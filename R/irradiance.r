@@ -1,0 +1,64 @@
+#' Calculate photon (quantum) irradiance from spectral (energy) irradiance.
+#'
+#' This function gives the energy irradiance for a given
+#' waveband of a radiation spectrum.
+#'
+#' @param w.length numeric array of wavelength (nm)
+#' @param s.irrad numeric array of spectral (energy) irradiances (W m-2 nm-1)
+#' @param w.band list with elements 'lo' and 'hi' giving the boundaries of the waveband (nm)
+#' @param unit.out character string with allowed values "energy", and "photon", or its alias "quantum"
+#' @param unit.in character string with allowed values "energy", and "photon", or its alias "quantum"
+#' 
+#' @return a single numeric value with no change in scale factor: [W m-2 nm-1] -> [mol s-1 m-2]
+#' @keywords manip misc
+#' @export
+#' @examples
+#' data(sun.data)
+#' with(sun.data, photon.irradiance(w.length, s.e.irrad, new.waveband(400,700)))
+
+irradiance <- 
+  function(w.length, s.irrad, w.band=NULL, unit.out=NULL, unit.in="energy"){
+    # what output? seems safer to not have a default here
+    if (is.null(unit.out)){
+      warning("'unit.out' has no default value")
+      return(NA)
+    }
+    # make code a bit simpler further down
+    if (unit.in=="quantum") {unit.in <- "photon"}
+    # sanity check for wavelengths
+    if (is.unsorted(w.length, strictly=TRUE)) {
+      warning("Error: wavelengths should be sorted in ascending order")
+      return(NA)
+    }
+    if (length(w.length) != length(s.irrad)){
+      warning("Error: wavelengths vector and s.e.irrad vector should have same length")
+      return(NA)
+    }
+    # rescale input data if needed
+    if (unit.in=="photon"){
+      s.e.irrad <- as.energy(w.length, s.irrad)
+    }
+    else if (unit.in=="energy"){
+      s.e.irrad <- s.irrad
+    } else {
+      warning("Invalid 'unit.in' value.")
+      return(NA)
+    }
+    # if the waveband is undefined then use all data
+    if (is.null(w.band)){
+      w.band <- new_waveband(min(w.length),max(w.length),hinges=NULL)
+    }
+    # if the w.band includes 'hinges' we 
+    if (!is.null(w.band$hinges)){
+      new.data <- insert_hinges(w.length, s.e.irrad, w.band$hinges)
+      w.length <- new.data$length
+      s.e.irrad <- new.data$s.irrad
+    }
+    # calculate the multipliers
+    mult <- calc_multipliers(w.length, w.band, unit.out)
+    
+    # calculate weighted spectral irradiance
+    irrad <- integrate_irradiance(s.e.irrad * mult)
+    
+    return(irrad)
+  }

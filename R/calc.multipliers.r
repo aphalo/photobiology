@@ -1,0 +1,43 @@
+#' Calculate multipliers for selecting a range of wavelengths and optionally applying a
+#' biological spectral weighting function (BSWF) and wavelength normalization.
+#'
+#' This function gives a set of numeric multipliers that can be used
+#' to select a waveband and apply a weight.
+#' The multipliers can be as input to \code{\link{generic.w.integral}}
+#' when calculating irradiances.
+#'
+#' @param w.length numeric array of wavelength (nm)
+#' @param w.band list(low, high, weight, BSWF.fun, norm)
+#'
+#' @return a numeric array of multipliers of the same length as \code{w.length}
+#' @export
+#' @keywords manip misc
+#' @examples
+#' data(sun.data)
+#' with(sun.data, calc.multipliers(w.length, PAR))
+#' with(sun.data, calc.multipliers(w.length, waveband.descriptor(400,700,"photon")))
+
+calc_multipliers <- function(w.length,w.band,unit.out="energy"){
+  mult <- numeric(length(w.length))
+  outside.band <- w.length < w.band$low | w.length >= w.band$high
+  inside.band <- !outside.band
+  mult[outside.band] <- 0.0
+  if (unit.out=="energy"){
+    mult[inside.band] <- 1.0
+  }
+  else if (unit.out=="photon"||unit.out=="quantum"){
+    mult[inside.band] <- e2qmol_multipliers(w.length[inside.band])
+  }
+  if (!is.null(w.band$weight)){
+    if (w.band$weight=="BSWF"|w.band$weight=="SWF"){
+       mult[inside.band] <- mult[inside.band] * w.band$SWF.fun(w.length[inside.band])
+     }
+  } 
+  if (!is.null(w.band$norm)){
+    if (w.band$norm >= w.band$low & w.band$norm <= w.band$high){
+      mul[inside.band] <- mult[inside.band] / w.band$SWF.fun(norm)
+    }
+  }
+  return(mult)
+}
+
