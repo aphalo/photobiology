@@ -14,7 +14,7 @@
 #' @export
 #' @examples
 #' data(sun.data)
-#' with(sun.data, photon.irradiance(w.length, s.e.irrad, new.waveband(400,700)))
+#' with(sun.data, irradiance(w.length, s.e.irrad, new_waveband(400,700), "photon"))
 
 irradiance <- 
   function(w.length, s.irrad, w.band=NULL, unit.out=NULL, unit.in="energy"){
@@ -46,19 +46,19 @@ irradiance <-
     }
     # if the waveband is undefined then use all data
     if (is.null(w.band)){
-      w.band <- new_waveband(min(w.length),max(w.length),hinges=NULL)
+      w.band <- new_waveband(min(w.length),max(w.length))
     }
-    # if the w.band includes 'hinges' we 
+    # if the w.band includes 'hinges' we insert them
     if (!is.null(w.band$hinges)){
-      new.data <- insert_hinges(w.length, s.e.irrad, w.band$hinges)
-      w.length <- new.data$length
+      new.data <- insert_hinges(w.length, s.irrad, w.band$hinges)
+      w.length <- new.data$w.length
       s.e.irrad <- new.data$s.irrad
     }
     # calculate the multipliers
     mult <- calc_multipliers(w.length, w.band, unit.out)
     
     # calculate weighted spectral irradiance
-    irrad <- integrate_irradiance(s.e.irrad * mult)
+    irrad <- integrate_irradiance(w.length, s.e.irrad * mult)
     
     return(irrad)
   }

@@ -3,19 +3,17 @@
 #'
 #' This function gives a set of numeric multipliers that can be used
 #' to select a waveband and apply a weight.
-#' The multipliers can be as input to \code{\link{generic.w.integral}}
-#' when calculating irradiances.
 #'
 #' @param w.length numeric array of wavelength (nm)
 #' @param w.band list(low, high, weight, BSWF.fun, norm)
+#' @param unit.out a character string: "photon" or "energy", default is "energy"
 #'
 #' @return a numeric array of multipliers of the same length as \code{w.length}
-#' @export
 #' @keywords manip misc
 #' @examples
 #' data(sun.data)
 #' with(sun.data, calc.multipliers(w.length, PAR))
-#' with(sun.data, calc.multipliers(w.length, waveband.descriptor(400,700,"photon")))
+#' with(sun.data, calc_multipliers(w.length, new_waveband(400,700),"photon"))
 
 calc_multipliers <- function(w.length,w.band,unit.out="energy"){
   mult <- numeric(length(w.length))
@@ -36,6 +34,9 @@ calc_multipliers <- function(w.length,w.band,unit.out="energy"){
   if (!is.null(w.band$norm)){
     if (w.band$norm >= w.band$low & w.band$norm <= w.band$high){
       mul[inside.band] <- mult[inside.band] / w.band$SWF.fun(norm)
+    } else {
+      warning("normalization wavelength outside range of SWF")
+      return(NA)
     }
   }
   return(mult)
