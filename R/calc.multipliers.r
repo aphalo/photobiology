@@ -13,7 +13,6 @@
 #' @export
 #' @examples
 #' data(sun.data)
-#' with(sun.data, calc_multipliers(w.length, PAR()))
 #' with(sun.data, calc_multipliers(w.length, new_waveband(400,700),"photon"))
 
 calc_multipliers <- function(w.length,w.band,unit.out="energy"){

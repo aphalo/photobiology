@@ -16,9 +16,7 @@
 #' data(sun.data)
 #' 
 #' with(sun.data, energy_irradiance(w.length, s.e.irrad))
-#' with(sun.data, energy_irradiance(w.length, s.e.irrad, PAR()))
 #' with(sun.data, energy_irradiance(w.length, s.e.irrad, new_waveband(400,700)))
-#' with(sun.data, energy_irradiance(w.length, s.e.irrad, PG()))
 
 energy_irradiance <- 
   function(w.length, s.irrad, w.band=NULL, unit.in="energy"){

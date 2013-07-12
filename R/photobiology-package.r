@@ -12,8 +12,8 @@
 #' \tabular{ll}{
 #' Package: \tab photobiology\cr
 #' Type: \tab Package\cr
-#' Version: \tab 0.1.0\cr
-#' Date: \tab 2013-07-11\cr
+#' Version: \tab 0.1.1\cr
+#' Date: \tab 2013-07-12\cr
 #' License: \tab GPL (>2.0)\cr
 #' }
 #' The most important functions in the package are \code{\link{energy_irradiance}}, 
@@ -33,14 +33,8 @@
 #' @examples
 #' data(sun.data)
 #' with(sun.data, photon_irradiance(w.length, s.e.irrad)) # the whole spectrum
-#' with(sun.data, photon_irradiance(w.length, s.e.irrad, PAR())) # photosynthetic photon irradiance
 #' with(sun.data, photon_irradiance(w.length, s.e.irrad, new_waveband(400,700))) # idem
-#' with(sun.data, photon_irradiance(w.length, s.e.irrad, PG())) # effective UV photon irradiance
-#' with(sun.data, photon_irradiance(w.length, s.e.irrad, PG(300))) # same, with PG normalized at 300 nm
 #' 
 #' with(sun.data, energy_irradiance(w.length, s.e.irrad)) # the whole spectrum
-#' with(sun.data, energy_irradiance(w.length, s.e.irrad, PAR())) # photosynthetic energy irradiance
 #' with(sun.data, energy_irradiance(w.length, s.e.irrad, new_waveband(400,700))) # idem
-#' with(sun.data, energy_irradiance(w.length, s.e.irrad, PG())) # effective UV irradiance
-#' with(sun.data, photon_irradiance(w.length, s.e.irrad, PG(300))) # same, with PG normalized at 300 nm
 NULL
