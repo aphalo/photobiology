@@ -16,7 +16,7 @@
 #' @export
 #' @examples
 #' data(sun.data)
-#' with(sun.data, insert_hinges(w.length, s.e.irrad, c(399.99,400.00,699.99,700.00))
+#' with(sun.data, insert_hinges(w.length, s.e.irrad, c(399.99,400.00,699.99,700.00)))
 
 insert_hinges <- function(w.length, s.irrad, hinges)
 {

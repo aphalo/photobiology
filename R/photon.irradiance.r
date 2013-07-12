@@ -14,10 +14,11 @@
 #' @export
 #' @examples
 #' data(sun.data)
-#' with(sun.data, photon_irradiance(w.length, s.e.irrad)) # the whole spectrum
-#' with(sun.data, photon_irradiance(w.length, s.e.irrad, PAR())) # photosynthetic photon irradiance
-#' with(sun.data, photon_irradiance(w.length, s.e.irrad, waveband(400,700))) # idem
-#' with(sun.data, photon_irradiance(w.length, s.e.irrad, PG())) # effective UV photon irradiance
+#' 
+#' with(sun.data, photon_irradiance(w.length, s.e.irrad))
+#' with(sun.data, photon_irradiance(w.length, s.e.irrad, PAR()))
+#' with(sun.data, photon_irradiance(w.length, s.e.irrad, new_waveband(400,700)))
+#' with(sun.data, photon_irradiance(w.length, s.e.irrad, PG()))
 
 photon_irradiance <- 
   function(w.length, s.irrad, w.band=NULL, unit.in="energy"){

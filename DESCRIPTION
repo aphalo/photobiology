@@ -13,5 +13,5 @@ Depends: R (>= 2.1.0)
 License: GPL-3
 LazyLoad: yes
 LazyData: yes
-ByteCompile: true
+ByteCompile: false
 Encoding: UTF-8

@@ -8,6 +8,7 @@
 #' 
 #' @return a single numeric value with no change in scale factor: e.g. [W m-2 nm-1] -> [W m-2]
 #' @keywords manip misc
+#' @export
 #' @examples
 #' data(sun.data)
 #' with(sun.data, integrate_irradiance(w.length, s.e.irrad))

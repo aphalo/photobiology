@@ -10,9 +10,10 @@
 #'
 #' @return a numeric array of multipliers of the same length as \code{w.length}
 #' @keywords manip misc
+#' @export
 #' @examples
 #' data(sun.data)
-#' with(sun.data, calc.multipliers(w.length, PAR))
+#' with(sun.data, calc_multipliers(w.length, PAR()))
 #' with(sun.data, calc_multipliers(w.length, new_waveband(400,700),"photon"))
 
 calc_multipliers <- function(w.length,w.band,unit.out="energy"){
@@ -33,7 +34,7 @@ calc_multipliers <- function(w.length,w.band,unit.out="energy"){
   } 
   if (!is.null(w.band$norm)){
     if (w.band$norm >= w.band$low & w.band$norm <= w.band$high){
-      mul[inside.band] <- mult[inside.band] / w.band$SWF.fun(norm)
+      mult[inside.band] <- mult[inside.band] / w.band$SWF.fun(w.band$norm)
     } else {
       warning("normalization wavelength outside range of SWF")
       return(NA)

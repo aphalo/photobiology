@@ -36,7 +36,7 @@ irradiance <-
     }
     # rescale input data if needed
     if (unit.in=="photon"){
-      s.e.irrad <- as.energy(w.length, s.irrad)
+      s.e.irrad <- as_energy(w.length, s.irrad)
     }
     else if (unit.in=="energy"){
       s.e.irrad <- s.irrad

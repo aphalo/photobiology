@@ -17,7 +17,7 @@
 #' License: \tab GPL (>2.0)\cr
 #' }
 #' The most important functions in the package are \code{\link{energy_irradiance}}, 
-#' \code{\link{photon_irradiance}, and \code{\link{new_waveband}}}. The first two, 
+#' \code{\link{photon_irradiance}}, and \code{\link{new_waveband}}. The first two, 
 #' are used to obtain energy and photon irradiances from spectral data. The third 
 #' function is used to define how to calculate new quantities.
 #' @references
@@ -30,15 +30,17 @@
 #' http://hdl.handle.net/10138/37558
 #' @note When released, this package will replace the package 
 #' \code{\link[UVcalc:UVcalc-package]{UVcalc}}. 
-#' @example
+#' @examples
 #' data(sun.data)
 #' with(sun.data, photon_irradiance(w.length, s.e.irrad)) # the whole spectrum
 #' with(sun.data, photon_irradiance(w.length, s.e.irrad, PAR())) # photosynthetic photon irradiance
-#' with(sun.data, photon_irradiance(w.length, s.e.irrad, waveband(400,700))) # idem
+#' with(sun.data, photon_irradiance(w.length, s.e.irrad, new_waveband(400,700))) # idem
 #' with(sun.data, photon_irradiance(w.length, s.e.irrad, PG())) # effective UV photon irradiance
+#' with(sun.data, photon_irradiance(w.length, s.e.irrad, PG(300))) # same, with PG normalized at 300 nm
 #' 
 #' with(sun.data, energy_irradiance(w.length, s.e.irrad)) # the whole spectrum
-#' with(sun.data, energy_irradiance(w.length, s.e.irrad, PAR)) # photosynthetic energy irradiance
-#' with(sun.data, energy_irradiance(w.length, s.e.irrad, waveband(400,700))) # idem
+#' with(sun.data, energy_irradiance(w.length, s.e.irrad, PAR())) # photosynthetic energy irradiance
+#' with(sun.data, energy_irradiance(w.length, s.e.irrad, new_waveband(400,700))) # idem
 #' with(sun.data, energy_irradiance(w.length, s.e.irrad, PG())) # effective UV irradiance
+#' with(sun.data, photon_irradiance(w.length, s.e.irrad, PG(300))) # same, with PG normalized at 300 nm
 NULL

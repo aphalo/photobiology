@@ -10,9 +10,9 @@
 #' @keywords manip misc
 #' @examples
 #' data(sun.data)
-#' with(sun.data, as_energy_mol(w.length, s.e.irrad))
+#' with(sun.data, as_energy(w.length, s.q.irrad))
 #' 
 
 as_energy <- function(w.length, s.qmol.irrad){
-  return(s.qmol.irrad * e2q_multipliers(w.length))
+  return(s.qmol.irrad * e2qmol_multipliers(w.length))
 }

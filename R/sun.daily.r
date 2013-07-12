@@ -5,8 +5,9 @@
 #' The variables are as follows:
 #' 
 #' \itemize{
-#'   \item w.length. (nm)  
-#'   \item s.e.irrad. (J d-1 m-2 nm-1) 
+#'   \item w.length (nm)  
+#'   \item s.e.irrad (J d-1 m-2 nm-1) 
+#'   \item s.q.irrad (mol d-1 m-2 nm-1)
 #' }
 #' 
 #' @docType data

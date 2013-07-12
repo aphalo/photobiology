@@ -11,9 +11,10 @@
 #' 
 #' @references \url{http://uv4growth.dyndns.org/}
 #' @keywords misc
+#' @export
 #' @examples
 #' data(sun.data)
-#' with(sun.data, PG.q(w.length))
+#' with(sun.data, PG.q.fun(w.length))
 
 PG.q.fun <-
 function(w.length){

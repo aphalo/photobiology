@@ -7,13 +7,11 @@
 #'
 #' @return a numeric array of spectral photon irradiances
 #' @export
-#' @aliases as_photon_mol as_quantum_mol
 #' @keywords manip misc
 #' @examples
 #' data(sun.data)
-#' with(sun.data, as_photon_mol(w.length, s.e.irrad))
 #' with(sun.data, as_quantum_mol(w.length, s.e.irrad))
 
-as_photon_mol <- as_quantum_mol <- function(w.length, s.e.irrad){
+as_quantum_mol <- function(w.length, s.e.irrad){
   return(s.e.irrad / e2qmol_multipliers(w.length))
 }
