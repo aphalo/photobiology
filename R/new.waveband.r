@@ -17,6 +17,7 @@
 #' data(sun.data)
 #' with(sun.data, irradiance(w.length, s.e.irrad, new_waveband(400,700), "photon"))
 #' 
-new_waveband <- function(w.low, w.high, weight=NULL, SWF.fun=NULL, norm=NULL, hinges=NULL){
+new_waveband <- function(w.low, w.high, weight=NULL, SWF.fun=NULL, norm=NULL, 
+                         hinges=c(w.low-0.01,w.low,w.high-0.01,w.high)){
   return(list(low=w.low, high=w.high, weight=weight, SWF.fun=SWF.fun, norm=norm, hinges=hinges))
 } 
