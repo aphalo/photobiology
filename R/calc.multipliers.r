@@ -15,7 +15,7 @@
 #' data(sun.data)
 #' with(sun.data, calc_multipliers(w.length, new_waveband(400,700),"photon"))
 
-calc_multipliers <- function(w.length,w.band,unit.out="energy"){
+calc_multipliers <- function(w.length, w.band, unit.out="energy"){
   mult <- numeric(length(w.length))
   outside.band <- w.length < w.band$low | w.length >= w.band$high
   inside.band <- !outside.band
@@ -26,19 +26,25 @@ calc_multipliers <- function(w.length,w.band,unit.out="energy"){
   else if (unit.out=="photon"||unit.out=="quantum"){
     mult[inside.band] <- e2qmol_multipliers(w.length[inside.band])
   }
-  if (!is.null(w.band$weight)){
-    if (w.band$weight=="BSWF"|w.band$weight=="SWF"){
-       mult[inside.band] <- mult[inside.band] * w.band$SWF.fun(w.length[inside.band])
-     }
-  } 
+  if (!is.null(w.band$weight) && (w.band$weight=="BSWF"||w.band$weight=="SWF")){
+    mult[inside.band] <- mult[inside.band] * w.band$SWF.fun(w.length[inside.band])
+    if (!is.null(w.band$SWF.norm) && w.band$SWF.unit=="photon"){
+      mult[inside.band] <- mult[inside.band] * w.length[inside.band] / w.band$SWF.norm
+      } else if (w.band$SWF.unit!="energy"){
+      warning("'SWF.norm' unknown: cannot convert 'SWF.fun' to energy based units.")
+      return(NA)
+    }
+  }
   if (!is.null(w.band$norm)){
-    if (w.band$norm >= w.band$low & w.band$norm <= w.band$high){
-      mult[inside.band] <- mult[inside.band] / w.band$SWF.fun(w.band$norm)
+    if (w.band$norm >= w.band$low && w.band$norm <= w.band$high){
+      mult[inside.band] <- mult[inside.band] / w.band$SWF.fun(w.band$norm) * 
+        ifelse(w.band$SWF.unit=="photon", w.band$norm / w.band$SWF.norm, 1.0)
     } else {
       warning("normalization wavelength outside range of SWF")
       return(NA)
-    }
+    } 
   }
   return(mult)
 }
 
+  
