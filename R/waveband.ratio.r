@@ -78,9 +78,9 @@ waveband_ratio <- function(w.length, s.irrad,
     merged.hinges <- c(ifelse(is.null(w.band.denom$hinges), numeric(0), w.band.denom$hinges), 
                        ifelse(is.null(w.band.num$hinges), numeric(0), w.band.num$hinges))
     if (length(merged.hinges) > 0){
-      new.data <- insert_hinges(w.length, s.irrad,merged.hinges)
+      new.data <- insert_hinges(w.length, s.irrad, merged.hinges)
       w.length <- new.data$w.length
-      s.e.irrad <- new.data$s.irrad
+      s.irrad <- new.data$s.irrad
     }
     # calculate the multipliers
     mult.num <- calc_multipliers(w.length, w.band.num, unit.out.num, unit.in)
