@@ -1,0 +1,5 @@
+photobiology 0.2.0
+==================
+
+Reimplemented irradiance(), calc_mutlipliers, e2qmol_multipliers(), and added e2quantum_multipliers().
+Also reimplemented new_waveband(), changing its interface. Some changes in other photobiologyxxxx will be needed.

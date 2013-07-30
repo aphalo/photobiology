@@ -7,6 +7,7 @@
 #' @param w.length numeric array of wavelength (nm)
 #' @param w.band list(low, high, weight, BSWF.fun, norm)
 #' @param unit.out a character string: "photon" or "energy", default is "energy"
+#' @param unit.in a character string: "photon" or "energy", default is "energy"
 #'
 #' @return a numeric array of multipliers of the same length as \code{w.length}
 #' @keywords manip misc
@@ -15,30 +16,35 @@
 #' data(sun.data)
 #' with(sun.data, calc_multipliers(w.length, new_waveband(400,700),"photon"))
 
-calc_multipliers <- function(w.length, w.band, unit.out="energy"){
+calc_multipliers <- function(w.length, w.band, unit.out="energy", unit.in="energy"){
   mult <- numeric(length(w.length))
   outside.band <- w.length < w.band$low | w.length >= w.band$high
   inside.band <- !outside.band
   mult[outside.band] <- 0.0
   if (unit.out=="energy"){
-    mult[inside.band] <- 1.0
-  }
-  else if (unit.out=="photon"||unit.out=="quantum"){
-    mult[inside.band] <- e2qmol_multipliers(w.length[inside.band])
-  }
-  if (!is.null(w.band$weight) && (w.band$weight=="BSWF"||w.band$weight=="SWF")){
-    mult[inside.band] <- mult[inside.band] * w.band$SWF.fun(w.length[inside.band])
-    if (!is.null(w.band$SWF.norm) && w.band$SWF.unit=="photon"){
-      mult[inside.band] <- mult[inside.band] * w.length[inside.band] / w.band$SWF.norm
-      } else if (w.band$SWF.unit!="energy"){
-      warning("'SWF.norm' unknown: cannot convert 'SWF.fun' to energy based units.")
-      return(NA)
+    if (unit.in=="energy"){
+      mult[inside.band] <- 1.0
+    } else if (unit.in=="photon"){
+      mult[inside.band] <- 1.0 / e2qmol_multipliers(w.length[inside.band])    
+    } 
+    if (!is.null(w.band$weight) && (w.band$weight=="BSWF" || w.band$weight=="SWF")){
+      mult[inside.band] <- mult[inside.band] * w.band$SWF.e.fun(w.length[inside.band])
     }
   }
-  if (!is.null(w.band$norm)){
+  else if (unit.out=="photon"){
+    if (unit.in=="photon"){
+      mult[inside.band] <- 1.0
+    } else if (unit.in=="energy"){
+      mult[inside.band] <- e2qmol_multipliers(w.length[inside.band])    
+    } 
+    if (!is.null(w.band$weight) && (w.band$weight=="BSWF" || w.band$weight=="SWF")){
+      mult[inside.band] <- mult[inside.band] * w.band$SWF.q.fun(w.length[inside.band])
+    }
+  }
+  if (!is.null(w.band$norm) && (!is.null(w.band$weight))){
     if (w.band$norm >= w.band$low && w.band$norm <= w.band$high){
-      mult[inside.band] <- mult[inside.band] / w.band$SWF.fun(w.band$norm) * 
-        ifelse(w.band$SWF.unit=="photon", w.band$norm / w.band$SWF.norm, 1.0)
+      norm.divisor <- ifelse(unit.out=="energy", w.band$SWF.e.fun(w.band$norm),  w.band$SWF.q.fun(w.band$norm))
+      mult[inside.band] <- mult[inside.band] / norm.divisor
     } else {
       warning("normalization wavelength outside range of SWF")
       return(NA)

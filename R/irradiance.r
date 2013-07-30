@@ -34,15 +34,14 @@ irradiance <-
       warning("Error: wavelengths vector and s.e.irrad vector should have same length")
       return(NA)
     }
-    # rescale input data if needed
-    if (unit.in=="photon"){
-      s.e.irrad <- as_energy(w.length, s.irrad)
-    }
-    else if (unit.in=="energy"){
-      s.e.irrad <- s.irrad
-    } else {
-      warning("Invalid 'unit.in' value.")
+    # check for NAs
+    if (any(is.na(w.length)|is.na(s.irrad))){
+      warning("Error: at least one NA value in wavelengths vector and/or s.e.irrad vector")
       return(NA)
+    }
+    # warn if w.length values are not reasonable
+    if (min(w.length < 200.0) || max(w.length > 1000.0)){
+      warning("Warning: wavelength values should be in nm\n data contains values < 200 nm and/or > 1000 nm")
     }
     # if the waveband is undefined then use all data
     if (is.null(w.band)){
@@ -52,13 +51,13 @@ irradiance <-
     if (!is.null(w.band$hinges)){
       new.data <- insert_hinges(w.length, s.irrad, w.band$hinges)
       w.length <- new.data$w.length
-      s.e.irrad <- new.data$s.irrad
+      s.irrad <- new.data$s.irrad
     }
     # calculate the multipliers
-    mult <- calc_multipliers(w.length, w.band, unit.out)
+    mult <- calc_multipliers(w.length, w.band, unit.out, unit.in)
     
     # calculate weighted spectral irradiance
-    irrad <- integrate_irradiance(w.length, s.e.irrad * mult)
+    irrad <- integrate_irradiance(w.length, s.irrad * mult)
     
     return(irrad)
   }

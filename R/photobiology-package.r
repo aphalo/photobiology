@@ -12,8 +12,8 @@
 #' \tabular{ll}{
 #' Package: \tab photobiology\cr
 #' Type: \tab Package\cr
-#' Version: \tab 0.1.2\cr
-#' Date: \tab 2013-07-13\cr
+#' Version: \tab 0.2.0\cr
+#' Date: \tab 2013-07-30\cr
 #' License: \tab GPL (>2.0)\cr
 #' }
 #' The most important functions in the package are \code{\link{energy_irradiance}}, 
