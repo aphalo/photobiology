@@ -4,7 +4,9 @@
 #' gretaly reduces the errors caused by interpolating the weighted irradiance during
 #' integration of the effective spectral irradiance. This is specially true when data
 #' has a large wavelength step size.
-#'  
+#' 
+#' @usage insert_hinges(w.length, s.irrad, hinges) 
+#' 
 #' @param w.length numeric array of wavelength (nm)
 #' @param s.irrad numeric array of spectral irradiance values
 #' @param hinges a numeric array giving the wavelengths at which the s.irrad should be inserted by

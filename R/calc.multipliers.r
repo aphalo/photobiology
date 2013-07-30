@@ -4,6 +4,8 @@
 #' This function gives a set of numeric multipliers that can be used
 #' to select a waveband and apply a weight.
 #'
+#' @usage calc_multipliers(w.length, w.band, unit.out="energy", unit.in="energy")
+#' 
 #' @param w.length numeric array of wavelength (nm)
 #' @param w.band list(low, high, weight, BSWF.fun, norm)
 #' @param unit.out a character string: "photon" or "energy", default is "energy"

@@ -1,5 +1,7 @@
 #' Build a "waveband" object that can be used as imput when calculating irradiances.
 #'
+#' @usage new_waveband(w.low, w.high, weight=NULL, SWF.e.fun=NULL, SWF.q.fun=NULL, norm=NULL, SWF.norm=NULL, hinges=c(w.low-0.01,w.low,w.high-0.01,w.high))
+#' 
 #' @param w.low numeric value, wavelength at the short end of the band (nm)
 #' @param w.high numeric value, wavelength at the long end of the band (nm)
 #' @param weight a character string "SWF" or "BSWF", use NULL (the defalt) to indicate no weighting used

@@ -4,6 +4,7 @@
 #' waveband of a radiation spectrum.
 #'
 #' @usage photons_energy_ratio(w.length, s.irrad, w.band=NULL, unit.in="energy")
+#' 
 #' @param w.length numeric array of wavelength (nm)
 #' @param s.irrad numeric array of spectral (energy) irradiances (W m-2 nm-1)
 #' @param w.band list with elements 'lo' and 'hi' giving the boundaries of the waveband (nm)

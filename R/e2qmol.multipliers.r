@@ -1,6 +1,8 @@
 #' Gives multipliers as a function of wavelength, for converting from energy to photon 
 #' (quantum) molar units.
 #'
+#' @usage e2qmol_multipliers(w.length)
+#' 
 #' @param w.length numeric array of wavelengths (nm)
 #' 
 #' @return a numeric array of multipliers

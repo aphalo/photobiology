@@ -2,7 +2,9 @@
 #'
 #' This function gives the result of integrating spectral irradiance over
 #' wavelengths.
-#'
+#' 
+#' @usage integrate_irradiance(w.length, s.irrad)
+#' 
 #' @param w.length numeric array of wavelength (nm)
 #' @param s.irrad numeric array of spectral irradiances
 #' 

@@ -2,6 +2,8 @@
 #'
 #' For example an spectrum [mol s-1 m-2 nm-1] is converted into a spectrum [W m-2 nm-1] 
 #'
+#' @usage as_energy(w.length, s.qmol.irrad)
+#' 
 #' @param w.length numeric array of wavelength (nm)
 #' @param s.qmol.irrad a numeric array of spectral photon irradiances
 #'
