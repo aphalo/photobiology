@@ -1,6 +1,6 @@
 #' Build a "waveband" object that can be used as imput when calculating irradiances.
 #'
-#' @usage new_waveband(w.low, w.high, weight=NULL, SWF.e.fun=NULL, SWF.q.fun=NULL, norm=NULL, SWF.norm=NULL, hinges=c(w.low-0.01,w.low,w.high-0.01,w.high))
+#' @usage new_waveband(w.low, w.high, weight=NULL, SWF.e.fun=NULL, SWF.q.fun=NULL, norm=NULL, SWF.norm=NULL, hinges=c(w.low-0.01,w.low,w.high-0.01,w.high), wb.name=NULL)
 #' 
 #' @param w.low numeric value, wavelength at the short end of the band (nm)
 #' @param w.high numeric value, wavelength at the long end of the band (nm)
@@ -13,8 +13,9 @@
 #' to 1.0, in nm. "NULL" means no normalization.
 #' @param hinges a numeric array giving the wavelengths at which the s.irrad should be inserted by
 #' interpolation, no interpolation is indicated by an empty array (numeric(0))
+#' @param wb.name character string giving the name for the waveband defined, default is "no.name"
 #' 
-#' @return a list with components low, high, weight, SWF.fun, norm, hinges
+#' @return a list with components low, high, weight, SWF.fun, norm, hinges, name
 #' @keywords manip misc
 #' @export
 #' @examples
@@ -23,7 +24,7 @@
 #' 
 new_waveband <- function(w.low, w.high, 
                          weight=NULL, SWF.e.fun=NULL, SWF.q.fun=NULL, norm=NULL, 
-                         SWF.norm=NULL, hinges=c(w.low-0.01,w.low,w.high-0.01,w.high)){
+                         SWF.norm=NULL, hinges=c(w.low-0.01,w.low,w.high-0.01,w.high), wb.name=NULL){
   if (!is.null(weight)) {
     # 
     if (!is.null(SWF.e.fun) && is.null(SWF.q.fun)){
@@ -45,5 +46,5 @@ new_waveband <- function(w.low, w.high,
       return(NA)
     }
   }
-  return(list(low=w.low, high=w.high, weight=weight, SWF.e.fun=SWF.e.fun, SWF.q.fun=SWF.q.fun, SWF.norm=SWF.norm, norm=norm, hinges=hinges))
+  return(list(low=w.low, high=w.high, weight=weight, SWF.e.fun=SWF.e.fun, SWF.q.fun=SWF.q.fun, SWF.norm=SWF.norm, norm=norm, hinges=hinges, name=wb.name))
 } 
