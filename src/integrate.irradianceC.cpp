@@ -13,19 +13,19 @@ using namespace Rcpp;
 //' 
 //' @return a single numeric value with no change in scale factor: e.g. [W m-2 nm-1] -> [W m-2]
 //' @keywords manip misc
-//' @name integrateirr
-//' @alias integrateirr
+//' @name integrate_irradianceC
+//' @alias integrate_irradianceC
 //' @export
+//' @useDynLib photobiology
 //' @examples
 //' data(sun.data)
-//' with(sun.data, integrateirr(w.length, s.e.irrad))
+//' with(sun.data, integrate_irradianceC(w.length, s.e.irrad))
 // [[Rcpp::export]]
-double integrateirr(NumericVector w_length, NumericVector s_irrad) {
-    double irrad = 0.0;
-    int last = w_length.size();
-    for (int i = 0; i < last; i++){
-      irrad =+ ((s_irrad[i] + s_irrad[i+1]) / 2.0 * (w_length[i+1] - w_length[i]));
+double integrate_irradianceC(NumericVector w_length, NumericVector s_irrad) {
+    double irradiance = 0.0;
+    int n = w_length.size();
+    for (int i = 0; i < n-1; i++){
+      irradiance =+ ((s_irrad[i+1] + s_irrad[i]) / 2.0) * (w_length[i+1] - w_length[i]);
     }
-    return(irrad);
+    return irradiance;
 }
-

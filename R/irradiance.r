@@ -4,7 +4,7 @@
 #' waveband of a radiation spectrum.
 #'
 #' @usage irradiance(w.length, s.irrad, w.band=NULL, unit.out=NULL, unit.in="energy", 
-#' check.spectrum=TRUE, use.cached.mult=FALSE)
+#' check.spectrum=TRUE, use.cached.mult=FALSE, use.cpp.code=TRUE)
 #' 
 #' @param w.length numeric array of wavelength (nm)
 #' @param s.irrad numeric array of spectral (energy) irradiances (W m-2 nm-1)
@@ -23,7 +23,7 @@
 
 irradiance <- 
   function(w.length, s.irrad, w.band=NULL, unit.out=NULL, unit.in="energy", 
-           check.spectrum=TRUE, use.cached.mult=FALSE){
+           check.spectrum=TRUE, use.cached.mult=FALSE, use.cpp.code=TRUE){
     # what output? seems safer to not have a default here
     if (is.null(unit.out)){
       warning("'unit.out' has no default value")
@@ -50,7 +50,11 @@ irradiance <-
                              unit.in=unit.in, use.cached.mult=use.cached.mult)
     
     # calculate weighted spectral irradiance
-    irrad <- integrate_irradiance(w.length, s.irrad * mult)
+    if (use.cpp.code) {
+      irrad <- integrate_irradianceC(w.length, s.irrad * mult)
+    } else {
+      irrad <- integrate_irradianceR(w.length, s.irrad * mult)
+    }
     
     return(irrad)
   }

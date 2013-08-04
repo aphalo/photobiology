@@ -2,3 +2,4 @@ RcppExports.o
 RcppExports.cpp
 integrate.irradiance.o
 integrateirrad.o
+integrate.irradianceC.o
