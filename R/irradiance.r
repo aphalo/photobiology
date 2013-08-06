@@ -13,6 +13,7 @@
 #' @param unit.in character string with allowed values "energy", and "photon", or its alias "quantum"
 #' @param check.spectrum logical indicating whether to sanity check input data, default is TRUE
 #' @param use.cached.mult logical indicating whether multiplier values should be cached between calls
+#' @param use.cpp.code logical indicating whether to use compiled C++ function for integartion
 #' 
 #' @return a single numeric value with no change in scale factor: [W m-2 nm-1] -> [mol s-1 m-2]
 #' @keywords manip misc

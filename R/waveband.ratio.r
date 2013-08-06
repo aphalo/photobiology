@@ -4,7 +4,8 @@
 #' wavebands of a radiation spectrum.
 #'
 #' @usage waveband_ratio(w.length, s.irrad, w.band.num=NULL, w.band.denom=NULL, 
-#' unit.out.num=NULL, unit.out.denom=unit.out.num, unit.in="energy")
+#' unit.out.num=NULL, unit.out.denom=unit.out.num, unit.in="energy", 
+#' check.spectrum=TRUE, use.cached.mult=FALSE, use.cpp.code=TRUE)
 #' @param w.length numeric array of wavelength (nm)
 #' @param s.irrad numeric array of spectral (energy) irradiances (W m-2 nm-1)
 #' @param w.band.num list with elements 'lo' and 'hi' giving the boundaries of the waveband (nm)
@@ -12,6 +13,9 @@
 #' @param unit.out.num character string with allowed values "energy", and "photon", or its alias "quantum"
 #' @param unit.out.denom character string with allowed values "energy", and "photon", or its alias "quantum"
 #' @param unit.in character string with allowed values "energy", and "photon", or its alias "quantum"
+#' @param check.spectrum logical indicating whether to sanity check input data, default is TRUE
+#' @param use.cached.mult logical indicating whether multiplier values should be cached between calls
+#' @param use.cpp.code logical indicating whether to use compiled C++ function for integartion
 #' 
 #' @return a single numeric value giving the unitless ratio 
 #' @keywords manip misc
@@ -32,7 +36,8 @@
 waveband_ratio <- function(w.length, s.irrad, 
                              w.band.num=NULL, w.band.denom=NULL, 
                              unit.out.num=NULL, unit.out.denom=unit.out.num, 
-                             unit.in="energy"){
+                             unit.in="energy", 
+                             check.spectrum=TRUE, use.cached.mult=FALSE, use.cpp.code=TRUE){
     # We duplicate code from irradiance() here to avoid repeated checks
     # and calculations on the same data
     #
@@ -44,23 +49,9 @@ waveband_ratio <- function(w.length, s.irrad,
     # make code a bit simpler further down
     if (unit.in=="quantum") {unit.in <- "photon"}
     # sanity check for wavelengths
-    if (is.unsorted(w.length, strictly=TRUE)) {
-      warning("Error: wavelengths should be sorted in ascending order")
+    if (check.spectrum && !check_spectrum(w.length, s.irrad)) {
       return(NA)
-    }
-    if (length(w.length) != length(s.irrad)){
-      warning("Error: wavelengths vector and s.e.irrad vector should have same length")
-      return(NA)
-    }
-    # check for NAs
-    if (any(is.na(w.length)|is.na(s.irrad))){
-      warning("Error: at least one NA value in wavelengths vector and/or s.irrad vector")
-      return(NA)
-    }
-    # warn if w.length values are not reasonable
-    if (min(w.length < 200.0) || max(w.length > 1000.0)){
-      warning("Warning: wavelength values should be in nm\n data contains values < 200 nm and/or > 1000 nm")
-    }
+    } 
     # if the waveband for numerator is undefined then use
     # the whole wavelength range of the spectrum for numerator
     if (is.null(w.band.num)){
@@ -83,12 +74,18 @@ waveband_ratio <- function(w.length, s.irrad,
       s.irrad <- new.data$s.irrad
     }
     # calculate the multipliers
-    mult.num <- calc_multipliers(w.length, w.band.num, unit.out.num, unit.in)
-    mult.denom <- calc_multipliers(w.length, w.band.denom, unit.out.denom, unit.in)
+    mult.num <- calc_multipliers(w.length, w.band.num, unit.out.num, unit.in, use.cached.mult=use.cached.mult)
+    mult.denom <- calc_multipliers(w.length, w.band.denom, unit.out.denom, unit.in, use.cached.mult=use.cached.mult)
     
     # calculate weighted spectral irradiance
-    irrad.num <- integrate_irradiance(w.length, s.irrad * mult.num)
-    irrad.denom <- integrate_irradiance(w.length, s.irrad * mult.denom)
+    # calculate weighted spectral irradiance
+    if (use.cpp.code) {
+      irrad.num <- integrate_irradianceC(w.length, s.irrad * mult.num)
+      irrad.denom <- integrate_irradianceC(w.length, s.irrad * mult.denom)
+    } else {
+      irrad.num <- integrate_irradianceR(w.length, s.irrad * mult.num)
+      irrad.denom <- integrate_irradianceR(w.length, s.irrad * mult.denom)
+    }
     
     return(irrad.num / irrad.denom)
   }

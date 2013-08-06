@@ -6,7 +6,7 @@ using namespace Rcpp;
 //' This function gives the result of integrating spectral irradiance over
 //' wavelengths. Coded in C++.
 //' 
-//' @usage integrateirr(w_length, s_irrad)
+//' @usage integrate_irradianceC(w_length, s_irrad)
 //' 
 //' @param w_length numeric array of wavelength (nm)
 //' @param s_irrad numeric array of spectral irradiances
