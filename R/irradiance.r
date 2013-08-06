@@ -3,13 +3,17 @@
 #' This function gives the energy irradiance for a given
 #' waveband of a radiation spectrum.
 #'
-#' @usage irradiance(w.length, s.irrad, w.band=NULL, unit.out=NULL, unit.in="energy")
+#' @usage irradiance(w.length, s.irrad, w.band=NULL, unit.out=NULL, unit.in="energy", 
+#' check.spectrum=TRUE, use.cached.mult=FALSE, use.cpp.code=TRUE)
 #' 
 #' @param w.length numeric array of wavelength (nm)
 #' @param s.irrad numeric array of spectral (energy) irradiances (W m-2 nm-1)
 #' @param w.band list with elements 'lo' and 'hi' giving the boundaries of the waveband (nm)
 #' @param unit.out character string with allowed values "energy", and "photon", or its alias "quantum"
 #' @param unit.in character string with allowed values "energy", and "photon", or its alias "quantum"
+#' @param check.spectrum logical indicating whether to sanity check input data, default is TRUE
+#' @param use.cached.mult logical indicating whether multiplier values should be cached between calls
+#' @param use.cpp.code logical indicating whether to use compiled C++ function for integartion
 #' 
 #' @return a single numeric value with no change in scale factor: [W m-2 nm-1] -> [mol s-1 m-2]
 #' @keywords manip misc
@@ -17,9 +21,19 @@
 #' @examples
 #' data(sun.data)
 #' with(sun.data, irradiance(w.length, s.e.irrad, new_waveband(400,700), "photon"))
+#' @note The last three parameters control speed optimizations. The defaults should be suitable
+#' in mosts cases. If you set \code{check.spectrum=FALSE} then you should call \code{check_spectrum()}
+#' at least once for your spectrum before using any of the other functions. If you will use repeatedly
+#' the same SWFs on many spectra measured at exactly the same wavelengths you may obtain some speed up
+#' by setting \code{use.cached.mult=TRUE}. However, be aware that you are responsible for ensuring
+#' that the wavelengths are the same in each call, as the only test done is for the length of the
+#' \code{w.length} vector. The is no reason for setting \code{use.cpp.code=FALSE} other than for
+#' testing the improvement in speed, or in cases where there is no suitable C++ compiler for building
+#' the package.
 
 irradiance <- 
-  function(w.length, s.irrad, w.band=NULL, unit.out=NULL, unit.in="energy"){
+  function(w.length, s.irrad, w.band=NULL, unit.out=NULL, unit.in="energy", 
+           check.spectrum=TRUE, use.cached.mult=FALSE, use.cpp.code=TRUE){
     # what output? seems safer to not have a default here
     if (is.null(unit.out)){
       warning("'unit.out' has no default value")
@@ -27,24 +41,10 @@ irradiance <-
     }
     # make code a bit simpler further down
     if (unit.in=="quantum") {unit.in <- "photon"}
-    # sanity check for wavelengths
-    if (is.unsorted(w.length, strictly=TRUE)) {
-      warning("Error: wavelengths should be sorted in ascending order")
+    # sanity check for spectral data and abort if check fails
+    if (check.spectrum && !check_spectrum(w.length, s.irrad)) {
       return(NA)
-    }
-    if (length(w.length) != length(s.irrad)){
-      warning("Error: wavelengths vector and s.e.irrad vector should have same length")
-      return(NA)
-    }
-    # check for NAs
-    if (any(is.na(w.length)|is.na(s.irrad))){
-      warning("Error: at least one NA value in wavelengths vector and/or s.e.irrad vector")
-      return(NA)
-    }
-    # warn if w.length values are not reasonable
-    if (min(w.length < 200.0) || max(w.length > 1000.0)){
-      warning("Warning: wavelength values should be in nm\n data contains values < 200 nm and/or > 1000 nm")
-    }
+    } 
     # if the waveband is undefined then use all data
     if (is.null(w.band)){
       w.band <- new_waveband(min(w.length),max(w.length))
@@ -56,10 +56,15 @@ irradiance <-
       s.irrad <- new.data$s.irrad
     }
     # calculate the multipliers
-    mult <- calc_multipliers(w.length, w.band, unit.out, unit.in)
+    mult <- calc_multipliers(w.length=w.length, w.band=w.band, unit.out=unit.out, 
+                             unit.in=unit.in, use.cached.mult=use.cached.mult)
     
     # calculate weighted spectral irradiance
-    irrad <- integrate_irradiance(w.length, s.irrad * mult)
+    if (use.cpp.code) {
+      irrad <- integrate_irradianceC(w.length, s.irrad * mult)
+    } else {
+      irrad <- integrate_irradianceR(w.length, s.irrad * mult)
+    }
     
     return(irrad)
   }

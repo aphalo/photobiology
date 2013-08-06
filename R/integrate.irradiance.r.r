@@ -3,7 +3,7 @@
 #' This function gives the result of integrating spectral irradiance over
 #' wavelengths.
 #' 
-#' @usage integrate_irradiance(w.length, s.irrad)
+#' @usage integrate_irradianceR(w.length, s.irrad)
 #' 
 #' @param w.length numeric array of wavelength (nm)
 #' @param s.irrad numeric array of spectral irradiances
@@ -13,9 +13,9 @@
 #' @export
 #' @examples
 #' data(sun.data)
-#' with(sun.data, integrate_irradiance(w.length, s.e.irrad))
+#' with(sun.data, integrate_irradianceR(w.length, s.e.irrad))
 
-integrate_irradiance <-
+integrate_irradianceR <-
 function(w.length, s.irrad){
     irrad <- 0.0
     for (i in 1:(length(w.length)-1)){

@@ -12,9 +12,9 @@
 #' \tabular{ll}{
 #' Package: \tab photobiology\cr
 #' Type: \tab Package\cr
-#' Version: \tab 0.2.0\cr
-#' Date: \tab 2013-07-30\cr
-#' License: \tab GPL (>2.0)\cr
+#' Version: \tab 0.2.2\cr
+#' Date: \tab 2013-08-06\cr
+#' License: \tab GPL (>= 2.0)\cr
 #' }
 #' The most important functions in the package are \code{\link{energy_irradiance}}, 
 #' \code{\link{photon_irradiance}}, and \code{\link{new_waveband}}. The first two, 
@@ -28,8 +28,8 @@
 #' Division of Plant Biology. ISBN 978-952-10-8363-1 (PDF), 
 #' 978-952-10-8362-4 (paperback). Open access PDF download available at 
 #' http://hdl.handle.net/10138/37558
-#' @note When released, this package will replace the package 
-#' \code{\link[UVcalc:UVcalc-package]{UVcalc}}. 
+#' @note When released, this package will replace the package UVcalc. 
+#' 
 #' @examples
 #' data(sun.data)
 #' with(sun.data, photon_irradiance(w.length, s.e.irrad)) # the whole spectrum
