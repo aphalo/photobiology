@@ -12,9 +12,9 @@
 #' \tabular{ll}{
 #' Package: \tab photobiology\cr
 #' Type: \tab Package\cr
-#' Version: \tab 0.2.1\cr
-#' Date: \tab 2013-08-03\cr
-#' License: \tab GPL (>2.0)\cr
+#' Version: \tab 0.2.2\cr
+#' Date: \tab 2013-08-06\cr
+#' License: \tab GPL (>= 2.0)\cr
 #' }
 #' The most important functions in the package are \code{\link{energy_irradiance}}, 
 #' \code{\link{photon_irradiance}}, and \code{\link{new_waveband}}. The first two, 

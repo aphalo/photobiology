@@ -21,6 +21,15 @@
 #' @examples
 #' data(sun.data)
 #' with(sun.data, irradiance(w.length, s.e.irrad, new_waveband(400,700), "photon"))
+#' @note The last three parameters control speed optimizations. The defaults should be suitable
+#' in mosts cases. If you set \code{check.spectrum=FALSE} then you should call \code{check_spectrum()}
+#' at least once for your spectrum before using any of the other functions. If you will use repeatedly
+#' the same SWFs on many spectra measured at exactly the same wavelengths you may obtain some speed up
+#' by setting \code{use.cached.mult=TRUE}. However, be aware that you are responsible for ensuring
+#' that the wavelengths are the same in each call, as the only test done is for the length of the
+#' \code{w.length} vector. The is no reason for setting \code{use.cpp.code=FALSE} other than for
+#' testing the improvement in speed, or in cases where there is no suitable C++ compiler for building
+#' the package.
 
 irradiance <- 
   function(w.length, s.irrad, w.band=NULL, unit.out=NULL, unit.in="energy", 

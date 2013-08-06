@@ -1,3 +1,4 @@
+library(photobiology)
 library(photobiologyUV)
 library(microbenchmark)
 
@@ -17,7 +18,10 @@ test.calc_multipliers(CIE(300))
 test.irradiance <- function(w.band=new_waveband(400,700)) {
   microbenchmark(irradiance(w.length, s.e.irrad, w.band,"photon", check.spectrum=TRUE, use.cached.mult=FALSE),
                  irradiance(w.length, s.e.irrad, w.band,"photon", check.spectrum=TRUE, use.cached.mult=TRUE),
-                 irradiance(w.length, s.e.irrad, w.band,"photon", check.spectrum=FALSE, use.cached.mult=TRUE))
+                 irradiance(w.length, s.e.irrad, w.band,"photon", check.spectrum=FALSE, use.cached.mult=TRUE),
+                 irradiance(w.length, s.e.irrad, w.band,"photon", check.spectrum=TRUE, use.cached.mult=FALSE, use.cpp.code=FALSE),
+                 irradiance(w.length, s.e.irrad, w.band,"photon", check.spectrum=TRUE, use.cached.mult=TRUE, use.cpp.code=FALSE),
+                 irradiance(w.length, s.e.irrad, w.band,"photon", check.spectrum=FALSE, use.cached.mult=TRUE, use.cpp.code=FALSE))
 }
 
 test.irradiance()
@@ -26,8 +30,8 @@ test.irradiance(CIE())
 test.irradiance(CIE(300))
 
 test.integrate_irradiance <- function() {
-  microbenchmark(integrate_irradiance(w.length, s.e.irrad),
-                 integrateirr(w.length, s.e.irrad))
+  microbenchmark(integrate_irradianceR(w.length, s.e.irrad),
+                 integrate_irradianceC(w.length, s.e.irrad))
 }
 
 test.integrate_irradiance()

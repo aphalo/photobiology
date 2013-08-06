@@ -22,10 +22,12 @@
 calc_multipliers <- function(w.length, w.band, unit.out="energy", unit.in="energy", use.cached.mult=FALSE){
   cache.needs.saving <- FALSE
   if (use.cached.mult && !is.null(w.band$name)) {
+    # this needs to be changed to something better
+    ourEnv <- .GlobalEnv
     # search for cached multipliers
     cache.name <- paste(w.band$name, unit.in, unit.out, sep=".")
-    if (exists(cache.name, where = .GlobalEnv)) {
-      mult <- get(cache.name, envir = .GlobalEnv)
+    if (exists(cache.name, where = ourEnv)) {
+      mult <- get(cache.name, envir = ourEnv)
       if (length(w.length) == length(mult)) {
         return(mult)
       } else {
@@ -69,7 +71,7 @@ calc_multipliers <- function(w.length, w.band, unit.out="energy", unit.in="energ
     } 
   }
   if (use.cached.mult && cache.needs.saving) {
-    assign(cache.name, mult, envir = .GlobalEnv)
+    assign(cache.name, mult, envir = ourEnv)
   }
   return(mult)
 }
