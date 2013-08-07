@@ -18,12 +18,13 @@
 #' @examples
 #' data(sun.data)
 #' with(sun.data, calc_multipliers(w.length, new_waveband(400,700),"photon"))
+#' with(sun.data, calc_multipliers(w.length, new_waveband(400,700),"photon", use.cached.mult=TRUE))
 
 calc_multipliers <- function(w.length, w.band, unit.out="energy", unit.in="energy", use.cached.mult=FALSE){
   cache.needs.saving <- FALSE
   if (use.cached.mult && !is.null(w.band$name)) {
     # this needs to be changed to something better
-    ourEnv <- .GlobalEnv
+    ourEnv <- photobio.cache
     # search for cached multipliers
     cache.name <- paste(w.band$name, unit.in, unit.out, sep=".")
     if (exists(cache.name, where = ourEnv)) {
@@ -76,4 +77,11 @@ calc_multipliers <- function(w.length, w.band, unit.out="energy", unit.in="energ
   return(mult)
 }
 
+.onLoad <- function(libname = find.package("photobiology"), pkgname = "photobiology") {
+  photobio.cache <<- new.env(parent = .GlobalEnv)
+}
+
+.onUnload <- function(libpath) {
+  rm(photobio.cache, envir= .GlobalEnv)
+}
   
