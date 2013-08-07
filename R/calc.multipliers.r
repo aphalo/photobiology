@@ -77,7 +77,7 @@ calc_multipliers <- function(w.length, w.band, unit.out="energy", unit.in="energ
   return(mult)
 }
 
-.onLoad <- function(libname = find.package("photobiology"), pkgname = "photobiology") {
+.onLoad <- function(libname, pkgname) {
   photobio.cache <<- new.env(parent = .GlobalEnv)
 }
 

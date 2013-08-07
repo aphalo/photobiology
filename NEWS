@@ -1,3 +1,12 @@
+photobiology 0.2.2-0.2.3
+========================
+
+Revised photon_ratio() to use same optimizations.
+
+Imporved implementation of cache. Now it is enclosed in an environment that is created when
+the package is loaded and removed when it is unloaded.
+
+
 photobiology 0.2.1
 ==================
 
