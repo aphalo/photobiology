@@ -4,5 +4,7 @@
 *.Rd
 photobiology.Rproj
 R/RcppExports.R
+src-i386/
+src-x64/
 src/RcppExports.cpp
-*.o
+NAMESPACE

@@ -1,3 +1,28 @@
+photobiology 0.2.2-0.2.3
+========================
+
+Revised photon_ratio() to use same optimizations.
+
+Imporved implementation of cache. Now it is enclosed in an environment that is created when
+the package is loaded and removed when it is unloaded.
+
+
+photobiology 0.2.1
+==================
+
+Factored to a separate function the code to check spectral data, and added argument to irradiance to switch off the checking.
+
+Added a "name" field to wavebands and a wb.name argument to new_waveband(), with a default so that no old code will be broken.
+
+Added argument to calc_multipliers() to enable caching. Disabled by default.
+
+Added argument to irradiance() to enable/disable checking of spectral data. Enabled by default.
+
+Added argument to irradiance() to enable use of speed optimizations.
+
+Defaults to arguments ensure that nothing changes from earlier versions unless new features are
+explicitly enabled.
+
 photobiology 0.2.0
 ==================
 

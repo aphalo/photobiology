@@ -4,12 +4,13 @@
 #' This function gives a set of numeric multipliers that can be used
 #' to select a waveband and apply a weight.
 #'
-#' @usage calc_multipliers(w.length, w.band, unit.out="energy", unit.in="energy")
+#' @usage calc_multipliers(w.length, w.band, unit.out="energy", unit.in="energy", use.cached.mult=FALSE)
 #' 
 #' @param w.length numeric array of wavelength (nm)
 #' @param w.band list(low, high, weight, BSWF.fun, norm)
 #' @param unit.out a character string: "photon" or "energy", default is "energy"
 #' @param unit.in a character string: "photon" or "energy", default is "energy"
+#' @param use.cached.mult logical indicating whether multiplier values should be cached between calls
 #'
 #' @return a numeric array of multipliers of the same length as \code{w.length}
 #' @keywords manip misc
@@ -17,8 +18,26 @@
 #' @examples
 #' data(sun.data)
 #' with(sun.data, calc_multipliers(w.length, new_waveband(400,700),"photon"))
+#' with(sun.data, calc_multipliers(w.length, new_waveband(400,700),"photon", use.cached.mult=TRUE))
 
-calc_multipliers <- function(w.length, w.band, unit.out="energy", unit.in="energy"){
+calc_multipliers <- function(w.length, w.band, unit.out="energy", unit.in="energy", use.cached.mult=FALSE){
+  cache.needs.saving <- FALSE
+  if (use.cached.mult && !is.null(w.band$name)) {
+    # this needs to be changed to something better
+    ourEnv <- photobio.cache
+    # search for cached multipliers
+    cache.name <- paste(w.band$name, unit.in, unit.out, sep=".")
+    if (exists(cache.name, where = ourEnv)) {
+      mult <- get(cache.name, envir = ourEnv)
+      if (length(w.length) == length(mult)) {
+        return(mult)
+      } else {
+        cache.needs.saving <- TRUE
+      }
+    } else {
+      cache.needs.saving <- TRUE      
+    }
+  }
   mult <- numeric(length(w.length))
   outside.band <- w.length < w.band$low | w.length >= w.band$high
   inside.band <- !outside.band
@@ -52,7 +71,17 @@ calc_multipliers <- function(w.length, w.band, unit.out="energy", unit.in="energ
       return(NA)
     } 
   }
+  if (use.cached.mult && cache.needs.saving) {
+    assign(cache.name, mult, envir = ourEnv)
+  }
   return(mult)
 }
 
+.onLoad <- function(libname, pkgname) {
+  photobio.cache <<- new.env(parent = .GlobalEnv)
+}
+
+.onUnload <- function(libpath) {
+  rm(photobio.cache, envir= .GlobalEnv)
+}
   
