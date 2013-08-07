@@ -3,3 +3,6 @@
 .RData
 *.Rd
 photobiology.Rproj
+R/RcppExports.R
+src/RcppExports.cpp
+*.o
