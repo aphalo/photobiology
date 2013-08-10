@@ -46,5 +46,7 @@ new_waveband <- function(w.low, w.high,
       return(NA)
     }
   }
-  return(list(low=w.low, high=w.high, weight=weight, SWF.e.fun=SWF.e.fun, SWF.q.fun=SWF.q.fun, SWF.norm=SWF.norm, norm=norm, hinges=hinges, name=wb.name))
+  return(list(low=w.low, high=w.high, 
+              weight=weight, SWF.e.fun=SWF.e.fun, SWF.q.fun=SWF.q.fun, SWF.norm=SWF.norm, 
+              norm=norm, hinges=hinges, name=wb.name))
 } 
