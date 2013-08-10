@@ -4,7 +4,7 @@
 #' waveband of a radiation spectrum.
 #'
 #' @usage irradiance(w.length, s.irrad, w.band=NULL, unit.out=NULL, unit.in="energy", 
-#' check.spectrum=TRUE, use.cached.mult=FALSE, use.cpp.code=TRUE)
+#' check.spectrum=TRUE, use.cached.mult=FALSE, use.cpp.code=TRUE, use.hinges=NULL)
 #' 
 #' @param w.length numeric array of wavelength (nm)
 #' @param s.irrad numeric array of spectral (energy) irradiances (W m-2 nm-1)
@@ -13,7 +13,8 @@
 #' @param unit.in character string with allowed values "energy", and "photon", or its alias "quantum"
 #' @param check.spectrum logical indicating whether to sanity check input data, default is TRUE
 #' @param use.cached.mult logical indicating whether multiplier values should be cached between calls
-#' @param use.cpp.code logical indicating whether to use compiled C++ function for integartion
+#' @param use.cpp.code logical indicating whether to use compiled C++ function for integration
+#' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
 #' 
 #' @return a single numeric value with no change in scale factor: [W m-2 nm-1] -> [mol s-1 m-2]
 #' @keywords manip misc
@@ -33,7 +34,8 @@
 
 irradiance <- 
   function(w.length, s.irrad, w.band=NULL, unit.out=NULL, unit.in="energy", 
-           check.spectrum=TRUE, use.cached.mult=FALSE, use.cpp.code=TRUE){
+           check.spectrum=TRUE, use.cached.mult=FALSE, use.cpp.code=TRUE,
+           use.hinges=NULL){
     # what output? seems safer to not have a default here
     if (is.null(unit.out)){
       warning("'unit.out' has no default value")
@@ -49,8 +51,19 @@ irradiance <-
     if (is.null(w.band)){
       w.band <- new_waveband(min(w.length),max(w.length))
     }
+    # choose whether to use hinges or not
+    # if the user has specified its value, we leave it alone
+    # but if it was not requested, we decide whether to use
+    # it or not based of the wavelength resolution of the
+    # spectrum. This will produce small errors for high
+    # spectral resulution data, and speed up the calculations
+    # a lot in such cases
+    if (is.null(use.hinges)) {
+      length.wl <- length(w.length)
+      use.hinges <- (w.length[length.wl] - w.length[1]) / length.wl > 1.0 # 
+    }
     # if the w.band includes 'hinges' we insert them
-    if (!is.null(w.band$hinges) & length(w.band$hinges>0)){
+    if (use.hinges & !is.null(w.band$hinges) & length(w.band$hinges>0)){
       new.data <- insert_hinges(w.length, s.irrad, w.band$hinges)
       w.length <- new.data$w.length
       s.irrad <- new.data$s.irrad
