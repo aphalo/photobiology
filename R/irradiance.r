@@ -51,6 +51,7 @@ irradiance <-
     if (is.null(w.band)){
       w.band <- new_waveband(min(w.length),max(w.length))
     }
+    # if the w.band includes 'hinges' we insert them
     # choose whether to use hinges or not
     # if the user has specified its value, we leave it alone
     # but if it was not requested, we decide whether to use
@@ -62,7 +63,6 @@ irradiance <-
       length.wl <- length(w.length)
       use.hinges <- (w.length[length.wl] - w.length[1]) / length.wl > 1.0 # 
     }
-    # if the w.band includes 'hinges' we insert them
     if (use.hinges & !is.null(w.band$hinges) & length(w.band$hinges>0)){
       new.data <- insert_hinges(w.length, s.irrad, w.band$hinges)
       w.length <- new.data$w.length

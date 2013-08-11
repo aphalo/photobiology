@@ -40,16 +40,6 @@ energy_irradiance(w.length, s.e.irrad, GEN.G(), use.hinges=TRUE)
 energy_irradiance(w.length, s.e.irrad, GEN.G(), use.hinges=FALSE)
 
 Rprof("irradiance.out")
-irradiance(w.length, s.e.irrad, new_waveband(400,700),"photon", check.spectrum=FALSE, use.cached.mult=TRUE, use.cpp.code=FALSE)
-Rprof(NULL)
-summaryRprof("irradiance.out")
-
-Rprof("irradiance.out")
-test.irradiance()
-Rprof(NULL)
-summaryRprof("irradiance.out")
-
-Rprof("irradiance.out")
 for (i in 1:1000){
 irradiance(w.length, s.e.irrad, new_waveband(400,700),"photon", check.spectrum=FALSE, use.cached.mult=TRUE, use.cpp.code=TRUE)
 }
@@ -62,4 +52,5 @@ for (i in 1:1000){
 }
 Rprof(NULL)
 summaryRprof("irradiance.out")
+
 unlink("irradiance.out")

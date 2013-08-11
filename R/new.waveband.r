@@ -25,6 +25,8 @@
 new_waveband <- function(w.low, w.high, 
                          weight=NULL, SWF.e.fun=NULL, SWF.q.fun=NULL, norm=NULL, 
                          SWF.norm=NULL, hinges=c(w.low-0.01,w.low,w.high-0.01,w.high), wb.name=NULL){
+  # we make sure that hinges is not NULL, as this causes problems elsewhere
+  if (is.null(hinges)) hinges <- numeric(0)
   if (!is.null(weight)) {
     # 
     if (!is.null(SWF.e.fun) && is.null(SWF.q.fun)){

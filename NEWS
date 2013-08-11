@@ -1,3 +1,14 @@
+photobiology 0.2.4
+==================
+
+As profiling showed that calls to insert_hinges() and within this function to which() were 
+uisng most of run time of the functions, a new parameter was added to functions so that
+the use of hinges can be switched on and off. The default is to use hinges for interpolation
+only if the wavelength resolution of the spectrum is worse than 1.0 nm. This causes only
+small errors in the results of calculations (< 1%) but reduces run time very significantly.
+The defaults should work just fine in most cases, in which case there is no need to do any
+changes to user code.
+
 photobiology 0.2.2-0.2.3
 ========================
 

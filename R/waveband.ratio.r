@@ -5,7 +5,7 @@
 #'
 #' @usage waveband_ratio(w.length, s.irrad, w.band.num=NULL, w.band.denom=NULL, 
 #' unit.out.num=NULL, unit.out.denom=unit.out.num, unit.in="energy", 
-#' check.spectrum=TRUE, use.cached.mult=FALSE, use.cpp.code=TRUE)
+#' check.spectrum=TRUE, use.cached.mult=FALSE, use.cpp.code=TRUE, use.hinges=NULL)
 #' @param w.length numeric array of wavelength (nm)
 #' @param s.irrad numeric array of spectral (energy) irradiances (W m-2 nm-1)
 #' @param w.band.num list with elements 'lo' and 'hi' giving the boundaries of the waveband (nm)
@@ -16,6 +16,7 @@
 #' @param check.spectrum logical indicating whether to sanity check input data, default is TRUE
 #' @param use.cached.mult logical indicating whether multiplier values should be cached between calls
 #' @param use.cpp.code logical indicating whether to use compiled C++ function for integartion
+#' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
 #' 
 #' @return a single numeric value giving the unitless ratio 
 #' @keywords manip misc
@@ -37,7 +38,8 @@ waveband_ratio <- function(w.length, s.irrad,
                              w.band.num=NULL, w.band.denom=NULL, 
                              unit.out.num=NULL, unit.out.denom=unit.out.num, 
                              unit.in="energy", 
-                             check.spectrum=TRUE, use.cached.mult=FALSE, use.cpp.code=TRUE){
+                             check.spectrum=TRUE, use.cached.mult=FALSE, 
+                             use.cpp.code=TRUE, use.hinges=NULL){
     # We duplicate code from irradiance() here to avoid repeated checks
     # and calculations on the same data
     #
@@ -64,14 +66,27 @@ waveband_ratio <- function(w.length, s.irrad,
       w.band.denom <- new_waveband(min(w.length),max(w.length))
       warning("'w.band.denom' not supplied, using whole range of data instead.")
     }
+    # choose whether to use hinges or not
+    # if the user has specified its value, we leave it alone
+    # but if it was not requested, we decide whether to use
+    # it or not based of the wavelength resolution of the
+    # spectrum. This will produce small errors for high
+    # spectral resulution data, and speed up the calculations
+    # a lot in such cases
+    if (is.null(use.hinges)) {
+      length.wl <- length(w.length)
+      use.hinges <- (w.length[length.wl] - w.length[1]) / length.wl > 1.0 # 
+    }
     # if the w.band.num and/or w.band.denom include 'hinges' we insert them
     # it is o.k. to have hinges unsorted!
-    merged.hinges <- c(ifelse(is.null(w.band.denom$hinges), numeric(0), w.band.denom$hinges), 
-                       ifelse(is.null(w.band.num$hinges), numeric(0), w.band.num$hinges))
-    if (length(merged.hinges) > 0){
-      new.data <- insert_hinges(w.length, s.irrad, merged.hinges)
-      w.length <- new.data$w.length
-      s.irrad <- new.data$s.irrad
+    # in new_waveband() NULL hinges are replaced with numeric(0)
+    if (use.hinges) {
+      merged.hinges <- c(w.band.denom$hinges, w.band.num$hinges)
+      if (length(merged.hinges) > 0){
+        new.data <- insert_hinges(w.length, s.irrad, merged.hinges)
+        w.length <- new.data$w.length
+        s.irrad <- new.data$s.irrad
+      }
     }
     # calculate the multipliers
     mult.num <- calc_multipliers(w.length, w.band.num, unit.out.num, unit.in, use.cached.mult=use.cached.mult)
