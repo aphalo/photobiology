@@ -1,7 +1,7 @@
 Package: photobiology
 Type: Package
 Title: Light and radiation quantification for photobiology research
-Version: 0.2.4
+Version: 0.2.5
 Date: 2013-08-11
 Author: Pedro J. Aphalo <pedro.aphalo@helsinki.fi>
 Maintainer: Pedro J. Aphalo <pedro.aphalo@helsinki.fi>
@@ -9,7 +9,9 @@ Description: Calculation of effective (weighted) and unweighted irradiances/dose
              derived quantities from spectral irradiance data, as used in photobiology.
 License: GPL (>=2)
 URL: http://uv4growth.dyndns.org/r-packages/
-Depends: R (>= 3.0.0), Rcpp (>= 0.10.4), 
+Depends: R (>= 3.0.0)
+Imports: Rcpp (>= 0.10.4)
+Suggests: photobiologyUV (>= 0.2.1), photobiologyVIS (>= 0.1.0), knitr (>= 1.2)
 LazyLoad: yes
 LazyData: yes
 ByteCompile: true
