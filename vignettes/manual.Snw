@@ -6,7 +6,6 @@
 \documentclass{article}
 
 \usepackage[utf8]{inputenc}
-\usepackage{abbrev}
 \usepackage[unicode=true,pdfusetitle,
  bookmarks=true,bookmarksnumbered=true,bookmarksopen=true,bookmarksopenlevel=2,
  breaklinks=false,pdfborder={0 0 1},backref=false,colorlinks=false]
@@ -14,13 +13,18 @@
 \usepackage{listings}
 \usepackage{booktabs}
 \usepackage{breakurl}
+\usepackage{xspace}
 
 \newcommand{\PB}{\textsf{photobiology}\xspace}
 \newcommand{\PBVIS}{\textsf{photobiologyVIS}\xspace}
 \newcommand{\PBUV}{\textsf{photobiologyUV}\xspace}
 \newcommand{\PBPHY}{\textsf{photobiologyPhy}\xspace}
-\newcommand{\PBCrY}{\textsf{photobiologyCry}\xspace}
- 
+\newcommand{\PBCRY}{\textsf{photobiologyCry}\xspace}
+
+\newcommand{\watt}{W m-2}
+\newcommand{\wattnm}{W m-2 nm-1}
+\newcommand{\mwattnm}{mW m-2 nm-1}
+
 \begin{document}
 
 \title{\PB Version 0.2.5\\Manual}
@@ -116,7 +120,7 @@ Here we just use the example data supplied with the package.
 
 \section{Defining wavebands}
 
-All functions use \textt{waveband}s as definitions of the range of wave lengths and the spectral weighting function (SWF) to use in the calculations. A few other bits of information may be included to fine-tune calculations. The waveband definifitions do NOT describe whether input spectral irradiances are photon or energy based, nor whether the output irradiance will be based on photon or energy units.
+All functions use \texttt{waveband}s as definitions of the range of wave lengths and the spectral weighting function (SWF) to use in the calculations. A few other bits of information may be included to fine-tune calculations. The waveband definifitions do NOT describe whether input spectral irradiances are photon or energy based, nor whether the output irradiance will be based on photon or energy units.
 
 When defining a waveband which uses a SWF, a function can be supplied either based on energy effectiveness, on photon effectiveness, or one function for each one. If only one function is supplied the other one is built automatically, but if performance is a concern it is better to provide two separate functions. Another case when you might want to enter the same function twice, is if you are using an absorptance spectrum as SWF, as the percent of radiation absorbed will be independent of whether photon or energy units are used for the spectral irradiance. 
 
@@ -132,7 +136,7 @@ my_CIE_3 <- new_waveband(250, 400, weight="SWF", SWF.e.fun=CIE.e.fun,
 
 \section{Calculating irradiance or exposure}
 
-There is one basic function for these calculations \textt{irradiance()}, it takes an array of wavelengths (sorted in strictly increasing order), and the corresponding values of spectral irradiance. By default the input is assumed to be in energy units, but parameter \texttt{unit.in} cab be used to adjust the calculations to expect photon units. The type of unit used for the calculated irradiance (or expossure) is set by the parameter \texttt{unit.out} with no default. If no \texttt{w.band} parameter is supplied, the whole spectrum spectrum input is used, unweighted, to calculate the total irradiance. If a \texttt{w.band} is supplied, then the range of wavelengths specified and SWF if present are used for calculating the irradiance. If the waveband definition does not include a SWF, then the unweighted irradiance is returned, if the definition includes a SWF, then a weighted irradiance is returned.  
+There is one basic function for these calculations \texttt{irradiance()}, it takes an array of wavelengths (sorted in strictly increasing order), and the corresponding values of spectral irradiance. By default the input is assumed to be in energy units, but parameter \texttt{unit.in} cab be used to adjust the calculations to expect photon units. The type of unit used for the calculated irradiance (or expossure) is set by the parameter \texttt{unit.out} with no default. If no \texttt{w.band} parameter is supplied, the whole spectrum spectrum input is used, unweighted, to calculate the total irradiance. If a \texttt{w.band} is supplied, then the range of wavelengths specified and SWF if present are used for calculating the irradiance. If the waveband definition does not include a SWF, then the unweighted irradiance is returned, if the definition includes a SWF, then a weighted irradiance is returned.  
 
 The functions \texttt{photon\_irradiance()} and \texttt{energy\_irradiance()}, just call \texttt{irradiance()} with the \texttt{unit.out} set to \texttt{"photon"} or \texttt{"energy"} respectively.
 
