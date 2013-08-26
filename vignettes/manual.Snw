@@ -1,5 +1,5 @@
 %\VignetteEngine{knitr}
-%\VignetteIndexEntry{Finctions for quantifying VIS and UV radiation}
+%\VignetteIndexEntry{Functions for quantifying VIS and UV radiation}
 %\VignetteDepends{knitr, photobiology, photobiologyUV, photobiologyVIS}
 %\VignetteKeyword{misc}
 
@@ -20,6 +20,7 @@
 \newcommand{\PBUV}{\textsf{photobiologyUV}\xspace}
 \newcommand{\PBPHY}{\textsf{photobiologyPhy}\xspace}
 \newcommand{\PBCRY}{\textsf{photobiologyCry}\xspace}
+\newcommand{\PBFLT}{\textsf{photobiologyFilters}\xspace}
 
 \newcommand{\watt}{W m-2}
 \newcommand{\wattnm}{W m-2 nm-1}
@@ -35,7 +36,8 @@
 \section{Introduction}
 
 We have developed a set of packages to
-facilitate the calculation of many different quantities that can be derived from spectral irradiance data. The base package in this suite is called \PB, and is the package described here. There other especialized packages for quantification of ultraviolet radiation (\PBUV), visible radiation (\PBVIS), or based on Phytochrome (\PBPHY) and Cryptochrome (\PBCRY) (both photoreceptors present in plants). In the future it will be submitted to CRAN (Comprehensive R archive network), it is meanwhile available from \url{https://bitbucket.org/aphalo/photobiology/downloads}. There is also a public Git repository at \url{https://bitbucket.org/aphalo/photobiology} from where the source code of the current an earlier versions can be cloned.
+facilitate the calculation of many different quantities that can be derived from spectral irradiance data. The base package in this suite is called \PB, and is the package described here. There other especialized packages for quantification of ultraviolet radiation (\PBUV), visible radiation (\PBVIS), or based on Phytochrome (\PBPHY), Cryptochrome (\PBCRY) (both photoreceptors present in plants), and 
+spectral data for filters (\PBFLT). In the future it will be submitted to CRAN (Comprehensive R archive network), it is meanwhile available from \url{https://bitbucket.org/aphalo/photobiology/downloads}. There is also a public Git repository at \url{https://bitbucket.org/aphalo/photobiology} from where the source code of the current an earlier versions can be cloned.
 
 \section{Installation and use}
 
