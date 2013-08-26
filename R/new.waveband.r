@@ -13,7 +13,7 @@
 #' to 1.0, in nm. "NULL" means no normalization.
 #' @param hinges a numeric array giving the wavelengths at which the s.irrad should be inserted by
 #' interpolation, no interpolation is indicated by an empty array (numeric(0))
-#' @param wb.name character string giving the name for the waveband defined, default is "no.name"
+#' @param wb.name character string giving the name for the waveband defined, default is NULL
 #' 
 #' @return a list with components low, high, weight, SWF.fun, norm, hinges, name
 #' @keywords manip misc
