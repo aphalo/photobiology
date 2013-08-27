@@ -54,7 +54,7 @@ loading it from the library when needed.
 To load the package into the workspace we use \verb!library(photobiologyPhy)!.
 
 <<example-0, eval=TRUE>>=
-library(photobiology)
+library(photobiology, photobiologyUV, photobiologyVIS)
 @
 
 % \section{Example of spectral data}
