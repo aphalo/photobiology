@@ -48,13 +48,15 @@ options(replace.assign=TRUE,width=60)
 @
 
 The functions in the package \PBPHY are
-made available by installing the packages \verb!photobiologyPhy! (once) and
+made available by installing the packages \verb!photobiology! (once) and
 loading it from the library when needed.
 
-To load the package into the workspace we use \verb!library(photobiologyPhy)!.
+To load the package into the workspace we use \verb!library(photobiology)!.
 
 <<example-0, eval=TRUE>>=
-library(photobiology, photobiologyUV, photobiologyVIS)
+library(photobiology)
+library(photobiologyUV)
+library(photobiologyVIS)
 @
 
 % \section{Example of spectral data}
