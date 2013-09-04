@@ -1,8 +1,8 @@
 Package: photobiology
 Type: Package
 Title: Light and radiation quantification for photobiology research
-Version: 0.2.6
-Date: 2013-08-27
+Version: 0.2.7
+Date: 2013-09-03
 Author: Pedro J. Aphalo <pedro.aphalo@helsinki.fi>
 Maintainer: Pedro J. Aphalo <pedro.aphalo@helsinki.fi>
 Description: Calculation of effective (weighted) and unweighted irradiances/doses and other
@@ -12,7 +12,7 @@ URL: http://uv4growth.dyndns.org/r-packages/
 VignetteBuilder: knitr
 Depends: R (>= 3.0.0)
 Imports: Rcpp (>= 0.10.4)
-Suggests: photobiologyUV (>= 0.2.1), photobiologyVIS (>= 0.1.0), photobiologyPhy, photobiologyCry, photobiologyFilters, knitr (>= 1.2)
+Suggests: photobiologyUV (>= 0.2.1), photobiologyVIS (>= 0.1.0), knitr (>= 1.2)
 LazyLoad: yes
 LazyData: yes
 ByteCompile: true
