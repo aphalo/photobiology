@@ -28,7 +28,7 @@
 
 \begin{document}
 
-\title{\PB Version 0.2.5\\Manual}
+\title{\PB Version 0.2.7\\Manual}
 \author{Pedro J. Aphalo}
 
 \maketitle
@@ -232,7 +232,8 @@ lines(s.e.irrad/max(s.e.irrad) ~ w.length, col="black")
 The first thing to do is to think whether any part of the spectral measurements can be \textit{a priori} known to be equal to zero. For example for the solar spectrum at ground level it is safe to assume that the spectral irradiance is zero for all wavelengths shorter than 293~nm. If the data are noisy, it is best to discard these data before calculating any effective UV doses. This can be easily done as follows if the data are in a data.frame (of course, replacing \texttt{w.length} with the name used in your data frame for the wavelengths array:
 
 <<example-subset>>=
-trimmed.sun.data <- subset(sun.data, w.length >= 293)
+subsetted.sun.data <- subset(sun.data, w.length >= 293)
+head(subsetted.sun.data)
 @
 
 And then just use the trimmed data in your calculations.
@@ -241,7 +242,10 @@ If the data are not in a dataframe, then there are different options: 1) create 
 
 <<example-trim>>=
 trimmed.sun.data <- trim_tails(w.length, s.e.irrad, low=293)
+head(trimmed.sun.data)
 @
+
+This function returns a new data.frame and uses always the same variable names for the columns.
 
 <<detach>>=
 detach(sun.data)
