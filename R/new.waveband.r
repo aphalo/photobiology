@@ -33,14 +33,14 @@ new_waveband <- function(w.low, w.high,
     # 
     if (!is.null(SWF.e.fun) && is.null(SWF.q.fun)){
       if (!is.null(SWF.norm)){
-        SWF.q.fun <- function(w.length,s.e.irrad){SWF.e.fun(w.length) *  SWF.norm / w.length}
+        SWF.q.fun <- function(w.length){SWF.e.fun(w.length) *  SWF.norm / w.length}
       } else {
         warning("Warning: either both photon and energy SWFs should be supplied, or a value for the 
               wavelength at which the function supplied is normalized should be supplied through SWF.norm")
       }
     } else if (!is.null(SWF.q.fun) && is.null(SWF.e.fun)  && !is.null(SWF.norm)){
       if (!is.null(SWF.norm)){
-        SWF.e.fun <- function(w.length,s.e.irrad){SWF.q.fun(w.length) * w.length / SWF.norm}
+        SWF.e.fun <- function(w.length){SWF.q.fun(w.length) * w.length / SWF.norm}
       } else {
         warning("Warning: either both photon and energy SWFs should be supplied, or a value for the 
               wavelength at which the function supplied is normalized should be supplied through SWF.norm")
