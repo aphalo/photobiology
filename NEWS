@@ -1,3 +1,10 @@
+photobiology 0.2.7 + 0.2.8
+==========================
+The vignette "Examples" was moved to a sepate package because it used a very large data set.
+An "benign"" error in new_waveband() was fixed (this has no effect on calculations).
+The data set sun.data was updated to contain instantaneous data, and its documentation updated
+to better describe the data.
+
 photobiology 0.2.6
 ==================
 

@@ -28,7 +28,7 @@
 
 \begin{document}
 
-\title{\PB Version 0.2.7\\Manual}
+\title{\PB Version 0.2.8\\ User Guide}
 \author{Pedro J. Aphalo}
 
 \maketitle
@@ -131,7 +131,6 @@ When defining a waveband which uses a SWF, a function can be supplied either bas
 <<example-waveband-01, eval=TRUE>>=
 my_PAR <- new_waveband(400, 700)
 
-library(photobiologyUV)
 my_CIE_1 <- new_waveband(250, 400, weight="SWF", SWF.e.fun=CIE.e.fun, SWF.norm=298)
 my_CIE_2 <- new_waveband(250, 400, weight="SWF", SWF.q.fun=CIE.q.fun, SWF.norm=298)
 my_CIE_3 <- new_waveband(250, 400, weight="SWF", SWF.e.fun=CIE.e.fun, 

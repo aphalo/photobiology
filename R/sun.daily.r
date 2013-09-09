@@ -10,8 +10,9 @@
 #'   \item s.q.irrad (mol d-1 m-2 nm-1)
 #' }
 #' 
+#' @author Anders K. Lindfors (data)
 #' @docType data
 #' @keywords datasets
-#' @format A data frame with 508 rows and 2 variables
+#' @format A data frame with 508 rows and 3 variables
 #' @name sun.daily.data
 NULL
