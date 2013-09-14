@@ -219,10 +219,11 @@ We here plot weighted and unweighted irradiances using simulated solar spectral 
 
 %\cite{Kotilainenxxxx, Lindforsxxxx}.
 
-<<weighted-spectra-01>>=
-weighted.s.e.irrad <- s.e.irrad * calc_multipliers(w.length, GEN.T()) # default is unit.out="energy"
+<<weighted-spectra-01, tidy=FALSE>>=
+weighted.s.e.irrad <- s.e.irrad * calc_multipliers(w.length, GEN.T())
 plot(weighted.s.e.irrad/max(weighted.s.e.irrad) ~ w.length, type="l", col="red", 
-     xlab="Wavelength (nm)", ylab="UnWeighted and GEN.T weighted spectral irradiance (relative units)")
+     xlab="Wavelength (nm)", 
+     ylab="UnWeighted and GEN.T weighted spectral irradiance (relative units)")
 lines(s.e.irrad/max(s.e.irrad) ~ w.length, col="black")
 @
 
