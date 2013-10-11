@@ -7,7 +7,7 @@
 #' @docType package
 #' @keywords misc
 #' @name photobiology-package
-#' @author Pedro J. Apahalo
+#' @author Pedro J. Aphalo
 #' @details
 #' \tabular{ll}{
 #' Package: \tab photobiology\cr
