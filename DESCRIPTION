@@ -8,7 +8,6 @@ Maintainer: Pedro J. Aphalo <pedro.aphalo@helsinki.fi>
 Description: Calculation of effective (weighted) and unweighted irradiances/doses and other
              derived quantities from spectral irradiance data, as used in photobiology.
 License: GPL (>=2)
-URL: http://uv4growth.dyndns.org/r-packages/
 VignetteBuilder: knitr
 Depends: R (>= 3.0.0)
 Imports: Rcpp (>= 0.10.4)
