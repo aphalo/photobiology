@@ -12,8 +12,8 @@
 #' \tabular{ll}{
 #' Package: \tab photobiology\cr
 #' Type: \tab Package\cr
-#' Version: \tab 0.2.8\cr
-#' Date: \tab 2013-09-09\cr
+#' Version: \tab 0.2.9\cr
+#' Date: \tab 2013-10-25\cr
 #' License: \tab GPL (>= 2.0)\cr
 #' }
 #' The most important functions in the package are \code{\link{energy_irradiance}}, 
@@ -33,8 +33,8 @@
 #' @examples
 #' data(sun.data)
 #' with(sun.data, photon_irradiance(w.length, s.e.irrad)) # the whole spectrum
-#' with(sun.data, photon_irradiance(w.length, s.e.irrad, new_waveband(400,700))) # idem
+#' with(sun.data, photon_irradiance(w.length, s.e.irrad, new_waveband(400,700)))
 #' 
 #' with(sun.data, energy_irradiance(w.length, s.e.irrad)) # the whole spectrum
-#' with(sun.data, energy_irradiance(w.length, s.e.irrad, new_waveband(400,700))) # idem
+#' with(sun.data, energy_irradiance(w.length, s.e.irrad, new_waveband(400,700)))
 NULL
