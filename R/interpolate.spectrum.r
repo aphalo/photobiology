@@ -1,6 +1,7 @@
 #' Calculate spectral values at a different set of wavelengths
 #'
-#' For example an spectrum [W m-2 nm-1] is converted into a spectrum [mol s-1 m-2 nm-1]
+#' For example interpolate spectral irradiance (or spectral transmittance) values
+#' at new wavelengths values.
 #'
 #' @usage interpolate_spectrum(w.length.in, s.irrad, w.length.out, fill.value=NA)
 #' 

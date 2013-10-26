@@ -4,7 +4,7 @@
 #' values are calculated by interpolation. After this, the two spectral values at
 #' each wavelength are added.
 #'
-#' @usage sum_spectra <- function(w.length1, w.length2=NULL, s.irrad1, s.irrad2, trim="union", na.rm=FALSE)
+#' @usage sum_spectra(w.length1, w.length2=NULL, s.irrad1, s.irrad2, trim="union", na.rm=FALSE)
 #' 
 #' @param w.length1 numeric array of wavelength (nm)
 #' @param w.length2 numeric array of wavelength (nm)
@@ -14,24 +14,25 @@
 #' @param na.rm a logical value, if TRUE, not the default, NAs in the input are replaced with zeros
 #' 
 #' @return a dataframe with two numeric variables
-#' \item{w.length}{A numeric vector with the wavelengths (nm) obtaining by "fusing" w.length1 and 
+#' \item{w.length}{A numeric vector with the wavelengths (nm) obtained by "fusing" w.length1 and 
 #' w.length2. w.length contains all the unique vales, sorted in ascending order.}
 #' \item{s.irrad}{A numeric vector with the sum of the two spectral values at each wavelength.}
 #' @details If trim=="union" spectral values are calculated for the whole range of wavelengths
-#' covered by at least one of the input spectrum, and missing values are set to zero before addition.
+#' covered by at least one of the input spectra, and missing values are set in each input spectrum 
+#' to zero before addition.
 #' If trim=="intersection" then the range of wavelengths covered by both input spectra is returned,
-#' and the non-overlaping regions discarded. If only w.length2==NULL, it is assumed that both spectra
+#' and the non-overlaping regions discarded. 
+#' If w.length2==NULL, it is assumed that both spectra
 #' are measured at the same wavelengths, and a simple addition is used, ensuring fast calculation.
 #' @export
 #' @keywords manip misc
 #' @examples
 #' data(sun.data)
-#' twice.s.e.irrad <- with(sun.data, sum_spectra(w.length, w.length, s.e.irrad, s.e.irrad))
+#' twice.sun.data <- with(sun.data, sum_spectra(w.length, w.length, s.e.irrad, s.e.irrad))
 #' plot(I(s.e.irrad*2)~w.length, data=sun.data)
-#' lines(s.irrad ~ w.length, data=twice.s.e.irrad, col="red")
+#' lines(s.irrad ~ w.length, data=twice.sun.data, col="red")
 
-sum_spectra <- function(w.length1, w.length2=NULL, s.irrad1, s.irrad2, 
-                        trim="union", na.rm=FALSE) {
+sum_spectra <- function(w.length1, w.length2=NULL, s.irrad1, s.irrad2, trim="union", na.rm=FALSE) {
   if (na.rm) {
     ifelse(!is.na(s.irrad1), s.irrad1, 0.0)
     ifelse(!is.na(s.irrad2), s.irrad2, 0.0)

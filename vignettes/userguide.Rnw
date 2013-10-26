@@ -21,6 +21,8 @@
 \newcommand{\PBPHY}{\textsf{photobiologyPhy}\xspace}
 \newcommand{\PBCRY}{\textsf{photobiologyCry}\xspace}
 \newcommand{\PBFLT}{\textsf{photobiologyFilters}\xspace}
+\newcommand{\PBLA}{\textsf{photobiologyLamps}\xspace}
+
 
 \newcommand{\watt}{W m-2}
 \newcommand{\wattnm}{W m-2 nm-1}
@@ -28,7 +30,7 @@
 
 \begin{document}
 
-\title{\PB Version 0.2.8\\ User Guide}
+\title{\PB Version 0.2.9\\ User Guide}
 \author{Pedro J. Aphalo}
 
 \maketitle
@@ -253,6 +255,18 @@ detach(sun.data)
 
 Using real spectral data compared to modelled spectral data for sunlight we show a finally some of the pitfalls, and possible work-arounds, for dealing with noisy measurements, and calculating effective doses from them.
 
+\section{Auxiliary function}
+
+Sometimes it is needed to add (parallel sum) between two spectra, even if the two spectra have been
+measured at different wavelengths or wavelength steps. This can happen for example when we would like
+to calculate the spectrum of a combination of two light sources from the individual spectra. The
+function \verb|sum_spectra()| can be used in such a case. It's use is described in User Guide of the 
+\PBLA package.
+
+A function \verb|interpolate_spectrum| is also included to facilitate interpolation of spectral values. It is used in the function described in the previous paragraph, but facilitate interpolation.
+Under the hood it uses R's \verb|spline| function, but it allows more easy control of values to be
+used for extrapolation.
+ 
 \section{Optimizing performance}
 
 When developing the current version of \PB quite a lot of effort was spent in optimizing performance, as in one of our experiments, we need to process several tens of thoudsands of measured spectra. The defaults should provide good performance in most cases, however, some further improvements are achievable, when a series of different calculations are done on the same spectrum, or when a series of spectra measured at exactly the same wavelengths are used for calculating weighted irradiances or exposures.
