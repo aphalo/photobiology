@@ -13,6 +13,5 @@
 #' with(sun.data, e2qmol_multipliers(w.length))
 #' 
 e2qmol_multipliers <- function(w.length){
-  Na = 6.02214129e23 # Avogadro's number, photons per mol
-  return(e2quantum_multipliers(w.length) / Na)
+  return(e2quantum_multipliers(w.length, molar=TRUE))
 }

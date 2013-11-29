@@ -30,7 +30,7 @@
 
 \begin{document}
 
-\title{\PB Version 0.2.9\\ User Guide}
+\title{\PB Version 0.2.11\\ User Guide}
 \author{Pedro J. Aphalo}
 
 \maketitle
@@ -273,8 +273,8 @@ When developing the current version of \PB quite a lot of effort was spent in op
 
 In the case of doing calculations repeatedly on the same spectrum, a small imrovement in performance can be achieved by setting the parameter \texttt{check.spectrum=FALSE} for all but the first call to \texttt{irradiance()}, or \texttt{photon\_irradiance()}, or \texttt{energy\_irradiance()}, or the equivalent function for ratios. It is also possible to set this parameter to FALSE in all calls, and do the check beforehand by calling \texttt{check\_spectrum()}.
 
-In the case of calculating weighted irradiances on many spectra having exactly the same wavelength values, then a significant improvement in the performance can be achieved by setting \texttt{use.cached.mult=TRUE}, as this reuses the multipliers calculated during succesive calls based on the same waveband. However, to achiev this increase in performance, the tests to ensure that the wavelength values have not changed, have to be kept to the minimum. Currently only the length of the wavelength array is checked, and the cached recalculated if the length changes. For this reason, this is not the default, and when using caching the user is responsible for making sure that the array of wavelengths has not changed between calls.
+In the case of calculating weighted irradiances on many spectra having exactly the same wavelength values, then a significant improvement in the performance can be achieved by setting \texttt{use.cached.mult=TRUE}, as this reuses the multipliers calculated during succesive calls based on the same waveband. However, to achieve this increase in performance, the tests to ensure that the wavelength values have not changed, have to be kept to the minimum. Currently only the length of the wavelength array is checked, and the cached recalculated if the length changes. For this reason, this is not the default, and when using caching the user is responsible for making sure that the array of wavelengths has not changed between calls.
 
-The option not to use C++ code is mainly there to be able to test the code and measure the improvement in performance. I see no reason for disabling C++ code, as it does exactly the same calculation but much faster.
+The option not to use C++ code is mainly there to be able to test the code and measure the improvement in performance. I see no reason for disabling C++ code, as it does exactly the same calculation but much faster. At the moment there are two functions written in C++ using Rcpp.
  
 \end{document}

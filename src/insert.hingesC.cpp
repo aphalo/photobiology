@@ -28,6 +28,8 @@ using namespace std;
 //' @examples
 //' with(sun.data, insert_hingesC(w.length, s.e.irrad, c(399.99,400.00,699.99,700.00)))
 //' with(sun.data, insert_hingesC(w.length, s.e.irrad, c(199.99,200.00,399.50,399.99,400.00,699.99,700.00,799.99,1000.00)))
+//' with(sun.data, insert_hingesC(w.length, s.e.irrad, c(200.00,1000.00)))
+//' with(sun.data, insert_hingesC(w.length, s.e.irrad, c(699.99,700.00,399.99,400.00)))
 //
 // I have tried to optimize this function as much as possible.
 // It assumes that hinges are sorted in increasing order.
@@ -35,21 +37,25 @@ using namespace std;
 // vector only in the "tail" starting at the previously inserted hinge.
 // The second example tests several boundary conditions: response for hinges outside the range of the spectrum, two succesive
 // insertions between the a single pair of values in the spectral data, and for insertion of
-// hinges at walengths already present in the data. A test for the boundary condition
-// when an empty numeric vector is passed to hinges fails. 
-// with(sun.data, insert_hingesC(w.length, s.e.irrad, c())) in Rcpp
+// hinges at walengths already present in the data. The third example tests the case when all
+// hinges are outside the range of the spectral data. The fourth example tests for the case of
+// an unsorted hinges NumericVector. A test for the boundary condition
+// when an empty numeric vector is passed to hinges fails. This is due to a constrain in
+// Rcpp on not passing empty R objects to C++ functions.
+// with(sun.data, insert_hingesC(w.length, s.e.irrad, c())) gives an error in the R "glue" code.
 //
 // [[Rcpp::export]]
 DataFrame insert_hingesC (NumericVector w_length, NumericVector s_irrad, NumericVector hinges) {
 
-    NumericVector::iterator h_low = lower_bound(hinges.begin(), hinges.end(), *w_length.begin());
-    NumericVector::iterator h_high = lower_bound(hinges.begin(), hinges.end(), *(w_length.end() - 1));
+    NumericVector hinges_local = sort_unique(hinges);
+    NumericVector::iterator h_low = lower_bound(hinges_local.begin(), hinges_local.end(), *w_length.begin());
+    NumericVector::iterator h_high = lower_bound(hinges_local.begin(), hinges_local.end(), *(w_length.end() - 1));
     NumericVector::iterator inserted;
     NumericVector::iterator after_inserted;
 
       #ifdef DEBUG    
-        cout << "h_low: " << distance(hinges.begin(), h_low) <<  "\n";
-        cout << "h_high: " << distance(hinges.begin(), h_high) <<  "\n";
+        cout << "h_low: " << distance(hinges_local.begin(), h_low) <<  "\n";
+        cout << "h_high: " << distance(hinges_local.begin(), h_high) <<  "\n";
       #endif
     int i = 0;
     for (NumericVector::iterator it=h_low; it<h_high; it++) {

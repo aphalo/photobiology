@@ -64,7 +64,12 @@ irradiance <-
       use.hinges <- (w.length[length.wl] - w.length[1]) / length.wl > 1.0 # 
     }
     if (use.hinges & !is.null(w.band$hinges) & length(w.band$hinges>0)){
-      new.data <- insert_hinges(w.length, s.irrad, w.band$hinges)
+      if (use.cpp.code) {
+        new.data <- insert_hingesC(w.length, s.irrad, w.band$hinges)
+      }
+      else {
+        new.data <- insert_hingesR(w.length, s.irrad, w.band$hinges)
+      }
       w.length <- new.data$w.length
       s.irrad <- new.data$s.irrad
     }

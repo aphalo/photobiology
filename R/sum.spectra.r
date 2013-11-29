@@ -34,8 +34,8 @@
 
 sum_spectra <- function(w.length1, w.length2=NULL, s.irrad1, s.irrad2, trim="union", na.rm=FALSE) {
   if (na.rm) {
-    ifelse(!is.na(s.irrad1), s.irrad1, 0.0)
-    ifelse(!is.na(s.irrad2), s.irrad2, 0.0)
+    s.irrad1 <- ifelse(!is.na(s.irrad1), s.irrad1, 0.0)
+    s.irrad2 <- ifelse(!is.na(s.irrad2), s.irrad2, 0.0)
   }
   if (is.null(w.length2)) {
     if (length(s.irrad1) == length(s.irrad2) & length(w.length1) == length(s.irrad1)){

@@ -15,5 +15,5 @@
 #' with(sun.data, as_quantum_mol(w.length, s.e.irrad))
 
 as_quantum_mol <- function(w.length, s.e.irrad){
-  return(s.e.irrad * e2qmol_multipliers(w.length))
+  return(s.e.irrad * e2quantum_multipliers(w.length, molar=TRUE))
 }

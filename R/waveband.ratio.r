@@ -83,7 +83,12 @@ waveband_ratio <- function(w.length, s.irrad,
     if (use.hinges) {
       merged.hinges <- c(w.band.denom$hinges, w.band.num$hinges)
       if (length(merged.hinges) > 0){
-        new.data <- insert_hinges(w.length, s.irrad, merged.hinges)
+        if (use.cpp.code) {
+          new.data <- insert_hingesC(w.length, s.irrad, merged.hinges)
+        }
+        else {
+          new.data <- insert_hingesR(w.length, s.irrad, merged.hinges)
+        }
         w.length <- new.data$w.length
         s.irrad <- new.data$s.irrad
       }

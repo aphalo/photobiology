@@ -28,7 +28,7 @@ new_waveband <- function(w.low, w.high,
   # we make sure that hinges is not NULL, as this would cause problems elsewhere
   # if we are not using a SWF then we do not need to add hinges as we will be anyway interpolating
   # raw irradiances rather than weighted irradiances
-  if (is.null(hinges) | is.null(weight)) hinges <- numeric(0)
+  if (is.null(hinges)) hinges <- numeric(0)
   if (!is.null(weight)) {
     # 
     if (!is.null(SWF.e.fun) && is.null(SWF.q.fun)){
