@@ -21,7 +21,6 @@ using namespace std;
 //' @export
 //' @useDynLib photobiology
 //' @examples
-//' data(sun.data)
 //' with(sun.data, integrate_irradianceC(w.length, s.e.irrad))
 // [[Rcpp::export]]
 double integrate_irradianceC(NumericVector w_length, NumericVector s_irrad) {
