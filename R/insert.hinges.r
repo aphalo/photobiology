@@ -5,7 +5,7 @@
 #' integration of the effective spectral irradiance. This is specially true when data
 #' has a large wavelength step size.
 #' 
-#' @usage insert_hingesR(w.length, s.irrad, hinges) 
+#' @usage insert_hinges(w.length, s.irrad, hinges) 
 #' 
 #' @param w.length numeric array of wavelength (nm)
 #' @param s.irrad numeric array of spectral irradiance values
@@ -18,9 +18,9 @@
 #' @export
 #' @examples
 #' data(sun.data)
-#' with(sun.data, insert_hingesR(w.length, s.e.irrad, c(399.99,400.00,699.99,700.00)))
+#' with(sun.data, insert_hinges(w.length, s.e.irrad, c(399.99,400.00,699.99,700.00)))
 
-insert_hingesR <- function(w.length, s.irrad, hinges)
+insert_hinges <- function(w.length, s.irrad, hinges)
 {
   # discard repeated values
   hinges <- unique(sort(hinges))
