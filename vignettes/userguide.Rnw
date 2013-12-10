@@ -30,7 +30,7 @@
 
 \begin{document}
 
-\title{\PB Version 0.2.9\\ User Guide}
+\title{\PB Version 0.2.12\\ User Guide}
 \author{Pedro J. Aphalo}
 
 \maketitle

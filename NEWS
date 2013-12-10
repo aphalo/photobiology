@@ -1,3 +1,7 @@
+photobiology 0.2.12
+===================
+New version of insert_hinges() using STL in C++, but this is still a bottleneck apparently due to copying of dataframes...
+
 photobiology 0.2.11
 ===================
 Added Rcpp version of insert_hinges() using the much faster binary search algorithm.

@@ -1,6 +1,6 @@
 #' Build a "waveband" object that can be used as imput when calculating irradiances.
 #'
-#' @usage new_waveband(w.low, w.high, weight=NULL, SWF.e.fun=NULL, SWF.q.fun=NULL, norm=NULL, SWF.norm=NULL, hinges=c(w.low-0.01,w.low,w.high-0.01,w.high), wb.name=NULL)
+#' @usage new_waveband(w.low, w.high, weight=NULL, SWF.e.fun=NULL, SWF.q.fun=NULL, norm=NULL, SWF.norm=NULL, hinges=NULL, wb.name=NULL)
 #' 
 #' @param w.low numeric value, wavelength at the short end of the band (nm)
 #' @param w.high numeric value, wavelength at the long end of the band (nm)
@@ -12,7 +12,8 @@
 #' @param norm a single numeric value indicating the wavelength at which the SWF should be normalized
 #' to 1.0, in nm. "NULL" means no normalization.
 #' @param hinges a numeric array giving the wavelengths at which the s.irrad should be inserted by
-#' interpolation, no interpolation is indicated by an empty array (numeric(0))
+#' interpolation, no interpolation is indicated by an empty array (numeric(0)), if NULL then interpolation 
+#' will take place at both ends of the band.
 #' @param wb.name character string giving the name for the waveband defined, default is NULL
 #' 
 #' @return a list with components low, high, weight, SWF.fun, norm, hinges, name
@@ -24,12 +25,14 @@
 #' 
 new_waveband <- function(w.low, w.high, 
                          weight=NULL, SWF.e.fun=NULL, SWF.q.fun=NULL, norm=NULL, 
-                         SWF.norm=NULL, hinges=c(w.low-0.01,w.low,w.high-0.01,w.high), wb.name=NULL){
+                         SWF.norm=NULL, hinges=NULL, wb.name=NULL){
   # we make sure that hinges is not NULL, as this would cause problems elsewhere
   # if we are not using a SWF then we do not need to add hinges as we will be anyway interpolating
   # raw irradiances rather than weighted irradiances
-  if (is.null(hinges) | is.null(weight)) hinges <- numeric(0)
-  if (!is.null(weight)) {
+  if (is.null(hinges)) {
+    hinges <- c(w.low-0.01,w.low,w.high-0.01,w.high)
+  }
+  if (!is.null(weight) && weight!="none") {
     # 
     if (!is.null(SWF.e.fun) && is.null(SWF.q.fun)){
       if (!is.null(SWF.norm)){
