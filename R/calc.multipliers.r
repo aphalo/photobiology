@@ -46,7 +46,7 @@ calc_multipliers <- function(w.length, w.band, unit.out="energy", unit.in="energ
     if (unit.in=="energy"){
       mult[inside.band] <- 1.0
     } else if (unit.in=="photon"){
-      mult[inside.band] <- 1.0 / e2quantum_multipliers(w.length[inside.band], molar=TRUE)    
+      mult[inside.band] <- 1.0 / e2qmol_multipliers(w.length[inside.band])    
     } 
     if (!is.null(w.band$weight) && (w.band$weight=="BSWF" || w.band$weight=="SWF")){
       mult[inside.band] <- mult[inside.band] * w.band$SWF.e.fun(w.length[inside.band])
@@ -56,7 +56,7 @@ calc_multipliers <- function(w.length, w.band, unit.out="energy", unit.in="energ
     if (unit.in=="photon"){
       mult[inside.band] <- 1.0
     } else if (unit.in=="energy"){
-      mult[inside.band] <- e2quantum_multipliers(w.length[inside.band], molar=TRUE)    
+      mult[inside.band] <- e2qmol_multipliers(w.length[inside.band])    
     } 
     if (!is.null(w.band$weight) && (w.band$weight=="BSWF" || w.band$weight=="SWF")){
       mult[inside.band] <- mult[inside.band] * w.band$SWF.q.fun(w.length[inside.band])

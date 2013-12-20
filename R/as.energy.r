@@ -16,5 +16,5 @@
 #' 
 
 as_energy <- function(w.length, s.qmol.irrad){
-  return(s.qmol.irrad / e2quantum_multipliers(w.length, molar=TRUE))
+  return(s.qmol.irrad / e2qmol_multipliers(w.length))
 }
