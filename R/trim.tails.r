@@ -22,6 +22,10 @@
 #' data(sun.data)
 #' head(sun.data)
 #' head(with(sun.data, trim_tails(w.length, s.e.irrad, low.limit=300)))
+#' head(with(sun.data, trim_tails(w.length, s.e.irrad, low.limit=300, fill=NULL)))
+#' head(with(sun.data, trim_tails(w.length, s.e.irrad, low.limit=300, fill=NA)))
+#' head(with(sun.data, trim_tails(w.length, s.e.irrad, low.limit=300, fill=0.0)))
+#' with(sun.data, trim_tails(w.length, s.e.irrad, low.limit=300, high.limit=400, fill=NA))
 
 trim_tails <- function(w.length, s.irrad, low.limit=min(w.length), high.limit=max(w.length), use.hinges=TRUE, fill=NULL)
 {
@@ -31,11 +35,12 @@ trim_tails <- function(w.length, s.irrad, low.limit=min(w.length), high.limit=ma
     w.length <- new.data$w.length
     s.irrad <- new.data$s.irrad
   }
-  trimmed.selector <- w.length >= low.limit & w.length <= high.limit
+  trimmed.selector <- (w.length >= low.limit) & (w.length <= high.limit)
   if (is.null(fill)) {
     return(data.frame(w.length=w.length[trimmed.selector], s.irrad=s.irrad[trimmed.selector]))
   }
   else {
-    return(data.frame(w.length=w.length, s.irrad=s.irrad[!trimmed.selector] <- fill))
+    s.irrad[!trimmed.selector] <- fill
+    return(data.frame(w.length=w.length, s.irrad=s.irrad))
   }
 }
