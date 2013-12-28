@@ -35,6 +35,7 @@ trim_tails <- function(w.length, s.irrad, low.limit=min(w.length), high.limit=ma
     w.length <- new.data$w.length
     s.irrad <- new.data$s.irrad
   }
+  
   trimmed.selector <- (w.length >= low.limit) & (w.length <= high.limit)
   if (is.null(fill)) {
     return(data.frame(w.length=w.length[trimmed.selector], s.irrad=s.irrad[trimmed.selector]))

@@ -13,6 +13,10 @@
 #' @return a numeric array of interpolated spectral values
 #' 
 #' @export
+#' @note
+#' The current version of interpolate uses \code{spline} if fewer than 25 data points are available. 
+#' Otherwise it uses \code{approx}. In the first case a cubic spline is used, in the second case
+#' linear interpolation, which should be faster.
 #' @keywords manip misc
 #' @examples
 #' data(sun.data)
@@ -31,6 +35,10 @@ interpolate_spectrum <- function(w.length.in, s.irrad, w.length.out, fill.value=
   if (!is.null(fill.value)){
     s.irrad.out[!selector] <- fill.value
   }
-  s.irrad.out[selector] <- spline(w.length.in, s.irrad, xout=w.length.out[selector])$y
+  if (sum(selector) <= 25) {
+    s.irrad.out[selector] <- spline(w.length.in, s.irrad, xout=w.length.out[selector])$y
+  } else {
+    s.irrad.out[selector] <- approx(w.length.in, s.irrad, xout=w.length.out[selector])$y
+  }
   return(s.irrad.out)
 }
