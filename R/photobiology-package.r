@@ -20,6 +20,7 @@
 #' \code{\link{photon_irradiance}}, and \code{\link{new_waveband}}. The first two, 
 #' are used to obtain energy and photon irradiances from spectral data. The third 
 #' function is used to define how to calculate new quantities.
+#' 
 #' @references
 #' Aphalo, P. J., Albert, A., Björn, L. O., McLeod, A. R., Robson, T. M., 
 #' Rosenqvist, E. (Eds.). (2012). Beyond the Visible: A handbook of best 
@@ -28,6 +29,7 @@
 #' Division of Plant Biology. ISBN 978-952-10-8363-1 (PDF), 
 #' 978-952-10-8362-4 (paperback). Open access PDF download available at 
 #' http://hdl.handle.net/10138/37558
+#' 
 #' @note When released, this package will replace the package UVcalc. 
 #' 
 #' @examples
