@@ -93,13 +93,8 @@ waveband_ratio <- function(w.length, s.irrad,
     mult.denom <- calc_multipliers(w.length, w.band.denom, unit.out.denom, unit.in, use.cached.mult=use.cached.mult)
     
     # calculate weighted spectral irradiance
-    if (use.cpp.code) {
-      irrad.num <- integrate_irradianceC(w.length, s.irrad * mult.num)
-      irrad.denom <- integrate_irradianceC(w.length, s.irrad * mult.denom)
-    } else {
-      irrad.num <- integrate_irradianceR(w.length, s.irrad * mult.num)
-      irrad.denom <- integrate_irradianceR(w.length, s.irrad * mult.denom)
-    }
+    irrad.num <- integrate_irradiance(w.length, s.irrad * mult.num)
+    irrad.denom <- integrate_irradiance(w.length, s.irrad * mult.denom)
     
     return(irrad.num / irrad.denom)
   }

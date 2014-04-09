@@ -1,3 +1,12 @@
+photobiology 0.2.16
+===================
+Changed irradiance() so that it optionally accepts a list of wave_bands and returns a vector or irradiances. The returned
+values have a names attribute set to the names of the elements in the wave_band list. If the names are missing, it
+returns the "name"s stored in the wave_band objects.
+
+wave_band objects are now S3 objects with class "waveband", a print.waveband() function was added, which is called whenever
+the generic print function is called on a "waveband" object.
+
 photobiology 0.2.15
 ===================
 Updated NAMESPACE to fix error caused by changes in Rcpp or R.

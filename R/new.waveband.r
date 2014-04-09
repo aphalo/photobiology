@@ -19,6 +19,7 @@
 #' @return a list with components low, high, weight, SWF.fun, norm, hinges, name
 #' @keywords manip misc
 #' @export
+#' @exportClass waveband
 #' @examples
 #' data(sun.data)
 #' with(sun.data, irradiance(w.length, s.e.irrad, new_waveband(400,700), "photon"))
@@ -52,8 +53,13 @@ new_waveband <- function(w.low, w.high,
       warning("weight != NULL, but no SWFs supplied")
       return(NA)
     }
+    if (is.null(wb.name)) wb.name <- paste("range", as.character(w.low), as.character(w.high), "wtd", sep=".")
+  } else {
+    if (is.null(wb.name)) wb.name <- paste("range", as.character(w.low), as.character(w.high), sep=".")
   }
-  return(list(low=w.low, high=w.high, 
-              weight=weight, SWF.e.fun=SWF.e.fun, SWF.q.fun=SWF.q.fun, SWF.norm=SWF.norm, 
-              norm=norm, hinges=hinges, name=wb.name))
+  w_band <- list(low=w.low, high=w.high, 
+                 weight=weight, SWF.e.fun=SWF.e.fun, SWF.q.fun=SWF.q.fun, SWF.norm=SWF.norm, 
+                 norm=norm, hinges=hinges, name=wb.name)
+  class(w_band) <- "waveband"
+  return(w_band)
 } 

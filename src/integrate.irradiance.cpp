@@ -11,7 +11,7 @@ using namespace std;
 //' This function gives the result of integrating spectral irradiance over
 //' wavelengths. Coded in C++.
 //' 
-//' @usage integrate_irradianceC(w_length, s_irrad)
+//' @usage integrate_irradiance(w_length, s_irrad)
 //' 
 //' @param w_length numeric array of wavelength (nm)
 //' @param s_irrad numeric array of spectral irradiances
@@ -21,9 +21,9 @@ using namespace std;
 //' @export
 //' @useDynLib photobiology
 //' @examples
-//' with(sun.data, integrate_irradianceC(w.length, s.e.irrad))
+//' with(sun.data, integrate_irradiance(w.length, s.e.irrad))
 // [[Rcpp::export]]
-double integrate_irradianceC(NumericVector w_length, NumericVector s_irrad) {
+double integrate_irradiance(NumericVector w_length, NumericVector s_irrad) {
     int n = w_length.size();
     double irradiance = 0.0;
 

@@ -126,7 +126,7 @@ Here we just use the example data supplied with the package.
 
 \section{Defining wavebands}
 
-All functions use \texttt{waveband}s as definitions of the range of wave lengths and the spectral weighting function (SWF) to use in the calculations. A few other bits of information may be included to fine-tune calculations. The waveband definifitions do NOT describe whether input spectral irradiances are photon or energy based, nor whether the output irradiance will be based on photon or energy units.
+All functions use \texttt{waveband}s as definitions of the range of wave lengths and the spectral weighting function (SWF) to use in the calculations. A few other bits of information may be included to fine-tune calculations. The waveband definifitions do NOT describe whether input spectral irradiances are photon or energy based, nor whether the output irradiance will be based on photon or energy units. Waveband objects belong to the S3 class "waveband".
 
 When defining a waveband which uses a SWF, a function can be supplied either based on energy effectiveness, on photon effectiveness, or one function for each one. If only one function is supplied the other one is built automatically, but if performance is a concern it is better to provide two separate functions. Another case when you might want to enter the same function twice, is if you are using an absorptance spectrum as SWF, as the percent of radiation absorbed will be independent of whether photon or energy units are used for the spectral irradiance. 
 
@@ -165,6 +165,13 @@ CIE <- function(norm=298) {
 }
 @
 
+The generic print() function calls print.waveband()
+
+<<>>=
+CIE()
+PAR()
+@
+
 Now the example calculations.
 
 <<example-irradiance-01>>=
@@ -184,6 +191,14 @@ energy_irradiance(w.length, s.e.irrad, my_CIE_3)
 energy_irradiance(w.length, s.e.irrad, CIE())
 energy_irradiance(w.length, s.e.irrad, CIE(298))
 energy_irradiance(w.length, s.e.irrad, CIE(300))
+@
+
+Lists of wavebands are also accepted as argument.
+
+<<>>=
+energy_irradiance(w.length, s.e.irrad, list(CIE(), CIE(298), CIE(300)))
+my_wavebands <- list(Red(), Blue(), Green())
+energy_irradiance(w.length, s.e.irrad, my_wavebands)
 @
 
 \section{Calculating ratios}

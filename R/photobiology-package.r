@@ -32,6 +32,8 @@
 #' 
 #' @note When released, this package will replace the package UVcalc. 
 #' 
+#' @importFrom Rcpp evalCpp
+#' 
 #' @examples
 #' data(sun.data)
 #' with(sun.data, photon_irradiance(w.length, s.e.irrad)) # the whole spectrum

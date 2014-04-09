@@ -8,7 +8,7 @@
 #' 
 #' @param w.length numeric array of wavelength (nm)
 #' @param s.irrad numeric array of spectral (energy) irradiances (W m-2 nm-1)
-#' @param w.band list with elements 'lo' and 'hi' giving the boundaries of the waveband (nm)
+#' @param w.band list of waveband definitions created with new_waveband()
 #' @param unit.out character string with allowed values "energy", and "photon", or its alias "quantum"
 #' @param unit.in character string with allowed values "energy", and "photon", or its alias "quantum"
 #' @param check.spectrum logical indicating whether to sanity check input data, default is TRUE
@@ -51,6 +51,7 @@ irradiance <-
     if (is.null(w.band)){
       w.band <- new_waveband(min(w.length),max(w.length))
     }
+    if (class(w.band) == "waveband") w.band <- list(w.band)
     # if the w.band includes 'hinges' we insert them
     # choose whether to use hinges or not
     # if the user has specified its value, we leave it alone
@@ -63,21 +64,39 @@ irradiance <-
       length.wl <- length(w.length)
       use.hinges <- (w.length[length.wl] - w.length[1]) / length.wl > 1.0 # 
     }
-    if (use.hinges & !is.null(w.band$hinges) & length(w.band$hinges>0)){
-      new.data <- insert_hinges(w.length, s.irrad, w.band$hinges)
-      w.length <- new.data$w.length
-      s.irrad <- new.data$s.irrad
+    # we collect all hinges and insert them in one go
+    # this may alter a little the returned values
+    # but should be faster
+    if (use.hinges) {
+      all.hinges <- NULL
+      for (wb in w.band) {
+        if (!is.null(wb$hinges) & length(wb$hinges>0)) {
+          all.hinges <- c(all.hinges, wb$hinges)
+        }
+      }
+      if (!is.null(all.hinges)) {
+        new.data <- insert_hinges(w.length, s.irrad, all.hinges)      
+        w.length <- new.data$w.length
+        s.irrad <- new.data$s.irrad
+      }
     }
-    # calculate the multipliers
-    mult <- calc_multipliers(w.length=w.length, w.band=w.band, unit.out=unit.out, 
-                             unit.in=unit.in, use.cached.mult=use.cached.mult)
+    wb_name <- names(w.band)
+    no_names_flag <- is.null(wb_name)
+    if (no_names_flag) wb_name <- character(length(w.band))
+    irrad <- numeric(length(w.band))
     
-    # calculate weighted spectral irradiance
-    if (use.cpp.code) {
-      irrad <- integrate_irradianceC(w.length, s.irrad * mult)
-    } else {
-      irrad <- integrate_irradianceR(w.length, s.irrad * mult)
+    i <- 0
+    for (wb in w.band) {
+      i <- i + 1
+      # get names from wb if needed
+      if (no_names_flag) wb_name[i] <- wb$name
+      # calculate the multipliers
+      mult <- calc_multipliers(w.length=w.length, w.band=wb, unit.out=unit.out, 
+                               unit.in=unit.in, use.cached.mult=use.cached.mult)
+      # calculate weighted spectral irradiance
+      irr <- integrate_irradiance(w.length, s.irrad * mult)
+      irrad[i] <- irr
     }
-    
+    names(irrad) <- wb_name
     return(irrad)
   }
