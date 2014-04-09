@@ -8,8 +8,8 @@
 #' check.spectrum=TRUE, use.cached.mult=FALSE, use.cpp.code=TRUE, use.hinges=NULL)
 #' @param w.length numeric array of wavelength (nm)
 #' @param s.irrad numeric array of spectral (energy) irradiances (W m-2 nm-1)
-#' @param w.band.num list with elements 'lo' and 'hi' giving the boundaries of the waveband (nm)
-#' @param w.band.denom list with elements 'lo' and 'hi' giving the boundaries of the waveband (nm)
+#' @param w.band.num an object of class "waveband" 
+#' @param w.band.denom an object of class "waveband"
 #' @param unit.out.num character string with allowed values "energy", and "photon", or its alias "quantum"
 #' @param unit.out.denom character string with allowed values "energy", and "photon", or its alias "quantum"
 #' @param unit.in character string with allowed values "energy", and "photon", or its alias "quantum"
