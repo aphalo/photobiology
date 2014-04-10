@@ -1,11 +1,10 @@
 photobiology 0.2.16
 ===================
-Changed irradiance() so that it optionally accepts a list of wave_bands and returns a vector or irradiances. The returned
-values have a names attribute set to the names of the elements in the wave_band list. If the names are missing, it
-returns the "name"s stored in the wave_band objects.
+Changed irradiance() so that it optionally accepts a list of wave_bands and returns a vector or irradiances. The returned values have a names attribute set to the names of the elements in the wave_band list. If the names are missing, it returns the "name"s stored in the wave_band objects.
 
-wave_band objects are now S3 objects with class "waveband", a print.waveband() function was added, which is called whenever
-the generic print function is called on a "waveband" object.
+wave_band objects are now S3 objects with class "waveband", a print.waveband() function was added, which is called whenever the generic print function is called on a "waveband" object.
+
+New convenience functions split_irradiance(), split_energy_irradiance() and split_photon_irradiance() for integrating unweighted irradiances for a series of contiguous wavelength ranges. 
 
 photobiology 0.2.15
 ===================
@@ -13,8 +12,7 @@ Updated NAMESPACE to fix error caused by changes in Rcpp or R.
 
 photobiology 0.2.14
 ===================
-Updated User Guide. Modified interpolate_spectrum so that it uses cubic spline interpolation when the number
-of data points is small, and linear interpolation otherwise.
+Updated User Guide. Modified interpolate_spectrum so that it uses cubic spline interpolation when the number of data points is small, and linear interpolation otherwise.
 
 photobiology 0.2.13
 ===================
@@ -30,9 +28,7 @@ Added Rcpp version of insert_hinges() using the much faster binary search algori
 
 photobiology 0.2.10
 ===================
-Small, backward compatible change to trim_tails: added fill parameter. If NULL (default) the function
-works as earlier deleting the tails. If another value is passed as fill, the s.irrad values in the
-tails are replaced with this value.
+Small, backward compatible change to trim_tails: added fill parameter. If NULL (default) the function works as earlier deleting the tails. If another value is passed as fill, the s.irrad values in the tails are replaced with this value.
 
 photobiology 0.2.9
 ==================
@@ -40,10 +36,7 @@ Added two new functions: interpolate_spectrum() and sum_spectra()
 
 photobiology 0.2.7 + 0.2.8
 ==========================
-The vignette "Examples" was moved to a sepate package because it used a very large data set.
-An "benign"" error in new_waveband() was fixed (this has no effect on calculations).
-The data set sun.data was updated to contain instantaneous data, and its documentation updated
-to better describe the data.
+The vignette "Examples" was moved to a sepate package because it used a very large data set. An "benign"" error in new_waveband() was fixed (this has no effect on calculations). The data set sun.data was updated to contain instantaneous data, and its documentation updated to better describe the data.
 
 photobiology 0.2.6
 ==================
@@ -58,22 +51,14 @@ A vignette "Manual" was added. No changes to R or C++ code.
 photobiology 0.2.4
 ==================
 
-As profiling showed that calls to insert_hinges() and within this function to which() were 
-uisng most of run time of the functions, a new parameter was added to functions so that
-the use of hinges can be switched on and off. The default is to use hinges for interpolation
-only if the wavelength resolution of the spectrum is worse than 1.0 nm. This causes only
-small errors in the results of calculations (< 1%) but reduces run time very significantly.
-The defaults should work just fine in most cases, in which case there is no need to do any
-changes to user code. In addition new_waveband() was modified so that if no SWF is used,
-then hinges are not included in the waveband defined.
+As profiling showed that calls to insert_hinges() and within this function to which() were uisng most of run time of the functions, a new parameter was added to functions so that the use of hinges can be switched on and off. The default is to use hinges for interpolation only if the wavelength resolution of the spectrum is worse than 1.0 nm. This causes only small errors in the results of calculations (< 1%) but reduces run time very significantly. The defaults should work just fine in most cases, in which case there is no need to do any changes to user code. In addition new_waveband() was modified so that if no SWF is used, then hinges are not included in the waveband defined.
 
 photobiology 0.2.2-0.2.3
 ========================
 
 Revised photon_ratio() to use same optimizations.
 
-Imporved implementation of cache. Now it is enclosed in an environment that is created when
-the package is loaded and removed when it is unloaded.
+Imporved implementation of cache. Now it is enclosed in an environment that is created when the package is loaded and removed when it is unloaded.
 
 
 photobiology 0.2.1
@@ -89,8 +74,7 @@ Added argument to irradiance() to enable/disable checking of spectral data. Enab
 
 Added argument to irradiance() to enable use of speed optimizations.
 
-Defaults to arguments ensure that nothing changes from earlier versions unless new features are
-explicitly enabled.
+Defaults to arguments ensure that nothing changes from earlier versions unless new features are explicitly enabled.
 
 photobiology 0.2.0
 ==================

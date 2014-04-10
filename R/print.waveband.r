@@ -1,15 +1,16 @@
 #' Print a "waveband" object that can be used as imput when calculating irradiances.
 #' 
-#' @usage print(w_band)
+#' A function to more nicely print objects of class "waveband".
 #' 
-#' @param w_band an object of class "waveband"
+#' @param x an object of class "waveband"
+#' @param ... not used in current version
 #' 
 #' @export
 #' 
-print.waveband <- function(w_band) {
-  cat(w_band$name, "\n")
-  cat("low (nm)", round(w_band$low, 0), "\n")
-  cat("high (nm)", round(w_band$high, 0), "\n")
-  if (!is.null(w_band$weight)) cat("weighted", w_band$weight, "\n")
-  if (!is.null(w_band$norm)) cat("normalized at", w_band$norm, "nm \n")
+print.waveband <- function(x, ...) {
+  cat(x$name, "\n")
+  cat("low (nm)", round(x$low, 0), "\n")
+  cat("high (nm)", round(x$high, 0), "\n")
+  if (!is.null(x$weight)) cat("weighted", x$weight, "\n")
+  if (!is.null(x$norm)) cat("normalized at", x$norm, "nm \n")
 }

@@ -18,7 +18,7 @@
 #' @examples
 #' data(sun.data)
 #' with(sun.data, calc_multipliers(w.length, new_waveband(400,700),"photon"))
-#' with(sun.data, calc_multipliers(w.length, new_waveband(400,700),"photon", use.cached.mult=TRUE))
+#' ## with(sun.data, calc_multipliers(w.length, new_waveband(400,700),"photon", use.cached.mult=TRUE))
 
 calc_multipliers <- function(w.length, w.band, unit.out="energy", unit.in="energy", use.cached.mult=FALSE){
   cache.needs.saving <- FALSE

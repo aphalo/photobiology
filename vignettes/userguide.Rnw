@@ -30,7 +30,23 @@
 
 \begin{document}
 
-\title{\PB Version 0.2.16\\ User Guide}
+<<setup, include=FALSE, cache=FALSE>>=
+library(knitr)
+opts_chunk$set(fig.path='figure/pos-', fig.align='center', fig.show='hold', size="footnotesize", dev='cairo_pdf')
+options(replace.assign=TRUE,width=60)
+@
+
+<<example-0-hiden, eval=TRUE, include=FALSE>>=
+library(photobiology)
+library(photobiologyUV)
+library(photobiologyVIS)
+@
+
+<<own-set-up, echo=FALSE, include=FALSE>>=
+my_version <- packageVersion("photobiology")
+@
+
+\title{\PB Version \Sexpr{my_version}\\ User Guide}
 \author{Pedro J. Aphalo}
 
 \maketitle
@@ -38,16 +54,10 @@
 \section{Introduction}
 
 We have developed a set of packages to
-facilitate the calculation of many different quantities that can be derived from spectral irradiance data. The base package in this suite is called \PB, and is the package described here. There other especialized packages for quantification of ultraviolet radiation (\PBUV), visible radiation (\PBVIS), or based on Phytochrome (\PBPHY), Cryptochrome (\PBCRY) (both photoreceptors present in plants), and 
+facilitate the calculation of many different quantities that can be derived from spectral irradiance data. The base package in this suite is called \PB, and is the package described here. There other specialized packages for quantification of ultraviolet radiation (\PBUV), visible radiation (\PBVIS), or based on Phytochrome (\PBPHY), Cryptochrome (\PBCRY) (both photoreceptors present in plants), and 
 spectral data for filters (\PBFLT). In the future it will be submitted to CRAN (Comprehensive R archive network), it is meanwhile available from \url{https://bitbucket.org/aphalo/photobiology/downloads}. There is also a public Git repository at \url{https://bitbucket.org/aphalo/photobiology} from where the source code of the current an earlier versions can be cloned.
 
 \section{Installation and use}
-
-<<setup, include=FALSE, cache=FALSE>>=
-library(knitr)
-opts_chunk$set(fig.path='figure/pos-', fig.align='center', fig.show='hold', size="footnotesize", dev='cairo_pdf')
-options(replace.assign=TRUE,width=60)
-@
 
 The functions in the package \PBPHY are
 made available by installing the packages \verb!photobiology! (once) and
@@ -55,7 +65,7 @@ loading it from the library when needed.
 
 To load the package into the workspace we use \verb!library(photobiology)!.
 
-<<example-0, eval=TRUE>>=
+<<example-0-visible, eval=FALSE>>=
 library(photobiology)
 library(photobiologyUV)
 library(photobiologyVIS)
@@ -118,7 +128,7 @@ by 10, and each value in the vector of spectral irradiances is divided by 1000.
 If the spectral irradiance is in \mwattnm then values should be multiplied by 10 to
 convert them to \wattnm.
 
-It is very important to make sure that the wavelengths are in nanometers as this is what
+It is very important to make sure that the wavelengths are in nanometres as this is what
 the functions expect. If the wavelengths are in the wrong units, the action spectra will be
 wrongly calculated, and the returned value for effective irradiance will be completely wrong.
 
@@ -126,12 +136,13 @@ Here we just use the example data supplied with the package.
 
 \section{Defining wavebands}
 
-All functions use \texttt{waveband}s as definitions of the range of wave lengths and the spectral weighting function (SWF) to use in the calculations. A few other bits of information may be included to fine-tune calculations. The waveband definifitions do NOT describe whether input spectral irradiances are photon or energy based, nor whether the output irradiance will be based on photon or energy units. Waveband objects belong to the S3 class "waveband".
+All functions use \texttt{waveband}s as definitions of the range of wave lengths and the spectral weighting function (SWF) to use in the calculations. A few other bits of information may be included to fine-tune calculations. The waveband definitions do NOT describe whether input spectral irradiances are photon or energy based, nor whether the output irradiance will be based on photon or energy units. Waveband objects belong to the S3 class "waveband".
 
 When defining a waveband which uses a SWF, a function can be supplied either based on energy effectiveness, on photon effectiveness, or one function for each one. If only one function is supplied the other one is built automatically, but if performance is a concern it is better to provide two separate functions. Another case when you might want to enter the same function twice, is if you are using an absorptance spectrum as SWF, as the percent of radiation absorbed will be independent of whether photon or energy units are used for the spectral irradiance. 
 
 <<example-waveband-01, eval=TRUE>>=
 my_PAR <- new_waveband(400, 700)
+my_PARx <- new_waveband(400, 700, wb.name="my_PARx")
 
 my_CIE_1 <- new_waveband(250, 400, weight="SWF", SWF.e.fun=CIE.e.fun, SWF.norm=298)
 my_CIE_2 <- new_waveband(250, 400, weight="SWF", SWF.q.fun=CIE.q.fun, SWF.norm=298)
@@ -141,7 +152,7 @@ my_CIE_3 <- new_waveband(250, 400, weight="SWF", SWF.e.fun=CIE.e.fun,
 
 \section{Calculating irradiance or exposure}
 
-There is one basic function for these calculations \texttt{irradiance()}, it takes an array of wavelengths (sorted in strictly increasing order), and the corresponding values of spectral irradiance. By default the input is assumed to be in energy units, but parameter \texttt{unit.in} cab be used to adjust the calculations to expect photon units. The type of unit used for the calculated irradiance (or expossure) is set by the parameter \texttt{unit.out} with no default. If no \texttt{w.band} parameter is supplied, the whole spectrum spectrum input is used, unweighted, to calculate the total irradiance. If a \texttt{w.band} is supplied, then the range of wavelengths specified and SWF if present are used for calculating the irradiance. If the waveband definition does not include a SWF, then the unweighted irradiance is returned, if the definition includes a SWF, then a weighted irradiance is returned.  
+There is one basic function for these calculations \texttt{irradiance()}, it takes an array of wavelengths (sorted in strictly increasing order), and the corresponding values of spectral irradiance. By default the input is assumed to be in energy units, but parameter \texttt{unit.in} cab be used to adjust the calculations to expect photon units. The type of unit used for the calculated irradiance (or exposure) is set by the parameter \texttt{unit.out} with no default. If no \texttt{w.band} parameter is supplied, the whole spectrum spectrum input is used, unweighted, to calculate the total irradiance. If a \texttt{w.band} is supplied, then the range of wavelengths specified and SWF if present are used for calculating the irradiance. If the waveband definition does not include a SWF, then the unweighted irradiance is returned, if the definition includes a SWF, then a weighted irradiance is returned.  
 
 The functions \texttt{photon\_irradiance()} and \texttt{energy\_irradiance()}, just call \texttt{irradiance()} with the \texttt{unit.out} set to \texttt{"photon"} or \texttt{"energy"} respectively.
 
@@ -152,7 +163,7 @@ data(sun.data)
 attach(sun.data)
 @
 
-Then we compare the calculations based on the different wavebands defined in the previous section and the predefined functions in the packages \PBVIS and \PBUV. The predefined functions have the advantaje of allowing the specification of parameters to modify the \texttt{w.band} created. In the example bellow, we use this to set the normalization wavelength.
+Then we compare the calculations based on the different wavebands defined in the previous section and the predefined functions in the packages \PBVIS and \PBUV. The predefined functions have the advantage of allowing the specification of parameters to modify the \texttt{w.band} created. In the example bellow, we use this to set the normalization wavelength.
 
 This is how CIE() is defined in \PBUV.
 
@@ -168,16 +179,19 @@ CIE <- function(norm=298) {
 The generic print() function calls print.waveband()
 
 <<>>=
-CIE()
 PAR()
+str(PAR())
+
+CIE()
+str(CIE())
 @
 
 Now the example calculations.
 
 <<example-irradiance-01>>=
 photon_irradiance(w.length, s.e.irrad, my_PAR)
+photon_irradiance(w.length, s.e.irrad, my_PARx)
 
-library(photobiologyVIS)
 photon_irradiance(w.length, s.e.irrad, PAR())
 
 photon_irradiance(w.length, s.e.irrad, my_CIE_1)
@@ -201,14 +215,23 @@ my_wavebands <- list(Red(), Blue(), Green())
 energy_irradiance(w.length, s.e.irrad, my_wavebands)
 @
 
+The are also convenience functions for calculating how `total' irradiance is split among different contiguous bands
+of the spectrum. The functions \texttt{split\_photon\_irradiance()} and \texttt{split\_energy\_irradiance()}, just call \texttt{split\_irradiance()} with the \texttt{unit.out} set to \texttt{"photon"} or \texttt{"energy"} respectively.
+
+<<>>=
+split_energy_irradiance(w.length, s.e.irrad, c(300, 400, 500, 600, 700, 800))
+split_energy_irradiance(w.length, s.e.irrad, c(400, 500, 600, 700), scale="percent")
+split_photon_irradiance(w.length, s.e.irrad, c(400, 500, 600, 700), scale="percent")
+@
+
 \section{Calculating ratios}
 
-The function \texttt{waveband\_ratio()} takes basically the same parameters as as \texttt{irradiance}, but two waveband definitions instead of one, and two \texttt{unit.out} definitions instead of one. This is the base function used in all the `ratio' functions in the \PB package.
+The function \texttt{waveband\_ratio()} takes basically the same parameters as \texttt{irradiance}, but two waveband definitions instead of one, and two \texttt{unit.out} definitions instead of one. This is the base function used in all the `ratio' functions in the \PB package.
 
 \sloppy
 The derived functions are: \texttt{photon\_ratio()}, \texttt{energy\_ratio()}, and \texttt{photons\_energy\_ratio}. The packages \PBVIS and \PBUV use these to define some convenience functions, and here we give and example for a function not yet implemented, but which you may find as a useful example.
 
-If for example we would like to calcualte the ratio between UVB and PAR radiation, we would use either 
+If for example we would like to calculate the ratio between UVB and PAR radiation, we would use either 
 of the following function calls, depending on which type of units we desire.
 
 <<example-ratios-01>>=
@@ -226,6 +249,15 @@ PAR.energy <- PPFD.mol.photon / conv.factor
 print(conv.factor)
 print(PPFD.mol.photon * 1e6)
 print(PAR.energy)
+@
+
+The `ratio' functions do not accept lists of waveband objects as the `irradiance' functions do. This is a feature, as otherwise it would be too easy to make mistakes. It is possible to use the `irradiance' functions to calculate several ratios in one go.
+
+<<example-ratios-03>>=
+ratios <- photon_irradiance(w.length, s.e.irrad, list(UVC=UVC(), UVB=UVB(), UVA=UVA())) / photon_irradiance(w.length, s.e.irrad, PAR())
+ratios
+names(ratios) <- paste(names(ratios), ":PAR", sep="")
+ratios
 @
 
 \section{Calculating weighted spectral irradiances}
@@ -268,14 +300,14 @@ In the following example we use a longer wavelength (297 nm) just to show how th
 head(sun.data)
 @
 
-Subsetting can be easily done as follows if the data are in a data.frame (of course, replacing \texttt{w.length} with the name used in your data frame for the wavelengths array):
+Sub-setting can be easily done as follows if the data are in a data.frame (of course, replacing \texttt{w.length} with the name used in your data frame for the wavelengths array):
  
 <<example-subset>>=
 subsetted.sun.data <- subset(sun.data, w.length >= 297)
 head(subsetted.sun.data)
 @
 
-And then just use the subsetted data in your calculations.
+And then just use the sub-setted data in your calculations.
 
 If the data are not in a dataframe, then there are different options: 1) create a data frame from your data, 2) use the function \texttt{trim\_tails()} from this package, or 3) just use R commands. Here we give examples of the use of \texttt{trim\_tails()}, and just use the same data as in earlier examples. First we delete all data for wavelengths shorter than 293 nm.
 
@@ -313,20 +345,136 @@ trimmed.zero.sun.data <- trim_tails(w.length, s.e.irrad, low.limit=297, fill=0.0
 head(trimmed.zero.sun.data)
 @
 
-<<detach>>=
-detach(sun.data)
-@
-
 %Using real spectral data compared to modelled spectral data for sunlight we show a finally some of the pitfalls, and possible work-arounds, for dealing with noisy measurements, and calculating effective doses from them.
 
 \section{Optimizing performance}
 
-When developing the current version of \PB quite a lot of effort was spent in optimizing performance, as in one of our experiments, we need to process several hundreds of thoudsands of measured spectra. The defaults should provide good performance in most cases, however, some further improvements are achievable, when a series of different calculations are done on the same spectrum, or when a series of spectra measured at exactly the same wavelengths are used for calculating weighted irradiances or exposures.
+When developing the current version of \PB quite a lot of effort was spent in optimizing performance, as in one of our experiments, we need to process several hundreds of thousands of measured spectra. The defaults should provide good performance in most cases, however, some further improvements are achievable, when a series of different calculations are done on the same spectrum, or when a series of spectra measured at exactly the same wavelengths are used for calculating weighted irradiances or exposures.
 
-In the case of doing calculations repeatedly on the same spectrum, a small imrovement in performance can be achieved by setting the parameter \texttt{check.spectrum=FALSE} for all but the first call to \texttt{irradiance()}, or \texttt{photon\_irradiance()}, or \texttt{energy\_irradiance()}, or the equivalent function for ratios. It is also possible to set this parameter to FALSE in all calls, and do the check beforehand by explicitly calling \texttt{check\_spectrum()}.
+In the case of doing calculations repeatedly on the same spectrum, a small improvement in performance can be achieved by setting the parameter \texttt{check.spectrum=FALSE} for all but the first call to \texttt{irradiance()}, or \texttt{photon\_irradiance()}, or \texttt{energy\_irradiance()}, or the equivalent function for ratios. It is also possible to set this parameter to FALSE in all calls, and do the check beforehand by explicitly calling \texttt{check\_spectrum()}.
 
-In the case of calculating weighted irradiances on many spectra having exactly the same wavelength values, then a significant improvement in the performance can be achieved by setting \texttt{use.cached.mult=TRUE}, as this reuses the multipliers calculated during succesive calls based on the same waveband. However, to achieve this increase in performance, the tests to ensure that the wavelength values have not changed, have to be kept to the minimum. Currently only the length of the wavelength array is checked, and the cached values discarded and recalculated if the length changes. For this reason, this is not the default, and when using caching the user is responsible for making sure that the array of wavelengths has not changed between calls.
+In the case of calculating weighted irradiances on many spectra having exactly the same wavelength values, then a significant improvement in the performance can be achieved by setting \texttt{use.cached.mult=TRUE}, as this reuses the multipliers calculated during successive calls based on the same waveband. However, to achieve this increase in performance, the tests to ensure that the wavelength values have not changed, have to be kept to the minimum. Currently only the length of the wavelength array is checked, and the cached values discarded and recalculated if the length changes. For this reason, this is not the default, and when using caching the user is responsible for making sure that the array of wavelengths has not changed between calls.
 
-The option not to use C++ code is mainly there to be able to test the code and measure the improvement in performance. I see no reason for disabling C++ code, as it does exactly the same calculation but much faster. At the moment there are two functions written in C++ using Rcpp.
- 
+You can use the package \texttt{microbenchmark} to time the code and find the parts that slow it down. I have used it, and also
+I have used profiling to optimize the code for speed. The examples below show how choosing different values from the defualts
+can speed up calculations when the same calculations are done repeatedly on spectra measured at exactly the same wavelengths, something which is usual when analysing spectra measured with the same instrument. The choice of defaults is based on what is
+best when processing a moderate number of spectra, say less than a few hundreds, as opposed to many thousands.
+
+<<>>=
+library(microbenchmark)
+@
+
+The convenience functions are slightly slower than the generic \texttt{irradiance} function by about 2\% if using the cache.
+
+<<>>=
+res <- microbenchmark(irradiance(w.length, s.e.irrad, PAR(), unit.out="photon", use.cache=TRUE), times=100L, control=list(warmup = 10L))
+res$expr <- ""; res
+res <- microbenchmark(photon_irradiance(w.length, s.e.irrad, PAR(), use.cache=TRUE), times=100L, control=list(warmup = 10L))
+res$expr <- ""; res
+@
+
+Using the cache when repeatedly applying the same unweighted waveband halves the execution time.
+
+<<>>=
+res <- microbenchmark(photon_irradiance(w.length, s.e.irrad, PAR()), times=100L, control=list(warmup = 10L))
+res$expr <- ""; res
+res <- microbenchmark(photon_irradiance(w.length, s.e.irrad, PAR(), use.cache=TRUE), times=100L, control=list(warmup = 10L))
+res$expr <- ""; res
+@
+
+Disabling the checking of the spectrum halves once again the execution time.
+
+<<>>=
+res <- microbenchmark(photon_irradiance(w.length, s.e.irrad, PAR(), use.cache=TRUE), times=100L, control=list(warmup = 10L))
+res$expr <- ""; res
+res <- microbenchmark(photon_irradiance(w.length, s.e.irrad, PAR(), use.cache=TRUE, check.spectrum=FALSE), times=100L, control=list(warmup = 10L))
+res$expr <- ""; res
+@
+
+Saving a waveband object and reusing it, gives a speed up of about 12\% when all other optimizations are also used. The reduction in execution time from the original default values is about 70\%.
+
+<<>>=
+myPAR <- PAR()
+res <- microbenchmark(photon_irradiance(w.length, s.e.irrad, PAR(), use.cache=TRUE, check.spectrum=FALSE), times=100L, control=list(warmup = 10L))
+res$expr <- ""; res
+res <- microbenchmark(photon_irradiance(w.length, s.e.irrad, myPAR, use.cache=TRUE, check.spectrum=FALSE), times=100L, control=list(warmup = 10L))
+res$expr <- ""; res
+@
+
+Inserting `hinges' to reduce integration errors slows down the computations a lot, increasing the execution time 5.6 times. If the spectral data is measured with a small wavelength step, the errors are rather small. By default the use of `hinges' is automatically decided based on the average wavelength step in the spectral data.
+
+<<>>=
+energy_irradiance(w.length, s.e.irrad, PAR(), use.cache=TRUE)
+energy_irradiance(w.length, s.e.irrad, PAR(), use.cache=TRUE, use.hinges=TRUE)
+res <- microbenchmark(energy_irradiance(w.length, s.e.irrad, PAR(), use.cache=TRUE), times=100L, control=list(warmup = 10L))
+res$expr <- ""; res
+res <- microbenchmark(energy_irradiance(w.length, s.e.irrad, PAR(), use.cache=TRUE, use.hinges=TRUE), times=100L, control=list(warmup = 10L))
+res$expr <- ""; res
+@
+
+When using BSWFs the speed up by use of the cache is more important, with CIE the execution time is reduced by 75\%.
+
+<<>>=
+res <- microbenchmark(energy_irradiance(w.length, s.e.irrad, CIE()), times=100L, control=list(warmup = 10L))
+res$expr <- ""; res
+res <- microbenchmark(energy_irradiance(w.length, s.e.irrad, CIE(), use.cache=TRUE), times=100L, control=list(warmup = 10L))
+res$expr <- ""; res
+@
+
+Saving a waveband object that uses weighting and reusing it, gives a speed up of about 25\% when all other optimizations are also used. when using CIE the reduction in execution time from the original default values is about 85\%.
+
+<<>>=
+myCIE <- CIE()
+res <- microbenchmark(photon_irradiance(w.length, s.e.irrad, CIE(), use.cache=TRUE, check.spectrum=FALSE), times=100L, control=list(warmup = 10L))
+res$expr <- ""; res
+res <- microbenchmark(photon_irradiance(w.length, s.e.irrad, myCIE, use.cache=TRUE, check.spectrum=FALSE), times=100L, control=list(warmup = 10L))
+res$expr <- ""; res
+@
+
+Inserting `hinges' to reduce integration errors slows down the computations a lot. If the spectral data is measured with a
+small wavelength step, the errors are rather small. By default the use of `hinges' is automatically decided based on the
+average wavelength step in the spectral data.
+
+<<>>=
+energy_irradiance(w.length, s.e.irrad, CIE(), use.cache=TRUE)
+energy_irradiance(w.length, s.e.irrad, CIE(), use.cache=TRUE, use.hinges=TRUE)
+res <- microbenchmark(energy_irradiance(w.length, s.e.irrad, CIE(), use.cache=TRUE), times=100L, control=list(warmup = 10L))
+res$expr <- ""; res
+res <- microbenchmark(energy_irradiance(w.length, s.e.irrad, CIE(), use.cache=TRUE, use.hinges=TRUE), times=100L, control=list(warmup = 10L))
+res$expr <- ""; res
+@
+
+Using the cache also helps with \texttt{split\_irradiance}.
+
+<<>>=
+res <- microbenchmark(split_photon_irradiance(w.length, s.e.irrad, c(400, 500, 600, 700)), times=100L, control=list(warmup = 10L))
+res$expr <- ""; res
+res <- microbenchmark(split_photon_irradiance(w.length, s.e.irrad, c(400, 500, 600, 700), use.cache=TRUE), times=100L, control=list(warmup = 10L))
+res$expr <- ""; res
+@
+
+Using hinges slows down calculations increasing the execution time by 2.4 times, which is less than if calculating the same three wavebands separately, as all hinges are inserted in one operation.
+
+<<>>=
+res <- microbenchmark(split_photon_irradiance(w.length, s.e.irrad, c(400, 500, 600, 700), use.cache=TRUE), times=100L, control=list(warmup = 10L))
+res$expr <- ""; res
+res <- microbenchmark(split_photon_irradiance(w.length, s.e.irrad, c(400, 500, 600, 700), use.cache=TRUE, use.hinges=TRUE), times=100L, control=list(warmup = 10L))
+res$expr <- ""; res
+@
+
+Disabling checking of the spectrum reduces the execution time, but proportionally not as much as for the \texttt{irradiance} functions, as the spectrum is checked only once independently of the number of bands into which it is split.
+
+<<>>=
+res <- microbenchmark(split_photon_irradiance(w.length, s.e.irrad, c(400, 500, 600, 700), use.cache=TRUE), times=100L, control=list(warmup = 10L))
+res$expr <- ""; res
+res <- microbenchmark(split_photon_irradiance(w.length, s.e.irrad, c(400, 500, 600, 700), use.cache=TRUE, check.spectrum=FALSE), times=100L, control=list(warmup = 10L))
+res$expr <- ""; res
+@
+
+As all the execution times are in microseconds, all the optimizations discussed above are totally irrelevant unless you are planning to repeat similar calculations on thousands of spectra.
+
+<<detach>>=
+detach(sun.data)
+@
+
 \end{document}

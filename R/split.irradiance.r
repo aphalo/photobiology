@@ -1,0 +1,77 @@
+#' Split a spectrum into contiguous bands and calculate energy or photon (quantum) irradiance 
+#' from spectral (energy) or photon irradiance.
+#'
+#' This function returns the energy or photon irradiance for a series of contiguous wavebands
+#' from a radiation spectrum. The returned values can be either absolute or relative to their
+#' sum.
+#'
+#' @usage split_irradiance(w.length, s.irrad, cut.w.length=range(w.length), unit.out=NULL, unit.in="energy", 
+#' scale = "absolute", check.spectrum=TRUE, use.cached.mult=FALSE, use.hinges=NULL)
+#' 
+#' @param w.length numeric array of wavelength (nm)
+#' @param s.irrad numeric array of spectral (energy) irradiances (W m-2 nm-1)
+#' @param cut.w.length numeric array of wavelengths (nm)
+#' @param unit.out character string with allowed values "energy", and "photon", or its alias "quantum"
+#' @param unit.in character string with allowed values "energy", and "photon", or its alias "quantum"
+#' @param scale a character string indicating the scale used for the returned values ("absolute", "relative", "percent") 
+#' @param check.spectrum logical indicating whether to sanity check input data, default is TRUE
+#' @param use.cached.mult logical indicating whether multiplier values should be cached between calls
+#' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
+#' 
+#' @return a numeric array of irradiances with no change in scale factor: [W m-2 nm-1] -> [mol s-1 m-2]
+#' or relative values (fraction of one) if scale = "relative" or scale = "percent"
+#' @keywords manip misc
+#' @export
+#' @examples
+#' data(sun.data)
+#' with(sun.data, split_irradiance(w.length, s.e.irrad, cut.w.length=c(300, 400, 500, 600, 700), "photon"))
+#' @note The last three parameters control speed optimizations. The defaults should be suitable
+#' in mosts cases. If you set \code{check.spectrum=FALSE} then you should call \code{check_spectrum()}
+#' at least once for your spectrum before using any of the other functions. If you will use repeatedly
+#' the same SWFs on many spectra measured at exactly the same wavelengths you may obtain some speed up
+#' by setting \code{use.cached.mult=TRUE}. However, be aware that you are responsible for ensuring
+#' that the wavelengths are the same in each call, as the only test done is for the length of the
+#' \code{w.length} vector. 
+
+split_irradiance <- function(w.length, s.irrad, cut.w.length=range(w.length), unit.out=NULL, unit.in="energy", scale="absolute", 
+                 check.spectrum=TRUE, use.cached.mult=FALSE, use.hinges=NULL)
+{
+  # what output? seems safer to not have a default here
+  if (is.null(unit.out)){
+    warning("'unit.out' has no default value")
+    return(NA)
+  }
+  # make code a bit simpler further down
+  if (unit.in=="quantum") {unit.in <- "photon"}
+  # sanity check for spectral data and abort if check fails
+  if (check.spectrum && !check_spectrum(w.length, s.irrad)) {
+    return(NA)
+  } 
+  # clean the cut point wavelengths
+  if (is.null(cut.w.length)){
+    cut.w.length=range(w.length)
+  } else {
+    if (length(cut.w.length) < 2) {
+      warning("End cut points have no default, but only one cut point supplied")
+      return(NA)
+    }
+    cut.w.length <- unique(sort(cut.w.length))
+    if (cut.w.length[1] < min(w.length) || cut.w.length[length(cut.w.length)] > max(w.length)) {
+      warning("Cut point(s) outside spectral data range")
+      return(NA)
+    }
+  }
+  w.band.num <- length(cut.w.length) - 1
+  w.bands <- list(new_waveband(cut.w.length[1], cut.w.length[2]))
+  if (w.band.num > 2) for (i in 2:w.band.num) {
+    w.bands <- c(w.bands, list(new_waveband(cut.w.length[i], cut.w.length[i+1])))
+  }
+  irrads <- irradiance(w.length, s.irrad, w.bands, unit.out=unit.out, unit.in=unit.in, 
+                       check.spectrum=FALSE, use.cached.mult=use.cached.mult, use.hinges=use.hinges)
+  if (scale == "relative") {
+    irrads <- irrads / sum(irrads)
+  } else if (scale == "percent") {
+    irrads <- irrads / sum(irrads) * 100
+  }
+  return(irrads)
+}
