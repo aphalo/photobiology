@@ -78,10 +78,10 @@ calc_multipliers <- function(w.length, w.band, unit.out="energy", unit.in="energ
 }
 
 .onLoad <- function(libname, pkgname) {
-  photobio.cache <<- new.env(parent = .GlobalEnv)
+  photobio.cache <<- new.env(parent = emptyenv())
 }
 
 .onUnload <- function(libpath) {
-  rm(photobio.cache, envir= .GlobalEnv)
+  rm(photobio.cache, envir = emptyenv())
 }
   
