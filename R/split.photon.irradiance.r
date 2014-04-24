@@ -24,6 +24,15 @@
 #' @examples
 #' data(sun.data)
 #' with(sun.data, split_photon_irradiance(w.length, s.e.irrad, cut.w.length=c(300, 400, 500, 600, 700)))
+#' with(sun.data, split_photon_irradiance(w.length, s.e.irrad, cut.w.length=c(200, 400, 500, 600, 900)))
+#' with(sun.data, split_photon_irradiance(w.length, s.e.irrad, cut.w.length=c(300, 400, 500)))
+#' with(sun.data, split_photon_irradiance(w.length, s.e.irrad, cut.w.length=c(300, 400)))
+#' with(sun.data, split_photon_irradiance(w.length, s.e.irrad, cut.w.length=c(300, 400, 300)))
+#' with(sun.data, split_photon_irradiance(w.length, s.e.irrad, cut.w.length=c(100, 200)))
+#' with(sun.data, split_photon_irradiance(w.length, s.e.irrad, cut.w.length=c(1000, 1200)))
+#' with(sun.data, split_photon_irradiance(w.length, s.e.irrad, cut.w.length=c(300)))
+#' with(sun.data, split_photon_irradiance(w.length, s.e.irrad))
+#' 
 #' @note The last three parameters control speed optimizations. The defaults should be suitable
 #' in mosts cases. If you set \code{check.spectrum=FALSE} then you should call \code{check_spectrum()}
 #' at least once for your spectrum before using any of the other functions. If you will use repeatedly

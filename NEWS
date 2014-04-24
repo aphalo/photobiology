@@ -1,3 +1,8 @@
+photobiology 0.2.18
+===================
+
+Fixed a bug in split_irradiance() and improved handling of cut point values outside the data range, unsorted cut-points, and redundant cut-points. For 'good' data there are no changes in output, except in the case when three cut points were supplied, as the third one was being ignored. The handling of out-of-range cut points has been changed so that the endpoints are moved to the extreme wavelengths of the data. 
+
 photobiology 0.2.17
 ===================
 

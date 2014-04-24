@@ -51,19 +51,36 @@ split_irradiance <- function(w.length, s.irrad, cut.w.length=range(w.length), un
   if (is.null(cut.w.length)){
     cut.w.length=range(w.length)
   } else {
-    if (length(cut.w.length) < 2) {
+    cut.w.length <- unique(sort(cut.w.length))
+    len.cut.w.length <- length(cut.w.length)
+    if (len.cut.w.length < 2) {
       warning("End cut points have no default, but only one cut point supplied")
       return(NA)
-    }
-    cut.w.length <- unique(sort(cut.w.length))
-    if (cut.w.length[1] < min(w.length) || cut.w.length[length(cut.w.length)] > max(w.length)) {
-      warning("Cut point(s) outside spectral data range")
+    } else if (cut.w.length[1] > max(w.length) || cut.w.length[len.cut.w.length] < min(w.length)) {
+      warning("All cut points are outside the range of the spectral data")
       return(NA)
+    }
+    if (cut.w.length[1] < min(w.length)) {
+      warning("Shortest cut point(s) outside spectral data range")
+      i <- 2
+      while(i < len.cut.w.length && cut.w.length[i] < min(w.length)) i <- i + 1
+      cut.w.length <- c(min(w.length), cut.w.length[i:len.cut.w.length])
+      len.cut.w.length <- length(cut.w.length)
+    }
+    if (cut.w.length[len.cut.w.length] > max(w.length)) {
+      warning("Longest cut point(s) outside spectral data range")
+      j <- len.cut.w.length - 1
+      while(j > 2 && cut.w.length[j] > max(w.length)) j <- j - 1
+      cut.w.length <- c(cut.w.length[1:j], max(w.length))
+      len.cut.w.length <- length(cut.w.length)
+    }
+    if (len.cut.w.length < 2) {
+      stop("Failed assertion in split.irradiance. You've found a bug!")
     }
   }
   w.band.num <- length(cut.w.length) - 1
   w.bands <- list(new_waveband(cut.w.length[1], cut.w.length[2]))
-  if (w.band.num > 2) for (i in 2:w.band.num) {
+  if (w.band.num > 1) for (i in 2:w.band.num) {
     w.bands <- c(w.bands, list(new_waveband(cut.w.length[i], cut.w.length[i+1])))
   }
   irrads <- irradiance(w.length, s.irrad, w.bands, unit.out=unit.out, unit.in=unit.in, 
