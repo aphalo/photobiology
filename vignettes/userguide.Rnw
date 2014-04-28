@@ -176,14 +176,27 @@ CIE <- function(norm=298) {
 }
 @
 
-The generic print() function calls print.waveband()
+The generic functions print(), min(), max(), range(), mean() and labels() call the corresponding special functions defined for wavebdand objects: print.waveband(), range.waveband(), etc.
 
 <<>>=
 PAR()
 str(PAR())
+range(PAR())
+min(PAR())
+max(PAR())
+mean(PAR()) # gives wavelength at center
+labels(PAR())
 
 CIE()
 str(CIE())
+labels(CIE())
+labels(CIE(300))
+
+labels(UVB())
+labels(UVB("medical"))
+labels(UVB("ISO"))
+labels(new_waveband(100, 200))
+labels(new_waveband(100, 200, wb.name="ANY STRING"))
 @
 
 Now the example calculations.
