@@ -1,3 +1,10 @@
+# The Colour & Vision Research laboratory and database are based at the Institute of 
+# Ophthalmology, which is part of University College London.
+# Dowloaded on 2014-04-28
+# http://www.cvrl.org/
+# 2-deg XYZ CMFs transformed from the CIE (2006) 2-deg LMS cone fundamentals
+#
+w.length,x,y,z
 390,3.769647E-03,4.146161E-04,1.847260E-02
 391,4.532416E-03,5.028333E-04,2.221101E-02
 392,5.446553E-03,6.084991E-04,2.669819E-02

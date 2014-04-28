@@ -1,0 +1,6 @@
+oldwd <- setwd("raw.data")
+ciexyz2006CMF.data <- read.csv(file="lin2012xyz2e_1_7sf.csv")
+setwd(oldwd)
+setwd("data")
+save(ciexyz2006CMF.data, file="ciexyz2006CMF.data.rda")
+setwd(oldwd)

@@ -1,7 +1,11 @@
-photobiology 0.2.18
+photobiology 0.2.19
 ===================
 
-Added waveband versions of generic function range() and labels().
+Added waveband versions of generic functions, min(), max(), range() and labels().
+Updated trim_tails() so that it can also expand a spectrum.
+New functions:
+w_length2rgb() to calculate RGB colour definitions for monochormatic light.
+s.e.irrad2rgb() to calculate RGB colour definition from spectral irradiance data or reflectance data.
 
 photobiology 0.2.18
 ===================
