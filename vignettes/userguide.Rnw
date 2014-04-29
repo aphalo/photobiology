@@ -185,6 +185,8 @@ range(PAR())
 min(PAR())
 max(PAR())
 mean(PAR()) # gives wavelength at center
+center_wl(PAR())
+color(PAR()) # equivalent RGB color definitions
 labels(PAR())
 
 CIE()

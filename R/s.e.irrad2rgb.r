@@ -1,7 +1,7 @@
 #' Spectrum to rgb color conversion
 #'
 #' Calculates rgb values from spectra based on human color matching functions (CMF) or chromaticity
-#' coordinates (CC). A CMF takes into account luminous sensitivity, while a CC only the colour hue.
+#' coordinates (CC). A CMF takes into account luminous sensitivity, while a CC only the color hue.
 #' This function, in contrast to that in package pavo does not normalize the values to equal luminosity,
 #' so using a CMF as input gives the expected result. Another difference is that it allows the user
 #' to choose the chromaticity data to be used. The data used by default is different, and it corresponds
@@ -9,21 +9,21 @@
 #' not hard coded, so the function could be used to simulate vision in other organisms as long as
 #' pseudo CMF or CC data are available for the simulation.
 #'
-#' @usage s_e_irrad2rgb(w.length, s.e.irrad, sens=ciexyzCMF2.data, colour.name=NULL)
+#' @usage s_e_irrad2rgb(w.length, s.e.irrad, sens=ciexyzCMF2.data, color.name=NULL)
 #'
 #' @param w.length numeric array of wavelengths (nm)
 #' @param s.e.irrad numeric array of spectral irradiance values
 #' @param sens a dataframe with variables w.length, x, y, and z, giving the CC or CMF definition (default is the
 #' proposed human CMF according to CIE 2006.)
-#' @param colour.name character string for naming the rgb colour definition
+#' @param color.name character string for naming the rgb color definition
 #' 
-#' @return A colour defined using \code{rgb()}. The numeric values of the RGB components can be obtained 
+#' @return A color defined using \code{rgb()}. The numeric values of the RGB components can be obtained 
 #' using function \code{col2rgb()}.
 #' 
 #' @export
 #' @examples
 #' data(sun.data)
-#' my.color <- with(sun.data, s_e_irrad2rgb(w.length, s.e.irrad, colour.name="sunWhite"))
+#' my.color <- with(sun.data, s_e_irrad2rgb(w.length, s.e.irrad, color.name="sunWhite"))
 #' col2rgb(my.color)
 #' 
 #' @author Pedro J. Aphalo 
@@ -33,12 +33,12 @@
 #' online data respository at \url{http://www.cvrl.org/}.
 #' @references \url{http://www.cs.rit.edu/~ncs/color/t_spectr.html}.
 
-s_e_irrad2rgb <- function(w.length, s.e.irrad, sens=ciexyzCMF2.data, colour.name=NULL) {
+s_e_irrad2rgb <- function(w.length, s.e.irrad, sens=ciexyzCMF2.data, color.name=NULL) {
   low.limit <- min(sens$w.length)
   high.limit <- max(sens$w.length)
-  if (length(w.length) == 1) {
+  if (single_wl <- length(w.length) == 1) {
     if (w.length < low.limit || w.length > high.limit) {
-      return(rgb(0, 0, 0, name=colour.name))
+      return(rgb(0, 0, 0, names=color.name))
     } else {
       s.e.irrad = 1.0
     }
@@ -52,14 +52,20 @@ s_e_irrad2rgb <- function(w.length, s.e.irrad, sens=ciexyzCMF2.data, colour.name
     }
   }
   
-# will expand and fill with zeros when needed
+# if we have a spectrum we will expand and fill with zeros when needed
 
-sens$s.e.irrad <- interpolate_spectrum(w.length, s.e.irrad, sens$w.length, fill=0.0)
-sens$s.e.irrad.norm <- with(sens, s.e.irrad / integrate_irradiance(w.length, s.e.irrad))
+if (!single_wl) {
+  sens$s.e.irrad <- interpolate_spectrum(w.length, s.e.irrad, sens$w.length, fill.value=0.0)
+  sens$s.e.irrad.norm <- with(sens, s.e.irrad / integrate_irradiance(w.length, s.e.irrad))
 
-X <- with(sens, integrate_irradiance(w.length, s.e.irrad.norm * x))
-Y <- with(sens, integrate_irradiance(w.length, s.e.irrad.norm * y))
-Z <- with(sens, integrate_irradiance(w.length, s.e.irrad.norm * z))
+  X <- with(sens, integrate_irradiance(w.length, s.e.irrad.norm * x))
+  Y <- with(sens, integrate_irradiance(w.length, s.e.irrad.norm * y))
+  Z <- with(sens, integrate_irradiance(w.length, s.e.irrad.norm * z))
+} else {
+  X <- approx(sens$w.length, sens$x, w.length)$y
+  Y <- approx(sens$w.length, sens$y, w.length)$y
+  Z <- approx(sens$w.length, sens$z, w.length)$y
+}
 
 XYZ <- rbind(X, Y, Z)
 
@@ -71,11 +77,12 @@ rgb1 <- xyzmat %*% as.matrix(XYZ)
 
 # print(rgb1)
 
-# normalization
+# not all colours can be represented in the RGB space, so unrepresentable
+# colours are converted by brute force into representable colours
 rgb1[rgb1 < 0] <- 0
 rgb1[rgb1 > 1] <- 1
 
-rgb.color <- rgb(red=rgb1[1,1], green=rgb1[2,1], blue=rgb1[3,1], name=colour.name)
+rgb.color <- rgb(red=rgb1[1,1], green=rgb1[2,1], blue=rgb1[3,1], names=color.name)
 
 rgb.color
 
