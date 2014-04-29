@@ -289,6 +289,51 @@ plot(weighted.s.e.irrad/max(weighted.s.e.irrad) ~ w.length, type="l", col="red",
 lines(s.e.irrad/max(s.e.irrad) ~ w.length, col="black")
 @
 
+\section{Calculating equivalent RGB colous for display}
+
+Two functions allow calculation of simulated colour of light sources as R colour definitions for monochromatic
+and polychromatic light. By default CIE coordinates for \textit{typical} human vision are used, but the functions
+have a parameter that can be used for suppying a different chromaticity definition.
+
+<<>>=
+w_length2rgb(550) # green
+w_length2rgb(630) # red
+w_length2rgb(380) # UVA
+w_length2rgb(750) # far red
+w_length2rgb(c(550, 630, 380, 750)) # vectorized
+@
+
+<<>>=
+with(sun.data, s_e_irrad2rgb(w.length, s.e.irrad))
+with(sun.data, s_e_irrad2rgb(w.length, s.e.irrad, sens=ciexyzCC2.data))
+@
+
+<<>>=
+wl <- c(390, 829)
+
+my.colors <- w_length2rgb(wl[1]:wl[2])
+# my.colors <- w_length2rgb(wl[1]:wl[2], sens=ciexyzCC2.data)
+# my.colors <- w_length2rgb(wl[1]:wl[2], sens=ciexyzCMF2.data)
+
+colCount <- 40 # number per row
+rowCount <- trunc(length(my.colors) / colCount)
+
+plot( c(1,colCount), c(0,rowCount), type="n", ylab="", xlab="",
+      axes=FALSE, ylim=c(rowCount,0))
+title(paste("RGB colours for", as.character(wl[1]), "to", as.character(wl[2]), "nm"))
+
+for (j in 0:(rowCount-1))
+{
+  base <- j*colCount
+  remaining <- length(my.colors) - base
+  RowSize <- ifelse(remaining < colCount, remaining, colCount)
+  rect((1:RowSize)-0.5,j-0.5, (1:RowSize)+0.5,j+0.5,
+       border="black",
+       col=my.colors[base + (1:RowSize)])
+}
+
+@
+
 \section{Auxiliary functions}
 
 Sometimes it is needed to add (parallel sum) between two spectra, even if the two spectra have been

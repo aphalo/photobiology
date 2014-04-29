@@ -2,7 +2,7 @@
 #'
 #' Calculates rgb values from spectra based on human color matching functions
 #'
-#' @usage w_length2rgb(w.length, sens=ciexyz.data, colour.name=NULL)
+#' @usage w_length2rgb(w.length, sens=ciexyzCMF2.data, colour.name=NULL)
 #'
 #' @param w.length numeric array of wavelengths (nm)
 #' @param sens a dataframe with variables w.length, x, y, and z, giving the chromaticity definition 
@@ -17,7 +17,7 @@
 #' 
 #' @author Pedro J. Aphalo 
 
-w_length2rgb <- function(w.length, sens=ciexyz.data, colour.name=NULL) {
+w_length2rgb <- function(w.length, sens=ciexyzCMF2.data, colour.name=NULL) {
   len <- length(w.length)
   colors <- NULL
   for (i in 1:len) {

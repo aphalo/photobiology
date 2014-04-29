@@ -28,7 +28,6 @@
 #' head(with(sun.data, trim_tails(w.length, s.e.irrad, low.limit=300, fill=NA)))
 #' head(with(sun.data, trim_tails(w.length, s.e.irrad, low.limit=300, fill=0.0)))
 #' head(with(sun.data, trim_tails(w.length, s.e.irrad, low.limit=100, fill=0.0)))
-#' \notrun{
 #' tail(with(sun.data, trim_tails(w.length, s.e.irrad, low.limit=300, high.limit=1000, fill=NA)))
 #' tail(with(sun.data, trim_tails(w.length, s.e.irrad, low.limit=300, high.limit=1000, fill=0.0)))
 #' tail(with(sun.data, trim_tails(w.length, s.e.irrad, low.limit=300, high.limit=1000)))
@@ -36,7 +35,7 @@
 #' tail(with(sun.data, trim_tails(w.length, s.e.irrad, low.limit=300, high.limit=400, fill=NA)))
 #' tail(with(sun.data, trim_tails(w.length, s.e.irrad, low.limit=100, high.limit=400, fill=0.0)))
 #' head(with(sun.data, trim_tails(w.length, s.e.irrad, low.limit=100, high.limit=400, fill=0.0)))
-#' }
+#' 
 
 trim_tails <- function(w.length, s.irrad, low.limit=min(w.length), high.limit=max(w.length), use.hinges=TRUE, fill=NULL)
 {

@@ -1,3 +1,10 @@
+# The Colour & Vision Research laboratory and database are based at the Institute of 
+# Ophthalmology, which is part of University College London.
+# Dowloaded on 2014-04-28
+# http://www.cvrl.org/
+# Chromaticity coordinates 2-deg coordinates from 2-deg XYZ CMFs
+#
+w.length, x, y, z
 390,0.16638,0.01830,0.81532
 391,0.16635,0.01846,0.81519
 392,0.16629,0.01858,0.81513

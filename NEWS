@@ -6,6 +6,7 @@ Updated trim_tails() so that it can also expand a spectrum.
 New functions:
 w_length2rgb() to calculate RGB colour definitions for monochormatic light.
 s.e.irrad2rgb() to calculate RGB colour definition from spectral irradiance data or reflectance data.
+Data on x, y, z coordinates for CIE chromaticity coordinates and colour matching functions added.
 
 photobiology 0.2.18
 ===================
