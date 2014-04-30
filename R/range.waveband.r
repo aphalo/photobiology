@@ -110,7 +110,7 @@ color.default <- function(x) {
 #' @export color.waveband
 #' 
 color.waveband <- function(x) {
-  color <- c(w_length2rgb(mean(x), sens=ciexyzCMF2.data, color.name=paste(labels(x)[1], "CMF")), 
-             w_length2rgb(mean(x), sens=ciexyzCC2.data, color.name=paste(labels(x)[1], "CC")))
+  color <- c(w_length_range2rgb(range(x), sens=ciexyzCMF2.data, color.name=paste(labels(x)[1], "CMF")), 
+             w_length_range2rgb(range(x), sens=ciexyzCC2.data, color.name=paste(labels(x)[1], "CC")))
   return(color)           
 }

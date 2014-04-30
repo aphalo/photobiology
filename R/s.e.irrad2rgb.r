@@ -45,11 +45,11 @@ s_e_irrad2rgb <- function(w.length, s.e.irrad, sens=ciexyzCMF2.data, color.name=
   } else {
     if (!check_spectrum(w.length, s.e.irrad)) {
       return(NA)
-    } else {
-      if (min(w.length) > low.limit | max(w.length) < high.limit) {
-        warning('Wavelength range does not capture the full cromaticity range\nfilling missing values with zeros.')
-      }
-    }
+    } # else {
+#      if (min(w.length) > low.limit | max(w.length) < high.limit) {
+#        warning('Wavelength range does not capture the full cromaticity range\nfilling missing values with zeros.')
+#      }
+#    }
   }
   
 # if we have a spectrum we will expand and fill with zeros when needed

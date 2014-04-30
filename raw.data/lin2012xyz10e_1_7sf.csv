@@ -5,6 +5,7 @@
 # 10-deg XYZ CMFs transformed from the CIE (2006) 2-deg LMS cone fundamentals
 # for untransformed energy units
 #
+w.length, x, y, z
 390,2.952420E-03,4.076779E-04,1.318752E-02
 391,3.577275E-03,4.977769E-04,1.597879E-02
 392,4.332146E-03,6.064754E-04,1.935758E-02
