@@ -1,8 +1,8 @@
 Package: photobiology
 Type: Package
 Title: Light and radiation quantification for photobiology research
-Version: 0.2.20
-Date: 2014-04-30
+Version: 0.2.21
+Date: 2014-05-05
 Author: Pedro J. Aphalo <pedro.aphalo@helsinki.fi>
 Maintainer: Pedro J. Aphalo <pedro.aphalo@helsinki.fi>
 Description: Calculation of effective (weighted) and unweighted irradiances/doses and other
@@ -20,3 +20,4 @@ Encoding: UTF-8
 LinkingTo: Rcpp
 URL: http://uv4growth.dyndns.org, http://openinstruments.dyndns.org, https://bitbucket.org/aphalo/photobiology
 BugReports: https://bitbucket.org/aphalo/photobiology
+Roxygen: list(wrap = FALSE)

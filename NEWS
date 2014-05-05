@@ -1,3 +1,8 @@
+photobiology 0.2.21
+===================
+
+Fixed a bug in s.e.irrad2rgb() caused by not explicitly handling the case when the wavelength range was completely outside outside the range of the the CMF or CC data. In other words the function crashed when the colour of invisible radiation was requested. Now "black" is returned in this case.
+
 photobiology 0.2.20
 ===================
 
