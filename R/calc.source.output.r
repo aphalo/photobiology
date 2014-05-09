@@ -5,13 +5,13 @@
 #' data or by name for light source data included in the packages photobiologySun,
 #' photobiologyLamps, or photobiologyLEDs, scaling the values.
 #'
-#' @usage calc_source_output(w.length.out, lamp.name=NULL, 
+#' @usage calc_source_output(w.length.out, source.name=NULL, 
 #'                                w.length.in=NULL, s.irrad.in=NULL, 
 #'                                unit.in="energy",
 #'                                scaled=NULL, fill=NA)
 #' 
 #' @param w.length.out numeric vector of wavelengths (nm) for output
-#' @param lamp.name a character string giving the name of a lamp data set, default is NULL
+#' @param source.name a character string giving the name of a lamp data set, default is NULL
 #' @param w.length.in numeric vector of wavelengths (nm) for input
 #' @param s.irrad.in numeric vector of spectral transmittance value (fractions or percent)
 #' @param unit.in a character string "energy" or "photon"
@@ -32,7 +32,7 @@
 #' calc_source_output(500:600, "sun")
 #' 
 calc_source_output <- function(w.length.out,
-                                    lamp.name=NULL, 
+                                    source.name=NULL, 
                                     w.length.in=NULL, s.irrad.in=NULL, 
                                     unit.in="energy",
                                     scaled=NULL, fill=NA) {  
@@ -40,10 +40,10 @@ calc_source_output <- function(w.length.out,
   # two vectors w.length.in and s.irrad.in
   
   if (is.null(w.length.in) | is.null(s.irrad.in)) {
-    if (is.null(lamp.name)) {
+    if (is.null(source.name)) {
       return(NA) 
     } else {
-      lamp.object.name <- paste(lamp.name, "data", sep=".")
+      lamp.object.name <- paste(source.name, "data", sep=".")
       if (!exists(lamp.object.name)) {
         warning("No data for lamp with name: ", lamp.object.name)
         return(NA)

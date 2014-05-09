@@ -7,4 +7,10 @@ R/RcppExports.R
 src-i386/
 src-x64/
 src/RcppExports.cpp
+*.tex
+*.pdf
+*.bbl
+*.synctex.gz
+*.log
+*.so
 

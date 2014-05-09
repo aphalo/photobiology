@@ -2,6 +2,8 @@ photobiology 0.2.22
 ===================
 
 Moved from photobiologyLamps and renamed function calc_lamp_output() to calc_source_output().
+Moved from photobiologyLamps calc_filter_multipliers().
+Added two examples of how to draw Maxwell's triangles.
 
 photobiology 0.2.21
 ===================

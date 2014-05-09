@@ -1,6 +1,6 @@
 %\VignetteEngine{knitr}
 %\VignetteIndexEntry{Functions for quantifying VIS and UV radiation}
-%\VignetteDepends{knitr, photobiology, photobiologyUV, photobiologyVIS}
+%\VignetteDepends{knitr, photobiology, photobiologyUV, photobiologyVIS, photobiologyFilters, ggplot2, ggtern}
 %\VignetteKeyword{misc}
 
 \documentclass{article}
@@ -168,7 +168,7 @@ attach(sun.data)
 
 Then we compare the calculations based on the different wavebands defined in the previous section and the predefined functions in the packages \PBVIS and \PBUV. The predefined functions have the advantage of allowing the specification of parameters to modify the \texttt{w.band} created. In the example bellow, we use this to set the normalization wavelength.
 
-This is how CIE() is defined in \PBUV.
+This is how \texttt{CIE()} is defined in \PBUV.
 
 <<example-CIE, eval=FALSE>>=
 CIE <- function(norm=298) {
@@ -179,7 +179,8 @@ CIE <- function(norm=298) {
 }
 @
 
-The generic functions print(), min(), max(), range(), mean() and labels() call the corresponding special functions defined for wavebdand objects: print.waveband(), range.waveband(), etc.
+\sloppy
+The generic functions \texttt{print()}, \texttt{min()}, \texttt{max()}, \texttt{range()}, \texttt{mean()} and \texttt{labels()} call the corresponding special functions defined for wavebdand objects: \texttt{print.waveband()}, \texttt{range.waveband()}, etc.
 
 <<>>=
 PAR()
@@ -233,6 +234,7 @@ my_wavebands <- list(Red(), Blue(), Green())
 energy_irradiance(w.length, s.e.irrad, my_wavebands)
 @
 
+\sloppy
 The are also convenience functions for calculating how `total' irradiance is split among different contiguous bands
 of the spectrum. The functions \texttt{split\_photon\_irradiance()} and \texttt{split\_energy\_irradiance()}, just call \texttt{split\_irradiance()} with the \texttt{unit.out} set to \texttt{"photon"} or \texttt{"energy"} respectively.
 

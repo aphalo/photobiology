@@ -11,7 +11,7 @@ License: GPL (>=2)
 VignetteBuilder: knitr
 Depends: R (>= 3.0.0)
 Imports: Rcpp (>= 0.11.0)
-Suggests: photobiologyUV (>= 0.2.1), photobiologyVIS (>= 0.1.0), knitr (>= 1.2), microbenchmark
+Suggests: photobiologyUV (>= 0.2.1), photobiologyVIS (>= 0.1.0), photobiologyFilters, ggplot2, ggtern, knitr (>= 1.2), microbenchmark
 LazyLoad: yes
 LazyData: yes
 ByteCompile: true
