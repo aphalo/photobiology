@@ -1,3 +1,10 @@
+photobiology 0.2.23
+===================
+
+Removed center_wl center_wl.generic and center_wl.waveband
+Added spread spread.generic and spread.waveband
+Added midpoint midpoint.generic and midpoint.waveband
+
 photobiology 0.2.22
 ===================
 

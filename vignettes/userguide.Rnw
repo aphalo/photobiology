@@ -180,16 +180,16 @@ CIE <- function(norm=298) {
 @
 
 \sloppy
-The generic functions \texttt{print()}, \texttt{min()}, \texttt{max()}, \texttt{range()}, \texttt{mean()} and \texttt{labels()} call the corresponding special functions defined for wavebdand objects: \texttt{print.waveband()}, \texttt{range.waveband()}, etc.
+The generic functions \texttt{print()}, \texttt{min()}, \texttt{max()}, \texttt{range()}, \texttt{midpoint()} and \texttt{labels()} call the corresponding special functions defined for wavebdand objects: \texttt{print.waveband()}, \texttt{range.waveband()}, etc.
 
 <<>>=
 PAR()
 str(PAR())
 range(PAR())
+spread(PAR())
 min(PAR())
 max(PAR())
-mean(PAR()) # gives wavelength at center
-center_wl(PAR())
+midpoint(PAR()) # gives wavelength at center
 color(PAR()) # equivalent RGB color definitions
 labels(PAR())
 

@@ -1,3 +1,5 @@
+# range -------------------------------------------------------------------
+
 #' Wavelength range of a "waveband" object.
 #' 
 #' A function that returns the wavelength range from objects of class "waveband".
@@ -11,7 +13,9 @@ range.waveband <- function(x, ..., na.rm = FALSE) {
   return(c(x$low, x$high))
 }
 
-#' Wavelength range of a "waveband" object.
+# min ---------------------------------------------------------------------
+
+#' Wavelength minimum of a "waveband" object.
 #' 
 #' A function that returns the wavelength minimum from objects of class "waveband".
 #' 
@@ -24,7 +28,9 @@ min.waveband <- function(x, ..., na.rm = FALSE) {
   return(x$low)
 }
 
-#' Wavelength range of a "waveband" object.
+# max ---------------------------------------------------------------------
+
+#' Wavelength maximum of a "waveband" object.
 #' 
 #' A function that returns the wavelength maximum from objects of class "waveband".
 #' 
@@ -37,50 +43,71 @@ max.waveband <- function(x, ..., na.rm = FALSE) {
   return(x$high)
 }
 
-#' Wavelength at center of a "waveband" object.
-#' 
-#' A function that returns the wavelength at the middle of the wavelength range of
-#' objects of class "waveband".
-#' 
-#' @param x an object of class "waveband"
-#' @param trim ignored
-#' @param ... not used in current version
-#' @param na.rm ignored
-#' @export
-#' 
-mean.waveband <- function(x, trim = 0, na.rm = FALSE, ...) {
-  return((x$low + x$high) / 2)  
-}
+# midpoint ------------------------------------------------------------------
 
 #' Generic function
 #' 
-#' A function that returns the wavelength at the middle of the wavelength range.
+#' A function that returns the wavelength at the center of the wavelength range.
 #' 
 #' @param x an R object
-#' @export center_wl center_wl.default
-center_wl <- function(x) UseMethod("center_wl", x)
+#' @export midpoint
+midpoint <- function(x) UseMethod("midpoint", x)
 
 #' Default for generic function
 #' 
-#' A function that returns the wavelength at the middle of the wavelength range.
+#' A function that returns the wavelength at the center of the wavelength range.
 #' 
 #' @param x an R object
-#' @export center_wl center_wl.default
-center_wl.default <- function(x) {
-  return(NA)
+#' @export midpoint.default
+midpoint.default <- function(x) {
+  return(min(x) + (max(x) - min(x)) / 2)
 }
 
 #' Wavelength at center of a "waveband" object.
 #' 
-#' A function that returns the wavelength at the middle of the wavelength range of
+#' A function that returns the wavelength at the center of the wavelength range of
 #' objects of class "waveband".
 #' 
 #' @param x an object of class "waveband"
-#' @export center_wl.waveband
+#' @export midpoint.waveband
 #' 
-center_wl.waveband <- function(x) {
-  return((x$low + x$high) / 2)  
+midpoint.waveband <- function(x) {
+  return(x$low + (x$high - x$low) / 2)
 }
+
+# spread ------------------------------------------------------------------
+
+#' Generic function
+#' 
+#' A function that returns the spread (max(x) - min(x)) for R objects.
+#' 
+#' @param x an R object
+#' @export spread
+spread <- function(x) UseMethod("spread", x)
+
+#' Default for generic function
+#' 
+#' A function that returns the spread (max(x) - min(x)) for objects.
+#' 
+#' @param x an R object
+#' @export spread.default
+#' 
+spread.default <- function(x) {
+  return(max(x) - min(x))
+}
+
+#' Wavelength spread (max-min) of a "waveband" object.
+#' 
+#' A function that returns the wavelength spread from objects of class "waveband".
+#' 
+#' @param x an object of class "waveband"
+#' @export
+#' 
+spread.waveband <- function(x) {
+  return(x$high - x$low)
+}
+
+# color -------------------------------------------------------------------
 
 #' Generic function that returns the color of an object.
 #' 
