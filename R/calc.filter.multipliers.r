@@ -9,7 +9,7 @@
 #'                                pc=FALSE, div=1.0)
 #' 
 #' @param w.length.out numeric vector of wavelengths (nm) for output
-#' @param filter.name a character string giving the name of a filter data set, default is a 'clear' filter (100 \% transmittance)
+#' @param filter.name a character string giving the name of a filter data set, default is a 'clear' filter (T = 1.0)
 #' @param w.length.in numeric vector of wavelengths (nm) for input
 #' @param transmittance.in numeric vector of spectral transmittance value (as percent)
 #' @param pc logical value indicating whether transmittances are expressed as percentages or fractions (default is to return a fraction)
@@ -20,8 +20,8 @@
 #' @export
 #' @examples
 #' require(photobiologyFilters)
-#' data(polythene.new.data)
-#' with(polythene.new.data, calc_filter_multipliers(400:500, w.length.in=w.length, transmittance.in=transmittance))
+#' data(polythene.new.dt)
+#' with(polythene.new.dt, calc_filter_multipliers(400:500, w.length.in=w.length, transmittance.in=Tpc))
 #' calc_filter_multipliers(400:500, "polythene.new")
 #' calc_filter_multipliers(400:500, "polythene.new", pc=TRUE)
 #' calc_filter_multipliers(400:500)
@@ -32,12 +32,12 @@ calc_filter_multipliers <- function(w.length.out,
                                     pc=FALSE, div = 1.0) {
   if (!pc) div <- div * 100.0 # filter transmittance data is assumed to be stored as percentages
   if (is.null(w.length.in) | is.null(transmittance.in)) {
-    filter.object <- paste(filter.name, "data", sep=".")
-    return(with(get(filter.object), spline(w.length, transmittance, xout=w.length.out)$y) / div)
+    filter.object <- paste(filter.name, "dt", sep=".")
+    return(with(get(filter.object), spline(w.length, Tpc, xout=w.length.out)$y) / div)
   } else {
     if (!check_spectrum(w.length.in, transmittance.in)) {
       return(NA)
     }
-    return(spline(w.length.in,transmittance.in,xout=w.length.out)$y / div)
+    return(spline(w.length.in, transmittance.in, xout=w.length.out)$y / div)
   }
 }

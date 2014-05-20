@@ -363,25 +363,25 @@ for (j in 0:(rowCount-1))
 Given a color in any of the above ways, yields RGB values that can be used to locate the position of any colour on Maxwell's triangle. First using R's predifined colour.
 
 <<>>=
-colours <- c("red", "green", "yellow", "white", "orange")
+colours <- c("red", "green", "yellow", "white", "orange", "blue", "pink", "purple")
 rgb.values <- col2rgb(colours)
 test.data <- data.frame(colour=colours, R=rgb.values[1, ], G=rgb.values[2, ], B=rgb.values[3, ])
-maxwell.tern <- ggtern(data=test.data, aes(x=R, y=G, z=B, label=colour)) + geom_point() + geom_text() +
-  labs(x = "R", y="G", z="B")
+maxwell.tern <- ggtern(data=test.data, aes(x=R, y=G, z=B, label=colour, fill=colour)) + geom_point(shape=21, size=4) + geom_text(hjust=-0.3) +
+  labs(x = "R", y="G", z="B") + scale_fill_identity()
 maxwell.tern
 @
 
 Now using colours calculated from filter transmittance spectra.
 
 <<>>=
-yellow.filter <- with(canary.yellow.new.data, s_e_irrad2rgb(w.length, transmittance, sens=ciexyzCMF2.data))
-green.filter <- with(moss.green.new.data, s_e_irrad2rgb(w.length, transmittance, sens=ciexyzCMF2.data))
-polyester.filter <- with(polyester.new.data, s_e_irrad2rgb(w.length, transmittance, sens=ciexyzCMF2.data))
+yellow.filter <- with(canary.yellow.new.dt, s_e_irrad2rgb(w.length, Tfr, sens=ciexyzCMF2.data))
+green.filter <- with(moss.green.new.dt, s_e_irrad2rgb(w.length, Tfr, sens=ciexyzCMF2.data))
+polyester.filter <- with(polyester.new.dt, s_e_irrad2rgb(w.length, Tfr, sens=ciexyzCMF2.data))
 colours <- c(yellow.filter, green.filter, polyester.filter)
 rgb.values <- col2rgb(colours)
-test.data <- data.frame(colour=colours, R=rgb.values[1, ], G=rgb.values[2, ], B=rgb.values[3, ], labels=c("A", "B", "C"))
-maxwell.tern <- ggtern(data=test.data, aes(x=R, y=G, z=B, colour=colour, label=labels)) + geom_point(size=6) + geom_text(vjust=-1) +
-  labs(x = "R", y="G", z="B")  + scale_colour_identity()
+test.data <- data.frame(colour=colours, R=rgb.values[1, ], G=rgb.values[2, ], B=rgb.values[3, ], labels=c("canary yellow", "moss green", "polyester"))
+maxwell.tern <- ggtern(data=test.data, aes(x=R, y=G, z=B, fill=colour, label=labels)) + geom_point(shape=21, size=4) + geom_text(hjust=-0.15) +
+  labs(x = "R", y="G", z="B")  + scale_fill_identity()
 maxwell.tern
 @
 

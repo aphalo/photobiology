@@ -1,10 +1,10 @@
-#' Add two spectra, even if the wavelengths values differ 
+#' Multiply two spectra, even if the wavelengths values differ 
 #'
 #' The wavelength vectors of the two spectra are merged, and the missing spectral
 #' values are calculated by interpolation. After this, the two spectral values at
 #' each wavelength are added.
 #'
-#' @usage sum_spectra(w.length1, w.length2=NULL, s.irrad1, s.irrad2, trim="union", na.rm=FALSE)
+#' @usage prod_spectra(w.length1, w.length2=NULL, s.irrad1, s.irrad2, trim="union", na.rm=FALSE)
 #' 
 #' @param w.length1 numeric array of wavelength (nm)
 #' @param w.length2 numeric array of wavelength (nm)
@@ -29,13 +29,13 @@
 #' @examples
 #' data(sun.data)
 #' head(sun.data)
-#' twice.sun.data <- with(sun.data, sum_spectra(w.length, w.length, s.e.irrad, s.e.irrad))
-#' head(twice.sun.data)
-#' tail(twice.sun.data)
+#' square.sun.data <- with(sun.data, prod_spectra(w.length, w.length, s.e.irrad, s.e.irrad))
+#' head(square.sun.data)
+#' tail(square.sun.data)
 
-sum_spectra <- function(w.length1, w.length2=NULL, s.irrad1, s.irrad2, trim="union", na.rm=FALSE) {
+prod_spectra <- function(w.length1, w.length2=NULL, s.irrad1, s.irrad2, trim="union", na.rm=FALSE) {
   return(oper_spectra(w.length1=w.length1, w.length2=w.length2, 
                       s.irrad1=s.irrad1, s.irrad2=s.irrad2, 
                       trim="union", na.rm=FALSE,
-                      bin.oper=`+`))
+                      bin.oper=`*`))
 }

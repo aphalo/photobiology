@@ -1,3 +1,13 @@
+photobiology 0.2.25
+===================
+
+Modified calc_filter_multipliers to work with photobiologyFilters 0.1.8 and later
+
+photobiology 0.2.24
+===================
+
+Added functions oper_spectra, prod_spectra, div_spectra, and subt_spectra, and redefined sum_spectra based on oper_spectra. Behaviour of sum_spectra has not changed.
+
 photobiology 0.2.23
 ===================
 
