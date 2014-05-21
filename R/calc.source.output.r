@@ -32,10 +32,10 @@
 #' calc_source_output(500:600, "sun")
 #' 
 calc_source_output <- function(w.length.out,
-                                    source.name=NULL, 
-                                    w.length.in=NULL, s.irrad.in=NULL, 
-                                    unit.in="energy",
-                                    scaled=NULL, fill=NA) {  
+                               source.name=NULL, 
+                               w.length.in=NULL, s.irrad.in=NULL, 
+                               unit.in="energy",
+                               scaled=NULL, fill=NA) {  
   # we first check the different possible inputs and convert to
   # two vectors w.length.in and s.irrad.in
   
@@ -43,10 +43,13 @@ calc_source_output <- function(w.length.out,
     if (is.null(source.name)) {
       return(NA) 
     } else {
-      lamp.object.name <- paste(source.name, "data", sep=".")
+      lamp.object.name <- paste(source.name, "dt", sep=".")
       if (!exists(lamp.object.name)) {
-        warning("No data for lamp with name: ", lamp.object.name)
-        return(NA)
+        lamp.object.name <- paste(source.name, "data", sep=".")
+        if (!exists(lamp.object.name)) {
+          warning("No data for lamp with name: ", lamp.object.name)
+          return(NA)
+        }
       }
       lamp.object <- get(lamp.object.name)
       w.length.in <- lamp.object$w.length

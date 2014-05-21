@@ -456,134 +456,20 @@ head(trimmed.zero.sun.data)
 
 %Using real spectral data compared to modelled spectral data for sunlight we show a finally some of the pitfalls, and possible work-arounds, for dealing with noisy measurements, and calculating effective doses from them.
 
+<<detach>>=
+detach(sun.data)
+@
+
 \section{Optimizing performance}
 
-When developing the current version of \PB quite a lot of effort was spent in optimizing performance, as in one of our experiments, we need to process several hundreds of thousands of measured spectra. The defaults should provide good performance in most cases, however, some further improvements are achievable, when a series of different calculations are done on the same spectrum, or when a series of spectra measured at exactly the same wavelengths are used for calculating weighted irradiances or exposures.
+When developing the current version of \PB quite a lot of effort was spent in optimizing performance, as in one of our experiments, we need to process several hundred thousands of measured spectra. The defaults should provide good performance in most cases, however, some further improvements are achievable, when a series of different calculations are done on the same spectrum, or when a series of spectra measured at exactly the same wavelengths are used for calculating weighted irradiances or exposures.
 
 In the case of doing calculations repeatedly on the same spectrum, a small improvement in performance can be achieved by setting the parameter \texttt{check.spectrum=FALSE} for all but the first call to \texttt{irradiance()}, or \texttt{photon\_irradiance()}, or \texttt{energy\_irradiance()}, or the equivalent function for ratios. It is also possible to set this parameter to FALSE in all calls, and do the check beforehand by explicitly calling \texttt{check\_spectrum()}.
 
 In the case of calculating weighted irradiances on many spectra having exactly the same wavelength values, then a significant improvement in the performance can be achieved by setting \texttt{use.cached.mult=TRUE}, as this reuses the multipliers calculated during successive calls based on the same waveband. However, to achieve this increase in performance, the tests to ensure that the wavelength values have not changed, have to be kept to the minimum. Currently only the length of the wavelength array is checked, and the cached values discarded and recalculated if the length changes. For this reason, this is not the default, and when using caching the user is responsible for making sure that the array of wavelengths has not changed between calls.
 
 You can use the package \texttt{microbenchmark} to time the code and find the parts that slow it down. I have used it, and also
-I have used profiling to optimize the code for speed. The examples below show how choosing different values from the defualts
-can speed up calculations when the same calculations are done repeatedly on spectra measured at exactly the same wavelengths, something which is usual when analysing spectra measured with the same instrument. The choice of defaults is based on what is
+I have used profiling to optimize the code for speed. The choice of defaults is based on what is
 best when processing a moderate number of spectra, say less than a few hundreds, as opposed to many thousands.
-
-<<>>=
-library(microbenchmark)
-@
-
-The convenience functions are slightly slower than the generic \texttt{irradiance} function by about 2\% if using the cache.
-
-<<>>=
-res <- microbenchmark(irradiance(w.length, s.e.irrad, PAR(), unit.out="photon", use.cache=TRUE), times=100L, control=list(warmup = 10L))
-res$expr <- ""; res
-res <- microbenchmark(photon_irradiance(w.length, s.e.irrad, PAR(), use.cache=TRUE), times=100L, control=list(warmup = 10L))
-res$expr <- ""; res
-@
-
-Using the cache when repeatedly applying the same unweighted waveband halves the execution time.
-
-<<>>=
-res <- microbenchmark(photon_irradiance(w.length, s.e.irrad, PAR()), times=100L, control=list(warmup = 10L))
-res$expr <- ""; res
-res <- microbenchmark(photon_irradiance(w.length, s.e.irrad, PAR(), use.cache=TRUE), times=100L, control=list(warmup = 10L))
-res$expr <- ""; res
-@
-
-Disabling the checking of the spectrum halves once again the execution time.
-
-<<>>=
-res <- microbenchmark(photon_irradiance(w.length, s.e.irrad, PAR(), use.cache=TRUE), times=100L, control=list(warmup = 10L))
-res$expr <- ""; res
-res <- microbenchmark(photon_irradiance(w.length, s.e.irrad, PAR(), use.cache=TRUE, check.spectrum=FALSE), times=100L, control=list(warmup = 10L))
-res$expr <- ""; res
-@
-
-Saving a waveband object and reusing it, gives a speed up of about 12\% when all other optimizations are also used. The reduction in execution time from the original default values is about 70\%.
-
-<<>>=
-myPAR <- PAR()
-res <- microbenchmark(photon_irradiance(w.length, s.e.irrad, PAR(), use.cache=TRUE, check.spectrum=FALSE), times=100L, control=list(warmup = 10L))
-res$expr <- ""; res
-res <- microbenchmark(photon_irradiance(w.length, s.e.irrad, myPAR, use.cache=TRUE, check.spectrum=FALSE), times=100L, control=list(warmup = 10L))
-res$expr <- ""; res
-@
-
-Inserting `hinges' to reduce integration errors slows down the computations a lot, increasing the execution time 5.6 times. If the spectral data is measured with a small wavelength step, the errors are rather small. By default the use of `hinges' is automatically decided based on the average wavelength step in the spectral data.
-
-<<>>=
-energy_irradiance(w.length, s.e.irrad, PAR(), use.cache=TRUE)
-energy_irradiance(w.length, s.e.irrad, PAR(), use.cache=TRUE, use.hinges=TRUE)
-res <- microbenchmark(energy_irradiance(w.length, s.e.irrad, PAR(), use.cache=TRUE), times=100L, control=list(warmup = 10L))
-res$expr <- ""; res
-res <- microbenchmark(energy_irradiance(w.length, s.e.irrad, PAR(), use.cache=TRUE, use.hinges=TRUE), times=100L, control=list(warmup = 10L))
-res$expr <- ""; res
-@
-
-When using BSWFs the speed up by use of the cache is more important, with CIE the execution time is reduced by 75\%.
-
-<<>>=
-res <- microbenchmark(energy_irradiance(w.length, s.e.irrad, CIE()), times=100L, control=list(warmup = 10L))
-res$expr <- ""; res
-res <- microbenchmark(energy_irradiance(w.length, s.e.irrad, CIE(), use.cache=TRUE), times=100L, control=list(warmup = 10L))
-res$expr <- ""; res
-@
-
-Saving a waveband object that uses weighting and reusing it, gives a speed up of about 25\% when all other optimizations are also used. when using CIE the reduction in execution time from the original default values is about 85\%.
-
-<<>>=
-myCIE <- CIE()
-res <- microbenchmark(photon_irradiance(w.length, s.e.irrad, CIE(), use.cache=TRUE, check.spectrum=FALSE), times=100L, control=list(warmup = 10L))
-res$expr <- ""; res
-res <- microbenchmark(photon_irradiance(w.length, s.e.irrad, myCIE, use.cache=TRUE, check.spectrum=FALSE), times=100L, control=list(warmup = 10L))
-res$expr <- ""; res
-@
-
-Inserting `hinges' to reduce integration errors slows down the computations a lot. If the spectral data is measured with a
-small wavelength step, the errors are rather small. By default the use of `hinges' is automatically decided based on the
-average wavelength step in the spectral data.
-
-<<>>=
-energy_irradiance(w.length, s.e.irrad, CIE(), use.cache=TRUE)
-energy_irradiance(w.length, s.e.irrad, CIE(), use.cache=TRUE, use.hinges=TRUE)
-res <- microbenchmark(energy_irradiance(w.length, s.e.irrad, CIE(), use.cache=TRUE), times=100L, control=list(warmup = 10L))
-res$expr <- ""; res
-res <- microbenchmark(energy_irradiance(w.length, s.e.irrad, CIE(), use.cache=TRUE, use.hinges=TRUE), times=100L, control=list(warmup = 10L))
-res$expr <- ""; res
-@
-
-Using the cache also helps with \texttt{split\_irradiance}.
-
-<<>>=
-res <- microbenchmark(split_photon_irradiance(w.length, s.e.irrad, c(400, 500, 600, 700)), times=100L, control=list(warmup = 10L))
-res$expr <- ""; res
-res <- microbenchmark(split_photon_irradiance(w.length, s.e.irrad, c(400, 500, 600, 700), use.cache=TRUE), times=100L, control=list(warmup = 10L))
-res$expr <- ""; res
-@
-
-Using hinges slows down calculations increasing the execution time by 2.4 times, which is less than if calculating the same three wavebands separately, as all hinges are inserted in one operation.
-
-<<>>=
-res <- microbenchmark(split_photon_irradiance(w.length, s.e.irrad, c(400, 500, 600, 700), use.cache=TRUE), times=100L, control=list(warmup = 10L))
-res$expr <- ""; res
-res <- microbenchmark(split_photon_irradiance(w.length, s.e.irrad, c(400, 500, 600, 700), use.cache=TRUE, use.hinges=TRUE), times=100L, control=list(warmup = 10L))
-res$expr <- ""; res
-@
-
-Disabling checking of the spectrum reduces the execution time, but proportionally not as much as for the \texttt{irradiance} functions, as the spectrum is checked only once independently of the number of bands into which it is split.
-
-<<>>=
-res <- microbenchmark(split_photon_irradiance(w.length, s.e.irrad, c(400, 500, 600, 700), use.cache=TRUE), times=100L, control=list(warmup = 10L))
-res$expr <- ""; res
-res <- microbenchmark(split_photon_irradiance(w.length, s.e.irrad, c(400, 500, 600, 700), use.cache=TRUE, check.spectrum=FALSE), times=100L, control=list(warmup = 10L))
-res$expr <- ""; res
-@
-
-As all the execution times are in microseconds, all the optimizations discussed above are totally irrelevant unless you are planning to repeat similar calculations on thousands of spectra.
-
-<<detach>>=
-detach(sun.data)
-@
 
 \end{document}

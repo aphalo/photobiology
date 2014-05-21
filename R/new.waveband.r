@@ -1,6 +1,6 @@
 #' Build a "waveband" object that can be used as imput when calculating irradiances.
 #'
-#' @usage new_waveband(w.low, w.high, weight=NULL, SWF.e.fun=NULL, SWF.q.fun=NULL, norm=NULL, SWF.norm=NULL, hinges=NULL, wb.name=NULL)
+#' @usage new_waveband(w.low, w.high, weight=NULL, SWF.e.fun=NULL, SWF.q.fun=NULL, norm=NULL, SWF.norm=NULL, hinges=NULL, wb.name=NULL, wb.label=wb.name)
 #' 
 #' @param w.low numeric value, wavelength at the short end of the band (nm)
 #' @param w.high numeric value, wavelength at the long end of the band (nm)
@@ -15,6 +15,7 @@
 #' interpolation, no interpolation is indicated by an empty array (numeric(0)), if NULL then interpolation 
 #' will take place at both ends of the band.
 #' @param wb.name character string giving the name for the waveband defined, default is NULL
+#' @param wb.label character string giving the label of the waveband to be used for ploting, default is wb.name
 #' 
 #' @return a list with components low, high, weight, SWF.fun, norm, hinges, name
 #' @keywords manip misc
@@ -26,12 +27,12 @@
 #' 
 new_waveband <- function(w.low, w.high, 
                          weight=NULL, SWF.e.fun=NULL, SWF.q.fun=NULL, norm=NULL, 
-                         SWF.norm=NULL, hinges=NULL, wb.name=NULL){
+                         SWF.norm=NULL, hinges=NULL, wb.name=NULL, wb.label=wb.name){
   # we make sure that hinges is not NULL, as this would cause problems elsewhere
   # if we are not using a SWF then we do not need to add hinges as we will be anyway interpolating
   # raw irradiances rather than weighted irradiances
   if (is.null(hinges)) {
-    hinges <- c(w.low-0.01,w.low,w.high-0.01,w.high)
+    hinges <- c(w.low-0.001,w.low,w.high-0.001,w.high)
   }
   if (!is.null(weight) && weight!="none") {
     # 
@@ -53,13 +54,13 @@ new_waveband <- function(w.low, w.high,
       warning("weight != NULL, but no SWFs supplied")
       return(NA)
     }
-    if (is.null(wb.name)) wb.name <- paste("range", as.character(w.low), as.character(w.high), "wtd", sep=".")
+    if (is.null(wb.name)) wb.name <- paste("range", as.character(signif(w.low, 4)), as.character(signif(w.high, 4)), "wtd", sep=".")
   } else {
-    if (is.null(wb.name)) wb.name <- paste("range", as.character(w.low), as.character(w.high), sep=".")
+    if (is.null(wb.name)) wb.name <- paste("range", as.character(signif(w.low, 4)), as.character(signif(w.high, 4)), sep=".")
   }
   w_band <- list(low=w.low, high=w.high, 
                  weight=weight, SWF.e.fun=SWF.e.fun, SWF.q.fun=SWF.q.fun, SWF.norm=SWF.norm, 
-                 norm=norm, hinges=hinges, name=wb.name)
-  class(w_band) <- "waveband"
+                 norm=norm, hinges=hinges, name=wb.name, label=wb.label)
+  setattr(w_band, "class", c("waveband", class(w_band))) 
   return(w_band)
 } 

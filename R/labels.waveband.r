@@ -8,5 +8,5 @@
 #' @export
 #' 
 labels.waveband <- function(object, ...) {
-  return(list(label = object$name))
+  return(list(label = object$label, name = object$name))
 }
