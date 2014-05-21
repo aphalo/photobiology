@@ -141,3 +141,37 @@ color.waveband <- function(x) {
              w_length_range2rgb(range(x), sens=ciexyzCC2.data, color.name=paste(labels(x)[1], "CC")))
   return(color)           
 }
+
+
+# normalization -----------------------------------------------------------
+
+#' Normalization of an R object.
+#' 
+#' A generic function that returns the normalization of an R object.
+#' 
+#' @param x an R object
+#' @export normalization.default
+#' 
+normalization <- function(x) UseMethod("normalization", x)
+
+#' Normalization of an R object.
+#' 
+#' A generic function that returns the normalization of an R object.
+#' 
+#' @param x an R object
+#' @export normalization
+#' 
+normalization.default <- function(x) {
+  return(NA)
+}
+
+#' Normalization of a "waveband" object.
+#' 
+#' A function that returns the normalization wavelength of a waveband object.
+#' 
+#' @param x an object of class "waveband"
+#' @export normalization.waveband
+#' 
+normalization.waveband <- function(x) {
+  return(ifelse(is.null(x$norm), NA, x$norm))           
+}

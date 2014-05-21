@@ -4,7 +4,7 @@
 #' wavebands of a radiation spectrum.
 #'
 #' @usage energy_ratio(w.length, s.irrad, w.band.num=NULL, w.band.denom=NULL, unit.in="energy", 
-#' check.spectrum=TRUE, use.cached.mult=FALSE, use.cpp.code=TRUE, use.hinges=NULL)
+#' check.spectrum=TRUE, use.cached.mult=FALSE, use.hinges=NULL)
 #'
 #' @param w.length numeric array of wavelength (nm)
 #' @param s.irrad numeric array of spectral (energy) irradiances (W m-2 nm-1)
@@ -13,7 +13,6 @@
 #' @param unit.in character string with allowed values "energy", and "photon", or its alias "quantum"
 #' @param check.spectrum logical indicating whether to sanity check input data, default is TRUE
 #' @param use.cached.mult logical indicating whether multiplier values should be cached between calls
-#' @param use.cpp.code logical indicating whether to use compiled C++ function for integartion
 #' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
 #' 
 #' @return a single numeric value giving the unitless ratio 
@@ -32,10 +31,10 @@ energy_ratio <- function(w.length, s.irrad,
                          w.band.num=NULL, w.band.denom=NULL, 
                          unit.in="energy",
                          check.spectrum=TRUE, use.cached.mult=FALSE, 
-                         use.cpp.code=TRUE, use.hinges=NULL) {
+                         use.hinges=NULL) {
   return(waveband_ratio(w.length, s.irrad, w.band.num, w.band.denom, 
                         unit.out.num="energy", unit.out.denom="energy", 
                         unit.in=unit.in,
                         check.spectrum=check.spectrum, use.cached.mult=use.cached.mult,
-                        use.cpp.code=use.cpp.code, use.hinges=use.hinges))
+                        use.hinges=use.hinges))
 }
