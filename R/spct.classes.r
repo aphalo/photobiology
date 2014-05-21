@@ -68,36 +68,41 @@ setSourceSpct <- function(x) {
 #'
 '*.generic.spct' <- function(e1, e2) {
   if (is(e1, "filter.spct") && is(e2, "filter.spct")) {
-    z <- oper_spectra(e1$w.length, e2$w.length, e1$Tfr, e2$Tfr, bin.oper=`*`)
+    z <- oper_spectra(e1$w.length, e2$w.length, e1$Tfr, e2$Tfr, bin.oper=`*`, trim="intersection")
     setDT(z)
     setnames(z, 2, "Tfr")
     z[ , Tpc := Tfr * 100]
-    setFilterSpc(z)
+    setFilterSpct(z)
     return(z)
   } else if(is(e1, "filter.spct") && is(e2, "source.spct")) {
-    z1 <- oper_spectra(e1$w.length, e2$w.length, e1$Tfr, e2$s.e.irrad, bin.oper=`*`)
-    z2 <- oper_spectra(e1$w.length, e2$w.length, e1$Tfr, e2$s.q.irrad, bin.oper=`*`)
+    z1 <- oper_spectra(e1$w.length, e2$w.length, e1$Tfr, e2$s.e.irrad, bin.oper=`*`, trim="intersection")
+    z2 <- oper_spectra(e1$w.length, e2$w.length, e1$Tfr, e2$s.q.irrad, bin.oper=`*`, trim="intersection")
     z <- data.table(w.length = z1$w.length, s.e.irrad = z1$s.irrad, s.q.irrad = z2$s.irrad)
-    setSourceSpc(z)
+    setSourceSpct(z)
     return(z)
   } else if(is(e2, "filter.spct") && is(e1, "source.spct")) {    
-    z1 <- oper_spectra(e2$w.length, e1$w.length, e2$Tfr, e1$s.e.irrad, bin.oper=`*`)
-    z2 <- oper_spectra(e2$w.length, e1$w.length, e2$Tfr, e1$s.q.irrad, bin.oper=`*`)
+    z1 <- oper_spectra(e2$w.length, e1$w.length, e2$Tfr, e1$s.e.irrad, bin.oper=`*`, trim="intersection")
+    z2 <- oper_spectra(e2$w.length, e1$w.length, e2$Tfr, e1$s.q.irrad, bin.oper=`*`, trim="intersection")
     z <- data.table(w.length = z1$w.length, s.e.irrad = z1$s.irrad, s.q.irrad = z2$s.irrad)
-    setSourceSpc(z)
+    setSourceSpct(z)
     return(z)
   } else if(is(e1, "source.spct") && is(e2, "source.spct")) {
-    z1 <- oper_spectra(e1$w.length, e2$w.length, e1$s.e.irrad, e2$s.e.irrad, bin.oper=`*`)
-    z2 <- oper_spectra(e1$w.length, e2$w.length, e1$s.e.irrad, e2$s.q.irrad, bin.oper=`*`)
+    z1 <- oper_spectra(e1$w.length, e2$w.length, e1$s.e.irrad, e2$s.e.irrad, bin.oper=`*`, trim="intersection")
+    z2 <- oper_spectra(e1$w.length, e2$w.length, e1$s.e.irrad, e2$s.q.irrad, bin.oper=`*`, trim="intersection")
     z <- data.table(w.length = z1$w.length, s.e.irrad = z1$s.irrad, s.q.irrad = z2$s.irrad)
-    setSourceSpc(z)
+    setSourceSpct(z)
     return(z)
   } else if(is(e1, "filter.spct") && is.numeric(e2)) {
     z <- copy(e1)
     z$Tfr <- z$Tfr * e2
     z$Tpc <- z$Tfr * 100
     return(z)
-  } else {                                               
+  } else if(is(e1, "source.spct") && is.numeric(e2)) {
+    z <- copy(e1)
+    z$s.e.irrad <- z$s.e.irrad * e2
+    z$s.q.irrad <- NA
+    return(z)
+  }else {                                               
     return(NA)
   }
 }  
@@ -114,34 +119,39 @@ setSourceSpct <- function(x) {
 #'
 '/.generic.spct' <- function(e1, e2) {
   if (is(e1, "filter.spct") && is(e2, "filter.spct")) {
-    z <- oper_spectra(e1$w.length, e2$w.length, e1$Tfr, e2$Tfr, bin.oper=`/`)
+    z <- oper_spectra(e1$w.length, e2$w.length, e1$Tfr, e2$Tfr, bin.oper=`/`, trim="intersection")
     setDT(z)
     setnames(z, 2, "Tfr")
     z[ , Tpc := Tfr * 100]
-    setFilterSpc(z)
+    setFilterSpct(z)
     return(z)
   } else if(is(e1, "filter.spct") && is(e2, "source.spct")) {
-    z1 <- oper_spectra(e1$w.length, e2$w.length, e1$Tfr, e2$s.e.irrad, bin.oper=`/`)
-    z2 <- oper_spectra(e1$w.length, e2$w.length, e1$Tfr, e2$s.q.irrad, bin.oper=`/`)
+    z1 <- oper_spectra(e1$w.length, e2$w.length, e1$Tfr, e2$s.e.irrad, bin.oper=`/`, trim="intersection")
+    z2 <- oper_spectra(e1$w.length, e2$w.length, e1$Tfr, e2$s.q.irrad, bin.oper=`/`, trim="intersection")
     z <- data.table(w.length = z1$w.length, s.e.irrad = z1$s.irrad, s.q.irrad = z2$s.irrad)
-    setSourceSpc(z)
+    setSourceSpct(z)
     return(z)
   } else if(is(e2, "filter.spct") && is(e1, "source.spct")) {    
-    z1 <- oper_spectra(e2$w.length, e1$w.length, e2$Tfr, e1$s.e.irrad, bin.oper=`/`)
-    z2 <- oper_spectra(e2$w.length, e1$w.length, e2$Tfr, e1$s.q.irrad, bin.oper=`/`)
+    z1 <- oper_spectra(e2$w.length, e1$w.length, e2$Tfr, e1$s.e.irrad, bin.oper=`/`, trim="intersection")
+    z2 <- oper_spectra(e2$w.length, e1$w.length, e2$Tfr, e1$s.q.irrad, bin.oper=`/`, trim="intersection")
     z <- data.table(w.length = z1$w.length, s.e.irrad = z1$s.irrad, s.q.irrad = z2$s.irrad)
-    setSourceSpc(z)
+    setSourceSpct(z)
     return(z)
   } else if(is(e1, "source.spct") && is(e2, "source.spct")) {
-    z1 <- oper_spectra(e1$w.length, e2$w.length, e1$s.e.irrad, e2$s.e.irrad, bin.oper=`/`)
-    z2 <- oper_spectra(e1$w.length, e2$w.length, e1$s.e.irrad, e2$s.q.irrad, bin.oper=`/`)
+    z1 <- oper_spectra(e1$w.length, e2$w.length, e1$s.e.irrad, e2$s.e.irrad, bin.oper=`/`, trim="intersection")
+    z2 <- oper_spectra(e1$w.length, e2$w.length, e1$s.e.irrad, e2$s.q.irrad, bin.oper=`/`, trim="intersection")
     z <- data.table(w.length = z1$w.length, s.e.irrad = z1$s.irrad, s.q.irrad = z2$s.irrad)
-    setSourceSpc(z)
+    setSourceSpct(z)
     return(z)
   } else if(is(e1, "filter.spct") && is.numeric(e2)) {
     z <- copy(e1)
     z$Tfr <- z$Tfr / e2
     z$Tpc <- z$Tfr * 100
+    return(z)
+  } else if(is(e1, "source.spct") && is.numeric(e2)) {
+    z <- copy(e1)
+    z$s.e.irrad <- z$s.e.irrad / e2
+    z$s.q.irrad <- NA
     return(z)
   } else {                                               
     return(NA)
@@ -160,34 +170,39 @@ setSourceSpct <- function(x) {
 #'
 '+.generic.spct' <- function(e1, e2) {
   if (is(e1, "filter.spct") && is(e2, "filter.spct")) {
-    z <- oper_spectra(e1$w.length, e2$w.length, e1$Tfr, e2$Tfr, bin.oper=`+`)
+    z <- oper_spectra(e1$w.length, e2$w.length, e1$Tfr, e2$Tfr, bin.oper=`+`, trim="intersection")
     setDT(z)
     setnames(z, 2, "Tfr")
     z[ , Tpc := Tfr * 100]
-    setFilterSpc(z)
+    setFilterSpct(z)
     return(z)
   } else if(is(e1, "filter.spct") && is(e2, "source.spct")) {
-    z1 <- oper_spectra(e1$w.length, e2$w.length, e1$Tfr, e2$s.e.irrad, bin.oper=`+`)
-    z2 <- oper_spectra(e1$w.length, e2$w.length, e1$Tfr, e2$s.q.irrad, bin.oper=`+`)
+    z1 <- oper_spectra(e1$w.length, e2$w.length, e1$Tfr, e2$s.e.irrad, bin.oper=`+`, trim="intersection")
+    z2 <- oper_spectra(e1$w.length, e2$w.length, e1$Tfr, e2$s.q.irrad, bin.oper=`+`, trim="intersection")
     z <- data.table(w.length = z1$w.length, s.e.irrad = z1$s.irrad, s.q.irrad = z2$s.irrad)
-    setSourceSpc(z)
+    setSourceSpct(z)
     return(z)
   } else if(is(e2, "filter.spct") && is(e1, "source.spct")) {    
-    z1 <- oper_spectra(e2$w.length, e1$w.length, e2$Tfr, e1$s.e.irrad, bin.oper=`+`)
-    z2 <- oper_spectra(e2$w.length, e1$w.length, e2$Tfr, e1$s.q.irrad, bin.oper=`+`)
+    z1 <- oper_spectra(e2$w.length, e1$w.length, e2$Tfr, e1$s.e.irrad, bin.oper=`+`, trim="intersection")
+    z2 <- oper_spectra(e2$w.length, e1$w.length, e2$Tfr, e1$s.q.irrad, bin.oper=`+`, trim="intersection")
     z <- data.table(w.length = z1$w.length, s.e.irrad = z1$s.irrad, s.q.irrad = z2$s.irrad)
-    setSourceSpc(z)
+    setSourceSpct(z)
     return(z)
   } else if(is(e1, "source.spct") && is(e2, "source.spct")) {
-    z1 <- oper_spectra(e1$w.length, e2$w.length, e1$s.e.irrad, e2$s.e.irrad, bin.oper=`+`)
-    z2 <- oper_spectra(e1$w.length, e2$w.length, e1$s.e.irrad, e2$s.q.irrad, bin.oper=`+`)
+    z1 <- oper_spectra(e1$w.length, e2$w.length, e1$s.e.irrad, e2$s.e.irrad, bin.oper=`+`, trim="intersection")
+    z2 <- oper_spectra(e1$w.length, e2$w.length, e1$s.e.irrad, e2$s.q.irrad, bin.oper=`+`, trim="intersection")
     z <- data.table(w.length = z1$w.length, s.e.irrad = z1$s.irrad, s.q.irrad = z2$s.irrad)
-    setSourceSpc(z)
+    setSourceSpct(z)
     return(z)
   } else if(is(e1, "filter.spct") && is.numeric(e2)) {
     z <- copy(e1)
     z$Tfr <- z$Tfr + e2
     z$Tpc <- z$Tfr * 100
+    return(z)
+  } else if(is(e1, "source.spct") && is.numeric(e2)) {
+    z <- copy(e1)
+    z$s.e.irrad <- z$s.e.irrad + e2
+    z$s.q.irrad <- NA
     return(z)
   } else {                                               
     return(NA)
@@ -206,34 +221,39 @@ setSourceSpct <- function(x) {
 #'
 '-.generic.spct' <- function(e1, e2) {
   if (is(e1, "filter.spct") && is(e2, "filter.spct")) {
-    z <- oper_spectra(e1$w.length, e2$w.length, e1$Tfr, e2$Tfr, bin.oper=`-`)
+    z <- oper_spectra(e1$w.length, e2$w.length, e1$Tfr, e2$Tfr, bin.oper=`-`, trim="intersection")
     setDT(z)
     setnames(z, 2, "Tfr")
     z[ , Tpc := Tfr * 100]
-    setFilterSpc(z)
+    setFilterSpct(z)
     return(z)
   } else if(is(e1, "filter.spct") && is(e2, "source.spct")) {
-    z1 <- oper_spectra(e1$w.length, e2$w.length, e1$Tfr, e2$s.e.irrad, bin.oper=`-`)
-    z2 <- oper_spectra(e1$w.length, e2$w.length, e1$Tfr, e2$s.q.irrad, bin.oper=`-`)
+    z1 <- oper_spectra(e1$w.length, e2$w.length, e1$Tfr, e2$s.e.irrad, bin.oper=`-`, trim="intersection")
+    z2 <- oper_spectra(e1$w.length, e2$w.length, e1$Tfr, e2$s.q.irrad, bin.oper=`-`, trim="intersection")
     z <- data.table(w.length = z1$w.length, s.e.irrad = z1$s.irrad, s.q.irrad = z2$s.irrad)
-    setSourceSpc(z)
+    setSourceSpct(z)
     return(z)
   } else if(is(e2, "filter.spct") && is(e1, "source.spct")) {    
-    z1 <- oper_spectra(e2$w.length, e1$w.length, e2$Tfr, e1$s.e.irrad, bin.oper=`-`)
-    z2 <- oper_spectra(e2$w.length, e1$w.length, e2$Tfr, e1$s.q.irrad, bin.oper=`-`)
+    z1 <- oper_spectra(e2$w.length, e1$w.length, e2$Tfr, e1$s.e.irrad, bin.oper=`-`, trim="intersection")
+    z2 <- oper_spectra(e2$w.length, e1$w.length, e2$Tfr, e1$s.q.irrad, bin.oper=`-`, trim="intersection")
     z <- data.table(w.length = z1$w.length, s.e.irrad = z1$s.irrad, s.q.irrad = z2$s.irrad)
-    setSourceSpc(z)
+    setSourceSpct(z)
     return(z)
   } else if(is(e1, "source.spct") && is(e2, "source.spct")) {
-    z1 <- oper_spectra(e1$w.length, e2$w.length, e1$s.e.irrad, e2$s.e.irrad, bin.oper=`-`)
-    z2 <- oper_spectra(e1$w.length, e2$w.length, e1$s.e.irrad, e2$s.q.irrad, bin.oper=`-`)
+    z1 <- oper_spectra(e1$w.length, e2$w.length, e1$s.e.irrad, e2$s.e.irrad, bin.oper=`-`, trim="intersection")
+    z2 <- oper_spectra(e1$w.length, e2$w.length, e1$s.e.irrad, e2$s.q.irrad, bin.oper=`-`, trim="intersection")
     z <- data.table(w.length = z1$w.length, s.e.irrad = z1$s.irrad, s.q.irrad = z2$s.irrad)
-    setSourceSpc(z)
+    setSourceSpct(z)
     return(z)
   } else if(is(e1, "filter.spct") && is.numeric(e2)) {
     z <- copy(e1)
     z$Tfr <- z$Tfr - e2
     z$Tpc <- z$Tfr * 100
+    return(z)
+  } else if(is(e1, "source.spct") && is.numeric(e2)) {
+    z <- copy(e1)
+    z$s.e.irrad <- z$s.e.irrad - e2
+    z$s.q.irrad <- NA
     return(z)
   } else {                                               
     return(NA)
