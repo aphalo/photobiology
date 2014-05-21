@@ -75,5 +75,5 @@ oper_spectra <- function(w.length1, w.length2=NULL, s.irrad1, s.irrad2, trim="un
   s.irrad1.int <- interpolate_spectrum(w.length1, s.irrad1, w.length, fill.value=0.0)
   s.irrad2.int <- interpolate_spectrum(w.length2, s.irrad2, w.length, fill.value=0.0)
   s.irrad.result <- bin.oper(s.irrad1.int, s.irrad2.int, ...)
-  return(data.table(w.length, s.irrad=s.irrad.result))
+  return(data.frame(w.length, s.irrad=s.irrad.result))
 }

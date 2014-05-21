@@ -4,7 +4,7 @@
 #' waveband of a radiation spectrum.
 #'
 #' @usage irradiance(w.length, s.irrad, w.band=NULL, unit.out=NULL, unit.in="energy", 
-#' check.spectrum=TRUE, use.cached.mult=FALSE, use.hinges=NULL)
+#' check.spectrum=TRUE, use.cached.mult=FALSE, use.cpp.code=TRUE, use.hinges=NULL)
 #' 
 #' @param w.length numeric array of wavelength (nm)
 #' @param s.irrad numeric array of spectral (energy) irradiances (W m-2 nm-1)
@@ -13,6 +13,7 @@
 #' @param unit.in character string with allowed values "energy", and "photon", or its alias "quantum"
 #' @param check.spectrum logical indicating whether to sanity check input data, default is TRUE
 #' @param use.cached.mult logical indicating whether multiplier values should be cached between calls
+#' @param use.cpp.code logical indicating whether to use compiled C++ function for integration
 #' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
 #' 
 #' @return a single numeric value with no change in scale factor: [W m-2 nm-1] -> [mol s-1 m-2]
@@ -33,7 +34,7 @@
 
 irradiance <- 
   function(w.length, s.irrad, w.band=NULL, unit.out=NULL, unit.in="energy", 
-           check.spectrum=TRUE, use.cached.mult=FALSE,
+           check.spectrum=TRUE, use.cached.mult=FALSE, use.cpp.code=TRUE,
            use.hinges=NULL){
     # what output? seems safer to not have a default here
     if (is.null(unit.out)){
@@ -48,24 +49,16 @@ irradiance <-
     } 
     # if the waveband is undefined then use all data
     if (is.null(w.band)){
-#      w.band <- new_waveband(min(w.length), max(w.length))  
-      w.band <- new_waveband(min(w.length), max(w.length) + 0.001)  
-      # we need to add a small number as the test is "<"
-      # this affects signifcantly the result only when no hinges are used
+      w.band <- new_waveband(min(w.length),max(w.length))
     }
-    if (is(w.band, "waveband")) {
-      # if the argument is a single w.band, we enclose it in a list
-      # so that the for loop works as expected.This is a bit of a 
-      # cludge but let's us avoid treating it as a special case
-      w.band <- list(w.band)
-    }
+    if (class(w.band) == "waveband") w.band <- list(w.band)
     # if the w.band includes 'hinges' we insert them
     # choose whether to use hinges or not
     # if the user has specified its value, we leave it alone
     # but if it was not requested, we decide whether to use
     # it or not based of the wavelength resolution of the
     # spectrum. This will produce small errors for high
-    # spectral resolution data, and speed up the calculations
+    # spectral resulution data, and speed up the calculations
     # a lot in such cases
     if (is.null(use.hinges)) {
       length.wl <- length(w.length)
@@ -77,7 +70,7 @@ irradiance <-
     if (use.hinges) {
       all.hinges <- NULL
       for (wb in w.band) {
-        if (!is.null(wb$hinges) & length(wb$hinges)>0) {
+        if (!is.null(wb$hinges) & length(wb$hinges>0)) {
           all.hinges <- c(all.hinges, wb$hinges)
         }
       }

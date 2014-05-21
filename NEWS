@@ -1,38 +1,7 @@
-photobiology 0.3.0
-===================
-************ MAJOR UPDATE ****************
-There are some backward incompatibilities
-
-Saved wavebands will give an error, but any
-code used to create them should still work
-unchanged.
-
-If you used the parameter use.cpp.code in
-your code, you will just need to delete
-the corresponding arguments. C++ code is
-always used.
-
-I hope I haven't broken anything else but
-I have made quite major internal changes.
-
-At the moment the code is a bit slower than
-before. I will most likely be able to cure
-this at a later stage.
-******************************************
-
-The package now depends on data.table which is now imported. As MayaCalc already returns data.table objects, hopefully this will help optimize performance and memory use. Users should be aware that data.tables are copied by reference, and a true copy is needed, function copy should be used.
-
-I am making the code more object (S3) oriented. Three new classes are exported "filter.spct", "source.spct", and "generic.spct", and three new functions were added to set the class of objects to these classes. If the object is not already a data.table, it is setDT. This allows me to create a more user-friendly interface by overlaoding operators. Now the four basic operations work on spectra, and one can also use these same operations between a spectrum a numerical vector of legnth one or longer. This is my attempt to make calcualtions intuitive, but do not expect them to be fast.
-
-Added a label field to waveband object to store an optional label for plotting, which by default is set equal to the name of the waveband. labels.waveband was changed to return in field label this label instead of the name, and the name is returned in the field name. Also added a new function normalization.waveband that returns the normalization wavelength.
-
-calc_filter_multipliers now accepts both a filter name as a character string or an object of class "filter.spct" as argument to parameter filter (which was renamed from filter.name). In addition the function acquired a pc.in logical parameter, an the pc parameter was renamed pc.out. This allows any combination of input and output as percentages or fractions. 
-
 photobiology 0.2.25
 ===================
 
 Modified calc_filter_multipliers to work with photobiologyFilters 0.1.8 and later
-Both calc_filter_multipliers and calc_source_multipliers now find by name both objects with ending .dt and .data. If both exist .dt is used.
 
 photobiology 0.2.24
 ===================
