@@ -16,6 +16,7 @@
 #' 
 #' @docType data
 #' @keywords datasets
-#' @format A data frame with 508 rows and 3 variables
-#' @name sun.data
+#' @format A data frame compatible "source.spct" object with 508 rows and 3 variables
+#' @name sun.dt
+#' @aliases sun.data
 NULL
