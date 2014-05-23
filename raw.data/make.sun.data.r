@@ -10,6 +10,7 @@ setwd("../data")
 sun.dt <- sun.midday.data
 setSourceSpct(sun.dt)
 sun.data <- sun.dt
-save(sun.dt, sun.data, file="sun.dt.rda")
+save(sun.dt, file="sun.dt.rda")
+save(sun.data, file="sun.data.rda")
 rm(sun.dt, sun.data, sun.midday.data)
 setwd("..")
