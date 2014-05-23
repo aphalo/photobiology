@@ -190,6 +190,7 @@ spread(PAR())
 min(PAR())
 max(PAR())
 midpoint(PAR()) # gives wavelength at center
+normalization(PAR())
 color(PAR()) # equivalent RGB color definitions
 labels(PAR())
 
@@ -197,12 +198,15 @@ CIE()
 str(CIE())
 labels(CIE())
 labels(CIE(300))
+normalization(CIE())
+normalization(CIE(300))
 
 labels(UVB())
 labels(UVB("medical"))
 labels(UVB("ISO"))
 labels(new_waveband(100, 200))
-labels(new_waveband(100, 200, wb.name="ANY STRING"))
+labels(new_waveband(100, 200, wb.name="ANY NAME"))
+labels(new_waveband(100, 200, wb.name="ANY NAME", wb.label="ANY LABEL"))
 @
 
 Now the example calculations.
