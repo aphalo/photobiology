@@ -7,7 +7,7 @@ sun.midday.data$s.e.irrad <- sun.midday.data$s.e.irrad / 1e3
 sun.midday.data$s.q.irrad <- with(sun.midday.data, as_quantum_mol(w.length, s.e.irrad))
 setwd("../data")
 
-sun.dt <- sun.midday.data
+sun.dt <- data.table(sun.midday.data)
 setSourceSpct(sun.dt)
 sun.data <- sun.dt
 save(sun.dt, file="sun.dt.rda")
