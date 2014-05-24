@@ -367,6 +367,29 @@ setSourceSpct <- function(x) {
   }
 }  
 
+#' "exp" function for spectra
+#' 
+#' Exponential function for spectra.
+#' 
+#' @param x an object of class "generic.spct"
+#' @export
+#'
+'exp.generic.spct' <- function(x) {
+  if(is(x, "filter.spct")) {
+    z <- copy(x)
+    z$Tfr <- exp(z$Tfr)
+    z$Tpc <- z$Tfr * 100
+    return(z)
+  } else if(is(x, "source.spct")) {
+    z <- copy(x)
+    z$s.e.irrad <- exp(z$s.e.irrad)
+    z$s.q.irrad <- exp(z$s.q.irrad)
+    return(z)
+  } else {                                               
+    return(NA)
+  }
+}
+
 #' "range" function for spectra
 #' 
 #' Range function for spectra, returning wavelength range.
@@ -431,3 +454,101 @@ labels.generic.spct <- function(object, ...) {
   return(NA)
 }
 
+
+# transmittance and absorbance --------------------------------------------
+
+
+# A2T ---------------------------------------------------------------------
+
+
+#' Generic function
+#' 
+#' Function that coverts absorbance into transmittance (fraction).
+#' 
+#' @param x an R object
+#' @export A2T
+A2T <- function(x) UseMethod("A2T")
+
+#' Default for generic function
+#' 
+#' Function that coverts absorbance into transmittance (fraction).
+#' 
+#' @param x an R object
+#' @export A2T.default
+A2T.default <- function(x) {
+  return(10^-x)
+}
+
+#' "gneric.spct" function
+#' 
+#' Function that coverts absorbance into transmittance (fraction).
+#' 
+#' @param x a "generic.spct"  object
+#' @export A2T.generic.spct
+#' 
+A2T.generic.spct <- function(x) {
+  if (is(x, "filter.spct")) {
+    if (byref) {
+      z <- x
+    } else {
+      z <- copy(x)
+    }
+    if (exists("A", z, inherits=FALSE)) {
+      z[ , Tfr := 10^-A]
+      z[ , Tpc := Tfr * 100]
+    } else {
+      z[ , Tfr := NA]
+      z[ , Tpc := NA]      
+    }
+    return(z)
+  } else {
+    return(NA)
+  }
+}
+
+
+# T2A ---------------------------------------------------------------------
+
+
+#' Generic function
+#' 
+#' Function that coverts transmittance into absorbance (fraction).
+#' 
+#' @param x an R object
+#' @export T2A
+T2A <- function(x) UseMethod("T2A", x)
+
+#' Default for generic function
+#' 
+#' Function that coverts transmittance into absorbance (fraction).
+#' 
+#' @param x an R object
+#' @export T2A.default
+T2A.default <- function(x) {
+  return(-log10(x))
+}
+
+#' "gneric.spct" function
+#' 
+#' Function that coverts transmittance into absorbance (fraction).
+#' 
+#' @param x a "generic.spct"  object
+#' @export T2A.generic.spct
+#' 
+T2A.generic.spct <- function(x) {
+  if (is(x, "filter.spct")) {
+    if (byref) {
+      z <- x
+    } else {
+      z <- copy(x)
+    }
+    if (exists("Tfr", z, inherits=FALSE)) {
+      z[ , A := -log10(Tfr)]
+    } else {
+      z[ , A := NA]
+    }
+    return(z)
+  } else {
+    return(NA)
+  }
+}
