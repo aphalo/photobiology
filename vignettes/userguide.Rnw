@@ -14,6 +14,7 @@
 \usepackage{booktabs}
 \usepackage{breakurl}
 \usepackage{xspace}
+\usepackage{framed}
 
 \newcommand{\PB}{\textsf{photobiology}\xspace}
 \newcommand{\PBVIS}{\textsf{photobiologyVIS}\xspace}
@@ -55,6 +56,10 @@ my_version <- packageVersion("photobiology")
 \maketitle
 
 \section{Introduction}
+
+\begin{framed}
+This user guide is out of date. What is included is correct, but new functionality is not yet described.
+\end{framed}
 
 We have developed a set of packages to
 facilitate the calculation of many different quantities that can be derived from spectral irradiance data. The base package in this suite is called \PB, and is the package described here. There other specialized packages for quantification of ultraviolet radiation (\PBUV), visible radiation (\PBVIS), or based on Phytochrome (\PBPHY), Cryptochrome (\PBCRY) (both photoreceptors present in plants), and 
