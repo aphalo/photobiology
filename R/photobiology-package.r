@@ -12,8 +12,8 @@
 #' \tabular{ll}{
 #' Package: \tab photobiology\cr
 #' Type: \tab Package\cr
-#' Version: \tab 0.3.0\cr
-#' Date: \tab 2014-05-20\cr
+#' Version: \tab 0.3.1\cr
+#' Date: \tab 2014-05-30\cr
 #' License: \tab GPL (>= 2.0)\cr
 #' }
 #' The most important functions in the package are \code{\link{energy_irradiance}}, 
@@ -33,7 +33,7 @@
 #' @note When released, this package will replace the package UVcalc. 
 #' 
 #' @importFrom Rcpp evalCpp
-#' @import data.table
+#' @import data.table lubridate
 #' 
 #' @examples
 #' data(sun.data)

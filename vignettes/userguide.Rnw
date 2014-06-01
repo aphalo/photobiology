@@ -305,6 +305,23 @@ plot(weighted.s.e.irrad/max(weighted.s.e.irrad) ~ w.length, type="l", col="red",
 lines(s.e.irrad/max(s.e.irrad) ~ w.length, col="black")
 @
 
+\section{Position of the sun in the sky}
+
+In photobiology research we sometimed need to calculate the position on the sun at arbitrary locations and positions. The function \code{sun\_angles} returns the azimuth in degrees eastwards, altitude in degrees above the horizon, solar disk diameter in degrees and sun to earth distance in astronomical units. The time should be POSIXct vector, possibly of length one, and it is easiest to use package \code{lubridate} for working with time and dates.
+
+<<>>=
+sun_angles(now(), lat=34, lon=0)
+sun_angles(ymd_hms("2014-01-01 0:0:0", tz="UTC"))
+@
+
+\section{Calculating times of sunrise and sunset}
+
+<<>>=
+day_night()
+day_night(ymd("2014-05-30", tz = "UTC"), lat=30, lon=0)
+day_night(ymd("2014-05-30", tz = "UTC"), lat=30, lon=0, twilight="civil")
+@
+
 \section{Calculating equivalent RGB colous for display}
 
 Two functions allow calculation of simulated colour of light sources as R colour definitions. Three different functions are avaialble, one for monochromatic light taking as argument wavelength values, and one for polychromatic light taking as argument spectral energy irradiances and the corresponding wave length values. The third function can be used to calculate a representative RGB colour for a band of the spectrum represeted as a range of wavelength, based on the assumption of a flat energy irradiance accreoss the range.
