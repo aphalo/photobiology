@@ -53,7 +53,7 @@ trim_tails <- function(w.length, s.irrad, low.limit=min(w.length), high.limit=ma
       low.end <- low.limit
     } else {
       warning("Ignoring low.limit as it is too low.")
-      low.limit <- min(w.length)
+      low.limit <- low.end
     }
   }
   
@@ -69,7 +69,7 @@ trim_tails <- function(w.length, s.irrad, low.limit=min(w.length), high.limit=ma
       high.end <- high.limit
     } else {
       warning("Ignoring high.limit as it is too high.")
-      high.limit <- max(w.length)
+      high.limit <- high.end
     }
   }
   

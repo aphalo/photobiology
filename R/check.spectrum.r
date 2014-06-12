@@ -31,7 +31,7 @@ check_spectrum <- function(w.length, s.irrad) {
     return(FALSE)
   }
   # warn if w.length values are not reasonable
-  if (min(w.length < 200.0) || max(w.length > 1000.0)){
+  if (min(w.length < 200.0) || max(w.length > 6000.0)){
     warning("Warning: wavelength values should be in nm\n data contains values < 200 nm and/or > 1000 nm")
   }
   # test average wavelength delta
