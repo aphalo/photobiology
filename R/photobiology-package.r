@@ -33,66 +33,13 @@
 #' @note When released, this package will replace the package UVcalc.
 #'
 #' @importFrom Rcpp evalCpp
-#' @importFrom data.table
-#'            %between%
-#'            %chin%
-#'            %like%
-#'            :=
-#'            address
-#'            all.equal
-#'            all.equal.data.table
-#'            alloc.col
-#'            as.data.table
-#'            between
-#'            chgroup
-#'            chmatch
-#'            chorder
-#'            CJ
-#'            class:data.table
-#'            copy
-#'            data.table
-#'            data.table-class
-#'            dcast
-#'            dcast.data.table
-#'            duplicated
-#'            duplicated.data.table
-#'            fread
-#'            haskey
-#'            is.data.table
-#'            is.na.data.table
-#'            J
-#'            key
-#'            key<-
-#'            last
-#'            like
-#'            melt
-#'            melt.data.table
-#'            merge
-#'            merge.data.table
-#'            na.omit.data.table
-#'            Ops.data.table
-#'            rbindlist
-#'            set
-#'            setattr
-#'            setcolorder
-#'            setDT
-#'            setkey
-#'            setkeyv
-#'            setnames
-#'            SJ
-#'            subset
-#'            subset.data.table
-#'            tables
-#'            test.data.table.
-#'            timetaken
-#'            transform
-#'            transform.data.table
-#'            truelength
-#'            unique
-#'            unique.data.table
-#'            within
-#'            within.data.table
-#'            [.data.table
+#' @importFrom data.table data.table tables setkey setkeyv key "key<-" haskey CJ SJ copy
+#' @importFrom data.table as.data.table is.data.table test.data.table last like "%like%" between "%between%"
+#' @importFrom data.table truelength alloc.col ":="
+#' @importFrom data.table setattr setnames setcolorder set setDT
+#' @importFrom data.table rbindlist
+#' @importFrom data.table chmatch "%chin%" chorder chgroup
+#' @importClassesFrom data.table data.table
 #'
 #' @import lubridate
 #'

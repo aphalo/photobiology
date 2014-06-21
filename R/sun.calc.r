@@ -1,16 +1,16 @@
 #' Calculate solar angles
 #'
 #' This function returns the solar angles for a given time and location.
-#' 
+#'
 #' @usage sun_angles(t = now(), lon = 0, lat = 0, use_refraction = FALSE)
 #'
 #' @param t array of POSIXct times, any valid TZ is allowed, default is current time
 #' @param lon numeric array of longitudes (degrees)
 #' @param lat numeric array of latitudes (degrees)
 #' @param use_refraction logical indicating whether to correct for difraction in the atmosphere
-#' 
+#'
 #' @return a list with components time in same TZ as input, azimuth, elevation, diameter, and distance.
-#' 
+#'
 #' @keywords manip misc
 #' @export
 #' @examples
@@ -18,7 +18,7 @@
 #' sun_angles()
 #' sun_angles(ymd_hms("2014-09-23 12:00:00"))
 #' sun_angles(ymd_hms("2014-09-23 12:00:00"), lat=60, lon=0)
-#' 
+#'
 sun_angles <- function(t = now(), lon = 0, lat = 0, use_refraction = FALSE)
 {
   if (!is.POSIXct(t)) {
@@ -67,7 +67,7 @@ sun_angles <- function(t = now(), lon = 0, lat = 0, use_refraction = FALSE)
   }
   delta <- year - 1949
   leap <- delta%/%4
-  jd <- 32916.5 + (delta * 365 + leap + day) + hour / 24 
+  jd <- 32916.5 + (delta * 365 + leap + day) + hour / 24
   jd <- jd + ifelse(0 == (year%%100) & 0 != (year%%400), 1,
                     0)
   time <- jd - 51545
@@ -120,9 +120,9 @@ sun_angles <- function(t = now(), lon = 0, lat = 0, use_refraction = FALSE)
     stop("output el out of range")
   if (any(az < 0) || any(az > 360))
     stop("output az out of range")
-  return(list(time = with_tz(t, tz), 
-              azimuth = az, 
-              elevation = el, 
+  return(list(time = with_tz(t, tz),
+              azimuth = az,
+              elevation = el,
               diameter = soldia,
               distance = soldst))
 }
@@ -130,7 +130,7 @@ sun_angles <- function(t = now(), lon = 0, lat = 0, use_refraction = FALSE)
 #' Calculate time of sunrise and sunset
 #'
 #' This function returns the times of sunrise and sunset for a given loaction and date.
-#' 
+#'
 #' @usage day_night(t = today(), lon = 0, lat = 0, twilight = "none", tz=NULL)
 #'
 #' @param t array of POSIXct times, any valid TZ is allowed, default is current date
@@ -138,10 +138,10 @@ sun_angles <- function(t = now(), lon = 0, lat = 0, use_refraction = FALSE)
 #' @param lat numeric array of latitudes (degrees)
 #' @param twilight character string, one of "none", "civil", "nautical", "astronomical"
 #' @param tz character string incading time zone to be used in output
-#' 
-#' @return a list with fields sunrise time, sunset time, day length, night length. 
+#'
+#' @return a list with fields sunrise time, sunset time, day length, night length.
 #' The times are returned in the same TZ as used for the date.
-#' 
+#'
 #' @keywords manip misc
 #' @export
 #' @examples
@@ -149,7 +149,7 @@ sun_angles <- function(t = now(), lon = 0, lat = 0, use_refraction = FALSE)
 #' day_night()
 #' day_night(ymd("2014-05-30"), lat=30, lon=0)
 #' day_night(ymd("2014-05-30"), lat=30, lon=0, twilight="civil")
-#' 
+#'
 
 day_night <- function(t = today(), lon = 0, lat = 0, twilight = "none", tz=NULL) {
   if (twilight=="none") {
@@ -209,10 +209,11 @@ day_night <- function(t = today(), lon = 0, lat = 0, twilight = "none", tz=NULL)
   } else {
     daylength <- set_time - rise_time
   }
-  return(list(sunrise = rise_time,
-              noon = noon_time,
-              sunset = set_time,
-              daylength = daylength,
+  return(list(day         = t,
+              sunrise     = rise_time,
+              noon        = noon_time,
+              sunset      = set_time,
+              daylength   = daylength,
               nightlength = 24 - daylength
   ))
 }
