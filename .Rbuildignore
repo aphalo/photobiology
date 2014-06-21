@@ -1,4 +1,5 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
-^raw\.data/*
 ^\.git/*
+^raw\.data/*
+^test/*

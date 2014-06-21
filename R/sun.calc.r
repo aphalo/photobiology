@@ -21,6 +21,10 @@
 #' 
 sun_angles <- function(t = now(), lon = 0, lat = 0, use_refraction = FALSE)
 {
+  if (!is.POSIXct(t)) {
+    warning("Argument t is not a POSIXct time.")
+    return(NA)
+  }
   tz <- tz(t)
   t <- with_tz(t, "UTC")
   nt <- length(t)
@@ -42,7 +46,7 @@ sun_angles <- function(t = now(), lon = 0, lat = 0, use_refraction = FALSE)
   day <- yday(t)
   if (any(day < 1) || any(day > 366))
     stop("day is not in range 1 to 366")
-  hour <- hour(t)
+  hour <- hour(t) + minute(t) / 60 + second(t) / 3600
   if (any(hour < -13) || any(hour > 36))
     stop("hour outside range -13 to 36")
   if (any(lat < -90)) {
@@ -63,7 +67,7 @@ sun_angles <- function(t = now(), lon = 0, lat = 0, use_refraction = FALSE)
   }
   delta <- year - 1949
   leap <- delta%/%4
-  jd <- 32916.5 + (delta * 365 + leap + day) + hour/24
+  jd <- 32916.5 + (delta * 365 + leap + day) + hour / 24 
   jd <- jd + ifelse(0 == (year%%100) & 0 != (year%%400), 1,
                     0)
   time <- jd - 51545
@@ -116,8 +120,11 @@ sun_angles <- function(t = now(), lon = 0, lat = 0, use_refraction = FALSE)
     stop("output el out of range")
   if (any(az < 0) || any(az > 360))
     stop("output az out of range")
-  list(time = with_tz(t, tz), azimuth = az, elevation = el, diameter = soldia,
-       distance = soldst)
+  return(list(time = with_tz(t, tz), 
+              azimuth = az, 
+              elevation = el, 
+              diameter = soldia,
+              distance = soldst))
 }
 
 #' Calculate time of sunrise and sunset
@@ -154,41 +161,56 @@ day_night <- function(t = today(), lon = 0, lat = 0, twilight = "none", tz=NULL)
   } else if (twilight=="astronomical") {
     twilight_angle <- -18
   }
-  if (is.null(tz)) {
-    tz <- tz(t)
+  if (!is.POSIXct(t)) {
+    if (is.instant(t)) {
+      t <- as.POSIXct(t, tz="UTC")
+    } else {
+      warning("t is not a valid time or date")
+    }
   }
-  t <- floor_date(t, "day")
-  hour(t) <- 12
-  t_num <- as.numeric(t)
+  if (is.null(tz)) {
+    tz <-  Sys.timezone()
+  }
+  t <- as.POSIXct(t, tz=tz)
+  hour(t) <- 0
+  minute(t) <- 0
+  second(t) <- 0
+  t_num <- as.numeric(t, tz=tz)
   alt <- function(x){
-    t_temp <- as.POSIXct(x, origin=origin)
+    t_temp <- as.POSIXct(x, origin=origin, tz="UTC")
     return(sun_angles(t_temp,
                     lon=lon,
                     lat=lat)$elevation +
              twilight_angle)
   }
+  noon <- try(
+    optimize(f=alt, interval=c(t_num + 7200, t_num + 86400 - 7200), maximum=TRUE)$maximum
+    )
+  if (inherits(noon, "try-error")) {
+    return(NA)
+  }
+  noon_time <- as.POSIXct(noon, tz=tz, origin=origin)
   rise <- try(
-    uniroot(alt, lower = t_num - 86400/2, upper=t_num)$root,
-    silent=FALSE)
+    uniroot(alt, lower = noon - 86400/2, upper=noon)$root,
+    silent=TRUE)
   if (inherits(rise, "try-error")) {
     rise <- NA
   }
   rise_time <- as.POSIXct(rise, tz=tz, origin=origin)
   set <- try(
-    uniroot(alt, lower=t_num, upper=t_num + 86400/2)$root,
-    silent=FALSE)
+    uniroot(alt, lower=noon, upper=noon + 86400/2)$root,
+    silent=TRUE)
   if (inherits(set, "try-error")) {
     set <- NA
   }
   set_time <- as.POSIXct(set, tz=tz, origin=origin)
-  if (is.na(rise) & is.na(set)) {
-    daylength <- ifelse(alt(t_num) > 0, 24, 0)
-  } else if (is.na(rise) | is.na(set)){
-    daylength <- NA
+  if (is.na(rise) || is.na(set)) {
+    daylength <- ifelse(alt(noon) > 0, 24, 0)
   } else {
     daylength <- set_time - rise_time
   }
   return(list(sunrise = rise_time,
+              noon = noon_time,
               sunset = set_time,
               daylength = daylength,
               nightlength = 24 - daylength

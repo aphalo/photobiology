@@ -1,7 +1,12 @@
+photobiology 0.3.2
+===================
+
+Function day_night had bugs, now fixed.
+
 photobiology 0.3.1
 ===================
 
-Added functions sun_angles and day_night
+Added functions sun_angles and day_night.
 
 photobiology 0.3.0
 ===================

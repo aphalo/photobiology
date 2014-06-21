@@ -1,9 +1,9 @@
 #' Quantification of ultraviolet and visible radiation for photobiology
-#' 
-#' Calculation of quantities relevant to the effects of radiation on different 
-#' organisms and biological processes from spectral data. The package is designed 
+#'
+#' Calculation of quantities relevant to the effects of radiation on different
+#' organisms and biological processes from spectral data. The package is designed
 #' so that it is easy for the user to create new quantification functions.
-#' 
+#'
 #' @docType package
 #' @keywords misc
 #' @name photobiology-package
@@ -16,30 +16,91 @@
 #' Date: \tab 2014-05-30\cr
 #' License: \tab GPL (>= 2.0)\cr
 #' }
-#' The most important functions in the package are \code{\link{energy_irradiance}}, 
-#' \code{\link{photon_irradiance}}, and \code{\link{new_waveband}}. The first two, 
-#' are used to obtain energy and photon irradiances from spectral data. The third 
+#' The most important functions in the package are \code{\link{energy_irradiance}},
+#' \code{\link{photon_irradiance}}, and \code{\link{new_waveband}}. The first two,
+#' are used to obtain energy and photon irradiances from spectral data. The third
 #' function is used to define how to calculate new quantities.
-#' 
+#'
 #' @references
-#' Aphalo, P. J., Albert, A., Björn, L. O., McLeod, A. R., Robson, T. M., 
-#' Rosenqvist, E. (Eds.). (2012). Beyond the Visible: A handbook of best 
-#' practice in plant UV photobiology (1st ed., p. xxx + 174). 
-#' Helsinki: University of Helsinki, Department of Biosciences, 
-#' Division of Plant Biology. ISBN 978-952-10-8363-1 (PDF), 
-#' 978-952-10-8362-4 (paperback). Open access PDF download available at 
+#' Aphalo, P. J., Albert, A., Björn, L. O., McLeod, A. R., Robson, T. M.,
+#' Rosenqvist, E. (Eds.). (2012). Beyond the Visible: A handbook of best
+#' practice in plant UV photobiology (1st ed., p. xxx + 174).
+#' Helsinki: University of Helsinki, Department of Biosciences,
+#' Division of Plant Biology. ISBN 978-952-10-8363-1 (PDF),
+#' 978-952-10-8362-4 (paperback). Open access PDF download available at
 #' http://hdl.handle.net/10138/37558
-#' 
-#' @note When released, this package will replace the package UVcalc. 
-#' 
+#'
+#' @note When released, this package will replace the package UVcalc.
+#'
 #' @importFrom Rcpp evalCpp
-#' @import data.table lubridate
-#' 
+#' @importFrom data.table
+#'            %between%
+#'            %chin%
+#'            %like%
+#'            :=
+#'            address
+#'            all.equal
+#'            all.equal.data.table
+#'            alloc.col
+#'            as.data.table
+#'            between
+#'            chgroup
+#'            chmatch
+#'            chorder
+#'            CJ
+#'            class:data.table
+#'            copy
+#'            data.table
+#'            data.table-class
+#'            dcast
+#'            dcast.data.table
+#'            duplicated
+#'            duplicated.data.table
+#'            fread
+#'            haskey
+#'            is.data.table
+#'            is.na.data.table
+#'            J
+#'            key
+#'            key<-
+#'            last
+#'            like
+#'            melt
+#'            melt.data.table
+#'            merge
+#'            merge.data.table
+#'            na.omit.data.table
+#'            Ops.data.table
+#'            rbindlist
+#'            set
+#'            setattr
+#'            setcolorder
+#'            setDT
+#'            setkey
+#'            setkeyv
+#'            setnames
+#'            SJ
+#'            subset
+#'            subset.data.table
+#'            tables
+#'            test.data.table.
+#'            timetaken
+#'            transform
+#'            transform.data.table
+#'            truelength
+#'            unique
+#'            unique.data.table
+#'            within
+#'            within.data.table
+#'            [.data.table
+#'
+#' @import lubridate
+#'
 #' @examples
 #' data(sun.data)
 #' with(sun.data, photon_irradiance(w.length, s.e.irrad)) # the whole spectrum
 #' with(sun.data, photon_irradiance(w.length, s.e.irrad, new_waveband(400,700)))
-#' 
+#'
 #' with(sun.data, energy_irradiance(w.length, s.e.irrad)) # the whole spectrum
 #' with(sun.data, energy_irradiance(w.length, s.e.irrad, new_waveband(400,700)))
 NULL

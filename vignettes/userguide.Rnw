@@ -62,7 +62,7 @@ This user guide is out of date. What is included is correct, but new functionali
 \end{framed}
 
 We have developed a set of packages to
-facilitate the calculation of many different quantities that can be derived from spectral irradiance data. The base package in this suite is called \PB, and is the package described here. There other specialized packages for quantification of ultraviolet radiation (\PBUV), visible radiation (\PBVIS), or based on Phytochrome (\PBPHY), Cryptochrome (\PBCRY) (both photoreceptors present in plants), and 
+facilitate the calculation of many different quantities that can be derived from spectral irradiance data. The base package in this suite is called \PB, and is the package described here. There other specialized packages for quantification of ultraviolet radiation (\PBUV), visible radiation (\PBVIS), or based on Phytochrome (\PBPHY), Cryptochrome (\PBCRY) (both photoreceptors present in plants), and
 spectral data for filters (\PBFLT). In the future it will be submitted to CRAN (Comprehensive R archive network), it is meanwhile available from \url{https://bitbucket.org/aphalo/photobiology/downloads}. There is also a public Git repository at \url{https://bitbucket.org/aphalo/photobiology} from where the source code of the current an earlier versions can be cloned.
 
 \section{Installation and use}
@@ -80,37 +80,37 @@ library(photobiologyVIS)
 @
 
 % \section{Example of spectral data}
-% 
+%
 % Depending on the format of the spectral data you will have
 % to use different approaches to import them into your R
 % workspace. We here give an example for a `comma separated
-% values' text file. 
-% 
+% values' text file.
+%
 % In such a case we load the spectral data into R using \verb!read.table()!
 % or \verb!read.csv()!.
-% 
+%
 % A file from a Macam
 % spectroradiometer starts:
 % \lstset{language=}
 % \lstinputlisting[lastline=20]{Philips_TL12.csv}
 % \lstset{language=R}
-% 
+%
 % \sloppy
 % For a file like this one, use the code below but
 % replacing "name" with the name and path to the data file. On Windows systems you need
 % to scape backslashes in file paths like this: `\verb!\\!'.
-% 
+%
 % <<eval=FALSE, echo=FALSE>>=
 % setwd("vignettes")
 % @
-% 
+%
 % <<example-1, eval=TRUE>>=
 % my.data <- read.csv(file="Philips_TL12.csv", skip=1,
 %   col.names=c("wavelength", "irrad"))
 % attach(my.data)
 % energy_irradiance(wavelength,irrad,CIE())
 % @
-% 
+%
 % <<eval=FALSE, echo=FALSE>>=
 % setwd("..")
 % @
@@ -118,7 +118,7 @@ library(photobiologyVIS)
 \section{Spectral data }
 If our spectral irradiance data is in \wattnm, and the wavelength in nm, as in the case of
 the Macam spectroradiometer, the functions will return the effective irradiance in \watt. In this
-example we calculated a biologically effective irradiance. 
+example we calculated a biologically effective irradiance.
 
 If, for example, the spectral irradiance output by our model of spectroradiometer is in m\wattnm,
 and the wavelengths are in Ångstrom then to obtain the effective irradiance in \watt we will
@@ -146,7 +146,7 @@ Here we just use the example data supplied with the package.
 
 All functions use \texttt{waveband}s as definitions of the range of wave lengths and the spectral weighting function (SWF) to use in the calculations. A few other bits of information may be included to fine-tune calculations. The waveband definitions do NOT describe whether input spectral irradiances are photon or energy based, nor whether the output irradiance will be based on photon or energy units. Waveband objects belong to the S3 class "waveband".
 
-When defining a waveband which uses a SWF, a function can be supplied either based on energy effectiveness, on photon effectiveness, or one function for each one. If only one function is supplied the other one is built automatically, but if performance is a concern it is better to provide two separate functions. Another case when you might want to enter the same function twice, is if you are using an absorptance spectrum as SWF, as the percent of radiation absorbed will be independent of whether photon or energy units are used for the spectral irradiance. 
+When defining a waveband which uses a SWF, a function can be supplied either based on energy effectiveness, on photon effectiveness, or one function for each one. If only one function is supplied the other one is built automatically, but if performance is a concern it is better to provide two separate functions. Another case when you might want to enter the same function twice, is if you are using an absorptance spectrum as SWF, as the percent of radiation absorbed will be independent of whether photon or energy units are used for the spectral irradiance.
 
 <<example-waveband-01, eval=TRUE>>=
 my_PAR <- new_waveband(400, 700)
@@ -154,13 +154,13 @@ my_PARx <- new_waveband(400, 700, wb.name="my_PARx")
 
 my_CIE_1 <- new_waveband(250, 400, weight="SWF", SWF.e.fun=CIE.e.fun, SWF.norm=298)
 my_CIE_2 <- new_waveband(250, 400, weight="SWF", SWF.q.fun=CIE.q.fun, SWF.norm=298)
-my_CIE_3 <- new_waveband(250, 400, weight="SWF", SWF.e.fun=CIE.e.fun, 
+my_CIE_3 <- new_waveband(250, 400, weight="SWF", SWF.e.fun=CIE.e.fun,
                          SWF.q.fun=CIE.q.fun, SWF.norm=298)
 @
 
 \section{Calculating irradiance or exposure}
 
-There is one basic function for these calculations \texttt{irradiance()}, it takes an array of wavelengths (sorted in strictly increasing order), and the corresponding values of spectral irradiance. By default the input is assumed to be in energy units, but parameter \texttt{unit.in} cab be used to adjust the calculations to expect photon units. The type of unit used for the calculated irradiance (or exposure) is set by the parameter \texttt{unit.out} with no default. If no \texttt{w.band} parameter is supplied, the whole spectrum spectrum input is used, unweighted, to calculate the total irradiance. If a \texttt{w.band} is supplied, then the range of wavelengths specified and SWF if present are used for calculating the irradiance. If the waveband definition does not include a SWF, then the unweighted irradiance is returned, if the definition includes a SWF, then a weighted irradiance is returned.  
+There is one basic function for these calculations \texttt{irradiance()}, it takes an array of wavelengths (sorted in strictly increasing order), and the corresponding values of spectral irradiance. By default the input is assumed to be in energy units, but parameter \texttt{unit.in} cab be used to adjust the calculations to expect photon units. The type of unit used for the calculated irradiance (or exposure) is set by the parameter \texttt{unit.out} with no default. If no \texttt{w.band} parameter is supplied, the whole spectrum spectrum input is used, unweighted, to calculate the total irradiance. If a \texttt{w.band} is supplied, then the range of wavelengths specified and SWF if present are used for calculating the irradiance. If the waveband definition does not include a SWF, then the unweighted irradiance is returned, if the definition includes a SWF, then a weighted irradiance is returned.
 
 The functions \texttt{photon\_irradiance()} and \texttt{energy\_irradiance()}, just call \texttt{irradiance()} with the \texttt{unit.out} set to \texttt{"photon"} or \texttt{"energy"} respectively.
 
@@ -177,9 +177,9 @@ This is how \texttt{CIE()} is defined in \PBUV.
 
 <<example-CIE, eval=FALSE>>=
 CIE <- function(norm=298) {
-  new_waveband(w.low=250, w.high=400, 
-               weight="SWF", SWF.e.fun=CIE.e.fun, SWF.norm=298, 
-               norm=norm, hinges=c(249.99, 250, 298, 328, 399.99, 400), 
+  new_waveband(w.low=250, w.high=400,
+               weight="SWF", SWF.e.fun=CIE.e.fun, SWF.norm=298,
+               norm=norm, hinges=c(249.99, 250, 298, 328, 399.99, 400),
                wb.name=paste("CIE98", as.character(norm), sep="."))
 }
 @
@@ -260,7 +260,7 @@ The function \texttt{waveband\_ratio()} takes basically the same parameters as \
 \sloppy
 The derived functions are: \texttt{photon\_ratio()}, \texttt{energy\_ratio()}, and \texttt{photons\_energy\_ratio}. The packages \PBVIS and \PBUV use these to define some convenience functions, and here we give and example for a function not yet implemented, but which you may find as a useful example.
 
-If for example we would like to calculate the ratio between UVB and PAR radiation, we would use either 
+If for example we would like to calculate the ratio between UVB and PAR radiation, we would use either
 of the following function calls, depending on which type of units we desire.
 
 <<example-ratios-01>>=
@@ -293,14 +293,14 @@ ratios
 
 This calculation is not very frequently used, but it is very instructive to look at spectral data in this way, as it can make apparent the large effect that small measuring errors can have on the estimated effective irradiances or exposures.
 
-We here plot weighted and unweighted irradiances using simulated solar spectral irradiance data. 
+We here plot weighted and unweighted irradiances using simulated solar spectral irradiance data.
 
 %\cite{Kotilainenxxxx, Lindforsxxxx}.
 
 <<weighted-spectra-01, tidy=FALSE>>=
 weighted.s.e.irrad <- s.e.irrad * calc_multipliers(w.length, GEN.T())
-plot(weighted.s.e.irrad/max(weighted.s.e.irrad) ~ w.length, type="l", col="red", 
-     xlab="Wavelength (nm)", 
+plot(weighted.s.e.irrad/max(weighted.s.e.irrad) ~ w.length, type="l", col="red",
+     xlab="Wavelength (nm)",
      ylab="UnWeighted and GEN.T weighted spectral irradiance (relative units)")
 lines(s.e.irrad/max(s.e.irrad) ~ w.length, col="black")
 @
@@ -416,18 +416,18 @@ maxwell.tern
 Sometimes it is needed to add (parallel sum) between two spectra, even if the two spectra have been
 measured at different wavelengths or wavelength steps. This can happen for example when we would like
 to calculate the spectrum of a combination of two light sources from the individual spectra. The
-function \verb|sum_spectra()| can be used in such a case. It's use is described in User Guide of the 
+function \verb|sum_spectra()| can be used in such a case. It's use is described in User Guide of the
 \PBLA package.
 
 A function \verb|interpolate_spectrum| is also included to facilitate interpolation of spectral values. It is used in the function described in the previous paragraph, but also be used by itself when interpolation is needed.
-Under the hood it uses R's \verb|spline| function if there are fewer than 25 data points, and uses \verb|approx| 
+Under the hood it uses R's \verb|spline| function if there are fewer than 25 data points, and uses \verb|approx|
 otherwise. It allows easier control of values to be used for extrapolation.
 
 % Functions \verb|find_peaks| and \verb|get_peaks| can be used to find peaks (local maxima in a spectrum).
 
 \section{Dealing with real `noisy' spectral data}
 
-The first thing to do is to think whether any part of the spectral measurements can be \textit{a priori} known to be equal to zero. For example for the solar spectrum at ground level it is safe to assume that the spectral irradiance is zero for all wavelengths shorter than 293~nm. If the data are noisy, it is best to discard these data before calculating any effective UV doses. 
+The first thing to do is to think whether any part of the spectral measurements can be \textit{a priori} known to be equal to zero. For example for the solar spectrum at ground level it is safe to assume that the spectral irradiance is zero for all wavelengths shorter than 293~nm. If the data are noisy, it is best to discard these data before calculating any effective UV doses.
 
 In the following example we use a longer wavelength (297 nm) just to show how the function works, because the example spectral data set starts at 293 nm.
 
@@ -436,7 +436,7 @@ head(sun.data)
 @
 
 Sub-setting can be easily done as follows if the data are in a data.frame (of course, replacing \texttt{w.length} with the name used in your data frame for the wavelengths array):
- 
+
 <<example-subset>>=
 subsetted.sun.data <- subset(sun.data, w.length >= 297)
 head(subsetted.sun.data)
