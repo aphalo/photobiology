@@ -1,5 +1,5 @@
 %\VignetteEngine{knitr}
-%\VignetteIndexEntry{Functions for quantifying VIS and UV radiation}
+%\VignetteIndexEntry{User guide}
 %\VignetteDepends{knitr, photobiology, photobiologyUV, photobiologyVIS, photobiologyFilters, ggplot2, ggtern}
 %\VignetteKeyword{misc}
 
