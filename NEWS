@@ -2,6 +2,7 @@ photobiology 0.3.3
 ===================
 
 New functions insert_spct_hinges(), trim_spct_tails(), integrate_spct() ...
+Example solar spectrum  data now available as "source.spct" objects and as "data.table" and "data.frame" so as not to break any old code.
 
 photobiology 0.3.2
 ===================

@@ -11,19 +11,18 @@
 ##' @keywords manip misc
 ##' @export
 ##' @examples
-##' data(sun.data)
-##' sun.spct <- setGenSpct(sun.data)
+##' data(sun.spct)
 ##' integrate_spct(sun.spct)
 integrate_spct <- function(spct) {
   names.spct <- names(spct)
   names.data <-names.spct[names.spct != "w.length"]
   comment.spct <- comment(spct)
   first.iter <- TRUE
-  integrals <- numeric(length(names.data))
+  integrals <- NULL
   for (data.col in names.data) {
     integrals <- c(integrals, integrate_irradiance(spct[["w.length"]], spct[[eval(data.col)]]))
   }
-  names(integrals) <- names.data
+  names(integrals) <- gsub("^s.", x = names.data, replacement = "")
   setattr(integrals, "comment", comment.spct)
   return(integrals)
 }

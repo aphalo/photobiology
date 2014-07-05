@@ -20,21 +20,20 @@
 #' @keywords manip misc
 #' @export
 #' @examples
-#' data(sun.data)
-#' sun.spct <- setGenSpct(sun.data)
+#' data(sun.spct)
 #' head(sun.spct)
 #' head(trim_spct_tails(sun.spct, low.limit=300))
-#' head(trim_spct_tails(sun.spct, low.limit=300, fill=NULL)))
-#' head(trim_spct_tails(sun.spct, low.limit=300, fill=NA)))
-#' head(trim_spct_tails(sun.spct, low.limit=300, fill=0.0)))
-#' head(trim_spct_tails(sun.spct, low.limit=100, fill=0.0)))
-#' tail(trim_spct_tails(sun.spct, low.limit=300, high.limit=1000, fill=NA)))
-#' tail(trim_spct_tails(sun.spct, low.limit=300, high.limit=1000, fill=0.0)))
-#' tail(trim_spct_tails(sun.spct, low.limit=300, high.limit=1000)))
-#' head(trim_spct_tails(sun.spct, low.limit=300, high.limit=1000)))
-#' tail(trim_spct_tails(sun.spct, low.limit=300, high.limit=400, fill=NA)))
-#' tail(trim_spct_tails(sun.spct, low.limit=100, high.limit=400, fill=0.0)))
-#' head(trim_spct_tails(sun.spct, low.limit=100, high.limit=400, fill=0.0)))
+#' head(trim_spct_tails(sun.spct, low.limit=300, fill=NULL))
+#' head(trim_spct_tails(sun.spct, low.limit=300, fill=NA))
+#' head(trim_spct_tails(sun.spct, low.limit=300, fill=0.0))
+#' head(trim_spct_tails(sun.spct, low.limit=100, fill=0.0))
+#' tail(trim_spct_tails(sun.spct, low.limit=300, high.limit=1000, fill=NA))
+#' tail(trim_spct_tails(sun.spct, low.limit=300, high.limit=1000, fill=0.0))
+#' tail(trim_spct_tails(sun.spct, low.limit=300, high.limit=1000))
+#' head(trim_spct_tails(sun.spct, low.limit=300, high.limit=1000))
+#' tail(trim_spct_tails(sun.spct, low.limit=300, high.limit=400, fill=NA))
+#' tail(trim_spct_tails(sun.spct, low.limit=100, high.limit=400, fill=0.0))
+#' head(trim_spct_tails(sun.spct, low.limit=100, high.limit=400, fill=0.0))
 #'
 
 trim_spct_tails <- function(spct, low.limit=min(spct), high.limit=max(spct), use.hinges=TRUE, fill=NULL)
@@ -75,7 +74,7 @@ trim_spct_tails <- function(spct, low.limit=min(spct), high.limit=max(spct), use
       high.tail.length <- high.limit - high.end
       high.tail.w.length <- seq(from = high.end + 1, to = high.limit, length = high.tail.length)
       spct.bottom <- data.table(w.length = high.tail.w.length)
-      setattr(spct.bottom, "class") <- class.spct
+      setattr(spct.bottom, "class", class.spct)
       for (data.col in names.data) {
         spct.bottom[ , eval(data.col) := fill]
       }
