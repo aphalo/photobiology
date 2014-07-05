@@ -1,13 +1,13 @@
 #' Calculate multipliers by interpolation from filter data
-#' 
+#'
 #' @description
-#' Calculate multipliers by interpolation from filter data, from user-supplied spectral transmittance 
+#' Calculate multipliers by interpolation from filter data, from user-supplied spectral transmittance
 #' data or by name for data included in the package
 #'
-#' @usage calc_filter_multipliers(w.length.out, filter=clear.dt, 
-#'                                w.length.in=NULL, transmittance.in=NULL, 
+#' @usage calc_filter_multipliers(w.length.out, filter=clear.dt,
+#'                                w.length.in=NULL, transmittance.in=NULL,
 #'                                pc.in=TRUE, pc.out=FALSE, div=1.0)
-#' 
+#'
 #' @param w.length.out numeric vector of wavelengths (nm) for output
 #' @param filter a character string giving the name of a filter data set, or an object of class "filter.spct"
 #'   default is 'clear.dt' a clear filter (T = 1.0)
@@ -16,8 +16,8 @@
 #' @param pc.in logical value indicating whether transmittances are expressed as percentages or fractions (default is to receive a percent)
 #' @param pc.out logical value indicating whether transmittances are expressed as percentages or fractions (default is to return a fraction)
 #' @param div numeric value default is 100.0 if pc=TRUE, but if pc=FALSE, default is 1.0, but can be changed in the call
-#'  
-#' @return a numeric vector of fractional transmittances 
+#'
+#' @return a numeric vector of fractional transmittances
 #' @keywords manip misc
 #' @export
 #' @examples
@@ -28,9 +28,9 @@
 #' calc_filter_multipliers(400:500, polythene.new.dt)
 #' calc_filter_multipliers(400:500, "polythene.new", pc.out=TRUE)
 #' calc_filter_multipliers(400:500)
-#' 
+#'
 calc_filter_multipliers <- function(w.length.out,
-                                    filter=clear.dt, 
+                                    filter=clear.dt,
                                     w.length.in=NULL, transmittance.in=NULL,
                                     pc.in=TRUE,
                                     pc.out=FALSE, div = 1.0) {

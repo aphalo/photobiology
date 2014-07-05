@@ -1,3 +1,8 @@
+photobiology 0.3.3
+===================
+
+New functions insert_spct_hinges(), trim_spct_tails(), integrate_spct() ...
+
 photobiology 0.3.2
 ===================
 
@@ -38,7 +43,7 @@ Added generic functions A2T and T2A for converting absorbance to transmittance a
 
 Added a label field to waveband object to store an optional label for plotting, which by default is set equal to the name of the waveband. labels.waveband was changed to return in field label this label instead of the name, and the name is returned in the field name. Also added a new function normalization.waveband that returns the normalization wavelength.
 
-calc_filter_multipliers now accepts both a filter name as a character string or an object of class "filter.spct" as argument to parameter filter (which was renamed from filter.name). In addition the function acquired a pc.in logical parameter, an the pc parameter was renamed pc.out. This allows any combination of input and output as percentages or fractions. 
+calc_filter_multipliers now accepts both a filter name as a character string or an object of class "filter.spct" as argument to parameter filter (which was renamed from filter.name). In addition the function acquired a pc.in logical parameter, an the pc parameter was renamed pc.out. This allows any combination of input and output as percentages or fractions.
 
 photobiology 0.2.25
 ===================
@@ -74,7 +79,7 @@ photobiology 0.2.20
 ===================
 
 New function w_length_range2rgb(), which takes a range of wavelengths, and returns the equivalent RGB colour assuming equal spectral (energy) irradiance at all wave lengths within the range.
-Modified the calculation of color for wavebands, uisng this new function. 
+Modified the calculation of color for wavebands, uisng this new function.
 
 photobiology 0.2.19
 ===================
@@ -89,12 +94,12 @@ Data on x, y, z coordinates for CIE chromaticity coordinates and colour matching
 photobiology 0.2.18
 ===================
 
-Fixed a bug in split_irradiance() and improved handling of cut point values outside the data range, unsorted cut-points, and redundant cut-points. For 'good' data there are no changes in output, except in the case when three cut points were supplied, as the third one was being ignored. The handling of out-of-range cut points has been changed so that the endpoints are moved to the extreme wavelengths of the data. 
+Fixed a bug in split_irradiance() and improved handling of cut point values outside the data range, unsorted cut-points, and redundant cut-points. For 'good' data there are no changes in output, except in the case when three cut points were supplied, as the third one was being ignored. The handling of out-of-range cut points has been changed so that the endpoints are moved to the extreme wavelengths of the data.
 
 photobiology 0.2.17
 ===================
 
-The cache is now created in the "emptyenv". This solves a long-standing error message during installation. 
+The cache is now created in the "emptyenv". This solves a long-standing error message during installation.
 
 photobiology 0.2.16
 ===================
@@ -102,7 +107,7 @@ Changed irradiance() so that it optionally accepts a list of wave_bands and retu
 
 wave_band objects are now S3 objects with class "waveband", a print.waveband() function was added, which is called whenever the generic print function is called on a "waveband" object.
 
-New convenience functions split_irradiance(), split_energy_irradiance() and split_photon_irradiance() for integrating unweighted irradiances for a series of contiguous wavelength ranges. 
+New convenience functions split_irradiance(), split_energy_irradiance() and split_photon_irradiance() for integrating unweighted irradiances for a series of contiguous wavelength ranges.
 
 photobiology 0.2.15
 ===================
