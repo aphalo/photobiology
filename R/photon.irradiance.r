@@ -1,9 +1,9 @@
 #' Calculate photon irradiance from spectral irradiance
 #'
-#' This function gives the photon irradiance for a given
+#' This function returns the photon irradiance for a given
 #' waveband of a radiation spectrum, optionally applies
 #' a BSWF.
-#' 
+#'
 #' @usage photon_irradiance(w.length, s.irrad, w.band=NULL, unit.in="energy",
 #' check.spectrum=TRUE, use.cached.mult=FALSE, use.hinges=NULL)
 #'
@@ -14,21 +14,21 @@
 #' @param check.spectrum logical indicating whether to sanity check input data, default is TRUE
 #' @param use.cached.mult logical indicating whether multiplier values should be cached between calls
 #' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
-#' 
+#'
 #' @return a single numeric value with no change in scale factor: [W m-2 nm-1] -> [W m-2]
 #' @keywords manip misc
 #' @export
 #' @examples
 #' data(sun.data)
-#' 
+#'
 #' with(sun.data, photon_irradiance(w.length, s.e.irrad))
 #' with(sun.data, photon_irradiance(w.length, s.e.irrad, new_waveband(400,700)))
 
-photon_irradiance <- 
-  function(w.length, s.irrad, w.band=NULL, unit.in="energy", 
+photon_irradiance <-
+  function(w.length, s.irrad, w.band=NULL, unit.in="energy",
            check.spectrum=TRUE, use.cached.mult=FALSE, use.hinges=NULL){
-    return(irradiance(w.length=w.length, s.irrad=s.irrad, w.band=w.band, 
-                      unit.out="photon", unit.in=unit.in, 
-                      check.spectrum=check.spectrum, use.cached.mult=use.cached.mult, 
+    return(irradiance(w.length=w.length, s.irrad=s.irrad, w.band=w.band,
+                      unit.out="photon", unit.in=unit.in,
+                      check.spectrum=check.spectrum, use.cached.mult=use.cached.mult,
                       use.hinges=use.hinges))
   }

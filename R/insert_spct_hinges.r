@@ -12,7 +12,6 @@
 ##' interpolation, no interpolation is indicated by an empty array (numeric(0))
 ##'
 ##' @return a data.frame with variables \code{w.length} and \code{s.irrad}
-##' @name insert_hinges
 ##' @keywords manip misc
 ##' @export
 ##' @examples

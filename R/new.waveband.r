@@ -1,7 +1,7 @@
 #' Build a "waveband" object that can be used as imput when calculating irradiances.
 #'
 #' @usage new_waveband(w.low, w.high, weight=NULL, SWF.e.fun=NULL, SWF.q.fun=NULL, norm=NULL, SWF.norm=NULL, hinges=NULL, wb.name=NULL, wb.label=wb.name)
-#' 
+#'
 #' @param w.low numeric value, wavelength at the short end of the band (nm)
 #' @param w.high numeric value, wavelength at the long end of the band (nm)
 #' @param weight a character string "SWF" or "BSWF", use NULL (the defalt) to indicate no weighting used
@@ -12,11 +12,11 @@
 #' @param norm a single numeric value indicating the wavelength at which the SWF should be normalized
 #' to 1.0, in nm. "NULL" means no normalization.
 #' @param hinges a numeric array giving the wavelengths at which the s.irrad should be inserted by
-#' interpolation, no interpolation is indicated by an empty array (numeric(0)), if NULL then interpolation 
+#' interpolation, no interpolation is indicated by an empty array (numeric(0)), if NULL then interpolation
 #' will take place at both ends of the band.
 #' @param wb.name character string giving the name for the waveband defined, default is NULL
 #' @param wb.label character string giving the label of the waveband to be used for ploting, default is wb.name
-#' 
+#'
 #' @return a list with components low, high, weight, SWF.fun, norm, hinges, name
 #' @keywords manip misc
 #' @export
@@ -24,9 +24,9 @@
 #' @examples
 #' data(sun.data)
 #' with(sun.data, irradiance(w.length, s.e.irrad, new_waveband(400,700), "photon"))
-#' 
-new_waveband <- function(w.low, w.high, 
-                         weight=NULL, SWF.e.fun=NULL, SWF.q.fun=NULL, norm=NULL, 
+#'
+new_waveband <- function(w.low, w.high,
+                         weight=NULL, SWF.e.fun=NULL, SWF.q.fun=NULL, norm=NULL,
                          SWF.norm=NULL, hinges=NULL, wb.name=NULL, wb.label=wb.name){
   # we make sure that hinges is not NULL, as this would cause problems elsewhere
   # if we are not using a SWF then we do not need to add hinges as we will be anyway interpolating
@@ -35,19 +35,19 @@ new_waveband <- function(w.low, w.high,
     hinges <- c(w.low-0.001,w.low,w.high-0.001,w.high)
   }
   if (!is.null(weight) && weight!="none") {
-    # 
+    #
     if (!is.null(SWF.e.fun) && is.null(SWF.q.fun)){
       if (!is.null(SWF.norm)){
         SWF.q.fun <- function(w.length){SWF.e.fun(w.length) *  SWF.norm / w.length}
       } else {
-        warning("Warning: either both photon and energy SWFs should be supplied, or a value for the 
+        warning("Warning: either both photon and energy SWFs should be supplied, or a value for the
               wavelength at which the function supplied is normalized should be supplied through SWF.norm")
       }
     } else if (!is.null(SWF.q.fun) && is.null(SWF.e.fun)  && !is.null(SWF.norm)){
       if (!is.null(SWF.norm)){
         SWF.e.fun <- function(w.length){SWF.q.fun(w.length) * w.length / SWF.norm}
       } else {
-        warning("Warning: either both photon and energy SWFs should be supplied, or a value for the 
+        warning("Warning: either both photon and energy SWFs should be supplied, or a value for the
               wavelength at which the function supplied is normalized should be supplied through SWF.norm")
       }
     } else if (is.null(SWF.e.fun) && is.null(SWF.q.fun)){
@@ -56,11 +56,12 @@ new_waveband <- function(w.low, w.high,
     }
     if (is.null(wb.name)) wb.name <- paste("range", as.character(signif(w.low, 4)), as.character(signif(w.high, 4)), "wtd", sep=".")
   } else {
+    weight <- "none"
     if (is.null(wb.name)) wb.name <- paste("range", as.character(signif(w.low, 4)), as.character(signif(w.high, 4)), sep=".")
   }
-  w_band <- list(low=w.low, high=w.high, 
-                 weight=weight, SWF.e.fun=SWF.e.fun, SWF.q.fun=SWF.q.fun, SWF.norm=SWF.norm, 
+  w_band <- list(low=w.low, high=w.high,
+                 weight=weight, SWF.e.fun=SWF.e.fun, SWF.q.fun=SWF.q.fun, SWF.norm=SWF.norm,
                  norm=norm, hinges=hinges, name=wb.name, label=wb.label)
-  setattr(w_band, "class", c("waveband", class(w_band))) 
+  setattr(w_band, "class", c("waveband", class(w_band)))
   return(w_band)
-} 
+}

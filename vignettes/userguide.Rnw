@@ -57,10 +57,6 @@ my_version <- packageVersion("photobiology")
 
 \section{Introduction}
 
-\begin{framed}
-This user guide is out of date. What is included is correct, but new functionality is not yet described.
-\end{framed}
-
 We have developed a set of packages to
 facilitate the calculation of many different quantities that can be derived from spectral irradiance data. The base package in this suite is called \PB, and is the package described here. There other specialized packages for quantification of ultraviolet radiation (\PBUV), visible radiation (\PBVIS), or based on Phytochrome (\PBPHY), Cryptochrome (\PBCRY) (both photoreceptors present in plants), and
 spectral data for filters (\PBFLT). In the future it will be submitted to CRAN (Comprehensive R archive network), it is meanwhile available from \url{https://bitbucket.org/aphalo/photobiology/downloads}. There is also a public Git repository at \url{https://bitbucket.org/aphalo/photobiology} from where the source code of the current an earlier versions can be cloned.
@@ -79,41 +75,24 @@ library(photobiologyUV)
 library(photobiologyVIS)
 @
 
-% \section{Example of spectral data}
-%
-% Depending on the format of the spectral data you will have
-% to use different approaches to import them into your R
-% workspace. We here give an example for a `comma separated
-% values' text file.
-%
-% In such a case we load the spectral data into R using \verb!read.table()!
-% or \verb!read.csv()!.
-%
-% A file from a Macam
-% spectroradiometer starts:
-% \lstset{language=}
-% \lstinputlisting[lastline=20]{Philips_TL12.csv}
-% \lstset{language=R}
-%
-% \sloppy
-% For a file like this one, use the code below but
-% replacing "name" with the name and path to the data file. On Windows systems you need
-% to scape backslashes in file paths like this: `\verb!\\!'.
-%
-% <<eval=FALSE, echo=FALSE>>=
-% setwd("vignettes")
-% @
-%
-% <<example-1, eval=TRUE>>=
-% my.data <- read.csv(file="Philips_TL12.csv", skip=1,
-%   col.names=c("wavelength", "irrad"))
-% attach(my.data)
-% energy_irradiance(wavelength,irrad,CIE())
-% @
-%
-% <<eval=FALSE, echo=FALSE>>=
-% setwd("..")
-% @
+\section{Data formats}
+
+The package provides two sets of functions for most operations: functions programmed following a functional paradign, and functions using an object-oriented paradigm. The former functions take as arguments numeric vectors and are probably faster. The later ones take `spectra' objects as arguments, are easier to use, and at least at the moment, to some extent slower. For everyday use the use of `spectra' objects is recommended, but when maximum performance or flexibility in scripts is desired, the use of the functions taking numeric vectors as arguments may allow optimizations that are not possible with the object-oriented higher level functions.
+
+\subsection{Using numeric vectors}
+
+When dealing with spectra, we operate on pairs of vectors, one with the wavelengths in nm, and a second one with the corresponding values for the spectral data.
+
+It is usual to `group' these two (or more) vectors into a data frame. For vectors within a data frame we need to `make them visible' when operating with the functions that expect numeric vectors as arguments.
+
+\subsection{Using `spectra' objects}
+
+This package defines a family of objects based on data tables (data frame compatible) which impose some restrictions on the naming of the vectors, something that allows the second set of functions to `find' the data when passed one of these objects as argument. In addition, as the data is checked when the object is built, there is no need to test for the validity of the data each time a calculation is carried out. The other advantage of using objects, is that especialized versions of generic functions like \texttt{print} and operators like \texttt{+} can be defined for spectra.
+
+\begin{framed}
+This user guide is out of date. What is included is correct, but most of the object-oriented functionality is not yet described.
+\end{framed}
+
 
 \section{Spectral data }
 If our spectral irradiance data is in \wattnm, and the wavelength in nm, as in the case of
