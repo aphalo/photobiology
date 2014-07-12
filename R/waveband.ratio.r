@@ -21,7 +21,6 @@
 #' @keywords manip misc
 #' @export
 #' @examples
-#' data(sun.data)
 #' # photon:photon ratio
 #' with(sun.data, waveband_ratio(w.length, s.e.irrad, new_waveband(400,500), new_waveband(400,700), "photon"))
 #' # energy:energy ratio

@@ -25,7 +25,6 @@
 #' @keywords manip misc
 #' @export
 #' @examples
-#' data(sun.spct)
 #' head(sun.spct)
 #' head(trim_spct(sun.spct, low.limit=300))
 #' head(trim_spct(sun.spct, low.limit=300, fill=NULL))

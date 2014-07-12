@@ -1,3 +1,8 @@
+photobiology 0.3.4
+===================
+
+Modified packages so as to consistently use .spct as the name tag of all objects represnting spectra. Recently .dt was used and earlier, .data, that is still a fall-back in the current version.
+
 photobiology 0.3.3
 ===================
 

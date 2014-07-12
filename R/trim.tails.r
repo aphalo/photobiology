@@ -21,7 +21,6 @@
 #' @keywords manip misc
 #' @export
 #' @examples
-#' data(sun.data)
 #' head(sun.data)
 #' head(with(sun.data, trim_tails(w.length, s.e.irrad, low.limit=300)))
 #' head(with(sun.data, trim_tails(w.length, s.e.irrad, low.limit=300, fill=NULL)))

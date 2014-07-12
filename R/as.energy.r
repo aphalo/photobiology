@@ -11,8 +11,7 @@
 #' @export
 #' @keywords manip misc
 #' @examples
-#' data(sun.data)
-#' with(sun.data, as_energy(w.length, s.q.irrad))
+#' with(sun.spct, as_energy(w.length, s.q.irrad))
 #' 
 
 as_energy <- function(w.length, s.qmol.irrad){

@@ -146,8 +146,7 @@ The functions \texttt{photon\_irradiance()} and \texttt{energy\_irradiance()}, j
 We first load some data to play with.
 
 <<example-data, eval=TRUE>>=
-data(sun.data)
-attach(sun.data)
+attach(sun.spct)
 @
 
 Then we compare the calculations based on the different wavebands defined in the previous section and the predefined functions in the packages \PBVIS and \PBUV. The predefined functions have the advantage of allowing the specification of parameters to modify the \texttt{w.band} created. In the example bellow, we use this to set the normalization wavelength.
@@ -323,18 +322,18 @@ Examples for wavelength ranges:
 <<>>=
 w_length_range2rgb(c(400,700))
 w_length_range2rgb(400:700)
-w_length_range2rgb(sun.data$w.length)
+w_length_range2rgb(sun.spct$w.length)
 w_length_range2rgb(550)
 @
 
 Examples for spectra, in this case the solar spectrum:
 
 <<>>=
-with(sun.data, s_e_irrad2rgb(w.length, s.e.irrad))
-with(sun.data, s_e_irrad2rgb(w.length, s.e.irrad, sens=ciexyzCMF2.data))
-with(sun.data, s_e_irrad2rgb(w.length, s.e.irrad, sens=ciexyzCMF10.data))
-with(sun.data, s_e_irrad2rgb(w.length, s.e.irrad, sens=ciexyzCC2.data))
-with(sun.data, s_e_irrad2rgb(w.length, s.e.irrad, sens=ciexyzCC10.data))
+with(sun.spct, s_e_irrad2rgb(w.length, s.e.irrad))
+with(sun.spct, s_e_irrad2rgb(w.length, s.e.irrad, sens=ciexyzCMF2.data))
+with(sun.spct, s_e_irrad2rgb(w.length, s.e.irrad, sens=ciexyzCMF10.data))
+with(sun.spct, s_e_irrad2rgb(w.length, s.e.irrad, sens=ciexyzCC2.data))
+with(sun.spct, s_e_irrad2rgb(w.length, s.e.irrad, sens=ciexyzCC10.data))
 @
 
 Here we plot the RGB colours for the range covered by the CIE 2006 proposed standard calculated at each 1 nm step:
@@ -379,9 +378,9 @@ maxwell.tern
 Now using colours calculated from filter transmittance spectra.
 
 <<>>=
-yellow.filter <- with(canary.yellow.new.dt, s_e_irrad2rgb(w.length, Tfr, sens=ciexyzCMF2.data))
-green.filter <- with(moss.green.new.dt, s_e_irrad2rgb(w.length, Tfr, sens=ciexyzCMF2.data))
-polyester.filter <- with(polyester.new.dt, s_e_irrad2rgb(w.length, Tfr, sens=ciexyzCMF2.data))
+yellow.filter <- with(canary.yellow.new.spct, s_e_irrad2rgb(w.length, Tfr, sens=ciexyzCMF2.data))
+green.filter <- with(moss.green.new.spct, s_e_irrad2rgb(w.length, Tfr, sens=ciexyzCMF2.data))
+polyester.filter <- with(polyester.new.spct, s_e_irrad2rgb(w.length, Tfr, sens=ciexyzCMF2.data))
 colours <- c(yellow.filter, green.filter, polyester.filter)
 rgb.values <- col2rgb(colours)
 test.data <- data.frame(colour=colours, R=rgb.values[1, ], G=rgb.values[2, ], B=rgb.values[3, ], labels=c("canary yellow", "moss green", "polyester"))
@@ -411,14 +410,14 @@ The first thing to do is to think whether any part of the spectral measurements 
 In the following example we use a longer wavelength (297 nm) just to show how the function works, because the example spectral data set starts at 293 nm.
 
 <<example-sun>>=
-head(sun.data)
+head(sun.spct)
 @
 
 Sub-setting can be easily done as follows if the data are in a data.frame (of course, replacing \texttt{w.length} with the name used in your data frame for the wavelengths array):
 
 <<example-subset>>=
-subsetted.sun.data <- subset(sun.data, w.length >= 297)
-head(subsetted.sun.data)
+subsetted.sun.spct <- subset(sun.spct, w.length >= 297)
+head(subsetted.sun.spct)
 @
 
 And then just use the sub-setted data in your calculations.
@@ -426,43 +425,43 @@ And then just use the sub-setted data in your calculations.
 If the data are not in a dataframe, then there are different options: 1) create a data frame from your data, 2) use the function \texttt{trim\_tails()} from this package, or 3) just use R commands. Here we give examples of the use of \texttt{trim\_tails()}, and just use the same data as in earlier examples. First we delete all data for wavelengths shorter than 293 nm.
 
 <<example-trim-low>>=
-trimmed.sun.data <- trim_tails(w.length, s.e.irrad, low.limit=297)
-head(trimmed.sun.data)
-tail(trimmed.sun.data)
+trimmed.sun.spct <- trim_tails(w.length, s.e.irrad, low.limit=297)
+head(trimmed.sun.spct)
+tail(trimmed.sun.spct)
 @
 
 This function returns a new data.frame and uses always the same variable names for the columns.
 
 <<example-trim-both>>=
-trimmed.both.sun.data <- trim_tails(w.length, s.e.irrad, low.limit=297, high.limit=550)
-head(trimmed.both.sun.data)
-tail(trimmed.both.sun.data)
+trimmed.both.sun.spct <- trim_tails(w.length, s.e.irrad, low.limit=297, high.limit=550)
+head(trimmed.both.sun.spct)
+tail(trimmed.both.sun.spct)
 @
 
 If we supply a different value than the default NULL for the parameter \texttt{fill}, the w.length values are kept, and the trimmed spectral irradiance values replaced by the value supplied.
 
 <<example-trim-na>>=
-trimmed.na.sun.data <- trim_tails(w.length, s.e.irrad, low.limit=297, fill=NA)
-head(trimmed.na.sun.data)
+trimmed.na.sun.spct <- trim_tails(w.length, s.e.irrad, low.limit=297, fill=NA)
+head(trimmed.na.sun.spct)
 @
 
 <<example-trim-both-na>>=
-trimmed.both.na.sun.data <- trim_tails(w.length, s.e.irrad, low.limit=297, high.limit=400, fill=NA)
-head(trimmed.both.na.sun.data)
-tail(trimmed.both.na.sun.data)
+trimmed.both.na.sun.spct <- trim_tails(w.length, s.e.irrad, low.limit=297, high.limit=400, fill=NA)
+head(trimmed.both.na.sun.spct)
+tail(trimmed.both.na.sun.spct)
 @
 
 In addition to NA we can supply an arbitrary numeric value.
 
 <<example-trim-zero>>=
-trimmed.zero.sun.data <- trim_tails(w.length, s.e.irrad, low.limit=297, fill=0.0)
-head(trimmed.zero.sun.data)
+trimmed.zero.sun.spct <- trim_tails(w.length, s.e.irrad, low.limit=297, fill=0.0)
+head(trimmed.zero.sun.spct)
 @
 
 %Using real spectral data compared to modelled spectral data for sunlight we show a finally some of the pitfalls, and possible work-arounds, for dealing with noisy measurements, and calculating effective doses from them.
 
 <<detach>>=
-detach(sun.data)
+detach(sun.spct)
 @
 
 \section{Optimizing performance}
