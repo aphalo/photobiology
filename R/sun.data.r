@@ -18,7 +18,7 @@
 #' @keywords datasets
 #' @format A data-frame- and data-table compatible "source.spct" object with 508 rows and 3 variables
 #' @name sun.spct
-#' @aliases sun.data sun.dt
+#' @aliases sun.data sun.dt sun.spct
 NULL
 #' Time-integrated daily spectral irradiance (simulated)
 #'
@@ -38,5 +38,5 @@ NULL
 #' @keywords datasets
 #' @format A data-frame- and data-table compatible "source.spct" object with 508 rows and 3 variables
 #' @name sun.daily.spct
-#' @aliases sun.daily.data sun.daily.dt
+#' @aliases sun.daily.data sun.daily.dt sun.daily.spct
 NULL

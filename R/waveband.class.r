@@ -19,12 +19,12 @@ labels.waveband <- function(object, ...) {
 #'
 #' A function that returns the wavelength range from objects of class "waveband".
 #'
-#' @param x an object of class "waveband"
 #' @param ... not used in current version
 #' @param na.rm ignored
 #' @export
 #'
-range.waveband <- function(x, ..., na.rm = FALSE) {
+range.waveband <- function(..., na.rm = FALSE) {
+  x <- c(...)
   return(c(x$low, x$high))
 }
 
@@ -34,13 +34,13 @@ range.waveband <- function(x, ..., na.rm = FALSE) {
 #'
 #' A function that returns the wavelength minimum from objects of class "waveband".
 #'
-#' @param x an object of class "waveband"
 #' @param ... not used in current version
 #' @param na.rm ignored
 #' @export
 #'
-min.waveband <- function(x, ..., na.rm = FALSE) {
-  return(x$low)
+min.waveband <- function(..., na.rm = FALSE) {
+  x <- c(...)
+    return(x$low)
 }
 
 # max ---------------------------------------------------------------------
@@ -49,12 +49,12 @@ min.waveband <- function(x, ..., na.rm = FALSE) {
 #'
 #' A function that returns the wavelength maximum from objects of class "waveband".
 #'
-#' @param x an object of class "waveband"
 #' @param ... not used in current version
 #' @param na.rm ignored
 #' @export
 #'
-max.waveband <- function(x, ..., na.rm = FALSE) {
+max.waveband <- function(..., na.rm = FALSE) {
+  x <- c(...)
   return(x$high)
 }
 

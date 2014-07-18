@@ -25,7 +25,6 @@
 #' @keywords manip misc
 #' @export
 #' @examples
-#' data(sun.spct)
 #' head(sun.spct)
 #' head(trim_spct(sun.spct, low.limit=300))
 #' head(trim_spct(sun.spct, low.limit=300, fill=NULL))
@@ -69,7 +68,7 @@ trim_spct <- function(spct, band=NULL, low.limit=min(spct), high.limit=max(spct)
       for (data.col in names.data) {
         spct.top[ , eval(data.col) := fill]
       }
-      spct <- rbind(top.spct, spct)
+      spct <- rbind(spct.top, spct)
       setattr(spct, "comment", comment.spct)
       low.end <- min(spct)
     } else {

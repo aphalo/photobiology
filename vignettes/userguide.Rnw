@@ -12,7 +12,7 @@
  {hyperref}
 \usepackage{listings}
 \usepackage{booktabs}
-\usepackage{breakurl}
+%\usepackage{breakurl}
 \usepackage{xspace}
 \usepackage{framed}
 
@@ -38,6 +38,7 @@ options(replace.assign=TRUE,width=60)
 @
 
 <<example-0-hiden, eval=TRUE, include=FALSE>>=
+library(data.table)
 library(photobiology)
 library(photobiologyUV)
 library(photobiologyVIS)
@@ -70,14 +71,18 @@ loading it from the library when needed.
 To load the package into the workspace we use \verb!library(photobiology)!.
 
 <<example-0-visible, eval=FALSE>>=
+library(data.table)
 library(photobiology)
 library(photobiologyUV)
 library(photobiologyVIS)
+library(photobiologyFilters)
+library(ggplot2)
+library(ggtern)
 @
 
 \section{Data formats}
 
-The package provides two sets of functions for most operations: functions programmed following a functional paradign, and functions using an object-oriented paradigm. The former functions take as arguments numeric vectors and are probably faster. The later ones take `spectra' objects as arguments, are easier to use, and at least at the moment, to some extent slower. For everyday use the use of `spectra' objects is recommended, but when maximum performance or flexibility in scripts is desired, the use of the functions taking numeric vectors as arguments may allow optimizations that are not possible with the object-oriented higher level functions.
+The package provides two sets of functions for many operations: functions programmed following a functional paradign, and functions using an object-oriented paradigm. The former functions take as arguments numeric vectors and are probably faster. The later ones take `spectra' objects as arguments, are easier to use, and at least at the moment, to some extent slower. For everyday use `spectra' objects are recommended, but when maximum performance or flexibility in scripts is desired, the use of the functions taking numeric vectors as arguments may allow optimizations that are not possible with the object-oriented higher level functions.
 
 \subsection{Using numeric vectors}
 
@@ -87,12 +92,42 @@ It is usual to `group' these two (or more) vectors into a data frame. For vector
 
 \subsection{Using `spectra' objects}
 
-This package defines a family of objects based on data tables (data frame compatible) which impose some restrictions on the naming of the vectors, something that allows the second set of functions to `find' the data when passed one of these objects as argument. In addition, as the data is checked when the object is built, there is no need to test for the validity of the data each time a calculation is carried out. The other advantage of using objects, is that especialized versions of generic functions like \texttt{print} and operators like \texttt{+} can be defined for spectra.
+This package defines a family of objects based on data tables (data frame compatible objects) which impose some restrictions on the naming of the vectors, something that allows the second set of functions to `find' the data when passed one of these objects as argument. In addition, as the data is checked when the object is built, there is no need to test for the validity of the data each time a calculation is carried out. The other advantage of using `spct' objects, is that especialized versions of generic functions like \texttt{print} and operators like \texttt{+} can be defined for spectra. \texttt{spct} objects are derived from data.table objects, which in turn are derived from data.frame objects. In this package we define a \textit{generic} spectrum type of object, derived from data table, from which especialized types of spectra are derived. This `parenthood' hierachy means that spectra objects can be used almost anywhere where a \texttt{data.frame} or \texttt{data.table} is expected.
 
-\begin{framed}
-This user guide is out of date. What is included is correct, but most of the object-oriented functionality is not yet described.
-\end{framed}
+%\begin{framed}
+Be aware that although data.tables are syntactically compatible with data.frames, in some special cases the same code may have different semantics as data tables use references in some cases were data frames would use a copy of the data. In general, no such problems exist, and the different semantics only applies to data table especific syntax. If in doubt, to avoid problems, when you really intend to make a new copy of a spectrum, preserving the original object unchanged by later operations on the new `name', use function \texttt{copy} in addition to the assignment operator.
 
+<<>>=
+# 1) data frame syntax on a data.frame
+a.df <- data.frame(x=1:3, y=rep(1, 3))
+b.df <- a.df
+b.df$y <- b.df$y * 2
+b.df
+a.df # not modified!
+# 2) data frame syntax on a data.table
+a.dt <- data.table(x=1:3, y=rep(1, 3))
+b.dt <- a.dt
+b.dt$y <- b.dt$y * 2
+b.dt
+a.dt # not modified!
+# 3) data table syntax on a data.table
+a.dt <- data.table(x=1:3, y=rep(1, 3))
+b.dt <- a.dt
+b.dt[ , y := y * 2]
+a.dt # modified!
+# 4) forcing creation of a copy
+a.dt <- data.table(x=1:3, y=rep(1, 3))
+c.dt <- copy(a.dt)
+c.dt[ , y := y * 2]
+a.dt # not modified!
+@
+
+From the examples above one can see that in example 3) \texttt{b.dt} is not a copy of \texttt{a.dt}, but instead a reference (a new name pointing to the original object), while in examples 1), 2) and 4) \texttt{b.dt}, is a new object, initialized to the value of \texttt{a.dt}.
+%\end{framed}
+
+% \begin{framed}
+% This user guide is out of date. What is included is correct, but most of the object-oriented functionality is not yet described.
+% \end{framed}
 
 \section{Spectral data }
 If our spectral irradiance data is in \wattnm, and the wavelength in nm, as in the case of
@@ -119,7 +154,105 @@ It is very important to make sure that the wavelengths are in nanometres as this
 the functions expect. If the wavelengths are in the wrong units, the action spectra will be
 wrongly calculated, and the returned value for effective irradiance will be completely wrong.
 
-Here we just use the example data supplied with the package.
+\texttt{generic.spct} objects can be created from data tables and data frames simply by setting then as such. However, a column called \texttt{w.length} must be present and contain wavelength values expressed in nm.
+
+<<>>=
+a.spct <- setGenSpct(data.table(w.length = 300:305, y = rep(1,6)))
+class(a.spct)
+a.spct
+@
+
+\texttt{source.spct} objects can be created from data tables, data frames, and \texttt{generic.spct} simply by setting then as such. However, a columns called \texttt{w.length} (wavelength values expressed in nm) and \texttt{s.e.irrad} (\wattnm) and\or \texttt{s.q.irrad} (\molnm) must be present.
+
+<<>>=
+b.spct <- setSourceSpct(data.table(w.length = 300:305, s.e.irrad = rep(1,6)))
+class(b.spct)
+b.spct
+@
+
+\texttt{filter.spct} objects can be created from data tables, data frames, and \texttt{generic.spct} simply by setting then as such. However, columns called \texttt{w.length} (wavelength values expressed in nm) and \texttt{Tpc} (T\%), \texttt{Tfr} (T as fraction of 1) and\or \texttt{A} (absorbance ($\log_{10}$ based)) must be present.
+
+<<>>=
+c.spct <- setFilterSpct(data.table(w.length = 300:305, Tfr = rep(1,6)))
+class(c.spct)
+c.spct
+@
+
+Here we just use the example data supplied with the packages.
+
+<<>>=
+class(sun.spct)
+sun.spct
+@
+
+\section{Working with spectral objects}
+
+\subsection{Conversions}
+
+The functions \texttt{e2q} and \texttt{q2e} can be used on source spectra to convert spectral energy irradiance into spectral photon irradiance and vice versa. The first argument should be a spectrum, and the second optional argument sets the action with \texttt{"add"} and \texttt{"replace"} as possible values. In the second case the whole spectrum object is copied, while in the first case a column is added but the unchanged columns are references to the original ones, rather than copies.
+
+<<>>=
+b.spct
+b1.spct <- e2q(b.spct, "replace")
+b.spct
+b1.spct
+
+b2.spct <- e2q(b.spct, "add")
+b.spct
+b2.spct
+@
+
+For \texttt{filter.spct} objects functions \texttt{T2A} and \texttt{A2T} allow conversion between spectral transmittance and spectral absorbance and vice versa.
+
+\subsection{Remapping a spectrum to different wavelengths}
+
+Converting spectra available at a given set of wavelengths values to a different one, is frequently needed when operating with several spectra of different origin. One can increase the \emph{apparent} resolution by interpolation, and reduce it by local averaging or smoothing and resampling. The same function works on all \code{spct} objects, interpolating every column except \code{w.length} and replacing in this last column the old wavelength values with the new ones supplied as argument. The optional argument \code{fill.value} cointrol what value is assigned to wavelengths in the new data that are outside the range of the new waveelngths.
+
+<<>>=
+interpolate_spct(sun.spct, seq(400, 500, by=0.1))
+@
+
+
+\subsection{Summaries}
+
+Functions \code{integrate_spct} and \code{average_spct} take into account each individual wavelength step, so they return valid results even for spectra measured at arbitrary and varying wavelength steps.
+
+<<>>=
+integrate_spct(sun.spct)
+average_spct(sun.spct)
+@
+
+'Normal' and a couple of new functions are also available for spectra, but redefined to return wavelengths.
+
+<<>>=
+range(sun.spct)
+min(sun.spct)
+max(sun.spct)
+midpoint(sun.spct)
+spread(sun.spct)
+@
+
+The \code{data.table} definition of \code{summary} returns column-wise results that should be interpreted with care if the wavelength step is not constant.
+
+<<>>=
+summary(sun.spct)
+@
+
+\section{Using operators with spectra}
+
+The basic math operators have definitions for spectra. It is possible to sum, substract, multiply and divide spectra. These operators can be used even if the spectral data is on different arbitrary sets of wavelengths.
+
+<<>>=
+sun.spct / sun.spct
+sun.spct + sun.spct
+@
+
+Operators are also defined for operations between an spectrum and a numeric vector (with normal recycling).
+
+<<>>=
+sun.spct * 2
+sun.spct * c(0,1)
+@
 
 \section{Defining wavebands}
 
@@ -142,13 +275,6 @@ my_CIE_3 <- new_waveband(250, 400, weight="SWF", SWF.e.fun=CIE.e.fun,
 There is one basic function for these calculations \texttt{irradiance()}, it takes an array of wavelengths (sorted in strictly increasing order), and the corresponding values of spectral irradiance. By default the input is assumed to be in energy units, but parameter \texttt{unit.in} cab be used to adjust the calculations to expect photon units. The type of unit used for the calculated irradiance (or exposure) is set by the parameter \texttt{unit.out} with no default. If no \texttt{w.band} parameter is supplied, the whole spectrum spectrum input is used, unweighted, to calculate the total irradiance. If a \texttt{w.band} is supplied, then the range of wavelengths specified and SWF if present are used for calculating the irradiance. If the waveband definition does not include a SWF, then the unweighted irradiance is returned, if the definition includes a SWF, then a weighted irradiance is returned.
 
 The functions \texttt{photon\_irradiance()} and \texttt{energy\_irradiance()}, just call \texttt{irradiance()} with the \texttt{unit.out} set to \texttt{"photon"} or \texttt{"energy"} respectively.
-
-We first load some data to play with.
-
-<<example-data, eval=TRUE>>=
-data(sun.data)
-attach(sun.data)
-@
 
 Then we compare the calculations based on the different wavebands defined in the previous section and the predefined functions in the packages \PBVIS and \PBUV. The predefined functions have the advantage of allowing the specification of parameters to modify the \texttt{w.band} created. In the example bellow, we use this to set the normalization wavelength.
 
@@ -190,17 +316,40 @@ labels(UVB("medical"))
 labels(UVB("ISO"))
 labels(new_waveband(100, 200))
 labels(new_waveband(100, 200, wb.name="ANY NAME"))
-labels(new_waveband(100, 200, wb.name="ANY NAME", wb.label="ANY LABEL"))
+labels(new_waveband(100, 200, wb.name="ANY NAME",
+                    wb.label="ANY LABEL"))
 @
 
-Now the example calculations.
+\subsection{Irradiances from vectors}
+
+Here we describe the functions that use vectors as arguments. In the next section we describe similar functions for \code{spct} objects.
+
+The functions taking numerical vectors as arguments can be used with stored as vectors, or using \code{with} with data frames, data tables, lists, and spectra objetcs.
+
+<<>>=
+with(sun.data, photon_irradiance(w.length, s.e.irrad, PAR()))
+with(sun.spct, photon_irradiance(w.length, s.e.irrad, PAR()))
+@
+
+The recommended practice is to use \code{with}, as above. But to keep code lines shorter and simpler we attach the data frame \code{sun.data} to make the contained vectors visible. The use of \code{w.length} and \code{s.e.irrad} and7or \code{s.q.irrad} is just our convention, and vectors of any name can be supplied as arguments.
+
+<<example-data, eval=TRUE>>=
+attach(sun.data)
+@
+
+Some examples comparing different definitions of wavebands for PAR. Photon irradiance is expresed in \mol.
 
 <<example-irradiance-01>>=
 photon_irradiance(w.length, s.e.irrad, my_PAR)
 photon_irradiance(w.length, s.e.irrad, my_PARx)
 
 photon_irradiance(w.length, s.e.irrad, PAR())
+photon_irradiance(w.length, s.e.irrad, PAR()) * 1e6
+@
 
+Some examples comparing different definitions of wavebands for erythemal \UVB (CIE98) irradiance in \watt.
+
+<<example-irradiance-02>>=
 photon_irradiance(w.length, s.e.irrad, my_CIE_1)
 photon_irradiance(w.length, s.e.irrad, my_CIE_2)
 photon_irradiance(w.length, s.e.irrad, my_CIE_3)
@@ -227,12 +376,34 @@ The are also convenience functions for calculating how `total' irradiance is spl
 of the spectrum. The functions \texttt{split\_photon\_irradiance()} and \texttt{split\_energy\_irradiance()}, just call \texttt{split\_irradiance()} with the \texttt{unit.out} set to \texttt{"photon"} or \texttt{"energy"} respectively.
 
 <<>>=
-split_energy_irradiance(w.length, s.e.irrad, c(300, 400, 500, 600, 700, 800))
-split_energy_irradiance(w.length, s.e.irrad, c(400, 500, 600, 700), scale="percent")
-split_photon_irradiance(w.length, s.e.irrad, c(400, 500, 600, 700), scale="percent")
+split_energy_irradiance(w.length, s.e.irrad,
+                        c(300, 400, 500, 600, 700, 800))
+split_energy_irradiance(w.length, s.e.irrad,
+                        c(400, 500, 600, 700),
+                        scale="percent")
+split_photon_irradiance(w.length, s.e.irrad,
+                        c(400, 500, 600, 700),
+                        scale="percent")
+@
+
+Now we detach the data frame.
+
+<<example-data-detach, eval=TRUE>>=
+detach(sun.data)
+@
+
+\subsection{Irradiances from spectra}
+
+The code using \code{spct} objects is much simpler.
+
+<<>>=
+e_irrad_spct(sun.spct, PAR())
+q_irrad_spct(sun.spct, PAR())
 @
 
 \section{Calculating ratios}
+
+\subsection{Ratios from vectors}
 
 The function \texttt{waveband\_ratio()} takes basically the same parameters as \texttt{irradiance}, but two waveband definitions instead of one, and two \texttt{unit.out} definitions instead of one. This is the base function used in all the `ratio' functions in the \PB package.
 
@@ -241,6 +412,12 @@ The derived functions are: \texttt{photon\_ratio()}, \texttt{energy\_ratio()}, a
 
 If for example we would like to calculate the ratio between UVB and PAR radiation, we would use either
 of the following function calls, depending on which type of units we desire.
+
+We attach again the data frame.
+
+<<example-data-1, eval=TRUE>>=
+attach(sun.data)
+@
 
 <<example-ratios-01>>=
 photon_ratio(w.length, s.e.irrad, UVB(), PAR())
@@ -262,15 +439,25 @@ print(PAR.energy)
 The `ratio' functions do not accept lists of waveband objects as the `irradiance' functions do. This is a feature, as otherwise it would be too easy to make mistakes. It is possible to use the `irradiance' functions to calculate several ratios in one go.
 
 <<example-ratios-03>>=
-ratios <- photon_irradiance(w.length, s.e.irrad, list(UVC=UVC(), UVB=UVB(), UVA=UVA())) / photon_irradiance(w.length, s.e.irrad, PAR())
+ratios <- photon_irradiance(w.length, s.e.irrad,
+                            list(UVC=UVC(), UVB=UVB(), UVA=UVA())) /
+  photon_irradiance(w.length, s.e.irrad, PAR())
 ratios
 names(ratios) <- paste(names(ratios), ":PAR", sep="")
 ratios
 @
 
+\subsection{Ratios from spectra}
+
+\begin{framed}
+To be implemented soon.
+\end{framed}
+
 \section{Calculating weighted spectral irradiances}
 
 This calculation is not very frequently used, but it is very instructive to look at spectral data in this way, as it can make apparent the large effect that small measuring errors can have on the estimated effective irradiances or exposures.
+
+\subsection{Weighted spectral irradiance from vectors}
 
 We here plot weighted and unweighted irradiances using simulated solar spectral irradiance data.
 
@@ -284,9 +471,15 @@ plot(weighted.s.e.irrad/max(weighted.s.e.irrad) ~ w.length, type="l", col="red",
 lines(s.e.irrad/max(s.e.irrad) ~ w.length, col="black")
 @
 
+\subsection{Weighted spectral irradiance from an unweighted spectrum}
+
+\begin{framed}
+To be implemented soon.
+\end{framed}
+
 \section{Position of the sun in the sky}
 
-In photobiology research we sometimed need to calculate the position on the sun at arbitrary locations and positions. The function \code{sun\_angles} returns the azimuth in degrees eastwards, altitude in degrees above the horizon, solar disk diameter in degrees and sun to earth distance in astronomical units. The time should be POSIXct vector, possibly of length one, and it is easiest to use package \code{lubridate} for working with time and dates.
+In photobiology research we sometimed need to calculate the position on the sun at arbitrary locations and positions. The function \texttt{sun\_angles} returns the azimuth in degrees eastwards, altitude in degrees above the horizon, solar disk diameter in degrees and sun to earth distance in astronomical units. The time should be POSIXct vector, possibly of length one, and it is easiest to use package \texttt{lubridate} for working with time and dates.
 
 <<>>=
 sun_angles(now(), lat=34, lon=0)
@@ -323,19 +516,23 @@ Examples for wavelength ranges:
 <<>>=
 w_length_range2rgb(c(400,700))
 w_length_range2rgb(400:700)
-w_length_range2rgb(sun.data$w.length)
+w_length_range2rgb(sun.spct$w.length)
 w_length_range2rgb(550)
 @
 
-Examples for spectra, in this case the solar spectrum:
+Examples for spectral as vectors, in this case for the solar spectrum:
 
 <<>>=
-with(sun.data, s_e_irrad2rgb(w.length, s.e.irrad))
-with(sun.data, s_e_irrad2rgb(w.length, s.e.irrad, sens=ciexyzCMF2.data))
-with(sun.data, s_e_irrad2rgb(w.length, s.e.irrad, sens=ciexyzCMF10.data))
-with(sun.data, s_e_irrad2rgb(w.length, s.e.irrad, sens=ciexyzCC2.data))
-with(sun.data, s_e_irrad2rgb(w.length, s.e.irrad, sens=ciexyzCC10.data))
+with(sun.spct, s_e_irrad2rgb(w.length, s.e.irrad))
+with(sun.spct, s_e_irrad2rgb(w.length, s.e.irrad, sens=ciexyzCMF2.data))
+with(sun.spct, s_e_irrad2rgb(w.length, s.e.irrad, sens=ciexyzCMF10.data))
+with(sun.spct, s_e_irrad2rgb(w.length, s.e.irrad, sens=ciexyzCC2.data))
+with(sun.spct, s_e_irrad2rgb(w.length, s.e.irrad, sens=ciexyzCC10.data))
 @
+
+\begin{framed}
+Examples for \code{source.spct} objects to be implemented soon.
+\end{framed}
 
 Here we plot the RGB colours for the range covered by the CIE 2006 proposed standard calculated at each 1 nm step:
 
@@ -343,8 +540,6 @@ Here we plot the RGB colours for the range covered by the CIE 2006 proposed stan
 wl <- c(390, 829)
 
 my.colors <- w_length2rgb(wl[1]:wl[2])
-# my.colors <- w_length2rgb(wl[1]:wl[2], sens=ciexyzCC2.data)
-# my.colors <- w_length2rgb(wl[1]:wl[2], sens=ciexyzCMF2.data)
 
 colCount <- 40 # number per row
 rowCount <- trunc(length(my.colors) / colCount)
@@ -365,28 +560,42 @@ for (j in 0:(rowCount-1))
 
 @
 
-Given a color in any of the above ways, yields RGB values that can be used to locate the position of any colour on Maxwell's triangle. First using R's predifined colour.
+Given a color in any of the above ways, yields RGB values that can be used to locate the position of any colour on Maxwell's triangle. Here using R's predifined colours.
 
 <<>>=
 colours <- c("red", "green", "yellow", "white", "orange", "blue", "pink", "purple")
 rgb.values <- col2rgb(colours)
 test.data <- data.frame(colour=colours, R=rgb.values[1, ], G=rgb.values[2, ], B=rgb.values[3, ])
-maxwell.tern <- ggtern(data=test.data, aes(x=R, y=G, z=B, label=colour, fill=colour)) + geom_point(shape=21, size=4) + geom_text(hjust=-0.3) +
+maxwell.tern <- ggtern(data=test.data, aes(x=R, y=G, z=B, label=colour, fill=colour)) +
+  geom_point(shape=21, size=4) + geom_text(hjust=-0.3) +
   labs(x = "R", y="G", z="B") + scale_fill_identity()
 maxwell.tern
 @
 
-Now using colours calculated from filter transmittance spectra.
+We simulate the spectra of filtered sunlight by multiplying the solar spectrum by filter transmittance spectra.
 
 <<>>=
-yellow.filter <- with(canary.yellow.new.dt, s_e_irrad2rgb(w.length, Tfr, sens=ciexyzCMF2.data))
-green.filter <- with(moss.green.new.dt, s_e_irrad2rgb(w.length, Tfr, sens=ciexyzCMF2.data))
-polyester.filter <- with(polyester.new.dt, s_e_irrad2rgb(w.length, Tfr, sens=ciexyzCMF2.data))
+yellow.light.spct <- canary.yellow.new.spct * sun.spct
+green.light.spct <- moss.green.new.spct * sun.spct
+polyester.light.spct <- polyester.new.spct * sun.spct
+@
+
+Now using the filtered sunlight spectra we calculate colours based on human vision photoreceptors.
+
+<<>>=
+yellow.filter <- with(yellow.light.spct, s_e_irrad2rgb(w.length, s.e.irrad))
+green.filter <- with(green.light.spct, s_e_irrad2rgb(w.length, s.e.irrad))
+polyester.filter <- with(polyester.light.spct, s_e_irrad2rgb(w.length, s.e.irrad))
 colours <- c(yellow.filter, green.filter, polyester.filter)
 rgb.values <- col2rgb(colours)
-test.data <- data.frame(colour=colours, R=rgb.values[1, ], G=rgb.values[2, ], B=rgb.values[3, ], labels=c("canary yellow", "moss green", "polyester"))
-maxwell.tern <- ggtern(data=test.data, aes(x=R, y=G, z=B, fill=colour, label=labels)) + geom_point(shape=21, size=4) + geom_text(hjust=-0.15) +
-  labs(x = "R", y="G", z="B")  + scale_fill_identity()
+test.data <- data.frame(colour=colours,
+                        R=rgb.values[1, ], G=rgb.values[2, ], B=rgb.values[3, ],
+                        labels=c("canary yellow", "moss green", "polyester"))
+maxwell.tern <- ggtern(data=test.data, aes(x=R, y=G, z=B, fill=colour, label=labels)) +
+  geom_point(shape=21, size=4) +
+  geom_text(hjust=-0.15) +
+  labs(x = "R", y="G", z="B")  +
+  scale_fill_identity()
 maxwell.tern
 @
 
@@ -411,52 +620,54 @@ The first thing to do is to think whether any part of the spectral measurements 
 In the following example we use a longer wavelength (297 nm) just to show how the function works, because the example spectral data set starts at 293 nm.
 
 <<example-sun>>=
-head(sun.data)
+head(sun.spct)
 @
 
 Sub-setting can be easily done as follows if the data are in a data.frame (of course, replacing \texttt{w.length} with the name used in your data frame for the wavelengths array):
 
 <<example-subset>>=
-subsetted.sun.data <- subset(sun.data, w.length >= 297)
-head(subsetted.sun.data)
+subsetted.sun.spct <- subset(sun.spct, w.length >= 297)
+head(subsetted.sun.spct)
 @
 
 And then just use the sub-setted data in your calculations.
 
 If the data are not in a dataframe, then there are different options: 1) create a data frame from your data, 2) use the function \texttt{trim\_tails()} from this package, or 3) just use R commands. Here we give examples of the use of \texttt{trim\_tails()}, and just use the same data as in earlier examples. First we delete all data for wavelengths shorter than 293 nm.
 
+\subsection{Trimming spectra stored as vectors}
+
 <<example-trim-low>>=
-trimmed.sun.data <- trim_tails(w.length, s.e.irrad, low.limit=297)
-head(trimmed.sun.data)
-tail(trimmed.sun.data)
+trimmed.sun.spct <- trim_tails(w.length, s.e.irrad, low.limit=297)
+head(trimmed.sun.spct)
+tail(trimmed.sun.spct)
 @
 
 This function returns a new data.frame and uses always the same variable names for the columns.
 
 <<example-trim-both>>=
-trimmed.both.sun.data <- trim_tails(w.length, s.e.irrad, low.limit=297, high.limit=550)
-head(trimmed.both.sun.data)
-tail(trimmed.both.sun.data)
+trimmed.both.sun.spct <- trim_tails(w.length, s.e.irrad, low.limit=297, high.limit=550)
+head(trimmed.both.sun.spct)
+tail(trimmed.both.sun.spct)
 @
 
 If we supply a different value than the default NULL for the parameter \texttt{fill}, the w.length values are kept, and the trimmed spectral irradiance values replaced by the value supplied.
 
 <<example-trim-na>>=
-trimmed.na.sun.data <- trim_tails(w.length, s.e.irrad, low.limit=297, fill=NA)
-head(trimmed.na.sun.data)
+trimmed.na.sun.spct <- trim_tails(w.length, s.e.irrad, low.limit=297, fill=NA)
+head(trimmed.na.sun.spct)
 @
 
 <<example-trim-both-na>>=
-trimmed.both.na.sun.data <- trim_tails(w.length, s.e.irrad, low.limit=297, high.limit=400, fill=NA)
-head(trimmed.both.na.sun.data)
-tail(trimmed.both.na.sun.data)
+trimmed.both.na.sun.spct <- trim_tails(w.length, s.e.irrad, low.limit=297, high.limit=400, fill=NA)
+head(trimmed.both.na.sun.spct)
+tail(trimmed.both.na.sun.spct)
 @
 
 In addition to NA we can supply an arbitrary numeric value.
 
 <<example-trim-zero>>=
-trimmed.zero.sun.data <- trim_tails(w.length, s.e.irrad, low.limit=297, fill=0.0)
-head(trimmed.zero.sun.data)
+trimmed.zero.sun.spct <- trim_tails(w.length, s.e.irrad, low.limit=297, fill=0.0)
+head(trimmed.zero.sun.spct)
 @
 
 %Using real spectral data compared to modelled spectral data for sunlight we show a finally some of the pitfalls, and possible work-arounds, for dealing with noisy measurements, and calculating effective doses from them.
@@ -464,6 +675,21 @@ head(trimmed.zero.sun.data)
 <<detach>>=
 detach(sun.data)
 @
+
+\subsection{Trimming spectra}
+
+We can use as above \code{low.limit}, \code{high.limit}, and \code{fill} as in the examples above.
+
+<<>>=
+trim_spct(sun.spct, low.limit=297)
+@
+
+We can in addition do the trimming with a \code{waveband} object.
+
+<<>>=
+trim_spct(sun.spct, PAR())
+@
+
 
 \section{Optimizing performance}
 

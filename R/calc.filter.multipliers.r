@@ -4,13 +4,13 @@
 #' Calculate multipliers by interpolation from filter data, from user-supplied spectral transmittance
 #' data or by name for data included in the package
 #'
-#' @usage calc_filter_multipliers(w.length.out, filter=clear.dt,
+#' @usage calc_filter_multipliers(w.length.out, filter=clear.spct,
 #'                                w.length.in=NULL, transmittance.in=NULL,
 #'                                pc.in=TRUE, pc.out=FALSE, div=1.0)
 #'
 #' @param w.length.out numeric vector of wavelengths (nm) for output
 #' @param filter a character string giving the name of a filter data set, or an object of class "filter.spct"
-#'   default is 'clear.dt' a clear filter (T = 1.0)
+#'   default is 'clear.spct' a clear filter (T = 1.0)
 #' @param w.length.in numeric vector of wavelengths (nm) for input
 #' @param transmittance.in numeric vector of spectral transmittance value (as percent)
 #' @param pc.in logical value indicating whether transmittances are expressed as percentages or fractions (default is to receive a percent)
@@ -22,22 +22,22 @@
 #' @export
 #' @examples
 #' require(photobiologyFilters)
-#' data(polythene.new.dt)
-#' with(polythene.new.dt, calc_filter_multipliers(400:500, w.length.in=w.length, transmittance.in=Tpc))
+#' data(polythene.new.spct)
+#' with(polythene.new.spct, calc_filter_multipliers(400:500, w.length.in=w.length, transmittance.in=Tpc))
 #' calc_filter_multipliers(400:500, "polythene.new")
-#' calc_filter_multipliers(400:500, polythene.new.dt)
+#' calc_filter_multipliers(400:500, polythene.new.spct)
 #' calc_filter_multipliers(400:500, "polythene.new", pc.out=TRUE)
 #' calc_filter_multipliers(400:500)
 #'
 calc_filter_multipliers <- function(w.length.out,
-                                    filter=clear.dt,
+                                    filter=clear.spct,
                                     w.length.in=NULL, transmittance.in=NULL,
                                     pc.in=TRUE,
                                     pc.out=FALSE, div = 1.0) {
   if (is.null(w.length.in) | is.null(transmittance.in)) {
     if (is.character(filter)) {
       filter.name <- filter
-      filter.object.name <- paste(filter.name, "dt", sep=".")
+      filter.object.name <- paste(filter.name, "spct", sep=".")
       if (!exists(filter.object.name)) {
         filter.object.name <- paste(filter.name, "data", sep=".")
         if (!exists(filter.object.name)) {
