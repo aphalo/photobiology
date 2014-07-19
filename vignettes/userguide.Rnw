@@ -522,11 +522,14 @@ plot(weighted.s.e.irrad/max(weighted.s.e.irrad) ~ w.length, type="l", col="red",
 lines(s.e.irrad/max(s.e.irrad) ~ w.length, col="black")
 @
 
-\subsection{Weighted spectral irradiance from an unweighted spectrum}
+\subsection{Weighted spectral irradiance from an unweighted source spectrum}
 
-\begin{framed}
-To be implemented soon.
-\end{framed}
+The multiplication operator is defined for operation between a \texttt{source.spct} and a \texttt{waveband}.
+
+<<>>=
+sun.CIE.spct <- sun.spct * CIE()
+sun.CIE.spct
+@
 
 \section{Position of the sun in the sky}
 
@@ -571,7 +574,7 @@ w_length_range2rgb(sun.spct$w.length)
 w_length_range2rgb(550)
 @
 
-Examples for spectral as vectors, in this case for the solar spectrum:
+Examples for spectra as vectors, in this case for the solar spectrum:
 
 <<>>=
 with(sun.spct, s_e_irrad2rgb(w.length, s.e.irrad))
@@ -581,9 +584,12 @@ with(sun.spct, s_e_irrad2rgb(w.length, s.e.irrad, sens=ciexyzCC2.data))
 with(sun.spct, s_e_irrad2rgb(w.length, s.e.irrad, sens=ciexyzCC10.data))
 @
 
-\begin{framed}
-Examples for \texttt{source.spct} objects to be implemented soon.
-\end{framed}
+Examples with \texttt{source.spct} objects.
+
+<<>>=
+rgb_spct(sun.spct)
+rgb_spct(sun.spct, sens=ciexyzCMF2.data)
+@
 
 Here we plot the RGB colours for the range covered by the CIE 2006 proposed standard calculated at each 1 nm step:
 

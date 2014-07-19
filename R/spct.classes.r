@@ -227,28 +227,33 @@ setSourceSpct <- function(x) {
     z <- data.table(w.length = z1$w.length, s.e.irrad = z1$s.irrad, s.q.irrad = z2$s.irrad)
     setSourceSpct(z)
     return(z)
-  } else if(is(e1, "source.spct") && is(e2, "source.spct")) {
+  } else if (is(e1, "source.spct") && is(e2, "source.spct")) {
     z1 <- oper_spectra(e1$w.length, e2$w.length, e1$s.e.irrad, e2$s.e.irrad, bin.oper=`*`, trim="intersection")
     z2 <- oper_spectra(e1$w.length, e2$w.length, e1$s.e.irrad, e2$s.q.irrad, bin.oper=`*`, trim="intersection")
     z <- data.table(w.length = z1$w.length, s.e.irrad = z1$s.irrad, s.q.irrad = z2$s.irrad)
     setSourceSpct(z)
     return(z)
-  } else if(is(e1, "filter.spct") && is.numeric(e2)) {
+  } else if (is(e1, "filter.spct") && is.numeric(e2)) {
     z <- copy(e1)
     z$Tfr <- z$Tfr * e2
     z$Tpc <- z$Tfr * 100
     return(z)
-  } else if(is(e1, "reflector.spct") && is.numeric(e2)) {
+  } else if (is(e1, "reflector.spct") && is.numeric(e2)) {
     z <- copy(e1)
     z$Rfr <- z$Rfr * e2
     z$Rpc <- z$Rfr * 100
     return(z)
-  } else if(is(e1, "source.spct") && is.numeric(e2)) {
+  } else if (is(e1, "source.spct") && is.numeric(e2)) {
     z <- copy(e1)
     z$s.e.irrad <- z$s.e.irrad * e2
     z$s.q.irrad <- z$s.q.irrad * e2
     return(z)
-  }else {
+  } else if (is(e1, "source.spct") && is(e2, "waveband")) {
+    z <- copy(e1)
+    z$s.e.irrad.wght <- z$s.e.irrad * calc_multipliers(z$w.length, e2, unit.out="energy", unit.in="energy")
+    z$s.q.irrad.wght <- z$s.q.irrad * calc_multipliers(z$w.length, e2, unit.out="photon", unit.in="photon")
+    return(z)
+  } else {
     return(NA)
   }
 }

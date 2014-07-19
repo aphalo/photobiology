@@ -16,20 +16,20 @@
 #' @param sens a dataframe with variables w.length, x, y, and z, giving the CC or CMF definition (default is the
 #' proposed human CMF according to CIE 2006.)
 #' @param color.name character string for naming the rgb color definition
-#' 
-#' @return A color defined using \code{rgb()}. The numeric values of the RGB components can be obtained 
+#'
+#' @return A color defined using \code{rgb()}. The numeric values of the RGB components can be obtained
 #' using function \code{col2rgb()}.
-#' 
+#'
 #' @export
 #' @examples
 #' data(sun.data)
 #' my.color <- with(sun.data, s_e_irrad2rgb(w.length, s.e.irrad, color.name="sunWhite"))
 #' col2rgb(my.color)
-#' 
-#' @author Pedro J. Aphalo 
-#' @note Very heavily modified from Chad Eliason's \email{cme16@@zips.uakron.edu} spec2rgb function in package Pavo. 
+#'
+#' @author Pedro J. Aphalo
+#' @note Very heavily modified from Chad Eliason's \email{cme16@@zips.uakron.edu} spec2rgb function in package Pavo.
 #' @references CIE(1932). Commission Internationale de l'Eclairage Proceedings, 1931. Cambridge: Cambridge University Press.
-#' @references Color matching functions obtained from Colour and Vision Research Laboratory 
+#' @references Color matching functions obtained from Colour and Vision Research Laboratory
 #' online data respository at \url{http://www.cvrl.org/}.
 #' @references \url{http://www.cs.rit.edu/~ncs/color/t_spectr.html}.
 
@@ -51,7 +51,7 @@ s_e_irrad2rgb <- function(w.length, s.e.irrad, sens=ciexyzCMF2.data, color.name=
 #      }
 #    }
   }
-  
+
 # if we have a spectrum we will expand and fill with zeros when needed
 
 if (!single_wl) {
