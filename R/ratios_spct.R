@@ -1,0 +1,114 @@
+#' Calculate photon ratio from spectral irradiance.
+#'
+#' This function returns the photon ratio for a given
+#' pair of wavebands of a light source spectrum.
+#'
+#' @usage q_ratio_spct(spct, w.band.num=NULL, w.band.denom=NULL,
+#' use.cached.mult=FALSE, use.hinges=NULL)
+#'
+#' @param spct an object of class "source.spct"
+#' @param w.band.num waveband definition created with new_waveband()
+#' @param w.band.denom waveband definition created with new_waveband()
+#' @param use.cached.mult logical indicating whether multiplier values should be cached between calls
+#' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
+#'
+#' @return a single numeric nondimensional value giving a photon ratio
+#' @keywords manip misc
+#' @export
+#' @examples
+#' data(sun.spct)
+#' q_ratio_spct(sun.spct, new_waveband(400,500), new_waveband(400,700))
+#'
+#' @note The last two parameters control speed optimizations. The defaults should be suitable
+#' in mosts cases. If you will use repeatedly
+#' the same SWFs on many spectra measured at exactly the same wavelengths you may obtain some speed up
+#' by setting \code{use.cached.mult=TRUE}. However, be aware that you are responsible for ensuring
+#' that the wavelengths are the same in each call, as the only test done is for the length of the
+#' \code{w.length} vector.
+
+q_ratio_spct <-
+  function(spct, w.band.num=NULL, w.band.denom=NULL, use.cached.mult=FALSE, use.hinges=NULL){
+    q.irrad.num <- irrad_spct(spct, w.band=w.band.num, unit.out="photon",
+                              use.cached.mult=use.cached.mult, use.hinges=use.hinges)
+    q.irrad.denom <- irrad_spct(spct, w.band=w.band.denom, unit.out="photon",
+                                use.cached.mult=use.cached.mult, use.hinges=use.hinges)
+    ratio <- q.irrad.num / q.irrad.denom
+    names(ratio) <- paste(names(q.irrad.num), ":", names(q.irrad.denom), "(q:q)", sep="")
+    return(ratio)
+  }
+
+#' Calculate energy ratio from spectral irradiance.
+#'
+#' This function returns the photon ratio for a given
+#' pair of wavebands of a light source spectrum.
+#'
+#' @usage e_ratio_spct(spct, w.band.num=NULL, w.band.denom=NULL,
+#' use.cached.mult=FALSE, use.hinges=NULL)
+#'
+#' @param spct an object of class "source.spct"
+#' @param w.band.num waveband definition created with new_waveband()
+#' @param w.band.denom waveband definition created with new_waveband()
+#' @param use.cached.mult logical indicating whether multiplier values should be cached between calls
+#' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
+#'
+#' @return a single numeric nondimensional value giving an energy ratio
+#' @keywords manip misc
+#' @export
+#' @examples
+#' data(sun.spct)
+#' e_ratio_spct(sun.spct, new_waveband(400,500), new_waveband(400,700))
+#'
+#' @note The last two parameters control speed optimizations. The defaults should be suitable
+#' in mosts cases. If you will use repeatedly
+#' the same SWFs on many spectra measured at exactly the same wavelengths you may obtain some speed up
+#' by setting \code{use.cached.mult=TRUE}. However, be aware that you are responsible for ensuring
+#' that the wavelengths are the same in each call, as the only test done is for the length of the
+#' \code{w.length} vector.
+
+e_ratio_spct <-
+  function(spct, w.band.num=NULL, w.band.denom=NULL, use.cached.mult=FALSE, use.hinges=NULL){
+    e.irrad.num <- irrad_spct(spct, w.band=w.band.num, unit.out="energy",
+                              use.cached.mult=use.cached.mult, use.hinges=use.hinges)
+    e.irrad.denom <- irrad_spct(spct, w.band=w.band.denom, unit.out="energy",
+                                use.cached.mult=use.cached.mult, use.hinges=use.hinges)
+    ratio <- e.irrad.num / e.irrad.denom
+    names(ratio) <- paste(names(e.irrad.num), ":", names(e.irrad.denom), "(e:e)", sep="")
+    return(ratio)
+  }
+
+#' Calculate energy ratio from spectral irradiance.
+#'
+#' This function returns the photon ratio for a given
+#' pair of wavebands of a light source spectrum.
+#'
+#' @usage qe_ratio_spct(spct, w.band=NULL, use.cached.mult=FALSE, use.hinges=NULL)
+#'
+#' @param spct an object of class "source.spct"
+#' @param w.band a single definition or a list of waveband definitions created with new_waveband()
+#' @param use.cached.mult logical indicating whether multiplier values should be cached between calls
+#' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
+#'
+#' @return a single numeric value giving number of moles of photons per Joule.
+#' @keywords manip misc
+#' @export
+#' @examples
+#' data(sun.spct)
+#' qe_ratio_spct(sun.spct, new_waveband(400,700))
+#'
+#' @note The last two parameters control speed optimizations. The defaults should be suitable
+#' in mosts cases. If you will use repeatedly
+#' the same SWFs on many spectra measured at exactly the same wavelengths you may obtain some speed up
+#' by setting \code{use.cached.mult=TRUE}. However, be aware that you are responsible for ensuring
+#' that the wavelengths are the same in each call, as the only test done is for the length of the
+#' \code{w.length} vector.
+
+qe_ratio_spct <-
+  function(spct, w.band=NULL, use.cached.mult=FALSE, use.hinges=NULL){
+    q.irrad <- irrad_spct(spct, w.band=w.band, unit.out="photon",
+                              use.cached.mult=use.cached.mult, use.hinges=use.hinges)
+    e.irrad <- irrad_spct(spct, w.band=w.band, unit.out="energy",
+                                use.cached.mult=use.cached.mult, use.hinges=use.hinges)
+    ratio <- q.irrad / e.irrad
+    names(ratio) <- paste("q:e(", names(q.irrad), ")", sep="")
+    return(ratio)
+  }

@@ -30,7 +30,9 @@
 #' 978-952-10-8362-4 (paperback). Open access PDF download available at
 #' http://hdl.handle.net/10138/37558
 #'
-#' @note When released, this package will replace the package UVcalc.
+#' @note This package is still under development, but is by now quite stable.
+#'
+#' @import lubridate
 #'
 #' @importFrom Rcpp evalCpp
 #' @importFrom data.table data.table tables setkey setkeyv key "key<-" haskey CJ SJ copy
@@ -41,7 +43,13 @@
 #' @importFrom data.table chmatch "%chin%" chorder chgroup
 #' @importClassesFrom data.table data.table
 #'
-#' @import lubridate
+#' @exportClass data.table
+#' @export data.table tables setkey setkeyv key "key<-" haskey CJ SJ copy
+#' @export as.data.table is.data.table test.data.table last like "%like%" between "%between%"
+#' @export truelength alloc.col ":="
+#' @export setattr setnames setcolorder set setDT
+#' @export rbindlist
+#' @export chmatch "%chin%" chorder chgroup
 #'
 #' @examples
 #' data(sun.data)

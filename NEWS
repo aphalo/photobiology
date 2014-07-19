@@ -1,10 +1,13 @@
 photobiology 0.3.4
 ===================
 
-New functions interpolate_spct(), reflectance_spct() and transmittance_spct().
+Added a class for reflectance spectra and updated operator definitions. Added function setReflectorSpct().
+New functions interpolate_spct(), reflectance_spct(), transmittance_spct(), q_ratio_spct(), e_ratio_spct(), qe_ratio_spct(), and check(), check.generic.spct(), check.filter.spct(), check.reflector.spct(), and check.source.spct().
 Debugged min(), max(), range(), midpoint(), spread(), labels() for spectra.
+Updated setGenericSpct(), setFilterSpct() and setSourceSpct() to use check() to check and fix if possible missing variable, or add the missing variables as a vector of NAs.
+
 Updated the vignette with examples of the use of spct objects and the functions and operators defined for them.
-Added. Modified packages so as to consistently use .spct as the name tag of all objects representing spectra. Recently .dt was used and earlier, .data, that is still a fall-back in the current version.
+Modified packages so as to consistently use .spct as the name tag of all objects representing spectra. Recently .dt was used and earlier, .data, that is still a fall-back in the current version.
 
 photobiology 0.3.3
 ===================
