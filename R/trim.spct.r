@@ -47,7 +47,7 @@ trim_spct <- function(spct, band=NULL, low.limit=min(spct), high.limit=max(spct)
   verbose <- FALSE # use option in the future
 
   names.spct <- names(spct)
-  names.data <-names.spct[names.spct != "w.length"]
+  names.data <- names.spct[names.spct != "w.length"]
   class.spct  <- class(spct)
   comment.spct <- comment(spct)
   # check for target
@@ -64,12 +64,10 @@ trim_spct <- function(spct, band=NULL, low.limit=min(spct), high.limit=max(spct)
       low.tail.length <- low.end - low.limit
       low.tail.w.length <- seq(from = low.limit, to = low.end - 1, length=low.tail.length)
       spct.top <- data.table(w.length = low.tail.w.length)
-      setattr(spct.top, "class", class.spct)
       for (data.col in names.data) {
         spct.top[ , eval(data.col) := fill]
       }
-      spct <- rbind(spct.top, spct)
-      setattr(spct, "comment", comment.spct)
+      spct <- rbindlist(list(spct.top, spct))
       low.end <- min(spct)
     } else {
       if (verbose) {
@@ -87,12 +85,10 @@ trim_spct <- function(spct, band=NULL, low.limit=min(spct), high.limit=max(spct)
       high.tail.length <- high.limit - high.end
       high.tail.w.length <- seq(from = high.end + 1, to = high.limit, length = high.tail.length)
       spct.bottom <- data.table(w.length = high.tail.w.length)
-      setattr(spct.bottom, "class", class.spct)
       for (data.col in names.data) {
         spct.bottom[ , eval(data.col) := fill]
       }
-      spct <- rbind(spct, spct.bottom)
-      setattr(spct, "comment", comment.spct)
+      spct <- rbindlist(list(spct, spct.bottom))
       low.end <- max(spct)
     } else {
       if (verbose) {
@@ -108,15 +104,17 @@ trim_spct <- function(spct, band=NULL, low.limit=min(spct), high.limit=max(spct)
     hinges <- c(low.limit - 1e-4, low.limit, high.limit, high.limit + 1e-4)
     spct <- insert_spct_hinges(spct, hinges)
   }
-
   setkey(spct, w.length)
   if (is.null(fill)) {
-    return(spct[w.length %between% trim.range])
+    spct <- spct[w.length %between% trim.range]
   }
   else {
     for (data.col in names.data) {
       spct[!w.length %between% trim.range, eval(data.col) := fill]
     }
-  return(spct)
   }
+# %between% removes derived class tags!
+  setattr(spct, "class", class.spct)
+  setattr(spct, "comment", comment.spct)
+  return(spct)
 }
