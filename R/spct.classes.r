@@ -227,31 +227,31 @@ setSourceSpct <- function(x) {
   } else if (is(e1, "filter.spct") && is.numeric(e2)) {
     z <- copy(e1)
     z[ , Tfr := Tfr * e2]
-    if (exists("Tpc", z, inherit=FALSE)) {
+    if (exists("Tpc", z, inherits=FALSE)) {
       z[ , Tpc := NULL]
     }
-    if (exists("A", z, inherit=FALSE)) {
+    if (exists("A", z, inherits=FALSE)) {
       z[ , A := NULL]
     }
     return(z)
   } else if (is(e1, "reflector.spct") && is.numeric(e2)) {
     z <- copy(e1)
     z[ , Rfr := Rfr * e2]
-    if (exists("Rpc", z, inherit=FALSE)) {
+    if (exists("Rpc", z, inherits=FALSE)) {
       z[ , Tpc := NULL]
     }
     return(z)
   } else if (is(e1, "source.spct") && is.numeric(e2)) {
     z <- copy(e1)
     z[ , s.e.irrad := s.e.irrad * e2]
-    if (exists("s.q.irrad", z, inherit=FALSE)) {
+    if (exists("s.q.irrad", z, inherits=FALSE)) {
       z[ , s.q.irrad := NULL]
     }
     return(z)
   } else if (is(e1, "source.spct") && is(e2, "waveband")) {
     z <- e1
     z$s.e.irrad <- z$s.e.irrad * calc_multipliers(z$w.length, e2, unit.out="energy", unit.in="energy")
-    if (exists("s.q.irrad", z, inherit=FALSE)) {
+    if (exists("s.q.irrad", z, inherits=FALSE)) {
       z[ , s.q.irrad := NULL]
     }
     return(z)
@@ -308,31 +308,31 @@ setSourceSpct <- function(x) {
   } else if (is(e1, "filter.spct") && is.numeric(e2)) {
     z <- copy(e1)
     z[ , Tfr := Tfr / e2]
-    if (exists("Tpc", z, inherit=FALSE)) {
+    if (exists("Tpc", z, inherits=FALSE)) {
       z[ , Tpc := NULL]
     }
-    if (exists("A", z, inherit=FALSE)) {
+    if (exists("A", z, inherits=FALSE)) {
       z[ , A := NULL]
     }
     return(z)
   } else if (is(e1, "reflector.spct") && is.numeric(e2)) {
     z <- copy(e1)
     z[ , Rfr := Rfr / e2]
-    if (exists("Rpc", z, inherit=FALSE)) {
+    if (exists("Rpc", z, inherits=FALSE)) {
       z[ , Tpc := NULL]
     }
     return(z)
   } else if (is(e1, "source.spct") && is.numeric(e2)) {
     z <- copy(e1)
     z[ , s.e.irrad := s.e.irrad / e2]
-    if (exists("s.q.irrad", z, inherit=FALSE)) {
+    if (exists("s.q.irrad", z, inherits=FALSE)) {
       z[ , s.q.irrad := NULL]
     }
     return(z)
   } else if (is(e1, "source.spct") && is(e2, "waveband")) {
     z <- e1
     z$s.e.irrad <- z$s.e.irrad / calc_multipliers(z$w.length, e2, unit.out="energy", unit.in="energy")
-    if (exists("s.q.irrad", z, inherit=FALSE)) {
+    if (exists("s.q.irrad", z, inherits=FALSE)) {
       z[ , s.q.irrad := NULL]
     }
     return(z)
@@ -389,24 +389,24 @@ setSourceSpct <- function(x) {
   } else if (is(e1, "filter.spct") && is.numeric(e2)) {
     z <- copy(e1)
     z[ , Tfr := Tfr + e2]
-    if (exists("Tpc", z, inherit=FALSE)) {
+    if (exists("Tpc", z, inherits=FALSE)) {
       z[ , Tpc := NULL]
     }
-    if (exists("A", z, inherit=FALSE)) {
+    if (exists("A", z, inherits=FALSE)) {
       z[ , A := NULL]
     }
     return(z)
   } else if (is(e1, "reflector.spct") && is.numeric(e2)) {
     z <- copy(e1)
     z[ , Rfr := Rfr + e2]
-    if (exists("Rpc", z, inherit=FALSE)) {
+    if (exists("Rpc", z, inherits=FALSE)) {
       z[ , Tpc := NULL]
     }
     return(z)
   } else if (is(e1, "source.spct") && is.numeric(e2)) {
     z <- copy(e1)
     z[ , s.e.irrad := s.e.irrad + e2]
-    if (exists("s.q.irrad", z, inherit=FALSE)) {
+    if (exists("s.q.irrad", z, inherits=FALSE)) {
       z[ , s.q.irrad := NULL]
     }
     return(z)
@@ -463,24 +463,24 @@ setSourceSpct <- function(x) {
   } else if (is(e1, "filter.spct") && is.numeric(e2)) {
     z <- copy(e1)
     z[ , Tfr := Tfr - e2]
-    if (exists("Tpc", z, inherit=FALSE)) {
+    if (exists("Tpc", z, inherits=FALSE)) {
       z[ , Tpc := NULL]
     }
-    if (exists("A", z, inherit=FALSE)) {
+    if (exists("A", z, inherits=FALSE)) {
       z[ , A := NULL]
     }
     return(z)
   } else if (is(e1, "reflector.spct") && is.numeric(e2)) {
     z <- copy(e1)
     z[ , Rfr := Rfr - e2]
-    if (exists("Rpc", z, inherit=FALSE)) {
+    if (exists("Rpc", z, inherits=FALSE)) {
       z[ , Tpc := NULL]
     }
     return(z)
   } else if (is(e1, "source.spct") && is.numeric(e2)) {
     z <- copy(e1)
     z[ , s.e.irrad := s.e.irrad - e2]
-    if (exists("s.q.irrad", z, inherit=FALSE)) {
+    if (exists("s.q.irrad", z, inherits=FALSE)) {
       z[ , s.q.irrad := NULL]
     }
     return(z)
@@ -501,24 +501,24 @@ setSourceSpct <- function(x) {
   if(is(e1, "filter.spct") && is.numeric(e2)) {
     z <- copy(e1)
     z[ , Tfr := Tfr^e2]
-    if (exists("Tpc", z, inherit=FALSE)) {
+    if (exists("Tpc", z, inherits=FALSE)) {
       z[ , Tpc := NULL]
     }
-    if (exists("A", z, inherit=FALSE)) {
+    if (exists("A", z, inherits=FALSE)) {
       z[ , A := NULL]
     }
     return(z)
   } else if(is(e1, "reflector.spct") && is.numeric(e2)) {
     z <- copy(e1)
     z$Rfr <- z$Rfr^e2
-    if (exists("Rpc", z, inherit=FALSE)) {
+    if (exists("Rpc", z, inherits=FALSE)) {
       z[ , Tpc := NULL]
     }
     return(z)
   } else if(is(e1, "source.spct") && is.numeric(e2)) {
     z <- copy(e1)
     z[ , s.e.irrad := s.e.irrad^e2]
-    if (exists("s.q.irrad", z, inherit=FALSE)) {
+    if (exists("s.q.irrad", z, inherits=FALSE)) {
       z[ , s.q.irrad := NULL]
     }
     return(z)
@@ -539,17 +539,17 @@ setSourceSpct <- function(x) {
   if(is(x, "filter.spct")) {
     z <- copy(x)
     z$Tfr <- log(z$Tfr, base)
-    if (exists("Tpc", z, inherit=FALSE)) {
+    if (exists("Tpc", z, inherits=FALSE)) {
       z[ , Tpc := NULL]
     }
-    if (exists("A", z, inherit=FALSE)) {
+    if (exists("A", z, inherits=FALSE)) {
       z[ , A := NULL]
     }
     return(z)
   } else if(is(x, "reflector.spct")) {
     z <- copy(x)
     z$Rfr <- log(z$Rfr, base)
-    if (exists("Rpc", z, inherit=FALSE)) {
+    if (exists("Rpc", z, inherits=FALSE)) {
       z[ , Tpc := NULL]
     }
     z$Rpc <- z$Rfr * 100
@@ -557,7 +557,7 @@ setSourceSpct <- function(x) {
   } else if(is(x, "source.spct")) {
     z <- copy(x)
     z$s.e.irrad <- log(z$s.e.irrad, base)
-    if (exists("s.q.irrad", z, inherit=FALSE)) {
+    if (exists("s.q.irrad", z, inherits=FALSE)) {
       z[ , s.q.irrad := NULL]
     }
     return(z)
@@ -577,24 +577,24 @@ setSourceSpct <- function(x) {
   if(is(x, "filter.spct")) {
     z <- copy(x)
     z[ , Tfr := log10(Tfr)]
-    if (exists("Tpc", z, inherit=FALSE)) {
+    if (exists("Tpc", z, inherits=FALSE)) {
       z[ , Tpc := NULL]
     }
-    if (exists("A", z, inherit=FALSE)) {
+    if (exists("A", z, inherits=FALSE)) {
       z[ , A := NULL]
     }
     return(z)
   } else if(is(x, "reflector.spct")) {
     z <- copy(x)
     z[ , Rfr := log10(Rfr)]
-    if (exists("Rpc", z, inherit=FALSE)) {
+    if (exists("Rpc", z, inherits=FALSE)) {
       z[ , Tpc := NULL]
     }
     return(z)
   } else if(is(x, "source.spct")) {
     z <- copy(x)
     z[, s.e.irrad := log10(s.e.irrad)]
-    if (exists("s.q.irrad", z, inherit=FALSE)) {
+    if (exists("s.q.irrad", z, inherits=FALSE)) {
       z[ , s.q.irrad := NULL]
     }
     return(z)
@@ -614,24 +614,24 @@ setSourceSpct <- function(x) {
   if(is(x, "filter.spct")) {
     z <- copy(x)
     z[ , Tfr := sqrt(Tfr)]
-    if (exists("Tpc", z, inherit=FALSE)) {
+    if (exists("Tpc", z, inherits=FALSE)) {
       z[ , Tpc := NULL]
     }
-    if (exists("A", z, inherit=FALSE)) {
+    if (exists("A", z, inherits=FALSE)) {
       z[ , A := NULL]
     }
     return(z)
   } else if(is(x, "reflector.spct")) {
     z <- copy(x)
     z[ , Rfr := sqrt(Rfr)]
-    if (exists("Rpc", z, inherit=FALSE)) {
+    if (exists("Rpc", z, inherits=FALSE)) {
       z[ , Tpc := NULL]
     }
     return(z)
   } else if(is(x, "source.spct")) {
     z <- copy(x)
     z[ , s.e.irrad := sqrt(s.e.irrad)]
-    if (exists("s.q.irrad", z, inherit=FALSE)) {
+    if (exists("s.q.irrad", z, inherits=FALSE)) {
       z[ , s.q.irrad := NULL]
     }
     return(z)
@@ -651,24 +651,24 @@ setSourceSpct <- function(x) {
   if(is(x, "filter.spct")) {
     z <- copy(x)
     z[ , Tfr := exp(Tfr)]
-    if (exists("Tpc", z, inherit=FALSE)) {
+    if (exists("Tpc", z, inherits=FALSE)) {
       z[ , Tpc := NULL]
     }
-    if (exists("A", z, inherit=FALSE)) {
+    if (exists("A", z, inherits=FALSE)) {
       z[ , A := NULL]
     }
     return(z)
   } else   if(is(x, "reflector.spct")) {
     z <- copy(x)
     z[ , Rfr <- exp(Rfr)]
-    if (exists("Rpc", z, inherit=FALSE)) {
+    if (exists("Rpc", z, inherits=FALSE)) {
       z[ , Tpc := NULL]
     }
     return(z)
   } else if(is(x, "source.spct")) {
     z <- copy(x)
     z[ , s.e.irrad := exp(s.e.irrad)]
-    if (exists("s.q.irrad", z, inherit=FALSE)) {
+    if (exists("s.q.irrad", z, inherits=FALSE)) {
       z[ , s.q.irrad := NULL]
     }
     return(z)

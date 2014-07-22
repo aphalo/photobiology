@@ -1,7 +1,7 @@
 photobiology 0.3.5
 ===================
 
-Fixed bug in trim_spct(), which was returning data.table objects instead of objects of the same type as supplied as argument.
+Fixed "bug"" in trim_spct(), which was returning data.table objects instead of objects of the same type as supplied as argument. A bug in version 1.9.2 of data.table was behind some other problems, so added requirement for data.table 1.9.3+ to DESCRIPTION.
 
 photobiology 0.3.4
 ===================
