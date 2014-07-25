@@ -22,3 +22,7 @@ class(test2.dt)
 test3.dt <- test.dt[ 2:9 ]
 class(test3.dt)
 
+test.dt[ , b := NULL]
+test1.dt[ , b := NULL]
+test2.dt[ , b := NULL]
+test3.dt[ , b := NULL]
