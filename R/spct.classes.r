@@ -101,12 +101,17 @@ check.source.spct <- function(x, byref=TRUE) {
 #' @exportClass generic.spct
 #'
 setGenSpct <- function(x) {
-  if (!is.data.table(x)) {
+  name = substitute(x)
+    if (!is.data.table(x)) {
       setDT(x)
   }
   setattr(x, "class", c("generic.spct", class(x)))
   x <- check(x)
   setkey(x, w.length)
+  if (is.name(name)) {
+    name = as.character(name)
+    assign(name, x, parent.frame(), inherits = TRUE)
+  }
   invisible(x)
 }
 
@@ -120,6 +125,7 @@ setGenSpct <- function(x) {
 #' @exportClass filter.spct
 #'
 setFilterSpct <- function(x) {
+  name = substitute(x)
   if (!is.data.table(x)) {
     setDT(x)
   }
@@ -129,8 +135,13 @@ setFilterSpct <- function(x) {
   if (!is(x, "filter.spct")) {
     setattr(x, "class", c("filter.spct", class(x)))
   }
+  x <- check(x)
   setkey(x, w.length)
-  invisible(check(x))
+  if (is.name(name)) {
+    name = as.character(name)
+    assign(name, x, parent.frame(), inherits = TRUE)
+  }
+  invisible(x)
 }
 
 #' set class of a data.frame or data.table or generic.spct object to "reflector.spct"
@@ -143,6 +154,7 @@ setFilterSpct <- function(x) {
 #' @exportClass filter.spct
 #'
 setReflectorSpct <- function(x) {
+  name = substitute(x)
   if (!is.data.table(x)) {
     setDT(x)
   }
@@ -152,8 +164,13 @@ setReflectorSpct <- function(x) {
   if (!is(x, "reflector.spct")) {
     setattr(x, "class", c("reflector.spct", class(x)))
   }
+  x <- check(x)
   setkey(x, w.length)
-  invisible(check(x))
+  if (is.name(name)) {
+    name = as.character(name)
+    assign(name, x, parent.frame(), inherits = TRUE)
+  }
+  invisible(x)
 }
 
 #' set class of a data.frame or data.table or generic.spct object to "source.spct"
@@ -166,6 +183,7 @@ setReflectorSpct <- function(x) {
 #' @exportClass source.spct
 #'
 setSourceSpct <- function(x) {
+  name = substitute(x)
   if (!is.data.table(x)) {
     setDT(x)
   }
@@ -175,8 +193,13 @@ setSourceSpct <- function(x) {
   if (!is(x, "sourcer_spct")) {
     setattr(x, "class", c("source.spct", class(x)))
   }
+  x <- check(x)
   setkey(x, w.length)
-  invisible(check(x))
+  if (is.name(name)) {
+    name = as.character(name)
+    assign(name, x, parent.frame(), inherits = TRUE)
+  }
+  invisible(x)
 }
 
 #' "*" operator for spectra
