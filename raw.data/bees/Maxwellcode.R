@@ -1,5 +1,4 @@
 library(photobiology)
-library(data.table)
 library(ggtern)
 
 oldwd <- setwd("raw.data/bees")
@@ -38,4 +37,16 @@ S.leaf[ , spec.loc.G := G / (U + B + G)]
 
 fig.spec0 <- ggtern(data=S.leaf, aes(x=spec.loc.U, y=spec.loc.B, z=spec.loc.G)) + geom_point() + geom_line()
 fig.spec0 + geom_point(data=S.flower, aes(x=U, y=B, z=G)) + labs(x="UV", y="Blue", z="Green")
+
+
+# Paula's data ------------------------------------------------------------
+
+aitovirna <- read.table(file="aitovirna1sivu.spc", col.names=c("w.length", "Rpc"))
+aitovirna.spct <- setReflectorSpct(aitovirna)
+class(aitovirna.spct)
+aitovirna.spct * D65.spct
+interpolate_spct(D65.spct, aitovirna$w.length)$data.col * aitovirna[,Rfr]
+
 setwd(oldwd)
+
+cedta()

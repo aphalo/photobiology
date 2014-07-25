@@ -12,8 +12,8 @@
 #' \tabular{ll}{
 #' Package: \tab photobiology\cr
 #' Type: \tab Package\cr
-#' Version: \tab 0.3.5\cr
-#' Date: \tab 2014-07-21\cr
+#' Version: \tab 0.3.6\cr
+#' Date: \tab 2014-07-25\cr
 #' License: \tab GPL (>= 2.0)\cr
 #' }
 #' The most important functions in the package are \code{\link{energy_irradiance}},
@@ -38,17 +38,28 @@
 #' @importFrom data.table data.table tables setkey setkeyv key "key<-" haskey CJ SJ copy
 #' @importFrom data.table as.data.table is.data.table test.data.table last like "%like%" between "%between%"
 #' @importFrom data.table truelength alloc.col ":="
-#' @importFrom data.table setattr setnames setcolorder set setDT
-#' @importFrom data.table rbindlist
+#' @importFrom data.table setattr setnames setcolorder set setDT setDF
+#' @importFrom data.table setorder setorderv
+#' @importFrom data.table setNumericRounding getNumericRounding
 #' @importFrom data.table chmatch "%chin%" chorder chgroup
+#' @importFrom data.table rbindlist
+#' @importFrom data.table fread
+#' @importFrom data.table address
+#' @importFrom data.table .SD .N .I .GRP .BY
 #' @importClassesFrom data.table data.table
 #'
 #' @exportClass data.table
 #' @export data.table tables setkey setkeyv key "key<-" haskey CJ SJ copy
 #' @export as.data.table is.data.table test.data.table last like "%like%" between "%between%"
 #' @export truelength alloc.col ":="
-#' @export setattr setnames setcolorder set setDT
+#' @export setattr setnames setcolorder set setDT setDF
+#' @export setorder setorderv
+#' @export setNumericRounding getNumericRounding
+#' @export chmatch "%chin%" chorder chgroup
 #' @export rbindlist
+#' @export fread
+#' @export address
+#' @export .SD .N .I .GRP .BY
 #' @export chmatch "%chin%" chorder chgroup
 #'
 #' @examples
