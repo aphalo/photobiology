@@ -18,5 +18,6 @@
 #' @docType data
 #' @keywords datasets
 #' @format A source spectrum with 441 rows and 2 variables
-#' @name D65.spct D65.dt D65.data
+#' @name D65.spct
+#' @aliases D65.spct D65.dt D65.data
 NULL

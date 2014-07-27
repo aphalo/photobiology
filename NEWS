@@ -1,3 +1,9 @@
+photobiology 0.3.6
+===================
+
+The set...Spct() functions until 0.3.5 had different semantics than setDT in data.table. This has now been fixed.
+Data for CIE D65 illuminant has been added. The imports and re-exports from data.table now include additional functions including some new to data.table 1.9.3.
+
 photobiology 0.3.5
 ===================
 
