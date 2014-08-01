@@ -97,7 +97,7 @@ It is usual to `group' these two (or more) vectors into a data frame. For vector
 
 \subsection{Using `spectra' objects}
 
-This package defines a family of objects based on data tables (data frame compatible objects) which impose some restrictions on the naming of the vectors, something that allows the second set of functions to `find' the data when passed one of these objects as argument. In addition, as the data is checked when the object is built, there is no need to test for the validity of the data each time a calculation is carried out. The other advantage of using \texttt{spct} objects, is that specialized versions of generic functions like \texttt{print} and operators like \texttt{+} can be defined for spectra. \texttt{spct} objects are derived from data.table objects, which in turn are derived from data.frame objects. In this package we define a \textit{generic} spectrum type of object, derived from data table, from which specialized types of spectra are derived. This `parenthood' hierarchy means that spectra objects can be used almost anywhere where a \texttt{data.frame} or \texttt{data.table} is expected. Many functions defined in package \texttt{data.table} and useful when working with spectra are re-exported by the current package, so that in most cases there is no need to explicitly include \texttt{library(data.table)} in your scripts.
+This package defines a family of objects based on data tables (data frame compatible objects) which impose some restrictions on the naming of the vectors, something that allows the second set of functions to `find' the data when passed one of these objects as argument. In addition, as the data is checked when the object is built, there is no need to test for the validity of the data each time a calculation is carried out. The other advantage of using \texttt{spct} objects, is that specialized versions of generic functions like \texttt{print} and operators like \texttt{+} can be defined for spectra. \texttt{\_\_\_.spct} objects are derived from data.table objects, which in turn are derived from data.frame objects. In this package we define a \textit{generic} spectrum type of object, derived from data table, from which specialized types of spectra are derived. This `parenthood' hierarchy means that spectra objects can be used almost anywhere where a \texttt{data.frame} or \texttt{data.table} is expected. Many functions defined in package \texttt{data.table} and useful when working with spectra are re-exported by the current package, so that in most cases there is no need to explicitly include \texttt{library(data.table)} in your scripts.
 
 Although \texttt{data.tables} are syntactically compatible with \texttt{data.frames}, in some special cases the same code may have different semantics as data tables use references in some cases were data frames would use a copy of the data. In general, no such problems exist, and the different semantics only applies to data table specific syntax. If in doubt, to avoid problems, when you really intend to make a new copy of a spectrum, preserving the original object unchanged by later operations on the new `name', use function \texttt{copy} in addition to the assignment operator.
 
@@ -156,7 +156,7 @@ wrongly calculated, and the returned value for effective irradiance will be comp
 
 \subsection{Creation}
 
-\texttt{generic.spct} objects can be created from data tables and data frames simply by setting then as such. However, a column called \texttt{w.length} must be present and contain wavelength values expressed in nm.
+\texttt{generic.spct} objects can be created from data tables and data frames simply by setting them as such. However, a column called \texttt{w.length} must be present and contain wavelength values expressed in nm.
 
 <<>>=
 a.spct <- setGenSpct(data.table(w.length = 300:305, y = rep(1,6)))
@@ -164,7 +164,7 @@ class(a.spct)
 a.spct
 @
 
-\texttt{source.spct} objects can be created from data tables, data frames, and \texttt{generic.spct} simply by setting then as such. However, a columns called \texttt{w.length} (wavelength values expressed in nm) and \texttt{s.e.irrad} (\wattnm) and\textbackslash or \texttt{s.q.irrad} (\molnm) must be present.
+\texttt{source.spct} objects can be created from data tables, data frames, and \texttt{generic.spct} simply by setting them as such. However, a columns called \texttt{w.length} (wavelength values expressed in nm) and \texttt{s.e.irrad} (\wattnm) and\textbackslash or \texttt{s.q.irrad} (\molnm) must be present.
 
 <<>>=
 b.spct <- setSourceSpct(data.table(w.length = 300:305, s.e.irrad = rep(1,6)))
@@ -172,7 +172,7 @@ class(b.spct)
 b.spct
 @
 
-\texttt{filter.spct} objects can be created from data tables, data frames, and \texttt{generic.spct} simply by setting then as such. However, columns called \texttt{w.length} (wavelength values expressed in nm) and \texttt{Tpc} (T\%), \texttt{Tfr} (T as fraction of 1) and\textbackslash or \texttt{A} (absorbance ($\log_{10}$ based)) must be present.
+\texttt{filter.spct} objects can be created from data tables, data frames, and \texttt{generic.spct} simply by setting them as such. However, columns called \texttt{w.length} (wavelength values expressed in nm) and \texttt{Tpc} (T\%), \texttt{Tfr} (T as fraction of 1) and\textbackslash or \texttt{A} (absorbance ($\log_{10}$ based)) must be present.
 
 <<>>=
 c.spct <- setFilterSpct(data.table(w.length = 300:305, Tfr = rep(1,6)))
@@ -180,35 +180,46 @@ class(c.spct)
 c.spct
 @
 
-\texttt{reflector.spct} objects can be created from data tables, data frames, and \texttt{generic.spct} simply by setting then as such. However, columns called \texttt{w.length} (wavelength values expressed in nm) and \texttt{Rpc} (R\%), and\textbackslash or \texttt{Rfr} (R as fraction of 1) must be present.
+\texttt{reflector.spct} objects can be created from data tables, data frames, and \texttt{generic.spct} simply by setting them as such. However, columns called \texttt{w.length} (wavelength values expressed in nm) and \texttt{Rpc} (R\%), and\textbackslash or \texttt{Rfr} (R as fraction of 1) must be present.
 
 <<>>=
-c.spct <- setReflectorSpct(data.table(w.length = 300:305, Rfr = rep(1,6)))
-class(c.spct)
-c.spct
-@
-
-If the expected data is not available, then it is filled in if possible with values, and if not with NAs.
-
-<<>>=
-d.spct <- setReflectorSpct(data.table(w.length = 300:305, Rpc = rep(100,6)))
+d.spct <- setReflectorSpct(data.table(w.length = 300:305, Rfr = rep(1,6)))
 class(d.spct)
 d.spct
 @
 
+\texttt{chroma.spct} objects can be created from data tables, data frames, and \texttt{generic.spct} simply by setting them as such. However, columns called \texttt{w.length} (wavelength values expressed in nm) and \texttt{x}, \texttt{y} and \texttt{z} must be present, giving the trichromic chromaticity constants.
+
 <<>>=
-e.spct <- setReflectorSpct(data.table(w.length = 300:305, z = rep(1,6)))
+e.spct <- setChromaSpct(data.table(w.length = 300:305, x = rep(1,6), y = rep(1,6), z = rep(1,6)))
 class(e.spct)
 e.spct
 @
 
+In all cases if the expected data is not available, then it is filled in if possible with values, and if not with NAs.
+
 <<>>=
-e.spct <- setReflectorSpct(data.table(wl = 300:305, Rfr = rep(1,6)))
-class(e.spct)
-e.spct
+f.spct <- setReflectorSpct(data.table(w.length = 300:305, Rpc = rep(100,6)))
+class(f.spct)
+f.spct
 @
 
-Here we just use the example data supplied with the packages.
+When required data is not available, and it cannot be calculated from other columns, the required column is added and filled with \texttt{NA}s.
+<<>>=
+g.spct <- setReflectorSpct(data.table(w.length = 300:305, z = rep(1,6)))
+class(g.spct)
+g.spct
+@
+
+If no \texttt{w.length} column is present, and a \texttt{wl} column is found, it is renamed to \texttt{w.length}.
+
+<<>>=
+h.spct <- setReflectorSpct(data.table(wl = 300:305, Rfr = rep(1,6)))
+class(h.spct)
+h.spct
+@
+
+Here we just use the example data supplied with the package.
 
 <<>>=
 class(sun.spct)
@@ -283,6 +294,8 @@ Operators are also defined for operations between an spectrum and a numeric vect
 sun.spct * 2
 sun.spct * c(0,1)
 @
+
+There is one special case, for \texttt{chroma.spct}: if the second operand is a numeric vector of length three, containing three \emph{named} values `x', `y' and `z', the corresponding element is used for each of the chromaticity `columns' in the \texttt{chroma.spct}. Un-named values or differently named values are not treated specially.
 
 \section{Defining wavebands}
 

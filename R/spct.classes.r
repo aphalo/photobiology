@@ -1,3 +1,5 @@
+# check -------------------------------------------------------------------
+
 #' Generic function
 #'
 #' Check that an R object contains the expected data members.
@@ -26,11 +28,15 @@ check.default <- function(x, byref=FALSE) {
 #' @param byref logical indicating if new object will be created by reference or by copy of x
 #' @export check.generic.spct
 check.generic.spct <- function(x, byref=TRUE) {
-  if (exists("w.length", x, inherits=FALSE)) {
+  if (exists("w.length", x, mode = "numeric", inherits=FALSE)) {
+    invisible(return(x))
+  } else if (exists("wl", x, mode = "numeric", inherits=FALSE)) {
+    setnames(x, "wl", "w.length")
     invisible(return(x))
   } else {
     warning("No wavelength data found in generic.spct")
-    invisible(return(x[ , w.length := NA]))
+    x[ , w.length := NA]
+    invisible(return(x))
   }
 }
 
@@ -42,15 +48,18 @@ check.generic.spct <- function(x, byref=TRUE) {
 #' @param byref logical indicating if new object will be created by reference or by copy of x
 #' @export check.filter.spct
 check.filter.spct <- function(x, byref=TRUE) {
-  if (exists("Tfr", x, inherits=FALSE)) {
+  if (exists("Tfr", x, mode = "numeric", inherits=FALSE)) {
     invisible(return(x))
-  } else if (exists("Tpc", x, inherits=FALSE)) {
-    invisible(return(x[ , Tfr := Tpc / 100]))
-  } else if (exists("A", x, inherits=FALSE)) {
-    invisible(return(x[ , Tfr := A2T(A)]))
+  } else if (exists("Tpc", x, mode = "numeric", inherits=FALSE)) {
+    x[ , Tfr := Tpc / 100]
+    invisible(return(x))
+  } else if (exists("A", x, mode = "numeric", inherits=FALSE)) {
+    x[ , Tfr := A2T(A)]
+    invisible(return(x))
   } else {
     warning("No transmittance or absorbance data found in filter.spct")
-    invisible(return(x[ , Tfr := NA]))
+    x[ , Tfr := NA]
+    invisible(return(x))
   }
 }
 
@@ -62,13 +71,36 @@ check.filter.spct <- function(x, byref=TRUE) {
 #' @param byref logical indicating if new object will be created by reference or by copy of x
 #' @export check.reflector.spct
 check.reflector.spct <- function(x, byref=TRUE) {
-  if (exists("Rfr", x, inherits=FALSE)) {
+  if (exists("Rfr", x, mode = "numeric", inherits=FALSE)) {
     invisible(return(x))
-  } else if (exists("Rpc", x, inherits=FALSE)) {
-    invisible(return(x[ , Rfr := Rpc / 100]))
+  } else if (exists("Rpc", x, mode = "numeric", inherits=FALSE)) {
+    x[ , Rfr := Rpc / 100]
+    invisible(return(x))
   } else {
-    warning("No reflectance data found in reflector.spct")
-    invisible(return(x[ , Rfr := NA]))
+    warning("No reflectance data found in filter.spct")
+    x[ , Rfr := NA]
+    invisible(return(x))
+  }
+}
+
+#' Specialization for response.spct
+#'
+#' Check that a response.spct object contains the expected data members.
+#'
+#' @param x a response.spct object
+#' @param byref logical indicating if new object will be created by reference or by copy of x
+#' @export check.response.spct
+check.response.spct <- function(x, byref=TRUE) {
+  if (exists("response", x, mode = "numeric", inherits=FALSE)) {
+    invisible(return(x))
+  } else if (exists("signal", x, mode = "numeric", inherits=FALSE)) {
+    x[ , response := signal]
+    x[ , signal := NULL]
+    invisible(return(x))
+  } else {
+    warning("No response data found in filter.spct")
+    x[ , response := NA]
+    invisible(return(x))
   }
 }
 
@@ -80,15 +112,41 @@ check.reflector.spct <- function(x, byref=TRUE) {
 #' @param byref logical indicating if new object will be created by reference or by copy of x
 #' @export check.source.spct
 check.source.spct <- function(x, byref=TRUE) {
-  if (exists("s.e.irrad", x, inherits=FALSE)) {
+  if (exists("s.e.irrad", x, mode = "numeric", inherits=FALSE)) {
     invisible(return(x))
-  } else if (exists("s.q.irrad", x, inherits=FALSE)) {
+  } else if (exists("s.q.irrad", x, mode = "numeric", inherits=FALSE)) {
     invisible(return(q2e(x, action="add", byref=byref)))
   } else {
     warning("No spectral irradiance data found in source.spct")
-    invisible(return(x[ , s.e.irrad := NA]))
+    x[ , s.e.irrad := NA]
+    invisible(return(x))
   }
 }
+
+#' Specialization for chroma.spct
+#'
+#' Check that a chroma.spct object contains the expected data members.
+#'
+#' @param x a source.spct object
+#' @param byref logical indicating if new object will be created by reference or by copy of x
+#' @export check.source.spct
+check.chroma.spct <- function(x, byref=TRUE) {
+  names_x <- names(x)
+  idxs <- grep("[XYZ]", names_x)
+  names2lc <- names_x[idxs]
+  setnames(x, names2lc, tolower(names2lc))
+  if (exists("x", x, mode="numeric", inherits=FALSE) &&
+      exists("y", x, mode="numeric", inherits=FALSE) &&
+      exists("z", x, mode="numeric", inherits=FALSE) ) {
+    invisible(return(x))
+  } else {
+    warning("No spectral chromaticity coordinates data found in chroma.spct")
+    invisible(return(x[ , c(x, y, z) := NA]))
+  }
+}
+
+
+# set class ---------------------------------------------------------------
 
 
 #' set class of a data.frame or data.table object to "generic.spct"
@@ -173,6 +231,35 @@ setReflectorSpct <- function(x) {
   invisible(x)
 }
 
+#' set class of a data.frame or data.table or generic.spct object to "response.spct"
+#'
+#' Sets the class attibute of a data.frame or data.table object to "response.spct" object,
+#' used to store response spectra
+#'
+#' @param x a data.frame
+#' @export
+#' @exportClass filter.spct
+#'
+setResponseSpct <- function(x) {
+  name = substitute(x)
+  if (!is.data.table(x)) {
+    setDT(x)
+  }
+  if (!is(x, "generic.spct")) {
+    setGenSpct(x)
+  }
+  if (!is(x, "response.spct")) {
+    setattr(x, "class", c("response.spct", class(x)))
+  }
+  x <- check(x)
+  setkey(x, w.length)
+  if (is.name(name)) {
+    name = as.character(name)
+    assign(name, x, parent.frame(), inherits = TRUE)
+  }
+  invisible(x)
+}
+
 #' set class of a data.frame or data.table or generic.spct object to "source.spct"
 #'
 #' Sets the class attibute of a data.frame or data.table object to "source.spct" an object to store spectra
@@ -202,52 +289,126 @@ setSourceSpct <- function(x) {
   invisible(x)
 }
 
-#' "*" operator for spectra
+#' set class of a data.frame or data.table or generic.spct object to "chroma.spct"
+#'
+#' Sets the class attibute of a data.frame or data.table object to "chroma.spct" an object to store spectra
+#' if the object is a data.frame is is mane a data.table
+#'
+#' @param x a data.frame
+#' @export
+#' @exportClass chroma.spct
+#'
+setChromaSpct <- function(x) {
+  name = substitute(x)
+  if (!is.data.table(x)) {
+    setDT(x)
+  }
+  if (!is(x, "generic.spct")) {
+    setGenSpct(x)
+  }
+  if (!is(x, "chroma.spct")) {
+    setattr(x, "class", c("chroma.spct", class(x)))
+  }
+  x <- check(x)
+  setkey(x, w.length)
+  if (is.name(name)) {
+    name = as.character(name)
+    assign(name, x, parent.frame(), inherits = TRUE)
+  }
+  invisible(x)
+}
+
+
+# multiplication ----------------------------------------------------------
+
+
+#' "*" operator for chromaticity spectra
 #'
 #' Multiplication operator for spectra.
 #'
-#' @param e1 an object of class "generic.spct"
+#' @param e1 an object of class "chroma.spct"
 #' @param e2 an object of class "generic.spct"
-#' @name times-.generic.spct
+#' @name times-.chroma.spct
 #' @export
 #'
-'*.generic.spct' <- function(e1, e2) {
-  if (is(e1, "filter.spct") && is(e2, "filter.spct")) {
+'*.chroma.spct' <- function(e1, e2) {
+  if (is(e2, "source.spct")) {
+    x <- oper_spectra(e1$w.length, e2$w.length, e1$x, e2$s.e.irrad, bin.oper=`*`, trim="intersection")
+    setnames(x, 2, "x")
+    setkey(x, w.length)
+    y <- oper_spectra(e1$w.length, e2$w.length, e1$y, e2$s.e.irrad, bin.oper=`*`, trim="intersection")
+    setnames(y, 2, "y")
+    setkey(y, w.length)
+    z <- oper_spectra(e1$w.length, e2$w.length, e1$z, e2$s.e.irrad, bin.oper=`*`, trim="intersection")
+    setnames(z, 2, "z")
+    setkey(z, w.length)
+    out.spct <- cbind(x, y[ , 2], z[ , 2])
+    setChromaSpct(out.spct)
+    setkey(out.spct, w.length)
+    return(out.spct)
+  } else if (is(e2, "filter.spct")) {
+    x <- oper_spectra(e1$w.length, e2$w.length, e1$x, e2$Tfr, bin.oper=`*`, trim="intersection")
+    setnames(x, 2, "x")
+    setkey(x, w.length)
+    y <- oper_spectra(e1$w.length, e2$w.length, e1$y, e2$Tfr, bin.oper=`*`, trim="intersection")
+    setnames(y, 2, "y")
+    setkey(y, w.length)
+    z <- oper_spectra(e1$w.length, e2$w.length, e1$z, e2$Tfr, bin.oper=`*`, trim="intersection")
+    setnames(z, 2, "z")
+    setkey(z, w.length)
+    out.spct <- cbind(x, y[ , 2], z[ , 2])
+    setChromaSpct(out.spct)
+    setkey(out.spct, w.length)
+    return(out.spct)
+  } else if (is(e2, "reflector.spct")) {
+    x <- oper_spectra(e1$w.length, e2$w.length, e1$x, e2$Rfr, bin.oper=`*`, trim="intersection")
+    setnames(x, 2, "x")
+    setkey(x, w.length)
+    y <- oper_spectra(e1$w.length, e2$w.length, e1$y, e2$Rfr, bin.oper=`*`, trim="intersection")
+    setnames(y, 2, "y")
+    setkey(y, w.length)
+    z <- oper_spectra(e1$w.length, e2$w.length, e1$z, e2$Rfr, bin.oper=`*`, trim="intersection")
+    setnames(z, 2, "z")
+    setkey(z, w.length)
+    out.spct <- cbind(x, y[ , 2], z[ , 2])
+    setChromaSpct(out.spct)
+    setkey(out.spct, w.length)
+    return(out.spct)
+  } else if (is.numeric(e2)) {
+    e3 <- copy(e1)
+    if (length(e2) == 3 && names(e2) == c("x", "y", "z")) {
+      e3[ , `:=`(x = x * e2["x"] , y = y * e2["y"], z = z  * e2["z"])]
+      return(e3)
+    } else {
+      e3[ , `:=`(x = x * e2 , y = y * e2, z = z  * e2)]
+      return(e3)
+    }
+  } else {
+    return(NA)
+  }
+}
+
+#' "*" operator for filter spectra
+#'
+#' Multiplication operator for filter spectra.
+#'
+#' @param e1 an object of class "filter.spct"
+#' @param e2 an object of class "filter.spct"
+#' @name times-.filter.spct
+#' @export
+#'
+'*.filter.spct' <- function(e1, e2) {
+  if (is(e2, "filter.spct")) {
     z <- oper_spectra(e1$w.length, e2$w.length, e1$Tfr, e2$Tfr, bin.oper=`*`, trim="intersection")
     setnames(z, 2, "Tfr")
     setFilterSpct(z)
     return(z)
-  } else if(is(e1, "filter.spct") && is(e2, "source.spct")) {
+  } else if(is(e2, "source.spct")) {
     z <- oper_spectra(e1$w.length, e2$w.length, e1$Tfr, e2$s.e.irrad, bin.oper=`*`, trim="intersection")
     setnames(z, 2, "s.e.irrad")
     setSourceSpct(z)
     return(z)
-  } else if(is(e2, "filter.spct") && is(e1, "source.spct")) {
-    z <- oper_spectra(e2$w.length, e1$w.length, e2$Tfr, e1$s.e.irrad, bin.oper=`*`, trim="intersection")
-    setnames(z, 2, "s.e.irrad")
-    setSourceSpct(z)
-    return(z)
-  } else if (is(e1, "reflector.spct") && is(e2, "reflector.spct")) {
-    z <- oper_spectra(e1$w.length, e2$w.length, e1$Rfr, e2$Rfr, bin.oper=`*`, trim="intersection")
-    setnames(z, 2, "Rfr")
-    setReflectorSpct(z)
-    return(z)
-  } else if(is(e1, "reflector.spct") && is(e2, "source.spct")) {
-    z <- oper_spectra(e1$w.length, e2$w.length, e1$Rfr, e2$s.e.irrad, bin.oper=`*`, trim="intersection")
-    setnames(z, 2, "s.e.irrad")
-    setSourceSpct(z)
-    return(z)
-  } else if(is(e2, "reflector.spct") && is(e1, "source.spct")) {
-    z <- oper_spectra(e2$w.length, e1$w.length, e2$Rfr, e1$s.e.irrad, bin.oper=`*`, trim="intersection")
-    setnames(z, 2, "s.e.irrad")
-    setSourceSpct(z)
-    return(z)
-  } else if (is(e1, "source.spct") && is(e2, "source.spct")) {
-    z <- oper_spectra(e1$w.length, e2$w.length, e1$s.e.irrad, e2$s.e.irrad, bin.oper=`*`, trim="intersection")
-    setnames(z, 2, "s.e.irrad")
-    setSourceSpct(z)
-    return(z)
-  } else if (is(e1, "filter.spct") && is.numeric(e2)) {
+  } else if (is.numeric(e2)) {
     z <- copy(e1)
     z[ , Tfr := Tfr * e2]
     if (exists("Tpc", z, inherits=FALSE)) {
@@ -257,22 +418,123 @@ setSourceSpct <- function(x) {
       z[ , A := NULL]
     }
     return(z)
-  } else if (is(e1, "reflector.spct") && is.numeric(e2)) {
+  } else {
+    return(NA)
+  }
+}
+
+
+#' "*" operator for reflector spectra
+#'
+#' Multiplication operator for reflector spectra.
+#'
+#' @param e1 an object of class "reflector.spct"
+#' @param e2 an object of class "reflector.spct"
+#' @name times-.reflector.spct
+#' @export
+#'
+'*.reflector.spct' <- function(e1, e2) {
+  if (is(e2, "reflector.spct")) {
+    z <- oper_spectra(e1$w.length, e2$w.length, e1$Rfr, e2$Rfr, bin.oper=`*`, trim="intersection")
+    setnames(z, 2, "Rfr")
+    setReflectorSpct(z)
+    return(z)
+  } else if(is(e2, "source.spct")) {
+    if (!exists("s.e.irrad", e2, inherits=FALSE)) {
+      q2e(e2, "replace")
+    }
+    z <- oper_spectra(e1$w.length, e2$w.length, e1$Rfr, e2$s.e.irrad, bin.oper=`*`, trim="intersection")
+    setnames(z, 2, "s.e.irrad")
+    setSourceSpct(z)
+    return(z)
+  } else if (is.numeric(e2)) {
     z <- copy(e1)
     z[ , Rfr := Rfr * e2]
     if (exists("Rpc", z, inherits=FALSE)) {
-      z[ , Tpc := NULL]
+      z[ , Rpc := NULL]
     }
     return(z)
-  } else if (is(e1, "source.spct") && is.numeric(e2)) {
+  } else {
+    return(NA)
+  }
+}
+
+#' "*" operator for response spectra
+#'
+#' Multiplication operator for response spectra.
+#'
+#' @param e1 an object of class "response.spct"
+#' @param e2 an object of class "response.spct"
+#' @name times-.reflector.spct
+#' @export
+#'
+'*.response.spct' <- function(e1, e2) {
+  if (is(e2, "filter.spct")) {
+    z <- oper_spectra(e1$w.length, e2$w.length, e1$response, e2$Tfr, bin.oper=`*`, trim="intersection")
+    setnames(z, 2, "response")
+    setResponseSpct(z)
+    return(z)
+  } else if (is(e2, "reflector.spct")) {
+    z <- oper_spectra(e1$w.length, e2$w.length, e1$response, e2$Rfr, bin.oper=`*`, trim="intersection")
+    setnames(z, 2, "response")
+    setResponseSpct(z)
+    return(z)
+  }else if(is(e2, "source.spct")) {
+    if (!exists("s.e.irrad", e2, inherits=FALSE)) {
+      q2e(e2, "replace")
+    }
+    z <- oper_spectra(e1$w.length, e2$w.length, e1$response, e2$s.e.irrad, bin.oper=`*`, trim="intersection")
+    setnames(z, 2, "response")
+    setResponseSpct(z)
+    return(z)
+  } else if (is.numeric(e2)) {
+    z <- copy(e1)
+    z[ , response := response * e2]
+    return(z)
+  } else {
+    return(NA)
+  }
+}
+
+#' "*" operator for source objects
+#'
+#' Multiplication operator for source spectra.
+#'
+#' @param e1 an object of class "source.spct"
+#' @param e2 an object of class "generic.spct" or numeric
+#' @name times-.generic.spct
+#' @export
+#'
+'*.source.spct' <- function(e1, e2) {
+if (is(e2, "source.spct")) {
+    z <- oper_spectra(e1$w.length, e2$w.length, e1$s.e.irrad, e2$s.e.irrad, bin.oper=`*`, trim="intersection")
+    setnames(z, 2, "s.e.irrad")
+    setSourceSpct(z)
+    return(z)
+  } else if (is(e2, "filter.spct")) {
+    z <- oper_spectra(e1$w.length, e2$w.length, e1$s.e.irrad, e2$Tfr, bin.oper=`*`, trim="intersection")
+    setnames(z, 2, "s.e.irrad")
+    setSourceSpct(z)
+    return(z)
+  } else if (is(e2, "reflector.spct")) {
+    z <- oper_spectra(e1$w.length, e2$w.length, e1$s.e.irrad, e2$Rfr, bin.oper=`*`, trim="intersection")
+    setnames(z, 2, "s.e.irrad")
+    setSourceSpct(z)
+    return(z)
+  } else if (is(e2, "response.spct")) {
+    z <- oper_spectra(e1$w.length, e2$w.length, e1$s.e.irrad, e2$response, bin.oper=`*`, trim="intersection")
+    setnames(z, 2, "response")
+    setResponseSpct(z)
+    return(z)
+  } else if (is.numeric(e2)) {
     z <- copy(e1)
     z[ , s.e.irrad := s.e.irrad * e2]
     if (exists("s.q.irrad", z, inherits=FALSE)) {
       z[ , s.q.irrad := NULL]
     }
     return(z)
-  } else if (is(e1, "source.spct") && is(e2, "waveband")) {
-    z <- e1
+  } else if (is(e2, "waveband")) {
+    z <- copy(e1)
     z$s.e.irrad <- z$s.e.irrad * calc_multipliers(z$w.length, e2, unit.out="energy", unit.in="energy")
     if (exists("s.q.irrad", z, inherits=FALSE)) {
       z[ , s.q.irrad := NULL]
@@ -283,52 +545,108 @@ setSourceSpct <- function(x) {
   }
 }
 
-#' "/" operator for spectra
+#' "*" operator for generic spectra
 #'
-#' Division operators for spectra.
+#' Multiplication operator for generic spectra.
 #'
 #' @param e1 an object of class "generic.spct"
 #' @param e2 an object of class "generic.spct"
-#' @name slash-.generic.spct
+#' @name times-.generic.spct
 #' @export
 #'
-'/.generic.spct' <- function(e1, e2) {
-  if (is(e1, "filter.spct") && is(e2, "filter.spct")) {
+'*.generic.spct' <- function(e1, e2) {
+   return(NA)
+}
+
+# division ----------------------------------------------------------------
+
+#' "/" operator for chromaticity spectra
+#'
+#' Division operator for spectra.
+#'
+#' @param e1 an object of class "chroma.spct"
+#' @param e2 an object of class "generic.spct"
+#' @name times-.chroma.spct
+#' @export
+#'
+'/.chroma.spct' <- function(e1, e2) {
+  if (is(e2, "source.spct")) {
+    x <- oper_spectra(e1$w.length, e2$w.length, e1$x, e2$s.e.irrad, bin.oper=`/`, trim="intersection")
+    setnames(x, 2, "x")
+    setkey(x, w.length)
+    y <- oper_spectra(e1$w.length, e2$w.length, e1$y, e2$s.e.irrad, bin.oper=`/`, trim="intersection")
+    setnames(y, 2, "y")
+    setkey(y, w.length)
+    z <- oper_spectra(e1$w.length, e2$w.length, e1$z, e2$s.e.irrad, bin.oper=`/`, trim="intersection")
+    setnames(z, 2, "z")
+    setkey(z, w.length)
+    out.spct <- cbind(x, y[ , 2], z[ , 2])
+    setChromaSpct(out.spct)
+    setkey(out.spct, w.length)
+    return(out.spct)
+  } else if (is(e2, "filter.spct")) {
+    x <- oper_spectra(e1$w.length, e2$w.length, e1$x, e2$Tfr, bin.oper=`/`, trim="intersection")
+    setnames(x, 2, "x")
+    setkey(x, w.length)
+    y <- oper_spectra(e1$w.length, e2$w.length, e1$y, e2$Tfr, bin.oper=`/`, trim="intersection")
+    setnames(y, 2, "y")
+    setkey(y, w.length)
+    z <- oper_spectra(e1$w.length, e2$w.length, e1$z, e2$Tfr, bin.oper=`/`, trim="intersection")
+    setnames(z, 2, "z")
+    setkey(z, w.length)
+    out.spct <- cbind(x, y[ , 2], z[ , 2])
+    setChromaSpct(out.spct)
+    setkey(out.spct, w.length)
+    return(out.spct)
+  } else if (is(e2, "reflector.spct")) {
+    x <- oper_spectra(e1$w.length, e2$w.length, e1$x, e2$Rfr, bin.oper=`/`, trim="intersection")
+    setnames(x, 2, "x")
+    setkey(x, w.length)
+    y <- oper_spectra(e1$w.length, e2$w.length, e1$y, e2$Rfr, bin.oper=`/`, trim="intersection")
+    setnames(y, 2, "y")
+    setkey(y, w.length)
+    z <- oper_spectra(e1$w.length, e2$w.length, e1$z, e2$Rfr, bin.oper=`/`, trim="intersection")
+    setnames(z, 2, "z")
+    setkey(z, w.length)
+    out.spct <- cbind(x, y[ , 2], z[ , 2])
+    setChromaSpct(out.spct)
+    setkey(out.spct, w.length)
+    return(out.spct)
+  } else if (is.numeric(e2)) {
+    e3 <- copy(e1)
+    if (length(e2) == 3 && names(e2) == c("x", "y", "z")) {
+      e3[ , `:=`(x = x / e2["x"] , y = y / e2["y"], z = z  / e2["z"])]
+      return(e3)
+    } else {
+      e3[ , `:=`(x = x / e2 , y = y / e2, z = z  / e2)]
+      return(e3)
+    }
+  } else {
+    return(NA)
+  }
+}
+
+#' "/" operator for filter spectra
+#'
+#' Division operator for filter spectra.
+#'
+#' @param e1 an object of class "filter.spct"
+#' @param e2 an object of class "filter.spct"
+#' @name times-.filter.spct
+#' @export
+#'
+'/.filter.spct' <- function(e1, e2) {
+  if (is(e2, "filter.spct")) {
     z <- oper_spectra(e1$w.length, e2$w.length, e1$Tfr, e2$Tfr, bin.oper=`/`, trim="intersection")
     setnames(z, 2, "Tfr")
     setFilterSpct(z)
     return(z)
-  } else if(is(e1, "filter.spct") && is(e2, "source.spct")) {
+  } else if(is(e2, "source.spct")) {
     z <- oper_spectra(e1$w.length, e2$w.length, e1$Tfr, e2$s.e.irrad, bin.oper=`/`, trim="intersection")
     setnames(z, 2, "s.e.irrad")
     setSourceSpct(z)
     return(z)
-  } else if(is(e2, "filter.spct") && is(e1, "source.spct")) {
-    z <- oper_spectra(e2$w.length, e1$w.length, e2$Tfr, e1$s.e.irrad, bin.oper=`/`, trim="intersection")
-    setnames(z, 2, "s.e.irrad")
-    setSourceSpct(z)
-    return(z)
-  } else if (is(e1, "reflector.spct") && is(e2, "reflector.spct")) {
-    z <- oper_spectra(e1$w.length, e2$w.length, e1$Rfr, e2$Rfr, bin.oper=`/`, trim="intersection")
-    setnames(z, 2, "Rfr")
-    setReflectorSpct(z)
-    return(z)
-  } else if(is(e1, "reflector.spct") && is(e2, "source.spct")) {
-    z <- oper_spectra(e1$w.length, e2$w.length, e1$Rfr, e2$s.e.irrad, bin.oper=`/`, trim="intersection")
-    setnames(z, 2, "s.e.irrad")
-    setSourceSpct(z)
-    return(z)
-  } else if(is(e2, "reflector.spct") && is(e1, "source.spct")) {
-    z <- oper_spectra(e2$w.length, e1$w.length, e2$Rfr, e1$s.e.irrad, bin.oper=`/`, trim="intersection")
-    setnames(z, 2, "s.e.irrad")
-    setSourceSpct(z)
-    return(z)
-  } else if (is(e1, "source.spct") && is(e2, "source.spct")) {
-    z <- oper_spectra(e1$w.length, e2$w.length, e1$s.e.irrad, e2$s.e.irrad, bin.oper=`/`, trim="intersection")
-    setnames(z, 2, "s.e.irrad")
-    setSourceSpct(z)
-    return(z)
-  } else if (is(e1, "filter.spct") && is.numeric(e2)) {
+  } else if (is.numeric(e2)) {
     z <- copy(e1)
     z[ , Tfr := Tfr / e2]
     if (exists("Tpc", z, inherits=FALSE)) {
@@ -338,22 +656,123 @@ setSourceSpct <- function(x) {
       z[ , A := NULL]
     }
     return(z)
-  } else if (is(e1, "reflector.spct") && is.numeric(e2)) {
+  } else {
+    return(NA)
+  }
+}
+
+
+#' "/" operator for reflector spectra
+#'
+#' Division operator for reflector spectra.
+#'
+#' @param e1 an object of class "reflector.spct"
+#' @param e2 an object of class "reflector.spct"
+#' @name times-.reflector.spct
+#' @export
+#'
+'/.reflector.spct' <- function(e1, e2) {
+  if (is(e2, "reflector.spct")) {
+    z <- oper_spectra(e1$w.length, e2$w.length, e1$Rfr, e2$Rfr, bin.oper=`/`, trim="intersection")
+    setnames(z, 2, "Rfr")
+    setReflectorSpct(z)
+    return(z)
+  } else if(is(e2, "source.spct")) {
+    if (!exists("s.e.irrad", e2, inherits=FALSE)) {
+      q2e(e2, "replace")
+    }
+    z <- oper_spectra(e1$w.length, e2$w.length, e1$Rfr, e2$s.e.irrad, bin.oper=`/`, trim="intersection")
+    setnames(z, 2, "s.e.irrad")
+    setSourceSpct(z)
+    return(z)
+  } else if (is.numeric(e2)) {
     z <- copy(e1)
     z[ , Rfr := Rfr / e2]
     if (exists("Rpc", z, inherits=FALSE)) {
-      z[ , Tpc := NULL]
+      z[ , Rpc := NULL]
     }
     return(z)
-  } else if (is(e1, "source.spct") && is.numeric(e2)) {
+  } else {
+    return(NA)
+  }
+}
+
+#' "/" operator for response spectra
+#'
+#' Division operator for response spectra.
+#'
+#' @param e1 an object of class "response.spct"
+#' @param e2 an object of class "response.spct"
+#' @name times-.reflector.spct
+#' @export
+#'
+'/.response.spct' <- function(e1, e2) {
+  if (is(e2, "filter.spct")) {
+    z <- oper_spectra(e1$w.length, e2$w.length, e1$response, e2$Tfr, bin.oper=`/`, trim="intersection")
+    setnames(z, 2, "response")
+    setResponseSpct(z)
+    return(z)
+  } else if (is(e2, "reflector.spct")) {
+    z <- oper_spectra(e1$w.length, e2$w.length, e1$response, e2$Rfr, bin.oper=`/`, trim="intersection")
+    setnames(z, 2, "response")
+    setResponseSpct(z)
+    return(z)
+  }else if(is(e2, "source.spct")) {
+    if (!exists("s.e.irrad", e2, inherits=FALSE)) {
+      q2e(e2, "replace")
+    }
+    z <- oper_spectra(e1$w.length, e2$w.length, e1$response, e2$s.e.irrad, bin.oper=`/`, trim="intersection")
+    setnames(z, 2, "response")
+    setResponseSpct(z)
+    return(z)
+  } else if (is.numeric(e2)) {
+    z <- copy(e1)
+    z[ , response := response / e2]
+    return(z)
+  } else {
+    return(NA)
+  }
+}
+
+#' "/" operator for source objects
+#'
+#' Division operator for source spectra.
+#'
+#' @param e1 an object of class "source.spct"
+#' @param e2 an object of class "generic.spct" or numeric
+#' @name times-.generic.spct
+#' @export
+#'
+'/.source.spct' <- function(e1, e2) {
+  if (is(e2, "source.spct")) {
+    z <- oper_spectra(e1$w.length, e2$w.length, e1$s.e.irrad, e2$s.e.irrad, bin.oper=`/`, trim="intersection")
+    setnames(z, 2, "s.e.irrad")
+    setSourceSpct(z)
+    return(z)
+  } else if (is(e2, "filter.spct")) {
+    z <- oper_spectra(e1$w.length, e2$w.length, e1$s.e.irrad, e2$Tfr, bin.oper=`/`, trim="intersection")
+    setnames(z, 2, "s.e.irrad")
+    setSourceSpct(z)
+    return(z)
+  } else if (is(e2, "reflector.spct")) {
+    z <- oper_spectra(e1$w.length, e2$w.length, e1$s.e.irrad, e2$Rfr, bin.oper=`/`, trim="intersection")
+    setnames(z, 2, "s.e.irrad")
+    setSourceSpct(z)
+    return(z)
+  } else if (is(e2, "response.spct")) {
+    z <- oper_spectra(e1$w.length, e2$w.length, e1$s.e.irrad, e2$response, bin.oper=`/`, trim="intersection")
+    setnames(z, 2, "response")
+    setResponseSpct(z)
+    return(z)
+  } else if (is.numeric(e2)) {
     z <- copy(e1)
     z[ , s.e.irrad := s.e.irrad / e2]
     if (exists("s.q.irrad", z, inherits=FALSE)) {
       z[ , s.q.irrad := NULL]
     }
     return(z)
-  } else if (is(e1, "source.spct") && is(e2, "waveband")) {
-    z <- e1
+  } else if (is(e2, "waveband")) {
+    z <- copy(e1)
     z$s.e.irrad <- z$s.e.irrad / calc_multipliers(z$w.length, e2, unit.out="energy", unit.in="energy")
     if (exists("s.q.irrad", z, inherits=FALSE)) {
       z[ , s.q.irrad := NULL]
@@ -364,52 +783,51 @@ setSourceSpct <- function(x) {
   }
 }
 
-#' "+" operator for spectra
+#' "/" operator for generic spectra
 #'
-#' Summation operator for spectra.
+#' Division operator for generic spectra.
 #'
 #' @param e1 an object of class "generic.spct"
 #' @param e2 an object of class "generic.spct"
-#' @name plus-.generic.spct
+#' @name times-.generic.spct
 #' @export
 #'
-'+.generic.spct' <- function(e1, e2) {
-  if (is(e1, "filter.spct") && is(e2, "filter.spct")) {
+'/.generic.spct' <- function(e1, e2) {
+  return(NA)
+}
+
+
+# Sum ---------------------------------------------------------------
+
+#' "+" operator for chromaticity spectra
+#'
+#' Division operator for spectra.
+#'
+#' @param e1 an object of class "chroma.spct"
+#' @param e2 an object of class "generic.spct"
+#' @name times-.chroma.spct
+#' @export
+#'
+'+.chroma.spct' <- function(e1, e2) {
+  return(NA)
+}
+
+#' "+" operator for filter spectra
+#'
+#' Division operator for filter spectra.
+#'
+#' @param e1 an object of class "filter.spct"
+#' @param e2 an object of class "filter.spct"
+#' @name times-.filter.spct
+#' @export
+#'
+'+.filter.spct' <- function(e1, e2) {
+  if (is(e2, "filter.spct")) {
     z <- oper_spectra(e1$w.length, e2$w.length, e1$Tfr, e2$Tfr, bin.oper=`+`, trim="intersection")
     setnames(z, 2, "Tfr")
     setFilterSpct(z)
     return(z)
-  } else if(is(e1, "filter.spct") && is(e2, "source.spct")) {
-    z <- oper_spectra(e1$w.length, e2$w.length, e1$Tfr, e2$s.e.irrad, bin.oper=`+`, trim="intersection")
-    setnames(z, 2, "s.e.irrad")
-    setSourceSpct(z)
-    return(z)
-  } else if(is(e2, "filter.spct") && is(e1, "source.spct")) {
-    z <- oper_spectra(e2$w.length, e1$w.length, e2$Tfr, e1$s.e.irrad, bin.oper=`+`, trim="intersection")
-    setnames(z, 2, "s.e.irrad")
-    setSourceSpct(z)
-    return(z)
-  } else if (is(e1, "reflector.spct") && is(e2, "reflector.spct")) {
-    z <- oper_spectra(e1$w.length, e2$w.length, e1$Rfr, e2$Rfr, bin.oper=`+`, trim="intersection")
-    setnames(z, 2, "Rfr")
-    setReflectorSpct(z)
-    return(z)
-  } else if(is(e1, "reflector.spct") && is(e2, "source.spct")) {
-    z <- oper_spectra(e1$w.length, e2$w.length, e1$Rfr, e2$s.e.irrad, bin.oper=`+`, trim="intersection")
-    setnames(z, 2, "s.e.irrad")
-    setSourceSpct(z)
-    return(z)
-  } else if(is(e2, "reflector.spct") && is(e1, "source.spct")) {
-    z <- oper_spectra(e2$w.length, e1$w.length, e2$Rfr, e1$s.e.irrad, bin.oper=`+`, trim="intersection")
-    setnames(z, 2, "s.e.irrad")
-    setSourceSpct(z)
-    return(z)
-  } else if (is(e1, "source.spct") && is(e2, "source.spct")) {
-    z <- oper_spectra(e1$w.length, e2$w.length, e1$s.e.irrad, e2$s.e.irrad, bin.oper=`+`, trim="intersection")
-    setnames(z, 2, "s.e.irrad")
-    setSourceSpct(z)
-    return(z)
-  } else if (is(e1, "filter.spct") && is.numeric(e2)) {
+  } else if (is.numeric(e2)) {
     z <- copy(e1)
     z[ , Tfr := Tfr + e2]
     if (exists("Tpc", z, inherits=FALSE)) {
@@ -419,18 +837,32 @@ setSourceSpct <- function(x) {
       z[ , A := NULL]
     }
     return(z)
-  } else if (is(e1, "reflector.spct") && is.numeric(e2)) {
+  } else {
+    return(NA)
+  }
+}
+
+
+#' "+" operator for reflector spectra
+#'
+#' Division operator for reflector spectra.
+#'
+#' @param e1 an object of class "reflector.spct"
+#' @param e2 an object of class "reflector.spct"
+#' @name times-.reflector.spct
+#' @export
+#'
+'+.reflector.spct' <- function(e1, e2) {
+  if (is(e2, "reflector.spct")) {
+    z <- oper_spectra(e1$w.length, e2$w.length, e1$Rfr, e2$Rfr, bin.oper=`+`, trim="intersection")
+    setnames(z, 2, "Rfr")
+    setReflectorSpct(z)
+    return(z)
+  } else if (is.numeric(e2)) {
     z <- copy(e1)
     z[ , Rfr := Rfr + e2]
     if (exists("Rpc", z, inherits=FALSE)) {
-      z[ , Tpc := NULL]
-    }
-    return(z)
-  } else if (is(e1, "source.spct") && is.numeric(e2)) {
-    z <- copy(e1)
-    z[ , s.e.irrad := s.e.irrad + e2]
-    if (exists("s.q.irrad", z, inherits=FALSE)) {
-      z[ , s.q.irrad := NULL]
+      z[ , Rpc := NULL]
     }
     return(z)
   } else {
@@ -438,52 +870,109 @@ setSourceSpct <- function(x) {
   }
 }
 
-#' "-" operator for spectra
+#' "+" operator for response spectra
 #'
-#' Unary negation and binary substraction operator for spectra.
+#' Division operator for response spectra.
+#'
+#' @param e1 an object of class "response.spct"
+#' @param e2 an object of class "response.spct"
+#' @name times-.reflector.spct
+#' @export
+#'
+'+.response.spct' <- function(e1, e2) {
+  if(is(e2, "response.spct")) {
+    z <- oper_spectra(e1$w.length, e2$w.length, e1$response, e2$response, bin.oper=`+`, trim="intersection")
+    setnames(z, 2, "response")
+    setResponseSpct(z)
+    return(z)
+  } else if (is.numeric(e2)) {
+    z <- copy(e1)
+    z[ , response := response + e2]
+    return(z)
+  } else {
+    return(NA)
+  }
+}
+
+#' "+" operator for source objects
+#'
+#' Division operator for source spectra.
+#'
+#' @param e1 an object of class "source.spct"
+#' @param e2 an object of class "generic.spct" or numeric
+#' @name times-.generic.spct
+#' @export
+#'
+'+.source.spct' <- function(e1, e2) {
+  if (!exists("s.e.irrad", e1, inherits=FALSE)) {
+    q2e(e2, "replace")
+  }
+
+  if (is(e2, "source.spct")) {
+    if (!exists("s.e.irrad", e2, inherits=FALSE)) {
+      q2e(e2, "replace")
+    }
+    z <- oper_spectra(e1$w.length, e2$w.length, e1$s.e.irrad, e2$s.e.irrad, bin.oper=`+`, trim="intersection")
+    setnames(z, 2, "s.e.irrad")
+    setSourceSpct(z)
+    return(z)
+  } else if (is.numeric(e2)) {
+    z <- copy(e1)
+    z[ , s.e.irrad := s.e.irrad + e2]
+    if (exists("s.q.irrad", z, inherits=FALSE)) {
+      z[ , s.q.irrad := NULL]
+    }
+    return(z)
+  }  else {
+    return(NA)
+  }
+}
+
+#' "+" operator for generic spectra
+#'
+#' Division operator for generic spectra.
 #'
 #' @param e1 an object of class "generic.spct"
 #' @param e2 an object of class "generic.spct"
-#' @name minus-.generic.spct
+#' @name times-.generic.spct
 #' @export
 #'
-'-.generic.spct' <- function(e1, e2) {
-  if (is(e1, "filter.spct") && is(e2, "filter.spct")) {
+'+.generic.spct' <- function(e1, e2) {
+  return(NA)
+}
+
+
+# Minus -------------------------------------------------------------------
+
+#' "-" operator for chromaticity spectra
+#'
+#' Subsreation operator for spectra.
+#'
+#' @param e1 an object of class "chroma.spct"
+#' @param e2 an object of class "generic.spct"
+#' @name times-.chroma.spct
+#' @export
+#'
+'-.chroma.spct' <- function(e1, e2) {
+  return(NA)
+}
+
+#' "-" operator for filter spectra
+#'
+#' Division operator for filter spectra.
+#'
+#' @param e1 an object of class "filter.spct"
+#' @param e2 an object of class "filter.spct"
+#' @name times-.filter.spct
+#' @export
+#'
+'-.filter.spct' <- function(e1, e2) {
+  if (is(e2, "filter.spct")) {
     z <- oper_spectra(e1$w.length, e2$w.length, e1$Tfr, e2$Tfr, bin.oper=`-`, trim="intersection")
     setnames(z, 2, "Tfr")
     setFilterSpct(z)
     return(z)
-  } else if(is(e1, "filter.spct") && is(e2, "source.spct")) {
-    z <- oper_spectra(e1$w.length, e2$w.length, e1$Tfr, e2$s.e.irrad, bin.oper=`-`, trim="intersection")
-    setnames(z, 2, "s.e.irrad")
-    setSourceSpct(z)
-    return(z)
-  } else if(is(e2, "filter.spct") && is(e1, "source.spct")) {
-    z <- oper_spectra(e2$w.length, e1$w.length, e2$Tfr, e1$s.e.irrad, bin.oper=`-`, trim="intersection")
-    setnames(z, 2, "s.e.irrad")
-    setSourceSpct(z)
-    return(z)
-  } else if (is(e1, "reflector.spct") && is(e2, "reflector.spct")) {
-    z <- oper_spectra(e1$w.length, e2$w.length, e1$Rfr, e2$Rfr, bin.oper=`-`, trim="intersection")
-    setnames(z, 2, "Rfr")
-    setReflectorSpct(z)
-    return(z)
-  } else if(is(e1, "reflector.spct") && is(e2, "source.spct")) {
-    z <- oper_spectra(e1$w.length, e2$w.length, e1$Rfr, e2$s.e.irrad, bin.oper=`-`, trim="intersection")
-    setnames(z, 2, "s.e.irrad")
-    setSourceSpct(z)
-    return(z)
-  } else if(is(e2, "reflector.spct") && is(e1, "source.spct")) {
-    z <- oper_spectra(e2$w.length, e1$w.length, e2$Rfr, e1$s.e.irrad, bin.oper=`-`, trim="intersection")
-    setnames(z, 2, "s.e.irrad")
-    setSourceSpct(z)
-    return(z)
-  } else if (is(e1, "source.spct") && is(e2, "source.spct")) {
-    z <- oper_spectra(e1$w.length, e2$w.length, e1$s.e.irrad, e2$s.e.irrad, bin.oper=`-`, trim="intersection")
-    setnames(z, 2, "s.e.irrad")
-    setSourceSpct(z)
-    return(z)
-  } else if (is(e1, "filter.spct") && is.numeric(e2)) {
+  } else if (is.numeric(e2)) {
     z <- copy(e1)
     z[ , Tfr := Tfr - e2]
     if (exists("Tpc", z, inherits=FALSE)) {
@@ -493,24 +982,113 @@ setSourceSpct <- function(x) {
       z[ , A := NULL]
     }
     return(z)
-  } else if (is(e1, "reflector.spct") && is.numeric(e2)) {
+  } else {
+    return(NA)
+  }
+}
+
+
+#' "-" operator for reflector spectra
+#'
+#' Division operator for reflector spectra.
+#'
+#' @param e1 an object of class "reflector.spct"
+#' @param e2 an object of class "reflector.spct"
+#' @name times-.reflector.spct
+#' @export
+#'
+'-.reflector.spct' <- function(e1, e2) {
+  if (is(e2, "reflector.spct")) {
+    z <- oper_spectra(e1$w.length, e2$w.length, e1$Rfr, e2$Rfr, bin.oper=`-`, trim="intersection")
+    setnames(z, 2, "Rfr")
+    setReflectorSpct(z)
+    return(z)
+  } else if (is.numeric(e2)) {
     z <- copy(e1)
     z[ , Rfr := Rfr - e2]
     if (exists("Rpc", z, inherits=FALSE)) {
-      z[ , Tpc := NULL]
-    }
-    return(z)
-  } else if (is(e1, "source.spct") && is.numeric(e2)) {
-    z <- copy(e1)
-    z[ , s.e.irrad := s.e.irrad - e2]
-    if (exists("s.q.irrad", z, inherits=FALSE)) {
-      z[ , s.q.irrad := NULL]
+      z[ , Rpc := NULL]
     }
     return(z)
   } else {
     return(NA)
   }
 }
+
+#' "-" operator for response spectra
+#'
+#' Division operator for response spectra.
+#'
+#' @param e1 an object of class "response.spct"
+#' @param e2 an object of class "response.spct"
+#' @name times-.reflector.spct
+#' @export
+#'
+'-.response.spct' <- function(e1, e2) {
+  if(is(e2, "response.spct")) {
+    z <- oper_spectra(e1$w.length, e2$w.length, e1$response, e2$response, bin.oper=`-`, trim="intersection")
+    setnames(z, 2, "response")
+    setResponseSpct(z)
+    return(z)
+  } else if (is.numeric(e2)) {
+    z <- copy(e1)
+    z[ , response := response - e2]
+    return(z)
+  } else {
+    return(NA)
+  }
+}
+
+#' "-" operator for source objects
+#'
+#' Division operator for source spectra.
+#'
+#' @param e1 an object of class "source.spct"
+#' @param e2 an object of class "generic.spct" or numeric
+#' @name times-.generic.spct
+#' @export
+#'
+'-.source.spct' <- function(e1, e2) {
+  if (!exists("s.e.irrad", e1, inherits=FALSE)) {
+    q2e(e2, "replace")
+  }
+
+  if (is(e2, "source.spct")) {
+    if (!exists("s.e.irrad", e2, inherits=FALSE)) {
+      q2e(e2, "replace")
+    }
+    z <- oper_spectra(e1$w.length, e2$w.length, e1$s.e.irrad, e2$s.e.irrad, bin.oper=`-`, trim="intersection")
+    setnames(z, 2, "s.e.irrad")
+    setSourceSpct(z)
+    return(z)
+  } else if (is.numeric(e2)) {
+    z <- copy(e1)
+    z[ , s.e.irrad := s.e.irrad - e2]
+    if (exists("s.q.irrad", z, inherits=FALSE)) {
+      z[ , s.q.irrad := NULL]
+    }
+    return(z)
+  }  else {
+    return(NA)
+  }
+}
+
+#' "-" operator for generic spectra
+#'
+#' Division operator for generic spectra.
+#'
+#' @param e1 an object of class "generic.spct"
+#' @param e2 an object of class "generic.spct"
+#' @name times-.generic.spct
+#' @export
+#'
+'-.generic.spct' <- function(e1, e2) {
+  return(NA)
+}
+
+# old ---------------------------------------------------------------------
+
+
 
 #' "^" operator for spectra
 #'
@@ -741,7 +1319,7 @@ min.generic.spct <- function(..., na.rm=FALSE) {
 
 #' Labels of a "generic.spct" object.
 #'
-#' A function to obtain the labels of a spectrum. Currently returns NA.
+#' A function to obtain the labels of a spectrum. Currently returns 'names'.
 #'
 #' @param object an object of generic.spct
 #' @param ... not used in current version
@@ -785,13 +1363,12 @@ A2T.default <- function(x, action=NULL, byref=FALSE) {
 #'
 #' Function that coverts absorbance into transmittance (fraction).
 #'
-#' @param x a "generic.spct"  object
+#' @param x a "filter.spct"  object
 #' @param action a character string
 #' @param byref logical indicating if new object will be created by reference or by copy of x
-#' @export A2T.generic.spct
+#' @export A2T.filter.spct
 #'
-A2T.generic.spct <- function(x, action="add", byref=FALSE) {
-  if (is(x, "filter.spct")) {
+A2T.filter.spct <- function(x, action="add", byref=FALSE) {
     if (byref) {
       z <- x
     } else {
@@ -808,10 +1385,7 @@ A2T.generic.spct <- function(x, action="add", byref=FALSE) {
       z[ , A := NULL]
     }
     return(z)
-  } else {
-    return(NA)
   }
-}
 
 
 # T2A ---------------------------------------------------------------------
@@ -839,16 +1413,16 @@ T2A.default <- function(x, action=NULL, byref=FALSE) {
   return(-log10(x))
 }
 
-#' "gneric_spct" function
+#' "filter.spct" function
 #'
 #' Function that coverts transmittance into absorbance (fraction).
 #'
-#' @param x a "generic.spct"  object
+#' @param x a "filter.spct"  object
 #' @param action a character string
 #' @param byref logical indicating if new object will be created by reference or by copy of x
-#' @export T2A.generic.spct
+#' @export T2A.filter.spct
 #'
-T2A.generic.spct <- function(x, action="add", byref=FALSE) {
+T2A.filter.spct <- function(x, action="add", byref=FALSE) {
   if (is(x, "filter.spct")) {
     if (byref) {
       z <- x
@@ -898,16 +1472,16 @@ e2q.default <- function(x, action="add", byref=FALSE) {
   return(NA)
 }
 
-#' "generic.spct" function
+#' "source.spct" function
 #'
 #' Function that coverts spectral energy irradiance into spectral photon irradiance (molar).
 #'
-#' @param x a "generic.spct"  object
+#' @param x a "source.spct"  object
 #' @param action a character string
 #' @param byref logical indicating if new object will be created by reference or by copy of x
-#' @export e2q.generic.spct
+#' @export e2q.source.spct
 #'
-e2q.generic.spct <- function(x, action="add", byref=FALSE) {
+e2q.source.spct <- function(x, action="add", byref=FALSE) {
   if (is(x, "source.spct")) {
     if (byref) {
       z <- x
@@ -960,12 +1534,12 @@ q2e.default <- function(x, action="add", byref=FALSE) {
 #'
 #' Function that coverts spectral photon irradiance (molar) into spectral energy irradiance.
 #'
-#' @param x a "generic.spct"  object
+#' @param x a "source.spct"  object
 #' @param action a character string
 #' @param byref logical indicating if new object will be created by reference or by copy of x
-#' @export q2e.generic.spct
+#' @export q2e.source.spct
 #'
-q2e.generic.spct <- function(x, action="add", byref=FALSE) {
+q2e.source.spct <- function(x, action="add", byref=FALSE) {
   if (is(x, "source.spct")) {
     if (byref) {
       z <- x
