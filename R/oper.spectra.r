@@ -1,11 +1,11 @@
-#' Binary operation on two spectra, even if the wavelengths values differ 
+#' Binary operation on two spectra, even if the wavelengths values differ
 #'
 #' The wavelength vectors of the two spectra are merged, and the missing spectral
 #' values are calculated by interpolation. After this, the two spectral values at
 #' each wavelength are added.
 #'
 #' @usage oper_spectra(w.length1, w.length2=NULL, s.irrad1, s.irrad2, trim="union", na.rm=FALSE, bin.oper=NULL, ...)
-#' 
+#'
 #' @param w.length1 numeric array of wavelength (nm)
 #' @param w.length2 numeric array of wavelength (nm)
 #' @param s.irrad1 a numeric array of spectral values
@@ -15,14 +15,14 @@
 #' @param bin.oper a function defining a binary operator (for the usual math operators enclose argument in backticks)
 #' @param ... additional arguments (by name) passed to bin.oper
 #' @return a dataframe with two numeric variables
-#' \item{w.length}{A numeric vector with the wavelengths (nm) obtained by "fusing" w.length1 and 
+#' \item{w.length}{A numeric vector with the wavelengths (nm) obtained by "fusing" w.length1 and
 #' w.length2. w.length contains all the unique vales, sorted in ascending order.}
 #' \item{s.irrad}{A numeric vector with the sum of the two spectral values at each wavelength.}
 #' @details If trim=="union" spectral values are calculated for the whole range of wavelengths
-#' covered by at least one of the input spectra, and missing values are set in each input spectrum 
+#' covered by at least one of the input spectra, and missing values are set in each input spectrum
 #' to zero before addition.
 #' If trim=="intersection" then the range of wavelengths covered by both input spectra is returned,
-#' and the non-overlaping regions discarded. 
+#' and the non-overlaping regions discarded.
 #' If w.length2==NULL, it is assumed that both spectra
 #' are measured at the same wavelengths, and a simple addition is used, ensuring fast calculation.
 #' @export
@@ -46,11 +46,11 @@ oper_spectra <- function(w.length1, w.length2=NULL, s.irrad1, s.irrad2, trim="un
   if (is.null(w.length2)) {
     if (length(s.irrad1) == length(s.irrad2) & length(w.length1) == length(s.irrad1)){
       s.irrad.result <- bin.oper(s.irrad1, s.irrad2, ...)
-      w.length <- w.length1 
+      w.length <- w.length1
     } else {
       stop("Mismatch in the length of input vectors")
     }
-    return(data.frame(w.length, s.irrad=s.irrad.result))
+    return(data.table(w.length, s.irrad=s.irrad.result))
   }
   if (length(w.length2) != length(s.irrad2) | length(w.length1) != length(s.irrad1)){
     stop("Mismatch in the length of input vectors")
