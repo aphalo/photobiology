@@ -92,9 +92,9 @@ irrad_spct <-
     # we add the missing it.
     # As spectra are passed by reference the changes propagate to the argument
     if (unit.out == "energy") {
-      q2e(spct)
+      q2e(spct, byref=TRUE)
     } else if (unit.out == "photon") {
-      e2q(spct)
+      e2q(spct, byref=TRUE)
     } else {
       stop("Unrecognized value for unit.out")
     }

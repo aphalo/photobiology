@@ -162,7 +162,7 @@ check.chroma.spct <- function(x, byref=TRUE) {
 #' @exportClass generic.spct
 #'
 setGenSpct <- function(x) {
-  name = substitute(x)
+  name <- substitute(x)
   if (!is.data.table(x)) {
     setDT(x)
   }
@@ -170,7 +170,7 @@ setGenSpct <- function(x) {
   x <- check(x)
   setkey(x, w.length)
   if (is.name(name)) {
-    name = as.character(name)
+    name <- as.character(name)
     assign(name, x, parent.frame(), inherits = TRUE)
   }
   invisible(x)
@@ -186,7 +186,7 @@ setGenSpct <- function(x) {
 #' @exportClass filter.spct
 #'
 setFilterSpct <- function(x) {
-  name = substitute(x)
+  name <- substitute(x)
   if (!is.data.table(x)) {
     setDT(x)
   }
@@ -199,7 +199,7 @@ setFilterSpct <- function(x) {
   x <- check(x)
   setkey(x, w.length)
   if (is.name(name)) {
-    name = as.character(name)
+    name <- as.character(name)
     assign(name, x, parent.frame(), inherits = TRUE)
   }
   invisible(x)
@@ -215,7 +215,7 @@ setFilterSpct <- function(x) {
 #' @exportClass filter.spct
 #'
 setReflectorSpct <- function(x) {
-  name = substitute(x)
+  name <- substitute(x)
   if (!is.data.table(x)) {
     setDT(x)
   }
@@ -228,7 +228,7 @@ setReflectorSpct <- function(x) {
   x <- check(x)
   setkey(x, w.length)
   if (is.name(name)) {
-    name = as.character(name)
+    name <- as.character(name)
     assign(name, x, parent.frame(), inherits = TRUE)
   }
   invisible(x)
@@ -244,7 +244,7 @@ setReflectorSpct <- function(x) {
 #' @exportClass filter.spct
 #'
 setResponseSpct <- function(x) {
-  name = substitute(x)
+  name <- substitute(x)
   if (!is.data.table(x)) {
     setDT(x)
   }
@@ -257,7 +257,7 @@ setResponseSpct <- function(x) {
   x <- check(x)
   setkey(x, w.length)
   if (is.name(name)) {
-    name = as.character(name)
+    name <- as.character(name)
     assign(name, x, parent.frame(), inherits = TRUE)
   }
   invisible(x)
@@ -273,7 +273,7 @@ setResponseSpct <- function(x) {
 #' @exportClass source.spct
 #'
 setSourceSpct <- function(x) {
-  name = substitute(x)
+  name <- substitute(x)
   if (!is.data.table(x)) {
     setDT(x)
   }
@@ -286,7 +286,7 @@ setSourceSpct <- function(x) {
   x <- check(x)
   setkey(x, w.length)
   if (is.name(name)) {
-    name = as.character(name)
+    name <- as.character(name)
     assign(name, x, parent.frame(), inherits = TRUE)
   }
   invisible(x)
@@ -302,7 +302,7 @@ setSourceSpct <- function(x) {
 #' @exportClass chroma.spct
 #'
 setChromaSpct <- function(x) {
-  name = substitute(x)
+  name <- substitute(x)
   if (!is.data.table(x)) {
     setDT(x)
   }
@@ -315,7 +315,7 @@ setChromaSpct <- function(x) {
   x <- check(x)
   setkey(x, w.length)
   if (is.name(name)) {
-    name = as.character(name)
+    name <- as.character(name)
     assign(name, x, parent.frame(), inherits = TRUE)
   }
   invisible(x)
@@ -1140,24 +1140,25 @@ A2T.default <- function(x, action=NULL, byref=FALSE) {
 #'
 A2T.filter.spct <- function(x, action="add", byref=FALSE) {
   if (byref) {
-    z <- x
+    name <- substitute(x)
   } else {
-    z <- copy(x)
+    x <- copy(x)
   }
-  if (exists("Tfr", z, inherits=FALSE)) {
+  if (exists("Tfr", x, inherits=FALSE)) {
     NULL
-  } else if (exists("A", z, inherits=FALSE)) {
-    z[ , Tfr := 10^-A]
+  } else if (exists("A", x, inherits=FALSE)) {
+    x[ , Tfr := 10^-A]
   } else {
-    z[ , Tfr := NA]
+    x[ , Tfr := NA]
   }
-  if (exists("Tpc", z, inherits=FALSE)) {
-    z[ , Tpc := NULL]
+  if (action=="replace" && exists("A", x, inherits=FALSE)) {
+    x[ , A := NULL]
   }
-  if (action=="replace" && exists("A", z, inherits=FALSE)) {
-    z[ , A := NULL]
+  if (byref && is.name(name)) { # this is a temporary safe net
+    name <- as.character(name)
+    assign(name, x, parent.frame(), inherits = TRUE)
   }
-  return(z)
+  return(x)
 }
 
 
@@ -1196,29 +1197,26 @@ T2A.default <- function(x, action=NULL, byref=FALSE) {
 #' @export T2A.filter.spct
 #'
 T2A.filter.spct <- function(x, action="add", byref=FALSE) {
-  if (is(x, "filter.spct")) {
-    if (byref) {
-      z <- x
-    } else {
-      z <- copy(x)
-    }
-    if (exists("A", z, inherits=FALSE)) {
-      NULL
-    } else if (exists("Tfr", z, inherits=FALSE)) {
-      z[ , A := -log10(Tfr)]
-    } else {
-      z[ , A := NA]
-    }
-    if (exists("Tpc", z, inherits=FALSE)) {
-      z[ , Tpc := NULL]
-    }
-    if (action=="replace" && exists("Tfr", z, inherits=FALSE)) {
-      z[ , Tfr := NULL]
-    }
-    return(z)
+  if (byref) {
+    name <- substitute(x)
   } else {
-    return(NA)
+    x <- copy(x)
   }
+  if (exists("A", x, inherits=FALSE)) {
+    NULL
+  } else if (exists("Tfr", x, inherits=FALSE)) {
+    x[ , A := -log10(Tfr)]
+  } else {
+    x[ , A := NA]
+  }
+  if (action=="replace" && exists("Tfr", x, inherits=FALSE)) {
+    x[ , Tfr := NULL]
+  }
+  if (byref && is.name(name)) {  # this is a temporary safe net
+    name <- as.character(name)
+    assign(name, x, parent.frame(), inherits = TRUE)
+  }
+  return(x)
 }
 
 
@@ -1259,26 +1257,26 @@ e2q.default <- function(x, action="add", byref=FALSE) {
 #' @export e2q.source.spct
 #'
 e2q.source.spct <- function(x, action="add", byref=FALSE) {
-  if (is(x, "source.spct")) {
-    if (byref) {
-      z <- x
-    } else {
-      z <- copy(x)
-    }
-    if (exists("s.q.irrad", z, inherits=FALSE)) {
-      NULL
-    } else if (exists("s.e.irrad", z, inherits=FALSE)) {
-      z[ , s.q.irrad := s.e.irrad * e2qmol_multipliers(w.length)]
-    } else {
-      z[ , s.q.irrad := rep(NA, length(w.length))]
-    }
-    if (action=="replace" && exists("s.e.irrad", z, inherits=FALSE)) {
-      z[ , s.e.irrad := NULL]
-    }
-    return(z)
+  if (byref) {
+    name <- substitute(x)
   } else {
-    return(NA)
+    x <- copy(x)
   }
+  if (exists("s.q.irrad", x, inherits=FALSE)) {
+    NULL
+  } else if (exists("s.e.irrad", x, inherits=FALSE)) {
+    x[ , s.q.irrad := s.e.irrad * e2qmol_multipliers(w.length)]
+  } else {
+    x[ , s.q.irrad := rep(NA, length(w.length))]
+  }
+  if (action=="replace" && exists("s.e.irrad", x, inherits=FALSE)) {
+    x[ , s.e.irrad := NULL]
+  }
+  if (byref && is.name(name)) {  # this is a temporary safe net
+    name <- as.character(name)
+    assign(name, x, parent.frame(), inherits = TRUE)
+  }
+  return(x)
 }
 
 # photon to energy ---------------------------------------------------------------------
@@ -1316,24 +1314,24 @@ q2e.default <- function(x, action="add", byref=FALSE) {
 #' @export q2e.source.spct
 #'
 q2e.source.spct <- function(x, action="add", byref=FALSE) {
-  if (is(x, "source.spct")) {
-    if (byref) {
-      z <- x
-    } else {
-      z <- copy(x)
-    }
-    if (exists("s.e.irrad", z, inherits=FALSE)) {
-      NULL
-    } else if (exists("s.e.irrad", z, inherits=FALSE)) {
-      z[ , s.e.irrad := s.q.irrad / q2emol_multipliers(w.length)]
-    } else {
-      z[ , s.e.irrad := rep(NA, length(w.length))]
-    }
-    if (action=="replace" && exists("s.q.irrad", z, inherits=FALSE)) {
-      z[ , s.q.irrad := NULL]
-    }
-    return(z)
+  if (byref) {
+    name <- substitute(x)
   } else {
-    return(NA)
+    x <- copy(x)
   }
+  if (exists("s.e.irrad", x, inherits=FALSE)) {
+    NULL
+  } else if (exists("s.q.irrad", x, inherits=FALSE)) {
+    x[ , s.e.irrad := s.q.irrad / e2qmol_multipliers(w.length)]
+  } else {
+    x[ , s.e.irrad := rep(NA, length(w.length))]
+  }
+  if (action=="replace" && exists("s.q.irrad", x, inherits=FALSE)) {
+    x[ , s.q.irrad := NULL]
+  }
+  if (byref && is.name(name)) {  # this is a temporary safe net
+    name <- as.character(name)
+    assign(name, x, parent.frame(), inherits = TRUE)
+  }
+  return(x)
 }
