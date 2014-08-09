@@ -9,11 +9,11 @@
 #' not hard coded, so the function could be used to simulate vision in other organisms as long as
 #' pseudo CMF or CC data are available for the simulation.
 #'
-#' @usage s_e_irrad2rgb(w.length, s.e.irrad, sens=ciexyzCMF2.data, color.name=NULL)
+#' @usage s_e_irrad2rgb(w.length, s.e.irrad, sens=ciexyzCMF2.spct, color.name=NULL)
 #'
 #' @param w.length numeric array of wavelengths (nm)
 #' @param s.e.irrad numeric array of spectral irradiance values
-#' @param sens a dataframe with variables w.length, x, y, and z, giving the CC or CMF definition (default is the
+#' @param sens a chroma.spct object with variables w.length, x, y, and z, giving the CC or CMF definition (default is the
 #' proposed human CMF according to CIE 2006.)
 #' @param color.name character string for naming the rgb color definition
 #'
@@ -33,7 +33,7 @@
 #' online data respository at \url{http://www.cvrl.org/}.
 #' @references \url{http://www.cs.rit.edu/~ncs/color/t_spectr.html}.
 
-s_e_irrad2rgb <- function(w.length, s.e.irrad, sens=ciexyzCMF2.data, color.name=NULL) {
+s_e_irrad2rgb <- function(w.length, s.e.irrad, sens=ciexyzCMF2.spct, color.name=NULL) {
   low.limit <- min(sens$w.length)
   high.limit <- max(sens$w.length)
   if (single_wl <- length(w.length) == 1) {

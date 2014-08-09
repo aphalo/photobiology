@@ -40,15 +40,23 @@ irrad_spct <-
     }
     # if the waveband is undefined then use all data
     if (is.null(w.band)){
-      w.band <- new_waveband(min(spct$w.length), max(spct$w.length) + 1e-4)
+      w.band <- new_waveband(min(spct), max(spct) + 1e-4)
       # we need to add a small number as the test is "<"
       # this affects signifcantly the result only when no hinges are used
     }
     if (is(w.band, "waveband")) {
       # if the argument is a single w.band, we enclose it in a list
       # so that the for loop works as expected.This is a bit of a
-      # cludge but let's us avoid treating it as a special case
+      # cludge but lets us avoid treating it as a special case
       w.band <- list(w.band)
+    }
+    # we check if the list elements are named, if not we set a flag
+    # and an empty vector that will be later filled in with data from
+    # the waveband definitions.
+    wb_number <- length(w.band) # number of wavebands in list
+    wb_name <- names(w.band) # their names in the list
+    if (is.null(wb_name)) {
+      wb_name <- character(wb_number)
     }
     # if the w.band includes 'hinges' we insert them
     # choose whether to use hinges or not
@@ -59,8 +67,10 @@ irrad_spct <-
     # spectral resolution data, and speed up the calculations
     # a lot in such cases
     if (is.null(use.hinges)) {
-      length.wl <- length(spct$w.length)
-      use.hinges <- (spct$w.length[length.wl] - spct$w.length[1]) / length.wl > 0.7 #
+      length.wl <- length(spct)
+      use.hinges <- (spct$w.length[length.wl] - spct$w.length[1]) / length.wl > 1.1
+      # we use 1.1 nm as performance degradation by using hinges is very significant
+      # in the current version.
     }
     # we collect all hinges and insert them in one go
     # this may alter a little the returned values
@@ -76,47 +86,30 @@ irrad_spct <-
         spct <- insert_spct_hinges(spct, all.hinges)
       }
     }
-    wb_name <- names(w.band)
-    no_names_flag <- is.null(wb_name)
-    if (no_names_flag){
-      wb_name <- character(length(w.band))
-    }
 
     # "source.spct" objects are not guaranteed to contain spectral irradiance
     # expressed in the needed type of scale, if the needed one is missing
     # we add the missing it.
     # As spectra are passed by reference the changes propagate to the argument
     if (unit.out == "energy") {
-      if (with(spct, exists("s.e.irrad"))) {
-        data.name <- "s.e.irrad"
-      } else if (with(spct, exists("s.q.irrad"))) {
-        spct[ , s.e.irrad := s.q.irrad / e2qmol_multipliers(w.length)]
-      } else {
-        warning("No light source data found.")
-        return(NA)
-      }
+      q2e(spct)
     } else if (unit.out == "photon") {
-      if (with(spct, exists("s.q.irrad"))) {
-        data.name <- "s.q.irrad"
-      } else if (with(spct, exists("s.e.irrad"))) {
-        spct[ , s.q.irrad := s.e.irrad * e2qmol_multipliers(w.length)]
-      } else {
-        warning("No light source data found.")
-        return(NA)
-      }
+      e2q(spct)
     } else {
-      stop("Bug in code.")
+      stop("Unrecognized value for unit.out")
     }
     unit.in <- unit.out
 
     # We iterate through the list of wavebands collecting the integrated irradiances,
     # possibly weighted depending on the waveband definition
-    irrad <- numeric(length(w.band))
-    i <- 0
+    irrad <- numeric(wb_number)
+    i <- 0L
     for (wb in w.band) {
-      i <- i + 1
+      i <- i + 1L
       # get names from wb if needed
-      if (no_names_flag) wb_name[i] <- wb$name
+      if (wb_name[i] == "") {
+        wb_name[i] <- wb$name
+      }
       # calculate the multipliers
       mult <- calc_multipliers(w.length=spct$w.length, w.band=wb, unit.out=unit.out,
                                unit.in=unit.in, use.cached.mult=use.cached.mult)

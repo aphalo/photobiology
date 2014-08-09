@@ -591,17 +591,17 @@ Examples for spectra as vectors, in this case for the solar spectrum:
 
 <<>>=
 with(sun.spct, s_e_irrad2rgb(w.length, s.e.irrad))
-with(sun.spct, s_e_irrad2rgb(w.length, s.e.irrad, sens=ciexyzCMF2.data))
-with(sun.spct, s_e_irrad2rgb(w.length, s.e.irrad, sens=ciexyzCMF10.data))
-with(sun.spct, s_e_irrad2rgb(w.length, s.e.irrad, sens=ciexyzCC2.data))
-with(sun.spct, s_e_irrad2rgb(w.length, s.e.irrad, sens=ciexyzCC10.data))
+with(sun.spct, s_e_irrad2rgb(w.length, s.e.irrad, sens=ciexyzCMF2.spct))
+with(sun.spct, s_e_irrad2rgb(w.length, s.e.irrad, sens=ciexyzCMF10.spct))
+with(sun.spct, s_e_irrad2rgb(w.length, s.e.irrad, sens=ciexyzCC2.spct))
+with(sun.spct, s_e_irrad2rgb(w.length, s.e.irrad, sens=ciexyzCC10.spct))
 @
 
 Examples with \texttt{source.spct} objects.
 
 <<>>=
 rgb_spct(sun.spct)
-rgb_spct(sun.spct, sens=ciexyzCMF2.data)
+rgb_spct(sun.spct, sens=ciexyzCMF2.spct)
 @
 
 Here we plot the RGB colours for the range covered by the CIE 2006 proposed standard calculated at each 1 nm step:

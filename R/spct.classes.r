@@ -33,6 +33,9 @@ check.generic.spct <- function(x, byref=TRUE) {
   } else if (exists("wl", x, mode = "numeric", inherits=FALSE)) {
     setnames(x, "wl", "w.length")
     invisible(return(x))
+  } else if (exists("wavelength", x, mode = "numeric", inherits=FALSE)) {
+    setnames(x, "wavelength", "w.length")
+    invisible(return(x))
   } else {
     warning("No wavelength data found in generic.spct")
     x[ , w.length := NA]
@@ -1141,14 +1144,17 @@ A2T.filter.spct <- function(x, action="add", byref=FALSE) {
   } else {
     z <- copy(x)
   }
-  if (exists("A", z, inherits=FALSE)) {
+  if (exists("Tfr", z, inherits=FALSE)) {
+    NULL
+  } else if (exists("A", z, inherits=FALSE)) {
     z[ , Tfr := 10^-A]
-    z[ , Tpc := Tfr * 100]
   } else {
     z[ , Tfr := NA]
-    z[ , Tpc := NA]
   }
-  if (action=="replace") {
+  if (exists("Tpc", z, inherits=FALSE)) {
+    z[ , Tpc := NULL]
+  }
+  if (action=="replace" && exists("A", z, inherits=FALSE)) {
     z[ , A := NULL]
   }
   return(z)
@@ -1196,14 +1202,18 @@ T2A.filter.spct <- function(x, action="add", byref=FALSE) {
     } else {
       z <- copy(x)
     }
-    if (exists("Tfr", z, inherits=FALSE)) {
+    if (exists("A", z, inherits=FALSE)) {
+      NULL
+    } else if (exists("Tfr", z, inherits=FALSE)) {
       z[ , A := -log10(Tfr)]
     } else {
       z[ , A := NA]
     }
-    if (action=="replace") {
-      z[ , Tfr := NULL]
+    if (exists("Tpc", z, inherits=FALSE)) {
       z[ , Tpc := NULL]
+    }
+    if (action=="replace" && exists("Tfr", z, inherits=FALSE)) {
+      z[ , Tfr := NULL]
     }
     return(z)
   } else {
@@ -1256,14 +1266,13 @@ e2q.source.spct <- function(x, action="add", byref=FALSE) {
       z <- copy(x)
     }
     if (exists("s.q.irrad", z, inherits=FALSE)) {
-      return(z)
-    }
-    if (exists("s.e.irrad", z, inherits=FALSE)) {
+      NULL
+    } else if (exists("s.e.irrad", z, inherits=FALSE)) {
       z[ , s.q.irrad := s.e.irrad * e2qmol_multipliers(w.length)]
     } else {
       z[ , s.q.irrad := rep(NA, length(w.length))]
     }
-    if (action=="replace") {
+    if (action=="replace" && exists("s.e.irrad", z, inherits=FALSE)) {
       z[ , s.e.irrad := NULL]
     }
     return(z)
@@ -1314,14 +1323,13 @@ q2e.source.spct <- function(x, action="add", byref=FALSE) {
       z <- copy(x)
     }
     if (exists("s.e.irrad", z, inherits=FALSE)) {
-      return(z)
-    }
-    if (exists("s.e.irrad", z, inherits=FALSE)) {
+      NULL
+    } else if (exists("s.e.irrad", z, inherits=FALSE)) {
       z[ , s.e.irrad := s.q.irrad / q2emol_multipliers(w.length)]
     } else {
       z[ , s.e.irrad := rep(NA, length(w.length))]
     }
-    if (action=="replace") {
+    if (action=="replace" && exists("s.q.irrad", z, inherits=FALSE)) {
       z[ , s.q.irrad := NULL]
     }
     return(z)

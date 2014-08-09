@@ -1,3 +1,8 @@
+photobiology 0.3.8
+===================
+
+Now chromaticity and colour matching function data are as chroma.spct objects. This required also edits to many of the colour related functions. Added CMF for honeybees and example daily solar spectral data. Edited irrad_spct() so that results always include waveband names.
+
 photobiology 0.3.7
 ===================
 

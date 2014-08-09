@@ -2,10 +2,10 @@
 #'
 #' This function returns the RGB values for a source spectrum.
 #'
-#' @usage rgb_spct(spct, sens=ciexyzCMF2.data, color.name=NULL)
+#' @usage rgb_spct(spct, sens=ciexyzCMF2.spct, color.name=NULL)
 #'
 #' @param spct an object of class "source.spct"
-#' @param sens a dataframe with variables w.length, x, y, and z, giving the CC or CMF definition (default is the
+#' @param sens a chroma.spct object with variables w.length, x, y, and z, giving the CC or CMF definition (default is the
 #' proposed human CMF according to CIE 2006.)
 #' @param color.name character string for naming the rgb color definition
 #'
@@ -17,7 +17,7 @@
 #'
 
 rgb_spct <-
-  function(spct, sens=ciexyzCMF2.data, color.name=NULL){
+  function(spct, sens=ciexyzCMF2.spct, color.name=NULL){
     if (is(spct, "source.spct")) {
       return(s_e_irrad2rgb(spct$w.length, spct$s.e.irrad, sens=sens, color.name=color.name))
     } else {

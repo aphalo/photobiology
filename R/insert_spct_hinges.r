@@ -19,21 +19,26 @@
 ##' insert_spct_hinges(sun.spct, c(399.99,400.00,699.99,700.00))
 ##' insert_spct_hinges(sun.spct, c(199.99,200.00,399.50,399.99,400.00,699.99,700.00,799.99,1000.00))
 insert_spct_hinges <- function(spct, hinges=NULL) {
+  if (is.null(hinges)) {
+    return(spct)
+  }
   hinges <- hinges[hinges > min(spct) & hinges < max(spct)]
   if (length(hinges) > 0) {
     names.spct <- names(spct)
-    names.data <- names.spct[names.spct != "w.length"]
+    names.data <- names.spct != "w.length"
+    idx.wl <- which(!names.data)
+    idx.data <- which(names.data)
     class.spct <- class(spct)
     comment.spct <- comment(spct)
     hinges <- unique(sort(hinges))
     first.iter <- TRUE
-    for (data.col in names.data) {
-      temp.data <- insert_hinges(spct[["w.length"]], spct[[eval(data.col)]], hinges)
+    for (data.col in idx.data) {
+      temp.data <- insert_hinges(spct[[idx.wl]], spct[[data.col]], hinges)
       if (first.iter) {
-        new.spct <- data.table(w.length = temp.data[["w.length"]])
+        new.spct <- data.table(w.length = temp.data[[1]])
         first.iter <- FALSE
       }
-      new.spct[ , eval(data.col) := temp.data[["s.irrad"]] ]
+      new.spct[ , names.spct[data.col] := temp.data[[2]] ]
     }
     setattr(new.spct, "comment", comment.spct)
     setattr(new.spct, "class", class.spct)
