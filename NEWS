@@ -1,3 +1,10 @@
+photobiology 0.3.9
+===================
+
+Added summary() and corresponding print() methods for spectral objects, and stepsize() default and "generic.spct" methods. Changed SetSourceSpct() to accept a "time.unit" argument, which is used to set an attribute in "source.spct" objects (defaults to "second" making it transparently backwards compatible).
+
+Performance tests show that with default setttings the irradiance functions for "source.spct" objects execute significantly faster than the vector based ones. Operators for spectra are at the moment relatively very slow.
+
 photobiology 0.3.8
 ===================
 

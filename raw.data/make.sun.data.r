@@ -19,13 +19,14 @@ setwd("..")
 
 setwd("raw.data")
 
-sun.daily.spct <- read.table("sun_20120601_cum.hel.txt", col.names=c("w.length","s.e.irrad"))
-setSourceSpct(sun.daily.spct)
-sun.daily.spct[ , w.length := w.length * 1e-1]
-# sun.daily.spct[ , s.e.irrad := s.e.irrad * 1e-3]
-e2q(sun.daily.spct)
+sun.daily.data <- read.table("sun_20120601_cum.hel.txt", col.names=c("w.length","s.e.irrad"))
+sun.daily.data$w.length <- sun.daily.data$w.length / 10.0
+# sun.daily.data$s.e.irrad <- sun.daily.data$s.e.irrad / 1e3
+sun.daily.data$s.q.irrad <- with(sun.daily.data, as_quantum_mol(w.length, s.e.irrad))
+sun.daily.spct <- sun.daily.dt <- sun.daily.data
 
-sun.daily.data <- sun.daily.dt <- sun.daily.spct
+setSourceSpct(sun.daily.spct, time.unit="day")
+setDT(sun.daily.dt)
 
 setwd("../data")
 

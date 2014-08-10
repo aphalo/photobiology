@@ -89,6 +89,10 @@ library(ggtern)
 
 The package provides two sets of functions for many operations: functions programmed following a functional paradigm, and functions using an object-oriented paradigm. The former functions take as arguments numeric vectors and are probably faster. The later ones take `spectra' objects as arguments, are easier to use, and at least at the moment, to some extent slower. For everyday use `spectra' objects are recommended, but when maximum performance or flexibility in scripts is desired, the use of the functions taking numeric vectors as arguments may allow optimizations that are not possible with the object-oriented higher level functions.
 
+\subsection{Example spectral data}
+
+A few data objects are included in the package for use in examples. Two simulated solar spectra, \texttt{sun.spct} and \texttt{sun.daily.spct}, \ldots
+
 \subsection{Using numeric vectors}
 
 When dealing with spectra, we operate on pairs of vectors, one with the wavelengths in nm, and a second one with the corresponding values for the spectral data.
@@ -128,18 +132,22 @@ a.dt # not modified!
 
 From the examples above one can see that in example 3) \texttt{b.dt} is not a copy of \texttt{a.dt}, but instead a reference (a new name pointing to the original object), while in examples 1), 2) and 4) \texttt{b.dt}, is a new object, initialized to the value of \texttt{a.dt}.
 
-\section{Spectral data}
+\subsection{Spectral data assumptions}
+
+An assumption of the package is that wavelengths are always expressed in nanometres ($1~\Unit{nm} = 1 \cdot 10^{-9} \Unit{m}$). If the data to be analysed uses different units for wavelengths, e.g.\ Ånstrom ($1~\Unit{Å} = 1 \cdot 10^{-10} m$), the values need to be rescaled before any calculations. \textbf{Not doing so will yield completely wrong results!}
+
+Energy irradiances are assumed to be expressed in \watt and photon irradiances in \mol, that is to say using second as unit for time. This is the default, but it is possible to set the unit for time to day in the case of \textt{source.spct} objects.
 
 If our spectral irradiance data is in \wattnm, and the wavelength in nm, as in the case of
-the Macam spectroradiometer, the functions will return the effective irradiance in \watt. In this
-example we calculated a biologically effective irradiance.
+Macam spectroradiometers, the data can be used directly and functions in the package will return irradiances in \watt.
 
-If, for example, the spectral irradiance output by our model of spectroradiometer is in m\wattnm,
+If, for example, the spectral irradiance output by our model of spectroradiometer is in \mwattnm,
 and the wavelengths are in Ångstrom then to obtain the effective irradiance in \watt we will
-need to convert the units.
+need to rescale the data.
 
 <<example-1, eval=FALSE>>=
-energy_irradiance(wavelength/10,irrad/1000)
+# not run
+energy_irradiance(wavelength/10, irrad/1000)
 @
 
 In the example above, we take advantage of the behavior of the S language: an operation between a scalar
@@ -147,12 +155,8 @@ and vector, is equivalent to applying this operation to each member of the vecto
 Consequently, in the code above, each value from the vector of wavelengths is divided
 by 10, and each value in the vector of spectral irradiances is divided by 1000.
 
-If the spectral irradiance is in \mwattnm then values should be multiplied by 10 to
-convert them to \wattnm.
-
 It is very important to make sure that the wavelengths are in nanometres as this is what
-all functions expect. If the wavelengths are in the wrong units, the action spectra will be
-wrongly calculated, and the returned value for effective irradiance will be completely wrong.
+all functions expect. If wavelength values are in the wrong units, the action-spectra weights and quantum conversions will be wrongly calculated, and the values returned by most functions completely wrong, without warning.
 
 \subsection{Creation}
 
@@ -170,6 +174,17 @@ a.spct
 b.spct <- setSourceSpct(data.table(w.length = 300:305, s.e.irrad = rep(1,6)))
 class(b.spct)
 b.spct
+@
+
+If the spectral irradiance is expressed per day, then the parameter \texttt{time.unit} should be set to \texttt{"day"} instead of the default of "second". This information can be used when printing the results.
+
+<<>>=
+b.d.spct <- setSourceSpct(
+  data.table(w.length = 300:305, s.e.irrad = rep(1,6)),
+  time.unit="day")
+attr(b.d.spct, "time.unit")
+class(b.d.spct)
+b.d.spct
 @
 
 \texttt{filter.spct} objects can be created from data tables, data frames, and \texttt{generic.spct} simply by setting them as such. However, columns called \texttt{w.length} (wavelength values expressed in nm) and \texttt{Tpc} (T\%), \texttt{Tfr} (T as fraction of 1) and\textbackslash or \texttt{A} (absorbance ($\log_{10}$ based)) must be present.
@@ -226,8 +241,6 @@ class(sun.spct)
 sun.spct
 @
 
-\section{Working with spectral objects}
-
 \subsection{Conversions}
 
 The functions \texttt{e2q} and \texttt{q2e} can be used on source spectra to convert spectral energy irradiance into spectral photon irradiance and vice versa. The first argument should be a spectrum, and the second optional argument sets the action with \texttt{"add"} and \texttt{"replace"} as possible values. In the second case the whole spectrum object is copied, while in the first case a column is added but the unchanged columns are references to the original ones, rather than copies.
@@ -273,10 +286,14 @@ midpoint(sun.spct)
 spread(sun.spct)
 @
 
-The \texttt{data.table} definition of \texttt{summary} returns column-wise results that should be interpreted with care if the wavelength step is not constant.
+Method definitions for \texttt{summary} and corresponding \texttt{print} methods are available for spectral objects. In the case of \texttt{source.spct} objects the \texttt{time.unit} attribute makes it possible to print the summary with using the correct units.
 
 <<>>=
 summary(sun.spct)
+@
+
+<<>>=
+summary(sun.daily.spct)
 @
 
 \section{Using operators with spectra}

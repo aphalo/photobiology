@@ -12,7 +12,7 @@
 #' \tabular{ll}{
 #' Package: \tab photobiology\cr
 #' Type: \tab Package\cr
-#' Version: \tab 0.3.8\cr
+#' Version: \tab 0.3.9\cr
 #' Date: \tab 2014-08-09\cr
 #' License: \tab GPL (>= 2.0)\cr
 #' }
