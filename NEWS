@@ -1,3 +1,10 @@
+photobiology 0.3.10
+===================
+
+Updated vignette to use new package photobiologyWavebands.
+Added a generic function tag() and a method for generic.spct(). tag() can be used to 'tag' the rows
+based on a list of wavebands. A color() method for source.spct() was added.
+
 photobiology 0.3.9
 ===================
 

@@ -1651,4 +1651,20 @@ print.summary.chroma.spct <- function(x, ...) {
   cat(paste("maximum (x, y, z) values are (", paste(x[["x.max"]], x[["y.max"]], x[["z.max"]], sep=", "), ")", sep=""), "\n")
 }
 
+#' Color of a source.spct object.
+#'
+#' A function that returns the equivalent RGB colour of an object of class "source.spct".
+#'
+#' @param x an object of class "source.spct"
+#' @param ... not used in current version
+#' @export color.source.spct
+#'
+color.source.spct <- function(x, ...) {
+#  x.name <- as.character(substitute(x))
+  x.name <- "source"
+  q2e(x, byref=TRUE)
+  color <- c(s_e_irrad2rgb(x[["w.length"]], x[["s.e.irrad"]], sens=ciexyzCMF2.spct, color.name=paste(x.name, "CMF")),
+             s_e_irrad2rgb(x[["w.length"]], x[["s.e.irrad"]], sens=ciexyzCC2.spct, color.name=paste(x.name, "CC")))
+  return(color)
+}
 

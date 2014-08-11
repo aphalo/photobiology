@@ -1,6 +1,6 @@
 %\VignetteEngine{knitr}
 %\VignetteIndexEntry{User guide}
-%\VignetteDepends{knitr, photobiology, photobiologyUV, photobiologyVIS, photobiologyFilters, ggplot2, ggtern}
+%\VignetteDepends{knitr, photobiology, photobiologyWavebands, photobiologyFilters, ggplot2, ggtern}
 %\VignetteKeyword{misc}
 
 \documentclass{article}
@@ -41,13 +41,12 @@
 <<setup, include=FALSE, cache=FALSE>>=
 library(knitr)
 opts_chunk$set(fig.path='figure/pos-', fig.align='center', fig.show='hold', size="footnotesize", dev='cairo_pdf')
-options(replace.assign=TRUE,width=60)
+# options(replace.assign=TRUE,width=60)
 @
 
 <<example-0-hiden, eval=TRUE, include=FALSE>>=
 library(photobiology)
-library(photobiologyUV)
-library(photobiologyVIS)
+library(photobiologyWavebands)
 library(photobiologyFilters)
 library(ggplot2)
 library(ggtern)
@@ -70,7 +69,7 @@ spectral data for filters (\PBFLT). In the future it will be submitted to CRAN (
 
 \section{Installation and use}
 
-The functions in the package \PBPHY are
+The functions in the package \PB are
 made available by installing the packages \verb!photobiology! (once) and
 loading it from the library when needed.
 
@@ -78,8 +77,7 @@ To load the package into the workspace we use \verb!library(photobiology)!.
 
 <<example-0-visible, eval=FALSE>>=
 library(photobiology)
-library(photobiologyUV)
-library(photobiologyVIS)
+library(photobiologyWavebands)
 library(photobiologyFilters)
 library(ggplot2)
 library(ggtern)
@@ -136,7 +134,7 @@ From the examples above one can see that in example 3) \texttt{b.dt} is not a co
 
 An assumption of the package is that wavelengths are always expressed in nanometres ($1~\Unit{nm} = 1 \cdot 10^{-9} \Unit{m}$). If the data to be analysed uses different units for wavelengths, e.g.\ Ånstrom ($1~\Unit{Å} = 1 \cdot 10^{-10} m$), the values need to be rescaled before any calculations. \textbf{Not doing so will yield completely wrong results!}
 
-Energy irradiances are assumed to be expressed in \watt and photon irradiances in \mol, that is to say using second as unit for time. This is the default, but it is possible to set the unit for time to day in the case of \textt{source.spct} objects.
+Energy irradiances are assumed to be expressed in \watt and photon irradiances in \mol, that is to say using second as unit for time. This is the default, but it is possible to set the unit for time to day in the case of \texttt{source.spct} objects.
 
 If our spectral irradiance data is in \wattnm, and the wavelength in nm, as in the case of
 Macam spectroradiometers, the data can be used directly and functions in the package will return irradiances in \watt.
@@ -366,21 +364,28 @@ midpoint(PAR()) # gives wavelength at center
 normalization(PAR())
 color(PAR()) # equivalent RGB color definitions
 labels(PAR())
+@
 
+<<>>=
 CIE()
 str(CIE())
 labels(CIE())
 labels(CIE(300))
 normalization(CIE())
 normalization(CIE(300))
+@
 
+<<>>=
 labels(UVB())
 labels(UVB("medical"))
 labels(UVB("ISO"))
+@
+
+<<>>=
 labels(new_waveband(100, 200))
 labels(new_waveband(100, 200, wb.name="ANY NAME"))
-labels(new_waveband(100, 200, wb.name="ANY NAME",
-                    wb.label="ANY LABEL"))
+labels(new_waveband(100, 200, wb.name="ANY SHORT NAME",
+                    wb.label="ANY LONG LABEL"))
 @
 
 \subsection{Irradiances from vectors}
@@ -534,6 +539,17 @@ qe_ratio_spct(sun.spct, PAR())
 qe_ratio_spct(sun.spct, list(Blue(), Green(), Red()))
 @
 
+\subsection{Tagging observations in a spectrum}
+
+The function \texttt{tag} can be used to tag different parts of a spectrum according to wavebands.
+
+<<>>=
+tag(sun.spct, PAR(), byref=FALSE)
+tag(sun.spct, UV_bands(), byref=FALSE)
+@
+
+The added factor, labels, and colour data can be used for further processing or for plotting.
+
 \section{Calculating weighted spectral irradiances}
 
 This calculation is not very frequently used, but it is very instructive to look at spectral data in this way, as it can make apparent the large effect that small measuring errors can have on the estimated effective irradiances or exposures.
@@ -621,6 +637,13 @@ rgb_spct(sun.spct)
 rgb_spct(sun.spct, sens=ciexyzCMF2.spct)
 @
 
+And also a \texttt{color} method for \texttt{source.spct}.
+
+<<>>=
+color(sun.spct)
+color(sun.spct * rg630.spct)
+@
+
 Here we plot the RGB colours for the range covered by the CIE 2006 proposed standard calculated at each 1 nm step:
 
 <<>>=
@@ -675,9 +698,10 @@ polyester.light.spct <- polyester.new.spct * sun.spct
 Now using the filtered sunlight spectra we calculate colours based on human vision photoreceptors.
 
 <<>>=
-yellow.filter <- with(yellow.light.spct, s_e_irrad2rgb(w.length, s.e.irrad))
-green.filter <- with(green.light.spct, s_e_irrad2rgb(w.length, s.e.irrad))
-polyester.filter <- with(polyester.light.spct, s_e_irrad2rgb(w.length, s.e.irrad))
+coord <- 1 # CMF
+yellow.filter <- color(yellow.light.spct)[coord]
+green.filter <- color(green.light.spct)[coord]
+polyester.filter <- color(polyester.light.spct)[coord]
 colours <- c(yellow.filter, green.filter, polyester.filter)
 rgb.values <- col2rgb(colours)
 test.data <- data.frame(colour=colours,

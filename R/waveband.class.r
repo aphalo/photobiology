@@ -66,7 +66,7 @@ max.waveband <- function(..., na.rm = FALSE) {
 #'
 #' @param x an R object
 #' @export midpoint
-midpoint <- function(x) UseMethod("midpoint", x)
+midpoint <- function(x) UseMethod("midpoint")
 
 #' Default for generic function
 #'
@@ -98,7 +98,7 @@ midpoint.waveband <- function(x) {
 #'
 #' @param x an R object
 #' @export spread
-spread <- function(x) UseMethod("spread", x)
+spread <- function(x) UseMethod("spread")
 
 #' Default for generic function
 #'
@@ -129,19 +129,21 @@ spread.waveband <- function(x) {
 #' A function that returns the equivalent RGB color of an object.
 #'
 #' @param x an R object
-#' @export color color.default
+#' @param ... not used in current version
+#' @export color
 #'
-color <- function(x) UseMethod("color", x)
+color <- function(x, ...) UseMethod("color")
 
 #' Default of function that returns Color of an object.
 #'
 #' A function that returns the equivalent RGB color of an object.
 #'
 #' @param x an R object
-#' @export color color.default
+#' @param ... not used in current version
+#' @export color.default
 #'
-color.default <- function(x) {
-  return("black")
+color.default <- function(x, ...) {
+  return("#000000")
 }
 
 #' Color at center of a "waveband" object.
@@ -149,11 +151,14 @@ color.default <- function(x) {
 #' A function that returns the equivalent RGB colour of an object of class "waveband".
 #'
 #' @param x an object of class "waveband"
+#' @param short.names logical indicating whether to use short or long names for wavebands
+#' @param ... not used in current version
 #' @export color.waveband
 #'
-color.waveband <- function(x) {
-  color <- c(w_length_range2rgb(range(x), sens=ciexyzCMF2.spct, color.name=paste(labels(x)[1], "CMF")),
-             w_length_range2rgb(range(x), sens=ciexyzCC2.spct, color.name=paste(labels(x)[1], "CC")))
+color.waveband <- function(x, short.names=TRUE, ...) {
+  idx <- ifelse(short.names, "name", "label")
+  color <- c(w_length_range2rgb(range(x), sens=ciexyzCMF2.spct, color.name=paste(labels(x)[[idx]], "CMF")),
+             w_length_range2rgb(range(x), sens=ciexyzCC2.spct, color.name=paste(labels(x)[[idx]], "CC")))
   return(color)
 }
 
@@ -167,7 +172,7 @@ color.waveband <- function(x) {
 #' @param x an R object
 #' @export normalization.default
 #'
-normalization <- function(x) UseMethod("normalization", x)
+normalization <- function(x) UseMethod("normalization")
 
 #' Normalization of an R object.
 #'
@@ -200,7 +205,7 @@ normalization.waveband <- function(x) {
 #' @param x an R object
 #' @export is_effective.default
 #'
-is_effective <- function(x) UseMethod("is_effective", x)
+is_effective <- function(x) UseMethod("is_effective")
 
 #' Is an R object "effective".
 #'

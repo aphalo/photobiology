@@ -38,11 +38,8 @@ irrad_spct <-
     if (unit.out == "quantum") {
       unit.out <- "photon"
     }
-    # if the waveband is undefined then use all data
-    if (is.null(w.band)){
+    if (is.null(w.band)) {
       w.band <- new_waveband(min(spct), max(spct) + 1e-4)
-      # we need to add a small number as the test is "<"
-      # this affects signifcantly the result only when no hinges are used
     }
     if (is(w.band, "waveband")) {
       # if the argument is a single w.band, we enclose it in a list
@@ -53,10 +50,10 @@ irrad_spct <-
     # we check if the list elements are named, if not we set a flag
     # and an empty vector that will be later filled in with data from
     # the waveband definitions.
-    wb_number <- length(w.band) # number of wavebands in list
-    wb_name <- names(w.band) # their names in the list
-    if (is.null(wb_name)) {
-      wb_name <- character(wb_number)
+    wb.number <- length(w.band) # number of wavebands in list
+    wb.name <- names(w.band) # their names in the list
+    if (is.null(wb.name)) {
+      wb.name <- character(wb.number)
     }
     # if the w.band includes 'hinges' we insert them
     # choose whether to use hinges or not
@@ -67,7 +64,7 @@ irrad_spct <-
     # spectral resolution data, and speed up the calculations
     # a lot in such cases
     if (is.null(use.hinges)) {
-      length.wl <- length(spct)
+      length.wl <- length(spct$w.length)
       use.hinges <- (spct$w.length[length.wl] - spct$w.length[1]) / length.wl > 1.1
       # we use 1.1 nm as performance degradation by using hinges is very significant
       # in the current version.
@@ -102,13 +99,13 @@ irrad_spct <-
 
     # We iterate through the list of wavebands collecting the integrated irradiances,
     # possibly weighted depending on the waveband definition
-    irrad <- numeric(wb_number)
+    irrad <- numeric(wb.number)
     i <- 0L
     for (wb in w.band) {
       i <- i + 1L
       # get names from wb if needed
-      if (wb_name[i] == "") {
-        wb_name[i] <- wb$name
+      if (wb.name[i] == "") {
+        wb.name[i] <- wb$name
       }
       # calculate the multipliers
       mult <- calc_multipliers(w.length=spct$w.length, w.band=wb, unit.out=unit.out,
@@ -122,6 +119,6 @@ irrad_spct <-
       irrad[i] <- irr
     }
 
-    names(irrad) <- wb_name
+    names(irrad) <- wb.name
     return(irrad)
   }
