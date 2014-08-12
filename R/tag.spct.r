@@ -32,11 +32,15 @@ tag.default <- function(x, ...) {
 #'
 tag.generic.spct <- function(x,
                              w.band=NULL,
-                             use.hinges=NULL,
+                             use.hinges=TRUE,
                              short.names=TRUE,
                              byref=TRUE, ...) {
   if (!byref) {
     x <- copy(x)
+  }
+  if (!is.null(w.band) && is.na(w.band[1])) {
+    x[ , wl.color := w_length2rgb(w.length)]
+    return(x)
   }
   if (!is.null(w.band) & is(w.band, "waveband")) {
     # if the argument is a single w.band, we enclose it in a list
@@ -49,10 +53,10 @@ tag.generic.spct <- function(x,
   # we check if the list elements are named, if not we set a flag
   # and an empty vector that will be later filled in with data from
   # the waveband definitions.
-  wb.number <- length(w.band) # number of wavebands in list
-  wb.name <- names(w.band) # their names in the list
-  if (is.null(wb.name)) {
-    wb.name <- character(wb.number)
+  wbs.number <- length(w.band) # number of wavebands in list
+  wbs.name <- names(w.band) # their names in the list
+  if (is.null(wbs.name)) {
+    wbs.name <- character(wbs.number)
   }
   # if the w.band includes 'hinges' we insert them
   # choose whether to use hinges or not
@@ -84,30 +88,55 @@ tag.generic.spct <- function(x,
   }
 
   # We iterate through the list of wavebands adding the tags
-  wb.rgb <- character(wb.number)
-  wb.wl.low <- wb.wl.high <- numeric(wb.number)
+  wbs.rgb <- character(wbs.number)
+  wbs.wl.low <- wbs.wl.high <- numeric(wbs.number)
   i <- 0L
   for (wb in w.band) {
     i <- i + 1L
-    if (wb.name[i] == "") {
+    if (wbs.name[i] == "") {
       if (short.names) {
-        wb.name[i] <- labels(wb)[["label"]]
+        wbs.name[i] <- labels(wb)[["label"]]
       } else {
-        wb.name[i] <- labels(wb)[["name"]]
+        wbs.name[i] <- labels(wb)[["name"]]
       }
     }
-    wb.wl.low[i] <- min(wb)
-    wb.wl.high[i] <- max(wb)
-    wb.rgb[i] <- color(wb)[1]
+    wbs.wl.low[i] <- min(wb)
+    wbs.wl.high[i] <- max(wb)
+    wbs.rgb[i] <- color(wb)[1]
   }
   n <- i
   x[ , idx := as.integer(NA) ]
   for (i in 1L:n) {
-    x[ w.length >= wb.wl.low[i] & w.length < wb.wl.high[i], idx := as.integer(i) ]
+    x[ w.length >= wbs.wl.low[i] & w.length < wbs.wl.high[i], idx := as.integer(i) ]
   }
-  x[ , band.name := wb.name[idx] ]
-  x[ , band.color := wb.rgb[idx] ]
-  x[ band.name == "none", band.color := "#000000" ]
-  x[ , band.f := factor(band.name, levels=wb.name) ]
+  x[ , wl.color := w_length2rgb(w.length)]
+  x[ , wb.color := wbs.rgb[idx] ]
+  x[ , wb.name := wbs.name[idx] ]
+  x[ wb.name == "none", wb.color := "#000000" ]
+  x[ , wb.f := factor(wb.name, levels=wbs.name) ]
   x[ , idx := NULL]
+}
+#' Specialization for source.spct
+#'
+#' Tag a source.spct object using a list of wavebands.
+#'
+#' @param x a source.spct object
+#' @param w.band list of waveband definitions created with new_waveband()
+#' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
+#' @param short.names logical indicating whether to use short or long names for wavebands
+#' @param byref logical indicating if new object will be created by reference or by copy of x
+#' @param ... not used in current version
+#' @export tag.source.spct
+#'
+tag.source.spct <- function(x,
+                             w.band=NULL,
+                             use.hinges=NULL,
+                             short.names=TRUE,
+                             byref=TRUE, ...) {
+  if (!byref) {
+    x <- copy(x)
+  }
+  q2e(x, byref=TRUE)
+  x[ , irrad.color := s_e_irrad2rgb(w.length, s.e.irrad)]
+  tag.generic.spct(x, w.band, use.hinges, short.names, byref)
 }
