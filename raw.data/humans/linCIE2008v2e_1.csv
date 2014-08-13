@@ -1,3 +1,9 @@
+# The Colour & Vision Research laboratory and database are based at the Institute of
+# Ophthalmology, which is part of University College London.
+# Dowloaded on 2014-04-28
+# http://www.cvrl.org/
+# CIE (2008) physiologically-relevant 2-deg V(λ) luminous efficiency functions
+w.length, response
 390,4.14616E-04
 391,5.02833E-04
 392,6.08499E-04

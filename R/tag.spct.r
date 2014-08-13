@@ -49,7 +49,7 @@ tag.generic.spct <- function(x,
     w.band <- list(w.band)
   }
   # we add a waveband for the whole spectrum
-  w.band <- c(list(new_waveband(min(x), max(x) + 1e-4, wb.name="none")), w.band)
+#  w.band <- c(list(new_waveband(min(x), max(x) + 1e-4, wb.name=NA)), w.band)
   # we check if the list elements are named, if not we set a flag
   # and an empty vector that will be later filled in with data from
   # the waveband definitions.
@@ -105,14 +105,17 @@ tag.generic.spct <- function(x,
     wbs.rgb[i] <- color(wb)[1]
   }
   n <- i
-  x[ , idx := as.integer(NA) ]
-  for (i in 1L:n) {
+  wbs.name[n + 1] <- NA
+  wbs.rgb[n+1] <- NA
+
+  x[ , idx := n + 1 ]
+  for (i in 1L:n + 1) {
     x[ w.length >= wbs.wl.low[i] & w.length < wbs.wl.high[i], idx := as.integer(i) ]
   }
-  x[ , wl.color := w_length2rgb(w.length)]
+  wl.color.tmp <- w_length2rgb(x$w.length)
+  x[ , wl.color := wl.color.tmp]
   x[ , wb.color := wbs.rgb[idx] ]
   x[ , wb.name := wbs.name[idx] ]
-  x[ wb.name == "none", wb.color := "#000000" ]
   x[ , wb.f := factor(wb.name, levels=wbs.name) ]
   x[ , idx := NULL]
 }
@@ -128,6 +131,8 @@ tag.generic.spct <- function(x,
 #' @param ... not used in current version
 #' @export tag.source.spct
 #'
+#' @note At the moment not doing anything
+#'
 tag.source.spct <- function(x,
                              w.band=NULL,
                              use.hinges=NULL,
@@ -137,6 +142,6 @@ tag.source.spct <- function(x,
     x <- copy(x)
   }
   q2e(x, byref=TRUE)
-  x[ , irrad.color := s_e_irrad2rgb(w.length, s.e.irrad)]
+#  x[ , irrad.color := s_e_irrad2rgb(w.length, s.e.irrad)]
   tag.generic.spct(x, w.band, use.hinges, short.names, byref)
 }

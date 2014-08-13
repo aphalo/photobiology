@@ -5,19 +5,23 @@ oldwd <- setwd("raw.data/humans")
 # Human
 ciexyzCMF2.spct <- read.csv(file="lin2012xyz2e_1_7sf.csv", comment.char = "#")
 ciexyzCC2.spct <- read.csv(file="cc2012xyz2_1_5dp.csv", comment.char = "#")
+ciev2.spct <- read.csv(file="linCIE2008v2e_1.csv", comment.char = "#")
 ciexyzCMF10.spct <- read.csv(file="lin2012xyz10e_1_7sf.csv", comment.char = "#")
 ciexyzCC10.spct <- read.csv(file="cc2012xyz10_1_5dp.csv", comment.char = "#")
+ciev10.spct <- read.csv(file="linCIE2008v10e_1.csv", comment.char = "#")
 setChromaSpct(ciexyzCMF2.spct)
 setChromaSpct(ciexyzCC2.spct)
+setResponseSpct(ciev2.spct)
 setChromaSpct(ciexyzCMF10.spct)
 setChromaSpct(ciexyzCC10.spct)
+setResponseSpct(ciev10.spct)
 
 setwd(oldwd)
 
 olwd <- setwd("data")
 
 # save(ciexyzCMF2.data, ciexyzCMF10.data, ciexyzCC2.data, ciexyzCC10.data, file="ciexyz2006.data.rda")
-save(ciexyzCMF2.spct, ciexyzCMF10.spct, ciexyzCC2.spct, ciexyzCC10.spct, file="ciexyz2006.spct.rda")
+save(ciexyzCMF2.spct, ciexyzCMF10.spct, ciexyzCC2.spct, ciexyzCC10.spct, ciev2.spct, ciev10.spct, file="ciexyz2006.spct.rda")
 
 setwd(olwd)
 
