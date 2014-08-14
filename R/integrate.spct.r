@@ -81,6 +81,11 @@ interpolate_spct <- function(spct, w.length.out=NULL, fill.value=NA, length.out=
   if (!is.null(length.out) && (is.na(length.out) || length.out < 1L) ) {
     return(spct[NA])
   }
+  class.spct <- class(spct)
+  comment.spct <- comment(spct)
+  if  (is(spct, "source.spct")) {
+    time.unit.spct <- attr(spct, "time.unit", exact=TRUE)
+  }
   if (!is.null(length.out)  && length.out == 1L) {
     if (is.null(w.length.out)) {
       w.length.out <- midpoint(spct)
@@ -124,12 +129,28 @@ interpolate_spct <- function(spct, w.length.out=NULL, fill.value=NA, length.out=
                                          temp.values,
                                          w.length.out,
                                          fill.value)
-#      new.spct[ , as.character(eval(expression(data.col))) := new.values]
-     new.spct[ , eval(data.col) := new.values]
+      #      new.spct[ , as.character(eval(expression(data.col))) := new.values]
+      new.spct[ , eval(data.col) := new.values]
     }
   }
-  setattr(new.spct, "comment", comment(spct))
-  setattr(new.spct, "class", class(spct))
+  setattr(new.spct, "comment", comment.spct)
+  if(class.spct[1] == "source.spct") {
+    setSourceSpct(new.spct)
+    if (!is.null(time.unit.spct)) {
+      setattr(new.spct, "unit.out", time.unit.spct)
+    }
+  } else if (class.spct[1] == "filter.spct") {
+    setFilterSpct(new.spct)
+  } else if (class.spct[1] == "reflector.spct") {
+    setReflectorSpct(new.spct)
+  } else if (class.spct[1] == "response.spct") {
+    setResponseSpct(new.spct)
+  } else if (class.spct[1] == "chroma.spct") {
+    setChromaSpct(new.spct)
+  } else if (class.spct[1] == "generic.spct") {
+    setGenericSpct(new.spct)
+  }
+  setattr(new.spct, "comment", comment.spct)
   setkey(new.spct, w.length)
   return(new.spct)
 }

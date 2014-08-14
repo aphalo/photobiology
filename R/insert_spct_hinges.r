@@ -24,16 +24,21 @@ insert_spct_hinges <- function(spct, hinges=NULL) {
   }
   hinges <- hinges[hinges > min(spct) & hinges < max(spct)]
   if (length(hinges) > 0) {
+    name <- substitute(spct)
     names.spct <- names(spct)
     names.data <- names.spct != "w.length"
     idx.wl <- which(!names.data)
     idx.data <- which(names.data)
     class.spct <- class(spct)
     comment.spct <- comment(spct)
+    if  (is(x, "source.spct")) {
+      time.unit.spct <- attr(spct, "time.unit", exact=TRUE)
+    }
     hinges <- unique(sort(hinges))
     first.iter <- TRUE
+#    setDF(spct)
     for (data.col in idx.data) {
-      temp.data <- insert_hinges(spct[[idx.wl]], spct[[data.col]], hinges)
+      temp.data <- insert_hinges(spct[["w.length"]], spct[[data.col]], hinges)
       if (first.iter) {
         new.spct <- data.table(w.length = temp.data[[1]])
         first.iter <- FALSE
@@ -41,9 +46,29 @@ insert_spct_hinges <- function(spct, hinges=NULL) {
       new.spct[ , names.spct[data.col] := temp.data[[2]] ]
     }
     setattr(new.spct, "comment", comment.spct)
-    setattr(new.spct, "class", class.spct)
-    return(new.spct)
+    if(class.spct[1] == "source.spct") {
+      setSourceSpct(new.spct)
+      if (!is.null(time.unit.spct)) {
+        setattr(new.spct, "unit.out", time.unit.spct)
+      }
+    } else if (class.spct[1] == "filter.spct") {
+      setFilterSpct(new.spct)
+    } else if (class.spct[1] == "reflector.spct") {
+      setReflectorSpct(new.spct)
+    } else if (class.spct[1] == "response.spct") {
+      setResponseSpct(new.spct)
+    } else if (class.spct[1] == "chroma.spct") {
+      setChromaSpct(new.spct)
+    } else if (class.spct[1] == "generic.spct") {
+      setGenericSpct(new.spct)
+    }
+    setattr(new.spct, "comment", comment.spct)
+    if (is.name(name)) {
+      name <- as.character(name)
+      assign(name, new.spct, parent.frame(), inherits = TRUE)
+    }
+    invisible(return(new.spct))
   } else {
-    return(spct)
+    invisible(return(spct))
   }
 }

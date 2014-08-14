@@ -88,6 +88,7 @@ new_waveband <- function(w.low, w.high,
 split_bands <- function(x, short.names=TRUE, length.out=NULL) {
   if (is(x, "generic.spct") || is(x, "waveband")) {
     w.length <- range(x)
+    w.length[2] <- w.length[2] + 1e-4
   } else {
     w.length <- x
   }
@@ -132,6 +133,7 @@ split_bands <- function(x, short.names=TRUE, length.out=NULL) {
   if (length(bands.out) == 1) {
     return(bands.out[[1]])
   } else {
+    names(bands.out) <- paste("wb", 1:length.out, sep="")
     return(bands.out)
   }
   return(bands.out)

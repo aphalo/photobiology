@@ -35,6 +35,7 @@ tag.generic.spct <- function(x,
                              use.hinges=TRUE,
                              short.names=TRUE,
                              byref=TRUE, ...) {
+  name <- substitute(x)
   if (!byref) {
     x <- copy(x)
   }
@@ -42,7 +43,7 @@ tag.generic.spct <- function(x,
     x[ , wl.color := w_length2rgb(w.length)]
     return(x)
   }
-  if (!is.null(w.band) & is(w.band, "waveband")) {
+  if (!is.null(w.band) && is(w.band, "waveband")) {
     # if the argument is a single w.band, we enclose it in a list
     # so that the for loop works as expected.This is a bit of a
     # cludge but lets us avoid treating it as a special case
@@ -68,7 +69,7 @@ tag.generic.spct <- function(x,
   # a lot in such cases
   if (is.null(use.hinges)) {
     length.wl <- length(x$w.length)
-    use.hinges <- (x$w.length[length.wl] - x$w.length[1]) / length.wl > 1.1
+    use.hinges <- (x$w.length[length.wl] - x$w.length[1]) / length.wl > 0.2
     # we use 1.1 nm as performance degradation by using hinges is very significant
     # in the current version.
   }
@@ -79,7 +80,7 @@ tag.generic.spct <- function(x,
     all.hinges <- NULL
     for (wb in w.band) {
       if (!is.null(wb$hinges) & length(wb$hinges)>0) {
-        all.hinges <- c(all.hinges, wb$hinges)
+        all.hinges <- c(all.hinges, wb[["hinges"]])
       }
     }
     if (!is.null(all.hinges)) {
@@ -95,7 +96,7 @@ tag.generic.spct <- function(x,
     i <- i + 1L
     if (wbs.name[i] == "") {
       if (short.names) {
-        wbs.name[i] <- labels(wb)[["label"]]
+        wbs.name[i] <- paste("wb", i, sep="") # labels(wb)[["label"]]
       } else {
         wbs.name[i] <- labels(wb)[["name"]]
       }
@@ -105,11 +106,11 @@ tag.generic.spct <- function(x,
     wbs.rgb[i] <- color(wb)[1]
   }
   n <- i
-  wbs.name[n + 1] <- NA
-  wbs.rgb[n+1] <- NA
+  wbs.name[n + 1L] <- NA
+  wbs.rgb[n + 1L] <- NA
 
-  x[ , idx := n + 1 ]
-  for (i in 1L:n + 1) {
+  x[ , idx := n + 1L ]
+  for (i in 1L:n) {
     x[ w.length >= wbs.wl.low[i] & w.length < wbs.wl.high[i], idx := as.integer(i) ]
   }
   wl.color.tmp <- w_length2rgb(x$w.length)
@@ -118,7 +119,14 @@ tag.generic.spct <- function(x,
   x[ , wb.name := wbs.name[idx] ]
   x[ , wb.f := factor(wb.name, levels=wbs.name) ]
   x[ , idx := NULL]
+  # to work by reference we need to assign the new DT to the old one
+  if (byref & is.name(name)) {
+    name <- as.character(name)
+    assign(name, x, parent.frame(), inherits = TRUE)
+  }
+  invisible(return(x))
 }
+
 #' Specialization for source.spct
 #'
 #' Tag a source.spct object using a list of wavebands.
@@ -138,10 +146,12 @@ tag.source.spct <- function(x,
                              use.hinges=NULL,
                              short.names=TRUE,
                              byref=TRUE, ...) {
-  if (!byref) {
-    x <- copy(x)
+  name <- substitute(x)
+  tag.generic.spct(x, w.band, use.hinges, short.names, byref=TRUE)
+  #  x[ , irrad.color := s_e_irrad2rgb(w.length, s.e.irrad)]
+  if (is.name(name)) {
+    name <- as.character(name)
+    assign(name, x, parent.frame(), inherits = TRUE)
   }
-  q2e(x, byref=TRUE)
-#  x[ , irrad.color := s_e_irrad2rgb(w.length, s.e.irrad)]
-  tag.generic.spct(x, w.band, use.hinges, short.names, byref)
+  invisible(return(x))
 }
