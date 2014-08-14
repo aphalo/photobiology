@@ -465,8 +465,9 @@ detach(sun.data)
 The code using \texttt{spct} objects is much simpler.
 
 <<>>=
-e_irrad_spct(sun.spct, PAR())
-q_irrad_spct(sun.spct, PAR())
+e_irrad(sun.spct, PAR()) # W m-2
+q_irrad(sun.spct, PAR()) * 1e6 # umol s-1 m-2
+q_irrad(sun.daily.spct, PAR()) # mol d-1 m-2
 @
 
 \section{Calculating ratios}
@@ -504,7 +505,7 @@ print(PPFD.mol.photon * 1e6)
 print(PAR.energy)
 @
 
-The `ratio' functions do not accept lists of waveband objects as the `irradiance' functions do. This is a feature, as otherwise it would be too easy to make mistakes. It is possible to use the `irradiance' functions to calculate several ratios in one go.
+The `ratio' functions for vectors do not accept lists of waveband objects as the `irradiance' functions do. This is a feature, as otherwise it would be too easy to make mistakes. It is possible to use the `irradiance' functions to calculate several ratios in one go, or use the functions that calculate ratios from spectral objects.
 
 <<example-ratios-03>>=
 ratios <- photon_irradiance(w.length, s.e.irrad,
@@ -515,28 +516,34 @@ names(ratios) <- paste(names(ratios), ":PAR", sep="")
 ratios
 @
 
+
 \subsection{Ratios from spectra}
 
 <<>>=
-q_ratio_spct(sun.spct, UVB(), PAR())
-q_ratio_spct(sun.spct,
-             list(UVC(), UVB(), UVA()),
-             UV())
-q_ratio_spct(sun.spct,
-             UVB(),
-             list(UV(), PAR()))
+q_ratio(sun.spct, UVB(), PAR())
+q_ratio(sun.spct,
+        list(UVC(), UVB(), UVA()),
+        UV())
+q_ratio(sun.spct,
+        UVB(),
+        list(UV(), PAR()))
 @
 
 <<>>=
-e_ratio_spct(sun.spct, UVB(), PAR())
-e_ratio_spct(sun.spct,
-             list(UVC(), UVB(), UVA()),
-             UV())
+e_ratio(sun.spct, UVB(), PAR())
+e_ratio(sun.spct,
+        list(UVC(), UVB(), UVA()),
+        UV())
 @
 
 <<>>=
-qe_ratio_spct(sun.spct, PAR())
-qe_ratio_spct(sun.spct, list(Blue(), Green(), Red()))
+qe_ratio(sun.spct, PAR())
+qe_ratio(sun.spct, list(Blue(), Green(), Red()))
+@
+
+<<>>=
+eq_ratio(sun.spct, PAR())
+eq_ratio(sun.spct, list(Blue(), Green(), Red()))
 @
 
 \subsection{Tagging observations in a spectrum}
@@ -548,7 +555,7 @@ tag(sun.spct, PAR(), byref=FALSE)
 tag(sun.spct, UV_bands(), byref=FALSE)
 @
 
-The added factor, labels, and colour data can be used for further processing or for plotting.
+The added factor, labels, and colour data can be used for further processing or for plotting\footnote{See section \ref{sec:??} for details.}.
 
 \section{Calculating weighted spectral irradiances}
 
@@ -566,6 +573,15 @@ plot(weighted.s.e.irrad/max(weighted.s.e.irrad) ~ w.length, type="l", col="red",
      xlab="Wavelength (nm)",
      ylab="UnWeighted and GEN.T weighted spectral irradiance (relative units)")
 lines(s.e.irrad/max(s.e.irrad) ~ w.length, col="black")
+@
+
+Or using spectral objects and ggplot.
+
+<<>>=
+ggplot(data=sun.spct, aes(x=w.length, y=s.e.irrad/max(s.e.irrad))) +
+  geom_line() + geom_line(data=sun.spct * CIE(), colour="red") +
+  labs(x="Wavelength (nm)",
+       y="UnWeighted and GEN.T weighted spectral irradiance (relative units)")
 @
 
 \subsection{Weighted spectral irradiance from an unweighted source spectrum}

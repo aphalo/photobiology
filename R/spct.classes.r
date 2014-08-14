@@ -1441,8 +1441,8 @@ summary.source.spct <- function(object, digits = 4L, ...) {
   w.length.step = stepsize(object)[1],
   max.s.e.irrad = max(object$s.e.irrad),
   min.s.e.irrad = min(object$s.e.irrad),
-  e.irrad = as.numeric(e_irrad_spct(object)),
-  q.irrad = as.numeric(q_irrad_spct(object))
+  e.irrad = as.numeric(e_irrad(object)),
+  q.irrad = as.numeric(q_irrad(object))
   )
   z <- signif(z, digits)
   attr(z, "time.unit") <- time.unit

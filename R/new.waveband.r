@@ -65,3 +65,74 @@ new_waveband <- function(w.low, w.high,
   setattr(w_band, "class", c("waveband", class(w_band)))
   return(w_band)
 }
+
+#' Build a list of unweighted "waveband" objects that can be used as imput when calculating irradiances.
+#'
+#' @usage split_bands(x, short.names=TRUE, length.out=NULL)
+#'
+#' @param x a numeric array of wavelengths to split at (nm), or a range of wavelengths or
+#' a generic.spct or a waveband, or a list numeric vectors with ranges (numeric vectors) as elements.
+#' @param short.names logical indicating whether to use short or long names for wavebands
+#' @param length.out numeric giving the number of regions to split the range into (ignored if w.length is not numeric).
+#'
+#' @return an un-named list of wabeband objects
+#' @keywords manip misc
+#' @export
+#' @examples
+#' split_bands(c(400,500,600))
+#' split_bands(c(400,700), length.out=6)
+#' split_bands(400:700, length.out=3)
+#' split_bands(sun.spct, length.out=10)
+#'
+
+split_bands <- function(x, short.names=TRUE, length.out=NULL) {
+  if (is(x, "generic.spct") || is(x, "waveband")) {
+    w.length <- range(x)
+  } else {
+    w.length <- x
+  }
+  # if the elements in the list or vector supplied as argument are named
+  # they are used as names for the waveband
+  wb.names <- names(w.length)
+  if (is.numeric(w.length)) {
+    wl.len <- length(w.length)
+    if (wl.len < 2) {
+      warning("At least two wavelength values are needed.")
+      return(list())
+    } else {
+      if (!is.null(length.out)) {
+        if (length.out < 1L) {
+          return(NA)
+        } else {
+          wl.len <- length.out + 1
+          w.length <- seq(min(w.length), max(w.length), length.out=wl.len)
+         }
+      }
+      w.length <- unique(sort(w.length))
+      bands.out <- list()
+      for (i in 1:(wl.len - 1)) {
+        wb.temp <- new_waveband(w.length[i], w.length[i+1],
+                     hinges=NULL, wb.name=NULL)
+        bands.out <- c(bands.out, list(wb.temp))
+      }
+    }
+  } else if (is.list(w.length)) {
+    bands.out <- list()
+    i <- 0L
+    for (wl.range in w.length) {
+      i <- i + 1L
+      wb.temp <- list(new_waveband(min(wl.range), max(wl.range),
+                                   hinges=NULL, wb.name=NULL))
+      bands.out <- c(bands.out, wb.temp)
+    }
+  } else {
+    warning("Invalid x input.")
+    return(NA)
+  }
+  if (length(bands.out) == 1) {
+    return(bands.out[[1]])
+  } else {
+    return(bands.out)
+  }
+  return(bands.out)
+}
