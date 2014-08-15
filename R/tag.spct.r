@@ -42,7 +42,9 @@ tag.generic.spct <- function(x,
     name <- substitute(x)
   }
   if (!is.null(w.band) && is.na(w.band[1])) {
-    x[ , wl.color := w_length2rgb(w.length)]
+    x[ , wl.color := w_length2rgb(x$w.length)]
+    tag.data <- list(wl.color=TRUE)
+    setattr(x, "spct.tags", tag.data)
     return(x)
   }
   if (!is.null(w.band) && is(w.band, "waveband")) {
@@ -98,7 +100,10 @@ tag.generic.spct <- function(x,
     i <- i + 1L
     if (wbs.name[i] == "") {
       if (short.names) {
-        wbs.name[i] <- paste("wb", i, sep="") # labels(wb)[["label"]]
+        name.temp <- labels(wb)[["label"]]
+        wbs.name[i] <- ifelse(grepl("^range.", name.temp, ignore.case=TRUE),
+                              paste("wb", i, sep=""),
+                              name.temp)
       } else {
         wbs.name[i] <- labels(wb)[["name"]]
       }
@@ -108,19 +113,23 @@ tag.generic.spct <- function(x,
     wbs.rgb[i] <- color(wb)[1]
   }
   n <- i
-  wbs.name[n + 1L] <- NA
-  wbs.rgb[n + 1L] <- NA
-
   x[ , idx := n + 1L ]
   for (i in 1L:n) {
     x[ w.length >= wbs.wl.low[i] & w.length < wbs.wl.high[i], idx := as.integer(i) ]
   }
   wl.color.tmp <- w_length2rgb(x$w.length)
   x[ , wl.color := wl.color.tmp]
-  x[ , wb.color := wbs.rgb[idx] ]
-  x[ , wb.name := wbs.name[idx] ]
-  x[ , wb.f := factor(wb.name, levels=wbs.name) ]
+  x[ , wb.f := factor(wbs.name[idx], levels=wbs.name) ]
   x[ , idx := NULL]
+  tag.data <- list(time.unit=attr(x, "time.unit"),
+                   wb.key.name="Bands",
+                   wl.color=TRUE,
+                   wb.color=TRUE,
+                   wb.num = n,
+                   wb.colors=wbs.rgb[1:n],
+                   wb.names=wbs.name[1:n],
+                   wb.list=w.band)
+  setattr(x, "spct.tags", tag.data)
   # to work by reference we need to assign the new DT to the old one
   if (byref & is.name(name)) {
     name <- as.character(name)
@@ -155,6 +164,7 @@ tag.source.spct <- function(x,
   }
   tag.generic.spct(x, w.band, use.hinges, short.names, byref=TRUE)
   #  x[ , irrad.color := s_e_irrad2rgb(w.length, s.e.irrad)]
+  #  setattr(x, "spct.tags", )
   if (byref && is.name(name)) {
     name <- as.character(name)
     assign(name, x, parent.frame(), inherits = TRUE)
