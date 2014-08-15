@@ -6,7 +6,7 @@
 #' spectrum of the measured light source. Occasionally one may
 #' want also to expand the wavelength range.
 #'
-#' @usage trim_spct(spct, band=NULL, low.limit=min(spct), high.limit=max(spct), use.hinges=TRUE, fill=NULL, byref=TRUE)
+#' @usage trim_spct(spct, band=NULL, low.limit=NULL, high.limit=NULL, use.hinges=TRUE, fill=NULL, byref=FALSE)
 #'
 #' @param spct an object of class "generic.spct"
 #' @param band a numeric vector of length two, or any other object for which function range() will return two
@@ -26,28 +26,33 @@
 #' @keywords manip misc
 #' @export
 #' @examples
-#' head(sun.spct)
-#' head(trim_spct(sun.spct, low.limit=300))
-#' head(trim_spct(sun.spct, low.limit=300, fill=NULL))
-#' head(trim_spct(sun.spct, low.limit=300, fill=NA))
-#' head(trim_spct(sun.spct, low.limit=300, fill=0.0))
-#' head(trim_spct(sun.spct, low.limit=100, fill=0.0))
-#' tail(trim_spct(sun.spct, low.limit=300, high.limit=1000, fill=NA))
-#' tail(trim_spct(sun.spct, low.limit=300, high.limit=1000, fill=0.0))
-#' tail(trim_spct(sun.spct, low.limit=300, high.limit=1000))
-#' head(trim_spct(sun.spct, low.limit=300, high.limit=1000))
-#' tail(trim_spct(sun.spct, low.limit=300, high.limit=400, fill=NA))
-#' tail(trim_spct(sun.spct, low.limit=100, high.limit=400, fill=0.0))
-#' head(trim_spct(sun.spct, low.limit=100, high.limit=400, fill=0.0))
-#' head(trim_spct(sun.spct, band=new_waveband(300, 350)))
-#' head(trim_spct(sun.spct, band=c(300, 350)))
+#' trim_spct(sun.spct, low.limit=300)
+#' my.sun.spct <- copy(sun.spct)
+#' trim_spct(my.sun.spct, low.limit=300, byref=TRUE)
+#' my.sun.spct
+#' trim_spct(sun.spct, low.limit=300, fill=NULL)
+#' trim_spct(sun.spct, low.limit=300, fill=NA)
+#' trim_spct(sun.spct, low.limit=300, fill=0.0)
+#' trim_spct(sun.spct, low.limit=300, high.limit=1000, fill=NA)
+#' trim_spct(sun.spct, low.limit=300, high.limit=1000, fill=0.0)
+#' trim_spct(sun.spct, low.limit=300, high.limit=1000)
+#' trim_spct(sun.spct, low.limit=300, high.limit=400, fill=NA)
+#' trim_spct(sun.spct, low.limit=100, high.limit=400, fill=0.0)
+#' trim_spct(sun.spct, band=new_waveband(300, 350))
+#' trim_spct(sun.spct, band=c(300, 350))
 #'
 
-trim_spct <- function(spct, band=NULL, low.limit=min(spct), high.limit=max(spct), use.hinges=TRUE, fill=NULL, byref=TRUE)
+trim_spct <- function(spct, band=NULL, low.limit=NULL, high.limit=NULL, use.hinges=TRUE, fill=NULL, byref=FALSE)
 {
   verbose <- TRUE
   if (byref) {
     name <- substitute(spct)
+  }
+  if (is.null(low.limit)) {
+    low.limit <- min(spct, na.rm=TRUE)
+  }
+  if (is.null(high.limit)) {
+    high.limit <- max(spct, na.rm=TRUE)
   }
   names.spct <- names(spct)
   names.data <- names.spct[names.spct != "w.length"]
@@ -61,7 +66,7 @@ trim_spct <- function(spct, band=NULL, low.limit=min(spct), high.limit=max(spct)
     high.limit <- trim.range[2]
   }
   # check whether we should expand the low end
-  low.end <- min(spct)
+  low.end <- min(spct, na.rm=TRUE)
   if (low.end > low.limit) {
     if (!is.null(fill)) {
       # expand short tail
@@ -71,7 +76,8 @@ trim_spct <- function(spct, band=NULL, low.limit=min(spct), high.limit=max(spct)
       for (data.col in names.data) {
         spct.top[ , eval(data.col) := fill]
       }
-      spct <- rbindlist(list(spct.top, spct))
+      setattr(spct.top, "class", class(spct))
+      spct <- rbindspct(list(spct.top, spct))
       low.end <- min(spct)
     } else {
       if (verbose) {
@@ -82,7 +88,7 @@ trim_spct <- function(spct, band=NULL, low.limit=min(spct), high.limit=max(spct)
   }
 
   # check whether we should expand the high end
-  high.end <- max(spct)
+  high.end <- max(spct, na.rm=TRUE)
   if (high.end < high.limit) {
     if (!is.null(fill)) {
       # expand short tail
@@ -92,7 +98,8 @@ trim_spct <- function(spct, band=NULL, low.limit=min(spct), high.limit=max(spct)
       for (data.col in names.data) {
         spct.bottom[ , eval(data.col) := fill]
       }
-      spct <- rbindlist(list(spct, spct.bottom))
+      setattr(spct.bottom, "class", class(spct))
+      spct <- rbindspct(list(spct, spct.bottom))
       low.end <- max(spct)
     } else {
       if (verbose) {
@@ -121,7 +128,7 @@ trim_spct <- function(spct, band=NULL, low.limit=min(spct), high.limit=max(spct)
   setattr(spct, "time.unit", time.unit.spct)
   if (byref && is.name(name)) {
     name <- as.character(name)
-    assign(name, spct, parent.frame(), inherits = FALSE)
+    assign(name, spct, parent.frame(), inherits = TRUE)
   }
 # %between% removes derived class tags!
 #  setattr(spct, "class", class.spct)

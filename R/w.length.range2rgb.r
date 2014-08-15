@@ -22,10 +22,10 @@ w_length_range2rgb <- function(w.length, sens=ciexyzCMF2.spct, color.name=NULL) 
   w.length <- unique(sort(w.length))
   len <- length(w.length)
   if (len < 2 ) {
-    warning("Calculating RGB values for monochromatic light.")
+    message("Calculating RGB values for monochromatic light.")
     return(w_length2rgb(w.length, sens, color.name))
   } else if (len > 2) {
-    warning("Using only extreme wavelength values.")
+    message("Using only extreme wavelength values.")
     w.length <- range(w.length)
   }
   num.values <- max(50L, trunc(w.length[2] - w.length[1]))

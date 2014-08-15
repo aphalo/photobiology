@@ -143,7 +143,51 @@ color <- function(x, ...) UseMethod("color")
 #' @export color.default
 #'
 color.default <- function(x, ...) {
-  return("#000000")
+  return(rep("#000000", length(x)))
+}
+
+#' Default of function that returns Color of a numer (wavelength in nm).
+#'
+#' A function that returns the equivalent RGB color of a wavelength.
+#'
+#' @param x a numeric object
+#' @param type character telling whether "CMF", "CC", or "both" should be returned.
+#' @param ... not used in current version
+#' @export color.numeric
+#'
+color.numeric <- function(x, type="CMF", ...) {
+  if (type=="CMF") {
+    color.out <- w_length2rgb(x, sens=ciexyzCMF2.spct, color.name=NULL)
+  } else if (type=="CC") {
+    color.out <- w_length2rgb(x, sens=ciexyzCC2.spct, color.name=NULL)
+  } else {
+    color.our <- rep(NA, length(x))
+  }
+  if (!is.null(names(x))){
+    names(color.out) <- paste(names(x), type, sep=".")
+  }
+  return(color.out)
+}
+
+#' Default of function that returns Color of elements in a list.
+#'
+#' A function that returns the equivalent RGB color of elements in a list.
+#'
+#' @param x an R list object
+#' @param short.names logical indicating whether to use short or long names for wavebands
+#' @param type character telling whether "CMF", "CC", or "both" should be returned.
+#' @param ... not used in current version
+#' @export color.list
+#'
+color.list <- function(x, short.names=TRUE, type="CMF", ...) {
+  color.out <- numeric(0)
+  for (xi in x) {
+    color.out <- c(color.out, color(xi, short.names = short.names, type = type, ...))
+  }
+  if (!is.null(names(x))) {
+    names(color.out) <- paste(names(x), type, sep=".")
+  }
+  return(color.out)
 }
 
 #' Color at center of a "waveband" object.
@@ -152,13 +196,23 @@ color.default <- function(x, ...) {
 #'
 #' @param x an object of class "waveband"
 #' @param short.names logical indicating whether to use short or long names for wavebands
+#' @param type character telling whether "CMF", "CC", or "both" should be returned.
 #' @param ... not used in current version
 #' @export color.waveband
 #'
-color.waveband <- function(x, short.names=TRUE, ...) {
-  idx <- ifelse(short.names, "name", "label")
-  color <- c(w_length_range2rgb(range(x), sens=ciexyzCMF2.spct, color.name=paste(labels(x)[[idx]], "CMF")),
-             w_length_range2rgb(range(x), sens=ciexyzCC2.spct, color.name=paste(labels(x)[[idx]], "CC")))
+color.waveband <- function(x, short.names=TRUE, type="both", ...) {
+  idx <- ifelse(!short.names, "name", "label")
+  name <- labels(x)[[idx]]
+  if (type == "both") {
+    color <- list(CMF = w_length_range2rgb(range(x), sens=ciexyzCMF2.spct, color.name=paste(name, "CMF", sep=".")),
+                  CC  = w_length_range2rgb(range(x), sens=ciexyzCC2.spct, color.name=paste(name, "CC", sep=".")))
+  } else if (type == "CMF") {
+    color <- w_length_range2rgb(range(x), sens=ciexyzCMF2.spct, color.name=paste(name, "CMF", sep="."))
+  } else if (type == "CC") {
+    color <- w_length_range2rgb(range(x), sens=ciexyzCC2.spct, color.name=paste(name, "CC", sep="."))
+  } else {
+    color <- NA
+  }
   return(color)
 }
 

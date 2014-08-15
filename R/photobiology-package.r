@@ -13,7 +13,7 @@
 #' Package: \tab photobiology\cr
 #' Type: \tab Package\cr
 #' Version: \tab 0.3.10\cr
-#' Date: \tab 2014-08-14\cr
+#' Date: \tab 2014-08-15\cr
 #' License: \tab GPL (>= 2.0)\cr
 #' }
 #' The most important functions in the package are \code{\link{energy_irradiance}},
@@ -42,7 +42,6 @@
 #' @importFrom data.table setorder setorderv
 #' @importFrom data.table setNumericRounding getNumericRounding
 #' @importFrom data.table chmatch "%chin%" chorder chgroup
-#' @importFrom data.table rbindlist
 #' @importFrom data.table fread
 #' @importFrom data.table address
 #' @importFrom data.table .SD .N .I .GRP .BY
@@ -56,7 +55,6 @@
 #' @export setorder setorderv
 #' @export setNumericRounding getNumericRounding
 #' @export chmatch "%chin%" chorder chgroup
-#' @export rbindlist
 #' @export fread
 #' @export address
 #' @export .SD .N .I .GRP .BY
@@ -69,4 +67,5 @@
 #'
 #' with(sun.data, energy_irradiance(w.length, s.e.irrad)) # the whole spectrum
 #' with(sun.data, energy_irradiance(w.length, s.e.irrad, new_waveband(400,700)))
+#'
 NULL
