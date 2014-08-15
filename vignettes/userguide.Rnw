@@ -818,13 +818,20 @@ detach(sun.data)
 We can use as above \texttt{low.limit}, \texttt{high.limit}, and \texttt{fill} as in the examples above.
 
 <<>>=
-trim_spct(sun.spct, low.limit=297)
+trim_spct(sun.spct, low.limit=297, byref=FALSE)
 @
 
 We can in addition do the trimming with a \texttt{waveband} object.
 
 <<>>=
-trim_spct(sun.spct, PAR())
+trim_spct(sun.spct, PAR(), byref=FALSE)
+@
+
+By default \code{trim\_spct} trims its argument in place, but as \code{sun.spct} is protected as part of the package, we need to first make a copy.
+
+<<>>=
+my_sun.spct <- copy(sun.spct)
+trim_spct(my_sun.spct, PAR())
 @
 
 

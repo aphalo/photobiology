@@ -35,9 +35,11 @@ tag.generic.spct <- function(x,
                              use.hinges=TRUE,
                              short.names=TRUE,
                              byref=TRUE, ...) {
-  name <- substitute(x)
   if (!byref) {
     x <- copy(x)
+    name <- NA
+  } else {
+    name <- substitute(x)
   }
   if (!is.null(w.band) && is.na(w.band[1])) {
     x[ , wl.color := w_length2rgb(w.length)]
@@ -146,10 +148,14 @@ tag.source.spct <- function(x,
                              use.hinges=NULL,
                              short.names=TRUE,
                              byref=TRUE, ...) {
+  if (!byref) {
+    x <- copy(x)
+  } else {
   name <- substitute(x)
+  }
   tag.generic.spct(x, w.band, use.hinges, short.names, byref=TRUE)
   #  x[ , irrad.color := s_e_irrad2rgb(w.length, s.e.irrad)]
-  if (is.name(name)) {
+  if (byref && is.name(name)) {
     name <- as.character(name)
     assign(name, x, parent.frame(), inherits = TRUE)
   }

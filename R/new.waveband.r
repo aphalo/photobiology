@@ -96,6 +96,7 @@ split_bands <- function(x, short.names=TRUE, length.out=NULL) {
   # they are used as names for the waveband
   wb.names <- names(w.length)
   if (is.numeric(w.length)) {
+    unique(sort(w.length))
     wl.len <- length(w.length)
     if (wl.len < 2) {
       warning("At least two wavelength values are needed.")
@@ -108,8 +109,9 @@ split_bands <- function(x, short.names=TRUE, length.out=NULL) {
           wl.len <- length.out + 1
           w.length <- seq(min(w.length), max(w.length), length.out=wl.len)
          }
+      } else {
+        length.out <- wl.len - 1
       }
-      w.length <- unique(sort(w.length))
       bands.out <- list()
       for (i in 1:(wl.len - 1)) {
         wb.temp <- new_waveband(w.length[i], w.length[i+1],
@@ -133,7 +135,7 @@ split_bands <- function(x, short.names=TRUE, length.out=NULL) {
   if (length(bands.out) == 1) {
     return(bands.out[[1]])
   } else {
-    names(bands.out) <- paste("wb", 1:length.out, sep="")
+    names(bands.out) <- paste("wb", 1:length(bands.out), sep="")
     return(bands.out)
   }
   return(bands.out)

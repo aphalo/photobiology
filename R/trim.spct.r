@@ -6,7 +6,7 @@
 #' spectrum of the measured light source. Occasionally one may
 #' want also to expand the wavelength range.
 #'
-#' @usage trim_spct(spct, band=NULL, low.limit=min(spct), high.limit=max(spct), use.hinges=TRUE, fill=NULL)
+#' @usage trim_spct(spct, band=NULL, low.limit=min(spct), high.limit=max(spct), use.hinges=TRUE, fill=NULL, byref=TRUE)
 #'
 #' @param spct an object of class "generic.spct"
 #' @param band a numeric vector of length two, or any other object for which function range() will return two
@@ -15,6 +15,7 @@
 #' @param use.hinges logical, if TRUE (the default)
 #' wavelengths in nm.
 #' @param fill if fill==NULL then tails are deleted, otherwise tails or s.irrad are filled with the value of fill
+#' @param byref logical indicating if new object will be created by reference or by copy of spct
 #'
 #' @return a spectrum of same class as input with its tails trimmed or expanded
 #'
@@ -42,14 +43,17 @@
 #' head(trim_spct(sun.spct, band=c(300, 350)))
 #'
 
-trim_spct <- function(spct, band=NULL, low.limit=min(spct), high.limit=max(spct), use.hinges=TRUE, fill=NULL)
+trim_spct <- function(spct, band=NULL, low.limit=min(spct), high.limit=max(spct), use.hinges=TRUE, fill=NULL, byref=TRUE)
 {
-  verbose <- FALSE # use option in the future
-
+  verbose <- TRUE
+  if (byref) {
+    name <- substitute(spct)
+  }
   names.spct <- names(spct)
   names.data <- names.spct[names.spct != "w.length"]
-  class.spct  <- class(spct)
+#  class.spct  <- class(spct)
   comment.spct <- comment(spct)
+  time.unit.spct <- attr(spct, "time.unit", exact=TRUE)
   # check for target
   if (!is.null(band)) {
     trim.range <- range(band)
@@ -113,8 +117,13 @@ trim_spct <- function(spct, band=NULL, low.limit=min(spct), high.limit=max(spct)
       spct[!w.length %between% trim.range, eval(data.col) := fill]
     }
   }
-# %between% removes derived class tags!
-  setattr(spct, "class", class.spct)
   setattr(spct, "comment", comment.spct)
-  return(spct)
+  setattr(spct, "time.unit", time.unit.spct)
+  if (byref && is.name(name)) {
+    name <- as.character(name)
+    assign(name, spct, parent.frame(), inherits = FALSE)
+  }
+# %between% removes derived class tags!
+#  setattr(spct, "class", class.spct)
+  invisible(return(spct))
 }

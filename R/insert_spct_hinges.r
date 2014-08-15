@@ -20,10 +20,14 @@
 ##' insert_spct_hinges(sun.spct, c(199.99,200.00,399.50,399.99,400.00,699.99,700.00,799.99,1000.00))
 insert_spct_hinges <- function(spct, hinges=NULL) {
   if (is.null(hinges)) {
-    return(spct)
+    invisible(return(spct))
   }
   hinges <- hinges[hinges > min(spct) & hinges < max(spct)]
+  hinges <- unique(sort(hinges))
+  old.w.length <- spct[["w.length"]]
+  hinges <- setdiff(hinges, old.w.length)
   if (length(hinges) > 0) {
+    new.w.length <- sort(c(hinges, old.w.length))
     name <- substitute(spct)
     names.spct <- names(spct)
     names.data <- names.spct != "w.length"
@@ -31,21 +35,19 @@ insert_spct_hinges <- function(spct, hinges=NULL) {
     idx.data <- which(names.data)
     class.spct <- class(spct)
     comment.spct <- comment(spct)
-    if  (is(x, "source.spct")) {
+    if  (is(spct, "source.spct")) {
       time.unit.spct <- attr(spct, "time.unit", exact=TRUE)
     }
-    hinges <- unique(sort(hinges))
+    new.spct <- data.table(w.length = new.w.length)
     first.iter <- TRUE
-#    setDF(spct)
     for (data.col in idx.data) {
-      temp.data <- insert_hinges(spct[["w.length"]], spct[[data.col]], hinges)
-      if (first.iter) {
-        new.spct <- data.table(w.length = temp.data[[1]])
-        first.iter <- FALSE
+      temp.data <- spct[[data.col]]
+      if (is.numeric(temp.data)) {
+        new.spct[ , names.spct[data.col] := put_hinges(old.w.length, temp.data, hinges)]
+      } else {
+        new.spct[ , names.spct[data.col] := NA]
       }
-      new.spct[ , names.spct[data.col] := temp.data[[2]] ]
     }
-    setattr(new.spct, "comment", comment.spct)
     if(class.spct[1] == "source.spct") {
       setSourceSpct(new.spct)
       if (!is.null(time.unit.spct)) {
