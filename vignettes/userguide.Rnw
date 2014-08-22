@@ -555,7 +555,21 @@ tag(sun.spct, PAR(), byref=FALSE)
 tag(sun.spct, UV_bands(), byref=FALSE)
 @
 
-The added factor, labels, and colour data can be used for further processing or for plotting\footnote{See section \ref{sec:??} for details.}.
+The added factor and colour data can be used for further processing or for plotting. Information about the tagging and wavebands is stored in an attribute \code{tag.attr} in every tagged spectrum, this yields a more compact output and keeps a `trace' of the tagging.
+
+<<>>=
+tg.sun.spct <- tag(sun.spct, PAR(), byref=FALSE)
+attr(tg.sun.spct, "spct.tags")
+@
+
+Additional functions are available which return a tagged spectrum and take as input a list of wavebands, but no spectral data. They `build' an spectrum from the data in the wavebands, and are useful for plotting the boundaries of wavebands.
+
+<<>>=
+wb2tagged_spct(UV_bands())
+wb2rect_spct(UV_bands())
+@
+
+Function \code{wb2tagged\_spct} returns a tagged spectrum, with two rows for each waveband, corresponding to the low and high wavelength boundaries, while function \code{wb2rect\_spct} returns a spectrum with only one row per waveband, with \code{w.length} set to its midpoint but with additional columns  \code{xmin} and \code{xmax} corresponding to the low and high wavelength boundaries ot the wavebands.
 
 \section{Calculating weighted spectral irradiances}
 

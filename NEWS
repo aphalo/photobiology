@@ -1,3 +1,8 @@
+photobiology 0.3.11
+===================
+
+Added setGenericSpct() as a synonim for setGenSpct() to keep naming consistent. Added functions wb2tagged_spct() and wb2rect_spct() for creating a tagged generic.spct objects suitable from a list of wavebands.
+
 photobiology 0.3.10
 ===================
 

@@ -45,7 +45,7 @@ tag.generic.spct <- function(x,
     x[ , wl.color := w_length2rgb(x$w.length)]
     tag.data <- list(wl.color=TRUE)
     setattr(x, "spct.tags", tag.data)
-    return(x)
+    invisible(return(x))
   }
   if (!is.null(w.band) && is(w.band, "waveband")) {
     # if the argument is a single w.band, we enclose it in a list
@@ -170,4 +170,121 @@ tag.source.spct <- function(x,
     assign(name, x, parent.frame(), inherits = TRUE)
   }
   invisible(return(x))
+}
+
+#' Make spectrum from a list of wavebands
+#'
+#' Make a generic.spct object with wavelengths from the range of wavebands
+#' in a list.
+#'
+#' @param w.band list of waveband definitions created with new_waveband() or a single waveband object
+#' @export
+#'
+#' @return a generic.spectrum object, with columns w.length as s.e.irrad,
+#' the second one, se to 1 for all wavelengths.
+#'
+wb2spct <- function(w.band) {
+  if (is(w.band, "waveband")) {
+    w.band <- list(w.band)
+  }
+  w.length <- numeric(0)
+  for (wb in w.band) {
+    if (is(wb, "waveband")) {
+      w.length <- c(w.length, range(wb))
+    }
+  }
+  if (is.null(w.length) || length(w.length) < 2) {
+    return(NA)
+  }
+  w.length <- unique(sort(w.length))
+  new.spct <- data.table(w.length = w.length, s.e.irrad = 1)
+  setGenSpct(new.spct)
+  invisible(return(new.spct))
+}
+
+#' Make a tagged generic spectrum from a list of wavebands
+#'
+#' Make a tagged generic.spct object with wavelengths from the range of wavebands
+#' in a list, and names of the same bands as factor levels, and also corresponding
+#' colours.
+#'
+#' @param w.band list of waveband definitions created with new_waveband() or a single waveband object
+#' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
+#' @param short.names logical indicating whether to use short or long names for wavebands
+#' @param ... not used in current version
+#' @export
+#'
+#' @note At the moment not doing anything
+#'
+#' @return a tagged spectrum
+#'
+wb2tagged_spct <- function(w.band,
+                    use.hinges=TRUE,
+                    short.names=TRUE,
+                    ...) {
+  new.spct <- wb2spct(w.band)
+  tag(new.spct, w.band, use.hinges, short.names, byref=TRUE)
+  new.spct[ , y := 0]
+  invisible(return(new.spct))
+}
+
+#' Make spectrum from a list of wavebands
+#'
+#' Make a generic.spct object with wavelengths from the range of wavebands
+#' in a list.
+#'
+#' @param w.band list of waveband definitions created with new_waveband() or a single waveband object
+#' @param short.names logical indicating whether to use short or long names for wavebands
+#' @export
+#'
+#' @return a generic.spectrum object, with columns w.length as s.e.irrad,
+#' the second one, se to 1 for all wavelengths.
+#'
+wb2rect_spct <- function(w.band,
+                         short.names=TRUE) {
+  if (is(w.band, "waveband")) {
+    w.band <- list(w.band)
+  }
+  wbs.number <- length(w.band) # number of wavebands in list
+  wbs.name <- names(w.band)
+  if (is.null(wbs.name)) {
+    wbs.name <- character(wbs.number)
+  }
+  wbs.wl.mid <- wbs.wl.high <- wbs.wl.low <- numeric(wbs.number)
+  wbs.rgb <- character(wbs.number)
+  i <- 0L
+  for (wb in w.band) {
+    i <- i + 1L
+    if (wbs.name[i] == "") {
+      if (short.names) {
+        name.temp <- labels(wb)[["label"]]
+        wbs.name[i] <- ifelse(grepl("^range.", name.temp, ignore.case=TRUE),
+                              paste("wb", i, sep=""),
+                              name.temp)
+      } else {
+        wbs.name[i] <- labels(wb)[["name"]]
+      }
+    }
+    wbs.wl.low[i] <- min(wb)
+    wbs.wl.mid[i] <- midpoint(wb)
+    wbs.wl.high[i] <- max(wb)
+    wbs.rgb[i] <- color(wb)[1]
+  }
+  new.spct <- data.table(w.length = wbs.wl.mid, s.e.irrad = 1,
+                         wl.color = w_length2rgb(wbs.wl.mid),
+                         wb.f = factor(wbs.name, levels=wbs.name),
+                         xmax = wbs.wl.high, xmin = wbs.wl.low,
+                         y = 0)
+  setGenSpct(new.spct)
+  tag.data <- list(time.unit="none",
+                   wb.key.name="Bands",
+                   wl.color=TRUE,
+                   wb.color=TRUE,
+                   wb.num = wbs.number,
+                   wb.colors=wbs.rgb,
+                   wb.names=wbs.name,
+                   wb.list=w.band)
+  setattr(new.spct, "spct.tags", tag.data)
+
+  invisible(return(new.spct))
 }

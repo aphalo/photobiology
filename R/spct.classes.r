@@ -158,8 +158,9 @@ check.chroma.spct <- function(x, byref=TRUE) {
 #' if the object is a data.frame is is mane a data.table
 #'
 #' @param x a data.frame
-#' @export
+#' @export setGenericSpct setGenSpct
 #' @exportClass generic.spct
+#' @aliases setGenericSpct setGenSpct
 #'
 setGenSpct <- function(x) {
   name <- substitute(x)
@@ -175,6 +176,8 @@ setGenSpct <- function(x) {
   }
   invisible(x)
 }
+
+setGenericSpct <- setGenSpct
 
 #' set class of a data.frame or data.table or generic.spct object to "filter.spct"
 #'
