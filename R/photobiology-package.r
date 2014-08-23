@@ -12,14 +12,15 @@
 #' \tabular{ll}{
 #' Package: \tab photobiology\cr
 #' Type: \tab Package\cr
-#' Version: \tab 0.3.11\cr
-#' Date: \tab 2014-08-21\cr
+#' Version: \tab 0.3.12\cr
+#' Date: \tab 2014-08-23\cr
 #' License: \tab GPL (>= 2.0)\cr
 #' }
-#' The most important functions in the package are \code{\link{energy_irradiance}},
-#' \code{\link{photon_irradiance}}, and \code{\link{new_waveband}}. The first two,
-#' are used to obtain energy and photon irradiances from spectral data. The third
-#' function is used to define how to calculate new quantities.
+#' This package is the core of a suite of packages for photobiological
+#' data analysis and plotting. The accompanying packages are data and
+#' definitions that are to a large extent application-area specific
+#' while the functions in this package are widely useful in photobiology
+#' and radiation quantification in geophysics and meteorology.
 #'
 #' @references
 #' Aphalo, P. J., Albert, A., Björn, L. O., McLeod, A. R., Robson, T. M.,

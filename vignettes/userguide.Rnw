@@ -204,7 +204,8 @@ d.spct
 \texttt{chroma.spct} objects can be created from data tables, data frames, and \texttt{generic.spct} simply by setting them as such. However, columns called \texttt{w.length} (wavelength values expressed in nm) and \texttt{x}, \texttt{y} and \texttt{z} must be present, giving the trichromic chromaticity constants.
 
 <<>>=
-e.spct <- setChromaSpct(data.table(w.length = 300:305, x = rep(1,6), y = rep(1,6), z = rep(1,6)))
+e.spct <- setChromaSpct(data.table(w.length = 300:305, x = rep(1,6),
+                                   y = rep(1,6), z = rep(1,6)))
 class(e.spct)
 e.spct
 @

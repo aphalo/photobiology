@@ -273,7 +273,7 @@ wb2rect_spct <- function(w.band,
   new.spct <- data.table(w.length = wbs.wl.mid, s.e.irrad = 1,
                          wl.color = w_length2rgb(wbs.wl.mid),
                          wb.f = factor(wbs.name, levels=wbs.name),
-                         xmax = wbs.wl.high, xmin = wbs.wl.low,
+                         wl.high = wbs.wl.high, wl.low = wbs.wl.low,
                          y = 0)
   setGenSpct(new.spct)
   tag.data <- list(time.unit="none",

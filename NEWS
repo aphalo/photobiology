@@ -1,3 +1,8 @@
+photobiology 0.3.12
+===================
+
+Changed the name of two of the variables added by wb2rect_spct() to more meaningful ones.
+
 photobiology 0.3.11
 ===================
 
