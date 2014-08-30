@@ -11,7 +11,7 @@
 ##' @param hinges a numeric array giving the wavelengths (nm) at which the s.irrad should be inserted by
 ##' interpolation, no interpolation is indicated by an empty array (numeric(0))
 ##'
-##' @return a data.frame with variables \code{w.length} and \code{s.irrad}
+##' @return a generic.spct or a derived type with variables \code{w.length} and other numeric variables.
 ##' @keywords manip misc
 ##' @export
 ##' @examples
@@ -20,7 +20,7 @@
 ##' insert_spct_hinges(sun.spct, c(199.99,200.00,399.50,399.99,400.00,699.99,700.00,799.99,1000.00))
 insert_spct_hinges <- function(spct, hinges=NULL) {
   if (is.null(hinges)) {
-    invisible(return(spct))
+    invisible(spct)
   }
   hinges <- hinges[hinges > min(spct) & hinges < max(spct)]
   hinges <- unique(sort(hinges))
@@ -69,8 +69,8 @@ insert_spct_hinges <- function(spct, hinges=NULL) {
       name <- as.character(name)
       assign(name, new.spct, parent.frame(), inherits = TRUE)
     }
-    invisible(return(new.spct))
+    invisible(new.spct)
   } else {
-    invisible(return(spct))
+    invisible(spct)
   }
 }

@@ -29,17 +29,17 @@ check.default <- function(x, byref=FALSE) {
 #' @export check.generic.spct
 check.generic.spct <- function(x, byref=TRUE) {
   if (exists("w.length", x, mode = "numeric", inherits=FALSE)) {
-    invisible(return(x))
+    invisible(x)
   } else if (exists("wl", x, mode = "numeric", inherits=FALSE)) {
     setnames(x, "wl", "w.length")
-    invisible(return(x))
+    invisible(x)
   } else if (exists("wavelength", x, mode = "numeric", inherits=FALSE)) {
     setnames(x, "wavelength", "w.length")
-    invisible(return(x))
+    invisible(x)
   } else {
     warning("No wavelength data found in generic.spct")
     x[ , w.length := NA]
-    invisible(return(x))
+    invisible(x)
   }
 }
 
@@ -52,17 +52,17 @@ check.generic.spct <- function(x, byref=TRUE) {
 #' @export check.filter.spct
 check.filter.spct <- function(x, byref=TRUE) {
   if (exists("Tfr", x, mode = "numeric", inherits=FALSE)) {
-    invisible(return(x))
+    invisible(x)
   } else if (exists("Tpc", x, mode = "numeric", inherits=FALSE)) {
     x[ , Tfr := Tpc / 100]
-    invisible(return(x))
+    invisible(x)
   } else if (exists("A", x, mode = "numeric", inherits=FALSE)) {
     x[ , Tfr := A2T(A)]
-    invisible(return(x))
+    invisible(x)
   } else {
     warning("No transmittance or absorbance data found in filter.spct")
     x[ , Tfr := NA]
-    invisible(return(x))
+    invisible(x)
   }
 }
 
@@ -75,14 +75,14 @@ check.filter.spct <- function(x, byref=TRUE) {
 #' @export check.reflector.spct
 check.reflector.spct <- function(x, byref=TRUE) {
   if (exists("Rfr", x, mode = "numeric", inherits=FALSE)) {
-    invisible(return(x))
+    invisible(x)
   } else if (exists("Rpc", x, mode = "numeric", inherits=FALSE)) {
     x[ , Rfr := Rpc / 100]
-    invisible(return(x))
+    invisible(x)
   } else {
     warning("No reflectance data found in filter.spct")
     x[ , Rfr := NA]
-    invisible(return(x))
+    invisible(x)
   }
 }
 
@@ -95,15 +95,15 @@ check.reflector.spct <- function(x, byref=TRUE) {
 #' @export check.response.spct
 check.response.spct <- function(x, byref=TRUE) {
   if (exists("response", x, mode = "numeric", inherits=FALSE)) {
-    invisible(return(x))
+    invisible(x)
   } else if (exists("signal", x, mode = "numeric", inherits=FALSE)) {
     x[ , response := signal]
     x[ , signal := NULL]
-    invisible(return(x))
+    invisible(x)
   } else {
     warning("No response data found in filter.spct")
     x[ , response := NA]
-    invisible(return(x))
+    invisible(x)
   }
 }
 
@@ -116,13 +116,13 @@ check.response.spct <- function(x, byref=TRUE) {
 #' @export check.source.spct
 check.source.spct <- function(x, byref=TRUE) {
   if (exists("s.e.irrad", x, mode = "numeric", inherits=FALSE)) {
-    invisible(return(x))
+    invisible(x)
   } else if (exists("s.q.irrad", x, mode = "numeric", inherits=FALSE)) {
-    invisible(return(q2e(x, action="add", byref=byref)))
+    invisible(q2e(x, action="add", byref=byref))
   } else {
     warning("No spectral irradiance data found in source.spct")
     x[ , s.e.irrad := NA]
-    invisible(return(x))
+    invisible(x)
   }
 }
 
@@ -141,10 +141,10 @@ check.chroma.spct <- function(x, byref=TRUE) {
   if (exists("x", x, mode="numeric", inherits=FALSE) &&
         exists("y", x, mode="numeric", inherits=FALSE) &&
         exists("z", x, mode="numeric", inherits=FALSE) ) {
-    invisible(return(x))
+    invisible(x)
   } else {
     warning("No spectral chromaticity coordinates data found in chroma.spct")
-    invisible(return(x[ , c(x, y, z) := NA]))
+    invisible(x[ , c(x, y, z) := NA])
   }
 }
 
@@ -154,10 +154,10 @@ check.chroma.spct <- function(x, byref=TRUE) {
 
 #' set class of a data.frame or data.table object to "generic.spct"
 #'
-#' Sets the class attibute of a data.frame or data.table object to "generic.spct" an object to store spectra
-#' if the object is a data.frame is is mane a data.table
+#' Sets the class attibute of a data.frame or data.table object to "generic.spct" an object to store spectra.
+#' If the object is a data.frame is is made a data.table in the process.
 #'
-#' @param x a data.frame
+#' @param x a data.frame or data.table
 #' @export setGenericSpct setGenSpct
 #' @exportClass generic.spct
 #' @aliases setGenericSpct setGenSpct
@@ -181,10 +181,10 @@ setGenericSpct <- setGenSpct
 
 #' set class of a data.frame or data.table or generic.spct object to "filter.spct"
 #'
-#' Sets the class attibute of a data.frame or data.table object to "filter.spct" an object to store spectra
-#' if the object is a data.frame is is mane a data.table
+#' Sets the class attibute of a data.frame or data.table object to "filter.spct" an object to store spectra.
+#' If the object is a data.frame is is also made a data.table in the process.
 #'
-#' @param x a data.frame
+#' @param x a data.frame or data.table
 #' @export
 #' @exportClass filter.spct
 #'
@@ -210,10 +210,10 @@ setFilterSpct <- function(x) {
 
 #' set class of a data.frame or data.table or generic.spct object to "reflector.spct"
 #'
-#' Sets the class attibute of a data.frame or data.table object to "reflector.spct" an object to store spectra
-#' if the object is a data.frame is is mane a data.table
+#' Sets the class attibute of a data.frame or data.table object to "reflector.spct" an object to store spectra.
+#' If the object is a data.frame is is also made a data.table in the process.
 #'
-#' @param x a data.frame
+#' @param x a data.frame or data.table
 #' @export
 #' @exportClass filter.spct
 #'
@@ -242,7 +242,7 @@ setReflectorSpct <- function(x) {
 #' Sets the class attibute of a data.frame or data.table object to "response.spct" object,
 #' used to store response spectra
 #'
-#' @param x a data.frame
+#' @param x a data.frame or data.table.
 #' @export
 #' @exportClass filter.spct
 #'
@@ -268,10 +268,10 @@ setResponseSpct <- function(x) {
 
 #' set class of a data.frame or data.table or generic.spct object to "source.spct"
 #'
-#' Sets the class attibute of a data.frame or data.table object to "source.spct" an object to store spectra
-#' if the object is a data.frame is is mane a data.table
+#' Sets the class attibute of a data.frame or data.table object to "source.spct" an object to store spectra.
+#' If the object is a data.frame is is also made a data.table in the process.
 #'
-#' @param x a data.frame
+#' @param x a data.frame or data.table
 #' @param time.unit character string "second" or "day"
 #' @export
 #' @exportClass source.spct
@@ -299,10 +299,10 @@ setSourceSpct <- function(x, time.unit="second") {
 
 #' set class of a data.frame or data.table or generic.spct object to "chroma.spct"
 #'
-#' Sets the class attibute of a data.frame or data.table object to "chroma.spct" an object to store spectra
-#' if the object is a data.frame is is mane a data.table
+#' Sets the class attibute of a data.frame or data.table object to "chroma.spct" an object to store spectra.
+#' If the object is a data.frame is is also made a data.table in the process.
 #'
-#' @param x a data.frame
+#' @param x a data.frame or data.table
 #' @export
 #' @exportClass chroma.spct
 #'
@@ -344,46 +344,46 @@ setChromaSpct <- function(x) {
       x <- oper_spectra(e1$w.length, e2$w.length, e1$x, e2$s.e.irrad, bin.oper=`*`, trim="intersection")
       y <- oper_spectra(e1$w.length, e2$w.length, e1$y, e2$s.e.irrad, bin.oper=`*`, trim="intersection")
       z <- oper_spectra(e1$w.length, e2$w.length, e1$z, e2$s.e.irrad, bin.oper=`*`, trim="intersection")
-      out.spct <- data.frame(w.length=x$w.length, x=x[["s.irrad"]], y=y[["s.irrad"]], z=z[["s.irrad"]])
+      out.spct <- data.table(w.length=x$w.length, x=x[["s.irrad"]], y=y[["s.irrad"]], z=z[["s.irrad"]])
       setChromaSpct(out.spct)
-      return(out.spct)
+      invisible(out.spct)
     } else if (is(e2, "filter.spct")) {
       x <- oper_spectra(e1$w.length, e2$w.length, e1$x, e2$Tfr, bin.oper=`*`, trim="intersection")
       y <- oper_spectra(e1$w.length, e2$w.length, e1$y, e2$Tfr, bin.oper=`*`, trim="intersection")
       z <- oper_spectra(e1$w.length, e2$w.length, e1$z, e2$Tfr, bin.oper=`*`, trim="intersection")
-      out.spct <- data.frame(w.length=x$w.length, x=x[["s.irrad"]], y=y[["s.irrad"]], z=z[["s.irrad"]])
+      out.spct <- data.table(w.length=x$w.length, x=x[["s.irrad"]], y=y[["s.irrad"]], z=z[["s.irrad"]])
       setChromaSpct(out.spct)
-      return(out.spct)
+      invisible(out.spct)
     } else if (is(e2, "reflector.spct")) {
       x <- oper_spectra(e1$w.length, e2$w.length, e1$x, e2$Rfr, bin.oper=`*`, trim="intersection")
       y <- oper_spectra(e1$w.length, e2$w.length, e1$y, e2$Rfr, bin.oper=`*`, trim="intersection")
       z <- oper_spectra(e1$w.length, e2$w.length, e1$z, e2$Rfr, bin.oper=`*`, trim="intersection")
-      out.spct <- data.frame(w.length=x$w.length, x=x[["s.irrad"]], y=y[["s.irrad"]], z=z[["s.irrad"]])
+      out.spct <- data.table(w.length=x$w.length, x=x[["s.irrad"]], y=y[["s.irrad"]], z=z[["s.irrad"]])
       setChromaSpct(out.spct)
-      return(out.spct)
+      invisible(out.spct)
     } else if (is.numeric(e2)) {
       e3 <- copy(e1)
       if (length(e2) == 3 && names(e2) == c("x", "y", "z")) {
         e3[ , `:=`(x = x * e2["x"] , y = y * e2["y"], z = z  * e2["z"])]
-        return(e3)
+        invisible(e3)
       } else {
         e3[ , `:=`(x = x * e2 , y = y * e2, z = z  * e2)]
-        return(e3)
+        invisible(e3)
       }
     } else {
-      return(NA)
+      invisible(NA)
     }
   } else if (is(e1, "filter.spct")) {
     if (is(e2, "filter.spct")) {
       z <- oper_spectra(e1$w.length, e2$w.length, e1$Tfr, e2$Tfr, bin.oper=`*`, trim="intersection")
       setnames(z, 2, "Tfr")
       setFilterSpct(z)
-      return(z)
+      invisible(z)
     } else if(is(e2, "source.spct")) {
       z <- oper_spectra(e1$w.length, e2$w.length, e1$Tfr, e2$s.e.irrad, bin.oper=`*`, trim="intersection")
       setnames(z, 2, "s.e.irrad")
       setSourceSpct(z)
-      return(z)
+      invisible(z)
     } else if (is.numeric(e2)) {
       z <- copy(e1)
       z[ , Tfr := Tfr * e2]
@@ -393,16 +393,16 @@ setChromaSpct <- function(x) {
       if (exists("A", z, inherits=FALSE)) {
         z[ , A := NULL]
       }
-      return(z)
+      invisible(z)
     } else {
-      return(NA)
+      invisible(NA)
     }
   } else if(is(e1, "reflector.spct")) {
     if (is(e2, "reflector.spct")) {
       z <- oper_spectra(e1$w.length, e2$w.length, e1$Rfr, e2$Rfr, bin.oper=`*`, trim="intersection")
       setnames(z, 2, "Rfr")
       setReflectorSpct(z)
-      return(z)
+      invisible(z)
     } else if(is(e2, "source.spct")) {
       if (!exists("s.e.irrad", e2, inherits=FALSE)) {
         q2e(e2, "replace")
@@ -410,28 +410,28 @@ setChromaSpct <- function(x) {
       z <- oper_spectra(e1$w.length, e2$w.length, e1$Rfr, e2$s.e.irrad, bin.oper=`*`, trim="intersection")
       setnames(z, 2, "s.e.irrad")
       setSourceSpct(z)
-      return(z)
+      invisible(z)
     } else if (is.numeric(e2)) {
       z <- copy(e1)
       z[ , Rfr := Rfr * e2]
       if (exists("Rpc", z, inherits=FALSE)) {
         z[ , Rpc := NULL]
       }
-      return(z)
+      invisible(z)
     } else {
-      return(NA)
+      invisible(NA)
     }
   } else if (is(e1, "response.spct")) {
     if (is(e2, "filter.spct")) {
       z <- oper_spectra(e1$w.length, e2$w.length, e1$response, e2$Tfr, bin.oper=`*`, trim="intersection")
       setnames(z, 2, "response")
       setResponseSpct(z)
-      return(z)
+      invisible(z)
     } else if (is(e2, "reflector.spct")) {
       z <- oper_spectra(e1$w.length, e2$w.length, e1$response, e2$Rfr, bin.oper=`*`, trim="intersection")
       setnames(z, 2, "response")
       setResponseSpct(z)
-      return(z)
+      invisible(z)
     }else if(is(e2, "source.spct")) {
       if (!exists("s.e.irrad", e2, inherits=FALSE)) {
         q2e(e2, "replace")
@@ -439,51 +439,51 @@ setChromaSpct <- function(x) {
       z <- oper_spectra(e1$w.length, e2$w.length, e1$response, e2$s.e.irrad, bin.oper=`*`, trim="intersection")
       setnames(z, 2, "response")
       setResponseSpct(z)
-      return(z)
+      invisible(z)
     } else if (is.numeric(e2)) {
       z <- copy(e1)
       z[ , response := response * e2]
-      return(z)
+      invisible(z)
     } else {
-      return(NA)
+      invisible(NA)
     }
   } else if (is(e1, "source.spct")) {
     if (is(e2, "source.spct")) {
       z <- oper_spectra(e1$w.length, e2$w.length, e1$s.e.irrad, e2$s.e.irrad, bin.oper=`*`, trim="intersection")
       setnames(z, 2, "s.e.irrad")
       setSourceSpct(z)
-      return(z)
+      invisible(z)
     } else if (is(e2, "filter.spct")) {
       z <- oper_spectra(e1$w.length, e2$w.length, e1$s.e.irrad, e2$Tfr, bin.oper=`*`, trim="intersection")
       setnames(z, 2, "s.e.irrad")
       setSourceSpct(z)
-      return(z)
+      invisible(z)
     } else if (is(e2, "reflector.spct")) {
       z <- oper_spectra(e1$w.length, e2$w.length, e1$s.e.irrad, e2$Rfr, bin.oper=`*`, trim="intersection")
       setnames(z, 2, "s.e.irrad")
       setSourceSpct(z)
-      return(z)
+      invisible(z)
     } else if (is(e2, "response.spct")) {
       z <- oper_spectra(e1$w.length, e2$w.length, e1$s.e.irrad, e2$response, bin.oper=`*`, trim="intersection")
       setnames(z, 2, "response")
       setResponseSpct(z)
-      return(z)
+      invisible(z)
     } else if (is.numeric(e2)) {
       z <- copy(e1)
       z[ , s.e.irrad := s.e.irrad * e2]
       if (exists("s.q.irrad", z, inherits=FALSE)) {
         z[ , s.q.irrad := NULL]
       }
-      return(z)
+      invisible(z)
     } else if (is(e2, "waveband")) {
       z <- copy(e1)
       z$s.e.irrad <- z$s.e.irrad * calc_multipliers(z$w.length, e2, unit.out="energy", unit.in="energy")
       if (exists("s.q.irrad", z, inherits=FALSE)) {
         z[ , s.q.irrad := NULL]
       }
-      return(z)
+      invisible(z)
     } else {
-      return(NA)
+      invisible(NA)
     }
   }
 }
@@ -506,46 +506,46 @@ setChromaSpct <- function(x) {
       x <- oper_spectra(e1$w.length, e2$w.length, e1$x, e2$s.e.irrad, bin.oper=`/`, trim="intersection")
       y <- oper_spectra(e1$w.length, e2$w.length, e1$y, e2$s.e.irrad, bin.oper=`/`, trim="intersection")
       z <- oper_spectra(e1$w.length, e2$w.length, e1$z, e2$s.e.irrad, bin.oper=`/`, trim="intersection")
-      out.spct <- data.frame(w.length=x$w.length, x=x[["s.irrad"]], y=y[["s.irrad"]], z=z[["s.irrad"]])
+      out.spct <- data.table(w.length=x$w.length, x=x[["s.irrad"]], y=y[["s.irrad"]], z=z[["s.irrad"]])
       setChromaSpct(out.spct)
-      return(out.spct)
+      invisible(out.spct)
     } else if (is(e2, "filter.spct")) {
       x <- oper_spectra(e1$w.length, e2$w.length, e1$x, e2$Tfr, bin.oper=`/`, trim="intersection")
       y <- oper_spectra(e1$w.length, e2$w.length, e1$y, e2$Tfr, bin.oper=`/`, trim="intersection")
       z <- oper_spectra(e1$w.length, e2$w.length, e1$z, e2$Tfr, bin.oper=`/`, trim="intersection")
-      out.spct <- data.frame(w.length=x$w.length, x=x[["s.irrad"]], y=y[["s.irrad"]], z=z[["s.irrad"]])
+      out.spct <- data.table(w.length=x$w.length, x=x[["s.irrad"]], y=y[["s.irrad"]], z=z[["s.irrad"]])
       setChromaSpct(out.spct)
-      return(out.spct)
+      invisible(out.spct)
     } else if (is(e2, "reflector.spct")) {
       x <- oper_spectra(e1$w.length, e2$w.length, e1$x, e2$Rfr, bin.oper=`/`, trim="intersection")
       y <- oper_spectra(e1$w.length, e2$w.length, e1$y, e2$Rfr, bin.oper=`/`, trim="intersection")
       z <- oper_spectra(e1$w.length, e2$w.length, e1$z, e2$Rfr, bin.oper=`/`, trim="intersection")
-      out.spct <- data.frame(w.length=x$w.length, x=x[["s.irrad"]], y=y[["s.irrad"]], z=z[["s.irrad"]])
+      out.spct <- data.table(w.length=x$w.length, x=x[["s.irrad"]], y=y[["s.irrad"]], z=z[["s.irrad"]])
       setChromaSpct(out.spct)
-      return(out.spct)
+      invisible(out.spct)
     } else if (is.numeric(e2)) {
       e3 <- copy(e1)
       if (length(e2) == 3 && names(e2) == c("x", "y", "z")) {
         e3[ , `:=`(x = x / e2["x"] , y = y / e2["y"], z = z  / e2["z"])]
-        return(e3)
+        invisible(e3)
       } else {
         e3[ , `:=`(x = x / e2 , y = y / e2, z = z  / e2)]
-        return(e3)
+        invisible(e3)
       }
     } else {
-      return(NA)
+      invisible(NA)
     }
   } else if (is(e1, "filter.spct")) {
     if (is(e2, "filter.spct")) {
       z <- oper_spectra(e1$w.length, e2$w.length, e1$Tfr, e2$Tfr, bin.oper=`/`, trim="intersection")
       setnames(z, 2, "Tfr")
       setFilterSpct(z)
-      return(z)
+      invisible(z)
     } else if(is(e2, "source.spct")) {
       z <- oper_spectra(e1$w.length, e2$w.length, e1$Tfr, e2$s.e.irrad, bin.oper=`/`, trim="intersection")
       setnames(z, 2, "s.e.irrad")
       setSourceSpct(z)
-      return(z)
+      invisible(z)
     } else if (is.numeric(e2)) {
       z <- copy(e1)
       z[ , Tfr := Tfr / e2]
@@ -555,16 +555,16 @@ setChromaSpct <- function(x) {
       if (exists("A", z, inherits=FALSE)) {
         z[ , A := NULL]
       }
-      return(z)
+      invisible(z)
     } else {
-      return(NA)
+      invisible(NA)
     }
   } else if(is(e1, "reflector.spct")) {
     if (is(e2, "reflector.spct")) {
       z <- oper_spectra(e1$w.length, e2$w.length, e1$Rfr, e2$Rfr, bin.oper=`/`, trim="intersection")
       setnames(z, 2, "Rfr")
       setReflectorSpct(z)
-      return(z)
+      invisible(z)
     } else if(is(e2, "source.spct")) {
       if (!exists("s.e.irrad", e2, inherits=FALSE)) {
         q2e(e2, "replace")
@@ -572,28 +572,28 @@ setChromaSpct <- function(x) {
       z <- oper_spectra(e1$w.length, e2$w.length, e1$Rfr, e2$s.e.irrad, bin.oper=`/`, trim="intersection")
       setnames(z, 2, "s.e.irrad")
       setSourceSpct(z)
-      return(z)
+      invisible(z)
     } else if (is.numeric(e2)) {
       z <- copy(e1)
       z[ , Rfr := Rfr / e2]
       if (exists("Rpc", z, inherits=FALSE)) {
         z[ , Rpc := NULL]
       }
-      return(z)
+      invisible(z)
     } else {
-      return(NA)
+      invisible(NA)
     }
   } else if (is(e1, "response.spct")) {
     if (is(e2, "filter.spct")) {
       z <- oper_spectra(e1$w.length, e2$w.length, e1$response, e2$Tfr, bin.oper=`/`, trim="intersection")
       setnames(z, 2, "response")
       setResponseSpct(z)
-      return(z)
+      invisible(z)
     } else if (is(e2, "reflector.spct")) {
       z <- oper_spectra(e1$w.length, e2$w.length, e1$response, e2$Rfr, bin.oper=`/`, trim="intersection")
       setnames(z, 2, "response")
       setResponseSpct(z)
-      return(z)
+      invisible(z)
     }else if(is(e2, "source.spct")) {
       if (!exists("s.e.irrad", e2, inherits=FALSE)) {
         q2e(e2, "replace")
@@ -601,51 +601,51 @@ setChromaSpct <- function(x) {
       z <- oper_spectra(e1$w.length, e2$w.length, e1$response, e2$s.e.irrad, bin.oper=`/`, trim="intersection")
       setnames(z, 2, "response")
       setResponseSpct(z)
-      return(z)
+      invisible(z)
     } else if (is.numeric(e2)) {
       z <- copy(e1)
       z[ , response := response / e2]
-      return(z)
+      invisible(z)
     } else {
-      return(NA)
+      invisible(NA)
     }
   } else if (is(e1, "source.spct")) {
     if (is(e2, "source.spct")) {
       z <- oper_spectra(e1$w.length, e2$w.length, e1$s.e.irrad, e2$s.e.irrad, bin.oper=`/`, trim="intersection")
       setnames(z, 2, "s.e.irrad")
       setSourceSpct(z)
-      return(z)
+      invisible(z)
     } else if (is(e2, "filter.spct")) {
       z <- oper_spectra(e1$w.length, e2$w.length, e1$s.e.irrad, e2$Tfr, bin.oper=`/`, trim="intersection")
       setnames(z, 2, "s.e.irrad")
       setSourceSpct(z)
-      return(z)
+      invisible(z)
     } else if (is(e2, "reflector.spct")) {
       z <- oper_spectra(e1$w.length, e2$w.length, e1$s.e.irrad, e2$Rfr, bin.oper=`/`, trim="intersection")
       setnames(z, 2, "s.e.irrad")
       setSourceSpct(z)
-      return(z)
+      invisible(z)
     } else if (is(e2, "response.spct")) {
       z <- oper_spectra(e1$w.length, e2$w.length, e1$s.e.irrad, e2$response, bin.oper=`/`, trim="intersection")
       setnames(z, 2, "response")
       setResponseSpct(z)
-      return(z)
+      invisible(z)
     } else if (is.numeric(e2)) {
       z <- copy(e1)
       z[ , s.e.irrad := s.e.irrad / e2]
       if (exists("s.q.irrad", z, inherits=FALSE)) {
         z[ , s.q.irrad := NULL]
       }
-      return(z)
+      invisible(z)
     } else if (is(e2, "waveband")) {
       z <- copy(e1)
       z$s.e.irrad <- z$s.e.irrad / calc_multipliers(z$w.length, e2, unit.out="energy", unit.in="energy")
       if (exists("s.q.irrad", z, inherits=FALSE)) {
         z[ , s.q.irrad := NULL]
       }
-      return(z)
+      invisible(z)
     } else {
-      return(NA)
+      invisible(NA)
     }
   }
 }
@@ -668,7 +668,7 @@ setChromaSpct <- function(x) {
       z <- oper_spectra(e1$w.length, e2$w.length, e1$Tfr, e2$Tfr, bin.oper=`+`, trim="intersection")
       setnames(z, 2, "Tfr")
       setFilterSpct(z)
-      return(z)
+      invisible(z)
     } else if (is.numeric(e2)) {
       z <- copy(e1)
       z[ , Tfr := Tfr + e2]
@@ -678,16 +678,16 @@ setChromaSpct <- function(x) {
       if (exists("A", z, inherits=FALSE)) {
         z[ , A := NULL]
       }
-      return(z)
+      invisible(z)
     } else {
-      return(NA)
+      invisible(NA)
     }
   } else if (is(e1, "filterr.spct")) {
     if (is(e2, "filter.spct")) {
       z <- oper_spectra(e1$w.length, e2$w.length, e1$Tfr, e2$Tfr, bin.oper=`+`, trim="intersection")
       setnames(z, 2, "Tfr")
       setFilterSpct(z)
-      return(z)
+      invisible(z)
     } else if (is.numeric(e2)) {
       z <- copy(e1)
       z[ , Tfr := Tfr + e2]
@@ -697,38 +697,38 @@ setChromaSpct <- function(x) {
       if (exists("A", z, inherits=FALSE)) {
         z[ , A := NULL]
       }
-      return(z)
+      invisible(z)
     } else {
-      return(NA)
+      invisible(NA)
     }
   } else if (is(e1, "reflector.spct")) {
     if (is(e2, "reflector.spct")) {
       z <- oper_spectra(e1$w.length, e2$w.length, e1$Rfr, e2$Rfr, bin.oper=`+`, trim="intersection")
       setnames(z, 2, "Rfr")
       setReflectorSpct(z)
-      return(z)
+      invisible(z)
     } else if (is.numeric(e2)) {
       z <- copy(e1)
       z[ , Rfr := Rfr + e2]
       if (exists("Rpc", z, inherits=FALSE)) {
         z[ , Rpc := NULL]
       }
-      return(z)
+      invisible(z)
     } else {
-      return(NA)
+      invisible(NA)
     }
   } else if (is(e1, "response.spct")) {
     if(is(e2, "response.spct")) {
       z <- oper_spectra(e1$w.length, e2$w.length, e1$response, e2$response, bin.oper=`+`, trim="intersection")
       setnames(z, 2, "response")
       setResponseSpct(z)
-      return(z)
+      invisible(z)
     } else if (is.numeric(e2)) {
       z <- copy(e1)
       z[ , response := response + e2]
-      return(z)
+      invisible(z)
     } else {
-      return(NA)
+      invisible(NA)
     }
   } else if (is(e1, "source.spct")) {
     if (!exists("s.e.irrad", e1, inherits=FALSE)) {
@@ -742,16 +742,16 @@ setChromaSpct <- function(x) {
       z <- oper_spectra(e1$w.length, e2$w.length, e1$s.e.irrad, e2$s.e.irrad, bin.oper=`+`, trim="intersection")
       setnames(z, 2, "s.e.irrad")
       setSourceSpct(z)
-      return(z)
+      invisible(z)
     } else if (is.numeric(e2)) {
       z <- copy(e1)
       z[ , s.e.irrad := s.e.irrad + e2]
       if (exists("s.q.irrad", z, inherits=FALSE)) {
         z[ , s.q.irrad := NULL]
       }
-      return(z)
+      invisible(z)
     }  else {
-      return(NA)
+      invisible(NA)
     }
   }
 }
@@ -774,7 +774,7 @@ setChromaSpct <- function(x) {
       z <- oper_spectra(e1$w.length, e2$w.length, e1$Tfr, e2$Tfr, bin.oper=`-`, trim="intersection")
       setnames(z, 2, "Tfr")
       setFilterSpct(z)
-      return(z)
+      invisible(z)
     } else if (is.numeric(e2)) {
       z <- copy(e1)
       z[ , Tfr := Tfr - e2]
@@ -784,16 +784,16 @@ setChromaSpct <- function(x) {
       if (exists("A", z, inherits=FALSE)) {
         z[ , A := NULL]
       }
-      return(z)
+      invisible(z)
     } else {
-      return(NA)
+      invisible(NA)
     }
   } else if (is(e1, "filterr.spct")) {
     if (is(e2, "filter.spct")) {
       z <- oper_spectra(e1$w.length, e2$w.length, e1$Tfr, e2$Tfr, bin.oper=`-`, trim="intersection")
       setnames(z, 2, "Tfr")
       setFilterSpct(z)
-      return(z)
+      invisible(z)
     } else if (is.numeric(e2)) {
       z <- copy(e1)
       z[ , Tfr := Tfr - e2]
@@ -803,38 +803,38 @@ setChromaSpct <- function(x) {
       if (exists("A", z, inherits=FALSE)) {
         z[ , A := NULL]
       }
-      return(z)
+      invisible(z)
     } else {
-      return(NA)
+      invisible(NA)
     }
   } else if (is(e1, "reflector.spct")) {
     if (is(e2, "reflector.spct")) {
       z <- oper_spectra(e1$w.length, e2$w.length, e1$Rfr, e2$Rfr, bin.oper=`-`, trim="intersection")
       setnames(z, 2, "Rfr")
       setReflectorSpct(z)
-      return(z)
+      invisible(z)
     } else if (is.numeric(e2)) {
       z <- copy(e1)
       z[ , Rfr := Rfr - e2]
       if (exists("Rpc", z, inherits=FALSE)) {
         z[ , Rpc := NULL]
       }
-      return(z)
+      invisible(z)
     } else {
-      return(NA)
+      invisible(NA)
     }
   } else if (is(e1, "response.spct")) {
     if(is(e2, "response.spct")) {
       z <- oper_spectra(e1$w.length, e2$w.length, e1$response, e2$response, bin.oper=`-`, trim="intersection")
       setnames(z, 2, "response")
       setResponseSpct(z)
-      return(z)
+      invisible(z)
     } else if (is.numeric(e2)) {
       z <- copy(e1)
       z[ , response := response - e2]
-      return(z)
+      invisible(z)
     } else {
-      return(NA)
+      invisible(NA)
     }
   } else if (is(e1, "source.spct")) {
     if (!exists("s.e.irrad", e1, inherits=FALSE)) {
@@ -847,16 +847,16 @@ setChromaSpct <- function(x) {
       z <- oper_spectra(e1$w.length, e2$w.length, e1$s.e.irrad, e2$s.e.irrad, bin.oper=`-`, trim="intersection")
       setnames(z, 2, "s.e.irrad")
       setSourceSpct(z)
-      return(z)
+      invisible(z)
     } else if (is.numeric(e2)) {
       z <- copy(e1)
       z[ , s.e.irrad := s.e.irrad - e2]
       if (exists("s.q.irrad", z, inherits=FALSE)) {
         z[ , s.q.irrad := NULL]
       }
-      return(z)
+      invisible(z)
     }  else {
-      return(NA)
+      invisible(NA)
     }
   }
 }
@@ -883,23 +883,23 @@ setChromaSpct <- function(x) {
     if (exists("A", z, inherits=FALSE)) {
       z[ , A := NULL]
     }
-    return(z)
+    invisible(z)
   } else if(is(e1, "reflector.spct") && is.numeric(e2)) {
     z <- copy(e1)
     z$Rfr <- z$Rfr^e2
     if (exists("Rpc", z, inherits=FALSE)) {
       z[ , Tpc := NULL]
     }
-    return(z)
+    invisible(z)
   } else if(is(e1, "source.spct") && is.numeric(e2)) {
     z <- copy(e1)
     z[ , s.e.irrad := s.e.irrad^e2]
     if (exists("s.q.irrad", z, inherits=FALSE)) {
       z[ , s.q.irrad := NULL]
     }
-    return(z)
+    invisible(z)
   } else {
-    return(NA)
+    invisible(NA)
   }
 }
 
@@ -921,7 +921,7 @@ setChromaSpct <- function(x) {
     if (exists("A", z, inherits=FALSE)) {
       z[ , A := NULL]
     }
-    return(z)
+    invisible(z)
   } else if(is(x, "reflector.spct")) {
     z <- copy(x)
     z$Rfr <- log(z$Rfr, base)
@@ -929,16 +929,16 @@ setChromaSpct <- function(x) {
       z[ , Tpc := NULL]
     }
     z$Rpc <- z$Rfr * 100
-    return(z)
+    invisible(z)
   } else if(is(x, "source.spct")) {
     z <- copy(x)
     z$s.e.irrad <- log(z$s.e.irrad, base)
     if (exists("s.q.irrad", z, inherits=FALSE)) {
       z[ , s.q.irrad := NULL]
     }
-    return(z)
+    invisible(z)
   } else {
-    return(NA)
+    invisible(NA)
   }
 }
 
@@ -959,23 +959,23 @@ setChromaSpct <- function(x) {
     if (exists("A", z, inherits=FALSE)) {
       z[ , A := NULL]
     }
-    return(z)
+    invisible(z)
   } else if(is(x, "reflector.spct")) {
     z <- copy(x)
     z[ , Rfr := log10(Rfr)]
     if (exists("Rpc", z, inherits=FALSE)) {
       z[ , Tpc := NULL]
     }
-    return(z)
+    invisible(z)
   } else if(is(x, "source.spct")) {
     z <- copy(x)
     z[, s.e.irrad := log10(s.e.irrad)]
     if (exists("s.q.irrad", z, inherits=FALSE)) {
       z[ , s.q.irrad := NULL]
     }
-    return(z)
+    invisible(z)
   } else {
-    return(NA)
+    invisible(NA)
   }
 }
 
@@ -996,23 +996,23 @@ setChromaSpct <- function(x) {
     if (exists("A", z, inherits=FALSE)) {
       z[ , A := NULL]
     }
-    return(z)
+    invisible(z)
   } else if(is(x, "reflector.spct")) {
     z <- copy(x)
     z[ , Rfr := sqrt(Rfr)]
     if (exists("Rpc", z, inherits=FALSE)) {
       z[ , Tpc := NULL]
     }
-    return(z)
+    invisible(z)
   } else if(is(x, "source.spct")) {
     z <- copy(x)
     z[ , s.e.irrad := sqrt(s.e.irrad)]
     if (exists("s.q.irrad", z, inherits=FALSE)) {
       z[ , s.q.irrad := NULL]
     }
-    return(z)
+    invisible(z)
   } else {
-    return(NA)
+    invisible(NA)
   }
 }
 
@@ -1033,23 +1033,23 @@ setChromaSpct <- function(x) {
     if (exists("A", z, inherits=FALSE)) {
       z[ , A := NULL]
     }
-    return(z)
+    invisible(z)
   } else   if(is(x, "reflector.spct")) {
     z <- copy(x)
     z[ , Rfr <- exp(Rfr)]
     if (exists("Rpc", z, inherits=FALSE)) {
       z[ , Tpc := NULL]
     }
-    return(z)
+    invisible(z)
   } else if(is(x, "source.spct")) {
     z <- copy(x)
     z[ , s.e.irrad := exp(s.e.irrad)]
     if (exists("s.q.irrad", z, inherits=FALSE)) {
       z[ , s.q.irrad := NULL]
     }
-    return(z)
+    invisible(z)
   } else {
-    return(NA)
+    invisible(NA)
   }
 }
 
@@ -1202,7 +1202,7 @@ A2T.filter.spct <- function(x, action="add", byref=FALSE) {
     name <- as.character(name)
     assign(name, x, parent.frame(), inherits = TRUE)
   }
-  return(x)
+  invisible(x)
 }
 
 
@@ -1260,7 +1260,7 @@ T2A.filter.spct <- function(x, action="add", byref=FALSE) {
     name <- as.character(name)
     assign(name, x, parent.frame(), inherits = TRUE)
   }
-  return(x)
+  invisible(x)
 }
 
 
@@ -1320,7 +1320,7 @@ e2q.source.spct <- function(x, action="add", byref=FALSE) {
     name <- as.character(name)
     assign(name, x, parent.frame(), inherits = TRUE)
   }
-  return(x)
+  invisible(x)
 }
 
 # photon to energy ---------------------------------------------------------------------
@@ -1377,7 +1377,7 @@ q2e.source.spct <- function(x, action="add", byref=FALSE) {
     name <- as.character(name)
     assign(name, x, parent.frame(), inherits = TRUE)
   }
-  return(x)
+  invisible(x)
 }
 
 

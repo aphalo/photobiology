@@ -86,9 +86,9 @@ calc_source_output <- function(w.length.out,
   # we check unit.in and and convert the output spectrum accordingly
 
   if (unit.in == "energy") {
-    out.data <- data.frame(w.length = w.length.out, s.e.irrad = s.irrad.out, s.q.irrad = as_quantum_mol(w.length.out, s.irrad.out))
+    out.data <- data.table(w.length = w.length.out, s.e.irrad = s.irrad.out, s.q.irrad = as_quantum_mol(w.length.out, s.irrad.out))
     } else if (unit.in == "photon") {
-    out.data <- data.frame(w.length = w.length.out, s.e.irrad = as_energy(w.length.out, s.irrad.out), s.q.irrad = s.irrad.out)
+    out.data <- data.table(w.length = w.length.out, s.e.irrad = as_energy(w.length.out, s.irrad.out), s.q.irrad = s.irrad.out)
     } else {
     warning("Bad argument for unit.in: ", unit.in)
     return(NA)

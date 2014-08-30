@@ -1,3 +1,9 @@
+photobiology 0.3.13
+===================
+
+Replaced several 'return' statements with 'invisible'.
+Replaced all remaining data.frame() calls with data.table().
+
 photobiology 0.3.12
 ===================
 

@@ -45,7 +45,7 @@ tag.generic.spct <- function(x,
     x[ , wl.color := w_length2rgb(x$w.length)]
     tag.data <- list(wl.color=TRUE)
     setattr(x, "spct.tags", tag.data)
-    invisible(return(x))
+    invisible(x)
   }
   if (!is.null(w.band) && is(w.band, "waveband")) {
     # if the argument is a single w.band, we enclose it in a list
@@ -135,7 +135,7 @@ tag.generic.spct <- function(x,
     name <- as.character(name)
     assign(name, x, parent.frame(), inherits = TRUE)
   }
-  invisible(return(x))
+  invisible(x)
 }
 
 #' Specialization for source.spct
@@ -169,7 +169,7 @@ tag.source.spct <- function(x,
     name <- as.character(name)
     assign(name, x, parent.frame(), inherits = TRUE)
   }
-  invisible(return(x))
+  invisible(x)
 }
 
 #' Make spectrum from a list of wavebands
@@ -194,12 +194,12 @@ wb2spct <- function(w.band) {
     }
   }
   if (is.null(w.length) || length(w.length) < 2) {
-    return(NA)
+    invisible(NA)
   }
   w.length <- unique(sort(w.length))
   new.spct <- data.table(w.length = w.length, s.e.irrad = 1)
   setGenSpct(new.spct)
-  invisible(return(new.spct))
+  invisible(new.spct)
 }
 
 #' Make a tagged generic spectrum from a list of wavebands
@@ -225,7 +225,7 @@ wb2tagged_spct <- function(w.band,
   new.spct <- wb2spct(w.band)
   tag(new.spct, w.band, use.hinges, short.names, byref=TRUE)
   new.spct[ , y := 0]
-  invisible(return(new.spct))
+  invisible(new.spct)
 }
 
 #' Make spectrum from a list of wavebands
@@ -286,5 +286,5 @@ wb2rect_spct <- function(w.band,
                    wb.list=w.band)
   setattr(new.spct, "spct.tags", tag.data)
 
-  invisible(return(new.spct))
+  invisible(new.spct)
 }

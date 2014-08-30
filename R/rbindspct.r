@@ -104,7 +104,7 @@ rbindspct <- function(l, use.names = fill, fill = TRUE) {
   } else if (l.class == "generic.spct") {
     setGenericSpct(ans)
   }
-  return(ans)
+  invisible(ans)
 }
 
 rbindlist <- function(l, use.names = fill, fill = FALSE) {

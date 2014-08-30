@@ -283,6 +283,7 @@ min(sun.spct)
 max(sun.spct)
 midpoint(sun.spct)
 spread(sun.spct)
+stepsize(sun.spct)
 @
 
 Method definitions for \texttt{summary} and corresponding \texttt{print} methods are available for spectral objects. In the case of \texttt{source.spct} objects the \texttt{time.unit} attribute makes it possible to print the summary with using the correct units.
