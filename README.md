@@ -1,4 +1,4 @@
-Package __photobiology__ is a set of tools to be used together with other packages in the __r4photobiology__ suite of classes, methods, functions and data designed to facilitate photobiology related data analysis and simualtion.
+Package __photobiology__ is a set of tools to be used together with other packages in the __r4photobiology__ suite of classes, methods, functions and data designed to facilitate photobiology related data analysis and simulation.
 
 We have attempted to keep a good balance between fast computation, easy to maintain code, and a clear interface. The package has in addition to user-friendly methods and objects, also functions optimized for raw performance.
 
