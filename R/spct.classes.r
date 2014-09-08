@@ -94,15 +94,21 @@ check.reflector.spct <- function(x, byref=TRUE) {
 #' @param byref logical indicating if new object will be created by reference or by copy of x
 #' @export check.response.spct
 check.response.spct <- function(x, byref=TRUE) {
-  if (exists("response", x, mode = "numeric", inherits=FALSE)) {
+  if (exists("s.e.response", x, mode = "numeric", inherits=FALSE)) {
+    invisible(x)
+  } else if (exists("response", x, mode = "numeric", inherits=FALSE)) {
+    x[ , s.e.response := response]
+    x[ , response := NULL]
     invisible(x)
   } else if (exists("signal", x, mode = "numeric", inherits=FALSE)) {
-    x[ , response := signal]
+    x[ , s.e.response := signal]
     x[ , signal := NULL]
     invisible(x)
+  } else if (exists("s.q.response", x, mode = "numeric", inherits=FALSE)) {
+    invisible(q2e(x, action="add", byref=byref))
   } else {
     warning("No response data found in filter.spct")
-    x[ , response := NA]
+    x[ , s.e.response := NA]
     invisible(x)
   }
 }
@@ -423,26 +429,26 @@ setChromaSpct <- function(x) {
     }
   } else if (is(e1, "response.spct")) {
     if (is(e2, "filter.spct")) {
-      z <- oper_spectra(e1$w.length, e2$w.length, e1$response, e2$Tfr, bin.oper=`*`, trim="intersection")
-      setnames(z, 2, "response")
+      z <- oper_spectra(e1$w.length, e2$w.length, e1$s.e.response, e2$Tfr, bin.oper=`*`, trim="intersection")
+      setnames(z, 2, "s.e.response")
       setResponseSpct(z)
       invisible(z)
     } else if (is(e2, "reflector.spct")) {
-      z <- oper_spectra(e1$w.length, e2$w.length, e1$response, e2$Rfr, bin.oper=`*`, trim="intersection")
-      setnames(z, 2, "response")
+      z <- oper_spectra(e1$w.length, e2$w.length, e1$s.e.response, e2$Rfr, bin.oper=`*`, trim="intersection")
+      setnames(z, 2, "s.e.response")
       setResponseSpct(z)
       invisible(z)
     }else if(is(e2, "source.spct")) {
       if (!exists("s.e.irrad", e2, inherits=FALSE)) {
         q2e(e2, "replace")
       }
-      z <- oper_spectra(e1$w.length, e2$w.length, e1$response, e2$s.e.irrad, bin.oper=`*`, trim="intersection")
-      setnames(z, 2, "response")
+      z <- oper_spectra(e1$w.length, e2$w.length, e1$s.e.response, e2$s.e.irrad, bin.oper=`*`, trim="intersection")
+      setnames(z, 2, "s.e.response")
       setResponseSpct(z)
       invisible(z)
     } else if (is.numeric(e2)) {
       z <- copy(e1)
-      z[ , response := response * e2]
+      z[ , s.e.response := s.e.response * e2]
       invisible(z)
     } else {
       invisible(NA)
@@ -464,8 +470,8 @@ setChromaSpct <- function(x) {
       setSourceSpct(z)
       invisible(z)
     } else if (is(e2, "response.spct")) {
-      z <- oper_spectra(e1$w.length, e2$w.length, e1$s.e.irrad, e2$response, bin.oper=`*`, trim="intersection")
-      setnames(z, 2, "response")
+      z <- oper_spectra(e1$w.length, e2$w.length, e1$s.e.irrad, e2$s.e.response, bin.oper=`*`, trim="intersection")
+      setnames(z, 2, "s.e.response")
       setResponseSpct(z)
       invisible(z)
     } else if (is.numeric(e2)) {
@@ -583,28 +589,28 @@ setChromaSpct <- function(x) {
     } else {
       invisible(NA)
     }
-  } else if (is(e1, "response.spct")) {
+  } else if (is(e1, "responses.spct")) {
     if (is(e2, "filter.spct")) {
-      z <- oper_spectra(e1$w.length, e2$w.length, e1$response, e2$Tfr, bin.oper=`/`, trim="intersection")
-      setnames(z, 2, "response")
+      z <- oper_spectra(e1$w.length, e2$w.length, e1$s.e.response, e2$Tfr, bin.oper=`/`, trim="intersection")
+      setnames(z, 2, "s.e.response")
       setResponseSpct(z)
       invisible(z)
     } else if (is(e2, "reflector.spct")) {
-      z <- oper_spectra(e1$w.length, e2$w.length, e1$response, e2$Rfr, bin.oper=`/`, trim="intersection")
-      setnames(z, 2, "response")
+      z <- oper_spectra(e1$w.length, e2$w.length, e1$s.e.response, e2$Rfr, bin.oper=`/`, trim="intersection")
+      setnames(z, 2, "s.e.response")
       setResponseSpct(z)
       invisible(z)
     }else if(is(e2, "source.spct")) {
       if (!exists("s.e.irrad", e2, inherits=FALSE)) {
         q2e(e2, "replace")
       }
-      z <- oper_spectra(e1$w.length, e2$w.length, e1$response, e2$s.e.irrad, bin.oper=`/`, trim="intersection")
-      setnames(z, 2, "response")
+      z <- oper_spectra(e1$w.length, e2$w.length, e1$s.e.response, e2$s.e.irrad, bin.oper=`/`, trim="intersection")
+      setnames(z, 2, "s.e.response")
       setResponseSpct(z)
       invisible(z)
     } else if (is.numeric(e2)) {
       z <- copy(e1)
-      z[ , response := response / e2]
+      z[ , s.e.response := s.e.response / e2]
       invisible(z)
     } else {
       invisible(NA)
@@ -626,8 +632,8 @@ setChromaSpct <- function(x) {
       setSourceSpct(z)
       invisible(z)
     } else if (is(e2, "response.spct")) {
-      z <- oper_spectra(e1$w.length, e2$w.length, e1$s.e.irrad, e2$response, bin.oper=`/`, trim="intersection")
-      setnames(z, 2, "response")
+      z <- oper_spectra(e1$w.length, e2$w.length, e1$s.e.irrad, e2$s.e.response, bin.oper=`/`, trim="intersection")
+      setnames(z, 2, "s.e.response")
       setResponseSpct(z)
       invisible(z)
     } else if (is.numeric(e2)) {
@@ -719,13 +725,13 @@ setChromaSpct <- function(x) {
     }
   } else if (is(e1, "response.spct")) {
     if(is(e2, "response.spct")) {
-      z <- oper_spectra(e1$w.length, e2$w.length, e1$response, e2$response, bin.oper=`+`, trim="intersection")
-      setnames(z, 2, "response")
+      z <- oper_spectra(e1$w.length, e2$w.length, e1$s.e.response, e2$s.e.response, bin.oper=`+`, trim="intersection")
+      setnames(z, 2, "s.e.response")
       setResponseSpct(z)
       invisible(z)
     } else if (is.numeric(e2)) {
       z <- copy(e1)
-      z[ , response := response + e2]
+      z[ , s.e.response := s.e.response + e2]
       invisible(z)
     } else {
       invisible(NA)
@@ -825,13 +831,13 @@ setChromaSpct <- function(x) {
     }
   } else if (is(e1, "response.spct")) {
     if(is(e2, "response.spct")) {
-      z <- oper_spectra(e1$w.length, e2$w.length, e1$response, e2$response, bin.oper=`-`, trim="intersection")
-      setnames(z, 2, "response")
+      z <- oper_spectra(e1$w.length, e2$w.length, e1$s.e.response, e2$s.e.response, bin.oper=`-`, trim="intersection")
+      setnames(z, 2, "s.e.response")
       setResponseSpct(z)
       invisible(z)
     } else if (is.numeric(e2)) {
       z <- copy(e1)
-      z[ , response := response - e2]
+      z[ , s.e.response := s.e.response - e2]
       invisible(z)
     } else {
       invisible(NA)
@@ -1311,10 +1317,42 @@ e2q.source.spct <- function(x, action="add", byref=FALSE) {
   } else if (exists("s.e.irrad", x, inherits=FALSE)) {
     x[ , s.q.irrad := s.e.irrad * e2qmol_multipliers(w.length)]
   } else {
-    x[ , s.q.irrad := rep(NA, length(w.length))]
+    x[ , s.q.irrad := NA]
   }
   if (action=="replace" && exists("s.e.irrad", x, inherits=FALSE)) {
     x[ , s.e.irrad := NULL]
+  }
+  if (byref && is.name(name)) {  # this is a temporary safe net
+    name <- as.character(name)
+    assign(name, x, parent.frame(), inherits = TRUE)
+  }
+  invisible(x)
+}
+
+#' "response.spct" function
+#'
+#' Function that coverts response to spectral energy irradiance into response to spectral photon irradiance (molar).
+#'
+#' @param x a "response.spct"  object
+#' @param action a character string
+#' @param byref logical indicating if new object will be created by reference or by copy of x
+#' @export e2q.response.spct
+#'
+e2q.response.spct <- function(x, action="add", byref=FALSE) {
+  if (byref) {
+    name <- substitute(x)
+  } else {
+    x <- copy(x)
+  }
+  if (exists("s.q.response", x, inherits=FALSE)) {
+    NULL
+  } else if (exists("s.e.response", x, inherits=FALSE)) {
+    x[ , s.q.response := s.e.response / e2qmol_multipliers(w.length)]
+  } else {
+    x[ , s.q.response := NA]
+  }
+  if (action=="replace" && exists("s.e.response", x, inherits=FALSE)) {
+    x[ , s.e.response := NULL]
   }
   if (byref && is.name(name)) {  # this is a temporary safe net
     name <- as.character(name)
@@ -1348,7 +1386,7 @@ q2e.default <- function(x, action="add", byref=FALSE) {
   return(NA)
 }
 
-#' "generic.spct" function
+#' "source.spct" function
 #'
 #' Function that coverts spectral photon irradiance (molar) into spectral energy irradiance.
 #'
@@ -1368,7 +1406,7 @@ q2e.source.spct <- function(x, action="add", byref=FALSE) {
   } else if (exists("s.q.irrad", x, inherits=FALSE)) {
     x[ , s.e.irrad := s.q.irrad / e2qmol_multipliers(w.length)]
   } else {
-    x[ , s.e.irrad := rep(NA, length(w.length))]
+    x[ , s.e.irrad := NA]
   }
   if (action=="replace" && exists("s.q.irrad", x, inherits=FALSE)) {
     x[ , s.q.irrad := NULL]
@@ -1380,6 +1418,37 @@ q2e.source.spct <- function(x, action="add", byref=FALSE) {
   invisible(x)
 }
 
+#' "response.spct" function
+#'
+#' Function that coverts response to spectral photon irradiance (molar) into response to spectral energy irradiance.
+#'
+#' @param x a "response.spct"  object
+#' @param action a character string
+#' @param byref logical indicating if new object will be created by reference or by copy of x
+#' @export q2e.response.spct
+#'
+q2e.response.spct <- function(x, action="add", byref=FALSE) {
+  if (byref) {
+    name <- substitute(x)
+  } else {
+    x <- copy(x)
+  }
+  if (exists("s.e.response", x, inherits=FALSE)) {
+    NULL
+  } else if (exists("s.q.response", x, inherits=FALSE)) {
+    x[ , s.e.response := s.q.response * e2qmol_multipliers(w.length)]
+  } else {
+    x[ , s.e.response := NA]
+  }
+  if (action=="replace" && exists("s.q.response", x, inherits=FALSE)) {
+    x[ , s.q.irrad := NULL]
+  }
+  if (byref && is.name(name)) {  # this is a temporary safe net
+    name <- as.character(name)
+    assign(name, x, parent.frame(), inherits = TRUE)
+  }
+  invisible(x)
+}
 
 # summary -----------------------------------------------------------------
 
@@ -1586,8 +1655,8 @@ summary.response.spct <- function(object, digits = 4L, ...) {
     min.w.length = min(object),
     midpoint.w.length = midpoint(object),
     w.length.step = stepsize(object)[1],
-    max.response = max(object$response),
-    min.response = min(object$response),
+    max.response = max(object$s.e.response),
+    min.response = min(object$s.e.response),
     total.response = as.numeric(integrate_spct(object)),
     mean.response = as.numeric(integrate_spct(object) / spread(object))
   )

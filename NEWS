@@ -1,3 +1,8 @@
+photobiology 0.3.14
+===================
+
+The required component of response.spct objects was renamed from 'response' to 's.e.response'. 'response' is also accepted and renamed into 's.e.response'. If 's.q.response' is present it is accepted and amintained. New methods e2q() and q2e() for response.spct class.
+
 photobiology 0.3.13
 ===================
 
