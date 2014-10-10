@@ -66,6 +66,32 @@ check.filter.spct <- function(x, byref=TRUE) {
   }
 }
 
+#' Specialization for absorptance.spct
+#'
+#' Check that an R object contains the expected data members.
+#'
+#' @param x an R object
+#' @param byref logical indicating if new object will be created by reference or by copy of x
+#' @export check.filter.spct
+check.absorptance.spct <- function(x, byref=TRUE) {
+  if (exists("Abst", x, mode = "numeric", inherits=FALSE)) {
+    invisible(x)
+  } else if (exists("Tfr", x, mode = "numeric", inherits=FALSE)) {
+    x[ , Abst := 1.0 - Tfr]
+    invisible(x)
+  } else if (exists("Tpc", x, mode = "numeric", inherits=FALSE)) {
+    x[ , Abst := 1.0 - Tpc / 100]
+    invisible(x)
+  } else if (exists("A", x, mode = "numeric", inherits=FALSE)) {
+    x[ , Abst := 1.0 - A2T(A)]
+    invisible(x)
+  } else {
+    warning("No transmittance or absorbance data found in filter.spct")
+    x[ , Abst := NA]
+    invisible(x)
+  }
+}
+
 #' Specialization for reflector.spct
 #'
 #' Check that a reflector.spct object contains the expected data members.
@@ -204,6 +230,35 @@ setFilterSpct <- function(x) {
   }
   if (!is(x, "filter.spct")) {
     setattr(x, "class", c("filter.spct", class(x)))
+  }
+  x <- check(x)
+  setkey(x, w.length)
+  if (is.name(name)) {
+    name <- as.character(name)
+    assign(name, x, parent.frame(), inherits = TRUE)
+  }
+  invisible(x)
+}
+
+#' set class of a data.frame or data.table or generic.spct object to "absorptance.spct"
+#'
+#' Sets the class attibute of a data.frame or data.table object to "filter.spct" an object to store spectra.
+#' If the object is a data.frame is is also made a data.table in the process.
+#'
+#' @param x a data.frame or data.table
+#' @export
+#' @exportClass filter.spct
+#'
+setAbsorptanceSpct <- function(x) {
+  name <- substitute(x)
+  if (!is.data.table(x)) {
+    setDT(x)
+  }
+  if (!is(x, "generic.spct")) {
+    setGenSpct(x)
+  }
+  if (!is(x, "absorptance.spct")) {
+    setattr(x, "class", c("absorptance.spct", class(x)))
   }
   x <- check(x)
   setkey(x, w.length)
@@ -360,6 +415,13 @@ setChromaSpct <- function(x) {
       out.spct <- data.table(w.length=x$w.length, x=x[["s.irrad"]], y=y[["s.irrad"]], z=z[["s.irrad"]])
       setChromaSpct(out.spct)
       invisible(out.spct)
+    } else if (is(e2, "absorptance.spct")) {
+      x <- oper_spectra(e1$w.length, e2$w.length, e1$x, e2$Abst, bin.oper=`*`, trim="intersection")
+      y <- oper_spectra(e1$w.length, e2$w.length, e1$y, e2$Abst, bin.oper=`*`, trim="intersection")
+      z <- oper_spectra(e1$w.length, e2$w.length, e1$z, e2$Abst, bin.oper=`*`, trim="intersection")
+      out.spct <- data.table(w.length=x$w.length, x=x[["s.irrad"]], y=y[["s.irrad"]], z=z[["s.irrad"]])
+      setChromaSpct(out.spct)
+      invisible(out.spct)
     } else if (is(e2, "reflector.spct")) {
       x <- oper_spectra(e1$w.length, e2$w.length, e1$x, e2$Rfr, bin.oper=`*`, trim="intersection")
       y <- oper_spectra(e1$w.length, e2$w.length, e1$y, e2$Rfr, bin.oper=`*`, trim="intersection")
@@ -399,6 +461,24 @@ setChromaSpct <- function(x) {
       if (exists("A", z, inherits=FALSE)) {
         z[ , A := NULL]
       }
+      invisible(z)
+    } else {
+      invisible(NA)
+    }
+  } else if (is(e1, "absorptance.spct")) {
+    if (is(e2, "absorptance.spct")) {
+      z <- oper_spectra(e1$w.length, e2$w.length, e1$Abst, e2$Abst, bin.oper=`*`, trim="intersection")
+      setnames(z, 2, "Abst")
+      setAbsorptanceSpct(z)
+      invisible(z)
+    } else if(is(e2, "source.spct")) {
+      z <- oper_spectra(e1$w.length, e2$w.length, e1$Abst, e2$s.e.irrad, bin.oper=`*`, trim="intersection")
+      setnames(z, 2, "s.e.irrad")
+      setSourceSpct(z)
+      invisible(z)
+    } else if (is.numeric(e2)) {
+      z <- copy(e1)
+      z[ , Abst := Abst * e2]
       invisible(z)
     } else {
       invisible(NA)
@@ -461,6 +541,11 @@ setChromaSpct <- function(x) {
       invisible(z)
     } else if (is(e2, "filter.spct")) {
       z <- oper_spectra(e1$w.length, e2$w.length, e1$s.e.irrad, e2$Tfr, bin.oper=`*`, trim="intersection")
+      setnames(z, 2, "s.e.irrad")
+      setSourceSpct(z)
+      invisible(z)
+    } else if (is(e2, "absorptance.spct")) {
+      z <- oper_spectra(e1$w.length, e2$w.length, e1$s.e.irrad, e2$Abst, bin.oper=`*`, trim="intersection")
       setnames(z, 2, "s.e.irrad")
       setSourceSpct(z)
       invisible(z)
@@ -565,6 +650,24 @@ setChromaSpct <- function(x) {
     } else {
       invisible(NA)
     }
+  } else if (is(e1, "absorptance.spct")) {
+    if (is(e2, "absorptance.spct")) {
+      z <- oper_spectra(e1$w.length, e2$w.length, e1$Abst, e2$Abst, bin.oper=`/`, trim="intersection")
+      setnames(z, 2, "Abst")
+      setAbsorptanceSpct(z)
+      invisible(z)
+    } else if(is(e2, "source.spct")) {
+      z <- oper_spectra(e1$w.length, e2$w.length, e1$Abst, e2$s.e.irrad, bin.oper=`/`, trim="intersection")
+      setnames(z, 2, "s.e.irrad")
+      setSourceSpct(z)
+      invisible(z)
+    } else if (is.numeric(e2)) {
+      z <- copy(e1)
+      z[ , Abst := Abst / e2]
+      invisible(z)
+    } else {
+      invisible(NA)
+    }
   } else if(is(e1, "reflector.spct")) {
     if (is(e2, "reflector.spct")) {
       z <- oper_spectra(e1$w.length, e2$w.length, e1$Rfr, e2$Rfr, bin.oper=`/`, trim="intersection")
@@ -625,6 +728,11 @@ setChromaSpct <- function(x) {
       z <- oper_spectra(e1$w.length, e2$w.length, e1$s.e.irrad, e2$Tfr, bin.oper=`/`, trim="intersection")
       setnames(z, 2, "s.e.irrad")
       setSourceSpct(z)
+      invisible(z)
+    } else if (is(e2, "absorptance.spct")) {
+      z <- oper_spectra(e1$w.length, e2$w.length, e1$s.e.irrad, e2$Abst, bin.oper=`/`, trim="intersection")
+      setnames(z, 2, "response")
+      setResponseSpct(z)
       invisible(z)
     } else if (is(e2, "reflector.spct")) {
       z <- oper_spectra(e1$w.length, e2$w.length, e1$s.e.irrad, e2$Rfr, bin.oper=`/`, trim="intersection")

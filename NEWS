@@ -1,3 +1,8 @@
+photobiology 0.3.15
+===================
+
+Added new class absorptance.spct, and * and / operators for it.
+
 photobiology 0.3.14
 ===================
 
