@@ -1,3 +1,13 @@
+photobiology 0.3.16
+===================
+
+Editted wb2xx functions. Added other required variables and set their values to zero, so that the generic.spct objects returned by the waveband to spectra functions can be safely converted to any of the specialized spct spectral objects. This makes then labelling of all types of spectral plots equaly easy.
+
+photobiology 0.3.15
+===================
+
+Never released, changes reversed.
+
 photobiology 0.3.14
 ===================
 

@@ -197,7 +197,7 @@ wb2spct <- function(w.band) {
     invisible(NA)
   }
   w.length <- unique(sort(w.length))
-  new.spct <- data.table(w.length = w.length, s.e.irrad = 1)
+  new.spct <- data.table(w.length = w.length, s.e.irrad = 0, s.q.irrad = 0, Tfr = 0, Rfl = 0, s.e.response = 0)
   setGenSpct(new.spct)
   invisible(new.spct)
 }
@@ -270,7 +270,8 @@ wb2rect_spct <- function(w.band,
     wbs.wl.high[i] <- max(wb)
     wbs.rgb[i] <- color(wb)[1]
   }
-  new.spct <- data.table(w.length = wbs.wl.mid, s.e.irrad = 1,
+  new.spct <- data.table(w.length = wbs.wl.mid,
+                         s.e.irrad = 0, s.q.irrad = 0, Tfr = 0, Rfl = 0, s.e.response = 0,
                          wl.color = w_length2rgb(wbs.wl.mid),
                          wb.f = factor(wbs.name, levels=wbs.name),
                          wl.high = wbs.wl.high, wl.low = wbs.wl.low,
