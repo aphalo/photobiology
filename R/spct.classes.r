@@ -20,7 +20,7 @@ check.default <- function(x, byref=FALSE) {
   return(x)
 }
 
-#' Default for generic function
+#' Specialization for private.spct
 #'
 #' Check that an R object contains the expected data members.
 #'
@@ -31,6 +31,7 @@ check.private.spct <- function(x, byref=TRUE) {
         exists("numbers", x, mode = "numeric", inherits=FALSE)) {
     invisible(x)
   }
+}
 
 #' Specialization for generic.spct
 #'
@@ -212,6 +213,7 @@ setPrivateSpct <- function(x) {
   setattr(x, "class", c("private.spct", class(x)))
   x <- check(x)
   setkey(x, w.length)
+  x <- copy(x[,list(w.length,numbers)])
   if (is.name(name)) {
     name <- as.character(name)
     assign(name, x, parent.frame(), inherits = TRUE)
@@ -365,6 +367,147 @@ setChromaSpct <- function(x) {
     assign(name, x, parent.frame(), inherits = TRUE)
   }
   invisible(x)
+}
+
+
+# is function for spct classes --------------------------------------------
+
+#' Query class of a generic spectrum
+#'
+#' Functions to check if an object is a generic spectrum, or coerce it if possible.
+#'
+#' @usage is.generic.spct(x)
+#'
+#' @param x any R object
+#'
+#' @return is.generic.spct returns TRUE if its argument is a generic spectrum (that is, has "generic.spct" amongst its classes) and FALSE otherwise.
+#'
+#' @export
+#'
+is.generic.spct <- function(x) inherits(x, "generic.spct")
+
+#' Query class of a private spectrum
+#'
+#' Functions to check if an object is a private spectrum, or coerce it if possible.
+#'
+#' @usage is.private.spct(x)
+#'
+#' @param x any R object
+#'
+#' @return is.private.spct returns TRUE if its argument is a private spectrum (that is, has "private.spct" amongst its classes) and FALSE otherwise.
+#'
+#' @export
+#'
+is.private.spct <- function(x) inherits(x, "private.spct")
+
+#' Query class of a source spectrum
+#'
+#' Functions to check if an object is a source spectrum, or coerce it if possible.
+#'
+#' @usage is.source.spct(x)
+#'
+#' @param x any R object
+#'
+#' @return is.source.spct returns TRUE if its argument is a source spectrum (that is, has "source.spct" amongst its classes) and FALSE otherwise.
+#'
+#' @export
+#'
+is.source.spct <- function(x) inherits(x, "source.spct")
+
+#' Query class of a filter spectrum
+#'
+#' Functions to check if an object is a filter spectrum, or coerce it if possible.
+#'
+#' @usage is.filter.spct(x)
+#'
+#' @param x any R object
+#'
+#' @return is.filter.spct returns TRUE if its argument is a filter spectrum (that is, has "filter.spct" amongst its classes) and FALSE otherwise.
+#'
+#' @export
+#'
+is.filter.spct <- function(x) inherits(x, "filter.spct")
+
+#' Query class of a reflector spectrum
+#'
+#' Functions to check if an object is a reflector spectrum, or coerce it if possible.
+#'
+#' @usage is.reflector.spct(x)
+#'
+#' @param x any R object
+#'
+#' @return is.reflector.spct returns TRUE if its argument is a reflector spectrum (that is, has "reflector.spct" amongst its classes) and FALSE otherwise.
+#'
+#' @export
+#'
+is.reflector.spct <- function(x) inherits(x, "reflector.spct")
+
+#' Query class of a response spectrum
+#'
+#' Functions to check if an object is a response spectrum, or coerce it if possible.
+#'
+#' @usage is.response.spct(x)
+#'
+#' @param x any R object
+#'
+#' @return is.response.spct returns TRUE if its argument is a response spectrum (that is, has "response.spct" amongst its classes) and FALSE otherwise.
+#'
+#' @export
+#'
+is.response.spct <- function(x) inherits(x, "response.spct")
+
+#' Query class of a chroma spectrum
+#'
+#' Functions to check if an object is a chroma spectrum, or coerce it if possible.
+#'
+#' @usage is.chroma.spct(x)
+#'
+#' @param x any R object
+#'
+#' @return is.chroma.spct returns TRUE if its argument is a chroma spectrum (that is, has "chroma.spct" amongst its classes) and FALSE otherwise.
+#'
+#' @export
+#'
+is.chroma.spct <- function(x) inherits(x, "chroma.spct")
+
+#' Query if it is an spectrum
+#'
+#' Functions to check if an object is a generic spectrum, or coerce it if possible.
+#'
+#' @usage is.any.spct(x)
+#'
+#' @param x any R object
+#'
+#' @return is.any.spct returns TRUE if its argument is a an spectrum and FALSE otherwise.
+#'
+#' @export
+#'
+is.any.spct <- function(x) {
+  spct.classes <- c("generic.spct", "private.spct",
+                    "filter.spct", "reflector.spct",
+                    "source.spct",
+                    "response.spct", "chroma.spct")
+  inherits(x, spct.classes)
+}
+
+#' Query which is the class of an spectrum
+#'
+#' Functions to check if an object is a generic spectrum, or coerce it if possible.
+#'
+#' @usage class.spct(x)
+#'
+#' @param x any R object
+#'
+#' @return class.spct returns a vector containing all matching xxxx.spct classes.
+#'
+#' @export
+#'
+class.spct <- function(x) {
+  spct.classes <- c("generic.spct", "private.spct",
+                    "filter.spct", "reflector.spct",
+                    "source.spct",
+                    "response.spct", "chroma.spct")
+  spct.classes[inherits(x, spct.classes, TRUE)]
 }
 
 
