@@ -20,6 +20,18 @@ check.default <- function(x, byref=FALSE) {
   return(x)
 }
 
+#' Default for generic function
+#'
+#' Check that an R object contains the expected data members.
+#'
+#' @param x a private.spct object
+#' @param byref logical indicating if new object will be created by reference or by copy of x
+check.private.spct <- function(x, byref=TRUE) {
+  if (exists("w.length", x, mode = "numeric", inherits=FALSE) &&
+        exists("numbers", x, mode = "numeric", inherits=FALSE)) {
+    invisible(x)
+  }
+
 #' Specialization for generic.spct
 #'
 #' Check that a generic.spct object contains the expected data members.
@@ -184,6 +196,29 @@ setGenSpct <- function(x) {
 }
 
 setGenericSpct <- setGenSpct
+
+#' set class of a data.frame or data.table object to "private.spct"
+#'
+#' Sets the class attibute of a data.frame or data.table object to "generic.spct" an object to store spectra.
+#' If the object is a data.frame is is made a data.table in the process.
+#'
+#' @param x a data.frame or data.table
+#'
+setPrivateSpct <- function(x) {
+  name <- substitute(x)
+  if (!is.data.table(x)) {
+    setDT(x)
+  }
+  setattr(x, "class", c("private.spct", class(x)))
+  x <- check(x)
+  setkey(x, w.length)
+  if (is.name(name)) {
+    name <- as.character(name)
+    assign(name, x, parent.frame(), inherits = TRUE)
+  }
+  invisible(x)
+}
+
 
 #' set class of a data.frame or data.table or generic.spct object to "filter.spct"
 #'

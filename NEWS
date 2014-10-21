@@ -1,3 +1,9 @@
+photobiology 0.4.00
+===================
+
+Started new development branch.
+Add as.xx for spct object functions to easy use of operators. I should probably also rewrite the operator functions as there is so much messy logic in current code. Use S4 objects? to handle operations with any order of operators? Probably yes...
+
 photobiology 0.3.16
 ===================
 
