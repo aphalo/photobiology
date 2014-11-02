@@ -1,10 +1,20 @@
+TODO
+====
+
+Add as.xx functions for spct objects to easy use of operators. I should probably also rewrite the operator functions as there is so much messy logic in current code.
+
+photobiology 0.4.01
+===================
+
+Fixed a troublesome bug caused by a couple of missing exports. MayaCalc was broken because of this.
+
+Moved functions D2_spectrum() and FEL_spectrum() to this package from photobiologyLamps
+
 photobiology 0.4.00
 ===================
 
 Started new development branch.
 Added is.xxx.spct() functions for all classes defined and is.any.spct() and class.spct() functions to query class of spectral objects.
-
-Next add as.xx functions for spct objects to easy use of operators. I should probably also rewrite the operator functions as there is so much messy logic in current code.
 
 photobiology 0.3.16
 ===================

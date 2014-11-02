@@ -12,8 +12,8 @@
 #' \tabular{ll}{
 #' Package: \tab photobiology\cr
 #' Type: \tab Package\cr
-#' Version: \tab 0.4.00\cr
-#' Date: \tab 2014-10-24\cr
+#' Version: \tab 0.4.01\cr
+#' Date: \tab 2014-11-03\cr
 #' License: \tab GPL (>= 2.0)\cr
 #' }
 #' This package is the core of a suite of packages for photobiological
@@ -33,7 +33,7 @@
 #'
 #' @note This package is still under development, but is by now quite stable.
 #'
-#' @import lubridate
+#' @import lubridate methods
 #'
 #' @importFrom Rcpp evalCpp
 #' @importFrom data.table data.table tables setkey setkeyv key "key<-" haskey CJ SJ copy
@@ -49,6 +49,8 @@
 #' @importClassesFrom data.table data.table
 #'
 #' @exportClass data.table
+#' @export "["
+#' @export "[<-"
 #' @export data.table tables setkey setkeyv key "key<-" haskey CJ SJ copy
 #' @export as.data.table is.data.table test.data.table last like "%like%" between "%between%"
 #' @export truelength alloc.col ":="
@@ -59,7 +61,6 @@
 #' @export fread
 #' @export address
 #' @export .SD .N .I .GRP .BY
-#' @export chmatch "%chin%" chorder chgroup
 #'
 #' @examples
 #' data(sun.data)
