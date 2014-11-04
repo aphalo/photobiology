@@ -1,10 +1,9 @@
 library(photobiology)
-library(photobiologyUV)
-library(photobiologyVIS)
+library(photobiologyWavebands)
 library(microbenchmark)
 
-data(sun.data)
-attach(sun.data)
+data(sun.spct)
+attach(sun.spct)
 
 test.irradiance <- function(w.band=new_waveband(400,700)) {
   microbenchmark(irradiance(w.length, s.e.irrad, w.band,"photon", check.spectrum=TRUE, use.cached.mult=FALSE),
@@ -13,13 +12,8 @@ test.irradiance <- function(w.band=new_waveband(400,700)) {
                  irradiance(w.length, s.e.irrad, w.band,"photon", check.spectrum=TRUE, use.cached.mult=FALSE, use.hinges=TRUE),
                  irradiance(w.length, s.e.irrad, w.band,"photon", check.spectrum=FALSE, use.cached.mult=FALSE, use.hinges=TRUE),
                  irradiance(w.length, s.e.irrad, w.band,"photon", check.spectrum=FALSE, use.cached.mult=TRUE, use.hinges=TRUE),
-                 irradiance(w.length, s.e.irrad, w.band,"photon", check.spectrum=FALSE, use.cached.mult=TRUE, use.hinges=FALSE),
-                 irradiance(w.length, s.e.irrad, w.band,"photon", check.spectrum=TRUE, use.cached.mult=FALSE, use.cpp.code=FALSE),
-                 irradiance(w.length, s.e.irrad, w.band,"photon", check.spectrum=TRUE, use.cached.mult=TRUE, use.cpp.code=FALSE),
-                 irradiance(w.length, s.e.irrad, w.band,"photon", check.spectrum=FALSE, use.cached.mult=TRUE, use.cpp.code=FALSE),
-                 irradiance(w.length, s.e.irrad, w.band,"photon", check.spectrum=FALSE, use.cached.mult=TRUE, use.cpp.code=FALSE, use.hinges=TRUE),
-                 irradiance(w.length, s.e.irrad, w.band,"photon", check.spectrum=FALSE, use.cached.mult=TRUE, use.cpp.code=FALSE, use.hinges=FALSE),
-                 irradiance(w.length, s.e.irrad, w.band,"photon", check.spectrum=TRUE, use.cached.mult=FALSE, use.cpp.code=FALSE, use.hinges=TRUE))
+                 irradiance(w.length, s.e.irrad, w.band,"photon", check.spectrum=FALSE, use.cached.mult=TRUE, use.hinges=FALSE)
+)
 }
 
 test.irradiance()
@@ -46,7 +40,7 @@ energy_irradiance(w.length, s.e.irrad, GEN.G(), use.hinges=FALSE)
 
 Rprof("irradiance.out")
 for (i in 1:10000){
-irradiance(w.length, s.e.irrad, new_waveband(400,700),"photon", check.spectrum=FALSE, use.cached.mult=TRUE, use.cpp.code=TRUE)
+irradiance(w.length, s.e.irrad, new_waveband(400,700),"photon", check.spectrum=FALSE, use.cached.mult=TRUE)
 }
 Rprof(NULL)
 summaryRprof("irradiance.out")
@@ -55,7 +49,7 @@ unlink("irradiance.out")
 
 Rprof("irradiance.out")
 for (i in 1:10000){
-  irradiance(w.length, s.e.irrad, new_waveband(400,700, wb.name="my.test"),"photon", check.spectrum=FALSE, use.cached.mult=FALSE, use.cpp.code=TRUE)
+  irradiance(w.length, s.e.irrad, new_waveband(400,700, wb.name="my.test"),"photon", check.spectrum=FALSE, use.cached.mult=FALSE)
 }
 Rprof(NULL)
 summaryRprof("irradiance.out")
@@ -64,7 +58,7 @@ unlink("irradiance.out")
 
 Rprof("irradiance.out")
 for (i in 1:10000){
-  irradiance(w.length, s.e.irrad, new_waveband(400,700, hinges=numeric(0)),"photon", check.spectrum=FALSE, use.cached.mult=TRUE, use.cpp.code=TRUE)
+  irradiance(w.length, s.e.irrad, new_waveband(400,700, hinges=numeric(0)),"photon", check.spectrum=FALSE, use.cached.mult=TRUE)
 }
 Rprof(NULL)
 summaryRprof("irradiance.out")
@@ -73,7 +67,7 @@ unlink("irradiance.out")
 
 Rprof("irradiance.out")
 for (i in 1:10000){
-  irradiance(w.length, s.e.irrad, DNA.N(), unit.out="energy", check.spectrum=TRUE, use.cached.mult=TRUE, use.cpp.code=TRUE, use.hinges=TRUE)
+  irradiance(w.length, s.e.irrad, DNA.N(), unit.out="energy", check.spectrum=TRUE, use.cached.mult=TRUE, use.hinges=TRUE)
 }
 Rprof(NULL)
 summaryRprof("irradiance.out")
