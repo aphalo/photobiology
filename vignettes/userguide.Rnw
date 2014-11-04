@@ -156,16 +156,23 @@ by 10, and each value in the vector of spectral irradiances is divided by 1000.
 It is very important to make sure that the wavelengths are in nanometres as this is what
 all functions expect. If wavelength values are in the wrong units, the action-spectra weights and quantum conversions will be wrongly calculated, and the values returned by most functions completely wrong, without warning.
 
-\subsection{Setting and querying the classe of a spectrum object}
+\subsection{Setting and querying the class of a spectrum object}
 
 \texttt{generic.spct} objects can be created from data tables and data frames simply by setting them as such. However, a column called \texttt{w.length} must be present and contain wavelength values expressed in nm. Functions with names of the form \texttt{is.\_\_\_\_.spct} are defined for all classes of spectra and can take as arguments any R object. In addition function \texttt{is.any.spct} can use to query if an R objetc inherits from any of the classes of spectra defined in this package. Finally function \texttt{class.spct} works similarly to R's \texttt{class} functions but returns only a vector with only the names of spectra classes.
+
+With create a data.table object \texttt{a.spct}, and query its class.
 
 <<>>=
 a.spct <- data.table(w.length = 300:305, y = rep(1,6))
 class(a.spct)
 class.spct(a.spct)
 is.any.spct(a.spct)
-a.spct <- setGenSpct(a.spct)
+@
+
+We convert \texttt{a.spct} into a \texttt{generic.spct} object, and query its class.
+
+<<>>=
+setGenSpct(a.spct)
 class(a.spct)
 class.spct(a.spct)
 is.any.spct(a.spct)
@@ -248,6 +255,22 @@ class(sun.spct)
 sun.spct
 @
 
+We can set an spectrum object to a defferent type.
+
+<<>>=
+i.spct <- copy(sun.spct)
+setGenericSpct(i.spct)
+class(i.spct)
+@
+
+We can also make a `generic.spct' copy of any spectrum object.
+
+<<>>=
+j.spct <- as.generic.spct(sun.spct)
+class(j.spct)
+class(sun.spct)
+@
+
 \subsection{Conversions}
 
 The functions \texttt{e2q} and \texttt{q2e} can be used on source spectra to convert spectral energy irradiance into spectral photon irradiance and vice versa. The first argument should be a spectrum, and the second optional argument sets the action with \texttt{"add"} and \texttt{"replace"} as possible values. In the second case the whole spectrum object is copied, while in the first case a column is added but the unchanged columns are references to the original ones, rather than copies.
@@ -306,7 +329,7 @@ summary(sun.daily.spct)
 
 \section{Using operators with spectra}
 
-The basic math operators have definitions for spectra. It is possible to sum, subtract, multiply and divide spectra. These operators can be used even if the spectral data is on different arbitrary sets of wavelengths.
+The basic math operators have definitions for spectra. It is possible to sum, subtract, multiply and divide spectra. These operators can be used even if the spectral data is on different arbitrary sets of wavelengths. Operators by default use values expressed in energy units.
 
 <<>>=
 sun.spct / sun.spct

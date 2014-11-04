@@ -188,6 +188,21 @@ check.chroma.spct <- function(x, byref=TRUE) {
 
 # set class ---------------------------------------------------------------
 
+#' Remove derived .spct class attributes from a spectrum object
+#'
+#' Removes from the class attibute of a xxxx.spct atributes leaving only "generic.spct" if it is present.
+#'
+#' @param x an R object
+#' @export
+#'
+rmDerivedSpct <- function(x) {
+  name <- substitute(x)
+  derivedclasses <- c("source.spct", "filter.spct", "reflector.spct", "response.spct",
+                      "chroma.spct")
+  allclasses <- class(x)
+  setattr(x, "class", allclasses[!allclasses %in% derivedclasses])
+  invisible(x)
+}
 
 #' set class of a data.frame or data.table object to "generic.spct"
 #'
@@ -201,6 +216,7 @@ check.chroma.spct <- function(x, byref=TRUE) {
 #'
 setGenSpct <- function(x) {
   name <- substitute(x)
+  rmDerivedSpct(x)
   if (!is.data.table(x)) {
     setDT(x)
   }
@@ -227,8 +243,12 @@ setGenericSpct <- setGenSpct
 #'
 setPrivateSpct <- function(x) {
   name <- substitute(x)
+  rmDerivedSpct(x)
   if (!is.data.table(x)) {
     setDT(x)
+  }
+  if (!is.generic.spct(x)) {
+    setGenSpct(x)
   }
   if (!is.private.spct(x)) {
     setattr(x, "class", c("private.spct", class(x)))
@@ -255,6 +275,7 @@ setPrivateSpct <- function(x) {
 #'
 setFilterSpct <- function(x) {
   name <- substitute(x)
+  rmDerivedSpct(x)
   if (!is.data.table(x)) {
     setDT(x)
   }
@@ -284,6 +305,7 @@ setFilterSpct <- function(x) {
 #'
 setReflectorSpct <- function(x) {
   name <- substitute(x)
+  rmDerivedSpct(x)
   if (!is.data.table(x)) {
     setDT(x)
   }
@@ -313,6 +335,7 @@ setReflectorSpct <- function(x) {
 #'
 setResponseSpct <- function(x) {
   name <- substitute(x)
+  rmDerivedSpct(x)
   if (!is.data.table(x)) {
     setDT(x)
   }
@@ -343,6 +366,7 @@ setResponseSpct <- function(x) {
 #'
 setSourceSpct <- function(x, time.unit="second") {
   name <- substitute(x)
+  rmDerivedSpct(x)
   if (!is.data.table(x)) {
     setDT(x)
   }
@@ -373,6 +397,7 @@ setSourceSpct <- function(x, time.unit="second") {
 #'
 setChromaSpct <- function(x) {
   name <- substitute(x)
+  rmDerivedSpct(x)
   if (!is.data.table(x)) {
     setDT(x)
   }
@@ -392,7 +417,7 @@ setChromaSpct <- function(x) {
 }
 
 
-# is function for spct classes --------------------------------------------
+# is functions for spct classes --------------------------------------------
 
 #' Query class of a generic spectrum
 #'
@@ -525,3 +550,38 @@ class.spct <- function(x) {
   spct.cls[inherits(x, spct.cls, TRUE)]
 }
 
+# as functions for spct classes --------------------------------------------
+
+#' Return a copy of an R object with its class set to generic.spct
+#'
+#' Function that returns a converted copy of a spectrum object.
+#'
+#' @usage as.generic.spct(x)
+#'
+#' @param x any R object
+#'
+#' @return as.generic.spct returns a "generic.spct" if possible.
+#'
+#' @export
+#'
+as.generic.spct <- function(x) {
+  y <- copy(x)
+  setGenericSpct(y)
+}
+
+#' Return a copy of an R object with its class set to private.spct
+#'
+#' Function that returns a converted copy of a spectrum object.
+#'
+#' @usage as.private.spct(x)
+#'
+#' @param x any R object
+#'
+#' @return as.private.spct returns a "private.spct" if possible.
+#'
+#' @export
+#'
+as.private.spct <- function(x) {
+  y <- copy(x)
+  setPrivateSpct(y)
+}

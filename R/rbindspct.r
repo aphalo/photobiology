@@ -79,8 +79,8 @@
 #' @aliases rbindspc rbindlist
 #'
 
-rbindspct <- function(l, use.names = fill, fill = TRUE) {
-  # rbindlist strips attributes and sets class to data.table
+rbindspct <- function(l, use.names = TRUE, fill = TRUE) {
+  # original rbindlist from data.table strips attributes and sets class to data.table
   l.class <- c( "source.spct", "filter.spct", "reflector.spct", "response.spct", "chroma.spct",
                 "generic.spct", "data.table", "data.frame")
   for (spct in l) {
