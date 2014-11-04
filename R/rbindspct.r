@@ -3,7 +3,7 @@
 #' Same as \code{rbindlist} from package data.table but preserves class of spectral objects. Has different defaults
 #' for use names and fill.
 #'
-#' @usage rbindspct(l, use.names=fill, fill=TRUE)
+#' @usage rbindspct(l, use.names=TRUE, fill=TRUE)
 #'
 #' @usage rbindlist(l, use.names=fill, fill=FALSE)
 #'
