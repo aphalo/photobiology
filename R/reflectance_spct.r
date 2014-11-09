@@ -28,7 +28,7 @@ reflectance_spct <-
     # if the waveband is undefined then use all data
     if (is.null(w.band)){
       #      w.band <- new_waveband(min(w.length), max(w.length))
-      w.band <- new_waveband(min(spct$w.length), max(spct$w.length) + 1e-4)
+      w.band <- new_waveband(min(spct), max(spct) + 1e-4)
       # we need to add a small number as the test is "<"
       # this affects signifcantly the result only when no hinges are used
     }
@@ -49,7 +49,7 @@ reflectance_spct <-
     # a lot in such cases
     if (is.null(use.hinges)) {
       length.wl <- length(spct$w.length)
-      use.hinges <- (spct$w.length[length.wl] - spct$w.length[1]) / length.wl > 0.7 #
+      use.hinges <- ((max(spct) - min(spct)) / length.wl) > 0.7
     }
 
     # we collect all hinges and insert them in one go
