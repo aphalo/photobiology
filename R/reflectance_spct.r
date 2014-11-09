@@ -4,6 +4,7 @@
 #' waveband and a reflectance spectrum.
 #'
 #' @usage reflectance_spct(spct, w.band=NULL, pc.out=FALSE, use.hinges=NULL)
+#' @usage reflectance(spct, w.band=NULL, pc.out=FALSE, use.hinges=NULL)
 #'
 #' @param spct an object of class "generic.spct"
 #' @param w.band list of waveband definitions created with new_waveband()
@@ -12,8 +13,10 @@
 #'
 #' @return a single numeric value expressed either as a fraction of one or a percentage
 #' @keywords manip misc
-#' @export
+#' @export reflectance_spct reflectance.reflector.spct
+#' @aliases reflectance_spct reflectance.reflector.spct
 #' @examples
+#' # library(photobiologyReflectors)
 #' # reflectance_spct(glass_refl.spct, new_waveband(400,700), pc.out=TRUE)
 #' # reflectance_spct(glass_refl.spct, new_waveband(400,700), pc.out=FALSE)
 #'
@@ -74,8 +77,8 @@ reflectance_spct <-
     # expressed in the needed scale, we add the needed columns and as
     # spectra are passed by reference they propagate to the argument
     if (pc.out) {
-      if (with(spct, !exists("Rpc"))) {
-        if (with(spct, exists("Rfr"))) {
+      if (!exists("Rpc", spct, inherits=FALSE)) {
+        if (exists("Rfr", spct, inherits=FALSE)) {
           spct[ , Rpc := Rfr * 100]
         } else {
           warning("No light source data found.")
@@ -83,8 +86,8 @@ reflectance_spct <-
         }
       }
     } else {
-      if (with(spct, exists("Rfr"))) {
-        if (with(spct, exists("Rpc"))) {
+      if (!exists("Rfr", spct, inherits=FALSE)) {
+        if (exists("Rpc", spct, inherits=FALSE)) {
           spct[ , Rfr := Rpc / 100]
         } else {
           warning("No light source data found.")
@@ -121,3 +124,42 @@ reflectance_spct <-
     names(reflectance) <- paste(names(reflectance), wb_name)
     return(reflectance)
   }
+
+#' Generic function
+#'
+#' Calculate average reflectance.
+#'
+#' @param spct an object of class "generic.spct"
+#' @param w.band list of waveband definitions created with new_waveband()
+#' @param pc.out a logical indicating whether result should be a percentage or a fraction of one
+#' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
+#'
+#' @export reflectance
+#'
+reflectance <- function(spct, w.band, pc.out, use.hinges) UseMethod("reflectance")
+
+#' Default for generic function
+#'
+#' Calculate average reflectance.
+#'
+#' @param spct an object of class "generic.spct"
+#' @param w.band list of waveband definitions created with new_waveband()
+#' @param pc.out a logical indicating whether result should be a percentage or a fraction of one
+#' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
+#' @export reflectance.default
+#'
+reflectance.default <- function(spct, w.band, pc.out, use.hinges) {
+  return(NA)
+}
+
+#' Specialization for reflector.spct
+#'
+#' Calculate average reflectance.
+#'
+#' @param spct an object of class "reflector.spct"
+#' @param w.band list of waveband definitions created with new_waveband()
+#' @param pc.out a logical indicating whether result should be a percentage or a fraction of one
+#' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
+#' @export reflectance.reflector.spct
+#'
+reflectance.reflector.spct <- reflectance_spct

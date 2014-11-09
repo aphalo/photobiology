@@ -3,6 +3,11 @@ TODO
 
 I should probably also rewrite the operator functions as there is so much messy logic in current code.
 
+photobiology 0.4.3
+===================
+
+Fixed bug in functions transmittance_spct() and reflectance_spct(), and added aliases transmittance() and reflectance().
+
 photobiology 0.4.2
 ===================
 

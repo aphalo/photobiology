@@ -579,6 +579,12 @@ eq_ratio(sun.spct, PAR())
 eq_ratio(sun.spct, list(Blue(), Green(), Red()))
 @
 
+\subsection{Calculating average transmittance and reflectance}
+
+<<>>=
+transmittance(polyester.new.spct, list(UVB(), UVB(), PAR()))
+@
+
 \subsection{Tagging observations in a spectrum}
 
 The function \texttt{tag} can be used to tag different parts of a spectrum according to wavebands.

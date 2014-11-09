@@ -4,6 +4,7 @@
 #' waveband of a transmittance spectrum.
 #'
 #' @usage transmittance_spct(spct, w.band=NULL, pc.out=FALSE, use.hinges=NULL)
+#' @usage transmittance(spct, w.band=NULL, pc.out=FALSE, use.hinges=NULL)
 #'
 #' @param spct an object of class "generic.spct"
 #' @param w.band list of waveband definitions created with new_waveband()
@@ -12,10 +13,12 @@
 #'
 #' @return a single numeric value with no change in scale factor: [W m-2 nm-1] -> [mol s-1 m-2]
 #' @keywords manip misc
-#' @export
+#' @export transmittance_spct transmittance.filter.spct
+#' @aliases transmittance_spct transmittance.filter.spct
 #' @examples
-#' # transmittance_spct(glass_trans.spc, new_waveband(400,700), pc.out=TRUE)
-#' # transmittance_spct(glass_trans.spc, new_waveband(400,700), pc.out=FALSE)
+#' library(photobiologyFilters)
+#' transmittance(polyester.new.spct, new_waveband(400,700), pc.out=TRUE)
+#' transmittance(polyester.new.spct, new_waveband(400,700), pc.out=FALSE)
 #'
 #' @note The last parameter controls speed optimization. The defaults should be suitable
 #' in mosts cases. Only the range of wavelengths in the wavebands is used and all BSWFs are ignored.
@@ -24,8 +27,7 @@ transmittance_spct <-
   function(spct, w.band=NULL, pc.out=FALSE, use.hinges=NULL){
     # if the waveband is undefined then use all data
     if (is.null(w.band)){
-      #      w.band <- new_waveband(min(w.length), max(w.length))
-      w.band <- new_waveband(min(spct$w.length), max(spct$w.length) + 1e-4)
+      w.band <- new_waveband(min(spct), max(spct) + 1e-4)
       # we need to add a small number as the test is "<"
       # this affects signifcantly the result only when no hinges are used
     }
@@ -74,24 +76,24 @@ transmittance_spct <-
     # expressed in the needed scale, we add the needed columns and as
     # spectra are passed by reference they propagate to the argument
     if (pc.out) {
-      if (with(spct, !exists("Tpc"))) {
-        if (with(spct, exists("Tfr"))) {
+      if (!exists("Tpc", spct, inherits=FALSE)) {
+        if (exists("Tfr", spct, inherits=FALSE)) {
           spct[ , Tpc := Tfr * 100]
-        } else if (with(spct, exists("A"))) {
+        } else if (exists("A", spct, inherits=FALSE)) {
           A2T(spct)
         } else {
-          warning("No light source data found.")
+          warning("No transmittance source data found.")
           return(NA)
         }
       }
     } else {
-      if (with(spct, exists("Tfr"))) {
+      if (!exists("Tfr", spct, inherits=FALSE)) {
         if (with(spct, exists("Tpc"))) {
           spct[ , Tfr := Tpc / 100]
-        } else if (with(spct, exists("A"))) {
+        } else if (exists("A", spct, inherits=FALSE)) {
           A2T(spct)
         } else {
-          warning("No light source data found.")
+          warning("No transmittance source data found.")
           return(NA)
         }
       }
@@ -125,3 +127,42 @@ transmittance_spct <-
     names(transmittance) <- paste(names(transmittance), wb_name)
     return(transmittance)
   }
+
+#' Generic function
+#'
+#' Calculate average transmittance.
+#'
+#' @param spct an object of class "generic.spct"
+#' @param w.band list of waveband definitions created with new_waveband()
+#' @param pc.out a logical indicating whether result should be a percentage or a fraction of one
+#' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
+#'
+#' @export transmittance
+#'
+transmittance <- function(spct, w.band, pc.out, use.hinges) UseMethod("transmittance")
+
+#' Default for generic function
+#'
+#' Calculate average transmittance.
+#'
+#' @param spct an object of class "generic.spct"
+#' @param w.band list of waveband definitions created with new_waveband()
+#' @param pc.out a logical indicating whether result should be a percentage or a fraction of one
+#' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
+#' @export transmittance.default
+#'
+transmittance.default <- function(spct, w.band, pc.out, use.hinges) {
+  return(NA)
+}
+
+#' Specialization for filter.spct
+#'
+#' Calculate average transmittance.
+#'
+#' @param spct an object of class "filter.spct"
+#' @param w.band list of waveband definitions created with new_waveband()
+#' @param pc.out a logical indicating whether result should be a percentage or a fraction of one
+#' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
+#' @export transmittance.filter.spct
+#'
+transmittance.filter.spct <- transmittance_spct
