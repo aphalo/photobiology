@@ -13,8 +13,7 @@
 #'
 #' @return a single numeric value expressed either as a fraction of one or a percentage
 #' @keywords manip misc
-#' @export reflectance_spct reflectance.reflector.spct
-#' @aliases reflectance_spct reflectance.reflector.spct
+#' @export reflectance_spct
 #' @examples
 #' # library(photobiologyReflectors)
 #' # reflectance_spct(glass_refl.spct, new_waveband(400,700), pc.out=TRUE)

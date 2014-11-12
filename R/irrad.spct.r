@@ -179,7 +179,7 @@ irrad_spct <- irrad
 #' that the wavelengths are the same in each call, as the only test done is for the length of the
 #' \code{w.length} vector.
 #'
-#' @aliases e_irrad e_irrad_spect
+#' @aliases e_irrad e_irrad_spct
 
 e_irrad <-
   function(spct, w.band=NULL, use.cached.mult=FALSE, use.hinges=NULL){

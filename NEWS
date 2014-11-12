@@ -3,6 +3,13 @@ TODO
 
 I should probably also rewrite the operator functions as there is so much messy logic in current code.
 
+photobiology 0.4.4
+===================
+
+Added the remaining as.xxxx.spct() functions.
+Added object creation functions source.spct(), filter.spct() and reflector.spct().
+Cleaned code to avoid some warnings.
+
 photobiology 0.4.3
 ===================
 

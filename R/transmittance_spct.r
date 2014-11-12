@@ -14,7 +14,6 @@
 #' @return a single numeric value with no change in scale factor: [W m-2 nm-1] -> [mol s-1 m-2]
 #' @keywords manip misc
 #' @export transmittance_spct transmittance.filter.spct
-#' @aliases transmittance_spct transmittance.filter.spct
 #' @examples
 #' library(photobiologyFilters)
 #' transmittance(polyester.new.spct, new_waveband(400,700), pc.out=TRUE)

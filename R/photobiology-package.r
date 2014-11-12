@@ -12,8 +12,8 @@
 #' \tabular{ll}{
 #' Package: \tab photobiology\cr
 #' Type: \tab Package\cr
-#' Version: \tab 0.4.3\cr
-#' Date: \tab 2014-11-09\cr
+#' Version: \tab 0.4.4\cr
+#' Date: \tab 2014-11-12\cr
 #' License: \tab GPL (>= 2.0)\cr
 #' }
 #' This package is the core of a suite of packages for photobiological
@@ -47,20 +47,6 @@
 #' @importFrom data.table address
 #' @importFrom data.table .SD .N .I .GRP .BY
 #' @importClassesFrom data.table data.table
-#'
-#' @exportClass data.table
-#' @export "["
-#' @export "[<-"
-#' @export data.table tables setkey setkeyv key "key<-" haskey CJ SJ copy
-#' @export as.data.table is.data.table test.data.table last like "%like%" between "%between%"
-#' @export truelength alloc.col ":="
-#' @export setattr setnames setcolorder set setDT setDF
-#' @export setorder setorderv
-#' @export setNumericRounding getNumericRounding
-#' @export chmatch "%chin%" chorder chgroup
-#' @export fread
-#' @export address
-#' @export .SD .N .I .GRP .BY
 #'
 #' @examples
 #' data(sun.data)

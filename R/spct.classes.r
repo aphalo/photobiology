@@ -585,3 +585,89 @@ as.private.spct <- function(x) {
   y <- copy(x)
   setPrivateSpct(y)
 }
+
+#' Return a copy of an R object with its class set to private.spct
+#'
+#' Function that returns a converted copy of a spectrum object.
+#'
+#' @usage as.source.spct(x)
+#'
+#' @param x any R object
+#'
+#' @return as.source.spct returns a "source.spct" if possible.
+#'
+#' @export
+#'
+as.source.spct <- function(x) {
+  y <- copy(x)
+  setSourceSpct(y)
+}
+
+#' Return a copy of an R object with its class set to private.spct
+#'
+#' Function that returns a converted copy of a spectrum object.
+#'
+#' @usage as.filter.spct(x)
+#'
+#' @param x any R object
+#'
+#' @return as.filter.spct returns a "filter.spct" if possible.
+#'
+#' @export
+#'
+as.filter.spct <- function(x) {
+  y <- copy(x)
+  setFilterSpct(y)
+}
+
+#' Return a copy of an R object with its class set to private.spct
+#'
+#' Function that returns a converted copy of a spectrum object.
+#'
+#' @usage as.reflector.spct(x)
+#'
+#' @param x any R object
+#'
+#' @return as.reflector.spct returns a "reflector.spct" if possible.
+#'
+#' @export
+#'
+as.reflector.spct <- function(x) {
+  y <- copy(x)
+  setReflectorSpct(y)
+}
+
+#' Return a copy of an R object with its class set to private.spct
+#'
+#' Function that returns a converted copy of a spectrum object.
+#'
+#' @usage as.response.spct(x)
+#'
+#' @param x any R object
+#'
+#' @return as.response.spct returns a "response.spct" if possible.
+#'
+#' @export
+#'
+as.response.spct <- function(x) {
+  y <- copy(x)
+  setResponseSpct(y)
+}
+
+#' Return a copy of an R object with its class set to private.spct
+#'
+#' Function that returns a converted copy of a spectrum object.
+#'
+#' @usage as.chroma.spct(x)
+#'
+#' @param x any R object
+#'
+#' @return as.chroma.spct returns a "chroma.spct" if possible.
+#'
+#' @export
+#'
+as.chroma.spct <- function(x) {
+  y <- copy(x)
+  setChromaSpct(y)
+}
+
