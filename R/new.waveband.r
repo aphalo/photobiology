@@ -1,5 +1,44 @@
 #' Build a "waveband" object that can be used as imput when calculating irradiances.
 #'
+#' @usage waveband(x, weight=NULL, SWF.e.fun=NULL, SWF.q.fun=NULL, norm=NULL, SWF.norm=NULL, hinges=NULL, wb.name=NULL, wb.label=wb.name)
+#'
+#' @param x any R object on which applying the function range yields an array of two numeric values, describimg a range of wavelengths (nm)
+#' @param weight a character string "SWF" or "BSWF", use NULL (the defalt) to indicate no weighting used
+#' when calculating irradiance
+#' @param SWF.e.fun a function giving multipliers for a spectral weighting function (energy) as a function of wavelength (nm)
+#' @param SWF.q.fun a function giving multipliers for a spectral weighting function (quantum) as a function of wavelength (nm)
+#' @param SWF.norm a numeric value giving the native normalization wavelength (nm) used by SWF.e.fun and SWF.q.fun
+#' @param norm a single numeric value indicating the wavelength at which the SWF should be normalized
+#' to 1.0, in nm. "NULL" means no normalization.
+#' @param hinges a numeric array giving the wavelengths at which the s.irrad should be inserted by
+#' interpolation, no interpolation is indicated by an empty array (numeric(0)), if NULL then interpolation
+#' will take place at both ends of the band.
+#' @param wb.name character string giving the name for the waveband defined, default is NULL
+#' @param wb.label character string giving the label of the waveband to be used for ploting, default is wb.name
+#'
+#' @return a list with components low, high, weight, SWF.fun, norm, hinges, name
+#' @keywords manip misc
+#' @export
+#' @exportClass waveband
+#' @examples
+#' e_irrad(sun.spct, waveband(sun.spct))
+#' q_irrad(sun.spct, waveband(c(400,700)))
+#' e_irrad(sun.spct, CIE98()) # weighted
+#' e_irrad(sun.spct, waveband(CIE98())) # unweighted
+#'
+waveband <- function(x,
+                     weight=NULL, SWF.e.fun=NULL, SWF.q.fun=NULL, norm=NULL,
+                     SWF.norm=NULL, hinges=NULL, wb.name=NULL, wb.label=wb.name) {
+  if (is.generic.spct(x) && is.null(wb.name)) {
+    wb.name = "Total"
+  }
+  x.range <- range(x)
+  new_waveband(x.range[1], x.range[x], weight=weight, SWF.e.fun=SWF.e.fun, SWF.q.fun=SWF.q.fun,
+               hinges=hinges, wb.name=wb.name, wb.label=wb.label)
+}
+
+#' Build a "waveband" object that can be used as imput when calculating irradiances.
+#'
 #' @usage new_waveband(w.low, w.high, weight=NULL, SWF.e.fun=NULL, SWF.q.fun=NULL, norm=NULL, SWF.norm=NULL, hinges=NULL, wb.name=NULL, wb.label=wb.name)
 #'
 #' @param w.low numeric value, wavelength at the short end of the band (nm)
@@ -22,8 +61,7 @@
 #' @export
 #' @exportClass waveband
 #' @examples
-#' data(sun.data)
-#' with(sun.data, irradiance(w.length, s.e.irrad, new_waveband(400,700), "photon"))
+#' with(sun.spct, irradiance(w.length, s.e.irrad, new_waveband(400,700), "photon"))
 #'
 new_waveband <- function(w.low, w.high,
                          weight=NULL, SWF.e.fun=NULL, SWF.q.fun=NULL, norm=NULL,
