@@ -4,20 +4,19 @@
 #' waveband and a reflectance spectrum.
 #'
 #' @usage reflectance_spct(spct, w.band=NULL, pc.out=FALSE, use.hinges=NULL)
-#' @usage reflectance(spct, w.band=NULL, pc.out=FALSE, use.hinges=NULL)
 #'
-#' @param spct an object of class "generic.spct"
+#' @param spct an object of class generic.spct"
 #' @param w.band list of waveband definitions created with new_waveband()
 #' @param pc.out a logical indicating whether result should be a percentage or a fraction of one
 #' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
 #'
 #' @return a single numeric value expressed either as a fraction of one or a percentage
 #' @keywords manip misc
-#' @export reflectance_spct
+#' @export
 #' @examples
 #' # library(photobiologyReflectors)
-#' # reflectance_spct(glass_refl.spct, new_waveband(400,700), pc.out=TRUE)
-#' # reflectance_spct(glass_refl.spct, new_waveband(400,700), pc.out=FALSE)
+#' # reflectance(glass_refl.spct, new_waveband(400,700), pc.out=TRUE)
+#' # reflectance(glass_refl.spct, new_waveband(400,700), pc.out=FALSE)
 #'
 #' @note The last parameter controls speed optimization. The defaults should be suitable
 #' in mosts cases. Only the range of wavelengths in the wavebands is used and all BSWFs are ignored.
@@ -57,7 +56,7 @@ reflectance_spct <-
     if (use.hinges) {
       all.hinges <- NULL
       for (wb in w.band) {
-        if (!is.null(wb$hinges) & length(wb$hinges)>0) {
+        if (!is.null(wb$hinges) && length(wb$hinges)>0) {
           all.hinges <- c(all.hinges, wb$hinges)
         }
       }
@@ -72,7 +71,7 @@ reflectance_spct <-
     if (no_names_flag) {
       wb_name <- character(length(w.band))
     }
-    # "filter.spct" objects are not guaranteed to contain transmittance
+    # "reflector.spct" objects are not guaranteed to contain reflectance
     # expressed in the needed scale, we add the needed columns and as
     # spectra are passed by reference they propagate to the argument
     if (pc.out) {
@@ -103,7 +102,7 @@ reflectance_spct <-
     }
 
     # we iterate through the list of wavebands
-    transmittance <- numeric(length(w.band))
+    reflectance <- numeric(length(w.band))
     i <- 0
     for (wb in w.band) {
       i <- i + 1
@@ -116,7 +115,7 @@ reflectance_spct <-
           wb_name[i] <- wb$name
         }
       }
-      # we calculate the average transmittance.
+      # we calculate the average reflectance.
       reflectance[i] <- average_spct(trim_spct(spct.cols, wb, use.hinges=FALSE))
     }
 
@@ -154,6 +153,9 @@ reflectance.default <- function(spct, w.band, pc.out, use.hinges) {
 #' Specialization for reflector.spct
 #'
 #' Calculate average reflectance.
+#'
+#' @usage reflectance.reflector.spct(spct, w.band=NULL, pc.out=FALSE, use.hinges=NULL)
+#' @usage reflectance(spct, w.band=NULL, pc.out=FALSE, use.hinges=NULL)
 #'
 #' @param spct an object of class "reflector.spct"
 #' @param w.band list of waveband definitions created with new_waveband()

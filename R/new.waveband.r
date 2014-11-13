@@ -23,8 +23,6 @@
 #' @examples
 #' e_irrad(sun.spct, waveband(sun.spct))
 #' q_irrad(sun.spct, waveband(c(400,700)))
-#' e_irrad(sun.spct, CIE98()) # weighted
-#' e_irrad(sun.spct, waveband(CIE98())) # unweighted
 #'
 waveband <- function(x,
                      weight=NULL, SWF.e.fun=NULL, SWF.q.fun=NULL, norm=NULL,
@@ -33,7 +31,7 @@ waveband <- function(x,
     wb.name = "Total"
   }
   x.range <- range(x)
-  new_waveband(x.range[1], x.range[x], weight=weight, SWF.e.fun=SWF.e.fun, SWF.q.fun=SWF.q.fun,
+  new_waveband(x.range[1], x.range[2] + 1e-4, weight=weight, SWF.e.fun=SWF.e.fun, SWF.q.fun=SWF.q.fun,
                hinges=hinges, wb.name=wb.name, wb.label=wb.label)
 }
 

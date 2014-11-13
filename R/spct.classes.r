@@ -188,19 +188,22 @@ check.chroma.spct <- function(x, byref=TRUE) {
 
 # set class ---------------------------------------------------------------
 
-#' Remove derived .spct class attributes from a spectrum object
+#' Remove generic.spct and derived xxx.spct class attributes from a spectrum object
 #'
-#' Removes from the class attibute of a xxxx.spct atributes leaving only "generic.spct" if it is present.
+#' Removes from the class attibute of a xxxx.spct atributes.
 #'
 #' @param x an R object
 #' @export
 #'
 rmDerivedSpct <- function(x) {
   name <- substitute(x)
-  derivedclasses <- c("source.spct", "filter.spct", "reflector.spct", "response.spct",
-                      "chroma.spct")
+  spctclasses <- spct.classes()
   allclasses <- class(x)
-  setattr(x, "class", allclasses[!allclasses %in% derivedclasses])
+  setattr(x, "class", setdiff(allclasses, spctclasses))
+  if (is.name(name)) {
+    name <- as.character(name)
+    assign(name, x, parent.frame(), inherits = TRUE)
+  }
   invisible(x)
 }
 
@@ -546,8 +549,8 @@ is.any.spct <- function(x) {
 #' @export
 #'
 class.spct <- function(x) {
-  spct.cls <- spct.classes()
-  spct.cls[inherits(x, spct.cls, TRUE)]
+#  intersect(spct.classes(), class(x)) # alters order!
+  class(x)[class(x) %in% spct.classes()] # maintains order
 }
 
 # as functions for spct classes --------------------------------------------
@@ -586,7 +589,7 @@ as.private.spct <- function(x) {
   setPrivateSpct(y)
 }
 
-#' Return a copy of an R object with its class set to private.spct
+#' Return a copy of an R object with its class set to source.spct
 #'
 #' Function that returns a converted copy of a spectrum object.
 #'
@@ -603,7 +606,7 @@ as.source.spct <- function(x) {
   setSourceSpct(y)
 }
 
-#' Return a copy of an R object with its class set to private.spct
+#' Return a copy of an R object with its class set to filter.spct
 #'
 #' Function that returns a converted copy of a spectrum object.
 #'
@@ -620,7 +623,7 @@ as.filter.spct <- function(x) {
   setFilterSpct(y)
 }
 
-#' Return a copy of an R object with its class set to private.spct
+#' Return a copy of an R object with its class set to reflector.spct
 #'
 #' Function that returns a converted copy of a spectrum object.
 #'
@@ -637,7 +640,7 @@ as.reflector.spct <- function(x) {
   setReflectorSpct(y)
 }
 
-#' Return a copy of an R object with its class set to private.spct
+#' Return a copy of an R object with its class set to response.spct
 #'
 #' Function that returns a converted copy of a spectrum object.
 #'
@@ -654,7 +657,7 @@ as.response.spct <- function(x) {
   setResponseSpct(y)
 }
 
-#' Return a copy of an R object with its class set to private.spct
+#' Return a copy of an R object with its class set to chroma.spct
 #'
 #' Function that returns a converted copy of a spectrum object.
 #'

@@ -3,6 +3,14 @@ TODO
 
 I should probably also rewrite the operator functions as there is so much messy logic in current code.
 
+photobiology 0.4.5
+===================
+
+Added waveband() constructor function.
+Fixed bug in reflectance_spct() and reflectance() functions.
+Fixed bug in class.spct().
+Revised the user guide to reflect all changes to the code done in the last few versions.
+
 photobiology 0.4.4
 ===================
 

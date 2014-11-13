@@ -42,6 +42,7 @@ q_ratio <-
                                 use.cached.mult=use.cached.mult, use.hinges=use.hinges)
     ratio <- q.irrad.num / q.irrad.denom
     names(ratio) <- paste(names(q.irrad.num), ":", names(q.irrad.denom), "(q:q)", sep="")
+    setattr(ratio, "time.unit", NULL)
     return(ratio)
   }
 
@@ -91,6 +92,7 @@ e_ratio <-
                                 use.cached.mult=use.cached.mult, use.hinges=use.hinges)
     ratio <- e.irrad.num / e.irrad.denom
     names(ratio) <- paste(names(e.irrad.num), ":", names(e.irrad.denom), "(e:e)", sep="")
+    setattr(ratio, "time.unit", NULL)
     return(ratio)
   }
 
@@ -136,6 +138,7 @@ qe_ratio <-
                                 use.cached.mult=use.cached.mult, use.hinges=use.hinges)
     ratio <- q.irrad / e.irrad
     names(ratio) <- paste("q:e(", names(q.irrad), ")", sep="")
+    setattr(ratio, "time.unit", NULL)
     return(ratio)
   }
 
