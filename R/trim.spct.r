@@ -44,6 +44,9 @@
 
 trim_spct <- function(spct, band=NULL, low.limit=NULL, high.limit=NULL, use.hinges=TRUE, fill=NULL, byref=FALSE)
 {
+  if (!is.any.spct(spct)) {
+    setGenericSpct(spct)
+  }
   verbose <- TRUE
   if (byref) {
     name <- substitute(spct)
@@ -56,9 +59,10 @@ trim_spct <- function(spct, band=NULL, low.limit=NULL, high.limit=NULL, use.hing
   }
   names.spct <- names(spct)
   names.data <- names.spct[names.spct != "w.length"]
-#  class.spct  <- class(spct)
+  #  class.spct  <- class(spct)
   comment.spct <- comment(spct)
   time.unit.spct <- attr(spct, "time.unit", exact=TRUE)
+  Tfr.type.spct <- attr(spct, "Tfr.type", exact=TRUE)
   # check for target
   if (!is.null(band)) {
     trim.range <- range(band)
@@ -124,13 +128,20 @@ trim_spct <- function(spct, band=NULL, low.limit=NULL, high.limit=NULL, use.hing
       spct[!w.length %between% trim.range, eval(data.col) := fill]
     }
   }
-  setattr(spct, "comment", comment.spct)
-  setattr(spct, "time.unit", time.unit.spct)
+  if (!is.null(comment.spct)) {
+    setattr(spct, "comment", comment.spct)
+  }
+  if (!is.null(time.unit.spct)) {
+    setattr(spct, "time.unit", time.unit.spct)
+  }
+  if (!is.null(Tfr.type.spct)) {
+    setattr(spct, "Tfr.typr", Tfr.type.spct)
+  }
   if (byref && is.name(name)) {
     name <- as.character(name)
     assign(name, spct, parent.frame(), inherits = TRUE)
   }
-# %between% removes derived class tags!
-#  setattr(spct, "class", class.spct)
+  # %between% removes derived class tags!
+  #  setattr(spct, "class", class.spct)
   invisible(spct)
 }

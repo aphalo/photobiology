@@ -2,7 +2,7 @@
 #'
 #' This fucntion can be used to create source.spct objects from numeric vectors.
 #'
-#' @usage source.spct(w.length, s.e.irrad=NULL, s.q.irrad=NULL, time.unit="second", comment=NULL)
+#' @usage source.spct(w.length, s.e.irrad=NULL, s.q.irrad=NULL, time.unit=c("second", "day"), comment=NULL)
 #'
 #' @param w.length numeric vector with wavelengths in nanometres
 #' @param s.e.irrad numeric vecror with spectral energy irradiance in W m-2 nm-1 or J d-1 m-2 nm-1
@@ -14,7 +14,7 @@
 #'
 #' @export
 #'
-source.spct <- function(w.length, s.e.irrad=NULL, s.q.irrad=NULL, time.unit="second", comment=NULL) {
+source.spct <- function(w.length, s.e.irrad=NULL, s.q.irrad=NULL, time.unit=c("second", "day"), comment=NULL) {
   if (is.null(s.q.irrad) && (is.numeric(s.e.irrad))) {
     out.spct <- data.table(w.length, s.e.irrad)
   } else if (is.null(s.e.irrad) && (is.numeric(s.q.irrad))) {
@@ -23,29 +23,24 @@ source.spct <- function(w.length, s.e.irrad=NULL, s.q.irrad=NULL, time.unit="sec
     warning("One and only one of s.e.irrad or s.q.irrad should be different from NULL.")
     return(NA)
   }
-  if (!(time.unit %in% c("second", "day"))) {
-    warning("Invalid time unit string.")
-    return(NA)
-  }
-  setattr(out.spct, "time.unit", time.unit)
   if (!is.null(comment)) {
     setattr(out.spct, "comment", comment)
   }
-  setSourceSpct(out.spct)
-  return(out.spct)
+  setSourceSpct(out.spct, time.unit)
+  invisible(out.spct)
 }
 
 #' Create a new filter.spct
 #'
 #' This fucntion can be used to create source.spct objects from numeric vectors.
 #'
-#' @usage filter.spct(w.length, Tfr=NULL, Tpc=NULL, A=NULL, type="total", comment=NULL)
+#' @usage filter.spct(w.length, Tfr=NULL, Tpc=NULL, A=NULL, Tfr.type=c("total", "internal"), comment=NULL)
 #'
 #' @param w.length numeric vector with wavelengths in nanometres
 #' @param Tfr numeric vector with spectral transmittance as fraction of one
 #' @param Tpc numeric vector with spectral transmittance as percent values
 #' @param A   numeric vector of absorbance values (log10 based)
-#' @param type character string indicating whether transmittance values are "total" or "internal" values
+#' @param Tfr.type character string indicating whether transmittance values are "total" or "internal" values
 #' @param comment character string to be added as a comment attribute to the created object
 #'
 #' @return a source.spct object
@@ -55,7 +50,7 @@ source.spct <- function(w.length, s.e.irrad=NULL, s.q.irrad=NULL, time.unit="sec
 #'
 #' @export
 #'
-filter.spct <- function(w.length, Tfr=NULL, Tpc=NULL, A=NULL, type="total", comment=NULL) {
+filter.spct <- function(w.length, Tfr=NULL, Tpc=NULL, A=NULL, Tfr.type=c("total", "internal"), comment=NULL) {
   if (is.null(Tpc) && is.null(A) && is.numeric(Tfr)) {
     out.spct <- data.table(w.length, Tfr)
   } else if (is.null(Tfr) && is.null(A) && is.numeric(Tpc)) {
@@ -66,16 +61,11 @@ filter.spct <- function(w.length, Tfr=NULL, Tpc=NULL, A=NULL, type="total", comm
     warning("One and only one of Tfr, Tpc or Abs should be different from NULL.")
     return(NA)
   }
-  if (!(type %in% c("total", "internal"))) {
-    warning("Invalid transmittance type string.")
-    return(NA)
-  }
-  setattr(out.spct, "transmittance.type", type)
   if (!is.null(comment)) {
     setattr(out.spct, "comment", comment)
   }
-  setFilterSpct(out.spct)
-  return(out.spct)
+  setFilterSpct(out.spct, Tfr.type)
+  invisible(out.spct)
 }
 
 #' Create a new reflector.spct

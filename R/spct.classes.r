@@ -111,7 +111,7 @@ check.reflector.spct <- function(x, byref=TRUE) {
     x[ , Rfr := Rpc / 100]
     invisible(x)
   } else {
-    warning("No reflectance data found in filter.spct")
+    warning("No reflectance data found in reflector.spct")
     x[ , Rfr := NA]
     invisible(x)
   }
@@ -138,7 +138,7 @@ check.response.spct <- function(x, byref=TRUE) {
   } else if (exists("s.q.response", x, mode = "numeric", inherits=FALSE)) {
     invisible(q2e(x, action="add", byref=byref))
   } else {
-    warning("No response data found in filter.spct")
+    warning("No response data found in response.spct")
     x[ , s.e.response := NA]
     invisible(x)
   }
@@ -273,10 +273,11 @@ setPrivateSpct <- function(x) {
 #' If the object is a data.frame is is also made a data.table in the process.
 #'
 #' @param x a data.frame or data.table
+#' @param Tfr.type a character string, either "total" or "internal"
 #' @export
 #' @exportClass filter.spct
 #'
-setFilterSpct <- function(x) {
+setFilterSpct <- function(x, Tfr.type=c("total", "internal")) {
   name <- substitute(x)
   rmDerivedSpct(x)
   if (!is.data.table(x)) {
@@ -288,6 +289,7 @@ setFilterSpct <- function(x) {
   if (!is.filter.spct(x)) {
     setattr(x, "class", c("filter.spct", class(x)))
   }
+  setTfrType(x, Tfr.type)
   x <- check(x)
   setkey(x, w.length)
   if (is.name(name)) {
@@ -379,8 +381,8 @@ setSourceSpct <- function(x, time.unit="second") {
   if (!is.source.spct(x)) {
     setattr(x, "class", c("source.spct", class(x)))
   }
+  setTimeUnit(x, time.unit)
   x <- check(x)
-  setattr(x, "time.unit", time.unit)
   setkey(x, w.length)
   if (is.name(name)) {
     name <- as.character(name)
@@ -593,34 +595,36 @@ as.private.spct <- function(x) {
 #'
 #' Function that returns a converted copy of a spectrum object.
 #'
-#' @usage as.source.spct(x)
+#' @usage as.source.spct(x, time.unit=c("second", "day"))
 #'
 #' @param x any R object
+#' @param time.unit character string, "second" or "day"
 #'
 #' @return as.source.spct returns a "source.spct" if possible.
 #'
 #' @export
 #'
-as.source.spct <- function(x) {
+as.source.spct <- function(x, time.unit=c("second", "day")) {
   y <- copy(x)
-  setSourceSpct(y)
+  setSourceSpct(y, time.unit)
 }
 
 #' Return a copy of an R object with its class set to filter.spct
 #'
 #' Function that returns a converted copy of a spectrum object.
 #'
-#' @usage as.filter.spct(x)
+#' @usage as.filter.spct(x, Tfr.type=c("total", "internal"))
 #'
 #' @param x any R object
+#' @param Tfr.type a character string, either "total" or "internal"
 #'
 #' @return as.filter.spct returns a "filter.spct" if possible.
 #'
 #' @export
 #'
-as.filter.spct <- function(x) {
+as.filter.spct <- function(x, Tfr.type=c("total", "internal")) {
   y <- copy(x)
-  setFilterSpct(y)
+  setFilterSpct(y, Tfr.type)
 }
 
 #' Return a copy of an R object with its class set to reflector.spct
@@ -672,5 +676,63 @@ as.response.spct <- function(x) {
 as.chroma.spct <- function(x) {
   y <- copy(x)
   setChromaSpct(y)
+}
+
+
+# time.unit attribute -----------------------------------------------------
+
+#' Set the "time.unit" attribute of an existing source.spct object
+#'
+#' Funtion to set by reference the "time.unit" attribute
+#'
+#' @usage setTimeUnit(x, time.unit=c("second", "day"))
+#'
+#' @param x a source.spct object
+#' @param time.unit a character string, either "second" or "day"
+#'
+#' @return x
+#'
+#' @note if x is not a source.spct object, x is not modified
+#'
+#' @export
+#'
+setTimeUnit <- function(x, time.unit=c("second", "day")) {
+  if  (!(time.unit[1] %in% c("second", "day", "unknown"))) {
+    warning("Invalid 'time.unit' argument, only 'second' and 'day' supported.")
+    invisible(x)
+  }
+  if (is.source.spct(x)) {
+    setattr(x, "time.unit", time.unit[1])
+  }
+  invisible(x)
+}
+
+
+# Tfr.type attribute ------------------------------------------------------
+
+#' Set the "Tfr.type" attribute of an existing source.spct object
+#'
+#' Funtion to set by reference the "Tfr.type" attribute
+#'
+#' @usage setTfrType(x, Tfr.type=c("total", "internal"))
+#'
+#' @param x a source.spct object
+#' @param Tfr.type a character string, either "total" or "internal"
+#'
+#' @return x
+#'
+#' @note if x is not a filter.spct object, x is not modified
+#'
+#' @export
+#'
+setTfrType <- function(x, Tfr.type=c("total", "internal")) {
+  if  (!(Tfr.type[1] %in% c("total", "internal", "unknown"))) {
+    warning("Invalid 'Tfr.type' argument, only 'total' and 'internal' supported.")
+    invisible(x)
+  }
+  if (is.filter.spct(x)) {
+    setattr(x, "Tfr.type", Tfr.type[1])
+  }
+  invisible(x)
 }
 

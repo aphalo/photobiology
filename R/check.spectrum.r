@@ -32,8 +32,8 @@ check_spectrum <- function(w.length, s.irrad) {
     pass <- FALSE
   }
   # warn if w.length values are not reasonable
-  if (min(w.length < 200.0) || max(w.length > 6000.0)){
-    warning("Warning: wavelength values should be in nm\n data contains values < 200 nm and/or > 6000 nm")
+  if (min(w.length < 100.0) || max(w.length > 6000.0)){
+    warning("Warning: wavelength values should be in nm\n data contains values < 100 nm and/or > 6000 nm")
   }
   # test average wavelength delta
   w.length.resolution <- (max(w.length) - min(w.length))/ length(w.length)
@@ -69,8 +69,8 @@ check_w.length <- function(w.length) {
     pass <- FALSE
   }
   # warn if w.length values are not reasonable
-  if (min(w.length < 200.0) || max(w.length > 6000.0)){
-    warning("Warning: wavelength values should be in nm\n data contains values < 200 nm and/or > 6000 nm")
+  if (min(w.length < 100.0) || max(w.length > 6000.0)){
+    warning("Warning: wavelength values should be in nm\n data contains values < 100 nm and/or > 6000 nm")
     pass <- FALSE
   }
   # test average wavelength delta

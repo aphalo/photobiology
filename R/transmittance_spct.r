@@ -124,6 +124,7 @@ transmittance_spct <-
     }
 
     names(transmittance) <- paste(names(transmittance), wb_name)
+    setattr(transmittance, "Tfr.type", attr(spct, "Tfr.type", exact=TRUE))
     return(transmittance)
   }
 
