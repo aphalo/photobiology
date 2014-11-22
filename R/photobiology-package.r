@@ -12,8 +12,8 @@
 #' \tabular{ll}{
 #' Package: \tab photobiology\cr
 #' Type: \tab Package\cr
-#' Version: \tab 0.4.6\cr
-#' Date: \tab 2014-11-14\cr
+#' Version: \tab 0.4.7\cr
+#' Date: \tab 2014-11-22\cr
 #' License: \tab GPL (>= 2.0)\cr
 #' }
 #' This package is the core of a suite of packages for photobiological

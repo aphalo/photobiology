@@ -517,6 +517,14 @@ waveband(sun.spct)
 waveband(my_CIE_1)
 @
 
+The function \texttt{is.waveband} can the used to query any R object.
+
+<<>>=
+is.waveband(my_CIE_1)
+is.waveband(PAR())
+is.waveband(sun.spct)
+@
+
 \subsection{Calculating irradiance or exposure}
 
 The package includes two `families' of functions, one taking as argument spectrum objects and another taking numeric vectors as arguments. We prefer in general the first `family'.

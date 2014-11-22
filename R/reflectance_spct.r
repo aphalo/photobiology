@@ -154,9 +154,6 @@ reflectance.default <- function(spct, w.band, pc.out, use.hinges) {
 #'
 #' Calculate average reflectance.
 #'
-#' @usage reflectance.reflector.spct(spct, w.band=NULL, pc.out=FALSE, use.hinges=NULL)
-#' @usage reflectance(spct, w.band=NULL, pc.out=FALSE, use.hinges=NULL)
-#'
 #' @param spct an object of class "reflector.spct"
 #' @param w.band list of waveband definitions created with new_waveband()
 #' @param pc.out a logical indicating whether result should be a percentage or a fraction of one

@@ -176,3 +176,19 @@ split_bands <- function(x, short.names=TRUE, length.out=NULL) {
   }
   return(bands.out)
 }
+
+#' Query if it is a waveband
+#'
+#' Functions to check if an object is waveband.
+#'
+#' @usage is.waveband(x)
+#'
+#' @param x any R object
+#'
+#' @return is.waveband returns TRUE if its argument is a waveband and FALSE otherwise.
+#'
+#' @export
+#'
+is.waveband <- function(x) {
+  inherits(x, "waveband")
+}

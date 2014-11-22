@@ -1,7 +1,18 @@
 TODO
 ====
 
+
 I should probably also rewrite the operator functions as there is so much messy logic in current code.
+
+photobiology 0.4.7
+===================
+
+Added function is.waveband().
+
+photobiology 0.4.6
+===================
+
+Fixed various small bugs. Removed rbindlist(), for spectra rbindspct() should be used instead.
 
 photobiology 0.4.5
 ===================
