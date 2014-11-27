@@ -31,7 +31,7 @@ waveband <- function(x,
     wb.name = "Total"
   }
   x.range <- range(x)
-  new_waveband(x.range[1], x.range[2] + 1e-4, weight=weight, SWF.e.fun=SWF.e.fun, SWF.q.fun=SWF.q.fun,
+  new_waveband(x.range[1], x.range[2], weight=weight, SWF.e.fun=SWF.e.fun, SWF.q.fun=SWF.q.fun,
                hinges=hinges, wb.name=wb.name, wb.label=wb.label)
 }
 
@@ -68,7 +68,7 @@ new_waveband <- function(w.low, w.high,
   # if we are not using a SWF then we do not need to add hinges as we will be anyway interpolating
   # raw irradiances rather than weighted irradiances
   if (is.null(hinges)) {
-    hinges <- c(w.low - 1e-4, w.low, w.high - 1e-4, w.high)
+    hinges <- c(w.low - 1e-4, w.low, w.high, w.high + 1e-4)
   }
   if (!is.null(weight) && weight!="none") {
     #

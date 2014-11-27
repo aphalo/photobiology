@@ -4,6 +4,12 @@ TODO
 
 I should probably also rewrite the operator functions as there is so much messy logic in current code.
 
+photobiology 0.4.8
+===================
+
+Tweaked handling of w.high by new_waveband().
+Generic function response() added.
+
 photobiology 0.4.7
 ===================
 
