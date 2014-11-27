@@ -32,7 +32,7 @@ waveband <- function(x,
   }
   x.range <- range(x)
   new_waveband(x.range[1], x.range[2], weight=weight, SWF.e.fun=SWF.e.fun, SWF.q.fun=SWF.q.fun,
-               hinges=hinges, wb.name=wb.name, wb.label=wb.label)
+               norm=norm, SWF.norm=SWF.norm, hinges=hinges, wb.name=wb.name, wb.label=wb.label)
 }
 
 #' Build a "waveband" object that can be used as imput when calculating irradiances.
@@ -104,10 +104,12 @@ new_waveband <- function(w.low, w.high,
 
 #' Build a list of unweighted "waveband" objects that can be used as imput when calculating irradiances.
 #'
-#' @usage split_bands(x, short.names=TRUE, length.out=NULL)
+#' @usage split_bands(x, list.names=NULL, short.names=is.null(wb.names), length.out=NULL)
 #'
 #' @param x a numeric array of wavelengths to split at (nm), or a range of wavelengths or
-#' a generic.spct or a waveband, or a list numeric vectors with ranges (numeric vectors) as elements.
+#' a generic.spct or a waveband, or a list composed of wavelength ranges (as numeric vectors) for each individual
+#' waveband.
+#' @param list.names character vector with names for the component wavebands in the returned list
 #' @param short.names logical indicating whether to use short or long names for wavebands
 #' @param length.out numeric giving the number of regions to split the range into (ignored if w.length is not numeric).
 #'
@@ -116,21 +118,25 @@ new_waveband <- function(w.low, w.high,
 #' @export
 #' @examples
 #' split_bands(c(400,500,600))
+#' split_bands(list(c(400,500),c(550,650)))
+#' split_bands(c(400,500,600), short.names=FALSE)
+#' split_bands(c(400,500,600), list.names=c("a","b"))
 #' split_bands(c(400,700), length.out=6)
 #' split_bands(400:700, length.out=3)
 #' split_bands(sun.spct, length.out=10)
 #'
+#' @note \code{list.names} is used to assign names to the elements of the list, while the waveband objects themselves
+#' always retain their \code{wb.label} and \code{wb.name} as generated during their creation.
 
-split_bands <- function(x, short.names=TRUE, length.out=NULL) {
+split_bands <- function(x, list.names=NULL, short.names=is.null(list.names), length.out=NULL) {
   if (is(x, "generic.spct") || is(x, "waveband")) {
     w.length <- range(x)
-    w.length[2] <- w.length[2] + 1e-4
+    w.length[2] <- w.length[2]
+  } else if (!is.null(length.out)){
+    w.length <- range(x)
   } else {
     w.length <- x
   }
-  # if the elements in the list or vector supplied as argument are named
-  # they are used as names for the waveband
-  wb.names <- names(w.length)
   if (is.numeric(w.length)) {
     unique(sort(w.length))
     wl.len <- length(w.length)
@@ -149,32 +155,45 @@ split_bands <- function(x, short.names=TRUE, length.out=NULL) {
         length.out <- wl.len - 1
       }
       bands.out <- list()
+      names <- character()
       for (i in 1:(wl.len - 1)) {
         wb.temp <- new_waveband(w.length[i], w.length[i+1],
                      hinges=NULL, wb.name=NULL)
+        names[i] <- labels(wb.temp)[[1]]
         bands.out <- c(bands.out, list(wb.temp))
       }
+      num.bands <- wl.len - 1
     }
   } else if (is.list(w.length)) {
     bands.out <- list()
+    names <- character()
     i <- 0L
     for (wl.range in w.length) {
       i <- i + 1L
-      wb.temp <- list(new_waveband(min(wl.range), max(wl.range),
-                                   hinges=NULL, wb.name=NULL))
-      bands.out <- c(bands.out, wb.temp)
+      wb.temp <- new_waveband(min(wl.range), max(wl.range),
+                                   hinges=NULL, wb.name=NULL)
+      names[i] <- labels(wb.temp)[[1]]
+      bands.out <- c(bands.out, list(wb.temp))
     }
+    num.bands <- i
   } else {
     warning("Invalid x input.")
     return(NA)
   }
-  if (length(bands.out) == 1) {
+  if (length(bands.out) == 1 && is.null(list.names)) {
     return(bands.out[[1]])
   } else {
-    names(bands.out) <- paste("wb", 1:length(bands.out), sep="")
+    if (short.names) {
+      names(bands.out) <- paste("wb", 1:length(bands.out), sep="")
+    } else {
+      if (!is.null(list.names) && length(list.names) >= num.bands)  {
+        names(bands.out) <- list.names[1:num.bands]
+      } else {
+        names(bands.out) <- names
+      }
+    }
     return(bands.out)
   }
-  return(bands.out)
 }
 
 #' Query if it is a waveband

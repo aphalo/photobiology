@@ -9,6 +9,8 @@ photobiology 0.4.8
 
 Tweaked handling of w.high by new_waveband().
 Generic function response() added.
+Fixed bug in function waveband() which caused it not to properly create weighted wavebands.
+Improved handling of names by split_wavebands() and improved the documentation.
 
 photobiology 0.4.7
 ===================
