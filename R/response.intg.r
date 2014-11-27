@@ -3,7 +3,7 @@
 #' This function returns the mean response for a given
 #' waveband and a response spectrum.
 #'
-#' @usage response_intg(spct, w.band=NULL, use.hinges=NULL)
+#' @usage response_intg(spct, w.band=NULL, unit.out="energy", use.hinges=NULL)
 #'
 #' @param spct an object of class response.spct"
 #' @param w.band list of waveband definitions created with new_waveband()
@@ -15,9 +15,10 @@
 #' @keywords manip misc
 #' @export
 #' @examples
-#' library(photobiologySensors)
-#' response(Vital_BW_20.spct, new_waveband(400,700), unit.out="photon")
-#' response(Vital_BW_20.spct, new_waveband(400,700), unit.out="energy")
+#' # library(photobiologySensors)
+#' # data(Vital_BW_20.spct)
+#' # response(Vital_BW_20.spct, new_waveband(400,700), unit.out="photon")
+#' # response(Vital_BW_20.spct, new_waveband(400,700), unit.out="energy")
 #'
 #' @note The parameter \code{use.hinges} controls speed optimization. The defaults should be suitable
 #' in mosts cases. Only the range of wavelengths in the wavebands is used and all BSWFs are ignored.

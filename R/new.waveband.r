@@ -104,7 +104,7 @@ new_waveband <- function(w.low, w.high,
 
 #' Build a list of unweighted "waveband" objects that can be used as imput when calculating irradiances.
 #'
-#' @usage split_bands(x, list.names=NULL, short.names=is.null(wb.names), length.out=NULL)
+#' @usage split_bands(x, list.names=NULL, short.names=is.null(list.names), length.out=NULL)
 #'
 #' @param x a numeric array of wavelengths to split at (nm), or a range of wavelengths or
 #' a generic.spct or a waveband, or a list composed of wavelength ranges (as numeric vectors) for each individual
@@ -119,6 +119,7 @@ new_waveband <- function(w.low, w.high,
 #' @examples
 #' split_bands(c(400,500,600))
 #' split_bands(list(c(400,500),c(550,650)))
+#' split_bands(list(A=c(400,500),B=c(550,650)))
 #' split_bands(c(400,500,600), short.names=FALSE)
 #' split_bands(c(400,500,600), list.names=c("a","b"))
 #' split_bands(c(400,700), length.out=6)
