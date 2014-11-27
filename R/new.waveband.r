@@ -166,6 +166,9 @@ split_bands <- function(x, list.names=NULL, short.names=is.null(list.names), len
     }
   } else if (is.list(w.length)) {
     bands.out <- list()
+    if (is.null(list.names)) {
+      list.names <- names(w.length)
+    }
     names <- character()
     i <- 0L
     for (wl.range in w.length) {
