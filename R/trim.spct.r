@@ -85,7 +85,10 @@ trim_spct <- function(spct, band=NULL, low.limit=NULL, high.limit=NULL, use.hing
       low.end <- min(spct)
     } else {
       if (verbose) {
-        warning("Not trimming short end as low.limit is outside spectral data range.")
+        # give a warning only if difference is > 0.01 nm
+        if ((low.end - low.limit) > 0.01) {
+          warning("Not trimming short end as low.limit is outside spectral data range.")
+        }
       }
       low.limit <- low.end
     }
@@ -106,7 +109,8 @@ trim_spct <- function(spct, band=NULL, low.limit=NULL, high.limit=NULL, use.hing
       spct <- rbindspct(list(spct, spct.bottom))
       low.end <- max(spct)
     } else {
-      if (verbose) {
+      # give a warning only if difference is > 0.01 nm
+      if ((high.limit - high.end) > 0.01) {
         warning("Not trimming long end as high.limit is outside spectral data range.")
       }
       high.limit <- high.end

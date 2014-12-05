@@ -27,7 +27,7 @@ insert_spct_hinges <- function(spct, hinges=NULL) {
   old.w.length <- spct[["w.length"]]
   hinges <- setdiff(hinges, old.w.length)
   if (length(hinges) > 0) {
-    new.w.length <- sort(c(hinges, old.w.length))
+    new.w.length <- unique(sort(c(hinges, old.w.length)))
     name <- substitute(spct)
     names.spct <- names(spct)
     names.data <- names.spct != "w.length"

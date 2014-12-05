@@ -136,7 +136,7 @@ check.response.spct <- function(x, byref=TRUE) {
     x[ , signal := NULL]
     invisible(x)
   } else if (exists("s.q.response", x, mode = "numeric", inherits=FALSE)) {
-    invisible(q2e(x, action="add", byref=byref))
+    invisible(x)
   } else {
     warning("No response data found in response.spct")
     x[ , s.e.response := NA]
@@ -155,7 +155,7 @@ check.source.spct <- function(x, byref=TRUE) {
   if (exists("s.e.irrad", x, mode = "numeric", inherits=FALSE)) {
     invisible(x)
   } else if (exists("s.q.irrad", x, mode = "numeric", inherits=FALSE)) {
-    invisible(q2e(x, action="add", byref=byref))
+    invisible(x)
   } else {
     warning("No spectral irradiance data found in source.spct")
     x[ , s.e.irrad := NA]

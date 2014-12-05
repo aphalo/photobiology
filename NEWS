@@ -4,11 +4,23 @@ TODO
 
 I should probably also rewrite the operator functions as there is so much messy logic in current code.
 
+photobiology 0.4.9
+===================
+
+Generic functions e_response() and q_response() added, and debugged.
+Changed check() for source.spct and response.spct so that it does not "photon" based spectral data
+on building objects, as this adds uneeded computation and complicates the logic by changing the
+data on copy operations (which is surprising and can lead to difficult to trace bugs.)
+This change can be NOT BACKWARDS compatible in some cases of user code, but should be fine for
+other functions defined in the photobiology packages, as they have been edited to maintain the
+same visible behaviour.
+
+Fixed a spurious warning by trim_spct() due to minute differences in wavelengths.
+
 photobiology 0.4.8
 ===================
 
 Tweaked handling of w.high by new_waveband().
-Generic function response() added.
 Fixed bug in function waveband() which caused it not to properly create weighted wavebands.
 Improved handling of names by split_wavebands() and improved the documentation.
 
@@ -67,7 +79,7 @@ Added is.xxx.spct() functions for all classes defined and is.any.spct() and clas
 photobiology 0.3.16
 ===================
 
-Editted wb2xx functions. Added other required variables and set their values to zero, so that the generic.spct objects returned by the waveband to spectra functions can be safely converted to any of the specialized spct spectral objects. This makes then labelling of all types of spectral plots equaly easy.
+Edited wb2xx functions. Added other required variables and set their values to zero, so that the generic.spct objects returned by the waveband to spectra functions can be safely converted to any of the specialized spct spectral objects. This makes then labeling of all types of spectral plots equally easy.
 
 photobiology 0.3.15
 ===================
@@ -93,20 +105,20 @@ Changed the name of two of the variables added by wb2rect_spct() to more meaning
 photobiology 0.3.11
 ===================
 
-Added setGenericSpct() as a synonim for setGenSpct() to keep naming consistent. Added functions wb2tagged_spct() and wb2rect_spct() for creating a tagged generic.spct objects suitable from a list of wavebands.
+Added setGenericSpct() as a synonym for setGenSpct() to keep naming consistent. Added functions wb2tagged_spct() and wb2rect_spct() for creating a tagged generic.spct objects suitable from a list of wavebands.
 
 photobiology 0.3.10
 ===================
 
 Updated vignette to use new package photobiologyWavebands.
-Added a generic function tag() and methods for generic.spct and source.spct objects. tag() can be used to 'tag' the rows based on a list of wavebands, or simply with rgb color equivalents. A color() method for source.spct() was added, which returns the overall colour of the spectrum as a whole. Fixed a 'bug' in tag() that increased execution speed a lot. Added CIE2008 human luminous efficency function data. Added functions irrad(), q_irrad() and e_irrad() as synomims for irrad_spct(), q_irrad_spct() and e_irrad_spct(). Added functions irrad(), q_ratio(), e_ratio(), eq_ratio(), and qe_ratio() as synomims for q_ratio_spct(), e_ratio_spct(), eq_ratio_spct() and qe_ratio_spct(). eq_ratio_spct() is also a new function. Added function split_bands() for creating lists of unweighted wavebands. Several bug fixes, and new function put_hinges(). Added function rbindspct() and redefined rbindlist() (hiding data.table::rbindlist() by exporting photobiology::rbindlist() instead.) Also some changes to color() with new methods for numeric and lists.
+Added a generic function tag() and methods for generic.spct and source.spct objects. tag() can be used to 'tag' the rows based on a list of wavebands, or simply with rgb color equivalents. A color() method for source.spct() was added, which returns the overall colour of the spectrum as a whole. Fixed a 'bug' in tag() that increased execution speed a lot. Added CIE2008 human luminous efficiency function data. Added functions irrad(), q_irrad() and e_irrad() as synonyms for irrad_spct(), q_irrad_spct() and e_irrad_spct(). Added functions irrad(), q_ratio(), e_ratio(), eq_ratio(), and qe_ratio() as synonyms for q_ratio_spct(), e_ratio_spct(), eq_ratio_spct() and qe_ratio_spct(). eq_ratio_spct() is also a new function. Added function split_bands() for creating lists of unweighted wavebands. Several bug fixes, and new function put_hinges(). Added function rbindspct() and redefined rbindlist() (hiding data.table::rbindlist() by exporting photobiology::rbindlist() instead.) Also some changes to color() with new methods for numeric and lists.
 
 photobiology 0.3.9
 ===================
 
 Added summary() and corresponding print() methods for spectral objects, and stepsize() default and "generic.spct" methods. Changed SetSourceSpct() to accept a "time.unit" argument, which is used to set an attribute in "source.spct" objects (defaults to "second" making it transparently backwards compatible).
 
-Performance tests show that with default setttings the irradiance functions for "source.spct" objects execute significantly faster than the vector based ones. Operators for spectra are at the moment relatively very slow.
+Performance tests show that with default settings the irradiance functions for "source.spct" objects execute significantly faster than the vector based ones. Operators for spectra are at the moment relatively very slow.
 
 photobiology 0.3.8
 ===================
@@ -184,9 +196,9 @@ this at a later stage.
 
 The package now depends on data.table which is now imported. As MayaCalc already returns data.table objects, hopefully this will help optimize performance and memory use. Users should be aware that data.tables are copied by reference, and a true copy is needed, function copy should be used.
 
-I am making the code more object (S3) oriented. Three new classes are exported "filter.spct", "source.spct", and "generic.spct", and three new functions were added to set the class of objects to these classes. If the object is not already a data.table, it is setDT. This allows me to create a more user-friendly interface by overlaoding operators. Now the four basic operations work on spectra, and one can also use these same operations and ^between a spectrum a numerical vector of legnth one or longer. Many math functions and some summary functions have specializad versions for spectra. This is my attempt to make calcualtions intuitive, but do not expect them to be fast.
+I am making the code more object (S3) oriented. Three new classes are exported "filter.spct", "source.spct", and "generic.spct", and three new functions were added to set the class of objects to these classes. If the object is not already a data.table, it is setDT. This allows me to create a more user-friendly interface by overloading operators. Now the four basic operations work on spectra, and one can also use these same operations and ^between a spectrum a numerical vector of length one or longer. Many math functions and some summary functions have specialized versions for spectra. This is my attempt to make calculations intuitive, but do not expect them to be fast.
 
-Added generic functions A2T and T2A for converting absorbance to transmittance and back. The generic function takes a numerical agument, and there are special versions for spectra. When the argument is a "filter.spc" object they return a copy of the original object with the calculated quantity added. If the requested output already exists, it is NOT recalculated, just a copy of the argument is returned, if the input data is missing, the corresponding output is set to NA.
+Added generic functions A2T and T2A for converting absorbance to transmittance and back. The generic function takes a numerical argument, and there are special versions for spectra. When the argument is a "filter.spc" object they return a copy of the original object with the calculated quantity added. If the requested output already exists, it is NOT recalculated, just a copy of the argument is returned, if the input data is missing, the corresponding output is set to NA.
 
 Added a label field to waveband object to store an optional label for plotting, which by default is set equal to the name of the waveband. labels.waveband was changed to return in field label this label instead of the name, and the name is returned in the field name. Also added a new function normalization.waveband that returns the normalization wavelength.
 
