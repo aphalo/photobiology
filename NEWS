@@ -8,9 +8,9 @@ photobiology 0.4.9
 ===================
 
 Generic functions e_response() and q_response() added, and debugged.
-Changed check() for source.spct and response.spct so that it does not "photon" based spectral data
+Changed check() for source.spct and response.spct so that it does not add "energy" or "photon" based spectral data
 on building objects, as this adds uneeded computation and complicates the logic by changing the
-data on copy operations (which is surprising and can lead to difficult to trace bugs.)
+data on copy operations (which is surprising and can lead to difficult-to-trace bugs.)
 This change can be NOT BACKWARDS compatible in some cases of user code, but should be fine for
 other functions defined in the photobiology packages, as they have been edited to maintain the
 same visible behaviour.
