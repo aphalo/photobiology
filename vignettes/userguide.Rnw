@@ -338,7 +338,7 @@ class(k.spct)
 class(k.df)
 @
 
-Both \texttt{as.source,spct} and \texttt{as.filter.spct} accept an argument for setting the \texttt{time.unit} and \texttt{Tfr.type} attributes, respectively, with the same defaults as described above.
+Both \texttt{as.source.spct} and \texttt{as.filter.spct} accept an argument for setting the \texttt{time.unit} and \texttt{Tfr.type} attributes, respectively, with the same defaults as described above.
 
 \subsubsection{Using constructors}
 
@@ -360,7 +360,7 @@ class.spct(m.spct)
 m.spct
 @
 
-Both \texttt{source,spct} and \texttt{filter.spct} functions accept an argument for setting the \texttt{time.unit} and \texttt{Tfr.type} attributes, respectively, with the same defaults as described above.
+Both \texttt{source.spct} and \texttt{filter.spct} functions accept an argument for setting the \texttt{time.unit} and \texttt{Tfr.type} attributes, respectively, with the same defaults as described above.
 
 \subsection{Conversions between radiation units}
 
@@ -476,6 +476,8 @@ Operators are also defined for operations between an spectrum and a numeric vect
 sun.spct * 2
 sun.spct * c(0,1)
 @
+
+Even if the first operand is numeric, the results are calculated as expected, and a spectral object is returned.
 
 <<>>=
 2 * sun.spct

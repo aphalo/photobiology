@@ -1,114 +1,134 @@
-
-
+# Private function which takes the operator as its third argument
+# The operator must enclosed in backticks to be recognized as such
+#
+# This avoids the repetition of very similar code for each operator
+# as in the older versions.
 
 oper.generic.spct <- function(e1, e2, oper) {
+  if (is.logical(e1)) {
+    e1 <- as.integer(e1)
+  }
+  if (is.logical(e2)) {
+    e2 <- as.integer(e2)
+  }
+  if (is.numeric(e1) || is.waveband(e1)) {
+    e_temp <- e2
+    e2 <- e1
+    e1 <- e_temp
+  }
   class1 <- class.spct(e1)[1]
   class2 <- class.spct(e2)[1]
   if (class1 == "source.spct") {
+    if (is.waveband(e2)) {
+      if (!identical(oper, `*`)) return(NA)
+      mult <- calc_multipliers(w.length=e1$w.length, w.band=e2, unit.out="energy",
+                               unit.in="energy", use.cached.mult=FALSE)
+      return(source.spct(w.length=e1$w.length, s.e.irrad = e1$s.e.irrad * mult))
+    }
     q2e(e1, action = "add")
     if (is.numeric(e2)) {
-      invisible(source.spct(w.length=e1$w.length, s.e.irrad=oper(e1$s.e.irrad, e2)))
+      return(source.spct(w.length=e1$w.length, s.e.irrad=oper(e1$s.e.irrad, e2)))
     } else if (class2 == "source.spct") {
       z <- oper_spectra(e1$w.length, e2$w.length, e1$s.e.irrad, e2$s.e.irrad, bin.oper=oper, trim="intersection")
       setnames(z, 2, "s.e.irrad")
       setSourceSpct(z)
-      invisible(z)
+      return(z)
     } else if (class2 == "filter.spct") {
-      if (!identical(oper, `*`)) invisible(NA)
+      if (!identical(oper, `*`)) return(NA)
       z <- oper_spectra(e1$w.length, e2$w.length, e1$s.e.irrad, e2$Tfr, bin.oper=oper, trim="intersection")
       setnames(z, 2, "s.e.irrad")
       setSourceSpct(z)
-      invisible(z)
+      return(z)
     } else if (class2 == "reflector.spct") {
-      if (!identical(oper, `*`)) invisible(NA)
+      if (!identical(oper, `*`)) return(NA)
       z <- oper_spectra(e1$w.length, e2$w.length, e1$s.e.irrad, e2$s.e.irrad, bin.oper=oper, trim="intersection")
       setnames(z, 2, "s.e.irrad")
       setSourceSpct(z)
-      invisible(z)
+      return(z)
     } else if (class2 == "response.spct") {
       q2e(e2, action = "add")
-      if (!identical(oper, `*`)) invisible(NA)
+      if (!identical(oper, `*`)) return(NA)
       z <- oper_spectra(e1$w.length, e2$w.length, e1$s.e.irrad, e2$s.e.response, bin.oper=oper, trim="intersection")
       setnames(z, 2, "s.e.response")
       setResponseSpct(z)
-      invisible(z)
+      return(z)
     } else if (class2 == "chroma.spct") {
-      if (!identical(oper, `*`)) invisible(NA)
+      if (!identical(oper, `*`)) return(NA)
       x <- oper_spectra(e1$w.length, e2$w.length, e1$s.e.irrad, e2$x, bin.oper=oper, trim="intersection")
       y <- oper_spectra(e1$w.length, e2$w.length, e1$s.e.irrad, e2$y, bin.oper=oper, trim="intersection")
       z <- oper_spectra(e1$w.length, e2$w.length, e1$s.e.irrad, e2$z, bin.oper=oper, trim="intersection")
       out.spct <- data.table(w.length=x$w.length, x=x[["s.irrad"]], y=y[["s.irrad"]], z=z[["s.irrad"]])
       setChromaSpct(out.spct)
-      invisible(out.spct)
+      return(out.spct)
     } else { # this traps also e2 == "generic.spct"
-      invisible(NA)
+      return(NA)
     }
   } else if (class1 == "filter.spct") {
     A2T(e1)
     if (is.numeric(e2)) {
-      invisible(filter.spct(w.length=e1$w.length, Tfr=oper(e1$Tfr, e2)))
+      return(filter.spct(w.length=e1$w.length, Tfr=oper(e1$Tfr, e2)))
     } else if (class2 == "source.spct") {
-      if (!identical(oper, `*`)) invisible(NA)
+      if (!identical(oper, `*`)) return(NA)
       z <- oper_spectra(e1$w.length, e2$w.length, e1$Tfr, e2$s.e.irrad, bin.oper=oper, trim="intersection")
       setnames(z, 2, "s.e.irrad")
       setSourceSpct(z)
-      invisible(z)
+      return(z)
     } else if (class2 == "filter.spct") {
       A2T(e2)
-      if (!identical(oper, `*`)) invisible(NA)
+      if (!identical(oper, `*`)) return(NA)
       z <- oper_spectra(e1$w.length, e2$w.length, e1$Tfr, e2$Tfr, bin.oper=oper, trim="intersection")
       setnames(z, 2, "Tfr")
       setSourceSpct(z)
-      invisible(z)
+      return(z)
     } else { # this traps optically illegal operations
-      invisible(NA)
+      return(NA)
     }
   } else if (class1 == "reflector.spct") {
     A2T(e1)
     if (is.numeric(e2)) {
-      invisible(reflector.spct(w.length=e1$w.length, Rfr=oper(e1$Rfr, e2)))
+      return(reflector.spct(w.length=e1$w.length, Rfr=oper(e1$Rfr, e2)))
     } else if (class2 == "source.spct") {
-      if (!identical(oper, `*`)) invisible(NA)
+      if (!identical(oper, `*`)) return(NA)
       z <- oper_spectra(e1$w.length, e2$w.length, e1$Rfr, e2$s.e.irrad, bin.oper=oper, trim="intersection")
       setnames(z, 2, "s.e.irrad")
       setSourceSpct(z)
-      invisible(z)
+      return(z)
     } else { # this traps optically illegal operations
-      invisible(NA)
+      return(NA)
     }
   } else if (class1 == "response.spct") {
     q2e(e1)
     if (is.numeric(e2)) {
-      invisible(response.spct(w.length=e1$w.length, s.e.response=oper(e1$s.e.response, e2)))
+      return(response.spct(w.length=e1$w.length, s.e.response=oper(e1$s.e.response, e2)))
     } else if (class2 == "source.spct") {
-      if (!identical(oper, `*`)) invisible(NA)
+      if (!identical(oper, `*`)) return(NA)
       z <- oper_spectra(e1$w.length, e2$w.length, e1$s.e.response, e2$s.e.irrad, bin.oper=oper, trim="intersection")
       setnames(z, 2, "s.e.response")
       setResponseSpct(z)
-      invisible(z)
+      return(z)
     } else { # this traps optically illegal operations
-      invisible(NA)
+      return(NA)
     }
   } else if (class1 == "chroma.spct") {
     if (is.numeric(e2)) {
       e3 <- copy(e1)
       if (length(e2) == 3 && names(e2) == c("x", "y", "z")) {
         e3[ , `:=`(x = x * e2["x"] , y = y * e2["y"], z = z  * e2["z"])]
-        invisible(e3)
+        return(e3)
       } else {
         e3[ , `:=`(x = x * e2 , y = y * e2, z = z  * e2)]
-        invisible(e3)
+        return(e3)
       }
     } else if (class2 == "source.spct") {
         x <- oper_spectra(e1$w.length, e2$w.length, e1$x, e2$s.e.irrad, bin.oper=oper, trim="intersection")
         y <- oper_spectra(e1$w.length, e2$w.length, e1$y, e2$s.e.irrad, bin.oper=oper, trim="intersection")
         z <- oper_spectra(e1$w.length, e2$w.length, e1$z, e2$s.e.irrad, bin.oper=oper, trim="intersection")
-        invisible(chroma.spct(w.length=x$w.length, x=x[["s.irrad"]], y=y[["s.irrad"]], z=z[["s.irrad"]]))
+        return(chroma.spct(w.length=x$w.length, x=x[["s.irrad"]], y=y[["s.irrad"]], z=z[["s.irrad"]]))
       } else {
-        invisible(NA)
+        return(NA)
       }
   } else {
-    invisible(NA)
+    return(NA)
   }
 }
 
@@ -124,7 +144,7 @@ oper.generic.spct <- function(e1, e2, oper) {
 #' @export
 #'
 '*.generic.spct' <- function(e1, e2) {
-  invisible(oper.generic.spct(e1, e2, `*`))
+  return(oper.generic.spct(e1, e2, `*`))
 }
 
 # division ----------------------------------------------------------------
@@ -140,7 +160,7 @@ oper.generic.spct <- function(e1, e2, oper) {
 #' @export
 #'
 '/.generic.spct' <- function(e1, e2) {
-  invisible(oper.generic.spct(e1, e2, `/`))
+  return(oper.generic.spct(e1, e2, `/`))
 }
 
 # Sum ---------------------------------------------------------------
@@ -155,7 +175,7 @@ oper.generic.spct <- function(e1, e2, oper) {
 #' @export
 #'
 '+.generic.spct' <- function(e1, e2) {
-  invisible(oper.generic.spct(e1, e2, `+`))
+  return(oper.generic.spct(e1, e2, `+`))
 }
 
 # Minus -------------------------------------------------------------------
@@ -170,7 +190,7 @@ oper.generic.spct <- function(e1, e2, oper) {
 #' @export
 #'
 '-.generic.spct' <- function(e1, e2) {
-    invisible(oper.generic.spct(e1, e2, `-`))
+    return(oper.generic.spct(e1, e2, `-`))
   }
 
 # other operators  ---------------------------------------------------------------------
@@ -184,7 +204,7 @@ oper.generic.spct <- function(e1, e2, oper) {
 #' @export
 #'
 '^.generic.spct' <- function(e1, e2) {
-  invisible(oper.generic.spct(e1, e2, `^`))
+  return(oper.generic.spct(e1, e2, `^`))
 }
 
 #' "log" function for spectra
@@ -206,7 +226,7 @@ oper.generic.spct <- function(e1, e2, oper) {
     if (exists("A", z, inherits=FALSE)) {
       z[ , A := NULL]
     }
-    invisible(z)
+    return(z)
   } else if(is(x, "reflector.spct")) {
     z <- copy(x)
     z$Rfr <- log(z$Rfr, base)
@@ -214,7 +234,7 @@ oper.generic.spct <- function(e1, e2, oper) {
       z[ , Tpc := NULL]
     }
     z$Rpc <- z$Rfr * 100
-    invisible(z)
+    return(z)
   } else if(is(x, "source.spct")) {
     q2e(x)
     z <- copy(x)
@@ -222,16 +242,16 @@ oper.generic.spct <- function(e1, e2, oper) {
     if (exists("s.q.irrad", z, inherits=FALSE)) {
       z[ , s.q.irrad := NULL]
     }
-    invisible(z)
+    return(z)
   } else if(is(x, "response.spct")) {
     z <- copy(x)
     z$s.e.response <- log(z$s.e.response, base)
     if (exists("s.q.irrad", z, inherits=FALSE)) {
       z[ , s.q.irrad := NULL]
     }
-    invisible(z)
+    return(z)
   }else {
-    invisible(NA)
+    return(NA)
   }
 }
 
@@ -243,7 +263,7 @@ oper.generic.spct <- function(e1, e2, oper) {
 #' @export
 #'
 'log10.generic.spct' <- function(x) {
-  invisible(log.generic.spct(x, base = 10))
+  return(log.generic.spct(x, base = 10))
 }
 
 #' "sqrt" function for spectra
@@ -264,7 +284,7 @@ oper.generic.spct <- function(e1, e2, oper) {
     if (exists("A", z, inherits=FALSE)) {
       z[ , A := NULL]
     }
-    invisible(z)
+    return(z)
   } else if (is(x, "reflector.spct")) {
     z <- copy(x)
     z$Rfr <- sqrt(z$Rfr)
@@ -272,7 +292,7 @@ oper.generic.spct <- function(e1, e2, oper) {
       z[ , Tpc := NULL]
       z$Rpc <- z$Rfr * 100
     }
-    invisible(z)
+    return(z)
   } else if(is(x, "source.spct")) {
     q2e(x)
     z <- copy(x)
@@ -280,16 +300,16 @@ oper.generic.spct <- function(e1, e2, oper) {
     if (exists("s.q.irrad", z, inherits=FALSE)) {
       z[ , s.q.irrad := NULL]
     }
-    invisible(z)
+    return(z)
   } else if(is(x, "response.spct")) {
     z <- copy(x)
     z$s.e.response <- sqrt(z$s.e.response)
     if (exists("s.q.irrad", z, inherits=FALSE)) {
       z[ , s.q.irrad := NULL]
     }
-    invisible(z)
+    return(z)
   }else {
-    invisible(NA)
+    return(NA)
   }
 }
 
@@ -311,7 +331,7 @@ oper.generic.spct <- function(e1, e2, oper) {
     if (exists("A", z, inherits=FALSE)) {
       z[ , A := NULL]
     }
-    invisible(z)
+    return(z)
   } else if (is(x, "reflector.spct")) {
     z <- copy(x)
     z$Rfr <- exp(z$Rfr)
@@ -319,7 +339,7 @@ oper.generic.spct <- function(e1, e2, oper) {
       z[ , Tpc := NULL]
       z$Rpc <- z$Rfr * 100
     }
-    invisible(z)
+    return(z)
   } else if(is(x, "source.spct")) {
     q2e(x)
     z <- copy(x)
@@ -327,16 +347,16 @@ oper.generic.spct <- function(e1, e2, oper) {
     if (exists("s.q.irrad", z, inherits=FALSE)) {
       z[ , s.q.irrad := NULL]
     }
-    invisible(z)
+    return(z)
   } else if(is(x, "response.spct")) {
     z <- copy(x)
     z$s.e.response <- exp(z$s.e.response)
     if (exists("s.q.irrad", z, inherits=FALSE)) {
       z[ , s.q.irrad := NULL]
     }
-    invisible(z)
+    return(z)
   }else {
-    invisible(NA)
+    return(NA)
   }
 }
 
@@ -398,7 +418,7 @@ A2T.filter.spct <- function(x, action="add", byref=FALSE) {
     name <- as.character(name)
     assign(name, x, parent.frame(), inherits = TRUE)
   }
-  invisible(x)
+  return(x)
 }
 
 
@@ -456,7 +476,7 @@ T2A.filter.spct <- function(x, action="add", byref=FALSE) {
     name <- as.character(name)
     assign(name, x, parent.frame(), inherits = TRUE)
   }
-  invisible(x)
+  return(x)
 }
 
 
@@ -516,7 +536,7 @@ e2q.source.spct <- function(x, action="add", byref=FALSE) {
     name <- as.character(name)
     assign(name, x, parent.frame(), inherits = TRUE)
   }
-  invisible(x)
+  return(x)
 }
 
 #' "response.spct" function
@@ -548,7 +568,7 @@ e2q.response.spct <- function(x, action="add", byref=FALSE) {
     name <- as.character(name)
     assign(name, x, parent.frame(), inherits = TRUE)
   }
-  invisible(x)
+  return(x)
 }
 
 # photon to energy ---------------------------------------------------------------------
@@ -605,7 +625,7 @@ q2e.source.spct <- function(x, action="add", byref=FALSE) {
     name <- as.character(name)
     assign(name, x, parent.frame(), inherits = TRUE)
   }
-  invisible(x)
+  return(x)
 }
 
 #' "response.spct" function
@@ -637,5 +657,5 @@ q2e.response.spct <- function(x, action="add", byref=FALSE) {
     name <- as.character(name)
     assign(name, x, parent.frame(), inherits = TRUE)
   }
-  invisible(x)
+  return(x)
 }

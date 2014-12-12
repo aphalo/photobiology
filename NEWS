@@ -1,19 +1,33 @@
 TODO
 ====
 
+Need to add warnings informing what has happened, when a given combination of operands is
+rejected, and add a table to the User Guide summarizing the valid and invalid operations.
 
-I should probably also rewrite the operator functions as there is so much messy logic in current code.
+I need to add a specialized print function for spectra, and add a global option to limit
+the length of the output. In addition, I should remove the use of invisible() as it seems
+to be surprising and confusing.
+
+photobiology 0.4.10
+===================
+
+The code for the operators has been rewritten almost from scratch. The code for the special
+functions has been edited. In addition to cleaner and more compact code, now the order of
+the operators does no longer affect the dispatch of the operators for spectral objects.
+There are some changes in which combinations of arguments are accepted. The checking is
+now more strict with respect to what may make sense from the point of view of the physics
+behind the calculations. Failed checks return NA.
 
 photobiology 0.4.9
 ===================
 
 Generic functions e_response() and q_response() added, and debugged.
 Changed check() for source.spct and response.spct so that it does not add "energy" or "photon" based spectral data
-on building objects, as this adds uneeded computation and complicates the logic by changing the
+on building objects, as this adds unneeded computation and complicates the logic by changing the
 data on copy operations (which is surprising and can lead to difficult-to-trace bugs.)
 This change can be NOT BACKWARDS compatible in some cases of user code, but should be fine for
 other functions defined in the photobiology packages, as they have been edited to maintain the
-same visible behaviour.
+same visible behavior.
 
 Fixed a spurious warning by trim_spct() due to minute differences in wavelengths.
 
