@@ -105,7 +105,8 @@ It is usual to `group' these two (or more) vectors into a data frame. For vector
 
 \subsection{Using `spectra' objects}
 
-This package defines a family of objects based on data tables (data frame compatible objects) which impose some restrictions on the naming of the vectors, something that allows the second set of functions to `find' the data when passed one of these objects as argument. In addition, as the data is checked when the object is built, there is no need to test for the validity of the data each time a calculation is carried out. The other advantage of using \texttt{spct} objects, is that specialized versions of generic functions like \texttt{print} and operators like \texttt{+} can be defined for spectra. \texttt{\_\_\_.spct} objects are derived from data.table objects, which in turn are derived from data.frame objects. In this package we define a \textit{generic} spectrum type of object, derived from data table, from which specialized types of spectra are derived. This `parenthood' hierarchy means that spectra objects can be used almost anywhere where a \texttt{data.frame} or \texttt{data.table} is expected. Many functions defined in package \texttt{data.table} and useful when working with spectra are re-exported by the current package, so that in most cases there is no need to explicitly include \texttt{library(data.table)} in your scripts.
+This package defines a family of objects based on data tables (data frame compatible objects) which impose some restrictions on the naming of the vectors, something that allows the second set of functions to `find' the data when passed one of these objects as argument. In addition, as the data is checked when the object is built, there is no need to test for the validity of the data each time a calculation is carried out. The other advantage of using \texttt{spct} objects, is that specialized versions of generic functions like \texttt{print} and operators like \texttt{+} can be defined for spectra. \texttt{\_\_\_.spct} objects are derived from data.table objects, which in turn are derived from data.frame objects. In this package we define a \textit{generic} spectrum type of object, derived from data table, from which specialized types of spectra are derived. This `parenthood' hierarchy means that spectra objects can be used almost anywhere where a \texttt{data.frame} or \texttt{data.table} is expected. Many functions defined in package \texttt{data.table} are useful when working with spectra.
+%, so that in most cases there is no need to explicitly include \texttt{library(data.table)} in your scripts.
 
 Although \texttt{data.tables} are syntactically compatible with \texttt{data.frames}, in some special cases the same code may have different semantics as data tables use references in some cases were data frames would use a copy of the data. In general, no such problems exist, and the different semantics only applies to data table specific syntax. If in doubt, to avoid problems, when you really intend to make a new copy of a spectrum, preserving the original object unchanged by later operations on the new `name', use function \texttt{copy} in addition to the assignment operator.
 
@@ -136,9 +137,26 @@ a.dt # not modified!
 
 From the examples above one can see that in example 3) \texttt{b.dt} is not a copy of \texttt{a.dt}, but instead a reference (a new name pointing to the original object), while in examples 1), 2) and 4) \texttt{b.dt}, is a new object, initialized to the value of \texttt{a.dt}.
 
+Spectral objects are printed in the current version of the package by the function defined in package \texttt{data.frame}, consequently, it is possible to use options from this package to control printing. The first option set below, \texttt{datatable.print.nrows}, determines the number of rows above which only `head' and `tail' rows are printed. The second option, \texttt{datatable.print.topn}, determines how many rows are printed when not all rows are printed.
+
+<<set-up-printing>>=
+options(datatable.print.nrows=10)
+options(datatable.print.topn=2)
+@
+
+The number of rows printed can be also controlled through an explicit argument to the second parameter of \texttt{print}, \texttt{head}, and \texttt{tail}. Setting an option by means of \texttt{options} changes the default behaviour of \texttt{print}, but explicit arguments can still be used for changing this behaviour in an individual statement. The statement \texttt{a.dt} implicitly calls \texttt{print} when using R in interactive mode.
+
+<<>>=
+a.dt
+print(a.dt)
+print(a.dt, 1L)
+head(a.dt, 2L)
+tail(a.dt, 2L)
+@
+
 \subsection{Spectral data assumptions}
 
-An assumption of the package is that wavelengths are always expressed in nanometres ($1~\Unit{nm} = 1 \cdot 10^{-9} \Unit{m}$). If the data to be analysed uses different units for wavelengths, e.g.\ Angstrom ($1~\Unit{Å} = 1 \cdot 10^{-10} m$), the values need to be rescaled before any calculations. \textbf{Not doing so will yield completely wrong results!}
+An assumption of the package is that wavelengths are always expressed in nanometres ($1~\Unit{nm} = 1 \cdot 10^{-9} \Unit{m}$). If the data to be analysed uses different units for wavelengths, e.g.\ Angstrom ($1~\Unit{Å} = 1 \cdot 10^{-10} m$), the values need to be re-scaled before any calculations. \textbf{Not doing so will yield completely wrong results!}
 
 Energy irradiances are assumed to be expressed in \watt and photon irradiances in \mol, that is to say using second as unit for time. This is the default, but it is possible to set the unit for time to day in the case of \texttt{source.spct} objects.
 
@@ -759,7 +777,7 @@ q_irrad(sun.spct * polyester.new.spct, list(UVB(), UVA(), PAR())) /
 
 The functions \texttt{e\_response} and \texttt{q\_response} take response.spct objects as arguments, and return the integrated value for each waveband (integrated over wavelength) \textbf{assuming} a light source with a flat spectral energy or photon output respectively.
 
-If no waveband is supplied as argument, the whole spectrum is intergrated.
+If no waveband is supplied as argument, the whole spectrum is integrated.
 
 <<>>=
 e_response(Vital_BW_20.spct)
@@ -1001,7 +1019,7 @@ Sometimes it is needed to add (parallel sum) between two spectra, even if the tw
 measured at different wavelengths or wavelength steps. This can happen for example when we would like
 to calculate the spectrum of a combination of two light sources from the individual spectra.
 
-A function \verb|interpolate_spectrum| is also included to facilitate interpolation of spectral values. It is used internaly, but can also be used by itself when interpolation is needed.
+A function \verb|interpolate_spectrum| is also included to facilitate interpolation of spectral values. It is used internally, but can also be used by itself when interpolation is needed.
 Under the hood it uses R's \verb|spline| function if there are fewer than 25 data points, and uses \verb|approx|
 otherwise. It allows easier control of values to be used for extrapolation.
 
@@ -1012,14 +1030,14 @@ The first thing to do is to think whether any part of the spectral measurements 
 In the following example we use a longer wavelength (297~nm) just to show how the function works, because the example spectral data set starts at 293~nm.
 
 <<example-sun>>=
-head(sun.spct)
+head(sun.spct, 2L)
 @
 
 Sub-setting can be easily done as follows if the data are in a data.frame (of course, replacing \texttt{w.length} with the name used in your data frame for the wavelengths array):
 
 <<example-subset>>=
 subsetted.sun.spct <- subset(sun.spct, w.length >= 297)
-head(subsetted.sun.spct)
+head(subsetted.sun.spct, 2L)
 @
 
 And then just use the sub-setted data in your calculations.
@@ -1033,8 +1051,7 @@ See earlier section \ref{sec:trim:spct} on page \pageref{sec:trim:spct} for deta
 <<example-trim-low>>=
 trimmed.sun.spct <-
   trim_tails(w.length, s.e.irrad, low.limit=297)
-head(trimmed.sun.spct)
-tail(trimmed.sun.spct)
+print(trimmed.sun.spct)
 class(trimmed.sun.spct)
 @
 
@@ -1043,22 +1060,20 @@ This function returns a new data.frame and uses always the same variable names f
 <<example-trim-both>>=
 trimmed.both.sun.spct <-
   trim_tails(w.length, s.e.irrad, low.limit=297, high.limit=550)
-head(trimmed.both.sun.spct)
-tail(trimmed.both.sun.spct)
+print(trimmed.both.sun.spct)
 @
 
 If we supply a different value than the default NULL for the parameter \texttt{fill}, the w.length values are kept, and the trimmed spectral irradiance values replaced by the value supplied.
 
 <<example-trim-na>>=
 trimmed.na.sun.spct <- trim_tails(w.length, s.e.irrad, low.limit=297, fill=NA)
-head(trimmed.na.sun.spct)
+print(trimmed.na.sun.spct)
 @
 
 <<example-trim-both-na>>=
 trimmed.both.na.sun.spct <-
   trim_tails(w.length, s.e.irrad, low.limit=297, high.limit=400, fill=NA)
-head(trimmed.both.na.sun.spct)
-tail(trimmed.both.na.sun.spct)
+print(trimmed.both.na.sun.spct)
 @
 
 In addition to NA we can supply an arbitrary numeric value as fill.
@@ -1066,7 +1081,7 @@ In addition to NA we can supply an arbitrary numeric value as fill.
 <<example-trim-zero>>=
 trimmed.zero.sun.spct <-
   trim_tails(w.length, s.e.irrad, low.limit=297, fill=0.0)
-head(trimmed.zero.sun.spct)
+print(trimmed.zero.sun.spct)
 @
 
 %Using real spectral data compared to modelled spectral data for sunlight we show a finally some of the pitfalls, and possible work-arounds, for dealing with noisy measurements, and calculating effective doses from them.

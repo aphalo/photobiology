@@ -1,5 +1,6 @@
 
-
+# options(datatable.print.topn=1)
+# options(datatable.print.nrows=50)
 
 
 # summary -----------------------------------------------------------------

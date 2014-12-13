@@ -147,5 +147,5 @@ trim_spct <- function(spct, band=NULL, low.limit=NULL, high.limit=NULL, use.hing
   }
   # %between% removes derived class tags!
   #  setattr(spct, "class", class.spct)
-  invisible(spct)
+  return(spct)
 }

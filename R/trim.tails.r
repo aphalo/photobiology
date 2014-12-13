@@ -81,10 +81,10 @@ trim_tails <- function(w.length, s.irrad, low.limit=min(w.length), high.limit=ma
 
   trimmed.selector <- (w.length >= low.limit) & (w.length <= high.limit)
   if (is.null(fill)) {
-    invisible(data.table(w.length = w.length[trimmed.selector], s.irrad = s.irrad[trimmed.selector]))
+    return(data.table(w.length = w.length[trimmed.selector], s.irrad = s.irrad[trimmed.selector]))
   }
   else {
     s.irrad[!trimmed.selector] <- fill
-    invisible(data.table(w.length = w.length, s.irrad=s.irrad))
+    return(data.table(w.length = w.length, s.irrad=s.irrad))
   }
 }

@@ -20,7 +20,7 @@
 ##' insert_spct_hinges(sun.spct, c(199.99,200.00,399.50,399.99,400.00,699.99,700.00,799.99,1000.00))
 insert_spct_hinges <- function(spct, hinges=NULL) {
   if (is.null(hinges)) {
-    invisible(spct)
+    return(spct)
   }
   hinges <- hinges[hinges > min(spct) & hinges < max(spct)]
   hinges <- unique(sort(hinges))
@@ -69,8 +69,8 @@ insert_spct_hinges <- function(spct, hinges=NULL) {
       name <- as.character(name)
       assign(name, new.spct, parent.frame(), inherits = TRUE)
     }
-    invisible(new.spct)
+    return(new.spct)
   } else {
-    invisible(spct)
+    return(spct)
   }
 }

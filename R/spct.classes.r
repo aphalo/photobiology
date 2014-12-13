@@ -47,7 +47,7 @@ check.default <- function(x, byref=FALSE) {
 check.private.spct <- function(x, byref=TRUE) {
   if (exists("w.length", x, mode = "numeric", inherits=FALSE) &&
         exists("numbers", x, mode = "numeric", inherits=FALSE)) {
-    invisible(x)
+    return(x)
   }
 }
 
@@ -60,17 +60,17 @@ check.private.spct <- function(x, byref=TRUE) {
 #' @export check.generic.spct
 check.generic.spct <- function(x, byref=TRUE) {
   if (exists("w.length", x, mode = "numeric", inherits=FALSE)) {
-    invisible(x)
+    return(x)
   } else if (exists("wl", x, mode = "numeric", inherits=FALSE)) {
     setnames(x, "wl", "w.length")
-    invisible(x)
+    return(x)
   } else if (exists("wavelength", x, mode = "numeric", inherits=FALSE)) {
     setnames(x, "wavelength", "w.length")
-    invisible(x)
+    return(x)
   } else {
     warning("No wavelength data found in generic.spct")
     x[ , w.length := NA]
-    invisible(x)
+    return(x)
   }
 }
 
@@ -83,17 +83,17 @@ check.generic.spct <- function(x, byref=TRUE) {
 #' @export check.filter.spct
 check.filter.spct <- function(x, byref=TRUE) {
   if (exists("Tfr", x, mode = "numeric", inherits=FALSE)) {
-    invisible(x)
+    return(x)
   } else if (exists("Tpc", x, mode = "numeric", inherits=FALSE)) {
     x[ , Tfr := Tpc / 100]
-    invisible(x)
+    return(x)
   } else if (exists("A", x, mode = "numeric", inherits=FALSE)) {
     x[ , Tfr := A2T(A)]
-    invisible(x)
+    return(x)
   } else {
     warning("No transmittance or absorbance data found in filter.spct")
     x[ , Tfr := NA]
-    invisible(x)
+    return(x)
   }
 }
 
@@ -106,14 +106,14 @@ check.filter.spct <- function(x, byref=TRUE) {
 #' @export check.reflector.spct
 check.reflector.spct <- function(x, byref=TRUE) {
   if (exists("Rfr", x, mode = "numeric", inherits=FALSE)) {
-    invisible(x)
+    return(x)
   } else if (exists("Rpc", x, mode = "numeric", inherits=FALSE)) {
     x[ , Rfr := Rpc / 100]
-    invisible(x)
+    return(x)
   } else {
     warning("No reflectance data found in reflector.spct")
     x[ , Rfr := NA]
-    invisible(x)
+    return(x)
   }
 }
 
@@ -126,21 +126,21 @@ check.reflector.spct <- function(x, byref=TRUE) {
 #' @export check.response.spct
 check.response.spct <- function(x, byref=TRUE) {
   if (exists("s.e.response", x, mode = "numeric", inherits=FALSE)) {
-    invisible(x)
+    return(x)
   } else if (exists("response", x, mode = "numeric", inherits=FALSE)) {
     x[ , s.e.response := response]
     x[ , response := NULL]
-    invisible(x)
+    return(x)
   } else if (exists("signal", x, mode = "numeric", inherits=FALSE)) {
     x[ , s.e.response := signal]
     x[ , signal := NULL]
-    invisible(x)
+    return(x)
   } else if (exists("s.q.response", x, mode = "numeric", inherits=FALSE)) {
-    invisible(x)
+    return(x)
   } else {
     warning("No response data found in response.spct")
     x[ , s.e.response := NA]
-    invisible(x)
+    return(x)
   }
 }
 
@@ -153,13 +153,13 @@ check.response.spct <- function(x, byref=TRUE) {
 #' @export check.source.spct
 check.source.spct <- function(x, byref=TRUE) {
   if (exists("s.e.irrad", x, mode = "numeric", inherits=FALSE)) {
-    invisible(x)
+    return(x)
   } else if (exists("s.q.irrad", x, mode = "numeric", inherits=FALSE)) {
-    invisible(x)
+    return(x)
   } else {
     warning("No spectral irradiance data found in source.spct")
     x[ , s.e.irrad := NA]
-    invisible(x)
+    return(x)
   }
 }
 
@@ -178,10 +178,10 @@ check.chroma.spct <- function(x, byref=TRUE) {
   if (exists("x", x, mode="numeric", inherits=FALSE) &&
         exists("y", x, mode="numeric", inherits=FALSE) &&
         exists("z", x, mode="numeric", inherits=FALSE) ) {
-    invisible(x)
+    return(x)
   } else {
     warning("No spectral chromaticity coordinates data found in chroma.spct")
-    invisible(x[ , c(x, y, z) := NA])
+    return(x[ , c(x, y, z) := NA])
   }
 }
 
@@ -699,12 +699,12 @@ as.chroma.spct <- function(x) {
 setTimeUnit <- function(x, time.unit=c("second", "day")) {
   if  (!(time.unit[1] %in% c("second", "day", "unknown"))) {
     warning("Invalid 'time.unit' argument, only 'second' and 'day' supported.")
-    invisible(x)
+    return(x)
   }
   if (is.source.spct(x)) {
     setattr(x, "time.unit", time.unit[1])
   }
-  invisible(x)
+  return(x)
 }
 
 
@@ -728,11 +728,11 @@ setTimeUnit <- function(x, time.unit=c("second", "day")) {
 setTfrType <- function(x, Tfr.type=c("total", "internal")) {
   if  (!(Tfr.type[1] %in% c("total", "internal", "unknown"))) {
     warning("Invalid 'Tfr.type' argument, only 'total' and 'internal' supported.")
-    invisible(x)
+    return(x)
   }
   if (is.filter.spct(x)) {
     setattr(x, "Tfr.type", Tfr.type[1])
   }
-  invisible(x)
+  return(x)
 }
 

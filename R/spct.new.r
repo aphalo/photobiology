@@ -27,7 +27,7 @@ source.spct <- function(w.length, s.e.irrad=NULL, s.q.irrad=NULL, time.unit=c("s
     setattr(out.spct, "comment", comment)
   }
   setSourceSpct(out.spct, time.unit)
-  invisible(out.spct)
+  return(out.spct)
 }
 
 #' Create a new filter.spct
@@ -65,7 +65,7 @@ filter.spct <- function(w.length, Tfr=NULL, Tpc=NULL, A=NULL, Tfr.type=c("total"
     setattr(out.spct, "comment", comment)
   }
   setFilterSpct(out.spct, Tfr.type)
-  invisible(out.spct)
+  return(out.spct)
 }
 
 #' Create a new reflector.spct

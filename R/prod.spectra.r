@@ -34,7 +34,7 @@
 #' tail(square.sun.data)
 
 prod_spectra <- function(w.length1, w.length2=NULL, s.irrad1, s.irrad2, trim="union", na.rm=FALSE) {
-  invisible(oper_spectra(w.length1=w.length1, w.length2=w.length2,
+  return(oper_spectra(w.length1=w.length1, w.length2=w.length2,
                       s.irrad1=s.irrad1, s.irrad2=s.irrad2,
                       trim="union", na.rm=FALSE,
                       bin.oper=`*`))

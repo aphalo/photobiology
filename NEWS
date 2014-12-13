@@ -18,6 +18,10 @@ There are some changes in which combinations of arguments are accepted. The chec
 now more strict with respect to what may make sense from the point of view of the physics
 behind the calculations. Failed checks return NA.
 
+All calls to invisible(), except in the \texttt{set\_\_\_Spct} functions, have been replaced
+with return() as the lack of visible output was confusing. It is now docummented in the
+User Guide how to use options() to control the length of the print output.
+
 photobiology 0.4.9
 ===================
 
