@@ -6,7 +6,7 @@
 #' This function returns the irradiance for a given
 #' waveband of a light source spectrum.
 #'
-#' @usage irrad(spct, w.band=NULL, unit.out=NULL,
+#' @usage irrad(spct, w.band=NULL, unit.out=getOption("photobiology.base.unit", default="energy"),
 #' use.cached.mult=FALSE, use.hinges=NULL)
 #'
 #' @usage irrad_spct(spct, w.band=NULL, unit.out=NULL,
@@ -41,11 +41,11 @@
 #' @aliases irrad irrad_spct
 
 irrad <-
-  function(spct, w.band=NULL, unit.out=NULL,
+  function(spct, w.band=NULL, unit.out=getOption("photobiology.base.unit", default="energy"),
            use.cached.mult=FALSE, use.hinges=NULL){
     # what output? seems safer to not have a default here
     if (is.null(unit.out) || is.na(unit.out)){
-      warning("'unit.out' has no default value")
+      warning("'unit.out' set to an invalid value")
       return(NA)
     }
     if (unit.out == "quantum") {

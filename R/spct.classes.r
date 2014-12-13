@@ -82,6 +82,10 @@ check.generic.spct <- function(x, byref=TRUE) {
 #' @param byref logical indicating if new object will be created by reference or by copy of x
 #' @export check.filter.spct
 check.filter.spct <- function(x, byref=TRUE) {
+  if (is.null(attr(x, "Tfr.type"))) {
+    setTrfType(x, "total")
+    warning("Missing Trf.type attribute replaced by 'total'")
+  }
   if (exists("Tfr", x, mode = "numeric", inherits=FALSE)) {
     return(x)
   } else if (exists("Tpc", x, mode = "numeric", inherits=FALSE)) {
@@ -152,6 +156,10 @@ check.response.spct <- function(x, byref=TRUE) {
 #' @param byref logical indicating if new object will be created by reference or by copy of x
 #' @export check.source.spct
 check.source.spct <- function(x, byref=TRUE) {
+  if (is.null(attr(x, "time.unit"))) {
+    setTimeUnit(x, "second")
+    warning("Missing time.unit replaced by 'second'")
+  }
   if (exists("s.e.irrad", x, mode = "numeric", inherits=FALSE)) {
     return(x)
   } else if (exists("s.q.irrad", x, mode = "numeric", inherits=FALSE)) {

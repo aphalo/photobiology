@@ -4,9 +4,27 @@ TODO
 Need to add warnings informing what has happened, when a given combination of operands is
 rejected, and add a table to the User Guide summarizing the valid and invalid operations.
 
-I need to add a specialized print function for spectra, and add a global option to limit
-the length of the output. In addition, I should remove the use of invisible() as it seems
-to be surprising and confusing.
+photobiology 0.4.11
+===================
+
+Options for operators and functions added:
+options(photobiology.base.unit = "energy")
+options(photobiology.base.unit = "photon")
+determine whether operations are carried using energy based or a photon based quantities
+(this affects operations involving source.spct and response.spct objects).
+
+options(photobiology.filter.qty = "transmittance")
+options(photobiology.filter.qty = "absorbance")
+determine whether operations are carried using transmittance or absorbance quantities
+(this affects operations involving filter.spct objects).
+
+The defaults remain the same as in earlier versions.
+Options can be unset with NULL.
+options(photobiology.base.unit = NULL)
+options(photobiology.filter.qty = NULL)
+
+User Guide thoroughly updated to reflect currently available functionality, including
+the options described above.
 
 photobiology 0.4.10
 ===================
