@@ -7,6 +7,9 @@ rejected, and add a table to the User Guide summarizing the valid and invalid op
 photobiology 0.4.11
 ===================
 
+Added absorbance related functions, similar to the transmittance ones: absorbance_spct()
+and absorbance().
+
 Options for operators and functions added:
 options(photobiology.base.unit = "energy")
 options(photobiology.base.unit = "photon")

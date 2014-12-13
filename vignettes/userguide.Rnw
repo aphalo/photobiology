@@ -777,12 +777,13 @@ with(sun.data,
 )
 @
 
-\subsection{Calculating average transmittance and reflectance}
+\subsection{Calculating average transmittance, absorbance and reflectance}
 
-The functions \texttt{transmittance} and \texttt{reflectance} take filter.spct and reflector.spct objects as arguments, and return an average value for these quantities \textbf{assuming} a light source with a flat spectral energy output. Values expressed as percentages.
+The functions \texttt{transmittance}, \texttt{absorbance} and \texttt{reflectance} take filter.spct and reflector.spct objects as arguments, and return an average value for these quantities \textbf{assuming} a light source with a flat spectral energy output. Values expressed as percentages.
 
 <<>>=
 transmittance(polyester.new.spct, list(UVB(), UVA(), PAR())) * 100
+absorbance(polyester.new.spct, list(UVB(), UVA(), PAR()))
 @
 
 It is more likely that we would like to calculate these values with reference to light of a certain spectral quality. This needs to be calculated by hand, which is not difficult. For example, for UV-B, using energy.
