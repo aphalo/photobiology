@@ -3,29 +3,39 @@
 #' This function returns the mean response for a given
 #' waveband and a response spectrum.
 #'
-#' @usage response_intg(spct, w.band=NULL, unit.out, use.hinges=NULL)
+#' @usage response_spct(spct, w.band=NULL,
+#'                      unit.out=getOption("photobiology.base.unit",
+#'                      default="energy"), quantity, use.hinges=NULL)
 #'
 #' @param spct an object of class response.spct"
 #' @param w.band a waveband object or a list of waveband objects
 #' @param unit.out character string with allowed values "energy", and "photon", or its alias "quantum"
+#' @param quantity character string
 #' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
 #'
 #' @return a single numeric value expressed either as a fraction of one or a percentage, or a
 #' vector of the same length as the list of wave.bands.
 #' @keywords manip misc
-#' @export
+#' @export response.response.spct response_spct
+#' @aliases response.response.spct response_spct response
 #' @examples
 #' library(photobiologySensors)
-#' response_intg(Vital_BW_20.spct, new_waveband(200,300), unit.out="photon") * 1e-6
-#' response_intg(Vital_BW_20.spct, new_waveband(200,300), unit.out="energy")
-#' response_intg(Vital_BW_20.spct, unit.out="energy")
-#' response_intg(Vital_BW_20.spct, unit.out="photon") * 1e-6
+#' response_spct(Vital_BW_20.spct, new_waveband(293,385),
+#'    unit.out="photon") * 1e-6
+#' response_spct(Vital_BW_20.spct, new_waveband(293,385),
+#'    unit.out="energy")
+#' response_spct(Vital_BW_20.spct)
+#' response_spct(Vital_BW_20.spct, unit.out="energy")
+#' response_spct(Vital_BW_20.spct, unit.out="photon") * 1e-6
 #'
 #' @note The parameter \code{use.hinges} controls speed optimization. The defaults should be suitable
 #' in mosts cases. Only the range of wavelengths in the wavebands is used and all BSWFs are ignored.
 
-response_intg <-
-  function(spct, w.band=NULL, unit.out, use.hinges=NULL){
+response_spct <-
+  function(spct, w.band=NULL,
+           unit.out=getOption("photobiology.base.unit", default="energy"),
+           quantity="total",
+           use.hinges=NULL){
     # "response.spct" objects are not guaranteed to contain response
     # data.
     if (!exists("s.e.response", spct, inherits=FALSE) &&
@@ -107,25 +117,82 @@ response_intg <-
       # we calculate the integrated response.
       response[i] <- integrate_spct(trim_spct(spct, wb, use.hinges=FALSE))
     }
+    if (quantity %in% c("contribution", "contribution.pc")) {
+      if (any(sapply(w.band, is_effective))) {
+        warning("'quantity '", quantity, "' not supported when using BSWFs, returning 'total' instead")
+        quantity <- "total"
+      } else {
+        total <- response_spct(spct, w.band=NULL, unit.out=unit.out,
+                            quantity="total", use.hinges=FALSE)
+        response <- response / total
+        if (quantity == "contribution.pc") {
+          response <- response * 1e2
+        }
+      }
+    } else if (quantity %in% c("relative", "relative.pc")) {
+      if (any(sapply(w.band, is_effective))) {
+        warning("'quantity '", quantity, "' not supported when using BSWFs, returning 'total' instead")
+        quantity <- "total"
+      } else {
+        total <- sum(response)
+        response <- response / total
+        if (quantity == "relative.pc") {
+          response <- response * 1e2
+        }
+      }
+    } else if (quantity == "average") {
+      response <- response / sapply(w.band, spread)
+    } else if (quantity != "total") {
+      warning("'quantity '", quantity, "' is invalid, returning 'total' instead")
+      quantity <- "total"
+    }
 
     names(response) <- paste(names(response), wb_name)
-    if (unit.out == "photon") {
-      setattr(response, "radiation.unit", "q response")
-    } else if (unit.out == "energy") {
-      setattr(response, "radiation.unit", "e response")
-    }
+    setattr(response, "radiation.unit", paste(unit.out, "response", quantity))
     return(response)
   }
 
-#' Calculate energy-based photo-response from spectral response.
+response.response.spct <- response_spct
+
+#' Default for generic function
 #'
-#' This function returns the mean response for a given
+#' Calculate average photon-based photo-response.
+#'
+#' @param spct an object of class "generic.spct"
+#' @param w.band a waveband object or a list of waveband objects
+#' @param unit.out character string with allowed values "energy", and "photon", or its alias "quantum"
+#' @param quantity character string
+#' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
+#' @export response.default
+#'
+response.default <- function(spct, w.band, unit.out, quantity, use.hinges) {
+  return(NA)
+}
+
+#' Generic function
+#'
+#' Calculate average photon- or energy-based photo-response.
+#'
+#' @param spct an R object of class "generic.spct"
+#' @param w.band a waveband object or a list of waveband objects
+#' @param unit.out character string with allowed values "energy", and "photon", or its alias "quantum"
+#' @param quantity character string
+#' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
+#'
+#' @export
+#'
+response <- function(spct, w.band, unit.out, quantity, use.hinges) UseMethod("response")
+
+#' Calculate energy or photon based response from spectral response.
+#'
+#' This function returns the mean, total, or contribution of response for each
 #' waveband and a response spectrum.
 #'
-#' @usage e_response.response.spct(spct, w.band=NULL, use.hinges=NULL)
+#' @usage e_response(spct, w.band=NULL, quantity="total", use.hinges=NULL)
 #'
 #' @param spct an object of class response.spct"
 #' @param w.band a waveband object or a list of waveband objects
+#' @param quantity character string
 #' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
 #'
 #' @return a single numeric value expressed either as a fraction of one or a percentage, or a
@@ -141,8 +208,8 @@ response_intg <-
 #' in mosts cases. Only the range of wavelengths in the wavebands is used and all BSWFs are ignored.
 
 e_response.response.spct <-
-  function(spct, w.band=NULL, use.hinges=NULL){
-    response_intg(spct=spct, w.band=w.band, unit.out="energy", use.hinges=use.hinges)
+  function(spct, w.band=NULL, quantity="total", use.hinges=NULL){
+    response_spct(spct=spct, w.band=w.band, unit.out="energy", quantity=quantity, use.hinges=use.hinges)
   }
 
 #' Calculate photon-based photo-response from spectral response.
@@ -150,10 +217,11 @@ e_response.response.spct <-
 #' This function returns the mean response for a given
 #' waveband and a response spectrum.
 #'
-#' @usage q_response.response.spct(spct, w.band=NULL, use.hinges=NULL)
+#' @usage q_response.response.spct(spct, w.band=NULL, quantity="total", use.hinges=NULL)
 #'
 #' @param spct an object of class response.spct"
 #' @param w.band a waveband object or a list of waveband objects
+#' @param quantity character string
 #' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
 #'
 #' @return a single numeric value expressed either as a fraction of one or a percentage, or a
@@ -169,8 +237,8 @@ e_response.response.spct <-
 #' in mosts cases. Only the range of wavelengths in the wavebands is used and all BSWFs are ignored.
 
 q_response.response.spct <-
-  function(spct, w.band=NULL, use.hinges=NULL){
-    response_intg(spct=spct, w.band=w.band, unit.out="photon", use.hinges=use.hinges)
+  function(spct, w.band=NULL, quantity="total", use.hinges=NULL){
+    response_spct(spct=spct, w.band=w.band, unit.out="photon", quantity=quantity, use.hinges=use.hinges)
   }
 
 #' Generic function
@@ -179,11 +247,12 @@ q_response.response.spct <-
 #'
 #' @param spct an R object of class "generic.spct"
 #' @param w.band a waveband object or a list of waveband objects
+#' @param quantity character string
 #' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
 #'
 #' @export e_response
 #'
-e_response <- function(spct, w.band, use.hinges) UseMethod("e_response")
+e_response <- function(spct, w.band, quantity, use.hinges) UseMethod("e_response")
 
 #' Generic function
 #'
@@ -191,11 +260,12 @@ e_response <- function(spct, w.band, use.hinges) UseMethod("e_response")
 #'
 #' @param spct an R object of class "generic.spct"
 #' @param w.band a waveband object or a list of waveband objects
+#' @param quantity character string
 #' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
 #'
 #' @export q_response
 #'
-q_response <- function(spct, w.band, use.hinges) UseMethod("q_response")
+q_response <- function(spct, w.band, quantity, use.hinges) UseMethod("q_response")
 
 #' Default for generic function
 #'
@@ -203,10 +273,11 @@ q_response <- function(spct, w.band, use.hinges) UseMethod("q_response")
 #'
 #' @param spct an object of class "generic.spct"
 #' @param w.band a waveband object or a list of waveband objects
+#' @param quantity character string
 #' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
-#' @export reflectance.default
+#' @export e_response.default
 #'
-e_response.default <- function(spct, w.band, use.hinges) {
+e_response.default <- function(spct, w.band, quantity, use.hinges) {
   return(NA)
 }
 
@@ -216,10 +287,11 @@ e_response.default <- function(spct, w.band, use.hinges) {
 #'
 #' @param spct an object of class "generic.spct"
 #' @param w.band a waveband object or a list of waveband objects
+#' @param quantity character string
 #' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
-#' @export reflectance.default
+#' @export q_response.default
 #'
-q_response.default <- function(spct, w.band, use.hinges) {
+q_response.default <- function(spct, w.band, quantity, use.hinges) {
   return(NA)
 }
 

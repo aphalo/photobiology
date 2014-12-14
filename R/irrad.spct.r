@@ -7,14 +7,16 @@
 #' waveband of a light source spectrum.
 #'
 #' @usage irrad(spct, w.band=NULL, unit.out=getOption("photobiology.base.unit", default="energy"),
-#' use.cached.mult=FALSE, use.hinges=NULL)
+#' quantity="total", use.cached.mult=FALSE, use.hinges=NULL)
 #'
-#' @usage irrad_spct(spct, w.band=NULL, unit.out=NULL,
-#' use.cached.mult=FALSE, use.hinges=NULL)
+#' @usage irrad_spct(spct, w.band=NULL,
+#'                   unit.out=getOption("photobiology.base.unit", default="energy"),
+#'                   quantity="total", use.cached.mult=FALSE, use.hinges=NULL)
 #'
 #' @param spct an object of class "source.spct"
 #' @param w.band list of waveband definitions created with new_waveband()
 #' @param unit.out character string with allowed values "energy", and "photon", or its alias "quantum"
+#' @param quantity character string
 #' @param use.cached.mult logical indicating whether multiplier values should be cached between calls
 #' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
 #'
@@ -25,9 +27,8 @@
 #' If time.unit is day, [J d-1 m-2 nm-1] -> [mol d-1 m-2] or [J d-1 m-2 nm-1] -> [J m-2]
 #'
 #' @keywords manip misc
-#' @export irrad irrad_spct
+#' @export irrad.source.spct irrad_spct
 #' @examples
-#' data(sun.spct)
 #' irrad_spct(sun.spct, new_waveband(400,700), "photon")
 #' irrad_spct(sun.spct, new_waveband(400,700), "energy")
 #'
@@ -38,11 +39,11 @@
 #' that the wavelengths are the same in each call, as the only test done is for the length of the
 #' \code{w.length} vector.
 #'
-#' @aliases irrad irrad_spct
+#' @aliases irrad.source.spct irrad_spct
 
-irrad <-
+irrad_spct <-
   function(spct, w.band=NULL, unit.out=getOption("photobiology.base.unit", default="energy"),
-           use.cached.mult=FALSE, use.hinges=NULL){
+           quantity="total", use.cached.mult=FALSE, use.hinges=NULL){
     # we have a default, but we check for invalid arguments
     if (is.null(unit.out) || is.na(unit.out)){
       warning("'unit.out' set to an invalid value")
@@ -131,15 +132,74 @@ irrad <-
       }
       irrad[i] <- irr
     }
-
+    if (quantity %in% c("contribution", "contribution.pc")) {
+      if (any(sapply(w.band, is_effective))) {
+        warning("'quantity '", quantity, "' not supported when using BSWFs, returning 'total' instead")
+        quantity <- "total"
+      } else {
+        total <- irrad_spct(spct, w.band=NULL, unit.out=unit.out,
+                            quantity="total", use.cached.mult=FALSE, use.hinges=FALSE)
+        irrad <- irrad / total
+        if (quantity == "contribution.pc") {
+          irrad <- irrad * 1e2
+        }
+      }
+    } else if (quantity %in% c("relative", "relative.pc")) {
+      if (any(sapply(w.band, is_effective))) {
+        warning("'quantity '", quantity, "' not supported when using BSWFs, returning 'total' instead")
+        quantity <- "total"
+      } else {
+        total <- sum(irrad)
+        irrad <- irrad / total
+        if (quantity == "relative.pc") {
+          irrad <- irrad * 1e2
+        }
+      }
+    } else if (quantity == "average") {
+      irrad <- irrad / sapply(w.band, spread)
+    } else if (quantity != "total") {
+      warning("'quantity '", quantity, "' is invalid, returning 'total' instead")
+      quantity <- "total"
+    }
     names(irrad) <- wb.name
     setattr(irrad, "time.unit", attr(spct, "time.unit", exact=TRUE))
-    setattr(irrad, "radiation.unit", unit.out)
+    setattr(irrad, "radiation.unit", paste(unit.out, "irradiance", quantity))
     return(irrad)
   }
 
-irrad_spct <- irrad
+irrad.source.spct <- irrad_spct
 
+#' Default for generic function
+#'
+#' Calculate energy or photon irradiance.
+#'
+#' @param spct an object of class "generic.spct"
+#' @param w.band a waveband object or a list of waveband objects
+#' @param unit.out character string with allowed values "energy", and "photon", or its alias "quantum"
+#' @param quantity character string
+#' @param use.cached.mult logical indicating whether multiplier values should be cached between calls
+#' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
+#' @export reflectance.default
+#'
+
+irrad.default <- function(spct, w.band, unit.out, quantity, use.cached.mult, use.hinges) {
+  return(NA)
+}
+
+#' Generic function
+#'
+#' Calculate energy or photon irradiance.
+#'
+#' @param spct an R object of class "generic.spct"
+#' @param w.band a waveband object or a list of waveband objects
+#' @param unit.out character string with allowed values "energy", and "photon", or its alias "quantum"
+#' @param quantity character string
+#' @param use.cached.mult logical indicating whether multiplier values should be cached between calls
+#' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
+#'
+#' @export
+#'
+irrad <- function(spct, w.band, unit.out, quantity, use.cached.mult, use.hinges) UseMethod("irrad")
 
 # energy irradiance -------------------------------------------------------
 
@@ -150,22 +210,19 @@ irrad_spct <- irrad
 #' waveband of a light source spectrum.
 #'
 #' @usage e_irrad(spct, w.band=NULL,
-#' use.cached.mult=FALSE, use.hinges=NULL)
-#'
-#' @usage e_irrad_spct(spct, w.band=NULL,
-#' use.cached.mult=FALSE, use.hinges=NULL)
+#' quantity="total", use.cached.mult=FALSE, use.hinges=NULL)
 #'
 #' @param spct an object of class "source.spct"
 #' @param w.band list of waveband definitions created with new_waveband()
+#' @param quantity character string
 #' @param use.cached.mult logical indicating whether multiplier values should be cached between calls
 #' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
 #'
 #' @return a single numeric value with no change in scale factor: [W m-2 nm-1] -> [W m-2]
 #' @keywords manip misc
-#' @export e_irrad e_irrad_spct
+#' @export
 #' @examples
-#' data(sun.spct)
-#' e_irrad_spct(sun.spct, new_waveband(400,700))
+#' e_irrad(sun.spct, new_waveband(400,700))
 #'
 #' @return One numeric value for each waveband with no change in scale factor, with name attribute set to
 #' the name of each waveband unless a named list is supplied in which case the names of the list elements are
@@ -180,16 +237,12 @@ irrad_spct <- irrad
 #' that the wavelengths are the same in each call, as the only test done is for the length of the
 #' \code{w.length} vector.
 #'
-#' @aliases e_irrad e_irrad_spct
 
-e_irrad <-
-  function(spct, w.band=NULL, use.cached.mult=FALSE, use.hinges=NULL){
-    return(irrad(spct, w.band=w.band, unit.out="energy",
-                      use.cached.mult=use.cached.mult, use.hinges=use.hinges))
+e_irrad.source.spct <-
+  function(spct, w.band=NULL, quantity="total", use.cached.mult=FALSE, use.hinges=NULL){
+    irrad_spct(spct, w.band=w.band, unit.out="energy", quantity=quantity,
+                      use.cached.mult=use.cached.mult, use.hinges=use.hinges)
   }
-
-e_irrad_spct <- e_irrad
-
 
 # photon irradiance -------------------------------------------------------
 
@@ -200,24 +253,21 @@ e_irrad_spct <- e_irrad
 #' waveband of a light source spectrum.
 #'
 #' @usage q_irrad(spct, w.band=NULL,
-#' use.cached.mult=FALSE, use.hinges=NULL)
-#'
-#' @usage q_irrad_spct(spct, w.band=NULL,
-#' use.cached.mult=FALSE, use.hinges=NULL)
+#' quantity="total", use.cached.mult=FALSE, use.hinges=NULL)
 #'
 #' @param spct an object of class "source.spct"
 #' @param w.band list of waveband definitions created with new_waveband()
+#' @param quantity character string
 #' @param use.cached.mult logical indicating whether multiplier values should be cached between calls
 #' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
 #'
 #' @return a single numeric value with no change in scale factor: [W m-2 nm-1] -> [mol s-1 m-2]
 #' @keywords manip misc
-#' @export q_irrad q_irrad_spct
+#' @export
 #'
 #' @note The three functions are at the moment identical. The "_spct" versions are deprecated
 #' @examples
-#' data(sun.spct)
-#' q_irrad_spct(sun.spct, new_waveband(400,700))
+#' q_irrad(sun.spct, new_waveband(400,700))
 #'
 #' @return One numeric value for each waveband with no change in scale factor, with name attribute set to
 #' the name of each waveband unless a named list is supplied in which case the names of the list elements are
@@ -233,13 +283,67 @@ e_irrad_spct <- e_irrad
 #' \code{w.length} vector.
 #'
 #' @name q_irrad
-#' @aliases q_irrad q_irrad_spct
 
-q_irrad <-
-  function(spct, w.band=NULL, use.cached.mult=FALSE, use.hinges=NULL){
-    return(irrad(spct, w.band=w.band, unit.out="photon",
-                      use.cached.mult=use.cached.mult, use.hinges=use.hinges))
+q_irrad.source.spct <-
+  function(spct, w.band=NULL, quantity="total", use.cached.mult=FALSE, use.hinges=NULL){
+    irrad_spct(spct, w.band=w.band, unit.out="photon", quantity=quantity,
+                      use.cached.mult=use.cached.mult, use.hinges=use.hinges)
   }
 
-q_irrad_spct <- q_irrad
+#' Generic function
+#'
+#' Calculate (energy) irradiance.
+#'
+#' @param spct an R object of class "generic.spct"
+#' @param w.band a waveband object or a list of waveband objects
+#' @param quantity character string
+#' @param use.cached.mult logical indicating whether multiplier values should be cached between calls
+#' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
+#'
+#' @export e_irrad
+#'
+e_irrad <- function(spct, w.band, quantity, use.cached.mult, use.hinges) UseMethod("e_irrad")
 
+#' Generic function
+#'
+#' Calculate photon irradiance.
+#'
+#' @param spct an R object of class "generic.spct"
+#' @param w.band a waveband object or a list of waveband objects
+#' @param quantity character string
+#' @param use.cached.mult logical indicating whether multiplier values should be cached between calls
+#' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
+#'
+#' @export q_irrad
+#'
+q_irrad <- function(spct, w.band, quantity, use.cached.mult, use.hinges) UseMethod("q_irrad")
+
+#' Default for generic function
+#'
+#' Calculate (energy) irradiance.
+#'
+#' @param spct an object of class "generic.spct"
+#' @param w.band a waveband object or a list of waveband objects
+#' @param quantity character string
+#' @param use.cached.mult logical indicating whether multiplier values should be cached between calls
+#' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
+#' @export e_irrad.default
+#'
+e_irrad.default <- function(spct, w.band, quantity, use.cached.mult, use.hinges) {
+  return(NA)
+}
+
+#' Default for generic function
+#'
+#' Calculate photon irradiance.
+#'
+#' @param spct an object of class "generic.spct"
+#' @param w.band a waveband object or a list of waveband objects
+#' @param quantity character string
+#' @param use.cached.mult logical indicating whether multiplier values should be cached between calls
+#' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
+#' @export q_irrad.default
+#'
+q_irrad.default <- function(spct, w.band, quantity, use.cached.mult, use.hinges) {
+  return(NA)
+}

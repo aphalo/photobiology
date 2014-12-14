@@ -3,11 +3,12 @@
 #' This function returns the mean absorbance for a given
 #' waveband of a absorbance spectrum.
 #'
-#' @usage absorbance_spct(spct, w.band=NULL, use.hinges=NULL)
+#' @usage absorbance_spct(spct, w.band=NULL, quantity="average", use.hinges=NULL)
 #' @usage absorbance(spct, w.band=NULL, use.hinges=NULL)
 #'
 #' @param spct an object of class "filter.spct"
 #' @param w.band list of waveband definitions created with new_waveband()
+#' @param quantity character string
 #' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
 #'
 #' @return a single numeric value with no change in scale factor: AU (absorbance units, using log10)
@@ -21,7 +22,7 @@
 #' in mosts cases. Only the range of wavelengths in the wavebands is used and all BSWFs are ignored.
 
 absorbance_spct <-
-  function(spct, w.band=NULL, use.hinges=NULL){
+  function(spct, w.band=NULL, quantity="average", use.hinges=NULL){
     spct <- T2A(spct, action="replace", byref=FALSE)
     # if the waveband is undefined then use all data
     if (is.null(w.band)){
@@ -65,10 +66,10 @@ absorbance_spct <-
     }
 
     # we prepare labels for output
-    wb_name <- names(w.band)
-    no_names_flag <- is.null(wb_name)
+    wb.name <- names(w.band)
+    no_names_flag <- is.null(wb.name)
     if (no_names_flag) {
-      wb_name <- character(length(w.band))
+      wb.name <- character(length(w.band))
     }
     #
     # we iterate through the list of wavebands
@@ -80,17 +81,36 @@ absorbance_spct <-
       if (no_names_flag) {
         if (is_effective(wb)) {
           warning("Using only wavelength range from a weighted waveband object.")
-          wb_name[i] <- paste("range", as.character(signif(min(wb), 4)), as.character(signif(max(wb), 4)), sep=".")
+          wb.name[i] <- paste("range", as.character(signif(min(wb), 4)), as.character(signif(max(wb), 4)), sep=".")
         } else {
-          wb_name[i] <- wb$name
+          wb.name[i] <- wb$name
         }
       }
       # we calculate the average transmittance.
-      absorbance[i] <- average_spct(trim_spct(spct, wb, use.hinges=FALSE))
+      absorbance[i] <- integrate_spct(trim_spct(spct, wb, use.hinges=FALSE))
     }
-    names(absorbance) <- paste(names(absorbance), wb_name)
+
+    if (quantity %in% c("contribution", "contribution.pc")) {
+      total <- absorbance_spct(spct, w.band=NULL,
+                                  quantity="total", use.hinges=FALSE)
+      absorbance <- absorbance / total
+      if (quantity == "percent") {
+        absorbance <- absorbance * 1e2
+      }
+    } else if (quantity %in% c("relative", "relative.pc")) {
+      total <- sum(absorbance)
+      absorbance <- absorbance / total
+      if (quantity == "percent") {
+        absorbance <- absorbance * 1e2
+      }
+    } else if (quantity == "average") {
+      absorbance <- absorbance / sapply(w.band, spread)
+    }
+    names(absorbance) <- paste(names(absorbance), wb.name)
+    names(absorbance) <- wb.name
+    setattr(absorbance, "time.unit", "none")
     setattr(absorbance, "Tfr.type", attr(spct, "Tfr.type", exact=TRUE))
-    setattr(absorbance, "radiation.unit", "absorbance")
+    setattr(absorbance, "radiation.unit", paste("absorbance", quantity))
     return(absorbance)
   }
 
@@ -100,11 +120,12 @@ absorbance_spct <-
 #'
 #' @param spct an object of class "generic.spct"
 #' @param w.band list of waveband definitions created with new_waveband()
+#' @param quantity character string
 #' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
 #'
 #' @export absorbance
 #'
-absorbance <- function(spct, w.band, use.hinges) UseMethod("absorbance")
+absorbance <- function(spct, w.band, quantity, use.hinges) UseMethod("absorbance")
 
 #' Default for generic function
 #'
@@ -112,10 +133,11 @@ absorbance <- function(spct, w.band, use.hinges) UseMethod("absorbance")
 #'
 #' @param spct an object of class "generic.spct"
 #' @param w.band list of waveband definitions created with new_waveband()
+#' @param quantity character string
 #' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
 #' @export absorbance.default
 #'
-absorbance.default <- function(spct, w.band, use.hinges) {
+absorbance.default <- function(spct, w.band, quantity, use.hinges) {
   return(NA)
 }
 
@@ -125,6 +147,7 @@ absorbance.default <- function(spct, w.band, use.hinges) {
 #'
 #' @param spct an object of class "filter.spct"
 #' @param w.band list of waveband definitions created with new_waveband()
+#' @param quantity character string
 #' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
 #' @export absorbance.filter.spct
 #'

@@ -611,7 +611,13 @@ In each `family' there is one basic function for these calculations \texttt{irra
 
 \subsubsection{Irradiances from spectra}
 
-The code using \texttt{spct} objects is simple, where \texttt{PAR()} is a predefined waveband constructor.
+The code using \texttt{spct} objects is simple, to integrate the whole spectrum we can use
+
+<<>>=
+irrad(sun.spct)
+@
+
+and, to integrate a range of wavelength, in the example, photosynthetically active radiation, we use \texttt{PAR()} that is a predefined waveband constructor.
 
 <<>>=
 irrad(sun.spct, PAR(), unit.out = "energy") # W m-2
@@ -619,8 +625,7 @@ irrad(sun.spct, PAR(), unit.out = "photon") # mol s-1 m-2
 irrad(sun.spct, PAR(), unit.out = "photon") * 1e6 # umol s-1 m-2
 @
 
-The default value returned by \texttt{irrad} is in energy irradiance units, unless the option described above
-is set.
+The default for \texttt{irrad}, when no argument \texttt{unit.out} is supplied, is to return the irradiance value in energy irradiance units, unless the R \texttt{photobiology.base.unit} option is set.
 
 <<>>=
 irrad(sun.spct, PAR()) # W m-2
@@ -652,6 +657,18 @@ Lists of wavebands are also accepted as argument.
 e_irrad(sun.spct, list(CIE(), CIE(298), CIE(300)))
 my_wavebands <- list(Red(), Blue(), Green())
 e_irrad(sun.spct, my_wavebands)
+@
+
+These functions have an additional argument \texttt{quantity}, with default \texttt{"total"}, which can take values controlling the output.
+
+<<>>=
+irrad(sun.spct, UV_bands())
+irrad(sun.spct, UV_bands(), quantity="total")
+irrad(sun.spct, UV_bands(), quantity="contribution")
+irrad(sun.spct, UV_bands(), quantity="contribution.pc")
+irrad(sun.spct, UV_bands(), quantity="relative")
+irrad(sun.spct, UV_bands(), quantity="relative.pc")
+irrad(sun.spct, UV_bands(), quantity="average")
 @
 
 \subsubsection{Irradiances from numeric vectors}
@@ -782,30 +799,61 @@ with(sun.data,
 The functions \texttt{transmittance}, \texttt{absorbance} and \texttt{reflectance} take filter.spct and reflector.spct objects as arguments, and return an average value for these quantities \textbf{assuming} a light source with a flat spectral energy output. Values expressed as percentages.
 
 <<>>=
-transmittance(polyester.new.spct, list(UVB(), UVA(), PAR())) * 100
+transmittance(polyester.new.spct, list(UVB(), UVA(), PAR()))
+transmittance(polyester.new.spct, list(UVB(), UVA(), PAR()), pc.out=TRUE)
+@
+
+This function has an additional argument \texttt{quantity}, with default \texttt{"average"}, which can take values controlling the output.
+
+<<>>=
+transmittance(polyester.new.spct, UV_bands())
+transmittance(polyester.new.spct, UV_bands(), quantity="total")
+transmittance(polyester.new.spct, UV_bands(), quantity="contribution")
+transmittance(polyester.new.spct, UV_bands(), quantity="contribution.pc")
+transmittance(polyester.new.spct, UV_bands(), quantity="relative")
+transmittance(polyester.new.spct, UV_bands(), quantity="relative.pc")
+transmittance(polyester.new.spct, UV_bands(), quantity="average")
+@
+
+An equivalent function returning absorbance instead of transmittance takes the same arguments as \texttt{transmittance}, except for \texttt{pc.out} which is not useful for absorbance.
+
+<<>>=
 absorbance(polyester.new.spct, list(UVB(), UVA(), PAR()))
 @
 
-It is more likely that we would like to calculate these values with reference to light of a certain spectral quality. This needs to be calculated by hand, which is not difficult. For example, for UV-B, using energy.
+This function has an additional argument \texttt{quantity}, with default \texttt{"average"}, which can take values controlling the output.
 
 <<>>=
-q_irrad(sun.spct * polyester.new.spct, UVB()) / q_irrad(sun.spct, UVB()) * 100
+transmittance(polyester.new.spct, UV_bands())
+transmittance(polyester.new.spct, UV_bands(), quantity="total")
+transmittance(polyester.new.spct, UV_bands(), quantity="contribution")
+transmittance(polyester.new.spct, UV_bands(), quantity="contribution.pc")
+transmittance(polyester.new.spct, UV_bands(), quantity="relative")
+transmittance(polyester.new.spct, UV_bands(), quantity="relative.pc")
+transmittance(polyester.new.spct, UV_bands(), quantity="average")
+@
+
+It is more likely that we would like to calculate these values with reference to light of a certain spectral quality. This needs to be calculated by hand, which is not difficult. For example, for UV-B.
+
+<<>>=
+irrad(sun.spct * polyester.new.spct, UVB()) / irrad(sun.spct, UVB()) * 100
 @
 
 And for a list of wavebands, as percentages.
 
 <<>>=
-q_irrad(sun.spct * polyester.new.spct, list(UVB(), UVA(), PAR())) /
-  q_irrad(sun.spct, list(UVB(), UVA(), PAR())) * 100
+irrad(sun.spct * polyester.new.spct, list(UVB(), UVA(), PAR())) /
+  irrad(sun.spct, list(UVB(), UVA(), PAR())) * 100
 @
 
 \subsection{Calculating integrated response}
 
-The functions \texttt{e\_response} and \texttt{q\_response} take response.spct objects as arguments, and return the integrated value for each waveband (integrated over wavelength) \textbf{assuming} a light source with a flat spectral energy or photon output respectively.
+The functions  \texttt{response}, \texttt{e\_response} and \texttt{q\_response} take response.spct objects as arguments, and return the integrated value for each waveband (integrated over wavelength) \textbf{assuming} a light source with a flat spectral energy or photon output respectively.
 
 If no waveband is supplied as argument, the whole spectrum is integrated.
 
 <<>>=
+response(Vital_BW_20.spct)
 e_response(Vital_BW_20.spct)
 @
 
@@ -813,12 +861,30 @@ e_response(Vital_BW_20.spct)
 q_response(Vital_BW_20.spct) * 1e-6
 @
 
+When a waveband, or list of wavebands, is supplied the response is calculated for the wavebands.
+
 <<>>=
 e_response(Vital_BW_20.spct, UVB())
 q_response(Vital_BW_20.spct, UVB()) * 1e-6
 @
 
-It is more likely the we would like to calculate these values with reference to light of a certain spectral irradiance. This can be achieved by multiplying the sensor's spectral responsivity by the light source spectral irradiance.
+<<>>=
+e_response(Vital_BW_20.spct, list(UVB(), UVA()))
+@
+
+This function has an additional argument \texttt{quantity}, with default \texttt{"total"}, which can take values controlling the output.
+
+<<>>=
+response(Vital_BW_20.spct, UV_bands())
+response(Vital_BW_20.spct, UV_bands(), quantity="total")
+response(Vital_BW_20.spct, UV_bands(), quantity="contribution")
+response(Vital_BW_20.spct, UV_bands(), quantity="contribution.pc")
+response(Vital_BW_20.spct, UV_bands(), quantity="relative")
+response(Vital_BW_20.spct, UV_bands(), quantity="relative.pc")
+response(Vital_BW_20.spct, UV_bands(), quantity="average")
+@
+
+If we would like to calculate these values with reference to light of a certain spectral irradiance. This can be achieved by multiplying the sensor's spectral responsivity by the light source spectral irradiance.
 
 <<>>=
 e_response(sun.spct * Vital_BW_20.spct, UVB())
@@ -828,7 +894,7 @@ q_response(sun.spct * Vital_BW_20.spct, UVB()) * 1e-6
 And for a list of wavebands
 
 <<>>=
-q_response(sun.spct * KIPP_PQS1_PAR_quantum.spct, list(UVB(), UVA(), PAR())) * 1e-6
+q_response(sun.spct * KIPP_PQS1_PAR_quantum.spct, list(UVA(), PAR())) * 1e-6
 @
 
 \subsection{Integrating a generic spectrum}

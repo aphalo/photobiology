@@ -3,12 +3,13 @@
 #' This function returns the mean transmittance for a given
 #' waveband of a transmittance spectrum.
 #'
-#' @usage transmittance_spct(spct, w.band=NULL, pc.out=FALSE, use.hinges=NULL)
-#' @usage transmittance(spct, w.band=NULL, pc.out=FALSE, use.hinges=NULL)
+#' @usage transmittance_spct(spct, w.band=NULL, pc.out=FALSE,
+#'                      quantity="average", use.hinges=NULL)
 #'
 #' @param spct an object of class "generic.spct"
 #' @param w.band list of waveband definitions created with new_waveband()
 #' @param pc.out a logical indicating whether result should be a percentage or a fraction of one
+#' @param quantity character string
 #' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
 #'
 #' @return a single numeric value with no change in scale factor: [W m-2 nm-1] -> [mol s-1 m-2]
@@ -23,7 +24,7 @@
 #' in mosts cases. Only the range of wavelengths in the wavebands is used and all BSWFs are ignored.
 
 transmittance_spct <-
-  function(spct, w.band=NULL, pc.out=FALSE, use.hinges=NULL){
+  function(spct, w.band=NULL, pc.out=FALSE, quantity="average", use.hinges=NULL){
     spct <- A2T(spct, action="replace", byref=FALSE)
     # if the waveband is undefined then use all data
     if (is.null(w.band)){
@@ -67,10 +68,10 @@ transmittance_spct <-
     }
 
     # we prepare labels for output
-    wb_name <- names(w.band)
-    no_names_flag <- is.null(wb_name)
+    wb.name <- names(w.band)
+    no_names_flag <- is.null(wb.name)
     if (no_names_flag) {
-      wb_name <- character(length(w.band))
+      wb.name <- character(length(w.band))
     }
     # we iterate through the list of wavebands
     transmittance <- numeric(length(w.band))
@@ -81,24 +82,48 @@ transmittance_spct <-
       if (no_names_flag) {
         if (is_effective(wb)) {
           warning("Using only wavelength range from a weighted waveband object.")
-          wb_name[i] <- paste("range", as.character(signif(min(wb), 4)), as.character(signif(max(wb), 4)), sep=".")
+          wb.name[i] <- paste("range", as.character(signif(min(wb), 4)), as.character(signif(max(wb), 4)), sep=".")
         } else {
-          wb_name[i] <- wb$name
+          wb.name[i] <- wb$name
         }
       }
       # we calculate the average transmittance.
-      transmittance[i] <- average_spct(trim_spct(spct, wb, use.hinges=FALSE))
+      transmittance[i] <- integrate_spct(trim_spct(spct, wb, use.hinges=FALSE))
     }
 
-    names(transmittance) <- paste(names(transmittance), wb_name)
-    setattr(transmittance, "Tfr.type", attr(spct, "Tfr.type", exact=TRUE))
-    if (pc.out) {
-      setattr(transmittance, "radiation.unit", "transmittance %")
-      return(transmittance * 1e2)
-    } else {
-      setattr(transmittance, "radiation.unit", "transmittance")
-      return(transmittance)
+    if (quantity %in% c("contribution", "contribution.pc")) {
+      total <- transmittance_spct(spct, w.band=NULL, pc.out=FALSE,
+                                quantity="total", use.hinges=FALSE)
+      transmittance <- transmittance / total
+      if (quantity == "contribution.pc") {
+        transmittance <- transmittance * 1e2
+      }
+    } else if (quantity %in% c("relative", "relative.pc")) {
+      total <- sum(transmittance)
+      transmittance <- transmittance / total
+      if (quantity == "relative.pc") {
+        transmittance <- transmittance * 1e2
+      }
+    } else if (quantity == "average") {
+      transmittance <- transmittance / sapply(w.band, spread)
+      if (pc.out) {
+        transmittance <- transmittance * 1e2
+        quantity <- paste(quantity, "(%)")
+      }
+    } else if (quantity == "total") {
+      if (pc.out) {
+        transmittance <- transmittance * 1e2
+        quantity <- paste(quantity, "(%)")
+      }
+    } else if (quantity != "total") {
+      warning("'quantity '", quantity, "' is invalid, returning 'total' instead")
+      quantity <- "total"
     }
+    names(transmittance) <- paste(names(transmittance), wb.name)
+    setattr(transmittance, "time.unit", "none")
+    setattr(transmittance, "Tfr.type", attr(spct, "Tfr.type", exact=TRUE))
+    setattr(transmittance, "radiation.unit", paste("transmittance", quantity))
+    return(transmittance)
   }
 
 #' Generic function
@@ -108,11 +133,12 @@ transmittance_spct <-
 #' @param spct an object of class "generic.spct"
 #' @param w.band list of waveband definitions created with new_waveband()
 #' @param pc.out a logical indicating whether result should be a percentage or a fraction of one
+#' @param quantity character string
 #' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
 #'
 #' @export transmittance
 #'
-transmittance <- function(spct, w.band, pc.out, use.hinges) UseMethod("transmittance")
+transmittance <- function(spct, w.band, pc.out, quantity, use.hinges) UseMethod("transmittance")
 
 #' Default for generic function
 #'
@@ -121,10 +147,11 @@ transmittance <- function(spct, w.band, pc.out, use.hinges) UseMethod("transmitt
 #' @param spct an object of class "generic.spct"
 #' @param w.band list of waveband definitions created with new_waveband()
 #' @param pc.out a logical indicating whether result should be a percentage or a fraction of one
+#' @param quantity character string
 #' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
 #' @export transmittance.default
 #'
-transmittance.default <- function(spct, w.band, pc.out, use.hinges) {
+transmittance.default <- function(spct, w.band, pc.out, quantity, use.hinges) {
   return(NA)
 }
 
@@ -135,6 +162,7 @@ transmittance.default <- function(spct, w.band, pc.out, use.hinges) {
 #' @param spct an object of class "filter.spct"
 #' @param w.band list of waveband definitions created with new_waveband()
 #' @param pc.out a logical indicating whether result should be a percentage or a fraction of one
+#' @param quantity character string
 #' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
 #' @export transmittance.filter.spct
 #'

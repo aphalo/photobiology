@@ -3,11 +3,13 @@
 #' This function returns the mean reflectance for a given
 #' waveband and a reflectance spectrum.
 #'
-#' @usage reflectance_spct(spct, w.band=NULL, pc.out=FALSE, use.hinges=NULL)
+#' @usage reflectance_spct(spct, w.band=NULL, pc.out=FALSE,
+#'                         quantity="average", use.hinges=NULL)
 #'
 #' @param spct an object of class generic.spct"
 #' @param w.band list of waveband definitions created with new_waveband()
 #' @param pc.out a logical indicating whether result should be a percentage or a fraction of one
+#' @param quantity character string
 #' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
 #'
 #' @return a single numeric value expressed either as a fraction of one or a percentage
@@ -22,7 +24,7 @@
 #' in mosts cases. Only the range of wavelengths in the wavebands is used and all BSWFs are ignored.
 
 reflectance_spct <-
-  function(spct, w.band=NULL, pc.out=FALSE, use.hinges=NULL){
+  function(spct, w.band=NULL, pc.out=FALSE, quantity="average", use.hinges=NULL){
     # if the waveband is undefined then use all data
     if (is.null(w.band)){
       #      w.band <- new_waveband(min(w.length), max(w.length))
@@ -66,10 +68,10 @@ reflectance_spct <-
     }
 
     # we prepare labels for output
-    wb_name <- names(w.band)
-    no_names_flag <- is.null(wb_name)
+    wb.name <- names(w.band)
+    no_names_flag <- is.null(wb.name)
     if (no_names_flag) {
-      wb_name <- character(length(w.band))
+      wb.name <- character(length(w.band))
     }
    # we iterate through the list of wavebands
     reflectance <- numeric(length(w.band))
@@ -80,24 +82,49 @@ reflectance_spct <-
       if (no_names_flag) {
         if (is_effective(wb)) {
           warning("Using only wavelength range from a weighted waveband object.")
-          wb_name[i] <- paste("range", as.character(signif(min(wb), 4)), as.character(signif(max(wb), 4)), sep=".")
+          wb.name[i] <- paste("range", as.character(signif(min(wb), 4)), as.character(signif(max(wb), 4)), sep=".")
         } else {
-          wb_name[i] <- wb$name
+          wb.name[i] <- wb$name
         }
       }
       # we calculate the average reflectance.
-      reflectance[i] <- average_spct(trim_spct(spct.cols, wb, use.hinges=FALSE))
+      reflectance[i] <- integrate_spct(trim_spct(spct.cols, wb, use.hinges=FALSE))
     }
 
-    names(reflectance) <- paste(names(reflectance), wb_name)
-   if (pc.out) {
-     setattr(reflectance, "radiation.unit", "reflectance %")
-     return(reflectance * 1e2)
-   } else {
-     setattr(reflectance, "radiation.unit", "reflectance")
-     return(reflectance)
+   if (quantity %in% c("contribution", "contribution.pc")) {
+     total <- reflectance_spct(spct, w.band=NULL, pc.out=FALSE,
+                                 quantity="total", use.hinges=FALSE)
+     reflectance <- reflectance / total
+     if (quantity == "contribution.pc") {
+       reflectance <- reflectance * 1e2
+     }
+   } else if (quantity %in% c("relative", "relative.pc")) {
+     total <- sum(reflectance)
+     reflectance <- reflectance / total
+     if (quantity == "relative.pc") {
+       reflectance <- reflectance * 1e2
+     }
+   } else if (quantity == "average") {
+     reflectance <- reflectance / sapply(w.band, spread)
+     if (pc.out) {
+       reflectance <- reflectance * 1e2
+       quantity <- paste(quantity, "(%)")
+     }
+   } else if (quantity == "total") {
+     if (pc.out) {
+       reflectance <- reflectance * 1e2
+       quantity <- paste(quantity, "(%)")
+     }
+   } else if (quantity != "total") {
+     warning("'quantity '", quantity, "' is invalid, returning 'total' instead")
+     quantity <- "total"
    }
+   names(reflectance) <- paste(names(reflectance), wb.name)
+   setattr(reflectance, "time.unit", "none")
+   setattr(reflectance, "radiation.unit", paste("reflectance", quantity))
+   return(reflectance)
   }
+
 
 #' Generic function
 #'
@@ -106,11 +133,12 @@ reflectance_spct <-
 #' @param spct an object of class "generic.spct"
 #' @param w.band list of waveband definitions created with new_waveband()
 #' @param pc.out a logical indicating whether result should be a percentage or a fraction of one
+#' @param quantity character string
 #' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
 #'
 #' @export reflectance
 #'
-reflectance <- function(spct, w.band, pc.out, use.hinges) UseMethod("reflectance")
+reflectance <- function(spct, w.band, pc.out, quantity, use.hinges) UseMethod("reflectance")
 
 #' Default for generic function
 #'
@@ -119,10 +147,11 @@ reflectance <- function(spct, w.band, pc.out, use.hinges) UseMethod("reflectance
 #' @param spct an object of class "generic.spct"
 #' @param w.band list of waveband definitions created with new_waveband()
 #' @param pc.out a logical indicating whether result should be a percentage or a fraction of one
+#' @param quantity character string
 #' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
 #' @export reflectance.default
 #'
-reflectance.default <- function(spct, w.band, pc.out, use.hinges) {
+reflectance.default <- function(spct, w.band, pc.out, quantity, use.hinges) {
   return(NA)
 }
 
@@ -133,6 +162,7 @@ reflectance.default <- function(spct, w.band, pc.out, use.hinges) {
 #' @param spct an object of class "reflector.spct"
 #' @param w.band list of waveband definitions created with new_waveband()
 #' @param pc.out a logical indicating whether result should be a percentage or a fraction of one
+#' @param quantity character string
 #' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
 #' @export reflectance.reflector.spct
 #'

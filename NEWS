@@ -4,7 +4,7 @@ TODO
 Need to add warnings informing what has happened, when a given combination of operands is
 rejected, and add a table to the User Guide summarizing the valid and invalid operations.
 
-photobiology 0.4.11
+photobiology 0.5.0
 ===================
 
 The default data in spectral objects has changed in the present and the previous versions. This is
@@ -14,9 +14,9 @@ as percentages, only as fractions, as this does not affect later computations, a
 is needed the result of the computation is just multiplied by 100.
 
 I added absorbance related functions, similar to the transmittance and reflectance ones: absorbance_spct()
-and absorbance(). All these functions, as well as those for irradiances and ratios now return values
-with the "radiation.unit" attribute set. In addition some edits were done to simplify the code when
-possible.
+and absorbance(). All these functions, as well as those for irradiances and ratios, and responses
+now return values with the "radiation.unit" attribute set. In addition several edits were done to simplify the code when possible. Irradiance, response, transmittance, reflectance and absorbance functions have gained
+a new parameter 'quantity', that can take one value out of "total", "contribution" (to total as a fraction), "percent" (contribution as percent), or "average" (the total divided by the 'spread' or width of the waveband in nm). New function response().
 
 Options for operators and functions added:
 options(photobiology.base.unit = "energy")
@@ -35,6 +35,8 @@ no default for "unit.out" now uses the one set by the option, if the option is s
 Options can be unset with NULL.
 options(photobiology.base.unit = NULL)
 options(photobiology.filter.qty = NULL)
+
+Moved functions find_peaks(), get_peaks() and get_valleys() from photobiologygg to this package.
 
 User Guide thoroughly updated to reflect currently available functionality, including
 the options described above.
