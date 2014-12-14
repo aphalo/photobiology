@@ -109,6 +109,11 @@ response_intg <-
     }
 
     names(response) <- paste(names(response), wb_name)
+    if (unit.out == "photon") {
+      setattr(response, "radiation.unit", "q response")
+    } else if (unit.out == "energy") {
+      setattr(response, "radiation.unit", "e response")
+    }
     return(response)
   }
 

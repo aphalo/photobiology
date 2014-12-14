@@ -24,6 +24,7 @@
 
 transmittance_spct <-
   function(spct, w.band=NULL, pc.out=FALSE, use.hinges=NULL){
+    spct <- A2T(spct, action="replace", byref=FALSE)
     # if the waveband is undefined then use all data
     if (is.null(w.band)){
       w.band <- new_waveband(min(spct), max(spct) + 1e-4)
@@ -71,40 +72,6 @@ transmittance_spct <-
     if (no_names_flag) {
       wb_name <- character(length(w.band))
     }
-    # "filter.spct" objects are not guaranteed to contain transmittance
-    # expressed in the needed scale, we add the needed columns and as
-    # spectra are passed by reference they propagate to the argument
-    if (pc.out) {
-      if (!exists("Tpc", spct, inherits=FALSE)) {
-        if (exists("Tfr", spct, inherits=FALSE)) {
-          spct[ , Tpc := Tfr * 100]
-        } else if (exists("A", spct, inherits=FALSE)) {
-          A2T(spct)
-        } else {
-          warning("No transmittance source data found.")
-          return(NA)
-        }
-      }
-    } else {
-      if (!exists("Tfr", spct, inherits=FALSE)) {
-        if (with(spct, exists("Tpc"))) {
-          spct[ , Tfr := Tpc / 100]
-        } else if (exists("A", spct, inherits=FALSE)) {
-          A2T(spct)
-        } else {
-          warning("No transmittance source data found.")
-          return(NA)
-        }
-      }
-    }
-
-    #
-    if (pc.out) {
-      spct.cols <- spct[ , list(w.length, Tpc)]
-    } else {
-      spct.cols <- spct[ , list(w.length, Tfr)]
-    }
-
     # we iterate through the list of wavebands
     transmittance <- numeric(length(w.band))
     i <- 0
@@ -120,12 +87,18 @@ transmittance_spct <-
         }
       }
       # we calculate the average transmittance.
-      transmittance[i] <- average_spct(trim_spct(spct.cols, wb, use.hinges=FALSE))
+      transmittance[i] <- average_spct(trim_spct(spct, wb, use.hinges=FALSE))
     }
 
     names(transmittance) <- paste(names(transmittance), wb_name)
     setattr(transmittance, "Tfr.type", attr(spct, "Tfr.type", exact=TRUE))
-    return(transmittance)
+    if (pc.out) {
+      setattr(transmittance, "radiation.unit", "transmittance %")
+      return(transmittance * 1e2)
+    } else {
+      setattr(transmittance, "radiation.unit", "transmittance")
+      return(transmittance)
+    }
   }
 
 #' Generic function

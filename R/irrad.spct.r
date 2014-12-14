@@ -43,7 +43,7 @@
 irrad <-
   function(spct, w.band=NULL, unit.out=getOption("photobiology.base.unit", default="energy"),
            use.cached.mult=FALSE, use.hinges=NULL){
-    # what output? seems safer to not have a default here
+    # we have a default, but we check for invalid arguments
     if (is.null(unit.out) || is.na(unit.out)){
       warning("'unit.out' set to an invalid value")
       return(NA)
@@ -54,7 +54,7 @@ irrad <-
     if (is.null(w.band)) {
       w.band <- new_waveband(min(spct), max(spct) + 1e-4)
     }
-    if (is(w.band, "waveband")) {
+    if (is.waveband(w.band)) {
       # if the argument is a single w.band, we enclose it in a list
       # so that the for loop works as expected.This is a bit of a
       # cludge but lets us avoid treating it as a special case
@@ -133,7 +133,8 @@ irrad <-
     }
 
     names(irrad) <- wb.name
-    attr(irrad, "time.unit") <- attr(spct, "time.unit", exact=TRUE)
+    setattr(irrad, "time.unit", attr(spct, "time.unit", exact=TRUE))
+    setattr(irrad, "radiation.unit", unit.out)
     return(irrad)
   }
 

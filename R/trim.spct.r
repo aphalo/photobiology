@@ -139,7 +139,7 @@ trim_spct <- function(spct, band=NULL, low.limit=NULL, high.limit=NULL, use.hing
     setattr(spct, "time.unit", time.unit.spct)
   }
   if (!is.null(Tfr.type.spct)) {
-    setattr(spct, "Tfr.typr", Tfr.type.spct)
+    setattr(spct, "Tfr.type", Tfr.type.spct)
   }
   if (byref && is.name(name)) {
     name <- as.character(name)

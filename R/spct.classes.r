@@ -90,9 +90,10 @@ check.filter.spct <- function(x, byref=TRUE) {
     return(x)
   } else if (exists("Tpc", x, mode = "numeric", inherits=FALSE)) {
     x[ , Tfr := Tpc / 100]
+    x[ , Tpc := NULL]
     return(x)
   } else if (exists("A", x, mode = "numeric", inherits=FALSE)) {
-    x[ , Tfr := A2T(A)]
+#    x[ , Tfr := A2T(A)]
     return(x)
   } else {
     warning("No transmittance or absorbance data found in filter.spct")
@@ -113,6 +114,7 @@ check.reflector.spct <- function(x, byref=TRUE) {
     return(x)
   } else if (exists("Rpc", x, mode = "numeric", inherits=FALSE)) {
     x[ , Rfr := Rpc / 100]
+    x[ , Rpc := NULL]
     return(x)
   } else {
     warning("No reflectance data found in reflector.spct")

@@ -7,27 +7,39 @@ rejected, and add a table to the User Guide summarizing the valid and invalid op
 photobiology 0.4.11
 ===================
 
-Added absorbance related functions, similar to the transmittance ones: absorbance_spct()
-and absorbance().
+The default data in spectral objects has changed in the present and the previous versions. This is
+to avoid, when possible, conversions when creating spectral objects. Instead, the input is
+checked in the functions accepting spectral objects as input. However, values are never stored
+as percentages, only as fractions, as this does not affect later computations, and when a percent
+is needed the result of the computation is just multiplied by 100.
+
+I added absorbance related functions, similar to the transmittance and reflectance ones: absorbance_spct()
+and absorbance(). All these functions, as well as those for irradiances and ratios now return values
+with the "radiation.unit" attribute set. In addition some edits were done to simplify the code when
+possible.
 
 Options for operators and functions added:
 options(photobiology.base.unit = "energy")
 options(photobiology.base.unit = "photon")
-determine whether operations are carried using energy based or a photon based quantities
-(this affects operations involving source.spct and response.spct objects).
+These options determine whether operations are carried using energy based or a photon based quantities.
+This affects operations involving source.spct and response.spct objects when using operators,
+and the defaults for "unit.out" for functions accepting spectral objects as arguments.
 
 options(photobiology.filter.qty = "transmittance")
 options(photobiology.filter.qty = "absorbance")
 determine whether operations are carried using transmittance or absorbance quantities
 (this affects operations involving filter.spct objects).
 
-The defaults remain the same as in earlier versions.
+The defaults remain the same as in earlier versions, except for irrad() which instead of having
+no default for "unit.out" now uses the one set by the option, if the option is set.
 Options can be unset with NULL.
 options(photobiology.base.unit = NULL)
 options(photobiology.filter.qty = NULL)
 
 User Guide thoroughly updated to reflect currently available functionality, including
 the options described above.
+
+Fixed bug in trim_spct() which led to wrongly copied attribute for filter.spct objects.
 
 photobiology 0.4.10
 ===================

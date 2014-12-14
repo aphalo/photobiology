@@ -71,37 +71,7 @@ reflectance_spct <-
     if (no_names_flag) {
       wb_name <- character(length(w.band))
     }
-    # "reflector.spct" objects are not guaranteed to contain reflectance
-    # expressed in the needed scale, we add the needed columns and as
-    # spectra are passed by reference they propagate to the argument
-    if (pc.out) {
-      if (!exists("Rpc", spct, inherits=FALSE)) {
-        if (exists("Rfr", spct, inherits=FALSE)) {
-          spct[ , Rpc := Rfr * 100]
-        } else {
-          warning("No light source data found.")
-          return(NA)
-        }
-      }
-    } else {
-      if (!exists("Rfr", spct, inherits=FALSE)) {
-        if (exists("Rpc", spct, inherits=FALSE)) {
-          spct[ , Rfr := Rpc / 100]
-        } else {
-          warning("No light source data found.")
-          return(NA)
-        }
-      }
-    }
-
-    #
-    if (pc.out) {
-      spct.cols <- spct[ , list(w.length, Rpc)]
-    } else {
-      spct.cols <- spct[ , list(w.length, Rfr)]
-    }
-
-    # we iterate through the list of wavebands
+   # we iterate through the list of wavebands
     reflectance <- numeric(length(w.band))
     i <- 0
     for (wb in w.band) {
@@ -120,7 +90,13 @@ reflectance_spct <-
     }
 
     names(reflectance) <- paste(names(reflectance), wb_name)
-    return(reflectance)
+   if (pc.out) {
+     setattr(reflectance, "radiation.unit", "reflectance %")
+     return(reflectance * 1e2)
+   } else {
+     setattr(reflectance, "radiation.unit", "reflectance")
+     return(reflectance)
+   }
   }
 
 #' Generic function

@@ -43,6 +43,7 @@ q_ratio <-
     ratio <- q.irrad.num / q.irrad.denom
     names(ratio) <- paste(names(q.irrad.num), ":", names(q.irrad.denom), "(q:q)", sep="")
     setattr(ratio, "time.unit", NULL)
+    setattr(ratio, "radiation.unit", "q:q ratio")
     return(ratio)
   }
 
@@ -93,6 +94,7 @@ e_ratio <-
     ratio <- e.irrad.num / e.irrad.denom
     names(ratio) <- paste(names(e.irrad.num), ":", names(e.irrad.denom), "(e:e)", sep="")
     setattr(ratio, "time.unit", NULL)
+    setattr(ratio, "radiation.unit", "e:e ratio")
     return(ratio)
   }
 
@@ -139,6 +141,7 @@ qe_ratio <-
     ratio <- q.irrad / e.irrad
     names(ratio) <- paste("q:e(", names(q.irrad), ")", sep="")
     setattr(ratio, "time.unit", NULL)
+    setattr(ratio, "radiation.unit", "q:e ratio")
     return(ratio)
   }
 
@@ -178,9 +181,10 @@ qe_ratio_spct <- qe_ratio
 
 eq_ratio <-
   function(spct, w.band=NULL, use.cached.mult=FALSE, use.hinges=NULL){
-    z <- 1 / qe_ratio(spct, w.band, use.cached.mult, use.hinges)
-    names(z) <- gsub("q:e", "e:q", names(z), fixed=TRUE )
-    return(z)
+    ratio <- 1 / qe_ratio(spct, w.band, use.cached.mult, use.hinges)
+    names(ratio) <- gsub("q:e", "e:q", names(ratio), fixed=TRUE )
+    setattr(ratio, "radiation.unit", "e:q ratio")
+    return(ratio)
   }
 
 eq_ratio_spct <- eq_ratio

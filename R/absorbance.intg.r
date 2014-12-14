@@ -88,9 +88,9 @@ absorbance_spct <-
       # we calculate the average transmittance.
       absorbance[i] <- average_spct(trim_spct(spct, wb, use.hinges=FALSE))
     }
-
     names(absorbance) <- paste(names(absorbance), wb_name)
     setattr(absorbance, "Tfr.type", attr(spct, "Tfr.type", exact=TRUE))
+    setattr(absorbance, "radiation.unit", "absorbance")
     return(absorbance)
   }
 
