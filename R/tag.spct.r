@@ -190,7 +190,7 @@ wb2spct <- function(w.band) {
   w.length <- numeric(0)
   for (wb in w.band) {
     if (is(wb, "waveband")) {
-      w.length <- c(w.length, range(wb))
+      w.length <- c(w.length, wb$hinges)
     }
   }
   if (is.null(w.length) || length(w.length) < 2) {

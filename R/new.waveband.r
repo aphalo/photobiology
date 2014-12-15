@@ -68,7 +68,7 @@ new_waveband <- function(w.low, w.high,
   # if we are not using a SWF then we do not need to add hinges as we will be anyway interpolating
   # raw irradiances rather than weighted irradiances
   if (is.null(hinges)) {
-    hinges <- c(w.low - 1e-4, w.low, w.high, w.high + 1e-4)
+    hinges <- c(w.low - 1e-4, w.low, w.high - 1e-4, w.high)
   }
   if (!is.null(weight) && weight!="none") {
     #
@@ -90,10 +90,16 @@ new_waveband <- function(w.low, w.high,
       warning("weight != NULL, but no SWFs supplied")
       return(NA)
     }
-    if (is.null(wb.name)) wb.name <- paste("range", as.character(signif(w.low, 4)), as.character(signif(w.high, 4)), "wtd", sep=".")
+    if (is.null(wb.name)) {
+      wb.name <- paste("range", as.character(signif(w.low, 4)), as.character(signif(w.high, 4)), "wtd", sep=".")
+      wb.label <- wb.name
+    }
   } else {
     weight <- "none"
-    if (is.null(wb.name)) wb.name <- paste("range", as.character(signif(w.low, 4)), as.character(signif(w.high, 4)), sep=".")
+    if (is.null(wb.name)) {
+      wb.name <- paste("range", as.character(signif(w.low, 4)), as.character(signif(w.high, 4)), sep=".")
+      wb.label <- wb.name
+    }
   }
   w_band <- list(low = w.low, high = w.high,
                  weight = weight, SWF.e.fun = SWF.e.fun, SWF.q.fun = SWF.q.fun, SWF.norm = SWF.norm,

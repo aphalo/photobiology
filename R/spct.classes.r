@@ -345,10 +345,11 @@ setReflectorSpct <- function(x) {
 #' used to store response spectra
 #'
 #' @param x a data.frame or data.table.
+#' @param time.unit character string "second" or "day"
 #' @export
 #' @exportClass filter.spct
 #'
-setResponseSpct <- function(x) {
+setResponseSpct <- function(x, time.unit="none") {
   name <- substitute(x)
   rmDerivedSpct(x)
   if (!is.data.table(x)) {
@@ -360,6 +361,7 @@ setResponseSpct <- function(x) {
   if (!is.response.spct(x)) {
     setattr(x, "class", c("response.spct", class(x)))
   }
+  setTimeUnit(x, time.unit)
   x <- check(x)
   setkey(x, w.length)
   if (is.name(name)) {
@@ -707,10 +709,10 @@ as.chroma.spct <- function(x) {
 #'
 #' @export
 #'
-setTimeUnit <- function(x, time.unit=c("second", "hour", "day")) {
-  if  (!(time.unit[1] %in% c("second", "hour", "day", "unknown"))) {
-    warning("Invalid 'time.unit' argument, only 'second', 'hour', and 'day' supported.")
-    return(x)
+setTimeUnit <- function(x, time.unit=c("second", "hour", "day", "none")) {
+  if  (!(time.unit[1] %in% c("second", "hour", "day", "none", "unknown"))) {
+    warning("Invalid 'time.unit' argument, only 'second', 'hour', 'day', and 'none' supported.")
+    time.unit <- "unknown"
   }
   if (is.source.spct(x) || is.response.spct(x)) {
     setattr(x, "time.unit", time.unit[1])

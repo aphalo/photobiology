@@ -6,9 +6,6 @@
 #' This function returns the irradiance for a given
 #' waveband of a light source spectrum.
 #'
-#' @usage irrad(spct, w.band=NULL, unit.out=getOption("photobiology.base.unit", default="energy"),
-#' quantity="total", use.cached.mult=FALSE, use.hinges=NULL)
-#'
 #' @usage irrad_spct(spct, w.band=NULL,
 #'                   unit.out=getOption("photobiology.base.unit", default="energy"),
 #'                   quantity="total", use.cached.mult=FALSE, use.hinges=NULL)
