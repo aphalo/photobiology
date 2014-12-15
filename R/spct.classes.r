@@ -695,23 +695,24 @@ as.chroma.spct <- function(x) {
 #'
 #' Funtion to set by reference the "time.unit" attribute
 #'
-#' @usage setTimeUnit(x, time.unit=c("second", "day"))
+#' @usage setTimeUnit(x, time.unit=c("second", "hour", "day"))
 #'
 #' @param x a source.spct object
-#' @param time.unit a character string, either "second" or "day"
+#' @param time.unit a character string, either "second", "hour" or "day"
 #'
 #' @return x
 #'
-#' @note if x is not a source.spct object, x is not modified
+#' @note if x is not a source.spct or response.spct object, x is not modified.
+#' \code{time.unit="hour"} is currently not fully supported.
 #'
 #' @export
 #'
-setTimeUnit <- function(x, time.unit=c("second", "day")) {
-  if  (!(time.unit[1] %in% c("second", "day", "unknown"))) {
-    warning("Invalid 'time.unit' argument, only 'second' and 'day' supported.")
+setTimeUnit <- function(x, time.unit=c("second", "hour", "day")) {
+  if  (!(time.unit[1] %in% c("second", "hour", "day", "unknown"))) {
+    warning("Invalid 'time.unit' argument, only 'second', 'hour', and 'day' supported.")
     return(x)
   }
-  if (is.source.spct(x)) {
+  if (is.source.spct(x) || is.response.spct(x)) {
     setattr(x, "time.unit", time.unit[1])
   }
   return(x)

@@ -30,6 +30,38 @@ source.spct <- function(w.length, s.e.irrad=NULL, s.q.irrad=NULL, time.unit=c("s
   return(out.spct)
 }
 
+#' Create a new response.spct
+#'
+#' This fucntion can be used to create response.spct objects from numeric vectors.
+#'
+#' @usage response.spct(w.length, s.e.response=NULL, s.q.response=NULL, time.unit=c("second", "day"), comment=NULL)
+#'
+#' @param w.length numeric vector with wavelengths in nanometres
+#' @param s.e.response numeric vecror with spectral energy irradiance in W m-2 nm-1 or J d-1 m-2 nm-1
+#' @param s.q.response numeric vecror with spectral photon irradiance in mol s-1 m-2 nm-1 or mol d-1 m-2 nm-1
+#' @param time.unit character string indicating the time unit used for spectral irradiance or exposure ("second" or "day")
+#' @param comment character string to be added as a comment attribute to the created object
+#'
+#' @return a response.spct object
+#'
+#' @export
+#'
+response.spct <- function(w.length, s.e.response=NULL, s.q.response=NULL, time.unit=c("second", "day"), comment=NULL) {
+  if (is.null(s.q.response) && (is.numeric(s.e.response))) {
+    out.spct <- data.table(w.length, s.e.response)
+  } else if (is.null(s.e.response) && (is.numeric(s.q.response))) {
+    out.spct <- data.table(w.length, s.q.response)
+  } else {
+    warning("One and only one of s.e.response or s.q.response should be different from NULL.")
+    return(NA)
+  }
+  if (!is.null(comment)) {
+    setattr(out.spct, "comment", comment)
+  }
+  setResponseSpct(out.spct, time.unit)
+  return(out.spct)
+}
+
 #' Create a new filter.spct
 #'
 #' This fucntion can be used to create source.spct objects from numeric vectors.
