@@ -6,10 +6,11 @@
 #' spectrum of the measured light source. Occasionally one may
 #' want also to expand the wavelength range.
 #'
-#' @usage trim_spct(spct, band=NULL, low.limit=NULL, high.limit=NULL, use.hinges=TRUE, fill=NULL, byref=FALSE)
+#' @usage trim_spct(spct, range=NULL, low.limit=NULL, high.limit=NULL,
+#'                  use.hinges=TRUE, fill=NULL, byref=FALSE)
 #'
 #' @param spct an object of class "generic.spct"
-#' @param band a numeric vector of length two, or any other object for which function range() will return two
+#' @param range a numeric vector of length two, or any other object for which function range() will return two
 #' @param low.limit shortest wavelength to be kept (defaults to shortest w.length value)
 #' @param high.limit longest wavelength to be kept (defaults to longest w.length value)
 #' @param use.hinges logical, if TRUE (the default)
@@ -20,7 +21,7 @@
 #' @return a spectrum of same class as input with its tails trimmed or expanded
 #'
 #' @note When expanding an spectrum, if fill==NULL, then expansion is not performed.
-#' Band can be "wave_band" object, a numeric vector or a list of numeric vectors, or any other user-defined or built-in
+#' Range can be "waveband" object, a numeric vector or a list of numeric vectors, or any other user-defined or built-in
 #' object for which range() returns a numeric vector of legth two, that can be interpreted as wavelengths expressed in nm.
 #'
 #' @keywords manip misc
@@ -38,11 +39,11 @@
 #' trim_spct(sun.spct, low.limit=300, high.limit=1000)
 #' trim_spct(sun.spct, low.limit=300, high.limit=400, fill=NA)
 #' trim_spct(sun.spct, low.limit=100, high.limit=400, fill=0.0)
-#' trim_spct(sun.spct, band=new_waveband(300, 350))
-#' trim_spct(sun.spct, band=c(300, 350))
+#' trim_spct(sun.spct, range=new_waveband(300, 350))
+#' trim_spct(sun.spct, range=c(300, 350))
 #'
 
-trim_spct <- function(spct, band=NULL, low.limit=NULL, high.limit=NULL, use.hinges=TRUE, fill=NULL, byref=FALSE)
+trim_spct <- function(spct, range=NULL, low.limit=NULL, high.limit=NULL, use.hinges=TRUE, fill=NULL, byref=FALSE)
 {
   if (!is.any.spct(spct)) {
     setGenericSpct(spct)
@@ -50,6 +51,10 @@ trim_spct <- function(spct, band=NULL, low.limit=NULL, high.limit=NULL, use.hing
   verbose <- TRUE
   if (byref) {
     name <- substitute(spct)
+  }
+  if (!is.null(range)) {
+    low.limit <- ifelse(!is.null(low.limit), max(min(range), low.limit), min(range))
+    high.limit <- ifelse(!is.null(high.limit), min(max(range), high.limit), max(range))
   }
   if (is.null(low.limit)) {
     low.limit <- min(spct, na.rm=TRUE)
@@ -63,12 +68,6 @@ trim_spct <- function(spct, band=NULL, low.limit=NULL, high.limit=NULL, use.hing
   comment.spct <- comment(spct)
   time.unit.spct <- attr(spct, "time.unit", exact=TRUE)
   Tfr.type.spct <- attr(spct, "Tfr.type", exact=TRUE)
-  # check for target
-  if (!is.null(band)) {
-    trim.range <- range(band)
-    low.limit <- trim.range[1]
-    high.limit <- trim.range[2]
-  }
   # check whether we should expand the low end
   low.end <- min(spct, na.rm=TRUE)
   if (low.end > low.limit) {

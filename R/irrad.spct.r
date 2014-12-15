@@ -206,8 +206,8 @@ irrad <- function(spct, w.band, unit.out, quantity, use.cached.mult, use.hinges)
 #' This function returns the energy irradiance for a given
 #' waveband of a light source spectrum.
 #'
-#' @usage e_irrad(spct, w.band=NULL,
-#' quantity="total", use.cached.mult=FALSE, use.hinges=NULL)
+#' @usage e_irrad.source.spct(spct, w.band=NULL,
+#'                quantity="total", use.cached.mult=FALSE, use.hinges=NULL)
 #'
 #' @param spct an object of class "source.spct"
 #' @param w.band list of waveband definitions created with new_waveband()
@@ -234,9 +234,9 @@ irrad <- function(spct, w.band, unit.out, quantity, use.cached.mult, use.hinges)
 #' that the wavelengths are the same in each call, as the only test done is for the length of the
 #' \code{w.length} vector.
 #'
-
 e_irrad.source.spct <-
-  function(spct, w.band=NULL, quantity="total", use.cached.mult=FALSE, use.hinges=NULL){
+  function(spct, w.band=NULL,
+           quantity="total", use.cached.mult=FALSE, use.hinges=NULL){
     irrad_spct(spct, w.band=w.band, unit.out="energy", quantity=quantity,
                       use.cached.mult=use.cached.mult, use.hinges=use.hinges)
   }
@@ -249,8 +249,8 @@ e_irrad.source.spct <-
 #' This function returns the photon irradiance for a given
 #' waveband of a light source spectrum.
 #'
-#' @usage q_irrad(spct, w.band=NULL,
-#' quantity="total", use.cached.mult=FALSE, use.hinges=NULL)
+#' @usage q_irrad.source.spct(spct, w.band=NULL,
+#'                            quantity="total", use.cached.mult=FALSE, use.hinges=NULL)
 #'
 #' @param spct an object of class "source.spct"
 #' @param w.band list of waveband definitions created with new_waveband()
@@ -282,7 +282,10 @@ e_irrad.source.spct <-
 #' @name q_irrad
 
 q_irrad.source.spct <-
-  function(spct, w.band=NULL, quantity="total", use.cached.mult=FALSE, use.hinges=NULL){
+  function(spct, w.band=NULL,
+           quantity="total",
+           use.cached.mult=FALSE,
+           use.hinges=NULL){
     irrad_spct(spct, w.band=w.band, unit.out="photon", quantity=quantity,
                       use.cached.mult=use.cached.mult, use.hinges=use.hinges)
   }

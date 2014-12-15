@@ -3,6 +3,7 @@ TODO
 
 Need to add warnings informing what has happened, when a given combination of operands is
 rejected, and add a table to the User Guide summarizing the valid and invalid operations.
+Add trim_waveband() to all the summary functions so as to avoid warnings.
 
 photobiology 0.5.1
 ===================
@@ -11,6 +12,8 @@ Added missing response.spct() function.
 Fixed two bugs in new_waveband: 1) wb.label was not set when wb.name was auto-generated!
 2) Both hinges were on the outside of the waveband, giving trouble with wavebands sharing
 their limits.
+
+Added new function trim_waveband().
 
 photobiology 0.5.0
 ===================
