@@ -8,12 +8,13 @@
 #'
 #' @usage irrad_spct(spct, w.band=NULL,
 #'                   unit.out=getOption("photobiology.base.unit", default="energy"),
-#'                   quantity="total", use.cached.mult=FALSE, use.hinges=NULL)
+#'                   quantity="total", wb.trim=FALSE, use.cached.mult=FALSE, use.hinges=NULL)
 #'
 #' @param spct an object of class "source.spct"
 #' @param w.band list of waveband definitions created with new_waveband()
 #' @param unit.out character string with allowed values "energy", and "photon", or its alias "quantum"
 #' @param quantity character string
+#' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries are trimmed, if FALSE, they are discarded
 #' @param use.cached.mult logical indicating whether multiplier values should be cached between calls
 #' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
 #'
@@ -40,7 +41,7 @@
 
 irrad_spct <-
   function(spct, w.band=NULL, unit.out=getOption("photobiology.base.unit", default="energy"),
-           quantity="total", use.cached.mult=FALSE, use.hinges=NULL){
+           quantity="total", wb.trim=FALSE, use.cached.mult=FALSE, use.hinges=NULL){
     # we have a default, but we check for invalid arguments
     if (is.null(unit.out) || is.na(unit.out)){
       warning("'unit.out' set to an invalid value")
@@ -50,7 +51,7 @@ irrad_spct <-
       unit.out <- "photon"
     }
     if (is.null(w.band)) {
-      w.band <- new_waveband(min(spct), max(spct) + 1e-4)
+      w.band <- waveband(spct)
     }
     if (is.waveband(w.band)) {
       # if the argument is a single w.band, we enclose it in a list
@@ -58,6 +59,7 @@ irrad_spct <-
       # cludge but lets us avoid treating it as a special case
       w.band <- list(w.band)
     }
+    w.band <- trim_waveband(w.band=w.band, range=spct, trim=wb.trim)
     # we check if the list elements are named, if not we set a flag
     # and an empty vector that will be later filled in with data from
     # the waveband definitions.
@@ -158,7 +160,11 @@ irrad_spct <-
       warning("'quantity '", quantity, "' is invalid, returning 'total' instead")
       quantity <- "total"
     }
-    names(irrad) <- wb.name
+    if (length(irrad) == 0) {
+      irrad <- NA
+      names(irrad) <- "out of range"
+    }
+    names(irrad) <- paste(names(irrad), wb.name)
     setattr(irrad, "time.unit", attr(spct, "time.unit", exact=TRUE))
     setattr(irrad, "radiation.unit", paste(unit.out, "irradiance", quantity))
     return(irrad)
@@ -174,12 +180,13 @@ irrad.source.spct <- irrad_spct
 #' @param w.band a waveband object or a list of waveband objects
 #' @param unit.out character string with allowed values "energy", and "photon", or its alias "quantum"
 #' @param quantity character string
+#' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries are trimmed, if FALSE, they are discarded
 #' @param use.cached.mult logical indicating whether multiplier values should be cached between calls
 #' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
 #' @export reflectance.default
 #'
 
-irrad.default <- function(spct, w.band, unit.out, quantity, use.cached.mult, use.hinges) {
+irrad.default <- function(spct, w.band, unit.out, quantity, wb.trim, use.cached.mult, use.hinges) {
   return(NA)
 }
 
@@ -191,12 +198,13 @@ irrad.default <- function(spct, w.band, unit.out, quantity, use.cached.mult, use
 #' @param w.band a waveband object or a list of waveband objects
 #' @param unit.out character string with allowed values "energy", and "photon", or its alias "quantum"
 #' @param quantity character string
+#' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries are trimmed, if FALSE, they are discarded
 #' @param use.cached.mult logical indicating whether multiplier values should be cached between calls
 #' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
 #'
 #' @export
 #'
-irrad <- function(spct, w.band, unit.out, quantity, use.cached.mult, use.hinges) UseMethod("irrad")
+irrad <- function(spct, w.band, unit.out, quantity, wb.trim, use.cached.mult, use.hinges) UseMethod("irrad")
 
 # energy irradiance -------------------------------------------------------
 
@@ -207,11 +215,12 @@ irrad <- function(spct, w.band, unit.out, quantity, use.cached.mult, use.hinges)
 #' waveband of a light source spectrum.
 #'
 #' @usage e_irrad.source.spct(spct, w.band=NULL,
-#'                quantity="total", use.cached.mult=FALSE, use.hinges=NULL)
+#'                quantity="total", wb.trim=FALSE, use.cached.mult=FALSE, use.hinges=NULL)
 #'
 #' @param spct an object of class "source.spct"
 #' @param w.band list of waveband definitions created with new_waveband()
 #' @param quantity character string
+#' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries are trimmed, if FALSE, they are discarded
 #' @param use.cached.mult logical indicating whether multiplier values should be cached between calls
 #' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
 #'
@@ -236,8 +245,8 @@ irrad <- function(spct, w.band, unit.out, quantity, use.cached.mult, use.hinges)
 #'
 e_irrad.source.spct <-
   function(spct, w.band=NULL,
-           quantity="total", use.cached.mult=FALSE, use.hinges=NULL){
-    irrad_spct(spct, w.band=w.band, unit.out="energy", quantity=quantity,
+           quantity="total", wb.trim=FALSE, use.cached.mult=FALSE, use.hinges=NULL){
+    irrad_spct(spct, w.band=w.band, unit.out="energy", quantity=quantity, wb.trim=wb.trim,
                       use.cached.mult=use.cached.mult, use.hinges=use.hinges)
   }
 
@@ -250,11 +259,12 @@ e_irrad.source.spct <-
 #' waveband of a light source spectrum.
 #'
 #' @usage q_irrad.source.spct(spct, w.band=NULL,
-#'                            quantity="total", use.cached.mult=FALSE, use.hinges=NULL)
+#'                            quantity="total", wb.trim=FALSE, use.cached.mult=FALSE, use.hinges=NULL)
 #'
 #' @param spct an object of class "source.spct"
 #' @param w.band list of waveband definitions created with new_waveband()
 #' @param quantity character string
+#' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries are trimmed, if FALSE, they are discarded
 #' @param use.cached.mult logical indicating whether multiplier values should be cached between calls
 #' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
 #'
@@ -284,9 +294,10 @@ e_irrad.source.spct <-
 q_irrad.source.spct <-
   function(spct, w.band=NULL,
            quantity="total",
+           wb.trim=FALSE,
            use.cached.mult=FALSE,
            use.hinges=NULL){
-    irrad_spct(spct, w.band=w.band, unit.out="photon", quantity=quantity,
+    irrad_spct(spct, w.band=w.band, unit.out="photon", quantity=quantity, wb.trim=wb.trim,
                       use.cached.mult=use.cached.mult, use.hinges=use.hinges)
   }
 
@@ -297,12 +308,13 @@ q_irrad.source.spct <-
 #' @param spct an R object of class "generic.spct"
 #' @param w.band a waveband object or a list of waveband objects
 #' @param quantity character string
+#' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries are trimmed, if FALSE, they are discarded
 #' @param use.cached.mult logical indicating whether multiplier values should be cached between calls
 #' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
 #'
 #' @export e_irrad
 #'
-e_irrad <- function(spct, w.band, quantity, use.cached.mult, use.hinges) UseMethod("e_irrad")
+e_irrad <- function(spct, w.band, quantity, wb.trim, use.cached.mult, use.hinges) UseMethod("e_irrad")
 
 #' Generic function
 #'
@@ -311,12 +323,13 @@ e_irrad <- function(spct, w.band, quantity, use.cached.mult, use.hinges) UseMeth
 #' @param spct an R object of class "generic.spct"
 #' @param w.band a waveband object or a list of waveband objects
 #' @param quantity character string
+#' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries are trimmed, if FALSE, they are discarded
 #' @param use.cached.mult logical indicating whether multiplier values should be cached between calls
 #' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
 #'
 #' @export q_irrad
 #'
-q_irrad <- function(spct, w.band, quantity, use.cached.mult, use.hinges) UseMethod("q_irrad")
+q_irrad <- function(spct, w.band, quantity, wb.trim, use.cached.mult, use.hinges) UseMethod("q_irrad")
 
 #' Default for generic function
 #'
@@ -325,11 +338,12 @@ q_irrad <- function(spct, w.band, quantity, use.cached.mult, use.hinges) UseMeth
 #' @param spct an object of class "generic.spct"
 #' @param w.band a waveband object or a list of waveband objects
 #' @param quantity character string
+#' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries are trimmed, if FALSE, they are discarded
 #' @param use.cached.mult logical indicating whether multiplier values should be cached between calls
 #' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
 #' @export e_irrad.default
 #'
-e_irrad.default <- function(spct, w.band, quantity, use.cached.mult, use.hinges) {
+e_irrad.default <- function(spct, w.band, quantity, wb.trim, use.cached.mult, use.hinges) {
   return(NA)
 }
 
@@ -340,10 +354,11 @@ e_irrad.default <- function(spct, w.band, quantity, use.cached.mult, use.hinges)
 #' @param spct an object of class "generic.spct"
 #' @param w.band a waveband object or a list of waveband objects
 #' @param quantity character string
+#' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries are trimmed, if FALSE, they are discarded
 #' @param use.cached.mult logical indicating whether multiplier values should be cached between calls
 #' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
 #' @export q_irrad.default
 #'
-q_irrad.default <- function(spct, w.band, quantity, use.cached.mult, use.hinges) {
+q_irrad.default <- function(spct, w.band, quantity, wb.trim, use.cached.mult, use.hinges) {
   return(NA)
 }

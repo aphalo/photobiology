@@ -3,12 +3,13 @@
 #' This function returns the mean absorbance for a given
 #' waveband of a absorbance spectrum.
 #'
-#' @usage absorbance_spct(spct, w.band=NULL, quantity="average", use.hinges=NULL)
+#' @usage absorbance_spct(spct, w.band=NULL, quantity="average", wb.trim=FALSE, use.hinges=NULL)
 #' @usage absorbance(spct, w.band=NULL, use.hinges=NULL)
 #'
 #' @param spct an object of class "filter.spct"
 #' @param w.band list of waveband definitions created with new_waveband()
 #' @param quantity character string
+#' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries are trimmed, if FALSE, they are discarded
 #' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
 #'
 #' @return a single numeric value with no change in scale factor: AU (absorbance units, using log10)
@@ -22,13 +23,11 @@
 #' in mosts cases. Only the range of wavelengths in the wavebands is used and all BSWFs are ignored.
 
 absorbance_spct <-
-  function(spct, w.band=NULL, quantity="average", use.hinges=NULL){
+  function(spct, w.band=NULL, quantity="average", wb.trim=FALSE, use.hinges=NULL){
     spct <- T2A(spct, action="replace", byref=FALSE)
     # if the waveband is undefined then use all data
     if (is.null(w.band)){
-      w.band <- new_waveband(min(spct), max(spct) + 1e-4)
-      # we need to add a small number as the test is "<"
-      # this affects signifcantly the result only when no hinges are used
+      w.band <- waveband(spct)
     }
     if (is(w.band, "waveband")) {
       # if the argument is a single w.band, we enclose it in a list
@@ -36,6 +35,7 @@ absorbance_spct <-
       # cludge but let's us avoid treating it as a special case
       w.band <- list(w.band)
     }
+    w.band <- trim_waveband(w.band=w.band, range=spct, trim=wb.trim)
 
     # if the w.band includes 'hinges' we insert them
     # choose whether to use hinges or not
@@ -106,8 +106,11 @@ absorbance_spct <-
     } else if (quantity == "average") {
       absorbance <- absorbance / sapply(w.band, spread)
     }
+    if (length(absorbance) == 0) {
+      irrad <- NA
+      names(absorbance) <- "out of range"
+    }
     names(absorbance) <- paste(names(absorbance), wb.name)
-    names(absorbance) <- wb.name
     setattr(absorbance, "time.unit", "none")
     setattr(absorbance, "Tfr.type", attr(spct, "Tfr.type", exact=TRUE))
     setattr(absorbance, "radiation.unit", paste("absorbance", quantity))
@@ -120,12 +123,13 @@ absorbance_spct <-
 #'
 #' @param spct an object of class "generic.spct"
 #' @param w.band list of waveband definitions created with new_waveband()
+#' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries are trimmed, if FALSE, they are discarded
 #' @param quantity character string
 #' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
 #'
 #' @export absorbance
 #'
-absorbance <- function(spct, w.band, quantity, use.hinges) UseMethod("absorbance")
+absorbance <- function(spct, w.band, quantity, wb.trim, use.hinges) UseMethod("absorbance")
 
 #' Default for generic function
 #'
@@ -134,10 +138,11 @@ absorbance <- function(spct, w.band, quantity, use.hinges) UseMethod("absorbance
 #' @param spct an object of class "generic.spct"
 #' @param w.band list of waveband definitions created with new_waveband()
 #' @param quantity character string
+#' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries are trimmed, if FALSE, they are discarded
 #' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
 #' @export absorbance.default
 #'
-absorbance.default <- function(spct, w.band, quantity, use.hinges) {
+absorbance.default <- function(spct, w.band, quantity, wb.trim, use.hinges) {
   return(NA)
 }
 
@@ -148,6 +153,7 @@ absorbance.default <- function(spct, w.band, quantity, use.hinges) {
 #' @param spct an object of class "filter.spct"
 #' @param w.band list of waveband definitions created with new_waveband()
 #' @param quantity character string
+#' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries are trimmed, if FALSE, they are discarded
 #' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
 #' @export absorbance.filter.spct
 #'

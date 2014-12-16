@@ -4,12 +4,13 @@
 #' waveband of a transmittance spectrum.
 #'
 #' @usage transmittance_spct(spct, w.band=NULL, pc.out=FALSE,
-#'                      quantity="average", use.hinges=NULL)
+#'                      quantity="average", wb.trim=FALSE, use.hinges=NULL)
 #'
 #' @param spct an object of class "generic.spct"
 #' @param w.band list of waveband definitions created with new_waveband()
 #' @param pc.out a logical indicating whether result should be a percentage or a fraction of one
 #' @param quantity character string
+#' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries are trimmed, if FALSE, they are discarded
 #' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
 #'
 #' @return a single numeric value with no change in scale factor: [W m-2 nm-1] -> [mol s-1 m-2]
@@ -24,13 +25,11 @@
 #' in mosts cases. Only the range of wavelengths in the wavebands is used and all BSWFs are ignored.
 
 transmittance_spct <-
-  function(spct, w.band=NULL, pc.out=FALSE, quantity="average", use.hinges=NULL){
+  function(spct, w.band=NULL, pc.out=FALSE, quantity="average", wb.trim=FALSE, use.hinges=NULL){
     spct <- A2T(spct, action="replace", byref=FALSE)
     # if the waveband is undefined then use all data
     if (is.null(w.band)){
-      w.band <- new_waveband(min(spct), max(spct) + 1e-4)
-      # we need to add a small number as the test is "<"
-      # this affects signifcantly the result only when no hinges are used
+      w.band <- waveband(spct)
     }
     if (is(w.band, "waveband")) {
       # if the argument is a single w.band, we enclose it in a list
@@ -38,6 +37,7 @@ transmittance_spct <-
       # cludge but let's us avoid treating it as a special case
       w.band <- list(w.band)
     }
+    w.band <- trim_waveband(w.band=w.band, range=spct, trim=wb.trim)
 
     # if the w.band includes 'hinges' we insert them
     # choose whether to use hinges or not
@@ -119,6 +119,11 @@ transmittance_spct <-
       warning("'quantity '", quantity, "' is invalid, returning 'total' instead")
       quantity <- "total"
     }
+
+    if (length(transmittance) == 0) {
+      irrad <- NA
+      names(transmittance) <- "out of range"
+    }
     names(transmittance) <- paste(names(transmittance), wb.name)
     setattr(transmittance, "time.unit", "none")
     setattr(transmittance, "Tfr.type", attr(spct, "Tfr.type", exact=TRUE))
@@ -134,11 +139,12 @@ transmittance_spct <-
 #' @param w.band list of waveband definitions created with new_waveband()
 #' @param pc.out a logical indicating whether result should be a percentage or a fraction of one
 #' @param quantity character string
+#' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries are trimmed, if FALSE, they are discarded
 #' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
 #'
 #' @export transmittance
 #'
-transmittance <- function(spct, w.band, pc.out, quantity, use.hinges) UseMethod("transmittance")
+transmittance <- function(spct, w.band, pc.out, quantity, wb.trim, use.hinges) UseMethod("transmittance")
 
 #' Default for generic function
 #'
@@ -148,10 +154,11 @@ transmittance <- function(spct, w.band, pc.out, quantity, use.hinges) UseMethod(
 #' @param w.band list of waveband definitions created with new_waveband()
 #' @param pc.out a logical indicating whether result should be a percentage or a fraction of one
 #' @param quantity character string
+#' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries are trimmed, if FALSE, they are discarded
 #' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
 #' @export transmittance.default
 #'
-transmittance.default <- function(spct, w.band, pc.out, quantity, use.hinges) {
+transmittance.default <- function(spct, w.band, pc.out, quantity, wb.trim, use.hinges) {
   return(NA)
 }
 
@@ -163,6 +170,7 @@ transmittance.default <- function(spct, w.band, pc.out, quantity, use.hinges) {
 #' @param w.band list of waveband definitions created with new_waveband()
 #' @param pc.out a logical indicating whether result should be a percentage or a fraction of one
 #' @param quantity character string
+#' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries are trimmed, if FALSE, they are discarded
 #' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
 #' @export transmittance.filter.spct
 #'

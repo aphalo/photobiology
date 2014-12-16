@@ -21,7 +21,6 @@
 #' @keywords manip misc
 #' @export q_ratio q_ratio_spct
 #' @examples
-#' data(sun.spct)
 #' q_ratio_spct(sun.spct, new_waveband(400,500), new_waveband(400,700))
 #'
 #' @note Recycling for wavebans takes place when the number of denominator and denominator wavebands differ.
@@ -36,9 +35,9 @@
 
 q_ratio <-
   function(spct, w.band.num=NULL, w.band.denom=NULL, use.cached.mult=FALSE, use.hinges=NULL){
-    q.irrad.num <- irrad_spct(spct, w.band=w.band.num, unit.out="photon",
+    q.irrad.num <- irrad_spct(spct, w.band=w.band.num, unit.out="photon", quantity="total", wb.trim=FALSE,
                               use.cached.mult=use.cached.mult, use.hinges=use.hinges)
-    q.irrad.denom <- irrad_spct(spct, w.band=w.band.denom, unit.out="photon",
+    q.irrad.denom <- irrad_spct(spct, w.band=w.band.denom, unit.out="photon", quantity="total", wb.trim=FALSE,
                                 use.cached.mult=use.cached.mult, use.hinges=use.hinges)
     ratio <- q.irrad.num / q.irrad.denom
     names(ratio) <- paste(names(q.irrad.num), ":", names(q.irrad.denom), "(q:q)", sep="")
@@ -73,7 +72,6 @@ q_ratio_spct <- q_ratio
 #' @keywords manip misc
 #' @export e_ratio e_ratio_spct
 #' @examples
-#' data(sun.spct)
 #' e_ratio_spct(sun.spct, new_waveband(400,500), new_waveband(400,700))
 #'
 #' @note Recycling for wavebans takes place when the number of denominator and denominator wavebands differ.
@@ -87,9 +85,9 @@ q_ratio_spct <- q_ratio
 
 e_ratio <-
   function(spct, w.band.num=NULL, w.band.denom=NULL, use.cached.mult=FALSE, use.hinges=NULL){
-    e.irrad.num <- irrad_spct(spct, w.band=w.band.num, unit.out="energy",
+    e.irrad.num <- irrad_spct(spct, w.band=w.band.num, unit.out="energy", quantity="total", wb.trim=FALSE,
                               use.cached.mult=use.cached.mult, use.hinges=use.hinges)
-    e.irrad.denom <- irrad_spct(spct, w.band=w.band.denom, unit.out="energy",
+    e.irrad.denom <- irrad_spct(spct, w.band=w.band.denom, unit.out="energy", quantity="total", wb.trim=FALSE,
                                 use.cached.mult=use.cached.mult, use.hinges=use.hinges)
     ratio <- e.irrad.num / e.irrad.denom
     names(ratio) <- paste(names(e.irrad.num), ":", names(e.irrad.denom), "(e:e)", sep="")
@@ -120,7 +118,6 @@ e_ratio_spct <- e_ratio
 #' @keywords manip misc
 #' @export qe_ratio qe_ratio_spct
 #' @examples
-#' data(sun.spct)
 #' qe_ratio_spct(sun.spct, new_waveband(400,700))
 #'
 #' @note The last two parameters control speed optimizations. The defaults should be suitable
@@ -134,9 +131,9 @@ e_ratio_spct <- e_ratio
 
 qe_ratio <-
   function(spct, w.band=NULL, use.cached.mult=FALSE, use.hinges=NULL){
-    q.irrad <- irrad_spct(spct, w.band=w.band, unit.out="photon",
+    q.irrad <- irrad_spct(spct, w.band=w.band, unit.out="photon", quantity="total", wb.trim=FALSE,
                               use.cached.mult=use.cached.mult, use.hinges=use.hinges)
-    e.irrad <- irrad_spct(spct, w.band=w.band, unit.out="energy",
+    e.irrad <- irrad_spct(spct, w.band=w.band, unit.out="energy", quantity="total", wb.trim=FALSE,
                                 use.cached.mult=use.cached.mult, use.hinges=use.hinges)
     ratio <- q.irrad / e.irrad
     names(ratio) <- paste("q:e(", names(q.irrad), ")", sep="")
@@ -167,7 +164,6 @@ qe_ratio_spct <- qe_ratio
 #' @keywords manip misc
 #' @export eq_ratio eq_ratio_spct
 #' @examples
-#' data(sun.spct)
 #' eq_ratio_spct(sun.spct, new_waveband(400,700))
 #'
 #' @note The last two parameters control speed optimizations. The defaults should be suitable

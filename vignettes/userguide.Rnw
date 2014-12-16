@@ -833,17 +833,20 @@ transmittance(polyester.new.spct, UV_bands(), quantity="relative.pc")
 transmittance(polyester.new.spct, UV_bands(), quantity="average")
 @
 
-It is more likely that we would like to calculate these values with reference to light of a certain spectral quality. This needs to be calculated by hand, which is not difficult. For example, for UV-B.
+It is more likely that we would like to calculate these values with reference to light of a certain spectral quality. This needs to be calculated by hand, which is not difficult. For example, for UV-B, which we can
+calculate, either by trimming the waveband as shown here, or by extending the sun spectrum with zeros.
 
 <<>>=
-irrad(sun.spct * polyester.new.spct, UVB()) / irrad(sun.spct, UVB()) * 100
+tr.UVB <- trim_waveband(UVB(), sun.spct, trim=TRUE)
+irrad(sun.spct * polyester.new.spct, tr.UVB) /
+                            irrad(sun.spct, tr.UVB) * 100
 @
 
 And for a list of wavebands, as percentages.
 
 <<>>=
-irrad(sun.spct * polyester.new.spct, list(UVB(), UVA(), PAR())) /
-  irrad(sun.spct, list(UVB(), UVA(), PAR())) * 100
+irrad(sun.spct * polyester.new.spct, list(UVB(), UVA(), PAR()), wb.trim=TRUE) /
+  irrad(sun.spct, list(UVB(), UVA(), PAR()), wb.trim=TRUE) * 100
 @
 
 \subsection{Calculating integrated response}

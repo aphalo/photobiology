@@ -4,20 +4,21 @@
 #' waveband and a response spectrum.
 #'
 #' @usage response_spct(spct, w.band=NULL,
-#'                      unit.out=getOption("photobiology.base.unit",
-#'                      default="energy"), quantity, use.hinges=NULL)
+#'                      unit.out=getOption("photobiology.base.unit", default="energy"),
+#'                      quantity="total", wb.trim=FALSE, use.hinges=NULL)
 #'
 #' @param spct an object of class response.spct"
 #' @param w.band a waveband object or a list of waveband objects
 #' @param unit.out character string with allowed values "energy", and "photon", or its alias "quantum"
 #' @param quantity character string
+#' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries are trimmed, if FALSE, they are discarded
 #' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
 #'
 #' @return a single numeric value expressed either as a fraction of one or a percentage, or a
 #' vector of the same length as the list of wave.bands.
 #' @keywords manip misc
 #' @export response.response.spct response_spct
-#' @aliases response.response.spct response_spct response
+#' @aliases response.response.spct response_spct
 #' @examples
 #' library(photobiologySensors)
 #' response_spct(Vital_BW_20.spct, new_waveband(293,385),
@@ -35,14 +36,8 @@ response_spct <-
   function(spct, w.band=NULL,
            unit.out=getOption("photobiology.base.unit", default="energy"),
            quantity="total",
+           wb.trim=FALSE,
            use.hinges=NULL){
-    # "response.spct" objects are not guaranteed to contain response
-    # data.
-    if (!exists("s.e.response", spct, inherits=FALSE) &&
-          ! exists("s.q.response", spct, inherits=FALSE)) {
-      warning("No spectral response data found.")
-      return(NA)
-    }
     # makes "quantum" synonym for "photon" without changes to other code
     if (unit.out == "quantum") {
       unit.out <- "photon"
@@ -59,7 +54,7 @@ response_spct <-
 
     # if the waveband is undefined then use all data
     if (is.null(w.band)){
-      w.band <- list(Total=waveband(range(spct), wb.name="Total"))
+      w.band <- waveband(spct)
     }
     if (is.waveband(w.band)) {
       # if the argument is a single w.band, we enclose it in a list
@@ -67,6 +62,7 @@ response_spct <-
       # cludge but it let's us avoid treating it as a special case
       w.band <- list(w.band)
     }
+    w.band <- trim_waveband(w.band=w.band, range=spct, trim=wb.trim)
 
     # if the w.band includes 'hinges' we insert them,
     # but if not, we decide whether to insert hinges or not
@@ -147,6 +143,10 @@ response_spct <-
       quantity <- "total"
     }
 
+    if (length(response) == 0) {
+      response <- NA
+      names(response) <- "out of range"
+    }
     names(response) <- paste(names(response), wb_name)
     setattr(response, "radiation.unit", paste(unit.out, "response", quantity))
     return(response)
@@ -162,10 +162,11 @@ response.response.spct <- response_spct
 #' @param w.band a waveband object or a list of waveband objects
 #' @param unit.out character string with allowed values "energy", and "photon", or its alias "quantum"
 #' @param quantity character string
+#' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries are trimmed, if FALSE, they are discarded
 #' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
 #' @export response.default
 #'
-response.default <- function(spct, w.band, unit.out, quantity, use.hinges) {
+response.default <- function(spct, w.band, unit.out, quantity, wb.trim, use.hinges) {
   return(NA)
 }
 
@@ -177,22 +178,24 @@ response.default <- function(spct, w.band, unit.out, quantity, use.hinges) {
 #' @param w.band a waveband object or a list of waveband objects
 #' @param unit.out character string with allowed values "energy", and "photon", or its alias "quantum"
 #' @param quantity character string
+#' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries are trimmed, if FALSE, they are discarded
 #' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
 #'
 #' @export
 #'
-response <- function(spct, w.band, unit.out, quantity, use.hinges) UseMethod("response")
+response <- function(spct, w.band, unit.out, quantity, wb.trim, use.hinges) UseMethod("response")
 
 #' Calculate energy or photon based response from spectral response.
 #'
 #' This function returns the mean, total, or contribution of response for each
 #' waveband and a response spectrum.
 #'
-#' @usage e_response(spct, w.band=NULL, quantity="total", use.hinges=NULL)
+#' @usage e_response.response.spct(spct, w.band=NULL, quantity="total", wb.trim=FALSE, use.hinges=NULL)
 #'
 #' @param spct an object of class response.spct"
 #' @param w.band a waveband object or a list of waveband objects
 #' @param quantity character string
+#' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries are trimmed, if FALSE, they are discarded
 #' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
 #'
 #' @return a single numeric value expressed either as a fraction of one or a percentage, or a
@@ -208,8 +211,10 @@ response <- function(spct, w.band, unit.out, quantity, use.hinges) UseMethod("re
 #' in mosts cases. Only the range of wavelengths in the wavebands is used and all BSWFs are ignored.
 
 e_response.response.spct <-
-  function(spct, w.band=NULL, quantity="total", use.hinges=NULL){
-    response_spct(spct=spct, w.band=w.band, unit.out="energy", quantity=quantity, use.hinges=use.hinges)
+  function(spct, w.band=NULL, quantity="total", wb.trim=FALSE, use.hinges=NULL){
+    response_spct(spct=spct, w.band=w.band, unit.out="energy",
+                  quantity=quantity, wb.trim=wb.trim,
+                  use.hinges=use.hinges)
   }
 
 #' Calculate photon-based photo-response from spectral response.
@@ -217,11 +222,12 @@ e_response.response.spct <-
 #' This function returns the mean response for a given
 #' waveband and a response spectrum.
 #'
-#' @usage q_response.response.spct(spct, w.band=NULL, quantity="total", use.hinges=NULL)
+#' @usage q_response.response.spct(spct, w.band=NULL, quantity="total", wb.trim=FALSE, use.hinges=NULL)
 #'
 #' @param spct an object of class response.spct"
 #' @param w.band a waveband object or a list of waveband objects
 #' @param quantity character string
+#' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries are trimmed, if FALSE, they are discarded
 #' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
 #'
 #' @return a single numeric value expressed either as a fraction of one or a percentage, or a
@@ -237,8 +243,10 @@ e_response.response.spct <-
 #' in mosts cases. Only the range of wavelengths in the wavebands is used and all BSWFs are ignored.
 
 q_response.response.spct <-
-  function(spct, w.band=NULL, quantity="total", use.hinges=NULL){
-    response_spct(spct=spct, w.band=w.band, unit.out="photon", quantity=quantity, use.hinges=use.hinges)
+  function(spct, w.band=NULL, quantity="total", wb.trim=FALSE, use.hinges=NULL){
+    response_spct(spct=spct, w.band=w.band, unit.out="photon",
+                  quantity=quantity, wb.trim=wb.trim,
+                  use.hinges=use.hinges)
   }
 
 #' Generic function
@@ -248,11 +256,12 @@ q_response.response.spct <-
 #' @param spct an R object of class "generic.spct"
 #' @param w.band a waveband object or a list of waveband objects
 #' @param quantity character string
+#' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries are trimmed, if FALSE, they are discarded
 #' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
 #'
 #' @export e_response
 #'
-e_response <- function(spct, w.band, quantity, use.hinges) UseMethod("e_response")
+e_response <- function(spct, w.band, quantity, wb.trim, use.hinges) UseMethod("e_response")
 
 #' Generic function
 #'
@@ -261,11 +270,12 @@ e_response <- function(spct, w.band, quantity, use.hinges) UseMethod("e_response
 #' @param spct an R object of class "generic.spct"
 #' @param w.band a waveband object or a list of waveband objects
 #' @param quantity character string
+#' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries are trimmed, if FALSE, they are discarded
 #' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
 #'
 #' @export q_response
 #'
-q_response <- function(spct, w.band, quantity, use.hinges) UseMethod("q_response")
+q_response <- function(spct, w.band, quantity, wb.trim, use.hinges) UseMethod("q_response")
 
 #' Default for generic function
 #'
@@ -274,10 +284,11 @@ q_response <- function(spct, w.band, quantity, use.hinges) UseMethod("q_response
 #' @param spct an object of class "generic.spct"
 #' @param w.band a waveband object or a list of waveband objects
 #' @param quantity character string
+#' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries are trimmed, if FALSE, they are discarded
 #' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
 #' @export e_response.default
 #'
-e_response.default <- function(spct, w.band, quantity, use.hinges) {
+e_response.default <- function(spct, w.band, quantity, wb.trim, use.hinges) {
   return(NA)
 }
 
@@ -288,10 +299,11 @@ e_response.default <- function(spct, w.band, quantity, use.hinges) {
 #' @param spct an object of class "generic.spct"
 #' @param w.band a waveband object or a list of waveband objects
 #' @param quantity character string
+#' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries are trimmed, if FALSE, they are discarded
 #' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
 #' @export q_response.default
 #'
-q_response.default <- function(spct, w.band, quantity, use.hinges) {
+q_response.default <- function(spct, w.band, quantity, wb.trim, use.hinges) {
   return(NA)
 }
 

@@ -63,7 +63,7 @@ trim_waveband <- function(w.band, range=NULL, low.limit=NULL, high.limit=NULL, t
         trimmed.wb$label <- paste(wb$label, trimmed.tag, sep=".")
         trimmed.wb$name <- paste(wb$name, trimmed.tag, sep=".")
         i <- i + 1L
-        w.band.out[i] <- list(trimmed.wb)
+        w.band.out[[i]] <- trimmed.wb
       }
     }
   }
