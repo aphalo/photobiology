@@ -40,7 +40,8 @@
 
 <<setup, include=FALSE, cache=FALSE>>=
 library(knitr)
-opts_chunk$set(fig.path='figure/pos-', fig.align='center', fig.show='hold', size="footnotesize", dev='cairo_pdf')
+opts_chunk$set(fig.path='figure/pos-', fig.align='center', fig.show='hold',
+               fig.width=7, fig.height=6, size="footnotesize", dev='cairo_pdf')
 # options(replace.assign=TRUE,width=60)
 @
 
@@ -582,9 +583,9 @@ operate on spectral photon irradiance and return spectral photon irradiance inst
 this behaviour can be set, and will remain active until unset or reset.
 
 <<>>=
-options(photobiology.base.unit = "photon")
+options(photobiology.radiation.unit = "photon")
 sun.spct * UVB()
-options(photobiology.base.unit = "energy")
+options(photobiology.radiation.unit = "energy")
 sun.spct * UVB()
 @
 
@@ -599,7 +600,7 @@ polyester.new.spct^2
 
 Either option can be unset, by means of the \texttt{NULL} value.
 <<>>=
-options(photobiology.base.unit = NULL)
+options(photobiology.radiation.unit = NULL)
 options(photobiology.filter.qty = NULL)
 @
 
@@ -625,17 +626,17 @@ irrad(sun.spct, PAR(), unit.out = "photon") # mol s-1 m-2
 irrad(sun.spct, PAR(), unit.out = "photon") * 1e6 # umol s-1 m-2
 @
 
-The default for \texttt{irrad}, when no argument \texttt{unit.out} is supplied, is to return the irradiance value in energy irradiance units, unless the R \texttt{photobiology.base.unit} option is set.
+The default for \texttt{irrad}, when no argument \texttt{unit.out} is supplied, is to return the irradiance value in energy irradiance units, unless the R \texttt{photobiology.radiation.unit} option is set.
 
 <<>>=
 irrad(sun.spct, PAR()) # W m-2
-options(photobiology.base.unit = "photon")
+options(photobiology.radiation.unit = "photon")
 irrad(sun.spct, PAR()) # mol s-1 m-2
-options(photobiology.base.unit = NULL)
+options(photobiology.radiation.unit = NULL)
 @
 
 \sloppy
-Functions \texttt{e\_irrad} and \texttt{q\_irrad} save some typing, and always return the same type of spectral irradiance quantity, independently of global option \texttt{photobiology.base.unit}.
+Functions \texttt{e\_irrad} and \texttt{q\_irrad} save some typing, and always return the same type of spectral irradiance quantity, independently of global option \texttt{photobiology.radiation.unit}.
 
 <<>>=
 e_irrad(sun.spct, PAR()) # W m-2
@@ -962,9 +963,11 @@ We here plot, using \texttt{ggplot2}, weighted (in red) and unweighted irradianc
 
 <<>>=
 ggplot(data=sun.spct, aes(x=w.length, y=s.e.irrad/max(s.e.irrad))) +
-  geom_line() + geom_line(data=sun.spct * CIE(), colour="red") +
+  geom_line() +
+  geom_line(data=sun.spct * CIE(), colour="red",
+            aes(y=s.e.response/max(s.e.response))) +
   labs(x="Wavelength (nm)",
-       y="UnWeighted and GEN.T weighted spectral irradiance (relative units)")
+       y="UnWeighted and CIE98-weighted spectral irradiance (relative units)")
 @
 
 \subsubsection{Weighted spectral irradiance from vectors}
@@ -980,7 +983,7 @@ plot(weighted.s.e.irrad/max(weighted.s.e.irrad) ~ w.length, type="l",
      data=sun.spct,
      col="red",
      xlab="Wavelength (nm)",
-     ylab="UnWeighted and GEN.T weighted spectral irradiance (relative units)")
+     ylab="UnWeighted and CIE98-weighted spectral irradiance (relative units)")
 lines(s.e.irrad/max(s.e.irrad) ~ w.length, col="black", data=sun.spct)
 @
 

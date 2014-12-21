@@ -22,16 +22,21 @@ oper.e.generic.spct <- function(e1, e2, oper) {
     e1 <- q2e(e1, action = "add")
     if (is.waveband(e2)) {
       if (!identical(oper, `*`)) return(NA)
+      e1 <- trim_spct(e1, range=e2, verbose=FALSE)
       mult <- calc_multipliers(w.length=e1$w.length, w.band=e2, unit.out="energy",
                                unit.in="energy", use.cached.mult=FALSE)
-      return(source.spct(w.length=e1$w.length, s.e.irrad = e1$s.e.irrad * mult))
+      if (is_effective(e2)) {
+        return(response.spct(w.length=e1$w.length, s.e.response = e1$s.e.irrad * mult, time.unit=attr(e1, "time.unit", exact="TRUE")))
+      } else {
+        return(source.spct(w.length=e1$w.length, s.e.irrad = e1$s.e.irrad * mult, time.unit=attr(e1, "time.unit", exact="TRUE")))
+      }
     }
     if (is.numeric(e2)) {
       return(source.spct(w.length=e1$w.length, s.e.irrad=oper(e1$s.e.irrad, e2)))
     } else if (class2 == "source.spct") {
       z <- oper_spectra(e1$w.length, e2$w.length, e1$s.e.irrad, e2$s.e.irrad, bin.oper=oper, trim="intersection")
       setnames(z, 2, "s.e.irrad")
-      setSourceSpct(z)
+      setSourceSpct(z, time.unit=attr(e1, "time.unit", exact="TRUE"))
       return(z)
     } else if (class2 == "filter.spct") {
       filter.quantity <- getOption("photobiology.filter.qty", default="transmittance")
@@ -40,27 +45,27 @@ oper.e.generic.spct <- function(e1, e2, oper) {
         e2 <- A2T(e2)
         z <- oper_spectra(e1$w.length, e2$w.length, e1$s.e.irrad, e2$Tfr, bin.oper=oper, trim="intersection")
         setnames(z, 2, "s.e.irrad")
-        setSourceSpct(z)
+        setSourceSpct(z, time.unit=attr(e1, "time.unit", exact="TRUE"))
       } else if (filter.quantity=="absorbance") {
         if (!identical(oper, `*`)) return(NA)
         e2 <- T2A(e2)
         z <- oper_spectra(e1$w.length, e2$w.length, e1$s.e.irrad, e2$A, bin.oper=oper, trim="intersection")
         setnames(z, 2, "s.e.response")
-        setResponseSpct(z)
+        setResponseSpct(z, time.unit=attr(e1, "time.unit", exact="TRUE"))
       }
       return(z)
     } else if (class2 == "reflector.spct") {
       if (!identical(oper, `*`)) return(NA)
       z <- oper_spectra(e1$w.length, e2$w.length, e1$s.e.irrad, e2$s.e.irrad, bin.oper=oper, trim="intersection")
       setnames(z, 2, "s.e.irrad")
-      setSourceSpct(z)
+      setSourceSpct(z, time.unit=attr(e1, "time.unit", exact="TRUE"))
       return(z)
     } else if (class2 == "response.spct") {
       e2 <- q2e(e2, action = "add")
       if (!identical(oper, `*`)) return(NA)
       z <- oper_spectra(e1$w.length, e2$w.length, e1$s.e.irrad, e2$s.e.response, bin.oper=oper, trim="intersection")
       setnames(z, 2, "s.e.response")
-      setResponseSpct(z)
+      setResponseSpct(z, time.unit=attr(e1, "time.unit", exact="TRUE"))
       return(z)
     } else if (class2 == "chroma.spct") {
       if (!identical(oper, `*`)) return(NA)
@@ -85,13 +90,13 @@ oper.e.generic.spct <- function(e1, e2, oper) {
         if (!identical(oper, `*`)) return(NA)
         z <- oper_spectra(e1$w.length, e2$w.length, e1$Tfr, e2$s.e.irrad, bin.oper=oper, trim="intersection")
         setnames(z, 2, "s.e.irrad")
-        setSourceSpct(z)
+        setSourceSpct(z, time.unit=attr(e2, "time.unit", exact="TRUE"))
       } else if (class2 == "filter.spct") {
         e2 <- A2T(e2)
         if (!identical(oper, `*`)) return(NA)
         z <- oper_spectra(e1$w.length, e2$w.length, e1$Tfr, e2$Tfr, bin.oper=oper, trim="intersection")
         setnames(z, 2, "Tfr")
-        setFilterSpct(z)
+        setFilterSpct(z, time.unit=attr(e2, "time.unit", exact="TRUE"))
         return(z)
       } else { # this traps optically illegal operations
         return(NA)
@@ -106,7 +111,7 @@ oper.e.generic.spct <- function(e1, e2, oper) {
         if (!identical(oper, `*`)) return(NA)
         z <- oper_spectra(e1$w.length, e2$w.length, e1$A, e2$s.e.irrad, bin.oper=oper, trim="intersection")
         setnames(z, 2, "s.e.response")
-        setResponseSpct(z)
+        setResponseSpct(z, time.unit=attr(e2, "time.unit", exact="TRUE"))
         return(z)
       } else if (class2 == "filter.spct") {
         e2 <- T2A(e2)
@@ -127,7 +132,7 @@ oper.e.generic.spct <- function(e1, e2, oper) {
       if (!identical(oper, `*`)) return(NA)
       z <- oper_spectra(e1$w.length, e2$w.length, e1$Rfr, e2$s.e.irrad, bin.oper=oper, trim="intersection")
       setnames(z, 2, "s.e.irrad")
-      setSourceSpct(z)
+      setSourceSpct(z, time.unit=attr(e2, "time.unit", exact="TRUE"))
       return(z)
     } else { # this traps optically illegal operations
       return(NA)
@@ -140,7 +145,7 @@ oper.e.generic.spct <- function(e1, e2, oper) {
       if (!identical(oper, `*`)) return(NA)
       z <- oper_spectra(e1$w.length, e2$w.length, e1$s.e.response, e2$s.e.irrad, bin.oper=oper, trim="intersection")
       setnames(z, 2, "s.e.response")
-      setResponseSpct(z)
+      setResponseSpct(z, time.unit=attr(e2, "time.unit", exact="TRUE"))
       return(z)
     } else { # this traps optically illegal operations
       return(NA)
@@ -192,13 +197,22 @@ oper.q.generic.spct <- function(e1, e2, oper) {
     e1 <- e2q(e1, action = "add")
     if (is.waveband(e2)) {
       if (!identical(oper, `*`)) return(NA)
+      e1 <- trim_spct(e1, range=e2, verbose=FALSE)
       mult <- calc_multipliers(w.length=e1$w.length, w.band=e2, unit.out="photon",
                                unit.in="photon", use.cached.mult=FALSE)
-      return(source.spct(w.length=e1$w.length, s.q.irrad = e1$s.q.irrad * mult))
+      if (is_effective(e2)) {
+        return(response.spct(w.length=e1$w.length, s.q.response = e1$s.q.irrad * mult, time.unit=attr(e1, "time.unit")))
+      } else {
+        return(source.spct(w.length=e1$w.length, s.q.irrad = e1$s.q.irrad * mult, time.unit=attr(e1, "time.unit")))
+      }
     }
     if (is.numeric(e2)) {
       return(source.spct(w.length=e1$w.length, s.q.irrad=oper(e1$s.q.irrad, e2)))
     } else if (class2 == "source.spct") {
+      if (attr(e1, "time.unit") != attr(e2, "time.unit")) {
+        warning("operands have different value for 'time.unit' attribute")
+        return(NA)
+      }
       z <- oper_spectra(e1$w.length, e2$w.length, e1$s.q.irrad, e2$s.q.irrad, bin.oper=oper, trim="intersection")
       setnames(z, 2, "s.q.irrad")
       setSourceSpct(z)
@@ -350,7 +364,7 @@ oper.q.generic.spct <- function(e1, e2, oper) {
 #' @export
 #'
 '*.generic.spct' <- function(e1, e2) {
-  unit <- getOption("photobiology.base.unit", default="energy")
+  unit <- getOption("photobiology.radiation.unit", default="energy")
   if (unit == "energy") {
     return(oper.e.generic.spct(e1, e2, `*`))
   } else if (unit == "photon" || unit == "quantum") {
@@ -373,7 +387,7 @@ oper.q.generic.spct <- function(e1, e2, oper) {
 #' @export
 #'
 '/.generic.spct' <- function(e1, e2) {
-  unit <- getOption("photobiology.base.unit", default="energy")
+  unit <- getOption("photobiology.radiation.unit", default="energy")
   if (unit == "energy") {
     return(oper.e.generic.spct(e1, e2, `/`))
   } else if (unit == "photon" || unit == "quantum") {
@@ -395,7 +409,7 @@ oper.q.generic.spct <- function(e1, e2, oper) {
 #' @export
 #'
 '+.generic.spct' <- function(e1, e2) {
-  unit <- getOption("photobiology.base.unit", default="energy")
+  unit <- getOption("photobiology.radiation.unit", default="energy")
   if (unit == "energy") {
     return(oper.e.generic.spct(e1, e2, `+`))
   } else if (unit == "photon" || unit == "quantum") {
@@ -417,7 +431,7 @@ oper.q.generic.spct <- function(e1, e2, oper) {
 #' @export
 #'
 '-.generic.spct' <- function(e1, e2) {
-  unit <- getOption("photobiology.base.unit", default="energy")
+  unit <- getOption("photobiology.radiation.unit", default="energy")
   if (unit == "energy") {
     return(oper.e.generic.spct(e1, e2, `-`))
   } else if (unit == "photon" || unit == "quantum") {
@@ -438,7 +452,7 @@ oper.q.generic.spct <- function(e1, e2, oper) {
 #' @export
 #'
 '^.generic.spct' <- function(e1, e2) {
-  unit <- getOption("photobiology.base.unit", default="energy")
+  unit <- getOption("photobiology.radiation.unit", default="energy")
   if (unit == "energy") {
     return(oper.e.generic.spct(e1, e2, `^`))
   } else if (unit == "photon" || unit == "quantum") {
@@ -477,7 +491,7 @@ oper.q.generic.spct <- function(e1, e2, oper) {
     z$Rpc <- z$Rfr * 100
     return(z)
   } else if(is(x, "source.spct")) {
-    unit <- getOption("photobiology.base.unit", default="energy")
+    unit <- getOption("photobiology.radiation.unit", default="energy")
     if (unit == "energy") {
       x <- q2e(x)
       z <- copy(x)
@@ -498,7 +512,7 @@ oper.q.generic.spct <- function(e1, e2, oper) {
       return(NA)
     }
   } else if(is(x, "response.spct")) {
-    unit <- getOption("photobiology.base.unit", default="energy")
+    unit <- getOption("photobiology.radiation.unit", default="energy")
     if (unit == "energy") {
       x <- q2e(x)
       z <- copy(x)
@@ -562,7 +576,7 @@ oper.q.generic.spct <- function(e1, e2, oper) {
     z$Rpc <- z$Rfr * 100
     return(z)
   } else if(is(x, "source.spct")) {
-    unit <- getOption("photobiology.base.unit", default="energy")
+    unit <- getOption("photobiology.radiation.unit", default="energy")
     if (unit == "energy") {
       x <- q2e(x)
       z <- copy(x)
@@ -583,7 +597,7 @@ oper.q.generic.spct <- function(e1, e2, oper) {
       return(NA)
     }
   } else if(is(x, "response.spct")) {
-    unit <- getOption("photobiology.base.unit", default="energy")
+    unit <- getOption("photobiology.radiation.unit", default="energy")
     if (unit == "energy") {
       x <- q2e(x)
       z <- copy(x)
@@ -636,7 +650,7 @@ oper.q.generic.spct <- function(e1, e2, oper) {
     z$Rpc <- z$Rfr * 100
     return(z)
   } else if(is(x, "source.spct")) {
-    unit <- getOption("photobiology.base.unit", default="energy")
+    unit <- getOption("photobiology.radiation.unit", default="energy")
     if (unit == "energy") {
       x <- q2e(x)
       z <- copy(x)
@@ -657,7 +671,7 @@ oper.q.generic.spct <- function(e1, e2, oper) {
       return(NA)
     }
   } else if(is(x, "response.spct")) {
-    unit <- getOption("photobiology.base.unit", default="energy")
+    unit <- getOption("photobiology.radiation.unit", default="energy")
     if (unit == "energy") {
       x <- q2e(x)
       z <- copy(x)

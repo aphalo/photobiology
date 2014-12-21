@@ -4,6 +4,17 @@ TODO
 Need to add warnings informing what has happened, when a given combination of operands is
 rejected, and add a table to the User Guide summarizing the valid and invalid operations.
 
+photobiology 0.5.2
+===================
+
+Fixed bug in operators that caused the 'time.unit' attribute not to propagate to returned values.
+Fixed bug in operations between wavebands and spectra which resulted in the returned
+spectrum being expanded to the range of the waveband even if the operand spectrum did not overlap
+this range.
+
+The option "photobiology.base.unit" has been renamed "photobiology.radiation.unit", for consistency
+with package photobiologygg and for clarity.
+
 photobiology 0.5.1
 ===================
 

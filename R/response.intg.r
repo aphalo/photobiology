@@ -4,7 +4,7 @@
 #' waveband and a response spectrum.
 #'
 #' @usage response_spct(spct, w.band=NULL,
-#'                      unit.out=getOption("photobiology.base.unit", default="energy"),
+#'                      unit.out=getOption("photobiology.radiation.unit", default="energy"),
 #'                      quantity="total", wb.trim=FALSE, use.hinges=NULL)
 #'
 #' @param spct an object of class response.spct"
@@ -34,7 +34,7 @@
 
 response_spct <-
   function(spct, w.band=NULL,
-           unit.out=getOption("photobiology.base.unit", default="energy"),
+           unit.out=getOption("photobiology.radiation.unit", default="energy"),
            quantity="total",
            wb.trim=FALSE,
            use.hinges=NULL){

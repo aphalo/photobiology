@@ -7,7 +7,7 @@
 #' want also to expand the wavelength range.
 #'
 #' @usage trim_spct(spct, range=NULL, low.limit=NULL, high.limit=NULL,
-#'                  use.hinges=TRUE, fill=NULL, byref=FALSE)
+#'                  use.hinges=TRUE, fill=NULL, byref=FALSE, verbose=TRUE)
 #'
 #' @param spct an object of class "generic.spct"
 #' @param range a numeric vector of length two, or any other object for which function range() will return two
@@ -17,6 +17,7 @@
 #' wavelengths in nm.
 #' @param fill if fill==NULL then tails are deleted, otherwise tails or s.irrad are filled with the value of fill
 #' @param byref logical indicating if new object will be created by reference or by copy of spct
+#' @param verbose logical
 #'
 #' @return a spectrum of same class as input with its tails trimmed or expanded
 #'
@@ -43,12 +44,11 @@
 #' trim_spct(sun.spct, range=c(300, 350))
 #'
 
-trim_spct <- function(spct, range=NULL, low.limit=NULL, high.limit=NULL, use.hinges=TRUE, fill=NULL, byref=FALSE)
+trim_spct <- function(spct, range=NULL, low.limit=NULL, high.limit=NULL, use.hinges=TRUE, fill=NULL, byref=FALSE, verbose=TRUE)
 {
   if (!is.any.spct(spct)) {
     setGenericSpct(spct)
   }
-  verbose <- TRUE
   if (byref) {
     name <- substitute(spct)
   }
@@ -85,7 +85,7 @@ trim_spct <- function(spct, range=NULL, low.limit=NULL, high.limit=NULL, use.hin
     } else {
       if (verbose) {
         # give a warning only if difference is > 0.01 nm
-        if ((low.end - low.limit) > 0.01) {
+        if (verbose && (low.end - low.limit) > 0.01) {
           warning("Not trimming short end as low.limit is outside spectral data range.")
         }
       }
@@ -109,7 +109,7 @@ trim_spct <- function(spct, range=NULL, low.limit=NULL, high.limit=NULL, use.hin
       low.end <- max(spct)
     } else {
       # give a warning only if difference is > 0.01 nm
-      if ((high.limit - high.end) > 0.01) {
+      if (verbose && (high.limit - high.end) > 0.01) {
         warning("Not trimming long end as high.limit is outside spectral data range.")
       }
       high.limit <- high.end

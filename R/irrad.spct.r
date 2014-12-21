@@ -7,7 +7,7 @@
 #' waveband of a light source spectrum.
 #'
 #' @usage irrad_spct(spct, w.band=NULL,
-#'                   unit.out=getOption("photobiology.base.unit", default="energy"),
+#'                   unit.out=getOption("photobiology.radiation.unit", default="energy"),
 #'                   quantity="total", wb.trim=FALSE, use.cached.mult=FALSE, use.hinges=NULL)
 #'
 #' @param spct an object of class "source.spct"
@@ -40,7 +40,7 @@
 #' @aliases irrad.source.spct irrad_spct
 
 irrad_spct <-
-  function(spct, w.band=NULL, unit.out=getOption("photobiology.base.unit", default="energy"),
+  function(spct, w.band=NULL, unit.out=getOption("photobiology.radiation.unit", default="energy"),
            quantity="total", wb.trim=FALSE, use.cached.mult=FALSE, use.hinges=NULL){
     # we have a default, but we check for invalid arguments
     if (is.null(unit.out) || is.na(unit.out)){
