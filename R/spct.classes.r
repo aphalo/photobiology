@@ -235,6 +235,7 @@ setGenSpct <- function(x) {
   }
   if (!is.generic.spct(x)){
     setattr(x, "class", c("generic.spct", class(x)))
+    setattr(x, "spct.tags", NA)
   }
   x <- check(x)
   setkey(x, w.length)
@@ -565,6 +566,29 @@ is.any.spct <- function(x) {
 class.spct <- function(x) {
 #  intersect(spct.classes(), class(x)) # alters order!
   class(x)[class(x) %in% spct.classes()] # maintains order
+}
+
+#' Query if it is an spectrum is tagged
+#'
+#' Functions to check if an spct object contains tags.
+#'
+#' @usage is.tagged(x)
+#'
+#' @param x any R object
+#'
+#' @return is.tagged returns TRUE if its argument is a an spectrum
+#' that contains tags and FALSE if it is an untagged spectrun, but
+#' returns NA for any other R object.
+#'
+#' @export
+#'
+is.tagged <- function(x) {
+  if (!is.any.spct(x)) {
+    return(NA)
+  } else {
+    tags <- attr(x, "spct.tags", exact=TRUE)
+    return(!is.null(tags) && length(tags) > 0 && !is.na(tags[[1]]))
+  }
 }
 
 # as functions for spct classes --------------------------------------------

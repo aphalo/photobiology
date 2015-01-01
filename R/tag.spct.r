@@ -41,6 +41,10 @@ tag.generic.spct <- function(x,
   } else {
     name <- substitute(x)
   }
+  if (is.tagged(x)) {
+    warning("Overwriting old tags in spectrum")
+    untag(x)
+  }
   if (!is.null(w.band) && is.na(w.band[1])) {
     x[ , wl.color := w_length2rgb(x$w.length)]
     tag.data <- list(wl.color=TRUE)
@@ -54,7 +58,7 @@ tag.generic.spct <- function(x,
     w.band <- list(w.band)
   }
   # we add a waveband for the whole spectrum
-#  w.band <- c(list(new_waveband(min(x), max(x) + 1e-4, wb.name=NA)), w.band)
+  #  w.band <- c(list(new_waveband(min(x), max(x) + 1e-4, wb.name=NA)), w.band)
   # we check if the list elements are named, if not we set a flag
   # and an empty vector that will be later filled in with data from
   # the waveband definitions.

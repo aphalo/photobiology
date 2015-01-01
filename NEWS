@@ -4,6 +4,12 @@ TODO
 Need to add warnings informing what has happened, when a given combination of operands is
 rejected, and add a table to the User Guide summarizing the valid and invalid operations.
 
+photobiology 0.5.3
+===================
+
+Added function is.tagged() to easily test if an spectrum has been tagged for plotting.
+Added function untag() to delete tag data from spectra.
+
 photobiology 0.5.2
 ===================
 
