@@ -4,6 +4,9 @@ TODO
 Need to add warnings informing what has happened, when a given combination of operands is
 rejected, and add a table to the User Guide summarizing the valid and invalid operations.
 
+Add to function annotate_waveband the ability to accept lists of waveband objects as input.
+Fix handlind of names in waveband() when the input is a list of wavelength ranges.
+
 photobiology 0.5.3
 ===================
 
