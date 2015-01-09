@@ -1,8 +1,8 @@
 Package: photobiology
 Type: Package
 Title: Light and radiation quantification for photobiology research
-Version: 0.5.3
-Date: 2014-12-31
+Version: 0.5.4
+Date: 2015-01-09
 Author: Pedro J. Aphalo <pedro.aphalo@helsinki.fi>
 Maintainer: Pedro J. Aphalo <pedro.aphalo@helsinki.fi>
 Description: Calculation of effective (weighted) and unweighted
@@ -13,11 +13,11 @@ VignetteBuilder: knitr
 Depends:
     R (>= 3.1.0),
     lubridate,
-    data.table (>= 1.9.4),
-    splus2R
+    data.table (>= 1.9.4)
 Imports:
     Rcpp (>= 0.11.0),
-    methods
+    methods,
+    splus2R
 Suggests:
     photobiologyWavebands,
     photobiologySun,

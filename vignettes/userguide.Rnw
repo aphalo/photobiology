@@ -70,7 +70,7 @@ my_version <- packageVersion("photobiology")
 
 We have developed a set of packages to
 facilitate the calculation of many different quantities that can be derived from spectral irradiance data. The base package in this suite is called \PB, and is the package described here. There other specialized packages for quantification of ultraviolet radiation (\PBUV), visible radiation (\PBVIS), or based on Phytochrome (\PBPHY), Cryptochrome (\PBCRY) (both photoreceptors present in plants), and
-spectral data for filters (\PBFLT). In the future it will be submitted to CRAN (Comprehensive R archive network), it is meanwhile available from \url{https://bitbucket.org/aphalo/photobiology/downloads}. There is also a public Git repository at \url{https://bitbucket.org/aphalo/photobiology} from where the source code of the current an earlier versions can be cloned.
+spectral data for filters (\PBFLT). In the future it will be submitted to CRAN (Comprehensive R archive network), it is meanwhile available from \url{https://www.r4photobiology.info/}. There is also a public Git repository at \url{https://bitbucket.org/aphalo/} from where the source code of the current an earlier versions can be cloned.
 
 \section{Installation and use}
 
@@ -369,7 +369,7 @@ Both \texttt{as.source.spct} and \texttt{as.filter.spct} accept an argument for 
 This approach is similar to using function \texttt{data.frame} to create a data frame, but in this case the names of the arguments are meaningful.
 
 <<>>=
-l.spct <- filter.spct(w.length = 300:305, Tpc = rep(100,6))
+l.spct <- filter.spct(w.length = 300:305, Tpc = 100) # '100' is recycled
 class.spct(l.spct)
 l.spct
 @
@@ -378,8 +378,7 @@ Of course one can also use existing R objects as arguments.
 
 <<>>=
 wl1 <- 300:305
-Reflected_fraction <- rep(0.5, 6)
-m.spct <- reflector.spct(w.length = wl1, Rfr = Reflected_fraction)
+m.spct <- reflector.spct(w.length = wl1, Rfr = 0.5) # '0.5' is recycled
 class.spct(m.spct)
 m.spct
 @
@@ -519,6 +518,39 @@ The function \texttt{waveband} is useful when wanting to create a waveband cover
 <<>>=
 waveband(sun.spct)
 waveband(my_CIE_1)
+@
+
+The function \texttt{split\_bands} can be used to generate lists of unweighted wavebands in two different ways: a) it can be used to split a range of wavelengths given by an R object into a series of adjacent wavebands, or b) with a list of objects returning ranges, it can be used to create non-adjacent and even overlapping wavebands.
+
+The code chunk bellow shows an example of two variations of case a). With the default value for \texttt{length.out} of \texttt{NULL} each numerical value in the input is taken as a wavelength (nm) at the boundary between adjacent wavebands. If a numerical value is supplied to \texttt{length.out}, then the whole wavelength range of the input is split into this number of equally spaced adjacent wavebands.
+
+<<>>=
+split_bands(c(200, 225, 300))
+split_bands(c(200, 225, 300), length.out = 2)
+@
+
+In both examples above, the output is a list of two wavebands, but the boundary is at a different wavelength. The chunck bellow gives a few more examples of the use of case a).
+
+<<>>=
+split_bands(sun.spct, length.out = 2)
+split_bands(PAR(), length.out = 2)
+split_bands(c(200, 800), length.out = 3)
+# we use head show the first two out of 100 wavebands
+head(split_bands(c(200, 800), length.out = 100), 2)
+@
+
+Now we demonstrate case b). This is handles by recursion, so each list element can be anything that is a valid input to the function, including a nested list. However, the returned value is always a flat list of wavebands.
+
+<<>>=
+split_bands(list(A=c(200, 300), B=c(400, 500), C=c(250, 350)))
+split_bands(list(c(100, 150, 200), c(800, 825)))
+@
+
+In case b) if we supply a numeric value to \texttt{length.out}, this value is used recursively for each element of the list.
+
+<<>>=
+split_bands(list(R=Red(), B=Blue()), length.out = 2)
+split_bands(list(c(100, 150, 200), c(800, 825)), length.out = 1)
 @
 
 The function \texttt{is.waveband} can the used to query any R object.
