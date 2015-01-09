@@ -23,7 +23,8 @@
 #' @examples
 #' require(photobiologyFilters)
 #' data(polythene.new.spct)
-#' with(polythene.new.spct, calc_filter_multipliers(400:500, w.length.in=w.length, transmittance.in=Tfr))
+#' with(polythene.new.spct,
+#'      calc_filter_multipliers(400:500, w.length.in=w.length, transmittance.in=Tfr))
 #' calc_filter_multipliers(400:500, "polythene.new")
 #' calc_filter_multipliers(400:500, polythene.new.spct)
 #' calc_filter_multipliers(400:500, "polythene.new", pc.out=TRUE)

@@ -6,8 +6,11 @@
 #' sum.
 #'
 #' @usage split_irradiance(w.length, s.irrad, cut.w.length=range(w.length),
-#' unit.out=getOption("photobiology.base.unit", default="energy"), unit.in="energy",
-#' scale = "absolute", check.spectrum=TRUE, use.cached.mult=FALSE, use.hinges=NULL)
+#'                         unit.out=getOption("photobiology.base.unit", default="energy"),
+#'                         unit.in="energy",
+#'                         scale = "absolute",
+#'                         check.spectrum=TRUE, use.cached.mult=FALSE,
+#'                         use.hinges=NULL)
 #'
 #' @param w.length numeric array of wavelength (nm)
 #' @param s.irrad numeric array of spectral (energy) irradiances (W m-2 nm-1)
@@ -25,7 +28,10 @@
 #' @export
 #' @examples
 #' data(sun.data)
-#' with(sun.data, split_irradiance(w.length, s.e.irrad, cut.w.length=c(300, 400, 500, 600, 700), "photon"))
+#' with(sun.data,
+#'       split_irradiance(w.length, s.e.irrad,
+#'                        cut.w.length=c(300, 400, 500, 600, 700),
+#'                        unit.out="photon"))
 #' @note The last three parameters control speed optimizations. The defaults should be suitable
 #' in mosts cases. If you set \code{check.spectrum=FALSE} then you should call \code{check_spectrum()}
 #' at least once for your spectrum before using any of the other functions. If you will use repeatedly

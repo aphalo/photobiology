@@ -2,7 +2,8 @@
 #'
 #' This fucntion can be used to create source.spct objects from numeric vectors.
 #'
-#' @usage source.spct(w.length, s.e.irrad=NULL, s.q.irrad=NULL, time.unit=c("second", "day"), comment=NULL)
+#' @usage source.spct(w.length, s.e.irrad=NULL, s.q.irrad=NULL,
+#'                    time.unit=c("second", "day"), comment=NULL)
 #'
 #' @param w.length numeric vector with wavelengths in nanometres
 #' @param s.e.irrad numeric vecror with spectral energy irradiance in W m-2 nm-1 or J d-1 m-2 nm-1
@@ -34,7 +35,8 @@ source.spct <- function(w.length, s.e.irrad=NULL, s.q.irrad=NULL, time.unit=c("s
 #'
 #' This fucntion can be used to create response.spct objects from numeric vectors.
 #'
-#' @usage response.spct(w.length, s.e.response=NULL, s.q.response=NULL, time.unit=c("second", "day"), comment=NULL)
+#' @usage response.spct(w.length, s.e.response=NULL, s.q.response=NULL,
+#'                      time.unit=c("second", "day"), comment=NULL)
 #'
 #' @param w.length numeric vector with wavelengths in nanometres
 #' @param s.e.response numeric vecror with spectral energy irradiance in W m-2 nm-1 or J d-1 m-2 nm-1
@@ -66,7 +68,8 @@ response.spct <- function(w.length, s.e.response=NULL, s.q.response=NULL, time.u
 #'
 #' This fucntion can be used to create source.spct objects from numeric vectors.
 #'
-#' @usage filter.spct(w.length, Tfr=NULL, Tpc=NULL, A=NULL, Tfr.type=c("total", "internal"), comment=NULL)
+#' @usage filter.spct(w.length, Tfr=NULL, Tpc=NULL, A=NULL,
+#'                    Tfr.type=c("total", "internal"), comment=NULL)
 #'
 #' @param w.length numeric vector with wavelengths in nanometres
 #' @param Tfr numeric vector with spectral transmittance as fraction of one

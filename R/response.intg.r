@@ -190,7 +190,9 @@ response <- function(spct, w.band, unit.out, quantity, wb.trim, use.hinges) UseM
 #' This function returns the mean, total, or contribution of response for each
 #' waveband and a response spectrum.
 #'
-#' @usage e_response.response.spct(spct, w.band=NULL, quantity="total", wb.trim=FALSE, use.hinges=NULL)
+#' @usage e_response.response.spct(spct, w.band=NULL,
+#'                                 quantity="total",
+#'                                 wb.trim=FALSE, use.hinges=NULL)
 #'
 #' @param spct an object of class response.spct"
 #' @param w.band a waveband object or a list of waveband objects
@@ -222,7 +224,9 @@ e_response.response.spct <-
 #' This function returns the mean response for a given
 #' waveband and a response spectrum.
 #'
-#' @usage q_response.response.spct(spct, w.band=NULL, quantity="total", wb.trim=FALSE, use.hinges=NULL)
+#' @usage q_response.response.spct(spct, w.band=NULL,
+#'                                 quantity="total",
+#'                                 wb.trim=FALSE, use.hinges=NULL)
 #'
 #' @param spct an object of class response.spct"
 #' @param w.band a waveband object or a list of waveband objects

@@ -15,8 +15,12 @@
 #' @export
 #' @examples
 #' with(sun.data, w.length[find_peaks(s.e.irrad)])
-#' @note this function handles non-finite (including NA) values differently than \code{peaks}, instead of giving an error
-#' they are replaced with the smallest finite value in the \code{x}.
+#'
+#' @note This function is a wrapper built on function \code{peaks} from \pkg{splus2R} and handles non-finite
+#' (including NA) values differently than \code{peaks}, instead of giving an error
+#' they are replaced with the smallest finite value in \code{x}.
+#'
+#' @seealso \code{\link[splus2R]{peaks}}
 #'
 find_peaks <- function(x, ignore_threshold=0.0, span=3, strict=TRUE) {
   range_x <- range(x, finite=TRUE)

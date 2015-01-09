@@ -224,9 +224,10 @@ irrad <- function(spct, w.band, unit.out, quantity, wb.trim, use.cached.mult, us
 #' @param use.cached.mult logical indicating whether multiplier values should be cached between calls
 #' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
 #'
-#' @return a single numeric value with no change in scale factor: [W m-2 nm-1] -> [W m-2]
 #' @keywords manip misc
+#'
 #' @export
+#'
 #' @examples
 #' e_irrad(sun.spct, new_waveband(400,700))
 #'
@@ -259,7 +260,8 @@ e_irrad.source.spct <-
 #' waveband of a light source spectrum.
 #'
 #' @usage q_irrad.source.spct(spct, w.band=NULL,
-#'                            quantity="total", wb.trim=FALSE, use.cached.mult=FALSE, use.hinges=NULL)
+#'                            quantity="total", wb.trim=FALSE,
+#'                            use.cached.mult=FALSE, use.hinges=NULL)
 #'
 #' @param spct an object of class "source.spct"
 #' @param w.band list of waveband definitions created with new_waveband()
@@ -268,11 +270,12 @@ e_irrad.source.spct <-
 #' @param use.cached.mult logical indicating whether multiplier values should be cached between calls
 #' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
 #'
-#' @return a single numeric value with no change in scale factor: [W m-2 nm-1] -> [mol s-1 m-2]
 #' @keywords manip misc
+#'
 #' @export
 #'
 #' @note The three functions are at the moment identical. The "_spct" versions are deprecated
+#'
 #' @examples
 #' q_irrad(sun.spct, new_waveband(400,700))
 #'
@@ -289,7 +292,7 @@ e_irrad.source.spct <-
 #' that the wavelengths are the same in each call, as the only test done is for the length of the
 #' \code{w.length} vector.
 #'
-#' @name q_irrad
+#' @export q_irrad.source.spct
 
 q_irrad.source.spct <-
   function(spct, w.band=NULL,
@@ -327,7 +330,7 @@ e_irrad <- function(spct, w.band, quantity, wb.trim, use.cached.mult, use.hinges
 #' @param use.cached.mult logical indicating whether multiplier values should be cached between calls
 #' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
 #'
-#' @export q_irrad
+#' @export
 #'
 q_irrad <- function(spct, w.band, quantity, wb.trim, use.cached.mult, use.hinges) UseMethod("q_irrad")
 
@@ -341,6 +344,7 @@ q_irrad <- function(spct, w.band, quantity, wb.trim, use.cached.mult, use.hinges
 #' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries are trimmed, if FALSE, they are discarded
 #' @param use.cached.mult logical indicating whether multiplier values should be cached between calls
 #' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
+#'
 #' @export e_irrad.default
 #'
 e_irrad.default <- function(spct, w.band, quantity, wb.trim, use.cached.mult, use.hinges) {
@@ -357,6 +361,7 @@ e_irrad.default <- function(spct, w.band, quantity, wb.trim, use.cached.mult, us
 #' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries are trimmed, if FALSE, they are discarded
 #' @param use.cached.mult logical indicating whether multiplier values should be cached between calls
 #' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
+#'
 #' @export q_irrad.default
 #'
 q_irrad.default <- function(spct, w.band, quantity, wb.trim, use.cached.mult, use.hinges) {

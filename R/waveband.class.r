@@ -257,16 +257,19 @@ normalization.waveband <- function(x) {
 #' A generic function that returns the normalization of an R object.
 #'
 #' @param x an R object
-#' @export is_effective.default
+#' @export is_effective is.effective
+#' @aliases is_effective is.effective
 #'
 is_effective <- function(x) UseMethod("is_effective")
+
+is.effective <- is_effective
 
 #' Is an R object "effective".
 #'
 #' A generic function that returns the normalization of an R object.
 #'
 #' @param x an R object
-#' @export is_effective
+#' @export is_effective.default
 #'
 is_effective.default <- function(x) {
   return(NA)

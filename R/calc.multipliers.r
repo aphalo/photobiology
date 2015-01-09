@@ -4,7 +4,9 @@
 #' This function gives a set of numeric multipliers that can be used
 #' to select a waveband and apply a weight.
 #'
-#' @usage calc_multipliers(w.length, w.band, unit.out="energy", unit.in="energy", use.cached.mult=FALSE, fill=0)
+#' @usage calc_multipliers(w.length, w.band,
+#'                         unit.out="energy", unit.in="energy",
+#'                         use.cached.mult=FALSE, fill=0)
 #'
 #' @param w.length numeric array of wavelength (nm)
 #' @param w.band a waveband object (but not a list of waveband objects)

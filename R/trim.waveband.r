@@ -2,10 +2,13 @@
 #'
 #' Trimming is needed for example when the spectral data does not cover the whole waveband.
 #'
-#' @usage trim_waveband(w.band, range=NULL, low.limit=NULL, high.limit=NULL, trim=FALSE, use.hinges=TRUE)
+#' @usage trim_waveband(w.band, range=NULL,
+#'                      low.limit=NULL, high.limit=NULL,
+#'                      trim=FALSE, use.hinges=TRUE)
 #'
 #' @param w.band an object of class "waveband" or a list of such objects
-#' @param range a numeric vector of length two, or any other object for which function range() will return two
+#' @param range a numeric vector of length two, or any other object for which function
+#'        range() will return two
 #' @param low.limit shortest wavelength to be kept (defaults to shortest w.length value)
 #' @param high.limit longest wavelength to be kept (defaults to longest w.length value)
 #' @param trim logical (default is FALSE, which just discards off range wavebands)
@@ -19,7 +22,11 @@
 #' trim_waveband(waveband(c(200,1000)), c(400,700))
 #'
 
-trim_waveband <- function(w.band, range=NULL, low.limit=NULL, high.limit=NULL, trim=FALSE, use.hinges=TRUE)
+trim_waveband <- function(w.band,
+                          range=NULL,
+                          low.limit=NULL, high.limit=NULL,
+                          trim=FALSE,
+                          use.hinges=TRUE)
 {
   if (!is.null(w.band) && is.waveband(w.band)) {
     w.band <- list(w.band)

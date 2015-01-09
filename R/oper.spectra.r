@@ -4,7 +4,9 @@
 #' values are calculated by interpolation. After this, the two spectral values at
 #' each wavelength are added.
 #'
-#' @usage oper_spectra(w.length1, w.length2=NULL, s.irrad1, s.irrad2, trim="union", na.rm=FALSE, bin.oper=NULL, ...)
+#' @usage oper_spectra(w.length1, w.length2=NULL,
+#'                     s.irrad1, s.irrad2,
+#'                     trim="union", na.rm=FALSE, bin.oper=NULL, ...)
 #'
 #' @param w.length1 numeric array of wavelength (nm)
 #' @param w.length2 numeric array of wavelength (nm)
@@ -30,11 +32,15 @@
 #' @examples
 #' data(sun.data)
 #' head(sun.data)
-#' result.data <- with(sun.data, oper_spectra(w.length, w.length, s.e.irrad, s.e.irrad, bin.oper=`+`))
+#' result.data <-
+#'     with(sun.data,
+#'          oper_spectra(w.length, w.length, s.e.irrad, s.e.irrad, bin.oper=`+`))
 #' head(result.data)
 #' tail(result.data)
 #' my_fun <- function(e1, e2, k) {return((e1 + e2) / k)}
-#' result.data <- with(sun.data, oper_spectra(w.length, w.length, s.e.irrad, s.e.irrad, bin.oper=my_fun, k=2))
+#' result.data <-
+#'     with(sun.data,
+#'         oper_spectra(w.length, w.length, s.e.irrad, s.e.irrad, bin.oper=my_fun, k=2))
 #' head(result.data)
 #' tail(result.data)
 
