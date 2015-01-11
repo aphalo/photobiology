@@ -24,6 +24,7 @@ tag.default <- function(x, ...) {
 #'
 #' @param x a generic.spct object
 #' @param w.band list of waveband definitions created with new_waveband()
+#' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries are trimmed, if FALSE, they are discarded
 #' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
 #' @param short.names logical indicating whether to use short or long names for wavebands
 #' @param byref logical indicating if new object will be created by reference or by copy of x
@@ -32,6 +33,7 @@ tag.default <- function(x, ...) {
 #'
 tag.generic.spct <- function(x,
                              w.band=NULL,
+                             wb.trim=NULL,
                              use.hinges=TRUE,
                              short.names=TRUE,
                              byref=TRUE, ...) {
@@ -45,6 +47,10 @@ tag.generic.spct <- function(x,
     warning("Overwriting old tags in spectrum")
     untag(x)
   }
+#   # we add a waveband for the whole spectrum
+#   if (is.null(w.band)) {
+#     w.band <- waveband(range(x))
+#   }
   if (!is.null(w.band) && is.na(w.band[1])) {
     x[ , wl.color := w_length2rgb(x$w.length)]
     tag.data <- list(wl.color=TRUE)
@@ -57,8 +63,9 @@ tag.generic.spct <- function(x,
     # cludge but lets us avoid treating it as a special case
     w.band <- list(w.band)
   }
-  # we add a waveband for the whole spectrum
-  #  w.band <- c(list(new_waveband(min(x), max(x) + 1e-4, wb.name=NA)), w.band)
+  # we delete or trim the wavebands that are not fully within the
+  # spectral data wavelngth range
+  w.band <- trim_waveband(w.band=w.band, range=x, trim=wb.trim)
   # we check if the list elements are named, if not we set a flag
   # and an empty vector that will be later filled in with data from
   # the waveband definitions.
@@ -142,39 +149,6 @@ tag.generic.spct <- function(x,
   return(x)
 }
 
-#' Specialization for source.spct
-#'
-#' Tag a source.spct object using a list of wavebands.
-#'
-#' @param x a source.spct object
-#' @param w.band list of waveband definitions created with new_waveband()
-#' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
-#' @param short.names logical indicating whether to use short or long names for wavebands
-#' @param byref logical indicating if new object will be created by reference or by copy of x
-#' @param ... not used in current version
-#' @export tag.source.spct
-#'
-#' @note At the moment not doing anything
-#'
-tag.source.spct <- function(x,
-                             w.band=NULL,
-                             use.hinges=NULL,
-                             short.names=TRUE,
-                             byref=TRUE, ...) {
-  if (!byref) {
-    x <- copy(x)
-  } else {
-  name <- substitute(x)
-  }
-  tag.generic.spct(x, w.band, use.hinges, short.names, byref=TRUE)
-  #  x[ , irrad.color := s_e_irrad2rgb(w.length, s.e.irrad)]
-  #  setattr(x, "spct.tags", )
-  if (byref && is.name(name)) {
-    name <- as.character(name)
-    assign(name, x, parent.frame(), inherits = TRUE)
-  }
-  return(x)
-}
 
 #' Make spectrum from a list of wavebands
 #'

@@ -3,7 +3,7 @@
 #' This function returns the mean absorbance for a given
 #' waveband of a absorbance spectrum.
 #'
-#' @usage absorbance_spct(spct, w.band=NULL, quantity="average", wb.trim=FALSE, use.hinges=NULL)
+#' @usage absorbance_spct(spct, w.band=NULL, quantity="average", wb.trim=NULL, use.hinges=NULL)
 #' @usage absorbance(spct, w.band=NULL, use.hinges=NULL)
 #'
 #' @param spct an object of class "filter.spct"
@@ -23,7 +23,7 @@
 #' in mosts cases. Only the range of wavelengths in the wavebands is used and all BSWFs are ignored.
 
 absorbance_spct <-
-  function(spct, w.band=NULL, quantity="average", wb.trim=FALSE, use.hinges=NULL){
+  function(spct, w.band=NULL, quantity="average", wb.trim=NULL, use.hinges=NULL){
     spct <- T2A(spct, action="replace", byref=FALSE)
     # if the waveband is undefined then use all data
     if (is.null(w.band)){

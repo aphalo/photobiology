@@ -35,9 +35,9 @@
 
 q_ratio <-
   function(spct, w.band.num=NULL, w.band.denom=NULL, use.cached.mult=FALSE, use.hinges=NULL){
-    q.irrad.num <- irrad_spct(spct, w.band=w.band.num, unit.out="photon", quantity="total", wb.trim=FALSE,
+    q.irrad.num <- irrad_spct(spct, w.band=w.band.num, unit.out="photon", quantity="total", wb.trim=NULL,
                               use.cached.mult=use.cached.mult, use.hinges=use.hinges)
-    q.irrad.denom <- irrad_spct(spct, w.band=w.band.denom, unit.out="photon", quantity="total", wb.trim=FALSE,
+    q.irrad.denom <- irrad_spct(spct, w.band=w.band.denom, unit.out="photon", quantity="total", wb.trim=NULL,
                                 use.cached.mult=use.cached.mult, use.hinges=use.hinges)
     ratio <- q.irrad.num / q.irrad.denom
     names(ratio) <- paste(names(q.irrad.num), ":", names(q.irrad.denom), "(q:q)", sep="")
@@ -85,9 +85,9 @@ q_ratio_spct <- q_ratio
 
 e_ratio <-
   function(spct, w.band.num=NULL, w.band.denom=NULL, use.cached.mult=FALSE, use.hinges=NULL){
-    e.irrad.num <- irrad_spct(spct, w.band=w.band.num, unit.out="energy", quantity="total", wb.trim=FALSE,
+    e.irrad.num <- irrad_spct(spct, w.band=w.band.num, unit.out="energy", quantity="total", wb.trim=NULL,
                               use.cached.mult=use.cached.mult, use.hinges=use.hinges)
-    e.irrad.denom <- irrad_spct(spct, w.band=w.band.denom, unit.out="energy", quantity="total", wb.trim=FALSE,
+    e.irrad.denom <- irrad_spct(spct, w.band=w.band.denom, unit.out="energy", quantity="total", wb.trim=NULL,
                                 use.cached.mult=use.cached.mult, use.hinges=use.hinges)
     ratio <- e.irrad.num / e.irrad.denom
     names(ratio) <- paste(names(e.irrad.num), ":", names(e.irrad.denom), "(e:e)", sep="")
@@ -131,9 +131,9 @@ e_ratio_spct <- e_ratio
 
 qe_ratio <-
   function(spct, w.band=NULL, use.cached.mult=FALSE, use.hinges=NULL){
-    q.irrad <- irrad_spct(spct, w.band=w.band, unit.out="photon", quantity="total", wb.trim=FALSE,
+    q.irrad <- irrad_spct(spct, w.band=w.band, unit.out="photon", quantity="total", wb.trim=NULL,
                               use.cached.mult=use.cached.mult, use.hinges=use.hinges)
-    e.irrad <- irrad_spct(spct, w.band=w.band, unit.out="energy", quantity="total", wb.trim=FALSE,
+    e.irrad <- irrad_spct(spct, w.band=w.band, unit.out="energy", quantity="total", wb.trim=NULL,
                                 use.cached.mult=use.cached.mult, use.hinges=use.hinges)
     ratio <- q.irrad / e.irrad
     names(ratio) <- paste("q:e(", names(q.irrad), ")", sep="")

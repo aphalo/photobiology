@@ -4,6 +4,15 @@ TODO
 Need to add warnings informing what has happened, when a given combination of operands is
 rejected, and add a table to the User Guide summarizing the valid and invalid operations.
 
+photobiology 0.5.5
+===================
+
+Changed the default for the trimming of wavebands to TRUE, and added a global option so that
+the default can be changed globally by setting the option: e.g. using
+options(photobiology.waveband.trim = FALSE)
+
+Also added waveband trimming handling to function tag().
+
 photobiology 0.5.4
 ===================
 

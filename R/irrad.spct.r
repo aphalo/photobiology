@@ -8,7 +8,7 @@
 #'
 #' @usage irrad_spct(spct, w.band=NULL,
 #'                   unit.out=getOption("photobiology.radiation.unit", default="energy"),
-#'                   quantity="total", wb.trim=FALSE, use.cached.mult=FALSE, use.hinges=NULL)
+#'                   quantity="total", wb.trim=NULL, use.cached.mult=FALSE, use.hinges=NULL)
 #'
 #' @param spct an object of class "source.spct"
 #' @param w.band list of waveband definitions created with new_waveband()
@@ -41,7 +41,7 @@
 
 irrad_spct <-
   function(spct, w.band=NULL, unit.out=getOption("photobiology.radiation.unit", default="energy"),
-           quantity="total", wb.trim=FALSE, use.cached.mult=FALSE, use.hinges=NULL){
+           quantity="total", wb.trim=NULL, use.cached.mult=FALSE, use.hinges=NULL){
     # we have a default, but we check for invalid arguments
     if (is.null(unit.out) || is.na(unit.out)){
       warning("'unit.out' set to an invalid value")
@@ -215,12 +215,13 @@ irrad <- function(spct, w.band, unit.out, quantity, wb.trim, use.cached.mult, us
 #' waveband of a light source spectrum.
 #'
 #' @usage e_irrad.source.spct(spct, w.band=NULL,
-#'                quantity="total", wb.trim=FALSE, use.cached.mult=FALSE, use.hinges=NULL)
+#'                quantity="total", wb.trim=NULL, use.cached.mult=FALSE, use.hinges=NULL)
 #'
 #' @param spct an object of class "source.spct"
 #' @param w.band list of waveband definitions created with new_waveband()
 #' @param quantity character string
-#' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries are trimmed, if FALSE, they are discarded
+#' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries are trimmed, if FALSE,
+#'        they are discarded
 #' @param use.cached.mult logical indicating whether multiplier values should be cached between calls
 #' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
 #'
@@ -246,7 +247,7 @@ irrad <- function(spct, w.band, unit.out, quantity, wb.trim, use.cached.mult, us
 #'
 e_irrad.source.spct <-
   function(spct, w.band=NULL,
-           quantity="total", wb.trim=FALSE, use.cached.mult=FALSE, use.hinges=NULL){
+           quantity="total", wb.trim=NULL, use.cached.mult=FALSE, use.hinges=NULL){
     irrad_spct(spct, w.band=w.band, unit.out="energy", quantity=quantity, wb.trim=wb.trim,
                       use.cached.mult=use.cached.mult, use.hinges=use.hinges)
   }
@@ -260,7 +261,7 @@ e_irrad.source.spct <-
 #' waveband of a light source spectrum.
 #'
 #' @usage q_irrad.source.spct(spct, w.band=NULL,
-#'                            quantity="total", wb.trim=FALSE,
+#'                            quantity="total", wb.trim=NULL,
 #'                            use.cached.mult=FALSE, use.hinges=NULL)
 #'
 #' @param spct an object of class "source.spct"
@@ -297,7 +298,7 @@ e_irrad.source.spct <-
 q_irrad.source.spct <-
   function(spct, w.band=NULL,
            quantity="total",
-           wb.trim=FALSE,
+           wb.trim=NULL,
            use.cached.mult=FALSE,
            use.hinges=NULL){
     irrad_spct(spct, w.band=w.band, unit.out="photon", quantity=quantity, wb.trim=wb.trim,

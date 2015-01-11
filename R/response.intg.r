@@ -5,7 +5,7 @@
 #'
 #' @usage response_spct(spct, w.band=NULL,
 #'                      unit.out=getOption("photobiology.radiation.unit", default="energy"),
-#'                      quantity="total", wb.trim=FALSE, use.hinges=NULL)
+#'                      quantity="total", wb.trim=NULL, use.hinges=NULL)
 #'
 #' @param spct an object of class response.spct"
 #' @param w.band a waveband object or a list of waveband objects
@@ -36,7 +36,7 @@ response_spct <-
   function(spct, w.band=NULL,
            unit.out=getOption("photobiology.radiation.unit", default="energy"),
            quantity="total",
-           wb.trim=FALSE,
+           wb.trim=NULL,
            use.hinges=NULL){
     # makes "quantum" synonym for "photon" without changes to other code
     if (unit.out == "quantum") {
@@ -192,7 +192,7 @@ response <- function(spct, w.band, unit.out, quantity, wb.trim, use.hinges) UseM
 #'
 #' @usage e_response.response.spct(spct, w.band=NULL,
 #'                                 quantity="total",
-#'                                 wb.trim=FALSE, use.hinges=NULL)
+#'                                 wb.trim=NULL, use.hinges=NULL)
 #'
 #' @param spct an object of class response.spct"
 #' @param w.band a waveband object or a list of waveband objects
@@ -213,7 +213,7 @@ response <- function(spct, w.band, unit.out, quantity, wb.trim, use.hinges) UseM
 #' in mosts cases. Only the range of wavelengths in the wavebands is used and all BSWFs are ignored.
 
 e_response.response.spct <-
-  function(spct, w.band=NULL, quantity="total", wb.trim=FALSE, use.hinges=NULL){
+  function(spct, w.band=NULL, quantity="total", wb.trim=NULL, use.hinges=NULL){
     response_spct(spct=spct, w.band=w.band, unit.out="energy",
                   quantity=quantity, wb.trim=wb.trim,
                   use.hinges=use.hinges)
@@ -226,7 +226,7 @@ e_response.response.spct <-
 #'
 #' @usage q_response.response.spct(spct, w.band=NULL,
 #'                                 quantity="total",
-#'                                 wb.trim=FALSE, use.hinges=NULL)
+#'                                 wb.trim=NULL, use.hinges=NULL)
 #'
 #' @param spct an object of class response.spct"
 #' @param w.band a waveband object or a list of waveband objects
@@ -247,7 +247,7 @@ e_response.response.spct <-
 #' in mosts cases. Only the range of wavelengths in the wavebands is used and all BSWFs are ignored.
 
 q_response.response.spct <-
-  function(spct, w.band=NULL, quantity="total", wb.trim=FALSE, use.hinges=NULL){
+  function(spct, w.band=NULL, quantity="total", wb.trim=NULL, use.hinges=NULL){
     response_spct(spct=spct, w.band=w.band, unit.out="photon",
                   quantity=quantity, wb.trim=wb.trim,
                   use.hinges=use.hinges)

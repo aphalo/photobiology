@@ -4,7 +4,7 @@
 #' waveband and a reflectance spectrum.
 #'
 #' @usage reflectance_spct(spct, w.band=NULL, pc.out=FALSE,
-#'                         quantity="average", wb.trim=FALSE, use.hinges=NULL)
+#'                         quantity="average", wb.trim=NULL, use.hinges=NULL)
 #'
 #' @param spct an object of class generic.spct"
 #' @param w.band list of waveband definitions created with new_waveband()
@@ -25,7 +25,7 @@
 #' in mosts cases. Only the range of wavelengths in the wavebands is used and all BSWFs are ignored.
 
 reflectance_spct <-
-  function(spct, w.band=NULL, pc.out=FALSE, quantity="average", wb.trim=FALSE, use.hinges=NULL){
+  function(spct, w.band=NULL, pc.out=FALSE, quantity="average", wb.trim=NULL, use.hinges=NULL){
     # if the waveband is undefined then use all data
     if (is.null(w.band)){
       w.band <- waveband(spct)
