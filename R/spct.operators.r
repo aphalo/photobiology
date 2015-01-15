@@ -22,7 +22,7 @@ oper.e.generic.spct <- function(e1, e2, oper) {
     e1 <- q2e(e1, action = "add")
     if (is.waveband(e2)) {
       if (!identical(oper, `*`)) return(NA)
-      e1 <- trim_spct(e1, range=e2, verbose=FALSE)
+      e1 <- trim_spct(e1, low.limit=min(e2), high.limit=max(e2) - 1e-3, verbose=FALSE, use.hinges = TRUE)
       mult <- calc_multipliers(w.length=e1$w.length, w.band=e2, unit.out="energy",
                                unit.in="energy", use.cached.mult=FALSE)
       if (is_effective(e2)) {
@@ -197,7 +197,7 @@ oper.q.generic.spct <- function(e1, e2, oper) {
     e1 <- e2q(e1, action = "add")
     if (is.waveband(e2)) {
       if (!identical(oper, `*`)) return(NA)
-      e1 <- trim_spct(e1, range=e2, verbose=FALSE)
+      e1 <- trim_spct(e1, low.limit = min(e2), high.limit = max(e2) - 1e-3, verbose=FALSE, use.hinges = TRUE)
       mult <- calc_multipliers(w.length=e1$w.length, w.band=e2, unit.out="photon",
                                unit.in="photon", use.cached.mult=FALSE)
       if (is_effective(e2)) {

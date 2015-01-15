@@ -17,8 +17,7 @@
 #' @return a single numeric value expressed either as a fraction of one or a percentage, or a
 #' vector of the same length as the list of wave.bands.
 #' @keywords manip misc
-#' @export response.response.spct response_spct
-#' @aliases response.response.spct response_spct
+#' @export
 #' @examples
 #' library(photobiologySensors)
 #' response_spct(Vital_BW_20.spct, new_waveband(293,385),
@@ -38,6 +37,9 @@ response_spct <-
            quantity="total",
            wb.trim=NULL,
            use.hinges=NULL){
+    if (!is.response.spct(spct)) {
+      setResponseSpct(spct)
+    }
     # makes "quantum" synonym for "photon" without changes to other code
     if (unit.out == "quantum") {
       unit.out <- "photon"
@@ -152,7 +154,38 @@ response_spct <-
     return(response)
   }
 
-response.response.spct <- response_spct
+#' Calculate response from spectral response.
+#'
+#' This function returns the mean response for a given
+#' waveband and a response spectrum.
+#'
+#' @param spct an object of class response.spct"
+#' @param w.band a waveband object or a list of waveband objects
+#' @param unit.out character string with allowed values "energy", and "photon", or its alias "quantum"
+#' @param quantity character string
+#' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries are trimmed, if FALSE, they are discarded
+#' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
+#'
+#' @return a single numeric value expressed either as a fraction of one or a percentage, or a
+#' vector of the same length as the list of wave.bands.
+#' @keywords manip misc
+#'
+#' @examples
+#' library(photobiologySensors)
+#' response(Vital_BW_20.spct, new_waveband(293,385),
+#'    unit.out="photon") * 1e-6
+#' response(Vital_BW_20.spct, new_waveband(293,385),
+#'    unit.out="energy")
+#' response(Vital_BW_20.spct)
+#' response(Vital_BW_20.spct, unit.out="energy")
+#' response(Vital_BW_20.spct, unit.out="photon") * 1e-6
+#'
+#' @note The parameter \code{use.hinges} controls speed optimization. The defaults should be suitable
+#' in mosts cases. Only the range of wavelengths in the wavebands is used and all BSWFs are ignored.
+#' @method response generic.spct
+#' @export
+#'
+response.generic.spct <- response_spct
 
 #' Default for generic function
 #'

@@ -46,7 +46,7 @@ source.spct <- function(w.length, s.e.irrad=NULL, s.q.irrad=NULL, time.unit=c("s
 #'
 #' @return a response.spct object
 #'
-#' @export
+#' @export response.spct
 #'
 response.spct <- function(w.length, s.e.response=NULL, s.q.response=NULL, time.unit=c("second", "day"), comment=NULL) {
   if (is.null(s.q.response) && (is.numeric(s.e.response))) {

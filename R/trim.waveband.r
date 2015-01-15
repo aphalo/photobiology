@@ -2,9 +2,11 @@
 #'
 #' Trimming is needed for example when the spectral data does not cover the whole waveband.
 #'
-#' @usage trim_waveband(w.band, range=NULL,
+#' @usage trim_waveband(w.band,
+#'                      range=NULL,
 #'                      low.limit=NULL, high.limit=NULL,
-#'                      trim=FALSE, use.hinges=TRUE)
+#'                      trim=NULL,
+#'                      use.hinges=TRUE)
 #'
 #' @param w.band an object of class "waveband" or a list of such objects
 #' @param range a numeric vector of length two, or any other object for which function

@@ -4,6 +4,19 @@ TODO
 Need to add warnings informing what has happened, when a given combination of operands is
 rejected, and add a table to the User Guide summarizing the valid and invalid operations.
 
+photobiology 0.5.6
+===================
+
+Added function clear_photobio.cache() and renamed the cache itself to "protect"" it from accidental
+deletion by making it invisible.
+Optimized colour calculations for improved speed and debugged the changes.
+Revised User Guide.
+Fixed bug that was causing response() not to be exported.
+Fixed bug in operations between spectra and wavebands and added also a small safety marging
+to protect from rounding errors.
+A few minor bugs also fixed.
+Fixed an important bug causing error in plot(sun.spct * CIE()) (a difficult one to track).
+
 photobiology 0.5.5
 ===================
 

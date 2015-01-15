@@ -37,10 +37,12 @@ w_length2rgb <- function(w.length, sens=ciexyzCMF2.spct, color.name=NULL) {
   } else {
     color.names <-NULL
   }
-  colors <- NULL
-  for (i in 1:len.wl) {
-    colors[i] <-  s_e_irrad2rgb(w.length[i], 1.0, sens=sens)
-    if (generate.names) color.names[i] <- paste("wl", as.character(round(w.length[i], 1)), "nm", sep=".")
+   colors <- NULL
+   for (i in 1:len.wl) {
+     colors[i] <-  s_e_irrad2rgb(w.length[i], 1.0, sens=sens, check = FALSE)
+   }
+  if (generate.names) {
+    color.names <- paste("wl", as.character(round(w.length, 1)), "nm", sep=".")
   }
   names(colors) <- color.names
   return(colors)

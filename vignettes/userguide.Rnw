@@ -369,18 +369,40 @@ Both \texttt{as.source.spct} and \texttt{as.filter.spct} accept an argument for 
 This approach is similar to using function \texttt{data.frame} to create a data frame, but in this case the names of the arguments are meaningful.
 
 <<>>=
+s.spct <- source.spct(w.length = 300:305, s.e.irrad = 100) # '100' is recycled
+class.spct(s.spct)
+s.spct
+@
+
+<<>>=
+s.spct <- source.spct(w.length = 300:305, s.q.irrad = 40, time.unit = "day") # '40' is recycled
+class.spct(s.spct)
+s.spct
+@
+
+<<>>=
 l.spct <- filter.spct(w.length = 300:305, Tpc = 100) # '100' is recycled
 class.spct(l.spct)
 l.spct
 @
 
-Of course one can also use existing R objects as arguments.
+<<>>=
+l.spct <- filter.spct(w.length = 300:305, A = 2) # '2' is recycled
+class.spct(l.spct)
+l.spct
+@
 
 <<>>=
 wl1 <- 300:305
 m.spct <- reflector.spct(w.length = wl1, Rfr = 0.5) # '0.5' is recycled
 class.spct(m.spct)
 m.spct
+@
+
+<<>>=
+l.spct <- response.spct(w.length = 300:305, s.e.response = 0.5) # '0.5' is recycled
+class.spct(l.spct)
+l.spct
 @
 
 Both \texttt{source.spct} and \texttt{filter.spct} functions accept an argument for setting the \texttt{time.unit} and \texttt{Tfr.type} attributes, respectively, with the same defaults as described above.

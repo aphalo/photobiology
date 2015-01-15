@@ -25,7 +25,7 @@ labels.waveband <- function(object, ...) {
 #'
 range.waveband <- function(..., na.rm = FALSE) {
   x <- c(...)
-  return(c(x$low, x$high))
+  return(c(x$low, x$high)) # we are using double precision
 }
 
 # min ---------------------------------------------------------------------

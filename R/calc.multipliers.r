@@ -27,7 +27,7 @@ calc_multipliers <- function(w.length, w.band, unit.out="energy", unit.in="energ
   cache.needs.saving <- FALSE
   if (use.cached.mult && !is.null(w.band$name)) {
     # this needs to be changed to something better
-    ourEnv <- photobio.cache
+    ourEnv <- .photobio.cache
     # search for cached multipliers
     cache.name <- paste(w.band$name, as.character(fill), unit.in, unit.out, sep=".")
     if (exists(cache.name, where = ourEnv)) {
@@ -81,9 +81,36 @@ calc_multipliers <- function(w.length, w.band, unit.out="energy", unit.in="energ
 }
 
 .onLoad <- function(libname, pkgname) {
-  photobio.cache <<- new.env(parent = emptyenv())
+  .photobio.cache <<- new.env(parent = emptyenv())
 }
 
 .onUnload <- function(libpath) {
-  rm(photobio.cache, envir = emptyenv())
+  rm(.photobio.cache, envir = emptyenv())
+}
+
+#' clear the spectral weights cache
+#'
+#' Clear the cache objects stored in environment .photobio.cache
+#'
+#' @usage clear_photobio.cache(pattern = "*")
+#'
+#' @param pattern character string passed to ls() for selecting within the
+#' environment .photobio.cache the objects to be deleted
+#'
+#' @examples
+#' clear_photobio.cache()
+#'
+#' @export
+#'
+clear_photobio.cache <- function(pattern = "*") {
+  if (!exists(".photobio.cache", mode = "environment")) {
+    warning("No cache environment found!")
+    return()
+  }
+  objects.to.rm <- try(ls(pattern = pattern, name = ".photobio.cache"))
+  if (length(objects.to.rm) > 0) {
+    rm(list=, envir = ".photobio.cache")
+  } else {
+    warning("No objects found in cache!")
+  }
 }

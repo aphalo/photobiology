@@ -9,13 +9,14 @@
 #' not hard coded, so the function could be used to simulate vision in other organisms as long as
 #' pseudo CMF or CC data are available for the simulation.
 #'
-#' @usage s_e_irrad2rgb(w.length, s.e.irrad, sens=ciexyzCMF2.spct, color.name=NULL)
+#' @usage s_e_irrad2rgb(w.length, s.e.irrad, sens=ciexyzCMF2.spct, color.name=NULL, check=TRUE)
 #'
 #' @param w.length numeric array of wavelengths (nm)
 #' @param s.e.irrad numeric array of spectral irradiance values
 #' @param sens a chroma.spct object with variables w.length, x, y, and z, giving the CC or CMF definition (default is the
 #' proposed human CMF according to CIE 2006.)
 #' @param color.name character string for naming the rgb color definition
+#' @param check logical indicating whether to check or not spectral data
 #'
 #' @return A color defined using \code{rgb()}. The numeric values of the RGB components can be obtained
 #' using function \code{col2rgb()}.
@@ -33,7 +34,7 @@
 #' online data respository at \url{http://www.cvrl.org/}.
 #' @references \url{http://www.cs.rit.edu/~ncs/color/t_spectr.html}.
 
-s_e_irrad2rgb <- function(w.length, s.e.irrad, sens=ciexyzCMF2.spct, color.name=NULL) {
+s_e_irrad2rgb <- function(w.length, s.e.irrad, sens=ciexyzCMF2.spct, color.name=NULL, check=TRUE) {
   low.limit <- min(sens$w.length)
   high.limit <- max(sens$w.length)
   if (single_wl <- length(w.length) == 1) {
@@ -43,19 +44,16 @@ s_e_irrad2rgb <- function(w.length, s.e.irrad, sens=ciexyzCMF2.spct, color.name=
       s.e.irrad = 1.0
     }
   } else {
-    if (!check_spectrum(w.length, s.e.irrad)) {
+    if (check && !check_spectrum(w.length, s.e.irrad)) {
       return(NA)
-    } # else {
-#      if (min(w.length) > low.limit | max(w.length) < high.limit) {
-#        warning('Wavelength range does not capture the full cromaticity range\nfilling missing values with zeros.')
-#      }
-#    }
-  }
-
+    }
+}
 # if we have a spectrum we will expand and fill with zeros when needed
 
 if (!single_wl) {
-  if ((max(w.length) <= low.limit) || (min(w.length) >= high.limit)) return("#000000") # black
+  if ((max(w.length) <= low.limit) || (min(w.length) >= high.limit)) {
+    return("black")
+  }
   sens$s.e.irrad <- interpolate_spectrum(w.length, s.e.irrad, sens$w.length, fill.value=0.0)
   sens$s.e.irrad.norm <- with(sens, s.e.irrad / integrate_irradiance(w.length, s.e.irrad))
 
@@ -82,6 +80,11 @@ rgb1 <- xyzmat %*% as.matrix(XYZ)
 # colours are converted by brute force into representable colours
 rgb1[rgb1 < 0] <- 0
 rgb1[rgb1 > 1] <- 1
+
+if (anyNA(rgb1[ , 1])) {
+  warning("NA in rgb values, returning 'black'")
+  return("black")
+}
 
 rgb.color <- rgb(red=rgb1[1,1], green=rgb1[2,1], blue=rgb1[3,1], names=color.name)
 
