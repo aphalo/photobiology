@@ -3,7 +3,7 @@
 #' Same as \code{rbindlist} from package data.table but preserves class of spectral objects. Has different defaults
 #' for use names and fill.
 #'
-#' @usage rbindspct(l, use.names = TRUE, fill=TRUE, add.factor = FALSE)
+#' @usage rbindspct(l, use.names = TRUE, fill=TRUE, add.factor = FALSE, factor.name = "spct.idx")
 #'
 #' @param l A list containing \code{source.spct}, \code{filter.spct}, \code{reflector.spct}, \code{response.spct},
 #' \code{chroma.spct}, \code{generic.spct}, \code{data.table}, \code{data.frame} or \code{list} objects.
@@ -17,6 +17,8 @@
 #' \code{use.names} has also to be \code{TRUE}, and all items of the input list have to have non-null column names.
 #'
 #' @param add.factor logical indicating if a factor should be added to distinguish data from each spectrum
+#'
+#' @param factor.name character string name to use for the added factor
 #'
 #' @details
 #' Each item of \code{l} can be a spectrum, \code{data.table}, \code{data.frame} or \code{list}, including \code{NULL} (skipped)
@@ -72,7 +74,8 @@
 #' @keywords data
 #'
 
-rbindspct <- function(l, use.names = TRUE, fill = TRUE, add.factor = FALSE) {
+rbindspct <- function(l, use.names = TRUE, fill = TRUE,
+                      add.factor = FALSE, factor.name = "spct.idx") {
   # original rbindlist from data.table strips attributes and sets class to data.table
   if (is.null(l) || length(l) < 1) {
     return(l)
@@ -100,10 +103,10 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, add.factor = FALSE) {
     comment.ans <- "rbindspct: concatenated comments"
     comments.found <- FALSE
     for (i in 1:length(l)) { # transversing the list with spct
-      l[[i]][ , spct.idx := names.spct[i] ]
+      l[[i]][ , (factor.name) := names.spct[i] ]
       temp <- comment(l[[i]])
       comments.found <- comments.found || !is.null(temp)
-      comment.ans <- paste(comment.ans, "\nspct.idx: ", names.spct[i], "\n", comment(l[[i]]))
+      comment.ans <- paste(comment.ans, "\n", factor.name , ": ", names.spct[i], "\n", comment(l[[i]]), sep="")
     }
     if (!comments.found) {
       comment.ans <- NULL
@@ -155,8 +158,9 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, add.factor = FALSE) {
     setGenericSpct(ans)
   }
   if (add.factor) {
-    ans[ , spct.idx := factor(spct.idx)]
-    setkey(ans, spct.idx, w.length)
+    ans[ , (factor.name) := factor(ans[[(factor.name)]])]
+    keys <- c(factor.name, "w.length")
+    setkeyv(ans, keys)
     setattr(ans, "comment", comment.ans)
   }
   return(ans)
