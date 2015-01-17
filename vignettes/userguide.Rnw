@@ -407,6 +407,38 @@ l.spct
 
 Both \texttt{source.spct} and \texttt{filter.spct} functions accept an argument for setting the \texttt{time.unit} and \texttt{Tfr.type} attributes, respectively, with the same defaults as described above.
 
+\subsubsection{Row binding spectra}
+
+Sometimes, especially for plotting, we may want to row-bind spectra. When the aim is that the returned object
+retains its class attributes, and other spectrum related attributes like ther time unit, functions \texttt{rbind}
+from base R, and its reimplementation from package \texttt{data.table}, and function \texttt{rbindlist} also
+defined in package \texttt{data.table} should NOT be used. Package \PB provides function \texttt{rbinspct} for
+row-binding spectra, with the necessary checks for consistency of the bound spectra.
+
+<<>>=
+# STOPGAP
+shade.spct <- copy(sun.spct)
+@
+
+
+<<>>=
+rbindspct(list(sun.spct, shade.spct))
+@
+
+It is also possible to add an ID factor, to be able to still recognize the origin of the observations after the
+binding. If the supplied list is anonymous, then capital letters will be used for levels.
+
+<<>>=
+rbindspct(list(sun.spct, shade.spct), add.factor = TRUE)
+@
+
+In contrast, if a named list with no missing names, is supplied as argument, these names are used for the levels of the ID factor.
+
+<<>>=
+rbindspct(list(sun = sun.spct, shade = shade.spct), add.factor = TRUE)
+@
+
+
 \subsection{Conversions between radiation units}
 
 The functions \texttt{e2q} and \texttt{q2e} can be used on source spectra to convert spectral energy irradiance into spectral photon irradiance and vice versa. The first argument should be a spectrum, and the second optional argument sets the action with \texttt{"add"} and \texttt{"replace"} as possible values. In the second case the whole spectrum object is copied, while in the first case a column is added but the unchanged columns are references to the original ones, rather than copies.
@@ -433,6 +465,11 @@ interpolate_spct(sun.spct, seq(400, 500, by=0.1))
 @
 
 \subsection{Trimming spectral objects}\label{sec:trim:spct}
+
+\begin{framed}
+\noindent
+Because of how \verb|[ ]| operators work in R, and especially on objects of classes derived from \texttt{data.table} some object attributes are lost when this operator is used to subset spct objects, consequently it is safer to use the function described in this section.
+\end{framed}
 
 Sometimes it is desirable to change the range of wavelengths included in a spectrum. If we are interested in a given part of the spectrum, there is no need to do calculations or plotting the whole spectrum. Sometimes we may want to expand the range of wavelengths, filling the expansion of all other variables with a certain value (i.e.\ a number, or NA.)
 
@@ -469,6 +506,7 @@ In addition, when fill is not \texttt{NULL}, expansion is possible.
 <<>>=
 head(trim_spct(sun.spct, low.limit=290, fill=0))
 @
+
 
 \subsection{Summaries}
 
@@ -1216,7 +1254,7 @@ To stack spectral objects the function \texttt{rbindspct} should be used instead
 
 \begin{framed}
 \noindent
-In some past versions of the package we had included our own version of \texttt{rbindlist} to override the one defined in package \texttt{data.table}, but this was triggering warnings and causing other problems. Because of this it has been removed.
+In earlier versions of the package we had included our own version of \texttt{rbindlist} to override the one defined in package \texttt{data.table}, but this was triggering warnings and causing other problems. Because of this it has been removed.
 \end{framed}
 
 Sometimes it is needed to add (parallel sum) between two spectra, even if the two spectra have been

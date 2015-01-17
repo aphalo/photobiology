@@ -4,6 +4,12 @@ TODO
 Need to add warnings informing what has happened, when a given combination of operands is
 rejected, and add a table to the User Guide summarizing the valid and invalid operations.
 
+photobiology 0.5.7
+===================
+
+rbindspct() now will add, if requested, a factor 'spct.idx' to the returned spct object,
+with a different level for each spectrum in the input list.
+
 photobiology 0.5.6
 ===================
 

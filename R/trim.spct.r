@@ -80,6 +80,12 @@ trim_spct <- function(spct, range=NULL, low.limit=NULL, high.limit=NULL, use.hin
         spct.top[ , eval(data.col) := fill]
       }
       setattr(spct.top, "class", class(spct))
+      # next statement needed because of consistency checks in rbindspct()
+      if (is.source.spct(spct)) {
+        setattr(spct.top, "time.unit", time.unit.spct)
+      } else if (is.filter.spct(spct)) {
+        setattr(spct.top, "Tfr.type", Tfr.type.spct)
+      }
       spct <- rbindspct(list(spct.top, spct))
       low.end <- min(spct)
     } else {
@@ -105,6 +111,12 @@ trim_spct <- function(spct, range=NULL, low.limit=NULL, high.limit=NULL, use.hin
         spct.bottom[ , eval(data.col) := fill]
       }
       setattr(spct.bottom, "class", class(spct))
+      # next statement needed because of consistency checks in rbindspct()
+      if (is.source.spct(spct)) {
+        setattr(spct.bottom, "time.unit", time.unit.spct)
+      } else if (is.filter.spct(spct)) {
+        setattr(spct.bottom, "Tfr.type", Tfr.type.spct)
+      }
       spct <- rbindspct(list(spct, spct.bottom))
       low.end <- max(spct)
     } else {
