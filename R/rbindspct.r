@@ -74,10 +74,21 @@
 
 rbindspct <- function(l, use.names = TRUE, fill = TRUE, add.factor = FALSE) {
   # original rbindlist from data.table strips attributes and sets class to data.table
+  if (is.null(l) || length(l) < 1) {
+    return(l)
+  }
+  if (!is.list(l) || is.any.spct(l) || is.waveband(l)) {
+    stop("Argument 'l' should be a list of spectra")
+    return(NULL)
+  }
   l.class <- c( "source.spct", "filter.spct", "reflector.spct", "response.spct", "chroma.spct",
-                "generic.spct", "data.table", "data.frame")
+                "generic.spct")
   for (spct in l) {
     l.class <- intersect(l.class, class(spct))
+  }
+  if (length(l.class) < 1) {
+    warning("Argument 'l' contains objects which are not spectra")
+    return(NA)
   }
   l.class <- l.class[1]
   #  print(l.class)
@@ -86,11 +97,17 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, add.factor = FALSE) {
     if (is.null(names.spct) || anyNA(names.spct)) {
       names.spct <- LETTERS[1:length(l)]
     }
+#    comment.spct <- ""
     for (i in 1:length(l)) { # transversing the list with spct
       l[[i]][ , spct.idx := names.spct[i] ]
+#      comment.spct <- paste(comment.spct, "\nspct.idx: ", names.spct[i], "\n", comment(l[[i]]))
     }
   }
-  ans <- data.table::rbindlist(l, use.names, fill)
+  if (length(l) < 2) {
+    ans <- l[[1]]
+  } else {
+    ans <- data.table::rbindlist(l, use.names, fill)
+  }
   if (is.null(ans)) {
     return(NULL)
   }
@@ -134,6 +151,7 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, add.factor = FALSE) {
   if (add.factor) {
     ans[ , spct.idx := factor(spct.idx)]
     setkey(ans, spct.idx, w.length)
+#    settr(ans, "comment", comment.spct)
   }
   return(ans)
 }
