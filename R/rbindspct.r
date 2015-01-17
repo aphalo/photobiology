@@ -49,8 +49,10 @@
 #'
 #' @seealso  \code{\link{data.table}}
 #'
-#' @note data.table::rbindlist is called internally and the result returned as is unless all elements in the list
-#' belong to one of the \code{.spct} classes.
+#' @note data.table::rbindlist is called internally and the result returned is the highest class in the inheritance
+#' hierachy which is common to all elements in the list. If not all members of the list belong to one of the
+#' \code{.spct} classes, an error is triggered. Code to set all source.spct and response.spct objects into
+#' energy-based quantities, and all filter.spct objects into transmittance before the binding is NOT YET implemented.
 #'
 #' @examples
 #'
@@ -68,6 +70,13 @@
 #' # adds factor 'spct.idx' with the names given to the spectra in the list
 #' # supplied as formal argument 'l' as levels
 #' spct <- rbindspct(list(one = sun.spct, two = sun.spct), add.factor = TRUE)
+#' head(spct)
+#' class(spct)
+#'
+#' # adds factor 'ID' with the names given to the spectra in the list
+#' # supplied as formal argument 'l' as levels
+#' spct <- rbindspct(list(one = sun.spct, two = sun.spct),
+#'                   add.factor = TRUE, factor.name = "ID")
 #' head(spct)
 #' class(spct)
 #'
