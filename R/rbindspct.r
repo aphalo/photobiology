@@ -97,10 +97,16 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, add.factor = FALSE) {
     if (is.null(names.spct) || anyNA(names.spct)) {
       names.spct <- LETTERS[1:length(l)]
     }
-#    comment.spct <- ""
+    comment.ans <- "rbindspct: concatenated comments"
+    comments.found <- FALSE
     for (i in 1:length(l)) { # transversing the list with spct
       l[[i]][ , spct.idx := names.spct[i] ]
-#      comment.spct <- paste(comment.spct, "\nspct.idx: ", names.spct[i], "\n", comment(l[[i]]))
+      temp <- comment(l[[i]])
+      comments.found <- comments.found || !is.null(temp)
+      comment.ans <- paste(comment.ans, "\nspct.idx: ", names.spct[i], "\n", comment(l[[i]]))
+    }
+    if (!comments.found) {
+      comment.ans <- NULL
     }
   }
   if (length(l) < 2) {
@@ -151,7 +157,7 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, add.factor = FALSE) {
   if (add.factor) {
     ans[ , spct.idx := factor(spct.idx)]
     setkey(ans, spct.idx, w.length)
-#    settr(ans, "comment", comment.spct)
+    setattr(ans, "comment", comment.ans)
   }
   return(ans)
 }

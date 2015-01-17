@@ -96,7 +96,8 @@ The package provides two sets of functions for many operations: functions progra
 
 \subsection{Example spectral data}
 
-A few data objects are included in the package for use in examples. Two simulated solar spectra, \texttt{sun.spct} and \texttt{sun.daily.spct}, \ldots
+A few data objects are included in the package for use in examples. Two simulated solar spectra, \texttt{sun.spct} and \texttt{sun.daily.spct}, are include as \texttt{source.spct} objects. The same data are also included as data.frame
+objects. Chromaticity data for humans are also included\ldots
 
 \subsection{Using numeric vectors}
 
@@ -1250,11 +1251,13 @@ maxwell.tern
 
 \section{Auxiliary functions}
 
-To stack spectral objects the function \texttt{rbindspct} should be used instead of \texttt{rbind} or \texttt{rbindlist} from package \texttt{data.table}. The functions from package \texttt{data.table} strip the spectral class attributes from the output, returning always a \texttt{data.table} object.
-
 \begin{framed}
 \noindent
-In earlier versions of the package we had included our own version of \texttt{rbindlist} to override the one defined in package \texttt{data.table}, but this was triggering warnings and causing other problems. Because of this it has been removed.
+To stack spectral objects the function \texttt{rbindspct} should be used instead of \texttt{rbind} or \texttt{rbindlist} from package \texttt{data.table}. The functions from package \texttt{data.table} strip the spectral class attributes from the output, returning always a \texttt{data.table} object.
+
+\texttt{subset} has the same problem, and in addition also removes comments, so it should be also avoided, and \texttt{trim\_spct} used instead.
+
+In earlier versions of the package we had included our own version of \texttt{rbindlist} to override the one defined in package \texttt{data.table}, but this was triggering warnings and causing other problems. Because of this it has been removed. (This is a, hopefully, temporary limitation.)
 \end{framed}
 
 Sometimes it is needed to add (parallel sum) between two spectra, even if the two spectra have been
@@ -1267,7 +1270,7 @@ otherwise. It allows easier control of values to be used for extrapolation.
 
 \section{Dealing with real `noisy' spectral data}
 
-The first thing to do is to think whether any part of the spectral measurements can be \textit{a priori} known to be equal to zero. For example for the solar spectrum at ground level it is safe to assume that the spectral irradiance is zero for all wavelengths shorter than 293~nm. If the data are noisy, it is best to discard these data before calculating any effective UV doses.
+The first thing to do is to think whether any part of the spectral measurements can be \textit{a priori} known to be equal to zero. For example for the solar spectrum at ground level it is safe to assume that the spectral irradiance is zero for all wavelengths shorter than 290~nm. If the data are noisy, it is best to discard these data before calculating any effective UV doses.
 
 In the following example we use a longer wavelength (297~nm) just to show how the function works, because the example spectral data set starts at 293~nm.
 
@@ -1278,63 +1281,63 @@ head(sun.spct, 2L)
 Sub-setting can be easily done as follows if the data are in a data.frame (of course, replacing \texttt{w.length} with the name used in your data frame for the wavelengths array):
 
 <<example-subset>>=
-subsetted.sun.spct <- subset(sun.spct, w.length >= 297)
-head(subsetted.sun.spct, 2L)
+trimmed.sun.spct <- trim_spct(sun.spct, low.limit = 297)
+head(trimmed.sun.spct, 2L)
 @
 
-And then just use the sub-setted data in your calculations.
+And then just use the trimmed ($\approx$ sub-setted) data in your calculations.
 
-If the data are not in a data frame, then there are different options: 1) create a data frame from your data, 2) use the function \texttt{trim\_tails()} from this package, or 3) just use R commands. Here we give examples of the use of \texttt{trim\_tails()}, using the same data as in earlier examples. First we `trim' (delete) all data for wavelengths shorter than 293~nm.
+If the data are in a data frame, instead of a spct object then \texttt{subset} or indexing can be used. If the data are available as vectors, different options: 1) create a data frame from your data, 2) use the function \texttt{trim\_tails()} from this package, or 3) just use R commands. Here we give examples of the use of \texttt{trim\_tails()}, using the same data as in earlier examples. First we `trim' (delete) all data for wavelengths shorter than 293~nm.
 
-\subsection{Trimming spectra stored as vectors}
+\subsection{Trimming spectra stored as data frames or individual vectors}
 
 See earlier section \ref{sec:trim:spct} on page \pageref{sec:trim:spct} for details on trimming spectrum objects, which is an easier way of achieving the same results as here.
 
 <<example-trim-low>>=
-trimmed.sun.spct <-
-  with(sun.spct,
+trimmed.sun.data <-
+  with(sun.data,
        trim_tails(w.length, s.e.irrad, low.limit=297)
   )
-print(trimmed.sun.spct)
-class(trimmed.sun.spct)
+print(trimmed.sun.data)
+class(trimmed.sun.data)
 @
 
 This function returns a new data.frame and uses always the same variable names for the columns.
 
 <<example-trim-both>>=
-trimmed.both.sun.spct <-
-  with(sun.spct,
+trimmed.both.sun.data <-
+  with(sun.data,
        trim_tails(w.length, s.e.irrad, low.limit=297, high.limit=550)
   )
-print(trimmed.both.sun.spct)
+print(trimmed.both.sun.data)
 @
 
 If we supply a different value than the default NULL for the parameter \texttt{fill}, the w.length values are kept, and the trimmed spectral irradiance values replaced by the value supplied.
 
 <<example-trim-na>>=
-trimmed.na.sun.spct <-
-  with(sun.spct,
+trimmed.na.sun.data <-
+  with(sun.data,
        trim_tails(w.length, s.e.irrad, low.limit=297, fill=NA)
   )
-print(trimmed.na.sun.spct)
+print(trimmed.na.sun.data)
 @
 
 <<example-trim-both-na>>=
-trimmed.both.na.sun.spct <-
-  with(sun.spct,
+trimmed.both.na.sun.data <-
+  with(sun.data,
        trim_tails(w.length, s.e.irrad, low.limit=297, high.limit=400, fill=NA)
   )
-print(trimmed.both.na.sun.spct)
+print(trimmed.both.na.sun.data)
 @
 
-In addition to NA we can supply an arbitrary numeric value as fill.
+In addition to \texttt{NA} we can supply an arbitrary numeric value as fill.
 
 <<example-trim-zero>>=
-trimmed.zero.sun.spct <-
-  with(sun.spct,
+trimmed.zero.sun.data <-
+  with(sun.data,
        trim_tails(w.length, s.e.irrad, low.limit=297, fill=0.0)
   )
-print(trimmed.zero.sun.spct)
+print(trimmed.zero.sun.data)
 @
 
 \section{Optimizing performance}

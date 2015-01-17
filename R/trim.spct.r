@@ -46,12 +46,14 @@
 
 trim_spct <- function(spct, range=NULL, low.limit=NULL, high.limit=NULL, use.hinges=TRUE, fill=NULL, byref=FALSE, verbose=TRUE)
 {
-  if (!is.any.spct(spct)) {
-    setGenericSpct(spct)
+  if (is.null(spct)) {
+    return(spct)
   }
+  stopifnot(is.any.spct(spct))
   if (byref) {
     name <- substitute(spct)
   }
+  class.spct <- class(spct)
   if (!is.null(range)) {
     low.limit <- ifelse(!is.null(low.limit), max(min(range), low.limit), min(range))
     high.limit <- ifelse(!is.null(high.limit), min(max(range), high.limit), max(range))
@@ -64,7 +66,6 @@ trim_spct <- function(spct, range=NULL, low.limit=NULL, high.limit=NULL, use.hin
   }
   names.spct <- names(spct)
   names.data <- names.spct[names.spct != "w.length"]
-  #  class.spct  <- class(spct)
   comment.spct <- comment(spct)
   time.unit.spct <- attr(spct, "time.unit", exact=TRUE)
   Tfr.type.spct <- attr(spct, "Tfr.type", exact=TRUE)
@@ -79,14 +80,8 @@ trim_spct <- function(spct, range=NULL, low.limit=NULL, high.limit=NULL, use.hin
       for (data.col in names.data) {
         spct.top[ , eval(data.col) := fill]
       }
-      setattr(spct.top, "class", class(spct))
-      # next statement needed because of consistency checks in rbindspct()
-      if (is.source.spct(spct)) {
-        setattr(spct.top, "time.unit", time.unit.spct)
-      } else if (is.filter.spct(spct)) {
-        setattr(spct.top, "Tfr.type", Tfr.type.spct)
-      }
-      spct <- rbindspct(list(spct.top, spct))
+      spct <- rbindlist(list(spct.top, spct))
+      setGenericSpct(spct)
       low.end <- min(spct)
     } else {
       if (verbose) {
@@ -110,14 +105,8 @@ trim_spct <- function(spct, range=NULL, low.limit=NULL, high.limit=NULL, use.hin
       for (data.col in names.data) {
         spct.bottom[ , eval(data.col) := fill]
       }
-      setattr(spct.bottom, "class", class(spct))
-      # next statement needed because of consistency checks in rbindspct()
-      if (is.source.spct(spct)) {
-        setattr(spct.bottom, "time.unit", time.unit.spct)
-      } else if (is.filter.spct(spct)) {
-        setattr(spct.bottom, "Tfr.type", Tfr.type.spct)
-      }
-      spct <- rbindspct(list(spct, spct.bottom))
+      spct <- rbindlist(list(spct, spct.bottom))
+      setGenericSpct(spct)
       low.end <- max(spct)
     } else {
       # give a warning only if difference is > 0.01 nm
@@ -156,7 +145,8 @@ trim_spct <- function(spct, range=NULL, low.limit=NULL, high.limit=NULL, use.hin
     name <- as.character(name)
     assign(name, spct, parent.frame(), inherits = TRUE)
   }
-  # %between% removes derived class tags!
-  #  setattr(spct, "class", class.spct)
+  # we use rbindlist which removes derived class attributes
+  setattr(spct, "class", class.spct)
+  check(spct)
   return(spct)
 }
