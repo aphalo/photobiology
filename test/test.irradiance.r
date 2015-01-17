@@ -3,10 +3,38 @@ library(photobiologyWavebands)
 library(microbenchmark)
 
 data(sun.spct)
+
+test.irrad <- function(w.band=new_waveband(400,700)) {
+  microbenchmark(irrad(sun.spct, w.band),
+                 irrad(sun.spct, w.band,"photon"),
+                 irrad(sun.spct, w.band),
+                 irrad(sun.spct, w.band,"photon"),
+                 irrad(sun.spct, w.band,"photon", use.cached.mult=FALSE),
+                 irrad(sun.spct, w.band,"photon", use.cached.mult=TRUE),
+                 irrad(sun.spct, w.band,"photon", use.cached.mult=TRUE),
+                 irrad(sun.spct, w.band,"photon", use.cached.mult=FALSE, use.hinges=TRUE),
+                 irrad(sun.spct, w.band,"photon", use.cached.mult=FALSE, use.hinges=TRUE),
+                 irrad(sun.spct, w.band,"photon", use.cached.mult=TRUE, use.hinges=TRUE),
+                 irrad(sun.spct, w.band,"photon", use.cached.mult=TRUE, use.hinges=FALSE)
+  )
+}
+
+test.irrad()
+
+test.irrad(CIE())
+
+test.irrad(DNA.N())
+
+dna <- DNA.N()
+
+test.irrad(dna)
+
 attach(sun.spct)
 
 test.irradiance <- function(w.band=new_waveband(400,700)) {
-  microbenchmark(irradiance(w.length, s.e.irrad, w.band,"photon", check.spectrum=TRUE, use.cached.mult=FALSE),
+  microbenchmark(irradiance(w.length, s.e.irrad, w.band,"photon"),
+                 irradiance(w.length, s.e.irrad, w.band,"photon"),
+                 irradiance(w.length, s.e.irrad, w.band,"photon", check.spectrum=TRUE, use.cached.mult=FALSE),
                  irradiance(w.length, s.e.irrad, w.band,"photon", check.spectrum=TRUE, use.cached.mult=TRUE),
                  irradiance(w.length, s.e.irrad, w.band,"photon", check.spectrum=FALSE, use.cached.mult=TRUE),
                  irradiance(w.length, s.e.irrad, w.band,"photon", check.spectrum=TRUE, use.cached.mult=FALSE, use.hinges=TRUE),
