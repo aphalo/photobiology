@@ -9,6 +9,9 @@ photobiology 0.5.7
 
 rbindspct() now will add, if requested, a factor 'spct.idx' to the returned spct object,
 with a different level for each spectrum in the input list.
+rbindspct() now works as expected even if spectra of the same class contain data stored
+using different types of quantities, e.g. energy or photon based, or transmittance vs.
+absorbance.
 
 photobiology 0.5.6
 ===================

@@ -51,8 +51,9 @@
 #'
 #' @note data.table::rbindlist is called internally and the result returned is the highest class in the inheritance
 #' hierachy which is common to all elements in the list. If not all members of the list belong to one of the
-#' \code{.spct} classes, an error is triggered. Code to set all source.spct and response.spct objects into
-#' energy-based quantities, and all filter.spct objects into transmittance before the binding is NOT YET implemented.
+#' \code{.spct} classes, an error is triggered. The function sets all data in \code{source.spct} and \code{response.spct}
+#' objects supplied as arguments into energy-based quantities, and all data in \code{filter.spct} objects into
+#' transmittance before the row binding is done.
 #'
 #' @examples
 #'
@@ -93,8 +94,21 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE,
     stop("Argument 'l' should be a list of spectra")
     return(NULL)
   }
+  # we find the lowest common class
+  # and in the same loop we make sure that all spectral data uses consistent units
   l.class <- c( "source.spct", "filter.spct", "reflector.spct", "response.spct", "chroma.spct",
                 "generic.spct")
+  for (i in 1:length(l)) {
+    class.spct <- class(l[[i]])
+    l.class <- intersect(l.class, class.spct)
+    if ("source.spct" %in% class.spct ||
+        "response.spct" %in% class.spct ) {
+      l[[i]] <- q2e(l[[i]], action = "replace", byref = FALSE)
+    }
+    if ("filter.spct" %in% class.spct) {
+      l[[i]] <- A2T(l[[i]], action = "replace", byref = FALSE)
+    }
+  }
   for (spct in l) {
     l.class <- intersect(l.class, class(spct))
   }
@@ -111,7 +125,7 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE,
     }
     comment.ans <- "rbindspct: concatenated comments"
     comments.found <- FALSE
-    for (i in 1:length(l)) { # transversing the list with spct
+    for (i in 1:length(l)) {
       l[[i]][ , (factor.name) := names.spct[i] ]
       temp <- comment(l[[i]])
       comments.found <- comments.found || !is.null(temp)
