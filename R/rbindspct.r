@@ -98,14 +98,16 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE,
   # and in the same loop we make sure that all spectral data uses consistent units
   l.class <- c( "source.spct", "filter.spct", "reflector.spct", "response.spct", "chroma.spct",
                 "generic.spct")
+  photon.based.input <- any(sapply(l, FUN=is.energy.based))
+  absorbance.based.input <- any(sapply(l, FUN=is.absorbance.based))
   for (i in 1:length(l)) {
     class.spct <- class(l[[i]])
     l.class <- intersect(l.class, class.spct)
-    if ("source.spct" %in% class.spct ||
-        "response.spct" %in% class.spct ) {
+    if (photon.based.input && ("source.spct" %in% class.spct ||
+        "response.spct" %in% class.spct )) {
       l[[i]] <- q2e(l[[i]], action = "replace", byref = FALSE)
     }
-    if ("filter.spct" %in% class.spct) {
+    if (absorbance.based.input && "filter.spct" %in% class.spct) {
       l[[i]] <- A2T(l[[i]], action = "replace", byref = FALSE)
     }
   }
@@ -157,6 +159,9 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE,
       }
     }
     setSourceSpct(ans, time.unit = time.unit[1])
+    if (photon.based.input) {
+      e2q(ans, action = "add", byref = TRUE)
+    }
   } else if (l.class == "filter.spct") {
     Tfr.type <- character(length(l))
     i <- 0L
@@ -171,10 +176,16 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE,
       }
     }
     setFilterSpct(ans, Tfr.type = Tfr.type[1])
+    if (absorbance.based.input) {
+      T2A(ans, action = "add", byref = TRUE)
+    }
   } else if (l.class == "reflector.spct") {
     setReflectorSpct(ans)
   } else if (l.class == "response.spct") {
     setResponseSpct(ans)
+    if (photon.based.input) {
+      e2q(ans, action = "add", byref = TRUE)
+    }
   } else if (l.class == "chroma.spct") {
     setChromSpct(ans)
   } else if (l.class == "generic.spct") {

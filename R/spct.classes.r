@@ -591,6 +591,110 @@ is.tagged <- function(x) {
   }
 }
 
+# is.photon.based ---------------------------------------------------------
+
+#' Query if it is an spectrum contains photon based data
+#'
+#' Functions to check if an spct contains photon based data
+#'
+#' @usage is.photon.based(x)
+#'
+#' @param x any R object
+#'
+#' @return is.photon.based returns TRUE if its argument is a a source.spct or
+#' a response.spct object that contains photon base data and FALSE if such an
+#' object does not contain such data, but returns NA for any other R object,
+#' including those belinging other \code{generic.spct}-derived classes.
+#'
+#' @export
+#'
+is.photon.based <- function(x) {
+  if (is.source.spct(x)) {
+    return("s.q.irrad" %in% names(x))
+  } else if (is.response.spct(x)) {
+    return("s.q.response" %in% names(x))
+  } else {
+    return(NA)
+  }
+}
+
+# is.energy.based ---------------------------------------------------------
+
+#' Query if it is an spectrum contains energy based data
+#'
+#' Functions to check if an spct contains energy based data
+#'
+#' @usage is.energy.based(x)
+#'
+#' @param x any R object
+#'
+#' @return is.energy.based returns TRUE if its argument is a a source.spct or
+#' a response.spct object that contains energy base data and FALSE if such an
+#' object does not contain such data, but returns NA for any other R object,
+#' including those belinging other \code{generic.spct}-derived classes
+#'
+#' @export
+#'
+is.energy.based <- function(x) {
+  if (is.source.spct(x)) {
+    return("s.e.irrad" %in% names(x))
+  } else if (is.response.spct(x)) {
+    return("s.e.response" %in% names(x))
+  } else {
+    return(NA)
+  }
+}
+
+# is.absorbance.based ---------------------------------------------------------
+
+#' Query if it is an spectrum contains absorbance data
+#'
+#' Functions to check if an spct contains absorbance data
+#'
+#' @usage is.absorbance.based(x)
+#'
+#' @param x any R object
+#'
+#' @return \code{is.absorbance.based} returns TRUE if its argument is a a \code{filter.spct}
+#' object that contains spectral absorbance data and FALSE if it does not contain
+#' such data, but returns NA for any other R object, including those belonging
+#' other \code{generic.spct}-derived classes.
+#'
+#' @export
+#'
+is.absorbance.based <- function(x) {
+  if (is.filter.spct(x)) {
+    return("A" %in% names(x))
+  } else {
+    return(NA)
+  }
+}
+
+# is.transmittance.based ---------------------------------------------------------
+
+#' Query if it is an spectrum contains transmittance data
+#'
+#' Functions to check if an spct contains transmittance data
+#'
+#' @usage is.transmittance.based(x)
+#'
+#' @param x any R object
+#'
+#' @return \code{is.transmittance.based} returns TRUE if its argument is a a \code{filter.spct}
+#' object that contains spectral transmittance data and FALSE if it does not contain
+#' such data, but returns NA for any other R object, including those belonging
+#' other \code{generic.spct}-derived classes.
+#'
+#' @export
+#'
+is.transmittance.based <- function(x) {
+  if (is.filter.spct(x)) {
+    return("Tfr" %in% names(x))
+  } else {
+    return(NA)
+  }
+}
+
 # as functions for spct classes --------------------------------------------
 
 #' Return a copy of an R object with its class set to generic.spct
@@ -772,4 +876,6 @@ setTfrType <- function(x, Tfr.type=c("total", "internal")) {
   }
   return(x)
 }
+
+
 
