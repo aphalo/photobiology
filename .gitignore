@@ -13,5 +13,4 @@ src/RcppExports.cpp
 *.synctex.gz
 *.log
 *.so
-
 *.toc

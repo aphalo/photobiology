@@ -12,6 +12,7 @@ with a different level for each spectrum in the input list.
 rbindspct() now works as expected even if spectra of the same class contain data stored
 using different types of quantities, e.g. energy or photon based, or transmittance vs.
 absorbance.
+User Guide text was edited. Code formatting in chunks improved.
 
 photobiology 0.5.6
 ===================
@@ -21,7 +22,7 @@ deletion by making it invisible.
 Optimized colour calculations for improved speed and debugged the changes.
 Revised User Guide.
 Fixed bug that was causing response() not to be exported.
-Fixed bug in operations between spectra and wavebands and added also a small safety marging
+Fixed bug in operations between spectra and wavebands and added also a small safety margin
 to protect from rounding errors.
 A few minor bugs also fixed.
 Fixed an important bug causing error in plot(sun.spct * CIE()) (a difficult one to track).
@@ -39,7 +40,7 @@ photobiology 0.5.4
 ===================
 
 Fixed bug in split_bands() function. Handling of names has changed to some extent, and handling
-of list objects supplied as x argument is now done by recursion, adding some additonal flexibility.
+of list objects supplied as x argument is now done by recursion, adding some additional flexibility.
 
 The User Guide was updated to include examples of the use of split_bands().
 
@@ -69,7 +70,7 @@ Fixed two bugs in new_waveband: 1) wb.label was not set when wb.name was auto-ge
 their limits.
 
 Added new function trim_waveband().
-Editted irrad(), response(), transmittance(), absorbance(), reflectance(), ratio() functions
+Edited irrad(), response(), transmittance(), absorbance(), reflectance(), ratio() functions
 for spectra to use this function internally, and gaining the wb.trim parameter, which defaults
 to FALSE. Fixed small numeric errors in the creation of the waveband for the whole spectrum.
 
@@ -123,7 +124,7 @@ now more strict with respect to what may make sense from the point of view of th
 behind the calculations. Failed checks return NA.
 
 All calls to invisible(), except in the \texttt{set\_\_\_Spct} functions, have been replaced
-with return() as the lack of visible output was confusing. It is now docummented in the
+with return() as the lack of visible output was confusing. It is now documented in the
 User Guide how to use options() to control the length of the print output.
 
 photobiology 0.4.9
@@ -135,7 +136,7 @@ on building objects, as this adds unneeded computation and complicates the logic
 data on copy operations (which is surprising and can lead to difficult-to-trace bugs.)
 This change can be NOT BACKWARDS compatible in some cases of user code, but should be fine for
 other functions defined in the photobiology packages, as they have been edited to maintain the
-same visible behavior.
+same visible behaviour.
 
 Fixed a spurious warning by trim_spct() due to minute differences in wavelengths.
 
@@ -201,7 +202,7 @@ Added is.xxx.spct() functions for all classes defined and is.any.spct() and clas
 photobiology 0.3.16
 ===================
 
-Edited wb2xx functions. Added other required variables and set their values to zero, so that the generic.spct objects returned by the waveband to spectra functions can be safely converted to any of the specialized spct spectral objects. This makes then labeling of all types of spectral plots equally easy.
+Edited wb2xx functions. Added other required variables and set their values to zero, so that the generic.spct objects returned by the waveband to spectra functions can be safely converted to any of the specialized spct spectral objects. This makes then labelling of all types of spectral plots equally easy.
 
 photobiology 0.3.15
 ===================
@@ -318,7 +319,7 @@ this at a later stage.
 
 The package now depends on data.table which is now imported. As MayaCalc already returns data.table objects, hopefully this will help optimize performance and memory use. Users should be aware that data.tables are copied by reference, and a true copy is needed, function copy should be used.
 
-I am making the code more object (S3) oriented. Three new classes are exported "filter.spct", "source.spct", and "generic.spct", and three new functions were added to set the class of objects to these classes. If the object is not already a data.table, it is setDT. This allows me to create a more user-friendly interface by overloading operators. Now the four basic operations work on spectra, and one can also use these same operations and ^between a spectrum a numerical vector of length one or longer. Many math functions and some summary functions have specialized versions for spectra. This is my attempt to make calculations intuitive, but do not expect them to be fast.
+I am making the code more object (S3) oriented. Three new classes are exported "filter.spct", "source.spct", and "generic.spct", and three new functions were added to set the class of objects to these classes. If the object is not already a data.table, it is setDT. This allows me to create a more user-friendly interface by overloading operators. Now the four basic operations work on spectra, and one can also use these same operations and ^between a spectrum a numerical vector of length one or longer. Many maths functions and some summary functions have specialized versions for spectra. This is my attempt to make calculations intuitive, but do not expect them to be fast.
 
 Added generic functions A2T and T2A for converting absorbance to transmittance and back. The generic function takes a numerical argument, and there are special versions for spectra. When the argument is a "filter.spc" object they return a copy of the original object with the calculated quantity added. If the requested output already exists, it is NOT recalculated, just a copy of the argument is returned, if the input data is missing, the corresponding output is set to NA.
 
