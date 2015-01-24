@@ -4,6 +4,11 @@ TODO
 Need to add warnings informing what has happened, when a given combination of operands is
 rejected, and add a table to the User Guide summarizing the valid and invalid operations.
 
+photobiology 0.5.8
+===================
+
+Bug in q2e.response.spct() fixed.
+
 photobiology 0.5.7
 ===================
 

@@ -987,7 +987,7 @@ q2e.response.spct <- function(x, action="add", byref=FALSE) {
     x[ , s.e.response := NA]
   }
   if (action=="replace" && exists("s.q.response", x, inherits=FALSE)) {
-    x[ , s.q.irrad := NULL]
+    x[ , s.q.response := NULL]
   }
   if (byref && is.name(name)) {  # this is a temporary safe net
     name <- as.character(name)
