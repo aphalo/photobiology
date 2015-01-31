@@ -11,8 +11,7 @@
  breaklinks=false,pdfborder={0 0 1},backref=false,colorlinks=false]
  {hyperref}
 \usepackage{listings}
-%\usepackage{booktabs}
-%\usepackage{breakurl}
+\usepackage{booktabs}\usepackage{bbding}
 \usepackage{xspace}
 \usepackage{framed}
 
@@ -70,6 +69,7 @@ my_version <- packageVersion("photobiology")
 
 \section{Introduction}
 
+\sloppy
 We have developed a set of packages to
 facilitate the calculation of many different quantities that can be derived from spectral irradiance data. The base package in this suite is called \PB, and is the package described here. There other specialized packages for quantification of ultraviolet radiation and visible radiation (\PBWB), or based on Phytochrome (\PBPHY), Cryptochrome (\PBCRY) (both photoreceptors present in plants). Other packages in the suite provide example spectral data for filters (\PBFLT), lamps (\PBLA), LEDs (\PBLD), sunlight (\PBSU) and broadband sensors (\PBSN) . In the future it will be submitted to CRAN (Comprehensive R archive network), it is meanwhile available from \url{https://www.r4photobiology.info/}. There is also a public Git repository at \url{https://bitbucket.org/aphalo/} from where the source code of the current an earlier versions can be cloned.
 
@@ -368,41 +368,41 @@ Both \texttt{as.source.spct} and \texttt{as.filter.spct} accept an argument for 
 
 \subsubsection{Using constructors}
 
-This approach is similar to using function \texttt{data.frame} to create a data frame, but in this case the names of the arguments are meaningful and convey information on the nature of the spectral data and basis of expression.
+This approach is similar to using function \texttt{data.frame} to create a data frame, but in this case the names of the arguments are meaningful and convey information on the nature of the spectral data and basis of expression. In the examples below we supply a single value for the spectral data. This value gets recycled as is normal in R, but of course in real use it is more usual to supply a vector of the same length as the \texttt{w.length} vector.
 
 <<>>=
-s.spct <- source.spct(w.length = 300:305, s.e.irrad = 100) # '100' is recycled
+s.spct <- source.spct(w.length = 300:305, s.e.irrad = 100)
 class.spct(s.spct)
 s.spct
 @
 
 <<>>=
-s.spct <- source.spct(w.length = 300:305, s.q.irrad = 40, time.unit = "day") # '40' is recycled
+s.spct <- source.spct(w.length = 300:305, s.q.irrad = 40, time.unit = "day")
 class.spct(s.spct)
 s.spct
 @
 
 <<>>=
-l.spct <- filter.spct(w.length = 300:305, Tpc = 100) # '100' is recycled
+l.spct <- filter.spct(w.length = 300:305, Tpc = 100)
 class.spct(l.spct)
 l.spct
 @
 
 <<>>=
-l.spct <- filter.spct(w.length = 300:305, A = 2) # '2' is recycled
+l.spct <- filter.spct(w.length = 300:305, A = 2)
 class.spct(l.spct)
 l.spct
 @
 
 <<>>=
 wl1 <- 300:305
-m.spct <- reflector.spct(w.length = wl1, Rfr = 0.5) # '0.5' is recycled
+m.spct <- reflector.spct(w.length = wl1, Rfr = 0.5)
 class.spct(m.spct)
 m.spct
 @
 
 <<>>=
-l.spct <- response.spct(w.length = 300:305, s.e.response = 0.5) # '0.5' is recycled
+l.spct <- response.spct(w.length = 300:305, s.e.response = 0.5)
 class.spct(l.spct)
 l.spct
 @
@@ -634,8 +634,42 @@ is.effective(sun.spct)
 
 \subsection{Using operators with spectra}
 
+\subsubsection{Binary operators}
+
 The basic maths operators have definitions for spectra. It is possible to sum, subtract, multiply and divide spectra. These operators can be used even if the spectral data is on different arbitrary sets of wavelengths. Operators by default use values expressed in energy units. Only certain operations are meaningful for a given combination of
-objects belonging to different classes, and meaningless combinations return \texttt{NA}. At the moment, without issuing a warning. By default operations are carried out on spectral energy irradiance for \texttt{source.spct} objects and transmittance for \texttt{filter.spct} objects.
+objects belonging to different classes, and meaningless combinations return \texttt{NA} also issuing a warning (see Table \ref{tab:operators}). By default operations are carried out on spectral energy irradiance for \texttt{source.spct} objects and transmittance for \texttt{filter.spct} objects.
+
+\begin{table}
+\newcommand{\N}{\textcolor{red}{\small N}}
+\newcommand{\Y}{\textcolor{green}{\small Y}}
+\caption[Binary operators]{Binary operators and operands. Validity and class of result. All operations marked `\Y' are allowed, those marked `\N' are forbiden and return \texttt{NA} and issue a warning.}\label{tab:operators}\vspace{0.75ex}
+\begin{tabular}{lcccccll}
+\toprule
+e1 & \verb|+| & \verb|-| & \verb|*| & \verb|/| & \verb|^| & e2 & result \\
+\midrule
+source.spct & \Y & \Y &\Y  & \Y & \Y & source.spct & source.spct \\
+filter.spct (T) & \N & \N & \Y & \Y  & \N & filter.spct & filter.spct \\
+filter.spct (A) & \Y & \Y & \N & \N  & \N & filter.spct & filter.spct \\
+reflector.spct & \N & \N & \Y &\Y  & \N & reflector.spct & reflector.spct \\
+response.spct & \Y & \Y & \Y & \Y & \N & response.spct & response.spct \\
+chroma.spct & \Y  & \Y & \Y & \Y & \Y & chroma.spct & chroma.spct \\
+\midrule
+source.spct & \Y  & \Y &\Y  & \Y & \Y & numeric & source.spct \\
+filter.spct & \Y  &\Y  & \Y &\Y  & \Y & numeric & filter.spct \\
+reflector.spct & \Y &\Y  &\Y  &\Y  & \Y & numeric & reflector.spct \\
+response.spct & \Y  & \Y  & \Y  & \Y  & \Y & numeric & response.spct \\
+chroma.spct & \Y & \Y  & \Y & \Y  & \Y & numeric & chroma.spct \\
+\midrule
+source.spct & \N & \N & \Y &\Y  & \N & response.spct & response.spct \\
+source.spct & \N & \N & \Y  & \Y  & \N & filter.spct (T) & source.spct \\
+source.spct & \N & \N & \Y  & \Y & \N & filter.spct (A) & source.spct \\
+source.spct & \N & \N & \Y  & \Y  & \N & reflector.spct & source.spct \\
+source.spct & \N & \N &\Y  & \N & \N & waveband (no BSWF) & source.spct \\
+source.spct & \N & \N &\Y  & \N & \N & waveband (BSWF) & response.spct \\
+\bottomrule
+\end{tabular}
+\end{table}
+
 
 <<>>=
 sun.spct * sun.spct
@@ -667,11 +701,20 @@ sun.spct * c(0,1)
 
 There is one special case, for \texttt{chroma.spct}: if the numeric operand has length three, containing three \emph{named} values `x', `y' and `z', the corresponding value is used for each of the chromaticity `columns' in the \texttt{chroma.spct}. Un-named values or differently named values are not treated specially.
 
-Operators are also defined for operations between an spectrum and a \texttt{waveband} object.
+Operators are also defined for operations between an spectrum and a \texttt{waveband} object. The next to code chunks demonstrate how the class of the result depends on whether the \texttt{waveband} object describes a range of wavelengths or a range of wavelengths plus a BSWF.
 
 <<>>=
-sun.spct * UVB()
-sun.spct * CIE()
+is.effective(UVB())
+clipped.spct <- sun.spct * UVB()
+class.spct(clipped.spct)
+clipped.spct
+@
+
+<<>>=
+is.effective(CIE())
+weighted.spct <- sun.spct * CIE()
+class.spct(weighted.spct)
+weighted.spct
 @
 
 And of course these operations can be combined into more complex statements, including parentheses, when needed. The example below estimates the difference in effective spectral irradiance according to the CIE98 definition, between sunlight and sunlight filtered with a polyester film. Of course, the result is valid only for the
@@ -680,6 +723,39 @@ solar spectral data used, which corresponds to Southern Finland.
 <<>>=
 sun.spct * CIE() - sun.spct * polyester.new.spct * CIE()
 @
+
+\subsubsection{Unary operators and math functions}
+
+The most common math functions, as well as unary minus and plus, are also implemented for spectral objects (see Table \ref{tab:unary}).
+
+\begin{table}
+\newcommand{\N}{\textcolor{red}{\small N}}
+\newcommand{\Y}{\textcolor{green}{\small Y}}
+\caption[Binary operators]{Unary operators and math functions. Validity and class of result. All operations marked `\Y' are allowed, those marked `\N' are not implemented and return \texttt{NA} and issue a warning.}\label{tab:unary}\vspace{0.75ex}
+\centering
+\begin{tabular}{lcccccll}
+\toprule
+e1 & \verb|+| & \verb|-| & \verb|log()| & \verb|log10()| & \verb|exp()| & \verb|sqrt()| & result \\
+\midrule
+source.spct & \Y & \Y &\Y  & \Y & \Y & \Y & source.spct \\
+filter.spct & \Y & \Y & \Y & \Y  & \Y & \Y & filter.spct \\
+reflector.spct & \Y & \Y & \Y &\Y  & \Y & \Y & reflector.spct \\
+response.spct & \Y & \Y & \Y & \Y & \Y & \Y & response.spct \\
+chroma.spct & \Y  & \Y & \Y & \Y & \Y & \Y & chroma.spct \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+<<>>=
++sun.spct
+-sun.spct
+log(sun.spct)
+log10(sun.spct)
+exp(sun.spct)
+sqrt(sun.spct)
+@
+
+\subsubsection{Options affecting math operators and functions}
 
 The behaviour of the operators depends on the value of two global options. If we would like the operators to
 operate on spectral photon irradiance and return spectral photon irradiance instead of spectral energy irradiance,
@@ -706,6 +782,7 @@ Either option can be unset, by means of the \texttt{NULL} value.
 options(photobiology.radiation.unit = NULL)
 options(photobiology.filter.qty = NULL)
 @
+
 
 \subsection{Calculating irradiance or exposure}
 

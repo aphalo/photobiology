@@ -1,8 +1,27 @@
 TODO
 ====
 
-Need to add warnings informing what has happened, when a given combination of operands is
-rejected, and add a table to the User Guide summarizing the valid and invalid operations.
+Build test cases.
+
+photobiology 0.5.9
+===================
+
+Updated opertors' code so that unary '-' and unary '+' now work for spectra.
+
+Rewrote the code for math functions, removing redundancy, and adding support for
+chroma.spct objects.
+
+Fixed a major bug in binary operators code for non-transitive operations, triggered
+when the first operand is numeric.
+
+Added a table to the User Guide summarizing the valid and invalid binary operations, and
+a second table listing unary operators and math functions.
+
+Edited the constructors of spct objects so that they recognize additional variable names
+for the input data, and rename them.
+
+Added warning messages informing of forbiden operations between dissimilar
+spectral objects and between spectral objetcs and wavebands are attempted.
 
 photobiology 0.5.8
 ===================

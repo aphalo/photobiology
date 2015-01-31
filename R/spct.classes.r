@@ -67,6 +67,9 @@ check.generic.spct <- function(x, byref=TRUE) {
   } else if (exists("wavelength", x, mode = "numeric", inherits=FALSE)) {
     setnames(x, "wavelength", "w.length")
     return(x)
+  } else if (exists("Wavelength", x, mode = "numeric", inherits=FALSE)) {
+    setnames(x, "Wavelength", "w.length")
+    return(x)
   } else {
     warning("No wavelength data found in generic.spct")
     x[ , w.length := NA]
@@ -86,6 +89,20 @@ check.filter.spct <- function(x, byref=TRUE) {
     setTrfType(x, "total")
     warning("Missing Trf.type attribute replaced by 'total'")
   }
+  # check and replace 'other' quantity names
+  if (exists("transmittance", x, mode = "numeric", inherits=FALSE)) {
+    if (max(x$transmittance) < 100.0 && min(x$transmittance >= 0.0)) {
+      setnames(x, "transmittance", "Tpc")
+      warning("Found varaible 'transmittance', I am assuming it expressed as percent")
+    }
+  }
+  if (exists("absorbance", x, mode = "numeric", inherits=FALSE)) {
+    if (max(x$absorbance) < 20.0 && min(x$absorbanvce >= -20.0)) {
+      setnames(x, "absorbance", "A")
+      warning("Found varaible 'absorbance', I am assuming it is in log10-based absorbance units")
+    }
+  }
+  # look for percentages and change them into fractions of one
   if (exists("Tfr", x, mode = "numeric", inherits=FALSE)) {
     return(x)
   } else if (exists("Tpc", x, mode = "numeric", inherits=FALSE)) {
@@ -110,6 +127,12 @@ check.filter.spct <- function(x, byref=TRUE) {
 #' @param byref logical indicating if new object will be created by reference or by copy of x
 #' @export check.reflector.spct
 check.reflector.spct <- function(x, byref=TRUE) {
+  if (exists("reflectance", x, mode = "numeric", inherits=FALSE)) {
+    if (max(x$reflectance) <= 100.0 && min(x$transmittance >= 0.0)) {
+      setnames(x, "reflectance", "Rpc")
+      warning("Found variable 'reflectance', I am assuming it is expressed as percent")
+    }
+  }
   if (exists("Rfr", x, mode = "numeric", inherits=FALSE)) {
     return(x)
   } else if (exists("Rpc", x, mode = "numeric", inherits=FALSE)) {
@@ -133,15 +156,17 @@ check.reflector.spct <- function(x, byref=TRUE) {
 check.response.spct <- function(x, byref=TRUE) {
   if (exists("s.e.response", x, mode = "numeric", inherits=FALSE)) {
     return(x)
+  } else if (exists("s.q.response", x, mode = "numeric", inherits=FALSE)) {
+    return(x)
   } else if (exists("response", x, mode = "numeric", inherits=FALSE)) {
     x[ , s.e.response := response]
     x[ , response := NULL]
+    warning("Found variable 'response', I am assuming it is expressed on an energy basis")
     return(x)
   } else if (exists("signal", x, mode = "numeric", inherits=FALSE)) {
     x[ , s.e.response := signal]
     x[ , signal := NULL]
-    return(x)
-  } else if (exists("s.q.response", x, mode = "numeric", inherits=FALSE)) {
+    warning("Found variable 'signal', I am assuming it is expressed on an energy basis")
     return(x)
   } else {
     warning("No response data found in response.spct")
@@ -165,6 +190,11 @@ check.source.spct <- function(x, byref=TRUE) {
   if (exists("s.e.irrad", x, mode = "numeric", inherits=FALSE)) {
     return(x)
   } else if (exists("s.q.irrad", x, mode = "numeric", inherits=FALSE)) {
+    return(x)
+  } else if (exists("irradiance", x, mode = "numeric", inherits=FALSE)) {
+    x[ , s.e.irradiance := irradiance]
+    x[ , irradiance := NULL]
+    warning("Found variable 'irradiance', I am assuming it is expressed on an energy basis")
     return(x)
   } else {
     warning("No spectral irradiance data found in source.spct")
