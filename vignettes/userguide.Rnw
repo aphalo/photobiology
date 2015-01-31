@@ -159,7 +159,7 @@ tail(a.dt, 2L)
 
 \subsection{Spectral data assumptions}
 
-An assumption of the package is that wavelengths are always expressed in nanometres ($1~\Unit{nm} = 1 \cdot 10^{-9}\,\Unit{m}$). If the data to be analysed uses different units for wavelengths, e.g.\ Angstrom ($1~\Unit{Å} = 1 \cdot 10^{-10}\,\Unit{m$}), the values need to be re-scaled before any calculations.
+An assumption of the package is that wavelengths are always expressed in nanometres ($1~\Unit{nm} = 1 \cdot 10^{-9}\,\Unit{m}$). If the data to be analysed uses different units for wavelengths, e.g.\ Ångstrom ($1~\Unit{Å} = 1 \cdot 10^{-10}\,\Unit{m$}), the values need to be re-scaled before any calculations.
 
 Energy irradiances are assumed to be expressed in \watt and photon irradiances in \mol, that is to say using second as unit for time. This is the default, but it is possible to set the unit for time to day in the case of \texttt{source.spct} objects.
 

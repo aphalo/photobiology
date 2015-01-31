@@ -85,32 +85,40 @@ check.generic.spct <- function(x, byref=TRUE) {
 #' @param byref logical indicating if new object will be created by reference or by copy of x
 #' @export check.filter.spct
 check.filter.spct <- function(x, byref=TRUE) {
+
+  range_check <- function(x) {
+    if (min(x$Tfr) < 0 || max(x$Tfr) > 1) {
+      warning("Off-range transmittance values [", signif(min(x$Tfr), 2), "...", signif(max(x$Tfr), 2), "] instead of  [0..1]")
+    }
+  }
+
   if (is.null(attr(x, "Tfr.type"))) {
     setTrfType(x, "total")
     warning("Missing Trf.type attribute replaced by 'total'")
   }
   # check and replace 'other' quantity names
   if (exists("transmittance", x, mode = "numeric", inherits=FALSE)) {
-    if (max(x$transmittance) < 100.0 && min(x$transmittance >= 0.0)) {
-      setnames(x, "transmittance", "Tpc")
-      warning("Found varaible 'transmittance', I am assuming it expressed as percent")
-    }
+    setnames(x, "transmittance", "Tpc")
+    warning("Found varaible 'transmittance', I am assuming it expressed as percent")
   }
   if (exists("absorbance", x, mode = "numeric", inherits=FALSE)) {
-    if (max(x$absorbance) < 20.0 && min(x$absorbanvce >= -20.0)) {
-      setnames(x, "absorbance", "A")
-      warning("Found varaible 'absorbance', I am assuming it is in log10-based absorbance units")
-    }
+    setnames(x, "absorbance", "A")
+    warning("Found varaible 'absorbance', I am assuming it is in log10-based absorbance units")
   }
   # look for percentages and change them into fractions of one
   if (exists("Tfr", x, mode = "numeric", inherits=FALSE)) {
+    range_check(x)
     return(x)
   } else if (exists("Tpc", x, mode = "numeric", inherits=FALSE)) {
     x[ , Tfr := Tpc / 100]
     x[ , Tpc := NULL]
+    range_check(x)
     return(x)
   } else if (exists("A", x, mode = "numeric", inherits=FALSE)) {
 #    x[ , Tfr := A2T(A)]
+    if (min(x$A) < 0) {
+      warning("Off-range min absorbance value: ", signif(min(x$A), 2), " instead of 0")
+    }
     return(x)
   } else {
     warning("No transmittance or absorbance data found in filter.spct")
@@ -127,17 +135,24 @@ check.filter.spct <- function(x, byref=TRUE) {
 #' @param byref logical indicating if new object will be created by reference or by copy of x
 #' @export check.reflector.spct
 check.reflector.spct <- function(x, byref=TRUE) {
-  if (exists("reflectance", x, mode = "numeric", inherits=FALSE)) {
-    if (max(x$reflectance) <= 100.0 && min(x$transmittance >= 0.0)) {
-      setnames(x, "reflectance", "Rpc")
-      warning("Found variable 'reflectance', I am assuming it is expressed as percent")
+
+  range_check <- function(x) {
+    if (min(x$Rfr) < 0 || max(x$Rfr) > 1) {
+      warning("Off-range reflectance values [", signif(min(x$Rfr), 2), "...", signif(max(x$Rfr), 2), "] instead of  [0..1]")
     }
   }
+
+  if (exists("reflectance", x, mode = "numeric", inherits=FALSE)) {
+    setnames(x, "reflectance", "Rpc")
+    warning("Found variable 'reflectance', I am assuming it is expressed as percent")
+  }
   if (exists("Rfr", x, mode = "numeric", inherits=FALSE)) {
+    range_check(x)
     return(x)
   } else if (exists("Rpc", x, mode = "numeric", inherits=FALSE)) {
     x[ , Rfr := Rpc / 100]
     x[ , Rpc := NULL]
+    range_check(x)
     return(x)
   } else {
     warning("No reflectance data found in reflector.spct")
@@ -858,7 +873,7 @@ as.chroma.spct <- function(x) {
 #' @usage setTimeUnit(x, time.unit=c("second", "hour", "day", "none", "unknown"))
 #'
 #' @param x a source.spct object
-#' @param time.unit a character string, either "second", "hour", "day", "none", or "unknown
+#' @param time.unit a character string, either "second", "hour", "day", "none", or "unknown"
 #'
 #' @return x
 #'

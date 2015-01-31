@@ -1,8 +1,8 @@
 Package: photobiology
 Type: Package
 Title: Light and radiation quantification for photobiology research
-Version: 0.5.9
-Date: 2015-01-30
+Version: 0.5.10
+Date: 2015-01-31
 Author: Pedro J. Aphalo <pedro.aphalo@helsinki.fi>
 Maintainer: Pedro J. Aphalo <pedro.aphalo@helsinki.fi>
 Description: Calculation of effective (weighted) and unweighted
@@ -26,7 +26,8 @@ Suggests:
     ggplot2,
     ggtern,
     knitr (>= 1.2),
-    microbenchmark
+    microbenchmark,
+    testthat
 LazyLoad: yes
 LazyData: yes
 ByteCompile: true

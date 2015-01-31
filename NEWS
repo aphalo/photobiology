@@ -1,7 +1,15 @@
 TODO
 ====
 
-Build test cases.
+Add test cases for chroma.spct
+
+photobiology 0.5.10
+===================
+
+Added automatic testing based on apckage testthat.
+
+Test cases for operators and math functions.
+Test cases for constructors of spectral objects.
 
 photobiology 0.5.9
 ===================
