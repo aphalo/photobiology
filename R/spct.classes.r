@@ -16,6 +16,37 @@ spct.classes <- function() {
     "response.spct", "chroma.spct")
 }
 
+
+# conditional setkey ------------------------------------------------------
+
+#' Stolen from data.table except that test added so that if the same key is
+#' already set setkeyv is not called.
+#'
+#' @usage setkey_spct(x, ..., verbose = getOption("datatable.verbose"), physical = TRUE)
+#'
+#' @param x spct object
+#' @param ... columns
+#' @param verbose logical
+#' @param physical logical
+#'
+#' @note \code{\link[data.table]{setkey}}
+#'
+#' @keywords internal
+#'
+setkey_spct <- function (x, ..., verbose = getOption("datatable.verbose"), physical = TRUE)
+{
+  if (is.character(x))
+    stop("x may no longer be the character name of the data.table. The possibility was undocumented and has been removed.")
+  cols = as.character(substitute(list(...))[-1])
+  if (!length(cols))
+    cols = colnames(x)
+  else if (identical(cols, "NULL"))
+    cols = NULL
+  if (is.any.spct(x) && !is.null(key(x)) && identical(cols, key(x)))
+    invisible(x)
+  setkeyv(x, cols, verbose = verbose, physical = physical)
+}
+
 # check -------------------------------------------------------------------
 
 #' Generic function
@@ -283,7 +314,7 @@ setGenSpct <- function(x) {
     setattr(x, "spct.tags", NA)
   }
   x <- check(x)
-  setkey(x, w.length)
+  setkey_spct(x, w.length)
   if (is.name(name)) {
     name <- as.character(name)
     assign(name, x, parent.frame(), inherits = TRUE)
@@ -313,7 +344,7 @@ setPrivateSpct <- function(x) {
     setattr(x, "class", c("private.spct", class(x)))
   }
   x <- check(x)
-  setkey(x, w.length)
+  setkey_spct(x, w.length)
   x <- copy(x[,list(w.length,numbers)])
   if (is.name(name)) {
     name <- as.character(name)
@@ -347,7 +378,7 @@ setFilterSpct <- function(x, Tfr.type=c("total", "internal")) {
   }
   setTfrType(x, Tfr.type)
   x <- check(x)
-  setkey(x, w.length)
+  setkey_spct(x, w.length)
   if (is.name(name)) {
     name <- as.character(name)
     assign(name, x, parent.frame(), inherits = TRUE)
@@ -377,7 +408,7 @@ setReflectorSpct <- function(x) {
     setattr(x, "class", c("reflector.spct", class(x)))
   }
   x <- check(x)
-  setkey(x, w.length)
+  setkey_spct(x, w.length)
   if (is.name(name)) {
     name <- as.character(name)
     assign(name, x, parent.frame(), inherits = TRUE)
@@ -409,7 +440,7 @@ setResponseSpct <- function(x, time.unit="none") {
   }
   setTimeUnit(x, time.unit)
   x <- check(x)
-  setkey(x, w.length)
+  setkey_spct(x, w.length)
   if (is.name(name)) {
     name <- as.character(name)
     assign(name, x, parent.frame(), inherits = TRUE)
@@ -441,7 +472,7 @@ setSourceSpct <- function(x, time.unit="second") {
   }
   setTimeUnit(x, time.unit)
   x <- check(x)
-  setkey(x, w.length)
+  setkey_spct(x, w.length)
   if (is.name(name)) {
     name <- as.character(name)
     assign(name, x, parent.frame(), inherits = TRUE)
@@ -471,7 +502,7 @@ setChromaSpct <- function(x) {
     setattr(x, "class", c("chroma.spct", class(x)))
   }
   x <- check(x)
-  setkey(x, w.length)
+  setkey_spct(x, w.length)
   if (is.name(name)) {
     name <- as.character(name)
     assign(name, x, parent.frame(), inherits = TRUE)

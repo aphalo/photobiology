@@ -3,6 +3,14 @@ TODO
 
 Add test cases for chroma.spct
 
+photobiology 0.5.11
+===================
+
+Changed code of irrad() and set___Spct() functions to be able to handle locked data.table
+objects such as .SD when using by within [ ] on spct objects. irrad() copies the spectrum
+only if needed, and the sorting key is set to "w.length" only if not already set to this
+same value.
+
 photobiology 0.5.10
 ===================
 
