@@ -5,8 +5,9 @@ test_that("constructor T fraction", {
 
   my.spct <- filter.spct(w.length = 400:409, Tfr = 0.1)
 
-  expect_warning(filter.spct(w.length = 400:409, Tfr = -0.1))
-  expect_warning(filter.spct(w.length = 400:409, Tfr = 1.1))
+  expect_error(filter.spct(w.length = 400:409, Tfr = -0.1))
+  expect_error(filter.spct(w.length = 400:409, Tfr = 1.1))
+  expect_warning(T2A(filter.spct(w.length = 400:409, Tfr = 0)))
   expect_equal(my.spct[["Tfr"]], rep(0.1, length.out = 10))
   expect_equal(my.spct[["w.length"]], 400:409)
   expect_named(my.spct, c("w.length", "Tfr"))

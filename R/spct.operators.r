@@ -851,6 +851,9 @@ T2A.filter.spct <- function(x, action="add", byref=FALSE) {
     name <- as.character(name)
     assign(name, x, parent.frame(), inherits = TRUE)
   }
+  if (any(is.infinite(x$A))) {
+    warning("'Inf' absorbance values generated as some Tfr values were equal to zero!")
+  }
   return(x)
 }
 

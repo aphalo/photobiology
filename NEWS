@@ -3,6 +3,13 @@ TODO
 
 Add test cases for chroma.spct
 
+photobiology 0.5.12
+===================
+
+Bad input error reporting improved for off-range Tfr and Rfr values in check().
+Warning given by T2A() when Tfr = 0 result in A = Inf.
+Added na.rm = TRUE when min() and max() are called on spectral data.
+
 photobiology 0.5.11
 ===================
 

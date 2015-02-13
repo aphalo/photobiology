@@ -91,21 +91,23 @@ check.private.spct <- function(x, byref=TRUE) {
 #' @export check.generic.spct
 check.generic.spct <- function(x, byref=TRUE) {
   if (exists("w.length", x, mode = "numeric", inherits=FALSE)) {
-    return(x)
+    NULL
   } else if (exists("wl", x, mode = "numeric", inherits=FALSE)) {
     setnames(x, "wl", "w.length")
-    return(x)
   } else if (exists("wavelength", x, mode = "numeric", inherits=FALSE)) {
     setnames(x, "wavelength", "w.length")
-    return(x)
   } else if (exists("Wavelength", x, mode = "numeric", inherits=FALSE)) {
     setnames(x, "Wavelength", "w.length")
-    return(x)
   } else {
     warning("No wavelength data found in generic.spct")
     x[ , w.length := NA]
-    return(x)
   }
+  wl.min <- min(x$w.length, na.rm = TRUE)
+  wl.max <- max(x$w.length, na.rm = TRUE)
+  if (wl.min < 100 || wl.max > 1e4) {
+    stop("w.length [", wl.min, "...", wl.max, "] is off-range; limits are 100 nm and 10000 nm")
+  }
+  return(x)
 }
 
 #' Specialization for filter.spct
@@ -118,8 +120,11 @@ check.generic.spct <- function(x, byref=TRUE) {
 check.filter.spct <- function(x, byref=TRUE) {
 
   range_check <- function(x) {
-    if (min(x$Tfr) < 0 || max(x$Tfr) > 1) {
-      warning("Off-range transmittance values [", signif(min(x$Tfr), 2), "...", signif(max(x$Tfr), 2), "] instead of  [0..1]")
+    Tfr.min <- min(x$Tfr, na.rm = TRUE)
+    Tfr.max <- max(x$Tfr, na.rm = TRUE)
+    if (Tfr.min < 0 ||  Tfr.max > 1) {
+      stop("Off-range transmittance values [", signif(Tfr.min, 2),
+              "...", signif(Tfr.max, 2), "] instead of  [0..1]")
     }
   }
 
@@ -147,8 +152,8 @@ check.filter.spct <- function(x, byref=TRUE) {
     return(x)
   } else if (exists("A", x, mode = "numeric", inherits=FALSE)) {
 #    x[ , Tfr := A2T(A)]
-    if (min(x$A) < 0) {
-      warning("Off-range min absorbance value: ", signif(min(x$A), 2), " instead of 0")
+    if (min(x$A, na.rm = TRUE) < 0) {
+      warning("Off-range min absorbance value: ", signif(min(x$A, na.rm = TRUE), 2), " instead of 0")
     }
     return(x)
   } else {
@@ -168,8 +173,11 @@ check.filter.spct <- function(x, byref=TRUE) {
 check.reflector.spct <- function(x, byref=TRUE) {
 
   range_check <- function(x) {
-    if (min(x$Rfr) < 0 || max(x$Rfr) > 1) {
-      warning("Off-range reflectance values [", signif(min(x$Rfr), 2), "...", signif(max(x$Rfr), 2), "] instead of  [0..1]")
+    Rfr.min <- min(x$Rfr, na.rm = TRUE)
+    Rfr.max <- max(x$Rfr, na.rm = TRUE)
+    if (Rfr.min < 0 ||  Rfr.max > 1) {
+      stop("Off-range reflectance values [", signif(Rfr.min, 2), "...",
+           signif(Rfr.max, 2), "] instead of  [0..1]")
     }
   }
 
