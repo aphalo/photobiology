@@ -55,8 +55,9 @@ setkey_spct <- function (x, ..., verbose = getOption("datatable.verbose"), physi
 #'
 #' @param x an R object
 #' @param byref logical indicating if new object will be created by reference or by copy of x
+#' @param strict.range logical indicating whether off-range values result in an error instead of a warning
 #' @export check
-check <- function(x, byref) UseMethod("check")
+check <- function(x, byref, strict.range) UseMethod("check")
 
 #' Default for generic function
 #'
@@ -64,8 +65,9 @@ check <- function(x, byref) UseMethod("check")
 #'
 #' @param x an R object
 #' @param byref logical indicating if new object will be created by reference or by copy of x
+#' @param strict.range logical indicating whether off-range values result in an error instead of a warning
 #' @export check.default
-check.default <- function(x, byref=FALSE) {
+check.default <- function(x, byref=FALSE, strict.range=TRUE) {
   return(x)
 }
 
@@ -75,7 +77,8 @@ check.default <- function(x, byref=FALSE) {
 #'
 #' @param x a private.spct object
 #' @param byref logical indicating if new object will be created by reference or by copy of x
-check.private.spct <- function(x, byref=TRUE) {
+#' @param strict.range logical indicating whether off-range values result in an error instead of a warning
+check.private.spct <- function(x, byref=TRUE, strict.range=TRUE) {
   if (exists("w.length", x, mode = "numeric", inherits=FALSE) &&
         exists("numbers", x, mode = "numeric", inherits=FALSE)) {
     return(x)
@@ -88,8 +91,9 @@ check.private.spct <- function(x, byref=TRUE) {
 #'
 #' @param x a generic.spct object
 #' @param byref logical indicating if new object will be created by reference or by copy of x
+#' @param strict.range logical indicating whether off-range values result in an error instead of a warning
 #' @export check.generic.spct
-check.generic.spct <- function(x, byref=TRUE) {
+check.generic.spct <- function(x, byref=TRUE, strict.range=TRUE) {
   if (exists("w.length", x, mode = "numeric", inherits=FALSE)) {
     NULL
   } else if (exists("wl", x, mode = "numeric", inherits=FALSE)) {
@@ -104,8 +108,8 @@ check.generic.spct <- function(x, byref=TRUE) {
   }
   wl.min <- min(x$w.length, na.rm = TRUE)
   wl.max <- max(x$w.length, na.rm = TRUE)
-  if (wl.min < 100 || wl.max > 1e4) {
-    stop("w.length [", wl.min, "...", wl.max, "] is off-range; limits are 100 nm and 10000 nm")
+  if (wl.min < 99.999 || wl.max > 6e3) {
+    stop("Off-range w.length values [", wl.min, "...", wl.max, "] instead of within 100 nm and 6000 nm")
   }
   return(x)
 }
@@ -116,15 +120,22 @@ check.generic.spct <- function(x, byref=TRUE) {
 #'
 #' @param x an R object
 #' @param byref logical indicating if new object will be created by reference or by copy of x
+#' @param strict.range logical indicating whether off-range values result in an error instead
+#' of a warning, NULL skips the test
 #' @export check.filter.spct
-check.filter.spct <- function(x, byref=TRUE) {
+check.filter.spct <- function(x, byref=TRUE, strict.range = TRUE) {
 
-  range_check <- function(x) {
+  range_check <- function(x, strict.range) {
     Tfr.min <- min(x$Tfr, na.rm = TRUE)
     Tfr.max <- max(x$Tfr, na.rm = TRUE)
-    if (Tfr.min < 0 ||  Tfr.max > 1) {
-      stop("Off-range transmittance values [", signif(Tfr.min, 2),
-              "...", signif(Tfr.max, 2), "] instead of  [0..1]")
+    if (!is.null(strict.range) & (Tfr.min < 0 || Tfr.max > 1)) {
+      message.text <- paste("Off-range transmittance values [", signif(Tfr.min, 2),
+                            "...", signif(Tfr.max, 2), "] instead of  [0..1]", sep="")
+      if (strict.range) {
+        stop(message.text)
+      } else {
+        warning(message.text)
+      }
     }
   }
 
@@ -143,12 +154,12 @@ check.filter.spct <- function(x, byref=TRUE) {
   }
   # look for percentages and change them into fractions of one
   if (exists("Tfr", x, mode = "numeric", inherits=FALSE)) {
-    range_check(x)
+    range_check(x, strict.range=strict.range)
     return(x)
   } else if (exists("Tpc", x, mode = "numeric", inherits=FALSE)) {
     x[ , Tfr := Tpc / 100]
     x[ , Tpc := NULL]
-    range_check(x)
+    range_check(x, strict.range=strict.range)
     return(x)
   } else if (exists("A", x, mode = "numeric", inherits=FALSE)) {
 #    x[ , Tfr := A2T(A)]
@@ -169,15 +180,22 @@ check.filter.spct <- function(x, byref=TRUE) {
 #'
 #' @param x a reflector.spct object
 #' @param byref logical indicating if new object will be created by reference or by copy of x
+#' @param strict.range logical indicating whether off-range values result in an error instead
+#' of a warning, NULL skips the tests
 #' @export check.reflector.spct
-check.reflector.spct <- function(x, byref=TRUE) {
+check.reflector.spct <- function(x, byref=TRUE, strict.range = TRUE) {
 
-  range_check <- function(x) {
+  range_check <- function(x, strict.range) {
     Rfr.min <- min(x$Rfr, na.rm = TRUE)
     Rfr.max <- max(x$Rfr, na.rm = TRUE)
-    if (Rfr.min < 0 ||  Rfr.max > 1) {
-      stop("Off-range reflectance values [", signif(Rfr.min, 2), "...",
-           signif(Rfr.max, 2), "] instead of  [0..1]")
+    if (!is.null(strict.range) & (Rfr.min < 0 ||  Rfr.max > 1)) {
+      message.text <- paste0("Off-range reflectance values [", signif(Rfr.min, 2), "...",
+                             signif(Rfr.max, 2), "] instead of  [0..1]", sep="")
+      if (strict.range) {
+        stop(message.text)
+      } else {
+        warning(message.text)
+      }
     }
   }
 
@@ -186,12 +204,12 @@ check.reflector.spct <- function(x, byref=TRUE) {
     warning("Found variable 'reflectance', I am assuming it is expressed as percent")
   }
   if (exists("Rfr", x, mode = "numeric", inherits=FALSE)) {
-    range_check(x)
+    range_check(x, strict.range=strict.range)
     return(x)
   } else if (exists("Rpc", x, mode = "numeric", inherits=FALSE)) {
     x[ , Rfr := Rpc / 100]
     x[ , Rpc := NULL]
-    range_check(x)
+    range_check(x, strict.range=strict.range)
     return(x)
   } else {
     warning("No reflectance data found in reflector.spct")
@@ -206,8 +224,9 @@ check.reflector.spct <- function(x, byref=TRUE) {
 #'
 #' @param x a response.spct object
 #' @param byref logical indicating if new object will be created by reference or by copy of x
+#' @param strict.range logical indicating whether off-range values result in an error instead of a warning
 #' @export check.response.spct
-check.response.spct <- function(x, byref=TRUE) {
+check.response.spct <- function(x, byref=TRUE, strict.range=TRUE) {
   if (exists("s.e.response", x, mode = "numeric", inherits=FALSE)) {
     return(x)
   } else if (exists("s.q.response", x, mode = "numeric", inherits=FALSE)) {
@@ -235,26 +254,58 @@ check.response.spct <- function(x, byref=TRUE) {
 #'
 #' @param x a source.spct object
 #' @param byref logical indicating if new object will be created by reference or by copy of x
+#' @param strict.range logical indicating whether off-range values result in an error instead
+#' of a warning, NULL skips the test
 #' @export check.source.spct
-check.source.spct <- function(x, byref=TRUE) {
+check.source.spct <- function(x, byref=TRUE, strict.range=FALSE) {
+
+  range_check <- function(x, strict.range) {
+    if (is.null(strict.range)) {
+      return()
+    }
+    if (exists("s.e.irrad", x, inherits = FALSE)) {
+      s.e.min <- min(x$s.e.irrad, na.rm = TRUE)
+      if (s.e.min < 0) {
+        message.text <- paste("Negative spectral energy irradiance values; minimun s.e.irrad =", signif(s.e.min, 2))
+        if (strict.range) {
+          stop(message.text)
+        } else {
+          warning(message.text)
+        }
+      }
+    }
+    if (exists("s.q.irrad", x, inherits = FALSE)) {
+      s.q.min <- min(x$s.q.irrad, na.rm = TRUE)
+      if (s.q.min < 0) {
+        message.text <- paste("Negative spectral photon irradiance values; minimun s.q.irrad =", signif(s.q.min, 2))
+        if (strict.range) {
+          stop(message.text)
+        } else {
+          warning(message.text)
+        }
+      }
+    }
+  }
+
   if (is.null(attr(x, "time.unit"))) {
     setTimeUnit(x, "second")
     warning("Missing time.unit replaced by 'second'")
   }
   if (exists("s.e.irrad", x, mode = "numeric", inherits=FALSE)) {
-    return(x)
+    NULL
   } else if (exists("s.q.irrad", x, mode = "numeric", inherits=FALSE)) {
-    return(x)
+    NULL
   } else if (exists("irradiance", x, mode = "numeric", inherits=FALSE)) {
     x[ , s.e.irradiance := irradiance]
     x[ , irradiance := NULL]
     warning("Found variable 'irradiance', I am assuming it is expressed on an energy basis")
-    return(x)
   } else {
     warning("No spectral irradiance data found in source.spct")
     x[ , s.e.irrad := NA]
     return(x)
   }
+  range_check(x, strict.range = strict.range)
+  return(x)
 }
 
 #' Specialization for chroma.spct
@@ -263,8 +314,9 @@ check.source.spct <- function(x, byref=TRUE) {
 #'
 #' @param x a source.spct object
 #' @param byref logical indicating if new object will be created by reference or by copy of x
+#' @param strict.range logical indicating whether off-range values result in an error instead of a warning
 #' @export check.source.spct
-check.chroma.spct <- function(x, byref=TRUE) {
+check.chroma.spct <- function(x, byref=TRUE, strict.range=TRUE) {
   names_x <- names(x)
   idxs <- grep("[XYZ]", names_x)
   names2lc <- names_x[idxs]
@@ -369,10 +421,11 @@ setPrivateSpct <- function(x) {
 #'
 #' @param x a data.frame or data.table
 #' @param Tfr.type a character string, either "total" or "internal"
+#' @param strict.range logical indicating whether off-range values result in an error instead of a warning
 #' @export
 #' @exportClass filter.spct
 #'
-setFilterSpct <- function(x, Tfr.type=c("total", "internal")) {
+setFilterSpct <- function(x, Tfr.type=c("total", "internal"), strict.range = TRUE) {
   name <- substitute(x)
   rmDerivedSpct(x)
   if (!is.data.table(x)) {
@@ -385,7 +438,7 @@ setFilterSpct <- function(x, Tfr.type=c("total", "internal")) {
     setattr(x, "class", c("filter.spct", class(x)))
   }
   setTfrType(x, Tfr.type)
-  x <- check(x)
+  x <- check(x, strict.range=strict.range)
   setkey_spct(x, w.length)
   if (is.name(name)) {
     name <- as.character(name)
@@ -400,10 +453,11 @@ setFilterSpct <- function(x, Tfr.type=c("total", "internal")) {
 #' If the object is a data.frame is is also made a data.table in the process.
 #'
 #' @param x a data.frame or data.table
+#' @param strict.range logical indicating whether off-range values result in an error instead of a warning
 #' @export
 #' @exportClass filter.spct
 #'
-setReflectorSpct <- function(x) {
+setReflectorSpct <- function(x, strict.range = TRUE) {
   name <- substitute(x)
   rmDerivedSpct(x)
   if (!is.data.table(x)) {
@@ -415,7 +469,7 @@ setReflectorSpct <- function(x) {
   if (!is.reflector.spct(x)) {
     setattr(x, "class", c("reflector.spct", class(x)))
   }
-  x <- check(x)
+  x <- check(x, strict.range=strict.range)
   setkey_spct(x, w.length)
   if (is.name(name)) {
     name <- as.character(name)
@@ -463,10 +517,11 @@ setResponseSpct <- function(x, time.unit="none") {
 #'
 #' @param x a data.frame or data.table
 #' @param time.unit character string "second" or "day"
+#' @param strict.range logical indicating whether off-range values result in an error instead of a warning
 #' @export
 #' @exportClass source.spct
 #'
-setSourceSpct <- function(x, time.unit="second") {
+setSourceSpct <- function(x, time.unit="second", strict.range = FALSE) {
   name <- substitute(x)
   rmDerivedSpct(x)
   if (!is.data.table(x)) {
@@ -479,7 +534,7 @@ setSourceSpct <- function(x, time.unit="second") {
     setattr(x, "class", c("source.spct", class(x)))
   }
   setTimeUnit(x, time.unit)
-  x <- check(x)
+  x <- check(x, strict.range = strict.range)
   setkey_spct(x, w.length)
   if (is.name(name)) {
     name <- as.character(name)
@@ -823,49 +878,52 @@ as.private.spct <- function(x) {
 #'
 #' @param x any R object
 #' @param time.unit character string, "second" or "day"
+#' @param strict.range logical indicating whether off-range values result in an error instead of a warning
 #'
 #' @return as.source.spct returns a "source.spct" if possible.
 #'
 #' @export
 #'
-as.source.spct <- function(x, time.unit=c("second", "day")) {
+as.source.spct <- function(x, time.unit=c("second", "day"), strict.range = FALSE) {
   y <- copy(x)
-  setSourceSpct(y, time.unit)
+  setSourceSpct(y, time.unit, strict.range = strict.range)
 }
 
 #' Return a copy of an R object with its class set to filter.spct
 #'
 #' Function that returns a converted copy of a spectrum object.
 #'
-#' @usage as.filter.spct(x, Tfr.type=c("total", "internal"))
+#' @usage as.filter.spct(x, Tfr.type=c("total", "internal"), strict.range = TRUE)
 #'
 #' @param x any R object
 #' @param Tfr.type a character string, either "total" or "internal"
+#' @param strict.range logical indicating whether off-range values result in an error instead of a warning
 #'
 #' @return as.filter.spct returns a "filter.spct" if possible.
 #'
 #' @export
 #'
-as.filter.spct <- function(x, Tfr.type=c("total", "internal")) {
+as.filter.spct <- function(x, Tfr.type=c("total", "internal"), strict.range = TRUE) {
   y <- copy(x)
-  setFilterSpct(y, Tfr.type)
+  setFilterSpct(y, Tfr.type, strict.range = strict.range)
 }
 
 #' Return a copy of an R object with its class set to reflector.spct
 #'
 #' Function that returns a converted copy of a spectrum object.
 #'
-#' @usage as.reflector.spct(x)
+#' @usage as.reflector.spct(x, strict.range = TRUE)
 #'
 #' @param x any R object
+#' @param strict.range logical indicating whether off-range values result in an error instead of a warning
 #'
 #' @return as.reflector.spct returns a "reflector.spct" if possible.
 #'
 #' @export
 #'
-as.reflector.spct <- function(x) {
+as.reflector.spct <- function(x, strict.range = TRUE) {
   y <- copy(x)
-  setReflectorSpct(y)
+  setReflectorSpct(y, strict.range = strict.range)
 }
 
 #' Return a copy of an R object with its class set to response.spct

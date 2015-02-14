@@ -18,8 +18,8 @@ test_that("constructor T percent", {
 
   my.spct <- filter.spct(w.length = 400:409, Tpc = 10)
 
-  expect_warning(filter.spct(w.length = 400:409, Tpc = -0.1))
-  expect_warning(filter.spct(w.length = 400:409, Tpc = 100.01))
+  expect_error(filter.spct(w.length = 400:409, Tpc = -0.1))
+  expect_error(filter.spct(w.length = 400:409, Tpc = 100.01))
   expect_equal(my.spct[["Tfr"]], rep(0.1, length.out = 10))
   expect_equal(my.spct[["w.length"]], 400:409)
   expect_named(my.spct, c("w.length", "Tfr"))

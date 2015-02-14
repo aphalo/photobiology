@@ -5,8 +5,8 @@ test_that("constructor fraction", {
 
   my.spct <- reflector.spct(w.length = 400:409, Rfr = 0.1)
 
-  expect_warning(reflector.spct(w.length = 400:409, Rfr = -0.1))
-  expect_warning(reflector.spct(w.length = 400:409, Rfr = 1.1))
+  expect_error(reflector.spct(w.length = 400:409, Rfr = -0.1))
+  expect_error(reflector.spct(w.length = 400:409, Rfr = 1.1))
   expect_equal(my.spct[["Rfr"]], rep(0.1, length.out = 10))
   expect_equal(my.spct[["w.length"]], 400:409)
   expect_named(my.spct, c("w.length", "Rfr"))
@@ -17,8 +17,8 @@ test_that("constructor percent", {
 
   my.spct <- reflector.spct(w.length = 400:409, Rpc = 10)
 
-  expect_warning(reflector.spct(w.length = 400:409, Rpc = -0.1))
-  expect_warning(reflector.spct(w.length = 400:409, Rpc = 100.01))
+  expect_error(reflector.spct(w.length = 400:409, Rpc = -0.1))
+  expect_error(reflector.spct(w.length = 400:409, Rpc = 100.01))
   expect_equal(my.spct[["Rfr"]], rep(0.1, length.out = 10))
   expect_equal(my.spct[["w.length"]], 400:409)
   expect_named(my.spct, c("w.length", "Rfr"))
@@ -35,8 +35,8 @@ test_that("oper", {
   expect_equal(my.e.spct * 2L, my.2e.spct)
   expect_equal(my.2e.spct / 2, my.e.spct)
   expect_equal(my.2e.spct / 2L, my.e.spct)
-  expect_equal(-my.e.spct * -2, my.2e.spct)
-  expect_equal(-my.e.spct * -2L, my.2e.spct)
+  expect_warning(-my.e.spct)
+  expect_equal(my.e.spct + 0.1, my.2e.spct)
   expect_equal(-my.2e.spct / -2, my.e.spct)
   expect_equal(-my.2e.spct / -2L, my.e.spct)
   expect_equal( 2 * my.e.spct, my.2e.spct)

@@ -227,14 +227,14 @@ class(1:10)
 Spectral objects created with earlier versions of this package are missing these attributes. For this reason `summary' and `plot' functions may not work as expected. The objects can be updated by adding the missing attribute using the functions  \texttt{setTimeUnit} and \texttt{setTfrType}.
 \end{framed}
 
-\subsubsection{Setting the class of a spectrum object}
+\subsubsection{Setting the class of a spectrum object}\label{sec:set:spct}
 
 \texttt{generic.spct} objects can be created from data tables and data frames simply by setting them as such. However, a column called \texttt{w.length} must be present and contain wavelength values expressed in nm. Functions with names of the form \texttt{is.\_\_\_\_.spct} are defined for all classes of spectra and can take as arguments any R object. In addition function \texttt{is.any.spct} can use to query if an R object inherits from any of the classes of spectra defined in this package. Finally function \texttt{class.spct} works similarly to R's \texttt{class} functions but returns a vector containing only the names of spectra classes. The `set' functions keep unrecognised variables, and fill missing required variables with \texttt{NA}, except for \texttt{w.length}, which if missing triggers an error.
 
 We create a data.table object \texttt{a.spct}, and query its class.
 
 <<>>=
-a.spct <- data.table(w.length = 300:305, y = rep(1,6))
+a.spct <- data.table(w.length = 300:305, y = 1)
 class(a.spct)
 class.spct(a.spct)
 is.any.spct(a.spct)
@@ -253,7 +253,7 @@ a.spct
 \texttt{source.spct} objects can be created from data tables, data frames, and \texttt{generic.spct} simply by setting them as such. However, columns called \texttt{w.length} (wavelength values expressed in nm) and \texttt{s.e.irrad} (\wattnm) or \texttt{s.q.irrad} (\molnm) must be present.
 
 <<>>=
-b.spct <- setSourceSpct(data.table(w.length = 300:305, s.e.irrad = rep(1,6)))
+b.spct <- setSourceSpct(data.table(w.length = 300:305, s.e.irrad = 1))
 attr(b.spct, "time.unit")
 class(b.spct)
 b.spct
@@ -273,7 +273,7 @@ b.d.spct
 \texttt{filter.spct} objects can be created from data tables, data frames, and \texttt{generic.spct} simply by setting them as such. However, columns called \texttt{w.length} (wavelength values expressed in nm) and \texttt{Tpc} (T\%), \texttt{Tfr} (T as fraction of 1) and\textbackslash or \texttt{A} (absorbance ($\log_{10}$ based)) must be present.
 
 <<>>=
-c.spct <- setFilterSpct(data.table(w.length = 300:305, Tfr = rep(1,6)))
+c.spct <- setFilterSpct(data.table(w.length = 300:305, Tfr = 1))
 attr(c.spct, "Tfr.type")
 class(c.spct)
 c.spct
@@ -282,7 +282,7 @@ c.spct
 If the spectral transmittance or absorbance is the internal component, then the parameter \texttt{Tfr.type} should be set to \texttt{"internal"} instead of the default of \texttt{"total"}. This information is used when printing and plotting source spectra.
 
 <<>>=
-c.i.spct <- setFilterSpct(data.table(w.length = 300:305, Tfr = rep(1,6)), "internal")
+c.i.spct <- setFilterSpct(data.table(w.length = 300:305, Tfr = 1), "internal")
 attr(c.i.spct, "Tfr.type")
 class(c.i.spct)
 c.i.spct
@@ -291,7 +291,7 @@ c.i.spct
 \texttt{reflector.spct} objects can be created from data tables, data frames, and \texttt{generic.spct} simply by setting them as such. However, columns called \texttt{w.length} (wavelength values expressed in nm) and \texttt{Rpc} (R\%), and\textbackslash or \texttt{Rfr} (R as fraction of 1) must be present.
 
 <<>>=
-d.spct <- setReflectorSpct(data.table(w.length = 300:305, Rfr = rep(1,6)))
+d.spct <- setReflectorSpct(data.table(w.length = 300:305, Rfr = 1))
 class(d.spct)
 d.spct
 @
@@ -299,8 +299,7 @@ d.spct
 \texttt{chroma.spct} objects can be created from data tables, data frames, and \texttt{generic.spct} simply by setting them as such. However, columns called \texttt{w.length} (wavelength values expressed in nm) and \texttt{x}, \texttt{y} and \texttt{z} must be present, giving the trichromic chromaticity constants.
 
 <<>>=
-e.spct <- setChromaSpct(data.table(w.length = 300:305, x = rep(1,6),
-                                   y = rep(1,6), z = rep(1,6)))
+e.spct <- setChromaSpct(data.table(w.length = 300:305, x = 1, y = 1, z = 1))
 class(e.spct)
 e.spct
 @
@@ -308,14 +307,14 @@ e.spct
 In all cases if the expected data is not available, then it is filled-in if possible with values.
 
 <<>>=
-f.spct <- setReflectorSpct(data.table(w.length = 300:305, Rpc = rep(100,6)))
+f.spct <- setReflectorSpct(data.table(w.length = 300:305, Rpc = 100))
 class(f.spct)
 f.spct
 @
 
 When required data is not available, and it cannot be calculated from other columns, the required column is added and filled with \texttt{NA}s.
 <<>>=
-g.spct <- setReflectorSpct(data.table(w.length = 300:305, z = rep(1,6)))
+g.spct <- setReflectorSpct(data.table(w.length = 300:305, z = 1))
 class(g.spct)
 g.spct
 @
@@ -323,10 +322,60 @@ g.spct
 If no variable named \texttt{w.length} is present, and a variable named \texttt{wl} is found, it is renamed to \texttt{w.length}.
 
 <<>>=
-h.spct <- setReflectorSpct(data.table(wl = 300:305, Rfr = rep(1,6)))
+h.spct <- setReflectorSpct(data.table(wl = 300:305, Rfr = 1))
 class(h.spct)
 h.spct
 @
+
+The range of the input is checked, and warnings or errors issued. The wavelength range test cannot be overriden as the most likely reason for it to be triggered is the expression of wavelengths in units other than the expected nanometres (nm).
+
+<<>>=
+h1.spct <- setReflectorSpct(data.table(wl = 5999:6001, Rfr = 1))
+@
+
+Transmittance and reflectance values are checked to be within their valid range, and spectral irradiance values to be zero or positive. By default failure of this test generates a fatal error.
+
+<<>>=
+h2.spct <- setReflectorSpct(data.table(wl = 300:305, Rfr = -1))
+@
+
+The constructor converts percents to fractions before applying the tests.
+
+<<>>=
+h3.spct <- setReflectorSpct(data.table(wl = 300:305, Rpc = -100))
+@
+
+Setting \texttt{strict.range = FALSE} issues a warning intead of an error, and returns an \texttt{.spct} object possibly containing the \emph{bad data}.
+
+<<>>=
+h4.spct <- setReflectorSpct(data.table(wl = 300:305, Rfr = -1),
+                            strict.range = FALSE)
+class(h.spct)
+h4.spct
+@
+
+Setting \texttt{strict.range = NULL} skips tests, and silently returns an \texttt{.spct} object possibly containing the \emph{bad data}.
+
+<<>>=
+h4.spct <- setReflectorSpct(data.table(wl = 300:305, Rfr = -1),
+                            strict.range = NULL)
+class(h.spct)
+h4.spct
+@
+
+The constructor converts percents to fractions before applying the tests.
+
+<<>>=
+h5.spct <- setReflectorSpct(data.table(wl = 300:305, Rpc = -100),
+                            strict.range = FALSE)
+class(h.spct)
+h.spct
+@
+
+\begin{framed}
+\noindent
+A very frequent source of off-range values is measurement noise. This noise should be preferably explicitly dealt with before any further calculations. Normal R and/or \texttt{data.table} syntax can be used resolve these problems by smoothing or replacement of the problem data. If the `bad' data is outside the range of interest it can be trimmed by means of function \texttt{trim\_spct} after creating a spectrum with setting \texttt{strict.range = FALSE} or setting \texttt{strict.range = NULL}
+\end{framed}
 
 We next use the example solar spectral irradiance data included in the package.
 
@@ -407,7 +456,7 @@ class.spct(l.spct)
 l.spct
 @
 
-Both \texttt{source.spct} and \texttt{filter.spct} functions accept an argument for setting the \texttt{time.unit} and \texttt{Tfr.type} attributes, respectively, with the same defaults as described above.
+Both \texttt{source.spct} and \texttt{filter.spct} functions accept an argument for setting the \texttt{time.unit} and \texttt{Tfr.type} attributes, respectively, with the same defaults as described above. Functions \texttt{source.spct}, \texttt{filter.spct} and \texttt{reflector.spct} have a \texttt{strict.range} formal argument, that alters checks as described in section \ref{sec:set:spct} above.
 
 \subsubsection{Row binding spectra}
 
