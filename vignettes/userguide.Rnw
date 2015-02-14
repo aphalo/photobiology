@@ -350,26 +350,26 @@ Setting \texttt{strict.range = FALSE} issues a warning intead of an error, and r
 <<>>=
 h4.spct <- setReflectorSpct(data.table(wl = 300:305, Rfr = -1),
                             strict.range = FALSE)
-class(h.spct)
+class(h4.spct)
 h4.spct
 @
 
 Setting \texttt{strict.range = NULL} skips tests, and silently returns an \texttt{.spct} object possibly containing the \emph{bad data}.
 
 <<>>=
-h4.spct <- setReflectorSpct(data.table(wl = 300:305, Rfr = -1),
+h5.spct <- setReflectorSpct(data.table(wl = 300:305, Rfr = -1),
                             strict.range = NULL)
-class(h.spct)
-h4.spct
+class(h5.spct)
+h5.spct
 @
 
 The constructor converts percents to fractions before applying the tests.
 
 <<>>=
-h5.spct <- setReflectorSpct(data.table(wl = 300:305, Rpc = -100),
+h6.spct <- setReflectorSpct(data.table(wl = 300:305, Rpc = -100),
                             strict.range = FALSE)
-class(h.spct)
-h.spct
+class(h6.spct)
+h6.spct
 @
 
 \begin{framed}
@@ -407,7 +407,7 @@ class(sun.spct)
 
 Or of a data frame.
 <<>>=
-k.df <- data.frame(wl = 400:4010, anything = 1)
+k.df <- data.frame(wl = 400:410, anything = 1)
 k.spct <- as.generic.spct(k.df)
 class(k.spct)
 class(k.df)
