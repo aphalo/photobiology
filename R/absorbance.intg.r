@@ -94,13 +94,13 @@ absorbance_spct <-
       total <- absorbance_spct(spct, w.band=NULL,
                                   quantity="total", use.hinges=FALSE)
       absorbance <- absorbance / total
-      if (quantity == "percent") {
+      if (quantity == "contribution.pc") {
         absorbance <- absorbance * 1e2
       }
     } else if (quantity %in% c("relative", "relative.pc")) {
       total <- sum(absorbance)
       absorbance <- absorbance / total
-      if (quantity == "percent") {
+      if (quantity == "relative.pc") {
         absorbance <- absorbance * 1e2
       }
     } else if (quantity == "average") {

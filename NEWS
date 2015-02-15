@@ -15,6 +15,9 @@ changed to more closely follow the development version 1.9.5 of package
 data.table. This will break user code that uses the previous
 syntax as added a few weeks ago to this package.
 
+Fixed bug in handling of 'quantity' arguments "contribution.pc" and "relative.pc"
+in function absorbance() which was affecting plot annotations.
+
 photobiology 0.5.11
 ===================
 
