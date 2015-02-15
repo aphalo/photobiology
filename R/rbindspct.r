@@ -3,7 +3,7 @@
 #' Same as \code{rbindlist} from package data.table but preserves class of spectral objects. Has different defaults
 #' for use names and fill.
 #'
-#' @usage rbindspct(l, use.names = TRUE, fill=TRUE, add.factor = FALSE, factor.name = "spct.idx")
+#' @usage rbindspct(l, use.names = TRUE, fill=TRUE, idfactor = NULL)
 #'
 #' @param l A list containing \code{source.spct}, \code{filter.spct}, \code{reflector.spct}, \code{response.spct},
 #' \code{chroma.spct}, \code{generic.spct}, \code{data.table}, \code{data.frame} or \code{list} objects.
@@ -16,9 +16,9 @@
 #' @param fill If \code{TRUE} fills missing columns with NAs. By default \code{TRUE}. When \code{TRUE},
 #' \code{use.names} has also to be \code{TRUE}, and all items of the input list have to have non-null column names.
 #'
-#' @param add.factor logical indicating if a factor should be added to distinguish data from each spectrum
-#'
-#' @param factor.name character string name to use for the added factor
+#' @param idfactor Generates an index column of \code{factor} type. Default (\code{FALSE}) is not to.
+#' If \code{idfactor=TRUE} then the column is auto named \code{spct.idx}. Alternatively the column name can be
+#' directly provided to \code{idfactor}.
 #'
 #' @details
 #' Each item of \code{l} can be a spectrum, \code{data.table}, \code{data.frame} or \code{list}, including \code{NULL} (skipped)
@@ -32,10 +32,6 @@
 #' object even when the list l contains only spct objects. In other words it drops derived classes, so its use
 #' should be avoided for spectral objects, and \code{rbindspct(l)} should be always used when working with
 #' spectral objects.
-#'
-#' If column \code{i} of the different input items do not all have the same type; e.g, a \code{generic.spct} may be
-#' bound with a \code{list} or a column is \code{factor} while others are \code{character} types, they are coerced
-#' to the highest type (SEXPTYPE).
 #'
 #' Note that any additional 'user added' attributes that might exist on individual items of the input list would not
 #' be preserved in the result. The attributes used by the \code{photobiology} package are preserved, and if they are
@@ -77,15 +73,14 @@
 #' # adds factor 'ID' with the names given to the spectra in the list
 #' # supplied as formal argument 'l' as levels
 #' spct <- rbindspct(list(one = sun.spct, two = sun.spct),
-#'                   add.factor = TRUE, factor.name = "ID")
+#'                   idfactor = "ID")
 #' head(spct)
 #' class(spct)
 #'
 #' @keywords data
 #'
 
-rbindspct <- function(l, use.names = TRUE, fill = TRUE,
-                      add.factor = FALSE, factor.name = "spct.idx") {
+rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = NULL) {
   # original rbindlist from data.table strips attributes and sets class to data.table
   if (is.null(l) || length(l) < 1) {
     return(l)
@@ -120,7 +115,14 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE,
   }
   l.class <- l.class[1]
   #  print(l.class)
+
+  add.factor <- !is.null(idfactor)
   if (add.factor) {
+    if (is.character(idfactor)) {
+      factor.name <- idfactor
+    } else {
+      factor.name <- "spct.idx"
+    }
     names.spct <- names(l)
     if (is.null(names.spct) || anyNA(names.spct)) {
       names.spct <- LETTERS[1:length(l)]

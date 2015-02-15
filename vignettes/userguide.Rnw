@@ -330,19 +330,19 @@ h.spct
 The range of the input is checked, and warnings or errors issued. The wavelength range test cannot be overriden as the most likely reason for it to be triggered is the expression of wavelengths in units other than the expected nanometres (nm).
 
 <<>>=
-h1.spct <- setReflectorSpct(data.table(wl = 5999:6001, Rfr = 1))
+(try(h1.spct <- setReflectorSpct(data.table(wl = 5999:6001, Rfr = 1))))
 @
 
 Transmittance and reflectance values are checked to be within their valid range, and spectral irradiance values to be zero or positive. By default failure of this test generates a fatal error.
 
 <<>>=
-h2.spct <- setReflectorSpct(data.table(wl = 300:305, Rfr = -1))
+(try(h2.spct <- setReflectorSpct(data.table(wl = 300:305, Rfr = -1))))
 @
 
 The constructor converts percents to fractions before applying the tests.
 
 <<>>=
-h3.spct <- setReflectorSpct(data.table(wl = 300:305, Rpc = -100))
+(try(h3.spct <- setReflectorSpct(data.table(wl = 300:305, Rpc = -100))))
 @
 
 Setting \texttt{strict.range = FALSE} issues a warning intead of an error, and returns an \texttt{.spct} object possibly containing the \emph{bad data}.
@@ -480,13 +480,19 @@ It is also possible to add an ID factor, to be able to still recognize the origi
 binding. If the supplied list is anonymous, then capital letters will be used for levels.
 
 <<>>=
-rbindspct(list(sun.spct, shade.spct), add.factor = TRUE)
+rbindspct(list(sun.spct, shade.spct), idfactor = TRUE)
 @
 
 In contrast, if a named list with no missing names, is supplied as argument, these names are used for the levels of the ID factor.
 
 <<>>=
-rbindspct(list(sun = sun.spct, shade = shade.spct), add.factor = TRUE)
+rbindspct(list(sun = sun.spct, shade = shade.spct), idfactor = TRUE)
+@
+
+If a character string is supplied as argument, then this will be used as the name of the factor.
+
+<<>>=
+rbindspct(list(sun = sun.spct, shade = shade.spct), idfactor = "ID")
 @
 
 

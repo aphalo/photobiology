@@ -874,7 +874,7 @@ as.private.spct <- function(x) {
 #'
 #' Function that returns a converted copy of a spectrum object.
 #'
-#' @usage as.source.spct(x, time.unit=c("second", "day"))
+#' @usage as.source.spct(x, time.unit=c("second", "day"), strict.range = FALSE)
 #'
 #' @param x any R object
 #' @param time.unit character string, "second" or "day"
