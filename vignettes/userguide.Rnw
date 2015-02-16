@@ -1,6 +1,6 @@
 %\VignetteEngine{knitr}
 %\VignetteIndexEntry{User guide}
-%\VignetteDepends{knitr, photobiology, photobiologyWavebands, photobiologySun, photobiologyFilters, photobiologySensors, ggplot2, ggtern}
+%\VignetteDepends{knitr, photobiology, photobiologyWavebands, photobiologySun, photobiologyFilters, photobiologySensors, photobiologygg, ggplot2, ggtern}
 %\VignetteKeyword{misc}
 
 \documentclass{article}
@@ -48,6 +48,7 @@ opts_chunk$set(fig.path='figure/pos-', fig.align='center', fig.show='hold',
 
 <<example-0-hiden, eval=TRUE, include=FALSE>>=
 library(photobiology)
+library(photobiologygg)
 library(photobiologyWavebands)
 library(photobiologySun)
 library(photobiologyFilters)
@@ -83,6 +84,7 @@ To load the package into the workspace we use \verb!library(photobiology)!.
 
 <<example-0-visible, eval=FALSE>>=
 library(photobiology)
+library(photobiologygg)
 library(photobiologyWavebands)
 library(photobiologySun)
 library(photobiologyFilters)
@@ -1240,6 +1242,161 @@ plot(weighted.s.e.irrad/max(weighted.s.e.irrad) ~ w.length, type = "l",
 lines(s.e.irrad/max(s.e.irrad) ~ w.length, col = "black", data = sun.spct)
 @
 
+\subsection{Auxiliary functions for manipulation of spectra}
+
+\begin{framed}
+\noindent
+To stack spectral objects the function \texttt{rbindspct} should be used instead of \texttt{rbind} or \texttt{rbindlist} from package \texttt{data.table}. The functions from package \texttt{data.table} strip the spectral class attributes from the output, returning always a \texttt{data.table} object.
+
+\texttt{subset} has the same problem, and in addition also removes comments, so it should be also avoided, and \texttt{trim\_spct} used instead.
+
+In earlier versions of the package we had included our own version of \texttt{rbindlist} to override the one defined in package \texttt{data.table}, but this was triggering warnings and causing other problems. Because of this it has been removed. (This is a, hopefully, temporary limitation.)
+\end{framed}
+
+Sometimes it is needed to add (parallel sum) between two spectra, even if the two spectra have been
+measured at different wavelengths or wavelength steps. This can happen for example when we would like
+to calculate the spectrum of a combination of two light sources from the individual spectra.
+
+A function \verb|interpolate_spectrum| is also included to facilitate interpolation of spectral values. It is used internally, but can also be used by itself when interpolation is needed.
+Under the hood it uses R's \verb|spline| function if there are fewer than 25 data points, and uses \verb|approx|
+otherwise. It allows easier control of values to be used for extrapolation.
+
+\subsection{Dealing with real `noisy' spectral data}
+
+The first thing to do is to think whether any part of the spectral measurements can be \textit{a priori} known to be equal to zero. For example for the solar spectrum at ground level it is safe to assume that the spectral irradiance is zero for all wavelengths shorter than 290~nm. If the data are noisy, it is best to discard these data before calculating any effective UV doses.
+
+Another possibility is do smoothing of the spectral data using one a series of possible algorithms. Smoothing can distort the spectrum becasue distinguishing between real peaks and valleys from noise is difficult.
+
+A third possibility is, when replicate measurements are available, to calculate "parallel" means, medians or other summary quantities, at each value of wavelength.
+
+We will discuss these three approaches in each of the sections below.
+
+\subsubsection{Trimming of regions known a priori to contain only noise}
+
+In the following example we use a longer wavelength (297~nm) just to show how the function works, because the example spectral data set starts at 293~nm.
+
+<<example-sun>>=
+head(sun.spct, 2L)
+@
+
+Sub-setting can be easily done as follows if the data are in a data.frame (of course, replacing \texttt{w.length} with the name used in your data frame for the wavelengths array):
+
+<<example-trim-noise>>=
+trimmed.sun.spct <- trim_spct(sun.spct, low.limit = 297)
+head(trimmed.sun.spct, 2L)
+@
+
+The code above deletes the data outside the limits. However, if we supply a different value than the default NULL for the parameter \texttt{fill}, the w.length values are kept, and the trimmed spectral irradiance values replaced by the value supplied.
+
+<<example-set-na>>=
+trimmed.sun.spct <- trim_spct(sun.spct, low.limit = 297, fill = NA)
+head(trimmed.sun.spct, 2L)
+@
+
+The code above sets the spectral irradiance values for waveelngths outside the limits to \texttt{NA}, but, for example when plotting, it is useful to replace the noise in the spectrum with zeros.
+
+<<example-set-zero>>=
+trimmed.sun.spct <- trim_spct(sun.spct, low.limit = 297, fill = 0)
+head(trimmed.sun.spct, 2L)
+@
+
+After `cleaning' the data we just use the trimmed ($\approx$ sub-setted) spectral data object in further calculations or plotting.
+
+If the data are in a data frame, instead of a spct object then \texttt{subset} or indexing can be used. If the data are available as vectors, different options: 1) create a data frame from your data, 2) use the function \texttt{trim\_tails()} from this package, or 3) just use R commands. Here we give examples of the use of \texttt{trim\_tails()}, using the same data as in earlier examples. First we `trim' (delete) all data for wavelengths shorter than 293~nm.
+
+\subsection{Smoothing of spectral data}
+
+Function \texttt{smooth\_spct} can be used to smoothen noise in spectra. Smoothing is effective in removing noise, but in case of spectra with a fine structure like the one for sunlight, the details of real peaks and valleys are also smoothed out. Smoothing should be used with great care as it can cause bias and distort the shape of spectra.
+
+We first generate a noisy solar spectrum by adding random noise to a noiseless solar spectrum. We will use this data to demonstrate smoothing.
+
+<<noisy-solar, fig.width=7, fig.height=4>>=
+noisy.sun.spct <- sun.spct +
+  rnorm(length(sun.spct$w.length), sd = 0.05) *
+  irrad(sun.spct, quantity = "average")
+plot(noisy.sun.spct)
+plot(sun.spct)
+@
+
+
+The default \texttt{"custom''} method is our own, and is suitable for small amounts of noise, as it only applies smoothing to low signal regions of the spectrum, and also forces to zero those regions which are `detected' to contain mostly noise. The strength parameter should be used to adjust the sensitivity to noise according to the signal-to-noise ratio in the spectral data. This algorithm is quite safe, and tends to preserve most of the fine structure of spectra.
+
+<<smooth-custom, fig.width=7, fig.height=4>>=
+plot(smooth_spct(noisy.sun.spct))
+@
+
+Methods \texttt{"lowess"} and \texttt{"supsmu"} are general purpose methods, which with their default values for the parameters tend to smooth spectra very agresively. They remove a significant portion of the spectral detail but could be useful when the data is very noisy or when the overall shape of a spectrum is of interest rather than the finer structure.
+
+<<smooth-lowess, fig.width=7, fig.height=4>>=
+plot(smooth_spct(noisy.sun.spct, method = "lowess"))
+@
+
+<<smooth-supsmu, fig.width=7, fig.height=4>>=
+plot(smooth_spct(noisy.sun.spct, method = "supsmu"))
+@
+
+\subsection{Parallel averaging and other parallel summaries}
+
+It is quite easy to calculate `parallel' summary quantities using \texttt{data.table} syntax and function \texttt{rbindspct}. However, one should be careful with the handling of \texttt{NA} values, and specially make sure that all spectra have values for spectral irradiance at the same wavelengths.
+
+We now generate four independent noisy replicates of the same solar spectrum, to demonstrate parallel summaries. Under normal use we would use \texttt{rbindspct} to bind the different true replicate measured spectra.
+
+<<four-noisy-solar, fig.width=7, fig.height=4>>=
+bound.spct <- rbindspct(list(sun.spct, sun.spct, sun.spct, sun.spct),
+                        idfactor = "ID")
+
+noisy.sun.spct <- bound.spct +
+  rnorm(length(bound.spct$w.length), sd = 0.05) *
+  irrad(sun.spct, quantity = "average")
+
+raw.data.fig <- ggplot(noisy.sun.spct, aes(w.length, s.e.irrad, colour = ID)) +
+  geom_point(alpha = 0.33)
+raw.data.fig
+@
+
+<<parallel-simple-1, fig.width=7, fig.height=4>>=
+
+mean.spct <- bound.spct[ , .(s.e.irrad = mean(s.e.irrad, na.rm = TRUE)),
+                        by = w.length]
+setSourceSpct(mean.spct)
+mean.spct
+
+mean.fig <- raw.data.fig + geom_line(data = mean.spct, colour = "black")
+mean.fig
+
+plot(mean.spct)
+@
+
+<<parallel-simple-2>>=
+median.spct <- bound.spct[ , .(s.e.irrad = median(s.e.irrad, na.rm = TRUE)),
+                          by = w.length]
+setSourceSpct(median.spct)
+median.spct
+@
+
+If the wavelength values in the different spectra are not the same, or if NAs are present, this slightly more complex code will make diagnosis of any problems much easier, and the resulting spectrum will still behave as a \texttt{source.spct} object when applying any other functions.
+
+<<parallel-multiple-1>>=
+meanx.spct <- bound.spct[ , .(s.e.irrad = mean(s.e.irrad, na.rm = TRUE),
+                              sd = sd(s.e.irrad, na.rm = TRUE),
+                              n = length(na.omit(s.e.irrad)),
+                              n.na = sum(is.na(s.e.irrad))
+                              ), by = w.length]
+setSourceSpct(meanx.spct)
+meanx.spct
+@
+
+<<parallel-multiple-2>>=
+medianx.spct <- bound.spct[ , .(s.e.irrad = median(s.e.irrad, na.rm = TRUE),
+                                mad = mad(s.e.irrad, na.rm = TRUE),
+                                n = length(na.omit(s.e.irrad)),
+                                n.na = sum(is.na(s.e.irrad))
+                                ), by = w.length]
+setSourceSpct(medianx.spct)
+medianx.spct
+@
+
+The two code chunks above can be easilly modified as needed, but they do not preserve all the attributes of the original spectra.
 
 \section{Astronomical calculations}
 
@@ -1382,96 +1539,6 @@ maxwell.tern <- ggtern(data = test.data,
 maxwell.tern
 @
 
-\section{Auxiliary functions}
-
-\begin{framed}
-\noindent
-To stack spectral objects the function \texttt{rbindspct} should be used instead of \texttt{rbind} or \texttt{rbindlist} from package \texttt{data.table}. The functions from package \texttt{data.table} strip the spectral class attributes from the output, returning always a \texttt{data.table} object.
-
-\texttt{subset} has the same problem, and in addition also removes comments, so it should be also avoided, and \texttt{trim\_spct} used instead.
-
-In earlier versions of the package we had included our own version of \texttt{rbindlist} to override the one defined in package \texttt{data.table}, but this was triggering warnings and causing other problems. Because of this it has been removed. (This is a, hopefully, temporary limitation.)
-\end{framed}
-
-Sometimes it is needed to add (parallel sum) between two spectra, even if the two spectra have been
-measured at different wavelengths or wavelength steps. This can happen for example when we would like
-to calculate the spectrum of a combination of two light sources from the individual spectra.
-
-A function \verb|interpolate_spectrum| is also included to facilitate interpolation of spectral values. It is used internally, but can also be used by itself when interpolation is needed.
-Under the hood it uses R's \verb|spline| function if there are fewer than 25 data points, and uses \verb|approx|
-otherwise. It allows easier control of values to be used for extrapolation.
-
-\section{Dealing with real `noisy' spectral data}
-
-The first thing to do is to think whether any part of the spectral measurements can be \textit{a priori} known to be equal to zero. For example for the solar spectrum at ground level it is safe to assume that the spectral irradiance is zero for all wavelengths shorter than 290~nm. If the data are noisy, it is best to discard these data before calculating any effective UV doses.
-
-In the following example we use a longer wavelength (297~nm) just to show how the function works, because the example spectral data set starts at 293~nm.
-
-<<example-sun>>=
-head(sun.spct, 2L)
-@
-
-Sub-setting can be easily done as follows if the data are in a data.frame (of course, replacing \texttt{w.length} with the name used in your data frame for the wavelengths array):
-
-<<example-subset>>=
-trimmed.sun.spct <- trim_spct(sun.spct, low.limit = 297)
-head(trimmed.sun.spct, 2L)
-@
-
-And then just use the trimmed ($\approx$ sub-setted) data in your calculations.
-
-If the data are in a data frame, instead of a spct object then \texttt{subset} or indexing can be used. If the data are available as vectors, different options: 1) create a data frame from your data, 2) use the function \texttt{trim\_tails()} from this package, or 3) just use R commands. Here we give examples of the use of \texttt{trim\_tails()}, using the same data as in earlier examples. First we `trim' (delete) all data for wavelengths shorter than 293~nm.
-
-\subsection{Trimming spectra stored as data frames or individual vectors}
-
-See earlier section \ref{sec:trim:spct} on page \pageref{sec:trim:spct} for details on trimming spectrum objects, which is an easier way of achieving the same results as here.
-
-<<example-trim-low>>=
-trimmed.sun.data <-
-  with(sun.data,
-       trim_tails(w.length, s.e.irrad, low.limit = 297)
-  )
-print(trimmed.sun.data)
-class(trimmed.sun.data)
-@
-
-This function returns a new data.frame and uses always the same variable names for the columns.
-
-<<example-trim-both>>=
-trimmed.both.sun.data <-
-  with(sun.data,
-       trim_tails(w.length, s.e.irrad, low.limit = 297, high.limit = 550)
-  )
-print(trimmed.both.sun.data)
-@
-
-If we supply a different value than the default NULL for the parameter \texttt{fill}, the w.length values are kept, and the trimmed spectral irradiance values replaced by the value supplied.
-
-<<example-trim-na>>=
-trimmed.na.sun.data <-
-  with(sun.data,
-       trim_tails(w.length, s.e.irrad, low.limit = 297, fill = NA)
-  )
-print(trimmed.na.sun.data)
-@
-
-<<example-trim-both-na>>=
-trimmed.both.na.sun.data <-
-  with(sun.data,
-       trim_tails(w.length, s.e.irrad, low.limit = 297, high.limit = 400, fill = NA)
-  )
-print(trimmed.both.na.sun.data)
-@
-
-In addition to \texttt{NA} we can supply an arbitrary numeric value as fill.
-
-<<example-trim-zero>>=
-trimmed.zero.sun.data <-
-  with(sun.data,
-       trim_tails(w.length, s.e.irrad, low.limit = 297, fill = 0.0)
-  )
-print(trimmed.zero.sun.data)
-@
 
 \section{Optimizing performance}
 

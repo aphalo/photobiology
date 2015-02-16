@@ -46,7 +46,12 @@ oper.e.generic.spct <- function(e1, e2, oper) {
       }
     }
     if (is.numeric(e2)) {
-      return(source.spct(w.length=e1$w.length, s.e.irrad=oper(e1$s.e.irrad, e2), strict.range = FALSE))
+      out.spct <- copy(e1)
+      if (exists("s.q.irrad", out.spct, inherits = FALSE)) {
+        out.spct[ , s.q.irrad := NULL]
+      }
+      out.spct[ , s.e.irrad := oper(s.e.irrad, e2)]
+      return(out.spct)
     } else if (class2 == "source.spct") {
       q2e(e2, action = "add", byref = TRUE)
       z <- oper_spectra(e1$w.length, e2$w.length, e1$s.e.irrad, e2$s.e.irrad, bin.oper=oper, trim="intersection")
@@ -238,7 +243,12 @@ oper.e.generic.spct <- function(e1, e2, oper) {
     }
   } else if (is.numeric(e1)) {
     if (class2 == "source.spct") {
-      return(source.spct(w.length=e2$w.length, s.e.irrad = oper(e1, e2$s.e.irrad), strict.range = FALSE))
+      out.spct <- copy(e2)
+      if (exists("s.q.irrad", out.spct, inherits = FALSE)) {
+        out.spct[ , s.q.irrad := NULL]
+      }
+      out.spct[ , s.e.irrad := oper(e1, s.e.irrad)]
+      return(out.spct)
     } else if (class2 == "filter.spct") {
       filter.quantity <- getOption("photobiology.filter.qty", default="transmittance")
       if (filter.quantity=="transmittance") {
@@ -321,7 +331,12 @@ oper.q.generic.spct <- function(e1, e2, oper) {
       }
     }
     if (is.numeric(e2)) {
-      return(source.spct(w.length=e1$w.length, s.q.irrad=oper(e1$s.q.irrad, e2), strict.range = FALSE))
+      out.spct <- copy(e1)
+      if (exists("s.e.irrad", out.spct, inherits = FALSE)) {
+        out.spct[ , s.e.irrad := NULL]
+      }
+      out.spct[ , s.q.irrad := oper(s.q.irrad, e2)]
+      return(out.spct)
     } else if (class2 == "source.spct") {
       e2q(e2, action = "add", byref = TRUE)
       if (attr(e1, "time.unit") != attr(e2, "time.unit")) {
@@ -486,7 +501,12 @@ oper.q.generic.spct <- function(e1, e2, oper) {
     }
   } else if (is.numeric(e1)) {
     if (class2 == "source.spct") {
-      return(source.spct(w.length=e2$w.length, s.q.irrad = oper(e1, e2$s.q.irrad), strict.range = FALSE))
+      out.spct <- copy(e2)
+      if (exists("s.e.irrad", out.spct, inherits = FALSE)) {
+        out.spct[ , s.e.irrad := NULL]
+      }
+      out.spct[ , s.q.irrad := oper(e1, s.q.irrad)]
+      return(out.spct)
     } else if (class2 == "filter.spct") {
       filter.quantity <- getOption("photobiology.filter.qty", default="transmittance")
       if (filter.quantity=="transmittance") {
