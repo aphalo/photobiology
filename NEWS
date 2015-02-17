@@ -6,7 +6,16 @@ Add test cases for chroma.spct
 photobiology 0.5.13
 ===================
 
-New function ssmooth() for spectra added. Based on the smoothing code in package MayaCalc. Only implemented for source.spct objects. Its interface may change soon. Now package caTools is neded.
+New function smooth_spct() for spectra added. Based on the smoothing code in
+package MayaCalc and optionally behaving as a wrapper to other smoothers
+available in R. Implemented for source.spct, filter.spct, reflector.spct
+and response.spct objects. Its interface may change. Now package caTools is
+neded.
+
+Operations between .spct objects and numeric vectors, possibly of length one,
+now preserve other variables (e.g.\ ID factors) contained in the spectral objects.
+
+Fixed bug in reflectance() function.
 
 photobiology 0.5.12
 ===================

@@ -119,7 +119,12 @@ oper.e.generic.spct <- function(e1, e2, oper) {
     if (filter.quantity=="transmittance") {
       e1 <- A2T(e1)
       if (is.numeric(e2)) {
-        return(filter.spct(w.length=e1$w.length, Tfr=oper(e1$Tfr, e2), strict.range = FALSE))
+        out.spct <- copy(e1)
+        if (exists("A", out.spct, inherits = FALSE)) {
+          out.spct[ , A := NULL]
+        }
+        out.spct[ , Tfr := oper(Tfr, e2)]
+        return(out.spct)
       }
       else if (class2 == "source.spct") {
         q2e(e2, action = "add", byref = TRUE)
@@ -147,9 +152,13 @@ oper.e.generic.spct <- function(e1, e2, oper) {
     } else if (filter.quantity=="absorbance") {
       T2A(e1, action = "add", byref = TRUE)
       if (is.numeric(e2)) {
-        return(filter.spct(w.length=e1$w.length, A=oper(e1$A, e2), strict.range = FALSE))
-      }
-      else if (class2 == "source.spct") {
+        out.spct <- copy(e1)
+        if (exists("Tfr", out.spct, inherits = FALSE)) {
+          out.spct[ , Tfr := NULL]
+        }
+        out.spct[ , A := oper(A, e2)]
+        return(out.spct)
+      } else if (class2 == "source.spct") {
         q2e(e2, action = "add", byref = TRUE)
         if (!identical(oper, `*`) && !identical(oper, `/`)) {
           warning("Only '*' and '/' are allowed between filter.spct and source.spct objects")
@@ -175,7 +184,9 @@ oper.e.generic.spct <- function(e1, e2, oper) {
     }
   } else if (class1 == "reflector.spct") {
     if (is.numeric(e2)) {
-      return(reflector.spct(w.length=e1$w.length, Rfr=oper(e1$Rfr, e2), strict.range = FALSE))
+      out.spct <- copy(e1)
+      out.spct[ , Rfr := oper(Rfr, e2)]
+      return(out.spct)
     } else if (class2 == "reflector.spct") {
       z <- oper_spectra(e1$w.length, e2$w.length, e1$Rfr, e2$Rfr, bin.oper=oper, trim="intersection")
       setnames(z, 2, "Rfr")
@@ -197,7 +208,12 @@ oper.e.generic.spct <- function(e1, e2, oper) {
   } else if (class1 == "response.spct") {
     q2e(e1, action = "add", byref = TRUE)
     if (is.numeric(e2)) {
-      return(response.spct(w.length=e1$w.length, s.e.response=oper(e1$s.e.response, e2)))
+      out.spct <- copy(e1)
+      if (exists("s.q.response", out.spct, inherits = FALSE)) {
+        out.spct[ , s.q.response := NULL]
+      }
+      out.spct[ , s.e.response := oper(s.e.response, e2)]
+      return(out.spct)
     } else if (class2 == "response.spct") {
       e2 <- q2e(e2, action = "add", byref = TRUE)
       z <- oper_spectra(e1$w.length, e2$w.length, e1$s.e.response, e2$s.e.response, bin.oper=oper, trim="intersection")
@@ -395,9 +411,13 @@ oper.q.generic.spct <- function(e1, e2, oper) {
     if (filter.quantity=="transmittance") {
       e1 <- A2T(e1)
       if (is.numeric(e2)) {
-        return(filter.spct(w.length=e1$w.length, Tfr=oper(e1$Tfr, e2), strict.range = FALSE))
-      }
-      else if (class2 == "source.spct") {
+        out.spct <- copy(e1)
+        if (exists("A", out.spct, inherits = FALSE)) {
+          out.spct[ , A := NULL]
+        }
+        out.spct[ , Tfr := oper(Tfr, e2)]
+        return(out.spct)
+      } else if (class2 == "source.spct") {
         e2q(e2, action = "add", byref = TRUE)
         if (!identical(oper, `*`)) return(NA)
         z <- oper_spectra(e1$w.length, e2$w.length, e1$Tfr, e2$s.q.irrad, bin.oper=oper, trim="intersection")
@@ -417,9 +437,12 @@ oper.q.generic.spct <- function(e1, e2, oper) {
     } else if (filter.quantity=="absorbance") {
       T2A(e1, action = "add", byref = TRUE)
       if (is.numeric(e2)) {
-        return(filter.spct(w.length=e1$w.length, A=oper(e1$A, e2), strict.range = FALSE))
-      }
-      else if (class2 == "source.spct") {
+        if (exists("Tfr", out.spct, inherits = FALSE)) {
+          out.spct[ , Tfr := NULL]
+        }
+        out.spct[ , A := oper(A, e2)]
+        return(out.spct)
+      } else if (class2 == "source.spct") {
         e2q(e2, action = "add", byref = TRUE)
         if (!identical(oper, `*`)) return(NA)
         z <- oper_spectra(e1$w.length, e2$w.length, e1$A, e2$s.q.irrad, bin.oper=oper, trim="intersection")
@@ -440,7 +463,9 @@ oper.q.generic.spct <- function(e1, e2, oper) {
     }
   } else if (class1 == "reflector.spct") {
     if (is.numeric(e2)) {
-      return(reflector.spct(w.length=e1$w.length, Rfr=oper(e1$Rfr, e2), strict.range = FALSE))
+      out.spct <- copy(e1)
+      out.spct[ , Rfr := oper(Rfr, e2)]
+      return(out.spct)
     } else if (class2 == "reflector.spct") {
       z <- oper_spectra(e1$w.length, e2$w.length, e1$Rfr, e2$Rfr, bin.oper=oper, trim="intersection")
       setnames(z, 2, "Rfr")
@@ -459,7 +484,12 @@ oper.q.generic.spct <- function(e1, e2, oper) {
   } else if (class1 == "response.spct") {
     e2q(e1, action = "add", byref = TRUE)
     if (is.numeric(e2)) {
-      return(response.spct(w.length=e1$w.length, s.q.response=oper(e1$s.q.response, e2)))
+      out.spct <- copy(e1)
+      if (exists("s.e.response", out.spct, inherits = FALSE)) {
+        out.spct[ , s.e.response := NULL]
+      }
+      out.spct[ , s.q.response := oper(s.q.response, e2)]
+      return(out.spct)
     }  else if (class2 == "response.spct") {
       z <- oper_spectra(e1$w.length, e2$w.length, e1$s.q.response, e2$s.q.response, bin.oper=oper, trim="intersection")
       setnames(z, 2, "s.q.response")

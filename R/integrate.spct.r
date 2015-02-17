@@ -15,7 +15,7 @@
 ##' integrate_spct(sun.spct)
 integrate_spct <- function(spct) {
   names.spct <- names(spct)
-  names.data <-names.spct[names.spct != "w.length"]
+  names.data <- names.spct[names.spct != "w.length"]
   comment.spct <- comment(spct)
   integrals <- NULL
   for (data.col in names.data) {

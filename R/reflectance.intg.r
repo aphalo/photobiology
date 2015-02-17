@@ -87,7 +87,7 @@ reflectance_spct <-
         }
       }
       # we calculate the average reflectance.
-      reflectance[i] <- integrate_spct(trim_spct(spct.cols, wb, use.hinges=FALSE))
+      reflectance[i] <- integrate_spct(trim_spct(spct, wb, use.hinges=FALSE))
     }
 
    if (quantity %in% c("contribution", "contribution.pc")) {

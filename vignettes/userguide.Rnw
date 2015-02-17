@@ -1304,7 +1304,7 @@ After `cleaning' the data we just use the trimmed ($\approx$ sub-setted) spectra
 
 If the data are in a data frame, instead of a spct object then \texttt{subset} or indexing can be used. If the data are available as vectors, different options: 1) create a data frame from your data, 2) use the function \texttt{trim\_tails()} from this package, or 3) just use R commands. Here we give examples of the use of \texttt{trim\_tails()}, using the same data as in earlier examples. First we `trim' (delete) all data for wavelengths shorter than 293~nm.
 
-\subsection{Smoothing of spectral data}
+\subsubsection{Smoothing of spectral data}
 
 Function \texttt{smooth\_spct} can be used to smoothen noise in spectra. Smoothing is effective in removing noise, but in case of spectra with a fine structure like the one for sunlight, the details of real peaks and valleys are also smoothed out. Smoothing should be used with great care as it can cause bias and distort the shape of spectra.
 
@@ -1312,34 +1312,47 @@ We first generate a noisy solar spectrum by adding random noise to a noiseless s
 
 <<noisy-solar, fig.width=7, fig.height=4>>=
 noisy.sun.spct <- sun.spct +
-  rnorm(length(sun.spct$w.length), sd = 0.05) *
+  rnorm(length(sun.spct$w.length), sd = 0.04) *
   irrad(sun.spct, quantity = "average")
-plot(noisy.sun.spct)
-plot(sun.spct)
+plot(sun.spct) + labs(title = "Noiseless solar spectrum")
+plot(noisy.sun.spct) + labs(title = "Noisy solar spectrum")
 @
 
 
 The default \texttt{"custom''} method is our own, and is suitable for small amounts of noise, as it only applies smoothing to low signal regions of the spectrum, and also forces to zero those regions which are `detected' to contain mostly noise. The strength parameter should be used to adjust the sensitivity to noise according to the signal-to-noise ratio in the spectral data. This algorithm is quite safe, and tends to preserve most of the fine structure of spectra.
 
 <<smooth-custom, fig.width=7, fig.height=4>>=
-plot(smooth_spct(noisy.sun.spct))
+plot(smooth_spct(noisy.sun.spct))  +
+  labs(title = "Noisy solar spectrum: custom smoothing")
 @
 
 Methods \texttt{"lowess"} and \texttt{"supsmu"} are general purpose methods, which with their default values for the parameters tend to smooth spectra very agresively. They remove a significant portion of the spectral detail but could be useful when the data is very noisy or when the overall shape of a spectrum is of interest rather than the finer structure.
 
 <<smooth-lowess, fig.width=7, fig.height=4>>=
-plot(smooth_spct(noisy.sun.spct, method = "lowess"))
+plot(smooth_spct(noisy.sun.spct, method = "lowess"))  +
+  labs(title = "Noisy solar spectrum: lowess smoothing")
 @
 
 <<smooth-supsmu, fig.width=7, fig.height=4>>=
-plot(smooth_spct(noisy.sun.spct, method = "supsmu"))
+plot(smooth_spct(noisy.sun.spct, method = "supsmu"))  +
+  labs(title = "Noisy solar spectrum: supsmu smoothing")
 @
 
-\subsection{Parallel averaging and other parallel summaries}
+Stronger or weaker smoothing is also possible.
 
-It is quite easy to calculate `parallel' summary quantities using \texttt{data.table} syntax and function \texttt{rbindspct}. However, one should be careful with the handling of \texttt{NA} values, and specially make sure that all spectra have values for spectral irradiance at the same wavelengths.
+<<smooth-custom-10, fig.width=7, fig.height=4>>=
+plot(smooth_spct(noisy.sun.spct, method = "supsmu", strength = 10))  +
+  labs(title = "Noisy solar spectrum: supsmu smoothing, strength = 10")
+@
 
-We now generate four independent noisy replicates of the same solar spectrum, to demonstrate parallel summaries. Under normal use we would use \texttt{rbindspct} to bind the different true replicate measured spectra.
+
+Function \texttt{smooth\_spct} is generic with specializtions for \texttt{source.spct}, \texttt{filter.spct}, \texttt{reflector.spct}, and \texttt{response.spct}.
+
+\subsubsection{Parallel averaging and other parallel summaries}
+
+It is quite easy to calculate `parallel' summary quantities using \texttt{data.table} syntax and function \texttt{rbindspct}. However, one should be careful with the handling of \texttt{NA} values, and specially make sure that all spectra have values for spectral irradiance at the same wavelengths. Similar code to that given in this section, using \texttt{source.spct} objects, can be used for \texttt{filter.spct}, \texttt{reflector.spct}, and \texttt{response.spct} objects.
+
+For the \texttt{source.spct} example we generate four independent noisy replicates of the same solar spectrum, to demonstrate parallel summaries. Under normal use we would use \texttt{rbindspct} to bind the different true replicate measured spectra.
 
 <<four-noisy-solar, fig.width=7, fig.height=4>>=
 bound.spct <- rbindspct(list(sun.spct, sun.spct, sun.spct, sun.spct),
