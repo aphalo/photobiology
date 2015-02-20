@@ -15,7 +15,7 @@
 #'
 #' @return a single numeric value with no change in scale factor: [W m-2 nm-1] -> [mol s-1 m-2]
 #' @keywords manip misc
-#' @export transmittance_spct transmittance.filter.spct
+#' @export transmittance_spct
 #' @examples
 #' library(photobiologyFilters)
 #' transmittance(polyester.new.spct, new_waveband(400,700), pc.out=TRUE)
@@ -26,7 +26,12 @@
 
 transmittance_spct <-
   function(spct, w.band=NULL, pc.out=FALSE, quantity="average", wb.trim=FALSE, use.hinges=NULL){
-    spct <- A2T(spct, action="replace", byref=FALSE)
+    if (is.filter.spct(spct)) {
+      spct <- A2T(spct, action="replace", byref=FALSE)
+    } else {
+      spct <- as.filter.spct(spct)
+      spct[ , Rfr := NULL]
+    }
     # if the waveband is undefined then use all data
     if (is.null(w.band)){
       w.band <- waveband(spct)
@@ -175,3 +180,17 @@ transmittance.default <- function(spct, w.band, pc.out, quantity, wb.trim, use.h
 #' @export transmittance.filter.spct
 #'
 transmittance.filter.spct <- transmittance_spct
+
+#' Specialization for object.spct
+#'
+#' Calculate average transmittance.
+#'
+#' @param spct an object of class "object.spct"
+#' @param w.band list of waveband definitions created with new_waveband()
+#' @param pc.out a logical indicating whether result should be a percentage or a fraction of one
+#' @param quantity character string
+#' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries are trimmed, if FALSE, they are discarded
+#' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
+#' @export transmittance.object.spct
+#'
+transmittance.object.spct <- transmittance_spct

@@ -153,6 +153,7 @@ reflector.spct <- function(w.length, Rfr=NULL, Rpc=NULL, comment=NULL, strict.ra
 #' @param w.length numeric vector with wavelengths in nanometres
 #' @param Rfr numeric vector with spectral Reflectance as fraction of one
 #' @param Tfr numeric vector with spectral transmittance as fraction of one
+#' @param Tfr.type a character string, either "total" or "internal"
 #' @param comment character string to be added as a comment attribute to the created object
 #' @param strict.range logical indicating whether off-range values result in an error instead of a warning
 #'
@@ -163,7 +164,7 @@ reflector.spct <- function(w.length, Rfr=NULL, Rpc=NULL, comment=NULL, strict.ra
 #'
 #' @export
 #'
-reflector.spct <- function(w.length, Rfr=NULL, Tfr=NULL, Tfr.type=c("total", "internal"),
+object.spct <- function(w.length, Rfr=NULL, Tfr=NULL, Tfr.type=c("total", "internal"),
                            comment=NULL, strict.range=TRUE) {
   out.spct <- data.table(w.length, Rfr, Tfr)
   if (!is.null(comment)) {
@@ -173,46 +174,52 @@ reflector.spct <- function(w.length, Rfr=NULL, Tfr=NULL, Tfr.type=c("total", "in
   return(out.spct)
 }
 
-# #' Merge two generic.spct objects
-# #'
-# #' Relatively quick merge of two spct objects based on w.length.
-# #'
-# #' @param x, y generic.spct (or derived) objects to be merged
-# #' @param ... other arguments passed to \code{merge.data.table}
-# #'
-# #' @note if the class of x and y is the same, it is preserved, but
-# #' if it differs \code{generic.spct} is used for the returned value,
-# #' except when x and y, are one each of classes reflector.spct and
-# #' filter.spct in which case an object.spct is returned.
-# #' In the current implementation only wavelengths values shared
-# #' by x and y are preserved.
-# #'
-# #' @export
-# #'
-# merge.generic.spct <- function(x, y, ...) {
-#   if (class.spct(x) == class.spct(y)) {
-#     z <- data.table:::merge.data.table(x, y, by = "w.length", ...)
-#     setattr(z, "class", class(x))
-#   } else if (class.spct(x) == "filter.spct" && class.spct(y) == "reflector.spct") {
-#     xx <- A2T(x, action = "replace", byref = FALSE)
-#     z <- data.table:::merge.data.table(xx, y, by = "w.length", ...)
-#     setObjectSpct(z, Tfr.type = attr(xx, "Tfr.type", exact = TRUE))
-#   } else if (class.spct(x) ==  "reflector.spct" && class.spct(y) == "filter.spct") {
-#     yy <- A2T(y, action = "replace", byref = FALSE)
-#     z <- data.table:::merge.data.table(xx, yy, by = "w.length", ...)
-#     setObjectSpct(z, Tfr.type = attr(yy, "Tfr.type", exact = TRUE))
-#   } else {
-#     z <- data.table:::merge.data.table(x, y, by = "w.length", ...)
-#     setGenericSpct(z)
-#   }
-#   new.comment <- paste("Merged spectrum\ncomment(x):\n",
-#                        comment(x),
-#                        "\nclass: ",
-#                        class.spct(x),
-#                        "\n\ncomment(y):\n",
-#                        comment(y),
-#                        "\nclass: ",
-#                        class.spct(y))
-#   setattr(z, "comment", new.comment)
-# }
+#' Merge two generic.spct objects
+#'
+#' Relatively quick merge of two spct objects based on w.length.
+#'
+#' @param x generic.spct (or derived) objects to be merged
+#' @param y generic.spct (or derived) objects to be merged
+#' @param by a vector of shared column names in \code{x} and \code{y} to merge on;
+#' \code{by} defaults to \code{w.length}.
+#' @param ... other arguments passed to \code{merge.data.table}
+#'
+#' @note if the class of x and y is the same, it is preserved, but
+#' if it differs \code{generic.spct} is used for the returned value,
+#' except when x and y, are one each of classes reflector.spct and
+#' filter.spct in which case an object.spct is returned.
+#' In the current implementation only wavelengths values shared
+#' by x and y are preserved.
+#'
+#' @seealso \code{\link[data.table]{merge}}
+#'
+#' @export
+#'
+merge.generic.spct <- function(x, y, by = "w.length", ...) {
+  if (identical(class.spct(x), class.spct(y))) {
+    z <- data.table:::merge.data.table(x, y, by = by, ...)
+    setattr(z, "class", class(x))
+  } else if (is.filter.spct(x) && is.reflector.spct(y)) {
+    xx <- A2T(x, action = "replace", byref = FALSE)
+    z <- data.table:::merge.data.table(xx, y, by = "w.length", ...)
+    setObjectSpct(z, Tfr.type = attr(xx, "Tfr.type", exact = TRUE))
+  } else if (is.reflector.spct(x) && is.filter.spct(y)) {
+    yy <- A2T(y, action = "replace", byref = FALSE)
+    z <- data.table:::merge.data.table(xx, yy, by = "w.length", ...)
+    setObjectSpct(z, Tfr.type = attr(yy, "Tfr.type", exact = TRUE))
+  } else {
+    z <- data.table:::merge.data.table(x, y, by = "w.length", ...)
+    setGenericSpct(z)
+  }
+  new.comment <- paste("Merged spectrum\ncomment(x):\n",
+                       comment(x),
+                       "\nclass: ",
+                       class.spct(x),
+                       "\n\ncomment(y):\n",
+                       comment(y),
+                       "\nclass: ",
+                       class.spct(y))
+  setattr(z, "comment", new.comment)
+  return(z)
+}
 

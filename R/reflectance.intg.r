@@ -26,6 +26,10 @@
 
 reflectance_spct <-
   function(spct, w.band=NULL, pc.out=FALSE, quantity="average", wb.trim=NULL, use.hinges=NULL){
+    if (is.object.spct(spct)) {
+      spct <- as.reflector.spct(spct)
+      spct[ , Tfr := NULL]
+    }
     # if the waveband is undefined then use all data
     if (is.null(w.band)){
       w.band <- waveband(spct)
@@ -173,3 +177,17 @@ reflectance.default <- function(spct, w.band, pc.out, quantity, wb.trim, use.hin
 #' @export reflectance.reflector.spct
 #'
 reflectance.reflector.spct <- reflectance_spct
+
+#' Specialization for object.spct
+#'
+#' Calculate average reflectance.
+#'
+#' @param spct an object of class "object.spct"
+#' @param w.band list of waveband definitions created with new_waveband()
+#' @param pc.out a logical indicating whether result should be a percentage or a fraction of one
+#' @param quantity character string
+#' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries are trimmed, if FALSE, they are discarded
+#' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
+#' @export reflectance.object.spct
+#'
+reflectance.object.spct <- reflectance_spct

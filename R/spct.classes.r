@@ -1055,7 +1055,7 @@ as.reflector.spct <- function(x, strict.range = TRUE) {
 #'
 #' Function that returns a converted copy of a spectrum object.
 #'
-#' @usage as.object.spct(x, strict.range = TRUE)
+#' @usage as.object.spct(x, Tfr.type=c("total", "internal"), strict.range = TRUE)
 #'
 #' @param x any R object
 #' @param Tfr.type a character string, either "total" or "internal"

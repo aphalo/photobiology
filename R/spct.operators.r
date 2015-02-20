@@ -5,6 +5,9 @@
 # as in the older versions.
 
 oper.e.generic.spct <- function(e1, e2, oper) {
+  if (is.object.spct(e1) || is.object.spct(e2)) {
+    stop("Operators are not defined for object.spct objects")
+  }
   if (is.logical(e1)) {
     e1 <- as.integer(e1)
   }
@@ -306,6 +309,9 @@ oper.e.generic.spct <- function(e1, e2, oper) {
 # as in the older versions.
 
 oper.q.generic.spct <- function(e1, e2, oper) {
+  if (is.object.spct(e1) || is.object.spct(e2)) {
+    stop("Operators are not defined for object.spct objects")
+  }
   if (is.logical(e1)) {
     e1 <- as.integer(e1)
   }

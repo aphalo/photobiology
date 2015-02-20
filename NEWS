@@ -3,6 +3,23 @@ TODO
 
 Add test cases for chroma.spct
 
+photobiology 0.5.14
+===================
+
+New class and methods added: object.spct, with the corresponding as.object.spct(),
+is.object.spct(), setObjetcSpct(), and check.object.spct() functions. Also
+functions reflectance() and transmittance() are implemented. Objects of this
+class can be used to store corresponding spectral transmittance and spectral
+reflectance values. No operators are defined for this class as they would be
+ambiguous. The class attribute needs to be changed to either filter.spct or
+reflector.spct before using operators, however, no data is lost in the process,
+or written except for the class attribute, so the class can be changed back to
+object.spct if needed.
+
+New function added: merge.generic.spct() is a wrapper on merge.data.frame()
+that sets the correct class to the retruned merged spectrum, preserves attributes
+used with .spct objects abd by default merges by w.length.
+
 photobiology 0.5.13
 ===================
 

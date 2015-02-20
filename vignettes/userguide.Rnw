@@ -298,6 +298,22 @@ class(d.spct)
 d.spct
 @
 
+\texttt{object.spct} objects can be created from data tables, data frames, and \texttt{generic.spct} simply by setting them as such. However, columns called \texttt{w.length} (wavelength values expressed in nm), \texttt{Tfr} (Ttransmittance, T, as fraction of one), and\textbackslash or \texttt{Rfr} (Reflectance, R, as fraction of one) must be present.
+
+<<>>=
+e.spct <- setObjectSpct(data.table(w.length = 300:305, Tfr = 0.5, Rfr = 0.5))
+class(e.spct)
+e.spct
+@
+
+\texttt{object.spct} objects can be also created by merging a \texttt{filter.spct} object and \texttt{reflector.spct} object if they share \texttt{w.length} values.
+
+<<>>=
+merged.spct <- merge(c.spct, d.spct)
+class(merged.spct)
+merged.spct
+@
+
 \texttt{chroma.spct} objects can be created from data tables, data frames, and \texttt{generic.spct} simply by setting them as such. However, columns called \texttt{w.length} (wavelength values expressed in nm) and \texttt{x}, \texttt{y} and \texttt{z} must be present, giving the trichromic chromaticity constants.
 
 <<>>=
@@ -458,7 +474,7 @@ class.spct(l.spct)
 l.spct
 @
 
-Both \texttt{source.spct} and \texttt{filter.spct} functions accept an argument for setting the \texttt{time.unit} and \texttt{Tfr.type} attributes, respectively, with the same defaults as described above. Functions \texttt{source.spct}, \texttt{filter.spct} and \texttt{reflector.spct} have a \texttt{strict.range} formal argument, that alters checks as described in section \ref{sec:set:spct} above.
+Function \texttt{source.spct} accepts an argument for setting the \texttt{time.unit}, and functions \texttt{filter.spct} and \texttt{object.spct} accept an argument for setting the \texttt{Tfr.type} attributes, with the same defaults as described above. Functions \texttt{source.spct}, \texttt{filter.spct}, \texttt{reflector.spct} and \texttt{object.spct} have a \texttt{strict.range} formal argument, that alters checks as described in section \ref{sec:set:spct} above.
 
 \subsubsection{Row binding spectra}
 
@@ -708,12 +724,14 @@ source.spct & \Y & \Y &\Y  & \Y & \Y & source.spct & source.spct \\
 filter.spct (T) & \N & \N & \Y & \Y  & \N & filter.spct & filter.spct \\
 filter.spct (A) & \Y & \Y & \N & \N  & \N & filter.spct & filter.spct \\
 reflector.spct & \N & \N & \Y &\Y  & \N & reflector.spct & reflector.spct \\
+object.spct & \N & \N & \N & \N &\N & object.spct & -- \\
 response.spct & \Y & \Y & \Y & \Y & \N & response.spct & response.spct \\
 chroma.spct & \Y  & \Y & \Y & \Y & \Y & chroma.spct & chroma.spct \\
 \midrule
 source.spct & \Y  & \Y &\Y  & \Y & \Y & numeric & source.spct \\
 filter.spct & \Y  &\Y  & \Y &\Y  & \Y & numeric & filter.spct \\
 reflector.spct & \Y &\Y  &\Y  &\Y  & \Y & numeric & reflector.spct \\
+object.spct & \N & \N & \N & \N &\N & numeric & -- \\
 response.spct & \Y  & \Y  & \Y  & \Y  & \Y & numeric & response.spct \\
 chroma.spct & \Y & \Y  & \Y & \Y  & \Y & numeric & chroma.spct \\
 \midrule
@@ -721,6 +739,7 @@ source.spct & \N & \N & \Y &\Y  & \N & response.spct & response.spct \\
 source.spct & \N & \N & \Y  & \Y  & \N & filter.spct (T) & source.spct \\
 source.spct & \N & \N & \Y  & \Y & \N & filter.spct (A) & source.spct \\
 source.spct & \N & \N & \Y  & \Y  & \N & reflector.spct & source.spct \\
+source.spct & \N & \N &\N  & \N & \N & object.spct & -- \\
 source.spct & \N & \N &\Y  & \N & \N & waveband (no BSWF) & source.spct \\
 source.spct & \N & \N &\Y  & \N & \N & waveband (BSWF) & response.spct \\
 \bottomrule
@@ -797,6 +816,7 @@ e1 & \verb|+| & \verb|-| & \verb|log()| & \verb|log10()| & \verb|exp()| & \verb|
 source.spct & \Y & \Y &\Y  & \Y & \Y & \Y & source.spct \\
 filter.spct & \Y & \Y & \Y & \Y  & \Y & \Y & filter.spct \\
 reflector.spct & \Y & \Y & \Y &\Y  & \Y & \Y & reflector.spct \\
+object.spct & \N & \N & \N & \N & \N & \N & -- \\
 response.spct & \Y & \Y & \Y & \Y & \Y & \Y & response.spct \\
 chroma.spct & \Y  & \Y & \Y & \Y & \Y & \Y & chroma.spct \\
 \bottomrule
@@ -1034,14 +1054,14 @@ with(sun.data,
 
 \subsection{Calculating average transmittance, absorbance and reflectance}
 
-The functions \texttt{transmittance}, \texttt{absorbance} and \texttt{reflectance} take filter.spct and reflector.spct objects as arguments, and return an average value for these quantities \textbf{assuming} a light source with a flat spectral energy output. Values expressed as percentages.
+The functions \texttt{transmittance}, and \texttt{absorbance} take \texttt{filter.spct} as argument, while function \texttt{reflectance} takes \texttt{reflector.spct} objects as argument. Functions \texttt{transmittance} and \texttt{reflectance} are also implemented for \texttt{object.spct}. They return as default an average value for these quantities \textbf{assuming} a light source with a flat spectral energy output. Values expressed as percentages can be obtained by setting argument \texttt{pc.out} to \texttt{TRUE}.
 
 <<>>=
 transmittance(polyester.new.spct, list(UVB(), UVA(), PAR()))
 transmittance(polyester.new.spct, list(UVB(), UVA(), PAR()), pc.out = TRUE)
 @
 
-This function has an additional argument \texttt{quantity}, with default \texttt{"average"}, which can take values controlling the output.
+Function \texttt{transmittance} has an additional argument \texttt{quantity}, with default \texttt{"average"}, which can take values controlling the output.
 
 <<>>=
 transmittance(polyester.new.spct, UV_bands())
@@ -1059,7 +1079,7 @@ An equivalent function returning absorbance instead of transmittance takes the s
 absorbance(polyester.new.spct, list(UVB(), UVA(), PAR()))
 @
 
-This function has an additional argument \texttt{quantity}, with default \texttt{"average"}, which can take values controlling the output.
+Function \texttt{absorbance} also has an additional argument \texttt{quantity}, with default \texttt{"average"}, which can take values controlling the output.
 
 <<>>=
 transmittance(polyester.new.spct, UV_bands())
