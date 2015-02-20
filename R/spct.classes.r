@@ -12,7 +12,7 @@
 spct.classes <- function() {
   c("generic.spct", "private.spct",
     "filter.spct", "reflector.spct",
-    "source.spct",
+    "source.spct", "object.spct",
     "response.spct", "chroma.spct")
 }
 
@@ -216,6 +216,84 @@ check.reflector.spct <- function(x, byref=TRUE, strict.range = TRUE) {
     x[ , Rfr := NA]
     return(x)
   }
+}
+
+#' Specialization for object.spct
+#'
+#' Check that a object.spct object contains the expected data members.
+#'
+#' @param x a object.spct object
+#' @param byref logical indicating if new object will be created by reference or by copy of x
+#' @param strict.range logical indicating whether off-range values result in an error instead
+#' of a warning, NULL skips the tests
+#' @export check.reflector.spct
+check.object.spct <- function(x, byref=TRUE, strict.range = TRUE) {
+
+  range_check <- function(x, strict.range) {
+    Rfr.min <- min(x$Rfr, na.rm = TRUE)
+    Rfr.max <- max(x$Rfr, na.rm = TRUE)
+    if (!is.na(Rfr.min) && !is.na(Rfr.max)) {
+      if (!is.null(strict.range) & (Rfr.min < 0 ||  Rfr.max > 1)) {
+        message.text <- paste0("Off-range reflectance values [", signif(Rfr.min, 2), "...",
+                               signif(Rfr.max, 2), "] instead of  [0..1]", sep="")
+        if (strict.range) {
+          stop(message.text)
+        } else {
+          warning(message.text)
+        }
+      }
+    }
+    Tfr.min <- min(x$Tfr, na.rm = TRUE)
+    Tfr.max <- max(x$Tfr, na.rm = TRUE)
+    if (!is.na(Tfr.min) && !is.na(Tfr.max)) {
+      if (!is.null(strict.range) & (Tfr.min < 0 ||  Tfr.max > 1)) {
+      message.text <- paste0("Off-range Transmittance values [", signif(Tfr.min, 2), "...",
+                             signif(Tfr.max, 2), "] instead of  [0..1]", sep="")
+      if (strict.range) {
+        stop(message.text)
+      } else {
+        warning(message.text)
+      }
+    }
+    }
+  }
+
+  if (is.null(attr(x, "Tfr.type"))) {
+    setTrfType(x, "total")
+    warning("Missing Trf.type attribute replaced by 'total'")
+  }
+  if (exists("reflectance", x, mode = "numeric", inherits=FALSE)) {
+    setnames(x, "reflectance", "Rpc")
+    warning("Found variable 'reflectance', I am assuming it is expressed as percent")
+  }
+  if (exists("Rfr", x, mode = "numeric", inherits=FALSE)) {
+  } else if (exists("Rpc", x, mode = "numeric", inherits=FALSE)) {
+    x[ , Rfr := Rpc / 100]
+    x[ , Rpc := NULL]
+  } else {
+    warning("No reflectance data found in object.spct")
+    x[ , Rfr := NA]
+  }
+
+  if (exists("transmittance", x, mode = "numeric", inherits=FALSE)) {
+    setnames(x, "transmittance", "Tpc")
+    warning("Found varaible 'transmittance', I am assuming it expressed as percent")
+  }
+  if (exists("Tfr", x, mode = "numeric", inherits=FALSE)) {
+    range_check(x, strict.range=strict.range)
+    return(x)
+  } else if (exists("Tpc", x, mode = "numeric", inherits=FALSE)) {
+    x[ , Tfr := Tpc / 100]
+    x[ , Tpc := NULL]
+    range_check(x, strict.range=strict.range)
+    return(x)
+  } else {
+    warning("No transmittance data found in object.spct")
+    x[ , Tfr := NA]
+    return(x)
+  }
+  range_check(x, strict.range=strict.range)
+  return(x)
 }
 
 #' Specialization for response.spct
@@ -478,6 +556,39 @@ setReflectorSpct <- function(x, strict.range = TRUE) {
   invisible(x)
 }
 
+#' set class of a data.frame or data.table or generic.spct object to "object.spct"
+#'
+#' Sets the class attibute of a data.frame or data.table object to "reflector.spct" an object to store spectra.
+#' If the object is a data.frame is is also made a data.table in the process.
+#'
+#' @param x a data.frame or data.table
+#' @param Tfr.type a character string, either "total" or "internal"
+#' @param strict.range logical indicating whether off-range values result in an error instead of a warning
+#' @export
+#' @exportClass object.spct
+#'
+setObjectSpct <- function(x, Tfr.type=c("total", "internal"), strict.range = TRUE) {
+  name <- substitute(x)
+  rmDerivedSpct(x)
+  if (!is.data.table(x)) {
+    setDT(x)
+  }
+  if (!is.generic.spct(x)) {
+    setGenSpct(x)
+  }
+  if (!is.object.spct(x)) {
+    setattr(x, "class", c("object.spct", class(x)))
+  }
+  setTfrType(x, Tfr.type)
+  x <- check(x, strict.range=strict.range)
+  setkey_spct(x, w.length)
+  if (is.name(name)) {
+    name <- as.character(name)
+    assign(name, x, parent.frame(), inherits = TRUE)
+  }
+  invisible(x)
+}
+
 #' set class of a data.frame or data.table or generic.spct object to "response.spct"
 #'
 #' Sets the class attibute of a data.frame or data.table object to "response.spct" object,
@@ -645,6 +756,20 @@ is.filter.spct <- function(x) inherits(x, "filter.spct")
 #' @export
 #'
 is.reflector.spct <- function(x) inherits(x, "reflector.spct")
+
+#' Query class of a object spectrum
+#'
+#' Functions to check if an object is a reflector spectrum, or coerce it if possible.
+#'
+#' @usage is.object.spct(x)
+#'
+#' @param x any R object
+#'
+#' @return is.object.spct returns TRUE if its argument is a object spectrum (that is, has "object.spct" amongst its classes) and FALSE otherwise.
+#'
+#' @export
+#'
+is.object.spct <- function(x) inherits(x, "object.spct")
 
 #' Query class of a response spectrum
 #'
@@ -926,6 +1051,25 @@ as.reflector.spct <- function(x, strict.range = TRUE) {
   setReflectorSpct(y, strict.range = strict.range)
 }
 
+#' Return a copy of an R object with its class set to object.spct
+#'
+#' Function that returns a converted copy of a spectrum object.
+#'
+#' @usage as.object.spct(x, strict.range = TRUE)
+#'
+#' @param x any R object
+#' @param Tfr.type a character string, either "total" or "internal"
+#' @param strict.range logical indicating whether off-range values result in an error instead of a warning
+#'
+#' @return as.object.spct returns a "object.spct" if possible.
+#'
+#' @export
+#'
+as.object.spct <- function(x, Tfr.type=c("total", "internal"), strict.range = TRUE) {
+  y <- copy(x)
+  setObjectSpct(y, Tfr.type, strict.range = strict.range)
+}
+
 #' Return a copy of an R object with its class set to response.spct
 #'
 #' Function that returns a converted copy of a spectrum object.
@@ -1013,7 +1157,7 @@ setTfrType <- function(x, Tfr.type=c("total", "internal")) {
     warning("Invalid 'Tfr.type' argument, only 'total' and 'internal' supported.")
     return(x)
   }
-  if (is.filter.spct(x)) {
+  if (is.filter.spct(x) || is.object.spct(x)) {
     setattr(x, "Tfr.type", Tfr.type[1])
   }
   return(x)
