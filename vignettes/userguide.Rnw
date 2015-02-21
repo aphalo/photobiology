@@ -1,6 +1,6 @@
 %\VignetteEngine{knitr}
 %\VignetteIndexEntry{User guide}
-%\VignetteDepends{knitr, photobiology, photobiologyWavebands, photobiologySun, photobiologyFilters, photobiologySensors, photobiologygg, ggplot2, ggtern}
+%\VignetteDepends{knitr, photobiology, photobiologyWavebands, photobiologySun, photobiologyFilters, photobiologyReflectors, photobiologySensors, photobiologyPlants, photobiologygg, ggplot2, ggtern}
 %\VignetteKeyword{misc}
 
 \documentclass{article}
@@ -52,7 +52,9 @@ library(photobiologygg)
 library(photobiologyWavebands)
 library(photobiologySun)
 library(photobiologyFilters)
+library(photobiologyReflectors)
 library(photobiologySensors)
+library(photobiologyPlants)
 library(ggplot2)
 library(ggtern)
 @
@@ -88,7 +90,9 @@ library(photobiologygg)
 library(photobiologyWavebands)
 library(photobiologySun)
 library(photobiologyFilters)
+library(photobiologyReflectors)
 library(photobiologySensors)
+library(photobiologyPlants)
 library(ggplot2)
 library(ggtern)
 @
@@ -1052,13 +1056,29 @@ with(sun.data,
 )
 @
 
-\subsection{Calculating average transmittance, absorbance and reflectance}
+\subsection{Calculating average transmittance, reflectance, absorptance and absorbance}
 
-The functions \texttt{transmittance}, and \texttt{absorbance} take \texttt{filter.spct} as argument, while function \texttt{reflectance} takes \texttt{reflector.spct} objects as argument. Functions \texttt{transmittance} and \texttt{reflectance} are also implemented for \texttt{object.spct}. They return as default an average value for these quantities \textbf{assuming} a light source with a flat spectral energy output. Values expressed as percentages can be obtained by setting argument \texttt{pc.out} to \texttt{TRUE}.
+The functions \texttt{transmittance}, and \texttt{absorbance} take \texttt{filter.spct} as argument, while function \texttt{reflectance} takes \texttt{reflector.spct} objects as argument. Functions \texttt{transmittance}, \texttt{reflectance} and \texttt{absorptance} are implemented for \texttt{object.spct}. They return as default an average value for these quantities \textbf{assuming} a light source with a flat spectral energy output. Values expressed as percentages can be obtained by setting argument \texttt{pc.out} to \texttt{TRUE}.
 
 <<>>=
 transmittance(polyester.new.spct, list(UVB(), UVA(), PAR()))
 transmittance(polyester.new.spct, list(UVB(), UVA(), PAR()), pc.out = TRUE)
+@
+
+<<>>=
+transmittance(Solidago_lower_adax.spct, Plant_bands())
+@
+
+<<>>=
+reflectance(Solidago_lower_adax.spct, Plant_bands())
+@
+
+<<>>=
+absorptance(Solidago_lower_adax.spct, Plant_bands())
+@
+
+<<>>=
+reflectance(gold.spct, VIS_bands())
 @
 
 Function \texttt{transmittance} has an additional argument \texttt{quantity}, with default \texttt{"average"}, which can take values controlling the output.
