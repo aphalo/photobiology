@@ -15,11 +15,11 @@ test_that("constructor energy", {
   expect_named(my.spct, c("w.length", "s.e.response"))
   expect_named(my.s.spct, c("w.length", "s.e.response"))
   expect_named(my.d.spct, c("w.length", "s.e.response"))
-  expect_equal(attr(my.spct, "time.unit", exact = TRUE), "second")
-  expect_equal(attr(my.s.spct, "time.unit", exact = TRUE), "second")
-  expect_equal(attr(my.h.spct, "time.unit", exact = TRUE), "hour")
-  expect_equal(attr(my.d.spct, "time.unit", exact = TRUE), "day")
-  expect_equal(attr(my.b.spct, "time.unit", exact = TRUE), "unknown")
+  expect_equal(getTimeUnit(my.spct), "second")
+  expect_equal(getTimeUnit(my.s.spct), "second")
+  expect_equal(getTimeUnit(my.h.spct), "hour")
+  expect_equal(getTimeUnit(my.d.spct), "day")
+  expect_equal(getTimeUnit(my.b.spct), "unknown")
 })
 
 test_that("constructor photon", {
@@ -36,11 +36,11 @@ test_that("constructor photon", {
   expect_named(my.spct, c("w.length", "s.q.response"))
   expect_named(my.s.spct, c("w.length", "s.q.response"))
   expect_named(my.d.spct, c("w.length", "s.q.response"))
-  expect_equal(attr(my.spct, "time.unit", exact = TRUE), "second")
-  expect_equal(attr(my.s.spct, "time.unit", exact = TRUE), "second")
-  expect_equal(attr(my.h.spct, "time.unit", exact = TRUE), "hour")
-  expect_equal(attr(my.d.spct, "time.unit", exact = TRUE), "day")
-  expect_equal(attr(my.b.spct, "time.unit", exact = TRUE), "unknown")
+  expect_equal(getTimeUnit(my.spct), "second")
+  expect_equal(getTimeUnit(my.s.spct), "second")
+  expect_equal(getTimeUnit(my.h.spct), "hour")
+  expect_equal(getTimeUnit(my.d.spct), "day")
+  expect_equal(getTimeUnit(my.b.spct), "unknown")
 })
 
 test_that("oper energy energy", {
