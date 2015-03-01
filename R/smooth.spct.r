@@ -65,7 +65,7 @@ smooth_spct.source.spct <- function(x, method = "custom", strength = 1, ...) {
       out.spct <- lowess(x$w.length, x$s.q.irrad, f = span, ...)
       names(out.spct) <- c("w.length", "s.q.irrad")
     }
-    setSourceSpct(out.spct, time.unit = attr(x, "time.unit", exact = TRUE))
+    setSourceSpct(out.spct, time.unit = getTimeUnit(x))
     if (all(c("s.e.irrad", "s.q.irrad") %in% names(x))) {
       e2q(out.spct, action = "add", byref = TRUE)
     }
@@ -349,7 +349,7 @@ smooth_spct.reflector.spct <- function(x, method = "custom", strength = 1, ...) 
       warning(num_bad, " 'bad' estimates in spectral irradiance")
     }
     out.spct <- out.spct[ , .(w.length, Rfr)]
-    setReflectorSpct(out.spct, Rfr.type = attr(x, "Rfr.type", exact = TRUE))
+    setReflectorSpct(out.spct)
     if (all(c("Rfr", "A") %in% names(x))) {
       T2A(out.spct, action = "add", byref = TRUE)
     }
