@@ -260,7 +260,7 @@ a.spct
 
 <<>>=
 b.spct <- setSourceSpct(data.table(w.length = 300:305, s.e.irrad = 1))
-attr(b.spct, "time.unit")
+getTimeUnit(b.spct)
 class(b.spct)
 b.spct
 @
@@ -271,7 +271,7 @@ If the spectral irradiance is expressed per day, then the parameter \texttt{time
 b.d.spct <- setSourceSpct(
   data.table(w.length = 300:305, s.e.irrad = rep(1,6)),
   time.unit = "day")
-attr(b.d.spct, "time.unit")
+getTimeUnit(b.d.spct)
 class(b.d.spct)
 b.d.spct
 @
@@ -280,7 +280,7 @@ b.d.spct
 
 <<>>=
 c.spct <- setFilterSpct(data.table(w.length = 300:305, Tfr = 1))
-attr(c.spct, "Tfr.type")
+getTfrType(c.spct)
 class(c.spct)
 c.spct
 @
@@ -289,7 +289,7 @@ If the spectral transmittance or absorbance is the internal component, then the 
 
 <<>>=
 c.i.spct <- setFilterSpct(data.table(w.length = 300:305, Tfr = 1), "internal")
-attr(c.i.spct, "Tfr.type")
+getTfrType(c.i.spct)
 class(c.i.spct)
 c.i.spct
 @

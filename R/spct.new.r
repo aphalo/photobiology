@@ -202,11 +202,11 @@ merge.generic.spct <- function(x, y, by = "w.length", ...) {
   } else if (is.filter.spct(x) && is.reflector.spct(y)) {
     xx <- A2T(x, action = "replace", byref = FALSE)
     z <- data.table:::merge.data.table(xx, y, by = "w.length", ...)
-    setObjectSpct(z, Tfr.type = attr(xx, "Tfr.type", exact = TRUE))
+    setObjectSpct(z, Tfr.type = getTfrType(xx))
   } else if (is.reflector.spct(x) && is.filter.spct(y)) {
     yy <- A2T(y, action = "replace", byref = FALSE)
     z <- data.table:::merge.data.table(xx, yy, by = "w.length", ...)
-    setObjectSpct(z, Tfr.type = attr(yy, "Tfr.type", exact = TRUE))
+    setObjectSpct(z, Tfr.type = getTfrType(yy))
   } else {
     z <- data.table:::merge.data.table(x, y, by = "w.length", ...)
     setGenericSpct(z)

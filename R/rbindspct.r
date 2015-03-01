@@ -152,7 +152,7 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = NULL) {
     i <- 0L
     for (spct in l) {
       i <- i + 1
-      time.unit[i] <- ifelse(is.null(attr(spct, "time.unit")), "unknown", attr(spct, "time.unit"))
+      time.unit[i] <- ifelse(is.null(getTimeUnit(spct)), "unknown", getTimeUnit(spct))
       if (i > 1) {
         if (!(time.unit[i-1] == time.unit[i])) {
           warning("Inconsistent time units among source spectra in rbindspct")
@@ -169,7 +169,7 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = NULL) {
     i <- 0L
     for (spct in l) {
       i <- i + 1
-      Tfr.type[i] <- ifelse(is.null(attr(spct, "Tfr.type")), "unknown", attr(spct, "Tfr.type"))
+      Tfr.type[i] <- ifelse(is.null(getTfrType(spct)), "unknown", getTfrType(spct))
       if (i > 1) {
         if (!(Tfr.type[i-1] == Tfr.type[i])) {
           warning("Inconsistent 'Tfr.type' among filter spectra in rbindspct")

@@ -34,7 +34,7 @@ integrate_spct <- function(spct) {
 ##'
 ##' @param spct an object of class "generic.spct"
 ##'
-##' @return one or more numeric values with no change in scale factor: e.g. [W m-2 nm-1] -> [W m-2]
+##' @return one or more numeric values with no change in scale factor: e.g. [W m-2 nm-1] -> [W m-2 nm-1]
 ##' @keywords manip misc
 ##' @export
 ##' @examples
@@ -84,7 +84,7 @@ interpolate_spct <- function(spct, w.length.out=NULL, fill.value=NA, length.out=
   class.spct <- class(spct)
   comment.spct <- comment(spct)
   if  (is(spct, "source.spct")) {
-    time.unit.spct <- attr(spct, "time.unit", exact=TRUE)
+    time.unit.spct <- getTimeUnit(spct)
   }
   if (!is.null(length.out)  && length.out == 1L) {
     if (is.null(w.length.out)) {
@@ -137,7 +137,7 @@ interpolate_spct <- function(spct, w.length.out=NULL, fill.value=NA, length.out=
   if(class.spct[1] == "source.spct") {
     setSourceSpct(new.spct)
     if (!is.null(time.unit.spct)) {
-      setattr(new.spct, "unit.out", time.unit.spct)
+      setTimeUnit(new.spct, time.unit.spct)
     }
   } else if (class.spct[1] == "filter.spct") {
     setFilterSpct(new.spct)

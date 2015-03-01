@@ -170,7 +170,7 @@ irrad_spct <-
       names(irrad) <- "out of range"
     }
     names(irrad) <- paste(names(irrad), wb.name)
-    setattr(irrad, "time.unit", attr(spct_x, "time.unit", exact=TRUE))
+    setattr(irrad, "time.unit", getTimeUnit(spct_x))
     setattr(irrad, "radiation.unit", paste(unit.out, "irradiance", quantity))
     return(irrad)
   }

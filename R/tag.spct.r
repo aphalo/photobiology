@@ -132,7 +132,7 @@ tag.generic.spct <- function(x,
   x[ , wl.color := wl.color.tmp]
   x[ , wb.f := factor(wbs.name[idx], levels=wbs.name) ]
   x[ , idx := NULL]
-  tag.data <- list(time.unit=attr(x, "time.unit"),
+  tag.data <- list(time.unit=getTimeUnit(x),
                    wb.key.name="Bands",
                    wl.color=TRUE,
                    wb.color=TRUE,

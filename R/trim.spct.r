@@ -67,8 +67,8 @@ trim_spct <- function(spct, range=NULL, low.limit=NULL, high.limit=NULL, use.hin
   names.spct <- names(spct)
   names.data <- names.spct[names.spct != "w.length"]
   comment.spct <- comment(spct)
-  time.unit.spct <- attr(spct, "time.unit", exact=TRUE)
-  Tfr.type.spct <- attr(spct, "Tfr.type", exact=TRUE)
+  time.unit.spct <- getTimeUnit(spct)
+  Tfr.type.spct <- getTfrType(spct)
   # check whether we should expand the low end
   low.end <- min(spct, na.rm=TRUE)
   if (low.end > low.limit) {
@@ -132,21 +132,21 @@ trim_spct <- function(spct, range=NULL, low.limit=NULL, high.limit=NULL, use.hin
       spct[!w.length %between% trim.range, eval(data.col) := fill]
     }
   }
+  # we use rbindlist which removes derived class attributes
+  setattr(spct, "class", class.spct)
   if (!is.null(comment.spct)) {
     setattr(spct, "comment", comment.spct)
   }
   if (!is.null(time.unit.spct)) {
-    setattr(spct, "time.unit", time.unit.spct)
+    setTimeUnit(spct, time.unit.spct)
   }
   if (!is.null(Tfr.type.spct)) {
-    setattr(spct, "Tfr.type", Tfr.type.spct)
+    setTfrType(spct, Tfr.type.spct)
   }
   if (byref && is.name(name)) {
     name <- as.character(name)
     assign(name, spct, parent.frame(), inherits = TRUE)
   }
-  # we use rbindlist which removes derived class attributes
-  setattr(spct, "class", class.spct)
   check(spct)
   return(spct)
 }

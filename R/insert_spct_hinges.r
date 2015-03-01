@@ -38,7 +38,7 @@ insert_spct_hinges <- function(spct, hinges=NULL) {
     class.spct <- class(spct)
     comment.spct <- comment(spct)
     if  (is(spct, "source.spct")) {
-      time.unit.spct <- attr(spct, "time.unit", exact=TRUE)
+      time.unit.spct <- getTimeUnit(spct)
     }
     new.spct <- data.table(w.length = new.w.length)
     first.iter <- TRUE
@@ -53,7 +53,7 @@ insert_spct_hinges <- function(spct, hinges=NULL) {
     if(class.spct[1] == "source.spct") {
       setSourceSpct(new.spct)
       if (!is.null(time.unit.spct)) {
-        setattr(new.spct, "unit.out", time.unit.spct)
+        setTimeUnit(new.spct, time.unit.spct)
       }
     } else if (class.spct[1] == "filter.spct") {
       setFilterSpct(new.spct)

@@ -3,6 +3,11 @@ TODO
 
 Add test cases for chroma.spct
 
+photobiology 0.5.15
+===================
+
+New functions normalize() and rescale() for spectra.
+
 photobiology 0.5.14
 ===================
 

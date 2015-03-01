@@ -130,8 +130,7 @@ transmittance_spct <-
       names(transmittance) <- "out of range"
     }
     names(transmittance) <- paste(names(transmittance), wb.name)
-    setattr(transmittance, "time.unit", "none")
-    setattr(transmittance, "Tfr.type", attr(spct, "Tfr.type", exact=TRUE))
+    setattr(transmittance, "Tfr.type", getTfrType(spct))
     setattr(transmittance, "radiation.unit", paste("transmittance", quantity))
     return(transmittance)
   }

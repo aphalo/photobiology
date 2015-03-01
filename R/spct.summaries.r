@@ -55,7 +55,7 @@ print.summary.generic.spct <- function(x, ...) {
 #' @examples
 #' str(summary(sun.spct))
 summary.source.spct <- function(object, digits = 4L, ...) {
-  time.unit <- attr(object, "time.unit")
+  time.unit <- getTimeUnit(object)
   if (is.null(time.unit)) {
     time.unit <- "second"
   }
@@ -119,6 +119,7 @@ print.summary.source.spct <- function(x, ...) {
 #' @export summary.filter.spct
 #'
 summary.filter.spct <- function(object, digits = 4L, ...) {
+  Tfr.type <- getTfrType(object)
   z <- c(
     max.w.length = max(object),
     min.w.length = min(object),
@@ -129,6 +130,7 @@ summary.filter.spct <- function(object, digits = 4L, ...) {
     mean.Tfr = as.numeric(integrate_spct(object) / spread(object))
   )
   z <- signif(z, digits)
+  attr(z, "Tfr.type") <- Tfr.type
   class(z) <- c("summary.filter.spct", class(z))
   return(z)
 }
@@ -143,11 +145,12 @@ summary.filter.spct <- function(object, digits = 4L, ...) {
 #' @export print.summary.filter.spct
 #'
 print.summary.filter.spct <- function(x, ...) {
-  time.unit <- attr(x, "time.unit")
+  Tfr.type <- attr(x, "Tfr.type")
   cat("wavelength ranges from", x[["min.w.length"]], "to", x[["max.w.length"]], "nm \n")
   cat("largest wavelength step size is", x[["w.length.step"]], "nm \n")
   cat("Spectral transmittance ranges from", x[["min.Tfr"]], "to", x[["max.Tfr"]], "\n")
   cat("Mean transmittance is", x[["mean.Tfr"]], "\n")
+  cat("Quantity is", Tfr.type, "\n")
 }
 
 #' Summary of a "reflector.spct" object.
@@ -185,7 +188,6 @@ summary.reflector.spct <- function(object, digits = 4L, ...) {
 #' @export print.summary.reflector.spct
 #'
 print.summary.reflector.spct <- function(x, ...) {
-  time.unit <- attr(x, "time.unit")
   cat("wavelength ranges from", x[["min.w.length"]], "to", x[["max.w.length"]], "nm \n")
   cat("largest wavelength step size is", x[["w.length.step"]], "nm \n")
   cat("Spectral reflectance ranges from", x[["min.Rfr"]], "to", x[["max.Rfr"]], "\n")
@@ -203,6 +205,7 @@ print.summary.reflector.spct <- function(x, ...) {
 #' @export summary.response.spct
 #'
 summary.response.spct <- function(object, digits = 4L, ...) {
+  time.unit <- getTimeUnit(object)
   z <- c(
     max.w.length = max(object),
     min.w.length = min(object),
@@ -215,6 +218,7 @@ summary.response.spct <- function(object, digits = 4L, ...) {
   )
   z <- signif(z, digits)
   class(z) <- c("summary.response.spct", class(z))
+  attr(z, "time.unit") <- time.unit
   return(z)
 }
 
@@ -292,10 +296,6 @@ color.source.spct <- function(x, ...) {
              s_e_irrad2rgb(x[["w.length"]], x[["s.e.irrad"]], sens=ciexyzCC2.spct, color.name=paste(x.name, "CC")))
   return(color)
 }
-
-
-
-
 
 # w.length summaries ------------------------------------------------------
 

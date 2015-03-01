@@ -139,9 +139,9 @@ check.filter.spct <- function(x, byref=TRUE, strict.range = TRUE) {
     }
   }
 
-  if (is.null(attr(x, "Tfr.type"))) {
-    setTrfType(x, "total")
-    warning("Missing Trf.type attribute replaced by 'total'")
+  if (is.null(getTfrType(x))) {
+    setTfrType(x, "total")
+    warning("Missing Tfr.type attribute replaced by 'total'")
   }
   # check and replace 'other' quantity names
   if (exists("transmittance", x, mode = "numeric", inherits=FALSE)) {
@@ -258,9 +258,9 @@ check.object.spct <- function(x, byref=TRUE, strict.range = TRUE) {
     }
   }
 
-  if (is.null(attr(x, "Tfr.type"))) {
-    setTrfType(x, "total")
-    warning("Missing Trf.type attribute replaced by 'total'")
+  if (is.null(getTfrType(x))) {
+    setTfrType(x, "total")
+    warning("Missing Tfr.type attribute replaced by 'total'")
   }
   if (exists("reflectance", x, mode = "numeric", inherits=FALSE)) {
     setnames(x, "reflectance", "Rpc")
@@ -365,7 +365,7 @@ check.source.spct <- function(x, byref=TRUE, strict.range=FALSE) {
     }
   }
 
-  if (is.null(attr(x, "time.unit"))) {
+  if (is.null(getTimeUnit(x))) {
     setTimeUnit(x, "second")
     warning("Missing time.unit replaced by 'second'")
   }
@@ -515,7 +515,7 @@ setFilterSpct <- function(x, Tfr.type=c("total", "internal"), strict.range = TRU
   if (!is.filter.spct(x)) {
     setattr(x, "class", c("filter.spct", class(x)))
   }
-  setTfrType(x, Tfr.type)
+  setTfrType(x, Tfr.type[1])
   x <- check(x, strict.range=strict.range)
   setkey_spct(x, w.length)
   if (is.name(name)) {
@@ -533,7 +533,7 @@ setFilterSpct <- function(x, Tfr.type=c("total", "internal"), strict.range = TRU
 #' @param x a data.frame or data.table
 #' @param strict.range logical indicating whether off-range values result in an error instead of a warning
 #' @export
-#' @exportClass filter.spct
+#' @exportClass reflector.spct
 #'
 setReflectorSpct <- function(x, strict.range = TRUE) {
   name <- substitute(x)
@@ -597,7 +597,7 @@ setObjectSpct <- function(x, Tfr.type=c("total", "internal"), strict.range = TRU
 #' @param x a data.frame or data.table.
 #' @param time.unit character string "second" or "day"
 #' @export
-#' @exportClass filter.spct
+#' @exportClass response.spct
 #'
 setResponseSpct <- function(x, time.unit="none") {
   name <- substitute(x)
@@ -1119,19 +1119,49 @@ as.chroma.spct <- function(x) {
 #' @return x
 #'
 #' @note if x is not a source.spct or response.spct object, x is not modified.
-#' \code{time.unit="hour"} is currently not fully supported.
+#' \code{time.unit = "hour"} is currently not fully supported.
 #'
 #' @export
 #'
 setTimeUnit <- function(x, time.unit=c("second", "hour", "day", "none", "unknown")) {
-  if  (!(time.unit[1] %in% c("second", "hour", "day", "none", "unknown"))) {
-    warning("Invalid 'time.unit' argument, only 'second', 'hour', 'day', and 'none' supported.")
-    time.unit <- "unknown"
-  }
   if (is.source.spct(x) || is.response.spct(x)) {
-    setattr(x, "time.unit", time.unit[1])
+    if  (!(time.unit[1] %in% c("second", "hour", "day", "none", "unknown"))) {
+      warning("Invalid 'time.unit' argument, only 'second', 'hour', 'day', and 'none' supported.")
+      time.unit <- "unknown"
+    }
+    setattr(x, "spct", c(attr(x, "spct", exact = TRUE), time.unit = time.unit[1]))
   }
   return(x)
+}
+
+#' Get the "time.unit" attribute of an existing source.spct object
+#'
+#' Funtion to read the "time.unit" attribute
+#'
+#' @usage getTimeUnit(x)
+#'
+#' @param x a source.spct object
+#'
+#' @return character string
+#'
+#' @note if x is not a \code{filter.spct} or a \code{response.spct} object, NA
+#' is retruned
+#'
+#' @export
+#'
+getTimeUnit <- function(x) {
+  if (is.source.spct(x) || is.response.spct(x)) {
+    spct.attr <- attr(x, "spct", exact = TRUE)
+    # backwards compatibility
+    if (is.null(spct.attr)) {
+      time.unit <- attr(x, "time.unit", exact = TRUE)
+    } else {
+      time.unit <- spct.attr[["time.unit"]]
+    }
+    return(time.unit[1])
+  } else {
+    return(NA)
+  }
 }
 
 
@@ -1153,15 +1183,42 @@ setTimeUnit <- function(x, time.unit=c("second", "hour", "day", "none", "unknown
 #' @export
 #'
 setTfrType <- function(x, Tfr.type=c("total", "internal")) {
-  if  (!(Tfr.type[1] %in% c("total", "internal", "unknown"))) {
-    warning("Invalid 'Tfr.type' argument, only 'total' and 'internal' supported.")
-    return(x)
-  }
   if (is.filter.spct(x) || is.object.spct(x)) {
-    setattr(x, "Tfr.type", Tfr.type[1])
+    if  (!(Tfr.type[1] %in% c("total", "internal", "unknown"))) {
+      warning("Invalid 'Tfr.type' argument, only 'total' and 'internal' supported.")
+      return(x)
+    }
+    setattr(x, "spct", c(attr(x, "spct", exact = TRUE), Tfr.type = Tfr.type[1]))
   }
   return(x)
 }
 
-
+#' Get the "Tfr.type" attribute of an existing source.spct object
+#'
+#' Funtion to read the "Tfr.type" attribute
+#'
+#' @usage setTfrType(x, Tfr.type=c("total", "internal"))
+#'
+#' @param x a source.spct object
+#'
+#' @return character string
+#'
+#' @note if x is not a \code{filter.spct} object, \code{NA} is returned
+#'
+#' @export
+#'
+getTfrType <- function(x) {
+  if (is.filter.spct(x) || is.object.spct(x)) {
+    spct.attr <- attr(x, "spct", exact = TRUE)
+    # backwards compatibility
+    if (is.null(spct.attr)) {
+      Tfr.type <- attr(x, "Tfr.type", exact = TRUE)
+    } else {
+      Tfr.type <- spct.attr[["Tfr.type"]]
+    }
+    return(Tfr.type[1])
+  } else {
+    return(NA)
+  }
+}
 

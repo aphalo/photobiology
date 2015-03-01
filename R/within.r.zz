@@ -1,0 +1,48 @@
+#' Tests whether a wavelength or range of wavelengths falls within an interval
+#'
+#' %within% returns TRUE if a falls within interval b, FALSE otherwise.
+#' If a is an interval, both its start and end dates must fall within b
+#' to return TRUE.
+#'
+#' @export
+#' @rdname within-interval
+#' @usage a \%within\% b
+#' @param a A numeric value or an R object to which function range can be applied range
+#' @param b An interval
+#' @return A logical
+#' @examples
+#' 350 %within% sun.spct
+#' waveband(c(200,300)) %within% sun.spct
+#' @note Extends package lubridate's %within% operator so that it can be used for
+#' checking wavelength ranges.
+#' @export
+# setGeneric("%within%")
+setMethod("%within%", signature(b = "numeric"), function(a,b){
+  if (is.waveband(a) || is.any.spct(a) || is.numeric(a)) {
+    a <- range(a)
+    b <- range(b)
+  } else {
+    stop("Argument 1 is not a recognized generic.spct, waveband, or numeric object")
+  }
+ b[1] <= a[1] && a[2] <= b[2]
+})
+
+setMethod("%within%", signature(b = "waveband"), function(a,b){
+  if (is.waveband(a) || is.any.spct(a) || is.numeric(a)) {
+    a <- range(a)
+    b <- range(b)
+  } else {
+    stop("Argument 1 is not a recognized generic.spct, waveband, or numeric object")
+  }
+  b[1] <= a[1] && a[2] <= b[2]
+})
+
+setMethod("%within%", signature(b = "generic.spct"), function(a,b){
+  if (is.waveband(a) || is.any.spct(a) || is.numeric(a)) {
+    a <- range(a)
+    b <- range(b)
+  } else {
+    stop("Argument 1 is not a recognized generic.spct, waveband, or numeric object")
+  }
+  b[1] <= a[1] && a[2] <= b[2]
+})

@@ -179,6 +179,7 @@ eq_ratio <-
   function(spct, w.band=NULL, use.cached.mult=FALSE, use.hinges=NULL){
     ratio <- 1 / qe_ratio(spct, w.band, use.cached.mult, use.hinges)
     names(ratio) <- gsub("q:e", "e:q", names(ratio), fixed=TRUE )
+    setattr(ratio, "time.unit", NULL)
     setattr(ratio, "radiation.unit", "e:q ratio")
     return(ratio)
   }

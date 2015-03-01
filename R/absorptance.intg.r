@@ -115,8 +115,7 @@ absorptance_spct <-
       names(absorptance) <- "out of range"
     }
     names(absorptance) <- paste(names(absorptance), wb.name)
-    setattr(absorptance, "time.unit", "none")
-    setattr(absorptance, "Tfr.type", attr(spct, "Tfr.type", exact=TRUE))
+    setattr(absorptance, "Tfr.type", getTfrType(spct))
     setattr(absorptance, "radiation.unit", paste("absorptance", quantity))
     return(absorptance)
   }
