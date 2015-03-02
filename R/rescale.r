@@ -52,7 +52,7 @@ rescale_spct <- function(spct, range, var.name, f, ...) {
   out.spct[ , var.name := out.spct[ , unlist(.SD), .SDcols = var.name] / summary.value, with = FALSE]
   setattr(out.spct, "class", class(spct))
   setattr(out.spct, "comment", comment(spct))
-  setattr(out.spct, "spct", c(attr(spct, "spct", exact = TRUE), rescaled = TRUE, f = f))
+  setattr(out.spct, "spct", list(attr(spct, "spct", exact = TRUE), rescaled = TRUE, f = f))
   out.spct
 }
 
@@ -88,7 +88,7 @@ Rescale.default <- function(x, ...) {
 #'                f = "mean",
 #'                unit.out = getOption("photobiology.radiation.unit", default="energy"))
 #'
-#' @param spct a source.spct object
+#' @param x a source.spct object
 #' @param ... not used in current version
 #' @param range an R object on which range() returns a vector of length 2,
 #' with min annd max wavelengths (nm)
@@ -131,7 +131,7 @@ Rescale.source.spct <- function(x,
 #'                f = "mean",
 #'                unit.out = getOption("photobiology.radiation.unit", default="energy"))
 #'
-#' @param spct a response.spct object
+#' @param x a response.spct object
 #' @param ... not used in current version
 #' @param range an R object on which range() returns a vector of length 2,
 #' with min annd max wavelengths (nm)
@@ -176,7 +176,7 @@ Rescale.response.spct <- function(x,
 #'                f = "mean",
 #'                qty.out = getOption("photobiology.filter.qty", default="transmittance"))
 #'
-#' @param spct a filter.spct object
+#' @param x a filter.spct object
 #' @param ... not used in current version
 #' @param range an R object on which range() returns a vector of length 2,
 #' with min annd max wavelengths (nm)
@@ -221,7 +221,7 @@ Rescale.filter.spct <- function(x,
 #'                f = "mean",
 #'                qty.out = NULL)
 #'
-#' @param spct a reflector.spct object
+#' @param x a reflector.spct object
 #' @param ... not used in current version
 #' @param range an R object on which range() returns a vector of length 2,
 #' with min annd max wavelengths (nm)
@@ -243,4 +243,23 @@ Rescale.reflector.spct <- function(x,
                       f = f,
                       var.name = "Rfr",
                       ...))
+}
+
+#' Query whether a generic spectrum has been rescaled.
+#'
+#' This function returns TRUE if x is a generic.spct and it has been rescaled
+#' by means of function \code{Rescale}.
+#'
+#' @usage is.rescaled(x)
+#'
+#' @param x a reflector.spct object
+#'
+#' @export
+#'
+is.rescaled <- function(x) {
+  if (!is.any.spct(x)) {
+    return(NA)
+  }
+  spct.attr <- attr(x, "spct", exact = TRUE)
+  as.logical(!is.null(spct.attr[["rescaled"]]) && spct.attr[["rescaled"]])
 }

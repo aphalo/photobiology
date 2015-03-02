@@ -61,7 +61,7 @@ normalize_spct <- function(spct, range, norm, var.name) {
   out.spct[ , var.name := out.spct[ , unlist(.SD), .SDcols = var.name] * scale.factor, with = FALSE]
   setattr(out.spct, "class", class(spct))
   setattr(out.spct, "comment", comment(spct))
-  setattr(out.spct, "spct", c(attr(spct, "spct", exact = TRUE), normalized = TRUE, norm = norm))
+  setattr(out.spct, "spct", list(attr(spct, "spct", exact = TRUE), normalized = TRUE, norm = norm))
   out.spct
 }
 
@@ -96,7 +96,7 @@ normalize.default <- function(x, ...) {
 #'                  norm = "max",
 #'                  unit.out = getOption("photobiology.radiation.unit", default="energy"))
 #'
-#' @param spct a source.spct object
+#' @param x a source.spct object
 #' @param ... not used in current version
 #' @param range an R object on which range() returns a vector of length 2,
 #' with min annd max wavelengths (nm)
@@ -139,7 +139,7 @@ normalize.source.spct <- function(x,
 #'                  norm = "max",
 #'                  unit.out = getOption("photobiology.radiation.unit", default="energy"))
 #'
-#' @param spct a response.spct object
+#' @param x a response.spct object
 #' @param ... not used in current version
 #' @param range an R object on which range() returns a vector of length 2,
 #' with min annd max wavelengths (nm)
@@ -225,7 +225,7 @@ normalize.filter.spct <- function(x,
 #'                  norm = "max",
 #'                  qty.out = NULL)
 #'
-#' @param spct a reflector.spct object
+#' @param x a reflector.spct object
 #' @param ... not used in current version
 #' @param range an R object on which range() returns a vector of length 2,
 #' with min annd max wavelengths (nm)
@@ -247,3 +247,23 @@ normalize.reflector.spct <- function(x,
                           norm = norm,
                           var.name = "Rfr"))
 }
+
+#' Query whether a generic spectrum has been normalized.
+#'
+#' This function returns TRUE if x is a generic.spct and it has been normalized
+#' by means of function \code{normalize}.
+#'
+#' @usage is.rescaled(x)
+#'
+#' @param x a reflector.spct object
+#'
+#' @export
+#'
+is.normalized <- function(x) {
+  if (!is.any.spct(x)) {
+    return(NA)
+  }
+  spct.attr <- attr(x, "spct", exact = TRUE)
+  as.logical(!is.null(spct.attr[["normalized"]]) && spct.attr[["normalized"]])
+}
+
