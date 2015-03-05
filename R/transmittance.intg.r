@@ -26,6 +26,10 @@
 
 transmittance_spct <-
   function(spct, w.band=NULL, pc.out=FALSE, quantity="average", wb.trim=FALSE, use.hinges=NULL){
+    if (is.normalized(spct) || is.rescaled(spct)) {
+      warning("The espectral data has been normalized or rescaled, making impossible to calculate transmittance")
+      return(NA)
+    }
     if (is.filter.spct(spct)) {
       spct <- A2T(spct, action="replace", byref=FALSE)
     } else {

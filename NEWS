@@ -2,8 +2,6 @@ TODO
 ====
 
 Add test cases for chroma.spct
-Edit normalize() and rescale() to mark this in the object with an attribute so that
-plotts and summaries can have this information available.
 
 photobiology 0.5.15
 ===================

@@ -42,6 +42,8 @@
 #' trim_spct(sun.spct, low.limit=100, high.limit=400, fill=0.0)
 #' trim_spct(sun.spct, range=new_waveband(300, 350))
 #' trim_spct(sun.spct, range=c(300, 350))
+#' trim_spct(sun.spct, range=c(NA, 350))
+#' trim_spct(sun.spct, range=c(NA, 300, 350))
 #'
 
 trim_spct <- function(spct, range=NULL, low.limit=NULL, high.limit=NULL, use.hinges=TRUE, fill=NULL, byref=FALSE, verbose=TRUE)
@@ -55,14 +57,26 @@ trim_spct <- function(spct, range=NULL, low.limit=NULL, high.limit=NULL, use.hin
   }
   class.spct <- class(spct)
   if (!is.null(range)) {
-    low.limit <- ifelse(!is.null(low.limit), max(min(range), low.limit), min(range))
-    high.limit <- ifelse(!is.null(high.limit), min(max(range), high.limit), max(range))
+    if (length(range) == 2 && is.na(range[1])) {
+      low.limit <- NULL
+    } else {
+      low.limit <- ifelse(!is.null(low.limit), max(min(range, nna.rm = TRUE), low.limit), min(range, na.rm = TRUE))
+    }
+    if (length(range) == 2 && is.na(range[2])) {
+      high.limit <- NULL
+    } else {
+      high.limit <- ifelse(!is.null(high.limit), min(max(range, na.rm = TRUE), high.limit), max(range, na.rm = TRUE))
+    }
   }
   if (is.null(low.limit)) {
     low.limit <- min(spct, na.rm=TRUE)
   }
   if (is.null(high.limit)) {
     high.limit <- max(spct, na.rm=TRUE)
+  }
+  if (high.limit - low.limit < 1e-7) {
+    warning("When trimming 'range' must be a finite wavelength interval")
+    return(NA) # this should be replaced with an empty spct object
   }
   names.spct <- names(spct)
   names.data <- names.spct[names.spct != "w.length"]

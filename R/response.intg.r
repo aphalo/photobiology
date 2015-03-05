@@ -37,8 +37,9 @@ response_spct <-
            quantity="total",
            wb.trim=NULL,
            use.hinges=NULL){
-    if (!is.response.spct(spct)) {
-      setResponseSpct(spct)
+    if (is.normalized(spct) || is.rescaled(spct)) {
+      warning("The espectral data has been normalized or rescaled, making impossible to calculate integrated response")
+      return(NA)
     }
     # makes "quantum" synonym for "photon" without changes to other code
     if (unit.out == "quantum") {

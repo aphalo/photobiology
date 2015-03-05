@@ -93,8 +93,16 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = NULL) {
   # and in the same loop we make sure that all spectral data uses consistent units
   l.class <- c( "source.spct", "filter.spct", "reflector.spct", "response.spct", "chroma.spct",
                 "generic.spct")
-  photon.based.input <- any(sapply(l, FUN=is.energy.based))
+  photon.based.input <- any(sapply(l, FUN=is.photon.based))
   absorbance.based.input <- any(sapply(l, FUN=is.absorbance.based))
+  rescaled.input <- sapply(l, FUN = is.rescaled)
+  normalized.input <- sapply(l, FUN = is.rescaled)
+  if (any(rescaled.input) && !all(rescaled.input)) {
+    warning("Only some of the spectra being row-bound have been previously rescaled")
+  }
+  if (any(normalized.input) && !all(normalized.input)) {
+    warning("Only some of the spectra being row-bound have been previously normalized")
+  }
   for (i in 1:length(l)) {
     class.spct <- class(l[[i]])
     l.class <- intersect(l.class, class.spct)
@@ -192,6 +200,12 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = NULL) {
     setChromSpct(ans)
   } else if (l.class == "generic.spct") {
     setGenericSpct(ans)
+  }
+  if (any(rescaled.input)) {
+    setattr(ans, "rescaled", "TRUE")
+  }
+  if (any(normalized.input)) {
+    setattr(ans, "normalized", "TRUE")
   }
   if (add.factor) {
     ans[ , (factor.name) := factor(ans[[(factor.name)]])]

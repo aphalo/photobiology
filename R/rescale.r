@@ -52,7 +52,9 @@ rescale_spct <- function(spct, range, var.name, f, ...) {
   out.spct[ , var.name := out.spct[ , unlist(.SD), .SDcols = var.name] / summary.value, with = FALSE]
   setattr(out.spct, "class", class(spct))
   setattr(out.spct, "comment", comment(spct))
-  setattr(out.spct, "spct", list(attr(spct, "spct", exact = TRUE), rescaled = TRUE, f = f))
+  setattr(out.spct, "rescaled", TRUE)
+  setTimeUnit(out.spct, getTimeUnit(spct))
+  setTfrType(out.spct, getTfrType(spct))
   out.spct
 }
 
@@ -252,7 +254,7 @@ Rescale.reflector.spct <- function(x,
 #'
 #' @usage is.rescaled(x)
 #'
-#' @param x a reflector.spct object
+#' @param x a generic.spct object
 #'
 #' @export
 #'
@@ -260,6 +262,6 @@ is.rescaled <- function(x) {
   if (!is.any.spct(x)) {
     return(NA)
   }
-  spct.attr <- attr(x, "spct", exact = TRUE)
-  as.logical(!is.null(spct.attr[["rescaled"]]) && spct.attr[["rescaled"]])
+  spct.attr <- attr(x, "rescaled", exact = TRUE)
+  as.logical(!is.null(spct.attr) && as.logical(spct.attr))
 }

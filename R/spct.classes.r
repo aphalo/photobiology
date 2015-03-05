@@ -1124,12 +1124,13 @@ as.chroma.spct <- function(x) {
 #' @export
 #'
 setTimeUnit <- function(x, time.unit=c("second", "hour", "day", "none", "unknown")) {
+  time.unit <- time.unit[[1]]
   if (is.source.spct(x) || is.response.spct(x)) {
-    if  (!(time.unit[1] %in% c("second", "hour", "day", "none", "unknown"))) {
+    if  (!(time.unit %in% c("second", "hour", "day", "none", "unknown"))) {
       warning("Invalid 'time.unit' argument, only 'second', 'hour', 'day', and 'none' supported.")
       time.unit <- "unknown"
     }
-    setattr(x, "spct", c(attr(x, "spct", exact = TRUE), time.unit = time.unit[1]))
+    setattr(x, "time.unit", time.unit)
   }
   return(x)
 }
@@ -1151,14 +1152,8 @@ setTimeUnit <- function(x, time.unit=c("second", "hour", "day", "none", "unknown
 #'
 getTimeUnit <- function(x) {
   if (is.source.spct(x) || is.response.spct(x)) {
-    spct.attr <- attr(x, "spct", exact = TRUE)
-    # backwards compatibility
-    if (is.null(spct.attr)) {
-      time.unit <- attr(x, "time.unit", exact = TRUE)
-    } else {
-      time.unit <- spct.attr[["time.unit"]]
-    }
-    return(time.unit[1])
+    time.unit <- attr(x, "time.unit", exact = TRUE)
+    return(time.unit[[1]])
   } else {
     return(NA)
   }
@@ -1183,12 +1178,13 @@ getTimeUnit <- function(x) {
 #' @export
 #'
 setTfrType <- function(x, Tfr.type=c("total", "internal")) {
+  Tfr.type <- Tfr.type[[1]]
   if (is.filter.spct(x) || is.object.spct(x)) {
-    if  (!(Tfr.type[1] %in% c("total", "internal", "unknown"))) {
+    if  (!(Tfr.type %in% c("total", "internal", "unknown"))) {
       warning("Invalid 'Tfr.type' argument, only 'total' and 'internal' supported.")
       return(x)
     }
-    setattr(x, "spct", c(attr(x, "spct", exact = TRUE), Tfr.type = Tfr.type[1]))
+    setattr(x, "Tfr.type", Tfr.type)
   }
   return(x)
 }
@@ -1209,16 +1205,9 @@ setTfrType <- function(x, Tfr.type=c("total", "internal")) {
 #'
 getTfrType <- function(x) {
   if (is.filter.spct(x) || is.object.spct(x)) {
-    spct.attr <- attr(x, "spct", exact = TRUE)
-    # backwards compatibility
-    if (is.null(spct.attr)) {
-      Tfr.type <- attr(x, "Tfr.type", exact = TRUE)
-    } else {
-      Tfr.type <- spct.attr[["Tfr.type"]]
-    }
-    return(Tfr.type[1])
+    Tfr.type <- attr(x, "Tfr.type", exact = TRUE)
+    return(Tfr.type[[1]])
   } else {
     return(NA)
   }
 }
-

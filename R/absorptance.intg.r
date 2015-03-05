@@ -24,6 +24,10 @@
 
 absorptance_spct <-
   function(spct, w.band=NULL, quantity="average", wb.trim=NULL, use.hinges=NULL){
+    if (is.normalized(spct) || is.rescaled(spct)) {
+      warning("The espectral data has been normalized or rescaled, making impossible to calculate absorptance")
+      return(NA)
+    }
     spct <- copy(spct)
     # we calculate absorptance
     spct[ , Afr := 1 - Tfr - Rfr]

@@ -8,7 +8,7 @@
 #'
 #' @usage irrad_spct(spct, w.band=NULL,
 #'                   unit.out=getOption("photobiology.radiation.unit", default="energy"),
-#'                   quantity="total", wb.trim=NULL, use.cached.mult=FALSE, use.hinges=NULL)
+#'                   quantity="total", wb.trim=NULL, use.cached.mult=FALSE, use.hinges=NULL, allow.scaled = FALSE)
 #'
 #' @param spct an object of class "source.spct"
 #' @param w.band list of waveband definitions created with new_waveband()
@@ -17,6 +17,10 @@
 #' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries are trimmed, if FALSE, they are discarded
 #' @param use.cached.mult logical indicating whether multiplier values should be cached between calls
 #' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
+#' @param allow.scaled logical indicating whether rescaled or normalized spectra as argument to spct are flagged as an error
+#'
+#' @note Formal parameter allow scaled is mainly used internally for calculation of ratios, as rescaling
+#' and normalization do not invalidate the calcualtion of ratios.
 #'
 #' @return One numeric value for each waveband with no change in scale factor, with name attribute set to
 #' the name of each waveband unless a named list is supplied in which case the names of the list elements are
@@ -41,8 +45,12 @@
 
 irrad_spct <-
   function(spct, w.band=NULL, unit.out=getOption("photobiology.radiation.unit", default="energy"),
-           quantity="total", wb.trim=NULL, use.cached.mult=FALSE, use.hinges=NULL){
+           quantity="total", wb.trim=NULL, use.cached.mult=FALSE, use.hinges=NULL, allow.scaled = FALSE){
     # we have a default, but we check for invalid arguments
+    if (!allow.scaled && (is.normalized(spct) || is.rescaled(spct))) {
+      warning("The espectral data has been normalized or rescaled, making impossible to calculate irradiance")
+      return(NA)
+    }
     if (identical(attr(spct, ".data.table.locked"), TRUE)) {
       spct_x <- copy(spct)
     } else {

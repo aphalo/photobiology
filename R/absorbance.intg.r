@@ -24,6 +24,10 @@
 
 absorbance_spct <-
   function(spct, w.band=NULL, quantity="average", wb.trim=NULL, use.hinges=NULL){
+    if (is.normalized(spct) || is.rescaled(spct)) {
+      warning("The espectral data has been normalized or rescaled, making impossible to calculate absorbance")
+      return(NA)
+    }
     spct <- T2A(spct, action="replace", byref=FALSE)
     # if the waveband is undefined then use all data
     if (is.null(w.band)){

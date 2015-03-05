@@ -61,7 +61,7 @@ normalize_spct <- function(spct, range, norm, var.name) {
   out.spct[ , var.name := out.spct[ , unlist(.SD), .SDcols = var.name] * scale.factor, with = FALSE]
   setattr(out.spct, "class", class(spct))
   setattr(out.spct, "comment", comment(spct))
-  setattr(out.spct, "spct", list(attr(spct, "spct", exact = TRUE), normalized = TRUE, norm = norm))
+  setattr(out.spct, "normalized", norm)
   out.spct
 }
 
@@ -255,7 +255,7 @@ normalize.reflector.spct <- function(x,
 #'
 #' @usage is.rescaled(x)
 #'
-#' @param x a reflector.spct object
+#' @param x a generic.spct object
 #'
 #' @export
 #'
@@ -263,7 +263,7 @@ is.normalized <- function(x) {
   if (!is.any.spct(x)) {
     return(NA)
   }
-  spct.attr <- attr(x, "spct", exact = TRUE)
-  as.logical(!is.null(spct.attr[["normalized"]]) && spct.attr[["normalized"]])
+  spct.attr <- attr(x, "normalized", exact = TRUE)
+  as.logical(!is.null(spct.attr) && as.logical(spct.attr))
 }
 
