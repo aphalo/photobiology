@@ -302,7 +302,7 @@ class(d.spct)
 d.spct
 @
 
-\texttt{object.spct} objects can be created from data tables, data frames, and \texttt{generic.spct} simply by setting them as such. However, columns called \texttt{w.length} (wavelength values expressed in nm), \texttt{Tfr} (Ttransmittance, T, as fraction of one), and\textbackslash or \texttt{Rfr} (Reflectance, R, as fraction of one) must be present.
+\texttt{object.spct} objects can be created from data tables, data frames, and \texttt{generic.spct} simply by setting them as such. However, columns called \texttt{w.length} (wavelength values expressed in nm), \texttt{Tfr} (Transmittance, T, as fraction of one), and\textbackslash or \texttt{Rfr} (Reflectance, R, as fraction of one) must be present.
 
 <<>>=
 e.spct <- setObjectSpct(data.table(w.length = 300:305, Tfr = 0.5, Rfr = 0.5))
@@ -349,7 +349,7 @@ class(h.spct)
 h.spct
 @
 
-The range of the input is checked, and warnings or errors issued. The wavelength range test cannot be overriden as the most likely reason for it to be triggered is the expression of wavelengths in units other than the expected nanometres (nm).
+The range of the input is checked, and warnings or errors issued. The wavelength range test cannot be overridden as the most likely reason for it to be triggered is the expression of wavelengths in units other than the expected nanometres (nm).
 
 <<>>=
 (try(h1.spct <- setReflectorSpct(data.table(wl = 5999:6001, Rfr = 1))))
@@ -367,7 +367,7 @@ The constructor converts percents to fractions before applying the tests.
 (try(h3.spct <- setReflectorSpct(data.table(wl = 300:305, Rpc = -100))))
 @
 
-Setting \texttt{strict.range = FALSE} issues a warning intead of an error, and returns an \texttt{.spct} object possibly containing the \emph{bad data}.
+Setting \texttt{strict.range = FALSE} issues a warning instead of an error, and returns an \texttt{.spct} object possibly containing the \emph{bad data}.
 
 <<>>=
 h4.spct <- setReflectorSpct(data.table(wl = 300:305, Rfr = -1),
@@ -534,6 +534,57 @@ b2.spct
 @
 
 For \texttt{filter.spct} objects functions \texttt{T2A} and \texttt{A2T} allow conversion between spectral transmittance and spectral absorbance and vice versa.
+
+\subsection{Normalizing a spectrum}
+
+Function \texttt{normalize} permits normalizing a spectrum to one at an arbitrary wavelength (nm) or to the wavelength
+of either the maximum or the minimum spectral value.
+
+<<>>=
+normalize(sun.spct)
+@
+
+Which is equivalent to
+
+<<>>=
+normalize(sun.spct, norm = "max")
+@
+
+We can also supply an arbitrary wavelength within the range of the data, and interpolation will be used if needed to calculate the multiplier but no insertion will be done on the spectral data. Consequently, a spectral value equal to one will not necessarily be generated when supplying a wavelength value as argument.
+
+<<>>=
+normalize(sun.spct, norm = 600.3)
+@
+
+It is also possible to supply a range within which the normalization wavelength will be searched.
+
+<<>>=
+normalize(sun.spct, range = PAR(), norm = "max")
+@
+
+As is the case for other functions, the argument "unit.unit" can be used to change the type output from the default.
+
+\subsection{Rescaling a spectrum}
+
+Function \texttt{Rescale} (with a capital R!) rescales a spectrum by dividing each spectral data value by either the integrated "total" or the average "mean" value over a range of wavelengths.
+
+<<>>=
+normalize(sun.spct)
+@
+
+<<>>=
+normalize(sun.spct, f = "total")
+@
+
+It is also possible to supply a range within which integration or averaging will be done.
+
+<<>>=
+normalize(sun.spct, range = PAR(), f = "mean")
+@
+
+As is the case for other functions, the argument "unit.unit" can be used to change the type output from the default.
+
+Furthermore, it is possible to pass any suitable R function, built or user defined, plus additional named arguments to it.
 
 \subsection{Remapping a spectrum to different wavelengths}
 
@@ -719,7 +770,7 @@ objects belonging to different classes, and meaningless combinations return \tex
 \begin{table}
 \newcommand{\N}{\textcolor{red}{\small N}}
 \newcommand{\Y}{\textcolor{green}{\small Y}}
-\caption[Binary operators]{Binary operators and operands. Validity and class of result. All operations marked `\Y' are allowed, those marked `\N' are forbiden and return \texttt{NA} and issue a warning.}\label{tab:operators}\vspace{0.75ex}
+\caption[Binary operators]{Binary operators and operands. Validity and class of result. All operations marked `\Y' are allowed, those marked `\N' are forbidden and return \texttt{NA} and issue a warning.}\label{tab:operators}\vspace{0.75ex}
 \begin{tabular}{lcccccll}
 \toprule
 e1 & \verb|+| & \verb|-| & \verb|*| & \verb|/| & \verb|^| & e2 & result \\
@@ -804,14 +855,14 @@ solar spectral data used, which corresponds to Southern Finland.
 sun.spct * CIE() - sun.spct * polyester.new.spct * CIE()
 @
 
-\subsubsection{Unary operators and math functions}
+\subsubsection{Unary operators and maths functions}
 
-The most common math functions, as well as unary minus and plus, are also implemented for spectral objects (see Table \ref{tab:unary}).
+The most common mat functions, as well as unary minus and plus, are also implemented for spectral objects (see Table \ref{tab:unary}).
 
 \begin{table}
 \newcommand{\N}{\textcolor{red}{\small N}}
 \newcommand{\Y}{\textcolor{green}{\small Y}}
-\caption[Binary operators]{Unary operators and math functions. Validity and class of result. All operations marked `\Y' are allowed, those marked `\N' are not implemented and return \texttt{NA} and issue a warning.}\label{tab:unary}\vspace{0.75ex}
+\caption[Binary operators]{Unary operators and maths functions. Validity and class of result. All operations marked `\Y' are allowed, those marked `\N' are not implemented and return \texttt{NA} and issue a warning.}\label{tab:unary}\vspace{0.75ex}
 \centering
 \begin{tabular}{lcccccll}
 \toprule
@@ -836,7 +887,7 @@ exp(sun.spct)
 sqrt(sun.spct)
 @
 
-\subsubsection{Options affecting math operators and functions}
+\subsubsection{Options affecting maths operators and functions}
 
 The behaviour of the operators depends on the value of two global options. If we would like the operators to
 operate on spectral photon irradiance and return spectral photon irradiance instead of spectral energy irradiance,
@@ -1305,7 +1356,7 @@ otherwise. It allows easier control of values to be used for extrapolation.
 
 The first thing to do is to think whether any part of the spectral measurements can be \textit{a priori} known to be equal to zero. For example for the solar spectrum at ground level it is safe to assume that the spectral irradiance is zero for all wavelengths shorter than 290~nm. If the data are noisy, it is best to discard these data before calculating any effective UV doses.
 
-Another possibility is do smoothing of the spectral data using one a series of possible algorithms. Smoothing can distort the spectrum becasue distinguishing between real peaks and valleys from noise is difficult.
+Another possibility is do smoothing of the spectral data using one a series of possible algorithms. Smoothing can distort the spectrum because distinguishing between real peaks and valleys from noise is difficult.
 
 A third possibility is, when replicate measurements are available, to calculate "parallel" means, medians or other summary quantities, at each value of wavelength.
 
@@ -1333,7 +1384,7 @@ trimmed.sun.spct <- trim_spct(sun.spct, low.limit = 297, fill = NA)
 head(trimmed.sun.spct, 2L)
 @
 
-The code above sets the spectral irradiance values for waveelngths outside the limits to \texttt{NA}, but, for example when plotting, it is useful to replace the noise in the spectrum with zeros.
+The code above sets the spectral irradiance values for wavelengths outside the limits to \texttt{NA}, but, for example when plotting, it is useful to replace the noise in the spectrum with zeros.
 
 <<example-set-zero>>=
 trimmed.sun.spct <- trim_spct(sun.spct, low.limit = 297, fill = 0)
@@ -1366,7 +1417,7 @@ plot(smooth_spct(noisy.sun.spct))  +
   labs(title = "Noisy solar spectrum: custom smoothing")
 @
 
-Methods \texttt{"lowess"} and \texttt{"supsmu"} are general purpose methods, which with their default values for the parameters tend to smooth spectra very agresively. They remove a significant portion of the spectral detail but could be useful when the data is very noisy or when the overall shape of a spectrum is of interest rather than the finer structure.
+Methods \texttt{"lowess"} and \texttt{"supsmu"} are general purpose methods, which with their default values for the parameters tend to smooth spectra very aggressively. They remove a significant portion of the spectral detail but could be useful when the data is very noisy or when the overall shape of a spectrum is of interest rather than the finer structure.
 
 <<smooth-lowess, fig.width=7, fig.height=4>>=
 plot(smooth_spct(noisy.sun.spct, method = "lowess"))  +
@@ -1386,7 +1437,7 @@ plot(smooth_spct(noisy.sun.spct, method = "supsmu", strength = 10))  +
 @
 
 
-Function \texttt{smooth\_spct} is generic with specializtions for \texttt{source.spct}, \texttt{filter.spct}, \texttt{reflector.spct}, and \texttt{response.spct}.
+Function \texttt{smooth\_spct} is generic with specializations for \texttt{source.spct}, \texttt{filter.spct}, \texttt{reflector.spct}, and \texttt{response.spct}.
 
 \subsubsection{Parallel averaging and other parallel summaries}
 
@@ -1449,7 +1500,7 @@ setSourceSpct(medianx.spct)
 medianx.spct
 @
 
-The two code chunks above can be easilly modified as needed, but they do not preserve all the attributes of the original spectra.
+The two code chunks above can be easily modified as needed, but they do not preserve all the attributes of the original spectra.
 
 \section{Astronomical calculations}
 

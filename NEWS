@@ -6,7 +6,19 @@ Add test cases for chroma.spct
 photobiology 0.5.15
 ===================
 
-New functions normalize() and rescale() for spectra.
+New functions normalize() and rescale() for spectra. Both functions set object
+attributes to flag the spectra that have been modified, and no longer are
+expressed in absolute units. In addition, tests were added
+to summary functions to disallow use of rescaled or normalized spectral data as
+input, with the exception of function integrate_spct().
+
+Function rbindspct() was revised to issue a warning when only some of the spectral
+objects are rescaled or normalized.
+
+Changes in the code for handling 'time.unit' and 'Tfr.type' attributes. Added
+new functions getTimeUnit() and getTftType().
+
+New test cases were added.
 
 photobiology 0.5.14
 ===================

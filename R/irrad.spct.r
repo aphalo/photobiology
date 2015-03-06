@@ -8,7 +8,8 @@
 #'
 #' @usage irrad_spct(spct, w.band=NULL,
 #'                   unit.out=getOption("photobiology.radiation.unit", default="energy"),
-#'                   quantity="total", wb.trim=NULL, use.cached.mult=FALSE, use.hinges=NULL, allow.scaled = FALSE)
+#'                   quantity="total", wb.trim=NULL, use.cached.mult=FALSE,
+#'                   use.hinges=NULL, allow.scaled = FALSE)
 #'
 #' @param spct an object of class "source.spct"
 #' @param w.band list of waveband definitions created with new_waveband()
