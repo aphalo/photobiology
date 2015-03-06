@@ -83,6 +83,7 @@ trim_spct <- function(spct, range=NULL, low.limit=NULL, high.limit=NULL, use.hin
   comment.spct <- comment(spct)
   time.unit.spct <- getTimeUnit(spct)
   Tfr.type.spct <- getTfrType(spct)
+  Rfr.type.spct <- getRfrType(spct)
   # check whether we should expand the low end
   low.end <- min(spct, na.rm=TRUE)
   if (low.end > low.limit) {
@@ -156,6 +157,9 @@ trim_spct <- function(spct, range=NULL, low.limit=NULL, high.limit=NULL, use.hin
   }
   if (!is.null(Tfr.type.spct)) {
     setTfrType(spct, Tfr.type.spct)
+  }
+  if (!is.null(Rfr.type.spct)) {
+    setRfrType(spct, Rfr.type.spct)
   }
   if (byref && is.name(name)) {
     name <- as.character(name)

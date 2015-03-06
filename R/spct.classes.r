@@ -199,6 +199,10 @@ check.reflector.spct <- function(x, byref=TRUE, strict.range = TRUE) {
     }
   }
 
+  if (is.null(getRfrType(x))) {
+    setRfrType(x, "total")
+    warning("Missing Rfr.type attribute replaced by 'total'")
+  }
   if (exists("reflectance", x, mode = "numeric", inherits=FALSE)) {
     setnames(x, "reflectance", "Rpc")
     warning("Found variable 'reflectance', I am assuming it is expressed as percent")
@@ -261,6 +265,10 @@ check.object.spct <- function(x, byref=TRUE, strict.range = TRUE) {
   if (is.null(getTfrType(x))) {
     setTfrType(x, "total")
     warning("Missing Tfr.type attribute replaced by 'total'")
+  }
+  if (is.null(getRfrType(x))) {
+    setRfrType(x, "total")
+    warning("Missing Rfr.type attribute replaced by 'total'")
   }
   if (exists("reflectance", x, mode = "numeric", inherits=FALSE)) {
     setnames(x, "reflectance", "Rpc")
@@ -531,11 +539,12 @@ setFilterSpct <- function(x, Tfr.type=c("total", "internal"), strict.range = TRU
 #' If the object is a data.frame is is also made a data.table in the process.
 #'
 #' @param x a data.frame or data.table
+#' @param Rfr.type a character string, either "total" or "specular"
 #' @param strict.range logical indicating whether off-range values result in an error instead of a warning
 #' @export
 #' @exportClass reflector.spct
 #'
-setReflectorSpct <- function(x, strict.range = TRUE) {
+setReflectorSpct <- function(x, Rfr.type=c("total", "specular"), strict.range = TRUE) {
   name <- substitute(x)
   rmDerivedSpct(x)
   if (!is.data.table(x)) {
@@ -547,6 +556,7 @@ setReflectorSpct <- function(x, strict.range = TRUE) {
   if (!is.reflector.spct(x)) {
     setattr(x, "class", c("reflector.spct", class(x)))
   }
+  setRfrType(x, Rfr.type[1])
   x <- check(x, strict.range=strict.range)
   setkey_spct(x, w.length)
   if (is.name(name)) {
@@ -563,11 +573,13 @@ setReflectorSpct <- function(x, strict.range = TRUE) {
 #'
 #' @param x a data.frame or data.table
 #' @param Tfr.type a character string, either "total" or "internal"
+#' @param Rfr.type a character string, either "total" or "specular"
 #' @param strict.range logical indicating whether off-range values result in an error instead of a warning
 #' @export
 #' @exportClass object.spct
 #'
-setObjectSpct <- function(x, Tfr.type=c("total", "internal"), strict.range = TRUE) {
+setObjectSpct <- function(x, Tfr.type=c("total", "internal"),
+                             Rfr.type=c("total", "specular"), strict.range = TRUE) {
   name <- substitute(x)
   rmDerivedSpct(x)
   if (!is.data.table(x)) {
@@ -580,6 +592,7 @@ setObjectSpct <- function(x, Tfr.type=c("total", "internal"), strict.range = TRU
     setattr(x, "class", c("object.spct", class(x)))
   }
   setTfrType(x, Tfr.type)
+  setRfrType(x, Rfr.type)
   x <- check(x, strict.range=strict.range)
   setkey_spct(x, w.length)
   if (is.name(name)) {
@@ -1162,18 +1175,18 @@ getTimeUnit <- function(x) {
 
 # Tfr.type attribute ------------------------------------------------------
 
-#' Set the "Tfr.type" attribute of an existing source.spct object
+#' Set the "Tfr.type" attribute of an existing filter.spct or object.spct object
 #'
 #' Funtion to set by reference the "Tfr.type" attribute
 #'
 #' @usage setTfrType(x, Tfr.type=c("total", "internal"))
 #'
-#' @param x a source.spct object
+#' @param x a filter.spct or an object.spct object
 #' @param Tfr.type a character string, either "total" or "internal"
 #'
 #' @return x
 #'
-#' @note if x is not a filter.spct object, x is not modified
+#' @note if x is not a filter.spct or an object.spct object, x is not modified
 #'
 #' @export
 #'
@@ -1189,11 +1202,63 @@ setTfrType <- function(x, Tfr.type=c("total", "internal")) {
   return(x)
 }
 
-#' Get the "Tfr.type" attribute of an existing source.spct object
+#' Get the "Tfr.type" attribute of an existing filter.spct or object.spct object
 #'
 #' Funtion to read the "Tfr.type" attribute
 #'
 #' @usage setTfrType(x, Tfr.type=c("total", "internal"))
+#'
+#' @param x a filter.spct or object.spct object
+#'
+#' @return character string
+#'
+#' @note if x is not a \code{filter.spct} or an \code{object.spct} object, \code{NA} is returned
+#'
+#' @export
+#'
+getTfrType <- function(x) {
+  if (is.filter.spct(x) || is.object.spct(x)) {
+    Tfr.type <- attr(x, "Tfr.type", exact = TRUE)
+    return(Tfr.type[[1]])
+  } else {
+    return(NA)
+  }
+}
+
+# Rfr.type attribute ------------------------------------------------------
+
+#' Set the "Rfr.type" attribute of an existing reflector.spct or object.spct object
+#'
+#' Funtion to set by reference the "Rfr.type" attribute
+#'
+#' @usage setRfrType(x, Rfr.type=c("total", "specular"))
+#'
+#' @param x a reflector.spct or an object.spct object
+#' @param Rfr.type a character string, either "total" or "specular"
+#'
+#' @return x
+#'
+#' @note if x is not a reflector.spct or object.spct object, x is not modified
+#'
+#' @export
+#'
+setRfrType <- function(x, Rfr.type=c("total", "specular")) {
+  Rfr.type <- Rfr.type[[1]]
+  if (is.reflector.spct(x) || is.object.spct(x)) {
+    if  (!(Rfr.type %in% c("total", "specular", "unknown"))) {
+      warning("Invalid 'Rfr.type' argument, only 'total' and 'internal' supported.")
+      return(x)
+    }
+    setattr(x, "Rfr.type", Rfr.type)
+  }
+  return(x)
+}
+
+#' Get the "Rfr.type" attribute of an existing reflector.spct object
+#'
+#' Funtion to read the "Rfr.type" attribute
+#'
+#' @usage setRfrType(x, Rfr.type=c("total", "specular"))
 #'
 #' @param x a source.spct object
 #'
@@ -1203,10 +1268,10 @@ setTfrType <- function(x, Tfr.type=c("total", "internal")) {
 #'
 #' @export
 #'
-getTfrType <- function(x) {
-  if (is.filter.spct(x) || is.object.spct(x)) {
-    Tfr.type <- attr(x, "Tfr.type", exact = TRUE)
-    return(Tfr.type[[1]])
+getRfrType <- function(x) {
+  if (is.reflector.spct(x) || is.object.spct(x)) {
+    Rfr.type <- attr(x, "Rfr.type", exact = TRUE)
+    return(Rfr.type[[1]])
   } else {
     return(NA)
   }
