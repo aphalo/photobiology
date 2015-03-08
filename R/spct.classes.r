@@ -513,6 +513,13 @@ setPrivateSpct <- function(x) {
 #'
 setFilterSpct <- function(x, Tfr.type=c("total", "internal"), strict.range = TRUE) {
   name <- substitute(x)
+  if ((is.object.spct(x) || is.filter.spct(x)) && !is.null(getTfrType(x))) {
+    if (length(Tfr.type) > 1) {
+      Tfr.type <- getTfrType(x)
+    } else {
+      warning("Replacing existing attribute 'Tfr.type' ", getTfrType(x))
+    }
+  }
   rmDerivedSpct(x)
   if (!is.data.table(x)) {
     setDT(x)
@@ -546,6 +553,13 @@ setFilterSpct <- function(x, Tfr.type=c("total", "internal"), strict.range = TRU
 #'
 setReflectorSpct <- function(x, Rfr.type=c("total", "specular"), strict.range = TRUE) {
   name <- substitute(x)
+  if ((is.object.spct(x) || is.reflector.spct(c)) && !is.null(getRfrType(x))) {
+    if (length(Rfr.type) > 1) {
+      Rfr.type <- getRfrType(x)
+    } else {
+      warning("Replacing existing attribute 'Rfr.type' ", getRfrType(x))
+    }
+  }
   rmDerivedSpct(x)
   if (!is.data.table(x)) {
     setDT(x)
@@ -581,6 +595,20 @@ setReflectorSpct <- function(x, Rfr.type=c("total", "specular"), strict.range = 
 setObjectSpct <- function(x, Tfr.type=c("total", "internal"),
                              Rfr.type=c("total", "specular"), strict.range = TRUE) {
   name <- substitute(x)
+  if ((is.filter.spct(x) || is.object.spct(x)) && !is.null(getTfrType(x))) {
+    if (length(Tfr.type) > 1) {
+      Tfr.type <- getTfrType(x)
+    } else {
+      warning("Replacing existing attribute 'Tfr.type' ", getTfrType(x))
+    }
+  }
+  if ((is.reflector.spct(x) || is.object.spct(x)) && !is.null(getRfrType(x))) {
+    if (length(Rfr.type) > 1) {
+      Rfr.type <- getRfrType(x)
+    } else {
+      warning("Replacing existing attribute 'Rfr.type' ", getRfrType(x))
+    }
+  }
   rmDerivedSpct(x)
   if (!is.data.table(x)) {
     setDT(x)
@@ -1053,15 +1081,16 @@ as.filter.spct <- function(x, Tfr.type=c("total", "internal"), strict.range = TR
 #' @usage as.reflector.spct(x, strict.range = TRUE)
 #'
 #' @param x any R object
+#' @param Rfr.type a character string, either "total" or "specular"
 #' @param strict.range logical indicating whether off-range values result in an error instead of a warning
 #'
 #' @return as.reflector.spct returns a "reflector.spct" if possible.
 #'
 #' @export
 #'
-as.reflector.spct <- function(x, strict.range = TRUE) {
+as.reflector.spct <- function(x, Rfr.type=c("total", "specular"), strict.range = TRUE) {
   y <- copy(x)
-  setReflectorSpct(y, strict.range = strict.range)
+  setReflectorSpct(y, Rfr.type = Rfr.type, strict.range = strict.range)
 }
 
 #' Return a copy of an R object with its class set to object.spct
@@ -1072,15 +1101,20 @@ as.reflector.spct <- function(x, strict.range = TRUE) {
 #'
 #' @param x any R object
 #' @param Tfr.type a character string, either "total" or "internal"
+#' @param Rfr.type a character string, either "total" or "specular"
 #' @param strict.range logical indicating whether off-range values result in an error instead of a warning
 #'
 #' @return as.object.spct returns a "object.spct" if possible.
 #'
 #' @export
 #'
-as.object.spct <- function(x, Tfr.type=c("total", "internal"), strict.range = TRUE) {
+as.object.spct <- function(x,
+                           Tfr.type=c("total", "internal"),
+                           Rfr.type=c("total", "specular"),
+                           strict.range = TRUE) {
   y <- copy(x)
-  setObjectSpct(y, Tfr.type, strict.range = strict.range)
+  setObjectSpct(y, Tfr.type = Tfr.type, Rfr.type = Rfr.type,
+                strict.range = strict.range)
 }
 
 #' Return a copy of an R object with its class set to response.spct

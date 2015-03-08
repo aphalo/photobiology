@@ -34,8 +34,10 @@ transmittance_spct <-
       spct <- A2T(spct, action="replace", byref=FALSE)
     } else {
       spct <- as.filter.spct(spct)
-      spct[ , Rfr := NULL]
     }
+    Tfr.type <- getTfrType(spct)
+    spct <- spct[ , .(w.length, Tfr)] # data.table removes attributes!
+    setTfrType(spct, Tfr.type = Tfr.type)
     # if the waveband is undefined then use all data
     if (is.null(w.band)){
       w.band <- waveband(spct)
@@ -113,7 +115,7 @@ transmittance_spct <-
       if (quantity == "relative.pc") {
         transmittance <- transmittance * 1e2
       }
-    } else if (quantity == "average") {
+    } else if (quantity %in% c("average", "mean")) {
       transmittance <- transmittance / sapply(w.band, spread)
       if (pc.out) {
         transmittance <- transmittance * 1e2
@@ -130,7 +132,7 @@ transmittance_spct <-
     }
 
     if (length(transmittance) == 0) {
-      irrad <- NA
+      transmittance <- NA
       names(transmittance) <- "out of range"
     }
     names(transmittance) <- paste(names(transmittance), wb.name)

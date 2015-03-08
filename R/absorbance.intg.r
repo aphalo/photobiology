@@ -29,6 +29,9 @@ absorbance_spct <-
       return(NA)
     }
     spct <- T2A(spct, action="replace", byref=FALSE)
+    Tfr.type <- getTfrType(spct)
+    spct <- spct[ , .(w.length, A)] # data.table removes attributes!
+    setTfrType(spct, Tfr.type = Tfr.type)
     # if the waveband is undefined then use all data
     if (is.null(w.band)){
       w.band <- waveband(spct)
@@ -107,11 +110,11 @@ absorbance_spct <-
       if (quantity == "relative.pc") {
         absorbance <- absorbance * 1e2
       }
-    } else if (quantity == "average") {
+    } else if (quantity %in% c("average", "mean")) {
       absorbance <- absorbance / sapply(w.band, spread)
     }
     if (length(absorbance) == 0) {
-      irrad <- NA
+      absorbance <- NA
       names(absorbance) <- "out of range"
     }
     names(absorbance) <- paste(names(absorbance), wb.name)

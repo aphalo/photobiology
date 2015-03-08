@@ -28,8 +28,12 @@ reflectance_spct <-
   function(spct, w.band=NULL, pc.out=FALSE, quantity="average", wb.trim=NULL, use.hinges=NULL){
     if (is.object.spct(spct)) {
       spct <- as.reflector.spct(spct)
-      spct[ , Tfr := NULL]
+    } else {
+      spct <- copy(spct)
     }
+    Rfr.type <- getRfrType(spct)
+    spct <- spct[ , .(w.length, Rfr)] # data.table removes attributes!
+    setRfrType(spct, Rfr.type = Rfr.type)
     # if the waveband is undefined then use all data
     if (is.null(w.band)){
       w.band <- waveband(spct)
@@ -107,7 +111,7 @@ reflectance_spct <-
      if (quantity == "relative.pc") {
        reflectance <- reflectance * 1e2
      }
-   } else if (quantity == "average") {
+   } else if (quantity %in% c("average", "mean")) {
      reflectance <- reflectance / sapply(w.band, spread)
      if (pc.out) {
        reflectance <- reflectance * 1e2
@@ -123,7 +127,7 @@ reflectance_spct <-
      quantity <- "total"
    }
    if (length(reflectance) == 0) {
-     irrad <- NA
+     reflectance <- NA
      names(reflectance) <- "out of range"
    }
    names(reflectance) <- paste(names(reflectance), wb.name)
