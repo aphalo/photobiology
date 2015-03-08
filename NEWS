@@ -15,8 +15,8 @@ input, with the exception of function integrate_spct().
 Function rbindspct() was revised to issue a warning when only some of the spectral
 objects are rescaled or normalized.
 
-Changes in the code for handling 'time.unit' and 'Tfr.type' attributes. Added
-new functions getTimeUnit() and getTftType().
+Changes in the code for handling 'time.unit', 'Tfr.type' and 'Rfr.type' attributes.
+Added new functions getTimeUnit(), getTfrType() and getRfrType().
 
 New test cases were added.
 
@@ -35,7 +35,7 @@ or written except for the class attribute, so the class can be changed back to
 object.spct if needed.
 
 New function added: merge.generic.spct() is a wrapper on merge.data.table()
-that sets the correct class to the retruned merged spectrum, preserves attributes
+that sets the correct class to the returned merged spectra, preserves attributes
 used with .spct objects and by default merges by w.length.
 
 photobiology 0.5.13
@@ -45,7 +45,7 @@ New function smooth_spct() for spectra added. Based on the smoothing code in
 package MayaCalc and optionally behaving as a wrapper to other smoothers
 available in R. Implemented for source.spct, filter.spct, reflector.spct
 and response.spct objects. Its interface may change. Now package caTools is
-neded.
+needed.
 
 Operations between .spct objects and numeric vectors, possibly of length one,
 now preserve other variables (e.g.\ ID factors) contained in the spectral objects.
@@ -59,7 +59,7 @@ Bad input error reporting improved for off-range Tfr and Rfr values in check().
 Warning given by T2A() when Tfr = 0 result in A = Inf.
 Added na.rm = TRUE when min() and max() are called on spectral data.
 
-The formal arguments addedd to function rbindspct() in version 0.5.7 have been
+The formal arguments added to function rbindspct() in version 0.5.7 have been
 changed to more closely follow the development version 1.9.5 of package
 data.table. This will break user code that uses the previous
 syntax as added a few weeks ago to this package.
@@ -86,7 +86,7 @@ Test cases for constructors of spectral objects.
 photobiology 0.5.9
 ===================
 
-Updated opertors' code so that unary '-' and unary '+' now work for spectra.
+Updated operators' code so that unary '-' and unary '+' now work for spectra.
 
 Rewrote the code for math functions, removing redundancy, and adding support for
 chroma.spct objects.
@@ -100,8 +100,8 @@ a second table listing unary operators and math functions.
 Edited the constructors of spct objects so that they recognize additional variable names
 for the input data, and rename them.
 
-Added warning messages informing of forbiden operations between dissimilar
-spectral objects and between spectral objetcs and wavebands are attempted.
+Added warning messages informing of forbidden operations between dissimilar
+spectral objects and between spectral objects and wavebands are attempted.
 
 photobiology 0.5.8
 ===================
@@ -465,7 +465,7 @@ photobiology 0.2.20
 ===================
 
 New function w_length_range2rgb(), which takes a range of wavelengths, and returns the equivalent RGB colour assuming equal spectral (energy) irradiance at all wave lengths within the range.
-Modified the calculation of color for wavebands, uisng this new function.
+Modified the calculation of color for wavebands, using this new function.
 
 photobiology 0.2.19
 ===================
@@ -473,7 +473,7 @@ photobiology 0.2.19
 Added waveband versions of generic functions, min(), max(), range() and labels().
 Updated trim_tails() so that it can also expand a spectrum.
 New functions:
-w_length2rgb() to calculate RGB colour definitions for monochormatic light.
+w_length2rgb() to calculate RGB colour definitions for monochromatic light.
 s.e.irrad2rgb() to calculate RGB colour definition from spectral irradiance data or reflectance data.
 Data on x, y, z coordinates for CIE chromaticity coordinates and colour matching functions added.
 
