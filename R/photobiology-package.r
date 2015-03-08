@@ -15,6 +15,9 @@
 #' Version: \tab 0.5.15\cr
 #' Date: \tab 2015-03-06\cr
 #' License: \tab GPL (>= 2.0)\cr
+#' URL: \tab \url{http://www.r4photobiology.info},\cr
+#' \tab \url{https://bitbucket.org/aphalo/photobiology}\cr
+#' BugReports: \tab \url{https://bitbucket.org/aphalo/photobiology}\cr
 #' }
 #' This package is the core of a suite of packages for photobiological
 #' data analysis and plotting. The accompanying packages are data and
@@ -31,7 +34,7 @@
 #' 978-952-10-8362-4 (paperback). Open access PDF download available at
 #' http://hdl.handle.net/10138/37558
 #'
-#' @note This package is still under development, but is by now quite stable.
+#' @note This package is still under development, but is by now stable.
 #'
 #' @import lubridate methods
 #'
@@ -49,11 +52,11 @@
 #' @importClassesFrom data.table data.table
 #'
 #' @examples
-#' data(sun.data)
-#' with(sun.data, photon_irradiance(w.length, s.e.irrad)) # the whole spectrum
-#' with(sun.data, photon_irradiance(w.length, s.e.irrad, new_waveband(400,700)))
-#'
-#' with(sun.data, energy_irradiance(w.length, s.e.irrad)) # the whole spectrum
-#' with(sun.data, energy_irradiance(w.length, s.e.irrad, new_waveband(400,700)))
+#' # irradiance of the whole spectrum
+#' irrad(sun.spct)
+#' # photon irradiance 400 nm to 700 nm
+#' q_irrad(sun.spct, waveband(c(400,700)))
+#' # energy irradiance 400 nm to 700 nm
+#' e_irrad(sun.spct, waveband(c(400,700)))
 #'
 NULL
