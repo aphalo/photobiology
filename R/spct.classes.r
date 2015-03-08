@@ -108,7 +108,7 @@ check.generic.spct <- function(x, byref=TRUE, strict.range=TRUE) {
   }
   wl.min <- min(x$w.length, na.rm = TRUE)
   wl.max <- max(x$w.length, na.rm = TRUE)
-  if (wl.min < 99.999 || wl.max > 6e3) {
+  if (wl.min < 99.999 || wl.max > 1.2e4) {
     stop("Off-range w.length values [", wl.min, "...", wl.max, "] instead of within 100 nm and 6000 nm")
   }
   return(x)
