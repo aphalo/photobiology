@@ -7,9 +7,12 @@ photobiology 0.5.16
 ===================
 
 Fixed handling of attributes in insert_spct_hinges() and added support for
-object.spct to this function.
+object.spct to this function. Also fixed small bugs here and there in the
+handling of attributes, to make behaviour more consistent. Added tests
+to avoid already set attributes to be overwritten by defaults when using
+set...() and as....() functions on existing .spct objects.
 
-Added warnings to default of generic functions to easy diagnosing of problems.
+Added warnings to default methods of generic functions to easy diagnosing of problems.
 
 photobiology 0.5.15
 ===================

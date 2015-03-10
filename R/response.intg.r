@@ -45,15 +45,20 @@ response_spct <-
     if (unit.out == "quantum") {
       unit.out <- "photon"
     }
+    time.unit <- getTimeUnit(spct)
     if (unit.out=="photon") {
       spct <- e2q(spct)
+      # the line below removes all non-data.frame attributes
       spct <- spct[ , list(w.length, s.q.response)]
     } else if (unit.out=="energy") {
       spct <- q2e(spct)
+      # the line below removes all non-data.frame attributes
       spct <- spct[ , list(w.length, s.e.response)]
     } else {
       stop("Invalid 'unit.out'")
     }
+    # we restore the .spct class and attributes
+    setResponseSpct(spct, time.unit = time.unit)
 
     # if the waveband is undefined then use all data
     if (is.null(w.band)){
@@ -151,6 +156,7 @@ response_spct <-
       names(response) <- "out of range"
     }
     names(response) <- paste(names(response), wb_name)
+    setattr(response, "time.unit", getTimeUnit(spct))
     setattr(response, "radiation.unit", paste(unit.out, "response", quantity))
     return(response)
   }

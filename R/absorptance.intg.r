@@ -30,10 +30,28 @@ absorptance_spct <-
     }
     spct <- copy(spct)
     # we calculate absorptance
-    spct[ , Afr := 1 - Tfr - Rfr]
     Tfr.type <- getTfrType(spct)
+    Rfr.type <- getRfrType(spct)
+    if (Tfr.type == "total" && Rfr.type == "total") {
+      spct[ , Afr := 1 - Tfr - Rfr]
+    } else if (Tfr.type == "internal" && Rfr.type == "total") {
+      spct[ , Afr == (1 - Tfr) * (1 - Rfr)]
+    } else if (Tfr.type == "unknown" || Rfr.type == "unknown") {
+      warning("'unknown' Tfr.type or Rfr.type, skipping absorptance calculation")
+      absorptance <- NA
+      setattr(absorptance, "Afr.type", "unknown")
+      setattr(absorptance, "radiation.unit", paste("absorptance", quantity))
+      return(absorptance)
+    } else if (Rfr.type == "specular") {
+      warning("'specular' Rfr.type, skipping absorptance calculation")
+      absorptance <- NA
+      setattr(absorptance, "Afr.type", "unknown")
+      setattr(absorptance, "radiation.unit", paste("absorptance", quantity))
+      return(absorptance)
+    } else {
+      stop("Failed assertion with Tfr.type: ", Tfr.type, "and Rfr.type: ", Rfr.type)
+    }
     spct <- spct[ , .(w.length, Afr)] # data.table removes attributes!
-    setTfrType(spct, Tfr.type = Tfr.type)
     setGenericSpct(spct)
     # if the waveband is undefined then use all data
     if (is.null(w.band)){
@@ -121,7 +139,7 @@ absorptance_spct <-
       names(absorptance) <- "out of range"
     }
     names(absorptance) <- paste(names(absorptance), wb.name)
-    setattr(absorptance, "Tfr.type", getTfrType(spct))
+    setattr(absorptance, "Afr.type", "total")
     setattr(absorptance, "radiation.unit", paste("absorptance", quantity))
     return(absorptance)
   }

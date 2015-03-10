@@ -26,12 +26,12 @@
 
 reflectance_spct <-
   function(spct, w.band=NULL, pc.out=FALSE, quantity="average", wb.trim=NULL, use.hinges=NULL){
+    Rfr.type <- getRfrType(spct)
     if (is.object.spct(spct)) {
       spct <- as.reflector.spct(spct)
     } else {
       spct <- copy(spct)
     }
-    Rfr.type <- getRfrType(spct)
     spct <- spct[ , .(w.length, Rfr)] # data.table removes attributes!
     setRfrType(spct, Rfr.type = Rfr.type)
     # if the waveband is undefined then use all data
@@ -131,7 +131,7 @@ reflectance_spct <-
      names(reflectance) <- "out of range"
    }
    names(reflectance) <- paste(names(reflectance), wb.name)
-   setattr(reflectance, "time.unit", "none")
+   setattr(reflectance, "Rfr.type", getRfrType(spct))
    setattr(reflectance, "radiation.unit", paste("reflectance", quantity))
    return(reflectance)
   }

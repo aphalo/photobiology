@@ -164,13 +164,18 @@ reflector.spct <- function(w.length, Rfr=NULL, Rpc=NULL, comment=NULL, strict.ra
 #'
 #' @export
 #'
-object.spct <- function(w.length, Rfr=NULL, Tfr=NULL, Tfr.type=c("total", "internal"),
-                           comment=NULL, strict.range=TRUE) {
+object.spct <- function(w.length, Rfr=NULL, Tfr=NULL,
+                        Tfr.type=c("total", "internal"),
+                        Rfr.type=c("total", "specular"),
+                        comment=NULL, strict.range=TRUE) {
   out.spct <- data.table(w.length, Rfr, Tfr)
   if (!is.null(comment)) {
     setattr(out.spct, "comment", comment)
   }
-  setObjectSpct(out.spct, strict.range=strict.range)
+  setObjectSpct(out.spct,
+                Tfr.type = Tfr.type,
+                Rfr.type = Rfr.type,
+                strict.range=strict.range)
   return(out.spct)
 }
 
@@ -202,11 +207,11 @@ merge.generic.spct <- function(x, y, by = "w.length", ...) {
   } else if (is.filter.spct(x) && is.reflector.spct(y)) {
     xx <- A2T(x, action = "replace", byref = FALSE)
     z <- data.table:::merge.data.table(xx, y, by = "w.length", ...)
-    setObjectSpct(z, Tfr.type = getTfrType(xx))
+    setObjectSpct(z, Tfr.type = getTfrType(x), Rfr.type = getRfrType(y))
   } else if (is.reflector.spct(x) && is.filter.spct(y)) {
     yy <- A2T(y, action = "replace", byref = FALSE)
     z <- data.table:::merge.data.table(xx, yy, by = "w.length", ...)
-    setObjectSpct(z, Tfr.type = getTfrType(yy))
+    setObjectSpct(z, Tfr.type = getTfrType(y), Rfr.type = getRfrType(x))
   } else {
     z <- data.table:::merge.data.table(x, y, by = "w.length", ...)
     setGenericSpct(z)

@@ -513,7 +513,7 @@ setPrivateSpct <- function(x) {
 #'
 setFilterSpct <- function(x, Tfr.type=c("total", "internal"), strict.range = TRUE) {
   name <- substitute(x)
-  if ((is.object.spct(x) || is.filter.spct(x)) && !is.null(getTfrType(x))) {
+  if ((is.object.spct(x) || is.filter.spct(x)) && getTfrType(x) != "unknown") {
     if (length(Tfr.type) > 1) {
       Tfr.type <- getTfrType(x)
     } else {
@@ -553,7 +553,7 @@ setFilterSpct <- function(x, Tfr.type=c("total", "internal"), strict.range = TRU
 #'
 setReflectorSpct <- function(x, Rfr.type=c("total", "specular"), strict.range = TRUE) {
   name <- substitute(x)
-  if ((is.object.spct(x) || is.reflector.spct(c)) && !is.null(getRfrType(x))) {
+  if ((is.object.spct(x) || is.reflector.spct(c)) && getRfrType(x) != "unknown") {
     if (length(Rfr.type) > 1) {
       Rfr.type <- getRfrType(x)
     } else {
@@ -595,14 +595,14 @@ setReflectorSpct <- function(x, Rfr.type=c("total", "specular"), strict.range = 
 setObjectSpct <- function(x, Tfr.type=c("total", "internal"),
                              Rfr.type=c("total", "specular"), strict.range = TRUE) {
   name <- substitute(x)
-  if ((is.filter.spct(x) || is.object.spct(x)) && !is.null(getTfrType(x))) {
+  if ((is.filter.spct(x) || is.object.spct(x)) && getTfrType(x) != "unknown") {
     if (length(Tfr.type) > 1) {
       Tfr.type <- getTfrType(x)
     } else {
       warning("Replacing existing attribute 'Tfr.type' ", getTfrType(x))
     }
   }
-  if ((is.reflector.spct(x) || is.object.spct(x)) && !is.null(getRfrType(x))) {
+  if ((is.reflector.spct(x) || is.object.spct(x)) && getRfrType(x) != "unknown") {
     if (length(Rfr.type) > 1) {
       Rfr.type <- getRfrType(x)
     } else {
@@ -1097,7 +1097,10 @@ as.reflector.spct <- function(x, Rfr.type=c("total", "specular"), strict.range =
 #'
 #' Function that returns a converted copy of a spectrum object.
 #'
-#' @usage as.object.spct(x, Tfr.type=c("total", "internal"), strict.range = TRUE)
+#' @usage as.object.spct(x,
+#'                       Tfr.type=c("total", "internal"),
+#'                       Rfr.type=c("total", "specular"),
+#'                       strict.range = TRUE)
 #'
 #' @param x any R object
 #' @param Tfr.type a character string, either "total" or "internal"
@@ -1121,17 +1124,18 @@ as.object.spct <- function(x,
 #'
 #' Function that returns a converted copy of a spectrum object.
 #'
-#' @usage as.response.spct(x)
+#' @usage as.response.spct(x, time.unit = "none")
 #'
 #' @param x any R object
+#' @param time.unit character string "second" or "day"
 #'
 #' @return as.response.spct returns a "response.spct" if possible.
 #'
 #' @export
 #'
-as.response.spct <- function(x) {
+as.response.spct <- function(x, time.unit = "none") {
   y <- copy(x)
-  setResponseSpct(y)
+  setResponseSpct(y, time.unit = time.unit)
 }
 
 #' Return a copy of an R object with its class set to chroma.spct
@@ -1158,20 +1162,28 @@ as.chroma.spct <- function(x) {
 #'
 #' Funtion to set by reference the "time.unit" attribute
 #'
-#' @usage setTimeUnit(x, time.unit=c("second", "hour", "day", "none", "unknown"))
+#' @usage setTimeUnit(x, time.unit=c("second", "hour", "day", "none"))
 #'
 #' @param x a source.spct object
-#' @param time.unit a character string, either "second", "hour", "day", "none", or "unknown"
+#' @param time.unit a character string, either "second", "hour", "day", or "none"
 #'
 #' @return x
 #'
 #' @note if x is not a source.spct or response.spct object, x is not modified.
+#' The behaviour of this function is 'unusual' in that the default for parameter
+#' \code{time.unit} is used only if \code{x} does not already have this attribute set.
 #' \code{time.unit = "hour"} is currently not fully supported.
 #'
 #' @export
 #'
-setTimeUnit <- function(x, time.unit=c("second", "hour", "day", "none", "unknown")) {
-  time.unit <- time.unit[[1]]
+setTimeUnit <- function(x, time.unit=c("second", "hour", "day", "none")) {
+  if (length(time.unit) > 1) {
+    if (getTimeUnit(x) != "unknown") {
+      time.unit <- getTimeUnit(x)
+    } else {
+      time.unit <- time.unit[[1]]
+    }
+  }
   if (is.source.spct(x) || is.response.spct(x)) {
     if  (!(time.unit %in% c("second", "hour", "day", "none", "unknown"))) {
       warning("Invalid 'time.unit' argument, only 'second', 'hour', 'day', and 'none' supported.")
@@ -1200,6 +1212,10 @@ setTimeUnit <- function(x, time.unit=c("second", "hour", "day", "none", "unknown
 getTimeUnit <- function(x) {
   if (is.source.spct(x) || is.response.spct(x)) {
     time.unit <- attr(x, "time.unit", exact = TRUE)
+    if (is.null(time.unit)) {
+      # need to handle objects created with old versions
+      time.unit <- "unknown"
+    }
     return(time.unit[[1]])
   } else {
     return(NA)
@@ -1221,11 +1237,19 @@ getTimeUnit <- function(x) {
 #' @return x
 #'
 #' @note if x is not a filter.spct or an object.spct object, x is not modified
+#' The behaviour of this function is 'unusual' in that the default for parameter
+#' \code{Tfr.type} is used only if \code{x} does not already have this attribute set.
 #'
 #' @export
 #'
 setTfrType <- function(x, Tfr.type=c("total", "internal")) {
-  Tfr.type <- Tfr.type[[1]]
+  if (length(Tfr.type) > 1) {
+    if (getTfrType(x) != "unknown") {
+      Tfr.type <- getTfrType(x)
+    } else {
+      Tfr.type <- Tfr.type[[1]]
+    }
+  }
   if (is.filter.spct(x) || is.object.spct(x)) {
     if  (!(Tfr.type %in% c("total", "internal", "unknown"))) {
       warning("Invalid 'Tfr.type' argument, only 'total' and 'internal' supported.")
@@ -1253,6 +1277,10 @@ setTfrType <- function(x, Tfr.type=c("total", "internal")) {
 getTfrType <- function(x) {
   if (is.filter.spct(x) || is.object.spct(x)) {
     Tfr.type <- attr(x, "Tfr.type", exact = TRUE)
+    if (is.null(Tfr.type)) {
+      # need to handle objects created with old versions
+      Tfr.type <- "unknown"
+    }
     return(Tfr.type[[1]])
   } else {
     return(NA)
@@ -1272,12 +1300,20 @@ getTfrType <- function(x) {
 #'
 #' @return x
 #'
-#' @note if x is not a reflector.spct or object.spct object, x is not modified
+#' @note if x is not a reflector.spct or object.spct object, x is not modified.
+#' The behaviour of this function is 'unusual' in that the default for parameter
+#' Rfr.type is used only if \code{x} does not already have this attribute set.
 #'
 #' @export
 #'
 setRfrType <- function(x, Rfr.type=c("total", "specular")) {
-  Rfr.type <- Rfr.type[[1]]
+  if (length(Rfr.type) > 1) {
+    if (getRfrType(x) != "unknown") {
+      Rfr.type <- getRfrType(x)
+    } else {
+      Rfr.type <- Rfr.type[[1]]
+    }
+  }
   if (is.reflector.spct(x) || is.object.spct(x)) {
     if  (!(Rfr.type %in% c("total", "specular", "unknown"))) {
       warning("Invalid 'Rfr.type' argument, only 'total' and 'internal' supported.")
@@ -1305,6 +1341,10 @@ setRfrType <- function(x, Rfr.type=c("total", "specular")) {
 getRfrType <- function(x) {
   if (is.reflector.spct(x) || is.object.spct(x)) {
     Rfr.type <- attr(x, "Rfr.type", exact = TRUE)
+    if (is.null(Rfr.type)) {
+      # need to handle objects created with old versions
+      Rfr.type <- "unknown"
+    }
     return(Rfr.type[[1]])
   } else {
     return(NA)
