@@ -76,6 +76,7 @@ Rescale <- function(x, ...) UseMethod("Rescale")
 #' @param ... not used in current version
 #' @export Rescale.default
 Rescale.default <- function(x, ...) {
+  warning("'Rescale' is not defined for objects of class ", class(spct)[1])
   return(x)
 }
 

@@ -15,6 +15,7 @@ tag <- function(x, ...) UseMethod("tag")
 #' @param ... not used in current version
 #' @export tag.default
 tag.default <- function(x, ...) {
+  warning("'tag' is not defined for objects of class ", class(spct)[1])
   return(x)
 }
 

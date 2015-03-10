@@ -3,6 +3,14 @@ TODO
 
 Add test cases for chroma.spct
 
+photobiology 0.5.16
+===================
+
+Fixed handling of attributes in insert_spct_hinges() and added support for
+object.spct to this function.
+
+Added warnings to default of generic functions to easy diagnosing of problems.
+
 photobiology 0.5.15
 ===================
 

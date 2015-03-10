@@ -165,6 +165,7 @@ reflectance <- function(spct, w.band, pc.out, quantity, wb.trim, use.hinges) Use
 #' @export reflectance.default
 #'
 reflectance.default <- function(spct, w.band, pc.out, quantity, wb.trim, use.hinges) {
+  warning("'reflectance' is not defined for objects of class ", class(spct)[1])
   return(NA)
 }
 

@@ -21,6 +21,10 @@
 ##'                    c(199.99,200.00,399.50,399.99,400.00,699.99,
 ##'                          700.00,799.99,1000.00))
 insert_spct_hinges <- function(spct, hinges=NULL) {
+  if (!is.any.spct(spct)) {
+    warning("Only objects derived from 'generic.spct' are supported")
+    return(spct)
+  }
   if (is.null(hinges)) {
     return(spct)
   }
@@ -37,8 +41,14 @@ insert_spct_hinges <- function(spct, hinges=NULL) {
     idx.data <- which(names.data)
     class.spct <- class(spct)
     comment.spct <- comment(spct)
-    if  (is(spct, "source.spct")) {
-      time.unit.spct <- getTimeUnit(spct)
+    if (is.source.spct(spct) || is.response.spct(spct)) {
+      time.unit <- getTimeUnit(spct)
+    }
+    if (is.filter.spct(spct) || is.object.spct(spct)) {
+      Tfr.type <- getTfrType(spct)
+    }
+    if (is.reflector.spct(spct) || is.object.spct(spct)) {
+      Rfr.type <- getRfrType(spct)
     }
     new.spct <- data.table(w.length = new.w.length)
     first.iter <- TRUE
@@ -51,16 +61,15 @@ insert_spct_hinges <- function(spct, hinges=NULL) {
       }
     }
     if(class.spct[1] == "source.spct") {
-      setSourceSpct(new.spct)
-      if (!is.null(time.unit.spct)) {
-        setTimeUnit(new.spct, time.unit.spct)
-      }
+      setSourceSpct(new.spct, time.unit = time.unit)
     } else if (class.spct[1] == "filter.spct") {
-      setFilterSpct(new.spct)
+      setFilterSpct(new.spct, Tfr.type = Tfr.type)
     } else if (class.spct[1] == "reflector.spct") {
-      setReflectorSpct(new.spct)
+      setReflectorSpct(new.spct, Rfr.type = Rfr.type)
+    } else if (class.spct[1] == "object.spct") {
+      setObjectSpct(new.spct, Tfr.type = Tfr.type, Rfr.type = Rfr.type)
     } else if (class.spct[1] == "response.spct") {
-      setResponseSpct(new.spct)
+      setResponseSpct(new.spct, time.unit = time.unit)
     } else if (class.spct[1] == "chroma.spct") {
       setChromaSpct(new.spct)
     } else if (class.spct[1] == "generic.spct") {

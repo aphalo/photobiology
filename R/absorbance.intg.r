@@ -149,6 +149,7 @@ absorbance <- function(spct, w.band, quantity, wb.trim, use.hinges) UseMethod("a
 #' @export absorbance.default
 #'
 absorbance.default <- function(spct, w.band, quantity, wb.trim, use.hinges) {
+  warning("'absorbance' is not defined for objects of class ", class(spct)[1])
   return(NA)
 }
 

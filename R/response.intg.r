@@ -201,6 +201,7 @@ response.generic.spct <- response_spct
 #' @export response.default
 #'
 response.default <- function(spct, w.band, unit.out, quantity, wb.trim, use.hinges) {
+  warning("'response' is not defined for objects of class ", class(spct)[1])
   return(NA)
 }
 
@@ -327,6 +328,7 @@ q_response <- function(spct, w.band, quantity, wb.trim, use.hinges) UseMethod("q
 #' @export e_response.default
 #'
 e_response.default <- function(spct, w.band, quantity, wb.trim, use.hinges) {
+  warning("'e_response' is not defined for objects of class ", class(spct)[1])
   return(NA)
 }
 
@@ -342,6 +344,7 @@ e_response.default <- function(spct, w.band, quantity, wb.trim, use.hinges) {
 #' @export q_response.default
 #'
 q_response.default <- function(spct, w.band, quantity, wb.trim, use.hinges) {
+  warning("'q_response' is not defined for objects of class ", class(spct)[1])
   return(NA)
 }
 

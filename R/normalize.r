@@ -82,7 +82,8 @@ normalize <- function(x, ...) UseMethod("normalize")
 #' @param ... not used in current version
 #' @export normalize.default
 normalize.default <- function(x, ...) {
-  return(x / max(x, ...))
+  warning("'normalize' is not defined for objects of class ", class(spct)[1])
+  return(x)
 }
 
 #' Normalize a source spectrum.

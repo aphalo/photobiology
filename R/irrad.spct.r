@@ -202,6 +202,7 @@ irrad.source.spct <- irrad_spct
 #' @export
 #'
 irrad.default <- function(spct, w.band, unit.out, quantity, wb.trim, use.cached.mult, use.hinges) {
+  warning("'irrad' is not defined for objects of class ", class(spct)[1])
   return(NA)
 }
 
@@ -364,6 +365,7 @@ q_irrad <- function(spct, w.band, quantity, wb.trim, use.cached.mult, use.hinges
 #' @export
 #'
 e_irrad.default <- function(spct, w.band, quantity, wb.trim, use.cached.mult, use.hinges) {
+  warning("'e_irrad' is not defined for objects of class ", class(spct)[1])
   return(NA)
 }
 
@@ -381,5 +383,6 @@ e_irrad.default <- function(spct, w.band, quantity, wb.trim, use.cached.mult, us
 #' @export
 #'
 q_irrad.default <- function(spct, w.band, quantity, wb.trim, use.cached.mult, use.hinges) {
+  warning("'q_irrad' is not defined for objects of class ", class(spct)[1])
   return(NA)
 }
