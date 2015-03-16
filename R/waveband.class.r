@@ -257,12 +257,12 @@ normalization.waveband <- function(x) {
 #' A generic function that returns the normalization of an R object.
 #'
 #' @param x an R object
-#' @export is_effective is.effective
-#' @aliases is_effective is.effective
+#' @export is_effective is_effective
+#' @aliases is_effective is_effective
 #'
 is_effective <- function(x) UseMethod("is_effective")
 
-is.effective <- is_effective
+is_effective <- is_effective
 
 #' Is an R object "effective".
 #'
@@ -277,7 +277,7 @@ is_effective.default <- function(x) {
 
 #' Is a "waveband" object defining an effective irradiance.
 #'
-#' A function that returns the normalization wavelength of a waveband object.
+#' A function that returns true if it is a BSWF.
 #'
 #' @param x an object of class "waveband"
 #' @export is_effective.waveband

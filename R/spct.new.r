@@ -3,12 +3,14 @@
 #' This fucntion can be used to create source.spct objects from numeric vectors.
 #'
 #' @usage source.spct(w.length, s.e.irrad=NULL, s.q.irrad=NULL,
-#'                    time.unit=c("second", "day"), comment=NULL, strict.range=TRUE)
+#'                    time.unit=c("second", "day"), bswf.used = c("none", "unknown"),
+#'                    comment=NULL, strict.range=TRUE)
 #'
 #' @param w.length numeric vector with wavelengths in nanometres
 #' @param s.e.irrad numeric vecror with spectral energy irradiance in W m-2 nm-1 or J d-1 m-2 nm-1
 #' @param s.q.irrad numeric vecror with spectral photon irradiance in mol s-1 m-2 nm-1 or mol d-1 m-2 nm-1
 #' @param time.unit character string indicating the time unit used for spectral irradiance or exposure ("second" or "day")
+#' @param bswf.used character string indicating the BSWF used, if any, for spectral effective irradiance or exposure ("second" or "day")
 #' @param comment character string to be added as a comment attribute to the created object
 #' @param strict.range logical indicating whether off-range values result in an error instead of a warning
 #'
@@ -16,7 +18,9 @@
 #'
 #' @export
 #'
-source.spct <- function(w.length, s.e.irrad=NULL, s.q.irrad=NULL, time.unit=c("second", "day"), comment=NULL, strict.range=TRUE) {
+source.spct <- function(w.length, s.e.irrad=NULL, s.q.irrad=NULL,
+                        time.unit=c("second", "day"), bswf.used = c("none", "unknown"),
+                        comment=NULL, strict.range=TRUE) {
   if (is.null(s.q.irrad) && (is.numeric(s.e.irrad))) {
     out.spct <- data.table(w.length, s.e.irrad)
   } else if (is.null(s.e.irrad) && (is.numeric(s.q.irrad))) {
@@ -28,7 +32,9 @@ source.spct <- function(w.length, s.e.irrad=NULL, s.q.irrad=NULL, time.unit=c("s
   if (!is.null(comment)) {
     setattr(out.spct, "comment", comment)
   }
-  setSourceSpct(out.spct, time.unit, strict.range)
+  setSourceSpct(out.spct,
+                time.unit = time.unit, bswf.used = bswf.used,
+                strict.range = strict.range)
   return(out.spct)
 }
 

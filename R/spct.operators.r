@@ -38,15 +38,22 @@ oper.e.generic.spct <- function(e1, e2, oper) {
         warning("Only '*' is allowed between source.spct and waveband objects")
         return(NA)
       }
+      if (is_effective(e1) && !is_effective(e2)) {
+        bwswf.used <- getBSWFUsed(e1)
+      } else if (!is_effective(e1) && is_effective(e2)) {
+        bswf.used <- labels(e2)[["name"]]
+      } else if (is_effective(e1) && is_effective(e2)) {
+        bswf.used <- paste(getBSWFUsed(e1), "*", labels(e2)[["name"]])
+      } else if (!is_effective(e1) && !is_effective(e2)) {
+        bswf.used <- "none"
+      } else {
+        stop("Failed assertion! BUG IN PACKAGE CODE")
+      }
       e1 <- trim_spct(e1, low.limit=min(e2), high.limit=max(e2) - 1e-3, verbose=FALSE, use.hinges = TRUE)
       mult <- calc_multipliers(w.length=e1$w.length, w.band=e2, unit.out="energy",
                                unit.in="energy", use.cached.mult=FALSE)
-      if (is_effective(e2)) {
-        return(response.spct(w.length=e1$w.length, s.e.response = e1$s.e.irrad * mult, time.unit=getTimeUnit(e1)))
-      } else {
-        return(source.spct(w.length=e1$w.length, s.e.irrad = e1$s.e.irrad * mult,
-                           time.unit=getTimeUnit(e1), strict.range = FALSE))
-      }
+      return(source.spct(w.length=e1$w.length, s.e.irrad = e1$s.e.irrad * mult,
+                           time.unit=getTimeUnit(e1), bswf.used=bswf.used, strict.range = FALSE))
     }
     if (is.numeric(e2)) {
       out.spct <- copy(e1)

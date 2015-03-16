@@ -375,7 +375,11 @@ check.source.spct <- function(x, byref=TRUE, strict.range=FALSE) {
 
   if (is.null(getTimeUnit(x))) {
     setTimeUnit(x, "second")
-    warning("Missing time.unit replaced by 'second'")
+    warning("Missing attribute 'time.unit' set to 'second'")
+  }
+  if (is.null(is_effective(x))) {
+    setBSWFUsed(x, "none")
+    warning("Missing atrribute 'bswf.used' set to 'none'")
   }
   if (exists("s.e.irrad", x, mode = "numeric", inherits=FALSE)) {
     NULL
@@ -673,7 +677,8 @@ setResponseSpct <- function(x, time.unit="none") {
 #' @export
 #' @exportClass source.spct
 #'
-setSourceSpct <- function(x, time.unit="second", strict.range = FALSE) {
+setSourceSpct <- function(x, time.unit="second", bswf.used=c("none", "unknown"),
+                          strict.range = FALSE) {
   name <- substitute(x)
   rmDerivedSpct(x)
   if (!is.data.table(x)) {
@@ -686,6 +691,7 @@ setSourceSpct <- function(x, time.unit="second", strict.range = FALSE) {
     setattr(x, "class", c("source.spct", class(x)))
   }
   setTimeUnit(x, time.unit)
+  setBSWFUsed(x, bswf.used = bswf.used)
   x <- check(x, strict.range = strict.range)
   setkey_spct(x, w.length)
   if (is.name(name)) {
@@ -1040,7 +1046,8 @@ as.private.spct <- function(x) {
 #'
 #' Function that returns a converted copy of a spectrum object.
 #'
-#' @usage as.source.spct(x, time.unit=c("second", "day"), strict.range = FALSE)
+#' @usage as.source.spct(x, time.unit=c("second", "day"), bswf.used=c("none", "unknown"),
+#'                       strict.range = FALSE)
 #'
 #' @param x any R object
 #' @param time.unit character string, "second" or "day"
@@ -1052,7 +1059,7 @@ as.private.spct <- function(x) {
 #'
 as.source.spct <- function(x, time.unit=c("second", "day"), strict.range = FALSE) {
   y <- copy(x)
-  setSourceSpct(y, time.unit, strict.range = strict.range)
+  setSourceSpct(y, time.unit, strict.range = strict.range, bswf.used = bswf.used)
 }
 
 #' Return a copy of an R object with its class set to filter.spct
@@ -1222,6 +1229,87 @@ getTimeUnit <- function(x) {
   }
 }
 
+
+# bswf attribute -----------------------------------------------------
+
+#' Set the "bswf.used" attribute of an existing source.spct object
+#'
+#' Funtion to set by reference the "time.unit" attribute
+#'
+#' @usage setBSWFUsed(x, bswf.used=c("none", "unknown"))
+#'
+#' @param x a source.spct object
+#' @param bsswf.used a character string, either "none" or the name of a BSWF
+#'
+#' @return x
+#'
+#' @note if x is not a source.spct, x is not modified.
+#' The behaviour of this function is 'unusual' in that the default for parameter
+#' \code{bswf.used} is used only if \code{x} does not already have this attribute set.
+#' \code{time.unit = "hour"} is currently not fully supported.
+#'
+#' @export
+#'
+setBSWFUsed <- function(x, bswf.used=c("none", "unknown")) {
+  if (is.null(bswf.used) || length(bswf.used) < 1) {
+    bswf.used <- "none"
+  }
+  if (length(bswf.used) > 1) {
+    if (is_effective(x)) {
+      bswf.used <- getBSWFUsed(x)
+    } else {
+      bswf.used <- bswf.used[[1]]
+    }
+  }
+  if (is.source.spct(x)) {
+    if  (!(is.character(bswf.used))) {
+      warning("Only character strings are valid vlues for 'bswf.used' argument")
+      bswf.used <- "unknown"
+    }
+    setattr(x, "bswf.used", bswf.used)
+  }
+  return(x)
+}
+
+#' Get the "bswf.used" attribute of an existing source.spct object
+#'
+#' Funtion to read the "time.unit" attribute
+#'
+#' @usage getBSWFUsed(x)
+#'
+#' @param x a source.spct object
+#'
+#' @return character string
+#'
+#' @note if x is not a \code{source.spct} object, NA
+#' is retruned
+#'
+#' @export
+#'
+getBSWFUsed <- function(x) {
+  if (is.source.spct(x)) {
+    bswf.used <- attr(x, "bswf.used", exact = TRUE)
+    if (is.null(bswf.used) || length(bswf.used) < 1) {
+      # need to handle objects created with old versions
+      bswf.used <- "none"
+    }
+    return(bswf.used[[1]])
+  } else {
+    return(NA)
+  }
+}
+
+#' Query if  an "source.spct" object contain effective spectral irradiance values.
+#'
+#' A function that returns \code{TRUE} if the spectral data has been convoluted
+#' with a BSWF to weight it.
+#'
+#' @param x an object of class "source.spct"
+#' @export is_effective.source.spct
+is_effective.source.spct <- function(x) {
+  bswf.used <- getBSWFUsed(x)
+  return( !is.null(bswf.used) && (bswf.used != "none") )
+}
 
 # Tfr.type attribute ------------------------------------------------------
 

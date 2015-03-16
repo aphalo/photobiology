@@ -3,6 +3,16 @@ TODO
 
 Add test cases for chroma.spct
 
+photobiology 0.5.17
+===================
+
+Bug fix: in version 0.5.15? the behaviour of the product of a BSWF and a source
+spectrum was changed to return a response spectrum. This is not consitent with
+the idea the a BSWF is a weughting function for quantifying radiation. The result
+should remain as radiation. This has been fixed, and now if the waveband is
+a BSWF (checked with function is.effective()) the resulting spectrum is tagged
+as being "effective".
+
 photobiology 0.5.16
 ===================
 

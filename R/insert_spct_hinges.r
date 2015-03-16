@@ -43,6 +43,7 @@ insert_spct_hinges <- function(spct, hinges=NULL) {
     comment.spct <- comment(spct)
     if (is.source.spct(spct) || is.response.spct(spct)) {
       time.unit <- getTimeUnit(spct)
+      bswf.used <- getBSWFUsed(spct)
     }
     if (is.filter.spct(spct) || is.object.spct(spct)) {
       Tfr.type <- getTfrType(spct)
@@ -61,7 +62,7 @@ insert_spct_hinges <- function(spct, hinges=NULL) {
       }
     }
     if(class.spct[1] == "source.spct") {
-      setSourceSpct(new.spct, time.unit = time.unit)
+      setSourceSpct(new.spct, time.unit = time.unit, bswf.used = bswf.used)
     } else if (class.spct[1] == "filter.spct") {
       setFilterSpct(new.spct, Tfr.type = Tfr.type)
     } else if (class.spct[1] == "reflector.spct") {
