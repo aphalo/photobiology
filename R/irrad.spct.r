@@ -128,22 +128,31 @@ irrad_spct <-
     # possibly weighted depending on the waveband definition
     irrad <- numeric(wb.number)
     i <- 0L
+    is_effective.spectrum <- is_effective(spct)
     for (wb in w.band) {
       i <- i + 1L
       # get names from wb if needed
       if (wb.name[i] == "") {
         wb.name[i] <- wb$name
       }
-      # calculate the multipliers
-      mult <- calc_multipliers(w.length=spct_x$w.length, w.band=wb, unit.out=unit.out,
-                               unit.in=unit.in, use.cached.mult=use.cached.mult)
-      # calculate weighted spectral irradiance
-      if (unit.out == "energy") {
-        irr <- with(spct_x, integrate_irradiance(w.length, s.e.irrad * mult))
+      if (is_effective.spectrum && is_effective(wb)) {
+        warning("Effective spectral irradiance is not compatible with a BSWF: ", wb.name[i])
+        irrad[i] <- NA
       } else {
-        irr <- with(spct_x, integrate_irradiance(w.length, s.q.irrad * mult))
+        if (is_effective.spectrum) {
+          wb.name[i] <- paste(getBSWFUsed(spct), "*", wb.name[i])
+        }
+        # calculate the multipliers
+        mult <- calc_multipliers(w.length=spct_x$w.length, w.band=wb, unit.out=unit.out,
+                                 unit.in=unit.in, use.cached.mult=use.cached.mult)
+        # calculate weighted spectral irradiance
+        if (unit.out == "energy") {
+          irr <- with(spct_x, integrate_irradiance(w.length, s.e.irrad * mult))
+        } else {
+          irr <- with(spct_x, integrate_irradiance(w.length, s.q.irrad * mult))
+        }
+        irrad[i] <- irr
       }
-      irrad[i] <- irr
     }
     if (quantity %in% c("contribution", "contribution.pc")) {
       if (any(sapply(w.band, is_effective))) {
@@ -180,7 +189,12 @@ irrad_spct <-
     }
     names(irrad) <- paste(names(irrad), wb.name)
     setattr(irrad, "time.unit", getTimeUnit(spct_x))
-    setattr(irrad, "radiation.unit", paste(unit.out, "irradiance", quantity))
+    if (is_effective(spct_x)) {
+      setattr(irrad, "radiation.unit",
+              paste(unit.out, "irradiance", quantity, "effective:", getBSWFUsed(spct_x)))
+    } else {
+      setattr(irrad, "radiation.unit", paste(unit.out, "irradiance", quantity))
+    }
     return(irrad)
   }
 
