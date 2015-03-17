@@ -673,6 +673,7 @@ setResponseSpct <- function(x, time.unit="none") {
 #'
 #' @param x a data.frame or data.table
 #' @param time.unit character string "second" or "day"
+#' @param bswf.used a character string, either "none" or the name of a BSWF
 #' @param strict.range logical indicating whether off-range values result in an error instead of a warning
 #' @export
 #' @exportClass source.spct
@@ -1046,7 +1047,9 @@ as.private.spct <- function(x) {
 #'
 #' Function that returns a converted copy of a spectrum object.
 #'
-#' @usage as.source.spct(x, time.unit=c("second", "day"), bswf.used=c("none", "unknown"),
+#' @usage as.source.spct(x,
+#'                       time.unit=c("second", "day"),
+#'                       bswf.used=c("none", "unknown"),
 #'                       strict.range = FALSE)
 #'
 #' @param x any R object
@@ -1057,7 +1060,10 @@ as.private.spct <- function(x) {
 #'
 #' @export
 #'
-as.source.spct <- function(x, time.unit=c("second", "day"), strict.range = FALSE) {
+as.source.spct <- function(x,
+                           time.unit=c("second", "day"),
+                           bswf.used=c("none", "unknown"),
+                           strict.range = FALSE) {
   y <- copy(x)
   setSourceSpct(y, time.unit, strict.range = strict.range, bswf.used = bswf.used)
 }
@@ -1085,7 +1091,7 @@ as.filter.spct <- function(x, Tfr.type=c("total", "internal"), strict.range = TR
 #'
 #' Function that returns a converted copy of a spectrum object.
 #'
-#' @usage as.reflector.spct(x, strict.range = TRUE)
+#' @usage as.reflector.spct(x, Rfr.type = c("total", "specular"), strict.range = TRUE)
 #'
 #' @param x any R object
 #' @param Rfr.type a character string, either "total" or "specular"
@@ -1095,7 +1101,7 @@ as.filter.spct <- function(x, Tfr.type=c("total", "internal"), strict.range = TR
 #'
 #' @export
 #'
-as.reflector.spct <- function(x, Rfr.type=c("total", "specular"), strict.range = TRUE) {
+as.reflector.spct <- function(x, Rfr.type = c("total", "specular"), strict.range = TRUE) {
   y <- copy(x)
   setReflectorSpct(y, Rfr.type = Rfr.type, strict.range = strict.range)
 }
@@ -1239,7 +1245,7 @@ getTimeUnit <- function(x) {
 #' @usage setBSWFUsed(x, bswf.used=c("none", "unknown"))
 #'
 #' @param x a source.spct object
-#' @param bsswf.used a character string, either "none" or the name of a BSWF
+#' @param bswf.used a character string, either "none" or the name of a BSWF
 #'
 #' @return x
 #'
@@ -1416,7 +1422,7 @@ setRfrType <- function(x, Rfr.type=c("total", "specular")) {
 #'
 #' Funtion to read the "Rfr.type" attribute
 #'
-#' @usage setRfrType(x, Rfr.type=c("total", "specular"))
+#' @usage getRfrType(x)
 #'
 #' @param x a source.spct object
 #'

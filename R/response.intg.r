@@ -5,7 +5,8 @@
 #'
 #' @usage response_spct(spct, w.band=NULL,
 #'                      unit.out=getOption("photobiology.radiation.unit", default="energy"),
-#'                      quantity="total", wb.trim=NULL, use.hinges=NULL)
+#'                      quantity="total", wb.trim=NULL,
+#'                      use.hinges=getOption("photobiology.use.hinges", default=NULL) )
 #'
 #' @param spct an object of class response.spct"
 #' @param w.band a waveband object or a list of waveband objects
@@ -36,7 +37,7 @@ response_spct <-
            unit.out=getOption("photobiology.radiation.unit", default="energy"),
            quantity="total",
            wb.trim=NULL,
-           use.hinges=NULL){
+           use.hinges=getOption("photobiology.use.hinges", default=NULL) ) {
     if (is.normalized(spct) || is.rescaled(spct)) {
       warning("The espectral data has been normalized or rescaled, making impossible to calculate integrated response")
       return(NA)
@@ -78,8 +79,7 @@ response_spct <-
     # spectrum. This can produce small errors for high
     # spectral resolution data, but speed up the calculations.
     if (is.null(use.hinges)) {
-      length.wl <- length(spct$w.length)
-      use.hinges <- ((max(spct) - min(spct)) / length.wl) > 0.7
+      use.hinges <- stepsize(spct)[2] > getOption("photobiology.auto.hinges.limit", default = 0.7) # nm
     }
 
     # we collect all hinges and insert them in one go
@@ -233,7 +233,8 @@ response <- function(spct, w.band, unit.out, quantity, wb.trim, use.hinges) UseM
 #'
 #' @usage e_response.response.spct(spct, w.band=NULL,
 #'                                 quantity="total",
-#'                                 wb.trim=NULL, use.hinges=NULL)
+#'                                 wb.trim=NULL,
+#'              use.hinges=getOption("photobiology.use.hinges", default=NULL) )
 #'
 #' @param spct an object of class response.spct"
 #' @param w.band a waveband object or a list of waveband objects
@@ -254,10 +255,11 @@ response <- function(spct, w.band, unit.out, quantity, wb.trim, use.hinges) UseM
 #' in mosts cases. Only the range of wavelengths in the wavebands is used and all BSWFs are ignored.
 
 e_response.response.spct <-
-  function(spct, w.band=NULL, quantity="total", wb.trim=NULL, use.hinges=NULL){
+  function(spct, w.band=NULL, quantity="total", wb.trim=NULL,
+           use.hinges=getOption("photobiology.use.hinges", default=NULL) ) {
     response_spct(spct=spct, w.band=w.band, unit.out="energy",
                   quantity=quantity, wb.trim=wb.trim,
-                  use.hinges=use.hinges)
+                  use.hinges=getOption("photobiology.use.hinges", default=NULL) )
   }
 
 #' Calculate photon-based photo-response from spectral response.
@@ -267,7 +269,8 @@ e_response.response.spct <-
 #'
 #' @usage q_response.response.spct(spct, w.band=NULL,
 #'                                 quantity="total",
-#'                                 wb.trim=NULL, use.hinges=NULL)
+#'                                 wb.trim=NULL,
+#'                                 use.hinges=getOption("photobiology.use.hinges", default=NULL) )
 #'
 #' @param spct an object of class response.spct"
 #' @param w.band a waveband object or a list of waveband objects
@@ -288,10 +291,11 @@ e_response.response.spct <-
 #' in mosts cases. Only the range of wavelengths in the wavebands is used and all BSWFs are ignored.
 
 q_response.response.spct <-
-  function(spct, w.band=NULL, quantity="total", wb.trim=NULL, use.hinges=NULL){
+  function(spct, w.band=NULL, quantity="total", wb.trim=NULL,
+           use.hinges=getOption("photobiology.use.hinges", default=NULL) ) {
     response_spct(spct=spct, w.band=w.band, unit.out="photon",
                   quantity=quantity, wb.trim=wb.trim,
-                  use.hinges=use.hinges)
+                  use.hinges=getOption("photobiology.use.hinges", default=NULL) )
   }
 
 #' Generic function

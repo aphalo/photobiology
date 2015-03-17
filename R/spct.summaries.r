@@ -56,9 +56,7 @@ print.summary.generic.spct <- function(x, ...) {
 #' str(summary(sun.spct))
 summary.source.spct <- function(object, digits = 4L, ...) {
   time.unit <- getTimeUnit(object)
-  if (is.null(time.unit)) {
-    time.unit <- "second"
-  }
+  bswf.used <- getBSWFUsed(object)
   z <- c(
   max.w.length = max(object),
   min.w.length = min(object),
@@ -71,6 +69,7 @@ summary.source.spct <- function(object, digits = 4L, ...) {
   )
   z <- signif(z, digits)
   attr(z, "time.unit") <- time.unit
+  attr(z, "bswf.used") <- bswf.used
   class(z) <- c("summary.source.spct", class(z))
   return(z)
 }
@@ -91,8 +90,12 @@ summary.source.spct <- function(object, digits = 4L, ...) {
 
 print.summary.source.spct <- function(x, ...) {
   time.unit <- attr(x, "time.unit")
+  bswf.used <- attr(x, "bswf.used")
   cat("wavelength ranges from", x[["min.w.length"]], "to", x[["max.w.length"]], "nm \n")
   cat("largest wavelength step size is", x[["w.length.step"]], "nm \n")
+  if (bswf.used != "none") {
+    cat("effective irradiances based on BSWF =", bswf.used, "\n")
+  }
   if (time.unit == "day") {
     cat("spectral irradiance ranges from", x[["min.s.e.irrad"]] * 1e-3, "to", x[["max.s.e.irrad"]] * 1e-3, "kJ d-1 m-2 nm-1 \n")
     cat("energy irradiance is", x[["e.irrad"]] * 1e-6, "MJ m-2 \n")
@@ -164,6 +167,7 @@ print.summary.filter.spct <- function(x, ...) {
 #' @export summary.reflector.spct
 #'
 summary.reflector.spct <- function(object, digits = 4L, ...) {
+  Rfr.type <- getRfrType(object)
   z <- c(
     max.w.length = max(object),
     min.w.length = min(object),
@@ -174,6 +178,7 @@ summary.reflector.spct <- function(object, digits = 4L, ...) {
     mean.Rfr = as.numeric(integrate_spct(object) / spread(object))
   )
   z <- signif(z, digits)
+  attr(z, "Rfr.type") <- Rfr.type
   class(z) <- c("summary.reflector.spct", class(z))
   return(z)
 }
@@ -188,10 +193,12 @@ summary.reflector.spct <- function(object, digits = 4L, ...) {
 #' @export print.summary.reflector.spct
 #'
 print.summary.reflector.spct <- function(x, ...) {
+  Rfr.type <- attr(x, "Rfr.type")
   cat("wavelength ranges from", x[["min.w.length"]], "to", x[["max.w.length"]], "nm \n")
   cat("largest wavelength step size is", x[["w.length.step"]], "nm \n")
   cat("Spectral reflectance ranges from", x[["min.Rfr"]], "to", x[["max.Rfr"]], "\n")
   cat("Mean reflectance is", x[["mean.Rfr"]], "\n")
+  cat("Quantity is", Rfr.type, "\n")
 }
 
 #' Summary of a "response.spct" object.
@@ -237,6 +244,7 @@ print.summary.response.spct <- function(x, ...) {
   cat("largest wavelength step size is", x[["w.length.step"]], "nm \n")
   cat("Spectral response ranges from", x[["min.response"]], "to", x[["max.response"]], "nm-1 \n")
   cat("Mean response is", x[["mean.response"]], "nm-1 \n")
+  cat("Time unit is", time.unit, "\n")
 }
 
 #' Summary of a "chroma.spct" object.

@@ -224,13 +224,23 @@ class(1:10)
 
 \subsubsection{Special attributes}
 
-\texttt{source.spct} objects have a \texttt{time.unit} attribute which can take one of two values \texttt{"second"} or \texttt{"day"}, the default is \texttt{"second"}. However, if the spectral data is for daily exposure, then the attribute should be set when the object is constructed. It is also possible to set the attribute for an existing object with function \texttt{setTimeUnit}.
+\texttt{source.spct} objects have a \texttt{time.unit} attribute which can take one of two values \texttt{"second"} or \texttt{"day"}, the default is \texttt{"second"}. However, if the spectral data is for daily exposure, then the attribute should be set when the object is constructed. \texttt{source.spct} objects have a \texttt{bswf.used} attribute which can take one of several values \texttt{"none"}, \texttt{"unknown"} or the name of a BSWF. It is also possible to set the attributes for an existing object with functions \texttt{setTimeUnit} and \texttt{setBSWFUsed}, and to querry the value of the attributes for an existing object with functions \texttt{getTimeUnit} and \texttt{getBSWFUsed}. The function \texttt{is\_effective} returns \texttt{TRUE} if the value of the \texttt{bswf.used} is neither \texttt{NULL} nor equal to \texttt{"none"}.
 
-\texttt{filter.spct} objects have a \texttt{Tfr.type} attribute which can take one of two values \texttt{"total"} or \texttt{"internal"}, the default being \texttt{"total"}. However, if the spectral transmittance or absorbance data is internal, meaning excluding the contribution of reflection, then the attribute should be set when the object is constructed. It is also possible to set the attribute for an existing object with function \texttt{setTfrType}.
+<<>>=
+is_effective(sun.spct)
+is_effective(sun.spct * VIS())
+getBSWFUsed(sun.spct * VIS())
+is_effective(sun.spct * CIE())
+getBSWFUsed(sun.spct * CIE())
+@
+
+\texttt{filter.spct} and \texttt{object.spct} objects have a \texttt{Tfr.type} attribute which can take one of two values \texttt{"total"} or \texttt{"internal"}, the default being \texttt{"total"}. However, if the spectral transmittance or absorbance data is internal, meaning excluding the contribution of reflection, then the attribute should be set when the object is constructed. It is also possible to set the attribute for an existing object with function \texttt{setTfrType}, and to querry the value of the attribute  for an existing object with function \texttt{setTfrType}.
+
+\texttt{reflector.spct} and \texttt{object.spct} objects have a \texttt{Rfr.type} attribute which can take one of two values \texttt{"total"} or \texttt{"specular"}, the default being \texttt{"total"}. However, if the spectral reflectance data is specular, meaning excluding the contribution of scattered reflection, then the attribute should be set when the object is constructed. It is also possible to set the attribute for an existing object with function \texttt{setRfrType}, and to querry the value of the attribute for an existing object with function \texttt{setRfrType}.
 
 \begin{framed}
 \noindent
-Spectral objects created with earlier versions of this package are missing these attributes. For this reason `summary' and `plot' functions may not work as expected. The objects can be updated by adding the missing attribute using the functions  \texttt{setTimeUnit} and \texttt{setTfrType}.
+Spectral objects created with earlier versions of this package are missing some of these attributes. For this reason `summary' and `plot' functions may not work as expected. The objects can be updated by adding the missing attribute using the functions \texttt{setTimeUnit}, \texttt{setBSWFUsed}, \texttt{setTfrType} and \texttt{setRfrType}.
 \end{framed}
 
 \subsubsection{Setting the class of a spectrum object}\label{sec:set:spct}
@@ -582,9 +592,9 @@ It is also possible to supply a range within which integration or averaging will
 normalize(sun.spct, range = PAR(), f = "mean")
 @
 
-As is the case for other functions, the argument "unit.unit" can be used to change the type output from the default.
+As is the case for other functions, the argument \texttt{"unit.out"} can be used to change the type output from the default.
 
-Furthermore, it is possible to pass any suitable R function, built or user defined, plus additional named arguments to it.
+Furthermore, it is possible to pass any suitable R function, built-in or user defined, plus additional named arguments to it.
 
 \subsection{Remapping a spectrum to different wavelengths}
 
@@ -671,6 +681,10 @@ summary(sun.spct)
 @
 
 <<>>=
+summary(sun.spct * CIE())
+@
+
+<<>>=
 summary(sun.daily.spct)
 @
 
@@ -751,13 +765,13 @@ is.waveband(PAR())
 is.waveband(sun.spct)
 @
 
-The function \texttt{is.effective} can the used to query any R object.
+The function \texttt{is\_effective} can the used to query any R object.
 
 <<>>=
-is.effective(my_CIE_1)
-is.effective(GEN.G())
-is.effective(PAR())
-is.effective(sun.spct)
+is_effective(my_CIE_1)
+is_effective(GEN.G())
+is_effective(PAR())
+is_effective(sun.spct)
 @
 
 \subsection{Using operators with spectra}
@@ -796,7 +810,7 @@ source.spct & \N & \N & \Y  & \Y & \N & filter.spct (A) & source.spct \\
 source.spct & \N & \N & \Y  & \Y  & \N & reflector.spct & source.spct \\
 source.spct & \N & \N &\N  & \N & \N & object.spct & -- \\
 source.spct & \N & \N &\Y  & \N & \N & waveband (no BSWF) & source.spct \\
-source.spct & \N & \N &\Y  & \N & \N & waveband (BSWF) & response.spct \\
+source.spct & \N & \N &\Y  & \N & \N & waveband (BSWF) & source.spct \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -835,16 +849,17 @@ There is one special case, for \texttt{chroma.spct}: if the numeric operand has 
 Operators are also defined for operations between an spectrum and a \texttt{waveband} object. The next to code chunks demonstrate how the class of the result depends on whether the \texttt{waveband} object describes a range of wavelengths or a range of wavelengths plus a BSWF.
 
 <<>>=
-is.effective(UVB())
+is_effective(UVB())
 clipped.spct <- sun.spct * UVB()
 class.spct(clipped.spct)
 clipped.spct
 @
 
 <<>>=
-is.effective(CIE())
+is_effective(CIE())
 weighted.spct <- sun.spct * CIE()
 class.spct(weighted.spct)
+is_effective(weighted.spct)
 weighted.spct
 @
 
@@ -967,9 +982,9 @@ e_irrad(sun.spct, waveband(c(400,700))) # W m-2
 Lists of wavebands are also accepted as argument.
 
 <<>>=
-e_irrad(sun.spct, list(CIE(), CIE(298), CIE(300)))
+e_irrad(sun.spct, list(CIE(), CIE(298), CIE(300))) # W m-2 (BE)
 my_wavebands <- list(Red(), Blue(), Green())
-e_irrad(sun.spct, my_wavebands)
+e_irrad(sun.spct, my_wavebands) # W m-2
 @
 
 These functions have an additional argument \texttt{quantity}, with default \texttt{"total"}, which can take values controlling the output.
@@ -1067,7 +1082,7 @@ qe_ratio(sun.spct, PAR())
 qe_ratio(sun.spct, list(Blue(), Green(), Red()))
 @
 
-Function \texttt{eq\_ratio}, has only one waveband parameter, and returns the`energy' to `photon' ratio,
+Function \texttt{eq\_ratio}, has only one waveband parameter, and returns the `energy' to `photon' ratio,
 
 <<>>=
 eq_ratio(sun.spct, PAR())
@@ -1236,7 +1251,7 @@ In some cases we may want to integrate the values of arbitrary columns other tha
 <<>>=
 integrate_spct(sun.spct)
 integrate_spct(sun.spct * UVA())
-e_irrad(sun.spct, UVA())
+e_irrad(sun.spct, UVA(), use.hinges = TRUE)
 @
 
 The function \texttt{integrate\_spct} integrates every column holding numeric values from a spectrum object, except for \texttt{w.length}.
@@ -1310,8 +1325,7 @@ We here plot, using \texttt{ggplot2}, weighted (in red) and unweighted irradianc
 <<>>=
 ggplot(data = sun.spct, aes(x = w.length, y = s.e.irrad/max(s.e.irrad))) +
   geom_line() +
-  geom_line(data = sun.spct * CIE(), colour = "red",
-            aes(y = s.e.response/max(s.e.response))) +
+  geom_line(data = sun.spct * CIE(), colour = "red") +
   labs(x = "Wavelength (nm)",
        y = "UnWeighted and CIE98-weighted spectral irradiance (relative units)")
 @

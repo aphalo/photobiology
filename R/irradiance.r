@@ -4,7 +4,8 @@
 #' waveband of a radiation spectrum.
 #'
 #' @usage irradiance(w.length, s.irrad, w.band=NULL, unit.out=NULL, unit.in="energy",
-#' check.spectrum=TRUE, use.cached.mult=FALSE, use.hinges=NULL)
+#'                   check.spectrum=TRUE, use.cached.mult=FALSE,
+#'                   use.hinges=getOption("photobiology.use.hinges", default=NULL) )
 #'
 #' @param w.length numeric array of wavelength (nm)
 #' @param s.irrad numeric array of spectral (energy) irradiances (W m-2 nm-1)
@@ -34,7 +35,7 @@
 irradiance <-
   function(w.length, s.irrad, w.band=NULL, unit.out=NULL, unit.in="energy",
            check.spectrum=TRUE, use.cached.mult=FALSE,
-           use.hinges=NULL){
+           use.hinges=getOption("photobiology.use.hinges", default=NULL) ){
     # what output? seems safer to not have a default here
     if (is.null(unit.out)){
       warning("'unit.out' has no default value")

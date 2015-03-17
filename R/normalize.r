@@ -183,7 +183,7 @@ normalize.response.spct <- function(x,
 #'                  norm = "max",
 #'                  qty.out = getOption("photobiology.filter.qty", default="transmittance"))
 #'
-#' @param spct a filter.spct object
+#' @param x a filter.spct object
 #' @param ... not used in current version
 #' @param range an R object on which range() returns a vector of length 2,
 #' with min annd max wavelengths (nm)
@@ -254,7 +254,7 @@ normalize.reflector.spct <- function(x,
 #' This function returns TRUE if x is a generic.spct and it has been normalized
 #' by means of function \code{normalize}.
 #'
-#' @usage is.rescaled(x)
+#' @usage is.normalized(x)
 #'
 #' @param x a generic.spct object
 #'

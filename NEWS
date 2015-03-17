@@ -6,12 +6,30 @@ Add test cases for chroma.spct
 photobiology 0.5.17
 ===================
 
+New options "photobiology.use.hinges" (NULL, TRUE, FALSE) with default NULL and
+"photobiology.auto.hinges.limit" (wavelength step in nm) with default 0.7 nm.
+Default behaviour is unchanged except for bug in irrad() functions where the
+limit was 1.1 nm instead of 0.7 nm as a result of a bug.
+
 Bug fix: in version 0.5.15? the behaviour of the product of a BSWF and a source
-spectrum was changed to return a response spectrum. This is not consitent with
-the idea the a BSWF is a weughting function for quantifying radiation. The result
-should remain as radiation. This has been fixed, and now if the waveband is
-a BSWF (checked with function is.effective()) the resulting spectrum is tagged
-as being "effective".
+spectrum was changed to return a response spectrum. This was not consitent with
+the idea that a BSWF is used for quantifying radiation rather predicting a
+biological response. The result should remain as radiation and continue to
+be expressed in energy or photon based units. This has been fixed. Starting
+from the current version, if the waveband is used with the '*' operator is
+a BSWF (tested with function is_effective()) the resulting spectrum is tagged
+as being "effective". The irrad() methods for source.spct have been updated to
+'recognize' effective spectral irradiance when supplied as input.
+
+Long-standing unsolved problem partly fixed: interpolate_spct() now in most
+cases applies smoothing to the spectrum before attempting interpolation if
+the vector of output wavelengths has length > 1, but is sparser than then
+original spectral data.
+
+summary() methods for spectra have been updated to report when source spectra
+are effective the BSWF that have been used.
+
+User guide updated.
 
 photobiology 0.5.16
 ===================

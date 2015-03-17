@@ -66,7 +66,7 @@ smooth_spct.source.spct <- function(x, method = "custom", strength = 1, ...) {
       out.spct <- lowess(x$w.length, x$s.q.irrad, f = span, ...)
       names(out.spct) <- c("w.length", "s.q.irrad")
     }
-    setSourceSpct(out.spct, time.unit = getTimeUnit(x))
+    setSourceSpct(out.spct, time.unit = getTimeUnit(x), bswf.used = getBSWFUsed(x))
     if (all(c("s.e.irrad", "s.q.irrad") %in% names(x))) {
       e2q(out.spct, action = "add", byref = TRUE)
     }

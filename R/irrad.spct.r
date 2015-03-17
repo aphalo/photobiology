@@ -7,9 +7,9 @@
 #' waveband of a light source spectrum.
 #'
 #' @usage irrad_spct(spct, w.band=NULL,
-#'                   unit.out=getOption("photobiology.radiation.unit", default="energy"),
-#'                   quantity="total", wb.trim=NULL, use.cached.mult=FALSE,
-#'                   use.hinges=NULL, allow.scaled = FALSE)
+#'        unit.out=getOption("photobiology.radiation.unit", default="energy"),
+#'        quantity="total", wb.trim=NULL, use.cached.mult=FALSE,
+#'        use.hinges=getOption("photobiology.use.hinges", default=NULL), allow.scaled = FALSE)
 #'
 #' @param spct an object of class "source.spct"
 #' @param w.band list of waveband definitions created with new_waveband()
@@ -46,7 +46,9 @@
 
 irrad_spct <-
   function(spct, w.band=NULL, unit.out=getOption("photobiology.radiation.unit", default="energy"),
-           quantity="total", wb.trim=NULL, use.cached.mult=FALSE, use.hinges=NULL, allow.scaled = FALSE){
+           quantity="total", wb.trim=NULL, use.cached.mult=FALSE,
+           use.hinges=getOption("photobiology.use.hinges", default=NULL),
+           allow.scaled = FALSE){
     # we have a default, but we check for invalid arguments
     if (!allow.scaled && (is.normalized(spct) || is.rescaled(spct))) {
       warning("The espectral data has been normalized or rescaled, making impossible to calculate irradiance")
@@ -91,10 +93,7 @@ irrad_spct <-
     # spectral resolution data, and speed up the calculations
     # a lot in such cases
     if (is.null(use.hinges)) {
-      length.wl <- length(spct_x$w.length)
-      use.hinges <- (spct_x$w.length[length.wl] - spct_x$w.length[1]) / length.wl > 1.1
-      # we use 1.1 nm as performance degradation by using hinges is very significant
-      # in the current version.
+      use.hinges <- stepsize(spct_x)[2] > getOption("photobiology.auto.hinges.limit", default = 0.7) # nm
     }
     # we collect all hinges and insert them in one go
     # this may alter a little the returned values
@@ -213,9 +212,11 @@ irrad.source.spct <- irrad_spct
 #' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries are trimmed, if FALSE, they are discarded
 #' @param use.cached.mult logical indicating whether multiplier values should be cached between calls
 #' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
+#' @param allow.scaled logical indicating whether rescaled or normalized spectra as argument to spct are flagged as an error
 #' @export
 #'
-irrad.default <- function(spct, w.band, unit.out, quantity, wb.trim, use.cached.mult, use.hinges) {
+irrad.default <- function(spct, w.band, unit.out, quantity, wb.trim,
+                          use.cached.mult, use.hinges, allow.scaled) {
   warning("'irrad' is not defined for objects of class ", class(spct)[1])
   return(NA)
 }
@@ -231,10 +232,12 @@ irrad.default <- function(spct, w.band, unit.out, quantity, wb.trim, use.cached.
 #' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries are trimmed, if FALSE, they are discarded
 #' @param use.cached.mult logical indicating whether multiplier values should be cached between calls
 #' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
+#' @param allow.scaled logical indicating whether rescaled or normalized spectra as argument to spct are flagged as an error
 #'
 #' @export
 #'
-irrad <- function(spct, w.band, unit.out, quantity, wb.trim, use.cached.mult, use.hinges) UseMethod("irrad")
+irrad <- function(spct, w.band, unit.out, quantity, wb.trim,
+                  use.cached.mult, use.hinges, allow.scaled) UseMethod("irrad")
 
 # energy irradiance -------------------------------------------------------
 
@@ -245,7 +248,9 @@ irrad <- function(spct, w.band, unit.out, quantity, wb.trim, use.cached.mult, us
 #' waveband of a light source spectrum.
 #'
 #' @usage e_irrad.source.spct(spct, w.band=NULL,
-#'                quantity="total", wb.trim=NULL, use.cached.mult=FALSE, use.hinges=NULL)
+#'                quantity="total", wb.trim=NULL, use.cached.mult=FALSE,
+#'                use.hinges=getOption("photobiology.use.hinges", default=NULL),
+#'                allow.scaled = allow.scaled )
 #'
 #' @param spct an object of class "source.spct"
 #' @param w.band list of waveband definitions created with new_waveband()
@@ -254,6 +259,7 @@ irrad <- function(spct, w.band, unit.out, quantity, wb.trim, use.cached.mult, us
 #'        they are discarded
 #' @param use.cached.mult logical indicating whether multiplier values should be cached between calls
 #' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
+#' @param allow.scaled logical indicating whether rescaled or normalized spectra as argument to spct are flagged as an error
 #'
 #' @keywords manip misc
 #'
@@ -277,9 +283,11 @@ irrad <- function(spct, w.band, unit.out, quantity, wb.trim, use.cached.mult, us
 #'
 e_irrad.source.spct <-
   function(spct, w.band=NULL,
-           quantity="total", wb.trim=NULL, use.cached.mult=FALSE, use.hinges=NULL){
+           quantity="total", wb.trim=NULL, use.cached.mult=FALSE,
+           use.hinges=getOption("photobiology.use.hinges", default=NULL),
+           allow.scaled = FALSE ) {
     irrad_spct(spct, w.band=w.band, unit.out="energy", quantity=quantity, wb.trim=wb.trim,
-                      use.cached.mult=use.cached.mult, use.hinges=use.hinges)
+                      use.cached.mult=use.cached.mult, use.hinges=use.hinges, allow.scaled = allow.scaled)
   }
 
 # photon irradiance -------------------------------------------------------
@@ -292,7 +300,9 @@ e_irrad.source.spct <-
 #'
 #' @usage q_irrad.source.spct(spct, w.band=NULL,
 #'                            quantity="total", wb.trim=NULL,
-#'                            use.cached.mult=FALSE, use.hinges=NULL)
+#'                            use.cached.mult=FALSE,
+#'                            use.hinges=getOption("photobiology.use.hinges", default=NULL),
+#'                            allow.scaled = FALSE)
 #'
 #' @param spct an object of class "source.spct"
 #' @param w.band list of waveband definitions created with new_waveband()
@@ -300,6 +310,7 @@ e_irrad.source.spct <-
 #' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries are trimmed, if FALSE, they are discarded
 #' @param use.cached.mult logical indicating whether multiplier values should be cached between calls
 #' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
+#' @param allow.scaled logical indicating whether rescaled or normalized spectra as argument to spct are flagged as an error
 #'
 #' @keywords manip misc
 #'
@@ -330,9 +341,10 @@ q_irrad.source.spct <-
            quantity="total",
            wb.trim=NULL,
            use.cached.mult=FALSE,
-           use.hinges=NULL){
+           use.hinges=getOption("photobiology.use.hinges", default=NULL),
+           allow.scaled = FALSE ) {
     irrad_spct(spct, w.band=w.band, unit.out="photon", quantity=quantity, wb.trim=wb.trim,
-                      use.cached.mult=use.cached.mult, use.hinges=use.hinges)
+                      use.cached.mult=use.cached.mult, use.hinges=use.hinges, allow.scaled = allow.scaled)
   }
 
 #' Generic function
@@ -345,10 +357,11 @@ q_irrad.source.spct <-
 #' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries are trimmed, if FALSE, they are discarded
 #' @param use.cached.mult logical indicating whether multiplier values should be cached between calls
 #' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
+#' @param allow.scaled logical indicating whether rescaled or normalized spectra as argument to spct are flagged as an error
 #'
 #' @export
 #'
-e_irrad <- function(spct, w.band, quantity, wb.trim, use.cached.mult, use.hinges) UseMethod("e_irrad")
+e_irrad <- function(spct, w.band, quantity, wb.trim, use.cached.mult, use.hinges, allow.scaled) UseMethod("e_irrad")
 
 #' Generic function
 #'
@@ -360,10 +373,11 @@ e_irrad <- function(spct, w.band, quantity, wb.trim, use.cached.mult, use.hinges
 #' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries are trimmed, if FALSE, they are discarded
 #' @param use.cached.mult logical indicating whether multiplier values should be cached between calls
 #' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
+#' @param allow.scaled logical indicating whether rescaled or normalized spectra as argument to spct are flagged as an error
 #'
 #' @export
 #'
-q_irrad <- function(spct, w.band, quantity, wb.trim, use.cached.mult, use.hinges) UseMethod("q_irrad")
+q_irrad <- function(spct, w.band, quantity, wb.trim, use.cached.mult, use.hinges, allow.scaled) UseMethod("q_irrad")
 
 #' Default for generic function
 #'
@@ -375,10 +389,11 @@ q_irrad <- function(spct, w.band, quantity, wb.trim, use.cached.mult, use.hinges
 #' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries are trimmed, if FALSE, they are discarded
 #' @param use.cached.mult logical indicating whether multiplier values should be cached between calls
 #' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
+#' @param allow.scaled logical indicating whether rescaled or normalized spectra as argument to spct are flagged as an error
 #'
 #' @export
 #'
-e_irrad.default <- function(spct, w.band, quantity, wb.trim, use.cached.mult, use.hinges) {
+e_irrad.default <- function(spct, w.band, quantity, wb.trim, use.cached.mult, use.hinges, allow.scaled) {
   warning("'e_irrad' is not defined for objects of class ", class(spct)[1])
   return(NA)
 }
@@ -393,10 +408,11 @@ e_irrad.default <- function(spct, w.band, quantity, wb.trim, use.cached.mult, us
 #' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries are trimmed, if FALSE, they are discarded
 #' @param use.cached.mult logical indicating whether multiplier values should be cached between calls
 #' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
+#' @param allow.scaled logical indicating whether rescaled or normalized spectra as argument to spct are flagged as an error
 #'
 #' @export
 #'
-q_irrad.default <- function(spct, w.band, quantity, wb.trim, use.cached.mult, use.hinges) {
+q_irrad.default <- function(spct, w.band, quantity, wb.trim, use.cached.mult, use.hinges, allow.scaled) {
   warning("'q_irrad' is not defined for objects of class ", class(spct)[1])
   return(NA)
 }

@@ -4,7 +4,8 @@
 #' waveband and a reflectance spectrum.
 #'
 #' @usage reflectance_spct(spct, w.band=NULL, pc.out=FALSE,
-#'                         quantity="average", wb.trim=NULL, use.hinges=NULL)
+#'                         quantity="average", wb.trim=NULL,
+#'                         use.hinges=getOption("photobiology.use.hinges", default=NULL) )
 #'
 #' @param spct an object of class generic.spct"
 #' @param w.band list of waveband definitions created with new_waveband()
@@ -25,7 +26,8 @@
 #' in mosts cases. Only the range of wavelengths in the wavebands is used and all BSWFs are ignored.
 
 reflectance_spct <-
-  function(spct, w.band=NULL, pc.out=FALSE, quantity="average", wb.trim=NULL, use.hinges=NULL){
+  function(spct, w.band=NULL, pc.out=FALSE, quantity="average", wb.trim=NULL,
+           use.hinges=getOption("photobiology.use.hinges", default=NULL) ){
     Rfr.type <- getRfrType(spct)
     if (is.object.spct(spct)) {
       spct <- as.reflector.spct(spct)
@@ -55,8 +57,7 @@ reflectance_spct <-
     # spectral resolution data, and speed up the calculations
     # a lot in such cases
     if (is.null(use.hinges)) {
-      length.wl <- length(spct$w.length)
-      use.hinges <- ((max(spct) - min(spct)) / length.wl) > 0.7
+      use.hinges <- stepsize(spct)[2] > getOption("photobiology.auto.hinges.limit", default = 0.7) # nm
     }
 
     # we collect all hinges and insert them in one go

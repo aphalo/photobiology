@@ -153,7 +153,9 @@ reflector.spct <- function(w.length, Rfr=NULL, Rpc=NULL, comment=NULL, strict.ra
 #' Such objects can be used to describe the optical properties of objects that both
 #' reflect and transmit radiation.
 #'
-#' @usage object.spct(w.length, Rfr=NULL, Tfr=NULL, Tfr.type=c("total", "internal"),
+#' @usage object.spct(w.length, Rfr=NULL, Tfr=NULL,
+#'                    Tfr.type=c("total", "internal"),
+#'                    Rfr.type=c("total", "specular"),
 #'                    comment=NULL, strict.range=TRUE)
 #'
 #' @param w.length numeric vector with wavelengths in nanometres

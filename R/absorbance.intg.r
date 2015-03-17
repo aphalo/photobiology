@@ -3,8 +3,10 @@
 #' This function returns the mean absorbance for a given
 #' waveband of a absorbance spectrum.
 #'
-#' @usage absorbance_spct(spct, w.band=NULL, quantity="average", wb.trim=NULL, use.hinges=NULL)
-#' @usage absorbance(spct, w.band=NULL, use.hinges=NULL)
+#' @usage absorbance_spct(spct, w.band=NULL, quantity="average", wb.trim=NULL,
+#'                        use.hinges=getOption("photobiology.use.hinges", default=NULL) )
+#' @usage absorbance(spct, w.band=NULL, quantity="average", wb.trim=NULL,
+#'                        use.hinges=getOption("photobiology.use.hinges", default=NULL) )
 #'
 #' @param spct an object of class "filter.spct"
 #' @param w.band list of waveband definitions created with new_waveband()
@@ -23,7 +25,8 @@
 #' in mosts cases. Only the range of wavelengths in the wavebands is used and all BSWFs are ignored.
 
 absorbance_spct <-
-  function(spct, w.band=NULL, quantity="average", wb.trim=NULL, use.hinges=NULL){
+  function(spct, w.band=NULL, quantity="average", wb.trim=NULL,
+           use.hinges=getOption("photobiology.use.hinges", default=NULL) ) {
     if (is.normalized(spct) || is.rescaled(spct)) {
       warning("The espectral data has been normalized or rescaled, making impossible to calculate absorbance")
       return(NA)
@@ -53,8 +56,7 @@ absorbance_spct <-
     # spectral resolution data, and speed up the calculations
     # a lot in such cases
     if (is.null(use.hinges)) {
-      length.wl <- length(spct$w.length)
-      use.hinges <- (spct$w.length[length.wl] - spct$w.length[1]) / length.wl > 0.7 #
+      use.hinges <- stepsize(spct)[2] > 0.7 #
     }
 
     # we collect all hinges and insert them in one go

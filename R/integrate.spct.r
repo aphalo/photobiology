@@ -81,6 +81,15 @@ interpolate_spct <- function(spct, w.length.out=NULL, fill.value=NA, length.out=
   if (!is.null(length.out) && (is.na(length.out) || length.out < 1L) ) {
     return(spct[NA])
   }
+  if (length(w.length.out) > 1L) {
+    step.ratio <- stepsize(spct)[1] / max(diff(w.length.out), na.rm = TRUE)
+    if (step.ratio < 1 && length(spct) > 100) {
+      # this a temporary kludge as the degree of smoothing is not well tuned and only
+      # tested with the solar spectrum.
+      warning("Smoothing before interpolation, as w.length.out is more sparse./nIt could be better to use the original data as is.")
+      spct <- smooth_spct(spct, method = "lowess", strength = step.ratio * 1e-2)
+    }
+  }
   class.spct <- class(spct)
   comment.spct <- comment(spct)
   if  (is(spct, "source.spct")) {

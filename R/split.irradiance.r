@@ -10,7 +10,7 @@
 #'                         unit.in="energy",
 #'                         scale = "absolute",
 #'                         check.spectrum=TRUE, use.cached.mult=FALSE,
-#'                         use.hinges=NULL)
+#'                         use.hinges=getOption("photobiology.use.hinges", default=NULL) )
 #'
 #' @param w.length numeric array of wavelength (nm)
 #' @param s.irrad numeric array of spectral (energy) irradiances (W m-2 nm-1)
@@ -43,7 +43,8 @@
 split_irradiance <- function(w.length, s.irrad, cut.w.length=range(w.length),
                              unit.out=getOption("photobiology.base.unit", default="energy"),
                              unit.in="energy", scale="absolute",
-                 check.spectrum=TRUE, use.cached.mult=FALSE, use.hinges=NULL)
+                             check.spectrum=TRUE, use.cached.mult=FALSE,
+                             use.hinges=getOption("photobiology.use.hinges", default=NULL) )
 {
   # what output? seems safer to not have a default here
   if (is.null(unit.out)){

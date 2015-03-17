@@ -4,7 +4,8 @@
 #' waveband of a transmittance spectrum.
 #'
 #' @usage transmittance_spct(spct, w.band=NULL, pc.out=FALSE,
-#'                      quantity="average", wb.trim=FALSE, use.hinges=NULL)
+#'                           quantity="average", wb.trim=FALSE,
+#'                           use.hinges=getOption("photobiology.use.hinges", default=NULL) )
 #'
 #' @param spct an object of class "generic.spct"
 #' @param w.band list of waveband definitions created with new_waveband()
@@ -25,7 +26,8 @@
 #' in mosts cases. Only the range of wavelengths in the wavebands is used and all BSWFs are ignored.
 
 transmittance_spct <-
-  function(spct, w.band=NULL, pc.out=FALSE, quantity="average", wb.trim=FALSE, use.hinges=NULL){
+  function(spct, w.band=NULL, pc.out=FALSE, quantity="average", wb.trim=FALSE,
+           use.hinges=getOption("photobiology.use.hinges", default=NULL) ) {
     if (is.normalized(spct) || is.rescaled(spct)) {
       warning("The espectral data has been normalized or rescaled, making impossible to calculate transmittance")
       return(NA)
@@ -59,8 +61,7 @@ transmittance_spct <-
     # spectral resolution data, and speed up the calculations
     # a lot in such cases
     if (is.null(use.hinges)) {
-      length.wl <- length(spct$w.length)
-      use.hinges <- (spct$w.length[length.wl] - spct$w.length[1]) / length.wl > 0.7 #
+      use.hinges <- stepsize(spct)[2] > getOption("photobiology.auto.hinges.limit", default = 0.7) # nm
     }
 
     # we collect all hinges and insert them in one go

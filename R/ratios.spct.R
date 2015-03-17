@@ -4,10 +4,12 @@
 #' pair of wavebands of a light source spectrum.
 #'
 #' @usage q_ratio(spct, w.band.num=NULL, w.band.denom=NULL,
-#' use.cached.mult=FALSE, use.hinges=NULL)
+#'                use.cached.mult=FALSE,
+#'                use.hinges=getOption("photobiology.use.hinges", default=NULL))
 #'
 #' @usage q_ratio_spct(spct, w.band.num=NULL, w.band.denom=NULL,
-#' use.cached.mult=FALSE, use.hinges=NULL)
+#'                     use.cached.mult=FALSE,
+#'                     use.hinges=getOption("photobiology.use.hinges", default=NULL) )
 #'
 #' @param spct an object of class "source.spct"
 #' @param w.band.num waveband definition created with new_waveband()
@@ -34,7 +36,8 @@
 #' @aliases q_ratio q_ratio_spct
 
 q_ratio <-
-  function(spct, w.band.num=NULL, w.band.denom=NULL, use.cached.mult=FALSE, use.hinges=NULL){
+  function(spct, w.band.num=NULL, w.band.denom=NULL, use.cached.mult=FALSE,
+           use.hinges=getOption("photobiology.use.hinges", default=NULL) ) {
     q.irrad.num <- irrad_spct(spct, w.band=w.band.num, unit.out="photon", quantity="total", wb.trim=NULL,
                               use.cached.mult=use.cached.mult, use.hinges=use.hinges, allow.scaled=TRUE)
     q.irrad.denom <- irrad_spct(spct, w.band=w.band.denom, unit.out="photon", quantity="total", wb.trim=NULL,
@@ -54,10 +57,12 @@ q_ratio_spct <- q_ratio
 #' pair of wavebands of a light source spectrum.
 #'
 #' @usage e_ratio(spct, w.band.num=NULL, w.band.denom=NULL,
-#' use.cached.mult=FALSE, use.hinges=NULL)
+#'                use.cached.mult=FALSE,
+#'                use.hinges=getOption("photobiology.use.hinges", default=NULL))
 #'
 #' @usage e_ratio_spct(spct, w.band.num=NULL, w.band.denom=NULL,
-#' use.cached.mult=FALSE, use.hinges=NULL)
+#'                     use.cached.mult=FALSE,
+#'                     use.hinges=getOption("photobiology.use.hinges", default=NULL) )
 #'
 #' @param spct an object of class "source.spct"
 #' @param w.band.num waveband definition created with new_waveband()
@@ -84,7 +89,8 @@ q_ratio_spct <- q_ratio
 #' @aliases e_ratio e_ratio_spct
 
 e_ratio <-
-  function(spct, w.band.num=NULL, w.band.denom=NULL, use.cached.mult=FALSE, use.hinges=NULL){
+  function(spct, w.band.num=NULL, w.band.denom=NULL, use.cached.mult=FALSE,
+           use.hinges=getOption("photobiology.use.hinges", default=NULL) ) {
     e.irrad.num <- irrad_spct(spct, w.band=w.band.num, unit.out="energy", quantity="total", wb.trim=NULL,
                               use.cached.mult=use.cached.mult, use.hinges=use.hinges, allow.scaled=TRUE)
     e.irrad.denom <- irrad_spct(spct, w.band=w.band.denom, unit.out="energy", quantity="total", wb.trim=NULL,
@@ -98,13 +104,15 @@ e_ratio <-
 
 e_ratio_spct <- e_ratio
 
-#' Calculate the photn to energy ratio from spectral irradiance.
+#' Calculate the photon to energy ratio from spectral irradiance.
 #'
 #' This function returns the photon to energy ratio for each waveband of a light source spectrum.
 #'
-#' @usage qe_ratio(spct, w.band=NULL, use.cached.mult=FALSE, use.hinges=NULL)
+#' @usage qe_ratio(spct, w.band=NULL, use.cached.mult=FALSE,
+#'                 use.hinges=getOption("photobiology.use.hinges", default=NULL) )
 #'
-#' @usage qe_ratio_spct(spct, w.band=NULL, use.cached.mult=FALSE, use.hinges=NULL)
+#' @usage qe_ratio_spct(spct, w.band=NULL, use.cached.mult=FALSE,
+#'                      use.hinges=getOption("photobiology.use.hinges", default=NULL) )
 #'
 #' @param spct an object of class "source.spct"
 #' @param w.band a single definition or a list of waveband definitions created with new_waveband()
@@ -130,7 +138,8 @@ e_ratio_spct <- e_ratio
 #' @aliases qe_ratio qe_ratio_spct
 
 qe_ratio <-
-  function(spct, w.band=NULL, use.cached.mult=FALSE, use.hinges=NULL){
+  function(spct, w.band=NULL, use.cached.mult=FALSE,
+           use.hinges=getOption("photobiology.use.hinges", default=NULL) ) {
     q.irrad <- irrad_spct(spct, w.band=w.band, unit.out="photon", quantity="total", wb.trim=NULL,
                               use.cached.mult=use.cached.mult, use.hinges=use.hinges, allow.scaled=TRUE)
     e.irrad <- irrad_spct(spct, w.band=w.band, unit.out="energy", quantity="total", wb.trim=NULL,
@@ -148,9 +157,11 @@ qe_ratio_spct <- qe_ratio
 #'
 #' This function returns the energy to molle photn ratio for each waveband and a light source spectrum.
 #'
-#' @usage eq_ratio(spct, w.band=NULL, use.cached.mult=FALSE, use.hinges=NULL)
+#' @usage eq_ratio(spct, w.band=NULL, use.cached.mult=FALSE,
+#'                 use.hinges=getOption("photobiology.use.hinges", default=NULL) )
 #'
-#' @usage eq_ratio_spct(spct, w.band=NULL, use.cached.mult=FALSE, use.hinges=NULL)
+#' @usage eq_ratio_spct(spct, w.band=NULL, use.cached.mult=FALSE,
+#'                      use.hinges=getOption("photobiology.use.hinges", default=NULL) )
 #'
 #' @param spct an object of class "source.spct"
 #' @param w.band a single definition or a list of waveband definitions created with new_waveband()
@@ -176,7 +187,8 @@ qe_ratio_spct <- qe_ratio
 #' @aliases eq_ratio eq_ratio_spct
 
 eq_ratio <-
-  function(spct, w.band=NULL, use.cached.mult=FALSE, use.hinges=NULL){
+  function(spct, w.band=NULL, use.cached.mult=FALSE,
+           use.hinges=getOption("photobiology.use.hinges", default=NULL) ) {
     ratio <- 1 / qe_ratio(spct, w.band, use.cached.mult, use.hinges)
     names(ratio) <- gsub("q:e", "e:q", names(ratio), fixed=TRUE )
     setattr(ratio, "time.unit", NULL)
