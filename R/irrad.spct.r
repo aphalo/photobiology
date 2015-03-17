@@ -127,18 +127,18 @@ irrad_spct <-
     # possibly weighted depending on the waveband definition
     irrad <- numeric(wb.number)
     i <- 0L
-    is_effective.spectrum <- is_effective(spct)
+    is.effective.spectrum <- is.effective(spct)
     for (wb in w.band) {
       i <- i + 1L
       # get names from wb if needed
       if (wb.name[i] == "") {
         wb.name[i] <- wb$name
       }
-      if (is_effective.spectrum && is_effective(wb)) {
+      if (is.effective.spectrum && is.effective(wb)) {
         warning("Effective spectral irradiance is not compatible with a BSWF: ", wb.name[i])
         irrad[i] <- NA
       } else {
-        if (is_effective.spectrum) {
+        if (is.effective.spectrum) {
           wb.name[i] <- paste(getBSWFUsed(spct), "*", wb.name[i])
         }
         # calculate the multipliers
@@ -154,7 +154,7 @@ irrad_spct <-
       }
     }
     if (quantity %in% c("contribution", "contribution.pc")) {
-      if (any(sapply(w.band, is_effective))) {
+      if (any(sapply(w.band, is.effective))) {
         warning("'quantity '", quantity, "' not supported when using BSWFs, returning 'total' instead")
         quantity <- "total"
       } else {
@@ -166,7 +166,7 @@ irrad_spct <-
         }
       }
     } else if (quantity %in% c("relative", "relative.pc")) {
-      if (any(sapply(w.band, is_effective))) {
+      if (any(sapply(w.band, is.effective))) {
         warning("'quantity '", quantity, "' not supported when using BSWFs, returning 'total' instead")
         quantity <- "total"
       } else {
@@ -188,7 +188,7 @@ irrad_spct <-
     }
     names(irrad) <- paste(names(irrad), wb.name)
     setattr(irrad, "time.unit", getTimeUnit(spct_x))
-    if (is_effective(spct_x)) {
+    if (is.effective(spct_x)) {
       setattr(irrad, "radiation.unit",
               paste(unit.out, "irradiance", quantity, "effective:", getBSWFUsed(spct_x)))
     } else {

@@ -111,7 +111,7 @@ response_spct <-
       i <- i + 1
       # we get names from wb if needed
       if (no_names_flag) {
-        if (is_effective(wb)) {
+        if (is.effective(wb)) {
           warning("Using only wavelength range from a weighted waveband object.")
           wb_name[i] <- paste("range", as.character(signif(min(wb), 4)), as.character(signif(max(wb), 4)), sep=".")
         } else {
@@ -122,7 +122,7 @@ response_spct <-
       response[i] <- integrate_spct(trim_spct(spct, wb, use.hinges=FALSE))
     }
     if (quantity %in% c("contribution", "contribution.pc")) {
-      if (any(sapply(w.band, is_effective))) {
+      if (any(sapply(w.band, is.effective))) {
         warning("'quantity '", quantity, "' not supported when using BSWFs, returning 'total' instead")
         quantity <- "total"
       } else {
@@ -134,7 +134,7 @@ response_spct <-
         }
       }
     } else if (quantity %in% c("relative", "relative.pc")) {
-      if (any(sapply(w.band, is_effective))) {
+      if (any(sapply(w.band, is.effective))) {
         warning("'quantity '", quantity, "' not supported when using BSWFs, returning 'total' instead")
         quantity <- "total"
       } else {

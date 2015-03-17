@@ -250,28 +250,28 @@ normalization.waveband <- function(x) {
   return(ifelse(is.null(x$norm), NA, x$norm))
 }
 
-# is_effective -----------------------------------------------------------
+# is.effective -----------------------------------------------------------
 
 #' Is an R object "effective".
 #'
 #' A generic function that returns the normalization of an R object.
 #'
 #' @param x an R object
-#' @export is_effective is_effective
-#' @aliases is_effective is_effective
+#' @export is.effective is.effective
+#' @aliases is.effective is.effective
 #'
-is_effective <- function(x) UseMethod("is_effective")
+is.effective <- function(x) UseMethod("is.effective")
 
-is_effective <- is_effective
+is.effective <- is.effective
 
 #' Is an R object "effective".
 #'
 #' A generic function that returns the normalization of an R object.
 #'
 #' @param x an R object
-#' @export is_effective.default
+#' @export is.effective.default
 #'
-is_effective.default <- function(x) {
+is.effective.default <- function(x) {
   return(NA)
 }
 
@@ -280,8 +280,8 @@ is_effective.default <- function(x) {
 #' A function that returns true if it is a BSWF.
 #'
 #' @param x an object of class "waveband"
-#' @export is_effective.waveband
+#' @export is.effective.waveband
 #'
-is_effective.waveband <- function(x) {
+is.effective.waveband <- function(x) {
   return(x$weight != "none")
 }

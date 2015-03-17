@@ -88,7 +88,7 @@ absorbance_spct <-
       i <- i + 1
       # we get names from wb if needed
       if (no_names_flag) {
-        if (is_effective(wb)) {
+        if (is.effective(wb)) {
           warning("Using only wavelength range from a weighted waveband object.")
           wb.name[i] <- paste("range", as.character(signif(min(wb), 4)), as.character(signif(max(wb), 4)), sep=".")
         } else {

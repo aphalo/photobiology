@@ -38,13 +38,13 @@ oper.e.generic.spct <- function(e1, e2, oper) {
         warning("Only '*' is allowed between source.spct and waveband objects")
         return(NA)
       }
-      if (is_effective(e1) && !is_effective(e2)) {
+      if (is.effective(e1) && !is.effective(e2)) {
         bwswf.used <- getBSWFUsed(e1)
-      } else if (!is_effective(e1) && is_effective(e2)) {
+      } else if (!is.effective(e1) && is.effective(e2)) {
         bswf.used <- labels(e2)[["name"]]
-      } else if (is_effective(e1) && is_effective(e2)) {
+      } else if (is.effective(e1) && is.effective(e2)) {
         bswf.used <- paste(getBSWFUsed(e1), "*", labels(e2)[["name"]])
-      } else if (!is_effective(e1) && !is_effective(e2)) {
+      } else if (!is.effective(e1) && !is.effective(e2)) {
         bswf.used <- "none"
       } else {
         stop("Failed assertion! BUG IN PACKAGE CODE")
@@ -64,7 +64,7 @@ oper.e.generic.spct <- function(e1, e2, oper) {
       return(out.spct)
     } else if (class2 == "source.spct") {
       q2e(e2, action = "add", byref = TRUE)
-      if (is_effective(e1) || is_effective(e2)) {
+      if (is.effective(e1) || is.effective(e2)) {
         warning("One or both operands are effective spectral irradiances")
         bswf.used <- paste(getBSWFUsed(e1), getBSWFUsed(e2))
       } else {
@@ -358,7 +358,7 @@ oper.q.generic.spct <- function(e1, e2, oper) {
       e1 <- trim_spct(e1, low.limit = min(e2), high.limit = max(e2) - 1e-3, verbose=FALSE, use.hinges = TRUE)
       mult <- calc_multipliers(w.length=e1$w.length, w.band=e2, unit.out="photon",
                                unit.in="photon", use.cached.mult=FALSE)
-      if (is_effective(e2)) {
+      if (is.effective(e2)) {
         return(response.spct(w.length=e1$w.length, s.q.response = e1$s.q.irrad * mult, time.unit=getTimeUnit(e1)))
       } else {
         return(source.spct(w.length=e1$w.length, s.q.irrad = e1$s.q.irrad * mult,
@@ -378,7 +378,7 @@ oper.q.generic.spct <- function(e1, e2, oper) {
         warning("operands have different value for 'time.unit' attribute")
         return(NA)
       }
-      if (is_effective(e1) || is_effective(e2)) {
+      if (is.effective(e1) || is.effective(e2)) {
         warning("One or both operands are effective spectral irradiances")
         bswf.used <- paste(getBSWFUsed(e1), getBSWFUsed(e2))
       } else {

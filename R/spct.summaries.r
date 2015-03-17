@@ -15,7 +15,7 @@
 #'
 #' @export summary.generic.spct
 #'
-summary.generic.spct <- function(object, digits = 4L, ...) {
+summary.generic.spct <- function(object, digits = max(3, getOption("digits")-3), ...) {
   z <- c(
     max.w.length = max(object),
     min.w.length = min(object),
@@ -54,7 +54,7 @@ print.summary.generic.spct <- function(x, ...) {
 #'
 #' @examples
 #' str(summary(sun.spct))
-summary.source.spct <- function(object, digits = 4L, ...) {
+summary.source.spct <- function(object, digits = max(3, getOption("digits")-3), ...) {
   time.unit <- getTimeUnit(object)
   bswf.used <- getBSWFUsed(object)
   z <- c(
@@ -121,7 +121,7 @@ print.summary.source.spct <- function(x, ...) {
 #'
 #' @export summary.filter.spct
 #'
-summary.filter.spct <- function(object, digits = 4L, ...) {
+summary.filter.spct <- function(object, digits = max(3, getOption("digits")-3), ...) {
   Tfr.type <- getTfrType(object)
   z <- c(
     max.w.length = max(object),
@@ -166,7 +166,7 @@ print.summary.filter.spct <- function(x, ...) {
 #'
 #' @export summary.reflector.spct
 #'
-summary.reflector.spct <- function(object, digits = 4L, ...) {
+summary.reflector.spct <- function(object, digits = max(3, getOption("digits")-3), ...) {
   Rfr.type <- getRfrType(object)
   z <- c(
     max.w.length = max(object),
@@ -211,7 +211,7 @@ print.summary.reflector.spct <- function(x, ...) {
 #'
 #' @export summary.response.spct
 #'
-summary.response.spct <- function(object, digits = 4L, ...) {
+summary.response.spct <- function(object, digits = max(3, getOption("digits")-3), ...) {
   time.unit <- getTimeUnit(object)
   z <- c(
     max.w.length = max(object),
@@ -257,7 +257,7 @@ print.summary.response.spct <- function(x, ...) {
 #'
 #' @export summary.chroma.spct
 #'
-summary.chroma.spct <- function(object, digits = 4L, ...) {
+summary.chroma.spct <- function(object, digits = max(3, getOption("digits")-3), ...) {
   z <- c(
     max.w.length = max(object),
     min.w.length = min(object),

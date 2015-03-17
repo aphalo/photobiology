@@ -377,7 +377,7 @@ check.source.spct <- function(x, byref=TRUE, strict.range=FALSE) {
     setTimeUnit(x, "second")
     warning("Missing attribute 'time.unit' set to 'second'")
   }
-  if (is.null(is_effective(x))) {
+  if (is.null(is.effective(x))) {
     setBSWFUsed(x, "none")
     warning("Missing atrribute 'bswf.used' set to 'none'")
   }
@@ -1261,7 +1261,7 @@ setBSWFUsed <- function(x, bswf.used=c("none", "unknown")) {
     bswf.used <- "none"
   }
   if (length(bswf.used) > 1) {
-    if (is_effective(x)) {
+    if (is.effective(x)) {
       bswf.used <- getBSWFUsed(x)
     } else {
       bswf.used <- bswf.used[[1]]
@@ -1311,8 +1311,8 @@ getBSWFUsed <- function(x) {
 #' with a BSWF to weight it.
 #'
 #' @param x an object of class "source.spct"
-#' @export is_effective.source.spct
-is_effective.source.spct <- function(x) {
+#' @export is.effective.source.spct
+is.effective.source.spct <- function(x) {
   bswf.used <- getBSWFUsed(x)
   return( !is.null(bswf.used) && (bswf.used != "none") )
 }

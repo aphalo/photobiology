@@ -11,7 +11,8 @@
  breaklinks=false,pdfborder={0 0 1},backref=false,colorlinks=false]
  {hyperref}
 \usepackage{listings}
-\usepackage{booktabs}\usepackage{bbding}
+\usepackage{booktabs}
+\usepackage{bbding}
 \usepackage{xspace}
 \usepackage{framed}
 
@@ -224,13 +225,13 @@ class(1:10)
 
 \subsubsection{Special attributes}
 
-\texttt{source.spct} objects have a \texttt{time.unit} attribute which can take one of two values \texttt{"second"} or \texttt{"day"}, the default is \texttt{"second"}. However, if the spectral data is for daily exposure, then the attribute should be set when the object is constructed. \texttt{source.spct} objects have a \texttt{bswf.used} attribute which can take one of several values \texttt{"none"}, \texttt{"unknown"} or the name of a BSWF. It is also possible to set the attributes for an existing object with functions \texttt{setTimeUnit} and \texttt{setBSWFUsed}, and to querry the value of the attributes for an existing object with functions \texttt{getTimeUnit} and \texttt{getBSWFUsed}. The function \texttt{is\_effective} returns \texttt{TRUE} if the value of the \texttt{bswf.used} is neither \texttt{NULL} nor equal to \texttt{"none"}.
+\texttt{source.spct} objects have a \texttt{time.unit} attribute which can take one of two values \texttt{"second"} or \texttt{"day"}, the default is \texttt{"second"}. However, if the spectral data is for daily exposure, then the attribute should be set when the object is constructed. \texttt{source.spct} objects have a \texttt{bswf.used} attribute which can take one of several values \texttt{"none"}, \texttt{"unknown"} or the name of a BSWF. It is also possible to set the attributes for an existing object with functions \texttt{setTimeUnit} and \texttt{setBSWFUsed}, and to querry the value of the attributes for an existing object with functions \texttt{getTimeUnit} and \texttt{getBSWFUsed}. The function \texttt{is.effective} returns \texttt{TRUE} if the value of the \texttt{bswf.used} is neither \texttt{NULL} nor equal to \texttt{"none"}.
 
 <<>>=
-is_effective(sun.spct)
-is_effective(sun.spct * VIS())
+is.effective(sun.spct)
+is.effective(sun.spct * VIS())
 getBSWFUsed(sun.spct * VIS())
-is_effective(sun.spct * CIE())
+is.effective(sun.spct * CIE())
 getBSWFUsed(sun.spct * CIE())
 @
 
@@ -572,7 +573,7 @@ It is also possible to supply a range within which the normalization wavelength 
 normalize(sun.spct, range = PAR(), norm = "max")
 @
 
-As is the case for other functions, the argument "unit.unit" can be used to change the type output from the default.
+As is the case for other functions, the argument \texttt{"unit.out"} can be used to change the type output from the default.
 
 \subsection{Rescaling a spectrum}
 
@@ -613,7 +614,7 @@ Because of how \verb|[ ]| operators work in R, and especially on objects of clas
 
 Sometimes it is desirable to change the range of wavelengths included in a spectrum. If we are interested in a given part of the spectrum, there is no need to do calculations or plotting the whole spectrum. Sometimes we may want to expand the range of wavelengths, filling the expansion of all other variables with a certain value (i.e.\ a number, or NA.)
 
-We can supply the arguments \texttt{band}, \texttt{low.limit}, \texttt{high.limit}, and \texttt{fill}. Either \texttt{band} or \texttt{xxx.limit} arguments should supplied, but not both at once. We use \texttt{head} to print the first six lines.
+We can supply the arguments \texttt{band}, \texttt{low.limit}, \texttt{high.limit}, and \texttt{fill}. Either \texttt{band} or \texttt{low.limit} and/or \texttt{high.limit} arguments should supplied, but not both at once. We use \texttt{head} to print the first six lines.
 
 <<>>=
 head(trim_spct(sun.spct, PAR()))
@@ -765,13 +766,13 @@ is.waveband(PAR())
 is.waveband(sun.spct)
 @
 
-The function \texttt{is\_effective} can the used to query any R object.
+The function \texttt{is.effective} can the used to query any R object.
 
 <<>>=
-is_effective(my_CIE_1)
-is_effective(GEN.G())
-is_effective(PAR())
-is_effective(sun.spct)
+is.effective(my_CIE_1)
+is.effective(GEN.G())
+is.effective(PAR())
+is.effective(sun.spct)
 @
 
 \subsection{Using operators with spectra}
@@ -849,17 +850,17 @@ There is one special case, for \texttt{chroma.spct}: if the numeric operand has 
 Operators are also defined for operations between an spectrum and a \texttt{waveband} object. The next to code chunks demonstrate how the class of the result depends on whether the \texttt{waveband} object describes a range of wavelengths or a range of wavelengths plus a BSWF.
 
 <<>>=
-is_effective(UVB())
+is.effective(UVB())
 clipped.spct <- sun.spct * UVB()
 class.spct(clipped.spct)
 clipped.spct
 @
 
 <<>>=
-is_effective(CIE())
+is.effective(CIE())
 weighted.spct <- sun.spct * CIE()
 class.spct(weighted.spct)
-is_effective(weighted.spct)
+is.effective(weighted.spct)
 weighted.spct
 @
 
@@ -904,7 +905,45 @@ sqrt(sun.spct)
 
 \subsubsection{Options affecting maths operators and functions}
 
-The behaviour of the operators depends on the value of two global options. If we would like the operators to
+Table \ref{tab:options} lists all the recognized options, and their default values. Within the suite all functions have a default value which is used when the options are undefined. Options are set using base R's function \texttt{options}, and queried with functions \texttt{options} and \texttt{getOption}.
+
+\begin{table}
+\caption[Options]{Options recognized by functions in the photobiology package and the values they can take.\label{tab:options}}
+\centering
+\begin{footnotesize}
+\begin{tabular}{lll}
+\toprule
+\textbf{Option} & \textbf{default} & \textbf{effect} \\
+\midrule
+\textbf{Base R} & & \\
+\addlinespace
+digits & 7 & $d - 3$ used by \texttt{summary} \\
+\midrule
+\textbf{Package \texttt{data.table}} & & \\
+\addlinespace
+datatable.print.nrows & $n = 100$ & nrow(\emph{spct}) $> n$ ``short'' printing \\
+datatable.print.topn & $n = 5 $ & nrows to print at top and bottom \\
+datatable.verbose & \texttt{FALSE} & give verbose output or not \\
+\midrule
+\textbf{R4photobioloy suite} & & \\
+\addlinespace
+photobiology.radiation.unit & \texttt{"energy"} & (\wattnm) \\
+                            & \texttt{"photon"} & (\molnm) \\
+photobiology.filter.qty & \texttt{"transmittance"} & ($/1$) \\
+                        & \texttt{"absorptance"} & ($/1$) \\
+                        & \texttt{"absorbance"} & (a.u. $\log_10$ base) \\
+photobiology.use.hinges & \texttt{NULL} & guess automatically \\
+                        & \texttt{TRUE} & do not insert hinges \\
+                        & \texttt{FALSE} & do insert hinges \\
+photobiology.auto.hinges.limit & 0.7 & wavelength step (nm) \\
+photobiology.waveband.trim & \texttt{TRUE} & trim or exclude \\
+photobiology.verbose & \texttt{FALSE} & give verbose output or not \\
+\bottomrule
+\end{tabular}
+\end{footnotesize}
+\end{table}
+
+The behaviour of the operators defined in this package depends on the value of two global options. If we would like the operators to
 operate on spectral photon irradiance and return spectral photon irradiance instead of spectral energy irradiance,
 this behaviour can be set, and will remain active until unset or reset.
 
@@ -953,7 +992,7 @@ irrad(sun.spct, PAR(), unit.out = "photon") # mol s-1 m-2
 irrad(sun.spct, PAR(), unit.out = "photon") * 1e6 # umol s-1 m-2
 @
 
-The default for \texttt{irrad}, when no argument \texttt{unit.out} is supplied, is to return the irradiance value in energy irradiance units, unless the R \texttt{photobiology.radiation.unit} option is set.
+The default for \texttt{irrad}, when no argument \texttt{unit.out} is supplied, is to return the irradiance value in energy irradiance units, unless the R option \texttt{photobiology.radiation.unit} is set.
 
 <<>>=
 irrad(sun.spct, PAR()) # W m-2
@@ -1328,6 +1367,31 @@ ggplot(data = sun.spct, aes(x = w.length, y = s.e.irrad/max(s.e.irrad))) +
   geom_line(data = sun.spct * CIE(), colour = "red") +
   labs(x = "Wavelength (nm)",
        y = "UnWeighted and CIE98-weighted spectral irradiance (relative units)")
+@
+
+An alternative is as follows, where it is easier to use other aesthetics, or plot addtional curves as shown in the chunk below.
+
+<<warning=FALSE>>=
+combined.spct <- rbindspct(list(normalize(sun.spct * PG(), range = c(290,400)),
+                                normalize(sun.spct * GEN.G(), range = c(290,400)),
+                                normalize(sun.spct * GEN.T(), range = c(290,400)),
+                                normalize(sun.spct * GEN.M(), range = c(290,400))
+                                )
+                           )
+@
+
+<<fig.width=8, fig.height=4>>=
+ggplot(data = combined.spct, aes(x = w.length, y = s.e.irrad, colour = BSWF)) +
+  geom_line() +
+  labs(x = "Wavelength (nm)",
+       y = "Effective spectral irradiance (relative units)")
+@
+
+<<>>=
+ggplot(data = combined.spct, aes(x = w.length, y = s.e.irrad)) +
+  geom_line() + facet_wrap(~BSWF, ncol = 2) +
+  labs(x = "Wavelength (nm)",
+       y = "Effective spectral irradiance (relative units)")
 @
 
 \subsubsection{Weighted spectral irradiance from vectors}

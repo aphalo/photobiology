@@ -96,11 +96,12 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = NULL) {
   photon.based.input <- any(sapply(l, FUN=is.photon.based))
   absorbance.based.input <- any(sapply(l, FUN=is.absorbance.based))
   rescaled.input <- sapply(l, FUN = is.rescaled)
-  normalized.input <- sapply(l, FUN = is.rescaled)
+  normalized.input <- sapply(l, FUN = is.normalized)
+  effective.input <- sapply(l, FUN = is.effective)
   if (any(rescaled.input) && !all(rescaled.input)) {
     warning("Only some of the spectra being row-bound have been previously rescaled")
   }
-  if (any(normalized.input) && !all(normalized.input)) {
+  if (any(normalized.input) && length(unique(normalized.input)) > 1L) {
     warning("Only some of the spectra being row-bound have been previously normalized")
   }
   for (i in 1:length(l)) {
@@ -117,36 +118,19 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = NULL) {
   for (spct in l) {
     l.class <- intersect(l.class, class(spct))
   }
-  if (length(l.class) < 1) {
+  if (length(l.class) < 1L) {
     warning("Argument 'l' contains objects which are not spectra")
     return(NA)
   }
   l.class <- l.class[1]
   #  print(l.class)
 
-  add.factor <- !is.null(idfactor)
-  if (add.factor) {
-    if (is.character(idfactor)) {
-      factor.name <- idfactor
-    } else {
-      factor.name <- "spct.idx"
-    }
-    names.spct <- names(l)
-    if (is.null(names.spct) || anyNA(names.spct)) {
-      names.spct <- LETTERS[1:length(l)]
-    }
-    comment.ans <- "rbindspct: concatenated comments"
-    comments.found <- FALSE
-    for (i in 1:length(l)) {
-      l[[i]][ , (factor.name) := names.spct[i] ]
-      temp <- comment(l[[i]])
-      comments.found <- comments.found || !is.null(temp)
-      comment.ans <- paste(comment.ans, "\n", factor.name , ": ", names.spct[i], "\n", comment(l[[i]]), sep="")
-    }
-    if (!comments.found) {
-      comment.ans <- NULL
-    }
+  names.spct <- names(l)
+  if (is.null(names.spct) || anyNA(names.spct)) {
+    names.spct <- LETTERS[1:length(l)]
   }
+
+  # Here we do the actual binding
   if (length(l) < 2) {
     ans <- l[[1]]
   } else {
@@ -155,44 +139,82 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = NULL) {
   if (is.null(ans)) {
     return(NULL)
   }
-  if (l.class == "source.spct") {
-    time.unit <- character(length(l))
-    i <- 0L
-    for (spct in l) {
-      i <- i + 1
-      time.unit[i] <- ifelse(is.null(getTimeUnit(spct)), "unknown", getTimeUnit(spct))
-      if (i > 1) {
-        if (!(time.unit[i-1] == time.unit[i])) {
-          warning("Inconsistent time units among source spectra in rbindspct")
-          return(NA)
-        }
-      }
+
+  add.factor <- !is.null(idfactor)
+  if (add.factor) {
+    if (is.character(idfactor)) {
+      factor.name <- idfactor
+    } else {
+      factor.name <- "spct.idx"
     }
-    setSourceSpct(ans, time.unit = time.unit[1])
+    ans[ , (factor.name) := factor(rep.int(names.spct, sapply(l, FUN = nrow)), levels = names.spct)]
+  }
+
+  comment.ans <- "rbindspct: concatenated comments"
+  comments.found <- FALSE
+
+  for (i in 1:length(l)) {
+    temp <- comment(l[[i]])
+    comments.found <- comments.found || !is.null(temp)
+    if (add.factor) {
+      temp <- paste("\n", factor.name , "= ", names.spct[i], ":\n", comment(l[[i]]), sep="")
+    } else {
+      temp <- paste("\n spectrum = ", names.spct[i], ":\n", comment(l[[i]]), sep="")
+    }
+    comment.ans <- paste(comment.ans, temp)
+  }
+  if (!comments.found) {
+    comment.ans <- NULL
+  }
+
+  if (l.class == "source.spct") {
+    time.unit <- sapply(l, FUN = getTimeUnit)
+    if (length(unique(time.unit)) > 1L) {
+      warning("Inconsistent time units among source spectra in rbindspct")
+      return(NA)
+    }
+    if (any(effective.input)) {
+      bswfs.input <- sapply(l, FUN = getBSWFUsed)
+      if (length(unique(bswfs.input)) > 1L) {
+        add.bswf <- TRUE
+        bswf.used <- "unknown"
+        ans[ , BSWF := factor(rep.int(bswfs.input, sapply(l, FUN = nrow)), levels = bswfs.input)]
+      } else {
+        add.bswf <- FALSE
+        bswf.used <- bswfs.input[1]
+      }
+    } else {
+      add.bswf <- FALSE
+      bswf.used <- rep("none", length(l))
+    }
+    setSourceSpct(ans, time.unit = time.unit[1], bswf.used = bswf.used)
     if (photon.based.input) {
       e2q(ans, action = "add", byref = TRUE)
     }
   } else if (l.class == "filter.spct") {
-    Tfr.type <- character(length(l))
-    i <- 0L
-    for (spct in l) {
-      i <- i + 1
-      Tfr.type[i] <- ifelse(is.null(getTfrType(spct)), "unknown", getTfrType(spct))
-      if (i > 1) {
-        if (!(Tfr.type[i-1] == Tfr.type[i])) {
-          warning("Inconsistent 'Tfr.type' among filter spectra in rbindspct")
-          return(NA)
-        }
-      }
+    Tfr.type <- sapply(l, FUN = getTfrType)
+    if (length(unique(Tfr.type)) > 1L) {
+      warning("Inconsistent 'Tfr.type' among filter spectra in rbindspct")
+      return(NA)
     }
     setFilterSpct(ans, Tfr.type = Tfr.type[1])
     if (absorbance.based.input) {
       T2A(ans, action = "add", byref = TRUE)
     }
   } else if (l.class == "reflector.spct") {
-    setReflectorSpct(ans)
+    Rfr.type <- sapply(l, FUN = getRfrType)
+    if (length(unique(Rfr.type)) > 1L) {
+      warning("Inconsistent 'Rfr.type' among reflector spectra in rbindspct")
+      return(NA)
+    }
+    setReflectorSpct(ans, Rfr.type = Rfr.type[1])
   } else if (l.class == "response.spct") {
-    setResponseSpct(ans)
+    time.unit <- sapply(l, FUN = getTimeUnit)
+    if (length(unique(time.unit)) > 1L) {
+      warning("Inconsistent time units among respose spectra in rbindspct")
+      return(NA)
+    }
+    setResponseSpct(ans, time.unit = time.unit[1])
     if (photon.based.input) {
       e2q(ans, action = "add", byref = TRUE)
     }
@@ -207,11 +229,18 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = NULL) {
   if (any(normalized.input)) {
     setattr(ans, "normalized", "TRUE")
   }
-  if (add.factor) {
-    ans[ , (factor.name) := factor(ans[[(factor.name)]])]
+  if (add.factor && !add.bswf) {
     keys <- c(factor.name, "w.length")
     setkeyv(ans, keys)
-    setattr(ans, "comment", comment.ans)
-  }
+    if (!is.null(comment.ans)) setattr(ans, "comment", comment.ans)
+  } else if (!add.factor && add.bswf) {
+    keys <- c("BSWF", "w.length")
+    setkeyv(ans, keys)
+    if (!is.null(comment.ans)) setattr(ans, "comment", comment.ans)
+  } else if (add.factor && add.bswf) {
+    keys <- c("BSWF", factor.name, "w.length")
+    setkeyv(ans, keys)
+    if (!is.null(comment.ans)) setattr(ans, "comment", comment.ans)
+  } # else we keep the default "w.length"
   return(ans)
 }

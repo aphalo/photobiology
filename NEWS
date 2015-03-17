@@ -17,17 +17,28 @@ the idea that a BSWF is used for quantifying radiation rather predicting a
 biological response. The result should remain as radiation and continue to
 be expressed in energy or photon based units. This has been fixed. Starting
 from the current version, if the waveband is used with the '*' operator is
-a BSWF (tested with function is_effective()) the resulting spectrum is tagged
+a BSWF (tested with function is.effective()) the resulting spectrum is tagged
 as being "effective". The irrad() methods for source.spct have been updated to
 'recognize' effective spectral irradiance when supplied as input.
+
+rbindspct() modified so that if at least one of the spectra in the list is of
+effective irradiance a factor named BSWF is added with the BSWFs retrieved
+from the spectra used as levels. The optional factor selected through parameter
+idfactor has now its levels always reflecting the order of the spectra in the
+input, even when using a named input list of spectra. Several rather minor
+bugs were fixed, including improved handling of comments and attributes.
+
+summary() methods for spectra have been updated to report when source spectra
+are effective the BSWF that have been used.
 
 Long-standing unsolved problem partly fixed: interpolate_spct() now in most
 cases applies smoothing to the spectrum before attempting interpolation if
 the vector of output wavelengths has length > 1, but is sparser than then
 original spectral data.
 
-summary() methods for spectra have been updated to report when source spectra
-are effective the BSWF that have been used.
+A few inconsistencies in the prarmeters among similar functions were fixed
+by adding the missing formal parameters. Also some problems in the documentation
+for a few functions were fixed.
 
 User guide updated.
 
