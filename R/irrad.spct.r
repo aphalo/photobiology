@@ -8,7 +8,9 @@
 #'
 #' @usage irrad_spct(spct, w.band=NULL,
 #'        unit.out=getOption("photobiology.radiation.unit", default="energy"),
-#'        quantity="total", wb.trim=NULL, use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
+#'        quantity="total",
+#'        wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
+#'        use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
 #'        use.hinges=getOption("photobiology.use.hinges", default=NULL), allow.scaled = FALSE)
 #'
 #' @param spct an object of class \code{source.spct}
@@ -45,8 +47,11 @@
 #' @aliases irrad.source.spct irrad_spct
 
 irrad_spct <-
-  function(spct, w.band=NULL, unit.out=getOption("photobiology.radiation.unit", default="energy"),
-           quantity="total", wb.trim=NULL, use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
+  function(spct, w.band=NULL,
+           unit.out=getOption("photobiology.radiation.unit", default="energy"),
+           quantity="total",
+           wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
+           use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
            use.hinges=getOption("photobiology.use.hinges", default=NULL),
            allow.scaled = FALSE){
     # we have a default, but we check for invalid arguments
@@ -248,7 +253,9 @@ irrad <- function(spct, w.band, unit.out, quantity, wb.trim,
 #' waveband of a light source spectrum.
 #'
 #' @usage e_irrad.source.spct(spct, w.band=NULL,
-#'                quantity="total", wb.trim=NULL, use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
+#'                quantity="total",
+#'                wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
+#'                use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
 #'                use.hinges=getOption("photobiology.use.hinges", default=NULL),
 #'                allow.scaled = FALSE)
 #'
@@ -283,11 +290,13 @@ irrad <- function(spct, w.band, unit.out, quantity, wb.trim,
 #'
 e_irrad.source.spct <-
   function(spct, w.band=NULL,
-           quantity="total", wb.trim=NULL, use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
+           quantity="total",
+           wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
+           use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
            use.hinges=getOption("photobiology.use.hinges", default=NULL),
            allow.scaled = FALSE ) {
     irrad_spct(spct, w.band=w.band, unit.out="energy", quantity=quantity, wb.trim=wb.trim,
-                      use.cached.mult=use.cached.mult, use.hinges=use.hinges, allow.scaled = allow.scaled)
+               use.cached.mult=use.cached.mult, use.hinges=use.hinges, allow.scaled = allow.scaled)
   }
 
 # photon irradiance -------------------------------------------------------
@@ -299,7 +308,7 @@ e_irrad.source.spct <-
 #' waveband of a light source spectrum.
 #'
 #' @usage q_irrad.source.spct(spct, w.band=NULL,
-#'                            quantity="total", wb.trim=NULL,
+#'                            quantity="total", wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
 #'                            use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
 #'                            use.hinges=getOption("photobiology.use.hinges", default=NULL),
 #'                            allow.scaled = FALSE)
@@ -339,7 +348,7 @@ e_irrad.source.spct <-
 q_irrad.source.spct <-
   function(spct, w.band=NULL,
            quantity="total",
-           wb.trim=NULL,
+           wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
            use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
            use.hinges=getOption("photobiology.use.hinges", default=NULL),
            allow.scaled = FALSE ) {

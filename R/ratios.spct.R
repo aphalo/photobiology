@@ -38,9 +38,9 @@
 q_ratio <-
   function(spct, w.band.num=NULL, w.band.denom=NULL, use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
            use.hinges=getOption("photobiology.use.hinges", default=NULL) ) {
-    q.irrad.num <- irrad_spct(spct, w.band=w.band.num, unit.out="photon", quantity="total", wb.trim=NULL,
+    q.irrad.num <- irrad_spct(spct, w.band=w.band.num, unit.out="photon", quantity="total", wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
                               use.cached.mult=use.cached.mult, use.hinges=use.hinges, allow.scaled=TRUE)
-    q.irrad.denom <- irrad_spct(spct, w.band=w.band.denom, unit.out="photon", quantity="total", wb.trim=NULL,
+    q.irrad.denom <- irrad_spct(spct, w.band=w.band.denom, unit.out="photon", quantity="total", wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
                                 use.cached.mult=use.cached.mult, use.hinges=use.hinges, allow.scaled=TRUE)
     ratio <- q.irrad.num / q.irrad.denom
     names(ratio) <- paste(names(q.irrad.num), ":", names(q.irrad.denom), "(q:q)", sep="")
@@ -91,9 +91,9 @@ q_ratio_spct <- q_ratio
 e_ratio <-
   function(spct, w.band.num=NULL, w.band.denom=NULL, use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
            use.hinges=getOption("photobiology.use.hinges", default=NULL) ) {
-    e.irrad.num <- irrad_spct(spct, w.band=w.band.num, unit.out="energy", quantity="total", wb.trim=NULL,
+    e.irrad.num <- irrad_spct(spct, w.band=w.band.num, unit.out="energy", quantity="total", wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
                               use.cached.mult=use.cached.mult, use.hinges=use.hinges, allow.scaled=TRUE)
-    e.irrad.denom <- irrad_spct(spct, w.band=w.band.denom, unit.out="energy", quantity="total", wb.trim=NULL,
+    e.irrad.denom <- irrad_spct(spct, w.band=w.band.denom, unit.out="energy", quantity="total", wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
                                 use.cached.mult=use.cached.mult, use.hinges=use.hinges, allow.scaled=TRUE)
     ratio <- e.irrad.num / e.irrad.denom
     names(ratio) <- paste(names(e.irrad.num), ":", names(e.irrad.denom), "(e:e)", sep="")
@@ -140,9 +140,9 @@ e_ratio_spct <- e_ratio
 qe_ratio <-
   function(spct, w.band=NULL, use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
            use.hinges=getOption("photobiology.use.hinges", default=NULL) ) {
-    q.irrad <- irrad_spct(spct, w.band=w.band, unit.out="photon", quantity="total", wb.trim=NULL,
+    q.irrad <- irrad_spct(spct, w.band=w.band, unit.out="photon", quantity="total", wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
                               use.cached.mult=use.cached.mult, use.hinges=use.hinges, allow.scaled=TRUE)
-    e.irrad <- irrad_spct(spct, w.band=w.band, unit.out="energy", quantity="total", wb.trim=NULL,
+    e.irrad <- irrad_spct(spct, w.band=w.band, unit.out="energy", quantity="total", wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
                                 use.cached.mult=use.cached.mult, use.hinges=use.hinges, allow.scaled=TRUE)
     ratio <- q.irrad / e.irrad
     names(ratio) <- paste("q:e(", names(q.irrad), ")", sep="")

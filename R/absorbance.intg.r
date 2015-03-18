@@ -3,10 +3,12 @@
 #' This function returns the mean absorbance for a given
 #' waveband of a absorbance spectrum.
 #'
-#' @usage absorbance_spct(spct, w.band=NULL, quantity="average", wb.trim=NULL,
+#' @usage absorbance_spct(spct, w.band=NULL, quantity="average",
+#'                        wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
 #'                        use.hinges=getOption("photobiology.use.hinges", default=NULL) )
-#' @usage absorbance(spct, w.band=NULL, quantity="average", wb.trim=NULL,
-#'                        use.hinges=getOption("photobiology.use.hinges", default=NULL) )
+#' @usage absorbance(spct, w.band=NULL, quantity="average",
+#'                   wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
+#'                   use.hinges=getOption("photobiology.use.hinges", default=NULL) )
 #'
 #' @param spct an object of class "filter.spct"
 #' @param w.band list of waveband definitions created with new_waveband()
@@ -25,7 +27,8 @@
 #' in mosts cases. Only the range of wavelengths in the wavebands is used and all BSWFs are ignored.
 
 absorbance_spct <-
-  function(spct, w.band=NULL, quantity="average", wb.trim=NULL,
+  function(spct, w.band=NULL, quantity="average",
+           wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
            use.hinges=getOption("photobiology.use.hinges", default=NULL) ) {
     if (is.normalized(spct) || is.rescaled(spct)) {
       warning("The espectral data has been normalized or rescaled, making impossible to calculate absorbance")

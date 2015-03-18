@@ -4,7 +4,7 @@
 #' waveband of a transmittance spectrum.
 #'
 #' @usage transmittance_spct(spct, w.band=NULL, pc.out=FALSE,
-#'                           quantity="average", wb.trim=FALSE,
+#'                           quantity="average", wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
 #'                           use.hinges=getOption("photobiology.use.hinges", default=NULL) )
 #'
 #' @param spct an object of class "generic.spct"
@@ -26,7 +26,7 @@
 #' in mosts cases. Only the range of wavelengths in the wavebands is used and all BSWFs are ignored.
 
 transmittance_spct <-
-  function(spct, w.band=NULL, pc.out=FALSE, quantity="average", wb.trim=FALSE,
+  function(spct, w.band=NULL, pc.out=FALSE, quantity="average", wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
            use.hinges=getOption("photobiology.use.hinges", default=NULL) ) {
     if (is.normalized(spct) || is.rescaled(spct)) {
       warning("The espectral data has been normalized or rescaled, making impossible to calculate transmittance")

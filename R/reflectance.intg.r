@@ -4,7 +4,7 @@
 #' waveband and a reflectance spectrum.
 #'
 #' @usage reflectance_spct(spct, w.band=NULL, pc.out=FALSE,
-#'                         quantity="average", wb.trim=NULL,
+#'                         quantity="average", wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
 #'                         use.hinges=getOption("photobiology.use.hinges", default=NULL) )
 #'
 #' @param spct an object of class generic.spct"
@@ -26,7 +26,8 @@
 #' in mosts cases. Only the range of wavelengths in the wavebands is used and all BSWFs are ignored.
 
 reflectance_spct <-
-  function(spct, w.band=NULL, pc.out=FALSE, quantity="average", wb.trim=NULL,
+  function(spct, w.band=NULL, pc.out=FALSE, quantity="average",
+           wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
            use.hinges=getOption("photobiology.use.hinges", default=NULL) ){
     Rfr.type <- getRfrType(spct)
     if (is.object.spct(spct)) {

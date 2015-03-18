@@ -5,7 +5,7 @@
 #'
 #' @usage response_spct(spct, w.band=NULL,
 #'                      unit.out=getOption("photobiology.radiation.unit", default="energy"),
-#'                      quantity="total", wb.trim=NULL,
+#'                      quantity="total", wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
 #'                      use.hinges=getOption("photobiology.use.hinges", default=NULL) )
 #'
 #' @param spct an object of class response.spct"
@@ -36,7 +36,7 @@ response_spct <-
   function(spct, w.band=NULL,
            unit.out=getOption("photobiology.radiation.unit", default="energy"),
            quantity="total",
-           wb.trim=NULL,
+           wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
            use.hinges=getOption("photobiology.use.hinges", default=NULL) ) {
     if (is.normalized(spct) || is.rescaled(spct)) {
       warning("The espectral data has been normalized or rescaled, making impossible to calculate integrated response")
@@ -233,7 +233,7 @@ response <- function(spct, w.band, unit.out, quantity, wb.trim, use.hinges) UseM
 #'
 #' @usage e_response.response.spct(spct, w.band=NULL,
 #'                                 quantity="total",
-#'                                 wb.trim=NULL,
+#'                                 wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
 #'              use.hinges=getOption("photobiology.use.hinges", default=NULL) )
 #'
 #' @param spct an object of class response.spct"
@@ -255,7 +255,7 @@ response <- function(spct, w.band, unit.out, quantity, wb.trim, use.hinges) UseM
 #' in mosts cases. Only the range of wavelengths in the wavebands is used and all BSWFs are ignored.
 
 e_response.response.spct <-
-  function(spct, w.band=NULL, quantity="total", wb.trim=NULL,
+  function(spct, w.band=NULL, quantity="total", wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
            use.hinges=getOption("photobiology.use.hinges", default=NULL) ) {
     response_spct(spct=spct, w.band=w.band, unit.out="energy",
                   quantity=quantity, wb.trim=wb.trim,
@@ -269,7 +269,7 @@ e_response.response.spct <-
 #'
 #' @usage q_response.response.spct(spct, w.band=NULL,
 #'                                 quantity="total",
-#'                                 wb.trim=NULL,
+#'                                 wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
 #'                                 use.hinges=getOption("photobiology.use.hinges", default=NULL) )
 #'
 #' @param spct an object of class response.spct"
@@ -291,7 +291,7 @@ e_response.response.spct <-
 #' in mosts cases. Only the range of wavelengths in the wavebands is used and all BSWFs are ignored.
 
 q_response.response.spct <-
-  function(spct, w.band=NULL, quantity="total", wb.trim=NULL,
+  function(spct, w.band=NULL, quantity="total", wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
            use.hinges=getOption("photobiology.use.hinges", default=NULL) ) {
     response_spct(spct=spct, w.band=w.band, unit.out="photon",
                   quantity=quantity, wb.trim=wb.trim,

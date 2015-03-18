@@ -34,7 +34,7 @@ tag.default <- function(x, ...) {
 #'
 tag.generic.spct <- function(x,
                              w.band=NULL,
-                             wb.trim=NULL,
+                             wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
                              use.hinges=TRUE,
                              short.names=TRUE,
                              byref=TRUE, ...) {

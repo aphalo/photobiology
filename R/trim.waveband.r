@@ -27,12 +27,9 @@
 trim_waveband <- function(w.band,
                           range=NULL,
                           low.limit=NULL, high.limit=NULL,
-                          trim=NULL,
+                          trim = getOption("photobiology.waveband.trim", default = TRUE),
                           use.hinges=TRUE)
 {
-  if (is.null(trim)) {
-    trim <- getOption("photobiology.waveband.trim", TRUE)
-  }
   if (!is.null(w.band) && is.waveband(w.band)) {
     w.band <- list(w.band)
   }
