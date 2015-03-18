@@ -8,11 +8,11 @@
 #'
 #' @usage irrad_spct(spct, w.band=NULL,
 #'        unit.out=getOption("photobiology.radiation.unit", default="energy"),
-#'        quantity="total", wb.trim=NULL, use.cached.mult=FALSE,
+#'        quantity="total", wb.trim=NULL, use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
 #'        use.hinges=getOption("photobiology.use.hinges", default=NULL), allow.scaled = FALSE)
 #'
-#' @param spct an object of class "source.spct"
-#' @param w.band list of waveband definitions created with new_waveband()
+#' @param spct an object of class \code{source.spct}
+#' @param w.band a list of \code{waveband} objects or a \code{waveband} object
 #' @param unit.out character string with allowed values "energy", and "photon", or its alias "quantum"
 #' @param quantity character string
 #' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries are trimmed, if FALSE, they are discarded
@@ -46,7 +46,7 @@
 
 irrad_spct <-
   function(spct, w.band=NULL, unit.out=getOption("photobiology.radiation.unit", default="energy"),
-           quantity="total", wb.trim=NULL, use.cached.mult=FALSE,
+           quantity="total", wb.trim=NULL, use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
            use.hinges=getOption("photobiology.use.hinges", default=NULL),
            allow.scaled = FALSE){
     # we have a default, but we check for invalid arguments
@@ -93,7 +93,7 @@ irrad_spct <-
     # spectral resolution data, and speed up the calculations
     # a lot in such cases
     if (is.null(use.hinges)) {
-      use.hinges <- stepsize(spct_x)[2] > getOption("photobiology.auto.hinges.limit", default = 0.7) # nm
+      use.hinges <- stepsize(spct_x)[2] > getOption("photobiology.auto.hinges.limit", default = 0.5) # nm
     }
     # we collect all hinges and insert them in one go
     # this may alter a little the returned values
@@ -159,7 +159,7 @@ irrad_spct <-
         quantity <- "total"
       } else {
         total <- irrad_spct(spct_x, w.band=NULL, unit.out=unit.out,
-                            quantity="total", use.cached.mult=FALSE, use.hinges=FALSE)
+                            quantity="total", use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE), use.hinges=FALSE)
         irrad <- irrad / total
         if (quantity == "contribution.pc") {
           irrad <- irrad * 1e2
@@ -225,8 +225,8 @@ irrad.default <- function(spct, w.band, unit.out, quantity, wb.trim,
 #'
 #' Calculate energy or photon irradiance.
 #'
-#' @param spct an R object of class "generic.spct"
-#' @param w.band a waveband object or a list of waveband objects
+#' @param spct an R object of class \code{generic.spct}
+#' @param w.band a list of \code{waveband} objects or a \code{waveband} object
 #' @param unit.out character string with allowed values "energy", and "photon", or its alias "quantum"
 #' @param quantity character string
 #' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries are trimmed, if FALSE, they are discarded
@@ -248,12 +248,12 @@ irrad <- function(spct, w.band, unit.out, quantity, wb.trim,
 #' waveband of a light source spectrum.
 #'
 #' @usage e_irrad.source.spct(spct, w.band=NULL,
-#'                quantity="total", wb.trim=NULL, use.cached.mult=FALSE,
+#'                quantity="total", wb.trim=NULL, use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
 #'                use.hinges=getOption("photobiology.use.hinges", default=NULL),
-#'                allow.scaled = allow.scaled )
+#'                allow.scaled = FALSE)
 #'
-#' @param spct an object of class "source.spct"
-#' @param w.band list of waveband definitions created with new_waveband()
+#' @param spct an object of class \code{source.spct}
+#' @param w.band a list of \code{waveband} objects or a \code{waveband} object
 #' @param quantity character string
 #' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries are trimmed, if FALSE,
 #'        they are discarded
@@ -283,7 +283,7 @@ irrad <- function(spct, w.band, unit.out, quantity, wb.trim,
 #'
 e_irrad.source.spct <-
   function(spct, w.band=NULL,
-           quantity="total", wb.trim=NULL, use.cached.mult=FALSE,
+           quantity="total", wb.trim=NULL, use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
            use.hinges=getOption("photobiology.use.hinges", default=NULL),
            allow.scaled = FALSE ) {
     irrad_spct(spct, w.band=w.band, unit.out="energy", quantity=quantity, wb.trim=wb.trim,
@@ -300,12 +300,12 @@ e_irrad.source.spct <-
 #'
 #' @usage q_irrad.source.spct(spct, w.band=NULL,
 #'                            quantity="total", wb.trim=NULL,
-#'                            use.cached.mult=FALSE,
+#'                            use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
 #'                            use.hinges=getOption("photobiology.use.hinges", default=NULL),
 #'                            allow.scaled = FALSE)
 #'
-#' @param spct an object of class "source.spct"
-#' @param w.band list of waveband definitions created with new_waveband()
+#' @param spct an object of class \code{source.spct}
+#' @param w.band a list of \code{waveband} objects or a \code{waveband} object
 #' @param quantity character string
 #' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries are trimmed, if FALSE, they are discarded
 #' @param use.cached.mult logical indicating whether multiplier values should be cached between calls
@@ -340,7 +340,7 @@ q_irrad.source.spct <-
   function(spct, w.band=NULL,
            quantity="total",
            wb.trim=NULL,
-           use.cached.mult=FALSE,
+           use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
            use.hinges=getOption("photobiology.use.hinges", default=NULL),
            allow.scaled = FALSE ) {
     irrad_spct(spct, w.band=w.band, unit.out="photon", quantity=quantity, wb.trim=wb.trim,
@@ -351,8 +351,8 @@ q_irrad.source.spct <-
 #'
 #' Calculate (energy) irradiance.
 #'
-#' @param spct an R object of class "generic.spct"
-#' @param w.band a waveband object or a list of waveband objects
+#' @param spct an R object of class \code{generic.spct}
+#' @param w.band a list of \code{waveband} objects or a \code{waveband} object
 #' @param quantity character string
 #' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries are trimmed, if FALSE, they are discarded
 #' @param use.cached.mult logical indicating whether multiplier values should be cached between calls
@@ -367,8 +367,8 @@ e_irrad <- function(spct, w.band, quantity, wb.trim, use.cached.mult, use.hinges
 #'
 #' Calculate photon irradiance.
 #'
-#' @param spct an R object of class "generic.spct"
-#' @param w.band a waveband object or a list of waveband objects
+#' @param spct an R object of class \code{generic.spct}
+#' @param w.band a list of \code{waveband} objects or a \code{waveband} object
 #' @param quantity character string
 #' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries are trimmed, if FALSE, they are discarded
 #' @param use.cached.mult logical indicating whether multiplier values should be cached between calls
@@ -383,8 +383,8 @@ q_irrad <- function(spct, w.band, quantity, wb.trim, use.cached.mult, use.hinges
 #'
 #' Calculate (energy) irradiance.
 #'
-#' @param spct an object of class "generic.spct"
-#' @param w.band a waveband object or a list of waveband objects
+#' @param spct an object of class \code{generic.spct}
+#' @param w.band a list of \code{waveband} objects or a \code{waveband} object
 #' @param quantity character string
 #' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries are trimmed, if FALSE, they are discarded
 #' @param use.cached.mult logical indicating whether multiplier values should be cached between calls
@@ -402,8 +402,8 @@ e_irrad.default <- function(spct, w.band, quantity, wb.trim, use.cached.mult, us
 #'
 #' Calculate photon irradiance.
 #'
-#' @param spct an object of class "generic.spct"
-#' @param w.band a waveband object or a list of waveband objects
+#' @param spct an object of class \code{generic.spct}
+#' @param w.band a list of \code{waveband} objects or a \code{waveband} object
 #' @param quantity character string
 #' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries are trimmed, if FALSE, they are discarded
 #' @param use.cached.mult logical indicating whether multiplier values should be cached between calls

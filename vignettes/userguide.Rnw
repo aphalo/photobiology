@@ -225,7 +225,7 @@ class(1:10)
 
 \subsubsection{Special attributes}
 
-\texttt{source.spct} objects have a \texttt{time.unit} attribute which can take one of two values \texttt{"second"} or \texttt{"day"}, the default is \texttt{"second"}. However, if the spectral data is for daily exposure, then the attribute should be set when the object is constructed. \texttt{source.spct} objects have a \texttt{bswf.used} attribute which can take one of several values \texttt{"none"}, \texttt{"unknown"} or the name of a BSWF. It is also possible to set the attributes for an existing object with functions \texttt{setTimeUnit} and \texttt{setBSWFUsed}, and to querry the value of the attributes for an existing object with functions \texttt{getTimeUnit} and \texttt{getBSWFUsed}. The function \texttt{is.effective} returns \texttt{TRUE} if the value of the \texttt{bswf.used} is neither \texttt{NULL} nor equal to \texttt{"none"}.
+\texttt{source.spct} objects have a \texttt{time.unit} attribute which can take one of two values \texttt{"second"} or \texttt{"day"}, the default is \texttt{"second"}. However, if the spectral data is for daily exposure, then the attribute should be set when the object is constructed. \texttt{source.spct} objects have a \texttt{bswf.used} attribute which can take one of several values \texttt{"none"}, \texttt{"unknown"} or the name of a BSWF. It is also possible to set the attributes for an existing object with functions \texttt{setTimeUnit} and \texttt{setBSWFUsed}, and to query the value of the attributes for an existing object with functions \texttt{getTimeUnit} and \texttt{getBSWFUsed}. The function \texttt{is.effective} returns \texttt{TRUE} if the value of the \texttt{bswf.used} is neither \texttt{NULL} nor equal to \texttt{"none"}.
 
 <<>>=
 is.effective(sun.spct)
@@ -235,9 +235,9 @@ is.effective(sun.spct * CIE())
 getBSWFUsed(sun.spct * CIE())
 @
 
-\texttt{filter.spct} and \texttt{object.spct} objects have a \texttt{Tfr.type} attribute which can take one of two values \texttt{"total"} or \texttt{"internal"}, the default being \texttt{"total"}. However, if the spectral transmittance or absorbance data is internal, meaning excluding the contribution of reflection, then the attribute should be set when the object is constructed. It is also possible to set the attribute for an existing object with function \texttt{setTfrType}, and to querry the value of the attribute  for an existing object with function \texttt{setTfrType}.
+\texttt{filter.spct} and \texttt{object.spct} objects have a \texttt{Tfr.type} attribute which can take one of two values \texttt{"total"} or \texttt{"internal"}, the default being \texttt{"total"}. However, if the spectral transmittance or absorbance data is internal, meaning excluding the contribution of reflection, then the attribute should be set when the object is constructed. It is also possible to set the attribute for an existing object with function \texttt{setTfrType}, and to query the value of the attribute  for an existing object with function \texttt{setTfrType}.
 
-\texttt{reflector.spct} and \texttt{object.spct} objects have a \texttt{Rfr.type} attribute which can take one of two values \texttt{"total"} or \texttt{"specular"}, the default being \texttt{"total"}. However, if the spectral reflectance data is specular, meaning excluding the contribution of scattered reflection, then the attribute should be set when the object is constructed. It is also possible to set the attribute for an existing object with function \texttt{setRfrType}, and to querry the value of the attribute for an existing object with function \texttt{setRfrType}.
+\texttt{reflector.spct} and \texttt{object.spct} objects have a \texttt{Rfr.type} attribute which can take one of two values \texttt{"total"} or \texttt{"specular"}, the default being \texttt{"total"}. However, if the spectral reflectance data is specular, meaning excluding the contribution of scattered reflection, then the attribute should be set when the object is constructed. It is also possible to set the attribute for an existing object with function \texttt{setRfrType}, and to query the value of the attribute for an existing object with function \texttt{setRfrType}.
 
 \begin{framed}
 \noindent
@@ -824,7 +824,7 @@ sun.spct + sun.spct
 sun.spct - sun.spct
 @
 
-When meaningful operations between different spectra are also allowed. For example, it is possible to simulate the effect of a filter on a light source by multiplying (or convoluting) the two spectra.
+When meaningful operations between different spectra are also allowed. For example, it is possible to simulate the effect of a filter on a light source by multiplying (or convolving) the two spectra.
 
 <<>>=
 sun.spct * polyester.new.spct
@@ -908,12 +908,13 @@ sqrt(sun.spct)
 Table \ref{tab:options} lists all the recognized options, and their default values. Within the suite all functions have a default value which is used when the options are undefined. Options are set using base R's function \texttt{options}, and queried with functions \texttt{options} and \texttt{getOption}.
 
 \begin{table}
-\caption[Options]{Options recognized by functions in the photobiology package and the values they can take.\label{tab:options}}
+\caption[Options]{Options recognized by functions in the \PB package and the values they can take.\label{tab:options}}\vspace{0.75ex}
+
 \centering
 \begin{footnotesize}
 \begin{tabular}{lll}
 \toprule
-\textbf{Option} & \textbf{default} & \textbf{effect} \\
+\textbf{Option} & \textbf{default} & \textbf{function} \\
 \midrule
 \textbf{Base R} & & \\
 \addlinespace
@@ -927,16 +928,17 @@ datatable.verbose & \texttt{FALSE} & give verbose output or not \\
 \midrule
 \textbf{R4photobioloy suite} & & \\
 \addlinespace
-photobiology.radiation.unit & \texttt{"energy"} & (\wattnm) \\
-                            & \texttt{"photon"} & (\molnm) \\
-photobiology.filter.qty & \texttt{"transmittance"} & ($/1$) \\
-                        & \texttt{"absorptance"} & ($/1$) \\
-                        & \texttt{"absorbance"} & (a.u. $\log_10$ base) \\
+photobiology.radiation.unit & \texttt{"energy"} & output (\wattnm) \\
+                            & \texttt{"photon"} & output (\molnm) \\
+photobiology.filter.qty & \texttt{"transmittance"} & output ($/1$) \\
+                        & \texttt{"absorptance"} & output ($/1$) \\
+                        & \texttt{"absorbance"} & output (a.u. $\log_10$ base) \\
 photobiology.use.hinges & \texttt{NULL} & guess automatically \\
                         & \texttt{TRUE} & do not insert hinges \\
                         & \texttt{FALSE} & do insert hinges \\
-photobiology.auto.hinges.limit & 0.7 & wavelength step (nm) \\
+photobiology.auto.hinges.limit & 0.5 & wavelength step (nm) \\
 photobiology.waveband.trim & \texttt{TRUE} & trim or exclude \\
+photobiology.use.cached.mult & \texttt{FALSE} & cache intermediate results or not \\
 photobiology.verbose & \texttt{FALSE} & give verbose output or not \\
 \bottomrule
 \end{tabular}
@@ -1369,7 +1371,7 @@ ggplot(data = sun.spct, aes(x = w.length, y = s.e.irrad/max(s.e.irrad))) +
        y = "UnWeighted and CIE98-weighted spectral irradiance (relative units)")
 @
 
-An alternative is as follows, where it is easier to use other aesthetics, or plot addtional curves as shown in the chunk below.
+An alternative is as follows, where it is easier to use other aesthetics, or plot additional curves as shown in the chunk below.
 
 <<warning=FALSE>>=
 combined.spct <- rbindspct(list(normalize(sun.spct * PG(), range = c(290,400)),

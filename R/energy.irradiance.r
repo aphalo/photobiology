@@ -5,7 +5,7 @@
 #' a BSWF.
 #'
 #' @usage energy_irradiance(w.length, s.irrad, w.band=NULL, unit.in="energy",
-#'                          check.spectrum=TRUE, use.cached.mult=FALSE,
+#'                          check.spectrum=TRUE, use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
 #'                          use.hinges=getOption("photobiology.use.hinges", default=NULL) )
 #'
 #' @param w.length numeric array of wavelength (nm)
@@ -27,7 +27,7 @@
 
 energy_irradiance <-
   function(w.length, s.irrad, w.band=NULL, unit.in="energy",
-           check.spectrum=TRUE, use.cached.mult=FALSE,
+           check.spectrum=TRUE, use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
            use.hinges=getOption("photobiology.use.hinges", default=NULL) ) {
     return(irradiance(w.length=w.length, s.irrad=s.irrad, w.band=w.band,
                       unit.out="energy", unit.in=unit.in,

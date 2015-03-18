@@ -9,7 +9,7 @@
 #'                         unit.out=getOption("photobiology.base.unit", default="energy"),
 #'                         unit.in="energy",
 #'                         scale = "absolute",
-#'                         check.spectrum=TRUE, use.cached.mult=FALSE,
+#'                         check.spectrum=TRUE, use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
 #'                         use.hinges=getOption("photobiology.use.hinges", default=NULL) )
 #'
 #' @param w.length numeric array of wavelength (nm)
@@ -43,7 +43,7 @@
 split_irradiance <- function(w.length, s.irrad, cut.w.length=range(w.length),
                              unit.out=getOption("photobiology.base.unit", default="energy"),
                              unit.in="energy", scale="absolute",
-                             check.spectrum=TRUE, use.cached.mult=FALSE,
+                             check.spectrum=TRUE, use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
                              use.hinges=getOption("photobiology.use.hinges", default=NULL) )
 {
   # what output? seems safer to not have a default here

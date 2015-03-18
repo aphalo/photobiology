@@ -4,7 +4,7 @@
 #' wavebands of a radiation spectrum.
 #'
 #' @usage energy_ratio(w.length, s.irrad, w.band.num=NULL, w.band.denom=NULL, unit.in="energy",
-#'                     check.spectrum=TRUE, use.cached.mult=FALSE,
+#'                     check.spectrum=TRUE, use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
 #'                     use.hinges=getOption("photobiology.use.hinges", default=NULL) )
 #'
 #' @param w.length numeric array of wavelength (nm)
@@ -31,7 +31,7 @@
 energy_ratio <- function(w.length, s.irrad,
                          w.band.num=NULL, w.band.denom=NULL,
                          unit.in="energy",
-                         check.spectrum=TRUE, use.cached.mult=FALSE,
+                         check.spectrum=TRUE, use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
                          use.hinges=getOption("photobiology.use.hinges", default=NULL) ) {
   return(waveband_ratio(w.length, s.irrad, w.band.num, w.band.denom,
                         unit.out.num="energy", unit.out.denom="energy",

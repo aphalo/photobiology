@@ -6,7 +6,7 @@
 #'
 #' @usage calc_multipliers(w.length, w.band,
 #'                         unit.out="energy", unit.in="energy",
-#'                         use.cached.mult=FALSE, fill=0)
+#'                         use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE), fill=0)
 #'
 #' @param w.length numeric array of wavelength (nm)
 #' @param w.band a waveband object (but not a list of waveband objects)
@@ -23,7 +23,7 @@
 #' with(sun.data, calc_multipliers(w.length, new_waveband(400,700),"photon"))
 #' ## with(sun.data, calc_multipliers(w.length, new_waveband(400,700),"photon", use.cached.mult=TRUE))
 
-calc_multipliers <- function(w.length, w.band, unit.out="energy", unit.in="energy", use.cached.mult=FALSE, fill=0){
+calc_multipliers <- function(w.length, w.band, unit.out="energy", unit.in="energy", use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE), fill=0){
   cache.needs.saving <- FALSE
   if (use.cached.mult && !is.null(w.band$name)) {
     # this needs to be changed to something better

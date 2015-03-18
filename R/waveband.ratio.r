@@ -5,7 +5,7 @@
 #'
 #' @usage waveband_ratio(w.length, s.irrad, w.band.num=NULL, w.band.denom=NULL,
 #'                       unit.out.num=NULL, unit.out.denom=unit.out.num, unit.in="energy",
-#'                       check.spectrum=TRUE, use.cached.mult=FALSE,
+#'                       check.spectrum=TRUE, use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
 #'                       use.hinges=getOption("photobiology.use.hinges", default=NULL) )
 #' @param w.length numeric array of wavelength (nm)
 #' @param s.irrad numeric array of spectral (energy) irradiances (W m-2 nm-1)
@@ -52,7 +52,7 @@ waveband_ratio <- function(w.length, s.irrad,
                              w.band.num=NULL, w.band.denom=NULL,
                              unit.out.num=NULL, unit.out.denom=unit.out.num,
                              unit.in="energy",
-                             check.spectrum=TRUE, use.cached.mult=FALSE,
+                             check.spectrum=TRUE, use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
                            use.hinges=getOption("photobiology.use.hinges", default=NULL) ) {
     # We duplicate code from irradiance() here to avoid repeated checks
     # and calculations on the same data

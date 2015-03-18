@@ -4,11 +4,11 @@
 #' pair of wavebands of a light source spectrum.
 #'
 #' @usage q_ratio(spct, w.band.num=NULL, w.band.denom=NULL,
-#'                use.cached.mult=FALSE,
+#'                use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
 #'                use.hinges=getOption("photobiology.use.hinges", default=NULL))
 #'
 #' @usage q_ratio_spct(spct, w.band.num=NULL, w.band.denom=NULL,
-#'                     use.cached.mult=FALSE,
+#'                     use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
 #'                     use.hinges=getOption("photobiology.use.hinges", default=NULL) )
 #'
 #' @param spct an object of class "source.spct"
@@ -36,7 +36,7 @@
 #' @aliases q_ratio q_ratio_spct
 
 q_ratio <-
-  function(spct, w.band.num=NULL, w.band.denom=NULL, use.cached.mult=FALSE,
+  function(spct, w.band.num=NULL, w.band.denom=NULL, use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
            use.hinges=getOption("photobiology.use.hinges", default=NULL) ) {
     q.irrad.num <- irrad_spct(spct, w.band=w.band.num, unit.out="photon", quantity="total", wb.trim=NULL,
                               use.cached.mult=use.cached.mult, use.hinges=use.hinges, allow.scaled=TRUE)
@@ -57,11 +57,11 @@ q_ratio_spct <- q_ratio
 #' pair of wavebands of a light source spectrum.
 #'
 #' @usage e_ratio(spct, w.band.num=NULL, w.band.denom=NULL,
-#'                use.cached.mult=FALSE,
+#'                use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
 #'                use.hinges=getOption("photobiology.use.hinges", default=NULL))
 #'
 #' @usage e_ratio_spct(spct, w.band.num=NULL, w.band.denom=NULL,
-#'                     use.cached.mult=FALSE,
+#'                     use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
 #'                     use.hinges=getOption("photobiology.use.hinges", default=NULL) )
 #'
 #' @param spct an object of class "source.spct"
@@ -89,7 +89,7 @@ q_ratio_spct <- q_ratio
 #' @aliases e_ratio e_ratio_spct
 
 e_ratio <-
-  function(spct, w.band.num=NULL, w.band.denom=NULL, use.cached.mult=FALSE,
+  function(spct, w.band.num=NULL, w.band.denom=NULL, use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
            use.hinges=getOption("photobiology.use.hinges", default=NULL) ) {
     e.irrad.num <- irrad_spct(spct, w.band=w.band.num, unit.out="energy", quantity="total", wb.trim=NULL,
                               use.cached.mult=use.cached.mult, use.hinges=use.hinges, allow.scaled=TRUE)
@@ -108,10 +108,10 @@ e_ratio_spct <- e_ratio
 #'
 #' This function returns the photon to energy ratio for each waveband of a light source spectrum.
 #'
-#' @usage qe_ratio(spct, w.band=NULL, use.cached.mult=FALSE,
+#' @usage qe_ratio(spct, w.band=NULL, use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
 #'                 use.hinges=getOption("photobiology.use.hinges", default=NULL) )
 #'
-#' @usage qe_ratio_spct(spct, w.band=NULL, use.cached.mult=FALSE,
+#' @usage qe_ratio_spct(spct, w.band=NULL, use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
 #'                      use.hinges=getOption("photobiology.use.hinges", default=NULL) )
 #'
 #' @param spct an object of class "source.spct"
@@ -138,7 +138,7 @@ e_ratio_spct <- e_ratio
 #' @aliases qe_ratio qe_ratio_spct
 
 qe_ratio <-
-  function(spct, w.band=NULL, use.cached.mult=FALSE,
+  function(spct, w.band=NULL, use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
            use.hinges=getOption("photobiology.use.hinges", default=NULL) ) {
     q.irrad <- irrad_spct(spct, w.band=w.band, unit.out="photon", quantity="total", wb.trim=NULL,
                               use.cached.mult=use.cached.mult, use.hinges=use.hinges, allow.scaled=TRUE)
@@ -157,10 +157,10 @@ qe_ratio_spct <- qe_ratio
 #'
 #' This function returns the energy to molle photn ratio for each waveband and a light source spectrum.
 #'
-#' @usage eq_ratio(spct, w.band=NULL, use.cached.mult=FALSE,
+#' @usage eq_ratio(spct, w.band=NULL, use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
 #'                 use.hinges=getOption("photobiology.use.hinges", default=NULL) )
 #'
-#' @usage eq_ratio_spct(spct, w.band=NULL, use.cached.mult=FALSE,
+#' @usage eq_ratio_spct(spct, w.band=NULL, use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
 #'                      use.hinges=getOption("photobiology.use.hinges", default=NULL) )
 #'
 #' @param spct an object of class "source.spct"
@@ -187,7 +187,7 @@ qe_ratio_spct <- qe_ratio
 #' @aliases eq_ratio eq_ratio_spct
 
 eq_ratio <-
-  function(spct, w.band=NULL, use.cached.mult=FALSE,
+  function(spct, w.band=NULL, use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
            use.hinges=getOption("photobiology.use.hinges", default=NULL) ) {
     ratio <- 1 / qe_ratio(spct, w.band, use.cached.mult, use.hinges)
     names(ratio) <- gsub("q:e", "e:q", names(ratio), fixed=TRUE )

@@ -7,7 +7,7 @@
 #'
 #' @usage split_photon_irradiance(w.length, s.irrad, cut.w.length=range(w.length),
 #'                                unit.in="energy", scale = "absolute",
-#'                                check.spectrum=TRUE, use.cached.mult=FALSE,
+#'                                check.spectrum=TRUE, use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
 #'                use.hinges=getOption("photobiology.use.hinges", default=NULL) )
 #'
 #' @param w.length numeric array of wavelength (nm)
@@ -61,7 +61,7 @@
 #' \code{w.length} vector.
 
 split_photon_irradiance <- function(w.length, s.irrad, cut.w.length=range(w.length), unit.in="energy", scale="absolute",
-                 check.spectrum=TRUE, use.cached.mult=FALSE,
+                 check.spectrum=TRUE, use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
                  use.hinges=getOption("photobiology.use.hinges", default=NULL) )
 {
     return(split_irradiance(w.length, s.irrad, cut.w.length=cut.w.length, unit.out="photon", unit.in=unit.in, scale=scale,

@@ -51,7 +51,7 @@ oper.e.generic.spct <- function(e1, e2, oper) {
       }
       e1 <- trim_spct(e1, low.limit=min(e2), high.limit=max(e2) - 1e-3, verbose=FALSE, use.hinges = TRUE)
       mult <- calc_multipliers(w.length=e1$w.length, w.band=e2, unit.out="energy",
-                               unit.in="energy", use.cached.mult=FALSE)
+                               unit.in="energy", use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE))
       return(source.spct(w.length=e1$w.length, s.e.irrad = e1$s.e.irrad * mult,
                            time.unit=getTimeUnit(e1), bswf.used=bswf.used, strict.range = FALSE))
     }
@@ -357,7 +357,7 @@ oper.q.generic.spct <- function(e1, e2, oper) {
       }
       e1 <- trim_spct(e1, low.limit = min(e2), high.limit = max(e2) - 1e-3, verbose=FALSE, use.hinges = TRUE)
       mult <- calc_multipliers(w.length=e1$w.length, w.band=e2, unit.out="photon",
-                               unit.in="photon", use.cached.mult=FALSE)
+                               unit.in="photon", use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE))
       if (is.effective(e2)) {
         return(response.spct(w.length=e1$w.length, s.q.response = e1$s.q.irrad * mult, time.unit=getTimeUnit(e1)))
       } else {

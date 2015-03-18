@@ -7,9 +7,10 @@ photobiology 0.5.17
 ===================
 
 New options "photobiology.use.hinges" (NULL, TRUE, FALSE) with default NULL and
-"photobiology.auto.hinges.limit" (wavelength step in nm) with default 0.7 nm.
-Default behaviour is unchanged except for bug in irrad() functions where the
-limit was 1.1 nm instead of 0.7 nm as a result of a bug.
+"photobiology.auto.hinges.limit" (wavelength step in nm) with new default 0.5 nm.
+Default behaviour is changed both for a bug in irrad() functions where the
+limit was 1.1 nm instead of 0.7 nm and as a result of changing to a smaller
+default value.
 
 Bug fix: in version 0.5.15? the behaviour of the product of a BSWF and a source
 spectrum was changed to return a response spectrum. This was not consitent with
@@ -22,22 +23,23 @@ as being "effective". The irrad() methods for source.spct have been updated to
 'recognize' effective spectral irradiance when supplied as input.
 
 rbindspct() modified so that if at least one of the spectra in the list is of
-effective irradiance a factor named BSWF is added with the BSWFs retrieved
+effective irradiance, but not all spectra have been calcualted with the same
+BSWF and normalization, a factor named BSWF is added with the BSWFs retrieved
 from the spectra used as levels. The optional factor selected through parameter
 idfactor has now its levels always reflecting the order of the spectra in the
-input, even when using a named input list of spectra. Several rather minor
+input list, even when using a named input list of spectra. Several rather minor
 bugs were fixed, including improved handling of comments and attributes.
 
-summary() methods for spectra have been updated to report when source spectra
-are effective the BSWF that have been used.
+summary() methods for spectra have been updated to report the BSWF that have
+been used if source spectra contain effective spectral irradiances.
 
 Long-standing unsolved problem partly fixed: interpolate_spct() now in most
 cases applies smoothing to the spectrum before attempting interpolation if
 the vector of output wavelengths has length > 1, but is sparser than then
 original spectral data.
 
-A few inconsistencies in the prarmeters among similar functions were fixed
-by adding the missing formal parameters. Also some problems in the documentation
+A few inconsistencies in the formal parameters among similar functions were fixed
+by adding the missing parameters. Also some problems in the documentation
 for a few functions were fixed.
 
 User guide updated.
