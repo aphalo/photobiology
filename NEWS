@@ -3,6 +3,28 @@ TODO
 
 Add test cases for chroma.spct
 
+photobiology 0.5.19
+===================
+
+Added specialized subset() methods for spectral objects as subset.data.table drops attributes.
+The new methods are wrappers that copy the attributes used by this package after the subset()
+operation is done by subscripting, including comment, but still drop any attributes added
+by users.
+
+Edited check.generic.spct() to generate a warning instead of an error for spectra
+of length zero, as can be returned by subset when the 'subset' condition is FALSE for
+all rows.
+
+photobiology 0.5.18
+===================
+
+Fixed bug in rbindspct().
+
+photobiology 0.5.17-1
+=====================
+
+Updated version requirements for all dependencies.
+
 photobiology 0.5.17
 ===================
 
@@ -13,7 +35,7 @@ limit was 1.1 nm instead of 0.7 nm and as a result of changing to a smaller
 default value. Existing and new options "photobiology.waveband.trim",
 "photobiology.use.cached.mult" are now used throughout.
 
-Bug fix: in version 0.5.15? the behaviour of the product of a BSWF and a source
+Bug fix: in version 0.5.? the behaviour of the product of a BSWF and a source
 spectrum was changed to return a response spectrum. This was not consitent with
 the idea that a BSWF is used for quantifying radiation rather predicting a
 biological response. The result should remain as radiation and continue to

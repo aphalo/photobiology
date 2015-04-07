@@ -1,3 +1,6 @@
+
+# rbind -------------------------------------------------------------------
+
 #' Makes one spectral object from a list of many
 #'
 #' Same as \code{rbindlist} from package data.table but preserves class of spectral objects. Has different defaults
@@ -125,7 +128,7 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = NULL) {
   l.class <- l.class[1]
   #  print(l.class)
 
-  names.spct <- names(l)
+    names.spct <- names(l)
   if (is.null(names.spct) || anyNA(names.spct)) {
     names.spct <- LETTERS[1:length(l)]
   }
@@ -166,6 +169,8 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = NULL) {
   if (!comments.found) {
     comment.ans <- NULL
   }
+
+  add.bswf <- FALSE
 
   if (l.class == "source.spct") {
     time.unit <- sapply(l, FUN = getTimeUnit)
@@ -243,4 +248,210 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = NULL) {
     if (!is.null(comment.ans)) setattr(ans, "comment", comment.ans)
   } # else we keep the default "w.length"
   return(ans)
+}
+
+
+# subset ------------------------------------------------------------------
+
+
+#' Subsetting generic.spct
+#'
+#' Returns subsets of a generic.spct
+#'
+#' @usage subset(x, subset, select, ...)
+#'
+#' @param x	generic.spct to subset
+#' @param subset logical expression indicating elements or rows to keep
+#' @param select expression indicating columns to select from x (IGNORED)
+#' @param ...	further arguments to be passed to or from other methods
+#'
+#' @details The subset argument works on the rows and will be evaluated in the
+#' generic.spct so columns can be referred to (by name) as variables in the expression
+#' The generic.spct that is returned will maintain the original attributes and keys as long as they are not select-ed out.
+#'
+#' @return A generic.spct containing the subset of rows and columns that are selected.
+#'
+#' @method subset generic.spct
+#'
+#' @seealso \code{\link{subset}}
+#'
+
+subset.generic.spct <- function(x, subset, select, ...) {
+  comment <- comment(x)
+  x.out <- x[eval(substitute(subset))]
+  if (!is.null(comment)) {
+    setattr(x.out, "comment", comment)
+  }
+  return(x.out)
+}
+
+#' Subsetting source.spct
+#'
+#' Returns subsets of a source.spct
+#'
+#' @usage subset(x, subset, select, ...)
+#'
+#' @param x	source.spct to subset
+#' @param subset logical expression indicating elements or rows to keep
+#' @param select expression indicating columns to select from x (IGNORED)
+#' @param ...	further arguments to be passed to or from other methods
+#'
+#' @details The subset argument works on the rows and will be evaluated in the
+#' source.spct so columns can be referred to (by name) as variables in the expression
+#' The source.spct that is returned will maintain the original attributes and keys as long as they are not select-ed out.
+#'
+#' @return A source.spct containing the subset of rows and columns that are selected.
+#'
+#' @export
+#'
+#' @examples
+#'
+#' subset(sun.spct, w.length > 400)
+#'
+#' @seealso \code{\link{subset}}
+#'
+
+subset.source.spct <- function(x, subset, select = NULL, ...) {
+  time.unit <- getTimeUnit(x)
+  bswf.used <- getBSWFUsed(x)
+  comment <- comment(x)
+  x.out <- x[eval(substitute(subset))]
+  setSourceSpct(x = x.out, time.unit = time.unit, bswf.used = bswf.used)
+  if (!is.null(comment)) {
+    setattr(x.out, "comment", comment)
+  }
+  return(x.out)
+}
+
+#' Subsetting filter.spct
+#'
+#' Returns subsets of a filter.spct
+#'
+#' @usage subset(x, subset, select, ...)
+#'
+#' @param x	filter.spct to subset
+#' @param subset logical expression indicating elements or rows to keep
+#' @param select expression indicating columns to select from x (IGNORED)
+#' @param ...	further arguments to be passed to or from other methods
+#'
+#' @details The subset argument works on the rows and will be evaluated in the
+#' filter.spct so columns can be referred to (by name) as variables in the expression
+#' The filter.spct that is returned will maintain the original attributes and keys as long as they are not select-ed out.
+#'
+#' @return A filter.spct containing the subset of rows and columns that are selected.
+#'
+#' @export
+#'
+#' @seealso \code{\link{subset}}
+#'
+
+subset.filter.spct <- function(x, subset, select = NULL, ...) {
+  Tfr.type <- getTfrType(x)
+  comment <- comment(x)
+  x.out <- x[eval(substitute(subset))]
+  setFilterSpct(x = x.out, Tfr.type = Tfr.type)
+  if (!is.null(comment)) {
+    setattr(x.out, "comment", comment)
+  }
+  return(x.out)
+}
+
+#' Subsetting reflector.spct
+#'
+#' Returns subsets of a reflector.spct
+#'
+#' @usage subset(x, subset, select, ...)
+#'
+#' @param x	reflector.spct to subset
+#' @param subset logical expression indicating elements or rows to keep
+#' @param select expression indicating columns to select from x (IGNORED)
+#' @param ...	further arguments to be passed to or from other methods
+#'
+#' @details The subset argument works on the rows and will be evaluated in the
+#' reflector.spct so columns can be referred to (by name) as variables in the expression
+#' The reflector.spct that is returned will maintain the original attributes and keys as long as they are not select-ed out.
+#'
+#' @return A reflector.spct containing the subset of rows and columns that are selected.
+#'
+#' @export
+#'
+#' @seealso \code{\link{subset}}
+#'
+
+subset.reflector.spct <- function(x, subset, select = NULL, ...) {
+  Rfr.type <- getRfrType(x)
+  comment <- comment(x)
+  x.out <- x[eval(substitute(subset))]
+  setReflectorSpct(x = x.out, Rfr.type = Rfr.type)
+  if (!is.null(comment)) {
+    setattr(x.out, "comment", comment)
+  }
+  return(x.out)
+}
+
+#' Subsetting response.spct
+#'
+#' Returns subsets of a response.spct
+#'
+#' @usage subset(x, subset, select, ...)
+#'
+#' @param x	response.spct to subset
+#' @param subset logical expression indicating elements or rows to keep
+#' @param select expression indicating columns to select from x (IGNORED)
+#' @param ...	further arguments to be passed to or from other methods
+#'
+#' @details The subset argument works on the rows and will be evaluated in the
+#' response.spct so columns can be referred to (by name) as variables in the expression
+#' The response.spct that is returned will maintain the original attributes and keys as long as they are not select-ed out.
+#'
+#' @return A response.spct containing the subset of rows and columns that are selected.
+#'
+#' @export
+#'
+#' @seealso \code{\link{subset}}
+#'
+
+subset.response.spct <- function(x, subset, select = NULL, ...) {
+  time.unit <- getTimeUnit(x)
+  comment <- comment(x)
+  x.out <- x[eval(substitute(subset))]
+  setResponseSpct(x = x.out, time.unit = time.unit)
+  if (!is.null(comment)) {
+    setattr(x.out, "comment", comment)
+  }
+  return(x.out)
+}
+
+#' Subsetting object.spct
+#'
+#' Returns subsets of a object.spct
+#'
+#' @usage subset(x, subset, select, ...)
+#'
+#' @param x	object.spct to subset
+#' @param subset logical expression indicating elements or rows to keep
+#' @param select expression indicating columns to select from x (IGNORED)
+#' @param ...	further arguments to be passed to or from other methods
+#'
+#' @details The subset argument works on the rows and will be evaluated in the
+#' object.spct so columns can be referred to (by name) as variables in the expression
+#' The object.spct that is returned will maintain the original attributes and keys as long as they are not select-ed out.
+#'
+#' @return A object.spct containing the subset of rows and columns that are selected.
+#'
+#' @export
+#'
+#' @seealso \code{\link{subset}}
+#'
+
+subset.object.spct <- function(x, subset, select = NULL, ...) {
+  Tfr.type <- getTfrType(x)
+  Rfr.type <- getRfrType(x)
+  comment <- comment(x)
+  x.out <- x[eval(substitute(subset))]
+  setObjectSpct(x = x.out, Tfr.type = Tfr.type, Rfr.type = Rfr.type)
+  if (!is.null(comment)) {
+    setattr(x.out, "comment", comment)
+  }
+  return(x.out)
 }

@@ -3,10 +3,10 @@
 #' Trimming is needed for example when the spectral data does not cover the whole waveband.
 #'
 #' @usage trim_waveband(w.band,
-#'                      range=NULL,
-#'                      low.limit=NULL, high.limit=NULL,
-#'                      trim=NULL,
-#'                      use.hinges=TRUE)
+#'                      range = NULL,
+#'                      low.limit = NULL, high.limit = NULL,
+#'                      trim = getOption("photobiology.waveband.trim", default = TRUE),
+#'                      use.hinges = TRUE)
 #'
 #' @param w.band an object of class "waveband" or a list of such objects
 #' @param range a numeric vector of length two, or any other object for which function
@@ -25,10 +25,10 @@
 #'
 
 trim_waveband <- function(w.band,
-                          range=NULL,
-                          low.limit=NULL, high.limit=NULL,
+                          range = NULL,
+                          low.limit = NULL, high.limit = NULL,
                           trim = getOption("photobiology.waveband.trim", default = TRUE),
-                          use.hinges=TRUE)
+                          use.hinges = TRUE)
 {
   if (!is.null(w.band) && is.waveband(w.band)) {
     w.band <- list(w.band)

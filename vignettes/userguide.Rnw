@@ -528,6 +528,20 @@ If a character string is supplied as argument, then this will be used as the nam
 rbindspct(list(sun = sun.spct, shade = shade.spct), idfactor = "ID")
 @
 
+\subsubsection{Subsetting spectra}
+
+Special \texttt{subset} methods for spectral objects have been implemented. These are used by default, and in contrast to
+\texttt{subset.data.table} preserve the attributes used by this package. The only difference, in the current implementation,
+compared to base R \texttt{subset()} is that the \texttt{select} arguments, is quietly ignored---this argument in base R
+can be used to select columns.
+
+In contrast to \texttt{trim\_spct}, \texttt{subset} never interpolates or inserts \emph{hinges}. On the other hand, the
+\texttt{subset} argument accepts any logical expression and can be consequently used to do subsetting, for example,
+based on factors.
+
+<<>>=
+subset(sun.spct, s.e.irrad > 0.2)
+@
 
 \subsection{Conversions between radiation units}
 
@@ -824,7 +838,7 @@ sun.spct + sun.spct
 sun.spct - sun.spct
 @
 
-When meaningful operations between different spectra are also allowed. For example, it is possible to simulate the effect of a filter on a light source by multiplying (or convolving) the two spectra.
+When meaningful, operations between different spectra are also allowed. For example, it is possible to simulate the effect of a filter on a light source by multiplying (or convolving) the two spectra.
 
 <<>>=
 sun.spct * polyester.new.spct

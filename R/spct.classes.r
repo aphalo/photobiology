@@ -108,8 +108,10 @@ check.generic.spct <- function(x, byref=TRUE, strict.range=TRUE) {
   }
   wl.min <- min(x$w.length, na.rm = TRUE)
 #  wl.max <- max(x$w.length, na.rm = TRUE)
-  if (wl.min < 99.999 || wl.min > 1e3) {
-    stop("Off-range minimum w.length value ", wl.min, " instead of within 100 nm and 1000 nm")
+  if (wl.min == Inf) {
+    warning("No valid 'w.length' values, probably a spectrum of length zero")
+  } else if (wl.min < 99.999 || wl.min > 5e3) {
+    stop("Off-range minimum w.length value ", wl.min, " instead of within 100 nm and 5000 nm")
   }
   return(x)
 }
