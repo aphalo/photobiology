@@ -19,6 +19,7 @@
 #' @return a waveband objects or a list of waveband objects trimmed or filtered
 #'
 #' @keywords manip misc
+#' @family trim functions
 #' @export
 #' @examples
 #' trim_waveband(waveband(c(200,1000)), c(400,700))

@@ -24,7 +24,7 @@
 #' @note When expanding an spectrum, if fill==NULL, then expansion is not performed.
 #' Range can be "waveband" object, a numeric vector or a list of numeric vectors, or any other user-defined or built-in
 #' object for which range() returns a numeric vector of legth two, that can be interpreted as wavelengths expressed in nm.
-#'
+#' @family trim functions
 #' @keywords manip misc
 #' @export
 #' @examples

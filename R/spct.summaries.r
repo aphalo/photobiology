@@ -6,15 +6,17 @@
 #'
 #' @usage summary.generic.spct(object, digits = max(3, getOption("digits")-3), ...)
 #'
-#' @param object An object of one of the såectral classes for which a summary is desired
+#' @param object An object of one of the spectral classes for which a summary is
+#'   desired
 #' @param digits integer Used for number formatting with \code{signif()}
-#' @param ... additional arguments affecting the summary produced, ignored in current version
+#' @param ... additional arguments affecting the summary produced, ignored in
+#'   current version
 #'
 #' @method summary generic.spct
 #'
-#' @return A summary object matching the class of \code{objetc}.
+#' @return A summary object matching the class of \code{object}.
 #'
-#' @export
+#' @export summary.generic.spct
 #'
 summary.generic.spct <- function(object, digits = max(3, getOption("digits")-3), ...) {
   z <- c(
@@ -28,11 +30,10 @@ summary.generic.spct <- function(object, digits = max(3, getOption("digits")-3),
   return(z)
 }
 
-#' @describeIn summary.generic.spct Summary of a "source.spct" object.
+# @describeIn summary.generic.spct Summary of a "source.spct" object.
 #'
 #' @export
-#'
-#' @method summary source.spct
+#' @rdname summary.generic.spct
 #'
 summary.source.spct <- function(object, digits = max(3, getOption("digits")-3), ...) {
   time.unit <- getTimeUnit(object)
@@ -54,11 +55,10 @@ summary.source.spct <- function(object, digits = max(3, getOption("digits")-3), 
   return(z)
 }
 
-#' @describeIn summary.generic.spct Summary of a \code{filter.spct} object.
-#'
-#' @method summary filter.spct
+# @describeIn summary.generic.spct Summary of a \code{filter.spct} object.
 #'
 #' @export
+#' @rdname summary.generic.spct
 #'
 summary.filter.spct <- function(object, digits = max(3, getOption("digits")-3), ...) {
   Tfr.type <- getTfrType(object)
@@ -77,11 +77,11 @@ summary.filter.spct <- function(object, digits = max(3, getOption("digits")-3), 
   return(z)
 }
 
-#' @describeIn summary.generic.spct Summary of a "reflector.spct" object.
-#'
-#' @method summary reflector.spct
+# @describeIn summary.generic.spct Summary of a "reflector.spct" object.
 #'
 #' @export
+#' @rdname summary.generic.spct
+#'
 summary.reflector.spct <- function(object, digits = max(3, getOption("digits")-3), ...) {
   Rfr.type <- getRfrType(object)
   z <- c(
@@ -99,11 +99,11 @@ summary.reflector.spct <- function(object, digits = max(3, getOption("digits")-3
   return(z)
 }
 
-#' @describeIn summary.generic.spct Summary of a "response.spct" object.
-#'
-#' @method summary response.spct
+# @describeIn summary.generic.spct Summary of a "response.spct" object.
 #'
 #' @export
+#' @rdname summary.generic.spct
+#'
 summary.response.spct <- function(object, digits = max(3, getOption("digits")-3), ...) {
   time.unit <- getTimeUnit(object)
   z <- c(
@@ -122,11 +122,11 @@ summary.response.spct <- function(object, digits = max(3, getOption("digits")-3)
   return(z)
 }
 
-#' @describeIn summary.generic.spct Summary of a "chroma.spct" object.
-#'
-#' @method summary chroma.spct
+# @describeIn summary.generic.spct Summary of a "chroma.spct" object.
 #'
 #' @export
+#' @rdname summary.generic.spct
+#'
 summary.chroma.spct <- function(object, digits = max(3, getOption("digits")-3), ...) {
   z <- c(
     max.w.length = max(object),
@@ -154,7 +154,7 @@ summary.chroma.spct <- function(object, digits = max(3, getOption("digits")-3), 
 #'
 #' @method print summary.generic.spct
 #'
-#' @export
+#' @export print.summary.generic.spct
 #'
 print.summary.generic.spct <- function(x, ...) {
   time.unit <- attr(x, "time.unit")
@@ -162,11 +162,10 @@ print.summary.generic.spct <- function(x, ...) {
   cat("largest wavelength step size is", x[["w.length.step"]], "nm \n")
 }
 
-#' @describeIn print.summary.generic.spct Print a "summary.source.spct" object.
-#'
-#' @method print summary.source.spct
+# @describeIn print.summary.generic.spct Print a "summary.source.spct" object.
 #'
 #' @export
+#' @rdname print.summary.generic.spct
 #'
 print.summary.source.spct <- function(x, ...) {
   time.unit <- attr(x, "time.unit")
@@ -191,11 +190,10 @@ print.summary.source.spct <- function(x, ...) {
   }
 }
 
-#' @describeIn print.summary.generic.spct Print a "summary.filter.spct" object.
-#'
-#' @method print summary.filter.spct
+# @describeIn print.summary.generic.spct Print a "summary.filter.spct" object.
 #'
 #' @export
+#' @rdname print.summary.generic.spct
 #'
 print.summary.filter.spct <- function(x, ...) {
   Tfr.type <- attr(x, "Tfr.type")
@@ -206,11 +204,10 @@ print.summary.filter.spct <- function(x, ...) {
   cat("Quantity is", Tfr.type, "\n")
 }
 
-#' @describeIn print.summary.generic.spct Print a "summary.reflector.spct" object.
-#'
-#' @method print summary.reflector.spct
+# @describeIn print.summary.generic.spct Print a "summary.reflector.spct" object.
 #'
 #' @export
+#' @rdname print.summary.generic.spct
 #'
 print.summary.reflector.spct <- function(x, ...) {
   Rfr.type <- attr(x, "Rfr.type")
@@ -221,11 +218,10 @@ print.summary.reflector.spct <- function(x, ...) {
   cat("Quantity is", Rfr.type, "\n")
 }
 
-#' @describeIn print.summary.generic.spct Print a "summary.response.spct" object.
-#'
-#' @method print summary.response.spct
+# @describeIn print.summary.generic.spct Print a "summary.response.spct" object.
 #'
 #' @export
+#' @rdname print.summary.generic.spct
 #'
 print.summary.response.spct <- function(x, ...) {
   time.unit <- attr(x, "time.unit")
@@ -236,11 +232,10 @@ print.summary.response.spct <- function(x, ...) {
   cat("Time unit is", time.unit, "\n")
 }
 
-#' @describeIn print.summary.generic.spct Print a "summary.chrome.spct" object.
-#'
-#' @method print summary.chroma.spct
+# @describeIn print.summary.generic.spct Print a "summary.chrome.spct" object.
 #'
 #' @export
+#' @rdname print.summary.generic.spct
 #'
 print.summary.chroma.spct <- function(x, ...) {
   time.unit <- attr(x, "time.unit")

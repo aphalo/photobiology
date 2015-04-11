@@ -698,7 +698,9 @@ setChromaSpct <- function(x) {
 #'
 #' @return These functions return TRUE if its argument is a of the queried type of spectrum and FALSE otherwise.
 #'
-#' @export
+#' @method is generic.spct
+#'
+#' @export is.generic.spct
 #'
 is.generic.spct <- function(x) inherits(x, "generic.spct")
 
@@ -911,7 +913,9 @@ is.transmittance.based <- function(x) {
 #'   class of spectral object, if \code{x} is a valid argument to the
 #'   correcponding set function.
 #'
-#' @export
+#' @method as generic.spct
+#'
+#' @export as.generic.spct
 #'
 as.generic.spct <- function(x) {
   y <- copy(x)
