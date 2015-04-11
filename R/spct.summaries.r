@@ -1,19 +1,20 @@
-
-# options(datatable.print.topn=1)
-# options(datatable.print.nrows=50)
-
-
 # summary -----------------------------------------------------------------
 
-#' Summary of a "generic.spct" object.
+#' Summary of a spectral object.
 #'
-#' A method of generic function summary for objects of class "generic.spct".
+#' Methods of generic function summary for objects of spectral classes.
 #'
-#' @param object an object of class "generic.spct" for which a summary is desired
-#' @param digits integer, used for number formatting with signif()
+#' @usage summary.generic.spct(object, digits = max(3, getOption("digits")-3), ...)
+#'
+#' @param object An object of one of the såectral classes for which a summary is desired
+#' @param digits integer Used for number formatting with \code{signif()}
 #' @param ... additional arguments affecting the summary produced, ignored in current version
 #'
-#' @export summary.generic.spct
+#' @method summary generic.spct
+#'
+#' @return A summary object matching the class of \code{objetc}.
+#'
+#' @export
 #'
 summary.generic.spct <- function(object, digits = max(3, getOption("digits")-3), ...) {
   z <- c(
@@ -27,45 +28,24 @@ summary.generic.spct <- function(object, digits = max(3, getOption("digits")-3),
   return(z)
 }
 
-#' Print a "summary.generic.spct" object.
+#' @describeIn summary.generic.spct Summary of a "source.spct" object.
 #'
-#' A function to nicely print objects of class "summary.generic.spct".
+#' @export
 #'
-#' @param x an object of class "summary.generic.spct"
-#' @param ... not used in current version
+#' @method summary source.spct
 #'
-#' @export print.summary.generic.spct
-#'
-print.summary.generic.spct <- function(x, ...) {
-  time.unit <- attr(x, "time.unit")
-  cat("wavelength ranges from", x[["min.w.length"]], "to", x[["max.w.length"]], "nm \n")
-  cat("largest wavelength step size is", x[["w.length.step"]], "nm \n")
-}
-
-#' Summary of a "source.spct" object.
-#'
-#' A method of generic function summary for objects of class "source.spct".
-#'
-#' @param object an object of class "source.spct" for which a summary is desired
-#' @param digits integer, used for number formatting with signif()
-#' @param ... additional arguments affecting the summary produced, ignored in current version
-#'
-#' @export summary.source.spct
-#'
-#' @examples
-#' str(summary(sun.spct))
 summary.source.spct <- function(object, digits = max(3, getOption("digits")-3), ...) {
   time.unit <- getTimeUnit(object)
   bswf.used <- getBSWFUsed(object)
   z <- c(
-  max.w.length = max(object),
-  min.w.length = min(object),
-  midpoint.w.length = midpoint(object),
-  w.length.step = stepsize(object)[1],
-  max.s.e.irrad = max(object$s.e.irrad),
-  min.s.e.irrad = min(object$s.e.irrad),
-  e.irrad = as.numeric(e_irrad(object)),
-  q.irrad = as.numeric(q_irrad(object))
+    max.w.length = max(object),
+    min.w.length = min(object),
+    midpoint.w.length = midpoint(object),
+    w.length.step = stepsize(object)[1],
+    max.s.e.irrad = max(object$s.e.irrad),
+    min.s.e.irrad = min(object$s.e.irrad),
+    e.irrad = as.numeric(e_irrad(object)),
+    q.irrad = as.numeric(q_irrad(object))
   )
   z <- signif(z, digits)
   attr(z, "time.unit") <- time.unit
@@ -74,20 +54,120 @@ summary.source.spct <- function(object, digits = max(3, getOption("digits")-3), 
   return(z)
 }
 
-#' Print a "summary.source.spct" object.
+#' @describeIn summary.generic.spct Summary of a \code{filter.spct} object.
 #'
-#' A function to nicely print objects of class "summary.source.spct".
+#' @method summary filter.spct
 #'
-#' @param x an object of class "summary.source.spct"
+#' @export
+#'
+summary.filter.spct <- function(object, digits = max(3, getOption("digits")-3), ...) {
+  Tfr.type <- getTfrType(object)
+  z <- c(
+    max.w.length = max(object),
+    min.w.length = min(object),
+    midpoint.w.length = midpoint(object),
+    w.length.step = stepsize(object)[1],
+    max.Tfr = max(object$Tfr),
+    min.Tfr = min(object$Tfr),
+    mean.Tfr = as.numeric(integrate_spct(object) / spread(object))
+  )
+  z <- signif(z, digits)
+  attr(z, "Tfr.type") <- Tfr.type
+  class(z) <- c("summary.filter.spct", class(z))
+  return(z)
+}
+
+#' @describeIn summary.generic.spct Summary of a "reflector.spct" object.
+#'
+#' @method summary reflector.spct
+#'
+#' @export
+summary.reflector.spct <- function(object, digits = max(3, getOption("digits")-3), ...) {
+  Rfr.type <- getRfrType(object)
+  z <- c(
+    max.w.length = max(object),
+    min.w.length = min(object),
+    midpoint.w.length = midpoint(object),
+    w.length.step = stepsize(object)[1],
+    max.Rfr = max(object$Rfr),
+    min.Rfr = min(object$Rfr),
+    mean.Rfr = as.numeric(integrate_spct(object) / spread(object))
+  )
+  z <- signif(z, digits)
+  attr(z, "Rfr.type") <- Rfr.type
+  class(z) <- c("summary.reflector.spct", class(z))
+  return(z)
+}
+
+#' @describeIn summary.generic.spct Summary of a "response.spct" object.
+#'
+#' @method summary response.spct
+#'
+#' @export
+summary.response.spct <- function(object, digits = max(3, getOption("digits")-3), ...) {
+  time.unit <- getTimeUnit(object)
+  z <- c(
+    max.w.length = max(object),
+    min.w.length = min(object),
+    midpoint.w.length = midpoint(object),
+    w.length.step = stepsize(object)[1],
+    max.response = max(object$s.e.response),
+    min.response = min(object$s.e.response),
+    total.response = as.numeric(integrate_spct(object)),
+    mean.response = as.numeric(integrate_spct(object) / spread(object))
+  )
+  z <- signif(z, digits)
+  class(z) <- c("summary.response.spct", class(z))
+  attr(z, "time.unit") <- time.unit
+  return(z)
+}
+
+#' @describeIn summary.generic.spct Summary of a "chroma.spct" object.
+#'
+#' @method summary chroma.spct
+#'
+#' @export
+summary.chroma.spct <- function(object, digits = max(3, getOption("digits")-3), ...) {
+  z <- c(
+    max.w.length = max(object),
+    min.w.length = min(object),
+    midpoint.w.length = midpoint(object),
+    w.length.step = stepsize(object)[1],
+    x.max = max(object[["x"]]),
+    y.max = max(object[["y"]]),
+    z.max = max(object[["z"]])
+  )
+  z <- signif(z, digits)
+  class(z) <- c("summary.chroma.spct", class(z))
+  return(z)
+}
+
+
+# Print spectral summaries ------------------------------------------------
+
+#' Print a summary object of a spectrum.
+#'
+#' A function to nicely print objects of classes "summary...spct".
+#'
+#' @param x An object of one of the summary classes for spectra
 #' @param ... not used in current version
 #'
-#' @export print.summary.source.spct
+#' @method print summary.generic.spct
 #'
-#' @examples
-#' summary(sun.spct)
-#' summary(sun.daily.spct)
+#' @export
+#'
+print.summary.generic.spct <- function(x, ...) {
+  time.unit <- attr(x, "time.unit")
+  cat("wavelength ranges from", x[["min.w.length"]], "to", x[["max.w.length"]], "nm \n")
+  cat("largest wavelength step size is", x[["w.length.step"]], "nm \n")
+}
 
-
+#' @describeIn print.summary.generic.spct Print a "summary.source.spct" object.
+#'
+#' @method print summary.source.spct
+#'
+#' @export
+#'
 print.summary.source.spct <- function(x, ...) {
   time.unit <- attr(x, "time.unit")
   bswf.used <- attr(x, "bswf.used")
@@ -111,41 +191,11 @@ print.summary.source.spct <- function(x, ...) {
   }
 }
 
-#' Summary of a "filter.spct" object.
+#' @describeIn print.summary.generic.spct Print a "summary.filter.spct" object.
 #'
-#' A method of generic function summary for objects of class "filter.spct".
+#' @method print summary.filter.spct
 #'
-#' @param object an object of class "filter.spct" for which a summary is desired
-#' @param digits integer, used for number formatting with signif()
-#' @param ... additional arguments affecting the summary produced, ignored in current version
-#'
-#' @export summary.filter.spct
-#'
-summary.filter.spct <- function(object, digits = max(3, getOption("digits")-3), ...) {
-  Tfr.type <- getTfrType(object)
-  z <- c(
-    max.w.length = max(object),
-    min.w.length = min(object),
-    midpoint.w.length = midpoint(object),
-    w.length.step = stepsize(object)[1],
-    max.Tfr = max(object$Tfr),
-    min.Tfr = min(object$Tfr),
-    mean.Tfr = as.numeric(integrate_spct(object) / spread(object))
-  )
-  z <- signif(z, digits)
-  attr(z, "Tfr.type") <- Tfr.type
-  class(z) <- c("summary.filter.spct", class(z))
-  return(z)
-}
-
-#' Print a "summary.filter.spct" object.
-#'
-#' A function to nicely print objects of class "summary.filter.spct".
-#'
-#' @param x an object of class "summary.filter.spct"
-#' @param ... not used in current version
-#'
-#' @export print.summary.filter.spct
+#' @export
 #'
 print.summary.filter.spct <- function(x, ...) {
   Tfr.type <- attr(x, "Tfr.type")
@@ -156,41 +206,11 @@ print.summary.filter.spct <- function(x, ...) {
   cat("Quantity is", Tfr.type, "\n")
 }
 
-#' Summary of a "reflector.spct" object.
+#' @describeIn print.summary.generic.spct Print a "summary.reflector.spct" object.
 #'
-#' A method of generic function summary for objects of class "reflector.spct".
+#' @method print summary.reflector.spct
 #'
-#' @param object an object of class "reflector.spct" for which a summary is desired
-#' @param digits integer, used for number formatting with signif()
-#' @param ... additional arguments affecting the summary produced, ignored in current version
-#'
-#' @export summary.reflector.spct
-#'
-summary.reflector.spct <- function(object, digits = max(3, getOption("digits")-3), ...) {
-  Rfr.type <- getRfrType(object)
-  z <- c(
-    max.w.length = max(object),
-    min.w.length = min(object),
-    midpoint.w.length = midpoint(object),
-    w.length.step = stepsize(object)[1],
-    max.Rfr = max(object$Rfr),
-    min.Rfr = min(object$Rfr),
-    mean.Rfr = as.numeric(integrate_spct(object) / spread(object))
-  )
-  z <- signif(z, digits)
-  attr(z, "Rfr.type") <- Rfr.type
-  class(z) <- c("summary.reflector.spct", class(z))
-  return(z)
-}
-
-#' Print a "summary.reflector.spct" object.
-#'
-#' A function to nicely print objects of class "summary.reflector.spct".
-#'
-#' @param x an object of class "summary.reflector.spct"
-#' @param ... not used in current version
-#'
-#' @export print.summary.reflector.spct
+#' @export
 #'
 print.summary.reflector.spct <- function(x, ...) {
   Rfr.type <- attr(x, "Rfr.type")
@@ -201,42 +221,11 @@ print.summary.reflector.spct <- function(x, ...) {
   cat("Quantity is", Rfr.type, "\n")
 }
 
-#' Summary of a "response.spct" object.
+#' @describeIn print.summary.generic.spct Print a "summary.response.spct" object.
 #'
-#' A method of generic function summary for objects of class "response.spct".
+#' @method print summary.response.spct
 #'
-#' @param object an object of class "response.spct" for which a summary is desired
-#' @param digits integer, used for number formatting with signif()
-#' @param ... additional arguments affecting the summary produced, ignored in current version
-#'
-#' @export summary.response.spct
-#'
-summary.response.spct <- function(object, digits = max(3, getOption("digits")-3), ...) {
-  time.unit <- getTimeUnit(object)
-  z <- c(
-    max.w.length = max(object),
-    min.w.length = min(object),
-    midpoint.w.length = midpoint(object),
-    w.length.step = stepsize(object)[1],
-    max.response = max(object$s.e.response),
-    min.response = min(object$s.e.response),
-    total.response = as.numeric(integrate_spct(object)),
-    mean.response = as.numeric(integrate_spct(object) / spread(object))
-  )
-  z <- signif(z, digits)
-  class(z) <- c("summary.response.spct", class(z))
-  attr(z, "time.unit") <- time.unit
-  return(z)
-}
-
-#' Print a "summary.response.spct" object.
-#'
-#' A function to nicely print objects of class "summary.response.spct".
-#'
-#' @param x an object of class "summary.response.spct"
-#' @param ... not used in current version
-#'
-#' @export print.summary.response.spct
+#' @export
 #'
 print.summary.response.spct <- function(x, ...) {
   time.unit <- attr(x, "time.unit")
@@ -247,39 +236,11 @@ print.summary.response.spct <- function(x, ...) {
   cat("Time unit is", time.unit, "\n")
 }
 
-#' Summary of a "chroma.spct" object.
+#' @describeIn print.summary.generic.spct Print a "summary.chrome.spct" object.
 #'
-#' A method of generic function summary for objects of class "chroma.spct".
+#' @method print summary.chroma.spct
 #'
-#' @param object an object of class "chroma.spct" for which a summary is desired
-#' @param digits integer, used for number formatting with signif()
-#' @param ... additional arguments affecting the summary produced, ignored in current version
-#'
-#' @export summary.chroma.spct
-#'
-summary.chroma.spct <- function(object, digits = max(3, getOption("digits")-3), ...) {
-  z <- c(
-    max.w.length = max(object),
-    min.w.length = min(object),
-    midpoint.w.length = midpoint(object),
-    w.length.step = stepsize(object)[1],
-    x.max = max(object[["x"]]),
-    y.max = max(object[["y"]]),
-    z.max = max(object[["z"]])
-  )
-  z <- signif(z, digits)
-  class(z) <- c("summary.chroma.spct", class(z))
-  return(z)
-}
-
-#' Print a "summary.chroma.spct" object.
-#'
-#' A function to nicely print objects of class "summary.chroma.spct".
-#'
-#' @param x an object of class "summary.chroma.spct"
-#' @param ... not used in current version
-#'
-#' @export print.summary.chroma.spct
+#' @export
 #'
 print.summary.chroma.spct <- function(x, ...) {
   time.unit <- attr(x, "time.unit")
@@ -288,13 +249,16 @@ print.summary.chroma.spct <- function(x, ...) {
   cat(paste("maximum (x, y, z) values are (", paste(x[["x.max"]], x[["y.max"]], x[["z.max"]], sep=", "), ")", sep=""), "\n")
 }
 
+# Color -------------------------------------------------------------------
+
 #' Color of a source.spct object.
 #'
-#' A function that returns the equivalent RGB colour of an object of class "source.spct".
+#' A function that returns the equivalent RGB colour of an object of class
+#' "source.spct".
 #'
 #' @param x an object of class "source.spct"
 #' @param ... not used in current version
-#' @export color.source.spct
+#' @export
 #'
 color.source.spct <- function(x, ...) {
 #  x.name <- as.character(substitute(x))
@@ -307,7 +271,6 @@ color.source.spct <- function(x, ...) {
 
 # w.length summaries ------------------------------------------------------
 
-
 #' "range" function for spectra
 #'
 #' Range function for spectra, returning wavelength range.
@@ -315,6 +278,7 @@ color.source.spct <- function(x, ...) {
 #' @param ... not used in current version
 #' @param na.rm a logical indicating whether missing values should be removed.
 #' @export
+#' @family wavelength summaries
 #'
 range.generic.spct <- function(..., na.rm=FALSE) {
   x <- c(...)
@@ -328,6 +292,7 @@ range.generic.spct <- function(..., na.rm=FALSE) {
 #' @param ... not used in current version
 #' @param na.rm a logical indicating whether missing values should be removed.
 #' @export
+#' @family wavelength summaries
 #'
 max.generic.spct <- function(..., na.rm=FALSE) {
   x <- c(...)
@@ -341,6 +306,7 @@ max.generic.spct <- function(..., na.rm=FALSE) {
 #' @param ... not used in current version
 #' @param na.rm a logical indicating whether missing values should be removed.
 #' @export
+#' @family wavelength summaries
 #'
 min.generic.spct <- function(..., na.rm=FALSE) {
   x <- c(...)
@@ -354,25 +320,17 @@ min.generic.spct <- function(..., na.rm=FALSE) {
 #' @param x an R object
 #' @param ... not used in current version
 #' @export stepsize
+#' @family wavelength summaries
 stepsize <- function(x, ...) UseMethod("stepsize")
 
-#' Default for generic function
-#'
-#' Function that returns the range of step sizes in an object.
-#'
-#' @param x an R object
-#' @param ... not used in current version
+#' @describeIn stepsize Default function usable on numeric vectors.
 #' @export stepsize.default
 stepsize.default <- function(x, ...) {
   return(range(diff(x)))
 }
 
-#' Method for "generic.spct" objects for generic function
+#' @describeIn stepsize  Method for "generic.spct" objects for generic function
 #'
-#' Function that returns the range of wavelength step sizes in a "generic.spct" object.
-#'
-#' @param x an R object
-#' @param ... not used in current version
 #' @export stepsize.generic.spct
 #'
 #' @examples
@@ -381,6 +339,9 @@ stepsize.default <- function(x, ...) {
 stepsize.generic.spct <- function(x, ...) {
   range(diff(x[["w.length"]]))
 }
+
+
+# Labels ------------------------------------------------------------------
 
 #' Labels of a "generic.spct" object.
 #'

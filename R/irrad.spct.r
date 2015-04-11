@@ -45,6 +45,8 @@
 #' \code{w.length} vector.
 #'
 #' @aliases irrad.source.spct irrad_spct
+#'
+#' @family irradiance functions
 
 irrad_spct <-
   function(spct, w.band=NULL,
@@ -204,6 +206,7 @@ irrad_spct <-
 
 #' @method irrad source.spct
 #' @export
+#' @family irradiance functions
 irrad.source.spct <- irrad_spct
 
 #' Default for generic function
@@ -219,6 +222,7 @@ irrad.source.spct <- irrad_spct
 #' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
 #' @param allow.scaled logical indicating whether rescaled or normalized spectra as argument to spct are flagged as an error
 #' @export
+#' @family irradiance functions
 #'
 irrad.default <- function(spct, w.band, unit.out, quantity, wb.trim,
                           use.cached.mult, use.hinges, allow.scaled) {
@@ -241,6 +245,7 @@ irrad.default <- function(spct, w.band, unit.out, quantity, wb.trim,
 #'
 #' @export
 #'
+#' @family irradiance functions
 irrad <- function(spct, w.band, unit.out, quantity, wb.trim,
                   use.cached.mult, use.hinges, allow.scaled) UseMethod("irrad")
 
@@ -288,6 +293,7 @@ irrad <- function(spct, w.band, unit.out, quantity, wb.trim,
 #' that the wavelengths are the same in each call, as the only test done is for the length of the
 #' \code{w.length} vector.
 #'
+#' @family irradiance functions
 e_irrad.source.spct <-
   function(spct, w.band=NULL,
            quantity="total",
@@ -344,6 +350,7 @@ e_irrad.source.spct <-
 #' \code{w.length} vector.
 #'
 #' @export
+#' @family irradiance functions
 
 q_irrad.source.spct <-
   function(spct, w.band=NULL,
@@ -369,6 +376,7 @@ q_irrad.source.spct <-
 #' @param allow.scaled logical indicating whether rescaled or normalized spectra as argument to spct are flagged as an error
 #'
 #' @export
+#' @family irradiance functions
 #'
 e_irrad <- function(spct, w.band, quantity, wb.trim, use.cached.mult, use.hinges, allow.scaled) UseMethod("e_irrad")
 
@@ -385,6 +393,7 @@ e_irrad <- function(spct, w.band, quantity, wb.trim, use.cached.mult, use.hinges
 #' @param allow.scaled logical indicating whether rescaled or normalized spectra as argument to spct are flagged as an error
 #'
 #' @export
+#' @family irradiance functions
 #'
 q_irrad <- function(spct, w.band, quantity, wb.trim, use.cached.mult, use.hinges, allow.scaled) UseMethod("q_irrad")
 
@@ -401,6 +410,7 @@ q_irrad <- function(spct, w.band, quantity, wb.trim, use.cached.mult, use.hinges
 #' @param allow.scaled logical indicating whether rescaled or normalized spectra as argument to spct are flagged as an error
 #'
 #' @export
+#' @family irradiance functions
 #'
 e_irrad.default <- function(spct, w.band, quantity, wb.trim, use.cached.mult, use.hinges, allow.scaled) {
   warning("'e_irrad' is not defined for objects of class ", class(spct)[1])
@@ -420,6 +430,7 @@ e_irrad.default <- function(spct, w.band, quantity, wb.trim, use.cached.mult, us
 #' @param allow.scaled logical indicating whether rescaled or normalized spectra as argument to spct are flagged as an error
 #'
 #' @export
+#' @family irradiance functions
 #'
 q_irrad.default <- function(spct, w.band, quantity, wb.trim, use.cached.mult, use.hinges, allow.scaled) {
   warning("'q_irrad' is not defined for objects of class ", class(spct)[1])
