@@ -1,29 +1,33 @@
-#' Normalize a spectrum.
+
+# normalize ---------------------------------------------------------------
+
+#' Normalize spectral data
 #'
-#' This function returns a spectral object of the same class as the one supplied
-#' as argument but with the spectral data normalized to 1.0 at a .
+#' These functions return a spectral object of the same class as the one
+#' supplied as argument but with the spectral data normalized to 1.o a certain
+#' wavelength.
 #'
-#' @note Note that scales are expanded so as to make space for the annotations.
-#' The object returned is a ggplot objects, and can be further manipulated.
+#' @param x An R object
+#' @param ... not used in current version
+#' @return A new object of the same class as \code{x}.
+#' @export normalize
+#' @note Accepted values for \code{norm} vary depending on the class of
+#'   \code{x}
+#' @family rescaling functions
 #'
-#' @usage normalize_spct(spct,
-#'                       range,
-#'                       norm,
-#'                       var.name)
+normalize <- function(x, ...) UseMethod("normalize")
+
+#' @describeIn normalize Default for generic function
 #'
-#' @param spct a generic.spct object
-#' @param range an R object on which range() returns a vector of length 2,
-#' with min annd max wavelengths (nm)
-#' @param norm numeric normalization wavelength (nm) or character string "max",
-#' or "min" for normalization at the corresponding wavelngth, or "integral"
-#' or "mean" for rescaling by dividing by these values.
-#' @param var.name the name of the variable to normalize
-#'
-#' @return a new object of the same class as \code{spct}.
-#'
+#' @export normalize.default
+normalize.default <- function(x, ...) {
+  warning("'normalize' is not defined for objects of class ", class(x)[1])
+  return(x)
+}
+
+
 #' @keywords internal
 #'
-
 normalize_spct <- function(spct, range, norm, var.name) {
   stopifnot(is.any.spct(spct), !is.null(var.name), length(var.name) == 1, var.name %in% names(spct))
   tmp.spct <- trim_spct(spct, range)
@@ -65,47 +69,16 @@ normalize_spct <- function(spct, range, norm, var.name) {
   out.spct
 }
 
-#' Generic function
+#' @describeIn normalize Normalize a \code{source.x} object.
 #'
-#' Function that returns an object with normalized data.
-#'
-#' @param x an R object
-#' @param ... not used in current version
-#' @export normalize
-normalize <- function(x, ...) UseMethod("normalize")
-
-#' Default for generic function
-#'
-#' Function that returns an object with normalized data.
-#'
-#' @param x an R object
-#' @param ... not used in current version
-#' @export normalize.default
-normalize.default <- function(x, ...) {
-  warning("'normalize' is not defined for objects of class ", class(spct)[1])
-  return(x)
-}
-
-#' Normalize a source spectrum.
-#'
-#' This function returns a spectral object of the same class as the one supplied
-#' as argument but with the spectral data normalized to 1.0 at a given wavelength.
-#'
-#' @usage normalize(x,
-#'                  ...,
-#'                  range = range(x),
-#'                  norm = "max",
-#'                  unit.out = getOption("photobiology.radiation.unit", default="energy"))
-#'
-#' @param x a source.spct object
-#' @param ... not used in current version
-#' @param range an R object on which range() returns a vector of length 2,
-#' with min annd max wavelengths (nm)
-#' @param norm numeric normalization wavelength (nm) or character string "max",
-#' or "min" for normalization at the corresponding wavelength.
-#' @param unit.out character string with allowed values "energy", and "photon", or its alias "quantum"
-#'
-#' @return a new object of the same class as \code{x}.
+#' @param range An R object on which \code{range()} returns a numeric vector of
+#'   length 2 with the limits of a range of wavelengths in nm, with min annd max
+#'   wavelengths (nm)
+#' @param norm numeric Normalization wavelength (nm) or character string "max",
+#'   or "min" for normalization at the corresponding wavelngth, or "integral" or
+#'   "mean" for rescaling by dividing by these values.
+#' @param unit.out character Allowed values "energy", and "photon",
+#'   or its alias "quantum"
 #'
 #' @export
 #'
@@ -129,26 +102,7 @@ normalize.source.spct <- function(x,
   }
 }
 
-#' Normalize a response spectrum.
-#'
-#' This function returns a spectral object of the same class as the one supplied
-#' as argument but with the spectral data normalized to 1.0 at a given wavelength.
-#'
-#' @usage normalize(x,
-#'                  ...,
-#'                  range = range(x),
-#'                  norm = "max",
-#'                  unit.out = getOption("photobiology.radiation.unit", default="energy"))
-#'
-#' @param x a response.spct object
-#' @param ... not used in current version
-#' @param range an R object on which range() returns a vector of length 2,
-#' with min annd max wavelengths (nm)
-#' @param norm numeric normalization wavelength (nm) or character string "max",
-#' or "min" for normalization at the corresponding wavelngth.
-#' @param unit.out character string with allowed values "energy", and "photon", or its alias "quantum"
-#'
-#' @return a new object of the same class as \code{x}.
+#' @describeIn normalize Normalize a response spectrum.
 #'
 #' @export
 #'
@@ -172,26 +126,10 @@ normalize.response.spct <- function(x,
   }
 }
 
-#' Normalize a filter spectrum.
+#' @describeIn normalize Normalize a filter spectrum.
 #'
-#' This function returns a spectral object of the same class as the one supplied
-#' as argument but with the spectral data normalized to 1.0 at a given wavelength.
-#'
-#' @usage normalize(x,
-#'                  ...,
-#'                  range = range(x),
-#'                  norm = "max",
-#'                  qty.out = getOption("photobiology.filter.qty", default="transmittance"))
-#'
-#' @param x a filter.spct object
-#' @param ... not used in current version
-#' @param range an R object on which range() returns a vector of length 2,
-#' with min annd max wavelengths (nm)
-#' @param norm numeric normalization wavelength (nm) or character string "max",
-#' or "min" for normalization at the corresponding wavelngth.
-#' @param qty.out character string with allowed values "transmittance", and "absorbance"
-#'
-#' @return a new object of the same class as \code{x}.
+#' @param qty.out character string  Allowed values are "transmittance", and
+#'   "absorbance" indicating on which quantity to apply the normalization.
 #'
 #' @export
 #'
@@ -215,26 +153,7 @@ normalize.filter.spct <- function(x,
   }
 }
 
-#' Normalize a reflector spectrum.
-#'
-#' This function returns a spectral object of the same class as the one supplied
-#' as argument but with the spectral data normalized to 1.0 at a given wavelength.
-#'
-#' @usage normalize(x,
-#'                  ...,
-#'                  range = range(x),
-#'                  norm = "max",
-#'                  qty.out = NULL)
-#'
-#' @param x a reflector.spct object
-#' @param ... not used in current version
-#' @param range an R object on which range() returns a vector of length 2,
-#' with min annd max wavelengths (nm)
-#' @param norm numeric normalization wavelength (nm) or character string "max",
-#' or "min" for normalization at the corresponding wavelngth.
-#' @param qty.out ignored
-#'
-#' @return a new object of the same class as \code{x}.
+#' @describeIn normalize Normalize a reflector spectrum.
 #'
 #' @export
 #'
@@ -249,16 +168,24 @@ normalize.reflector.spct <- function(x,
                           var.name = "Rfr"))
 }
 
+
+# is.normalized function --------------------------------------------------
+
 #' Query whether a generic spectrum has been normalized.
 #'
-#' This function returns TRUE if x is a generic.spct and it has been normalized
-#' by means of function \code{normalize}.
+#' This function tests a \code{generic.spct} object for an attribute that
+#' signals whether the spectral data has been normalized or not after the object
+#' was created.
 #'
 #' @usage is.normalized(x)
 #'
-#' @param x a generic.spct object
+#' @param x An R object.
+#'
+#' @return A \code{logical} value. If \code{x} is not normalized or \code{x} is
+#'   not a \code{generic.spct} object the value returned is \code{FALSE}.
 #'
 #' @export
+#' @family rescaling functions
 #'
 is.normalized <- function(x) {
   if (!is.any.spct(x)) {

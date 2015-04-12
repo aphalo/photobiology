@@ -254,9 +254,9 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = NULL) {
 # subset ------------------------------------------------------------------
 
 
-#' Subsetting generic.spct
+#' Subsetting methods for spectra
 #'
-#' Returns subsets of a generic.spct
+#' Just like \code{subset} in base R, but preserves the special attributes used in spectral classes.
 #'
 #' @usage subset(x, subset, select, ...)
 #'
@@ -269,13 +269,15 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = NULL) {
 #' generic.spct so columns can be referred to (by name) as variables in the expression
 #' The generic.spct that is returned will maintain the original attributes and keys as long as they are not select-ed out.
 #'
-#' @return A generic.spct containing the subset of rows and columns that are selected.
+#' @return An object of the same class as \code{x} but containing only the subset of rows and columns that are selected.
 #'
 #' @method subset generic.spct
 #'
-#' @seealso \code{\link{subset}}
+#' @examples
+#' subset(sun.spct, w.length > 400)
 #'
-
+#' @seealso \code{\link{subset}} and \code{\link{trim_spct}}
+#'
 subset.generic.spct <- function(x, subset, select, ...) {
   comment <- comment(x)
   x.out <- x[eval(substitute(subset))]
@@ -285,32 +287,11 @@ subset.generic.spct <- function(x, subset, select, ...) {
   return(x.out)
 }
 
-#' Subsetting source.spct
-#'
-#' Returns subsets of a source.spct
-#'
-#' @usage subset(x, subset, select, ...)
-#'
-#' @param x	source.spct to subset
-#' @param subset logical expression indicating elements or rows to keep
-#' @param select expression indicating columns to select from x (IGNORED)
-#' @param ...	further arguments to be passed to or from other methods
-#'
-#' @details The subset argument works on the rows and will be evaluated in the
-#' source.spct so columns can be referred to (by name) as variables in the expression
-#' The source.spct that is returned will maintain the original attributes and keys as long as they are not select-ed out.
-#'
-#' @return A source.spct containing the subset of rows and columns that are selected.
+# @describeIn subset.generic.spct Subset for light source spectra.
 #'
 #' @export
+#' @rdname subset.generic.spct
 #'
-#' @examples
-#'
-#' subset(sun.spct, w.length > 400)
-#'
-#' @seealso \code{\link{subset}}
-#'
-
 subset.source.spct <- function(x, subset, select = NULL, ...) {
   time.unit <- getTimeUnit(x)
   bswf.used <- getBSWFUsed(x)
@@ -323,28 +304,11 @@ subset.source.spct <- function(x, subset, select = NULL, ...) {
   return(x.out)
 }
 
-#' Subsetting filter.spct
-#'
-#' Returns subsets of a filter.spct
-#'
-#' @usage subset(x, subset, select, ...)
-#'
-#' @param x	filter.spct to subset
-#' @param subset logical expression indicating elements or rows to keep
-#' @param select expression indicating columns to select from x (IGNORED)
-#' @param ...	further arguments to be passed to or from other methods
-#'
-#' @details The subset argument works on the rows and will be evaluated in the
-#' filter.spct so columns can be referred to (by name) as variables in the expression
-#' The filter.spct that is returned will maintain the original attributes and keys as long as they are not select-ed out.
-#'
-#' @return A filter.spct containing the subset of rows and columns that are selected.
+# @describeIn subset.generic.spct Subset for light filter spectra.
 #'
 #' @export
+#' @rdname subset.generic.spct
 #'
-#' @seealso \code{\link{subset}}
-#'
-
 subset.filter.spct <- function(x, subset, select = NULL, ...) {
   Tfr.type <- getTfrType(x)
   comment <- comment(x)
@@ -356,28 +320,11 @@ subset.filter.spct <- function(x, subset, select = NULL, ...) {
   return(x.out)
 }
 
-#' Subsetting reflector.spct
-#'
-#' Returns subsets of a reflector.spct
-#'
-#' @usage subset(x, subset, select, ...)
-#'
-#' @param x	reflector.spct to subset
-#' @param subset logical expression indicating elements or rows to keep
-#' @param select expression indicating columns to select from x (IGNORED)
-#' @param ...	further arguments to be passed to or from other methods
-#'
-#' @details The subset argument works on the rows and will be evaluated in the
-#' reflector.spct so columns can be referred to (by name) as variables in the expression
-#' The reflector.spct that is returned will maintain the original attributes and keys as long as they are not select-ed out.
-#'
-#' @return A reflector.spct containing the subset of rows and columns that are selected.
+# @describeIn subset.generic.spct Subset for light reflector spectra.
 #'
 #' @export
+#' @rdname subset.generic.spct
 #'
-#' @seealso \code{\link{subset}}
-#'
-
 subset.reflector.spct <- function(x, subset, select = NULL, ...) {
   Rfr.type <- getRfrType(x)
   comment <- comment(x)
@@ -389,28 +336,11 @@ subset.reflector.spct <- function(x, subset, select = NULL, ...) {
   return(x.out)
 }
 
-#' Subsetting response.spct
-#'
-#' Returns subsets of a response.spct
-#'
-#' @usage subset(x, subset, select, ...)
-#'
-#' @param x	response.spct to subset
-#' @param subset logical expression indicating elements or rows to keep
-#' @param select expression indicating columns to select from x (IGNORED)
-#' @param ...	further arguments to be passed to or from other methods
-#'
-#' @details The subset argument works on the rows and will be evaluated in the
-#' response.spct so columns can be referred to (by name) as variables in the expression
-#' The response.spct that is returned will maintain the original attributes and keys as long as they are not select-ed out.
-#'
-#' @return A response.spct containing the subset of rows and columns that are selected.
+# @describeIn subset.generic.spct Subset for light response spectra.
 #'
 #' @export
+#' @rdname subset.generic.spct
 #'
-#' @seealso \code{\link{subset}}
-#'
-
 subset.response.spct <- function(x, subset, select = NULL, ...) {
   time.unit <- getTimeUnit(x)
   comment <- comment(x)
@@ -422,28 +352,11 @@ subset.response.spct <- function(x, subset, select = NULL, ...) {
   return(x.out)
 }
 
-#' Subsetting object.spct
-#'
-#' Returns subsets of a object.spct
-#'
-#' @usage subset(x, subset, select, ...)
-#'
-#' @param x	object.spct to subset
-#' @param subset logical expression indicating elements or rows to keep
-#' @param select expression indicating columns to select from x (IGNORED)
-#' @param ...	further arguments to be passed to or from other methods
-#'
-#' @details The subset argument works on the rows and will be evaluated in the
-#' object.spct so columns can be referred to (by name) as variables in the expression
-#' The object.spct that is returned will maintain the original attributes and keys as long as they are not select-ed out.
-#'
-#' @return A object.spct containing the subset of rows and columns that are selected.
+# @describeIn subset.generic.spct Subset for light response spectra.
 #'
 #' @export
+#' @rdname subset.generic.spct
 #'
-#' @seealso \code{\link{subset}}
-#'
-
 subset.object.spct <- function(x, subset, select = NULL, ...) {
   Tfr.type <- getTfrType(x)
   Rfr.type <- getRfrType(x)

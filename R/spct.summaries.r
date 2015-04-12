@@ -23,7 +23,7 @@ summary.generic.spct <- function(object, digits = max(3, getOption("digits")-3),
     max.w.length = max(object),
     min.w.length = min(object),
     midpoint.w.length = midpoint(object),
-    w.length.step = stepsize(object)[1],
+    w.length.step = stepsize(object)[1]
   )
   z <- signif(z, digits)
   class(z) <- c("summary.generic.spct", class(z))

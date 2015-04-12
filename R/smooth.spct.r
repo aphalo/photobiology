@@ -1,61 +1,43 @@
-#' Generic function
+#' Smooth a spectrum using one of several different methods
 #'
-#' Smooth a spectrum.
+#' These functions implement one original methods and acts as a wrapper for
+#' other common R smoothing functions. The advantage of using this function for
+#' smoothing spectral objects is that it simplifies the user interface and sets,
+#' when needed, defaults suitable for spectral data.
 #'
 #' @param x an R object
 #' @param method a character string "custom", "lowess", "supsmu"
 #' @param strength numeric value to adjust the degree of smoothing
 #' @param ... other parameters passed to the underlying smoothing functions
 #'
+#' @note Method "custom" is our home-brewed method which applies strong
+#'   smoothing to low signal regions of the spectral data, and weaker or no
+#'   smoothing to the high signal areas. Values very close to zero are set to
+#'   zero with a limit which depends on the local variation. This method is an
+#'   ad-hock method suitable for smoothing spectral data obtained with array
+#'   spectrometers. In the cased of methods "lowess" and "supsmu" the current
+#'   function behaves like a wrapper of the functions of the same names from
+#'   base R.
+#'
+#' @keywords manip misc
 #' @export smooth_spct
 #'
 smooth_spct <- function(x, method, strength, ...) UseMethod("smooth_spct")
 
-#' Default for generic function
+#' @describeIn smooth_spct Default for generic function
 #'
-#' Smooth a spectrum.
-#'
-#' @param x an R object
-#' @param method a character string "custom", "lowess", "supsmu"
-#' @param strength numeric value to adjust the degree of smoothing
-#' @param ... other parameters passed to the underlying smoothing functions
-#'
-#' @export smooth_spct.default
+#' @export
 #'
 smooth_spct.default <- function(x, method, strength, ...) {
   warning("'smooth_spct' is not defined for objects of class ", class(spct)[1])
   return(x)
 }
 
-#' Smooth a source spectrum using one of several different methods
+#' @describeIn smooth_spct Smooth a source spectrum
 #'
-#' This function implements one original methods and acts as a wrapper for other
-#' common R smoothing functions. The advantage of using this function for smoothing
-#' \code{source.spct} objects is that it simplifies the user interface and sets,
-#' when needed, defaults suitable for spectral irardiance data.
-#'
-#' @usage smooth_spct.source.spct(x, method = "custom", strength = 1, ...)
-#'
-#' @param x a source.spct object
-#' @param method a character string "custom", "lowess", "supsmu"
-#' @param strength numeric value to adjust the degree of smoothing
-#' @param ... other parameters passed to the underlying smoothing functions
-#'
-#' @return a source.spct object smoothed
-#'
-#' @export smooth_spct.source.spct
+#' @export
 #' @importFrom caTools runmad runmin
 #'
-#' @note Method "custom" is our home-brewed method which applies strong smoothing
-#' to low signal regions of the spectral data, and weaker or no smoothing to the
-#' high signal areas. Values very close to zero are set to zero with a limit which
-#' depends on the local variation. This method is an ad-hock method suitable for
-#' smoothing spectral data obtained with array spectrometers. In the cased of methods
-#' "lowess" and "supsmu" the current function behaves like a wrapper of the functions
-#' of the same names from base R.
-#'
-#' @keywords manip misc
-
 smooth_spct.source.spct <- function(x, method = "custom", strength = 1, ...) {
   if (method == "lowess") {
     span = 1/50 * strength
@@ -129,7 +111,7 @@ smooth_spct.source.spct <- function(x, method = "custom", strength = 1, ...) {
     if (num_bad > 50) {
       warning(num_bad, " 'bad' estimates in spectral irradiance")
     }
-    out.spct <- out.spct[ , .(w.length, s.e.irrad)]
+    out.spct <- out.spct[ , list(w.length, s.e.irrad)]
     setSourceSpct(out.spct, time.unit = attr(x, "time.unit", exact = TRUE))
     if (all(c("s.e.irrad", "s.q.irrad") %in% names(x))) {
       e2q(out.spct, action = "add", byref = TRUE)
@@ -143,35 +125,10 @@ smooth_spct.source.spct <- function(x, method = "custom", strength = 1, ...) {
   }
 }
 
-#' Smooth a filter spectrum using one of several different methods
+#' @describeIn smooth_spct Smooth a filter spectrum
 #'
-#' This function implements one original methods and acts as a wrapper for other
-#' common R smoothing functions. The advantage of using this function for smoothing
-#' \code{filter.spct} objects is that it simplifies the user interface and sets,
-#' when needed, defaults suitable for spectral irardiance data.
+#' @export
 #'
-#' @usage smooth_spct.filter.spct(x, method = "custom", strength = 1, ...)
-#'
-#' @param x a filter.spct object
-#' @param method a character string "custom", "lowess", "supsmu"
-#' @param strength numeric value to adjust the degree of smoothing
-#' @param ... other parameters passed to the underlying smoothing functions
-#'
-#' @return a filter.spct object smoothed
-#'
-#' @export smooth_spct.filter.spct
-#' @importFrom caTools runmad runmin
-#'
-#' @note Method "custom" is our home-brewed method which applies strong smoothing
-#' to low signal regions of the spectral data, and weaker or no smoothing to the
-#' high signal areas. Values very close to zero are set to zero with a limit which
-#' depends on the local variation. This method is an ad-hock method suitable for
-#' smoothing spectral data obtained with array spectrometers. In the cased of methods
-#' "lowess" and "supsmu" the current function behaves like a wrapper of the functions
-#' of the same names from base R.
-#'
-#' @keywords manip misc
-
 smooth_spct.filter.spct <- function(x, method = "custom", strength = 1, ...) {
   if (method == "lowess") {
     span = 1/50 * strength
@@ -260,35 +217,10 @@ smooth_spct.filter.spct <- function(x, method = "custom", strength = 1, ...) {
 }
 
 
-#' Smooth a reflector spectrum using one of several different methods
+#' @describeIn smooth_spct Smooth a reflector spectrum
 #'
-#' This function implements one original methods and acts as a wrapper for other
-#' common R smoothing functions. The advantage of using this function for smoothing
-#' \code{reflector.spct} objects is that it simplifies the user interface and sets,
-#' when needed, defaults suitable for spectral irardiance data.
+#' @export
 #'
-#' @usage smooth_spct.reflector.spct(x, method = "custom", strength = 1, ...)
-#'
-#' @param x a reflector.spct object
-#' @param method a character string "custom", "lowess", "supsmu"
-#' @param strength numeric value to adjust the degree of smoothing
-#' @param ... other parameters passed to the underlying smoothing functions
-#'
-#' @return a reflector.spct object smoothed
-#'
-#' @export smooth_spct.reflector.spct
-#' @importFrom caTools runmad runmin
-#'
-#' @note Method "custom" is our home-brewed method which applies strong smoothing
-#' to low signal regions of the spectral data, and weaker or no smoothing to the
-#' high signal areas. Values very close to zero are set to zero with a limit which
-#' depends on the local variation. This method is an ad-hock method suitable for
-#' smoothing spectral data obtained with array spectrometers. In the cased of methods
-#' "lowess" and "supsmu" the current function behaves like a wrapper of the functions
-#' of the same names from base R.
-#'
-#' @keywords manip misc
-
 smooth_spct.reflector.spct <- function(x, method = "custom", strength = 1, ...) {
   if (method == "lowess") {
     span = 1/50 * strength
@@ -363,35 +295,10 @@ smooth_spct.reflector.spct <- function(x, method = "custom", strength = 1, ...) 
   }
 }
 
-#' Smooth a response spectrum using one of several different methods
+#' @describeIn smooth_spct Smooth a response spectrum
 #'
-#' This function implements one original methods and acts as a wrapper for other
-#' common R smoothing functions. The advantage of using this function for smoothing
-#' \code{response.spct} objects is that it simplifies the user interface and sets,
-#' when needed, defaults suitable for spectral irardiance data.
+#' @export
 #'
-#' @usage smooth_spct.response.spct(x, method = "custom", strength = 1, ...)
-#'
-#' @param x a response.spct object
-#' @param method a character string "custom", "lowess", "supsmu"
-#' @param strength numeric value to adjust the degree of smoothing
-#' @param ... other parameters passed to the underlying smoothing functions
-#'
-#' @return a response.spct object smoothed
-#'
-#' @export smooth_spct.response.spct
-#' @importFrom caTools runmad runmin
-#'
-#' @note Method "custom" is our home-brewed method which applies strong smoothing
-#' to low signal regions of the spectral data, and weaker or no smoothing to the
-#' high signal areas. Values very close to zero are set to zero with a limit which
-#' depends on the local variation. This method is an ad-hock method suitable for
-#' smoothing spectral data obtained with array spectrometers. In the cased of methods
-#' "lowess" and "supsmu" the current function behaves like a wrapper of the functions
-#' of the same names from base R.
-#'
-#' @keywords manip misc
-
 smooth_spct.response.spct <- function(x, method = "custom", strength = 1, ...) {
   if (method == "lowess") {
     span = 1/50 * strength

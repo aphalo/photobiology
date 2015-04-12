@@ -1,43 +1,83 @@
+# response methods --------------------------------------------------------
+
+
 #' Calculate response from spectral response.
 #'
-#' This function returns the mean response for a given
-#' waveband and a response spectrum.
+#' Calculate average photon- or energy-based photo-response.
 #'
-#' @usage response_spct(spct, w.band=NULL,
-#'                      unit.out=getOption("photobiology.radiation.unit", default="energy"),
-#'                      quantity="total", wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
-#'                      use.hinges=getOption("photobiology.use.hinges", default=NULL) )
+#' @usage response(spct, w.band, unit.out, quantity, wb.trim, use.hinges )
 #'
-#' @param spct an object of class response.spct"
-#' @param w.band a waveband object or a list of waveband objects
-#' @param unit.out character string with allowed values "energy", and "photon", or its alias "quantum"
-#' @param quantity character string
-#' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries are trimmed, if FALSE, they are discarded
-#' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
+#' @param spct an R object of class "generic.spct"
+#' @param w.band A waveband object or a list of waveband objects
+#' @param unit.out character Allowed values "energy", and "photon", or its alias
+#'   "quantum"
+#' @param quantity character Allowed values ""
+#' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries
+#'   are trimmed, if FALSE, they are discarded
+#' @param use.hinges logical indicating whether to use hinges to reduce
+#'   interpolation errors
 #'
-#' @return a single numeric value expressed either as a fraction of one or a percentage, or a
-#' vector of the same length as the list of wave.bands.
-#' @keywords manip misc
+#' @note The parameter \code{use.hinges} controls speed optimization. The
+#'   defaults should be suitable in mosts cases. Only the range of wavelengths
+#'   in the wavebands is used and all BSWFs are ignored.
+#'
+#' @return A single numeric value expressed either as a fraction of one or a
+#'   percentage, or a vector of the same length as the list of wave.bands. The
+#'   quantity returned depends on the value of \code{quantity}. Whether it is
+#'   expressed in energy-based or photon-based units depends on \code{unit.out}.
+#'
 #' @export
-#' @examples
-#' library(photobiologySensors)
-#' response_spct(Vital_BW_20.spct, new_waveband(293,385),
-#'    unit.out="photon") * 1e-6
-#' response_spct(Vital_BW_20.spct, new_waveband(293,385),
-#'    unit.out="energy")
-#' response_spct(Vital_BW_20.spct)
-#' response_spct(Vital_BW_20.spct, unit.out="energy")
-#' response_spct(Vital_BW_20.spct, unit.out="photon") * 1e-6
+#' @family response functions
 #'
-#' @note The parameter \code{use.hinges} controls speed optimization. The defaults should be suitable
-#' in mosts cases. Only the range of wavelengths in the wavebands is used and all BSWFs are ignored.
+response <- function(spct, w.band, unit.out, quantity, wb.trim, use.hinges) UseMethod("response")
 
-response_spct <-
+#' @describeIn response Default for generic function
+#'
+#' @export
+#'
+response.default <- function(spct, w.band, unit.out, quantity, wb.trim, use.hinges) {
+  warning("'response' is not defined for objects of class ", class(spct)[1])
+  return(NA)
+}
+
+#' @describeIn response Method for response spectra.
+#'
+#' @export
+#'
+response.response.spct <-
   function(spct, w.band=NULL,
            unit.out=getOption("photobiology.radiation.unit", default="energy"),
            quantity="total",
            wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
            use.hinges=getOption("photobiology.use.hinges", default=NULL) ) {
+    response_spct(spct=spct, w.band=w.band, unit.out=unit.out,
+                  quantity=quantity, wb.trim=wb.trim,
+                  use.hinges=use.hinges )
+  }
+
+#' Calculate response from spectral response.
+#'
+#' This function returns the mean response for a given
+#' waveband and a response spectrum.
+#'
+#' @usage response_spct(spct, w.band, unit.out, quantity, wb.trim, use.hinges)
+#'
+#' @param spct an object of class response.spct"
+#' @param w.band a waveband object or a list of waveband objects
+#' @param unit.out character with allowed values "energy", and "photon", or its alias "quantum"
+#' @param quantity character
+#' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries are trimmed, if FALSE, they are discarded
+#' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
+#'
+#' @return a single numeric value expressed either as a fraction of one or a percentage, or a
+#' vector of the same length as the list of wave.bands.
+#' @keywords internal
+#'
+#' @note The parameter \code{use.hinges} controls speed optimization. The defaults should be suitable
+#' in mosts cases. Only the range of wavelengths in the wavebands is used and all BSWFs are ignored.
+
+response_spct <-
+  function(spct, w.band, unit.out, quantity, wb.trim, use.hinges) {
     if (is.normalized(spct) || is.rescaled(spct)) {
       warning("The espectral data has been normalized or rescaled, making impossible to calculate integrated response")
       return(NA)
@@ -161,89 +201,27 @@ response_spct <-
     return(response)
   }
 
-#' Calculate response from spectral response.
-#'
-#' This function returns the mean response for a given
-#' waveband and a response spectrum.
-#'
-#' @param spct an object of class response.spct"
-#' @param w.band a waveband object or a list of waveband objects
-#' @param unit.out character string with allowed values "energy", and "photon", or its alias "quantum"
-#' @param quantity character string
-#' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries are trimmed, if FALSE, they are discarded
-#' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
-#'
-#' @return a single numeric value expressed either as a fraction of one or a percentage, or a
-#' vector of the same length as the list of wave.bands.
-#' @keywords manip misc
-#'
-#' @examples
-#' library(photobiologySensors)
-#' response(Vital_BW_20.spct, new_waveband(293,385),
-#'    unit.out="photon") * 1e-6
-#' response(Vital_BW_20.spct, new_waveband(293,385),
-#'    unit.out="energy")
-#' response(Vital_BW_20.spct)
-#' response(Vital_BW_20.spct, unit.out="energy")
-#' response(Vital_BW_20.spct, unit.out="photon") * 1e-6
-#'
-#' @note The parameter \code{use.hinges} controls speed optimization. The defaults should be suitable
-#' in mosts cases. Only the range of wavelengths in the wavebands is used and all BSWFs are ignored.
-#' @method response generic.spct
-#' @export
-#'
-response.generic.spct <- response_spct
-
-#' Default for generic function
-#'
-#' Calculate average photon-based photo-response.
-#'
-#' @param spct an object of class "generic.spct"
-#' @param w.band a waveband object or a list of waveband objects
-#' @param unit.out character string with allowed values "energy", and "photon", or its alias "quantum"
-#' @param quantity character string
-#' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries are trimmed, if FALSE, they are discarded
-#' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
-#' @export response.default
-#'
-response.default <- function(spct, w.band, unit.out, quantity, wb.trim, use.hinges) {
-  warning("'response' is not defined for objects of class ", class(spct)[1])
-  return(NA)
-}
-
-#' Generic function
-#'
-#' Calculate average photon- or energy-based photo-response.
-#'
-#' @param spct an R object of class "generic.spct"
-#' @param w.band a waveband object or a list of waveband objects
-#' @param unit.out character string with allowed values "energy", and "photon", or its alias "quantum"
-#' @param quantity character string
-#' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries are trimmed, if FALSE, they are discarded
-#' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
-#'
-#' @export
-#'
-response <- function(spct, w.band, unit.out, quantity, wb.trim, use.hinges) UseMethod("response")
+# e_response methods --------------------------------------------------------
 
 #' Calculate energy or photon based response from spectral response.
 #'
 #' This function returns the mean, total, or contribution of response for each
 #' waveband and a response spectrum.
 #'
-#' @usage e_response.response.spct(spct, w.band=NULL,
-#'                                 quantity="total",
-#'                                 wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
-#'              use.hinges=getOption("photobiology.use.hinges", default=NULL) )
+#' @usage e_response(spct, w.band, quantity, wb.trim, use.hinges )
 #'
-#' @param spct an object of class response.spct"
+#' @param spct an R object
 #' @param w.band a waveband object or a list of waveband objects
-#' @param quantity character string
-#' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries are trimmed, if FALSE, they are discarded
-#' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
+#' @param quantity character
+#' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries
+#'   are trimmed, if FALSE, they are discarded
+#' @param use.hinges logical indicating whether to use hinges to reduce
+#'   interpolation errors
 #'
-#' @return a single numeric value expressed either as a fraction of one or a percentage, or a
-#' vector of the same length as the list of wave.bands.
+#' @return A single numeric value expressed either as a fraction of one or a
+#'   percentage, or a vector of the same length as the list of wave.bands. The
+#'   quantity returned, although always on energy-based units, depends on the
+#'   value of \code{quantity}.
 #' @keywords manip misc
 #' @export
 #' @examples
@@ -251,35 +229,57 @@ response <- function(spct, w.band, unit.out, quantity, wb.trim, use.hinges) UseM
 #' e_response(Vital_BW_20.spct, new_waveband(200,300))
 #' e_response(Vital_BW_20.spct)
 #'
-#' @note The parameter \code{use.hinges} controls speed optimization. The defaults should be suitable
-#' in mosts cases. Only the range of wavelengths in the wavebands is used and all BSWFs are ignored.
+#' @note The parameter \code{use.hinges} controls speed optimization. The
+#'   defaults should be suitable in mosts cases. Only the range of wavelengths
+#'   in the wavebands is used and all BSWFs are ignored.
+#'
+#' @family response functions
+#'
+e_response <- function(spct, w.band, quantity, wb.trim, use.hinges) UseMethod("e_response")
 
+#' @describeIn e_response Default method for generic function
+#'
+#' @export
+#'
+e_response.default <- function(spct, w.band, quantity, wb.trim, use.hinges) {
+  warning("'e_response' is not defined for objects of class ", class(spct)[1])
+  return(NA)
+}
+
+#' @describeIn e_response Method for response spectra.
+#'
+#' @export
+#'
 e_response.response.spct <-
-  function(spct, w.band=NULL, quantity="total", wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
+  function(spct, w.band=NULL, quantity="total",
+           wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
            use.hinges=getOption("photobiology.use.hinges", default=NULL) ) {
     response_spct(spct=spct, w.band=w.band, unit.out="energy",
                   quantity=quantity, wb.trim=wb.trim,
-                  use.hinges=getOption("photobiology.use.hinges", default=NULL) )
+                  use.hinges=use.hinges )
   }
 
-#' Calculate photon-based photo-response from spectral response.
+# q_response methods --------------------------------------------------------
+
+##' Calculate photon-based photo-response from spectral response.
 #'
 #' This function returns the mean response for a given
 #' waveband and a response spectrum.
 #'
-#' @usage q_response.response.spct(spct, w.band=NULL,
-#'                                 quantity="total",
-#'                                 wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
-#'                                 use.hinges=getOption("photobiology.use.hinges", default=NULL) )
+#' @usage q_response(spct, w.band, quantity, wb.trim, use.hinges )
 #'
-#' @param spct an object of class response.spct"
+#' @param spct an R object
 #' @param w.band a waveband object or a list of waveband objects
-#' @param quantity character string
-#' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries are trimmed, if FALSE, they are discarded
-#' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
+#' @param quantity character
+#' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries
+#'   are trimmed, if FALSE, they are discarded
+#' @param use.hinges logical indicating whether to use hinges to reduce
+#'   interpolation errors
 #'
-#' @return a single numeric value expressed either as a fraction of one or a percentage, or a
-#' vector of the same length as the list of wave.bands.
+#' @return A single numeric value expressed either as a fraction of one or a
+#'   percentage, or a vector of the same length as the list of wave.bands. The
+#'   quantity returned, although always on photon-based units, depends on the
+#'   value of \code{quantity}.
 #' @keywords manip misc
 #' @export
 #' @examples
@@ -287,74 +287,33 @@ e_response.response.spct <-
 #' q_response(Vital_BW_20.spct, new_waveband(200,300)) * 1e-6
 #' q_response(Vital_BW_20.spct) * 1e-6
 #'
-#' @note The parameter \code{use.hinges} controls speed optimization. The defaults should be suitable
-#' in mosts cases. Only the range of wavelengths in the wavebands is used and all BSWFs are ignored.
-
-q_response.response.spct <-
-  function(spct, w.band=NULL, quantity="total", wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
-           use.hinges=getOption("photobiology.use.hinges", default=NULL) ) {
-    response_spct(spct=spct, w.band=w.band, unit.out="photon",
-                  quantity=quantity, wb.trim=wb.trim,
-                  use.hinges=getOption("photobiology.use.hinges", default=NULL) )
-  }
-
-#' Generic function
+#' @note The parameter \code{use.hinges} controls speed optimization. The
+#'   defaults should be suitable in mosts cases. Only the range of wavelengths
+#'   in the wavebands is used and all BSWFs are ignored.
 #'
-#' Calculate average energy-based photo-response.
-#'
-#' @param spct an R object of class "generic.spct"
-#' @param w.band a waveband object or a list of waveband objects
-#' @param quantity character string
-#' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries are trimmed, if FALSE, they are discarded
-#' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
-#'
-#' @export e_response
-#'
-e_response <- function(spct, w.band, quantity, wb.trim, use.hinges) UseMethod("e_response")
-
-#' Generic function
-#'
-#' Calculate average photon-based photo-response.
-#'
-#' @param spct an R object of class "generic.spct"
-#' @param w.band a waveband object or a list of waveband objects
-#' @param quantity character string
-#' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries are trimmed, if FALSE, they are discarded
-#' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
-#'
-#' @export q_response
+#' @family response functions
 #'
 q_response <- function(spct, w.band, quantity, wb.trim, use.hinges) UseMethod("q_response")
 
-#' Default for generic function
+#' @describeIn q_response Default method for generic function
 #'
-#' Calculate average energy-based photo-response.
-#'
-#' @param spct an object of class "generic.spct"
-#' @param w.band a waveband object or a list of waveband objects
-#' @param quantity character string
-#' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries are trimmed, if FALSE, they are discarded
-#' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
-#' @export e_response.default
-#'
-e_response.default <- function(spct, w.band, quantity, wb.trim, use.hinges) {
-  warning("'e_response' is not defined for objects of class ", class(spct)[1])
-  return(NA)
-}
-
-#' Default for generic function
-#'
-#' Calculate average photon-based photo-response.
-#'
-#' @param spct an object of class "generic.spct"
-#' @param w.band a waveband object or a list of waveband objects
-#' @param quantity character string
-#' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries are trimmed, if FALSE, they are discarded
-#' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
-#' @export q_response.default
+#' @export
 #'
 q_response.default <- function(spct, w.band, quantity, wb.trim, use.hinges) {
   warning("'q_response' is not defined for objects of class ", class(spct)[1])
   return(NA)
 }
+
+#' @describeIn q_response Method for response spectra.
+#'
+#' @export
+#'
+q_response.response.spct <-
+  function(spct, w.band=NULL, quantity="total",
+           wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
+           use.hinges=getOption("photobiology.use.hinges", default=NULL) ) {
+    response_spct(spct=spct, w.band=w.band, unit.out="photon",
+                  quantity=quantity, wb.trim=wb.trim,
+                  use.hinges=use.hinges )
+  }
 

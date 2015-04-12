@@ -901,7 +901,7 @@ is.transmittance.based <- function(x) {
 
 # as functions for spct classes --------------------------------------------
 
-#' Functions to create a spectrum by copy.
+#' Return a copy of an R object as an spectrum object
 #'
 #' Return a copy of an R object with its class set to a given type of spectrum.
 #'
@@ -913,9 +913,9 @@ is.transmittance.based <- function(x) {
 #'   class of spectral object, if \code{x} is a valid argument to the
 #'   correcponding set function.
 #'
-#' @method as generic.spct
+#' @export
 #'
-#' @export as.generic.spct
+#' @family creation of spectral objects functions
 #'
 as.generic.spct <- function(x) {
   y <- copy(x)
@@ -939,8 +939,7 @@ as.private.spct <- function(x) {
   setPrivateSpct(y)
 }
 
-#' @describeIn as.generic.spct Copy and convert an R object into a
-#'   \code{source.spct}
+#' @describeIn as.generic.spct Copy and convert an R object into a \code{source.spct}
 #'
 #' @usage as.source.spct(x, time.unit=c("second", "day"), bswf.used=c("none",
 #'   "unknown"), strict.range = FALSE)

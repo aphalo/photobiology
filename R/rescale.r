@@ -1,10 +1,31 @@
+# Rescale methods ---------------------------------------------------------
+
+
 #' Rescale a spectrum.
 #'
-#' This function returns a spectral object of the same class as the one supplied
-#' as argument but with the spectral data rescaled to 1.0 at a .
+#' These functions return a spectral object of the same class as the one supplied
+#' as argument but with the spectral data rescaled.
 #'
-#' @note Note that scales are expanded so as to make space for the annotations.
-#' The object returned is a ggplot objects, and can be further manipulated.
+#' @param x An R object
+#' @param ... not used in current version
+#' @export Rescale
+#' @family rescaling functions
+#'
+Rescale <- function(x, ...) UseMethod("Rescale")
+
+#' @describeIn Rescale Default for generic function
+#'
+#' @export
+#'
+Rescale.default <- function(x, ...) {
+  warning("'Rescale' is not defined for objects of class ", class(spct)[1])
+  return(x)
+}
+
+#' Rescale a spectrum.
+#'
+#' These functions return a spectral object of the same class as the one supplied
+#' as argument but with the spectral data rescaled.
 #'
 #' @usage rescale_spct(spct,
 #'                     range,
@@ -12,11 +33,11 @@
 #'                     f,
 #'                     ...)
 #'
-#' @param spct a generic.spct object
+#' @param spct generic.spct The spectrum to be normalized
 #' @param range an R object on which range() returns a vector of length 2,
 #' with min annd max wavelengths (nm)
-#' @param var.name the name of the variable to Rescale
-#' @param f a summary function to be applied to \code{spct}
+#' @param var.name character The name of the variable to Rescale
+#' @param f function A summary function to be applied to \code{spct}
 #' @param ... other arguments passed to f()
 #'
 #' @return a new object of the same class as \code{spct}.
@@ -58,48 +79,14 @@ rescale_spct <- function(spct, range, var.name, f, ...) {
   out.spct
 }
 
-
-#' Generic function
+#' @describeIn Rescale Rescale a source spectrum.
 #'
-#' Function that returns an object with rescaled data.
-#'
-#' @param x an R object
-#' @param ... not used in current version
-#' @export Rescale
-Rescale <- function(x, ...) UseMethod("Rescale")
-
-#' Default for generic function
-#'
-#' Function that returns an object with rescaled data.
-#'
-#' @param x an R object
-#' @param ... not used in current version
-#' @export Rescale.default
-Rescale.default <- function(x, ...) {
-  warning("'Rescale' is not defined for objects of class ", class(spct)[1])
-  return(x)
-}
-
-#' Rescale a source spectrum.
-#'
-#' This function returns a spectral object of the same class as the one supplied
-#' as argument but with the spectral data rescaled to 1.0 at a given wavelength.
-#'
-#' @usage Rescale(x,
-#'                ...,
-#'                range = range(x),
-#'                f = "mean",
-#'                unit.out = getOption("photobiology.radiation.unit", default="energy"))
-#'
-#' @param x a source.spct object
-#' @param ... not used in current version
-#' @param range an R object on which range() returns a vector of length 2,
-#' with min annd max wavelengths (nm)
-#' @param f numeric normalization wavelength (nm) or character string "mean",
+#' @param range An R object on which \code{range()} returns a numeric vector of
+#'   length 2 with the limits of a range of wavelengths in nm, with min annd max
+#'   wavelengths (nm)
+#' @param f numeric Normalization wavelength (nm) or character string "mean",
 #' or "total" for normalization at the corresponding wavelength.
-#' @param unit.out character string with allowed values "energy", and "photon", or its alias "quantum"
-#'
-#' @return a new object of the same class as \code{x}.
+#' @param unit.out character Alowed values "energy", and "photon", or its alias "quantum"
 #'
 #' @export
 #'
@@ -123,24 +110,7 @@ Rescale.source.spct <- function(x,
   }
 }
 
-#' Rescale a response spectrum.
-#'
-#' This function returns a spectral object of the same class as the one supplied
-#' as argument but with the spectral data rescaled to 1.0 at a given wavelength.
-#'
-#' @usage Rescale(x,
-#'                ...,
-#'                range = range(x),
-#'                f = "mean",
-#'                unit.out = getOption("photobiology.radiation.unit", default="energy"))
-#'
-#' @param x a response.spct object
-#' @param ... not used in current version
-#' @param range an R object on which range() returns a vector of length 2,
-#' with min annd max wavelengths (nm)
-#' @param f numeric normalization wavelength (nm) or character string "mean",
-#' or "total" for normalization at the corresponding wavelngth.
-#' @param unit.out character string with allowed values "energy", and "photon", or its alias "quantum"
+#' @describeIn Rescale Rescale a response spectrum.
 #'
 #' @return a new object of the same class as \code{x}.
 #'
@@ -168,26 +138,9 @@ Rescale.response.spct <- function(x,
   }
 }
 
-#' Rescale a filter spectrum.
+#' @describeIn Rescale Rescale a filter spectrum.
 #'
-#' This function returns a spectral object of the same class as the one supplied
-#' as argument but with the spectral data rescaled to 1.0 at a given wavelength.
-#'
-#' @usage Rescale(x,
-#'                ...,
-#'                range = range(x),
-#'                f = "mean",
-#'                qty.out = getOption("photobiology.filter.qty", default="transmittance"))
-#'
-#' @param x a filter.spct object
-#' @param ... not used in current version
-#' @param range an R object on which range() returns a vector of length 2,
-#' with min annd max wavelengths (nm)
-#' @param f numeric normalization wavelength (nm) or character string "mean",
-#' or "total" for normalization at the corresponding wavelngth.
-#' @param qty.out character string with allowed values "transmittance", and "absorbance"
-#'
-#' @return a new object of the same class as \code{x}.
+#' @param qty.out character Allowed values "transmittance", and "absorbance"
 #'
 #' @export
 #'
@@ -213,26 +166,7 @@ Rescale.filter.spct <- function(x,
   }
 }
 
-#' Rescale a reflector spectrum.
-#'
-#' This function returns a spectral object of the same class as the one supplied
-#' as argument but with the spectral data rescaled to 1.0 at a given wavelength.
-#'
-#' @usage Rescale(x,
-#'                ...,
-#'                range = range(x),
-#'                f = "mean",
-#'                qty.out = NULL)
-#'
-#' @param x a reflector.spct object
-#' @param ... not used in current version
-#' @param range an R object on which range() returns a vector of length 2,
-#' with min annd max wavelengths (nm)
-#' @param f numeric normalization wavelength (nm) or character string "mean",
-#' or "total" for normalization at the corresponding wavelngth.
-#' @param qty.out ignored
-#'
-#' @return a new object of the same class as \code{x}.
+#' @describeIn Rescale Rescale a reflector spectrum.
 #'
 #' @export
 #'
@@ -248,16 +182,23 @@ Rescale.reflector.spct <- function(x,
                       ...))
 }
 
+# is.rescaled function ----------------------------------------------------
+
 #' Query whether a generic spectrum has been rescaled.
 #'
-#' This function returns TRUE if x is a generic.spct and it has been rescaled
-#' by means of function \code{Rescale}.
+#' This function tests a \code{generic.spct} object for an attribute that
+#' signals whether the spectral data has been rescled or not after the object
+#' was created.
 #'
 #' @usage is.rescaled(x)
 #'
-#' @param x a generic.spct object
+#' @param x An R object.
+#'
+#' @return A \code{logical} value. If \code{x} is not rescaled or \code{x} is
+#'   not a \code{generic.spct} object the value returned is \code{FALSE}.
 #'
 #' @export
+#' @family rescaling functions
 #'
 is.rescaled <- function(x) {
   if (!is.any.spct(x)) {
