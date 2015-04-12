@@ -53,10 +53,15 @@ setkey_spct <- function (x, ..., verbose = getOption("datatable.verbose"), physi
 #'
 #' Check that an R object contains the expected data members.
 #'
+#' @usage check(x, byref, strict.range)
+#'
 #' @param x An R object
 #' @param byref logical indicating if new object will be created by reference or by copy of \code{x}
 #' @param strict.range logical indicating whether off-range values result in an error instead of a warning
 #' @export
+#'
+#' @family data validity check functions
+#'
 check <- function(x, byref, strict.range) UseMethod("check")
 
 #' @describeIn check Default for generic function.
@@ -1175,17 +1180,8 @@ getBSWFUsed <- function(x) {
   }
 }
 
-#' Query if  an "source.spct" object contain effective spectral irradiance values.
-#'
-#' A function that returns \code{TRUE} if the spectral data has been convoluted
-#' with a BSWF to weight it.
-#'
-#' @param x an object of class "source.spct"
-#' @export is.effective.source.spct
-is.effective.source.spct <- function(x) {
-  bswf.used <- getBSWFUsed(x)
-  return( !is.null(bswf.used) && (bswf.used != "none") )
-}
+# is.effective.source.spct defined in file "waveband.class.r" to avoid the need
+# of using colate to get the documentation in the correct order.
 
 # Tfr.type attribute ------------------------------------------------------
 

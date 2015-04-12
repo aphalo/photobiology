@@ -10,7 +10,8 @@
 #'   use.hinges, allow.scaled)
 #'
 #' @param spct an R object
-#' @param w.band a list of \code{waveband} objects or a \code{waveband} object
+#' @param w.band waveband or list of waveband objects The waveband(s) determine
+#'   the region(s) of the spectrum that are summarized.
 #' @param unit.out character string with allowed values "energy", and "photon",
 #'   or its alias "quantum"
 #' @param quantity character string

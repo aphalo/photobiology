@@ -1,36 +1,35 @@
-#' Generic function
+#' Remove tags from a spectrum.
 #'
-#' Remove tags from an R object containing the expected data members.
+#' Remove tags from an R object if present, otherwise return the object
+#' unchanged.
 #'
 #' @param x an R object
 #' @param ... not used in current version
 #' @export untag
+#'
+#' @family tagging and related functions
+#'
 untag <- function(x, ...) UseMethod("untag")
 
-#' Default for generic function
+#' @describeIn untag Default for generic function
 #'
-#' Remove tags from an R object containing the expected data members.
+#' @export
 #'
-#' @param x an R object
-#' @param ... not used in current version
-#' @export untag.default
 untag.default <- function(x, ...) {
   return(x)
 }
 
-#' Specialization for generic.spct
+#' @describeIn untag Specialization for generic.spct
 #'
-#' Remove tags from a generic.spct object.
+#' @param byref logical indicating if new object will be created by reference or
+#'   by copy of x
 #'
-#' @param x a generic.spct object
-#' @param byref logical indicating if new object will be created by reference or by copy of x
-#' @param ... not used in current version
+#' @return if \code{x} contains tag data they are removed and the "spct.tags"
+#'   atrribute is set to \code{NA}, while if \code{x} has no tags, it is not
+#'   modified. In either case, the byref argument is respected: in all cases if
+#'   \code{byref=FALSE} a copy of \code{x} is returned.
 #'
-#' @return if \code{x} contains tag data they are removed and the "spct.tags" atrribute is set to \code{NA},
-#' while if \code{x} has no tags, it is not modified. In either case, the byref argument is respected:
-#' in all cases if \code{byref=FALSE} a copy of \code{x} is returned.
-#'
-#' @export untag.generic.spct
+#' @export
 #'
 untag.generic.spct <- function(x,
                                byref=TRUE, ...) {

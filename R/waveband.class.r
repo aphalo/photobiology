@@ -9,6 +9,8 @@
 #'
 #' @export
 #'
+#' @family waveband attributes
+#'
 labels.waveband <- function(object, ...) {
   return(list(label = object$label, name = object$name))
 }
@@ -22,6 +24,8 @@ labels.waveband <- function(object, ...) {
 #' @param ... not used in current version
 #' @param na.rm ignored
 #' @export
+#'
+#' @family wavelength summaries
 #'
 range.waveband <- function(..., na.rm = FALSE) {
   x <- c(...)
@@ -37,6 +41,8 @@ range.waveband <- function(..., na.rm = FALSE) {
 #' @param ... not used in current version
 #' @param na.rm ignored
 #' @export
+#'
+#' @family wavelength summaries
 #'
 min.waveband <- function(..., na.rm = FALSE) {
   x <- c(...)
@@ -64,27 +70,32 @@ max.waveband <- function(..., na.rm = FALSE) {
 #'
 #' A function that returns the wavelength at the center of the wavelength range.
 #'
+#' @usage midpoint(x)
+#'
 #' @param x an R object
 #' @export midpoint
+#'
+#' @return A numeric value equal to (max(x) - min(x)) / 2. In the case of spectral
+#' objects a wavelength in nm. For any other R object, according to available
+#' definitions of \code{\link{min}} and \code{\link{max}}.
+#'
+#' @family wavelength summaries
+#'
 midpoint <- function(x) UseMethod("midpoint")
 
-#' Default for generic function
+#' @describeIn midpoint Default method for generic function
 #'
-#' A function that returns the wavelength at the center of the wavelength range.
+#' @export
 #'
-#' @param x an R object
-#' @export midpoint.default
+#' @family wavelength summaries
+#'
 midpoint.default <- function(x) {
   return(min(x) + (max(x) - min(x)) / 2)
 }
 
-#' Wavelength at center of a "waveband" object.
+#' @describeIn midpoint Wavelength at center of a "waveband" object.
 #'
-#' A function that returns the wavelength at the center of the wavelength range of
-#' objects of class "waveband".
-#'
-#' @param x an object of class "waveband"
-#' @export midpoint.waveband
+#' @export
 #'
 midpoint.waveband <- function(x) {
   return(x$low + (x$high - x$low) / 2)
@@ -96,26 +107,28 @@ midpoint.waveband <- function(x) {
 #'
 #' A function that returns the spread (max(x) - min(x)) for R objects.
 #'
+#' @usage spread(x)
+#'
 #' @param x an R object
+#'
+#' @return A numeric value equal to max(x) - min(x). In the case of spectral
+#'   objects wavelength difference in nm. For any other R object, according to
+#'   available definitions of \code{\link{min}} and \code{\link{max}}.
+#'
 #' @export spread
+#'
 spread <- function(x) UseMethod("spread")
 
-#' Default for generic function
+#' @describeIn spread Default method for generic function
 #'
-#' A function that returns the spread (max(x) - min(x)) for objects.
-#'
-#' @param x an R object
-#' @export spread.default
+#' @export
 #'
 spread.default <- function(x) {
   return(max(x) - min(x))
 }
 
-#' Wavelength spread (max-min) of a "waveband" object.
+#' @describeIn spread Wavelength spread in nm.
 #'
-#' A function that returns the wavelength spread from objects of class "waveband".
-#'
-#' @param x an object of class "waveband"
 #' @export
 #'
 spread.waveband <- function(x) {
@@ -134,26 +147,20 @@ spread.waveband <- function(x) {
 #'
 color <- function(x, ...) UseMethod("color")
 
-#' Default of function that returns Color of an object.
+#' @describeIn color Default method (returns always "black").
 #'
-#' A function that returns the equivalent RGB color of an object.
-#'
-#' @param x an R object
-#' @param ... not used in current version
-#' @export color.default
+#' @export
 #'
 color.default <- function(x, ...) {
   return(rep("#000000", length(x)))
 }
 
-#' Default of function that returns Color of a numer (wavelength in nm).
+#' @describeIn color Method that returns Color definitions corresponding to
+#'   numeric values representing a wavelengths in nm.
 #'
-#' A function that returns the equivalent RGB color of a wavelength.
-#'
-#' @param x a numeric object
 #' @param type character telling whether "CMF", "CC", or "both" should be returned.
-#' @param ... not used in current version
-#' @export color.numeric
+#'
+#' @export
 #'
 color.numeric <- function(x, type="CMF", ...) {
   if (type=="CMF") {
@@ -169,15 +176,15 @@ color.numeric <- function(x, type="CMF", ...) {
   return(color.out)
 }
 
-#' Default of function that returns Color of elements in a list.
+#' @describeIn color Method that returns Color of elements in a list.
 #'
-#' A function that returns the equivalent RGB color of elements in a list.
+#' @param short.names logical indicating whether to use short or long names for
+#'   wavebands
 #'
-#' @param x an R list object
-#' @param short.names logical indicating whether to use short or long names for wavebands
-#' @param type character telling whether "CMF", "CC", or "both" should be returned.
-#' @param ... not used in current version
-#' @export color.list
+#' @note When \code{x} is a list but not a waveband, if a method  \code{color}
+#'   is not available for the class of each element of the list, then
+#'   \code{color.default} will be called.
+#' @export
 #'
 color.list <- function(x, short.names=TRUE, type="CMF", ...) {
   color.out <- numeric(0)
@@ -190,15 +197,9 @@ color.list <- function(x, short.names=TRUE, type="CMF", ...) {
   return(color.out)
 }
 
-#' Color at center of a "waveband" object.
+#' @describeIn color Color at midpoint of a \code{\link{waveband}} object.
 #'
-#' A function that returns the equivalent RGB colour of an object of class "waveband".
-#'
-#' @param x an object of class "waveband"
-#' @param short.names logical indicating whether to use short or long names for wavebands
-#' @param type character telling whether "CMF", "CC", or "both" should be returned.
-#' @param ... not used in current version
-#' @export color.waveband
+#' @export
 #'
 color.waveband <- function(x, short.names=TRUE, type="both", ...) {
   idx <- ifelse(!short.names, "name", "label")
@@ -224,27 +225,23 @@ color.waveband <- function(x, short.names=TRUE, type="both", ...) {
 #' A generic function that returns the normalization of an R object.
 #'
 #' @param x an R object
-#' @export normalization.default
+#' @export normalization
+#'
+#' @family waveband attributes
 #'
 normalization <- function(x) UseMethod("normalization")
 
-#' Normalization of an R object.
+#' @describeIn normalization Default methods.
 #'
-#' A generic function that returns the normalization of an R object.
-#'
-#' @param x an R object
-#' @export normalization
+#' @export
 #'
 normalization.default <- function(x) {
   return(NA)
 }
 
-#' Normalization of a "waveband" object.
+#' @describeIn normalization Normalization of a \code{\link{waveband}} object.
 #'
-#' A function that returns the normalization wavelength of a waveband object.
-#'
-#' @param x an object of class "waveband"
-#' @export normalization.waveband
+#' @export
 #'
 normalization.waveband <- function(x) {
   return(ifelse(is.null(x$norm), NA, x$norm))
@@ -254,34 +251,43 @@ normalization.waveband <- function(x) {
 
 #' Is an R object "effective".
 #'
-#' A generic function that returns the normalization of an R object.
+#' A generic function for quering if a biological spectral weighting function
+#' (BSWF) has been applied to an object or is included in its definition.
 #'
 #' @param x an R object
-#' @export is.effective is.effective
-#' @aliases is.effective is.effective
+#'
+#' @return A \code{logical}.
+#'
+#' @export is.effective
+#'
+#' @family waveband attributes
 #'
 is.effective <- function(x) UseMethod("is.effective")
 
-is.effective <- is.effective
-
-#' Is an R object "effective".
+#' @describeIn is.effective Default method.
 #'
-#' A generic function that returns the normalization of an R object.
-#'
-#' @param x an R object
-#' @export is.effective.default
+#' @export
 #'
 is.effective.default <- function(x) {
   return(NA)
 }
 
-#' Is a "waveband" object defining an effective irradiance.
+#' @describeIn is.effective Is a \code{waveband} object defining a method for
+#'   calcualtaing effective irradiance.
 #'
-#' A function that returns true if it is a BSWF.
-#'
-#' @param x an object of class "waveband"
-#' @export is.effective.waveband
+#' @export
 #'
 is.effective.waveband <- function(x) {
   return(x$weight != "none")
 }
+
+#' @describeIn is.effective Does a \code{source.spct} object contain effective spectral irradiance values.
+#'
+#' @export
+#'
+is.effective.source.spct <- function(x) {
+  bswf.used <- getBSWFUsed(x)
+  return( !is.null(bswf.used) && (bswf.used != "none") )
+}
+
+

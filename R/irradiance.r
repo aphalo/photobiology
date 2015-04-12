@@ -1,37 +1,51 @@
 #' Calculate photon (quantum) irradiance from spectral (energy) irradiance.
 #'
-#' This function gives the energy irradiance for a given
-#' waveband of a radiation spectrum.
+#' This function gives the energy irradiance for a given waveband of a radiation
+#' spectrum.
 #'
-#' @usage irradiance(w.length, s.irrad, w.band=NULL, unit.out=NULL, unit.in="energy",
-#'                   check.spectrum=TRUE, use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
-#'                   use.hinges=getOption("photobiology.use.hinges", default=NULL) )
+#' @usage irradiance(w.length, s.irrad, w.band=NULL, unit.out=NULL,
+#'   unit.in="energy", check.spectrum=TRUE, use.cached.mult =
+#'   getOption("photobiology.use.cached.mult", default = FALSE),
+#'   use.hinges=getOption("photobiology.use.hinges", default=NULL) )
 #'
-#' @param w.length numeric array of wavelength (nm)
-#' @param s.irrad numeric array of spectral (energy) irradiances (W m-2 nm-1)
-#' @param w.band list of waveband definitions created with new_waveband()
-#' @param unit.out character string with allowed values "energy", and "photon", or its alias "quantum"
-#' @param unit.in character string with allowed values "energy", and "photon", or its alias "quantum"
-#' @param check.spectrum logical indicating whether to sanity check input data, default is TRUE
-#' @param use.cached.mult logical indicating whether multiplier values should be cached between calls
-#' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
+#' @param w.length numeric Vector of wavelength (nm)
+#' @param s.irrad numeric Corresponding vector of spectral (energy) irradiances
+#'   (W m-2 nm-1)
+#' @param w.band waveband or list of waveband objects The waveband(s) determine
+#'   the region(s) of the spectrum that are summarized.
+#' @param unit.out character Allowed values "energy", and "photon", or its alias
+#'   "quantum"
+#' @param unit.in character Allowed values "energy", and "photon", or its alias
+#'   "quantum"
+#' @param check.spectrum logical Flag indicating whether to sanity check input
+#'   data, default is TRUE
+#' @param use.cached.mult logical Flag indicating whether multiplier values
+#'   should be cached between calls
+#' @param use.hinges logical Flag indicating whether to use hinges to reduce
+#'   interpolation errors
 #'
-#' @return a single numeric value with no change in scale factor: [W m-2 nm-1] -> [mol s-1 m-2]
+#' @return a single numeric value with no change in scale factor: [W m-2 nm-1]
+#'   -> [mol s-1 m-2]
 #' @keywords manip misc
 #' @export
 #' @examples
 #' data(sun.data)
 #' with(sun.data, irradiance(w.length, s.e.irrad, new_waveband(400,700), "photon"))
-#' @note The last three parameters control speed optimizations. The defaults should be suitable
-#' in mosts cases. If you set \code{check.spectrum=FALSE} then you should call \code{check_spectrum()}
-#' at least once for your spectrum before using any of the other functions. If you will use repeatedly
-#' the same SWFs on many spectra measured at exactly the same wavelengths you may obtain some speed up
-#' by setting \code{use.cached.mult=TRUE}. However, be aware that you are responsible for ensuring
-#' that the wavelengths are the same in each call, as the only test done is for the length of the
-#' \code{w.length} vector. The is no reason for setting \code{use.cpp.code=FALSE} other than for
-#' testing the improvement in speed, or in cases where there is no suitable C++ compiler for building
-#' the package.
-
+#' @note The last three parameters control speed optimizations. The defaults
+#'   should be suitable in mosts cases. If you set \code{check.spectrum=FALSE}
+#'   then you should call \code{check_spectrum()} at least once for your
+#'   spectrum before using any of the other functions. If you will use
+#'   repeatedly the same SWFs on many spectra measured at exactly the same
+#'   wavelengths you may obtain some speed up by setting
+#'   \code{use.cached.mult=TRUE}. However, be aware that you are responsible for
+#'   ensuring that the wavelengths are the same in each call, as the only test
+#'   done is for the length of the \code{w.length} vector. The is no reason for
+#'   setting \code{use.cpp.code=FALSE} other than for testing the improvement in
+#'   speed, or in cases where there is no suitable C++ compiler for building the
+#'   package.
+#'
+#' @family irradiance functions
+#'
 irradiance <-
   function(w.length, s.irrad, w.band=NULL, unit.out=NULL, unit.in="energy",
            check.spectrum=TRUE, use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),

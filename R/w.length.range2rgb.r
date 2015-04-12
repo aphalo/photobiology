@@ -2,13 +2,13 @@
 #'
 #' Calculates rgb values from spectra based on human color matching functions
 #'
-#' @usage w_length_range2rgb(w.length, sens=ciexyzCMF2.spct, color.name=NULL)
+#' @usage w_length_range2rgb(w.length, sens = ciexyzCMF2.spct, color.name = NULL)
 #'
-#' @param w.length numeric array of wavelengths (nm) of length 2. If longer, its range is used.
-#' @param sens a chroma.spct object with variables w.length, x, y, and z, giving the chromaticity definition
-#' @param color.name character string for naming the rgb color definition
+#' @param w.length numeric Vector of wavelengths (nm) of length 2. If longer, its range is used.
+#' @param sens chroma.spct Used as the chromaticity definition
+#' @param color.name character Used for naming the rgb color definition
 #'
-#' @return An atrray of colors defined using \code{rgb()}. The numeric values of the RGB components can be obtained
+#' @return A vector of colors defined using \code{rgb()}. The numeric values of the RGB components can be obtained
 #' using function \code{col2rgb()}.
 #'
 #' @export
@@ -16,8 +16,9 @@
 #' col2rgb(w_length_range2rgb(c(500,600)))
 #' col2rgb(w_length_range2rgb(550))
 #' col2rgb(w_length_range2rgb(500:600))
-#' @author Pedro J. Aphalo
-
+#'
+#' @family color functions
+#'
 w_length_range2rgb <- function(w.length, sens=ciexyzCMF2.spct, color.name=NULL) {
   if (is.null(w.length) || !is.numeric(w.length)) {
     warning("Bad wlength input, must be numeric")

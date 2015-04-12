@@ -1,31 +1,85 @@
-#' Calculate absorptance from spectral absorptance.
+#' Calculate summary absorptance from spectral data.
 #'
-#' This function returns the mean absorptance for a given
-#' waveband of a absorptance spectrum.
+#' Function to calculate the mean, total, or other summary of absorptance for
+#' spectral data stored in a \code{filter.spct} or in an \code{object.spct}.
+#' Absorptance is a different quantity than absorbance.
 #'
-#' @usage absorptance_spct(spct, w.band=NULL, quantity="average",
-#'                         wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
-#'                         use.hinges=getOption("photobiology.use.hinges", default=NULL) )
-#' @usage absorptance(spct, w.band=NULL, quantity="average",
-#'                    wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
-#'                    use.hinges=getOption("photobiology.use.hinges", default=NULL) )
+#' @usage absorptance(spct, w.band, quantity, wb.trim, use.hinges)
 #'
-#' @param spct an object of class "object.spct"
-#' @param w.band list of waveband definitions created with new_waveband()
-#' @param quantity character string
-#' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries are trimmed, if FALSE, they are discarded
-#' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
+#' @param spct an R object
+#' @param w.band waveband or list of waveband objects The waveband(s) determine
+#'   the region(s) of the spectrum that are summarized.
+#' @param quantity character
+#' @param wb.trim logical Flag if wavebands crossing spectral data boundaries
+#'   are trimmed or ignored
+#' @param use.hinges logical Flag indicating whether to use hinges to reduce
+#'   interpolation errors
 #'
-#' @return a single numeric value with no change in scale factor: AU (absorptance units, using log10)
-#' @keywords manip misc
-#' @export absorptance_spct absorptance.object.spct
+#' @note The \code{use.hinges} parameter controls speed optimization. The
+#'   defaults should be suitable in most cases. Only the range of wavelengths
+#'   in the wavebands is used and all BSWFs are ignored.
+#'
+#' @return A single numeric value with no change in scale factor, except in the
+#' case of percentages (absorptance is the fraction absorbed)
+#'
 #' @examples
 #' library(photobiologyFilters)
 #' absorptance(polyester.new.spct, new_waveband(400,700))
 #'
-#' @note The last parameter controls speed optimization. The defaults should be suitable
-#' in mosts cases. Only the range of wavelengths in the wavebands is used and all BSWFs are ignored.
+#' @export
+#'
+absorptance <- function(spct, w.band, quantity, wb.trim, use.hinges) UseMethod("absorptance")
 
+#' @describeIn absorptance Default for generic function
+#'
+#' @export
+#'
+absorptance.default <- function(spct, w.band, quantity, wb.trim, use.hinges) {
+  warning("'absorptance' is not defined for objects of class ", class(spct)[1])
+  return(NA)
+}
+
+#' @describeIn absorptance Specialization for object spectra
+#'
+#' @export
+#'
+absorptance.object.spct <-
+  function(spct, w.band=NULL, quantity="average",
+           wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
+           use.hinges=getOption("photobiology.use.hinges", default=NULL) )  {
+    absorptance_spct(spct = spct, w.band = w.band, quantity = quantity,
+                     wb.trim = wb.trim, use.hinges = use.hinges)
+  }
+
+#' @describeIn absorptance Specialization for filter spectra
+#'
+#' @export
+#'
+absorbance.filter.spct <-
+  function(spct, w.band=NULL, quantity="average",
+           wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
+           use.hinges=getOption("photobiology.use.hinges", default=NULL) ) {
+    spct <- as.object.spct(spct)
+    absorbance_spct(spct, w.band = w.band, quantity = quantity,
+                    wb.trim = wb.trim, use.hinges = use.hinges)
+  }
+
+#' Calculate absorptance from spectral absorptance.
+#'
+#' This function returns the summary absorptance for a given
+#' waveband of a \code{object.spct} object
+#'
+#' @usage absorptance_spct(spct, w.band, quantity, wb.trim, use.hinges)
+#'
+#' @param spct object.spct
+#' @param w.band waveband or list of waveband objects The wavebands determine
+#'   the region(s) of the spectrum that are summarized.
+#' @param quantity character string
+#' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries are trimmed, if FALSE, they are discarded
+#' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
+#'
+#' @keywords internal
+#'
 absorptance_spct <-
   function(spct, w.band=NULL, quantity="average",
            wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
@@ -148,45 +202,3 @@ absorptance_spct <-
     return(absorptance)
   }
 
-#' Generic function
-#'
-#' Calculate average absorptance.
-#'
-#' @param spct an object of class "generic.spct"
-#' @param w.band list of waveband definitions created with new_waveband()
-#' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries are trimmed, if FALSE, they are discarded
-#' @param quantity character string
-#' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
-#'
-#' @export absorptance
-#'
-absorptance <- function(spct, w.band, quantity, wb.trim, use.hinges) UseMethod("absorptance")
-
-#' Default for generic function
-#'
-#' Calculate average absorptance.
-#'
-#' @param spct an object of class "generic.spct"
-#' @param w.band list of waveband definitions created with new_waveband()
-#' @param quantity character string
-#' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries are trimmed, if FALSE, they are discarded
-#' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
-#' @export absorptance.default
-#'
-absorptance.default <- function(spct, w.band, quantity, wb.trim, use.hinges) {
-  warning("'absorptance' is not defined for objects of class ", class(spct)[1])
-  return(NA)
-}
-
-#' Specialization for object.spct
-#'
-#' Calculate average absorptance
-#'
-#' @param spct an object of class "object.spct"
-#' @param w.band list of waveband definitions created with new_waveband()
-#' @param quantity character string
-#' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries are trimmed, if FALSE, they are discarded
-#' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
-#' @export absorptance.object.spct
-#'
-absorptance.object.spct <- absorptance_spct

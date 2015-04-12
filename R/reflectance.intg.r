@@ -1,34 +1,96 @@
+#' Calculate summary reflectance from spectral data.
+#'
+#' Function to calculate the mean, total, or other summary of reflectance for
+#' spectral data stored in a \code{reflector.spct} or in an \code{object.spct}.
+#'
+#' @usage reflectance(spct, w.band, quantity, wb.trim, use.hinges)
+#'
+#' @param spct an R object
+#' @param w.band waveband or list of waveband objects The waveband(s) determine
+#'   the region(s) of the spectrum that are summarized.
+#' @param pc.out logical Flag for output as percent
+#' @param quantity character
+#' @param wb.trim logical Flag telling if wavebands crossing spectral data boundaries
+#'   are trimmed or ignored
+#' @param use.hinges logical Flag indicating whether to use hinges to reduce
+#'   interpolation errors
+#'
+#' @note The \code{use.hinges} parameter controls speed optimization. The
+#'   defaults should be suitable in most cases. Only the range of wavelengths
+#'   in the wavebands is used and all BSWFs are ignored.
+#'
+#' @return A single numeric value with no change in scale factor, except in the
+#' case of percentages (reflectance is the fraction reflected)
+#'
+#' @examples
+#' library(photobiologyReflectors)
+#' reflectance(gold.spct, new_waveband(400,700), pc.out=TRUE)
+#' reflectance(gold.spct, new_waveband(400,700), pc.out=FALSE)
+#'
+#' @export
+#'
+reflectance <- function(spct, w.band, pc.out, quantity, wb.trim, use.hinges) UseMethod("reflectance")
+
+#' @describeIn reflectance Default for generic function
+#'
+#' @export
+#'
+reflectance.default <- function(spct, w.band, pc.out, quantity, wb.trim, use.hinges) {
+  warning("'reflectance' is not defined for objects of class ", class(spct)[1])
+  return(NA)
+}
+
+#' @describeIn reflectance Specialization for reflector.spct
+#'
+#' @export
+#'
+reflectance.reflector.spct <-
+  function(spct, w.band = NULL, pc.out = FALSE, quantity = "average",
+           wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
+           use.hinges=getOption("photobiology.use.hinges", default=NULL) ) {
+    reflectance_spct(spct = spct, w.band = w.band,
+                     pc.out = pc.out, quantity = quantity,
+                     wb.trim = wb.trim,
+                     use.hinges = use.hinges)
+  }
+
+#' @describeIn reflectance Specialization for object.spct
+#'
+#' @export
+#'
+reflectance.object.spct <-
+  function(spct, w.band = NULL, pc.out = FALSE, quantity = "average",
+           wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
+           use.hinges=getOption("photobiology.use.hinges", default=NULL) ) {
+    reflectance_spct(spct = spct, w.band = w.band,
+                     pc.out = pc.out, quantity = quantity,
+                     wb.trim = wb.trim,
+                     use.hinges = use.hinges)
+  }
+
 #' Calculate reflectance from spectral reflectance.
 #'
-#' This function returns the mean reflectance for a given
-#' waveband and a reflectance spectrum.
+#' This function returns the mean reflectance for a given waveband and a
+#' reflectance spectrum.
 #'
-#' @usage reflectance_spct(spct, w.band=NULL, pc.out=FALSE,
-#'                         quantity="average", wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
-#'                         use.hinges=getOption("photobiology.use.hinges", default=NULL) )
+#' @usage reflectance_spct(spct, w.band, pc.out, quantity, wb.trim, use.hinges)
 #'
 #' @param spct an object of class generic.spct"
 #' @param w.band list of waveband definitions created with new_waveband()
-#' @param pc.out a logical indicating whether result should be a percentage or a fraction of one
+#' @param pc.out a logical indicating whether result should be a percentage or a
+#'   fraction of one
 #' @param quantity character string
-#' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries are trimmed, if FALSE, they are discarded
-#' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
+#' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries
+#'   are trimmed, if FALSE, they are discarded
+#' @param use.hinges logical indicating whether to use hinges to reduce
+#'   interpolation errors
 #'
-#' @return a single numeric value expressed either as a fraction of one or a percentage
-#' @keywords manip misc
-#' @export
-#' @examples
-#' # library(photobiologyReflectors)
-#' # reflectance(glass_refl.spct, new_waveband(400,700), pc.out=TRUE)
-#' # reflectance(glass_refl.spct, new_waveband(400,700), pc.out=FALSE)
+#' @return A single numeric value expressed either as a fraction of one or a
+#'   percentage
+#' @keywords internal
 #'
-#' @note The last parameter controls speed optimization. The defaults should be suitable
-#' in mosts cases. Only the range of wavelengths in the wavebands is used and all BSWFs are ignored.
-
 reflectance_spct <-
-  function(spct, w.band=NULL, pc.out=FALSE, quantity="average",
-           wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
-           use.hinges=getOption("photobiology.use.hinges", default=NULL) ){
+  function(spct, w.band, pc.out, quantity, wb.trim, use.hinges){
     Rfr.type <- getRfrType(spct)
     if (is.object.spct(spct)) {
       spct <- as.reflector.spct(spct)
@@ -139,62 +201,3 @@ reflectance_spct <-
   }
 
 
-#' Generic function
-#'
-#' Calculate average reflectance.
-#'
-#' @param spct an object of class "generic.spct"
-#' @param w.band list of waveband definitions created with new_waveband()
-#' @param pc.out a logical indicating whether result should be a percentage or a fraction of one
-#' @param quantity character string
-#' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries are trimmed, if FALSE, they are discarded
-#' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
-#'
-#' @export reflectance
-#'
-reflectance <- function(spct, w.band, pc.out, quantity, wb.trim, use.hinges) UseMethod("reflectance")
-
-#' Default for generic function
-#'
-#' Calculate average reflectance.
-#'
-#' @param spct an object of class "generic.spct"
-#' @param w.band list of waveband definitions created with new_waveband()
-#' @param pc.out a logical indicating whether result should be a percentage or a fraction of one
-#' @param quantity character string
-#' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries are trimmed, if FALSE, they are discarded
-#' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
-#' @export reflectance.default
-#'
-reflectance.default <- function(spct, w.band, pc.out, quantity, wb.trim, use.hinges) {
-  warning("'reflectance' is not defined for objects of class ", class(spct)[1])
-  return(NA)
-}
-
-#' Specialization for reflector.spct
-#'
-#' Calculate average reflectance.
-#'
-#' @param spct an object of class "reflector.spct"
-#' @param w.band list of waveband definitions created with new_waveband()
-#' @param pc.out a logical indicating whether result should be a percentage or a fraction of one
-#' @param quantity character string
-#' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries are trimmed, if FALSE, they are discarded
-#' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
-#' @export reflectance.reflector.spct
-#'
-reflectance.reflector.spct <- reflectance_spct
-
-#' Specialization for object.spct
-#'
-#' Calculate average reflectance.
-#'
-#' @param spct an object of class "object.spct"
-#' @param w.band list of waveband definitions created with new_waveband()
-#' @param pc.out a logical indicating whether result should be a percentage or a fraction of one
-#' @param quantity character string
-#' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries are trimmed, if FALSE, they are discarded
-#' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
-#' @export reflectance.object.spct
-#'
-reflectance.object.spct <- reflectance_spct

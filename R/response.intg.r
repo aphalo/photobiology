@@ -8,12 +8,13 @@
 #' @usage response(spct, w.band, unit.out, quantity, wb.trim, use.hinges )
 #'
 #' @param spct an R object of class "generic.spct"
-#' @param w.band A waveband object or a list of waveband objects
+#' @param w.band waveband or list of waveband objects The waveband(s) determine
+#'   the region(s) of the spectrum that are summarized
 #' @param unit.out character Allowed values "energy", and "photon", or its alias
 #'   "quantum"
 #' @param quantity character Allowed values ""
-#' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries
-#'   are trimmed, if FALSE, they are discarded
+#' @param wb.trim logical Flag telling if wavebands crossing spectral data boundaries
+#'   are trimmed or ignored
 #' @param use.hinges logical indicating whether to use hinges to reduce
 #'   interpolation errors
 #'
