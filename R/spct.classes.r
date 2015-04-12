@@ -7,7 +7,7 @@
 #'
 #' @export
 #'
-#' @return a character vector of class names
+#' @return A \code{character} vector of class names
 #'
 spct.classes <- function() {
   c("generic.spct", "private.spct",
@@ -19,17 +19,18 @@ spct.classes <- function() {
 
 # conditional setkey ------------------------------------------------------
 
-#' Stolen from data.table except that test added so that if the same key is
-#' already set setkeyv is not called.
+#' Set the sorting key(s) of Stolen from data.table except that test added so
+#' that if the same key is already set setkeyv is not called.
 #'
-#' @usage setkey_spct(x, ..., verbose = getOption("datatable.verbose"), physical = TRUE)
+#' @usage setkey_spct(x, ..., verbose = getOption("datatable.verbose"), physical
+#'   = TRUE)
 #'
 #' @param x spct object
 #' @param ... columns
 #' @param verbose logical
 #' @param physical logical
 #'
-#' @note \code{\link[data.table]{setkey}}
+#' @seealso \code{\link[data.table]{setkey}}
 #'
 #' @keywords internal
 #'
@@ -56,8 +57,10 @@ setkey_spct <- function (x, ..., verbose = getOption("datatable.verbose"), physi
 #' @usage check(x, byref, strict.range)
 #'
 #' @param x An R object
-#' @param byref logical indicating if new object will be created by reference or by copy of \code{x}
-#' @param strict.range logical indicating whether off-range values result in an error instead of a warning
+#' @param byref logical indicating if new object will be created by reference or
+#'   by copy of \code{x}
+#' @param strict.range logical indicating whether off-range values result in an
+#'   error instead of a warning
 #' @export
 #'
 #' @family data validity check functions
@@ -375,10 +378,13 @@ check.chroma.spct <- function(x, byref=TRUE, strict.range=TRUE) {
 
 # set class ---------------------------------------------------------------
 
-#' Remove generic.spct and derived xxx.spct class attributes from a spectrum object.
+#' Remove generic.spct and derived xxx.spct class attributes from a spectrum
+#' object.
 #'
-#' Removes from the class attibute of a xxxx.spct atributes.
+#' Removes from the class attibute of a generic.spct object any derived spectral
+#' classes found.
 #'
+#' @usage rmDerivedSpct(x)
 #' @param x An R object.
 #' @export
 #'
@@ -394,16 +400,18 @@ rmDerivedSpct <- function(x) {
   invisible(x)
 }
 
-#' Set class of a data.frame or data.table object to generic.spct.
+#' Set class of an object to "generic.spct".
 #'
-#' Sets the class attibute of a data.frame or data.table object to "generic.spct" an object to store spectra.
-#' If the object is a data.frame is is made a data.table in the process.
+#' Sets the class attibute of a data.frame or data.table or a different spectral
+#' object to "generic.spct". If the object is a data.frame is is made a
+#' data.table in the process.
 #'
 #' @param x a data.frame or data.table
 #' @export setGenericSpct setGenSpct
 #' @exportClass generic.spct
 #' @aliases setGenericSpct setGenSpct
 #' @family setSpct functions
+#'
 setGenSpct <- function(x) {
   name <- substitute(x)
   rmDerivedSpct(x)
@@ -425,14 +433,16 @@ setGenSpct <- function(x) {
 
 setGenericSpct <- setGenSpct
 
-#' set class of a data.frame or data.table object to "private.spct".
+#' set class of an object to "private.spct".
 #'
-#' Sets the class attibute of a data.frame or data.table object to "generic.spct" an object to store spectra.
-#' If the object is a data.frame is is made a data.table in the process.
+#' Sets the class attibute of a data.frame or data.table or a different spectral
+#' object  to "private.spct". If the object is a data.frame is is made a
+#' data.table in the process.
 #'
-#' @param x a data.frame or data.table
+#' @param x data.frame or data.table
 #' @family setSpct functions
 #' @keywords internal
+#'
 setPrivateSpct <- function(x) {
   name <- substitute(x)
   rmDerivedSpct(x)
@@ -455,15 +465,16 @@ setPrivateSpct <- function(x) {
   invisible(x)
 }
 
-
-#' set class of a data.frame or data.table or generic.spct object to "filter.spct".
+#' set class of an object to "filter.spct".
 #'
-#' Sets the class attibute of a data.frame or data.table object to "filter.spct" an object to store spectra.
-#' If the object is a data.frame is is also made a data.table in the process.
+#' Sets the class attibute of a data.frame or data.table or a different spectral
+#' object to "filter.spct". If the object is a data.frame is is also made a
+#' data.table in the process.
 #'
 #' @param x a data.frame or data.table
 #' @param Tfr.type a character string, either "total" or "internal"
-#' @param strict.range logical indicating whether off-range values result in an error instead of a warning
+#' @param strict.range logical indicating whether off-range values result in an
+#'   error instead of a warning
 #' @export
 #' @exportClass filter.spct
 #' @family setSpct functions
@@ -497,14 +508,16 @@ setFilterSpct <- function(x, Tfr.type=c("total", "internal"), strict.range = TRU
   invisible(x)
 }
 
-#' set class of a data.frame or data.table or generic.spct object to "reflector.spct".
+#' set class of a an object to "reflector.spct".
 #'
-#' Sets the class attibute of a data.frame or data.table object to "reflector.spct" an object to store spectra.
-#' If the object is a data.frame is is also made a data.table in the process.
+#' Sets the class attibute of a data.frame or data.table or a different spectral
+#' object to "reflector.spct". If the object is a data.frame is is also made a
+#' data.table in the process.
 #'
 #' @param x a data.frame or data.table
 #' @param Rfr.type a character string, either "total" or "specular"
-#' @param strict.range logical indicating whether off-range values result in an error instead of a warning
+#' @param strict.range logical indicating whether off-range values result in an
+#'   error instead of a warning
 #' @export
 #' @exportClass reflector.spct
 #' @family setSpct functions
@@ -538,15 +551,17 @@ setReflectorSpct <- function(x, Rfr.type=c("total", "specular"), strict.range = 
   invisible(x)
 }
 
-#' set class of a data.frame or data.table or generic.spct object to "object.spct".
+#' set class of an object to "object.spct".
 #'
-#' Sets the class attibute of a data.frame or data.table object to "reflector.spct" an object to store spectra.
-#' If the object is a data.frame is is also made a data.table in the process.
+#' Sets the class attibute of a data.frame, data.table or a different spectral
+#' object to "reflector.spct" If the object is a data.frame is is also made a
+#' data.table in the process.
 #'
 #' @param x a data.frame or data.table
 #' @param Tfr.type a character string, either "total" or "internal"
 #' @param Rfr.type a character string, either "total" or "specular"
-#' @param strict.range logical indicating whether off-range values result in an error instead of a warning
+#' @param strict.range logical indicating whether off-range values result in an
+#'   error instead of a warning
 #' @export
 #' @exportClass object.spct
 #' @family setSpct functions
@@ -589,10 +604,11 @@ setObjectSpct <- function(x, Tfr.type=c("total", "internal"),
   invisible(x)
 }
 
-#' set class of a data.frame or data.table or generic.spct object to "response.spct".
+#' set class of an object to "response.spct".
 #'
-#' Sets the class attibute of a data.frame or data.table object to "response.spct" object,
-#' used to store response spectra
+#' Sets the class attibute of a data.frame, data.table object or a different
+#' spectral object to "response.spct". If the object is a data.frame is is also
+#' made a data.table in the process.
 #'
 #' @param x a data.frame or data.table.
 #' @param time.unit character string "second" or "day"
@@ -622,15 +638,17 @@ setResponseSpct <- function(x, time.unit="none") {
   invisible(x)
 }
 
-#' set class of a data.frame or data.table or generic.spct object to "source.spct".
+#' set class of an object to "source.spct".
 #'
-#' Sets the class attibute of a data.frame or data.table object to "source.spct" an object to store spectra.
-#' If the object is a data.frame is is also made a data.table in the process.
+#' Sets the class attibute of a data.frame, a data.table or a different spectral
+#' object to "source.spct". If the object is a data.frame is is also made a
+#' data.table in the process.
 #'
 #' @param x a data.frame or data.table
-#' @param time.unit character string "second" or "day"
-#' @param bswf.used a character string, either "none" or the name of a BSWF
-#' @param strict.range logical indicating whether off-range values result in an error instead of a warning
+#' @param time.unit character A string "second" or "day"
+#' @param bswf.used a character A string, either "none" or the name of a BSWF
+#' @param strict.range logical Flag indicating whether off-range values result
+#'   in an error instead of a warning
 #' @export
 #' @exportClass source.spct
 #' @family setSpct functions
@@ -659,10 +677,11 @@ setSourceSpct <- function(x, time.unit="second", bswf.used=c("none", "unknown"),
   invisible(x)
 }
 
-#' set class of a data.frame or data.table or generic.spct object to "chroma.spct".
+#' set class of an object to "chroma.spct".
 #'
-#' Sets the class attibute of a data.frame or data.table object to "chroma.spct" an object to store spectra.
-#' If the object is a data.frame is is also made a data.table in the process.
+#' Sets the class attibute of a data.frame, a data.table or a different spectral
+#' object to "chroma.spct". If the object is a data.frame is is also made a
+#' data.table in the process.
 #'
 #' @param x a data.frame or data.table
 #' @export
@@ -695,13 +714,15 @@ setChromaSpct <- function(x) {
 
 #' Query class of spectrum objects.
 #'
-#' Functions to check if an object is a given type of spectrum, or coerce it if possible.
+#' Functions to check if an object is a given type of spectrum, or coerce it if
+#' possible.
 #'
 #' @usage is.generic.spct(x)
 #'
 #' @param x An R object.
 #'
-#' @return These functions return TRUE if its argument is a of the queried type of spectrum and FALSE otherwise.
+#' @return These functions return TRUE if its argument is a of the queried type
+#'   of spectrum and FALSE otherwise.
 #'
 #' @method is generic.spct
 #'
@@ -711,9 +732,11 @@ is.generic.spct <- function(x) inherits(x, "generic.spct")
 
 #' Query if an R object is a \code{private.spct}
 #'
-#' Functions to check if an object is a private spectrum, or coerce it if possible.
+#' Functions to check if an object is a private spectrum, or coerce it if
+#' possible.
 #'
-#' @return is.private.spct returns TRUE if its argument is a private spectrum  and FALSE otherwise.
+#' @return is.private.spct returns TRUE if its argument is a private spectrum
+#'   and FALSE otherwise.
 #' @export
 #' @keywords internal
 #'
@@ -749,7 +772,8 @@ is.response.spct <- function(x) inherits(x, "response.spct")
 #'
 is.chroma.spct <- function(x) inherits(x, "chroma.spct")
 
-#' @describeIn is.generic.spct Query if an R object is an spectrum of any of the above classes.
+#' @describeIn is.generic.spct Query if an R object is an spectrum of any of the
+#'   above classes.
 #' @export
 #'
 is.any.spct <- function(x) {
@@ -758,13 +782,15 @@ is.any.spct <- function(x) {
 
 #' Query which is the class of an spectrum
 #'
-#' Functions to check if an object is a generic spectrum, or coerce it if possible.
+#' Functions to check if an object is a generic spectrum, or coerce it if
+#' possible.
 #'
 #' @usage class.spct(x)
 #'
 #' @param x any R object
 #'
-#' @return class.spct returns a vector containing all matching xxxx.spct classes.
+#' @return class.spct returns a vector containing all matching xxxx.spct
+#'   classes.
 #'
 #' @export
 #'
@@ -786,6 +812,8 @@ class.spct <- function(x) {
 #' returns NA for any other R object.
 #'
 #' @export
+#'
+#' @family tagging and related functions
 #'
 is.tagged <- function(x) {
   if (!is.any.spct(x)) {
@@ -912,7 +940,7 @@ is.transmittance.based <- function(x) {
 #'
 #' @usage as.generic.spct(x)
 #'
-#' @param x An R object
+#' @param x an R object
 #'
 #' @return These functions return a copy of \code{x} converted into a given
 #'   class of spectral object, if \code{x} is a valid argument to the
@@ -944,14 +972,16 @@ as.private.spct <- function(x) {
   setPrivateSpct(y)
 }
 
-#' @describeIn as.generic.spct Copy and convert an R object into a \code{source.spct}
+#' @describeIn as.generic.spct Copy and convert an R object into a
+#'   \code{source.spct}
 #'
 #' @usage as.source.spct(x, time.unit=c("second", "day"), bswf.used=c("none",
 #'   "unknown"), strict.range = FALSE)
 #'
-#' @param time.unit character string, "second" or "day"
-#' @param strict.range logical indicating whether off-range values result in an
-#'   error instead of a warning
+#' @param time.unit character A string, "second" or "day"
+#' @param bswf.used character
+#' @param strict.range logical Flag indicating whether off-range values result
+#'   in an error instead of a warning
 #'
 #' @export
 #'
@@ -970,8 +1000,6 @@ as.source.spct <- function(x,
 #'   TRUE)
 #'
 #' @param Tfr.type a character string, either "total" or "internal"
-#' @param strict.range logical indicating whether off-range values result in an
-#'   error instead of a warning
 #'
 #' @export
 #'
@@ -987,8 +1015,6 @@ as.filter.spct <- function(x, Tfr.type=c("total", "internal"), strict.range = TR
 #'   TRUE)
 #'
 #' @param Rfr.type a character string, either "total" or "specular"
-#' @param strict.range logical indicating whether off-range values result in an
-#'   error instead of a warning
 #'
 #' @export
 #'
@@ -1018,8 +1044,6 @@ as.object.spct <- function(x,
 #'   \code{response.spct}
 #'
 #' @usage as.response.spct(x, time.unit = "none")
-#'
-#' @param time.unit character string "second" or "day"
 #'
 #' @export
 #'
@@ -1061,6 +1085,7 @@ as.chroma.spct <- function(x) {
 #'
 #' @export
 #' @family time attribute functions
+#'
 setTimeUnit <- function(x, time.unit=c("second", "hour", "day", "none")) {
   if (length(time.unit) > 1) {
     if (getTimeUnit(x) != "unknown") {
@@ -1189,7 +1214,7 @@ getBSWFUsed <- function(x) {
 #'
 #' Funtion to set by reference the "Tfr.type" attribute
 #'
-#' @usage setTfrType(x, Tfr.type=c("total", "internal"))
+#' @usage setTfrType(x, Tfr.type = c("total", "internal"))
 #'
 #' @param x a filter.spct or an object.spct object
 #' @param Tfr.type a character string, either "total" or "internal"
@@ -1221,17 +1246,17 @@ setTfrType <- function(x, Tfr.type=c("total", "internal")) {
   return(x)
 }
 
-#' Get the "Tfr.type" attribute of an existing filter.spct or object.spct object
+#' Get the "Tfr.type" attribute of an existing filter.spct or object.spct object.
 #'
 #' Funtion to read the "Tfr.type" attribute
 #'
-#' @usage setTfrType(x, Tfr.type=c("total", "internal"))
+#' @usage getTfrType(x)
 #'
 #' @param x a filter.spct or object.spct object
 #'
 #' @return character string
 #'
-#' @note if x is not a \code{filter.spct} or an \code{object.spct} object, \code{NA} is returned
+#' @note If x is not a \code{filter.spct} or an \code{object.spct} object, \code{NA} is returned.
 #'
 #' @export
 #' @family Tfr attribute functions

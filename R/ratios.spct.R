@@ -170,33 +170,37 @@ qe_ratio <-
 
 #' Calculate energy to mol photon ratio from spectral irradiance.
 #'
-#' This function returns the energy to molle photn ratio for each waveband and a light source spectrum.
+#' This function returns the energy to molle photn ratio for each waveband and a
+#' light source spectrum.
 #'
-#' @usage eq_ratio(spct, w.band=NULL, use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
-#'                 use.hinges=getOption("photobiology.use.hinges", default=NULL) )
+#' @usage eq_ratio(spct, w.band=NULL, use.cached.mult =
+#'   getOption("photobiology.use.cached.mult", default = FALSE),
+#'   use.hinges=getOption("photobiology.use.hinges", default=NULL) )
 #'
 #' @param spct source.spct
 #' @param w.band waveband or list of waveband objects
-#' @param use.cached.mult logical Flag telling whether multiplier values should be
-#'   cached between calls
+#' @param use.cached.mult logical Flag telling whether multiplier values should
+#'   be cached between calls
 #' @param use.hinges logical Flag telling whether to use hinges to reduce
 #'   interpolation errors
 #'
-#' @return a numeric value giving number of Joule per mol of photons for each waveband, with name attribute set to
-#' the name of each waveband unless a named list of wavebands is supplied in which case the names of the list
-#' elements are used, with "e:q" prepended..
+#' @return a numeric value giving number of Joule per mol of photons for each
+#'   waveband, with name attribute set to the name of each waveband unless a
+#'   named list of wavebands is supplied in which case the names of the list
+#'   elements are used, with "e:q" prepended..
 #'
 #' @keywords manip misc
 #' @export
 #' @examples
 #' eq_ratio(sun.spct, new_waveband(400,700))
 #'
-#' @note The last two parameters control speed optimizations. The defaults should be suitable
-#' in mosts cases. If you will use repeatedly
-#' the same SWFs on many spectra measured at exactly the same wavelengths you may obtain some speed up
-#' by setting \code{use.cached.mult=TRUE}. However, be aware that you are responsible for ensuring
-#' that the wavelengths are the same in each call, as the only test done is for the length of the
-#' \code{w.length} vector.
+#' @note The last two parameters control speed optimizations. The defaults
+#'   should be suitable in mosts cases. If you will use repeatedly the same SWFs
+#'   on many spectra measured at exactly the same wavelengths you may obtain
+#'   some speed up by setting \code{use.cached.mult=TRUE}. However, be aware
+#'   that you are responsible for ensuring that the wavelengths are the same in
+#'   each call, as the only test done is for the length of the \code{w.length}
+#'   vector.
 #'
 #' @family photon and energy ratio functions
 #'

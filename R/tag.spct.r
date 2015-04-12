@@ -36,7 +36,6 @@ tag.default <- function(x, ...) {
 #'   for wavebands
 #' @param byref logical Flag indicating if new object will be created \emph{by
 #'   reference} or \emph{by copy} of \code{x}
-#' @param ... not used in current version
 #' @export
 #'
 tag.generic.spct <- function(x,
@@ -163,6 +162,8 @@ tag.generic.spct <- function(x,
 #' Create a generic.spct object with wavelengths from wavebands
 #' in a list.
 #'
+#' @usage wb2spct(w.band)
+#'
 #' @param w.band waveband or list of waveband objects The waveband(s) determine
 #'  the wavelengths in variable \code{w.length} of the returned spectrum
 #' @export
@@ -200,6 +201,8 @@ wb2spct <- function(w.band) {
 #' wavebands in a list, and names of the same bands as factor levels, and
 #' corresponding color definitions.
 #'
+#' @usage wb2tagged_spct(w.band, use.hinges = TRUE, short.names = TRUE, ...)
+#'
 #' @param w.band waveband or list of waveband objects The waveband(s) determine
 #'   the region(s) of the spectrum that are tagged and the wavelengths returned
 #'   in variable \code{w.length}
@@ -215,10 +218,8 @@ wb2spct <- function(w.band) {
 #'
 #' @family tagging and related functions
 #'
-wb2tagged_spct <- function(w.band,
-                    use.hinges=TRUE,
-                    short.names=TRUE,
-                    ...) {
+wb2tagged_spct <-
+  function(w.band, use.hinges = TRUE, short.names = TRUE, ...) {
   new.spct <- wb2spct(w.band)
   tag(new.spct, w.band, use.hinges, short.names, byref=TRUE)
   new.spct[ , y := 0]
@@ -230,6 +231,8 @@ wb2tagged_spct <- function(w.band,
 #' Create a generic.spct object with wavelengths from the range of wavebands
 #' in a list. The spectrum is suitable for plotting labels, symbols, rectangles
 #' or similar, as the midpoint of each waveband is added to the spectrum.
+#'
+#' @usage wb2rect_spct(w.band, short.names = TRUE)
 #'
 #' @param w.band waveband or list of waveband objects The waveband(s) determine
 #'  the wavelengths in variable \code{w.length} of the returned spectrum
@@ -247,8 +250,7 @@ wb2tagged_spct <- function(w.band,
 #'
 #' @family tagging and related functions
 #'
-wb2rect_spct <- function(w.band,
-                         short.names=TRUE) {
+wb2rect_spct <- function(w.band, short.names = TRUE) {
   if (is(w.band, "waveband")) {
     w.band <- list(w.band)
   }

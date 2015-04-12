@@ -4,7 +4,7 @@
 #'
 #' Methods of generic function summary for objects of spectral classes.
 #'
-#' @usage summary.generic.spct(object, digits = max(3, getOption("digits")-3), ...)
+#' @usage summary(object, digits = max(3, getOption("digits")-3), ...)
 #'
 #' @param object An object of one of the spectral classes for which a summary is
 #'   desired

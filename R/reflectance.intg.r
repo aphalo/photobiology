@@ -3,7 +3,7 @@
 #' Function to calculate the mean, total, or other summary of reflectance for
 #' spectral data stored in a \code{reflector.spct} or in an \code{object.spct}.
 #'
-#' @usage reflectance(spct, w.band, quantity, wb.trim, use.hinges)
+#' @usage reflectance(spct, w.band, pc.out, quantity, wb.trim, use.hinges)
 #'
 #' @param spct an R object
 #' @param w.band waveband or list of waveband objects The waveband(s) determine

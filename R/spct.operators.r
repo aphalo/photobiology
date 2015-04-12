@@ -598,14 +598,15 @@ oper.q.generic.spct <- function(e1, e2, oper) {
 
 # multiplication ----------------------------------------------------------
 
-#' "*" operator for generic spectra
+#' "*" operator for spectra
 #'
-#' Multiplication operator for generic spectra.
+#' Multiplication operator for spectra.
 #'
 #' @param e1 an object of class "generic.spct"
 #' @param e2 an object of class "generic.spct"
 #' @name times-.generic.spct
 #' @export
+#' @family math operators and functions
 #'
 '*.generic.spct' <- function(e1, e2) {
   unit <- getOption("photobiology.radiation.unit", default="energy")
@@ -621,7 +622,7 @@ oper.q.generic.spct <- function(e1, e2, oper) {
 # division ----------------------------------------------------------------
 
 
-#' "/" operator for generic spectra
+#' "/" operator for spectra
 #'
 #' Division operator for generic spectra.
 #'
@@ -629,6 +630,7 @@ oper.q.generic.spct <- function(e1, e2, oper) {
 #' @param e2 an object of class "generic.spct"
 #' @name slash-.generic.spct
 #' @export
+#' @family math operators and functions
 #'
 '/.generic.spct' <- function(e1, e2) {
   unit <- getOption("photobiology.radiation.unit", default="energy")
@@ -643,7 +645,7 @@ oper.q.generic.spct <- function(e1, e2, oper) {
 
 # Sum ---------------------------------------------------------------
 
-#' "+" operator for generic spectra
+#' "+" operator for spectra
 #'
 #' Division operator for generic spectra.
 #'
@@ -651,6 +653,7 @@ oper.q.generic.spct <- function(e1, e2, oper) {
 #' @param e2 an object of class "generic.spct"
 #' @name plus-.generic.spct
 #' @export
+#' @family math operators and functions
 #'
 '+.generic.spct' <- function(e1, e2 = NULL) {
   unit <- getOption("photobiology.radiation.unit", default="energy")
@@ -668,7 +671,7 @@ oper.q.generic.spct <- function(e1, e2, oper) {
 
 # Minus -------------------------------------------------------------------
 
-#' "-" operator for generic spectra
+#' "-" operator for spectra
 #'
 #' Substraction operator for generic spectra.
 #'
@@ -676,6 +679,7 @@ oper.q.generic.spct <- function(e1, e2, oper) {
 #' @param e2 an object of class "generic.spct"
 #' @name minus-.generic.spct
 #' @export
+#' @family math operators and functions
 #'
 '-.generic.spct' <- function(e1, e2 = NULL) {
   unit <- getOption("photobiology.radiation.unit", default="energy")
@@ -701,6 +705,7 @@ oper.q.generic.spct <- function(e1, e2, oper) {
 #' @param e1 an object of class "generic.spct"
 #' @param e2 a numeric vector. possibly of length one.
 #' @export
+#' @family math operators and functions
 #'
 '^.generic.spct' <- function(e1, e2) {
   unit <- getOption("photobiology.radiation.unit", default="energy")
@@ -724,6 +729,8 @@ oper.q.generic.spct <- function(e1, e2, oper) {
 #' @param x an object of class "generic.spct"
 #' @param f an R function with signature function(x, ...)
 #' @param ... additional arguments passed to f
+#'
+#' @keywords internal
 #'
 f_dispatcher_spct <- function(x, f, ...) {
   if (is(x, "filter.spct")) {
@@ -774,6 +781,7 @@ f_dispatcher_spct <- function(x, f, ...) {
 #' @param x an object of class "generic.spct"
 #' @param base a positive number: the base with respect to which logarithms are computed. Defaults to e=exp(1).
 #' @export
+#' @family math operators and functions
 #'
 log.generic.spct <- function(x, base = exp(1)) {
   f_dispatcher_spct(x, log, base)
@@ -785,6 +793,7 @@ log.generic.spct <- function(x, base = exp(1)) {
 #'
 #' @param x an object of class "generic.spct"
 #' @export
+#' @family math operators and functions
 #'
 log10.generic.spct <- function(x) {
   f_dispatcher_spct(x, log, base = 10)
@@ -796,6 +805,7 @@ log10.generic.spct <- function(x) {
 #'
 #' @param x an object of class "generic.spct"
 #' @export
+#' @family math operators and functions
 #'
 sqrt.generic.spct <- function(x) {
   f_dispatcher_spct(x, sqrt)
@@ -807,6 +817,7 @@ sqrt.generic.spct <- function(x) {
 #'
 #' @param x an object of class "generic.spct"
 #' @export
+#' @family math operators and functions
 #'
 exp.generic.spct <- function(x) {
   f_dispatcher_spct(x, exp)
@@ -827,28 +838,21 @@ exp.generic.spct <- function(x) {
 #' @param action a character string
 #' @param byref logical indicating if new object will be created by reference or by copy of x
 #' @export A2T
+#' @family quantity conversion functions
+#'
 A2T <- function(x, action, byref) UseMethod("A2T")
 
-#' Default for generic function
+#' @describeIn A2T Default method for generic function
 #'
-#' Function that coverts absorbance into transmittance (fraction).
+#' @export
 #'
-#' @param x an R object
-#' @param action a character string
-#' @param byref logical indicating if new object will be created by reference or by copy of x
-#' @export A2T.default
 A2T.default <- function(x, action=NULL, byref=FALSE) {
   return(10^-x)
 }
 
-#' "generic.spct" function
+#' @describeIn A2T Method for filter spectra
 #'
-#' Function that coverts absorbance into transmittance (fraction).
-#'
-#' @param x a "filter.spct"  object
-#' @param action a character string
-#' @param byref logical indicating if new object will be created by reference or by copy of x
-#' @export A2T.filter.spct
+#' @export
 #'
 A2T.filter.spct <- function(x, action="add", byref=FALSE) {
   if (byref) {
@@ -877,36 +881,34 @@ A2T.filter.spct <- function(x, action="add", byref=FALSE) {
 # T2A ---------------------------------------------------------------------
 
 
-#' Generic function
+#' Convert transmittance into absorbance.
 #'
 #' Function that coverts transmittance into absorbance (fraction).
 #'
 #' @param x an R object
-#' @param action a character string
+#' @param action character Allowed values "replace" and "add"
 #' @param byref logical indicating if new object will be created by reference or by copy of x
 #' @export T2A
+#' @family quantity conversion functions
+#'
 T2A <- function(x, action, byref) UseMethod("T2A")
 
-#' Default for generic function
+#' @describeIn T2A Default method for generic function
 #'
-#' Function that coverts transmittance into absorbance (fraction).
+#' @export
 #'
-#' @param x an R object
-#' @param action a character string
-#' @param byref logical indicating if new object will be created by reference or by copy of x
-#' @export T2A.default
 T2A.default <- function(x, action=NULL, byref=FALSE) {
+  if (any(x < 0)) {
+    Tfr.zero <- getOption(photobiology.Tfr.zero, default = 1e-10)
+    warning("Replacing zeros by", Tfr.zero)
+    x <- ifelse(x <= 0, Tfr.zero, x)
+  }
   return(-log10(x))
 }
 
-#' "filter.spct" function
+#' @describeIn T2A Method for filter spectra
 #'
-#' Function that coverts transmittance into absorbance (fraction).
-#'
-#' @param x a "filter.spct"  object
-#' @param action a character string
-#' @param byref logical indicating if new object will be created by reference or by copy of x
-#' @export T2A.filter.spct
+#' @export
 #'
 T2A.filter.spct <- function(x, action="add", byref=FALSE) {
   if (byref) {
@@ -940,7 +942,7 @@ T2A.filter.spct <- function(x, action="add", byref=FALSE) {
 # energy to photon ---------------------------------------------------------------------
 
 
-#' Generic function
+#' Convert energy-based spectra into photon-based spectra.
 #'
 #' Function that coverts spectral energy irradiance into spectral photon irradiance (molar).
 #'
@@ -948,28 +950,21 @@ T2A.filter.spct <- function(x, action="add", byref=FALSE) {
 #' @param action a character string
 #' @param byref logical indicating if new object will be created by reference or by copy of x
 #' @export e2q
+#' @family quantity conversion functions
+#'
 e2q <- function(x, action, byref) UseMethod("e2q")
 
-#' Default for generic function
+#' @describeIn e2q Default method
 #'
-#' Function that coverts spectral energy irradiance into spectral photon irradiance (molar).
+#' @export
 #'
-#' @param x an R object
-#' @param action a character string
-#' @param byref logical indicating if new object will be created by reference or by copy of x
-#' @export e2q.default
 e2q.default <- function(x, action="add", byref=FALSE) {
   return(NA)
 }
 
-#' "source.spct" function
+#' @describeIn e2q Method for spectral irradiance
 #'
-#' Function that coverts spectral energy irradiance into spectral photon irradiance (molar).
-#'
-#' @param x a "source.spct"  object
-#' @param action a character string
-#' @param byref logical indicating if new object will be created by reference or by copy of x
-#' @export e2q.source.spct
+#' @export
 #'
 e2q.source.spct <- function(x, action="add", byref=FALSE) {
   if (byref) {
@@ -994,14 +989,9 @@ e2q.source.spct <- function(x, action="add", byref=FALSE) {
   return(x)
 }
 
-#' "response.spct" function
+#' @describeIn e2q Method for spectral responsiveness
 #'
-#' Function that coverts response to spectral energy irradiance into response to spectral photon irradiance (molar).
-#'
-#' @param x a "response.spct"  object
-#' @param action a character string
-#' @param byref logical indicating if new object will be created by reference or by copy of x
-#' @export e2q.response.spct
+#' @export
 #'
 e2q.response.spct <- function(x, action="add", byref=FALSE) {
   if (byref) {
@@ -1028,8 +1018,7 @@ e2q.response.spct <- function(x, action="add", byref=FALSE) {
 
 # photon to energy ---------------------------------------------------------------------
 
-
-#' Generic function
+#' Convert photon-based spectra into energy-based spectra.
 #'
 #' Function that coverts spectral photon irradiance (molar) into spectral energy irradiance.
 #'
@@ -1037,28 +1026,21 @@ e2q.response.spct <- function(x, action="add", byref=FALSE) {
 #' @param action a character string
 #' @param byref logical indicating if new object will be created by reference or by copy of x
 #' @export q2e
+#' @family quantity conversion functions
+#'
 q2e <- function(x, action, byref) UseMethod("q2e")
 
-#' Default for generic function
+#' @describeIn q2e Default method
 #'
-#' Function that coverts spectral photon irradiance (molar) into spectral energy irradiance.
+#' @export
 #'
-#' @param x an R object
-#' @param action a character string
-#' @param byref logical indicating if new object will be created by reference or by copy of x
-#' @export q2e.default
 q2e.default <- function(x, action="add", byref=FALSE) {
   return(NA)
 }
 
-#' "source.spct" function
+#' @describeIn q2e Method for spectral irradiance
 #'
-#' Function that coverts spectral photon irradiance (molar) into spectral energy irradiance.
-#'
-#' @param x a "source.spct"  object
-#' @param action a character string
-#' @param byref logical indicating if new object will be created by reference or by copy of x
-#' @export q2e.source.spct
+#' @export
 #'
 q2e.source.spct <- function(x, action="add", byref=FALSE) {
   if (byref) {
@@ -1083,14 +1065,9 @@ q2e.source.spct <- function(x, action="add", byref=FALSE) {
   return(x)
 }
 
-#' "response.spct" function
+#' @describeIn q2e Method for spectral responsiveness
 #'
-#' Function that coverts response to spectral photon irradiance (molar) into response to spectral energy irradiance.
-#'
-#' @param x a "response.spct"  object
-#' @param action a character string
-#' @param byref logical indicating if new object will be created by reference or by copy of x
-#' @export q2e.response.spct
+#' @export
 #'
 q2e.response.spct <- function(x, action="add", byref=FALSE) {
   if (byref) {

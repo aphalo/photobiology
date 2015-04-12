@@ -193,6 +193,7 @@ reflector.spct <- function(w.length, Rfr=NULL, Rpc=NULL, comment=NULL, strict.ra
 #' @param Rfr numeric vector with spectral Reflectance as fraction of one
 #' @param Tfr numeric vector with spectral transmittance as fraction of one
 #' @param Tfr.type a character string, either "total" or "internal"
+#' @param Rfr.type a character string, either "total" or "specular"
 #' @param comment character string to be added as a comment attribute to the
 #'   created object
 #' @param strict.range logical indicating whether off-range values result in an

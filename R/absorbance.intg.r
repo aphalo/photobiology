@@ -9,14 +9,14 @@
 #' @param w.band waveband or list of waveband objects The waveband(s) determine
 #'   the region(s) of the spectrum that are summarized.
 #' @param quantity character
-#' @param wb.trim logical Flag if wavebands crossing spectral data boundaries
-#'   are trimmed or ignored
+#' @param wb.trim logical Flag indicating if wavebands crossing spectral data
+#'   boundaries are trimmed or ignored
 #' @param use.hinges logical Flag indicating whether to use hinges to reduce
 #'   interpolation errors
 #'
 #' @note The \code{use.hinges} parameter controls speed optimization. The
-#'   defaults should be suitable in most cases. Only the range of wavelengths
-#'   in the wavebands is used and all BSWFs are ignored.
+#'   defaults should be suitable in most cases. Only the range of wavelengths in
+#'   the wavebands is used and all BSWFs are ignored.
 #'
 #' @examples
 #' library(photobiologyFilters)

@@ -12,7 +12,7 @@
 #' @param s.irrad numeric array of spectral irradiances, by default as energy (W
 #'   m-2 nm-1)
 #' @param w.band waveband
-#' @param unit.character Values recognized "photon" or "energy", default is "energy"
+#' @param unit.in character Values recognized "photon" or "energy"
 #' @param check.spectrum logical Flag telling whether to sanity check input data,
 #'   default is TRUE
 #' @param use.cached.mult logical Flag telling whether multiplier values should be

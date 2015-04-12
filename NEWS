@@ -6,7 +6,9 @@ Add test cases for chroma.spct
 photobiology 0.5.20
 ===================
 
-Improvements to the documentation, using features of latest version of package roxygen2.
+Full overhaul of the documentation, using features of latest version of package roxygen2.
+Documentation for related functions is now on the same file, and most pages are cross-
+refewrenced.
 
 photobiology 0.5.19
 ===================

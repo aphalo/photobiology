@@ -52,7 +52,7 @@ average_spct <- function(spct) {
   return(integrate_spct(spct) / (max(spct) - min(spct)))
 }
 
-#' Map an spectrum to wavelength values.
+#' Map a spectrum to new wavelength values.
 #'
 #' This function gives the result of interpolating spectral data from the original set of
 #' wavelengths to a new one.

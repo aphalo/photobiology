@@ -1,24 +1,32 @@
-#' Calculate photon (quantum) or energy ratio from spectral (energy or photon) irradiance.
+#' Calculate photon (quantum) or energy ratio.
 #'
 #' This function gives the (energy or photon) irradiance ratio between two given
 #' wavebands of a radiation spectrum.
 #'
-#' @usage waveband_ratio(w.length, s.irrad, w.band.num=NULL, w.band.denom=NULL,
-#'                       unit.out.num=NULL, unit.out.denom=unit.out.num, unit.in="energy",
-#'                       check.spectrum=TRUE, use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
-#'                       use.hinges=getOption("photobiology.use.hinges", default=NULL) )
-#' @param w.length numeric array of wavelength (nm)
-#' @param s.irrad numeric array of spectral (energy) irradiances (W m-2 nm-1)
-#' @param w.band.num an object of class "waveband"
-#' @param w.band.denom an object of class "waveband"
-#' @param unit.out.num character string with allowed values "energy", and "photon", or its alias "quantum"
-#' @param unit.out.denom character string with allowed values "energy", and "photon", or its alias "quantum"
-#' @param unit.in character string with allowed values "energy", and "photon", or its alias "quantum"
-#' @param check.spectrum logical indicating whether to sanity check input data, default is TRUE
-#' @param use.cached.mult logical indicating whether multiplier values should be cached between calls
-#' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
+#' @usage waveband_ratio(w.length, s.irrad, w.band.num = NULL, w.band.denom =
+#'   NULL, unit.out.num = NULL, unit.out.denom = unit.out.num, unit.in =
+#'   "energy", check.spectrum = TRUE, use.cached.mult =
+#'   getOption("photobiology.use.cached.mult", default = FALSE), use.hinges =
+#'   getOption("photobiology.use.hinges", default=NULL) )
+#' @param w.length numeric Vector of wavelengths (nm)
+#' @param s.irrad numeric Corresponding vector of spectral (energy) irradiances
+#'   (W m-2 nm-1)
+#' @param w.band.num waveband
+#' @param w.band.denom waveband
+#' @param unit.out.num character Allowed values "energy", and "photon", or its
+#'   alias "quantum"
+#' @param unit.out.denom character Allowed values "energy", and "photon", or its
+#'   alias "quantum"
+#' @param unit.in character Allowed values "energy", and "photon", or its alias
+#'   "quantum"
+#' @param check.spectrum logical Flag indicating whether to sanity check input
+#'   data, default is TRUE
+#' @param use.cached.mult logical Flag indicating whether multiplier values
+#'   should be cached between calls
+#' @param use.hinges logical Flag indicating whether to use hinges to reduce
+#'   interpolation errors
 #'
-#' @return a single numeric value giving the unitless ratio
+#' @return a single numeric value giving the ratio
 #' @keywords manip misc
 #' @export
 #' @examples
@@ -47,13 +55,15 @@
 #' with(sun.data,
 #'      waveband_ratio(w.length, s.e.irrad,
 #'      unit.out.num="photon"))
-
-waveband_ratio <- function(w.length, s.irrad,
-                             w.band.num=NULL, w.band.denom=NULL,
-                             unit.out.num=NULL, unit.out.denom=unit.out.num,
-                             unit.in="energy",
-                             check.spectrum=TRUE, use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
-                           use.hinges=getOption("photobiology.use.hinges", default=NULL) ) {
+#'
+waveband_ratio <-
+  function(w.length, s.irrad,
+           w.band.num=NULL, w.band.denom=NULL,
+           unit.out.num=NULL, unit.out.denom=unit.out.num,
+           unit.in="energy",
+           check.spectrum=TRUE,
+           use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
+           use.hinges = getOption("photobiology.use.hinges", default=NULL) ) {
     # We duplicate code from irradiance() here to avoid repeated checks
     # and calculations on the same data
     #

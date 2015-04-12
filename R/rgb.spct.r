@@ -5,17 +5,20 @@
 #' @usage rgb_spct(spct, sens=ciexyzCMF2.spct, color.name=NULL)
 #'
 #' @param spct an object of class "source.spct"
-#' @param sens a chroma.spct object with variables w.length, x, y, and z, giving the CC or CMF definition (default is the
-#' proposed human CMF according to CIE 2006.)
+#' @param sens a chroma.spct object with variables w.length, x, y, and z, giving
+#'   the CC or CMF definition (default is the proposed human CMF according to
+#'   CIE 2006.)
 #' @param color.name character string for naming the rgb color definition
 #'
-#' @return A color defined using \code{rgb()}. The numeric values of the RGB components can be obtained
+#' @return A color defined using \code{rgb()}. The numeric values of the RGB
+#'   components can be obtained
 #' @keywords manip misc
 #' @export
 #' @examples
 #' rgb_spct(sun.spct)
 #'
-
+#' @family color functions
+#'
 rgb_spct <-
   function(spct, sens=ciexyzCMF2.spct, color.name=NULL){
     if (is(spct, "source.spct")) {

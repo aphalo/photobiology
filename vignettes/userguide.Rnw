@@ -17,8 +17,7 @@
 \usepackage{framed}
 
 \newcommand{\PB}{\textsf{photobiology}\xspace}
-\newcommand{\PBPHY}{\textsf{photobiologyPhy}\xspace}
-\newcommand{\PBCRY}{\textsf{photobiologyCry}\xspace}
+\newcommand{\PBPla}{\textsf{photobiologyPlants}\xspace}
 \newcommand{\PBFLT}{\textsf{photobiologyFilters}\xspace}
 \newcommand{\PBSU}{\textsf{photobiologySun}\xspace}
 \newcommand{\PBLA}{\textsf{photobiologyLamps}\xspace}
@@ -75,7 +74,7 @@ my_version <- packageVersion("photobiology")
 
 \sloppy
 We have developed a set of packages to
-facilitate the calculation of many different quantities that can be derived from spectral irradiance data. The base package in this suite is called \PB, and is the package described here. There other specialized packages for quantification of ultraviolet radiation and visible radiation (\PBWB), or based on Phytochrome (\PBPHY), Cryptochrome (\PBCRY) (both photoreceptors present in plants). Other packages in the suite provide example spectral data for filters (\PBFLT), lamps (\PBLA), LEDs (\PBLD), sunlight (\PBSU) and broadband sensors (\PBSN) . In the future it will be submitted to CRAN (Comprehensive R archive network), it is meanwhile available from \url{https://www.r4photobiology.info/}. There is also a public Git repository at \url{https://bitbucket.org/aphalo/} from where the source code of the current an earlier versions can be cloned.
+facilitate the calculation of many different quantities that can be derived from spectral irradiance data. The base package in this suite is called \PB, and is the package described here. There other specialized packages for quantification of ultraviolet radiation and visible radiation (\PBWB), or plant photoreceptors (\PBPla). Other packages in the suite provide example spectral data for filters (\PBFLT), lamps (\PBLA), LEDs (\PBLD), sunlight (\PBSU) and broadband sensors (\PBSN). In the future it will be submitted to CRAN (Comprehensive R archive network), it is meanwhile available from \url{https://www.r4photobiology.info/}. There is also a public Git repository at \url{https://bitbucket.org/aphalo/} from where the source code of the current an earlier versions can be cloned.
 
 \section{Installation and use}
 

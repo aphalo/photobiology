@@ -1,33 +1,109 @@
 #' Calculate transmittance from spectral transmittance.
 #'
-#' This function returns the mean transmittance for a given
-#' waveband of a transmittance spectrum.
+#' This function returns the summary transmittance for given wavebands from a
+#' filter or object spectrum.
 #'
-#' @usage transmittance_spct(spct, w.band=NULL, pc.out=FALSE,
-#'                           quantity="average", wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
-#'                           use.hinges=getOption("photobiology.use.hinges", default=NULL) )
+#' @usage transmittance(spct, w.band, pc.out, quantity, wb.trim, use.hinges)
 #'
-#' @param spct an object of class "generic.spct"
-#' @param w.band list of waveband definitions created with new_waveband()
-#' @param pc.out a logical indicating whether result should be a percentage or a fraction of one
-#' @param quantity character string
-#' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries are trimmed, if FALSE, they are discarded
-#' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
+#' @param spct an R object
+#' @param w.band waveband or list of waveband objects The waveband(s) determine
+#'   the region(s) of the spectrum that are summarized.
+#' @param pc.out logical Flag indicating whether result should be a percentage or a
+#'   fraction of one
+#' @param quantity character
+#' @param wb.trim logical Flag indicating if wavebands crossing spectral data boundaries
+#'   are trimmed or ignored
+#' @param use.hinges logical Flag indicating whether to use hinges to reduce
+#'   interpolation errors
 #'
-#' @return a single numeric value with no change in scale factor: [W m-2 nm-1] -> [mol s-1 m-2]
+#' @return A numeric vector with no change in scale factor (expressed as percent
+#'   or fraction)
 #' @keywords manip misc
-#' @export transmittance_spct
+#' @export transmittance
 #' @examples
 #' library(photobiologyFilters)
 #' transmittance(polyester.new.spct, new_waveband(400,700), pc.out=TRUE)
 #' transmittance(polyester.new.spct, new_waveband(400,700), pc.out=FALSE)
 #'
-#' @note The last parameter controls speed optimization. The defaults should be suitable
-#' in mosts cases. Only the range of wavelengths in the wavebands is used and all BSWFs are ignored.
+#' @note The \code{use.hinges} parameter controls speed optimization. The
+#'   defaults should be suitable in mosts cases. Only the range of wavelengths
+#'   in the wavebands is used and all BSWFs are ignored.
+#'
+#' @export transmittance
+#'
+transmittance <- function(spct, w.band, pc.out, quantity, wb.trim, use.hinges) UseMethod("transmittance")
+
+#' @describeIn transmittance Default method
+#'
+#' @export
+#'
+transmittance.default <- function(spct, w.band, pc.out, quantity, wb.trim, use.hinges) {
+  return(NA)
+}
+
+#' @describeIn transmittance Method for filter spectra
+#'
+#' @export
+#'
+transmittance.filter.spct <-
+  function(spct, w.band=NULL,
+           pc.out=FALSE,
+           quantity="average",
+           wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
+           use.hinges=getOption("photobiology.use.hinges", default=NULL) ) {
+    transmittance_spct(spct = spct,
+                       w.band = w.band,
+                       pc.out = pc.out,
+                       quantity = quantity,
+                       wb.trim = wb.trim,
+                       use.hinges = use.hinges)
+  }
+
+#' @describeIn transmittance Method for object spectra
+#'
+#' @export
+#'
+transmittance.object.spct <-
+  function(spct, w.band=NULL,
+           pc.out=FALSE,
+           quantity="average",
+           wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
+           use.hinges=getOption("photobiology.use.hinges", default=NULL) ) {
+    transmittance_spct(spct = spct,
+                       w.band = w.band,
+                       pc.out = pc.out,
+                       quantity = quantity,
+                       wb.trim = wb.trim,
+                       use.hinges = use.hinges)
+  }
+
+#' Calculate transmittance from spectral transmittance.
+#'
+#' This function returns the mean transmittance for a given waveband of a
+#' transmittance spectrum.
+#'
+#' @usage transmittance_spct(spct, w.band, pc.out, quantity, wb.trim, use.hinges)
+#'
+#' @param spct an object of class "generic.spct"
+#' @param w.band waveband or list of waveband objects The waveband(s) determine
+#'   the region(s) of the spectrum that are summarized.
+#' @param pc.out logical Flag indicating whether result should be a percentage or a
+#'   fraction of one
+#' @param quantity character
+#' @param wb.trim logical Flag indicating if wavebands crossing spectral data boundaries
+#'   are trimmed or ignored
+#' @param use.hinges logical Flag indicating whether to use hinges to reduce
+#'   interpolation errors
+#'
+#' @return a single numeric value
+#' @keywords internal
+#'
+#' @note The last parameter controls speed optimization. The defaults should be
+#'   suitable in mosts cases. Only the range of wavelengths in the wavebands is
+#'   used and all BSWFs are ignored.
 
 transmittance_spct <-
-  function(spct, w.band=NULL, pc.out=FALSE, quantity="average", wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
-           use.hinges=getOption("photobiology.use.hinges", default=NULL) ) {
+  function(spct, w.band, pc.out, quantity, wb.trim, use.hinges) {
     if (is.normalized(spct) || is.rescaled(spct)) {
       warning("The espectral data has been normalized or rescaled, making impossible to calculate transmittance")
       return(NA)
@@ -142,61 +218,3 @@ transmittance_spct <-
     return(transmittance)
   }
 
-#' Generic function
-#'
-#' Calculate average transmittance.
-#'
-#' @param spct an object of class "generic.spct"
-#' @param w.band list of waveband definitions created with new_waveband()
-#' @param pc.out a logical indicating whether result should be a percentage or a fraction of one
-#' @param quantity character string
-#' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries are trimmed, if FALSE, they are discarded
-#' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
-#'
-#' @export transmittance
-#'
-transmittance <- function(spct, w.band, pc.out, quantity, wb.trim, use.hinges) UseMethod("transmittance")
-
-#' Default for generic function
-#'
-#' Calculate average transmittance.
-#'
-#' @param spct an object of class "generic.spct"
-#' @param w.band list of waveband definitions created with new_waveband()
-#' @param pc.out a logical indicating whether result should be a percentage or a fraction of one
-#' @param quantity character string
-#' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries are trimmed, if FALSE, they are discarded
-#' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
-#' @export transmittance.default
-#'
-transmittance.default <- function(spct, w.band, pc.out, quantity, wb.trim, use.hinges) {
-  return(NA)
-}
-
-#' Specialization for filter.spct
-#'
-#' Calculate average transmittance.
-#'
-#' @param spct an object of class "filter.spct"
-#' @param w.band list of waveband definitions created with new_waveband()
-#' @param pc.out a logical indicating whether result should be a percentage or a fraction of one
-#' @param quantity character string
-#' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries are trimmed, if FALSE, they are discarded
-#' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
-#' @export transmittance.filter.spct
-#'
-transmittance.filter.spct <- transmittance_spct
-
-#' Specialization for object.spct
-#'
-#' Calculate average transmittance.
-#'
-#' @param spct an object of class "object.spct"
-#' @param w.band list of waveband definitions created with new_waveband()
-#' @param pc.out a logical indicating whether result should be a percentage or a fraction of one
-#' @param quantity character string
-#' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries are trimmed, if FALSE, they are discarded
-#' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
-#' @export transmittance.object.spct
-#'
-transmittance.object.spct <- transmittance_spct

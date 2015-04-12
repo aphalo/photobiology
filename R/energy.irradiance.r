@@ -11,7 +11,7 @@
 #' @param w.length numeric array of wavelength (nm)
 #' @param s.irrad numeric array of spectral irradiances, by default as energy (W
 #'   m-2 nm-1)
-#' @param w.band
+#' @param w.band waveband
 #' @param unit.in a character Allowed values "photon" or "energy", default is
 #'   "energy"
 #' @param check.spectrum logical Flag indicating whether to sanity check input

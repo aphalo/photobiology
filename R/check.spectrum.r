@@ -16,6 +16,8 @@
 #' @examples
 #' with(sun.data, check_spectrum(w.length, s.e.irrad))
 #'
+#' @family data validity check functions
+#'
 check_spectrum <- function(w.length, s.irrad) {
   pass <- TRUE
   # check for NAs
