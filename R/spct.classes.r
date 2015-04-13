@@ -668,6 +668,11 @@ is.source.spct <- function(x) inherits(x, "source.spct")
 #' @rdname is.generic.spct
 #' @export
 #'
+is.response.spct <- function(x) inherits(x, "response.spct")
+
+#' @rdname is.generic.spct
+#' @export
+#'
 is.filter.spct <- function(x) inherits(x, "filter.spct")
 
 #' @rdname is.generic.spct
@@ -679,11 +684,6 @@ is.reflector.spct <- function(x) inherits(x, "reflector.spct")
 #' @export
 #'
 is.object.spct <- function(x) inherits(x, "object.spct")
-
-#' @rdname is.generic.spct
-#' @export
-#'
-is.response.spct <- function(x) inherits(x, "response.spct")
 
 #' @rdname is.generic.spct
 #' @export
@@ -873,9 +873,6 @@ as.generic.spct <- function(x) {
 
 #' @rdname as.generic.spct
 #'
-#' @usage as.source.spct(x, time.unit=c("second", "day"), bswf.used=c("none",
-#'   "unknown"), strict.range = FALSE)
-#'
 #' @param time.unit character A string, "second" or "day"
 #' @param bswf.used character
 #' @param strict.range logical Flag indicating whether off-range values result
@@ -893,8 +890,14 @@ as.source.spct <- function(x,
 
 #' @rdname as.generic.spct
 #'
-#' @usage as.filter.spct(x, Tfr.type=c("total", "internal"), strict.range =
-#'   TRUE)
+#' @export
+#'
+as.response.spct <- function(x, time.unit = "none") {
+  y <- copy(x)
+  setResponseSpct(y, time.unit = time.unit)
+}
+
+#' @rdname as.generic.spct
 #'
 #' @param Tfr.type a character string, either "total" or "internal"
 #'
@@ -907,9 +910,6 @@ as.filter.spct <- function(x, Tfr.type=c("total", "internal"), strict.range = TR
 
 #' @rdname as.generic.spct
 #'
-#' @usage as.reflector.spct(x, Rfr.type = c("total", "specular"), strict.range =
-#'   TRUE)
-#'
 #' @param Rfr.type a character string, either "total" or "specular"
 #'
 #' @export
@@ -920,9 +920,6 @@ as.reflector.spct <- function(x, Rfr.type = c("total", "specular"), strict.range
 }
 
 #' @rdname as.generic.spct
-#'
-#' @usage as.object.spct(x, Tfr.type=c("total", "internal"), Rfr.type=c("total",
-#'   "specular"), strict.range = TRUE)
 #'
 #' @export
 #'
@@ -936,19 +933,6 @@ as.object.spct <- function(x,
 }
 
 #' @rdname as.generic.spct
-#'
-#' @usage as.response.spct(x, time.unit = "none")
-#'
-#' @export
-#'
-as.response.spct <- function(x, time.unit = "none") {
-  y <- copy(x)
-  setResponseSpct(y, time.unit = time.unit)
-}
-
-#' @rdname as.generic.spct
-#'
-#' @usage as.chroma.spct(x)
 #'
 #' @export
 #'

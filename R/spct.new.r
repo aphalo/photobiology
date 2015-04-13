@@ -2,33 +2,43 @@
 
 # Constructors ------------------------------------------------------------
 
-#' Create a new source.spct
+#' Create new spectral objects.
 #'
-#' This fucntion can be used to create source.spct objects from numeric vectors.
+#' These fucntions can be used to create spectral objects derived from
+#' \code{generic.spct}. They take as arguments numeric vectors for the data
+#' character scalars for attributes, and a logical flag.
 #'
 #' @usage source.spct(w.length, s.e.irrad=NULL, s.q.irrad=NULL,
 #'   time.unit=c("second", "day"), bswf.used = c("none", "unknown"),
 #'   comment=NULL, strict.range=TRUE)
 #'
 #' @param w.length numeric vector with wavelengths in nanometres
-#' @param s.e.irrad numeric vecror with spectral energy irradiance in W m-2 nm-1
-#'   or J d-1 m-2 nm-1
-#' @param s.q.irrad numeric vecror with spectral photon irradiance in mol s-1
-#'   m-2 nm-1 or mol d-1 m-2 nm-1
+#' @param s.e.irrad numeric vecror with spectral energy irradiance in [W m-2
+#'   nm-1] or [J d-1 m-2 nm-1]
+#' @param s.q.irrad numeric A vector with spectral photon irradiance in [mol s-1
+#'   m-2 nm-1] or [mol d-1 m-2 nm-1].
 #' @param time.unit character string indicating the time unit used for spectral
-#'   irradiance or exposure ("second" or "day")
-#' @param bswf.used character string indicating the BSWF used, if any, for
-#'   spectral effective irradiance or exposure ("second" or "day")
-#' @param comment character string to be added as a comment attribute to the
-#'   created object
-#' @param strict.range logical indicating whether off-range values result in an
-#'   error instead of a warning
+#'   irradiance or exposure ("second" or "day").
+#' @param bswf.used character A string indicating the BSWF used, if any, for
+#'   spectral effective irradiance or exposure ("none" or the name of the BSWF).
+#' @param comment character A string to be added as a comment attribute to the
+#'   object created.
+#' @param strict.range logical Flag indicating whether off-range values result
+#'   in an error instead of a warning.
 #'
 #' @return An source.spct object
 #'
 #' @export
 #'
 #' @family creation of spectral objects functions
+#'
+#' @rdname source.spct
+#'
+#' @note The functions can be used to add only one spectral quantity to a
+#'   spectral object. Some of the functions have different arguments, for the
+#'   same quantity expressed in different units. An actual parameter can be
+#'   supplied to only one of these formal paprameters in a given call to the
+#'   fucntion.
 #'
 source.spct <- function(w.length, s.e.irrad=NULL, s.q.irrad=NULL,
                         time.unit=c("second", "day"), bswf.used = c("none", "unknown"),
@@ -50,29 +60,14 @@ source.spct <- function(w.length, s.e.irrad=NULL, s.q.irrad=NULL,
   return(out.spct)
 }
 
-#' Create a new response.spct
+#' @rdname source.spct
 #'
-#' This fucntion can be used to create response.spct objects from numeric
-#' vectors.
-#'
-#' @usage response.spct(w.length, s.e.response=NULL, s.q.response=NULL,
-#'   time.unit=c("second", "day"), comment=NULL)
-#'
-#' @param w.length numeric vector with wavelengths in nanometres
 #' @param s.e.response numeric vecror with spectral energy irradiance in W m-2
 #'   nm-1 or J d-1 m-2 nm-1
 #' @param s.q.response numeric vecror with spectral photon irradiance in mol s-1
 #'   m-2 nm-1 or mol d-1 m-2 nm-1
-#' @param time.unit character string indicating the time unit used for spectral
-#'   irradiance or exposure ("second" or "day")
-#' @param comment character string to be added as a comment attribute to the
-#'   created object
 #'
-#' @return A response.spct object
-#'
-#' @export response.spct
-#'
-#' @family creation of spectral objects functions
+#' @export
 #'
 response.spct <- function(w.length, s.e.response=NULL, s.q.response=NULL, time.unit=c("second", "day"), comment=NULL) {
   if (is.null(s.q.response) && (is.numeric(s.e.response))) {
@@ -90,33 +85,19 @@ response.spct <- function(w.length, s.e.response=NULL, s.q.response=NULL, time.u
   return(out.spct)
 }
 
-#' Create a new filter.spct
+#' @rdname source.spct
 #'
-#' This fucntion can be used to create filter.spct objects from numeric vectors.
-#'
-#' @usage filter.spct(w.length, Tfr=NULL, Tpc=NULL, A=NULL, Tfr.type=c("total",
-#'   "internal"), comment=NULL, strict.range=TRUE)
-#'
-#' @param w.length numeric vector with wavelengths in nanometres
 #' @param Tfr numeric vector with spectral transmittance as fraction of one
 #' @param Tpc numeric vector with spectral transmittance as percent values
 #' @param A   numeric vector of absorbance values (log10 based)
 #' @param Tfr.type character string indicating whether transmittance values are
 #'   "total" or "internal" values
-#' @param comment character string to be added as a comment attribute to the
-#'   created object
-#' @param strict.range logical indicating whether off-range values result in an
-#'   error instead of a warning
-#'
-#' @return A filter.spct object
 #'
 #' @note "internal" transmittance is defined as the transmittance of the
 #'   material body itself, while "total" transmittance includes the effects of
 #'   surface reflectance on the ammount of light transmitted.
 #'
 #' @export
-#' @family creation of spectral objects functions
-#'
 #'
 filter.spct <- function(w.length, Tfr=NULL, Tpc=NULL, A=NULL, Tfr.type=c("total", "internal"),
                         comment=NULL, strict.range=TRUE) {
@@ -137,31 +118,12 @@ filter.spct <- function(w.length, Tfr=NULL, Tpc=NULL, A=NULL, Tfr.type=c("total"
   return(out.spct)
 }
 
-#' Create a new reflector.spct
+#' @rdname source.spct
 #'
-#' This fucntion can be used to create reflector.spct objects from numeric
-#' vectors.
-#'
-#' @usage reflector.spct(w.length, Rfr=NULL, Rpc=NULL, comment=NULL,
-#'   strict.range=TRUE)
-#'
-#' @param w.length numeric vector with wavelengths in nanometres
 #' @param Rfr numeric vector with spectral refletance as fraction of one
 #' @param Rpc numeric vector with spectral reflectance as percent values
-#' @param comment character string to be added as a comment attribute to the
-#'   created object
-#' @param strict.range logical indicating whether off-range values result in an
-#'   error instead of a warning
-#'
-#' @return A reflector.spct object
-#'
-#' @note "internal" transmittance is defined as the transmittance of the
-#'   material body itself, while "total" transmittance includes the effects of
-#'   surface reflectance on the ammount of light transmitted.
 #'
 #' @export
-#'
-#' @family creation of spectral objects functions
 #'
 reflector.spct <- function(w.length, Rfr=NULL, Rpc=NULL, comment=NULL, strict.range=TRUE) {
   if (is.null(Rpc) && is.numeric(Rfr)) {
@@ -179,35 +141,9 @@ reflector.spct <- function(w.length, Rfr=NULL, Rpc=NULL, comment=NULL, strict.ra
   return(out.spct)
 }
 
-#' Create a new object.spct
-#'
-#' This fucntion can be used to create object.spct objects from numeric vectors.
-#' Such objects can be used to describe the optical properties of objects that
-#' both reflect and transmit radiation.
-#'
-#' @usage object.spct(w.length, Rfr=NULL, Tfr=NULL, Tfr.type=c("total",
-#'   "internal"), Rfr.type=c("total", "specular"), comment=NULL,
-#'   strict.range=TRUE)
-#'
-#' @param w.length numeric vector with wavelengths in nanometres
-#' @param Rfr numeric vector with spectral Reflectance as fraction of one
-#' @param Tfr numeric vector with spectral transmittance as fraction of one
-#' @param Tfr.type a character string, either "total" or "internal"
-#' @param Rfr.type a character string, either "total" or "specular"
-#' @param comment character string to be added as a comment attribute to the
-#'   created object
-#' @param strict.range logical indicating whether off-range values result in an
-#'   error instead of a warning
-#'
-#' @return An object.spct object
-#'
-#' @note "internal" transmittance is defined as the transmittance of the
-#'   material body itself, while "total" transmittance includes the effects of
-#'   surface reflectance on the ammount of light transmitted.
+#' @rdname source.spct
 #'
 #' @export
-#'
-#' @family creation of spectral objects functions
 #'
 object.spct <- function(w.length, Rfr=NULL, Tfr=NULL,
                         Tfr.type=c("total", "internal"),
