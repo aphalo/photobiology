@@ -5,10 +5,10 @@
 #' Create new spectral objects.
 #'
 #' These fucntions can be used to create spectral objects derived from
-#' \code{generic.spct}. They take as arguments numeric vectors for the data
+#' \code{generic_spct}. They take as arguments numeric vectors for the data
 #' character scalars for attributes, and a logical flag.
 #'
-#' @usage source.spct(w.length, s.e.irrad=NULL, s.q.irrad=NULL,
+#' @usage source_spct(w.length, s.e.irrad=NULL, s.q.irrad=NULL,
 #'   time.unit=c("second", "day"), bswf.used = c("none", "unknown"),
 #'   comment=NULL, strict.range=TRUE)
 #'
@@ -26,13 +26,13 @@
 #' @param strict.range logical Flag indicating whether off-range values result
 #'   in an error instead of a warning.
 #'
-#' @return An source.spct object
+#' @return An source_spct object
 #'
 #' @export
 #'
 #' @family creation of spectral objects functions
 #'
-#' @rdname source.spct
+#' @rdname source_spct
 #'
 #' @note The functions can be used to add only one spectral quantity to a
 #'   spectral object. Some of the functions have different arguments, for the
@@ -40,7 +40,7 @@
 #'   supplied to only one of these formal paprameters in a given call to the
 #'   fucntion.
 #'
-source.spct <- function(w.length, s.e.irrad=NULL, s.q.irrad=NULL,
+source_spct <- function(w.length, s.e.irrad=NULL, s.q.irrad=NULL,
                         time.unit=c("second", "day"), bswf.used = c("none", "unknown"),
                         comment=NULL, strict.range=TRUE) {
   if (is.null(s.q.irrad) && (is.numeric(s.e.irrad))) {
@@ -60,7 +60,7 @@ source.spct <- function(w.length, s.e.irrad=NULL, s.q.irrad=NULL,
   return(out.spct)
 }
 
-#' @rdname source.spct
+#' @rdname source_spct
 #'
 #' @param s.e.response numeric vecror with spectral energy irradiance in W m-2
 #'   nm-1 or J d-1 m-2 nm-1
@@ -69,7 +69,7 @@ source.spct <- function(w.length, s.e.irrad=NULL, s.q.irrad=NULL,
 #'
 #' @export
 #'
-response.spct <- function(w.length, s.e.response=NULL, s.q.response=NULL, time.unit=c("second", "day"), comment=NULL) {
+response_spct <- function(w.length, s.e.response=NULL, s.q.response=NULL, time.unit=c("second", "day"), comment=NULL) {
   if (is.null(s.q.response) && (is.numeric(s.e.response))) {
     out.spct <- data.table(w.length, s.e.response)
   } else if (is.null(s.e.response) && (is.numeric(s.q.response))) {
@@ -85,7 +85,7 @@ response.spct <- function(w.length, s.e.response=NULL, s.q.response=NULL, time.u
   return(out.spct)
 }
 
-#' @rdname source.spct
+#' @rdname source_spct
 #'
 #' @param Tfr numeric vector with spectral transmittance as fraction of one
 #' @param Tpc numeric vector with spectral transmittance as percent values
@@ -99,7 +99,7 @@ response.spct <- function(w.length, s.e.response=NULL, s.q.response=NULL, time.u
 #'
 #' @export
 #'
-filter.spct <- function(w.length, Tfr=NULL, Tpc=NULL, A=NULL, Tfr.type=c("total", "internal"),
+filter_spct <- function(w.length, Tfr=NULL, Tpc=NULL, A=NULL, Tfr.type=c("total", "internal"),
                         comment=NULL, strict.range=TRUE) {
   if (is.null(Tpc) && is.null(A) && is.numeric(Tfr)) {
     out.spct <- data.table(w.length, Tfr)
@@ -118,14 +118,14 @@ filter.spct <- function(w.length, Tfr=NULL, Tpc=NULL, A=NULL, Tfr.type=c("total"
   return(out.spct)
 }
 
-#' @rdname source.spct
+#' @rdname source_spct
 #'
 #' @param Rfr numeric vector with spectral refletance as fraction of one
 #' @param Rpc numeric vector with spectral reflectance as percent values
 #'
 #' @export
 #'
-reflector.spct <- function(w.length, Rfr=NULL, Rpc=NULL, comment=NULL, strict.range=TRUE) {
+reflector_spct <- function(w.length, Rfr=NULL, Rpc=NULL, comment=NULL, strict.range=TRUE) {
   if (is.null(Rpc) && is.numeric(Rfr)) {
     out.spct <- data.table(w.length, Rfr)
   } else if (is.null(Rfr) && is.numeric(Rpc)) {
@@ -141,11 +141,11 @@ reflector.spct <- function(w.length, Rfr=NULL, Rpc=NULL, comment=NULL, strict.ra
   return(out.spct)
 }
 
-#' @rdname source.spct
+#' @rdname source_spct
 #'
 #' @export
 #'
-object.spct <- function(w.length, Rfr=NULL, Tfr=NULL,
+object_spct <- function(w.length, Rfr=NULL, Tfr=NULL,
                         Tfr.type=c("total", "internal"),
                         Rfr.type=c("total", "specular"),
                         comment=NULL, strict.range=TRUE) {
@@ -164,20 +164,20 @@ object.spct <- function(w.length, Rfr=NULL, Tfr=NULL,
 # merge -------------------------------------------------------------------
 
 
-#' Merge two generic.spct objects
+#' Merge two generic_spct objects
 #'
 #' Relatively quick merge of two spct objects based on w.length.
 #'
-#' @param x generic.spct (or derived) objects to be merged
-#' @param y generic.spct (or derived) objects to be merged
+#' @param x generic_spct (or derived) objects to be merged
+#' @param y generic_spct (or derived) objects to be merged
 #' @param by a vector of shared column names in \code{x} and \code{y} to merge on;
 #' \code{by} defaults to \code{w.length}.
 #' @param ... other arguments passed to \code{merge.data.table}
 #'
 #' @note if the class of x and y is the same, it is preserved, but
-#' if it differs \code{generic.spct} is used for the returned value,
-#' except when x and y, are one each of classes reflector.spct and
-#' filter.spct in which case an object.spct is returned.
+#' if it differs \code{generic_spct} is used for the returned value,
+#' except when x and y, are one each of classes reflector_spct and
+#' filter_spct in which case an object_spct is returned.
 #' In the current implementation only wavelengths values shared
 #' by x and y are preserved.
 #'
@@ -185,15 +185,15 @@ object.spct <- function(w.length, Rfr=NULL, Tfr=NULL,
 #'
 #' @export
 #'
-merge.generic.spct <- function(x, y, by = "w.length", ...) {
-  if (identical(class.spct(x), class.spct(y))) {
+merge.generic_spct <- function(x, y, by = "w.length", ...) {
+  if (identical(class_spct(x), class_spct(y))) {
     z <- data.table:::merge.data.table(x, y, by = by, ...)
     setattr(z, "class", class(x))
-  } else if (is.filter.spct(x) && is.reflector.spct(y)) {
+  } else if (is_filter_spct(x) && is_reflector_spct(y)) {
     xx <- A2T(x, action = "replace", byref = FALSE)
     z <- data.table:::merge.data.table(xx, y, by = "w.length", ...)
     setObjectSpct(z, Tfr.type = getTfrType(x), Rfr.type = getRfrType(y))
-  } else if (is.reflector.spct(x) && is.filter.spct(y)) {
+  } else if (is_reflector_spct(x) && is_filter_spct(y)) {
     yy <- A2T(y, action = "replace", byref = FALSE)
     z <- data.table:::merge.data.table(xx, yy, by = "w.length", ...)
     setObjectSpct(z, Tfr.type = getTfrType(y), Rfr.type = getRfrType(x))
@@ -204,11 +204,11 @@ merge.generic.spct <- function(x, y, by = "w.length", ...) {
   new.comment <- paste("Merged spectrum\ncomment(x):\n",
                        comment(x),
                        "\nclass: ",
-                       class.spct(x),
+                       class_spct(x),
                        "\n\ncomment(y):\n",
                        comment(y),
                        "\nclass: ",
-                       class.spct(y))
+                       class_spct(y))
   setattr(z, "comment", new.comment)
   return(z)
 }

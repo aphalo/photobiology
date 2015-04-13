@@ -67,13 +67,13 @@ irrad.default <- function(spct, w.band, unit.out, quantity, wb.trim,
   return(NA)
 }
 
-#' @describeIn irrad  Calculates irradiance from a \code{source.spct}
+#' @describeIn irrad  Calculates irradiance from a \code{source_spct}
 #'   object.
 #'
-#' @method irrad source.spct
+#' @method irrad source_spct
 #' @export
 #'
-irrad.source.spct <-
+irrad.source_spct <-
   function(spct, w.band=NULL,
            unit.out=getOption("photobiology.radiation.unit", default="energy"),
            quantity="total",
@@ -101,7 +101,7 @@ irrad.source.spct <-
     if (is.null(w.band)) {
       w.band <- waveband(spct_x)
     }
-    if (is.waveband(w.band)) {
+    if (is_waveband(w.band)) {
       # if the argument is a single w.band, we enclose it in a list
       # so that the for loop works as expected.This is a bit of a
       # cludge but lets us avoid treating it as a special case
@@ -142,7 +142,7 @@ irrad.source.spct <-
       }
     }
 
-    # "source.spct" objects are not guaranteed to contain spectral irradiance
+    # "source_spct" objects are not guaranteed to contain spectral irradiance
     # expressed in the needed type of scale, if the needed one is missing
     # we add the missing it.
     # As spectra are passed by reference the changes propagate to the argument
@@ -159,18 +159,18 @@ irrad.source.spct <-
     # possibly weighted depending on the waveband definition
     irrad <- numeric(wb.number)
     i <- 0L
-    is.effective.spectrum <- is.effective(spct)
+    is_effective.spectrum <- is_effective(spct)
     for (wb in w.band) {
       i <- i + 1L
       # get names from wb if needed
       if (wb.name[i] == "") {
         wb.name[i] <- wb$name
       }
-      if (is.effective.spectrum && is.effective(wb)) {
+      if (is_effective.spectrum && is_effective(wb)) {
         warning("Effective spectral irradiance is not compatible with a BSWF: ", wb.name[i])
         irrad[i] <- NA
       } else {
-        if (is.effective.spectrum) {
+        if (is_effective.spectrum) {
           wb.name[i] <- paste(getBSWFUsed(spct), "*", wb.name[i])
         }
         # calculate the multipliers
@@ -186,7 +186,7 @@ irrad.source.spct <-
       }
     }
     if (quantity %in% c("contribution", "contribution.pc")) {
-      if (any(sapply(w.band, is.effective))) {
+      if (any(sapply(w.band, is_effective))) {
         warning("'quantity '", quantity, "' not supported when using BSWFs, returning 'total' instead")
         quantity <- "total"
       } else {
@@ -198,7 +198,7 @@ irrad.source.spct <-
         }
       }
     } else if (quantity %in% c("relative", "relative.pc")) {
-      if (any(sapply(w.band, is.effective))) {
+      if (any(sapply(w.band, is_effective))) {
         warning("'quantity '", quantity, "' not supported when using BSWFs, returning 'total' instead")
         quantity <- "total"
       } else {
@@ -220,7 +220,7 @@ irrad.source.spct <-
     }
     names(irrad) <- paste(names(irrad), wb.name)
     setattr(irrad, "time.unit", getTimeUnit(spct_x))
-    if (is.effective(spct_x)) {
+    if (is_effective(spct_x)) {
       setattr(irrad, "radiation.unit",
               paste(unit.out, "irradiance", quantity, "effective:", getBSWFUsed(spct_x)))
     } else {
@@ -230,7 +230,7 @@ irrad.source.spct <-
   }
 
 #' @keywords internal
-irrad_spct <- irrad.source.spct
+irrad_spct <- irrad.source_spct
 
 # energy irradiance -------------------------------------------------------
 
@@ -290,11 +290,11 @@ e_irrad.default <- function(spct, w.band, quantity, wb.trim, use.cached.mult, us
   return(NA)
 }
 
-#' @describeIn e_irrad  Calculates energy irradiance from a \code{source.spct}
+#' @describeIn e_irrad  Calculates energy irradiance from a \code{source_spct}
 #'   object.
 #' @export
 #'
-e_irrad.source.spct <-
+e_irrad.source_spct <-
   function(spct, w.band=NULL,
            quantity="total",
            wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
@@ -363,12 +363,12 @@ q_irrad.default <- function(spct, w.band, quantity, wb.trim, use.cached.mult, us
   return(NA)
 }
 
-#' @describeIn q_irrad  Calculates photon irradiance from a \code{source.spct}
+#' @describeIn q_irrad  Calculates photon irradiance from a \code{source_spct}
 #'   object.
 #'
 #' @export
 #'
-q_irrad.source.spct <-
+q_irrad.source_spct <-
   function(spct, w.band=NULL,
            quantity="total",
            wb.trim = getOption("photobiology.waveband.trim", default =TRUE),

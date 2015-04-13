@@ -1,7 +1,7 @@
 #' Calculate summary absorptance from spectral data.
 #'
 #' Function to calculate the mean, total, or other summary of absorptance for
-#' spectral data stored in a \code{filter.spct} or in an \code{object.spct}.
+#' spectral data stored in a \code{filter_spct} or in an \code{object_spct}.
 #' Absorptance is a different quantity than absorbance.
 #'
 #' @usage absorptance(spct, w.band, quantity, wb.trim, use.hinges)
@@ -43,7 +43,7 @@ absorptance.default <- function(spct, w.band, quantity, wb.trim, use.hinges) {
 #'
 #' @export
 #'
-absorptance.object.spct <-
+absorptance.object_spct <-
   function(spct, w.band=NULL, quantity="average",
            wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
            use.hinges=getOption("photobiology.use.hinges", default=NULL) )  {
@@ -55,11 +55,11 @@ absorptance.object.spct <-
 #'
 #' @export
 #'
-absorptance.filter.spct <-
+absorptance.filter_spct <-
   function(spct, w.band=NULL, quantity="average",
            wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
            use.hinges=getOption("photobiology.use.hinges", default=NULL) ) {
-    spct <- as.object.spct(spct)
+    spct <- as_object_spct(spct)
     absorptance_spct(spct, w.band = w.band, quantity = quantity,
                     wb.trim = wb.trim, use.hinges = use.hinges)
   }
@@ -67,11 +67,11 @@ absorptance.filter.spct <-
 #' Calculate absorptance from spectral absorptance.
 #'
 #' This function returns the summary absorptance for a given
-#' waveband of a \code{object.spct} object
+#' waveband of a \code{object_spct} object
 #'
 #' @usage absorptance_spct(spct, w.band, quantity, wb.trim, use.hinges)
 #'
-#' @param spct object.spct
+#' @param spct object_spct
 #' @param w.band waveband or list of waveband objects The wavebands determine
 #'   the region(s) of the spectrum that are summarized.
 #' @param quantity character string
@@ -165,7 +165,7 @@ absorptance_spct <-
       i <- i + 1
       # we get names from wb if needed
       if (no_names_flag) {
-        if (is.effective(wb)) {
+        if (is_effective(wb)) {
           warning("Using only wavelength range from a weighted waveband object.")
           wb.name[i] <- paste("range", as.character(signif(min(wb), 4)), as.character(signif(max(wb), 4)), sep=".")
         } else {

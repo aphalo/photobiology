@@ -7,7 +7,7 @@
 #'
 #' @usage response(spct, w.band, unit.out, quantity, wb.trim, use.hinges )
 #'
-#' @param spct an R object of class "generic.spct"
+#' @param spct an R object of class "generic_spct"
 #' @param w.band waveband or list of waveband objects The waveband(s) determine
 #'   the region(s) of the spectrum that are summarized
 #' @param unit.out character Allowed values "energy", and "photon", or its alias
@@ -45,7 +45,7 @@ response.default <- function(spct, w.band, unit.out, quantity, wb.trim, use.hing
 #'
 #' @export
 #'
-response.response.spct <-
+response.response_spct <-
   function(spct, w.band=NULL,
            unit.out=getOption("photobiology.radiation.unit", default="energy"),
            quantity="total",
@@ -63,7 +63,7 @@ response.response.spct <-
 #'
 #' @usage response_spct(spct, w.band, unit.out, quantity, wb.trim, use.hinges)
 #'
-#' @param spct an object of class response.spct"
+#' @param spct an object of class response_spct"
 #' @param w.band a waveband object or a list of waveband objects
 #' @param unit.out character with allowed values "energy", and "photon", or its alias "quantum"
 #' @param quantity character
@@ -106,7 +106,7 @@ response_spct <-
     if (is.null(w.band)){
       w.band <- waveband(spct)
     }
-    if (is.waveband(w.band)) {
+    if (is_waveband(w.band)) {
       # if the argument is a single w.band, we enclose it in a list
       # so that the for loop works as expected. This is a bit of a
       # cludge but it let's us avoid treating it as a special case
@@ -152,7 +152,7 @@ response_spct <-
       i <- i + 1
       # we get names from wb if needed
       if (no_names_flag) {
-        if (is.effective(wb)) {
+        if (is_effective(wb)) {
           warning("Using only wavelength range from a weighted waveband object.")
           wb_name[i] <- paste("range", as.character(signif(min(wb), 4)), as.character(signif(max(wb), 4)), sep=".")
         } else {
@@ -163,7 +163,7 @@ response_spct <-
       response[i] <- integrate_spct(trim_spct(spct, wb, use.hinges=FALSE))
     }
     if (quantity %in% c("contribution", "contribution.pc")) {
-      if (any(sapply(w.band, is.effective))) {
+      if (any(sapply(w.band, is_effective))) {
         warning("'quantity '", quantity, "' not supported when using BSWFs, returning 'total' instead")
         quantity <- "total"
       } else {
@@ -175,7 +175,7 @@ response_spct <-
         }
       }
     } else if (quantity %in% c("relative", "relative.pc")) {
-      if (any(sapply(w.band, is.effective))) {
+      if (any(sapply(w.band, is_effective))) {
         warning("'quantity '", quantity, "' not supported when using BSWFs, returning 'total' instead")
         quantity <- "total"
       } else {
@@ -251,7 +251,7 @@ e_response.default <- function(spct, w.band, quantity, wb.trim, use.hinges) {
 #'
 #' @export
 #'
-e_response.response.spct <-
+e_response.response_spct <-
   function(spct, w.band=NULL, quantity="total",
            wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
            use.hinges=getOption("photobiology.use.hinges", default=NULL) ) {
@@ -309,7 +309,7 @@ q_response.default <- function(spct, w.band, quantity, wb.trim, use.hinges) {
 #'
 #' @export
 #'
-q_response.response.spct <-
+q_response.response_spct <-
   function(spct, w.band=NULL, quantity="total",
            wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
            use.hinges=getOption("photobiology.use.hinges", default=NULL) ) {

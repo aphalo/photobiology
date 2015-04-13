@@ -7,7 +7,7 @@
 #'   getOption("photobiology.use.cached.mult", default = FALSE),
 #'   use.hinges=getOption("photobiology.use.hinges", default=NULL))
 #'
-#' @param spct an object of class "source.spct"
+#' @param spct an object of class "source_spct"
 #' @param w.band.num waveband definition created with new_waveband()
 #' @param w.band.denom waveband definition created with new_waveband()
 #' @param use.cached.mult logical indicating whether multiplier values should be
@@ -66,7 +66,7 @@ q_ratio <-
 #'   getOption("photobiology.use.cached.mult", default = FALSE),
 #'   use.hinges=getOption("photobiology.use.hinges", default=NULL))
 #'
-#' @param spct asource.spct
+#' @param spct asource_spct
 #' @param w.band.num waveband or list of waveband objects
 #' @param w.band.denom waveband or list of waveband objects
 #' @param use.cached.mult logical Flag telling whether multiplier values should be
@@ -122,7 +122,7 @@ e_ratio <-
 #'   getOption("photobiology.use.cached.mult", default = FALSE),
 #'   use.hinges=getOption("photobiology.use.hinges", default=NULL) )
 #'
-#' @param spct source.spct
+#' @param spct source_spct
 #' @param w.band waveband or list of waveband objects
 #' @param use.cached.mult logical Flag telling whether multiplier values should be
 #'   cached between calls
@@ -177,7 +177,7 @@ qe_ratio <-
 #'   getOption("photobiology.use.cached.mult", default = FALSE),
 #'   use.hinges=getOption("photobiology.use.hinges", default=NULL) )
 #'
-#' @param spct source.spct
+#' @param spct source_spct
 #' @param w.band waveband or list of waveband objects
 #' @param use.cached.mult logical Flag telling whether multiplier values should
 #'   be cached between calls

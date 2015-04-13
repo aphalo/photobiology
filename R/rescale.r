@@ -33,7 +33,7 @@ Rescale.default <- function(x, ...) {
 #'                     f,
 #'                     ...)
 #'
-#' @param spct generic.spct The spectrum to be normalized
+#' @param spct generic_spct The spectrum to be normalized
 #' @param range an R object on which range() returns a vector of length 2,
 #' with min annd max wavelengths (nm)
 #' @param var.name character The name of the variable to Rescale
@@ -46,7 +46,7 @@ Rescale.default <- function(x, ...) {
 #'
 
 rescale_spct <- function(spct, range, var.name, f, ...) {
-  stopifnot(is.any.spct(spct), !is.null(var.name), length(var.name) == 1, var.name %in% names(spct))
+  stopifnot(is_any_spct(spct), !is.null(var.name), length(var.name) == 1, var.name %in% names(spct))
   tmp.spct <- trim_spct(spct, range)
   tmp.spct <- tmp.spct[ , .SD, .SDcols = c("w.length", var.name)]
   # rescaling needed
@@ -90,7 +90,7 @@ rescale_spct <- function(spct, range, var.name, f, ...) {
 #'
 #' @export
 #'
-Rescale.source.spct <- function(x,
+Rescale.source_spct <- function(x,
                                 ...,
                                 range = x,
                                 f = "mean",
@@ -116,7 +116,7 @@ Rescale.source.spct <- function(x,
 #'
 #' @export
 #'
-Rescale.response.spct <- function(x,
+Rescale.response_spct <- function(x,
                                   ...,
                                   range = x,
                                   f = "mean",
@@ -144,7 +144,7 @@ Rescale.response.spct <- function(x,
 #'
 #' @export
 #'
-Rescale.filter.spct <- function(x,
+Rescale.filter_spct <- function(x,
                                 ...,
                                 range = x,
                                 f = "mean",
@@ -170,7 +170,7 @@ Rescale.filter.spct <- function(x,
 #'
 #' @export
 #'
-Rescale.reflector.spct <- function(x,
+Rescale.reflector_spct <- function(x,
                                    ...,
                                    range = x,
                                    f = "mean",
@@ -186,7 +186,7 @@ Rescale.reflector.spct <- function(x,
 
 #' Query whether a generic spectrum has been rescaled.
 #'
-#' This function tests a \code{generic.spct} object for an attribute that
+#' This function tests a \code{generic_spct} object for an attribute that
 #' signals whether the spectral data has been rescled or not after the object
 #' was created.
 #'
@@ -195,13 +195,13 @@ Rescale.reflector.spct <- function(x,
 #' @param x An R object.
 #'
 #' @return A \code{logical} value. If \code{x} is not rescaled or \code{x} is
-#'   not a \code{generic.spct} object the value returned is \code{FALSE}.
+#'   not a \code{generic_spct} object the value returned is \code{FALSE}.
 #'
 #' @export
 #' @family rescaling functions
 #'
 is.rescaled <- function(x) {
-  if (!is.any.spct(x)) {
+  if (!is_any_spct(x)) {
     return(NA)
   }
   spct.attr <- attr(x, "rescaled", exact = TRUE)

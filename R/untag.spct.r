@@ -19,7 +19,7 @@ untag.default <- function(x, ...) {
   return(x)
 }
 
-#' @describeIn untag Specialization for generic.spct
+#' @describeIn untag Specialization for generic_spct
 #'
 #' @param byref logical indicating if new object will be created by reference or
 #'   by copy of x
@@ -31,7 +31,7 @@ untag.default <- function(x, ...) {
 #'
 #' @export
 #'
-untag.generic.spct <- function(x,
+untag.generic_spct <- function(x,
                                byref=TRUE, ...) {
   if (!byref) {
     x <- copy(x)
@@ -39,7 +39,7 @@ untag.generic.spct <- function(x,
   } else {
     name <- substitute(x)
   }
-  if (!is.tagged(x)) {
+  if (!is_tagged(x)) {
     return(x)
   }
   x[ , wl.color := NULL]

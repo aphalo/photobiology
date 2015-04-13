@@ -1,7 +1,7 @@
 #' Calculate summary reflectance from spectral data.
 #'
 #' Function to calculate the mean, total, or other summary of reflectance for
-#' spectral data stored in a \code{reflector.spct} or in an \code{object.spct}.
+#' spectral data stored in a \code{reflector_spct} or in an \code{object_spct}.
 #'
 #' @usage reflectance(spct, w.band, pc.out, quantity, wb.trim, use.hinges)
 #'
@@ -40,11 +40,11 @@ reflectance.default <- function(spct, w.band, pc.out, quantity, wb.trim, use.hin
   return(NA)
 }
 
-#' @describeIn reflectance Specialization for reflector.spct
+#' @describeIn reflectance Specialization for reflector_spct
 #'
 #' @export
 #'
-reflectance.reflector.spct <-
+reflectance.reflector_spct <-
   function(spct, w.band = NULL, pc.out = FALSE, quantity = "average",
            wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
            use.hinges=getOption("photobiology.use.hinges", default=NULL) ) {
@@ -54,11 +54,11 @@ reflectance.reflector.spct <-
                      use.hinges = use.hinges)
   }
 
-#' @describeIn reflectance Specialization for object.spct
+#' @describeIn reflectance Specialization for object_spct
 #'
 #' @export
 #'
-reflectance.object.spct <-
+reflectance.object_spct <-
   function(spct, w.band = NULL, pc.out = FALSE, quantity = "average",
            wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
            use.hinges=getOption("photobiology.use.hinges", default=NULL) ) {
@@ -75,7 +75,7 @@ reflectance.object.spct <-
 #'
 #' @usage reflectance_spct(spct, w.band, pc.out, quantity, wb.trim, use.hinges)
 #'
-#' @param spct an object of class generic.spct"
+#' @param spct an object of class generic_spct"
 #' @param w.band list of waveband definitions created with new_waveband()
 #' @param pc.out a logical indicating whether result should be a percentage or a
 #'   fraction of one
@@ -92,8 +92,8 @@ reflectance.object.spct <-
 reflectance_spct <-
   function(spct, w.band, pc.out, quantity, wb.trim, use.hinges){
     Rfr.type <- getRfrType(spct)
-    if (is.object.spct(spct)) {
-      spct <- as.reflector.spct(spct)
+    if (is_object_spct(spct)) {
+      spct <- as_reflector_spct(spct)
     } else {
       spct <- copy(spct)
     }
@@ -151,7 +151,7 @@ reflectance_spct <-
       i <- i + 1
       # we get names from wb if needed
       if (no_names_flag) {
-        if (is.effective(wb)) {
+        if (is_effective(wb)) {
           warning("Using only wavelength range from a weighted waveband object.")
           wb.name[i] <- paste("range", as.character(signif(min(wb), 4)), as.character(signif(max(wb), 4)), sep=".")
         } else {

@@ -3,8 +3,20 @@ TODO
 
 Add test cases for chroma.spct
 
-photobiology 0.5.20
+photobiology 0.6.0
 ===================
+
+I am reading the new book "R Packages", authored by Hadley Wickham, and I have
+found several things to improve in the package, especially with naming conventions
+and documentation. I have earlier followed "common practice" or tried to
+make names consistent with data.table. As the package has not yet been
+publicly released, I am taking this last chance I have of getting the
+naming conventions imporved.
+
+Major backwards-incompatible changes to function names to avoid method dispatch problems.
+All function and class names use underscores. Only S3 methods have dots, and only between
+method namne and class names. Although namy names have changed, they should be still
+easily recognizable to current users.
 
 Full overhaul of the documentation, using features of latest version of package roxygen2.
 Documentation for related functions is now on the same file, and most pages are cross-
@@ -48,7 +60,7 @@ the idea that a BSWF is used for quantifying radiation rather predicting a
 biological response. The result should remain as radiation and continue to
 be expressed in energy or photon based units. This has been fixed. Starting
 from the current version, if the waveband is used with the '*' operator is
-a BSWF (tested with function is.effective()) the resulting spectrum is tagged
+a BSWF (tested with function is_effective()) the resulting spectrum is tagged
 as being "effective". The irrad() methods for source.spct have been updated to
 'recognize' effective spectral irradiance when supplied as input.
 
@@ -234,7 +246,7 @@ The User Guide was updated to include examples of the use of split_bands().
 photobiology 0.5.3
 ===================
 
-Added function is.tagged() to easily test if an spectrum has been tagged for plotting.
+Added function is_tagged() to easily test if an spectrum has been tagged for plotting.
 Added function untag() to delete tag data from spectra.
 
 photobiology 0.5.2
@@ -337,7 +349,7 @@ Improved handling of names by split_wavebands() and improved the documentation.
 photobiology 0.4.7
 ===================
 
-Added function is.waveband().
+Added function is_waveband().
 
 photobiology 0.4.6
 ===================
@@ -349,7 +361,7 @@ photobiology 0.4.5
 
 Added waveband() constructor function.
 Fixed bug in reflectance_spct() and reflectance() functions.
-Fixed bug in class.spct().
+Fixed bug in class_spct().
 Revised the user guide to reflect all changes to the code done in the last few versions.
 
 photobiology 0.4.4
@@ -384,7 +396,7 @@ photobiology 0.4.00
 ===================
 
 Started new development branch.
-Added is.xxx.spct() functions for all classes defined and is.any.spct() and class.spct() functions to query class of spectral objects.
+Added is.xxx.spct() functions for all classes defined and is_any_spct() and class_spct() functions to query class of spectral objects.
 
 photobiology 0.3.16
 ===================

@@ -5,7 +5,7 @@
 #'
 #' @usage integrate_spct(spct)
 #'
-#' @param spct generic.spct
+#' @param spct generic_spct
 #'
 #' @return One or more numeric values with no change in scale factor: e.g. [W
 #'   m-2 nm-1] -> [W m-2]. Each value in the returned vector corresponds to a
@@ -37,7 +37,7 @@ integrate_spct <- function(spct) {
 #'
 #' @usage average_spct(spct)
 #'
-#' @param spct generic.spct
+#' @param spct generic_spct
 #'
 #' @return One or more numeric values with no change in scale factor: e.g. [W
 #'   m-2 nm-1] -> [W m-2 nm-1]. Each value in the returned vector corresponds to a
@@ -59,7 +59,7 @@ average_spct <- function(spct) {
 #'
 #' @usage interpolate_spct(spct, w.length.out=NULL, fill.value = NA, length.out=NULL)
 #'
-#' @param spct generic.spct
+#' @param spct generic_spct
 #' @param w.length.out numeric array of wavelengths (nm)
 #' @param fill.value a value to be assigned to out of range wavelengths
 #' @param length.out numeric value
@@ -99,9 +99,9 @@ interpolate_spct <- function(spct, w.length.out=NULL, fill.value=NA, length.out=
       spct <- smooth_spct(spct, method = "supsmu", strength = step.ratio * 1e-2)
     }
   }
-  class.spct <- class(spct)
+  class_spct <- class(spct)
   comment.spct <- comment(spct)
-  if  (is(spct, "source.spct")) {
+  if  (is(spct, "source_spct")) {
     time.unit.spct <- getTimeUnit(spct)
   }
   if (!is.null(length.out)  && length.out == 1L) {
@@ -152,20 +152,20 @@ interpolate_spct <- function(spct, w.length.out=NULL, fill.value=NA, length.out=
     }
   }
   setattr(new.spct, "comment", comment.spct)
-  if(class.spct[1] == "source.spct") {
+  if(class_spct[1] == "source_spct") {
     setSourceSpct(new.spct)
     if (!is.null(time.unit.spct)) {
       setTimeUnit(new.spct, time.unit.spct)
     }
-  } else if (class.spct[1] == "filter.spct") {
+  } else if (class_spct[1] == "filter_spct") {
     setFilterSpct(new.spct)
-  } else if (class.spct[1] == "reflector.spct") {
+  } else if (class_spct[1] == "reflector_spct") {
     setReflectorSpct(new.spct)
-  } else if (class.spct[1] == "response.spct") {
+  } else if (class_spct[1] == "response_spct") {
     setResponseSpct(new.spct)
-  } else if (class.spct[1] == "chroma.spct") {
+  } else if (class_spct[1] == "chroma_spct") {
     setChromaSpct(new.spct)
-  } else if (class.spct[1] == "generic.spct") {
+  } else if (class_spct[1] == "generic_spct") {
     setGenericSpct(new.spct)
   }
   setattr(new.spct, "comment", comment.spct)

@@ -9,7 +9,7 @@
 #'                                pc.in=TRUE, pc.out=FALSE, div=1.0)
 #'
 #' @param w.length.out numeric vector of wavelengths (nm) for output
-#' @param filter a character string giving the name of a filter data set, or an object of class "filter.spct"
+#' @param filter a character string giving the name of a filter data set, or an object of class "filter_spct"
 #'   default is 'clear.spct' a clear filter (T = 1.0)
 #' @param w.length.in numeric vector of wavelengths (nm) for input
 #' @param transmittance.in numeric vector of spectral transmittance value (as percent)
@@ -50,8 +50,8 @@ calc_filter_multipliers <- function(w.length.out,
     } else {
       filter.object <- filter
     }
-    if (!is(filter.object, "filter.spct")) {
-      warning('Object is not of class "filter.spct".')
+    if (!is(filter.object, "filter_spct")) {
+      warning('Object is not of class "filter_spct".')
       return(NA)
     }
     if (pc.out) div <- div / 100.0 # we use fractional Tfr from filter object

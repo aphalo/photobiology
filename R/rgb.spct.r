@@ -4,8 +4,8 @@
 #'
 #' @usage rgb_spct(spct, sens=ciexyzCMF2.spct, color.name=NULL)
 #'
-#' @param spct an object of class "source.spct"
-#' @param sens a chroma.spct object with variables w.length, x, y, and z, giving
+#' @param spct an object of class "source_spct"
+#' @param sens a chroma_spct object with variables w.length, x, y, and z, giving
 #'   the CC or CMF definition (default is the proposed human CMF according to
 #'   CIE 2006.)
 #' @param color.name character string for naming the rgb color definition
@@ -21,7 +21,7 @@
 #'
 rgb_spct <-
   function(spct, sens=ciexyzCMF2.spct, color.name=NULL){
-    if (is(spct, "source.spct")) {
+    if (is(spct, "source_spct")) {
       return(s_e_irrad2rgb(spct$w.length, spct$s.e.irrad, sens=sens, color.name=color.name))
     } else {
       return(NA)

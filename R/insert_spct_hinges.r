@@ -7,11 +7,11 @@
 ##'
 ##' @usage insert_spct_hinges(spct, hinges=NULL)
 ##'
-##' @param spct an object of class "generic.spct"
+##' @param spct an object of class "generic_spct"
 ##' @param hinges a numeric array giving the wavelengths (nm) at which the s.irrad should be inserted by
 ##' interpolation, no interpolation is indicated by an empty array (numeric(0))
 ##'
-##' @return a generic.spct or a derived type with variables \code{w.length} and other numeric variables.
+##' @return a generic_spct or a derived type with variables \code{w.length} and other numeric variables.
 ##' @keywords manip misc
 ##' @export
 ##' @examples
@@ -21,8 +21,8 @@
 ##'                    c(199.99,200.00,399.50,399.99,400.00,699.99,
 ##'                          700.00,799.99,1000.00))
 insert_spct_hinges <- function(spct, hinges=NULL) {
-  if (!is.any.spct(spct)) {
-    warning("Only objects derived from 'generic.spct' are supported")
+  if (!is_any_spct(spct)) {
+    warning("Only objects derived from 'generic_spct' are supported")
     return(spct)
   }
   if (is.null(hinges)) {
@@ -39,16 +39,16 @@ insert_spct_hinges <- function(spct, hinges=NULL) {
     names.data <- names.spct != "w.length"
     idx.wl <- which(!names.data)
     idx.data <- which(names.data)
-    class.spct <- class(spct)
+    class_spct <- class(spct)
     comment.spct <- comment(spct)
-    if (is.source.spct(spct) || is.response.spct(spct)) {
+    if (is_source_spct(spct) || is_response_spct(spct)) {
       time.unit <- getTimeUnit(spct)
       bswf.used <- getBSWFUsed(spct)
     }
-    if (is.filter.spct(spct) || is.object.spct(spct)) {
+    if (is_filter_spct(spct) || is_object_spct(spct)) {
       Tfr.type <- getTfrType(spct)
     }
-    if (is.reflector.spct(spct) || is.object.spct(spct)) {
+    if (is_reflector_spct(spct) || is_object_spct(spct)) {
       Rfr.type <- getRfrType(spct)
     }
     new.spct <- data.table(w.length = new.w.length)
@@ -61,19 +61,19 @@ insert_spct_hinges <- function(spct, hinges=NULL) {
         new.spct[ , names.spct[data.col] := NA]
       }
     }
-    if(class.spct[1] == "source.spct") {
+    if(class_spct[1] == "source_spct") {
       setSourceSpct(new.spct, time.unit = time.unit, bswf.used = bswf.used)
-    } else if (class.spct[1] == "filter.spct") {
+    } else if (class_spct[1] == "filter_spct") {
       setFilterSpct(new.spct, Tfr.type = Tfr.type)
-    } else if (class.spct[1] == "reflector.spct") {
+    } else if (class_spct[1] == "reflector_spct") {
       setReflectorSpct(new.spct, Rfr.type = Rfr.type)
-    } else if (class.spct[1] == "object.spct") {
+    } else if (class_spct[1] == "object_spct") {
       setObjectSpct(new.spct, Tfr.type = Tfr.type, Rfr.type = Rfr.type)
-    } else if (class.spct[1] == "response.spct") {
+    } else if (class_spct[1] == "response_spct") {
       setResponseSpct(new.spct, time.unit = time.unit)
-    } else if (class.spct[1] == "chroma.spct") {
+    } else if (class_spct[1] == "chroma_spct") {
       setChromaSpct(new.spct)
-    } else if (class.spct[1] == "generic.spct") {
+    } else if (class_spct[1] == "generic_spct") {
       setGenericSpct(new.spct)
     }
     setattr(new.spct, "comment", comment.spct)

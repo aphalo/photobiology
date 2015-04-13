@@ -16,7 +16,7 @@
 #'
 #' @docType data
 #' @keywords datasets
-#' @format A data-frame- and data-table compatible "source.spct" object with 508 rows and 3 variables
+#' @format A data-frame- and data-table compatible "source_spct" object with 508 rows and 3 variables
 #' @name sun.spct
 #' @aliases sun.data sun.dt sun.spct
 NULL
@@ -36,7 +36,7 @@ NULL
 #' @author Anders K. Lindfors (data)
 #' @docType data
 #' @keywords datasets
-#' @format A data-frame- and data-table compatible "source.spct" object with 511 rows and 3 variables
+#' @format A data-frame- and data-table compatible "source_spct" object with 511 rows and 3 variables
 #' @name sun.daily.spct
 #' @aliases sun.daily.data sun.daily.dt
 NULL

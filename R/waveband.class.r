@@ -247,7 +247,7 @@ normalization.waveband <- function(x) {
   return(ifelse(is.null(x$norm), NA, x$norm))
 }
 
-# is.effective -----------------------------------------------------------
+# is_effective -----------------------------------------------------------
 
 #' Is an R object "effective".
 #'
@@ -258,34 +258,34 @@ normalization.waveband <- function(x) {
 #'
 #' @return A \code{logical}.
 #'
-#' @export is.effective
+#' @export is_effective
 #'
 #' @family waveband attributes
 #'
-is.effective <- function(x) UseMethod("is.effective")
+is_effective <- function(x) UseMethod("is_effective")
 
-#' @describeIn is.effective Default method.
+#' @describeIn is_effective Default method.
 #'
 #' @export
 #'
-is.effective.default <- function(x) {
+is_effective.default <- function(x) {
   return(NA)
 }
 
-#' @describeIn is.effective Is a \code{waveband} object defining a method for
+#' @describeIn is_effective Is a \code{waveband} object defining a method for
 #'   calcualtaing effective irradiance.
 #'
 #' @export
 #'
-is.effective.waveband <- function(x) {
+is_effective.waveband <- function(x) {
   return(x$weight != "none")
 }
 
-#' @describeIn is.effective Does a \code{source.spct} object contain effective spectral irradiance values.
+#' @describeIn is_effective Does a \code{source_spct} object contain effective spectral irradiance values.
 #'
 #' @export
 #'
-is.effective.source.spct <- function(x) {
+is_effective.source_spct <- function(x) {
   bswf.used <- getBSWFUsed(x)
   return( !is.null(bswf.used) && (bswf.used != "none") )
 }

@@ -16,7 +16,7 @@
 #'
 #' @param w.length numeric array of wavelengths (nm)
 #' @param s.e.irrad numeric array of spectral irradiance values
-#' @param sens a chroma.spct object with variables w.length, x, y, and z, giving
+#' @param sens a chroma_spct object with variables w.length, x, y, and z, giving
 #'   the CC or CMF definition (default is the proposed human CMF according to
 #'   CIE 2006.)
 #' @param color.name character string for naming the rgb color definition

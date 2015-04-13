@@ -103,7 +103,7 @@ The package provides two sets of functions for many operations: functions progra
 
 \subsection{Example spectral data}
 
-A few data objects are included in the package for use in examples. Two simulated solar spectra, \texttt{sun.spct} and \texttt{sun.daily.spct}, are include as \texttt{source.spct} objects. The same data are also included as data.frame
+A few data objects are included in the package for use in examples. Two simulated solar spectra, \texttt{sun.spct} and \texttt{sun.daily.spct}, are include as \texttt{source\_spct} objects. The same data are also included as data.frame
 objects. Chromaticity data for humans are also included\ldots
 
 \subsection{Using numeric vectors}
@@ -114,7 +114,7 @@ It is usual to `group' these two (or more) vectors into a data frame. For vector
 
 \subsection{Using `spectra' objects}
 
-This package defines a family of objects based on data tables (data frame compatible objects) which impose some restrictions on the naming of the vectors, something that allows the second set of functions to `find' the data when passed one of these objects as argument. In addition, as the data is checked when the object is built, there is no need to test for the validity of the data each time a calculation is carried out. The other advantage of using \texttt{spct} objects, is that specialized versions of generic functions like \texttt{print} and operators like \texttt{+} can be defined for spectra. \texttt{\_\_\_.spct} objects are derived from data.table objects, which in turn are derived from data.frame objects. In this package we define a \textit{generic} spectrum type of object, derived from data table, from which specialized types of spectra are derived. This `parenthood' hierarchy means that spectra objects can be used almost anywhere where a \texttt{data.frame} or \texttt{data.table} is expected. Many functions defined in package \texttt{data.table} are useful when working with spectra.
+This package defines a family of objects based on data tables (data frame compatible objects) which impose some restrictions on the naming of the vectors, something that allows the second set of functions to `find' the data when passed one of these objects as argument. In addition, as the data is checked when the object is built, there is no need to test for the validity of the data each time a calculation is carried out. The other advantage of using \texttt{spct} objects, is that specialized versions of generic functions like \texttt{print} and operators like \texttt{+} can be defined for spectra. \texttt{\_\_\_spct} objects are derived from \texttt{data.table} objects, which in turn are derived from data.frame objects. In this package we define a \textit{generic} spectrum type of object, derived from data table, from which specialized types of spectra are derived. This `parenthood' hierarchy means that spectra objects can be used almost anywhere where a \texttt{data.frame} or \texttt{data.table} is expected. Many functions defined in package \texttt{data.table} are useful when working with spectra.
 %, so that in most cases there is no need to explicitly include \texttt{library(data.table)} in your scripts.
 
 Although \texttt{data.tables} are syntactically compatible with \texttt{data.frames}, in some special cases the same code may have different semantics as data tables use references in some cases were data frames would use a copy of the data. In general, no such problems exist, and the different semantics only applies to data table specific syntax. If in doubt, to avoid problems, when you really intend to make a new copy of a spectrum, preserving the original object unchanged by later operations on the new `name', use function \texttt{copy} in addition to the assignment operator.
@@ -167,10 +167,10 @@ tail(a.dt, 2L)
 
 An assumption of the package is that wavelengths are always expressed in nanometres ($1~\Unit{nm} = 1 \cdot 10^{-9}\,\Unit{m}$). If the data to be analysed uses different units for wavelengths, e.g.\ Ångstrom ($1~\Unit{Å} = 1 \cdot 10^{-10}\,\Unit{m$}), the values need to be re-scaled before any calculations.
 
-Energy irradiances are assumed to be expressed in \watt and photon irradiances in \mol, that is to say using second as unit for time. This is the default, but it is possible to set the unit for time to day in the case of \texttt{source.spct} objects.
+Energy irradiances are assumed to be expressed in \watt and photon irradiances in \mol, that is to say using second as unit for time. This is the default, but it is possible to set the unit for time to day in the case of \texttt{source\_spct} objects.
 
 The default time unit used is \emph{second}, but \emph{day} can be used by supplying the argument \texttt{"day"}
-to a parameter of the constructor of \texttt{source.spct} objects.
+to a parameter of the constructor of \texttt{source\_spct} objects.
 
 \begin{framed}
 \noindent
@@ -203,16 +203,16 @@ There are basically three different approaches to the creation of spectra. The f
 Consistently with R design, the package provides `is' functions for querying the type of spectra objects.
 
 <<>>=
-is.source.spct(sun.spct)
-is.filter.spct(sun.spct)
-is.any.spct(sun.spct)
+is_source_spct(sun.spct)
+is_filter_spct(sun.spct)
+is_any_spct(sun.spct)
 @
 
 In addition function \texttt{class.spc} returns directly the spectrum-related class attributes.
 
 <<>>=
-class.spct(sun.spct)
-class.spct(1:10)
+class_spct(sun.spct)
+class_spct(1:10)
 @
 
 The built-in R function \texttt{class} returns all class attributes of an R object.
@@ -224,19 +224,19 @@ class(1:10)
 
 \subsubsection{Special attributes}
 
-\texttt{source.spct} objects have a \texttt{time.unit} attribute which can take one of two values \texttt{"second"} or \texttt{"day"}, the default is \texttt{"second"}. However, if the spectral data is for daily exposure, then the attribute should be set when the object is constructed. \texttt{source.spct} objects have a \texttt{bswf.used} attribute which can take one of several values \texttt{"none"}, \texttt{"unknown"} or the name of a BSWF. It is also possible to set the attributes for an existing object with functions \texttt{setTimeUnit} and \texttt{setBSWFUsed}, and to query the value of the attributes for an existing object with functions \texttt{getTimeUnit} and \texttt{getBSWFUsed}. The function \texttt{is.effective} returns \texttt{TRUE} if the value of the \texttt{bswf.used} is neither \texttt{NULL} nor equal to \texttt{"none"}.
+\texttt{source\_spct} objects have a \texttt{time.unit} attribute which can take one of two values \texttt{"second"} or \texttt{"day"}, the default is \texttt{"second"}. However, if the spectral data is for daily exposure, then the attribute should be set when the object is constructed. \texttt{source\_spct} objects have a \texttt{bswf.used} attribute which can take one of several values \texttt{"none"}, \texttt{"unknown"} or the name of a BSWF. It is also possible to set the attributes for an existing object with functions \texttt{setTimeUnit} and \texttt{setBSWFUsed}, and to query the value of the attributes for an existing object with functions \texttt{getTimeUnit} and \texttt{getBSWFUsed}. The function \texttt{is\_effective} returns \texttt{TRUE} if the value of the \texttt{bswf.used} is neither \texttt{NULL} nor equal to \texttt{"none"}.
 
 <<>>=
-is.effective(sun.spct)
-is.effective(sun.spct * VIS())
+is_effective(sun.spct)
+is_effective(sun.spct * VIS())
 getBSWFUsed(sun.spct * VIS())
-is.effective(sun.spct * CIE())
+is_effective(sun.spct * CIE())
 getBSWFUsed(sun.spct * CIE())
 @
 
-\texttt{filter.spct} and \texttt{object.spct} objects have a \texttt{Tfr.type} attribute which can take one of two values \texttt{"total"} or \texttt{"internal"}, the default being \texttt{"total"}. However, if the spectral transmittance or absorbance data is internal, meaning excluding the contribution of reflection, then the attribute should be set when the object is constructed. It is also possible to set the attribute for an existing object with function \texttt{setTfrType}, and to query the value of the attribute  for an existing object with function \texttt{setTfrType}.
+\texttt{filter\_spct} and \texttt{object\_spct} objects have a \texttt{Tfr.type} attribute which can take one of two values \texttt{"total"} or \texttt{"internal"}, the default being \texttt{"total"}. However, if the spectral transmittance or absorbance data is internal, meaning excluding the contribution of reflection, then the attribute should be set when the object is constructed. It is also possible to set the attribute for an existing object with function \texttt{setTfrType}, and to query the value of the attribute  for an existing object with function \texttt{setTfrType}.
 
-\texttt{reflector.spct} and \texttt{object.spct} objects have a \texttt{Rfr.type} attribute which can take one of two values \texttt{"total"} or \texttt{"specular"}, the default being \texttt{"total"}. However, if the spectral reflectance data is specular, meaning excluding the contribution of scattered reflection, then the attribute should be set when the object is constructed. It is also possible to set the attribute for an existing object with function \texttt{setRfrType}, and to query the value of the attribute for an existing object with function \texttt{setRfrType}.
+\texttt{reflector\_spct} and \texttt{object\_spct} objects have a \texttt{Rfr.type} attribute which can take one of two values \texttt{"total"} or \texttt{"specular"}, the default being \texttt{"total"}. However, if the spectral reflectance data is specular, meaning excluding the contribution of scattered reflection, then the attribute should be set when the object is constructed. It is also possible to set the attribute for an existing object with function \texttt{setRfrType}, and to query the value of the attribute for an existing object with function \texttt{setRfrType}.
 
 \begin{framed}
 \noindent
@@ -245,28 +245,28 @@ Spectral objects created with earlier versions of this package are missing some 
 
 \subsubsection{Setting the class of a spectrum object}\label{sec:set:spct}
 
-\texttt{generic.spct} objects can be created from data tables and data frames simply by setting them as such. However, a column called \texttt{w.length} must be present and contain wavelength values expressed in nm. Functions with names of the form \texttt{is.\_\_\_\_.spct} are defined for all classes of spectra and can take as arguments any R object. In addition function \texttt{is.any.spct} can use to query if an R object inherits from any of the classes of spectra defined in this package. Finally function \texttt{class.spct} works similarly to R's \texttt{class} functions but returns a vector containing only the names of spectra classes. The `set' functions keep unrecognised variables, and fill missing required variables with \texttt{NA}, except for \texttt{w.length}, which if missing triggers an error.
+\texttt{generic\_spct} objects can be created from data tables and data frames simply by setting them as such. However, a column called \texttt{w.length} must be present and contain wavelength values expressed in nm. Functions with names of the form \texttt{is\_\_\_\_\_.spct} are defined for all classes of spectra and can take as arguments any R object. In addition function \texttt{is\_any\_spct} can use to query if an R object inherits from any of the classes of spectra defined in this package. Finally function \texttt{class\_spct} works similarly to R's \texttt{class} functions but returns a vector containing only the names of spectra classes. The `set' functions keep unrecognised variables, and fill missing required variables with \texttt{NA}, except for \texttt{w.length}, which if missing triggers an error.
 
 We create a data.table object \texttt{a.spct}, and query its class.
 
 <<>>=
 a.spct <- data.table(w.length = 300:305, y = 1)
 class(a.spct)
-class.spct(a.spct)
-is.any.spct(a.spct)
+class_spct(a.spct)
+is_any_spct(a.spct)
 @
 
-We convert \texttt{a.spct} into a \texttt{generic.spct} object, and query its class.
+We convert \texttt{a.spct} into a \texttt{generic\_spct} object, and query its class.
 
 <<>>=
 setGenericSpct(a.spct)
 class(a.spct)
-class.spct(a.spct)
-is.generic.spct(a.spct)
+class_spct(a.spct)
+is_generic_spct(a.spct)
 a.spct
 @
 
-\texttt{source.spct} objects can be created from data tables, data frames, and \texttt{generic.spct} simply by setting them as such. However, columns called \texttt{w.length} (wavelength values expressed in nm) and \texttt{s.e.irrad} (\wattnm) or \texttt{s.q.irrad} (\molnm) must be present.
+\texttt{source\_spct} objects can be created from data tables, data frames, and \texttt{generic\_spct} simply by setting them as such. However, columns called \texttt{w.length} (wavelength values expressed in nm) and \texttt{s.e.irrad} (\wattnm) or \texttt{s.q.irrad} (\molnm) must be present.
 
 <<>>=
 b.spct <- setSourceSpct(data.table(w.length = 300:305, s.e.irrad = 1))
@@ -286,7 +286,7 @@ class(b.d.spct)
 b.d.spct
 @
 
-\texttt{filter.spct} objects can be created from data tables, data frames, and \texttt{generic.spct} simply by setting them as such. However, columns called \texttt{w.length} (wavelength values expressed in nm) and \texttt{Tpc} (T\%), \texttt{Tfr} (T as fraction of 1) and\textbackslash or \texttt{A} (absorbance ($\log_{10}$ based)) must be present.
+\texttt{filter\_spct} objects can be created from data tables, data frames, and \texttt{generic\_spct} simply by setting them as such. However, columns called \texttt{w.length} (wavelength values expressed in nm) and \texttt{Tpc} (T\%), \texttt{Tfr} (T as fraction of 1) and\textbackslash or \texttt{A} (absorbance ($\log_{10}$ based)) must be present.
 
 <<>>=
 c.spct <- setFilterSpct(data.table(w.length = 300:305, Tfr = 1))
@@ -304,7 +304,7 @@ class(c.i.spct)
 c.i.spct
 @
 
-\texttt{reflector.spct} objects can be created from data tables, data frames, and \texttt{generic.spct} simply by setting them as such. However, columns called \texttt{w.length} (wavelength values expressed in nm) and \texttt{Rpc} (R\%), and\textbackslash or \texttt{Rfr} (R as fraction of 1) must be present.
+\texttt{reflector\_spct} objects can be created from data tables, data frames, and \texttt{generic\_spct} simply by setting them as such. However, columns called \texttt{w.length} (wavelength values expressed in nm) and \texttt{Rpc} (R\%), and\textbackslash or \texttt{Rfr} (R as fraction of 1) must be present.
 
 <<>>=
 d.spct <- setReflectorSpct(data.table(w.length = 300:305, Rfr = 1))
@@ -312,7 +312,7 @@ class(d.spct)
 d.spct
 @
 
-\texttt{object.spct} objects can be created from data tables, data frames, and \texttt{generic.spct} simply by setting them as such. However, columns called \texttt{w.length} (wavelength values expressed in nm), \texttt{Tfr} (Transmittance, T, as fraction of one), and\textbackslash or \texttt{Rfr} (Reflectance, R, as fraction of one) must be present.
+\texttt{object\_spct} objects can be created from data tables, data frames, and \texttt{generic\_spct} simply by setting them as such. However, columns called \texttt{w.length} (wavelength values expressed in nm), \texttt{Tfr} (Transmittance, T, as fraction of one), and\textbackslash or \texttt{Rfr} (Reflectance, R, as fraction of one) must be present.
 
 <<>>=
 e.spct <- setObjectSpct(data.table(w.length = 300:305, Tfr = 0.5, Rfr = 0.5))
@@ -320,7 +320,7 @@ class(e.spct)
 e.spct
 @
 
-\texttt{object.spct} objects can be also created by merging a \texttt{filter.spct} object and \texttt{reflector.spct} object if they share \texttt{w.length} values.
+\texttt{object\_spct} objects can be also created by merging a \texttt{filter\_spct} object and \texttt{reflector\_spct} object if they share \texttt{w.length} values.
 
 <<>>=
 merged.spct <- merge(c.spct, d.spct)
@@ -328,7 +328,7 @@ class(merged.spct)
 merged.spct
 @
 
-\texttt{chroma.spct} objects can be created from data tables, data frames, and \texttt{generic.spct} simply by setting them as such. However, columns called \texttt{w.length} (wavelength values expressed in nm) and \texttt{x}, \texttt{y} and \texttt{z} must be present, giving the trichromic chromaticity constants.
+\texttt{chroma\_spct} objects can be created from data tables, data frames, and \texttt{generic\_spct} simply by setting them as such. However, columns called \texttt{w.length} (wavelength values expressed in nm) and \texttt{x}, \texttt{y} and \texttt{z} must be present, giving the trichromic chromaticity constants.
 
 <<>>=
 e.spct <- setChromaSpct(data.table(w.length = 300:305, x = 1, y = 1, z = 1))
@@ -429,10 +429,10 @@ class(i.spct)
 
 Here we briefly describe the `as' functions, as what has been discussed above for `set' functions also applies to `as' functions, as they simply make a copy of their argument before calling the set functions, and then return this new object.
 
-We can make a `generic.spct' copy of any spectrum object.
+We can make a `generic\_spct' copy of any spectrum object.
 
 <<>>=
-j.spct <- as.generic.spct(sun.spct)
+j.spct <- as_generic_spct(sun.spct)
 class(j.spct)
 class(sun.spct)
 @
@@ -440,55 +440,55 @@ class(sun.spct)
 Or of a data frame.
 <<>>=
 k.df <- data.frame(wl = 400:410, anything = 1)
-k.spct <- as.generic.spct(k.df)
+k.spct <- as_generic_spct(k.df)
 class(k.spct)
 class(k.df)
 @
 
-Both \texttt{as.source.spct} and \texttt{as.filter.spct} accept an argument for setting the \texttt{time.unit} and \texttt{Tfr.type} attributes, respectively, with the same defaults as described above.
+Both \texttt{as\_source\_spct} and \texttt{as\_filter\_spct} accept an argument for setting the \texttt{time.unit} and \texttt{Tfr.type} attributes, respectively, with the same defaults as described above.
 
 \subsubsection{Using constructors}
 
 This approach is similar to using function \texttt{data.frame} to create a data frame, but in this case the names of the arguments are meaningful and convey information on the nature of the spectral data and basis of expression. In the examples below we supply a single value for the spectral data. This value gets recycled as is normal in R, but of course in real use it is more usual to supply a vector of the same length as the \texttt{w.length} vector.
 
 <<>>=
-s.spct <- source.spct(w.length = 300:305, s.e.irrad = 100)
-class.spct(s.spct)
+s.spct <- source_spct(w.length = 300:305, s.e.irrad = 100)
+class_spct(s.spct)
 s.spct
 @
 
 <<>>=
-s.spct <- source.spct(w.length = 300:305, s.q.irrad = 40, time.unit = "day")
-class.spct(s.spct)
+s.spct <- source_spct(w.length = 300:305, s.q.irrad = 40, time.unit = "day")
+class_spct(s.spct)
 s.spct
 @
 
 <<>>=
-l.spct <- filter.spct(w.length = 300:305, Tpc = 100)
-class.spct(l.spct)
+l.spct <- filter_spct(w.length = 300:305, Tpc = 100)
+class_spct(l.spct)
 l.spct
 @
 
 <<>>=
-l.spct <- filter.spct(w.length = 300:305, A = 2)
-class.spct(l.spct)
+l.spct <- filter_spct(w.length = 300:305, A = 2)
+class_spct(l.spct)
 l.spct
 @
 
 <<>>=
 wl1 <- 300:305
-m.spct <- reflector.spct(w.length = wl1, Rfr = 0.5)
-class.spct(m.spct)
+m.spct <- reflector_spct(w.length = wl1, Rfr = 0.5)
+class_spct(m.spct)
 m.spct
 @
 
 <<>>=
-l.spct <- response.spct(w.length = 300:305, s.e.response = 0.5)
-class.spct(l.spct)
+l.spct <- response_spct(w.length = 300:305, s.e.response = 0.5)
+class_spct(l.spct)
 l.spct
 @
 
-Function \texttt{source.spct} accepts an argument for setting the \texttt{time.unit}, and functions \texttt{filter.spct} and \texttt{object.spct} accept an argument for setting the \texttt{Tfr.type} attributes, with the same defaults as described above. Functions \texttt{source.spct}, \texttt{filter.spct}, \texttt{reflector.spct} and \texttt{object.spct} have a \texttt{strict.range} formal argument, that alters checks as described in section \ref{sec:set:spct} above.
+Function \texttt{source\_spct} accepts an argument for setting the \texttt{time.unit}, and functions \texttt{filter\_spct} and \texttt{object\_spct} accept an argument for setting the \texttt{Tfr.type} attributes, with the same defaults as described above. Functions \texttt{source\_spct}, \texttt{filter\_spct}, \texttt{reflector\_spct} and \texttt{object\_spct} have a \texttt{strict.range} formal argument, that alters checks as described in section \ref{sec:set:spct} above.
 
 \subsubsection{Row binding spectra}
 
@@ -557,7 +557,7 @@ b.spct
 b2.spct
 @
 
-For \texttt{filter.spct} objects functions \texttt{T2A} and \texttt{A2T} allow conversion between spectral transmittance and spectral absorbance and vice versa.
+For \texttt{filter\_spct} objects functions \texttt{T2A} and \texttt{A2T} allow conversion between spectral transmittance and spectral absorbance and vice versa.
 
 \subsection{Normalizing a spectrum}
 
@@ -688,7 +688,7 @@ Function \texttt{stepsize} computes the size of every single step in the spectru
 stepsize(sun_May_morning.spct)
 @
 
-Specialized definitions of \texttt{summary} and the corresponding \texttt{print} methods are available for spectral objects. In the case of \texttt{source.spct} objects the \texttt{time.unit} attribute makes it possible to print the summary using the correct units.
+Specialized definitions of \texttt{summary} and the corresponding \texttt{print} methods are available for spectral objects. In the case of \texttt{source\_spct} objects the \texttt{time.unit} attribute makes it possible to print the summary using the correct units.
 
 <<>>=
 summary(sun.spct)
@@ -771,21 +771,21 @@ split_bands(list(R = Red(), B = Blue()), length.out  =  2)
 split_bands(list(c(100, 150, 200), c(800, 825)), length.out = 1)
 @
 
-The function \texttt{is.waveband} can the used to query any R object.
+The function \texttt{is\_waveband} can the used to query any R object.
 
 <<>>=
-is.waveband(my_CIE_1)
-is.waveband(PAR())
-is.waveband(sun.spct)
+is_waveband(my_CIE_1)
+is_waveband(PAR())
+is_waveband(sun.spct)
 @
 
-The function \texttt{is.effective} can the used to query any R object.
+The function \texttt{is\_effective} can the used to query any R object.
 
 <<>>=
-is.effective(my_CIE_1)
-is.effective(GEN.G())
-is.effective(PAR())
-is.effective(sun.spct)
+is_effective(my_CIE_1)
+is_effective(GEN.G())
+is_effective(PAR())
+is_effective(sun.spct)
 @
 
 \subsection{Using operators with spectra}
@@ -793,7 +793,7 @@ is.effective(sun.spct)
 \subsubsection{Binary operators}
 
 The basic maths operators have definitions for spectra. It is possible to sum, subtract, multiply and divide spectra. These operators can be used even if the spectral data is on different arbitrary sets of wavelengths. Operators by default use values expressed in energy units. Only certain operations are meaningful for a given combination of
-objects belonging to different classes, and meaningless combinations return \texttt{NA} also issuing a warning (see Table \ref{tab:operators}). By default operations are carried out on spectral energy irradiance for \texttt{source.spct} objects and transmittance for \texttt{filter.spct} objects.
+objects belonging to different classes, and meaningless combinations return \texttt{NA} also issuing a warning (see Table \ref{tab:operators}). By default operations are carried out on spectral energy irradiance for \texttt{source\_spct} objects and transmittance for \texttt{filter\_spct} objects.
 
 \begin{table}
 \newcommand{\N}{\textcolor{red}{\small N}}
@@ -803,28 +803,28 @@ objects belonging to different classes, and meaningless combinations return \tex
 \toprule
 e1 & \verb|+| & \verb|-| & \verb|*| & \verb|/| & \verb|^| & e2 & result \\
 \midrule
-source.spct & \Y & \Y &\Y  & \Y & \Y & source.spct & source.spct \\
-filter.spct (T) & \N & \N & \Y & \Y  & \N & filter.spct & filter.spct \\
-filter.spct (A) & \Y & \Y & \N & \N  & \N & filter.spct & filter.spct \\
-reflector.spct & \N & \N & \Y &\Y  & \N & reflector.spct & reflector.spct \\
-object.spct & \N & \N & \N & \N &\N & object.spct & -- \\
-response.spct & \Y & \Y & \Y & \Y & \N & response.spct & response.spct \\
-chroma.spct & \Y  & \Y & \Y & \Y & \Y & chroma.spct & chroma.spct \\
+source\_spct & \Y & \Y &\Y  & \Y & \Y & source\_spct & source\_spct \\
+filter\_spct (T) & \N & \N & \Y & \Y  & \N & filter\_spct & filter\_spct \\
+filter\_spct (A) & \Y & \Y & \N & \N  & \N & filter\_spct & filter\_spct \\
+reflector\_spct & \N & \N & \Y &\Y  & \N & reflector\_spct & reflector\_spct \\
+object\_spct & \N & \N & \N & \N &\N & object\_spct & -- \\
+response\_spct & \Y & \Y & \Y & \Y & \N & response\_spct & response\_spct \\
+chroma\_spct & \Y  & \Y & \Y & \Y & \Y & chroma\_spct & chroma\_spct \\
 \midrule
-source.spct & \Y  & \Y &\Y  & \Y & \Y & numeric & source.spct \\
-filter.spct & \Y  &\Y  & \Y &\Y  & \Y & numeric & filter.spct \\
-reflector.spct & \Y &\Y  &\Y  &\Y  & \Y & numeric & reflector.spct \\
-object.spct & \N & \N & \N & \N &\N & numeric & -- \\
-response.spct & \Y  & \Y  & \Y  & \Y  & \Y & numeric & response.spct \\
-chroma.spct & \Y & \Y  & \Y & \Y  & \Y & numeric & chroma.spct \\
+source\_spct & \Y  & \Y &\Y  & \Y & \Y & numeric & source\_spct \\
+filter\_spct & \Y  &\Y  & \Y &\Y  & \Y & numeric & filter\_spct \\
+reflector\_spct & \Y &\Y  &\Y  &\Y  & \Y & numeric & reflector\_spct \\
+object\_spct & \N & \N & \N & \N &\N & numeric & -- \\
+response\_spct & \Y  & \Y  & \Y  & \Y  & \Y & numeric & response\_spct \\
+chroma\_spct & \Y & \Y  & \Y & \Y  & \Y & numeric & chroma\_spct \\
 \midrule
-source.spct & \N & \N & \Y &\Y  & \N & response.spct & response.spct \\
-source.spct & \N & \N & \Y  & \Y  & \N & filter.spct (T) & source.spct \\
-source.spct & \N & \N & \Y  & \Y & \N & filter.spct (A) & source.spct \\
-source.spct & \N & \N & \Y  & \Y  & \N & reflector.spct & source.spct \\
-source.spct & \N & \N &\N  & \N & \N & object.spct & -- \\
-source.spct & \N & \N &\Y  & \N & \N & waveband (no BSWF) & source.spct \\
-source.spct & \N & \N &\Y  & \N & \N & waveband (BSWF) & source.spct \\
+source\_spct & \N & \N & \Y &\Y  & \N & response\_spct & response\_spct \\
+source\_spct & \N & \N & \Y  & \Y  & \N & filter\_spct (T) & source\_spct \\
+source\_spct & \N & \N & \Y  & \Y & \N & filter\_spct (A) & source\_spct \\
+source\_spct & \N & \N & \Y  & \Y  & \N & reflector\_spct & source\_spct \\
+source\_spct & \N & \N &\N  & \N & \N & object\_spct & -- \\
+source\_spct & \N & \N &\Y  & \N & \N & waveband (no BSWF) & source\_spct \\
+source\_spct & \N & \N &\Y  & \N & \N & waveband (BSWF) & source\_spct \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -858,22 +858,22 @@ sun.spct * 2
 sun.spct * c(0,1)
 @
 
-There is one special case, for \texttt{chroma.spct}: if the numeric operand has length three, containing three \emph{named} values `x', `y' and `z', the corresponding value is used for each of the chromaticity `columns' in the \texttt{chroma.spct}. Un-named values or differently named values are not treated specially.
+There is one special case, for \texttt{chroma\_spct}: if the numeric operand has length three, containing three \emph{named} values `x', `y' and `z', the corresponding value is used for each of the chromaticity `columns' in the \texttt{chroma\_spct}. Un-named values or differently named values are not treated specially.
 
 Operators are also defined for operations between an spectrum and a \texttt{waveband} object. The next to code chunks demonstrate how the class of the result depends on whether the \texttt{waveband} object describes a range of wavelengths or a range of wavelengths plus a BSWF.
 
 <<>>=
-is.effective(UVB())
+is_effective(UVB())
 clipped.spct <- sun.spct * UVB()
-class.spct(clipped.spct)
+class_spct(clipped.spct)
 clipped.spct
 @
 
 <<>>=
-is.effective(CIE())
+is_effective(CIE())
 weighted.spct <- sun.spct * CIE()
-class.spct(weighted.spct)
-is.effective(weighted.spct)
+class_spct(weighted.spct)
+is_effective(weighted.spct)
 weighted.spct
 @
 
@@ -897,12 +897,12 @@ The most common mat functions, as well as unary minus and plus, are also impleme
 \toprule
 e1 & \verb|+| & \verb|-| & \verb|log()| & \verb|log10()| & \verb|exp()| & \verb|sqrt()| & result \\
 \midrule
-source.spct & \Y & \Y &\Y  & \Y & \Y & \Y & source.spct \\
-filter.spct & \Y & \Y & \Y & \Y  & \Y & \Y & filter.spct \\
-reflector.spct & \Y & \Y & \Y &\Y  & \Y & \Y & reflector.spct \\
-object.spct & \N & \N & \N & \N & \N & \N & -- \\
-response.spct & \Y & \Y & \Y & \Y & \Y & \Y & response.spct \\
-chroma.spct & \Y  & \Y & \Y & \Y & \Y & \Y & chroma.spct \\
+source\_spct & \Y & \Y &\Y  & \Y & \Y & \Y & source\_spct \\
+filter\_spct & \Y & \Y & \Y & \Y  & \Y & \Y & filter\_spct \\
+reflector\_spct & \Y & \Y & \Y &\Y  & \Y & \Y & reflector\_spct \\
+object\_spct & \N & \N & \N & \N & \N & \N & -- \\
+response\_spct & \Y & \Y & \Y & \Y & \Y & \Y & response\_spct \\
+chroma\_spct & \Y  & \Y & \Y & \Y & \Y & \Y & chroma\_spct \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -1178,7 +1178,7 @@ with(sun.data,
 
 \subsection{Calculating average transmittance, reflectance, absorptance and absorbance}
 
-The functions \texttt{transmittance}, and \texttt{absorbance} take \texttt{filter.spct} as argument, while function \texttt{reflectance} takes \texttt{reflector.spct} objects as argument. Functions \texttt{transmittance}, \texttt{reflectance} and \texttt{absorptance} are implemented for \texttt{object.spct}. They return as default an average value for these quantities \textbf{assuming} a light source with a flat spectral energy output. Values expressed as percentages can be obtained by setting argument \texttt{pc.out} to \texttt{TRUE}.
+The functions \texttt{transmittance}, and \texttt{absorbance} take \texttt{filter\_spct} as argument, while function \texttt{reflectance} takes \texttt{reflector\_spct} objects as argument. Functions \texttt{transmittance}, \texttt{reflectance} and \texttt{absorptance} are implemented for \texttt{object\_spct}. They return as default an average value for these quantities \textbf{assuming} a light source with a flat spectral energy output. Values expressed as percentages can be obtained by setting argument \texttt{pc.out} to \texttt{TRUE}.
 
 <<>>=
 transmittance(polyester.new.spct, list(UVB(), UVA(), PAR()))
@@ -1249,7 +1249,7 @@ irrad(sun.spct * polyester.new.spct, list(UVB(), UVA(), PAR()), wb.trim = TRUE) 
 
 \subsection{Calculating integrated response}
 
-The functions  \texttt{response}, \texttt{e\_response} and \texttt{q\_response} take response.spct objects as arguments, and return the integrated value for each waveband (integrated over wavelength) \textbf{assuming} a light source with a flat spectral energy or photon output respectively.
+The functions  \texttt{response}, \texttt{e\_response} and \texttt{q\_response} take response_spct objects as arguments, and return the integrated value for each waveband (integrated over wavelength) \textbf{assuming} a light source with a flat spectral energy or photon output respectively.
 
 If no waveband is supplied as argument, the whole spectrum is integrated.
 
@@ -1300,7 +1300,7 @@ q_response(sun.spct * KIPP_PQS1_PAR_quantum.spct, list(UVA(), PAR())) * 1e-6
 
 \subsection{Integrating a generic spectrum}
 
-In some cases we may want to integrate the values of arbitrary columns other than \texttt{w.length} in an spectral object. All spectral classes are derived from \texttt{generic.spct}, so the examples in this section apply to objects of any of the `child' spectral classes as well.
+In some cases we may want to integrate the values of arbitrary columns other than \texttt{w.length} in an spectral object. All spectral classes are derived from \texttt{generic\_spct}, so the examples in this section apply to objects of any of the `child' spectral classes as well.
 
 <<>>=
 integrate_spct(sun.spct)
@@ -1343,13 +1343,13 @@ wb2rect_spct(UV_bands())
 
 Function \code{wb2tagged\_spct} returns a tagged spectrum, with two rows for each waveband, corresponding to the low and high wavelength boundaries, while function \code{wb2rect\_spct} returns a spectrum with only one row per waveband, with \code{w.length} set to its midpoint but with additional columns  \code{xmin} and \code{xmax} corresponding to the low and high wavelength boundaries of the wavebands.
 
-Function \code{is.tagged} can be used to query if an spectrum is tagged or not, and function \code{untag} removes the tags.
+Function \code{is\_tagged} can be used to query if an spectrum is tagged or not, and function \code{untag} removes the tags.
 
 <<>>=
 tg.sun.spct
-is.tagged(tg.sun.spct)
+is_tagged(tg.sun.spct)
 untag(tg.sun.spct)
-is.tagged(tg.sun.spct)
+is_tagged(tg.sun.spct)
 @
 
 In the chuck above, we can see how this works, using in this case the default \code{byref = TRUE} which adds the tags in place, or ``by reference'', to the spct object supplied as argument.
@@ -1367,14 +1367,14 @@ This calculation is not very frequently used, but it is very instructive to look
 
 \subsubsection{Weighted spectral irradiance from spectrum objects}
 
-The multiplication operator is defined for operations between a \texttt{source.spct} and a \texttt{waveband}, so this is the easiest way of doing the calculations.
+The multiplication operator is defined for operations between a \texttt{source\_spct} and a \texttt{waveband}, so this is the easiest way of doing the calculations.
 
 <<>>=
 sun.CIE.spct <- sun.spct * CIE()
 sun.CIE.spct
 @
 
-We here plot, using \texttt{ggplot2}, weighted (in red) and unweighted irradiances using simulated solar spectral irradiance data stored as a source.spct object, and applying the BSWF weights on the fly.
+We here plot, using \texttt{ggplot2}, weighted (in red) and unweighted irradiances using simulated solar spectral irradiance data stored as a \texttt{source\_spct} object, and applying the BSWF weights on the fly.
 
 <<>>=
 ggplot(data = sun.spct, aes(x = w.length, y = s.e.irrad/max(s.e.irrad))) +
@@ -1530,13 +1530,13 @@ plot(smooth_spct(noisy.sun.spct, method = "supsmu", strength = 10))  +
 @
 
 
-Function \texttt{smooth\_spct} is generic with specializations for \texttt{source.spct}, \texttt{filter.spct}, \texttt{reflector.spct}, and \texttt{response.spct}.
+Function \texttt{smooth\_spct} is generic with specializations for \texttt{source\_spct}, \texttt{filter\_spct}, \texttt{reflector\_spct}, and \texttt{response\_spct}.
 
 \subsubsection{Parallel averaging and other parallel summaries}
 
-It is quite easy to calculate `parallel' summary quantities using \texttt{data.table} syntax and function \texttt{rbindspct}. However, one should be careful with the handling of \texttt{NA} values, and specially make sure that all spectra have values for spectral irradiance at the same wavelengths. Similar code to that given in this section, using \texttt{source.spct} objects, can be used for \texttt{filter.spct}, \texttt{reflector.spct}, and \texttt{response.spct} objects.
+It is quite easy to calculate `parallel' summary quantities using \texttt{data.table} syntax and function \texttt{rbindspct}. However, one should be careful with the handling of \texttt{NA} values, and specially make sure that all spectra have values for spectral irradiance at the same wavelengths. Similar code to that given in this section, using \texttt{source\_spct} objects, can be used for \texttt{filter\_spct}, \texttt{reflector\_spct}, and \texttt{response\_spct} objects.
 
-For the \texttt{source.spct} example we generate four independent noisy replicates of the same solar spectrum, to demonstrate parallel summaries. Under normal use we would use \texttt{rbindspct} to bind the different true replicate measured spectra.
+For the \texttt{source\_spct} example we generate four independent noisy replicates of the same solar spectrum, to demonstrate parallel summaries. Under normal use we would use \texttt{rbindspct} to bind the different true replicate measured spectra.
 
 <<four-noisy-solar, fig.width=7, fig.height=4>>=
 bound.spct <- rbindspct(list(sun.spct, sun.spct, sun.spct, sun.spct),
@@ -1571,7 +1571,7 @@ setSourceSpct(median.spct)
 median.spct
 @
 
-If the wavelength values in the different spectra are not the same, or if NAs are present, this slightly more complex code will make diagnosis of any problems much easier, and the resulting spectrum will still behave as a \texttt{source.spct} object when applying any other functions.
+If the wavelength values in the different spectra are not the same, or if NAs are present, this slightly more complex code will make diagnosis of any problems much easier, and the resulting spectrum will still behave as a \texttt{source\_spct} object when applying any other functions.
 
 <<parallel-multiple-1>>=
 meanx.spct <- bound.spct[ , .(s.e.irrad = mean(s.e.irrad, na.rm = TRUE),
@@ -1650,14 +1650,14 @@ with(sun.spct, s_e_irrad2rgb(w.length, s.e.irrad, sens = ciexyzCC2.spct))
 with(sun.spct, s_e_irrad2rgb(w.length, s.e.irrad, sens = ciexyzCC10.spct))
 @
 
-Examples with \texttt{source.spct} objects.
+Examples with \texttt{source\_spct} objects.
 
 <<>>=
 rgb_spct(sun.spct)
 rgb_spct(sun.spct, sens = ciexyzCMF2.spct)
 @
 
-And also a \texttt{color} method for \texttt{source.spct}.
+And also a \texttt{color} method for \texttt{source\_spct}.
 
 <<>>=
 color(sun.spct)

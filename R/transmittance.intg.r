@@ -45,7 +45,7 @@ transmittance.default <- function(spct, w.band, pc.out, quantity, wb.trim, use.h
 #'
 #' @export
 #'
-transmittance.filter.spct <-
+transmittance.filter_spct <-
   function(spct, w.band=NULL,
            pc.out=FALSE,
            quantity="average",
@@ -63,7 +63,7 @@ transmittance.filter.spct <-
 #'
 #' @export
 #'
-transmittance.object.spct <-
+transmittance.object_spct <-
   function(spct, w.band=NULL,
            pc.out=FALSE,
            quantity="average",
@@ -84,7 +84,7 @@ transmittance.object.spct <-
 #'
 #' @usage transmittance_spct(spct, w.band, pc.out, quantity, wb.trim, use.hinges)
 #'
-#' @param spct an object of class "generic.spct"
+#' @param spct an object of class "generic_spct"
 #' @param w.band waveband or list of waveband objects The waveband(s) determine
 #'   the region(s) of the spectrum that are summarized.
 #' @param pc.out logical Flag indicating whether result should be a percentage or a
@@ -108,10 +108,10 @@ transmittance_spct <-
       warning("The espectral data has been normalized or rescaled, making impossible to calculate transmittance")
       return(NA)
     }
-    if (is.filter.spct(spct)) {
+    if (is_filter_spct(spct)) {
       spct <- A2T(spct, action="replace", byref=FALSE)
     } else {
-      spct <- as.filter.spct(spct)
+      spct <- as_filter_spct(spct)
     }
     Tfr.type <- getTfrType(spct)
     spct <- spct[ , .(w.length, Tfr)] # data.table removes attributes!
@@ -168,7 +168,7 @@ transmittance_spct <-
       i <- i + 1
       # we get names from wb if needed
       if (no_names_flag) {
-        if (is.effective(wb)) {
+        if (is_effective(wb)) {
           warning("Using only wavelength range from a weighted waveband object.")
           wb.name[i] <- paste("range", as.character(signif(min(wb), 4)), as.character(signif(max(wb), 4)), sep=".")
         } else {

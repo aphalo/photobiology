@@ -29,7 +29,7 @@
 waveband <- function(x,
                      weight=NULL, SWF.e.fun=NULL, SWF.q.fun=NULL, norm=NULL,
                      SWF.norm=NULL, hinges=NULL, wb.name=NULL, wb.label=wb.name) {
-  if (is.generic.spct(x) && is.null(wb.name)) {
+  if (is_generic_spct(x) && is.null(wb.name)) {
     wb.name = "Total"
   }
   x.range <- range(x)
@@ -118,7 +118,7 @@ new_waveband <- function(w.low, w.high,
 #' @usage split_bands(x, list.names=NULL, short.names=is.null(list.names), length.out=NULL)
 #'
 #' @param x a numeric array of wavelengths to split at (nm), or a range of wavelengths or
-#' a generic.spct or a waveband.
+#' a generic_spct or a waveband.
 #' @param list.names character vector with names for the component wavebands in the returned
 #' list (in order of increasing wavelength)
 #' @param short.names logical indicating whether to use short or long names for wavebands
@@ -143,7 +143,7 @@ new_waveband <- function(w.low, w.high,
 #' always retain their \code{wb.label} and \code{wb.name} as generated during their creation.
 
 split_bands <- function(x, list.names=NULL, short.names=is.null(list.names), length.out=NULL) {
-  if (!is.any.spct(x) && !is.waveband(x) && is.list(x)) {
+  if (!is_any_spct(x) && !is_waveband(x) && is.list(x)) {
     x.len <- length(x)
     names.len <- length(list.names)
     if (names.len < x.len) {
@@ -162,7 +162,7 @@ split_bands <- function(x, list.names=NULL, short.names=is.null(list.names), len
     }
     return(bands.out)
   }
-  if (is.generic.spct(x) || is.waveband(x)) {
+  if (is_generic_spct(x) || is_waveband(x)) {
     w.length <- range(x)
   } else if (is.numeric(x)) {
     x <- unique(sort(x))
@@ -217,14 +217,14 @@ split_bands <- function(x, list.names=NULL, short.names=is.null(list.names), len
 #'
 #' Functions to check if an object is waveband.
 #'
-#' @usage is.waveband(x)
+#' @usage is_waveband(x)
 #'
 #' @param x any R object
 #'
-#' @return is.waveband returns TRUE if its argument is a waveband and FALSE otherwise.
+#' @return is_waveband returns TRUE if its argument is a waveband and FALSE otherwise.
 #'
 #' @export
 #'
-is.waveband <- function(x) {
+is_waveband <- function(x) {
   inherits(x, "waveband")
 }

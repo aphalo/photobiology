@@ -8,9 +8,9 @@
 #'
 #' @usage rbindspct(l, use.names = TRUE, fill=TRUE, idfactor = NULL)
 #'
-#' @param l A list containing \code{source.spct}, \code{filter.spct},
-#'   \code{reflector.spct}, \code{response.spct}, \code{chroma.spct},
-#'   \code{generic.spct}, \code{data.table}, \code{data.frame} or \code{list}
+#' @param l A list containing \code{source_spct}, \code{filter_spct},
+#'   \code{reflector_spct}, \code{response_spct}, \code{chroma_spct},
+#'   \code{generic_spct}, \code{data.table}, \code{data.frame} or \code{list}
 #'   objects. At least one of the inputs should have column names set.
 #'   \code{\dots} is the same but you pass the objects by name separately.
 #'
@@ -35,7 +35,7 @@
 #' number of (potentially many) objects to stack. \code{rbind} (not implemented
 #' yet for spectra) however is most useful to stack two or three objects which
 #' you know in advance. \code{rbindspct} always returns at least a
-#' \code{generic.spct} as long as all elements in l are spectra, otherwise a
+#' \code{generic_spct} as long as all elements in l are spectra, otherwise a
 #' \code{data.frame} is returned even when stacking a \code{list} with a
 #' \code{data.frame}, for example. The difference between \code{rbindspct(l)}
 #' and \code{rbindlist(l)} from package \pkg{data.table} is in their
@@ -64,8 +64,8 @@
 #'   the highest class in the inheritance hierachy which is common to all
 #'   elements in the list. If not all members of the list belong to one of the
 #'   \code{.spct} classes, an error is triggered. The function sets all data in
-#'   \code{source.spct} and \code{response.spct} objects supplied as arguments
-#'   into energy-based quantities, and all data in \code{filter.spct} objects
+#'   \code{source_spct} and \code{response_spct} objects supplied as arguments
+#'   into energy-based quantities, and all data in \code{filter_spct} objects
 #'   into transmittance before the row binding is done.
 #'
 #' @examples
@@ -96,19 +96,19 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = NULL) {
   if (is.null(l) || length(l) < 1) {
     return(l)
   }
-  if (!is.list(l) || is.any.spct(l) || is.waveband(l)) {
+  if (!is.list(l) || is_any_spct(l) || is_waveband(l)) {
     stop("Argument 'l' should be a list of spectra")
     return(NULL)
   }
   # we find the lowest common class
   # and in the same loop we make sure that all spectral data uses consistent units
-  l.class <- c( "source.spct", "filter.spct", "reflector.spct", "response.spct", "chroma.spct",
-                "generic.spct")
-  photon.based.input <- any(sapply(l, FUN=is.photon.based))
-  absorbance.based.input <- any(sapply(l, FUN=is.absorbance.based))
+  l.class <- c( "source_spct", "filter_spct", "reflector_spct", "response_spct", "chroma_spct",
+                "generic_spct")
+  photon.based.input <- any(sapply(l, FUN=is_photon_based))
+  absorbance.based.input <- any(sapply(l, FUN=is_absorbance_based))
   rescaled.input <- sapply(l, FUN = is.rescaled)
   normalized.input <- sapply(l, FUN = is.normalized)
-  effective.input <- sapply(l, FUN = is.effective)
+  effective.input <- sapply(l, FUN = is_effective)
   if (any(rescaled.input) && !all(rescaled.input)) {
     warning("Only some of the spectra being row-bound have been previously rescaled")
   }
@@ -116,13 +116,13 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = NULL) {
     warning("Only some of the spectra being row-bound have been previously normalized")
   }
   for (i in 1:length(l)) {
-    class.spct <- class(l[[i]])
-    l.class <- intersect(l.class, class.spct)
-    if (photon.based.input && ("source.spct" %in% class.spct ||
-        "response.spct" %in% class.spct )) {
+    class_spct <- class(l[[i]])
+    l.class <- intersect(l.class, class_spct)
+    if (photon.based.input && ("source_spct" %in% class_spct ||
+        "response_spct" %in% class_spct )) {
       l[[i]] <- q2e(l[[i]], action = "replace", byref = FALSE)
     }
-    if (absorbance.based.input && "filter.spct" %in% class.spct) {
+    if (absorbance.based.input && "filter_spct" %in% class_spct) {
       l[[i]] <- A2T(l[[i]], action = "replace", byref = FALSE)
     }
   }
@@ -180,7 +180,7 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = NULL) {
 
   add.bswf <- FALSE
 
-  if (l.class == "source.spct") {
+  if (l.class == "source_spct") {
     time.unit <- sapply(l, FUN = getTimeUnit)
     if (length(unique(time.unit)) > 1L) {
       warning("Inconsistent time units among source spectra in rbindspct")
@@ -204,7 +204,7 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = NULL) {
     if (photon.based.input) {
       e2q(ans, action = "add", byref = TRUE)
     }
-  } else if (l.class == "filter.spct") {
+  } else if (l.class == "filter_spct") {
     Tfr.type <- sapply(l, FUN = getTfrType)
     if (length(unique(Tfr.type)) > 1L) {
       warning("Inconsistent 'Tfr.type' among filter spectra in rbindspct")
@@ -214,14 +214,14 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = NULL) {
     if (absorbance.based.input) {
       T2A(ans, action = "add", byref = TRUE)
     }
-  } else if (l.class == "reflector.spct") {
+  } else if (l.class == "reflector_spct") {
     Rfr.type <- sapply(l, FUN = getRfrType)
     if (length(unique(Rfr.type)) > 1L) {
       warning("Inconsistent 'Rfr.type' among reflector spectra in rbindspct")
       return(NA)
     }
     setReflectorSpct(ans, Rfr.type = Rfr.type[1])
-  } else if (l.class == "response.spct") {
+  } else if (l.class == "response_spct") {
     time.unit <- sapply(l, FUN = getTimeUnit)
     if (length(unique(time.unit)) > 1L) {
       warning("Inconsistent time units among respose spectra in rbindspct")
@@ -231,9 +231,9 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = NULL) {
     if (photon.based.input) {
       e2q(ans, action = "add", byref = TRUE)
     }
-  } else if (l.class == "chroma.spct") {
+  } else if (l.class == "chroma_spct") {
     setChromSpct(ans)
-  } else if (l.class == "generic.spct") {
+  } else if (l.class == "generic_spct") {
     setGenericSpct(ans)
   }
   if (any(rescaled.input)) {
@@ -269,27 +269,27 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = NULL) {
 #'
 #' @usage subset(x, subset, select, ...)
 #'
-#' @param x	generic.spct to subset
+#' @param x	generic_spct to subset
 #' @param subset logical expression indicating elements or rows to keep
 #' @param select expression indicating columns to select from x (IGNORED)
 #' @param ...	further arguments to be passed to or from other methods
 #'
 #' @details The subset argument works on the rows and will be evaluated in the
-#'   generic.spct so columns can be referred to (by name) as variables in the
-#'   expression The generic.spct that is returned will maintain the original
+#'   generic_spct so columns can be referred to (by name) as variables in the
+#'   expression The generic_spct that is returned will maintain the original
 #'   attributes and keys as long as they are not select-ed out.
 #'
 #' @return An object of the same class as \code{x} but containing only the
 #'   subset of rows and columns that are selected.
 #'
-#' @method subset generic.spct
+#' @method subset generic_spct
 #'
 #' @examples
 #' subset(sun.spct, w.length > 400)
 #'
 #' @seealso \code{\link{subset}} and \code{\link{trim_spct}}
 #'
-subset.generic.spct <- function(x, subset, select, ...) {
+subset.generic_spct <- function(x, subset, select, ...) {
   comment <- comment(x)
   x.out <- x[eval(substitute(subset))]
   if (!is.null(comment)) {
@@ -298,12 +298,12 @@ subset.generic.spct <- function(x, subset, select, ...) {
   return(x.out)
 }
 
-# @describeIn subset.generic.spct Subset for light source spectra.
+# @describeIn subset.generic_spct Subset for light source spectra.
 #'
 #' @export
-#' @rdname subset.generic.spct
+#' @rdname subset.generic_spct
 #'
-subset.source.spct <- function(x, subset, select = NULL, ...) {
+subset.source_spct <- function(x, subset, select = NULL, ...) {
   time.unit <- getTimeUnit(x)
   bswf.used <- getBSWFUsed(x)
   comment <- comment(x)
@@ -315,12 +315,12 @@ subset.source.spct <- function(x, subset, select = NULL, ...) {
   return(x.out)
 }
 
-# @describeIn subset.generic.spct Subset for light filter spectra.
+# @describeIn subset.generic_spct Subset for light filter spectra.
 #'
 #' @export
-#' @rdname subset.generic.spct
+#' @rdname subset.generic_spct
 #'
-subset.filter.spct <- function(x, subset, select = NULL, ...) {
+subset.filter_spct <- function(x, subset, select = NULL, ...) {
   Tfr.type <- getTfrType(x)
   comment <- comment(x)
   x.out <- x[eval(substitute(subset))]
@@ -331,12 +331,12 @@ subset.filter.spct <- function(x, subset, select = NULL, ...) {
   return(x.out)
 }
 
-# @describeIn subset.generic.spct Subset for light reflector spectra.
+# @describeIn subset.generic_spct Subset for light reflector spectra.
 #'
 #' @export
-#' @rdname subset.generic.spct
+#' @rdname subset.generic_spct
 #'
-subset.reflector.spct <- function(x, subset, select = NULL, ...) {
+subset.reflector_spct <- function(x, subset, select = NULL, ...) {
   Rfr.type <- getRfrType(x)
   comment <- comment(x)
   x.out <- x[eval(substitute(subset))]
@@ -347,12 +347,12 @@ subset.reflector.spct <- function(x, subset, select = NULL, ...) {
   return(x.out)
 }
 
-# @describeIn subset.generic.spct Subset for light response spectra.
+# @describeIn subset.generic_spct Subset for light response spectra.
 #'
 #' @export
-#' @rdname subset.generic.spct
+#' @rdname subset.generic_spct
 #'
-subset.response.spct <- function(x, subset, select = NULL, ...) {
+subset.response_spct <- function(x, subset, select = NULL, ...) {
   time.unit <- getTimeUnit(x)
   comment <- comment(x)
   x.out <- x[eval(substitute(subset))]
@@ -363,12 +363,12 @@ subset.response.spct <- function(x, subset, select = NULL, ...) {
   return(x.out)
 }
 
-# @describeIn subset.generic.spct Subset for light response spectra.
+# @describeIn subset.generic_spct Subset for light response spectra.
 #'
 #' @export
-#' @rdname subset.generic.spct
+#' @rdname subset.generic_spct
 #'
-subset.object.spct <- function(x, subset, select = NULL, ...) {
+subset.object_spct <- function(x, subset, select = NULL, ...) {
   Tfr.type <- getTfrType(x)
   Rfr.type <- getRfrType(x)
   comment <- comment(x)

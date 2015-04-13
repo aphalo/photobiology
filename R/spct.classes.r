@@ -3,17 +3,17 @@
 
 #' Function that returns a vector containing the names of spectra classes.
 #'
-#' @usage spct.classes()
+#' @usage spct_classes()
 #'
 #' @export
 #'
 #' @return A \code{character} vector of class names.
 #'
-spct.classes <- function() {
-  c("generic.spct",
-    "filter.spct", "reflector.spct",
-    "source.spct", "object.spct",
-    "response.spct", "chroma.spct")
+spct_classes <- function() {
+  c("generic_spct",
+    "filter_spct", "reflector_spct",
+    "source_spct", "object_spct",
+    "response_spct", "chroma_spct")
 }
 
 # conditional setkey ------------------------------------------------------
@@ -42,7 +42,7 @@ setkey_spct <- function (x, ..., verbose = getOption("datatable.verbose"), physi
     cols = colnames(x)
   else if (identical(cols, "NULL"))
     cols = NULL
-  if (is.any.spct(x) && !is.null(key(x)) && identical(cols, key(x)))
+  if (is_any_spct(x) && !is.null(key(x)) && identical(cols, key(x)))
     invisible(x)
   setkeyv(x, cols, verbose = verbose, physical = physical)
 }
@@ -72,9 +72,9 @@ check.default <- function(x, byref=FALSE, strict.range=TRUE) {
   return(x)
 }
 
-#' @describeIn check Specialization for generic.spct.
+#' @describeIn check Specialization for generic_spct.
 #' @export
-check.generic.spct <- function(x, byref=TRUE, strict.range=TRUE) {
+check.generic_spct <- function(x, byref=TRUE, strict.range=TRUE) {
   if (exists("w.length", x, mode = "numeric", inherits=FALSE)) {
     NULL
   } else if (exists("wl", x, mode = "numeric", inherits=FALSE)) {
@@ -84,7 +84,7 @@ check.generic.spct <- function(x, byref=TRUE, strict.range=TRUE) {
   } else if (exists("Wavelength", x, mode = "numeric", inherits=FALSE)) {
     setnames(x, "Wavelength", "w.length")
   } else {
-    warning("No wavelength data found in generic.spct")
+    warning("No wavelength data found in generic_spct")
     x[ , w.length := NA]
   }
   wl.min <- min(x$w.length, na.rm = TRUE)
@@ -97,9 +97,9 @@ check.generic.spct <- function(x, byref=TRUE, strict.range=TRUE) {
   return(x)
 }
 
-#' @describeIn check Specialization for filter.spct.
+#' @describeIn check Specialization for filter_spct.
 #' @export
-check.filter.spct <- function(x, byref=TRUE, strict.range = TRUE) {
+check.filter_spct <- function(x, byref=TRUE, strict.range = TRUE) {
 
   range_check <- function(x, strict.range) {
     Tfr.min <- min(x$Tfr, na.rm = TRUE)
@@ -144,15 +144,15 @@ check.filter.spct <- function(x, byref=TRUE, strict.range = TRUE) {
     }
     return(x)
   } else {
-    warning("No transmittance or absorbance data found in filter.spct")
+    warning("No transmittance or absorbance data found in filter_spct")
     x[ , Tfr := NA]
     return(x)
   }
 }
 
-#' @describeIn check Specialization for reflector.spct.
+#' @describeIn check Specialization for reflector_spct.
 #' @export
-check.reflector.spct <- function(x, byref=TRUE, strict.range = TRUE) {
+check.reflector_spct <- function(x, byref=TRUE, strict.range = TRUE) {
 
   range_check <- function(x, strict.range) {
     Rfr.min <- min(x$Rfr, na.rm = TRUE)
@@ -185,15 +185,15 @@ check.reflector.spct <- function(x, byref=TRUE, strict.range = TRUE) {
     range_check(x, strict.range=strict.range)
     return(x)
   } else {
-    warning("No reflectance data found in reflector.spct")
+    warning("No reflectance data found in reflector_spct")
     x[ , Rfr := NA]
     return(x)
   }
 }
 
-#' @describeIn check Specialization for object.spct.
+#' @describeIn check Specialization for object_spct.
 #' @export
-check.object.spct <- function(x, byref=TRUE, strict.range = TRUE) {
+check.object_spct <- function(x, byref=TRUE, strict.range = TRUE) {
 
   range_check <- function(x, strict.range) {
     Rfr.min <- min(x$Rfr, na.rm = TRUE)
@@ -241,7 +241,7 @@ check.object.spct <- function(x, byref=TRUE, strict.range = TRUE) {
     x[ , Rfr := Rpc / 100]
     x[ , Rpc := NULL]
   } else {
-    warning("No reflectance data found in object.spct")
+    warning("No reflectance data found in object_spct")
     x[ , Rfr := NA]
   }
 
@@ -258,7 +258,7 @@ check.object.spct <- function(x, byref=TRUE, strict.range = TRUE) {
     range_check(x, strict.range=strict.range)
     return(x)
   } else {
-    warning("No transmittance data found in object.spct")
+    warning("No transmittance data found in object_spct")
     x[ , Tfr := NA]
     return(x)
   }
@@ -266,9 +266,9 @@ check.object.spct <- function(x, byref=TRUE, strict.range = TRUE) {
   return(x)
 }
 
-#' @describeIn check Specialization for response.spct.
+#' @describeIn check Specialization for response_spct.
 #' @export
-check.response.spct <- function(x, byref=TRUE, strict.range=TRUE) {
+check.response_spct <- function(x, byref=TRUE, strict.range=TRUE) {
   if (exists("s.e.response", x, mode = "numeric", inherits=FALSE)) {
     return(x)
   } else if (exists("s.q.response", x, mode = "numeric", inherits=FALSE)) {
@@ -284,15 +284,15 @@ check.response.spct <- function(x, byref=TRUE, strict.range=TRUE) {
     warning("Found variable 'signal', I am assuming it is expressed on an energy basis")
     return(x)
   } else {
-    warning("No response data found in response.spct")
+    warning("No response data found in response_spct")
     x[ , s.e.response := NA]
     return(x)
   }
 }
 
-#' @describeIn check Specialization for source.spct.
+#' @describeIn check Specialization for source_spct.
 #' @export
-check.source.spct <- function(x, byref=TRUE, strict.range=FALSE) {
+check.source_spct <- function(x, byref=TRUE, strict.range=FALSE) {
 
   range_check <- function(x, strict.range) {
     if (is.null(strict.range)) {
@@ -326,7 +326,7 @@ check.source.spct <- function(x, byref=TRUE, strict.range=FALSE) {
     setTimeUnit(x, "second")
     warning("Missing attribute 'time.unit' set to 'second'")
   }
-  if (is.null(is.effective(x))) {
+  if (is.null(is_effective(x))) {
     setBSWFUsed(x, "none")
     warning("Missing atrribute 'bswf.used' set to 'none'")
   }
@@ -339,7 +339,7 @@ check.source.spct <- function(x, byref=TRUE, strict.range=FALSE) {
     x[ , irradiance := NULL]
     warning("Found variable 'irradiance', I am assuming it is expressed on an energy basis")
   } else {
-    warning("No spectral irradiance data found in source.spct")
+    warning("No spectral irradiance data found in source_spct")
     x[ , s.e.irrad := NA]
     return(x)
   }
@@ -347,9 +347,9 @@ check.source.spct <- function(x, byref=TRUE, strict.range=FALSE) {
   return(x)
 }
 
-#' @describeIn check Specialization for chroma.spct.
+#' @describeIn check Specialization for chroma_spct.
 #' @export
-check.chroma.spct <- function(x, byref=TRUE, strict.range=TRUE) {
+check.chroma_spct <- function(x, byref=TRUE, strict.range=TRUE) {
   names_x <- names(x)
   idxs <- grep("[XYZ]", names_x)
   names2lc <- names_x[idxs]
@@ -359,7 +359,7 @@ check.chroma.spct <- function(x, byref=TRUE, strict.range=TRUE) {
         exists("z", x, mode="numeric", inherits=FALSE) ) {
     return(x)
   } else {
-    warning("No spectral chromaticity coordinates data found in chroma.spct")
+    warning("No spectral chromaticity coordinates data found in chroma_spct")
     return(x[ , c(x, y, z) := NA])
   }
 }
@@ -367,10 +367,10 @@ check.chroma.spct <- function(x, byref=TRUE, strict.range=TRUE) {
 
 # set class ---------------------------------------------------------------
 
-#' Remove "generic.spct" and derived class attributes.
+#' Remove "generic_spct" and derived class attributes.
 #'
-#' Removes from an spectrum object the class attibutes "generic.spct" and any
-#' derived class attribute such as "source.spct". \strong{This operation is done
+#' Removes from an spectrum object the class attibutes "generic_spct" and any
+#' derived class attribute such as "source_spct". \strong{This operation is done
 #' by reference!}
 #'
 #' @usage rmDerivedSpct(x)
@@ -386,7 +386,7 @@ check.chroma.spct <- function(x, byref=TRUE, strict.range=TRUE) {
 #'
 rmDerivedSpct <- function(x) {
   name <- substitute(x)
-  spctclasses <- spct.classes()
+  spctclasses <- spct_classes()
   allclasses <- class(x)
   setattr(x, "class", setdiff(allclasses, spctclasses))
   if (is.name(name)) {
@@ -399,12 +399,12 @@ rmDerivedSpct <- function(x) {
 #' Convert an R object into a spectrum object.
 #'
 #' Sets the class attibute of a data.frame or data.table or a different spectral
-#' object to "generic.spct". If the object is a data.frame is is made a
+#' object to "generic_spct". If the object is a data.frame is is made a
 #' data.table in the process.
 #'
-#' @param x data.frame, data.table, list or generic.spct and derived classes
+#' @param x data.frame, data.table, list or generic_spct and derived classes
 #' @export
-#' @exportClass generic.spct
+#' @exportClass generic_spct
 #' @family set and unset spectral class functions
 #'
 setGenericSpct <- function(x) {
@@ -413,8 +413,8 @@ setGenericSpct <- function(x) {
   if (!is.data.table(x)) {
     setDT(x)
   }
-if (!is.generic.spct(x)){
-    setattr(x, "class", c("generic.spct", class(x)))
+if (!is_generic_spct(x)){
+    setattr(x, "class", c("generic_spct", class(x)))
     setattr(x, "spct.tags", NA)
   }
   x <- check(x)
@@ -432,17 +432,17 @@ if (!is.generic.spct(x)){
 #' @export
 setGenSpct <- setGenericSpct
 
-#' @describeIn setGenericSpct Set class of an object to "filter.spct".
+#' @describeIn setGenericSpct Set class of an object to "filter_spct".
 #'
 #' @param Tfr.type character A string, either "total" or "internal".
 #' @param strict.range logical Flag indicating whether off-range values result in an
 #'   error instead of a warning.
 #' @export
-#' @exportClass filter.spct
+#' @exportClass filter_spct
 #'
 setFilterSpct <- function(x, Tfr.type=c("total", "internal"), strict.range = TRUE) {
   name <- substitute(x)
-  if ((is.object.spct(x) || is.filter.spct(x)) && getTfrType(x) != "unknown") {
+  if ((is_object_spct(x) || is_filter_spct(x)) && getTfrType(x) != "unknown") {
     if (length(Tfr.type) > 1) {
       Tfr.type <- getTfrType(x)
     } else {
@@ -453,11 +453,11 @@ setFilterSpct <- function(x, Tfr.type=c("total", "internal"), strict.range = TRU
   if (!is.data.table(x)) {
     setDT(x)
   }
-  if (!is.generic.spct(x)) {
+  if (!is_generic_spct(x)) {
     setGenSpct(x)
   }
-  if (!is.filter.spct(x)) {
-    setattr(x, "class", c("filter.spct", class(x)))
+  if (!is_filter_spct(x)) {
+    setattr(x, "class", c("filter_spct", class(x)))
   }
   setTfrType(x, Tfr.type[1])
   x <- check(x, strict.range=strict.range)
@@ -469,15 +469,15 @@ setFilterSpct <- function(x, Tfr.type=c("total", "internal"), strict.range = TRU
   invisible(x)
 }
 
-#' @describeIn setGenericSpct Set class of a an object to "reflector.spct".
+#' @describeIn setGenericSpct Set class of a an object to "reflector_spct".
 #'
 #' @param Rfr.type character A string, either "total" or "specular".
 #' @export
-#' @exportClass reflector.spct
+#' @exportClass reflector_spct
 #'
 setReflectorSpct <- function(x, Rfr.type=c("total", "specular"), strict.range = TRUE) {
   name <- substitute(x)
-  if ((is.object.spct(x) || is.reflector.spct(c)) && getRfrType(x) != "unknown") {
+  if ((is_object_spct(x) || is_reflector_spct(c)) && getRfrType(x) != "unknown") {
     if (length(Rfr.type) > 1) {
       Rfr.type <- getRfrType(x)
     } else {
@@ -488,11 +488,11 @@ setReflectorSpct <- function(x, Rfr.type=c("total", "specular"), strict.range = 
   if (!is.data.table(x)) {
     setDT(x)
   }
-  if (!is.generic.spct(x)) {
+  if (!is_generic_spct(x)) {
     setGenSpct(x)
   }
-  if (!is.reflector.spct(x)) {
-    setattr(x, "class", c("reflector.spct", class(x)))
+  if (!is_reflector_spct(x)) {
+    setattr(x, "class", c("reflector_spct", class(x)))
   }
   setRfrType(x, Rfr.type[1])
   x <- check(x, strict.range=strict.range)
@@ -504,22 +504,22 @@ setReflectorSpct <- function(x, Rfr.type=c("total", "specular"), strict.range = 
   invisible(x)
 }
 
-#' @describeIn setGenericSpct Set class of an object to "object.spct".
+#' @describeIn setGenericSpct Set class of an object to "object_spct".
 #'
 #' @export
-#' @exportClass object.spct
+#' @exportClass object_spct
 #'
 setObjectSpct <- function(x, Tfr.type=c("total", "internal"),
                              Rfr.type=c("total", "specular"), strict.range = TRUE) {
   name <- substitute(x)
-  if ((is.filter.spct(x) || is.object.spct(x)) && getTfrType(x) != "unknown") {
+  if ((is_filter_spct(x) || is_object_spct(x)) && getTfrType(x) != "unknown") {
     if (length(Tfr.type) > 1) {
       Tfr.type <- getTfrType(x)
     } else {
       warning("Replacing existing attribute 'Tfr.type' ", getTfrType(x))
     }
   }
-  if ((is.reflector.spct(x) || is.object.spct(x)) && getRfrType(x) != "unknown") {
+  if ((is_reflector_spct(x) || is_object_spct(x)) && getRfrType(x) != "unknown") {
     if (length(Rfr.type) > 1) {
       Rfr.type <- getRfrType(x)
     } else {
@@ -530,11 +530,11 @@ setObjectSpct <- function(x, Tfr.type=c("total", "internal"),
   if (!is.data.table(x)) {
     setDT(x)
   }
-  if (!is.generic.spct(x)) {
+  if (!is_generic_spct(x)) {
     setGenSpct(x)
   }
-  if (!is.object.spct(x)) {
-    setattr(x, "class", c("object.spct", class(x)))
+  if (!is_object_spct(x)) {
+    setattr(x, "class", c("object_spct", class(x)))
   }
   setTfrType(x, Tfr.type)
   setRfrType(x, Rfr.type)
@@ -547,11 +547,11 @@ setObjectSpct <- function(x, Tfr.type=c("total", "internal"),
   invisible(x)
 }
 
-#' @describeIn setGenericSpct Set class of an object to "response.spct".
+#' @describeIn setGenericSpct Set class of an object to "response_spct".
 #'
 #' @param time.unit character A string "second" or "day".
 #' @export
-#' @exportClass response.spct
+#' @exportClass response_spct
 #'
 setResponseSpct <- function(x, time.unit="none") {
   name <- substitute(x)
@@ -559,11 +559,11 @@ setResponseSpct <- function(x, time.unit="none") {
   if (!is.data.table(x)) {
     setDT(x)
   }
-  if (!is.generic.spct(x)) {
+  if (!is_generic_spct(x)) {
     setGenSpct(x)
   }
-  if (!is.response.spct(x)) {
-    setattr(x, "class", c("response.spct", class(x)))
+  if (!is_response_spct(x)) {
+    setattr(x, "class", c("response_spct", class(x)))
   }
   setTimeUnit(x, time.unit)
   x <- check(x)
@@ -575,11 +575,11 @@ setResponseSpct <- function(x, time.unit="none") {
   invisible(x)
 }
 
-#' @describeIn setGenericSpct Set class of an object to "source.spct".
+#' @describeIn setGenericSpct Set class of an object to "source_spct".
 #'
 #' @param bswf.used character A string, either "none" or the name of a BSWF.
 #' @export
-#' @exportClass source.spct
+#' @exportClass source_spct
 #'
 setSourceSpct <- function(x, time.unit="second", bswf.used=c("none", "unknown"),
                           strict.range = FALSE) {
@@ -588,11 +588,11 @@ setSourceSpct <- function(x, time.unit="second", bswf.used=c("none", "unknown"),
   if (!is.data.table(x)) {
     setDT(x)
   }
-  if (!is.generic.spct(x)) {
+  if (!is_generic_spct(x)) {
     setGenSpct(x)
   }
-  if (!is.source.spct(x)) {
-    setattr(x, "class", c("source.spct", class(x)))
+  if (!is_source_spct(x)) {
+    setattr(x, "class", c("source_spct", class(x)))
   }
   setTimeUnit(x, time.unit)
   setBSWFUsed(x, bswf.used = bswf.used)
@@ -605,10 +605,10 @@ setSourceSpct <- function(x, time.unit="second", bswf.used=c("none", "unknown"),
   invisible(x)
 }
 
-#' @describeIn setGenericSpct Set class of an object to "chroma.spct".
+#' @describeIn setGenericSpct Set class of an object to "chroma_spct".
 #'
 #' @export
-#' @exportClass chroma.spct
+#' @exportClass chroma_spct
 #'
 setChromaSpct <- function(x) {
   name <- substitute(x)
@@ -616,11 +616,11 @@ setChromaSpct <- function(x) {
   if (!is.data.table(x)) {
     setDT(x)
   }
-  if (!is.generic.spct(x)) {
+  if (!is_generic_spct(x)) {
     setGenSpct(x)
   }
-  if (!is.chroma.spct(x)) {
-    setattr(x, "class", c("chroma.spct", class(x)))
+  if (!is_chroma_spct(x)) {
+    setattr(x, "class", c("chroma_spct", class(x)))
   }
   x <- check(x)
   setkey_spct(x, w.length)
@@ -639,7 +639,7 @@ setChromaSpct <- function(x) {
 #' Functions to check if an object is of a given type of spectrum, or coerce it if
 #' possible.
 #'
-#' @usage is.generic.spct(x)
+#' @usage is_generic_spct(x)
 #'
 #' @param x an R object.
 #'
@@ -647,55 +647,55 @@ setChromaSpct <- function(x) {
 #'   of spectrum and \code{FALSE} otherwise.
 #'
 #' @note Derived types also return TRUE for a query for a base type such as
-#' \code{generic.spct}.
+#' \code{generic_spct}.
 #'
 #' @examples
-#' is.source.spct(sun.spct)
-#' is.filter.spct(sun.spct)
-#' is.generic.spct(sun.spct)
-#' is.any.spct(sun.spct)
+#' is_source_spct(sun.spct)
+#' is_filter_spct(sun.spct)
+#' is_generic_spct(sun.spct)
+#' is_any_spct(sun.spct)
 #'
-#' @export is.generic.spct
-#' @rdname is.generic.spct
+#' @export is_generic_spct
+#' @rdname is_generic_spct
 #'
-is.generic.spct <- function(x) inherits(x, "generic.spct")
+is_generic_spct <- function(x) inherits(x, "generic_spct")
 
-#' @rdname is.generic.spct
+#' @rdname is_generic_spct
 #' @export
 #'
-is.source.spct <- function(x) inherits(x, "source.spct")
+is_source_spct <- function(x) inherits(x, "source_spct")
 
-#' @rdname is.generic.spct
+#' @rdname is_generic_spct
 #' @export
 #'
-is.response.spct <- function(x) inherits(x, "response.spct")
+is_response_spct <- function(x) inherits(x, "response_spct")
 
-#' @rdname is.generic.spct
+#' @rdname is_generic_spct
 #' @export
 #'
-is.filter.spct <- function(x) inherits(x, "filter.spct")
+is_filter_spct <- function(x) inherits(x, "filter_spct")
 
-#' @rdname is.generic.spct
+#' @rdname is_generic_spct
 #' @export
 #'
-is.reflector.spct <- function(x) inherits(x, "reflector.spct")
+is_reflector_spct <- function(x) inherits(x, "reflector_spct")
 
-#' @rdname is.generic.spct
+#' @rdname is_generic_spct
 #' @export
 #'
-is.object.spct <- function(x) inherits(x, "object.spct")
+is_object_spct <- function(x) inherits(x, "object_spct")
 
-#' @rdname is.generic.spct
+#' @rdname is_generic_spct
 #' @export
 #'
-is.chroma.spct <- function(x) inherits(x, "chroma.spct")
+is_chroma_spct <- function(x) inherits(x, "chroma_spct")
 
-#' @rdname is.generic.spct
+#' @rdname is_generic_spct
 #'
 #' @export
 #'
-is.any.spct <- function(x) {
-  inherits(x, spct.classes())
+is_any_spct <- function(x) {
+  inherits(x, spct_classes())
 }
 
 #' Query which is the class of an spectrum.
@@ -703,29 +703,29 @@ is.any.spct <- function(x) {
 #' Functions to check if an object is a generic spectrum, or coerce it if
 #' possible.
 #'
-#' @usage class.spct(x)
+#' @usage class_spct(x)
 #'
 #' @param x any R object
 #'
-#' @return class.spct returns a vector containing all matching xxxx.spct
+#' @return class_spct returns a vector containing all matching xxxx.spct
 #'   classes.
 #'
 #' @export
 #'
-class.spct <- function(x) {
-#  intersect(spct.classes(), class(x)) # alters order!
-  class(x)[class(x) %in% spct.classes()] # maintains order
+class_spct <- function(x) {
+#  intersect(spct_classes(), class(x)) # alters order!
+  class(x)[class(x) %in% spct_classes()] # maintains order
 }
 
 #' Query if it is an spectrum is tagged
 #'
 #' Functions to check if an spct object contains tags.
 #'
-#' @usage is.tagged(x)
+#' @usage is_tagged(x)
 #'
 #' @param x any R object
 #'
-#' @return is.tagged returns TRUE if its argument is a an spectrum
+#' @return is_tagged returns TRUE if its argument is a an spectrum
 #' that contains tags and FALSE if it is an untagged spectrun, but
 #' returns NA for any other R object.
 #'
@@ -733,8 +733,8 @@ class.spct <- function(x) {
 #'
 #' @family tagging and related functions
 #'
-is.tagged <- function(x) {
-  if (!is.any.spct(x)) {
+is_tagged <- function(x) {
+  if (!is_any_spct(x)) {
     return(NA)
   } else {
     tags <- attr(x, "spct.tags", exact=TRUE)
@@ -742,105 +742,105 @@ is.tagged <- function(x) {
   }
 }
 
-# is.photon.based ---------------------------------------------------------
+# is_photon_based ---------------------------------------------------------
 
 #' Query if a spectrum contains photon- or energy-based data.
 #'
-#' Functions to check if \code{source.spct} and \code{response.spct} objects
+#' Functions to check if \code{source_spct} and \code{response_spct} objects
 #' contains photon-based or energy-based data.
 #'
-#' @usage is.photon.based(x)
+#' @usage is_photon_based(x)
 #'
 #' @param x any R object
 #'
-#' @return \code{is.photon.based} returns \code{TRUE} if its argument is a a
-#'   \code{source.spct} or a \code{response.spct} object that contains photon
+#' @return \code{is_photon_based} returns \code{TRUE} if its argument is a a
+#'   \code{source_spct} or a \code{response_spct} object that contains photon
 #'   base data and \code{FALSE} if such an object does not contain such data,
 #'   but returns \code{NA} for any other R object, including those belonging
-#'   other \code{generic.spct}-derived classes.
+#'   other \code{generic_spct}-derived classes.
 #'
 #' @export
 #' @family query units functions
 #'
-#' @rdname is.photon.based
+#' @rdname is_photon_based
 #'
-is.photon.based <- function(x) {
-  if (is.source.spct(x)) {
+is_photon_based <- function(x) {
+  if (is_source_spct(x)) {
     return("s.q.irrad" %in% names(x))
-  } else if (is.response.spct(x)) {
+  } else if (is_response_spct(x)) {
     return("s.q.response" %in% names(x))
   } else {
     return(NA)
   }
 }
 
-# is.energy.based ---------------------------------------------------------
+# is_energy_based ---------------------------------------------------------
 
-#' @rdname is.photon.based
+#' @rdname is_photon_based
 #'
-#' @usage is.energy.based(x)
+#' @usage is_energy_based(x)
 #'
-#' @return \code{is.energy.based} returns \code{TRUE} if its argument is a a \code{source.spct} or
-#' a \code{response.spct} object that contains energy base data and \code{FALSE} if such an
+#' @return \code{is_energy_based} returns \code{TRUE} if its argument is a a \code{source_spct} or
+#' a \code{response_spct} object that contains energy base data and \code{FALSE} if such an
 #' object does not contain such data, but returns \code{NA} for any other R object,
-#' including those belonging other \code{generic.spct}-derived classes
+#' including those belonging other \code{generic_spct}-derived classes
 #'
 #' @export
 #'
-is.energy.based <- function(x) {
-  if (is.source.spct(x)) {
+is_energy_based <- function(x) {
+  if (is_source_spct(x)) {
     return("s.e.irrad" %in% names(x))
-  } else if (is.response.spct(x)) {
+  } else if (is_response_spct(x)) {
     return("s.e.response" %in% names(x))
   } else {
     return(NA)
   }
 }
 
-# is.absorbance.based ---------------------------------------------------------
+# is_absorbance_based ---------------------------------------------------------
 
 #' Query if a spectrum contains absorbance or transmittance data
 #'
 #' Functions to check if an filter spectrum contains spectral absorbance data or
 #' spectral transmittance data.
 #'
-#' @usage is.absorbance.based(x)
+#' @usage is_absorbance_based(x)
 #'
 #' @param x an R object
 #'
-#' @return \code{is.absorbance.based} returns TRUE if its argument is a \code{filter.spct}
+#' @return \code{is_absorbance_based} returns TRUE if its argument is a \code{filter_spct}
 #' object that contains spectral absorbance data and FALSE if it does not contain
 #' such data, but returns NA for any other R object, including those belonging
-#' other \code{generic.spct}-derived classes.
+#' other \code{generic_spct}-derived classes.
 #'
 #' @export
 #' @family query units functions
 #'
-#' @rdname is.absorbance.based
+#' @rdname is_absorbance_based
 #'
-is.absorbance.based <- function(x) {
-  if (is.filter.spct(x)) {
+is_absorbance_based <- function(x) {
+  if (is_filter_spct(x)) {
     return("A" %in% names(x))
   } else {
     return(NA)
   }
 }
 
-# is.transmittance.based ---------------------------------------------------------
+# is_transmittance_based ---------------------------------------------------------
 
-#' @rdname is.absorbance.based
+#' @rdname is_absorbance_based
 #'
-#' @usage is.transmittance.based(x)
+#' @usage is_transmittance_based(x)
 #'
-#' @return \code{is.transmittance.based} returns TRUE if its argument is a a \code{filter.spct}
+#' @return \code{is_transmittance_based} returns TRUE if its argument is a a \code{filter_spct}
 #' object that contains spectral transmittance data and FALSE if it does not contain
 #' such data, but returns NA for any other R object, including those belonging
-#' other \code{generic.spct}-derived classes.
+#' other \code{generic_spct}-derived classes.
 #'
 #' @export
 #'
-is.transmittance.based <- function(x) {
-  if (is.filter.spct(x)) {
+is_transmittance_based <- function(x) {
+  if (is_filter_spct(x)) {
     return("Tfr" %in% names(x))
   } else {
     return(NA)
@@ -853,7 +853,7 @@ is.transmittance.based <- function(x) {
 #'
 #' Return a copy of an R object with its class set to a given type of spectrum.
 #'
-#' @usage as.generic.spct(x)
+#' @usage as_generic_spct(x)
 #'
 #' @param x an R object
 #'
@@ -864,14 +864,14 @@ is.transmittance.based <- function(x) {
 #' @export
 #'
 #' @family creation of spectral objects functions
-#' @rdname as.generic.spct
+#' @rdname as_generic_spct
 #'
-as.generic.spct <- function(x) {
+as_generic_spct <- function(x) {
   y <- copy(x)
   setGenericSpct(y)
 }
 
-#' @rdname as.generic.spct
+#' @rdname as_generic_spct
 #'
 #' @param time.unit character A string, "second" or "day"
 #' @param bswf.used character
@@ -880,7 +880,7 @@ as.generic.spct <- function(x) {
 #'
 #' @export
 #'
-as.source.spct <- function(x,
+as_source_spct <- function(x,
                            time.unit=c("second", "day"),
                            bswf.used=c("none", "unknown"),
                            strict.range = FALSE) {
@@ -888,42 +888,42 @@ as.source.spct <- function(x,
   setSourceSpct(y, time.unit, strict.range = strict.range, bswf.used = bswf.used)
 }
 
-#' @rdname as.generic.spct
+#' @rdname as_generic_spct
 #'
 #' @export
 #'
-as.response.spct <- function(x, time.unit = "none") {
+as_response_spct <- function(x, time.unit = "none") {
   y <- copy(x)
   setResponseSpct(y, time.unit = time.unit)
 }
 
-#' @rdname as.generic.spct
+#' @rdname as_generic_spct
 #'
 #' @param Tfr.type a character string, either "total" or "internal"
 #'
 #' @export
 #'
-as.filter.spct <- function(x, Tfr.type=c("total", "internal"), strict.range = TRUE) {
+as_filter_spct <- function(x, Tfr.type=c("total", "internal"), strict.range = TRUE) {
   y <- copy(x)
   setFilterSpct(y, Tfr.type, strict.range = strict.range)
 }
 
-#' @rdname as.generic.spct
+#' @rdname as_generic_spct
 #'
 #' @param Rfr.type a character string, either "total" or "specular"
 #'
 #' @export
 #'
-as.reflector.spct <- function(x, Rfr.type = c("total", "specular"), strict.range = TRUE) {
+as_reflector_spct <- function(x, Rfr.type = c("total", "specular"), strict.range = TRUE) {
   y <- copy(x)
   setReflectorSpct(y, Rfr.type = Rfr.type, strict.range = strict.range)
 }
 
-#' @rdname as.generic.spct
+#' @rdname as_generic_spct
 #'
 #' @export
 #'
-as.object.spct <- function(x,
+as_object_spct <- function(x,
                            Tfr.type=c("total", "internal"),
                            Rfr.type=c("total", "specular"),
                            strict.range = TRUE) {
@@ -932,11 +932,11 @@ as.object.spct <- function(x,
                 strict.range = strict.range)
 }
 
-#' @rdname as.generic.spct
+#' @rdname as_generic_spct
 #'
 #' @export
 #'
-as.chroma.spct <- function(x) {
+as_chroma_spct <- function(x) {
   y <- copy(x)
   setChromaSpct(y)
 }
@@ -944,18 +944,18 @@ as.chroma.spct <- function(x) {
 
 # time.unit attribute -----------------------------------------------------
 
-#' Set the "time.unit" attribute of an existing source.spct object
+#' Set the "time.unit" attribute of an existing source_spct object
 #'
 #' Funtion to set by reference the "time.unit" attribute
 #'
 #' @usage setTimeUnit(x, time.unit=c("second", "hour", "day", "none"))
 #'
-#' @param x a source.spct object
+#' @param x a source_spct object
 #' @param time.unit a character string, either "second", "hour", "day", or "none"
 #'
 #' @return x
 #'
-#' @note if x is not a source.spct or response.spct object, x is not modified.
+#' @note if x is not a source_spct or response_spct object, x is not modified.
 #' The behaviour of this function is 'unusual' in that the default for parameter
 #' \code{time.unit} is used only if \code{x} does not already have this attribute set.
 #' \code{time.unit = "hour"} is currently not fully supported.
@@ -971,7 +971,7 @@ setTimeUnit <- function(x, time.unit=c("second", "hour", "day", "none")) {
       time.unit <- time.unit[[1]]
     }
   }
-  if (is.source.spct(x) || is.response.spct(x)) {
+  if (is_source_spct(x) || is_response_spct(x)) {
     if  (!(time.unit %in% c("second", "hour", "day", "none", "unknown"))) {
       warning("Invalid 'time.unit' argument, only 'second', 'hour', 'day', and 'none' supported.")
       time.unit <- "unknown"
@@ -981,24 +981,24 @@ setTimeUnit <- function(x, time.unit=c("second", "hour", "day", "none")) {
   return(x)
 }
 
-#' Get the "time.unit" attribute of an existing source.spct object
+#' Get the "time.unit" attribute of an existing source_spct object
 #'
 #' Funtion to read the "time.unit" attribute
 #'
 #' @usage getTimeUnit(x)
 #'
-#' @param x a source.spct object
+#' @param x a source_spct object
 #'
 #' @return character string
 #'
-#' @note if x is not a \code{filter.spct} or a \code{response.spct} object, NA
+#' @note if x is not a \code{filter_spct} or a \code{response_spct} object, NA
 #' is retruned
 #'
 #' @export
 #' @family time attribute functions
 #'
 getTimeUnit <- function(x) {
-  if (is.source.spct(x) || is.response.spct(x)) {
+  if (is_source_spct(x) || is_response_spct(x)) {
     time.unit <- attr(x, "time.unit", exact = TRUE)
     if (is.null(time.unit)) {
       # need to handle objects created with old versions
@@ -1013,18 +1013,18 @@ getTimeUnit <- function(x) {
 
 # bswf attribute -----------------------------------------------------
 
-#' Set the "bswf.used" attribute of an existing source.spct object
+#' Set the "bswf.used" attribute of an existing source_spct object
 #'
 #' Funtion to set by reference the "time.unit" attribute
 #'
 #' @usage setBSWFUsed(x, bswf.used=c("none", "unknown"))
 #'
-#' @param x a source.spct object
+#' @param x a source_spct object
 #' @param bswf.used a character string, either "none" or the name of a BSWF
 #'
 #' @return x
 #'
-#' @note if x is not a source.spct, x is not modified.
+#' @note if x is not a source_spct, x is not modified.
 #' The behaviour of this function is 'unusual' in that the default for parameter
 #' \code{bswf.used} is used only if \code{x} does not already have this attribute set.
 #' \code{time.unit = "hour"} is currently not fully supported.
@@ -1037,13 +1037,13 @@ setBSWFUsed <- function(x, bswf.used=c("none", "unknown")) {
     bswf.used <- "none"
   }
   if (length(bswf.used) > 1) {
-    if (is.effective(x)) {
+    if (is_effective(x)) {
       bswf.used <- getBSWFUsed(x)
     } else {
       bswf.used <- bswf.used[[1]]
     }
   }
-  if (is.source.spct(x)) {
+  if (is_source_spct(x)) {
     if  (!(is.character(bswf.used))) {
       warning("Only character strings are valid vlues for 'bswf.used' argument")
       bswf.used <- "unknown"
@@ -1053,24 +1053,24 @@ setBSWFUsed <- function(x, bswf.used=c("none", "unknown")) {
   return(x)
 }
 
-#' Get the "bswf.used" attribute of an existing source.spct object
+#' Get the "bswf.used" attribute of an existing source_spct object
 #'
 #' Funtion to read the "time.unit" attribute
 #'
 #' @usage getBSWFUsed(x)
 #'
-#' @param x a source.spct object
+#' @param x a source_spct object
 #'
 #' @return character string
 #'
-#' @note if x is not a \code{source.spct} object, NA
+#' @note if x is not a \code{source_spct} object, NA
 #' is retruned
 #'
 #' @export
 #' @family BSWF attribute functions
 #'
 getBSWFUsed <- function(x) {
-  if (is.source.spct(x)) {
+  if (is_source_spct(x)) {
     bswf.used <- attr(x, "bswf.used", exact = TRUE)
     if (is.null(bswf.used) || length(bswf.used) < 1) {
       # need to handle objects created with old versions
@@ -1082,23 +1082,23 @@ getBSWFUsed <- function(x) {
   }
 }
 
-# is.effective.source.spct defined in file "waveband.class.r" to avoid the need
+# is_effective.source_spct defined in file "waveband.class.r" to avoid the need
 # of using colate to get the documentation in the correct order.
 
 # Tfr.type attribute ------------------------------------------------------
 
-#' Set the "Tfr.type" attribute of an existing filter.spct or object.spct object
+#' Set the "Tfr.type" attribute of an existing filter_spct or object_spct object
 #'
 #' Funtion to set by reference the "Tfr.type" attribute
 #'
 #' @usage setTfrType(x, Tfr.type = c("total", "internal"))
 #'
-#' @param x a filter.spct or an object.spct object
+#' @param x a filter_spct or an object_spct object
 #' @param Tfr.type a character string, either "total" or "internal"
 #'
 #' @return x
 #'
-#' @note if x is not a filter.spct or an object.spct object, x is not modified
+#' @note if x is not a filter_spct or an object_spct object, x is not modified
 #' The behaviour of this function is 'unusual' in that the default for parameter
 #' \code{Tfr.type} is used only if \code{x} does not already have this attribute set.
 #'
@@ -1113,7 +1113,7 @@ setTfrType <- function(x, Tfr.type=c("total", "internal")) {
       Tfr.type <- Tfr.type[[1]]
     }
   }
-  if (is.filter.spct(x) || is.object.spct(x)) {
+  if (is_filter_spct(x) || is_object_spct(x)) {
     if  (!(Tfr.type %in% c("total", "internal", "unknown"))) {
       warning("Invalid 'Tfr.type' argument, only 'total' and 'internal' supported.")
       return(x)
@@ -1123,23 +1123,23 @@ setTfrType <- function(x, Tfr.type=c("total", "internal")) {
   return(x)
 }
 
-#' Get the "Tfr.type" attribute of an existing filter.spct or object.spct object.
+#' Get the "Tfr.type" attribute of an existing filter_spct or object_spct object.
 #'
 #' Funtion to read the "Tfr.type" attribute
 #'
 #' @usage getTfrType(x)
 #'
-#' @param x a filter.spct or object.spct object
+#' @param x a filter_spct or object_spct object
 #'
 #' @return character string
 #'
-#' @note If x is not a \code{filter.spct} or an \code{object.spct} object, \code{NA} is returned.
+#' @note If x is not a \code{filter_spct} or an \code{object_spct} object, \code{NA} is returned.
 #'
 #' @export
 #' @family Tfr attribute functions
 #'
 getTfrType <- function(x) {
-  if (is.filter.spct(x) || is.object.spct(x)) {
+  if (is_filter_spct(x) || is_object_spct(x)) {
     Tfr.type <- attr(x, "Tfr.type", exact = TRUE)
     if (is.null(Tfr.type)) {
       # need to handle objects created with old versions
@@ -1153,18 +1153,18 @@ getTfrType <- function(x) {
 
 # Rfr.type attribute ------------------------------------------------------
 
-#' Set the "Rfr.type" attribute of an existing reflector.spct or object.spct object
+#' Set the "Rfr.type" attribute of an existing reflector_spct or object_spct object
 #'
 #' Funtion to set by reference the "Rfr.type" attribute
 #'
 #' @usage setRfrType(x, Rfr.type=c("total", "specular"))
 #'
-#' @param x a reflector.spct or an object.spct object
+#' @param x a reflector_spct or an object_spct object
 #' @param Rfr.type a character string, either "total" or "specular"
 #'
 #' @return x
 #'
-#' @note if x is not a reflector.spct or object.spct object, x is not modified.
+#' @note if x is not a reflector_spct or object_spct object, x is not modified.
 #' The behaviour of this function is 'unusual' in that the default for parameter
 #' Rfr.type is used only if \code{x} does not already have this attribute set.
 #'
@@ -1179,7 +1179,7 @@ setRfrType <- function(x, Rfr.type=c("total", "specular")) {
       Rfr.type <- Rfr.type[[1]]
     }
   }
-  if (is.reflector.spct(x) || is.object.spct(x)) {
+  if (is_reflector_spct(x) || is_object_spct(x)) {
     if  (!(Rfr.type %in% c("total", "specular", "unknown"))) {
       warning("Invalid 'Rfr.type' argument, only 'total' and 'internal' supported.")
       return(x)
@@ -1189,23 +1189,23 @@ setRfrType <- function(x, Rfr.type=c("total", "specular")) {
   return(x)
 }
 
-#' Get the "Rfr.type" attribute of an existing reflector.spct object
+#' Get the "Rfr.type" attribute of an existing reflector_spct object
 #'
 #' Funtion to read the "Rfr.type" attribute
 #'
 #' @usage getRfrType(x)
 #'
-#' @param x a source.spct object
+#' @param x a source_spct object
 #'
 #' @return character string
 #'
-#' @note if x is not a \code{filter.spct} object, \code{NA} is returned
+#' @note if x is not a \code{filter_spct} object, \code{NA} is returned
 #'
 #' @export
 #' @family Rfr attribute functions
 #'
 getRfrType <- function(x) {
-  if (is.reflector.spct(x) || is.object.spct(x)) {
+  if (is_reflector_spct(x) || is_object_spct(x)) {
     Rfr.type <- attr(x, "Rfr.type", exact = TRUE)
     if (is.null(Rfr.type)) {
       # need to handle objects created with old versions

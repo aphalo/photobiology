@@ -22,9 +22,9 @@ tag.default <- function(x, ...) {
   return(x)
 }
 
-#' @describeIn tag Tag one of \code{generic.spct}, and derived classes including
-#'   \code{source.spct}, \code{filter.spct}, \code{reflector.spct},
-#'   \code{object.spct}, and \code{rspponse.spct}.
+#' @describeIn tag Tag one of \code{generic_spct}, and derived classes including
+#'   \code{source_spct}, \code{filter_spct}, \code{reflector_spct},
+#'   \code{object_spct}, and \code{rspponse.spct}.
 #'
 #' @param w.band waveband or list of waveband objects The waveband(s) determine
 #'   the region(s) of the spectrum that are tagged
@@ -38,7 +38,7 @@ tag.default <- function(x, ...) {
 #'   reference} or \emph{by copy} of \code{x}
 #' @export
 #'
-tag.generic.spct <- function(x,
+tag.generic_spct <- function(x,
                              w.band=NULL,
                              wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
                              use.hinges=TRUE,
@@ -50,7 +50,7 @@ tag.generic.spct <- function(x,
   } else {
     name <- substitute(x)
   }
-  if (is.tagged(x)) {
+  if (is_tagged(x)) {
     warning("Overwriting old tags in spectrum")
     untag(x)
   }
@@ -159,7 +159,7 @@ tag.generic.spct <- function(x,
 
 #' Create a spectrum from a list of wavebands
 #'
-#' Create a generic.spct object with wavelengths from wavebands
+#' Create a generic_spct object with wavelengths from wavebands
 #' in a list.
 #'
 #' @usage wb2spct(w.band)
@@ -172,7 +172,7 @@ tag.generic.spct <- function(x,
 #' \emph{union} of all  boundaries and hinges defined in the waveband(s).
 #' Different spectral data variables are set to zero and
 #' added making the returned value compatible with classes derived
-#' from \code{generic.spct}.
+#' from \code{generic_spct}.
 #'
 #' @family tagging and related functions
 #'
@@ -197,7 +197,7 @@ wb2spct <- function(w.band) {
 
 #' Create a tagged spectrum from a list of wavebands
 #'
-#' Create a tagged \code{generic.spct} object with wavelengths from the range of
+#' Create a tagged \code{generic_spct} object with wavelengths from the range of
 #' wavebands in a list, and names of the same bands as factor levels, and
 #' corresponding color definitions.
 #'
@@ -228,7 +228,7 @@ wb2tagged_spct <-
 
 #' Create a tagged spectrum from a list of wavebands
 #'
-#' Create a generic.spct object with wavelengths from the range of wavebands
+#' Create a generic_spct object with wavelengths from the range of wavebands
 #' in a list. The spectrum is suitable for plotting labels, symbols, rectangles
 #' or similar, as the midpoint of each waveband is added to the spectrum.
 #'
@@ -246,7 +246,7 @@ wb2tagged_spct <-
 #' of the wavebands, and wl.color the color definition corresponding to the
 #' wavebands. Different spectral data variables are set to zero and
 #' added making the returned value compatible with classes derived
-#' from \code{generic.spct}.
+#' from \code{generic_spct}.
 #'
 #' @family tagging and related functions
 #'

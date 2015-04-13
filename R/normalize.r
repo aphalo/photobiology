@@ -29,7 +29,7 @@ normalize.default <- function(x, ...) {
 #' @keywords internal
 #'
 normalize_spct <- function(spct, range, norm, var.name) {
-  stopifnot(is.any.spct(spct), !is.null(var.name), length(var.name) == 1, var.name %in% names(spct))
+  stopifnot(is_any_spct(spct), !is.null(var.name), length(var.name) == 1, var.name %in% names(spct))
   tmp.spct <- trim_spct(spct, range)
   # rescaling needed
   if (!is.null(norm)) {
@@ -82,7 +82,7 @@ normalize_spct <- function(spct, range, norm, var.name) {
 #'
 #' @export
 #'
-normalize.source.spct <- function(x,
+normalize.source_spct <- function(x,
                                   ...,
                                   range = x,
                                   norm = "max",
@@ -106,7 +106,7 @@ normalize.source.spct <- function(x,
 #'
 #' @export
 #'
-normalize.response.spct <- function(x,
+normalize.response_spct <- function(x,
                                   ...,
                                   range = x,
                                   norm = "max",
@@ -133,7 +133,7 @@ normalize.response.spct <- function(x,
 #'
 #' @export
 #'
-normalize.filter.spct <- function(x,
+normalize.filter_spct <- function(x,
                                   ...,
                                   range = x,
                                   norm = "max",
@@ -157,7 +157,7 @@ normalize.filter.spct <- function(x,
 #'
 #' @export
 #'
-normalize.reflector.spct <- function(x,
+normalize.reflector_spct <- function(x,
                                   ...,
                                   range = x,
                                   norm = "max",
@@ -173,7 +173,7 @@ normalize.reflector.spct <- function(x,
 
 #' Query whether a generic spectrum has been normalized.
 #'
-#' This function tests a \code{generic.spct} object for an attribute that
+#' This function tests a \code{generic_spct} object for an attribute that
 #' signals whether the spectral data has been normalized or not after the object
 #' was created.
 #'
@@ -182,13 +182,13 @@ normalize.reflector.spct <- function(x,
 #' @param x An R object.
 #'
 #' @return A \code{logical} value. If \code{x} is not normalized or \code{x} is
-#'   not a \code{generic.spct} object the value returned is \code{FALSE}.
+#'   not a \code{generic_spct} object the value returned is \code{FALSE}.
 #'
 #' @export
 #' @family rescaling functions
 #'
 is.normalized <- function(x) {
-  if (!is.any.spct(x)) {
+  if (!is_any_spct(x)) {
     return(NA)
   }
   spct.attr <- attr(x, "normalized", exact = TRUE)

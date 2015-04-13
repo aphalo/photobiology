@@ -38,7 +38,7 @@ smooth_spct.default <- function(x, method, strength, ...) {
 #' @export
 #' @importFrom caTools runmad runmin
 #'
-smooth_spct.source.spct <- function(x, method = "custom", strength = 1, ...) {
+smooth_spct.source_spct <- function(x, method = "custom", strength = 1, ...) {
   if (method == "lowess") {
     span = 1/50 * strength
     if ("s.e.irrad" %in% names(x)) {
@@ -129,7 +129,7 @@ smooth_spct.source.spct <- function(x, method = "custom", strength = 1, ...) {
 #'
 #' @export
 #'
-smooth_spct.filter.spct <- function(x, method = "custom", strength = 1, ...) {
+smooth_spct.filter_spct <- function(x, method = "custom", strength = 1, ...) {
   if (method == "lowess") {
     span = 1/50 * strength
     if ("Tfr" %in% names(x)) {
@@ -221,7 +221,7 @@ smooth_spct.filter.spct <- function(x, method = "custom", strength = 1, ...) {
 #'
 #' @export
 #'
-smooth_spct.reflector.spct <- function(x, method = "custom", strength = 1, ...) {
+smooth_spct.reflector_spct <- function(x, method = "custom", strength = 1, ...) {
   if (method == "lowess") {
     span = 1/50 * strength
     if ("Rfr" %in% names(x)) {
@@ -299,7 +299,7 @@ smooth_spct.reflector.spct <- function(x, method = "custom", strength = 1, ...) 
 #'
 #' @export
 #'
-smooth_spct.response.spct <- function(x, method = "custom", strength = 1, ...) {
+smooth_spct.response_spct <- function(x, method = "custom", strength = 1, ...) {
   if (method == "lowess") {
     span = 1/50 * strength
     if ("s.e.response" %in% names(x)) {

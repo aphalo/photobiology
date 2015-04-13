@@ -5,7 +5,7 @@
 #' @usage w_length_range2rgb(w.length, sens = ciexyzCMF2.spct, color.name = NULL)
 #'
 #' @param w.length numeric Vector of wavelengths (nm) of length 2. If longer, its range is used.
-#' @param sens chroma.spct Used as the chromaticity definition
+#' @param sens chroma_spct Used as the chromaticity definition
 #' @param color.name character Used for naming the rgb color definition
 #'
 #' @return A vector of colors defined using \code{rgb()}. The numeric values of the RGB components can be obtained

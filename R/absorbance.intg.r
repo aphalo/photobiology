@@ -1,7 +1,7 @@
 #' Calculate summary absorbance from spectral data.
 #'
 #' Function to calculate the mean, total, or other summary of absorbance for
-#' spectral data stored in a \code{filter.spct} or in an \code{object.spct}.
+#' spectral data stored in a \code{filter_spct} or in an \code{object_spct}.
 #'
 #' @usage absorbance(spct, w.band, quantity, wb.trim, use.hinges)
 #'
@@ -39,7 +39,7 @@ absorbance.default <- function(spct, w.band, quantity, wb.trim, use.hinges) {
 #'
 #' @export
 #'
-absorbance.filter.spct <-
+absorbance.filter_spct <-
   function(spct, w.band=NULL, quantity="average",
            wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
            use.hinges=getOption("photobiology.use.hinges", default=NULL) ) {
@@ -50,11 +50,11 @@ absorbance.filter.spct <-
 #'
 #' @export
 #'
-absorbance.object.spct <-
+absorbance.object_spct <-
   function(spct, w.band=NULL, quantity="average",
            wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
            use.hinges=getOption("photobiology.use.hinges", default=NULL) ) {
-    spct <- as.filter.spct(spct)
+    spct <- as_filter_spct(spct)
     absorbance_spct(spct, w.band = w.band, quantity = quantity, wb.trim = wb.trim, use.hinges = use.hinges)
   }
 
@@ -65,7 +65,7 @@ absorbance.object.spct <-
 #'
 #' @usage absorbance_spct(spct, w.band, quantity, wb.trim , use.hinges)
 #'
-#' @param spct filter.spct
+#' @param spct filter_spct
 #' @param w.band waveband or list of waveband objects The wavebands determine
 #'   the region(s) of the spectrum that are summarized.
 #' @param quantity character
@@ -138,7 +138,7 @@ absorbance_spct <-
       i <- i + 1
       # we get names from wb if needed
       if (no_names_flag) {
-        if (is.effective(wb)) {
+        if (is_effective(wb)) {
           warning("Using only wavelength range from a weighted waveband object.")
           wb.name[i] <- paste("range", as.character(signif(min(wb), 4)), as.character(signif(max(wb), 4)), sep=".")
         } else {

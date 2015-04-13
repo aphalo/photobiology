@@ -9,7 +9,7 @@
 #' @usage trim_spct(spct, range=NULL, low.limit=NULL, high.limit=NULL,
 #'                  use.hinges=TRUE, fill=NULL, byref=FALSE, verbose=TRUE)
 #'
-#' @param spct an object of class "generic.spct"
+#' @param spct an object of class "generic_spct"
 #' @param range a numeric vector of length two, or any other object for which function range() will return two
 #' @param low.limit shortest wavelength to be kept (defaults to shortest w.length value)
 #' @param high.limit longest wavelength to be kept (defaults to longest w.length value)
@@ -51,11 +51,11 @@ trim_spct <- function(spct, range=NULL, low.limit=NULL, high.limit=NULL, use.hin
   if (is.null(spct)) {
     return(spct)
   }
-  stopifnot(is.any.spct(spct))
+  stopifnot(is_any_spct(spct))
   if (byref) {
     name <- substitute(spct)
   }
-  class.spct <- class(spct)
+  class_spct <- class(spct)
   if (!is.null(range)) {
     if (length(range) == 2 && is.na(range[1])) {
       low.limit <- NULL
@@ -148,7 +148,7 @@ trim_spct <- function(spct, range=NULL, low.limit=NULL, high.limit=NULL, use.hin
     }
   }
   # we use rbindlist which removes derived class attributes
-  setattr(spct, "class", class.spct)
+  setattr(spct, "class", class_spct)
   if (!is.null(comment.spct)) {
     setattr(spct, "comment", comment.spct)
   }
