@@ -39,7 +39,7 @@ untag.generic_spct <- function(x,
   } else {
     name <- substitute(x)
   }
-  if (!is_tagged(x)) {
+  if (!is.tagged(x)) {
     return(x)
   }
   x[ , wl.color := NULL]

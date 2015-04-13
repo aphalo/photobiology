@@ -104,14 +104,14 @@ transmittance.object_spct <-
 
 transmittance_spct <-
   function(spct, w.band, pc.out, quantity, wb.trim, use.hinges) {
-    if (is.normalized(spct) || is.rescaled(spct)) {
+    if (is_normalized(spct) || is_rescaled(spct)) {
       warning("The espectral data has been normalized or rescaled, making impossible to calculate transmittance")
       return(NA)
     }
-    if (is_filter_spct(spct)) {
+    if (is.filter_spct(spct)) {
       spct <- A2T(spct, action="replace", byref=FALSE)
     } else {
-      spct <- as_filter_spct(spct)
+      spct <- as.filter_spct(spct)
     }
     Tfr.type <- getTfrType(spct)
     spct <- spct[ , .(w.length, Tfr)] # data.table removes attributes!

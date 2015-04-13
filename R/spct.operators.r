@@ -5,7 +5,7 @@
 # as in the older versions.
 
 oper.e.generic_spct <- function(e1, e2, oper) {
-  if (is_object_spct(e1) || is_object_spct(e2)) {
+  if (is.object_spct(e1) || is.object_spct(e2)) {
     stop("Operators are not defined for object_spct objects")
   }
   if (is.logical(e1)) {
@@ -14,7 +14,7 @@ oper.e.generic_spct <- function(e1, e2, oper) {
   if (is.logical(e2)) {
     e2 <- as.integer(e2)
   }
-  if (is_waveband(e1)) {
+  if (is.waveband(e1)) {
     e_temp <- e2
     e2 <- e1
     e1 <- e_temp
@@ -26,14 +26,14 @@ oper.e.generic_spct <- function(e1, e2, oper) {
   }
   if (is.numeric(e2)) {
     class2 <- "numeric"
-  } else if (is_waveband(e2)) {
+  } else if (is.waveband(e2)) {
     class2 <- "waveband"
   } else {
     class2 <- class_spct(e2)[1]
   }
   if (class1 == "source_spct") {
     q2e(e1, action = "add", byref = TRUE)
-    if (is_waveband(e2)) {
+    if (is.waveband(e2)) {
       if (!identical(oper, `*`)) {
         warning("Only '*' is allowed between source_spct and waveband objects")
         return(NA)
@@ -322,7 +322,7 @@ oper.e.generic_spct <- function(e1, e2, oper) {
 # as in the older versions.
 
 oper.q.generic_spct <- function(e1, e2, oper) {
-  if (is_object_spct(e1) || is_object_spct(e2)) {
+  if (is.object_spct(e1) || is.object_spct(e2)) {
     stop("Operators are not defined for object_spct objects")
   }
   if (is.logical(e1)) {
@@ -331,7 +331,7 @@ oper.q.generic_spct <- function(e1, e2, oper) {
   if (is.logical(e2)) {
     e2 <- as.integer(e2)
   }
-  if (is_waveband(e1)) {
+  if (is.waveband(e1)) {
     e_temp <- e2
     e2 <- e1
     e1 <- e_temp
@@ -343,14 +343,14 @@ oper.q.generic_spct <- function(e1, e2, oper) {
   }
   if (is.numeric(e2)) {
     class2 <- "numeric"
-  } else if (is_waveband(e2)) {
+  } else if (is.waveband(e2)) {
     class2 <- "waveband"
   } else {
     class2 <- class_spct(e2)[1]
   }
   if (class1 == "source_spct") {
     e2q(e1, action = "add", byref = TRUE)
-    if (is_waveband(e2)) {
+    if (is.waveband(e2)) {
       if (!identical(oper, `*`)) {
         warning("The operation attempted in undefined according to Optics laws or the input is malformed")
         return(NA)
@@ -765,7 +765,7 @@ f_dispatcher_spct <- function(x, f, ...) {
       z[ , s.q.response := f(s.q.response, ...)]
       return(z)
     }
-  } else if (is_chroma_spct(x)) {
+  } else if (is.chroma_spct(x)) {
     z <- copy(x)
     z[ , `:=` (x = f(x, ...), y = f(y, ...), z = f(z, ...)) ]
     return(z)

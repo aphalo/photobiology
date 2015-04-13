@@ -79,7 +79,7 @@ response.response_spct <-
 
 response_spct <-
   function(spct, w.band, unit.out, quantity, wb.trim, use.hinges) {
-    if (is.normalized(spct) || is.rescaled(spct)) {
+    if (is_normalized(spct) || is_rescaled(spct)) {
       warning("The espectral data has been normalized or rescaled, making impossible to calculate integrated response")
       return(NA)
     }
@@ -106,7 +106,7 @@ response_spct <-
     if (is.null(w.band)){
       w.band <- waveband(spct)
     }
-    if (is_waveband(w.band)) {
+    if (is.waveband(w.band)) {
       # if the argument is a single w.band, we enclose it in a list
       # so that the for loop works as expected. This is a bit of a
       # cludge but it let's us avoid treating it as a special case

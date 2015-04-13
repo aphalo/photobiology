@@ -54,7 +54,7 @@ absorbance.object_spct <-
   function(spct, w.band=NULL, quantity="average",
            wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
            use.hinges=getOption("photobiology.use.hinges", default=NULL) ) {
-    spct <- as_filter_spct(spct)
+    spct <- as.filter_spct(spct)
     absorbance_spct(spct, w.band = w.band, quantity = quantity, wb.trim = wb.trim, use.hinges = use.hinges)
   }
 
@@ -77,7 +77,7 @@ absorbance.object_spct <-
 #'
 absorbance_spct <-
   function(spct, w.band, quantity, wb.trim, use.hinges) {
-    if (is.normalized(spct) || is.rescaled(spct)) {
+    if (is_normalized(spct) || is_rescaled(spct)) {
       warning("The espectral data has been normalized or rescaled, making impossible to calculate absorbance")
       return(NA)
     }

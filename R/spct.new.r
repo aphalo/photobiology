@@ -189,11 +189,11 @@ merge.generic_spct <- function(x, y, by = "w.length", ...) {
   if (identical(class_spct(x), class_spct(y))) {
     z <- data.table:::merge.data.table(x, y, by = by, ...)
     setattr(z, "class", class(x))
-  } else if (is_filter_spct(x) && is_reflector_spct(y)) {
+  } else if (is.filter_spct(x) && is.reflector_spct(y)) {
     xx <- A2T(x, action = "replace", byref = FALSE)
     z <- data.table:::merge.data.table(xx, y, by = "w.length", ...)
     setObjectSpct(z, Tfr.type = getTfrType(x), Rfr.type = getRfrType(y))
-  } else if (is_reflector_spct(x) && is_filter_spct(y)) {
+  } else if (is.reflector_spct(x) && is.filter_spct(y)) {
     yy <- A2T(y, action = "replace", byref = FALSE)
     z <- data.table:::merge.data.table(xx, yy, by = "w.length", ...)
     setObjectSpct(z, Tfr.type = getTfrType(y), Rfr.type = getRfrType(x))

@@ -46,7 +46,7 @@ Rescale.default <- function(x, ...) {
 #'
 
 rescale_spct <- function(spct, range, var.name, f, ...) {
-  stopifnot(is_any_spct(spct), !is.null(var.name), length(var.name) == 1, var.name %in% names(spct))
+  stopifnot(is.any_spct(spct), !is.null(var.name), length(var.name) == 1, var.name %in% names(spct))
   tmp.spct <- trim_spct(spct, range)
   tmp.spct <- tmp.spct[ , .SD, .SDcols = c("w.length", var.name)]
   # rescaling needed
@@ -182,7 +182,7 @@ Rescale.reflector_spct <- function(x,
                       ...))
 }
 
-# is.rescaled function ----------------------------------------------------
+# is_rescaled function ----------------------------------------------------
 
 #' Query whether a generic spectrum has been rescaled.
 #'
@@ -190,7 +190,7 @@ Rescale.reflector_spct <- function(x,
 #' signals whether the spectral data has been rescled or not after the object
 #' was created.
 #'
-#' @usage is.rescaled(x)
+#' @usage is_rescaled(x)
 #'
 #' @param x An R object.
 #'
@@ -200,8 +200,8 @@ Rescale.reflector_spct <- function(x,
 #' @export
 #' @family rescaling functions
 #'
-is.rescaled <- function(x) {
-  if (!is_any_spct(x)) {
+is_rescaled <- function(x) {
+  if (!is.any_spct(x)) {
     return(NA)
   }
   spct.attr <- attr(x, "rescaled", exact = TRUE)

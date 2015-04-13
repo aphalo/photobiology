@@ -51,7 +51,7 @@ trim_spct <- function(spct, range=NULL, low.limit=NULL, high.limit=NULL, use.hin
   if (is.null(spct)) {
     return(spct)
   }
-  stopifnot(is_any_spct(spct))
+  stopifnot(is.any_spct(spct))
   if (byref) {
     name <- substitute(spct)
   }

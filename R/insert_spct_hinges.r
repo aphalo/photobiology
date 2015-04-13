@@ -21,7 +21,7 @@
 ##'                    c(199.99,200.00,399.50,399.99,400.00,699.99,
 ##'                          700.00,799.99,1000.00))
 insert_spct_hinges <- function(spct, hinges=NULL) {
-  if (!is_any_spct(spct)) {
+  if (!is.any_spct(spct)) {
     warning("Only objects derived from 'generic_spct' are supported")
     return(spct)
   }
@@ -41,14 +41,14 @@ insert_spct_hinges <- function(spct, hinges=NULL) {
     idx.data <- which(names.data)
     class_spct <- class(spct)
     comment.spct <- comment(spct)
-    if (is_source_spct(spct) || is_response_spct(spct)) {
+    if (is.source_spct(spct) || is.response_spct(spct)) {
       time.unit <- getTimeUnit(spct)
       bswf.used <- getBSWFUsed(spct)
     }
-    if (is_filter_spct(spct) || is_object_spct(spct)) {
+    if (is.filter_spct(spct) || is.object_spct(spct)) {
       Tfr.type <- getTfrType(spct)
     }
-    if (is_reflector_spct(spct) || is_object_spct(spct)) {
+    if (is.reflector_spct(spct) || is.object_spct(spct)) {
       Rfr.type <- getRfrType(spct)
     }
     new.spct <- data.table(w.length = new.w.length)

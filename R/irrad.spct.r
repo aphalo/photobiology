@@ -82,7 +82,7 @@ irrad.source_spct <-
            use.hinges=getOption("photobiology.use.hinges", default=NULL),
            allow.scaled = FALSE){
     # we have a default, but we check for invalid arguments
-    if (!allow.scaled && (is.normalized(spct) || is.rescaled(spct))) {
+    if (!allow.scaled && (is_normalized(spct) || is_rescaled(spct))) {
       warning("The espectral data has been normalized or rescaled, making impossible to calculate irradiance")
       return(NA)
     }
@@ -101,7 +101,7 @@ irrad.source_spct <-
     if (is.null(w.band)) {
       w.band <- waveband(spct_x)
     }
-    if (is_waveband(w.band)) {
+    if (is.waveband(w.band)) {
       # if the argument is a single w.band, we enclose it in a list
       # so that the for loop works as expected.This is a bit of a
       # cludge but lets us avoid treating it as a special case
@@ -159,18 +159,18 @@ irrad.source_spct <-
     # possibly weighted depending on the waveband definition
     irrad <- numeric(wb.number)
     i <- 0L
-    is_effective.spectrum <- is_effective(spct)
+    is.effective.spectrum <- is_effective(spct)
     for (wb in w.band) {
       i <- i + 1L
       # get names from wb if needed
       if (wb.name[i] == "") {
         wb.name[i] <- wb$name
       }
-      if (is_effective.spectrum && is_effective(wb)) {
+      if (is.effective.spectrum && is_effective(wb)) {
         warning("Effective spectral irradiance is not compatible with a BSWF: ", wb.name[i])
         irrad[i] <- NA
       } else {
-        if (is_effective.spectrum) {
+        if (is.effective.spectrum) {
           wb.name[i] <- paste(getBSWFUsed(spct), "*", wb.name[i])
         }
         # calculate the multipliers

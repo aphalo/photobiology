@@ -92,8 +92,8 @@ reflectance.object_spct <-
 reflectance_spct <-
   function(spct, w.band, pc.out, quantity, wb.trim, use.hinges){
     Rfr.type <- getRfrType(spct)
-    if (is_object_spct(spct)) {
-      spct <- as_reflector_spct(spct)
+    if (is.object_spct(spct)) {
+      spct <- as.reflector_spct(spct)
     } else {
       spct <- copy(spct)
     }

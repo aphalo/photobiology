@@ -31,7 +31,7 @@ trim_waveband <- function(w.band,
                           trim = getOption("photobiology.waveband.trim", default = TRUE),
                           use.hinges = TRUE)
 {
-  if (!is.null(w.band) && is_waveband(w.band)) {
+  if (!is.null(w.band) && is.waveband(w.band)) {
     w.band <- list(w.band)
   }
   verbose <- TRUE

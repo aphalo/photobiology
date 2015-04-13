@@ -96,7 +96,7 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = NULL) {
   if (is.null(l) || length(l) < 1) {
     return(l)
   }
-  if (!is.list(l) || is_any_spct(l) || is_waveband(l)) {
+  if (!is.list(l) || is.any_spct(l) || is.waveband(l)) {
     stop("Argument 'l' should be a list of spectra")
     return(NULL)
   }
@@ -104,10 +104,10 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = NULL) {
   # and in the same loop we make sure that all spectral data uses consistent units
   l.class <- c( "source_spct", "filter_spct", "reflector_spct", "response_spct", "chroma_spct",
                 "generic_spct")
-  photon.based.input <- any(sapply(l, FUN=is_photon_based))
-  absorbance.based.input <- any(sapply(l, FUN=is_absorbance_based))
-  rescaled.input <- sapply(l, FUN = is.rescaled)
-  normalized.input <- sapply(l, FUN = is.normalized)
+  photon.based.input <- any(sapply(l, FUN=is.photon_based))
+  absorbance.based.input <- any(sapply(l, FUN=is.absorbance_based))
+  rescaled.input <- sapply(l, FUN = is_rescaled)
+  normalized.input <- sapply(l, FUN = is_normalized)
   effective.input <- sapply(l, FUN = is_effective)
   if (any(rescaled.input) && !all(rescaled.input)) {
     warning("Only some of the spectra being row-bound have been previously rescaled")

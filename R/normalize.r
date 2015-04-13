@@ -29,7 +29,7 @@ normalize.default <- function(x, ...) {
 #' @keywords internal
 #'
 normalize_spct <- function(spct, range, norm, var.name) {
-  stopifnot(is_any_spct(spct), !is.null(var.name), length(var.name) == 1, var.name %in% names(spct))
+  stopifnot(is.any_spct(spct), !is.null(var.name), length(var.name) == 1, var.name %in% names(spct))
   tmp.spct <- trim_spct(spct, range)
   # rescaling needed
   if (!is.null(norm)) {
@@ -169,7 +169,7 @@ normalize.reflector_spct <- function(x,
 }
 
 
-# is.normalized function --------------------------------------------------
+# is_normalized function --------------------------------------------------
 
 #' Query whether a generic spectrum has been normalized.
 #'
@@ -177,7 +177,7 @@ normalize.reflector_spct <- function(x,
 #' signals whether the spectral data has been normalized or not after the object
 #' was created.
 #'
-#' @usage is.normalized(x)
+#' @usage is_normalized(x)
 #'
 #' @param x An R object.
 #'
@@ -187,8 +187,8 @@ normalize.reflector_spct <- function(x,
 #' @export
 #' @family rescaling functions
 #'
-is.normalized <- function(x) {
-  if (!is_any_spct(x)) {
+is_normalized <- function(x) {
+  if (!is.any_spct(x)) {
     return(NA)
   }
   spct.attr <- attr(x, "normalized", exact = TRUE)
