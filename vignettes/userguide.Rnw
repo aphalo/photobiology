@@ -203,9 +203,9 @@ There are basically three different approaches to the creation of spectra. The f
 Consistently with R design, the package provides `is' functions for querying the type of spectra objects.
 
 <<>>=
-is_source_spct(sun.spct)
-is_filter_spct(sun.spct)
-is_any_spct(sun.spct)
+is.source_spct(sun.spct)
+is.filter_spct(sun.spct)
+is.any_spct(sun.spct)
 @
 
 In addition function \texttt{class.spc} returns directly the spectrum-related class attributes.
@@ -245,7 +245,7 @@ Spectral objects created with earlier versions of this package are missing some 
 
 \subsubsection{Setting the class of a spectrum object}\label{sec:set:spct}
 
-\texttt{generic\_spct} objects can be created from data tables and data frames simply by setting them as such. However, a column called \texttt{w.length} must be present and contain wavelength values expressed in nm. Functions with names of the form \texttt{is\_\_\_\_\_.spct} are defined for all classes of spectra and can take as arguments any R object. In addition function \texttt{is\_any\_spct} can use to query if an R object inherits from any of the classes of spectra defined in this package. Finally function \texttt{class\_spct} works similarly to R's \texttt{class} functions but returns a vector containing only the names of spectra classes. The `set' functions keep unrecognised variables, and fill missing required variables with \texttt{NA}, except for \texttt{w.length}, which if missing triggers an error.
+\texttt{generic\_spct} objects can be created from data tables and data frames simply by setting them as such. However, a column called \texttt{w.length} must be present and contain wavelength values expressed in nm. Functions with names of the form \texttt{is.\_\_\_\_.spct} are defined for all classes of spectra and can take as arguments any R object. In addition function \texttt{is.any\_spct} can use to query if an R object inherits from any of the classes of spectra defined in this package. Finally function \texttt{class\_spct} works similarly to R's \texttt{class} functions but returns a vector containing only the names of spectra classes. The `set' functions keep unrecognised variables, and fill missing required variables with \texttt{NA}, except for \texttt{w.length}, which if missing triggers an error.
 
 We create a data.table object \texttt{a.spct}, and query its class.
 
@@ -253,7 +253,7 @@ We create a data.table object \texttt{a.spct}, and query its class.
 a.spct <- data.table(w.length = 300:305, y = 1)
 class(a.spct)
 class_spct(a.spct)
-is_any_spct(a.spct)
+is.any_spct(a.spct)
 @
 
 We convert \texttt{a.spct} into a \texttt{generic\_spct} object, and query its class.
@@ -262,7 +262,7 @@ We convert \texttt{a.spct} into a \texttt{generic\_spct} object, and query its c
 setGenericSpct(a.spct)
 class(a.spct)
 class_spct(a.spct)
-is_generic_spct(a.spct)
+is.generic_spct(a.spct)
 a.spct
 @
 
@@ -432,7 +432,7 @@ Here we briefly describe the `as' functions, as what has been discussed above fo
 We can make a `generic\_spct' copy of any spectrum object.
 
 <<>>=
-j.spct <- as_generic_spct(sun.spct)
+j.spct <- as.generic_spct(sun.spct)
 class(j.spct)
 class(sun.spct)
 @
@@ -440,12 +440,12 @@ class(sun.spct)
 Or of a data frame.
 <<>>=
 k.df <- data.frame(wl = 400:410, anything = 1)
-k.spct <- as_generic_spct(k.df)
+k.spct <- as.generic_spct(k.df)
 class(k.spct)
 class(k.df)
 @
 
-Both \texttt{as\_source\_spct} and \texttt{as\_filter\_spct} accept an argument for setting the \texttt{time.unit} and \texttt{Tfr.type} attributes, respectively, with the same defaults as described above.
+Both \texttt{as.source\_spct} and \texttt{as.filter\_spct} accept an argument for setting the \texttt{time.unit} and \texttt{Tfr.type} attributes, respectively, with the same defaults as described above.
 
 \subsubsection{Using constructors}
 
@@ -771,12 +771,12 @@ split_bands(list(R = Red(), B = Blue()), length.out  =  2)
 split_bands(list(c(100, 150, 200), c(800, 825)), length.out = 1)
 @
 
-The function \texttt{is\_waveband} can the used to query any R object.
+The function \texttt{is.waveband} can the used to query any R object.
 
 <<>>=
-is_waveband(my_CIE_1)
-is_waveband(PAR())
-is_waveband(sun.spct)
+is.waveband(my_CIE_1)
+is.waveband(PAR())
+is.waveband(sun.spct)
 @
 
 The function \texttt{is\_effective} can the used to query any R object.
