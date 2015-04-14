@@ -459,7 +459,7 @@ setFilterSpct <- function(x, Tfr.type=c("total", "internal"),
     setDT(x)
   }
   if (!is.generic_spct(x)) {
-    setGenericSpct(x)
+    setGenericSpct(x, multiple.wl = multiple.wl)
   }
   if (!is.filter_spct(x)) {
     setattr(x, "class", c("filter_spct", class(x)))
