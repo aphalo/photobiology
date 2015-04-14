@@ -13,41 +13,41 @@ test_that("normalize", {
   expect_equal(class(normalize(my.spct)), class(my.spct))
   expect_error(normalize(my.spct, range = 100))
   expect_error(normalize(my.spct, range = c(100, 100)))
-  expect_true(is.normalized(normalize(my.spct)))
-  expect_false(is.normalized(my.spct))
-  expect_equal(is.source.spct(normalize(my.spct)), is.source.spct(my.spct))
-  expect_equal(is.filter.spct(normalize(my.spct)), is.filter.spct(my.spct))
+  expect_true(is_normalized(normalize(my.spct)))
+  expect_false(is_normalized(my.spct))
+  expect_equal(is.source_spct(normalize(my.spct)), is.source_spct(my.spct))
+  expect_equal(is.filter_spct(normalize(my.spct)), is.filter_spct(my.spct))
   expect_equal(getTimeUnit(normalize(my.spct)), getTimeUnit(my.spct))
   expect_equal(comment(normalize(my.spct)), comment(my.spct))
 })
 
-context("rescale.spct")
+context("scale.spct")
 
-test_that("Rescale", {
+test_that("scale", {
 
   my.spct <- q2e(sun.spct, action = "replace")
 
-  expect_equivalent(integrate_spct(Rescale(my.spct, f = "total")), 1)
-  expect_less_than(integrate_spct(Rescale(my.spct, f = "mean")) * average_spct(my.spct) - irrad(my.spct), 0.25)
-  expect_warning(irrad(Rescale(my.spct, f = "mean")))
-  expect_equal(irrad(Rescale(my.spct, f = "mean")), NA)
-  expect_named(Rescale(my.spct), setdiff(names(my.spct), "s.q.irrad"))
-  expect_equal(class(Rescale(my.spct)), class(my.spct))
-  expect_error(Rescale(my.spct, range = 100))
+  expect_equivalent(integrate_spct(scale(my.spct, f = "total")), 1)
+  expect_less_than(integrate_spct(scale(my.spct, f = "mean")) * average_spct(my.spct) - irrad(my.spct), 0.25)
+  expect_warning(irrad(scale(my.spct, f = "mean")))
+  expect_equal(irrad(scale(my.spct, f = "mean")), NA)
+  expect_named(scale(my.spct), setdiff(names(my.spct), "s.q.irrad"))
+  expect_equal(class(scale(my.spct)), class(my.spct))
+  expect_error(scale(my.spct, range = 100))
   expect_error(normalize(my.spct, range = c(100, 100)))
-  expect_true(is.rescaled(Rescale(my.spct)))
-  expect_false(is.rescaled(my.spct))
-  expect_equal(is.source.spct(Rescale(my.spct)), is.source.spct(my.spct))
-  expect_equal(is.filter.spct(Rescale(my.spct)), is.filter.spct(my.spct))
-  expect_equal(getTimeUnit(Rescale(my.spct)), getTimeUnit(my.spct))
-  expect_equal(comment(Rescale(my.spct)), comment(my.spct))
+  expect_true(is_scaled(scale(my.spct)))
+  expect_false(is_scaled(my.spct))
+  expect_equal(is.source_spct(scale(my.spct)), is.source_spct(my.spct))
+  expect_equal(is.filter_spct(scale(my.spct)), is.filter_spct(my.spct))
+  expect_equal(getTimeUnit(scale(my.spct)), getTimeUnit(my.spct))
+  expect_equal(comment(scale(my.spct)), comment(my.spct))
 })
 
 context("integrate_spct average_spct")
 
 test_that("integrate_spct", {
 
-  my.spct <- source.spct(w.length=100:200, s.e.irrad = 1)
+  my.spct <- source_spct(w.length=100:200, s.e.irrad = 1)
 
   expect_equivalent(integrate_spct(my.spct), sum(my.spct$s.e.irrad) - 1)
   expect_equivalent(average_spct(my.spct), 1)
@@ -55,7 +55,7 @@ test_that("integrate_spct", {
   expect_named(average_spct(my.spct), "e.irrad")
 
 
-  my.spct <- source.spct(w.length=seq(from=1000, to=2000, by=10), s.e.irrad = 1)
+  my.spct <- source_spct(w.length=seq(from=1000, to=2000, by=10), s.e.irrad = 1)
 
   expect_equivalent(integrate_spct(my.spct), (sum(my.spct$s.e.irrad) - 1) * 10)
   expect_equivalent(average_spct(my.spct), 1)

@@ -1,15 +1,15 @@
 library("photobiology")
-context("source.spct")
+context("source_spct")
 
 test_that("constructor energy", {
 
-  my.spct <- source.spct(w.length = 400:409, s.e.irrad = 1)
-  my.s.spct <- source.spct(w.length = 400:409, s.e.irrad = 1, time.unit = "second")
-  my.h.spct <- source.spct(w.length = 400:409, s.e.irrad = 1, time.unit = "hour")
-  my.d.spct <- source.spct(w.length = 400:409, s.e.irrad = 1, time.unit = "day")
-  my.b.spct <- source.spct(w.length = 400:409, s.e.irrad = 1, time.unit = "zzz")
+  my.spct <- source_spct(w.length = 400:409, s.e.irrad = 1)
+  my.s.spct <- source_spct(w.length = 400:409, s.e.irrad = 1, time.unit = "second")
+  my.h.spct <- source_spct(w.length = 400:409, s.e.irrad = 1, time.unit = "hour")
+  my.d.spct <- source_spct(w.length = 400:409, s.e.irrad = 1, time.unit = "day")
+  my.b.spct <- source_spct(w.length = 400:409, s.e.irrad = 1, time.unit = "zzz")
 
-  expect_warning(my.b.spct <- source.spct(w.length = 400:409, s.e.irrad = 1, time.unit = "zzz"))
+  expect_warning(my.b.spct <- source_spct(w.length = 400:409, s.e.irrad = 1, time.unit = "zzz"))
   expect_equal(my.spct[["s.e.irrad"]], rep(1, length.out = 10))
   expect_equal(my.spct[["w.length"]], 400:409)
   expect_named(my.spct, c("w.length", "s.e.irrad"))
@@ -24,13 +24,13 @@ test_that("constructor energy", {
 
 test_that("constructor photon", {
 
-  my.spct <- source.spct(w.length = 400:409, s.q.irrad = 1)
-  my.s.spct <- source.spct(w.length = 400:409, s.q.irrad = 1, time.unit = "second")
-  my.h.spct <- source.spct(w.length = 400:409, s.q.irrad = 1, time.unit = "hour")
-  my.d.spct <- source.spct(w.length = 400:409, s.q.irrad = 1, time.unit = "day")
-  my.b.spct <- source.spct(w.length = 400:409, s.q.irrad = 1, time.unit = "zzz")
+  my.spct <- source_spct(w.length = 400:409, s.q.irrad = 1)
+  my.s.spct <- source_spct(w.length = 400:409, s.q.irrad = 1, time.unit = "second")
+  my.h.spct <- source_spct(w.length = 400:409, s.q.irrad = 1, time.unit = "hour")
+  my.d.spct <- source_spct(w.length = 400:409, s.q.irrad = 1, time.unit = "day")
+  my.b.spct <- source_spct(w.length = 400:409, s.q.irrad = 1, time.unit = "zzz")
 
-  expect_warning(my.b.spct <- source.spct(w.length = 400:409, s.q.irrad = 1, time.unit = "zzz"))
+  expect_warning(my.b.spct <- source_spct(w.length = 400:409, s.q.irrad = 1, time.unit = "zzz"))
   expect_equal(my.spct[["s.q.irrad"]], rep(1, length.out = 10))
   expect_equal(my.spct[["w.length"]], 400:409)
   expect_named(my.spct, c("w.length", "s.q.irrad"))
@@ -45,8 +45,8 @@ test_that("constructor photon", {
 
 test_that("oper energy energy", {
 
-  my.e.spct <- source.spct(w.length = 400:409, s.e.irrad = 1)
-  my.2e.spct <- source.spct(w.length = 400:409, s.e.irrad = 2)
+  my.e.spct <- source_spct(w.length = 400:409, s.e.irrad = 1)
+  my.2e.spct <- source_spct(w.length = 400:409, s.e.irrad = 2)
 
   options(photobiology.radiation.unit = "energy")
 
@@ -68,8 +68,8 @@ test_that("oper energy energy", {
 
 test_that("oper energy energy", {
 
-  my.e.spct <- source.spct(w.length = 400:409, s.e.irrad = 1)
-  my.2e.spct <- source.spct(w.length = 400:409, s.e.irrad = 2)
+  my.e.spct <- source_spct(w.length = 400:409, s.e.irrad = 1)
+  my.2e.spct <- source_spct(w.length = 400:409, s.e.irrad = 2)
 
   options(photobiology.radiation.unit = NULL)
 
@@ -90,8 +90,8 @@ test_that("oper energy energy", {
 
 test_that("oper photon energy", {
 
-  my.q.spct <- source.spct(w.length = 400:409, s.q.irrad = 1)
-  my.2q.spct <- source.spct(w.length = 400:409, s.q.irrad = 2)
+  my.q.spct <- source_spct(w.length = 400:409, s.q.irrad = 1)
+  my.2q.spct <- source_spct(w.length = 400:409, s.q.irrad = 2)
 
   options(photobiology.radiation.unit = "energy")
 
@@ -113,8 +113,8 @@ test_that("oper photon energy", {
 
 test_that("oper photon photon", {
 
-  my.q.spct <- source.spct(w.length = 400:409, s.q.irrad = 1)
-  my.2q.spct <- source.spct(w.length = 400:409, s.q.irrad = 2)
+  my.q.spct <- source_spct(w.length = 400:409, s.q.irrad = 1)
+  my.2q.spct <- source_spct(w.length = 400:409, s.q.irrad = 2)
 
   options(photobiology.radiation.unit = "photon")
 
@@ -136,8 +136,8 @@ test_that("oper photon photon", {
 
 test_that("oper energy photon", {
 
-  my.e.spct <- source.spct(w.length = 400:409, s.e.irrad = 1)
-  my.2e.spct <- source.spct(w.length = 400:409, s.e.irrad = 2)
+  my.e.spct <- source_spct(w.length = 400:409, s.e.irrad = 1)
+  my.2e.spct <- source_spct(w.length = 400:409, s.e.irrad = 2)
 
   options(photobiology.radiation.unit = "photon")
 
@@ -159,8 +159,8 @@ test_that("oper energy photon", {
 
 test_that("math energy energy", {
 
-  my.e.spct <- source.spct(w.length = 400:409, s.e.irrad = 1)
-  my.2e.spct <- source.spct(w.length = 400:409, s.e.irrad = 2)
+  my.e.spct <- source_spct(w.length = 400:409, s.e.irrad = 1)
+  my.2e.spct <- source_spct(w.length = 400:409, s.e.irrad = 2)
 
   options(photobiology.radiation.unit = "energy")
 
@@ -175,8 +175,8 @@ test_that("math energy energy", {
 
 test_that("math photon photon", {
 
-  my.q.spct <- source.spct(w.length = 400:409, s.q.irrad = 1)
-  my.2q.spct <- source.spct(w.length = 400:409, s.q.irrad = 2)
+  my.q.spct <- source_spct(w.length = 400:409, s.q.irrad = 1)
+  my.2q.spct <- source_spct(w.length = 400:409, s.q.irrad = 2)
 
   options(photobiology.radiation.unit = "photon")
 

@@ -1,13 +1,13 @@
 library("photobiology")
-context("filter.spct")
+context("filter_spct")
 
 test_that("constructor T fraction", {
 
-  my.spct <- filter.spct(w.length = 400:409, Tfr = 0.1)
+  my.spct <- filter_spct(w.length = 400:409, Tfr = 0.1)
 
-  expect_error(filter.spct(w.length = 400:409, Tfr = -0.1))
-  expect_error(filter.spct(w.length = 400:409, Tfr = 1.1))
-  expect_warning(T2A(filter.spct(w.length = 400:409, Tfr = 0)))
+  expect_error(filter_spct(w.length = 400:409, Tfr = -0.1))
+  expect_error(filter_spct(w.length = 400:409, Tfr = 1.1))
+  expect_warning(T2A(filter_spct(w.length = 400:409, Tfr = 0)))
   expect_equal(my.spct[["Tfr"]], rep(0.1, length.out = 10))
   expect_equal(my.spct[["w.length"]], 400:409)
   expect_named(my.spct, c("w.length", "Tfr"))
@@ -16,10 +16,10 @@ test_that("constructor T fraction", {
 
 test_that("constructor T percent", {
 
-  my.spct <- filter.spct(w.length = 400:409, Tpc = 10)
+  my.spct <- filter_spct(w.length = 400:409, Tpc = 10)
 
-  expect_error(filter.spct(w.length = 400:409, Tpc = -0.1))
-  expect_error(filter.spct(w.length = 400:409, Tpc = 100.01))
+  expect_error(filter_spct(w.length = 400:409, Tpc = -0.1))
+  expect_error(filter_spct(w.length = 400:409, Tpc = 100.01))
   expect_equal(my.spct[["Tfr"]], rep(0.1, length.out = 10))
   expect_equal(my.spct[["w.length"]], 400:409)
   expect_named(my.spct, c("w.length", "Tfr"))
@@ -28,9 +28,9 @@ test_that("constructor T percent", {
 
 test_that("constructor absorbance", {
 
-  my.spct <- filter.spct(w.length = 400:409, A = 1)
+  my.spct <- filter_spct(w.length = 400:409, A = 1)
 
-  expect_warning(filter.spct(w.length = 400:409, A = -0.1))
+  expect_warning(filter_spct(w.length = 400:409, A = -0.1))
   expect_equal(my.spct[["A"]], rep(1, length.out = 10))
   expect_equal(my.spct[["w.length"]], 400:409)
   expect_named(my.spct, c("w.length", "A"))
@@ -39,8 +39,8 @@ test_that("constructor absorbance", {
 
 test_that("oper default", {
 
-  my.e.spct <- filter.spct(w.length = 400:409, Tfr = 0.1)
-  my.2e.spct <- filter.spct(w.length = 400:409, Tfr = 0.2)
+  my.e.spct <- filter_spct(w.length = 400:409, Tfr = 0.1)
+  my.2e.spct <- filter_spct(w.length = 400:409, Tfr = 0.2)
 
   options(photobiology.filter.qty = NULL)
 
@@ -59,8 +59,8 @@ test_that("oper default", {
 
 test_that("oper transmittance", {
 
-  my.e.spct <- filter.spct(w.length = 400:409, Tfr = 0.1)
-  my.2e.spct <- filter.spct(w.length = 400:409, Tfr = 0.2)
+  my.e.spct <- filter_spct(w.length = 400:409, Tfr = 0.1)
+  my.2e.spct <- filter_spct(w.length = 400:409, Tfr = 0.2)
 
   options(photobiology.filter.qty = "transmittance")
 
@@ -81,8 +81,8 @@ test_that("oper transmittance", {
 
 test_that("oper absorbance", {
 
-  my.e.spct <- filter.spct(w.length = 400:409, A = 1)
-  my.2e.spct <- filter.spct(w.length = 400:409, A = 2)
+  my.e.spct <- filter_spct(w.length = 400:409, A = 1)
+  my.2e.spct <- filter_spct(w.length = 400:409, A = 2)
 
   options(photobiology.filter.qty = "absorbance")
 
@@ -105,8 +105,8 @@ test_that("oper absorbance", {
 
 test_that("math default", {
 
-  my.e.spct <- filter.spct(w.length = 400:409, Tfr = 0.1)
-  my.2e.spct <- filter.spct(w.length = 400:409, Tfr = 0.2)
+  my.e.spct <- filter_spct(w.length = 400:409, Tfr = 0.1)
+  my.2e.spct <- filter_spct(w.length = 400:409, Tfr = 0.2)
 
   expect_equal(log10(my.e.spct)[["Tfr"]],  rep(log10(0.1), length.out = 10))
   expect_equal(log(my.e.spct)[["Tfr"]],  rep(log(0.1), length.out = 10))
@@ -118,8 +118,8 @@ test_that("math default", {
 
 test_that("math absorbance", {
 
-  my.e.spct <- filter.spct(w.length = 400:409, Tfr = 0.1)
-  my.2e.spct <- filter.spct(w.length = 400:409, Tfr = 0.2)
+  my.e.spct <- filter_spct(w.length = 400:409, Tfr = 0.1)
+  my.2e.spct <- filter_spct(w.length = 400:409, Tfr = 0.2)
 
   options(photobiology.filter.qty = "absorbance")
 
