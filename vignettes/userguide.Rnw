@@ -717,12 +717,12 @@ my_PAR <- new_waveband(400, 700)
 my_PARx <- new_waveband(400, 700, wb.name = "my_PARx")
 
 my_CIE_1 <-
-  new_waveband(250, 400, weight = "SWF", SWF.e.fun = CIE.e.fun, SWF.norm = 298)
+  new_waveband(250, 400, weight = "SWF", SWF.e.fun = CIE_e_fun, SWF.norm = 298)
 my_CIE_2 <-
-  new_waveband(250, 400, weight = "SWF", SWF.q.fun = CIE.q.fun, SWF.norm = 298)
+  new_waveband(250, 400, weight = "SWF", SWF.q.fun = CIE_q_fun, SWF.norm = 298)
 my_CIE_3 <-
-  new_waveband(250, 400, weight = "SWF", SWF.e.fun = CIE.e.fun,
-                         SWF.q.fun = CIE.q.fun, SWF.norm = 298)
+  new_waveband(250, 400, weight = "SWF", SWF.e.fun = CIE_e_fun,
+                         SWF.q.fun = CIE_q_fun, SWF.norm = 298)
 @
 
 The first example above, can be also written as, and in the same way all other statements above can be rewritten, replacing the two separate limits with an array of length 2:
