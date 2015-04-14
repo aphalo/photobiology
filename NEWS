@@ -18,6 +18,18 @@ All function and class names use underscores. Only S3 methods have dots, and onl
 method namne and class names. Although namy names have changed, they should be still
 easily recognizable to current users.
 
+Added test for non-unique wavelength values during spectral object construction,
+and added a new formal argument to check() and set...() functions to allow
+setting the maximum number of copies allowed. Current version only triggers
+a warning.
+
+Generic function Rescale() has been replaced by methods for the generic function scale()
+defined in R base, and is_rescaled() has been renamed is_scaled().
+
+IMPORTANT: because the .spct classes have been renamed, objects created with
+earlier versions of the package are not recognized. They need to be "upgraded"
+with function upgrade().
+
 Full overhaul of the documentation, using features of latest version of package roxygen2.
 Documentation for related functions is now on the same file, and most pages are cross-
 refewrenced.

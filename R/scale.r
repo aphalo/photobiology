@@ -1,33 +1,11 @@
-# Rescale methods ---------------------------------------------------------
+# scale methods ---------------------------------------------------------
 
-
-#' Rescale a spectrum.
+#' Scale a spectrum.
 #'
 #' These functions return a spectral object of the same class as the one supplied
-#' as argument but with the spectral data rescaled.
+#' as argument but with the spectral data scaled.
 #'
-#' @param x An R object
-#' @param ... not used in current version
-#' @export Rescale
-#' @family rescaling functions
-#'
-Rescale <- function(x, ...) UseMethod("Rescale")
-
-#' @describeIn Rescale Default for generic function
-#'
-#' @export
-#'
-Rescale.default <- function(x, ...) {
-  warning("'Rescale' is not defined for objects of class ", class(spct)[1])
-  return(x)
-}
-
-#' Rescale a spectrum.
-#'
-#' These functions return a spectral object of the same class as the one supplied
-#' as argument but with the spectral data rescaled.
-#'
-#' @usage rescale_spct(spct,
+#' @usage scale_spct(spct,
 #'                     range,
 #'                     var.name,
 #'                     f,
@@ -36,7 +14,7 @@ Rescale.default <- function(x, ...) {
 #' @param spct generic_spct The spectrum to be normalized
 #' @param range an R object on which range() returns a vector of length 2,
 #' with min annd max wavelengths (nm)
-#' @param var.name character The name of the variable to Rescale
+#' @param var.name character The name of the variable to scale
 #' @param f function A summary function to be applied to \code{spct}
 #' @param ... other arguments passed to f()
 #'
@@ -44,8 +22,7 @@ Rescale.default <- function(x, ...) {
 #'
 #' @keywords internal
 #'
-
-rescale_spct <- function(spct, range, var.name, f, ...) {
+scale_spct <- function(spct, range, var.name, f, ...) {
   stopifnot(is.any_spct(spct), !is.null(var.name), length(var.name) == 1, var.name %in% names(spct))
   tmp.spct <- trim_spct(spct, range)
   tmp.spct <- tmp.spct[ , .SD, .SDcols = c("w.length", var.name)]
@@ -73,35 +50,42 @@ rescale_spct <- function(spct, range, var.name, f, ...) {
   out.spct[ , var.name := out.spct[ , unlist(.SD), .SDcols = var.name] / summary.value, with = FALSE]
   setattr(out.spct, "class", class(spct))
   setattr(out.spct, "comment", comment(spct))
-  setattr(out.spct, "rescaled", TRUE)
+  setattr(out.spct, "scaled", TRUE)
   setTimeUnit(out.spct, getTimeUnit(spct))
   setTfrType(out.spct, getTfrType(spct))
   out.spct
 }
 
-#' @describeIn Rescale Rescale a source spectrum.
+#' Scale a spectrum
 #'
+#' These functions return a spectral object of the same class as the one supplied
+#' as argument but with the spectral data (re)scaled.
+#'
+#' @param x an R object.
+#' @param center ignored in current version
+#' @param scale ignored in current version
 #' @param range An R object on which \code{range()} returns a numeric vector of
 #'   length 2 with the limits of a range of wavelengths in nm, with min annd max
 #'   wavelengths (nm)
 #' @param f numeric Normalization wavelength (nm) or character string "mean",
 #' or "total" for normalization at the corresponding wavelength.
 #' @param unit.out character Alowed values "energy", and "photon", or its alias "quantum"
+#' @param ... additonal named arguments passed down to \code{f}.
 #'
 #' @export
-#'
-Rescale.source_spct <- function(x,
-                                ...,
+#' @rdname scale
+scale.source_spct <- function(x, center = TRUE, scale = TRUE,
                                 range = x,
                                 f = "mean",
-                                unit.out = getOption("photobiology.radiation.unit", default="energy")) {
+                                unit.out = getOption("photobiology.radiation.unit", default="energy"),
+                              ...) {
   if (unit.out == "energy") {
-    return(rescale_spct(spct = q2e(x, action = "replace"),
+    return(scale_spct(spct = q2e(x, action = "replace"),
                         range = range(range),
                         f = f,
                         var.name = "s.e.irrad"))
   } else if (unit.out %in% c("photon", "quantum") ) {
-    return(rescale_spct(spct = e2q(x, action = "replace"),
+    return(scale_spct(spct = e2q(x, action = "replace"),
                         range = range(range),
                         f = f,
                         var.name = "s.q.irrad"))
@@ -110,25 +94,25 @@ Rescale.source_spct <- function(x,
   }
 }
 
-#' @describeIn Rescale Rescale a response spectrum.
+#' @rdname scale
 #'
 #' @return a new object of the same class as \code{x}.
 #'
 #' @export
 #'
-Rescale.response_spct <- function(x,
-                                  ...,
+scale.response_spct <- function(x, center = TRUE, scale = TRUE,
                                   range = x,
                                   f = "mean",
-                                  unit.out = getOption("photobiology.radiation.unit", default="energy")) {
+                                  unit.out = getOption("photobiology.radiation.unit", default="energy"),
+                                ...) {
   if (unit.out == "energy") {
-    return(rescale_spct(spct = q2e(x, action = "replace"),
+    return(scale_spct(spct = q2e(x, action = "replace"),
                         range = range(range),
                         f = f,
                         var.name = "s.e.response",
                         ...))
   } else if (unit.out %in% c("photon", "quantum") ) {
-    return(rescale_spct(spct = e2q(x, action = "replace"),
+    return(scale_spct(spct = e2q(x, action = "replace"),
                         range = range(range),
                         f = f,
                         var.name = "s.q.response",
@@ -138,25 +122,25 @@ Rescale.response_spct <- function(x,
   }
 }
 
-#' @describeIn Rescale Rescale a filter spectrum.
+#' @rdname scale
 #'
 #' @param qty.out character Allowed values "transmittance", and "absorbance"
 #'
 #' @export
 #'
-Rescale.filter_spct <- function(x,
-                                ...,
+scale.filter_spct <- function(x, center = TRUE, scale = TRUE,
                                 range = x,
                                 f = "mean",
-                                qty.out = getOption("photobiology.filter.qty", default="transmittance")) {
+                                qty.out = getOption("photobiology.filter.qty", default="transmittance"),
+                              ...) {
   if (qty.out == "transmittance") {
-    return(rescale_spct(spct = A2T(x, action = "replace"),
+    return(scale_spct(spct = A2T(x, action = "replace"),
                         range = range(range),
                         f = f,
                         var.name = "Tfr",
                         ...))
   } else if (qty.out == "absorbance") {
-    return(rescale_spct(spct = T2A(x, action = "replace"),
+    return(scale_spct(spct = T2A(x, action = "replace"),
                         range = range(range),
                         f = f,
                         var.name = "A",
@@ -166,44 +150,44 @@ Rescale.filter_spct <- function(x,
   }
 }
 
-#' @describeIn Rescale Rescale a reflector spectrum.
+#' @rdname scale
 #'
 #' @export
 #'
-Rescale.reflector_spct <- function(x,
-                                   ...,
+scale.reflector_spct <- function(x, center = TRUE, scale = TRUE,
                                    range = x,
                                    f = "mean",
-                                   qty.out = NULL) {
-  return(rescale_spct(spct = x,
+                                   qty.out = NULL,
+                                 ...) {
+  return(scale_spct(spct = x,
                       range = range(range),
                       f = f,
                       var.name = "Rfr",
                       ...))
 }
 
-# is_rescaled function ----------------------------------------------------
+# is_scaled function ----------------------------------------------------
 
-#' Query whether a generic spectrum has been rescaled.
+#' Query whether a generic spectrum has been scaled.
 #'
 #' This function tests a \code{generic_spct} object for an attribute that
 #' signals whether the spectral data has been rescled or not after the object
 #' was created.
 #'
-#' @usage is_rescaled(x)
+#' @usage is_scaled(x)
 #'
 #' @param x An R object.
 #'
-#' @return A \code{logical} value. If \code{x} is not rescaled or \code{x} is
+#' @return A \code{logical} value. If \code{x} is not scaled or \code{x} is
 #'   not a \code{generic_spct} object the value returned is \code{FALSE}.
 #'
 #' @export
 #' @family rescaling functions
 #'
-is_rescaled <- function(x) {
+is_scaled <- function(x) {
   if (!is.any_spct(x)) {
     return(NA)
   }
-  spct.attr <- attr(x, "rescaled", exact = TRUE)
+  spct.attr <- attr(x, "scaled", exact = TRUE)
   as.logical(!is.null(spct.attr) && as.logical(spct.attr))
 }

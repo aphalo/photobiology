@@ -51,7 +51,7 @@ response.response_spct <-
            quantity="total",
            wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
            use.hinges=getOption("photobiology.use.hinges", default=NULL) ) {
-    response_spct(spct=spct, w.band=w.band, unit.out=unit.out,
+    resp_spct(spct=spct, w.band=w.band, unit.out=unit.out,
                   quantity=quantity, wb.trim=wb.trim,
                   use.hinges=use.hinges )
   }
@@ -61,7 +61,7 @@ response.response_spct <-
 #' This function returns the mean response for a given
 #' waveband and a response spectrum.
 #'
-#' @usage response_spct(spct, w.band, unit.out, quantity, wb.trim, use.hinges)
+#' @usage resp_spct(spct, w.band, unit.out, quantity, wb.trim, use.hinges)
 #'
 #' @param spct an object of class response_spct"
 #' @param w.band a waveband object or a list of waveband objects
@@ -76,11 +76,13 @@ response.response_spct <-
 #'
 #' @note The parameter \code{use.hinges} controls speed optimization. The defaults should be suitable
 #' in mosts cases. Only the range of wavelengths in the wavebands is used and all BSWFs are ignored.
-
-response_spct <-
+#'
+#' @keywords internal
+#'
+resp_spct <-
   function(spct, w.band, unit.out, quantity, wb.trim, use.hinges) {
-    if (is_normalized(spct) || is_rescaled(spct)) {
-      warning("The espectral data has been normalized or rescaled, making impossible to calculate integrated response")
+    if (is_normalized(spct) || is_scaled(spct)) {
+      warning("The espectral data has been normalized or scaled, making impossible to calculate integrated response")
       return(NA)
     }
     # makes "quantum" synonym for "photon" without changes to other code
@@ -167,7 +169,7 @@ response_spct <-
         warning("'quantity '", quantity, "' not supported when using BSWFs, returning 'total' instead")
         quantity <- "total"
       } else {
-        total <- response_spct(spct, w.band=NULL, unit.out=unit.out,
+        total <- resp_spct(spct, w.band=NULL, unit.out=unit.out,
                             quantity="total", use.hinges=FALSE)
         response <- response / total
         if (quantity == "contribution.pc") {
@@ -255,7 +257,7 @@ e_response.response_spct <-
   function(spct, w.band=NULL, quantity="total",
            wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
            use.hinges=getOption("photobiology.use.hinges", default=NULL) ) {
-    response_spct(spct=spct, w.band=w.band, unit.out="energy",
+    resp_spct(spct=spct, w.band=w.band, unit.out="energy",
                   quantity=quantity, wb.trim=wb.trim,
                   use.hinges=use.hinges )
   }
@@ -313,7 +315,7 @@ q_response.response_spct <-
   function(spct, w.band=NULL, quantity="total",
            wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
            use.hinges=getOption("photobiology.use.hinges", default=NULL) ) {
-    response_spct(spct=spct, w.band=w.band, unit.out="photon",
+    resp_spct(spct=spct, w.band=w.band, unit.out="photon",
                   quantity=quantity, wb.trim=wb.trim,
                   use.hinges=use.hinges )
   }

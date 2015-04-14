@@ -122,10 +122,13 @@ filter_spct <- function(w.length, Tfr=NULL, Tpc=NULL, A=NULL, Tfr.type=c("total"
 #'
 #' @param Rfr numeric vector with spectral refletance as fraction of one
 #' @param Rpc numeric vector with spectral reflectance as percent values
+#' @param Rfr.type character A string, either "total" or "specular".
 #'
 #' @export
 #'
-reflector_spct <- function(w.length, Rfr=NULL, Rpc=NULL, comment=NULL, strict.range=TRUE) {
+reflector_spct <- function(w.length, Rfr=NULL, Rpc=NULL,
+                           Rfr.type=c("total", "specular"),
+                           comment=NULL, strict.range=TRUE) {
   if (is.null(Rpc) && is.numeric(Rfr)) {
     out.spct <- data.table(w.length, Rfr)
   } else if (is.null(Rfr) && is.numeric(Rpc)) {
@@ -137,7 +140,7 @@ reflector_spct <- function(w.length, Rfr=NULL, Rpc=NULL, comment=NULL, strict.ra
   if (!is.null(comment)) {
     setattr(out.spct, "comment", comment)
   }
-  setReflectorSpct(out.spct, strict.range=strict.range)
+  setReflectorSpct(out.spct, Rfr.type = Rfr.type, strict.range=strict.range)
   return(out.spct)
 }
 

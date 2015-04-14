@@ -590,7 +590,7 @@ As is the case for other functions, the argument \texttt{"unit.out"} can be used
 
 \subsection{Rescaling a spectrum}
 
-Function \texttt{Rescale} (with a capital R!) rescales a spectrum by dividing each spectral data value by either the integrated "total" or the average "mean" value over a range of wavelengths.
+Function \texttt{rescale} (with a capital R!) rescales a spectrum by dividing each spectral data value by either the integrated "total" or the average "mean" value over a range of wavelengths.
 
 <<>>=
 normalize(sun.spct)
@@ -1249,7 +1249,7 @@ irrad(sun.spct * polyester.new.spct, list(UVB(), UVA(), PAR()), wb.trim = TRUE) 
 
 \subsection{Calculating integrated response}
 
-The functions  \texttt{response}, \texttt{e\_response} and \texttt{q\_response} take response_spct objects as arguments, and return the integrated value for each waveband (integrated over wavelength) \textbf{assuming} a light source with a flat spectral energy or photon output respectively.
+The functions  \texttt{response}, \texttt{e\_response} and \texttt{q\_response} take \texttt{response\_spct} objects as arguments, and return the integrated value for each waveband (integrated over wavelength) \textbf{assuming} a light source with a flat spectral energy or photon output respectively.
 
 If no waveband is supplied as argument, the whole spectrum is integrated.
 

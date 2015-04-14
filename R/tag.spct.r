@@ -50,7 +50,7 @@ tag.generic_spct <- function(x,
   } else {
     name <- substitute(x)
   }
-  if (is.tagged(x)) {
+  if (is_tagged(x)) {
     warning("Overwriting old tags in spectrum")
     untag(x)
   }
@@ -191,7 +191,7 @@ wb2spct <- function(w.band) {
   }
   w.length <- unique(sort(w.length))
   new.spct <- data.table(w.length = w.length, s.e.irrad = 0, s.q.irrad = 0, Tfr = 0, Rfl = 0, s.e.response = 0)
-  setGenSpct(new.spct)
+  setGenericSpct(new.spct)
   return(new.spct)
 }
 
@@ -285,7 +285,7 @@ wb2rect_spct <- function(w.band, short.names = TRUE) {
                          wb.f = factor(wbs.name, levels=wbs.name),
                          wl.high = wbs.wl.high, wl.low = wbs.wl.low,
                          y = 0)
-  setGenSpct(new.spct)
+  setGenericSpct(new.spct)
   tag.data <- list(time.unit="none",
                    wb.key.name="Bands",
                    wl.color=TRUE,

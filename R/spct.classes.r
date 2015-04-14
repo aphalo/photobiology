@@ -49,32 +49,36 @@ setkey_spct <- function (x, ..., verbose = getOption("datatable.verbose"), physi
 
 # check -------------------------------------------------------------------
 
-#' Generic check function.
+#' Check validity of spectral objects
 #'
 #' Check that an R object contains the expected data members.
 #'
-#' @usage check(x, byref, strict.range)
+#' @usage check(x, byref, strict.range, ...)
 #'
 #' @param x An R object
 #' @param byref logical indicating if new object will be created by reference or
 #'   by copy of \code{x}
 #' @param strict.range logical indicating whether off-range values result in an
 #'   error instead of a warning
+#' @param ... additional param possible derived methods
 #' @export
 #'
 #' @family data validity check functions
 #'
-check <- function(x, byref, strict.range) UseMethod("check")
+check <- function(x, byref, strict.range, ...) UseMethod("check")
 
 #' @describeIn check Default for generic function.
 #' @export
-check.default <- function(x, byref=FALSE, strict.range=TRUE) {
+check.default <- function(x, byref=FALSE, strict.range=TRUE, ...) {
   return(x)
 }
 
 #' @describeIn check Specialization for generic_spct.
+#'
+#' @param multiple.wl numeric Maximum number of repeated w.length entries with same value.
+#'
 #' @export
-check.generic_spct <- function(x, byref=TRUE, strict.range=TRUE) {
+check.generic_spct <- function(x, byref=TRUE, strict.range=TRUE, multiple.wl = 1L, ...) {
   if (exists("w.length", x, mode = "numeric", inherits=FALSE)) {
     NULL
   } else if (exists("wl", x, mode = "numeric", inherits=FALSE)) {
@@ -94,12 +98,16 @@ check.generic_spct <- function(x, byref=TRUE, strict.range=TRUE) {
   } else if (wl.min < 99.999 || wl.min > 5e3) {
     stop("Off-range minimum w.length value ", wl.min, " instead of within 100 nm and 5000 nm")
   }
+  wl.reps <- x[ , length(w.length) / length(unique(w.length))]
+  if (wl.reps > multiple.wl) {
+    warning("'w.length' values are not unique in ", wl.reps, " copies.")
+  }
   return(x)
 }
 
 #' @describeIn check Specialization for filter_spct.
 #' @export
-check.filter_spct <- function(x, byref=TRUE, strict.range = TRUE) {
+check.filter_spct <- function(x, byref=TRUE, strict.range = TRUE, multiple.wl = 1L, ...) {
 
   range_check <- function(x, strict.range) {
     Tfr.min <- min(x$Tfr, na.rm = TRUE)
@@ -193,7 +201,7 @@ check.reflector_spct <- function(x, byref=TRUE, strict.range = TRUE) {
 
 #' @describeIn check Specialization for object_spct.
 #' @export
-check.object_spct <- function(x, byref=TRUE, strict.range = TRUE) {
+check.object_spct <- function(x, byref=TRUE, strict.range = TRUE, multiple.wl = 1L, ...) {
 
   range_check <- function(x, strict.range) {
     Rfr.min <- min(x$Rfr, na.rm = TRUE)
@@ -250,25 +258,25 @@ check.object_spct <- function(x, byref=TRUE, strict.range = TRUE) {
     warning("Found varaible 'transmittance', I am assuming it expressed as percent")
   }
   if (exists("Tfr", x, mode = "numeric", inherits=FALSE)) {
-    range_check(x, strict.range=strict.range)
+    range_check(x, strict.range = strict.range)
     return(x)
   } else if (exists("Tpc", x, mode = "numeric", inherits=FALSE)) {
     x[ , Tfr := Tpc / 100]
     x[ , Tpc := NULL]
-    range_check(x, strict.range=strict.range)
+    range_check(x, strict.range = strict.range)
     return(x)
   } else {
     warning("No transmittance data found in object_spct")
     x[ , Tfr := NA]
     return(x)
   }
-  range_check(x, strict.range=strict.range)
+  range_check(x, strict.range = strict.range)
   return(x)
 }
 
 #' @describeIn check Specialization for response_spct.
 #' @export
-check.response_spct <- function(x, byref=TRUE, strict.range=TRUE) {
+check.response_spct <- function(x, byref=TRUE, strict.range=TRUE, multiple.wl = 1L, ...) {
   if (exists("s.e.response", x, mode = "numeric", inherits=FALSE)) {
     return(x)
   } else if (exists("s.q.response", x, mode = "numeric", inherits=FALSE)) {
@@ -292,7 +300,7 @@ check.response_spct <- function(x, byref=TRUE, strict.range=TRUE) {
 
 #' @describeIn check Specialization for source_spct.
 #' @export
-check.source_spct <- function(x, byref=TRUE, strict.range=FALSE) {
+check.source_spct <- function(x, byref=TRUE, strict.range=FALSE, multiple.wl = 1L, ...) {
 
   range_check <- function(x, strict.range) {
     if (is.null(strict.range)) {
@@ -349,7 +357,7 @@ check.source_spct <- function(x, byref=TRUE, strict.range=FALSE) {
 
 #' @describeIn check Specialization for chroma_spct.
 #' @export
-check.chroma_spct <- function(x, byref=TRUE, strict.range=TRUE) {
+check.chroma_spct <- function(x, byref=TRUE, strict.range=TRUE, multiple.wl = 1L, ...) {
   names_x <- names(x)
   idxs <- grep("[XYZ]", names_x)
   names2lc <- names_x[idxs]
@@ -403,21 +411,23 @@ rmDerivedSpct <- function(x) {
 #' data.table in the process.
 #'
 #' @param x data.frame, data.table, list or generic_spct and derived classes
+#' @param multiple.wl numeric Maximum number of repeated w.length entries with same value.
+#'
 #' @export
 #' @exportClass generic_spct
 #' @family set and unset spectral class functions
 #'
-setGenericSpct <- function(x) {
+setGenericSpct <- function(x, multiple.wl = 1L) {
   name <- substitute(x)
   rmDerivedSpct(x)
   if (!is.data.table(x)) {
     setDT(x)
   }
-if (!is.generic_spct(x)){
+  if (!is.generic_spct(x)){
     setattr(x, "class", c("generic_spct", class(x)))
     setattr(x, "spct.tags", NA)
   }
-  x <- check(x)
+  x <- check(x, multiple.wl = multiple.wl)
   setkey_spct(x, w.length)
   if (is.name(name)) {
     name <- as.character(name)
@@ -425,12 +435,6 @@ if (!is.generic_spct(x)){
   }
   invisible(x)
 }
-
-# Deprecated (to be removed in due time)
-#
-#' @keywords internal
-#' @export
-setGenSpct <- setGenericSpct
 
 #' @describeIn setGenericSpct Set class of an object to "filter_spct".
 #'
@@ -440,7 +444,8 @@ setGenSpct <- setGenericSpct
 #' @export
 #' @exportClass filter_spct
 #'
-setFilterSpct <- function(x, Tfr.type=c("total", "internal"), strict.range = TRUE) {
+setFilterSpct <- function(x, Tfr.type=c("total", "internal"),
+                          strict.range = TRUE, multiple.wl = 1L) {
   name <- substitute(x)
   if ((is.object_spct(x) || is.filter_spct(x)) && getTfrType(x) != "unknown") {
     if (length(Tfr.type) > 1) {
@@ -454,13 +459,13 @@ setFilterSpct <- function(x, Tfr.type=c("total", "internal"), strict.range = TRU
     setDT(x)
   }
   if (!is.generic_spct(x)) {
-    setGenSpct(x)
+    setGenericSpct(x)
   }
   if (!is.filter_spct(x)) {
     setattr(x, "class", c("filter_spct", class(x)))
   }
   setTfrType(x, Tfr.type[1])
-  x <- check(x, strict.range=strict.range)
+  x <- check(x, strict.range = strict.range)
   setkey_spct(x, w.length)
   if (is.name(name)) {
     name <- as.character(name)
@@ -475,7 +480,8 @@ setFilterSpct <- function(x, Tfr.type=c("total", "internal"), strict.range = TRU
 #' @export
 #' @exportClass reflector_spct
 #'
-setReflectorSpct <- function(x, Rfr.type=c("total", "specular"), strict.range = TRUE) {
+setReflectorSpct <- function(x, Rfr.type=c("total", "specular"),
+                             strict.range = TRUE, multiple.wl = 1L) {
   name <- substitute(x)
   if ((is.object_spct(x) || is.reflector_spct(c)) && getRfrType(x) != "unknown") {
     if (length(Rfr.type) > 1) {
@@ -489,13 +495,13 @@ setReflectorSpct <- function(x, Rfr.type=c("total", "specular"), strict.range = 
     setDT(x)
   }
   if (!is.generic_spct(x)) {
-    setGenSpct(x)
+    setGenericSpct(x, multiple.wl = multiple.wl)
   }
   if (!is.reflector_spct(x)) {
     setattr(x, "class", c("reflector_spct", class(x)))
   }
   setRfrType(x, Rfr.type[1])
-  x <- check(x, strict.range=strict.range)
+  x <- check(x, strict.range = strict.range)
   setkey_spct(x, w.length)
   if (is.name(name)) {
     name <- as.character(name)
@@ -509,8 +515,10 @@ setReflectorSpct <- function(x, Rfr.type=c("total", "specular"), strict.range = 
 #' @export
 #' @exportClass object_spct
 #'
-setObjectSpct <- function(x, Tfr.type=c("total", "internal"),
-                             Rfr.type=c("total", "specular"), strict.range = TRUE) {
+setObjectSpct <- function(x,
+                          Tfr.type=c("total", "internal"),
+                          Rfr.type=c("total", "specular"),
+                          strict.range = TRUE, multiple.wl = 1L) {
   name <- substitute(x)
   if ((is.filter_spct(x) || is.object_spct(x)) && getTfrType(x) != "unknown") {
     if (length(Tfr.type) > 1) {
@@ -531,14 +539,14 @@ setObjectSpct <- function(x, Tfr.type=c("total", "internal"),
     setDT(x)
   }
   if (!is.generic_spct(x)) {
-    setGenSpct(x)
+    setGenericSpct(x, multiple.wl = multiple.wl)
   }
   if (!is.object_spct(x)) {
     setattr(x, "class", c("object_spct", class(x)))
   }
   setTfrType(x, Tfr.type)
   setRfrType(x, Rfr.type)
-  x <- check(x, strict.range=strict.range)
+  x <- check(x, strict.range = strict.range)
   setkey_spct(x, w.length)
   if (is.name(name)) {
     name <- as.character(name)
@@ -553,14 +561,14 @@ setObjectSpct <- function(x, Tfr.type=c("total", "internal"),
 #' @export
 #' @exportClass response_spct
 #'
-setResponseSpct <- function(x, time.unit="none") {
+setResponseSpct <- function(x, time.unit="none", multiple.wl = 1L) {
   name <- substitute(x)
   rmDerivedSpct(x)
   if (!is.data.table(x)) {
     setDT(x)
   }
   if (!is.generic_spct(x)) {
-    setGenSpct(x)
+    setGenericSpct(x, multiple.wl = multiple.wl)
   }
   if (!is.response_spct(x)) {
     setattr(x, "class", c("response_spct", class(x)))
@@ -582,14 +590,14 @@ setResponseSpct <- function(x, time.unit="none") {
 #' @exportClass source_spct
 #'
 setSourceSpct <- function(x, time.unit="second", bswf.used=c("none", "unknown"),
-                          strict.range = FALSE) {
+                          strict.range = FALSE, multiple.wl = 1L) {
   name <- substitute(x)
   rmDerivedSpct(x)
   if (!is.data.table(x)) {
     setDT(x)
   }
   if (!is.generic_spct(x)) {
-    setGenSpct(x)
+    setGenericSpct(x, multiple.wl = multiple.wl)
   }
   if (!is.source_spct(x)) {
     setattr(x, "class", c("source_spct", class(x)))
@@ -610,14 +618,14 @@ setSourceSpct <- function(x, time.unit="second", bswf.used=c("none", "unknown"),
 #' @export
 #' @exportClass chroma_spct
 #'
-setChromaSpct <- function(x) {
+setChromaSpct <- function(x, multiple.wl = 1L) {
   name <- substitute(x)
   rmDerivedSpct(x)
   if (!is.data.table(x)) {
     setDT(x)
   }
   if (!is.generic_spct(x)) {
-    setGenSpct(x)
+    setGenericSpct(x, multiple.wl = multiple.wl)
   }
   if (!is.chroma_spct(x)) {
     setattr(x, "class", c("chroma_spct", class(x)))
@@ -721,11 +729,11 @@ class_spct <- function(x) {
 #'
 #' Functions to check if an spct object contains tags.
 #'
-#' @usage is.tagged(x)
+#' @usage is_tagged(x)
 #'
 #' @param x any R object
 #'
-#' @return is.tagged returns TRUE if its argument is a an spectrum
+#' @return is_tagged returns TRUE if its argument is a an spectrum
 #' that contains tags and FALSE if it is an untagged spectrun, but
 #' returns NA for any other R object.
 #'
@@ -733,7 +741,7 @@ class_spct <- function(x) {
 #'
 #' @family tagging and related functions
 #'
-is.tagged <- function(x) {
+is_tagged <- function(x) {
   if (!is.any_spct(x)) {
     return(NA)
   } else {

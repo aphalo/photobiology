@@ -4,8 +4,6 @@
 #'
 #' Methods of generic function summary for objects of spectral classes.
 #'
-#' @usage summary(object, digits = max(3, getOption("digits")-3), ...)
-#'
 #' @param object An object of one of the spectral classes for which a summary is
 #'   desired
 #' @param digits integer Used for number formatting with \code{signif()}

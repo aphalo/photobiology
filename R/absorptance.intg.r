@@ -84,8 +84,8 @@ absorptance_spct <-
   function(spct, w.band=NULL, quantity="average",
            wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
            use.hinges=getOption("photobiology.use.hinges", default=NULL) ) {
-    if (is_normalized(spct) || is_rescaled(spct)) {
-      warning("The espectral data has been normalized or rescaled, making impossible to calculate absorptance")
+    if (is_normalized(spct) || is_scaled(spct)) {
+      warning("The espectral data has been normalized or scaled, making impossible to calculate absorptance")
       return(NA)
     }
     spct <- copy(spct)

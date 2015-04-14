@@ -106,11 +106,11 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = NULL) {
                 "generic_spct")
   photon.based.input <- any(sapply(l, FUN=is.photon_based))
   absorbance.based.input <- any(sapply(l, FUN=is.absorbance_based))
-  rescaled.input <- sapply(l, FUN = is_rescaled)
+  scaled.input <- sapply(l, FUN = is_scaled)
   normalized.input <- sapply(l, FUN = is_normalized)
   effective.input <- sapply(l, FUN = is_effective)
-  if (any(rescaled.input) && !all(rescaled.input)) {
-    warning("Only some of the spectra being row-bound have been previously rescaled")
+  if (any(scaled.input) && !all(scaled.input)) {
+    warning("Only some of the spectra being row-bound have been previously scaled")
   }
   if (any(normalized.input) && length(unique(normalized.input)) > 1L) {
     warning("Only some of the spectra being row-bound have been previously normalized")
@@ -200,7 +200,7 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = NULL) {
       add.bswf <- FALSE
       bswf.used <- rep("none", length(l))
     }
-    setSourceSpct(ans, time.unit = time.unit[1], bswf.used = bswf.used)
+    setSourceSpct(ans, time.unit = time.unit[1], bswf.used = bswf.used, multiple.wl = length(l))
     if (photon.based.input) {
       e2q(ans, action = "add", byref = TRUE)
     }
@@ -210,7 +210,7 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = NULL) {
       warning("Inconsistent 'Tfr.type' among filter spectra in rbindspct")
       return(NA)
     }
-    setFilterSpct(ans, Tfr.type = Tfr.type[1])
+    setFilterSpct(ans, Tfr.type = Tfr.type[1], multiple.wl = length(l))
     if (absorbance.based.input) {
       T2A(ans, action = "add", byref = TRUE)
     }
@@ -220,24 +220,24 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = NULL) {
       warning("Inconsistent 'Rfr.type' among reflector spectra in rbindspct")
       return(NA)
     }
-    setReflectorSpct(ans, Rfr.type = Rfr.type[1])
+    setReflectorSpct(ans, Rfr.type = Rfr.type[1], multiple.wl = length(l))
   } else if (l.class == "response_spct") {
     time.unit <- sapply(l, FUN = getTimeUnit)
     if (length(unique(time.unit)) > 1L) {
       warning("Inconsistent time units among respose spectra in rbindspct")
       return(NA)
     }
-    setResponseSpct(ans, time.unit = time.unit[1])
+    setResponseSpct(ans, time.unit = time.unit[1], multiple.wl = length(l))
     if (photon.based.input) {
       e2q(ans, action = "add", byref = TRUE)
     }
   } else if (l.class == "chroma_spct") {
-    setChromSpct(ans)
+    setChromSpct(ans, multiple.wl = length(l))
   } else if (l.class == "generic_spct") {
-    setGenericSpct(ans)
+    setGenericSpct(ans, multiple.wl = length(l))
   }
-  if (any(rescaled.input)) {
-    setattr(ans, "rescaled", "TRUE")
+  if (any(scaled.input)) {
+    setattr(ans, "scaled", "TRUE")
   }
   if (any(normalized.input)) {
     setattr(ans, "normalized", "TRUE")
@@ -266,8 +266,6 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = NULL) {
 #'
 #' Just like \code{subset} in base R, but preserves the special attributes used
 #' in spectral classes.
-#'
-#' @usage subset(x, subset, select, ...)
 #'
 #' @param x	generic_spct to subset
 #' @param subset logical expression indicating elements or rows to keep
@@ -308,7 +306,7 @@ subset.source_spct <- function(x, subset, select = NULL, ...) {
   bswf.used <- getBSWFUsed(x)
   comment <- comment(x)
   x.out <- x[eval(substitute(subset))]
-  setSourceSpct(x = x.out, time.unit = time.unit, bswf.used = bswf.used)
+  setSourceSpct(x = x.out, time.unit = time.unit, bswf.used = bswf.used, multiple.wl = Inf)
   if (!is.null(comment)) {
     setattr(x.out, "comment", comment)
   }
@@ -324,7 +322,7 @@ subset.filter_spct <- function(x, subset, select = NULL, ...) {
   Tfr.type <- getTfrType(x)
   comment <- comment(x)
   x.out <- x[eval(substitute(subset))]
-  setFilterSpct(x = x.out, Tfr.type = Tfr.type)
+  setFilterSpct(x = x.out, Tfr.type = Tfr.type, multiple.wl = Inf)
   if (!is.null(comment)) {
     setattr(x.out, "comment", comment)
   }
@@ -340,7 +338,7 @@ subset.reflector_spct <- function(x, subset, select = NULL, ...) {
   Rfr.type <- getRfrType(x)
   comment <- comment(x)
   x.out <- x[eval(substitute(subset))]
-  setReflectorSpct(x = x.out, Rfr.type = Rfr.type)
+  setReflectorSpct(x = x.out, Rfr.type = Rfr.type, multiple.wl = Inf)
   if (!is.null(comment)) {
     setattr(x.out, "comment", comment)
   }
@@ -356,7 +354,7 @@ subset.response_spct <- function(x, subset, select = NULL, ...) {
   time.unit <- getTimeUnit(x)
   comment <- comment(x)
   x.out <- x[eval(substitute(subset))]
-  setResponseSpct(x = x.out, time.unit = time.unit)
+  setResponseSpct(x = x.out, time.unit = time.unit, multiple.wl = Inf)
   if (!is.null(comment)) {
     setattr(x.out, "comment", comment)
   }
@@ -373,7 +371,7 @@ subset.object_spct <- function(x, subset, select = NULL, ...) {
   Rfr.type <- getRfrType(x)
   comment <- comment(x)
   x.out <- x[eval(substitute(subset))]
-  setObjectSpct(x = x.out, Tfr.type = Tfr.type, Rfr.type = Rfr.type)
+  setObjectSpct(x = x.out, Tfr.type = Tfr.type, Rfr.type = Rfr.type, multiple.wl = Inf)
   if (!is.null(comment)) {
     setattr(x.out, "comment", comment)
   }

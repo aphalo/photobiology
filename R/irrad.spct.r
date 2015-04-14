@@ -21,7 +21,7 @@
 #'   cached between calls
 #' @param use.hinges logical indicating whether to use hinges to reduce
 #'   interpolation errors
-#' @param allow.scaled logical indicating whether rescaled or normalized spectra
+#' @param allow.scaled logical indicating whether scaled or normalized spectra
 #'   as argument to spct are flagged as an error
 #'
 #' @note Formal parameter \code{allow.scaled} is used internally for calculation
@@ -82,8 +82,8 @@ irrad.source_spct <-
            use.hinges=getOption("photobiology.use.hinges", default=NULL),
            allow.scaled = FALSE){
     # we have a default, but we check for invalid arguments
-    if (!allow.scaled && (is_normalized(spct) || is_rescaled(spct))) {
-      warning("The espectral data has been normalized or rescaled, making impossible to calculate irradiance")
+    if (!allow.scaled && (is_normalized(spct) || is_scaled(spct))) {
+      warning("The espectral data has been normalized or scaled, making impossible to calculate irradiance")
       return(NA)
     }
     if (identical(attr(spct, ".data.table.locked"), TRUE)) {
@@ -252,7 +252,7 @@ irrad_spct <- irrad.source_spct
 #'   cached between calls
 #' @param use.hinges logical indicating whether to use hinges to reduce
 #'   interpolation errors
-#' @param allow.scaled logical indicating whether rescaled or normalized spectra
+#' @param allow.scaled logical indicating whether scaled or normalized spectra
 #'   as argument to spct are flagged as an error
 #'
 #' @keywords manip misc
@@ -325,7 +325,7 @@ e_irrad.source_spct <-
 #'   cached between calls
 #' @param use.hinges logical indicating whether to use hinges to reduce
 #'   interpolation errors
-#' @param allow.scaled logical indicating whether rescaled or normalized spectra
+#' @param allow.scaled logical indicating whether scaled or normalized spectra
 #'   as argument to spct are flagged as an error
 #'
 #' @keywords manip misc
