@@ -1,11 +1,135 @@
-# scale methods ---------------------------------------------------------
+# fscale methods ---------------------------------------------------------
 
-#' Scale a spectrum.
+#' Rescale a spectrum using a summary function
+#'
+#' These functions return a spectral object of the same class as the one supplied
+#' as argument but with the spectral data rescaled.
+#'
+#' @param x An R object
+#' @param ... additonal named arguments passed down to \code{f}.
+#' @export fscale
+#' @family rescaling functions
+#'
+fscale <- function(x, ...) UseMethod("fscale")
+
+#' @describeIn fscale Default for generic function
+#'
+#' @export
+#'
+#' @return a new object of the same class as \code{x}.
+#'
+fscale.default <- function(x, ...) {
+  warning("'fscale' is not defined for objects of class ", class(spct)[1])
+  return(x)
+}
+
+#' @describeIn fscale
+#'
+#' @param range An R object on which \code{range()} returns a numeric vector of
+#'   length 2 with the limits of a range of wavelengths in nm, with min annd max
+#'   wavelengths (nm)
+#' @param f numeric Normalization wavelength (nm) or character string "mean",
+#' or "total" for normalization at the corresponding wavelength.
+#' @param unit.out character Alowed values "energy", and "photon", or its alias "quantum"
+#'
+#' @export
+#'
+fscale.source_spct <- function(x,
+                               range = x,
+                               f = "mean",
+                               unit.out = getOption("photobiology.radiation.unit", default="energy"),
+                               ...) {
+  if (unit.out == "energy") {
+    return(fscale_spct(spct = q2e(x, action = "replace"),
+                       range = range(range),
+                       f = f,
+                       var.name = "s.e.irrad"))
+  } else if (unit.out %in% c("photon", "quantum") ) {
+    return(fscale_spct(spct = e2q(x, action = "replace"),
+                       range = range(range),
+                       f = f,
+                       var.name = "s.q.irrad"))
+  } else {
+    stop("'unit.out ", unit.out, " is unknown")
+  }
+}
+
+#' @describeIn fscale
+#'
+#' @export
+#'
+fscale.response_spct <- function(x,
+                                 range = x,
+                                 f = "mean",
+                                 unit.out = getOption("photobiology.radiation.unit", default="energy"),
+                                 ...) {
+  if (unit.out == "energy") {
+    return(fscale_spct(spct = q2e(x, action = "replace"),
+                       range = range(range),
+                       f = f,
+                       var.name = "s.e.response",
+                       ...))
+  } else if (unit.out %in% c("photon", "quantum") ) {
+    return(fscale_spct(spct = e2q(x, action = "replace"),
+                       range = range(range),
+                       f = f,
+                       var.name = "s.q.response",
+                       ...))
+  } else {
+    stop("'unit.out ", unit.out, " is unknown")
+  }
+}
+
+#' @describeIn fscale
+#'
+#' @param qty.out character Allowed values "transmittance", and "absorbance"
+#'
+#' @export
+#'
+fscale.filter_spct <- function(x,
+                               range = x,
+                               f = "mean",
+                               qty.out = getOption("photobiology.filter.qty", default="transmittance"),
+                               ...) {
+  if (qty.out == "transmittance") {
+    return(fscale_spct(spct = A2T(x, action = "replace"),
+                       range = range(range),
+                       f = f,
+                       var.name = "Tfr",
+                       ...))
+  } else if (qty.out == "absorbance") {
+    return(fscale_spct(spct = T2A(x, action = "replace"),
+                       range = range(range),
+                       f = f,
+                       var.name = "A",
+                       ...))
+  } else {
+    stop("'qty.out ", unit.out, " is unknown")
+  }
+}
+
+#' @describeIn fscale
+#'
+#' @export
+#'
+fscale.reflector_spct <- function(x,
+                                  range = x,
+                                  f = "mean",
+                                  qty.out = NULL,
+                                  ...) {
+  return(fscale_spct(spct = x,
+                     range = range(range),
+                     f = f,
+                     var.name = "Rfr",
+                     ...))
+}
+
+#' fscale a spectrum.
 #'
 #' These functions return a spectral object of the same class as the one supplied
 #' as argument but with the spectral data scaled.
 #'
-#' @usage scale_spct(spct,
+#' @usage fscale_spct(spct,
 #'                     range,
 #'                     var.name,
 #'                     f,
@@ -14,7 +138,7 @@
 #' @param spct generic_spct The spectrum to be normalized
 #' @param range an R object on which range() returns a vector of length 2,
 #' with min annd max wavelengths (nm)
-#' @param var.name character The name of the variable to scale
+#' @param var.name character The name of the variable to fscale
 #' @param f function A summary function to be applied to \code{spct}
 #' @param ... other arguments passed to f()
 #'
@@ -22,7 +146,7 @@
 #'
 #' @keywords internal
 #'
-scale_spct <- function(spct, range, var.name, f, ...) {
+fscale_spct <- function(spct, range, var.name, f, ...) {
   stopifnot(is.any_spct(spct), !is.null(var.name), length(var.name) == 1, var.name %in% names(spct))
   tmp.spct <- trim_spct(spct, range)
   tmp.spct <- tmp.spct[ , .SD, .SDcols = c("w.length", var.name)]
@@ -54,116 +178,6 @@ scale_spct <- function(spct, range, var.name, f, ...) {
   setTimeUnit(out.spct, getTimeUnit(spct))
   setTfrType(out.spct, getTfrType(spct))
   out.spct
-}
-
-#' Scale a spectrum
-#'
-#' These functions return a spectral object of the same class as the one supplied
-#' as argument but with the spectral data (re)scaled.
-#'
-#' @param x an R object.
-#' @param center ignored in current version
-#' @param scale ignored in current version
-#' @param range An R object on which \code{range()} returns a numeric vector of
-#'   length 2 with the limits of a range of wavelengths in nm, with min annd max
-#'   wavelengths (nm)
-#' @param f numeric Normalization wavelength (nm) or character string "mean",
-#' or "total" for normalization at the corresponding wavelength.
-#' @param unit.out character Alowed values "energy", and "photon", or its alias "quantum"
-#' @param ... additonal named arguments passed down to \code{f}.
-#'
-#' @export
-#' @rdname scale
-scale.source_spct <- function(x, center = TRUE, scale = TRUE,
-                                range = x,
-                                f = "mean",
-                                unit.out = getOption("photobiology.radiation.unit", default="energy"),
-                              ...) {
-  if (unit.out == "energy") {
-    return(scale_spct(spct = q2e(x, action = "replace"),
-                        range = range(range),
-                        f = f,
-                        var.name = "s.e.irrad"))
-  } else if (unit.out %in% c("photon", "quantum") ) {
-    return(scale_spct(spct = e2q(x, action = "replace"),
-                        range = range(range),
-                        f = f,
-                        var.name = "s.q.irrad"))
-  } else {
-    stop("'unit.out ", unit.out, " is unknown")
-  }
-}
-
-#' @rdname scale
-#'
-#' @return a new object of the same class as \code{x}.
-#'
-#' @export
-#'
-scale.response_spct <- function(x, center = TRUE, scale = TRUE,
-                                  range = x,
-                                  f = "mean",
-                                  unit.out = getOption("photobiology.radiation.unit", default="energy"),
-                                ...) {
-  if (unit.out == "energy") {
-    return(scale_spct(spct = q2e(x, action = "replace"),
-                        range = range(range),
-                        f = f,
-                        var.name = "s.e.response",
-                        ...))
-  } else if (unit.out %in% c("photon", "quantum") ) {
-    return(scale_spct(spct = e2q(x, action = "replace"),
-                        range = range(range),
-                        f = f,
-                        var.name = "s.q.response",
-                        ...))
-  } else {
-    stop("'unit.out ", unit.out, " is unknown")
-  }
-}
-
-#' @rdname scale
-#'
-#' @param qty.out character Allowed values "transmittance", and "absorbance"
-#'
-#' @export
-#'
-scale.filter_spct <- function(x, center = TRUE, scale = TRUE,
-                                range = x,
-                                f = "mean",
-                                qty.out = getOption("photobiology.filter.qty", default="transmittance"),
-                              ...) {
-  if (qty.out == "transmittance") {
-    return(scale_spct(spct = A2T(x, action = "replace"),
-                        range = range(range),
-                        f = f,
-                        var.name = "Tfr",
-                        ...))
-  } else if (qty.out == "absorbance") {
-    return(scale_spct(spct = T2A(x, action = "replace"),
-                        range = range(range),
-                        f = f,
-                        var.name = "A",
-                        ...))
-  } else {
-    stop("'qty.out ", unit.out, " is unknown")
-  }
-}
-
-#' @rdname scale
-#'
-#' @export
-#'
-scale.reflector_spct <- function(x, center = TRUE, scale = TRUE,
-                                   range = x,
-                                   f = "mean",
-                                   qty.out = NULL,
-                                 ...) {
-  return(scale_spct(spct = x,
-                      range = range(range),
-                      f = f,
-                      var.name = "Rfr",
-                      ...))
 }
 
 # is_scaled function ----------------------------------------------------

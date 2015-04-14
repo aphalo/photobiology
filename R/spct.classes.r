@@ -160,7 +160,7 @@ check.filter_spct <- function(x, byref=TRUE, strict.range = TRUE, multiple.wl = 
 
 #' @describeIn check Specialization for reflector_spct.
 #' @export
-check.reflector_spct <- function(x, byref=TRUE, strict.range = TRUE) {
+check.reflector_spct <- function(x, byref=TRUE, strict.range = TRUE, ...) {
 
   range_check <- function(x, strict.range) {
     Rfr.min <- min(x$Rfr, na.rm = TRUE)

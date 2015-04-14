@@ -21,26 +21,26 @@ test_that("normalize", {
   expect_equal(comment(normalize(my.spct)), comment(my.spct))
 })
 
-context("scale.spct")
+context("fscale.spct")
 
-test_that("scale", {
+test_that("fscale", {
 
   my.spct <- q2e(sun.spct, action = "replace")
 
-  expect_equivalent(integrate_spct(scale(my.spct, f = "total")), 1)
-  expect_less_than(integrate_spct(scale(my.spct, f = "mean")) * average_spct(my.spct) - irrad(my.spct), 0.25)
-  expect_warning(irrad(scale(my.spct, f = "mean")))
-  expect_equal(irrad(scale(my.spct, f = "mean")), NA)
-  expect_named(scale(my.spct), setdiff(names(my.spct), "s.q.irrad"))
-  expect_equal(class(scale(my.spct)), class(my.spct))
-  expect_error(scale(my.spct, range = 100))
+  expect_equivalent(integrate_spct(fscale(my.spct, f = "total")), 1)
+  expect_less_than(integrate_spct(fscale(my.spct, f = "mean")) * average_spct(my.spct) - irrad(my.spct), 0.25)
+  expect_warning(irrad(fscale(my.spct, f = "mean")))
+  expect_equal(irrad(fscale(my.spct, f = "mean")), NA)
+  expect_named(fscale(my.spct), setdiff(names(my.spct), "s.q.irrad"))
+  expect_equal(class(fscale(my.spct)), class(my.spct))
+  expect_error(fscale(my.spct, range = 100))
   expect_error(normalize(my.spct, range = c(100, 100)))
-  expect_true(is_scaled(scale(my.spct)))
+  expect_true(is_scaled(fscale(my.spct)))
   expect_false(is_scaled(my.spct))
-  expect_equal(is.source_spct(scale(my.spct)), is.source_spct(my.spct))
-  expect_equal(is.filter_spct(scale(my.spct)), is.filter_spct(my.spct))
-  expect_equal(getTimeUnit(scale(my.spct)), getTimeUnit(my.spct))
-  expect_equal(comment(scale(my.spct)), comment(my.spct))
+  expect_equal(is.source_spct(fscale(my.spct)), is.source_spct(my.spct))
+  expect_equal(is.filter_spct(fscale(my.spct)), is.filter_spct(my.spct))
+  expect_equal(getTimeUnit(fscale(my.spct)), getTimeUnit(my.spct))
+  expect_equal(comment(fscale(my.spct)), comment(my.spct))
 })
 
 context("integrate_spct average_spct")

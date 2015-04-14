@@ -56,10 +56,20 @@
 #'
 #' @family split a spectrum into regions functions
 #'
-split_photon_irradiance <- function(w.length, s.irrad, cut.w.length=range(w.length), unit.in="energy", scale="absolute",
-                 check.spectrum=TRUE, use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
-                 use.hinges=getOption("photobiology.use.hinges", default=NULL) )
+split_photon_irradiance <- function(w.length, s.irrad,
+                                    cut.w.length=range(w.length),
+                                    unit.in="energy",
+                                    scale="absolute",
+                                    check.spectrum=TRUE,
+                                    use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
+                                    use.hinges=getOption("photobiology.use.hinges", default=NULL) )
 {
-    return(split_irradiance(w.length, s.irrad, cut.w.length=cut.w.length, unit.out="photon", unit.in=unit.in, scale=scale,
-                            check.spectrum=check.spectrum, use.cached.mult=use.cached.mult, use.hinges=use.hinges))
+  return(split_irradiance(w.length, s.irrad,
+                          cut.w.length=cut.w.length,
+                          unit.out="photon",
+                          unit.in=unit.in,
+                          scale=scale,
+                          check.spectrum=check.spectrum,
+                          use.cached.mult=use.cached.mult,
+                          use.hinges=use.hinges))
 }
