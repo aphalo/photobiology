@@ -1,0 +1,117 @@
+---
+title: "Upgrade Guide"
+author: "Pedro J. Aphalo"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Upgrade Guide}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+## What is new in version 0.6.0
+
+I have done a lot of renaming as I have learnt in the hard way that using
+dots is S3 class names and methods causes lots of problems. The name changes will break
+old code and stored/saved spectral objects need to be __upgraded__ before 
+they can be used with the new version of the suite. Of course, they continue
+to be valid data.table and data.frame objects.
+
+Several frequently used classes like data.frame and data.table include a
+dot in their name, but as Hadley Wickham emphasizes in his book _R packages_
+it is much better to consistently use underscores instead of dot.
+
+The naming rules I am now following are:
+
+Class names include only letters, or letter plus undercore characters, leading
+to these name changes:
+
+- `generic.spct` -> `generic_spct`
+- `source.spct` -> `source_spct`
+- `response.spct` -> `response_spct`
+- `filter.spct` -> `filter_spct`
+- `reflector.spct` -> `reflector_spct`
+- `object.spct` -> `object_spct`
+- `chroma.spct` -> `chroma_spct`
+
+Constructors have been renamed accordingly:
+
+- `generic.spct()` -> `generic_spct()`
+- `source.spct()` -> `source_spct()`
+- _etc._
+
+The class-test and copy-and-set class functions were renamed to match, but
+following 'normal' R style the first dot has been maintained:
+
+- `is.source.spct()` -> `is.source_spct()`
+- `as.source.spct()` -> `as.source_spct()`
+- `is.any.spct()` -> `is.any_spct()`
+- _etc._
+    
+With exceptiion of `is.  ()` and `as.  ()` functions shown
+above, all function names no longer contain dots. In the new names dots have
+been replaced by underscores. This also affected those `is.  ()` used
+to query other attributes or properties of spectral objects which are
+classes.
+
+- `is.effective()` -> `is_effective()`
+- `is.normalized()` -> `is_normalized()`
+- `is.rescaled()` -> `is_scaled()`
+- _etc._
+   
+BSWF-waveband creation functions were also renamed to achieve consistency:
+
+- `GEN.G()` -> `GEN_G()`
+- `DNA.N()` -> `DNA_N()`
+- _etc._
+
+In the case of functions used to automate the creation of BSWF-based wavebands
+the old names are no longer indexed
+in the documentation, but the functions themsleves will remain available. 
+However, __in new scripts the new names should be used__, as they are _deprecated_ 
+and may be no longer be available in future versions.
+
+There is one furtehr name change, required by conflicting names with other
+existing R fucntions definition: `Rescale()` -> `fscale()`, the `f` comming 
+from function, as rescaling is done based on a summary function supplied
+through formal parameter `f`.
+
+## How to upgrade your old scripts to work with the new version
+
+To upgrade the spectral objects what needs to be done is to change the
+names stored in the `class` attribute of spectral objetcs, as only the
+name of the class has changed rather than its definition.
+
+We have defined a method of function `upgrade()` to just do this. So
+all what is needed is to call upgrade, with each object to be upgraded
+as argument. The _upgrade_ is done by reference (in place) in the original
+stored object.
+
+```{r, echo=FALSE}
+library(photobiology)
+my.old.spct <- source_spct(w.length = 400:450, s.e.irrad = 1)
+class(my.old.spct) <-  gsub("_spct", ".spct", class(my.old.spct), fixed = TRUE)
+class(my.old.spct)
+
+```
+
+
+```{r}
+upgrade_all_spct <- function(obj.names = ls(parent.frame())) {
+  for (obj.name in obj.names) {
+    obj <- get(obj.name, inherits = TRUE)
+    class(obj)
+    if (inherits(obj, "generic.spct")) {
+      print(paste("Upgrading", obj.name))
+      class(obj) <- gsub(".spct", "_spct", class(obj), fixed = TRUE)
+      assign(obj.name, obj, inherits = TRUE)
+    } else {
+      print(paste("Skipping", obj.name))
+    }
+  }
+}
+
+```
+
+Two functions are avaialble to help in the upgrading of spectral objects
+
