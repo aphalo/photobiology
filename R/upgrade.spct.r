@@ -47,16 +47,16 @@ upgrade.generic.spct <-
 #'
 #' @family upgrade from earlier versions
 #'
-find_and_upgrade_old_spct <- function(obj.names = ls(parent.frame())) {
+upgrade_spectra <- function(obj.names = ls(parent.frame())) {
   for (obj.name in obj.names) {
     obj <- get(obj.name, inherits = TRUE)
     class(obj)
     if (inherits(obj, "generic.spct")) {
-      print(paste("Upgrading", obj.name))
+      message("Upgrading: ", obj.name)
       class(obj) <- gsub(".spct", "_spct", class(obj), fixed = TRUE)
       assign(obj.name, obj, inherits = TRUE)
     } else {
-      print(paste("Skipping", obj.name))
+      message("Skipping: ", obj.name)
     }
   }
 }
@@ -74,4 +74,4 @@ find_and_upgrade_old_spct <- function(obj.names = ls(parent.frame())) {
 #'
 #' @family upgrade from earlier versions
 #'
-is.old_spct <- function(object) inherits(obj, "generic.spct")
+is.old_spct <- function(object) inherits(object, "generic.spct")

@@ -19,4 +19,4 @@ BuildType: Package
 PackageUseDevtools: Yes
 PackageInstallArgs: --no-multiarch --with-keep.source
 PackageBuildBinaryArgs: --with-keep.source --debug
-PackageRoxygenize: rd,namespace
+PackageRoxygenize: rd,namespace,vignette

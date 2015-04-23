@@ -3,6 +3,13 @@ TODO
 
 Add test cases for chroma.spct
 
+photobiology 0.6.1
+===================
+
+Added vignette with upgrade instructions.
+
+Added new functions is.old_spct() and upgrade_spctra()
+
 photobiology 0.6.0
 ===================
 
