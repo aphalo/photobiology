@@ -611,11 +611,11 @@ setObjectSpct <- function(x,
 
 #' @describeIn setGenericSpct Set class of an object to "response_spct".
 #'
-#' @param time.unit character A string "second" or "day".
+#' @param time.unit character A string "second", "day" or "exposure".
 #' @export
 #' @exportClass response_spct
 #'
-setResponseSpct <- function(x, time.unit="none", multiple.wl = 1L) {
+setResponseSpct <- function(x, time.unit="second", multiple.wl = 1L) {
   name <- substitute(x)
   rmDerivedSpct(x)
   if (!is.data.table(x)) {
@@ -949,7 +949,7 @@ as.cps_spct <- function(x) {
 
 #' @rdname as.generic_spct
 #'
-#' @param time.unit character A string, "second" or "day"
+#' @param time.unit character A string, "second", "day" or "exposure"
 #' @param bswf.used character
 #' @param strict.range logical Flag indicating whether off-range values result
 #'   in an error instead of a warning
@@ -957,7 +957,7 @@ as.cps_spct <- function(x) {
 #' @export
 #'
 as.source_spct <- function(x,
-                           time.unit=c("second", "day"),
+                           time.unit=c("second", "day", "exposure"),
                            bswf.used=c("none", "unknown"),
                            strict.range = FALSE) {
   y <- copy(x)
@@ -968,7 +968,7 @@ as.source_spct <- function(x,
 #'
 #' @export
 #'
-as.response_spct <- function(x, time.unit = "none") {
+as.response_spct <- function(x, time.unit = "second") {
   y <- copy(x)
   setResponseSpct(y, time.unit = time.unit)
 }
@@ -1024,10 +1024,10 @@ as.chroma_spct <- function(x) {
 #'
 #' Funtion to set by reference the "time.unit" attribute
 #'
-#' @usage setTimeUnit(x, time.unit=c("second", "hour", "day", "none"))
+#' @usage setTimeUnit(x, time.unit=c("second", "hour", "day", "exposure", "none"))
 #'
 #' @param x a source_spct object
-#' @param time.unit a character string, either "second", "hour", "day", or "none"
+#' @param time.unit a character string, either "second", "hour", "day", "exposure" or "none"
 #'
 #' @return x
 #'
@@ -1039,7 +1039,7 @@ as.chroma_spct <- function(x) {
 #' @export
 #' @family time attribute functions
 #'
-setTimeUnit <- function(x, time.unit=c("second", "hour", "day", "none")) {
+setTimeUnit <- function(x, time.unit=c("second", "hour", "day", "exposure", "none")) {
   if (length(time.unit) > 1) {
     if (getTimeUnit(x) != "unknown") {
       time.unit <- getTimeUnit(x)
@@ -1048,8 +1048,8 @@ setTimeUnit <- function(x, time.unit=c("second", "hour", "day", "none")) {
     }
   }
   if (is.source_spct(x) || is.response_spct(x)) {
-    if  (!(time.unit %in% c("second", "hour", "day", "none", "unknown"))) {
-      warning("Invalid 'time.unit' argument, only 'second', 'hour', 'day', and 'none' supported.")
+    if  (!(time.unit %in% c("second", "hour", "day", "none", "exposure", "unknown"))) {
+      warning("Invalid 'time.unit' argument, only 'second', 'hour', 'day', 'exposure' and 'none' supported.")
       time.unit <- "unknown"
     }
     setattr(x, "time.unit", time.unit)

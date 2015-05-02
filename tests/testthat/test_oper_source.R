@@ -7,6 +7,7 @@ test_that("constructor energy", {
   my.s.spct <- source_spct(w.length = 400:409, s.e.irrad = 1, time.unit = "second")
   my.h.spct <- source_spct(w.length = 400:409, s.e.irrad = 1, time.unit = "hour")
   my.d.spct <- source_spct(w.length = 400:409, s.e.irrad = 1, time.unit = "day")
+  my.e.spct <- source_spct(w.length = 400:409, s.e.irrad = 1, time.unit = "exposure")
   my.b.spct <- source_spct(w.length = 400:409, s.e.irrad = 1, time.unit = "zzz")
 
   expect_warning(my.b.spct <- source_spct(w.length = 400:409, s.e.irrad = 1, time.unit = "zzz"))
@@ -15,10 +16,12 @@ test_that("constructor energy", {
   expect_named(my.spct, c("w.length", "s.e.irrad"))
   expect_named(my.s.spct, c("w.length", "s.e.irrad"))
   expect_named(my.d.spct, c("w.length", "s.e.irrad"))
+  expect_named(my.e.spct, c("w.length", "s.e.irrad"))
   expect_equal(getTimeUnit(my.spct), "second")
   expect_equal(getTimeUnit(my.s.spct), "second")
   expect_equal(getTimeUnit(my.h.spct), "hour")
   expect_equal(getTimeUnit(my.d.spct), "day")
+  expect_equal(getTimeUnit(my.e.spct), "exposure")
   expect_equal(getTimeUnit(my.b.spct), "unknown")
 })
 
@@ -28,6 +31,7 @@ test_that("constructor photon", {
   my.s.spct <- source_spct(w.length = 400:409, s.q.irrad = 1, time.unit = "second")
   my.h.spct <- source_spct(w.length = 400:409, s.q.irrad = 1, time.unit = "hour")
   my.d.spct <- source_spct(w.length = 400:409, s.q.irrad = 1, time.unit = "day")
+  my.e.spct <- source_spct(w.length = 400:409, s.q.irrad = 1, time.unit = "exposure")
   my.b.spct <- source_spct(w.length = 400:409, s.q.irrad = 1, time.unit = "zzz")
 
   expect_warning(my.b.spct <- source_spct(w.length = 400:409, s.q.irrad = 1, time.unit = "zzz"))
@@ -36,10 +40,12 @@ test_that("constructor photon", {
   expect_named(my.spct, c("w.length", "s.q.irrad"))
   expect_named(my.s.spct, c("w.length", "s.q.irrad"))
   expect_named(my.d.spct, c("w.length", "s.q.irrad"))
+  expect_named(my.e.spct, c("w.length", "s.q.irrad"))
   expect_equal(getTimeUnit(my.spct), "second")
   expect_equal(getTimeUnit(my.s.spct), "second")
   expect_equal(getTimeUnit(my.h.spct), "hour")
   expect_equal(getTimeUnit(my.d.spct), "day")
+  expect_equal(getTimeUnit(my.e.spct), "exposure")
   expect_equal(getTimeUnit(my.b.spct), "unknown")
 })
 

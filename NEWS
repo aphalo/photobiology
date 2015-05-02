@@ -2,6 +2,14 @@ TODO
 ====
 
 Add test cases for chroma_spct and cps_spct
+Add operators for operations between 'duration' objects and spectra.
+Allow time.unit attribute to be a 'duration' object from package lubridate in addition
+to predefined character strings. Support value "hour" by converting spectral data
+on an hourly base to be expresed per "second".
+
+Implement peak fitting in addition to current peak search algorithm, so
+that location of peaks is more precise (Found peak positions in-between wavelength values
+in spectral data possible).
 
 photobiology 0.6.2
 ==================
@@ -9,6 +17,17 @@ photobiology 0.6.2
 Added new class cps_spct for uncalibrated spectral data in counts per second.
 These are not raw instrument counts, but data linerized and re-expresed per unit
 time in seconds. Maths operators and functions are supported.
+
+Added new accepted value for attribute time.unit: "exposure", meaning the
+total exposure time, in which case instead of spectral irradiances, the
+objects store spectral fluence or spectral dose.
+
+Added data for CIE standard A illuminant.
+
+Changed package data files to contain each only one R object.
+
+Updated User Guide adding summary tables for spectral objects and their
+variables and attributes.
 
 photobiology 0.6.1
 ===================

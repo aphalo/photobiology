@@ -1,6 +1,6 @@
 library(photobiology)
 
-oldwd <- setwd("raw.data/humans")
+oldwd <- setwd("data-raw/humans")
 
 # Human
 ciexyzCMF2.spct <- read.csv(file="lin2012xyz2e_1_7sf.csv", comment.char = "#")
@@ -21,13 +21,18 @@ setwd(oldwd)
 olwd <- setwd("data")
 
 # save(ciexyzCMF2.data, ciexyzCMF10.data, ciexyzCC2.data, ciexyzCC10.data, file="ciexyz2006.data.rda")
-save(ciexyzCMF2.spct, ciexyzCMF10.spct, ciexyzCC2.spct, ciexyzCC10.spct, ciev2.spct, ciev10.spct, file="ciexyz2006.spct.rda")
+save(ciexyzCMF2.spct, file="ciexyzCMF2.spct.rda")
+save(ciexyzCMF10.spct, file="ciexyzCMF10.spct.rda")
+save(ciexyzCC2.spct, file="ciexyzCC2.spct.rda")
+save(ciexyzCC10.spct, file="ciexyzCC10.spct.rda")
+save(ciev2.spct, file="ciev2.spct.rda")
+save(ciev10.spct, file="ciev10.spct.rda")
 
 setwd(olwd)
 
 # Honeybee
 
-oldwd <- setwd("raw.data/bees")
+oldwd <- setwd("data-raw/bees")
 
 Maxwell.data <- read.table(file="Maxwell.data", header=TRUE)
 

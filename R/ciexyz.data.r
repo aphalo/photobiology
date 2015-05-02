@@ -18,7 +18,7 @@
 #'
 #' @docType data
 #' @keywords datasets
-#' @format A data frame with 441 rows and 4 variables
+#' @format A chroma_spct object with 441 rows and 4 variables
 #' @name ciexyzCC2.spct
 NULL
 
@@ -42,7 +42,7 @@ NULL
 #'
 #' @docType data
 #' @keywords datasets
-#' @format A data frame with 441 rows and 4 variables
+#' @format A chroma_spct object with 441 rows and 4 variables
 #' @name ciexyzCC10.spct
 NULL
 
@@ -66,7 +66,7 @@ NULL
 #'
 #' @docType data
 #' @keywords datasets
-#' @format A data frame with 441 rows and 4 variables
+#' @format A chroma_spct object with 441 rows and 4 variables
 #' @name ciexyzCMF2.spct
 NULL
 
@@ -90,7 +90,7 @@ NULL
 #'
 #' @docType data
 #' @keywords datasets
-#' @format A data frame with 441 rows and 4 variables
+#' @format A chroma_spct object with 441 rows and 4 variables
 #' @name ciexyzCMF10.spct
 NULL
 
@@ -113,7 +113,7 @@ NULL
 #'
 #' @docType data
 #' @keywords datasets
-#' @format A data frame with 441 rows and 4 variables
+#' @format A chroma_spct object with 441 rows and 4 variables
 #' @name ciev10.spct
 NULL
 
@@ -136,6 +136,6 @@ NULL
 #'
 #' @docType data
 #' @keywords datasets
-#' @format A data frame with 441 rows and 4 variables
+#' @format A chroma_spct object with 441 rows and 4 variables
 #' @name ciev2.spct
 NULL

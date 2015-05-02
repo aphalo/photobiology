@@ -2,7 +2,7 @@ Package: photobiology
 Type: Package
 Title: Light and radiation quantification for photobiology research
 Version: 0.6.2
-Date: 2015-04-30
+Date: 2015-05-02
 Author: Pedro J. Aphalo <pedro.aphalo@helsinki.fi>
 Maintainer: Pedro J. Aphalo <pedro.aphalo@helsinki.fi>
 Description: Calculation of effective (weighted) and unweighted
@@ -20,7 +20,7 @@ Imports:
     splus2R (>= 1.2-0),
     caTools (>= 1.17.1)
 Suggests:
-    photobiologygg (>= 0.3.0),
+    photobiologygg (>= 0.3.1),
     photobiologyWavebands (>= 0.3.0),
     photobiologySun (>= 0.3.0),
     photobiologyFilters (>= 0.3.0),

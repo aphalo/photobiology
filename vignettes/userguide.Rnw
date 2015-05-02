@@ -37,6 +37,34 @@
 \newcommand{\mol}{\Unit{mol\,m^{-2}\,s^{-1}}}
 \newcommand{\molnm}{\Unit{mol\,m^{-2}\,s^{-1}\,nm^{-1}}}
 
+\newcommand{\jday}{\Unit{J\,m^{-2}\,d^{-1}}}
+\newcommand{\kjday}{\Unit{kJ\,m^{-2}\,d^{-1}}}
+\newcommand{\jdaynm}{\Unit{J\,m^{-2}\,d^{-1}\,nm^{-1}}}
+\newcommand{\molday}{\Unit{molday\,m^{-2}\,d^{-1}}}
+\newcommand{\moldaynm}{\Unit{mol\,m^{-2}\,d^{-1}\,nm^{-1}}}
+
+\newcommand{\jtot}{\Unit{J\,m^{-2}}}
+\newcommand{\kjtot}{\Unit{kJ\,m^{-2}}}
+\newcommand{\jtotnm}{\Unit{J\,m^{-2}\,nm^{-1}}}
+\newcommand{\moltot}{\Unit{molday\,m^{-2}}}
+\newcommand{\moltotnm}{\Unit{mol\,m^{-2}\,nm^{-1}}}
+
+\newcommand{\cps}{\Unit{\mathit{n}\,s^{-1}}}
+\newcommand{\qresponse}{\Unit{\mathit{x}\,mol^{-1}\,s^{-1}}}
+\newcommand{\eresponse}{\Unit{\mathit{x}\,J^{-1}\,s^{-1}}}
+\newcommand{\qresponsenm}{\Unit{\mathit{x}\,mol^{-1}\,s^{-1}\,nm^{-1}}}
+\newcommand{\eresponsenm}{\Unit{\mathit{x}\,J^{-1}\,s^{-1}\,nm^{-1}}}
+
+\newcommand{\qresponseday}{\Unit{\mathit{x}\,mol^{-1}\,d^{-1}}}
+\newcommand{\eresponseday}{\Unit{\mathit{x}\,J^{-1}\,d^{-1}}}
+\newcommand{\qresponsedaynm}{\Unit{\mathit{x}\,mol^{-1}\,d^{-1}\,nm^{-1}}}
+\newcommand{\eresponsedaynm}{\Unit{\mathit{x}\,J^{-1}\,d^{-1}\,nm^{-1}}}
+
+\newcommand{\qresponsetot}{\Unit{\mathit{x}\,mol^{-1}}}
+\newcommand{\eresponsetoto}{\Unit{\mathit{x}\,J^{-1}}}
+\newcommand{\qresponsetotnm}{\Unit{\mathit{x}\,mol^{-1}\,nm^{-1}}}
+\newcommand{\eresponsetotnm}{\Unit{\mathit{x}\,J^{-1}\,nm^{-1}}}
+
 \begin{document}
 
 <<setup, include=FALSE, cache=FALSE>>=
@@ -163,13 +191,87 @@ head(a.dt, 2L)
 tail(a.dt, 2L)
 @
 
+\subsection{Spectral classes}
+
+The package defines several classes intended to be used to store different types of spectral data. They are all derived from \texttt{generic\_spct}, which in turn is derived from \texttt{data.table}. Table \ref{tab:spct:classes} lists them.
+
+\begin{table}
+\caption{Classes for spectral data}\label{tab:spct:classes}
+\centering
+\begin{tabular}{lll}
+\toprule
+Name & Variables & Attributes\\
+\midrule
+generic\_spct & w.length & \\
+cps\_spct & w.length, cps & \\
+source\_spct & w.length, s.e.irrad, s.q.irrad & time.unit, bswf \\
+filter\_spct & w.length, Tfr, A & Tfr.type \\
+reflector\_spct & w.length, Rfr & Rfr.type \\
+object\_spct & w.length, Tfr, Rfr & Tfr.type, Rfr.type \\
+response\_spct & w.length, s.e.response, s.q.response & time.unit \\
+chroma\_spct & w.length, x, y, z & \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The \emph{design} imposes that data from different observations are never present as different
+\emph{data columns}, if present, additional data columns represent different properties from
+the same observation event.
+In most cases, one spectral object corresponds to one spectral observation, but some functions
+are compatible or can be used to create spectral objects where the spectral data from different
+observations are stored ``longitudinally'' and ``tagged'' with a factor with a level for each
+observation event. These observations must use consistent units of expression
+and attribute values.
+
 \subsection{Spectral data assumptions}
 
-An assumption of the package is that wavelengths are always expressed in nanometres ($1~\Unit{nm} = 1 \cdot 10^{-9}\,\Unit{m}$). If the data to be analysed uses different units for wavelengths, e.g.\ Ångstrom ($1~\Unit{Å} = 1 \cdot 10^{-10}\,\Unit{m$}), the values need to be re-scaled before any calculations.
+An assumption of the package is that wavelengths are always expressed in nanometres ($1~\Unit{nm} = 1 \cdot 10^{-9}\,\Unit{m}$). If the data to be analysed uses different units for wavelengths, e.g.\ Ångstrom ($1~\Unit{Å} = 1 \cdot 10^{-10}\,\Unit{m$}), the values need to be re-scaled before any calculations. Table \ref{tab:spct:units} lists the units of expression for the different variables listed in  Table  \ref{tab:spct:classes}.
+
+\begin{table}
+\caption[Variables for spectral data]{Variables used for spectral data and their units of expression: A: as stored in objects of the spectral classes, B: also recognized by the \texttt{set} family of functions for spectra and automatically converted.}\label{tab:spct:units}
+\centering
+\begin{tabular}{lll}
+\toprule
+Variables & Attribute value & Unit of expression \\
+\midrule
+A: stored & & \\
+\midrule
+w.length & nm &  \\
+cps & \cps & \\
+s.e.irrad &  \wattnm & time.unit = "second" \\
+s.e.irrad &  \jdaynm & time.unit = "day" \\
+s.e.irrad &  \jtotnm & time.unit = "exposure" \\
+s.q.irrad &  \molnm & time.unit = "second" \\
+s.q.irrad &  \moldaynm & time.unit = "day" \\
+s.q.irrad &  \moltotnm & time.unit = "exposure" \\
+Tfr & [0,1] &  Tfr.type = "total" \\
+Tfr & [0,1] &  Tfr.type = "internal" \\
+Rfr & [0,1] &  Rfr.type = "total" \\
+Rfr & [0,1] &  Rfr.type = "specular" \\
+s.e.response & \eresponsenm &  time.unit = "second" \\
+s.e.response & \eresponsedaynm &  time.unit = "day" \\
+s.e.response & \eresponsetotnm &  time.unit = "exposure" \\
+s.q.response & \qresponsenm &  time.unit = "second" \\
+s.q.response & \qresponsedaynm &  time.unit = "day" \\
+s.q.response & \qresponsetotnm &  time.unit = "exposure" \\
+x, y, z & [0,1] & \\
+\midrule
+B: converted & & \\
+\midrule
+wl $\to$ w.length & nm & \\
+wavelength $\to$ w.length & nm & \\
+Tpc $\to$ Tfr & [0,100] &  Tfr.type = "total" \\
+Tpc $\to$ Tfr  & [0,100] &  Tfr.type = "internal" \\
+Rpc $\to$ Rfr  & [0,100] &  Rfr.type = "total" \\
+Rpc $\to$ Rfr  & [0,100] &  Rfr.type = "specular" \\
+counts.per.second $\to$ cps & \cps &  \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 Energy irradiances are assumed to be expressed in \watt and photon irradiances in \mol, that is to say using second as unit for time. This is the default, but it is possible to set the unit for time to day in the case of \texttt{source\_spct} objects.
 
-The default time unit used is \emph{second}, but \emph{day} can be used by supplying the argument \texttt{"day"}
+The default time unit used is \emph{second}, but \emph{day} and \emph{exposure} can be used by supplying the arguments \texttt{"day"} or \texttt{"exposure"}\footnote{The meaning of \texttt{"exposure"} is the total exposure  time, in other words, fluence instead of irradiance.}
 to a parameter of the constructor of \texttt{source\_spct} objects.
 
 \begin{framed}
@@ -194,7 +296,7 @@ and vector, is equivalent to applying this operation to each member of the vecto
 Consequently, in the code above, each value from the vector of wavelengths is divided
 by 10, and each value in the vector of spectral irradiances is divided by 1000.
 
-\subsection{Spectral objects}
+\subsection{Spectral object creations}
 
 There are basically three different approaches to the creation of spectra. The first approach consist in setting the class attribute of an existing data frame or data table, in simple terms, converting an existing object into a spectral object. This approach avoids creating a copy of the data, and should be fastest. The second approach is to use an `as' function to create a new spectral object from a data frame or data table (the original object remains unchanged, and independent of the spectral object). The third approach is to use a function with the same name as the spectrum object class, and supply the data as numeric vector arguments. With the first two approaches the variables should be suitably named so that they can be recognized, in the third approach the formal argument to which the actual argument vector is supplied determines how it is interpreted.
 
@@ -362,19 +464,19 @@ h.spct
 The range of the input is checked, and warnings or errors issued. The wavelength range test cannot be overridden as the most likely reason for it to be triggered is the expression of wavelengths in units other than the expected nanometres (nm).
 
 <<>>=
-(try(h1.spct <- setReflectorSpct(data.table(wl = 5999:6001, Rfr = 1))))
+cat(try(h1.spct <- setReflectorSpct(data.table(wl = 5999:6001, Rfr = 1))))
 @
 
 Transmittance and reflectance values are checked to be within their valid range, and spectral irradiance values to be zero or positive. By default failure of this test generates a fatal error.
 
 <<>>=
-(try(h2.spct <- setReflectorSpct(data.table(wl = 300:305, Rfr = -1))))
+cat(try(h2.spct <- setReflectorSpct(data.table(wl = 300:305, Rfr = -1))))
 @
 
 The constructor converts percents to fractions before applying the tests.
 
 <<>>=
-(try(h3.spct <- setReflectorSpct(data.table(wl = 300:305, Rpc = -100))))
+cat(try(h3.spct <- setReflectorSpct(data.table(wl = 300:305, Rpc = -100))))
 @
 
 Setting \texttt{strict.range = FALSE} issues a warning instead of an error, and returns an \texttt{.spct} object possibly containing the \emph{bad data}.
@@ -803,6 +905,7 @@ objects belonging to different classes, and meaningless combinations return \tex
 \toprule
 e1 & \verb|+| & \verb|-| & \verb|*| & \verb|/| & \verb|^| & e2 & result \\
 \midrule
+cps\_spct & \Y & \Y &\Y  & \Y & \Y & cps\_spct & cps\_spct \\
 source\_spct & \Y & \Y &\Y  & \Y & \Y & source\_spct & source\_spct \\
 filter\_spct (T) & \N & \N & \Y & \Y  & \N & filter\_spct & filter\_spct \\
 filter\_spct (A) & \Y & \Y & \N & \N  & \N & filter\_spct & filter\_spct \\
@@ -811,6 +914,7 @@ object\_spct & \N & \N & \N & \N &\N & object\_spct & -- \\
 response\_spct & \Y & \Y & \Y & \Y & \N & response\_spct & response\_spct \\
 chroma\_spct & \Y  & \Y & \Y & \Y & \Y & chroma\_spct & chroma\_spct \\
 \midrule
+cps\_spct & \Y  & \Y &\Y  & \Y & \Y & numeric & cps\_spct \\
 source\_spct & \Y  & \Y &\Y  & \Y & \Y & numeric & source\_spct \\
 filter\_spct & \Y  &\Y  & \Y &\Y  & \Y & numeric & filter\_spct \\
 reflector\_spct & \Y &\Y  &\Y  &\Y  & \Y & numeric & reflector\_spct \\
@@ -897,6 +1001,7 @@ The most common mat functions, as well as unary minus and plus, are also impleme
 \toprule
 e1 & \verb|+| & \verb|-| & \verb|log()| & \verb|log10()| & \verb|exp()| & \verb|sqrt()| & result \\
 \midrule
+cps\_spct & \Y & \Y &\Y  & \Y & \Y & \Y & cps\_spct \\
 source\_spct & \Y & \Y &\Y  & \Y & \Y & \Y & source\_spct \\
 filter\_spct & \Y & \Y & \Y & \Y  & \Y & \Y & filter\_spct \\
 reflector\_spct & \Y & \Y & \Y &\Y  & \Y & \Y & reflector\_spct \\
@@ -1748,5 +1853,46 @@ In the case of calculating weighted irradiances on many spectra having exactly t
 You can use the package \texttt{microbenchmark} to time the code and find the parts that slow it down. I have used it, and also
 I have used profiling to optimize the code for speed. The choice of defaults is based on what is
 best when processing a moderate number of spectra, say less than a few hundreds, as opposed to many thousands.
+
+\section{Example data}
+
+A few example spectra are included in this package for use in examples and vignettes, and testing (Tables \ref{tab:data:spct} and \ref{tab:data:chroma}).
+
+\begin{table}
+\centering
+\caption{Data sets included in the package: spectra. The CIE standard illuminant data in this package are normalized to one at $\lambda = 560\,$nm, while in the CIE standard they are normalized to 100 at the same wavelength.}\label{tab:data:spct}
+\begin{tabular}{llll}
+\toprule
+Object & class & units & data description \\
+\midrule
+sun.spct & source\_spct & \wattnm & solar spectral irradiance \\
+sun.daily.spct & source\_spct & \jdaynm & solar spectral exposure \\
+sun.data & data.frame & \wattnm & solar spectral irradiance \\
+sun.daily.data & data.frame & \jdaynm & solar spectral exposure\\
+D65.illuminant.spct & source\_spct & (norm. 560 nm) & CIE standard \\
+A.illuminant.spct & source\_spct & (norm. 560 nm)  & CIE standard \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+\begin{table}
+\centering
+\caption{Data sets included in the package: chromaticity data}\label{tab:data:chroma}
+\begin{tabular}{lll}
+\toprule
+Object & class & data description \\
+\midrule
+ciexyzCC2.spct & chroma\_spct &  human chromaticity coordinates $2^\circ$ \\
+ciexyzCC10.spct & chroma\_spct &   human chromaticity coordinates $10^\circ$  \\
+ciexyzCMF2.spct & chroma\_spct &   human colour matching function $2^\circ$ \\
+ciexyzCMF10.spct & chroma\_spct &  human colour matching function $10^\circ$ \\
+ciev2.spct & chroma\_spct &  human luminous efficiency $2^\circ$ \\
+ciev10.spct & chroma\_spct &   human luminous efficiency $10^\circ$ \\
+beesxyzCMF.spct &  chroma\_spct &  bee colour matching function \\
+\bottomrule
+\end{tabular}
+\end{table}
+
 
 \end{document}
