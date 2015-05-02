@@ -10,7 +10,7 @@
 #' @return A \code{character} vector of class names.
 #'
 spct_classes <- function() {
-  c("generic_spct",
+  c("generic_spct", "cps_spct",
     "filter_spct", "reflector_spct",
     "source_spct", "object_spct",
     "response_spct", "chroma_spct")
@@ -103,6 +103,34 @@ check.generic_spct <- function(x, byref=TRUE, strict.range=TRUE, multiple.wl = 1
     warning("'w.length' values are not unique in ", wl.reps, " copies.")
   }
   return(x)
+}
+
+#' @describeIn check Specialization for cps_spct.
+#' @export
+check.cps_spct <- function(x, byref=TRUE, strict.range = TRUE, ...) {
+
+  range_check <- function(x, strict.range) {
+    cps.min <- min(x$cps, na.rm = TRUE)
+    if (!is.null(strict.range) & (cps.min < 0)) {
+      message.text <- paste0("Off-range cps values:", signif(cps.min, 2))
+      if (strict.range) {
+        stop(message.text)
+      } else {
+        warning(message.text)
+      }
+    }
+  }
+  if (exists("cps", x, mode = "numeric", inherits=FALSE)) {
+    return(x)
+  } else if (exists("counts.per.second", x, mode = "numeric", inherits=FALSE)) {
+    setnames(x, "counts.per.second", "cps")
+    warning("Found variable 'counts.per.second', renamed to 'cps'")
+    return(x)
+  } else {
+    warning("No counts per second data found in cps_spct")
+    x[ , cps := NA]
+    return(x)
+  }
 }
 
 #' @describeIn check Specialization for filter_spct.
@@ -436,6 +464,32 @@ setGenericSpct <- function(x, multiple.wl = 1L) {
   invisible(x)
 }
 
+#' @describeIn setGenericSpct Set class of a an object to "cps_spct".
+#'
+#' @export
+#' @exportClass cps_spct
+#'
+setCpsSpct <- function(x, strict.range = TRUE, multiple.wl = 1L) {
+  name <- substitute(x)
+  rmDerivedSpct(x)
+  if (!is.data.table(x)) {
+    setDT(x)
+  }
+  if (!is.generic_spct(x)) {
+    setGenericSpct(x, multiple.wl = multiple.wl)
+  }
+  if (!is.cps_spct(x)) {
+    setattr(x, "class", c("cps_spct", class(x)))
+  }
+  x <- check(x, strict.range = strict.range)
+  setkey_spct(x, w.length)
+  if (is.name(name)) {
+    name <- as.character(name)
+    assign(name, x, parent.frame(), inherits = TRUE)
+  }
+  invisible(x)
+}
+
 #' @describeIn setGenericSpct Set class of an object to "filter_spct".
 #'
 #' @param Tfr.type character A string, either "total" or "internal".
@@ -671,6 +725,11 @@ is.generic_spct <- function(x) inherits(x, "generic_spct")
 #' @rdname is.generic_spct
 #' @export
 #'
+is.cps_spct <- function(x) inherits(x, "cps_spct")
+
+#' @rdname is.generic_spct
+#' @export
+#'
 is.source_spct <- function(x) inherits(x, "source_spct")
 
 #' @rdname is.generic_spct
@@ -877,6 +936,15 @@ is.transmittance_based <- function(x) {
 as.generic_spct <- function(x) {
   y <- copy(x)
   setGenericSpct(y)
+}
+
+#' @rdname as.generic_spct
+#'
+#' @export
+#'
+as.cps_spct <- function(x) {
+  y <- copy(x)
+  setCpsSpct(y)
 }
 
 #' @rdname as.generic_spct

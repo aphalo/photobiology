@@ -233,6 +233,8 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = NULL) {
     }
   } else if (l.class == "chroma_spct") {
     setChromSpct(ans, multiple.wl = length(l))
+  } else if (l.class == "cps_spct") {
+    setCpsSpct(ans, multiple.wl = length(l))
   } else if (l.class == "generic_spct") {
     setGenericSpct(ans, multiple.wl = length(l))
   }
@@ -245,16 +247,14 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = NULL) {
   if (add.factor && !add.bswf) {
     keys <- c(factor.name, "w.length")
     setkeyv(ans, keys)
-    if (!is.null(comment.ans)) setattr(ans, "comment", comment.ans)
   } else if (!add.factor && add.bswf) {
     keys <- c("BSWF", "w.length")
     setkeyv(ans, keys)
-    if (!is.null(comment.ans)) setattr(ans, "comment", comment.ans)
   } else if (add.factor && add.bswf) {
     keys <- c("BSWF", factor.name, "w.length")
     setkeyv(ans, keys)
-    if (!is.null(comment.ans)) setattr(ans, "comment", comment.ans)
   } # else we keep the default "w.length"
+  if (!is.null(comment.ans)) setattr(ans, "comment", comment.ans)
   return(ans)
 }
 
@@ -282,6 +282,10 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = NULL) {
 #'
 #' @method subset generic_spct
 #'
+#' @note Current implementation restores object class after subsetting, as
+#' subsetting using subset.data.table() strips the object of attributes
+#' including derived classes.
+#'
 #' @examples
 #' subset(sun.spct, w.length > 400)
 #'
@@ -289,11 +293,27 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = NULL) {
 #'
 subset.generic_spct <- function(x, subset, select, ...) {
   comment <- comment(x)
-  x.out <- x[eval(substitute(subset))]
+  z <- x[eval(substitute(subset))]
+  setGenericSpct(z)
   if (!is.null(comment)) {
-    setattr(x.out, "comment", comment)
+    setattr(z, "comment", comment)
   }
-  return(x.out)
+  return(z)
+}
+
+# @describeIn subset.generic_spct Subset for counts per second spectra.
+#'
+#' @export
+#' @rdname subset.generic_spct
+#'
+subset.cps_spct <- function(x, subset, select = NULL, ...) {
+  comment <- comment(x)
+  z <- x[eval(substitute(subset))]
+  setCpsSPct(z)
+  if (!is.null(comment)) {
+    setattr(z, "comment", comment)
+  }
+  return(z)
 }
 
 # @describeIn subset.generic_spct Subset for light source spectra.
@@ -305,12 +325,12 @@ subset.source_spct <- function(x, subset, select = NULL, ...) {
   time.unit <- getTimeUnit(x)
   bswf.used <- getBSWFUsed(x)
   comment <- comment(x)
-  x.out <- x[eval(substitute(subset))]
-  setSourceSpct(x = x.out, time.unit = time.unit, bswf.used = bswf.used, multiple.wl = Inf)
+  z <- x[eval(substitute(subset))]
+  setSourceSpct(x = z, time.unit = time.unit, bswf.used = bswf.used, multiple.wl = Inf)
   if (!is.null(comment)) {
-    setattr(x.out, "comment", comment)
+    setattr(z, "comment", comment)
   }
-  return(x.out)
+  return(z)
 }
 
 # @describeIn subset.generic_spct Subset for light filter spectra.
@@ -321,12 +341,12 @@ subset.source_spct <- function(x, subset, select = NULL, ...) {
 subset.filter_spct <- function(x, subset, select = NULL, ...) {
   Tfr.type <- getTfrType(x)
   comment <- comment(x)
-  x.out <- x[eval(substitute(subset))]
-  setFilterSpct(x = x.out, Tfr.type = Tfr.type, multiple.wl = Inf)
+  z <- x[eval(substitute(subset))]
+  setFilterSpct(x = z, Tfr.type = Tfr.type, multiple.wl = Inf)
   if (!is.null(comment)) {
-    setattr(x.out, "comment", comment)
+    setattr(z, "comment", comment)
   }
-  return(x.out)
+  return(z)
 }
 
 # @describeIn subset.generic_spct Subset for light reflector spectra.
@@ -337,12 +357,12 @@ subset.filter_spct <- function(x, subset, select = NULL, ...) {
 subset.reflector_spct <- function(x, subset, select = NULL, ...) {
   Rfr.type <- getRfrType(x)
   comment <- comment(x)
-  x.out <- x[eval(substitute(subset))]
-  setReflectorSpct(x = x.out, Rfr.type = Rfr.type, multiple.wl = Inf)
+  z <- x[eval(substitute(subset))]
+  setReflectorSpct(x = z, Rfr.type = Rfr.type, multiple.wl = Inf)
   if (!is.null(comment)) {
-    setattr(x.out, "comment", comment)
+    setattr(z, "comment", comment)
   }
-  return(x.out)
+  return(z)
 }
 
 # @describeIn subset.generic_spct Subset for light response spectra.
@@ -353,12 +373,12 @@ subset.reflector_spct <- function(x, subset, select = NULL, ...) {
 subset.response_spct <- function(x, subset, select = NULL, ...) {
   time.unit <- getTimeUnit(x)
   comment <- comment(x)
-  x.out <- x[eval(substitute(subset))]
-  setResponseSpct(x = x.out, time.unit = time.unit, multiple.wl = Inf)
+  z <- x[eval(substitute(subset))]
+  setResponseSpct(x = z, time.unit = time.unit, multiple.wl = Inf)
   if (!is.null(comment)) {
-    setattr(x.out, "comment", comment)
+    setattr(z, "comment", comment)
   }
-  return(x.out)
+  return(z)
 }
 
 # @describeIn subset.generic_spct Subset for light response spectra.
@@ -370,10 +390,10 @@ subset.object_spct <- function(x, subset, select = NULL, ...) {
   Tfr.type <- getTfrType(x)
   Rfr.type <- getRfrType(x)
   comment <- comment(x)
-  x.out <- x[eval(substitute(subset))]
-  setObjectSpct(x = x.out, Tfr.type = Tfr.type, Rfr.type = Rfr.type, multiple.wl = Inf)
+  z <- x[eval(substitute(subset))]
+  setObjectSpct(x = z, Tfr.type = Tfr.type, Rfr.type = Rfr.type, multiple.wl = Inf)
   if (!is.null(comment)) {
-    setattr(x.out, "comment", comment)
+    setattr(z, "comment", comment)
   }
-  return(x.out)
+  return(z)
 }

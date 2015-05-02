@@ -20,6 +20,7 @@
 #' @name sun.spct
 #' @aliases sun.data sun.dt sun.spct
 NULL
+
 #' Time-integrated daily spectral irradiance (simulated)
 #'
 #' A dataset containing the wavelengths at a 1 nm interval

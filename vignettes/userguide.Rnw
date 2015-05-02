@@ -935,7 +935,7 @@ digits & 7 & $d - 3$ used by \texttt{summary} \\
 \midrule
 \textbf{Package \texttt{data.table}} & & \\
 \addlinespace
-datatable.print.nrows & $n = 100$ & nrow(\emph{spct}) $> n$ ``short'' printing \\
+datatable.print.nrows & $n = 100$ & nrow(\emph{spct}) $> n$ \texttt{}short'' printing \\
 datatable.print.topn & $n = 5 $ & nrows to print at top and bottom \\
 datatable.verbose & \texttt{FALSE} & give verbose output or not \\
 \midrule
@@ -1352,7 +1352,7 @@ untag(tg.sun.spct)
 is_tagged(tg.sun.spct)
 @
 
-In the chuck above, we can see how this works, using in this case the default \code{byref = TRUE} which adds the tags in place, or ``by reference'', to the spct object supplied as argument.
+In the chuck above, we can see how this works, using in this case the default \code{byref = TRUE} which adds the tags in place, or \texttt{}by reference'', to the spct object supplied as argument.
 
 In the chunk bellow, we demonstrate that if an already tagged spectrum is re-tagged, the old tags are replaced with new ones, with a warning.
 

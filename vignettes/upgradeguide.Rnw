@@ -1,0 +1,212 @@
+%\VignetteEngine{knitr}
+%\VignetteIndexEntry{Upgrade guide}
+%\VignetteDepends{knitr, photobiology}
+%\VignetteKeyword{misc}
+
+\documentclass{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[unicode=true,pdfusetitle,
+ bookmarks=true,bookmarksnumbered=true,bookmarksopen=true,bookmarksopenlevel=2,
+ breaklinks=false,pdfborder={0 0 1},backref=false,colorlinks=false]
+ {hyperref}
+\usepackage{listings}
+\usepackage{booktabs}
+\usepackage{bbding}
+\usepackage{xspace}
+\usepackage{framed}
+
+\newcommand{\PB}{\textsf{photobiology}\xspace}
+\newcommand{\PBPla}{\textsf{photobiologyPlants}\xspace}
+\newcommand{\PBFLT}{\textsf{photobiologyFilters}\xspace}
+\newcommand{\PBSU}{\textsf{photobiologySun}\xspace}
+\newcommand{\PBLA}{\textsf{photobiologyLamps}\xspace}
+\newcommand{\PBLD}{\textsf{photobiologyLEDs}\xspace}
+\newcommand{\PBSN}{\textsf{photobiologySensors}\xspace}
+\newcommand{\PBWB}{\textsf{photobiologyWavebands}\xspace}
+
+\newcommand{\UV}{UV\xspace}
+\newcommand{\UVB}{UVB\xspace}
+\newcommand{\UVA}{UVA\xspace}
+
+\newcommand{\Unit}[1]{\ensuremath{\mathrm{#1}}\xspace}
+
+\newcommand{\watt}{\Unit{W\,m^{-2}}}
+\newcommand{\wattnm}{\Unit{W\,m^{-2}\,nm^{-1}}}
+\newcommand{\mwattnm}{\Unit{mW\,m^{-2}\,nm^{-1}}}
+\newcommand{\mol}{\Unit{mol\,m^{-2}\,s^{-1}}}
+\newcommand{\molnm}{\Unit{mol\,m^{-2}\,s^{-1}\,nm^{-1}}}
+
+\begin{document}
+
+<<setup, include=FALSE, cache=FALSE>>=
+library(knitr)
+opts_chunk$set(fig.path='figure/pos-', fig.align='center', fig.show='hold',
+               fig.width=7, fig.height=6, size="footnotesize")
+# options(replace.assign=TRUE,width=60)
+@
+
+<<example-0-hiden, eval=TRUE, include=FALSE>>=
+library(photobiology)
+@
+
+<<own-set-up, echo=FALSE, include=FALSE>>=
+my_version <- packageVersion("photobiology")
+@
+
+\title{\PB Version \Sexpr{my_version}\\ Upgrade Guide}
+\author{Pedro J. Aphalo}
+
+\maketitle
+
+\section{Changes in versions 0.6.0 and higher}
+
+I have renamed classes and functions as I have learnt in the hard way that using
+dots is S3 class names and methods causes lots of problems. The name changes will break
+old code and stored/saved spectral objects need to be \emph{upgraded} before
+they can be used with the current version of the suite. Of course, they continue
+to be valid \texttt{data.table} and \texttt{data.frame} objects.
+
+Several frequently used classes like \texttt{data.frame} and \texttt{data.table} include a
+dot in their name, but as Hadley Wickham emphasizes in his new book \emph{R packages}
+it is preferable to consistently use underscores instead of dots.
+
+Below we describe new naming rules used, and the resulting changes in class, method
+and function names compared to versions previous to 0.6.0.
+
+Class names include only letters, or letter plus underscore characters, leading
+to these name changes:
+\begin{itemize}
+\item[] \texttt{generic.spct} $\to$ \texttt{generic\_spct}
+\item[] \texttt{source.spct} $\to$ \texttt{source\_spct}
+\item[] \texttt{response.spct} $\to$ \texttt{response\_spct}
+\item[] \texttt{filter.spct} $\to$ \texttt{filter\_spct}
+\item[] \texttt{reflector.spct} $\to$ \texttt{reflector\_spct}
+\item[] \texttt{object.spct} $\to$ \texttt{object\_spct}
+\item[] \texttt{chroma.spct} $\to$ \texttt{chroma\_spct}
+\end{itemize}
+
+Constructors have been renamed accordingly:
+\begin{itemize}
+\item[] \texttt{generic.spct()} $\to$ \texttt{generic\_spct()}
+\item[] \texttt{source.spct()} $\to$ \texttt{source\_spct()}
+\item[] \emph{etc.}
+\end{itemize}
+
+The class-test and copy-and-set class functions were renamed to match, but
+following 'normal' R style the first dot, following \texttt{is} or
+\texttt{is}, has been maintained:
+
+\begin{itemize}
+\item[] \texttt{is.any.spct()} $\to$ \texttt{is.any\_spct()}
+\item[] \texttt{is.source.spct()} $\to$ \texttt{is.source\_spct()}
+\item[] \texttt{as.source.spct()} $\to$ \texttt{as.source\_spct()}
+\item[] \emph{etc.}
+\end{itemize}
+
+With exception of `is.  ()` and `as.  ()` functions shown
+above, all function names no longer contain dots. In the new names dots have
+been replaced by underscores. This also affected those \texttt{is.~()} functions
+which are not S3 methods and which are used to query other attributes or
+properties of spectral objects.
+
+\begin{itemize}
+\item[] \texttt{is.effective()} $\to$ \texttt{is\_effective()}
+\item[] \texttt{is.normalized()} $\to$ \texttt{is\_normalized()}
+\item[] \texttt{is.rescaled()} $\to$ \texttt{is\_scaled()}
+\item[] \emph{etc.}
+\end{itemize}
+
+BSWF-waveband creation functions were also renamed to achieve consistency:
+
+\begin{itemize}
+\item[] \texttt{GEN.G()} $\to$ \texttt{GEN\_G()}
+\item[] \texttt{DNA.N()} $\to$ \texttt{DNA\_N()}
+\item[] \emph{etc.}
+\end{itemize}
+
+In the case of functions used to automate the creation of BSWF-based wavebands
+the old names are no longer indexed
+in the documentation, but the functions themselves will remain available.
+However, \textbf{in new scripts the new names should be used}, as they are \emph{deprecated}
+and may be no longer available in future versions of the suite.
+
+There is one further name change, required by conflicting names with other
+existing R functions: \texttt{Rescale()} $\to$ \texttt{fscale()}, the \texttt{f} coming
+from function, as rescaling is done based on a summary function supplied
+through formal parameter \texttt{f}.
+
+\section{How to check if an R object is \emph{old spectrum}}
+
+Function \texttt{is.old\_spct} can be used to query if an R object is a spectral
+object created with a version of package \texttt{photobiology} with version
+< 0.6.0.
+
+We need to only consider \texttt{generic.spct} as objects of derived classes
+like \texttt{source.spct} are by inheritance also \texttt{generic.spct} objects.
+
+\section{How to upgrade your \emph{old spectra}}
+
+To upgrade the spectral objects what needs to be done is to change the
+names stored in the \texttt{class} attribute of spectral objects, as only the
+name of the class has changed rather than its definition.
+
+In the new version we still export the S3 class \texttt{generic.spct} (with a dot)
+so that old spectral objects can be \emph{recognized} and the upgrade method
+applied.
+
+We have also defined a method of function \texttt{upgrade()} for
+single \texttt{generic.spct} objects. So all what is needed is to call upgrade,
+with the object to be upgraded as argument. The \emph{upgrade} is done by
+reference (in place) in the object supplied as argument.
+
+To demonstrate this we \emph{fake} an spectral object defined by and earlier
+version of the package by changing the class attribute.
+
+<<eval=FALSE>>=
+library(photobiology)
+@
+
+<<>>=
+my.old.spct <- source_spct(w.length = 400:450, s.e.irrad = 1)
+class(my.old.spct) <-  gsub("_spct", ".spct", class(my.old.spct), fixed = TRUE)
+class(my.old.spct)
+another.old.spct <- copy(my.old.spct)
+@
+
+We can use method \texttt{upgrade()} to upgrade a single spectrum.
+
+<<>>=
+is.old_spct(my.old.spct)
+upgrade(my.old.spct)
+is.old_spct(my.old.spct)
+is.source_spct(my.old.spct)
+@
+
+Another function \texttt{upgrade\_spectra} takes as argument a list of R objects.
+Objects which are not \emph{old spectra} are not altered, while \emph{old spectra}
+are upgraded. The default is to upgrade all objects in the current environment
+and enclosing environments.
+
+<<>>=
+is.old_spct(another.old.spct)
+upgrade_spectra()
+is.old_spct(another.old.spct)
+is.source_spct(another.old.spct)
+@
+
+We hope that these functions will make the transition to the new version
+less painful.
+
+\section{How to update old scripts}
+
+Updating old scripts consists in searching and replacing the changed names.
+This can be done with a text editor or IDE like \textsf{RStudio} or `blindly' with
+a shell script or batch file.
+
+A command line tool like \texttt{grep} or the GUI program \texttt{grepWin}
+make it possible to do the substitutions on several script files in one
+job. It is wise when doing mass batch updating, to keep a backup of the
+old scripts at least until the updated scripts have been carefully tested.
+
+\end{document}

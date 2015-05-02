@@ -13,7 +13,7 @@
 #'   comment=NULL, strict.range=TRUE)
 #'
 #' @param w.length numeric vector with wavelengths in nanometres
-#' @param s.e.irrad numeric vecror with spectral energy irradiance in [W m-2
+#' @param s.e.irrad numeric vector with spectral energy irradiance in [W m-2
 #'   nm-1] or [J d-1 m-2 nm-1]
 #' @param s.q.irrad numeric A vector with spectral photon irradiance in [mol s-1
 #'   m-2 nm-1] or [mol d-1 m-2 nm-1].
@@ -44,45 +44,60 @@ source_spct <- function(w.length, s.e.irrad=NULL, s.q.irrad=NULL,
                         time.unit=c("second", "day"), bswf.used = c("none", "unknown"),
                         comment=NULL, strict.range=TRUE) {
   if (is.null(s.q.irrad) && (is.numeric(s.e.irrad))) {
-    out.spct <- data.table(w.length, s.e.irrad)
+    z <- data.table(w.length, s.e.irrad)
   } else if (is.null(s.e.irrad) && (is.numeric(s.q.irrad))) {
-    out.spct <- data.table(w.length, s.q.irrad)
+    z <- data.table(w.length, s.q.irrad)
   } else {
     warning("One and only one of s.e.irrad or s.q.irrad should be different from NULL.")
     return(NA)
   }
   if (!is.null(comment)) {
-    setattr(out.spct, "comment", comment)
+    setattr(z, "comment", comment)
   }
-  setSourceSpct(out.spct,
+  setSourceSpct(z,
                 time.unit = time.unit, bswf.used = bswf.used,
                 strict.range = strict.range)
-  return(out.spct)
+  return(z)
 }
 
 #' @rdname source_spct
 #'
-#' @param s.e.response numeric vecror with spectral energy irradiance in W m-2
+#' @param cps numeric vector with linearized raw counts expressed per second
+#'
+#' @export
+#'
+cps_spct <- function(w.length, cps=NULL, comment=NULL) {
+  z <- data.table(w.length = w.length, cps = cps)
+  if (!is.null(comment)) {
+    setattr(z, "comment", comment)
+  }
+  setCpsSpct(z)
+  return(z)
+}
+
+#' @rdname source_spct
+#'
+#' @param s.e.response numeric vector with spectral energy irradiance in W m-2
 #'   nm-1 or J d-1 m-2 nm-1
-#' @param s.q.response numeric vecror with spectral photon irradiance in mol s-1
+#' @param s.q.response numeric vector with spectral photon irradiance in mol s-1
 #'   m-2 nm-1 or mol d-1 m-2 nm-1
 #'
 #' @export
 #'
 response_spct <- function(w.length, s.e.response=NULL, s.q.response=NULL, time.unit=c("second", "day"), comment=NULL) {
   if (is.null(s.q.response) && (is.numeric(s.e.response))) {
-    out.spct <- data.table(w.length, s.e.response)
+    z <- data.table(w.length, s.e.response)
   } else if (is.null(s.e.response) && (is.numeric(s.q.response))) {
-    out.spct <- data.table(w.length, s.q.response)
+    z <- data.table(w.length, s.q.response)
   } else {
     warning("One and only one of s.e.response or s.q.response should be different from NULL.")
     return(NA)
   }
   if (!is.null(comment)) {
-    setattr(out.spct, "comment", comment)
+    setattr(z, "comment", comment)
   }
-  setResponseSpct(out.spct, time.unit)
-  return(out.spct)
+  setResponseSpct(z, time.unit)
+  return(z)
 }
 
 #' @rdname source_spct
@@ -102,20 +117,20 @@ response_spct <- function(w.length, s.e.response=NULL, s.q.response=NULL, time.u
 filter_spct <- function(w.length, Tfr=NULL, Tpc=NULL, A=NULL, Tfr.type=c("total", "internal"),
                         comment=NULL, strict.range=TRUE) {
   if (is.null(Tpc) && is.null(A) && is.numeric(Tfr)) {
-    out.spct <- data.table(w.length, Tfr)
+    z <- data.table(w.length, Tfr)
   } else if (is.null(Tfr) && is.null(A) && is.numeric(Tpc)) {
-    out.spct <- data.table(w.length, Tpc)
+    z <- data.table(w.length, Tpc)
   } else if (is.null(Tpc) && is.null(Tfr) && is.numeric(A)) {
-    out.spct <- data.table(w.length, A)
+    z <- data.table(w.length, A)
   } else {
     warning("One and only one of Tfr, Tpc or Abs should be different from NULL.")
     return(NA)
   }
   if (!is.null(comment)) {
-    setattr(out.spct, "comment", comment)
+    setattr(z, "comment", comment)
   }
-  setFilterSpct(out.spct, Tfr.type, strict.range = strict.range)
-  return(out.spct)
+  setFilterSpct(z, Tfr.type, strict.range = strict.range)
+  return(z)
 }
 
 #' @rdname source_spct
@@ -130,18 +145,18 @@ reflector_spct <- function(w.length, Rfr=NULL, Rpc=NULL,
                            Rfr.type=c("total", "specular"),
                            comment=NULL, strict.range=TRUE) {
   if (is.null(Rpc) && is.numeric(Rfr)) {
-    out.spct <- data.table(w.length, Rfr)
+    z <- data.table(w.length, Rfr)
   } else if (is.null(Rfr) && is.numeric(Rpc)) {
-    out.spct <- data.table(w.length, Rpc)
+    z <- data.table(w.length, Rpc)
   } else {
     warning("One and only one of Rfr, or Rpc should be different from NULL.")
     return(NA)
   }
   if (!is.null(comment)) {
-    setattr(out.spct, "comment", comment)
+    setattr(z, "comment", comment)
   }
-  setReflectorSpct(out.spct, Rfr.type = Rfr.type, strict.range=strict.range)
-  return(out.spct)
+  setReflectorSpct(z, Rfr.type = Rfr.type, strict.range=strict.range)
+  return(z)
 }
 
 #' @rdname source_spct
@@ -152,15 +167,15 @@ object_spct <- function(w.length, Rfr=NULL, Tfr=NULL,
                         Tfr.type=c("total", "internal"),
                         Rfr.type=c("total", "specular"),
                         comment=NULL, strict.range=TRUE) {
-  out.spct <- data.table(w.length, Rfr, Tfr)
+  z <- data.table(w.length, Rfr, Tfr)
   if (!is.null(comment)) {
-    setattr(out.spct, "comment", comment)
+    setattr(z, "comment", comment)
   }
-  setObjectSpct(out.spct,
+  setObjectSpct(z,
                 Tfr.type = Tfr.type,
                 Rfr.type = Rfr.type,
                 strict.range=strict.range)
-  return(out.spct)
+  return(z)
 }
 
 
