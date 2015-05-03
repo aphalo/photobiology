@@ -5,10 +5,6 @@
 #' This function gives a set of numeric multipliers that can be used to select a
 #' waveband and apply a weight.
 #'
-#' @usage calc_multipliers(w.length, w.band, unit.out="energy",
-#'   unit.in="energy", use.cached.mult =
-#'   getOption("photobiology.use.cached.mult", default = FALSE), fill=0)
-#'
 #' @param w.length numeric Vector of wavelengths (nm)
 #' @param w.band waveband
 #' @param unit.out character A string: "photon" or "energy", default is "energy"

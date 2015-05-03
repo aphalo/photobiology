@@ -2,15 +2,11 @@
 
 # Constructors ------------------------------------------------------------
 
-#' Create new spectral objects.
+#' Create new spectral objects
 #'
 #' These fucntions can be used to create spectral objects derived from
 #' \code{generic_spct}. They take as arguments numeric vectors for the data
 #' character scalars for attributes, and a logical flag.
-#'
-#' @usage source_spct(w.length, s.e.irrad=NULL, s.q.irrad=NULL,
-#'   time.unit=c("second", "day"), bswf.used = c("none", "unknown"),
-#'   comment=NULL, strict.range=TRUE)
 #'
 #' @param w.length numeric vector with wavelengths in nanometres
 #' @param s.e.irrad numeric vector with spectral energy irradiance in [W m-2

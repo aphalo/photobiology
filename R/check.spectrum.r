@@ -3,12 +3,12 @@
 #' This function checks a spectral radiation data in \code{numeric} vectors for
 #' compliance with assumptions used in calculations.
 #'
-#' @usage check_spectrum(w.length, s.irrad)
-#'
 #' @param w.length numeric Vector of wavelengths (nm)
-#' @param s.irrad numeric Corresponding vector of spectral (energy) irradiances (W m-2 nm-1)
+#' @param s.irrad numeric Corresponding vector of spectral (energy) irradiances
+#'   (W m-2 nm-1)
 #'
-#' @return A single \code{logical} value indicating whether test was passed or not
+#' @return A single \code{logical} value indicating whether test was passed or
+#'   not
 #' @export
 #'
 #' @keywords manip misc

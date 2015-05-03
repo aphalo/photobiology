@@ -11,9 +11,6 @@
 #' hard coded, so the function could be used to simulate vision in other
 #' organisms as long as pseudo CMF or CC data are available for the simulation.
 #'
-#' @usage s_e_irrad2rgb(w.length, s.e.irrad, sens=ciexyzCMF2.spct,
-#'   color.name=NULL, check=TRUE)
-#'
 #' @param w.length numeric array of wavelengths (nm)
 #' @param s.e.irrad numeric array of spectral irradiance values
 #' @param sens a chroma_spct object with variables w.length, x, y, and z, giving
@@ -28,7 +25,8 @@
 #' @export
 #'
 #' @examples
-#' my.color <- with(sun.data, s_e_irrad2rgb(w.length, s.e.irrad, color.name="sunWhite"))
+#' my.color <-
+#'     with(sun.data, s_e_irrad2rgb(w.length, s.e.irrad, color.name="sunWhite"))
 #' col2rgb(my.color)
 #'
 #' @note Very heavily modified from Chad Eliason's

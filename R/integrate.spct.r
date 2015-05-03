@@ -1,9 +1,6 @@
 #' Integrate spectral data.
 #'
-#' This function gives the result of integrating spectral data over
-#' wavelengths.
-#'
-#' @usage integrate_spct(spct)
+#' This function gives the result of integrating spectral data over wavelengths.
 #'
 #' @param spct generic_spct
 #'

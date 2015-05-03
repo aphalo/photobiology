@@ -1,19 +1,17 @@
 #' Trim tails of the wavebands based on wavelength limits.
 #'
-#' Trimming is needed for example when the spectral data does not cover the whole waveband.
-#'
-#' @usage trim_waveband(w.band,
-#'                      range = NULL,
-#'                      low.limit = NULL, high.limit = NULL,
-#'                      trim = getOption("photobiology.waveband.trim", default = TRUE),
-#'                      use.hinges = TRUE)
+#' Trimming is needed for example when the spectral data does not cover the
+#' whole waveband.
 #'
 #' @param w.band an object of class "waveband" or a list of such objects
-#' @param range a numeric vector of length two, or any other object for which function
-#'        range() will return two
-#' @param low.limit shortest wavelength to be kept (defaults to shortest w.length value)
-#' @param high.limit longest wavelength to be kept (defaults to longest w.length value)
-#' @param trim logical (default is FALSE, which just discards off range wavebands)
+#' @param range a numeric vector of length two, or any other object for which
+#'   function range() will return two
+#' @param low.limit shortest wavelength to be kept (defaults to shortest
+#'   w.length value)
+#' @param high.limit longest wavelength to be kept (defaults to longest w.length
+#'   value)
+#' @param trim logical (default is FALSE, which just discards off range
+#'   wavebands)
 #' @param use.hinges logical, if TRUE (the default)
 #'
 #' @return a waveband objects or a list of waveband objects trimmed or filtered
@@ -24,7 +22,6 @@
 #' @examples
 #' trim_waveband(waveband(c(200,1000)), c(400,700))
 #'
-
 trim_waveband <- function(w.band,
                           range = NULL,
                           low.limit = NULL, high.limit = NULL,

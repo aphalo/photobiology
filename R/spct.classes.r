@@ -3,8 +3,6 @@
 
 #' Function that returns a vector containing the names of spectra classes.
 #'
-#' @usage spct_classes()
-#'
 #' @export
 #'
 #' @return A \code{character} vector of class names.
@@ -20,9 +18,6 @@ spct_classes <- function() {
 
 #' Set the sorting key(s) of Stolen from data.table except that test added so
 #' that if the same key is already set setkeyv is not called.
-#'
-#' @usage setkey_spct(x, ..., verbose = getOption("datatable.verbose"), physical
-#'   = TRUE)
 #'
 #' @param x spct object
 #' @param ... columns
@@ -52,8 +47,6 @@ setkey_spct <- function (x, ..., verbose = getOption("datatable.verbose"), physi
 #' Check validity of spectral objects
 #'
 #' Check that an R object contains the expected data members.
-#'
-#' @usage check(x, byref, strict.range, ...)
 #'
 #' @param x An R object
 #' @param byref logical indicating if new object will be created by reference or
@@ -409,7 +402,6 @@ check.chroma_spct <- function(x, byref=TRUE, strict.range=TRUE, multiple.wl = 1L
 #' derived class attribute such as "source_spct". \strong{This operation is done
 #' by reference!}
 #'
-#' @usage rmDerivedSpct(x)
 #' @param x an R object.
 #' @export
 #'
@@ -696,12 +688,10 @@ setChromaSpct <- function(x, multiple.wl = 1L) {
 
 # is functions for spct classes --------------------------------------------
 
-#' Query class of spectrum objects.
+#' Query class of spectrum objects
 #'
 #' Functions to check if an object is of a given type of spectrum, or coerce it if
 #' possible.
-#'
-#' @usage is.generic_spct(x)
 #'
 #' @param x an R object.
 #'
@@ -765,12 +755,10 @@ is.any_spct <- function(x) {
   inherits(x, spct_classes())
 }
 
-#' Query which is the class of an spectrum.
+#' Query which is the class of an spectrum
 #'
 #' Functions to check if an object is a generic spectrum, or coerce it if
 #' possible.
-#'
-#' @usage class_spct(x)
 #'
 #' @param x any R object
 #'
@@ -787,8 +775,6 @@ class_spct <- function(x) {
 #' Query if it is an spectrum is tagged
 #'
 #' Functions to check if an spct object contains tags.
-#'
-#' @usage is_tagged(x)
 #'
 #' @param x any R object
 #'
@@ -815,8 +801,6 @@ is_tagged <- function(x) {
 #'
 #' Functions to check if \code{source_spct} and \code{response_spct} objects
 #' contains photon-based or energy-based data.
-#'
-#' @usage is.photon_based(x)
 #'
 #' @param x any R object
 #'
@@ -845,8 +829,6 @@ is.photon_based <- function(x) {
 
 #' @rdname is.photon_based
 #'
-#' @usage is.energy_based(x)
-#'
 #' @return \code{is.energy_based} returns \code{TRUE} if its argument is a a \code{source_spct} or
 #' a \code{response_spct} object that contains energy base data and \code{FALSE} if such an
 #' object does not contain such data, but returns \code{NA} for any other R object,
@@ -870,8 +852,6 @@ is.energy_based <- function(x) {
 #'
 #' Functions to check if an filter spectrum contains spectral absorbance data or
 #' spectral transmittance data.
-#'
-#' @usage is.absorbance_based(x)
 #'
 #' @param x an R object
 #'
@@ -897,8 +877,6 @@ is.absorbance_based <- function(x) {
 
 #' @rdname is.absorbance_based
 #'
-#' @usage is.transmittance_based(x)
-#'
 #' @return \code{is.transmittance_based} returns TRUE if its argument is a a \code{filter_spct}
 #' object that contains spectral transmittance data and FALSE if it does not contain
 #' such data, but returns NA for any other R object, including those belonging
@@ -919,8 +897,6 @@ is.transmittance_based <- function(x) {
 #' Return a copy of an R object as an spectrum object
 #'
 #' Return a copy of an R object with its class set to a given type of spectrum.
-#'
-#' @usage as.generic_spct(x)
 #'
 #' @param x an R object
 #'
@@ -1024,17 +1000,17 @@ as.chroma_spct <- function(x) {
 #'
 #' Funtion to set by reference the "time.unit" attribute
 #'
-#' @usage setTimeUnit(x, time.unit=c("second", "hour", "day", "exposure", "none"))
-#'
 #' @param x a source_spct object
-#' @param time.unit a character string, either "second", "hour", "day", "exposure" or "none"
+#' @param time.unit a character string, either "second", "hour", "day",
+#'   "exposure" or "none"
 #'
 #' @return x
 #'
 #' @note if x is not a source_spct or response_spct object, x is not modified.
-#' The behaviour of this function is 'unusual' in that the default for parameter
-#' \code{time.unit} is used only if \code{x} does not already have this attribute set.
-#' \code{time.unit = "hour"} is currently not fully supported.
+#'   The behaviour of this function is 'unusual' in that the default for
+#'   parameter \code{time.unit} is used only if \code{x} does not already have
+#'   this attribute set. \code{time.unit = "hour"} is currently not fully
+#'   supported.
 #'
 #' @export
 #' @family time attribute functions
@@ -1060,8 +1036,6 @@ setTimeUnit <- function(x, time.unit=c("second", "hour", "day", "exposure", "non
 #' Get the "time.unit" attribute of an existing source_spct object
 #'
 #' Funtion to read the "time.unit" attribute
-#'
-#' @usage getTimeUnit(x)
 #'
 #' @param x a source_spct object
 #'
@@ -1089,21 +1063,20 @@ getTimeUnit <- function(x) {
 
 # bswf attribute -----------------------------------------------------
 
-#' Set the "bswf.used" attribute of an existing source_spct object
+#' Set the "bswf.used" attribute
 #'
-#' Funtion to set by reference the "time.unit" attribute
-#'
-#' @usage setBSWFUsed(x, bswf.used=c("none", "unknown"))
+#' Funtion to set by reference the "time.unit" attribute of an existing
+#' source_spct object
 #'
 #' @param x a source_spct object
 #' @param bswf.used a character string, either "none" or the name of a BSWF
 #'
 #' @return x
 #'
-#' @note if x is not a source_spct, x is not modified.
-#' The behaviour of this function is 'unusual' in that the default for parameter
-#' \code{bswf.used} is used only if \code{x} does not already have this attribute set.
-#' \code{time.unit = "hour"} is currently not fully supported.
+#' @note if x is not a source_spct, x is not modified. The behaviour of this
+#'   function is 'unusual' in that the default for parameter \code{bswf.used} is
+#'   used only if \code{x} does not already have this attribute set.
+#'   \code{time.unit = "hour"} is currently not fully supported.
 #'
 #' @export
 #' @family BSWF attribute functions
@@ -1129,18 +1102,15 @@ setBSWFUsed <- function(x, bswf.used=c("none", "unknown")) {
   return(x)
 }
 
-#' Get the "bswf.used" attribute of an existing source_spct object
+#' Get the "bswf.used" attribute
 #'
-#' Funtion to read the "time.unit" attribute
-#'
-#' @usage getBSWFUsed(x)
+#' Funtion to read the "time.unit" attribute of an existing source_spct object
 #'
 #' @param x a source_spct object
 #'
 #' @return character string
 #'
-#' @note if x is not a \code{source_spct} object, NA
-#' is retruned
+#' @note if x is not a \code{source_spct} object, NA is retruned
 #'
 #' @export
 #' @family BSWF attribute functions
@@ -1163,11 +1133,10 @@ getBSWFUsed <- function(x) {
 
 # Tfr.type attribute ------------------------------------------------------
 
-#' Set the "Tfr.type" attribute of an existing filter_spct or object_spct object
+#' Set the "Tfr.type" attribute
 #'
-#' Funtion to set by reference the "Tfr.type" attribute
-#'
-#' @usage setTfrType(x, Tfr.type = c("total", "internal"))
+#' Funtion to set by reference the "Tfr.type" attribute of an existing
+#' filter_spct or object_spct object
 #'
 #' @param x a filter_spct or an object_spct object
 #' @param Tfr.type a character string, either "total" or "internal"
@@ -1175,8 +1144,9 @@ getBSWFUsed <- function(x) {
 #' @return x
 #'
 #' @note if x is not a filter_spct or an object_spct object, x is not modified
-#' The behaviour of this function is 'unusual' in that the default for parameter
-#' \code{Tfr.type} is used only if \code{x} does not already have this attribute set.
+#'   The behaviour of this function is 'unusual' in that the default for
+#'   parameter \code{Tfr.type} is used only if \code{x} does not already have
+#'   this attribute set.
 #'
 #' @export
 #' @family Tfr attribute functions
@@ -1199,17 +1169,17 @@ setTfrType <- function(x, Tfr.type=c("total", "internal")) {
   return(x)
 }
 
-#' Get the "Tfr.type" attribute of an existing filter_spct or object_spct object.
+#' Get the "Tfr.type" attribute
 #'
-#' Funtion to read the "Tfr.type" attribute
-#'
-#' @usage getTfrType(x)
+#' Funtion to read the "Tfr.type" attribute of an existing filter_spct or
+#' object_spct object.
 #'
 #' @param x a filter_spct or object_spct object
 #'
 #' @return character string
 #'
-#' @note If x is not a \code{filter_spct} or an \code{object_spct} object, \code{NA} is returned.
+#' @note If x is not a \code{filter_spct} or an \code{object_spct} object,
+#'   \code{NA} is returned.
 #'
 #' @export
 #' @family Tfr attribute functions
@@ -1229,11 +1199,10 @@ getTfrType <- function(x) {
 
 # Rfr.type attribute ------------------------------------------------------
 
-#' Set the "Rfr.type" attribute of an existing reflector_spct or object_spct object
+#' Set the "Rfr.type" attribute
 #'
-#' Funtion to set by reference the "Rfr.type" attribute
-#'
-#' @usage setRfrType(x, Rfr.type=c("total", "specular"))
+#' Funtion to set by reference the "Rfr.type" attribute  of an existing
+#' reflector_spct or object_spct object.
 #'
 #' @param x a reflector_spct or an object_spct object
 #' @param Rfr.type a character string, either "total" or "specular"
@@ -1241,8 +1210,9 @@ getTfrType <- function(x) {
 #' @return x
 #'
 #' @note if x is not a reflector_spct or object_spct object, x is not modified.
-#' The behaviour of this function is 'unusual' in that the default for parameter
-#' Rfr.type is used only if \code{x} does not already have this attribute set.
+#'   The behaviour of this function is 'unusual' in that the default for
+#'   parameter Rfr.type is used only if \code{x} does not already have this
+#'   attribute set.
 #'
 #' @export
 #' @family Rfr attribute functions
@@ -1265,11 +1235,10 @@ setRfrType <- function(x, Rfr.type=c("total", "specular")) {
   return(x)
 }
 
-#' Get the "Rfr.type" attribute of an existing reflector_spct object
+#' Get the "Rfr.type" attribute
 #'
-#' Funtion to read the "Rfr.type" attribute
-#'
-#' @usage getRfrType(x)
+#' Funtion to read the "Rfr.type" attribute of an existing reflector_spct
+#' object.
 #'
 #' @param x a source_spct object
 #'

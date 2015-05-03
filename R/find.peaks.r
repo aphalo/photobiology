@@ -1,10 +1,9 @@
-#' Find peaks in a spectrum.
+#' Find peaks in a spectrum
 #'
 #' This function finds all peaks (local maxima) in a spectrum, using a user
 #' selectable size threshold relative to the tallest peak (global maximum). This
 #' a wrapper built on top of function peaks from package splus2R.
 #'
-#' @usage find_peaks(x, ignore_threshold = 0.0, span = 3, strict = TRUE)
 #' @param x numeric array
 #' @param ignore_threshold numeric value between 0.0 and 1.0 indicating the size
 #'   threshold below which peaks will be ignored.
@@ -22,10 +21,10 @@
 #' @examples
 #' with(sun.data, w.length[find_peaks(s.e.irrad)])
 #'
-#' @note This function is a wrapper built on function \code{\link[splus2R]{peaks}} from
-#'   \pkg{splus2R} and handles non-finite (including NA) values differently than
-#'   \code{peaks}, instead of giving an error they are replaced with the
-#'   smallest finite value in \code{x}.
+#' @note This function is a wrapper built on function
+#'   \code{\link[splus2R]{peaks}} from \pkg{splus2R} and handles non-finite
+#'   (including NA) values differently than \code{peaks}, instead of giving an
+#'   error they are replaced with the smallest finite value in \code{x}.
 #'
 #' @seealso \code{\link[splus2R]{peaks}}
 #'

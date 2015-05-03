@@ -1,12 +1,12 @@
-#' Print a "waveband" object that can be used as imput when calculating irradiances.
-#' 
+#' Print a "waveband" object
+#'
 #' A function to more nicely print objects of class "waveband".
-#' 
+#'
 #' @param x an object of class "waveband"
 #' @param ... not used in current version
-#' 
+#'
 #' @export
-#' 
+#'
 print.waveband <- function(x, ...) {
   cat(x$name, "\n")
   cat("low (nm)", round(x$low, 0), "\n")

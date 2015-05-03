@@ -1,26 +1,27 @@
 #' Calculate deuterim lamp output spectrum from fitted constants
 #'
-#' @description
-#' Calculate values by means of a nth degree polynomial from user-supplied
-#' constants (for example from a lamp calibartion certificate).
+#' @description Calculate values by means of a nth degree polynomial from
+#' user-supplied constants (for example from a lamp calibartion certificate).
 #'
-#' @usage D2_spectrum(w.length, k=D2.UV653, fill=NULL)
 #' @param w.length numeric vector of wavelengths (nm) for output
 #' @param k a numeric vector with n constants for the polynomial
-#' @param fill if NA, no extrapolation is done, and NA is returned for wavelengths outside the range of the input.
-#'   If NULL then the tails are deleted. If 0 then the tails are set to zero, etc. NULL is default.
+#' @param fill if NA, no extrapolation is done, and NA is returned for
+#'   wavelengths outside the range of the input. If NULL then the tails are
+#'   deleted. If 0 then the tails are set to zero, etc. NULL is default.
 #'
-#' @return a dataframe with four numeric vectors with wavelength values (w.length), energy and photon irradiance (s.e.irrad, s.q.irrad) depending on the argument passed to unit.out (s.irrad).
+#' @return a dataframe with four numeric vectors with wavelength values
+#'   (w.length), energy and photon irradiance (s.e.irrad, s.q.irrad) depending
+#'   on the argument passed to unit.out (s.irrad).
 #' @keywords manip misc
 #' @export D2_spectrum
 #' @aliases D2_spectrum
 #'
-#' @note This is function is valid for wavelengths in the range 180 nm to 495 nm,
-#' for wavelengths outside this range NAs are returned.
+#' @note This is function is valid for wavelengths in the range 180 nm to 495
+#'   nm, for wavelengths outside this range NAs are returned.
 #' @examples
 #' D2_spectrum(200)
 #' D2_spectrum(170:220)
-
+#'
 D2_spectrum <- function(w.length, k=D2.UV653, fill=NULL) {
   pws <- (length(k) - 1):0
   fill.selector <- w.length < 190 | w.length > 450

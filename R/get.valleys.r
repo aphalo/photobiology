@@ -1,11 +1,9 @@
-#' Get peaks in a spectrum.
+#' Get peaks in a spectrum
 #'
 #' This function finds all valleys (local minima) in a spectrum, using a user
 #' selectable size threshold relative to the tallest peak (global maximum). This
 #' a wrapper built on top of function peaks from package splus2R.
 #'
-#' @usage get_valleys(x, y, ignore_threshold = 0.0, span = 5, strict = TRUE,
-#'   x_unit = "", x_digits = 3)
 #' @param x numeric array
 #' @param y numeric array
 #' @param ignore_threshold numeric value between 0.0 and 1.0 indicating the

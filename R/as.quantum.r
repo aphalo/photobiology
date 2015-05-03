@@ -3,10 +3,9 @@
 #' For example an spectrum [W m-2 nm-1] is converted into a spectrum [s-1 m-2
 #' nm-1]
 #'
-#' @usage as_quantum(w.length, s.e.irrad)
-#'
 #' @param w.length numeric Vector of wavelengths (nm)
-#' @param s.e.irrad numeric Corresponding vector of spectral (energy) irradiances
+#' @param s.e.irrad numeric Corresponding vector of spectral (energy)
+#'   irradiances
 #'
 #' @return A numeric array of spectral photon irradiances
 #' @export

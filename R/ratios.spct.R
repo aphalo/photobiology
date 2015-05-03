@@ -1,11 +1,7 @@
-#' Calculate photon ratio from spectral irradiance.
+#' Calculate photon ratio from spectral irradiance
 #'
 #' This function returns the photon ratio for a given pair of wavebands of a
 #' light source spectrum.
-#'
-#' @usage q_ratio(spct, w.band.num=NULL, w.band.denom=NULL, use.cached.mult =
-#'   getOption("photobiology.use.cached.mult", default = FALSE),
-#'   use.hinges=getOption("photobiology.use.hinges", default=NULL))
 #'
 #' @param spct an object of class "source_spct"
 #' @param w.band.num waveband definition created with new_waveband()
@@ -33,8 +29,6 @@
 #'   ensuring that the wavelengths are the same in each call, as the only test
 #'   done is for the length of the \code{w.length} vector.
 #'
-#' @aliases q_ratio
-#'
 #' @family photon and energy ratio functions
 #'
 q_ratio <-
@@ -57,14 +51,10 @@ q_ratio <-
     return(ratio)
   }
 
-#' Calculate energy ratio from spectral irradiance.
+#' Calculate energy ratio from spectral irradiance
 #'
 #' This function returns the photon ratio for a given pair of wavebands of a
 #' light source spectrum.
-#'
-#' @usage e_ratio(spct, w.band.num=NULL, w.band.denom=NULL, use.cached.mult =
-#'   getOption("photobiology.use.cached.mult", default = FALSE),
-#'   use.hinges=getOption("photobiology.use.hinges", default=NULL))
 #'
 #' @param spct asource_spct
 #' @param w.band.num waveband or list of waveband objects
@@ -93,8 +83,6 @@ q_ratio <-
 #'   ensuring that the wavelengths are the same in each call, as the only test
 #'   done is for the length of the \code{w.length} vector.
 #'
-#' @aliases e_ratio
-#'
 #' @family photon and energy ratio functions
 #'
 e_ratio <-
@@ -113,14 +101,10 @@ e_ratio <-
     return(ratio)
   }
 
-#' Calculate the photon to energy ratio from spectral irradiance.
+#' Calculate the photon to energy ratio from spectral irradiance
 #'
 #' This function returns the photon to energy ratio for each waveband of a light
 #' source spectrum.
-#'
-#' @usage qe_ratio(spct, w.band=NULL, use.cached.mult =
-#'   getOption("photobiology.use.cached.mult", default = FALSE),
-#'   use.hinges=getOption("photobiology.use.hinges", default=NULL) )
 #'
 #' @param spct source_spct
 #' @param w.band waveband or list of waveband objects
@@ -168,14 +152,10 @@ qe_ratio <-
     return(ratio)
   }
 
-#' Calculate energy to mol photon ratio from spectral irradiance.
+#' Calculate energy to mol photon ratio from spectral irradiance
 #'
 #' This function returns the energy to molle photn ratio for each waveband and a
 #' light source spectrum.
-#'
-#' @usage eq_ratio(spct, w.band=NULL, use.cached.mult =
-#'   getOption("photobiology.use.cached.mult", default = FALSE),
-#'   use.hinges=getOption("photobiology.use.hinges", default=NULL) )
 #'
 #' @param spct source_spct
 #' @param w.band waveband or list of waveband objects

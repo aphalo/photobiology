@@ -1,6 +1,6 @@
 # summary -----------------------------------------------------------------
 
-#' Summary of a spectral object.
+#' Summary of a spectral object
 #'
 #' Methods of generic function summary for objects of spectral classes.
 #'
@@ -322,7 +322,7 @@ stepsize.default <- function(x, ...) {
   return(range(diff(x)))
 }
 
-#' @describeIn stepsize  Method for "generic_spct" objects for generic function
+#' @describeIn stepsize  Method for "generic_spct" objects for generic function.
 #'
 #' @export stepsize.generic_spct
 #'
@@ -336,7 +336,7 @@ stepsize.generic_spct <- function(x, ...) {
 
 # Labels ------------------------------------------------------------------
 
-#' Labels of a "generic_spct" object.
+#' Labels of a "generic_spct" object
 #'
 #' A function to obtain the labels of a spectrum. Currently returns 'names'.
 #'

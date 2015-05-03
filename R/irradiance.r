@@ -3,11 +3,6 @@
 #' This function gives the energy irradiance for a given waveband of a radiation
 #' spectrum.
 #'
-#' @usage irradiance(w.length, s.irrad, w.band=NULL, unit.out=NULL,
-#'   unit.in="energy", check.spectrum=TRUE, use.cached.mult =
-#'   getOption("photobiology.use.cached.mult", default = FALSE),
-#'   use.hinges=getOption("photobiology.use.hinges", default=NULL) )
-#'
 #' @param w.length numeric Vector of wavelength (nm)
 #' @param s.irrad numeric Corresponding vector of spectral (energy) irradiances
 #'   (W m-2 nm-1)

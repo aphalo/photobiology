@@ -3,8 +3,6 @@
 #' This function returns the summary transmittance for given wavebands from a
 #' filter or object spectrum.
 #'
-#' @usage transmittance(spct, w.band, pc.out, quantity, wb.trim, use.hinges)
-#'
 #' @param spct an R object
 #' @param w.band waveband or list of waveband objects The waveband(s) determine
 #'   the region(s) of the spectrum that are summarized.

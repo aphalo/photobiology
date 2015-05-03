@@ -3,11 +3,6 @@
 #' This function gives the energy irradiance for a given waveband of a radiation
 #' spectrum, optionally applies a BSWF.
 #'
-#' @usage energy_irradiance(w.length, s.irrad, w.band=NULL, unit.in="energy",
-#'   check.spectrum=TRUE, use.cached.mult =
-#'   getOption("photobiology.use.cached.mult", default = FALSE),
-#'   use.hinges=getOption("photobiology.use.hinges", default=NULL) )
-#'
 #' @param w.length numeric array of wavelength (nm)
 #' @param s.irrad numeric array of spectral irradiances, by default as energy (W
 #'   m-2 nm-1)

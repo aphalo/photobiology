@@ -177,8 +177,6 @@ normalize.reflector_spct <- function(x,
 #' signals whether the spectral data has been normalized or not after the object
 #' was created.
 #'
-#' @usage is_normalized(x)
-#'
 #' @param x An R object.
 #'
 #' @return A \code{logical} value. If \code{x} is not normalized or \code{x} is

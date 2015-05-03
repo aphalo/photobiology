@@ -1,4 +1,4 @@
-#' Remove tags from a spectrum.
+#' Remove tags from a spectrum
 #'
 #' Remove tags from an R object if present, otherwise return the object
 #' unchanged.

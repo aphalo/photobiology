@@ -1,4 +1,4 @@
-#' @title Spectral irradiance (simulated)
+#' @title Solar spectral irradiance (simulated)
 #'
 #' @description A dataset containing the wavelengths at a 1 nm interval
 #' and the corresponding spectral (energy) irradiance and spectral photon irradiance.
@@ -20,7 +20,7 @@
 #' @name sun.spct
 NULL
 
-#' @title Spectral irradiance (simulated)
+#' @title Solar spectral irradiance (simulated)
 #'
 #' @description A dataset containing the wavelengths at a 1 nm interval
 #' and the corresponding spectral (energy) irradiance and spectral photon irradiance.
@@ -42,7 +42,7 @@ NULL
 #' @name sun.data
 NULL
 
-#' Time-integrated daily spectral irradiance (simulated)
+#' Daily solar spectral irradiance (simulated)
 #'
 #' A dataset containing the wavelengths at a 1 nm interval
 #' and the corresponding spectral (energy) irradiance.
@@ -62,7 +62,7 @@ NULL
 #' @name sun.daily.spct
 NULL
 
-#' Time-integrated daily spectral irradiance (simulated)
+#' Daily solar spectral irradiance (simulated)
 #'
 #' A dataset containing the wavelengths at a 1 nm interval
 #' and the corresponding spectral (energy) irradiance.

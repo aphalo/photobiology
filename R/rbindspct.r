@@ -3,16 +3,14 @@
 
 #' Makes one spectral object from a list of many
 #'
-#' Same as \code{rbindlist} from package data.table but preserves class of spectral objects. Has different defaults
-#' for use names and fill.
-#'
-#' @usage rbindspct(l, use.names = TRUE, fill=TRUE, idfactor = NULL)
+#' Same as \code{rbindlist} from package data.table but preserves class of
+#' spectral objects. Has different defaults for use names and fill.
 #'
 #' @param l A list containing \code{source_spct}, \code{filter_spct},
 #'   \code{reflector_spct}, \code{response_spct}, \code{chroma_spct},
-#'   \code{generic_spct}, \code{data.table}, \code{data.frame} or \code{list}
-#'   objects. At least one of the inputs should have column names set.
-#'   \code{\dots} is the same but you pass the objects by name separately.
+#'   \code{cps_spct}, \code{generic_spct}, \code{data.table}, \code{data.frame}
+#'   or \code{list} objects. At least one of the inputs should have column names
+#'   set. \code{\dots} is the same but you pass the objects by name separately.
 #'
 #' @param use.names logical If \code{TRUE} items will be bound by matching
 #'   column names. By default \code{TRUE} for \code{rbindspct}. Columns with

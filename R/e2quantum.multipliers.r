@@ -1,10 +1,11 @@
+#' Calculate energy to quantum multipliers
+#'
 #' Gives multipliers as a function of wavelength, for converting from energy to
 #' photon (quantum) units (number of photons as default, or moles of photons).
 #'
-#' @usage e2quantum_multipliers(w.length, molar = FALSE)
-#'
 #' @param w.length numeric Vector of wavelengths (nm)
-#' @param molar logical Flag indicating whether output should be in moles or numbers
+#' @param molar logical Flag indicating whether output should be in moles or
+#'   numbers
 #'
 #' @return A numeric array of multipliers
 #' @keywords manip misc

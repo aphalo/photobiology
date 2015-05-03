@@ -2,8 +2,6 @@
 #'
 #' This function returns the solar angles for a given time and location.
 #'
-#' @usage sun_angles(t = now(), lon = 0, lat = 0, use_refraction = FALSE)
-#'
 #' @param t POSIXct Time, any valid time zone (TZ) is allowed, default is
 #'   current time
 #' @param lon numeric Vector of longitudes (degrees)

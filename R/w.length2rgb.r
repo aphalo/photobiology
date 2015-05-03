@@ -2,14 +2,12 @@
 #'
 #' Calculates rgb values from spectra based on human color matching functions
 #'
-#' @usage w_length2rgb(w.length, sens = ciexyzCMF2.spct, color.name = NULL)
-#'
 #' @param w.length numeric Vector of wavelengths (nm)
 #' @param sens chroma_spct Used as chromaticity definition
 #' @param color.name character Used for naming the rgb color definition
 #'
-#' @return A vector of colors defined using \code{rgb()}. The numeric values of the RGB components can be obtained
-#'   using function \code{col2rgb()}.
+#' @return A vector of colors defined using \code{rgb()}. The numeric values of
+#'   the RGB components can be obtained using function \code{col2rgb()}.
 #'
 #' @export
 #' @examples

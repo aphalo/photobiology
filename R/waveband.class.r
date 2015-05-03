@@ -1,6 +1,6 @@
 # labels ------------------------------------------------------------------
 
-#' Name and label of a "waveband" object.
+#' Name and label of a "waveband" object
 #'
 #' A function to obtain the name and label of objects of class "waveband".
 #'
@@ -17,7 +17,7 @@ labels.waveband <- function(object, ...) {
 
 # range -------------------------------------------------------------------
 
-#' Wavelength range of a "waveband" object.
+#' Wavelength range of a "waveband" object
 #'
 #' A function that returns the wavelength range from objects of class "waveband".
 #'
@@ -34,7 +34,7 @@ range.waveband <- function(..., na.rm = FALSE) {
 
 # min ---------------------------------------------------------------------
 
-#' Wavelength minimum of a "waveband" object.
+#' Wavelength minimum of a "waveband" object
 #'
 #' A function that returns the wavelength minimum from objects of class "waveband".
 #'
@@ -51,7 +51,7 @@ min.waveband <- function(..., na.rm = FALSE) {
 
 # max ---------------------------------------------------------------------
 
-#' Wavelength maximum of a "waveband" object.
+#' Wavelength maximum of a "waveband" object
 #'
 #' A function that returns the wavelength maximum from objects of class "waveband".
 #'
@@ -69,8 +69,6 @@ max.waveband <- function(..., na.rm = FALSE) {
 #' Generic function
 #'
 #' A function that returns the wavelength at the center of the wavelength range.
-#'
-#' @usage midpoint(x)
 #'
 #' @param x an R object
 #' @export midpoint
@@ -106,8 +104,6 @@ midpoint.waveband <- function(x) {
 #' Generic function
 #'
 #' A function that returns the spread (max(x) - min(x)) for R objects.
-#'
-#' @usage spread(x)
 #'
 #' @param x an R object
 #'
@@ -220,7 +216,7 @@ color.waveband <- function(x, short.names=TRUE, type="both", ...) {
 
 # normalization -----------------------------------------------------------
 
-#' Normalization of an R object.
+#' Normalization of an R object
 #'
 #' A generic function that returns the normalization of an R object.
 #'
@@ -249,7 +245,7 @@ normalization.waveband <- function(x) {
 
 # is_effective -----------------------------------------------------------
 
-#' Is an R object "effective".
+#' Is an R object "effective"
 #'
 #' A generic function for quering if a biological spectral weighting function
 #' (BSWF) has been applied to an object or is included in its definition.
@@ -281,7 +277,8 @@ is_effective.waveband <- function(x) {
   return(x$weight != "none")
 }
 
-#' @describeIn is_effective Does a \code{source_spct} object contain effective spectral irradiance values.
+#' @describeIn is_effective Does a \code{source_spct} object contain effective
+#'   spectral irradiance values.
 #'
 #' @export
 #'

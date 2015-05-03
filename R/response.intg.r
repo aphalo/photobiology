@@ -1,11 +1,9 @@
 # response methods --------------------------------------------------------
 
 
-#' Calculate response from spectral response.
+#' Calculate response from spectral response
 #'
 #' Calculate average photon- or energy-based photo-response.
-#'
-#' @usage response(spct, w.band, unit.out, quantity, wb.trim, use.hinges )
 #'
 #' @param spct an R object of class "generic_spct"
 #' @param w.band waveband or list of waveband objects The waveband(s) determine
@@ -56,12 +54,10 @@ response.response_spct <-
                   use.hinges=use.hinges )
   }
 
-#' Calculate response from spectral response.
+#' Calculate response from spectral response
 #'
 #' This function returns the mean response for a given
 #' waveband and a response spectrum.
-#'
-#' @usage resp_spct(spct, w.band, unit.out, quantity, wb.trim, use.hinges)
 #'
 #' @param spct an object of class response_spct"
 #' @param w.band a waveband object or a list of waveband objects
@@ -206,12 +202,10 @@ resp_spct <-
 
 # e_response methods --------------------------------------------------------
 
-#' Calculate energy or photon based response from spectral response.
+#' Calculate energy or photon based response from spectral response
 #'
 #' This function returns the mean, total, or contribution of response for each
 #' waveband and a response spectrum.
-#'
-#' @usage e_response(spct, w.band, quantity, wb.trim, use.hinges )
 #'
 #' @param spct an R object
 #' @param w.band a waveband object or a list of waveband objects
@@ -264,12 +258,10 @@ e_response.response_spct <-
 
 # q_response methods --------------------------------------------------------
 
-##' Calculate photon-based photo-response from spectral response.
+##' Calculate photon-based photo-response from spectral response
 #'
 #' This function returns the mean response for a given
 #' waveband and a response spectrum.
-#'
-#' @usage q_response(spct, w.band, quantity, wb.trim, use.hinges )
 #'
 #' @param spct an R object
 #' @param w.band a waveband object or a list of waveband objects

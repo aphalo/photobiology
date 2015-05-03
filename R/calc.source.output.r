@@ -1,33 +1,38 @@
 #' Calculate light source output by interpolation from lamp data
 #'
-#' @description
-#' Calculate interpolated values by interpolation from user-supplied spectral emission
-#' data or by name for light source data included in the packages photobiologySun,
-#' photobiologyLamps, or photobiologyLEDs, scaling the values.
-#'
-#' @usage calc_source_output(w.length.out, source.name=NULL,
-#'                                w.length.in=NULL, s.irrad.in=NULL,
-#'                                unit.in="energy",
-#'                                scaled=NULL, fill=NA)
+#' @description Calculate interpolated values by interpolation from
+#' user-supplied spectral emission data or by name for light source data
+#' included in the packages photobiologySun, photobiologyLamps, or
+#' photobiologyLEDs, scaling the values.
 #'
 #' @param w.length.out numeric vector of wavelengths (nm) for output
-#' @param source.name a character string giving the name of a lamp data set, default is NULL
+#' @param source.name a character string giving the name of a lamp data set,
+#'   default is NULL
 #' @param w.length.in numeric vector of wavelengths (nm) for input
-#' @param s.irrad.in numeric vector of spectral transmittance value (fractions or percent)
+#' @param s.irrad.in numeric vector of spectral transmittance value (fractions
+#'   or percent)
 #' @param unit.in a character string "energy" or "photon"
 #' @param scaled NULL, "peak", "area"; div ignored if !is.null(scaled)
-#' @param fill if NA, no extrapolation is done, and NA is returned for wavelengths outside the range of the input. If NULL then the tails are deleted. If 0 then the tails are set to zero.
+#' @param fill if NA, no extrapolation is done, and NA is returned for
+#'   wavelengths outside the range of the input. If NULL then the tails are
+#'   deleted. If 0 then the tails are set to zero.
 #'
-#' @return a dataframe with four numeric vectors with wavelength values (w.length), scaled and interpolated spectral energy irradiance (s.e.irrad),
-#'    scaled and interpolated spectral photon irradiance values (s.q.irrad).
+#' @return a dataframe with four numeric vectors with wavelength values
+#'   (w.length), scaled and interpolated spectral energy irradiance (s.e.irrad),
+#'   scaled and interpolated spectral photon irradiance values (s.q.irrad).
 #' @keywords manip misc
 #' @export
 #'
-#' @note This is a convenience function that adds no new functionality but makes it a little easier to plot lamp spectral emission data consistently.
-#' It automates interpolation, extrapolation/trimming and scaling.
+#' @note This is a convenience function that adds no new functionality but makes
+#'   it a little easier to plot lamp spectral emission data consistently. It
+#'   automates interpolation, extrapolation/trimming and scaling.
 #' @examples
-#' with(sun.data, calc_source_output(290:1100, w.length.in=w.length, s.irrad.in=s.e.irrad))
-#' calc_source_output(290:1100, w.length.in=sun.data$w.length, s.irrad.in=sun.data$s.e.irrad, fill=0.0)
+#' with(sun.data,
+#'      calc_source_output(290:1100, w.length.in=w.length, s.irrad.in=s.e.irrad))
+#' calc_source_output(290:1100,
+#'                    w.length.in=sun.data$w.length,
+#'                    s.irrad.in=sun.data$s.e.irrad,
+#'                    fill=0.0)
 #' calc_source_output(200:4000, "sun")
 #' calc_source_output(500:600, "sun")
 #'

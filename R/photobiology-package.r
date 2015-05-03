@@ -1,8 +1,9 @@
 #' Quantification of ultraviolet and visible radiation for photobiology
 #'
 #' Calculation of quantities relevant to the effects of radiation on different
-#' organisms and biological processes from spectral data. The package is designed
-#' so that it is easy for the user to create new quantification functions.
+#' organisms and biological processes from spectral data. The package is
+#' designed so that it is easy for the user to create new quantification
+#' functions.
 #'
 #' @docType package
 #' @keywords misc
@@ -39,8 +40,10 @@
 #' @import lubridate methods
 #'
 #' @importFrom Rcpp evalCpp
-#' @importFrom data.table data.table tables setkey setkeyv key "key<-" haskey CJ SJ copy
-#' @importFrom data.table as.data.table is.data.table test.data.table last like "%like%" between "%between%"
+#' @importFrom data.table data.table tables setkey setkeyv key "key<-" haskey CJ
+#'   SJ copy
+#' @importFrom data.table as.data.table is.data.table test.data.table last like
+#'   "%like%" between "%between%"
 #' @importFrom data.table truelength alloc.col ":="
 #' @importFrom data.table setattr setnames setcolorder set setDT setDF
 #' @importFrom data.table setorder setorderv

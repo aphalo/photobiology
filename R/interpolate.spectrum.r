@@ -1,9 +1,7 @@
 #' Calculate spectral values at a different set of wavelengths
 #'
-#' For example interpolate spectral irradiance (or spectral transmittance) values
-#' at new wavelengths values.
-#'
-#' @usage interpolate_spectrum(w.length.in, s.irrad, w.length.out, fill.value=NA)
+#' For example interpolate spectral irradiance (or spectral transmittance)
+#' values at new wavelengths values.
 #'
 #' @param w.length.in numeric array of wavelengths (nm)
 #' @param s.irrad a numeric array of spectral values
@@ -13,18 +11,19 @@
 #' @return a numeric array of interpolated spectral values
 #'
 #' @export
-#' @note
-#' The current version of interpolate uses \code{spline} if fewer than 25 data points are available.
-#' Otherwise it uses \code{approx}. In the first case a cubic spline is used, in the second case
-#' linear interpolation, which should be faster.
+#' @note The current version of interpolate uses \code{spline} if fewer than 25
+#' data points are available. Otherwise it uses \code{approx}. In the first case
+#' a cubic spline is used, in the second case linear interpolation, which should
+#' be faster.
 #' @keywords manip misc
 #' @examples
 #' data(sun.data)
 #' my.w.length <- 300:700
-#' my.s.e.irrad <- with(sun.data, interpolate_spectrum(w.length, s.e.irrad, my.w.length))
+#' my.s.e.irrad <-
+#'   with(sun.data, interpolate_spectrum(w.length, s.e.irrad, my.w.length))
 #' plot(my.s.e.irrad ~ my.w.length)
 #' lines(s.e.irrad ~ w.length, data=sun.data)
-
+#'
 interpolate_spectrum <- function(w.length.in, s.irrad, w.length.out, fill.value=NA) {
   if (is.null(fill.value) && (w.length.out[1] < w.length.in[1] ||
                                 w.length.out[length(w.length.out)] > w.length.in[length(w.length.in)])) {

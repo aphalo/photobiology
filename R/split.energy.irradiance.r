@@ -5,12 +5,6 @@
 #' wavebands from a radiation spectrum. The returned values can be either
 #' absolute or relative to their sum.
 #'
-#' @usage split_energy_irradiance(w.length, s.irrad,
-#'   cut.w.length=range(w.length), unit.in="energy", scale = "absolute",
-#'   check.spectrum=TRUE, use.cached.mult =
-#'   getOption("photobiology.use.cached.mult", default = FALSE),
-#'   use.hinges=getOption("photobiology.use.hinges", default=NULL) )
-#'
 #' @param w.length numeric Vector of wavelengths (nm)
 #' @param s.irrad numeric Corresponding vector of spectral (energy) irradiances
 #'   (W m-2 nm-1)

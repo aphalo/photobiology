@@ -1,12 +1,7 @@
-#' Calculate photon (quantum) ratio from spectral (energy or photon) irradiance.
+#' Calculate photon (quantum) ratio from spectral (energy or photon) irradiance
 #'
 #' This function gives the photon ratio between two given wavebands of a
 #' radiation spectrum.
-#'
-#' @usage photon_ratio(w.length, s.irrad, w.band.num=NULL, w.band.denom=NULL,
-#'   unit.in="energy", check.spectrum=TRUE, use.cached.mult =
-#'   getOption("photobiology.use.cached.mult", default = FALSE),
-#'   use.hinges=getOption("photobiology.use.hinges", default=NULL) )
 #'
 #' @param w.length numeric array of wavelength (nm)
 #' @param s.irrad numeric array of spectral (energy) irradiances (W m-2 nm-1)

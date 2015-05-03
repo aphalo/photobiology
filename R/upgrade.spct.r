@@ -32,14 +32,15 @@ upgrade.generic.spct <-
 #' Update the spectral class names of objects to those used in photobiology (>=
 #' 0.6.0).
 #'
-#' @param obj.names char Names of objects to upgrade as a vector of character strings
+#' @param obj.names char Names of objects to upgrade as a vector of character
+#'   strings
 #'
 #' @note The objects are modified by reference. The class names with ending
 #'   ".spct" are replaced by their new equivalents ending in "_spct".
 #'   \code{object.names} can safely include names of any R object. Names of
 #'   objects which do not belong to any the old \code{.spct} classes are
-#'   ignored. This makes it possible to supply as argument the output
-#'   from \code{ls}, the default, or its equivalent \code{objects}.
+#'   ignored. This makes it possible to supply as argument the output from
+#'   \code{ls}, the default, or its equivalent \code{objects}.
 #'
 #' @return The modified object (invisibly).
 #'
@@ -63,8 +64,8 @@ upgrade_spectra <- function(obj.names = ls(parent.frame())) {
 
 #' Query if an object has old class names
 #'
-#' Query if an object has old class names Query if an object has old class names as
-#' used in photobiology (>= 0.6.0).
+#' Query if an object has old class names Query if an object has old class names
+#' as used in photobiology (>= 0.6.0).
 #'
 #' @param object an R object
 #'

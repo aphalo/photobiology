@@ -2,8 +2,6 @@
 #'
 #' This function returns the RGB values for a source spectrum.
 #'
-#' @usage rgb_spct(spct, sens=ciexyzCMF2.spct, color.name=NULL)
-#'
 #' @param spct an object of class "source_spct"
 #' @param sens a chroma_spct object with variables w.length, x, y, and z, giving
 #'   the CC or CMF definition (default is the proposed human CMF according to

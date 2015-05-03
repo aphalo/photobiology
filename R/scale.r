@@ -124,20 +124,14 @@ fscale.reflector_spct <- function(x,
                      ...))
 }
 
-#' fscale a spectrum.
+#' fscale a spectrum
 #'
-#' These functions return a spectral object of the same class as the one supplied
-#' as argument but with the spectral data scaled.
-#'
-#' @usage fscale_spct(spct,
-#'                     range,
-#'                     var.name,
-#'                     f,
-#'                     ...)
+#' These functions return a spectral object of the same class as the one
+#' supplied as argument but with the spectral data scaled.
 #'
 #' @param spct generic_spct The spectrum to be normalized
-#' @param range an R object on which range() returns a vector of length 2,
-#' with min annd max wavelengths (nm)
+#' @param range an R object on which range() returns a vector of length 2, with
+#'   min annd max wavelengths (nm)
 #' @param var.name character The name of the variable to fscale
 #' @param f function A summary function to be applied to \code{spct}
 #' @param ... other arguments passed to f()
@@ -182,13 +176,11 @@ fscale_spct <- function(spct, range, var.name, f, ...) {
 
 # is_scaled function ----------------------------------------------------
 
-#' Query whether a generic spectrum has been scaled.
+#' Query whether a generic spectrum has been scaled
 #'
 #' This function tests a \code{generic_spct} object for an attribute that
 #' signals whether the spectral data has been rescled or not after the object
 #' was created.
-#'
-#' @usage is_scaled(x)
 #'
 #' @param x An R object.
 #'

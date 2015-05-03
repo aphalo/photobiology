@@ -1,29 +1,32 @@
-#' Trim (or expand) tails of the spectrum based on wavelength limits,
-#' interpolating the values at the limits.
+#' Trim (or expand) tails of a spectrum
 #'
-#' Trimming is needed for example to remove short wavelength noise
-#' when the measured spectrum extends beyond the known emission
-#' spectrum of the measured light source. Occasionally one may
-#' want also to expand the wavelength range.
-#'
-#' @usage trim_spct(spct, range=NULL, low.limit=NULL, high.limit=NULL,
-#'                  use.hinges=TRUE, fill=NULL, byref=FALSE, verbose=TRUE)
+#' Trimming of tails of a spectrum based on wavelength limits, interpolating the
+#' values at the boundaries. Trimming is needed for example to remove short
+#' wavelength noise when the measured spectrum extends beyond the known emission
+#' spectrum of the measured light source. Occasionally one may want also to
+#' expand the wavelength range.
 #'
 #' @param spct an object of class "generic_spct"
-#' @param range a numeric vector of length two, or any other object for which function range() will return two
-#' @param low.limit shortest wavelength to be kept (defaults to shortest w.length value)
-#' @param high.limit longest wavelength to be kept (defaults to longest w.length value)
-#' @param use.hinges logical, if TRUE (the default)
-#' wavelengths in nm.
-#' @param fill if fill==NULL then tails are deleted, otherwise tails or s.irrad are filled with the value of fill
-#' @param byref logical indicating if new object will be created by reference or by copy of spct
+#' @param range a numeric vector of length two, or any other object for which
+#'   function range() will return two
+#' @param low.limit shortest wavelength to be kept (defaults to shortest
+#'   w.length value)
+#' @param high.limit longest wavelength to be kept (defaults to longest w.length
+#'   value)
+#' @param use.hinges logical, if TRUE (the default) wavelengths in nm.
+#' @param fill if fill==NULL then tails are deleted, otherwise tails or s.irrad
+#'   are filled with the value of fill
+#' @param byref logical indicating if new object will be created by reference or
+#'   by copy of spct
 #' @param verbose logical
 #'
 #' @return a spectrum of same class as input with its tails trimmed or expanded
 #'
-#' @note When expanding an spectrum, if fill==NULL, then expansion is not performed.
-#' Range can be "waveband" object, a numeric vector or a list of numeric vectors, or any other user-defined or built-in
-#' object for which range() returns a numeric vector of legth two, that can be interpreted as wavelengths expressed in nm.
+#' @note When expanding an spectrum, if fill==NULL, then expansion is not
+#'   performed. Range can be "waveband" object, a numeric vector or a list of
+#'   numeric vectors, or any other user-defined or built-in object for which
+#'   \code{range()} returns a numeric vector of legth two, that can be
+#'   interpreted as wavelengths expressed in nm.
 #' @family trim functions
 #' @keywords manip misc
 #' @export
@@ -35,18 +38,9 @@
 #' trim_spct(sun.spct, low.limit=300, fill=NULL)
 #' trim_spct(sun.spct, low.limit=300, fill=NA)
 #' trim_spct(sun.spct, low.limit=300, fill=0.0)
-#' trim_spct(sun.spct, low.limit=300, high.limit=1000, fill=NA)
-#' trim_spct(sun.spct, low.limit=300, high.limit=1000, fill=0.0)
-#' trim_spct(sun.spct, low.limit=300, high.limit=1000)
-#' trim_spct(sun.spct, low.limit=300, high.limit=400, fill=NA)
-#' trim_spct(sun.spct, low.limit=100, high.limit=400, fill=0.0)
-#' trim_spct(sun.spct, range=new_waveband(300, 350))
-#' trim_spct(sun.spct, range=c(300, 350))
-#' trim_spct(sun.spct, range=c(NA, 350))
-#' trim_spct(sun.spct, range=c(NA, 300, 350))
 #'
-
-trim_spct <- function(spct, range=NULL, low.limit=NULL, high.limit=NULL, use.hinges=TRUE, fill=NULL, byref=FALSE, verbose=TRUE)
+trim_spct <- function(spct, range=NULL, low.limit=NULL, high.limit=NULL,
+                      use.hinges=TRUE, fill=NULL, byref=FALSE, verbose=TRUE)
 {
   if (is.null(spct)) {
     return(spct)

@@ -4,8 +4,6 @@
 #' spectral data stored in a \code{filter_spct} or in an \code{object_spct}.
 #' Absorptance is a different quantity than absorbance.
 #'
-#' @usage absorptance(spct, w.band, quantity, wb.trim, use.hinges)
-#'
 #' @param spct an R object
 #' @param w.band waveband or list of waveband objects The waveband(s) determine
 #'   the region(s) of the spectrum that are summarized.
@@ -68,8 +66,6 @@ absorptance.filter_spct <-
 #'
 #' This function returns the summary absorptance for a given
 #' waveband of a \code{object_spct} object
-#'
-#' @usage absorptance_spct(spct, w.band, quantity, wb.trim, use.hinges)
 #'
 #' @param spct object_spct
 #' @param w.band waveband or list of waveband objects The wavebands determine

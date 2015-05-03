@@ -3,8 +3,6 @@
 #' For example an spectrum [mol s-1 m-2 nm-1] is converted into a spectrum [W
 #' m-2 nm-1]
 #'
-#' @usage as_energy(w.length, s.qmol.irrad)
-#'
 #' @param w.length numeric Vector of wavelengths (nm)
 #' @param s.qmol.irrad numeric Corresponding vector of spectral photon
 #'   irradiances

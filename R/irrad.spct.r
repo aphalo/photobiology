@@ -6,9 +6,6 @@
 #' This function returns the irradiance for a given waveband of a light source
 #' spectrum.
 #'
-#' @usage irrad(spct, w.band, unit.out, quantity, wb.trim, use.cached.mult,
-#'   use.hinges, allow.scaled)
-#'
 #' @param spct an R object
 #' @param w.band waveband or list of waveband objects The waveband(s) determine
 #'   the region(s) of the spectrum that are summarized.
@@ -240,9 +237,6 @@ irrad_spct <- irrad.source_spct
 #' This function returns the energy irradiance for a given waveband of a light
 #' source spectrum.
 #'
-#' @usage e_irrad(spct, w.band, quantity, wb.trim, use.cached.mult, use.hinges,
-#'   allow.scaled)
-#'
 #' @param spct an R object
 #' @param w.band a list of \code{waveband} objects or a \code{waveband} object
 #' @param quantity character string
@@ -312,9 +306,6 @@ e_irrad.source_spct <-
 #'
 #' This function returns the photon irradiance (or quantum irradiance) for a
 #' given waveband of a light source spectrum.
-#'
-#' @usage q_irrad(spct, w.band, quantity, wb.trim , use.cached.mult,
-#'   use.hinges, allow.scaled)
 #'
 #' @param spct an R object
 #' @param w.band a list of \code{waveband} objects or a \code{waveband} object

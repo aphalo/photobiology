@@ -1,13 +1,7 @@
-#' Calculate moles of photons per Joule ratio from spectral (energy or photon)
-#' irradiance.
+#' Calculate moles of photons per Joule ratio
 #'
 #' This function gives the photons:energy ratio between for one given waveband
 #' of a radiation spectrum.
-#'
-#' @usage photons_energy_ratio(w.length, s.irrad, w.band = NULL, unit.in = "energy",
-#'   check.spectrum=TRUE, use.cached.mult =
-#'   getOption("photobiology.use.cached.mult", default = FALSE),
-#'   use.hinges = getOption("photobiology.use.hinges", default=NULL) )
 #'
 #' @param w.length numeric array of wavelength (nm)
 #' @param s.irrad numeric array of spectral (energy) irradiances (W m-2 nm-1)

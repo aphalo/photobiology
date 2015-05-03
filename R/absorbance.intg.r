@@ -3,8 +3,6 @@
 #' Function to calculate the mean, total, or other summary of absorbance for
 #' spectral data stored in a \code{filter_spct} or in an \code{object_spct}.
 #'
-#' @usage absorbance(spct, w.band, quantity, wb.trim, use.hinges)
-#'
 #' @param spct an R object
 #' @param w.band waveband or list of waveband objects The waveband(s) determine
 #'   the region(s) of the spectrum that are summarized.
@@ -62,8 +60,6 @@ absorbance.object_spct <-
 #'
 #' This function returns the mean absorbance for a given
 #' waveband of a absorbance spectrum.
-#'
-#' @usage absorbance_spct(spct, w.band, quantity, wb.trim , use.hinges)
 #'
 #' @param spct filter_spct
 #' @param w.band waveband or list of waveband objects The wavebands determine

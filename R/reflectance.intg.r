@@ -3,8 +3,6 @@
 #' Function to calculate the mean, total, or other summary of reflectance for
 #' spectral data stored in a \code{reflector_spct} or in an \code{object_spct}.
 #'
-#' @usage reflectance(spct, w.band, pc.out, quantity, wb.trim, use.hinges)
-#'
 #' @param spct an R object
 #' @param w.band waveband or list of waveband objects The waveband(s) determine
 #'   the region(s) of the spectrum that are summarized.
@@ -68,12 +66,10 @@ reflectance.object_spct <-
                      use.hinges = use.hinges)
   }
 
-#' Calculate reflectance from spectral reflectance.
+#' Calculate reflectance from spectral reflectance
 #'
 #' This function returns the mean reflectance for a given waveband and a
 #' reflectance spectrum.
-#'
-#' @usage reflectance_spct(spct, w.band, pc.out, quantity, wb.trim, use.hinges)
 #'
 #' @param spct an object of class generic_spct"
 #' @param w.band list of waveband definitions created with new_waveband()
