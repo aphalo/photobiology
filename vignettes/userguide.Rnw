@@ -347,7 +347,7 @@ Spectral objects created with earlier versions of this package are missing some 
 
 \subsubsection{Setting the class of a spectrum object}\label{sec:set:spct}
 
-\texttt{generic\_spct} objects can be created from data tables and data frames simply by setting them as such. However, a column called \texttt{w.length} must be present and contain wavelength values expressed in nm. Functions with names of the form \texttt{is.\_\_\_\_.spct} are defined for all classes of spectra and can take as arguments any R object. In addition function \texttt{is.any\_spct} can use to query if an R object inherits from any of the classes of spectra defined in this package. Finally function \texttt{class\_spct} works similarly to R's \texttt{class} functions but returns a vector containing only the names of spectra classes. The `set' functions keep unrecognised variables, and fill missing required variables with \texttt{NA}, except for \texttt{w.length}, which if missing triggers an error.
+\texttt{generic\_spct} objects can be created from data tables and data frames simply by setting them as such. However, a column called \texttt{w.length} must be present and contain wavelength values expressed in nm. Functions with names of the form \texttt{is.\_\_\_\_spct} are defined for all classes of spectra and can take as arguments any R object. In addition function \texttt{is.any\_spct} can use to query if an R object inherits from any of the classes of spectra defined in this package. Finally function \texttt{class\_spct} works similarly to R's \texttt{class} functions but returns a vector containing only the names of spectra classes. The `set' functions keep unrecognised variables, and fill missing required variables with \texttt{NA}, except for \texttt{w.length}, which if missing triggers an error.
 
 We create a data.table object \texttt{a.spct}, and query its class.
 
@@ -447,7 +447,7 @@ f.spct
 @
 
 When required data is not available, and it cannot be calculated from other columns, the required column is added and filled with \texttt{NA}s.
-<<>>=
+<<warning=TRUE, purl=FALSE>>=
 g.spct <- setReflectorSpct(data.table(w.length = 300:305, z = 1))
 class(g.spct)
 g.spct
@@ -455,7 +455,7 @@ g.spct
 
 If no variable named \texttt{w.length} is present, and a variable named \texttt{wl} is found, it is renamed to \texttt{w.length}.
 
-<<>>=
+<<error=TRUE, purl=FALSE>>=
 h.spct <- setReflectorSpct(data.table(wl = 300:305, Rfr = 1))
 class(h.spct)
 h.spct
@@ -463,32 +463,32 @@ h.spct
 
 The range of the input is checked, and warnings or errors issued. The wavelength range test cannot be overridden as the most likely reason for it to be triggered is the expression of wavelengths in units other than the expected nanometres (nm).
 
-<<>>=
-cat(try(h1.spct <- setReflectorSpct(data.table(wl = 5999:6001, Rfr = 1))))
+<<error=TRUE, purl=FALSE>>=
+h1.spct <- setReflectorSpct(data.table(wl = 5999:6001, Rfr = 1))
 @
 
 Transmittance and reflectance values are checked to be within their valid range, and spectral irradiance values to be zero or positive. By default failure of this test generates a fatal error.
 
-<<>>=
-cat(try(h2.spct <- setReflectorSpct(data.table(wl = 300:305, Rfr = -1))))
+<<error=TRUE, purl=FALSE>>=
+h2.spct <- setReflectorSpct(data.table(wl = 300:305, Rfr = -1))
 @
 
 The constructor converts percents to fractions before applying the tests.
 
-<<>>=
-cat(try(h3.spct <- setReflectorSpct(data.table(wl = 300:305, Rpc = -100))))
+<<error=TRUE, purl=FALSE>>=
+h3.spct <- setReflectorSpct(data.table(wl = 300:305, Rpc = -100))
 @
 
-Setting \texttt{strict.range = FALSE} issues a warning instead of an error, and returns an \texttt{.spct} object possibly containing the \emph{bad data}.
+Setting \texttt{strict.range = FALSE} issues a warning instead of an error, and returns a \texttt{reflector\_spct} object possibly containing the \emph{bad data}.
 
-<<>>=
+<<warning=TRUE, purl=FALSE>>=
 h4.spct <- setReflectorSpct(data.table(wl = 300:305, Rfr = -1),
                             strict.range = FALSE)
 class(h4.spct)
 h4.spct
 @
 
-Setting \texttt{strict.range = NULL} skips tests, and silently returns an \texttt{.spct} object possibly containing the \emph{bad data}.
+Setting \texttt{strict.range = NULL} skips tests, and silently returns a \texttt{reflector\_spct} object possibly containing the \emph{bad data}.
 
 <<>>=
 h5.spct <- setReflectorSpct(data.table(wl = 300:305, Rfr = -1),
@@ -499,7 +499,7 @@ h5.spct
 
 The constructor converts percents to fractions before applying the tests.
 
-<<>>=
+<<warning=TRUE, purl=FALSE>>=
 h6.spct <- setReflectorSpct(data.table(wl = 300:305, Rpc = -100),
                             strict.range = FALSE)
 class(h6.spct)
@@ -740,7 +740,7 @@ head(trim_spct(sun.spct, PAR()))
 head(trim_spct(sun.spct, low.limit = 297))
 @
 
-By default \code{trim\_spct} trims its argument by copy, this can be changed by setting \code{byref = TRUE} but as \code{sun.spct} is protected as part of the package, we cannot use it here.
+By default \texttt{trim\_spct} trims its argument by copy, this can be changed by setting \texttt{byref = TRUE} but as \texttt{sun.spct} is protected as part of the package, we cannot use it here.
 
 <<>>=
 my_sun.spct <- copy(sun.spct)
@@ -984,7 +984,7 @@ weighted.spct
 And of course these operations can be combined into more complex statements, including parentheses, when needed. The example below estimates the difference in effective spectral irradiance according to the CIE98 definition, between sunlight and sunlight filtered with a polyester film. Of course, the result is valid only for the
 solar spectral data used, which corresponds to Southern Finland.
 
-<<>>=
+<<warning=TRUE, purl=FALSE>>=
 sun.spct * CIE() - sun.spct * polyester.new.spct * CIE()
 @
 
@@ -1432,7 +1432,7 @@ tag(sun.spct, PAR(), byref = FALSE)
 tag(sun.spct, UV_bands(), byref = FALSE)
 @
 
-The added factor and colour data can be used for further processing or for plotting. Information about the tagging and wavebands is stored in an attribute \code{tag.attr} in every tagged spectrum, this yields a more compact output and keeps a `trace' of the tagging.
+The added factor and colour data can be used for further processing or for plotting. Information about the tagging and wavebands is stored in an attribute \texttt{tag.attr} in every tagged spectrum, this yields a more compact output and keeps a `trace' of the tagging.
 
 <<>>=
 tg.sun.spct <- tag(sun.spct, PAR(), byref = FALSE)
@@ -1446,9 +1446,9 @@ wb2tagged_spct(UV_bands())
 wb2rect_spct(UV_bands())
 @
 
-Function \code{wb2tagged\_spct} returns a tagged spectrum, with two rows for each waveband, corresponding to the low and high wavelength boundaries, while function \code{wb2rect\_spct} returns a spectrum with only one row per waveband, with \code{w.length} set to its midpoint but with additional columns  \code{xmin} and \code{xmax} corresponding to the low and high wavelength boundaries of the wavebands.
+Function \texttt{wb2tagged\_spct} returns a tagged spectrum, with two rows for each waveband, corresponding to the low and high wavelength boundaries, while function \texttt{wb2rect\_spct} returns a spectrum with only one row per waveband, with \texttt{w.length} set to its midpoint but with additional columns  \texttt{xmin} and \texttt{xmax} corresponding to the low and high wavelength boundaries of the wavebands.
 
-Function \code{is\_tagged} can be used to query if an spectrum is tagged or not, and function \code{untag} removes the tags.
+Function \texttt{is\_tagged} can be used to query if an spectrum is tagged or not, and function \texttt{untag} removes the tags.
 
 <<>>=
 tg.sun.spct
@@ -1457,11 +1457,11 @@ untag(tg.sun.spct)
 is_tagged(tg.sun.spct)
 @
 
-In the chuck above, we can see how this works, using in this case the default \code{byref = TRUE} which adds the tags in place, or \texttt{}by reference'', to the spct object supplied as argument.
+In the chuck above, we can see how this works, using in this case the default \texttt{byref = TRUE} which adds the tags in place, or ``by reference'', to the spct object supplied as argument.
 
 In the chunk bellow, we demonstrate that if an already tagged spectrum is re-tagged, the old tags are replaced with new ones, with a warning.
 
-<<>>=
+<<warning=TRUE, purl=FALSE>>=
 tag(tg.sun.spct, PAR())
 tag(tg.sun.spct, VIS())
 @
@@ -1599,7 +1599,7 @@ Function \texttt{smooth\_spct} can be used to smoothen noise in spectra. Smoothi
 
 We first generate a noisy solar spectrum by adding random noise to a noiseless solar spectrum. We will use this data to demonstrate smoothing.
 
-<<noisy-solar, fig.width=7, fig.height=4>>=
+<<noisy-solar, fig.width=7, fig.height=4, warning=TRUE, purl=FALSE>>=
 noisy.sun.spct <- sun.spct +
   rnorm(length(sun.spct$w.length), sd = 0.04) *
   irrad(sun.spct, quantity = "average")
