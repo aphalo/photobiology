@@ -16,7 +16,9 @@ spct_classes <- function() {
 
 # conditional setkey ------------------------------------------------------
 
-#' Set the sorting key(s) of Stolen from data.table except that test added so
+#' Set the sorting key(s) of spectra
+#'
+#' Code taken from data.table's setkey() except that test added so
 #' that if the same key is already set setkeyv is not called.
 #'
 #' @param x spct object
@@ -26,7 +28,7 @@ spct_classes <- function() {
 #'
 #' @seealso \code{\link[data.table]{setkey}}
 #'
-#' @keywords internal
+#' @export
 #'
 setkey_spct <- function (x, ..., verbose = getOption("datatable.verbose"), physical = TRUE)
 {
