@@ -181,7 +181,7 @@ day_night <- function(t = today(), lon = 0, lat = 0, twilight = "none", tz=NULL)
     t_temp <- as.POSIXct(x, origin=origin, tz="UTC")
     return(sun_angles(t_temp,
                     lon=lon,
-                    lat=lat)$elevation +
+                    lat=lat)$elevation -
              twilight_angle)
   }
   noon <- try(

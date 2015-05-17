@@ -11,6 +11,12 @@ Implement peak fitting in addition to current peak search algorithm, so
 that location of peaks is more precise (Found peak positions in-between wavelength values
 in spectral data possible).
 
+photobiology 0.6.3
+==================
+
+Fixed long-standing bug in twilight calculation in fucntion day_night().
+Documentation and User Guide updated.
+
 photobiology 0.6.2
 ==================
 
