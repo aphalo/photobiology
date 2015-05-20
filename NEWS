@@ -14,7 +14,10 @@ in spectral data possible).
 photobiology 0.6.3
 ==================
 
-Fixed long-standing bug in twilight calculation in fucntion day_night().
+Fixed long-standing bug in twilight calculation in function day_night().
+irrad(), e_irrad(), and q_irrad() modified so that NAs in the spectral data outside
+the range of waveband(s) do not cause the result to be an NA.
+
 Documentation and User Guide updated.
 
 photobiology 0.6.2

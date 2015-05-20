@@ -4,6 +4,7 @@
 #' spectral values are calculated by interpolation. After this, the two spectral
 #' values at each wavelength are added.
 #'
+#' @param w.length1 numeric array of wavelength (nm)
 #' @param w.length2 numeric array of wavelength (nm)
 #' @param s.irrad1 a numeric array of spectral values
 #' @param s.irrad2 a numeric array of spectral values

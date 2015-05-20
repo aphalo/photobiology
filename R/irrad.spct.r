@@ -174,10 +174,11 @@ irrad.source_spct <-
         mult <- calc_multipliers(w.length=spct_x$w.length, w.band=wb, unit.out=unit.out,
                                  unit.in=unit.in, use.cached.mult=use.cached.mult)
         # calculate weighted spectral irradiance
+        # the ifelse is needed to overrride NAs in spectral data for regions where mult == 0
         if (unit.out == "energy") {
-          irr <- with(spct_x, integrate_irradiance(w.length, s.e.irrad * mult))
+          irr <- with(spct_x, integrate_irradiance(w.length, ifelse(mult == 0, 0, s.e.irrad * mult)))
         } else {
-          irr <- with(spct_x, integrate_irradiance(w.length, s.q.irrad * mult))
+          irr <- with(spct_x, integrate_irradiance(w.length, ifelse(mult == 0, 0, s.q.irrad * mult)))
         }
         irrad[i] <- irr
       }
