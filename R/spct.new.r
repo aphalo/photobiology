@@ -14,7 +14,8 @@
 #' @param s.q.irrad numeric A vector with spectral photon irradiance in [mol s-1
 #'   m-2 nm-1] or [mol d-1 m-2 nm-1].
 #' @param time.unit character string indicating the time unit used for spectral
-#'   irradiance or exposure ("second" or "day").
+#'   irradiance or exposure ("second" , "day" or "exposure") or an object of
+#'   class duration as defined in package lubridate.
 #' @param bswf.used character A string indicating the BSWF used, if any, for
 #'   spectral effective irradiance or exposure ("none" or the name of the BSWF).
 #' @param comment character A string to be added as a comment attribute to the
@@ -36,9 +37,10 @@
 #'   supplied to only one of these formal paprameters in a given call to the
 #'   fucntion.
 #'
-source_spct <- function(w.length, s.e.irrad=NULL, s.q.irrad=NULL,
-                        time.unit=c("second", "day"), bswf.used = c("none", "unknown"),
-                        comment=NULL, strict.range=TRUE) {
+source_spct <- function(w.length, s.e.irrad = NULL, s.q.irrad = NULL,
+                        time.unit = c("second", "day", "exposure"),
+                        bswf.used = c("none", "unknown"),
+                        comment = NULL, strict.range = TRUE) {
   if (is.null(s.q.irrad) && (is.numeric(s.e.irrad))) {
     z <- data.table(w.length, s.e.irrad)
   } else if (is.null(s.e.irrad) && (is.numeric(s.q.irrad))) {
@@ -51,7 +53,8 @@ source_spct <- function(w.length, s.e.irrad=NULL, s.q.irrad=NULL,
     setattr(z, "comment", comment)
   }
   setSourceSpct(z,
-                time.unit = time.unit, bswf.used = bswf.used,
+                time.unit = time.unit,
+                bswf.used = bswf.used,
                 strict.range = strict.range)
   return(z)
 }
@@ -80,7 +83,9 @@ cps_spct <- function(w.length, cps=NULL, comment=NULL) {
 #'
 #' @export
 #'
-response_spct <- function(w.length, s.e.response=NULL, s.q.response=NULL, time.unit=c("second", "day"), comment=NULL) {
+response_spct <- function(w.length, s.e.response = NULL, s.q.response = NULL,
+                          time.unit = c("second", "day", "exposure"),
+                          comment = NULL) {
   if (is.null(s.q.response) && (is.numeric(s.e.response))) {
     z <- data.table(w.length, s.e.response)
   } else if (is.null(s.e.response) && (is.numeric(s.q.response))) {
