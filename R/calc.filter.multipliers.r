@@ -1,21 +1,22 @@
 #' Calculate multipliers by interpolation from filter data
 #'
-#' @description
-#' Calculate multipliers by interpolation from filter data, from user-supplied spectral transmittance
-#' data or by name for data included in the package
-#'
-#' @usage calc_filter_multipliers(w.length.out, filter=clear.spct,
-#'                                w.length.in=NULL, transmittance.in=NULL,
-#'                                pc.in=TRUE, pc.out=FALSE, div=1.0)
+#' @description Calculate multipliers by interpolation from filter data, from
+#' user-supplied spectral transmittance data or by name for data included in the
+#' package
 #'
 #' @param w.length.out numeric vector of wavelengths (nm) for output
-#' @param filter a character string giving the name of a filter data set, or an object of class "filter.spct"
-#'   default is 'clear.spct' a clear filter (T = 1.0)
+#' @param filter a character string giving the name of a filter data set, or an
+#'   object of class "filter_spct" default is 'clear.spct' a clear filter (T =
+#'   1.0)
 #' @param w.length.in numeric vector of wavelengths (nm) for input
-#' @param transmittance.in numeric vector of spectral transmittance value (as percent)
-#' @param pc.in logical value indicating whether transmittances are expressed as percentages or fractions (default is to receive a percent)
-#' @param pc.out logical value indicating whether transmittances are expressed as percentages or fractions (default is to return a fraction)
-#' @param div numeric value default is 100.0 if pc=TRUE, but if pc=FALSE, default is 1.0, but can be changed in the call
+#' @param transmittance.in numeric vector of spectral transmittance value (as
+#'   percent)
+#' @param pc.in logical value indicating whether transmittances are expressed as
+#'   percentages or fractions (default is to receive a percent)
+#' @param pc.out logical value indicating whether transmittances are expressed
+#'   as percentages or fractions (default is to return a fraction)
+#' @param div numeric value default is 100.0 if pc=TRUE, but if pc=FALSE,
+#'   default is 1.0, but can be changed in the call
 #'
 #' @return a numeric vector of fractional transmittances
 #' @keywords manip misc
@@ -23,7 +24,8 @@
 #' @examples
 #' require(photobiologyFilters)
 #' data(polythene.new.spct)
-#' with(polythene.new.spct, calc_filter_multipliers(400:500, w.length.in=w.length, transmittance.in=Tfr))
+#' with(polythene.new.spct,
+#'      calc_filter_multipliers(400:500, w.length.in=w.length, transmittance.in=Tfr))
 #' calc_filter_multipliers(400:500, "polythene.new")
 #' calc_filter_multipliers(400:500, polythene.new.spct)
 #' calc_filter_multipliers(400:500, "polythene.new", pc.out=TRUE)
@@ -49,8 +51,8 @@ calc_filter_multipliers <- function(w.length.out,
     } else {
       filter.object <- filter
     }
-    if (!is(filter.object, "filter.spct")) {
-      warning('Object is not of class "filter.spct".')
+    if (!is(filter.object, "filter_spct")) {
+      warning('Object is not of class "filter_spct".')
       return(NA)
     }
     if (pc.out) div <- div / 100.0 # we use fractional Tfr from filter object

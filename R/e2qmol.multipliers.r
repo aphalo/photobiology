@@ -1,17 +1,18 @@
-#' Gives multipliers as a function of wavelength, for converting from energy to photon 
-#' (quantum) molar units.
+#' Calculate energy to quantum (mol) multipliers
 #'
-#' @usage e2qmol_multipliers(w.length)
-#' 
-#' @param w.length numeric array of wavelengths (nm)
-#' 
-#' @return a numeric array of multipliers
+#' Gives multipliers as a function of wavelength, for converting from energy to
+#' photon (quantum) molar units.
+#'
+#' @param w.length numeric Vector of wavelengths (nm)
+#'
+#' @return A numeric array of multipliers
 #' @keywords manip misc
 #' @export
 #' @examples
-#' data(sun.data)
 #' with(sun.data, e2qmol_multipliers(w.length))
-#' 
+#'
+#' @family quantity conversion functions
+#'
 e2qmol_multipliers <- function(w.length){
   return(e2quantum_multipliers(w.length, molar=TRUE))
 }

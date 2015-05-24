@@ -14,3 +14,4 @@ src/RcppExports.cpp
 *.log
 *.so
 
+vignettes/userguide.toc
