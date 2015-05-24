@@ -1,9 +1,0 @@
-Chittka 	Chittka L. 1996 J. Theor. Biol. 181:179-196
-Norway 	Oppdal
-1254 	radially symmetric, calyx upper side
-http://reflectance.co.uk//simplesearch.php?search=Taraxacum%20officinale
-downloade 10/08/2014
-
-If you use data from the Floral Reflectance Database in a published work, you agree to cite the database as your source. At present, this version of the database should be cited as follows:
-
-Arnold SEJ, Faruq S, Savolainen V, McOwan PW, Chittka L, 2010 FReD: The Floral Reflectance Database — A Web Portal for Analyses of Flower Colour. PLoS ONE 5(12): e14287. doi:10.1371/journal.pone.0014287 

@@ -1,6 +1,54 @@
+#' Waveband constructor method
+#'
+#' Constructor for "waveband" objects that can be used as imput when calculating
+#' irradiances.
+#'
+#' @param x any R object on which applying the function range yields an array of
+#'   two numeric values, describimg a range of wavelengths (nm)
+#' @param weight a character string "SWF" or "BSWF", use NULL (the defalt) to
+#'   indicate no weighting used when calculating irradiance
+#' @param SWF.e.fun a function giving multipliers for a spectral weighting
+#'   function (energy) as a function of wavelength (nm)
+#' @param SWF.q.fun a function giving multipliers for a spectral weighting
+#'   function (quantum) as a function of wavelength (nm)
+#' @param SWF.norm a numeric value giving the native normalization wavelength
+#'   (nm) used by SWF.e.fun and SWF.q.fun
+#' @param norm a single numeric value indicating the wavelength at which the SWF
+#'   should be normalized to 1.0, in nm. "NULL" means no normalization.
+#' @param hinges a numeric array giving the wavelengths at which the s.irrad
+#'   should be inserted by interpolation, no interpolation is indicated by an
+#'   empty array (numeric(0)), if NULL then interpolation will take place at
+#'   both ends of the band.
+#' @param wb.name character string giving the name for the waveband defined,
+#'   default is NULL
+#' @param wb.label character string giving the label of the waveband to be used
+#'   for ploting, default is wb.name
+#'
+#' @return a list with components low, high, weight, SWF.fun, norm, hinges, name
+#' @keywords manip misc
+#' @export
+#' @exportClass waveband
+#' @examples
+#' e_irrad(sun.spct, waveband(sun.spct))
+#' q_irrad(sun.spct, waveband(c(400,700)))
+#'
+waveband <- function(x,
+                     weight=NULL, SWF.e.fun=NULL, SWF.q.fun=NULL, norm=NULL,
+                     SWF.norm=NULL, hinges=NULL, wb.name=NULL, wb.label=wb.name) {
+  if (is.generic_spct(x) && is.null(wb.name)) {
+    wb.name = "Total"
+  }
+  x.range <- range(x)
+  new_waveband(x.range[1], x.range[2], weight=weight, SWF.e.fun=SWF.e.fun, SWF.q.fun=SWF.q.fun,
+               norm=norm, SWF.norm=SWF.norm, hinges=hinges, wb.name=wb.name, wb.label=wb.label)
+}
+
 #' Build a "waveband" object that can be used as imput when calculating irradiances.
 #'
-#' @usage new_waveband(w.low, w.high, weight=NULL, SWF.e.fun=NULL, SWF.q.fun=NULL, norm=NULL, SWF.norm=NULL, hinges=NULL, wb.name=NULL, wb.label=wb.name)
+#' @usage new_waveband(w.low, w.high, weight=NULL, SWF.e.fun=NULL,
+#'                     SWF.q.fun=NULL, norm=NULL, SWF.norm=NULL,
+#'                     hinges=NULL,
+#'                     wb.name=NULL, wb.label=wb.name)
 #'
 #' @param w.low numeric value, wavelength at the short end of the band (nm)
 #' @param w.high numeric value, wavelength at the long end of the band (nm)
@@ -22,8 +70,7 @@
 #' @export
 #' @exportClass waveband
 #' @examples
-#' data(sun.data)
-#' with(sun.data, irradiance(w.length, s.e.irrad, new_waveband(400,700), "photon"))
+#' with(sun.spct, irradiance(w.length, s.e.irrad, new_waveband(400,700), "photon"))
 #'
 new_waveband <- function(w.low, w.high,
                          weight=NULL, SWF.e.fun=NULL, SWF.q.fun=NULL, norm=NULL,
@@ -54,10 +101,16 @@ new_waveband <- function(w.low, w.high,
       warning("weight != NULL, but no SWFs supplied")
       return(NA)
     }
-    if (is.null(wb.name)) wb.name <- paste("range", as.character(signif(w.low, 4)), as.character(signif(w.high, 4)), "wtd", sep=".")
+    if (is.null(wb.name)) {
+      wb.name <- paste("range", as.character(signif(w.low, 4)), as.character(signif(w.high, 4)), "wtd", sep=".")
+      wb.label <- wb.name
+    }
   } else {
     weight <- "none"
-    if (is.null(wb.name)) wb.name <- paste("range", as.character(signif(w.low, 4)), as.character(signif(w.high, 4)), sep=".")
+    if (is.null(wb.name)) {
+      wb.name <- paste("range", as.character(signif(w.low, 4)), as.character(signif(w.high, 4)), sep=".")
+      wb.label <- wb.name
+    }
   }
   w_band <- list(low = w.low, high = w.high,
                  weight = weight, SWF.e.fun = SWF.e.fun, SWF.q.fun = SWF.q.fun, SWF.norm = SWF.norm,
@@ -68,75 +121,116 @@ new_waveband <- function(w.low, w.high,
 
 #' Build a list of unweighted "waveband" objects that can be used as imput when calculating irradiances.
 #'
-#' @usage split_bands(x, short.names=TRUE, length.out=NULL)
+#' @usage split_bands(x, list.names=NULL, short.names=is.null(list.names), length.out=NULL)
 #'
 #' @param x a numeric array of wavelengths to split at (nm), or a range of wavelengths or
-#' a generic.spct or a waveband, or a list numeric vectors with ranges (numeric vectors) as elements.
+#' a generic_spct or a waveband.
+#' @param list.names character vector with names for the component wavebands in the returned
+#' list (in order of increasing wavelength)
 #' @param short.names logical indicating whether to use short or long names for wavebands
-#' @param length.out numeric giving the number of regions to split the range into (ignored if w.length is not numeric).
+#' @param length.out numeric giving the number of regions to split the range into (ignored
+#' if w.length is not numeric).
 #'
 #' @return an un-named list of wabeband objects
 #' @keywords manip misc
 #' @export
 #' @examples
 #' split_bands(c(400,500,600))
+#' split_bands(list(c(400,500),c(550,650)))
+#' split_bands(list(A=c(400,500),B=c(550,650)))
+#' split_bands(c(400,500,600), short.names=FALSE)
+#' split_bands(c(400,500,600), list.names=c("a","b"))
 #' split_bands(c(400,700), length.out=6)
 #' split_bands(400:700, length.out=3)
 #' split_bands(sun.spct, length.out=10)
+#' split_bands(waveband(c(400,700)), length.out=5)
 #'
+#' @note \code{list.names} is used to assign names to the elements of the list, while the waveband objects themselves
+#' always retain their \code{wb.label} and \code{wb.name} as generated during their creation.
 
-split_bands <- function(x, short.names=TRUE, length.out=NULL) {
-  if (is(x, "generic.spct") || is(x, "waveband")) {
-    w.length <- range(x)
-    w.length[2] <- w.length[2] + 1e-4
-  } else {
-    w.length <- x
-  }
-  # if the elements in the list or vector supplied as argument are named
-  # they are used as names for the waveband
-  wb.names <- names(w.length)
-  if (is.numeric(w.length)) {
-    unique(sort(w.length))
-    wl.len <- length(w.length)
-    if (wl.len < 2) {
-      warning("At least two wavelength values are needed.")
-      return(list())
-    } else {
-      if (!is.null(length.out)) {
-        if (length.out < 1L) {
-          return(NA)
-        } else {
-          wl.len <- length.out + 1
-          w.length <- seq(min(w.length), max(w.length), length.out=wl.len)
-         }
-      } else {
-        length.out <- wl.len - 1
-      }
-      bands.out <- list()
-      for (i in 1:(wl.len - 1)) {
-        wb.temp <- new_waveband(w.length[i], w.length[i+1],
-                     hinges=NULL, wb.name=NULL)
-        bands.out <- c(bands.out, list(wb.temp))
-      }
+split_bands <- function(x, list.names=NULL, short.names=is.null(list.names), length.out=NULL) {
+  if (!is.any_spct(x) && !is.waveband(x) && is.list(x)) {
+    x.len <- length(x)
+    names.len <- length(list.names)
+    if (names.len < x.len) {
+      list.names <- names(x)
+      names.len <- length(list.names)
     }
-  } else if (is.list(w.length)) {
+    if (names.len < x.len) {
+      list.names <- paste("wb", letters[1:x.len], sep=".")
+    }
     bands.out <- list()
-    i <- 0L
-    for (wl.range in w.length) {
-      i <- i + 1L
-      wb.temp <- list(new_waveband(min(wl.range), max(wl.range),
-                                   hinges=NULL, wb.name=NULL))
+    for (i in 1:x.len) {
+      wb.temp <- split_bands(x[[i]],
+                             list.names[i],
+                             length.out = length.out)
       bands.out <- c(bands.out, wb.temp)
     }
-  } else {
-    warning("Invalid x input.")
-    return(NA)
-  }
-  if (length(bands.out) == 1) {
-    return(bands.out[[1]])
-  } else {
-    names(bands.out) <- paste("wb", 1:length(bands.out), sep="")
     return(bands.out)
   }
-  return(bands.out)
+  if (is.generic_spct(x) || is.waveband(x)) {
+    w.length <- range(x)
+  } else if (is.numeric(x)) {
+    x <- unique(sort(x))
+    if (length(x) > 1L) {
+      w.length <- x
+    } else {
+      warning("At least two wavelength values are needed")
+      return(list())
+    }
+  }
+  wl.len <- length(w.length)
+  if (!is.null(length.out) && is.numeric(length.out)) {
+    if (length.out < 1L) {
+      warning("'length.out' if non null must be >= 1")
+      return(list())
+    } else {
+      w.length <- range(w.length)
+      wl.len <- length.out + 1
+      w.length <- seq(w.length[1], w.length[2], length.out=wl.len)
+    }
+  } else {
+    length.out <- wl.len - 1
+  }
+  use.wb.names <- is.null(list.names)
+  bands.out <- list()
+  names <- character()
+  for (i in 1:(wl.len - 1)) {
+    wb.temp <- new_waveband(w.length[i], w.length[i+1],
+                            hinges=NULL, wb.name=NULL)
+    names[i] <- ifelse(use.wb.names, labels(wb.temp)[[1]], list.names[i])
+    bands.out <- c(bands.out, list(wb.temp))
+  }
+  num.bands <- wl.len - 1
+
+  if (length(bands.out) == 1 && is.null(list.names)) {
+    return(bands.out[[1]])
+  } else {
+    if (short.names) {
+      names(bands.out) <- paste("wb", 1:length(bands.out), sep="")
+    } else {
+      if (!is.null(list.names) && length(list.names) >= num.bands)  {
+        names(bands.out) <- list.names[1:num.bands]
+      } else {
+        names(bands.out) <- names
+      }
+    }
+    return(bands.out)
+  }
+}
+
+#' Query if it is a waveband
+#'
+#' Functions to check if an object is waveband.
+#'
+#' @usage is.waveband(x)
+#'
+#' @param x any R object
+#'
+#' @return is.waveband returns TRUE if its argument is a waveband and FALSE otherwise.
+#'
+#' @export
+#'
+is.waveband <- function(x) {
+  inherits(x, "waveband")
 }

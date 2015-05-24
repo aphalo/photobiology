@@ -1,7 +1,461 @@
+TODO
+====
+
+Add test cases for chroma_spct and cps_spct
+Add operators for operations between 'duration' objects and spectra.
+Allow time.unit attribute to be a 'duration' object from package lubridate in addition
+to predefined character strings. Support value "hour" by converting spectral data
+on an hourly base to be expresed per "second".
+
+Implement peak fitting in addition to current peak search algorithm, so
+that location of peaks is more precise (Found peak positions in-between wavelength values
+in spectral data possible).
+
+photobiology 0.6.3
+==================
+
+Fixed long-standing bug in twilight calculation in function day_night().
+irrad(), e_irrad(), and q_irrad() modified so that NAs in the spectral data outside
+the range of waveband(s) do not cause the result to be an NA.
+
+Documentation and User Guide updated.
+
+photobiology 0.6.2
+==================
+
+Added new class cps_spct for uncalibrated spectral data in counts per second.
+These are not raw instrument counts, but data linerized and re-expresed per unit
+time in seconds. Maths operators and functions are supported.
+
+Added new accepted value for attribute time.unit: "exposure", meaning the
+total exposure time, in which case instead of spectral irradiances, the
+objects store spectral fluence or spectral dose.
+
+Added data for CIE standard A illuminant.
+
+Changed package data files to contain each only one R object.
+
+Updated User Guide adding summary tables for spectral objects and their
+variables and attributes.
+
+photobiology 0.6.1
+===================
+
+Added User Guide vignette with upgrade instructions.
+
+Added new functions is.old_spct() and upgrade_spectra()
+
+photobiology 0.6.0
+===================
+
+I am reading the new book "R Packages", authored by Hadley Wickham, and I have
+found several things to improve in the package, especially with naming conventions
+and documentation. I have earlier followed "common practice" or tried to
+make names consistent with data.table. As the package has not yet been
+publicly released, I am taking this last chance I have of getting the
+naming conventions improved.
+
+Major backwards-incompatible changes to function names to avoid method dispatch problems.
+All function and class names use underscores. Only S3 methods have dots, and only between
+method name and class names. Although many names have changed, they should be still
+easily recognizable to current users.
+
+Added test for non-unique wavelength values during spectral object construction,
+and added a new formal argument to check() and set...() functions to allow
+setting the maximum number of copies allowed. Current version only triggers
+a warning.
+
+Generic function Rescale() has been replaced by methods for the generic function scale()
+defined in R base, and is_rescaled() has been renamed is_scaled().
+
+IMPORTANT: because the .spct classes have been renamed, objects created with
+earlier versions of the package are not recognized. They need to be "upgraded"
+with function upgrade().
+
+Full overhaul of the documentation, using features of latest version of package roxygen2.
+Documentation for related functions is now on the same file, and most pages are cross-
+referenced.
+
+photobiology 0.5.19
+===================
+
+Added specialized subset() methods for spectral objects as subset.data.table drops attributes.
+The new methods are wrappers that copy the attributes used by this package after the subset()
+operation is done by subscripting, including comment, but still drop any attributes added
+by users.
+
+Edited check.generic.spct() to generate a warning instead of an error for spectra
+of length zero, as can be returned by subset when the 'subset' condition is FALSE for
+all rows.
+
+photobiology 0.5.18
+===================
+
+Fixed bug in rbindspct().
+
+photobiology 0.5.17-1
+=====================
+
+Updated version requirements for all dependencies.
+
+photobiology 0.5.17
+===================
+
+New options "photobiology.use.hinges" (NULL, TRUE, FALSE) with default NULL and
+"photobiology.auto.hinges.limit" (wavelength step in nm) with new default 0.5 nm.
+Default behaviour is changed both for a bug in irrad() functions where the
+limit was 1.1 nm instead of 0.7 nm and as a result of changing to a smaller
+default value. Existing and new options "photobiology.waveband.trim",
+"photobiology.use.cached.mult" are now used throughout.
+
+Bug fix: in version 0.5.? the behaviour of the product of a BSWF and a source
+spectrum was changed to return a response spectrum. This was not consistent with
+the idea that a BSWF is used for quantifying radiation rather predicting a
+biological response. The result should remain as radiation and continue to
+be expressed in energy or photon based units. This has been fixed. Starting
+from the current version, if the waveband is used with the '*' operator is
+a BSWF (tested with function is_effective()) the resulting spectrum is tagged
+as being "effective". The irrad() methods for source.spct have been updated to
+'recognize' effective spectral irradiance when supplied as input.
+
+rbindspct() modified so that if at least one of the spectra in the list is of
+effective irradiance, but not all spectra have been calculated with the same
+BSWF and normalization, a factor named BSWF is added with the BSWFs retrieved
+from the spectra used as levels. The optional factor selected through parameter
+idfactor has now its levels always reflecting the order of the spectra in the
+input list, even when using a named input list of spectra. Several rather minor
+bugs were fixed, including improved handling of comments and attributes.
+
+summary() methods for spectra have been updated to report the BSWF that have
+been used if source spectra contain effective spectral irradiances.
+
+Long-standing unsolved problem partly fixed: interpolate_spct() now in most
+cases applies smoothing to the spectrum before attempting interpolation if
+the vector of output wavelengths has length > 1, but is sparser than then
+original spectral data.
+
+A few inconsistencies in the formal parameters among similar functions were fixed
+by adding the missing parameters. Also some problems in the documentation
+for a few functions were fixed.
+
+User guide updated.
+
+photobiology 0.5.16
+===================
+
+Fixed handling of attributes in insert_spct_hinges() and added support for
+object.spct to this function. Also fixed small bugs here and there in the
+handling of attributes, to make behaviour more consistent. Added tests
+to avoid already set attributes to be overwritten by defaults when using
+set...() and as....() functions on existing .spct objects.
+
+Added warnings to default methods of generic functions to easy the diagnostic
+of problems.
+
+photobiology 0.5.15
+===================
+
+New functions normalize() and rescale() for spectra. Both functions set object
+attributes to flag the spectra that have been modified, and no longer are
+expressed in absolute units. In addition, tests were added
+to summary functions to disallow use of rescaled or normalized spectral data as
+input, with the exception of function integrate_spct().
+
+Function rbindspct() was revised to issue a warning when only some of the spectral
+objects are rescaled or normalized.
+
+Changes in the code for handling 'time.unit', 'Tfr.type' and 'Rfr.type' attributes.
+Added new functions getTimeUnit(), getTfrType() and getRfrType().
+
+New test cases were added.
+
+photobiology 0.5.14
+===================
+
+New class and methods added: object.spct, with the corresponding as.object.spct(),
+is.object.spct(), setObjetcSpct(), and check.object.spct() functions. Also
+functions reflectance() and transmittance() are implemented. New function
+absorptance() is implemented only for object.spct objects. Objects of this
+class can be used to store corresponding spectral transmittance and spectral
+reflectance values. No operators are defined for this class as they would be
+ambiguous. The class attribute needs to be changed to either filter.spct or
+reflector.spct before using operators, however, no data is lost in the process,
+or written except for the class attribute, so the class can be changed back to
+object.spct if needed.
+
+New function added: merge.generic.spct() is a wrapper on merge.data.table()
+that sets the correct class to the returned merged spectra, preserves attributes
+used with .spct objects and by default merges by w.length.
+
+photobiology 0.5.13
+===================
+
+New function smooth_spct() for spectra added. Based on the smoothing code in
+package MayaCalc and optionally behaving as a wrapper to other smoothers
+available in R. Implemented for source.spct, filter.spct, reflector.spct
+and response.spct objects. Its interface may change. Now package caTools is
+needed.
+
+Operations between .spct objects and numeric vectors, possibly of length one,
+now preserve other variables (e.g.\ ID factors) contained in the spectral objects.
+
+Fixed bug in reflectance() function.
+
+photobiology 0.5.12
+===================
+
+Bad input error reporting improved for off-range Tfr and Rfr values in check().
+Warning given by T2A() when Tfr = 0 result in A = Inf.
+Added na.rm = TRUE when min() and max() are called on spectral data.
+
+The formal arguments added to function rbindspct() in version 0.5.7 have been
+changed to more closely follow the development version 1.9.5 of package
+data.table. This will break user code that uses the previous
+syntax as added a few weeks ago to this package.
+
+Fixed bug in handling of 'quantity' arguments "contribution.pc" and "relative.pc"
+in function absorbance() which was affecting plot annotations.
+
+photobiology 0.5.11
+===================
+
+Changed code of irrad() and set___Spct() functions to be able to handle locked data.table
+objects such as .SD when using by within [ ] on spct objects. irrad() copies the spectrum
+only if needed, and the sorting key is set to "w.length" only if not already set to this
+same value.
+
+photobiology 0.5.10
+===================
+
+Added automatic testing based on package testthat.
+
+Test cases for operators and math functions.
+Test cases for constructors of spectral objects.
+
+photobiology 0.5.9
+===================
+
+Updated operators' code so that unary '-' and unary '+' now work for spectra.
+
+Rewrote the code for math functions, removing redundancy, and adding support for
+chroma.spct objects.
+
+Fixed a major bug in binary operators code for non-transitive operations, triggered
+when the first operand is numeric.
+
+Added a table to the User Guide summarizing the valid and invalid binary operations, and
+a second table listing unary operators and math functions.
+
+Edited the constructors of spct objects so that they recognize additional variable names
+for the input data, and rename them.
+
+Added warning messages informing of forbidden operations between dissimilar
+spectral objects and between spectral objects and wavebands are attempted.
+
+photobiology 0.5.8
+===================
+
+Bug in q2e.response.spct() fixed.
+
+photobiology 0.5.7
+===================
+
+rbindspct() now will add, if requested, a factor 'spct.idx' to the returned spct object,
+with a different level for each spectrum in the input list.
+rbindspct() now works as expected even if spectra of the same class contain data stored
+using different types of quantities, e.g. energy or photon based, or transmittance vs.
+absorbance.
+User Guide text was edited. Code formatting in chunks improved.
+
+photobiology 0.5.6
+===================
+
+Added function clear_photobio.cache() and renamed the cache itself to "protect"" it from accidental
+deletion by making it invisible.
+Optimized colour calculations for improved speed and debugged the changes.
+Revised User Guide.
+Fixed bug that was causing response() not to be exported.
+Fixed bug in operations between spectra and wavebands and added also a small safety margin
+to protect from rounding errors.
+A few minor bugs also fixed.
+Fixed an important bug causing error in plot(sun.spct * CIE()) (a difficult one to track).
+
+photobiology 0.5.5
+===================
+
+Changed the default for the trimming of wavebands to TRUE, and added a global option so that
+the default can be changed globally by setting the option: e.g. using
+options(photobiology.waveband.trim = FALSE)
+
+Also added waveband trimming handling to function tag().
+
+photobiology 0.5.4
+===================
+
+Fixed bug in split_bands() function. Handling of names has changed to some extent, and handling
+of list objects supplied as x argument is now done by recursion, adding some additional flexibility.
+
+The User Guide was updated to include examples of the use of split_bands().
+
+photobiology 0.5.3
+===================
+
+Added function is_tagged() to easily test if an spectrum has been tagged for plotting.
+Added function untag() to delete tag data from spectra.
+
+photobiology 0.5.2
+===================
+
+Fixed bug in operators that caused the 'time.unit' attribute not to propagate to returned values.
+Fixed bug in operations between wavebands and spectra which resulted in the returned
+spectrum being expanded to the range of the waveband even if the operand spectrum did not overlap
+this range.
+
+The option "photobiology.base.unit" has been renamed "photobiology.radiation.unit", for consistency
+with package photobiologygg and for clarity.
+
+photobiology 0.5.1
+===================
+
+Added missing response.spct() function.
+Fixed two bugs in new_waveband: 1) wb.label was not set when wb.name was auto-generated!
+2) Both hinges were on the outside of the waveband, giving trouble with wavebands sharing
+their limits.
+
+Added new function trim_waveband().
+Edited irrad(), response(), transmittance(), absorbance(), reflectance(), ratio() functions
+for spectra to use this function internally, and gaining the wb.trim parameter, which defaults
+to FALSE. Fixed small numeric errors in the creation of the waveband for the whole spectrum.
+
+photobiology 0.5.0
+===================
+
+The default data in spectral objects has changed in the present and the previous versions. This is
+to avoid, when possible, conversions when creating spectral objects. Instead, the input is
+checked in the functions accepting spectral objects as input. However, values are never stored
+as percentages, only as fractions, as this does not affect later computations, and when a percent
+is needed the result of the computation is just multiplied by 100.
+
+I added absorbance related functions, similar to the transmittance and reflectance ones: absorbance_spct()
+and absorbance(). All these functions, as well as those for irradiances and ratios, and responses
+now return values with the "radiation.unit" attribute set. In addition several edits were done to simplify the code when possible. Irradiance, response, transmittance, reflectance and absorbance functions have gained
+a new parameter 'quantity', that can take one value out of "total", "contribution" (to total as a fraction), "percent" (contribution as percent), or "average" (the total divided by the 'spread' or width of the waveband in nm). New function response().
+
+Options for operators and functions added:
+options(photobiology.base.unit = "energy")
+options(photobiology.base.unit = "photon")
+These options determine whether operations are carried using energy based or a photon based quantities.
+This affects operations involving source.spct and response.spct objects when using operators,
+and the defaults for "unit.out" for functions accepting spectral objects as arguments.
+
+options(photobiology.filter.qty = "transmittance")
+options(photobiology.filter.qty = "absorbance")
+determine whether operations are carried using transmittance or absorbance quantities
+(this affects operations involving filter.spct objects).
+
+The defaults remain the same as in earlier versions, except for irrad() which instead of having
+no default for "unit.out" now uses the one set by the option, if the option is set.
+Options can be unset with NULL.
+options(photobiology.base.unit = NULL)
+options(photobiology.filter.qty = NULL)
+
+Moved functions find_peaks(), get_peaks() and get_valleys() from photobiologygg to this package.
+
+User Guide thoroughly updated to reflect currently available functionality, including
+the options described above.
+
+Fixed bug in trim_spct() which led to wrongly copied attribute for filter.spct objects.
+
+photobiology 0.4.10
+===================
+
+The code for the operators has been rewritten almost from scratch. The code for the special
+functions has been edited. In addition to cleaner and more compact code, now the order of
+the operators does no longer affect the dispatch of the operators for spectral objects.
+There are some changes in which combinations of arguments are accepted. The checking is
+now more strict with respect to what may make sense from the point of view of the physics
+behind the calculations. Failed checks return NA.
+
+All calls to invisible(), except in the \texttt{set\_\_\_Spct} functions, have been replaced
+with return() as the lack of visible output was confusing. It is now documented in the
+User Guide how to use options() to control the length of the print output.
+
+photobiology 0.4.9
+===================
+
+Generic functions e_response() and q_response() added, and debugged.
+Changed check() for source.spct and response.spct so that it does not add "energy" or "photon" based spectral data
+on building objects, as this adds unneeded computation and complicates the logic by changing the
+data on copy operations (which is surprising and can lead to difficult-to-trace bugs.)
+This change can be NOT BACKWARDS compatible in some cases of user code, but should be fine for
+other functions defined in the photobiology packages, as they have been edited to maintain the
+same visible behaviour.
+
+Fixed a spurious warning by trim_spct() due to minute differences in wavelengths.
+
+photobiology 0.4.8
+===================
+
+Tweaked handling of w.high by new_waveband().
+Fixed bug in function waveband() which caused it not to properly create weighted wavebands.
+Improved handling of names by split_wavebands() and improved the documentation.
+
+photobiology 0.4.7
+===================
+
+Added function is_waveband().
+
+photobiology 0.4.6
+===================
+
+Fixed various small bugs. Removed rbindlist(), for spectra rbindspct() should be used instead.
+
+photobiology 0.4.5
+===================
+
+Added waveband() constructor function.
+Fixed bug in reflectance_spct() and reflectance() functions.
+Fixed bug in class_spct().
+Revised the user guide to reflect all changes to the code done in the last few versions.
+
+photobiology 0.4.4
+===================
+
+Added the remaining as.xxxx.spct() functions.
+Added object creation functions source.spct(), filter.spct() and reflector.spct().
+Cleaned code to avoid some warnings.
+
+photobiology 0.4.3
+===================
+
+Fixed bug in functions transmittance_spct() and reflectance_spct(), and added aliases transmittance() and reflectance().
+
+photobiology 0.4.2
+===================
+
+New function rmDerivedSpct() now used internally for setting xxx.spct classes consistently by removing derived class attributes when class is set to parent class.
+
+New as.generic.spct() and as.private.spct() functions for spct objects to easy use of operators.
+
+Bug in default arguments to rbindspct() fixed.
+
+photobiology 0.4.01
+===================
+
+Fixed a troublesome bug caused by a couple of missing exports. MayaCalc was broken because of this.
+
+Moved functions D2_spectrum() and FEL_spectrum() to this package from photobiologyLamps
+
+photobiology 0.4.00
+===================
+
+Started new development branch.
+Added is.xxx.spct() functions for all classes defined and is_any_spct() and class_spct() functions to query class of spectral objects.
+
 photobiology 0.3.16
 ===================
 
-Editted wb2xx functions. Added other required variables and set their values to zero, so that the generic.spct objects returned by the waveband to spectra functions can be safely converted to any of the specialized spct spectral objects. This makes then labelling of all types of spectral plots equaly easy.
+Edited wb2xx functions. Added other required variables and set their values to zero, so that the generic.spct objects returned by the waveband to spectra functions can be safely converted to any of the specialized spct spectral objects. This makes then labelling of all types of spectral plots equally easy.
 
 photobiology 0.3.15
 ===================
@@ -11,7 +465,7 @@ Never released, changes reversed.
 photobiology 0.3.14
 ===================
 
-The required component of response.spct objects was renamed from 'response' to 's.e.response'. 'response' is also accepted and renamed into 's.e.response'. If 's.q.response' is present it is accepted and amintained. New methods e2q() and q2e() for response.spct class.
+The required component of response.spct objects was renamed from 'response' to 's.e.response'. 'response' is also accepted and renamed into 's.e.response'. If 's.q.response' is present it is accepted and maintained. New methods e2q() and q2e() for response.spct class.
 
 photobiology 0.3.13
 ===================
@@ -27,20 +481,20 @@ Changed the name of two of the variables added by wb2rect_spct() to more meaning
 photobiology 0.3.11
 ===================
 
-Added setGenericSpct() as a synonim for setGenSpct() to keep naming consistent. Added functions wb2tagged_spct() and wb2rect_spct() for creating a tagged generic.spct objects suitable from a list of wavebands.
+Added setGenericSpct() as a synonym for setGenSpct() to keep naming consistent. Added functions wb2tagged_spct() and wb2rect_spct() for creating a tagged generic.spct objects suitable from a list of wavebands.
 
 photobiology 0.3.10
 ===================
 
 Updated vignette to use new package photobiologyWavebands.
-Added a generic function tag() and methods for generic.spct and source.spct objects. tag() can be used to 'tag' the rows based on a list of wavebands, or simply with rgb color equivalents. A color() method for source.spct() was added, which returns the overall colour of the spectrum as a whole. Fixed a 'bug' in tag() that increased execution speed a lot. Added CIE2008 human luminous efficency function data. Added functions irrad(), q_irrad() and e_irrad() as synomims for irrad_spct(), q_irrad_spct() and e_irrad_spct(). Added functions irrad(), q_ratio(), e_ratio(), eq_ratio(), and qe_ratio() as synomims for q_ratio_spct(), e_ratio_spct(), eq_ratio_spct() and qe_ratio_spct(). eq_ratio_spct() is also a new function. Added function split_bands() for creating lists of unweighted wavebands. Several bug fixes, and new function put_hinges(). Added function rbindspct() and redefined rbindlist() (hiding data.table::rbindlist() by exporting photobiology::rbindlist() instead.) Also some changes to color() with new methods for numeric and lists.
+Added a generic function tag() and methods for generic.spct and source.spct objects. tag() can be used to 'tag' the rows based on a list of wavebands, or simply with rgb color equivalents. A color() method for source.spct() was added, which returns the overall colour of the spectrum as a whole. Fixed a 'bug' in tag() that increased execution speed a lot. Added CIE2008 human luminous efficiency function data. Added functions irrad(), q_irrad() and e_irrad() as synonyms for irrad_spct(), q_irrad_spct() and e_irrad_spct(). Added functions irrad(), q_ratio(), e_ratio(), eq_ratio(), and qe_ratio() as synonyms for q_ratio_spct(), e_ratio_spct(), eq_ratio_spct() and qe_ratio_spct(). eq_ratio_spct() is also a new function. Added function split_bands() for creating lists of unweighted wavebands. Several bug fixes, and new function put_hinges(). Added function rbindspct() and redefined rbindlist() (hiding data.table::rbindlist() by exporting photobiology::rbindlist() instead.) Also some changes to color() with new methods for numeric and lists.
 
 photobiology 0.3.9
 ===================
 
 Added summary() and corresponding print() methods for spectral objects, and stepsize() default and "generic.spct" methods. Changed SetSourceSpct() to accept a "time.unit" argument, which is used to set an attribute in "source.spct" objects (defaults to "second" making it transparently backwards compatible).
 
-Performance tests show that with default setttings the irradiance functions for "source.spct" objects execute significantly faster than the vector based ones. Operators for spectra are at the moment relatively very slow.
+Performance tests show that with default settings the irradiance functions for "source.spct" objects execute significantly faster than the vector based ones. Operators for spectra are at the moment relatively very slow.
 
 photobiology 0.3.8
 ===================
@@ -118,9 +572,9 @@ this at a later stage.
 
 The package now depends on data.table which is now imported. As MayaCalc already returns data.table objects, hopefully this will help optimize performance and memory use. Users should be aware that data.tables are copied by reference, and a true copy is needed, function copy should be used.
 
-I am making the code more object (S3) oriented. Three new classes are exported "filter.spct", "source.spct", and "generic.spct", and three new functions were added to set the class of objects to these classes. If the object is not already a data.table, it is setDT. This allows me to create a more user-friendly interface by overlaoding operators. Now the four basic operations work on spectra, and one can also use these same operations and ^between a spectrum a numerical vector of legnth one or longer. Many math functions and some summary functions have specializad versions for spectra. This is my attempt to make calcualtions intuitive, but do not expect them to be fast.
+I am making the code more object (S3) oriented. Three new classes are exported "filter.spct", "source.spct", and "generic.spct", and three new functions were added to set the class of objects to these classes. If the object is not already a data.table, it is setDT. This allows me to create a more user-friendly interface by overloading operators. Now the four basic operations work on spectra, and one can also use these same operations and ^between a spectrum a numerical vector of length one or longer. Many maths functions and some summary functions have specialized versions for spectra. This is my attempt to make calculations intuitive, but do not expect them to be fast.
 
-Added generic functions A2T and T2A for converting absorbance to transmittance and back. The generic function takes a numerical agument, and there are special versions for spectra. When the argument is a "filter.spc" object they return a copy of the original object with the calculated quantity added. If the requested output already exists, it is NOT recalculated, just a copy of the argument is returned, if the input data is missing, the corresponding output is set to NA.
+Added generic functions A2T and T2A for converting absorbance to transmittance and back. The generic function takes a numerical argument, and there are special versions for spectra. When the argument is a "filter.spc" object they return a copy of the original object with the calculated quantity added. If the requested output already exists, it is NOT recalculated, just a copy of the argument is returned, if the input data is missing, the corresponding output is set to NA.
 
 Added a label field to waveband object to store an optional label for plotting, which by default is set equal to the name of the waveband. labels.waveband was changed to return in field label this label instead of the name, and the name is returned in the field name. Also added a new function normalization.waveband that returns the normalization wavelength.
 
@@ -160,7 +614,7 @@ photobiology 0.2.20
 ===================
 
 New function w_length_range2rgb(), which takes a range of wavelengths, and returns the equivalent RGB colour assuming equal spectral (energy) irradiance at all wave lengths within the range.
-Modified the calculation of color for wavebands, uisng this new function.
+Modified the calculation of color for wavebands, using this new function.
 
 photobiology 0.2.19
 ===================
@@ -168,7 +622,7 @@ photobiology 0.2.19
 Added waveband versions of generic functions, min(), max(), range() and labels().
 Updated trim_tails() so that it can also expand a spectrum.
 New functions:
-w_length2rgb() to calculate RGB colour definitions for monochormatic light.
+w_length2rgb() to calculate RGB colour definitions for monochromatic light.
 s.e.irrad2rgb() to calculate RGB colour definition from spectral irradiance data or reflectance data.
 Data on x, y, z coordinates for CIE chromaticity coordinates and colour matching functions added.
 

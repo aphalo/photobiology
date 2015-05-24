@@ -3,63 +3,108 @@
 
 #' Calculate irradiance from spectral irradiance.
 #'
-#' This function returns the irradiance for a given
-#' waveband of a light source spectrum.
+#' This function returns the irradiance for a given waveband of a light source
+#' spectrum.
 #'
-#' @usage irrad(spct, w.band=NULL, unit.out=NULL,
-#' use.cached.mult=FALSE, use.hinges=NULL)
+#' @param spct an R object
+#' @param w.band waveband or list of waveband objects The waveband(s) determine
+#'   the region(s) of the spectrum that are summarized.
+#' @param unit.out character string with allowed values "energy", and "photon",
+#'   or its alias "quantum"
+#' @param quantity character string
+#' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries
+#'   are trimmed, if FALSE, they are discarded
+#' @param use.cached.mult logical indicating whether multiplier values should be
+#'   cached between calls
+#' @param use.hinges logical indicating whether to use hinges to reduce
+#'   interpolation errors
+#' @param allow.scaled logical indicating whether scaled or normalized spectra
+#'   as argument to spct are flagged as an error
 #'
-#' @usage irrad_spct(spct, w.band=NULL, unit.out=NULL,
-#' use.cached.mult=FALSE, use.hinges=NULL)
+#' @note Formal parameter \code{allow.scaled} is used internally for calculation
+#'   of ratios, as rescaling and normalization do not invalidate the calculation
+#'   of ratios.
 #'
-#' @param spct an object of class "source.spct"
-#' @param w.band list of waveband definitions created with new_waveband()
-#' @param unit.out character string with allowed values "energy", and "photon", or its alias "quantum"
-#' @param use.cached.mult logical indicating whether multiplier values should be cached between calls
-#' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
-#'
-#' @return One numeric value for each waveband with no change in scale factor, with name attribute set to
-#' the name of each waveband unless a named list is supplied in which case the names of the list elements are
-#' used. The time.unit attribute is copied from the spectrum object to the output. Units are as follows:
-#' If time.unit is second, [W m-2 nm-1] -> [mol s-1 m-2] or [W m-2 nm-1] -> [W m-2]
-#' If time.unit is day, [J d-1 m-2 nm-1] -> [mol d-1 m-2] or [J d-1 m-2 nm-1] -> [J m-2]
+#' @return One numeric value for each waveband with no change in scale factor,
+#'   with name attribute set to the name of each waveband unless a named list is
+#'   supplied in which case the names of the list elements are used. The
+#'   time.unit attribute is copied from the spectrum object to the output. Units
+#'   are as follows: If time.unit is second, [W m-2 nm-1] -> [mol s-1 m-2] or [W
+#'   m-2 nm-1] -> [W m-2] If time.unit is day, [J d-1 m-2 nm-1] -> [mol d-1 m-2]
+#'   or [J d-1 m-2 nm-1] -> [J m-2]
 #'
 #' @keywords manip misc
-#' @export irrad irrad_spct
+#' @export
 #' @examples
-#' data(sun.spct)
-#' irrad_spct(sun.spct, new_waveband(400,700), "photon")
-#' irrad_spct(sun.spct, new_waveband(400,700), "energy")
+#' irrad(sun.spct, new_waveband(400,700), "photon")
+#' irrad(sun.spct, new_waveband(400,700), "energy")
 #'
-#' @note The last two parameters control speed optimizations. The defaults should be suitable
-#' in mosts cases. If you will use repeatedly
-#' the same SWFs on many spectra measured at exactly the same wavelengths you may obtain some speed up
-#' by setting \code{use.cached.mult=TRUE}. However, be aware that you are responsible for ensuring
-#' that the wavelengths are the same in each call, as the only test done is for the length of the
-#' \code{w.length} vector.
+#' @note The last two parameters control speed optimizations. The defaults
+#'   should be suitable in mosts cases. If you will use repeatedly the same SWFs
+#'   on many spectra measured at exactly the same wavelengths you may obtain
+#'   some speed up by setting \code{use.cached.mult=TRUE}. However, be aware
+#'   that you are responsible for ensuring that the wavelengths are the same in
+#'   each call, as the only test done is for the length of the \code{w.length}
+#'   vector.
 #'
-#' @aliases irrad irrad_spct
+#' @aliases irrad
+#'
+#' @family irradiance functions
+#'
+irrad <- function(spct, w.band, unit.out, quantity, wb.trim,
+                  use.cached.mult, use.hinges, allow.scaled) UseMethod("irrad")
 
-irrad <-
-  function(spct, w.band=NULL, unit.out=NULL,
-           use.cached.mult=FALSE, use.hinges=NULL){
-    # what output? seems safer to not have a default here
+#' @describeIn irrad Default for generic function
+#'
+#' @export
+#'
+irrad.default <- function(spct, w.band, unit.out, quantity, wb.trim,
+                          use.cached.mult, use.hinges, allow.scaled) {
+  warning("'irrad' is not defined for objects of class ", class(spct)[1])
+  return(NA)
+}
+
+#' @describeIn irrad  Calculates irradiance from a \code{source_spct}
+#'   object.
+#'
+#' @method irrad source_spct
+#' @export
+#'
+irrad.source_spct <-
+  function(spct, w.band=NULL,
+           unit.out=getOption("photobiology.radiation.unit", default="energy"),
+           quantity="total",
+           wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
+           use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
+           use.hinges=getOption("photobiology.use.hinges", default=NULL),
+           allow.scaled = FALSE){
+    # we have a default, but we check for invalid arguments
+    if (!allow.scaled && (is_normalized(spct) || is_scaled(spct))) {
+      warning("The espectral data has been normalized or scaled, making impossible to calculate irradiance")
+      return(NA)
+    }
+    if (identical(attr(spct, ".data.table.locked"), TRUE)) {
+      spct_x <- copy(spct)
+    } else {
+      spct_x <- spct
+    }
     if (is.null(unit.out) || is.na(unit.out)){
-      warning("'unit.out' has no default value")
+      warning("'unit.out' set to an invalid value")
       return(NA)
     }
     if (unit.out == "quantum") {
       unit.out <- "photon"
     }
     if (is.null(w.band)) {
-      w.band <- new_waveband(min(spct), max(spct) + 1e-4)
+      w.band <- waveband(spct_x)
     }
-    if (is(w.band, "waveband")) {
+    if (is.waveband(w.band)) {
       # if the argument is a single w.band, we enclose it in a list
       # so that the for loop works as expected.This is a bit of a
       # cludge but lets us avoid treating it as a special case
       w.band <- list(w.band)
     }
+    w.band <- trim_waveband(w.band=w.band, range=spct_x, trim=wb.trim)
     # we check if the list elements are named, if not we set a flag
     # and an empty vector that will be later filled in with data from
     # the waveband definitions.
@@ -77,10 +122,7 @@ irrad <-
     # spectral resolution data, and speed up the calculations
     # a lot in such cases
     if (is.null(use.hinges)) {
-      length.wl <- length(spct$w.length)
-      use.hinges <- (spct$w.length[length.wl] - spct$w.length[1]) / length.wl > 1.1
-      # we use 1.1 nm as performance degradation by using hinges is very significant
-      # in the current version.
+      use.hinges <- stepsize(spct_x)[2] > getOption("photobiology.auto.hinges.limit", default = 0.5) # nm
     }
     # we collect all hinges and insert them in one go
     # this may alter a little the returned values
@@ -93,18 +135,18 @@ irrad <-
         }
       }
       if (!is.null(all.hinges)) {
-        spct <- insert_spct_hinges(spct, all.hinges)
+        spct_x <- insert_spct_hinges(spct_x, all.hinges)
       }
     }
 
-    # "source.spct" objects are not guaranteed to contain spectral irradiance
+    # "source_spct" objects are not guaranteed to contain spectral irradiance
     # expressed in the needed type of scale, if the needed one is missing
     # we add the missing it.
     # As spectra are passed by reference the changes propagate to the argument
     if (unit.out == "energy") {
-      q2e(spct, byref=TRUE)
+      q2e(spct_x, byref=TRUE)
     } else if (unit.out == "photon") {
-      e2q(spct, byref=TRUE)
+      e2q(spct_x, byref=TRUE)
     } else {
       stop("Unrecognized value for unit.out")
     }
@@ -114,131 +156,217 @@ irrad <-
     # possibly weighted depending on the waveband definition
     irrad <- numeric(wb.number)
     i <- 0L
+    is.effective.spectrum <- is_effective(spct)
     for (wb in w.band) {
       i <- i + 1L
       # get names from wb if needed
       if (wb.name[i] == "") {
         wb.name[i] <- wb$name
       }
-      # calculate the multipliers
-      mult <- calc_multipliers(w.length=spct$w.length, w.band=wb, unit.out=unit.out,
-                               unit.in=unit.in, use.cached.mult=use.cached.mult)
-      # calculate weighted spectral irradiance
-      if (unit.out == "energy") {
-        irr <- with(spct, integrate_irradiance(w.length, s.e.irrad * mult))
+      if (is.effective.spectrum && is_effective(wb)) {
+        warning("Effective spectral irradiance is not compatible with a BSWF: ", wb.name[i])
+        irrad[i] <- NA
       } else {
-        irr <- with(spct, integrate_irradiance(w.length, s.q.irrad * mult))
+        if (is.effective.spectrum) {
+          wb.name[i] <- paste(getBSWFUsed(spct), "*", wb.name[i])
+        }
+        # calculate the multipliers
+        mult <- calc_multipliers(w.length=spct_x$w.length, w.band=wb, unit.out=unit.out,
+                                 unit.in=unit.in, use.cached.mult=use.cached.mult)
+        # calculate weighted spectral irradiance
+        # the ifelse is needed to overrride NAs in spectral data for regions where mult == 0
+        if (unit.out == "energy") {
+          irr <- with(spct_x, integrate_irradiance(w.length, ifelse(mult == 0, 0, s.e.irrad * mult)))
+        } else {
+          irr <- with(spct_x, integrate_irradiance(w.length, ifelse(mult == 0, 0, s.q.irrad * mult)))
+        }
+        irrad[i] <- irr
       }
-      irrad[i] <- irr
     }
-
-    names(irrad) <- wb.name
-    attr(irrad, "time.unit") <- attr(spct, "time.unit", exact=TRUE)
+    if (quantity %in% c("contribution", "contribution.pc")) {
+      if (any(sapply(w.band, is_effective))) {
+        warning("'quantity '", quantity, "' not supported when using BSWFs, returning 'total' instead")
+        quantity <- "total"
+      } else {
+        total <- irrad_spct(spct_x, w.band=NULL, unit.out=unit.out,
+                            quantity="total", use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE), use.hinges=FALSE)
+        irrad <- irrad / total
+        if (quantity == "contribution.pc") {
+          irrad <- irrad * 1e2
+        }
+      }
+    } else if (quantity %in% c("relative", "relative.pc")) {
+      if (any(sapply(w.band, is_effective))) {
+        warning("'quantity '", quantity, "' not supported when using BSWFs, returning 'total' instead")
+        quantity <- "total"
+      } else {
+        total <- sum(irrad)
+        irrad <- irrad / total
+        if (quantity == "relative.pc") {
+          irrad <- irrad * 1e2
+        }
+      }
+    } else if (quantity == "average") {
+      irrad <- irrad / sapply(w.band, spread)
+    } else if (quantity != "total") {
+      warning("'quantity '", quantity, "' is invalid, returning 'total' instead")
+      quantity <- "total"
+    }
+    if (length(irrad) == 0) {
+      irrad <- NA
+      names(irrad) <- "out of range"
+    }
+    names(irrad) <- paste(names(irrad), wb.name)
+    setattr(irrad, "time.unit", getTimeUnit(spct_x))
+    if (is_effective(spct_x)) {
+      setattr(irrad, "radiation.unit",
+              paste(unit.out, "irradiance", quantity, "effective:", getBSWFUsed(spct_x)))
+    } else {
+      setattr(irrad, "radiation.unit", paste(unit.out, "irradiance", quantity))
+    }
     return(irrad)
   }
 
-irrad_spct <- irrad
-
+#' @keywords internal
+irrad_spct <- irrad.source_spct
 
 # energy irradiance -------------------------------------------------------
 
 
 #' Calculate energy irradiance from spectral irradiance.
 #'
-#' This function returns the energy irradiance for a given
-#' waveband of a light source spectrum.
+#' This function returns the energy irradiance for a given waveband of a light
+#' source spectrum.
 #'
-#' @usage e_irrad(spct, w.band=NULL,
-#' use.cached.mult=FALSE, use.hinges=NULL)
+#' @param spct an R object
+#' @param w.band a list of \code{waveband} objects or a \code{waveband} object
+#' @param quantity character string
+#' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries
+#'   are trimmed, if FALSE, they are discarded
+#' @param use.cached.mult logical indicating whether multiplier values should be
+#'   cached between calls
+#' @param use.hinges logical indicating whether to use hinges to reduce
+#'   interpolation errors
+#' @param allow.scaled logical indicating whether scaled or normalized spectra
+#'   as argument to spct are flagged as an error
 #'
-#' @usage e_irrad_spct(spct, w.band=NULL,
-#' use.cached.mult=FALSE, use.hinges=NULL)
-#'
-#' @param spct an object of class "source.spct"
-#' @param w.band list of waveband definitions created with new_waveband()
-#' @param use.cached.mult logical indicating whether multiplier values should be cached between calls
-#' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
-#'
-#' @return a single numeric value with no change in scale factor: [W m-2 nm-1] -> [W m-2]
 #' @keywords manip misc
-#' @export e_irrad e_irrad_spct
+#'
+#' @export
+#'
 #' @examples
-#' data(sun.spct)
-#' e_irrad_spct(sun.spct, new_waveband(400,700))
+#' e_irrad(sun.spct, new_waveband(400,700))
 #'
-#' @return One numeric value for each waveband with no change in scale factor, with name attribute set to
-#' the name of each waveband unless a named list is supplied in which case the names of the list elements are
-#' used. The time.unit attribute is copied from the spectrum object to the output. Units are as follows:
-#' If time.unit is second, [W m-2 nm-1] -> [W m-2]
-#' If time.unit is day, [J d-1 m-2 nm-1] -> [J m-2]
+#' @return One numeric value for each waveband with no change in scale factor,
+#'   with name attribute set to the name of each waveband unless a named list is
+#'   supplied in which case the names of the list elements are used. The
+#'   time.unit attribute is copied from the spectrum object to the output. Units
+#'   are as follows: If time.unit is second, [W m-2 nm-1] -> [W m-2] If
+#'   time.unit is day, [J d-1 m-2 nm-1] -> [J m-2]
 #'
-#' @note The last two parameters control speed optimizations. The defaults should be suitable
-#' in mosts cases. If you will use repeatedly
-#' the same SWFs on many spectra measured at exactly the same wavelengths you may obtain some speed up
-#' by setting \code{use.cached.mult=TRUE}. However, be aware that you are responsible for ensuring
-#' that the wavelengths are the same in each call, as the only test done is for the length of the
-#' \code{w.length} vector.
+#' @note The last two parameters control speed optimizations. The defaults
+#'   should be suitable in mosts cases. If you will use repeatedly the same SWFs
+#'   on many spectra measured at exactly the same wavelengths you may obtain
+#'   some speed up by setting \code{use.cached.mult=TRUE}. However, be aware
+#'   that you are responsible for ensuring that the wavelengths are the same in
+#'   each call, as the only test done is for the length of the \code{w.length}
+#'   vector.
 #'
-#' @aliases e_irrad e_irrad_spect
+#' @family irradiance functions
+#'
+e_irrad <- function(spct, w.band, quantity, wb.trim, use.cached.mult, use.hinges, allow.scaled) UseMethod("e_irrad")
 
-e_irrad <-
-  function(spct, w.band=NULL, use.cached.mult=FALSE, use.hinges=NULL){
-    return(irrad(spct, w.band=w.band, unit.out="energy",
-                      use.cached.mult=use.cached.mult, use.hinges=use.hinges))
+#' @describeIn e_irrad Default for generic function
+#'
+#' @export
+#'
+e_irrad.default <- function(spct, w.band, quantity, wb.trim, use.cached.mult, use.hinges, allow.scaled) {
+  warning("'e_irrad' is not defined for objects of class ", class(spct)[1])
+  return(NA)
+}
+
+#' @describeIn e_irrad  Calculates energy irradiance from a \code{source_spct}
+#'   object.
+#' @export
+#'
+e_irrad.source_spct <-
+  function(spct, w.band=NULL,
+           quantity="total",
+           wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
+           use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
+           use.hinges=getOption("photobiology.use.hinges", default=NULL),
+           allow.scaled = FALSE ) {
+    irrad_spct(spct, w.band=w.band, unit.out="energy", quantity=quantity, wb.trim=wb.trim,
+               use.cached.mult=use.cached.mult, use.hinges=use.hinges, allow.scaled = allow.scaled)
   }
-
-e_irrad_spct <- e_irrad
-
 
 # photon irradiance -------------------------------------------------------
 
 
 #' Calculate photon irradiance from spectral irradiance.
 #'
-#' This function returns the photon irradiance for a given
-#' waveband of a light source spectrum.
+#' This function returns the photon irradiance (or quantum irradiance) for a
+#' given waveband of a light source spectrum.
 #'
-#' @usage q_irrad(spct, w.band=NULL,
-#' use.cached.mult=FALSE, use.hinges=NULL)
+#' @param spct an R object
+#' @param w.band a list of \code{waveband} objects or a \code{waveband} object
+#' @param quantity character string
+#' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries
+#'   are trimmed, if FALSE, they are discarded
+#' @param use.cached.mult logical indicating whether multiplier values should be
+#'   cached between calls
+#' @param use.hinges logical indicating whether to use hinges to reduce
+#'   interpolation errors
+#' @param allow.scaled logical indicating whether scaled or normalized spectra
+#'   as argument to spct are flagged as an error
 #'
-#' @usage q_irrad_spct(spct, w.band=NULL,
-#' use.cached.mult=FALSE, use.hinges=NULL)
-#'
-#' @param spct an object of class "source.spct"
-#' @param w.band list of waveband definitions created with new_waveband()
-#' @param use.cached.mult logical indicating whether multiplier values should be cached between calls
-#' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
-#'
-#' @return a single numeric value with no change in scale factor: [W m-2 nm-1] -> [mol s-1 m-2]
 #' @keywords manip misc
-#' @export q_irrad q_irrad_spct
 #'
-#' @note The three functions are at the moment identical. The "_spct" versions are deprecated
+#' @export
+#'
 #' @examples
-#' data(sun.spct)
-#' q_irrad_spct(sun.spct, new_waveband(400,700))
+#' q_irrad(sun.spct, new_waveband(400,700))
 #'
-#' @return One numeric value for each waveband with no change in scale factor, with name attribute set to
-#' the name of each waveband unless a named list is supplied in which case the names of the list elements are
-#' used. The time.unit attribute is copied from the spectrum object to the output. Units are as follows:
-#' If time.unit is second, [W m-2 nm-1] -> [mol s-1 m-2]
-#' If time.unit is day, [J d-1 m-2 nm-1] -> [mol d-1 m-2]
+#' @return One numeric value for each waveband with no change in scale factor,
+#'   with name attribute set to the name of each waveband unless a named list is
+#'   supplied in which case the names of the list elements are used. The
+#'   time.unit attribute is copied from the spectrum object to the output. Units
+#'   are as follows: If time.unit is second, [W m-2 nm-1] -> [mol s-1 m-2] If
+#'   time.unit is day, [J d-1 m-2 nm-1] -> [mol d-1 m-2]
 #'
-#' @note The last two parameters control speed optimizations. The defaults should be suitable
-#' in mosts cases. If you will use repeatedly
-#' the same SWFs on many spectra measured at exactly the same wavelengths you may obtain some speed up
-#' by setting \code{use.cached.mult=TRUE}. However, be aware that you are responsible for ensuring
-#' that the wavelengths are the same in each call, as the only test done is for the length of the
-#' \code{w.length} vector.
+#' @note The last two parameters control speed optimizations. The defaults
+#'   should be suitable in mosts cases. If you will use repeatedly the same SWFs
+#'   on many spectra measured at exactly the same wavelengths you may obtain
+#'   some speed up by setting \code{use.cached.mult=TRUE}. However, be aware
+#'   that you are responsible for ensuring that the wavelengths are the same in
+#'   each call, as the only test done is for the length of the \code{w.length}
+#'   vector.
 #'
-#' @name q_irrad
-#' @aliases q_irrad q_irrad_spct
+#' @export
+#' @family irradiance functions
+q_irrad <- function(spct, w.band, quantity, wb.trim, use.cached.mult, use.hinges, allow.scaled) UseMethod("q_irrad")
 
-q_irrad <-
-  function(spct, w.band=NULL, use.cached.mult=FALSE, use.hinges=NULL){
-    return(irrad(spct, w.band=w.band, unit.out="photon",
-                      use.cached.mult=use.cached.mult, use.hinges=use.hinges))
+#' @describeIn q_irrad Default for generic function
+#'
+#' @export
+#'
+q_irrad.default <- function(spct, w.band, quantity, wb.trim, use.cached.mult, use.hinges, allow.scaled) {
+  warning("'q_irrad' is not defined for objects of class ", class(spct)[1])
+  return(NA)
+}
+
+#' @describeIn q_irrad  Calculates photon irradiance from a \code{source_spct}
+#'   object.
+#'
+#' @export
+#'
+q_irrad.source_spct <-
+  function(spct, w.band=NULL,
+           quantity="total",
+           wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
+           use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
+           use.hinges=getOption("photobiology.use.hinges", default=NULL),
+           allow.scaled = FALSE ) {
+    irrad_spct(spct, w.band=w.band, unit.out="photon", quantity=quantity, wb.trim=wb.trim,
+                      use.cached.mult=use.cached.mult, use.hinges=use.hinges, allow.scaled = allow.scaled)
   }
-
-q_irrad_spct <- q_irrad
-

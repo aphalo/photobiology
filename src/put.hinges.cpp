@@ -24,10 +24,7 @@ using namespace std;
 //' @name put_hinges
 //' @keywords manip misc
 //' @export
-//' @examples
-//' with(sun.data, insert_hinges(w.length, s.e.irrad, c(399.99,400.00,699.99,700.00)))
-//' with(sun.data, insert_hinges(w.length, s.e.irrad, c(199.99,200.00,399.50,399.99,400.00,699.99,700.00,799.99,1000.00)))
-//
+//'
 // I have tried to optimize this function as much as possible.
 // It assumes that hinges are sorted in increasing order.
 // It uses binary search to find the insertion point, and also does this search in the w_length

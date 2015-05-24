@@ -2,14 +2,15 @@
 #'
 #' This function returns the solar angles for a given time and location.
 #'
-#' @usage sun_angles(t = now(), lon = 0, lat = 0, use_refraction = FALSE)
+#' @param t POSIXct Time, any valid time zone (TZ) is allowed, default is
+#'   current time
+#' @param lon numeric Vector of longitudes (degrees)
+#' @param lat numeric Vector of latitudes (degrees)
+#' @param use_refraction logical Flag indicating whether to correct for
+#'   difraction in the atmosphere
 #'
-#' @param t array of POSIXct times, any valid TZ is allowed, default is current time
-#' @param lon numeric array of longitudes (degrees)
-#' @param lat numeric array of latitudes (degrees)
-#' @param use_refraction logical indicating whether to correct for difraction in the atmosphere
-#'
-#' @return a list with components time in same TZ as input, azimuth, elevation, diameter, and distance.
+#' @return A list with components time in same TZ as input, azimuth, elevation,
+#'   diameter, and distance.
 #'
 #' @keywords manip misc
 #' @export
@@ -180,7 +181,7 @@ day_night <- function(t = today(), lon = 0, lat = 0, twilight = "none", tz=NULL)
     t_temp <- as.POSIXct(x, origin=origin, tz="UTC")
     return(sun_angles(t_temp,
                     lon=lon,
-                    lat=lat)$elevation +
+                    lat=lat)$elevation -
              twilight_angle)
   }
   noon <- try(

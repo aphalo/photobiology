@@ -1,20 +1,22 @@
 #' Sanity check of a spectrum.
 #'
-#' This function checks a radiation spectrum for compliance with assumptions used in calculations.
+#' This function checks a spectral radiation data in \code{numeric} vectors for
+#' compliance with assumptions used in calculations.
 #'
-#' @usage check_spectrum(w.length, s.irrad)
+#' @param w.length numeric Vector of wavelengths (nm)
+#' @param s.irrad numeric Corresponding vector of spectral (energy) irradiances
+#'   (W m-2 nm-1)
 #'
-#' @param w.length numeric array of wavelength (nm)
-#' @param s.irrad numeric array of spectral (energy) irradiances (W m-2 nm-1)
-#'
-#' @return a single logical value indicating whether test was passed or not
+#' @return A single \code{logical} value indicating whether test was passed or
+#'   not
 #' @export
 #'
 #' @keywords manip misc
 #'
 #' @examples
-#' data(sun.data)
 #' with(sun.data, check_spectrum(w.length, s.e.irrad))
+#'
+#' @family data validity check functions
 #'
 check_spectrum <- function(w.length, s.irrad) {
   pass <- TRUE
@@ -32,8 +34,8 @@ check_spectrum <- function(w.length, s.irrad) {
     pass <- FALSE
   }
   # warn if w.length values are not reasonable
-  if (min(w.length < 200.0) || max(w.length > 6000.0)){
-    warning("Warning: wavelength values should be in nm\n data contains values < 200 nm and/or > 6000 nm")
+  if (min(w.length < 100.0) || max(w.length > 6000.0)){
+    warning("Warning: wavelength values should be in nm\n data contains values < 100 nm and/or > 6000 nm")
   }
   # test average wavelength delta
   w.length.resolution <- (max(w.length) - min(w.length))/ length(w.length)
@@ -62,6 +64,8 @@ check_spectrum <- function(w.length, s.irrad) {
 #' data(sun.data)
 #' with(sun.data, photobiology:::check_w.length(w.length))
 #'
+#' @family data validity check functions
+#'
 check_w.length <- function(w.length) {
   pass <- TRUE
   if (is.unsorted(w.length, strictly=TRUE)) {
@@ -69,8 +73,8 @@ check_w.length <- function(w.length) {
     pass <- FALSE
   }
   # warn if w.length values are not reasonable
-  if (min(w.length < 200.0) || max(w.length > 6000.0)){
-    warning("Warning: wavelength values should be in nm\n data contains values < 200 nm and/or > 6000 nm")
+  if (min(w.length < 100.0) || max(w.length > 6000.0)){
+    warning("Warning: wavelength values should be in nm\n data contains values < 100 nm and/or > 6000 nm")
     pass <- FALSE
   }
   # test average wavelength delta

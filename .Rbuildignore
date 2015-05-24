@@ -1,5 +1,5 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^\.git/*
-^raw\.data/*
 ^test/*
+^data-raw$
