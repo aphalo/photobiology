@@ -1006,6 +1006,8 @@ as.chroma_spct <- function(x) {
 #' @param x a source_spct object
 #' @param time.unit a character string, either "second", "hour", "day",
 #'   "exposure" or "none", or a lubridate::duration
+#' @param override.ok logical Flag that can be used to silence warning when
+#'   overwritting an existing attribute value (used internally)
 #'
 #' @return x
 #'
@@ -1019,7 +1021,17 @@ as.chroma_spct <- function(x) {
 #' @family time attribute functions
 #'
 setTimeUnit <- function(x,
-                        time.unit=c("second", "hour", "day", "exposure", "none")) {
+                        time.unit = c("second", "hour", "day", "exposure", "none"),
+                        override.ok = FALSE) {
+  old.time.unit <- getTimeUnit(x)
+  override.ok <- override.ok ||
+    is.character(old.time.unit) &&
+    old.time.unit %in% c("unknown", "none", time.unit)
+  if (!override.ok) {
+    warning("Overrriding existing 'time.unit' '", old.time.unit,
+            "' with '", time.unit, "' may invalidate data!")
+  }
+
   if (length(time.unit) > 1) {
     if (getTimeUnit(x) != "unknown") {
       time.unit <- getTimeUnit(x)
@@ -1049,9 +1061,9 @@ setTimeUnit <- function(x,
 #' Funtion to read the "time.unit" attribute
 #'
 #' @param x a source_spct object
-#' @param force.duraction logical If TRUE a lubridate::duration is returned even
-#'   if the object attribute is a character, if no conversion is possible NA is
-#'   returned.
+#' @param force.duration logical If TRUE a lubridate::duration is returned even
+#'   if the object attribute is a character string, if no conversion is possible
+#'   NA is returned.
 #'
 #' @return character string or a lubridate::duration
 #'
@@ -1082,11 +1094,14 @@ getTimeUnit <- function(x, force.duration = FALSE) {
 #' Convert the "time.unit" attribute of an existing source_spct object
 #'
 #' Funtion to set the "time.unit" attribute and simultaneously rescaling the
-#' spectral data to be expressed in the new time unit.
+#' spectral data to be expressed in the new time unit. The change is done
+#' by reference ('in place')
 #'
 #' @param x a source_spct object
 #' @param time.unit a character string, either "second", "hour", "day",
 #'   "exposure" or "none", or a lubridate::duration
+#' @param byref logical indicating if new object will be created by reference or
+#'   by copy of \code{x}
 #'
 #' @return x possibly with the \code{time.unit} attribute modified
 #'
@@ -1098,41 +1113,42 @@ getTimeUnit <- function(x, force.duration = FALSE) {
 #' @export
 #' @family time attribute functions
 #'
-convertTimeUnit <- function(x, time.unit = NULL) {
-  x <- checkTimeUnit(x)
+convertTimeUnit <- function(x, time.unit = NULL, byref = TRUE) {
+  if (byref) x.out <- x else x.out <- copy(x)
+  x.out <- checkTimeUnit(x.out)
 
-  if (is.null(time.unit)) invisible(x)
+  if (is.null(time.unit)) invisible(x.out)
 
   new.time.unit <- char2duration(time.unit)
-  old.time.unit <- getTimeUnit(x, force.duration = TRUE)
+  old.time.unit <- getTimeUnit(x.out, force.duration = TRUE)
 
   factor <- as.numeric(new.time.unit) / as.numeric(old.time.unit)
 
-  if (is.source_spct(x)) {
-    columns <- intersect(names(x), c("s.e.irrad", "s.q.irrad") )
+  if (is.source_spct(x.out)) {
+    columns <- intersect(names(x.out), c("s.e.irrad", "s.q.irrad") )
     if ("s.e.irrad" %in% columns) {
-      x[ , s.e.irrad := s.e.irrad * factor]
+      x.out[ , s.e.irrad := s.e.irrad * factor]
     }
     if ("s.q.irrad" %in% columns) {
-      x[ , s.q.irrad := s.q.irrad * factor]
+      x.out[ , s.q.irrad := s.q.irrad * factor]
     }
-  } else if (is.response_spct(x)) {
-    columns <- intersect(names(x), c("s.e.response", "s.q.response") )
+  } else if (is.response_spct(x.out)) {
+    columns <- intersect(names(x.out), c("s.e.response", "s.q.response") )
     if ("s.e.response" %in% columns) {
-      x[ , s.e.response := s.e.response * factor]
+      x.out[ , s.e.response := s.e.response * factor]
     }
     if ("s.q.response" %in% columns) {
-      x[ , s.q.response := s.q.response * factor]
+      x.out[ , s.q.response := s.q.response * factor]
     }
   } else {
-    invisible(x)
+    invisible(x.out)
   }
-  if (length(setdiff(names(x), c("w.length", columns))) > 0) {
-    warning("Only data in ", columns, " converted to time unit ", time.unit)
+  if (length(setdiff(names(x.out), c("w.length", columns))) > 0) {
+    warning("Only data in '", paste(columns, collapse = "', '"), "' converted to time unit '", time.unit, "'")
   }
-  setTimeUnit(x, time.unit)
+  setTimeUnit(x.out, time.unit, override.ok = TRUE)
 
-  return(x)
+  invisible(x.out)
 }
 
 

@@ -11,6 +11,18 @@ Implement peak fitting in addition to current peak search algorithm, so
 that location of peaks is more precise (Found peak positions in-between wavelength values
 in spectral data possible).
 
+photobiology 0.6.4
+==================
+
+Add support for lubridate::duration:
+Parameter "time.unit" in methods and fucntions related for source_spct and
+response_spect objects accepts durations.
+New function convertTimeUnit() can be used to modify the time.unit attribute,
+reexpressing the spectral data using the new "time.unit".
+Old function setTimeUnit() issues a warning when it is used to override an
+already set "time.unit" attribute.
+
+
 photobiology 0.6.3
 ==================
 
