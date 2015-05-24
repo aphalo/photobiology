@@ -1,4 +1,5 @@
 library("photobiology")
+library("lubridate")
 context("response_spct")
 
 test_that("constructor energy", {
@@ -9,6 +10,8 @@ test_that("constructor energy", {
   my.d.spct <- response_spct(w.length = 400:409, s.e.response = 1, time.unit = "day")
   my.e.spct <- response_spct(w.length = 400:409, s.e.response = 1, time.unit = "exposure")
   my.b.spct <- response_spct(w.length = 400:409, s.e.response = 1, time.unit = "zzz")
+  my.ds.spct <- response_spct(w.length = 400:409, s.e.response = 1, time.unit = duration(1, "seconds"))
+  my.dh.spct <- response_spct(w.length = 400:409, s.e.response = 1, time.unit = duration(1, "hours"))
 
   expect_warning(my.b.spct <- response_spct(w.length = 400:409, s.e.response = 1, time.unit = "zzz"))
   expect_equal(my.spct[["s.e.response"]], rep(1, length.out = 10))
@@ -23,6 +26,8 @@ test_that("constructor energy", {
   expect_equal(getTimeUnit(my.d.spct), "day")
   expect_equal(getTimeUnit(my.e.spct), "exposure")
   expect_equal(getTimeUnit(my.b.spct), "unknown")
+  expect_equal(getTimeUnit(my.ds.spct), duration(1, "seconds"))
+  expect_equal(getTimeUnit(my.dh.spct), duration(1, "hours"))
 })
 
 test_that("constructor photon", {
@@ -33,6 +38,8 @@ test_that("constructor photon", {
   my.d.spct <- response_spct(w.length = 400:409, s.q.response = 1, time.unit = "day")
   my.e.spct <- response_spct(w.length = 400:409, s.q.response = 1, time.unit = "exposure")
   my.b.spct <- response_spct(w.length = 400:409, s.q.response = 1, time.unit = "zzz")
+  my.ds.spct <- response_spct(w.length = 400:409, s.q.response = 1, time.unit = duration(1, "seconds"))
+  my.dh.spct <- response_spct(w.length = 400:409, s.q.response = 1, time.unit = duration(1, "hours"))
 
   expect_warning(my.b.spct <- response_spct(w.length = 400:409, s.q.response = 1, time.unit = "zzz"))
   expect_equal(my.spct[["s.q.response"]], rep(1, length.out = 10))
@@ -47,6 +54,8 @@ test_that("constructor photon", {
   expect_equal(getTimeUnit(my.d.spct), "day")
   expect_equal(getTimeUnit(my.e.spct), "exposure")
   expect_equal(getTimeUnit(my.b.spct), "unknown")
+  expect_equal(getTimeUnit(my.ds.spct), duration(1, "seconds"))
+  expect_equal(getTimeUnit(my.dh.spct), duration(1, "hours"))
 })
 
 test_that("oper energy energy", {
@@ -194,3 +203,4 @@ test_that("math photon photon", {
 
   options(photobiology.radiation.unit = NULL)
 })
+
