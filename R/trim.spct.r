@@ -146,7 +146,7 @@ trim_spct <- function(spct, range=NULL, low.limit=NULL, high.limit=NULL,
   if (!is.null(comment.spct)) {
     setattr(spct, "comment", comment.spct)
   }
-  if (!is.null(time.unit.spct)) {
+  if (!is.null(time.unit.spct) && !is.na(time.unit.spct)) {
     setTimeUnit(spct, time.unit.spct)
   }
   if (!is.null(Tfr.type.spct)) {

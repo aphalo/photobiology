@@ -401,7 +401,6 @@ q_irrad.source_spct <-
 #' @param w.band a list of \code{waveband} objects or a \code{waveband} object
 #' @param unit.out character string with allowed values "energy", and "photon",
 #'   or its alias "quantum"
-#' @param quantity character string
 #' @param exposure.time lubridate::duration
 #' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries
 #'   are trimmed, if FALSE, they are discarded
@@ -417,7 +416,10 @@ q_irrad.source_spct <-
 #' @export
 #'
 #' @examples
-#' q_fluence(sun.spct, new_waveband(400,700))
+#' library(lubridate)
+#' fluence(sun.spct,
+#'         w.band = new_waveband(400,700),
+#'         exposure.time = duration(3, "minutes") )
 #'
 #' @return One numeric value for each waveband with no change in scale factor,
 #'   with name attribute set to the name of each waveband unless a named list is
@@ -436,13 +438,15 @@ q_irrad.source_spct <-
 #'
 #' @export
 #' @family irradiance functions
-fluence <- function(spct, w.band, unit.out, quantity, exposure.time, wb.trim, use.cached.mult, use.hinges, allow.scaled) UseMethod("fluence")
+fluence <- function(spct, w.band, unit.out, exposure.time, wb.trim,
+                    use.cached.mult, use.hinges, allow.scaled) UseMethod("fluence")
 
 #' @describeIn fluence Default for generic function
 #'
 #' @export
 #'
-fluence.default <- function(spct, w.band, unit.out, quantity, exposure.time, wb.trim, use.cached.mult, use.hinges, allow.scaled) {
+fluence.default <- function(spct, w.band, unit.out, exposure.time,
+                            wb.trim, use.cached.mult, use.hinges, allow.scaled) {
   warning("'fluence' is not defined for objects of class ", class(spct)[1])
   return(NA)
 }
@@ -455,7 +459,6 @@ fluence.default <- function(spct, w.band, unit.out, quantity, exposure.time, wb.
 fluence.source_spct <-
   function(spct, w.band = NULL,
            unit.out = getOption("photobiology.radiation.unit", default = "energy"),
-           quantity = "total",
            exposure.time = NA,
            wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
            use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
@@ -465,7 +468,7 @@ fluence.source_spct <-
       exposure.time <- lubridate::as.duration(exposure.time)
     }
     return.value <-
-      irrad_spct(spct, w.band=w.band, unit.out=unit.out, quantity=quantity,
+      irrad_spct(spct, w.band=w.band, unit.out=unit.out, quantity="total",
                  time.unit = exposure.time, wb.trim=wb.trim,
                  use.cached.mult=use.cached.mult, use.hinges=use.hinges,
                  allow.scaled = allow.scaled)
@@ -489,8 +492,7 @@ fluence.source_spct <-
 #'
 #' @param spct an R object
 #' @param w.band a list of \code{waveband} objects or a \code{waveband} object
-#' @param quantity character string
-#' @param exposure.time.unit lubridate::duration
+#' @param exposure.time lubridate::duration
 #' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries
 #'   are trimmed, if FALSE, they are discarded
 #' @param use.cached.mult logical indicating whether multiplier values should be
@@ -505,7 +507,10 @@ fluence.source_spct <-
 #' @export
 #'
 #' @examples
-#' q_fluence(sun.spct, new_waveband(400,700))
+#' library(lubridate)
+#' q_fluence(sun.spct,
+#'           w.band = new_waveband(400,700),
+#'           exposure.time = duration(3, "minutes") )
 #'
 #' @return One numeric value for each waveband with no change in scale factor,
 #'   with name attribute set to the name of each waveband unless a named list is
@@ -523,13 +528,15 @@ fluence.source_spct <-
 #'
 #' @export
 #' @family irradiance functions
-q_fluence <- function(spct, w.band, quantity, exposure.time, wb.trim, use.cached.mult, use.hinges, allow.scaled) UseMethod("q_fluence")
+q_fluence <- function(spct, w.band, exposure.time, wb.trim, use.cached.mult,
+                      use.hinges, allow.scaled) UseMethod("q_fluence")
 
 #' @describeIn q_fluence Default for generic function
 #'
 #' @export
 #'
-q_fluence.default <- function(spct, w.band, quantity, exposure.time, wb.trim, use.cached.mult, use.hinges, allow.scaled) {
+q_fluence.default <- function(spct, w.band, exposure.time, wb.trim,
+                              use.cached.mult, use.hinges, allow.scaled) {
   warning("'q_fluence' is not defined for objects of class ", class(spct)[1])
   return(NA)
 }
@@ -541,7 +548,6 @@ q_fluence.default <- function(spct, w.band, quantity, exposure.time, wb.trim, us
 #'
 q_fluence.source_spct <-
   function(spct, w.band = NULL,
-           quantity = "total",
            exposure.time = NA,
            wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
            use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
@@ -552,7 +558,7 @@ q_fluence.source_spct <-
     }
 
     return.value <-
-      irrad_spct(spct, w.band=w.band, unit.out="photon", quantity=quantity,
+      irrad_spct(spct, w.band=w.band, unit.out="photon", quantity="total",
                  time.unit = exposure.time, wb.trim=wb.trim,
                  use.cached.mult=use.cached.mult, use.hinges=use.hinges,
                  allow.scaled = allow.scaled)
@@ -572,7 +578,6 @@ q_fluence.source_spct <-
 #'
 #' @param spct an R object
 #' @param w.band a list of \code{waveband} objects or a \code{waveband} object
-#' @param quantity character string
 #' @param exposure.time lubridate::duration
 #' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries
 #'   are trimmed, if FALSE, they are discarded
@@ -588,7 +593,9 @@ q_fluence.source_spct <-
 #' @export
 #'
 #' @examples
-#' q_fluence(sun.spct, new_waveband(400,700))
+#' library(lubridate)
+#' e_fluence(sun.spct, w.band = new_waveband(400,700),
+#'           exposure.time = duration(3, "minutes") )
 #'
 #' @return One numeric value for each waveband with no change in scale factor,
 #'   with name attribute set to the name of each waveband unless a named list is
@@ -606,13 +613,15 @@ q_fluence.source_spct <-
 #'
 #' @export
 #' @family irradiance functions
-e_fluence <- function(spct, w.band, quantity, exposure.time, wb.trim, use.cached.mult, use.hinges, allow.scaled) UseMethod("e_fluence")
+e_fluence <- function(spct, w.band, exposure.time, wb.trim, use.cached.mult,
+                      use.hinges, allow.scaled) UseMethod("e_fluence")
 
 #' @describeIn e_fluence Default for generic function
 #'
 #' @export
 #'
-e_fluence.default <- function(spct, w.band, quantity, exposure.time, wb.trim, use.cached.mult, use.hinges, allow.scaled) {
+e_fluence.default <- function(spct, w.band, exposure.time, wb.trim, use.cached.mult,
+                              use.hinges, allow.scaled) {
   warning("'e_fluence' is not defined for objects of class ", class(spct)[1])
   return(NA)
 }
@@ -624,7 +633,6 @@ e_fluence.default <- function(spct, w.band, quantity, exposure.time, wb.trim, us
 #'
 e_fluence.source_spct <-
   function(spct, w.band = NULL,
-           quantity = "total",
            exposure.time = NA,
            wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
            use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
@@ -634,7 +642,7 @@ e_fluence.source_spct <-
       exposure.time <- lubridate::as.duration(exposure.time)
     }
   return.value <-
-      irrad_spct(spct, w.band=w.band, unit.out="energy", quantity=quantity,
+      irrad_spct(spct, w.band=w.band, unit.out="energy", quantity="total",
                  time.unit = exposure.time, wb.trim=wb.trim,
                  use.cached.mult=use.cached.mult, use.hinges=use.hinges,
                  allow.scaled = allow.scaled)

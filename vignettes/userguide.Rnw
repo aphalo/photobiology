@@ -296,7 +296,7 @@ and vector, is equivalent to applying this operation to each member of the vecto
 Consequently, in the code above, each value from the vector of wavelengths is divided
 by 10, and each value in the vector of spectral irradiances is divided by 1000.
 
-\subsection{Spectral object creations}
+\subsection{Spectral object construction}
 
 There are basically three different approaches to the creation of spectra. The first approach consist in setting the class attribute of an existing data frame or data table, in simple terms, converting an existing object into a spectral object. This approach avoids creating a copy of the data, and should be fastest. The second approach is to use an `as' function to create a new spectral object from a data frame or data table (the original object remains unchanged, and independent of the spectral object). The third approach is to use a function with the same name as the spectrum object class, and supply the data as numeric vector arguments. With the first two approaches the variables should be suitably named so that they can be recognized, in the third approach the formal argument to which the actual argument vector is supplied determines how it is interpreted.
 
