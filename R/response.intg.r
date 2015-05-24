@@ -56,22 +56,27 @@ response.response_spct <-
 
 #' Calculate response from spectral response
 #'
-#' This function returns the mean response for a given
-#' waveband and a response spectrum.
+#' This function returns the mean response for a given waveband and a response
+#' spectrum.
 #'
 #' @param spct an object of class response_spct"
 #' @param w.band a waveband object or a list of waveband objects
-#' @param unit.out character with allowed values "energy", and "photon", or its alias "quantum"
-#' @param quantity character
-#' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries are trimmed, if FALSE, they are discarded
-#' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
+#' @param unit.out character with allowed values "energy", and "photon", or its
+#'   alias "quantum"
+#' @param quantity character with allowed values "total", "average" ("mean"),
+#'   "contibution", "contribution.pc", "relative", "relative.pc"
+#' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries
+#'   are trimmed, if FALSE, they are discarded
+#' @param use.hinges logical indicating whether to use hinges to reduce
+#'   interpolation errors
 #'
-#' @return a single numeric value expressed either as a fraction of one or a percentage, or a
-#' vector of the same length as the list of wave.bands.
+#' @return a single numeric value expressed either as a fraction of one or a
+#'   percentage, or a vector of the same length as the list of wave.bands.
 #' @keywords internal
 #'
-#' @note The parameter \code{use.hinges} controls speed optimization. The defaults should be suitable
-#' in mosts cases. Only the range of wavelengths in the wavebands is used and all BSWFs are ignored.
+#' @note The parameter \code{use.hinges} controls speed optimization. The
+#'   defaults should be suitable in mosts cases. Only the range of wavelengths
+#'   in the wavebands is used and all BSWFs are ignored.
 #'
 #' @keywords internal
 #'
@@ -183,7 +188,7 @@ resp_spct <-
           response <- response * 1e2
         }
       }
-    } else if (quantity == "average") {
+    } else if (quantity %in% c("average", "mean")) {
       response <- response / sapply(w.band, spread)
     } else if (quantity != "total") {
       warning("'quantity '", quantity, "' is invalid, returning 'total' instead")

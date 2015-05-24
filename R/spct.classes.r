@@ -1191,7 +1191,7 @@ checkTimeUnit <- function(x) {
 # private
 char2duration <- function(time.unit) {
   if (is.character(time.unit)) {
-    duration <- switch(time.unit,
+    time.duration <- switch(time.unit,
                         second  = lubridate::duration(1, "seconds"),
                         minute  = lubridate::duration(1, "minutes"),
                         hour    = lubridate::duration(1, "hours"),
@@ -1200,8 +1200,10 @@ char2duration <- function(time.unit) {
                         none    = lubridate::duration(NA),
                         unknown = lubridate::duration(NA)
     )
+  } else if (lubridate::is.duration(time.unit)) {
+    time.duration <- time.unit
   }
-  return(duration)
+  return(time.duration)
 }
 
 
