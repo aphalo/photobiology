@@ -94,14 +94,16 @@ resp_spct <-
       unit.out <- "photon"
     }
 
-    if (!is.null(time.unit)) {
+    data.time.unit <- getTimeUnit(spct)
+
+    if (!is.null(time.unit) && time.unit != data.time.unit) {
       if (!lubridate::is.duration(time.unit) && !is.character(time.unit)) {
         message("converting 'time.unit' ", time.unit, " into a lubridate::duration")
         time.unit <- lubridate::as.duration(time.unit)
       }
       spct <- convertTimeUnit(spct, time.unit = time.unit, byref = FALSE)
     } else {
-      time.unit <- getTimeUnit(spct)
+      time.unit <- data.time.unit
     }
 
     if (unit.out=="photon") {
@@ -178,7 +180,7 @@ resp_spct <-
         }
       }
       # we calculate the integrated response.
-      response[i] <- integrate_spct(trim_spct(spct, wb, use.hinges=FALSE))
+      response[i] <- integrate_spct(trim_spct(spct, wb, use.hinges = FALSE))
     }
     if (quantity %in% c("contribution", "contribution.pc")) {
       if (any(sapply(w.band, is_effective))) {
@@ -186,8 +188,9 @@ resp_spct <-
                 "' not supported when using BSWFs, returning 'total' instead")
         quantity <- "total"
       } else {
-        total <- resp_spct(spct, w.band=NULL, unit.out=unit.out,
-                            quantity="total", use.hinges=FALSE)
+        total <- resp_spct(spct, w.band = NULL, unit.out = unit.out,
+                           quantity = "total", time.unit = time.unit,
+                           wb.trim = FALSE, use.hinges = FALSE)
         response <- response / total
         if (quantity == "contribution.pc") {
           response <- response * 1e2

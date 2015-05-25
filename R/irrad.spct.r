@@ -82,18 +82,21 @@ irrad.source_spct <-
            allow.scaled = FALSE){
     # we have a default, but we check for invalid arguments
     if (!allow.scaled && (is_normalized(spct) || is_scaled(spct))) {
-      warning("The espectral data has been normalized or scaled, making impossible to calculate irradiance")
+      warning("The espectral data has been normalized or scaled, ",
+              "making impossible to calculate irradiance")
       return(NA)
     }
 
-    if (!is.null(time.unit)) {
+    data.time.unit <- getTimeUnit(spct)
+
+    if (!is.null(time.unit) && time.unit != data.time.unit) {
       if (!lubridate::is.duration(time.unit) && !is.character(time.unit)) {
         message("converting 'time.unit' ", time.unit, " into a lubridate::duration")
         time.unit <- lubridate::as.duration(time.unit)
       }
       spct <- convertTimeUnit(spct, time.unit = time.unit, byref = FALSE)
     } else {
-      time.unit <- getTimeUnit(spct)
+      time.unit <- data.time.unit
     }
 
     if (identical(attr(spct, ".data.table.locked"), TRUE)) {
@@ -198,11 +201,18 @@ irrad.source_spct <-
     }
     if (quantity %in% c("contribution", "contribution.pc")) {
       if (any(sapply(w.band, is_effective))) {
-        warning("'quantity '", quantity, "' not supported when using BSWFs, returning 'total' instead")
+        warning("'quantity '", quantity,
+                "' not supported when using BSWFs, returning 'total' instead")
         quantity <- "total"
       } else {
-        total <- irrad_spct(spct_x, w.band=NULL, unit.out=unit.out,
-                            quantity="total", use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE), use.hinges=FALSE)
+        total <- irrad_spct(spct_x, w.band=NULL,
+                            unit.out=unit.out,
+                            quantity="total",
+                            time.unit = time.unit,
+                            use.cached.mult =
+                              getOption("photobiology.use.cached.mult", default = FALSE),
+                            wb.trim = FALSE,
+                            use.hinges = FALSE)
         irrad <- irrad / total
         if (quantity == "contribution.pc") {
           irrad <- irrad * 1e2
@@ -210,7 +220,8 @@ irrad.source_spct <-
       }
     } else if (quantity %in% c("relative", "relative.pc")) {
       if (any(sapply(w.band, is_effective))) {
-        warning("'quantity '", quantity, "' not supported when using BSWFs, returning 'total' instead")
+        warning("'quantity '", quantity,
+                "' not supported when using BSWFs, returning 'total' instead")
         quantity <- "total"
       } else {
         total <- sum(irrad)
