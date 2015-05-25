@@ -87,6 +87,10 @@ irrad.source_spct <-
     }
 
     if (!is.null(time.unit)) {
+      if (!lubridate::is.duration(time.unit) && !is.character(time.unit)) {
+        message("converting 'time.unit' ", time.unit, " into a lubridate::duration")
+        time.unit <- lubridate::as.duration(time.unit)
+      }
       spct <- convertTimeUnit(spct, time.unit = time.unit, byref = FALSE)
     } else {
       time.unit <- getTimeUnit(spct)
@@ -464,9 +468,13 @@ fluence.source_spct <-
            use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
            use.hinges=getOption("photobiology.use.hinges", default=NULL),
            allow.scaled = FALSE ) {
-    if (!lubridate::is.duration(exposure.time)) {
-      exposure.time <- lubridate::as.duration(exposure.time)
+    if (!lubridate::is.duration(exposure.time) &&
+        !is.period(exposure.time) &&
+        !is.numeric(exposure.time) ) {
+      warning("Invalid value ", exposure.time, " for 'exposure.time'")
+      exposure.time <- lubridate::duration(NA)
     }
+
     return.value <-
       irrad_spct(spct, w.band=w.band, unit.out=unit.out, quantity="total",
                  time.unit = exposure.time, wb.trim=wb.trim,
@@ -553,8 +561,11 @@ q_fluence.source_spct <-
            use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
            use.hinges=getOption("photobiology.use.hinges", default=NULL),
            allow.scaled = FALSE ) {
-    if (!lubridate::is.duration(exposure.time)) {
-      exposure.time <- lubridate::as.duration(exposure.time)
+    if (!lubridate::is.duration(exposure.time) &&
+        !is.period(exposure.time) &&
+        !is.numeric(exposure.time) ) {
+      warning("Invalid value ", exposure.time, " for 'exposure.time'")
+      exposure.time <- lubridate::duration(NA)
     }
 
     return.value <-
@@ -638,18 +649,21 @@ e_fluence.source_spct <-
            use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
            use.hinges=getOption("photobiology.use.hinges", default=NULL),
            allow.scaled = FALSE ) {
-    if (!lubridate::is.duration(exposure.time)) {
-      exposure.time <- lubridate::as.duration(exposure.time)
+    if (!lubridate::is.duration(exposure.time) &&
+        !is.period(exposure.time) &&
+        !is.numeric(exposure.time) ) {
+      warning("Invalid value ", exposure.time, " for 'exposure.time'")
+      exposure.time <- lubridate::duration(NA)
     }
-  return.value <-
+    return.value <-
       irrad_spct(spct, w.band=w.band, unit.out="energy", quantity="total",
                  time.unit = exposure.time, wb.trim=wb.trim,
                  use.cached.mult=use.cached.mult, use.hinges=use.hinges,
                  allow.scaled = allow.scaled)
-  setattr(return.value, "radiation.unit", "energy fluence (J m-2)")
-  setattr(return.value, "exposure.duration", exposure.time)
-  setattr(return.value, "time.unit", NULL)
-  return(return.value)
+    setattr(return.value, "radiation.unit", "energy fluence (J m-2)")
+    setattr(return.value, "exposure.duration", exposure.time)
+    setattr(return.value, "time.unit", NULL)
+    return(return.value)
   }
 
 

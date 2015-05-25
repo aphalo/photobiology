@@ -217,6 +217,10 @@ test_that("irrad e_irrad q_irrad", {
                irrad.result * 0.5, tolerance = 1e-6)
   expect_equal(as.numeric(irrad(sun.spct, time.unit = duration(1, "minutes"))),
                irrad.result * 60, tolerance = 1e-6)
+  expect_equal(as.numeric(irrad(sun.spct, time.unit = minutes(1))),
+               irrad.result * 60, tolerance = 1e-6)
+  expect_equal(as.numeric(irrad(sun.spct, time.unit = hms("00:01:00"))),
+               irrad.result * 60, tolerance = 1e-6)
   expect_equal(as.numeric(e_irrad(sun.spct)), irrad.result, tolerance = 1e-6)
   expect_equal(as.numeric(e_irrad(sun.spct, time.unit = "second")),
                irrad.result, tolerance = 1e-6)
@@ -227,6 +231,10 @@ test_that("irrad e_irrad q_irrad", {
   expect_equal(as.numeric(e_irrad(sun.spct, time.unit = duration(0.5))),
                irrad.result * 0.5, tolerance = 1e-6)
   expect_equal(as.numeric(e_irrad(sun.spct, time.unit = duration(1, "minutes"))),
+               irrad.result * 60, tolerance = 1e-6)
+  expect_equal(as.numeric(e_irrad(sun.spct, time.unit = minutes(1))),
+               irrad.result * 60, tolerance = 1e-6)
+  expect_equal(as.numeric(e_irrad(sun.spct, time.unit = hms("00:01:00"))),
                irrad.result * 60, tolerance = 1e-6)
   irrad.result <- 0.001255336
   expect_equal(as.numeric(q_irrad(sun.spct)), irrad.result, tolerance = 1e-6)
@@ -239,6 +247,10 @@ test_that("irrad e_irrad q_irrad", {
   expect_equal(as.numeric(q_irrad(sun.spct, time.unit = duration(0.5))),
                irrad.result * 0.5, tolerance = 1e-6)
   expect_equal(as.numeric(q_irrad(sun.spct, time.unit = duration(1, "minutes"))),
+               irrad.result * 60, tolerance = 1e-6)
+  expect_equal(as.numeric(q_irrad(sun.spct, time.unit = minutes(1))),
+               irrad.result * 60, tolerance = 1e-6)
+  expect_equal(as.numeric(q_irrad(sun.spct, time.unit = hms("00:01:00"))),
                irrad.result * 60, tolerance = 1e-6)
 })
 
