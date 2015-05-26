@@ -29,6 +29,9 @@ New methods fluence(), e_fluence() and q_fluence().
 
 Fixed bug in absorptance.filter_spct().
 
+Replaced "." by "_" in the names of the classes returned by summary() methods
+for spectra.
+
 photobiology 0.6.3
 ==================
 
