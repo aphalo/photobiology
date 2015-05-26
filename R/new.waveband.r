@@ -24,13 +24,11 @@
 #' @param wb.label character string giving the label of the waveband to be used
 #'   for ploting, default is wb.name
 #'
-#' @return a list with components low, high, weight, SWF.fun, norm, hinges, name
+#' @return a \code{waveband} object
 #' @keywords manip misc
 #' @export
-#' @exportClass waveband
 #' @examples
-#' e_irrad(sun.spct, waveband(sun.spct))
-#' q_irrad(sun.spct, waveband(c(400,700)))
+#' waveband(c(400,700))
 #'
 waveband <- function(x,
                      weight=NULL, SWF.e.fun=NULL, SWF.q.fun=NULL, norm=NULL,
@@ -43,34 +41,14 @@ waveband <- function(x,
                norm=norm, SWF.norm=SWF.norm, hinges=hinges, wb.name=wb.name, wb.label=wb.label)
 }
 
-#' Build a "waveband" object that can be used as imput when calculating irradiances.
-#'
-#' @usage new_waveband(w.low, w.high, weight=NULL, SWF.e.fun=NULL,
-#'                     SWF.q.fun=NULL, norm=NULL, SWF.norm=NULL,
-#'                     hinges=NULL,
-#'                     wb.name=NULL, wb.label=wb.name)
-#'
+#' @describeIn waveband A less flexible variant
 #' @param w.low numeric value, wavelength at the short end of the band (nm)
 #' @param w.high numeric value, wavelength at the long end of the band (nm)
-#' @param weight a character string "SWF" or "BSWF", use NULL (the defalt) to indicate no weighting used
-#' when calculating irradiance
-#' @param SWF.e.fun a function giving multipliers for a spectral weighting function (energy) as a function of wavelength (nm)
-#' @param SWF.q.fun a function giving multipliers for a spectral weighting function (quantum) as a function of wavelength (nm)
-#' @param SWF.norm a numeric value giving the native normalization wavelength (nm) used by SWF.e.fun and SWF.q.fun
-#' @param norm a single numeric value indicating the wavelength at which the SWF should be normalized
-#' to 1.0, in nm. "NULL" means no normalization.
-#' @param hinges a numeric array giving the wavelengths at which the s.irrad should be inserted by
-#' interpolation, no interpolation is indicated by an empty array (numeric(0)), if NULL then interpolation
-#' will take place at both ends of the band.
-#' @param wb.name character string giving the name for the waveband defined, default is NULL
-#' @param wb.label character string giving the label of the waveband to be used for ploting, default is wb.name
 #'
-#' @return a list with components low, high, weight, SWF.fun, norm, hinges, name
-#' @keywords manip misc
 #' @export
 #' @exportClass waveband
 #' @examples
-#' with(sun.spct, irradiance(w.length, s.e.irrad, new_waveband(400,700), "photon"))
+#' new_waveband(400,700)
 #'
 new_waveband <- function(w.low, w.high,
                          weight=NULL, SWF.e.fun=NULL, SWF.q.fun=NULL, norm=NULL,
@@ -119,17 +97,20 @@ new_waveband <- function(w.low, w.high,
   return(w_band)
 }
 
-#' Build a list of unweighted "waveband" objects that can be used as imput when calculating irradiances.
+#' Build a list of unweighted "waveband" objects that can be used as imput when
+#' calculating irradiances.
 #'
-#' @usage split_bands(x, list.names=NULL, short.names=is.null(list.names), length.out=NULL)
+#' @usage split_bands(x, list.names=NULL, short.names=is.null(list.names),
+#'   length.out=NULL)
 #'
-#' @param x a numeric array of wavelengths to split at (nm), or a range of wavelengths or
-#' a generic_spct or a waveband.
-#' @param list.names character vector with names for the component wavebands in the returned
-#' list (in order of increasing wavelength)
-#' @param short.names logical indicating whether to use short or long names for wavebands
-#' @param length.out numeric giving the number of regions to split the range into (ignored
-#' if w.length is not numeric).
+#' @param x a numeric array of wavelengths to split at (nm), or a range of
+#'   wavelengths or a generic_spct or a waveband.
+#' @param list.names character vector with names for the component wavebands in
+#'   the returned list (in order of increasing wavelength)
+#' @param short.names logical indicating whether to use short or long names for
+#'   wavebands
+#' @param length.out numeric giving the number of regions to split the range
+#'   into (ignored if w.length is not numeric).
 #'
 #' @return an un-named list of wabeband objects
 #' @keywords manip misc
@@ -145,8 +126,9 @@ new_waveband <- function(w.low, w.high,
 #' split_bands(sun.spct, length.out=10)
 #' split_bands(waveband(c(400,700)), length.out=5)
 #'
-#' @note \code{list.names} is used to assign names to the elements of the list, while the waveband objects themselves
-#' always retain their \code{wb.label} and \code{wb.name} as generated during their creation.
+#' @note \code{list.names} is used to assign names to the elements of the list,
+#'   while the waveband objects themselves always retain their \code{wb.label}
+#'   and \code{wb.name} as generated during their creation.
 
 split_bands <- function(x, list.names=NULL, short.names=is.null(list.names), length.out=NULL) {
   if (!is.any_spct(x) && !is.waveband(x) && is.list(x)) {

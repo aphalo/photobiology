@@ -26,7 +26,7 @@ summary.generic_spct <- function(object, digits = max(3, getOption("digits")-3),
   return(z)
 }
 
-#' @describeIn summary.generic_spct Summary of a "source_spct" object.
+# @describeIn summary.generic_spct Summary of a "source_spct" object.
 #'
 #' @param time.unit character or lubridate::duration
 #'
@@ -60,7 +60,7 @@ summary.source_spct <- function(object,
   return(z)
 }
 
-#' @describeIn summary.generic_spct Summary of a \code{filter_spct} object.
+# @describeIn summary.generic_spct Summary of a \code{filter_spct} object.
 #'
 #' @export
 #' @rdname summary.generic_spct
@@ -82,7 +82,7 @@ summary.filter_spct <- function(object, digits = max(3, getOption("digits")-3), 
   return(z)
 }
 
-#' @describeIn summary.generic_spct Summary of a "reflector_spct" object.
+# @describeIn summary.generic_spct Summary of a "reflector_spct" object.
 #'
 #' @export
 #' @rdname summary.generic_spct
@@ -104,7 +104,7 @@ summary.reflector_spct <- function(object, digits = max(3, getOption("digits")-3
   return(z)
 }
 
-#' @describeIn summary.generic_spct Summary of a "response_spct" object.
+# @describeIn summary.generic_spct Summary of a "response_spct" object.
 #'
 #' @export
 #' @rdname summary.generic_spct
@@ -136,7 +136,7 @@ summary.response_spct <- function(object,
   return(z)
 }
 
-#' @describeIn summary.generic_spct Summary of a "chroma_spct" object.
+# @describeIn summary.generic_spct Summary of a "chroma_spct" object.
 #'
 #' @export
 #' @rdname summary.generic_spct
@@ -174,7 +174,7 @@ print.summary_generic_spct <- function(x, ...) {
   cat("largest wavelength step size is", x[["w.length.step"]], "nm \n")
 }
 
-#' @describeIn print.summary_generic_spct Print a "summary_source_spct" object.
+# @describeIn print.summary_generic_spct Print a "summary_source_spct" object.
 #'
 #' @export
 #' @rdname print.summary_generic_spct
@@ -205,7 +205,7 @@ print.summary_source_spct <- function(x, ...) {
   }
 }
 
-#' @describeIn print.summary_generic_spct Print a "summary_filter_spct" object.
+# @describeIn print.summary_generic_spct Print a "summary_filter_spct" object.
 #'
 #' @export
 #' @rdname print.summary_generic_spct
@@ -219,7 +219,7 @@ print.summary_filter_spct <- function(x, ...) {
   cat("Quantity is", Tfr.type, "\n")
 }
 
-#' @describeIn print.summary_generic_spct Print a "summary_reflector_spct" object.
+# @describeIn print.summary_generic_spct Print a "summary_reflector_spct" object.
 #'
 #' @export
 #' @rdname print.summary_generic_spct
@@ -233,7 +233,7 @@ print.summary_reflector_spct <- function(x, ...) {
   cat("Quantity is", Rfr.type, "\n")
 }
 
-#' @describeIn print.summary_generic_spct Print a "summary_response_spct" object.
+# @describeIn print.summary_generic_spct Print a "summary_response_spct" object.
 #'
 #' @export
 #' @rdname print.summary_generic_spct
@@ -254,7 +254,7 @@ print.summary_response_spct <- function(x, ...) {
       as.character(time.unit), "\n")
 }
 
-#' @describeIn print.summary_generic_spct Print a "summary_chrome.spct" object.
+# @describeIn print.summary_generic_spct Print a "summary_chrome.spct" object.
 #'
 #' @export
 #' @rdname print.summary_generic_spct
