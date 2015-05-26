@@ -205,10 +205,13 @@ test_that("math photon photon", {
 })
 
 test_that("response e_response q_response", {
-  my.spct <- response_spct(w.length = 400:450, s.e.response = 1)
+  my.spct <- response_spct(w.length = 300:700, s.e.response = 1)
 
-  response.result <- 50
+  response.result <- 400
   expect_equal(as.numeric(response(my.spct)), response.result, tolerance = 1e-6)
+  expect_equal(as.numeric(response(my.spct, quantity = "total")), response.result, tolerance = 1e-6)
+  expect_equal(as.numeric(response(my.spct, quantity = "average")), 1, tolerance = 1e-6)
+  expect_equal(as.numeric(response(my.spct, quantity = "mean")), 1, tolerance = 1e-6)
   expect_equal(as.numeric(response(my.spct, time.unit = "second")),
                response.result, tolerance = 1e-6)
   expect_equal(as.numeric(response(my.spct, time.unit = "hour")),
@@ -219,6 +222,26 @@ test_that("response e_response q_response", {
                response.result * 0.5, tolerance = 1e-6)
   expect_equal(as.numeric(response(my.spct, time.unit = duration(1, "minutes"))),
                response.result * 60, tolerance = 1e-6)
+  expect_equal(sum(as.numeric(response(my.spct, quantity = "total",
+                                       w.band = split_bands(my.spct, length.out = 3)))),
+               response.result)
+  expect_equal(sum(as.numeric(response(my.spct, quantity = "average",
+                                       w.band = split_bands(my.spct, length.out = 3)))), 3)
+  expect_equal(sum(as.numeric(response(my.spct, quantity = "average",
+                                       w.band = split_bands(my.spct, length.out = 5)))), 5)
+
+  expect_equal(sum(as.numeric(response(my.spct, quantity = "relative",
+                                      w.band = split_bands(my.spct, length.out = 3)))), 1)
+  expect_equal(sum(as.numeric(response(my.spct, quantity = "relative",
+                                      w.band = split_bands(c(400, 600), length.out = 3)))), 1)
+  expect_equal(sum(as.numeric(response(my.spct, quantity = "contribution",
+                                      w.band = split_bands(my.spct, length.out = 3)))), 1)
+  expect_less_than(sum(as.numeric(response(my.spct, quantity = "contribution",
+                                          w.band = split_bands(c(400, 600), length.out = 3)))), 1)
+  expect_equal(sum(as.numeric(response(trim_spct(my.spct, range = c(400, 600)),
+                                      quantity = "contribution",
+                                      w.band = split_bands(c(400, 600), length.out = 3)))), 1)
+
   expect_equal(as.numeric(e_response(my.spct)), response.result, tolerance = 1e-6)
   expect_equal(as.numeric(e_response(my.spct, time.unit = "second")),
                response.result, tolerance = 1e-6)
@@ -230,7 +253,7 @@ test_that("response e_response q_response", {
                response.result * 0.5, tolerance = 1e-6)
   expect_equal(as.numeric(e_response(my.spct, time.unit = duration(1, "minutes"))),
                response.result * 60, tolerance = 1e-6)
-  response.result <- 14090200
+  response.result <- 101360909
   expect_equal(as.numeric(q_response(my.spct)), response.result, tolerance = 1e-6)
   expect_equal(as.numeric(q_response(my.spct, time.unit = "second")),
                response.result, tolerance = 1e-6)

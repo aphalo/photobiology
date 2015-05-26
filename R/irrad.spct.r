@@ -230,7 +230,7 @@ irrad.source_spct <-
           irrad <- irrad * 1e2
         }
       }
-    } else if (quantity == "average") {
+    } else if (quantity %in% c("average", "mean") ) {
       irrad <- irrad / sapply(w.band, spread)
     } else if (quantity != "total") {
       warning("'quantity '", quantity, "' is invalid, returning 'total' instead")
