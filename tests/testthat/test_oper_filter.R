@@ -132,3 +132,68 @@ test_that("math absorbance", {
   options(photobiology.filter.qty = NULL)
 
 })
+
+test_that("transmittance", {
+  my.spct <- filter_spct(w.length = 300:700, Tfr = 1)
+
+  transmittance.result <- 400
+  expect_equal(as.numeric(transmittance(my.spct)), 1, tolerance = 1e-6)
+  expect_equal(as.numeric(transmittance(my.spct, quantity = "total")),
+               transmittance.result, tolerance = 1e-6)
+  expect_equal(as.numeric(transmittance(my.spct, quantity = "average")), 1, tolerance = 1e-6)
+  expect_equal(as.numeric(transmittance(my.spct, quantity = "mean")), 1, tolerance = 1e-6)
+  expect_equal(sum(as.numeric(transmittance(my.spct, quantity = "total",
+                                       w.band = split_bands(my.spct, length.out = 3)))),
+               transmittance.result)
+  expect_equal(sum(as.numeric(transmittance(my.spct, quantity = "average",
+                                       w.band = split_bands(my.spct, length.out = 3)))), 3)
+  expect_equal(sum(as.numeric(transmittance(my.spct, quantity = "average",
+                                       w.band = split_bands(my.spct, length.out = 5)))), 5)
+
+  expect_equal(sum(as.numeric(transmittance(my.spct, quantity = "relative",
+                                       w.band = split_bands(my.spct, length.out = 3)))), 1)
+  expect_equal(sum(as.numeric(transmittance(my.spct, quantity = "relative",
+                                       w.band = split_bands(c(400, 600), length.out = 3)))), 1)
+  expect_equal(sum(as.numeric(transmittance(my.spct, quantity = "contribution",
+                                       w.band = split_bands(my.spct, length.out = 3)))), 1)
+  expect_less_than(sum(as.numeric(transmittance(my.spct, quantity = "contribution",
+                                           w.band = split_bands(c(400, 600), length.out = 3)))), 1)
+  expect_equal(sum(as.numeric(transmittance(trim_spct(my.spct, range = c(400, 600)),
+                                       quantity = "contribution",
+                                       w.band = split_bands(c(400, 600), length.out = 3)))), 1)
+
+
+})
+
+test_that("absorptance", {
+  my.spct <- filter_spct(w.length = 300:700, Tfr = 0.5, Tfr.type = "internal")
+
+  absorptance.result <- 0.5 * 400
+  expect_equal(as.numeric(absorptance(my.spct)), 0.5, tolerance = 1e-6)
+  expect_equal(as.numeric(absorptance(my.spct, quantity = "total")),
+               absorptance.result, tolerance = 1e-6)
+  expect_equal(as.numeric(absorptance(my.spct, quantity = "average")), 0.5, tolerance = 1e-6)
+  expect_equal(as.numeric(absorptance(my.spct, quantity = "mean")), 0.5, tolerance = 1e-6)
+  expect_equal(sum(as.numeric(absorptance(my.spct, quantity = "total",
+                                            w.band = split_bands(my.spct, length.out = 3)))),
+               absorptance.result)
+  expect_equal(sum(as.numeric(absorptance(my.spct, quantity = "average",
+                                            w.band = split_bands(my.spct, length.out = 3)))), 3 * 0.5)
+  expect_equal(sum(as.numeric(absorptance(my.spct, quantity = "average",
+                                            w.band = split_bands(my.spct, length.out = 5)))), 5 * 0.5)
+
+  expect_equal(sum(as.numeric(absorptance(my.spct, quantity = "relative",
+                                            w.band = split_bands(my.spct, length.out = 3)))), 1)
+  expect_equal(sum(as.numeric(absorptance(my.spct, quantity = "relative",
+                                            w.band = split_bands(c(400, 600), length.out = 3)))), 1)
+  expect_equal(sum(as.numeric(absorptance(my.spct, quantity = "contribution",
+                                            w.band = split_bands(my.spct, length.out = 3)))), 1)
+  expect_less_than(sum(as.numeric(absorptance(my.spct, quantity = "contribution",
+                                                w.band = split_bands(c(400, 600), length.out = 3)))), 1)
+  expect_equal(sum(as.numeric(absorptance(trim_spct(my.spct, range = c(400, 600)),
+                                            quantity = "contribution",
+                                            w.band = split_bands(c(400, 600), length.out = 3)))), 1)
+
+
+})
+

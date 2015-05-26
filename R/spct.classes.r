@@ -1333,7 +1333,7 @@ setTfrType <- function(x, Tfr.type=c("total", "internal")) {
 getTfrType <- function(x) {
   if (is.filter_spct(x) || is.object_spct(x)) {
     Tfr.type <- attr(x, "Tfr.type", exact = TRUE)
-    if (is.null(Tfr.type)) {
+    if (is.null(Tfr.type) || is.na(Tfr.type)) {
       # need to handle objects created with old versions
       Tfr.type <- "unknown"
     }
@@ -1398,7 +1398,7 @@ setRfrType <- function(x, Rfr.type=c("total", "specular")) {
 getRfrType <- function(x) {
   if (is.reflector_spct(x) || is.object_spct(x)) {
     Rfr.type <- attr(x, "Rfr.type", exact = TRUE)
-    if (is.null(Rfr.type)) {
+    if (is.null(Rfr.type) || is.na(Rfr.type)) {
       # need to handle objects created with old versions
       Rfr.type <- "unknown"
     }

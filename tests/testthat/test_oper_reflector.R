@@ -59,3 +59,33 @@ test_that("math", {
 
 })
 
+test_that("reflectance", {
+  my.spct <- reflector_spct(w.length = 300:700, Rfr = 1)
+
+  reflectance.result <- 400
+  expect_equal(as.numeric(reflectance(my.spct)), 1, tolerance = 1e-6)
+  expect_equal(as.numeric(reflectance(my.spct, quantity = "total")), reflectance.result, tolerance = 1e-6)
+  expect_equal(as.numeric(reflectance(my.spct, quantity = "average")), 1, tolerance = 1e-6)
+  expect_equal(as.numeric(reflectance(my.spct, quantity = "mean")), 1, tolerance = 1e-6)
+  expect_equal(sum(as.numeric(reflectance(my.spct, quantity = "total",
+                                          w.band = split_bands(my.spct, length.out = 3)))),
+               reflectance.result)
+  expect_equal(sum(as.numeric(reflectance(my.spct, quantity = "average",
+                                          w.band = split_bands(my.spct, length.out = 3)))), 3)
+  expect_equal(sum(as.numeric(reflectance(my.spct, quantity = "average",
+                                          w.band = split_bands(my.spct, length.out = 5)))), 5)
+
+  expect_equal(sum(as.numeric(reflectance(my.spct, quantity = "relative",
+                                          w.band = split_bands(my.spct, length.out = 3)))), 1)
+  expect_equal(sum(as.numeric(reflectance(my.spct, quantity = "relative",
+                                          w.band = split_bands(c(400, 600), length.out = 3)))), 1)
+  expect_equal(sum(as.numeric(reflectance(my.spct, quantity = "contribution",
+                                          w.band = split_bands(my.spct, length.out = 3)))), 1)
+  expect_less_than(sum(as.numeric(reflectance(my.spct, quantity = "contribution",
+                                              w.band = split_bands(c(400, 600), length.out = 3)))), 1)
+  expect_equal(sum(as.numeric(reflectance(trim_spct(my.spct, range = c(400, 600)),
+                                          quantity = "contribution",
+                                          w.band = split_bands(c(400, 600), length.out = 3)))), 1)
+
+
+})
