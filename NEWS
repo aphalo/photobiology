@@ -13,14 +13,21 @@ photobiology 0.6.4
 Add support for lubridate::duration:
 Parameter "time.unit" in methods and fucntions related for source_spct and
 response_spect objects accepts durations.
-New function convertTimeUnit() can be used to modify the time.unit attribute,
-reexpressing the spectral data using the new "time.unit".
+
+New function convertTimeUnit()
+can be used to modify the time.unit attribute, reexpressing the spectral
+data using the new "time.unit".
+
 Old function setTimeUnit() issues a warning when it is used to override an
 already set "time.unit" attribute.
+
 Methods irrad(), e_irrad() and q_irrad(), and response(), e_response() and
 q_response() gain parameter 'time.unit' which can be used to obtain ther
 result expressed on a different time-unit basis.
+
 New methods fluence(), e_fluence() and q_fluence().
+
+Fixed bug in absorptance.filter_spct().
 
 photobiology 0.6.3
 ==================
