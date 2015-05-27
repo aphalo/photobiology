@@ -30,6 +30,8 @@
 #' @examples
 #' waveband(c(400,700))
 #'
+#' @family waveband constructors
+#'
 waveband <- function(x,
                      weight=NULL, SWF.e.fun=NULL, SWF.q.fun=NULL, norm=NULL,
                      SWF.norm=NULL, hinges=NULL, wb.name=NULL, wb.label=wb.name) {
@@ -129,6 +131,9 @@ new_waveband <- function(w.low, w.high,
 #' @note \code{list.names} is used to assign names to the elements of the list,
 #'   while the waveband objects themselves always retain their \code{wb.label}
 #'   and \code{wb.name} as generated during their creation.
+#'
+#' @family waveband constructors
+#'
 
 split_bands <- function(x, list.names=NULL, short.names=is.null(list.names), length.out=NULL) {
   if (!is.any_spct(x) && !is.waveband(x) && is.list(x)) {
