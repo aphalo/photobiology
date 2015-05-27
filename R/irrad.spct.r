@@ -12,6 +12,7 @@
 #' @param unit.out character string with allowed values "energy", and "photon",
 #'   or its alias "quantum"
 #' @param quantity character string
+#' @param time.unit character or lubridate::duration
 #' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries
 #'   are trimmed, if FALSE, they are discarded
 #' @param use.cached.mult logical indicating whether multiplier values should be
@@ -51,14 +52,14 @@
 #'
 #' @family irradiance functions
 #'
-irrad <- function(spct, w.band, unit.out, quantity, wb.trim,
+irrad <- function(spct, w.band, unit.out, quantity, time.unit, wb.trim,
                   use.cached.mult, use.hinges, allow.scaled) UseMethod("irrad")
 
 #' @describeIn irrad Default for generic function
 #'
 #' @export
 #'
-irrad.default <- function(spct, w.band, unit.out, quantity, wb.trim,
+irrad.default <- function(spct, w.band, unit.out, quantity, time.unit, wb.trim,
                           use.cached.mult, use.hinges, allow.scaled) {
   warning("'irrad' is not defined for objects of class ", class(spct)[1])
   return(NA)
@@ -71,18 +72,33 @@ irrad.default <- function(spct, w.band, unit.out, quantity, wb.trim,
 #' @export
 #'
 irrad.source_spct <-
-  function(spct, w.band=NULL,
-           unit.out=getOption("photobiology.radiation.unit", default="energy"),
+  function(spct, w.band = NULL,
+           unit.out = getOption("photobiology.radiation.unit", default = "energy"),
            quantity="total",
-           wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
+           time.unit = NULL,
+           wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
            use.hinges=getOption("photobiology.use.hinges", default=NULL),
            allow.scaled = FALSE){
     # we have a default, but we check for invalid arguments
     if (!allow.scaled && (is_normalized(spct) || is_scaled(spct))) {
-      warning("The espectral data has been normalized or scaled, making impossible to calculate irradiance")
+      warning("The espectral data has been normalized or scaled, ",
+              "making impossible to calculate irradiance")
       return(NA)
     }
+
+    data.time.unit <- getTimeUnit(spct)
+
+    if (!is.null(time.unit) && time.unit != data.time.unit) {
+      if (!lubridate::is.duration(time.unit) && !is.character(time.unit)) {
+        message("converting 'time.unit' ", time.unit, " into a lubridate::duration")
+        time.unit <- lubridate::as.duration(time.unit)
+      }
+      spct <- convertTimeUnit(spct, time.unit = time.unit, byref = FALSE)
+    } else {
+      time.unit <- data.time.unit
+    }
+
     if (identical(attr(spct, ".data.table.locked"), TRUE)) {
       spct_x <- copy(spct)
     } else {
@@ -185,11 +201,18 @@ irrad.source_spct <-
     }
     if (quantity %in% c("contribution", "contribution.pc")) {
       if (any(sapply(w.band, is_effective))) {
-        warning("'quantity '", quantity, "' not supported when using BSWFs, returning 'total' instead")
+        warning("'quantity '", quantity,
+                "' not supported when using BSWFs, returning 'total' instead")
         quantity <- "total"
       } else {
-        total <- irrad_spct(spct_x, w.band=NULL, unit.out=unit.out,
-                            quantity="total", use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE), use.hinges=FALSE)
+        total <- irrad_spct(spct_x, w.band=NULL,
+                            unit.out=unit.out,
+                            quantity="total",
+                            time.unit = time.unit,
+                            use.cached.mult =
+                              getOption("photobiology.use.cached.mult", default = FALSE),
+                            wb.trim = FALSE,
+                            use.hinges = FALSE)
         irrad <- irrad / total
         if (quantity == "contribution.pc") {
           irrad <- irrad * 1e2
@@ -197,7 +220,8 @@ irrad.source_spct <-
       }
     } else if (quantity %in% c("relative", "relative.pc")) {
       if (any(sapply(w.band, is_effective))) {
-        warning("'quantity '", quantity, "' not supported when using BSWFs, returning 'total' instead")
+        warning("'quantity '", quantity,
+                "' not supported when using BSWFs, returning 'total' instead")
         quantity <- "total"
       } else {
         total <- sum(irrad)
@@ -206,7 +230,7 @@ irrad.source_spct <-
           irrad <- irrad * 1e2
         }
       }
-    } else if (quantity == "average") {
+    } else if (quantity %in% c("average", "mean") ) {
       irrad <- irrad / sapply(w.band, spread)
     } else if (quantity != "total") {
       warning("'quantity '", quantity, "' is invalid, returning 'total' instead")
@@ -241,6 +265,7 @@ irrad_spct <- irrad.source_spct
 #' @param spct an R object
 #' @param w.band a list of \code{waveband} objects or a \code{waveband} object
 #' @param quantity character string
+#' @param time.unit character or lubridate::duration
 #' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries
 #'   are trimmed, if FALSE, they are discarded
 #' @param use.cached.mult logical indicating whether multiplier values should be
@@ -274,30 +299,34 @@ irrad_spct <- irrad.source_spct
 #'
 #' @family irradiance functions
 #'
-e_irrad <- function(spct, w.band, quantity, wb.trim, use.cached.mult, use.hinges, allow.scaled) UseMethod("e_irrad")
+e_irrad <- function(spct, w.band, quantity, time.unit, wb.trim, use.cached.mult, use.hinges, allow.scaled) UseMethod("e_irrad")
 
 #' @describeIn e_irrad Default for generic function
 #'
 #' @export
 #'
-e_irrad.default <- function(spct, w.band, quantity, wb.trim, use.cached.mult, use.hinges, allow.scaled) {
+e_irrad.default <- function(spct, w.band, quantity, time.unit, wb.trim, use.cached.mult, use.hinges, allow.scaled) {
   warning("'e_irrad' is not defined for objects of class ", class(spct)[1])
   return(NA)
 }
 
 #' @describeIn e_irrad  Calculates energy irradiance from a \code{source_spct}
 #'   object.
+#'
 #' @export
 #'
 e_irrad.source_spct <-
   function(spct, w.band=NULL,
            quantity="total",
+           time.unit = NULL,
            wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
            use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
            use.hinges=getOption("photobiology.use.hinges", default=NULL),
            allow.scaled = FALSE ) {
-    irrad_spct(spct, w.band=w.band, unit.out="energy", quantity=quantity, wb.trim=wb.trim,
-               use.cached.mult=use.cached.mult, use.hinges=use.hinges, allow.scaled = allow.scaled)
+    irrad_spct(spct, w.band=w.band, unit.out="energy", quantity=quantity,
+               time.unit = time.unit, wb.trim=wb.trim,
+               use.cached.mult=use.cached.mult, use.hinges=use.hinges,
+               allow.scaled = allow.scaled)
   }
 
 # photon irradiance -------------------------------------------------------
@@ -311,6 +340,7 @@ e_irrad.source_spct <-
 #' @param spct an R object
 #' @param w.band a list of \code{waveband} objects or a \code{waveband} object
 #' @param quantity character string
+#' @param time.unit character or lubridate::duration
 #' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries
 #'   are trimmed, if FALSE, they are discarded
 #' @param use.cached.mult logical indicating whether multiplier values should be
@@ -344,13 +374,13 @@ e_irrad.source_spct <-
 #'
 #' @export
 #' @family irradiance functions
-q_irrad <- function(spct, w.band, quantity, wb.trim, use.cached.mult, use.hinges, allow.scaled) UseMethod("q_irrad")
+q_irrad <- function(spct, w.band, quantity, time.unit, wb.trim, use.cached.mult, use.hinges, allow.scaled) UseMethod("q_irrad")
 
 #' @describeIn q_irrad Default for generic function
 #'
 #' @export
 #'
-q_irrad.default <- function(spct, w.band, quantity, wb.trim, use.cached.mult, use.hinges, allow.scaled) {
+q_irrad.default <- function(spct, w.band, quantity, time.unit, wb.trim, use.cached.mult, use.hinges, allow.scaled) {
   warning("'q_irrad' is not defined for objects of class ", class(spct)[1])
   return(NA)
 }
@@ -361,12 +391,290 @@ q_irrad.default <- function(spct, w.band, quantity, wb.trim, use.cached.mult, us
 #' @export
 #'
 q_irrad.source_spct <-
-  function(spct, w.band=NULL,
-           quantity="total",
+  function(spct, w.band = NULL,
+           quantity = "total",
+           time.unit = NULL,
            wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
            use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
            use.hinges=getOption("photobiology.use.hinges", default=NULL),
            allow.scaled = FALSE ) {
-    irrad_spct(spct, w.band=w.band, unit.out="photon", quantity=quantity, wb.trim=wb.trim,
-                      use.cached.mult=use.cached.mult, use.hinges=use.hinges, allow.scaled = allow.scaled)
+    irrad_spct(spct, w.band=w.band, unit.out="photon", quantity=quantity,
+               time.unit = time.unit, wb.trim=wb.trim,
+               use.cached.mult=use.cached.mult, use.hinges=use.hinges,
+               allow.scaled = allow.scaled)
   }
+
+
+# fluence -----------------------------------------------------------------
+
+#' Calculate energy or photon fluence from spectral irradiance
+#'
+#' This function returns the energy or photon fluence for a given waveband of a
+#' light source spectrum and the duration of the exposure.
+#'
+#' @param spct an R object
+#' @param w.band a list of \code{waveband} objects or a \code{waveband} object
+#' @param unit.out character string with allowed values "energy", and "photon",
+#'   or its alias "quantum"
+#' @param exposure.time lubridate::duration
+#' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries
+#'   are trimmed, if FALSE, they are discarded
+#' @param use.cached.mult logical indicating whether multiplier values should be
+#'   cached between calls
+#' @param use.hinges logical indicating whether to use hinges to reduce
+#'   interpolation errors
+#' @param allow.scaled logical indicating whether scaled or normalized spectra
+#'   as argument to spct are flagged as an error
+#'
+#' @keywords manip misc
+#'
+#' @export
+#'
+#' @examples
+#' library(lubridate)
+#' fluence(sun.spct,
+#'         w.band = new_waveband(400,700),
+#'         exposure.time = duration(3, "minutes") )
+#'
+#' @return One numeric value for each waveband with no change in scale factor,
+#'   with name attribute set to the name of each waveband unless a named list is
+#'   supplied in which case the names of the list elements are used. The
+#'   time.unit attribute is copied from the spectrum object to the output. Units
+#'   are as follows: If time.unit is second, [W m-2 nm-1] -> [mol s-1 m-2] If
+#'   time.unit is day, [J d-1 m-2 nm-1] -> [mol d-1 m-2]
+#'
+#' @note The last two parameters control speed optimizations. The defaults
+#'   should be suitable in mosts cases. If you will use repeatedly the same SWFs
+#'   on many spectra measured at exactly the same wavelengths you may obtain
+#'   some speed up by setting \code{use.cached.mult=TRUE}. However, be aware
+#'   that you are responsible for ensuring that the wavelengths are the same in
+#'   each call, as the only test done is for the length of the \code{w.length}
+#'   vector.
+#'
+#' @export
+#' @family irradiance functions
+fluence <- function(spct, w.band, unit.out, exposure.time, wb.trim,
+                    use.cached.mult, use.hinges, allow.scaled) UseMethod("fluence")
+
+#' @describeIn fluence Default for generic function
+#'
+#' @export
+#'
+fluence.default <- function(spct, w.band, unit.out, exposure.time,
+                            wb.trim, use.cached.mult, use.hinges, allow.scaled) {
+  warning("'fluence' is not defined for objects of class ", class(spct)[1])
+  return(NA)
+}
+
+#' @describeIn fluence  Calculate photon fluence from a \code{source_spct}
+#'   object and the duration of the exposure
+#'
+#' @export
+#'
+fluence.source_spct <-
+  function(spct, w.band = NULL,
+           unit.out = getOption("photobiology.radiation.unit", default = "energy"),
+           exposure.time = NA,
+           wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
+           use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
+           use.hinges=getOption("photobiology.use.hinges", default=NULL),
+           allow.scaled = FALSE ) {
+    if (!lubridate::is.duration(exposure.time) &&
+        !is.period(exposure.time) &&
+        !is.numeric(exposure.time) ) {
+      warning("Invalid value ", exposure.time, " for 'exposure.time'")
+      exposure.time <- lubridate::duration(NA)
+    }
+
+    return.value <-
+      irrad_spct(spct, w.band=w.band, unit.out=unit.out, quantity="total",
+                 time.unit = exposure.time, wb.trim=wb.trim,
+                 use.cached.mult=use.cached.mult, use.hinges=use.hinges,
+                 allow.scaled = allow.scaled)
+    if (unit.out %in% c("photon", "quantum")) {
+      setattr(return.value, "radiation.unit", "photon fluence (mol m-2)")
+    } else if (unit.out == "energy") {
+      setattr(return.value, "radiation.unit", "energy fluence (J m-2)")
+    }
+    setattr(return.value, "exposure.duration", exposure.time)
+    setattr(return.value, "time.unit", NULL)
+    return(return.value)
+  }
+
+
+# photon fluence ----------------------------------------------------------
+
+#' Calculate photon fluence from spectral irradiance.
+#'
+#' This function returns the photon irradiance (or quantum irradiance) for a
+#' given waveband of a light source spectrum.
+#'
+#' @param spct an R object
+#' @param w.band a list of \code{waveband} objects or a \code{waveband} object
+#' @param exposure.time lubridate::duration
+#' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries
+#'   are trimmed, if FALSE, they are discarded
+#' @param use.cached.mult logical indicating whether multiplier values should be
+#'   cached between calls
+#' @param use.hinges logical indicating whether to use hinges to reduce
+#'   interpolation errors
+#' @param allow.scaled logical indicating whether scaled or normalized spectra
+#'   as argument to spct are flagged as an error
+#'
+#' @keywords manip misc
+#'
+#' @export
+#'
+#' @examples
+#' library(lubridate)
+#' q_fluence(sun.spct,
+#'           w.band = new_waveband(400,700),
+#'           exposure.time = duration(3, "minutes") )
+#'
+#' @return One numeric value for each waveband with no change in scale factor,
+#'   with name attribute set to the name of each waveband unless a named list is
+#'   supplied in which case the names of the list elements are used. The
+#'   exposure.time is copied from the spectrum object to the output as an attibute.
+#'   Units are as follows: moles of photons per exposure.
+#'
+#' @note The last two parameters control speed optimizations. The defaults
+#'   should be suitable in mosts cases. If you will use repeatedly the same SWFs
+#'   on many spectra measured at exactly the same wavelengths you may obtain
+#'   some speed up by setting \code{use.cached.mult=TRUE}. However, be aware
+#'   that you are responsible for ensuring that the wavelengths are the same in
+#'   each call, as the only test done is for the length of the \code{w.length}
+#'   vector.
+#'
+#' @export
+#' @family irradiance functions
+q_fluence <- function(spct, w.band, exposure.time, wb.trim, use.cached.mult,
+                      use.hinges, allow.scaled) UseMethod("q_fluence")
+
+#' @describeIn q_fluence Default for generic function
+#'
+#' @export
+#'
+q_fluence.default <- function(spct, w.band, exposure.time, wb.trim,
+                              use.cached.mult, use.hinges, allow.scaled) {
+  warning("'q_fluence' is not defined for objects of class ", class(spct)[1])
+  return(NA)
+}
+
+#' @describeIn q_fluence  Calculate photon fluence from a \code{source_spct}
+#'   object and the duration of the exposure
+#'
+#' @export
+#'
+q_fluence.source_spct <-
+  function(spct, w.band = NULL,
+           exposure.time = NA,
+           wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
+           use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
+           use.hinges=getOption("photobiology.use.hinges", default=NULL),
+           allow.scaled = FALSE ) {
+    if (!lubridate::is.duration(exposure.time) &&
+        !is.period(exposure.time) &&
+        !is.numeric(exposure.time) ) {
+      warning("Invalid value ", exposure.time, " for 'exposure.time'")
+      exposure.time <- lubridate::duration(NA)
+    }
+
+    return.value <-
+      irrad_spct(spct, w.band=w.band, unit.out="photon", quantity="total",
+                 time.unit = exposure.time, wb.trim=wb.trim,
+                 use.cached.mult=use.cached.mult, use.hinges=use.hinges,
+                 allow.scaled = allow.scaled)
+    setattr(return.value, "radiation.unit", "photon fluence (mol m-2)")
+    setattr(return.value, "exposure.duration", exposure.time)
+    setattr(return.value, "time.unit", NULL)
+    return(return.value)
+  }
+
+
+# energy fluence ----------------------------------------------------------
+
+#' Calculate energy fluence from spectral irradiance.
+#'
+#' This function returns the energy flurnce for a given waveband of a light
+#' source spectrum given the duration of the exposure.
+#'
+#' @param spct an R object
+#' @param w.band a list of \code{waveband} objects or a \code{waveband} object
+#' @param exposure.time lubridate::duration
+#' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries
+#'   are trimmed, if FALSE, they are discarded
+#' @param use.cached.mult logical indicating whether multiplier values should be
+#'   cached between calls
+#' @param use.hinges logical indicating whether to use hinges to reduce
+#'   interpolation errors
+#' @param allow.scaled logical indicating whether scaled or normalized spectra
+#'   as argument to spct are flagged as an error
+#'
+#' @keywords manip misc
+#'
+#' @export
+#'
+#' @examples
+#' library(lubridate)
+#' e_fluence(sun.spct, w.band = new_waveband(400,700),
+#'           exposure.time = duration(3, "minutes") )
+#'
+#' @return One numeric value for each waveband with no change in scale factor,
+#'   with name attribute set to the name of each waveband unless a named list is
+#'   supplied in which case the names of the list elements are used. The
+#'   exposure.time is copied to the output as an attribute. Units are as
+#'   follows: (J) joules per exposure.
+#'
+#' @note The last two parameters control speed optimizations. The defaults
+#'   should be suitable in mosts cases. If you will use repeatedly the same SWFs
+#'   on many spectra measured at exactly the same wavelengths you may obtain
+#'   some speed up by setting \code{use.cached.mult=TRUE}. However, be aware
+#'   that you are responsible for ensuring that the wavelengths are the same in
+#'   each call, as the only test done is for the length of the \code{w.length}
+#'   vector.
+#'
+#' @export
+#' @family irradiance functions
+e_fluence <- function(spct, w.band, exposure.time, wb.trim, use.cached.mult,
+                      use.hinges, allow.scaled) UseMethod("e_fluence")
+
+#' @describeIn e_fluence Default for generic function
+#'
+#' @export
+#'
+e_fluence.default <- function(spct, w.band, exposure.time, wb.trim, use.cached.mult,
+                              use.hinges, allow.scaled) {
+  warning("'e_fluence' is not defined for objects of class ", class(spct)[1])
+  return(NA)
+}
+
+#' @describeIn e_fluence  Calculate energy fluence from a \code{source_spct}
+#'   object and the duration of the exposure.
+#'
+#' @export
+#'
+e_fluence.source_spct <-
+  function(spct, w.band = NULL,
+           exposure.time = NA,
+           wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
+           use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
+           use.hinges=getOption("photobiology.use.hinges", default=NULL),
+           allow.scaled = FALSE ) {
+    if (!lubridate::is.duration(exposure.time) &&
+        !is.period(exposure.time) &&
+        !is.numeric(exposure.time) ) {
+      warning("Invalid value ", exposure.time, " for 'exposure.time'")
+      exposure.time <- lubridate::duration(NA)
+    }
+    return.value <-
+      irrad_spct(spct, w.band=w.band, unit.out="energy", quantity="total",
+                 time.unit = exposure.time, wb.trim=wb.trim,
+                 use.cached.mult=use.cached.mult, use.hinges=use.hinges,
+                 allow.scaled = allow.scaled)
+    setattr(return.value, "radiation.unit", "energy fluence (J m-2)")
+    setattr(return.value, "exposure.duration", exposure.time)
+    setattr(return.value, "time.unit", NULL)
+    return(return.value)
+  }
+
+

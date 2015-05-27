@@ -1,4 +1,6 @@
 library("photobiology")
+library("lubridate")
+
 context("source_spct")
 
 test_that("constructor energy", {
@@ -9,6 +11,8 @@ test_that("constructor energy", {
   my.d.spct <- source_spct(w.length = 400:409, s.e.irrad = 1, time.unit = "day")
   my.e.spct <- source_spct(w.length = 400:409, s.e.irrad = 1, time.unit = "exposure")
   my.b.spct <- source_spct(w.length = 400:409, s.e.irrad = 1, time.unit = "zzz")
+  my.ds.spct <- source_spct(w.length = 400:409, s.e.irrad = 1, time.unit = duration(1, "seconds"))
+  my.dh.spct <- source_spct(w.length = 400:409, s.e.irrad = 1, time.unit = duration(1, "hours"))
 
   expect_warning(my.b.spct <- source_spct(w.length = 400:409, s.e.irrad = 1, time.unit = "zzz"))
   expect_equal(my.spct[["s.e.irrad"]], rep(1, length.out = 10))
@@ -23,6 +27,8 @@ test_that("constructor energy", {
   expect_equal(getTimeUnit(my.d.spct), "day")
   expect_equal(getTimeUnit(my.e.spct), "exposure")
   expect_equal(getTimeUnit(my.b.spct), "unknown")
+  expect_equal(getTimeUnit(my.ds.spct), duration(1, "seconds"))
+  expect_equal(getTimeUnit(my.dh.spct), duration(1, "hours"))
 })
 
 test_that("constructor photon", {
@@ -33,6 +39,8 @@ test_that("constructor photon", {
   my.d.spct <- source_spct(w.length = 400:409, s.q.irrad = 1, time.unit = "day")
   my.e.spct <- source_spct(w.length = 400:409, s.q.irrad = 1, time.unit = "exposure")
   my.b.spct <- source_spct(w.length = 400:409, s.q.irrad = 1, time.unit = "zzz")
+  my.ds.spct <- source_spct(w.length = 400:409, s.q.irrad = 1, time.unit = duration(1, "seconds"))
+  my.dh.spct <- source_spct(w.length = 400:409, s.q.irrad = 1, time.unit = duration(1, "hours"))
 
   expect_warning(my.b.spct <- source_spct(w.length = 400:409, s.q.irrad = 1, time.unit = "zzz"))
   expect_equal(my.spct[["s.q.irrad"]], rep(1, length.out = 10))
@@ -47,6 +55,8 @@ test_that("constructor photon", {
   expect_equal(getTimeUnit(my.d.spct), "day")
   expect_equal(getTimeUnit(my.e.spct), "exposure")
   expect_equal(getTimeUnit(my.b.spct), "unknown")
+  expect_equal(getTimeUnit(my.ds.spct), duration(1, "seconds"))
+  expect_equal(getTimeUnit(my.dh.spct), duration(1, "hours"))
 })
 
 test_that("oper energy energy", {
@@ -194,3 +204,144 @@ test_that("math photon photon", {
 
   options(photobiology.radiation.unit = NULL)
 })
+
+test_that("irrad e_irrad q_irrad", {
+  irrad.result <- 269.1249
+  expect_equal(as.numeric(irrad(sun.spct)), irrad.result, tolerance = 1e-6)
+  expect_equal(as.numeric(irrad(sun.spct, quantity = "total")), irrad.result, tolerance = 1e-6)
+  expect_equal(as.numeric(irrad(sun.spct, quantity = "average")),
+               irrad.result / spread(sun.spct), tolerance = 1e-6)
+  expect_equal(as.numeric(irrad(sun.spct, quantity = "mean")),
+               irrad.result / spread(sun.spct), tolerance = 1e-6)
+  expect_equal(as.numeric(irrad(sun.spct, time.unit = "second")),
+               irrad.result, tolerance = 1e-6)
+  expect_equal(as.numeric(irrad(sun.spct, time.unit = "hour")),
+               irrad.result * 3600, tolerance = 1e-6)
+  expect_equal(as.numeric(irrad(sun.spct, time.unit = duration(1))),
+               irrad.result, tolerance = 1e-6)
+  expect_equal(as.numeric(irrad(sun.spct, time.unit = duration(0.5))),
+               irrad.result * 0.5, tolerance = 1e-6)
+  expect_equal(as.numeric(irrad(sun.spct, time.unit = duration(1, "minutes"))),
+               irrad.result * 60, tolerance = 1e-6)
+  expect_equal(as.numeric(irrad(sun.spct, time.unit = minutes(1))),
+               irrad.result * 60, tolerance = 1e-6)
+  expect_equal(as.numeric(irrad(sun.spct, time.unit = hms("00:01:00"))),
+               irrad.result * 60, tolerance = 1e-6)
+  expect_equal(sum(as.numeric(irrad(sun.spct, quantity = "relative",
+                                    w.band = split_bands(sun.spct, length.out = 3)))), 1)
+  expect_equal(sum(as.numeric(irrad(sun.spct, quantity = "relative",
+                                    w.band = split_bands(c(400, 600), length.out = 3)))), 1)
+  expect_equal(sum(as.numeric(irrad(sun.spct, quantity = "contribution",
+                                    w.band = split_bands(sun.spct, length.out = 3)))), 1)
+  expect_less_than(sum(as.numeric(irrad(sun.spct, quantity = "contribution",
+                                        w.band = split_bands(c(400, 600), length.out = 3)))), 1)
+  expect_equal(sum(as.numeric(irrad(trim_spct(sun.spct, range = c(400, 600)),
+                                    quantity = "contribution",
+                                    w.band = split_bands(c(400, 600), length.out = 3)))), 1)
+
+  expect_equal(as.numeric(e_irrad(sun.spct)), irrad.result, tolerance = 1e-6)
+  expect_equal(as.numeric(e_irrad(sun.spct, time.unit = "second")),
+               irrad.result, tolerance = 1e-6)
+  expect_equal(as.numeric(e_irrad(sun.spct, time.unit = "hour")),
+               irrad.result * 3600, tolerance = 1e-6)
+  expect_equal(as.numeric(e_irrad(sun.spct, time.unit = duration(1))),
+               irrad.result, tolerance = 1e-6)
+  expect_equal(as.numeric(e_irrad(sun.spct, time.unit = duration(0.5))),
+               irrad.result * 0.5, tolerance = 1e-6)
+  expect_equal(as.numeric(e_irrad(sun.spct, time.unit = duration(1, "minutes"))),
+               irrad.result * 60, tolerance = 1e-6)
+  expect_equal(as.numeric(e_irrad(sun.spct, time.unit = minutes(1))),
+               irrad.result * 60, tolerance = 1e-6)
+  expect_equal(as.numeric(e_irrad(sun.spct, time.unit = hms("00:01:00"))),
+               irrad.result * 60, tolerance = 1e-6)
+  expect_equal(sum(as.numeric(e_irrad(sun.spct, quantity = "relative",
+                                      w.band = split_bands(sun.spct, length.out = 3)))), 1)
+  expect_equal(sum(as.numeric(e_irrad(sun.spct, quantity = "relative",
+                                      w.band = split_bands(c(400, 600), length.out = 3)))), 1)
+  expect_equal(sum(as.numeric(e_irrad(sun.spct, quantity = "contribution",
+                                      w.band = split_bands(sun.spct, length.out = 3)))), 1)
+  expect_less_than(sum(as.numeric(e_irrad(sun.spct, quantity = "contribution",
+                                          w.band = split_bands(c(400, 600), length.out = 3)))), 1)
+  expect_equal(sum(as.numeric(e_irrad(trim_spct(sun.spct, range = c(400, 600)),
+                                      quantity = "contribution",
+                                      w.band = split_bands(c(400, 600), length.out = 3)))), 1)
+
+
+  irrad.result <- 0.001255336
+
+  expect_equal(as.numeric(q_irrad(sun.spct)), irrad.result, tolerance = 1e-6)
+  expect_equal(as.numeric(q_irrad(sun.spct, time.unit = "second")),
+               irrad.result, tolerance = 1e-6)
+  expect_equal(as.numeric(q_irrad(sun.spct, time.unit = "hour")),
+               irrad.result * 3600, tolerance = 1e-6)
+  expect_equal(as.numeric(q_irrad(sun.spct, time.unit = duration(1))),
+               irrad.result, tolerance = 1e-6)
+  expect_equal(as.numeric(q_irrad(sun.spct, time.unit = duration(0.5))),
+               irrad.result * 0.5, tolerance = 1e-6)
+  expect_equal(as.numeric(q_irrad(sun.spct, time.unit = duration(1, "minutes"))),
+               irrad.result * 60, tolerance = 1e-6)
+  expect_equal(as.numeric(q_irrad(sun.spct, time.unit = minutes(1))),
+               irrad.result * 60, tolerance = 1e-6)
+  expect_equal(as.numeric(q_irrad(sun.spct, time.unit = hms("00:01:00"))),
+               irrad.result * 60, tolerance = 1e-6)
+  expect_equal(as.numeric(q_irrad(sun.spct, quantity = "relative")), 1)
+  expect_equal(as.numeric(q_irrad(sun.spct, quantity = "relative.pc")), 100)
+  expect_equal(as.numeric(q_irrad(sun.spct, quantity = "contribution")), 1)
+  expect_equal(as.numeric(q_irrad(sun.spct, quantity = "contribution.pc")), 100)
+  expect_equal(sum(as.numeric(q_irrad(sun.spct, quantity = "relative",
+                                      w.band = split_bands(sun.spct, length.out = 3)))), 1)
+  expect_equal(sum(as.numeric(q_irrad(sun.spct, quantity = "relative",
+                                      w.band = split_bands(c(400, 600), length.out = 3)))), 1)
+  expect_equal(sum(as.numeric(q_irrad(sun.spct, quantity = "contribution",
+                                      w.band = split_bands(sun.spct, length.out = 3)))), 1)
+  expect_less_than(sum(as.numeric(q_irrad(sun.spct, quantity = "contribution",
+                                          w.band = split_bands(c(400, 600), length.out = 3)))), 1)
+  expect_equal(sum(as.numeric(q_irrad(trim_spct(sun.spct, range = c(400, 600)),
+                                      quantity = "contribution",
+                                      w.band = split_bands(c(400, 600), length.out = 3)))), 1)
+})
+
+test_that("fluence e_fluence q_fluence", {
+  fluence.result <- 269.1249
+  expect_error(fluence(sun.spct))
+  expect_error(fluence(sun.spct, exposure.time = "second"))
+  expect_error(fluence(sun.spct, exposure.time = "hour"))
+  expect_equal(as.numeric(fluence(sun.spct, exposure.time = duration(1))),
+               fluence.result, tolerance = 1e-6)
+  expect_equal(as.numeric(fluence(sun.spct, exposure.time = duration(0.5))),
+               fluence.result * 0.5, tolerance = 1e-6)
+  expect_equal(as.numeric(fluence(sun.spct, exposure.time = duration(1, "minutes"))),
+               fluence.result * 60, tolerance = 1e-6)
+  expect_equal(as.numeric(fluence(sun.spct, exposure.time = minutes(1))),
+               fluence.result * 60, tolerance = 1e-6)
+  expect_equal(as.numeric(fluence(sun.spct, exposure.time = hms("00:01:00"))),
+               fluence.result * 60, tolerance = 1e-6)
+  expect_error(e_fluence(sun.spct))
+  expect_error(e_fluence(sun.spct, exposure.time = "second"))
+  expect_error(e_fluence(sun.spct, exposure.time = "hour"))
+  expect_equal(as.numeric(e_fluence(sun.spct, exposure.time = duration(1))),
+               fluence.result, tolerance = 1e-6)
+  expect_equal(as.numeric(e_fluence(sun.spct, exposure.time = duration(0.5))),
+               fluence.result * 0.5, tolerance = 1e-6)
+  expect_equal(as.numeric(e_fluence(sun.spct, exposure.time = duration(1, "minutes"))),
+               fluence.result * 60, tolerance = 1e-6)
+  expect_equal(as.numeric(e_fluence(sun.spct, exposure.time = minutes(1))),
+               fluence.result * 60, tolerance = 1e-6)
+  expect_equal(as.numeric(e_fluence(sun.spct, exposure.time = hms("00:01:00"))),
+               fluence.result * 60, tolerance = 1e-6)
+  fluence.result <- 0.001255336
+  expect_error(q_fluence(sun.spct))
+  expect_error(q_fluence(sun.spct, exposure.time = "second"))
+  expect_error(q_fluence(sun.spct, exposure.time = "hour"))
+  expect_equal(as.numeric(q_fluence(sun.spct, exposure.time = duration(1))),
+               fluence.result, tolerance = 1e-6)
+  expect_equal(as.numeric(q_fluence(sun.spct, exposure.time = duration(0.5))),
+               fluence.result * 0.5, tolerance = 1e-6)
+  expect_equal(as.numeric(q_fluence(sun.spct, exposure.time = duration(1, "minutes"))),
+               fluence.result * 60, tolerance = 1e-6)
+  expect_equal(as.numeric(q_fluence(sun.spct, exposure.time = minutes(1))),
+               fluence.result * 60, tolerance = 1e-6)
+  expect_equal(as.numeric(q_fluence(sun.spct, exposure.time = hms("00:01:00"))),
+               fluence.result * 60, tolerance = 1e-6)
+})
+

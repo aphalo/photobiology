@@ -228,11 +228,11 @@ and attribute values.
 An assumption of the package is that wavelengths are always expressed in nanometres ($1~\Unit{nm} = 1 \cdot 10^{-9}\,\Unit{m}$). If the data to be analysed uses different units for wavelengths, e.g.\ Ångstrom ($1~\Unit{Å} = 1 \cdot 10^{-10}\,\Unit{m$}), the values need to be re-scaled before any calculations. Table \ref{tab:spct:units} lists the units of expression for the different variables listed in  Table  \ref{tab:spct:classes}.
 
 \begin{table}
-\caption[Variables for spectral data]{Variables used for spectral data and their units of expression: A: as stored in objects of the spectral classes, B: also recognized by the \texttt{set} family of functions for spectra and automatically converted.}\label{tab:spct:units}
+\caption[Variables for spectral data]{Variables used for spectral data and their units of expression: A: as stored in objects of the spectral classes, B: also recognized by the \texttt{set} family of functions for spectra and automatically converted. \texttt{time.unit} accepts in addition to the character strings listed in the table, objects of classes \texttt{lubridate::duration} and \texttt{period}, in addition \texttt{numeric} values are interpreted as seconds. \texttt{exposure.time} accepts these same values, but not the character strings.}\label{tab:spct:units}
 \centering
 \begin{tabular}{lll}
 \toprule
-Variables & Attribute value & Unit of expression \\
+Variables & Unit of expression & Attribute value \\
 \midrule
 A: stored & & \\
 \midrule
@@ -240,20 +240,24 @@ w.length & nm &  \\
 cps & \cps & \\
 s.e.irrad &  \wattnm & time.unit = "second" \\
 s.e.irrad &  \jdaynm & time.unit = "day" \\
-s.e.irrad &  \jtotnm & time.unit = "exposure" \\
+s.e.irrad &  varies & time.unit = \emph{duration} \\
 s.q.irrad &  \molnm & time.unit = "second" \\
 s.q.irrad &  \moldaynm & time.unit = "day" \\
 s.q.irrad &  \moltotnm & time.unit = "exposure" \\
+s.q.irrad &  varies & time.unit = \emph{duration} \\
 Tfr & [0,1] &  Tfr.type = "total" \\
 Tfr & [0,1] &  Tfr.type = "internal" \\
+A   & a.u.  &  Tfr.type = "internal" \\
 Rfr & [0,1] &  Rfr.type = "total" \\
 Rfr & [0,1] &  Rfr.type = "specular" \\
 s.e.response & \eresponsenm &  time.unit = "second" \\
 s.e.response & \eresponsedaynm &  time.unit = "day" \\
 s.e.response & \eresponsetotnm &  time.unit = "exposure" \\
+s.e.response & varies &  time.unit = \emph{duration} \\
 s.q.response & \qresponsenm &  time.unit = "second" \\
 s.q.response & \qresponsedaynm &  time.unit = "day" \\
 s.q.response & \qresponsetotnm &  time.unit = "exposure" \\
+s.q.response & varies &  time.unit = \emph{duration} \\
 x, y, z & [0,1] & \\
 \midrule
 B: converted & & \\
@@ -274,6 +278,8 @@ Energy irradiances are assumed to be expressed in \watt and photon irradiances i
 The default time unit used is \emph{second}, but \emph{day} and \emph{exposure} can be used by supplying the arguments \texttt{"day"} or \texttt{"exposure"}\footnote{The meaning of \texttt{"exposure"} is the total exposure  time, in other words, fluence instead of irradiance.}
 to a parameter of the constructor of \texttt{source\_spct} objects.
 
+The attributes are normally set when an object spectral object is created, either using default values of values supplied as arguments to the constructor.
+
 \begin{framed}
 \noindent
 Not respecting these assumptions will yield completely wrong results! It is extremely important to make sure that the wavelengths are in nanometres as this is what all functions expect. If wavelength values are in the wrong units, the action-spectra weights and quantum conversions will be wrongly calculated, and the values returned by most functions completely wrong, without warning.
@@ -283,22 +289,22 @@ If spectral irradiance data is in \wattnm, and the wavelength in nm, as is the c
 Macam spectroradiometers, the data can be used directly and functions in the package will return irradiances in \watt.
 
 If, for example, the spectral irradiance data output by a spectroradiometer is expressed in \mwattnm,
-and the wavelengths are in Ångstrom then to obtain correct results when using any of the packages in the suite, we
-need to rescale the data.
+and the wavelengths are in Ångstrom then to obtain correct results when using any of the packages in the suite, we need to rescale the data when creating a new object.
 
 <<example-1, eval=FALSE>>=
 # not run
-energy_irradiance(wavelength/10, irrad/1000)
+my.spct <- source_spct(w.length = wavelength/10, s.e.irrad = irrad/1000)
 @
 
-In the example above, we take advantage of the behaviour of the S language: an operation between a scalar
-and vector, is equivalent to applying this operation to each member of the vector.
+In the example above, we take advantage of the behaviour of the S language: an operation between a scalar and vector, is equivalent to applying this operation to each member of the vector.
 Consequently, in the code above, each value from the vector of wavelengths is divided
 by 10, and each value in the vector of spectral irradiances is divided by 1000.
 
-\subsection{Spectral object creations}
+\subsection{Spectral objects}
 
 There are basically three different approaches to the creation of spectra. The first approach consist in setting the class attribute of an existing data frame or data table, in simple terms, converting an existing object into a spectral object. This approach avoids creating a copy of the data, and should be fastest. The second approach is to use an `as' function to create a new spectral object from a data frame or data table (the original object remains unchanged, and independent of the spectral object). The third approach is to use a function with the same name as the spectrum object class, and supply the data as numeric vector arguments. With the first two approaches the variables should be suitably named so that they can be recognized, in the third approach the formal argument to which the actual argument vector is supplied determines how it is interpreted.
+
+Before giving examples of how to construct objects to store spectral data we show how to query the class of an object, and how to test the type of an spectrum.
 
 \subsubsection{Querying the class of a spectrum object}
 
@@ -339,6 +345,15 @@ getBSWFUsed(sun.spct * CIE())
 \texttt{filter\_spct} and \texttt{object\_spct} objects have a \texttt{Tfr.type} attribute which can take one of two values \texttt{"total"} or \texttt{"internal"}, the default being \texttt{"total"}. However, if the spectral transmittance or absorbance data is internal, meaning excluding the contribution of reflection, then the attribute should be set when the object is constructed. It is also possible to set the attribute for an existing object with function \texttt{setTfrType}, and to query the value of the attribute  for an existing object with function \texttt{setTfrType}.
 
 \texttt{reflector\_spct} and \texttt{object\_spct} objects have a \texttt{Rfr.type} attribute which can take one of two values \texttt{"total"} or \texttt{"specular"}, the default being \texttt{"total"}. However, if the spectral reflectance data is specular, meaning excluding the contribution of scattered reflection, then the attribute should be set when the object is constructed. It is also possible to set the attribute for an existing object with function \texttt{setRfrType}, and to query the value of the attribute for an existing object with function \texttt{setRfrType}.
+
+\texttt{source\_spct} and \texttt{response\_spct} objects have a \texttt{time.unit} attribute. This can contain either character strings or \texttt{duration} objects as defined in package \texttt{lubridate}. When querying the \texttt{time.unit} of an object, by default the stored value is returned, but it is possibly to force the returned object to be a \texttt{lubridate::duration}, in which case \emph{character strings} are converted into \texttt{duration}, possibly \texttt{NA}.
+
+<<>>=
+getTimeUnit(sun.spct)
+getTimeUnit(sun.daily.spct)
+getTimeUnit(sun.spct, force.duration = TRUE)
+getTimeUnit(sun.daily.spct, force.duration = TRUE)
+@
 
 \begin{framed}
 \noindent
@@ -592,6 +607,19 @@ l.spct
 
 Function \texttt{source\_spct} accepts an argument for setting the \texttt{time.unit}, and functions \texttt{filter\_spct} and \texttt{object\_spct} accept an argument for setting the \texttt{Tfr.type} attributes, with the same defaults as described above. Functions \texttt{source\_spct}, \texttt{filter\_spct}, \texttt{reflector\_spct} and \texttt{object\_spct} have a \texttt{strict.range} formal argument, that alters checks as described in section \ref{sec:set:spct} above.
 
+\subsubsection{Setting attributes}
+
+In most cases attributes are set during the constructions of spectral objects and should be changed with \emph{set} functions only to correct earlier mistakes, or exceptionally update objects created earlier versions of the package.
+
+Sometimes it may be useful to change the time unit used for expresing spectral irradiance or spectral response, and this can be achieved with function \texttt{convertTimeUnit}.
+
+<<>>=
+ten.minutes.spct <-
+  convertTimeUnit(sun.spct, time.unit  = duration(10, "minutes"), byref = FALSE)
+head(ten.minutes.spct)
+getTimeUnit(ten.minutes.spct)
+@
+
 \subsubsection{Row binding spectra}
 
 Sometimes, especially for plotting, we may want to row-bind spectra. When the aim is that the returned object
@@ -604,7 +632,6 @@ row-binding spectra, with the necessary checks for consistency of the bound spec
 # STOPGAP
 shade.spct <- copy(sun.spct)
 @
-
 
 <<>>=
 rbindspct(list(sun.spct, shade.spct))
@@ -1130,6 +1157,19 @@ q_irrad(sun.spct, PAR()) * 1e6 # umol s-1 m-2
 q_irrad(sun.daily.spct, PAR()) # mol d-1 m-2
 @
 
+It is also possible to supply a time unit to use as basis of expression for the returned value, but be aware that conversion into a loger time unit is only valid for sources like lamps, which have an output the remains constant in time.
+
+<<>>=
+irrad(sun.spct, PAR(), time.unit = "hour")
+irrad(sun.spct, PAR(), time.unit = duration(8, "hours"))
+@
+
+Using a shorter time unit than the original, yields an average value re-expressed on a new time unit base.
+
+<<>>=
+irrad(sun.daily.spct, PAR(), time.unit = "second")
+@
+
 We can use predefined waveband constructors, waveband objects, or define wavebands on the fly.
 
 <<>>=
@@ -1204,6 +1244,32 @@ with(sun.data,
 )
 @
 
+\subsection{Calculating fluence}
+
+The code using \texttt{spct} objects is simple, to integrate the whole spectrum we can use code similar to that for irradiances, but we need to always supply \texttt{exposure.time} as it has no default. The exposure time is a \texttt{lubridate::duration}, but any argument accepted by \texttt{as.duration} can also be used.
+
+<<>>=
+fluence(sun.spct, exposure.time = duration(1, "hours"))
+fluence(sun.spct, exposure.time = 3600) # seconds
+fluence(sun.spct, exposure.time = hms("01:00:00"))
+@
+
+and, to integrate a range of wavelengths, in the example, photosynthetically active radiation, we use \texttt{PAR()} that is a predefined waveband constructor.
+
+<<>>=
+fluence(sun.spct, PAR(), unit.out = "photon",
+        exposure.time = duration(1, "hours"))
+@
+
+<<>>=
+fluence(sun.spct, CIE(),
+        exposure.time = duration(30, "minutes"))
+@
+
+<<>>=
+fluence(sun.spct, CIE(),
+        exposure.time = duration(0.5, "hours"))
+@
 
 \subsection{Calculating ratios}
 

@@ -300,6 +300,9 @@ check.object_spct <- function(x, byref=TRUE, strict.range = TRUE, multiple.wl = 
 #' @describeIn check Specialization for response_spct.
 #' @export
 check.response_spct <- function(x, byref=TRUE, strict.range=TRUE, multiple.wl = 1L, ...) {
+
+  x <- checkTimeUnit(x)
+
   if (exists("s.e.response", x, mode = "numeric", inherits=FALSE)) {
     return(x)
   } else if (exists("s.q.response", x, mode = "numeric", inherits=FALSE)) {
@@ -353,10 +356,8 @@ check.source_spct <- function(x, byref=TRUE, strict.range=FALSE, multiple.wl = 1
     }
   }
 
-  if (is.null(getTimeUnit(x))) {
-    setTimeUnit(x, "second")
-    warning("Missing attribute 'time.unit' set to 'second'")
-  }
+  x <- checkTimeUnit(x)
+
   if (is.null(is_effective(x))) {
     setBSWFUsed(x, "none")
     warning("Missing atrribute 'bswf.used' set to 'none'")
@@ -1004,7 +1005,9 @@ as.chroma_spct <- function(x) {
 #'
 #' @param x a source_spct object
 #' @param time.unit a character string, either "second", "hour", "day",
-#'   "exposure" or "none"
+#'   "exposure" or "none", or a lubridate::duration
+#' @param override.ok logical Flag that can be used to silence warning when
+#'   overwritting an existing attribute value (used internally)
 #'
 #' @return x
 #'
@@ -1017,7 +1020,18 @@ as.chroma_spct <- function(x) {
 #' @export
 #' @family time attribute functions
 #'
-setTimeUnit <- function(x, time.unit=c("second", "hour", "day", "exposure", "none")) {
+setTimeUnit <- function(x,
+                        time.unit = c("second", "hour", "day", "exposure", "none"),
+                        override.ok = FALSE) {
+  old.time.unit <- getTimeUnit(x)
+  override.ok <- override.ok ||
+    is.character(old.time.unit) &&
+    old.time.unit %in% c("unknown", "none", time.unit)
+  if (!override.ok) {
+    warning("Overrriding existing 'time.unit' '", old.time.unit,
+            "' with '", time.unit, "' may invalidate data!")
+  }
+
   if (length(time.unit) > 1) {
     if (getTimeUnit(x) != "unknown") {
       time.unit <- getTimeUnit(x)
@@ -1026,13 +1040,20 @@ setTimeUnit <- function(x, time.unit=c("second", "hour", "day", "exposure", "non
     }
   }
   if (is.source_spct(x) || is.response_spct(x)) {
-    if  (!(time.unit %in% c("second", "hour", "day", "none", "exposure", "unknown"))) {
-      warning("Invalid 'time.unit' argument, only 'second', 'hour', 'day', 'exposure' and 'none' supported.")
-      time.unit <- "unknown"
+    if (is.character(time.unit)) {
+      if (!(time.unit %in% c("second", "hour", "day", "none", "exposure", "unknown"))) {
+        warning("Unrecognized 'time.unit' argument ", time.unit, " set to 'unknown'.")
+        time.unit <- "unknown"
+      }
+      else if (lubridate::is.duration(time.unit)) {
+        if (time.unit <= duration(0, "seconds")) {
+          stop("When 'time.unit' is a duration, it must be > 0")
+        }
+      }
     }
     setattr(x, "time.unit", time.unit)
   }
-  return(x)
+  invisible(x)
 }
 
 #' Get the "time.unit" attribute of an existing source_spct object
@@ -1040,26 +1061,149 @@ setTimeUnit <- function(x, time.unit=c("second", "hour", "day", "exposure", "non
 #' Funtion to read the "time.unit" attribute
 #'
 #' @param x a source_spct object
+#' @param force.duration logical If TRUE a lubridate::duration is returned even
+#'   if the object attribute is a character string, if no conversion is possible
+#'   NA is returned.
 #'
-#' @return character string
+#' @return character string or a lubridate::duration
 #'
-#' @note if x is not a \code{filter_spct} or a \code{response_spct} object, NA
-#' is retruned
+#' @note if x is not a \code{source_spct} or a \code{response_spct} object, NA
+#' is returned
 #'
 #' @export
 #' @family time attribute functions
 #'
-getTimeUnit <- function(x) {
+getTimeUnit <- function(x, force.duration = FALSE) {
   if (is.source_spct(x) || is.response_spct(x)) {
     time.unit <- attr(x, "time.unit", exact = TRUE)
     if (is.null(time.unit)) {
       # need to handle objects created with old versions
       time.unit <- "unknown"
     }
-    return(time.unit[[1]])
+    # needed because of bad handling of defaults in constructor
+    if (force.duration && is.character(time.unit)) {
+      time.unit <- time.unit[[1]]
+      time.unit <- char2duration(time.unit)
+    }
+    return(time.unit)
   } else {
     return(NA)
   }
+}
+
+#' Convert the "time.unit" attribute of an existing source_spct object
+#'
+#' Funtion to set the "time.unit" attribute and simultaneously rescaling the
+#' spectral data to be expressed in the new time unit. The change is done
+#' by reference ('in place')
+#'
+#' @param x a source_spct object
+#' @param time.unit a character string, either "second", "hour", "day",
+#'   "exposure" or "none", or a lubridate::duration
+#' @param byref logical indicating if new object will be created by reference or
+#'   by copy of \code{x}
+#'
+#' @return x possibly with the \code{time.unit} attribute modified
+#'
+#' @note if x is not a \code{source_spct} or a \code{response_spct} object, or
+#'   time.unit is NULL x is returned unchanged, if the existing or new time.unit
+#'   cannot be converted to a duration, then the returned spectrum will contain
+#'   NAs.
+#'
+#' @export
+#' @family time attribute functions
+#'
+convertTimeUnit <- function(x, time.unit = NULL, byref = TRUE) {
+  if (byref) x.out <- x else x.out <- copy(x)
+  x.out <- checkTimeUnit(x.out)
+
+  if (is.null(time.unit)) invisible(x.out)
+
+  new.time.unit <- char2duration(time.unit)
+  old.time.unit <- getTimeUnit(x.out, force.duration = TRUE)
+
+  factor <- as.numeric(new.time.unit) / as.numeric(old.time.unit)
+
+  if (is.source_spct(x.out)) {
+    columns <- intersect(names(x.out), c("s.e.irrad", "s.q.irrad") )
+    if ("s.e.irrad" %in% columns) {
+      x.out[ , s.e.irrad := s.e.irrad * factor]
+    }
+    if ("s.q.irrad" %in% columns) {
+      x.out[ , s.q.irrad := s.q.irrad * factor]
+    }
+  } else if (is.response_spct(x.out)) {
+    columns <- intersect(names(x.out), c("s.e.response", "s.q.response") )
+    if ("s.e.response" %in% columns) {
+      x.out[ , s.e.response := s.e.response * factor]
+    }
+    if ("s.q.response" %in% columns) {
+      x.out[ , s.q.response := s.q.response * factor]
+    }
+  } else {
+    invisible(x.out)
+  }
+  if (length(setdiff(names(x.out), c("w.length", columns))) > 0) {
+    warning("Only data in '", paste(columns, collapse = "', '"), "' converted to time unit '", time.unit, "'")
+  }
+  setTimeUnit(x.out, time.unit, override.ok = TRUE)
+
+  invisible(x.out)
+}
+
+
+#' Check the "time.unit" attribute of an existing source_spct object
+#'
+#' Funtion to read the "time.unit" attribute
+#'
+#' @param x a source_spct object
+#'
+#' @return x possibly with the \code{time.unit} attribute modified
+#'
+#' @note if x is not a \code{source_spct} or a \code{response_spct} object, NA
+#' is returned
+#'
+#' @export
+#' @family time attribute functions
+#'
+checkTimeUnit <- function(x) {
+  if (is.source_spct(x) || is.response_spct(x)) {
+    time.unit <- getTimeUnit(x)
+    if (is.null(time.unit)) {
+      setTimeUnit(x, "second")
+      warning("Missing attribute 'time.unit' set to 'second'")
+    }
+
+    if (is.character(time.unit) &&
+        !(time.unit %in% c("second", "minute", "hour", "day", "exposure", "none", "unknown"))) {
+      stop("'time.unit' ",  time.unit, " is unknown")
+    } else if (lubridate::is.duration(time.unit)) {
+      if (time.unit <= lubridate::duration(0, "seconds")) {
+        stop("When 'time.unit' is a duration, it must be > 0")
+      }
+    } else if (!is.character(time.unit)) {
+      stop("'time.unit' must be of class character or lubridate::duration")
+    }
+  }
+  invisible(x)
+}
+
+# private
+char2duration <- function(time.unit) {
+  if (is.character(time.unit)) {
+    time.duration <- switch(time.unit,
+                        second  = lubridate::duration(1, "seconds"),
+                        minute  = lubridate::duration(1, "minutes"),
+                        hour    = lubridate::duration(1, "hours"),
+                        day     = lubridate::duration(1, "days"),
+                        exposure = lubridate::duration(NA),
+                        none    = lubridate::duration(NA),
+                        unknown = lubridate::duration(NA)
+    )
+  } else if (lubridate::is.duration(time.unit)) {
+    time.duration <- time.unit
+  }
+  return(time.duration)
 }
 
 
@@ -1189,7 +1333,7 @@ setTfrType <- function(x, Tfr.type=c("total", "internal")) {
 getTfrType <- function(x) {
   if (is.filter_spct(x) || is.object_spct(x)) {
     Tfr.type <- attr(x, "Tfr.type", exact = TRUE)
-    if (is.null(Tfr.type)) {
+    if (is.null(Tfr.type) || is.na(Tfr.type)) {
       # need to handle objects created with old versions
       Tfr.type <- "unknown"
     }
@@ -1254,7 +1398,7 @@ setRfrType <- function(x, Rfr.type=c("total", "specular")) {
 getRfrType <- function(x) {
   if (is.reflector_spct(x) || is.object_spct(x)) {
     Rfr.type <- attr(x, "Rfr.type", exact = TRUE)
-    if (is.null(Rfr.type)) {
+    if (is.null(Rfr.type) || is.na(Rfr.type)) {
       # need to handle objects created with old versions
       Rfr.type <- "unknown"
     }

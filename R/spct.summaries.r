@@ -10,11 +10,9 @@
 #' @param ... additional arguments affecting the summary produced, ignored in
 #'   current version
 #'
-#' @method summary generic_spct
-#'
 #' @return A summary object matching the class of \code{object}.
 #'
-#' @export summary.generic_spct
+#' @export
 #'
 summary.generic_spct <- function(object, digits = max(3, getOption("digits")-3), ...) {
   z <- c(
@@ -24,17 +22,26 @@ summary.generic_spct <- function(object, digits = max(3, getOption("digits")-3),
     w.length.step = stepsize(object)[1]
   )
   z <- signif(z, digits)
-  class(z) <- c("summary.generic_spct", class(z))
+  class(z) <- c("summary_generic_spct", class(z))
   return(z)
 }
 
 # @describeIn summary.generic_spct Summary of a "source_spct" object.
 #'
+#' @param time.unit character or lubridate::duration
+#'
 #' @export
 #' @rdname summary.generic_spct
 #'
-summary.source_spct <- function(object, digits = max(3, getOption("digits")-3), ...) {
-  time.unit <- getTimeUnit(object)
+summary.source_spct <- function(object,
+                                digits = max(3, getOption("digits")-3),
+                                time.unit = NULL,
+                                ...) {
+  if (!is.null(time.unit)) {
+    object <- convertTimeUnit(object, time.unit = time.unit, byref = FALSE)
+  } else {
+    time.unit <- getTimeUnit(object)
+  }
   bswf.used <- getBSWFUsed(object)
   z <- c(
     max.w.length = max(object),
@@ -49,7 +56,7 @@ summary.source_spct <- function(object, digits = max(3, getOption("digits")-3), 
   z <- signif(z, digits)
   attr(z, "time.unit") <- time.unit
   attr(z, "bswf.used") <- bswf.used
-  class(z) <- c("summary.source_spct", class(z))
+  class(z) <- c("summary_source_spct", class(z))
   return(z)
 }
 
@@ -71,7 +78,7 @@ summary.filter_spct <- function(object, digits = max(3, getOption("digits")-3), 
   )
   z <- signif(z, digits)
   attr(z, "Tfr.type") <- Tfr.type
-  class(z) <- c("summary.filter_spct", class(z))
+  class(z) <- c("summary_filter_spct", class(z))
   return(z)
 }
 
@@ -93,7 +100,7 @@ summary.reflector_spct <- function(object, digits = max(3, getOption("digits")-3
   )
   z <- signif(z, digits)
   attr(z, "Rfr.type") <- Rfr.type
-  class(z) <- c("summary.reflector_spct", class(z))
+  class(z) <- c("summary_reflector_spct", class(z))
   return(z)
 }
 
@@ -102,8 +109,15 @@ summary.reflector_spct <- function(object, digits = max(3, getOption("digits")-3
 #' @export
 #' @rdname summary.generic_spct
 #'
-summary.response_spct <- function(object, digits = max(3, getOption("digits")-3), ...) {
-  time.unit <- getTimeUnit(object)
+summary.response_spct <- function(object,
+                                  digits = max(3, getOption("digits")-3),
+                                  time.unit = NULL,
+                                  ...) {
+  if (!is.null(time.unit)) {
+    object <- convertTimeUnit(object, time.unit = time.unit, byref = FALSE)
+  } else {
+    time.unit <- getTimeUnit(object)
+  }
   z <- c(
     max.w.length = max(object),
     min.w.length = min(object),
@@ -111,11 +125,13 @@ summary.response_spct <- function(object, digits = max(3, getOption("digits")-3)
     w.length.step = stepsize(object)[1],
     max.response = max(object$s.e.response),
     min.response = min(object$s.e.response),
-    total.response = as.numeric(integrate_spct(object)),
-    mean.response = as.numeric(integrate_spct(object) / spread(object))
+    total.q_response = as.numeric(q_response(object, quantity = "total")),
+    mean.q_response = as.numeric(q_response(object, quantity = "mean")),
+    total.e_response = as.numeric(e_response(object, quantity = "total")),
+    mean.e_response = as.numeric(e_response(object, quantity = "mean"))
   )
   z <- signif(z, digits)
-  class(z) <- c("summary.response_spct", class(z))
+  class(z) <- c("summary_response_spct", class(z))
   attr(z, "time.unit") <- time.unit
   return(z)
 }
@@ -136,7 +152,7 @@ summary.chroma_spct <- function(object, digits = max(3, getOption("digits")-3), 
     z.max = max(object[["z"]])
   )
   z <- signif(z, digits)
-  class(z) <- c("summary.chroma_spct", class(z))
+  class(z) <- c("summary_chroma_spct", class(z))
   return(z)
 }
 
@@ -150,22 +166,20 @@ summary.chroma_spct <- function(object, digits = max(3, getOption("digits")-3), 
 #' @param x An object of one of the summary classes for spectra
 #' @param ... not used in current version
 #'
-#' @method print summary.generic_spct
+#' @export
 #'
-#' @export print.summary.generic_spct
-#'
-print.summary.generic_spct <- function(x, ...) {
+print.summary_generic_spct <- function(x, ...) {
   time.unit <- attr(x, "time.unit")
   cat("wavelength ranges from", x[["min.w.length"]], "to", x[["max.w.length"]], "nm \n")
   cat("largest wavelength step size is", x[["w.length.step"]], "nm \n")
 }
 
-# @describeIn print.summary.generic_spct Print a "summary.source_spct" object.
+# @describeIn print.summary_generic_spct Print a "summary_source_spct" object.
 #'
 #' @export
-#' @rdname print.summary.generic_spct
+#' @rdname print.summary_generic_spct
 #'
-print.summary.source_spct <- function(x, ...) {
+print.summary_source_spct <- function(x, ...) {
   time.unit <- attr(x, "time.unit")
   bswf.used <- attr(x, "bswf.used")
   cat("wavelength ranges from", x[["min.w.length"]], "to", x[["max.w.length"]], "nm \n")
@@ -173,27 +187,30 @@ print.summary.source_spct <- function(x, ...) {
   if (bswf.used != "none") {
     cat("effective irradiances based on BSWF =", bswf.used, "\n")
   }
-  if (time.unit == "day") {
-    cat("spectral irradiance ranges from", x[["min.s.e.irrad"]] * 1e-3, "to", x[["max.s.e.irrad"]] * 1e-3, "kJ d-1 m-2 nm-1 \n")
-    cat("energy irradiance is", x[["e.irrad"]] * 1e-6, "MJ m-2 \n")
+  if (time.unit == "day" || time.unit == lubridate::duration(1, "days")) {
+    cat("spectral irradiance ranges from", x[["min.s.e.irrad"]] * 1e-3,
+        "to", x[["max.s.e.irrad"]] * 1e-3, "kJ d-1 m-2 nm-1 \n")
+    cat("energy irradiance is", x[["e.irrad"]] * 1e-6, "MJ d-1 m-2 \n")
     cat("photon irradiance is", x[["q.irrad"]], "mol d-1 m-2 \n")
-  } else if (time.unit == "second") {
-    cat("spectral irradiance ranges from", x[["min.s.e.irrad"]], "to", x[["max.s.e.irrad"]], "W m-2 nm-1 \n")
+  } else if (time.unit == "second" || time.unit == lubridate::duration(1, "seconds")) {
+    cat("spectral irradiance ranges from", x[["min.s.e.irrad"]],
+        "to", x[["max.s.e.irrad"]], "W m-2 nm-1 \n")
     cat("energy irradiance is", x[["e.irrad"]], "W m-2 \n")
     cat("photon irradiance is", x[["q.irrad"]] * 1e6, "umol s-1 m-2\n")
   } else {
-    cat("spectral irradiance ranges from", x[["min.s.e.irrad"]], "to", x[["max.s.e.irrad"]], "\n")
-    cat("energy irradiance is", x[["e.irrad"]], "\n")
-    cat("photon irradiance is", x[["q.irrad"]], "\n")
+    cat("spectral irradiance ranges from", x[["min.s.e.irrad"]],
+        "to", x[["max.s.e.irrad"]], "J m-2 nm-1 per", as.character(time.unit), "\n")
+    cat("energy irradiance is", x[["e.irrad"]], "J m-2 per", as.character(time.unit), "\n")
+    cat("photon irradiance is", x[["q.irrad"]], "mol m-2 per", as.character(time.unit), "\n")
   }
 }
 
-# @describeIn print.summary.generic_spct Print a "summary.filter_spct" object.
+# @describeIn print.summary_generic_spct Print a "summary_filter_spct" object.
 #'
 #' @export
-#' @rdname print.summary.generic_spct
+#' @rdname print.summary_generic_spct
 #'
-print.summary.filter_spct <- function(x, ...) {
+print.summary_filter_spct <- function(x, ...) {
   Tfr.type <- attr(x, "Tfr.type")
   cat("wavelength ranges from", x[["min.w.length"]], "to", x[["max.w.length"]], "nm \n")
   cat("largest wavelength step size is", x[["w.length.step"]], "nm \n")
@@ -202,12 +219,12 @@ print.summary.filter_spct <- function(x, ...) {
   cat("Quantity is", Tfr.type, "\n")
 }
 
-# @describeIn print.summary.generic_spct Print a "summary.reflector_spct" object.
+# @describeIn print.summary_generic_spct Print a "summary_reflector_spct" object.
 #'
 #' @export
-#' @rdname print.summary.generic_spct
+#' @rdname print.summary_generic_spct
 #'
-print.summary.reflector_spct <- function(x, ...) {
+print.summary_reflector_spct <- function(x, ...) {
   Rfr.type <- attr(x, "Rfr.type")
   cat("wavelength ranges from", x[["min.w.length"]], "to", x[["max.w.length"]], "nm \n")
   cat("largest wavelength step size is", x[["w.length.step"]], "nm \n")
@@ -216,30 +233,39 @@ print.summary.reflector_spct <- function(x, ...) {
   cat("Quantity is", Rfr.type, "\n")
 }
 
-# @describeIn print.summary.generic_spct Print a "summary.response_spct" object.
+# @describeIn print.summary_generic_spct Print a "summary_response_spct" object.
 #'
 #' @export
-#' @rdname print.summary.generic_spct
+#' @rdname print.summary_generic_spct
 #'
-print.summary.response_spct <- function(x, ...) {
+print.summary_response_spct <- function(x, ...) {
   time.unit <- attr(x, "time.unit")
   cat("wavelength ranges from", x[["min.w.length"]], "to", x[["max.w.length"]], "nm \n")
   cat("largest wavelength step size is", x[["w.length.step"]], "nm \n")
-  cat("Spectral response ranges from", x[["min.response"]], "to", x[["max.response"]], "nm-1 \n")
-  cat("Mean response is", x[["mean.response"]], "nm-1 \n")
-  cat("Time unit is", time.unit, "\n")
+  cat("Spectral response ranges from", x[["min.response"]],
+      "to", x[["max.response"]], "response units W-1 nm-1 per", as.character(time.unit), "\n")
+  cat("Mean response is", x[["mean.e_response"]], "response units W-1 nm-1 per",
+      as.character(time.unit), "\n")
+  cat("Total response is", x[["total.e_response"]], "response units J-1 per",
+      as.character(time.unit), "\n")
+  cat("Mean response is", x[["mean.q_response"]], "response units mol-1 nm-1 per",
+      as.character(time.unit), "\n")
+  cat("Total response is", x[["total.q_response"]], "response units mol-1 per",
+      as.character(time.unit), "\n")
 }
 
-# @describeIn print.summary.generic_spct Print a "summary.chrome.spct" object.
+# @describeIn print.summary_generic_spct Print a "summary_chrome.spct" object.
 #'
 #' @export
-#' @rdname print.summary.generic_spct
+#' @rdname print.summary_generic_spct
 #'
-print.summary.chroma_spct <- function(x, ...) {
+print.summary_chroma_spct <- function(x, ...) {
   time.unit <- attr(x, "time.unit")
   cat("wavelength ranges from", x[["min.w.length"]], "to", x[["max.w.length"]], "nm \n")
   cat("largest wavelength step size is", x[["w.length.step"]], "nm \n")
-  cat(paste("maximum (x, y, z) values are (", paste(x[["x.max"]], x[["y.max"]], x[["z.max"]], sep=", "), ")", sep=""), "\n")
+  cat(paste("maximum (x, y, z) values are (",
+            paste(x[["x.max"]], x[["y.max"]], x[["z.max"]], sep=", "),
+            ")", sep=""), "\n")
 }
 
 # Color -------------------------------------------------------------------
@@ -312,19 +338,19 @@ min.generic_spct <- function(..., na.rm=FALSE) {
 #'
 #' @param x an R object
 #' @param ... not used in current version
-#' @export stepsize
+#' @export
 #' @family wavelength summaries
 stepsize <- function(x, ...) UseMethod("stepsize")
 
 #' @describeIn stepsize Default function usable on numeric vectors.
-#' @export stepsize.default
+#' @export
 stepsize.default <- function(x, ...) {
   return(range(diff(x)))
 }
 
 #' @describeIn stepsize  Method for "generic_spct" objects for generic function.
 #'
-#' @export stepsize.generic_spct
+#' @export
 #'
 #' @examples
 #' stepsize(sun.spct)

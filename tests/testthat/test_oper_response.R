@@ -1,4 +1,5 @@
 library("photobiology")
+library("lubridate")
 context("response_spct")
 
 test_that("constructor energy", {
@@ -9,6 +10,8 @@ test_that("constructor energy", {
   my.d.spct <- response_spct(w.length = 400:409, s.e.response = 1, time.unit = "day")
   my.e.spct <- response_spct(w.length = 400:409, s.e.response = 1, time.unit = "exposure")
   my.b.spct <- response_spct(w.length = 400:409, s.e.response = 1, time.unit = "zzz")
+  my.ds.spct <- response_spct(w.length = 400:409, s.e.response = 1, time.unit = duration(1, "seconds"))
+  my.dh.spct <- response_spct(w.length = 400:409, s.e.response = 1, time.unit = duration(1, "hours"))
 
   expect_warning(my.b.spct <- response_spct(w.length = 400:409, s.e.response = 1, time.unit = "zzz"))
   expect_equal(my.spct[["s.e.response"]], rep(1, length.out = 10))
@@ -23,6 +26,8 @@ test_that("constructor energy", {
   expect_equal(getTimeUnit(my.d.spct), "day")
   expect_equal(getTimeUnit(my.e.spct), "exposure")
   expect_equal(getTimeUnit(my.b.spct), "unknown")
+  expect_equal(getTimeUnit(my.ds.spct), duration(1, "seconds"))
+  expect_equal(getTimeUnit(my.dh.spct), duration(1, "hours"))
 })
 
 test_that("constructor photon", {
@@ -33,6 +38,8 @@ test_that("constructor photon", {
   my.d.spct <- response_spct(w.length = 400:409, s.q.response = 1, time.unit = "day")
   my.e.spct <- response_spct(w.length = 400:409, s.q.response = 1, time.unit = "exposure")
   my.b.spct <- response_spct(w.length = 400:409, s.q.response = 1, time.unit = "zzz")
+  my.ds.spct <- response_spct(w.length = 400:409, s.q.response = 1, time.unit = duration(1, "seconds"))
+  my.dh.spct <- response_spct(w.length = 400:409, s.q.response = 1, time.unit = duration(1, "hours"))
 
   expect_warning(my.b.spct <- response_spct(w.length = 400:409, s.q.response = 1, time.unit = "zzz"))
   expect_equal(my.spct[["s.q.response"]], rep(1, length.out = 10))
@@ -47,6 +54,8 @@ test_that("constructor photon", {
   expect_equal(getTimeUnit(my.d.spct), "day")
   expect_equal(getTimeUnit(my.e.spct), "exposure")
   expect_equal(getTimeUnit(my.b.spct), "unknown")
+  expect_equal(getTimeUnit(my.ds.spct), duration(1, "seconds"))
+  expect_equal(getTimeUnit(my.dh.spct), duration(1, "hours"))
 })
 
 test_that("oper energy energy", {
@@ -193,4 +202,67 @@ test_that("math photon photon", {
   expect_equal(sqrt(my.q.spct)[["s.q.response"]],  rep(sqrt(1), length.out = 10))
 
   options(photobiology.radiation.unit = NULL)
+})
+
+test_that("response e_response q_response", {
+  my.spct <- response_spct(w.length = 300:700, s.e.response = 1)
+
+  response.result <- 400
+  expect_equal(as.numeric(response(my.spct)), response.result, tolerance = 1e-6)
+  expect_equal(as.numeric(response(my.spct, quantity = "total")), response.result, tolerance = 1e-6)
+  expect_equal(as.numeric(response(my.spct, quantity = "average")), 1, tolerance = 1e-6)
+  expect_equal(as.numeric(response(my.spct, quantity = "mean")), 1, tolerance = 1e-6)
+  expect_equal(as.numeric(response(my.spct, time.unit = "second")),
+               response.result, tolerance = 1e-6)
+  expect_equal(as.numeric(response(my.spct, time.unit = "hour")),
+               response.result * 3600, tolerance = 1e-6)
+  expect_equal(as.numeric(response(my.spct, time.unit = duration(1))),
+               response.result, tolerance = 1e-6)
+  expect_equal(as.numeric(response(my.spct, time.unit = duration(0.5))),
+               response.result * 0.5, tolerance = 1e-6)
+  expect_equal(as.numeric(response(my.spct, time.unit = duration(1, "minutes"))),
+               response.result * 60, tolerance = 1e-6)
+  expect_equal(sum(as.numeric(response(my.spct, quantity = "total",
+                                       w.band = split_bands(my.spct, length.out = 3)))),
+               response.result)
+  expect_equal(sum(as.numeric(response(my.spct, quantity = "average",
+                                       w.band = split_bands(my.spct, length.out = 3)))), 3)
+  expect_equal(sum(as.numeric(response(my.spct, quantity = "average",
+                                       w.band = split_bands(my.spct, length.out = 5)))), 5)
+
+  expect_equal(sum(as.numeric(response(my.spct, quantity = "relative",
+                                      w.band = split_bands(my.spct, length.out = 3)))), 1)
+  expect_equal(sum(as.numeric(response(my.spct, quantity = "relative",
+                                      w.band = split_bands(c(400, 600), length.out = 3)))), 1)
+  expect_equal(sum(as.numeric(response(my.spct, quantity = "contribution",
+                                      w.band = split_bands(my.spct, length.out = 3)))), 1)
+  expect_less_than(sum(as.numeric(response(my.spct, quantity = "contribution",
+                                          w.band = split_bands(c(400, 600), length.out = 3)))), 1)
+  expect_equal(sum(as.numeric(response(trim_spct(my.spct, range = c(400, 600)),
+                                      quantity = "contribution",
+                                      w.band = split_bands(c(400, 600), length.out = 3)))), 1)
+
+  expect_equal(as.numeric(e_response(my.spct)), response.result, tolerance = 1e-6)
+  expect_equal(as.numeric(e_response(my.spct, time.unit = "second")),
+               response.result, tolerance = 1e-6)
+  expect_equal(as.numeric(e_response(my.spct, time.unit = "hour")),
+               response.result * 3600, tolerance = 1e-6)
+  expect_equal(as.numeric(e_response(my.spct, time.unit = duration(1))),
+               response.result, tolerance = 1e-6)
+  expect_equal(as.numeric(e_response(my.spct, time.unit = duration(0.5))),
+               response.result * 0.5, tolerance = 1e-6)
+  expect_equal(as.numeric(e_response(my.spct, time.unit = duration(1, "minutes"))),
+               response.result * 60, tolerance = 1e-6)
+  response.result <- 101360909
+  expect_equal(as.numeric(q_response(my.spct)), response.result, tolerance = 1e-6)
+  expect_equal(as.numeric(q_response(my.spct, time.unit = "second")),
+               response.result, tolerance = 1e-6)
+  expect_equal(as.numeric(q_response(my.spct, time.unit = "hour")),
+               response.result * 3600, tolerance = 1e-6)
+  expect_equal(as.numeric(q_response(my.spct, time.unit = duration(1))),
+               response.result, tolerance = 1e-6)
+  expect_equal(as.numeric(q_response(my.spct, time.unit = duration(0.5))),
+               response.result * 0.5, tolerance = 1e-6)
+  expect_equal(as.numeric(q_response(my.spct, time.unit = duration(1, "minutes"))),
+               response.result * 60, tolerance = 1e-6)
 })

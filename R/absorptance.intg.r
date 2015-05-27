@@ -22,7 +22,7 @@
 #'
 #' @examples
 #' library(photobiologyFilters)
-#' absorptance(polyester.new.spct, new_waveband(400,700))
+#' absorptance(ug1.spct, new_waveband(400,700))
 #'
 #' @export
 #'
@@ -54,44 +54,58 @@ absorptance.object_spct <-
 #' @export
 #'
 absorptance.filter_spct <-
-  function(spct, w.band=NULL, quantity="average",
-           wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
-           use.hinges=getOption("photobiology.use.hinges", default=NULL) ) {
-    spct <- as.object_spct(spct)
-    absorptance_spct(spct, w.band = w.band, quantity = quantity,
-                    wb.trim = wb.trim, use.hinges = use.hinges)
+  function(spct, w.band = NULL, quantity = "average",
+           wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
+           use.hinges = getOption("photobiology.use.hinges", default = NULL) ) {
+    if (getTfrType(spct) != "internal") {
+      warning("Internal absorptance cannot be calculed from total transmittance alone")
+      return(NA)
+    } else {
+      absorptance_spct(spct = spct, w.band = w.band, quantity = quantity,
+                       wb.trim = wb.trim, use.hinges = use.hinges)
+    }
   }
 
 #' Calculate absorptance from spectral absorptance.
 #'
-#' This function returns the summary absorptance for a given
-#' waveband of a \code{object_spct} object
+#' This function returns the summary absorptance for a given waveband of a
+#' \code{object_spct} object
 #'
 #' @param spct object_spct
 #' @param w.band waveband or list of waveband objects The wavebands determine
 #'   the region(s) of the spectrum that are summarized.
 #' @param quantity character string
-#' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries are trimmed, if FALSE, they are discarded
-#' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
+#' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries
+#'   are trimmed, if FALSE, they are discarded
+#' @param use.hinges logical indicating whether to use hinges to reduce
+#'   interpolation errors
 #'
 #' @keywords internal
 #'
 absorptance_spct <-
-  function(spct, w.band=NULL, quantity="average",
-           wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
-           use.hinges=getOption("photobiology.use.hinges", default=NULL) ) {
+  function(spct, w.band = NULL, quantity = "average",
+           wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
+           use.hinges = getOption("photobiology.use.hinges", default = NULL) ) {
     if (is_normalized(spct) || is_scaled(spct)) {
       warning("The espectral data has been normalized or scaled, making impossible to calculate absorptance")
       return(NA)
     }
     spct <- copy(spct)
+
     # we calculate absorptance
     Tfr.type <- getTfrType(spct)
     Rfr.type <- getRfrType(spct)
-    if (Tfr.type == "total" && Rfr.type == "total") {
+    if (is.filter_spct(spct) && Tfr.type == "internal") {
+      Afr.type <- Tfr.type
+      Rfr.type <- "unknown" # otherwise NA would require special handling
+      A2T(spct, action = "add", byref = TRUE)
+      spct[ , Afr := 1 - Tfr]
+    } else if (Tfr.type == "total" && Rfr.type == "total") {
+      Afr.type <- "total"
       spct[ , Afr := 1 - Tfr - Rfr]
     } else if (Tfr.type == "internal" && Rfr.type == "total") {
-      spct[ , Afr == (1 - Tfr) * (1 - Rfr)]
+      Afr.type <- "total"
+      spct[ , Afr := (1 - Tfr) * (1 - Rfr)]
     } else if (Tfr.type == "unknown" || Rfr.type == "unknown") {
       warning("'unknown' Tfr.type or Rfr.type, skipping absorptance calculation")
       absorptance <- NA
@@ -107,8 +121,8 @@ absorptance_spct <-
     } else {
       stop("Failed assertion with Tfr.type: ", Tfr.type, "and Rfr.type: ", Rfr.type)
     }
-    spct <- spct[ , .(w.length, Afr)] # data.table removes attributes!
-    setGenericSpct(spct)
+    temp.spct <- spct[ , .(w.length, Afr)] # data.table removes attributes!
+    setGenericSpct(temp.spct)
     # if the waveband is undefined then use all data
     if (is.null(w.band)){
       w.band <- waveband(spct)
@@ -130,7 +144,8 @@ absorptance_spct <-
     # spectral resolution data, and speed up the calculations
     # a lot in such cases
     if (is.null(use.hinges)) {
-      use.hinges <- stepsize(spct)[2] > getOption("photobiology.auto.hinges.limit", default = 0.5) # nm
+      use.hinges <-
+        stepsize(spct)[2] > getOption("photobiology.auto.hinges.limit", default = 0.5) # nm
     }
     # we collect all hinges and insert them in one go
     # this may alter a little the returned values
@@ -143,7 +158,7 @@ absorptance_spct <-
         }
       }
       if (!is.null(all.hinges)) {
-        spct <- insert_spct_hinges(spct, all.hinges)
+        temp.spct <- insert_spct_hinges(temp.spct, all.hinges)
       }
     }
 
@@ -169,12 +184,12 @@ absorptance_spct <-
         }
       }
       # we calculate the average transmittance.
-      absorptance[i] <- integrate_spct(trim_spct(spct, wb, use.hinges=FALSE))
+      absorptance[i] <- integrate_spct(trim_spct(temp.spct, wb, use.hinges=FALSE))
     }
 
     if (quantity %in% c("contribution", "contribution.pc")) {
-      total <- absorptance_spct(spct, w.band=NULL,
-                                  quantity="total", use.hinges=FALSE)
+      total <- absorptance_spct(spct, w.band = NULL,
+                                  quantity = "total", use.hinges = FALSE)
       absorptance <- absorptance / total
       if (quantity == "contribution.pc") {
         absorptance <- absorptance * 1e2
@@ -193,7 +208,7 @@ absorptance_spct <-
       names(absorptance) <- "out of range"
     }
     names(absorptance) <- paste(names(absorptance), wb.name)
-    setattr(absorptance, "Afr.type", "total")
+    setattr(absorptance, "Afr.type", Afr.type)
     setattr(absorptance, "radiation.unit", paste("absorptance", quantity))
     return(absorptance)
   }

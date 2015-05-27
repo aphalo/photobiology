@@ -11,6 +11,7 @@
 #' @param unit.out character Allowed values "energy", and "photon", or its alias
 #'   "quantum"
 #' @param quantity character Allowed values ""
+#' @param time.unit character or lubridate::duration
 #' @param wb.trim logical Flag telling if wavebands crossing spectral data boundaries
 #'   are trimmed or ignored
 #' @param use.hinges logical indicating whether to use hinges to reduce
@@ -28,13 +29,13 @@
 #' @export
 #' @family response functions
 #'
-response <- function(spct, w.band, unit.out, quantity, wb.trim, use.hinges) UseMethod("response")
+response <- function(spct, w.band, unit.out, quantity, time.unit, wb.trim, use.hinges) UseMethod("response")
 
 #' @describeIn response Default for generic function
 #'
 #' @export
 #'
-response.default <- function(spct, w.band, unit.out, quantity, wb.trim, use.hinges) {
+response.default <- function(spct, w.band, unit.out, quantity, time.unit, wb.trim, use.hinges) {
   warning("'response' is not defined for objects of class ", class(spct)[1])
   return(NA)
 }
@@ -44,48 +45,67 @@ response.default <- function(spct, w.band, unit.out, quantity, wb.trim, use.hing
 #' @export
 #'
 response.response_spct <-
-  function(spct, w.band=NULL,
-           unit.out=getOption("photobiology.radiation.unit", default="energy"),
-           quantity="total",
-           wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
-           use.hinges=getOption("photobiology.use.hinges", default=NULL) ) {
-    resp_spct(spct=spct, w.band=w.band, unit.out=unit.out,
-                  quantity=quantity, wb.trim=wb.trim,
-                  use.hinges=use.hinges )
+  function(spct, w.band = NULL,
+           unit.out = getOption("photobiology.radiation.unit", default = "energy"),
+           quantity = "total",
+           time.unit = NULL,
+           wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
+           use.hinges = getOption("photobiology.use.hinges", default = NULL) ) {
+    resp_spct(spct = spct, w.band = w.band, unit.out = unit.out,
+              quantity = quantity, time.unit = time.unit, wb.trim = wb.trim,
+              use.hinges = use.hinges )
   }
 
 #' Calculate response from spectral response
 #'
-#' This function returns the mean response for a given
-#' waveband and a response spectrum.
+#' This function returns the mean response for a given waveband and a response
+#' spectrum.
 #'
 #' @param spct an object of class response_spct"
 #' @param w.band a waveband object or a list of waveband objects
-#' @param unit.out character with allowed values "energy", and "photon", or its alias "quantum"
-#' @param quantity character
-#' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries are trimmed, if FALSE, they are discarded
-#' @param use.hinges logical indicating whether to use hinges to reduce interpolation errors
+#' @param unit.out character with allowed values "energy", and "photon", or its
+#'   alias "quantum"
+#' @param quantity character with allowed values "total", "average" ("mean"),
+#'   "contibution", "contribution.pc", "relative", "relative.pc"
+#' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries
+#'   are trimmed, if FALSE, they are discarded
+#' @param use.hinges logical indicating whether to use hinges to reduce
+#'   interpolation errors
 #'
-#' @return a single numeric value expressed either as a fraction of one or a percentage, or a
-#' vector of the same length as the list of wave.bands.
+#' @return a single numeric value expressed either as a fraction of one or a
+#'   percentage, or a vector of the same length as the list of wave.bands.
 #' @keywords internal
 #'
-#' @note The parameter \code{use.hinges} controls speed optimization. The defaults should be suitable
-#' in mosts cases. Only the range of wavelengths in the wavebands is used and all BSWFs are ignored.
+#' @note The parameter \code{use.hinges} controls speed optimization. The
+#'   defaults should be suitable in mosts cases. Only the range of wavelengths
+#'   in the wavebands is used and all BSWFs are ignored.
 #'
 #' @keywords internal
 #'
 resp_spct <-
-  function(spct, w.band, unit.out, quantity, wb.trim, use.hinges) {
+  function(spct, w.band, unit.out, quantity, time.unit, wb.trim, use.hinges) {
     if (is_normalized(spct) || is_scaled(spct)) {
-      warning("The espectral data has been normalized or scaled, making impossible to calculate integrated response")
+      warning("The espectral data has been normalized or scaled, ",
+              "making impossible to calculate integrated response")
       return(NA)
     }
     # makes "quantum" synonym for "photon" without changes to other code
     if (unit.out == "quantum") {
       unit.out <- "photon"
     }
-    time.unit <- getTimeUnit(spct)
+
+    data.time.unit <- getTimeUnit(spct)
+
+    if (!is.null(time.unit) && time.unit != data.time.unit) {
+      if (!lubridate::is.duration(time.unit) && !is.character(time.unit)) {
+        message("converting 'time.unit' ", time.unit, " into a lubridate::duration")
+        time.unit <- lubridate::as.duration(time.unit)
+      }
+      spct <- convertTimeUnit(spct, time.unit = time.unit, byref = FALSE)
+    } else {
+      time.unit <- data.time.unit
+    }
+
     if (unit.out=="photon") {
       spct <- e2q(spct)
       # the line below removes all non-data.frame attributes
@@ -118,7 +138,8 @@ resp_spct <-
     # spectrum. This can produce small errors for high
     # spectral resolution data, but speed up the calculations.
     if (is.null(use.hinges)) {
-      use.hinges <- stepsize(spct)[2] > getOption("photobiology.auto.hinges.limit", default = 0.5) # nm
+      use.hinges <- stepsize(spct)[2] >
+        getOption("photobiology.auto.hinges.limit", default = 0.5) # nm
     }
 
     # we collect all hinges and insert them in one go
@@ -152,21 +173,24 @@ resp_spct <-
       if (no_names_flag) {
         if (is_effective(wb)) {
           warning("Using only wavelength range from a weighted waveband object.")
-          wb_name[i] <- paste("range", as.character(signif(min(wb), 4)), as.character(signif(max(wb), 4)), sep=".")
+          wb_name[i] <- paste("range", as.character(signif(min(wb), 4)),
+                              as.character(signif(max(wb), 4)), sep=".")
         } else {
           wb_name[i] <- wb$name
         }
       }
       # we calculate the integrated response.
-      response[i] <- integrate_spct(trim_spct(spct, wb, use.hinges=FALSE))
+      response[i] <- integrate_spct(trim_spct(spct, wb, use.hinges = FALSE))
     }
     if (quantity %in% c("contribution", "contribution.pc")) {
       if (any(sapply(w.band, is_effective))) {
-        warning("'quantity '", quantity, "' not supported when using BSWFs, returning 'total' instead")
+        warning("'quantity '", quantity,
+                "' not supported when using BSWFs, returning 'total' instead")
         quantity <- "total"
       } else {
-        total <- resp_spct(spct, w.band=NULL, unit.out=unit.out,
-                            quantity="total", use.hinges=FALSE)
+        total <- resp_spct(spct, w.band = NULL, unit.out = unit.out,
+                           quantity = "total", time.unit = time.unit,
+                           wb.trim = FALSE, use.hinges = FALSE)
         response <- response / total
         if (quantity == "contribution.pc") {
           response <- response * 1e2
@@ -174,7 +198,8 @@ resp_spct <-
       }
     } else if (quantity %in% c("relative", "relative.pc")) {
       if (any(sapply(w.band, is_effective))) {
-        warning("'quantity '", quantity, "' not supported when using BSWFs, returning 'total' instead")
+        warning("'quantity '", quantity,
+                "' not supported when using BSWFs, returning 'total' instead")
         quantity <- "total"
       } else {
         total <- sum(response)
@@ -183,7 +208,7 @@ resp_spct <-
           response <- response * 1e2
         }
       }
-    } else if (quantity == "average") {
+    } else if (quantity %in% c("average", "mean")) {
       response <- response / sapply(w.band, spread)
     } else if (quantity != "total") {
       warning("'quantity '", quantity, "' is invalid, returning 'total' instead")
@@ -210,6 +235,7 @@ resp_spct <-
 #' @param spct an R object
 #' @param w.band a waveband object or a list of waveband objects
 #' @param quantity character
+#' @param time.unit character or lubridate::duration
 #' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries
 #'   are trimmed, if FALSE, they are discarded
 #' @param use.hinges logical indicating whether to use hinges to reduce
@@ -232,13 +258,13 @@ resp_spct <-
 #'
 #' @family response functions
 #'
-e_response <- function(spct, w.band, quantity, wb.trim, use.hinges) UseMethod("e_response")
+e_response <- function(spct, w.band, quantity, time.unit, wb.trim, use.hinges) UseMethod("e_response")
 
 #' @describeIn e_response Default method for generic function
 #'
 #' @export
 #'
-e_response.default <- function(spct, w.band, quantity, wb.trim, use.hinges) {
+e_response.default <- function(spct, w.band, quantity, time.unit, wb.trim, use.hinges) {
   warning("'e_response' is not defined for objects of class ", class(spct)[1])
   return(NA)
 }
@@ -248,12 +274,14 @@ e_response.default <- function(spct, w.band, quantity, wb.trim, use.hinges) {
 #' @export
 #'
 e_response.response_spct <-
-  function(spct, w.band=NULL, quantity="total",
+  function(spct, w.band = NULL,
+           quantity = "total",
+           time.unit = NULL,
            wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
            use.hinges=getOption("photobiology.use.hinges", default=NULL) ) {
     resp_spct(spct=spct, w.band=w.band, unit.out="energy",
-                  quantity=quantity, wb.trim=wb.trim,
-                  use.hinges=use.hinges )
+              quantity=quantity, time.unit=time.unit, wb.trim=wb.trim,
+              use.hinges=use.hinges )
   }
 
 # q_response methods --------------------------------------------------------
@@ -266,6 +294,7 @@ e_response.response_spct <-
 #' @param spct an R object
 #' @param w.band a waveband object or a list of waveband objects
 #' @param quantity character
+#' @param time.unit character or lubridate::duration
 #' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries
 #'   are trimmed, if FALSE, they are discarded
 #' @param use.hinges logical indicating whether to use hinges to reduce
@@ -288,13 +317,13 @@ e_response.response_spct <-
 #'
 #' @family response functions
 #'
-q_response <- function(spct, w.band, quantity, wb.trim, use.hinges) UseMethod("q_response")
+q_response <- function(spct, w.band, quantity, time.unit, wb.trim, use.hinges) UseMethod("q_response")
 
 #' @describeIn q_response Default method for generic function
 #'
 #' @export
 #'
-q_response.default <- function(spct, w.band, quantity, wb.trim, use.hinges) {
+q_response.default <- function(spct, w.band, quantity, time.unit, wb.trim, use.hinges) {
   warning("'q_response' is not defined for objects of class ", class(spct)[1])
   return(NA)
 }
@@ -304,11 +333,13 @@ q_response.default <- function(spct, w.band, quantity, wb.trim, use.hinges) {
 #' @export
 #'
 q_response.response_spct <-
-  function(spct, w.band=NULL, quantity="total",
-           wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
-           use.hinges=getOption("photobiology.use.hinges", default=NULL) ) {
-    resp_spct(spct=spct, w.band=w.band, unit.out="photon",
-                  quantity=quantity, wb.trim=wb.trim,
-                  use.hinges=use.hinges )
+  function(spct, w.band = NULL,
+           quantity = "total",
+           time.unit = NULL,
+           wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
+           use.hinges = getOption("photobiology.use.hinges", default = NULL) ) {
+    resp_spct(spct = spct, w.band = w.band, unit.out = "photon",
+              quantity = quantity, time.unit = time.unit, wb.trim = wb.trim,
+              use.hinges = use.hinges )
   }
 
