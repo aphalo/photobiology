@@ -7,6 +7,11 @@ Implement peak fitting in addition to current peak search algorithm, so
 that location of peaks is more precise (Found peak positions in-between wavelength values
 in spectral data possible).
 
+photobiology 0.6.5
+==================
+
+Update dependency versions.
+
 photobiology 0.6.4
 ==================
 
