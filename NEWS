@@ -7,6 +7,12 @@ Implement peak fitting in addition to current peak search algorithm, so
 that location of peaks is more precise (Found peak positions in-between wavelength values
 in spectral data possible).
 
+photobiology 0.6.5
+==================
+
+Add suport for "twilight" definition as angle in degrees in function
+day_night(), and different angles for sunrise and sunset.
+
 photobiology 0.6.4
 ==================
 

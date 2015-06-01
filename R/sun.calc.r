@@ -132,7 +132,7 @@ sun_angles <- function(t = now(), lon = 0, lat = 0, use_refraction = FALSE)
 #'
 #' This function returns the times of sunrise and sunset for a given location
 #' and date. It can be also used to find the time for an arbitrary solar
-#' elevation between zenith and -30 degrees by supplying  a "twilight" angle
+#' elevation between 90 and -90 degrees by supplying "twilight" angle(s)
 #' as argument.
 #'
 #' @param t array of POSIXct times, any valid TZ is allowed, default is current
@@ -140,12 +140,15 @@ sun_angles <- function(t = now(), lon = 0, lat = 0, use_refraction = FALSE)
 #' @param lon numeric array of longitudes (degrees)
 #' @param lat numeric array of latitudes (degrees)
 #' @param twilight character string, one of "none", "civil", "nautical",
-#'   "astronomical", or a \code{numeric} value giving a solar elevation angle in
-#'   degrees (negative if below the horizon)
+#'   "astronomical", or a \code{numeric} vector of length one, or two, giving
+#'   solar elevation angle(s) in degrees (negative if below the horizon).
 #' @param tz character string incading time zone to be used in output
 #'
 #' @return a list with fields sunrise time, sunset time, day length, night
 #'   length. The times are returned in the same TZ as used for the date.
+#'
+#' @note If twilight is a numeric vector of length two, the element with index 1
+#'   is used for sunrise and that with index 2 for sunset.
 #'
 #' @keywords manip misc
 #' @export
@@ -155,25 +158,34 @@ sun_angles <- function(t = now(), lon = 0, lat = 0, use_refraction = FALSE)
 #' day_night(ymd("2014-05-30"), lat = 30, lon = 0)
 #' day_night(ymd("2014-05-30"), lat = 30, lon = 0, twilight = "civil")
 #' day_night(ymd("2014-05-30"), lat = 30, lon = 0, twilight = -6)
+#' day_night(ymd("2014-05-30"), lat = 30, lon = 0, twilight = c(-6, 30))
 
 day_night <- function(t = today(), lon = 0, lat = 0, twilight = "none", tz=Sys.timezone()) {
   if (!is.numeric(twilight)) {
     if (twilight=="none") {
-      twilight_angle <- 0
+      twilight_angle <- c(0, 0)
     } else if (twilight=="civil") {
-      twilight_angle <- -6
+      twilight_angle <- c(-6, -6)
     } else if (twilight=="nautical") {
-      twilight_angle <- -12
+      twilight_angle <- c(-12, -12)
     } else if (twilight=="astronomical") {
-      twilight_angle <- -18
+      twilight_angle <- c(-18, -18)
     } else {
-      twilight_angle <- NA
+      twilight_angle <- c(NA, NA)
     }
   } else {
-    twilight_angle <- ifelse(twilight < 90 & twilight > -33, twilight, NA)
+    if (length(twilight) == 1) {
+      twilight_angle <- rep(twilight, 2)
+    } else if (length(twilight) == 2) {
+      twilight_angle <- twilight
+    } else {
+      twilight_angle <- c(NA, NA)
+    }
+    twilight_angle <- ifelse(twilight_angle < 90, twilight_angle, NA)
+    twilight_angle <- ifelse(twilight_angle > -90, twilight_angle, NA)
   }
-  if (is.na(twilight_angle)) {
-    warning("Unrecognized argument for 'twilight' :", twilight)
+  if (any(is.na(twilight_angle))) {
+    warning("Unrecognized argument value for 'twilight': ", twilight)
     return(NA)
   }
   if (!is.POSIXct(t)) {
@@ -193,10 +205,10 @@ day_night <- function(t = today(), lon = 0, lat = 0, twilight = "none", tz=Sys.t
     t_temp <- as.POSIXct(x, origin=origin, tz="UTC")
     return(sun_angles(t_temp,
                       lon=lon,
-                      lat=lat)$elevation -
-             twilight_angle)
+                      lat=lat)$elevation - twlght_angl)
   }
 
+  twlght_angl <- 0
   noon <- try(
     optimize(f=altitude, interval=c(t_num + 7200, t_num + 86400 - 7200), maximum=TRUE)$maximum
   )
@@ -205,6 +217,7 @@ day_night <- function(t = today(), lon = 0, lat = 0, twilight = "none", tz=Sys.t
   }
   noon_time <- as.POSIXct(noon, tz=tz, origin=origin)
 
+  twlght_angl <- twilight_angle[1]
   rise <- try(
     uniroot(f=altitude, lower = noon - 86400/2, upper=noon)$root,
     silent=TRUE)
@@ -213,6 +226,7 @@ day_night <- function(t = today(), lon = 0, lat = 0, twilight = "none", tz=Sys.t
   }
   rise_time <- as.POSIXct(rise, tz=tz, origin=origin)
 
+  twlght_angl <- twilight_angle[2]
   set <- try(
     uniroot(f=altitude, lower=noon, upper=noon + 86400/2)$root,
     silent=TRUE)
