@@ -13,6 +13,11 @@ photobiology 0.6.5
 Add suport for "twilight" definition as angle in degrees in function
 day_night(), and different angles for sunrise and sunset.
 
+Fix bug in calc_multipliers() that resulted in NAs in cases where
+normalization wavelengths fell outside the range of a waveband object
+but could be anyway computed without errors because the BSWF was
+defined over a wider range of wavelengths than the waveband itself.
+
 photobiology 0.6.4
 ==================
 
