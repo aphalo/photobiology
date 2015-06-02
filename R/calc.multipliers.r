@@ -63,12 +63,12 @@ calc_multipliers <- function(w.length, w.band, unit.out="energy", unit.in="energ
     }
   }
   if (!is.null(w.band$norm) && (!is.null(w.band$weight))){
-    if (w.band$norm >= w.band$low && w.band$norm <= w.band$high){
+    if (w.band[["norm"]] != w.band[["SWF.norm"]]) {
       norm.divisor <- ifelse(unit.out=="energy", w.band$SWF.e.fun(w.band$norm),  w.band$SWF.q.fun(w.band$norm))
+      if (is.na(norm.divisor)) {
+        warning("normalization wavelength outside range of SWF")
+      }
       mult[inside.band] <- mult[inside.band] / norm.divisor
-    } else {
-      warning("normalization wavelength outside range of SWF")
-      return(NA)
     }
   }
   if (use.cached.mult && cache.needs.saving) {
