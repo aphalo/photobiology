@@ -24,7 +24,7 @@
 #'
 sun_angles <- function(time = lubridate::now(), lon = 0, lat = 0, use_refraction = FALSE)
 {
-  if (!is.POSIXct(time)) {
+  if (!lubridate::is.POSIXct(time)) {
     warning("Argument time is not a POSIXct time.")
     return(NA)
   }
@@ -49,7 +49,7 @@ sun_angles <- function(time = lubridate::now(), lon = 0, lat = 0, use_refraction
   day <- yday(t)
   if (any(day < 1) || any(day > 366))
     stop("day is not in range 1 to 366")
-  hour <- hour(t) + minute(t) / 60 + second(t) / 3600
+  hour <- lubridate::hour(t) + lubridate::minute(t) / 60 + lubridate::second(t) / 3600
   if (any(hour < -13) || any(hour > 36))
     stop("hour outside range -13 to 36")
   if (any(lat < -90)) {
@@ -216,8 +216,8 @@ twilight2angle <- function(twilight) {
 #' @return numeric representtaion of the date
 #' @keywords internal
 date2seconds <- function(t, tz) {
-  if (!is.POSIXct(t)) {
-    if (is.instant(t)) {
+  if (!lubridate::is.POSIXct(t)) {
+    if (lubridate::is.instant(t)) {
       t <- as.POSIXct(t, tz="UTC")
     } else {
       warning("t is not a valid time or date")
@@ -235,8 +235,8 @@ date2seconds <- function(t, tz) {
 #' @return numeric representtaion of the date
 #' @keywords internal
 time2seconds <- function(t, tz) {
-  if (!is.POSIXct(t)) {
-    if (is.instant(t)) {
+  if (!lubridate::is.POSIXct(t)) {
+    if (lubridate::is.instant(t)) {
       t <- as.POSIXct(t, tz="UTC")
     } else {
       warning("t is not a valid time or date")
