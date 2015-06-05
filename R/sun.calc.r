@@ -24,7 +24,7 @@
 #'
 sun_angles <- function(time = lubridate::now(), lon = 0, lat = 0, use_refraction = FALSE)
 {
-  if (!is.POSIXct(time)) {
+  if (!lubridate::is.POSIXct(time)) {
     warning("Argument time is not a POSIXct time.")
     return(NA)
   }
@@ -216,7 +216,7 @@ twilight2angle <- function(twilight) {
 #' @return numeric representtaion of the date
 #' @keywords internal
 date2seconds <- function(t, tz) {
-  if (!is.POSIXct(t)) {
+  if (!lubridate::is.POSIXct(t)) {
     if (is.instant(t)) {
       t <- as.POSIXct(t, tz="UTC")
     } else {
@@ -235,7 +235,7 @@ date2seconds <- function(t, tz) {
 #' @return numeric representtaion of the date
 #' @keywords internal
 time2seconds <- function(t, tz) {
-  if (!is.POSIXct(t)) {
+  if (!lubridate::is.POSIXct(t)) {
     if (is.instant(t)) {
       t <- as.POSIXct(t, tz="UTC")
     } else {
