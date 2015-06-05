@@ -217,7 +217,11 @@ twilight2angle <- function(twilight) {
 #' @keywords internal
 date2seconds <- function(t, tz) {
   if (!lubridate::is.POSIXct(t)) {
+<<<<<<< HEAD
     if (lubridate::is.instant(t)) {
+=======
+    if (is.instant(t)) {
+>>>>>>> dda6aefac02335caf3033bb58da2e509518c7416
       t <- as.POSIXct(t, tz="UTC")
     } else {
       warning("t is not a valid time or date")
@@ -236,7 +240,11 @@ date2seconds <- function(t, tz) {
 #' @keywords internal
 time2seconds <- function(t, tz) {
   if (!lubridate::is.POSIXct(t)) {
+<<<<<<< HEAD
     if (lubridate::is.instant(t)) {
+=======
+    if (is.instant(t)) {
+>>>>>>> dda6aefac02335caf3033bb58da2e509518c7416
       t <- as.POSIXct(t, tz="UTC")
     } else {
       warning("t is not a valid time or date")
