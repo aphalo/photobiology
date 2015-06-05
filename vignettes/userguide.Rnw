@@ -1779,10 +1779,52 @@ sun_angles(ymd_hms("2014-01-01 0:0:0", tz = "UTC"))
 
 \subsection{Calculating times of sunrise and sunset}
 
+Functions \texttt{sunrise\_time}, \texttt{sunset\_time}, \texttt{noon\_time}, \texttt{day\_length} and \texttt{night\_length} have all the same parameter signature. In addition, function \texttt{day\_night} returns a list containing all the quantities returned by the other functions. They are all vectorized for the
+\texttt{date} parameter.
+
+We create a vector of dates to use in the examples---default time zone of \texttt{ymd} is UTC or GMT.
+
 <<>>=
-day_night()
-day_night(ymd("2014-05-30", tz = "UTC"), lat = 30, lon = 0)
-day_night(ymd("2014-05-30", tz = "UTC"), lat = 30, lon = 0, twilight = "civil")
+dates <- seq(from = ymd("2015-03-01"), to = ymd("2015-07-1"), length.out = 3)
+@
+
+Default latitude is zero (the Equator), the default longitude is zero (Greenwich), and default time zone for the functions in the \texttt{photobiology} package is \texttt{"UTC"}. Be also aware that for summer dates the times are expressed accrodingly. In the examples below this can be recognized for example, by the time zone being reported as EEST instead of EET for Eastern Europe.
+
+<<>>=
+noon_time(dates, lat =  60, tz = "UTC")
+noon_time(dates, lat =  60, tz = "CET")
+@
+
+Southern hemisphere latitudes are given as negative numbers.
+
+<<>>=
+day_length(dates, lat =  60)
+day_length(dates, lat = -60)
+@
+
+<<>>=
+day_night(dates, lat =  60)
+@
+
+The default for \texttt{date} is the current day.
+
+<<>>=
+sunrise_time(lat = 60)
+@
+
+Both latitude and longitude can be supplied, but be aware that if the returned value is desired in the local time coordinates, the time zone should match the longitude.
+
+<<>>=
+sunrise_time(today(tzone = "UTC"), lat = 60, lon = 0, tz = "UTC")
+sunrise_time(today(tzone = "EET"), lat = 60, lon = 25, tz = "EET")
+@
+
+Finally the angle used in the twilight calculation can be supplied, either as the name of a standard definition, or as an angle in degrees (negative for sun positions below the horizon). Positive angles can be used when the time of sun occlusion behind a building, mountain, or other obstacle needs to be calculated.
+
+<<>>=
+sunrise_time(today(tzone = "EET"), lat = 60, lon = 25, tz = "EET", twilight = "civil")
+sunrise_time(today(tzone = "EET"), lat = 60, lon = 25, tz = "EET", twilight = -10)
+sunrise_time(today(tzone = "EET"), lat = 60, lon = 25, tz = "EET", twilight = +12)
 @
 
 \section{Calculating equivalent RGB colours for display}

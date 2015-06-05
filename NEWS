@@ -7,6 +7,16 @@ Implement peak fitting in addition to current peak search algorithm, so
 that location of peaks is more precise (Found peak positions in-between wavelength values
 in spectral data possible).
 
+photobiology 0.6.6
+==================
+
+A user reported that day_night() was not vectorized as stated in the
+documentation. This bug has been fixed, and now day_night() and the
+new functions noon_time(), sunrise_time(), sunset_time(),
+day_length() and night_length() are all vectorized for the 'date'
+parameter. The default 'tz' for all the functions in now "UTC", to match
+the default time zone used to obtain the default for 'date'.
+
 photobiology 0.6.5
 ==================
 
