@@ -2,7 +2,7 @@
 #'
 #' This function returns the solar angles for a given time and location.
 #'
-#' @param t POSIXct Time, any valid time zone (TZ) is allowed, default is
+#' @param time POSIXct Time, any valid time zone (TZ) is allowed, default is
 #'   current time
 #' @param lon numeric Vector of longitudes (degrees)
 #' @param lat numeric Vector of latitudes (degrees)
@@ -12,6 +12,8 @@
 #' @return A list with components time in same TZ as input, azimuth, elevation,
 #'   diameter, and distance.
 #'
+#' @family astronomy related functions
+#'
 #' @keywords manip misc
 #' @export
 #' @examples
@@ -20,14 +22,14 @@
 #' sun_angles(ymd_hms("2014-09-23 12:00:00"))
 #' sun_angles(ymd_hms("2014-09-23 12:00:00"), lat=60, lon=0)
 #'
-sun_angles <- function(t = now(), lon = 0, lat = 0, use_refraction = FALSE)
+sun_angles <- function(time = lubridate::now(), lon = 0, lat = 0, use_refraction = FALSE)
 {
-  if (!is.POSIXct(t)) {
-    warning("Argument t is not a POSIXct time.")
+  if (!is.POSIXct(time)) {
+    warning("Argument time is not a POSIXct time.")
     return(NA)
   }
-  tz <- tz(t)
-  t <- with_tz(t, "UTC")
+  tz <- lubridate::tz(time)
+  t <- lubridate::with_tz(time, "UTC")
   nt <- length(t)
   nlon <- length(lon)
   nlat <- length(lat)
@@ -121,13 +123,59 @@ sun_angles <- function(t = now(), lon = 0, lat = 0, use_refraction = FALSE)
     stop("output el out of range")
   if (any(az < 0) || any(az > 360))
     stop("output az out of range")
-  return(list(time = with_tz(t, tz),
+  return(list(time = lubridate::with_tz(t, tz),
               azimuth = az,
               elevation = el,
               diameter = soldia,
               distance = soldst))
 }
 
+
+#' Times of sunrise, sunset and solar noon. Day length and night length.
+#'
+#' Functions for calculating the timing of solar positions by means of function
+#' \code{sun_angles}, given geographical coordinates and dates. They can be also
+#' used to find the time for an arbitrary solar elevation between 90 and -90
+#' degrees by supplying "twilight" angle(s) as argument.
+#'
+#' @param date array of POSIXct times or Date objects, any valid TZ is allowed,
+#'   default is current date
+#' @param lon numeric array of longitudes (degrees)
+#' @param lat numeric array of latitudes (degrees)
+#' @param twilight character string, one of "none", "civil", "nautical",
+#'   "astronomical", or a \code{numeric} vector of length one, or two, giving
+#'   solar elevation angle(s) in degrees (negative if below the horizon).
+#' @param tz character string incading time zone to be used in output, default
+#'   is system time zone
+#'
+#' @return \code{day_night} returns a list with fields sunrise time, sunset
+#'   time, day length, night length. Each element of the list is a vector of the
+#'   same length as the argument supplied for date.
+#'
+#' @note If twilight is a numeric vector of length two, the element with index 1
+#'   is used for sunrise and that with index 2 for sunset.
+#'
+#' @family astronomy related functions
+#'
+#' @keywords manip misc
+#' @export
+#' @examples
+#' library(lubridate)
+#' day_length()
+#' day_length(ymd("2015-05-30"), lat = 60, lon = 25)
+#' day_length(ymd("2014-12-30"), lat = 60, lon = 25)
+#' day_length(ymd("2015-05-30"), lat = 60, lon = 25, twilight = "civil")
+#' sunrise_time(ymd("2015-05-30"), lat = 60, lon = 25, tz = "EET")
+#' day_night(ymd("2015-05-30"), lat = 60, lon = 25, twilight = "civil")
+
+day_night <- function(date = lubridate::today(), lon = 0, lat = 0, twilight = "none", tz = "UTC") {
+  list(day         = as.Date(date),
+       sunrise     = sunrise_time(date = date, tz = tz, lon = lon, lat = lat, twilight = twilight),
+       noon        = noon_time(date = date, tz = tz, lon = lon, lat = lat),
+       sunset      = sunset_time(date = date, tz = tz, lon = lon, lat = lat, twilight = twilight),
+       daylength   = day_length(date = date, tz = tz, lon = lon, lat = lat, twilight = twilight),
+       nightlength = night_length(date = date, tz = tz, lon = lon, lat = lat, twilight = twilight) )
+}
 
 #' twilight argument check and conversion
 #'
@@ -176,9 +224,9 @@ date2seconds <- function(t, tz) {
     }
   }
   t <- as.POSIXct(t, tz=tz)
-  hour(t) <- 0
-  minute(t) <- 0
-  second(t) <- 0
+  lubridate::hour(t) <- 0
+  lubridate::minute(t) <- 0
+  lubridate::second(t) <- 0
   as.numeric(t, tz=tz)
 }
 
@@ -211,8 +259,9 @@ altitude <- function(x, lon, lat, twlght_angl){
 
 #' @describeIn day_night Calculate time coordinates at local noon
 #' @export
-#' @return a vector of POSIXct times
-noon_time <- function(date = lubridate::today(), tz = lubridate::tz(date), lon = 0, lat = 0, twilight = NA) {
+#' @return \code{noon_time}, \code{sunrise_time} and \code{sunset_time} return a
+#'   vector of POSIXct times
+noon_time <- function(date = lubridate::today(), tz = "UTC", lon = 0, lat = 0, twilight = NA) {
   date_num <- sapply(date, date2seconds, tz = tz)
   times <- numeric()
   twlght_angl <- 0
@@ -227,13 +276,12 @@ noon_time <- function(date = lubridate::today(), tz = lubridate::tz(date), lon =
     }
     times <- c(times, noon)
   }
-  as.POSIXct(times, tz=tz, origin=lubridate::origin)
+  as.POSIXct(times, tz = tz, origin = lubridate::origin)
 }
 
 #' @describeIn day_night Calculate time at sunrise
 #' @export
-#' @return a vector of POSIXct times
-sunrise_time <- function(date = lubridate::today(), tz = lubridate::tz(date), lon = 0, lat = 0, twilight = "none") {
+sunrise_time <- function(date = lubridate::today(), tz = "UTC", lon = 0, lat = 0, twilight = "none") {
   noon <- noon_time(date = date, tz = tz, lon = lon, lat = lat)
   noon_num <- sapply(noon, time2seconds, tz = tz)
   times <- numeric()
@@ -254,8 +302,7 @@ sunrise_time <- function(date = lubridate::today(), tz = lubridate::tz(date), lo
 
 #' @describeIn day_night Calculate time at sunrise
 #' @export
-#' @return a vector of POSIXct times
-sunset_time <- function(date = lubridate::today(), tz = lubridate::tz(date), lon = 0, lat = 0, twilight = "none") {
+sunset_time <- function(date = lubridate::today(), tz = "UTC", lon = 0, lat = 0, twilight = "none") {
   noon <- noon_time(date = date, tz = tz, lon = lon, lat = lat)
   noon_num <- sapply(noon, time2seconds, tz = tz)
   times <- numeric()
@@ -276,8 +323,9 @@ sunset_time <- function(date = lubridate::today(), tz = lubridate::tz(date), lon
 
 #' @describeIn day_night Calculate day length
 #' @export
-#' @return a vector
-day_length <- function(date = lubridate::today(), tz = lubridate::tz(date), lon = 0, lat = 0, twilight = "none") {
+#' @return \code{day_length} and \code{night_length} return numeric a vector
+#'   giving the length in hours
+day_length <- function(date = lubridate::today(), tz = "UTC", lon = 0, lat = 0, twilight = "none") {
   noon <- noon_time(date = date, tz = tz, lon = lon, lat = lat)
   rise_time <- sunrise_time(date = date, tz = tz, lon = lon, lat = lat, twilight = twilight)
   set_time <- sunset_time(date = date, tz = tz, lon = lon, lat = lat, twilight = twilight)
@@ -288,51 +336,6 @@ day_length <- function(date = lubridate::today(), tz = lubridate::tz(date), lon 
 
 #' @describeIn day_night Calculate night length
 #' @export
-#' @return a vector
-night_length <- function(date = lubridate::today(), tz = lubridate::tz(date), lon = 0, lat = 0, twilight = "none") {
+night_length <- function(date = lubridate::today(), tz = "UTC", lon = 0, lat = 0, twilight = "none") {
   24 - day_length(date = date, tz = tz, lon = lon, lat = lat, twilight = twilight)
-}
-
-#' Calculate time of sunrise and sunset and daylength
-#'
-#' This function returns the times of sunrise and sunset for a given location
-#' and date. It can be also used to find the time for an arbitrary solar
-#' elevation between 90 and -90 degrees by supplying "twilight" angle(s)
-#' as argument.
-#'
-#' @param t array of POSIXct times, any valid TZ is allowed, default is current
-#'   date
-#' @param lon numeric array of longitudes (degrees)
-#' @param lat numeric array of latitudes (degrees)
-#' @param twilight character string, one of "none", "civil", "nautical",
-#'   "astronomical", or a \code{numeric} vector of length one, or two, giving
-#'   solar elevation angle(s) in degrees (negative if below the horizon).
-#' @param tz character string incading time zone to be used in output, default
-#'   is system time zone
-#'
-#' @return a list with fields sunrise time, sunset time, day length, night
-#'   length. The times are returned in the same TZ as used for the date. Each
-#'   element of the list is a vector of the same length as the argument
-#'   supplied for date (or the deprecated t)
-#'
-#' @note If twilight is a numeric vector of length two, the element with index 1
-#'   is used for sunrise and that with index 2 for sunset.
-#'
-#' @keywords manip misc
-#' @export
-#' @examples
-#' library(lubridate)
-#' day_night()
-#' day_night(ymd("2014-05-30"), lat = 30, lon = 0)
-#' day_night(ymd("2014-05-30"), lat = 30, lon = 0, twilight = "civil")
-#' day_night(ymd("2014-05-30"), lat = 30, lon = 0, twilight = -6)
-#' day_night(ymd("2014-05-30"), lat = 30, lon = 0, twilight = c(-6, 30))
-
-day_night <- function(t = lubridate::today(), lon = 0, lat = 0, twilight = "none", tz = lubridate::tz(date), date = t) {
-  list(day         = as.Date(date),
-       sunrise     = sunrise_time(date = date, tz = tz, lon = lon, lat = lat, twilight = twilight),
-       noon        = noon_time(date = date, tz = tz, lon = lon, lat = lat),
-       sunset      = sunset_time(date = date, tz = tz, lon = lon, lat = lat, twilight = twilight),
-       daylength   = day_length(date = date, tz = tz, lon = lon, lat = lat, twilight = twilight),
-       nightlength = night_length(date = date, tz = tz, lon = lon, lat = lat, twilight = twilight) )
 }
