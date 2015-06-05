@@ -35,6 +35,8 @@ normalization wavelengths fell outside the range of a waveband object
 but could be anyway computed without errors because the BSWF was
 defined over a wider range of wavelengths than the waveband itself.
 
+Updated dependency versions.
+
 photobiology 0.6.4
 ==================
 
