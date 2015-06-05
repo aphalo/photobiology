@@ -14,6 +14,7 @@
 #'   on the argument passed to unit.out (s.irrad).
 #' @keywords manip misc
 #' @export D2_spectrum
+#' @aliases D2_spectrum
 #'
 #' @note This is function is valid for wavelengths in the range 180 nm to 495
 #'   nm, for wavelengths outside this range NAs are returned.

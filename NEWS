@@ -10,19 +10,12 @@ in spectral data possible).
 photobiology 0.6.6
 ==================
 
-Package 'lubridate' is no longer imported, so to use functions from
-this pacakge, users must explicitly load it.
-
 A user reported that day_night() was not vectorized as stated in the
 documentation. This bug has been fixed, and now day_night() and the
 new functions noon_time(), sunrise_time(), sunset_time(),
 day_length() and night_length() are all vectorized for the 'date'
 parameter. The default 'tz' for all the functions in now "UTC", to match
-the default time zone used to obtain the default for 'date'. The 't'
-argument of day_night() has been renamed 'date' for clarity.
-
-These changes, may break old user code! (but needed changes will be
-minor).
+the default time zone used to obtain the default for 'date'.
 
 photobiology 0.6.5
 ==================

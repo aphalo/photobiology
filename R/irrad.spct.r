@@ -48,6 +48,8 @@
 #'   each call, as the only test done is for the length of the \code{w.length}
 #'   vector.
 #'
+#' @aliases irrad
+#'
 #' @family irradiance functions
 #'
 irrad <- function(spct, w.band, unit.out, quantity, time.unit, wb.trim,

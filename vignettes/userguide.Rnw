@@ -1,6 +1,6 @@
 %\VignetteEngine{knitr}
 %\VignetteIndexEntry{User guide}
-%\VignetteDepends{knitr, photobiology, photobiologyWavebands, photobiologySun, photobiologyFilters, photobiologyReflectors, photobiologySensors, photobiologyPlants, photobiologygg, ggplot2, ggtern, lubridate}
+%\VignetteDepends{knitr, photobiology, photobiologyWavebands, photobiologySun, photobiologyFilters, photobiologyReflectors, photobiologySensors, photobiologyPlants, photobiologygg, ggplot2, ggtern}
 %\VignetteKeyword{misc}
 
 \documentclass{article}
@@ -85,7 +85,6 @@ library(photobiologySensors)
 library(photobiologyPlants)
 library(ggplot2)
 library(ggtern)
-library(lubridate)
 @
 
 <<own-set-up, echo=FALSE, include=FALSE>>=
@@ -1823,12 +1822,9 @@ sunrise_time(today(tzone = "EET"), lat = 60, lon = 25, tz = "EET")
 Finally the angle used in the twilight calculation can be supplied, either as the name of a standard definition, or as an angle in degrees (negative for sun positions below the horizon). Positive angles can be used when the time of sun occlusion behind a building, mountain, or other obstacle needs to be calculated.
 
 <<>>=
-sunrise_time(today(tzone = "EET"), lat = 60, lon = 25, tz = "EET",
-             twilight = "civil")
-sunrise_time(today(tzone = "EET"), lat = 60, lon = 25, tz = "EET",
-             twilight = -10)
-sunrise_time(today(tzone = "EET"), lat = 60, lon = 25, tz = "EET",
-             twilight = +12)
+sunrise_time(today(tzone = "EET"), lat = 60, lon = 25, tz = "EET", twilight = "civil")
+sunrise_time(today(tzone = "EET"), lat = 60, lon = 25, tz = "EET", twilight = -10)
+sunrise_time(today(tzone = "EET"), lat = 60, lon = 25, tz = "EET", twilight = +12)
 @
 
 \section{Calculating equivalent RGB colours for display}

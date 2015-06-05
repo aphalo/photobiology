@@ -14,6 +14,7 @@
 #'   on the argument passed to unit.out (s.irrad).
 #' @keywords manip misc
 #' @export FEL_spectrum
+#' @aliases FEL_spectrum
 #'
 #' @note This is function is valid for wavelengths in the range 180 nm to 495
 #'   nm, for wavelengths outside this range NAs are returned.

@@ -8,14 +8,13 @@
 #' @docType package
 #' @keywords misc
 #' @name photobiology-package
-#' @aliases photobiology
 #' @author Pedro J. Aphalo
 #' @details
 #' \tabular{ll}{
 #' Package: \tab photobiology\cr
 #' Type: \tab Package\cr
-#' Version: \tab 0.6.6\cr
-#' Date: \tab 2015-06-05\cr
+#' Version: \tab 0.6.4\cr
+#' Date: \tab 2015-05-25\cr
 #' License: \tab GPL (>= 3.0)\cr
 #' URL: \tab \url{http://www.r4photobiology.info},\cr
 #' \tab \url{https://bitbucket.org/aphalo/photobiology}\cr
@@ -38,7 +37,7 @@
 #'
 #' @note This package is still under development, but is by now stable.
 #'
-#' @import methods
+#' @import lubridate methods
 #'
 #' @importFrom Rcpp evalCpp
 #' @importFrom data.table data.table tables setkey setkeyv key "key<-" haskey CJ
