@@ -250,7 +250,7 @@ time2seconds <- function(t, tz) {
 #'
 #' @return an elevation angle delta
 #' @keywords internal
-altitude <- function(x, lon, lat, twlght_angl){
+altitude <- function(x, lon, lat, twlght_angl = 0){
   t_temp <- as.POSIXct(x, origin = lubridate::origin, tz = "UTC")
   return(sun_angles(t_temp,
                     lon = lon,
@@ -330,7 +330,7 @@ day_length <- function(date = lubridate::today(), tz = "UTC", lon = 0, lat = 0, 
   rise_time <- sunrise_time(date = date, tz = tz, lon = lon, lat = lat, twilight = twilight)
   set_time <- sunset_time(date = date, tz = tz, lon = lon, lat = lat, twilight = twilight)
   ifelse(is.na(rise_time) | is.na(set_time),
-         ifelse(altitude(noon) > 0, 24, 0),
+         ifelse(altitude(noon, lon = lon, lat = lat) > 0, 24, 0),
          set_time - rise_time)
 }
 
