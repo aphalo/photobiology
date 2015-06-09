@@ -206,7 +206,7 @@ twilight2angle <- function(twilight) {
     twilight_angle <- ifelse(twilight_angle > -90, twilight_angle, NA)
   }
   if (any(is.na(twilight_angle))) {
-    warning("Unrecognized argument value for 'twilight': ", twilight)
+    error("Unrecognized argument value for 'twilight': ", twilight)
   }
   twilight_angle
 }

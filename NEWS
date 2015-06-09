@@ -7,6 +7,13 @@ Implement peak fitting in addition to current peak search algorithm, so
 that location of peaks is more precise (Found peak positions in-between wavelength values
 in spectral data possible).
 
+photobiology 0.6.7
+==================
+
+Fix bug in functions day_length() and night_length() added in 0.6.6.
+The bug was triggering an error in calculations for polar regions.
+(Test cases added.)
+
 photobiology 0.6.6
 ==================
 
