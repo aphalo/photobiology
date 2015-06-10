@@ -1,11 +1,14 @@
 TODO
 ====
 
-Add test cases for chroma_spct and cps_spct
+Add test cases for chroma_spct
 
-Implement peak fitting in addition to current peak search algorithm, so
-that location of peaks is more precise (Found peak positions in-between wavelength values
-in spectral data possible).
+photobiology 0.6.8
+==================
+
+Functions sunrise_time(), noon_time(), sunset_time(), day_length(),
+night_length() and day_night() gain formal parameter 'unit.out',
+but its default value preserves earlier behaviour.
 
 photobiology 0.6.7
 ==================
