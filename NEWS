@@ -10,6 +10,11 @@ Functions sunrise_time(), noon_time(), sunset_time(), day_length(),
 night_length() and day_night() gain formal parameter 'unit.out',
 but its default value preserves earlier behaviour.
 
+New generic functions peaks() and valleys().
+
+subset() methods for spectral objects gain a new parameter 'idx'.
+During subsetting, tags are removed from the returned spectrum.
+
 photobiology 0.6.7
 ==================
 
