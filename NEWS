@@ -1,6 +1,9 @@
 TODO
 ====
 
+Find a way of wrapping `[.data.table` so that attributes are
+preserved when used with derived classes.
+
 Add test cases for chroma_spct
 
 photobiology 0.6.8

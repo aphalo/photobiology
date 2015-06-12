@@ -757,7 +757,7 @@ oper.q.generic_spct <- function(e1, e2, oper) {
 
 #' math function dispatcher for spectra
 #'
-#' Function that dispatches the fucntion supplied as argument using different variables depending
+#' Function that dispatches the function supplied as argument using different variables depending
 #' on the class of the spectrum argument.
 #'
 #' @param x an object of class "generic_spct"
@@ -772,8 +772,16 @@ f_dispatcher_spct <- function(x, f, ...) {
     z[ , cps := f(cps, ...)]
     return(z)
   } else if (is.filter_spct(x)) {
-    z <- A2T(x, action = "replace", byref = FALSE)
-    z[ , Tfr := f(Tfr, ...)]
+    filter.qty <- getOption("photobiology.filter.qty", default="transmittance")
+    if (filter.qty == "transmittance") {
+      z <- A2T(x, action = "replace", byref = FALSE)
+      z[ , Tfr := f(Tfr, ...)]
+    } else if (filter.qty == "absorbance") {
+      z <- T2A(x, action = "replace", byref = FALSE)
+      z[ , A := f(A, ...)]
+    } else {
+      stop("Unrecognized 'unit.out': ", unit.out)
+    }
     return(z)
   } else if(is.reflector_spct(x)) {
     z <- copy(x)

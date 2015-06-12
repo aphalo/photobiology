@@ -206,34 +206,70 @@ peaks.generic_spct <- function(x, span, ignore_threshold, strict, ...) {
 #' @examples
 #' peaks(sun.spct)
 #'
-peaks.source_spct <- function(x, span = 5, ignore_threshold = 0.0, strict = TRUE, ...) {
-  peaks.idx <- find_peaks(x[["s.e.irrad"]],
+peaks.source_spct <-
+  function(x, span = 5, ignore_threshold = 0.0, strict = TRUE,
+           unit.out = getOption("photobiology.radiation.unit", default="energy"),
+           ...) {
+  if (unit.out == "energy") {
+    z <- q2e(x, "replace", FALSE)
+    col.name <- "s.e.irrad"
+  } else if (unit.out %in% c("photon", "quantum")) {
+    z <- e2q(x, "replace", FALSE)
+    col.name <- "s.q.irrad"
+  } else {
+    stop("Unrecognized 'unit.out': ", unit.out)
+  }
+  peaks.idx <- find_peaks(z[[col.name]],
                         span = span, ignore_threshold = ignore_threshold,
                         strict = strict)
-  subset(x, idx = peaks.idx)
+  subset(z, idx = peaks.idx)
 }
 
 #' @describeIn peaks  Method for "response_spct" objects for generic function.
 #'
 #' @export
 #'
-peaks.response_spct <- function(x, span = 5, ignore_threshold = 0.0, strict = TRUE, ...) {
-  peaks.idx <- find_peaks(x[["s.e.response"]],
+peaks.response_spct <-
+  function(x, span = 5, ignore_threshold = 0.0, strict = TRUE,
+           unit.out = getOption("photobiology.radiation.unit", default="energy"),
+           ...) {
+    if (unit.out == "energy") {
+    z <- q2e(x, "replace", FALSE)
+    col.name <- "s.e.response"
+  } else if (unit.out %in% c("photon", "quantum")) {
+    z <- e2q(x, "replace", FALSE)
+    col.name <- "s.q.response"
+  } else {
+    stop("Unrecognized 'unit.out': ", unit.out)
+  }
+  peaks.idx <- find_peaks(z[[col.name]],
                           span = span, ignore_threshold = ignore_threshold,
                           strict = strict)
-  subset(x, idx = peaks.idx)
+  subset(z, idx = peaks.idx)
 }
 
 #' @describeIn peaks  Method for "filter_spct" objects for generic function.
 #'
 #' @export
 #'
-peaks.filter_spct <- function(x, span = 5, ignore_threshold = 0, strict = TRUE, ...) {
-  peaks.idx <- find_peaks(x[["Tfr"]],
-                          span = span, ignore_threshold = ignore_threshold,
-                          strict = strict)
-  subset(x, idx = peaks.idx)
-}
+peaks.filter_spct <-
+  function(x, span = 5, ignore_threshold = 0, strict = TRUE,
+           filter.qty = getOption("photobiology.filter.qty", default="transmittance"),
+           ...) {
+    if (filter.qty == "transmittance") {
+      z <- A2T(x, "replace", FALSE)
+      col.name <- "Tfr"
+    } else if (filter.qty == "absorbance") {
+      z <- T2A(x, "replace", FALSE)
+      col.name <- "A"
+    } else {
+      stop("Unrecognized 'unit.out': ", unit.out)
+    }
+    peaks.idx <- find_peaks(z[[col.name]],
+                            span = span, ignore_threshold = ignore_threshold,
+                            strict = strict)
+    subset(z, idx = peaks.idx)
+  }
 
 #' @describeIn peaks  Method for "reflector_spct" objects for generic function.
 #'
@@ -315,34 +351,70 @@ valleys.generic_spct <- function(x, span = 5, ignore_threshold = 0.0, strict = T
 #' @examples
 #' valleys(sun.spct)
 #'
-valleys.source_spct <- function(x, span = 5, ignore_threshold = 0.0, strict = TRUE, ...) {
-  valleys.idx <- find_peaks(-x[["s.e.irrad"]],
+valleys.source_spct <-
+  function(x, span = 5, ignore_threshold = 0.0, strict = TRUE,
+           unit.out = getOption("photobiology.radiation.unit", default="energy"),
+           ...) {
+    if (unit.out == "energy") {
+      z <- q2e(x, "replace", FALSE)
+      col.name <- "s.e.irrad"
+    } else if (unit.out %in% c("photon", "quantum")) {
+      z <- e2q(x, "replace", FALSE)
+      col.name <- "s.q.irrad"
+    } else {
+      stop("Unrecognized 'unit.out': ", unit.out)
+    }
+    valleys.idx <- find_peaks(-z[[col.name]],
                           span = span, ignore_threshold = ignore_threshold,
                           strict = strict)
-  subset(x, idx = valleys.idx)
+  subset(z, idx = valleys.idx)
 }
 
 #' @describeIn valleys  Method for "response_spct" objects for generic function.
 #'
 #' @export
 #'
-valleys.response_spct <- function(x, span = 5, ignore_threshold = 0.0, strict = TRUE, ...) {
-  valleys.idx <- find_peaks(-x[["s.e.response"]],
-                          span = span, ignore_threshold = ignore_threshold,
-                          strict = strict)
-  subset(x, idx = valleys.idx)
-}
+valleys.response_spct <-
+  function(x, span = 5, ignore_threshold = 0.0, strict = TRUE,
+           unit.out = getOption("photobiology.radiation.unit", default="energy"),
+           ...) {
+    if (unit.out == "energy") {
+      z <- q2e(x, "replace", FALSE)
+      col.name <- "s.e.response"
+    } else if (unit.out %in% c("photon", "quantum")) {
+      z <- e2q(x, "replace", FALSE)
+      col.name <- "s.q.response"
+    } else {
+      stop("Unrecognized 'unit.out': ", unit.out)
+    }
+    peaks.idx <- find_peaks(-z[[col.name]],
+                            span = span, ignore_threshold = ignore_threshold,
+                            strict = strict)
+    subset(z, idx = peaks.idx)
+  }
 
 #' @describeIn valleys  Method for "filter_spct" objects for generic function.
 #'
 #' @export
 #'
-valleys.filter_spct <- function(x, span = 5, ignore_threshold = 0, strict = TRUE, ...) {
-  valleys.idx <- find_peaks(-x[["Tfr"]],
-                          span = span, ignore_threshold = ignore_threshold,
-                          strict = strict)
-  subset(x, idx = valleys.idx)
-}
+valleys.filter_spct <-
+  function(x, span = 5, ignore_threshold = 0, strict = TRUE,
+           filter.qty = getOption("photobiology.filter.qty", default="transmittance"),
+           ...) {
+    if (filter.qty == "transmittance") {
+      z <- A2T(x, "replace", FALSE)
+      col.name <- "Tfr"
+    } else if (filter.qty == "absorbance") {
+      z <- T2A(x, "replace", FALSE)
+      col.name <- "A"
+    } else {
+      stop("Unrecognized 'unit.out': ", unit.out)
+    }
+    peaks.idx <- find_peaks(-z[[col.name]],
+                            span = span, ignore_threshold = ignore_threshold,
+                            strict = strict)
+    subset(z, idx = peaks.idx)
+  }
 
 #' @describeIn valleys  Method for "reflector_spct" objects for generic function.
 #'

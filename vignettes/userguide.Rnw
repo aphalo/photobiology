@@ -832,6 +832,38 @@ summary(sun.spct * CIE())
 summary(sun.daily.spct)
 @
 
+\subsection{Peaks and valleys}
+
+Functions \texttt{peaks} and \texttt{valleys} take spectra as first argument and return a subset of the spectral object data corresponding to local maxima and local minima of the measured variable. \texttt{span} defines the width of the `window' used as a number of observations.
+
+<<>>=
+peaks(sun.spct, span = 51)
+valleys(sun.spct, span = 51)
+@
+
+In the case of \texttt{source\_spct} and \texttt{response\_spct} methods \texttt{unit.out} can be used to force peaks to be searched using either energy or photon based spectral irradiance. The default is energy, or the option \texttt{"photobiology.radiation.unit"} if set.
+
+<<>>=
+peaks(sun.spct, span = 51, unit.out = "photon")
+@
+
+In the case of \texttt{filter\_spct} methods \texttt{unit.out} can be used to force peaks to be searched using either spectral transmittance or spectral absorbance. The default is transmittance, or the option
+\texttt{"photobiology.filter.qty"} if set.
+
+<<>>=
+peaks(ug1.spct)
+peaks(ug1.spct, filter.qty = "absorbance")
+valleys(ug1.spct, filter.qty = "absorbance")
+@
+
+It is possible to approximately set the width of the windows in nanometres by using function \texttt{step\_size}. As \texttt{stepsize} returns a range, we use \texttt{mean} in this example, although one could also use an index (1 or 2), or \texttt{min} or \texttt{max} depending on needs.
+
+<<>>=
+peaks(sun.spct, span = 21 / mean(stepsize(sun.spct)))
+@
+
+Low level functions \texttt{find\_peaks}, \texttt{get\_peaks} and \texttt{get\_valleys} take numeric vectors as arguments.
+
 \subsection{Defining wavebands}
 
 All functions use \texttt{waveband}s as definitions of the range of wave lengths and the spectral weighting function (SWF) to use in the calculations. A few other bits of information may be included to fine-tune calculations. The waveband definitions do NOT describe whether input spectral irradiances are photon or energy based, nor whether the output irradiance will be based on photon or energy units. Waveband objects belong to the S3 class "waveband".
@@ -1602,12 +1634,23 @@ lines(s.e.irrad/max(s.e.irrad) ~ w.length, col = "black", data = sun.spct)
 
 \begin{framed}
 \noindent
+It is safe to use function \texttt{subset} with spectral objects as method especialization have been defined, which preserve all attributes including class.
+
+The use of indexing is mostly to be avoided in the current version because attributes defined in the spectral classes are stripped, even though the derived class attribute is preserved. I have been unable to make obvious ways of wrapping this operator work as expected for the spectral classes.
+
 To stack spectral objects the function \texttt{rbindspct} should be used instead of \texttt{rbind} or \texttt{rbindlist} from package \texttt{data.table}. The functions from package \texttt{data.table} strip the spectral class attributes from the output, returning always a \texttt{data.table} object.
 
-\texttt{subset} has the same problem, and in addition also removes comments, so it should be also avoided, and \texttt{trim\_spct} used instead.
-
-In earlier versions of the package we had included our own version of \texttt{rbindlist} to override the one defined in package \texttt{data.table}, but this was triggering warnings and causing other problems. Because of this it has been removed. (This is a, hopefully, temporary limitation.)
 \end{framed}
+
+\texttt{subset} methods for spectral objects preserve spectral attributes.
+
+<<>>=
+subset(sun.spct, w.length > 600)
+subset(sun.spct, c(TRUE, rep(FALSE, 99)))
+subset(sun.spct, c(1:5, 10))
+selector <- 1:5
+subset(sun.spct, selector)
+@
 
 Sometimes it is needed to add (parallel sum) between two spectra, even if the two spectra have been
 measured at different wavelengths or wavelength steps. This can happen for example when we would like
