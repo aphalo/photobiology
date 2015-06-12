@@ -67,11 +67,30 @@ summary.source_spct <- function(object,
     min.w.length = min(object),
     midpoint.w.length = midpoint(object),
     w.length.step = stepsize(object)[1],
-    max.s.e.irrad = max(object$s.e.irrad),
-    min.s.e.irrad = min(object$s.e.irrad),
     e.irrad = as.numeric(e_irrad(object)),
     q.irrad = as.numeric(q_irrad(object))
   )
+
+  if (exists("s.e.irrad", object, inherits = FALSE)) {
+    z <- c(z,
+           max.s.e.irrad = max(object$s.e.irrad, ...),
+           min.s.e.irrad = min(object$s.e.irrad, ...) )
+  } else {
+    z <- c(z,
+           max.s.e.irrad = NA,
+           min.s.e.irrad = NA )
+  }
+
+  if (exists("s.q.irrad", object, inherits = FALSE)) {
+    z <- c(z,
+           max.s.q.irrad = max(object$s.q.irrad, ...),
+           min.s.q.irrad = min(object$s.q.irrad, ...) )
+  } else {
+    z <- c(z,
+           max.s.q.irrad = NA,
+           min.s.q.irrad = NA )
+  }
+
   z <- signif(z, digits)
   attr(z, "time.unit") <- time.unit
   attr(z, "bswf.used") <- bswf.used
@@ -91,11 +110,28 @@ summary.filter_spct <- function(object, digits = max(3, getOption("digits")-3), 
     max.w.length = max(object),
     min.w.length = min(object),
     midpoint.w.length = midpoint(object),
-    w.length.step = stepsize(object)[1],
+    w.length.step = stepsize(object)[1] )
+
+  if (exists("Tfr", object, inherits = FALSE)) {
+    z <- c(z,
     max.Tfr = max(object$Tfr),
-    min.Tfr = min(object$Tfr),
-    mean.Tfr = as.numeric(integrate_spct(object) / spread(object))
-  )
+    min.Tfr = min(object$Tfr) )
+  } else {
+    z <- c(z,
+           max.Tfr = NA,
+           min.Tfr = NA )
+  }
+
+  if (exists("A", object, inherits = FALSE)) {
+    z <- c(z,
+           max.A = max(object$A),
+           min.A = min(object$A) )
+  } else {
+    z <- c(z,
+           max.A = NA,
+           min.A = NA )
+  }
+
   z <- signif(z, digits)
   attr(z, "Tfr.type") <- Tfr.type
   comment(z) <- comment(object)
@@ -172,14 +208,37 @@ summary.response_spct <- function(object,
     max.w.length = max(object),
     min.w.length = min(object),
     midpoint.w.length = midpoint(object),
-    w.length.step = stepsize(object)[1],
-    max.response = max(object$s.e.response),
-    min.response = min(object$s.e.response),
-    total.q_response = as.numeric(q_response(object, quantity = "total")),
-    mean.q_response = as.numeric(q_response(object, quantity = "mean")),
-    total.e_response = as.numeric(e_response(object, quantity = "total")),
-    mean.e_response = as.numeric(e_response(object, quantity = "mean"))
+    w.length.step = stepsize(object)[1]
   )
+
+  if (exists("s.e.response", object, inherits = FALSE)) {
+    z <- c(z,
+           max.s.e.response = max(object$s.e.response, ...),
+           min.s.e.response = min(object$s.e.response, ...),
+           total.e.response = as.numeric(e_response(object, quantity = "total")),
+           mean.e.response = as.numeric(e_response(object, quantity = "mean")) )
+  } else {
+    z <- c(z,
+           max.s.e.response = NA,
+           min.s.e.response = NA,
+           total.e.response = NA,
+           mean.e.response = NA )
+  }
+
+  if (exists("s.q.response", object, inherits = FALSE)) {
+    z <- c(z,
+           max.s.q.response = max(object$s.q.response, ...),
+           min.s.q.response = min(object$s.q.response, ...),
+           total.q.response = as.numeric(q_response(object, quantity = "total")),
+           mean.q.response = as.numeric(q_response(object, quantity = "mean")) )
+  } else {
+    z <- c(z,
+           max.s.q.response = NA,
+           min.s.q.response = NA,
+           total.q.response = NA,
+           mean.q.response = NA )
+  }
+
   z <- signif(z, digits)
   comment(z) <- comment(object)
   attr(z, "time.unit") <- time.unit
@@ -257,21 +316,35 @@ print.summary_source_spct <- function(x, ...) {
   if (bswf.used != "none") {
     cat("effective irradiances based on BSWF =", bswf.used, "\n")
   }
-  if (time.unit == "day" || time.unit == lubridate::duration(1, "days")) {
-    cat("spectral irradiance ranges from", x[["min.s.e.irrad"]] * 1e-3,
-        "to", x[["max.s.e.irrad"]] * 1e-3, "kJ d-1 m-2 nm-1 \n")
-    cat("energy irradiance is", x[["e.irrad"]] * 1e-6, "MJ d-1 m-2 \n")
-    cat("photon irradiance is", x[["q.irrad"]], "mol d-1 m-2 \n")
-  } else if (time.unit == "second" || time.unit == lubridate::duration(1, "seconds")) {
-    cat("spectral irradiance ranges from", x[["min.s.e.irrad"]],
-        "to", x[["max.s.e.irrad"]], "W m-2 nm-1 \n")
-    cat("energy irradiance is", x[["e.irrad"]], "W m-2 \n")
-    cat("photon irradiance is", x[["q.irrad"]] * 1e6, "umol s-1 m-2\n")
-  } else {
-    cat("spectral irradiance ranges from", x[["min.s.e.irrad"]],
-        "to", x[["max.s.e.irrad"]], "J m-2 nm-1 per", as.character(time.unit), "\n")
-    cat("energy irradiance is", x[["e.irrad"]], "J m-2 per", as.character(time.unit), "\n")
-    cat("photon irradiance is", x[["q.irrad"]], "mol m-2 per", as.character(time.unit), "\n")
+  if (!is.na(x[["max.s.e.irrad"]]) || !is.na(x[["min.s.e.irrad"]])) {
+    if (time.unit == "day" || time.unit == lubridate::duration(1, "days")) {
+      cat("spectral energy irradiance ranges from", x[["min.s.e.irrad"]] * 1e-3,
+          "to", x[["max.s.e.irrad"]] * 1e-3, "kJ d-1 m-2 nm-1 \n")
+      cat("energy irradiance is", x[["e.irrad"]] * 1e-6, "MJ d-1 m-2 \n")
+    } else if (time.unit == "second" || time.unit == lubridate::duration(1, "seconds")) {
+      cat("spectral irradiance ranges from", x[["min.s.e.irrad"]],
+          "to", x[["max.s.e.irrad"]], "W m-2 nm-1 \n")
+      cat("energy irradiance is", x[["e.irrad"]], "W m-2 \n")
+     } else {
+      cat("spectral irradiance ranges from", x[["min.s.e.irrad"]],
+          "to", x[["max.s.e.irrad"]], "J m-2 nm-1 per", as.character(time.unit), "\n")
+      cat("energy irradiance is", x[["e.irrad"]], "J m-2 per", as.character(time.unit), "\n")
+    }
+  }
+  if (!is.na(x[["max.s.q.irrad"]]) || !is.na(x[["min.s.q.irrad"]])) {
+    if (time.unit == "day" || time.unit == lubridate::duration(1, "days")) {
+      cat("spectral photom irradiance ranges from", x[["min.s.q.irrad"]] * 1e3,
+          "to", x[["max.s.q.irrad"]] * 1e3, "mmol d-1 m-2 nm-1 \n")
+      cat("photon irradiance is", x[["q.irrad"]], "mol d-1 m-2 \n")
+    } else if (time.unit == "second" || time.unit == lubridate::duration(1, "seconds")) {
+      cat("spectral photon irradiance ranges from", x[["min.s.q.irrad"]] * 1e6,
+          "to", x[["max.s.q.irrad"]] * 1e6, "umol s-1 m-2 nm-1 \n")
+      cat("photon irradiance is", x[["q.irrad"]] * 1e6, "umol s-1 m-2\n")
+    } else {
+      cat("spectral photon irradiance ranges from", x[["min.s.q.irrad"]],
+          "to", x[["max.s.q.irrad"]], "mol m-2 nm-1 per", as.character(time.unit), "\n")
+      cat("photon irradiance is", x[["q.irrad"]], "mol m-2 per", as.character(time.unit), "\n")
+    }
   }
 }
 
@@ -284,8 +357,14 @@ print.summary_filter_spct <- function(x, ...) {
   Tfr.type <- attr(x, "Tfr.type")
   cat("wavelength ranges from", x[["min.w.length"]], "to", x[["max.w.length"]], "nm \n")
   cat("largest wavelength step size is", x[["w.length.step"]], "nm \n")
-  cat("Spectral transmittance ranges from", x[["min.Tfr"]], "to", x[["max.Tfr"]], "\n")
-  cat("Mean transmittance is", x[["mean.Tfr"]], "\n")
+  if (!is.na(x[["min.Tfr"]]) || !is.na( x[["max.Tfr"]])) {
+    cat("Spectral transmittance ranges from", x[["min.Tfr"]], "to", x[["max.Tfr"]], "\n")
+    #  cat("Mean transmittance is", x[["mean.Tfr"]], "\n")
+  }
+  if (!is.na(x[["min.A"]]) || !is.na( x[["max.A"]])) {
+    cat("Spectral absorbance ranges from", x[["min.A"]], "to", x[["max.A"]], "\n")
+    #  cat("Mean transmittance is", x[["mean.Tfr"]], "\n")
+  }
   cat("Quantity is", Tfr.type, "\n")
 }
 
@@ -330,16 +409,24 @@ print.summary_response_spct <- function(x, ...) {
   time.unit <- attr(x, "time.unit")
   cat("wavelength ranges from", x[["min.w.length"]], "to", x[["max.w.length"]], "nm \n")
   cat("largest wavelength step size is", x[["w.length.step"]], "nm \n")
-  cat("Spectral response ranges from", x[["min.response"]],
-      "to", x[["max.response"]], "response units W-1 nm-1 per", as.character(time.unit), "\n")
-  cat("Mean response is", x[["mean.e_response"]], "response units W-1 nm-1 per",
-      as.character(time.unit), "\n")
-  cat("Total response is", x[["total.e_response"]], "response units J-1 per",
-      as.character(time.unit), "\n")
-  cat("Mean response is", x[["mean.q_response"]], "response units mol-1 nm-1 per",
-      as.character(time.unit), "\n")
-  cat("Total response is", x[["total.q_response"]], "response units mol-1 per",
-      as.character(time.unit), "\n")
+
+  if (!is.na(x[["max.s.e.response"]]) || !is.na(x[["min.s.e.response"]])) {
+    cat("Spectral response ranges from", x[["min.s.e.response"]],
+        "to", x[["max.s.e.response"]], "response units J-1 nm-1 per", as.character(time.unit), "\n")
+    cat("Mean response is", x[["mean.e.response"]], "response units J-1 nm-1 per",
+        as.character(time.unit), "\n")
+    cat("Total response is", x[["total.e.response"]], "response units J-1 per",
+        as.character(time.unit), "\n")
+  }
+
+  if (!is.na(x[["max.s.q.response"]]) || !is.na(x[["min.s.q.response"]])) {
+    cat("Spectral quantum response ranges from", x[["min.s.q.response"]],
+        "to", x[["max.s.q.response"]], "response units mol-1 nm-1 per", as.character(time.unit), "\n")
+    cat("Mean quantum response is", x[["mean.q.response"]], "response units mol-1 nm-1 per",
+        as.character(time.unit), "\n")
+    cat("Total quantum response is", x[["total.q.response"]], "response units mol-1 per",
+        as.character(time.unit), "\n")
+  }
 }
 
 # @describeIn print.summary_generic_spct Print a "summary_chrome.spct" object.
