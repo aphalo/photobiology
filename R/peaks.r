@@ -201,6 +201,8 @@ peaks.generic_spct <- function(x, span, ignore_threshold, strict, ...) {
 
 #' @describeIn peaks  Method for "source_spct" objects for generic function.
 #'
+#' @param unit.out character One of "energy" or "photon"
+#'
 #' @export
 #'
 #' @examples
@@ -249,6 +251,8 @@ peaks.response_spct <-
 }
 
 #' @describeIn peaks  Method for "filter_spct" objects for generic function.
+#'
+#' @param filter.qty character One of "transmittance" or "absorbance"
 #'
 #' @export
 #'
@@ -346,6 +350,8 @@ valleys.generic_spct <- function(x, span = 5, ignore_threshold = 0.0, strict = T
 
 #' @describeIn valleys  Method for "source_spct" objects for generic function.
 #'
+#' @param unit.out character One of "energy" or "photon"
+#'
 #' @export
 #'
 #' @examples
@@ -394,6 +400,8 @@ valleys.response_spct <-
   }
 
 #' @describeIn valleys  Method for "filter_spct" objects for generic function.
+#'
+#' @param filter.qty character One of "transmittance" or "absorbance"
 #'
 #' @export
 #'
