@@ -85,7 +85,7 @@ response.response_spct <-
 resp_spct <-
   function(spct, w.band, unit.out, quantity, time.unit, wb.trim, use.hinges) {
     if (is_normalized(spct) || is_scaled(spct)) {
-      warning("The espectral data has been normalized or scaled, ",
+      warning("The spectral data has been normalized or scaled, ",
               "making impossible to calculate integrated response")
       return(NA)
     }
