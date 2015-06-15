@@ -18,6 +18,13 @@ New generic functions peaks() and valleys().
 subset() methods for spectral objects gain a new parameter 'idx'.
 During subsetting, tags are removed from the returned spectrum.
 
+Functions is.photon_based(), is.energy_based(), is.absorbance_based()
+and is.transmittance_based() have been renamed by replacing the dot
+with an underscore for consistency with other functions not
+test for object class.
+
+Fixed bug in trim_waveband().
+
 photobiology 0.6.7
 ==================
 
