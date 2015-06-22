@@ -94,8 +94,17 @@ check.generic_spct <- function(x, byref=TRUE, strict.range=TRUE, multiple.wl = 1
     stop("Off-range minimum w.length value ", wl.min, " instead of within 100 nm and 5000 nm")
   }
   wl.reps <- x[ , length(w.length) / length(unique(w.length))]
-  if (x[ , length(w.length)] >= 2 && wl.reps > multiple.wl) {
-    warning("'w.length' values are not unique in ", wl.reps, " copies.")
+  if (wl.reps > 1) {
+    if ((wl.reps - trunc(wl.reps)) < 1e-5) {
+      wl.reps <- trunc(wl.reps)
+      if (x[ , length(w.length)] >= 2 && wl.reps > multiple.wl) {
+        warning("'w.length' values are not unique: ", wl.reps, " copies of each.")
+      }
+    } else {
+      warning("'w.length' values are not all unique with ",
+              round((wl.reps - trunc(wl.reps)) * x[, length(w.length)], 0) ,
+              " duplicate values.")
+    }
   }
   return(x)
 }
