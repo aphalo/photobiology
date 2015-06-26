@@ -106,7 +106,6 @@ test_that("oper absorbance", {
 test_that("math default", {
 
   my.e.spct <- filter_spct(w.length = 400:409, Tfr = 0.1)
-  my.2e.spct <- filter_spct(w.length = 400:409, Tfr = 0.2)
 
   expect_equal(log10(my.e.spct)[["Tfr"]],  rep(log10(0.1), length.out = 10))
   expect_equal(log(my.e.spct)[["Tfr"]],  rep(log(0.1), length.out = 10))
@@ -118,16 +117,15 @@ test_that("math default", {
 
 test_that("math absorbance", {
 
-  my.e.spct <- filter_spct(w.length = 400:409, Tfr = 0.1)
-  my.2e.spct <- filter_spct(w.length = 400:409, Tfr = 0.2)
+  my.e.spct <- filter_spct(w.length = 400:409, A = 1)
 
   options(photobiology.filter.qty = "absorbance")
 
-  expect_equal(log10(my.e.spct)[["Tfr"]],  rep(log10(0.1), length.out = 10))
-  expect_equal(log(my.e.spct)[["Tfr"]],  rep(log(0.1), length.out = 10))
-  expect_equal(log(my.e.spct, 2)[["Tfr"]],  rep(log(0.1, 2), length.out = 10))
-  expect_equal(exp(my.e.spct)[["Tfr"]],  rep(exp(0.1), length.out = 10))
-  expect_equal(sqrt(my.e.spct)[["Tfr"]],  rep(sqrt(0.1), length.out = 10))
+  expect_equal(log10(my.e.spct)[["A"]],  rep(log10(1), length.out = 10))
+  expect_equal(log(my.e.spct)[["A"]],  rep(log(1), length.out = 10))
+  expect_equal(log(my.e.spct, 2)[["A"]],  rep(log(1, 2), length.out = 10))
+  expect_equal(exp(my.e.spct)[["A"]],  rep(exp(1), length.out = 10))
+  expect_equal(sqrt(my.e.spct)[["A"]],  rep(sqrt(1), length.out = 10))
 
   options(photobiology.filter.qty = NULL)
 

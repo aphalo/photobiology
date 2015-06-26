@@ -80,7 +80,7 @@ irrad.source_spct <-
            allow.scaled = FALSE){
     # we have a default, but we check for invalid arguments
     if (!allow.scaled && (is_normalized(spct) || is_scaled(spct))) {
-      warning("The espectral data has been normalized or scaled, ",
+      warning("The spectral data has been normalized or scaled, ",
               "making impossible to calculate irradiance")
       return(NA)
     }

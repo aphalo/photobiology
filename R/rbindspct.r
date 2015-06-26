@@ -102,8 +102,8 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = NULL) {
   # and in the same loop we make sure that all spectral data uses consistent units
   l.class <- c( "source_spct", "filter_spct", "reflector_spct", "response_spct", "chroma_spct",
                 "generic_spct")
-  photon.based.input <- any(sapply(l, FUN=is.photon_based))
-  absorbance.based.input <- any(sapply(l, FUN=is.absorbance_based))
+  photon.based.input <- any(sapply(l, FUN=is_photon_based))
+  absorbance.based.input <- any(sapply(l, FUN=is_absorbance_based))
   scaled.input <- sapply(l, FUN = is_scaled)
   normalized.input <- sapply(l, FUN = is_normalized)
   effective.input <- sapply(l, FUN = is_effective)
@@ -268,6 +268,7 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = NULL) {
 #' @param x	generic_spct to subset
 #' @param subset logical expression indicating elements or rows to keep
 #' @param select expression indicating columns to select from x (IGNORED)
+#' @param idx integer vector of indexes of rows to keep
 #' @param ...	further arguments to be passed to or from other methods
 #'
 #' @details The subset argument works on the rows and will be evaluated in the
@@ -289,13 +290,18 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = NULL) {
 #'
 #' @seealso \code{\link{subset}} and \code{\link{trim_spct}}
 #'
-subset.generic_spct <- function(x, subset, select, ...) {
+subset.generic_spct <- function(x, subset, select, idx = NULL, ...) {
   comment <- comment(x)
-  z <- x[eval(substitute(subset))]
+  if (!is.null(idx)) {
+    z <- x[idx]
+  } else {
+    z <- x[eval(substitute(subset))]
+  }
   setGenericSpct(z)
   if (!is.null(comment)) {
     setattr(z, "comment", comment)
   }
+  untag(z)
   return(z)
 }
 
@@ -304,13 +310,18 @@ subset.generic_spct <- function(x, subset, select, ...) {
 #' @export
 #' @rdname subset.generic_spct
 #'
-subset.cps_spct <- function(x, subset, select = NULL, ...) {
+subset.cps_spct <- function(x, subset, select = NULL, idx = NULL, ...) {
   comment <- comment(x)
-  z <- x[eval(substitute(subset))]
+  if (!is.null(idx)) {
+    z <- x[idx]
+  } else {
+    z <- x[eval(substitute(subset))]
+  }
   setCpsSPct(z)
   if (!is.null(comment)) {
     setattr(z, "comment", comment)
   }
+  untag(z)
   return(z)
 }
 
@@ -319,15 +330,20 @@ subset.cps_spct <- function(x, subset, select = NULL, ...) {
 #' @export
 #' @rdname subset.generic_spct
 #'
-subset.source_spct <- function(x, subset, select = NULL, ...) {
+subset.source_spct <- function(x, subset, select = NULL, idx = NULL, ...) {
   time.unit <- getTimeUnit(x)
   bswf.used <- getBSWFUsed(x)
   comment <- comment(x)
-  z <- x[eval(substitute(subset))]
+  if (!is.null(idx)) {
+    z <- x[idx]
+  } else {
+    z <- x[eval(substitute(subset))]
+  }
   setSourceSpct(x = z, time.unit = time.unit, bswf.used = bswf.used, multiple.wl = Inf)
   if (!is.null(comment)) {
     setattr(z, "comment", comment)
   }
+  untag(z)
   return(z)
 }
 
@@ -336,14 +352,19 @@ subset.source_spct <- function(x, subset, select = NULL, ...) {
 #' @export
 #' @rdname subset.generic_spct
 #'
-subset.filter_spct <- function(x, subset, select = NULL, ...) {
+subset.filter_spct <- function(x, subset, select = NULL, idx = NULL, ...) {
   Tfr.type <- getTfrType(x)
   comment <- comment(x)
-  z <- x[eval(substitute(subset))]
+  if (!is.null(idx)) {
+    z <- x[idx]
+  } else {
+    z <- x[eval(substitute(subset))]
+  }
   setFilterSpct(x = z, Tfr.type = Tfr.type, multiple.wl = Inf)
   if (!is.null(comment)) {
     setattr(z, "comment", comment)
   }
+  untag(z)
   return(z)
 }
 
@@ -352,14 +373,19 @@ subset.filter_spct <- function(x, subset, select = NULL, ...) {
 #' @export
 #' @rdname subset.generic_spct
 #'
-subset.reflector_spct <- function(x, subset, select = NULL, ...) {
+subset.reflector_spct <- function(x, subset, select = NULL, idx = NULL, ...) {
   Rfr.type <- getRfrType(x)
   comment <- comment(x)
-  z <- x[eval(substitute(subset))]
+  if (!is.null(idx)) {
+    z <- x[idx]
+  } else {
+    z <- x[eval(substitute(subset))]
+  }
   setReflectorSpct(x = z, Rfr.type = Rfr.type, multiple.wl = Inf)
   if (!is.null(comment)) {
     setattr(z, "comment", comment)
   }
+  untag(z)
   return(z)
 }
 
@@ -368,14 +394,19 @@ subset.reflector_spct <- function(x, subset, select = NULL, ...) {
 #' @export
 #' @rdname subset.generic_spct
 #'
-subset.response_spct <- function(x, subset, select = NULL, ...) {
+subset.response_spct <- function(x, subset, select = NULL, idx = NULL, ...) {
   time.unit <- getTimeUnit(x)
   comment <- comment(x)
-  z <- x[eval(substitute(subset))]
+  if (!is.null(idx)) {
+    z <- x[idx]
+  } else {
+    z <- x[eval(substitute(subset))]
+  }
   setResponseSpct(x = z, time.unit = time.unit, multiple.wl = Inf)
   if (!is.null(comment)) {
     setattr(z, "comment", comment)
   }
+  untag(z)
   return(z)
 }
 
@@ -384,14 +415,19 @@ subset.response_spct <- function(x, subset, select = NULL, ...) {
 #' @export
 #' @rdname subset.generic_spct
 #'
-subset.object_spct <- function(x, subset, select = NULL, ...) {
+subset.object_spct <- function(x, subset, select = NULL, idx = NULL, ...) {
   Tfr.type <- getTfrType(x)
   Rfr.type <- getRfrType(x)
   comment <- comment(x)
-  z <- x[eval(substitute(subset))]
+  if (!is.null(idx)) {
+    z <- x[idx]
+  } else {
+    z <- x[eval(substitute(subset))]
+  }
   setObjectSpct(x = z, Tfr.type = Tfr.type, Rfr.type = Rfr.type, multiple.wl = Inf)
   if (!is.null(comment)) {
     setattr(z, "comment", comment)
   }
+  untag(z)
   return(z)
 }

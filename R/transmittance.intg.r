@@ -103,7 +103,7 @@ transmittance.object_spct <-
 transmittance_spct <-
   function(spct, w.band, pc.out, quantity, wb.trim, use.hinges) {
     if (is_normalized(spct) || is_scaled(spct)) {
-      warning("The espectral data has been normalized or scaled, making impossible to calculate transmittance")
+      warning("The spectral data has been normalized or scaled, making impossible to calculate transmittance")
       return(NA)
     }
     if (is.filter_spct(spct)) {

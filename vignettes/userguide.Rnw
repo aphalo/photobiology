@@ -226,7 +226,7 @@ and attribute values.
 
 \subsection{Spectral data assumptions}
 
-An assumption of the package is that wavelengths are always expressed in nanometres ($1~\Unit{nm} = 1 \cdot 10^{-9}\,\Unit{m}$). If the data to be analysed uses different units for wavelengths, e.g.\ Ångstrom ($1~\Unit{Å} = 1 \cdot 10^{-10}\,\Unit{m$}), the values need to be re-scaled before any calculations. Table \ref{tab:spct:units} lists the units of expression for the different variables listed in  Table  \ref{tab:spct:classes}.
+An assumption of the package is that wavelengths are always expressed in nanometres ($1~\Unit{nm} = 1 \cdot 10^{-9}\,\Unit{m}$). If the data to be analysed uses different units for wavelengths, e.g.\ Ångstrom ($1~\Unit{Å} = 1 \cdot 10^{-10}\,\Unit{m}$), the values need to be re-scaled before any calculations. Table \ref{tab:spct:units} lists the units of expression for the different variables listed in  Table  \ref{tab:spct:classes}.
 
 \begin{table}
 \caption[Variables for spectral data]{Variables used for spectral data and their units of expression: A: as stored in objects of the spectral classes, B: also recognized by the \texttt{set} family of functions for spectra and automatically converted. \texttt{time.unit} accepts in addition to the character strings listed in the table, objects of classes \texttt{lubridate::duration} and \texttt{period}, in addition \texttt{numeric} values are interpreted as seconds. \texttt{exposure.time} accepts these same values, but not the character strings.}\label{tab:spct:units}
@@ -832,6 +832,38 @@ summary(sun.spct * CIE())
 summary(sun.daily.spct)
 @
 
+\subsection{Peaks and valleys}
+
+Functions \texttt{peaks} and \texttt{valleys} take spectra as first argument and return a subset of the spectral object data corresponding to local maxima and local minima of the measured variable. \texttt{span} defines the width of the `window' used as a number of observations.
+
+<<>>=
+peaks(sun.spct, span = 51)
+valleys(sun.spct, span = 51)
+@
+
+In the case of \texttt{source\_spct} and \texttt{response\_spct} methods \texttt{unit.out} can be used to force peaks to be searched using either energy or photon based spectral irradiance. The default is energy, or the option \texttt{"photobiology.radiation.unit"} if set.
+
+<<>>=
+peaks(sun.spct, span = 51, unit.out = "photon")
+@
+
+In the case of \texttt{filter\_spct} methods \texttt{unit.out} can be used to force peaks to be searched using either spectral transmittance or spectral absorbance. The default is transmittance, or the option
+\texttt{"photobiology.filter.qty"} if set.
+
+<<>>=
+peaks(ug1.spct)
+peaks(ug1.spct, filter.qty = "absorbance")
+valleys(ug1.spct, filter.qty = "absorbance")
+@
+
+It is possible to approximately set the width of the windows in nanometres by using function \texttt{step\_size}. As \texttt{stepsize} returns a range, we use \texttt{mean} in this example, although one could also use an index (1 or 2), or \texttt{min} or \texttt{max} depending on needs.
+
+<<>>=
+peaks(sun.spct, span = 21 / mean(stepsize(sun.spct)))
+@
+
+Low level functions \texttt{find\_peaks}, \texttt{get\_peaks} and \texttt{get\_valleys} take numeric vectors as arguments.
+
 \subsection{Defining wavebands}
 
 All functions use \texttt{waveband}s as definitions of the range of wave lengths and the spectral weighting function (SWF) to use in the calculations. A few other bits of information may be included to fine-tune calculations. The waveband definitions do NOT describe whether input spectral irradiances are photon or energy based, nor whether the output irradiance will be based on photon or energy units. Waveband objects belong to the S3 class "waveband".
@@ -1332,7 +1364,7 @@ PAR.energy
 The function \texttt{waveband\_ratio()} takes basically the same parameters as \texttt{irradiance}, but two waveband definitions instead of one, and two \texttt{unit.out} definitions instead of one. This is the base function used in all the vector based `ratio' functions in the \PB package.
 
 \sloppy
-The derived functions are: \texttt{photon\_ratio()}, \texttt{energy\_ratio()}, and \texttt{photons\_energy\_ratio}. The packages \PBVIS and \PBUV use these to define some convenience functions, and here we give and example for a function not yet implemented, but which you may find as a useful example.
+The derived functions are: \texttt{photon\_ratio()}, \texttt{energy\_ratio()}, and \texttt{photons\_energy\_ratio}.
 
 In contrast to the functions described in the previous section, these functions only accept individual waveband definitions (not lists of them).
 
@@ -1602,12 +1634,23 @@ lines(s.e.irrad/max(s.e.irrad) ~ w.length, col = "black", data = sun.spct)
 
 \begin{framed}
 \noindent
+It is safe to use function \texttt{subset} with spectral objects as method especialization have been defined, which preserve all attributes including class.
+
+The use of indexing is mostly to be avoided in the current version because attributes defined in the spectral classes are stripped, even though the derived class attribute is preserved. I have been unable to make obvious ways of wrapping this operator work as expected for the spectral classes.
+
 To stack spectral objects the function \texttt{rbindspct} should be used instead of \texttt{rbind} or \texttt{rbindlist} from package \texttt{data.table}. The functions from package \texttt{data.table} strip the spectral class attributes from the output, returning always a \texttt{data.table} object.
 
-\texttt{subset} has the same problem, and in addition also removes comments, so it should be also avoided, and \texttt{trim\_spct} used instead.
-
-In earlier versions of the package we had included our own version of \texttt{rbindlist} to override the one defined in package \texttt{data.table}, but this was triggering warnings and causing other problems. Because of this it has been removed. (This is a, hopefully, temporary limitation.)
 \end{framed}
+
+\texttt{subset} methods for spectral objects preserve spectral attributes.
+
+<<>>=
+subset(sun.spct, w.length > 600)
+subset(sun.spct, c(TRUE, rep(FALSE, 99)))
+subset(sun.spct, c(1:5, 10))
+selector <- 1:5
+subset(sun.spct, selector)
+@
 
 Sometimes it is needed to add (parallel sum) between two spectra, even if the two spectra have been
 measured at different wavelengths or wavelength steps. This can happen for example when we would like
@@ -1778,7 +1821,7 @@ sun_angles(now(), lat = 34, lon = 0)
 sun_angles(ymd_hms("2014-01-01 0:0:0", tz = "UTC"))
 @
 
-\subsection{Calculating times of sunrise and sunset}
+\subsection{Calculating times of sunrise, solar noon and sunset}
 
 Functions \texttt{sunrise\_time}, \texttt{sunset\_time}, \texttt{noon\_time}, \texttt{day\_length} and \texttt{night\_length} have all the same parameter signature. In addition, function \texttt{day\_night} returns a list containing all the quantities returned by the other functions. They are all vectorized for the
 \texttt{date} parameter.
@@ -1792,15 +1835,8 @@ dates <- seq(from = ymd("2015-03-01"), to = ymd("2015-07-1"), length.out = 3)
 Default latitude is zero (the Equator), the default longitude is zero (Greenwich), and default time zone for the functions in the \texttt{photobiology} package is \texttt{"UTC"}. Be also aware that for summer dates the times are expressed accrodingly. In the examples below this can be recognized for example, by the time zone being reported as EEST instead of EET for Eastern Europe.
 
 <<>>=
-noon_time(dates, lat =  60, tz = "UTC")
-noon_time(dates, lat =  60, tz = "CET")
-@
-
-Southern hemisphere latitudes are given as negative numbers.
-
-<<>>=
-day_length(dates, lat =  60)
-day_length(dates, lat = -60)
+noon_time(dates, tz = "UTC", lat =  60)
+noon_time(dates, tz = "CET", lat =  60)
 @
 
 <<>>=
@@ -1816,19 +1852,47 @@ sunrise_time(lat = 60)
 Both latitude and longitude can be supplied, but be aware that if the returned value is desired in the local time coordinates, the time zone should match the longitude.
 
 <<>>=
-sunrise_time(today(tzone = "UTC"), lat = 60, lon = 0, tz = "UTC")
-sunrise_time(today(tzone = "EET"), lat = 60, lon = 25, tz = "EET")
+sunrise_time(today(tzone = "UTC"), tz = "UTC", lat = 60, lon = 0)
+sunrise_time(today(tzone = "EET"), tz = "EET", lat = 60, lon = 25)
 @
 
-Finally the angle used in the twilight calculation can be supplied, either as the name of a standard definition, or as an angle in degrees (negative for sun positions below the horizon). Positive angles can be used when the time of sun occlusion behind a building, mountain, or other obstacle needs to be calculated.
+Southern hemisphere latitudes are given as negative numbers.
 
 <<>>=
-sunrise_time(today(tzone = "EET"), lat = 60, lon = 25, tz = "EET",
+sunrise_time(dates, lat =  60)
+sunrise_time(dates, lat = -60)
+@
+
+The angle used in the twilight calculation can be supplied, either as the name of a standard definition, or as an angle in degrees (negative for sun positions below the horizon). Positive angles can be used when the time of sun occlusion behind a building, mountain, or other obstacle needs to be calculated.
+
+<<>>=
+sunrise_time(today(tzone = "EET"), tz = "EET", lat = 60, lon = 25,
              twilight = "civil")
-sunrise_time(today(tzone = "EET"), lat = 60, lon = 25, tz = "EET",
+sunrise_time(today(tzone = "EET"), tz = "EET", lat = 60, lon = 25,
              twilight = -10)
-sunrise_time(today(tzone = "EET"), lat = 60, lon = 25, tz = "EET",
+sunrise_time(today(tzone = "EET"), tz = "EET", lat = 60, lon = 25,
              twilight = +12)
+@
+
+Parameter \texttt{unit.out} can be used to obtain the returned value expresed as time-of-day in hours, minutes, or seconds since midnight.
+
+<<>>=
+sunrise_time(today(tzone = "EET"), tz = "EET", lat = 60, lon = 25,
+             unit.out = "hour")
+@
+
+Functions \texttt{day\_length} and \texttt{night\_length} return by default the length of time in hours.
+
+<<>>=
+day_length(dates, lat = 60)
+night_length(dates, lat = 60)
+@
+
+Function \texttt{day\_night} returns a list.
+
+<<>>=
+day_night(dates, lat = 60)
+day_night(dates, lat = 60, unit.out = "hour")
 @
 
 \section{Calculating equivalent RGB colours for display}

@@ -28,9 +28,11 @@ fscale.default <- function(x, ...) {
 #' @param range An R object on which \code{range()} returns a numeric vector of
 #'   length 2 with the limits of a range of wavelengths in nm, with min annd max
 #'   wavelengths (nm)
-#' @param f numeric Normalization wavelength (nm) or character string "mean",
-#' or "total" for normalization at the corresponding wavelength.
-#' @param unit.out character Alowed values "energy", and "photon", or its alias "quantum"
+#' @param f character string "mean" or "total" for scaling so taht this summary
+#'   value becomes 1 for the returned object, or the name of a function taking
+#'   \code{x} as first argument and returning a numeric value.
+#' @param unit.out character Alowed values "energy", and "photon", or its alias
+#'   "quantum"
 #'
 #' @export
 #'
@@ -196,4 +198,33 @@ is_scaled <- function(x) {
   }
   spct.attr <- attr(x, "scaled", exact = TRUE)
   as.logical(!is.null(spct.attr) && as.logical(spct.attr))
+}
+
+# getScaled -----------------------------------------------------------
+
+#' Get the "scaled" attribute
+#'
+#' Funtion to read the "scaled" attribute of an existing generic_spct
+#' object.
+#'
+#' @param x a generic_spct object
+#'
+#' @return logical
+#'
+#' @note if x is not a \code{filter_spct} object, \code{NA} is returned
+#'
+#' @export
+#' @family Rfr attribute functions
+#'
+getScaled <- function(x) {
+  if (is.any_spct(x)) {
+    scaled <- attr(x, "scaled", exact = TRUE)
+    if (is.null(scaled) || is.na(scaled)) {
+      # need to handle objects created with old versions
+      scaled <- FALSE
+    }
+    return(scaled[[1]])
+  } else {
+    return(NA)
+  }
 }

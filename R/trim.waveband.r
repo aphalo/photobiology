@@ -20,11 +20,19 @@
 #' @family trim functions
 #' @export
 #' @examples
-#' trim_waveband(waveband(c(200,1000)), c(400,700))
+#' library(photobiologyWavebands)
 #'
+#' trim_waveband(VIS(), c(400,700))
+#' trim_waveband(VIS(), low.limit = 400)
+#' trim_waveband(VIS(), high.limit = 700)
+#'
+#' trim_waveband(VIS_bands(), c(400,700))
+#' trim_waveband(VIS_bands(), low.limit = 400)
+#' trim_waveband(VIS_bands(), high.limit = 700)
+
 trim_waveband <- function(w.band,
                           range = NULL,
-                          low.limit = NULL, high.limit = NULL,
+                          low.limit = 0, high.limit = Inf,
                           trim = getOption("photobiology.waveband.trim", default = TRUE),
                           use.hinges = TRUE)
 {
@@ -35,12 +43,6 @@ trim_waveband <- function(w.band,
   if (!is.null(range)) {
     low.limit <- ifelse(!is.null(low.limit), max(min(range), low.limit), min(range))
     high.limit <- ifelse(!is.null(high.limit), min(max(range), high.limit), max(range))
-  }
-  if (is.null(low.limit)) {
-    low.limit <- min(w.band)
-  }
-  if (is.null(high.limit)) {
-    high.limit <- max(w.band)
   }
   w.band.out <- list()
   i <- 0

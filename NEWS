@@ -1,11 +1,36 @@
 TODO
 ====
 
-Add test cases for chroma_spct and cps_spct
+Find a way of wrapping `[.data.table` so that attributes are
+preserved when used with derived classes.
 
-Implement peak fitting in addition to current peak search algorithm, so
-that location of peaks is more precise (Found peak positions in-between wavelength values
-in spectral data possible).
+Add test cases for chroma_spct
+
+photobiology 0.6.8
+==================
+
+Functions sunrise_time(), noon_time(), sunset_time(), day_length(),
+night_length() and day_night() gain formal parameter 'unit.out',
+but its default value preserves earlier behaviour.
+
+New generic functions peaks() and valleys().
+
+subset() methods for spectral objects gain a new parameter 'idx'.
+During subsetting, tags are removed from the returned spectrum.
+
+Functions is.photon_based(), is.energy_based(), is.absorbance_based()
+and is.transmittance_based() have been renamed by replacing the dot
+with an underscore for consistency with other functions not
+test for object class.
+
+Fixed bug in trim_waveband().
+
+photobiology 0.6.7
+==================
+
+Fix bug in functions day_length() and night_length() added in 0.6.6.
+The bug was triggering an error in calculations for polar regions.
+(Test cases added.)
 
 photobiology 0.6.6
 ==================
