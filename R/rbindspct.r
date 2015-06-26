@@ -102,8 +102,8 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = NULL) {
   # and in the same loop we make sure that all spectral data uses consistent units
   l.class <- c( "source_spct", "filter_spct", "reflector_spct", "response_spct", "chroma_spct",
                 "generic_spct")
-  photon.based.input <- any(sapply(l, FUN=is.photon_based))
-  absorbance.based.input <- any(sapply(l, FUN=is.absorbance_based))
+  photon.based.input <- any(sapply(l, FUN=is_photon_based))
+  absorbance.based.input <- any(sapply(l, FUN=is_absorbance_based))
   scaled.input <- sapply(l, FUN = is_scaled)
   normalized.input <- sapply(l, FUN = is_normalized)
   effective.input <- sapply(l, FUN = is_effective)

@@ -193,3 +193,32 @@ is_normalized <- function(x) {
   as.logical(!is.null(spct.attr) && as.logical(spct.attr))
 }
 
+# getNormalized -----------------------------------------------------------
+
+#' Get the "normalized" attribute
+#'
+#' Funtion to read the "normalized" attribute of an existing generic_spct
+#' object.
+#'
+#' @param x a generic_spct object
+#'
+#' @return character or numeric or logical
+#'
+#' @note if x is not a \code{filter_spct} object, \code{NA} is returned
+#'
+#' @export
+#' @family Rfr attribute functions
+#'
+getNormalized <- function(x) {
+  if (is.generic_spct(x)) {
+    normalized <- attr(x, "normalized", exact = TRUE)
+    if (is.null(normalized) || is.na(normalized)) {
+      # need to handle objects created with old versions
+      normalized <- FALSE
+    }
+    return(normalized[[1]])
+  } else {
+    return(NA)
+  }
+}
+
