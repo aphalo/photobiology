@@ -21,6 +21,7 @@
 #'   interpolation errors
 #' @param allow.scaled logical indicating whether scaled or normalized spectra
 #'   as argument to spct are flagged as an error
+#' @param ... other arguments (possibly ignored)
 #'
 #' @note Formal parameter \code{allow.scaled} is used internally for calculation
 #'   of ratios, as rescaling and normalization do not invalidate the calculation
@@ -51,14 +52,14 @@
 #' @family irradiance functions
 #'
 irrad <- function(spct, w.band, unit.out, quantity, time.unit, wb.trim,
-                  use.cached.mult, use.hinges, allow.scaled) UseMethod("irrad")
+                  use.cached.mult, use.hinges, allow.scaled, ...) UseMethod("irrad")
 
 #' @describeIn irrad Default for generic function
 #'
 #' @export
 #'
 irrad.default <- function(spct, w.band, unit.out, quantity, time.unit, wb.trim,
-                          use.cached.mult, use.hinges, allow.scaled) {
+                          use.cached.mult, use.hinges, allow.scaled, ...) {
   warning("'irrad' is not defined for objects of class ", class(spct)[1])
   return(NA)
 }
@@ -77,7 +78,7 @@ irrad.source_spct <-
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
            use.hinges=getOption("photobiology.use.hinges", default=NULL),
-           allow.scaled = FALSE){
+           allow.scaled = FALSE, ...){
     # we have a default, but we check for invalid arguments
     if (!allow.scaled && (is_normalized(spct) || is_scaled(spct))) {
       warning("The spectral data has been normalized or scaled, ",
@@ -272,6 +273,7 @@ irrad_spct <- irrad.source_spct
 #'   interpolation errors
 #' @param allow.scaled logical indicating whether scaled or normalized spectra
 #'   as argument to spct are flagged as an error
+#' @param ... other arguments (possibly ignored)
 #'
 #' @keywords manip misc
 #'
@@ -297,13 +299,17 @@ irrad_spct <- irrad.source_spct
 #'
 #' @family irradiance functions
 #'
-e_irrad <- function(spct, w.band, quantity, time.unit, wb.trim, use.cached.mult, use.hinges, allow.scaled) UseMethod("e_irrad")
+e_irrad <- function(spct, w.band,
+                    quantity, time.unit, wb.trim,
+                    use.cached.mult, use.hinges, allow.scaled, ...) UseMethod("e_irrad")
 
 #' @describeIn e_irrad Default for generic function
 #'
 #' @export
 #'
-e_irrad.default <- function(spct, w.band, quantity, time.unit, wb.trim, use.cached.mult, use.hinges, allow.scaled) {
+e_irrad.default <- function(spct, w.band,
+                            quantity, time.unit, wb.trim,
+                            use.cached.mult, use.hinges, allow.scaled, ...) {
   warning("'e_irrad' is not defined for objects of class ", class(spct)[1])
   return(NA)
 }
@@ -320,7 +326,7 @@ e_irrad.source_spct <-
            wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
            use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
            use.hinges=getOption("photobiology.use.hinges", default=NULL),
-           allow.scaled = FALSE ) {
+           allow.scaled = FALSE, ...) {
     irrad_spct(spct, w.band=w.band, unit.out="energy", quantity=quantity,
                time.unit = time.unit, wb.trim=wb.trim,
                use.cached.mult=use.cached.mult, use.hinges=use.hinges,
@@ -347,6 +353,7 @@ e_irrad.source_spct <-
 #'   interpolation errors
 #' @param allow.scaled logical indicating whether scaled or normalized spectra
 #'   as argument to spct are flagged as an error
+#' @param ... other arguments (possibly ignored)
 #'
 #' @keywords manip misc
 #'
@@ -372,13 +379,17 @@ e_irrad.source_spct <-
 #'
 #' @export
 #' @family irradiance functions
-q_irrad <- function(spct, w.band, quantity, time.unit, wb.trim, use.cached.mult, use.hinges, allow.scaled) UseMethod("q_irrad")
+q_irrad <- function(spct, w.band,
+                    quantity, time.unit, wb.trim,
+                    use.cached.mult, use.hinges, allow.scaled, ...) UseMethod("q_irrad")
 
 #' @describeIn q_irrad Default for generic function
 #'
 #' @export
 #'
-q_irrad.default <- function(spct, w.band, quantity, time.unit, wb.trim, use.cached.mult, use.hinges, allow.scaled) {
+q_irrad.default <- function(spct, w.band,
+                            quantity, time.unit, wb.trim,
+                            use.cached.mult, use.hinges, allow.scaled, ...) {
   warning("'q_irrad' is not defined for objects of class ", class(spct)[1])
   return(NA)
 }
@@ -395,7 +406,7 @@ q_irrad.source_spct <-
            wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
            use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
            use.hinges=getOption("photobiology.use.hinges", default=NULL),
-           allow.scaled = FALSE ) {
+           allow.scaled = FALSE, ...) {
     irrad_spct(spct, w.band=w.band, unit.out="photon", quantity=quantity,
                time.unit = time.unit, wb.trim=wb.trim,
                use.cached.mult=use.cached.mult, use.hinges=use.hinges,
@@ -423,6 +434,7 @@ q_irrad.source_spct <-
 #'   interpolation errors
 #' @param allow.scaled logical indicating whether scaled or normalized spectra
 #'   as argument to spct are flagged as an error
+#' @param ... other arguments (possibly ignored)
 #'
 #' @keywords manip misc
 #'
@@ -452,14 +464,14 @@ q_irrad.source_spct <-
 #' @export
 #' @family irradiance functions
 fluence <- function(spct, w.band, unit.out, exposure.time, wb.trim,
-                    use.cached.mult, use.hinges, allow.scaled) UseMethod("fluence")
+                    use.cached.mult, use.hinges, allow.scaled, ...) UseMethod("fluence")
 
 #' @describeIn fluence Default for generic function
 #'
 #' @export
 #'
 fluence.default <- function(spct, w.band, unit.out, exposure.time,
-                            wb.trim, use.cached.mult, use.hinges, allow.scaled) {
+                            wb.trim, use.cached.mult, use.hinges, allow.scaled, ...) {
   warning("'fluence' is not defined for objects of class ", class(spct)[1])
   return(NA)
 }
@@ -476,7 +488,7 @@ fluence.source_spct <-
            wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
            use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
            use.hinges=getOption("photobiology.use.hinges", default=NULL),
-           allow.scaled = FALSE ) {
+           allow.scaled = FALSE, ...) {
     if (!lubridate::is.duration(exposure.time) &&
         !is.period(exposure.time) &&
         !is.numeric(exposure.time) ) {
@@ -518,6 +530,7 @@ fluence.source_spct <-
 #'   interpolation errors
 #' @param allow.scaled logical indicating whether scaled or normalized spectra
 #'   as argument to spct are flagged as an error
+#' @param ... other arguments (possibly ignored)
 #'
 #' @keywords manip misc
 #'
@@ -546,14 +559,14 @@ fluence.source_spct <-
 #' @export
 #' @family irradiance functions
 q_fluence <- function(spct, w.band, exposure.time, wb.trim, use.cached.mult,
-                      use.hinges, allow.scaled) UseMethod("q_fluence")
+                      use.hinges, allow.scaled, ...) UseMethod("q_fluence")
 
 #' @describeIn q_fluence Default for generic function
 #'
 #' @export
 #'
 q_fluence.default <- function(spct, w.band, exposure.time, wb.trim,
-                              use.cached.mult, use.hinges, allow.scaled) {
+                              use.cached.mult, use.hinges, allow.scaled, ...) {
   warning("'q_fluence' is not defined for objects of class ", class(spct)[1])
   return(NA)
 }
@@ -569,7 +582,7 @@ q_fluence.source_spct <-
            wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
            use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
            use.hinges=getOption("photobiology.use.hinges", default=NULL),
-           allow.scaled = FALSE ) {
+           allow.scaled = FALSE, ...) {
     if (!lubridate::is.duration(exposure.time) &&
         !is.period(exposure.time) &&
         !is.numeric(exposure.time) ) {
@@ -607,6 +620,7 @@ q_fluence.source_spct <-
 #'   interpolation errors
 #' @param allow.scaled logical indicating whether scaled or normalized spectra
 #'   as argument to spct are flagged as an error
+#' @param ... other arguments (possibly ignored)
 #'
 #' @keywords manip misc
 #'
@@ -634,14 +648,14 @@ q_fluence.source_spct <-
 #' @export
 #' @family irradiance functions
 e_fluence <- function(spct, w.band, exposure.time, wb.trim, use.cached.mult,
-                      use.hinges, allow.scaled) UseMethod("e_fluence")
+                      use.hinges, allow.scaled, ...) UseMethod("e_fluence")
 
 #' @describeIn e_fluence Default for generic function
 #'
 #' @export
 #'
 e_fluence.default <- function(spct, w.band, exposure.time, wb.trim, use.cached.mult,
-                              use.hinges, allow.scaled) {
+                              use.hinges, allow.scaled, ...) {
   warning("'e_fluence' is not defined for objects of class ", class(spct)[1])
   return(NA)
 }
@@ -657,7 +671,7 @@ e_fluence.source_spct <-
            wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
            use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
            use.hinges=getOption("photobiology.use.hinges", default=NULL),
-           allow.scaled = FALSE ) {
+           allow.scaled = FALSE, ...) {
     if (!lubridate::is.duration(exposure.time) &&
         !is.period(exposure.time) &&
         !is.numeric(exposure.time) ) {

@@ -460,6 +460,7 @@ setGenericSpct <- function(x, multiple.wl = 1L) {
     setattr(x, "spct.tags", NA)
   }
   x <- check(x, multiple.wl = multiple.wl)
+  setattr(x, "spct.version", 1)
   setkey_spct(x, w.length)
   if (is.name(name)) {
     name <- as.character(name)
@@ -1417,3 +1418,52 @@ getRfrType <- function(x) {
   }
 }
 
+#' Get the "spct.version" attribute
+#'
+#' Funtion to read the "spct.version" attribute of an existing generic_spct
+#' object.
+#'
+#' @param x a generic_spct object
+#'
+#' @return numeric value
+#'
+#' @note if x is not a \code{generic_spct} object, \code{NA} is returned,
+#'   and if it the attribute is missing, zero is returned with a warning.
+#'
+#' @export
+#'
+getObjectVersion <- function(x) {
+  if (is.any_spct(x)) {
+    version <- attr(x, "spct.version", exact = TRUE)
+    if (is.null(version)) {
+      # need to handle objects created with old versions
+      version <- 0L
+    }
+  } else {
+    version <- NA
+  }
+  version
+}
+
+#' Check that the "spct.version" attribute is set
+#'
+#' Funtion to check the "spct.version" attribute of an existing generic_spct
+#' object.
+#'
+#' @param x a generic_spct object
+#'
+#' @return numeric value
+#'
+#' @note if x is not a \code{generic_spct} object, \code{NA} is returned,
+#'   and if it the attribute is missing, zero is returned with a warning.
+#'
+#' @keywords internal
+#'
+checkObjectVersion <- function(x) {
+  version <- getObjectVersion(x)
+  stopifnot(!is.na(version))
+  if (version < 1L) {
+    warning("The object '", as.character(substitute(x)),
+            "' was created in a version (< 0.7.0) or has become corrupted")
+  }
+}

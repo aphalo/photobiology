@@ -12,6 +12,7 @@
 #'   are trimmed or ignored
 #' @param use.hinges logical Flag indicating whether to use hinges to reduce
 #'   interpolation errors
+#' @param ... other arguments (possibly ignored)
 #'
 #' @note The \code{use.hinges} parameter controls speed optimization. The
 #'   defaults should be suitable in most cases. Only the range of wavelengths
@@ -26,13 +27,13 @@
 #'
 #' @export
 #'
-absorptance <- function(spct, w.band, quantity, wb.trim, use.hinges) UseMethod("absorptance")
+absorptance <- function(spct, w.band, quantity, wb.trim, use.hinges, ...) UseMethod("absorptance")
 
 #' @describeIn absorptance Default for generic function
 #'
 #' @export
 #'
-absorptance.default <- function(spct, w.band, quantity, wb.trim, use.hinges) {
+absorptance.default <- function(spct, w.band, quantity, wb.trim, use.hinges, ...) {
   warning("'absorptance' is not defined for objects of class ", class(spct)[1])
   return(NA)
 }
@@ -42,9 +43,10 @@ absorptance.default <- function(spct, w.band, quantity, wb.trim, use.hinges) {
 #' @export
 #'
 absorptance.object_spct <-
-  function(spct, w.band=NULL, quantity="average",
+  function(spct, w.band=NULL,
+           quantity="average",
            wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
-           use.hinges=getOption("photobiology.use.hinges", default=NULL) )  {
+           use.hinges=getOption("photobiology.use.hinges", default=NULL), ...)  {
     absorptance_spct(spct = spct, w.band = w.band, quantity = quantity,
                      wb.trim = wb.trim, use.hinges = use.hinges)
   }
@@ -54,9 +56,10 @@ absorptance.object_spct <-
 #' @export
 #'
 absorptance.filter_spct <-
-  function(spct, w.band = NULL, quantity = "average",
+  function(spct, w.band = NULL,
+           quantity = "average",
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
-           use.hinges = getOption("photobiology.use.hinges", default = NULL) ) {
+           use.hinges = getOption("photobiology.use.hinges", default = NULL), ... ) {
     if (getTfrType(spct) != "internal") {
       warning("Internal absorptance cannot be calculed from total transmittance alone")
       return(NA)
