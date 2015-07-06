@@ -13,25 +13,19 @@ multi_spct_classes <- function() {
     "response_multi_spct", "chroma_multi_spct")
 }
 
-#' @title Convert a list of spectral objects into a "multi spectrum" object
+#' @title
 #'
-#' @description Sets the class attibute of a list of spectra to the
-#'   corresponding multi-spct class, also setting the target class for summaries.
+#' @description Converts a list of spectral objects into a "multi spectrum"
+#'   object by setting the class attibute of the list of spectra to the
+#'   corresponding multi-spct class, check that components of the list belong to
+#'   the expected class.
 #'
 #' @param l list of generic_spct or derived classes
-#' @param class the class expected for the elements of l
+#' @param class character The class expected for the elements of l
 #' @param ncol integer Number of 'virtual' columns in data
 #'
 #' @export
 #' @exportClass generic_multi_spct
-#' @exportClass cps_multi_spct
-#' @exportClass source_multi_spct
-#' @exportClass response_multi_spct
-#' @exportClass filter_multi_spct
-#' @exportClass reflector_multi_spct
-#' @exportClass object_multi_spct
-#' @exportClass response_multi_spct
-#' @exportClass chroma_multi_spct
 #'
 #' @family collections of spectra classes family
 #'
@@ -58,6 +52,7 @@ generic_multi_spct <- function(l, class = "generic_spct", ncol = 1, byrow = FALS
 #' @describeIn generic_multi_spct Specialization for collections of \code{cps_spct} objects.
 #'
 #' @export
+#' @exportClass cps_multi_spct
 #'
 cps_multi_spct <- function(l, ncol = 1, byrow = FALSE, idfactor = TRUE, ...) {
   generic_multi_spct(l, class = "cps_spct", ncol = ncol, byrow = byrow, ...)
@@ -66,6 +61,7 @@ cps_multi_spct <- function(l, ncol = 1, byrow = FALSE, idfactor = TRUE, ...) {
 #' @describeIn generic_multi_spct Specialization for collections of \code{source_spct} objects.
 #'
 #' @export
+#' @exportClass source_multi_spct
 #'
 source_multi_spct <- function(l, ncol = 1, byrow = FALSE, idfactor = TRUE, ...) {
   generic_multi_spct(l, class = "source_spct", ncol = ncol, byrow = byrow, ...)
@@ -74,6 +70,7 @@ source_multi_spct <- function(l, ncol = 1, byrow = FALSE, idfactor = TRUE, ...) 
 #' @describeIn generic_multi_spct Specialization for collections of \code{filter_spct} objects.
 #'
 #' @export
+#' @exportClass filter_multi_spct
 #'
 filter_multi_spct <- function(l, ncol = 1, byrow = FALSE, idfactor = TRUE, ...) {
   generic_multi_spct(l, class = "filter_spct", ncol = ncol, byrow = byrow, ...)
@@ -82,6 +79,7 @@ filter_multi_spct <- function(l, ncol = 1, byrow = FALSE, idfactor = TRUE, ...) 
 #' @describeIn generic_multi_spct Specialization for collections of \code{reflector_spct} objects.
 #'
 #' @export
+#' @exportClass reflector_multi_spct
 #'
 reflector_multi_spct <- function(l, ncol = 1, byrow = FALSE, idfactor = TRUE, ...) {
   generic_multi_spct(l, class = "reflector_spct", ncol = ncol, byrow = byrow, ...)
@@ -90,6 +88,7 @@ reflector_multi_spct <- function(l, ncol = 1, byrow = FALSE, idfactor = TRUE, ..
 #' @describeIn generic_multi_spct Specialization for collections of \code{object_spct} objects.
 #'
 #' @export
+#' @exportClass object_multi_spct
 #'
 object_multi_spct <- function(l, ncol = 1, byrow = FALSE, idfactor = TRUE, ...) {
   generic_multi_spct(l, class = "object_spct", ncol = ncol, byrow = byrow, ...)
@@ -98,6 +97,7 @@ object_multi_spct <- function(l, ncol = 1, byrow = FALSE, idfactor = TRUE, ...) 
 #' @describeIn generic_multi_spct Specialization for collections of \code{response_spct} objects.
 #'
 #' @export
+#' @exportClass response_multi_spct
 #'
 response_multi_spct <- function(l, ncol = 1, byrow = FALSE, idfactor = TRUE, ...) {
   generic_multi_spct(l, class = "response_spct", ncol = ncol, byrow = byrow, ...)
@@ -106,6 +106,7 @@ response_multi_spct <- function(l, ncol = 1, byrow = FALSE, idfactor = TRUE, ...
 #' @describeIn generic_multi_spct Specialization for collections of \code{chroma_spct} objects.
 #'
 #' @export
+#' @exportClass chroma_multi_spct
 #'
 chroma_multi_spct <- function(l, ncol = 1, byrow = FALSE, idfactor = TRUE, ...) {
   generic_multi_spct(l, class = "chroma_spct", ncol = ncol, byrow = byrow, ...)
