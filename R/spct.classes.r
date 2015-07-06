@@ -460,6 +460,7 @@ setGenericSpct <- function(x, multiple.wl = 1L) {
     setattr(x, "spct.tags", NA)
   }
   x <- check(x, multiple.wl = multiple.wl)
+  setattr(x, "photobiology.spct.version", 1)
   setkey_spct(x, w.length)
   if (is.name(name)) {
     name <- as.character(name)

@@ -1,3 +1,12 @@
+MUST DO VERY SOON
+=================
+
+Add a "version" attribute to generic_spct and all derived classes that
+can be used to test whether object attributes have been "lost" in
+user code. This will require "old objects" to be upgraded before use
+but will plug a hole in the mechanism used to keep track of units
+and other fundamental data properties.
+
 TODO
 ====
 
@@ -5,6 +14,14 @@ Find a way of wrapping `[.data.table` so that attributes are
 preserved when used with derived classes.
 
 Add test cases for chroma_spct
+
+photobiology 0.6.9
+==================
+
+Add function normalized_diff_ind() usable for calculation of indexes
+similar to NDVI (normalized difference vegetaion index) for
+reflectance and any other spectral summary quantity and two
+waveband objetcs.
 
 photobiology 0.6.8
 ==================
