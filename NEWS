@@ -15,6 +15,19 @@ preserved when used with derived classes.
 
 Add test cases for chroma_spct
 
+photobiology 0.7.0
+==================
+
+Make ratio functions into methods, and add 'wb.trim' as a parameter.
+
+Add multi_spct classes and methods. The idea for these new classes
+came from a question from Susan Holmes after my talk
+at UseR!2015 in Aalborg. She asked whether my package could handle
+hyperspectral image data. I answer not, but that this feature could
+be easily added. As with the rest of the package I have now a first
+design that avoids as much as possible making assumptions about the
+data, and allows as much extensibility as possible.
+
 photobiology 0.6.9
 ==================
 

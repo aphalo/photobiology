@@ -31,19 +31,39 @@
 #'
 #' @family photon and energy ratio functions
 #'
-q_ratio <-
+q_ratio <- function(spct, w.band.num, w.band.denom,
+                  use.cached.mult, use.hinges, wb.trim) UseMethod("q_ratio")
+
+#' @describeIn q_ratio Default for generic function
+#'
+#' @export
+#'
+q_ratio.default <- function(spct, w.band.num, w.band.denom,
+                            use.cached.mult, use.hinges, wb.trim) {
+  warning("'q_ratio' is not defined for objects of class ", class(spct)[1])
+  return(NA)
+}
+
+#' @describeIn q_ratio Method for \code{source_spct} objects
+#'
+#' @export
+#'
+q_ratio.source_spct <-
   function(spct,
            w.band.num=NULL, w.band.denom=NULL,
            use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
-           use.hinges=getOption("photobiology.use.hinges", default=NULL) ) {
+           use.hinges=getOption("photobiology.use.hinges", default=NULL),
+           wb.trim = getOption("photobiology.waveband.trim", default =TRUE)) {
     q.irrad.num <- irrad_spct(spct, w.band=w.band.num,
                               unit.out="photon", quantity="total",
-                              wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
-                              use.cached.mult=use.cached.mult, use.hinges=use.hinges, allow.scaled=TRUE)
+                              wb.trim = wb.trim,
+                              use.cached.mult=use.cached.mult, use.hinges=use.hinges,
+                              allow.scaled=TRUE)
     q.irrad.denom <- irrad_spct(spct, w.band=w.band.denom,
                                 unit.out="photon", quantity="total",
-                                wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
-                                use.cached.mult=use.cached.mult, use.hinges=use.hinges, allow.scaled=TRUE)
+                                wb.trim = wb.trim,
+                                use.cached.mult=use.cached.mult, use.hinges=use.hinges,
+                                allow.scaled=TRUE)
     ratio <- q.irrad.num / q.irrad.denom
     names(ratio) <- paste(names(q.irrad.num), ":", names(q.irrad.denom), "(q:q)", sep="")
     setattr(ratio, "time.unit", NULL)
@@ -85,15 +105,37 @@ q_ratio <-
 #'
 #' @family photon and energy ratio functions
 #'
-e_ratio <-
+e_ratio <- function(spct, w.band.num, w.band.denom,
+                    use.cached.mult, use.hinges, wb.trim) UseMethod("q_ratio")
+
+#' @describeIn e_ratio Default for generic function
+#'
+#' @export
+#'
+e_ratio.default <- function(spct, w.band.num, w.band.denom,
+                            use.cached.mult, use.hinges, wb.trim) {
+  warning("'e_ratio' is not defined for objects of class ", class(spct)[1])
+  return(NA)
+}
+
+#' @describeIn e_ratio Method for \code{source_spct} objects
+#'
+#' @export
+#'
+e_ratio.source_spct <-
   function(spct,
            w.band.num=NULL, w.band.denom=NULL,
            use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
-           use.hinges=getOption("photobiology.use.hinges", default=NULL) ) {
-    e.irrad.num <- irrad_spct(spct, w.band=w.band.num, unit.out="energy", quantity="total", wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
-                              use.cached.mult=use.cached.mult, use.hinges=use.hinges, allow.scaled=TRUE)
-    e.irrad.denom <- irrad_spct(spct, w.band=w.band.denom, unit.out="energy", quantity="total", wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
-                                use.cached.mult=use.cached.mult, use.hinges=use.hinges, allow.scaled=TRUE)
+           use.hinges=getOption("photobiology.use.hinges", default=NULL),
+           wb.trim = getOption("photobiology.waveband.trim", default =TRUE) {
+    e.irrad.num <- irrad_spct(spct, w.band=w.band.num, unit.out="energy", quantity="total",
+                              wb.trim = wb.trim,
+                              use.cached.mult=use.cached.mult, use.hinges=use.hinges,
+                              allow.scaled=TRUE)
+    e.irrad.denom <- irrad_spct(spct, w.band=w.band.denom, unit.out="energy", quantity="total",
+                                wb.trim = wb.trim,
+                                use.cached.mult=use.cached.mult, use.hinges=use.hinges,
+                                allow.scaled=TRUE)
     ratio <- e.irrad.num / e.irrad.denom
     names(ratio) <- paste(names(e.irrad.num), ":", names(e.irrad.denom), "(e:e)", sep="")
     setattr(ratio, "time.unit", NULL)
@@ -133,17 +175,35 @@ e_ratio <-
 #'
 #' @family photon and energy ratio functions
 #'
-qe_ratio <-
+qe_ratio <- function(spct, w.band,
+                     use.cached.mult, use.hinges, wb.trim) UseMethod("qe_ratio")
+
+#' @describeIn qe_ratio Default for generic function
+#'
+#' @export
+#'
+qe_ratio.default <- function(spct, w.band,
+                             use.cached.mult, use.hinges, wb.trim) {
+  warning("'qe_ratio' is not defined for objects of class ", class(spct)[1])
+  return(NA)
+}
+
+#' @describeIn qe_ratio Method for \code{source_spct} objects
+#'
+#' @export
+#'
+qe_ratio.source_spct <-
   function(spct, w.band=NULL,
            use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
-           use.hinges=getOption("photobiology.use.hinges", default=NULL) ) {
+           use.hinges=getOption("photobiology.use.hinges", default=NULL),
+           wb.trim = getOption("photobiology.waveband.trim", default =TRUE) ) {
     q.irrad <- irrad_spct(spct, w.band=w.band, unit.out="photon",
                           quantity="total",
-                          wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
+                          wb.trim = wb.trim,
                           use.cached.mult=use.cached.mult, use.hinges=use.hinges, allow.scaled=TRUE)
     e.irrad <- irrad_spct(spct, w.band=w.band, unit.out="energy",
                           quantity="total",
-                          wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
+                          wb.trim = wb.trim,
                           use.cached.mult=use.cached.mult, use.hinges=use.hinges, allow.scaled=TRUE)
     ratio <- q.irrad / e.irrad
     names(ratio) <- paste("q:e(", names(q.irrad), ")", sep="")
@@ -184,10 +244,29 @@ qe_ratio <-
 #'
 #' @family photon and energy ratio functions
 #'
-eq_ratio <-
-  function(spct, w.band=NULL, use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
-           use.hinges=getOption("photobiology.use.hinges", default=NULL) ) {
-    ratio <- 1 / qe_ratio(spct, w.band, use.cached.mult, use.hinges)
+eq_ratio <- function(spct, w.band,
+                     use.cached.mult, use.hinges, wb.trim) UseMethod("eq_ratio")
+
+#' @describeIn eq_ratio Default for generic function
+#'
+#' @export
+#'
+eq_ratio.default <- function(spct, w.band,
+                             use.cached.mult, use.hinges, wb.trim) {
+  warning("'eq_ratio' is not defined for objects of class ", class(spct)[1])
+  return(NA)
+}
+
+#' @describeIn qe_ratio Method for \code{source_spct} objects
+#'
+#' @export
+#'
+eq_ratio.source_spct <-
+  function(spct, w.band=NULL,
+           use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
+           use.hinges=getOption("photobiology.use.hinges", default=NULL),
+           wb.trim = getOption("photobiology.waveband.trim", default =TRUE) ) {
+    ratio <- 1 / qe_ratio(spct, w.band, use.cached.mult, use.hinges, wb.trim)
     names(ratio) <- gsub("q:e", "e:q", names(ratio), fixed=TRUE )
     setattr(ratio, "time.unit", NULL)
     setattr(ratio, "radiation.unit", "e:q ratio")
