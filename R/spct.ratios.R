@@ -257,7 +257,7 @@ eq_ratio.default <- function(spct, w.band,
   return(NA)
 }
 
-#' @describeIn qe_ratio Method for \code{source_spct} objects
+#' @describeIn eq_ratio Method for \code{source_spct} objects
 #'
 #' @export
 #'
