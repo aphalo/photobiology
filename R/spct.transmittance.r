@@ -6,22 +6,19 @@
 #' @param spct an R object
 #' @param w.band waveband or list of waveband objects The waveband(s) determine
 #'   the region(s) of the spectrum that are summarized.
-#' @param pc.out logical Flag indicating whether result should be a percentage or a
-#'   fraction of one
 #' @param quantity character
 #' @param wb.trim logical Flag indicating if wavebands crossing spectral data boundaries
 #'   are trimmed or ignored
 #' @param use.hinges logical Flag indicating whether to use hinges to reduce
 #'   interpolation errors
+#' @param ... other arguments
 #'
-#' @return A numeric vector with no change in scale factor (expressed as percent
-#'   or fraction)
+#' @return A numeric vector with no change in scale factor
 #' @keywords manip misc
 #' @export transmittance
 #' @examples
 #' library(photobiologyFilters)
-#' transmittance(polyester.new.spct, new_waveband(400,700), pc.out=TRUE)
-#' transmittance(polyester.new.spct, new_waveband(400,700), pc.out=FALSE)
+#' transmittance(polyester.new.spct, waveband(c(400, 700)))
 #'
 #' @note The \code{use.hinges} parameter controls speed optimization. The
 #'   defaults should be suitable in mosts cases. Only the range of wavelengths
@@ -29,13 +26,13 @@
 #'
 #' @export transmittance
 #'
-transmittance <- function(spct, w.band, pc.out, quantity, wb.trim, use.hinges) UseMethod("transmittance")
+transmittance <- function(spct, w.band, quantity, wb.trim, use.hinges, ...) UseMethod("transmittance")
 
 #' @describeIn transmittance Default method
 #'
 #' @export
 #'
-transmittance.default <- function(spct, w.band, pc.out, quantity, wb.trim, use.hinges) {
+transmittance.default <- function(spct, w.band, quantity, wb.trim, use.hinges, ...) {
   return(NA)
 }
 
@@ -45,13 +42,11 @@ transmittance.default <- function(spct, w.band, pc.out, quantity, wb.trim, use.h
 #'
 transmittance.filter_spct <-
   function(spct, w.band=NULL,
-           pc.out=FALSE,
            quantity="average",
            wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
-           use.hinges=getOption("photobiology.use.hinges", default=NULL) ) {
+           use.hinges=getOption("photobiology.use.hinges", default=NULL), ...) {
     transmittance_spct(spct = spct,
                        w.band = w.band,
-                       pc.out = pc.out,
                        quantity = quantity,
                        wb.trim = wb.trim,
                        use.hinges = use.hinges)
@@ -63,13 +58,11 @@ transmittance.filter_spct <-
 #'
 transmittance.object_spct <-
   function(spct, w.band=NULL,
-           pc.out=FALSE,
            quantity="average",
            wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
-           use.hinges=getOption("photobiology.use.hinges", default=NULL) ) {
+           use.hinges=getOption("photobiology.use.hinges", default=NULL), ...) {
     transmittance_spct(spct = spct,
                        w.band = w.band,
-                       pc.out = pc.out,
                        quantity = quantity,
                        wb.trim = wb.trim,
                        use.hinges = use.hinges)
@@ -80,13 +73,9 @@ transmittance.object_spct <-
 #' This function returns the mean transmittance for a given waveband of a
 #' transmittance spectrum.
 #'
-#' @usage transmittance_spct(spct, w.band, pc.out, quantity, wb.trim, use.hinges)
-#'
 #' @param spct an object of class "generic_spct"
 #' @param w.band waveband or list of waveband objects The waveband(s) determine
 #'   the region(s) of the spectrum that are summarized.
-#' @param pc.out logical Flag indicating whether result should be a percentage or a
-#'   fraction of one
 #' @param quantity character
 #' @param wb.trim logical Flag indicating if wavebands crossing spectral data boundaries
 #'   are trimmed or ignored
@@ -101,7 +90,7 @@ transmittance.object_spct <-
 #'   used and all BSWFs are ignored.
 
 transmittance_spct <-
-  function(spct, w.band, pc.out, quantity, wb.trim, use.hinges) {
+  function(spct, w.band, quantity, wb.trim, use.hinges) {
     if (is_normalized(spct) || is_scaled(spct)) {
       warning("The spectral data has been normalized or scaled, making impossible to calculate transmittance")
       return(NA)
@@ -168,7 +157,8 @@ transmittance_spct <-
       if (no_names_flag) {
         if (is_effective(wb)) {
           warning("Using only wavelength range from a weighted waveband object.")
-          wb.name[i] <- paste("range", as.character(signif(min(wb), 4)), as.character(signif(max(wb), 4)), sep=".")
+          wb.name[i] <- paste("range", as.character(signif(min(wb), 4)),
+                              as.character(signif(max(wb), 4)), sep=".")
         } else {
           wb.name[i] <- wb$name
         }
@@ -178,7 +168,7 @@ transmittance_spct <-
     }
 
     if (quantity %in% c("contribution", "contribution.pc")) {
-      total <- transmittance_spct(spct, w.band=NULL, pc.out=FALSE,
+      total <- transmittance_spct(spct, w.band=NULL,
                                 quantity="total", use.hinges=FALSE)
       transmittance <- transmittance / total
       if (quantity == "contribution.pc") {
@@ -192,15 +182,8 @@ transmittance_spct <-
       }
     } else if (quantity %in% c("average", "mean")) {
       transmittance <- transmittance / sapply(w.band, spread)
-      if (pc.out) {
-        transmittance <- transmittance * 1e2
-        quantity <- paste(quantity, "(%)")
-      }
     } else if (quantity == "total") {
-      if (pc.out) {
-        transmittance <- transmittance * 1e2
-        quantity <- paste(quantity, "(%)")
-      }
+      NULL
     } else if (quantity != "total") {
       warning("'quantity '", quantity, "' is invalid, returning 'total' instead")
       quantity <- "total"

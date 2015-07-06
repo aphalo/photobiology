@@ -1,25 +1,28 @@
 #' Upgrade one spectral object
 #'
 #' Update the spectral class names of objects to those used in photobiology (>=
-#' 0.6.0).
+#' 0.6.0) and add 'version' attribute as used in photobiology (>= 0.70).
 #'
 #' @param object generic.spct A single object to upgrade
-#' @param ... not used
 #'
 #' @note The object is modified by reference. The class names with ending
 #'   ".spct" replaced by their new equivalents ending in "_spct".
 #'
 #' @return The modified object (invisibly).
 #'
-#' @export upgrade.generic.spct
-#' @exportClass generic.spct
+#' @export
 #'
 #' @family upgrade from earlier versions
 #'
-upgrade.generic.spct <-
-  function(object, ...) {
+upgrade_spct <-
+  function(object) {
     name <- substitute(object)
-    class(object) <- gsub(".spct", "_spct", class(object), fixed = TRUE)
+    setattr(object, "class", gsub(".spct", "_spct", class(object), fixed = TRUE))
+    version <- getObjectVersion(object)
+    if (version <= 0L) {
+      setattr(object, "spct.version", 1L)
+    }
+    check(object)
     if (is.name(name)) {
       name <- as.character(name)
       assign(name, object, parent.frame(), inherits = TRUE)

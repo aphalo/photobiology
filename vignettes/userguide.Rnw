@@ -616,7 +616,7 @@ Sometimes it may be useful to change the time unit used for expresing spectral i
 
 <<>>=
 ten.minutes.spct <-
-  convertTimeUnit(sun.spct, time.unit  = duration(10, "minutes"), byref = FALSE)
+  convertTimeUnit(sun.spct, time.unit = duration(10, "minutes"), byref = FALSE)
 head(ten.minutes.spct)
 getTimeUnit(ten.minutes.spct)
 @
@@ -1231,6 +1231,21 @@ irrad(sun.spct, UV_bands(), quantity = "relative.pc")
 irrad(sun.spct, UV_bands(), quantity = "average")
 @
 
+\subsubsection{Irradiances from multiple spectra}
+
+<<>>=
+filtered_sun <-
+  source_multi_spct(
+    lapply(list(none = clear.spct,
+                ug1 = ug1.spct, ug11 = ug11.spct,
+                gg400 = gg400.spct,
+                og550 = og550.spct,
+                rg665 = rg665.spct, rg830 = rg830.spct),
+           `*`,
+           y = sun.spct))
+irrad(filtered_sun, list(UVA(), VIS()))
+@
+
 \subsubsection{Irradiances from numeric vectors}
 
 The code using numeric vectors is more complicated, but adds some additional flexibility. Under normal circumstances it is easier to use the functions described above.
@@ -1392,11 +1407,10 @@ normalized_diff_ind(sun.spct,
 
 \subsection{Calculating average transmittance, reflectance, absorptance and absorbance}
 
-The functions \texttt{transmittance}, and \texttt{absorbance} take \texttt{filter\_spct} as argument, while function \texttt{reflectance} takes \texttt{reflector\_spct} objects as argument. Functions \texttt{transmittance}, \texttt{reflectance} and \texttt{absorptance} are implemented for \texttt{object\_spct}. They return as default an average value for these quantities \textbf{assuming} a light source with a flat spectral energy output. Values expressed as percentages can be obtained by setting argument \texttt{pc.out} to \texttt{TRUE}.
+The functions \texttt{transmittance}, and \texttt{absorbance} take \texttt{filter\_spct} as argument, while function \texttt{reflectance} takes \texttt{reflector\_spct} objects as argument. Functions \texttt{transmittance}, \texttt{reflectance} and \texttt{absorptance} are implemented for \texttt{object\_spct}. They return as default an average value for these quantities \textbf{assuming} a light source with a flat spectral energy output.
 
 <<>>=
 transmittance(polyester.new.spct, list(UVB(), UVA(), PAR()))
-transmittance(polyester.new.spct, list(UVB(), UVA(), PAR()), pc.out = TRUE)
 @
 
 <<>>=
@@ -1427,7 +1441,7 @@ transmittance(polyester.new.spct, UV_bands(), quantity = "relative.pc")
 transmittance(polyester.new.spct, UV_bands(), quantity = "average")
 @
 
-An equivalent function returning absorbance instead of transmittance takes the same arguments as \texttt{transmittance}, except for \texttt{pc.out} which is not useful for absorbance.
+An equivalent function returning absorbance instead of transmittance takes the same arguments as \texttt{transmittance}.
 
 <<>>=
 absorbance(polyester.new.spct, list(UVB(), UVA(), PAR()))
@@ -1459,6 +1473,19 @@ And for a list of wavebands, as percentages.
 <<>>=
 irrad(sun.spct * polyester.new.spct, list(UVB(), UVA(), PAR()), wb.trim = TRUE) /
   irrad(sun.spct, list(UVB(), UVA(), PAR()), wb.trim = TRUE) * 100
+@
+
+\subsubsection{Transmittances from multiple spectra}
+
+<<>>=
+filters <-
+  filter_multi_spct(
+    list(clear = clear.spct,
+         ug1 = ug1.spct, ug11 = ug11.spct,
+         gg400 = gg400.spct,
+         og550 = og550.spct,
+         rg665 = rg665.spct, rg830 = rg830.spct))
+transmittance(filters, list(UVA(), VIS()))
 @
 
 \subsection{Calculating integrated response}
@@ -1510,6 +1537,16 @@ And for a list of wavebands
 
 <<>>=
 q_response(sun.spct * KIPP_PQS1_PAR_quantum.spct, list(UVA(), PAR())) * 1e-6
+@
+
+\subsubsection{Responses from multiple spectra}
+
+<<>>=
+sensors <-
+  response_multi_spct(
+    list(BW20 = Vital_BW_20.spct,
+         Berger = Berger_UV_erythemal.spct))
+response(sensors, list(UVC(), UVB(), UVA()), quantity = "contribution")
 @
 
 \subsection{Integrating a generic spectrum}

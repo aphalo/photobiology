@@ -6,34 +6,32 @@
 #' @param spct an R object
 #' @param w.band waveband or list of waveband objects The waveband(s) determine
 #'   the region(s) of the spectrum that are summarized.
-#' @param pc.out logical Flag for output as percent
 #' @param quantity character
 #' @param wb.trim logical Flag telling if wavebands crossing spectral data boundaries
 #'   are trimmed or ignored
 #' @param use.hinges logical Flag indicating whether to use hinges to reduce
 #'   interpolation errors
+#' @param ... other arguments
 #'
 #' @note The \code{use.hinges} parameter controls speed optimization. The
 #'   defaults should be suitable in most cases. Only the range of wavelengths
 #'   in the wavebands is used and all BSWFs are ignored.
 #'
-#' @return A single numeric value with no change in scale factor, except in the
-#' case of percentages (reflectance is the fraction reflected)
+#' @return A single numeric value with no change in scale factor
 #'
 #' @examples
 #' library(photobiologyReflectors)
-#' reflectance(gold.spct, new_waveband(400,700), pc.out=TRUE)
-#' reflectance(gold.spct, new_waveband(400,700), pc.out=FALSE)
+#' reflectance(gold.spct, waveband(c(400,700)))
 #'
 #' @export
 #'
-reflectance <- function(spct, w.band, pc.out, quantity, wb.trim, use.hinges) UseMethod("reflectance")
+reflectance <- function(spct, w.band, quantity, wb.trim, use.hinges, ...) UseMethod("reflectance")
 
 #' @describeIn reflectance Default for generic function
 #'
 #' @export
 #'
-reflectance.default <- function(spct, w.band, pc.out, quantity, wb.trim, use.hinges) {
+reflectance.default <- function(spct, w.band, quantity, wb.trim, use.hinges, ...) {
   warning("'reflectance' is not defined for objects of class ", class(spct)[1])
   return(NA)
 }
@@ -43,11 +41,11 @@ reflectance.default <- function(spct, w.band, pc.out, quantity, wb.trim, use.hin
 #' @export
 #'
 reflectance.reflector_spct <-
-  function(spct, w.band = NULL, pc.out = FALSE, quantity = "average",
+  function(spct, w.band = NULL, quantity = "average",
            wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
-           use.hinges=getOption("photobiology.use.hinges", default=NULL) ) {
+           use.hinges=getOption("photobiology.use.hinges", default=NULL), ... ) {
     reflectance_spct(spct = spct, w.band = w.band,
-                     pc.out = pc.out, quantity = quantity,
+                     quantity = quantity,
                      wb.trim = wb.trim,
                      use.hinges = use.hinges)
   }
@@ -57,11 +55,11 @@ reflectance.reflector_spct <-
 #' @export
 #'
 reflectance.object_spct <-
-  function(spct, w.band = NULL, pc.out = FALSE, quantity = "average",
+  function(spct, w.band = NULL, quantity = "average",
            wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
-           use.hinges=getOption("photobiology.use.hinges", default=NULL) ) {
+           use.hinges=getOption("photobiology.use.hinges", default=NULL), ... ) {
     reflectance_spct(spct = spct, w.band = w.band,
-                     pc.out = pc.out, quantity = quantity,
+                     quantity = quantity,
                      wb.trim = wb.trim,
                      use.hinges = use.hinges)
   }
@@ -73,20 +71,17 @@ reflectance.object_spct <-
 #'
 #' @param spct an object of class generic_spct"
 #' @param w.band list of waveband definitions created with new_waveband()
-#' @param pc.out a logical indicating whether result should be a percentage or a
-#'   fraction of one
 #' @param quantity character string
 #' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries
 #'   are trimmed, if FALSE, they are discarded
 #' @param use.hinges logical indicating whether to use hinges to reduce
 #'   interpolation errors
 #'
-#' @return A single numeric value expressed either as a fraction of one or a
-#'   percentage
+#' @return A single numeric value expressed as a fraction of one
 #' @keywords internal
 #'
 reflectance_spct <-
-  function(spct, w.band, pc.out, quantity, wb.trim, use.hinges){
+  function(spct, w.band, quantity, wb.trim, use.hinges){
     Rfr.type <- getRfrType(spct)
     if (is.object_spct(spct)) {
       spct <- as.reflector_spct(spct)
@@ -159,7 +154,7 @@ reflectance_spct <-
     }
 
    if (quantity %in% c("contribution", "contribution.pc")) {
-     total <- reflectance_spct(spct, w.band=NULL, pc.out=FALSE,
+     total <- reflectance_spct(spct, w.band=NULL,
                                  quantity="total", use.hinges=FALSE)
      reflectance <- reflectance / total
      if (quantity == "contribution.pc") {
@@ -173,15 +168,7 @@ reflectance_spct <-
      }
    } else if (quantity %in% c("average", "mean")) {
      reflectance <- reflectance / sapply(w.band, spread)
-     if (pc.out) {
-       reflectance <- reflectance * 1e2
-       quantity <- paste(quantity, "(%)")
-     }
    } else if (quantity == "total") {
-     if (pc.out) {
-       reflectance <- reflectance * 1e2
-       quantity <- paste(quantity, "(%)")
-     }
    } else if (quantity != "total") {
      warning("'quantity '", quantity, "' is invalid, returning 'total' instead")
      quantity <- "total"

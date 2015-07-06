@@ -23,6 +23,8 @@ multi_spct_classes <- function() {
 #' @param l list of generic_spct or derived classes
 #' @param class character The class expected for the elements of l
 #' @param ncol integer Number of 'virtual' columns in data
+#' @param byrow logical If \code{ncol > 1} how to read in the data
+#' @param ... additional arguments
 #'
 #' @export
 #' @exportClass generic_multi_spct
@@ -54,7 +56,7 @@ generic_multi_spct <- function(l, class = "generic_spct", ncol = 1, byrow = FALS
 #' @export
 #' @exportClass cps_multi_spct
 #'
-cps_multi_spct <- function(l, ncol = 1, byrow = FALSE, idfactor = TRUE, ...) {
+cps_multi_spct <- function(l, ncol = 1, byrow = FALSE, ...) {
   generic_multi_spct(l, class = "cps_spct", ncol = ncol, byrow = byrow, ...)
 }
 
@@ -63,7 +65,7 @@ cps_multi_spct <- function(l, ncol = 1, byrow = FALSE, idfactor = TRUE, ...) {
 #' @export
 #' @exportClass source_multi_spct
 #'
-source_multi_spct <- function(l, ncol = 1, byrow = FALSE, idfactor = TRUE, ...) {
+source_multi_spct <- function(l, ncol = 1, byrow = FALSE, ...) {
   generic_multi_spct(l, class = "source_spct", ncol = ncol, byrow = byrow, ...)
 }
 
@@ -72,7 +74,7 @@ source_multi_spct <- function(l, ncol = 1, byrow = FALSE, idfactor = TRUE, ...) 
 #' @export
 #' @exportClass filter_multi_spct
 #'
-filter_multi_spct <- function(l, ncol = 1, byrow = FALSE, idfactor = TRUE, ...) {
+filter_multi_spct <- function(l, ncol = 1, byrow = FALSE, ...) {
   generic_multi_spct(l, class = "filter_spct", ncol = ncol, byrow = byrow, ...)
 }
 
@@ -81,7 +83,7 @@ filter_multi_spct <- function(l, ncol = 1, byrow = FALSE, idfactor = TRUE, ...) 
 #' @export
 #' @exportClass reflector_multi_spct
 #'
-reflector_multi_spct <- function(l, ncol = 1, byrow = FALSE, idfactor = TRUE, ...) {
+reflector_multi_spct <- function(l, ncol = 1, byrow = FALSE, ...) {
   generic_multi_spct(l, class = "reflector_spct", ncol = ncol, byrow = byrow, ...)
 }
 
@@ -90,7 +92,7 @@ reflector_multi_spct <- function(l, ncol = 1, byrow = FALSE, idfactor = TRUE, ..
 #' @export
 #' @exportClass object_multi_spct
 #'
-object_multi_spct <- function(l, ncol = 1, byrow = FALSE, idfactor = TRUE, ...) {
+object_multi_spct <- function(l, ncol = 1, byrow = FALSE, ...) {
   generic_multi_spct(l, class = "object_spct", ncol = ncol, byrow = byrow, ...)
 }
 
@@ -99,7 +101,7 @@ object_multi_spct <- function(l, ncol = 1, byrow = FALSE, idfactor = TRUE, ...) 
 #' @export
 #' @exportClass response_multi_spct
 #'
-response_multi_spct <- function(l, ncol = 1, byrow = FALSE, idfactor = TRUE, ...) {
+response_multi_spct <- function(l, ncol = 1, byrow = FALSE, ...) {
   generic_multi_spct(l, class = "response_spct", ncol = ncol, byrow = byrow, ...)
 }
 
@@ -108,6 +110,6 @@ response_multi_spct <- function(l, ncol = 1, byrow = FALSE, idfactor = TRUE, ...
 #' @export
 #' @exportClass chroma_multi_spct
 #'
-chroma_multi_spct <- function(l, ncol = 1, byrow = FALSE, idfactor = TRUE, ...) {
+chroma_multi_spct <- function(l, ncol = 1, byrow = FALSE, ...) {
   generic_multi_spct(l, class = "chroma_spct", ncol = ncol, byrow = byrow, ...)
 }

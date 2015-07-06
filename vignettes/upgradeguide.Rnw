@@ -136,28 +136,32 @@ existing R functions: \texttt{Rescale()} $\to$ \texttt{fscale()}, the \texttt{f}
 from function, as rescaling is done based on a summary function supplied
 through formal parameter \texttt{f}.
 
-\section{How to check if an R object is \emph{old spectrum}}
+\section{Changes in versions 0.7.0 and higher}
+
+\texttt{generic\_spct} objects now have an atribute \texttt{"spct.version"} which
+help automate reading of \emph{old} objects in future updates. It will also allow
+the detection of lost attributes.
+
+\section{Checking if an object is an \emph{old spectrum}}
 
 Function \texttt{is.old\_spct} can be used to query if an R object is a spectral
 object created with a version of package \texttt{photobiology} with version
-< 0.6.0.
+< 0.6.0. Function \texttt{getObjectVersion} can be used to query the version.
+Current version is 1, for older (or corrupted) objects the returned value is
+0.
 
 We need to only consider \texttt{generic.spct} as objects of derived classes
 like \texttt{source.spct} are by inheritance also \texttt{generic.spct} objects.
 
-\section{How to upgrade your \emph{old spectra}}
+\section{Upgrading \emph{old spectra}}
 
 To upgrade the spectral objects what needs to be done is to change the
 names stored in the \texttt{class} attribute of spectral objects, as only the
 name of the class has changed rather than its definition.
 
-In the new version we still export the S3 class \texttt{generic.spct} (with a dot)
-so that old spectral objects can be \emph{recognized} and the upgrade method
-applied.
-
-We have also defined a method of function \texttt{upgrade()} for
-single \texttt{generic.spct} objects. So all what is needed is to call upgrade,
-with the object to be upgraded as argument. The \emph{upgrade} is done by
+Function \texttt{upgrade\_spct} updates the class of old objects, adds the
+\texttt{spct.version} attribute and calls \texttt{check()} on the resulting
+object. The \emph{upgrade} is done by
 reference (in place) in the object supplied as argument.
 
 To demonstrate this we \emph{fake} an spectral object defined by and earlier
@@ -174,11 +178,11 @@ class(my.old.spct)
 another.old.spct <- copy(my.old.spct)
 @
 
-We can use method \texttt{upgrade()} to upgrade a single spectrum.
+We can use method \texttt{upgrade\_spct()} to upgrade a single spectrum.
 
 <<>>=
 is.old_spct(my.old.spct)
-upgrade(my.old.spct)
+upgrade_spct(my.old.spct)
 is.old_spct(my.old.spct)
 is.source_spct(my.old.spct)
 @
@@ -195,10 +199,10 @@ is.old_spct(another.old.spct)
 is.source_spct(another.old.spct)
 @
 
-We hope that these functions will make the transition to the new version
+We hope that these functions will make the transition to the new versions
 less painful.
 
-\section{How to update old scripts}
+\section{Updating old scripts}
 
 Updating old scripts consists in searching and replacing the changed names.
 This can be done with a text editor or IDE like \textsf{RStudio} or `blindly' with

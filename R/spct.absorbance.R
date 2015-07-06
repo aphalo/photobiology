@@ -11,6 +11,7 @@
 #'   boundaries are trimmed or ignored
 #' @param use.hinges logical Flag indicating whether to use hinges to reduce
 #'   interpolation errors
+#' @param ... other arguments (possibly ignored)
 #'
 #' @note The \code{use.hinges} parameter controls speed optimization. The
 #'   defaults should be suitable in most cases. Only the range of wavelengths in
@@ -22,13 +23,13 @@
 #'
 #' @export
 #'
-absorbance <- function(spct, w.band, quantity, wb.trim, use.hinges) UseMethod("absorbance")
+absorbance <- function(spct, w.band, quantity, wb.trim, use.hinges, ...) UseMethod("absorbance")
 
 #' @describeIn absorbance Default for generic function
 #'
 #' @export
 #'
-absorbance.default <- function(spct, w.band, quantity, wb.trim, use.hinges) {
+absorbance.default <- function(spct, w.band, quantity, wb.trim, use.hinges, ...) {
   warning("'absorbance' is not defined for objects of class ", class(spct)[1])
   return(NA)
 }
@@ -40,8 +41,9 @@ absorbance.default <- function(spct, w.band, quantity, wb.trim, use.hinges) {
 absorbance.filter_spct <-
   function(spct, w.band=NULL, quantity="average",
            wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
-           use.hinges=getOption("photobiology.use.hinges", default=NULL) ) {
-    absorbance_spct(spct = spct, w.band = w.band, quantity = quantity, wb.trim = wb.trim, use.hinges = use.hinges)
+           use.hinges=getOption("photobiology.use.hinges", default=NULL), ...) {
+    absorbance_spct(spct = spct, w.band = w.band, quantity = quantity, wb.trim = wb.trim,
+                    use.hinges = use.hinges)
   }
 
 #' @describeIn absorbance Specialization for object spectra
@@ -51,7 +53,7 @@ absorbance.filter_spct <-
 absorbance.object_spct <-
   function(spct, w.band=NULL, quantity="average",
            wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
-           use.hinges=getOption("photobiology.use.hinges", default=NULL) ) {
+           use.hinges=getOption("photobiology.use.hinges", default=NULL), ...) {
     spct <- as.filter_spct(spct)
     absorbance_spct(spct, w.band = w.band, quantity = quantity, wb.trim = wb.trim, use.hinges = use.hinges)
   }
@@ -136,7 +138,8 @@ absorbance_spct <-
       if (no_names_flag) {
         if (is_effective(wb)) {
           warning("Using only wavelength range from a weighted waveband object.")
-          wb.name[i] <- paste("range", as.character(signif(min(wb), 4)), as.character(signif(max(wb), 4)), sep=".")
+          wb.name[i] <- paste("range", as.character(signif(min(wb), 4)),
+                              as.character(signif(max(wb), 4)), sep=".")
         } else {
           wb.name[i] <- wb$name
         }
