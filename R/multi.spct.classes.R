@@ -13,7 +13,7 @@ multi_spct_classes <- function() {
     "response_multi_spct", "chroma_multi_spct")
 }
 
-#' @title
+#' @title Constructors of multi_spct Objects
 #'
 #' @description Converts a list of spectral objects into a "multi spectrum"
 #'   object by setting the class attibute of the list of spectra to the

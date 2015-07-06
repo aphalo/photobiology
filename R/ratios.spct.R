@@ -127,7 +127,7 @@ e_ratio.source_spct <-
            w.band.num=NULL, w.band.denom=NULL,
            use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
            use.hinges=getOption("photobiology.use.hinges", default=NULL),
-           wb.trim = getOption("photobiology.waveband.trim", default =TRUE) {
+           wb.trim = getOption("photobiology.waveband.trim", default =TRUE) ) {
     e.irrad.num <- irrad_spct(spct, w.band=w.band.num, unit.out="energy", quantity="total",
                               wb.trim = wb.trim,
                               use.cached.mult=use.cached.mult, use.hinges=use.hinges,

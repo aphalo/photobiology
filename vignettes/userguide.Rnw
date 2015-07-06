@@ -1380,6 +1380,16 @@ with(sun.data,
 )
 @
 
+\subsubsection{Normalized difference indexes}
+
+These indexes are frequently used to summarize reflectance data, for example in remote rensing the NDVI (normalized difference vegetation index). Here we give an \emph{unusual} example to demonstrate that function \texttt{normalized\_diff\_ind()} can be used to calculate, or define any similar inedex.
+
+<<>>=
+normalized_diff_ind(sun.spct,
+                    waveband(c(400, 700)), waveband(c(700, 1100)),
+                    irrad)
+@
+
 \subsection{Calculating average transmittance, reflectance, absorptance and absorbance}
 
 The functions \texttt{transmittance}, and \texttt{absorbance} take \texttt{filter\_spct} as argument, while function \texttt{reflectance} takes \texttt{reflector\_spct} objects as argument. Functions \texttt{transmittance}, \texttt{reflectance} and \texttt{absorptance} are implemented for \texttt{object\_spct}. They return as default an average value for these quantities \textbf{assuming} a light source with a flat spectral energy output. Values expressed as percentages can be obtained by setting argument \texttt{pc.out} to \texttt{TRUE}.
