@@ -4,7 +4,9 @@
 #' pair of wavebands.
 #'
 #' @param spct an R object
-#' @param plus.w.band, minus.w.band waveband objects The waveband determine the
+#' @param plus.w.band waveband objects The waveband determine the
+#'   region of the spectrum used in the calculations
+#' @param minus.w.band waveband objects The waveband determine the
 #'   region of the spectrum used in the calculations
 #' @param f function used for integration taking spct as first argument and a
 #'   list of wavebands as second argument.

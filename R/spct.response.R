@@ -16,6 +16,7 @@
 #'   are trimmed or ignored
 #' @param use.hinges logical indicating whether to use hinges to reduce
 #'   interpolation errors
+#' @param ... other arguments
 #'
 #' @note The parameter \code{use.hinges} controls speed optimization. The
 #'   defaults should be suitable in mosts cases. Only the range of wavelengths
@@ -29,13 +30,13 @@
 #' @export
 #' @family response functions
 #'
-response <- function(spct, w.band, unit.out, quantity, time.unit, wb.trim, use.hinges) UseMethod("response")
+response <- function(spct, w.band, unit.out, quantity, time.unit, wb.trim, use.hinges, ...) UseMethod("response")
 
 #' @describeIn response Default for generic function
 #'
 #' @export
 #'
-response.default <- function(spct, w.band, unit.out, quantity, time.unit, wb.trim, use.hinges) {
+response.default <- function(spct, w.band, unit.out, quantity, time.unit, wb.trim, use.hinges, ...) {
   warning("'response' is not defined for objects of class ", class(spct)[1])
   return(NA)
 }
@@ -50,7 +51,7 @@ response.response_spct <-
            quantity = "total",
            time.unit = NULL,
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
-           use.hinges = getOption("photobiology.use.hinges", default = NULL) ) {
+           use.hinges = getOption("photobiology.use.hinges", default = NULL), ... ) {
     resp_spct(spct = spct, w.band = w.band, unit.out = unit.out,
               quantity = quantity, time.unit = time.unit, wb.trim = wb.trim,
               use.hinges = use.hinges )
@@ -71,6 +72,7 @@ response.response_spct <-
 #'   are trimmed, if FALSE, they are discarded
 #' @param use.hinges logical indicating whether to use hinges to reduce
 #'   interpolation errors
+#' @param ... other arguments
 #'
 #' @return a single numeric value expressed either as a fraction of one or a
 #'   percentage, or a vector of the same length as the list of wave.bands.
@@ -83,7 +85,7 @@ response.response_spct <-
 #' @keywords internal
 #'
 resp_spct <-
-  function(spct, w.band, unit.out, quantity, time.unit, wb.trim, use.hinges) {
+  function(spct, w.band, unit.out, quantity, time.unit, wb.trim, use.hinges, ...) {
     if (is_normalized(spct) || is_scaled(spct)) {
       warning("The spectral data has been normalized or scaled, ",
               "making impossible to calculate integrated response")
@@ -240,6 +242,7 @@ resp_spct <-
 #'   are trimmed, if FALSE, they are discarded
 #' @param use.hinges logical indicating whether to use hinges to reduce
 #'   interpolation errors
+#' @param ... other arguments
 #'
 #' @return A single numeric value expressed either as a fraction of one or a
 #'   percentage, or a vector of the same length as the list of wave.bands. The
@@ -258,13 +261,13 @@ resp_spct <-
 #'
 #' @family response functions
 #'
-e_response <- function(spct, w.band, quantity, time.unit, wb.trim, use.hinges) UseMethod("e_response")
+e_response <- function(spct, w.band, quantity, time.unit, wb.trim, use.hinges, ...) UseMethod("e_response")
 
 #' @describeIn e_response Default method for generic function
 #'
 #' @export
 #'
-e_response.default <- function(spct, w.band, quantity, time.unit, wb.trim, use.hinges) {
+e_response.default <- function(spct, w.band, quantity, time.unit, wb.trim, use.hinges, ...) {
   warning("'e_response' is not defined for objects of class ", class(spct)[1])
   return(NA)
 }
@@ -278,7 +281,7 @@ e_response.response_spct <-
            quantity = "total",
            time.unit = NULL,
            wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
-           use.hinges=getOption("photobiology.use.hinges", default=NULL) ) {
+           use.hinges=getOption("photobiology.use.hinges", default=NULL), ...) {
     resp_spct(spct=spct, w.band=w.band, unit.out="energy",
               quantity=quantity, time.unit=time.unit, wb.trim=wb.trim,
               use.hinges=use.hinges )
@@ -299,6 +302,7 @@ e_response.response_spct <-
 #'   are trimmed, if FALSE, they are discarded
 #' @param use.hinges logical indicating whether to use hinges to reduce
 #'   interpolation errors
+#' @param ... other arguments
 #'
 #' @return A single numeric value expressed either as a fraction of one or a
 #'   percentage, or a vector of the same length as the list of wave.bands. The
@@ -317,13 +321,13 @@ e_response.response_spct <-
 #'
 #' @family response functions
 #'
-q_response <- function(spct, w.band, quantity, time.unit, wb.trim, use.hinges) UseMethod("q_response")
+q_response <- function(spct, w.band, quantity, time.unit, wb.trim, use.hinges, ...) UseMethod("q_response")
 
 #' @describeIn q_response Default method for generic function
 #'
 #' @export
 #'
-q_response.default <- function(spct, w.band, quantity, time.unit, wb.trim, use.hinges) {
+q_response.default <- function(spct, w.band, quantity, time.unit, wb.trim, use.hinges, ...) {
   warning("'q_response' is not defined for objects of class ", class(spct)[1])
   return(NA)
 }
@@ -337,7 +341,7 @@ q_response.response_spct <-
            quantity = "total",
            time.unit = NULL,
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
-           use.hinges = getOption("photobiology.use.hinges", default = NULL) ) {
+           use.hinges = getOption("photobiology.use.hinges", default = NULL), ... ) {
     resp_spct(spct = spct, w.band = w.band, unit.out = "photon",
               quantity = quantity, time.unit = time.unit, wb.trim = wb.trim,
               use.hinges = use.hinges )
