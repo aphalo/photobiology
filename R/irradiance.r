@@ -42,9 +42,9 @@
 #' @family irradiance functions
 #'
 irradiance <-
-  function(w.length, s.irrad, w.band=NULL, unit.out=NULL, unit.in="energy",
-           check.spectrum=TRUE, use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
-           use.hinges=getOption("photobiology.use.hinges", default=NULL) ){
+  function(w.length, s.irrad, w.band = NULL, unit.out = NULL, unit.in = "energy",
+           check.spectrum = TRUE, use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
+           use.hinges = getOption("photobiology.use.hinges", default = NULL) ){
     # what output? seems safer to not have a default here
     if (is.null(unit.out)){
       warning("'unit.out' has no default value")
@@ -79,7 +79,8 @@ irradiance <-
     # a lot in such cases
     if (is.null(use.hinges)) {
       length.wl <- length(w.length)
-      use.hinges <- (w.length[length.wl] - w.length[1]) / length.wl > 1.1 #
+      use.hinges <- (w.length[length.wl] - w.length[1]) / length.wl >
+        getOption("photobiology.auto.hinges.limit", default = 0.5)
     }
     # we collect all hinges and insert them in one go
     # this may alter a little the returned values
