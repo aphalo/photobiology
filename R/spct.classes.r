@@ -14,36 +14,6 @@ spct_classes <- function() {
     "response_spct", "chroma_spct")
 }
 
-# conditional setkey ------------------------------------------------------
-
-#' Set the sorting key(s) of spectra
-#'
-#' Code taken from data.table's setkey() except that test added so
-#' that if the same key is already set setkeyv is not called.
-#'
-#' @param x spct object
-#' @param ... columns
-#' @param verbose logical
-#' @param physical logical
-#'
-#' @seealso \code{\link[data.table]{setkey}}
-#'
-#' @export
-#'
-setkey_spct <- function (x, ..., verbose = getOption("datatable.verbose"), physical = TRUE)
-{
-  if (is.character(x))
-    stop("x may no longer be the character name of the data.table. The possibility was undocumented and has been removed.")
-  cols = as.character(substitute(list(...))[-1])
-  if (!length(cols))
-    cols = colnames(x)
-  else if (identical(cols, "NULL"))
-    cols = NULL
-  if (is.any_spct(x) && !is.null(key(x)) && identical(cols, key(x)))
-    invisible(x)
-  setkeyv(x, cols, verbose = verbose, physical = physical)
-}
-
 # check -------------------------------------------------------------------
 
 #' Check validity of spectral objects
@@ -93,16 +63,16 @@ check.generic_spct <- function(x, byref=TRUE, strict.range=TRUE, multiple.wl = 1
   } else if (wl.min < 99.999 || wl.min > 5e3) {
     stop("Off-range minimum w.length value ", wl.min, " instead of within 100 nm and 5000 nm")
   }
-  wl.reps <- x[ , length(w.length) / length(unique(w.length))]
+  wl.reps <- with(x, length(w.length) / length(unique(w.length)) )
   if (wl.reps > 1) {
     if ((wl.reps - trunc(wl.reps)) < 1e-5) {
       wl.reps <- trunc(wl.reps)
-      if (x[ , length(w.length)] >= 2 && wl.reps > multiple.wl) {
+      if (with(x, length(w.length)) >= 2 && wl.reps > multiple.wl) {
         warning("'w.length' values are not unique: ", wl.reps, " copies of each.")
       }
     } else {
       warning("'w.length' values are not all unique with ",
-              round((wl.reps - trunc(wl.reps)) * x[, length(w.length)], 0) ,
+              round((wl.reps - trunc(wl.reps)) * with(x, length(w.length)), 0) ,
               " duplicate values.")
     }
   }
@@ -132,7 +102,7 @@ check.cps_spct <- function(x, byref=TRUE, strict.range = TRUE, ...) {
     return(x)
   } else {
     warning("No counts per second data found in cps_spct")
-    x[ , cps := NA]
+    x[["cps"]] = NA
     return(x)
   }
 }
@@ -162,7 +132,7 @@ check.filter_spct <- function(x, byref=TRUE, strict.range = TRUE, multiple.wl = 
   # check and replace 'other' quantity names
   if (exists("transmittance", x, mode = "numeric", inherits=FALSE)) {
     setnames(x, "transmittance", "Tpc")
-    warning("Found varaible 'transmittance', I am assuming it expressed as percent")
+    warning("Found varaible 'transmittance', I am assuming it is expressed as percent")
   }
   if (exists("absorbance", x, mode = "numeric", inherits=FALSE)) {
     setnames(x, "absorbance", "A")
@@ -173,8 +143,8 @@ check.filter_spct <- function(x, byref=TRUE, strict.range = TRUE, multiple.wl = 
     range_check(x, strict.range=strict.range)
     return(x)
   } else if (exists("Tpc", x, mode = "numeric", inherits=FALSE)) {
-    x[ , Tfr := Tpc / 100]
-    x[ , Tpc := NULL]
+    x[["Tfr"]] <- x[["Tpc"]] / 100
+    x[["Tpc"]] <-  NULL
     range_check(x, strict.range=strict.range)
     return(x)
   } else if (exists("A", x, mode = "numeric", inherits=FALSE)) {
@@ -185,7 +155,7 @@ check.filter_spct <- function(x, byref=TRUE, strict.range = TRUE, multiple.wl = 
     return(x)
   } else {
     warning("No transmittance or absorbance data found in filter_spct")
-    x[ , Tfr := NA]
+    x[["Tfr"] <- NA
     return(x)
   }
 }
@@ -220,13 +190,13 @@ check.reflector_spct <- function(x, byref=TRUE, strict.range = TRUE, ...) {
     range_check(x, strict.range=strict.range)
     return(x)
   } else if (exists("Rpc", x, mode = "numeric", inherits=FALSE)) {
-    x[ , Rfr := Rpc / 100]
-    x[ , Rpc := NULL]
+    x[["Rfr"]] <- x[["Rpc"]] / 100
+    x[["Rpc"]] <- NULL
     range_check(x, strict.range=strict.range)
     return(x)
   } else {
     warning("No reflectance data found in reflector_spct")
-    x[ , Rfr := NA]
+    x[["Rfr"]] <- NA
     return(x)
   }
 }
@@ -278,11 +248,11 @@ check.object_spct <- function(x, byref=TRUE, strict.range = TRUE, multiple.wl = 
   }
   if (exists("Rfr", x, mode = "numeric", inherits=FALSE)) {
   } else if (exists("Rpc", x, mode = "numeric", inherits=FALSE)) {
-    x[ , Rfr := Rpc / 100]
-    x[ , Rpc := NULL]
+    x[["Rfr"]] <- x[["Rpc"]] / 100
+    x[["Rpc"]] <- NULL
   } else {
     warning("No reflectance data found in object_spct")
-    x[ , Rfr := NA]
+    x[["Rfr"]] <- NA
   }
 
   if (exists("transmittance", x, mode = "numeric", inherits=FALSE)) {
@@ -293,13 +263,13 @@ check.object_spct <- function(x, byref=TRUE, strict.range = TRUE, multiple.wl = 
     range_check(x, strict.range = strict.range)
     return(x)
   } else if (exists("Tpc", x, mode = "numeric", inherits=FALSE)) {
-    x[ , Tfr := Tpc / 100]
-    x[ , Tpc := NULL]
+    x[["Tfr"]] <- x[["Tpc"]] / 100
+    x[["Tpc"]] <- NULL
     range_check(x, strict.range = strict.range)
     return(x)
   } else {
     warning("No transmittance data found in object_spct")
-    x[ , Tfr := NA]
+    x[["Tfr"]] <- NA
     return(x)
   }
   range_check(x, strict.range = strict.range)
@@ -317,21 +287,23 @@ check.response_spct <- function(x, byref=TRUE, strict.range=TRUE, multiple.wl = 
   } else if (exists("s.q.response", x, mode = "numeric", inherits=FALSE)) {
     return(x)
   } else if (exists("response", x, mode = "numeric", inherits=FALSE)) {
-    x[ , s.e.response := response]
-    x[ , response := NULL]
+    x[["s.e.response"]] <- x[["response"]]
+    x[["response"]] <- NULL
     warning("Found variable 'response', I am assuming it is expressed on an energy basis")
     return(x)
   } else if (exists("signal", x, mode = "numeric", inherits=FALSE)) {
-    x[ , s.e.response := signal]
-    x[ , signal := NULL]
+    x[["s.e.response"]] <- x[["signal"]]
+    x[["signal"]] <- NULL
     warning("Found variable 'signal', I am assuming it is expressed on an energy basis")
     return(x)
   } else {
     warning("No response data found in response_spct")
-    x[ , s.e.response := NA]
+    x[["s.e.response"]] :<- NA
     return(x)
   }
 }
+
+# edited up to here --------------------------------------------------------
 
 #' @describeIn check Specialization for source_spct.
 #' @export
