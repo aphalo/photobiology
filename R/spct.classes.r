@@ -45,7 +45,9 @@ check.default <- function(x, byref=FALSE, strict.range=TRUE, ...) {
 #' @export
 check.generic_spct <- function(x, byref=TRUE, strict.range=TRUE, multiple.wl = 1L, ...) {
   if (exists("w.length", x, mode = "numeric", inherits=FALSE)) {
-    NULL
+    if (is.unsorted(x[["w.lengtgh"]], na.rm = TRUE, strictly = TRUE)) {
+      stop("'w.length' must be sorted in ascending order and have unique values")
+    }
   } else if (exists("wl", x, mode = "numeric", inherits=FALSE)) {
     setnames(x, "wl", "w.length")
   } else if (exists("wavelength", x, mode = "numeric", inherits=FALSE)) {
@@ -155,7 +157,7 @@ check.filter_spct <- function(x, byref=TRUE, strict.range = TRUE, multiple.wl = 
     return(x)
   } else {
     warning("No transmittance or absorbance data found in filter_spct")
-    x[["Tfr"] <- NA
+    x[["Tfr"]] <- NA
     return(x)
   }
 }
@@ -298,12 +300,10 @@ check.response_spct <- function(x, byref=TRUE, strict.range=TRUE, multiple.wl = 
     return(x)
   } else {
     warning("No response data found in response_spct")
-    x[["s.e.response"]] :<- NA
+    x[["s.e.response"]] <- NA
     return(x)
   }
 }
-
-# edited up to here --------------------------------------------------------
 
 #' @describeIn check Specialization for source_spct.
 #' @export
@@ -348,12 +348,12 @@ check.source_spct <- function(x, byref=TRUE, strict.range=FALSE, multiple.wl = 1
   } else if (exists("s.q.irrad", x, mode = "numeric", inherits=FALSE)) {
     NULL
   } else if (exists("irradiance", x, mode = "numeric", inherits=FALSE)) {
-    x[ , s.e.irradiance := irradiance]
-    x[ , irradiance := NULL]
+    x[["s.e.irradiance"]] <- x[["irradiance"]]
+    x[["irradiance"]] <- NULL
     warning("Found variable 'irradiance', I am assuming it is expressed on an energy basis")
   } else {
     warning("No spectral irradiance data found in source_spct")
-    x[ , s.e.irrad := NA]
+    x[["s.e.irrad"]] <- NA
     return(x)
   }
   range_check(x, strict.range = strict.range)
@@ -367,14 +367,19 @@ check.chroma_spct <- function(x, byref=TRUE, strict.range=TRUE, multiple.wl = 1L
   idxs <- grep("[XYZ]", names_x)
   names2lc <- names_x[idxs]
   setnames(x, names2lc, tolower(names2lc))
-  if (exists("x", x, mode="numeric", inherits=FALSE) &&
-        exists("y", x, mode="numeric", inherits=FALSE) &&
-        exists("z", x, mode="numeric", inherits=FALSE) ) {
-    return(x)
-  } else {
-    warning("No spectral chromaticity coordinates data found in chroma_spct")
-    return(x[ , c(x, y, z) := NA])
+  if (!exists("x", x, mode="numeric", inherits=FALSE)) {
+    warning("Chromaticity coordinate 'x' data missing")
+    x[["x"]] <- NA
   }
+  if (!exists("y", x, mode="numeric", inherits=FALSE)) {
+    warning("Chromaticity coordinate 'y' data missing")
+    x[["y"]] <- NA
+  }
+  if (!exists("z", x, mode="numeric", inherits=FALSE)) {
+    warning("Chromaticity coordinate 'z' data missing")
+    x[["z"]] <- NA
+  }
+  return(x)
 }
 
 
@@ -424,16 +429,16 @@ rmDerivedSpct <- function(x) {
 setGenericSpct <- function(x, multiple.wl = 1L) {
   name <- substitute(x)
   rmDerivedSpct(x)
-  if (!is.data.table(x)) {
-    setDT(x)
+  if (!is.data.frame(x)) {
+    x <- as.data.frame(x)
   }
   if (!is.generic_spct(x)){
     setattr(x, "class", c("generic_spct", class(x)))
     setattr(x, "spct.tags", NA)
   }
   x <- check(x, multiple.wl = multiple.wl)
-  setattr(x, "spct.version", 1)
-  setkey_spct(x, w.length)
+  setattr(x, "spct.version", 2)
+#  setkey_spct(x, w.length)
   if (is.name(name)) {
     name <- as.character(name)
     assign(name, x, parent.frame(), inherits = TRUE)
@@ -449,8 +454,8 @@ setGenericSpct <- function(x, multiple.wl = 1L) {
 setCpsSpct <- function(x, strict.range = TRUE, multiple.wl = 1L) {
   name <- substitute(x)
   rmDerivedSpct(x)
-  if (!is.data.table(x)) {
-    setDT(x)
+  if (!is.data.frame(x)) {
+    x <- as.data.frame(x)
   }
   if (!is.generic_spct(x)) {
     setGenericSpct(x, multiple.wl = multiple.wl)
@@ -459,7 +464,7 @@ setCpsSpct <- function(x, strict.range = TRUE, multiple.wl = 1L) {
     setattr(x, "class", c("cps_spct", class(x)))
   }
   x <- check(x, strict.range = strict.range)
-  setkey_spct(x, w.length)
+#  setkey_spct(x, w.length)
   if (is.name(name)) {
     name <- as.character(name)
     assign(name, x, parent.frame(), inherits = TRUE)
@@ -486,8 +491,8 @@ setFilterSpct <- function(x, Tfr.type=c("total", "internal"),
     }
   }
   rmDerivedSpct(x)
-  if (!is.data.table(x)) {
-    setDT(x)
+  if (!is.data.frame(x)) {
+    x <- as.data.frame(x)
   }
   if (!is.generic_spct(x)) {
     setGenericSpct(x, multiple.wl = multiple.wl)
@@ -497,7 +502,7 @@ setFilterSpct <- function(x, Tfr.type=c("total", "internal"),
   }
   setTfrType(x, Tfr.type[1])
   x <- check(x, strict.range = strict.range)
-  setkey_spct(x, w.length)
+#  setkey_spct(x, w.length)
   if (is.name(name)) {
     name <- as.character(name)
     assign(name, x, parent.frame(), inherits = TRUE)
@@ -522,8 +527,8 @@ setReflectorSpct <- function(x, Rfr.type=c("total", "specular"),
     }
   }
   rmDerivedSpct(x)
-  if (!is.data.table(x)) {
-    setDT(x)
+  if (!is.data.frame(x)) {
+    x <- as.data.frame(x)
   }
   if (!is.generic_spct(x)) {
     setGenericSpct(x, multiple.wl = multiple.wl)
@@ -533,7 +538,7 @@ setReflectorSpct <- function(x, Rfr.type=c("total", "specular"),
   }
   setRfrType(x, Rfr.type[1])
   x <- check(x, strict.range = strict.range)
-  setkey_spct(x, w.length)
+#  setkey_spct(x, w.length)
   if (is.name(name)) {
     name <- as.character(name)
     assign(name, x, parent.frame(), inherits = TRUE)
@@ -566,8 +571,8 @@ setObjectSpct <- function(x,
     }
   }
   rmDerivedSpct(x)
-  if (!is.data.table(x)) {
-    setDT(x)
+  if (!is.data.frame(x)) {
+    x <- as.data.frame(x)
   }
   if (!is.generic_spct(x)) {
     setGenericSpct(x, multiple.wl = multiple.wl)
@@ -578,7 +583,7 @@ setObjectSpct <- function(x,
   setTfrType(x, Tfr.type)
   setRfrType(x, Rfr.type)
   x <- check(x, strict.range = strict.range)
-  setkey_spct(x, w.length)
+#  setkey_spct(x, w.length)
   if (is.name(name)) {
     name <- as.character(name)
     assign(name, x, parent.frame(), inherits = TRUE)
@@ -595,8 +600,8 @@ setObjectSpct <- function(x,
 setResponseSpct <- function(x, time.unit="second", multiple.wl = 1L) {
   name <- substitute(x)
   rmDerivedSpct(x)
-  if (!is.data.table(x)) {
-    setDT(x)
+  if (!is.data.frame(x)) {
+    x <- as.data.frame(x)
   }
   if (!is.generic_spct(x)) {
     setGenericSpct(x, multiple.wl = multiple.wl)
@@ -606,7 +611,7 @@ setResponseSpct <- function(x, time.unit="second", multiple.wl = 1L) {
   }
   setTimeUnit(x, time.unit)
   x <- check(x)
-  setkey_spct(x, w.length)
+#  setkey_spct(x, w.length)
   if (is.name(name)) {
     name <- as.character(name)
     assign(name, x, parent.frame(), inherits = TRUE)
@@ -624,8 +629,8 @@ setSourceSpct <- function(x, time.unit="second", bswf.used=c("none", "unknown"),
                           strict.range = FALSE, multiple.wl = 1L) {
   name <- substitute(x)
   rmDerivedSpct(x)
-  if (!is.data.table(x)) {
-    setDT(x)
+  if (!is.data.frame(x)) {
+    x <- as.data.frame(x)
   }
   if (!is.generic_spct(x)) {
     setGenericSpct(x, multiple.wl = multiple.wl)
@@ -636,7 +641,7 @@ setSourceSpct <- function(x, time.unit="second", bswf.used=c("none", "unknown"),
   setTimeUnit(x, time.unit)
   setBSWFUsed(x, bswf.used = bswf.used)
   x <- check(x, strict.range = strict.range)
-  setkey_spct(x, w.length)
+#  setkey_spct(x, w.length)
   if (is.name(name)) {
     name <- as.character(name)
     assign(name, x, parent.frame(), inherits = TRUE)
@@ -652,8 +657,8 @@ setSourceSpct <- function(x, time.unit="second", bswf.used=c("none", "unknown"),
 setChromaSpct <- function(x, multiple.wl = 1L) {
   name <- substitute(x)
   rmDerivedSpct(x)
-  if (!is.data.table(x)) {
-    setDT(x)
+  if (!is.data.frame(x)) {
+    x <- as.data.frame(x)
   }
   if (!is.generic_spct(x)) {
     setGenericSpct(x, multiple.wl = multiple.wl)
@@ -662,7 +667,7 @@ setChromaSpct <- function(x, multiple.wl = 1L) {
     setattr(x, "class", c("chroma_spct", class(x)))
   }
   x <- check(x)
-  setkey_spct(x, w.length)
+#  setkey_spct(x, w.length)
   if (is.name(name)) {
     name <- as.character(name)
     assign(name, x, parent.frame(), inherits = TRUE)
@@ -1096,39 +1101,28 @@ getTimeUnit <- function(x, force.duration = FALSE) {
 #' @family time attribute functions
 #'
 convertTimeUnit <- function(x, time.unit = NULL, byref = TRUE) {
-  if (byref) x.out <- x else x.out <- copy(x)
-  x.out <- checkTimeUnit(x.out)
-
-  if (is.null(time.unit)) invisible(x.out)
+#  if (byref) x.out <- x else x.out <- copy(x) # needs fixing!
+  if (is.null(time.unit) || !is.any_spct(x)) {
+    return(invisible(x))
+  }
+  x.out <- checkTimeUnit(x)
 
   new.time.unit <- char2duration(time.unit)
   old.time.unit <- getTimeUnit(x.out, force.duration = TRUE)
 
   factor <- as.numeric(new.time.unit) / as.numeric(old.time.unit)
 
-  if (is.source_spct(x.out)) {
-    columns <- intersect(names(x.out), c("s.e.irrad", "s.q.irrad") )
-    if ("s.e.irrad" %in% columns) {
-      x.out[ , s.e.irrad := s.e.irrad * factor]
-    }
-    if ("s.q.irrad" %in% columns) {
-      x.out[ , s.q.irrad := s.q.irrad * factor]
-    }
-  } else if (is.response_spct(x.out)) {
-    columns <- intersect(names(x.out), c("s.e.response", "s.q.response") )
-    if ("s.e.response" %in% columns) {
-      x.out[ , s.e.response := s.e.response * factor]
-    }
-    if ("s.q.response" %in% columns) {
-      x.out[ , s.q.response := s.q.response * factor]
-    }
+  columns <- intersect(names(x.out), c("s.e.irrad", "s.q.irrad", "s.e.response", "s.q.response") )
+
+  for (col in columns) {
+    x.out[[col]] <- x.out[[col]] * factor
+  }
+
+  if (length(columns) > 0) {
+    setTimeUnit(x.out, time.unit, override.ok = TRUE)
   } else {
-    invisible(x.out)
+    warning("Nothing to convert to new time unit")
   }
-  if (length(setdiff(names(x.out), c("w.length", columns))) > 0) {
-    warning("Only data in '", paste(columns, collapse = "', '"), "' converted to time unit '", time.unit, "'")
-  }
-  setTimeUnit(x.out, time.unit, override.ok = TRUE)
 
   invisible(x.out)
 }
