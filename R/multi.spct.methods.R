@@ -10,34 +10,44 @@
 #' @export
 #'
 f_multi_spct <- function(mspct, f, ..., idx = !is.null(names(mspct))) {
-  z <- NULL
-
-  z <- lapply(mspct, f, ...)
-  namesz <- names(z[[1]])
-  z <- unlist(z, recursive = FALSE, use.names = FALSE)
+  z0 <- lapply(mspct, f, ...)
+  z <- unlist(z0, recursive = FALSE, use.names = FALSE)
 
   nspct <- length(mspct)
   nz <- length(z)
   nqty <- nz %/% nspct
-  ncol <- attr(mspct, "ncol", exact = TRUE)
-  nrow <- nspct / ncol
+  nrow <- nspct
+  ncol <- nqty
+  stopifnot(nz %% nqty == 0)
+  stopifnot(ncol > 0)
+  stopifnot(nrow > 0)
 
-  stopifnot(nspct %% ncol == 0)
+  namesz <- names(z0[[1]])
+  if (is.null(namesz) && nqty > 1) {
+    namesz <- as.character(1:nqty)
+  }
 
-  rows <- rep(1:nrow, ncol)
-  cols <- rep(1:ncol, rep(nrow, ncol))
+  rows <- rep(1:nrow)
 
   if (nz / nspct > 1) {
-    z <- matrix(z, ncol = nqty, byrow = TRUE)
+    z <- matrix(z, ncol = ncol, byrow = TRUE)
   }
-  df <- data.frame(row = rows, col = cols, z = z)
+
   if (idx) {
-    df[["idx"]] <- names(mspct)
+    namesspct <- names(mspct)
   }
 
-  qty.names <- paste(as.character(substitute(f)), gsub(" ", "", namesz), sep = "_")
+  if (!idx || is.null(namesspct)) {
+    namesspct <- as.character(1:nspct)
+  }
 
-  setnames(df, (1:nqty) + 2, qty.names)
+  df <- data.frame(spct.idx = namesspct, z = z)
+
+  qty.names <- paste(as.character(substitute(f)),
+                     gsub(" ", "", namesz),
+                     sep = ifelse(is.null(namesz), "", "_"))
+
+  setnames(df, (2:(nqty + 1)), qty.names)
   df
 }
 
@@ -49,8 +59,11 @@ f_multi_spct <- function(mspct, f, ..., idx = !is.null(names(mspct))) {
 #' @export
 #' @rdname  range.generic_spct
 #'
-range.generic_multi_spct <- function(..., na.rm = FALSE, idx = !is.null(names(spct))) {
+range.generic_multi_spct <- function(..., na.rm = FALSE, idx = NULL) {
   mspct <- c(...)
+  if (is.null(idx)) {
+    idx <- !is.null(names(mspct))
+  }
   f_multi_spct(mspct = mspct, f = range, na.rm = na.rm, idx = idx)
 }
 
@@ -60,9 +73,12 @@ range.generic_multi_spct <- function(..., na.rm = FALSE, idx = !is.null(names(sp
 #' @export
 #' @rdname  min.generic_spct
 #'
-min.generic_multi_spct <- function(..., na.rm = FALSE, idx = !is.null(names(spct))) {
+min.generic_multi_spct <- function(..., na.rm = FALSE, idx = NULL) {
   mspct <- c(...)
-  f_multi_spct(mspct = mspct, min, na.rm = na.rm, idx = idx)
+  if (is.null(idx)) {
+    idx <- !is.null(names(mspct))
+  }
+  f_multi_spct(mspct = mspct, f = min, na.rm = na.rm, idx = idx)
 }
 
 #' @param idx logical whether to add a column with the names of the elements of
@@ -71,9 +87,12 @@ min.generic_multi_spct <- function(..., na.rm = FALSE, idx = !is.null(names(spct
 #' @export
 #' @rdname  max.generic_spct
 #'
-max.generic_multi_spct <- function(..., na.rm = FALSE, idx = !is.null(names(spct))) {
+max.generic_multi_spct <- function(..., na.rm = FALSE, idx = NULL) {
   mspct <- c(...)
-  f_multi_spct(mspct = mspct, max, ..., na.rm = na.rm, idx = idx)
+  if (is.null(idx)) {
+    idx <- !is.null(names(mspct))
+  }
+  f_multi_spct(mspct = mspct, f = max, ..., na.rm = na.rm, idx = idx)
 }
 
 #' @describeIn stepsize  Method for "generic_multi_spct" objects for generic function.
@@ -82,17 +101,8 @@ max.generic_multi_spct <- function(..., na.rm = FALSE, idx = !is.null(names(spct
 #'
 #' @export
 #'
-stepsize.generic_multi_spct <- function(x, ..., idx = !is.null(names(spct))) {
-  f_multi_spct(mspct = x, stepsize, ..., idx = idx)
-}
-
-#' @param idx logical whether to add a column with the names of the elements of spct
-#'
-#' @export
-#' @rdname  labels.generic_spct
-#'
-labels.generic_multi_spct <- function(object, ..., idx = !is.null(names(spct))) {
-  f_multi_spct(object, labels, ..., idx = idx)
+stepsize.generic_multi_spct <- function(x, ..., idx = !is.null(names(x))) {
+  f_multi_spct(mspct = x, f = stepsize, ..., idx = idx)
 }
 
 # source_multi_spct methods -----------------------------------------------

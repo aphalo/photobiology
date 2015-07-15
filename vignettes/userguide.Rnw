@@ -794,7 +794,7 @@ head(trim_spct(sun.spct, low.limit = 290, fill = 0))
 
 \subsection{Summaries}
 
-Functions \texttt{integrate\_spct} and \texttt{average\_spct} take into account each individual wavelength step, so they return valid results even for spectra measured at arbitrary and varying wavelength steps.
+Functions \texttt{integrate\_spct} and \texttt{average\_spct} take into account each individual wavelength step, so they return valid results even for spectra measured at arbitrary and varying wavelength steps. They operate on every numeric column in the spectrum object given as argument.
 
 <<>>=
 integrate_spct(sun.spct)
@@ -831,6 +831,27 @@ summary(sun.spct * CIE())
 <<>>=
 summary(sun.daily.spct)
 @
+
+\subsubsection{Summaries from multiple spectra}
+
+Collections of spectra can be useful not only for time-series of spectra or spectral images, but also when dealing with a small group of related spectra. In the example below we show how to use a collection of spectra for calculating summaries. The spectra in a collection do \textbf{not} need to have been measured at the same wavelength values, or to be of the same length. Consequently, in some cases applying the summary functions described above (except for \texttt{summary}) to collections of spectra can be useful. The value returned is a data frame, with one column per each returned value by the corresponding method for individual spectra.
+
+<<>>=
+filtered_sun <-
+  source_multi_spct(
+    lapply(list(none = clear.spct,
+                ug1 = ug1.spct, ug11 = ug11.spct,
+                gg400 = gg400.spct,
+                og550 = og550.spct,
+                rg665 = rg665.spct, rg830 = rg830.spct),
+           `*`,
+           y = sun.spct))
+range(filtered_sun)
+@
+
+\begin{framed}
+Not all summary methods are yet implemented for collections of spectra, as this is a new set of classes, just added to the package.
+\end{framed}
 
 \subsection{Peaks and valleys}
 
@@ -1233,6 +1254,10 @@ irrad(sun.spct, UV_bands(), quantity = "average")
 
 \subsubsection{Irradiances from multiple spectra}
 
+Collections of spectra can be useful not only for time-series of spectra or spectral images, but also when dealing with a small group of related spectra. In the example below we show how to use a collection of spectra for estimating irradiances under different filters set up in sunlight.
+
+One thing to remember, is that operators in R are just functions with special names and call syntax. They can also be called with the usual function call syntax by enclosing their \emph{name} in backquotes. We use this trick to use the multiplication operator \texttt{`*`} in a call to \texttt{lapply} which returns a list, which we convert into a \texttt{source\_multi\_spct} object. After this we just call the \texttt{irrad} method on the \emph{collection of spectra} and obtain the result as a data frame with one row per spectrum and one column by waveband.
+
 <<>>=
 filtered_sun <-
   source_multi_spct(
@@ -1374,6 +1399,12 @@ PPFD.mol.photon * 1e6
 PAR.energy
 @
 
+\subsubsection{Ratios from collections of spectra}
+
+<<>>=
+q_ratio(filtered_sun, list(UVB(), UVA()), PAR())
+@
+
 \subsubsection{Ratios from vectors}
 
 The function \texttt{waveband\_ratio()} takes basically the same parameters as \texttt{irradiance}, but two waveband definitions instead of one, and two \texttt{unit.out} definitions instead of one. This is the base function used in all the vector based `ratio' functions in the \PB package.
@@ -1476,6 +1507,8 @@ irrad(sun.spct * polyester.new.spct, list(UVB(), UVA(), PAR()), wb.trim = TRUE) 
 @
 
 \subsubsection{Transmittances from multiple spectra}
+
+Here we construct a collection of filter spectra, and then we calculate the transmittance of these filters for two wavebands, obtaining the results as a data frame, with one row per filter, and one column per waveband.
 
 <<>>=
 filters <-
