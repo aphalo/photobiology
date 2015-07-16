@@ -6,6 +6,13 @@ preserved when used with derived classes.
 
 Add test cases for chroma_spct and all the multi_spct classes.
 
+photobiology 0.7.1
+==================
+
+Fix bug in new code added in 0.7.0.
+Update vignette.
+Add tests for new code.
+
 photobiology 0.7.0
 ==================
 

@@ -46,6 +46,8 @@ generic_multi_spct <- function(l, class = "generic_spct", ncol = 1, byrow = FALS
                           ifelse(multi_class != "generic_multi_spct", "generic_multi_spct", NULL),
                           "list"))
   }
+  setattr(l, "mspct.version", 1)
+
   setattr(l, "ncol", ncol)
   setattr(l, "byrow", byrow)
   l
