@@ -13,6 +13,41 @@ mspct_classes <- function() {
     "response_mspct", "chroma_mspct")
 }
 
+# remove mspct class attributes --------------------------------------------
+
+#' Remove "generic_mspct" and derived class attributes.
+#'
+#' Removes from an spectrum object the class attibutes "generic_mspct" and any
+#' derived class attribute such as "source_mspct". \strong{This operation is done
+#' by reference!}
+#'
+#' @param x an R object.
+#' @export
+#'
+#' @note If \code{x} is an object of any of the multi spectral classes defined
+#' in this package, this function changes by reference the multi spectrum object
+#' into the underlying lis object. Otherwise, it just leaves \code{x}
+#' unchanged. The modified \code{x} is also returned invisibly.
+#'
+#' @return A character vector containing the removed class attribute values. This
+#' is different to the behaviour of function \code{unlist} in base R!
+#'
+#' @family set and unset 'multi spectral' class functions
+#'
+rmDerivedMspct <- function(x) {
+  name <- substitute(x)
+  mspctclasses <- mspct_classes()
+  allclasses <- class(x)
+  setattr(x, "class", setdiff(allclasses, mspctclasses))
+  if (is.name(name)) {
+    name <- as.character(name)
+    assign(name, x, parent.frame(), inherits = TRUE)
+  }
+  invisible(setdiff(allclasses, class(x)))
+}
+
+# Constructors ------------------------------------------------------------
+
 #' @title Constructors of multi_spct Objects
 #'
 #' @description Converts a list of spectral objects into a "multi spectrum"
@@ -178,3 +213,122 @@ is.chroma_mspct <- function(x) inherits(x, "chroma_mspct")
 is.any_mspct <- function(x) {
   inherits(x, mspct_classes())
 }
+
+# as functions for mspct classes --------------------------------------------
+
+#' Return a copy of an R object as an spectrum object
+#'
+#' Return a copy of an R object with its class set to a given type of spectrum.
+#'
+#' @param x an R object
+#'
+#' @return These functions return a copy of \code{x} converted into a given
+#'   class of spectral object, if \code{x} is a valid argument to the
+#'   correcponding set function.
+#'
+#' @export
+#'
+#' @family creation of spectral objects functions
+#' @rdname as.generic_mspct
+#'
+as.generic_mspct <- function(x) {
+  y <- copy(x)
+  rmDerivedMspct(y)
+  z <- lapply(y, setGenericSpct)
+  generic_mspct(z)
+}
+
+#' @rdname as.generic_mspct
+#'
+#' @export
+#'
+as.cps_mspct <- function(x) {
+  y <- copy(x)
+  rmDerivedMspct(y)
+  z <- lapply(y, setCpsSpct)
+  cps_mspct(z)
+}
+
+#' @rdname as.generic_mspct
+#'
+#' @param time.unit character A string, "second", "day" or "exposure"
+#' @param bswf.used character
+#' @param strict.range logical Flag indicating whether off-range values result
+#'   in an error instead of a warning
+#'
+#' @export
+#'
+as.source_mspct <- function(x,
+                           time.unit=c("second", "day", "exposure"),
+                           bswf.used=c("none", "unknown"),
+                           strict.range = FALSE) {
+  y <- copy(x)
+  rmDerivedMspct(y)
+  z <- lapply(y, setSourceSpct, time.unit = time.unit, strict.range = strict.range, bswf.used = bswf.used)
+  source_mspct(z)
+}
+
+#' @rdname as.generic_mspct
+#'
+#' @export
+#'
+as.response_mspct <- function(x, time.unit = "second") {
+  y <- copy(x)
+  rmDerivedMspct(y)
+  z <- lapply(y, setResponseSpct, time.unit = time.unit)
+  reponse_mspct(z)
+}
+
+#' @rdname as.generic_mspct
+#'
+#' @param Tfr.type a character string, either "total" or "internal"
+#'
+#' @export
+#'
+as.filter_mspct <- function(x, Tfr.type=c("total", "internal"), strict.range = TRUE) {
+  y <- copy(x)
+  rmDerivedMspct(y)
+  z <- lapply(y, setFilterSpct, Tfr.type = Tfr.type, strict.range = strict.range)
+  filter_mspct(z)
+}
+
+#' @rdname as.generic_mspct
+#'
+#' @param Rfr.type a character string, either "total" or "specular"
+#'
+#' @export
+#'
+as.reflector_mspct <- function(x, Rfr.type = c("total", "specular"), strict.range = TRUE) {
+  y <- copy(x)
+  rmDerivedMspct(y)
+  z <- lapply(y, setReflectorSpct, Rfr.type = Rfr.type, strict.range = strict.range)
+  reflector_mspct(z)
+}
+
+#' @rdname as.generic_mspct
+#'
+#' @export
+#'
+as.object_mspct <- function(x,
+                           Tfr.type=c("total", "internal"),
+                           Rfr.type=c("total", "specular"),
+                           strict.range = TRUE) {
+  y <- copy(x)
+  rmDerivedMspct(y)
+  z <- lapply(y, setObjectSpct, Tfr.type = Tfr.type, Rfr.type = Rfr.type,
+              strict.range = strict.range)
+  object_mspct(z)
+}
+
+#' @rdname as.generic_mspct
+#'
+#' @export
+#'
+as.chroma_mspct <- function(x) {
+  y <- copy(x)
+  rmDerivedMspct(y)
+  z <- lapply(y, setChromaSpct)
+  chroma_mspct(z)
+}
+
+
