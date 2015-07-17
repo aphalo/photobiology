@@ -6,13 +6,21 @@ preserved when used with derived classes.
 
 Add test cases for chroma_spct and all the multi_spct classes.
 
+photobiology 0.7.1
+==================
+
+Fix bug in new code added in 0.7.0.
+Update vignette.
+Add tests for new code.
+
 photobiology 0.7.0
 ==================
 
 Make ratio functions into methods, and add 'wb.trim' as a parameter.
 Remove 'pc.out' parameter from methods that had it.
 
-Add multi_spct classes and summary methods. The idea for these new
+Add _mspct classes and summary methods for collections of spectral
+objects (the 'm' in _mspct comes from 'multi'. The idea for these new
 classes came from a question from Susan Holmes after my talk
 at UseR!2015 in Aalborg. She asked whether my package could handle
 hyperspectral image data. I answer not, but that this feature could

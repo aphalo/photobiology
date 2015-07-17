@@ -7,10 +7,10 @@
 #' @return A \code{character} vector of class names.
 #'
 multi_spct_classes <- function() {
-  c("generic_multi_spct", "cps_multi_spct",
-    "filter_multi_spct", "reflector_multi_spct",
-    "source_multi_spct", "object_multi_spct",
-    "response_multi_spct", "chroma_multi_spct")
+  c("generic_mspct", "cps_mspct",
+    "filter_mspct", "reflector_mspct",
+    "source_mspct", "object_mspct",
+    "response_mspct", "chroma_mspct")
 }
 
 #' @title Constructors of multi_spct Objects
@@ -27,14 +27,14 @@ multi_spct_classes <- function() {
 #' @param ... additional arguments
 #'
 #' @export
-#' @exportClass generic_multi_spct
+#' @exportClass generic_mspct
 #'
 #' @family collections of spectra classes family
 #'
-generic_multi_spct <- function(l, class = "generic_spct", ncol = 1, byrow = FALSE,  ...) {
+generic_mspct <- function(l, class = "generic_spct", ncol = 1, byrow = FALSE,  ...) {
   stopifnot(is.list(l))
 
-  multi_class <- paste(sub("_spct", "_multi_spct", class))
+  multi_class <- paste(sub("_spct", "_mspct", class))
   if (class(l)[1] == multi_class) {
     warning("Class is already set to '", multi_class, "'")
   } else {
@@ -43,73 +43,75 @@ generic_multi_spct <- function(l, class = "generic_spct", ncol = 1, byrow = FALS
       stopifnot(class %in% class_spct(spct))
     }
     setattr(l, "class", c(multi_class,
-                          ifelse(multi_class != "generic_multi_spct", "generic_multi_spct", NULL),
+                          ifelse(multi_class != "generic_mspct", "generic_mspct", NULL),
                           "list"))
   }
+  setattr(l, "mspct.version", 1)
+
   setattr(l, "ncol", ncol)
   setattr(l, "byrow", byrow)
   l
 }
 
-#' @describeIn generic_multi_spct Specialization for collections of \code{cps_spct} objects.
+#' @describeIn generic_mspct Specialization for collections of \code{cps_spct} objects.
 #'
 #' @export
-#' @exportClass cps_multi_spct
+#' @exportClass cps_mspct
 #'
-cps_multi_spct <- function(l, ncol = 1, byrow = FALSE, ...) {
-  generic_multi_spct(l, class = "cps_spct", ncol = ncol, byrow = byrow, ...)
+cps_mspct <- function(l, ncol = 1, byrow = FALSE, ...) {
+  generic_mspct(l, class = "cps_spct", ncol = ncol, byrow = byrow, ...)
 }
 
-#' @describeIn generic_multi_spct Specialization for collections of \code{source_spct} objects.
+#' @describeIn generic_mspct Specialization for collections of \code{source_spct} objects.
 #'
 #' @export
-#' @exportClass source_multi_spct
+#' @exportClass source_mspct
 #'
-source_multi_spct <- function(l, ncol = 1, byrow = FALSE, ...) {
-  generic_multi_spct(l, class = "source_spct", ncol = ncol, byrow = byrow, ...)
+source_mspct <- function(l, ncol = 1, byrow = FALSE, ...) {
+  generic_mspct(l, class = "source_spct", ncol = ncol, byrow = byrow, ...)
 }
 
-#' @describeIn generic_multi_spct Specialization for collections of \code{filter_spct} objects.
+#' @describeIn generic_mspct Specialization for collections of \code{filter_spct} objects.
 #'
 #' @export
-#' @exportClass filter_multi_spct
+#' @exportClass filter_mspct
 #'
-filter_multi_spct <- function(l, ncol = 1, byrow = FALSE, ...) {
-  generic_multi_spct(l, class = "filter_spct", ncol = ncol, byrow = byrow, ...)
+filter_mspct <- function(l, ncol = 1, byrow = FALSE, ...) {
+  generic_mspct(l, class = "filter_spct", ncol = ncol, byrow = byrow, ...)
 }
 
-#' @describeIn generic_multi_spct Specialization for collections of \code{reflector_spct} objects.
+#' @describeIn generic_mspct Specialization for collections of \code{reflector_spct} objects.
 #'
 #' @export
-#' @exportClass reflector_multi_spct
+#' @exportClass reflector_mspct
 #'
-reflector_multi_spct <- function(l, ncol = 1, byrow = FALSE, ...) {
-  generic_multi_spct(l, class = "reflector_spct", ncol = ncol, byrow = byrow, ...)
+reflector_mspct <- function(l, ncol = 1, byrow = FALSE, ...) {
+  generic_mspct(l, class = "reflector_spct", ncol = ncol, byrow = byrow, ...)
 }
 
-#' @describeIn generic_multi_spct Specialization for collections of \code{object_spct} objects.
+#' @describeIn generic_mspct Specialization for collections of \code{object_spct} objects.
 #'
 #' @export
-#' @exportClass object_multi_spct
+#' @exportClass object_mspct
 #'
-object_multi_spct <- function(l, ncol = 1, byrow = FALSE, ...) {
-  generic_multi_spct(l, class = "object_spct", ncol = ncol, byrow = byrow, ...)
+object_mspct <- function(l, ncol = 1, byrow = FALSE, ...) {
+  generic_mspct(l, class = "object_spct", ncol = ncol, byrow = byrow, ...)
 }
 
-#' @describeIn generic_multi_spct Specialization for collections of \code{response_spct} objects.
+#' @describeIn generic_mspct Specialization for collections of \code{response_spct} objects.
 #'
 #' @export
-#' @exportClass response_multi_spct
+#' @exportClass response_mspct
 #'
-response_multi_spct <- function(l, ncol = 1, byrow = FALSE, ...) {
-  generic_multi_spct(l, class = "response_spct", ncol = ncol, byrow = byrow, ...)
+response_mspct <- function(l, ncol = 1, byrow = FALSE, ...) {
+  generic_mspct(l, class = "response_spct", ncol = ncol, byrow = byrow, ...)
 }
 
-#' @describeIn generic_multi_spct Specialization for collections of \code{chroma_spct} objects.
+#' @describeIn generic_mspct Specialization for collections of \code{chroma_spct} objects.
 #'
 #' @export
-#' @exportClass chroma_multi_spct
+#' @exportClass chroma_mspct
 #'
-chroma_multi_spct <- function(l, ncol = 1, byrow = FALSE, ...) {
-  generic_multi_spct(l, class = "chroma_spct", ncol = ncol, byrow = byrow, ...)
+chroma_mspct <- function(l, ncol = 1, byrow = FALSE, ...) {
+  generic_mspct(l, class = "chroma_spct", ncol = ncol, byrow = byrow, ...)
 }

@@ -6,6 +6,9 @@ context("source_spct")
 test_that("constructor energy", {
 
   my.spct <- source_spct(w.length = 400:409, s.e.irrad = 1)
+  expect_equal(class(my.spct)[1:2], c("source_spct", "generic_spct") )
+  expect_equal(attr(my.spct, "spct.version", exact = TRUE), 1)
+
   my.s.spct <- source_spct(w.length = 400:409, s.e.irrad = 1, time.unit = "second")
   my.h.spct <- source_spct(w.length = 400:409, s.e.irrad = 1, time.unit = "hour")
   my.d.spct <- source_spct(w.length = 400:409, s.e.irrad = 1, time.unit = "day")
@@ -34,6 +37,8 @@ test_that("constructor energy", {
 test_that("constructor photon", {
 
   my.spct <- source_spct(w.length = 400:409, s.q.irrad = 1)
+  expect_equal(class(my.spct)[1:2], c("source_spct", "generic_spct") )
+
   my.s.spct <- source_spct(w.length = 400:409, s.q.irrad = 1, time.unit = "second")
   my.h.spct <- source_spct(w.length = 400:409, s.q.irrad = 1, time.unit = "hour")
   my.d.spct <- source_spct(w.length = 400:409, s.q.irrad = 1, time.unit = "day")

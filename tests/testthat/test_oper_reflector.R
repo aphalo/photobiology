@@ -4,6 +4,8 @@ context("reflector_spct")
 test_that("constructor fraction", {
 
   my.spct <- reflector_spct(w.length = 400:409, Rfr = 0.1)
+  expect_equal(class(my.spct)[1:2], c("reflector_spct", "generic_spct") )
+  expect_equal(attr(my.spct, "spct.version", exact = TRUE), 1)
 
   expect_error(reflector_spct(w.length = 400:409, Rfr = -0.1))
   expect_error(reflector_spct(w.length = 400:409, Rfr = 1.1))
@@ -16,6 +18,7 @@ test_that("constructor fraction", {
 test_that("constructor percent", {
 
   my.spct <- reflector_spct(w.length = 400:409, Rpc = 10)
+  expect_equal(class(my.spct)[1:2], c("reflector_spct", "generic_spct") )
 
   expect_error(reflector_spct(w.length = 400:409, Rpc = -0.1))
   expect_error(reflector_spct(w.length = 400:409, Rpc = 100.01))

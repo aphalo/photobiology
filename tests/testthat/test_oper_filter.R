@@ -4,6 +4,8 @@ context("filter_spct")
 test_that("constructor T fraction", {
 
   my.spct <- filter_spct(w.length = 400:409, Tfr = 0.1)
+  expect_equal(class(my.spct)[1:2], c("filter_spct", "generic_spct") )
+  expect_equal(attr(my.spct, "spct.version", exact = TRUE), 1)
 
   expect_error(filter_spct(w.length = 400:409, Tfr = -0.1))
   expect_error(filter_spct(w.length = 400:409, Tfr = 1.1))
@@ -17,6 +19,7 @@ test_that("constructor T fraction", {
 test_that("constructor T percent", {
 
   my.spct <- filter_spct(w.length = 400:409, Tpc = 10)
+  expect_equal(class(my.spct)[1:2], c("filter_spct", "generic_spct") )
 
   expect_error(filter_spct(w.length = 400:409, Tpc = -0.1))
   expect_error(filter_spct(w.length = 400:409, Tpc = 100.01))
@@ -29,6 +32,7 @@ test_that("constructor T percent", {
 test_that("constructor absorbance", {
 
   my.spct <- filter_spct(w.length = 400:409, A = 1)
+  expect_equal(class(my.spct)[1:2], c("filter_spct", "generic_spct") )
 
   expect_warning(filter_spct(w.length = 400:409, A = -0.1))
   expect_equal(my.spct[["A"]], rep(1, length.out = 10))
