@@ -6,7 +6,7 @@
 #'
 #' @return A \code{character} vector of class names.
 #'
-multi_spct_classes <- function() {
+mspct_classes <- function() {
   c("generic_mspct", "cps_mspct",
     "filter_mspct", "reflector_mspct",
     "source_mspct", "object_mspct",
@@ -114,4 +114,67 @@ response_mspct <- function(l, ncol = 1, byrow = FALSE, ...) {
 #'
 chroma_mspct <- function(l, ncol = 1, byrow = FALSE, ...) {
   generic_mspct(l, class = "chroma_spct", ncol = ncol, byrow = byrow, ...)
+}
+
+# is functions for mmspct classes --------------------------------------------
+
+#' Query class of spectrum objects
+#'
+#' Functions to check if an object is of a given type of spectrum, or coerce it if
+#' possible.
+#'
+#' @param x an R object.
+#'
+#' @return These functions return \code{TRUE} if its argument is a of the queried type
+#'   of spectrum and \code{FALSE} otherwise.
+#'
+#' @note Derived types also return TRUE for a query for a base type such as
+#' \code{generic_mspct}.
+#'
+#' @export
+#' @rdname is.generic_mspct
+#'
+is.generic_mmspct <- function(x) inherits(x, "generic_mmspct")
+
+#' @rdname is.generic_mspct
+#' @export
+#'
+is.cps_mspct <- function(x) inherits(x, "cps_mspct")
+
+#' @rdname is.generic_mspct
+#' @export
+#'
+is.source_mspct <- function(x) inherits(x, "source_mspct")
+
+#' @rdname is.generic_mspct
+#' @export
+#'
+is.response_mspct <- function(x) inherits(x, "response_mspct")
+
+#' @rdname is.generic_mspct
+#' @export
+#'
+is.filter_mspct <- function(x) inherits(x, "filter_mspct")
+
+#' @rdname is.generic_mspct
+#' @export
+#'
+is.reflector_mspct <- function(x) inherits(x, "reflector_mspct")
+
+#' @rdname is.generic_mspct
+#' @export
+#'
+is.object_mspct <- function(x) inherits(x, "object_mspct")
+
+#' @rdname is.generic_mspct
+#' @export
+#'
+is.chroma_mspct <- function(x) inherits(x, "chroma_mspct")
+
+#' @rdname is.generic_mspct
+#'
+#' @export
+#'
+is.any_mspct <- function(x) {
+  inherits(x, mspct_classes())
 }
