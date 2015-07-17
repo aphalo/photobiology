@@ -838,7 +838,7 @@ Collections of spectra can be useful not only for time-series of spectra or spec
 
 <<>>=
 filtered_sun <-
-  source_multi_spct(
+  source_mspct(
     lapply(list(none = clear.spct,
                 ug1 = ug1.spct, ug11 = ug11.spct,
                 gg400 = gg400.spct,
@@ -1260,7 +1260,7 @@ One thing to remember, is that operators in R are just functions with special na
 
 <<>>=
 filtered_sun <-
-  source_multi_spct(
+  source_mspct(
     lapply(list(none = clear.spct,
                 ug1 = ug1.spct, ug11 = ug11.spct,
                 gg400 = gg400.spct,
@@ -1512,7 +1512,7 @@ Here we construct a collection of filter spectra, and then we calculate the tran
 
 <<>>=
 filters <-
-  filter_multi_spct(
+  filter_mspct(
     list(clear = clear.spct,
          ug1 = ug1.spct, ug11 = ug11.spct,
          gg400 = gg400.spct,
@@ -1576,7 +1576,7 @@ q_response(sun.spct * KIPP_PQS1_PAR_quantum.spct, list(UVA(), PAR())) * 1e-6
 
 <<>>=
 sensors <-
-  response_multi_spct(
+  response_mspct(
     list(BW20 = Vital_BW_20.spct,
          Berger = Berger_UV_erythemal.spct))
 response(sensors, list(UVC(), UVB(), UVA()), quantity = "contribution")

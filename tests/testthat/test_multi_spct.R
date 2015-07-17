@@ -3,7 +3,7 @@ library(data.table)
 
 context("multi_spct")
 
-test_that("source_multi_spct", {
+test_that("source_mspct", {
 
   my1.spct <- source_spct(w.length = 400:410, s.e.irrad = 1)
   my2.spct <- source_spct(w.length = 400:410, s.e.irrad = 2)
@@ -11,19 +11,19 @@ test_that("source_multi_spct", {
   my4.spct <- source_spct(w.length = 400:410, s.e.irrad = 4)
   my5.spct <- source_spct(w.length = 400:410, s.e.irrad = 5)
 
-  my.mspct <- source_multi_spct(list(my1.spct, my2.spct, my3.spct, my4.spct, my5.spct))
+  my.mspct <- source_mspct(list(my1.spct, my2.spct, my3.spct, my4.spct, my5.spct))
 
-  expect_equal(class(my.mspct)[1:2], c("source_multi_spct", "generic_multi_spct") )
+  expect_equal(class(my.mspct)[1:2], c("source_mspct", "generic_mspct") )
   expect_equal(attr(my.mspct, "mspct.version", exact = TRUE), 1)
   expect_equal(attr(my.mspct, "ncol", exact = TRUE), 1)
   expect_equal(attr(my.mspct, "byrow", exact = TRUE), FALSE)
 
-  my_named.mspct <- source_multi_spct(list(one = my1.spct,
+  my_named.mspct <- source_mspct(list(one = my1.spct,
                                            two = my2.spct,
                                            three = my3.spct,
                                            four = my4.spct,
                                            five = my5.spct))
-  expect_equal(class(my_named.mspct)[1:2], c("source_multi_spct", "generic_multi_spct") )
+  expect_equal(class(my_named.mspct)[1:2], c("source_mspct", "generic_mspct") )
   expect_equal(attr(my_named.mspct, "mspct.version", exact = TRUE), 1)
   expect_equal(attr(my_named.mspct, "ncol", exact = TRUE), 1)
   expect_equal(attr(my_named.mspct, "byrow", exact = TRUE), FALSE)
