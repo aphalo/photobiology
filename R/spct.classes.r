@@ -432,6 +432,7 @@ rmDerivedSpct <- function(x) {
   spctclasses <- spct_classes()
   allclasses <- class(x)
   setattr(x, "class", setdiff(allclasses, spctclasses))
+  setattr(x, "spct.version", NULL)
   if (is.name(name)) {
     name <- as.character(name)
     assign(name, x, parent.frame(), inherits = TRUE)

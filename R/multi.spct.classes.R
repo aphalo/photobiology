@@ -39,6 +39,7 @@ rmDerivedMspct <- function(x) {
   mspctclasses <- mspct_classes()
   allclasses <- class(x)
   setattr(x, "class", setdiff(allclasses, mspctclasses))
+  setattr(x, "mspct.version", NULL)
   if (is.name(name)) {
     name <- as.character(name)
     assign(name, x, parent.frame(), inherits = TRUE)
