@@ -1,11 +1,40 @@
-#' Multi-sppct summary methods
+#' Multi-spct transform methods
+#'
+#' Apply a function returning an object of the same class as its first argument.
+#'
+#' @param mspct an object of class generic_mspct or a derived class
+#' @param f a function
+#' @param ... other arguments passed to f
+#' @param idx logical whether to add a column with the names of the elements of mspct
+#'
+#' @return an object of the same class as mspct
+#'
+#' @export
+#'
+mutate_mspct <- function(mspct, f, ...) {
+  stopifnot(is.any_mspct(mspct))
+  mspct.class <- class(mspct)[1]
+
+  y <- llply(mspct, f, ...)
+
+  stopifnot(length(y) == length(mspct))
+
+  generic_mspct(l = y,
+                class = mspct.class,
+                byrow = attr(mspct, "byrow", exact = TRUE),
+                ncol = attr(mspct, "ncol", exact = TRUE))
+}
+
+#' Multi-spct summary methods
 #'
 #' Functions
 #'
 #' @param mspct an object of class generic_mspct or a derived class
 #' @param f a function
-#' @param ... other arguments passed to irrad.source.spct
+#' @param ... other arguments passed to f
 #' @param idx logical whether to add a column with the names of the elements of mspct
+#'
+#' @return a data frame
 #'
 #' @export
 #'
