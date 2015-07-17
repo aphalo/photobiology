@@ -13,7 +13,10 @@ photobiology 0.7.1
 
 Fix bug in new code added in 0.7.0.
 Update rbinspct() to work well with _mspct objects as argument.
-Add is. functions for all _mspct classes.
+Add is. and as. functions for all _mspct classes.
+Add function rmDerivedMspct().
+Change returned value of rmDerivedSpct() into a charcter vector
+containing the removed class attributes.
 Update vignette.
 Add tests for new code.
 

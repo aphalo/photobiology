@@ -417,10 +417,13 @@ check.chroma_spct <- function(x, byref=TRUE, strict.range=TRUE, multiple.wl = 1L
 #' @param x an R object.
 #' @export
 #'
-#' @return If \code{x} is an object of any of the spectral classes defined
-#' in this package, this function changes by reference the spectrum object
-#' into the underlying data.table object. Otherwise, it just leaves \code{x}
-#' unchanged. The modofied \code{x} is also returned invisibly.
+#' @note If \code{x} is an object of any of the spectral classes defined
+#'   in this package, this function changes by reference the spectrum
+#'   object into the underlying data.table object. Otherwise, it just leaves \code{x}
+#'   unchanged.
+#'
+#' @return A character vector containing the removed class attribute values.
+#'   This is different to the behaviour of function \code{unlist} in base R!
 #'
 #' @family set and unset spectral class functions
 #'
@@ -433,7 +436,7 @@ rmDerivedSpct <- function(x) {
     name <- as.character(name)
     assign(name, x, parent.frame(), inherits = TRUE)
   }
-  invisible(x)
+  invisible(setdiff(allclasses, class(x)))
 }
 
 #' Convert an R object into a spectrum object.

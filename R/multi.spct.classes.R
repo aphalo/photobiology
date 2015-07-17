@@ -25,12 +25,12 @@ mspct_classes <- function() {
 #' @export
 #'
 #' @note If \code{x} is an object of any of the multi spectral classes defined
-#' in this package, this function changes by reference the multi spectrum object
-#' into the underlying lis object. Otherwise, it just leaves \code{x}
-#' unchanged. The modified \code{x} is also returned invisibly.
+#'   in this package, this function changes by reference the multi spectrum
+#'   object into the underlying lis object. Otherwise, it just leaves \code{x}
+#'   unchanged. The modified \code{x} is also returned invisibly.
 #'
-#' @return A character vector containing the removed class attribute values. This
-#' is different to the behaviour of function \code{unlist} in base R!
+#' @return A character vector containing the removed class attribute values.
+#'   This is different to the behaviour of function \code{unlist} in base R!
 #'
 #' @family set and unset 'multi spectral' class functions
 #'
