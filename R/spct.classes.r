@@ -1436,7 +1436,7 @@ getRfrType <- function(x) {
 #'
 #' @export
 #'
-getObjectVersion <- function(x) {
+getSpctVersion <- function(x) {
   if (is.any_spct(x)) {
     version <- attr(x, "spct.version", exact = TRUE)
     if (is.null(version)) {
@@ -1463,7 +1463,7 @@ getObjectVersion <- function(x) {
 #'
 #' @keywords internal
 #'
-checkObjectVersion <- function(x) {
+checkSpctVersion <- function(x) {
   version <- getObjectVersion(x)
   stopifnot(!is.na(version))
   if (version < 1L) {

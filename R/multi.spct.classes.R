@@ -98,9 +98,12 @@ generic_mspct <- function(l, class = "generic_spct", ncol = 1, byrow = FALSE) {
     multi_class <- c(multi_class, class(l))
     setattr(l, "class", multi_class)
   }
+  if (is.null(names(l))) {
+    setattr(l, "names", paste("spct", 1:length(l), sep = "_"))
+  }
   setattr(l, "mspct.version", 1)
 
-  setattr(l, "ncol", ncol)
+  setattr(l, "dim", c(length(l) %/% ncol, ncol))
   setattr(l, "byrow", byrow)
   l
 }
@@ -348,4 +351,21 @@ as.chroma_mspct <- function(x) {
   chroma_mspct(z)
 }
 
+#' Dimensions of an Object
+#'
+#' Retrieve or set the dimension of an object.
+#'
+#' @param x A \code{generic_mscpt} object or of a derived class.
+#'
+#' @return Either NULL or a numeric vector, which is coerced to integer (by truncation).
+#'
+#' @export
+#'
+dim.generic_mspct <- function(x) {
+  z <- attr(x, "dim", exact = TRUE)
+  if(!is.null(z)) {
+    z <- as.integer(z)
+  }
+
+}
 

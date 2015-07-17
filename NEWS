@@ -14,8 +14,16 @@ photobiology 0.7.1
 Fix bug in new code added in 0.7.0.
 Update rbinspct() to work well with _mspct objects as argument.
 Add is. and as. functions for all _mspct classes.
+Add function mutate_mspct() and improve code of function f_mspct()
+using package plyr.
+Implement e2q() and q2e() methods for objects of classes
+source_mspct and response_mspct.
+Implement T2A() and A2T() methods for objects of class
+filter_mspct.
+Implement min(), max(), range(), spread(), midpoint() and
+stepsize() for objects of class generic_mspct and derived classes.
 Add function rmDerivedMspct().
-Change returned value of rmDerivedSpct() into a charcter vector
+Change returned value of rmDerivedSpct() into a character vector
 containing the removed class attributes.
 Update vignette.
 Add tests for new code.

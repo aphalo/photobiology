@@ -18,7 +18,7 @@ upgrade_spct <-
   function(object) {
     name <- substitute(object)
     setattr(object, "class", gsub(".spct", "_spct", class(object), fixed = TRUE))
-    version <- getObjectVersion(object)
+    version <- getSpctVersion(object)
     if (version <= 0L) {
       setattr(object, "spct.version", 1L)
     }
