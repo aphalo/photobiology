@@ -552,8 +552,10 @@ color.source_spct <- function(x, ...) {
 #  x.name <- as.character(substitute(x))
   x.name <- "source"
   q2e(x, byref=TRUE)
-  color <- c(s_e_irrad2rgb(x[["w.length"]], x[["s.e.irrad"]], sens=ciexyzCMF2.spct, color.name=paste(x.name, "CMF")),
-             s_e_irrad2rgb(x[["w.length"]], x[["s.e.irrad"]], sens=ciexyzCC2.spct, color.name=paste(x.name, "CC")))
+  color <- c(s_e_irrad2rgb(x[["w.length"]], x[["s.e.irrad"]],
+                           sens=ciexyzCMF2.spct, color.name=paste(x.name, "CMF")),
+             s_e_irrad2rgb(x[["w.length"]], x[["s.e.irrad"]],
+                           sens=ciexyzCC2.spct, color.name=paste(x.name, "CC")))
   return(color)
 }
 
@@ -568,9 +570,9 @@ color.source_spct <- function(x, ...) {
 #' @export
 #' @family wavelength summaries
 #'
-range.generic_spct <- function(..., na.rm=FALSE) {
-  x <- c(...)
-  return(range(x[["w.length"]], na.rm=na.rm))
+range.generic_spct <- function(..., na.rm = FALSE) {
+  x <- list(...)[[1]]
+  range(x[["w.length"]], na.rm = na.rm)
 }
 
 #' "max" function for spectra
@@ -583,8 +585,8 @@ range.generic_spct <- function(..., na.rm=FALSE) {
 #' @family wavelength summaries
 #'
 max.generic_spct <- function(..., na.rm=FALSE) {
-  x <- c(...)
-  return(max(x[["w.length"]], na.rm=na.rm))
+  x <- list(...)[[1]]
+  max(x[["w.length"]], na.rm=na.rm)
 }
 
 #' "min" function for spectra
@@ -596,9 +598,9 @@ max.generic_spct <- function(..., na.rm=FALSE) {
 #' @export
 #' @family wavelength summaries
 #'
-min.generic_spct <- function(..., na.rm=FALSE) {
-  x <- c(...)
-  return(min(x[["w.length"]], na.rm=na.rm))
+min.generic_spct <- function(..., na.rm = FALSE) {
+  x <- list(...)[[1]]
+  min(x[["w.length"]], na.rm = na.rm)
 }
 
 #' Generic function
@@ -617,7 +619,7 @@ stepsize.default <- function(x, ...) {
   return(range(diff(x)))
 }
 
-#' @describeIn stepsize  Method for "generic_spct" objects for generic function.
+#' @describeIn stepsize  Method for "generic_spct" objects.
 #'
 #' @export
 #'
@@ -628,6 +630,28 @@ stepsize.generic_spct <- function(x, ...) {
   range(diff(x[["w.length"]]))
 }
 
+
+#' @describeIn stepsize  Method for "generic_spct" objects.
+#'
+#' @export
+#'
+#' @examples
+#' spread(sun.spct)
+#'
+spread.generic_spct <- function(x, ...) {
+  spread.wl <- spread(x[["w.length"]])
+}
+
+#' @describeIn midpoint Method for "generic_spct" objects.
+#'
+#' @export
+#'
+#' @examples
+#' midpoint(sun.spct)
+#'
+midpoint.generic_spct <- function(x, ...) {
+  midpoint(x[["w.length"]])
+}
 
 # Labels ------------------------------------------------------------------
 

@@ -634,18 +634,19 @@ row-binding spectra, with the necessary checks for consistency of the bound spec
 shade.spct <- copy(sun.spct)
 @
 
+By default an ID factor \texttt{spct.idx} is added so that it is recognize the origin of the observations after the binding. If the supplied list has named members, then these names are used as factor levels. Otherwise level names are generated automatically.
+
 <<>>=
 rbindspct(list(sun.spct, shade.spct))
 @
 
-It is also possible to add an ID factor, to be able to still recognize the origin of the observations after the
-binding. If the supplied list is anonymous, then capital letters will be used for levels.
+It is possible to suppress the creation of the ID factor, but this is rarely of any use.
 
 <<>>=
-rbindspct(list(sun.spct, shade.spct), idfactor = TRUE)
+rbindspct(list(sun.spct, shade.spct), idfactor = FALSE)
 @
 
-In contrast, if a named list with no missing names, is supplied as argument, these names are used for the levels of the ID factor.
+If a named list with no missing names, is supplied as argument, these names are used for the levels of the ID factor.
 
 <<>>=
 rbindspct(list(sun = sun.spct, shade = shade.spct), idfactor = TRUE)
@@ -655,6 +656,27 @@ If a character string is supplied as argument, then this will be used as the nam
 
 <<>>=
 rbindspct(list(sun = sun.spct, shade = shade.spct), idfactor = "ID")
+@
+
+In the special case when the members of the list are \texttt{source\_spct} objects containing effective spectral irradiance data, and they are not based on the same BSWF, an additional factor \texttt{BSWF} will be added, and the \texttt{BSWF} attribute of the resulting spectrum set to \texttt{"multiple"}.
+
+<<>>=
+rb2.spct <- rbindspct(list(sun.spct * CIE(), shade.spct * CIE()))
+rb2.spct
+getBSWFUsed(rb2.spct)
+@
+
+<<>>=
+rb1.spct <- rbindspct(list(sun.spct * CIE(), sun.spct * GEN.G()))
+rb1.spct
+getBSWFUsed(rb1.spct)
+@
+
+The warning above is caused by the different length of the members of the list, and in this case can be ignored.
+
+<<>>=
+range(sun.spct * CIE())
+range(sun.spct * GEN.G())
 @
 
 \subsubsection{Subsetting spectra}

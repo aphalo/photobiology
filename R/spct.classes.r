@@ -8,10 +8,10 @@
 #' @return A \code{character} vector of class names.
 #'
 spct_classes <- function() {
-  c("generic_spct", "cps_spct",
+  c("cps_spct",
     "filter_spct", "reflector_spct",
     "source_spct", "object_spct",
-    "response_spct", "chroma_spct")
+    "response_spct", "chroma_spct", "generic_spct")
 }
 
 # conditional setkey ------------------------------------------------------
@@ -417,10 +417,13 @@ check.chroma_spct <- function(x, byref=TRUE, strict.range=TRUE, multiple.wl = 1L
 #' @param x an R object.
 #' @export
 #'
-#' @return If \code{x} is an object of any of the spectral classes defined
-#' in this package, this function changes by reference the spectrum object
-#' into the underlying data.table object. Otherwise, it just leaves \code{x}
-#' unchanged. The modofied \code{x} is also returned invisibly.
+#' @note If \code{x} is an object of any of the spectral classes defined
+#'   in this package, this function changes by reference the spectrum
+#'   object into the underlying data.table object. Otherwise, it just leaves \code{x}
+#'   unchanged.
+#'
+#' @return A character vector containing the removed class attribute values.
+#'   This is different to the behaviour of function \code{unlist} in base R!
 #'
 #' @family set and unset spectral class functions
 #'
@@ -429,11 +432,12 @@ rmDerivedSpct <- function(x) {
   spctclasses <- spct_classes()
   allclasses <- class(x)
   setattr(x, "class", setdiff(allclasses, spctclasses))
+  setattr(x, "spct.version", NULL)
   if (is.name(name)) {
     name <- as.character(name)
     assign(name, x, parent.frame(), inherits = TRUE)
   }
-  invisible(x)
+  invisible(setdiff(allclasses, class(x)))
 }
 
 #' Convert an R object into a spectrum object.
@@ -1432,7 +1436,7 @@ getRfrType <- function(x) {
 #'
 #' @export
 #'
-getObjectVersion <- function(x) {
+getSpctVersion <- function(x) {
   if (is.any_spct(x)) {
     version <- attr(x, "spct.version", exact = TRUE)
     if (is.null(version)) {
@@ -1459,7 +1463,7 @@ getObjectVersion <- function(x) {
 #'
 #' @keywords internal
 #'
-checkObjectVersion <- function(x) {
+checkSpctVersion <- function(x) {
   version <- getObjectVersion(x)
   stopifnot(!is.na(version))
   if (version < 1L) {

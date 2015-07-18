@@ -2,14 +2,32 @@ TODO
 ====
 
 Find a way of wrapping `[.data.table` so that attributes are
-preserved when used with derived classes.
+preserved when used with derived classes or revert to using
+data frames.
 
-Add test cases for chroma_spct and all the multi_spct classes.
+Add test cases for chroma_spct and improve tests for the _mspct
+classes.
 
 photobiology 0.7.1
 ==================
 
 Fix bug in new code added in 0.7.0.
+Update rbinspct() to work well with _mspct objects as argument.
+Add is. and as. functions for all _mspct classes.
+Add function mutate_mspct() and improve code of function f_mspct()
+using package plyr.
+Implement e2q() and q2e() methods for objects of classes
+source_mspct and response_mspct.
+Implement T2A() and A2T() methods for objects of class
+filter_mspct.
+Implement min(), max(), range(), spread(), midpoint() and
+stepsize() for objects of class generic_mspct and derived classes.
+Implement dim() for objects of class generic_mspct and derived
+classes, which also makes avialble functions ncol() and nrow()
+for objects of these classes.
+Add function rmDerivedMspct().
+Change returned value of rmDerivedSpct() into a character vector
+containing the removed class attributes.
 Update vignette.
 Add tests for new code.
 

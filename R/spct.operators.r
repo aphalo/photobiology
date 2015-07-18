@@ -924,6 +924,14 @@ A2T.filter_spct <- function(x, action="add", byref=FALSE) {
   return(x)
 }
 
+#' @describeIn A2T Method for collections of filter spectra
+#'
+#' @export
+#'
+A2T.filter_mspct <- function(x, action = "add", byref = FALSE, ...) {
+  mutate_mspct(x, A2T, action = action, byref = byref, ...)
+}
+
 
 # T2A ---------------------------------------------------------------------
 
@@ -981,6 +989,14 @@ T2A.filter_spct <- function(x, action="add", byref=FALSE) {
     warning("'Inf' absorbance values generated as some Tfr values were equal to zero!")
   }
   return(x)
+}
+
+#' @describeIn T2A Method for collections of filter spectra
+#'
+#' @export
+#'
+T2A.filter_mspct <- function(x, action = "add", byref = FALSE, ...) {
+  mutate_mspct(x, T2A, action = action, byref = byref, ...)
 }
 
 
@@ -1063,6 +1079,22 @@ e2q.response_spct <- function(x, action="add", byref=FALSE) {
   return(x)
 }
 
+#' @describeIn e2q Method for collections of (light) source spectra
+#'
+#' @export
+#'
+e2q.source_mspct <- function(x, action = "add", byref = FALSE, ...) {
+  mutate_mspct(x, e2q, action = action, byref = byref, ...)
+}
+
+#' @describeIn e2q Method for for collections of response spectra
+#'
+#' @export
+#'
+e2q.response_mspct <- function(x, action = "add", byref = FALSE, ...) {
+  mutate_mspct(x, e2q, action = action, byref = byref, ...)
+}
+
 # photon to energy ---------------------------------------------------------------------
 
 #' Convert photon-based spectra into energy-based spectra.
@@ -1137,5 +1169,22 @@ q2e.response_spct <- function(x, action="add", byref=FALSE) {
     assign(name, x, parent.frame(), inherits = TRUE)
   }
   return(x)
+}
+
+#' @describeIn q2e Method for collections of (light) source spectra
+#'
+#' @export
+#'
+q2e.source_mspct <- function(x, action = "add", byref = FALSE, ...) {
+  mutate_mspct(x, q2e, action = action, byref = byref, ...)
+}
+
+
+#' @describeIn q2e Method for collections of response spectra
+#'
+#' @export
+#'
+q2e.response_mspct <- function(x, action = "add", byref = FALSE, ...) {
+  mutate_mspct(x, q2e, action = action, byref = byref, ...)
 }
 
