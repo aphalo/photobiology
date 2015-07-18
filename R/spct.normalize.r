@@ -69,7 +69,7 @@ normalize_spct <- function(spct, range, norm, var.name) {
   out.spct
 }
 
-#' @describeIn normalize Normalize a \code{source.x} object.
+#' @describeIn normalize Normalize a \code{source_spct} object.
 #'
 #' @param range An R object on which \code{range()} returns a numeric vector of
 #'   length 2 with the limits of a range of wavelengths in nm, with min annd max

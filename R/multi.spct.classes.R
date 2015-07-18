@@ -7,10 +7,10 @@
 #' @return A \code{character} vector of class names.
 #'
 mspct_classes <- function() {
-  c("generic_mspct", "cps_mspct",
+  c("cps_mspct",
     "filter_mspct", "reflector_mspct",
     "source_mspct", "object_mspct",
-    "response_mspct", "chroma_mspct")
+    "response_mspct", "chroma_mspct", "generic_mspct")
 }
 
 # remove mspct class attributes --------------------------------------------

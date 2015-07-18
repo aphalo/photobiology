@@ -86,7 +86,13 @@
 #' head(spct)
 #' class(spct)
 #'
-rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = is.any_mspct(l)) {
+rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
+  if ( (is.null(idfactor) && (!is.null(names(l)))) ||
+       (is.logical(idfactor) && idfactor ) ) {
+    idfactor <- "spct.idx"
+  }
+  add.idfactor <- is.character(idfactor)
+
   # original rbindlist from data.table strips attributes and sets class to data.table
   if (is.null(l) || length(l) < 1) {
     return(l)
@@ -124,13 +130,11 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = is.any_mspct(
     warning("Argument 'l' contains objects which are not spectra")
     return(NA)
   }
-  l.class <- l.class[1]
-  #  print(l.class)
-
-  names.spct <- names(l)
-  if (is.null(names.spct) || anyNA(names.spct)) {
-    names.spct <- LETTERS[1:length(l)]
+  # safer than l.class[1] which depends on order of class names in l.class
+  if (length(l.class) > 1L) {
+    l.class <- setdiff(l.class, "generic_spct")
   }
+  #  print(l.class)
 
   # Here we do the actual binding
   if (length(l) < 2) {
@@ -142,14 +146,13 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = is.any_mspct(
     return(NULL)
   }
 
-  add.factor <- !is.null(idfactor)
-  if (add.factor) {
-    if (is.character(idfactor)) {
-      factor.name <- idfactor
-    } else {
-      factor.name <- "spct.idx"
-    }
-    ans[ , (factor.name) := factor(rep.int(names.spct, sapply(l, FUN = nrow)), levels = names.spct)]
+  names.spct <- names(l)
+  if (is.null(names.spct) || anyNA(names.spct) || length(names.spct) < length(l)) {
+    names.spct <- paste("spct", 1:length(l), sep = "_")
+  }
+  if (add.idfactor) {
+    ans[ , (idfactor) := factor(rep.int(names.spct, sapply(l, FUN = nrow)),
+                                levels = names.spct)]
   }
 
   comment.ans <- "rbindspct: concatenated comments"
@@ -158,8 +161,8 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = is.any_mspct(
   for (i in 1:length(l)) {
     temp <- comment(l[[i]])
     comments.found <- comments.found || !is.null(temp)
-    if (add.factor) {
-      temp <- paste("\n", factor.name , "= ", names.spct[i], ":\n", comment(l[[i]]), sep="")
+    if (add.idfactor) {
+      temp <- paste("\n", idfactor , "= ", names.spct[i], ":\n", comment(l[[i]]), sep="")
     } else {
       temp <- paste("\n spectrum = ", names.spct[i], ":\n", comment(l[[i]]), sep="")
     }
@@ -181,7 +184,7 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = is.any_mspct(
       bswfs.input <- sapply(l, FUN = getBSWFUsed)
       if (length(unique(bswfs.input)) > 1L) {
         add.bswf <- TRUE
-        bswf.used <- "unknown"
+        bswf.used <- "multiple"
         ans[ , BSWF := factor(rep.int(bswfs.input, sapply(l, FUN = nrow)), levels = bswfs.input)]
       } else {
         add.bswf <- FALSE
@@ -235,14 +238,14 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = is.any_mspct(
   if (any(normalized.input)) {
     setattr(ans, "normalized", "TRUE")
   }
-  if (add.factor && !add.bswf) {
-    keys <- c(factor.name, "w.length")
+  if (add.idfactor && !add.bswf) {
+    keys <- c(idfactor, "w.length")
     setkeyv(ans, keys)
-  } else if (!add.factor && add.bswf) {
+  } else if (!add.idfactor && add.bswf) {
     keys <- c("BSWF", "w.length")
     setkeyv(ans, keys)
-  } else if (add.factor && add.bswf) {
-    keys <- c("BSWF", factor.name, "w.length")
+  } else if (add.idfactor && add.bswf) {
+    keys <- c("BSWF", idfactor, "w.length")
     setkeyv(ans, keys)
   } # else we keep the default "w.length"
   if (!is.null(comment.ans)) setattr(ans, "comment", comment.ans)

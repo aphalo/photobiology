@@ -22,6 +22,9 @@ Implement T2A() and A2T() methods for objects of class
 filter_mspct.
 Implement min(), max(), range(), spread(), midpoint() and
 stepsize() for objects of class generic_mspct and derived classes.
+Implement dim() for objects of class generic_mspct and derived
+classes, which also makes avialble functions ncol() and nrow()
+for objects of these classes.
 Add function rmDerivedMspct().
 Change returned value of rmDerivedSpct() into a character vector
 containing the removed class attributes.
