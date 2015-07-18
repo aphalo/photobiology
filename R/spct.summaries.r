@@ -12,7 +12,7 @@
 #'
 #' @return A summary object matching the class of \code{object}.
 #'
-#' @export
+#' @method summary generic_spct
 #'
 summary.generic_spct <- function(object, digits = max(3, getOption("digits")-3), ...) {
   z <- c(
@@ -27,7 +27,7 @@ summary.generic_spct <- function(object, digits = max(3, getOption("digits")-3),
   return(z)
 }
 
-#' @export
+#' @method summary cps_spct
 #' @rdname summary.generic_spct
 #'
 summary.cps_spct <- function(object, digits = max(3, getOption("digits")-3), ...) {
@@ -51,7 +51,7 @@ summary.cps_spct <- function(object, digits = max(3, getOption("digits")-3), ...
 #'
 #' @param time.unit character or lubridate::duration
 #'
-#' @export
+#' @method summary source_spct
 #' @rdname summary.generic_spct
 #'
 summary.source_spct <- function(object,
@@ -106,7 +106,7 @@ summary.source_spct <- function(object,
 
 # @describeIn summary.generic_spct Summary of a \code{filter_spct} object.
 #'
-#' @export
+#' @method summary filter_spct
 #' @rdname summary.generic_spct
 #'
 summary.filter_spct <- function(object, digits = max(3, getOption("digits")-3), ...) {
@@ -152,7 +152,7 @@ summary.filter_spct <- function(object, digits = max(3, getOption("digits")-3), 
 
 # @describeIn summary.generic_spct Summary of a "reflector_spct" object.
 #'
-#' @export
+#' @method summary reflector_spct
 #' @rdname summary.generic_spct
 #'
 summary.reflector_spct <- function(object, digits = max(3, getOption("digits")-3), ...) {
@@ -177,7 +177,7 @@ summary.reflector_spct <- function(object, digits = max(3, getOption("digits")-3
 
 # @describeIn summary.generic_spct Summary of a \code{filter_spct} object.
 #'
-#' @export
+#' @method summary object_spct
 #' @rdname summary.generic_spct
 #'
 summary.object_spct <- function(object, digits = max(3, getOption("digits")-3), ...) {
@@ -207,7 +207,7 @@ summary.object_spct <- function(object, digits = max(3, getOption("digits")-3), 
 
 # @describeIn summary.generic_spct Summary of a "response_spct" object.
 #'
-#' @export
+#' @method summary response_spct
 #' @rdname summary.generic_spct
 #'
 summary.response_spct <- function(object,
@@ -266,7 +266,7 @@ summary.response_spct <- function(object,
 
 # @describeIn summary.generic_spct Summary of a "chroma_spct" object.
 #'
-#' @export
+#' @method summary chroma_spct
 #' @rdname summary.generic_spct
 #'
 summary.chroma_spct <- function(object, digits = max(3, getOption("digits")-3), ...) {
@@ -287,7 +287,6 @@ summary.chroma_spct <- function(object, digits = max(3, getOption("digits")-3), 
   class(z) <- c("summary_chroma_spct", class(z))
   return(z)
 }
-
 
 # Print spectral summaries ------------------------------------------------
 
@@ -631,7 +630,7 @@ stepsize.generic_spct <- function(x, ...) {
 }
 
 
-#' @describeIn stepsize  Method for "generic_spct" objects.
+#' @describeIn spread  Method for "generic_spct" objects.
 #'
 #' @export
 #'
@@ -639,7 +638,7 @@ stepsize.generic_spct <- function(x, ...) {
 #' spread(sun.spct)
 #'
 spread.generic_spct <- function(x, ...) {
-  spread.wl <- spread(x[["w.length"]])
+  spread(x[["w.length"]])
 }
 
 #' @describeIn midpoint Method for "generic_spct" objects.

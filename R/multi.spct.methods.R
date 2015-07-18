@@ -5,7 +5,6 @@
 #' @param mspct an object of class generic_mspct or a derived class
 #' @param f a function
 #' @param ... other arguments passed to f
-#' @param idx logical whether to add a column with the names of the elements of mspct
 #'
 #' @return an object of the same class as mspct
 #'
@@ -130,7 +129,7 @@ max.generic_mspct <- function(..., na.rm = FALSE, idx = NULL) {
 
 #' @describeIn stepsize  Method for "generic_mspct" objects.
 #'
-##' @param idx logical whether to add a column with the names of the elements of spct
+#' @param idx logical whether to add a column with the names of the elements of spct
 #'
 #' @export
 #'
@@ -148,7 +147,7 @@ spread.generic_mspct <- function(x, ..., idx = !is.null(names(x))) {
   f_mspct(mspct = x, f = spread, ..., idx = idx)
 }
 
-#' @describeIn stepsize  Method for "generic_mspct" objects.
+#' @describeIn midpoint Method for "generic_mspct" objects.
 #'
 #' @param idx logical whether to add a column with the names of the elements of spct
 #'
