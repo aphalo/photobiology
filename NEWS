@@ -28,7 +28,7 @@ for objects of these classes.
 Add function rmDerivedMspct().
 Change returned value of rmDerivedSpct() into a character vector
 containing the removed class attributes.
-Update vignette.
+Update and reorganize User Guide.
 Add tests for new code.
 
 photobiology 0.7.0

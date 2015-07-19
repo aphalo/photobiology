@@ -884,16 +884,18 @@ exp.generic_spct <- function(x) {
 #' @param x an R object
 #' @param action a character string
 #' @param byref logical indicating if new object will be created by reference or by copy of x
+#' @param ... not used in current version
+#'
 #' @export A2T
 #' @family quantity conversion functions
 #'
-A2T <- function(x, action, byref) UseMethod("A2T")
+A2T <- function(x, action, byref, ...) UseMethod("A2T")
 
 #' @describeIn A2T Default method for generic function
 #'
 #' @export
 #'
-A2T.default <- function(x, action=NULL, byref=FALSE) {
+A2T.default <- function(x, action=NULL, byref=FALSE, ...) {
   return(10^-x)
 }
 
@@ -901,7 +903,7 @@ A2T.default <- function(x, action=NULL, byref=FALSE) {
 #'
 #' @export
 #'
-A2T.filter_spct <- function(x, action="add", byref=FALSE) {
+A2T.filter_spct <- function(x, action="add", byref=FALSE, ...) {
   if (byref) {
     name <- substitute(x)
   } else {
@@ -943,16 +945,18 @@ A2T.filter_mspct <- function(x, action = "add", byref = FALSE, ...) {
 #' @param x an R object
 #' @param action character Allowed values "replace" and "add"
 #' @param byref logical indicating if new object will be created by reference or by copy of x
+#' @param ... not used in current version
+#'
 #' @export T2A
 #' @family quantity conversion functions
 #'
-T2A <- function(x, action, byref) UseMethod("T2A")
+T2A <- function(x, action, byref, ...) UseMethod("T2A")
 
 #' @describeIn T2A Default method for generic function
 #'
 #' @export
 #'
-T2A.default <- function(x, action=NULL, byref=FALSE) {
+T2A.default <- function(x, action=NULL, byref=FALSE, ...) {
   if (any(x < 0)) {
     Tfr.zero <- getOption(photobiology.Tfr.zero, default = 1e-10)
     warning("Replacing zeros by", Tfr.zero)
@@ -965,7 +969,7 @@ T2A.default <- function(x, action=NULL, byref=FALSE) {
 #'
 #' @export
 #'
-T2A.filter_spct <- function(x, action="add", byref=FALSE) {
+T2A.filter_spct <- function(x, action="add", byref=FALSE, ...) {
   if (byref) {
     name <- substitute(x)
   } else {
@@ -1012,16 +1016,18 @@ T2A.filter_mspct <- function(x, action = "add", byref = FALSE, ...) {
 #' @param x an R object
 #' @param action a character string
 #' @param byref logical indicating if new object will be created by reference or by copy of x
+#' @param ... not used in current version
+#'
 #' @export e2q
 #' @family quantity conversion functions
 #'
-e2q <- function(x, action, byref) UseMethod("e2q")
+e2q <- function(x, action, byref, ...) UseMethod("e2q")
 
 #' @describeIn e2q Default method
 #'
 #' @export
 #'
-e2q.default <- function(x, action="add", byref=FALSE) {
+e2q.default <- function(x, action="add", byref=FALSE, ...) {
   return(NA)
 }
 
@@ -1029,7 +1035,7 @@ e2q.default <- function(x, action="add", byref=FALSE) {
 #'
 #' @export
 #'
-e2q.source_spct <- function(x, action="add", byref=FALSE) {
+e2q.source_spct <- function(x, action="add", byref=FALSE, ...) {
   if (byref) {
     name <- substitute(x)
   } else {
@@ -1056,7 +1062,7 @@ e2q.source_spct <- function(x, action="add", byref=FALSE) {
 #'
 #' @export
 #'
-e2q.response_spct <- function(x, action="add", byref=FALSE) {
+e2q.response_spct <- function(x, action="add", byref=FALSE, ...) {
   if (byref) {
     name <- substitute(x)
   } else {
@@ -1104,16 +1110,18 @@ e2q.response_mspct <- function(x, action = "add", byref = FALSE, ...) {
 #' @param x an R object
 #' @param action a character string
 #' @param byref logical indicating if new object will be created by reference or by copy of x
+#' @param ... not used in current version
+#'
 #' @export q2e
 #' @family quantity conversion functions
 #'
-q2e <- function(x, action, byref) UseMethod("q2e")
+q2e <- function(x, action, byref, ...) UseMethod("q2e")
 
 #' @describeIn q2e Default method
 #'
 #' @export
 #'
-q2e.default <- function(x, action="add", byref=FALSE) {
+q2e.default <- function(x, action="add", byref=FALSE, ...) {
   return(NA)
 }
 
@@ -1121,7 +1129,7 @@ q2e.default <- function(x, action="add", byref=FALSE) {
 #'
 #' @export
 #'
-q2e.source_spct <- function(x, action="add", byref=FALSE) {
+q2e.source_spct <- function(x, action="add", byref=FALSE, ...) {
   if (byref) {
     name <- substitute(x)
   } else {
@@ -1148,7 +1156,7 @@ q2e.source_spct <- function(x, action="add", byref=FALSE) {
 #'
 #' @export
 #'
-q2e.response_spct <- function(x, action="add", byref=FALSE) {
+q2e.response_spct <- function(x, action="add", byref=FALSE, ...) {
   if (byref) {
     name <- substitute(x)
   } else {
