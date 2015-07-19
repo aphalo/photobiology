@@ -12,7 +12,7 @@
 #'
 #' @return A summary object matching the class of \code{object}.
 #'
-#' @export
+#' @method summary generic_spct
 #'
 summary.generic_spct <- function(object, digits = max(3, getOption("digits")-3), ...) {
   z <- c(
@@ -27,7 +27,7 @@ summary.generic_spct <- function(object, digits = max(3, getOption("digits")-3),
   return(z)
 }
 
-#' @export
+#' @method summary cps_spct
 #' @rdname summary.generic_spct
 #'
 summary.cps_spct <- function(object, digits = max(3, getOption("digits")-3), ...) {
@@ -51,7 +51,7 @@ summary.cps_spct <- function(object, digits = max(3, getOption("digits")-3), ...
 #'
 #' @param time.unit character or lubridate::duration
 #'
-#' @export
+#' @method summary source_spct
 #' @rdname summary.generic_spct
 #'
 summary.source_spct <- function(object,
@@ -106,7 +106,7 @@ summary.source_spct <- function(object,
 
 # @describeIn summary.generic_spct Summary of a \code{filter_spct} object.
 #'
-#' @export
+#' @method summary filter_spct
 #' @rdname summary.generic_spct
 #'
 summary.filter_spct <- function(object, digits = max(3, getOption("digits")-3), ...) {
@@ -152,7 +152,7 @@ summary.filter_spct <- function(object, digits = max(3, getOption("digits")-3), 
 
 # @describeIn summary.generic_spct Summary of a "reflector_spct" object.
 #'
-#' @export
+#' @method summary reflector_spct
 #' @rdname summary.generic_spct
 #'
 summary.reflector_spct <- function(object, digits = max(3, getOption("digits")-3), ...) {
@@ -177,7 +177,7 @@ summary.reflector_spct <- function(object, digits = max(3, getOption("digits")-3
 
 # @describeIn summary.generic_spct Summary of a \code{filter_spct} object.
 #'
-#' @export
+#' @method summary object_spct
 #' @rdname summary.generic_spct
 #'
 summary.object_spct <- function(object, digits = max(3, getOption("digits")-3), ...) {
@@ -207,7 +207,7 @@ summary.object_spct <- function(object, digits = max(3, getOption("digits")-3), 
 
 # @describeIn summary.generic_spct Summary of a "response_spct" object.
 #'
-#' @export
+#' @method summary response_spct
 #' @rdname summary.generic_spct
 #'
 summary.response_spct <- function(object,
@@ -266,7 +266,7 @@ summary.response_spct <- function(object,
 
 # @describeIn summary.generic_spct Summary of a "chroma_spct" object.
 #'
-#' @export
+#' @method summary chroma_spct
 #' @rdname summary.generic_spct
 #'
 summary.chroma_spct <- function(object, digits = max(3, getOption("digits")-3), ...) {
@@ -287,7 +287,6 @@ summary.chroma_spct <- function(object, digits = max(3, getOption("digits")-3), 
   class(z) <- c("summary_chroma_spct", class(z))
   return(z)
 }
-
 
 # Print spectral summaries ------------------------------------------------
 
@@ -552,8 +551,10 @@ color.source_spct <- function(x, ...) {
 #  x.name <- as.character(substitute(x))
   x.name <- "source"
   q2e(x, byref=TRUE)
-  color <- c(s_e_irrad2rgb(x[["w.length"]], x[["s.e.irrad"]], sens=ciexyzCMF2.spct, color.name=paste(x.name, "CMF")),
-             s_e_irrad2rgb(x[["w.length"]], x[["s.e.irrad"]], sens=ciexyzCC2.spct, color.name=paste(x.name, "CC")))
+  color <- c(s_e_irrad2rgb(x[["w.length"]], x[["s.e.irrad"]],
+                           sens=ciexyzCMF2.spct, color.name=paste(x.name, "CMF")),
+             s_e_irrad2rgb(x[["w.length"]], x[["s.e.irrad"]],
+                           sens=ciexyzCC2.spct, color.name=paste(x.name, "CC")))
   return(color)
 }
 
@@ -568,9 +569,9 @@ color.source_spct <- function(x, ...) {
 #' @export
 #' @family wavelength summaries
 #'
-range.generic_spct <- function(..., na.rm=FALSE) {
-  x <- c(...)
-  return(range(x[["w.length"]], na.rm=na.rm))
+range.generic_spct <- function(..., na.rm = FALSE) {
+  x <- list(...)[[1]]
+  range(x[["w.length"]], na.rm = na.rm)
 }
 
 #' "max" function for spectra
@@ -583,8 +584,8 @@ range.generic_spct <- function(..., na.rm=FALSE) {
 #' @family wavelength summaries
 #'
 max.generic_spct <- function(..., na.rm=FALSE) {
-  x <- c(...)
-  return(max(x[["w.length"]], na.rm=na.rm))
+  x <- list(...)[[1]]
+  max(x[["w.length"]], na.rm=na.rm)
 }
 
 #' "min" function for spectra
@@ -596,9 +597,9 @@ max.generic_spct <- function(..., na.rm=FALSE) {
 #' @export
 #' @family wavelength summaries
 #'
-min.generic_spct <- function(..., na.rm=FALSE) {
-  x <- c(...)
-  return(min(x[["w.length"]], na.rm=na.rm))
+min.generic_spct <- function(..., na.rm = FALSE) {
+  x <- list(...)[[1]]
+  min(x[["w.length"]], na.rm = na.rm)
 }
 
 #' Generic function
@@ -617,7 +618,7 @@ stepsize.default <- function(x, ...) {
   return(range(diff(x)))
 }
 
-#' @describeIn stepsize  Method for "generic_spct" objects for generic function.
+#' @describeIn stepsize  Method for "generic_spct" objects.
 #'
 #' @export
 #'
@@ -628,6 +629,28 @@ stepsize.generic_spct <- function(x, ...) {
   range(diff(x[["w.length"]]))
 }
 
+
+#' @describeIn spread  Method for "generic_spct" objects.
+#'
+#' @export
+#'
+#' @examples
+#' spread(sun.spct)
+#'
+spread.generic_spct <- function(x, ...) {
+  spread(x[["w.length"]])
+}
+
+#' @describeIn midpoint Method for "generic_spct" objects.
+#'
+#' @export
+#'
+#' @examples
+#' midpoint(sun.spct)
+#'
+midpoint.generic_spct <- function(x, ...) {
+  midpoint(x[["w.length"]])
+}
 
 # Labels ------------------------------------------------------------------
 

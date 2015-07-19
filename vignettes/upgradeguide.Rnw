@@ -142,6 +142,9 @@ through formal parameter \texttt{f}.
 help automate reading of \emph{old} objects in future updates. It will also allow
 the detection of lost attributes.
 
+The new \texttt{generic\_mspct} objects have an atribute \texttt{"mspct.version"}
+which allows the detection of lost attributes.
+
 \section{Checking if an object is an \emph{old spectrum}}
 
 Function \texttt{is.old\_spct} can be used to query if an R object is a spectral
