@@ -71,6 +71,7 @@ max.waveband <- function(..., na.rm = FALSE) {
 #' A function that returns the wavelength at the center of the wavelength range.
 #'
 #' @param x an R object
+#' @param ... not used in current version
 #' @export midpoint
 #'
 #' @return A numeric value equal to (max(x) - min(x)) / 2. In the case of spectral
@@ -79,7 +80,7 @@ max.waveband <- function(..., na.rm = FALSE) {
 #'
 #' @family wavelength summaries
 #'
-midpoint <- function(x) UseMethod("midpoint")
+midpoint <- function(x, ...) UseMethod("midpoint")
 
 #' @describeIn midpoint Default method for generic function
 #'
@@ -87,7 +88,7 @@ midpoint <- function(x) UseMethod("midpoint")
 #'
 #' @family wavelength summaries
 #'
-midpoint.default <- function(x) {
+midpoint.default <- function(x, ...) {
   return(min(x) + (max(x) - min(x)) / 2)
 }
 
@@ -95,7 +96,7 @@ midpoint.default <- function(x) {
 #'
 #' @export
 #'
-midpoint.waveband <- function(x) {
+midpoint.waveband <- function(x, ...) {
   return(x$low + (x$high - x$low) / 2)
 }
 
@@ -106,6 +107,7 @@ midpoint.waveband <- function(x) {
 #' A function that returns the spread (max(x) - min(x)) for R objects.
 #'
 #' @param x an R object
+#' @param ... not used in current version
 #'
 #' @return A numeric value equal to max(x) - min(x). In the case of spectral
 #'   objects wavelength difference in nm. For any other R object, according to
@@ -113,13 +115,13 @@ midpoint.waveband <- function(x) {
 #'
 #' @export spread
 #'
-spread <- function(x) UseMethod("spread")
+spread <- function(x, ...) UseMethod("spread")
 
 #' @describeIn spread Default method for generic function
 #'
 #' @export
 #'
-spread.default <- function(x) {
+spread.default <- function(x, ...) {
   return(max(x) - min(x))
 }
 
@@ -127,7 +129,7 @@ spread.default <- function(x) {
 #'
 #' @export
 #'
-spread.waveband <- function(x) {
+spread.waveband <- function(x, ...) {
   return(x$high - x$low)
 }
 

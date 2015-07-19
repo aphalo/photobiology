@@ -6,11 +6,11 @@
 #' Same as \code{rbindlist} from package data.table but preserves class of
 #' spectral objects. Has different defaults for use names and fill.
 #'
-#' @param l A list containing \code{source_spct}, \code{filter_spct},
-#'   \code{reflector_spct}, \code{response_spct}, \code{chroma_spct},
-#'   \code{cps_spct}, \code{generic_spct}, \code{data.table}, \code{data.frame}
-#'   or \code{list} objects. At least one of the inputs should have column names
-#'   set. \code{\dots} is the same but you pass the objects by name separately.
+#' @param l A \code{source_mspct}, \code{filter_mspct}, \code{reflector_mspct},
+#'   \code{response_mspct}, \code{chroma_mspct}, \code{cps_mspct},
+#'   \code{generic_mspct} object or a list containing \code{source_spct},
+#'   \code{filter_spct}, \code{reflector_spct}, \code{response_spct},
+#'   \code{chroma_spct}, \code{cps_spct}, or \code{generic_spct} objects.
 #'
 #' @param use.names logical If \code{TRUE} items will be bound by matching
 #'   column names. By default \code{TRUE} for \code{rbindspct}. Columns with
@@ -23,25 +23,22 @@
 #'   and all items of the input list have to have non-null column names.
 #'
 #' @param idfactor logical or character Generates an index column of
-#'   \code{factor} type. Default (\code{FALSE}) is not to. If
-#'   \code{idfactor=TRUE} then the column is auto named \code{spct.idx}.
-#'   Alternatively the column name can be directly provided to \code{idfactor}.
+#'   \code{factor} type. Default (\code{TRUE}) is to for both lists and
+#'   \code{_mspct} objects. If \code{idfactor=TRUE} then the column is auto
+#'   named \code{spct.idx}. Alternatively the column name can be directly
+#'   provided to \code{idfactor} as a character string.
 #'
-#' @details Each item of \code{l} can be a spectrum, \code{data.table},
-#' \code{data.frame} or \code{list}, including \code{NULL} (skipped) or an empty
-#' object (0 rows). \code{rbindspc} is most useful when there are a variable
-#' number of (potentially many) objects to stack. \code{rbind} (not implemented
-#' yet for spectra) however is most useful to stack two or three objects which
-#' you know in advance. \code{rbindspct} always returns at least a
-#' \code{generic_spct} as long as all elements in l are spectra, otherwise a
-#' \code{data.frame} is returned even when stacking a \code{list} with a
-#' \code{data.frame}, for example. The difference between \code{rbindspct(l)}
-#' and \code{rbindlist(l)} from package \pkg{data.table} is in their
-#' \emph{default value for formal argument} \code{use.names}, and in that
-#' \code{rbindlist} will NOT return a spct object even when the list l contains
-#' only spct objects. In other words it drops derived classes, so its use should
-#' be avoided for spectral objects, and \code{rbindspct(l)} should be always
-#' used when working with spectral objects.
+#' @details Each item of \code{l} should be a spectrum, including \code{NULL}
+#'   (skipped) or an empty object (0 rows). \code{rbindspc} is most useful when
+#'   there are a variable number of (potentially many) objects to stack.
+#'   \code{rbindspct} always returns at least a \code{generic_spct} as long as
+#'   all elements in l are spectra. The main difference between
+#'   \code{rbindspct(l)} and \code{rbindlist(l)} from package \pkg{data.table}
+#'   is in their \emph{default value for formal arguments} \code{use.names}, and
+#'   in that \code{rbindlist} will NOT return a spct object even when the list l
+#'   contains only spct objects. In other words it drops derived classes, so its
+#'   use should be avoided for spectral objects, and \code{rbindspct(l)} should
+#'   be always used when working with spectral objects.
 #'
 #' @note Note that any additional 'user added' attributes that might exist on
 #'   individual items of the input list would not be preserved in the result.
@@ -49,10 +46,10 @@
 #'   if they are not consistent accross the bound spectral objetcs, a warning is
 #'   issued.
 #'
-#' @return An spectral object of a type common to all bound items or a
-#'   \code{data.table} containing a concatenation of all the items passed in. If
-#'   the argument 'add.factor' is true, then a factor 'spct.idx' will be added
-#'   to the returned spectral object.
+#' @return An spectral object of a type common to all bound items containing a
+#'   concatenation of all the items passed in. If the argument 'idfactor' is
+#'   TRUE, then a factor 'spct.idx' will be added to the returned spectral
+#'   object.
 #'
 #' @export
 #'
@@ -61,7 +58,7 @@
 #' @note data.table::rbindlist is called internally and the result returned is
 #'   the highest class in the inheritance hierachy which is common to all
 #'   elements in the list. If not all members of the list belong to one of the
-#'   \code{.spct} classes, an error is triggered. The function sets all data in
+#'   \code{_spct} classes, an error is triggered. The function sets all data in
 #'   \code{source_spct} and \code{response_spct} objects supplied as arguments
 #'   into energy-based quantities, and all data in \code{filter_spct} objects
 #'   into transmittance before the row binding is done.
@@ -89,19 +86,24 @@
 #' head(spct)
 #' class(spct)
 #'
-rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = NULL) {
+rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
+  if ( (is.null(idfactor) && (!is.null(names(l)))) ||
+       (is.logical(idfactor) && idfactor ) ) {
+    idfactor <- "spct.idx"
+  }
+  add.idfactor <- is.character(idfactor)
+
   # original rbindlist from data.table strips attributes and sets class to data.table
   if (is.null(l) || length(l) < 1) {
     return(l)
   }
   if (!is.list(l) || is.any_spct(l) || is.waveband(l)) {
-    stop("Argument 'l' should be a list of spectra")
+    stop("Argument 'l' should be a list of spectra or an _mspct object")
     return(NULL)
   }
   # we find the lowest common class
-  # and in the same loop we make sure that all spectral data uses consistent units
-  l.class <- c( "source_spct", "filter_spct", "reflector_spct", "response_spct", "chroma_spct",
-                "generic_spct")
+  # and in the same loop we make sure that all spectral data use consistent units
+  l.class <- spct_classes()
   photon.based.input <- any(sapply(l, FUN=is_photon_based))
   absorbance.based.input <- any(sapply(l, FUN=is_absorbance_based))
   scaled.input <- sapply(l, FUN = is_scaled)
@@ -124,20 +126,15 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = NULL) {
       l[[i]] <- A2T(l[[i]], action = "replace", byref = FALSE)
     }
   }
-  for (spct in l) {
-    l.class <- intersect(l.class, class(spct))
-  }
   if (length(l.class) < 1L) {
     warning("Argument 'l' contains objects which are not spectra")
     return(NA)
   }
-  l.class <- l.class[1]
-  #  print(l.class)
-
-    names.spct <- names(l)
-  if (is.null(names.spct) || anyNA(names.spct)) {
-    names.spct <- LETTERS[1:length(l)]
+  # safer than l.class[1] which depends on order of class names in l.class
+  if (length(l.class) > 1L) {
+    l.class <- setdiff(l.class, "generic_spct")
   }
+  #  print(l.class)
 
   # Here we do the actual binding
   if (length(l) < 2) {
@@ -149,14 +146,13 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = NULL) {
     return(NULL)
   }
 
-  add.factor <- !is.null(idfactor)
-  if (add.factor) {
-    if (is.character(idfactor)) {
-      factor.name <- idfactor
-    } else {
-      factor.name <- "spct.idx"
-    }
-    ans[ , (factor.name) := factor(rep.int(names.spct, sapply(l, FUN = nrow)), levels = names.spct)]
+  names.spct <- names(l)
+  if (is.null(names.spct) || anyNA(names.spct) || length(names.spct) < length(l)) {
+    names.spct <- paste("spct", 1:length(l), sep = "_")
+  }
+  if (add.idfactor) {
+    ans[ , (idfactor) := factor(rep.int(names.spct, sapply(l, FUN = nrow)),
+                                levels = names.spct)]
   }
 
   comment.ans <- "rbindspct: concatenated comments"
@@ -165,8 +161,8 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = NULL) {
   for (i in 1:length(l)) {
     temp <- comment(l[[i]])
     comments.found <- comments.found || !is.null(temp)
-    if (add.factor) {
-      temp <- paste("\n", factor.name , "= ", names.spct[i], ":\n", comment(l[[i]]), sep="")
+    if (add.idfactor) {
+      temp <- paste("\n", idfactor , "= ", names.spct[i], ":\n", comment(l[[i]]), sep="")
     } else {
       temp <- paste("\n spectrum = ", names.spct[i], ":\n", comment(l[[i]]), sep="")
     }
@@ -188,7 +184,7 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = NULL) {
       bswfs.input <- sapply(l, FUN = getBSWFUsed)
       if (length(unique(bswfs.input)) > 1L) {
         add.bswf <- TRUE
-        bswf.used <- "unknown"
+        bswf.used <- "multiple"
         ans[ , BSWF := factor(rep.int(bswfs.input, sapply(l, FUN = nrow)), levels = bswfs.input)]
       } else {
         add.bswf <- FALSE
@@ -242,14 +238,14 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = NULL) {
   if (any(normalized.input)) {
     setattr(ans, "normalized", "TRUE")
   }
-  if (add.factor && !add.bswf) {
-    keys <- c(factor.name, "w.length")
+  if (add.idfactor && !add.bswf) {
+    keys <- c(idfactor, "w.length")
     setkeyv(ans, keys)
-  } else if (!add.factor && add.bswf) {
+  } else if (!add.idfactor && add.bswf) {
     keys <- c("BSWF", "w.length")
     setkeyv(ans, keys)
-  } else if (add.factor && add.bswf) {
-    keys <- c("BSWF", factor.name, "w.length")
+  } else if (add.idfactor && add.bswf) {
+    keys <- c("BSWF", idfactor, "w.length")
     setkeyv(ans, keys)
   } # else we keep the default "w.length"
   if (!is.null(comment.ans)) setattr(ans, "comment", comment.ans)

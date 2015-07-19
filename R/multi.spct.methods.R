@@ -1,54 +1,86 @@
-#' Multi-sppct summary methods
+#' Multi-spct transform methods
+#'
+#' Apply a function returning an object of the same class as its first argument.
+#'
+#' @param mspct an object of class generic_mspct or a derived class
+#' @param f a function
+#' @param ... other arguments passed to f
+#'
+#' @return an object of the same class as mspct
+#'
+#' @export
+#'
+mutate_mspct <- function(mspct, f, ...) {
+  stopifnot(is.any_mspct(mspct))
+  mspct.class <- class(mspct)[1]
+
+  y <- llply(mspct, f, ...)
+
+  stopifnot(length(y) == length(mspct))
+
+  generic_mspct(l = y,
+                class = mspct.class,
+                byrow = attr(mspct, "byrow", exact = TRUE),
+                ncol = ncol(mspct))
+}
+
+#' Multi-spct summary methods
 #'
 #' Functions
 #'
 #' @param mspct an object of class generic_mspct or a derived class
 #' @param f a function
-#' @param ... other arguments passed to irrad.source.spct
+#' @param ... other arguments passed to f
 #' @param idx logical whether to add a column with the names of the elements of mspct
+#'
+#' @return a data frame
 #'
 #' @export
 #'
-f_mspct <- function(mspct, f, ..., idx = !is.null(names(mspct))) {
-  z0 <- lapply(mspct, f, ...)
-  z <- unlist(z0, recursive = FALSE, use.names = FALSE)
+f_mspct <- function(mspct, f, ..., idx = NULL) {
+  stopifnot(is.any_mspct(mspct))
 
-  nspct <- length(mspct)
-  nz <- length(z)
-  nqty <- nz %/% nspct
-  nrow <- nspct
-  ncol <- nqty
-  stopifnot(nz %% nqty == 0)
-  stopifnot(ncol > 0)
-  stopifnot(nrow > 0)
-
-  namesz <- names(z0[[1]])
-  if (is.null(namesz) && nqty > 1) {
-    namesz <- as.character(1:nqty)
+  if ( (is.logical(idx) && idx) ||
+       (is.null(idx) && !any(is.null(names(mspct)))) ) {
+    idx <- "spct.idx"
   }
 
-  rows <- rep(1:nrow)
+  z <- plyr::ldply(.data = mspct,
+                   .fun = f,
+                   ...,
+                   .id = idx )
 
-  if (nz / nspct > 1) {
-    z <- matrix(z, ncol = ncol, byrow = TRUE)
+  f.name <- as.character(substitute(f))
+
+  if (f.name %in% c("min", "max", "range", "spread", "midpoint", "stepsize")) {
+    qty.names <- switch(f.name,
+                        min = "min.wl",
+                        max = "max.wl",
+                        range = c("min.wl", "max.wl"),
+                        spread = "spread.wl",
+                        midpoint = "midpoint.wl",
+                        stepsize = c("min.step.wl", "max.step.wl") )
+  } else {
+    qty.names <- paste(f.name,
+                       gsub(" ", "", names(z)[-1]),
+                       sep = "_")
   }
 
-  if (idx) {
-    namesspct <- names(mspct)
+  setattr(z, "names", c(names(z)[1], qty.names))
+
+  mspct.nrow <- nrow(mspct)
+  mspct.ncol <- ncol(mspct)
+
+  if (mspct.ncol > 1) {
+    if (byrow) {
+      z$col <- rep(1:mspct.ncol, mspct.nrow)
+      z$row <- rep(1:mspct.nrow, rep(mspct.col, mspct.nrow))
+    } else {
+      z$col <- rep(1:mspct.ncol, rep(mspct.nrow, mspct.ncol))
+      z$row <- rep(1:mspct.nrow, mspct.col)
+    }
   }
-
-  if (!idx || is.null(namesspct)) {
-    namesspct <- as.character(1:nspct)
-  }
-
-  df <- data.frame(spct.idx = namesspct, z = z)
-
-  qty.names <- paste(as.character(substitute(f)),
-                     gsub(" ", "", namesz),
-                     sep = ifelse(is.null(namesz), "", "_"))
-
-  setnames(df, (2:(nqty + 1)), qty.names)
-  df
+  z
 }
 
 # generic_mspct methods -----------------------------------------------
@@ -60,7 +92,7 @@ f_mspct <- function(mspct, f, ..., idx = !is.null(names(mspct))) {
 #' @rdname  range.generic_spct
 #'
 range.generic_mspct <- function(..., na.rm = FALSE, idx = NULL) {
-  mspct <- c(...)
+  mspct <- list(...)[[1]]
   if (is.null(idx)) {
     idx <- !is.null(names(mspct))
   }
@@ -74,7 +106,7 @@ range.generic_mspct <- function(..., na.rm = FALSE, idx = NULL) {
 #' @rdname  min.generic_spct
 #'
 min.generic_mspct <- function(..., na.rm = FALSE, idx = NULL) {
-  mspct <- c(...)
+  mspct <- list(...)[[1]]
   if (is.null(idx)) {
     idx <- !is.null(names(mspct))
   }
@@ -88,21 +120,41 @@ min.generic_mspct <- function(..., na.rm = FALSE, idx = NULL) {
 #' @rdname  max.generic_spct
 #'
 max.generic_mspct <- function(..., na.rm = FALSE, idx = NULL) {
-  mspct <- c(...)
+  mspct <- list(...)[[1]]
   if (is.null(idx)) {
     idx <- !is.null(names(mspct))
   }
   f_mspct(mspct = mspct, f = max, ..., na.rm = na.rm, idx = idx)
 }
 
-#' @describeIn stepsize  Method for "generic_mspct" objects for generic function.
+#' @describeIn stepsize  Method for "generic_mspct" objects.
 #'
-##' @param idx logical whether to add a column with the names of the elements of spct
+#' @param idx logical whether to add a column with the names of the elements of spct
 #'
 #' @export
 #'
 stepsize.generic_mspct <- function(x, ..., idx = !is.null(names(x))) {
   f_mspct(mspct = x, f = stepsize, ..., idx = idx)
+}
+
+#' @describeIn spread  Method for "generic_mspct" objects.
+#'
+#' @param idx logical whether to add a column with the names of the elements of spct
+#'
+#' @export
+#'
+spread.generic_mspct <- function(x, ..., idx = !is.null(names(x))) {
+  f_mspct(mspct = x, f = spread, ..., idx = idx)
+}
+
+#' @describeIn midpoint Method for "generic_mspct" objects.
+#'
+#' @param idx logical whether to add a column with the names of the elements of spct
+#'
+#' @export
+#'
+midpoint.generic_mspct <- function(x, ..., idx = !is.null(names(x))) {
+  f_mspct(mspct = x, f = midpoint, ..., idx = idx)
 }
 
 # source_mspct methods -----------------------------------------------
@@ -125,11 +177,11 @@ irrad.source_mspct <-
            allow.scaled = FALSE,
            ...,
            idx = !is.null(names(spct))) {
-  f_mspct(mspct = spct, f = irrad,
-               w.band = w.band, unit.out = unit.out,
-               wb.trim = wb.trim, use.cached.mult = use.cached.mult,
-               use.hinges = use.hinges, allow.scaled = allow.scaled, idx = idx)
-}
+    f_mspct(mspct = spct, f = irrad,
+            w.band = w.band, unit.out = unit.out,
+            wb.trim = wb.trim, use.cached.mult = use.cached.mult,
+            use.hinges = use.hinges, allow.scaled = allow.scaled, idx = idx)
+  }
 
 #' @describeIn q_irrad  Calculates photon (quantum) irradiance from a
 #'   \code{source_mspct} object.
@@ -574,4 +626,54 @@ e_response.response_mspct <-
                  use.hinges = use.hinges,
                  idx = idx)
   }
+
+#' Get the "mspct.version" attribute
+#'
+#' Funtion to read the "mspct.version" attribute of an existing generic_spct
+#' object.
+#'
+#' @param x a generic_mspct object
+#'
+#' @return numeric value
+#'
+#' @note if x is not a \code{generic_spct} object, \code{NA} is returned,
+#'   and if it the attribute is missing, zero is returned with a warning.
+#'
+#' @export
+#'
+getMspctVersion <- function(x) {
+  if (is.any_spct(x)) {
+    version <- attr(x, "spct.version", exact = TRUE)
+    if (is.null(version)) {
+      # need to handle objects created with old versions
+      version <- 0L
+    }
+  } else {
+    version <- NA
+  }
+  version
+}
+
+#' Check that the "mspct.version" attribute is set
+#'
+#' Funtion to check the "mspct.version" attribute of an existing generic_spct
+#' object.
+#'
+#' @param x a generic_mspct object
+#'
+#' @return numeric value
+#'
+#' @note if x is not a \code{generic_mspct} object, \code{NA} is returned,
+#'   and if it the attribute is missing, zero is returned with a warning.
+#'
+#' @keywords internal
+#'
+checkMspctVersion <- function(x) {
+  version <- getMspctVersion(x)
+  stopifnot(!is.na(version))
+  if (version < 1L) {
+    warning("The object '", as.character(substitute(x)),
+            "' is corrupted")
+  }
+}
 
