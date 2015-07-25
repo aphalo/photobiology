@@ -6,6 +6,9 @@
 #'
 #' @return A \code{character} vector of class names.
 #'
+#' @examples
+#' mspct_classes()
+#'
 mspct_classes <- function() {
   c("cps_mspct",
     "filter_mspct", "reflector_mspct",
