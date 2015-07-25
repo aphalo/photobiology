@@ -34,7 +34,7 @@ oper.e.generic_spct <- function(e1, e2, oper) {
   if (class1 == "cps_spct") {
     if (is.numeric(e2)) {
     z <- e1
-    z[["cps"]] <- oper(z[["cp"]], e2)]
+    z[["cps"]] <- oper(z[["cps"]], e2)
     return(z)
     } else if (class2 == "cps_spct") {
       z <- oper_spectra(e1$w.length, e2$w.length, e1$cps, e2$cps, bin.oper=oper, trim="intersection")
@@ -470,7 +470,7 @@ oper.q.generic_spct <- function(e1, e2, oper) {
         if (exists("A", z, inherits = FALSE)) {
           z[["A"]] <- NULL
         }
-        z[["Tfr"]] <- oper(z[["Tfr"]], e2)]
+        z[["Tfr"]] <- oper(z[["Tfr"]], e2)
         return(z)
       } else if (class2 == "source_spct") {
         e2q(e2, action = "add", byref = TRUE)
@@ -495,7 +495,7 @@ oper.q.generic_spct <- function(e1, e2, oper) {
         if (exists("Tfr", z, inherits = FALSE)) {
           z[["Tfr"]] <- NULL
         }
-        z[["A"]] <- oper(z[["A"]], e2)]
+        z[["A"]] <- oper(z[["A"]], e2)
         return(z)
       } else if (class2 == "source_spct") {
         e2q(e2, action = "add", byref = TRUE)
@@ -543,7 +543,7 @@ oper.q.generic_spct <- function(e1, e2, oper) {
       if (exists("s.e.response", z, inherits = FALSE)) {
         z[["s.e.response"]] <- NULL
       }
-      z["s.q.response"]] <- oper(z[["s.q.response"]], e2)
+      z[["s.q.response"]] <- oper(z[["s.q.response"]], e2)
       return(z)
     }  else if (class2 == "response_spct") {
       z <- oper_spectra(e1$w.length, e2$w.length, e1$s.q.response, e2$s.q.response, bin.oper=oper, trim="intersection")
@@ -594,7 +594,7 @@ oper.q.generic_spct <- function(e1, e2, oper) {
       if (exists("s.e.irrad", z, inherits = FALSE)) {
         z[["s.e.irrad"]] <- NULL
       }
-      z[["s.q.irrad"] <- oper(e1, z[["s.q.irrad"]])
+      z[["s.q.irrad"]] <- oper(e1, z[["s.q.irrad"]])
       return(z)
     } else if (class2 == "filter_spct") {
       filter.quantity <- getOption("photobiology.filter.qty", default="transmittance")
@@ -769,13 +769,13 @@ oper.q.generic_spct <- function(e1, e2, oper) {
 f_dispatcher_spct <- function(x, f, ...) {
   if (is.cps_spct(x)) {
     z <- x
-    z[["cps"]] <- f(z[["cps"]], ...)]
+    z[["cps"]] <- f(z[["cps"]], ...)
     return(z)
   } else if (is.filter_spct(x)) {
     filter.qty <- getOption("photobiology.filter.qty", default="transmittance")
     if (filter.qty == "transmittance") {
       z <- A2T(x, action = "replace", byref = FALSE)
-      z[["Tfr"] <- f(z[["Tfr"]], ...)
+      z[["Tfr"]] <- f(z[["Tfr"]], ...)
     } else if (filter.qty == "absorbance") {
       z <- T2A(x, action = "replace", byref = FALSE)
       z[["A"]] <- f(z[["A"]], ...)
@@ -785,13 +785,13 @@ f_dispatcher_spct <- function(x, f, ...) {
     return(z)
   } else if(is.reflector_spct(x)) {
     z <- x
-    z[["Rfr"]] <- f(z[["Rfr"]], ...)]
+    z[["Rfr"]] <- f(z[["Rfr"]], ...)
     return(z)
   } else if(is.source_spct(x)) {
     unit <- getOption("photobiology.radiation.unit", default="energy")
     if (unit == "energy") {
       z <- q2e(x, action = "replace", byref = FALSE)
-      z[["s.e.irrad"]] <- f(z[["s.e.irrad"]], ...)]
+      z[["s.e.irrad"]] <- f(z[["s.e.irrad"]], ...)
       return(z)
     } else if (unit == "photon" || unit == "quantum") {
       z <- e2q(x, action = "replace", byref = FALSE)
@@ -976,7 +976,7 @@ T2A.filter_spct <- function(x, action="add", byref=FALSE, ...) {
   if (exists("A", x, inherits=FALSE)) {
     NULL
   } else if (exists("Tfr", x, inherits=FALSE)) {
-    x[["A"]] <- -log10(x[["Tfr"]]
+    x[["A"]] <- -log10(x[["Tfr"]])
   } else {
     x[["A"]] <- NA
   }
@@ -1130,7 +1130,7 @@ q2e.source_spct <- function(x, action="add", byref=FALSE, ...) {
   if (exists("s.e.irrad", x, inherits=FALSE)) {
     NULL
   } else if (exists("s.q.irrad", x, inherits=FALSE)) {
-    x[["s.e.irrad"]] <- x[["s.q.irrad"]] / e2qmol_multipliers(z[["w.length"]]
+    x[["s.e.irrad"]] <- x[["s.q.irrad"]] / e2qmol_multipliers(z[["w.length"]])
   } else {
     x[["s.e.irrad"]] <- NA
   }

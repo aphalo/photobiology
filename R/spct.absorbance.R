@@ -113,7 +113,7 @@ absorbance_spct <-
     if (use.hinges) {
       all.hinges <- NULL
       for (wb in w.band) {
-        if (!is.null(wb$hinges) & length(wb[["hinges"]]>0) {
+        if (!is.null(wb$hinges) & length(wb[["hinges"]]>0)) {
           all.hinges <- c(all.hinges, wb[["hinges"]])
         }
       }
