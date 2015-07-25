@@ -1,7 +1,7 @@
 #' Calculate photon (quantum) irradiance from spectral (energy) irradiance.
 #'
-#' This function gives the energy irradiance for a given waveband of a radiation
-#' spectrum.
+#' This function returns the energy irradiance for a given waveband of a
+#' radiation spectrum.
 #'
 #' @param w.length numeric Vector of wavelength (nm)
 #' @param s.irrad numeric Corresponding vector of spectral (energy) irradiances
