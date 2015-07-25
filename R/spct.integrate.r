@@ -135,7 +135,7 @@ interpolate_spct <- function(spct, w.length.out=NULL, fill.value=NA, length.out=
     }
   }
   w.length.out <- unique(sort(w.length.out))
-  new.spct <- data.table(w.length = w.length.out)
+  new.spct <- dplyr:data_frame(w.length = w.length.out)
 
   for (data.col in names.data) {
     temp.values <-  with(spct, get(data.col))
@@ -145,7 +145,7 @@ interpolate_spct <- function(spct, w.length.out=NULL, fill.value=NA, length.out=
                                          w.length.out,
                                          fill.value)
       #      new.spct[ , as.character(eval(expression(data.col))) := new.values]
-      new.spct[ , eval(data.col) := new.values]
+      new.spct[[data.col]] <- new.values
     }
   }
   setattr(new.spct, "comment", comment.spct)

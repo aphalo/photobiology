@@ -185,7 +185,7 @@ peaks.default <- function(x, span, ignore_threshold, strict, ...) {
 #' @describeIn peaks Default function usable on numeric vectors.
 #' @export
 peaks.numeric <- function(x, span = 5, ignore_threshold, strict = TRUE, ...) {
-  x[splus2R::peaks(x = x, span = span, strict = strict)]
+  splus2R::peaks(x = x, span = span, strict = strict)
 }
 
 #' @describeIn peaks  Method for "generic_spct" objects for generic function.

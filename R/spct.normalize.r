@@ -35,20 +35,20 @@ normalize_spct <- function(spct, range, norm, var.name) {
   if (!is.null(norm)) {
     if (is.character(norm)) {
       if (norm %in% c("max", "maximum")) {
-        idx <- which.max(tmp.spct[ , unlist(.SD), .SDcols = var.name])
+        idx <- which.max(tmp.spct[[var.name]])
       } else if (norm %in% c("min", "minimum")) {
-        idx <- which.min(tmp.spct[ , unlist(.SD), .SDcols = var.name])
+        idx <- which.min(tmp.spct[[var.name]])
       } else {
         warning("Invalid character '", norm, "'value in 'norm'")
         idx <- NA
       }
-      scale.factor <- 1 / as.numeric(tmp.spct[idx, .SD, .SDcols = var.name])
+      scale.factor <- 1 / as.numeric(tmp.spct[idx, var.name])
       norm <- tmp.spct[idx, w.length]
     } else if (is.numeric(norm)) {
       if (norm >= min(tmp.spct) && norm <= max(tmp.spct)) {
-        tmp.spct <- tmp.spct[ , .SD, .SDcols = c("w.length", var.name)]
+        tmp.spct <- tmp.spct[ , c("w.length", var.name)]
         setattr(tmp.spct, "class", class(spct))
-        scale.factor <- 1 / interpolate_spct(tmp.spct, norm)[ , unlist(.SD), .SDcols = var.name]
+        scale.factor <- 1 / interpolate_spct(tmp.spct, norm)[ , var.name]
       } else {
         warning("'norm = ", norm, "' value outside spectral data range of ",
                 round(min(tmp.spct), 1), " to ", round(max(tmp.spct), 1), " (nm)")
@@ -61,8 +61,8 @@ normalize_spct <- function(spct, range, norm, var.name) {
     scale.factor <- 1 # implemented in this way to ensure that all returned
     # values folow the same copy/reference semantics
   }
-  out.spct <- copy(spct)
-  out.spct[ , var.name := out.spct[ , unlist(.SD), .SDcols = var.name] * scale.factor, with = FALSE]
+#  out.spct <- copy(spct)
+  out.spct[[var.name]] <- out.spct[ , var.name] * scale.factor
   setattr(out.spct, "class", class(spct))
   setattr(out.spct, "comment", comment(spct))
   setattr(out.spct, "normalized", norm)

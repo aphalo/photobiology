@@ -102,13 +102,13 @@ absorptance_spct <-
       Afr.type <- Tfr.type
       Rfr.type <- "unknown" # otherwise NA would require special handling
       A2T(spct, action = "add", byref = TRUE)
-      spct[ , Afr := 1 - Tfr]
+      spct[["Afr"]] <- 1 - spct[["Tfr"]]
     } else if (Tfr.type == "total" && Rfr.type == "total") {
       Afr.type <- "total"
-      spct[ , Afr := 1 - Tfr - Rfr]
+      spct[["Afr"]] <- 1 - spct[["Tfr"]] - spct[["Rfr"]]
     } else if (Tfr.type == "internal" && Rfr.type == "total") {
       Afr.type <- "total"
-      spct[ , Afr := (1 - Tfr) * (1 - Rfr)]
+      spct[["Afr"]] <- (1 - spct[["Tfr"]]) * (1 - spct[["Rfr"]])
     } else if (Tfr.type == "unknown" || Rfr.type == "unknown") {
       warning("'unknown' Tfr.type or Rfr.type, skipping absorptance calculation")
       absorptance <- NA
@@ -124,7 +124,7 @@ absorptance_spct <-
     } else {
       stop("Failed assertion with Tfr.type: ", Tfr.type, "and Rfr.type: ", Rfr.type)
     }
-    temp.spct <- spct[ , .(w.length, Afr)] # data.table removes attributes!
+    temp.spct <- spct[ , c("w.length", "Afr")] # data.frame removes attributes?
     setGenericSpct(temp.spct)
     # if the waveband is undefined then use all data
     if (is.null(w.band)){

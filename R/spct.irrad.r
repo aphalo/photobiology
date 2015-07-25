@@ -98,11 +98,6 @@ irrad.source_spct <-
       time.unit <- data.time.unit
     }
 
-    if (identical(attr(spct, ".data.table.locked"), TRUE)) {
-      spct_x <- copy(spct)
-    } else {
-      spct_x <- spct
-    }
     if (is.null(unit.out) || is.na(unit.out)){
       warning("'unit.out' set to an invalid value")
       return(NA)
@@ -159,9 +154,9 @@ irrad.source_spct <-
     # we add the missing it.
     # As spectra are passed by reference the changes propagate to the argument
     if (unit.out == "energy") {
-      q2e(spct_x, byref=TRUE)
+      q2e(spct_x, byref = TRUE)
     } else if (unit.out == "photon") {
-      e2q(spct_x, byref=TRUE)
+      e2q(spct_x, byref = TRUE)
     } else {
       stop("Unrecognized value for unit.out")
     }
@@ -497,9 +492,9 @@ fluence.source_spct <-
     }
 
     return.value <-
-      irrad_spct(spct, w.band=w.band, unit.out=unit.out, quantity="total",
-                 time.unit = exposure.time, wb.trim=wb.trim,
-                 use.cached.mult=use.cached.mult, use.hinges=use.hinges,
+      irrad_spct(spct, w.band = w.band, unit.out = unit.out, quantity = "total",
+                 time.unit = exposure.time, wb.trim = wb.trim,
+                 use.cached.mult = use.cached.mult, use.hinges = use.hinges,
                  allow.scaled = allow.scaled)
     if (unit.out %in% c("photon", "quantum")) {
       setattr(return.value, "radiation.unit", "photon fluence (mol m-2)")
@@ -579,9 +574,9 @@ q_fluence.default <- function(spct, w.band, exposure.time, wb.trim,
 q_fluence.source_spct <-
   function(spct, w.band = NULL,
            exposure.time = NA,
-           wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
+           wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
-           use.hinges=getOption("photobiology.use.hinges", default=NULL),
+           use.hinges = getOption("photobiology.use.hinges", default = NULL),
            allow.scaled = FALSE, ...) {
     if (!lubridate::is.duration(exposure.time) &&
         !is.period(exposure.time) &&
@@ -591,9 +586,9 @@ q_fluence.source_spct <-
     }
 
     return.value <-
-      irrad_spct(spct, w.band=w.band, unit.out="photon", quantity="total",
-                 time.unit = exposure.time, wb.trim=wb.trim,
-                 use.cached.mult=use.cached.mult, use.hinges=use.hinges,
+      irrad_spct(spct, w.band = w.band, unit.out = "photon", quantity = "total",
+                 time.unit = exposure.time, wb.trim = wb.trim,
+                 use.cached.mult = use.cached.mult, use.hinges = use.hinges,
                  allow.scaled = allow.scaled)
     setattr(return.value, "radiation.unit", "photon fluence (mol m-2)")
     setattr(return.value, "exposure.duration", exposure.time)
@@ -668,9 +663,9 @@ e_fluence.default <- function(spct, w.band, exposure.time, wb.trim, use.cached.m
 e_fluence.source_spct <-
   function(spct, w.band = NULL,
            exposure.time = NA,
-           wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
+           wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
-           use.hinges=getOption("photobiology.use.hinges", default=NULL),
+           use.hinges = getOption("photobiology.use.hinges", default = NULL),
            allow.scaled = FALSE, ...) {
     if (!lubridate::is.duration(exposure.time) &&
         !is.period(exposure.time) &&
@@ -679,9 +674,9 @@ e_fluence.source_spct <-
       exposure.time <- lubridate::duration(NA)
     }
     return.value <-
-      irrad_spct(spct, w.band=w.band, unit.out="energy", quantity="total",
-                 time.unit = exposure.time, wb.trim=wb.trim,
-                 use.cached.mult=use.cached.mult, use.hinges=use.hinges,
+      irrad_spct(spct, w.band = w.band, unit.out = "energy", quantity = "total",
+                 time.unit = exposure.time, wb.trim = wb.trim,
+                 use.cached.mult = use.cached.mult, use.hinges = use.hinges,
                  allow.scaled = allow.scaled)
     setattr(return.value, "radiation.unit", "energy fluence (J m-2)")
     setattr(return.value, "exposure.duration", exposure.time)

@@ -167,7 +167,7 @@ fscale_spct <- function(spct, range, var.name, f, ...) {
     # values folow the same copy/reference semantics
   }
   out.spct <- copy(spct)
-  out.spct[ , var.name := out.spct[ , unlist(.SD), .SDcols = var.name] / summary.value, with = FALSE]
+  out.spct[[var.name]] <- out.spct[[var.name]] / summary.value
   setattr(out.spct, "class", class(spct))
   setattr(out.spct, "comment", comment(spct))
   setattr(out.spct, "scaled", TRUE)

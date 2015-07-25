@@ -87,7 +87,7 @@ trim_spct <- function(spct, range=NULL, low.limit=NULL, high.limit=NULL,
       low.tail.w.length <- seq(from = low.limit, to = low.end - 1, length=low.tail.length)
       spct.top <- data.table(w.length = low.tail.w.length)
       for (data.col in names.data) {
-        spct.top[ , eval(data.col) := fill]
+        spct.top[[data.col]] <- fill
       }
       spct <- rbindlist(list(spct.top, spct))
       setGenericSpct(spct)
@@ -112,7 +112,7 @@ trim_spct <- function(spct, range=NULL, low.limit=NULL, high.limit=NULL,
       high.tail.w.length <- seq(from = high.end + 1, to = high.limit, length = high.tail.length)
       spct.bottom <- data.table(w.length = high.tail.w.length)
       for (data.col in names.data) {
-        spct.bottom[ , eval(data.col) := fill]
+        spct.bottom[[data.col]] <- fill
       }
       spct <- rbindlist(list(spct, spct.bottom))
       setGenericSpct(spct)
@@ -138,7 +138,7 @@ trim_spct <- function(spct, range=NULL, low.limit=NULL, high.limit=NULL,
   }
   else {
     for (data.col in names.data) {
-      spct[!w.length %between% trim.range, eval(data.col) := fill]
+      spct[!w.length %between% trim.range, data.col] <- fill
     }
   }
   # we use rbindlist which removes derived class attributes

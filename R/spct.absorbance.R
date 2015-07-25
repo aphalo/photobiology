@@ -81,7 +81,7 @@ absorbance_spct <-
     }
     spct <- T2A(spct, action="replace", byref=FALSE)
     Tfr.type <- getTfrType(spct)
-    spct <- spct[ , .(w.length, A)] # data.table removes attributes!
+    spct <- spct[ , c("w.length", "A")] # data.frame removes attributes?
     setTfrType(spct, Tfr.type = Tfr.type)
     # if the waveband is undefined then use all data
     if (is.null(w.band)){
@@ -113,8 +113,8 @@ absorbance_spct <-
     if (use.hinges) {
       all.hinges <- NULL
       for (wb in w.band) {
-        if (!is.null(wb$hinges) & length(wb$hinges)>0) {
-          all.hinges <- c(all.hinges, wb$hinges)
+        if (!is.null(wb$hinges) & length(wb[["hinges"]]>0) {
+          all.hinges <- c(all.hinges, wb[["hinges"]])
         }
       }
       if (!is.null(all.hinges)) {

@@ -12,7 +12,7 @@
 #' @param na.rm a logical value, if TRUE, not the default, NAs in the input are
 #'   replaced with zeros
 #'
-#' @return a dataframe with two numeric variables \item{w.length}{A numeric
+#' @return a data frame with two numeric variables \item{w.length}{A numeric
 #'   vector with the wavelengths (nm) obtained by "fusing" w.length1 and
 #'   w.length2. w.length contains all the unique vales, sorted in ascending
 #'   order.} \item{s.irrad}{A numeric vector with the sum of the two spectral

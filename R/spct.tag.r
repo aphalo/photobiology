@@ -62,7 +62,7 @@ tag.generic_spct <- function(x,
 #     w.band <- waveband(range(x))
 #   }
   if (!is.null(w.band) && is.na(w.band[1])) {
-    x[ , wl.color := w_length2rgb(x$w.length)]
+    x[["wl.color"]] <- w_length2rgb(x[["w.length"]])
     tag.data <- list(wl.color=TRUE)
     setattr(x, "spct.tags", tag.data)
     return(x)
@@ -134,14 +134,15 @@ tag.generic_spct <- function(x,
     wbs.rgb[i] <- color(wb)[1]
   }
   n <- i
-  x[ , idx := n + 1L ]
+  x[["idx"]] <- n + 1L ## seems redundant to me now!
   for (i in 1L:n) {
-    x[ w.length >= wbs.wl.low[i] & w.length < wbs.wl.high[i], idx := as.integer(i) ]
+    x[["idx"]] <- with(x, ifelse(w.length >= wbs.wl.low[i] & w.length < wbs.wl.high[i],
+                                 as.integer(i), idx))
   }
-  wl.color.tmp <- w_length2rgb(x$w.length)
-  x[ , wl.color := wl.color.tmp]
-  x[ , wb.f := factor(wbs.name[idx], levels=wbs.name) ]
-  x[ , idx := NULL]
+  wl.color.tmp <- w_length2rgb(x[["w.length"]]) ## why two steps!??
+  x[["wl.color"]] <-  wl.color.tmp
+  x[["wb.f"]] <- factor(wbs.name[idx], levels=wbs.name)
+  x[["idx"]] <- NULL
   tag.data <- list(time.unit=getTimeUnit(x),
                    wb.key.name="Bands",
                    wl.color=TRUE,
@@ -151,7 +152,7 @@ tag.generic_spct <- function(x,
                    wb.names=wbs.name[1:n],
                    wb.list=w.band)
   setattr(x, "spct.tags", tag.data)
-  # to work by reference we need to assign the new DT to the old one
+  # to work by reference we need to assign the new data frame to the old one
   if (byref & is.name(name)) {
     name <- as.character(name)
     assign(name, x, parent.frame(), inherits = TRUE)
@@ -221,7 +222,7 @@ wb2tagged_spct <-
   function(w.band, use.hinges = TRUE, short.names = TRUE, ...) {
   new.spct <- wb2spct(w.band)
   tag(new.spct, w.band, use.hinges, short.names, byref=TRUE)
-  new.spct[ , y := 0]
+  new.spct[["y"]] <- 0
   return(new.spct)
 }
 
@@ -343,8 +344,8 @@ untag.generic_spct <- function(x,
   if (!is_tagged(x)) {
     return(x)
   }
-  x[ , wl.color := NULL]
-  x[ , wb.f := NULL ]
+  x[["wl.color"]] <- NULL
+  x[["wb.f"]] <- NULL
   tag.data <- NA
   setattr(x, "spct.tags", tag.data)
   # to work by reference we need to assign the new DT to the old one

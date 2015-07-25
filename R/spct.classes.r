@@ -58,7 +58,7 @@ check.generic_spct <- function(x, byref=TRUE, strict.range=TRUE, multiple.wl = 1
     warning("No wavelength data found in generic_spct")
     x[ , w.length := NA]
   }
-  wl.min <- min(x$w.length, na.rm = TRUE)
+  wl.min <- min(x[["w.length"]], na.rm = TRUE)
 #  wl.max <- max(x$w.length, na.rm = TRUE)
   if (wl.min == Inf) {
     warning("No valid 'w.length' values, probably a spectrum of length zero")
@@ -114,8 +114,8 @@ check.cps_spct <- function(x, byref=TRUE, strict.range = TRUE, ...) {
 check.filter_spct <- function(x, byref=TRUE, strict.range = TRUE, multiple.wl = 1L, ...) {
 
   range_check <- function(x, strict.range) {
-    Tfr.min <- min(x$Tfr, na.rm = TRUE)
-    Tfr.max <- max(x$Tfr, na.rm = TRUE)
+    Tfr.min <- min(x[["Tfr"]], na.rm = TRUE)
+    Tfr.max <- max(x[["Tfr"]], na.rm = TRUE)
     if (!is.null(strict.range) & (Tfr.min < 0 || Tfr.max > 1)) {
       message.text <- paste("Off-range transmittance values [", signif(Tfr.min, 2),
                             "...", signif(Tfr.max, 2), "] instead of  [0..1]", sep="")
@@ -208,8 +208,8 @@ check.reflector_spct <- function(x, byref=TRUE, strict.range = TRUE, ...) {
 check.object_spct <- function(x, byref=TRUE, strict.range = TRUE, multiple.wl = 1L, ...) {
 
   range_check <- function(x, strict.range) {
-    Rfr.min <- min(x$Rfr, na.rm = TRUE)
-    Rfr.max <- max(x$Rfr, na.rm = TRUE)
+    Rfr.min <- min(x[["Rfr"]], na.rm = TRUE)
+    Rfr.max <- max(x[["Rfr"]], na.rm = TRUE)
     if (!is.na(Rfr.min) && !is.na(Rfr.max)) {
       if (!is.null(strict.range) & (Rfr.min < 0 ||  Rfr.max > 1)) {
         message.text <- paste0("Off-range reflectance values [", signif(Rfr.min, 2), "...",
@@ -221,8 +221,8 @@ check.object_spct <- function(x, byref=TRUE, strict.range = TRUE, multiple.wl = 
         }
       }
     }
-    Tfr.min <- min(x$Tfr, na.rm = TRUE)
-    Tfr.max <- max(x$Tfr, na.rm = TRUE)
+    Tfr.min <- min(x[["Tfr"]], na.rm = TRUE)
+    Tfr.max <- max(x[["Tfr"]], na.rm = TRUE)
     if (!is.na(Tfr.min) && !is.na(Tfr.max)) {
       if (!is.null(strict.range) & (Tfr.min < 0 ||  Tfr.max > 1)) {
       message.text <- paste0("Off-range Transmittance values [", signif(Tfr.min, 2), "...",

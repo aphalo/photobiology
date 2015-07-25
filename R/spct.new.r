@@ -42,9 +42,9 @@ source_spct <- function(w.length, s.e.irrad = NULL, s.q.irrad = NULL,
                         bswf.used = c("none", "unknown"),
                         comment = NULL, strict.range = TRUE) {
   if (is.null(s.q.irrad) && (is.numeric(s.e.irrad))) {
-    z <- data.frame(w.length, s.e.irrad)
+    z <- dplyr::data_frame(w.length, s.e.irrad)
   } else if (is.null(s.e.irrad) && (is.numeric(s.q.irrad))) {
-    z <- data.frame(w.length, s.q.irrad)
+    z <- dplyr::data_frame(w.length, s.q.irrad)
   } else {
     warning("One and only one of s.e.irrad or s.q.irrad should be different from NULL.")
     return(NA)
@@ -66,7 +66,7 @@ source_spct <- function(w.length, s.e.irrad = NULL, s.q.irrad = NULL,
 #' @export
 #'
 cps_spct <- function(w.length, cps=NULL, comment=NULL) {
-  z <- data.frame(w.length = w.length, cps = cps)
+  z <- dplyr::data_frame(w.length = w.length, cps = cps)
   if (!is.null(comment)) {
     setattr(z, "comment", comment)
   }
@@ -87,9 +87,9 @@ response_spct <- function(w.length, s.e.response = NULL, s.q.response = NULL,
                           time.unit = c("second", "day", "exposure"),
                           comment = NULL) {
   if (is.null(s.q.response) && (is.numeric(s.e.response))) {
-    z <- data.frame(w.length, s.e.response)
+    z <- dplyr::data_frame(w.length, s.e.response)
   } else if (is.null(s.e.response) && (is.numeric(s.q.response))) {
-    z <- data.frame(w.length, s.q.response)
+    z <- dplyr::data_frame(w.length, s.q.response)
   } else {
     warning("One and only one of s.e.response or s.q.response should be different from NULL.")
     return(NA)
@@ -118,11 +118,11 @@ response_spct <- function(w.length, s.e.response = NULL, s.q.response = NULL,
 filter_spct <- function(w.length, Tfr=NULL, Tpc=NULL, A=NULL, Tfr.type=c("total", "internal"),
                         comment=NULL, strict.range=TRUE) {
   if (is.null(Tpc) && is.null(A) && is.numeric(Tfr)) {
-    z <- data.frame(w.length, Tfr)
+    z <- dplyr::data_frame(w.length, Tfr)
   } else if (is.null(Tfr) && is.null(A) && is.numeric(Tpc)) {
-    z <- data.frame(w.length, Tpc)
+    z <- dplyr::data.frame(w.length, Tpc)
   } else if (is.null(Tpc) && is.null(Tfr) && is.numeric(A)) {
-    z <- data.frame(w.length, A)
+    z <- dplyr::data.frame(w.length, A)
   } else {
     warning("One and only one of Tfr, Tpc or Abs should be different from NULL.")
     return(NA)
@@ -146,9 +146,9 @@ reflector_spct <- function(w.length, Rfr=NULL, Rpc=NULL,
                            Rfr.type=c("total", "specular"),
                            comment=NULL, strict.range=TRUE) {
   if (is.null(Rpc) && is.numeric(Rfr)) {
-    z <- data.frame(w.length, Rfr)
+    z <- dplyr::data_frame(w.length, Rfr)
   } else if (is.null(Rfr) && is.numeric(Rpc)) {
-    z <- data.frame(w.length, Rpc)
+    z <- dplyr::data_frame(w.length, Rpc)
   } else {
     warning("One and only one of Rfr, or Rpc should be different from NULL.")
     return(NA)
@@ -168,7 +168,7 @@ object_spct <- function(w.length, Rfr=NULL, Tfr=NULL,
                         Tfr.type=c("total", "internal"),
                         Rfr.type=c("total", "specular"),
                         comment=NULL, strict.range=TRUE) {
-  z <- data.frame(w.length, Rfr, Tfr)
+  z <- dplyr::data_frame(w.length, Rfr, Tfr)
   if (!is.null(comment)) {
     setattr(z, "comment", comment)
   }
@@ -207,8 +207,8 @@ object_spct <- function(w.length, Rfr=NULL, Tfr=NULL,
 merge.generic_spct <- function(x, y, by = "w.length", ...) {
   class.x <- class(x)
   class.y <- class(y)
-  x <- as.data.frame(x)
-  y <- as.data.frame(y)
+  x <- dplyr::as_data_frame ## needed?
+  y <- dplyr::as_data_frame(y) ## needed?
   if (identical(class.x, class.y)) {
     z <- dplyr::inner_join(x, y, by = by, ...)
     setattr(z, "class", class.x)

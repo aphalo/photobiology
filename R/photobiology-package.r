@@ -41,19 +41,7 @@
 #' @import methods
 #'
 #' @importFrom Rcpp evalCpp
-#' @importFrom data.table data.table tables setkey setkeyv key "key<-" haskey CJ
-#'   SJ copy
-#' @importFrom data.table as.data.table is.data.table test.data.table last like
-#'   "%like%" between "%between%"
-#' @importFrom data.table truelength alloc.col ":="
 #' @importFrom data.table setattr setnames setcolorder set setDT setDF
-#' @importFrom data.table setorder setorderv
-#' @importFrom data.table setNumericRounding getNumericRounding
-#' @importFrom data.table chmatch "%chin%" chorder chgroup
-#' @importFrom data.table fread
-#' @importFrom data.table address
-#' @importFrom data.table .SD .N .I .GRP .BY
-#' @importClassesFrom data.table data.table
 #'
 #' @examples
 #' # irradiance of the whole spectrum

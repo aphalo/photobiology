@@ -82,36 +82,36 @@ smooth_spct.source_spct <- function(x, method = "custom", strength = 1, ...) {
     # as the spectrum is already in energy units, we need to normalize thresholds
     out.spct <- copy(x) # just to avoid editing the code
     q2e(out.spct, action = "replace", byref = TRUE)
-    max_irrad <- out.spct[ , max(s.e.irrad, na.rm=TRUE)]
+    max_irrad <- max(out.spct[["s.e.irrad"]], na.rm=TRUE)
     smoothing_coef <- 1
     smoothing_hi_lim <- max(out.spct$w.length)
     # this could be tweeked in many ways...
     zero_limit_cnst <- max_irrad * 3e-4 / strength
-    out.spct[ , zero_limit :=  (zero_limit_cnst * 600) / w.length]
+    out.spct[["zero_limit"]] <-  (zero_limit_cnst * 600) / out_spct[["w.length"]]
     smooth_limit <- 1e-3 * smoothing_coef # just a guess for runmadmed
     smooth_threshold <- 5e-2 * max_irrad / strength # for s.e.irrad
-    out.spct[ , runmad := runmad(s.e.irrad, 7, endrule="mad")]
-    out.spct[ , runmed3 := runmed(s.e.irrad, 3, endrule="median")]
-    out.spct[ , runmed7 := runmed(s.e.irrad, 7, endrule="median")]
-    out.spct[ , runmed19 := runmed(s.e.irrad, 19, endrule="median")]
-    out.spct[ , runmin5 := runmin(s.e.irrad, 5)]
+    out.spct[["runmad"]] <- runmad(out.spct[["s.e.irrad"]], 7, endrule="mad")
+    out.spct[["runmed3"]] <- runmed(out.spct[["s.e.irrad"]], 3, endrule="median")
+    out.spct[["runmed7"]] <- runmed(out.spct[["s.e.irrad"]], 7, endrule="median")
+    out.spct[["runmed19"]] <- runmed(out.spct[["s.e.irrad"]], 19, endrule="median")
+    out.spct[["runmin5"]] <- runmin(out.spct[["s.e.irrad"]], 5)
     # we need to avoid division by 0.0 and we use zero_limit / 10 close enough to zero
-    out.spct[ , runmadmed := ifelse(runmad < zero_limit_cnst * 1e-1 | runmed7 < zero_limit * 1e-1, 0.0, runmad/abs(runmed7))]
-    out.spct[ , s.e.irrad.sm :=
-               ifelse( (runmed19 < zero_limit) | (runmin5 < zero_limit * 5e-2), 0.0,
+    out.spct[["runmadmed"]] <- ifelse(runmad < zero_limit_cnst * 1e-1 | runmed7 < zero_limit * 1e-1, 0.0, runmad/abs(runmed7))]
+    out.spct[["s.e.irrad.sm"]] <-
+               with(out.spct, ifelse( (runmed19 < zero_limit) | (runmin5 < zero_limit * 5e-2), 0.0,
                        ifelse((s.e.irrad > smooth_threshold) | (runmadmed < smooth_limit), s.e.irrad,
                               ifelse(runmadmed < 2 * smooth_limit, runmed3,
-                                     ifelse(runmadmed < 4 * smooth_limit, runmed7, runmed19))))]
-    out.spct[w.length < smoothing_hi_lim, s.e.irrad := s.e.irrad.sm]
-    out.spct[ , s.e.irrad.good := runmadmed < 1.0]
-    if (out.spct[ , any(is.na(s.e.irrad))]) {
-      warning(out.spct[ , sum(is.na(s.e.irrad))], " NAs in spectral irradiance")
+                                     ifelse(runmadmed < 4 * smooth_limit, runmed7, runmed19)))))
+    out.spct[["s.e.irrad"]] <- with(out.spct, ifelse(w.length < smoothing_hi_lim, s.e.irrad.sm, s.e.irrad))
+    out.spct[["s.e.irrad.good"]] <- out.spct[["runmadmed"]] < 1.0
+    if (with(out.spct, any(is.na(s.e.irrad)))) {
+      warning(sum(with(out.spct, any(is.na(s.e.irrad)))), " NAs in spectral irradiance")
     }
-    num_bad <- out.spct[ , sum(!s.e.irrad.good, na.rm=TRUE)]
+    num_bad <- with(out.spct, sum(!s.e.irrad.good, na.rm=TRUE))
     if (num_bad > 50) {
       warning(num_bad, " 'bad' estimates in spectral irradiance")
     }
-    out.spct <- out.spct[ , list(w.length, s.e.irrad)]
+    out.spct <- out.spct[ , c("w.length", "s.e.irrad")]
     setSourceSpct(out.spct, time.unit = attr(x, "time.unit", exact = TRUE))
     if (all(c("s.e.irrad", "s.q.irrad") %in% names(x))) {
       e2q(out.spct, action = "add", byref = TRUE)
@@ -178,31 +178,34 @@ smooth_spct.filter_spct <- function(x, method = "custom", strength = 1, ...) {
     smoothing_hi_lim <- max(out.spct$w.length)
     # this could be tweeked in many ways...
     zero_limit_cnst <- max_Tfr * 3e-4 / strength
-    out.spct[ , zero_limit :=  (zero_limit_cnst * 600) / w.length]
+    out.spct[["zero_limit"]] <-  (zero_limit_cnst * 600) / out.spct[["w.length"]]
     smooth_limit <- 1e-3 * smoothing_coef # just a guess for runmadmed
     smooth_threshold <- 5e-2 * max_Tfr / strength # for Tfr
-    out.spct[ , runmad := runmad(Tfr, 7, endrule="mad")]
-    out.spct[ , runmed3 := runmed(Tfr, 3, endrule="median")]
-    out.spct[ , runmed7 := runmed(Tfr, 7, endrule="median")]
-    out.spct[ , runmed19 := runmed(Tfr, 19, endrule="median")]
-    out.spct[ , runmin5 := runmin(Tfr, 5)]
+    out.spct[["runmad"]] <- runmad(out.spct[["Tfr"]], 7, endrule="mad")
+    out.spct[["runmed3"]] <- runmed(out.spct[["Tfr"]], 3, endrule="median")
+    out.spct[["runmed7"]] <- runmed(out.spct[["Tfr"]], 7, endrule="median")
+    out.spct[["runmed19"]] <- runmed(out.spct[["Tfr"]], 19, endrule="median")
+    out.spct[["runmin5"]] <- runmin(out.spct[["Tfr"]], 5)
     # we need to avoid division by 0.0 and we use zero_limit / 10 close enough to zero
-    out.spct[ , runmadmed := ifelse(runmad < zero_limit_cnst * 1e-1 | runmed7 < zero_limit * 1e-1, 0.0, runmad/abs(runmed7))]
-    out.spct[ , Tfr.sm :=
+    out.spct[["runmadmed"]] <- with(out.spct,
+                                    ifelse(runmad < zero_limit_cnst * 1e-1 | runmed7 < zero_limit * 1e-1,
+                                           0.0, runmad/abs(runmed7))]
+    out.spct[["Tfr.sm"]] <- with(out.spct,
                ifelse( (runmed19 < zero_limit) | (runmin5 < zero_limit * 5e-2), 0.0,
                        ifelse((Tfr > smooth_threshold) | (runmadmed < smooth_limit), Tfr,
                               ifelse(runmadmed < 2 * smooth_limit, runmed3,
-                                     ifelse(runmadmed < 4 * smooth_limit, runmed7, runmed19))))]
-    out.spct[w.length < smoothing_hi_lim, Tfr := Tfr.sm]
-    out.spct[ , Tfr.good := runmadmed < 1.0]
-    if (out.spct[ , any(is.na(Tfr))]) {
-      warning(out.spct[ , sum(is.na(Tfr))], " NAs in spectral irradiance")
+                                     ifelse(runmadmed < 4 * smooth_limit, runmed7, runmed19)))))
+    out.spct[["Tfr"]] <- with(out.spct,
+                              ifelse(w.length < smoothing_hi_lim, Tfr.sm, Tfr
+    out.spct[["Tfr.good"]] <- out.spct[["runmadmed"]] < 1.0
+    if (any(is.na(out.spct[["Tfr"]]))) {
+      warning(sum(is.na(out.spct[["Tfr"]]))), " NAs in spectral irradiance")
     }
-    num_bad <- out.spct[ , sum(!Tfr.good, na.rm=TRUE)]
+    num_bad <- sum(!out.spct[["Tfr.good"]], na.rm=TRUE)
     if (num_bad > 50) {
       warning(num_bad, " 'bad' estimates in spectral irradiance")
     }
-    out.spct <- out.spct[ , .(w.length, Tfr)]
+    out.spct <- out.spct[ , c("w.length", "Tfr")]
     setFilterSpct(out.spct, Tfr.type = attr(x, "Tfr.type", exact = TRUE))
     if (all(c("Tfr", "A") %in% names(x))) {
       T2A(out.spct, action = "add", byref = TRUE)
@@ -256,32 +259,35 @@ smooth_spct.reflector_spct <- function(x, method = "custom", strength = 1, ...) 
     smoothing_coef <- 1
     smoothing_hi_lim <- max(out.spct$w.length)
     # this could be tweeked in many ways...
-    zero_limit_cnst <- max_irrad * 3e-4 / strength
-    out.spct[ , zero_limit :=  (zero_limit_cnst * 600) / w.length]
+    zero_limit_cnst <- max_Rfr * 3e-4 / strength
+    out.spct[["zero_limit"]] <-  (zero_limit_cnst * 600) / out.spct[["w.length"]]
     smooth_limit <- 1e-3 * smoothing_coef # just a guess for runmadmed
     smooth_threshold <- 5e-2 * max_Rfr / strength # for Rfr
-    out.spct[ , runmad := runmad(Rfr, 7, endrule="mad")]
-    out.spct[ , runmed3 := runmed(Rfr, 3, endrule="median")]
-    out.spct[ , runmed7 := runmed(Rfr, 7, endrule="median")]
-    out.spct[ , runmed19 := runmed(Rfr, 19, endrule="median")]
-    out.spct[ , runmin5 := runmin(Rfr, 5)]
+    out.spct[["runmad"]] <- runmad(out.spct[["Rfr"]], 7, endrule="mad")
+    out.spct[["runmed3"]] <- runmed(out.spct[["Rfr"]], 3, endrule="median")
+    out.spct[["runmed7"]] <- runmed(out.spct[["Rfr"]], 7, endrule="median")
+    out.spct[["runmed19"]] <- runmed(out.spct[["Rfr"]], 19, endrule="median")
+    out.spct[["runmin5"]] <- runmin(out.spct[["Rfr"]], 5)
     # we need to avoid division by 0.0 and we use zero_limit / 10 close enough to zero
-    out.spct[ , runmadmed := ifelse(runmad < zero_limit_cnst * 1e-1 | runmed7 < zero_limit * 1e-1, 0.0, runmad/abs(runmed7))]
-    out.spct[ , Rfr.sm :=
+    out.spct[["runmadmed"]] <- with(out.spct,
+                                    ifelse(runmad < zero_limit_cnst * 1e-1 | runmed7 < zero_limit * 1e-1,
+                                           0.0, runmad/abs(runmed7)))
+    out.spct[["Rfr.sm"]] <- with(out.spct,
                ifelse( (runmed19 < zero_limit) | (runmin5 < zero_limit * 5e-2), 0.0,
                        ifelse((Rfr > smooth_threshold) | (runmadmed < smooth_limit), Rfr,
                               ifelse(runmadmed < 2 * smooth_limit, runmed3,
-                                     ifelse(runmadmed < 4 * smooth_limit, runmed7, runmed19))))]
-    out.spct[w.length < smoothing_hi_lim, Rfr := Rfr.sm]
-    out.spct[ , Rfr.good := runmadmed < 1.0]
-    if (out.spct[ , any(is.na(Rfr))]) {
+                                     ifelse(runmadmed < 4 * smooth_limit, runmed7, runmed19)))))
+    out.spct[["Rfr"]] <- with(out.spct,
+                              ifelse(w.length < smoothing_hi_lim, Rfr.sm, Rfr))
+    out.spct[["Rfr.good"]] <- out.spct[["runmadmed"]] < 1.0
+    if (anyNA(out.spct[["Rfr"]])) {
       warning(out.spct[ , sum(is.na(Rfr))], " NAs in spectral irradiance")
     }
-    num_bad <- out.spct[ , sum(!Rfr.good, na.rm=TRUE)]
+    num_bad <- sum(!out.spct[["Rfr.good"]], na.rm=TRUE)
     if (num_bad > 50) {
       warning(num_bad, " 'bad' estimates in spectral irradiance")
     }
-    out.spct <- out.spct[ , .(w.length, Rfr)]
+    out.spct <- out.spct[ , c("w.length", "Rfr")]
     setReflectorSpct(out.spct)
     if (all(c("Rfr", "A") %in% names(x))) {
       T2A(out.spct, action = "add", byref = TRUE)
@@ -343,36 +349,39 @@ smooth_spct.response_spct <- function(x, method = "custom", strength = 1, ...) {
     # as the spectrum is already in energy units, we need to normalize thresholds
     out.spct <- copy(x) # just to avoid editing the code
     q2e(out.spct, action = "replace", byref = TRUE)
-    max_response <- out.spct[ , max(s.e.response, na.rm=TRUE)]
+    max_response <- max(out.spct[["s.e.response"]], na.rm=TRUE)
     smoothing_coef <- 1
     smoothing_hi_lim <- max(out.spct$w.length)
     # this could be tweeked in many ways...
     zero_limit_cnst <- max_response * 3e-4 / strength
-    out.spct[ , zero_limit :=  (zero_limit_cnst * 600) / w.length]
+    out.spct[["zero_limit"]] <-  (zero_limit_cnst * 600) / w.length
     smooth_limit <- 1e-3 * smoothing_coef # just a guess for runmadmed
     smooth_threshold <- 5e-2 * max_response / strength # for s.e.response
-    out.spct[ , runmad := runmad(s.e.response, 7, endrule="mad")]
-    out.spct[ , runmed3 := runmed(s.e.response, 3, endrule="median")]
-    out.spct[ , runmed7 := runmed(s.e.response, 7, endrule="median")]
-    out.spct[ , runmed19 := runmed(s.e.response, 19, endrule="median")]
-    out.spct[ , runmin5 := runmin(s.e.response, 5)]
+    out.spct[["runmad"]] <- runmad(out.spct[["s.e.response"]], 7, endrule="mad")]
+    out.spct[["runmed3"]] <- runmed(out.spct[["s.e.response"]], 3, endrule="median")]
+    out.spct[["runmed7"]] <- runmed(out.spct[["s.e.response"]], 7, endrule="median")]
+    out.spct[["runmed19"]] <- runmed(out.spct[["s.e.response"]], 19, endrule="median")]
+    out.spct[["runmin5"]] <- runmin(out.spct[["s.e.response"]], 5)]
     # we need to avoid division by 0.0 and we use zero_limit / 10 close enough to zero
-    out.spct[ , runmadmed := ifelse(runmad < zero_limit_cnst * 1e-1 | runmed7 < zero_limit * 1e-1, 0.0, runmad/abs(runmed7))]
-    out.spct[ , s.e.response.sm :=
+    out.spct[["runmadmed"]] <- with(out.spct,
+                                    ifelse(runmad < zero_limit_cnst * 1e-1 | runmed7 < zero_limit * 1e-1,
+                                           0.0, runmad/abs(runmed7)))
+    out.spct[["s.e.response.sm"]] <- with(out.spct,
                ifelse( (runmed19 < zero_limit) | (runmin5 < zero_limit * 5e-2), 0.0,
                        ifelse((s.e.response > smooth_threshold) | (runmadmed < smooth_limit), s.e.response,
                               ifelse(runmadmed < 2 * smooth_limit, runmed3,
-                                     ifelse(runmadmed < 4 * smooth_limit, runmed7, runmed19))))]
-    out.spct[w.length < smoothing_hi_lim, s.e.response := s.e.response.sm]
-    out.spct[ , s.e.response.good := runmadmed < 1.0]
-    if (out.spct[ , any(is.na(s.e.response))]) {
-      warning(out.spct[ , sum(is.na(s.e.response))], " NAs in spectral responseiance")
+                                     ifelse(runmadmed < 4 * smooth_limit, runmed7, runmed19)))))
+    out.spct[["s.e.response"]] <- with(out.spct,
+                                       ifelse(w.length < smoothing_hi_lim, s.e.response.sm, s.e.response))
+    out.spct[["s.e.response.good"]] <- out.spct[["runmadmed"]] < 1.0
+    if (anyNA(out.spct[["s.e.response"]])) {
+      warning(sum(is.na(out.spct[["s.e.response"]])), " NAs in spectral responseiance")
     }
-    num_bad <- out.spct[ , sum(!s.e.response.good, na.rm=TRUE)]
+    num_bad <- sum(!out.spct[["s.e.response.good"]], na.rm=TRUE)
     if (num_bad > 50) {
       warning(num_bad, " 'bad' estimates in spectral responseiance")
     }
-    out.spct <- out.spct[ , .(w.length, s.e.response)]
+    out.spct <- out.spct[ , c("w.length", "s.e.response")]
     setResponseSpct(out.spct, time.unit = attr(x, "time.unit", exact = TRUE))
     if (all(c("s.e.response", "s.q.response") %in% names(x))) {
       e2q(out.spct, action = "add", byref = TRUE)
