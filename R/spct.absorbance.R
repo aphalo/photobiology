@@ -81,7 +81,7 @@ absorbance_spct <-
     }
     spct <- T2A(spct, action="replace", byref=FALSE)
     Tfr.type <- getTfrType(spct)
-    spct <- spct[ , c("w.length", "A")] # data.frame removes attributes?
+    spct <- spct[ , c("w.length", "A")] # data frame removes attributes?
     setTfrType(spct, Tfr.type = Tfr.type)
     # if the waveband is undefined then use all data
     if (is.null(w.band)){

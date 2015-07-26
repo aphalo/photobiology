@@ -120,9 +120,9 @@ filter_spct <- function(w.length, Tfr=NULL, Tpc=NULL, A=NULL, Tfr.type=c("total"
   if (is.null(Tpc) && is.null(A) && is.numeric(Tfr)) {
     z <- dplyr::data_frame(w.length, Tfr)
   } else if (is.null(Tfr) && is.null(A) && is.numeric(Tpc)) {
-    z <- dplyr::data.frame(w.length, Tpc)
+    z <- dplyr::data_frame(w.length, Tpc)
   } else if (is.null(Tpc) && is.null(Tfr) && is.numeric(A)) {
-    z <- dplyr::data.frame(w.length, A)
+    z <- dplyr::data_frame(w.length, A)
   } else {
     warning("One and only one of Tfr, Tpc or Abs should be different from NULL.")
     return(NA)
