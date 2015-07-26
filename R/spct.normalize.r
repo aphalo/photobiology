@@ -47,7 +47,7 @@ normalize_spct <- function(spct, range, norm, var.name) {
     } else if (is.numeric(norm)) {
       if (norm >= min(tmp.spct) && norm <= max(tmp.spct)) {
         tmp.spct <- tmp.spct[ , c("w.length", var.name)]
-        setattr(tmp.spct, "class", class(spct))
+        class(tmp.spct) <- class(spct)
         scale.factor <- 1 / interpolate_spct(tmp.spct, norm)[ , var.name]
       } else {
         warning("'norm = ", norm, "' value outside spectral data range of ",
@@ -58,14 +58,12 @@ normalize_spct <- function(spct, range, norm, var.name) {
       stop("'norm' should be numeric or character")
     }
   } else {
-    scale.factor <- 1 # implemented in this way to ensure that all returned
-    # values folow the same copy/reference semantics
+    return(spct)
   }
-#  out.spct <- copy(spct)
   out.spct[[var.name]] <- out.spct[ , var.name] * scale.factor
-  setattr(out.spct, "class", class(spct))
-  setattr(out.spct, "comment", comment(spct))
-  setattr(out.spct, "normalized", norm)
+  class(out.spct) <- class(spct)
+  comment(out.spct) <- comment(spct)
+  setNormalized(out.spct, norm) <- norm
   out.spct
 }
 
@@ -204,10 +202,10 @@ is_normalized <- function(x) {
 #'
 #' @return character or numeric or logical
 #'
-#' @note if x is not a \code{filter_spct} object, \code{NA} is returned
+#' @note if x is not a \code{generic_spct} object, \code{NA} is returned
 #'
 #' @export
-#' @family Rfr attribute functions
+#' @family rescaling functions
 #'
 getNormalized <- function(x) {
   if (is.generic_spct(x)) {
@@ -220,5 +218,25 @@ getNormalized <- function(x) {
   } else {
     return(NA)
   }
+}
+
+#' Set the "normalized" attribute
+#'
+#' Funtion to write the "normalized" attribute of an existing generic_spct
+#' object.
+#'
+#' @param x a generic_spct object
+#' @param norm numeric or logical
+#'
+#' @note if x is not a \code{generic_spct} object, x is not modified.
+#'
+#' @export
+#' @family rescaling functions
+#'
+setNormalized <- function(x, norm = FALSE) {
+  if (is.na(norm) || norm) {
+    attr(x, "normalized") <- norm
+  }
+  return(x)
 }
 

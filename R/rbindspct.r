@@ -140,7 +140,8 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
   if (length(l) < 2) {
     ans <- l[[1]]
   } else {
-    ans <- data.table::rbindlist(l, use.names, fill)
+    ans <- plyr::rbind.fill(l)
+    ans <- dplyr::as_data_frame(ans)
   }
   if (is.null(ans)) {
     return(NULL)
@@ -151,8 +152,8 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
     names.spct <- paste("spct", 1:length(l), sep = "_")
   }
   if (add.idfactor) {
-    ans[ , (idfactor) := factor(rep.int(names.spct, sapply(l, FUN = nrow)),
-                                levels = names.spct)]
+    ans[[idfactor]] <- factor(rep.int(names.spct, sapply(l, FUN = nrow)),
+                                levels = names.spct)
   }
 
   comment.ans <- "rbindspct: concatenated comments"
@@ -185,7 +186,7 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
       if (length(unique(bswfs.input)) > 1L) {
         add.bswf <- TRUE
         bswf.used <- "multiple"
-        ans[ , BSWF := factor(rep.int(bswfs.input, sapply(l, FUN = nrow)), levels = bswfs.input)]
+        ans[["BSWF"]] <- factor(rep.int(bswfs.input, sapply(l, FUN = nrow)), levels = bswfs.input)
       } else {
         add.bswf <- FALSE
         bswf.used <- bswfs.input[1]
@@ -233,199 +234,184 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
     setGenericSpct(ans, multiple.wl = length(l))
   }
   if (any(scaled.input)) {
-    setattr(ans, "scaled", "TRUE")
+    attr(ans, "scaled") <- TRUE
   }
   if (any(normalized.input)) {
-    setattr(ans, "normalized", "TRUE")
+    attr(ans, "normalized") <- TRUE
   }
-  if (add.idfactor && !add.bswf) {
-    keys <- c(idfactor, "w.length")
-    setkeyv(ans, keys)
-  } else if (!add.idfactor && add.bswf) {
-    keys <- c("BSWF", "w.length")
-    setkeyv(ans, keys)
-  } else if (add.idfactor && add.bswf) {
-    keys <- c("BSWF", idfactor, "w.length")
-    setkeyv(ans, keys)
-  } # else we keep the default "w.length"
-  if (!is.null(comment.ans)) setattr(ans, "comment", comment.ans)
+  if (!is.null(comment.ans)) {
+    comment(ans) <- comment.ans
+  }
   return(ans)
 }
 
 
-# subset ------------------------------------------------------------------
 
+# Subset ------------------------------------------------------------------
 
-#' Subsetting methods for spectra
+# subset.data.frame works as expected with all spectral classes as it
+# calls the Extract methods defined below on the object passed!
+
+# Extract ------------------------------------------------------------------
+
+#' Extract Parts of an spectrum
 #'
-#' Just like \code{subset} in base R, but preserves the special attributes used
-#' in spectral classes.
+#' Just like \code{[]} in base R, but preserves the special attributes used in
+#' spectral classes.
 #'
-#' @param x	generic_spct to subset
-#' @param subset logical expression indicating elements or rows to keep
-#' @param select expression indicating columns to select from x (IGNORED)
-#' @param idx integer vector of indexes of rows to keep
-#' @param ...	further arguments to be passed to or from other methods
+#' @param x	spectral object from which to extract element(s)
+#' @param i, j indices specifying elements to extract or replace. Indices are
+#'   numeric or character vectors or empty (missing) or NULL. Please, see
+#'   \code{\link[base]{Extract.data.frame}} for more details.
+#' @param drop logical. If TRUE the result is coerced to the lowest possible
+#'   dimension. The default is FALSE unless the result is a single column.
 #'
-#' @details The subset argument works on the rows and will be evaluated in the
-#'   generic_spct so columns can be referred to (by name) as variables in the
-#'   expression The generic_spct that is returned will maintain the original
-#'   attributes and keys as long as they are not select-ed out.
+#' @details These methods are just wrappers on the method for data.frame objects
+#'   which copy the additional attributes used by these classes, and validates
+#'   the extracted object as a spectral object, except when drop is TRUE and the
+#'   returned object has only one dimension.
 #'
 #' @return An object of the same class as \code{x} but containing only the
 #'   subset of rows and columns that are selected.
 #'
-#' @method subset generic_spct
+#' @method "[" generic_spct
 #'
-#' @note Current implementation restores object class after subsetting, as
-#' subsetting using subset.data.table() strips the object of attributes
-#' including derived classes.
+#' @note Currently only extract methods are implemented. Replacement methods
+#'   may be implemented in the future.
 #'
 #' @examples
-#' subset(sun.spct, w.length > 400)
+#' sun.spct[w.length > 400, ]
 #'
-#' @seealso \code{\link{subset}} and \code{\link{trim_spct}}
+#' @rdname Extract.generic.spct
 #'
-subset.generic_spct <- function(x, subset, select, idx = NULL, ...) {
-  comment <- comment(x)
-  if (!is.null(idx)) {
-    z <- x[idx]
-  } else {
-    z <- x[eval(substitute(subset))]
+#' @seealso \code{\link[base]{subset.data.frame}} and \code{\link{trim_spct}}
+#'
+"[.generic_spct" <-
+  function (x, i, j, drop = FALSE) {
+    xx <- `[.data.frame`(x, i, j, drop = drop)
+    if (is.data.frame(xx)) {
+      setGenericSpct(xx)
+      setNormalized(xx, getNormalized(x))
+      setScaled(xx, getScaled(x))
+      comment <- comment(x)
+      if (!is.null(comment)) {
+        comment(xx) <- comment
+      }
+    }
+    xx
   }
-  setGenericSpct(z)
-  if (!is.null(comment)) {
-    setattr(z, "comment", comment)
-  }
-  untag(z)
-  return(z)
-}
 
-# @describeIn subset.generic_spct Subset for counts per second spectra.
-#'
 #' @export
-#' @rdname subset.generic_spct
+#' @rdname Extract.generic.spct
 #'
-subset.cps_spct <- function(x, subset, select = NULL, idx = NULL, ...) {
-  comment <- comment(x)
-  if (!is.null(idx)) {
-    z <- x[idx]
-  } else {
-    z <- x[eval(substitute(subset))]
+"[.cps_spct" <-
+  function (x, i, j, drop = FALSE) {
+    xx <- `[.data.frame`(x, i, j, drop = drop)
+    if (is.data.frame(xx)) {
+      setCpsSPct(xx)
+      setNormalized(xx, getNormalized(x))
+      setScaled(xx, getScaled(x))
+      comment <- comment(x)
+      if (!is.null(comment)) {
+        comment(xx) <- comment
+      }
+    }
+    xx
   }
-  setCpsSPct(z)
-  if (!is.null(comment)) {
-    setattr(z, "comment", comment)
-  }
-  untag(z)
-  return(z)
-}
 
-# @describeIn subset.generic_spct Subset for light source spectra.
-#'
 #' @export
-#' @rdname subset.generic_spct
+#' @rdname Extract.generic.spct
 #'
-subset.source_spct <- function(x, subset, select = NULL, idx = NULL, ...) {
-  time.unit <- getTimeUnit(x)
-  bswf.used <- getBSWFUsed(x)
-  comment <- comment(x)
-  if (!is.null(idx)) {
-    z <- x[idx]
-  } else {
-    z <- x[eval(substitute(subset))]
+"[.source_spct" <-
+  function (x, i, j, drop = FALSE) {
+    xx <- `[.data.frame`(x, i, j, drop = drop)
+    if (is.data.frame(xx)) {
+      time.unit <- getTimeUnit(x)
+      bswf.used <- getBSWFUsed(x)
+      setSourceSpct(x = xx, time.unit = time.unit, bswf.used = bswf.used, multiple.wl = Inf)
+      setNormalized(xx, getNormalized(x))
+      setScaled(xx, getScaled(x))
+      comment <- comment(x)
+      if (!is.null(comment)) {
+        comment(xx) <- comment
+      }
+    }
+    xx
   }
-  setSourceSpct(x = z, time.unit = time.unit, bswf.used = bswf.used, multiple.wl = Inf)
-  if (!is.null(comment)) {
-    setattr(z, "comment", comment)
-  }
-  untag(z)
-  return(z)
-}
 
-# @describeIn subset.generic_spct Subset for light filter spectra.
-#'
 #' @export
-#' @rdname subset.generic_spct
+#' @rdname Extract.generic.spct
 #'
-subset.filter_spct <- function(x, subset, select = NULL, idx = NULL, ...) {
-  Tfr.type <- getTfrType(x)
-  comment <- comment(x)
-  if (!is.null(idx)) {
-    z <- x[idx]
-  } else {
-    z <- x[eval(substitute(subset))]
+"[.response_spct" <-
+  function (x, i, j, drop = FALSE) {
+    xx <- `[.data.frame`(x, i, j, drop = drop)
+    if (is.data.frame(xx)) {
+      time.unit <- getTimeUnit(x)
+      setResponseSpct(x = xx, time.unit = time.unit, multiple.wl = Inf)
+      setNormalized(xx, getNormalized(x))
+      setScaled(xx, getScaled(x))
+      comment <- comment(x)
+      if (!is.null(comment)) {
+        comment(xx) <- comment
+      }
+    }
+    xx
   }
-  setFilterSpct(x = z, Tfr.type = Tfr.type, multiple.wl = Inf)
-  if (!is.null(comment)) {
-    setattr(z, "comment", comment)
-  }
-  untag(z)
-  return(z)
-}
 
-# @describeIn subset.generic_spct Subset for light reflector spectra.
-#'
 #' @export
-#' @rdname subset.generic_spct
+#' @rdname Extract.generic.spct
 #'
-subset.reflector_spct <- function(x, subset, select = NULL, idx = NULL, ...) {
-  Rfr.type <- getRfrType(x)
-  comment <- comment(x)
-  if (!is.null(idx)) {
-    z <- x[idx]
-  } else {
-    z <- x[eval(substitute(subset))]
+"[.filter_spct" <-
+  function (x, i, j, drop = FALSE) {
+    xx <- `[.data.frame`(x, i, j, drop = drop)
+    if (is.data.frame(xx)) {
+      Tfr.type <- getTfrType(x)
+      setFilterSpct(x = xx, Tfr.type = Tfr.type, multiple.wl = Inf)
+      setNormalized(xx, getNormalized(x))
+      setScaled(xx, getScaled(x))
+      comment <- comment(x)
+      if (!is.null(comment)) {
+        comment(xx) <- comment
+      }
+    }
+    xx
   }
-  setReflectorSpct(x = z, Rfr.type = Rfr.type, multiple.wl = Inf)
-  if (!is.null(comment)) {
-    setattr(z, "comment", comment)
-  }
-  untag(z)
-  return(z)
-}
 
-# @describeIn subset.generic_spct Subset for light response spectra.
-#'
 #' @export
-#' @rdname subset.generic_spct
+#' @rdname Extract.generic.spct
 #'
-subset.response_spct <- function(x, subset, select = NULL, idx = NULL, ...) {
-  time.unit <- getTimeUnit(x)
-  comment <- comment(x)
-  if (!is.null(idx)) {
-    z <- x[idx]
-  } else {
-    z <- x[eval(substitute(subset))]
+"[.reflector_spct" <-
+  function (x, i, j, drop = FALSE) {
+    xx <- `[.data.frame`(x, i, j, drop = drop)
+    if (is.data.frame(xx)) {
+      Rfr.type <- getRfrType(x)
+      setReflectorSpct(x = xx, Rfr.type = Rfr.type, multiple.wl = Inf)
+      setNormalized(xx, getNormalized(x))
+      setScaled(xx, getScaled(x))
+      comment <- comment(x)
+      if (!is.null(comment)) {
+        comment(xx) <- comment
+      }
+    }
+    xx
   }
-  setResponseSpct(x = z, time.unit = time.unit, multiple.wl = Inf)
-  if (!is.null(comment)) {
-    setattr(z, "comment", comment)
-  }
-  untag(z)
-  return(z)
-}
 
-# @describeIn subset.generic_spct Subset for light response spectra.
-#'
 #' @export
-#' @rdname subset.generic_spct
+#' @rdname Extract.generic.spct
 #'
-subset.object_spct <- function(x, subset, select = NULL, idx = NULL, ...) {
-  Tfr.type <- getTfrType(x)
-  Rfr.type <- getRfrType(x)
-  comment <- comment(x)
-  if (!is.null(idx)) {
-    z <- x[idx]
-  } else {
-    z <- x[eval(substitute(subset))]
+"[.object_spct" <-
+  function (x, i, j, drop = FALSE) {
+    xx <- `[.data.frame`(x, i, j, drop = drop)
+    if (is.data.frame(xx)) {
+      Tfr.type <- getTfrType(x)
+      Rfr.type <- getRfrType(x)
+      setObjectSpct(x = xx, Tfr.type = Tfr.type, Rfr.type = Rfr.type, multiple.wl = Inf)
+      setNormalized(xx, getNormalized(x))
+      setScaled(xx, getScaled(x))
+      comment <- comment(x)
+      if (!is.null(comment)) {
+        comment(xx) <- comment
+      }
+    }
+    xx
   }
-  setObjectSpct(x = z, Tfr.type = Tfr.type, Rfr.type = Rfr.type, multiple.wl = Inf)
-  if (!is.null(comment)) {
-    setattr(z, "comment", comment)
-  }
-  untag(z)
-  return(z)
-}
-
-

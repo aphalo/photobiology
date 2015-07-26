@@ -50,7 +50,7 @@ source_spct <- function(w.length, s.e.irrad = NULL, s.q.irrad = NULL,
     return(NA)
   }
   if (!is.null(comment)) {
-    setattr(z, "comment", comment)
+    comment(z) <- comment
   }
   setSourceSpct(z,
                 time.unit = time.unit,
@@ -68,7 +68,7 @@ source_spct <- function(w.length, s.e.irrad = NULL, s.q.irrad = NULL,
 cps_spct <- function(w.length, cps=NULL, comment=NULL) {
   z <- dplyr::data_frame(w.length = w.length, cps = cps)
   if (!is.null(comment)) {
-    setattr(z, "comment", comment)
+    comment(z) <- comment
   }
   setCpsSpct(z)
   return(z)
@@ -95,7 +95,7 @@ response_spct <- function(w.length, s.e.response = NULL, s.q.response = NULL,
     return(NA)
   }
   if (!is.null(comment)) {
-    setattr(z, "comment", comment)
+    comment(z) <- comment
   }
   setResponseSpct(z, time.unit)
   return(z)
@@ -128,7 +128,7 @@ filter_spct <- function(w.length, Tfr=NULL, Tpc=NULL, A=NULL, Tfr.type=c("total"
     return(NA)
   }
   if (!is.null(comment)) {
-    setattr(z, "comment", comment)
+    comment(z) <- comment
   }
   setFilterSpct(z, Tfr.type, strict.range = strict.range)
   return(z)
@@ -154,7 +154,7 @@ reflector_spct <- function(w.length, Rfr=NULL, Rpc=NULL,
     return(NA)
   }
   if (!is.null(comment)) {
-    setattr(z, "comment", comment)
+    comment(z) <- comment
   }
   setReflectorSpct(z, Rfr.type = Rfr.type, strict.range=strict.range)
   return(z)
@@ -170,7 +170,7 @@ object_spct <- function(w.length, Rfr=NULL, Tfr=NULL,
                         comment=NULL, strict.range=TRUE) {
   z <- dplyr::data_frame(w.length, Rfr, Tfr)
   if (!is.null(comment)) {
-    setattr(z, "comment", comment)
+    comment(z) <- comment
   }
   setObjectSpct(z,
                 Tfr.type = Tfr.type,
@@ -211,7 +211,8 @@ merge.generic_spct <- function(x, y, by = "w.length", ...) {
   y <- dplyr::as_data_frame(y) ## needed?
   if (identical(class.x, class.y)) {
     z <- dplyr::inner_join(x, y, by = by, ...)
-    setattr(z, "class", class.x)
+    class(z) <- class.x
+    warning("Attributes lost when merging two objects of class '", class.x, "'.")
   } else if ("filter_spct" %in% class.x && "reflector_spct" %in% class.y) {
     xx <- A2T(x, action = "replace", byref = FALSE)
     z <- dplyr::inner_join(xx, y, by = "w.length", ...)
@@ -224,15 +225,14 @@ merge.generic_spct <- function(x, y, by = "w.length", ...) {
     z <- dplyr::inner_join(x, y, by = "w.length", ...)
     setGenericSpct(z)
   }
-  new.comment <- paste("Merged spectrum\ncomment(x):\n",
-                       comment(x),
-                       "\nclass: ",
-                       class_spct(x),
-                       "\n\ncomment(y):\n",
-                       comment(y),
-                       "\nclass: ",
-                       class_spct(y))
-  setattr(z, "comment", new.comment)
-  return(z)
+  comment(z) <- paste("Merged spectrum\ncomment(x):\n",
+                      comment(x),
+                      "\nclass: ",
+                      class_spct(x),
+                      "\n\ncomment(y):\n",
+                      comment(y),
+                      "\nclass: ",
+                      class_spct(y))
+  z
 }
 

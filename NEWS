@@ -1,12 +1,17 @@
 TODO
 ====
 
-Find a way of wrapping `[.data.table` so that attributes are
-preserved when used with derived classes or revert to using
-data frames.
-
 Add test cases for chroma_spct and improve tests for the _mspct
 classes.
+
+photobiology 0.8.0
+==================
+
+No longer use data.table as a base class for spectral objects.
+** Given the size of spectral data the advantages were to
+limited compared to the complications introduced. **
+
+Extract methods and subset function should now work as expected!
 
 photobiology 0.7.1
 ==================

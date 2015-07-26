@@ -194,8 +194,8 @@ transmittance_spct <-
       names(transmittance) <- "out of range"
     }
     names(transmittance) <- paste(names(transmittance), wb.name)
-    setattr(transmittance, "Tfr.type", getTfrType(spct))
-    setattr(transmittance, "radiation.unit", paste("transmittance", quantity))
+    attr(transmittance, "Tfr.type") <- getTfrType(spct)
+    attr(transmittance, "radiation.unit") <- paste("transmittance", quantity)
     return(transmittance)
   }
 

@@ -93,7 +93,7 @@ absorptance_spct <-
       warning("The spectral data has been normalized or scaled, making impossible to calculate absorptance")
       return(NA)
     }
-    spct <- copy(spct)
+    spct <- spct
 
     # we calculate absorptance
     Tfr.type <- getTfrType(spct)
@@ -112,14 +112,14 @@ absorptance_spct <-
     } else if (Tfr.type == "unknown" || Rfr.type == "unknown") {
       warning("'unknown' Tfr.type or Rfr.type, skipping absorptance calculation")
       absorptance <- NA
-      setattr(absorptance, "Afr.type", "unknown")
-      setattr(absorptance, "radiation.unit", paste("absorptance", quantity))
+      attr(absorptance, "Afr.type") <- "unknown"
+      attr(absorptance, "radiation.unit") <- paste("absorptance", quantity)
       return(absorptance)
     } else if (Rfr.type == "specular") {
       warning("'specular' Rfr.type, skipping absorptance calculation")
       absorptance <- NA
-      setattr(absorptance, "Afr.type", "unknown")
-      setattr(absorptance, "radiation.unit", paste("absorptance", quantity))
+      attr(absorptance, "Afr.type") <- "unknown"
+      attr(absorptance, "radiation.unit") <- paste("absorptance", quantity)
       return(absorptance)
     } else {
       stop("Failed assertion with Tfr.type: ", Tfr.type, "and Rfr.type: ", Rfr.type)
@@ -211,8 +211,8 @@ absorptance_spct <-
       names(absorptance) <- "out of range"
     }
     names(absorptance) <- paste(names(absorptance), wb.name)
-    setattr(absorptance, "Afr.type", Afr.type)
-    setattr(absorptance, "radiation.unit", paste("absorptance", quantity))
+    attr(absorptance, "Afr.type") <- Afr.type
+    attr(absorptance, "radiation.unit") <- paste("absorptance", quantity)
     return(absorptance)
   }
 

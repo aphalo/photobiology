@@ -166,11 +166,11 @@ fscale_spct <- function(spct, range, var.name, f, ...) {
     summary.value <- 1 # implemented in this way to ensure that all returned
     # values folow the same copy/reference semantics
   }
-  out.spct <- copy(spct)
+  out.spct <- spct
   out.spct[[var.name]] <- out.spct[[var.name]] / summary.value
-  setattr(out.spct, "class", class(spct))
-  setattr(out.spct, "comment", comment(spct))
-  setattr(out.spct, "scaled", TRUE)
+  class(out.spct) <- class(spct)
+  comment(out.spct) <- comment(spct)
+  setScaled(out.spct, TRUE)
   setTimeUnit(out.spct, getTimeUnit(spct))
   setTfrType(out.spct, getTfrType(spct))
   out.spct
@@ -228,3 +228,25 @@ getScaled <- function(x) {
     return(NA)
   }
 }
+
+#' Set the "scaled" attribute
+#'
+#' Funtion to write the "scaled" attribute of an existing generic_spct
+#' object.
+#'
+#' @param x a generic_spct object
+#' @param scaled logical
+#'
+#' @note if x is not a \code{generic_spct} object, x is not modified.
+#'   attribute set.
+#'
+#' @export
+#' @family rescaling functions
+#'
+setScaled <- function(x, scaled = FALSE) {
+  if (is.na(scaled) || scaled) {
+    attr(x, "scaled") <- scaled
+  }
+  return(x)
+}
+

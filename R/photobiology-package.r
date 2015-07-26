@@ -41,7 +41,6 @@
 #' @import methods
 #'
 #' @importFrom Rcpp evalCpp
-#' @importFrom data.table setattr setnames setcolorder set setDT setDF
 #'
 #' @examples
 #' # irradiance of the whole spectrum

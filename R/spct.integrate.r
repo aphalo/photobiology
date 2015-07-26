@@ -22,7 +22,7 @@ integrate_spct <- function(spct) {
     integrals <- c(integrals, integrate_irradiance(spct[["w.length"]], spct[[eval(data.col)]]))
   }
   names(integrals) <- gsub("^s.", x = names.data, replacement = "")
-  setattr(integrals, "comment", comment.spct)
+  comment(integral) <- comment.spct
   return(integrals)
 }
 
@@ -84,6 +84,7 @@ average_spct <- function(spct) {
 #' interpolate_spct(sun.spct, c(400,500), length.out=201)
 #'
 interpolate_spct <- function(spct, w.length.out=NULL, fill.value=NA, length.out=NULL) {
+  stopifnot(is.any_spct(spct))
   if (!is.null(length.out) && (is.na(length.out) || length.out < 1L) ) {
     return(spct[NA])
   }
@@ -97,10 +98,6 @@ interpolate_spct <- function(spct, w.length.out=NULL, fill.value=NA, length.out=
     }
   }
   class_spct <- class(spct)
-  comment.spct <- comment(spct)
-  if  (is(spct, "source_spct")) {
-    time.unit.spct <- getTimeUnit(spct)
-  }
   if (!is.null(length.out)  && length.out == 1L) {
     if (is.null(w.length.out)) {
       w.length.out <- midpoint(spct)
@@ -120,8 +117,6 @@ interpolate_spct <- function(spct, w.length.out=NULL, fill.value=NA, length.out=
   }
   names.spct <- names(spct)
   names.data <- names.spct[names.spct != "w.length"]
-  comment.spct <- comment(spct)
-  setkey(spct, w.length)
   max.spct <- max(spct)
   min.spct <- min(spct)
   max.wl.out <- max(w.length.out)
@@ -144,28 +139,34 @@ interpolate_spct <- function(spct, w.length.out=NULL, fill.value=NA, length.out=
                                          temp.values,
                                          w.length.out,
                                          fill.value)
-      #      new.spct[ , as.character(eval(expression(data.col))) := new.values]
       new.spct[[data.col]] <- new.values
     }
   }
-  setattr(new.spct, "comment", comment.spct)
   if(class_spct[1] == "source_spct") {
-    setSourceSpct(new.spct)
-    if (!is.null(time.unit.spct)) {
-      setTimeUnit(new.spct, time.unit.spct)
-    }
+    setSourceSpct(new.spct,
+                  time.unit = getTimeUnit(spct),
+                  bswf.used = getBSWFUsed(spct))
   } else if (class_spct[1] == "filter_spct") {
-    setFilterSpct(new.spct)
+    setFilterSpct(new.spct,
+                  Tfr.type = getTfrType(spct))
   } else if (class_spct[1] == "reflector_spct") {
-    setReflectorSpct(new.spct)
+    setReflectorSpct(new.spct,
+                     Rfr.type = getRfrType(spct))
+  } else if (class_spct[1] == "object_spct") {
+    setObjectSpct(new.spct,
+                  Tfr.type = getTfrType(spct),
+                  Rfr.type = getRfrType(spct))
   } else if (class_spct[1] == "response_spct") {
-    setResponseSpct(new.spct)
+    setResponseSpct(new.spct,
+                    time.unit = getTimeUnit(spct),
+    )
   } else if (class_spct[1] == "chroma_spct") {
     setChromaSpct(new.spct)
   } else if (class_spct[1] == "generic_spct") {
     setGenericSpct(new.spct)
   }
-  setattr(new.spct, "comment", comment.spct)
-  setkey(new.spct, w.length)
+  setNormalized(new.spct, getNormalized(spct))
+  setScaled(new.spct, getScaled(spct))
+  comment(new.spct) <- comment(spct)
   return(new.spct)
 }

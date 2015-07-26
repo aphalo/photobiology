@@ -47,12 +47,7 @@ tag.generic_spct <- function(x,
                              use.hinges=TRUE,
                              short.names=TRUE,
                              byref=TRUE, ...) {
-  if (!byref) {
-    x <- copy(x)
-    name <- NA
-  } else {
-    name <- substitute(x)
-  }
+  name <- substitute(x)
   if (is_tagged(x)) {
     warning("Overwriting old tags in spectrum")
     untag(x)
@@ -64,7 +59,7 @@ tag.generic_spct <- function(x,
   if (!is.null(w.band) && is.na(w.band[1])) {
     x[["wl.color"]] <- w_length2rgb(x[["w.length"]])
     tag.data <- list(wl.color=TRUE)
-    setattr(x, "spct.tags", tag.data)
+    attr(x, "spct.tags") <- tag.data
     return(x)
   }
   if (!is.null(w.band) && is(w.band, "waveband")) {
@@ -151,7 +146,7 @@ tag.generic_spct <- function(x,
                    wb.colors=wbs.rgb[1:n],
                    wb.names=wbs.name[1:n],
                    wb.list=w.band)
-  setattr(x, "spct.tags", tag.data)
+  attr(x, "spct.tags") <- tag.data
   # to work by reference we need to assign the new data frame to the old one
   if (byref & is.name(name)) {
     name <- as.character(name)
@@ -291,7 +286,7 @@ wb2rect_spct <- function(w.band, short.names = TRUE) {
                    wb.colors=wbs.rgb,
                    wb.names=wbs.name,
                    wb.list=w.band)
-  setattr(new.spct, "spct.tags", tag.data)
+  attr(new.spct, "spct.tags") <- tag.data
 
   return(new.spct)
 }
@@ -336,7 +331,7 @@ untag.default <- function(x, ...) {
 untag.generic_spct <- function(x,
                                byref=TRUE, ...) {
   if (!byref) {
-    x <- copy(x)
+    x <- x
     name <- NA
   } else {
     name <- substitute(x)
@@ -347,8 +342,8 @@ untag.generic_spct <- function(x,
   x[["wl.color"]] <- NULL
   x[["wb.f"]] <- NULL
   tag.data <- NA
-  setattr(x, "spct.tags", tag.data)
-  # to work by reference we need to assign the new DT to the old one
+  attr(x, "spct.tags") <- tag.data
+  # to work by reference we need to assign the new spct to the old one
   if (byref & is.name(name)) {
     name <- as.character(name)
     assign(name, x, parent.frame(), inherits = TRUE)

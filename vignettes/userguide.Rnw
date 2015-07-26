@@ -77,15 +77,12 @@ opts_chunk$set(fig.path='figure/pos-', fig.align='center', fig.show='hold',
 
 <<example-0-hiden, eval=TRUE, include=FALSE>>=
 library(photobiology)
-library(photobiologygg)
 library(photobiologyWavebands)
 library(photobiologySun)
 library(photobiologyFilters)
 library(photobiologyReflectors)
 library(photobiologySensors)
 library(photobiologyPlants)
-library(ggplot2)
-library(ggtern)
 library(lubridate)
 @
 
@@ -118,75 +115,34 @@ To load the package into the workspace we use \verb!library(photobiology)!.
 
 <<example-0-visible, eval=FALSE>>=
 library(photobiology)
-library(photobiologygg)
 library(photobiologyWavebands)
 library(photobiologySun)
 library(photobiologyFilters)
 library(photobiologyReflectors)
 library(photobiologySensors)
 library(photobiologyPlants)
-library(ggplot2)
-library(ggtern)
 @
 
 \section{Spectra}
 
-This package defines a family of classes based on data tables (data frame compatible objects) which impose some restrictions on the naming of the vectors, something that allows methods and some functions to `find' the data when passed one of these objects as argument. In addition, as the data is checked when the object is built, there is no need to test for the validity of the data each time a calculation is carried out. The other advantage of using \texttt{spct} objects, is that specialized versions of generic functions like \texttt{print} and operators like \texttt{+} can be defined for spectra. \texttt{\_\_\_spct} objects are also \texttt{data.table} objects, and \texttt{data.frame} objects, as a result of how classes have been derived. In this package we define a \textit{generic} or \emph{base} spectrum class, derived from \texttt{data.table}, from which specialized types of spectra are in turn derived. This `parenthood' hierarchy means that spectra objects can be used almost anywhere where a \texttt{data.frame} or \texttt{data.table} is expected. Many functions defined in package \texttt{data.table} are useful when working with spectra.
-%, so that in most cases there is no need to explicitly include \texttt{library(data.table)} in your scripts.
-
-Although \texttt{data.tables} are syntactically compatible with \texttt{data.frames}, in some special cases the same code may have different semantics as data tables use references in some cases were data frames would use a copy of the data. In general, no such problems exist, and the different semantics only applies to data table specific syntax. If in doubt, to avoid problems, when you really intend to make a new copy of a spectrum, preserving the original object unchanged by later operations on the new `name', use function \texttt{copy} in addition to the assignment operator.
-
-<<>>=
-# 1) data frame syntax on a data.frame
-a.df <- data.frame(x = 1:3, y = rep(1, 3))
-b.df <- a.df
-b.df$y <- b.df$y * 2
-b.df
-a.df # not modified!
-# 2) data frame syntax on a data.table
-a.dt <- data.table(x = 1:3, y = rep(1, 3))
-b.dt <- a.dt
-b.dt$y <- b.dt$y * 2
-b.dt
-a.dt # not modified!
-# 3) data table syntax on a data.table
-a.dt <- data.table(x = 1:3, y = rep(1, 3))
-b.dt <- a.dt
-b.dt[ , y := y * 2]
-a.dt # modified!
-# 4) forcing creation of a copy
-a.dt <- data.table(x = 1:3, y = rep(1, 3))
-c.dt <- copy(a.dt)
-c.dt[ , y := y * 2]
-a.dt # not modified!
-@
-
-From the examples above one can see that in example 3) \texttt{b.dt} is not a copy of \texttt{a.dt}, but instead a reference (a new name pointing to the original object), while in examples 1), 2) and 4) \texttt{b.dt}, is a new object, initialized to the value of \texttt{a.dt}.
+This package defines a family of classes based on data frames which impose some restrictions on the naming of the vectors, something that allows methods and some functions to `find' the data when passed one of these objects as argument. In addition, as the data is checked when the object is built, there is no need to test for the validity of the data each time a calculation is carried out. The other advantage of using \texttt{spct} objects, is that specialized versions of generic functions like \texttt{print} and operators like \texttt{+} can be defined for spectra. \texttt{\_\_\_spct} objects are \texttt{data.frame} objects, as a result of how classes have been derived. In this package we define a \textit{generic} or \emph{base} spectrum class, derived from \texttt{data.frame}, from which specialized types of spectra are in turn derived. This `parenthood' hierarchy means that spectra objects can be used almost anywhere where a \texttt{data.frame} is expected.
 
 \subsection{Printing}
-Spectral objects are printed in the current version of the package by the function defined in package \texttt{data.frame}, consequently, it is possible to use options from this package to control printing. The first option set below, \texttt{datatable.print.nrows}, determines the number of rows above which only `head' and `tail' rows are printed. The second option, \texttt{datatable.print.topn}, determines how many rows are printed when not all rows are printed.
+
+Spectral objects are printed in the current version of the package by the function defined in package \texttt{dplyr}, consequently, it is possible to the option from this package to control printing. Below texttt{dplyr.print_max}, the number of rows above which only `head' rows are printed, is set to 10, instead of the default 20.
 
 <<set-up-printing>>=
-options(datatable.print.nrows = 10)
-options(datatable.print.topn = 2)
+options(dplyr.print_max = 10)
 @
 
-The number of rows printed can be also controlled through an explicit argument to the second parameter of \texttt{print}, \texttt{head}, and \texttt{tail}. Setting an option by means of \texttt{options} changes the default behaviour of \texttt{print}, but explicit arguments can still be used for changing this behaviour in an individual statement. The statement \texttt{a.dt} implicitly calls \texttt{print} when using R in interactive mode.
-
-<<>>=
-a.dt
-print(a.dt)
-print(a.dt, 1L)
-head(a.dt, 2L)
-tail(a.dt, 2L)
-@
+The number of rows printed can be also controlled through an explicit argument to the second parameter of \texttt{head}.
 
 \subsection{Classes}
 
-The package defines several classes intended to be used to store different types of spectral data. They are all derived from \texttt{generic\_spct}, which in turn is derived from \texttt{data.table}. Table \ref{tab:spct:classes} lists them.
+The package defines several classes intended to be used to store different types of spectral data. They are all derived from \texttt{generic\_spct}, which in turn is derived from \texttt{data.frame} and internally created using \texttt{dplyr::data\_frame}. Table \ref{tab:spct:classes} lists them. Attributes are used in objects of these classes to keep \emph{metadata} such as information about units of expression.
 
 \begin{table}
-\caption{Classes for spectral data}\label{tab:spct:classes}
+\caption[Classes for spectral data]{Classes for spectral data. In addition to the attributes listed, all spectral objects have attributes \texttt{normalized} and \texttt{scaled}, plus the normal attributes of \texttt{data.frame} objects.}\label{tab:spct:classes}
 \centering
 \begin{tabular}{lll}
 \toprule
@@ -325,7 +281,7 @@ There are basically three different approaches to the creation of spectra. The f
 We create a data.table object \texttt{a.spct}, and query its class.
 
 <<>>=
-a.spct <- data.table(w.length = 300:305, y = 1)
+a.spct <- data.frame(w.length = 300:305, y = 1)
 class(a.spct)
 class_spct(a.spct)
 is.any_spct(a.spct)
@@ -344,7 +300,7 @@ a.spct
 \texttt{source\_spct} objects can be created from data tables, data frames, and \texttt{generic\_spct} simply by setting them as such. However, columns called \texttt{w.length} (wavelength values expressed in nm) and \texttt{s.e.irrad} (\wattnm) or \texttt{s.q.irrad} (\molnm) must be present.
 
 <<>>=
-b.spct <- setSourceSpct(data.table(w.length = 300:305, s.e.irrad = 1))
+b.spct <- setSourceSpct(data.frame(w.length = 300:305, s.e.irrad = 1))
 getTimeUnit(b.spct)
 class(b.spct)
 b.spct
@@ -354,7 +310,7 @@ If the spectral irradiance is expressed per day, then the parameter \texttt{time
 
 <<>>=
 b.d.spct <- setSourceSpct(
-  data.table(w.length = 300:305, s.e.irrad = rep(1,6)),
+  data.frame(w.length = 300:305, s.e.irrad = rep(1,6)),
   time.unit = "day")
 getTimeUnit(b.d.spct)
 class(b.d.spct)
@@ -364,7 +320,7 @@ b.d.spct
 \texttt{filter\_spct} objects can be created from data tables, data frames, and \texttt{generic\_spct} simply by setting them as such. However, columns called \texttt{w.length} (wavelength values expressed in nm) and \texttt{Tpc} (T\%), \texttt{Tfr} (T as fraction of 1) and\textbackslash or \texttt{A} (absorbance ($\log_{10}$ based)) must be present.
 
 <<>>=
-c.spct <- setFilterSpct(data.table(w.length = 300:305, Tfr = 1))
+c.spct <- setFilterSpct(data.frame(w.length = 300:305, Tfr = 1))
 getTfrType(c.spct)
 class(c.spct)
 c.spct
@@ -373,7 +329,7 @@ c.spct
 If the spectral transmittance or absorbance is the internal component, then the parameter \texttt{Tfr.type} should be set to \texttt{"internal"} instead of the default of \texttt{"total"}. This information is used when printing and plotting source spectra.
 
 <<>>=
-c.i.spct <- setFilterSpct(data.table(w.length = 300:305, Tfr = 1), "internal")
+c.i.spct <- setFilterSpct(data.frame(w.length = 300:305, Tfr = 1), "internal")
 getTfrType(c.i.spct)
 class(c.i.spct)
 c.i.spct
@@ -382,7 +338,7 @@ c.i.spct
 \texttt{reflector\_spct} objects can be created from data tables, data frames, and \texttt{generic\_spct} simply by setting them as such. However, columns called \texttt{w.length} (wavelength values expressed in nm) and \texttt{Rpc} (R\%), and\textbackslash or \texttt{Rfr} (R as fraction of 1) must be present.
 
 <<>>=
-d.spct <- setReflectorSpct(data.table(w.length = 300:305, Rfr = 1))
+d.spct <- setReflectorSpct(data.frame(w.length = 300:305, Rfr = 1))
 class(d.spct)
 d.spct
 @
@@ -390,7 +346,7 @@ d.spct
 \texttt{object\_spct} objects can be created from data tables, data frames, and \texttt{generic\_spct} simply by setting them as such. However, columns called \texttt{w.length} (wavelength values expressed in nm), \texttt{Tfr} (Transmittance, T, as fraction of one), and\textbackslash or \texttt{Rfr} (Reflectance, R, as fraction of one) must be present.
 
 <<>>=
-e.spct <- setObjectSpct(data.table(w.length = 300:305, Tfr = 0.5, Rfr = 0.5))
+e.spct <- setObjectSpct(data.frame(w.length = 300:305, Tfr = 0.5, Rfr = 0.5))
 class(e.spct)
 e.spct
 @
@@ -406,7 +362,7 @@ merged.spct
 \texttt{chroma\_spct} objects can be created from data tables, data frames, and \texttt{generic\_spct} simply by setting them as such. However, columns called \texttt{w.length} (wavelength values expressed in nm) and \texttt{x}, \texttt{y} and \texttt{z} must be present, giving the trichromic chromaticity constants.
 
 <<>>=
-e.spct <- setChromaSpct(data.table(w.length = 300:305, x = 1, y = 1, z = 1))
+e.spct <- setChromaSpct(data.frame(w.length = 300:305, x = 1, y = 1, z = 1))
 class(e.spct)
 e.spct
 @
@@ -414,14 +370,14 @@ e.spct
 In all cases if the expected data is not available, then it is filled-in if possible with values.
 
 <<>>=
-f.spct <- setReflectorSpct(data.table(w.length = 300:305, Rpc = 100))
+f.spct <- setReflectorSpct(data.frame(w.length = 300:305, Rpc = 100))
 class(f.spct)
 f.spct
 @
 
 When required data is not available, and it cannot be calculated from other columns, the required column is added and filled with \texttt{NA}s.
 <<warning=TRUE, purl=FALSE>>=
-g.spct <- setReflectorSpct(data.table(w.length = 300:305, z = 1))
+g.spct <- setReflectorSpct(data.frame(w.length = 300:305, z = 1))
 class(g.spct)
 g.spct
 @
@@ -429,7 +385,7 @@ g.spct
 If no variable named \texttt{w.length} is present, and a variable named \texttt{wl} is found, it is renamed to \texttt{w.length}.
 
 <<error=TRUE, purl=FALSE>>=
-h.spct <- setReflectorSpct(data.table(wl = 300:305, Rfr = 1))
+h.spct <- setReflectorSpct(data.frame(wl = 300:305, Rfr = 1))
 class(h.spct)
 h.spct
 @
@@ -437,25 +393,25 @@ h.spct
 The range of the input is checked, and warnings or errors issued. The wavelength range test cannot be overridden as the most likely reason for it to be triggered is the expression of wavelengths in units other than the expected nanometres (nm).
 
 <<error=TRUE, purl=FALSE>>=
-h1.spct <- setReflectorSpct(data.table(wl = 5999:6001, Rfr = 1))
+h1.spct <- setReflectorSpct(data.frame(wl = 5999:6001, Rfr = 1))
 @
 
 Transmittance and reflectance values are checked to be within their valid range, and spectral irradiance values to be zero or positive. By default failure of this test generates a fatal error.
 
 <<error=TRUE, purl=FALSE>>=
-h2.spct <- setReflectorSpct(data.table(wl = 300:305, Rfr = -1))
+h2.spct <- setReflectorSpct(data.frame(wl = 300:305, Rfr = -1))
 @
 
 The constructor converts percents to fractions before applying the tests.
 
 <<error=TRUE, purl=FALSE>>=
-h3.spct <- setReflectorSpct(data.table(wl = 300:305, Rpc = -100))
+h3.spct <- setReflectorSpct(data.frame(wl = 300:305, Rpc = -100))
 @
 
 Setting \texttt{strict.range = FALSE} issues a warning instead of an error, and returns a \texttt{reflector\_spct} object possibly containing the \emph{bad data}.
 
 <<warning=TRUE, purl=FALSE>>=
-h4.spct <- setReflectorSpct(data.table(wl = 300:305, Rfr = -1),
+h4.spct <- setReflectorSpct(data.frame(wl = 300:305, Rfr = -1),
                             strict.range = FALSE)
 class(h4.spct)
 h4.spct
@@ -464,7 +420,7 @@ h4.spct
 Setting \texttt{strict.range = NULL} skips tests, and silently returns a \texttt{reflector\_spct} object possibly containing the \emph{bad data}.
 
 <<>>=
-h5.spct <- setReflectorSpct(data.table(wl = 300:305, Rfr = -1),
+h5.spct <- setReflectorSpct(data.frame(wl = 300:305, Rfr = -1),
                             strict.range = NULL)
 class(h5.spct)
 h5.spct
@@ -473,7 +429,7 @@ h5.spct
 The constructor converts percents to fractions before applying the tests.
 
 <<warning=TRUE, purl=FALSE>>=
-h6.spct <- setReflectorSpct(data.table(wl = 300:305, Rpc = -100),
+h6.spct <- setReflectorSpct(data.frame(wl = 300:305, Rpc = -100),
                             strict.range = FALSE)
 class(h6.spct)
 h6.spct
@@ -481,7 +437,7 @@ h6.spct
 
 \begin{framed}
 \noindent
-A very frequent source of off-range values is measurement noise. This noise should be preferably explicitly dealt with before any further calculations. Normal R and/or \texttt{data.table} syntax can be used resolve these problems by smoothing or replacement of the problem data. If the `bad' data is outside the range of interest it can be trimmed by means of function \texttt{trim\_spct} after creating a spectrum with setting \texttt{strict.range = FALSE} or setting \texttt{strict.range = NULL}
+A very frequent source of off-range values is measurement noise. This noise should be preferably explicitly dealt with before any further calculations. Normal R and/or \texttt{data.frame} syntax can be used resolve these problems by smoothing or replacement of the problem data. If the `bad' data is outside the range of interest it can be trimmed by means of function \texttt{trim\_spct} after creating a spectrum with setting \texttt{strict.range = FALSE} or setting \texttt{strict.range = NULL}
 \end{framed}
 
 We next use the example solar spectral irradiance data included in the package.
@@ -956,14 +912,6 @@ Table \ref{tab:options} lists all the recognized options affecting maths operato
 \addlinespace
 digits & 7 & $d - 3$ used by \texttt{summary} \\
 \midrule
-\textbf{Package \texttt{data.table}} & & \\
-\addlinespace
-datatable.print.nrows & $n = 100$ & nrow(\emph{spct}) $> n$ \texttt{}short'' printing \\
-datatable.print.topn & $n = 5 $ & nrows to print at top and bottom \\
-datatable.verbose & \texttt{FALSE} & give verbose output or not \\
-\midrule
-\textbf{R4photobioloy suite} & & \\
-\addlinespace
 photobiology.radiation.unit & \texttt{"energy"} & output (\wattnm) \\
                             & \texttt{"photon"} & output (\molnm) \\
 photobiology.filter.qty & \texttt{"transmittance"} & output ($/1$) \\
@@ -1126,22 +1074,21 @@ range(sun.spct * CIE())
 range(sun.spct * GEN.G())
 @
 
-Special \texttt{subset} methods for spectral objects have been implemented. These are used by default, and in contrast to
-\texttt{subset.data.table} preserve the attributes used by this package. The only difference, in the current implementation,
-compared to base R \texttt{subset()} is that the \texttt{select} arguments, is quietly ignored---this argument in base R
-can be used to select columns.
+Special \textit{Extract} methods for spectral objects have been implemented. These are used by default and preserve the attributes used by this package, except when the retruned value is a single column from the spectral object.
 
-In contrast to \texttt{trim\_spct}, \texttt{subset} never interpolates or inserts \emph{hinges}. On the other hand, the
-\texttt{subset} argument accepts any logical expression and can be consequently used to do subsetting, for example,
-based on factors.
+<<>>=
+sun.spct[1:10, ]
+sun.spct[1:10, 1]
+sun.spct[1:10, 1, drop = TRUE]
+sun.spct[1:10, "w.length", drop = TRUE]
+@
+
+In contrast to \texttt{trim\_spct}, \texttt{subset} never interpolates or inserts \emph{hinges}. On the other hand, the \texttt{subset} argument accepts any logical expression and can be consequently used to do subsetting, for example, based on factors. Both \texttt{subset()} and \texttt{trim()} methods preserve attributes.
 
 <<>>=
 subset(sun.spct, s.e.irrad > 0.2)
 subset(sun.spct, w.length > 600)
 subset(sun.spct, c(TRUE, rep(FALSE, 99)))
-subset(sun.spct, c(1:5, 10))
-selector <- 1:5
-subset(sun.spct, selector)
 @
 
 \subsection{Conversions between radiation units}
@@ -1149,14 +1096,8 @@ subset(sun.spct, selector)
 The functions \texttt{e2q} and \texttt{q2e} can be used on source spectra to convert spectral energy irradiance into spectral photon irradiance and vice versa. The first argument should be a spectrum, and the second optional argument sets the action with \texttt{"add"} and \texttt{"replace"} as possible values. In the second case the whole spectrum object is copied, while in the first case a column is added but the unchanged columns are references to the original ones, rather than copies.
 
 <<>>=
-b.spct
-b1.spct <- e2q(b.spct, "replace")
-b.spct
-b1.spct
-
-b2.spct <- e2q(b.spct, "add")
-b.spct
-b2.spct
+a.spct <-  e2q(sun.spct, "replace")
+a.spct
 @
 
 For \texttt{filter\_spct} objects functions \texttt{T2A} and \texttt{A2T} allow conversion between spectral transmittance and spectral absorbance and vice versa.

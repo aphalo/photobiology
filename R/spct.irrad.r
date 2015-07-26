@@ -235,12 +235,12 @@ irrad.source_spct <-
       names(irrad) <- "out of range"
     }
     names(irrad) <- paste(names(irrad), wb.name)
-    setattr(irrad, "time.unit", getTimeUnit(spct_x))
+    attr(irrad, "time.unit") <- getTimeUnit(spct_x)
     if (is_effective(spct_x)) {
-      setattr(irrad, "radiation.unit",
-              paste(unit.out, "irradiance", quantity, "effective:", getBSWFUsed(spct_x)))
+      attr(irrad, "radiation.unit") <-
+              paste(unit.out, "irradiance", quantity, "effective:", getBSWFUsed(spct_x))
     } else {
-      setattr(irrad, "radiation.unit", paste(unit.out, "irradiance", quantity))
+      attr(irrad, "radiation.unit") <- paste(unit.out, "irradiance", quantity)
     }
     return(irrad)
   }
@@ -497,12 +497,12 @@ fluence.source_spct <-
                  use.cached.mult = use.cached.mult, use.hinges = use.hinges,
                  allow.scaled = allow.scaled)
     if (unit.out %in% c("photon", "quantum")) {
-      setattr(return.value, "radiation.unit", "photon fluence (mol m-2)")
+      attr(return.value, "radiation.unit") <- "photon fluence (mol m-2)"
     } else if (unit.out == "energy") {
-      setattr(return.value, "radiation.unit", "energy fluence (J m-2)")
+      attr(return.value, "radiation.unit") <- "energy fluence (J m-2)"
     }
-    setattr(return.value, "exposure.duration", exposure.time)
-    setattr(return.value, "time.unit", NULL)
+    attr(return.value, "exposure.duration") <- exposure.time
+    attr(return.value, "time.unit") <- NULL
     return(return.value)
   }
 
@@ -590,9 +590,9 @@ q_fluence.source_spct <-
                  time.unit = exposure.time, wb.trim = wb.trim,
                  use.cached.mult = use.cached.mult, use.hinges = use.hinges,
                  allow.scaled = allow.scaled)
-    setattr(return.value, "radiation.unit", "photon fluence (mol m-2)")
-    setattr(return.value, "exposure.duration", exposure.time)
-    setattr(return.value, "time.unit", NULL)
+    attr(return.value, "radiation.unit") <- "photon fluence (mol m-2)"
+    attr(return.value, "exposure.duration") <- exposure.time
+    attr(return.value, "time.unit") <- NULL
     return(return.value)
   }
 
@@ -678,9 +678,9 @@ e_fluence.source_spct <-
                  time.unit = exposure.time, wb.trim = wb.trim,
                  use.cached.mult = use.cached.mult, use.hinges = use.hinges,
                  allow.scaled = allow.scaled)
-    setattr(return.value, "radiation.unit", "energy fluence (J m-2)")
-    setattr(return.value, "exposure.duration", exposure.time)
-    setattr(return.value, "time.unit", NULL)
+    attr(return.value, "radiation.unit") <- "energy fluence (J m-2)"
+    attr(return.value, "exposure.duration") <- exposure.time
+    attr(return.value, "time.unit") <- NULL
     return(return.value)
   }
 

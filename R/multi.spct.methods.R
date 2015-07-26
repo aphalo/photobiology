@@ -66,7 +66,7 @@ f_mspct <- function(mspct, f, ..., idx = NULL) {
                        sep = "_")
   }
 
-  setattr(z, "names", c(names(z)[1], qty.names))
+  names(z) <- c(names(z)[1], qty.names)
 
   mspct.nrow <- nrow(mspct)
   mspct.ncol <- ncol(mspct)

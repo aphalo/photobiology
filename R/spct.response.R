@@ -222,8 +222,8 @@ resp_spct <-
       names(response) <- "out of range"
     }
     names(response) <- paste(names(response), wb_name)
-    setattr(response, "time.unit", getTimeUnit(spct))
-    setattr(response, "radiation.unit", paste(unit.out, "response", quantity))
+    attr(response, "time.unit") <- getTimeUnit(spct)
+    attr(response, "radiation.unit") <- paste(unit.out, "response", quantity)
     return(response)
   }
 

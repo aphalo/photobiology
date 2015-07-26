@@ -53,9 +53,9 @@ smooth_spct.source_spct <- function(x, method = "custom", strength = 1, ...) {
       e2q(out.spct, action = "add", byref = TRUE)
     }
     if (!is.null(comment(x))) {
-      setattr(out.spct, "comment", paste("Smoothed using 'lowess', f =", signif(span, 3), "\n\n", comment(x)))
+      comment(out.spct) <- paste("Smoothed using 'lowess', f =", signif(span, 3), "\n\n", comment(x))
     } else {
-      setattr(out.spct, "comment", paste("Smoothed using 'lowess', f =", signif(span, 3)))
+      comment(out.spct) <- paste("Smoothed using 'lowess', f =", signif(span, 3))
     }
     return(out.spct)
   } else if (method == "supsmu") {
@@ -72,15 +72,15 @@ smooth_spct.source_spct <- function(x, method = "custom", strength = 1, ...) {
       e2q(out.spct, action = "add", byref = TRUE)
     }
     if (!is.null(comment(x))) {
-      setattr(out.spct, "comment", paste("Smoothed using 'supsmu', span =", signif(span, 3), "\n\n", comment(x)))
+      comment(out.spct) <- paste("Smoothed using 'supsmu', span =", signif(span, 3), "\n\n", comment(x))
     } else {
-      setattr(out.spct, "comment", paste("Smoothed using 'supsmu', span =", signif(span, 3)))
+      comment(out.spct) <-  paste("Smoothed using 'supsmu', span =", signif(span, 3))
     }
     return(out.spct)
   } else if (method == "custom") {
     # my own and inefficient method!
     # as the spectrum is already in energy units, we need to normalize thresholds
-    out.spct <- copy(x) # just to avoid editing the code
+    out.spct <- x # just to avoid editing the code
     q2e(out.spct, action = "replace", byref = TRUE)
     max_irrad <- max(out.spct[["s.e.irrad"]], na.rm=TRUE)
     smoothing_coef <- 1
@@ -119,9 +119,11 @@ smooth_spct.source_spct <- function(x, method = "custom", strength = 1, ...) {
       e2q(out.spct, action = "add", byref = TRUE)
     }
     if (!is.null(comment(x))) {
-      setattr(out.spct, "comment", paste("Smoothed using 'custom', smooth_limit =", signif(smooth_limit, 3), "\n\n", comment(x)))
+      comment(out.spct) <- paste("Smoothed using 'custom', smooth_limit =",
+                                 signif(smooth_limit, 3), "\n\n", comment(x))
     } else {
-      setattr(out.spct, "comment", paste("Smoothed using 'custom', smooth_limit =", signif(smooth_limit, 3)))
+      comment(out.spct) <-  paste("Smoothed using 'custom', smooth_limit =",
+                                  signif(smooth_limit, 3))
     }
     return(out.spct)
   }
@@ -146,9 +148,9 @@ smooth_spct.filter_spct <- function(x, method = "custom", strength = 1, ...) {
       T2A(out.spct, action = "add", byref = TRUE)
     }
     if (!is.null(comment(x))) {
-      setattr(out.spct, "comment", paste("Smoothed using 'lowess', f =", signif(span, 3), "\n\n", comment(x)))
+      comment(out.spct) <- paste("Smoothed using 'lowess', f =", signif(span, 3), "\n\n", comment(x))
     } else {
-      setattr(out.spct, "comment", paste("Smoothed using 'lowess', f =", signif(span, 3)))
+      comment(out.spct) <- paste("Smoothed using 'lowess', f =", signif(span, 3))
     }
     return(out.spct)
   } else if (method == "supsmu") {
@@ -165,15 +167,15 @@ smooth_spct.filter_spct <- function(x, method = "custom", strength = 1, ...) {
       T2A(out.spct, action = "add", byref = TRUE)
     }
     if (!is.null(comment(x))) {
-      setattr(out.spct, "comment", paste("Smoothed using 'supsmu', span =", signif(span, 3), "\n\n", comment(x)))
+      comment(out.spct) <- paste("Smoothed using 'supsmu', span =", signif(span, 3), "\n\n", comment(x))
     } else {
-      setattr(out.spct, "comment", paste("Smoothed using 'supsmu', span =", signif(span, 3)))
+      comment(out.spct) <-  paste("Smoothed using 'supsmu', span =", signif(span, 3))
     }
     return(out.spct)
   } else if (method == "custom") {
     # my own and inefficient method!
     # as the spectrum is already in energy units, we need to normalize thresholds
-    out.spct <- copy(x) # just to avoid editing the code
+    out.spct <- x # just to avoid editing the code
     A2T(out.spct, action = "replace", byref = TRUE)
     max_Tfr <- 1
     smoothing_coef <- 1
@@ -213,9 +215,10 @@ smooth_spct.filter_spct <- function(x, method = "custom", strength = 1, ...) {
       T2A(out.spct, action = "add", byref = TRUE)
     }
     if (!is.null(comment(x))) {
-      setattr(out.spct, "comment", paste("Smoothed using 'custom', smooth_limit =", signif(smooth_limit, 3), "\n\n", comment(x)))
+      comment(out.spct) <- paste("Smoothed using 'custom', smooth_limit =",
+                                 signif(smooth_limit, 3), "\n\n", comment(x))
     } else {
-      setattr(out.spct, "comment", paste("Smoothed using 'custom', smooth_limit =", signif(smooth_limit, 3)))
+      comment(out.spct) <- paste("Smoothed using 'custom', smooth_limit =", signif(smooth_limit, 3))
     }
     return(out.spct)
   }
@@ -235,9 +238,9 @@ smooth_spct.reflector_spct <- function(x, method = "custom", strength = 1, ...) 
     }
     setReflectorSpct(out.spct)
     if (!is.null(comment(x))) {
-      setattr(out.spct, "comment", paste("Smoothed using 'lowess', f =", signif(span, 3), "\n\n", comment(x)))
+      comment(out.spct) <- paste("Smoothed using 'lowess', f =", signif(span, 3), "\n\n", comment(x))
     } else {
-      setattr(out.spct, "comment", paste("Smoothed using 'lowess', f =", signif(span, 3)))
+      comment(out.spct) <- paste("Smoothed using 'lowess', f =", signif(span, 3))
     }
     return(out.spct)
   } else if (method == "supsmu") {
@@ -248,15 +251,15 @@ smooth_spct.reflector_spct <- function(x, method = "custom", strength = 1, ...) 
     }
     setReflectorSpct(out.spct)
     if (!is.null(comment(x))) {
-      setattr(out.spct, "comment", paste("Smoothed using 'supsmu', span =", signif(span, 3), "\n\n", comment(x)))
+      comment(out.spct) <- paste("Smoothed using 'supsmu', span =", signif(span, 3), "\n\n", comment(x))
     } else {
-      setattr(out.spct, "comment", paste("Smoothed using 'supsmu', span =", signif(span, 3)))
+      comment(out.spct) <- paste("Smoothed using 'supsmu', span =", signif(span, 3))
     }
     return(out.spct)
   } else if (method == "custom") {
     # my own and inefficient method!
     # as the spectrum is already in energy units, we need to normalize thresholds
-    out.spct <- copy(x) # just to avoid editing the code
+    out.spct <- x # we make a working copy
     max_Rfr <- 1
     smoothing_coef <- 1
     smoothing_hi_lim <- max(out.spct$w.length)
@@ -295,9 +298,10 @@ smooth_spct.reflector_spct <- function(x, method = "custom", strength = 1, ...) 
       T2A(out.spct, action = "add", byref = TRUE)
     }
     if (!is.null(comment(x))) {
-      setattr(out.spct, "comment", paste("Smoothed using 'custom', smooth_limit =", signif(smooth_limit, 3), "\n\n", comment(x)))
+      comment(out.spct) <- paste("Smoothed using 'custom', smooth_limit =",
+                                 signif(smooth_limit, 3), "\n\n", comment(x))
     } else {
-      setattr(out.spct, "comment", paste("Smoothed using 'custom', smooth_limit =", signif(smooth_limit, 3)))
+      comment(out.spct) <- paste("Smoothed using 'custom', smooth_limit =", signif(smooth_limit, 3))
     }
     return(out.spct)
   }
@@ -322,9 +326,9 @@ smooth_spct.response_spct <- function(x, method = "custom", strength = 1, ...) {
       e2q(out.spct, action = "add", byref = TRUE)
     }
     if (!is.null(comment(x))) {
-      setattr(out.spct, "comment", paste("Smoothed using 'lowess', f =", signif(span, 3), "\n\n", comment(x)))
+      comment(out.spct) <- paste("Smoothed using 'lowess', f =", signif(span, 3), "\n\n", comment(x))
     } else {
-      setattr(out.spct, "comment", paste("Smoothed using 'lowess', f =", signif(span, 3)))
+      comment(out.spct) <- paste("Smoothed using 'lowess', f =", signif(span, 3))
     }
     return(out.spct)
   } else if (method == "supsmu") {
@@ -341,15 +345,15 @@ smooth_spct.response_spct <- function(x, method = "custom", strength = 1, ...) {
       e2q(out.spct, action = "add", byref = TRUE)
     }
     if (!is.null(comment(x))) {
-      setattr(out.spct, "comment", paste("Smoothed using 'supsmu', span =", signif(span, 3), "\n\n", comment(x)))
+      comment(out.spct) <- paste("Smoothed using 'supsmu', span =", signif(span, 3), "\n\n", comment(x))
     } else {
-      setattr(out.spct, "comment", paste("Smoothed using 'supsmu', span =", signif(span, 3)))
+      comment(out.spct) <- paste("Smoothed using 'supsmu', span =", signif(span, 3))
     }
     return(out.spct)
   } else if (method == "custom") {
     # my own and inefficient method!
     # as the spectrum is already in energy units, we need to normalize thresholds
-    out.spct <- copy(x) # just to avoid editing the code
+    out.spct <- x # we make a working copy
     q2e(out.spct, action = "replace", byref = TRUE)
     max_response <- max(out.spct[["s.e.response"]], na.rm=TRUE)
     smoothing_coef <- 1
@@ -389,9 +393,10 @@ smooth_spct.response_spct <- function(x, method = "custom", strength = 1, ...) {
       e2q(out.spct, action = "add", byref = TRUE)
     }
     if (!is.null(comment(x))) {
-      setattr(out.spct, "comment", paste("Smoothed using 'custom', smooth_limit =", signif(smooth_limit, 3), "\n\n", comment(x)))
+      comment(out.spct) <- paste("Smoothed using 'custom', smooth_limit =",
+                                 signif(smooth_limit, 3), "\n\n", comment(x))
     } else {
-      setattr(out.spct, "comment", paste("Smoothed using 'custom', smooth_limit =", signif(smooth_limit, 3)))
+      comment(out.spct) <- paste("Smoothed using 'custom', smooth_limit =", signif(smooth_limit, 3))
     }
     return(out.spct)
   }

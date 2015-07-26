@@ -89,7 +89,8 @@ trim_spct <- function(spct, range=NULL, low.limit=NULL, high.limit=NULL,
       for (data.col in names.data) {
         spct.top[[data.col]] <- fill
       }
-      spct <- rbindlist(list(spct.top, spct))
+      spct <- plyr::rbind.fill(list(spct.top, spct))
+      spct <- dplyr::as_data_frame(spct)
       setGenericSpct(spct)
       low.end <- min(spct)
     } else {
@@ -114,7 +115,8 @@ trim_spct <- function(spct, range=NULL, low.limit=NULL, high.limit=NULL,
       for (data.col in names.data) {
         spct.bottom[[data.col]] <- fill
       }
-      spct <- rbindlist(list(spct, spct.bottom))
+      spct <- plyr::rbind.fill(list(spct, spct.bottom))
+      spct <- dplyr::as_data_frame(spct)
       setGenericSpct(spct)
       low.end <- max(spct)
     } else {
@@ -132,19 +134,18 @@ trim_spct <- function(spct, range=NULL, low.limit=NULL, high.limit=NULL,
     hinges <- c(low.limit - 1e-4, low.limit, high.limit, high.limit + 1e-4)
     spct <- insert_spct_hinges(spct, hinges)
   }
-  setkey(spct, w.length)
+  within.selector <- with(spct, w.length >= trim.range[1] & w.length < trim.range[2])
   if (is.null(fill)) {
-    spct <- spct[w.length %between% trim.range]
-  }
-  else {
+    spct <- spct[within.selector, ]
+  } else {
     for (data.col in names.data) {
-      spct[!w.length %between% trim.range, data.col] <- fill
+      spct[!within.selector, data.col] <- fill
     }
   }
-  # we use rbindlist which removes derived class attributes
-  setattr(spct, "class", class_spct)
+  # we use plyr::rbind.fill which removes derived class attributes
+  class(spct) <- class_spct
   if (!is.null(comment.spct)) {
-    setattr(spct, "comment", comment.spct)
+    comment(spct) <- comment.spct
   }
   if (!is.null(time.unit.spct) && !is.na(time.unit.spct)) {
     setTimeUnit(spct, time.unit.spct)
