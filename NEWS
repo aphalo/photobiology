@@ -12,6 +12,10 @@ No longer use data.table as a base class for spectral objects.
 limited compared to the complications introduced. **
 
 Extract methods and subset function should now work as expected!
+Now semantics follows normal R semantics of passing arguments
+by copy, except in a few exceptions.
+
+** code is not yet optimized for performance **
 
 photobiology 0.7.1
 ==================

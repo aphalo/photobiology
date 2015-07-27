@@ -129,13 +129,11 @@ This package defines a family of classes based on data frames which impose some 
 
 \subsection{Printing}
 
-Spectral objects are printed in the current version of the package by the function defined in package \texttt{dplyr}, consequently, it is possible to the option from this package to control printing. Below texttt{dplyr.print_max}, the number of rows above which only `head' rows are printed, is set to 10, instead of the default 20.
+Spectral objects are printed in the current version of the package by the function defined in package \texttt{dplyr}, consequently, it is possible to the option from this package to control printing. Below \texttt{dplyr.print\_max}, the number of rows above which only `head' rows are printed, is set to 5, instead of the default 20.
 
 <<set-up-printing>>=
-options(dplyr.print_max = 10)
+options(dplyr.print_max = 5)
 @
-
-The number of rows printed can be also controlled through an explicit argument to the second parameter of \texttt{head}.
 
 \subsection{Classes}
 
@@ -450,7 +448,7 @@ sun.spct
 We can set a spectrum object to a different type of spectrum, but as above this can result in NAs in case of missing data. We need to make a copy of \texttt{sun.spct}, because being part of the package, it is protected and should not be modified by user code.
 
 <<>>=
-i.spct <- copy(sun.spct)
+i.spct <- sun.spct
 setGenericSpct(i.spct)
 class(i.spct)
 @
@@ -746,8 +744,6 @@ In both examples above, the output is a list of two wavebands, but the `split' b
 split_bands(sun.spct, length.out = 2)
 split_bands(PAR(), length.out = 2)
 split_bands(c(200, 800), length.out = 3)
-# we use head show the first two out of 100 wavebands
-head(split_bands(c(200, 800), length.out = 100), 2)
 @
 
 Now we demonstrate case b). This case is handled by recursion, so each list element can be anything that is a valid input to the function, including a nested list. However, the returned value is always a flat list of wavebands.
@@ -1026,7 +1022,7 @@ derived classes as input.
 
 <<>>=
 # STOPGAP
-shade.spct <- copy(sun.spct)
+shade.spct <- sun.spct
 @
 
 By default an ID factor named \texttt{spct.idx} is added so that it is possible to identify the origin of the observations after the binding. If the supplied list has named members, then these names are used as factor levels. Otherwise level names are generated automatically.
@@ -1170,38 +1166,38 @@ Because of how \verb|[ ]| operators work in R, and especially on objects of clas
 
 Sometimes it is desirable to change the range of wavelengths included in a spectrum. If we are interested in a given part of the spectrum, there is no need to do calculations or plotting the whole spectrum. Sometimes we may want to expand the range of wavelengths, filling the expansion of all other variables with a certain value (i.e.\ a number, or NA.)
 
-We can supply the arguments \texttt{band}, \texttt{low.limit}, \texttt{high.limit}, and \texttt{fill}. Either \texttt{band} or \texttt{low.limit} and/or \texttt{high.limit} arguments should supplied, but not both at once. We use \texttt{head} to print the first six lines.
+We can supply the arguments \texttt{band}, \texttt{low.limit}, \texttt{high.limit}, and \texttt{fill}. Either \texttt{band} or \texttt{low.limit} and/or \texttt{high.limit} arguments should supplied, but not both at once.
 
 <<>>=
-head(trim_spct(sun.spct, PAR()))
+trim_spct(sun.spct, PAR())
 @
 
 
 <<>>=
-head(trim_spct(sun.spct, low.limit = 297))
+trim_spct(sun.spct, low.limit = 297)
 @
 
 By default \texttt{trim\_spct} trims its argument by copy, this can be changed by setting \texttt{byref = TRUE} but as \texttt{sun.spct} is protected as part of the package, we cannot use it here.
 
 <<>>=
-my_sun.spct <- copy(sun.spct)
-head(trim_spct(my_sun.spct, low.limit = 297, byref = TRUE))
+my_sun.spct <- sun.spct
+trim_spct(my_sun.spct, low.limit = 297, byref = TRUE)
 @
 
 The default \texttt{fill} value is \texttt{NULL} which means deleting the values outside the trimmed region. It is possible to supply a different argument.
 
 <<>>=
-head(trim_spct(sun.spct, low.limit = 297, fill = 0))
+trim_spct(sun.spct, low.limit = 297, fill = 0)
 @
 
 <<>>=
-head(trim_spct(sun.spct, low.limit = 297, fill = NA))
+trim_spct(sun.spct, low.limit = 297, fill = NA)
 @
 
 In addition, when fill is not \texttt{NULL}, expansion is possible.
 
 <<>>=
-head(trim_spct(sun.spct, low.limit = 290, fill = 0))
+trim_spct(sun.spct, low.limit = 290, fill = 0)
 @
 
 \subsection{Convoluting weights}
@@ -1934,111 +1930,6 @@ After `cleaning' the data we just use the trimmed ($\approx$ sub-setted) spectra
 
 If the data are in a data frame, instead of a spct object then \texttt{subset} or indexing can be used. If the data are available as vectors, different options: 1) create a data frame from your data, 2) use the function \texttt{trim\_tails()} from this package, or 3) just use R commands. Here we give examples of the use of \texttt{trim\_tails()}, using the same data as in earlier examples. First we `trim' (delete) all data for wavelengths shorter than 293~nm.
 
-\subsubsection{Smoothing}
-
-Function \texttt{smooth\_spct} can be used to smoothen noise in spectra. Smoothing is effective in removing noise, but in case of spectra with a fine structure like the one for sunlight, the details of real peaks and valleys are also smoothed out. Smoothing should be used with great care as it can cause bias and distort the shape of spectra.
-
-We first generate a noisy solar spectrum by adding random noise to a noiseless solar spectrum. We will use this data to demonstrate smoothing.
-
-<<noisy-solar, fig.width=7, fig.height=4, warning=TRUE, purl=FALSE>>=
-noisy.sun.spct <- sun.spct +
-  rnorm(length(sun.spct$w.length), sd = 0.04) *
-  irrad(sun.spct, quantity = "average")
-@
-
-
-The default \texttt{"custom''} method is our own, and is suitable for small amounts of noise, as it only applies smoothing to low signal regions of the spectrum, and also forces to zero those regions which are `detected' to contain mostly noise. The strength parameter should be used to adjust the sensitivity to noise according to the signal-to-noise ratio in the spectral data. This algorithm is quite safe, and tends to preserve most of the fine structure of spectra.
-
-<<smooth-custom, fig.width=7, fig.height=4>>=
-plot(smooth_spct(noisy.sun.spct))  +
-  labs(title = "Noisy solar spectrum: custom smoothing")
-@
-
-Methods \texttt{"lowess"} and \texttt{"supsmu"} are general purpose methods, which with their default values for the parameters tend to smooth spectra very aggressively. They remove a significant portion of the spectral detail but could be useful when the data is very noisy or when the overall shape of a spectrum is of interest rather than the finer structure.
-
-<<smooth-lowess, fig.width=7, fig.height=4>>=
-plot(smooth_spct(noisy.sun.spct, method = "lowess"))  +
-  labs(title = "Noisy solar spectrum: lowess smoothing")
-@
-
-<<smooth-supsmu, fig.width=7, fig.height=4>>=
-plot(smooth_spct(noisy.sun.spct, method = "supsmu"))  +
-  labs(title = "Noisy solar spectrum: supsmu smoothing")
-@
-
-Stronger or weaker smoothing is also possible.
-
-<<smooth-custom-10, fig.width=7, fig.height=4>>=
-plot(smooth_spct(noisy.sun.spct, method = "supsmu", strength = 10))  +
-  labs(title = "Noisy solar spectrum: supsmu smoothing, strength = 10")
-@
-
-
-Function \texttt{smooth\_spct} is generic with specializations for \texttt{source\_spct}, \texttt{filter\_spct}, \texttt{reflector\_spct}, and \texttt{response\_spct}.
-
-\subsubsection{Parallel averaging and summaries}
-
-It is quite easy to calculate `parallel' summary quantities using \texttt{data.table} syntax and function \texttt{rbindspct}. However, one should be careful with the handling of \texttt{NA} values, and specially make sure that all spectra have values for spectral irradiance at the same wavelengths. Similar code to that given in this section, using \texttt{source\_spct} objects, can be used for \texttt{filter\_spct}, \texttt{reflector\_spct}, and \texttt{response\_spct} objects.
-
-For the \texttt{source\_spct} example we generate four independent noisy replicates of the same solar spectrum, to demonstrate parallel summaries. Under normal use we would use \texttt{rbindspct} to bind the different true replicate measured spectra.
-
-<<four-noisy-solar, fig.width=7, fig.height=4>>=
-bound.spct <- rbindspct(list(sun.spct, sun.spct, sun.spct, sun.spct),
-                        idfactor = "ID")
-
-noisy.sun.spct <- bound.spct +
-  rnorm(length(bound.spct$w.length), sd = 0.05) *
-  irrad(sun.spct, quantity = "average")
-
-raw.data.fig <- ggplot(noisy.sun.spct, aes(w.length, s.e.irrad, colour = ID)) +
-  geom_point(alpha = 0.33)
-raw.data.fig
-@
-
-<<parallel-simple-1, fig.width=7, fig.height=4>>=
-
-mean.spct <- bound.spct[ , .(s.e.irrad = mean(s.e.irrad, na.rm = TRUE)),
-                        by = w.length]
-setSourceSpct(mean.spct)
-mean.spct
-
-mean.fig <- raw.data.fig + geom_line(data = mean.spct, colour = "black")
-mean.fig
-
-plot(mean.spct)
-@
-
-<<parallel-simple-2>>=
-median.spct <- bound.spct[ , .(s.e.irrad = median(s.e.irrad, na.rm = TRUE)),
-                          by = w.length]
-setSourceSpct(median.spct)
-median.spct
-@
-
-If the wavelength values in the different spectra are not the same, or if NAs are present, this slightly more complex code will make diagnosis of any problems much easier, and the resulting spectrum will still behave as a \texttt{source\_spct} object when applying any other functions.
-
-<<parallel-multiple-1>>=
-meanx.spct <- bound.spct[ , .(s.e.irrad = mean(s.e.irrad, na.rm = TRUE),
-                              sd = sd(s.e.irrad, na.rm = TRUE),
-                              n = length(na.omit(s.e.irrad)),
-                              n.na = sum(is.na(s.e.irrad))
-                              ), by = w.length]
-setSourceSpct(meanx.spct)
-meanx.spct
-@
-
-<<parallel-multiple-2>>=
-medianx.spct <- bound.spct[ , .(s.e.irrad = median(s.e.irrad, na.rm = TRUE),
-                                mad = mad(s.e.irrad, na.rm = TRUE),
-                                n = length(na.omit(s.e.irrad)),
-                                n.na = sum(is.na(s.e.irrad))
-                                ), by = w.length]
-setSourceSpct(medianx.spct)
-medianx.spct
-@
-
-The two code chunks above can be easily modified as needed, but they do not preserve all the attributes of the original spectra.
-
 \section{Astronomy}
 
 \subsection{Position of the sun}
@@ -2173,79 +2064,6 @@ And also a \texttt{color} method for \texttt{source\_spct}.
 color(sun.spct)
 color(sun.spct * rg630.spct)
 @
-
-Here we plot the RGB colours for the range covered by the CIE 2006 proposed standard calculated at each 1 nm step:
-
-<<>>=
-wl <- c(390, 829)
-
-my.colors <- w_length2rgb(wl[1]:wl[2])
-
-colCount <- 40 # number per row
-rowCount <- trunc(length(my.colors) / colCount)
-
-plot( c(1,colCount), c(0,rowCount), type = "n", ylab = "", xlab = "",
-      axes = FALSE, ylim = c(rowCount,0))
-title(paste("RGB colours for", as.character(wl[1]),
-            "to", as.character(wl[2]), "nm"))
-
-for (j in 0:(rowCount-1))
-{
-  base <- j*colCount
-  remaining <- length(my.colors) - base
-  RowSize <- ifelse(remaining < colCount, remaining, colCount)
-  rect((1:RowSize)-0.5,j-0.5, (1:RowSize)+0.5,j+0.5,
-       border = "black",
-       col = my.colors[base + (1:RowSize)])
-}
-
-@
-
-Given a color in any of the above ways, yields RGB values that can be used to locate the position of any colour on Maxwell's triangle. Here using R's predefined colours.
-
-<<>>=
-colours <- c("red", "green", "yellow", "white", "orange",
-             "blue", "pink", "purple")
-rgb.values <- col2rgb(colours)
-test.data <-
-  data.frame(colour = colours,
-             R = rgb.values[1, ], G = rgb.values[2, ], B = rgb.values[3, ])
-maxwell.tern <- ggtern(data = test.data,
-                       aes(x = R, y = G, z = B, label = colour, fill = colour)) +
-  geom_point(shape = 21, size = 4) + geom_text(hjust = -0.3) +
-  labs(x = "R", y = "G", z = "B") + scale_fill_identity()
-maxwell.tern
-@
-
-We simulate the spectra of filtered sunlight by multiplying the solar spectrum by filter transmittance spectra.
-
-<<>>=
-yellow.light.spct <- canary.yellow.new.spct * sun.spct
-green.light.spct <- moss.green.new.spct * sun.spct
-polyester.light.spct <- polyester.new.spct * sun.spct
-@
-
-Now using the filtered sunlight spectra we calculate colours based on human vision photoreceptors.
-
-<<>>=
-coord <- 1 # CMF
-yellow.filter <- color(yellow.light.spct)[coord]
-green.filter <- color(green.light.spct)[coord]
-polyester.filter <- color(polyester.light.spct)[coord]
-colours <- c(yellow.filter, green.filter, polyester.filter)
-rgb.values <- col2rgb(colours)
-test.data <- data.frame(colour = colours,
-                        R = rgb.values[1, ], G = rgb.values[2, ], B = rgb.values[3, ],
-                        labels = c("canary yellow", "moss green", "polyester"))
-maxwell.tern <- ggtern(data = test.data,
-                       aes(x = R, y = G, z = B, fill = colour, label = labels)) +
-  geom_point(shape = 21, size = 4) +
-  geom_text(hjust = -0.15) +
-  labs(x = "R", y = "G", z = "B")  +
-  scale_fill_identity()
-maxwell.tern
-@
-
 
 \section{Optimizing performance}
 

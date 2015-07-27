@@ -41,7 +41,7 @@ rmDerivedMspct <- function(x) {
   name <- substitute(x)
   mspctclasses <- mspct_classes()
   allclasses <- class(x)
-  class(x, "class") <- setdiff(allclasses, mspctclasses)
+  class(x) <- setdiff(allclasses, mspctclasses)
   attr(x, "mspct.version") <- NULL
   if (is.name(name)) {
     name <- as.character(name)

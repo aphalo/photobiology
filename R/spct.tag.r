@@ -129,15 +129,14 @@ tag.generic_spct <- function(x,
     wbs.rgb[i] <- color(wb)[1]
   }
   n <- i
-  x[["idx"]] <- n + 1L ## seems redundant to me now!
+  x[["wl.color"]] <- NA
+  x[["wb.f"]] <- NA
   for (i in 1L:n) {
-    x[["idx"]] <- with(x, ifelse(w.length >= wbs.wl.low[i] & w.length < wbs.wl.high[i],
-                                 as.integer(i), idx))
+    selector <- x[["w.length"]] >= wbs.wl.low[i] & x[["w.length"]] < wbs.wl.high[i]
+    x[selector, "wb.f"] <- wbs.name[i]
   }
-  wl.color.tmp <- w_length2rgb(x[["w.length"]]) ## why two steps!??
-  x[["wl.color"]] <-  wl.color.tmp
-  x[["wb.f"]] <- factor(wbs.name[idx], levels=wbs.name)
-  x[["idx"]] <- NULL
+  x[["wl.color"]] <-  w_length2rgb(x[["w.length"]])
+  x[["wb.f"]] <- factor(x[["wb.f"]], levels=wbs.name)
   tag.data <- list(time.unit=getTimeUnit(x),
                    wb.key.name="Bands",
                    wl.color=TRUE,
