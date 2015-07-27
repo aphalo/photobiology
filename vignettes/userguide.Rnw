@@ -1217,16 +1217,6 @@ sun.CIE.spct <- sun.spct * CIE()
 sun.CIE.spct
 @
 
-We here plot, using \texttt{ggplot2}, weighted (in red) and unweighted irradiances using simulated solar spectral irradiance data stored as a \texttt{source\_spct} object, and applying the BSWF weights on the fly.
-
-<<>>=
-ggplot(data = sun.spct, aes(x = w.length, y = s.e.irrad/max(s.e.irrad))) +
-  geom_line() +
-  geom_line(data = sun.spct * CIE(), colour = "red") +
-  labs(x = "Wavelength (nm)",
-       y = "UnWeighted and CIE98-weighted spectral irradiance (relative units)")
-@
-
 An alternative is as follows, where it is easier to use other aesthetics, or plot additional curves as shown in the chunk below.
 
 <<warning=FALSE>>=
@@ -1238,20 +1228,6 @@ combined.spct <- rbindspct(list(normalize(sun.spct * PG(), range = c(290,400)),
                            )
 @
 
-<<fig.width=8, fig.height=4>>=
-ggplot(data = combined.spct, aes(x = w.length, y = s.e.irrad, colour = BSWF)) +
-  geom_line() +
-  labs(x = "Wavelength (nm)",
-       y = "Effective spectral irradiance (relative units)")
-@
-
-<<>>=
-ggplot(data = combined.spct, aes(x = w.length, y = s.e.irrad)) +
-  geom_line() + facet_wrap(~BSWF, ncol = 2) +
-  labs(x = "Wavelength (nm)",
-       y = "Effective spectral irradiance (relative units)")
-@
-
 \subsubsection{Vectors}
 
 It is also possible to use vectors, and base R plot functions.
@@ -1261,12 +1237,6 @@ weighted.s.e.irrad <-
   with(sun.spct,
        s.e.irrad * calc_multipliers(w.length, CIE())
   )
-plot(weighted.s.e.irrad/max(weighted.s.e.irrad) ~ w.length, type = "l",
-     data = sun.spct,
-     col = "red",
-     xlab = "Wavelength (nm)",
-     ylab = "UnWeighted and CIE98-weighted spectral irradiance (relative units)")
-lines(s.e.irrad/max(s.e.irrad) ~ w.length, col = "black", data = sun.spct)
 @
 
 \subsection{Tagging with bands and colours}

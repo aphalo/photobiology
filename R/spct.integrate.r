@@ -22,7 +22,7 @@ integrate_spct <- function(spct) {
     integrals <- c(integrals, integrate_irradiance(spct[["w.length"]], spct[[eval(data.col)]]))
   }
   names(integrals) <- gsub("^s.", x = names.data, replacement = "")
-  comment(integral) <- comment.spct
+  comment(integrals) <- comment.spct
   return(integrals)
 }
 
