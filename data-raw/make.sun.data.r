@@ -8,7 +8,7 @@ sun.midday.data$s.e.irrad <- sun.midday.data$s.e.irrad / 1e3
 sun.midday.data$s.q.irrad <- with(sun.midday.data, as_quantum_mol(w.length, s.e.irrad))
 
 sun.data <- as_data_frame(sun.midday.data)
-sun.spct <- as.source_spct(sun.spct)
+sun.spct <- as.source_spct(sun.data)
 
 setwd("../data")
 
