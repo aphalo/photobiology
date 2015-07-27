@@ -22,7 +22,7 @@ integrate_spct <- function(spct) {
     integrals <- c(integrals, integrate_irradiance(spct[["w.length"]], spct[[eval(data.col)]]))
   }
   names(integrals) <- gsub("^s.", x = names.data, replacement = "")
-  comment(integral) <- comment.spct
+  comment(integrals) <- comment.spct
   return(integrals)
 }
 
@@ -158,8 +158,7 @@ interpolate_spct <- function(spct, w.length.out=NULL, fill.value=NA, length.out=
                   Rfr.type = getRfrType(spct))
   } else if (class_spct[1] == "response_spct") {
     setResponseSpct(new.spct,
-                    time.unit = getTimeUnit(spct),
-    )
+                    time.unit = getTimeUnit(spct))
   } else if (class_spct[1] == "chroma_spct") {
     setChromaSpct(new.spct)
   } else if (class_spct[1] == "generic_spct") {
