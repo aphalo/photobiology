@@ -1,4 +1,5 @@
 library("photobiology")
+
 context("normalize.spct")
 
 test_that("normalize", {

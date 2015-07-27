@@ -1,4 +1,5 @@
 library("photobiology")
+
 context("generic_spct")
 
 test_that("constructor", {
@@ -9,7 +10,6 @@ test_that("constructor", {
 
   expect_equal(names(my.spct), c("w.length", "x"))
   expect_is(my.spct, "generic_spct")
-  expect_is(my.spct, "data.table")
   expect_is(my.spct, "data.frame")
   expect_equal(min(my.spct), 400)
   expect_equal(max(my.spct), 409)

@@ -1,5 +1,4 @@
 library(photobiology)
-library(data.table)
 
 context("multi_spct")
 

@@ -145,7 +145,7 @@ fscale.reflector_spct <- function(x,
 fscale_spct <- function(spct, range, var.name, f, ...) {
   stopifnot(is.any_spct(spct), !is.null(var.name), length(var.name) == 1, var.name %in% names(spct))
   tmp.spct <- trim_spct(spct, range)
-  tmp.spct <- tmp.spct[ , .SD, .SDcols = c("w.length", var.name)]
+  tmp.spct <- tmp.spct[[c("w.length", var.name)]]
   # rescaling needed
   if (!is.null(f)) {
     if (is.character(f)) {
