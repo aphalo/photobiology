@@ -103,6 +103,7 @@ check.cps_spct <- function(x, byref=TRUE, strict.range = TRUE, ...) {
       }
     }
   }
+
   if (exists("cps", x, mode = "numeric", inherits=FALSE)) {
     return(x)
   } else if (exists("counts.per.second", x, mode = "numeric", inherits=FALSE)) {

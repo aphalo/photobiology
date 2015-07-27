@@ -55,7 +55,7 @@ insert_spct_hinges <- function(spct, hinges=NULL) {
     if (is.reflector_spct(spct) || is.object_spct(spct)) {
       Rfr.type <- getRfrType(spct)
     }
-    new.spct <- data.table(w.length = new.w.length)
+    new.spct <- dplyr::data_frame(w.length = new.w.length)
     first.iter <- TRUE
     for (data.col in idx.data) {
       temp.data <- spct[[data.col]]
@@ -80,7 +80,7 @@ insert_spct_hinges <- function(spct, hinges=NULL) {
     } else if (class_spct[1] == "generic_spct") {
       setGenericSpct(new.spct)
     }
-    setattr(new.spct, "comment", comment.spct)
+    comment(new.spct) <- comment.spct
     if (is.name(name)) {
       name <- as.character(name)
       assign(name, new.spct, parent.frame(), inherits = TRUE)

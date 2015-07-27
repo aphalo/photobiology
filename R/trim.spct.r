@@ -131,7 +131,7 @@ trim_spct <- function(spct, range=NULL, low.limit=NULL, high.limit=NULL,
 
   # insert hinges
   if (use.hinges) {
-    hinges <- c(low.limit - 1e-4, low.limit, high.limit, high.limit + 1e-4)
+    hinges <- c(low.limit - 1e-4, low.limit, high.limit - 1e-4, high.limit)
     spct <- insert_spct_hinges(spct, hinges)
   }
   within.selector <- with(spct, w.length >= trim.range[1] & w.length < trim.range[2])

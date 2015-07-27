@@ -1,3 +1,38 @@
+# print -------------------------------------------------------------------
+
+#' print a spectral object
+#'
+#' Print method for objects of spectral classes.
+#'
+#' @param x An object of one of the summary classes for spectra
+#' @param ... not used in current version
+#' @param n	Number of rows to show. If NULL, the default, will print all rows if
+#'   less than option dplyr.print_max. Otherwise, will print dplyr.print_min
+#' @param width	Width of text output to generate. This defaults to NULL, which
+#'   means use getOption("width") and only display the columns that fit on one
+#'   screen. You can also set option(dplyr.width = Inf) to override this default
+#'   and always print all columns.
+#'
+#' @return Returns \code{x} invisibly.
+#'
+#' @export
+#'
+#' @note At the moment just a modified copy of dplyr:::print.tbl_df.
+#'
+#' @examples
+#'
+#' print(sun.spct)
+#' print(sun.spct, n = 5)
+#'
+print.generic_spct <- function(x, ..., n = NULL, width = NULL)
+{
+  cat("Object: local ", class_spct(x)[1], " ", dplyr::dim_desc(x), "\n", sep = "")
+  cat("Wavelength (nm): range ", min(x), " to ", max(x), ", step ", unique(stepsize(x)), "\n", sep = "")
+  cat("\n")
+  print(dplyr::trunc_mat(x, n = n, width = width))
+  invisible(x)
+}
+
 # summary -----------------------------------------------------------------
 
 #' Summary of a spectral object
@@ -615,7 +650,9 @@ stepsize <- function(x, ...) UseMethod("stepsize")
 #' @describeIn stepsize Default function usable on numeric vectors.
 #' @export
 stepsize.default <- function(x, ...) {
-  return(range(diff(x)))
+  ifelse(length(x) > 1L,
+         range(diff(x)),
+         NA)
 }
 
 #' @describeIn stepsize  Method for "generic_spct" objects.
@@ -626,7 +663,10 @@ stepsize.default <- function(x, ...) {
 #' stepsize(sun.spct)
 #'
 stepsize.generic_spct <- function(x, ...) {
-  range(diff(x[["w.length"]]))
+  wl <- x[["w.length"]]
+  ifelse(length(wl) > 1,
+         range(diff(wl)),
+         NA_real_)
 }
 
 

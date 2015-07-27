@@ -267,12 +267,15 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
 #'   dimension. The default is FALSE unless the result is a single column.
 #'
 #' @details These methods are just wrappers on the method for data.frame objects
-#'   which copy the additional attributes used by these classes, and validates
-#'   the extracted object as a spectral object, except when drop is TRUE and the
-#'   returned object has only one dimension.
+#'   which copy the additional attributes used by these classes, and validate
+#'   the extracted object as a spectral object. When drop is TRUE and the
+#'   returned object has only one column, then a vector is returned. If the
+#'   extrated columns are more than one but do not include \code{w.length}, a
+#'   data frame is returned instead of a spectral object.
 #'
 #' @return An object of the same class as \code{x} but containing only the
-#'   subset of rows and columns that are selected.
+#'   subset of rows and columns that are selected. See details for special
+#'   cases.
 #'
 #' @method "[" generic_spct
 #'
@@ -287,15 +290,23 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
 #' @seealso \code{\link[base]{subset.data.frame}} and \code{\link{trim_spct}}
 #'
 "[.generic_spct" <-
-  function (x, i, j, drop = FALSE) {
-    xx <- `[.data.frame`(x, i, j, drop = drop)
+  function (x, i, j, drop = NULL) {
+    if (is.null(drop)) {
+      xx <- `[.data.frame`(x, i, j)
+    } else {
+      xx <- `[.data.frame`(x, i, j, drop = drop)
+    }
     if (is.data.frame(xx)) {
-      setGenericSpct(xx)
-      setNormalized(xx, getNormalized(x))
-      setScaled(xx, getScaled(x))
-      comment <- comment(x)
-      if (!is.null(comment)) {
-        comment(xx) <- comment
+      if ("w.length" %in% names(xx)) {
+        setGenericSpct(xx)
+        setNormalized(xx, getNormalized(x))
+        setScaled(xx, getScaled(x))
+        comment <- comment(x)
+        if (!is.null(comment)) {
+          comment(xx) <- comment
+        }
+      } else {
+        xx <- dplyr::as_data_frame(xx)
       }
     }
     xx
@@ -305,15 +316,23 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
 #' @rdname Extract.generic.spct
 #'
 "[.cps_spct" <-
-  function (x, i, j, drop = FALSE) {
-    xx <- `[.data.frame`(x, i, j, drop = drop)
+  function (x, i, j, drop = NULL) {
+    if (is.null(drop)) {
+      xx <- `[.data.frame`(x, i, j)
+    } else {
+      xx <- `[.data.frame`(x, i, j, drop = drop)
+    }
     if (is.data.frame(xx)) {
-      setCpsSPct(xx)
-      setNormalized(xx, getNormalized(x))
-      setScaled(xx, getScaled(x))
-      comment <- comment(x)
-      if (!is.null(comment)) {
-        comment(xx) <- comment
+      if ("w.length" %in% names(xx)) {
+        setCpsSPct(xx)
+        setNormalized(xx, getNormalized(x))
+        setScaled(xx, getScaled(x))
+        comment <- comment(x)
+        if (!is.null(comment)) {
+          comment(xx) <- comment
+        }
+      } else {
+        xx <- dplyr::as_data_frame(xx)
       }
     }
     xx
@@ -323,17 +342,26 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
 #' @rdname Extract.generic.spct
 #'
 "[.source_spct" <-
-  function (x, i, j, drop = FALSE) {
-    xx <- `[.data.frame`(x, i, j, drop = drop)
+  function (x, i, j, drop = NULL) {
+    if (is.null(drop)) {
+      xx <- `[.data.frame`(x, i, j)
+    } else {
+      xx <- `[.data.frame`(x, i, j, drop = drop)
+    }
     if (is.data.frame(xx)) {
-      time.unit <- getTimeUnit(x)
-      bswf.used <- getBSWFUsed(x)
-      setSourceSpct(x = xx, time.unit = time.unit, bswf.used = bswf.used, multiple.wl = Inf)
-      setNormalized(xx, getNormalized(x))
-      setScaled(xx, getScaled(x))
-      comment <- comment(x)
-      if (!is.null(comment)) {
-        comment(xx) <- comment
+      if ("w.length" %in% names(xx)) {
+        time.unit <- getTimeUnit(x)
+        bswf.used <- getBSWFUsed(x)
+        setSourceSpct(x = xx, time.unit = time.unit, bswf.used = bswf.used, multiple.wl = Inf)
+        setNormalized(xx, getNormalized(x))
+        setScaled(xx, getScaled(x))
+        comment <- comment(x)
+        if (!is.null(comment)) {
+          comment(xx) <- comment
+        }
+
+      } else {
+        xx <- dplyr::as_data_frame(xx)
       }
     }
     xx
@@ -343,16 +371,24 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
 #' @rdname Extract.generic.spct
 #'
 "[.response_spct" <-
-  function (x, i, j, drop = FALSE) {
-    xx <- `[.data.frame`(x, i, j, drop = drop)
+  function (x, i, j, drop = NULL) {
+    if (is.null(drop)) {
+      xx <- `[.data.frame`(x, i, j)
+    } else {
+      xx <- `[.data.frame`(x, i, j, drop = drop)
+    }
     if (is.data.frame(xx)) {
-      time.unit <- getTimeUnit(x)
-      setResponseSpct(x = xx, time.unit = time.unit, multiple.wl = Inf)
-      setNormalized(xx, getNormalized(x))
-      setScaled(xx, getScaled(x))
-      comment <- comment(x)
-      if (!is.null(comment)) {
-        comment(xx) <- comment
+      if ("w.length" %in% names(xx)) {
+        time.unit <- getTimeUnit(x)
+        setResponseSpct(x = xx, time.unit = time.unit, multiple.wl = Inf)
+        setNormalized(xx, getNormalized(x))
+        setScaled(xx, getScaled(x))
+        comment <- comment(x)
+        if (!is.null(comment)) {
+          comment(xx) <- comment
+        }
+      } else {
+        xx <- dplyr::as_data_frame(xx)
       }
     }
     xx
@@ -362,16 +398,24 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
 #' @rdname Extract.generic.spct
 #'
 "[.filter_spct" <-
-  function (x, i, j, drop = FALSE) {
-    xx <- `[.data.frame`(x, i, j, drop = drop)
+  function (x, i, j, drop = NULL) {
+    if (is.null(drop)) {
+      xx <- `[.data.frame`(x, i, j)
+    } else {
+      xx <- `[.data.frame`(x, i, j, drop = drop)
+    }
     if (is.data.frame(xx)) {
-      Tfr.type <- getTfrType(x)
-      setFilterSpct(x = xx, Tfr.type = Tfr.type, multiple.wl = Inf)
-      setNormalized(xx, getNormalized(x))
-      setScaled(xx, getScaled(x))
-      comment <- comment(x)
-      if (!is.null(comment)) {
-        comment(xx) <- comment
+      if ("w.length" %in% names(xx)) {
+        Tfr.type <- getTfrType(x)
+        setFilterSpct(x = xx, Tfr.type = Tfr.type, multiple.wl = Inf)
+        setNormalized(xx, getNormalized(x))
+        setScaled(xx, getScaled(x))
+        comment <- comment(x)
+        if (!is.null(comment)) {
+          comment(xx) <- comment
+        }
+      } else {
+        xx <- dplyr::as_data_frame(xx)
       }
     }
     xx
@@ -381,16 +425,24 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
 #' @rdname Extract.generic.spct
 #'
 "[.reflector_spct" <-
-  function (x, i, j, drop = FALSE) {
-    xx <- `[.data.frame`(x, i, j, drop = drop)
+  function (x, i, j, drop = NULL) {
+    if (is.null(drop)) {
+      xx <- `[.data.frame`(x, i, j)
+    } else {
+      xx <- `[.data.frame`(x, i, j, drop = drop)
+    }
     if (is.data.frame(xx)) {
-      Rfr.type <- getRfrType(x)
-      setReflectorSpct(x = xx, Rfr.type = Rfr.type, multiple.wl = Inf)
-      setNormalized(xx, getNormalized(x))
-      setScaled(xx, getScaled(x))
-      comment <- comment(x)
-      if (!is.null(comment)) {
-        comment(xx) <- comment
+      if ("w.length" %in% names(xx)) {
+        Rfr.type <- getRfrType(x)
+        setReflectorSpct(x = xx, Rfr.type = Rfr.type, multiple.wl = Inf)
+        setNormalized(xx, getNormalized(x))
+        setScaled(xx, getScaled(x))
+        comment <- comment(x)
+        if (!is.null(comment)) {
+          comment(xx) <- comment
+        }
+      } else {
+        xx <- dplyr::as_data_frame(xx)
       }
     }
     xx
@@ -400,18 +452,53 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
 #' @rdname Extract.generic.spct
 #'
 "[.object_spct" <-
-  function (x, i, j, drop = FALSE) {
-    xx <- `[.data.frame`(x, i, j, drop = drop)
+  function (x, i, j, drop = NULL) {
+    if (is.null(drop)) {
+      xx <- `[.data.frame`(x, i, j)
+    } else {
+      xx <- `[.data.frame`(x, i, j, drop = drop)
+    }
     if (is.data.frame(xx)) {
-      Tfr.type <- getTfrType(x)
-      Rfr.type <- getRfrType(x)
-      setObjectSpct(x = xx, Tfr.type = Tfr.type, Rfr.type = Rfr.type, multiple.wl = Inf)
-      setNormalized(xx, getNormalized(x))
-      setScaled(xx, getScaled(x))
-      comment <- comment(x)
-      if (!is.null(comment)) {
-        comment(xx) <- comment
+      if ("w.length" %in% names(xx)) {
+        Tfr.type <- getTfrType(x)
+        Rfr.type <- getRfrType(x)
+        setObjectSpct(x = xx, Tfr.type = Tfr.type, Rfr.type = Rfr.type, multiple.wl = Inf)
+        setNormalized(xx, getNormalized(x))
+        setScaled(xx, getScaled(x))
+        comment <- comment(x)
+        if (!is.null(comment)) {
+          comment(xx) <- comment
+        } else {
+          xx <- dplyr::as_data_frame(xx)
+        }
       }
     }
     xx
   }
+
+#' @export
+#' @rdname Extract.generic.spct
+#'
+"[.chroma_spct" <-
+  function (x, i, j, drop = NULL) {
+    if (is.null(drop)) {
+      xx <- `[.data.frame`(x, i, j)
+    } else {
+      xx <- `[.data.frame`(x, i, j, drop = drop)
+    }
+    if (is.data.frame(xx)) {
+      if ("w.length" %in% names(xx)) {
+        setChromaSPct(xx)
+        setNormalized(xx, getNormalized(x))
+        setScaled(xx, getScaled(x))
+        comment <- comment(x)
+        if (!is.null(comment)) {
+          comment(xx) <- comment
+        }
+      } else {
+        xx <- dplyr::as_data_frame(xx)
+      }
+    }
+    xx
+  }
+

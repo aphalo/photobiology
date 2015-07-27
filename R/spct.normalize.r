@@ -42,8 +42,8 @@ normalize_spct <- function(spct, range, norm, var.name) {
         warning("Invalid character '", norm, "'value in 'norm'")
         idx <- NA
       }
-      scale.factor <- 1 / as.numeric(tmp.spct[idx, var.name])
-      norm <- tmp.spct[idx, w.length]
+      scale.factor <- 1 / tmp.spct[idx, var.name, drop = TRUE]
+      norm <- tmp.spct[idx, "w.length", drop = TRUE]
     } else if (is.numeric(norm)) {
       if (norm >= min(tmp.spct) && norm <= max(tmp.spct)) {
         tmp.spct <- tmp.spct[ , c("w.length", var.name)]
@@ -60,11 +60,9 @@ normalize_spct <- function(spct, range, norm, var.name) {
   } else {
     return(spct)
   }
-  out.spct[[var.name]] <- out.spct[ , var.name] * scale.factor
-  class(out.spct) <- class(spct)
-  comment(out.spct) <- comment(spct)
-  setNormalized(out.spct, norm) <- norm
-  out.spct
+  spct[[var.name]] <- spct[ , var.name, drop = TRUE] * scale.factor
+  spct <- setNormalized(spct, norm)
+  spct
 }
 
 #' @describeIn normalize Normalize a \code{source_spct} object.
