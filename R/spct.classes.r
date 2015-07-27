@@ -47,24 +47,26 @@ check.generic_spct <- function(x, byref=TRUE, strict.range=TRUE, multiple.wl = 1
   # fix old class attributes
   class.x <- class_spct(x)
   if (!("tbl_df") %in% class(x)){
-    dplyr::as_data_frame(x)
+    x <- dplyr::as_data_frame(x)
   }
   class(x) <- union(class.x, class(x))
   # check variables
+  if (exists("wl", x, mode = "numeric", inherits=FALSE)) {
+    x <- dplyr::rename(x, w.length = wl)
+  } else if (exists("wavelength", x, mode = "numeric", inherits=FALSE)) {
+    x <- dplyr::rename(x, w.length = wavelength)
+  } else if (exists("Wavelength", x, mode = "numeric", inherits=FALSE)) {
+    x <- dplyr::rename(x, w.length = Wavelength)
+  }
+
   if (exists("w.length", x, mode = "numeric", inherits=FALSE)) {
     if (is.unsorted(x[["w.lengtgh"]], na.rm = TRUE, strictly = TRUE)) {
       stop("'w.length' must be sorted in ascending order and have unique values")
     }
-  } else if (exists("wl", x, mode = "numeric", inherits=FALSE)) {
-    dplyr::rename(x, c("wl" = "w.length"))
-  } else if (exists("wavelength", x, mode = "numeric", inherits=FALSE)) {
-    dplyr::rename(x, c("wavelength" = "w.length"))
-  } else if (exists("Wavelength", x, mode = "numeric", inherits=FALSE)) {
-    dplyr::rename(x, c("wavelength" = "w.length"))
   } else {
-    warning("No wavelength data found in generic_spct")
-    x[["w.length"]] <- NA
+      stop("No wavelength data found in generic_spct")
   }
+
   wl.min <- min(x[["w.length"]], na.rm = TRUE)
   #  wl.max <- max(x$w.length, na.rm = TRUE)
   if (wl.min == Inf) {
@@ -107,7 +109,7 @@ check.cps_spct <- function(x, byref=TRUE, strict.range = TRUE, ...) {
   if (exists("cps", x, mode = "numeric", inherits=FALSE)) {
     return(x)
   } else if (exists("counts.per.second", x, mode = "numeric", inherits=FALSE)) {
-    dplyr::rename(x, c("counts.per.second" = "cps"))
+    x <- dplyr::rename(x, cps = counts.per.second)
     warning("Found variable 'counts.per.second', renamed it to 'cps'")
     return(x)
   } else {
@@ -141,12 +143,15 @@ check.filter_spct <- function(x, byref=TRUE, strict.range = TRUE, multiple.wl = 
   }
   # check and replace 'other' quantity names
   if (exists("transmittance", x, mode = "numeric", inherits=FALSE)) {
-    dplyr::rename(x, c("transmittance" = "Tpc"))
+    x <- dplyr::rename(x, Tpc = transmittance)
     warning("Found varaible 'transmittance', I am assuming it is expressed as percent")
   }
   if (exists("absorbance", x, mode = "numeric", inherits=FALSE)) {
-    dplyr::rename(x, c("absorbance" = "A"))
+    x <- dplyr::rename(x, A = absorbance)
     warning("Found varaible 'absorbance', I am assuming it is in log10-based absorbance units")
+  } else if (exists("Absorbance", x, mode = "numeric", inherits=FALSE)) {
+    x <- dplyr::rename(x, A = Absorbance)
+    warning("Found varaible 'Absorbance', I am assuming it is in log10-based absorbance units")
   }
   # look for percentages and change them into fractions of one
   if (exists("Tfr", x, mode = "numeric", inherits=FALSE)) {
@@ -171,7 +176,7 @@ check.filter_spct <- function(x, byref=TRUE, strict.range = TRUE, multiple.wl = 
 
 #' @describeIn check Specialization for reflector_spct.
 #' @export
-check.reflector_spct <- function(x, byref=TRUE, strict.range = TRUE, ...) {
+check.reflector_spct <- function(x, byref = TRUE, strict.range = TRUE, ...) {
 
   range_check <- function(x, strict.range) {
     Rfr.min <- min(x$Rfr, na.rm = TRUE)
@@ -192,7 +197,7 @@ check.reflector_spct <- function(x, byref=TRUE, strict.range = TRUE, ...) {
     warning("Missing Rfr.type attribute replaced by 'total'")
   }
   if (exists("reflectance", x, mode = "numeric", inherits=FALSE)) {
-    dplyr::rename(x, c("reflectance" = "Rpc"))
+    x <- dplyr::rename(x, Rpc = reflectance)
     warning("Found variable 'reflectance', I am assuming it is expressed as percent")
   }
   if (exists("Rfr", x, mode = "numeric", inherits=FALSE)) {
@@ -252,7 +257,7 @@ check.object_spct <- function(x, byref=TRUE, strict.range = TRUE, multiple.wl = 
     warning("Missing Rfr.type attribute replaced by 'total'")
   }
   if (exists("reflectance", x, mode = "numeric", inherits=FALSE)) {
-    dplyr::rename(x, c("reflectance" = "Rpc"))
+    x <- dplyr::rename(x, Rpc = reflectance)
     warning("Found variable 'reflectance', I am assuming it is expressed as percent")
   }
   if (exists("Rfr", x, mode = "numeric", inherits=FALSE)) {
@@ -265,7 +270,7 @@ check.object_spct <- function(x, byref=TRUE, strict.range = TRUE, multiple.wl = 
   }
 
   if (exists("transmittance", x, mode = "numeric", inherits=FALSE)) {
-    dplyr::rename(x, c("transmittance" = "Tpc"))
+    x <- dplyr::rename(x, Tpc = transmittance)
     warning("Found varaible 'transmittance', I am assuming it expressed as percent")
   }
   if (exists("Tfr", x, mode = "numeric", inherits=FALSE)) {
@@ -323,7 +328,8 @@ check.source_spct <- function(x, byref=TRUE, strict.range=FALSE, multiple.wl = 1
     if (exists("s.e.irrad", x, inherits = FALSE)) {
       s.e.min <- min(x$s.e.irrad, na.rm = TRUE)
       if (s.e.min < 0) {
-        message.text <- paste("Negative spectral energy irradiance values; minimun s.e.irrad =", signif(s.e.min, 2))
+        message.text <- paste("Negative spectral energy irradiance values; minimun s.e.irrad =",
+                              signif(s.e.min, 2))
         if (strict.range) {
           stop(message.text)
         } else {

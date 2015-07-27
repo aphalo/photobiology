@@ -290,7 +290,7 @@ is.any_spct(a.spct)
 We convert \texttt{a.spct} into a \texttt{generic\_spct} object, and query its class.
 
 <<>>=
-setGenericSpct(a.spct)
+a.spct <- as.generic_spct(a.spct)
 class(a.spct)
 class_spct(a.spct)
 is.generic_spct(a.spct)

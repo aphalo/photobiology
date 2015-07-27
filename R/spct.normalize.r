@@ -48,7 +48,7 @@ normalize_spct <- function(spct, range, norm, var.name) {
       if (norm >= min(tmp.spct) && norm <= max(tmp.spct)) {
         tmp.spct <- tmp.spct[ , c("w.length", var.name)]
         class(tmp.spct) <- class(spct)
-        scale.factor <- 1 / interpolate_spct(tmp.spct, norm)[ , var.name]
+        scale.factor <- 1 / interpolate_spct(spct = tmp.spct, w.length.out = norm)[ , eval(var.name)]
       } else {
         warning("'norm = ", norm, "' value outside spectral data range of ",
                 round(min(tmp.spct), 1), " to ", round(max(tmp.spct), 1), " (nm)")

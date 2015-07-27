@@ -488,7 +488,7 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
     }
     if (is.data.frame(xx)) {
       if ("w.length" %in% names(xx)) {
-        setChromaSPct(xx)
+        setChromaSpct(xx)
         setNormalized(xx, getNormalized(x))
         setScaled(xx, getScaled(x))
         comment <- comment(x)

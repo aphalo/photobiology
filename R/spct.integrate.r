@@ -22,7 +22,7 @@ integrate_spct <- function(spct) {
     integrals <- c(integrals, integrate_irradiance(spct[["w.length"]], spct[[eval(data.col)]]))
   }
   names(integrals) <- gsub("^s.", x = names.data, replacement = "")
-  comment(integrals) <- comment.spct
+  comment(integral) <- comment.spct
   return(integrals)
 }
 
@@ -116,7 +116,7 @@ interpolate_spct <- function(spct, w.length.out=NULL, fill.value=NA, length.out=
     return(spct)
   }
   names.spct <- names(spct)
-  names.data <- names.spct[names.spct != "w.length"]
+  names.data <- setdiff(names.spct, "w.length")
   max.spct <- max(spct)
   min.spct <- min(spct)
   max.wl.out <- max(w.length.out)
@@ -130,7 +130,7 @@ interpolate_spct <- function(spct, w.length.out=NULL, fill.value=NA, length.out=
     }
   }
   w.length.out <- unique(sort(w.length.out))
-  new.spct <- dplyr:data_frame(w.length = w.length.out)
+  new.spct <- dplyr::data_frame(w.length = w.length.out)
 
   for (data.col in names.data) {
     temp.values <-  with(spct, get(data.col))
@@ -158,7 +158,8 @@ interpolate_spct <- function(spct, w.length.out=NULL, fill.value=NA, length.out=
                   Rfr.type = getRfrType(spct))
   } else if (class_spct[1] == "response_spct") {
     setResponseSpct(new.spct,
-                    time.unit = getTimeUnit(spct))
+                    time.unit = getTimeUnit(spct),
+    )
   } else if (class_spct[1] == "chroma_spct") {
     setChromaSpct(new.spct)
   } else if (class_spct[1] == "generic_spct") {

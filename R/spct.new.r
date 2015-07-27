@@ -207,8 +207,6 @@ object_spct <- function(w.length, Rfr=NULL, Tfr=NULL,
 merge.generic_spct <- function(x, y, by = "w.length", ...) {
   class.x <- class(x)
   class.y <- class(y)
-  x <- dplyr::as_data_frame ## needed?
-  y <- dplyr::as_data_frame(y) ## needed?
   if (identical(class.x, class.y)) {
     z <- dplyr::inner_join(x, y, by = by, ...)
     class(z) <- class.x
