@@ -27,7 +27,8 @@
 print.generic_spct <- function(x, ..., n = NULL, width = NULL)
 {
   cat("Object: local ", class_spct(x)[1], " ", dplyr::dim_desc(x), "\n", sep = "")
-  cat("Wavelength (nm): range ", min(x), " to ", max(x), ", step ", unique(stepsize(x)), "\n", sep = "")
+  cat("Wavelength (nm): range ", paste(range(x), sep="", collapse = " to "), ", step ",
+      paste(unique(stepsize(x)), sep="", collapse = " to "), "\n", sep = "")
   cat("\n")
   print(dplyr::trunc_mat(x, n = n, width = width))
   invisible(x)
@@ -643,6 +644,9 @@ min.generic_spct <- function(..., na.rm = FALSE) {
 #'
 #' @param x an R object
 #' @param ... not used in current version
+#'
+#' @return A numeric vector of length 2 with min and maximum
+#'   stepsize values.
 #' @export
 #' @family wavelength summaries
 stepsize <- function(x, ...) UseMethod("stepsize")
@@ -650,9 +654,11 @@ stepsize <- function(x, ...) UseMethod("stepsize")
 #' @describeIn stepsize Default function usable on numeric vectors.
 #' @export
 stepsize.default <- function(x, ...) {
-  ifelse(length(x) > 1L,
-         range(diff(x)),
-         NA)
+  if (length(x) > 1) {
+    range(diff(x))
+  } else {
+    c(NA, NA)
+  }
 }
 
 #' @describeIn stepsize  Method for "generic_spct" objects.
@@ -664,11 +670,12 @@ stepsize.default <- function(x, ...) {
 #'
 stepsize.generic_spct <- function(x, ...) {
   wl <- x[["w.length"]]
-  ifelse(length(wl) > 1,
-         range(diff(wl)),
-         NA_real_)
+  if (length(wl) > 1) {
+    range(diff(wl))
+  } else {
+    c(NA, NA)
+  }
 }
-
 
 #' @describeIn spread  Method for "generic_spct" objects.
 #'

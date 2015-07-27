@@ -110,17 +110,13 @@ resp_spct <-
 
     if (unit.out=="photon") {
       spct <- e2q(spct)
-      # the line below removes all non-data.frame attributes
-      spct <- spct[ , list(w.length, s.q.response)]
+      spct <- spct[ , c("w.length", "s.q.response")]
     } else if (unit.out=="energy") {
       spct <- q2e(spct)
-      # the line below removes all non-data.frame attributes
-      spct <- spct[ , list(w.length, s.e.response)]
+      spct <- spct[ , c("w.length", "s.e.response")]
     } else {
       stop("Invalid 'unit.out'")
     }
-    # we restore the .spct class and attributes
-    setResponseSpct(spct, time.unit = time.unit)
 
     # if the waveband is undefined then use all data
     if (is.null(w.band)){

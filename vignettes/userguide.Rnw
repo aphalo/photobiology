@@ -560,7 +560,7 @@ For example, sometimes it may be useful to change the time unit used for expresi
 <<>>=
 ten.minutes.spct <-
   convertTimeUnit(sun.spct, time.unit = duration(10, "minutes"), byref = FALSE)
-head(ten.minutes.spct)
+ten.minutes.spct
 getTimeUnit(ten.minutes.spct)
 @
 
@@ -1880,8 +1880,8 @@ e_irrad(sun.spct, UVA(), use.hinges = TRUE)
 The function \texttt{integrate\_spct} integrates every column holding numeric values from a spectrum object, except for \texttt{w.length}, returning a total value no longer expressed per nanometre.
 
 <<>>=
-my.sun.spct <- copy(sun.spct)
-my.sun.spct[ , one := 1L]
+my.sun.spct <- sun.spct
+my.sun.spct$one <- 1
 integrate_spct(my.sun.spct)
 spread(sun.spct)
 @
@@ -1909,28 +1909,25 @@ We will discuss these three approaches in each of the sections below.
 In the following example we use a longer wavelength (297~nm) just to show how the function works, because the example spectral data set starts at 293~nm.
 
 <<example-sun>>=
-head(sun.spct, 2L)
+sun.spct
 @
 
 Sub-setting can be easily done as follows if the data are in a data.frame (of course, replacing \texttt{w.length} with the name used in your data frame for the wavelengths array):
 
 <<example-trim-noise>>=
-trimmed.sun.spct <- trim_spct(sun.spct, low.limit = 297)
-head(trimmed.sun.spct, 2L)
+trim_spct(sun.spct, low.limit = 297)
 @
 
 The code above deletes the data outside the limits. However, if we supply a different value than the default NULL for the parameter \texttt{fill}, the w.length values are kept, and the trimmed spectral irradiance values replaced by the value supplied.
 
 <<example-set-na>>=
-trimmed.sun.spct <- trim_spct(sun.spct, low.limit = 297, fill = NA)
-head(trimmed.sun.spct, 2L)
+trim_spct(sun.spct, low.limit = 297, fill = NA)
 @
 
 The code above sets the spectral irradiance values for wavelengths outside the limits to \texttt{NA}, but, for example when plotting, it is useful to replace the noise in the spectrum with zeros.
 
 <<example-set-zero>>=
-trimmed.sun.spct <- trim_spct(sun.spct, low.limit = 297, fill = 0)
-head(trimmed.sun.spct, 2L)
+trim_spct(sun.spct, low.limit = 297, fill = 0)
 @
 
 After `cleaning' the data we just use the trimmed ($\approx$ sub-setted) spectral data object in further calculations or plotting.
@@ -1947,8 +1944,6 @@ We first generate a noisy solar spectrum by adding random noise to a noiseless s
 noisy.sun.spct <- sun.spct +
   rnorm(length(sun.spct$w.length), sd = 0.04) *
   irrad(sun.spct, quantity = "average")
-plot(sun.spct) + labs(title = "Noiseless solar spectrum")
-plot(noisy.sun.spct) + labs(title = "Noisy solar spectrum")
 @
 
 

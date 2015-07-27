@@ -498,8 +498,9 @@ setFilterSpct <- function(x, Tfr.type=c("total", "internal"),
   if ((is.object_spct(x) || is.filter_spct(x)) && getTfrType(x) != "unknown") {
     if (length(Tfr.type) > 1) {
       Tfr.type <- getTfrType(x)
-    } else {
-      warning("Replacing existing attribute 'Tfr.type' ", getTfrType(x))
+    } else if (Tfr.type != getTfrType(x)) {
+      warning("Changing attribute 'Tfr.type' from ", getTfrType(x),
+              " into ", Tfr.type)
     }
   }
   rmDerivedSpct(x)
@@ -534,8 +535,9 @@ setReflectorSpct <- function(x, Rfr.type=c("total", "specular"),
   if ((is.object_spct(x) || is.reflector_spct(c)) && getRfrType(x) != "unknown") {
     if (length(Rfr.type) > 1) {
       Rfr.type <- getRfrType(x)
-    } else {
-      warning("Replacing existing attribute 'Rfr.type' ", getRfrType(x))
+    } else if (Rfr.type != getRfrType(x)) {
+      warning("Changing attribute 'Rfr.type' from ", getRfrType(x),
+              " into ", Rfr.type)
     }
   }
   rmDerivedSpct(x)
@@ -571,15 +573,17 @@ setObjectSpct <- function(x,
   if ((is.filter_spct(x) || is.object_spct(x)) && getTfrType(x) != "unknown") {
     if (length(Tfr.type) > 1) {
       Tfr.type <- getTfrType(x)
-    } else {
-      warning("Replacing existing attribute 'Tfr.type' ", getTfrType(x))
+    } else if (Tfr.type != getTfrType(x)) {
+      warning("Changing attribute 'Tfr.type' from ", getTfrType(x),
+              " into ", Tfr.type)
     }
   }
   if ((is.reflector_spct(x) || is.object_spct(x)) && getRfrType(x) != "unknown") {
     if (length(Rfr.type) > 1) {
       Rfr.type <- getRfrType(x)
-    } else {
-      warning("Replacing existing attribute 'Rfr.type' ", getRfrType(x))
+    } else if (Rfr.type != getRfrType(x)) {
+      warning("Changing attribute 'Rfr.type' from ", getRfrType(x),
+              " into ", Rfr.type)
     }
   }
   rmDerivedSpct(x)
@@ -1022,41 +1026,39 @@ as.chroma_spct <- function(x) {
 setTimeUnit <- function(x,
                         time.unit = c("second", "hour", "day", "exposure", "none"),
                         override.ok = FALSE) {
-  name <- substitute(x)
-  old.time.unit <- getTimeUnit(x)
-  override.ok <- override.ok ||
-    is.na(old.time.unit) ||
-    is.character(old.time.unit) &&
-    old.time.unit %in% c("unknown", "none", time.unit)
-  if (!override.ok) {
-    warning("Overrriding existing 'time.unit' '", old.time.unit,
-            "' with '", time.unit, "' may invalidate data!")
+  if (!(class(x)[1] %in% c("source_spct", "response_spct"))) {
+    return(invisible(x))
   }
-
+  name <- substitute(x)
   if (length(time.unit) > 1) {
     if (getTimeUnit(x) != "unknown") {
       time.unit <- getTimeUnit(x)
     } else {
       time.unit <- time.unit[[1]]
     }
+  } else {
+    old.time.unit <- getTimeUnit(x)
+    override.ok <- override.ok ||
+      is.character(old.time.unit) && old.time.unit %in% c("unknown", "none", time.unit)
+    if (!override.ok && old.time.unit != time.unit[1]) {
+      warning("Overrriding existing 'time.unit' '", old.time.unit,
+              "' with '", time.unit, "' may invalidate data!")
+    }
   }
-  if (is.source_spct(x) || is.response_spct(x)) {
-    if (is.character(time.unit)) {
-      if (!(time.unit %in% c("second", "hour", "day", "none", "exposure", "unknown"))) {
-        warning("Unrecognized 'time.unit' argument ", time.unit, " set to 'unknown'.")
-        time.unit <- "unknown"
-      }
-      else if (lubridate::is.duration(time.unit)) {
-        if (time.unit <= duration(0, "seconds")) {
-          stop("When 'time.unit' is a duration, it must be > 0")
-        }
-      }
+  if (is.character(time.unit)) {
+    if (!(time.unit %in% c("second", "hour", "day", "none", "exposure", "unknown"))) {
+      warning("Unrecognized 'time.unit' argument ", time.unit, " set to 'unknown'.")
+      time.unit <- "unknown"
     }
-    attr(x, "time.unit") <- time.unit
-    if (is.name(name)) {
-      name <- as.character(name)
-      assign(name, x, parent.frame(), inherits = TRUE)
+  } else if (lubridate::is.duration(time.unit)) {
+    if (time.unit <= duration(0, "seconds")) {
+      stop("When 'time.unit' is a duration, it must be > 0")
     }
+  }
+  attr(x, "time.unit") <- time.unit
+  if (is.name(name)) {
+    name <- as.character(name)
+    assign(name, x, parent.frame(), inherits = TRUE)
   }
   invisible(x)
 }

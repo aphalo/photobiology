@@ -77,7 +77,7 @@ irrad.source_spct <-
            time.unit = NULL,
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
-           use.hinges=getOption("photobiology.use.hinges", default=NULL),
+           use.hinges = getOption("photobiology.use.hinges", default = NULL),
            allow.scaled = FALSE, ...){
     # we have a default, but we check for invalid arguments
     if (!allow.scaled && (is_normalized(spct) || is_scaled(spct))) {
@@ -106,7 +106,7 @@ irrad.source_spct <-
       unit.out <- "photon"
     }
     if (is.null(w.band)) {
-      w.band <- waveband(spct_x)
+      w.band <- waveband(spct)
     }
     if (is.waveband(w.band)) {
       # if the argument is a single w.band, we enclose it in a list
@@ -114,7 +114,7 @@ irrad.source_spct <-
       # cludge but lets us avoid treating it as a special case
       w.band <- list(w.band)
     }
-    w.band <- trim_waveband(w.band=w.band, range=spct_x, trim=wb.trim)
+    w.band <- trim_waveband(w.band=w.band, range=spct, trim=wb.trim)
     # we check if the list elements are named, if not we set a flag
     # and an empty vector that will be later filled in with data from
     # the waveband definitions.
@@ -132,7 +132,7 @@ irrad.source_spct <-
     # spectral resolution data, and speed up the calculations
     # a lot in such cases
     if (is.null(use.hinges)) {
-      use.hinges <- stepsize(spct_x)[2] > getOption("photobiology.auto.hinges.limit", default = 0.5) # nm
+      use.hinges <- stepsize(spct)[2] > getOption("photobiology.auto.hinges.limit", default = 0.5) # nm
     }
     # we collect all hinges and insert them in one go
     # this may alter a little the returned values
@@ -145,7 +145,7 @@ irrad.source_spct <-
         }
       }
       if (!is.null(all.hinges)) {
-        spct_x <- insert_spct_hinges(spct_x, all.hinges)
+        spct <- insert_spct_hinges(spct, all.hinges)
       }
     }
 
@@ -154,9 +154,9 @@ irrad.source_spct <-
     # we add the missing it.
     # As spectra are passed by reference the changes propagate to the argument
     if (unit.out == "energy") {
-      q2e(spct_x, byref = TRUE)
+      q2e(spct, byref = TRUE)
     } else if (unit.out == "photon") {
-      e2q(spct_x, byref = TRUE)
+      e2q(spct, byref = TRUE)
     } else {
       stop("Unrecognized value for unit.out")
     }
@@ -181,14 +181,14 @@ irrad.source_spct <-
           wb.name[i] <- paste(getBSWFUsed(spct), "*", wb.name[i])
         }
         # calculate the multipliers
-        mult <- calc_multipliers(w.length=spct_x$w.length, w.band=wb, unit.out=unit.out,
+        mult <- calc_multipliers(w.length=spct$w.length, w.band=wb, unit.out=unit.out,
                                  unit.in=unit.in, use.cached.mult=use.cached.mult)
         # calculate weighted spectral irradiance
         # the ifelse is needed to overrride NAs in spectral data for regions where mult == 0
         if (unit.out == "energy") {
-          irr <- with(spct_x, integrate_irradiance(w.length, ifelse(mult == 0, 0, s.e.irrad * mult)))
+          irr <- with(spct, integrate_irradiance(w.length, ifelse(mult == 0, 0, s.e.irrad * mult)))
         } else {
-          irr <- with(spct_x, integrate_irradiance(w.length, ifelse(mult == 0, 0, s.q.irrad * mult)))
+          irr <- with(spct, integrate_irradiance(w.length, ifelse(mult == 0, 0, s.q.irrad * mult)))
         }
         irrad[i] <- irr
       }
@@ -199,7 +199,7 @@ irrad.source_spct <-
                 "' not supported when using BSWFs, returning 'total' instead")
         quantity <- "total"
       } else {
-        total <- irrad_spct(spct_x, w.band=NULL,
+        total <- irrad_spct(spct, w.band=NULL,
                             unit.out=unit.out,
                             quantity="total",
                             time.unit = time.unit,
@@ -235,10 +235,10 @@ irrad.source_spct <-
       names(irrad) <- "out of range"
     }
     names(irrad) <- paste(names(irrad), wb.name)
-    attr(irrad, "time.unit") <- getTimeUnit(spct_x)
-    if (is_effective(spct_x)) {
+    attr(irrad, "time.unit") <- getTimeUnit(spct)
+    if (is_effective(spct)) {
       attr(irrad, "radiation.unit") <-
-              paste(unit.out, "irradiance", quantity, "effective:", getBSWFUsed(spct_x))
+              paste(unit.out, "irradiance", quantity, "effective:", getBSWFUsed(spct))
     } else {
       attr(irrad, "radiation.unit") <- paste(unit.out, "irradiance", quantity)
     }
