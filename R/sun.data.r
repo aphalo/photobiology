@@ -7,7 +7,7 @@
 #'
 #' @details \itemize{ \item w.length (nm), range 293 to 800 nm. \item s.e.irrad
 #' (W m-2 nm-1) \item s.q.irrad (mol m-2 nm-1) }
-#' 
+#'
 #'
 #' @author Anders K. Lindfors (data)
 #' @references Lindfors, A.; Heikkilä, A.; Kaurola, J.; Koskela, T. & Lakkala,
@@ -17,8 +17,7 @@
 #'
 #' @docType data
 #' @keywords datasets
-#' @format A data-frame- and data-table compatible "source_spct" object with 508
-#'   rows and 3 variables
+#' @format A \code{source_spct} object with 508 rows and 3 variables
 #' @name sun.spct
 NULL
 
@@ -31,7 +30,7 @@ NULL
 #'
 #' @details \itemize{ \item w.length (nm), range 293 to 800 nm. \item s.e.irrad
 #' (W m-2 nm-1) \item s.q.irrad (mol m-2 nm-1) }
-#' 
+#'
 #' @author Anders K. Lindfors (data)
 #'
 #' @references Lindfors, A.; Heikkilä, A.; Kaurola, J.; Koskela, T. & Lakkala,
@@ -41,7 +40,7 @@ NULL
 #'
 #' @docType data
 #' @keywords datasets
-#' @format A data frame object with 508 rows and 3 variables
+#' @format A \code{data.frame} object with 508 rows and 3 variables
 #' @name sun.data
 NULL
 
@@ -53,7 +52,7 @@ NULL
 #'
 #' \itemize{ \item w.length (nm), range 290 to 800 nm. \item s.e.irrad (J d-1
 #' m-2 nm-1) \item s.q.irrad (mol d-1 m-2 nm-1) }
-#' 
+#'
 #' @author Anders K. Lindfors (data)
 #' @references Lindfors, A.; Heikkilä, A.; Kaurola, J.; Koskela, T. & Lakkala,
 #' K. (2009) Reconstruction of Solar Spectral Surface UV Irradiances Using
@@ -62,8 +61,7 @@ NULL
 #'
 #' @docType data
 #' @keywords datasets
-#' @format A data-frame- and data-table compatible "source_spct" object with 511
-#'   rows and 3 variables
+#' @format A \code{source_spct} object with 511 rows and 3 variables
 #' @name sun.daily.spct
 NULL
 
@@ -75,7 +73,7 @@ NULL
 #'
 #' \itemize{ \item w.length (nm), range 290 to 800 nm. \item s.e.irrad (J d-1
 #' m-2 nm-1) \item s.q.irrad (mol d-1 m-2 nm-1) }
-#' 
+#'
 #' @author Anders K. Lindfors (data)
 #' @references Lindfors, A.; Heikkilä, A.; Kaurola, J.; Koskela, T. & Lakkala,
 #' K. (2009) Reconstruction of Solar Spectral Surface UV Irradiances Using
@@ -84,6 +82,6 @@ NULL
 #'
 #' @docType data
 #' @keywords datasets
-#' @format A data-frame object with 511 rows and 3 variables
+#' @format A \code{data.frame} object with 511 rows and 3 variables
 #' @name sun.daily.data
 NULL

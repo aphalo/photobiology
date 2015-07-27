@@ -418,9 +418,8 @@ check.chroma_spct <- function(x, byref=TRUE, strict.range=TRUE, multiple.wl = 1L
 #'
 rmDerivedSpct <- function(x) {
   name <- substitute(x)
-  spctclasses <- spct_classes()
   allclasses <- class(x)
-  class(x) <- setdiff(allclasses, spctclasses)
+  class(x) <- setdiff(allclasses, spct_classes())
   attr(x, "spct.version") <- NULL
   if (is.name(name)) {
     name <- as.character(name)
@@ -431,11 +430,10 @@ rmDerivedSpct <- function(x) {
 
 #' Convert an R object into a spectrum object.
 #'
-#' Sets the class attibute of a data.frame or data.table or a different spectral
-#' object to "generic_spct". If the object is a data.frame is is made a
-#' data.table in the process.
+#' Sets the class attibute of a data.frame or an object of a derived
+#' class to "generic_spct".
 #'
-#' @param x data.frame, data.table, list or generic_spct and derived classes
+#' @param x data.frame, list or generic_spct and derived classes
 #' @param multiple.wl numeric Maximum number of repeated w.length entries with same value.
 #'
 #' @export

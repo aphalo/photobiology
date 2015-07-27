@@ -37,9 +37,8 @@ FEL_spectrum <- function(w.length, k=FEL, fill=NA) {
                           ((w.length[i] * 1e-9)^5 * (exp(0.014388 / (w.length[i] * 1e-9) / k$TK) - 1)))
   }
   s.e.irrad[fill.selector] <- fill
-  out.data <- data.table(w.length, s.e.irrad)
+  out.data <- source_spct(w.length, s.e.irrad)
   comment(out.data) <- paste("Fitted spectrum for:", comment(k))
-  setSourceSpct(out.data)
   return(out.data)
 }
 

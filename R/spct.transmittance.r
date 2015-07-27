@@ -101,8 +101,7 @@ transmittance_spct <-
       spct <- as.filter_spct(spct)
     }
     Tfr.type <- getTfrType(spct)
-    spct <- spct[ , c("w.length", "Tfr")] # data.table removes attributes!
-    setTfrType(spct, Tfr.type = Tfr.type)
+    spct <- spct[ , c("w.length", "Tfr")]
     # if the waveband is undefined then use all data
     if (is.null(w.band)){
       w.band <- waveband(spct)

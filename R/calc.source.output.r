@@ -91,10 +91,14 @@ calc_source_output <- function(w.length.out,
   # we check unit.in and and convert the output spectrum accordingly
 
   if (unit.in == "energy") {
-    out.data <- data.table(w.length = w.length.out, s.e.irrad = s.irrad.out, s.q.irrad = as_quantum_mol(w.length.out, s.irrad.out))
-    } else if (unit.in == "photon") {
-    out.data <- data.table(w.length = w.length.out, s.e.irrad = as_energy(w.length.out, s.irrad.out), s.q.irrad = s.irrad.out)
-    } else {
+    out.data <- source_spct(w.length = w.length.out,
+                            s.e.irrad = s.irrad.out,
+                            s.q.irrad = as_quantum_mol(w.length.out, s.irrad.out))
+  } else if (unit.in == "photon") {
+    out.data <- source_spct(w.length = w.length.out,
+                            s.e.irrad = as_energy(w.length.out, s.irrad.out),
+                            s.q.irrad = s.irrad.out)
+  } else {
     warning("Bad argument for unit.in: ", unit.in)
     return(NA)
   }
@@ -102,10 +106,10 @@ calc_source_output <- function(w.length.out,
   # do scaling
 
   if (!is.null(scaled)) {
-    if (scaled=="peak") {
+    if (scaled == "peak") {
       e.div <- max(out.data$s.e.irrad, na.rm=TRUE)
       q.div <- max(out.data$s.q.irrad, na.rm=TRUE)
-    } else if (scaled=="area") {
+    } else if (scaled == "area") {
       s.irrad.na.sub <- out.data$s.e.irrad
       s.irrad.na.sub[is.na(s.irrad.na.sub)] <- 0.0
       e.div <- integrate_irradiance(w.length.out, s.irrad.na.sub)
@@ -116,11 +120,11 @@ calc_source_output <- function(w.length.out,
       warning("Ignoring unsupported scaled argument: ", scaled)
       e.div <- q.div <- 1.0
     }
-    out.data$s.e.irrad[!out.fill.selector] <- out.data$s.e.irrad[!out.fill.selector] / e.div
-    out.data$s.q.irrad[!out.fill.selector] <- out.data$s.q.irrad[!out.fill.selector] / q.div
+    out.data[!out.fill.selector, s.e.irrad] <- out.data[!out.fill.selector, s.e.irrad] / e.div
+    out.data[!out.fill.selector, s.q.irrad] <- out.data[!out.fill.selector, s.q.irrad] / q.div
   }
-  out.data$s.e.irrad[out.fill.selector] <- fill
-  out.data$s.q.irrad[out.fill.selector] <- fill
+  out.data[out.fill.selector, s.e.irrad] <- fill
+  out.data[out.fill.selector, s.q.irrad] <- fill
 
   return(out.data)
 }

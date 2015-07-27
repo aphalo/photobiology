@@ -3,8 +3,8 @@
 
 #' Makes one spectral object from a list of many
 #'
-#' Same as \code{rbindlist} from package data.table but preserves class of
-#' spectral objects. Has different defaults for use names and fill.
+#' A wrapper on \code{dplyr::rbind_fill} that preserves class and other
+#' attributes of spectral objects.
 #'
 #' @param l A \code{source_mspct}, \code{filter_mspct}, \code{reflector_mspct},
 #'   \code{response_mspct}, \code{chroma_mspct}, \code{cps_mspct},
@@ -32,16 +32,10 @@
 #'   (skipped) or an empty object (0 rows). \code{rbindspc} is most useful when
 #'   there are a variable number of (potentially many) objects to stack.
 #'   \code{rbindspct} always returns at least a \code{generic_spct} as long as
-#'   all elements in l are spectra. The main difference between
-#'   \code{rbindspct(l)} and \code{rbindlist(l)} from package \pkg{data.table}
-#'   is in their \emph{default value for formal arguments} \code{use.names}, and
-#'   in that \code{rbindlist} will NOT return a spct object even when the list l
-#'   contains only spct objects. In other words it drops derived classes, so its
-#'   use should be avoided for spectral objects, and \code{rbindspct(l)} should
-#'   be always used when working with spectral objects.
+#'   all elements in l are spectra.
 #'
 #' @note Note that any additional 'user added' attributes that might exist on
-#'   individual items of the input list would not be preserved in the result.
+#'   individual items of the input list will not be preserved in the result.
 #'   The attributes used by the \code{photobiology} package are preserved, and
 #'   if they are not consistent accross the bound spectral objetcs, a warning is
 #'   issued.
@@ -53,9 +47,9 @@
 #'
 #' @export
 #'
-#' @seealso  \code{\link{data.table}}
+#' @seealso  \code{\link[dplyr]{rbind_fill}}
 #'
-#' @note data.table::rbindlist is called internally and the result returned is
+#' @note \code{dplyr::rbind_fill} is called internally and the result returned is
 #'   the highest class in the inheritance hierachy which is common to all
 #'   elements in the list. If not all members of the list belong to one of the
 #'   \code{_spct} classes, an error is triggered. The function sets all data in
@@ -93,7 +87,6 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
   }
   add.idfactor <- is.character(idfactor)
 
-  # original rbindlist from data.table strips attributes and sets class to data.table
   if (is.null(l) || length(l) < 1) {
     return(l)
   }
@@ -110,10 +103,10 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
   normalized.input <- sapply(l, FUN = is_normalized)
   effective.input <- sapply(l, FUN = is_effective)
   if (any(scaled.input) && !all(scaled.input)) {
-    warning("Only some of the spectra being row-bound have been previously scaled")
+    warning("Spectra being row-bound have been differently re-scaled")
   }
   if (any(normalized.input) && length(unique(normalized.input)) > 1L) {
-    warning("Only some of the spectra being row-bound have been previously normalized")
+    warning("Spectra being row-bound have been differently normalized")
   }
   for (i in 1:length(l)) {
     class_spct <- class(l[[i]])

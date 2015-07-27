@@ -85,7 +85,7 @@ trim_spct <- function(spct, range=NULL, low.limit=NULL, high.limit=NULL,
       # expand short tail
       low.tail.length <- low.end - low.limit
       low.tail.w.length <- seq(from = low.limit, to = low.end - 1, length=low.tail.length)
-      spct.top <- data.table(w.length = low.tail.w.length)
+      spct.top <- dplyr::data_frame(w.length = low.tail.w.length)
       for (data.col in names.data) {
         spct.top[[data.col]] <- fill
       }
@@ -111,7 +111,7 @@ trim_spct <- function(spct, range=NULL, low.limit=NULL, high.limit=NULL,
       # expand short tail
       high.tail.length <- high.limit - high.end
       high.tail.w.length <- seq(from = high.end + 1, to = high.limit, length = high.tail.length)
-      spct.bottom <- data.table(w.length = high.tail.w.length)
+      spct.bottom <- dplyr::data_frame(w.length = high.tail.w.length)
       for (data.col in names.data) {
         spct.bottom[[data.col]] <- fill
       }
@@ -142,7 +142,8 @@ trim_spct <- function(spct, range=NULL, low.limit=NULL, high.limit=NULL,
       spct[!within.selector, data.col] <- fill
     }
   }
-  # we use plyr::rbind.fill which removes derived class attributes
+  # we now use plyr::rbind.fill which does not remove attributes
+  # most of the code below may be redundant!!!
   class(spct) <- class_spct
   if (!is.null(comment.spct)) {
     comment(spct) <- comment.spct
