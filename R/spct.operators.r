@@ -912,7 +912,7 @@ A2T.filter_spct <- function(x, action="add", byref=FALSE, ...) {
   if (exists("Tfr", x, inherits=FALSE)) {
     NULL
   } else if (exists("A", x, inherits=FALSE)) {
-    x[["Tfr"]] <- 10^-z[["A"]]
+    x[["Tfr"]] <- 10^-x[["A"]]
   } else {
     x[["Tfr"]] <- NA
   }
@@ -1130,7 +1130,7 @@ q2e.source_spct <- function(x, action="add", byref=FALSE, ...) {
   if (exists("s.e.irrad", x, inherits=FALSE)) {
     NULL
   } else if (exists("s.q.irrad", x, inherits=FALSE)) {
-    x[["s.e.irrad"]] <- x[["s.q.irrad"]] / e2qmol_multipliers(z[["w.length"]])
+    x[["s.e.irrad"]] <- x[["s.q.irrad"]] / e2qmol_multipliers(x[["w.length"]])
   } else {
     x[["s.e.irrad"]] <- NA
   }

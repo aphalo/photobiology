@@ -63,7 +63,7 @@ check.generic_spct <- function(x, byref=TRUE, strict.range=TRUE, multiple.wl = 1
     dplyr::rename(x, c("wavelength" = "w.length"))
   } else {
     warning("No wavelength data found in generic_spct")
-    x[ , w.length := NA]
+    x[["w.length"]] <- NA
   }
   wl.min <- min(x[["w.length"]], na.rm = TRUE)
   #  wl.max <- max(x$w.length, na.rm = TRUE)
@@ -157,7 +157,6 @@ check.filter_spct <- function(x, byref=TRUE, strict.range = TRUE, multiple.wl = 
     range_check(x, strict.range=strict.range)
     return(x)
   } else if (exists("A", x, mode = "numeric", inherits=FALSE)) {
-    #    x[ , Tfr := A2T(A)]
     if (min(x$A, na.rm = TRUE) < 0) {
       warning("Off-range min absorbance value: ", signif(min(x$A, na.rm = TRUE), 2), " instead of 0")
     }

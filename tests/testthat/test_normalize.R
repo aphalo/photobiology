@@ -4,7 +4,7 @@ context("normalize.spct")
 
 test_that("normalize", {
 
-  my.spct <- copy(sun.spct)
+  my.spct <- sun.spct
 
   expect_equal(max(normalize(my.spct)$s.e.irrad), 1)
   expect_equal(max(normalize(my.spct, norm = "max")$s.e.irrad), 1)

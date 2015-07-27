@@ -60,9 +60,9 @@ insert_spct_hinges <- function(spct, hinges=NULL) {
     for (data.col in idx.data) {
       temp.data <- spct[[data.col]]
       if (is.numeric(temp.data)) {
-        new.spct[ , names.spct[data.col] := put_hinges(old.w.length, temp.data, hinges)]
+        new.spct[[names.spct[data.col] ]] <- put_hinges(old.w.length, temp.data, hinges)
       } else {
-        new.spct[ , names.spct[data.col] := NA]
+        new.spct[[names.spct[data.col] ]] <- NA
       }
     }
     if(class_spct[1] == "source_spct") {
