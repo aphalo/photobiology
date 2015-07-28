@@ -29,7 +29,7 @@ test_that("fscale", {
   my.spct <- q2e(sun.spct, action = "replace")
 
   expect_equivalent(integrate_spct(fscale(my.spct, f = "total")), 1)
-  expect_less_than(integrate_spct(fscale(my.spct, f = "mean")) * average_spct(my.spct) - irrad(my.spct), 0.25)
+  expect_less_than(average_spct(fscale(my.spct, f = "mean")), 1)
   expect_warning(irrad(fscale(my.spct, f = "mean")))
   expect_equal(irrad(fscale(my.spct, f = "mean")), NA)
   expect_named(fscale(my.spct), setdiff(names(my.spct), "s.q.irrad"))

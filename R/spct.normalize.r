@@ -232,9 +232,14 @@ getNormalized <- function(x) {
 #' @family rescaling functions
 #'
 setNormalized <- function(x, norm = FALSE) {
-  if (is.na(norm) || norm) {
+  name <- substitute(x)
+  if (is.any_spct(x) && (is.na(norm) || norm)) {
     attr(x, "normalized") <- norm
+    if (is.name(name)) {
+      name <- as.character(name)
+      assign(name, x, parent.frame(), inherits = TRUE)
+    }
   }
-  return(x)
+  invisible(x)
 }
 

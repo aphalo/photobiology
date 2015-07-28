@@ -143,8 +143,7 @@ fscale.reflector_spct <- function(x,
 #' @keywords internal
 #'
 fscale_spct <- function(spct, range, var.name, f, ...) {
-  stopifnot(is.any_spct(spct), !is.null(var.name), length(var.name) == 1, var.name %in% names(spct))
-  tmp.spct <- trim_spct(spct, range)
+  tmp.spct <- trim_spct(spct, range, byref = FALSE)
   tmp.spct <- tmp.spct[ , c("w.length", var.name)]
   # rescaling needed
   if (!is.null(f)) {
@@ -170,7 +169,7 @@ fscale_spct <- function(spct, range, var.name, f, ...) {
   out.spct[[var.name]] <- out.spct[[var.name]] / summary.value
   class(out.spct) <- class(spct)
   comment(out.spct) <- comment(spct)
-  setScaled(out.spct, TRUE)
+  setScaled(out.spct, list(multiplier = 1 / summary.value, f = f))
   setTimeUnit(out.spct, getTimeUnit(spct))
   setTfrType(out.spct, getTfrType(spct))
   out.spct
@@ -197,7 +196,7 @@ is_scaled <- function(x) {
     return(NA)
   }
   spct.attr <- attr(x, "scaled", exact = TRUE)
-  as.logical(!is.null(spct.attr) && as.logical(spct.attr))
+  as.logical(!is.null(spct.attr) && as.logical(spct.attr[[1]]))
 }
 
 # getScaled -----------------------------------------------------------
@@ -223,7 +222,7 @@ getScaled <- function(x) {
       # need to handle objects created with old versions
       scaled <- FALSE
     }
-    return(scaled[[1]])
+    return(scaled)
   } else {
     return(NA)
   }
@@ -244,9 +243,14 @@ getScaled <- function(x) {
 #' @family rescaling functions
 #'
 setScaled <- function(x, scaled = FALSE) {
-  if (is.na(scaled) || scaled) {
+  name <- substitute(x)
+  if (is.any_spct(x) && !is.null(scaled)) {
     attr(x, "scaled") <- scaled
+    if (is.name(name)) {
+      name <- as.character(name)
+      assign(name, x, parent.frame(), inherits = TRUE)
+    }
   }
-  return(x)
+  invisible(x)
 }
 

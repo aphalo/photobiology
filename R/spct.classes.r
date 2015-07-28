@@ -255,7 +255,23 @@ check.reflector_spct <- function(x, byref = TRUE, strict.range = FALSE, ...) {
 #' @export
 check.object_spct <- function(x, byref=TRUE, strict.range = FALSE, multiple.wl = 1L, ...) {
 
-  range_check <- function(x, strict.range) {
+  range_check_Tfr <- function(x, strict.range) {
+    if (!all(is.na(x[["Tfr"]]))) {
+      Tfr.min <- min(x[["Tfr"]], na.rm = TRUE)
+      Tfr.max <- max(x[["Tfr"]], na.rm = TRUE)
+      if (!is.null(strict.range) & (Tfr.min < 0 || Tfr.max > 1)) {
+        message.text <- paste("Off-range transmittance values [", signif(Tfr.min, 2),
+                              "...", signif(Tfr.max, 2), "] instead of  [0..1]", sep="")
+        if (strict.range) {
+          stop(message.text)
+        } else {
+          warning(message.text)
+        }
+      }
+    }
+  }
+
+  range_check_Rfr <- function(x, strict.range) {
     if (!all(is.na(x$Rfr))) {
       Rfr.min <- min(x[["Rfr"]], na.rm = TRUE)
       Rfr.max <- max(x[["Rfr"]], na.rm = TRUE)
@@ -263,21 +279,6 @@ check.object_spct <- function(x, byref=TRUE, strict.range = FALSE, multiple.wl =
         if (!is.null(strict.range) & (Rfr.min < 0 ||  Rfr.max > 1)) {
           message.text <- paste0("Off-range reflectance values [", signif(Rfr.min, 2), "...",
                                  signif(Rfr.max, 2), "] instead of  [0..1]", sep="")
-          if (strict.range) {
-            stop(message.text)
-          } else {
-            warning(message.text)
-          }
-        }
-      }
-    }
-    if (!all(is.na(x$Tfr))) {
-      Tfr.min <- min(x[["Tfr"]], na.rm = TRUE)
-      Tfr.max <- max(x[["Tfr"]], na.rm = TRUE)
-      if (!is.na(Tfr.min) && !is.na(Tfr.max)) {
-        if (!is.null(strict.range) & (Tfr.min < 0 ||  Tfr.max > 1)) {
-          message.text <- paste0("Off-range Transmittance values [", signif(Tfr.min, 2), "...",
-                                 signif(Tfr.max, 2), "] instead of  [0..1]", sep="")
           if (strict.range) {
             stop(message.text)
           } else {
@@ -301,9 +302,11 @@ check.object_spct <- function(x, byref=TRUE, strict.range = FALSE, multiple.wl =
     warning("Found variable 'reflectance', I am assuming it is expressed as percent")
   }
   if (exists("Rfr", x, mode = "numeric", inherits=FALSE)) {
+    range_check_Rfr(x, strict.range=strict.range)
   } else if (exists("Rpc", x, mode = "numeric", inherits=FALSE)) {
     x[["Rfr"]] <- x[["Rpc"]] / 100
     x[["Rpc"]] <- NULL
+    range_check_Rfr(x, strict.range=strict.range)
   } else {
     warning("No reflectance data found in object_spct")
     x[["Rfr"]] <- NA
@@ -314,16 +317,16 @@ check.object_spct <- function(x, byref=TRUE, strict.range = FALSE, multiple.wl =
     warning("Found variable 'transmittance', I am assuming it expressed as percent")
   }
   if (exists("Tfr", x, mode = "numeric", inherits=FALSE)) {
-    range_check(x, strict.range = strict.range)
+    range_check_Tfr(x, strict.range=strict.range)
   } else if (exists("Tpc", x, mode = "numeric", inherits=FALSE)) {
     x[["Tfr"]] <- x[["Tpc"]] / 100
     x[["Tpc"]] <- NULL
-    range_check(x, strict.range = strict.range)
+    range_check_Tfr(x, strict.range=strict.range)
   } else {
-    warning("No transmittance data found in object_spct")
+    warning("No transmittance or absorptance data found in object_spct")
     x[["Tfr"]] <- NA
   }
-  range_check(x, strict.range = strict.range)
+
   x
 }
 
@@ -480,7 +483,7 @@ rmDerivedSpct <- function(x) {
 setGenericSpct <- function(x, multiple.wl = 1L) {
   name <- substitute(x)
   rmDerivedSpct(x)
-  if (!is.data.frame(x)) {
+  if (!is.data.frame(x) || inherits(x, "data.table")) {
     x <- dplyr::as_data_frame(x)
   }
   if (!is.generic_spct(x)){
@@ -504,7 +507,7 @@ setGenericSpct <- function(x, multiple.wl = 1L) {
 setCpsSpct <- function(x, strict.range = FALSE, multiple.wl = 1L) {
   name <- substitute(x)
   rmDerivedSpct(x)
-  if (!is.data.frame(x)) {
+  if (!is.data.frame(x) || inherits(x, "data.table")) {
     x <- dplyr::as_data_frame(x)
   }
   if (!is.generic_spct(x)) {
@@ -541,7 +544,7 @@ setFilterSpct <- function(x, Tfr.type=c("total", "internal"),
     }
   }
   rmDerivedSpct(x)
-  if (!is.data.frame(x)) {
+  if (!is.data.frame(x) || inherits(x, "data.table")) {
     x <- dplyr::as_data_frame(x)
   }
   if (!is.generic_spct(x)) {
@@ -578,7 +581,7 @@ setReflectorSpct <- function(x, Rfr.type=c("total", "specular"),
     }
   }
   rmDerivedSpct(x)
-  if (!is.data.frame(x)) {
+  if (!is.data.frame(x) || inherits(x, "data.table")) {
     x <- dplyr::as_data_frame(x)
   }
   if (!is.generic_spct(x)) {
@@ -624,7 +627,7 @@ setObjectSpct <- function(x,
     }
   }
   rmDerivedSpct(x)
-  if (!is.data.frame(x)) {
+  if (!is.data.frame(x) || inherits(x, "data.table")) {
     x <- dplyr::as_data_frame(x)
   }
   if (!is.generic_spct(x)) {
@@ -653,7 +656,7 @@ setObjectSpct <- function(x,
 setResponseSpct <- function(x, time.unit="second", multiple.wl = 1L) {
   name <- substitute(x)
   rmDerivedSpct(x)
-  if (!is.data.frame(x)) {
+  if (!is.data.frame(x) || inherits(x, "data.table")) {
     x <- dplyr::as_data_frame(x)
   }
   if (!is.generic_spct(x)) {
@@ -682,7 +685,7 @@ setSourceSpct <- function(x, time.unit="second", bswf.used=c("none", "unknown"),
                           strict.range = FALSE, multiple.wl = 1L) {
   name <- substitute(x)
   rmDerivedSpct(x)
-  if (!is.data.frame(x)) {
+  if (!is.data.frame(x) || inherits(x, "data.table")) {
     x <- dplyr::as_data_frame(x)
   }
   if (!is.generic_spct(x)) {
@@ -710,7 +713,7 @@ setSourceSpct <- function(x, time.unit="second", bswf.used=c("none", "unknown"),
 setChromaSpct <- function(x, multiple.wl = 1L) {
   name <- substitute(x)
   rmDerivedSpct(x)
-  if (!is.data.frame(x)) {
+  if (!is.data.frame(x) || inherits(x, "data.table")) {
     x <- dplyr::as_data_frame(x)
   }
   if (!is.generic_spct(x)) {
@@ -1279,7 +1282,7 @@ setBSWFUsed <- function(x, bswf.used=c("none", "unknown")) {
     }
     attr(x, "bswf.used") <- bswf.used
   }
-  return(x)
+  invisible(x)
 }
 
 #' Get the "bswf.used" attribute
@@ -1351,7 +1354,7 @@ setTfrType <- function(x, Tfr.type=c("total", "internal")) {
       assign(name, x, parent.frame(), inherits = TRUE)
     }
   }
-  return(x)
+  invisible(x)
 }
 
 #' Get the "Tfr.type" attribute
@@ -1422,7 +1425,7 @@ setRfrType <- function(x, Rfr.type=c("total", "specular")) {
       assign(name, x, parent.frame(), inherits = TRUE)
     }
   }
-  return(x)
+  invisible(x)
 }
 
 #' Get the "Rfr.type" attribute
