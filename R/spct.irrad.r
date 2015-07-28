@@ -203,10 +203,9 @@ irrad.source_spct <-
                             unit.out=unit.out,
                             quantity="total",
                             time.unit = time.unit,
-                            use.cached.mult =
-                              getOption("photobiology.use.cached.mult", default = FALSE),
-                            wb.trim = FALSE,
-                            use.hinges = FALSE)
+                            use.cached.mult = use.cached.mult,
+                            wb.trim = wb.trim,
+                            use.hinges = use.hinges)
         irrad <- irrad / total
         if (quantity == "contribution.pc") {
           irrad <- irrad * 1e2

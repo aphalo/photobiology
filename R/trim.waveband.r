@@ -58,12 +58,12 @@ trim_waveband <- function(w.band,
       trimmed.high <- trimmed.low <- FALSE
       if (min(wb) < low.limit) {
         trimmed.wb$low <- low.limit
-        trimmed.wb$hinges <- unique(sort(c(low.limit - 1e-4, low.limit, wb$hinges[wb$hinges>=low.limit])))
+        trimmed.wb$hinges <- unique(sort(c(low.limit - 1e-9, low.limit, wb$hinges[wb$hinges>=low.limit])))
         trimmed.low <- TRUE
       }
       if (max(wb) > high.limit) {
         trimmed.wb$high <- high.limit
-        trimmed.wb$hinges <- unique(sort(c(wb$hinges[wb$hinges<=high.limit], high.limit - 1e-4, high.limit)))
+        trimmed.wb$hinges <- unique(sort(c(wb$hinges[wb$hinges<=high.limit], high.limit - 1e-9, high.limit)))
         trimmed.high <- TRUE
       }
       if (trimmed.low || trimmed.high) {

@@ -62,9 +62,12 @@ oper.e.generic_spct <- function(e1, e2, oper) {
       } else {
         stop("Failed assertion! BUG IN PACKAGE CODE")
       }
-      e1 <- trim_spct(e1, low.limit=min(e2), high.limit=max(e2) - 1e-3, verbose=FALSE, use.hinges = TRUE)
-      mult <- calc_multipliers(w.length=e1$w.length, w.band=e2, unit.out="energy",
-                               unit.in="energy", use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE))
+      e1 <- trim_spct(e1, low.limit=min(e2), high.limit=max(e2) - 1e-9, verbose=FALSE,
+                      use.hinges = getOption("photobiology.use.hinges", default=NULL))
+      mult <-
+        calc_multipliers(w.length=e1$w.length, w.band=e2, unit.out="energy",
+                         unit.in="energy",
+                         use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE))
       return(source_spct(w.length=e1$w.length, s.e.irrad = e1$s.e.irrad * mult,
                            time.unit=getTimeUnit(e1), bswf.used=bswf.used, strict.range = FALSE))
     }
@@ -218,7 +221,7 @@ oper.e.generic_spct <- function(e1, e2, oper) {
       return(z)
     } else if (class2 == "reflector_spct") {
       z <- oper_spectra(e1$w.length, e2$w.length, e1$Rfr, e2$Rfr, bin.oper=oper, trim="intersection")
-      snames(z)[2] <- "Rfr"
+      names(z)[2] <- "Rfr"
       setReflectorSpct(z, strict.range = FALSE)
       return(z)
     } else if (class2 == "source_spct") {
@@ -385,9 +388,11 @@ oper.q.generic_spct <- function(e1, e2, oper) {
         warning("The operation attempted in undefined according to Optics laws or the input is malformed")
         return(NA)
       }
-      e1 <- trim_spct(e1, low.limit = min(e2), high.limit = max(e2) - 1e-3, verbose=FALSE, use.hinges = TRUE)
+      e1 <- trim_spct(e1, low.limit = min(e2), high.limit = max(e2) - 1e-9, verbose=FALSE,
+                      use.hinges = getOption("photobiology.use.hinges", default=NULL))
       mult <- calc_multipliers(w.length=e1$w.length, w.band=e2, unit.out="photon",
-                               unit.in="photon", use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE))
+                               unit.in="photon",
+                               use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE))
       if (is_effective(e2)) {
         return(response_spct(w.length=e1$w.length, s.q.response = e1$s.q.irrad * mult, time.unit=getTimeUnit(e1)))
       } else {

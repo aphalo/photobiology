@@ -187,13 +187,15 @@ absorptance_spct <-
           wb.name[i] <- wb$name
         }
       }
-      # we calculate the average transmittance.
-      absorptance[i] <- integrate_spct(trim_spct(temp.spct, wb, use.hinges=FALSE))
+      absorptance[i] <-
+        integrate_spct(trim_spct(temp.spct, wb,
+                                 use.hinges = use.hinges))
     }
 
     if (quantity %in% c("contribution", "contribution.pc")) {
       total <- absorptance_spct(spct, w.band = NULL,
-                                  quantity = "total", use.hinges = FALSE)
+                                quantity = "total",
+                                use.hinges = use.hinges)
       absorptance <- absorptance / total
       if (quantity == "contribution.pc") {
         absorptance <- absorptance * 1e2

@@ -6,7 +6,7 @@ test_that("constructor energy", {
 
   my.spct <- response_spct(w.length = 400:409, s.e.response = 1)
   expect_equal(class(my.spct)[1:2], c("response_spct", "generic_spct") )
-  expect_equal(attr(my.spct, "spct.version", exact = TRUE), 1)
+  expect_equal(attr(my.spct, "spct.version", exact = TRUE), 2)
 
   my.s.spct <- response_spct(w.length = 400:409, s.e.response = 1, time.unit = "second")
   my.h.spct <- response_spct(w.length = 400:409, s.e.response = 1, time.unit = "hour")
