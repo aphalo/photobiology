@@ -5,10 +5,12 @@ test_that("constructor T fraction", {
 
   my.spct <- filter_spct(w.length = 400:409, Tfr = 0.1)
   expect_equal(class(my.spct)[1:2], c("filter_spct", "generic_spct") )
-  expect_equal(attr(my.spct, "spct.version", exact = TRUE), 1)
+  expect_equal(attr(my.spct, "spct.version", exact = TRUE), 2)
 
-  expect_error(filter_spct(w.length = 400:409, Tfr = -0.1))
-  expect_error(filter_spct(w.length = 400:409, Tfr = 1.1))
+  expect_error(filter_spct(w.length = 400:409, Tfr = -0.1, strict.range = TRUE))
+  expect_error(filter_spct(w.length = 400:409, Tfr = 1.1, strict.range = TRUE))
+  expect_warning(filter_spct(w.length = 400:409, Tfr = -0.1, strict.range = FALSE))
+  expect_warning(filter_spct(w.length = 400:409, Tfr = -0.1))
   expect_warning(T2A(filter_spct(w.length = 400:409, Tfr = 0)))
   expect_equal(my.spct[["Tfr"]], rep(0.1, length.out = 10))
   expect_equal(my.spct[["w.length"]], 400:409)
@@ -21,8 +23,8 @@ test_that("constructor T percent", {
   my.spct <- filter_spct(w.length = 400:409, Tpc = 10)
   expect_equal(class(my.spct)[1:2], c("filter_spct", "generic_spct") )
 
-  expect_error(filter_spct(w.length = 400:409, Tpc = -0.1))
-  expect_error(filter_spct(w.length = 400:409, Tpc = 100.01))
+  expect_warning(filter_spct(w.length = 400:409, Tpc = -0.1))
+  expect_warning(filter_spct(w.length = 400:409, Tpc = 100.01))
   expect_equal(my.spct[["Tfr"]], rep(0.1, length.out = 10))
   expect_equal(my.spct[["w.length"]], 400:409)
   expect_named(my.spct, c("w.length", "Tfr"))

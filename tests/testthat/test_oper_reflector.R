@@ -5,10 +5,10 @@ test_that("constructor fraction", {
 
   my.spct <- reflector_spct(w.length = 400:409, Rfr = 0.1)
   expect_equal(class(my.spct)[1:2], c("reflector_spct", "generic_spct") )
-  expect_equal(attr(my.spct, "spct.version", exact = TRUE), 1)
+  expect_equal(attr(my.spct, "spct.version", exact = TRUE), 2)
 
-  expect_error(reflector_spct(w.length = 400:409, Rfr = -0.1))
-  expect_error(reflector_spct(w.length = 400:409, Rfr = 1.1))
+  expect_warning(reflector_spct(w.length = 400:409, Rfr = -0.1))
+  expect_warning(reflector_spct(w.length = 400:409, Rfr = 1.1))
   expect_equal(my.spct[["Rfr"]], rep(0.1, length.out = 10))
   expect_equal(my.spct[["w.length"]], 400:409)
   expect_named(my.spct, c("w.length", "Rfr"))

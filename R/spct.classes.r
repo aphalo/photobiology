@@ -139,22 +139,6 @@ check.filter_spct <- function(x, byref=TRUE, strict.range = FALSE, multiple.wl =
     }
   }
 
-  range_check_Afr <- function(x, strict.range) {
-    if (!all(is.na(x[["Afr"]]))) {
-      Afr.min <- min(x[["Afr"]], na.rm = TRUE)
-    Afr.max <- max(x[["Afr"]], na.rm = TRUE)
-    if (!is.null(strict.range) & (Afr.min < 0 || Afr.max > 1)) {
-      message.text <- paste("Off-range absorptance values [", signif(Afr.min, 2),
-                            "...", signif(Afr.max, 2), "] instead of  [0..1]", sep="")
-      if (strict.range) {
-        stop(message.text)
-      } else {
-        warning(message.text)
-      }
-    }
-    }
-  }
-
   range_check_A <- function(x, strict.range) {
     if (!all(is.na(x[["A"]]))) {
       A.min <- min(x[["A"]], na.rm = TRUE)
@@ -199,8 +183,6 @@ if (is.null(getTfrType(x))) {
     x[["Tfr"]] <- x[["Tpc"]] / 100
     x[["Tpc"]] <-  NULL
     range_check(x, strict.range=strict.range)
-  } else if (exists("Afr", x, mode = "numeric", inherits=FALSE)) {
-    range_check_Afr(x, strict.range=strict.range)
   } else if (exists("A", x, mode = "numeric", inherits=FALSE)) {
     range_check_A(x, strict.range=strict.range)
   } else {
