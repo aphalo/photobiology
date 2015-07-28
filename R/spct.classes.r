@@ -87,7 +87,7 @@ check.generic_spct <- function(x, byref=TRUE, strict.range=TRUE, multiple.wl = 1
               " duplicate values.")
     }
   }
-  return(x)
+  x
 }
 
 #' @describeIn check Specialization for cps_spct.
@@ -124,54 +124,90 @@ check.cps_spct <- function(x, byref=TRUE, strict.range = TRUE, ...) {
 check.filter_spct <- function(x, byref=TRUE, strict.range = TRUE, multiple.wl = 1L, ...) {
 
   range_check <- function(x, strict.range) {
-    Tfr.min <- min(x[["Tfr"]], na.rm = TRUE)
-    Tfr.max <- max(x[["Tfr"]], na.rm = TRUE)
-    if (!is.null(strict.range) & (Tfr.min < 0 || Tfr.max > 1)) {
-      message.text <- paste("Off-range transmittance values [", signif(Tfr.min, 2),
-                            "...", signif(Tfr.max, 2), "] instead of  [0..1]", sep="")
+    if (!all(is.na(x[["Tfr"]]))) {
+      Tfr.min <- min(x[["Tfr"]], na.rm = TRUE)
+      Tfr.max <- max(x[["Tfr"]], na.rm = TRUE)
+      if (!is.null(strict.range) & (Tfr.min < 0 || Tfr.max > 1)) {
+        message.text <- paste("Off-range transmittance values [", signif(Tfr.min, 2),
+                              "...", signif(Tfr.max, 2), "] instead of  [0..1]", sep="")
+        if (strict.range) {
+          stop(message.text)
+        } else {
+          warning(message.text)
+        }
+      }
+    }
+  }
+
+  range_check_Afr <- function(x, strict.range) {
+    if (!all(is.na(x[["Afr"]]))) {
+      Afr.min <- min(x[["Afr"]], na.rm = TRUE)
+    Afr.max <- max(x[["Afr"]], na.rm = TRUE)
+    if (!is.null(strict.range) & (Afr.min < 0 || Afr.max > 1)) {
+      message.text <- paste("Off-range absorptance values [", signif(Afr.min, 2),
+                            "...", signif(Afr.max, 2), "] instead of  [0..1]", sep="")
       if (strict.range) {
         stop(message.text)
       } else {
         warning(message.text)
       }
     }
+    }
   }
+
+  range_check_A <- function(x, strict.range) {
+    if (!all(is.na(x[["A"]]))) {
+      A.min <- min(x[["A"]], na.rm = TRUE)
+      A.max <- max(x[["A"]], na.rm = TRUE)
+      if (!is.null(strict.range) & (A.min < 0 || A.max > 1)) {
+        message.text <- paste("Off-range absorbance values [", signif(A.min, 2),
+                              "...", signif(A.max, 2), "] instead of  [0..1]", sep="")
+        if (strict.range) {
+          stop(message.text)
+        } else {
+          warning(message.text)
+        }
+      }
+    }
+  }
+
 
   if (is.null(getTfrType(x))) {
     setTfrType(x, "total")
     warning("Missing Tfr.type attribute replaced by 'total'")
   }
-  # check and replace 'other' quantity names
+if (is.null(getTfrType(x))) {
+  setTfrType(x, "total")
+  warning("Missing Tfr.type attribute replaced by 'total'")
+}
+# check and replace 'other' quantity names
   if (exists("transmittance", x, mode = "numeric", inherits=FALSE)) {
     x <- dplyr::rename(x, Tpc = transmittance)
-    warning("Found varaible 'transmittance', I am assuming it is expressed as percent")
+    warning("Found variable 'transmittance', I am assuming it is expressed as percent")
   }
   if (exists("absorbance", x, mode = "numeric", inherits=FALSE)) {
     x <- dplyr::rename(x, A = absorbance)
-    warning("Found varaible 'absorbance', I am assuming it is in log10-based absorbance units")
+    warning("Found variable 'absorbance', I am assuming it is in log10-based absorbance units")
   } else if (exists("Absorbance", x, mode = "numeric", inherits=FALSE)) {
     x <- dplyr::rename(x, A = Absorbance)
-    warning("Found varaible 'Absorbance', I am assuming it is in log10-based absorbance units")
+    warning("Found variable 'Absorbance', I am assuming it is in log10-based absorbance units")
   }
   # look for percentages and change them into fractions of one
   if (exists("Tfr", x, mode = "numeric", inherits=FALSE)) {
     range_check(x, strict.range=strict.range)
-    return(x)
   } else if (exists("Tpc", x, mode = "numeric", inherits=FALSE)) {
     x[["Tfr"]] <- x[["Tpc"]] / 100
     x[["Tpc"]] <-  NULL
     range_check(x, strict.range=strict.range)
-    return(x)
+  } else if (exists("Afr", x, mode = "numeric", inherits=FALSE)) {
+    range_check_Afr(x, strict.range=strict.range)
   } else if (exists("A", x, mode = "numeric", inherits=FALSE)) {
-    if (min(x$A, na.rm = TRUE) < 0) {
-      warning("Off-range min absorbance value: ", signif(min(x$A, na.rm = TRUE), 2), " instead of 0")
-    }
-    return(x)
+    range_check_A(x, strict.range=strict.range)
   } else {
     warning("No transmittance or absorbance data found in filter_spct")
     x[["Tfr"]] <- NA
-    return(x)
   }
+  x
 }
 
 #' @describeIn check Specialization for reflector_spct.
@@ -179,15 +215,17 @@ check.filter_spct <- function(x, byref=TRUE, strict.range = TRUE, multiple.wl = 
 check.reflector_spct <- function(x, byref = TRUE, strict.range = TRUE, ...) {
 
   range_check <- function(x, strict.range) {
-    Rfr.min <- min(x$Rfr, na.rm = TRUE)
-    Rfr.max <- max(x$Rfr, na.rm = TRUE)
-    if (!is.null(strict.range) & (Rfr.min < 0 ||  Rfr.max > 1)) {
-      message.text <- paste0("Off-range reflectance values [", signif(Rfr.min, 2), "...",
-                             signif(Rfr.max, 2), "] instead of  [0..1]", sep="")
-      if (strict.range) {
-        stop(message.text)
-      } else {
-        warning(message.text)
+    if (!all(is.na(x$Rfr))) {
+      Rfr.min <- min(x$Rfr, na.rm = TRUE)
+      Rfr.max <- max(x$Rfr, na.rm = TRUE)
+      if (!is.null(strict.range) & (Rfr.min < 0 ||  Rfr.max > 1)) {
+        message.text <- paste0("Off-range reflectance values [", signif(Rfr.min, 2), "...",
+                               signif(Rfr.max, 2), "] instead of  [0..1]", sep="")
+        if (strict.range) {
+          stop(message.text)
+        } else {
+          warning(message.text)
+        }
       }
     }
   }
@@ -202,17 +240,15 @@ check.reflector_spct <- function(x, byref = TRUE, strict.range = TRUE, ...) {
   }
   if (exists("Rfr", x, mode = "numeric", inherits=FALSE)) {
     range_check(x, strict.range=strict.range)
-    return(x)
   } else if (exists("Rpc", x, mode = "numeric", inherits=FALSE)) {
     x[["Rfr"]] <- x[["Rpc"]] / 100
     x[["Rpc"]] <- NULL
     range_check(x, strict.range=strict.range)
-    return(x)
   } else {
     warning("No reflectance data found in reflector_spct")
     x[["Rfr"]] <- NA
-    return(x)
   }
+  x
 }
 
 #' @describeIn check Specialization for object_spct.
@@ -220,29 +256,33 @@ check.reflector_spct <- function(x, byref = TRUE, strict.range = TRUE, ...) {
 check.object_spct <- function(x, byref=TRUE, strict.range = TRUE, multiple.wl = 1L, ...) {
 
   range_check <- function(x, strict.range) {
-    Rfr.min <- min(x[["Rfr"]], na.rm = TRUE)
-    Rfr.max <- max(x[["Rfr"]], na.rm = TRUE)
-    if (!is.na(Rfr.min) && !is.na(Rfr.max)) {
-      if (!is.null(strict.range) & (Rfr.min < 0 ||  Rfr.max > 1)) {
-        message.text <- paste0("Off-range reflectance values [", signif(Rfr.min, 2), "...",
-                               signif(Rfr.max, 2), "] instead of  [0..1]", sep="")
-        if (strict.range) {
-          stop(message.text)
-        } else {
-          warning(message.text)
+    if (!all(is.na(x$Rfr))) {
+      Rfr.min <- min(x[["Rfr"]], na.rm = TRUE)
+      Rfr.max <- max(x[["Rfr"]], na.rm = TRUE)
+      if (!is.na(Rfr.min) && !is.na(Rfr.max)) {
+        if (!is.null(strict.range) & (Rfr.min < 0 ||  Rfr.max > 1)) {
+          message.text <- paste0("Off-range reflectance values [", signif(Rfr.min, 2), "...",
+                                 signif(Rfr.max, 2), "] instead of  [0..1]", sep="")
+          if (strict.range) {
+            stop(message.text)
+          } else {
+            warning(message.text)
+          }
         }
       }
     }
-    Tfr.min <- min(x[["Tfr"]], na.rm = TRUE)
-    Tfr.max <- max(x[["Tfr"]], na.rm = TRUE)
-    if (!is.na(Tfr.min) && !is.na(Tfr.max)) {
-      if (!is.null(strict.range) & (Tfr.min < 0 ||  Tfr.max > 1)) {
-        message.text <- paste0("Off-range Transmittance values [", signif(Tfr.min, 2), "...",
-                               signif(Tfr.max, 2), "] instead of  [0..1]", sep="")
-        if (strict.range) {
-          stop(message.text)
-        } else {
-          warning(message.text)
+    if (!all(is.na(x$Tfr))) {
+      Tfr.min <- min(x[["Tfr"]], na.rm = TRUE)
+      Tfr.max <- max(x[["Tfr"]], na.rm = TRUE)
+      if (!is.na(Tfr.min) && !is.na(Tfr.max)) {
+        if (!is.null(strict.range) & (Tfr.min < 0 ||  Tfr.max > 1)) {
+          message.text <- paste0("Off-range Transmittance values [", signif(Tfr.min, 2), "...",
+                                 signif(Tfr.max, 2), "] instead of  [0..1]", sep="")
+          if (strict.range) {
+            stop(message.text)
+          } else {
+            warning(message.text)
+          }
         }
       }
     }
@@ -271,23 +311,20 @@ check.object_spct <- function(x, byref=TRUE, strict.range = TRUE, multiple.wl = 
 
   if (exists("transmittance", x, mode = "numeric", inherits=FALSE)) {
     x <- dplyr::rename(x, Tpc = transmittance)
-    warning("Found varaible 'transmittance', I am assuming it expressed as percent")
+    warning("Found variable 'transmittance', I am assuming it expressed as percent")
   }
   if (exists("Tfr", x, mode = "numeric", inherits=FALSE)) {
     range_check(x, strict.range = strict.range)
-    return(x)
   } else if (exists("Tpc", x, mode = "numeric", inherits=FALSE)) {
     x[["Tfr"]] <- x[["Tpc"]] / 100
     x[["Tpc"]] <- NULL
     range_check(x, strict.range = strict.range)
-    return(x)
   } else {
     warning("No transmittance data found in object_spct")
     x[["Tfr"]] <- NA
-    return(x)
   }
   range_check(x, strict.range = strict.range)
-  return(x)
+  x
 }
 
 #' @describeIn check Specialization for response_spct.
