@@ -73,7 +73,7 @@ oper.e.generic_spct <- function(e1, e2, oper) {
       if (exists("s.q.irrad", z, inherits = FALSE)) {
         z[["s.q.irrad"]] <- NULL
       }
-      z[["s.e.irrad"]] <- oper(s.e.irrad, e2)
+      z[["s.e.irrad"]] <- oper(z[["s.e.irrad"]], e2)
       return(z)
     } else if (class2 == "source_spct") {
       q2e(e2, action = "add", byref = TRUE)

@@ -48,17 +48,18 @@ find_peaks <- function(x, ignore_threshold=0.0, span=3, strict=TRUE) {
   }
 }
 
-#' Get peaks in a spectrum
+#' Get peaks and valleys in a spectrum
 #'
-#' This function finds all peaks (local maxima) in a spectrum, using a user
-#' selectable size threshold relative to the tallest peak (global maximum). This
-#' a wrapper built on top of function peaks from package splus2R.
+#' These functions find peaks (local maxima) or valleys (local minima) in a
+#' spectrum, using a user selectable size threshold relative to the tallest peak
+#' (global maximum). This a wrapper built on top of function peaks from package
+#' splus2R.
 #'
 #' @param x numeric
 #' @param y numeric
 #' @param ignore_threshold numeric Value between 0.0 and 1.0 indicating the
-#'   relative size compared to talelst peakthreshold below which peaks will be
-#'   ignored.
+#'   relative size compared to tallest peak or deepest valley of the peaks
+#'   to return.
 #' @param span numeric A peak is defined as an element in a sequence which is
 #'   greater than all other elements within a window of width \code{span}
 #'   centered at that element. For example, a value of 3 means that a peak is
@@ -69,12 +70,13 @@ find_peaks <- function(x, ignore_threshold=0.0, span=3, strict=TRUE) {
 #'   from x value at peaks.
 #' @param x_digits numeric Number of significant digits in wavelength label.
 #'
-#' @return A dataframe with variables w.length and s.irrad with their values at
-#'   the peaks plus a character variable of labels.
+#' @return A data frame with variables w.length and s.irrad with their values at
+#'   the peaks or valleys plus a character variable of labels.
 #' @keywords manip misc
 #' @export
 #' @examples
 #' with(sun.spct, get_peaks(w.length, s.e.irrad))
+#' with(sun.spct, get_valleys(w.length, s.e.irrad))
 #'
 #' @family peaks and valleys functions
 #'
@@ -101,35 +103,8 @@ get_peaks <- function(x, y,
   }
 }
 
-#' Get peaks in a spectrum
-#'
-#' This function finds all valleys (local minima) in a spectrum, using a user
-#' selectable size threshold relative to the tallest peak (global maximum). This
-#' a wrapper built on top of function peaks from package splus2R.
-#'
-#' @param x numeric array
-#' @param y numeric array
-#' @param ignore_threshold numeric value between 0.0 and 1.0 indicating the
-#'   relative size compared to talelst peakthreshold below which peaks will be
-#'   ignored.
-#' @param span a peak is defined as an element in a sequence which is greater
-#'   than all other elements within a window of width span centered at that
-#'   element. The default value is 3, meaning that a peak is bigger than both of
-#'   its neighbors. Default: 3.
-#' @param strict logical flag: if TRUE, an element must be strictly greater than
-#'   all other values in its window to be considered a peak. Default: TRUE.
-#' @param x_unit  character vector to be pasted at end of lables built from x
-#'   value at peaks.
-#' @param x_digits number of significant digits in wevelength label.
-#'
-#' @return a dataframe of variables w.length and s.irrad with their values at
-#'   the peaks plus a character variable of labels.
-#' @keywords manip misc
+#' @describeIn get_peaks
 #' @export
-#' @examples
-#' with(sun.spct, get_valleys(w.length, s.e.irrad))
-#'
-#' @family peaks and valleys functions
 #'
 get_valleys <- function(x, y,
                         ignore_threshold = 0.0,
@@ -196,7 +171,7 @@ peaks.generic_spct <- function(x, span, ignore_threshold, strict, ...) {
   peaks.idx <- find_peaks(x[[names(x)[2]]],
                           span = span, ignore_threshold = ignore_threshold,
                           strict = strict)
-  subset(x, idx = peaks.idx)
+  z[peaks.idx, ]
 }
 
 #' @describeIn peaks  Method for "source_spct" objects for generic function.
@@ -212,20 +187,20 @@ peaks.source_spct <-
   function(x, span = 5, ignore_threshold = 0.0, strict = TRUE,
            unit.out = getOption("photobiology.radiation.unit", default="energy"),
            ...) {
-  if (unit.out == "energy") {
-    z <- q2e(x, "replace", FALSE)
-    col.name <- "s.e.irrad"
-  } else if (unit.out %in% c("photon", "quantum")) {
-    z <- e2q(x, "replace", FALSE)
-    col.name <- "s.q.irrad"
-  } else {
-    stop("Unrecognized 'unit.out': ", unit.out)
+    if (unit.out == "energy") {
+      z <- q2e(x, "replace", FALSE)
+      col.name <- "s.e.irrad"
+    } else if (unit.out %in% c("photon", "quantum")) {
+      z <- e2q(x, "replace", FALSE)
+      col.name <- "s.q.irrad"
+    } else {
+      stop("Unrecognized 'unit.out': ", unit.out)
+    }
+    peaks.idx <- find_peaks(z[[col.name]],
+                            span = span, ignore_threshold = ignore_threshold,
+                            strict = strict)
+    z[peaks.idx, ]
   }
-  peaks.idx <- find_peaks(z[[col.name]],
-                        span = span, ignore_threshold = ignore_threshold,
-                        strict = strict)
-  subset(z, idx = peaks.idx)
-}
 
 #' @describeIn peaks  Method for "response_spct" objects for generic function.
 #'
@@ -236,19 +211,19 @@ peaks.response_spct <-
            unit.out = getOption("photobiology.radiation.unit", default="energy"),
            ...) {
     if (unit.out == "energy") {
-    z <- q2e(x, "replace", FALSE)
-    col.name <- "s.e.response"
-  } else if (unit.out %in% c("photon", "quantum")) {
-    z <- e2q(x, "replace", FALSE)
-    col.name <- "s.q.response"
-  } else {
-    stop("Unrecognized 'unit.out': ", unit.out)
+      z <- q2e(x, "replace", FALSE)
+      col.name <- "s.e.response"
+    } else if (unit.out %in% c("photon", "quantum")) {
+      z <- e2q(x, "replace", FALSE)
+      col.name <- "s.q.response"
+    } else {
+      stop("Unrecognized 'unit.out': ", unit.out)
+    }
+    peaks.idx <- find_peaks(z[[col.name]],
+                            span = span, ignore_threshold = ignore_threshold,
+                            strict = strict)
+    z[peaks.idx, ]
   }
-  peaks.idx <- find_peaks(z[[col.name]],
-                          span = span, ignore_threshold = ignore_threshold,
-                          strict = strict)
-  subset(z, idx = peaks.idx)
-}
 
 #' @describeIn peaks  Method for "filter_spct" objects for generic function.
 #'
@@ -272,7 +247,7 @@ peaks.filter_spct <-
     peaks.idx <- find_peaks(z[[col.name]],
                             span = span, ignore_threshold = ignore_threshold,
                             strict = strict)
-    subset(z, idx = peaks.idx)
+    z[peaks.idx, ]
   }
 
 #' @describeIn peaks  Method for "reflector_spct" objects for generic function.
@@ -294,7 +269,7 @@ peaks.cps_spct <- function(x, span = 5, ignore_threshold = 0, strict = TRUE, ...
   peaks.idx <- find_peaks(x[["cps"]],
                           span = span, ignore_threshold = ignore_threshold,
                           strict = strict)
-  subset(x, idx = peaks.idx)
+  z[peaks.idx, ]
 }
 
 # valleys -------------------------------------------------------------------
@@ -345,7 +320,7 @@ valleys.generic_spct <- function(x, span = 5, ignore_threshold = 0.0, strict = T
   valleys.idx <- find_peaks(-x[names(x)[2]],
                           span = span, ignore_threshold = ignore_threshold,
                           strict = strict)
-  subset(x, idx = valleys.idx)
+  z[valleys.idx, ]
 }
 
 #' @describeIn valleys  Method for "source_spct" objects for generic function.
@@ -373,8 +348,8 @@ valleys.source_spct <-
     valleys.idx <- find_peaks(-z[[col.name]],
                           span = span, ignore_threshold = ignore_threshold,
                           strict = strict)
-  subset(z, idx = valleys.idx)
-}
+    z[valleys.idx, ]
+  }
 
 #' @describeIn valleys  Method for "response_spct" objects for generic function.
 #'
@@ -393,10 +368,10 @@ valleys.response_spct <-
     } else {
       stop("Unrecognized 'unit.out': ", unit.out)
     }
-    peaks.idx <- find_peaks(-z[[col.name]],
+    valleys.idx <- find_peaks(-z[[col.name]],
                             span = span, ignore_threshold = ignore_threshold,
                             strict = strict)
-    subset(z, idx = peaks.idx)
+    z[valleys.idx, ]
   }
 
 #' @describeIn valleys  Method for "filter_spct" objects for generic function.
@@ -418,10 +393,10 @@ valleys.filter_spct <-
     } else {
       stop("Unrecognized 'unit.out': ", unit.out)
     }
-    peaks.idx <- find_peaks(-z[[col.name]],
-                            span = span, ignore_threshold = ignore_threshold,
-                            strict = strict)
-    subset(z, idx = peaks.idx)
+    valleys.idx <- find_peaks(-z[[col.name]],
+                              span = span, ignore_threshold = ignore_threshold,
+                              strict = strict)
+    z[valleys.idx, ]
   }
 
 #' @describeIn valleys  Method for "reflector_spct" objects for generic function.
@@ -432,7 +407,7 @@ valleys.reflector_spct <- function(x, span = 5, ignore_threshold = 0, strict = T
   valleys.idx <- find_peaks(-x[["Rfr"]],
                           span = span, ignore_threshold = ignore_threshold,
                           strict = strict)
-  subset(x, idx = valleys.idx)
+  z[valleys.idx, ]
 }
 
 #' @describeIn valleys  Method for "cps_spct" objects for generic function.
@@ -443,5 +418,5 @@ valleys.cps_spct <- function(x, span = 5, ignore_threshold = 0, strict = TRUE, .
   valleys.idx <- find_peaks(-x[["cps"]],
                           span = span, ignore_threshold = ignore_threshold,
                           strict = strict)
-  subset(x, idx = valleys.idx)
+  z[valleys.idx, ]
 }

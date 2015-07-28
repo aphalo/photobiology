@@ -34,7 +34,7 @@ check <- function(x, byref, strict.range, ...) UseMethod("check")
 
 #' @describeIn check Default for generic function.
 #' @export
-check.default <- function(x, byref=FALSE, strict.range=TRUE, ...) {
+check.default <- function(x, byref=FALSE, strict.range = FALSE, ...) {
   return(x)
 }
 
@@ -43,7 +43,7 @@ check.default <- function(x, byref=FALSE, strict.range=TRUE, ...) {
 #' @param multiple.wl numeric Maximum number of repeated w.length entries with same value.
 #'
 #' @export
-check.generic_spct <- function(x, byref=TRUE, strict.range=TRUE, multiple.wl = 1L, ...) {
+check.generic_spct <- function(x, byref=TRUE, strict.range = FALSE, multiple.wl = 1L, ...) {
   # fix old class attributes
   class.x <- class_spct(x)
   if (!("tbl_df") %in% class(x)){
@@ -92,7 +92,7 @@ check.generic_spct <- function(x, byref=TRUE, strict.range=TRUE, multiple.wl = 1
 
 #' @describeIn check Specialization for cps_spct.
 #' @export
-check.cps_spct <- function(x, byref=TRUE, strict.range = TRUE, ...) {
+check.cps_spct <- function(x, byref=TRUE, strict.range = FALSE, ...) {
 
   range_check <- function(x, strict.range) {
     cps.min <- min(x$cps, na.rm = TRUE)
@@ -121,7 +121,7 @@ check.cps_spct <- function(x, byref=TRUE, strict.range = TRUE, ...) {
 
 #' @describeIn check Specialization for filter_spct.
 #' @export
-check.filter_spct <- function(x, byref=TRUE, strict.range = TRUE, multiple.wl = 1L, ...) {
+check.filter_spct <- function(x, byref=TRUE, strict.range = FALSE, multiple.wl = 1L, ...) {
 
   range_check <- function(x, strict.range) {
     if (!all(is.na(x[["Tfr"]]))) {
@@ -159,7 +159,7 @@ check.filter_spct <- function(x, byref=TRUE, strict.range = TRUE, multiple.wl = 
     if (!all(is.na(x[["A"]]))) {
       A.min <- min(x[["A"]], na.rm = TRUE)
       A.max <- max(x[["A"]], na.rm = TRUE)
-      if (!is.null(strict.range) & (A.min < 0 || A.max > 1)) {
+      if (!is.null(strict.range) & (A.min < 0 || A.max > 20)) {
         message.text <- paste("Off-range absorbance values [", signif(A.min, 2),
                               "...", signif(A.max, 2), "] instead of  [0..1]", sep="")
         if (strict.range) {
@@ -212,7 +212,7 @@ if (is.null(getTfrType(x))) {
 
 #' @describeIn check Specialization for reflector_spct.
 #' @export
-check.reflector_spct <- function(x, byref = TRUE, strict.range = TRUE, ...) {
+check.reflector_spct <- function(x, byref = TRUE, strict.range = FALSE, ...) {
 
   range_check <- function(x, strict.range) {
     if (!all(is.na(x$Rfr))) {
@@ -253,7 +253,7 @@ check.reflector_spct <- function(x, byref = TRUE, strict.range = TRUE, ...) {
 
 #' @describeIn check Specialization for object_spct.
 #' @export
-check.object_spct <- function(x, byref=TRUE, strict.range = TRUE, multiple.wl = 1L, ...) {
+check.object_spct <- function(x, byref=TRUE, strict.range = FALSE, multiple.wl = 1L, ...) {
 
   range_check <- function(x, strict.range) {
     if (!all(is.na(x$Rfr))) {
@@ -329,7 +329,7 @@ check.object_spct <- function(x, byref=TRUE, strict.range = TRUE, multiple.wl = 
 
 #' @describeIn check Specialization for response_spct.
 #' @export
-check.response_spct <- function(x, byref=TRUE, strict.range=TRUE, multiple.wl = 1L, ...) {
+check.response_spct <- function(x, byref=TRUE, strict.range = FALSE, multiple.wl = 1L, ...) {
 
   x <- checkTimeUnit(x)
 
@@ -356,7 +356,7 @@ check.response_spct <- function(x, byref=TRUE, strict.range=TRUE, multiple.wl = 
 
 #' @describeIn check Specialization for source_spct.
 #' @export
-check.source_spct <- function(x, byref=TRUE, strict.range=FALSE, multiple.wl = 1L, ...) {
+check.source_spct <- function(x, byref=TRUE, strict.range = FALSE, multiple.wl = 1L, ...) {
 
   range_check <- function(x, strict.range) {
     if (is.null(strict.range)) {
@@ -412,7 +412,7 @@ check.source_spct <- function(x, byref=TRUE, strict.range=FALSE, multiple.wl = 1
 
 #' @describeIn check Specialization for chroma_spct.
 #' @export
-check.chroma_spct <- function(x, byref=TRUE, strict.range=TRUE, multiple.wl = 1L, ...) {
+check.chroma_spct <- function(x, byref=TRUE, strict.range = FALSE, multiple.wl = 1L, ...) {
   names_x <- names(x)
   idxs <- grep("[XYZ]", names_x)
   names(x)[idxs] <- tolower(names_x[idxs])
@@ -501,7 +501,7 @@ setGenericSpct <- function(x, multiple.wl = 1L) {
 #' @export
 #' @exportClass cps_spct
 #'
-setCpsSpct <- function(x, strict.range = TRUE, multiple.wl = 1L) {
+setCpsSpct <- function(x, strict.range = FALSE, multiple.wl = 1L) {
   name <- substitute(x)
   rmDerivedSpct(x)
   if (!is.data.frame(x)) {
@@ -530,7 +530,7 @@ setCpsSpct <- function(x, strict.range = TRUE, multiple.wl = 1L) {
 #' @exportClass filter_spct
 #'
 setFilterSpct <- function(x, Tfr.type=c("total", "internal"),
-                          strict.range = TRUE, multiple.wl = 1L) {
+                          strict.range = FALSE, multiple.wl = 1L) {
   name <- substitute(x)
   if ((is.object_spct(x) || is.filter_spct(x)) && getTfrType(x) != "unknown") {
     if (length(Tfr.type) > 1) {
@@ -567,7 +567,7 @@ setFilterSpct <- function(x, Tfr.type=c("total", "internal"),
 #' @exportClass reflector_spct
 #'
 setReflectorSpct <- function(x, Rfr.type=c("total", "specular"),
-                             strict.range = TRUE, multiple.wl = 1L) {
+                             strict.range = FALSE, multiple.wl = 1L) {
   name <- substitute(x)
   if ((is.object_spct(x) || is.reflector_spct(c)) && getRfrType(x) != "unknown") {
     if (length(Rfr.type) > 1) {
@@ -605,7 +605,7 @@ setReflectorSpct <- function(x, Rfr.type=c("total", "specular"),
 setObjectSpct <- function(x,
                           Tfr.type=c("total", "internal"),
                           Rfr.type=c("total", "specular"),
-                          strict.range = TRUE, multiple.wl = 1L) {
+                          strict.range = FALSE, multiple.wl = 1L) {
   name <- substitute(x)
   if ((is.filter_spct(x) || is.object_spct(x)) && getTfrType(x) != "unknown") {
     if (length(Tfr.type) > 1) {
@@ -998,7 +998,7 @@ as.response_spct <- function(x, time.unit = "second") {
 #'
 #' @export
 #'
-as.filter_spct <- function(x, Tfr.type=c("total", "internal"), strict.range = TRUE) {
+as.filter_spct <- function(x, Tfr.type=c("total", "internal"), strict.range = FALSE) {
   y <- x
   setFilterSpct(y, Tfr.type, strict.range = strict.range)
 }
@@ -1009,7 +1009,7 @@ as.filter_spct <- function(x, Tfr.type=c("total", "internal"), strict.range = TR
 #'
 #' @export
 #'
-as.reflector_spct <- function(x, Rfr.type = c("total", "specular"), strict.range = TRUE) {
+as.reflector_spct <- function(x, Rfr.type = c("total", "specular"), strict.range = FALSE) {
   y <- x
   setReflectorSpct(y, Rfr.type = Rfr.type, strict.range = strict.range)
 }
@@ -1021,7 +1021,7 @@ as.reflector_spct <- function(x, Rfr.type = c("total", "specular"), strict.range
 as.object_spct <- function(x,
                            Tfr.type=c("total", "internal"),
                            Rfr.type=c("total", "specular"),
-                           strict.range = TRUE) {
+                           strict.range = FALSE) {
   y <- x
   setObjectSpct(y, Tfr.type = Tfr.type, Rfr.type = Rfr.type,
                 strict.range = strict.range)

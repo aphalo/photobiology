@@ -406,13 +406,11 @@ The constructor converts percents to fractions before applying the tests.
 h3.spct <- setReflectorSpct(data.frame(wl = 300:305, Rpc = -100))
 @
 
-Setting \texttt{strict.range = FALSE} issues a warning instead of an error, and returns a \texttt{reflector\_spct} object possibly containing the \emph{bad data}.
+Setting \texttt{strict.range = TRUE} issues an instead of a warning.
 
 <<warning=TRUE, purl=FALSE>>=
 h4.spct <- setReflectorSpct(data.frame(wl = 300:305, Rfr = -1),
-                            strict.range = FALSE)
-class(h4.spct)
-h4.spct
+                            strict.range = TRUE)
 @
 
 Setting \texttt{strict.range = NULL} skips tests, and silently returns a \texttt{reflector\_spct} object possibly containing the \emph{bad data}.
@@ -427,8 +425,7 @@ h5.spct
 The constructor converts percents to fractions before applying the tests.
 
 <<warning=TRUE, purl=FALSE>>=
-h6.spct <- setReflectorSpct(data.frame(wl = 300:305, Rpc = -100),
-                            strict.range = FALSE)
+h6.spct <- setReflectorSpct(data.frame(wl = 300:305, Rpc = -100))
 class(h6.spct)
 h6.spct
 @

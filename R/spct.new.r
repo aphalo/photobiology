@@ -40,7 +40,7 @@
 source_spct <- function(w.length, s.e.irrad = NULL, s.q.irrad = NULL,
                         time.unit = c("second", "day", "exposure"),
                         bswf.used = c("none", "unknown"),
-                        comment = NULL, strict.range = TRUE) {
+                        comment = NULL, strict.range = FALSE) {
   if (is.null(s.q.irrad) && (is.numeric(s.e.irrad))) {
     z <- dplyr::data_frame(w.length, s.e.irrad)
   } else if (is.null(s.e.irrad) && (is.numeric(s.q.irrad))) {
@@ -116,7 +116,7 @@ response_spct <- function(w.length, s.e.response = NULL, s.q.response = NULL,
 #' @export
 #'
 filter_spct <- function(w.length, Tfr=NULL, Tpc=NULL, A=NULL, Tfr.type=c("total", "internal"),
-                        comment=NULL, strict.range=TRUE) {
+                        comment=NULL, strict.range = FALSE) {
   if (is.null(Tpc) && is.null(A) && is.numeric(Tfr)) {
     z <- dplyr::data_frame(w.length, Tfr)
   } else if (is.null(Tfr) && is.null(A) && is.numeric(Tpc)) {
@@ -144,7 +144,7 @@ filter_spct <- function(w.length, Tfr=NULL, Tpc=NULL, A=NULL, Tfr.type=c("total"
 #'
 reflector_spct <- function(w.length, Rfr=NULL, Rpc=NULL,
                            Rfr.type=c("total", "specular"),
-                           comment=NULL, strict.range=TRUE) {
+                           comment=NULL, strict.range = FALSE) {
   if (is.null(Rpc) && is.numeric(Rfr)) {
     z <- dplyr::data_frame(w.length, Rfr)
   } else if (is.null(Rfr) && is.numeric(Rpc)) {
@@ -167,7 +167,7 @@ reflector_spct <- function(w.length, Rfr=NULL, Rpc=NULL,
 object_spct <- function(w.length, Rfr=NULL, Tfr=NULL,
                         Tfr.type=c("total", "internal"),
                         Rfr.type=c("total", "specular"),
-                        comment=NULL, strict.range=TRUE) {
+                        comment=NULL, strict.range = FALSE) {
   z <- dplyr::data_frame(w.length, Rfr, Tfr)
   if (!is.null(comment)) {
     comment(z) <- comment
