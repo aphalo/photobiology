@@ -47,8 +47,6 @@
 #'
 #' @export
 #'
-#' @seealso  \code{\link[dplyr]{rbind_fill}}
-#'
 #' @note \code{dplyr::rbind_fill} is called internally and the result returned is
 #'   the highest class in the inheritance hierachy which is common to all
 #'   elements in the list. If not all members of the list belong to one of the
@@ -238,8 +236,6 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
   return(ans)
 }
 
-
-
 # Subset ------------------------------------------------------------------
 
 # subset.data.frame works as expected with all spectral classes as it
@@ -249,11 +245,13 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
 
 #' Extract Parts of an spectrum
 #'
-#' Just like \code{[]} in base R, but preserves the special attributes used in
-#' spectral classes.
+#' Just like extraction with indexes in base R, but preserving the special
+#' attributes used in spectral classes and checking for validity of remaining
+#' spectral data.
 #'
 #' @param x	spectral object from which to extract element(s)
-#' @param i, j indices specifying elements to extract or replace. Indices are
+#' @param i index for rows,
+#' @param j index for columns, specifying elements to extract or replace. Indices are
 #'   numeric or character vectors or empty (missing) or NULL. Please, see
 #'   \code{\link[base]{Extract.data.frame}} for more details.
 #' @param drop logical. If TRUE the result is coerced to the lowest possible
@@ -276,9 +274,11 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
 #'   may be implemented in the future.
 #'
 #' @examples
-#' sun.spct[w.length > 400, ]
+#' sun.spct[sun.spct$w.length > 400, ]
+#' subset(sun.spct, w.length > 400)
 #'
-#' @rdname Extract.generic.spct
+#' @rdname extract
+#' @name Extract
 #'
 #' @seealso \code{\link[base]{subset.data.frame}} and \code{\link{trim_spct}}
 #'
@@ -306,7 +306,7 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
   }
 
 #' @export
-#' @rdname Extract.generic.spct
+#' @rdname extract
 #'
 "[.cps_spct" <-
   function (x, i, j, drop = NULL) {
@@ -332,7 +332,7 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
   }
 
 #' @export
-#' @rdname Extract.generic.spct
+#' @rdname extract
 #'
 "[.source_spct" <-
   function (x, i, j, drop = NULL) {
@@ -362,7 +362,7 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
   }
 
 #' @export
-#' @rdname Extract.generic.spct
+#' @rdname extract
 #'
 "[.response_spct" <-
   function (x, i, j, drop = NULL) {
@@ -390,7 +390,7 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
   }
 
 #' @export
-#' @rdname Extract.generic.spct
+#' @rdname extract
 #'
 "[.filter_spct" <-
   function (x, i, j, drop = NULL) {
@@ -418,7 +418,7 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
   }
 
 #' @export
-#' @rdname Extract.generic.spct
+#' @rdname extract
 #'
 "[.reflector_spct" <-
   function (x, i, j, drop = NULL) {
@@ -446,7 +446,7 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
   }
 
 #' @export
-#' @rdname Extract.generic.spct
+#' @rdname extract
 #'
 "[.object_spct" <-
   function (x, i, j, drop = NULL) {
@@ -475,7 +475,7 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
   }
 
 #' @export
-#' @rdname Extract.generic.spct
+#' @rdname extract
 #'
 "[.chroma_spct" <-
   function (x, i, j, drop = NULL) {

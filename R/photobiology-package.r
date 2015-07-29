@@ -14,8 +14,8 @@
 #' \tabular{ll}{
 #' Package: \tab photobiology\cr
 #' Type: \tab Package\cr
-#' Version: \tab 0.7.2\cr
-#' Date: \tab 2015-07-25\cr
+#' Version: \tab 0.8.0\cr
+#' Date: \tab 2015-07-29\cr
 #' License: \tab GPL (>= 3.0)\cr
 #' URL: \tab \url{http://www.r4photobiology.info},\cr
 #' \tab \url{https://bitbucket.org/aphalo/photobiology}\cr
@@ -37,8 +37,6 @@
 #' http://hdl.handle.net/10138/37558
 #'
 #' @note This package is still under development, but is by now stable.
-#'
-#' @import methods
 #'
 #' @importFrom Rcpp evalCpp
 #'

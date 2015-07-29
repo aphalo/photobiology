@@ -19,7 +19,7 @@ normalize <- function(x, ...) UseMethod("normalize")
 
 #' @describeIn normalize Default for generic function
 #'
-#' @export normalize.default
+#' @export
 normalize.default <- function(x, ...) {
   warning("'normalize' is not defined for objects of class ", class(x)[1])
   return(x)

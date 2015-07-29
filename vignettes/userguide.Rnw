@@ -1,6 +1,6 @@
 %\VignetteEngine{knitr}
 %\VignetteIndexEntry{User guide}
-%\VignetteDepends{knitr, photobiology, photobiologyWavebands, photobiologySun, photobiologyFilters, photobiologyReflectors, photobiologySensors, photobiologyPlants, photobiologygg, ggplot2, ggtern, lubridate}
+%\VignetteDepends{knitr, photobiology, photobiologyWavebands, photobiologySun, photobiologyFilters, photobiologyReflectors, photobiologySensors, lubridate}
 %\VignetteKeyword{misc}
 
 \documentclass{article}
@@ -82,7 +82,6 @@ library(photobiologySun)
 library(photobiologyFilters)
 library(photobiologyReflectors)
 library(photobiologySensors)
-library(photobiologyPlants)
 library(lubridate)
 @
 
@@ -113,14 +112,7 @@ loading it from the library when needed.
 
 To load the package into the workspace we use \verb!library(photobiology)!.
 
-<<example-0-visible, eval=FALSE>>=
-library(photobiology)
-library(photobiologyWavebands)
-library(photobiologySun)
-library(photobiologyFilters)
-library(photobiologyReflectors)
-library(photobiologySensors)
-library(photobiologyPlants)
+<<example-0-hiden, eval=FALSE>>=
 @
 
 \section{Spectra}
@@ -249,280 +241,81 @@ by 10, and each value in the vector of spectral irradiances is divided by 1000.
 Before giving examples of how to construct objects to store spectral data we show how to query the class of an object, and how to query the class of a spectrum. Consistently with R design, the package provides `is' functions for querying the type of spectra objects.
 
 <<>>=
-is.source_spct(sun.spct)
-is.filter_spct(sun.spct)
 is.any_spct(sun.spct)
+is.source_spct(sun.spct)
 @
 
 In addition function \texttt{class.spc} returns directly the spectrum-related class attributes.
 
 <<>>=
 class_spct(sun.spct)
-class_spct(1:10)
-@
-
-The built-in R function \texttt{class} returns all class attributes of an R object.
-
-<<>>=
 class(sun.spct)
-class(1:10)
 @
 
 \subsection{Construction}
 
-There are basically three different approaches to the creation of spectra. The first approach consist in setting the class attribute of an existing data frame or data table, in simple terms, converting an existing object into a spectral object. This approach avoids creating a copy of the data, and should be fastest. The second approach is to use an `as' function to create a new spectral object from a data frame or data table (the original object remains unchanged, and independent of the spectral object). The third approach is to use a function with the same name as the spectrum object class, and supply the data as numeric vector arguments. With the first two approaches the variables should be suitably named so that they can be recognized, in the third approach the formal argument to which the actual argument vector is supplied determines how it is interpreted.
+There are basically two different approaches to the creation of spectra by users, a constructor similar to \texttt{data.frame} constructor that takes vectors as arguments, and a constructor that converts \texttt{list} objects into spectral objects, which works similarly to \texttt{as.data.frame} from base R. In contrast to the data frame constructors spectral constructor require the variables or the vector arguments should be suitably named so that they can be recognized.
 
-\subsubsection{Setting the class of an object}\label{sec:set:spct}
-
-\texttt{generic\_spct} objects can be created from data tables and data frames simply by setting them as such. However, a column called \texttt{w.length} must be present and contain wavelength values expressed in nm. Functions with names of the form \texttt{is.\_\_\_\_spct} are defined for all classes of spectra and can take as arguments any R object. In addition function \texttt{is.any\_spct} can use to query if an R object inherits from any of the classes of spectra defined in this package. Finally function \texttt{class\_spct} works similarly to R's \texttt{class} functions but returns a vector containing only the names of spectra classes. The `set' functions keep unrecognised variables, and fill missing required variables with \texttt{NA}, except for \texttt{w.length}, which if missing triggers an error.
-
-We create a data.table object \texttt{a.spct}, and query its class.
+Here we briefly describe the `as' constructor functions for spectra. In the first example we create an object to store spectral irradiance data for `light source', by first creting a data frame, and creating the spectral object as a copy of it. In the example below we supply a single value, 1, for the spectral irradiance. This value gets recycled as is normal in R, but of course in real use it is more usual to supply a vector of the same length as the \texttt{w.length} vector.
 
 <<>>=
-a.spct <- data.frame(w.length = 300:305, y = 1)
-class(a.spct)
-class_spct(a.spct)
-is.any_spct(a.spct)
+my.df <- data.frame(w.length = 400:410, s.e.irrad = 1)
+my.spct <- as.source_spct(my.df)
+class(my.spct)
+class(my.df)
+my.spct
 @
-
-We convert \texttt{a.spct} into a \texttt{generic\_spct} object, and query its class.
-
-<<>>=
-a.spct <- as.generic_spct(a.spct)
-class(a.spct)
-class_spct(a.spct)
-is.generic_spct(a.spct)
-a.spct
-@
-
-\texttt{source\_spct} objects can be created from data tables, data frames, and \texttt{generic\_spct} simply by setting them as such. However, columns called \texttt{w.length} (wavelength values expressed in nm) and \texttt{s.e.irrad} (\wattnm) or \texttt{s.q.irrad} (\molnm) must be present.
-
-<<>>=
-b.spct <- setSourceSpct(data.frame(w.length = 300:305, s.e.irrad = 1))
-getTimeUnit(b.spct)
-class(b.spct)
-b.spct
-@
-
-If the spectral irradiance is expressed per day, then the parameter \texttt{time.unit} should be set to \texttt{"day"} instead of the default of \texttt{"second"}. This information is used when printing and plotting source spectra.
-
-<<>>=
-b.d.spct <- setSourceSpct(
-  data.frame(w.length = 300:305, s.e.irrad = rep(1,6)),
-  time.unit = "day")
-getTimeUnit(b.d.spct)
-class(b.d.spct)
-b.d.spct
-@
-
-\texttt{filter\_spct} objects can be created from data tables, data frames, and \texttt{generic\_spct} simply by setting them as such. However, columns called \texttt{w.length} (wavelength values expressed in nm) and \texttt{Tpc} (T\%), \texttt{Tfr} (T as fraction of 1) and\textbackslash or \texttt{A} (absorbance ($\log_{10}$ based)) must be present.
-
-<<>>=
-c.spct <- setFilterSpct(data.frame(w.length = 300:305, Tfr = 1))
-getTfrType(c.spct)
-class(c.spct)
-c.spct
-@
-
-If the spectral transmittance or absorbance is the internal component, then the parameter \texttt{Tfr.type} should be set to \texttt{"internal"} instead of the default of \texttt{"total"}. This information is used when printing and plotting source spectra.
-
-<<>>=
-c.i.spct <- setFilterSpct(data.frame(w.length = 300:305, Tfr = 1), "internal")
-getTfrType(c.i.spct)
-class(c.i.spct)
-c.i.spct
-@
-
-\texttt{reflector\_spct} objects can be created from data tables, data frames, and \texttt{generic\_spct} simply by setting them as such. However, columns called \texttt{w.length} (wavelength values expressed in nm) and \texttt{Rpc} (R\%), and\textbackslash or \texttt{Rfr} (R as fraction of 1) must be present.
-
-<<>>=
-d.spct <- setReflectorSpct(data.frame(w.length = 300:305, Rfr = 1))
-class(d.spct)
-d.spct
-@
-
-\texttt{object\_spct} objects can be created from data tables, data frames, and \texttt{generic\_spct} simply by setting them as such. However, columns called \texttt{w.length} (wavelength values expressed in nm), \texttt{Tfr} (Transmittance, T, as fraction of one), and\textbackslash or \texttt{Rfr} (Reflectance, R, as fraction of one) must be present.
-
-<<>>=
-e.spct <- setObjectSpct(data.frame(w.length = 300:305, Tfr = 0.5, Rfr = 0.5))
-class(e.spct)
-e.spct
-@
-
-\texttt{object\_spct} objects can be also created by merging a \texttt{filter\_spct} object and \texttt{reflector\_spct} object if they share \texttt{w.length} values.
-
-<<>>=
-merged.spct <- merge(c.spct, d.spct)
-class(merged.spct)
-merged.spct
-@
-
-\texttt{chroma\_spct} objects can be created from data tables, data frames, and \texttt{generic\_spct} simply by setting them as such. However, columns called \texttt{w.length} (wavelength values expressed in nm) and \texttt{x}, \texttt{y} and \texttt{z} must be present, giving the trichromic chromaticity constants.
-
-<<>>=
-e.spct <- setChromaSpct(data.frame(w.length = 300:305, x = 1, y = 1, z = 1))
-class(e.spct)
-e.spct
-@
-
-In all cases if the expected data is not available, then it is filled-in if possible with values.
-
-<<>>=
-f.spct <- setReflectorSpct(data.frame(w.length = 300:305, Rpc = 100))
-class(f.spct)
-f.spct
-@
-
-When required data is not available, and it cannot be calculated from other columns, the required column is added and filled with \texttt{NA}s.
-<<warning=TRUE, purl=FALSE>>=
-g.spct <- setReflectorSpct(data.frame(w.length = 300:305, z = 1))
-class(g.spct)
-g.spct
-@
-
-If no variable named \texttt{w.length} is present, and a variable named \texttt{wl} is found, it is renamed to \texttt{w.length}.
-
-<<error=TRUE, purl=FALSE>>=
-h.spct <- setReflectorSpct(data.frame(wl = 300:305, Rfr = 1))
-class(h.spct)
-h.spct
-@
-
-The range of the input is checked, and warnings or errors issued. The wavelength range test cannot be overridden as the most likely reason for it to be triggered is the expression of wavelengths in units other than the expected nanometres (nm).
-
-<<error=TRUE, purl=FALSE>>=
-h1.spct <- setReflectorSpct(data.frame(wl = 5999:6001, Rfr = 1))
-@
-
-Transmittance and reflectance values are checked to be within their valid range, and spectral irradiance values to be zero or positive. By default failure of this test generates a fatal error.
-
-<<error=TRUE, purl=FALSE>>=
-h2.spct <- setReflectorSpct(data.frame(wl = 300:305, Rfr = -1))
-@
-
-The constructor converts percents to fractions before applying the tests.
-
-<<error=TRUE, purl=FALSE>>=
-h3.spct <- setReflectorSpct(data.frame(wl = 300:305, Rpc = -100))
-@
-
-Setting \texttt{strict.range = TRUE} issues an instead of a warning.
-
-<<warning=TRUE, purl=FALSE>>=
-h4.spct <- setReflectorSpct(data.frame(wl = 300:305, Rfr = -1),
-                            strict.range = TRUE)
-@
-
-Setting \texttt{strict.range = NULL} skips tests, and silently returns a \texttt{reflector\_spct} object possibly containing the \emph{bad data}.
-
-<<>>=
-h5.spct <- setReflectorSpct(data.frame(wl = 300:305, Rfr = -1),
-                            strict.range = NULL)
-class(h5.spct)
-h5.spct
-@
-
-The constructor converts percents to fractions before applying the tests.
-
-<<warning=TRUE, purl=FALSE>>=
-h6.spct <- setReflectorSpct(data.frame(wl = 300:305, Rpc = -100))
-class(h6.spct)
-h6.spct
-@
-
-\begin{framed}
-\noindent
-A very frequent source of off-range values is measurement noise. This noise should be preferably explicitly dealt with before any further calculations. Normal R and/or \texttt{data.frame} syntax can be used resolve these problems by smoothing or replacement of the problem data. If the `bad' data is outside the range of interest it can be trimmed by means of function \texttt{trim\_spct} after creating a spectrum with setting \texttt{strict.range = FALSE} or setting \texttt{strict.range = NULL}
-\end{framed}
-
-We next use the example solar spectral irradiance data included in the package.
-
-<<>>=
-class(sun.spct)
-sun.spct
-@
-
-We can set a spectrum object to a different type of spectrum, but as above this can result in NAs in case of missing data. We need to make a copy of \texttt{sun.spct}, because being part of the package, it is protected and should not be modified by user code.
-
-<<>>=
-i.spct <- sun.spct
-setGenericSpct(i.spct)
-class(i.spct)
-@
-
-
-\subsubsection{Using `as' functions}
-
-Here we briefly describe the `as' functions, as what has been discussed above for `set' functions also applies to `as' functions, as they simply make a copy of their argument before calling the set functions, and then return this new object.
 
 We can make a `generic\_spct' copy of any spectrum object.
 
 <<>>=
-j.spct <- as.generic_spct(sun.spct)
-class(j.spct)
-class(sun.spct)
+my.g.spct <- as.generic_spct(my.spct)
+class(my.g.spct)
 @
 
-Or of a data frame.
-<<>>=
-k.df <- data.frame(wl = 400:410, anything = 1)
-k.spct <- as.generic_spct(k.df)
-class(k.spct)
-class(k.df)
-@
-
-Both \texttt{as.source\_spct} and \texttt{as.filter\_spct} accept an argument for setting the \texttt{time.unit} and \texttt{Tfr.type} attributes, respectively, with the same defaults as described above.
-
-\subsubsection{Using constructors}
-
-This approach is similar to using function \texttt{data.frame} to create a data frame, but in this case the names of the arguments are meaningful and convey information on the nature of the spectral data and basis of expression. In the examples below we supply a single value for the spectral data. This value gets recycled as is normal in R, but of course in real use it is more usual to supply a vector of the same length as the \texttt{w.length} vector.
+When cronstructing spectral objetcs from numeric vectors the names of the arguments are meaningful and convey information on the nature of the spectral data and basis of expression.
 
 <<>>=
-s.spct <- source_spct(w.length = 300:305, s.e.irrad = 100)
-class_spct(s.spct)
-s.spct
+source_spct(w.length = 300:305, s.e.irrad = 1)
 @
 
 <<>>=
-s.spct <- source_spct(w.length = 300:305, s.q.irrad = 40, time.unit = "day")
-class_spct(s.spct)
-s.spct
+z <- 300:305
+y <- 2
+source_spct(w.length = z, s.e.irrad = y)
 @
 
 <<>>=
-l.spct <- filter_spct(w.length = 300:305, Tpc = 100)
-class_spct(l.spct)
-l.spct
+w.length <- 300:305
+s.e.irrad <- 1
+source_spct(w.length, s.e.irrad)
 @
+
+The different constructors have additional arguments to be used in setting non-default values for the attributes. These arguments have the same name as the attributes. Here we used the data frame created in the first chunk of the section.
 
 <<>>=
-l.spct <- filter_spct(w.length = 300:305, A = 2)
-class_spct(l.spct)
-l.spct
+my.d.spct <- as.source_spct(my.df, time.unit = "day")
 @
+
+Argument \texttt{strict.range} can be used to override or make more strict the validation of the data values.
+<<>>=
+source_spct(w.length = 300:305, s.e.irrad = -1)
+source_spct(w.length = 300:305, s.e.irrad = -1, strict.range = NULL)
+@
+
+Finally argument \texttt{comment} can be used to add a comment to the data at the time of construction.
 
 <<>>=
-wl1 <- 300:305
-m.spct <- reflector_spct(w.length = wl1, Rfr = 0.5)
-class_spct(m.spct)
-m.spct
+my.cm.spct <- source_spct(w.length = 300:305, s.e.irrad = 1,
+                          comment = "This is a comment")
+comment(my.cm.spct)
 @
-
-<<>>=
-l.spct <- response_spct(w.length = 300:305, s.e.response = 0.5)
-class_spct(l.spct)
-l.spct
-@
-
-Function \texttt{source\_spct} accepts an argument for setting the \texttt{time.unit}, and functions \texttt{filter\_spct} and \texttt{object\_spct} accept an argument for setting the \texttt{Tfr.type} attributes, with the same defaults as described above. Functions \texttt{source\_spct}, \texttt{filter\_spct}, \texttt{reflector\_spct} and \texttt{object\_spct} have a \texttt{strict.range} formal argument, that alters checks as described in section \ref{sec:set:spct} above.
 
 \subsection{Special attributes}
 
-\texttt{source\_spct} objects have a \texttt{time.unit} attribute which can take one of two values \texttt{"second"} or \texttt{"day"}, the default is \texttt{"second"}. However, if the spectral data is for daily exposure, then the attribute should be set when the object is constructed. \texttt{source\_spct} objects have a \texttt{bswf.used} attribute which can take one of several values \texttt{"none"}, \texttt{"unknown"} or the name of a BSWF. It is also possible to set the attributes for an existing object with functions \texttt{setTimeUnit} and \texttt{setBSWFUsed}, and to query the value of the attributes for an existing object with functions \texttt{getTimeUnit} and \texttt{getBSWFUsed}.
+Spectral objects have several attributes used to store metadata, such as the time unit used. There are different functions available. One group of functions return a logical value, and another group returns the values of the attributes themselves. A third group of functions can be used to set the attributes, but these are very rarely needed in user code.
 
-\subsubsection{Retrieving attributes}
-
-The function \texttt{is\_effective} returns \texttt{TRUE} if the value of the \texttt{bswf.used} is neither \texttt{NULL} nor equal to \texttt{"none"}.
+For example function \texttt{is\_effective()} returns \texttt{TRUE} if the spectral data has been weighted with a BSWF. The corresponding \texttt{getBSWFUsed()} function can be used, in this case to retrieve the name of the BSWF that was used for generating the data. Here we demonstrate with one example, where we use two different \texttt{waveband} objects---constructed on-the-fly---, one defining a range of wavelengths, and another one defining the spectral weighting function for human erythema.
 
 <<>>=
 is_effective(sun.spct)
@@ -532,29 +325,15 @@ is_effective(sun.spct * CIE())
 getBSWFUsed(sun.spct * CIE())
 @
 
-\texttt{filter\_spct} and \texttt{object\_spct} objects have a \texttt{Tfr.type} attribute which can take one of two values \texttt{"total"} or \texttt{"internal"}, the default being \texttt{"total"}. However, if the spectral transmittance or absorbance data is internal, meaning excluding the contribution of reflection, then the attribute should be set when the object is constructed. It is also possible to set the attribute for an existing object with function \texttt{setTfrType}, and to query the value of the attribute  for an existing object with function \texttt{setTfrType}.
+Similar functions exist for other attributes and spectral clasees.
 
-\texttt{reflector\_spct} and \texttt{object\_spct} objects have a \texttt{Rfr.type} attribute which can take one of two values \texttt{"total"} or \texttt{"specular"}, the default being \texttt{"total"}. However, if the spectral reflectance data is specular, meaning excluding the contribution of scattered reflection, then the attribute should be set when the object is constructed. It is also possible to set the attribute for an existing object with function \texttt{setRfrType}, and to query the value of the attribute for an existing object with function \texttt{setRfrType}.
+As seen above, the attributes are set automatically, and consequently function \texttt{setBSWFUsed()} and other \emph{set} functions are only of use to programmers extending the package. One exception is when a wrong value has been assigned by mistake.
 
-\texttt{source\_spct} and \texttt{response\_spct} objects have a \texttt{time.unit} attribute. This can contain either character strings or \texttt{duration} objects as defined in package \texttt{lubridate}. When querying the \texttt{time.unit} of an object, by default the stored value is returned, but it is possibly to force the returned object to be a \texttt{lubridate::duration}, in which case \emph{character strings} are converted into \texttt{duration}, possibly \texttt{NA}.
-
-<<>>=
-getTimeUnit(sun.spct)
-getTimeUnit(sun.daily.spct)
-getTimeUnit(sun.spct, force.duration = TRUE)
-getTimeUnit(sun.daily.spct, force.duration = TRUE)
-@
-
-\subsubsection{Setting attributes}
-
-In most cases attributes are set during the constructions of spectral objects and should be changed with \emph{set} functions only to correct earlier mistakes, or exceptionally update objects created earlier versions of the package.
-Although functions are available for directly setting attributes, these functions are very rarely used in user code, as changing attributes alone normally invalidates the data object. In some cases one may need to copy or restore attributes between objects that have become corrupted by their loss. In general, conversion methods should be used instead.
-
-For example, sometimes it may be useful to change the time unit used for expresing spectral irradiance or spectral response, and this can be achieved with function \texttt{convertTimeUnit}. This function both converts spectral data to the new unit of expression and set the \texttt{time.unit} attribute, preserving the validity of the data object.
+Sometimes it may be desired to change the time unit used for expresing spectral irradiance or spectral response, and this can be achieved with \emph{conversion} function \texttt{convertTimeUnit}. This function both converts spectral data to the new unit of expression and sets the \texttt{time.unit} attribute, preserving the validity of the data object.
 
 <<>>=
 ten.minutes.spct <-
-  convertTimeUnit(sun.spct, time.unit = duration(10, "minutes"), byref = FALSE)
+  convertTimeUnit(sun.spct, time.unit = duration(10, "minutes"))
 ten.minutes.spct
 getTimeUnit(ten.minutes.spct)
 @
@@ -638,32 +417,19 @@ lapply(mixed.mspct, class)
 
 \section{Wavebands}
 
-When a range of wavelengths or a range of wavelengths plus a spectral weighting function (SWF) is needed for radiation summaries or transformations, methods, operators and functions defined in package \PB  use \texttt{waveband} objects to store and exchange these data. A few other bits of information can be included to fine-tune calculations. The waveband definitions do NOT describe whether input spectral irradiances are photon or energy based, nor whether the output irradiance will be based on photon or energy units. All waveband objects belong to the S3 class \texttt{waveband}.
+When a range of wavelengths or a range of wavelengths plus a spectral weighting function (SWF) is needed for radiation summaries or transformations, methods, operators and functions defined in package \PB  use \texttt{waveband} objects to store these data. A few other bits of information can be included to fine-tune calculations. The waveband definitions do NOT describe whether input spectral irradiances are photon or energy based, nor whether the output irradiance will be based on photon or energy units. All waveband objects belong to the S3 class \texttt{waveband}.
 
 \subsection{Construction}
 
 When defining a waveband which uses a SWF, a function can be supplied either based on energy effectiveness, on photon effectiveness, or one function for each one. If only one function is supplied the other one is built automatically, but if performance is a concern it is better to provide two separate functions. Another case when you might want to enter the same function twice, is if you are using an absorptance spectrum as SWF, as the percent of radiation absorbed will be independent of whether photon or energy units are used for the spectral irradiance.
 
-Two different functions can be used to create a waveband: \texttt{waveband} and \texttt{new\_waveband}.
-
-The difference is that \texttt{waveband} accepts the limits through a single argument, which can be any R object for which there is a suitable \texttt{range} function returning the range of wavelengths (nm) as a numeric vector of length 2.
-
-<<example-waveband-01, eval=TRUE>>=
-my_PAR <- waveband(c(400, 700))
-my_PARb <- new_waveband(400, 700)
-my_PAR
-my_PARb
-@
-
-The examples above, show that both constructors return equivalent waveband objects.
-
-Below we give a name to the waveband.
+To create a waveband object we use constructor function \texttt{waveband}, and optionally giving a name to it.
 
 <<>>=
-my_PARx <- waveband(c(400, 700), wb.name = "my_PARx")
+my_PAR <- waveband(c(400, 700), wb.name = "my_PAR")
 @
 
-Three examples of how to define equivalent wavebands based on a SWF follow.
+When including a BSWF, we supply, one or two versions of functions returning the weights as a function of wavelength. Several such functions are defined in package \PBWB as well as constructors using them. Here we give three examples of how equivalent wavebands can be defined based on a SWF. Although the constructor is smart enough to derive the missing function when only one function is supplied, performance may suffer.
 
 <<>>=
 my_CIE_1 <-
@@ -675,7 +441,7 @@ my_CIE_3 <-
                          SWF.q.fun = CIE_q_fun, SWF.norm = 298)
 @
 
-The function \texttt{waveband} is also useful when wanting to create a waveband covering the whole range of an spectrum, or when creating an unweighted waveband which covers exactly the same range of wavelengths as an existing weighted waveband.
+The first argument to \texttt{waveband()} does not need to be a numeric vector of length two. Any R object of a class that supplies a \texttt{range()} method definition that can be interpreted as a range of wavelengths in nanometres can be used. As a consequence, when wanting to construct a waveband covering the whole range of a spectrum one can simply supply the spectrum as argument, or to construct an unweighted waveband which covers exactly the same range of wavelengths as an existing effective (weighted) waveband, one can supply a waveband object as an argument.
 
 <<>>=
 waveband(sun.spct)
@@ -687,26 +453,19 @@ waveband(my_CIE_1)
 The function \texttt{is.waveband} can the used to query any R object. This function returns a logical value.
 
 <<>>=
-is.waveband(my_CIE_1)
 is.waveband(PAR())
-is.waveband(sun.spct)
+PAR <- PAR()
+is.waveband(PAR)
 @
 
-Base R function \texttt{class} can the used to retrieve the class attribute of any R object. This function returns a character vector.
-
-<<>>=
-class(PAR())
-@
+Above, we demonstrate that \texttt{PAR()} is a waveband constructor returning a waveband object, and \texttt{PAR} is a waveband object.
 
 \subsection{Retrieving properties}
 
 The function \texttt{is\_effective} can the used to query any R object.
 
 <<>>=
-is_effective(my_CIE_1)
-is_effective(GEN.G())
 is_effective(PAR())
-is_effective(sun.spct)
 @
 
 \section{Collections of wavebands}
@@ -803,9 +562,6 @@ source\_spct & \N & \N &\Y  & \N & \N & waveband (BSWF) & source\_spct \\
 
 <<>>=
 sun.spct * sun.spct
-sun.spct / sun.spct
-sun.spct + sun.spct
-sun.spct - sun.spct
 @
 
 When meaningful, operations between different spectra are also allowed. For example, it is possible to simulate the effect of a filter on a light source by multiplying (or convolving) the two spectra.
@@ -834,22 +590,14 @@ There is one special case, for \texttt{chroma\_spct}: if the numeric operand has
 Operators are also defined for operations between an spectrum and a \texttt{waveband} object. The next to code chunks demonstrate how the class of the result depends on whether the \texttt{waveband} object describes a range of wavelengths or a range of wavelengths plus a BSWF.
 
 <<>>=
-is_effective(UVB())
-clipped.spct <- sun.spct * UVB()
-class_spct(clipped.spct)
-clipped.spct
+sun.spct * UVB()
 @
 
 <<>>=
-is_effective(CIE())
-weighted.spct <- sun.spct * CIE()
-class_spct(weighted.spct)
-is_effective(weighted.spct)
-weighted.spct
+sun.spct * CIE()
 @
 
-And of course these operations can be combined into more complex statements, including parentheses, when needed. The example below estimates the difference in effective spectral irradiance according to the CIE98 definition, between sunlight and sunlight filtered with a polyester film. Of course, the result is valid only for the
-solar spectral data used, which corresponds to Southern Finland.
+And of course these operations can be combined into more complex statements, including parentheses, when needed. The example below estimates the difference in effective spectral irradiance according to the CIE98 definition, between sunlight and sunlight filtered with a polyester film. Of course, the result is valid only for the solar spectral data used, which corresponds to Southern Finland.
 
 <<warning=TRUE, purl=FALSE>>=
 sun.spct * CIE() - sun.spct * polyester.new.spct * CIE()
@@ -857,7 +605,7 @@ sun.spct * CIE() - sun.spct * polyester.new.spct * CIE()
 
 \subsection{Unary operators and maths functions}
 
-The most common mat functions, as well as unary minus and plus, are also implemented for spectral objects (see Table \ref{tab:unary}).
+The most common maths functions, as well as unary minus and plus, are also implemented for spectral objects (see Table \ref{tab:unary}).
 
 \begin{table}
 \newcommand{\N}{\textcolor{red}{\small N}}
@@ -880,11 +628,7 @@ chroma\_spct & \Y  & \Y & \Y & \Y & \Y & \Y & chroma\_spct \\
 \end{table}
 
 <<>>=
-+sun.spct
 -sun.spct
-log(sun.spct)
-log10(sun.spct)
-exp(sun.spct)
 sqrt(sun.spct)
 @
 
@@ -922,9 +666,7 @@ photobiology.verbose & \texttt{FALSE} & give verbose output or not \\
 \end{footnotesize}
 \end{table}
 
-The behaviour of the operators defined in this package depends on the value of two global options. If we would like the operators to
-operate on spectral photon irradiance and return spectral photon irradiance instead of spectral energy irradiance,
-this behaviour can be set, and will remain active until unset or reset.
+The behaviour of the operators defined in this package depends on the value of two global options. For example, if we would like the operators to operate on spectral photon irradiance and return spectral photon irradiance instead of spectral energy irradiance, this behaviour can be set, and will remain active until unset or reset.
 
 <<>>=
 options(photobiology.radiation.unit = "photon")
@@ -933,21 +675,7 @@ options(photobiology.radiation.unit = "energy")
 sun.spct * UVB()
 @
 
-For filters, an option controls whether transmittance, the default, or absorbance is use in the operations, and returned.
-
-<<>>=
-options(photobiology.filter.qty = "absorbance")
-polyester.new.spct * 2
-options(photobiology.filter.qty = "transmittance")
-polyester.new.spct ^ 2
-@
-
-Either option can be unset, by means of the \texttt{NULL} value.
-<<>>=
-options(photobiology.radiation.unit = NULL)
-options(photobiology.filter.qty = NULL)
-@
-
+The other options listed in Table \ref{tab:options} can be set similarly, to unset any option, they can be given a \texttt{NULL} value.
 
 \section{Transformations: methods and functions}
 
@@ -1008,64 +736,27 @@ In this section we describe methods and functions that take one or more spectral
 
 \subsection{Row binding spectra}
 
-Sometimes, especially for plotting, we may want to row-bind spectra. When the aim is that the returned object
-retains its class attributes, and other spectrum related attributes like the time unit, functions \texttt{rbind}
-from base R, and its reimplementation from package \texttt{data.table}, and function \texttt{rbindlist} also
-defined in package \texttt{data.table} should NOT be used. Package \PB provides function \texttt{rbinspct} for
-row-binding spectra, with the necessary checks for consistency of the bound spectra.
-
-In addition to lists of spectral objects, \texttt{rbindspct} accepts objects of \texttt{generic\_mspct} and
-derived classes as input.
+Sometimes, especially for plotting, we may want to row-bind spectra. When the aim is that the returned object retains its class and other attributes like the time unit. Package \PB provides function \texttt{rbinspct} for row-binding spectra, with the necessary checks for consistency of the bound spectra.
 
 <<>>=
 # STOPGAP
 shade.spct <- sun.spct
 @
 
-By default an ID factor named \texttt{spct.idx} is added so that it is possible to identify the origin of the observations after the binding. If the supplied list has named members, then these names are used as factor levels. Otherwise level names are generated automatically.
+By default an ID factor named \texttt{spct.idx} is added allow to idetify the source of the observations after the binding. If the supplied list has named members, then these names are used as factor levels. If a character value is supplied to as \texttt{idfactor} argument, this is used as name for the factor.
 
 <<>>=
 rbindspct(list(sun.spct, shade.spct))
-@
-
-It is possible to suppress the creation of the ID factor, but this is rarely of any use.
-
-<<>>=
-rbindspct(list(sun.spct, shade.spct), idfactor = FALSE)
-@
-
-If a named list of spectra with no missing names, is supplied as argument, these names are used for the levels of the ID factor.
-
-<<>>=
-rbindspct(list(sun = sun.spct, shade = shade.spct), idfactor = TRUE)
-@
-
-If a character string is supplied as argument, then this will be used as the name of the factor.
-
-<<>>=
-rbindspct(list(sun = sun.spct, shade = shade.spct), idfactor = "ID")
+rbindspct(list(A = sun.spct, B = shade.spct), idfactor = "site")
 @
 
 In the special case when the members of the list are \texttt{source\_spct} objects containing effective spectral irradiance data, and they are not based on the same BSWF, an additional factor \texttt{BSWF} will be automatically added, and the \texttt{BSWF} attribute of the resulting spectrum set to \texttt{"multiple"}.
 
 <<>>=
-rb2.spct <- rbindspct(list(sun.spct * CIE(), shade.spct * CIE()))
-rb2.spct
-getBSWFUsed(rb2.spct)
-@
-
-<<>>=
-rb1.spct <- rbindspct(list(sun.spct * CIE(), sun.spct * GEN.G()))
-rb1.spct
-getBSWFUsed(rb1.spct)
+rbindspct(list(sun.spct * CIE(), sun.spct * GEN.G()))
 @
 
 The warning above is caused by the different length of the members of the list, and in this case it is safe to ignore it.
-
-<<>>=
-range(sun.spct * CIE())
-range(sun.spct * GEN.G())
-@
 
 Special \textit{Extract} methods for spectral objects have been implemented. These are used by default and preserve the attributes used by this package, except when the retruned value is a single column from the spectral object.
 
@@ -1086,65 +777,46 @@ subset(sun.spct, c(TRUE, rep(FALSE, 99)))
 
 \subsection{Conversions between radiation units}
 
-The functions \texttt{e2q} and \texttt{q2e} can be used on source spectra to convert spectral energy irradiance into spectral photon irradiance and vice versa. The first argument should be a spectrum, and the second optional argument sets the action with \texttt{"add"} and \texttt{"replace"} as possible values. In the second case the whole spectrum object is copied, while in the first case a column is added but the unchanged columns are references to the original ones, rather than copies.
+The functions \texttt{e2q} and \texttt{q2e} can be used on source spectra to convert spectral energy irradiance into spectral photon irradiance and vice versa. A second optional argument sets the action with \texttt{"add"} and \texttt{"replace"} as possible values.
 
 <<>>=
-a.spct <-  e2q(sun.spct, "replace")
-a.spct
+e2q(sun.spct, "add")
+e2q(sun.spct, "replace")
 @
 
 For \texttt{filter\_spct} objects functions \texttt{T2A} and \texttt{A2T} allow conversion between spectral transmittance and spectral absorbance and vice versa.
 
 \subsection{Normalizing a spectrum}
 
-Function \texttt{normalize} permits normalizing a spectrum to one at an arbitrary wavelength (nm) or to the wavelength
-of either the maximum or the minimum spectral value.
+Function \texttt{normalize} permits normalizing a spectrum to a value of one at an arbitrary wavelength (nm) or to the wavelength of either the maximum or the minimum spectral value. It supports the different spectral classes, we use a \texttt{source\_spct} object as an example.
 
 <<>>=
 normalize(sun.spct)
 @
 
-Which is equivalent to
-
-<<>>=
-normalize(sun.spct, norm = "max")
-@
-
-We can also supply an arbitrary wavelength within the range of the data, and interpolation will be used if needed to calculate the multiplier but no insertion will be done on the spectral data. Consequently, a spectral value equal to one will not necessarily be generated when supplying a wavelength value as argument.
-
-<<>>=
-normalize(sun.spct, norm = 600.3)
-@
-
-It is also possible to supply a range within which the normalization wavelength will be searched.
+Which is equivalent to supplying \texttt{"max"} as argument to \texttt{norm}, it is also possible to give a range within which the maximum should be searched.
 
 <<>>=
 normalize(sun.spct, range = PAR(), norm = "max")
 @
 
-As is the case for other functions, the argument \texttt{"unit.out"} can be used to change the type output from the default.
+It is also possible to normalize to an arbitrary wavelength within the range of the data, even if it is not one of the wavelength values present in the spectral object, as interpolation is used when needed.
+
+<<>>=
+normalize(sun.spct, norm = 600.3)
+@
 
 \subsection{Rescaling a spectrum}
 
-Function \texttt{f\_scale} rescales a spectrum by dividing each spectral data value by a summary calculated with a function (f) selected by a character string, either the integrated "total" or the average or "mean" value over a range of wavelengths.
+Function \texttt{f\_scale} rescales a spectrum by dividing each spectral data value by a value calculated with a function (f) selected by a character string ("total" or "mean"), or an actual R function which can accept the spectrum object supplied as its first argument.
 
 <<>>=
 fscale(sun.spct)
-@
-
-<<>>=
 fscale(sun.spct, f = "total")
+fscale(sun.spct, range = PAR(), f = irrad)
 @
 
-It is also possible to supply a range within which integration or averaging will be done.
-
-<<>>=
-fscale(sun.spct, range = PAR(), f = "mean")
-@
-
-As is the case for other functions, the argument \texttt{"unit.out"} can be used to change the type output from the default.
-
-In addition to the character constants \texttt{"total"} and \texttt{"mean"}, it is possible to pass any suitable R function, built-in or user defined, through parameter \texttt{f} plus additional named arguments to it.
+In the third example, the spectral data is rescaled so that the corresponding photosynthetically-active irradiance is equal to one.
 
 \subsection{Wavelength interpolation}
 
@@ -1156,12 +828,7 @@ interpolate_spct(sun.spct, seq(400, 500, by = 0.1))
 
 \subsection{Trimming}\label{sec:trim:spct}
 
-\begin{framed}
-\noindent
-Because of how \verb|[ ]| operators work in R, and especially on objects of classes derived from \texttt{data.table} some object attributes are lost when this operator is used to subset spectral objects, consequently it is safer to use the function described in this section.
-\end{framed}
-
-Sometimes it is desirable to change the range of wavelengths included in a spectrum. If we are interested in a given part of the spectrum, there is no need to do calculations or plotting the whole spectrum. Sometimes we may want to expand the range of wavelengths, filling the expansion of all other variables with a certain value (i.e.\ a number, or NA.)
+Sometimes it is desirable to change the range of wavelengths included in a spectrum. If we are interested in a given part of the spectrum, there is no need to do calculations or plotting the whole spectrum. Sometimes we may want to expand the range of wavelengths, filling the expansion of all other variables with a certain value (i.e.\ a number, or NA.) In contrast to indexing, or subsetting, \emph{trimming} ensures that there will be spectral data returned at the boundaries of the trimmed region. These values are obtained by interpolation when they are not already present in the data.
 
 We can supply the arguments \texttt{band}, \texttt{low.limit}, \texttt{high.limit}, and \texttt{fill}. Either \texttt{band} or \texttt{low.limit} and/or \texttt{high.limit} arguments should supplied, but not both at once.
 
@@ -1174,21 +841,10 @@ trim_spct(sun.spct, PAR())
 trim_spct(sun.spct, low.limit = 297)
 @
 
-By default \texttt{trim\_spct} trims its argument by copy, this can be changed by setting \texttt{byref = TRUE} but as \texttt{sun.spct} is protected as part of the package, we cannot use it here.
-
-<<>>=
-my_sun.spct <- sun.spct
-trim_spct(my_sun.spct, low.limit = 297, byref = TRUE)
-@
-
-The default \texttt{fill} value is \texttt{NULL} which means deleting the values outside the trimmed region. It is possible to supply a different argument.
+The default \texttt{fill} value is \texttt{NULL} which means deleting the values outside the trimmed region. However, it is possible to supply a different argument.
 
 <<>>=
 trim_spct(sun.spct, low.limit = 297, fill = 0)
-@
-
-<<>>=
-trim_spct(sun.spct, low.limit = 297, fill = NA)
 @
 
 In addition, when fill is not \texttt{NULL}, expansion is possible.
@@ -1206,24 +862,12 @@ It is very instructive to look at weighted spectral data to understand how effec
 The multiplication operator is defined for operations between a \texttt{source\_spct} and a \texttt{waveband}, so this is the easiest way of doing the calculations.
 
 <<>>=
-sun.CIE.spct <- sun.spct * CIE()
-sun.CIE.spct
-@
-
-An alternative is as follows, where it is easier to use other aesthetics, or plot additional curves as shown in the chunk below.
-
-<<warning=FALSE>>=
-combined.spct <- rbindspct(list(normalize(sun.spct * PG(), range = c(290,400)),
-                                normalize(sun.spct * GEN.G(), range = c(290,400)),
-                                normalize(sun.spct * GEN.T(), range = c(290,400)),
-                                normalize(sun.spct * GEN.M(), range = c(290,400))
-                                )
-                           )
+sun.spct * CIE()
 @
 
 \subsubsection{Vectors}
 
-It is also possible to use vectors, and base R plot functions.
+It is also possible to use vectors.
 
 <<weighted-spectra-01, tidy=FALSE>>=
 weighted.s.e.irrad <-
@@ -1271,13 +915,6 @@ is_tagged(tg.sun.spct)
 @
 
 In the chuck above, we can see how this works, using in this case the default \texttt{byref = TRUE} which adds the tags in place, or ``by reference'', to the spct object supplied as argument.
-
-In the chunk bellow, we demonstrate that if an already tagged spectrum is re-tagged, the old tags are replaced with new ones, with a warning.
-
-<<warning=TRUE, purl=FALSE>>=
-tag(tg.sun.spct, PAR())
-tag(tg.sun.spct, VIS())
-@
 
 \section{Summaries}
 
@@ -1355,24 +992,9 @@ Specialized definitions of \texttt{summary} and the corresponding \texttt{print}
 summary(sun.spct)
 @
 
-<<>>=
-summary(sun.spct * CIE())
-@
-
-<<>>=
-summary(sun.daily.spct)
-@
-
 \subsection{Wavelength}
 
 \subsubsection{Individual spectra}
-
-Functions \texttt{integrate\_spct} and \texttt{average\_spct} take into account each individual wavelength step, so they return valid results even for spectra measured at arbitrary and varying wavelength steps. They operate on every numeric column in the spectrum object given as argument.
-
-<<>>=
-integrate_spct(sun.spct)
-average_spct(sun.spct)
-@
 
 The `usual' and a couple of new summary functions are available for spectra, but redefined to return wavelength based summaries in nanometres (nm).
 
@@ -1383,12 +1005,6 @@ max(sun.spct)
 midpoint(sun.spct)
 spread(sun.spct)
 stepsize(sun.spct)
-@
-
-Function \texttt{stepsize} computes the size of every single step in the spectrum, and returns the range of these values. In the example above for a simulated spectrum the step size is uniform, but in data from array spectrometers this is not the norm.
-
-<<>>=
-stepsize(sun_May_morning.spct)
 @
 
 \subsubsection{Collections of spectra}
@@ -1430,19 +1046,10 @@ In the case of \texttt{source\_spct} and \texttt{response\_spct} methods \texttt
 peaks(sun.spct, span = 51, unit.out = "photon")
 @
 
-In the case of \texttt{filter\_spct} methods \texttt{unit.out} can be used to force peaks to be searched using either spectral transmittance or spectral absorbance. The default is transmittance, or the option
-\texttt{"photobiology.filter.qty"} if set.
+It is possible to approximately set the width of the windows in nanometres by using function \texttt{step\_size}. However, here we simply use an odd number of wavelengths `steps'.
 
 <<>>=
-peaks(ug1.spct)
-peaks(ug1.spct, filter.qty = "absorbance")
-valleys(ug1.spct, filter.qty = "absorbance")
-@
-
-It is possible to approximately set the width of the windows in nanometres by using function \texttt{step\_size}. As \texttt{stepsize} returns a range, we use \texttt{mean} in this example, although one could also use an index (1 or 2), or \texttt{min} or \texttt{max} depending on needs.
-
-<<>>=
-peaks(sun.spct, span = 21 / mean(stepsize(sun.spct)))
+peaks(sun.spct, span = 21)
 @
 
 Low level functions \texttt{find\_peaks}, \texttt{get\_peaks} and \texttt{get\_valleys} take numeric vectors as arguments.
@@ -1457,22 +1064,13 @@ The code using \texttt{spct} objects is simple, to integrate the whole spectrum 
 irrad(sun.spct)
 @
 
-and, to integrate a range of wavelength, in the example, photosynthetically active radiation, we use \texttt{PAR()} that is a predefined waveband constructor.
+and, to integrate a range of wavelengths, in the example, photosynthetically active radiation, we use the predefined waveband constructor \texttt{PAR()}.
 
 <<>>=
-irrad(sun.spct, PAR(), unit.out = "energy") # W m-2
-irrad(sun.spct, PAR(), unit.out = "photon") # mol s-1 m-2
-irrad(sun.spct, PAR(), unit.out = "photon") * 1e6 # umol s-1 m-2
+irrad(sun.spct, PAR())
 @
 
 The default for \texttt{irrad}, when no argument \texttt{unit.out} is supplied, is to return the irradiance value in energy irradiance units, unless the R option \texttt{photobiology.radiation.unit} is set.
-
-<<>>=
-irrad(sun.spct, PAR()) # W m-2
-options(photobiology.radiation.unit = "photon")
-irrad(sun.spct, PAR()) # mol s-1 m-2
-options(photobiology.radiation.unit = NULL)
-@
 
 \sloppy
 Functions \texttt{e\_irrad} and \texttt{q\_irrad} save some typing, and always return the same type of spectral irradiance quantity, independently of global option \texttt{photobiology.radiation.unit}.
@@ -1480,7 +1078,6 @@ Functions \texttt{e\_irrad} and \texttt{q\_irrad} save some typing, and always r
 <<>>=
 e_irrad(sun.spct, PAR()) # W m-2
 q_irrad(sun.spct, PAR()) * 1e6 # umol s-1 m-2
-q_irrad(sun.daily.spct, PAR()) # mol d-1 m-2
 @
 
 It is also possible to supply a time unit to use as basis of expression for the returned value, but be aware that conversion into a loger time unit is only valid for sources like lamps, which have an output the remains constant in time.
@@ -1496,31 +1093,19 @@ Using a shorter time unit than the original, yields an average value re-expresse
 irrad(sun.daily.spct, PAR(), time.unit = "second")
 @
 
-We can use predefined waveband constructors, waveband objects, or define wavebands on the fly.
-
-<<>>=
-my_par <- PAR()
-e_irrad(sun.spct, my_par) # W m-2
-e_irrad(sun.spct, waveband(c(400,700))) # W m-2
-@
-
 Lists of wavebands are also accepted as argument.
 
 <<>>=
-e_irrad(sun.spct, list(CIE(), CIE(298), CIE(300))) # W m-2 (BE)
 my_wavebands <- list(Red(), Blue(), Green())
 e_irrad(sun.spct, my_wavebands) # W m-2
 @
 
-These functions have an additional argument \texttt{quantity}, with default \texttt{"total"}, which can take values controlling the output.
+These functions have an additional argument \texttt{quantity}, with default \texttt{"total"}, which can take values controlling the output. The value "total" yields \textbf{irradiance} in \watt, integrated over wavelengths for each waveband, while "average" yields the mean \textbf{spectral irradiance} within each waveband in \wattnm. The value "contribution" is relative to the irradiance for the whole spectrum, expressed as a fraction of one, while the value "relative" is relative to the sum of the irradiances for the different wavbands given as argument, also expressed as a fraction of one.
 
 <<>>=
-irrad(sun.spct, UV_bands())
 irrad(sun.spct, UV_bands(), quantity = "total")
 irrad(sun.spct, UV_bands(), quantity = "contribution")
-irrad(sun.spct, UV_bands(), quantity = "contribution.pc")
 irrad(sun.spct, UV_bands(), quantity = "relative")
-irrad(sun.spct, UV_bands(), quantity = "relative.pc")
 irrad(sun.spct, UV_bands(), quantity = "average")
 @
 
@@ -1545,53 +1130,23 @@ irrad(filtered_sun, list(UVA(), VIS()))
 
 \subsubsection{Numeric vectors}
 
-The code using numeric vectors is more complicated, but adds some additional flexibility. Under normal circumstances it is easier to use the functions described above.
+The code using numeric vectors is more complicated, but adds some additional flexibility for tweaking performance. Under normal circumstances it is easier to use the functions described above.
 
-Function \texttt{irradiance} takes an array of wavelengths (sorted in strictly increasing order), and the corresponding values of spectral irradiance. By default the input is assumed to be in energy units, but parameter \texttt{unit.in} cab be used to adjust the calculations to expect photon units. The type of unit used for the calculated irradiance (or exposure) is set by the parameter \texttt{unit.out} with no default. If no \texttt{w.band} parameter is supplied, the whole spectrum spectrum input is used, unweighted, to calculate the total irradiance. If a \texttt{w.band} is supplied, then the range of wavelengths specified and SWF if present are used for calculating the irradiance. If the waveband definition does not include a SWF, then the unweighted irradiance is returned, if the definition includes a SWF, then a weighted irradiance is returned.
-
-The functions \texttt{photon\_irradiance()} and \texttt{energy\_irradiance()}, just call \texttt{irradiance()} with the \texttt{unit.out} set to \texttt{"photon"} or \texttt{"energy"} respectively.
+Function \texttt{irradiance} takes an array of wavelengths (sorted in strictly increasing order), and the corresponding values of spectral irradiance. By default the input is assumed to be in energy units, but parameter \texttt{unit.in} can be used to change this default. The type of unit used for the returned quantity is set by \texttt{unit.out} with no default. The behaviour with respect to wavebands is as described above for spectral objects. The functions \texttt{photon\_irradiance()} and \texttt{energy\_irradiance()}, just call \texttt{irradiance()} with the \texttt{unit.out} set to \texttt{"photon"} or \texttt{"energy"} respectively.
 
 The functions taking numerical vectors as arguments can be used with data stored as vectors, or using \texttt{with} with data frames, data tables, lists, and spectra objects.
 
 <<>>=
-with(sun.data, photon_irradiance(w.length, s.e.irrad, PAR()))
 with(sun.spct, photon_irradiance(w.length, s.e.irrad, PAR()))
-@
-
-Lists of wavebands are also accepted as argument.
-
-<<>>=
-with(sun.data, energy_irradiance(w.length, s.e.irrad, list(CIE(), CIE(298), CIE(300))))
-my_wavebands <- list(Red(), Blue(), Green())
-with(sun.data, energy_irradiance(w.length, s.e.irrad, my_wavebands))
 @
 
 The recommended practice is to use \texttt{with}, as above.
 
-\sloppy
-The are also available convenience functions for calculating how `total' irradiance is split among different contiguous bands
-of the spectrum. The functions \texttt{split\_photon\_irradiance()} and \texttt{split\_energy\_irradiance()}, just call \texttt{split\_irradiance()} with the \texttt{unit.out} set to \texttt{"photon"} or \texttt{"energy"} respectively.
-
-<<>>=
-with(sun.data,
-     split_energy_irradiance(w.length, s.e.irrad,
-                             c(300, 400, 500, 600, 700, 800))
-)
-with(sun.data,
-     split_energy_irradiance(w.length, s.e.irrad,
-                             c(400, 500, 600, 700),
-                             scale = "percent")
-)
-with(sun.data,
-     split_photon_irradiance(w.length, s.e.irrad,
-                             c(400, 500, 600, 700),
-                             scale = "percent")
-)
-@
-
 \subsection{Fluence}
 
-The code using \texttt{spct} objects is simple, to integrate the whole spectrum we can use code similar to that for irradiances, but we need to always supply \texttt{exposure.time} as it has no default. The exposure time is a \texttt{lubridate::duration}, but any argument accepted by \texttt{as.duration} can also be used.
+\subsubsection{Individual spectra}
+
+The calculation of fluence values (time-integrated irradiance) is identical to that for irradiance, except that a \texttt{exposure.time} argument needs to be supplied. The exposure time must be a \texttt{lubridate::duration}, but any argument accepted by \texttt{as.duration} can also be used. Functions \texttt{fluence}, \texttt{e\_fluence} and \texttt{q\_fluence} correspond to \texttt{irrad}, \texttt{e\_irrad} and \texttt{q\_irrad},
 
 <<>>=
 fluence(sun.spct, exposure.time = duration(1, "hours"))
@@ -1599,28 +1154,17 @@ fluence(sun.spct, exposure.time = 3600) # seconds
 fluence(sun.spct, exposure.time = hms("01:00:00"))
 @
 
-and, to integrate a range of wavelengths, in the example, photosynthetically active radiation, we use \texttt{PAR()} that is a predefined waveband constructor.
+and, to obtain the photon fluence for a range of wavelengths, in the example, photosynthetically active radiation, we use \texttt{PAR()} that is a predefined waveband constructor, for 25 minutes of exposure we use.
 
 <<>>=
-fluence(sun.spct, PAR(), unit.out = "photon",
-        exposure.time = duration(1, "hours"))
-@
-
-<<>>=
-fluence(sun.spct, CIE(),
-        exposure.time = duration(30, "minutes"))
-@
-
-<<>>=
-fluence(sun.spct, CIE(),
-        exposure.time = duration(0.5, "hours"))
+e_fluence(sun.spct, PAR(), exposure.time = hms("00:25:00"))
 @
 
 \subsection{Photon and energy ratios}
 
 \subsubsection{Individual spectra}
 
-The functions described here, in there simplest use, calculate a ratio between two wavebands. The function \texttt{q\_ratio} returning photon ratios. However both waveband parameters can take lists of wavebands as arguments, with normal recycling rules in effect.
+The functions described here, in there simplest use, calculate a ratio between two wavebands. The function \texttt{q\_ratio} returning photon ratios. However both waveband parameters can take lists of wavebands as arguments, with normal recycling rules in effect. The corresponding function \texttt{e\_ratio} returns energy ratios.
 
 <<>>=
 q_ratio(sun.spct, UVB(), PAR())
@@ -1632,39 +1176,10 @@ q_ratio(sun.spct,
         list(UV(), PAR()))
 @
 
-Function \texttt{e\_ratio} returns energy ratios.
+Function \texttt{qe\_ratio}, has only one waveband parameter, and returns the `photon' to `energy' ratio, while its complement \texttt{eq\_ratio} returns the `energy' to `photon' ratio.
 
 <<>>=
-e_ratio(sun.spct, UVB(), PAR())
-e_ratio(sun.spct,
-        list(UVC(), UVB(), UVA()),
-        UV())
-@
-
-Function \texttt{qe\_ratio}, has only one waveband parameter, and returns the `photon' to `energy' ratio,
-
-<<>>=
-qe_ratio(sun.spct, PAR())
 qe_ratio(sun.spct, list(Blue(), Green(), Red()))
-@
-
-Function \texttt{eq\_ratio}, has only one waveband parameter, and returns the `energy' to `photon' ratio,
-
-<<>>=
-eq_ratio(sun.spct, PAR())
-eq_ratio(sun.spct, list(Blue(), Green(), Red()))
-@
-
-If we would like to calculate a conversion factor between PPFD (PAR photon irradiance in mol s-1 m-2) and PAR (energy) irradiance (W m-2) for a light source for which we have spectral data we could use the following code.
-
-<<example-ratios-02>>=
-conv.factor <- qe_ratio(sun.spct, PAR())
-
-PPFD.mol.photon <- 1000e-6
-PAR.energy <- PPFD.mol.photon / conv.factor
-conv.factor
-PPFD.mol.photon * 1e6
-PAR.energy
 @
 
 \subsubsection{Collections of spectra}
@@ -1678,19 +1193,13 @@ q_ratio(filtered_sun, list(UVB(), UVA()), PAR())
 The function \texttt{waveband\_ratio()} takes basically the same parameters as \texttt{irradiance}, but two waveband definitions instead of one, and two \texttt{unit.out} definitions instead of one. This is the base function used in all the vector based `ratio' functions in the \PB package.
 
 \sloppy
-The derived functions are: \texttt{photon\_ratio()}, \texttt{energy\_ratio()}, and \texttt{photons\_energy\_ratio}.
+Similar functions \texttt{photon\_ratio()}, \texttt{energy\_ratio()}, and \texttt{photons\_energy\_ratio} return the other ratios described above. In contrast to the functions described in the previous section, these functions only accept individual waveband definitions (not lists of them).
 
-In contrast to the functions described in the previous section, these functions only accept individual waveband definitions (not lists of them).
-
-If for example we would like to calculate the ratio between UVB and PAR radiation, we would use either
-of the following function calls, depending on which type of units we desire.
+To calculate the photon ratio between UVB and PAR photon irradiance in these to regions we use.
 
 <<example-ratios-01>>=
 with(sun.data,
      photon_ratio(w.length, s.e.irrad, UVB(), PAR())
-)
-with(sun.data,
-     energy_ratio(w.length, s.e.irrad, UVB(), PAR())
 )
 @
 
@@ -1710,72 +1219,17 @@ normalized_diff_ind(sun.spct,
 
 \subsubsection{Individual spectra}
 
-The functions \texttt{transmittance}, and \texttt{absorbance} take \texttt{filter\_spct} as argument, while function \texttt{reflectance} takes \texttt{reflector\_spct} objects as argument. Functions \texttt{transmittance}, \texttt{reflectance} and \texttt{absorptance} are implemented for \texttt{object\_spct}. They return as default an average value for these quantities \textbf{assuming} a light source with a flat spectral energy output.
+The functions \texttt{transmittance}, \texttt{absorptance} and \texttt{absorbance} take \texttt{filter\_spct} as argument, while function \texttt{reflectance} takes \texttt{reflector\_spct} objects as argument. Functions \texttt{transmittance}, \texttt{reflectance} and \texttt{absorptance} are also implemented for \texttt{object\_spct}. These functions return as default an average value for these quantities \textbf{assuming} a light source with a flat spectral energy output, but this can be changed as described above for \texttt{irrad()}.
 
 <<>>=
 transmittance(polyester.new.spct, list(UVB(), UVA(), PAR()))
 @
 
-<<>>=
-transmittance(Solidago_lower_adax.spct, Plant_bands())
-@
-
-<<>>=
-reflectance(Solidago_lower_adax.spct, Plant_bands())
-@
-
-<<>>=
-absorptance(Solidago_lower_adax.spct, Plant_bands())
-@
-
-<<>>=
-reflectance(gold.spct, VIS_bands())
-@
-
-Function \texttt{transmittance} has an additional argument \texttt{quantity}, with default \texttt{"average"}, which can take values controlling the output.
-
-<<>>=
-transmittance(polyester.new.spct, UV_bands())
-transmittance(polyester.new.spct, UV_bands(), quantity = "total")
-transmittance(polyester.new.spct, UV_bands(), quantity = "contribution")
-transmittance(polyester.new.spct, UV_bands(), quantity = "contribution.pc")
-transmittance(polyester.new.spct, UV_bands(), quantity = "relative")
-transmittance(polyester.new.spct, UV_bands(), quantity = "relative.pc")
-transmittance(polyester.new.spct, UV_bands(), quantity = "average")
-@
-
-An equivalent function returning absorbance instead of transmittance takes the same arguments as \texttt{transmittance}.
-
-<<>>=
-absorbance(polyester.new.spct, list(UVB(), UVA(), PAR()))
-@
-
-Function \texttt{absorbance} also has an additional argument \texttt{quantity}, with default \texttt{"average"}, which can take values controlling the output.
-
-<<>>=
-transmittance(polyester.new.spct, UV_bands())
-transmittance(polyester.new.spct, UV_bands(), quantity = "total")
-transmittance(polyester.new.spct, UV_bands(), quantity = "contribution")
-transmittance(polyester.new.spct, UV_bands(), quantity = "contribution.pc")
-transmittance(polyester.new.spct, UV_bands(), quantity = "relative")
-transmittance(polyester.new.spct, UV_bands(), quantity = "relative.pc")
-transmittance(polyester.new.spct, UV_bands(), quantity = "average")
-@
-
-It is more likely that we would like to calculate these values with reference to light of a certain spectral quality. This needs to be calculated by hand, which is not difficult. For example, for UV-B, which we can
-calculate, either by trimming the waveband as shown here, or by extending the sun spectrum with zeros.
-
-<<>>=
-tr.UVB <- trim_waveband(UVB(), sun.spct, trim = TRUE)
-irrad(sun.spct * polyester.new.spct, tr.UVB) /
-                            irrad(sun.spct, tr.UVB) * 100
-@
-
-And for a list of wavebands, as percentages.
+It is more likely that we would like to calculate these values with reference to light of a certain spectral quality. This needs to be calculated by hand, which is not difficult.
 
 <<>>=
 irrad(sun.spct * polyester.new.spct, list(UVB(), UVA(), PAR()), wb.trim = TRUE) /
-  irrad(sun.spct, list(UVB(), UVA(), PAR()), wb.trim = TRUE) * 100
+  irrad(sun.spct, list(UVB(), UVA(), PAR()), wb.trim = TRUE)
 @
 
 \subsubsection{Collections of spectra}
@@ -1797,54 +1251,19 @@ transmittance(filters, list(UVA(), VIS()))
 
 \subsubsection{Individual spectra}
 
-The functions  \texttt{response}, \texttt{e\_response} and \texttt{q\_response} take \texttt{response\_spct} objects as arguments, and return the integrated value for each waveband (integrated over wavelength) \textbf{assuming} a light source with a flat spectral energy or photon output respectively.
-
-If no waveband is supplied as argument, the whole spectrum is integrated.
+The functions  \texttt{response}, \texttt{e\_response} and \texttt{q\_response} take \texttt{response\_spct} objects as arguments, and return the integrated value for each waveband (integrated over wavelength) \textbf{assuming} a light source with a flat spectral energy or photon output respectively. If no waveband is supplied as argument, the whole spectrum is integrated.
 
 <<>>=
 response(Vital_BW_20.spct)
-e_response(Vital_BW_20.spct)
-@
-
-<<>>=
-q_response(Vital_BW_20.spct) * 1e-6
 @
 
 When a waveband, or list of wavebands, is supplied the response is calculated for the wavebands.
 
 <<>>=
-e_response(Vital_BW_20.spct, UVB())
-q_response(Vital_BW_20.spct, UVB()) * 1e-6
-@
-
-<<>>=
 e_response(Vital_BW_20.spct, list(UVB(), UVA()))
 @
 
-This function has an additional argument \texttt{quantity}, with default \texttt{"total"}, which can take values controlling the output.
-
-<<>>=
-response(Vital_BW_20.spct, UV_bands())
-response(Vital_BW_20.spct, UV_bands(), quantity = "total")
-response(Vital_BW_20.spct, UV_bands(), quantity = "contribution")
-response(Vital_BW_20.spct, UV_bands(), quantity = "contribution.pc")
-response(Vital_BW_20.spct, UV_bands(), quantity = "relative")
-response(Vital_BW_20.spct, UV_bands(), quantity = "relative.pc")
-response(Vital_BW_20.spct, UV_bands(), quantity = "average")
-@
-
-If we would like to calculate these values with reference to light of a certain spectral irradiance. This can be achieved by multiplying the sensor's spectral responsivity by the light source spectral irradiance.
-
-<<>>=
-e_response(sun.spct * Vital_BW_20.spct, UVB())
-q_response(sun.spct * Vital_BW_20.spct, UVB()) * 1e-6
-@
-
-And for a list of wavebands
-
-<<>>=
-q_response(sun.spct * KIPP_PQS1_PAR_quantum.spct, list(UVA(), PAR())) * 1e-6
-@
+This function has an additional argument \texttt{quantity}, with default \texttt{"total"}, as described for \texttt{irrad()}.
 
 \subsubsection{Collections of spectra}
 
@@ -1866,66 +1285,14 @@ We can integrate the values of arbitrary \texttt{numeric} columns other than \te
 
 <<>>=
 integrate_spct(sun.spct)
-integrate_spct(sun.spct * UVA())
-e_irrad(sun.spct, UVA(), use.hinges = TRUE)
 @
-
-The function \texttt{integrate\_spct} integrates every column holding numeric values from a spectrum object, except for \texttt{w.length}, returning a total value no longer expressed per nanometre.
-
-<<>>=
-my.sun.spct <- sun.spct
-my.sun.spct$one <- 1
-integrate_spct(my.sun.spct)
-spread(sun.spct)
-@
-
-In the simple example above, the integral of \texttt{one} gives us the span in nanometres of the spectrum.
 
 The function \texttt{average\_spct} integrates every column holding numeric values from a spectrum object, except for \texttt{w.length}, and divides the result by the \emph{spread} or width of the wavelength range integrated, returning a value expressed in the same units as the spectral data.
 
 <<>>=
-average_spct(my.sun.spct)
+average_spct(sun.spct)
 @
 
-\section{Handling `noisy' spectral data}
-
-The first thing to do is to think whether any part of the spectral measurements can be \textit{a priori} known to be equal to zero. For example for the solar spectrum at ground level it is safe to assume that the spectral irradiance is zero for all wavelengths shorter than 290~nm. If the data are noisy, it is best to discard these data before calculating any effective UV doses.
-
-Another possibility is do smoothing of the spectral data using one a series of possible algorithms. Smoothing can distort the spectrum because distinguishing between real peaks and valleys from noise is difficult.
-
-A third possibility is, when replicate measurements are available, to calculate "parallel" means, medians or other summary quantities, at each value of wavelength.
-
-We will discuss these three approaches in each of the sections below.
-
-\subsubsection{Trimming of noisy regions}
-
-In the following example we use a longer wavelength (297~nm) just to show how the function works, because the example spectral data set starts at 293~nm.
-
-<<example-sun>>=
-sun.spct
-@
-
-Sub-setting can be easily done as follows if the data are in a data.frame (of course, replacing \texttt{w.length} with the name used in your data frame for the wavelengths array):
-
-<<example-trim-noise>>=
-trim_spct(sun.spct, low.limit = 297)
-@
-
-The code above deletes the data outside the limits. However, if we supply a different value than the default NULL for the parameter \texttt{fill}, the w.length values are kept, and the trimmed spectral irradiance values replaced by the value supplied.
-
-<<example-set-na>>=
-trim_spct(sun.spct, low.limit = 297, fill = NA)
-@
-
-The code above sets the spectral irradiance values for wavelengths outside the limits to \texttt{NA}, but, for example when plotting, it is useful to replace the noise in the spectrum with zeros.
-
-<<example-set-zero>>=
-trim_spct(sun.spct, low.limit = 297, fill = 0)
-@
-
-After `cleaning' the data we just use the trimmed ($\approx$ sub-setted) spectral data object in further calculations or plotting.
-
-If the data are in a data frame, instead of a spct object then \texttt{subset} or indexing can be used. If the data are available as vectors, different options: 1) create a data frame from your data, 2) use the function \texttt{trim\_tails()} from this package, or 3) just use R commands. Here we give examples of the use of \texttt{trim\_tails()}, using the same data as in earlier examples. First we `trim' (delete) all data for wavelengths shorter than 293~nm.
 
 \section{Astronomy}
 
@@ -2023,8 +1390,6 @@ Examples for monochromatic light:
 <<>>=
 w_length2rgb(550) # green
 w_length2rgb(630) # red
-w_length2rgb(380) # UVA
-w_length2rgb(750) # far red
 w_length2rgb(c(550, 630, 380, 750)) # vectorized
 @
 
@@ -2033,9 +1398,6 @@ Examples for wavelength ranges:
 
 <<>>=
 w_length_range2rgb(c(400,700))
-w_length_range2rgb(400:700)
-w_length_range2rgb(sun.spct$w.length)
-w_length_range2rgb(550)
 @
 
 Examples for spectra as vectors, in this case for the solar spectrum:
@@ -2043,9 +1405,6 @@ Examples for spectra as vectors, in this case for the solar spectrum:
 <<>>=
 with(sun.spct, s_e_irrad2rgb(w.length, s.e.irrad))
 with(sun.spct, s_e_irrad2rgb(w.length, s.e.irrad, sens = ciexyzCMF2.spct))
-with(sun.spct, s_e_irrad2rgb(w.length, s.e.irrad, sens = ciexyzCMF10.spct))
-with(sun.spct, s_e_irrad2rgb(w.length, s.e.irrad, sens = ciexyzCC2.spct))
-with(sun.spct, s_e_irrad2rgb(w.length, s.e.irrad, sens = ciexyzCC10.spct))
 @
 
 Examples with \texttt{source\_spct} objects.

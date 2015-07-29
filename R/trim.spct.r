@@ -1,10 +1,10 @@
-#' Trim (or expand) tails of a spectrum
+#' Trim (or expand) head and/or tail of a spectrum
 #'
-#' Trimming of tails of a spectrum based on wavelength limits, interpolating the
-#' values at the boundaries. Trimming is needed for example to remove short
-#' wavelength noise when the measured spectrum extends beyond the known emission
-#' spectrum of the measured light source. Occasionally one may want also to
-#' expand the wavelength range.
+#' Trimming of head and tail of a spectrum based on wavelength limits,
+#' interpolating the values at the boundaries. Trimming is needed for example to
+#' remove short wavelength noise when the measured spectrum extends beyond the
+#' known emission spectrum of the measured light source. Occasionally one may
+#' want also to expand the wavelength range.
 #'
 #' @param spct an object of class "generic_spct"
 #' @param range a numeric vector of length two, or any other object for which
@@ -32,9 +32,7 @@
 #' @export
 #' @examples
 #' trim_spct(sun.spct, low.limit=300)
-#' my.sun.spct <- copy(sun.spct)
-#' trim_spct(my.sun.spct, low.limit=300, byref=TRUE)
-#' my.sun.spct
+#' trim_spct(sun.spct, low.limit=300)
 #' trim_spct(sun.spct, low.limit=300, fill=NULL)
 #' trim_spct(sun.spct, low.limit=300, fill=NA)
 #' trim_spct(sun.spct, low.limit=300, fill=0.0)

@@ -20,13 +20,16 @@ spectra can be used without any restrictions.
 
 Improved accuracy and accurancy of returned values (further
 than the ealier approximately 4 significant digits to close
-to 8 or 9 signicant digits when using hinges) and improved
+to 7 or 8 signicant digits when using hinges) and improved
 consistency among functions and operators.
 
 New print method for spectral objects.
 
 Several rather minor bugs and inconsistencies fixed,
 specially in operators.
+
+Several dependencies and suggests removed. No imports are
+now visible to users, which should avoid clashes.
 
 ** code is not yet optimized for performance **
 

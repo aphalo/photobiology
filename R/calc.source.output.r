@@ -6,8 +6,6 @@
 #' photobiologyLEDs, scaling the values.
 #'
 #' @param w.length.out numeric vector of wavelengths (nm) for output
-#' @param source.name a character string giving the name of a lamp data set,
-#'   default is NULL
 #' @param w.length.in numeric vector of wavelengths (nm) for input
 #' @param s.irrad.in numeric vector of spectral transmittance value (fractions
 #'   or percent)
@@ -17,7 +15,7 @@
 #'   wavelengths outside the range of the input. If NULL then the tails are
 #'   deleted. If 0 then the tails are set to zero.
 #'
-#' @return a dataframe with four numeric vectors with wavelength values
+#' @return a source_spct with three numeric vectors with wavelength values
 #'   (w.length), scaled and interpolated spectral energy irradiance (s.e.irrad),
 #'   scaled and interpolated spectral photon irradiance values (s.q.irrad).
 #' @keywords manip misc
@@ -27,48 +25,14 @@
 #'   it a little easier to plot lamp spectral emission data consistently. It
 #'   automates interpolation, extrapolation/trimming and scaling.
 #' @examples
-#' with(sun.data,
-#'      calc_source_output(290:1100, w.length.in=w.length, s.irrad.in=s.e.irrad))
-#' calc_source_output(290:1100,
-#'                    w.length.in=sun.data$w.length,
-#'                    s.irrad.in=sun.data$s.e.irrad,
-#'                    fill=0.0)
-#' calc_source_output(200:4000, "sun")
-#' calc_source_output(500:600, "sun")
+#' with(sun.data, calc_source_output(290:1100, w.length.in=w.length, s.irrad.in=s.e.irrad))
 #'
 calc_source_output <- function(w.length.out,
-                               source.name=NULL,
-                               w.length.in=NULL, s.irrad.in=NULL,
+                               w.length.in, s.irrad.in,
                                unit.in="energy",
                                scaled=NULL, fill=NA) {
-  # we first check the different possible inputs and convert to
-  # two vectors w.length.in and s.irrad.in
 
-  if (is.null(w.length.in) | is.null(s.irrad.in)) {
-    if (is.null(source.name)) {
-      return(NA)
-    } else {
-      lamp.object.name <- paste(source.name, "spct", sep=".")
-      if (!exists(lamp.object.name)) {
-        lamp.object.name <- paste(source.name, "data", sep=".")
-        if (!exists(lamp.object.name)) {
-          warning("No data for lamp with name: ", lamp.object.name)
-          return(NA)
-        }
-      }
-      lamp.object <- get(lamp.object.name)
-      w.length.in <- lamp.object$w.length
-      if (with(lamp.object, exists("s.e.irrad"))) {
-        unit.in <- "energy"
-        s.irrad.in <- lamp.object$s.e.irrad
-      } else if (with(lamp.object, exists("s.q.irrad"))) {
-        unit.in <- "photon"
-        s.irrad.in <- lamp.object$s.q.irrad
-      } else {
-        return(NA)
-      }
-    }
-  } else if (!check_spectrum(w.length.in, s.irrad.in)) {
+  if (!check_spectrum(w.length.in, s.irrad.in)) {
       return(NA)
   }
 
@@ -91,13 +55,13 @@ calc_source_output <- function(w.length.out,
   # we check unit.in and and convert the output spectrum accordingly
 
   if (unit.in == "energy") {
-    out.data <- source_spct(w.length = w.length.out,
-                            s.e.irrad = s.irrad.out,
-                            s.q.irrad = as_quantum_mol(w.length.out, s.irrad.out))
+    out.data <- e2q(source_spct(w.length = w.length.out,
+                            s.e.irrad = s.irrad.out),
+                    action = "add")
   } else if (unit.in == "photon") {
-    out.data <- source_spct(w.length = w.length.out,
-                            s.e.irrad = as_energy(w.length.out, s.irrad.out),
-                            s.q.irrad = s.irrad.out)
+    out.data <- q2e(source_spct(w.length = w.length.out,
+                            s.q.irrad = s.irrad.out),
+                    action = "add")
   } else {
     warning("Bad argument for unit.in: ", unit.in)
     return(NA)
@@ -120,11 +84,11 @@ calc_source_output <- function(w.length.out,
       warning("Ignoring unsupported scaled argument: ", scaled)
       e.div <- q.div <- 1.0
     }
-    out.data[!out.fill.selector, s.e.irrad] <- out.data[!out.fill.selector, s.e.irrad] / e.div
-    out.data[!out.fill.selector, s.q.irrad] <- out.data[!out.fill.selector, s.q.irrad] / q.div
+    out.data[!out.fill.selector, "s.e.irrad"] <- out.data[!out.fill.selector, s.e.irrad] / e.div
+    out.data[!out.fill.selector, "s.q.irrad"] <- out.data[!out.fill.selector, s.q.irrad] / q.div
   }
-  out.data[out.fill.selector, s.e.irrad] <- fill
-  out.data[out.fill.selector, s.q.irrad] <- fill
+  out.data[out.fill.selector, "s.e.irrad"] <- fill
+  out.data[out.fill.selector, "s.q.irrad"] <- fill
 
   return(out.data)
 }

@@ -3,14 +3,8 @@
 #' Insert new wavelength values into a spectrum interpolating the corresponding
 #' spectral data values.
 #'
-#' @note Inserting wavelengths values "hinges" immediately before and after a
-#'   discontinuity in the SWF, greatly reduces the errors caused by
-#'   interpolating the weighted irradiance during integration of the effective
-#'   spectral irradiance. This is specially true when data has a large
-#'   wavelength step size.
-#'
 #' @param spct an object of class "generic_spct"
-#' @param hinges a numeric array giving the wavelengths (nm) at which the
+#' @param hinges numeric vector of wavelengths (nm) at which the
 #'   s.irrad should be inserted by interpolation, no interpolation is indicated
 #'   by an empty array (numeric(0))
 #' @param byref logical indicating if new object will be created by reference or
@@ -18,8 +12,15 @@
 #'
 #' @return a generic_spct or a derived type with variables \code{w.length} and
 #'   other numeric variables.
-#' @keywords manip misc
+#'
+#' @note Inserting wavelengths values "hinges" immediately before and after a
+#'   discontinuity in the SWF, greatly reduces the errors caused by
+#'   interpolating the weighted irradiance during integration of the effective
+#'   spectral irradiance. This is specially true when data has a large
+#'   wavelength step size.
+#'
 #' @export
+#'
 #' @examples
 #' data(sun.spct)
 #' insert_spct_hinges(sun.spct, c(399.99,400.00,699.99,700.00))
