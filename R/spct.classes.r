@@ -96,7 +96,7 @@ check.cps_spct <- function(x, byref=TRUE, strict.range = FALSE, ...) {
 
   range_check <- function(x, strict.range) {
     cps.min <- min(x$cps, na.rm = TRUE)
-    if (!is.null(strict.range) & (cps.min < 0)) {
+    if (!is.null(strict.range) & (cps.min < -1e-8)) {
       message.text <- paste0("Off-range cps values:", signif(cps.min, 2))
       if (strict.range) {
         stop(message.text)
@@ -114,7 +114,7 @@ check.cps_spct <- function(x, byref=TRUE, strict.range = FALSE, ...) {
     return(x)
   } else {
     warning("No counts per second data found in cps_spct")
-    x[["cps"]] = NA
+    x[["cps"]] = NA_real_
     return(x)
   }
 }
@@ -127,7 +127,7 @@ check.filter_spct <- function(x, byref=TRUE, strict.range = FALSE, multiple.wl =
     if (!all(is.na(x[["Tfr"]]))) {
       Tfr.min <- min(x[["Tfr"]], na.rm = TRUE)
       Tfr.max <- max(x[["Tfr"]], na.rm = TRUE)
-      if (!is.null(strict.range) & (Tfr.min < 0 || Tfr.max > 1)) {
+      if (!is.null(strict.range) & (Tfr.min < -1e-8 || Tfr.max > 1)) {
         message.text <- paste("Off-range transmittance values [", signif(Tfr.min, 2),
                               "...", signif(Tfr.max, 2), "] instead of  [0..1]", sep="")
         if (strict.range) {
@@ -143,7 +143,7 @@ check.filter_spct <- function(x, byref=TRUE, strict.range = FALSE, multiple.wl =
     if (!all(is.na(x[["A"]]))) {
       A.min <- min(x[["A"]], na.rm = TRUE)
       A.max <- max(x[["A"]], na.rm = TRUE)
-      if (!is.null(strict.range) & (A.min < 0 || A.max > 20)) {
+      if (!is.null(strict.range) & (A.min < -1e-8 || A.max > 20)) {
         message.text <- paste("Off-range absorbance values [", signif(A.min, 2),
                               "...", signif(A.max, 2), "] instead of  [0..1]", sep="")
         if (strict.range) {
@@ -187,7 +187,7 @@ if (is.null(getTfrType(x))) {
     range_check_A(x, strict.range=strict.range)
   } else {
     warning("No transmittance or absorbance data found in filter_spct")
-    x[["Tfr"]] <- NA
+    x[["Tfr"]] <- NA_real_
   }
   x
 }
@@ -200,7 +200,7 @@ check.reflector_spct <- function(x, byref = TRUE, strict.range = FALSE, ...) {
     if (!all(is.na(x$Rfr))) {
       Rfr.min <- min(x$Rfr, na.rm = TRUE)
       Rfr.max <- max(x$Rfr, na.rm = TRUE)
-      if (!is.null(strict.range) & (Rfr.min < 0 ||  Rfr.max > 1)) {
+      if (!is.null(strict.range) & (Rfr.min < -1e-8 ||  Rfr.max > 1)) {
         message.text <- paste0("Off-range reflectance values [", signif(Rfr.min, 2), "...",
                                signif(Rfr.max, 2), "] instead of  [0..1]", sep="")
         if (strict.range) {
@@ -228,7 +228,7 @@ check.reflector_spct <- function(x, byref = TRUE, strict.range = FALSE, ...) {
     range_check(x, strict.range=strict.range)
   } else {
     warning("No reflectance data found in reflector_spct")
-    x[["Rfr"]] <- NA
+    x[["Rfr"]] <- NA_real_
   }
   x
 }
@@ -241,7 +241,7 @@ check.object_spct <- function(x, byref=TRUE, strict.range = FALSE, multiple.wl =
     if (!all(is.na(x[["Tfr"]]))) {
       Tfr.min <- min(x[["Tfr"]], na.rm = TRUE)
       Tfr.max <- max(x[["Tfr"]], na.rm = TRUE)
-      if (!is.null(strict.range) & (Tfr.min < 0 || Tfr.max > 1)) {
+      if (!is.null(strict.range) & (Tfr.min < -1e-8 || Tfr.max > 1)) {
         message.text <- paste("Off-range transmittance values [", signif(Tfr.min, 2),
                               "...", signif(Tfr.max, 2), "] instead of  [0..1]", sep="")
         if (strict.range) {
@@ -258,7 +258,7 @@ check.object_spct <- function(x, byref=TRUE, strict.range = FALSE, multiple.wl =
       Rfr.min <- min(x[["Rfr"]], na.rm = TRUE)
       Rfr.max <- max(x[["Rfr"]], na.rm = TRUE)
       if (!is.na(Rfr.min) && !is.na(Rfr.max)) {
-        if (!is.null(strict.range) & (Rfr.min < 0 ||  Rfr.max > 1)) {
+        if (!is.null(strict.range) & (Rfr.min < -1e-8 ||  Rfr.max > 1)) {
           message.text <- paste0("Off-range reflectance values [", signif(Rfr.min, 2), "...",
                                  signif(Rfr.max, 2), "] instead of  [0..1]", sep="")
           if (strict.range) {
@@ -306,7 +306,7 @@ check.object_spct <- function(x, byref=TRUE, strict.range = FALSE, multiple.wl =
     range_check_Tfr(x, strict.range=strict.range)
   } else {
     warning("No transmittance or absorptance data found in object_spct")
-    x[["Tfr"]] <- NA
+    x[["Tfr"]] <- NA_real_
   }
 
   x
@@ -334,7 +334,7 @@ check.response_spct <- function(x, byref=TRUE, strict.range = FALSE, multiple.wl
     return(x)
   } else {
     warning("No response data found in response_spct")
-    x[["s.e.response"]] <- NA
+    x[["s.e.response"]] <- NA_real_
     return(x)
   }
 }
@@ -349,7 +349,7 @@ check.source_spct <- function(x, byref=TRUE, strict.range = FALSE, multiple.wl =
     }
     if (exists("s.e.irrad", x, inherits = FALSE)) {
       s.e.min <- min(x$s.e.irrad, na.rm = TRUE)
-      if (s.e.min < 0) {
+      if (s.e.min < -1e-8) {
         message.text <- paste("Negative spectral energy irradiance values; minimun s.e.irrad =",
                               signif(s.e.min, 2))
         if (strict.range) {
@@ -388,7 +388,7 @@ check.source_spct <- function(x, byref=TRUE, strict.range = FALSE, multiple.wl =
     warning("Found variable 'irradiance', I am assuming it is expressed on an energy basis")
   } else {
     warning("No spectral irradiance data found in source_spct")
-    x[["s.e.irrad"]] <- NA
+    x[["s.e.irrad"]] <- NA_real_
     return(x)
   }
   range_check(x, strict.range = strict.range)
@@ -403,15 +403,15 @@ check.chroma_spct <- function(x, byref=TRUE, strict.range = FALSE, multiple.wl =
   names(x)[idxs] <- tolower(names_x[idxs])
   if (!exists("x", x, mode="numeric", inherits=FALSE)) {
     warning("Chromaticity coordinate 'x' data missing")
-    x[["x"]] <- NA
+    x[["x"]] <- NA_real_
   }
   if (!exists("y", x, mode="numeric", inherits=FALSE)) {
     warning("Chromaticity coordinate 'y' data missing")
-    x[["y"]] <- NA
+    x[["y"]] <- NA_real_
   }
   if (!exists("z", x, mode="numeric", inherits=FALSE)) {
     warning("Chromaticity coordinate 'z' data missing")
-    x[["z"]] <- NA
+    x[["z"]] <- NA_real_
   }
   return(x)
 }
@@ -1246,7 +1246,6 @@ char2duration <- function(time.unit) {
 #' @family BSWF attribute functions
 #'
 setBSWFUsed <- function(x, bswf.used=c("none", "unknown")) {
-  name <- substitute(x)
   if (is.null(bswf.used) || length(bswf.used) < 1) {
     bswf.used <- "none"
   }
@@ -1258,11 +1257,16 @@ setBSWFUsed <- function(x, bswf.used=c("none", "unknown")) {
     }
   }
   if (is.source_spct(x)) {
+    name <- substitute(x)
     if  (!(is.character(bswf.used))) {
       warning("Only character strings are valid vlues for 'bswf.used' argument")
       bswf.used <- "unknown"
     }
     attr(x, "bswf.used") <- bswf.used
+    if (is.name(name)) {
+      name <- as.character(name)
+      assign(name, x, parent.frame(), inherits = TRUE)
+    }
   }
   invisible(x)
 }
@@ -1452,7 +1456,7 @@ getRfrType <- function(x) {
 #' @export
 #'
 getSpctVersion <- function(x) {
-  if (is.any_spct(x)) {
+  if (is.any_spct(x) || is.old_spct(x)) {
     version <- attr(x, "spct.version", exact = TRUE)
     if (is.null(version)) {
       # need to handle objects created with old versions

@@ -27,8 +27,20 @@
 print.generic_spct <- function(x, ..., n = NULL, width = NULL)
 {
   cat("Object: local ", class_spct(x)[1], " ", dplyr::dim_desc(x), "\n", sep = "")
-  cat("Wavelength (nm): range ", paste(range(x), sep="", collapse = " to "), ", step ",
-      paste(unique(stepsize(x)), sep="", collapse = " to "), "\n", sep = "")
+  cat("Wavelength (nm): range ", paste(signif(range(x), 8), sep="", collapse = " to "), ", step ",
+      paste(unique(signif(stepsize(x), 7)), sep="", collapse = " to "), "\n", sep = "")
+  if (is_scaled(x)) {
+    scaling <- getScaled(x)[["f"]]
+    cat("Rescaled to '", scaling, "' = 1 \n", sep = "")
+  }
+  if (is_normalized(x)) {
+    norm <- getNormalized(x)
+    cat("Data normalized to ", norm, ifelse(is.numeric(norm), " nm \n", " \n"), sep = "")
+  }
+  if (is_effective(x)) {
+    BSWF <- getBSWFUsed(x)
+    cat("Data weighted using '", BSWF, "' BSWF\n", sep = "")
+  }
   cat("\n")
   print(dplyr::trunc_mat(x, n = n, width = width))
   invisible(x)
@@ -48,6 +60,7 @@ print.generic_spct <- function(x, ..., n = NULL, width = NULL)
 #'
 #' @return A summary object matching the class of \code{object}.
 #'
+#' @export
 #' @method summary generic_spct
 #'
 summary.generic_spct <- function(object, digits = max(3, getOption("digits")-3), ...) {
@@ -64,6 +77,7 @@ summary.generic_spct <- function(object, digits = max(3, getOption("digits")-3),
 }
 
 #' @method summary cps_spct
+#' @export
 #' @rdname summary.generic_spct
 #'
 summary.cps_spct <- function(object, digits = max(3, getOption("digits")-3), ...) {
@@ -88,6 +102,7 @@ summary.cps_spct <- function(object, digits = max(3, getOption("digits")-3), ...
 #' @param time.unit character or lubridate::duration
 #'
 #' @method summary source_spct
+#' @export
 #' @rdname summary.generic_spct
 #'
 summary.source_spct <- function(object,
@@ -143,6 +158,7 @@ summary.source_spct <- function(object,
 # @describeIn summary.generic_spct Summary of a \code{filter_spct} object.
 #'
 #' @method summary filter_spct
+#' @export
 #' @rdname summary.generic_spct
 #'
 summary.filter_spct <- function(object, digits = max(3, getOption("digits")-3), ...) {
@@ -189,6 +205,7 @@ summary.filter_spct <- function(object, digits = max(3, getOption("digits")-3), 
 # @describeIn summary.generic_spct Summary of a "reflector_spct" object.
 #'
 #' @method summary reflector_spct
+#' @export
 #' @rdname summary.generic_spct
 #'
 summary.reflector_spct <- function(object, digits = max(3, getOption("digits")-3), ...) {
@@ -214,6 +231,7 @@ summary.reflector_spct <- function(object, digits = max(3, getOption("digits")-3
 # @describeIn summary.generic_spct Summary of a \code{filter_spct} object.
 #'
 #' @method summary object_spct
+#' @export
 #' @rdname summary.generic_spct
 #'
 summary.object_spct <- function(object, digits = max(3, getOption("digits")-3), ...) {
@@ -244,6 +262,7 @@ summary.object_spct <- function(object, digits = max(3, getOption("digits")-3), 
 # @describeIn summary.generic_spct Summary of a "response_spct" object.
 #'
 #' @method summary response_spct
+#' @export
 #' @rdname summary.generic_spct
 #'
 summary.response_spct <- function(object,
@@ -303,6 +322,7 @@ summary.response_spct <- function(object,
 # @describeIn summary.generic_spct Summary of a "chroma_spct" object.
 #'
 #' @method summary chroma_spct
+#' @export
 #' @rdname summary.generic_spct
 #'
 summary.chroma_spct <- function(object, digits = max(3, getOption("digits")-3), ...) {

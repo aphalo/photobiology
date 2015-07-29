@@ -148,8 +148,7 @@ absorptance_spct <-
     # spectral resolution data, and speed up the calculations
     # a lot in such cases
     if (is.null(use.hinges)) {
-      use.hinges <-
-        stepsize(temp.spct)[2] > getOption("photobiology.auto.hinges.limit", default = 0.5) # nm
+      use.hinges <- auto_hinges(spct)
     }
     # we collect all hinges and insert them in one go
     # this may alter a little the returned values

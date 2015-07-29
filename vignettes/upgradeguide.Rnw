@@ -178,7 +178,7 @@ library(photobiology)
 my.old.spct <- source_spct(w.length = 400:450, s.e.irrad = 1)
 class(my.old.spct) <-  gsub("_spct", ".spct", class(my.old.spct), fixed = TRUE)
 class(my.old.spct)
-another.old.spct <- copy(my.old.spct)
+another.old.spct <- my.old.spct
 @
 
 We can use method \texttt{upgrade\_spct()} to upgrade a single spectrum.

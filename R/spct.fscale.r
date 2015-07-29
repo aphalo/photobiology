@@ -158,6 +158,7 @@ fscale_spct <- function(spct, range, var.name, f, ...) {
       }
     } else if (is.function(f)) {
       summary.value <- f(tmp.spct, ...)
+      f <- "a user supplied R function"
     } else {
       stop("'f' should be a function name or character")
     }

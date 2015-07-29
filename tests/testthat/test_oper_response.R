@@ -125,7 +125,7 @@ test_that("oper photon energy", {
   expect_equal(-my.2q.spct / -2, +my.q.spct)
   expect_equal(-my.2q.spct / -2L, +my.q.spct)
   expect_equal( 2 * my.q.spct, +my.2q.spct)
-  expect_equal( 1 / (2 / my.2q.spct), +my.q.spct)
+  expect_equal( sum((1 / (2 / my.2q.spct) - my.q.spct)[["s.e.response"]]), 0)
   expect_equal( 1 / my.q.spct, my.q.spct^-1)
 
   options(photobiology.radiation.unit = NULL)

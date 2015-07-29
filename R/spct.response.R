@@ -136,8 +136,7 @@ resp_spct <-
     # spectrum. This can produce small errors for high
     # spectral resolution data, but speed up the calculations.
     if (is.null(use.hinges)) {
-      use.hinges <- stepsize(spct)[2] >
-        getOption("photobiology.auto.hinges.limit", default = 0.5) # nm
+      use.hinges <- auto_hinges(spct)
     }
 
     # we collect all hinges and insert them in one go

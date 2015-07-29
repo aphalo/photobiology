@@ -88,10 +88,7 @@ tag.generic_spct <- function(x,
   # spectral resolution data, and speed up the calculations
   # a lot in such cases
   if (is.null(use.hinges)) {
-    length.wl <- length(x$w.length)
-    use.hinges <- (x$w.length[length.wl] - x$w.length[1]) / length.wl > 0.2
-    # we use 1.1 nm as performance degradation by using hinges is very significant
-    # in the current version.
+    use.hinges <- auto_hinges(spct)
   }
   # we collect all hinges and insert them in one go
   # this may alter a little the returned values

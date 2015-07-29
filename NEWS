@@ -8,14 +8,27 @@ photobiology 0.8.0
 ==================
 
 No longer use data.table as a base class for spectral objects.
-** Given the size of spectral data the advantages were to
+** Given the size of spectral data the advantages were too
 limited compared to the complications introduced. **
 
 Extract methods and subset function should now work as expected!
 Now semantics follows normal R semantics of passing arguments
-by copy, except in a few exceptions.
+by copy, except in a few exceptions. Now subscripting of
+spectra can be used without any restrictions.
+
+Improved accuracy and accurancy of returned values (further
+than the ealier approximately 4 significant digits to close
+to 8 or 9 signicant digits when using hinges) and improved
+consistency among functions and operators.
+
+New print method for spectral objects.
+
+Several rather minor bugs and inconsistencies fixed,
+specially in operators.
 
 ** code is not yet optimized for performance **
+
+** Hopefully not many bugs have been introduced **
 
 photobiology 0.7.1
 ==================
