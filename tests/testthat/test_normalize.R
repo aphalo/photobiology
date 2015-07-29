@@ -1,15 +1,16 @@
 library("photobiology")
+
 context("normalize.spct")
 
 test_that("normalize", {
 
-  my.spct <- copy(sun.spct)
+  my.spct <- q2e(sun.spct, action = "replace")
 
-  expect_equal(max(normalize(my.spct)$s.e.irrad), 1)
-  expect_equal(max(normalize(my.spct, norm = "max")$s.e.irrad), 1)
+  expect_equal(max(normalize(my.spct)$s.e.irrad), 1, tolerance = 1e-5)
+  expect_equal(max(normalize(my.spct, norm = "max")$s.e.irrad), 1, 1, tolerance = 1e-5)
   expect_warning(irrad(normalize(my.spct, norm = "max")))
   expect_equal(irrad(normalize(my.spct, norm = "max")), NA)
-  expect_named(normalize(my.spct), setdiff(names(my.spct), "s.q.irrad"))
+  expect_named(normalize(my.spct), names(my.spct))
   expect_equal(class(normalize(my.spct)), class(my.spct))
   expect_error(normalize(my.spct, range = 100))
   expect_error(normalize(my.spct, range = c(100, 100)))
@@ -19,6 +20,8 @@ test_that("normalize", {
   expect_equal(is.filter_spct(normalize(my.spct)), is.filter_spct(my.spct))
   expect_equal(getTimeUnit(normalize(my.spct)), getTimeUnit(my.spct))
   expect_equal(comment(normalize(my.spct)), comment(my.spct))
+  expect_equal(getNormalized(normalize(my.spct, norm = 400)), 400)
+  expect_equal(getNormalized(normalize(my.spct, norm = "max")), 451)
 })
 
 context("fscale.spct")
@@ -27,20 +30,21 @@ test_that("fscale", {
 
   my.spct <- q2e(sun.spct, action = "replace")
 
-  expect_equivalent(integrate_spct(fscale(my.spct, f = "total")), 1)
-  expect_less_than(integrate_spct(fscale(my.spct, f = "mean")) * average_spct(my.spct) - irrad(my.spct), 0.25)
+  expect_less_than(abs(integrate_spct(fscale(my.spct, f = "total")) - 1), 1e6)
+  expect_less_than(abs(average_spct(fscale(my.spct, f = "mean")) - 1), 1e6)
   expect_warning(irrad(fscale(my.spct, f = "mean")))
-  expect_equal(irrad(fscale(my.spct, f = "mean")), NA)
-  expect_named(fscale(my.spct), setdiff(names(my.spct), "s.q.irrad"))
+  expect_true(is.na(irrad(fscale(my.spct, f = "mean"))))
+  expect_named(fscale(my.spct), names(my.spct))
   expect_equal(class(fscale(my.spct)), class(my.spct))
   expect_error(fscale(my.spct, range = 100))
-  expect_error(normalize(my.spct, range = c(100, 100)))
   expect_true(is_scaled(fscale(my.spct)))
   expect_false(is_scaled(my.spct))
   expect_equal(is.source_spct(fscale(my.spct)), is.source_spct(my.spct))
   expect_equal(is.filter_spct(fscale(my.spct)), is.filter_spct(my.spct))
   expect_equal(getTimeUnit(fscale(my.spct)), getTimeUnit(my.spct))
   expect_equal(comment(fscale(my.spct)), comment(my.spct))
+  expect_true(is_scaled(fscale(my.spct)))
+  expect_false(is_scaled(my.spct))
 })
 
 context("integrate_spct average_spct")

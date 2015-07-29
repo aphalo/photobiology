@@ -41,8 +41,8 @@ rmDerivedMspct <- function(x) {
   name <- substitute(x)
   mspctclasses <- mspct_classes()
   allclasses <- class(x)
-  setattr(x, "class", setdiff(allclasses, mspctclasses))
-  setattr(x, "mspct.version", NULL)
+  class(x) <- setdiff(allclasses, mspctclasses)
+  attr(x, "mspct.version") <- NULL
   if (is.name(name)) {
     name <- as.character(name)
     assign(name, x, parent.frame(), inherits = TRUE)
@@ -99,15 +99,15 @@ generic_mspct <- function(l, class = "generic_spct", ncol = 1, byrow = FALSE) {
       multi_class <- c(multi_class, "generic_mspct")
     }
     multi_class <- c(multi_class, class(l))
-    setattr(l, "class", multi_class)
+    class(l) <- multi_class
   }
   if (is.null(names(l))) {
-    setattr(l, "names", paste("spct", 1:length(l), sep = "_"))
+    attr(l, "names") <- paste("spct", 1:length(l), sep = "_")
   }
-  setattr(l, "mspct.version", 1)
+  attr(l, "mspct.version") <- 2
 
-  setattr(l, "dim", c(length(l) %/% ncol, ncol))
-  setattr(l, "byrow", byrow)
+  attr(l, "dim") <- c(length(l) %/% ncol, ncol)
+  attr(l, "byrow") <- as.logical(byrow)
   l
 }
 
@@ -255,7 +255,7 @@ is.any_mspct <- function(x) {
 #' @rdname as.generic_mspct
 #'
 as.generic_mspct <- function(x) {
-  y <- copy(x)
+  y <- x
   rmDerivedMspct(y)
   z <- plyr::llply(y, setGenericSpct)
   generic_mspct(z)
@@ -266,7 +266,7 @@ as.generic_mspct <- function(x) {
 #' @export
 #'
 as.cps_mspct <- function(x) {
-  y <- copy(x)
+  y <- x
   rmDerivedMspct(y)
   z <- plyr::llply(y, setCpsSpct)
   cps_mspct(z)
@@ -285,7 +285,7 @@ as.source_mspct <- function(x,
                            time.unit=c("second", "day", "exposure"),
                            bswf.used=c("none", "unknown"),
                            strict.range = FALSE) {
-  y <- copy(x)
+  y <- x
   rmDerivedMspct(y)
   z <- plyr::llply(y, setSourceSpct, time.unit = time.unit, strict.range = strict.range, bswf.used = bswf.used)
   source_mspct(z)
@@ -296,7 +296,7 @@ as.source_mspct <- function(x,
 #' @export
 #'
 as.response_mspct <- function(x, time.unit = "second") {
-  y <- copy(x)
+  y <- x
   rmDerivedMspct(y)
   z <- plyr::llply(y, setResponseSpct, time.unit = time.unit)
   reponse_mspct(z)
@@ -309,7 +309,7 @@ as.response_mspct <- function(x, time.unit = "second") {
 #' @export
 #'
 as.filter_mspct <- function(x, Tfr.type=c("total", "internal"), strict.range = TRUE) {
-  y <- copy(x)
+  y <- x
   rmDerivedMspct(y)
   z <- plyr::llply(y, setFilterSpct, Tfr.type = Tfr.type, strict.range = strict.range)
   filter_mspct(z)
@@ -322,7 +322,7 @@ as.filter_mspct <- function(x, Tfr.type=c("total", "internal"), strict.range = T
 #' @export
 #'
 as.reflector_mspct <- function(x, Rfr.type = c("total", "specular"), strict.range = TRUE) {
-  y <- copy(x)
+  y <- x
   rmDerivedMspct(y)
   z <- plyr::llply(y, setReflectorSpct, Rfr.type = Rfr.type, strict.range = strict.range)
   reflector_mspct(z)
@@ -336,7 +336,7 @@ as.object_mspct <- function(x,
                            Tfr.type=c("total", "internal"),
                            Rfr.type=c("total", "specular"),
                            strict.range = TRUE) {
-  y <- copy(x)
+  y <- x
   rmDerivedMspct(y)
   z <- plyr::llply(y, setObjectSpct, Tfr.type = Tfr.type, Rfr.type = Rfr.type,
               strict.range = strict.range)
@@ -348,7 +348,7 @@ as.object_mspct <- function(x,
 #' @export
 #'
 as.chroma_mspct <- function(x) {
-  y <- copy(x)
+  y <- x
   rmDerivedMspct(y)
   z <- plyr::llply(y, setChromaSpct)
   chroma_mspct(z)

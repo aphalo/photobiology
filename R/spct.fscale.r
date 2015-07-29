@@ -143,9 +143,8 @@ fscale.reflector_spct <- function(x,
 #' @keywords internal
 #'
 fscale_spct <- function(spct, range, var.name, f, ...) {
-  stopifnot(is.any_spct(spct), !is.null(var.name), length(var.name) == 1, var.name %in% names(spct))
-  tmp.spct <- trim_spct(spct, range)
-  tmp.spct <- tmp.spct[ , .SD, .SDcols = c("w.length", var.name)]
+  tmp.spct <- trim_spct(spct, range, byref = FALSE)
+  tmp.spct <- tmp.spct[ , c("w.length", var.name)]
   # rescaling needed
   if (!is.null(f)) {
     if (is.character(f)) {
@@ -159,6 +158,7 @@ fscale_spct <- function(spct, range, var.name, f, ...) {
       }
     } else if (is.function(f)) {
       summary.value <- f(tmp.spct, ...)
+      f <- "a user supplied R function"
     } else {
       stop("'f' should be a function name or character")
     }
@@ -166,11 +166,11 @@ fscale_spct <- function(spct, range, var.name, f, ...) {
     summary.value <- 1 # implemented in this way to ensure that all returned
     # values folow the same copy/reference semantics
   }
-  out.spct <- copy(spct)
-  out.spct[ , var.name := out.spct[ , unlist(.SD), .SDcols = var.name] / summary.value, with = FALSE]
-  setattr(out.spct, "class", class(spct))
-  setattr(out.spct, "comment", comment(spct))
-  setattr(out.spct, "scaled", TRUE)
+  out.spct <- spct
+  out.spct[[var.name]] <- out.spct[[var.name]] / summary.value
+  class(out.spct) <- class(spct)
+  comment(out.spct) <- comment(spct)
+  setScaled(out.spct, list(multiplier = 1 / summary.value, f = f))
   setTimeUnit(out.spct, getTimeUnit(spct))
   setTfrType(out.spct, getTfrType(spct))
   out.spct
@@ -197,7 +197,7 @@ is_scaled <- function(x) {
     return(NA)
   }
   spct.attr <- attr(x, "scaled", exact = TRUE)
-  as.logical(!is.null(spct.attr) && as.logical(spct.attr))
+  as.logical(!is.null(spct.attr) && as.logical(spct.attr[[1]]))
 }
 
 # getScaled -----------------------------------------------------------
@@ -223,8 +223,35 @@ getScaled <- function(x) {
       # need to handle objects created with old versions
       scaled <- FALSE
     }
-    return(scaled[[1]])
+    return(scaled)
   } else {
     return(NA)
   }
 }
+
+#' Set the "scaled" attribute
+#'
+#' Funtion to write the "scaled" attribute of an existing generic_spct
+#' object.
+#'
+#' @param x a generic_spct object
+#' @param scaled logical
+#'
+#' @note if x is not a \code{generic_spct} object, x is not modified.
+#'   attribute set.
+#'
+#' @export
+#' @family rescaling functions
+#'
+setScaled <- function(x, scaled = FALSE) {
+  name <- substitute(x)
+  if (is.any_spct(x) && !is.null(scaled)) {
+    attr(x, "scaled") <- scaled
+    if (is.name(name)) {
+      name <- as.character(name)
+      assign(name, x, parent.frame(), inherits = TRUE)
+    }
+  }
+  invisible(x)
+}
+

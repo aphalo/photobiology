@@ -1,30 +1,33 @@
-##' Insert new wavelengths into a spectrum
-##'
-##' Insert new wavelength values into a spectrum interpolating the corresponding
-##' spectral data values.
-##'
-##' @note Inserting wavelengths values "hinges" immediately before and after a
-##'   discontinuity in the SWF, greatly reduces the errors caused by
-##'   interpolating the weighted irradiance during integration of the effective
-##'   spectral irradiance. This is specially true when data has a large
-##'   wavelength step size.
-##'
-##' @param spct an object of class "generic_spct"
-##' @param hinges a numeric array giving the wavelengths (nm) at which the
-##'   s.irrad should be inserted by interpolation, no interpolation is indicated
-##'   by an empty array (numeric(0))
-##'
-##' @return a generic_spct or a derived type with variables \code{w.length} and
-##'   other numeric variables.
-##' @keywords manip misc
-##' @export
-##' @examples
-##' data(sun.spct)
-##' insert_spct_hinges(sun.spct, c(399.99,400.00,699.99,700.00))
-##' insert_spct_hinges(sun.spct,
-##'                    c(199.99,200.00,399.50,399.99,400.00,699.99,
-##'                          700.00,799.99,1000.00))
-insert_spct_hinges <- function(spct, hinges=NULL) {
+#' Insert new wavelengths into a spectrum
+#'
+#' Insert new wavelength values into a spectrum interpolating the corresponding
+#' spectral data values.
+#'
+#' @param spct an object of class "generic_spct"
+#' @param hinges numeric vector of wavelengths (nm) at which the
+#'   s.irrad should be inserted by interpolation, no interpolation is indicated
+#'   by an empty array (numeric(0))
+#' @param byref logical indicating if new object will be created by reference or
+#'   by copy of spct
+#'
+#' @return a generic_spct or a derived type with variables \code{w.length} and
+#'   other numeric variables.
+#'
+#' @note Inserting wavelengths values "hinges" immediately before and after a
+#'   discontinuity in the SWF, greatly reduces the errors caused by
+#'   interpolating the weighted irradiance during integration of the effective
+#'   spectral irradiance. This is specially true when data has a large
+#'   wavelength step size.
+#'
+#' @export
+#'
+#' @examples
+#' data(sun.spct)
+#' insert_spct_hinges(sun.spct, c(399.99,400.00,699.99,700.00))
+#' insert_spct_hinges(sun.spct,
+#'                    c(199.99,200.00,399.50,399.99,400.00,699.99,
+#'                          700.00,799.99,1000.00))
+insert_spct_hinges <- function(spct, hinges=NULL, byref=FALSE) {
   if (!is.any_spct(spct)) {
     warning("Only objects derived from 'generic_spct' are supported")
     return(spct)
@@ -55,16 +58,17 @@ insert_spct_hinges <- function(spct, hinges=NULL) {
     if (is.reflector_spct(spct) || is.object_spct(spct)) {
       Rfr.type <- getRfrType(spct)
     }
-    new.spct <- data.table(w.length = new.w.length)
+    new.spct <- dplyr::data_frame(w.length = new.w.length)
     first.iter <- TRUE
     for (data.col in idx.data) {
       temp.data <- spct[[data.col]]
       if (is.numeric(temp.data)) {
-        new.spct[ , names.spct[data.col] := put_hinges(old.w.length, temp.data, hinges)]
+        new.spct[ , names.spct[data.col] ] <- put_hinges(old.w.length, temp.data, hinges)
       } else {
-        new.spct[ , names.spct[data.col] := NA]
+        new.spct[ , names.spct[data.col] ] <- NA
       }
     }
+    new.spct <- dplyr::as_data_frame(new.spct)
     if(class_spct[1] == "source_spct") {
       setSourceSpct(new.spct, time.unit = time.unit, bswf.used = bswf.used)
     } else if (class_spct[1] == "filter_spct") {
@@ -80,8 +84,8 @@ insert_spct_hinges <- function(spct, hinges=NULL) {
     } else if (class_spct[1] == "generic_spct") {
       setGenericSpct(new.spct)
     }
-    setattr(new.spct, "comment", comment.spct)
-    if (is.name(name)) {
+    comment(new.spct) <- comment.spct
+    if (byref && is.name(name)) {
       name <- as.character(name)
       assign(name, new.spct, parent.frame(), inherits = TRUE)
     }

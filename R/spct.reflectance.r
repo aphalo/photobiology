@@ -85,11 +85,8 @@ reflectance_spct <-
     Rfr.type <- getRfrType(spct)
     if (is.object_spct(spct)) {
       spct <- as.reflector_spct(spct)
-    } else {
-      spct <- copy(spct)
     }
-    spct <- spct[ , .(w.length, Rfr)] # data.table removes attributes!
-    setRfrType(spct, Rfr.type = Rfr.type)
+    spct <- spct[ , c("w.length", "Rfr")]
     # if the waveband is undefined then use all data
     if (is.null(w.band)){
       w.band <- waveband(spct)
@@ -111,7 +108,7 @@ reflectance_spct <-
     # spectral resolution data, and speed up the calculations
     # a lot in such cases
     if (is.null(use.hinges)) {
-      use.hinges <- stepsize(spct)[2] > getOption("photobiology.auto.hinges.limit", default = 0.5) # nm
+      use.hinges <- auto_hinges(spct)
     }
 
     # we collect all hinges and insert them in one go
@@ -150,12 +147,12 @@ reflectance_spct <-
         }
       }
       # we calculate the average reflectance.
-      reflectance[i] <- integrate_spct(trim_spct(spct, wb, use.hinges=FALSE))
+      reflectance[i] <- integrate_spct(trim_spct(spct, wb, use.hinges=use.hinges))
     }
 
    if (quantity %in% c("contribution", "contribution.pc")) {
      total <- reflectance_spct(spct, w.band=NULL,
-                                 quantity="total", use.hinges=FALSE)
+                                 quantity="total", use.hinges=use.hinges)
      reflectance <- reflectance / total
      if (quantity == "contribution.pc") {
        reflectance <- reflectance * 1e2
@@ -175,11 +172,11 @@ reflectance_spct <-
    }
    if (length(reflectance) == 0) {
      reflectance <- NA
-     names(reflectance) <- "out of range"
+     names(reflectance) <- "off range"
    }
    names(reflectance) <- paste(names(reflectance), wb.name)
-   setattr(reflectance, "Rfr.type", getRfrType(spct))
-   setattr(reflectance, "radiation.unit", paste("reflectance", quantity))
+   attr(reflectance, "Rfr.type") <- getRfrType(spct)
+   attr(reflectance, "radiation.unit") <- paste("reflectance", quantity)
    return(reflectance)
   }
 

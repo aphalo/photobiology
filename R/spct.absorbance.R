@@ -80,9 +80,7 @@ absorbance_spct <-
       return(NA)
     }
     spct <- T2A(spct, action="replace", byref=FALSE)
-    Tfr.type <- getTfrType(spct)
-    spct <- spct[ , .(w.length, A)] # data.table removes attributes!
-    setTfrType(spct, Tfr.type = Tfr.type)
+    spct <- spct[ , c("w.length", "A")]
     # if the waveband is undefined then use all data
     if (is.null(w.band)){
       w.band <- waveband(spct)
@@ -104,7 +102,7 @@ absorbance_spct <-
     # spectral resolution data, and speed up the calculations
     # a lot in such cases
     if (is.null(use.hinges)) {
-      use.hinges <- stepsize(spct)[2] > getOption("photobiology.auto.hinges.limit", default = 0.5) # nm
+      use.hinges <- auto_hinges(spct)
     }
 
     # we collect all hinges and insert them in one go
@@ -113,8 +111,8 @@ absorbance_spct <-
     if (use.hinges) {
       all.hinges <- NULL
       for (wb in w.band) {
-        if (!is.null(wb$hinges) & length(wb$hinges)>0) {
-          all.hinges <- c(all.hinges, wb$hinges)
+        if (!is.null(wb$hinges) & length(wb[["hinges"]]>0)) {
+          all.hinges <- c(all.hinges, wb[["hinges"]])
         }
       }
       if (!is.null(all.hinges)) {
@@ -145,12 +143,12 @@ absorbance_spct <-
         }
       }
       # we calculate the average transmittance.
-      absorbance[i] <- integrate_spct(trim_spct(spct, wb, use.hinges=FALSE))
+      absorbance[i] <- integrate_spct(trim_spct(spct, wb, use.hinges=use.hinges))
     }
 
     if (quantity %in% c("contribution", "contribution.pc")) {
       total <- absorbance_spct(spct, w.band=NULL,
-                                  quantity="total", use.hinges=FALSE)
+                                  quantity="total", use.hinges=use.hinges)
       absorbance <- absorbance / total
       if (quantity == "contribution.pc") {
         absorbance <- absorbance * 1e2
@@ -169,8 +167,8 @@ absorbance_spct <-
       names(absorbance) <- "out of range"
     }
     names(absorbance) <- paste(names(absorbance), wb.name)
-    setattr(absorbance, "Tfr.type", getTfrType(spct))
-    setattr(absorbance, "radiation.unit", paste("absorbance", quantity))
+    attr(absorbance, "Tfr.type") <- getTfrType(spct)
+    attr(absorbance, "radiation.unit") <- paste("absorbance", quantity)
     return(absorbance)
   }
 

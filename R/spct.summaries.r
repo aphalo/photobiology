@@ -1,3 +1,51 @@
+# print -------------------------------------------------------------------
+
+#' print a spectral object
+#'
+#' Print method for objects of spectral classes.
+#'
+#' @param x An object of one of the summary classes for spectra
+#' @param ... not used in current version
+#' @param n	Number of rows to show. If NULL, the default, will print all rows if
+#'   less than option dplyr.print_max. Otherwise, will print dplyr.print_min
+#' @param width	Width of text output to generate. This defaults to NULL, which
+#'   means use getOption("width") and only display the columns that fit on one
+#'   screen. You can also set option(dplyr.width = Inf) to override this default
+#'   and always print all columns.
+#'
+#' @return Returns \code{x} invisibly.
+#'
+#' @export
+#'
+#' @note At the moment just a modified copy of dplyr:::print.tbl_df.
+#'
+#' @examples
+#'
+#' print(sun.spct)
+#' print(sun.spct, n = 5)
+#'
+print.generic_spct <- function(x, ..., n = NULL, width = NULL)
+{
+  cat("Object: local ", class_spct(x)[1], " ", dplyr::dim_desc(x), "\n", sep = "")
+  cat("Wavelength (nm): range ", paste(signif(range(x), 8), sep="", collapse = " to "), ", step ",
+      paste(unique(signif(stepsize(x), 7)), sep="", collapse = " to "), "\n", sep = "")
+  if (is_scaled(x)) {
+    scaling <- getScaled(x)[["f"]]
+    cat("Rescaled to '", scaling, "' = 1 \n", sep = "")
+  }
+  if (is_normalized(x)) {
+    norm <- getNormalized(x)
+    cat("Data normalized to ", norm, ifelse(is.numeric(norm), " nm \n", " \n"), sep = "")
+  }
+  if (is_effective(x)) {
+    BSWF <- getBSWFUsed(x)
+    cat("Data weighted using '", BSWF, "' BSWF\n", sep = "")
+  }
+  cat("\n")
+  print(dplyr::trunc_mat(x, n = n, width = width))
+  invisible(x)
+}
+
 # summary -----------------------------------------------------------------
 
 #' Summary of a spectral object
@@ -12,6 +60,7 @@
 #'
 #' @return A summary object matching the class of \code{object}.
 #'
+#' @export
 #' @method summary generic_spct
 #'
 summary.generic_spct <- function(object, digits = max(3, getOption("digits")-3), ...) {
@@ -28,6 +77,7 @@ summary.generic_spct <- function(object, digits = max(3, getOption("digits")-3),
 }
 
 #' @method summary cps_spct
+#' @export
 #' @rdname summary.generic_spct
 #'
 summary.cps_spct <- function(object, digits = max(3, getOption("digits")-3), ...) {
@@ -52,6 +102,7 @@ summary.cps_spct <- function(object, digits = max(3, getOption("digits")-3), ...
 #' @param time.unit character or lubridate::duration
 #'
 #' @method summary source_spct
+#' @export
 #' @rdname summary.generic_spct
 #'
 summary.source_spct <- function(object,
@@ -107,6 +158,7 @@ summary.source_spct <- function(object,
 # @describeIn summary.generic_spct Summary of a \code{filter_spct} object.
 #'
 #' @method summary filter_spct
+#' @export
 #' @rdname summary.generic_spct
 #'
 summary.filter_spct <- function(object, digits = max(3, getOption("digits")-3), ...) {
@@ -153,6 +205,7 @@ summary.filter_spct <- function(object, digits = max(3, getOption("digits")-3), 
 # @describeIn summary.generic_spct Summary of a "reflector_spct" object.
 #'
 #' @method summary reflector_spct
+#' @export
 #' @rdname summary.generic_spct
 #'
 summary.reflector_spct <- function(object, digits = max(3, getOption("digits")-3), ...) {
@@ -178,6 +231,7 @@ summary.reflector_spct <- function(object, digits = max(3, getOption("digits")-3
 # @describeIn summary.generic_spct Summary of a \code{filter_spct} object.
 #'
 #' @method summary object_spct
+#' @export
 #' @rdname summary.generic_spct
 #'
 summary.object_spct <- function(object, digits = max(3, getOption("digits")-3), ...) {
@@ -208,6 +262,7 @@ summary.object_spct <- function(object, digits = max(3, getOption("digits")-3), 
 # @describeIn summary.generic_spct Summary of a "response_spct" object.
 #'
 #' @method summary response_spct
+#' @export
 #' @rdname summary.generic_spct
 #'
 summary.response_spct <- function(object,
@@ -267,6 +322,7 @@ summary.response_spct <- function(object,
 # @describeIn summary.generic_spct Summary of a "chroma_spct" object.
 #'
 #' @method summary chroma_spct
+#' @export
 #' @rdname summary.generic_spct
 #'
 summary.chroma_spct <- function(object, digits = max(3, getOption("digits")-3), ...) {
@@ -608,6 +664,9 @@ min.generic_spct <- function(..., na.rm = FALSE) {
 #'
 #' @param x an R object
 #' @param ... not used in current version
+#'
+#' @return A numeric vector of length 2 with min and maximum
+#'   stepsize values.
 #' @export
 #' @family wavelength summaries
 stepsize <- function(x, ...) UseMethod("stepsize")
@@ -615,7 +674,11 @@ stepsize <- function(x, ...) UseMethod("stepsize")
 #' @describeIn stepsize Default function usable on numeric vectors.
 #' @export
 stepsize.default <- function(x, ...) {
-  return(range(diff(x)))
+  if (length(x) > 1) {
+    range(diff(x))
+  } else {
+    c(NA, NA)
+  }
 }
 
 #' @describeIn stepsize  Method for "generic_spct" objects.
@@ -626,9 +689,13 @@ stepsize.default <- function(x, ...) {
 #' stepsize(sun.spct)
 #'
 stepsize.generic_spct <- function(x, ...) {
-  range(diff(x[["w.length"]]))
+  wl <- x[["w.length"]]
+  if (length(wl) > 1) {
+    range(diff(wl))
+  } else {
+    c(NA, NA)
+  }
 }
-
 
 #' @describeIn spread  Method for "generic_spct" objects.
 #'

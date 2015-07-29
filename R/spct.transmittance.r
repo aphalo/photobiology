@@ -101,8 +101,7 @@ transmittance_spct <-
       spct <- as.filter_spct(spct)
     }
     Tfr.type <- getTfrType(spct)
-    spct <- spct[ , .(w.length, Tfr)] # data.table removes attributes!
-    setTfrType(spct, Tfr.type = Tfr.type)
+    spct <- spct[ , c("w.length", "Tfr")]
     # if the waveband is undefined then use all data
     if (is.null(w.band)){
       w.band <- waveband(spct)
@@ -124,7 +123,7 @@ transmittance_spct <-
     # spectral resolution data, and speed up the calculations
     # a lot in such cases
     if (is.null(use.hinges)) {
-      use.hinges <- stepsize(spct)[2] > getOption("photobiology.auto.hinges.limit", default = 0.5) # nm
+      use.hinges <- auto_hinges(spct)
     }
 
     # we collect all hinges and insert them in one go
@@ -164,12 +163,12 @@ transmittance_spct <-
         }
       }
       # we calculate the average transmittance.
-      transmittance[i] <- integrate_spct(trim_spct(spct, wb, use.hinges=FALSE))
+      transmittance[i] <- integrate_spct(trim_spct(spct, wb, use.hinges=use.hinges))
     }
 
     if (quantity %in% c("contribution", "contribution.pc")) {
       total <- transmittance_spct(spct, w.band=NULL,
-                                quantity="total", use.hinges=FALSE)
+                                quantity="total", use.hinges=use.hinges)
       transmittance <- transmittance / total
       if (quantity == "contribution.pc") {
         transmittance <- transmittance * 1e2
@@ -194,8 +193,8 @@ transmittance_spct <-
       names(transmittance) <- "out of range"
     }
     names(transmittance) <- paste(names(transmittance), wb.name)
-    setattr(transmittance, "Tfr.type", getTfrType(spct))
-    setattr(transmittance, "radiation.unit", paste("transmittance", quantity))
+    attr(transmittance, "Tfr.type") <- getTfrType(spct)
+    attr(transmittance, "radiation.unit") <- paste("transmittance", quantity)
     return(transmittance)
   }
 

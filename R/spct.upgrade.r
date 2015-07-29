@@ -17,10 +17,12 @@
 upgrade_spct <-
   function(object) {
     name <- substitute(object)
-    setattr(object, "class", gsub(".spct", "_spct", class(object), fixed = TRUE))
     version <- getSpctVersion(object)
-    if (version <= 0L) {
-      setattr(object, "spct.version", 1L)
+    if (version < 1L) {
+    class(object) <- gsub(".spct", "_spct", class(object), fixed = TRUE)
+    }
+    if (version <= 1L) {
+      attr(object, "spct.version") <- 2L
     }
     check(object)
     if (is.name(name)) {
@@ -54,10 +56,9 @@ upgrade_spct <-
 upgrade_spectra <- function(obj.names = ls(parent.frame())) {
   for (obj.name in obj.names) {
     obj <- get(obj.name, inherits = TRUE)
-    class(obj)
-    if (inherits(obj, "generic.spct")) {
+    if (is.old_spct(obj)) {
       message("Upgrading: ", obj.name)
-      class(obj) <- gsub(".spct", "_spct", class(obj), fixed = TRUE)
+      upgrade_spct(obj)
       assign(obj.name, obj, inherits = TRUE)
     } else {
       message("Skipping: ", obj.name)

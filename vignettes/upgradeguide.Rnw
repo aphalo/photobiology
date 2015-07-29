@@ -145,6 +145,22 @@ the detection of lost attributes.
 The new \texttt{generic\_mspct} objects have an atribute \texttt{"mspct.version"}
 which allows the detection of lost attributes.
 
+\section{Changes in versions 0.8.0 and higher}
+
+Although \texttt{data.table} is no longer used internally, objects from versions
+6.0 or later do not need to be upgraded. They are fully compatible with the new
+version. Of course, data table syntax is not longer accepted, although this should
+make no difference as its use converted the spectral objects into data table
+objects.
+
+However, use of \texttt{copy()} is no longer needed, as the default behaviour is no longer
+to use references. The assignment \texttt{<-} operator, can be used instead. A dummy
+\texttt{copy()} function can be defined if needed as:
+
+<<>>=
+copy <- function(x) {x}
+@
+
 \section{Checking if an object is an \emph{old spectrum}}
 
 Function \texttt{is.old\_spct} can be used to query if an R object is a spectral
@@ -178,7 +194,7 @@ library(photobiology)
 my.old.spct <- source_spct(w.length = 400:450, s.e.irrad = 1)
 class(my.old.spct) <-  gsub("_spct", ".spct", class(my.old.spct), fixed = TRUE)
 class(my.old.spct)
-another.old.spct <- copy(my.old.spct)
+another.old.spct <- my.old.spct
 @
 
 We can use method \texttt{upgrade\_spct()} to upgrade a single spectrum.

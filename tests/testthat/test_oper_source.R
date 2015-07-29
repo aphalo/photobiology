@@ -7,7 +7,7 @@ test_that("constructor energy", {
 
   my.spct <- source_spct(w.length = 400:409, s.e.irrad = 1)
   expect_equal(class(my.spct)[1:2], c("source_spct", "generic_spct") )
-  expect_equal(attr(my.spct, "spct.version", exact = TRUE), 1)
+  expect_equal(attr(my.spct, "spct.version", exact = TRUE), 2)
 
   my.s.spct <- source_spct(w.length = 400:409, s.e.irrad = 1, time.unit = "second")
   my.h.spct <- source_spct(w.length = 400:409, s.e.irrad = 1, time.unit = "hour")
@@ -172,7 +172,7 @@ test_that("oper energy photon", {
   expect_equal(-my.2e.spct / -2, +my.e.spct)
   expect_equal(-my.2e.spct / -2L, +my.e.spct)
   expect_equal( 2 * my.e.spct, +my.2e.spct)
-  expect_equal( 1 / (2 / my.2e.spct), +my.e.spct)
+  expect_equal(sum((1 / (2 / my.2e.spct) - my.e.spct)[["s.q.irrad"]]), 0)
   expect_equal( 1 / my.e.spct, my.e.spct^-1)
 
   options(photobiology.radiation.unit = NULL)

@@ -267,7 +267,7 @@ is_effective <- function(x) UseMethod("is_effective")
 #' @export
 #'
 is_effective.default <- function(x) {
-  return(NA)
+  NA
 }
 
 #' @describeIn is_effective Is a \code{waveband} object defining a method for
@@ -276,7 +276,16 @@ is_effective.default <- function(x) {
 #' @export
 #'
 is_effective.waveband <- function(x) {
-  return(x$weight != "none")
+  x$weight != "none"
+}
+
+#' @describeIn is_effective Does a \code{source_spct} object contain effective
+#'   spectral irradiance values.
+#'
+#' @export
+#'
+is_effective.generic_spct <- function(x) {
+  FALSE
 }
 
 #' @describeIn is_effective Does a \code{source_spct} object contain effective
@@ -286,7 +295,7 @@ is_effective.waveband <- function(x) {
 #'
 is_effective.source_spct <- function(x) {
   bswf.used <- getBSWFUsed(x)
-  return( !is.null(bswf.used) && (bswf.used != "none") )
+  !is.null(bswf.used) && (bswf.used != "none")
 }
 
 

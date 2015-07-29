@@ -43,7 +43,8 @@
 #'
 irradiance <-
   function(w.length, s.irrad, w.band = NULL, unit.out = NULL, unit.in = "energy",
-           check.spectrum = TRUE, use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
+           check.spectrum = TRUE,
+           use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
            use.hinges = getOption("photobiology.use.hinges", default = NULL) ){
     # what output? seems safer to not have a default here
     if (is.null(unit.out)){
@@ -78,9 +79,7 @@ irradiance <-
     # spectral resolution data, and speed up the calculations
     # a lot in such cases
     if (is.null(use.hinges)) {
-      length.wl <- length(w.length)
-      use.hinges <- (w.length[length.wl] - w.length[1]) / length.wl >
-        getOption("photobiology.auto.hinges.limit", default = 0.5)
+      use.hinges <- auto_hinges(w.length)
     }
     # we collect all hinges and insert them in one go
     # this may alter a little the returned values

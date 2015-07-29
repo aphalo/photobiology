@@ -93,7 +93,6 @@ absorptance_spct <-
       warning("The spectral data has been normalized or scaled, making impossible to calculate absorptance")
       return(NA)
     }
-    spct <- copy(spct)
 
     # we calculate absorptance
     Tfr.type <- getTfrType(spct)
@@ -102,30 +101,32 @@ absorptance_spct <-
       Afr.type <- Tfr.type
       Rfr.type <- "unknown" # otherwise NA would require special handling
       A2T(spct, action = "add", byref = TRUE)
-      spct[ , Afr := 1 - Tfr]
+      temp.spct <- dplyr::data_frame(w.length = spct[["w.length"]],
+                                     Afr = 1 - spct[["Tfr"]])
     } else if (Tfr.type == "total" && Rfr.type == "total") {
       Afr.type <- "total"
-      spct[ , Afr := 1 - Tfr - Rfr]
-    } else if (Tfr.type == "internal" && Rfr.type == "total") {
+      temp.spct <- dplyr::data_frame(w.length = spct[["w.length"]],
+                               Afr = 1 - spct[["Tfr"]] - spct[["Rfr"]])
+     } else if (Tfr.type == "internal" && Rfr.type == "total") {
       Afr.type <- "total"
-      spct[ , Afr := (1 - Tfr) * (1 - Rfr)]
+      temp.spct <- dplyr::data_frame(w.length = spct[["w.length"]],
+                                   Afr = (1 - spct[["Tfr"]]) * (1 - spct[["Rfr"]]))
     } else if (Tfr.type == "unknown" || Rfr.type == "unknown") {
       warning("'unknown' Tfr.type or Rfr.type, skipping absorptance calculation")
       absorptance <- NA
-      setattr(absorptance, "Afr.type", "unknown")
-      setattr(absorptance, "radiation.unit", paste("absorptance", quantity))
+      attr(absorptance, "Afr.type") <- "unknown"
+      attr(absorptance, "radiation.unit") <- paste("absorptance", quantity)
       return(absorptance)
     } else if (Rfr.type == "specular") {
       warning("'specular' Rfr.type, skipping absorptance calculation")
       absorptance <- NA
-      setattr(absorptance, "Afr.type", "unknown")
-      setattr(absorptance, "radiation.unit", paste("absorptance", quantity))
+      attr(absorptance, "Afr.type") <- "unknown"
+      attr(absorptance, "radiation.unit") <- paste("absorptance", quantity)
       return(absorptance)
     } else {
       stop("Failed assertion with Tfr.type: ", Tfr.type, "and Rfr.type: ", Rfr.type)
     }
-    temp.spct <- spct[ , .(w.length, Afr)] # data.table removes attributes!
-    setGenericSpct(temp.spct)
+    temp.spct <- setGenericSpct(temp.spct)
     # if the waveband is undefined then use all data
     if (is.null(w.band)){
       w.band <- waveband(spct)
@@ -147,8 +148,7 @@ absorptance_spct <-
     # spectral resolution data, and speed up the calculations
     # a lot in such cases
     if (is.null(use.hinges)) {
-      use.hinges <-
-        stepsize(spct)[2] > getOption("photobiology.auto.hinges.limit", default = 0.5) # nm
+      use.hinges <- auto_hinges(spct)
     }
     # we collect all hinges and insert them in one go
     # this may alter a little the returned values
@@ -186,13 +186,15 @@ absorptance_spct <-
           wb.name[i] <- wb$name
         }
       }
-      # we calculate the average transmittance.
-      absorptance[i] <- integrate_spct(trim_spct(temp.spct, wb, use.hinges=FALSE))
+      absorptance[i] <-
+        integrate_spct(trim_spct(temp.spct, wb,
+                                 use.hinges = use.hinges))
     }
 
     if (quantity %in% c("contribution", "contribution.pc")) {
       total <- absorptance_spct(spct, w.band = NULL,
-                                  quantity = "total", use.hinges = FALSE)
+                                quantity = "total",
+                                use.hinges = use.hinges)
       absorptance <- absorptance / total
       if (quantity == "contribution.pc") {
         absorptance <- absorptance * 1e2
@@ -211,8 +213,8 @@ absorptance_spct <-
       names(absorptance) <- "out of range"
     }
     names(absorptance) <- paste(names(absorptance), wb.name)
-    setattr(absorptance, "Afr.type", Afr.type)
-    setattr(absorptance, "radiation.unit", paste("absorptance", quantity))
+    attr(absorptance, "Afr.type") <- Afr.type
+    attr(absorptance, "radiation.unit") <- paste("absorptance", quantity)
     return(absorptance)
   }
 

@@ -14,36 +14,6 @@ spct_classes <- function() {
     "response_spct", "chroma_spct", "generic_spct")
 }
 
-# conditional setkey ------------------------------------------------------
-
-#' Set the sorting key(s) of spectra
-#'
-#' Code taken from data.table's setkey() except that test added so
-#' that if the same key is already set setkeyv is not called.
-#'
-#' @param x spct object
-#' @param ... columns
-#' @param verbose logical
-#' @param physical logical
-#'
-#' @seealso \code{\link[data.table]{setkey}}
-#'
-#' @export
-#'
-setkey_spct <- function (x, ..., verbose = getOption("datatable.verbose"), physical = TRUE)
-{
-  if (is.character(x))
-    stop("x may no longer be the character name of the data.table. The possibility was undocumented and has been removed.")
-  cols = as.character(substitute(list(...))[-1])
-  if (!length(cols))
-    cols = colnames(x)
-  else if (identical(cols, "NULL"))
-    cols = NULL
-  if (is.any_spct(x) && !is.null(key(x)) && identical(cols, key(x)))
-    invisible(x)
-  setkeyv(x, cols, verbose = verbose, physical = physical)
-}
-
 # check -------------------------------------------------------------------
 
 #' Check validity of spectral objects
@@ -64,7 +34,7 @@ check <- function(x, byref, strict.range, ...) UseMethod("check")
 
 #' @describeIn check Default for generic function.
 #' @export
-check.default <- function(x, byref=FALSE, strict.range=TRUE, ...) {
+check.default <- function(x, byref=FALSE, strict.range = FALSE, ...) {
   return(x)
 }
 
@@ -73,49 +43,60 @@ check.default <- function(x, byref=FALSE, strict.range=TRUE, ...) {
 #' @param multiple.wl numeric Maximum number of repeated w.length entries with same value.
 #'
 #' @export
-check.generic_spct <- function(x, byref=TRUE, strict.range=TRUE, multiple.wl = 1L, ...) {
-  if (exists("w.length", x, mode = "numeric", inherits=FALSE)) {
-    NULL
-  } else if (exists("wl", x, mode = "numeric", inherits=FALSE)) {
-    setnames(x, "wl", "w.length")
-  } else if (exists("wavelength", x, mode = "numeric", inherits=FALSE)) {
-    setnames(x, "wavelength", "w.length")
-  } else if (exists("Wavelength", x, mode = "numeric", inherits=FALSE)) {
-    setnames(x, "Wavelength", "w.length")
-  } else {
-    warning("No wavelength data found in generic_spct")
-    x[ , w.length := NA]
+check.generic_spct <- function(x, byref=TRUE, strict.range = FALSE, multiple.wl = 1L, ...) {
+  # fix old class attributes
+  class.x <- class_spct(x)
+  if (!("tbl_df") %in% class(x)){
+    x <- dplyr::as_data_frame(x)
   }
-  wl.min <- min(x$w.length, na.rm = TRUE)
-#  wl.max <- max(x$w.length, na.rm = TRUE)
+  class(x) <- union(class.x, class(x))
+  # check variables
+  if (exists("wl", x, mode = "numeric", inherits=FALSE)) {
+    x <- dplyr::rename(x, w.length = wl)
+  } else if (exists("wavelength", x, mode = "numeric", inherits=FALSE)) {
+    x <- dplyr::rename(x, w.length = wavelength)
+  } else if (exists("Wavelength", x, mode = "numeric", inherits=FALSE)) {
+    x <- dplyr::rename(x, w.length = Wavelength)
+  }
+
+  if (exists("w.length", x, mode = "numeric", inherits=FALSE)) {
+    if (is.unsorted(x[["w.lengtgh"]], na.rm = TRUE, strictly = TRUE)) {
+      stop("'w.length' must be sorted in ascending order and have unique values")
+    }
+  } else {
+      stop("No wavelength data found in generic_spct")
+  }
+
+  wl.min <- min(x[["w.length"]], na.rm = TRUE)
+  #  wl.max <- max(x$w.length, na.rm = TRUE)
   if (wl.min == Inf) {
     warning("No valid 'w.length' values, probably a spectrum of length zero")
   } else if (wl.min < 99.999 || wl.min > 5e3) {
     stop("Off-range minimum w.length value ", wl.min, " instead of within 100 nm and 5000 nm")
   }
-  wl.reps <- x[ , length(w.length) / length(unique(w.length))]
+  wl.reps <- with(x, length(w.length) / length(unique(w.length)) )
   if (wl.reps > 1) {
     if ((wl.reps - trunc(wl.reps)) < 1e-5) {
       wl.reps <- trunc(wl.reps)
-      if (x[ , length(w.length)] >= 2 && wl.reps > multiple.wl) {
+      if (with(x, length(w.length)) >= 2 && wl.reps > multiple.wl) {
         warning("'w.length' values are not unique: ", wl.reps, " copies of each.")
       }
     } else {
       warning("'w.length' values are not all unique with ",
-              round((wl.reps - trunc(wl.reps)) * x[, length(w.length)], 0) ,
+              round((wl.reps - trunc(wl.reps)) * with(x, length(w.length)), 0) ,
               " duplicate values.")
     }
   }
-  return(x)
+  x
 }
 
 #' @describeIn check Specialization for cps_spct.
 #' @export
-check.cps_spct <- function(x, byref=TRUE, strict.range = TRUE, ...) {
+check.cps_spct <- function(x, byref=TRUE, strict.range = FALSE, ...) {
 
   range_check <- function(x, strict.range) {
     cps.min <- min(x$cps, na.rm = TRUE)
-    if (!is.null(strict.range) & (cps.min < 0)) {
+    if (!is.null(strict.range) & (cps.min < -1e-8)) {
       message.text <- paste0("Off-range cps values:", signif(cps.min, 2))
       if (strict.range) {
         stop(message.text)
@@ -124,122 +105,102 @@ check.cps_spct <- function(x, byref=TRUE, strict.range = TRUE, ...) {
       }
     }
   }
+
   if (exists("cps", x, mode = "numeric", inherits=FALSE)) {
     return(x)
   } else if (exists("counts.per.second", x, mode = "numeric", inherits=FALSE)) {
-    setnames(x, "counts.per.second", "cps")
-    warning("Found variable 'counts.per.second', renamed to 'cps'")
+    x <- dplyr::rename(x, cps = counts.per.second)
+    warning("Found variable 'counts.per.second', renamed it to 'cps'")
     return(x)
   } else {
     warning("No counts per second data found in cps_spct")
-    x[ , cps := NA]
+    x[["cps"]] = NA_real_
     return(x)
   }
 }
 
 #' @describeIn check Specialization for filter_spct.
 #' @export
-check.filter_spct <- function(x, byref=TRUE, strict.range = TRUE, multiple.wl = 1L, ...) {
+check.filter_spct <- function(x, byref=TRUE, strict.range = FALSE, multiple.wl = 1L, ...) {
 
   range_check <- function(x, strict.range) {
-    Tfr.min <- min(x$Tfr, na.rm = TRUE)
-    Tfr.max <- max(x$Tfr, na.rm = TRUE)
-    if (!is.null(strict.range) & (Tfr.min < 0 || Tfr.max > 1)) {
-      message.text <- paste("Off-range transmittance values [", signif(Tfr.min, 2),
-                            "...", signif(Tfr.max, 2), "] instead of  [0..1]", sep="")
-      if (strict.range) {
-        stop(message.text)
-      } else {
-        warning(message.text)
+    if (!all(is.na(x[["Tfr"]]))) {
+      Tfr.min <- min(x[["Tfr"]], na.rm = TRUE)
+      Tfr.max <- max(x[["Tfr"]], na.rm = TRUE)
+      if (!is.null(strict.range) & (Tfr.min < -1e-8 || Tfr.max > 1)) {
+        message.text <- paste("Off-range transmittance values [", signif(Tfr.min, 2),
+                              "...", signif(Tfr.max, 2), "] instead of  [0..1]", sep="")
+        if (strict.range) {
+          stop(message.text)
+        } else {
+          warning(message.text)
+        }
       }
     }
   }
+
+  range_check_A <- function(x, strict.range) {
+    if (!all(is.na(x[["A"]]))) {
+      A.min <- min(x[["A"]], na.rm = TRUE)
+      A.max <- max(x[["A"]], na.rm = TRUE)
+      if (!is.null(strict.range) & (A.min < -1e-8 || A.max > 20)) {
+        message.text <- paste("Off-range absorbance values [", signif(A.min, 2),
+                              "...", signif(A.max, 2), "] instead of  [0..1]", sep="")
+        if (strict.range) {
+          stop(message.text)
+        } else {
+          warning(message.text)
+        }
+      }
+    }
+  }
+
 
   if (is.null(getTfrType(x))) {
     setTfrType(x, "total")
     warning("Missing Tfr.type attribute replaced by 'total'")
   }
-  # check and replace 'other' quantity names
+if (is.null(getTfrType(x))) {
+  setTfrType(x, "total")
+  warning("Missing Tfr.type attribute replaced by 'total'")
+}
+# check and replace 'other' quantity names
   if (exists("transmittance", x, mode = "numeric", inherits=FALSE)) {
-    setnames(x, "transmittance", "Tpc")
-    warning("Found varaible 'transmittance', I am assuming it expressed as percent")
+    x <- dplyr::rename(x, Tpc = transmittance)
+    warning("Found variable 'transmittance', I am assuming it is expressed as percent")
   }
   if (exists("absorbance", x, mode = "numeric", inherits=FALSE)) {
-    setnames(x, "absorbance", "A")
-    warning("Found varaible 'absorbance', I am assuming it is in log10-based absorbance units")
+    x <- dplyr::rename(x, A = absorbance)
+    warning("Found variable 'absorbance', I am assuming it is in log10-based absorbance units")
+  } else if (exists("Absorbance", x, mode = "numeric", inherits=FALSE)) {
+    x <- dplyr::rename(x, A = Absorbance)
+    warning("Found variable 'Absorbance', I am assuming it is in log10-based absorbance units")
   }
   # look for percentages and change them into fractions of one
   if (exists("Tfr", x, mode = "numeric", inherits=FALSE)) {
     range_check(x, strict.range=strict.range)
-    return(x)
   } else if (exists("Tpc", x, mode = "numeric", inherits=FALSE)) {
-    x[ , Tfr := Tpc / 100]
-    x[ , Tpc := NULL]
+    x[["Tfr"]] <- x[["Tpc"]] / 100
+    x[["Tpc"]] <-  NULL
     range_check(x, strict.range=strict.range)
-    return(x)
   } else if (exists("A", x, mode = "numeric", inherits=FALSE)) {
-#    x[ , Tfr := A2T(A)]
-    if (min(x$A, na.rm = TRUE) < 0) {
-      warning("Off-range min absorbance value: ", signif(min(x$A, na.rm = TRUE), 2), " instead of 0")
-    }
-    return(x)
+    range_check_A(x, strict.range=strict.range)
   } else {
     warning("No transmittance or absorbance data found in filter_spct")
-    x[ , Tfr := NA]
-    return(x)
+    x[["Tfr"]] <- NA_real_
   }
+  x
 }
 
 #' @describeIn check Specialization for reflector_spct.
 #' @export
-check.reflector_spct <- function(x, byref=TRUE, strict.range = TRUE, ...) {
+check.reflector_spct <- function(x, byref = TRUE, strict.range = FALSE, ...) {
 
   range_check <- function(x, strict.range) {
-    Rfr.min <- min(x$Rfr, na.rm = TRUE)
-    Rfr.max <- max(x$Rfr, na.rm = TRUE)
-    if (!is.null(strict.range) & (Rfr.min < 0 ||  Rfr.max > 1)) {
-      message.text <- paste0("Off-range reflectance values [", signif(Rfr.min, 2), "...",
-                             signif(Rfr.max, 2), "] instead of  [0..1]", sep="")
-      if (strict.range) {
-        stop(message.text)
-      } else {
-        warning(message.text)
-      }
-    }
-  }
-
-  if (is.null(getRfrType(x))) {
-    setRfrType(x, "total")
-    warning("Missing Rfr.type attribute replaced by 'total'")
-  }
-  if (exists("reflectance", x, mode = "numeric", inherits=FALSE)) {
-    setnames(x, "reflectance", "Rpc")
-    warning("Found variable 'reflectance', I am assuming it is expressed as percent")
-  }
-  if (exists("Rfr", x, mode = "numeric", inherits=FALSE)) {
-    range_check(x, strict.range=strict.range)
-    return(x)
-  } else if (exists("Rpc", x, mode = "numeric", inherits=FALSE)) {
-    x[ , Rfr := Rpc / 100]
-    x[ , Rpc := NULL]
-    range_check(x, strict.range=strict.range)
-    return(x)
-  } else {
-    warning("No reflectance data found in reflector_spct")
-    x[ , Rfr := NA]
-    return(x)
-  }
-}
-
-#' @describeIn check Specialization for object_spct.
-#' @export
-check.object_spct <- function(x, byref=TRUE, strict.range = TRUE, multiple.wl = 1L, ...) {
-
-  range_check <- function(x, strict.range) {
-    Rfr.min <- min(x$Rfr, na.rm = TRUE)
-    Rfr.max <- max(x$Rfr, na.rm = TRUE)
-    if (!is.na(Rfr.min) && !is.na(Rfr.max)) {
-      if (!is.null(strict.range) & (Rfr.min < 0 ||  Rfr.max > 1)) {
+    if (!all(is.na(x$Rfr))) {
+      Rfr.min <- min(x$Rfr, na.rm = TRUE)
+      Rfr.max <- max(x$Rfr, na.rm = TRUE)
+      if (!is.null(strict.range) & (Rfr.min < -1e-8 ||  Rfr.max > 1)) {
         message.text <- paste0("Off-range reflectance values [", signif(Rfr.min, 2), "...",
                                signif(Rfr.max, 2), "] instead of  [0..1]", sep="")
         if (strict.range) {
@@ -249,18 +210,64 @@ check.object_spct <- function(x, byref=TRUE, strict.range = TRUE, multiple.wl = 
         }
       }
     }
-    Tfr.min <- min(x$Tfr, na.rm = TRUE)
-    Tfr.max <- max(x$Tfr, na.rm = TRUE)
-    if (!is.na(Tfr.min) && !is.na(Tfr.max)) {
-      if (!is.null(strict.range) & (Tfr.min < 0 ||  Tfr.max > 1)) {
-      message.text <- paste0("Off-range Transmittance values [", signif(Tfr.min, 2), "...",
-                             signif(Tfr.max, 2), "] instead of  [0..1]", sep="")
-      if (strict.range) {
-        stop(message.text)
-      } else {
-        warning(message.text)
+  }
+
+  if (is.null(getRfrType(x))) {
+    setRfrType(x, "total")
+    warning("Missing Rfr.type attribute replaced by 'total'")
+  }
+  if (exists("reflectance", x, mode = "numeric", inherits=FALSE)) {
+    x <- dplyr::rename(x, Rpc = reflectance)
+    warning("Found variable 'reflectance', I am assuming it is expressed as percent")
+  }
+  if (exists("Rfr", x, mode = "numeric", inherits=FALSE)) {
+    range_check(x, strict.range=strict.range)
+  } else if (exists("Rpc", x, mode = "numeric", inherits=FALSE)) {
+    x[["Rfr"]] <- x[["Rpc"]] / 100
+    x[["Rpc"]] <- NULL
+    range_check(x, strict.range=strict.range)
+  } else {
+    warning("No reflectance data found in reflector_spct")
+    x[["Rfr"]] <- NA_real_
+  }
+  x
+}
+
+#' @describeIn check Specialization for object_spct.
+#' @export
+check.object_spct <- function(x, byref=TRUE, strict.range = FALSE, multiple.wl = 1L, ...) {
+
+  range_check_Tfr <- function(x, strict.range) {
+    if (!all(is.na(x[["Tfr"]]))) {
+      Tfr.min <- min(x[["Tfr"]], na.rm = TRUE)
+      Tfr.max <- max(x[["Tfr"]], na.rm = TRUE)
+      if (!is.null(strict.range) & (Tfr.min < -1e-8 || Tfr.max > 1)) {
+        message.text <- paste("Off-range transmittance values [", signif(Tfr.min, 2),
+                              "...", signif(Tfr.max, 2), "] instead of  [0..1]", sep="")
+        if (strict.range) {
+          stop(message.text)
+        } else {
+          warning(message.text)
+        }
       }
     }
+  }
+
+  range_check_Rfr <- function(x, strict.range) {
+    if (!all(is.na(x$Rfr))) {
+      Rfr.min <- min(x[["Rfr"]], na.rm = TRUE)
+      Rfr.max <- max(x[["Rfr"]], na.rm = TRUE)
+      if (!is.na(Rfr.min) && !is.na(Rfr.max)) {
+        if (!is.null(strict.range) & (Rfr.min < -1e-8 ||  Rfr.max > 1)) {
+          message.text <- paste0("Off-range reflectance values [", signif(Rfr.min, 2), "...",
+                                 signif(Rfr.max, 2), "] instead of  [0..1]", sep="")
+          if (strict.range) {
+            stop(message.text)
+          } else {
+            warning(message.text)
+          }
+        }
+      }
     }
   }
 
@@ -273,42 +280,41 @@ check.object_spct <- function(x, byref=TRUE, strict.range = TRUE, multiple.wl = 
     warning("Missing Rfr.type attribute replaced by 'total'")
   }
   if (exists("reflectance", x, mode = "numeric", inherits=FALSE)) {
-    setnames(x, "reflectance", "Rpc")
+    x <- dplyr::rename(x, Rpc = reflectance)
     warning("Found variable 'reflectance', I am assuming it is expressed as percent")
   }
   if (exists("Rfr", x, mode = "numeric", inherits=FALSE)) {
+    range_check_Rfr(x, strict.range=strict.range)
   } else if (exists("Rpc", x, mode = "numeric", inherits=FALSE)) {
-    x[ , Rfr := Rpc / 100]
-    x[ , Rpc := NULL]
+    x[["Rfr"]] <- x[["Rpc"]] / 100
+    x[["Rpc"]] <- NULL
+    range_check_Rfr(x, strict.range=strict.range)
   } else {
     warning("No reflectance data found in object_spct")
-    x[ , Rfr := NA]
+    x[["Rfr"]] <- NA
   }
 
   if (exists("transmittance", x, mode = "numeric", inherits=FALSE)) {
-    setnames(x, "transmittance", "Tpc")
-    warning("Found varaible 'transmittance', I am assuming it expressed as percent")
+    x <- dplyr::rename(x, Tpc = transmittance)
+    warning("Found variable 'transmittance', I am assuming it expressed as percent")
   }
   if (exists("Tfr", x, mode = "numeric", inherits=FALSE)) {
-    range_check(x, strict.range = strict.range)
-    return(x)
+    range_check_Tfr(x, strict.range=strict.range)
   } else if (exists("Tpc", x, mode = "numeric", inherits=FALSE)) {
-    x[ , Tfr := Tpc / 100]
-    x[ , Tpc := NULL]
-    range_check(x, strict.range = strict.range)
-    return(x)
+    x[["Tfr"]] <- x[["Tpc"]] / 100
+    x[["Tpc"]] <- NULL
+    range_check_Tfr(x, strict.range=strict.range)
   } else {
-    warning("No transmittance data found in object_spct")
-    x[ , Tfr := NA]
-    return(x)
+    warning("No transmittance or absorptance data found in object_spct")
+    x[["Tfr"]] <- NA_real_
   }
-  range_check(x, strict.range = strict.range)
-  return(x)
+
+  x
 }
 
 #' @describeIn check Specialization for response_spct.
 #' @export
-check.response_spct <- function(x, byref=TRUE, strict.range=TRUE, multiple.wl = 1L, ...) {
+check.response_spct <- function(x, byref=TRUE, strict.range = FALSE, multiple.wl = 1L, ...) {
 
   x <- checkTimeUnit(x)
 
@@ -317,25 +323,25 @@ check.response_spct <- function(x, byref=TRUE, strict.range=TRUE, multiple.wl = 
   } else if (exists("s.q.response", x, mode = "numeric", inherits=FALSE)) {
     return(x)
   } else if (exists("response", x, mode = "numeric", inherits=FALSE)) {
-    x[ , s.e.response := response]
-    x[ , response := NULL]
+    x[["s.e.response"]] <- x[["response"]]
+    x[["response"]] <- NULL
     warning("Found variable 'response', I am assuming it is expressed on an energy basis")
     return(x)
   } else if (exists("signal", x, mode = "numeric", inherits=FALSE)) {
-    x[ , s.e.response := signal]
-    x[ , signal := NULL]
+    x[["s.e.response"]] <- x[["signal"]]
+    x[["signal"]] <- NULL
     warning("Found variable 'signal', I am assuming it is expressed on an energy basis")
     return(x)
   } else {
     warning("No response data found in response_spct")
-    x[ , s.e.response := NA]
+    x[["s.e.response"]] <- NA_real_
     return(x)
   }
 }
 
 #' @describeIn check Specialization for source_spct.
 #' @export
-check.source_spct <- function(x, byref=TRUE, strict.range=FALSE, multiple.wl = 1L, ...) {
+check.source_spct <- function(x, byref=TRUE, strict.range = FALSE, multiple.wl = 1L, ...) {
 
   range_check <- function(x, strict.range) {
     if (is.null(strict.range)) {
@@ -343,8 +349,9 @@ check.source_spct <- function(x, byref=TRUE, strict.range=FALSE, multiple.wl = 1
     }
     if (exists("s.e.irrad", x, inherits = FALSE)) {
       s.e.min <- min(x$s.e.irrad, na.rm = TRUE)
-      if (s.e.min < 0) {
-        message.text <- paste("Negative spectral energy irradiance values; minimun s.e.irrad =", signif(s.e.min, 2))
+      if (s.e.min < -1e-8) {
+        message.text <- paste("Negative spectral energy irradiance values; minimun s.e.irrad =",
+                              signif(s.e.min, 2))
         if (strict.range) {
           stop(message.text)
         } else {
@@ -376,12 +383,12 @@ check.source_spct <- function(x, byref=TRUE, strict.range=FALSE, multiple.wl = 1
   } else if (exists("s.q.irrad", x, mode = "numeric", inherits=FALSE)) {
     NULL
   } else if (exists("irradiance", x, mode = "numeric", inherits=FALSE)) {
-    x[ , s.e.irradiance := irradiance]
-    x[ , irradiance := NULL]
+    x[["s.e.irradiance"]] <- x[["irradiance"]]
+    x[["irradiance"]] <- NULL
     warning("Found variable 'irradiance', I am assuming it is expressed on an energy basis")
   } else {
     warning("No spectral irradiance data found in source_spct")
-    x[ , s.e.irrad := NA]
+    x[["s.e.irrad"]] <- NA_real_
     return(x)
   }
   range_check(x, strict.range = strict.range)
@@ -390,19 +397,23 @@ check.source_spct <- function(x, byref=TRUE, strict.range=FALSE, multiple.wl = 1
 
 #' @describeIn check Specialization for chroma_spct.
 #' @export
-check.chroma_spct <- function(x, byref=TRUE, strict.range=TRUE, multiple.wl = 1L, ...) {
+check.chroma_spct <- function(x, byref=TRUE, strict.range = FALSE, multiple.wl = 1L, ...) {
   names_x <- names(x)
   idxs <- grep("[XYZ]", names_x)
-  names2lc <- names_x[idxs]
-  setnames(x, names2lc, tolower(names2lc))
-  if (exists("x", x, mode="numeric", inherits=FALSE) &&
-        exists("y", x, mode="numeric", inherits=FALSE) &&
-        exists("z", x, mode="numeric", inherits=FALSE) ) {
-    return(x)
-  } else {
-    warning("No spectral chromaticity coordinates data found in chroma_spct")
-    return(x[ , c(x, y, z) := NA])
+  names(x)[idxs] <- tolower(names_x[idxs])
+  if (!exists("x", x, mode="numeric", inherits=FALSE)) {
+    warning("Chromaticity coordinate 'x' data missing")
+    x[["x"]] <- NA_real_
   }
+  if (!exists("y", x, mode="numeric", inherits=FALSE)) {
+    warning("Chromaticity coordinate 'y' data missing")
+    x[["y"]] <- NA_real_
+  }
+  if (!exists("z", x, mode="numeric", inherits=FALSE)) {
+    warning("Chromaticity coordinate 'z' data missing")
+    x[["z"]] <- NA_real_
+  }
+  return(x)
 }
 
 
@@ -419,7 +430,7 @@ check.chroma_spct <- function(x, byref=TRUE, strict.range=TRUE, multiple.wl = 1L
 #'
 #' @note If \code{x} is an object of any of the spectral classes defined
 #'   in this package, this function changes by reference the spectrum
-#'   object into the underlying data.table object. Otherwise, it just leaves \code{x}
+#'   object into the underlying data.frame object. Otherwise, it just leaves \code{x}
 #'   unchanged.
 #'
 #' @return A character vector containing the removed class attribute values.
@@ -429,10 +440,9 @@ check.chroma_spct <- function(x, byref=TRUE, strict.range=TRUE, multiple.wl = 1L
 #'
 rmDerivedSpct <- function(x) {
   name <- substitute(x)
-  spctclasses <- spct_classes()
   allclasses <- class(x)
-  setattr(x, "class", setdiff(allclasses, spctclasses))
-  setattr(x, "spct.version", NULL)
+  class(x) <- setdiff(allclasses, spct_classes())
+  attr(x, "spct.version") <- NULL
   if (is.name(name)) {
     name <- as.character(name)
     assign(name, x, parent.frame(), inherits = TRUE)
@@ -442,11 +452,10 @@ rmDerivedSpct <- function(x) {
 
 #' Convert an R object into a spectrum object.
 #'
-#' Sets the class attibute of a data.frame or data.table or a different spectral
-#' object to "generic_spct". If the object is a data.frame is is made a
-#' data.table in the process.
+#' Sets the class attibute of a data.frame or an object of a derived
+#' class to "generic_spct".
 #'
-#' @param x data.frame, data.table, list or generic_spct and derived classes
+#' @param x data.frame, list or generic_spct and derived classes
 #' @param multiple.wl numeric Maximum number of repeated w.length entries with same value.
 #'
 #' @export
@@ -456,16 +465,15 @@ rmDerivedSpct <- function(x) {
 setGenericSpct <- function(x, multiple.wl = 1L) {
   name <- substitute(x)
   rmDerivedSpct(x)
-  if (!is.data.table(x)) {
-    setDT(x)
+  if (!is.data.frame(x) || inherits(x, "data.table")) {
+    x <- dplyr::as_data_frame(x)
   }
   if (!is.generic_spct(x)){
-    setattr(x, "class", c("generic_spct", class(x)))
-    setattr(x, "spct.tags", NA)
+    class(x) <- c("generic_spct", class(x))
+    attr(x, "spct.tags") <- NA
   }
   x <- check(x, multiple.wl = multiple.wl)
-  setattr(x, "spct.version", 1)
-  setkey_spct(x, w.length)
+  attr(x, "spct.version") <- 2
   if (is.name(name)) {
     name <- as.character(name)
     assign(name, x, parent.frame(), inherits = TRUE)
@@ -478,20 +486,19 @@ setGenericSpct <- function(x, multiple.wl = 1L) {
 #' @export
 #' @exportClass cps_spct
 #'
-setCpsSpct <- function(x, strict.range = TRUE, multiple.wl = 1L) {
+setCpsSpct <- function(x, strict.range = FALSE, multiple.wl = 1L) {
   name <- substitute(x)
   rmDerivedSpct(x)
-  if (!is.data.table(x)) {
-    setDT(x)
+  if (!is.data.frame(x) || inherits(x, "data.table")) {
+    x <- dplyr::as_data_frame(x)
   }
   if (!is.generic_spct(x)) {
     setGenericSpct(x, multiple.wl = multiple.wl)
   }
   if (!is.cps_spct(x)) {
-    setattr(x, "class", c("cps_spct", class(x)))
+    class(x) <- c("cps_spct", class(x))
   }
   x <- check(x, strict.range = strict.range)
-  setkey_spct(x, w.length)
   if (is.name(name)) {
     name <- as.character(name)
     assign(name, x, parent.frame(), inherits = TRUE)
@@ -508,28 +515,29 @@ setCpsSpct <- function(x, strict.range = TRUE, multiple.wl = 1L) {
 #' @exportClass filter_spct
 #'
 setFilterSpct <- function(x, Tfr.type=c("total", "internal"),
-                          strict.range = TRUE, multiple.wl = 1L) {
+                          strict.range = FALSE, multiple.wl = 1L) {
   name <- substitute(x)
   if ((is.object_spct(x) || is.filter_spct(x)) && getTfrType(x) != "unknown") {
     if (length(Tfr.type) > 1) {
       Tfr.type <- getTfrType(x)
-    } else {
-      warning("Replacing existing attribute 'Tfr.type' ", getTfrType(x))
+    } else if (Tfr.type != getTfrType(x)) {
+      warning("Changing attribute 'Tfr.type' from ", getTfrType(x),
+              " into ", Tfr.type)
     }
   }
   rmDerivedSpct(x)
-  if (!is.data.table(x)) {
-    setDT(x)
+  if (!is.data.frame(x) || inherits(x, "data.table")) {
+    x <- dplyr::as_data_frame(x)
   }
   if (!is.generic_spct(x)) {
     setGenericSpct(x, multiple.wl = multiple.wl)
   }
   if (!is.filter_spct(x)) {
-    setattr(x, "class", c("filter_spct", class(x)))
+    class(x) <- c("filter_spct", class(x))
   }
   setTfrType(x, Tfr.type[1])
   x <- check(x, strict.range = strict.range)
-  setkey_spct(x, w.length)
+  #  setkey_spct(x, w.length)
   if (is.name(name)) {
     name <- as.character(name)
     assign(name, x, parent.frame(), inherits = TRUE)
@@ -544,28 +552,29 @@ setFilterSpct <- function(x, Tfr.type=c("total", "internal"),
 #' @exportClass reflector_spct
 #'
 setReflectorSpct <- function(x, Rfr.type=c("total", "specular"),
-                             strict.range = TRUE, multiple.wl = 1L) {
+                             strict.range = FALSE, multiple.wl = 1L) {
   name <- substitute(x)
   if ((is.object_spct(x) || is.reflector_spct(c)) && getRfrType(x) != "unknown") {
     if (length(Rfr.type) > 1) {
       Rfr.type <- getRfrType(x)
-    } else {
-      warning("Replacing existing attribute 'Rfr.type' ", getRfrType(x))
+    } else if (Rfr.type != getRfrType(x)) {
+      warning("Changing attribute 'Rfr.type' from ", getRfrType(x),
+              " into ", Rfr.type)
     }
   }
   rmDerivedSpct(x)
-  if (!is.data.table(x)) {
-    setDT(x)
+  if (!is.data.frame(x) || inherits(x, "data.table")) {
+    x <- dplyr::as_data_frame(x)
   }
   if (!is.generic_spct(x)) {
     setGenericSpct(x, multiple.wl = multiple.wl)
   }
   if (!is.reflector_spct(x)) {
-    setattr(x, "class", c("reflector_spct", class(x)))
+    class(x) <- c("reflector_spct", class(x))
   }
   setRfrType(x, Rfr.type[1])
   x <- check(x, strict.range = strict.range)
-  setkey_spct(x, w.length)
+  #  setkey_spct(x, w.length)
   if (is.name(name)) {
     name <- as.character(name)
     assign(name, x, parent.frame(), inherits = TRUE)
@@ -581,36 +590,38 @@ setReflectorSpct <- function(x, Rfr.type=c("total", "specular"),
 setObjectSpct <- function(x,
                           Tfr.type=c("total", "internal"),
                           Rfr.type=c("total", "specular"),
-                          strict.range = TRUE, multiple.wl = 1L) {
+                          strict.range = FALSE, multiple.wl = 1L) {
   name <- substitute(x)
   if ((is.filter_spct(x) || is.object_spct(x)) && getTfrType(x) != "unknown") {
     if (length(Tfr.type) > 1) {
       Tfr.type <- getTfrType(x)
-    } else {
-      warning("Replacing existing attribute 'Tfr.type' ", getTfrType(x))
+    } else if (Tfr.type != getTfrType(x)) {
+      warning("Changing attribute 'Tfr.type' from ", getTfrType(x),
+              " into ", Tfr.type)
     }
   }
   if ((is.reflector_spct(x) || is.object_spct(x)) && getRfrType(x) != "unknown") {
     if (length(Rfr.type) > 1) {
       Rfr.type <- getRfrType(x)
-    } else {
-      warning("Replacing existing attribute 'Rfr.type' ", getRfrType(x))
+    } else if (Rfr.type != getRfrType(x)) {
+      warning("Changing attribute 'Rfr.type' from ", getRfrType(x),
+              " into ", Rfr.type)
     }
   }
   rmDerivedSpct(x)
-  if (!is.data.table(x)) {
-    setDT(x)
+  if (!is.data.frame(x) || inherits(x, "data.table")) {
+    x <- dplyr::as_data_frame(x)
   }
   if (!is.generic_spct(x)) {
     setGenericSpct(x, multiple.wl = multiple.wl)
   }
   if (!is.object_spct(x)) {
-    setattr(x, "class", c("object_spct", class(x)))
+    class(x) <- c("object_spct", class(x))
   }
   setTfrType(x, Tfr.type)
   setRfrType(x, Rfr.type)
   x <- check(x, strict.range = strict.range)
-  setkey_spct(x, w.length)
+  #  setkey_spct(x, w.length)
   if (is.name(name)) {
     name <- as.character(name)
     assign(name, x, parent.frame(), inherits = TRUE)
@@ -627,18 +638,18 @@ setObjectSpct <- function(x,
 setResponseSpct <- function(x, time.unit="second", multiple.wl = 1L) {
   name <- substitute(x)
   rmDerivedSpct(x)
-  if (!is.data.table(x)) {
-    setDT(x)
+  if (!is.data.frame(x) || inherits(x, "data.table")) {
+    x <- dplyr::as_data_frame(x)
   }
   if (!is.generic_spct(x)) {
     setGenericSpct(x, multiple.wl = multiple.wl)
   }
   if (!is.response_spct(x)) {
-    setattr(x, "class", c("response_spct", class(x)))
+    class(x) <- c("response_spct", class(x))
   }
   setTimeUnit(x, time.unit)
   x <- check(x)
-  setkey_spct(x, w.length)
+  #  setkey_spct(x, w.length)
   if (is.name(name)) {
     name <- as.character(name)
     assign(name, x, parent.frame(), inherits = TRUE)
@@ -656,19 +667,19 @@ setSourceSpct <- function(x, time.unit="second", bswf.used=c("none", "unknown"),
                           strict.range = FALSE, multiple.wl = 1L) {
   name <- substitute(x)
   rmDerivedSpct(x)
-  if (!is.data.table(x)) {
-    setDT(x)
+  if (!is.data.frame(x) || inherits(x, "data.table")) {
+    x <- dplyr::as_data_frame(x)
   }
   if (!is.generic_spct(x)) {
     setGenericSpct(x, multiple.wl = multiple.wl)
   }
   if (!is.source_spct(x)) {
-    setattr(x, "class", c("source_spct", class(x)))
+    class(x) <- c("source_spct", class(x))
   }
   setTimeUnit(x, time.unit)
   setBSWFUsed(x, bswf.used = bswf.used)
   x <- check(x, strict.range = strict.range)
-  setkey_spct(x, w.length)
+  #  setkey_spct(x, w.length)
   if (is.name(name)) {
     name <- as.character(name)
     assign(name, x, parent.frame(), inherits = TRUE)
@@ -684,17 +695,17 @@ setSourceSpct <- function(x, time.unit="second", bswf.used=c("none", "unknown"),
 setChromaSpct <- function(x, multiple.wl = 1L) {
   name <- substitute(x)
   rmDerivedSpct(x)
-  if (!is.data.table(x)) {
-    setDT(x)
+  if (!is.data.frame(x) || inherits(x, "data.table")) {
+    x <- dplyr::as_data_frame(x)
   }
   if (!is.generic_spct(x)) {
     setGenericSpct(x, multiple.wl = multiple.wl)
   }
   if (!is.chroma_spct(x)) {
-    setattr(x, "class", c("chroma_spct", class(x)))
+    class(x) <- c("chroma_spct", class(x))
   }
   x <- check(x)
-  setkey_spct(x, w.length)
+  #  setkey_spct(x, w.length)
   if (is.name(name)) {
     name <- as.character(name)
     assign(name, x, parent.frame(), inherits = TRUE)
@@ -785,7 +796,7 @@ is.any_spct <- function(x) {
 #' @export
 #'
 class_spct <- function(x) {
-#  intersect(spct_classes(), class(x)) # alters order!
+  #  intersect(spct_classes(), class(x)) # alters order!
   class(x)[class(x) %in% spct_classes()] # maintains order
 }
 
@@ -927,7 +938,7 @@ is_transmittance_based <- function(x) {
 #' @rdname as.generic_spct
 #'
 as.generic_spct <- function(x) {
-  y <- copy(x)
+  y <- x
   setGenericSpct(y)
 }
 
@@ -936,7 +947,7 @@ as.generic_spct <- function(x) {
 #' @export
 #'
 as.cps_spct <- function(x) {
-  y <- copy(x)
+  y <- x
   setCpsSpct(y)
 }
 
@@ -953,7 +964,7 @@ as.source_spct <- function(x,
                            time.unit=c("second", "day", "exposure"),
                            bswf.used=c("none", "unknown"),
                            strict.range = FALSE) {
-  y <- copy(x)
+  y <- x
   setSourceSpct(y, time.unit, strict.range = strict.range, bswf.used = bswf.used)
 }
 
@@ -962,7 +973,7 @@ as.source_spct <- function(x,
 #' @export
 #'
 as.response_spct <- function(x, time.unit = "second") {
-  y <- copy(x)
+  y <- x
   setResponseSpct(y, time.unit = time.unit)
 }
 
@@ -972,8 +983,8 @@ as.response_spct <- function(x, time.unit = "second") {
 #'
 #' @export
 #'
-as.filter_spct <- function(x, Tfr.type=c("total", "internal"), strict.range = TRUE) {
-  y <- copy(x)
+as.filter_spct <- function(x, Tfr.type=c("total", "internal"), strict.range = FALSE) {
+  y <- x
   setFilterSpct(y, Tfr.type, strict.range = strict.range)
 }
 
@@ -983,8 +994,8 @@ as.filter_spct <- function(x, Tfr.type=c("total", "internal"), strict.range = TR
 #'
 #' @export
 #'
-as.reflector_spct <- function(x, Rfr.type = c("total", "specular"), strict.range = TRUE) {
-  y <- copy(x)
+as.reflector_spct <- function(x, Rfr.type = c("total", "specular"), strict.range = FALSE) {
+  y <- x
   setReflectorSpct(y, Rfr.type = Rfr.type, strict.range = strict.range)
 }
 
@@ -995,8 +1006,8 @@ as.reflector_spct <- function(x, Rfr.type = c("total", "specular"), strict.range
 as.object_spct <- function(x,
                            Tfr.type=c("total", "internal"),
                            Rfr.type=c("total", "specular"),
-                           strict.range = TRUE) {
-  y <- copy(x)
+                           strict.range = FALSE) {
+  y <- x
   setObjectSpct(y, Tfr.type = Tfr.type, Rfr.type = Rfr.type,
                 strict.range = strict.range)
 }
@@ -1006,7 +1017,7 @@ as.object_spct <- function(x,
 #' @export
 #'
 as.chroma_spct <- function(x) {
-  y <- copy(x)
+  y <- x
   setChromaSpct(y)
 }
 
@@ -1037,35 +1048,39 @@ as.chroma_spct <- function(x) {
 setTimeUnit <- function(x,
                         time.unit = c("second", "hour", "day", "exposure", "none"),
                         override.ok = FALSE) {
-  old.time.unit <- getTimeUnit(x)
-  override.ok <- override.ok ||
-    is.character(old.time.unit) &&
-    old.time.unit %in% c("unknown", "none", time.unit)
-  if (!override.ok) {
-    warning("Overrriding existing 'time.unit' '", old.time.unit,
-            "' with '", time.unit, "' may invalidate data!")
+  if (!(class(x)[1] %in% c("source_spct", "response_spct"))) {
+    return(invisible(x))
   }
-
+  name <- substitute(x)
   if (length(time.unit) > 1) {
     if (getTimeUnit(x) != "unknown") {
       time.unit <- getTimeUnit(x)
     } else {
       time.unit <- time.unit[[1]]
     }
-  }
-  if (is.source_spct(x) || is.response_spct(x)) {
-    if (is.character(time.unit)) {
-      if (!(time.unit %in% c("second", "hour", "day", "none", "exposure", "unknown"))) {
-        warning("Unrecognized 'time.unit' argument ", time.unit, " set to 'unknown'.")
-        time.unit <- "unknown"
-      }
-      else if (lubridate::is.duration(time.unit)) {
-        if (time.unit <= duration(0, "seconds")) {
-          stop("When 'time.unit' is a duration, it must be > 0")
-        }
-      }
+  } else {
+    old.time.unit <- getTimeUnit(x)
+    override.ok <- override.ok ||
+      is.character(old.time.unit) && old.time.unit %in% c("unknown", "none", time.unit)
+    if (!override.ok && old.time.unit != time.unit[1]) {
+      warning("Overrriding existing 'time.unit' '", old.time.unit,
+              "' with '", time.unit, "' may invalidate data!")
     }
-    setattr(x, "time.unit", time.unit)
+  }
+  if (is.character(time.unit)) {
+    if (!(time.unit %in% c("second", "hour", "day", "none", "exposure", "unknown"))) {
+      warning("Unrecognized 'time.unit' argument ", time.unit, " set to 'unknown'.")
+      time.unit <- "unknown"
+    }
+  } else if (lubridate::is.duration(time.unit)) {
+    if (time.unit <= duration(0, "seconds")) {
+      stop("When 'time.unit' is a duration, it must be > 0")
+    }
+  }
+  attr(x, "time.unit") <- time.unit
+  if (is.name(name)) {
+    name <- as.character(name)
+    assign(name, x, parent.frame(), inherits = TRUE)
   }
   invisible(x)
 }
@@ -1115,7 +1130,7 @@ getTimeUnit <- function(x, force.duration = FALSE) {
 #' @param time.unit a character string, either "second", "hour", "day",
 #'   "exposure" or "none", or a lubridate::duration
 #' @param byref logical indicating if new object will be created by reference or
-#'   by copy of \code{x}
+#'   by copy of \code{x} (currently ignored)
 #'
 #' @return x possibly with the \code{time.unit} attribute modified
 #'
@@ -1127,40 +1142,29 @@ getTimeUnit <- function(x, force.duration = FALSE) {
 #' @export
 #' @family time attribute functions
 #'
-convertTimeUnit <- function(x, time.unit = NULL, byref = TRUE) {
-  if (byref) x.out <- x else x.out <- copy(x)
-  x.out <- checkTimeUnit(x.out)
-
-  if (is.null(time.unit)) invisible(x.out)
+convertTimeUnit <- function(x, time.unit = NULL, byref = FALSE) {
+  #  if (!byref) x.out <- x else x.out <- copy(x) # needs fixing!
+  if (is.null(time.unit) || !is.any_spct(x)) {
+    return(invisible(x))
+  }
+  x.out <- checkTimeUnit(x)
 
   new.time.unit <- char2duration(time.unit)
   old.time.unit <- getTimeUnit(x.out, force.duration = TRUE)
 
   factor <- as.numeric(new.time.unit) / as.numeric(old.time.unit)
 
-  if (is.source_spct(x.out)) {
-    columns <- intersect(names(x.out), c("s.e.irrad", "s.q.irrad") )
-    if ("s.e.irrad" %in% columns) {
-      x.out[ , s.e.irrad := s.e.irrad * factor]
-    }
-    if ("s.q.irrad" %in% columns) {
-      x.out[ , s.q.irrad := s.q.irrad * factor]
-    }
-  } else if (is.response_spct(x.out)) {
-    columns <- intersect(names(x.out), c("s.e.response", "s.q.response") )
-    if ("s.e.response" %in% columns) {
-      x.out[ , s.e.response := s.e.response * factor]
-    }
-    if ("s.q.response" %in% columns) {
-      x.out[ , s.q.response := s.q.response * factor]
-    }
+  columns <- intersect(names(x.out), c("s.e.irrad", "s.q.irrad", "s.e.response", "s.q.response") )
+
+  for (col in columns) {
+    x.out[[col]] <- x.out[[col]] * factor
+  }
+
+  if (length(columns) > 0) {
+    setTimeUnit(x.out, time.unit, override.ok = TRUE)
   } else {
-    invisible(x.out)
+    warning("Nothing to convert to new time unit")
   }
-  if (length(setdiff(names(x.out), c("w.length", columns))) > 0) {
-    warning("Only data in '", paste(columns, collapse = "', '"), "' converted to time unit '", time.unit, "'")
-  }
-  setTimeUnit(x.out, time.unit, override.ok = TRUE)
 
   invisible(x.out)
 }
@@ -1206,13 +1210,13 @@ checkTimeUnit <- function(x) {
 char2duration <- function(time.unit) {
   if (is.character(time.unit)) {
     time.duration <- switch(time.unit,
-                        second  = lubridate::duration(1, "seconds"),
-                        minute  = lubridate::duration(1, "minutes"),
-                        hour    = lubridate::duration(1, "hours"),
-                        day     = lubridate::duration(1, "days"),
-                        exposure = lubridate::duration(NA),
-                        none    = lubridate::duration(NA),
-                        unknown = lubridate::duration(NA)
+                            second  = lubridate::duration(1, "seconds"),
+                            minute  = lubridate::duration(1, "minutes"),
+                            hour    = lubridate::duration(1, "hours"),
+                            day     = lubridate::duration(1, "days"),
+                            exposure = lubridate::duration(NA),
+                            none    = lubridate::duration(NA),
+                            unknown = lubridate::duration(NA)
     )
   } else if (lubridate::is.duration(time.unit)) {
     time.duration <- time.unit
@@ -1253,13 +1257,18 @@ setBSWFUsed <- function(x, bswf.used=c("none", "unknown")) {
     }
   }
   if (is.source_spct(x)) {
+    name <- substitute(x)
     if  (!(is.character(bswf.used))) {
       warning("Only character strings are valid vlues for 'bswf.used' argument")
       bswf.used <- "unknown"
     }
-    setattr(x, "bswf.used", bswf.used)
+    attr(x, "bswf.used") <- bswf.used
+    if (is.name(name)) {
+      name <- as.character(name)
+      assign(name, x, parent.frame(), inherits = TRUE)
+    }
   }
-  return(x)
+  invisible(x)
 }
 
 #' Get the "bswf.used" attribute
@@ -1312,6 +1321,7 @@ getBSWFUsed <- function(x) {
 #' @family Tfr attribute functions
 #'
 setTfrType <- function(x, Tfr.type=c("total", "internal")) {
+  name <- substitute(x)
   if (length(Tfr.type) > 1) {
     if (getTfrType(x) != "unknown") {
       Tfr.type <- getTfrType(x)
@@ -1324,9 +1334,13 @@ setTfrType <- function(x, Tfr.type=c("total", "internal")) {
       warning("Invalid 'Tfr.type' argument, only 'total' and 'internal' supported.")
       return(x)
     }
-    setattr(x, "Tfr.type", Tfr.type)
+    attr(x, "Tfr.type") <- Tfr.type
+    if (is.name(name)) {
+      name <- as.character(name)
+      assign(name, x, parent.frame(), inherits = TRUE)
+    }
   }
-  return(x)
+  invisible(x)
 }
 
 #' Get the "Tfr.type" attribute
@@ -1378,6 +1392,7 @@ getTfrType <- function(x) {
 #' @family Rfr attribute functions
 #'
 setRfrType <- function(x, Rfr.type=c("total", "specular")) {
+  name <- substitute(x)
   if (length(Rfr.type) > 1) {
     if (getRfrType(x) != "unknown") {
       Rfr.type <- getRfrType(x)
@@ -1390,9 +1405,13 @@ setRfrType <- function(x, Rfr.type=c("total", "specular")) {
       warning("Invalid 'Rfr.type' argument, only 'total' and 'internal' supported.")
       return(x)
     }
-    setattr(x, "Rfr.type", Rfr.type)
+    attr(x, "Rfr.type") <- Rfr.type
+    if (is.name(name)) {
+      name <- as.character(name)
+      assign(name, x, parent.frame(), inherits = TRUE)
+    }
   }
-  return(x)
+  invisible(x)
 }
 
 #' Get the "Rfr.type" attribute
@@ -1437,7 +1456,7 @@ getRfrType <- function(x) {
 #' @export
 #'
 getSpctVersion <- function(x) {
-  if (is.any_spct(x)) {
+  if (is.any_spct(x) || is.old_spct(x)) {
     version <- attr(x, "spct.version", exact = TRUE)
     if (is.null(version)) {
       # need to handle objects created with old versions

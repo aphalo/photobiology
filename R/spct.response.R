@@ -110,17 +110,13 @@ resp_spct <-
 
     if (unit.out=="photon") {
       spct <- e2q(spct)
-      # the line below removes all non-data.frame attributes
-      spct <- spct[ , list(w.length, s.q.response)]
+      spct <- spct[ , c("w.length", "s.q.response")]
     } else if (unit.out=="energy") {
       spct <- q2e(spct)
-      # the line below removes all non-data.frame attributes
-      spct <- spct[ , list(w.length, s.e.response)]
+      spct <- spct[ , c("w.length", "s.e.response")]
     } else {
       stop("Invalid 'unit.out'")
     }
-    # we restore the .spct class and attributes
-    setResponseSpct(spct, time.unit = time.unit)
 
     # if the waveband is undefined then use all data
     if (is.null(w.band)){
@@ -140,8 +136,7 @@ resp_spct <-
     # spectrum. This can produce small errors for high
     # spectral resolution data, but speed up the calculations.
     if (is.null(use.hinges)) {
-      use.hinges <- stepsize(spct)[2] >
-        getOption("photobiology.auto.hinges.limit", default = 0.5) # nm
+      use.hinges <- auto_hinges(spct)
     }
 
     # we collect all hinges and insert them in one go
@@ -182,7 +177,7 @@ resp_spct <-
         }
       }
       # we calculate the integrated response.
-      response[i] <- integrate_spct(trim_spct(spct, wb, use.hinges = FALSE))
+      response[i] <- integrate_spct(trim_spct(spct, wb, use.hinges = use.hinges))
     }
     if (quantity %in% c("contribution", "contribution.pc")) {
       if (any(sapply(w.band, is_effective))) {
@@ -192,7 +187,7 @@ resp_spct <-
       } else {
         total <- resp_spct(spct, w.band = NULL, unit.out = unit.out,
                            quantity = "total", time.unit = time.unit,
-                           wb.trim = FALSE, use.hinges = FALSE)
+                           wb.trim = FALSE, use.hinges = use.hinges)
         response <- response / total
         if (quantity == "contribution.pc") {
           response <- response * 1e2
@@ -222,8 +217,8 @@ resp_spct <-
       names(response) <- "out of range"
     }
     names(response) <- paste(names(response), wb_name)
-    setattr(response, "time.unit", getTimeUnit(spct))
-    setattr(response, "radiation.unit", paste(unit.out, "response", quantity))
+    attr(response, "time.unit") <- getTimeUnit(spct)
+    attr(response, "radiation.unit") <- paste(unit.out, "response", quantity)
     return(response)
   }
 
