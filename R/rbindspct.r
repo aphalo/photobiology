@@ -243,11 +243,11 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
 
 # Extract ------------------------------------------------------------------
 
-#' Extract Parts of an spectrum
+#' Extract or Replace Parts of a Spectrum
 #'
-#' Just like extraction with indexes in base R, but preserving the special
-#' attributes used in spectral classes and checking for validity of remaining
-#' spectral data.
+#' Just like extraction and replacement with indexes in base R, but preserving
+#' the special attributes used in spectral classes and checking for validity of
+#' remaining spectral data.
 #'
 #' @param x	spectral object from which to extract element(s)
 #' @param i index for rows,
@@ -276,6 +276,10 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
 #' @examples
 #' sun.spct[sun.spct$w.length > 400, ]
 #' subset(sun.spct, w.length > 400)
+#'
+#' tmp.spct <- sun.spct
+#' tmp.spct[tmp.spct$s.e.irrad < 1e-5 , "s.e.irrad"] <- 0
+#' e2q(tmp.spct[ , c("w.length", "s.e.irrad")]) # restore data consistency!
 #'
 #' @rdname extract
 #' @name Extract
@@ -500,3 +504,16 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
     xx
   }
 
+
+# replace -----------------------------------------------------------------
+
+#' @param value	A suitable replacement value: it will be repeated a whole number
+#'   of times if necessary and it may be coerced: see the Coercion section. If
+#'   NULL, deletes the column if a single column is selected.
+#'
+#' @export
+#' @rdname extract
+#'
+"[<-.generic_spct" <- function(x, i, j, value) {
+  check(`[<-.data.frame`(x, i, j, value))
+}
