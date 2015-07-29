@@ -4,6 +4,8 @@ TODO
 Add test cases for chroma_spct and improve tests for the _mspct
 classes.
 
+Define Replacement methods.
+
 photobiology 0.8.0
 ==================
 
