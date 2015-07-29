@@ -4,8 +4,6 @@ TODO
 Add test cases for chroma_spct and improve tests for the _mspct
 classes.
 
-Define Replacement methods.
-
 photobiology 0.8.0
 ==================
 
@@ -13,15 +11,20 @@ No longer use data.table as a base class for spectral objects.
 ** Given the size of spectral data the advantages were too
 limited compared to the complications introduced. **
 
-Extract methods and subset function should now work as expected!
-Now semantics follows normal R semantics of passing arguments
-by copy, except in a few exceptions. Now subscripting of
-spectra can be used without any restrictions.
+Extract and replacement methods "[" and "[<-" and the subset()
+function should now work as expected when applied to spectral
+objetcs!  Subscripting of spectra can be used without
+any restrictions.
 
-Improved accuracy and accurancy of returned values (further
-than the ealier approximately 4 significant digits to close
-to 7 or 8 signicant digits when using hinges) and improved
-consistency among functions and operators.
+Argument passing and assignment semantics follows normal
+R semantics of passing of making, `lazyly', a copy, except in
+a few exceptions.
+
+Improved accuracy of returned values (fron the ealier level
+of approximately 4 significant digits to close to 7 or 8
+signicant digits when using hinges) and improved
+consistency of returned values betwenn functions and
+operators.
 
 New print method for spectral objects.
 
