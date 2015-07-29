@@ -28,11 +28,11 @@ test_that("fscale", {
 
   my.spct <- q2e(sun.spct, action = "replace")
 
-  expect_equivalent(integrate_spct(fscale(my.spct, f = "total")), 1)
-  expect_less_than(integrate_spct(fscale(my.spct, f = "mean")) * average_spct(my.spct) - irrad(my.spct), 0.25)
+  expect_less_than(abs(integrate_spct(fscale(my.spct, f = "total")) - 1), 1e-6)
+  expect_less_than(abs(average_spct(fscale(my.spct, f = "mean")) - 1), 1e-6)
   expect_warning(irrad(fscale(my.spct, f = "mean")))
   expect_equal(irrad(fscale(my.spct, f = "mean")), NA)
-  expect_named(fscale(my.spct), setdiff(names(my.spct), "s.q.irrad"))
+  expect_named(fscale(my.spct), names(my.spct))
   expect_equal(class(fscale(my.spct)), class(my.spct))
   expect_error(fscale(my.spct, range = 100))
   expect_error(normalize(my.spct, range = c(100, 100)))

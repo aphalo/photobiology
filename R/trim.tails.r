@@ -16,7 +16,7 @@
 #' @param fill if fill==NULL then tails are deleted, otherwise tails or s.irrad
 #'   are filled with the value of fill
 #'
-#' @return a data.table with variables \code{w.length} and \code{s.irrad}
+#' @return a data.frame with variables \code{w.length} and \code{s.irrad}
 #'
 #' @note When expanding an spectrum, if fill==NULL, then expansion is not
 #'   performed with a warning.
@@ -77,10 +77,10 @@ trim_tails <- function(w.length, s.irrad,
 
   trimmed.selector <- (w.length >= low.limit) & (w.length <= high.limit)
   if (is.null(fill)) {
-    return(data.table(w.length = w.length[trimmed.selector], s.irrad = s.irrad[trimmed.selector]))
+    return(dplyr::data_frame(w.length = w.length[trimmed.selector], s.irrad = s.irrad[trimmed.selector]))
   }
   else {
     s.irrad[!trimmed.selector] <- fill
-    return(data.table(w.length = w.length, s.irrad=s.irrad))
+    return(dplyr::data_frame(w.length = w.length, s.irrad=s.irrad))
   }
 }

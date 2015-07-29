@@ -14,8 +14,8 @@
 #' \tabular{ll}{
 #' Package: \tab photobiology\cr
 #' Type: \tab Package\cr
-#' Version: \tab 0.7.1\cr
-#' Date: \tab 2015-07-16\cr
+#' Version: \tab 0.8.0\cr
+#' Date: \tab 2015-07-29\cr
 #' License: \tab GPL (>= 3.0)\cr
 #' URL: \tab \url{http://www.r4photobiology.info},\cr
 #' \tab \url{https://bitbucket.org/aphalo/photobiology}\cr
@@ -38,22 +38,7 @@
 #'
 #' @note This package is still under development, but is by now stable.
 #'
-#' @import methods
-#'
 #' @importFrom Rcpp evalCpp
-#' @importFrom data.table data.table tables setkey setkeyv key "key<-" haskey CJ
-#'   SJ copy
-#' @importFrom data.table as.data.table is.data.table test.data.table last like
-#'   "%like%" between "%between%"
-#' @importFrom data.table truelength alloc.col ":="
-#' @importFrom data.table setattr setnames setcolorder set setDT setDF
-#' @importFrom data.table setorder setorderv
-#' @importFrom data.table setNumericRounding getNumericRounding
-#' @importFrom data.table chmatch "%chin%" chorder chgroup
-#' @importFrom data.table fread
-#' @importFrom data.table address
-#' @importFrom data.table .SD .N .I .GRP .BY
-#' @importClassesFrom data.table data.table
 #'
 #' @examples
 #' # irradiance of the whole spectrum

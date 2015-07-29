@@ -1,10 +1,10 @@
-#' Trim (or expand) tails of a spectrum
+#' Trim (or expand) head and/or tail of a spectrum
 #'
-#' Trimming of tails of a spectrum based on wavelength limits, interpolating the
-#' values at the boundaries. Trimming is needed for example to remove short
-#' wavelength noise when the measured spectrum extends beyond the known emission
-#' spectrum of the measured light source. Occasionally one may want also to
-#' expand the wavelength range.
+#' Trimming of head and tail of a spectrum based on wavelength limits,
+#' interpolating the values at the boundaries. Trimming is needed for example to
+#' remove short wavelength noise when the measured spectrum extends beyond the
+#' known emission spectrum of the measured light source. Occasionally one may
+#' want also to expand the wavelength range.
 #'
 #' @param spct an object of class "generic_spct"
 #' @param range a numeric vector of length two, or any other object for which
@@ -32,9 +32,7 @@
 #' @export
 #' @examples
 #' trim_spct(sun.spct, low.limit=300)
-#' my.sun.spct <- copy(sun.spct)
-#' trim_spct(my.sun.spct, low.limit=300, byref=TRUE)
-#' my.sun.spct
+#' trim_spct(sun.spct, low.limit=300)
 #' trim_spct(sun.spct, low.limit=300, fill=NULL)
 #' trim_spct(sun.spct, low.limit=300, fill=NA)
 #' trim_spct(sun.spct, low.limit=300, fill=0.0)
@@ -44,6 +42,9 @@ trim_spct <- function(spct, range=NULL, low.limit=NULL, high.limit=NULL,
 {
   if (is.null(spct)) {
     return(spct)
+  }
+  if (is.null(use.hinges)) {
+    use.hinges <- auto_hinges(spct)
   }
   stopifnot(is.any_spct(spct))
   if (byref) {
@@ -85,11 +86,12 @@ trim_spct <- function(spct, range=NULL, low.limit=NULL, high.limit=NULL,
       # expand short tail
       low.tail.length <- low.end - low.limit
       low.tail.w.length <- seq(from = low.limit, to = low.end - 1, length=low.tail.length)
-      spct.top <- data.table(w.length = low.tail.w.length)
+      spct.top <- dplyr::data_frame(w.length = low.tail.w.length)
       for (data.col in names.data) {
-        spct.top[ , eval(data.col) := fill]
+        spct.top[[data.col]] <- fill
       }
-      spct <- rbindlist(list(spct.top, spct))
+      spct <- plyr::rbind.fill(list(spct.top, spct))
+      spct <- dplyr::as_data_frame(spct)
       setGenericSpct(spct)
       low.end <- min(spct)
     } else {
@@ -110,11 +112,12 @@ trim_spct <- function(spct, range=NULL, low.limit=NULL, high.limit=NULL,
       # expand short tail
       high.tail.length <- high.limit - high.end
       high.tail.w.length <- seq(from = high.end + 1, to = high.limit, length = high.tail.length)
-      spct.bottom <- data.table(w.length = high.tail.w.length)
+      spct.bottom <- dplyr::data_frame(w.length = high.tail.w.length)
       for (data.col in names.data) {
-        spct.bottom[ , eval(data.col) := fill]
+        spct.bottom[[data.col]] <- fill
       }
-      spct <- rbindlist(list(spct, spct.bottom))
+      spct <- plyr::rbind.fill(list(spct, spct.bottom))
+      spct <- dplyr::as_data_frame(spct)
       setGenericSpct(spct)
       low.end <- max(spct)
     } else {
@@ -129,22 +132,22 @@ trim_spct <- function(spct, range=NULL, low.limit=NULL, high.limit=NULL,
 
   # insert hinges
   if (use.hinges) {
-    hinges <- c(low.limit - 1e-4, low.limit, high.limit, high.limit + 1e-4)
+    hinges <- c(low.limit - 1e-12, low.limit, high.limit - 1e-12, high.limit)
     spct <- insert_spct_hinges(spct, hinges)
   }
-  setkey(spct, w.length)
+  within.selector <- with(spct, w.length >= trim.range[1] & w.length < trim.range[2])
   if (is.null(fill)) {
-    spct <- spct[w.length %between% trim.range]
-  }
-  else {
+    spct <- spct[within.selector, ]
+  } else {
     for (data.col in names.data) {
-      spct[!w.length %between% trim.range, eval(data.col) := fill]
+      spct[!within.selector, data.col] <- fill
     }
   }
-  # we use rbindlist which removes derived class attributes
-  setattr(spct, "class", class_spct)
+  # we now use plyr::rbind.fill which does not remove attributes
+  # most of the code below may be redundant!!!
+  class(spct) <- class_spct
   if (!is.null(comment.spct)) {
-    setattr(spct, "comment", comment.spct)
+    comment(spct) <- comment.spct
   }
   if (!is.null(time.unit.spct) && !is.na(time.unit.spct)) {
     setTimeUnit(spct, time.unit.spct)

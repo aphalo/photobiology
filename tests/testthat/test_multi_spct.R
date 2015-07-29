@@ -1,5 +1,4 @@
 library(photobiology)
-library(data.table)
 
 context("multi_spct")
 
@@ -14,7 +13,7 @@ test_that("source_mspct", {
   my.mspct <- source_mspct(list(my1.spct, my2.spct, my3.spct, my4.spct, my5.spct))
 
   expect_equal(class(my.mspct)[1:2], c("source_mspct", "generic_mspct") )
-  expect_equal(attr(my.mspct, "mspct.version", exact = TRUE), 1)
+  expect_equal(attr(my.mspct, "mspct.version", exact = TRUE), 2)
   expect_equal(ncol(my.mspct), 1)
   expect_equal(attr(my.mspct, "byrow", exact = TRUE), FALSE)
 
@@ -24,7 +23,7 @@ test_that("source_mspct", {
                                            four = my4.spct,
                                            five = my5.spct))
   expect_equal(class(my_named.mspct)[1:2], c("source_mspct", "generic_mspct") )
-  expect_equal(attr(my_named.mspct, "mspct.version", exact = TRUE), 1)
+  expect_equal(attr(my_named.mspct, "mspct.version", exact = TRUE), 2)
   expect_equal(ncol(my_named.mspct), 1)
   expect_equal(attr(my_named.mspct, "byrow", exact = TRUE), FALSE)
 

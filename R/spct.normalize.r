@@ -19,7 +19,7 @@ normalize <- function(x, ...) UseMethod("normalize")
 
 #' @describeIn normalize Default for generic function
 #'
-#' @export normalize.default
+#' @export
 normalize.default <- function(x, ...) {
   warning("'normalize' is not defined for objects of class ", class(x)[1])
   return(x)
@@ -35,20 +35,20 @@ normalize_spct <- function(spct, range, norm, var.name) {
   if (!is.null(norm)) {
     if (is.character(norm)) {
       if (norm %in% c("max", "maximum")) {
-        idx <- which.max(tmp.spct[ , unlist(.SD), .SDcols = var.name])
+        idx <- which.max(tmp.spct[[var.name]])
       } else if (norm %in% c("min", "minimum")) {
-        idx <- which.min(tmp.spct[ , unlist(.SD), .SDcols = var.name])
+        idx <- which.min(tmp.spct[[var.name]])
       } else {
         warning("Invalid character '", norm, "'value in 'norm'")
         idx <- NA
       }
-      scale.factor <- 1 / as.numeric(tmp.spct[idx, .SD, .SDcols = var.name])
-      norm <- tmp.spct[idx, w.length]
+      scale.factor <- 1 / tmp.spct[idx, var.name, drop = TRUE]
+      norm <- tmp.spct[idx, "w.length", drop = TRUE]
     } else if (is.numeric(norm)) {
       if (norm >= min(tmp.spct) && norm <= max(tmp.spct)) {
-        tmp.spct <- tmp.spct[ , .SD, .SDcols = c("w.length", var.name)]
-        setattr(tmp.spct, "class", class(spct))
-        scale.factor <- 1 / interpolate_spct(tmp.spct, norm)[ , unlist(.SD), .SDcols = var.name]
+        tmp.spct <- tmp.spct[ , c("w.length", var.name)]
+        class(tmp.spct) <- class(spct)
+        scale.factor <- 1 / interpolate_spct(spct = tmp.spct, w.length.out = norm)[ , eval(var.name)]
       } else {
         warning("'norm = ", norm, "' value outside spectral data range of ",
                 round(min(tmp.spct), 1), " to ", round(max(tmp.spct), 1), " (nm)")
@@ -58,15 +58,11 @@ normalize_spct <- function(spct, range, norm, var.name) {
       stop("'norm' should be numeric or character")
     }
   } else {
-    scale.factor <- 1 # implemented in this way to ensure that all returned
-    # values folow the same copy/reference semantics
+    return(spct)
   }
-  out.spct <- copy(spct)
-  out.spct[ , var.name := out.spct[ , unlist(.SD), .SDcols = var.name] * scale.factor, with = FALSE]
-  setattr(out.spct, "class", class(spct))
-  setattr(out.spct, "comment", comment(spct))
-  setattr(out.spct, "normalized", norm)
-  out.spct
+  spct[[var.name]] <- spct[ , var.name, drop = TRUE] * scale.factor
+  spct <- setNormalized(spct, norm)
+  spct
 }
 
 #' @describeIn normalize Normalize a \code{source_spct} object.
@@ -204,10 +200,10 @@ is_normalized <- function(x) {
 #'
 #' @return character or numeric or logical
 #'
-#' @note if x is not a \code{filter_spct} object, \code{NA} is returned
+#' @note if x is not a \code{generic_spct} object, \code{NA} is returned
 #'
 #' @export
-#' @family Rfr attribute functions
+#' @family rescaling functions
 #'
 getNormalized <- function(x) {
   if (is.generic_spct(x)) {
@@ -220,5 +216,30 @@ getNormalized <- function(x) {
   } else {
     return(NA)
   }
+}
+
+#' Set the "normalized" attribute
+#'
+#' Funtion to write the "normalized" attribute of an existing generic_spct
+#' object.
+#'
+#' @param x a generic_spct object
+#' @param norm numeric or logical
+#'
+#' @note if x is not a \code{generic_spct} object, x is not modified.
+#'
+#' @export
+#' @family rescaling functions
+#'
+setNormalized <- function(x, norm = FALSE) {
+  name <- substitute(x)
+  if (is.any_spct(x) && (is.na(norm) || norm)) {
+    attr(x, "normalized") <- norm
+    if (is.name(name)) {
+      name <- as.character(name)
+      assign(name, x, parent.frame(), inherits = TRUE)
+    }
+  }
+  invisible(x)
 }
 

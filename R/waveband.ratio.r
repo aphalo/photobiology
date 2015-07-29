@@ -98,8 +98,7 @@ waveband_ratio <-
     # spectral resulution data, and speed up the calculations
     # a lot in such cases
     if (is.null(use.hinges)) {
-      length.wl <- length(w.length)
-      use.hinges <- (w.length[length.wl] - w.length[1]) / length.wl > 1.0 #
+      use.hinges <- auto_hinges(w.length)
     }
     # if the w.band.num and/or w.band.denom include 'hinges' we insert them
     # it is o.k. to have hinges unsorted!

@@ -47,12 +47,7 @@ tag.generic_spct <- function(x,
                              use.hinges=TRUE,
                              short.names=TRUE,
                              byref=TRUE, ...) {
-  if (!byref) {
-    x <- copy(x)
-    name <- NA
-  } else {
-    name <- substitute(x)
-  }
+  name <- substitute(x)
   if (is_tagged(x)) {
     warning("Overwriting old tags in spectrum")
     untag(x)
@@ -62,9 +57,9 @@ tag.generic_spct <- function(x,
 #     w.band <- waveband(range(x))
 #   }
   if (!is.null(w.band) && is.na(w.band[1])) {
-    x[ , wl.color := w_length2rgb(x$w.length)]
+    x[["wl.color"]] <- w_length2rgb(x[["w.length"]])
     tag.data <- list(wl.color=TRUE)
-    setattr(x, "spct.tags", tag.data)
+    attr(x, "spct.tags") <- tag.data
     return(x)
   }
   if (!is.null(w.band) && is(w.band, "waveband")) {
@@ -93,10 +88,7 @@ tag.generic_spct <- function(x,
   # spectral resolution data, and speed up the calculations
   # a lot in such cases
   if (is.null(use.hinges)) {
-    length.wl <- length(x$w.length)
-    use.hinges <- (x$w.length[length.wl] - x$w.length[1]) / length.wl > 0.2
-    # we use 1.1 nm as performance degradation by using hinges is very significant
-    # in the current version.
+    use.hinges <- auto_hinges(spct)
   }
   # we collect all hinges and insert them in one go
   # this may alter a little the returned values
@@ -134,14 +126,14 @@ tag.generic_spct <- function(x,
     wbs.rgb[i] <- color(wb)[1]
   }
   n <- i
-  x[ , idx := n + 1L ]
+  x[["wl.color"]] <- NA
+  x[["wb.f"]] <- NA
   for (i in 1L:n) {
-    x[ w.length >= wbs.wl.low[i] & w.length < wbs.wl.high[i], idx := as.integer(i) ]
+    selector <- x[["w.length"]] >= wbs.wl.low[i] & x[["w.length"]] < wbs.wl.high[i]
+    x[selector, "wb.f"] <- wbs.name[i]
   }
-  wl.color.tmp <- w_length2rgb(x$w.length)
-  x[ , wl.color := wl.color.tmp]
-  x[ , wb.f := factor(wbs.name[idx], levels=wbs.name) ]
-  x[ , idx := NULL]
+  x[["wl.color"]] <-  w_length2rgb(x[["w.length"]])
+  x[["wb.f"]] <- factor(x[["wb.f"]], levels=wbs.name)
   tag.data <- list(time.unit=getTimeUnit(x),
                    wb.key.name="Bands",
                    wl.color=TRUE,
@@ -150,8 +142,8 @@ tag.generic_spct <- function(x,
                    wb.colors=wbs.rgb[1:n],
                    wb.names=wbs.name[1:n],
                    wb.list=w.band)
-  setattr(x, "spct.tags", tag.data)
-  # to work by reference we need to assign the new DT to the old one
+  attr(x, "spct.tags") <- tag.data
+  # to work by reference we need to assign the new data frame to the old one
   if (byref & is.name(name)) {
     name <- as.character(name)
     assign(name, x, parent.frame(), inherits = TRUE)
@@ -191,7 +183,8 @@ wb2spct <- function(w.band) {
     return(NA)
   }
   w.length <- unique(sort(w.length))
-  new.spct <- data.table(w.length = w.length, s.e.irrad = 0, s.q.irrad = 0, Tfr = 0, Rfl = 0, s.e.response = 0)
+  new.spct <- dplyr::data_frame(w.length = w.length, s.e.irrad = 0, s.q.irrad = 0,
+                                Tfr = 0, Rfl = 0, s.e.response = 0)
   setGenericSpct(new.spct)
   return(new.spct)
 }
@@ -221,7 +214,7 @@ wb2tagged_spct <-
   function(w.band, use.hinges = TRUE, short.names = TRUE, ...) {
   new.spct <- wb2spct(w.band)
   tag(new.spct, w.band, use.hinges, short.names, byref=TRUE)
-  new.spct[ , y := 0]
+  new.spct[["y"]] <- 0
   return(new.spct)
 }
 
@@ -275,12 +268,12 @@ wb2rect_spct <- function(w.band, short.names = TRUE) {
     wbs.wl.high[i] <- max(wb)
     wbs.rgb[i] <- color(wb)[1]
   }
-  new.spct <- data.table(w.length = wbs.wl.mid,
-                         s.e.irrad = 0, s.q.irrad = 0, Tfr = 0, Rfl = 0, s.e.response = 0,
-                         wl.color = w_length2rgb(wbs.wl.mid),
-                         wb.f = factor(wbs.name, levels=wbs.name),
-                         wl.high = wbs.wl.high, wl.low = wbs.wl.low,
-                         y = 0)
+  new.spct <- dplyr::data_frame(w.length = wbs.wl.mid,
+                                s.e.irrad = 0, s.q.irrad = 0, Tfr = 0, Rfl = 0, s.e.response = 0,
+                                wl.color = w_length2rgb(wbs.wl.mid),
+                                wb.f = factor(wbs.name, levels=wbs.name),
+                                wl.high = wbs.wl.high, wl.low = wbs.wl.low,
+                                y = 0)
   setGenericSpct(new.spct)
   tag.data <- list(time.unit="none",
                    wb.key.name="Bands",
@@ -290,7 +283,7 @@ wb2rect_spct <- function(w.band, short.names = TRUE) {
                    wb.colors=wbs.rgb,
                    wb.names=wbs.name,
                    wb.list=w.band)
-  setattr(new.spct, "spct.tags", tag.data)
+  attr(new.spct, "spct.tags") <- tag.data
 
   return(new.spct)
 }
@@ -335,7 +328,7 @@ untag.default <- function(x, ...) {
 untag.generic_spct <- function(x,
                                byref=TRUE, ...) {
   if (!byref) {
-    x <- copy(x)
+    x <- x
     name <- NA
   } else {
     name <- substitute(x)
@@ -343,11 +336,11 @@ untag.generic_spct <- function(x,
   if (!is_tagged(x)) {
     return(x)
   }
-  x[ , wl.color := NULL]
-  x[ , wb.f := NULL ]
+  x[["wl.color"]] <- NULL
+  x[["wb.f"]] <- NULL
   tag.data <- NA
-  setattr(x, "spct.tags", tag.data)
-  # to work by reference we need to assign the new DT to the old one
+  attr(x, "spct.tags") <- tag.data
+  # to work by reference we need to assign the new spct to the old one
   if (byref & is.name(name)) {
     name <- as.character(name)
     assign(name, x, parent.frame(), inherits = TRUE)

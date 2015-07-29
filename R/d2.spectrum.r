@@ -36,9 +36,8 @@ D2_spectrum <- function(w.length, k=D2.UV653, fill=NULL) {
     s.e.irrad[i] <- sum(w.length[i]^pws * k)
   }
   s.e.irrad[fill.selector] <- fill
-  out.data <- data.table(w.length, s.e.irrad)
+  out.data <- source_spct(w.length, s.e.irrad)
   comment(out.data) <- paste("Fitted spectrum for:", comment(k))
-  setSourceSpct(out.data)
   return(out.data)
 }
 

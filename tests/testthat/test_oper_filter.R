@@ -5,10 +5,12 @@ test_that("constructor T fraction", {
 
   my.spct <- filter_spct(w.length = 400:409, Tfr = 0.1)
   expect_equal(class(my.spct)[1:2], c("filter_spct", "generic_spct") )
-  expect_equal(attr(my.spct, "spct.version", exact = TRUE), 1)
+  expect_equal(attr(my.spct, "spct.version", exact = TRUE), 2)
 
-  expect_error(filter_spct(w.length = 400:409, Tfr = -0.1))
-  expect_error(filter_spct(w.length = 400:409, Tfr = 1.1))
+  expect_error(filter_spct(w.length = 400:409, Tfr = -0.1, strict.range = TRUE))
+  expect_error(filter_spct(w.length = 400:409, Tfr = 1.1, strict.range = TRUE))
+  expect_warning(filter_spct(w.length = 400:409, Tfr = -0.1, strict.range = FALSE))
+  expect_warning(filter_spct(w.length = 400:409, Tfr = -0.1))
   expect_warning(T2A(filter_spct(w.length = 400:409, Tfr = 0)))
   expect_equal(my.spct[["Tfr"]], rep(0.1, length.out = 10))
   expect_equal(my.spct[["w.length"]], 400:409)
@@ -21,8 +23,8 @@ test_that("constructor T percent", {
   my.spct <- filter_spct(w.length = 400:409, Tpc = 10)
   expect_equal(class(my.spct)[1:2], c("filter_spct", "generic_spct") )
 
-  expect_error(filter_spct(w.length = 400:409, Tpc = -0.1))
-  expect_error(filter_spct(w.length = 400:409, Tpc = 100.01))
+  expect_warning(filter_spct(w.length = 400:409, Tpc = -0.1))
+  expect_warning(filter_spct(w.length = 400:409, Tpc = 100.01))
   expect_equal(my.spct[["Tfr"]], rep(0.1, length.out = 10))
   expect_equal(my.spct[["w.length"]], 400:409)
   expect_named(my.spct, c("w.length", "Tfr"))
@@ -159,7 +161,7 @@ test_that("transmittance", {
   expect_equal(sum(as.numeric(transmittance(my.spct, quantity = "contribution",
                                        w.band = split_bands(my.spct, length.out = 3)))), 1)
   expect_less_than(sum(as.numeric(transmittance(my.spct, quantity = "contribution",
-                                           w.band = split_bands(c(400, 600), length.out = 3)))), 1)
+                                           w.band = split_bands(c(400, 600), length.out = 3)))), 0.5)
   expect_equal(sum(as.numeric(transmittance(trim_spct(my.spct, range = c(400, 600)),
                                        quantity = "contribution",
                                        w.band = split_bands(c(400, 600), length.out = 3)))), 1)
@@ -174,8 +176,8 @@ test_that("absorptance", {
   expect_equal(as.numeric(absorptance(my.spct)), 0.5, tolerance = 1e-6)
   expect_equal(as.numeric(absorptance(my.spct, quantity = "total")),
                absorptance.result, tolerance = 1e-6)
-  expect_equal(as.numeric(absorptance(my.spct, quantity = "average")), 0.5, tolerance = 1e-6)
-  expect_equal(as.numeric(absorptance(my.spct, quantity = "mean")), 0.5, tolerance = 1e-6)
+  expect_equal(as.numeric(absorptance(my.spct, quantity = "average")), 0.5)
+  expect_equal(as.numeric(absorptance(my.spct, quantity = "mean")), 0.5)
   expect_equal(sum(as.numeric(absorptance(my.spct, quantity = "total",
                                             w.band = split_bands(my.spct, length.out = 3)))),
                absorptance.result)
@@ -191,7 +193,7 @@ test_that("absorptance", {
   expect_equal(sum(as.numeric(absorptance(my.spct, quantity = "contribution",
                                             w.band = split_bands(my.spct, length.out = 3)))), 1)
   expect_less_than(sum(as.numeric(absorptance(my.spct, quantity = "contribution",
-                                                w.band = split_bands(c(400, 600), length.out = 3)))), 1)
+                                                w.band = split_bands(c(400, 600), length.out = 3)))), 0.5)
   expect_equal(sum(as.numeric(absorptance(trim_spct(my.spct, range = c(400, 600)),
                                             quantity = "contribution",
                                             w.band = split_bands(c(400, 600), length.out = 3)))), 1)
@@ -227,9 +229,9 @@ test_that("absorbance", {
   expect_equal(sum(as.numeric(absorbance(my.spct, quantity = "contribution",
                                           w.band = split_bands(my.spct, length.out = 3)))),
                1, tolerance = 1e-6)
-  expect_less_than(sum(as.numeric(absorbance(my.spct, quantity = "contribution",
+  expect_equal(sum(as.numeric(absorbance(my.spct, quantity = "contribution",
                                               w.band = split_bands(c(400, 600), length.out = 3)))),
-                   1, tolerance = 1e-6)
+                   0.5, tolerance = 1e-6)
   expect_equal(sum(as.numeric(absorbance(trim_spct(my.spct, range = c(400, 600)),
                                           quantity = "contribution",
                                           w.band = split_bands(c(400, 600), length.out = 3)))),
