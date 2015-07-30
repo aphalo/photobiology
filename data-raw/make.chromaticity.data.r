@@ -10,11 +10,17 @@ ciexyzCMF10.spct <- read.csv(file="lin2012xyz10e_1_7sf.csv", comment.char = "#")
 ciexyzCC10.spct <- read.csv(file="cc2012xyz10_1_5dp.csv", comment.char = "#")
 ciev10.spct <- read.csv(file="linCIE2008v10e_1.csv", comment.char = "#")
 setChromaSpct(ciexyzCMF2.spct)
+comment(ciexyzCMF2.spct) <- "CIE 2012 2 degrees CMF (color matching function) from lin2012xyz2e_1_7sf.csv"
 setChromaSpct(ciexyzCC2.spct)
+comment(ciexyzCC2.spct) <- "CIE 2012 2 degrees CC (color coordinates) from cc2012xyz2_1_5dp.csv"
 setResponseSpct(ciev2.spct)
+comment(ciev2.spct) <- "CIE 2008 2 degrees V from linCIE2008v2e_1.csv"
 setChromaSpct(ciexyzCMF10.spct)
+comment(ciexyzCMF10.spct) <- "CIE 2012 10 degrees CMF (color matching function) from lin2012xyz10e_1_7sf.csv"
 setChromaSpct(ciexyzCC10.spct)
+comment(ciexyzCC10.spct) <- "CIE 2012 10 degrees CC (color coordinates) from cc2012xyz10_1_5dp.csv"
 setResponseSpct(ciev10.spct)
+comment(ciev10.spct) <- "CIE 2008 10 degrees V from linCIE2008v10e_1.csv"
 
 setwd(oldwd)
 
@@ -37,9 +43,9 @@ oldwd <- setwd("data-raw/bees")
 Maxwell.data <- read.table(file="Maxwell.data", header=TRUE)
 
 beesxyzCMF.spct <- Maxwell.data[ , 1:4]
-setnames(beesxyzCMF.spct, 1:4, c("w.length", "x", "y", "z"))
+names(beesxyzCMF.spct)[1:4] <- c("w.length", "x", "y", "z")
 setChromaSpct(beesxyzCMF.spct)
-
+comment(beesxyzCMF.spct) <- "Maxwell's color matching function for honey bee"
 setwd(oldwd)
 
 olwd <- setwd("data")

@@ -24,7 +24,7 @@ Suggests:
     photobiologySun (>= 0.3.0),
     photobiologyFilters (>= 0.3.0),
     photobiologyReflectors (>= 0.3.0),
-    photobiologySensors (>= 0.3.1),
+    photobiologySensors (>= 0.3.0),
     photobiologyPlants (>= 0.3.0),
     knitr (>= 1.10.5),
     testthat (>= 0.10.0)
