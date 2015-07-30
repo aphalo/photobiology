@@ -14,4 +14,3 @@ src/RcppExports.cpp
 *.so
 vignettes/userguide.toc
 vignettes/*.pdf
-vignettes/figure/
