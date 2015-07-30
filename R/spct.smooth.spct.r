@@ -87,7 +87,7 @@ smooth_spct.source_spct <- function(x, method = "custom", strength = 1, ...) {
     smoothing_hi_lim <- max(out.spct$w.length)
     # this could be tweeked in many ways...
     zero_limit_cnst <- max_irrad * 3e-4 / strength
-    out.spct[["zero_limit"]] <-  (zero_limit_cnst * 600) / out_spct[["w.length"]]
+    out.spct[["zero_limit"]] <-  (zero_limit_cnst * 600) / out.spct[["w.length"]]
     smooth_limit <- 1e-3 * smoothing_coef # just a guess for runmadmed
     smooth_threshold <- 5e-2 * max_irrad / strength # for s.e.irrad
     out.spct[["runmad"]] <- runmad(out.spct[["s.e.irrad"]], 7, endrule="mad")
