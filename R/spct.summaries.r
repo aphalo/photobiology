@@ -26,9 +26,12 @@
 #'
 print.generic_spct <- function(x, ..., n = NULL, width = NULL)
 {
-  cat("Object: local ", class_spct(x)[1], " ", dplyr::dim_desc(x), "\n", sep = "")
+  cat("Object: ", class_spct(x)[1], " ", dplyr::dim_desc(x), "\n", sep = "")
   cat("Wavelength (nm): range ", paste(signif(range(x), 8), sep="", collapse = " to "), ", step ",
       paste(unique(signif(stepsize(x), 7)), sep="", collapse = " to "), "\n", sep = "")
+  if (class_spct(x)[1] %in% c("source_spct", "response_spct")) {
+    cat("Time unit: ", as.character(getTimeUnit(x, force.duration = TRUE)), "\n", sep = "")
+  }
   if (is_scaled(x)) {
     scaling <- getScaled(x)[["f"]]
     cat("Rescaled to '", scaling, "' = 1 \n", sep = "")
