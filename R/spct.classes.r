@@ -46,14 +46,14 @@ check.default <- function(x, byref=FALSE, strict.range = FALSE, ...) {
 check.generic_spct <- function(x, byref=TRUE, strict.range = FALSE, multiple.wl = 1L, ...) {
   # fix old class attributes
   class.x <- class_spct(x)
-  if (!("tbl_df") %in% class(x)){
+  if (!("tbl_df") %in% class(x)) {
     x <- dplyr::as_data_frame(x)
   }
   class(x) <- union(class.x, class(x))
   # check variables
-  if (exists("wl", x, mode = "numeric", inherits=FALSE)) {
+  if (exists("wl", x, mode = "numeric", inherits = FALSE)) {
     x <- dplyr::rename(x, w.length = wl)
-  } else if (exists("wavelength", x, mode = "numeric", inherits=FALSE)) {
+  } else if (exists("wavelength", x, mode = "numeric", inherits = FALSE)) {
     x <- dplyr::rename(x, w.length = wavelength)
   } else if (exists("Wavelength", x, mode = "numeric", inherits = FALSE)) {
     x <- dplyr::rename(x, w.length = Wavelength)
@@ -108,6 +108,8 @@ check.cps_spct <- function(x, byref=TRUE, strict.range = FALSE, ...) {
     }
   }
 
+  x <- check.generic_spct(x)
+
   if (exists("cps", x, mode = "numeric", inherits=FALSE)) {
     range_check(x)
     return(x)
@@ -142,6 +144,8 @@ check.filter_spct <- function(x, byref=TRUE, strict.range = FALSE, multiple.wl =
       }
     }
   }
+
+  x <- check.generic_spct(x)
 
   range_check_A <- function(x, strict.range) {
     if (!all(is.na(x[["A"]]))) {
@@ -216,6 +220,8 @@ check.reflector_spct <- function(x, byref = TRUE, strict.range = FALSE, ...) {
     }
   }
 
+  x <- check.generic_spct(x)
+
   if (is.null(getRfrType(x))) {
     setRfrType(x, "total")
     warning("Missing Rfr.type attribute replaced by 'total'")
@@ -256,6 +262,8 @@ check.object_spct <- function(x, byref=TRUE, strict.range = FALSE, multiple.wl =
       }
     }
   }
+
+  x <- check.generic_spct(x)
 
   range_check_Rfr <- function(x, strict.range) {
     if (!all(is.na(x$Rfr))) {
@@ -320,6 +328,8 @@ check.object_spct <- function(x, byref=TRUE, strict.range = FALSE, multiple.wl =
 #' @export
 check.response_spct <- function(x, byref=TRUE, strict.range = FALSE, multiple.wl = 1L, ...) {
 
+  x <- check.generic_spct(x)
+
   x <- checkTimeUnit(x)
 
   if (exists("s.e.response", x, mode = "numeric", inherits=FALSE)) {
@@ -376,6 +386,7 @@ check.source_spct <- function(x, byref=TRUE, strict.range = FALSE, multiple.wl =
     }
   }
 
+  x <- check.generic_spct(x)
   x <- checkTimeUnit(x)
 
   if (is.null(is_effective(x))) {

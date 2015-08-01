@@ -243,13 +243,21 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
 
 # Extract ------------------------------------------------------------------
 
+# $ operator for extraction does not need any wrapping as it always extracts
+# single columns returning objects of the underlying classes (e.g. numeric)
+# rather than spectral objects.
+#
+# [ needs special handling as it can be used to extract rows, or groups of
+# columns which are returned as spectral objects. Such returned objects
+# can easily become invalid, for example, lack a w.length variable.
+
 #' Extract or Replace Parts of a Spectrum
 #'
 #' Just like extraction and replacement with indexes in base R, but preserving
 #' the special attributes used in spectral classes and checking for validity of
 #' remaining spectral data.
 #'
-#' @param x	spectral object from which to extract element(s)
+#' @param x	spectral object from which to extract element(s) or in which to replace element(s)
 #' @param i index for rows,
 #' @param j index for columns, specifying elements to extract or replace. Indices are
 #'   numeric or character vectors or empty (missing) or NULL. Please, see
@@ -287,7 +295,7 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
 #' @seealso \code{\link[base]{subset.data.frame}} and \code{\link{trim_spct}}
 #'
 "[.generic_spct" <-
-  function (x, i, j, drop = NULL) {
+  function(x, i, j, drop = NULL) {
     if (is.null(drop)) {
       xx <- `[.data.frame`(x, i, j)
     } else {
@@ -313,7 +321,7 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
 #' @rdname extract
 #'
 "[.cps_spct" <-
-  function (x, i, j, drop = NULL) {
+  function(x, i, j, drop = NULL) {
     if (is.null(drop)) {
       xx <- `[.data.frame`(x, i, j)
     } else {
@@ -321,7 +329,7 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
     }
     if (is.data.frame(xx)) {
       if ("w.length" %in% names(xx)) {
-        setCpsSPct(xx)
+        setCpsSpct(xx)
         setNormalized(xx, getNormalized(x))
         setScaled(xx, getScaled(x))
         comment <- comment(x)
@@ -339,7 +347,7 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
 #' @rdname extract
 #'
 "[.source_spct" <-
-  function (x, i, j, drop = NULL) {
+  function(x, i, j, drop = NULL) {
     if (is.null(drop)) {
       xx <- `[.data.frame`(x, i, j)
     } else {
@@ -369,7 +377,7 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
 #' @rdname extract
 #'
 "[.response_spct" <-
-  function (x, i, j, drop = NULL) {
+  function(x, i, j, drop = NULL) {
     if (is.null(drop)) {
       xx <- `[.data.frame`(x, i, j)
     } else {
@@ -397,7 +405,7 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
 #' @rdname extract
 #'
 "[.filter_spct" <-
-  function (x, i, j, drop = NULL) {
+  function(x, i, j, drop = NULL) {
     if (is.null(drop)) {
       xx <- `[.data.frame`(x, i, j)
     } else {
@@ -425,7 +433,7 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
 #' @rdname extract
 #'
 "[.reflector_spct" <-
-  function (x, i, j, drop = NULL) {
+  function(x, i, j, drop = NULL) {
     if (is.null(drop)) {
       xx <- `[.data.frame`(x, i, j)
     } else {
@@ -453,7 +461,7 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
 #' @rdname extract
 #'
 "[.object_spct" <-
-  function (x, i, j, drop = NULL) {
+  function(x, i, j, drop = NULL) {
     if (is.null(drop)) {
       xx <- `[.data.frame`(x, i, j)
     } else {
@@ -482,7 +490,7 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
 #' @rdname extract
 #'
 "[.chroma_spct" <-
-  function (x, i, j, drop = NULL) {
+  function(x, i, j, drop = NULL) {
     if (is.null(drop)) {
       xx <- `[.data.frame`(x, i, j)
     } else {
@@ -507,13 +515,26 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
 
 # replace -----------------------------------------------------------------
 
+# We need to wrap the replace functions adding a call to our check method
+# to make sure that the object is still a valid spectrum after the
+# replacement.
+
 #' @param value	A suitable replacement value: it will be repeated a whole number
 #'   of times if necessary and it may be coerced: see the Coercion section. If
 #'   NULL, deletes the column if a single column is selected.
 #'
 #' @export
+#' @method "[<-" generic_spct
 #' @rdname extract
 #'
 "[<-.generic_spct" <- function(x, i, j, value) {
-  check(`[<-.data.frame`(x, i, j, value))
+  check(`[<-.data.frame`(x, i, j, value), byref = FALSE)
+}
+
+#' @export
+#' @method "$<-" generic_spct
+#' @rdname extract
+#'
+"$<-.generic_spct" <- function(x, name, value) {
+  check(`$<-.data.frame`(x, name, value), byref = FALSE)
 }

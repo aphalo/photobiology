@@ -121,10 +121,17 @@ This package defines a family of classes based on data frames which impose some 
 
 \subsection{Printing}
 
-Spectral objects are printed in the current version of the package by the function defined in package \texttt{dplyr}, consequently, it is possible to the option from this package to control printing. Below \texttt{dplyr.print\_max}, the number of rows above which only `head' rows are printed, is set to 5, instead of the default 20.
+Spectral objects are printed in the current version of the package by the function defined in package \texttt{dplyr}, consequently, it is possible to the options from this package to control printing.  \texttt{dplyr.print\_max}, the number of rows in the spectral object above which only \texttt{dplyr.print\_min} rows are printed, are both set to 5, instead of the default 20 and 10.
 
 <<set-up-printing>>=
 options(dplyr.print_max = 5)
+options(dplyr.print_min = 5)
+@
+
+For explicit calls to \texttt{print()} its argument \texttt{n} can be used to control the number of lines printed. If \texttt{n} is set to \verb|Inf| the whole spectrum is always printed.
+
+<<>>=
+print(sun.spct, n = 3)
 @
 
 \subsection{Classes}
@@ -734,7 +741,7 @@ In this section we describe methods and functions that take one or more spectral
 
 \end{table}
 
-\subsection{Row binding spectra}
+\subsection{Manipulating spectra}
 
 Sometimes, especially for plotting, we may want to row-bind spectra. When the aim is that the returned object retains its class and other attributes like the time unit. Package \PB provides function \texttt{rbinspct} for row-binding spectra, with the necessary checks for consistency of the bound spectra.
 
@@ -758,7 +765,7 @@ rbindspct(list(sun.spct * CIE(), sun.spct * GEN.G()))
 
 The warning above is caused by the different length of the members of the list, and in this case it is safe to ignore it.
 
-Special \textit{Extract} methods for spectral objects have been implemented. These are used by default and preserve the attributes used by this package, except when the retruned value is a single column from the spectral object.
+Special \textit{Extract} methods for spectral objects have been implemented. These are used by default and preserve the attributes used by this package, except when the returned value is a single column from the spectral object.
 
 <<>>=
 sun.spct[1:10, ]
@@ -775,9 +782,12 @@ subset(sun.spct, w.length > 600)
 subset(sun.spct, c(TRUE, rep(FALSE, 99)))
 @
 
+R's Extract methods \verb|$| and \verb|[[ ]]| can be used to extract whole columns.
+Replace methods \verb|$<-| and \verb|[<-| have definitions for spectral objects, which allow their safe use. They work identically to those for data frames but check the validity of the spectra after the replacement.
+
 \subsection{Conversions between radiation units}
 
-The functions \texttt{e2q} and \texttt{q2e} can be used on source spectra to convert spectral energy irradiance into spectral photon irradiance and vice versa. A second optional argument sets the action with \texttt{"add"} and \texttt{"replace"} as possible values.
+The functions \texttt{e2q} and \texttt{q2e} can be used on source spectra to convert spectral energy irradiance into spectral photon irradiance and vice versa. A second optional argument sets the action with \texttt{"add"} and \texttt{"replace"} as possible values. By default these functions use normal reference semantics.
 
 <<>>=
 e2q(sun.spct, "add")

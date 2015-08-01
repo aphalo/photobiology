@@ -969,7 +969,7 @@ T2A <- function(x, action, byref, ...) UseMethod("T2A")
 #'
 T2A.default <- function(x, action=NULL, byref=FALSE, ...) {
   if (any(x < 0)) {
-    Tfr.zero <- getOption(photobiology.Tfr.zero, default = 1e-10)
+    Tfr.zero <- getOption("photobiology.Tfr.zero", default = 1e-10)
     warning("Replacing zeros by", Tfr.zero)
     x <- ifelse(x <= 0, Tfr.zero, x)
   }

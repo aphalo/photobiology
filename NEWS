@@ -4,6 +4,14 @@ TODO
 Add test cases for chroma_spct and improve tests for the _mspct
 classes.
 
+photobiology 0.8.1
+==================
+
+tag() and untag() by default use copy semantics.
+Spectral objects with zero rows are handled cleanly.
+$<- defined for spectra.
+Fix bugs.
+
 photobiology 0.8.0
 ==================
 
