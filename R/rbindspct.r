@@ -1,7 +1,7 @@
 
 # rbind -------------------------------------------------------------------
 
-#' Makes one spectral object from a list of many
+#' Makes one spectral object from a list or collection of many
 #'
 #' A wrapper on \code{dplyr::rbind_fill} that preserves class and other
 #' attributes of spectral objects.
@@ -95,8 +95,8 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
   # we find the lowest common class
   # and in the same loop we make sure that all spectral data use consistent units
   l.class <- spct_classes()
-  photon.based.input <- any(sapply(l, FUN=is_photon_based))
-  absorbance.based.input <- any(sapply(l, FUN=is_absorbance_based))
+  photon.based.input <- any(sapply(l, FUN = is_photon_based))
+  absorbance.based.input <- any(sapply(l, FUN = is_absorbance_based))
   scaled.input <- sapply(l, FUN = is_scaled)
   normalized.input <- sapply(l, FUN = is_normalized)
   effective.input <- sapply(l, FUN = is_effective)
@@ -154,9 +154,9 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
     temp <- comment(l[[i]])
     comments.found <- comments.found || !is.null(temp)
     if (add.idfactor) {
-      temp <- paste("\n", idfactor , "= ", names.spct[i], ":\n", comment(l[[i]]), sep="")
+      temp <- paste("\n", idfactor , "= ", names.spct[i], ":\n", comment(l[[i]]), sep = "")
     } else {
-      temp <- paste("\n spectrum = ", names.spct[i], ":\n", comment(l[[i]]), sep="")
+      temp <- paste("\n spectrum = ", names.spct[i], ":\n", comment(l[[i]]), sep = "")
     }
     comment.ans <- paste(comment.ans, temp)
   }
@@ -218,7 +218,7 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
       e2q(ans, action = "add", byref = TRUE)
     }
   } else if (l.class == "chroma_spct") {
-    setChromSpct(ans, multiple.wl = length(l))
+    setChromaSpct(ans, multiple.wl = length(l))
   } else if (l.class == "cps_spct") {
     setCpsSpct(ans, multiple.wl = length(l))
   } else if (l.class == "generic_spct") {

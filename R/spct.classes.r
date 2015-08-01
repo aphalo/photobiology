@@ -55,36 +55,38 @@ check.generic_spct <- function(x, byref=TRUE, strict.range = FALSE, multiple.wl 
     x <- dplyr::rename(x, w.length = wl)
   } else if (exists("wavelength", x, mode = "numeric", inherits=FALSE)) {
     x <- dplyr::rename(x, w.length = wavelength)
-  } else if (exists("Wavelength", x, mode = "numeric", inherits=FALSE)) {
+  } else if (exists("Wavelength", x, mode = "numeric", inherits = FALSE)) {
     x <- dplyr::rename(x, w.length = Wavelength)
   }
 
-  if (exists("w.length", x, mode = "numeric", inherits=FALSE)) {
-    if (is.unsorted(x[["w.lengtgh"]], na.rm = TRUE, strictly = TRUE)) {
+  if (exists("w.length", x, mode = "numeric", inherits = FALSE)) {
+    if (nrow(x) && is.unsorted(x[["w.lengtgh"]], na.rm = TRUE, strictly = TRUE)) {
       stop("'w.length' must be sorted in ascending order and have unique values")
     }
   } else {
       stop("No wavelength data found in generic_spct")
   }
 
-  wl.min <- min(x[["w.length"]], na.rm = TRUE)
-  #  wl.max <- max(x$w.length, na.rm = TRUE)
-  if (wl.min == Inf) {
-    warning("No valid 'w.length' values, probably a spectrum of length zero")
-  } else if (wl.min < 99.999 || wl.min > 5e3) {
-    stop("Off-range minimum w.length value ", wl.min, " instead of within 100 nm and 5000 nm")
-  }
-  wl.reps <- with(x, length(w.length) / length(unique(w.length)) )
-  if (wl.reps > 1) {
-    if ((wl.reps - trunc(wl.reps)) < 1e-5) {
-      wl.reps <- trunc(wl.reps)
-      if (with(x, length(w.length)) >= 2 && wl.reps > multiple.wl) {
-        warning("'w.length' values are not unique: ", wl.reps, " copies of each.")
+  if (nrow(x)) {
+    wl.min <- min(x[["w.length"]], na.rm = TRUE)
+    #  wl.max <- max(x$w.length, na.rm = TRUE)
+    if (wl.min == Inf) {
+      warning("No valid 'w.length' values found")
+    } else if ((wl.min < 99.999 || wl.min > 5e3)) {
+      stop("Off-range minimum w.length value ", wl.min, " instead of within 100 nm and 5000 nm")
+    }
+    wl.reps <- with(x, length(w.length) / length(unique(w.length)) )
+    if (wl.reps > 1) {
+      if ((wl.reps - trunc(wl.reps)) < 1e-5) {
+        wl.reps <- trunc(wl.reps)
+        if (with(x, length(w.length)) >= 2 && wl.reps > multiple.wl) {
+          warning("'w.length' values are not unique: ", wl.reps, " copies of each.")
+        }
+      } else {
+        warning("'w.length' values are not all unique with ",
+                round((wl.reps - trunc(wl.reps)) * with(x, length(w.length)), 0) ,
+                " duplicate values.")
       }
-    } else {
-      warning("'w.length' values are not all unique with ",
-              round((wl.reps - trunc(wl.reps)) * with(x, length(w.length)), 0) ,
-              " duplicate values.")
     }
   }
   x
@@ -94,7 +96,7 @@ check.generic_spct <- function(x, byref=TRUE, strict.range = FALSE, multiple.wl 
 #' @export
 check.cps_spct <- function(x, byref=TRUE, strict.range = FALSE, ...) {
 
-  range_check <- function(x, strict.range) {
+  range_check <- function(x) {
     cps.min <- min(x$cps, na.rm = TRUE)
     if (!is.null(strict.range) & (cps.min < -1e-8)) {
       message.text <- paste0("Off-range cps values:", signif(cps.min, 2))
@@ -107,10 +109,12 @@ check.cps_spct <- function(x, byref=TRUE, strict.range = FALSE, ...) {
   }
 
   if (exists("cps", x, mode = "numeric", inherits=FALSE)) {
+    range_check(x)
     return(x)
   } else if (exists("counts.per.second", x, mode = "numeric", inherits=FALSE)) {
     x <- dplyr::rename(x, cps = counts.per.second)
     warning("Found variable 'counts.per.second', renamed it to 'cps'")
+    range_check(x)
     return(x)
   } else {
     warning("No counts per second data found in cps_spct")
@@ -160,19 +164,19 @@ check.filter_spct <- function(x, byref=TRUE, strict.range = FALSE, multiple.wl =
     setTfrType(x, "total")
     warning("Missing Tfr.type attribute replaced by 'total'")
   }
-if (is.null(getTfrType(x))) {
-  setTfrType(x, "total")
-  warning("Missing Tfr.type attribute replaced by 'total'")
-}
-# check and replace 'other' quantity names
-  if (exists("transmittance", x, mode = "numeric", inherits=FALSE)) {
+  if (is.null(getTfrType(x))) {
+    setTfrType(x, "total")
+    warning("Missing Tfr.type attribute replaced by 'total'")
+  }
+  # check and replace 'other' quantity names
+  if (exists("transmittance", x, mode = "numeric", inherits = FALSE)) {
     x <- dplyr::rename(x, Tpc = transmittance)
     warning("Found variable 'transmittance', I am assuming it is expressed as percent")
   }
-  if (exists("absorbance", x, mode = "numeric", inherits=FALSE)) {
+  if (exists("absorbance", x, mode = "numeric", inherits = FALSE)) {
     x <- dplyr::rename(x, A = absorbance)
     warning("Found variable 'absorbance', I am assuming it is in log10-based absorbance units")
-  } else if (exists("Absorbance", x, mode = "numeric", inherits=FALSE)) {
+  } else if (exists("Absorbance", x, mode = "numeric", inherits = FALSE)) {
     x <- dplyr::rename(x, A = Absorbance)
     warning("Found variable 'Absorbance', I am assuming it is in log10-based absorbance units")
   }
@@ -1483,7 +1487,7 @@ getSpctVersion <- function(x) {
 #' @keywords internal
 #'
 checkSpctVersion <- function(x) {
-  version <- getObjectVersion(x)
+  version <- getSpctVersion(x)
   stopifnot(!is.na(version))
   if (version < 1L) {
     warning("The object '", as.character(substitute(x)),

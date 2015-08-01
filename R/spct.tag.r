@@ -21,7 +21,7 @@ tag <- function(x, ...) UseMethod("tag")
 #' @export
 #'
 tag.default <- function(x, ...) {
-  warning("'tag' is not defined for objects of class ", class(spct)[1])
+  warning("'tag' is not defined for objects of class ", class(x)[1])
   return(x)
 }
 
@@ -41,24 +41,36 @@ tag.default <- function(x, ...) {
 #'   reference} or \emph{by copy} of \code{x}
 #' @export
 #'
+#' @note \code{NULL} as \code{w.band} argument does not add any new tags,
+#'   instead it removes existing tags if present. \code{NA}, the default, as
+#'   \code{w.band} argument removes existing waveband tags if present and
+#'   sets the \code{wl.color} variable. If a waveband object or a list of
+#'   wavebands is supplied as argument then tagging is based on them, and
+#'   \code{wl.color} is also set.
+#'
+#' @examples
+#'
+#' tag(sun.spct)
+#' tag(sun.spct, list(A = waveband(c(300,3005))))
+#'
 tag.generic_spct <- function(x,
-                             w.band=NULL,
-                             wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
-                             use.hinges=TRUE,
-                             short.names=TRUE,
-                             byref=TRUE, ...) {
+                             w.band = NA,
+                             wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
+                             use.hinges = TRUE,
+                             short.names = TRUE,
+                             byref = FALSE, ...) {
   name <- substitute(x)
   if (is_tagged(x)) {
     warning("Overwriting old tags in spectrum")
-    untag(x)
+    untag(x, byref = TRUE)
   }
-#   # we add a waveband for the whole spectrum
-#   if (is.null(w.band)) {
-#     w.band <- waveband(range(x))
-#   }
+ # we add a waveband for the whole spectrum
+  if (is.null(w.band)) {
+     return(x)
+  }
   if (!is.null(w.band) && is.na(w.band[1])) {
     x[["wl.color"]] <- w_length2rgb(x[["w.length"]])
-    tag.data <- list(wl.color=TRUE)
+    tag.data <- list(wl.color = TRUE)
     attr(x, "spct.tags") <- tag.data
     return(x)
   }
@@ -70,7 +82,7 @@ tag.generic_spct <- function(x,
   }
   # we delete or trim the wavebands that are not fully within the
   # spectral data wavelngth range
-  w.band <- trim_waveband(w.band=w.band, range=x, trim=wb.trim)
+  w.band <- trim_waveband(w.band = w.band, range = x, trim = wb.trim)
   # we check if the list elements are named, if not we set a flag
   # and an empty vector that will be later filled in with data from
   # the waveband definitions.
@@ -88,7 +100,7 @@ tag.generic_spct <- function(x,
   # spectral resolution data, and speed up the calculations
   # a lot in such cases
   if (is.null(use.hinges)) {
-    use.hinges <- auto_hinges(spct)
+    use.hinges <- auto_hinges(x)
   }
   # we collect all hinges and insert them in one go
   # this may alter a little the returned values
@@ -96,7 +108,7 @@ tag.generic_spct <- function(x,
   if (use.hinges) {
     all.hinges <- NULL
     for (wb in w.band) {
-      if (!is.null(wb$hinges) & length(wb$hinges)>0) {
+      if (!is.null(wb$hinges) & length(wb$hinges) > 0) {
         all.hinges <- c(all.hinges, wb[["hinges"]])
       }
     }
@@ -114,8 +126,8 @@ tag.generic_spct <- function(x,
     if (wbs.name[i] == "") {
       if (short.names) {
         name.temp <- labels(wb)[["label"]]
-        wbs.name[i] <- ifelse(grepl("^range.", name.temp, ignore.case=TRUE),
-                              paste("wb", i, sep=""),
+        wbs.name[i] <- ifelse(grepl("^range.", name.temp, ignore.case = TRUE),
+                              paste("wb", i, sep = ""),
                               name.temp)
       } else {
         wbs.name[i] <- labels(wb)[["name"]]
@@ -133,15 +145,15 @@ tag.generic_spct <- function(x,
     x[selector, "wb.f"] <- wbs.name[i]
   }
   x[["wl.color"]] <-  w_length2rgb(x[["w.length"]])
-  x[["wb.f"]] <- factor(x[["wb.f"]], levels=wbs.name)
-  tag.data <- list(time.unit=getTimeUnit(x),
-                   wb.key.name="Bands",
-                   wl.color=TRUE,
-                   wb.color=TRUE,
+  x[["wb.f"]] <- factor(x[["wb.f"]], levels = wbs.name)
+  tag.data <- list(time.unit = getTimeUnit(x),
+                   wb.key.name = "Bands",
+                   wl.color = TRUE,
+                   wb.color = TRUE,
                    wb.num = n,
-                   wb.colors=wbs.rgb[1:n],
-                   wb.names=wbs.name[1:n],
-                   wb.list=w.band)
+                   wb.colors = wbs.rgb[1:n],
+                   wb.names = wbs.name[1:n],
+                   wb.list = w.band)
   attr(x, "spct.tags") <- tag.data
   # to work by reference we need to assign the new data frame to the old one
   if (byref & is.name(name)) {
@@ -213,7 +225,7 @@ wb2spct <- function(w.band) {
 wb2tagged_spct <-
   function(w.band, use.hinges = TRUE, short.names = TRUE, ...) {
   new.spct <- wb2spct(w.band)
-  tag(new.spct, w.band, use.hinges, short.names, byref=TRUE)
+  tag(new.spct, w.band, use.hinges, short.names, byref = TRUE)
   new.spct[["y"]] <- 0
   return(new.spct)
 }
@@ -256,8 +268,8 @@ wb2rect_spct <- function(w.band, short.names = TRUE) {
     if (wbs.name[i] == "") {
       if (short.names) {
         name.temp <- labels(wb)[["label"]]
-        wbs.name[i] <- ifelse(grepl("^range.", name.temp, ignore.case=TRUE),
-                              paste("wb", i, sep=""),
+        wbs.name[i] <- ifelse(grepl("^range.", name.temp, ignore.case = TRUE),
+                              paste("wb", i, sep = ""),
                               name.temp)
       } else {
         wbs.name[i] <- labels(wb)[["name"]]
@@ -271,18 +283,18 @@ wb2rect_spct <- function(w.band, short.names = TRUE) {
   new.spct <- dplyr::data_frame(w.length = wbs.wl.mid,
                                 s.e.irrad = 0, s.q.irrad = 0, Tfr = 0, Rfl = 0, s.e.response = 0,
                                 wl.color = w_length2rgb(wbs.wl.mid),
-                                wb.f = factor(wbs.name, levels=wbs.name),
+                                wb.f = factor(wbs.name, levels = wbs.name),
                                 wl.high = wbs.wl.high, wl.low = wbs.wl.low,
                                 y = 0)
   setGenericSpct(new.spct)
-  tag.data <- list(time.unit="none",
-                   wb.key.name="Bands",
-                   wl.color=TRUE,
-                   wb.color=TRUE,
+  tag.data <- list(time.unit = "none",
+                   wb.key.name = "Bands",
+                   wl.color = TRUE,
+                   wb.color = TRUE,
                    wb.num = wbs.number,
-                   wb.colors=wbs.rgb,
-                   wb.names=wbs.name,
-                   wb.list=w.band)
+                   wb.colors = wbs.rgb,
+                   wb.names = wbs.name,
+                   wb.list = w.band)
   attr(new.spct, "spct.tags") <- tag.data
 
   return(new.spct)
@@ -326,7 +338,7 @@ untag.default <- function(x, ...) {
 #' @export
 #'
 untag.generic_spct <- function(x,
-                               byref=TRUE, ...) {
+                               byref = FALSE, ...) {
   if (!byref) {
     x <- x
     name <- NA

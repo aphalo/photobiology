@@ -104,7 +104,6 @@ unlink("irradiance.out")
 
 ### 2015
 
-summaryRprof("irradiance.out")
 Rprof("irradiance.out")
 for (i in 1:5000){
 e_irrad(sun.spct, CIE(), use.hinges = FALSE, wb.trim = TRUE, use.cached.mult = FALSE)
@@ -112,16 +111,57 @@ e_irrad(sun.spct, CIE(), use.hinges = FALSE, wb.trim = TRUE, use.cached.mult = F
 Rprof(NULL)
 summaryRprof("irradiance.out")
 
+Rprof("irradiance.out")
+for (i in 1:5000){
+  e_irrad(sun.spct, CIE())
+}
+Rprof(NULL)
+summaryRprof("irradiance.out")
+
 
 microbenchmark(q_irrad(sun.spct, Plant_bands()))
 
-test.mspct <- source_mspct(list(A = sun.spct, B = sun.daily.spct, C= sun.daily.spct, D = sun.daily.spct))
+test.mspct <- source_mspct(list(A = sun.spct, B = sun.daily.spct, C = sun.daily.spct, D = sun.daily.spct))
 
 microbenchmark(q_irrad(test.mspct, Plant_bands(),
+                       use.hinges = FALSE, wb.trim = TRUE, use.cached.mult = TRUE))
+
+microbenchmark(q_irrad(test.mspct, Plant_bands(),
+                       use.hinges = TRUE, wb.trim = TRUE, use.cached.mult = TRUE))
+
+microbenchmark(q_irrad(sun.spct, Plant_bands(),
                        use.hinges = FALSE, wb.trim = TRUE, use.cached.mult = TRUE))
 
 microbenchmark(q_irrad(sun.spct, Plant_bands(),
                        use.hinges = TRUE, wb.trim = TRUE, use.cached.mult = TRUE))
 
 microbenchmark(photon_irradiance(sun.spct$w.length, sun.spct$s.e.irrad, PAR(),
+                                 use.hinges = FALSE, use.cached.mult = TRUE))
+
+microbenchmark(photon_irradiance(sun.spct$w.length, sun.spct$s.e.irrad, PAR(),
                                  use.hinges = TRUE, use.cached.mult = TRUE))
+
+options(photobiology.use.hinges = TRUE)
+
+microbenchmark(photon_irradiance(sun.spct$w.length, sun.spct$s.e.irrad, PAR()))
+microbenchmark(photon_irradiance(sun.spct$w.length, sun.spct$s.e.irrad, CIE()))
+microbenchmark(photon_irradiance(sun.spct$w.length, sun.spct$s.e.irrad, Plant_bands()))
+microbenchmark(q_irrad(sun.spct, PAR()))
+microbenchmark(q_irrad(sun.spct, CIE()))
+microbenchmark(q_irrad(sun.spct, Plant_bands()))
+microbenchmark(q_irrad(test.mspct, PAR()))
+microbenchmark(q_irrad(test.mspct, CIE()))
+microbenchmark(q_irrad(test.mspct, Plant_bands()))
+
+options(photobiology.use.hinges = FALSE)
+
+microbenchmark(photon_irradiance(sun.spct$w.length, sun.spct$s.e.irrad, PAR()))
+microbenchmark(photon_irradiance(sun.spct$w.length, sun.spct$s.e.irrad, CIE()))
+microbenchmark(photon_irradiance(sun.spct$w.length, sun.spct$s.e.irrad, Plant_bands()))
+microbenchmark(q_irrad(sun.spct, PAR()))
+microbenchmark(q_irrad(sun.spct, CIE()))
+microbenchmark(q_irrad(sun.spct, Plant_bands()))
+microbenchmark(q_irrad(test.mspct, PAR()))
+microbenchmark(q_irrad(test.mspct, CIE()))
+microbenchmark(q_irrad(test.mspct, Plant_bands()))
+
