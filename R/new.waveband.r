@@ -221,3 +221,14 @@ split_bands <- function(x, list.names=NULL, short.names=is.null(list.names), len
 is.waveband <- function(x) {
   inherits(x, "waveband")
 }
+
+### I need to add a check.waveband() method and use it in the constructor and maybe also
+### add no-functional replacement operators.
+###
+
+check.waveband <- function(x, byref = FALSE, strict.range = FALSE, ...) {
+  stopifnot(x[["low"]] < x[["high"]])
+  stopifnot(x[["weight"]] == "none" && !(is.null(x[["SWF.e.fun"]] && is.null(x[["SWF.q.fun"]]))))
+  stopifnot(x[["weight"]] != "none" && (is.null(x[["SWF.e.fun"]] || is.null(x[["SWF.q.fun"]]))))
+  x
+}
