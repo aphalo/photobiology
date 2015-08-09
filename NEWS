@@ -4,6 +4,12 @@ TODO
 Add test cases for chroma_spct and improve tests for the _mspct
 classes.
 
+photobiology 0.8.2
+==================
+
+Fix bugs in trim_spct() and reduce triming rounding protection
+in operators for spectra.
+
 photobiology 0.8.1
 ==================
 

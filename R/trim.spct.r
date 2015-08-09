@@ -63,13 +63,9 @@ trim_spct <- function(spct, range=NULL, low.limit=NULL, high.limit=NULL,
       high.limit <- ifelse(!is.null(high.limit), min(max(range, na.rm = TRUE), high.limit), max(range, na.rm = TRUE))
     }
   }
-  if (is.null(low.limit)) {
-    low.limit <- min(spct, na.rm=TRUE)
-  }
-  if (is.null(high.limit)) {
-    high.limit <- max(spct, na.rm=TRUE)
-  }
-  if (high.limit - low.limit < 1e-7) {
+  trim.low <- !is.null(low.limit)
+  trim.high <- !is.null(high.limit)
+  if (trim.low && trim.high && high.limit - low.limit < 1e-7) {
     warning("When trimming 'range' must be a finite wavelength interval")
     return(NA) # this should be replaced with an empty spct object
   }
@@ -81,11 +77,11 @@ trim_spct <- function(spct, range=NULL, low.limit=NULL, high.limit=NULL,
   Rfr.type.spct <- getRfrType(spct)
   # check whether we should expand the low end
   low.end <- min(spct, na.rm=TRUE)
-  if (low.end > low.limit) {
+  if (trim.low && low.end > low.limit) {
     if (!is.null(fill)) {
       # expand short tail
-      low.tail.length <- low.end - low.limit
-      low.tail.w.length <- seq(from = low.limit, to = low.end - 1, length=low.tail.length)
+      low.tail.length <-  trunc(low.end - low.limit) + 2
+      low.tail.w.length <- seq(from = low.limit, to = low.end - 1e-12, length =low.tail.length)
       spct.top <- dplyr::data_frame(w.length = low.tail.w.length)
       for (data.col in names.data) {
         spct.top[[data.col]] <- fill
@@ -95,23 +91,20 @@ trim_spct <- function(spct, range=NULL, low.limit=NULL, high.limit=NULL,
       setGenericSpct(spct)
       low.end <- min(spct)
     } else {
-      if (verbose) {
-        # give a warning only if difference is > 0.01 nm
         if (verbose && (low.end - low.limit) > 0.01) {
           warning("Not trimming short end as low.limit is outside spectral data range.")
         }
-      }
-      low.limit <- low.end
+      trim.low <- FALSE
     }
   }
 
   # check whether we should expand the high end
   high.end <- max(spct, na.rm=TRUE)
-  if (high.end < high.limit) {
+  if (trim.high && high.end < high.limit) {
     if (!is.null(fill)) {
       # expand short tail
-      high.tail.length <- high.limit - high.end
-      high.tail.w.length <- seq(from = high.end + 1, to = high.limit, length = high.tail.length)
+      high.tail.length <- trunc(high.limit - high.end) + 2
+      high.tail.w.length <- seq(from = high.end + 1e-12, to = high.limit, length = high.tail.length)
       spct.bottom <- dplyr::data_frame(w.length = high.tail.w.length)
       for (data.col in names.data) {
         spct.bottom[[data.col]] <- fill
@@ -125,17 +118,30 @@ trim_spct <- function(spct, range=NULL, low.limit=NULL, high.limit=NULL,
       if (verbose && (high.limit - high.end) > 0.01) {
         warning("Not trimming long end as high.limit is outside spectral data range.")
       }
-      high.limit <- high.end
+     trim.high <- FALSE
     }
   }
-  trim.range <- c(low.limit, high.limit)
 
   # insert hinges
   if (use.hinges) {
-    hinges <- c(low.limit - 1e-12, low.limit, high.limit - 1e-12, high.limit)
+    hinges <- NULL
+    if (trim.low) {
+      hinges <- c(hinges, low.limit - 1e-12, low.limit)
+    }
+    if (trim.high) {
+      hinges <- c(hinges, high.limit - 1e-12, high.limit)
+    }
     spct <- insert_spct_hinges(spct, hinges)
   }
-  within.selector <- with(spct, w.length >= trim.range[1] & w.length < trim.range[2])
+  if (trim.low && trim.high){
+    within.selector <- with(spct, w.length >= low.limit & w.length < high.limit)
+  } else if (trim.low) {
+    within.selector <- with(spct, w.length >= low.limit)
+  } else if (trim.high) {
+    within.selector <- with(spct, w.length < high.limit)
+  } else {
+    within.selector <- TRUE
+  }
   if (is.null(fill)) {
     spct <- spct[within.selector, ]
   } else {

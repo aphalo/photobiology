@@ -32,7 +32,7 @@ insert_spct_hinges <- function(spct, hinges=NULL, byref=FALSE) {
     warning("Only objects derived from 'generic_spct' are supported")
     return(spct)
   }
-  if (is.null(hinges)) {
+  if (is.null(hinges) || length(hinges) == 0) {
     return(spct)
   }
   hinges <- hinges[hinges > min(spct) & hinges < max(spct)]

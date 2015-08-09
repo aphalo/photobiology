@@ -62,7 +62,7 @@ oper.e.generic_spct <- function(e1, e2, oper) {
       } else {
         stop("Failed assertion! BUG IN PACKAGE CODE")
       }
-      e1 <- trim_spct(e1, low.limit=min(e2), high.limit=max(e2) - 1e-9, verbose=FALSE,
+      e1 <- trim_spct(e1, low.limit=min(e2), high.limit=max(e2) - 1e-12, verbose=FALSE,
                       use.hinges = getOption("photobiology.use.hinges", default=NULL))
       mult <-
         calc_multipliers(w.length=e1$w.length, w.band=e2, unit.out="energy",
@@ -397,7 +397,7 @@ oper.q.generic_spct <- function(e1, e2, oper) {
       } else {
         stop("Failed assertion! BUG IN PACKAGE CODE")
       }
-      e1 <- trim_spct(e1, low.limit = min(e2), high.limit = max(e2) - 1e-9, verbose=FALSE,
+      e1 <- trim_spct(e1, low.limit = min(e2), high.limit = max(e2) - 1e-12, verbose=FALSE,
                       use.hinges = getOption("photobiology.use.hinges", default=NULL))
       mult <- calc_multipliers(w.length=e1$w.length, w.band=e2, unit.out="photon",
                                unit.in="photon",

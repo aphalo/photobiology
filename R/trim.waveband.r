@@ -50,7 +50,7 @@ trim_waveband <- function(w.band,
     if (min(wb) >= high.limit || max(wb) <= low.limit) {
       next
     }
-    if (min(wb) >= low.limit && max(wb) <= high.limit) {
+    if (min(wb) >= (low.limit - 5e-12) && max(wb) <= (high.limit + 5e-12)) {
       i <- i + 1L
       w.band.out[i] <- list(wb)
     } else if (trim) {

@@ -1,8 +1,8 @@
 Package: photobiology
 Type: Package
 Title: Light and Radiation Quantification for Photobiology Research
-Version: 0.8.1
-Date: 2015-08-01
+Version: 0.8.2
+Date: 2015-08-08
 Author: Pedro J. Aphalo <pedro.aphalo@helsinki.fi>
 Maintainer: Pedro J. Aphalo <pedro.aphalo@helsinki.fi>
 Description: Calculation of effective (weighted) and unweighted
