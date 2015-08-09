@@ -43,7 +43,7 @@ check.default <- function(x, byref=FALSE, strict.range = FALSE, ...) {
 #' @param multiple.wl numeric Maximum number of repeated w.length entries with same value.
 #'
 #' @export
-check.generic_spct <- function(x, byref=TRUE, strict.range = FALSE, multiple.wl = 1L, ...) {
+check.generic_spct <- function(x, byref=TRUE, strict.range = FALSE, multiple.wl = getMultipleWl(x), ...) {
   # fix old class attributes
   class.x <- class_spct(x)
   if (!("tbl_df") %in% class(x)) {
@@ -94,7 +94,7 @@ check.generic_spct <- function(x, byref=TRUE, strict.range = FALSE, multiple.wl 
 
 #' @describeIn check Specialization for cps_spct.
 #' @export
-check.cps_spct <- function(x, byref=TRUE, strict.range = FALSE, ...) {
+check.cps_spct <- function(x, byref=TRUE, strict.range = FALSE, multiple.wl = getMultipleWl(x), ...) {
 
   range_check <- function(x) {
     cps.min <- min(x$cps, na.rm = TRUE)
@@ -108,7 +108,7 @@ check.cps_spct <- function(x, byref=TRUE, strict.range = FALSE, ...) {
     }
   }
 
-  x <- check.generic_spct(x)
+  x <- check.generic_spct(x, multiple.wl = multiple.wl)
 
   if (exists("cps", x, mode = "numeric", inherits=FALSE)) {
     range_check(x)
@@ -127,7 +127,7 @@ check.cps_spct <- function(x, byref=TRUE, strict.range = FALSE, ...) {
 
 #' @describeIn check Specialization for filter_spct.
 #' @export
-check.filter_spct <- function(x, byref=TRUE, strict.range = FALSE, multiple.wl = 1L, ...) {
+check.filter_spct <- function(x, byref=TRUE, strict.range = FALSE, multiple.wl = getMultipleWl(x), ...) {
 
   range_check <- function(x, strict.range) {
     if (!all(is.na(x[["Tfr"]]))) {
@@ -145,7 +145,7 @@ check.filter_spct <- function(x, byref=TRUE, strict.range = FALSE, multiple.wl =
     }
   }
 
-  x <- check.generic_spct(x)
+  x <- check.generic_spct(x, multiple.wl = multiple.wl)
 
   range_check_A <- function(x, strict.range) {
     if (!all(is.na(x[["A"]]))) {
@@ -202,7 +202,7 @@ check.filter_spct <- function(x, byref=TRUE, strict.range = FALSE, multiple.wl =
 
 #' @describeIn check Specialization for reflector_spct.
 #' @export
-check.reflector_spct <- function(x, byref = TRUE, strict.range = FALSE, ...) {
+check.reflector_spct <- function(x, byref = TRUE, strict.range = FALSE, multiple.wl = getMultipleWl(x), ...) {
 
   range_check <- function(x, strict.range) {
     if (!all(is.na(x$Rfr))) {
@@ -220,7 +220,7 @@ check.reflector_spct <- function(x, byref = TRUE, strict.range = FALSE, ...) {
     }
   }
 
-  x <- check.generic_spct(x)
+  x <- check.generic_spct(x, multiple.wl = multiple.wl)
 
   if (is.null(getRfrType(x))) {
     setRfrType(x, "total")
@@ -245,7 +245,7 @@ check.reflector_spct <- function(x, byref = TRUE, strict.range = FALSE, ...) {
 
 #' @describeIn check Specialization for object_spct.
 #' @export
-check.object_spct <- function(x, byref=TRUE, strict.range = FALSE, multiple.wl = 1L, ...) {
+check.object_spct <- function(x, byref=TRUE, strict.range = FALSE, multiple.wl = getMultipleWl(x), ...) {
 
   range_check_Tfr <- function(x, strict.range) {
     if (!all(is.na(x[["Tfr"]]))) {
@@ -263,7 +263,7 @@ check.object_spct <- function(x, byref=TRUE, strict.range = FALSE, multiple.wl =
     }
   }
 
-  x <- check.generic_spct(x)
+  x <- check.generic_spct(x, multiple.wl = multiple.wl)
 
   range_check_Rfr <- function(x, strict.range) {
     if (!all(is.na(x$Rfr))) {
@@ -326,9 +326,9 @@ check.object_spct <- function(x, byref=TRUE, strict.range = FALSE, multiple.wl =
 
 #' @describeIn check Specialization for response_spct.
 #' @export
-check.response_spct <- function(x, byref=TRUE, strict.range = FALSE, multiple.wl = 1L, ...) {
+check.response_spct <- function(x, byref=TRUE, strict.range = FALSE, multiple.wl = getMultipleWl(x), ...) {
 
-  x <- check.generic_spct(x)
+  x <- check.generic_spct(x, multiple.wl = multiple.wl)
 
   x <- checkTimeUnit(x)
 
@@ -355,7 +355,7 @@ check.response_spct <- function(x, byref=TRUE, strict.range = FALSE, multiple.wl
 
 #' @describeIn check Specialization for source_spct.
 #' @export
-check.source_spct <- function(x, byref=TRUE, strict.range = FALSE, multiple.wl = 1L, ...) {
+check.source_spct <- function(x, byref=TRUE, strict.range = FALSE, multiple.wl = getMultipleWl(x), ...) {
 
   range_check <- function(x, strict.range) {
     if (is.null(strict.range)) {
@@ -386,7 +386,7 @@ check.source_spct <- function(x, byref=TRUE, strict.range = FALSE, multiple.wl =
     }
   }
 
-  x <- check.generic_spct(x)
+  x <- check.generic_spct(x, multiple.wl = multiple.wl)
   x <- checkTimeUnit(x)
 
   if (is.null(is_effective(x))) {
@@ -412,8 +412,11 @@ check.source_spct <- function(x, byref=TRUE, strict.range = FALSE, multiple.wl =
 
 #' @describeIn check Specialization for chroma_spct.
 #' @export
-check.chroma_spct <- function(x, byref=TRUE, strict.range = FALSE, multiple.wl = 1L, ...) {
+check.chroma_spct <- function(x, byref=TRUE, strict.range = FALSE, multiple.wl = getMultipleWl(x), ...) {
   names_x <- names(x)
+
+  x <- check.generic_spct(x, multiple.wl = multiple.wl)
+
   idxs <- grep("[XYZ]", names_x)
   names(x)[idxs] <- tolower(names_x[idxs])
   if (!exists("x", x, mode="numeric", inherits=FALSE)) {
@@ -486,8 +489,9 @@ setGenericSpct <- function(x, multiple.wl = 1L) {
   if (!is.generic_spct(x)){
     class(x) <- c("generic_spct", class(x))
     attr(x, "spct.tags") <- NA
+    setMultipleWl(x, multiple.wl = multiple.wl)
   }
-  x <- check(x, multiple.wl = multiple.wl)
+  x <- check(x)
   attr(x, "spct.version") <- 2
   if (is.name(name)) {
     name <- as.character(name)
@@ -636,7 +640,6 @@ setObjectSpct <- function(x,
   setTfrType(x, Tfr.type)
   setRfrType(x, Rfr.type)
   x <- check(x, strict.range = strict.range)
-  #  setkey_spct(x, w.length)
   if (is.name(name)) {
     name <- as.character(name)
     assign(name, x, parent.frame(), inherits = TRUE)
@@ -1041,7 +1044,7 @@ as.chroma_spct <- function(x) {
 
 #' Set the "time.unit" attribute of an existing source_spct object
 #'
-#' Funtion to set by reference the "time.unit" attribute
+#' Function to set by reference the "time.unit" attribute
 #'
 #' @param x a source_spct object
 #' @param time.unit a character string, either "second", "hour", "day",
@@ -1102,7 +1105,7 @@ setTimeUnit <- function(x,
 
 #' Get the "time.unit" attribute of an existing source_spct object
 #'
-#' Funtion to read the "time.unit" attribute
+#' Function to read the "time.unit" attribute
 #'
 #' @param x a source_spct object
 #' @param force.duration logical If TRUE a lubridate::duration is returned even
@@ -1137,7 +1140,7 @@ getTimeUnit <- function(x, force.duration = FALSE) {
 
 #' Convert the "time.unit" attribute of an existing source_spct object
 #'
-#' Funtion to set the "time.unit" attribute and simultaneously rescaling the
+#' Function to set the "time.unit" attribute and simultaneously rescaling the
 #' spectral data to be expressed in the new time unit. The change is done
 #' by reference ('in place')
 #'
@@ -1187,7 +1190,7 @@ convertTimeUnit <- function(x, time.unit = NULL, byref = FALSE) {
 
 #' Check the "time.unit" attribute of an existing source_spct object
 #'
-#' Funtion to read the "time.unit" attribute
+#' Function to read the "time.unit" attribute
 #'
 #' @param x a source_spct object
 #'
@@ -1244,7 +1247,7 @@ char2duration <- function(time.unit) {
 
 #' Set the "bswf.used" attribute
 #'
-#' Funtion to set by reference the "time.unit" attribute of an existing
+#' Function to set by reference the "time.unit" attribute of an existing
 #' source_spct object
 #'
 #' @param x a source_spct object
@@ -1288,7 +1291,7 @@ setBSWFUsed <- function(x, bswf.used=c("none", "unknown")) {
 
 #' Get the "bswf.used" attribute
 #'
-#' Funtion to read the "time.unit" attribute of an existing source_spct object
+#' Function to read the "time.unit" attribute of an existing source_spct object
 #'
 #' @param x a source_spct object
 #'
@@ -1319,7 +1322,7 @@ getBSWFUsed <- function(x) {
 
 #' Set the "Tfr.type" attribute
 #'
-#' Funtion to set by reference the "Tfr.type" attribute of an existing
+#' Function to set by reference the "Tfr.type" attribute of an existing
 #' filter_spct or object_spct object
 #'
 #' @param x a filter_spct or an object_spct object
@@ -1360,7 +1363,7 @@ setTfrType <- function(x, Tfr.type=c("total", "internal")) {
 
 #' Get the "Tfr.type" attribute
 #'
-#' Funtion to read the "Tfr.type" attribute of an existing filter_spct or
+#' Function to read the "Tfr.type" attribute of an existing filter_spct or
 #' object_spct object.
 #'
 #' @param x a filter_spct or object_spct object
@@ -1390,7 +1393,7 @@ getTfrType <- function(x) {
 
 #' Set the "Rfr.type" attribute
 #'
-#' Funtion to set by reference the "Rfr.type" attribute  of an existing
+#' Function to set by reference the "Rfr.type" attribute  of an existing
 #' reflector_spct or object_spct object.
 #'
 #' @param x a reflector_spct or an object_spct object
@@ -1431,7 +1434,7 @@ setRfrType <- function(x, Rfr.type=c("total", "specular")) {
 
 #' Get the "Rfr.type" attribute
 #'
-#' Funtion to read the "Rfr.type" attribute of an existing reflector_spct
+#' Function to read the "Rfr.type" attribute of an existing reflector_spct
 #' object.
 #'
 #' @param x a source_spct object
@@ -1458,7 +1461,7 @@ getRfrType <- function(x) {
 
 #' Get the "spct.version" attribute
 #'
-#' Funtion to read the "spct.version" attribute of an existing generic_spct
+#' Function to read the "spct.version" attribute of an existing generic_spct
 #' object.
 #'
 #' @param x a generic_spct object
@@ -1485,7 +1488,7 @@ getSpctVersion <- function(x) {
 
 #' Check that the "spct.version" attribute is set
 #'
-#' Funtion to check the "spct.version" attribute of an existing generic_spct
+#' Function to check the "spct.version" attribute of an existing generic_spct
 #' object.
 #'
 #' @param x a generic_spct object
@@ -1505,3 +1508,70 @@ checkSpctVersion <- function(x) {
             "' was created in a version (< 0.7.0) or has become corrupted")
   }
 }
+
+
+# multiple wl -------------------------------------------------------------
+
+#' Set the "multiple.wl" attribute
+#'
+#' Function to set by reference the "multiple.wl" attribute  of an existing
+#' generic_spct or an object of a class derived from generic_spct.
+#'
+#' @param x a generic_spct object
+#' @param multiple.wl numeric >= 1 If \code{multiple.wl} is \code{NULL}, the
+#'   default, the attribute is not modified if it is already present and valid,
+#'   and set to 1 otherwise.
+#'
+#' @return x
+#'
+#' @note if x is not a generic_spct or an object of a class derived from
+#'   generic_spct, x is not modified. If \code{multiple.wl}
+#'
+#' @export
+#' @family multiple.wl attribute functions
+#'
+setMultipleWl <- function(x, multiple.wl = NULL) {
+  stopifnot(is.any_spct(x))
+  name <- substitute(x)
+  if (is.null(multiple.wl)) {
+    multiple.wl <- getMultipleWl(x)
+  } else {
+    multiple.wl <- trunc(multiple.wl)
+    stopifnot(multiple.wl > 0)
+  }
+  attr(x, "multiple.wl") <- multiple.wl
+  if (is.name(name)) {
+    name <- as.character(name)
+    assign(name, x, parent.frame(), inherits = TRUE)
+  }
+  invisible(x)
+}
+
+#' Get the "multiple.wl" attribute
+#'
+#' Function to read the "Tfr.type" attribute of an existing filter_spct or
+#' object_spct object.
+#'
+#' @param x a generic_spct object
+#'
+#' @return integer
+#'
+#' @note If x is not a \code{generic_spct} or an object of a derived class
+#'   \code{NA} is returned.
+#'
+#' @export
+#' @family multiple.wl attribute functions
+#'
+getMultipleWl <- function(x) {
+  if (is.any_spct(x)) {
+    multiple.wl <- attr(x, "multiple.wl", exact = TRUE)
+    if (is.null(multiple.wl) || is.na(multiple.wl) || !is.numeric(multiple.wl)) {
+      # need to handle objects created with old versions
+      multiple.wl <- 1
+    }
+    return(multiple.wl)
+  } else {
+    return(NA)
+  }
+}
+

@@ -303,7 +303,7 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
     }
     if (is.data.frame(xx)) {
       if ("w.length" %in% names(xx)) {
-        setGenericSpct(xx)
+        setGenericSpct(xx, multiple.wl = getMultipleWl(x))
         setNormalized(xx, getNormalized(x))
         setScaled(xx, getScaled(x))
         comment <- comment(x)
@@ -329,7 +329,7 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
     }
     if (is.data.frame(xx)) {
       if ("w.length" %in% names(xx)) {
-        setCpsSpct(xx)
+        setCpsSpct(xx, multiple.wl = getMultipleWl(x))
         setNormalized(xx, getNormalized(x))
         setScaled(xx, getScaled(x))
         comment <- comment(x)
@@ -358,7 +358,7 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
         time.unit <- getTimeUnit(x)
         bswf.used <- getBSWFUsed(x)
         setSourceSpct(x = xx, time.unit = time.unit, bswf.used = bswf.used,
-                      multiple.wl = Inf, strict.range = NULL)
+                      multiple.wl = getMultipleWl(x), strict.range = NULL)
         setNormalized(xx, getNormalized(x))
         setScaled(xx, getScaled(x))
         comment <- comment(x)
@@ -387,7 +387,7 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
       if ("w.length" %in% names(xx)) {
         time.unit <- getTimeUnit(x)
         setResponseSpct(x = xx, time.unit = time.unit,
-                        multiple.wl = Inf)
+                        multiple.wl = getMultipleWl(x))
         setNormalized(xx, getNormalized(x))
         setScaled(xx, getScaled(x))
         comment <- comment(x)
@@ -415,7 +415,7 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
       if ("w.length" %in% names(xx)) {
         Tfr.type <- getTfrType(x)
         setFilterSpct(x = xx, Tfr.type = Tfr.type,
-                      multiple.wl = Inf, strict.range = NULL)
+                      multiple.wl = getMultipleWl(x), strict.range = NULL)
         setNormalized(xx, getNormalized(x))
         setScaled(xx, getScaled(x))
         comment <- comment(x)
@@ -443,7 +443,7 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
       if ("w.length" %in% names(xx)) {
         Rfr.type <- getRfrType(x)
         setReflectorSpct(x = xx, Rfr.type = Rfr.type,
-                         multiple.wl = Inf, strict.range = NULL)
+                         multiple.wl = getMultipleWl(x), strict.range = NULL)
         setNormalized(xx, getNormalized(x))
         setScaled(xx, getScaled(x))
         comment <- comment(x)
@@ -472,7 +472,7 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
         Tfr.type <- getTfrType(x)
         Rfr.type <- getRfrType(x)
         setObjectSpct(x = xx, Tfr.type = Tfr.type, Rfr.type = Rfr.type,
-                      multiple.wl = Inf, strict.range = NULL)
+                      multiple.wl = getMultipleWl(x), strict.range = NULL)
         setNormalized(xx, getNormalized(x))
         setScaled(xx, getScaled(x))
         comment <- comment(x)
@@ -498,7 +498,7 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
     }
     if (is.data.frame(xx)) {
       if ("w.length" %in% names(xx)) {
-        setChromaSpct(xx)
+        setChromaSpct(xx, multiple.wl = getMultipleWl(x))
         setNormalized(xx, getNormalized(x))
         setScaled(xx, getScaled(x))
         comment <- comment(x)
