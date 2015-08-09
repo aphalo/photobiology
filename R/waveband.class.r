@@ -122,6 +122,15 @@ spread <- function(x, ...) UseMethod("spread")
 #' @export
 #'
 spread.default <- function(x, ...) {
+  warning("'spread()' not defined for class '", paste(class(x), collapse = " "), "'")
+  NA
+}
+
+#' @describeIn spread Default method for generic function
+#'
+#' @export
+#'
+spread.numeric <- function(x, ...) {
   if (length(x) > 0) {
     return(max(x) - min(x))
   } else {
