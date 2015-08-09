@@ -64,7 +64,7 @@ check.generic_spct <- function(x, byref=TRUE, strict.range = FALSE, multiple.wl 
       stop("'w.length' must be sorted in ascending order and have unique values")
     }
   } else {
-      stop("No wavelength data found in generic_spct")
+    stop("No wavelength data found in generic_spct")
   }
 
   if (nrow(x)) {
@@ -75,18 +75,10 @@ check.generic_spct <- function(x, byref=TRUE, strict.range = FALSE, multiple.wl 
     } else if ((wl.min < 99.999 || wl.min > 5e3)) {
       stop("Off-range minimum w.length value ", wl.min, " instead of within 100 nm and 5000 nm")
     }
-    wl.reps <- with(x, length(w.length) / length(unique(w.length)) )
-    if (wl.reps > 1) {
-      if ((wl.reps - trunc(wl.reps)) < 1e-5) {
-        wl.reps <- trunc(wl.reps)
-        if (with(x, length(w.length)) >= 2 && wl.reps > multiple.wl) {
-          warning("'w.length' values are not unique: ", wl.reps, " copies of each.")
-        }
-      } else {
-        warning("'w.length' values are not all unique with ",
-                round((wl.reps - trunc(wl.reps)) * with(x, length(w.length)), 0) ,
-                " duplicate values.")
-      }
+    # we use run length encoding to find the maximum number of copies of any w.length value
+    longest.run <- max(rle(sort(x[["w.length"]]))[["lengths"]])
+    if (longest.run > multiple.wl) {
+      warning("")
     }
   }
   x

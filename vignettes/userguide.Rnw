@@ -763,8 +763,6 @@ In the special case when the members of the list are \texttt{source\_spct} objec
 rbindspct(list(sun.spct * CIE(), sun.spct * GEN.G()))
 @
 
-The warning above is caused by the different length of the members of the list, and in this case it is safe to ignore it.
-
 Special \textit{Extract} methods for spectral objects have been implemented. These are used by default and preserve the attributes used by this package, except when the returned value is a single column from the spectral object.
 
 <<>>=
