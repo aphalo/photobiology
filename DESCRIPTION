@@ -20,12 +20,12 @@ Imports:
     splus2R (>= 1.2-0),
     caTools (>= 1.17.1)
 Suggests:
-    photobiologyWavebands (>= 0.3.1),
-    photobiologySun (>= 0.3.0),
-    photobiologyFilters (>= 0.3.0),
-    photobiologyReflectors (>= 0.3.0),
-    photobiologySensors (>= 0.3.0),
-    photobiologyPlants (>= 0.3.0),
+    photobiologyWavebands (>= 0.3.3),
+    photobiologySun (>= 0.3.3),
+    photobiologyFilters (>= 0.3.1),
+    photobiologyReflectors (>= 0.3.1),
+    photobiologySensors (>= 0.3.2),
+    photobiologyPlants (>= 0.3.1),
     knitr (>= 1.10.5),
     testthat (>= 0.10.0)
 LazyLoad: yes
@@ -34,7 +34,7 @@ ByteCompile: true
 NeedsCompilation: yes
 Encoding: UTF-8
 LinkingTo: Rcpp
-URL: http://uv4growth.dyndns.org,
+URL: http://www.r4photobiology.info/,
     https://bitbucket.org/aphalo/photobiology
 BugReports: https://bitbucket.org/aphalo/photobiology
 Roxygen: list(wrap = FALSE)
