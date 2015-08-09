@@ -7,7 +7,8 @@ classes.
 photobiology 0.8.3
 ==================
 
-Improve handling of multple.wl > 1 to avoid spurius warnings
+Improve handling of multiple.wl > 1 to avoid spurious warnings.
+Fix minor bugs in spread().
 
 photobiology 0.8.2
 ==================

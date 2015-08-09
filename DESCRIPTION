@@ -1,7 +1,7 @@
 Package: photobiology
 Type: Package
 Title: Light and Radiation Quantification for Photobiology Research
-Version: 0.8.2.9001
+Version: 0.8.3
 Date: 2015-08-09
 Author: Pedro J. Aphalo <pedro.aphalo@helsinki.fi>
 Maintainer: Pedro J. Aphalo <pedro.aphalo@helsinki.fi>

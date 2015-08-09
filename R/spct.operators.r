@@ -81,9 +81,13 @@ oper.e.generic_spct <- function(e1, e2, oper) {
     } else if (class2 == "source_spct") {
       q2e(e2, action = "replace", byref = TRUE)
       if (is_effective(e1) || is_effective(e2)) {
-        warning("One or both operands are effective spectral irradiances")
-        bswf.used <- paste(getBSWFUsed(e1), getBSWFUsed(e2))
-      } else {
+        if (getBSWFUsed(e1) != getBSWFUsed(e2)) {
+          warning("One or both operands are effective spectral irradiances")
+          bswf.used <- paste(getBSWFUsed(e1), getBSWFUsed(e2))
+        } else {
+          bswf.used <- getBSWFUsed(e1)
+        }
+       } else {
         bswf.used <- "none"
       }
       z <- oper_spectra(e1$w.length, e2$w.length, e1$s.e.irrad, e2$s.e.irrad, bin.oper=oper, trim="intersection")
@@ -417,8 +421,12 @@ oper.q.generic_spct <- function(e1, e2, oper) {
         return(NA)
       }
       if (is_effective(e1) || is_effective(e2)) {
-        warning("One or both operands are effective spectral irradiances")
-        bswf.used <- paste(getBSWFUsed(e1), getBSWFUsed(e2))
+        if (getBSWFUsed(e1) != getBSWFUsed(e2)) {
+          warning("One or both operands are effective spectral irradiances")
+          bswf.used <- paste(getBSWFUsed(e1), getBSWFUsed(e2))
+        } else {
+          bswf.used <- getBSWFUsed(e1)
+        }
       } else {
         bswf.used <- "none"
       }
