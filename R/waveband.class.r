@@ -122,7 +122,11 @@ spread <- function(x, ...) UseMethod("spread")
 #' @export
 #'
 spread.default <- function(x, ...) {
-  return(max(x) - min(x))
+  if (length(x) > 0) {
+    return(max(x) - min(x))
+  } else {
+    return(NA_real_)
+  }
 }
 
 #' @describeIn spread Wavelength spread in nm.
