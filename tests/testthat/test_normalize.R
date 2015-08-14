@@ -21,6 +21,7 @@ test_that("normalize", {
   expect_equal(getTimeUnit(normalize(my.spct)), getTimeUnit(my.spct))
   expect_equal(comment(normalize(my.spct)), comment(my.spct))
   expect_equal(getNormalized(normalize(my.spct, norm = 400)), 400)
+  expect_equal(getNormalized(normalize(my.spct, norm = 400.2)), 400.2)
   expect_equal(getNormalized(normalize(my.spct, norm = "max")), 451)
 })
 

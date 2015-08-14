@@ -58,12 +58,7 @@ check.generic_spct <- function(x, byref=TRUE, strict.range = FALSE, multiple.wl 
   } else if (exists("Wavelength", x, mode = "numeric", inherits = FALSE)) {
     x <- dplyr::rename(x, w.length = Wavelength)
   }
-
-  if (exists("w.length", x, mode = "numeric", inherits = FALSE)) {
-    if (nrow(x) && is.unsorted(x[["w.lengtgh"]], na.rm = TRUE, strictly = TRUE)) {
-      stop("'w.length' must be sorted in ascending order and have unique values")
-    }
-  } else {
+  if (!exists("w.length", x, mode = "numeric", inherits = FALSE)) {
     stop("No wavelength data found in generic_spct")
   }
 
@@ -76,9 +71,19 @@ check.generic_spct <- function(x, byref=TRUE, strict.range = FALSE, multiple.wl 
       stop("Off-range minimum w.length value ", wl.min, " instead of within 100 nm and 5000 nm")
     }
     # we use run length encoding to find the maximum number of copies of any w.length value
-    longest.run <- max(rle(sort(x[["w.length"]]))[["lengths"]])
-    if (longest.run > multiple.wl) {
-      warning("")
+    # this be needed. This redundancy needs to be fixed.
+    if (multiple.wl == 1) {
+      if (is.unsorted(x[["w.length"]], na.rm = TRUE, strictly = TRUE)) {
+        stop("'w.length' must be sorted in ascending order and have unique values")
+      }
+    } else if (multiple.wl > 1) {
+      runs <- rle(sort(x[["w.length"]]))
+      num.copies <- max(runs[["lengths"]])
+      if (num.copies > multiple.wl) {
+        stop("Too many copies of w.length values: ", num.copies)
+      }
+    } else {
+      stop("ASSERTION FAILED: invalid 'multiple.wl' value: ", multiple.wl)
     }
   }
   x

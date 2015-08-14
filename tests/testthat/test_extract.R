@@ -59,7 +59,7 @@ test_that("source_spct", {
   my_z.spct <- my.spct
   expect_error(my_z.spct$w.length <- 0)
   my_z.spct <- my.spct
-  expect_warning(my_z.spct[1 , 1] <- my.spct[ 2, 1])
+  expect_error(my_z.spct[1 , 1] <- my.spct[ 2, 1])
 
   my_z.spct <- my.spct
   my_z.spct[1, 2] <- 1
