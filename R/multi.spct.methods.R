@@ -677,3 +677,34 @@ checkMspctVersion <- function(x) {
   }
 }
 
+
+# print method ------------------------------------------------------------
+
+#' Print a spectral collection object
+#'
+#' Print method for objects of the collection of spectra classes. Any object
+#' of a class derived from \code{geenric_mspct} is printed with this  method.
+#'
+#' @param x generic_mspct A collection of spectra
+#' @param ... not used in current version
+#' @param n	Number of rows to show for each member spectrum.
+#' @param width	Width of text output to generate.
+#'
+#' @return Returns \code{x} invisibly.
+#'
+#' @seealso \code{\link{print.generic_spct}} for details on \code{n}
+#' and \code{width}.
+#'
+#' @export
+#'
+print.generic_mspct <- function(x, ..., n = NULL, width = NULL)  {
+  cat("Object: ", class(x)[1], " ", dplyr::dim_desc(x), "\n", sep = "")
+  member.names <- names(x)
+  for (name in member.names) {
+    cat("--- Member:", name, "---\n")
+    print(x[[name]], n = n, width = width)
+  }
+  cat("--- END ---")
+  invisible(x)
+}
+

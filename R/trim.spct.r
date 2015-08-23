@@ -43,6 +43,13 @@ trim_spct <- function(spct, range=NULL, low.limit=NULL, high.limit=NULL,
   if (is.null(spct)) {
     return(spct)
   }
+  if (is.numeric(range)) {
+    stopifnot(length(range) > 1)
+  }
+  if (!is.null(range) &&
+      (!is.numeric(range) || (is.numeric(range) && length(range) != 2))) {
+    range <- range(range)
+  }
   if (is.null(use.hinges)) {
     use.hinges <- auto_hinges(spct)
   }
@@ -55,19 +62,21 @@ trim_spct <- function(spct, range=NULL, low.limit=NULL, high.limit=NULL,
     if (length(range) == 2 && is.na(range[1])) {
       low.limit <- NULL
     } else {
-      low.limit <- ifelse(!is.null(low.limit), max(min(range, nna.rm = TRUE), low.limit), min(range, na.rm = TRUE))
+      low.limit <- ifelse(!is.null(low.limit), max(min(range, na.rm = TRUE), low.limit),
+                          min(range, na.rm = TRUE))
     }
     if (length(range) == 2 && is.na(range[2])) {
       high.limit <- NULL
     } else {
-      high.limit <- ifelse(!is.null(high.limit), min(max(range, na.rm = TRUE), high.limit), max(range, na.rm = TRUE))
+      high.limit <- ifelse(!is.null(high.limit), min(max(range, na.rm = TRUE), high.limit),
+                           max(range, na.rm = TRUE))
     }
   }
   trim.low <- !is.null(low.limit)
   trim.high <- !is.null(high.limit)
   if (trim.low && trim.high && high.limit - low.limit < 1e-7) {
-    warning("When trimming 'range' must be a finite wavelength interval")
-    return(NA) # this should be replaced with an empty spct object
+    warning("When trimming 'range' must be a finite wavelength interval > 1E-7 nm")
+    return(spct[FALSE, ]) # returns a spct object with nrow equal to zero
   }
   names.spct <- names(spct)
   names.data <- names.spct[names.spct != "w.length"]
@@ -76,12 +85,14 @@ trim_spct <- function(spct, range=NULL, low.limit=NULL, high.limit=NULL,
   Tfr.type.spct <- getTfrType(spct)
   Rfr.type.spct <- getRfrType(spct)
   # check whether we should expand the low end
-  low.end <- min(spct, na.rm=TRUE)
+  low.end <- min(spct, na.rm = TRUE)
   if (trim.low && low.end > low.limit) {
     if (!is.null(fill)) {
       # expand short tail
-      low.tail.length <-  trunc(low.end - low.limit) + 2
-      low.tail.w.length <- seq(from = low.limit, to = low.end - 1e-12, length =low.tail.length)
+      low.tail.length <-  trunc(low.end - low.limit) + ifelse(use.hinges, 2, 1)
+      low.tail.w.length <- seq(from = low.limit,
+                               to = ifelse(use.hinges, low.end - 1e-12, low.end - 1),
+                               length = low.tail.length)
       spct.top <- dplyr::data_frame(w.length = low.tail.w.length)
       for (data.col in names.data) {
         spct.top[[data.col]] <- fill
@@ -99,12 +110,14 @@ trim_spct <- function(spct, range=NULL, low.limit=NULL, high.limit=NULL,
   }
 
   # check whether we should expand the high end
-  high.end <- max(spct, na.rm=TRUE)
+  high.end <- max(spct, na.rm = TRUE)
   if (trim.high && high.end < high.limit) {
     if (!is.null(fill)) {
       # expand short tail
-      high.tail.length <- trunc(high.limit - high.end) + 2
-      high.tail.w.length <- seq(from = high.end + 1e-12, to = high.limit, length = high.tail.length)
+      high.tail.length <- trunc(high.limit - high.end) + ifelse(use.hinges, 2, 1)
+      high.tail.w.length <- seq(from = ifelse(use.hinges, high.end + 1e-12, high.end + 1),
+                                to = high.limit,
+                                length = high.tail.length)
       spct.bottom <- dplyr::data_frame(w.length = high.tail.w.length)
       for (data.col in names.data) {
         spct.bottom[[data.col]] <- fill
@@ -132,6 +145,8 @@ trim_spct <- function(spct, range=NULL, low.limit=NULL, high.limit=NULL,
       hinges <- c(hinges, high.limit - 1e-12, high.limit)
     }
     spct <- insert_spct_hinges(spct, hinges)
+  } else {
+
   }
   if (trim.low && trim.high){
     within.selector <- with(spct, w.length >= low.limit & w.length < high.limit)

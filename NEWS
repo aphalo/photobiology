@@ -4,6 +4,34 @@ TODO
 Add test cases for chroma_spct and improve tests for the _mspct
 classes.
 
+photobiology 0.8.4
+==================
+
+Expand sun.spct and sun.daily.spct down to 280 nm with zeros.
+
+Add methods for construction of collections of spectra from
+data frames with different spectra in side-by-side columns
+('untidy' or wide data):
+split2source_mspct(), split2response_mscpt(),
+split2filter_mspct(), split2reflector_mspct(), and
+split2cps_mspsct()
+
+Add method for construction of collections of spectra from
+data frames with spectral data for different spectra in a
+single column ('tidy' or long data), and spectral objects
+containing several spectra, such as those returned by
+function rbindspct():
+subset2mspct()
+
+Add print() method for collections of spectra.
+
+Fix minor bug in trim_spct() which was inserting hinges on
+head and/or tail expansion even if use.hinges was set to
+FALSE.
+
+Fix bug in rare borderline cases where NA was being returned
+instead of empty spectral objects (objects with zero rows).
+
 photobiology 0.8.3
 ==================
 

@@ -43,12 +43,12 @@ fscale.source_spct <- function(x,
                                ...) {
   if (unit.out == "energy") {
     return(fscale_spct(spct = q2e(x, action = "replace"),
-                       range = range(range),
+                       range = range,
                        f = f,
                        var.name = "s.e.irrad"))
   } else if (unit.out %in% c("photon", "quantum") ) {
     return(fscale_spct(spct = e2q(x, action = "replace"),
-                       range = range(range),
+                       range = range,
                        f = f,
                        var.name = "s.q.irrad"))
   } else {
@@ -67,13 +67,13 @@ fscale.response_spct <- function(x,
                                  ...) {
   if (unit.out == "energy") {
     return(fscale_spct(spct = q2e(x, action = "replace"),
-                       range = range(range),
+                       range = range,
                        f = f,
                        var.name = "s.e.response",
                        ...))
   } else if (unit.out %in% c("photon", "quantum") ) {
     return(fscale_spct(spct = e2q(x, action = "replace"),
-                       range = range(range),
+                       range = range,
                        f = f,
                        var.name = "s.q.response",
                        ...))
@@ -95,13 +95,13 @@ fscale.filter_spct <- function(x,
                                ...) {
   if (qty.out == "transmittance") {
     return(fscale_spct(spct = A2T(x, action = "replace"),
-                       range = range(range),
+                       range = range,
                        f = f,
                        var.name = "Tfr",
                        ...))
   } else if (qty.out == "absorbance") {
     return(fscale_spct(spct = T2A(x, action = "replace"),
-                       range = range(range),
+                       range = range,
                        f = f,
                        var.name = "A",
                        ...))
@@ -120,7 +120,7 @@ fscale.reflector_spct <- function(x,
                                   qty.out = NULL,
                                   ...) {
   return(fscale_spct(spct = x,
-                     range = range(range),
+                     range = range,
                      f = f,
                      var.name = "Rfr",
                      ...))

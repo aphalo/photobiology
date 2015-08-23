@@ -182,23 +182,24 @@ tag.generic_spct <- function(x,
 #' @family tagging and related functions
 #'
 wb2spct <- function(w.band) {
-  if (is(w.band, "waveband")) {
+  if (is.waveband(w.band)) {
     w.band <- list(w.band)
   }
   w.length <- numeric(0)
   for (wb in w.band) {
-    if (is(wb, "waveband")) {
-      w.length <- c(w.length, wb$hinges)
-    }
+    stopifnot(is.waveband(wb))
+    w.length <- c(w.length, wb$hinges)
   }
   if (is.null(w.length) || length(w.length) < 2) {
-    return(NA)
+    new.spct <- dplyr::data_frame(w.length = numeric(0), s.e.irrad = numeric(0), s.q.irrad = numeric(0),
+                                  Tfr = numeric(0), Rfl = numeric(0), s.e.response = numeric(0))
+  } else {
+    w.length <- unique(sort(w.length))
+    new.spct <- dplyr::data_frame(w.length = w.length, s.e.irrad = 0, s.q.irrad = 0,
+                                  Tfr = 0, Rfl = 0, s.e.response = 0)
   }
-  w.length <- unique(sort(w.length))
-  new.spct <- dplyr::data_frame(w.length = w.length, s.e.irrad = 0, s.q.irrad = 0,
-                                Tfr = 0, Rfl = 0, s.e.response = 0)
   setGenericSpct(new.spct)
-  return(new.spct)
+  new.spct
 }
 
 #' Create a tagged spectrum from a list of wavebands

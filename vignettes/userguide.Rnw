@@ -357,7 +357,7 @@ Spectral objects created with earlier (pre-release) versions of this package are
 The package defines several classes intended to be used to store \emph{collections} of different types of spectral data. They are all derived from \texttt{generic\_mspct}, which in turn is derived from \texttt{list}. Table \ref{tab:mspct:classes} lists them.
 
 \begin{table}
-\caption{Classes for colletion of spectral objects}\label{tab:spct:classes}
+\caption{Classes for collections of spectral objects}\label{tab:spct:classes}
 \centering
 \begin{tabular}{lll}
 \toprule
@@ -383,8 +383,8 @@ Objects of these classes, except for those of class \texttt{generic\_mspct}, can
 
 We can construct a collection using a list of spectral objects as a starting point, in this case the spectral transmittance for two glass filters.
 <<>>=
-two_filters.mspct <- filter_mspct(list(gg400 = gg400.spct,
-                                       og550 = og550.spct))
+two_filters.mspct <- filter_mspct(list(gg400 = gg400.spct, og550 = og550.spct))
+two_filters.mspct
 @
 
 We can also create heterogeneous collections, but this reduces the number of methods that can be used on the resulting collection.
@@ -401,6 +401,34 @@ The \texttt{as} functions for collections of spectra, not only change the class 
 two_gen.mscpt <- as.generic_mspct(two_filters.mspct)
 class(two_gen.mscpt)
 lapply(two_gen.mscpt, class_spct)
+@
+
+\subsubsection{Converting `tidy' data}
+
+Spectral objects containing multiple spectra identified by a factor (class of the argument is replicated to collection members).
+
+<<>>=
+two_suns.spct <- rbindspct(list(a = sun.spct, b = sun.spct / 2))
+subset2mspct(two_suns.spct)
+@
+
+Data frame containing `tidy' spectral data (target class and index variable need to be supplied as arguments).
+<<>>=
+test1.df <- data.frame(w.length = rep(200:210, 2),
+                       s.e.irrad = rep(c(1, 2), c(11, 11)),
+                       spectrum = factor(rep(c("A", "B"), c(11,11))))
+subset2mspct(test1.df, member.class = "source_spct", idx.var = "spectrum")
+@
+
+\subsubsection{Converting `untidy' data frames}
+
+Data frame containing `untidy' or `wide' spectral data (class is determined by the function used,
+columns which are not \texttt{numeric} are skipped.
+
+<<>>=
+test2.df <- data.frame(w.length = 200:210, A = 1, B = 2, z = "A")
+split2source_mspct(test2.df)
+split2source_mspct(test2.df, spct.data.var = "s.q.irrad")
 @
 
 \subsection{Querying the class}

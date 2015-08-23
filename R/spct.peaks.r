@@ -86,21 +86,16 @@ get_peaks <- function(x, y,
                       strict = TRUE,
                       x_unit = "",
                       x_digits = 3) {
+  stopifnot(length(x) == length(y))
   selector <- find_peaks(y, ignore_threshold, span, strict)
   if (sum(selector) < 1) {
     return(data.frame(x=numeric(0), y=numeric(0), label=character(0)))
-  }
-  else {
+  } else {
     peaks.x <- x[selector]
     peaks.y <- y[selector]
-    if (length(peaks.x) == length(peaks.y)) {
-      return(data.frame(x=peaks.x, y=peaks.y,
+    return(data.frame(x=peaks.x, y=peaks.y,
                         label=paste(as.character(signif(x=peaks.x, digits=x_digits)), x_unit, sep="")))
-    }
-    else {
-      return(NA)
-    }
-  }
+   }
 }
 
 #' @describeIn get_peaks

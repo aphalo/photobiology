@@ -74,6 +74,9 @@ rmDerivedMspct <- function(x) {
 #' @family collections of spectra classes family
 #'
 generic_mspct <- function(l, class = "generic_spct", ncol = 1, byrow = FALSE) {
+  if (is.any_spct(l)) {
+    l <- list(l)
+  }
   stopifnot(is.list(l))
   class <- class[1]
   if (class %in% mspct_classes()) {
@@ -282,12 +285,13 @@ as.cps_mspct <- function(x) {
 #' @export
 #'
 as.source_mspct <- function(x,
-                           time.unit=c("second", "day", "exposure"),
-                           bswf.used=c("none", "unknown"),
-                           strict.range = FALSE) {
+                            time.unit=c("second", "day", "exposure"),
+                            bswf.used=c("none", "unknown"),
+                            strict.range = FALSE) {
   y <- x
   rmDerivedMspct(y)
-  z <- plyr::llply(y, setSourceSpct, time.unit = time.unit, strict.range = strict.range, bswf.used = bswf.used)
+  z <- plyr::llply(y, setSourceSpct, time.unit = time.unit,
+                   strict.range = strict.range, bswf.used = bswf.used)
   source_mspct(z)
 }
 
@@ -299,7 +303,7 @@ as.response_mspct <- function(x, time.unit = "second") {
   y <- x
   rmDerivedMspct(y)
   z <- plyr::llply(y, setResponseSpct, time.unit = time.unit)
-  reponse_mspct(z)
+  response_mspct(z)
 }
 
 #' @rdname as.generic_mspct
@@ -308,10 +312,13 @@ as.response_mspct <- function(x, time.unit = "second") {
 #'
 #' @export
 #'
-as.filter_mspct <- function(x, Tfr.type=c("total", "internal"), strict.range = TRUE) {
+as.filter_mspct <- function(x,
+                            Tfr.type=c("total", "internal"),
+                            strict.range = TRUE) {
   y <- x
   rmDerivedMspct(y)
-  z <- plyr::llply(y, setFilterSpct, Tfr.type = Tfr.type, strict.range = strict.range)
+  z <- plyr::llply(y, setFilterSpct, Tfr.type = Tfr.type,
+                   strict.range = strict.range)
   filter_mspct(z)
 }
 
@@ -321,10 +328,13 @@ as.filter_mspct <- function(x, Tfr.type=c("total", "internal"), strict.range = T
 #'
 #' @export
 #'
-as.reflector_mspct <- function(x, Rfr.type = c("total", "specular"), strict.range = TRUE) {
+as.reflector_mspct <- function(x,
+                               Rfr.type = c("total", "specular"),
+                               strict.range = TRUE) {
   y <- x
   rmDerivedMspct(y)
-  z <- plyr::llply(y, setReflectorSpct, Rfr.type = Rfr.type, strict.range = strict.range)
+  z <- plyr::llply(y, setReflectorSpct, Rfr.type = Rfr.type,
+                   strict.range = strict.range)
   reflector_mspct(z)
 }
 
@@ -333,13 +343,13 @@ as.reflector_mspct <- function(x, Rfr.type = c("total", "specular"), strict.rang
 #' @export
 #'
 as.object_mspct <- function(x,
-                           Tfr.type=c("total", "internal"),
-                           Rfr.type=c("total", "specular"),
-                           strict.range = TRUE) {
+                            Tfr.type=c("total", "internal"),
+                            Rfr.type=c("total", "specular"),
+                            strict.range = TRUE) {
   y <- x
   rmDerivedMspct(y)
   z <- plyr::llply(y, setObjectSpct, Tfr.type = Tfr.type, Rfr.type = Rfr.type,
-              strict.range = strict.range)
+                   strict.range = strict.range)
   object_mspct(z)
 }
 
@@ -354,21 +364,210 @@ as.chroma_mspct <- function(x) {
   chroma_mspct(z)
 }
 
+# constructor methods for data frames --------------------------------------
+
+#' @title Convert a 'wide' or untidy data frame into a collection of spectra
+#'
+#' @description Convert a data frame object into a "multi spectrum" object by
+#'   constructing a an object of a multi-spct class, converting numeric columns
+#'   other than wavelength into individual spct objects.
+#'
+#' @param x data frame
+#' @param member.class character Class of the collection members
+#' @param spct.data.var character Name of the spctral data argument in the
+#'   object constructor for \code{member.class}
+#' @param w.length.var character Name of column containing wavelength data in
+#'   nanometres
+#' @param idx.var character Name of column containing data to be copied unchanged
+#'   to each spct object
+#' @param ncol integer Number of 'virtual' columns in data
+#' @param byrow logical If \code{ncol > 1} how to read in the data
+#' @param ... additional arguments
+#'
+#' @export
+#'
+#' @family collections of spectra classes family
+#'
+split2mspct <- function(x,
+                        member.class = NULL,
+                        spct.data.var = NULL,
+                        w.length.var = "w.length", idx.var = NULL,
+                        ncol = 1, byrow = FALSE, ...) {
+  stopifnot(!is.null(member.class) || !is.character(member.class))
+  stopifnot(!is.null(spct.data.var) || !is.character(spct.data.var))
+  collection.class <- sub("_spct", "_mspct", member.class, fixed = TRUE)
+  member.constr <- member.class
+  collection.constr <- collection.class
+  col_names <- names(x)
+  data.cols <- setdiff(col_names, c(w.length.var, idx.var))
+  l <- list()
+  for (col in data.cols) {
+    if (!is.numeric(x[[col]])) {
+      next
+    }
+    args <- list(w.length = x[[w.length.var]])
+    args[[spct.data.var]] <- x[[col]]
+    args.ellipsis <- list(...)
+    l[[col]] <- do.call(member.constr, c(args, args.ellipsis))
+    if (!is.null(idx.var)) {
+      l[[col]][[idx.var]] <- x[[idx.var]]
+    }
+  }
+  margs <- list(l = l, ncol = ncol, byrow = byrow)
+  do.call(collection.constr, margs)
+}
+
+#' @describeIn split2mspct
+#' @export
+#'
+split2source_mspct <- function(x,
+                               spct.data.var = "s.e.irrad",
+                               w.length.var = "w.length", idx.var = NULL,
+                               ncol = 1, byrow = FALSE, ...) {
+  split2mspct(x = x,
+              member.class = "source_spct",
+              spct.data.var = spct.data.var,
+              w.length.var = w.length.var,
+              idx.var = idx.var,
+              ncol = ncol, byrow = byrow,
+              ...)
+}
+
+#' @describeIn split2mspct
+#' @export
+#'
+split2response_mspct <- function(x,
+                                 spct.data.var = "s.e.response",
+                                 w.length.var = "w.length", idx.var = NULL,
+                                 ncol = 1, byrow = FALSE, ...) {
+  split2mspct(x = x,
+              member.class = "response_spct",
+              spct.data.var = spct.data.var,
+              w.length.var = w.length.var,
+              idx.var = idx.var,
+              ncol = ncol, byrow = byrow,
+              ...)
+}
+
+#' @describeIn split2mspct
+#' @export
+#'
+split2filter_mspct <- function(x,
+                               spct.data.var = "Tfr",
+                               w.length.var = "w.length", idx.var = NULL,
+                               ncol = 1, byrow = FALSE, ...) {
+  split2mspct(x = x,
+              member.class = "filter_spct",
+              spct.data.var = spct.data.var,
+              w.length.var = w.length.var,
+              idx.var = idx.var,
+              ncol = ncol, byrow = byrow,
+              ...)
+}
+
+#' @describeIn split2mspct
+#' @export
+#'
+split2reflector_mspct <- function(x,
+                                  spct.data.var = "Rfr",
+                                  w.length.var = "w.length", idx.var = NULL,
+                                  ncol = 1, byrow = FALSE, ...) {
+  split2mspct(x = x,
+              member.class = "reflector_spct",
+              spct.data.var = spct.data.var,
+              w.length.var = w.length.var,
+              idx.var = idx.var,
+              ncol = ncol, byrow = byrow,
+              ...)
+}
+
+#' @describeIn split2mspct
+#' @export
+#'
+split2cps_mspct <- function(x,
+                            spct.data.var = "cps",
+                            w.length.var = "w.length", idx.var = NULL,
+                            ncol = 1, byrow = FALSE, ...) {
+  split2mspct(x = x,
+              member.class = "cps_spct",
+              spct.data.var = spct.data.var,
+              w.length.var = w.length.var,
+              idx.var = idx.var,
+              ncol = ncol, byrow = byrow,
+              ...)
+}
+
+#' @title Convert 'long' or tidy spectral data into a collection of spectra
+#'
+#' @description Convert a data frame object or spectral object into a collection
+#'   of soectra object of the corresponding class. For data frames converting
+#'   numeric columns other than wavelength into individual spct objects.
+#'
+#' @param x a generic_spct object or a derived class, or a data frame
+#' @param member.class character string
+#' @param idx.var character Name of column containing data to be copied
+#'   unchanged to each spct object
+#' @param drop.idx logical Flag indicating whether to drop or keep idx.var in
+#'   the collection members.
+#' @param ncol integer Number of 'virtual' columns in data
+#' @param byrow logical If \code{ncol > 1} how to read in the data
+#' @param ... additional arguments
+#'
+#' @note A non-null value for \code{member.class} is mandatory only when
+#'   \code{x} is a data frame.
+#'
+#' @export
+#'
+#' @family collections of spectra classes family
+#'
+subset2mspct <- function(x,
+                         member.class = NULL,
+                         idx.var = "spct.idx",
+                         drop.idx = TRUE,
+                         ncol = 1, byrow = FALSE, ...) {
+  if (is.any_spct(x) && is.null(member.class)) {
+    member.class <- class(x)[1]
+  }
+  stopifnot(!is.null(member.class) || !is.character(member.class))
+  stopifnot(idx.var %in% names(x))
+  collection.class <- sub("_spct", "_mspct", member.class, fixed = TRUE)
+  member.constr <- paste("as", member.class, sep = ".")
+  collection.constr <- collection.class
+  if (is.factor(x[[idx.var]])) {
+    groups <- levels(x[[idx.var]])
+  } else {
+    groups <- unique(x[[idx.var]])
+  }
+  l <- list()
+  for (grp in groups) {
+    slice <- subset(x, x[[idx.var]] == grp)
+    if (drop.idx) {
+      slice[[idx.var]] <- NULL
+    }
+    args <- list(x = slice)
+    args.ellipsis <- list(...)
+    l[[grp]] <- do.call(member.constr, c(args, args.ellipsis))
+  }
+  margs <- list(l = l, ncol = ncol, byrow = byrow)
+  do.call(collection.constr, margs)
+}
+
 #' Dimensions of an Object
 #'
 #' Retrieve or set the dimension of an object.
 #'
 #' @param x A \code{generic_mscpt} object or of a derived class.
 #'
-#' @return Either NULL or a numeric vector, which is coerced to integer (by truncation).
+#' @return Either NULL or a numeric vector, which is coerced to integer (by
+#'   truncation).
 #'
 #' @export
 #'
 dim.generic_mspct <- function(x) {
   z <- attr(x, "dim", exact = TRUE)
-  if(!is.null(z)) {
+  if (!is.null(z)) {
     z <- as.integer(z)
   }
-
+  z
 }
 
