@@ -542,8 +542,8 @@ reflectance.object_mspct <-
 absorbance.object_mspct <-
   function(spct, w.band=NULL,
            quantity="average",
-           wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
-           use.hinges=getOption("photobiology.use.hinges", default=NULL),
+           wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
+           use.hinges=getOption("photobiology.use.hinges", default = NULL),
            ..., idx = !is.null(names(spct))) {
     f_mspct(mspct = spct, f = absorbance,
                  w.band = w.band,
@@ -706,5 +706,60 @@ print.generic_mspct <- function(x, ..., n = NULL, width = NULL)  {
   }
   cat("--- END ---")
   invisible(x)
+}
+
+# convolute ---------------------------------------------------------------
+
+#' Convolve function for collections of spectra
+#'
+#' Convolve function for collections of spectra which applies an operation on
+#' all the individual members of the collection(s) of spectra.
+#'
+#' @param e1 an object of class \code{generic_mspct} or \code{generic_scpt} or
+#'   \code{numeric}
+#' @param e2 an object of class \code{generic_mspct} or \code{generic_scpt} or
+#'   \code{numeric}
+#' @param oper function, usually but not necesarily an operator with two
+#'   arguments.
+#' @param ... additional arguments passed to \code{oper} if present.
+#'
+#' @note At least one of e1 and e2 must be a \code{generic_mspct} object or
+#'   derived.
+#'
+#' @export
+#'
+#' @family math operators and functions
+#'
+convolve_mspct <- function(e1, e2, oper = `*`, ...) {
+  e3 <- list()
+  if (is.any_mspct(e1) & !is.any_mspct(e2)) {
+    for (spct.name in names(e1)) {
+      e3[[spct.name]] <- oper(e1[[spct.name]], e2, ...)
+    }
+    z <- generic_mspct(e3, class = shared_member_class(e3),
+                       ncol = ncol(e1),
+                       byrow = attr(e1, "byrow", exact = TRUE))
+  } else if (!is.any_mspct(e1) & is.any_mspct(e2)) {
+    for (spct.name in names(e2)) {
+      e3[[spct.name]] <- oper(e1, e2[[spct.name]], ...)
+    }
+    z <- generic_mspct(e3, class = shared_member_class(e3),
+                       ncol = ncol(e2),
+                       byrow = attr(e2, "byrow", exact = TRUE))
+  } else if (is.any_mspct(e1) & is.any_mspct(e2)) {
+    for (spct.name1 in names(e1)) {
+      for (spct.name2 in names(e2)) {
+        combined.name <- paste(spct.name1, spct.name2, sep = "_")
+        e3[[combined.name]] <- oper(e1[[spct.name1]], e2[[spct.name2]], ...)
+      }
+      z <- generic_mspct(e3, class = shared_member_class(e3),
+                         ncol = nrow(e2),
+                         byrow = FALSE)
+      dimnames(z) <- list(names(e1), names(e2))
+    }
+  } else {
+    stop("At least one of 'e1' and 'e2' should be a collection of spectra.")
+  }
+  z
 }
 

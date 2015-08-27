@@ -50,6 +50,32 @@ rmDerivedMspct <- function(x) {
   invisible(setdiff(allclasses, class(x)))
 }
 
+
+# query member classes ----------------------------------------------------
+
+#' Find classes common to all collection members.
+#'
+#' Finds the set intersection among the class attributes of all collection
+#' member as a target set of class names.
+#'
+#' @param l a list or a generic_mscpt object or of a derived class.
+#' @param target.set character The target set of classes within which to search
+#'   for classes common to all members.
+#' @export
+#'
+#' @return A character vector containing the class attribute values.
+#'
+#' @family set and unset 'multi spectral' class functions
+#'
+shared_member_class <- function(l, target.set = spct_classes()) {
+  l.class <- ifelse(is.list(target.set), target.set, list(target.set))
+  for (i in 1:length(l)) {
+    member_class <- class(l[[i]])
+    l.class <- intersect(l.class, member_class)
+  }
+  l.class
+}
+
 # Constructors ------------------------------------------------------------
 
 #' @title Constructors of multi_spct Objects
