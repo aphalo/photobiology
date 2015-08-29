@@ -41,8 +41,10 @@ rmDerivedMspct <- function(x) {
   name <- substitute(x)
   mspctclasses <- mspct_classes()
   allclasses <- class(x)
-  class(x) <- setdiff(allclasses, mspctclasses)
+  attr(x, "dim") <- NULL # if not removed class changes to matrix
+  attr(x, "byrow") <- NULL # if not removed class changes to matrix
   attr(x, "mspct.version") <- NULL
+  class(x) <- setdiff(allclasses, mspctclasses)
   if (is.name(name)) {
     name <- as.character(name)
     assign(name, x, parent.frame(), inherits = TRUE)
@@ -261,7 +263,7 @@ is.chroma_mspct <- function(x) inherits(x, "chroma_mspct")
 #' @export
 #'
 is.any_mspct <- function(x) {
-  inherits(x, mspct_classes())
+  inherits(x, "generic_mspct")
 }
 
 # as functions for mspct classes --------------------------------------------
