@@ -730,7 +730,7 @@ print.generic_mspct <- function(x, ..., n = NULL, width = NULL)  {
 #'
 #' @family math operators and functions
 #'
-convolve_mspct <- function(e1, e2, oper = `*`, ...) {
+convolve_each <- function(e1, e2, oper = `*`, ...) {
   e3 <- list()
   if (is.any_mspct(e1) & !is.any_mspct(e2)) {
     for (spct.name in names(e1)) {
@@ -752,14 +752,122 @@ convolve_mspct <- function(e1, e2, oper = `*`, ...) {
         combined.name <- paste(spct.name1, spct.name2, sep = "_")
         e3[[combined.name]] <- oper(e1[[spct.name1]], e2[[spct.name2]], ...)
       }
-      z <- generic_mspct(e3, class = shared_member_class(e3),
-                         ncol = nrow(e2),
-                         byrow = FALSE)
-      dimnames(z) <- list(names(e1), names(e2))
-    }
+     }
+    z <- generic_mspct(e3, class = shared_member_class(e3),
+                       ncol = nrow(e2),
+                       byrow = FALSE)
+    dimnames(z) <- list(names(e1), names(e2))
   } else {
     stop("At least one of 'e1' and 'e2' should be a collection of spectra.")
   }
   z
 }
 
+# Extract ------------------------------------------------------------------
+
+# $ operator for extraction does not need any wrapping as it always extracts
+# single columns returning objects of the underlying classes (e.g. numeric)
+# rather than spectral objects.
+#
+# [ needs special handling as it can be used to extract members, or groups of
+# members which must be returned as collections of spectral objects.
+#
+# In the case of replacement, collections of objects can easily become invalid,
+# if the replacement or added member belongs to a class other than the expected
+# one(s).
+
+#' Extract or replace members of a collection of spectra
+#'
+#' Just like extraction and replacement with indexes for base R lists, but
+#' preserving the special attributes used in spectral classes.
+#'
+#' @param x	collection of spectra object from which to extract member(s) or in
+#'   which to replace member(s)
+#' @param i index specifying elements to extract or replace. Indices are numeric
+#'   or character vectors. Please, see \code{\link[base]{Extract}} for
+#'   more details.
+#'
+#' @details This method is a wrapper on base R's extract method for lists that
+#'   sets additional attributes used by these classes.
+#'
+#' @return An object of the same class as \code{x} but containing only the
+#'   subset of members that are selected.
+#'
+#' @method "[" generic_mspct
+#' @export
+#'
+#' @rdname extract_mspct
+#' @name Extract_mspct
+#'
+"[.generic_mspct" <-
+  function(x, i, drop = NULL) {
+    xx <- `[.listof`(x, i)
+    generic_mspct(xx, class = class(x))
+  }
+
+# Not exported
+# Check if class_spct is compatible with class_mspct
+#
+is.member_class <- function(l, x) {
+  class(l)[1] == "generic_mscpt" && is.any_spct(x) ||
+    sub("_mspct", "", class(l)[1], fixed = TRUE) == sub("_spct", "", class(x)[1], fixed = TRUE)
+}
+
+#' @param value	A suitable replacement value: it will be repeated a whole number
+#'   of times if necessary and it may be coerced: see the Coercion section. If
+#'   NULL, deletes the column if a single column is selected.
+#'
+#' @export
+#' @method "[<-" generic_mspct
+#' @rdname extract_mspct
+#'
+"[<-.generic_mspct" <- function(x, i, value) {
+  # could be improved to accept derived classes as valid for replacement.
+  stopifnot(class(x) == class(value))
+  # could not find a better way of avoiding infinite recursion as '[[<-' is
+  # a primitive with no explicit default method.
+  old.class <- class(x)
+  class(x) <- "list"
+  x[i] <- value
+  class(x) <- old.class
+  x
+}
+
+#' @export
+#' @method "$<-" generic_mspct
+#' @rdname extract_mspct
+#'
+"$<-.generic_mspct" <- function(x, name, value) {
+  x[[name]] <- value
+}
+
+#' @export
+#' @method "[[<-" generic_mspct
+#' @rdname extract_mspct
+#'
+"[[<-.generic_mspct" <- function(x, name, value) {
+  stopifnot(is.member_class(x, value) || is.null(value))
+  # could not find a better way of avoiding infinite recursion as '[[<-' is
+  # a primitive with no explicit default method.
+  if (is.character(name) && !(name %in% names(x)) ) {
+    if (ncol(x) == 1) {
+      dimension <- c(nrow(x) + 1, 1)
+      names <- c(names(x), name)
+    } else {
+      stop("Appending to a matrix-like collection not supported.")
+    }
+  } else if (is.numeric(name) && (name > length(x)) ) {
+    stop("Appending to a collection using numeric indexing not supported.")
+  } else {
+    dimension <- NULL
+  }
+  old.class <- class(x)
+  class(x) <- "list"
+  x[[name]] <- value
+  class(x) <- old.class
+  if (!is.null(dimension)) {
+    dim(x) <- dimension
+    names(x) <- names
+  }
+  x
+}

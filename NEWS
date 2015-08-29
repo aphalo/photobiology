@@ -4,12 +4,19 @@ TODO
 Add test cases for chroma_spct and improve tests for the _mspct
 classes.
 
-Add test cases for convolute_mspct().
+Add test cases for convolve_each().
+
+Add method c() for concatenation of generic_mspct() and derived
+classes objects.
 
 photobiology 0.8.5
 ==================
 
-Add function convolute_mspct().
+Add function convolve_each().
+
+Add function shared_member_class().
+
+Add extract and replacement methods for collections of spectra.
 
 photobiology 0.8.4
 ==================

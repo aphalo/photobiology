@@ -68,7 +68,7 @@ rmDerivedMspct <- function(x) {
 #' @family set and unset 'multi spectral' class functions
 #'
 shared_member_class <- function(l, target.set = spct_classes()) {
-  l.class <- ifelse(is.list(target.set), target.set, list(target.set))
+  l.class <- target.set
   for (i in 1:length(l)) {
     member_class <- class(l[[i]])
     l.class <- intersect(l.class, member_class)
@@ -115,9 +115,7 @@ generic_mspct <- function(l, class = "generic_spct", ncol = 1, byrow = FALSE) {
     stop("'class' argument '", class, "' is not recognized as a spectral class")
   }
 
-  if (class(l)[1] == multi_class) {
-    warning("Class is already set to '", multi_class, "'")
-  } else {
+  if (class(l)[1] != multi_class) {
     if (is.any_mspct(l)) {
       rmDerivedMspct(l)
     }

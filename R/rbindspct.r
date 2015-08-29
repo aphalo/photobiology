@@ -251,7 +251,7 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
 # columns which are returned as spectral objects. Such returned objects
 # can easily become invalid, for example, lack a w.length variable.
 
-#' Extract or Replace Parts of a Spectrum
+#' Extract or replace parts of a spectrum
 #'
 #' Just like extraction and replacement with indexes in base R, but preserving
 #' the special attributes used in spectral classes and checking for validity of
@@ -277,9 +277,6 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
 #'   cases.
 #'
 #' @method "[" generic_spct
-#'
-#' @note Currently only extract methods are implemented. Replacement methods
-#'   may be implemented in the future.
 #'
 #' @examples
 #' sun.spct[sun.spct$w.length > 400, ]
