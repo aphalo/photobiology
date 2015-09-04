@@ -871,3 +871,31 @@ is.member_class <- function(l, x) {
   }
   x
 }
+
+# Combine -----------------------------------------------------------------
+
+#' Combine collections of spectra
+#'
+#' Combine two or more generic_mspct objects into a single object.
+#'
+#' @param ... one or more generic_mspct objects to combine.
+#' @param recursive logical ignored as nesting of collections of spectra is
+#' not supported.
+#' @param ncol numeric Virtual number of columns
+#' @param byrow logical When object has two dimensions, how to map member
+#' objects to columns and rows.
+#'
+#' @return A collection of spectra object belonging to the most derived class
+#' shared among the combined objects.
+#'
+#' @export
+#' @method c generic_mspct
+#'
+c.generic_mspct <- function(..., recursive = FALSE, ncol = 1, byrow = FALSE) {
+  l <- list(...)
+  shared.class <- shared_member_class(l, target.set = mspct_classes())
+  stopifnot(length(shared.class) > 0)
+  shared.class <- shared.class[1]
+  ul <- unlist(l, recursive = FALSE)
+  do.call(shared.class, list(l = ul, ncol = ncol, byrow = byrow))
+}
