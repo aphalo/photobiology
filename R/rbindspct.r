@@ -92,6 +92,8 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
     stop("Argument 'l' should be a list of spectra or an _mspct object")
     return(NULL)
   }
+  # list may have member which already have multiple spectra in long form
+  mltpl.wl <- sum(sapply(l, FUN = getMultipleWl))
   # we find the lowest common class
   # and in the same loop we make sure that all spectral data use consistent units
   l.class <- spct_classes()
@@ -186,7 +188,7 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
       add.bswf <- FALSE
       bswf.used <- rep("none", length(l))
     }
-    setSourceSpct(ans, time.unit = time.unit[1], bswf.used = bswf.used, multiple.wl = length(l))
+    setSourceSpct(ans, time.unit = time.unit[1], bswf.used = bswf.used, multiple.wl = mltpl.wl)
     if (photon.based.input) {
       e2q(ans, action = "add", byref = TRUE)
     }
@@ -196,7 +198,7 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
       warning("Inconsistent 'Tfr.type' among filter spectra in rbindspct")
       return(NA)
     }
-    setFilterSpct(ans, Tfr.type = Tfr.type[1], multiple.wl = length(l))
+    setFilterSpct(ans, Tfr.type = Tfr.type[1], multiple.wl = mltpl.wl)
     if (absorbance.based.input) {
       T2A(ans, action = "add", byref = TRUE)
     }
@@ -206,23 +208,23 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
       warning("Inconsistent 'Rfr.type' among reflector spectra in rbindspct")
       return(NA)
     }
-    setReflectorSpct(ans, Rfr.type = Rfr.type[1], multiple.wl = length(l))
+    setReflectorSpct(ans, Rfr.type = Rfr.type[1], multiple.wl = mltpl.wl)
   } else if (l.class == "response_spct") {
     time.unit <- sapply(l, FUN = getTimeUnit)
     if (length(unique(time.unit)) > 1L) {
       warning("Inconsistent time units among respose spectra in rbindspct")
       return(NA)
     }
-    setResponseSpct(ans, time.unit = time.unit[1], multiple.wl = length(l))
+    setResponseSpct(ans, time.unit = time.unit[1], multiple.wl = mltpl.wl)
     if (photon.based.input) {
       e2q(ans, action = "add", byref = TRUE)
     }
   } else if (l.class == "chroma_spct") {
-    setChromaSpct(ans, multiple.wl = length(l))
+    setChromaSpct(ans, multiple.wl = mltpl.wl)
   } else if (l.class == "cps_spct") {
-    setCpsSpct(ans, multiple.wl = length(l))
+    setCpsSpct(ans, multiple.wl = mltpl.wl)
   } else if (l.class == "generic_spct") {
-    setGenericSpct(ans, multiple.wl = length(l))
+    setGenericSpct(ans, multiple.wl = mltpl.wl)
   }
   if (any(scaled.input)) {
     attr(ans, "scaled") <- TRUE
