@@ -20,7 +20,7 @@ mutate_mspct <- function(mspct, f, ...) {
 
   generic_mspct(l = y,
                 class = mspct.class,
-                byrow = attr(mspct, "byrow", exact = TRUE),
+                byrow = attr(mspct, "mspct.byrow", exact = TRUE),
                 ncol = ncol(mspct))
 }
 
@@ -738,14 +738,14 @@ convolve_each <- function(e1, e2, oper = `*`, ...) {
     }
     z <- generic_mspct(e3, class = shared_member_class(e3),
                        ncol = ncol(e1),
-                       byrow = attr(e1, "byrow", exact = TRUE))
+                       byrow = attr(e1, "mspct.byrow", exact = TRUE))
   } else if (!is.any_mspct(e1) & is.any_mspct(e2)) {
     for (spct.name in names(e2)) {
       e3[[spct.name]] <- oper(e1, e2[[spct.name]], ...)
     }
     z <- generic_mspct(e3, class = shared_member_class(e3),
                        ncol = ncol(e2),
-                       byrow = attr(e2, "byrow", exact = TRUE))
+                       byrow = attr(e2, "mspct.byrow", exact = TRUE))
   } else if (is.any_mspct(e1) & is.any_mspct(e2)) {
     for (spct.name1 in names(e1)) {
       for (spct.name2 in names(e2)) {
@@ -852,23 +852,27 @@ is.member_class <- function(l, x) {
   if (is.character(name) && !(name %in% names(x)) ) {
     if (ncol(x) == 1) {
       dimension <- c(nrow(x) + 1, 1)
-      names <- c(names(x), name)
-    } else {
+  } else {
       stop("Appending to a matrix-like collection not supported.")
     }
   } else if (is.numeric(name) && (name > length(x)) ) {
     stop("Appending to a collection using numeric indexing not supported.")
+  } else if (is.null(value)) {
+    if (ncol(x) != 1) {
+      stop("Deleting members from a matrix-like collection not supported.")
+    } else {
+      dimension <- attr(x, "mspct.dim", exact = TRUE)
+    }
   } else {
-    dimension <- NULL
+    dimension <- attr(x, "mspct.dim", exact = TRUE)
   }
   old.class <- class(x)
+  old.byrow <- attr(x, "mspct.byrow", exact = TRUE)
   class(x) <- "list"
   x[[name]] <- value
   class(x) <- old.class
-  if (!is.null(dimension)) {
-    dim(x) <- dimension
-    names(x) <- names
-  }
+  attr(x, "mspct.dim") <- dimension
+  attr(x, "mspct.byrow") <- old.byrow
   x
 }
 

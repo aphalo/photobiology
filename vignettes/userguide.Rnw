@@ -450,6 +450,46 @@ lapply(mixed.mspct, class_spct)
 lapply(mixed.mspct, class)
 @
 
+\subsection{Extract, replace and combine}
+
+R's extraction and replacement methods have specializations for collections of spectra and can be used with the same syntax and functionality as for R lists. However they test the class and validity of the returned objects and replacement members.
+
+\begin{framed}
+The methods \texttt{`[`}, and \texttt{`[<-`}, extract and replace `parts' of the collection, respectively. Even when only one member is extrated, the returned value is a collection of spectra. The expected replacement value is also, always a collection of spectra.
+\end{framed}
+
+<<>>=
+two_filters.mspct[1]
+two_filters.mspct[2:1]
+@
+
+<<>>=
+two_filters.mspct[1:2] <- two_filters.mspct[2:1]
+@
+
+\begin{framed}
+The methods \texttt{`[[`}, \verb|$| and \texttt{`[[<-`}, extract and replace individual members of the collection, respectively. They allways return or expect objects of one of the spectral classes.
+\end{framed}
+
+<<>>=
+two_filters.mspct[[1]]
+two_filters.mspct$gg400
+two_filters.mspct[["gg400"]]
+@
+
+
+<<>>=
+two_filters.mspct[["bg3"]] <- bg3.spct
+two_filters.mspct[["gg400"]] <- NULL
+two_filters.mspct
+@
+
+We can use the combine method \texttt{c()} with collections of spectra (but not to create new collections from individual spectra).
+
+<<>>=
+c(two_filters.mspct, mixed.mspct)
+@
+
 \section{Wavebands}
 
 When a range of wavelengths or a range of wavelengths plus a spectral weighting function (SWF) is needed for radiation summaries or transformations, methods, operators and functions defined in package \PB  use \texttt{waveband} objects to store these data. A few other bits of information can be included to fine-tune calculations. The waveband definitions do NOT describe whether input spectral irradiances are photon or energy based, nor whether the output irradiance will be based on photon or energy units. All waveband objects belong to the S3 class \texttt{waveband}.

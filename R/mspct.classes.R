@@ -41,8 +41,8 @@ rmDerivedMspct <- function(x) {
   name <- substitute(x)
   mspctclasses <- mspct_classes()
   allclasses <- class(x)
-  attr(x, "dim") <- NULL # if not removed class changes to matrix
-  attr(x, "byrow") <- NULL # if not removed class changes to matrix
+  attr(x, "mspct.dim") <- NULL # if not removed class changes to matrix
+  attr(x, "mspct.byrow") <- NULL # if not removed class changes to matrix
   attr(x, "mspct.version") <- NULL
   class(x) <- setdiff(allclasses, mspctclasses)
   if (is.name(name)) {
@@ -135,8 +135,8 @@ generic_mspct <- function(l, class = "generic_spct", ncol = 1, byrow = FALSE) {
   }
   attr(l, "mspct.version") <- 2
 
-  attr(l, "dim") <- c(length(l) %/% ncol, ncol)
-  attr(l, "byrow") <- as.logical(byrow)
+  attr(l, "mspct.dim") <- c(length(l) %/% ncol, ncol)
+  attr(l, "mspct.byrow") <- as.logical(byrow)
   l
 }
 
@@ -590,7 +590,7 @@ subset2mspct <- function(x,
 #' @export
 #'
 dim.generic_mspct <- function(x) {
-  z <- attr(x, "dim", exact = TRUE)
+  z <- attr(x, "mspct.dim", exact = TRUE)
   if (!is.null(z)) {
     z <- as.integer(z)
   }

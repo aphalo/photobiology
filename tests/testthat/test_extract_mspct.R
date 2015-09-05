@@ -87,3 +87,28 @@ test_that("source_mspct", {
   expect_error(my_z.mspct[["spct_1"]] <- as.generic_spct(my1.spct))
 
 })
+
+context("combine_mspct")
+
+test_that("source_mspct", {
+
+  my1.spct <- source_spct(w.length = 400:410, s.e.irrad = 1)
+  my2.spct <- source_spct(w.length = 400:410, s.e.irrad = 2)
+  my3.spct <- source_spct(w.length = 400:410, s.e.irrad = 3)
+  my4.spct <- source_spct(w.length = 400:410, s.e.irrad = 4)
+  my5.spct <- source_spct(w.length = 400:410, s.e.irrad = 5)
+
+  spct.l <- list(my1.spct, my2.spct, my3.spct, my4.spct, my5.spct)
+  my.mspct <- source_mspct(spct.l)
+
+  spct.l1 <- list(my1.spct, my2.spct)
+  spct.l2 <- list(my3.spct, my4.spct, my5.spct)
+  my1.mspct <- source_mspct(spct.l1)
+  my2.mspct <- source_mspct(spct.l2)
+  my12.mspct <- c(my1.mspct, my2.mspct)
+
+  expect_equal(length(my12.mspct), length(my1.mspct) + length(my2.mspct))
+
+  expect_error(c(my1.mspct, my1.spct))
+
+})

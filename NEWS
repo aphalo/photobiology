@@ -4,7 +4,7 @@ TODO
 Add test cases for chroma_spct and improve tests for the _mspct
 classes.
 
-Add test cases for convolve_each() and c().
+Add test cases for convolve_each().
 
 photobiology 0.8.5
 ==================

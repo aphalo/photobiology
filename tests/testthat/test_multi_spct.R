@@ -19,7 +19,7 @@ test_that("source_mspct", {
   expect_equal(attr(my.mspct, "mspct.version", exact = TRUE), 2)
   expect_equal(ncol(my.mspct), 1)
   expect_equal(nrow(my.mspct), length(spct.l))
-  expect_equal(attr(my.mspct, "byrow", exact = TRUE), FALSE)
+  expect_equal(attr(my.mspct, "mspct.byrow", exact = TRUE), FALSE)
 
   named_spct.l <- list(one = my1.spct,
                        two = my2.spct,
@@ -34,7 +34,7 @@ test_that("source_mspct", {
   expect_equal(attr(my_named.mspct, "mspct.version", exact = TRUE), 2)
   expect_equal(ncol(my_named.mspct), 1)
   expect_equal(nrow(my.mspct), length(named_spct.l))
-  expect_equal(attr(my_named.mspct, "byrow", exact = TRUE), FALSE)
+  expect_equal(attr(my_named.mspct, "mspct.byrow", exact = TRUE), FALSE)
 
   expect_equal(length(my.mspct), 5)
   expect_equal(length(my_named.mspct), 5)
