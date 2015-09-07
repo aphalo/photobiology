@@ -10,12 +10,15 @@ photobiology 0.8.5
 ==================
 
 Implement extract and replacement methods for collections of spectra.
+(Please, let me know if you encounter any errors with these methods, as
+some testthat tests give infinite recursion errors that I cannot reproduce
+outside testthat.)
 
 Implement combine method c() for collections of spectra.
 
 Add function convolve_each().
 
-Add function shared_member_class().
+Add helper function shared_member_class().
 
 photobiology 0.8.4
 ==================
