@@ -766,7 +766,7 @@ convolve_each <- function(e1, e2, oper = `*`, ...) {
     z <- generic_mspct(e3, class = shared_member_class(e3),
                        ncol = nrow(e2),
                        byrow = FALSE)
-    attr(l, "mspct.dimnames")  <- list(names(e1), names(e2))
+    attr(z, "mspct.dimnames")  <- list(names(e1), names(e2))
   } else {
     stop("At least one of 'e1' and 'e2' should be a collection of spectra.")
   }
