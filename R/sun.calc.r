@@ -46,7 +46,7 @@ sun_angles <- function(time = lubridate::now(), lon = 0, lat = 0, use_refraction
   year <- year(t)
   if (any(year < 1950) || any(year > 2050))
     stop("year=", year, " is outside acceptable range")
-  day <- yday(t)
+  day <- lubridate::yday(t)
   if (any(day < 1) || any(day > 366))
     stop("day is not in range 1 to 366")
   hour <- lubridate::hour(t) + lubridate::minute(t) / 60 + lubridate::second(t) / 3600
@@ -217,7 +217,7 @@ twilight2angle <- function(twilight) {
     twilight_angle <- ifelse(twilight_angle > -90, twilight_angle, NA)
   }
   if (any(is.na(twilight_angle))) {
-    error("Unrecognized argument value for 'twilight': ", twilight)
+    stop("Unrecognized argument value for 'twilight': ", twilight)
   }
   twilight_angle
 }

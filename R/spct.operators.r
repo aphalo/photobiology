@@ -950,7 +950,7 @@ A2T.filter_spct <- function(x, action="add", byref=FALSE, ...) {
 #' @export
 #'
 A2T.filter_mspct <- function(x, action = "add", byref = FALSE, ...) {
-  mutate_mspct(x, A2T, action = action, byref = byref, ...)
+  msmsply(x, A2T, action = action, byref = byref, ...)
 }
 
 
@@ -1017,7 +1017,7 @@ T2A.filter_spct <- function(x, action="add", byref=FALSE, ...) {
 #' @export
 #'
 T2A.filter_mspct <- function(x, action = "add", byref = FALSE, ...) {
-  mutate_mspct(x, T2A, action = action, byref = byref, ...)
+  msmsply(x, T2A, action = action, byref = byref, ...)
 }
 
 
@@ -1103,7 +1103,7 @@ e2q.response_spct <- function(x, action="add", byref=FALSE, ...) {
 #' @export
 #'
 e2q.source_mspct <- function(x, action = "add", byref = FALSE, ...) {
-  mutate_mspct(x, e2q, action = action, byref = byref, ...)
+  msmsply(x, e2q, action = action, byref = byref, ...)
 }
 
 #' @describeIn e2q Method for for collections of response spectra
@@ -1111,7 +1111,7 @@ e2q.source_mspct <- function(x, action = "add", byref = FALSE, ...) {
 #' @export
 #'
 e2q.response_mspct <- function(x, action = "add", byref = FALSE, ...) {
-  mutate_mspct(x, e2q, action = action, byref = byref, ...)
+  msmsply(x, e2q, action = action, byref = byref, ...)
 }
 
 # photon to energy ---------------------------------------------------------------------
@@ -1193,7 +1193,7 @@ q2e.response_spct <- function(x, action="add", byref=FALSE, ...) {
 #' @export
 #'
 q2e.source_mspct <- function(x, action = "add", byref = FALSE, ...) {
-  mutate_mspct(x, q2e, action = action, byref = byref, ...)
+  msmsply(x, q2e, action = action, byref = byref, ...)
 }
 
 
@@ -1202,6 +1202,6 @@ q2e.source_mspct <- function(x, action = "add", byref = FALSE, ...) {
 #' @export
 #'
 q2e.response_mspct <- function(x, action = "add", byref = FALSE, ...) {
-  mutate_mspct(x, q2e, action = action, byref = byref, ...)
+  msmsply(x, q2e, action = action, byref = byref, ...)
 }
 

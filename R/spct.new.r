@@ -179,6 +179,24 @@ object_spct <- function(w.length, Rfr=NULL, Tfr=NULL,
   return(z)
 }
 
+#' @rdname source_spct
+#'
+#' @param x,y,z numeric colour coordinates
+#'
+#' @export
+#'
+chroma_spct <- function(w.length,
+                        x,
+                        y,
+                        z,
+                        comment=NULL, strict.range = FALSE) {
+  z <- dplyr::data_frame(w.length, x, y, z)
+  if (!is.null(comment)) {
+    comment(z) <- comment
+  }
+  setChromaSpct(z)
+  return(z)
+}
 
 # merge -------------------------------------------------------------------
 

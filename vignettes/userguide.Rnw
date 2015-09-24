@@ -490,7 +490,51 @@ We can use the combine method \texttt{c()} with collections of spectra (but not 
 c(two_filters.mspct, mixed.mspct)
 @
 
-\section{Wavebands}
+\subsection{Transform or \emph{apply} functions}
+
+We follow the namimg convention used in package plyr, but using the \texttt{ms} as prefix for \texttt{\_mspct} objects. Currently the only function implemented in this package is \texttt{msmsply} which both accepts and returns a collection of spectra.
+
+The function \texttt{msmsply()} can be used to apply a function to each member spectrum in a collection. The applied function is expected to return a `transformed' spectrum as another object of class \texttt{generic\_spct} or a class derived from it. The value returned by \texttt{msmsply} is a collection of spectra, of a type determined by the class(es) of the spectra in the new collection.
+
+We start with a simple example in which we add a constant to each spectrum in the collection
+<<>>=
+two.mspct <- source_mspct(list(A = sun.spct * 1, B = sun.spct * 2))
+msmsply(two.mspct, `+`, 0.1)
+@
+
+and continue with a more complex example in which we trim each spectrum
+<<>>=
+msmsply(two.mspct, trim_spct, range = c(281, 500), fill = NA)
+@
+
+In the second example we pass two arguments by name to the applied function. The number of arguments is not fixed, but the spectrum will be always passed as the first argument to the function.
+
+\subsection{Convolution}
+
+By convolution we normally mean the multiplication value by value at matching wavelengths of two spectra. The function described in this section facilitates this and similar operations among collections of spectra. An example use case could be the covolution of spectral irradiance by spectral transmittance for all combinations of light sources and filters in a collection of source spectra and a collection of filter spectra.
+
+Default operator (or function) is that for multiplication, either one or both of the two first arguments must be a collection of spectra. When only one argument is a collection of spectra, the other one can be a spectrum, or even a numeric vector. For multiplication the order of the operands does not affect the returned value. With operators or functions for non-transitive operations the order does matter.
+
+<<>>=
+convolve_each(two.mspct, sun.spct)
+@
+
+<<>>=
+convolve_each(sun.spct, two.mspct)
+@
+
+<<>>=
+another_two.mspct <- two.mspct
+names(another_two.mspct) <- c("a", "b")
+convolve_each(another_two.mspct, two.mspct)
+@
+
+The function \texttt{convolve\_each} will use other operators or functions and even pass additional named arguments when these are supplied as arguments.
+<<>>=
+convolve_each(two.mspct, sun.spct, oper = `+`)
+@
+
+\section{Wavebands }
 
 When a range of wavelengths or a range of wavelengths plus a spectral weighting function (SWF) is needed for radiation summaries or transformations, methods, operators and functions defined in package \PB  use \texttt{waveband} objects to store these data. A few other bits of information can be included to fine-tune calculations. The waveband definitions do NOT describe whether input spectral irradiances are photon or energy based, nor whether the output irradiance will be based on photon or energy units. All waveband objects belong to the S3 class \texttt{waveband}.
 
@@ -1189,18 +1233,15 @@ irrad(sun.spct, UV_bands(), quantity = "average")
 
 Collections of spectra can be useful not only for time-series of spectra or spectral images, but also when dealing with a small group of related spectra. In the example below we show how to use a collection of spectra for estimating irradiances under different filters set up in sunlight.
 
-One thing to remember, is that operators in R are just functions with special names and call syntax. They can also be called with the usual function call syntax by enclosing their \emph{name} in backquotes. We use this trick to use the multiplication operator \texttt{`*`} in a call to \texttt{lapply} which returns a list, which we convert into a \texttt{source\_multi\_spct} object. After this we just call the \texttt{irrad} method on the \emph{collection of spectra} and obtain the result as a data frame with one row per spectrum and one column by waveband.
+One thing to remember, is that operators in R are just functions with special names and call syntax. They can also be called with the usual function call syntax by enclosing their \emph{name} in backquotes. We use this trick to use the multiplication operator \texttt{`*`} in a call to \texttt{msmsply} which returns, in this case, a \texttt{source\_multi\_spct} object. After this we just call the \texttt{irrad} method on the \emph{collection of spectra} and obtain the result as a data frame with one row per spectrum and one column by waveband.
 
 <<>>=
-filtered_sun <-
-  source_mspct(
-    lapply(list(none = clear.spct,
+filters.mspct <- filter_mspct(list(none = clear.spct,
                 ug1 = ug1.spct, ug11 = ug11.spct,
                 gg400 = gg400.spct,
                 og550 = og550.spct,
-                rg665 = rg665.spct, rg830 = rg830.spct),
-           `*`,
-           y = sun.spct))
+                rg665 = rg665.spct, rg830 = rg830.spct))
+filtered_sun <- msmsply(filters.mspct, `*`, sun.spct)
 irrad(filtered_sun, list(UVA(), VIS()))
 @
 

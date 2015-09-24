@@ -14,8 +14,8 @@
 #' \tabular{ll}{
 #' Package: \tab photobiology\cr
 #' Type: \tab Package\cr
-#' Version: \tab 0.8.5\cr
-#' Date: \tab 2015-09-03\cr
+#' Version: \tab 0.8.6\cr
+#' Date: \tab 2015-09-24\cr
 #' License: \tab GPL (>= 3.0)\cr
 #' URL: \tab \url{http://www.r4photobiology.info},\cr
 #' \tab \url{https://bitbucket.org/aphalo/photobiology}\cr

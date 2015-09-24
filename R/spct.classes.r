@@ -1088,7 +1088,7 @@ setTimeUnit <- function(x,
       time.unit <- "unknown"
     }
   } else if (lubridate::is.duration(time.unit)) {
-    if (time.unit <= duration(0, "seconds")) {
+    if (time.unit <= lubridate::duration(0, "seconds")) {
       stop("When 'time.unit' is a duration, it must be > 0")
     }
   }

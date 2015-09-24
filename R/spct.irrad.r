@@ -438,7 +438,7 @@ q_irrad.source_spct <-
 #' library(lubridate)
 #' fluence(sun.spct,
 #'         w.band = new_waveband(400,700),
-#'         exposure.time = duration(3, "minutes") )
+#'         exposure.time = lubridate::duration(3, "minutes") )
 #'
 #' @return One numeric value for each waveband with no change in scale factor,
 #'   with name attribute set to the name of each waveband unless a named list is
@@ -484,7 +484,7 @@ fluence.source_spct <-
            use.hinges=getOption("photobiology.use.hinges", default=NULL),
            allow.scaled = FALSE, ...) {
     if (!lubridate::is.duration(exposure.time) &&
-        !is.period(exposure.time) &&
+        !lubridate::is.period(exposure.time) &&
         !is.numeric(exposure.time) ) {
       warning("Invalid value ", exposure.time, " for 'exposure.time'")
       exposure.time <- lubridate::duration(NA)
@@ -534,7 +534,7 @@ fluence.source_spct <-
 #' library(lubridate)
 #' q_fluence(sun.spct,
 #'           w.band = new_waveband(400,700),
-#'           exposure.time = duration(3, "minutes") )
+#'           exposure.time = lubridate::duration(3, "minutes") )
 #'
 #' @return One numeric value for each waveband with no change in scale factor,
 #'   with name attribute set to the name of each waveband unless a named list is
@@ -578,7 +578,7 @@ q_fluence.source_spct <-
            use.hinges = getOption("photobiology.use.hinges", default = NULL),
            allow.scaled = FALSE, ...) {
     if (!lubridate::is.duration(exposure.time) &&
-        !is.period(exposure.time) &&
+        !lubridate::is.period(exposure.time) &&
         !is.numeric(exposure.time) ) {
       warning("Invalid value ", exposure.time, " for 'exposure.time'")
       exposure.time <- lubridate::duration(NA)
@@ -623,7 +623,7 @@ q_fluence.source_spct <-
 #' @examples
 #' library(lubridate)
 #' e_fluence(sun.spct, w.band = new_waveband(400,700),
-#'           exposure.time = duration(3, "minutes") )
+#'           exposure.time = lubridate::duration(3, "minutes") )
 #'
 #' @return One numeric value for each waveband with no change in scale factor,
 #'   with name attribute set to the name of each waveband unless a named list is
@@ -667,7 +667,7 @@ e_fluence.source_spct <-
            use.hinges = getOption("photobiology.use.hinges", default = NULL),
            allow.scaled = FALSE, ...) {
     if (!lubridate::is.duration(exposure.time) &&
-        !is.period(exposure.time) &&
+        !lubridate::is.period(exposure.time) &&
         !is.numeric(exposure.time) ) {
       warning("Invalid value ", exposure.time, " for 'exposure.time'")
       exposure.time <- lubridate::duration(NA)

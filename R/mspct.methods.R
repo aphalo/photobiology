@@ -1,6 +1,7 @@
 #' Multi-spct transform methods
 #'
-#' Apply a function returning an object of the same class as its first argument.
+#' Apply a function returning an collection of spectra object of the same class
+#' as its first argument.
 #'
 #' @param mspct an object of class generic_mspct or a derived class
 #' @param f a function
@@ -10,19 +11,28 @@
 #'
 #' @export
 #'
-mutate_mspct <- function(mspct, f, ...) {
+msmsply <- function(mspct, f, ...) {
   stopifnot(is.any_mspct(mspct))
-  mspct.class <- class(mspct)[1]
+  mspct.class <- class(mspct)
 
-  y <- llply(mspct, f, ...)
+  y <- plyr::llply(mspct, f, ...)
 
   stopifnot(length(y) == length(mspct))
 
+  if (length(y) > 1) {
+    result.class <- shared_member_class(y)[1]
+  } else {
+    result.class <- mspct.class[1]
+  }
+  stopifnot(length(result.class) == 1)
+
   generic_mspct(l = y,
-                class = mspct.class,
+                class = result.class,
                 byrow = attr(mspct, "mspct.byrow", exact = TRUE),
                 ncol = ncol(mspct))
 }
+
+# msmsply <- msmsply
 
 #' Multi-spct summary methods
 #'
@@ -756,7 +766,7 @@ convolve_each <- function(e1, e2, oper = `*`, ...) {
     z <- generic_mspct(e3, class = shared_member_class(e3),
                        ncol = nrow(e2),
                        byrow = FALSE)
-    dimnames(z) <- list(names(e1), names(e2))
+    attr(l, "mspct.dimnames")  <- list(names(e1), names(e2))
   } else {
     stop("At least one of 'e1' and 'e2' should be a collection of spectra.")
   }
