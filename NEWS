@@ -4,7 +4,21 @@ TODO
 Add test cases for chroma_spct and improve tests for the _mspct
 classes.
 
-Add test cases for convolve_each().
+Add test cases for convolve_each() and the 'apply' functions.
+
+Add methods min.wl(), max.wl() and range.wl() as synonims for min, max, and
+range methods for spectral objects.
+
+Add methods min.s.value(), max.s.value() and range.s.value() for spectral
+objects.
+
+photobiology 0.8.7
+==================
+
+Bug fixes.
+Rename f_mspct() to msdply() to respect name conventions in common use.
+Add mslply() and msaply().
+Update documentation.
 
 photobiology 0.8.6
 ==================

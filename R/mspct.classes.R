@@ -221,7 +221,7 @@ chroma_mspct <- function(l, ncol = 1, byrow = FALSE, ...) {
 #' @export
 #' @rdname is.generic_mspct
 #'
-is.generic_mmspct <- function(x) inherits(x, "generic_mmspct")
+is.generic_mspct <- function(x) inherits(x, "generic_mspct")
 
 #' @rdname is.generic_mspct
 #' @export

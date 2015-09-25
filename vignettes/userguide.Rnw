@@ -357,7 +357,7 @@ Spectral objects created with earlier (pre-release) versions of this package are
 The package defines several classes intended to be used to store \emph{collections} of different types of spectral data. They are all derived from \texttt{generic\_mspct}, which in turn is derived from \texttt{list}. Table \ref{tab:mspct:classes} lists them.
 
 \begin{table}
-\caption{Classes for collections of spectral objects}\label{tab:spct:classes}
+\caption{Classes for collections of spectral objects}\label{tab:mspct:classes}
 \centering
 \begin{tabular}{lll}
 \toprule
@@ -455,7 +455,8 @@ lapply(mixed.mspct, class)
 R's extraction and replacement methods have specializations for collections of spectra and can be used with the same syntax and functionality as for R lists. However they test the class and validity of the returned objects and replacement members.
 
 \begin{framed}
-The methods \texttt{`[`}, and \texttt{`[<-`}, extract and replace `parts' of the collection, respectively. Even when only one member is extrated, the returned value is a collection of spectra. The expected replacement value is also, always a collection of spectra.
+\noindent
+Methods \texttt{`[`}, and \texttt{`[<-`}, extract and replace `parts' of the collection, respectively. Even when only one member is extrated, the returned value is a collection of spectra. The expected replacement value is also, always a collection of spectra.
 \end{framed}
 
 <<>>=
@@ -468,7 +469,8 @@ two_filters.mspct[1:2] <- two_filters.mspct[2:1]
 @
 
 \begin{framed}
-The methods \texttt{`[[`}, \verb|$| and \texttt{`[[<-`}, extract and replace individual members of the collection, respectively. They allways return or expect objects of one of the spectral classes.
+\noindent
+Methods \texttt{`[[`}, \verb|$| and \texttt{`[[<-`}, extract and replace individual members of the collection, respectively. They allways return or expect objects of one of the spectral classes.
 \end{framed}
 
 <<>>=
@@ -490,11 +492,13 @@ We can use the combine method \texttt{c()} with collections of spectra (but not 
 c(two_filters.mspct, mixed.mspct)
 @
 
-\subsection{Transform or \emph{apply} functions}
+\subsection{Transform or \emph{apply} functions}\label{sec:apply}
 
-We follow the namimg convention used in package plyr, but using the \texttt{ms} as prefix for \texttt{\_mspct} objects. Currently the only function implemented in this package is \texttt{msmsply} which both accepts and returns a collection of spectra.
+For our `apply' functions we follow the namimg convention used in package \texttt{plyr}, but using  \texttt{ms} as prefix for \texttt{\_mspct} objects. The `apply' functions implemented in the \PB package are \texttt{msmsply}, \texttt{msdply}, \texttt{mslply}  and \texttt{msaply} which both accepts a collections of spectra as first argument and return a collection of spectra, a data frame, a list, or an array respectively.
 
-The function \texttt{msmsply()} can be used to apply a function to each member spectrum in a collection. The applied function is expected to return a `transformed' spectrum as another object of class \texttt{generic\_spct} or a class derived from it. The value returned by \texttt{msmsply} is a collection of spectra, of a type determined by the class(es) of the spectra in the new collection.
+Functions \texttt{msmsply()}, \texttt{msdply} and \texttt{mslply} can be used to apply a function to each member spectrum in a collection. The `apply' fucntion to use depends on the return value of the applied function.
+
+In the case of \texttt{msmsply()} the applied function is expected to return a `transformed' spectrum as another object of class \texttt{generic\_spct} or a class derived from it. The value returned by \texttt{msmsply} is a collection of spectra, of a type determined by the class(es) of the member spectra in the new collection.
 
 We start with a simple example in which we add a constant to each spectrum in the collection
 <<>>=
@@ -509,7 +513,39 @@ msmsply(two.mspct, trim_spct, range = c(281, 500), fill = NA)
 
 In the second example we pass two arguments by name to the applied function. The number of arguments is not fixed, but the spectrum will be always passed as the first argument to the function.
 
-\subsection{Convolution}
+In the case of \texttt{msdply()} the applied function is expected to return an R object of the same length for each of the member spectra.
+
+<<>>=
+msdply(two.mspct, max)
+@
+
+<<>>=
+ranges.df <- msdply(two.mspct, range)
+ranges.df
+cat(comment(ranges.df))
+@
+
+<<>>=
+msdply(two.mspct, range, na.rm = TRUE)
+@
+
+In the case of \texttt{mslply()} the applied function is expected to return an R object of any length, possibly variable among members.
+
+<<>>=
+str(mslply(two.mspct, names))
+@
+
+In the case of \texttt{msaply()} the applied function is expected to return an R object of length 1, although a list with dimensions will be returned for longer return values.
+
+<<>>=
+str(msaply(two.mspct, max))
+@
+
+<<>>=
+str(msaply(two.mspct, range))
+@
+
+\subsection{Convolution}\label{sec:convolve}
 
 By convolution we normally mean the multiplication value by value at matching wavelengths of two spectra. The function described in this section facilitates this and similar operations among collections of spectra. An example use case could be the covolution of spectral irradiance by spectral transmittance for all combinations of light sources and filters in a collection of source spectra and a collection of filter spectra.
 
@@ -533,6 +569,11 @@ The function \texttt{convolve\_each} will use other operators or functions and e
 <<>>=
 convolve_each(two.mspct, sun.spct, oper = `+`)
 @
+
+\begin{framed}
+\noindent
+There are cases where functions \texttt{convolve\_each()} and \texttt{msmsply()} can be both used, but there are also cases where their differences matter. And example is convolving two collections of spectra, a case where only \texttt{convolve\_each()} can be used. In contrast, when one of the arguments is not a spectrum or a collection of spectra, \texttt{msmsply()} should be used instead.
+\end{framed}
 
 \section{Wavebands }
 
@@ -802,6 +843,7 @@ In this section we describe methods and functions that take one or more spectral
 
 \begin{table}
   \caption[Transformation methods for spectra]{Transformation methods for spectra. Key: + available, -- not available, f available in the future.}\label{tab:transform:spct}
+
   \centering
   \begin{footnotesize}
   \begin{tabular}{>{\ttfamily}lcccccc}
@@ -828,15 +870,23 @@ In this section we describe methods and functions that take one or more spectral
 \end{table}
 
 \begin{table}
-  \caption[Transformation methods for collections of spectra]{Transformation methods for collections of spectra. Key: + available, -- not available, f available in the future.}\label{tab:transform:mspct}
+  \caption[Transformation methods for collections of spectra]{Transformation methods for collections of spectra. Key: + available, -- not available, \textbf{f} use \texttt{msmsply()} or \texttt{convolve\_each()} to apply function or operator to collection members.}\label{tab:transform:mspct}
   \centering
   \begin{footnotesize}
   \begin{tabular}{>{\ttfamily}lcccccc}
     \toprule
     \textnormal{methods} & source & response & filter & reflector & object & chroma \\
     \midrule
-    mutate\_mspct & + & + & + & + & + & + \\
+    msmsply & + & + & + & + & + & + \\
+    msdply & + & + & + & + & + & + \\
+    mslply & + & + & + & + & + & + \\
+    msaply & + & + & + & + & + & + \\
+    \midrule
     rbindspct & + & + & + & + & + & + \\
+    c & + & + & + & + & + & + \\
+    \midrule
+    \emph{math operators} & f & f & f & f & f & f \\
+    \emph{math functions} & f & f & f & f & f & f \\
     \midrule
     e2q, q2e & + & + & -- & -- & -- & -- \\
     A2T, T2A & -- & -- & + & -- & -- & -- \\
@@ -844,8 +894,6 @@ In this section we describe methods and functions that take one or more spectral
     interpolate\_spct & f & f & f & f & f & f \\
     f\_scale & f & f & f & f & f & f \\
     normalize & f & f & f & f & f & f \\
-    \emph{math operators} & f & f & f & f & f & f \\
-    \emph{math functions} & f & f & f & f & f & f \\
     tag & f & f & f & f & f & f \\
     \bottomrule
   \end{tabular}
@@ -973,7 +1021,7 @@ In addition, when fill is not \texttt{NULL}, expansion is possible.
 trim_spct(sun.spct, low.limit = 290, fill = 0)
 @
 
-\subsection{Convoluting weights}
+\subsection{Convolving weights}
 
 It is very instructive to look at weighted spectral data to understand how effective irradiances are calculated. Plotting effective spectral irradiance data can be very instructive when analyzing the interaction of photoreceptors and ambient radiation. It can also illustrate what a large effect that small measuring errors can have on the estimated effective irradiances or exposures when SWFs have a steep slope.
 
@@ -1041,23 +1089,37 @@ In the chuck above, we can see how this works, using in this case the default \t
 Summaries can be calculated both from individual spectral objects (Table \ref{tab:summaries:spct}) and from collections of spectral objects (Table \ref{tab:summaries:mspct}). They return a \emph{simpler} object than the spectral data in their arguments. For example a vector of numeric values, possibly of length one, in the case of individual spectra, or a data frame containing one row of summary data for each spectrum the collection of multiple spectra supplied as argument.
 
 \begin{table}
-  \caption[Summary methods for spectra]{Summary methods for spectra.  Key: + available, -- not available, f available in the future.}\label{tab:summaries:spct}
+  \caption[Summary methods for spectra]{Summary methods for spectra.  Key: + available, -- not available.}\label{tab:summaries:spct}
   \centering
   \begin{footnotesize}
   \begin{tabular}{>{\ttfamily}lcccccc}
     \toprule
     \textnormal{methods} & source & response & filter & reflector & object & chroma \\
     \midrule
-    irrad, e\_irrad, q\_irrad & + & -- & -- & -- & -- & -- \\
-    fluence, e\_fluence, q\_fluence & + & -- & -- & -- & -- & -- \\
-    ratio, e\_ratio, q\_ratio & + & -- & -- & -- & -- & -- \\
-    qe\_ratio, eq\_ratio & + & -- & -- & -- & -- & -- \\
-    response, e\_response, q\_response & -- & + & -- & -- & -- & -- \\
+    irrad & + & -- & -- & -- & -- & -- \\
+    e\_irrad & + & -- & -- & -- & -- & -- \\
+    q\_irrad & + & -- & -- & -- & -- & -- \\
+    fluence & + & -- & -- & -- & -- & -- \\
+    e\_fluence & + & -- & -- & -- & -- & -- \\
+    q\_fluence & + & -- & -- & -- & -- & -- \\
+    ratio & + & -- & -- & -- & -- & -- \\
+    e\_ratio & + & -- & -- & -- & -- & -- \\
+    q\_ratio & + & -- & -- & -- & -- & -- \\
+    qe\_ratio & + & -- & -- & -- & -- & -- \\
+    eq\_ratio & + & -- & -- & -- & -- & -- \\
+    response & -- & + & -- & -- & -- & -- \\
+    e\_response & -- & + & -- & -- & -- & -- \\
+    q\_response & -- & + & -- & -- & -- & -- \\
     transmittance & -- & -- & + & -- & + & -- \\
     absorptance & -- & -- & + & -- & + & -- \\
     absorbance & -- & -- & + & -- & + & -- \\
-    range, min, max & + & + & + & + & + & + \\
-    stepsize, spread, midpoint & + & + & + & + & + & + \\
+    reflectance & -- & -- & -- & + & + & -- \\
+    range & + & + & + & + & + & + \\
+    min & + & + & + & + & + & + \\
+    max & + & + & + & + & + & + \\
+    stepsize & + & + & + & + & + & + \\
+    spread & + & + & + & + & + & + \\
+    midpoint & + & + & + & + & + & + \\
     labels & + & + & + & + & + & + \\
     summary & + & + & + & + & + & + \\
     peaks & + & + & + & + & + & + \\
@@ -1072,7 +1134,7 @@ Summaries can be calculated both from individual spectral objects (Table \ref{ta
 \end{table}
 
 \begin{table}
-  \caption[Summary methods for collections of spectra]{Summary methods for collections of spectra. Key: + available, -- not available, f available in the future.}\label{tab:summaries:mspct}
+  \caption[Summary methods for collections of spectra]{Summary methods for collections of spectra. Key: + available, -- not available, \textbf{f} use \texttt{msmsply()} or \texttt{convolve\_each()} to apply function to collection members, \textbf{a} use \texttt{msdply()} or \texttt{mslply} to apply function to collection members, \textbf{l} use \texttt{mslply} to apply function to collection members.}\label{tab:summaries:mspct}
   \centering
   \begin{footnotesize}
   \begin{tabular}{>{\ttfamily}lcccccc}
@@ -1081,23 +1143,37 @@ Summaries can be calculated both from individual spectral objects (Table \ref{ta
     \midrule
     f\_mspct & + & + & + & + & + & + \\
     \midrule
-    irrad, e\_irrad, q\_irrad & + & -- & -- & -- & -- & -- \\
-    fluence, e\_fluence, q\_fluence & + & -- & -- & -- & -- & -- \\
-    ratio, e\_ratio, q\_ratio & + & -- & -- & -- & -- & -- \\
-    qe\_ratio, eq\_ratio & + & -- & -- & -- & -- & -- \\
-    response, e\_response, q\_response & -- & + & -- & -- & -- & -- \\
+    irrad & + & -- & -- & -- & -- & -- \\
+    e\_irrad & + & -- & -- & -- & -- & -- \\
+    q\_irrad & + & -- & -- & -- & -- & -- \\
+    fluence & + & -- & -- & -- & -- & -- \\
+    e\_fluence & + & -- & -- & -- & -- & -- \\
+    q\_fluence & + & -- & -- & -- & -- & -- \\
+    ratio & + & -- & -- & -- & -- & -- \\
+    e\_ratio & + & -- & -- & -- & -- & -- \\
+    q\_ratio & + & -- & -- & -- & -- & -- \\
+    qe\_ratio & + & -- & -- & -- & -- & -- \\
+    eq\_ratio & + & -- & -- & -- & -- & -- \\
+    response & -- & + & -- & -- & -- & -- \\
+    e\_response & -- & + & -- & -- & -- & -- \\
+    q\_response & -- & + & -- & -- & -- & -- \\
     transmittance & -- & -- & + & -- & + & -- \\
     absorptance & -- & -- & + & -- & + & -- \\
     absorbance & -- & -- & + & -- & + & -- \\
-    range, min, max & + & + & + & + & + & + \\
-    stepsize, spread, midpoint & + & + & + & + & + & + \\
-    labels & -- & -- & -- & -- & -- & -- \\
-    summary & -- & -- & -- & -- & -- & -- \\
+    reflectance & -- & -- & -- & + & + & -- \\
+    range & + & + & + & + & + & + \\
+    min & + & + & + & + & + & + \\
+    max & + & + & + & + & + & + \\
+    stepsize & + & + & + & + & + & + \\
+    spread & + & + & + & + & + & + \\
+    midpoint & + & + & + & + & + & + \\
+    labels & l & l & l & l & l & l \\
+    summary & l & l & l & l & l & l \\
     peaks & f & f & f & f & f & f \\
     valleys & f & f & f & f & f & f \\
-    integrate\_spct & f & f & f & f & f & f \\
-    average\_spct & f & f & f & f & f & f \\
-    color & f & f & f & f & f & f \\
+    integrate\_spct & a & a & a & a & a & a \\
+    average\_spct & a & a & a & a & a & a \\
+    color & + & a & a & a & a & a \\
     \bottomrule
   \end{tabular}
   \end{footnotesize}
@@ -1130,24 +1206,18 @@ stepsize(sun.spct)
 \subsubsection{Collections of spectra}
 
 \begin{framed}
-Not all summary methods are yet implemented for collections of spectra, because this is a new set of classes, just added to the package. See Table \ref{tab:summaries:mspct} where methods be implemented in the \emph{future} are marked with `f'. Functions \texttt{f\_mspct} or \texttt{plyr::ldply} can be used to apply a function to all the spectra in a collection and obtain the results in a data frame object. Other \emph{apply} functions or \texttt{for} loops can also be used if needed.
+\noindent
+Only the most frequently used summary methods are implemented for collections of spectra. See Table \ref{tab:summaries:mspct} where methods that need to be applied with functions \texttt{msdply} or \texttt{mslply} to members in a collection and obtain the results in a data frame or a list object are indicated. Other \emph{apply} functions or \texttt{for} loops can also be used if needed.
 \end{framed}
 
 Collections of spectra can be useful not only for time-series of spectra or spectral images, but also when dealing with a small group of related spectra. In the example below we show how to use a collection of spectra for calculating summaries. The spectra in a collection do \textbf{not} need to have been measured at the same wavelength values, or have the same number of rows or even of columns. Consequently, in many cases applying the wavelength summary functions described above to collections of spectra can be useful. The value returned is a data frame, with a number of data columns equal to the length of the returned value by the corresponding method for individual spectra.
 
 <<>>=
-filtered_sun <-
-  source_mspct(
-    lapply(list(none = clear.spct,
-                ug1 = ug1.spct, ug11 = ug11.spct,
-                gg400 = gg400.spct,
-                og550 = og550.spct,
-                rg665 = rg665.spct, rg830 = rg830.spct),
-           `*`,
-           y = sun.spct))
-range(filtered_sun)
+filters.mspct <- filter_mspct(list(none = clear.spct,
+                                   ug1 = ug1.spct,
+                                   gg400 = gg400.spct))
+range(filters.mspct)
 @
-
 
 \subsection{Peaks and valleys}
 
@@ -1173,6 +1243,16 @@ peaks(sun.spct, span = 21)
 @
 
 Low level functions \texttt{find\_peaks}, \texttt{get\_peaks} and \texttt{get\_valleys} take numeric vectors as arguments.
+
+\subsubsection{Collections of spectra}
+
+We can use \texttt{msmsply()} to extract the peaks of a collection of spectra.
+
+<<>>=
+msmsply(filters.mspct, peaks, span = 11)
+@
+
+Two of the filters in the collection do not have peaks, and a spectrum object of length zero is returned for them.
 
 \subsection{Irradiance}
 
@@ -1233,14 +1313,29 @@ irrad(sun.spct, UV_bands(), quantity = "average")
 
 Collections of spectra can be useful not only for time-series of spectra or spectral images, but also when dealing with a small group of related spectra. In the example below we show how to use a collection of spectra for estimating irradiances under different filters set up in sunlight.
 
-One thing to remember, is that operators in R are just functions with special names and call syntax. They can also be called with the usual function call syntax by enclosing their \emph{name} in backquotes. We use this trick to use the multiplication operator \texttt{`*`} in a call to \texttt{msmsply} which returns, in this case, a \texttt{source\_multi\_spct} object. After this we just call the \texttt{irrad} method on the \emph{collection of spectra} and obtain the result as a data frame with one row per spectrum and one column by waveband.
-
+We first create a collection of filter spectra:
 <<>>=
 filters.mspct <- filter_mspct(list(none = clear.spct,
-                ug1 = ug1.spct, ug11 = ug11.spct,
-                gg400 = gg400.spct,
-                og550 = og550.spct,
-                rg665 = rg665.spct, rg830 = rg830.spct))
+                                   ug1 = ug1.spct,
+                                   gg400 = gg400.spct))
+@
+
+We then convolve each filter's spectral transmittance by the spectral irradiance of the light source
+<<>>=
+filtered_sun <- convolve_each(filters.mspct, sun.spct)
+irrad(filtered_sun, list(UVA(), VIS()))
+@
+
+The code above can also be written as a single statement
+<<>>=
+irrad(convolve_each(filters.mspct, sun.spct), list(UVA(), VIS()))
+@
+
+It is also possible to use an `apply' function. Syntax parallels that of base R's and package \texttt{plyr}'s. See sections \ref{sec:apply} and \ref{sec:convolve} for more details.
+
+One thing to remember, is that operators in R are just normal functions with special names and call syntax. They can also be called with the usual function call syntax by enclosing their \emph{name} in backquotes. We use this to pass as argument the multiplication operator \texttt{`*`} in a call to \texttt{msmsply} which returns, in this case, a \texttt{source\_multi\_spct} object. After this we just call the \texttt{irrad} method on the \emph{collection of spectra} and obtain the result as a data frame with one row per spectrum and one column by waveband.
+
+<<>>=
 filtered_sun <- msmsply(filters.mspct, `*`, sun.spct)
 irrad(filtered_sun, list(UVA(), VIS()))
 @
@@ -1354,14 +1449,10 @@ irrad(sun.spct * polyester.new.spct, list(UVB(), UVA(), PAR()), wb.trim = TRUE) 
 Here we construct a collection of filter spectra, and then we calculate the transmittance of these filters for two wavebands, obtaining the results as a data frame, with one row per filter, and one column per waveband.
 
 <<>>=
-filters <-
-  filter_mspct(
-    list(clear = clear.spct,
-         ug1 = ug1.spct, ug11 = ug11.spct,
-         gg400 = gg400.spct,
-         og550 = og550.spct,
-         rg665 = rg665.spct, rg830 = rg830.spct))
-transmittance(filters, list(UVA(), VIS()))
+filters.mspct <- filter_mspct(list(clear = clear.spct,
+                                   ug1 = ug1.spct,
+                                   gg400 = gg400.spct))
+transmittance(filters.mspct, list(UVA(), VIS()))
 @
 
 \subsection{Integrated response}
@@ -1385,10 +1476,8 @@ This function has an additional argument \texttt{quantity}, with default \texttt
 \subsubsection{Collections of spectra}
 
 <<>>=
-sensors <-
-  response_mspct(
-    list(BW20 = Vital_BW_20.spct,
-         Berger = Berger_UV_erythemal.spct))
+sensors <- response_mspct(list(BW20 = Vital_BW_20.spct,
+                               Berger = Berger_UV_erythemal.spct))
 response(sensors, list(UVC(), UVB(), UVA()), quantity = "contribution")
 @
 
