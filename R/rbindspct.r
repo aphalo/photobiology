@@ -278,7 +278,7 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
 #'   subset of rows and columns that are selected. See details for special
 #'   cases.
 #'
-#' @method "[" generic_spct
+#' @method [ generic_spct
 #'
 #' @examples
 #' sun.spct[sun.spct$w.length > 400, ]
@@ -522,15 +522,19 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
 #'   NULL, deletes the column if a single column is selected.
 #'
 #' @export
-#' @method "[<-" generic_spct
+#' @method [<- generic_spct
 #' @rdname extract
 #'
 "[<-.generic_spct" <- function(x, i, j, value) {
   check(`[<-.data.frame`(x, i, j, value), byref = FALSE)
 }
 
+#' @param name A literal character string or a name (possibly backtick quoted).
+#'   For extraction, this is normally (see under ‘Environments’) partially
+#'   matched to the names of the object.
+#'
 #' @export
-#' @method "$<-" generic_spct
+#' @method $<- generic_spct
 #' @rdname extract
 #'
 "$<-.generic_spct" <- function(x, name, value) {

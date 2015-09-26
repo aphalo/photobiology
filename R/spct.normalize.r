@@ -145,7 +145,7 @@ normalize.filter_spct <- function(x,
                           norm = norm,
                           var.name = "A"))
   } else {
-    stop("'qty.out ", unit.out, " is unknown")
+    stop("'qty.out ", qty.out, " is unknown")
   }
 }
 

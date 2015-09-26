@@ -84,8 +84,8 @@ calc_source_output <- function(w.length.out,
       warning("Ignoring unsupported scaled argument: ", scaled)
       e.div <- q.div <- 1.0
     }
-    out.data[!out.fill.selector, "s.e.irrad"] <- out.data[!out.fill.selector, s.e.irrad] / e.div
-    out.data[!out.fill.selector, "s.q.irrad"] <- out.data[!out.fill.selector, s.q.irrad] / q.div
+    out.data[!out.fill.selector, "s.e.irrad"] <- out.data[!out.fill.selector, "s.e.irrad"] / e.div
+    out.data[!out.fill.selector, "s.q.irrad"] <- out.data[!out.fill.selector, "s.q.irrad"] / q.div
   }
   out.data[out.fill.selector, "s.e.irrad"] <- fill
   out.data[out.fill.selector, "s.q.irrad"] <- fill

@@ -31,6 +31,8 @@ test_that("oper", {
   expect_equal( 2 * my.spct, my.2.spct)
   expect_equal( 1 / (2 / my.2.spct), my.spct)
   expect_equal( 1 / my.spct, my.spct^-1)
+  expect_equal(my.2.spct %/% 2L, my.spct)
+  expect_equal(my.2.spct %% 2L, my.spct %% 1L)
 })
 
 

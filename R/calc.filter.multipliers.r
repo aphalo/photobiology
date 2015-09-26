@@ -6,8 +6,7 @@
 #'
 #' @param w.length.out numeric vector of wavelengths (nm) for output
 #' @param filter a character string giving the name of a filter data set, or an
-#'   object of class "filter_spct" default is 'clear.spct' a clear filter (T =
-#'   1.0)
+#'   object of class "filter_spct".
 #' @param w.length.in numeric vector of wavelengths (nm) for input
 #' @param transmittance.in numeric vector of spectral transmittance value (as
 #'   percent)
@@ -29,10 +28,9 @@
 #' calc_filter_multipliers(400:500, "polythene.new")
 #' calc_filter_multipliers(400:500, polythene.new.spct)
 #' calc_filter_multipliers(400:500, "polythene.new", pc.out=TRUE)
-#' calc_filter_multipliers(400:500)
 #'
 calc_filter_multipliers <- function(w.length.out,
-                                    filter=clear.spct,
+                                    filter,
                                     w.length.in=NULL, transmittance.in=NULL,
                                     pc.in=TRUE,
                                     pc.out=FALSE, div = 1.0) {

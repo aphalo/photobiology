@@ -78,7 +78,7 @@ summary.generic_spct <- function(object, digits = max(3, getOption("digits")-3),
   z <- signif(z, digits)
   comment(z) <- comment(object)
   class(z) <- c("summary_generic_spct", class(z))
-  return(z)
+  z
 }
 
 #' @method summary cps_spct
@@ -99,7 +99,7 @@ summary.cps_spct <- function(object, digits = max(3, getOption("digits")-3), ...
   attr(z, "normalized") <- getNormalized(object)
   attr(z, "scaled") <- getScaled(object)
   class(z) <- c("summary_generic_spct", class(z))
-  return(z)
+  z
 }
 
 # @describeIn summary.generic_spct Summary of a "source_spct" object.
@@ -111,11 +111,12 @@ summary.cps_spct <- function(object, digits = max(3, getOption("digits")-3), ...
 #' @rdname summary.generic_spct
 #'
 summary.source_spct <- function(object,
-                                digits = max(3, getOption("digits")-3),
+                                digits = max(3, getOption("digits") - 3),
                                 time.unit = NULL,
                                 ...) {
   if (!is.null(time.unit)) {
-    object <- convertTimeUnit(object, time.unit = time.unit, byref = FALSE)
+    object <-
+      convertTimeUnit(object, time.unit = time.unit, byref = FALSE)
   } else {
     time.unit <- getTimeUnit(object)
   }
@@ -127,27 +128,35 @@ summary.source_spct <- function(object,
   )
 
   if (exists("s.e.irrad", object, inherits = FALSE)) {
-    z <- c(z,
-           max.s.e.irrad = max(object$s.e.irrad, ...),
-           min.s.e.irrad = min(object$s.e.irrad, ...),
-           e.irrad = as.numeric(e_irrad(object)) )
+    z <- c(
+      z,
+      max.s.e.irrad = max(object$s.e.irrad, ...),
+      min.s.e.irrad = min(object$s.e.irrad, ...),
+      e.irrad = as.numeric(e_irrad(object))
+    )
   } else {
-    z <- c(z,
-           max.s.e.irrad = NA,
-           min.s.e.irrad = NA,
-           e.irrad = NA )
+    z <- c(
+      z,
+      max.s.e.irrad = NA,
+      min.s.e.irrad = NA,
+      e.irrad = NA
+    )
   }
 
   if (exists("s.q.irrad", object, inherits = FALSE)) {
-    z <- c(z,
-           max.s.q.irrad = max(object$s.q.irrad, ...),
-           min.s.q.irrad = min(object$s.q.irrad, ...),
-           q.irrad = as.numeric(q_irrad(object)) )
+    z <- c(
+      z,
+      max.s.q.irrad = max(object$s.q.irrad, ...),
+      min.s.q.irrad = min(object$s.q.irrad, ...),
+      q.irrad = as.numeric(q_irrad(object))
+    )
   } else {
-    z <- c(z,
-           max.s.q.irrad = NA,
-           min.s.q.irrad = NA,
-           q.irrad = NA )
+    z <- c(
+      z,
+      max.s.q.irrad = NA,
+      min.s.q.irrad = NA,
+      q.irrad = NA
+    )
   }
 
   z <- signif(z, digits)
@@ -157,7 +166,7 @@ summary.source_spct <- function(object,
   attr(z, "scaled") <- getScaled(object)
   comment(z) <- comment(object)
   class(z) <- c("summary_source_spct", class(z))
-  return(z)
+  z
 }
 
 # @describeIn summary.generic_spct Summary of a \code{filter_spct} object.
@@ -166,7 +175,8 @@ summary.source_spct <- function(object,
 #' @export
 #' @rdname summary.generic_spct
 #'
-summary.filter_spct <- function(object, digits = max(3, getOption("digits")-3), ...) {
+summary.filter_spct <- function(object,
+                                digits = max(3, getOption("digits") - 3), ...) {
   Tfr.type <- getTfrType(object)
   z <- c(
     max.w.length = max(object),
@@ -204,7 +214,7 @@ summary.filter_spct <- function(object, digits = max(3, getOption("digits")-3), 
   attr(z, "scaled") <- getScaled(object)
   comment(z) <- comment(object)
   class(z) <- c("summary_filter_spct", class(z))
-  return(z)
+  z
 }
 
 # @describeIn summary.generic_spct Summary of a "reflector_spct" object.
@@ -213,7 +223,8 @@ summary.filter_spct <- function(object, digits = max(3, getOption("digits")-3), 
 #' @export
 #' @rdname summary.generic_spct
 #'
-summary.reflector_spct <- function(object, digits = max(3, getOption("digits")-3), ...) {
+summary.reflector_spct <- function(object,
+                                   digits = max(3, getOption("digits") - 3), ...) {
   Rfr.type <- getRfrType(object)
   z <- c(
     max.w.length = max(object),
@@ -230,7 +241,7 @@ summary.reflector_spct <- function(object, digits = max(3, getOption("digits")-3
   attr(z, "scaled") <- getScaled(object)
   comment(z) <- comment(object)
   class(z) <- c("summary_reflector_spct", class(z))
-  return(z)
+  z
 }
 
 # @describeIn summary.generic_spct Summary of a \code{filter_spct} object.
@@ -239,7 +250,8 @@ summary.reflector_spct <- function(object, digits = max(3, getOption("digits")-3
 #' @export
 #' @rdname summary.generic_spct
 #'
-summary.object_spct <- function(object, digits = max(3, getOption("digits")-3), ...) {
+summary.object_spct <- function(object,
+                                digits = max(3, getOption("digits") - 3), ...) {
   Tfr.type <- getTfrType(object)
   Rfr.type <- getRfrType(object)
   z <- c(
@@ -261,7 +273,7 @@ summary.object_spct <- function(object, digits = max(3, getOption("digits")-3), 
   attr(z, "scaled") <- getScaled(object)
   comment(z) <- comment(object)
   class(z) <- c("summary_object_spct", class(z))
-  return(z)
+  z
 }
 
 # @describeIn summary.generic_spct Summary of a "response_spct" object.
@@ -321,7 +333,7 @@ summary.response_spct <- function(object,
   attr(z, "scaled") <- getScaled(object)
   comment(z) <- comment(object)
   class(z) <- c("summary_response_spct", class(z))
-  return(z)
+  z
 }
 
 # @describeIn summary.generic_spct Summary of a "chroma_spct" object.
@@ -330,7 +342,8 @@ summary.response_spct <- function(object,
 #' @export
 #' @rdname summary.generic_spct
 #'
-summary.chroma_spct <- function(object, digits = max(3, getOption("digits")-3), ...) {
+summary.chroma_spct <- function(object,
+                                digits = max(3, getOption("digits") - 3), ...) {
   z <- c(
     max.w.length = max(object),
     min.w.length = min(object),
@@ -341,12 +354,11 @@ summary.chroma_spct <- function(object, digits = max(3, getOption("digits")-3), 
     z.max = max(object[["z"]])
   )
   z <- signif(z, digits)
-  attr(z, "time.unit") <- time.unit
   attr(z, "normalized") <- getNormalized(object)
   attr(z, "scaled") <- getScaled(object)
   comment(z) <- comment(object)
   class(z) <- c("summary_chroma_spct", class(z))
-  return(z)
+  z
 }
 
 # Print spectral summaries ------------------------------------------------
@@ -596,9 +608,9 @@ color.source_spct <- function(x, ...) {
   x.name <- "source"
   q2e(x, byref=TRUE)
   color <- c(s_e_irrad2rgb(x[["w.length"]], x[["s.e.irrad"]],
-                           sens=ciexyzCMF2.spct, color.name=paste(x.name, "CMF")),
+                           sens=photobiology::ciexyzCMF2.spct, color.name=paste(x.name, "CMF")),
              s_e_irrad2rgb(x[["w.length"]], x[["s.e.irrad"]],
-                           sens=ciexyzCC2.spct, color.name=paste(x.name, "CC")))
+                           sens=photobiology::ciexyzCC2.spct, color.name=paste(x.name, "CC")))
   return(color)
 }
 

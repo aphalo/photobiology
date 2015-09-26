@@ -686,7 +686,7 @@ objects belonging to different classes, and meaningless combinations return \tex
 \begin{table}
 \newcommand{\N}{\textcolor{red}{\small N}}
 \newcommand{\Y}{\textcolor{green}{\small Y}}
-\caption[Binary operators]{Binary operators and operands. Validity and class of result. All operations marked `\Y' are allowed, those marked `\N' are forbidden and return \texttt{NA} and issue a warning.}\label{tab:operators}\vspace{0.75ex}
+\caption[Binary operators]{Binary operators and operands. Validity and class of result. All operations marked `\Y' are allowed, those marked `\N' are forbidden and return \texttt{NA} and issue a warning. Operators \texttt{\%/\%} and \texttt{\%\%} follow \texttt{/}.}\label{tab:operators}\vspace{0.75ex}
 \begin{tabular}{lcccccll}
 \toprule
 e1 & \verb|+| & \verb|-| & \verb|*| & \verb|/| & \verb|^| & e2 & result \\
@@ -772,17 +772,17 @@ The most common maths functions, as well as unary minus and plus, are also imple
 \newcommand{\Y}{\textcolor{green}{\small Y}}
 \caption[Binary operators]{Unary operators and maths functions. Validity and class of result. All operations marked `\Y' are allowed, those marked `\N' are not implemented and return \texttt{NA} and issue a warning.}\label{tab:unary}\vspace{0.75ex}
 \centering
-\begin{tabular}{lcccccll}
+\begin{tabular}{lcccccccl}
 \toprule
-e1 & \verb|+| & \verb|-| & \verb|log()| & \verb|log10()| & \verb|exp()| & \verb|sqrt()| & result \\
+e1 & \verb|+| & \verb|-| & \verb|log| & \verb|log10| & \verb|exp| & \verb|sqrt| & \verb|abs| & result \\
 \midrule
-cps\_spct & \Y & \Y &\Y  & \Y & \Y & \Y & cps\_spct \\
-source\_spct & \Y & \Y &\Y  & \Y & \Y & \Y & source\_spct \\
-filter\_spct & \Y & \Y & \Y & \Y  & \Y & \Y & filter\_spct \\
-reflector\_spct & \Y & \Y & \Y &\Y  & \Y & \Y & reflector\_spct \\
-object\_spct & \N & \N & \N & \N & \N & \N & -- \\
-response\_spct & \Y & \Y & \Y & \Y & \Y & \Y & response\_spct \\
-chroma\_spct & \Y  & \Y & \Y & \Y & \Y & \Y & chroma\_spct \\
+cps\_spct & \Y & \Y &\Y  & \Y & \Y & \Y & \Y & cps\_spct \\
+source\_spct & \Y & \Y &\Y  & \Y & \Y & \Y &\Y &  source\_spct \\
+filter\_spct & \Y & \Y & \Y & \Y  & \Y & \Y &\Y &  filter\_spct \\
+reflector\_spct & \Y & \Y & \Y &\Y  & \Y & \Y &\Y &  reflector\_spct \\
+object\_spct & \N & \N & \N & \N & \N & \N & \N & -- \\
+response\_spct & \Y & \Y & \Y & \Y & \Y & \Y &\Y &  response\_spct \\
+chroma\_spct & \Y  & \Y & \Y & \Y & \Y & \Y &\Y &  chroma\_spct \\
 \bottomrule
 \end{tabular}
 \end{table}

@@ -651,7 +651,7 @@ oper.q.generic_spct <- function(e1, e2, oper) {
 
 # multiplication ----------------------------------------------------------
 
-#' "*" operator for spectra
+#' Arithmetic Operators
 #'
 #' Multiplication operator for spectra.
 #'
@@ -675,7 +675,7 @@ oper.q.generic_spct <- function(e1, e2, oper) {
 # division ----------------------------------------------------------------
 
 
-#' "/" operator for spectra
+#' Arithmetic Operators
 #'
 #' Division operator for generic spectra.
 #'
@@ -696,9 +696,51 @@ oper.q.generic_spct <- function(e1, e2, oper) {
   }
 }
 
+#' Arithmetic Operators
+#'
+#' Integer-division operator for generic spectra.
+#'
+#' @param e1 an object of class "generic_spct"
+#' @param e2 an object of class "generic_spct"
+#' @name div-.generic_spct
+#' @export
+#' @family math operators and functions
+#'
+'%/%.generic_spct' <- function(e1, e2) {
+  unit <- getOption("photobiology.radiation.unit", default="energy")
+  if (unit == "energy") {
+    return(oper.e.generic_spct(e1, e2, `%/%`))
+  } else if (unit == "photon" || unit == "quantum") {
+    return(oper.q.generic_spct(e1, e2, `%/%`))
+  } else {
+    return(NA)
+  }
+}
+
+#' Arithmetic Operators
+#'
+#' Reminder operator for generic spectra.
+#'
+#' @param e1 an object of class "generic_spct"
+#' @param e2 an object of class "generic_spct"
+#' @name mod-.generic_spct
+#' @export
+#' @family math operators and functions
+#'
+'%%.generic_spct' <- function(e1, e2) {
+  unit <- getOption("photobiology.radiation.unit", default="energy")
+  if (unit == "energy") {
+    return(oper.e.generic_spct(e1, e2, `%%`))
+  } else if (unit == "photon" || unit == "quantum") {
+    return(oper.q.generic_spct(e1, e2, `%%`))
+  } else {
+    return(NA)
+  }
+}
+
 # Sum ---------------------------------------------------------------
 
-#' "+" operator for spectra
+#' Arithmetic Operators
 #'
 #' Division operator for generic spectra.
 #'
@@ -724,7 +766,7 @@ oper.q.generic_spct <- function(e1, e2, oper) {
 
 # Minus -------------------------------------------------------------------
 
-#' "-" operator for spectra
+#' Arithmetic Operators
 #'
 #' Substraction operator for generic spectra.
 #'
@@ -751,7 +793,7 @@ oper.q.generic_spct <- function(e1, e2, oper) {
 
 # other operators  ---------------------------------------------------------------------
 
-#' "^" operator for spectra
+#' Arithmetic Operators
 #'
 #' Power operator for spectra.
 #'
@@ -774,7 +816,7 @@ oper.q.generic_spct <- function(e1, e2, oper) {
 
 # math functions ----------------------------------------------------------
 
-#' math function dispatcher for spectra
+#' Math function dispatcher for spectra
 #'
 #' Function that dispatches the function supplied as argument using different variables depending
 #' on the class of the spectrum argument.
@@ -799,7 +841,7 @@ f_dispatcher_spct <- function(x, f, ...) {
       z <- T2A(x, action = "replace", byref = FALSE)
       z[["A"]] <- f(z[["A"]], ...)
     } else {
-      stop("Unrecognized 'unit.out': ", unit.out)
+      stop("Unrecognized 'filter.qty': ", filter.qty)
     }
     return(z)
   } else if(is.reflector_spct(x)) {

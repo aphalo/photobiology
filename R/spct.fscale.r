@@ -19,7 +19,7 @@ fscale <- function(x, ...) UseMethod("fscale")
 #' @return a new object of the same class as \code{x}.
 #'
 fscale.default <- function(x, ...) {
-  warning("'fscale' is not defined for objects of class ", class(spct)[1])
+  warning("'fscale' is not defined for objects of class ", class(x)[1])
   return(x)
 }
 
@@ -106,7 +106,7 @@ fscale.filter_spct <- function(x,
                        var.name = "A",
                        ...))
   } else {
-    stop("'qty.out ", unit.out, " is unknown")
+    stop("'qty.out ", qty.out, " is unknown")
   }
 }
 

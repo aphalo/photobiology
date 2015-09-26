@@ -176,9 +176,9 @@ color.default <- function(x, ...) {
 #'
 color.numeric <- function(x, type="CMF", ...) {
   if (type=="CMF") {
-    color.out <- w_length2rgb(x, sens=ciexyzCMF2.spct, color.name=NULL)
+    color.out <- w_length2rgb(x, sens=photobiology::ciexyzCMF2.spct, color.name=NULL)
   } else if (type=="CC") {
-    color.out <- w_length2rgb(x, sens=ciexyzCC2.spct, color.name=NULL)
+    color.out <- w_length2rgb(x, sens=photobiology::ciexyzCC2.spct, color.name=NULL)
   } else {
     color.our <- rep(NA, length(x))
   }
@@ -217,18 +217,25 @@ color.waveband <- function(x, short.names=TRUE, type="both", ...) {
   idx <- ifelse(!short.names, "name", "label")
   name <- labels(x)[[idx]]
   if (type == "both") {
-    color <- list(CMF = w_length_range2rgb(range(x), sens=ciexyzCMF2.spct, color.name=paste(name, "CMF", sep=".")),
-                  CC  = w_length_range2rgb(range(x), sens=ciexyzCC2.spct, color.name=paste(name, "CC", sep=".")))
+    color <- list(CMF = w_length_range2rgb(range(x),
+                                           sens=photobiology::ciexyzCMF2.spct,
+                                           color.name=paste(name, "CMF", sep=".")),
+                  CC  = w_length_range2rgb(range(x),
+                                           sens=photobiology::ciexyzCC2.spct,
+                                           color.name=paste(name, "CC", sep=".")))
   } else if (type == "CMF") {
-    color <- w_length_range2rgb(range(x), sens=ciexyzCMF2.spct, color.name=paste(name, "CMF", sep="."))
+    color <- w_length_range2rgb(range(x),
+                                sens=photobiology::ciexyzCMF2.spct,
+                                color.name=paste(name, "CMF", sep="."))
   } else if (type == "CC") {
-    color <- w_length_range2rgb(range(x), sens=ciexyzCC2.spct, color.name=paste(name, "CC", sep="."))
+    color <- w_length_range2rgb(range(x),
+                                sens=photobiology::ciexyzCC2.spct,
+                                color.name=paste(name, "CC", sep="."))
   } else {
     color <- NA
   }
   return(color)
 }
-
 
 # normalization -----------------------------------------------------------
 

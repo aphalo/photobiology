@@ -99,11 +99,10 @@ new_waveband <- function(w.low, w.high,
   return(w_band)
 }
 
+#' List-of-wavebands constructor
+#'
 #' Build a list of unweighted "waveband" objects that can be used as imput when
 #' calculating irradiances.
-#'
-#' @usage split_bands(x, list.names=NULL, short.names=is.null(list.names),
-#'   length.out=NULL)
 #'
 #' @param x a numeric array of wavelengths to split at (nm), or a range of
 #'   wavelengths or a generic_spct or a waveband.
@@ -223,7 +222,7 @@ is.waveband <- function(x) {
 }
 
 ### I need to add a check.waveband() method and use it in the constructor and maybe also
-### add no-functional replacement operators.
+### add non-functional replacement operators.
 ###
 
 check.waveband <- function(x, byref = FALSE, strict.range = FALSE, ...) {

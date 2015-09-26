@@ -15,10 +15,11 @@ objects.
 photobiology 0.8.7
 ==================
 
-Bug fixes.
+Many bug fixes, mostly minor.
 Rename f_mspct() to msdply() to respect name conventions in common use.
 Add mslply() and msaply().
-Update documentation.
+Implement operators %/% and %%, and function abs() for spectra.
+Update documentation. Revise titles of help files.
 
 photobiology 0.8.6
 ==================

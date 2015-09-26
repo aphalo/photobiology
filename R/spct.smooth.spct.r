@@ -29,7 +29,7 @@ smooth_spct <- function(x, method, strength, ...) UseMethod("smooth_spct")
 #' @export
 #'
 smooth_spct.default <- function(x, method, strength, ...) {
-  warning("'smooth_spct' is not defined for objects of class ", class(spct)[1])
+  warning("'smooth_spct' is not defined for objects of class ", class(x)[1])
   return(x)
 }
 

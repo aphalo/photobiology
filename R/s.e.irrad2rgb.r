@@ -40,7 +40,9 @@
 #'
 #' @family color functions
 #'
-s_e_irrad2rgb <- function(w.length, s.e.irrad, sens=ciexyzCMF2.spct, color.name=NULL, check=TRUE) {
+s_e_irrad2rgb <- function(w.length, s.e.irrad,
+                          sens=photobiology::ciexyzCMF2.spct,
+                          color.name=NULL, check=TRUE) {
   low.limit <- min(sens$w.length)
   high.limit <- max(sens$w.length)
   if (single_wl <- length(w.length) == 1) {

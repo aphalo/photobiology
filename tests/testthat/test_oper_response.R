@@ -81,7 +81,9 @@ test_that("oper energy energy", {
   expect_equal(-my.2e.spct / -2L, my.e.spct)
   expect_equal( 2 * my.e.spct, my.2e.spct)
   expect_equal( 1 / (2 / my.2e.spct), my.e.spct)
-  expect_equal( 1 / my.e.spct, my.e.spct^-1)
+  expect_equal( 1 / my.e.spct, my.e.spct ^ -1)
+  expect_equal(my.2e.spct %/% 2L, my.e.spct)
+  expect_equal(my.2e.spct %% 2L, my.e.spct %% 1L)
 
   options(photobiology.radiation.unit = NULL)
 })
@@ -104,7 +106,9 @@ test_that("oper energy energy", {
   expect_equal(-my.2e.spct / -2L, my.e.spct)
   expect_equal( 2 * my.e.spct, my.2e.spct)
   expect_equal( 1 / (2 / my.2e.spct), my.e.spct)
-  expect_equal( 1 / my.e.spct, my.e.spct^-1)
+  expect_equal( 1 / my.e.spct, my.e.spct ^ -1)
+  expect_equal(my.2e.spct %/% 2L, my.e.spct)
+  expect_equal(my.2e.spct %% 2L, my.e.spct %% 1L)
 
 })
 
@@ -126,7 +130,9 @@ test_that("oper photon energy", {
   expect_equal(-my.2q.spct / -2L, +my.q.spct)
   expect_equal( 2 * my.q.spct, +my.2q.spct)
   expect_equal( sum((1 / (2 / my.2q.spct) - my.q.spct)[["s.e.response"]]), 0)
-  expect_equal( 1 / my.q.spct, my.q.spct^-1)
+  expect_equal( 1 / my.q.spct, my.q.spct ^ -1)
+  expect_equal(my.2q.spct %/% 2L, my.q.spct %/% 1L)
+  expect_equal(my.2q.spct %% 2L / 2, my.q.spct %% 1L)
 
   options(photobiology.radiation.unit = NULL)
 })
@@ -149,7 +155,9 @@ test_that("oper photon photon", {
   expect_equal(-my.2q.spct / -2L, my.q.spct)
   expect_equal( 2 * my.q.spct, my.2q.spct)
   expect_equal( 1 / (2 / my.2q.spct), my.q.spct)
-  expect_equal( 1 / my.q.spct, my.q.spct^-1)
+  expect_equal( 1 / my.q.spct, my.q.spct ^ -1)
+  expect_equal(my.2q.spct %/% 2L, my.q.spct %/% 1L)
+  expect_equal(my.2q.spct %% 2L, my.q.spct %% 1L)
 
   options(photobiology.radiation.unit = NULL)
 })
@@ -173,6 +181,8 @@ test_that("oper energy photon", {
   expect_equal( 2 * my.e.spct, +my.2e.spct)
   expect_equal( 1 / (2 / my.2e.spct), +my.e.spct)
   expect_equal( 1 / my.e.spct, my.e.spct^-1)
+  expect_equal(my.2e.spct %/% 2L, my.e.spct %/% 1L)
+  expect_equal(my.2e.spct %% 2L / 2, my.e.spct %% 1L)
 
   options(photobiology.radiation.unit = NULL)
 })

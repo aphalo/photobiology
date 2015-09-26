@@ -166,7 +166,7 @@ peaks.generic_spct <- function(x, span, ignore_threshold, strict, ...) {
   peaks.idx <- find_peaks(x[[names(x)[2]]],
                           span = span, ignore_threshold = ignore_threshold,
                           strict = strict)
-  z[peaks.idx, ]
+  x[peaks.idx, ]
 }
 
 #' @describeIn peaks  Method for "source_spct" objects for generic function.
@@ -237,7 +237,7 @@ peaks.filter_spct <-
       z <- T2A(x, "replace", FALSE)
       col.name <- "A"
     } else {
-      stop("Unrecognized 'unit.out': ", unit.out)
+      stop("Unrecognized 'filter.qty': ", filter.qty)
     }
     peaks.idx <- find_peaks(z[[col.name]],
                             span = span, ignore_threshold = ignore_threshold,
@@ -264,7 +264,7 @@ peaks.cps_spct <- function(x, span = 5, ignore_threshold = 0, strict = TRUE, ...
   peaks.idx <- find_peaks(x[["cps"]],
                           span = span, ignore_threshold = ignore_threshold,
                           strict = strict)
-  z[peaks.idx, ]
+  x[peaks.idx, ]
 }
 
 # valleys -------------------------------------------------------------------
@@ -315,7 +315,7 @@ valleys.generic_spct <- function(x, span = 5, ignore_threshold = 0.0, strict = T
   valleys.idx <- find_peaks(-x[names(x)[2]],
                           span = span, ignore_threshold = ignore_threshold,
                           strict = strict)
-  z[valleys.idx, ]
+  x[valleys.idx, ]
 }
 
 #' @describeIn valleys  Method for "source_spct" objects for generic function.
@@ -386,7 +386,7 @@ valleys.filter_spct <-
       z <- T2A(x, "replace", FALSE)
       col.name <- "A"
     } else {
-      stop("Unrecognized 'unit.out': ", unit.out)
+      stop("Unrecognized 'filter.qty': ", filter.qty)
     }
     valleys.idx <- find_peaks(-z[[col.name]],
                               span = span, ignore_threshold = ignore_threshold,
@@ -402,7 +402,7 @@ valleys.reflector_spct <- function(x, span = 5, ignore_threshold = 0, strict = T
   valleys.idx <- find_peaks(-x[["Rfr"]],
                           span = span, ignore_threshold = ignore_threshold,
                           strict = strict)
-  z[valleys.idx, ]
+  x[valleys.idx, ]
 }
 
 #' @describeIn valleys  Method for "cps_spct" objects for generic function.
@@ -413,5 +413,5 @@ valleys.cps_spct <- function(x, span = 5, ignore_threshold = 0, strict = TRUE, .
   valleys.idx <- find_peaks(-x[["cps"]],
                           span = span, ignore_threshold = ignore_threshold,
                           strict = strict)
-  z[valleys.idx, ]
+  x[valleys.idx, ]
 }

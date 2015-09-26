@@ -430,19 +430,19 @@ qe_ratio.source_mspct <-
                use.hinges = use.hinges, idx = idx)
 }
 
-#' @param idx logical whether to add a column with the names of the elements of spct
+#' @param idx logical whether to add a column with the names of the elements of
+#'   spct
 #'
 #' @export
 #' @rdname color.source_spct
 #'
-color.source_mspct <- function(x, ..., idx = !is.null(names(spct))) {
+color.source_mspct <- function(x, ..., idx = !is.null(names(x))) {
   msdply(mspct = x, color, ..., idx = idx)
 }
 
 # filter_mspct methods -----------------------------------------------
 
-#' @describeIn transmittance Calculates transmittance from a
-#'   \code{filter_mspct}
+#' @describeIn transmittance Calculates transmittance from a \code{filter_mspct}
 #'
 #' @param idx logical whether to add a column with the names of the elements of
 #'   spct
@@ -463,8 +463,7 @@ transmittance.filter_mspct <-
                  idx = idx)
   }
 
-#' @describeIn absorptance Calculates absorptance from a
-#'   \code{filter_mspct}
+#' @describeIn absorptance Calculates absorptance from a \code{filter_mspct}
 #'
 #' @param idx logical whether to add a column with the names of the elements of
 #'   spct
@@ -508,8 +507,7 @@ absorbance.filter_mspct <-
 
 # reflector_mspct methods -----------------------------------------------
 
-#' @describeIn reflectance Calculates reflectance from a
-#'   \code{reflector_mspct}
+#' @describeIn reflectance Calculates reflectance from a \code{reflector_mspct}
 #'
 #' @param idx logical whether to add a column with the names of the elements of
 #'   spct
@@ -532,8 +530,7 @@ reflectance.reflector_mspct <-
 
 # object_mspct methods -----------------------------------------------
 
-#' @describeIn transmittance Calculates transmittance from a
-#'   \code{object_mspct}
+#' @describeIn transmittance Calculates transmittance from a \code{object_mspct}
 #'
 #' @export
 #'
@@ -552,8 +549,7 @@ transmittance.object_mspct <-
   }
 
 
-#' @describeIn absorptance Calculates absorptance from a
-#'   \code{object_mspct}
+#' @describeIn absorptance Calculates absorptance from a \code{object_mspct}
 #'
 #' @export
 #'
@@ -571,8 +567,7 @@ absorptance.object_mspct <-
                  idx = idx)
   }
 
-#' @describeIn reflectance Calculates reflectance from a
-#'   \code{object_mspct}
+#' @describeIn reflectance Calculates reflectance from a \code{object_mspct}
 #'
 #' @export
 #'
@@ -821,26 +816,29 @@ convolve_each <- function(e1, e2, oper = `*`, ...) {
 # Extract ------------------------------------------------------------------
 
 # $ operator for extraction does not need any wrapping as it always extracts
-# single columns returning objects of the underlying classes (e.g. numeric)
-# rather than spectral objects.
+# single objects of the underlying classes (e.g. generic_spct)
+# rather than collections of spectral objects.
 #
 # [ needs special handling as it can be used to extract members, or groups of
 # members which must be returned as collections of spectral objects.
 #
 # In the case of replacement, collections of objects can easily become invalid,
 # if the replacement or added member belongs to a class other than the expected
-# one(s).
+# one(s) for the collection.
 
 #' Extract or replace members of a collection of spectra
 #'
 #' Just like extraction and replacement with indexes for base R lists, but
 #' preserving the special attributes used in spectral classes.
 #'
-#' @param x	collection of spectra object from which to extract member(s) or in
+#' @param x	Collection of spectra object from which to extract member(s) or in
 #'   which to replace member(s)
-#' @param i index specifying elements to extract or replace. Indices are numeric
+#' @param i Index specifying elements to extract or replace. Indices are numeric
 #'   or character vectors. Please, see \code{\link[base]{Extract}} for
 #'   more details.
+#' @param drop If TRUE the result is coerced to the lowest possible dimension
+#'   (see the examples). This only works for extracting elements, not for the
+#'   replacement.
 #'
 #' @details This method is a wrapper on base R's extract method for lists that
 #'   sets additional attributes used by these classes.
@@ -848,7 +846,7 @@ convolve_each <- function(e1, e2, oper = `*`, ...) {
 #' @return An object of the same class as \code{x} but containing only the
 #'   subset of members that are selected.
 #'
-#' @method "[" generic_mspct
+#' @method [ generic_mspct
 #' @export
 #'
 #' @rdname extract_mspct
@@ -873,7 +871,7 @@ is.member_class <- function(l, x) {
 #'   NULL, deletes the column if a single column is selected.
 #'
 #' @export
-#' @method "[<-" generic_mspct
+#' @method [<- generic_mspct
 #' @rdname extract_mspct
 #'
 "[<-.generic_mspct" <- function(x, i, value) {
@@ -888,8 +886,12 @@ is.member_class <- function(l, x) {
   x
 }
 
+#' @param name A literal character string or a name (possibly backtick quoted).
+#'   For extraction, this is normally (see under ‘Environments’) partially
+#'   matched to the names of the object.
+#'
 #' @export
-#' @method "$<-" generic_mspct
+#' @method $<- generic_mspct
 #' @rdname extract_mspct
 #'
 "$<-.generic_mspct" <- function(x, name, value) {
@@ -897,7 +899,7 @@ is.member_class <- function(l, x) {
 }
 
 #' @export
-#' @method "[[<-" generic_mspct
+#' @method [[<- generic_mspct
 #' @rdname extract_mspct
 #'
 "[[<-.generic_mspct" <- function(x, name, value) {
