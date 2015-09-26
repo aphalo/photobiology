@@ -105,8 +105,6 @@ calc_multipliers <-
 #'
 #' Clear the cache objects stored in environment .photobio.cache
 #'
-#' @usage clear_photobio.cache(pattern = "*")
-#'
 #' @param pattern character string passed to ls() for selecting within the
 #'   environment .photobio.cache the objects to be deleted
 #'

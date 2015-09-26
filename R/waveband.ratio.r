@@ -3,11 +3,6 @@
 #' This function gives the (energy or photon) irradiance ratio between two given
 #' wavebands of a radiation spectrum.
 #'
-#' @usage waveband_ratio(w.length, s.irrad, w.band.num = NULL, w.band.denom =
-#'   NULL, unit.out.num = NULL, unit.out.denom = unit.out.num, unit.in =
-#'   "energy", check.spectrum = TRUE, use.cached.mult =
-#'   getOption("photobiology.use.cached.mult", default = FALSE), use.hinges =
-#'   getOption("photobiology.use.hinges", default=NULL) )
 #' @param w.length numeric Vector of wavelengths (nm)
 #' @param s.irrad numeric Corresponding vector of spectral (energy) irradiances
 #'   (W m-2 nm-1)

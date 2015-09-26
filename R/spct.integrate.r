@@ -32,8 +32,6 @@ integrate_spct <- function(spct) {
 #' wavelengths and dividing the result by the spread or span of the
 #' wavelengths.
 #'
-#' @usage average_spct(spct)
-#'
 #' @param spct generic_spct
 #'
 #' @return One or more numeric values with no change in scale factor: e.g. [W
@@ -53,8 +51,6 @@ average_spct <- function(spct) {
 #'
 #' This function gives the result of interpolating spectral data from the original set of
 #' wavelengths to a new one.
-#'
-#' @usage interpolate_spct(spct, w.length.out=NULL, fill.value = NA, length.out=NULL)
 #'
 #' @param spct generic_spct
 #' @param w.length.out numeric array of wavelengths (nm)

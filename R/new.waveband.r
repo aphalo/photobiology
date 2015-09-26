@@ -209,8 +209,6 @@ split_bands <- function(x, list.names=NULL, short.names=is.null(list.names), len
 #'
 #' Functions to check if an object is waveband.
 #'
-#' @usage is.waveband(x)
-#'
 #' @param x any R object
 #'
 #' @return is.waveband returns TRUE if its argument is a waveband and FALSE otherwise.
