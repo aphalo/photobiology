@@ -1,4 +1,4 @@
-#' Calculate RGB values from spectral irradiance.
+#' RGB color values
 #'
 #' This function returns the RGB values for a source spectrum.
 #'

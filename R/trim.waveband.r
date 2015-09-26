@@ -1,7 +1,7 @@
-#' Trim tails of the wavebands based on wavelength limits.
+#' Trim (or expand) head and/or tail
 #'
-#' Trimming is needed for example when the spectral data does not cover the
-#' whole waveband.
+#' Trimming of waveband boundaries can be required needed when the spectral data
+#' does not cover the whole waveband.
 #'
 #' @param w.band an object of class "waveband" or a list of such objects
 #' @param range a numeric vector of length two, or any other object for which

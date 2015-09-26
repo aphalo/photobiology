@@ -1,7 +1,7 @@
-#' Calculate incandescent "FEL" lamp output spectrum from fitted constants
+#' Incandescent "FEL" lamp emission spectrum
 #'
 #' @description Calculate values by means of a nth degree polynomial from
-#' user-supplied constants (for example from a lamp calibartion certificate).
+#' user-supplied constants (for example from a lamp calibration certificate).
 #'
 #' @param w.length numeric vector of wavelengths (nm) for output
 #' @param k a numeric vector with n constants for the polynomial

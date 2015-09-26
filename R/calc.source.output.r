@@ -1,4 +1,4 @@
-#' Calculate light source output by interpolation from lamp data
+#' Light-source spectral output
 #'
 #' @description Calculate interpolated values by interpolation from
 #' user-supplied spectral emission data or by name for light source data

@@ -1,7 +1,7 @@
 
 # irradiance --------------------------------------------------------------
 
-#' Calculate irradiance from spectral irradiance.
+#' Irradiance
 #'
 #' This function returns the irradiance for a given waveband of a light source
 #' spectrum.
@@ -250,7 +250,7 @@ irrad_spct <- irrad.source_spct
 # energy irradiance -------------------------------------------------------
 
 
-#' Calculate energy irradiance from spectral irradiance.
+#' Energy irradiance
 #'
 #' This function returns the energy irradiance for a given waveband of a light
 #' source spectrum.
@@ -330,7 +330,7 @@ e_irrad.source_spct <-
 # photon irradiance -------------------------------------------------------
 
 
-#' Calculate photon irradiance from spectral irradiance.
+#' Photon irradiance
 #'
 #' This function returns the photon irradiance (or quantum irradiance) for a
 #' given waveband of a light source spectrum.
@@ -410,7 +410,7 @@ q_irrad.source_spct <-
 
 # fluence -----------------------------------------------------------------
 
-#' Calculate energy or photon fluence from spectral irradiance
+#' Fluence
 #'
 #' This function returns the energy or photon fluence for a given waveband of a
 #' light source spectrum and the duration of the exposure.
@@ -508,7 +508,7 @@ fluence.source_spct <-
 
 # photon fluence ----------------------------------------------------------
 
-#' Calculate photon fluence from spectral irradiance.
+#' Photon fluence
 #'
 #' This function returns the photon irradiance (or quantum irradiance) for a
 #' given waveband of a light source spectrum.
@@ -598,7 +598,7 @@ q_fluence.source_spct <-
 
 # energy fluence ----------------------------------------------------------
 
-#' Calculate energy fluence from spectral irradiance.
+#' Energy fluence
 #'
 #' This function returns the energy flurnce for a given waveband of a light
 #' source spectrum given the duration of the exposure.

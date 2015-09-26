@@ -1,6 +1,6 @@
 # labels ------------------------------------------------------------------
 
-#' Name and label of a "waveband" object
+#' Find labels from "waveband" object
 #'
 #' A function to obtain the name and label of objects of class "waveband".
 #'
@@ -17,7 +17,7 @@ labels.waveband <- function(object, ...) {
 
 # range -------------------------------------------------------------------
 
-#' Wavelength range of a "waveband" object
+#' Wavelength range
 #'
 #' A function that returns the wavelength range from objects of class "waveband".
 #'
@@ -34,7 +34,7 @@ range.waveband <- function(..., na.rm = FALSE) {
 
 # min ---------------------------------------------------------------------
 
-#' Wavelength minimum of a "waveband" object
+#' Wavelength minimum
 #'
 #' A function that returns the wavelength minimum from objects of class "waveband".
 #'
@@ -51,7 +51,7 @@ min.waveband <- function(..., na.rm = FALSE) {
 
 # max ---------------------------------------------------------------------
 
-#' Wavelength maximum of a "waveband" object
+#' Wavelength maximum
 #'
 #' A function that returns the wavelength maximum from objects of class "waveband".
 #'
@@ -66,7 +66,7 @@ max.waveband <- function(..., na.rm = FALSE) {
 
 # midpoint ------------------------------------------------------------------
 
-#' Generic function
+#' Central wavelength value
 #'
 #' A function that returns the wavelength at the center of the wavelength range.
 #'
@@ -102,7 +102,7 @@ midpoint.waveband <- function(x, ...) {
 
 # spread ------------------------------------------------------------------
 
-#' Generic function
+#' Length of object in wavelength units
 #'
 #' A function that returns the spread (max(x) - min(x)) for R objects.
 #'
@@ -148,9 +148,10 @@ spread.waveband <- function(x, ...) {
 
 # color -------------------------------------------------------------------
 
-#' Generic function that returns the color of an object.
+#' Color of an object
 #'
-#' A function that returns the equivalent RGB color of an object.
+#' A function that returns the equivalent RGB color of an object such as a
+#' spectrum or wavelength.
 #'
 #' @param x an R object
 #' @param ... not used in current version
@@ -233,7 +234,8 @@ color.waveband <- function(x, short.names=TRUE, type="both", ...) {
 
 #' Normalization of an R object
 #'
-#' A generic function that returns the normalization of an R object.
+#' Normalization wavelength of an R object, retireved from the object's
+#' attributes.
 #'
 #' @param x an R object
 #' @export normalization

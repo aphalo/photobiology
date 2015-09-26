@@ -1,4 +1,4 @@
-#' Calculate summary reflectance from spectral data.
+#' Reflectance
 #'
 #' Function to calculate the mean, total, or other summary of reflectance for
 #' spectral data stored in a \code{reflector_spct} or in an \code{object_spct}.

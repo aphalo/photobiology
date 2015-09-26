@@ -1,4 +1,4 @@
-#' Trim (or expand) tails of the spectrum
+#' Trim (or expand) head and/or tail
 #'
 #' Trimming of tails of a spectrum based on wavelength limits, interpolating the
 #' values at the boundaries.Trimming is needed for example to remove short

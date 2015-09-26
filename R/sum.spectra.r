@@ -1,8 +1,9 @@
-#' Add two spectra, even if the wavelengths values differ
+#' Add two spectra
 #'
 #' The wavelength vectors of the two spectra are merged, and the missing
 #' spectral values are calculated by interpolation. After this, the two spectral
-#' values at each wavelength are added.
+#' values at each wavelength are added. This is 'parallel' operation between two
+#' spectra.
 #'
 #' @param w.length1 numeric array of wavelength (nm)
 #' @param w.length2 numeric array of wavelength (nm)

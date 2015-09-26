@@ -1,6 +1,6 @@
 # print -------------------------------------------------------------------
 
-#' print a spectral object
+#' Print a spectral object
 #'
 #' Print method for objects of spectral classes.
 #'
@@ -351,7 +351,7 @@ summary.chroma_spct <- function(object, digits = max(3, getOption("digits")-3), 
 
 # Print spectral summaries ------------------------------------------------
 
-#' Print a summary object of a spectrum.
+#' Print spectral summary
 #'
 #' A function to nicely print objects of classes "summary...spct".
 #'
@@ -366,12 +366,7 @@ print.summary_generic_spct <- function(x, ...) {
   cat("largest wavelength step size is", x[["w.length.step"]], "nm \n")
 }
 
-#' Print a summary object of a spectrum.
-#'
-#' A function to nicely print objects of classes "summary...spct".
-#'
-#' @param x An object of one of the summary classes for spectra
-#' @param ... not used in current version
+#' @rdname print.summary_generic_spct
 #'
 #' @export
 #'
@@ -388,8 +383,6 @@ print.summary_cps_spct <- function(x, ...) {
   }
 }
 
-# @describeIn print.summary_generic_spct Print a "summary_source_spct" object.
-#'
 #' @export
 #' @rdname print.summary_generic_spct
 #'
@@ -445,8 +438,6 @@ print.summary_source_spct <- function(x, ...) {
   }
 }
 
-# @describeIn print.summary_generic_spct Print a "summary_filter_spct" object.
-#'
 #' @export
 #' @rdname print.summary_generic_spct
 #'
@@ -482,8 +473,6 @@ print.summary_filter_spct <- function(x, ...) {
   }
 }
 
-# @describeIn print.summary_generic_spct Print a "summary_reflector_spct" object.
-#'
 #' @export
 #' @rdname print.summary_generic_spct
 #'
@@ -507,8 +496,6 @@ print.summary_reflector_spct <- function(x, ...) {
   }
 }
 
-# @describeIn print.summary_generic_spct Print a "summary_filter_spct" object.
-#'
 #' @export
 #' @rdname print.summary_generic_spct
 #'
@@ -531,8 +518,6 @@ print.summary_object_spct <- function(x, ...) {
   }
 }
 
-# @describeIn print.summary_generic_spct Print a "summary_response_spct" object.
-#'
 #' @export
 #' @rdname print.summary_generic_spct
 #'
@@ -577,8 +562,6 @@ print.summary_response_spct <- function(x, ...) {
   }
 }
 
-# @describeIn print.summary_generic_spct Print a "summary_chrome.spct" object.
-#'
 #' @export
 #' @rdname print.summary_generic_spct
 #'
@@ -599,7 +582,7 @@ print.summary_chroma_spct <- function(x, ...) {
 
 # Color -------------------------------------------------------------------
 
-#' Color of a source_spct object.
+#' Color
 #'
 #' A function that returns the equivalent RGB colour of an object of class
 #' "source_spct".
@@ -621,7 +604,7 @@ color.source_spct <- function(x, ...) {
 
 # w.length summaries ------------------------------------------------------
 
-#' "range" function for spectra
+#' Range of wavelength
 #'
 #' Range function for spectra, returning wavelength range.
 #'
@@ -635,7 +618,7 @@ range.generic_spct <- function(..., na.rm = FALSE) {
   range(x[["w.length"]], na.rm = na.rm)
 }
 
-#' "max" function for spectra
+#' Maximun wavelength
 #'
 #' Maximun function for spectra, returning wavelength maximum.
 #'
@@ -649,7 +632,7 @@ max.generic_spct <- function(..., na.rm=FALSE) {
   max(x[["w.length"]], na.rm=na.rm)
 }
 
-#' "min" function for spectra
+#' Minimum wavelength
 #'
 #' Minimun function for spectra, returning wavelength minimum.
 #'
@@ -663,15 +646,15 @@ min.generic_spct <- function(..., na.rm = FALSE) {
   min(x[["w.length"]], na.rm = na.rm)
 }
 
-#' Generic function
+#' Stepsize
 #'
-#' Function that returns the range of step sizes in an object.
+#' Function that returns the range of step sizes in an object. Range of
+#' differences between succesive sorted values.
 #'
 #' @param x an R object
 #' @param ... not used in current version
 #'
-#' @return A numeric vector of length 2 with min and maximum
-#'   stepsize values.
+#' @return A numeric vector of length 2 with min and maximum stepsize values.
 #' @export
 #' @family wavelength summaries
 stepsize <- function(x, ...) UseMethod("stepsize")
@@ -726,7 +709,7 @@ midpoint.generic_spct <- function(x, ...) {
 
 # Labels ------------------------------------------------------------------
 
-#' Labels of a "generic_spct" object
+#' Find labels from spectral object
 #'
 #' A function to obtain the labels of a spectrum. Currently returns 'names'.
 #'

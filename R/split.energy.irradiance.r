@@ -1,8 +1,7 @@
-#' Split a spectrum into contiguous bands and calculate energy irradiance from
-#' spectral (energy) or photon irradiance.
+#' Energy irradiance for split spectrum regions
 #'
 #' This function returns the energy irradiance for a series of contiguous
-#' wavebands from a radiation spectrum. The returned values can be either
+#' wavebands from a radiation-source spectrum. The returned values can be either
 #' absolute or relative to their sum.
 #'
 #' @param w.length numeric Vector of wavelengths (nm)

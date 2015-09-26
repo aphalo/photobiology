@@ -1,7 +1,7 @@
 
 # tag ---------------------------------------------------------------------
 
-#' Tag a spectrum with lables and colors
+#' Tag a spectrum
 #'
 #' Spectra are tagged by adding variables and attributes containing color
 #' definitions, labels, and a factor following the wavebands given in
@@ -166,7 +166,7 @@ tag.generic_spct <- function(x,
 
 # wavebands -> tagged spectrum ----------------------------------------------
 
-#' Create a spectrum from a list of wavebands
+#' Create spectrum from wavebands
 #'
 #' Create a generic_spct object with wavelengths from wavebands in a list.
 #'
@@ -202,11 +202,13 @@ wb2spct <- function(w.band) {
   new.spct
 }
 
-#' Create a tagged spectrum from a list of wavebands
+#' Create tagged spectrum from wavebands
 #'
 #' Create a tagged \code{generic_spct} object with wavelengths from the range of
 #' wavebands in a list, and names of the same bands as factor levels, and
-#' corresponding color definitions.
+#' corresponding color definitions. The spectrum is not suitable for plotting
+#' labels, symbols, rectangles or similar, as the midpoint of each waveband is
+#' not added to the spectrum.
 #'
 #' @param w.band waveband or list of waveband objects The waveband(s) determine
 #'   the region(s) of the spectrum that are tagged and the wavelengths returned
@@ -219,7 +221,7 @@ wb2spct <- function(w.band) {
 #' @export
 #'
 #' @return A spectrum as returned by \code{\link{wb2spct}} but additionally
-#'   tagged using funciton \code{\link{tag}}
+#'   tagged using function \code{\link{tag}}
 #'
 #' @family tagging and related functions
 #'
@@ -231,7 +233,7 @@ wb2tagged_spct <-
   return(new.spct)
 }
 
-#' Create a tagged spectrum from a list of wavebands
+#' Create tagged spectrum from wavebands
 #'
 #' Create a generic_spct object with wavelengths from the range of wavebands in
 #' a list. The spectrum is suitable for plotting labels, symbols, rectangles or
@@ -305,7 +307,7 @@ wb2rect_spct <- function(w.band, short.names = TRUE) {
 # untag -------------------------------------------------------------------
 
 
-#' Remove tags from a spectrum
+#' Remove tags
 #'
 #' Remove tags from an R object if present, otherwise return the object
 #' unchanged.

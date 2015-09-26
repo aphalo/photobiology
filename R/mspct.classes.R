@@ -1,6 +1,9 @@
 # names of all multi spectral classes -------------------------------------------
 
-#' Function that returns a vector containing the names of multi-spectra classes.
+#' Names of multi-spectra classes
+#'
+#' Function that returns a vector containing the names of multi-spectra classes
+#' using for collections of spectra.
 #'
 #' @export
 #'
@@ -41,8 +44,8 @@ rmDerivedMspct <- function(x) {
   name <- substitute(x)
   mspctclasses <- mspct_classes()
   allclasses <- class(x)
-  attr(x, "mspct.dim") <- NULL # if not removed class changes to matrix
-  attr(x, "mspct.byrow") <- NULL # if not removed class changes to matrix
+  attr(x, "mspct.dim") <- NULL
+  attr(x, "mspct.byrow") <- NULL
   attr(x, "mspct.version") <- NULL
   class(x) <- setdiff(allclasses, mspctclasses)
   if (is.name(name)) {
@@ -55,7 +58,7 @@ rmDerivedMspct <- function(x) {
 
 # query member classes ----------------------------------------------------
 
-#' Find classes common to all collection members.
+#' Classes common to all collection members.
 #'
 #' Finds the set intersection among the class attributes of all collection
 #' member as a target set of class names.
@@ -80,7 +83,7 @@ shared_member_class <- function(l, target.set = spct_classes()) {
 
 # Constructors ------------------------------------------------------------
 
-#' @title Constructors of multi_spct Objects
+#' @title Collection-of-spectra constructor
 #'
 #' @description Converts a list of spectral objects into a "multi spectrum"
 #'   object by setting the class attibute of the list of spectra to the
@@ -268,9 +271,10 @@ is.any_mspct <- function(x) {
 
 # as functions for mspct classes --------------------------------------------
 
-#' Return a copy of an R object as an spectrum object
+#' @title Collection-of-spectra copy-constructor
 #'
-#' Return a copy of an R object with its class set to a given type of spectrum.
+#' @description Return a copy of an R object with its class set to a given type
+#'   of spectrum.
 #'
 #' @param x an R object
 #'

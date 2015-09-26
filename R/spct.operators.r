@@ -842,9 +842,9 @@ f_dispatcher_spct <- function(x, f, ...) {
   }
 }
 
-#' "log" function for spectra
+#' Logarithms and Exponentials
 #'
-#' Logarirthm function for spectra.
+#' Logarithm function for spectra.
 #'
 #' @param x an object of class "generic_spct"
 #' @param base a positive number: the base with respect to which logarithms are computed. Defaults to e=exp(1).
@@ -855,7 +855,7 @@ log.generic_spct <- function(x, base = exp(1)) {
   f_dispatcher_spct(x, log, base)
 }
 
-#' "log10" function for spectra
+#' Logarithms and Exponentials
 #'
 #' Base 10 logarithm function for spectra.
 #'
@@ -867,19 +867,7 @@ log10.generic_spct <- function(x) {
   f_dispatcher_spct(x, log, base = 10)
 }
 
-#' "sqrt" function for spectra
-#'
-#' Square root function for spectra.
-#'
-#' @param x an object of class "generic_spct"
-#' @export
-#' @family math operators and functions
-#'
-sqrt.generic_spct <- function(x) {
-  f_dispatcher_spct(x, sqrt)
-}
-
-#' "exp" function for spectra
+#' Logarithms and Exponentials
 #'
 #' Exponential function for spectra.
 #'
@@ -891,6 +879,30 @@ exp.generic_spct <- function(x) {
   f_dispatcher_spct(x, exp)
 }
 
+#' Miscellaneous Mathematical Functions
+#'
+#' Square root function for spectra.
+#'
+#' @param x an object of class "generic_spct"
+#' @export
+#' @family math operators and functions
+#'
+sqrt.generic_spct <- function(x) {
+  f_dispatcher_spct(x, sqrt)
+}
+
+#' Miscellaneous Mathematical Functions
+#'
+#' Absolute value function for spectra.
+#'
+#' @param x an object of class "generic_spct"
+#' @export
+#' @family math operators and functions
+#'
+abs.generic_spct <- function(x) {
+  f_dispatcher_spct(x, abs)
+}
+
 
 # transmittance and absorbance --------------------------------------------
 
@@ -898,7 +910,7 @@ exp.generic_spct <- function(x) {
 # A2T ---------------------------------------------------------------------
 
 
-#' Generic function
+#' Convert absorbance into transmittance
 #'
 #' Function that coverts absorbance into transmittance (fraction).
 #'
@@ -1026,7 +1038,7 @@ T2A.filter_mspct <- function(x, action = "add", byref = FALSE, ...) {
 # energy to photon ---------------------------------------------------------------------
 
 
-#' Convert energy-based spectra into photon-based spectra.
+#' Convert energy-based quantities into photon-based quantities.
 #'
 #' Function that coverts spectral energy irradiance into spectral photon irradiance (molar).
 #'
@@ -1116,7 +1128,7 @@ e2q.response_mspct <- function(x, action = "add", byref = FALSE, ...) {
 
 # photon to energy ---------------------------------------------------------------------
 
-#' Convert photon-based spectra into energy-based spectra.
+#' Convert photon-based quantities into energy-based quantities
 #'
 #' Function that coverts spectral photon irradiance (molar) into spectral energy irradiance.
 #'

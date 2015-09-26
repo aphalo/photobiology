@@ -1,4 +1,4 @@
-#' Insert new wavelengths into a spectrum
+#' Insert new wavelength values into a spectrum
 #'
 #' Insert new wavelength values into a spectrum interpolating the corresponding
 #' spectral data values.

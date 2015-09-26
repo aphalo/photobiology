@@ -1,7 +1,7 @@
 
 # rbind -------------------------------------------------------------------
 
-#' Makes one spectral object from a list or collection of many
+#' Row-bind spectra
 #'
 #' A wrapper on \code{dplyr::rbind_fill} that preserves class and other
 #' attributes of spectral objects.

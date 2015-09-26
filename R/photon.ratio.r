@@ -1,4 +1,4 @@
-#' Calculate photon (quantum) ratio from spectral (energy or photon) irradiance
+#' Photo:photon ratio
 #'
 #' This function gives the photon ratio between two given wavebands of a
 #' radiation spectrum.

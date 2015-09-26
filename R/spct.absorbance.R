@@ -1,4 +1,4 @@
-#' Calculate summary absorbance from spectral data.
+#' Absorbance
 #'
 #' Function to calculate the mean, total, or other summary of absorbance for
 #' spectral data stored in a \code{filter_spct} or in an \code{object_spct}.

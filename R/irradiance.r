@@ -1,4 +1,4 @@
-#' Calculate photon (quantum) irradiance from spectral (energy) irradiance.
+#' Photon (quantum) irradiance from spectral (energy) irradiance.
 #'
 #' This function returns the energy irradiance for a given waveband of a
 #' radiation spectrum.

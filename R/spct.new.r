@@ -2,7 +2,7 @@
 
 # Constructors ------------------------------------------------------------
 
-#' Create new spectral objects
+#' Spectral-object constructor
 #'
 #' These fucntions can be used to create spectral objects derived from
 #' \code{generic_spct}. They take as arguments numeric vectors for the data
@@ -197,6 +197,108 @@ chroma_spct <- function(w.length,
   setChromaSpct(z)
   return(z)
 }
+
+# as functions for spct classes --------------------------------------------
+
+#' Spectral-object copy constructor
+#'
+#' Return a copy of an R object with its class set to a given type of spectrum.
+#'
+#' @param x an R object
+#'
+#' @return These functions return a copy of \code{x} converted into a given
+#'   class of spectral object, if \code{x} is a valid argument to the
+#'   correcponding set function.
+#'
+#' @export
+#'
+#' @family creation of spectral objects functions
+#' @rdname as.generic_spct
+#'
+as.generic_spct <- function(x) {
+  y <- x
+  setGenericSpct(y)
+}
+
+#' @rdname as.generic_spct
+#'
+#' @export
+#'
+as.cps_spct <- function(x) {
+  y <- x
+  setCpsSpct(y)
+}
+
+#' @rdname as.generic_spct
+#'
+#' @param time.unit character A string, "second", "day" or "exposure"
+#' @param bswf.used character
+#' @param strict.range logical Flag indicating whether off-range values result
+#'   in an error instead of a warning
+#'
+#' @export
+#'
+as.source_spct <- function(x,
+                           time.unit=c("second", "day", "exposure"),
+                           bswf.used=c("none", "unknown"),
+                           strict.range = FALSE) {
+  y <- x
+  setSourceSpct(y, time.unit, strict.range = strict.range, bswf.used = bswf.used)
+}
+
+#' @rdname as.generic_spct
+#'
+#' @export
+#'
+as.response_spct <- function(x, time.unit = "second") {
+  y <- x
+  setResponseSpct(y, time.unit = time.unit)
+}
+
+#' @rdname as.generic_spct
+#'
+#' @param Tfr.type a character string, either "total" or "internal"
+#'
+#' @export
+#'
+as.filter_spct <- function(x, Tfr.type=c("total", "internal"), strict.range = FALSE) {
+  y <- x
+  setFilterSpct(y, Tfr.type, strict.range = strict.range)
+}
+
+#' @rdname as.generic_spct
+#'
+#' @param Rfr.type a character string, either "total" or "specular"
+#'
+#' @export
+#'
+as.reflector_spct <- function(x, Rfr.type = c("total", "specular"), strict.range = FALSE) {
+  y <- x
+  setReflectorSpct(y, Rfr.type = Rfr.type, strict.range = strict.range)
+}
+
+#' @rdname as.generic_spct
+#'
+#' @export
+#'
+as.object_spct <- function(x,
+                           Tfr.type=c("total", "internal"),
+                           Rfr.type=c("total", "specular"),
+                           strict.range = FALSE) {
+  y <- x
+  setObjectSpct(y, Tfr.type = Tfr.type, Rfr.type = Rfr.type,
+                strict.range = strict.range)
+}
+
+#' @rdname as.generic_spct
+#'
+#' @export
+#'
+as.chroma_spct <- function(x) {
+  y <- x
+  setChromaSpct(y)
+}
+
 
 # merge -------------------------------------------------------------------
 

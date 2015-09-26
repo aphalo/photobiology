@@ -1,4 +1,4 @@
-#' Calculate photon (quantum) or energy ratio.
+#' Photon or energy ratio
 #'
 #' This function gives the (energy or photon) irradiance ratio between two given
 #' wavebands of a radiation spectrum.

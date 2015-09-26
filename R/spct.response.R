@@ -1,7 +1,7 @@
 # response methods --------------------------------------------------------
 
 
-#' Calculate response from spectral response
+#' Integrated response
 #'
 #' Calculate average photon- or energy-based photo-response.
 #'
@@ -224,7 +224,7 @@ resp_spct <-
 
 # e_response methods --------------------------------------------------------
 
-#' Calculate energy or photon based response from spectral response
+#' Energy-based photo-response
 #'
 #' This function returns the mean, total, or contribution of response for each
 #' waveband and a response spectrum.
@@ -284,7 +284,7 @@ e_response.response_spct <-
 
 # q_response methods --------------------------------------------------------
 
-##' Calculate photon-based photo-response from spectral response
+##' Photon-based photo-response
 #'
 #' This function returns the mean response for a given
 #' waveband and a response spectrum.

@@ -1,4 +1,4 @@
-#' Trim (or expand) head and/or tail of a spectrum
+#' Trim (or expand) head and/or tail
 #'
 #' Trimming of head and tail of a spectrum based on wavelength limits,
 #' interpolating the values at the boundaries. Trimming is needed for example to

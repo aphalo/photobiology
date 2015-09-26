@@ -1,4 +1,4 @@
-#' Smooth a spectrum using one of several different methods
+#' Smooth a spectrum
 #'
 #' These functions implement one original methods and acts as a wrapper for
 #' other common R smoothing functions. The advantage of using this function for

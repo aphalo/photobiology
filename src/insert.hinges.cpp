@@ -7,7 +7,7 @@ using namespace std;
 #include <iostream>
 #endif
 
-//' Insert new wavelengths into the data, interpolating the corresponding spectral irradiance values.
+//' Insert wavelength values into spectral data.
 //'
 //' Inserting wavelengths values immediately bafore and after a discontinuity in the SWF,
 //' gretaly reduces the errors caused by interpolating the weighted irradiance during

@@ -17,8 +17,7 @@
 #' @docType data
 #' @keywords datasets
 #' @format A chroma_spct object with 441 rows and 4 variables
-#' @name ciexyzCC2.spct
-NULL
+"ciexyzCC2.spct"
 
 #' @title CIE xyz chromaticity coordinates (CC) 10 deg data
 #'
@@ -39,10 +38,9 @@ NULL
 #' @docType data
 #' @keywords datasets
 #' @format A chroma_spct object with 441 rows and 4 variables
-#' @name ciexyzCC10.spct
-NULL
+"ciexyzCC10.spct"
 
-#' @title linear energy CIE xyz colour matching function (CMF) 2 deg data
+#' @title Linear energy CIE xyz colour matching function (CMF) 2 deg data
 #'
 #' @description A dataset containing wavelengths at a 1 nm interval (390 nm to
 #'   830 nm) and the corresponding x, y, and z 2 degrees CMF values. Derived
@@ -61,10 +59,9 @@ NULL
 #' @docType data
 #' @keywords datasets
 #' @format A chroma_spct object with 441 rows and 4 variables
-#' @name ciexyzCMF2.spct
-NULL
+"ciexyzCMF2.spct"
 
-#' @title linear energy CIE xyz colour matching function (CMF) 10 deg data
+#' @title Linear energy CIE xyz colour matching function (CMF) 10 deg data
 #'
 #' @description A dataset containing wavelengths at a 1 nm interval (390 nm to
 #'   830 nm) and the corresponding x, y, and z 10 degrees CMF values. Derived
@@ -83,10 +80,9 @@ NULL
 #' @docType data
 #' @keywords datasets
 #' @format A chroma_spct object with 441 rows and 4 variables
-#' @name ciexyzCMF10.spct
-NULL
+"ciexyzCMF10.spct"
 
-#' @title linear energy CIE 2008 luminous efficiency function 10 deg data
+#' @title Linear energy CIE 2008 luminous efficiency function 10 deg data
 #'
 #' @description A dataset containing wavelengths at a 1 nm interval (390 nm to
 #'   830 nm) and the corresponding response values for a 10 degrees target.
@@ -104,10 +100,9 @@ NULL
 #' @docType data
 #' @keywords datasets
 #' @format A chroma_spct object with 441 rows and 4 variables
-#' @name ciev10.spct
-NULL
+"ciev10.spct"
 
-#' @title linear energy CIE 2008 luminous efficiency function 2 deg data
+#' @title Linear energy CIE 2008 luminous efficiency function 2 deg data
 #'
 #' @description A dataset containing wavelengths at a 1 nm interval (390 nm to
 #'   830 nm) and the corresponding response values for a 2 degrees target.
@@ -126,5 +121,4 @@ NULL
 #' @docType data
 #' @keywords datasets
 #' @format A chroma_spct object with 441 rows and 4 variables
-#' @name ciev2.spct
-NULL
+"ciev2.spct"

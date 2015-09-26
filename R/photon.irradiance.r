@@ -1,4 +1,4 @@
-#' Calculate photon irradiance from spectral irradiance
+#' Photon irradiance
 #'
 #' This function returns the photon irradiance for a given waveband of a
 #' radiation spectrum, optionally applies a BSWF.

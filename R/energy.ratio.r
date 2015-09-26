@@ -1,4 +1,4 @@
-#' Calculate energy ratio from spectral (energy or photon) irradiance.
+#' Energy:energy ratio
 #'
 #' This function gives the energy ratio between two given wavebands of a
 #' radiation spectrum.

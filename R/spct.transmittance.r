@@ -1,7 +1,6 @@
-#' Calculate transmittance from spectral transmittance.
+#' Transmittance
 #'
-#' This function returns the summary transmittance for given wavebands from a
-#' filter or object spectrum.
+#' Summary transmittance for supplied wavebands from filter or object spectrum.
 #'
 #' @param spct an R object
 #' @param w.band waveband or list of waveband objects The waveband(s) determine

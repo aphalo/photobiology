@@ -1,4 +1,4 @@
-#' Calculate multipliers by interpolation from filter data
+#' Spectral multipliers
 #'
 #' @description Calculate multipliers by interpolation from filter data, from
 #' user-supplied spectral transmittance data or by name for data included in the

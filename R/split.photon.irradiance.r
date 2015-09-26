@@ -1,5 +1,4 @@
-#' Split a spectrum into contiguous bands and calculate photon irradiance from
-#' spectral (energy) or photon irradiance.
+#' Photon irradiance for split spectrum regions
 #'
 #' This function returns the photon irradiance for a series of contiguous
 #' wavebands from a radiation spectrum. The returned values can be either

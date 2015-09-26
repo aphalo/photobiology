@@ -1,4 +1,4 @@
-#' Calculate solar angles
+#' Solar angles
 #'
 #' This function returns the solar angles for a given time and location.
 #'
@@ -131,7 +131,7 @@ sun_angles <- function(time = lubridate::now(), lon = 0, lat = 0, use_refraction
 }
 
 
-#' Times of sunrise, sunset and solar noon. Day length and night length.
+#' Times for sun positions
 #'
 #' Functions for calculating the timing of solar positions by means of function
 #' \code{sun_angles}, given geographical coordinates and dates. They can be also
@@ -268,7 +268,7 @@ altitude <- function(x, lon, lat, twlght_angl = 0){
                     lat = lat)$elevation - twlght_angl)
 }
 
-#' @describeIn day_night Calculate time coordinates at local noon
+#' @describeIn day_night Time coordinates at local noon
 #' @export
 #' @return \code{noon_time}, \code{sunrise_time} and \code{sunset_time} return a
 #'   vector of POSIXct times
@@ -295,7 +295,7 @@ noon_time <- function(date = lubridate::today(), tz = "UTC", lon = 0, lat = 0,
   times
 }
 
-#' @describeIn day_night Calculate time at sunrise
+#' @describeIn day_night Time coordinates at sunrise
 #'
 #' @export
 sunrise_time <- function(date = lubridate::today(), tz = "UTC", lon = 0, lat = 0,
@@ -352,7 +352,7 @@ sunset_time <- function(date = lubridate::today(), tz = "UTC", lon = 0, lat = 0,
   times
 }
 
-#' @describeIn day_night Calculate day length
+#' @describeIn day_night Day length (photoperiod)
 #' @export
 #' @return \code{day_length} and \code{night_length} return numeric a vector
 #'   giving the length in hours
@@ -373,7 +373,7 @@ day_length <- function(date = lubridate::today(), tz = "UTC", lon = 0, lat = 0,
          "second" = hours * 3600)
 }
 
-#' @describeIn day_night Calculate night length
+#' @describeIn day_night Night length (scotoperiod)
 #' @export
 night_length <- function(date = lubridate::today(), tz = "UTC", lon = 0, lat = 0,
                          twilight = "none", unit.out = "hour") {

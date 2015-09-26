@@ -1,4 +1,4 @@
-#' Calculate photon ratio from spectral irradiance
+#' Photon:photon ratio
 #'
 #' This function returns the photon ratio for a given pair of wavebands of a
 #' light source spectrum.
@@ -76,7 +76,7 @@ q_ratio.source_spct <-
     return(ratio)
   }
 
-#' Calculate energy ratio from spectral irradiance
+#' Energy:energy ratio
 #'
 #' This function returns the photon ratio for a given pair of wavebands of a
 #' light source spectrum.
@@ -151,7 +151,7 @@ e_ratio.source_spct <-
     return(ratio)
   }
 
-#' Calculate the photon to energy ratio from spectral irradiance
+#' Photon:energy ratio
 #'
 #' This function returns the photon to energy ratio for each waveband of a light
 #' source spectrum.
@@ -227,9 +227,9 @@ qe_ratio.source_spct <-
     return(ratio)
   }
 
-#' Calculate energy to mol photon ratio from spectral irradiance
+#' Energy:photon ratio
 #'
-#' This function returns the energy to molle photn ratio for each waveband and a
+#' This function returns the energy to mole of photons ratio for each waveband and a
 #' light source spectrum.
 #'
 #' @param spct source_spct

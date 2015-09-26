@@ -120,7 +120,7 @@ get_valleys <- function(x, y,
 
 # peaks -------------------------------------------------------------------
 
-#' Generic function
+#' Peaks or local maxima
 #'
 #' Function that returns a subset of an R object with observations corresponding
 #' to local maxima.
@@ -269,7 +269,7 @@ peaks.cps_spct <- function(x, span = 5, ignore_threshold = 0, strict = TRUE, ...
 
 # valleys -------------------------------------------------------------------
 
-#' Generic function
+#' Valleys or local minima
 #'
 #' Function that returns a subset of an R object with observations corresponding
 #' to local maxima.
