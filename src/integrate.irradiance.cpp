@@ -11,7 +11,8 @@ using namespace std;
 //' @param w_length numeric array of wavelength (nm)
 //' @param s_irrad numeric array of spectral irradiances
 //'
-//' @return a single numeric value with no change in scale factor: e.g. [W m-2 nm-1] -> [W m-2]
+//' @return a single numeric value with no change in scale factor: e.g. [W m-2
+//'   nm-1] -> [W m-2]
 //' @keywords manip misc
 //' @export
 //' @useDynLib photobiology
