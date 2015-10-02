@@ -48,7 +48,7 @@ trim_spct <- function(spct, range=NULL, low.limit=NULL, high.limit=NULL,
   }
   if (!is.null(range) &&
       (!is.numeric(range) || (is.numeric(range) && length(range) != 2))) {
-    range <- range(range)
+    range <- range(range, na.rm = TRUE)
   }
   if (is.null(use.hinges)) {
     use.hinges <- auto_hinges(spct)
@@ -185,4 +185,30 @@ trim_spct <- function(spct, range=NULL, low.limit=NULL, high.limit=NULL,
   }
   check(spct)
   return(spct)
+}
+
+#' @rdname trim_spct
+#' @param mspct an object of class "generic_mspct"
+#'
+#' @export
+#'
+trim_mspct <- function(mspct,
+                       range = NULL,
+                       low.limit = NULL,
+                       high.limit = NULL,
+                       use.hinges = TRUE,
+                       fill = NULL,
+                       byref = FALSE,
+                       verbose = TRUE) {
+  msmsply(
+    mspct = mspct,
+    f = trim_spct,
+    range = range,
+    low.limit = low.limit,
+    high.limit = high.limit,
+    use.hinges = use.hinges,
+    fill = fill,
+    byref = byref,
+    verbose = verbose
+  )
 }

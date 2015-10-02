@@ -6,13 +6,14 @@ classes.
 
 Add test cases for convolve_each() and the 'apply' functions.
 
-Add methods min.wl(), max.wl() and range.wl() as synonims for min, max, and
-range methods for spectral objects.
+photobiology 0.8.8
+==================
 
-Add methods min.s.value(), max.s.value() and range.s.value() for spectral
-objects.
+Internal changes needed for an update to photobiologyInOut.
+Update pacakge Title in docs.
+Add function trim_mspct().
 
-photobiology 0.8.7
+hotobiology 0.8.7
 ==================
 
 Many bug fixes, mostly minor.

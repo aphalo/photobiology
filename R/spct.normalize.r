@@ -30,6 +30,9 @@ normalize.default <- function(x, ...) {
 #'
 normalize_spct <- function(spct, range, norm, var.name) {
   stopifnot(is.any_spct(spct), !is.null(var.name), length(var.name) == 1, var.name %in% names(spct))
+  if (is.null(range) || is.na(range)) {
+    range <- spct
+  }
   tmp.spct <- trim_spct(spct, range)
   # rescaling needed
   if (!is.null(norm)) {
@@ -80,17 +83,17 @@ normalize_spct <- function(spct, range, norm, var.name) {
 #'
 normalize.source_spct <- function(x,
                                   ...,
-                                  range = x,
+                                  range = NULL,
                                   norm = "max",
                                   unit.out = getOption("photobiology.radiation.unit", default="energy")) {
   if (unit.out == "energy") {
     return(normalize_spct(spct = q2e(x, action = "replace"),
-                          range = range(range),
+                          range = range,
                           norm = norm,
                           var.name = "s.e.irrad"))
   } else if (unit.out %in% c("photon", "quantum") ) {
     return(normalize_spct(spct = e2q(x, action = "replace"),
-                          range = range(range),
+                          range = range,
                           norm = norm,
                           var.name = "s.q.irrad"))
   } else {
@@ -104,17 +107,17 @@ normalize.source_spct <- function(x,
 #'
 normalize.response_spct <- function(x,
                                   ...,
-                                  range = x,
+                                  range = NULL,
                                   norm = "max",
                                   unit.out = getOption("photobiology.radiation.unit", default="energy")) {
   if (unit.out == "energy") {
     return(normalize_spct(spct = q2e(x, action = "replace"),
-                          range = range(range),
+                          range = range,
                           norm = norm,
                           var.name = "s.e.response"))
   } else if (unit.out %in% c("photon", "quantum") ) {
     return(normalize_spct(spct = e2q(x, action = "replace"),
-                          range = range(range),
+                          range = range,
                           norm = norm,
                           var.name = "s.q.response"))
   } else {
@@ -131,17 +134,18 @@ normalize.response_spct <- function(x,
 #'
 normalize.filter_spct <- function(x,
                                   ...,
-                                  range = x,
+                                  range = NULL,
                                   norm = "max",
-                                  qty.out = getOption("photobiology.filter.qty", default="transmittance")) {
+                                  qty.out = getOption("photobiology.filter.qty",
+                                                      default="transmittance")) {
   if (qty.out == "transmittance") {
     return(normalize_spct(spct = A2T(x, action = "replace"),
-                          range = range(range),
+                          range = range,
                           norm = norm,
                           var.name = "Tfr"))
   } else if (qty.out == "absorbance") {
     return(normalize_spct(spct = T2A(x, action = "replace"),
-                          range = range(range),
+                          range = range,
                           norm = norm,
                           var.name = "A"))
   } else {
@@ -155,15 +159,93 @@ normalize.filter_spct <- function(x,
 #'
 normalize.reflector_spct <- function(x,
                                   ...,
-                                  range = x,
+                                  range = NULL,
                                   norm = "max",
                                   qty.out = NULL) {
     return(normalize_spct(spct = x,
-                          range = range(range),
+                          range = range,
                           norm = norm,
                           var.name = "Rfr"))
 }
 
+
+# collections of spectra --------------------------------------------------
+
+
+#' @describeIn normalize Normalize the members of a source_mspct object.
+#'
+#' @export
+#'
+normalize.source_mspct <- function(x,
+                                   ...,
+                                   range = NULL,
+                                   norm = "max",
+                                   unit.out = getOption("photobiology.radiation.unit",
+                                                        default = "energy")) {
+  msmsply(x,
+          normalize,
+          range = range,
+          norm = norm,
+          unit.out = unit.out,
+          ...)
+
+}
+
+#' @describeIn normalize Normalize the members of a response_mspct object.
+#'
+#' @export
+#'
+normalize.response_mspct <- function(x,
+                                     ...,
+                                     range = NULL,
+                                     norm = "max",
+                                     unit.out = getOption("photobiology.radiation.unit",
+                                                          default = "energy")) {
+  msmsply(x,
+          normalize,
+          range = range,
+          norm = norm,
+          unit.out = unit.out,
+          ...)
+
+}
+
+#' @describeIn normalize Normalize the members of a filter_mspct object.
+#'
+#' @export
+#'
+normalize.filter_mspct <- function(x,
+                                   ...,
+                                   range = NULL,
+                                   norm = "max",
+                                   qty.out = getOption("photobiology.filter.qty",
+                                                       default = "transmittance")) {
+  msmsply(x,
+          normalize,
+          range = range,
+          norm = norm,
+          qty.out = qty.out,
+          ...)
+
+}
+
+#' @describeIn normalize Normalize the members of a reflector_mspct object.
+#'
+#' @export
+#'
+normalize.reflector_mspct <- function(x,
+                                     ...,
+                                     range = x,
+                                     norm = "max",
+                                     qty.out = NULL) {
+  msmsply(x,
+          normalize,
+          range = range,
+          norm = norm,
+          qty.out = qty.out,
+          ...)
+
+}
 
 # is_normalized function --------------------------------------------------
 

@@ -1,4 +1,4 @@
-#' Quantification of ultraviolet and visible radiation for photobiology
+#' Base Photobiological Calculations
 #'
 #' Calculation of quantities relevant to the effects of radiation on different
 #' organisms and biological processes from spectral data. The package is
@@ -14,8 +14,8 @@
 #' \tabular{ll}{
 #' Package: \tab photobiology\cr
 #' Type: \tab Package\cr
-#' Version: \tab 0.8.7\cr
-#' Date: \tab 2015-09-26\cr
+#' Version: \tab 0.8.8\cr
+#' Date: \tab 2015-10-02\cr
 #' License: \tab GPL (>= 3.0)\cr
 #' URL: \tab \url{http://www.r4photobiology.info},\cr
 #' \tab \url{https://bitbucket.org/aphalo/photobiology}\cr

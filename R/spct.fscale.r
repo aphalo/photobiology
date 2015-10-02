@@ -37,7 +37,7 @@ fscale.default <- function(x, ...) {
 #' @export
 #'
 fscale.source_spct <- function(x,
-                               range = x,
+                               range = NULL,
                                f = "mean",
                                unit.out = getOption("photobiology.radiation.unit", default="energy"),
                                ...) {
@@ -61,7 +61,7 @@ fscale.source_spct <- function(x,
 #' @export
 #'
 fscale.response_spct <- function(x,
-                                 range = x,
+                                 range = NULL,
                                  f = "mean",
                                  unit.out = getOption("photobiology.radiation.unit", default="energy"),
                                  ...) {
@@ -89,9 +89,10 @@ fscale.response_spct <- function(x,
 #' @export
 #'
 fscale.filter_spct <- function(x,
-                               range = x,
+                               range = NULL,
                                f = "mean",
-                               qty.out = getOption("photobiology.filter.qty", default="transmittance"),
+                               qty.out = getOption("photobiology.filter.qty",
+                                                   default = "transmittance"),
                                ...) {
   if (qty.out == "transmittance") {
     return(fscale_spct(spct = A2T(x, action = "replace"),
@@ -115,7 +116,7 @@ fscale.filter_spct <- function(x,
 #' @export
 #'
 fscale.reflector_spct <- function(x,
-                                  range = x,
+                                  range = NULL,
                                   f = "mean",
                                   qty.out = NULL,
                                   ...) {
@@ -125,6 +126,77 @@ fscale.reflector_spct <- function(x,
                      var.name = "Rfr",
                      ...))
 }
+
+#' @describeIn fscale
+#'
+#' @export
+#'
+fscale.source_mspct <- function(x,
+                                 range = NULL,
+                                 f = "mean",
+                                 unit.out = getOption("photobiology.radiation.unit",
+                                                      default = "energy"),
+                                 ...) {
+  msmsply(x,
+          fscale,
+          range = range,
+          f = f,
+          unit.out = unit.out,
+          ...)
+}
+
+#' @describeIn fscale
+#'
+#' @export
+#'
+fscale.response_mspct <- function(x,
+                                  range = NULL,
+                                  f = "mean",
+                                  unit.out = getOption("photobiology.radiation.unit",
+                                                       default = "energy"),
+                                  ...) {
+  msmsply(x,
+          fscale,
+          range = range,
+          f = f,
+          unit.out = unit.out,
+          ...)
+}
+
+#' @describeIn fscale
+#'
+#' @export
+#'
+fscale.filter_mspct <- function(x,
+                                  range = NULL,
+                                  f = "mean",
+                                  qty.out = getOption("photobiology.filter.qty",
+                                                      default = "transmittance"),
+                                  ...) {
+  msmsply(x,
+          fscale,
+          range = range,
+          f = f,
+          qty.out = qty.out,
+          ...)
+}
+
+#' @describeIn fscale
+#'
+#' @export
+#'
+fscale.reflector_mspct <- function(x,
+                                  range = NULL,
+                                  f = "mean",
+                                  unit.out = NULL ) {
+  msmsply(x,
+          fscale,
+          range = range,
+          f = f,
+          unit.out = unit.out,
+          ...)
+}
+
 
 #' fscale a spectrum
 #'
@@ -143,6 +215,9 @@ fscale.reflector_spct <- function(x,
 #' @keywords internal
 #'
 fscale_spct <- function(spct, range, var.name, f, ...) {
+  if (is.null(range) || is.na(range)) {
+    range <- spct
+  }
   tmp.spct <- trim_spct(spct, range, byref = FALSE)
   tmp.spct <- tmp.spct[ , c("w.length", var.name)]
   # rescaling needed

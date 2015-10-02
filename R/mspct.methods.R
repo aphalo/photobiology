@@ -6,18 +6,18 @@
 #' Apply a function or operator to a collection of spectra.
 #'
 #' @param mspct an object of class generic_mspct or a derived class
-#' @param f a function
-#' @param ... other arguments passed to f
+#' @param .fun a function
+#' @param ... other arguments passed to .fun
 #'
 #' @return a collection of spectra in the case of \code{msmsply}
 #'
 #' @export
 #'
-msmsply <- function(mspct, f, ...) {
+msmsply <- function(mspct, .fun, ...) {
   stopifnot(is.any_mspct(mspct))
   mspct.class <- class(mspct)
 
-  y <- plyr::llply(mspct, f, ...)
+  y <- plyr::llply(mspct, .fun, ...)
 
   stopifnot(length(y) == length(mspct))
 
@@ -44,7 +44,7 @@ msmsply <- function(mspct, f, ...) {
 #'
 #' @export
 #'
-msdply <- function(mspct, f, ..., idx = NULL) {
+msdply <- function(mspct, .fun, ..., idx = NULL) {
   stopifnot(is.any_mspct(mspct))
 
   if ( (is.logical(idx) && idx) ||
@@ -53,11 +53,11 @@ msdply <- function(mspct, f, ..., idx = NULL) {
   }
 
   z <- plyr::ldply(.data = mspct,
-                   .fun = f,
+                   .fun = .fun,
                    ...,
                    .id = idx )
 
-  f.name <- as.character(substitute(f))
+  f.name <- as.character( substitute(.fun))
 
   if (f.name %in% c("min", "max", "range", "spread", "midpoint", "stepsize")) {
     qty.names <- switch(f.name,
@@ -101,16 +101,16 @@ msdply <- function(mspct, f, ..., idx = NULL) {
 #'
 #' @export
 #'
-mslply <- function(mspct, f, ...) {
+mslply <- function(mspct, .fun, ...) {
   stopifnot(is.any_mspct(mspct))
 
   z <- plyr::llply(.data = mspct,
-                   .fun = f,
+                   .fun = .fun,
                    ...)
 
   names(z) <- names(mspct)
 
-  f.name <- as.character(substitute(f))
+  f.name <- as.character( substitute(.fun))
 
   comment(z) <- paste("Applied function: '", f.name, "'.\n", sep = "", comment(mspct))
 
@@ -124,14 +124,14 @@ mslply <- function(mspct, f, ...) {
 #'
 #' @export
 #'
-msaply <- function(mspct, f, ...) {
+msaply <- function(mspct, .fun, ...) {
   stopifnot(is.any_mspct(mspct))
 
   z <- plyr::laply(.data = mspct,
-                   .fun = f,
+                   .fun = .fun,
                    ...)
 
-  f.name <- as.character(substitute(f))
+  f.name <- as.character( substitute(.fun))
 
   comment(z) <- paste("Applied function: '", f.name, "'.\n", sep = "", comment(mspct))
 
@@ -151,7 +151,7 @@ range.generic_mspct <- function(..., na.rm = FALSE, idx = NULL) {
   if (is.null(idx)) {
     idx <- !is.null(names(mspct))
   }
-  msdply(mspct = mspct, f = range, na.rm = na.rm, idx = idx)
+  msdply(mspct = mspct, .fun = range, na.rm = na.rm, idx = idx)
 }
 
 #' @param idx logical whether to add a column with the names of the elements of
@@ -165,7 +165,7 @@ min.generic_mspct <- function(..., na.rm = FALSE, idx = NULL) {
   if (is.null(idx)) {
     idx <- !is.null(names(mspct))
   }
-  msdply(mspct = mspct, f = min, na.rm = na.rm, idx = idx)
+  msdply(mspct = mspct, .fun = min, na.rm = na.rm, idx = idx)
 }
 
 #' @param idx logical whether to add a column with the names of the elements of
@@ -179,7 +179,7 @@ max.generic_mspct <- function(..., na.rm = FALSE, idx = NULL) {
   if (is.null(idx)) {
     idx <- !is.null(names(mspct))
   }
-  msdply(mspct = mspct, f = max, ..., na.rm = na.rm, idx = idx)
+  msdply(mspct = mspct, .fun = max, ..., na.rm = na.rm, idx = idx)
 }
 
 #' @describeIn stepsize  Method for "generic_mspct" objects.
@@ -189,7 +189,7 @@ max.generic_mspct <- function(..., na.rm = FALSE, idx = NULL) {
 #' @export
 #'
 stepsize.generic_mspct <- function(x, ..., idx = !is.null(names(x))) {
-  msdply(mspct = x, f = stepsize, ..., idx = idx)
+  msdply(mspct = x, .fun = stepsize, ..., idx = idx)
 }
 
 #' @describeIn spread  Method for "generic_mspct" objects.
@@ -199,7 +199,7 @@ stepsize.generic_mspct <- function(x, ..., idx = !is.null(names(x))) {
 #' @export
 #'
 spread.generic_mspct <- function(x, ..., idx = !is.null(names(x))) {
-  msdply(mspct = x, f = spread, ..., idx = idx)
+  msdply(mspct = x, .fun = spread, ..., idx = idx)
 }
 
 #' @describeIn midpoint Method for "generic_mspct" objects.
@@ -209,7 +209,7 @@ spread.generic_mspct <- function(x, ..., idx = !is.null(names(x))) {
 #' @export
 #'
 midpoint.generic_mspct <- function(x, ..., idx = !is.null(names(x))) {
-  msdply(mspct = x, f = midpoint, ..., idx = idx)
+  msdply(mspct = x, .fun = midpoint, ..., idx = idx)
 }
 
 # source_mspct methods -----------------------------------------------
@@ -232,7 +232,7 @@ irrad.source_mspct <-
            allow.scaled = FALSE,
            ...,
            idx = !is.null(names(spct))) {
-    msdply(mspct = spct, f = irrad,
+    msdply(mspct = spct, .fun = irrad,
             w.band = w.band, unit.out = unit.out,
             wb.trim = wb.trim, use.cached.mult = use.cached.mult,
             use.hinges = use.hinges, allow.scaled = allow.scaled, idx = idx)
@@ -255,7 +255,7 @@ q_irrad.source_mspct <-
            use.hinges = getOption("photobiology.use.hinges", default = NULL),
            allow.scaled = FALSE,
            ..., idx = !is.null(names(spct))) {
-  msdply(mspct = spct, f = q_irrad,
+  msdply(mspct = spct, .fun = q_irrad,
                w.band = w.band,
                wb.trim = wb.trim, use.cached.mult = use.cached.mult,
                use.hinges = use.hinges, allow.scaled = allow.scaled, idx = idx)
@@ -278,7 +278,7 @@ e_irrad.source_mspct <-
            use.hinges = getOption("photobiology.use.hinges", default = NULL),
            allow.scaled = FALSE,
            ..., idx = !is.null(names(spct))) {
-  msdply(mspct = spct, f = e_irrad,
+  msdply(mspct = spct, .fun = e_irrad,
                w.band = w.band,
                wb.trim = wb.trim, use.cached.mult = use.cached.mult,
                use.hinges = use.hinges, allow.scaled = allow.scaled, idx = idx)
@@ -300,7 +300,7 @@ fluence.source_mspct <-
            use.hinges = getOption("photobiology.use.hinges", default = NULL),
            allow.scaled = FALSE,
            ..., idx = !is.null(names(spct))) {
-    msdply(mspct = spct, f = fluence,
+    msdply(mspct = spct, .fun = fluence,
                  w.band = w.band, unit.out = unit.out,
                  exposure.time = exposure.time,
                  wb.trim = wb.trim, use.cached.mult = use.cached.mult,
@@ -321,7 +321,7 @@ e_fluence.source_mspct <-
            use.hinges = getOption("photobiology.use.hinges", default = NULL),
            allow.scaled = FALSE,
            ..., idx = !is.null(names(spct))) {
-    msdply(mspct = spct, f = e_fluence,
+    msdply(mspct = spct, .fun = e_fluence,
                  w.band = w.band,
                  exposure.time = exposure.time,
                  wb.trim = wb.trim, use.cached.mult = use.cached.mult,
@@ -343,7 +343,7 @@ q_fluence.source_mspct <-
            use.hinges = getOption("photobiology.use.hinges", default = NULL),
            allow.scaled = FALSE,
            ..., idx = !is.null(names(spct))) {
-    msdply(mspct = spct, f = q_fluence,
+    msdply(mspct = spct, .fun = q_fluence,
                  w.band = w.band,
                  exposure.time = exposure.time,
                  wb.trim = wb.trim, use.cached.mult = use.cached.mult,
@@ -364,7 +364,7 @@ q_ratio.source_mspct <-
            use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
            use.hinges = getOption("photobiology.use.hinges", default = NULL),
            ..., idx = !is.null(names(spct))) {
-  msdply(mspct = spct, f = q_ratio,
+  msdply(mspct = spct, .fun = q_ratio,
                w.band.num = w.band.num, w.band.denom = w.band.denom,
                wb.trim = wb.trim, use.cached.mult = use.cached.mult,
                use.hinges = use.hinges, idx = idx)
@@ -384,7 +384,7 @@ e_ratio.source_mspct <-
            use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
            use.hinges = getOption("photobiology.use.hinges", default = NULL),
            ..., idx = !is.null(names(spct))) {
-  msdply(mspct = spct, f = e_ratio,
+  msdply(mspct = spct, .fun = e_ratio,
                w.band.num = w.band.num, w.band.denom = w.band.denom,
                wb.trim = wb.trim, use.cached.mult = use.cached.mult,
                use.hinges = use.hinges, idx = idx)
@@ -404,7 +404,7 @@ eq_ratio.source_mspct <-
            use.hinges = getOption("photobiology.use.hinges", default = NULL),
            ...,
            idx = !is.null(names(spct))) {
-  msdply(mspct = spct, f = eq_ratio,
+  msdply(mspct = spct, .fun = eq_ratio,
                w.band = w.band,
                wb.trim = wb.trim, use.cached.mult = use.cached.mult,
                use.hinges = use.hinges, idx = idx)
@@ -424,7 +424,7 @@ qe_ratio.source_mspct <-
            use.hinges=getOption("photobiology.use.hinges", default = NULL),
            ...,
            idx = !is.null(names(spct))) {
-  msdply(spct, qe_ratio,
+  msdply(spct, .fun = qe_ratio,
                w.band = w.band,
                wb.trim = wb.trim, use.cached.mult = use.cached.mult,
                use.hinges = use.hinges, idx = idx)
@@ -455,7 +455,7 @@ transmittance.filter_mspct <-
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.hinges = getOption("photobiology.use.hinges", default = NULL),
            ..., idx = !is.null(names(spct)) ) {
-    msdply(mspct = spct, f = transmittance,
+    msdply(mspct = spct, .fun = transmittance,
                  w.band = w.band,
                  quantity = quantity,
                  wb.trim = wb.trim,
@@ -476,7 +476,7 @@ absorptance.filter_mspct <-
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.hinges = getOption("photobiology.use.hinges", default = NULL),
            ..., idx = !is.null(names(spct)) ) {
-    msdply(mspct = spct, f = absorptance,
+    msdply(mspct = spct, .fun = absorptance,
                  w.band = w.band,
                  quantity = quantity,
                  wb.trim = wb.trim,
@@ -497,7 +497,7 @@ absorbance.filter_mspct <-
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.hinges = getOption("photobiology.use.hinges", default = NULL),
            ..., idx = !is.null(names(spct))) {
-  msdply(mspct = spct, f = absorbance,
+  msdply(mspct = spct, .fun = absorbance,
                w.band = w.band,
                quantity = quantity,
                wb.trim = wb.trim,
@@ -520,7 +520,7 @@ reflectance.reflector_mspct <-
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.hinges = getOption("photobiology.use.hinges", default = NULL),
            ..., idx = !is.null(names(spct))) {
-  msdply(mspct = spct, f = reflectance,
+  msdply(mspct = spct, .fun = reflectance,
                w.band = w.band,
                quantity = quantity,
                wb.trim = wb.trim,
@@ -540,7 +540,7 @@ transmittance.object_mspct <-
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.hinges = getOption("photobiology.use.hinges", default = NULL),
            ..., idx = !is.null(names(spct)) ) {
-    msdply(mspct = spct, f = transmittance,
+    msdply(mspct = spct, .fun = transmittance,
                  w.band = w.band,
                  quantity = quantity,
                  wb.trim = wb.trim,
@@ -559,7 +559,7 @@ absorptance.object_mspct <-
            wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
            use.hinges=getOption("photobiology.use.hinges", default=NULL),
            ..., idx = !is.null(names(spct)) ) {
-    msdply(mspct = spct, f = absorptance,
+    msdply(mspct = spct, .fun = absorptance,
                  w.band = w.band,
                  quantity = quantity,
                  wb.trim = wb.trim,
@@ -577,7 +577,7 @@ reflectance.object_mspct <-
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.hinges= getOption("photobiology.use.hinges", default = NULL),
            ..., idx = !is.null(names(spct))) {
-    msdply(mspct = spct, f = reflectance,
+    msdply(mspct = spct, .fun = reflectance,
                  w.band = w.band,
                  quantity = quantity,
                  wb.trim = wb.trim,
@@ -595,7 +595,7 @@ absorbance.object_mspct <-
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.hinges=getOption("photobiology.use.hinges", default = NULL),
            ..., idx = !is.null(names(spct))) {
-    msdply(mspct = spct, f = absorbance,
+    msdply(mspct = spct, .fun = absorbance,
                  w.band = w.band,
                  quantity = quantity,
                  wb.trim = wb.trim,
@@ -620,7 +620,7 @@ response.response_mspct <-
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.hinges = getOption("photobiology.use.hinges", default = NULL),
            ..., idx = !is.null(names(spct))) {
-  msdply(mspct = spct, f = response,
+  msdply(mspct = spct, .fun = response,
                w.band = w.band, unit.out = unit.out,
                quantity = quantity,
                time.unit = time.unit,
@@ -644,7 +644,7 @@ q_response.response_mspct <-
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.hinges = getOption("photobiology.use.hinges", default = NULL),
            ..., idx = !is.null(names(spct))) {
-  msdply(mspct = spct, f = q_response,
+  msdply(mspct = spct, .fun = q_response,
                w.band = w.band,
                quantity = quantity,
                time.unit = time.unit,
@@ -668,7 +668,7 @@ e_response.response_mspct <-
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.hinges = getOption("photobiology.use.hinges", default = NULL),
            ..., idx = !is.null(names(spct))) {
-    msdply(mspct = spct, f = e_response,
+    msdply(mspct = spct, .fun = e_response,
                  w.band = w.band,
                  quantity = quantity,
                  time.unit = time.unit,
@@ -960,3 +960,4 @@ c.generic_mspct <- function(..., recursive = FALSE, ncol = 1, byrow = FALSE) {
   ul <- unlist(l, recursive = FALSE)
   do.call(shared.class, list(l = ul, ncol = ncol, byrow = byrow))
 }
+

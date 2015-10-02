@@ -24,7 +24,7 @@ spct_classes <- function() {
 #' @param byref logical indicating if new object will be created by reference or
 #'   by copy of \code{x}
 #' @param strict.range logical indicating whether off-range values result in an
-#'   error instead of a warning
+#'   error instead of a warning, \code{NA} disables the test.
 #' @param ... additional param possible derived methods
 #' @export
 #'
@@ -34,7 +34,7 @@ check <- function(x, byref, strict.range, ...) UseMethod("check")
 
 #' @describeIn check Default for generic function.
 #' @export
-check.default <- function(x, byref=FALSE, strict.range = FALSE, ...) {
+check.default <- function(x, byref=FALSE, strict.range = NA, ...) {
   return(x)
 }
 
@@ -43,7 +43,13 @@ check.default <- function(x, byref=FALSE, strict.range = FALSE, ...) {
 #' @param multiple.wl numeric Maximum number of repeated w.length entries with same value.
 #'
 #' @export
-check.generic_spct <- function(x, byref=TRUE, strict.range = FALSE, multiple.wl = getMultipleWl(x), ...) {
+check.generic_spct <-
+  function(x,
+           byref = TRUE,
+           strict.range = NA,
+           multiple.wl = getMultipleWl(x),
+           ...)
+  {
   # fix old class attributes
   class.x <- class_spct(x)
   if (!("tbl_df") %in% class(x)) {
@@ -91,11 +97,15 @@ check.generic_spct <- function(x, byref=TRUE, strict.range = FALSE, multiple.wl 
 
 #' @describeIn check Specialization for cps_spct.
 #' @export
-check.cps_spct <- function(x, byref=TRUE, strict.range = FALSE, multiple.wl = getMultipleWl(x), ...) {
+check.cps_spct <- function(x,
+                           byref=TRUE,
+                           strict.range = getOption("photobiology.strict.range", default = FALSE),
+                           multiple.wl = getMultipleWl(x),
+                           ...) {
 
   range_check <- function(x) {
     cps.min <- min(x$cps, na.rm = TRUE)
-    if (!is.null(strict.range) & (cps.min < -1e-8)) {
+    if (!is.null(strict.range) && !is.na(strict.range) && (cps.min < -1e-8)) {
       message.text <- paste0("Off-range cps values:", signif(cps.min, 2))
       if (strict.range) {
         stop(message.text)
@@ -124,13 +134,19 @@ check.cps_spct <- function(x, byref=TRUE, strict.range = FALSE, multiple.wl = ge
 
 #' @describeIn check Specialization for filter_spct.
 #' @export
-check.filter_spct <- function(x, byref=TRUE, strict.range = FALSE, multiple.wl = getMultipleWl(x), ...) {
+check.filter_spct <-
+  function(x,
+           byref = TRUE,
+           strict.range = getOption("photobiology.strict.range", default = FALSE),
+           multiple.wl = getMultipleWl(x),
+           ...)
+  {
 
   range_check <- function(x, strict.range) {
     if (!all(is.na(x[["Tfr"]]))) {
       Tfr.min <- min(x[["Tfr"]], na.rm = TRUE)
       Tfr.max <- max(x[["Tfr"]], na.rm = TRUE)
-      if (!is.null(strict.range) & (Tfr.min < -1e-8 || Tfr.max > 1)) {
+      if (!is.null(strict.range) && !is.na(strict.range) & (Tfr.min < -1e-8 || Tfr.max > 1)) {
         message.text <- paste("Off-range transmittance values [", signif(Tfr.min, 2),
                               "...", signif(Tfr.max, 2), "] instead of  [0..1]", sep="")
         if (strict.range) {
@@ -148,7 +164,7 @@ check.filter_spct <- function(x, byref=TRUE, strict.range = FALSE, multiple.wl =
     if (!all(is.na(x[["A"]]))) {
       A.min <- min(x[["A"]], na.rm = TRUE)
       A.max <- max(x[["A"]], na.rm = TRUE)
-      if (!is.null(strict.range) & (A.min < -1e-8 || A.max > 20)) {
+      if (!is.null(strict.range) && !is.na(strict.range) & (A.min < -1e-8 || A.max > 20)) {
         message.text <- paste("Off-range absorbance values [", signif(A.min, 2),
                               "...", signif(A.max, 2), "] instead of  [0..1]", sep="")
         if (strict.range) {
@@ -182,14 +198,14 @@ check.filter_spct <- function(x, byref=TRUE, strict.range = FALSE, multiple.wl =
     warning("Found variable 'Absorbance', I am assuming it is in log10-based absorbance units")
   }
   # look for percentages and change them into fractions of one
-  if (exists("Tfr", x, mode = "numeric", inherits=FALSE)) {
-    range_check(x, strict.range=strict.range)
-  } else if (exists("Tpc", x, mode = "numeric", inherits=FALSE)) {
+  if (exists("Tfr", x, mode = "numeric", inherits = FALSE)) {
+    range_check(x, strict.range = strict.range)
+  } else if (exists("Tpc", x, mode = "numeric", inherits = FALSE)) {
     x[["Tfr"]] <- x[["Tpc"]] / 100
     x[["Tpc"]] <-  NULL
-    range_check(x, strict.range=strict.range)
-  } else if (exists("A", x, mode = "numeric", inherits=FALSE)) {
-    range_check_A(x, strict.range=strict.range)
+    range_check(x, strict.range = strict.range)
+  } else if (exists("A", x, mode = "numeric", inherits = FALSE)) {
+    range_check_A(x, strict.range = strict.range)
   } else {
     warning("No transmittance or absorbance data found in filter_spct")
     x[["Tfr"]] <- NA_real_
@@ -199,23 +215,35 @@ check.filter_spct <- function(x, byref=TRUE, strict.range = FALSE, multiple.wl =
 
 #' @describeIn check Specialization for reflector_spct.
 #' @export
-check.reflector_spct <- function(x, byref = TRUE, strict.range = FALSE, multiple.wl = getMultipleWl(x), ...) {
+check.reflector_spct <-
+  function(x,
+           byref = TRUE,
+           strict.range = getOption("photobiology.strict.range", default = FALSE),
+           multiple.wl = getMultipleWl(x),
+           ...) {
 
-  range_check <- function(x, strict.range) {
-    if (!all(is.na(x$Rfr))) {
-      Rfr.min <- min(x$Rfr, na.rm = TRUE)
-      Rfr.max <- max(x$Rfr, na.rm = TRUE)
-      if (!is.null(strict.range) & (Rfr.min < -1e-8 ||  Rfr.max > 1)) {
-        message.text <- paste0("Off-range reflectance values [", signif(Rfr.min, 2), "...",
-                               signif(Rfr.max, 2), "] instead of  [0..1]", sep="")
-        if (strict.range) {
-          stop(message.text)
-        } else {
-          warning(message.text)
+    range_check <- function(x, strict.range) {
+      if (!all(is.na(x$Rfr))) {
+        Rfr.min <- min(x$Rfr, na.rm = TRUE)
+        Rfr.max <- max(x$Rfr, na.rm = TRUE)
+        if (!is.null(strict.range) && !is.na(strict.range) & (Rfr.min < -1e-8 ||  Rfr.max > 1)) {
+          message.text <-
+            paste0(
+              "Off-range reflectance values [",
+              signif(Rfr.min, 2),
+              "...",
+              signif(Rfr.max, 2),
+              "] instead of  [0..1]",
+              sep = ""
+            )
+          if (strict.range) {
+            stop(message.text)
+          } else {
+            warning(message.text)
+          }
         }
       }
     }
-  }
 
   x <- check.generic_spct(x, multiple.wl = multiple.wl)
 
@@ -242,13 +270,19 @@ check.reflector_spct <- function(x, byref = TRUE, strict.range = FALSE, multiple
 
 #' @describeIn check Specialization for object_spct.
 #' @export
-check.object_spct <- function(x, byref=TRUE, strict.range = FALSE, multiple.wl = getMultipleWl(x), ...) {
+
+check.object_spct <-
+  function(x,
+           byref = TRUE,
+           strict.range = getOption("photobiology.strict.range", default = FALSE),
+           multiple.wl = getMultipleWl(x),
+           ...) {
 
   range_check_Tfr <- function(x, strict.range) {
     if (!all(is.na(x[["Tfr"]]))) {
       Tfr.min <- min(x[["Tfr"]], na.rm = TRUE)
       Tfr.max <- max(x[["Tfr"]], na.rm = TRUE)
-      if (!is.null(strict.range) & (Tfr.min < -1e-8 || Tfr.max > 1)) {
+      if (!is.null(strict.range) && !is.na(strict.range) & (Tfr.min < -1e-8 || Tfr.max > 1)) {
         message.text <- paste("Off-range transmittance values [", signif(Tfr.min, 2),
                               "...", signif(Tfr.max, 2), "] instead of  [0..1]", sep="")
         if (strict.range) {
@@ -267,7 +301,7 @@ check.object_spct <- function(x, byref=TRUE, strict.range = FALSE, multiple.wl =
       Rfr.min <- min(x[["Rfr"]], na.rm = TRUE)
       Rfr.max <- max(x[["Rfr"]], na.rm = TRUE)
       if (!is.na(Rfr.min) && !is.na(Rfr.max)) {
-        if (!is.null(strict.range) & (Rfr.min < -1e-8 ||  Rfr.max > 1)) {
+        if (!is.null(strict.range) && !is.na(strict.range) & (Rfr.min < -1e-8 ||  Rfr.max > 1)) {
           message.text <- paste0("Off-range reflectance values [", signif(Rfr.min, 2), "...",
                                  signif(Rfr.max, 2), "] instead of  [0..1]", sep="")
           if (strict.range) {
@@ -323,7 +357,12 @@ check.object_spct <- function(x, byref=TRUE, strict.range = FALSE, multiple.wl =
 
 #' @describeIn check Specialization for response_spct.
 #' @export
-check.response_spct <- function(x, byref=TRUE, strict.range = FALSE, multiple.wl = getMultipleWl(x), ...) {
+check.response_spct <-
+  function(x,
+           byref = TRUE,
+           strict.range = NA,
+           multiple.wl = getMultipleWl(x),
+           ...) {
 
   x <- check.generic_spct(x, multiple.wl = multiple.wl)
 
@@ -352,36 +391,48 @@ check.response_spct <- function(x, byref=TRUE, strict.range = FALSE, multiple.wl
 
 #' @describeIn check Specialization for source_spct.
 #' @export
-check.source_spct <- function(x, byref=TRUE, strict.range = FALSE, multiple.wl = getMultipleWl(x), ...) {
+check.source_spct <-
+  function(x,
+           byref = TRUE,
+           strict.range = getOption("photobiology.strict.range", default = FALSE),
+           multiple.wl = getMultipleWl(x),
+           ...) {
 
-  range_check <- function(x, strict.range) {
-    if (is.null(strict.range)) {
-      return()
-    }
-    if (exists("s.e.irrad", x, inherits = FALSE)) {
-      s.e.min <- min(x$s.e.irrad, na.rm = TRUE)
-      if (s.e.min < -1e-8) {
-        message.text <- paste("Negative spectral energy irradiance values; minimun s.e.irrad =",
-                              signif(s.e.min, 2))
-        if (strict.range) {
-          stop(message.text)
-        } else {
-          warning(message.text)
+    range_check <- function(x, strict.range) {
+      min.limit <- -1e-3 # we accept small negative values
+      if (exists("s.e.irrad", x, inherits = FALSE) &&
+          !all(is.na(x[["s.e.irrad"]]))) {
+        s.e.range <- range(x$s.e.irrad, na.rm = TRUE)
+        if (s.e.range[1] < min.limit * s.e.range[2]) {
+          message.text <-
+            paste(
+              "Negative spectral energy irradiance values; minimun s.e.irrad =",
+              signif(s.e.range[1], 2)
+            )
+          if (strict.range) {
+            stop(message.text)
+          } else {
+            warning(message.text)
+          }
+        }
+      }
+      if (exists("s.q.irrad", x, inherits = FALSE) &&
+          !all(is.na(x[["s.q.irrad"]]))) {
+        s.q.range <- range(x$s.q.irrad, na.rm = TRUE)
+        if (s.q.range[1] < min.limit * s.q.range[2]) {
+          message.text <-
+            paste(
+              "Negative spectral photon irradiance values; minimun s.q.irrad =",
+              signif(s.q.range[1], 2)
+            )
+          if (strict.range) {
+            stop(message.text)
+          } else {
+            warning(message.text)
+          }
         }
       }
     }
-    if (exists("s.q.irrad", x, inherits = FALSE)) {
-      s.q.min <- min(x$s.q.irrad, na.rm = TRUE)
-      if (s.q.min < 0) {
-        message.text <- paste("Negative spectral photon irradiance values; minimun s.q.irrad =", signif(s.q.min, 2))
-        if (strict.range) {
-          stop(message.text)
-        } else {
-          warning(message.text)
-        }
-      }
-    }
-  }
 
   x <- check.generic_spct(x, multiple.wl = multiple.wl)
   x <- checkTimeUnit(x)
@@ -403,13 +454,22 @@ check.source_spct <- function(x, byref=TRUE, strict.range = FALSE, multiple.wl =
     x[["s.e.irrad"]] <- NA_real_
     return(x)
   }
-  range_check(x, strict.range = strict.range)
+  if (!is.null(strict.range) && !is.na(strict.range)) {
+    range_check(x, strict.range = strict.range)
+  }
   return(x)
 }
 
 #' @describeIn check Specialization for chroma_spct.
 #' @export
-check.chroma_spct <- function(x, byref=TRUE, strict.range = FALSE, multiple.wl = getMultipleWl(x), ...) {
+
+check.chroma_spct <-
+  function(x,
+           byref = TRUE,
+           strict.range = getOption("photobiology.strict.range", default = FALSE),
+           multiple.wl = getMultipleWl(x),
+           ...) {
+
   names_x <- names(x)
 
   x <- check.generic_spct(x, multiple.wl = multiple.wl)
