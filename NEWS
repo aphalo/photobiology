@@ -11,7 +11,10 @@ photobiology 0.8.8
 
 Internal changes needed for an update to photobiologyInOut.
 Update pacakge Title in docs.
-Add function trim_mspct().
+Add function trim_mspct(), and implement normalize() and fscale() methods for
+_mspct classes.
+Implement dim<- for _mspct classes.
+Fix bug in msmsply() and mslply().
 
 hotobiology 0.8.7
 ==================

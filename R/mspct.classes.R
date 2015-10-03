@@ -95,7 +95,8 @@ shared_member_class <- function(l, target.set = spct_classes()) {
 #'   for the elements of l
 #' @param ncol integer Number of 'virtual' columns in data
 #' @param byrow logical If \code{ncol > 1} how to read in the data
-#' @param ... additional arguments
+#' @param dim integer Array of dimensions
+#' @param ... ignored
 #'
 #' @export
 #' @exportClass generic_mspct
@@ -104,11 +105,14 @@ shared_member_class <- function(l, target.set = spct_classes()) {
 #'
 #' @family collections of spectra classes family
 #'
-generic_mspct <- function(l, class = "generic_spct", ncol = 1, byrow = FALSE) {
+generic_mspct <- function(l, class = "generic_spct",
+                          ncol = 1, byrow = FALSE,
+                          dim = c(length(l) %/% ncol, ncol)) {
   if (is.any_spct(l)) {
     l <- list(l)
   }
   stopifnot(is.list(l))
+
   class <- class[1]
   if (class %in% mspct_classes()) {
     multi_class <- class
@@ -138,7 +142,7 @@ generic_mspct <- function(l, class = "generic_spct", ncol = 1, byrow = FALSE) {
   }
   attr(l, "mspct.version") <- 2
 
-  attr(l, "mspct.dim") <- c(length(l) %/% ncol, ncol)
+  dim(l) <- dim
   attr(l, "mspct.byrow") <- as.logical(byrow)
   l
 }
@@ -601,3 +605,16 @@ dim.generic_mspct <- function(x) {
   z
 }
 
+#' @rdname dim.generic_mspct
+#'
+#' @param value Either NULL or a numeric vector, which is coerced to integer (by truncation).
+#'
+#' @export
+#'
+`dim<-.generic_mspct` <- function(x, value) {
+  if (! is.null(value)) {
+    value <- as.integer(value)
+  }
+  attr(x, "mspct.dim") <- value
+  x
+}

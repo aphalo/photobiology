@@ -16,7 +16,12 @@
 msmsply <- function(mspct, .fun, ...) {
   stopifnot(is.any_mspct(mspct))
   mspct.class <- class(mspct)
-
+  byrow <- attr(mspct, "mspct.byrow", exact = TRUE)
+  dim <- dim(mspct)
+  ncol <- ncol(mspct)
+  # llply returns a matrix for classes derived from list
+  #
+  rmDerivedMspct(mspct)
   y <- plyr::llply(mspct, .fun, ...)
 
   stopifnot(length(y) == length(mspct))
@@ -30,8 +35,9 @@ msmsply <- function(mspct, .fun, ...) {
 
   generic_mspct(l = y,
                 class = result.class,
-                byrow = attr(mspct, "mspct.byrow", exact = TRUE),
-                ncol = ncol(mspct))
+                byrow = byrow,
+                ncol = ncol,
+                dim = dim)
 }
 
 #' @rdname  msmsply
@@ -92,7 +98,7 @@ msdply <- function(mspct, .fun, ..., idx = NULL) {
       z$row <- rep(1:mspct.nrow, mspct.ncol)
     }
   }
-  z
+  dplyr::as_data_frame(z)
 }
 
 #' @rdname  msmsply
@@ -104,6 +110,9 @@ msdply <- function(mspct, .fun, ..., idx = NULL) {
 mslply <- function(mspct, .fun, ...) {
   stopifnot(is.any_mspct(mspct))
 
+  # llply returns a matrix for classes derived from list
+  #
+  rmDerivedMspct(mspct)
   z <- plyr::llply(.data = mspct,
                    .fun = .fun,
                    ...)
@@ -120,18 +129,31 @@ mslply <- function(mspct, .fun, ...) {
 
 #' @rdname  msmsply
 #'
+#' @param .drop should extra dimensions of length 1 in the output be dropped,
+#'   simplifying the output. Defaults to TRUE
 #' @return an array in the case of \code{msaply}
 #'
 #' @export
 #'
-msaply <- function(mspct, .fun, ...) {
+msaply <- function(mspct, .fun, ..., .drop = TRUE) {
   stopifnot(is.any_mspct(mspct))
 
-  z <- plyr::laply(.data = mspct,
-                   .fun = .fun,
-                   ...)
+  # As many of our summary functions return nuneric values with names and other
+  # attributes they need to be removed for dply::lapply to accept them.
+  .ffun <- function(mspct, ...) {
+    z <- .fun(mspct, ...)
+    if (is.numeric(z)) {
+      z <- as.numeric(z)
+    }
+    z
+  }
 
-  f.name <- as.character( substitute(.fun))
+  z <- plyr::laply(.data = mspct,
+                   .fun = .ffun,
+                   ...,
+                   .drop = .drop)
+
+  f.name <- as.character(substitute(.fun))
 
   comment(z) <- paste("Applied function: '", f.name, "'.\n", sep = "", comment(mspct))
 

@@ -188,12 +188,13 @@ fscale.filter_mspct <- function(x,
 fscale.reflector_mspct <- function(x,
                                   range = NULL,
                                   f = "mean",
-                                  unit.out = NULL ) {
+                                  qty.out = NULL,
+                                  ...) {
   msmsply(x,
           fscale,
           range = range,
           f = f,
-          unit.out = unit.out,
+          qty.out = qty.out,
           ...)
 }
 
