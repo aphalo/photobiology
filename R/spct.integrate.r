@@ -79,7 +79,10 @@ average_spct <- function(spct) {
 #' interpolate_spct(sun.spct, seq(200, 1000, by=0.1), 0)
 #' interpolate_spct(sun.spct, c(400,500), length.out=201)
 #'
-interpolate_spct <- function(spct, w.length.out=NULL, fill.value=NA, length.out=NULL) {
+interpolate_spct <- function(spct,
+                             w.length.out=NULL,
+                             fill.value=NA,
+                             length.out=NULL) {
   stopifnot(is.any_spct(spct))
   if (!is.null(length.out) && (is.na(length.out) || length.out < 1L) ) {
     return(spct[NA])
@@ -103,9 +106,9 @@ interpolate_spct <- function(spct, w.length.out=NULL, fill.value=NA, length.out=
   }
   if (!is.null(length.out) && length.out > 1) {
     if (is.null(w.length.out) || length(w.length.out) < 2L) {
-      w.length.out <- seq(min(spct), max(spct), length.out=length.out)
+      w.length.out <- seq(min(spct), max(spct), length.out = length.out)
     } else {
-      w.length.out <- seq(min(w.length.out), max(w.length.out), length.out=length.out)
+      w.length.out <- seq(min(w.length.out), max(w.length.out), length.out = length.out)
     }
   } else if (is.null(w.length.out)) {
     # nothing to do
@@ -138,7 +141,7 @@ interpolate_spct <- function(spct, w.length.out=NULL, fill.value=NA, length.out=
       new.spct[[data.col]] <- new.values
     }
   }
-  if(class_spct[1] == "source_spct") {
+  if (class_spct[1] == "source_spct") {
     setSourceSpct(new.spct,
                   time.unit = getTimeUnit(spct),
                   bswf.used = getBSWFUsed(spct))
@@ -154,7 +157,7 @@ interpolate_spct <- function(spct, w.length.out=NULL, fill.value=NA, length.out=
                   Rfr.type = getRfrType(spct))
   } else if (class_spct[1] == "response_spct") {
     setResponseSpct(new.spct,
-                    time.unit = getTimeUnit(spct),
+                    time.unit = getTimeUnit(spct)
     )
   } else if (class_spct[1] == "chroma_spct") {
     setChromaSpct(new.spct)
@@ -165,4 +168,22 @@ interpolate_spct <- function(spct, w.length.out=NULL, fill.value=NA, length.out=
   setScaled(new.spct, getScaled(spct))
   comment(new.spct) <- comment(spct)
   return(new.spct)
+}
+
+#' @rdname interpolate_spct
+#'
+#' @param mspct an object of class "generic_mspct"
+#'
+#' @export
+#'
+interpolate_mspct <- function(mspct,
+                             w.length.out=NULL,
+                             fill.value=NA,
+                             length.out=NULL) {
+
+  msmsply(mspct = mspct,
+          .fun = interpolate_spct,
+          w.length.out = w.length.out,
+          fill.value = fill.value,
+          length.out = length.out)
 }
