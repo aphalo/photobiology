@@ -16,6 +16,7 @@
 \usepackage{xspace}
 \usepackage{framed}
 \usepackage{array}
+\usepackage[font={small,sf},labelfont=bf]{caption}
 
 \newcommand{\PB}{\textsf{photobiology}\xspace}
 \newcommand{\PBPla}{\textsf{photobiologyPlants}\xspace}
@@ -141,9 +142,10 @@ The package defines several classes intended to be used to store different types
 \begin{table}
 \caption[Classes for spectral data]{Classes for spectral data. In addition to the attributes listed, all spectral objects have attributes \texttt{normalized} and \texttt{scaled}, plus the normal attributes of \texttt{data.frame} objects.}\label{tab:spct:classes}
 \centering
-\begin{tabular}{lll}
+\begin{footnotesize}
+\begin{tabular}{>{\ttfamily}l>{\ttfamily}l>{\ttfamily}l}
 \toprule
-Name & Variables & Attributes\\
+\textnormal{Name} & \textnormal{Variables} & \textnormal{Attributes} \\
 \midrule
 generic\_spct & w.length & \\
 cps\_spct & w.length, cps & \\
@@ -155,6 +157,7 @@ response\_spct & w.length, s.e.response, s.q.response & time.unit \\
 chroma\_spct & w.length, x, y, z & \\
 \bottomrule
 \end{tabular}
+\end{footnotesize}
 \end{table}
 
 The \emph{design} imposes that data from different observations are never present as different
@@ -173,9 +176,10 @@ An assumption of the package is that wavelengths are always expressed in nanomet
 \begin{table}
 \caption[Variables for spectral data]{Variables used for spectral data and their units of expression: A: as stored in objects of the spectral classes, B: also recognized by the \texttt{set} family of functions for spectra and automatically converted. \texttt{time.unit} accepts in addition to the character strings listed in the table, objects of classes \texttt{lubridate::duration} and \texttt{period}, in addition \texttt{numeric} values are interpreted as seconds. \texttt{exposure.time} accepts these same values, but not the character strings.}\label{tab:spct:units}
 \centering
-\begin{tabular}{lll}
+\begin{footnotesize}
+\begin{tabular}{>{\ttfamily}ll>{\ttfamily}l}
 \toprule
-Variables & Unit of expression & Attribute value \\
+\textnormal{Variables} & Unit of expression & \textnormal{Attribute value} \\
 \midrule
 A: stored & & \\
 \midrule
@@ -214,6 +218,7 @@ Rpc $\to$ Rfr  & [0,100] &  Rfr.type = "specular" \\
 counts.per.second $\to$ cps & \cps &  \\
 \bottomrule
 \end{tabular}
+\end{footnotesize}
 \end{table}
 
 Energy irradiances are assumed to be expressed in \watt and photon irradiances in \mol, that is to say using second as unit for time. This is the default, but it is possible to set the unit for time to day in the case of \texttt{source\_spct} objects.
@@ -357,22 +362,24 @@ Spectral objects created with earlier (pre-release) versions of this package are
 The package defines several classes intended to be used to store \emph{collections} of different types of spectral data. They are all derived from \texttt{generic\_mspct}, which in turn is derived from \texttt{list}. Table \ref{tab:mspct:classes} lists them.
 
 \begin{table}
-\caption{Classes for collections of spectral objects}\label{tab:mspct:classes}
+\caption[Classes for collections of spectral objects]{Classes for collections of spectral objects. Objects of class \texttt{generic\_mspct} can have member objects of any class derived from \texttt{generic\_spct} and can be heterogeneous. Atributes can be queried and set with the normal R methods of the same names.}\label{tab:mspct:classes}
 \centering
-\begin{tabular}{lll}
+\begin{small}
+\begin{tabular}{>{\ttfamily}l>{\ttfamily}l>{\ttfamily}l}
 \toprule
-Name & Member objects & Attributes\\
+\textnormal{Name} & \textnormal{Member objects} & \textnormal{Attributes}\\
 \midrule
-generic\_mspct & generic\_spct & names, dim \\
-cps\_mspct & cps\_spct & names, dim \\
-source\_mspct & source\_spct & names, dim \\
-filter\_mspct & filter\_spct & names, dim \\
-reflector\_mspct & reflector\_spct & names, dim \\
-object\_mspct & object\_spct & names, dim \\
-response\_mspct & response\_spct & names, dim \\
-chroma\_mspct & chroma\_spct & names, dim \\
+generic\_mspct & generic\_spct $+$ \textnormal{any derived} & names, dim, comment \\
+cps\_mspct & cps\_spct & names, dim, comment \\
+source\_mspct & source\_spct & names, dim, comment \\
+filter\_mspct & filter\_spct & names, dim, comment \\
+reflector\_mspct & reflector\_spct & names, dim, comment \\
+object\_mspct & object\_spct & names, dim, comment \\
+response\_mspct & response\_spct & names, dim, comment \\
+chroma\_mspct & chroma\_spct & names, dim, comment \\
 \bottomrule
 \end{tabular}
+\end{small}
 \end{table}
 
 Objects of these classes, except for those of class \texttt{generic\_mspct}, can contain members belonging to one of the classes. Being all other spectral object classes derived from \texttt{generic\_spct}, \texttt{generic\_mspct} objects can contain heterogeneous collections of spectra. In all cases, there are no restrictions on the lengths, wavelength range and/or wavelength step size, or attributes other than \texttt{class} of the contained spectra. Mimicking R's arrays and matrixes, a \texttt{dim} attribute is always present and \texttt{dim} methods are provided. These allows the storage of time series of spectral data, or (hyper)spectral image data, or even higher dimensional spectral data. The handling of 1D and 2D spectral collections is already implemented in the summary methods. Handling of 3D and higher dimensional data can be implemented in the future without changing the class definition. By having implemented \texttt{dim}, also methods \texttt{ncol} and \texttt{nrow} are available as they use \texttt{dim} internally. Array-like subscripting is \textbf{not} implemented.
@@ -494,7 +501,27 @@ c(two_filters.mspct, mixed.mspct)
 
 \subsection{Transform or \emph{apply} functions}\label{sec:apply}
 
-For our `apply' functions we follow the namimg convention used in package \texttt{plyr}, but using  \texttt{ms} as prefix for \texttt{\_mspct} objects. The `apply' functions implemented in the \PB package are \texttt{msmsply}, \texttt{msdply}, \texttt{mslply}  and \texttt{msaply} which both accepts a collections of spectra as first argument and return a collection of spectra, a data frame, a list, or an array respectively.
+For our `apply' functions we follow the namimg convention used in package \texttt{plyr}, but using  \texttt{ms} as prefix for \texttt{\_mspct} objects. The `apply' functions implemented in the \PB package are \texttt{msmsply}, \texttt{msdply}, \texttt{mslply}  and \texttt{msaply} which both accepts a collections of spectra as first argument and return a collection of spectra, a data frame, a list, or an array respectively (Table \ref{tab:apply}).
+
+\begin{table}
+  \caption[Apply functions for collections of spectra]{Apply fucntions for collections of spectra. Key: v., value returned by `apply' function; f.v., value returned by the applied function (argument \texttt{.fun}). In the table \texttt{generic\_mspct} and \texttt{generic\_spct} indicate objects of these classes or any class derived from them. The exact class of the collection of spectra object returned  will be determined by the class(es) of the values returned by the applied function.}\label{tab:apply}
+  \centering
+  \begin{scriptsize}
+  \begin{tabular}{>{\ttfamily}l>{\ttfamily}l>{\ttfamily}l>{\ttfamily}lll}
+    \toprule
+    \textnormal{`apply' function} & \textnormal{first arg.\ class} & \textnormal{v. class} &
+    \textnormal{f.v.\ class} & f.v.\ length & f.v.\ dims \\
+    \midrule
+    msmsply & generic\_mspct & generic\_mspct & generic\_spct & 1 & any \\
+    msdply & generic\_mspct & data.frame & numeric & $1\ldots n$ & 1 \\
+    mslply & generic\_mspct & list & \textnormal{any} & any & any \\
+    msaply & generic\_mspct & vector & \textnormal{any simple} & 1 & 0 \\
+    msaply & generic\_mspct & matrix & \textnormal{any simple} & $2\ldots n$ & $2\ldots n$  \\
+    concolve\_each & generic\_mspct & generic\_mspct & generic\_spct & 1 & any \\
+    \bottomrule
+  \end{tabular}
+  \end{scriptsize}
+\end{table}
 
 Functions \texttt{msmsply()}, \texttt{msdply} and \texttt{mslply} can be used to apply a function to each member spectrum in a collection. The `apply' fucntion to use depends on the return value of the applied function.
 
@@ -686,10 +713,13 @@ objects belonging to different classes, and meaningless combinations return \tex
 \begin{table}
 \newcommand{\N}{\textcolor{red}{\small N}}
 \newcommand{\Y}{\textcolor{green}{\small Y}}
-\caption[Binary operators]{Binary operators and operands. Validity and class of result. All operations marked `\Y' are allowed, those marked `\N' are forbidden and return \texttt{NA} and issue a warning. Operators \texttt{\%/\%} and \texttt{\%\%} follow \texttt{/}.}\label{tab:operators}\vspace{0.75ex}
-\begin{tabular}{lcccccll}
+\caption[Binary operators]{Binary operators and operands. Validity and class of result. All operations marked `\Y' are allowed, those marked `\N' are forbidden and return \texttt{NA} and issue a warning. Operators \texttt{\%/\%} and \texttt{\%\%} follow \texttt{/}.}\label{tab:operators}
+
+\centering
+\begin{footnotesize}
+\begin{tabular}{>{\ttfamily}lccccc>{\ttfamily}l>{\ttfamily}l}
 \toprule
-e1 & \verb|+| & \verb|-| & \verb|*| & \verb|/| & \verb|^| & e2 & result \\
+e1 & \verb|+| & \verb|-| & \verb|*| & \verb|/| & \verb|^| & e2 & \textnormal{value} \\
 \midrule
 cps\_spct & \Y & \Y &\Y  & \Y & \Y & cps\_spct & cps\_spct \\
 source\_spct & \Y & \Y &\Y  & \Y & \Y & source\_spct & source\_spct \\
@@ -717,6 +747,7 @@ source\_spct & \N & \N &\Y  & \N & \N & waveband (no BSWF) & source\_spct \\
 source\_spct & \N & \N &\Y  & \N & \N & waveband (BSWF) & source\_spct \\
 \bottomrule
 \end{tabular}
+  \end{footnotesize}
 \end{table}
 
 
@@ -770,11 +801,13 @@ The most common maths functions, as well as unary minus and plus, are also imple
 \begin{table}
 \newcommand{\N}{\textcolor{red}{\small N}}
 \newcommand{\Y}{\textcolor{green}{\small Y}}
-\caption[Binary operators]{Unary operators and maths functions. Validity and class of result. All operations marked `\Y' are allowed, those marked `\N' are not implemented and return \texttt{NA} and issue a warning.}\label{tab:unary}\vspace{0.75ex}
+\caption[Binary operators]{Unary operators and maths functions. Validity and class of result. All operations marked `\Y' are allowed, those marked `\N' are not implemented and return \texttt{NA} and issue a warning.}\label{tab:unary}
+
 \centering
-\begin{tabular}{lcccccccl}
+\begin{footnotesize}
+\begin{tabular}{>{\ttfamily}lccccccc>{\ttfamily}l}
 \toprule
-e1 & \verb|+| & \verb|-| & \verb|log| & \verb|log10| & \verb|exp| & \verb|sqrt| & \verb|abs| & result \\
+e1 & \verb|+| & \verb|-| & \verb|log| & \verb|log10| & \verb|exp| & \verb|sqrt| & \verb|abs| & \textnormal{value} \\
 \midrule
 cps\_spct & \Y & \Y &\Y  & \Y & \Y & \Y & \Y & cps\_spct \\
 source\_spct & \Y & \Y &\Y  & \Y & \Y & \Y &\Y &  source\_spct \\
@@ -785,6 +818,7 @@ response\_spct & \Y & \Y & \Y & \Y & \Y & \Y &\Y &  response\_spct \\
 chroma\_spct & \Y  & \Y & \Y & \Y & \Y & \Y &\Y &  chroma\_spct \\
 \bottomrule
 \end{tabular}
+  \end{footnotesize}
 \end{table}
 
 <<>>=
@@ -803,24 +837,37 @@ Table \ref{tab:options} lists all the recognized options affecting maths operato
 \begin{footnotesize}
 \begin{tabular}{lll}
 \toprule
-\textbf{Option} & \textbf{default} & \textbf{function} \\
+\underline{Option} & \texttt{values, \underline{default}} & \textbf{function} \\
 \midrule
 \textbf{Base R} & & \\
 \addlinespace
 digits & 7 & $d - 3$ used by \texttt{summary} \\
 \midrule
-photobiology.radiation.unit & \texttt{"energy"} & output (\wattnm) \\
+photobiology.radiation.unit & \texttt{\underline{"energy"}} & output (\wattnm) \\
                             & \texttt{"photon"} & output (\molnm) \\
-photobiology.filter.qty & \texttt{"transmittance"} & output ($/1$) \\
+\addlinespace
+photobiology.filter.qty & \texttt{\underline{"transmittance"}} & output ($/1$) \\
                         & \texttt{"absorptance"} & output ($/1$) \\
-                        & \texttt{"absorbance"} & output (a.u. $\log_10$ base) \\
-photobiology.use.hinges & \texttt{NULL} & guess automatically \\
+                        & \texttt{"absorbance"} & output (a.u. $\log_{10}$ base) \\
+\addlinespace
+photobiology.use.hinges & \texttt{\underline{NULL}} & guess automatically \\
                         & \texttt{TRUE} & do not insert hinges \\
                         & \texttt{FALSE} & do insert hinges \\
-photobiology.auto.hinges.limit & 0.5 & wavelength step (nm) \\
-photobiology.waveband.trim & \texttt{TRUE} & trim or exclude \\
-photobiology.use.cached.mult & \texttt{FALSE} & cache intermediate results or not \\
-photobiology.verbose & \texttt{FALSE} & give verbose output or not \\
+\addlinespace
+photobiology.strict.range & \texttt{NA} &  skip range test \\
+                        & \texttt{TRUE} & trigger and error \\
+                        & \texttt{\underline{FALSE}} & trigger a warning \\
+\addlinespace
+photobiology.auto.hinges.limit & \texttt{\underline{0.5}} & wavelength step (nm) \\
+\addlinespace
+photobiology.waveband.trim & \texttt{FALSE} & exclude \\
+                           & \texttt{\underline{TRUE}} & trim or exclude \\
+\addlinespace
+photobiology.use.cached.mult & \texttt{\underline{FALSE}} & do not cache intermediate results \\
+                             & \texttt{TRUE} & cache intermediate results \\
+\addlinespace
+photobiology.verbose & \texttt{\underline{FALSE}} & do not give verbose output \\
+                     & \texttt{TRUE} & give verbose output \\
 \bottomrule
 \end{tabular}
 \end{footnotesize}
@@ -858,8 +905,8 @@ In this section we describe methods and functions that take one or more spectral
     subset & + & + & + & + & + & + \\
     trim\_spct & + & + & + & + & + & + \\
     interpolate\_spct & + & + & + & + & + & + \\
-    f\_scale & + & + & + & + & + & +  \\
-    normalize & + & + & + & + & + & +  \\
+    f\_scale & + & + & + & + & -- & --  \\
+    normalize & + & + & + & + & -- & --  \\
     \emph{math operators} & + & + & + & + & + & +  \\
     \emph{math functions} & + & + & + & + & + & +  \\
     tag & + & + & + & + & + & +  \\
@@ -890,10 +937,10 @@ In this section we describe methods and functions that take one or more spectral
     \midrule
     e2q, q2e & + & + & -- & -- & -- & -- \\
     A2T, T2A & -- & -- & + & -- & -- & -- \\
-    trim\_spct & f & f & f & f & f & f \\
+    trim\_spct & + & + & + & + & + & + \\
     interpolate\_spct & f & f & f & f & f & f \\
-    f\_scale & f & f & f & f & f & f \\
-    normalize & f & f & f & f & f & f \\
+    f\_scale & + & + & + & + & -- & -- \\
+    normalize & + & + & + & + & -- & -- \\
     tag & f & f & f & f & f & f \\
     \bottomrule
   \end{tabular}
@@ -1134,7 +1181,7 @@ Summaries can be calculated both from individual spectral objects (Table \ref{ta
 \end{table}
 
 \begin{table}
-  \caption[Summary methods for collections of spectra]{Summary methods for collections of spectra. Key: + available, -- not available, \textbf{f} use \texttt{msmsply()} or \texttt{convolve\_each()} to apply function to collection members, \textbf{a} use \texttt{msdply()} or \texttt{mslply} to apply function to collection members, \textbf{l} use \texttt{mslply} to apply function to collection members.}\label{tab:summaries:mspct}
+  \caption[Summary methods for collections of spectra]{Summary methods for collections of spectra. Key: + available, -- not available, \textbf{ms} use \texttt{msmsply()} to apply function to collection members, \textbf{d} use \texttt{msdply()}, \textbf{l} use \texttt{mslply} to apply function to collection members, \textbf{a} use \texttt{msaply} to apply function to collection members.}\label{tab:summaries:mspct}
   \centering
   \begin{footnotesize}
   \begin{tabular}{>{\ttfamily}lcccccc}
@@ -1169,11 +1216,11 @@ Summaries can be calculated both from individual spectral objects (Table \ref{ta
     midpoint & + & + & + & + & + & + \\
     labels & l & l & l & l & l & l \\
     summary & l & l & l & l & l & l \\
-    peaks & f & f & f & f & f & f \\
-    valleys & f & f & f & f & f & f \\
-    integrate\_spct & a & a & a & a & a & a \\
-    average\_spct & a & a & a & a & a & a \\
-    color & + & a & a & a & a & a \\
+    peaks & ms & ms & ms & ms & ms & ms \\
+    valleys & ms & ms & ms & ms & ms & ms \\
+    integrate\_spct & a, d & a, d & a, d & a, d & d & d \\
+    average\_spct & a, d, l & a, d, l & a, d, l & d & d, l & d, l \\
+    color & + & -- & d, l & d, l & -- & d, l \\
     \bottomrule
   \end{tabular}
   \end{footnotesize}
@@ -1644,11 +1691,12 @@ best when processing a moderate number of spectra, say less than a few hundreds,
 A few example spectra are included in this package for use in examples and vignettes, and testing (Tables \ref{tab:data:spct} and \ref{tab:data:chroma}).
 
 \begin{table}
-\centering
 \caption{Data sets included in the package: spectra. The CIE standard illuminant data in this package are normalized to one at $\lambda = 560\,$nm, while in the CIE standard they are normalized to 100 at the same wavelength.}\label{tab:data:spct}
-\begin{tabular}{llll}
+\centering
+\begin{footnotesize}
+\begin{tabular}{>{\ttfamily}l>{\ttfamily}lll}
 \toprule
-Object & class & units & data description \\
+\textnormal{Object} & \textnormal{class} & units & data description \\
 \midrule
 sun.spct & source\_spct & \wattnm & solar spectral irradiance \\
 sun.daily.spct & source\_spct & \jdaynm & solar spectral exposure \\
@@ -1658,15 +1706,17 @@ D65.illuminant.spct & source\_spct & (norm. 560 nm) & CIE standard \\
 A.illuminant.spct & source\_spct & (norm. 560 nm)  & CIE standard \\
 \bottomrule
 \end{tabular}
+\end{footnotesize}
 \end{table}
 
 
 \begin{table}
-\centering
 \caption{Data sets included in the package: chromaticity data}\label{tab:data:chroma}
-\begin{tabular}{lll}
+\centering
+\begin{footnotesize}
+\begin{tabular}{>{\ttfamily}l>{\ttfamily}ll}
 \toprule
-Object & class & data description \\
+\textnormal{Object} & \textnormal{class} & data description \\
 \midrule
 ciexyzCC2.spct & chroma\_spct &  human chromaticity coordinates $2^\circ$ \\
 ciexyzCC10.spct & chroma\_spct &   human chromaticity coordinates $10^\circ$  \\
@@ -1677,6 +1727,7 @@ ciev10.spct & chroma\_spct &   human luminous efficiency $10^\circ$ \\
 beesxyzCMF.spct &  chroma\_spct &  bee colour matching function \\
 \bottomrule
 \end{tabular}
+\end{footnotesize}
 \end{table}
 
 
