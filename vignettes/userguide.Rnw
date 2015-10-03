@@ -599,7 +599,7 @@ convolve_each(two.mspct, sun.spct, oper = `+`)
 
 \begin{framed}
 \noindent
-There are cases where functions \texttt{convolve\_each()} and \texttt{msmsply()} can be both used, but there are also cases where their differences matter. And example is convolving two collections of spectra, a case where only \texttt{convolve\_each()} can be used. In contrast, when one of the arguments is not a spectrum or a collection of spectra, \texttt{msmsply()} should be used instead.
+There are cases where functions \texttt{convolve\_each()} and \texttt{msmsply()} can be both used, but there are also cases where their differences matter. An example is convolving two collections of spectra, a case where only \texttt{convolve\_each()} can be used. In contrast, when one of the arguments is not a spectrum or a collection of spectra, \texttt{msmsply()} should be used instead.
 \end{framed}
 
 \section{Wavebands }
@@ -925,6 +925,7 @@ In this section we describe methods and functions that take one or more spectral
     \toprule
     \textnormal{methods} & source & response & filter & reflector & object & chroma \\
     \midrule
+    convolve\_each & + & + & + & + & + & + \\
     msmsply & + & + & + & + & + & + \\
     msdply & + & + & + & + & + & + \\
     mslply & + & + & + & + & + & + \\
@@ -1171,11 +1172,11 @@ Summaries can be calculated both from individual spectral objects (Table \ref{ta
     midpoint & + & + & + & + & + & + \\
     labels & + & + & + & + & + & + \\
     summary & + & + & + & + & + & + \\
-    peaks & + & + & + & + & + & + \\
-    valleys & + & + & + & + & + & + \\
+    peaks & + & + & + & + & (+) & (+) \\
+    valleys & + & + & + & + & (+) & (+) \\
     integrate\_spct & + & + & + & + & + & + \\
     average\_spct & + & + & + & + & + & + \\
-    color & + & -- & + & + & -- & + \\
+    color & + & -- & -- & -- & -- & -- \\
     \bottomrule
   \end{tabular}
   \end{footnotesize}
@@ -1216,13 +1217,13 @@ Summaries can be calculated both from individual spectral objects (Table \ref{ta
     stepsize & + & + & + & + & + & + \\
     spread & + & + & + & + & + & + \\
     midpoint & + & + & + & + & + & + \\
-    labels & l & l & l & l & l & l \\
-    summary & l & l & l & l & l & l \\
-    peaks & ms & ms & ms & ms & ms & ms \\
-    valleys & ms & ms & ms & ms & ms & ms \\
-    integrate\_spct & a, d & a, d & a, d & a, d & d & d \\
-    average\_spct & a, d, l & a, d, l & a, d, l & d & d, l & d, l \\
-    color & + & -- & d, l & d, l & -- & d, l \\
+    labels & \textbf{l} & \textbf{l} & \textbf{l} & \textbf{l} & \textbf{l} & \textbf{l} \\
+    summary & \textbf{l} & \textbf{l} & \textbf{l} & \textbf{l} & \textbf{l} & \textbf{l} \\
+    peaks & + & + & + & + & (+) & (+) \\
+    valleys & + & + & + & + & (+) & (+) \\
+    integrate\_spct & \textbf{a, d, l} & \textbf{a, d, l} & \textbf{a, d, l} & \textbf{a, d, l} & \textbf{a, d, l} & \textbf{a, d, l} \\
+    average\_spct & \textbf{a, d, l} & \textbf{a, d, l} & \textbf{a, d, l} & \textbf{a, d, l} & \textbf{a, d, l} & \textbf{a, d, l} \\
+    color & + & -- & -- & -- & -- & -- \\
     \bottomrule
   \end{tabular}
   \end{footnotesize}
@@ -1256,7 +1257,7 @@ stepsize(sun.spct)
 
 \begin{framed}
 \noindent
-Only the most frequently used summary methods are implemented for collections of spectra. See Table \ref{tab:summaries:mspct} where methods that need to be applied with functions \texttt{msdply} or \texttt{mslply} to members in a collection and obtain the results in a data frame or a list object are indicated. Other \emph{apply} functions or \texttt{for} loops can also be used if needed.
+Most frequently used summary methods are implemented for collections of spectra. See Table \ref{tab:summaries:mspct} where methods that need to be applied with functions \texttt{msaply}, \texttt{msdply} or \texttt{mslply} to members in a collection and obtain the results in an array (vector, or matrix), a data frame or a list object are indicated. In many cases depending of the class desired for the result, one can chose a suitable `apply' function, and sometimes it is best to use such a function, even when the corresponding method is implemented for collections of spectra.
 \end{framed}
 
 Collections of spectra can be useful not only for time-series of spectra or spectral images, but also when dealing with a small group of related spectra. In the example below we show how to use a collection of spectra for calculating summaries. The spectra in a collection do \textbf{not} need to have been measured at the same wavelength values, or have the same number of rows or even of columns. Consequently, in many cases applying the wavelength summary functions described above to collections of spectra can be useful. The value returned is a data frame, with a number of data columns equal to the length of the returned value by the corresponding method for individual spectra.

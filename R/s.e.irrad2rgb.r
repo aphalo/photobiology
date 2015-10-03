@@ -62,7 +62,7 @@ if (!single_wl) {
   if ((max(w.length) <= low.limit) || (min(w.length) >= high.limit)) {
     return("black")
   }
-  sens$s.e.irrad <- interpolate_spectrum(w.length, s.e.irrad, sens$w.length, fill.value=0.0)
+  sens$s.e.irrad <- interpolate_spectrum(w.length, s.e.irrad, sens$w.length, fill=0.0)
   sens$s.e.irrad.norm <- with(sens, s.e.irrad / integrate_irradiance(w.length, s.e.irrad))
 
   X <- with(sens, integrate_irradiance(w.length, s.e.irrad.norm * x))

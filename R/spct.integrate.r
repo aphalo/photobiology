@@ -54,7 +54,7 @@ average_spct <- function(spct) {
 #'
 #' @param spct generic_spct
 #' @param w.length.out numeric array of wavelengths (nm)
-#' @param fill.value a value to be assigned to out of range wavelengths
+#' @param fill a value to be assigned to out of range wavelengths
 #' @param length.out numeric value
 #'
 #' @details If \code{length.out} it is a numeric value, then gives the number of rows in the
@@ -63,8 +63,8 @@ average_spct <- function(spct) {
 #' used to generate a vector of wavelength. A value of \code{NULL} for \code{fill} prevents
 #' extrapolation.
 #'
-#' @note The default \code{fill.value = NA} fills extrpolated values with NA. Giving NULL as
-#' argument for \code{fill.value} deletes wavelengths outside the input data range from the
+#' @note The default \code{fill = NA} fills extrpolated values with NA. Giving NULL as
+#' argument for \code{fill} deletes wavelengths outside the input data range from the
 #' returned spectrum. A numerical value can be also be provided as fill. This function calls
 #' \code{interpolate_spectrum} for each non-wavelength column in the input spectra object.
 #'
@@ -81,7 +81,7 @@ average_spct <- function(spct) {
 #'
 interpolate_spct <- function(spct,
                              w.length.out=NULL,
-                             fill.value=NA,
+                             fill=NA,
                              length.out=NULL) {
   stopifnot(is.any_spct(spct))
   if (!is.null(length.out) && (is.na(length.out) || length.out < 1L) ) {
@@ -122,7 +122,7 @@ interpolate_spct <- function(spct,
   min.wl.out <- min(w.length.out)
   if (min.spct > min.wl.out && min.spct < max.wl.out) w.length.out <- c(min.spct, w.length.out)
   if (max.spct < max.wl.out && max.spct > min.wl.out) w.length.out <- c(w.length.out, max.spct)
-  if (is.null(fill.value)) {
+  if (is.null(fill)) {
     w.length.out <- w.length.out[w.length.out >= min.spct & w.length.out <= max.spct]
     if (length(w.length.out) == 0) {
       return(spct[NA])
@@ -137,7 +137,7 @@ interpolate_spct <- function(spct,
       new.values <- interpolate_spectrum(spct$w.length,
                                          temp.values,
                                          w.length.out,
-                                         fill.value)
+                                         fill)
       new.spct[[data.col]] <- new.values
     }
   }
@@ -178,12 +178,12 @@ interpolate_spct <- function(spct,
 #'
 interpolate_mspct <- function(mspct,
                              w.length.out=NULL,
-                             fill.value=NA,
+                             fill=NA,
                              length.out=NULL) {
 
   msmsply(mspct = mspct,
           .fun = interpolate_spct,
           w.length.out = w.length.out,
-          fill.value = fill.value,
+          fill = fill,
           length.out = length.out)
 }

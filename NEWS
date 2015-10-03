@@ -8,14 +8,14 @@ photobiology 0.8.8
 ==================
 
 Add function trim_mspct().
-Implement normalize(), fscale(), tag() and untag() methods for
-generic_mspct and derived classes.
+Implement normalize(), fscale(), peaks(), valleys(), tag() and untag() methods
+for generic_mspct and derived classes.
 Implement dim<- for generic_mspct and derived classes.
 Fix bugs in msmsply() and mslply().
-Internal changes needed for an update to photobiologyInOut.
+Make internal changes needed for an update to photobiologyInOut.
 Add option "photobiolgy.strict.range" to allow changing the default behaviour
 for out-of-range values. (Used internally to avoid redundant checks and
-repetead warning messaged.)
+repetead warning messages.)
 
 Update pacakge Title in docs.
 Update User Guide, tables and their formatting.
