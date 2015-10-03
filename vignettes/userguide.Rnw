@@ -910,6 +910,7 @@ In this section we describe methods and functions that take one or more spectral
     \emph{math operators} & + & + & + & + & + & +  \\
     \emph{math functions} & + & + & + & + & + & +  \\
     tag & + & + & + & + & + & +  \\
+    untag & + & + & + & + & + & +  \\
     \bottomrule
   \end{tabular}
   \end{footnotesize}
@@ -917,7 +918,7 @@ In this section we describe methods and functions that take one or more spectral
 \end{table}
 
 \begin{table}
-  \caption[Transformation methods for collections of spectra]{Transformation methods for collections of spectra. Key: + available, -- not available, \textbf{f} use \texttt{msmsply()} or \texttt{convolve\_each()} to apply function or operator to collection members.}\label{tab:transform:mspct}
+  \caption[Transformation methods for collections of spectra]{Transformation methods for collections of spectra. Key: + available, -- not available, \textbf{ms} use \texttt{msmsply()} or \texttt{convolve\_each()} to apply function or operator to collection members.}\label{tab:transform:mspct}
   \centering
   \begin{footnotesize}
   \begin{tabular}{>{\ttfamily}lcccccc}
@@ -932,17 +933,18 @@ In this section we describe methods and functions that take one or more spectral
     rbindspct & + & + & + & + & + & + \\
     c & + & + & + & + & + & + \\
     \midrule
-    \emph{math operators} & f & f & f & f & f & f \\
-    \emph{math functions} & f & f & f & f & f & f \\
+    \emph{math operators} & ms & ms & ms & ms & ms & ms \\
+    \emph{math functions} & ms & ms & ms & ms & ms & ms \\
     \midrule
     e2q, q2e & + & + & -- & -- & -- & -- \\
     A2T, T2A & -- & -- & + & -- & -- & -- \\
     trim\_spct & + & + & + & + & + & + \\
-    interpolate\_spct & f & f & f & f & f & f \\
+    interpolate\_spct & + & + &+ & + & + & + \\
     f\_scale & + & + & + & + & -- & -- \\
     normalize & + & + & + & + & -- & -- \\
-    tag & f & f & f & f & f & f \\
-    \bottomrule
+    tag & + & + & + & + & + & + \\
+    untag & + & + & + & + & + & + \\
+   \bottomrule
   \end{tabular}
   \end{footnotesize}
 

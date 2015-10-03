@@ -7,12 +7,18 @@ classes.
 photobiology 0.8.8
 ==================
 
-Internal changes needed for an update to photobiologyInOut.
-Update pacakge Title in docs.
-Add function trim_mspct(), and implement normalize() and fscale() methods for
-_mspct classes.
-Implement dim<- for _mspct classes.
+Add function trim_mspct().
+Implement normalize(), fscale(), tag() and untag() methods for
+generic_mspct and derived classes.
+Implement dim<- for generic_mspct and derived classes.
 Fix bugs in msmsply() and mslply().
+Internal changes needed for an update to photobiologyInOut.
+Add option "photobiolgy.strict.range" to allow changing the default behaviour
+for out-of-range values. (Used internally to avoid redundant checks and
+repetead warning messaged.)
+
+Update pacakge Title in docs.
+Update User Guide, tables and their formatting.
 
 hotobiology 0.8.7
 ==================

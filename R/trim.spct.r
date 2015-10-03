@@ -148,7 +148,7 @@ trim_spct <- function(spct, range=NULL, low.limit=NULL, high.limit=NULL,
   } else {
 
   }
-  if (trim.low && trim.high){
+  if (trim.low && trim.high) {
     within.selector <- with(spct, w.length >= low.limit & w.length < high.limit)
   } else if (trim.low) {
     within.selector <- with(spct, w.length >= low.limit)
@@ -184,10 +184,11 @@ trim_spct <- function(spct, range=NULL, low.limit=NULL, high.limit=NULL,
     assign(name, spct, parent.frame(), inherits = TRUE)
   }
   check(spct)
-  return(spct)
+  spct
 }
 
 #' @rdname trim_spct
+#'
 #' @param mspct an object of class "generic_mspct"
 #'
 #' @export
@@ -200,15 +201,21 @@ trim_mspct <- function(mspct,
                        fill = NULL,
                        byref = FALSE,
                        verbose = TRUE) {
-  msmsply(
-    mspct = mspct,
-    f = trim_spct,
-    range = range,
-    low.limit = low.limit,
-    high.limit = high.limit,
-    use.hinges = use.hinges,
-    fill = fill,
-    byref = byref,
-    verbose = verbose
-  )
+  name <- substitute(mspct)
+
+  z <- msmsply(mspct = mspct,
+               .fun = trim_spct,
+               range = range,
+               low.limit = low.limit,
+               high.limit = high.limit,
+               use.hinges = use.hinges,
+               fill = fill,
+               byref = FALSE,
+               verbose = verbose )
+
+  if (byref & is.name(name)) {
+    name <- as.character(name)
+    assign(name, z, parent.frame(), inherits = TRUE)
+  }
+  z
 }

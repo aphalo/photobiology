@@ -27,7 +27,7 @@ tag.default <- function(x, ...) {
 
 #' @describeIn tag Tag one of \code{generic_spct}, and derived classes including
 #'   \code{source_spct}, \code{filter_spct}, \code{reflector_spct},
-#'   \code{object_spct}, and \code{rspponse.spct}.
+#'   \code{object_spct}, and \code{response_spct}.
 #'
 #' @param w.band waveband or list of waveband objects The waveband(s) determine
 #'   the region(s) of the spectrum that are tagged
@@ -163,6 +163,38 @@ tag.generic_spct <- function(x,
   return(x)
 }
 
+#' @describeIn tag Tag one of \code{generic_mspct}, and derived classes including
+#'   \code{source_mspct}, \code{filter_mspct}, \code{reflector_mspct},
+#'   \code{object_mspct}, and \code{response_mspct}.
+#'
+#' @export
+#'
+tag.generic_mspct <- function(x,
+                              w.band = NA,
+                              wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
+                              use.hinges = TRUE,
+                              short.names = TRUE,
+                              byref = FALSE,
+                              ...) {
+  name <- substitute(x)
+
+  z <- msmsply(
+    x,
+    tag,
+    w.band = w.band,
+    wb.trim = wb.trim,
+    use.hinges = use.hinges,
+    short.names = short.names,
+    byref = FALSE,
+    ...
+  )
+
+  if (byref & is.name(name)) {
+    name <- as.character(name)
+    assign(name, z, parent.frame(), inherits = TRUE)
+  }
+  return(z)
+}
 
 # wavebands -> tagged spectrum ----------------------------------------------
 
@@ -362,3 +394,26 @@ untag.generic_spct <- function(x,
   }
   return(x)
 }
+
+#' @describeIn untag Specialization for generic_spct
+#'
+#' @export
+#'
+untag.generic_mspct <- function(x,
+                               byref = FALSE, ...) {
+  name <- substitute(x)
+
+  z <- msmsply(
+    x,
+    untag,
+    byref = FALSE,
+    ...
+  )
+
+  if (byref & is.name(name)) {
+    name <- as.character(name)
+    assign(name, z, parent.frame(), inherits = TRUE)
+  }
+  z
+}
+
