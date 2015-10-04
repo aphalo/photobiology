@@ -662,7 +662,7 @@ oper.q.generic_spct <- function(e1, e2, oper) {
 #' @family math operators and functions
 #'
 '*.generic_spct' <- function(e1, e2) {
-  unit <- getOption("photobiology.radiation.unit", default="energy")
+  unit <- getOption("photobiology.radiation.unit", default = "energy")
   if (unit == "energy") {
     return(oper.e.generic_spct(e1, e2, `*`))
   } else if (unit == "photon" || unit == "quantum") {
@@ -686,7 +686,7 @@ oper.q.generic_spct <- function(e1, e2, oper) {
 #' @family math operators and functions
 #'
 '/.generic_spct' <- function(e1, e2) {
-  unit <- getOption("photobiology.radiation.unit", default="energy")
+  unit <- getOption("photobiology.radiation.unit", default = "energy")
   if (unit == "energy") {
     return(oper.e.generic_spct(e1, e2, `/`))
   } else if (unit == "photon" || unit == "quantum") {
@@ -707,7 +707,7 @@ oper.q.generic_spct <- function(e1, e2, oper) {
 #' @family math operators and functions
 #'
 '%/%.generic_spct' <- function(e1, e2) {
-  unit <- getOption("photobiology.radiation.unit", default="energy")
+  unit <- getOption("photobiology.radiation.unit", default = "energy")
   if (unit == "energy") {
     return(oper.e.generic_spct(e1, e2, `%/%`))
   } else if (unit == "photon" || unit == "quantum") {
@@ -728,7 +728,7 @@ oper.q.generic_spct <- function(e1, e2, oper) {
 #' @family math operators and functions
 #'
 '%%.generic_spct' <- function(e1, e2) {
-  unit <- getOption("photobiology.radiation.unit", default="energy")
+  unit <- getOption("photobiology.radiation.unit", default = "energy")
   if (unit == "energy") {
     return(oper.e.generic_spct(e1, e2, `%%`))
   } else if (unit == "photon" || unit == "quantum") {
@@ -751,7 +751,7 @@ oper.q.generic_spct <- function(e1, e2, oper) {
 #' @family math operators and functions
 #'
 '+.generic_spct' <- function(e1, e2 = NULL) {
-  unit <- getOption("photobiology.radiation.unit", default="energy")
+  unit <- getOption("photobiology.radiation.unit", default = "energy")
   if (is.null(e2)) {
     e2 <- 0.0
   }
@@ -777,7 +777,7 @@ oper.q.generic_spct <- function(e1, e2, oper) {
 #' @family math operators and functions
 #'
 '-.generic_spct' <- function(e1, e2 = NULL) {
-  unit <- getOption("photobiology.radiation.unit", default="energy")
+  unit <- getOption("photobiology.radiation.unit", default = "energy")
   if (is.null(e2)) {
     e2 <- e1
     e1 <- 0.0
@@ -803,7 +803,7 @@ oper.q.generic_spct <- function(e1, e2, oper) {
 #' @family math operators and functions
 #'
 '^.generic_spct' <- function(e1, e2) {
-  unit <- getOption("photobiology.radiation.unit", default="energy")
+  unit <- getOption("photobiology.radiation.unit", default = "energy")
   if (unit == "energy") {
     return(oper.e.generic_spct(e1, e2, `^`))
   } else if (unit %in% c("photon", "quantum")) {
@@ -822,61 +822,61 @@ oper.q.generic_spct <- function(e1, e2, oper) {
 #' on the class of the spectrum argument.
 #'
 #' @param x an object of class "generic_spct"
-#' @param f an R function with signature function(x, ...)
+#' @param .fun an R function with signature function(x, ...)
 #' @param ... additional arguments passed to f
 #'
 #' @keywords internal
 #'
-f_dispatcher_spct <- function(x, f, ...) {
+f_dispatcher_spct <- function(x, .fun, ...) {
   if (is.cps_spct(x)) {
     z <- x
-    z[["cps"]] <- f(z[["cps"]], ...)
+    z[["cps"]] <- .fun(z[["cps"]], ...)
     return(z)
   } else if (is.filter_spct(x)) {
     filter.qty <- getOption("photobiology.filter.qty", default="transmittance")
     if (filter.qty == "transmittance") {
       z <- A2T(x, action = "replace", byref = FALSE)
-      z[["Tfr"]] <- f(z[["Tfr"]], ...)
+      z[["Tfr"]] <- .fun(z[["Tfr"]], ...)
     } else if (filter.qty == "absorbance") {
       z <- T2A(x, action = "replace", byref = FALSE)
-      z[["A"]] <- f(z[["A"]], ...)
+      z[["A"]] <- .fun(z[["A"]], ...)
     } else {
       stop("Unrecognized 'filter.qty': ", filter.qty)
     }
     return(z)
-  } else if(is.reflector_spct(x)) {
+  } else if (is.reflector_spct(x)) {
     z <- x
-    z[["Rfr"]] <- f(z[["Rfr"]], ...)
+    z[["Rfr"]] <- .fun(z[["Rfr"]], ...)
     return(z)
-  } else if(is.source_spct(x)) {
-    unit <- getOption("photobiology.radiation.unit", default="energy")
+  } else if (is.source_spct(x)) {
+    unit <- getOption("photobiology.radiation.unit", default = "energy")
     if (unit == "energy") {
       z <- q2e(x, action = "replace", byref = FALSE)
-      z[["s.e.irrad"]] <- f(z[["s.e.irrad"]], ...)
+      z[["s.e.irrad"]] <- .fun(z[["s.e.irrad"]], ...)
       return(z)
     } else if (unit == "photon" || unit == "quantum") {
       z <- e2q(x, action = "replace", byref = FALSE)
-      z[["s.q.irrad"]] <- f(z[["s.q.irrad"]], ...)
+      z[["s.q.irrad"]] <- .fun(z[["s.q.irrad"]], ...)
       return(z)
     } else {
       return(NA)
     }
   } else if (is.response_spct(x)) {
-    unit <- getOption("photobiology.radiation.unit", default="energy")
+    unit <- getOption("photobiology.radiation.unit", default = "energy")
     if (unit == "energy") {
       z <- q2e(x, action = "replace", byref = FALSE)
-      z[["s.e.response"]] <- f(z[["s.e.response"]], ...)
+      z[["s.e.response"]] <- .fun(z[["s.e.response"]], ...)
       return(z)
     } else if (unit == "photon" || unit == "quantum") {
       z <- e2q(x, action = "replace", byref = FALSE)
-      z[["s.q.response"]] <- f(z[["s.q.response"]], ...)
+      z[["s.q.response"]] <- .fun(z[["s.q.response"]], ...)
       return(z)
     }
   } else if (is.chroma_spct(x)) {
     z <- x
-    z[["x"]] <- f(z[["x"]], ...)
-    z[["y"]] <- f(z[["y"]], ...)
-    z[["z"]] <- f(z[["z"]], ...)
+    z[["x"]] <- .fun(z[["x"]], ...)
+    z[["y"]] <- .fun(z[["y"]], ...)
+    z[["z"]] <- .fun(z[["z"]], ...)
     return(z)
   } else {
       warning("Function not implemented for ", class(x)[1], " objects.")
@@ -945,6 +945,83 @@ abs.generic_spct <- function(x) {
   f_dispatcher_spct(x, abs)
 }
 
+#' Sign
+#'
+#' \code{sign} returns a vector with the signs of the corresponding elements of
+#' x (the sign of a real number is 1, 0, or -1 if the number is positive, zero,
+#' or negative, respectively).
+#'
+#' @param x an object of class "generic_spct"
+#' @export
+#' @family math operators and functions
+#'
+sign.generic_spct <- function(x) {
+  f_dispatcher_spct(x, sign)
+}
+
+#' @title
+#' Rounding of Numbers
+#'
+#' @description
+#' \code{ceiling} takes a single numeric argument x and returns a numeric vector
+#' containing the smallest integers not less than the corresponding elements of
+#' x. \\
+#' \code{floor} takes a single numeric argument x and returns a numeric vector
+#' containing the largest integers not greater than the corresponding elements
+#' of x. \\
+#' \code{trunc} takes a single numeric argument x and returns a numeric vector
+#' containing the integers formed by truncating the values in x toward 0. \\
+#' \code{round} rounds the values in its first argument to the specified number of
+#' decimal places (default 0). \\
+#' \code{signif} rounds the values in its first argument to the specified number of
+#' significant digits.
+#'
+#' @param x an object of class "generic_spct" or a derived class.
+#' @param digits integer indicating the number of decimal places (round) or
+#'   significant digits (signif) to be used. Negative values are allowed (see
+#'   ‘Details’).
+#' @method round generic_spct
+#' @name round
+#' @export
+#' @family math operators and functions
+#'
+round.generic_spct <- function(x, digits = 0) {
+  f_dispatcher_spct(x, sign, digits = digits)
+}
+
+#' @rdname round
+#'
+#' @export
+#'
+signif.generic_spct <- function(x, digits = 6) {
+  f_dispatcher_spct(x, signif, digits = digits)
+}
+
+#' @rdname round
+#'
+#' @export
+#'
+ceiling.generic_spct <- function(x) {
+  f_dispatcher_spct(x, ceiling)
+}
+
+#' @rdname round
+#'
+#' @export
+#'
+floor.generic_spct <- function(x) {
+  f_dispatcher_spct(x, floor)
+}
+
+#' @rdname round
+#'
+#' @param ...	arguments to be passed to methods.
+#'
+#' @export
+#'
+trunc.generic_spct <- function(x, ...) {
+  f_dispatcher_spct(x, trunc, ...)
+}
 
 # transmittance and absorbance --------------------------------------------
 

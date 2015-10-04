@@ -194,6 +194,8 @@ test_that("math energy energy", {
   expect_equal(log(my.e.spct, 2)[["s.e.irrad"]],  rep(log(1, 2), length.out = 10))
   expect_equal(exp(my.e.spct)[["s.e.irrad"]],  rep(exp(1), length.out = 10))
   expect_equal(sqrt(my.e.spct)[["s.e.irrad"]],  rep(sqrt(1), length.out = 10))
+  expect_equal(abs(my.e.spct)[["s.e.irrad"]],  rep(abs(1), length.out = 10))
+  expect_equal(sign(my.e.spct)[["s.e.irrad"]],  rep(sign(1), length.out = 10))
 
   options(photobiology.radiation.unit = NULL)
 })
@@ -210,6 +212,8 @@ test_that("math photon photon", {
   expect_equal(log(my.q.spct, 2)[["s.q.irrad"]],  rep(log(1, 2), length.out = 10))
   expect_equal(exp(my.q.spct)[["s.q.irrad"]],  rep(exp(1), length.out = 10))
   expect_equal(sqrt(my.q.spct)[["s.q.irrad"]],  rep(sqrt(1), length.out = 10))
+  expect_equal(abs(my.q.spct)[["s.q.irrad"]],  rep(abs(1), length.out = 10))
+  expect_equal(sign(my.q.spct)[["s.q.irrad"]],  rep(sign(1), length.out = 10))
 
   options(photobiology.radiation.unit = NULL)
 })
