@@ -12,15 +12,20 @@ Implement normalize(), fscale(), peaks(), valleys(), tag() and untag() methods
 for generic_mspct and derived classes.
 Implement dim<- for generic_mspct and derived classes.
 Fix bugs in msmsply() and mslply().
+Implement sign(), round(), signif(), floor(), ceiling() methods for
+generic_mspct and derived classes.
+Implement log2(), cos(), sin(), tan(), acos(), asin(), acos(), cospi(), sinpi()
+and tanpi() methods for generic_mspct and derived classes.
+
 Make internal changes needed for an update to photobiologyInOut.
 Add option "photobiolgy.strict.range" to allow changing the default behaviour
 for out-of-range values. (Used internally to avoid redundant checks and
 repetead warning messages.)
 
-Update pacakge Title in docs.
+Update package Title in docs.
 Update User Guide, tables and their formatting.
 
-hotobiology 0.8.7
+photobiology 0.8.7
 ==================
 
 Many bug fixes, mostly minor.

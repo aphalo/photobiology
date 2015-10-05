@@ -59,6 +59,10 @@ NULL
 #' Radiative Transfer Simulations. Photochemistry and Photobiology, 85:
 #' 1233–1239
 #'
+#' @note The simualtions are based on libRadTran using hourly mean global
+#' radiation measurements to estimate cloud cover. The simulations were for
+#' each hour and the results integrated for the whole day.
+#'
 #' @docType data
 #' @keywords datasets
 #' @format A \code{source_spct} object with 511 rows and 3 variables

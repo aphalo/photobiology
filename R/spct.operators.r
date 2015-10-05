@@ -886,10 +886,16 @@ f_dispatcher_spct <- function(x, .fun, ...) {
 
 #' Logarithms and Exponentials
 #'
-#' Logarithm function for spectra.
+#' Logarithms and Exponentials for Spectra. The functions are applied to the
+#' spectral data, not the wavelengths. The quantity in the spectrum to which the
+#' function is appled depends on the class of \code{x} and the current value of
+#' output options
+#'
+#' @name log
 #'
 #' @param x an object of class "generic_spct"
-#' @param base a positive number: the base with respect to which logarithms are computed. Defaults to e=exp(1).
+#' @param base a positive number: the base with respect to which logarithms are
+#'   computed. Defaults to e=exp(1).
 #' @export
 #' @family math operators and functions
 #'
@@ -897,25 +903,25 @@ log.generic_spct <- function(x, base = exp(1)) {
   f_dispatcher_spct(x, log, base)
 }
 
-#' Logarithms and Exponentials
+#' @rdname log
 #'
-#' Base 10 logarithm function for spectra.
-#'
-#' @param x an object of class "generic_spct"
 #' @export
-#' @family math operators and functions
+#'
+log2.generic_spct <- function(x) {
+  f_dispatcher_spct(x, log, base = 2)
+}
+
+#' @rdname log
+#'
+#' @export
 #'
 log10.generic_spct <- function(x) {
   f_dispatcher_spct(x, log, base = 10)
 }
 
-#' Logarithms and Exponentials
+#' @rdname log
 #'
-#' Exponential function for spectra.
-#'
-#' @param x an object of class "generic_spct"
 #' @export
-#' @family math operators and functions
 #'
 exp.generic_spct <- function(x) {
   f_dispatcher_spct(x, exp)
@@ -923,7 +929,13 @@ exp.generic_spct <- function(x) {
 
 #' Miscellaneous Mathematical Functions
 #'
-#' Square root function for spectra.
+#' \code{abs(x)} computes the absolute value of \code{x}, \code{sqrt(x)}
+#' computes the (principal) square root of \code{x}. The functions are applied
+#' to the spectral data, not the wavelengths. The quantity in the spectrum to
+#' which the function is appled depends on the class of \code{x} and the current
+#' value of output options.
+#'
+#' @name MathFun
 #'
 #' @param x an object of class "generic_spct"
 #' @export
@@ -933,13 +945,9 @@ sqrt.generic_spct <- function(x) {
   f_dispatcher_spct(x, sqrt)
 }
 
-#' Miscellaneous Mathematical Functions
+#' @rdname MathFun
 #'
-#' Absolute value function for spectra.
-#'
-#' @param x an object of class "generic_spct"
 #' @export
-#' @family math operators and functions
 #'
 abs.generic_spct <- function(x) {
   f_dispatcher_spct(x, abs)
@@ -950,6 +958,8 @@ abs.generic_spct <- function(x) {
 #' \code{sign} returns a vector with the signs of the corresponding elements of
 #' x (the sign of a real number is 1, 0, or -1 if the number is positive, zero,
 #' or negative, respectively).
+#'
+#' @name sign
 #'
 #' @param x an object of class "generic_spct"
 #' @export
@@ -974,13 +984,16 @@ sign.generic_spct <- function(x) {
 #' \code{round} rounds the values in its first argument to the specified number of
 #' decimal places (default 0). \\
 #' \code{signif} rounds the values in its first argument to the specified number of
-#' significant digits.
+#' significant digits. \\
+#' The functions are applied to the spectral data, not the wavelengths. The
+#' quantity in the spectrum to which the function is appled depends on the class
+#' of \code{x} and the current value of output options.
 #'
 #' @param x an object of class "generic_spct" or a derived class.
 #' @param digits integer indicating the number of decimal places (round) or
 #'   significant digits (signif) to be used. Negative values are allowed (see
 #'   ‘Details’).
-#' @method round generic_spct
+#'
 #' @name round
 #' @export
 #' @family math operators and functions
@@ -1021,6 +1034,90 @@ floor.generic_spct <- function(x) {
 #'
 trunc.generic_spct <- function(x, ...) {
   f_dispatcher_spct(x, trunc, ...)
+}
+
+#' Trigonometric Functions
+#'
+#' Trigonometric functions for object of \code{generic_spct} and derived
+#' classes.  \\
+#' The functions are applied to the spectral data, not the wavelengths. The
+#' quantity in the spectrum to which the function is appled depends on the class
+#' of \code{x} and the current value of output options.
+#'
+#' @name Trig
+#'
+#' @param x an object of class "generic_spct" or a derived class.
+#'
+#' @export
+#'
+cos.generic_spct <- function(x) {
+  f_dispatcher_spct(x, cos)
+}
+
+#' @rdname Trig
+#'
+#' @export
+#'
+sin.generic_spct <- function(x) {
+  f_dispatcher_spct(x, sin)
+}
+
+#' @rdname Trig
+#'
+#' @export
+#'
+tan.generic_spct <- function(x) {
+  f_dispatcher_spct(x, tan)
+}
+
+#' @rdname Trig
+#'
+#' @export
+#'
+acos.generic_spct <- function(x) {
+  f_dispatcher_spct(x, acos)
+}
+
+#' @rdname Trig
+#'
+#' @export
+#'
+asin.generic_spct <- function(x) {
+  f_dispatcher_spct(x, asin)
+}
+
+#' @rdname Trig
+#'
+#' @export
+#'
+atan.generic_spct <- function(x) {
+  f_dispatcher_spct(x, atan)
+}
+
+#' @name Trig
+#'
+#' @param x an object of class "generic_spct" or a derived class.
+#'
+#' @export
+#'
+cospi.generic_spct <- function(x) {
+  f_dispatcher_spct(x, cospi)
+}
+
+#' @rdname Trig
+#'
+#' @export
+#'
+sinpi.generic_spct <- function(x) {
+  f_dispatcher_spct(x, sinpi)
+}
+
+#' @rdname Trig
+#'
+#' @export
+#'
+tanpi.generic_spct <- function(x) {
+  f_dispatcher_spct(x, tanpi)
 }
 
 # transmittance and absorbance --------------------------------------------
