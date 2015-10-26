@@ -1505,8 +1505,7 @@ setMultipleWl <- function(x, multiple.wl = NULL) {
 
 #' Get the "multiple.wl" attribute
 #'
-#' Function to read the "Tfr.type" attribute of an existing filter_spct or
-#' object_spct object.
+#' Function to read the "multiple.wl" attribute of an existing generic_spct.
 #'
 #' @param x a generic_spct object
 #'
@@ -1526,6 +1525,66 @@ getMultipleWl <- function(x) {
       multiple.wl <- 1
     }
     return(multiple.wl)
+  } else {
+    return(NA)
+  }
+}
+
+
+# when.measured ---------------------------------------------------------------
+
+#' Set the "when.measured" attribute
+#'
+#' Function to set by reference the "when" attribute  of an existing
+#' generic_spct or an object of a class derived from generic_spct.
+#'
+#' @param x a generic_spct object
+#' @param when.measured POSIXct to add as attribute
+#'
+#' @return x
+#'
+#' @note if x is not a generic_spct or an object of a class derived from
+#'   generic_spct, x is not modified. If \code{when} is not a POSIXct object
+#'   or \code{NULL} an error is triggered. A \code{POSIXct} describes an
+#'   instant in time (date plus time-of-day plus time zone).
+#'
+#' @export
+#' @family when.measured attribute functions
+#'
+setWhenMeasured <- function(x, when = lubridate::now(tzone = "UTC")) {
+  stopifnot(is.any_spct(x))
+  name <- substitute(x)
+  stopifnot(!is.null(when) && !lubridate::is.POSIXct(when.measured))
+  attr(x, "when.measured") <- when.measured
+  if (is.name(name)) {
+    name <- as.character(name)
+    assign(name, x, parent.frame(), inherits = TRUE)
+  }
+  invisible(x)
+}
+
+#' Get the "when.measured" attribute
+#'
+#' Function to read the "when.measured" attribute of an existing generic_spct.
+#'
+#' @param x a generic_spct object
+#'
+#' @return integer
+#'
+#' @note If x is not a \code{generic_spct} or an object of a derived class
+#'   \code{NA} is returned.
+#'
+#' @export
+#' @family when.measured attribute functions
+#'
+getWhenMeasured <- function(x) {
+  if (is.any_spct(x)) {
+    when.measured <- attr(x, "when.measured", exact = TRUE)
+    if (is.null(when.measured) || !lubridate::is.POSIXct(when.measured)) {
+      # need to handle invalid attribute values
+      when.measured <- NA
+    }
+    return(when.measured)
   } else {
     return(NA)
   }

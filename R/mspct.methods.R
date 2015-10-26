@@ -45,12 +45,13 @@ msmsply <- function(mspct, .fun, ...) {
 #' @param idx logical whether to add a column with the names of the elements of
 #'   mspct, if \code{NULL}, the default, a column is added only if all members
 #'   of \code{mscpt} are named.
+#' @param col.names character Names to be used for data columns.
 #'
 #' @return a data frame in the case of \code{msdply}
 #'
 #' @export
 #'
-msdply <- function(mspct, .fun, ..., idx = NULL) {
+msdply <- function(mspct, .fun, ..., idx = NULL, col.names = NULL) {
   stopifnot(is.any_mspct(mspct))
 
   if ( (is.logical(idx) && idx) ||
@@ -73,6 +74,11 @@ msdply <- function(mspct, .fun, ..., idx = NULL) {
                         spread = "spread.wl",
                         midpoint = "midpoint.wl",
                         stepsize = c("min.step.wl", "max.step.wl") )
+  } else if (!is.null(col.names) &&
+             !any(col.names=="") &&
+             !any(is.na(col.names)) &&
+             length(col.names) == length(names(z)) - 1) {
+    qty.names <- col.names
   } else {
     qty.names <- paste(f.name,
                        gsub(" ", "", names(z)[-1]),
@@ -254,10 +260,18 @@ irrad.source_mspct <-
            allow.scaled = FALSE,
            ...,
            idx = !is.null(names(spct))) {
-    msdply(mspct = spct, .fun = irrad,
-            w.band = w.band, unit.out = unit.out,
-            wb.trim = wb.trim, use.cached.mult = use.cached.mult,
-            use.hinges = use.hinges, allow.scaled = allow.scaled, idx = idx)
+    msdply(
+      mspct = spct,
+      .fun = irrad,
+      w.band = w.band,
+      unit.out = unit.out,
+      wb.trim = wb.trim,
+      use.cached.mult = use.cached.mult,
+      use.hinges = use.hinges,
+      allow.scaled = allow.scaled,
+      idx = idx,
+      col.names = names(w.band)
+    )
   }
 
 #' @describeIn q_irrad  Calculates photon (quantum) irradiance from a
@@ -277,11 +291,18 @@ q_irrad.source_mspct <-
            use.hinges = getOption("photobiology.use.hinges", default = NULL),
            allow.scaled = FALSE,
            ..., idx = !is.null(names(spct))) {
-  msdply(mspct = spct, .fun = q_irrad,
-               w.band = w.band,
-               wb.trim = wb.trim, use.cached.mult = use.cached.mult,
-               use.hinges = use.hinges, allow.scaled = allow.scaled, idx = idx)
-}
+    msdply(
+      mspct = spct,
+      .fun = q_irrad,
+      w.band = w.band,
+      wb.trim = wb.trim,
+      use.cached.mult = use.cached.mult,
+      use.hinges = use.hinges,
+      allow.scaled = allow.scaled,
+      idx = idx,
+      col.names = names(w.band)
+    )
+  }
 
 #' @describeIn e_irrad  Calculates energy irradiance from a
 #'   \code{source_mspct} object.
@@ -300,11 +321,18 @@ e_irrad.source_mspct <-
            use.hinges = getOption("photobiology.use.hinges", default = NULL),
            allow.scaled = FALSE,
            ..., idx = !is.null(names(spct))) {
-  msdply(mspct = spct, .fun = e_irrad,
-               w.band = w.band,
-               wb.trim = wb.trim, use.cached.mult = use.cached.mult,
-               use.hinges = use.hinges, allow.scaled = allow.scaled, idx = idx)
-}
+    msdply(
+      mspct = spct,
+      .fun = e_irrad,
+      w.band = w.band,
+      wb.trim = wb.trim,
+      use.cached.mult = use.cached.mult,
+      use.hinges = use.hinges,
+      allow.scaled = allow.scaled,
+      idx = idx,
+      col.names = names(w.band)
+    )
+  }
 
 #' @describeIn fluence Calculates fluence from a \code{source_mspct}
 #'   object.
@@ -322,12 +350,20 @@ fluence.source_mspct <-
            use.hinges = getOption("photobiology.use.hinges", default = NULL),
            allow.scaled = FALSE,
            ..., idx = !is.null(names(spct))) {
-    msdply(mspct = spct, .fun = fluence,
-                 w.band = w.band, unit.out = unit.out,
-                 exposure.time = exposure.time,
-                 wb.trim = wb.trim, use.cached.mult = use.cached.mult,
-                 use.hinges = use.hinges, allow.scaled = allow.scaled, idx = idx)
-}
+    msdply(
+      mspct = spct,
+      .fun = fluence,
+      w.band = w.band,
+      unit.out = unit.out,
+      exposure.time = exposure.time,
+      wb.trim = wb.trim,
+      use.cached.mult = use.cached.mult,
+      use.hinges = use.hinges,
+      allow.scaled = allow.scaled,
+      idx = idx,
+      col.names = names(w.band)
+    )
+  }
 
 #' @describeIn e_fluence Calculates energy fluence from a \code{source_mspct}
 #'   object.
@@ -343,11 +379,18 @@ e_fluence.source_mspct <-
            use.hinges = getOption("photobiology.use.hinges", default = NULL),
            allow.scaled = FALSE,
            ..., idx = !is.null(names(spct))) {
-    msdply(mspct = spct, .fun = e_fluence,
-                 w.band = w.band,
-                 exposure.time = exposure.time,
-                 wb.trim = wb.trim, use.cached.mult = use.cached.mult,
-                 use.hinges = use.hinges, allow.scaled = allow.scaled, idx = idx)
+    msdply(
+      mspct = spct,
+      .fun = e_fluence,
+      w.band = w.band,
+      exposure.time = exposure.time,
+      wb.trim = wb.trim,
+      use.cached.mult = use.cached.mult,
+      use.hinges = use.hinges,
+      allow.scaled = allow.scaled,
+      idx = idx,
+      col.names = names(w.band)
+    )
   }
 
 #' @describeIn q_fluence Calculates photon (quantum) fluence from a
@@ -365,11 +408,18 @@ q_fluence.source_mspct <-
            use.hinges = getOption("photobiology.use.hinges", default = NULL),
            allow.scaled = FALSE,
            ..., idx = !is.null(names(spct))) {
-    msdply(mspct = spct, .fun = q_fluence,
-                 w.band = w.band,
-                 exposure.time = exposure.time,
-                 wb.trim = wb.trim, use.cached.mult = use.cached.mult,
-                 use.hinges = use.hinges, allow.scaled = allow.scaled, idx = idx)
+    msdply(
+      mspct = spct,
+      .fun = q_fluence,
+      w.band = w.band,
+      exposure.time = exposure.time,
+      wb.trim = wb.trim,
+      use.cached.mult = use.cached.mult,
+      use.hinges = use.hinges,
+      allow.scaled = allow.scaled,
+      idx = idx,
+      col.names = names(w.band)
+    )
   }
 
 #' @describeIn q_ratio Calculates photon:photon from a \code{source_mspct}
@@ -386,11 +436,17 @@ q_ratio.source_mspct <-
            use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
            use.hinges = getOption("photobiology.use.hinges", default = NULL),
            ..., idx = !is.null(names(spct))) {
-  msdply(mspct = spct, .fun = q_ratio,
-               w.band.num = w.band.num, w.band.denom = w.band.denom,
-               wb.trim = wb.trim, use.cached.mult = use.cached.mult,
-               use.hinges = use.hinges, idx = idx)
-}
+    msdply(
+      mspct = spct,
+      .fun = q_ratio,
+      w.band.num = w.band.num,
+      w.band.denom = w.band.denom,
+      wb.trim = wb.trim,
+      use.cached.mult = use.cached.mult,
+      use.hinges = use.hinges,
+      idx = idx
+    )
+  }
 
 #' @describeIn e_ratio Calculates energy:energy ratio from a \code{source_mspct}
 #'   object.
@@ -406,11 +462,17 @@ e_ratio.source_mspct <-
            use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
            use.hinges = getOption("photobiology.use.hinges", default = NULL),
            ..., idx = !is.null(names(spct))) {
-  msdply(mspct = spct, .fun = e_ratio,
-               w.band.num = w.band.num, w.band.denom = w.band.denom,
-               wb.trim = wb.trim, use.cached.mult = use.cached.mult,
-               use.hinges = use.hinges, idx = idx)
-}
+    msdply(
+      mspct = spct,
+      .fun = e_ratio,
+      w.band.num = w.band.num,
+      w.band.denom = w.band.denom,
+      wb.trim = wb.trim,
+      use.cached.mult = use.cached.mult,
+      use.hinges = use.hinges,
+      idx = idx
+    )
+  }
 
 #' @describeIn eq_ratio Calculates energy:photon from a \code{source_mspct}
 #'   object.
@@ -426,11 +488,17 @@ eq_ratio.source_mspct <-
            use.hinges = getOption("photobiology.use.hinges", default = NULL),
            ...,
            idx = !is.null(names(spct))) {
-  msdply(mspct = spct, .fun = eq_ratio,
-               w.band = w.band,
-               wb.trim = wb.trim, use.cached.mult = use.cached.mult,
-               use.hinges = use.hinges, idx = idx)
-}
+    msdply(
+      mspct = spct,
+      .fun = eq_ratio,
+      w.band = w.band,
+      wb.trim = wb.trim,
+      use.cached.mult = use.cached.mult,
+      use.hinges = use.hinges,
+      idx = idx,
+      col.names = names(w.band)
+    )
+  }
 
 #' @describeIn qe_ratio Calculates photon:energy ratio from a
 #'   \code{source_mspct} object.
@@ -446,11 +514,17 @@ qe_ratio.source_mspct <-
            use.hinges=getOption("photobiology.use.hinges", default = NULL),
            ...,
            idx = !is.null(names(spct))) {
-  msdply(spct, .fun = qe_ratio,
-               w.band = w.band,
-               wb.trim = wb.trim, use.cached.mult = use.cached.mult,
-               use.hinges = use.hinges, idx = idx)
-}
+    msdply(
+      spct,
+      .fun = qe_ratio,
+      w.band = w.band,
+      wb.trim = wb.trim,
+      use.cached.mult = use.cached.mult,
+      use.hinges = use.hinges,
+      idx = idx,
+      col.names = names(w.band)
+    )
+  }
 
 #' @param idx logical whether to add a column with the names of the elements of
 #'   spct
@@ -477,12 +551,16 @@ transmittance.filter_mspct <-
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.hinges = getOption("photobiology.use.hinges", default = NULL),
            ..., idx = !is.null(names(spct)) ) {
-    msdply(mspct = spct, .fun = transmittance,
-                 w.band = w.band,
-                 quantity = quantity,
-                 wb.trim = wb.trim,
-                 use.hinges = use.hinges,
-                 idx = idx)
+    msdply(
+      mspct = spct,
+      .fun = transmittance,
+      w.band = w.band,
+      quantity = quantity,
+      wb.trim = wb.trim,
+      use.hinges = use.hinges,
+      idx = idx,
+      col.names = names(w.band)
+    )
   }
 
 #' @describeIn absorptance Calculates absorptance from a \code{filter_mspct}
@@ -498,12 +576,16 @@ absorptance.filter_mspct <-
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.hinges = getOption("photobiology.use.hinges", default = NULL),
            ..., idx = !is.null(names(spct)) ) {
-    msdply(mspct = spct, .fun = absorptance,
-                 w.band = w.band,
-                 quantity = quantity,
-                 wb.trim = wb.trim,
-                 use.hinges = use.hinges,
-                 idx = idx)
+    msdply(
+      mspct = spct,
+      .fun = absorptance,
+      w.band = w.band,
+      quantity = quantity,
+      wb.trim = wb.trim,
+      use.hinges = use.hinges,
+      idx = idx,
+      col.names = names(w.band)
+    )
   }
 
 #' @describeIn absorbance Calculates absorbance from a \code{filter_mspct}
@@ -519,13 +601,17 @@ absorbance.filter_mspct <-
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.hinges = getOption("photobiology.use.hinges", default = NULL),
            ..., idx = !is.null(names(spct))) {
-  msdply(mspct = spct, .fun = absorbance,
-               w.band = w.band,
-               quantity = quantity,
-               wb.trim = wb.trim,
-               use.hinges = use.hinges,
-               idx = idx)
-}
+    msdply(
+      mspct = spct,
+      .fun = absorbance,
+      w.band = w.band,
+      quantity = quantity,
+      wb.trim = wb.trim,
+      use.hinges = use.hinges,
+      idx = idx,
+      col.names = names(w.band)
+    )
+  }
 
 # reflector_mspct methods -----------------------------------------------
 
@@ -542,13 +628,17 @@ reflectance.reflector_mspct <-
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.hinges = getOption("photobiology.use.hinges", default = NULL),
            ..., idx = !is.null(names(spct))) {
-  msdply(mspct = spct, .fun = reflectance,
-               w.band = w.band,
-               quantity = quantity,
-               wb.trim = wb.trim,
-               use.hinges = use.hinges,
-               idx = idx)
-}
+    msdply(
+      mspct = spct,
+      .fun = reflectance,
+      w.band = w.band,
+      quantity = quantity,
+      wb.trim = wb.trim,
+      use.hinges = use.hinges,
+      idx = idx,
+      col.names = names(w.band)
+    )
+  }
 
 # object_mspct methods -----------------------------------------------
 
@@ -562,12 +652,16 @@ transmittance.object_mspct <-
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.hinges = getOption("photobiology.use.hinges", default = NULL),
            ..., idx = !is.null(names(spct)) ) {
-    msdply(mspct = spct, .fun = transmittance,
-                 w.band = w.band,
-                 quantity = quantity,
-                 wb.trim = wb.trim,
-                 use.hinges = use.hinges,
-                 idx = idx)
+    msdply(
+      mspct = spct,
+      .fun = transmittance,
+      w.band = w.band,
+      quantity = quantity,
+      wb.trim = wb.trim,
+      use.hinges = use.hinges,
+      idx = idx,
+      col.names = names(w.band)
+    )
   }
 
 
@@ -581,12 +675,16 @@ absorptance.object_mspct <-
            wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
            use.hinges=getOption("photobiology.use.hinges", default=NULL),
            ..., idx = !is.null(names(spct)) ) {
-    msdply(mspct = spct, .fun = absorptance,
-                 w.band = w.band,
-                 quantity = quantity,
-                 wb.trim = wb.trim,
-                 use.hinges = use.hinges,
-                 idx = idx)
+    msdply(
+      mspct = spct,
+      .fun = absorptance,
+      w.band = w.band,
+      quantity = quantity,
+      wb.trim = wb.trim,
+      use.hinges = use.hinges,
+      idx = idx,
+      col.names = names(w.band)
+    )
   }
 
 #' @describeIn reflectance Calculates reflectance from a \code{object_mspct}
@@ -599,12 +697,16 @@ reflectance.object_mspct <-
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.hinges= getOption("photobiology.use.hinges", default = NULL),
            ..., idx = !is.null(names(spct))) {
-    msdply(mspct = spct, .fun = reflectance,
-                 w.band = w.band,
-                 quantity = quantity,
-                 wb.trim = wb.trim,
-                 use.hinges = use.hinges,
-                 idx = idx)
+    msdply(
+      mspct = spct,
+      .fun = reflectance,
+      w.band = w.band,
+      quantity = quantity,
+      wb.trim = wb.trim,
+      use.hinges = use.hinges,
+      idx = idx,
+      col.names = names(w.band)
+    )
   }
 
 #' @describeIn absorbance Calculates absorbance from a \code{object_mspct}
@@ -617,12 +719,16 @@ absorbance.object_mspct <-
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.hinges=getOption("photobiology.use.hinges", default = NULL),
            ..., idx = !is.null(names(spct))) {
-    msdply(mspct = spct, .fun = absorbance,
-                 w.band = w.band,
-                 quantity = quantity,
-                 wb.trim = wb.trim,
-                 use.hinges = use.hinges,
-                 idx = idx)
+    msdply(
+      mspct = spct,
+      .fun = absorbance,
+      w.band = w.band,
+      quantity = quantity,
+      wb.trim = wb.trim,
+      use.hinges = use.hinges,
+      col.names = names(w.band),
+      idx = idx
+    )
   }
 
 # response_mspct methods -----------------------------------------------
@@ -642,14 +748,19 @@ response.response_mspct <-
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.hinges = getOption("photobiology.use.hinges", default = NULL),
            ..., idx = !is.null(names(spct))) {
-  msdply(mspct = spct, .fun = response,
-               w.band = w.band, unit.out = unit.out,
-               quantity = quantity,
-               time.unit = time.unit,
-               wb.trim = wb.trim,
-               use.hinges = use.hinges,
-               idx = idx)
-}
+    msdply(
+      mspct = spct,
+      .fun = response,
+      w.band = w.band,
+      unit.out = unit.out,
+      quantity = quantity,
+      time.unit = time.unit,
+      wb.trim = wb.trim,
+      use.hinges = use.hinges,
+      idx = idx,
+      col.names = names(w.band)
+    )
+  }
 
 #' @describeIn q_response Calculates photon (quantum) response from a
 #'   \code{response_mspct}
@@ -666,14 +777,18 @@ q_response.response_mspct <-
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.hinges = getOption("photobiology.use.hinges", default = NULL),
            ..., idx = !is.null(names(spct))) {
-  msdply(mspct = spct, .fun = q_response,
-               w.band = w.band,
-               quantity = quantity,
-               time.unit = time.unit,
-               wb.trim = wb.trim,
-               use.hinges = use.hinges,
-               idx = idx)
-}
+    msdply(
+      mspct = spct,
+      .fun = q_response,
+      w.band = w.band,
+      quantity = quantity,
+      time.unit = time.unit,
+      wb.trim = wb.trim,
+      use.hinges = use.hinges,
+      idx = idx,
+      col.names = names(w.band)
+    )
+  }
 
 #' @describeIn e_response Calculates energy response from a
 #'   \code{response_mspct}
@@ -690,13 +805,17 @@ e_response.response_mspct <-
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.hinges = getOption("photobiology.use.hinges", default = NULL),
            ..., idx = !is.null(names(spct))) {
-    msdply(mspct = spct, .fun = e_response,
-                 w.band = w.band,
-                 quantity = quantity,
-                 time.unit = time.unit,
-                 wb.trim = wb.trim,
-                 use.hinges = use.hinges,
-                 idx = idx)
+    msdply(
+      mspct = spct,
+      .fun = e_response,
+      w.band = w.band,
+      quantity = quantity,
+      time.unit = time.unit,
+      wb.trim = wb.trim,
+      use.hinges = use.hinges,
+      idx = idx,
+      col.names = names(w.band)
+    )
   }
 
 #' Get the "mspct.version" attribute

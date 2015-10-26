@@ -1096,8 +1096,6 @@ atan.generic_spct <- function(x) {
 
 #' @name Trig
 #'
-#' @param x an object of class "generic_spct" or a derived class.
-#'
 #' @export
 #'
 cospi.generic_spct <- function(x) {

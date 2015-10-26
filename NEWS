@@ -4,6 +4,13 @@ TODO
 Add test cases for chroma_spct and improve tests for the _mspct
 classes.
 
+photobiology 0.8.9
+==================
+
+Small edit to msdply() to allow setting of colum names. Update to _mspct summary
+methods to use the names in the list of wavebands, if present, as column names
+for the returned data frame.
+
 photobiology 0.8.8
 ==================
 

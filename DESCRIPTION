@@ -1,8 +1,8 @@
 Package: photobiology
 Type: Package
 Title: Base Photobiological Calculations
-Version: 0.8.8
-Date: 2015-10-04
+Version: 0.8.9
+Date: 2015-10-25
 Author: Pedro J. Aphalo <pedro.aphalo@helsinki.fi>
 Maintainer: Pedro J. Aphalo <pedro.aphalo@helsinki.fi>
 Description: Calculation of effective (weighted) and unweighted
@@ -40,3 +40,4 @@ URL: http://www.r4photobiology.info/,
     https://bitbucket.org/aphalo/photobiology
 BugReports: https://bitbucket.org/aphalo/photobiology
 Roxygen: list(wrap = FALSE)
+RoxygenNote: 5.0.0

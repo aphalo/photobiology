@@ -23,7 +23,9 @@
 #' @param strict.range logical Flag indicating whether off-range values result
 #'   in an error instead of a warning.
 #'
-#' @return An source_spct object
+#' @return A object of class generic_spct or a class derived from it, depending
+#'   on the function used. In other words an object of a class with the same
+#'   name as the constructor function.
 #'
 #' @export
 #'
@@ -34,8 +36,8 @@
 #' @note The functions can be used to add only one spectral quantity to a
 #'   spectral object. Some of the functions have different arguments, for the
 #'   same quantity expressed in different units. An actual parameter can be
-#'   supplied to only one of these formal paprameters in a given call to the
-#'   fucntion.
+#'   supplied to only one of these formal parameters in a given call to any
+#'   of these functions.
 #'
 source_spct <- function(w.length, s.e.irrad = NULL, s.q.irrad = NULL,
                         time.unit = c("second", "day", "exposure"),
