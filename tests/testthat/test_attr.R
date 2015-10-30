@@ -1,4 +1,44 @@
 library("photobiology")
+library("lubridate")
+
+context("set_get")
+
+test_that("any_spct", {
+
+  my.spct <- object_spct(w.length = 400:450, Tfr = 0.5, Rfr = 0.5)
+  tested.time <- ymd_hms("2015-12-31 23:59:59")
+
+  setWhenMeasured(my.spct, tested.time)
+  expect_equal(getWhenMeasured(my.spct), tested.time)
+  setWhenMeasured(my.spct, NULL)
+  expect_true(is.na(getWhenMeasured(my.spct)))
+  setWhenMeasured(my.spct, tested.time)
+  expect_equal(getWhenMeasured(my.spct), tested.time)
+
+  tested.location <- data.frame(lon = 24.93545, lat = 60.16952)
+
+  setWhereMeasured(my.spct, tested.location)
+  expect_equal(getWhereMeasured(my.spct), tested.location)
+  setWhereMeasured(my.spct, NULL)
+  expect_true(is.data.frame(getWhereMeasured(my.spct)))
+  expect_true(all(is.na(getWhereMeasured(my.spct))))
+
+  tested.location <- data.frame(lon = 24.93545, lat = 60.16952,
+                                address = "Helsinki")
+
+  setWhereMeasured(my.spct, tested.location)
+  expect_equal(getWhereMeasured(my.spct), tested.location)
+
+  tested.location <- data.frame(lon = 1, lat = 2)
+
+  setWhereMeasured(my.spct, lon = 1, lat = 2)
+  expect_equal(getWhereMeasured(my.spct), tested.location)
+
+  expect_error(setWhereMeasured(my.spct, 1L))
+  expect_error(setWhereMeasured(my.spct, "here"))
+
+  expect_equal(getSpctVersion(my.spct), 2L)
+})
 
 context("conversions")
 
@@ -71,6 +111,5 @@ test_that("integrate_spct", {
 
   expect_equivalent(average_spct(my.spct), 1.2538837047156523583e-05)
   expect_named(average_spct(my.spct), "q.irrad")
-
 
 })

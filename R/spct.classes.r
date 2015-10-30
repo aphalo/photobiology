@@ -1415,6 +1415,12 @@ getRfrType <- function(x) {
   }
 }
 
+
+# generic_spct attributes -------------------------------------------------
+
+
+# spct.version ------------------------------------------------------------
+
 #' Get the "spct.version" attribute
 #'
 #' Function to read the "spct.version" attribute of an existing generic_spct
@@ -1530,7 +1536,6 @@ getMultipleWl <- function(x) {
   }
 }
 
-
 # when.measured ---------------------------------------------------------------
 
 #' Set the "when.measured" attribute
@@ -1551,10 +1556,10 @@ getMultipleWl <- function(x) {
 #' @export
 #' @family when.measured attribute functions
 #'
-setWhenMeasured <- function(x, when = lubridate::now(tzone = "UTC")) {
+setWhenMeasured <- function(x, when.measured = lubridate::now(tzone = "UTC")) {
   stopifnot(is.any_spct(x))
   name <- substitute(x)
-  stopifnot(!is.null(when) && !lubridate::is.POSIXct(when.measured))
+  stopifnot(is.null(when.measured) || lubridate::is.POSIXct(when.measured))
   attr(x, "when.measured") <- when.measured
   if (is.name(name)) {
     name <- as.character(name)
@@ -1589,4 +1594,80 @@ getWhenMeasured <- function(x) {
     return(NA)
   }
 }
+
+# where.measured ---------------------------------------------------------------
+
+#' Set the "where.measured" attribute
+#'
+#' Function to set by reference the "where.measured" attribute  of an existing
+#' generic_spct or an object of a class derived from generic_spct.
+#'
+#' @param x a generic_spct object
+#' @param where.measured A one row data.frame such as returned by
+#'   \code{\link[ggmap]{geocode}} for a location search.
+#' @param lat numeric Latitude in decimal degrees North
+#' @param lon numeric Longitude in decimal degrees West
+#'
+#' @return x
+#'
+#' @note if x is not a generic_spct or an object of a class derived from
+#'   generic_spct, x is not modified. If \code{where} is not a POSIXct object
+#'   or \code{NULL} an error is triggered. A \code{POSIXct} describes an
+#'   instant in time (date plus time-of-day plus time zone).
+#'
+#' @export
+#' @family where.measured attribute functions
+#'
+setWhereMeasured <- function(x,
+                             where.measured = NA,
+                             lat = NA,
+                             lon = NA) {
+  stopifnot(is.any_spct(x))
+  name <- substitute(x)
+  if (!is.null(where.measured)) {
+    if (any(is.na(where.measured))) {
+      where.measured <- data.frame(lon = lon, lat = lat)
+    } else {
+      stopifnot(
+        is.data.frame(where.measured) && nrow(where.measured) == 1 &&
+          names(where.measured)[1:2] == c("lon", "lat")
+      )
+    }
+  }
+  attr(x, "where.measured") <- where.measured
+  if (is.name(name)) {
+    name <- as.character(name)
+    assign(name, x, parent.frame(), inherits = TRUE)
+  }
+  invisible(x)
+}
+
+#' Get the "where.measured" attribute
+#'
+#' Function to read the "where.measured" attribute of an existing generic_spct.
+#'
+#' @param x a generic_spct object
+#'
+#' @return a data.frane with a single row and at least columns "lon" and "lat".
+#'
+#' @note If x is not a \code{generic_spct} or an object of a derived class
+#'   \code{NA} is returned.
+#'
+#' @export
+#'
+#' @family where.measured attribute functions
+#'
+getWhereMeasured <- function(x) {
+  if (is.any_spct(x)) {
+    where.measured <- attr(x, "where.measured", exact = TRUE)
+    if (is.null(where.measured) || !is.data.frame(where.measured)) {
+      # need to handle invalid attribute values
+      where.measured <- data.frame(lon = NA, lat = NA)
+    }
+    return(where.measured)
+  } else {
+    return(NA)
+  }
+}
+
 
