@@ -279,14 +279,14 @@ setWhenMeasured.generic_mspct <-
       if (is.list(when.measured)) {
         when.measured <- when.measured[[1]]
         stopifnot(lubridate::is.POSIXct(when.measured))
-        lubridate::tz(when.measured) <- "UTC"
       }
-      x <- msmsply(mspct = x, .fun = setWhenMeasured, when.measured = when.measured)
+      when <- lubridate::with_tz(when.measured, "UTC")
+      x <- msmsply(mspct = x, .fun = setWhenMeasured, when.measured = when)
     } else if (length(when.measured) == length(x)) {
       for (i in 1:length(x)) {
         when <- when.measured[[i]]
         stopifnot(lubridate::is.POSIXct(when))
-        lubridate::tz(when) <- "UTC"
+        when <- lubridate::with_tz(when, "UTC")
         x[[i]] <- setWhenMeasured(x[[i]], when.measured = when)
       }
     }
@@ -301,15 +301,13 @@ setWhenMeasured.generic_mspct <-
 #' @param idx logical whether to add a column with the names of the elements of
 #'   spct
 #' @note The method for collections of spectra returns the
-#'   a data_frame with the correct times but they print in the local TZ as
-#'   the "tzone" attribute is not supported by R's vectors of POSIXct objects
-#'   or data frames.
+#'   a data_frame with the correct times in TZ = "UTC".
 #' @export
 getWhenMeasured.generic_mspct <- function(x,
                                          ...,
                                          idx = !is.null(names(x))) {
   z <- msdply(mspct = x, .fun = getWhenMeasured, ..., idx = idx)
-  attr(z, "tzone") <- "UTC"
+  z[["when.measured"]] <- lubridate::with_tz(z[["when.measured"]], "UTC")
   z
 }
 

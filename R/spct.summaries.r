@@ -28,11 +28,22 @@ print.generic_spct <- function(x, ..., n = NULL, width = NULL)
 {
   cat("Object: ", class_spct(x)[1], " ", dplyr::dim_desc(x), "\n", sep = "")
   if (nrow(x)) {
-    cat("Wavelength (nm): range ", paste(signif(range(x), 8), sep = "", collapse = " to "), ", step ",
-      paste(unique(signif(stepsize(x), 7)), sep = "", collapse = " to "), "\n", sep = "")
+    cat("Wavelength (nm): range ",
+        paste(signif(range(x), 8), sep = "", collapse = " to "), ", step ",
+        paste(unique(signif(stepsize(x), 7)), sep = "", collapse = " to "),
+        "\n", sep = "")
+  }
+  if (!any(is.na(getWhenMeasured(x)))) {
+    cat("Measured on: ", as.character(getWhenMeasured(x)), " UTC\n", sep = "")
+  }
+  if (!any(is.na(getWhereMeasured(x)))) {
+    where.measured <- getWhereMeasured(x)
+    cat("Measured at: ", where.measured[["lat"]], " N, ",
+        where.measured[["lon"]], " E\n", sep = "")
   }
   if (class_spct(x)[1] %in% c("source_spct", "response_spct")) {
-    cat("Time unit: ", as.character(getTimeUnit(x, force.duration = TRUE)), "\n", sep = "")
+    cat("Time unit: ", as.character(getTimeUnit(x, force.duration = TRUE)),
+        "\n", sep = "")
   }
   if (is_scaled(x)) {
     scaling <- getScaled(x)[["f"]]
@@ -40,7 +51,8 @@ print.generic_spct <- function(x, ..., n = NULL, width = NULL)
   }
   if (is_normalized(x)) {
     norm <- getNormalized(x)
-    cat("Data normalized to ", norm, ifelse(is.numeric(norm), " nm \n", " \n"), sep = "")
+    cat("Data normalized to ", norm,
+        ifelse(is.numeric(norm), " nm \n", " \n"), sep = "")
   }
   if (is_effective(x)) {
     BSWF <- getBSWFUsed(x)

@@ -1576,7 +1576,7 @@ setWhenMeasured.generic_spct <-
     stopifnot(is.null(when.measured) ||
               lubridate::is.POSIXct(when.measured))
     if (!is.null(when.measured)) {
-      lubridate::tz(when.measured) <- "UTC"
+      when.measured <- lubridate::with_tz(when.measured, "UTC")
     }
     attr(x, "when.measured") <- when.measured
     if (is.name(name)) {

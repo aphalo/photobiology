@@ -334,7 +334,7 @@ from pacakge \texttt{lubridate}.
 my.spct <- sun.spct
 setWhenMeasured(my.spct, NULL)
 getWhenMeasured(my.spct)
-setWhenMeasured(my.spct, ymd_hms("2015-10-31 22:55:00 EET"))
+setWhenMeasured(my.spct, ymd_hms("2015-10-31 22:55:00", tz = "EET"))
 getWhenMeasured(my.spct)
 @
 
@@ -348,6 +348,7 @@ getWhereMeasured(my.spct)
 setWhereMeasured(my.spct, lat = 60, lon = -10)
 getWhereMeasured(my.spct)
 getWhereMeasured(my.spct)$lon
+my.spct
 @
 
 Similar functions exist for other attributes which are not shared by all spectral classes.
@@ -632,12 +633,13 @@ Some of the \texttt{set} and \texttt{get} functions used with attributes have me
 
 <<>>=
 getWhenMeasured(two.mspct)
-setWhenMeasured(two.mspct, ymd("2015-10-31 UTC"))
+setWhenMeasured(two.mspct, ymd("2015-10-31"))
 getWhenMeasured(two.mspct)
 setWhenMeasured(two.mspct,
-                list(ymd_hm("2015-10-31 10:00 UTC"),
-                     ymd_hm("2015-10-31 11:00 UTC")))
+                list(ymd_hm("2015-10-31 10:00"),
+                     ymd_hm("2015-10-31 11:00")))
 getWhenMeasured(two.mspct)
+two.mspct
 @
 
 Other methods available are \texttt{getWhereMeasured} and \texttt{setWhereMeasured}.
