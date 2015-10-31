@@ -56,13 +56,17 @@ msdply <- function(mspct, .fun, ..., idx = NULL, col.names = NULL) {
 
   if ( (is.logical(idx) && idx) ||
        (is.null(idx) && !any(is.null(names(mspct)))) ) {
-    idx <- "spct.idx"
+    .idx <- "spct.idx"
+  } else if (is.logical(idx) && !idx) {
+    .idx <- NULL
+  } else {
+    .idx <- idx
   }
 
   z <- plyr::ldply(.data = mspct,
                    .fun = .fun,
                    ...,
-                   .id = idx )
+                   .id = .idx )
 
   f.name <- as.character( substitute(.fun))
 
@@ -72,7 +76,8 @@ msdply <- function(mspct, .fun, ..., idx = NULL, col.names = NULL) {
                     "spread",
                     "midpoint",
                     "stepsize",
-                    "getWhenMeasured")) {
+                    "getWhenMeasured",
+                    "getWhereMeasured")) {
     qty.names <- switch(
       f.name,
       min = "min.wl",
@@ -81,26 +86,29 @@ msdply <- function(mspct, .fun, ..., idx = NULL, col.names = NULL) {
       spread = "spread.wl",
       midpoint = "midpoint.wl",
       stepsize = c("min.step.wl", "max.step.wl"),
-      getWhenMeasured = "when.measured"
+      getWhenMeasured = "when.measured",
+      getWhereMeasured = NULL
     )
   } else if (!is.null(col.names) &&
              !any(col.names == "") &&
              !any(is.na(col.names)) &&
              length(col.names) == length(names(z)) - 1) {
     qty.names <- col.names
-  } else if (any(c("total", "mean", "contrib", "particip") %in% tolower(names(z)))) {
-    qty.names <- paste(f.name,
-                       gsub(" ", "", names(z)[-1]),
-                       sep = "_")
+#  } else if (any(c("total", "mean", "contrib", "particip") %in% tolower(names(z)))) {
   } else {# make new names using function name
-    qty.names <- NULL
+    if (is.null(.idx)) qty.names <- names(z) else qty.names <- names(z)[-1]
+    qty.names <- paste(f.name,
+                       gsub(" ", "", qty.names),
+                       sep = "_")
+#    qty.names <- NULL
   }
 
   if (!is.null(qty.names)) {
-    if (idx) {
-      names(z) <- c(names(z)[1], qty.names)
+    if (is.null(.idx)) {
+      names(z) <- qty.names
+    } else {
+      names(z)[-1] <- qty.names
     }
-    names(z) <- qty.names
   }
 
   comment(z) <- paste("Applied function: '", f.name, "'.\n", sep = "", comment(mspct))

@@ -87,6 +87,11 @@ test_that("any_mspct", {
   expect_equal(getWhenMeasured(my.mspct[["A"]]), tested.time1)
   expect_equal(getWhenMeasured(my.mspct[["B"]]), tested.time1)
 
+  expect_equal(ncol(getWhenMeasured(my.mspct, idx = F)), 1L)
+  expect_equal(ncol(getWhenMeasured(my.mspct, idx = T)), 2L)
+  expect_equal(ncol(getWhenMeasured(my.mspct, idx = NULL)), 2L)
+  expect_equal(ncol(getWhenMeasured(my.mspct, idx = "abc")), 2L)
+
   tested.location1 <- data.frame(lon = 10, lat = 20)
   tested.location2 <- data.frame(lon = 15, lat = 25)
   my.mspct[["A"]] <- setWhereMeasured(my.mspct[["A"]], tested.location1)

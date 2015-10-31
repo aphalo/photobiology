@@ -65,6 +65,20 @@ test_that("source_mspct", {
   expect_equal(names(my.mspct), levels(result.df$spct.idx))
   expect_equal(1:5, result.df$irrad_Total / 10)
 
+  result.df <- msdply(my.mspct, `irrad`, idx = "abc")
+
+  expect_equal("tbl_df", class(result.df)[1])
+  expect_equal(length(my.mspct), nrow(result.df))
+  expect_equal(2, ncol(result.df))
+  expect_equal(names(my.mspct), levels(result.df$abc))
+  expect_equal(1:5, result.df$irrad_Total / 10)
+
+  result.df <- msdply(my.mspct, `irrad`, idx = FALSE)
+
+  expect_equal("tbl_df", class(result.df)[1])
+  expect_equal(length(my.mspct), nrow(result.df))
+  expect_equal(1L, ncol(result.df))
+  expect_equal(1:5, result.df$irrad_Total / 10)
 })
 
 context("msaply")

@@ -325,9 +325,37 @@ comment(my.cm.spct)
 
 \subsection{Special attributes}
 
-Spectral objects have several attributes used to store metadata, such as the time unit used. There are different functions available. One group of functions return a logical value, and another group returns the values of the attributes themselves. A third group of functions can be used to set the attributes, but these are very rarely needed in user code.
+Spectral objects have several attributes used to store metadata, such as the time unit used or type of spectral quantity. Some attributes are meaningful for all the classes of spectra defined in the package. These are \emph{time of measurement} using attribute \texttt{"when.measured"}, \emph{place of measurement} using attrinute \texttt{"where.measured"} and free-text \emph{comments}. One can set and get comments stored in spectra by means of base R's \texttt{comment()} and \verb|comment() <-| functions. Some of the functions in this package append additional information to comments or merge comments.
 
-For example function \texttt{is\_effective()} returns \texttt{TRUE} if the spectral data has been weighted with a BSWF. The corresponding \texttt{getBSWFUsed()} function can be used, in this case to retrieve the name of the BSWF that was used for generating the data. Here we demonstrate with one example, where we use two different \texttt{waveband} objects---constructed on-the-fly---, one defining a range of wavelengths, and another one defining the spectral weighting function for human erythema.
+Functions \texttt{setWhenMeasured()} and \texttt{getWhenMeasured()} are used for setting or getting a date as a \texttt{POSIXct} value. This format is compatible with many functions
+from pacakge \texttt{lubridate}.
+
+<<>>=
+my.spct <- sun.spct
+setWhenMeasured(my.spct, NULL)
+getWhenMeasured(my.spct)
+setWhenMeasured(my.spct, ymd_hms("2015-10-31 22:55:00 EET"))
+getWhenMeasured(my.spct)
+@
+
+Functions \texttt{setWhereMeasured()} and \texttt{getWhereMeasured()} are used for setting or getting a geocode as a \texttt{data.frame} value. This format is comaptible with function
+\texttt{geocode()} from pacakge \texttt{ggmap}. It is also possible, to simply pass latitude
+and longitude coordinates, as shown below. The returned value is always a data frame with columns \texttt{"lon"} and \texttt{"lat"}.
+
+<<>>=
+setWhereMeasured(my.spct, NULL)
+getWhereMeasured(my.spct)
+setWhereMeasured(my.spct, lat = 60, lon = -10)
+getWhereMeasured(my.spct)
+getWhereMeasured(my.spct)$lon
+@
+
+Similar functions exist for other attributes which are not shared by all spectral classes.
+Spectral objects may have several other attributes used to store metadata, such as the time unit used. There functions available for quering and setting the state if these attributes. \texttt{is\_} functions return a logical value, and \texttt{get} functions return the values of the attributes themselves. In addition \texttt{set} functions can be used to set the value attributes, but many of the \texttt{set} functions are very rarely needed in user code.
+
+The attributes described below are set automatically, and consequently function \texttt{setBSWFUsed()} and other \emph{set} functions for these attributes are mainly of use to programmers extending the package. One exception is when a wrong value has been assigned by mistake and needs to be overwritten.
+
+For example function \texttt{is\_effective()} returns \texttt{TRUE} if the spectral data has been weighted with a BSWF. The corresponding \texttt{getBSWFUsed()} function can be used, in this case to retrieve the name of the BSWF that was used when generating the data. Here we demonstrate with one example, where we use two different \texttt{waveband} objects---constructed on-the-fly with constructor functions defined in package \PBWB---, one defining a range of wavelengths, and another one defining the spectral weighting function for human erythema.
 
 <<>>=
 is_effective(sun.spct)
@@ -337,11 +365,7 @@ is_effective(sun.spct * CIE())
 getBSWFUsed(sun.spct * CIE())
 @
 
-Similar functions exist for other attributes and spectral clasees.
-
-As seen above, the attributes are set automatically, and consequently function \texttt{setBSWFUsed()} and other \emph{set} functions are only of use to programmers extending the package. One exception is when a wrong value has been assigned by mistake.
-
-Sometimes it may be desired to change the time unit used for expresing spectral irradiance or spectral response, and this can be achieved with \emph{conversion} function \texttt{convertTimeUnit}. This function both converts spectral data to the new unit of expression and sets the \texttt{time.unit} attribute, preserving the validity of the data object.
+Sometimes it may be desired to change the time unit used for expresing spectral irradiance or spectral response, and this can be achieved with the \emph{conversion} function \texttt{convertTimeUnit}. This function both converts spectral data to the new unit of expression and sets the \texttt{time.unit} attribute, preserving the validity of the data object.
 
 <<>>=
 ten.minutes.spct <-
@@ -602,7 +626,23 @@ convolve_each(two.mspct, sun.spct, oper = `+`)
 There are cases where functions \texttt{convolve\_each()} and \texttt{msmsply()} can be both used, but there are also cases where their differences matter. An example is convolving two collections of spectra, a case where only \texttt{convolve\_each()} can be used. In contrast, when one of the arguments is not a spectrum or a collection of spectra, \texttt{msmsply()} should be used instead.
 \end{framed}
 
-\section{Wavebands }
+\subsection{Attributes}
+
+Some of the \texttt{set} and \texttt{get} functions used with attributes have method definitions for collections of spectra. Some examples follow.
+
+<<>>=
+getWhenMeasured(two.mspct)
+setWhenMeasured(two.mspct, ymd("2015-10-31 UTC"))
+getWhenMeasured(two.mspct)
+setWhenMeasured(two.mspct,
+                list(ymd_hm("2015-10-31 10:00 UTC"),
+                     ymd_hm("2015-10-31 11:00 UTC")))
+getWhenMeasured(two.mspct)
+@
+
+Other methods available are \texttt{getWhereMeasured} and \texttt{setWhereMeasured}.
+
+\section{Wavebands}
 
 When a range of wavelengths or a range of wavelengths plus a spectral weighting function (SWF) is needed for radiation summaries or transformations, methods, operators and functions defined in package \PB  use \texttt{waveband} objects to store these data. A few other bits of information can be included to fine-tune calculations. The waveband definitions do NOT describe whether input spectral irradiances are photon or energy based, nor whether the output irradiance will be based on photon or energy units. All waveband objects belong to the S3 class \texttt{waveband}.
 
