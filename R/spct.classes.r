@@ -1545,6 +1545,7 @@ getMultipleWl <- function(x) {
 #'
 #' @param x a generic_spct object
 #' @param when.measured POSIXct to add as attribute
+#' @param ... Allows use of additional arguments in methods for other classes.
 #'
 #' @return x
 #'
@@ -1556,17 +1557,34 @@ getMultipleWl <- function(x) {
 #' @export
 #' @family when.measured attribute functions
 #'
-setWhenMeasured <- function(x, when.measured = lubridate::now(tzone = "UTC")) {
-  stopifnot(is.any_spct(x))
-  name <- substitute(x)
-  stopifnot(is.null(when.measured) || lubridate::is.POSIXct(when.measured))
-  attr(x, "when.measured") <- when.measured
-  if (is.name(name)) {
-    name <- as.character(name)
-    assign(name, x, parent.frame(), inherits = TRUE)
-  }
+setWhenMeasured <- function(x, when.measured, ...) UseMethod("setWhenMeasured")
+
+#' @describeIn setWhenMeasured default
+#' @export
+setWhenMeasured.default <- function(x, when.measured, ...) {
+  warning("Default dummy method called.")
   invisible(x)
 }
+
+#' @describeIn setWhenMeasured generic_spct
+#' @export
+setWhenMeasured.generic_spct <-
+  function(x,
+           when.measured = lubridate::now(),
+           ...) {
+    name <- substitute(x)
+    stopifnot(is.null(when.measured) ||
+              lubridate::is.POSIXct(when.measured))
+    if (!is.null(when.measured)) {
+      lubridate::tz(when.measured) <- "UTC"
+    }
+    attr(x, "when.measured") <- when.measured
+    if (is.name(name)) {
+      name <- as.character(name)
+      assign(name, x, parent.frame(), inherits = TRUE)
+    }
+    invisible(x)
+  }
 
 #' Get the "when.measured" attribute
 #'
@@ -1574,6 +1592,7 @@ setWhenMeasured <- function(x, when.measured = lubridate::now(tzone = "UTC")) {
 #' or a generic_mspct.
 #'
 #' @param x a generic_spct object
+#' @param ... Allows use of additional arguments in methods for other classes.
 #'
 #' @return POSIXct An object with date and time.
 #'
@@ -1588,7 +1607,8 @@ getWhenMeasured <- function(x, ...) UseMethod("getWhenMeasured")
 #' @describeIn getWhenMeasured default
 #' @export
 getWhenMeasured.default <- function(x, ...) {
-  return(x)
+  # we return an NA of class POSIXct
+  suppressWarnings(lubridate::ymd(NA_character_))
 }
 
 #' @describeIn getWhenMeasured generic_spct
@@ -1598,7 +1618,8 @@ getWhenMeasured.generic_spct <- function(x, ...) {
   if (is.null(when.measured) ||
       !lubridate::is.POSIXct(when.measured)) {
     # need to handle invalid attribute values
-    when.measured <- NA
+    # we return an NA of class POSIXct
+    when.measured <- suppressWarnings(lubridate::ymd(NA_character_))
   }
   when.measured
 }
@@ -1615,6 +1636,7 @@ getWhenMeasured.generic_spct <- function(x, ...) {
 #'   \code{\link[ggmap]{geocode}} for a location search.
 #' @param lat numeric Latitude in decimal degrees North
 #' @param lon numeric Longitude in decimal degrees West
+#' @param ... Allows use of additional arguments in methods for other classes.
 #'
 #' @return x
 #'
@@ -1626,11 +1648,26 @@ getWhenMeasured.generic_spct <- function(x, ...) {
 #' @export
 #' @family where.measured attribute functions
 #'
-setWhereMeasured <- function(x,
+setWhereMeasured <-
+  function(x, where.measured, lat, lon, ...) UseMethod("setWhereMeasured")
+
+#' @describeIn setWhereMeasured default
+#' @export
+setWhereMeasured.default <- function(x,
+                                     where.measured,
+                                     lat,
+                                     lon,
+                                     ...) {
+  x
+}
+
+#' @describeIn setWhereMeasured generic_spct
+#' @export
+setWhereMeasured.generic_spct <- function(x,
                              where.measured = NA,
                              lat = NA,
-                             lon = NA) {
-  stopifnot(is.any_spct(x))
+                             lon = NA,
+                             ...) {
   name <- substitute(x)
   if (!is.null(where.measured)) {
     if (any(is.na(where.measured))) {
@@ -1638,7 +1675,7 @@ setWhereMeasured <- function(x,
     } else {
       stopifnot(
         is.data.frame(where.measured) && nrow(where.measured) == 1 &&
-          names(where.measured)[1:2] == c("lon", "lat")
+          all(c("lon", "lat") %in% names(where.measured))
       )
     }
   }
@@ -1655,6 +1692,7 @@ setWhereMeasured <- function(x,
 #' Function to read the "where.measured" attribute of an existing generic_spct.
 #'
 #' @param x a generic_spct object
+#' @param ... Allows use of additional arguments in methods for other classes.
 #'
 #' @return a data.frane with a single row and at least columns "lon" and "lat".
 #'

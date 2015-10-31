@@ -72,8 +72,7 @@ msdply <- function(mspct, .fun, ..., idx = NULL, col.names = NULL) {
                     "spread",
                     "midpoint",
                     "stepsize",
-                    "getWhenMeasured",
-                    "getWhereMeasured")) {
+                    "getWhenMeasured")) {
     qty.names <- switch(
       f.name,
       min = "min.wl",
@@ -82,21 +81,27 @@ msdply <- function(mspct, .fun, ..., idx = NULL, col.names = NULL) {
       spread = "spread.wl",
       midpoint = "midpoint.wl",
       stepsize = c("min.step.wl", "max.step.wl"),
-      getWhenMeasured = "when.measured",
-      getWhereMeasured = c("lon", "lat")
+      getWhenMeasured = "when.measured"
     )
   } else if (!is.null(col.names) &&
              !any(col.names == "") &&
              !any(is.na(col.names)) &&
              length(col.names) == length(names(z)) - 1) {
     qty.names <- col.names
-  } else {
+  } else if (any(c("total", "mean", "contrib", "particip") %in% tolower(names(z)))) {
     qty.names <- paste(f.name,
                        gsub(" ", "", names(z)[-1]),
                        sep = "_")
+  } else {# make new names using function name
+    qty.names <- NULL
   }
 
-  names(z) <- c(names(z)[1], qty.names)
+  if (!is.null(qty.names)) {
+    if (idx) {
+      names(z) <- c(names(z)[1], qty.names)
+    }
+    names(z) <- qty.names
+  }
 
   comment(z) <- paste("Applied function: '", f.name, "'.\n", sep = "", comment(mspct))
 
@@ -251,17 +256,100 @@ midpoint.generic_mspct <- function(x, ..., idx = !is.null(names(x))) {
   msdply(mspct = x, .fun = midpoint, ..., idx = idx)
 }
 
+# when --------------------------------------------------------------------
+
+#' @describeIn setWhenMeasured generic_mspct
+#' @export
+setWhenMeasured.generic_mspct <-
+  function(x,
+           when.measured = lubridate::now(),
+           ...) {
+    name <- substitute(x)
+    stopifnot((lubridate::is.POSIXct(when.measured) && length(when.measured) == 1) ||
+                is.list(when.measured))
+    if (lubridate::is.POSIXct(when.measured) || length(when.measured) == 1) {
+      if (is.list(when.measured)) {
+        when.measured <- when.measured[[1]]
+        stopifnot(lubridate::is.POSIXct(when.measured))
+        lubridate::tz(when.measured) <- "UTC"
+      }
+      x <- msmsply(mspct = x, .fun = setWhenMeasured, when.measured = when.measured)
+    } else if (length(when.measured) == length(x)) {
+      for (i in 1:length(x)) {
+        when <- when.measured[[i]]
+        stopifnot(lubridate::is.POSIXct(when))
+        lubridate::tz(when) <- "UTC"
+        x[[i]] <- setWhenMeasured(x[[i]], when.measured = when)
+      }
+    }
+    if (is.name(name)) {
+      name <- as.character(name)
+      assign(name, x, parent.frame(), inherits = TRUE)
+    }
+    invisible(x)
+  }
+
 #' @describeIn getWhenMeasured generic_mspct
 #' @param idx logical whether to add a column with the names of the elements of
 #'   spct
-#' @note At the moment the method for collections of spectra returns the
-#'   a data_frame with the correct times but they print in the local TZ instead
-#'   of in the stored TZ = UTC in the individual spectra.
+#' @note The method for collections of spectra returns the
+#'   a data_frame with the correct times but they print in the local TZ as
+#'   the "tzone" attribute is not supported by R's vectors of POSIXct objects
+#'   or data frames.
 #' @export
 getWhenMeasured.generic_mspct <- function(x,
                                          ...,
                                          idx = !is.null(names(x))) {
-  msdply(mspct = x, .fun = getWhenMeasured, ..., idx = idx)
+  z <- msdply(mspct = x, .fun = getWhenMeasured, ..., idx = idx)
+  attr(z, "tzone") <- "UTC"
+  z
+}
+
+# where -------------------------------------------------------------------
+
+#' @describeIn setWhereMeasured generic_mspct
+#' @note Method for collections of spectra recycles the location information
+#'   only if it is of length one.
+#' @export
+setWhereMeasured.generic_mspct <- function(x,
+                                          where.measured = NA,
+                                          lat = NA,
+                                          lon = NA,
+                                          ...) {
+  name <- substitute(x)
+  stopifnot(is.null(where.measured) || is.na(where.measured) ||
+              is.data.frame(where.measured) ||
+                (is.list(where.measured) && is.data.frame(where.measured[[1]])) )
+  if (is.null(where.measured) ||
+      (!is.na(where.measured) && is.data.frame(where.measured) && nrow(where.measured) == 1) ||
+       (is.na(where.measured) && length(lat) == 1 && length(lon) == 1)) {
+    x <- msmsply(mspct = x,
+                 .fun = setWhereMeasured,
+                 where.measured = where.measured,
+                 lat = lat,
+                 lon = lon)
+  } else if (!is.na(where.measured) && !is.data.frame(where.measured) &&
+             is.list(where.measured) && length(where.measured) == length(x)) {
+    for (i in 1:length(x)) {
+      x[[i]] <- setWhereMeasured(x[[i]], where.measured = where.measured[[i]])
+    }
+  } else if (!is.na(where.measured) && is.data.frame(where.measured) &&
+                nrow(where.measured) == length(x)) {
+    for (i in 1:length(x)) {
+      x[[i]] <- setWhereMeasured(x[[i]], where.measured = where.measured[i, ])
+    }
+  } else if (is.na(where.measured) && length(lat) == length(x) && length(lon) == length(x)) {
+    for (i in 1:length(x)) {
+      x[[i]] <- setWhereMeasured(x[[i]], lon = lon[i], lat = lat[i])
+    }
+  } else {
+    stop("Length of geocode information must be either 1, or equal to the number of spectra.")
+  }
+  if (is.name(name)) {
+    name <- as.character(name)
+    assign(name, x, parent.frame(), inherits = TRUE)
+  }
+  invisible(x)
 }
 
 #' @describeIn getWhereMeasured generic_mspct

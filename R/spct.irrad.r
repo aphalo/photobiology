@@ -73,7 +73,7 @@ irrad.default <- function(spct, w.band, unit.out, quantity, time.unit, wb.trim,
 irrad.source_spct <-
   function(spct, w.band = NULL,
            unit.out = getOption("photobiology.radiation.unit", default = "energy"),
-           quantity="total",
+           quantity = "total",
            time.unit = NULL,
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
@@ -230,7 +230,7 @@ irrad.source_spct <-
       quantity <- "total"
     }
     if (length(irrad) == 0) {
-      irrad <- NA
+      irrad <- NA_real_
       names(irrad) <- "out of range"
     }
     names(irrad) <- paste(names(irrad), wb.name)

@@ -12,7 +12,7 @@ objects. Add methods setWhereMeasured(), getWhereMeasured(), setWhenMeasured()
 and getWhenMeasured(). The first two methods are compatible with the output
 of ggmap::geocode() and the last two with POSIXct objects as returned by
 many functions in package lubridate, such as lubridate::now() and
-lubridate::today(). The two "get" methods are implemented for both generic_spct
+lubridate::today(). All these methods are implemented for both generic_spct
 and generic_mspct classes.
 
 photobiology 0.8.9
