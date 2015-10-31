@@ -66,16 +66,27 @@ msdply <- function(mspct, .fun, ..., idx = NULL, col.names = NULL) {
 
   f.name <- as.character( substitute(.fun))
 
-  if (f.name %in% c("min", "max", "range", "spread", "midpoint", "stepsize")) {
-    qty.names <- switch(f.name,
-                        min = "min.wl",
-                        max = "max.wl",
-                        range = c("min.wl", "max.wl"),
-                        spread = "spread.wl",
-                        midpoint = "midpoint.wl",
-                        stepsize = c("min.step.wl", "max.step.wl") )
+  if (f.name %in% c("min",
+                    "max",
+                    "range",
+                    "spread",
+                    "midpoint",
+                    "stepsize",
+                    "getWhenMeasured",
+                    "getWhereMeasured")) {
+    qty.names <- switch(
+      f.name,
+      min = "min.wl",
+      max = "max.wl",
+      range = c("min.wl", "max.wl"),
+      spread = "spread.wl",
+      midpoint = "midpoint.wl",
+      stepsize = c("min.step.wl", "max.step.wl"),
+      getWhenMeasured = "when.measured",
+      getWhereMeasured = c("lon", "lat")
+    )
   } else if (!is.null(col.names) &&
-             !any(col.names=="") &&
+             !any(col.names == "") &&
              !any(is.na(col.names)) &&
              length(col.names) == length(names(z)) - 1) {
     qty.names <- col.names
@@ -238,6 +249,29 @@ spread.generic_mspct <- function(x, ..., idx = !is.null(names(x))) {
 #'
 midpoint.generic_mspct <- function(x, ..., idx = !is.null(names(x))) {
   msdply(mspct = x, .fun = midpoint, ..., idx = idx)
+}
+
+#' @describeIn getWhenMeasured generic_mspct
+#' @param idx logical whether to add a column with the names of the elements of
+#'   spct
+#' @note At the moment the method for collections of spectra returns the
+#'   a data_frame with the correct times but they print in the local TZ instead
+#'   of in the stored TZ = UTC in the individual spectra.
+#' @export
+getWhenMeasured.generic_mspct <- function(x,
+                                         ...,
+                                         idx = !is.null(names(x))) {
+  msdply(mspct = x, .fun = getWhenMeasured, ..., idx = idx)
+}
+
+#' @describeIn getWhereMeasured generic_mspct
+#' @param idx logical whether to add a column with the names of the elements of
+#'   spct
+#' @export
+getWhereMeasured.generic_mspct <- function(x,
+                                          ...,
+                                          idx = !is.null(names(x))) {
+  msdply(mspct = x, .fun = getWhereMeasured, ..., idx = idx)
 }
 
 # source_mspct methods -----------------------------------------------
@@ -818,23 +852,24 @@ e_response.response_mspct <-
     )
   }
 
+
 #' Get the "mspct.version" attribute
 #'
-#' Funtion to read the "mspct.version" attribute of an existing generic_spct
+#' Funtion to read the "mspct.version" attribute of an existing generic_mspct
 #' object.
 #'
 #' @param x a generic_mspct object
 #'
 #' @return numeric value
 #'
-#' @note if x is not a \code{generic_spct} object, \code{NA} is returned,
+#' @note if x is not a \code{generic_mspct} object, \code{NA} is returned,
 #'   and if it the attribute is missing, zero is returned with a warning.
 #'
 #' @export
 #'
 getMspctVersion <- function(x) {
-  if (is.any_spct(x)) {
-    version <- attr(x, "spct.version", exact = TRUE)
+  if (is.any_mspct(x)) {
+    version <- attr(x, "mspct.version", exact = TRUE)
     if (is.null(version)) {
       # need to handle objects created with old versions
       version <- 0L

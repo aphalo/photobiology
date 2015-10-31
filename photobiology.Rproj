@@ -21,4 +21,4 @@ PackageInstallArgs: --no-multiarch --with-keep.source
 PackageBuildArgs: --compact-vignettes
 PackageBuildBinaryArgs: --with-keep.source --debug --compact-docs --resave-data
 PackageCheckArgs: --as-cran
-PackageRoxygenize: rd,collate
+PackageRoxygenize: rd,collate,namespace

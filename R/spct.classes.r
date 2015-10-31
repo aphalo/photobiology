@@ -25,7 +25,7 @@ spct_classes <- function() {
 #'   by copy of \code{x}
 #' @param strict.range logical indicating whether off-range values result in an
 #'   error instead of a warning, \code{NA} disables the test.
-#' @param ... additional param possible derived methods
+#' @param ... additional param possible in derived methods
 #' @export
 #'
 #' @family data validity check functions
@@ -1570,11 +1570,12 @@ setWhenMeasured <- function(x, when.measured = lubridate::now(tzone = "UTC")) {
 
 #' Get the "when.measured" attribute
 #'
-#' Function to read the "when.measured" attribute of an existing generic_spct.
+#' Function to read the "when.measured" attribute of an existing generic_spct
+#' or a generic_mspct.
 #'
 #' @param x a generic_spct object
 #'
-#' @return integer
+#' @return POSIXct An object with date and time.
 #'
 #' @note If x is not a \code{generic_spct} or an object of a derived class
 #'   \code{NA} is returned.
@@ -1582,17 +1583,24 @@ setWhenMeasured <- function(x, when.measured = lubridate::now(tzone = "UTC")) {
 #' @export
 #' @family when.measured attribute functions
 #'
-getWhenMeasured <- function(x) {
-  if (is.any_spct(x)) {
-    when.measured <- attr(x, "when.measured", exact = TRUE)
-    if (is.null(when.measured) || !lubridate::is.POSIXct(when.measured)) {
-      # need to handle invalid attribute values
-      when.measured <- NA
-    }
-    return(when.measured)
-  } else {
-    return(NA)
+getWhenMeasured <- function(x, ...) UseMethod("getWhenMeasured")
+
+#' @describeIn getWhenMeasured default
+#' @export
+getWhenMeasured.default <- function(x, ...) {
+  return(x)
+}
+
+#' @describeIn getWhenMeasured generic_spct
+#' @export
+getWhenMeasured.generic_spct <- function(x, ...) {
+  when.measured <- attr(x, "when.measured", exact = TRUE)
+  if (is.null(when.measured) ||
+      !lubridate::is.POSIXct(when.measured)) {
+    # need to handle invalid attribute values
+    when.measured <- NA
   }
+  when.measured
 }
 
 # where.measured ---------------------------------------------------------------
@@ -1657,17 +1665,22 @@ setWhereMeasured <- function(x,
 #'
 #' @family where.measured attribute functions
 #'
-getWhereMeasured <- function(x) {
-  if (is.any_spct(x)) {
-    where.measured <- attr(x, "where.measured", exact = TRUE)
-    if (is.null(where.measured) || !is.data.frame(where.measured)) {
-      # need to handle invalid attribute values
-      where.measured <- data.frame(lon = NA, lat = NA)
-    }
-    return(where.measured)
-  } else {
-    return(NA)
-  }
+getWhereMeasured <- function(x, ...) UseMethod("getWhereMeasured")
+
+#' @describeIn getWhereMeasured default
+#' @export
+getWhereMeasured.default <- function(x, ...) {
+  data.frame(lon = NA_real_, lat = NA_real_)
 }
 
-
+#' @describeIn getWhereMeasured generic_spct
+#' @export
+getWhereMeasured.generic_spct <- function(x, ...) {
+  where.measured <- attr(x, "where.measured", exact = TRUE)
+  if (is.null(where.measured) ||
+      !is.data.frame(where.measured)) {
+    # need to handle invalid or missing attribute values
+    where.measured <- data.frame(lon = NA_real_, lat = NA_real_)
+  }
+  where.measured
+}
