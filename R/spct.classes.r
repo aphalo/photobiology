@@ -146,7 +146,7 @@ check.filter_spct <-
     if (!all(is.na(x[["Tfr"]]))) {
       Tfr.min <- min(x[["Tfr"]], na.rm = TRUE)
       Tfr.max <- max(x[["Tfr"]], na.rm = TRUE)
-      if (!is.null(strict.range) && !is.na(strict.range) & (Tfr.min < -1e-8 || Tfr.max > 1)) {
+      if (!is.null(strict.range) && !is.na(strict.range) && (Tfr.min < -1e-7 || Tfr.max > 1)) {
         message.text <- paste("Off-range transmittance values [", signif(Tfr.min, 2),
                               "...", signif(Tfr.max, 2), "] instead of  [0..1]", sep="")
         if (strict.range) {
@@ -164,7 +164,7 @@ check.filter_spct <-
     if (!all(is.na(x[["A"]]))) {
       A.min <- min(x[["A"]], na.rm = TRUE)
       A.max <- max(x[["A"]], na.rm = TRUE)
-      if (!is.null(strict.range) && !is.na(strict.range) & (A.min < -1e-8 || A.max > 20)) {
+      if (!is.null(strict.range) && !is.na(strict.range) && (A.min < -1e-7 || A.max > 20)) {
         message.text <- paste("Off-range absorbance values [", signif(A.min, 2),
                               "...", signif(A.max, 2), "] instead of  [0..1]", sep="")
         if (strict.range) {
@@ -226,7 +226,7 @@ check.reflector_spct <-
       if (!all(is.na(x$Rfr))) {
         Rfr.min <- min(x$Rfr, na.rm = TRUE)
         Rfr.max <- max(x$Rfr, na.rm = TRUE)
-        if (!is.null(strict.range) && !is.na(strict.range) & (Rfr.min < -1e-8 ||  Rfr.max > 1)) {
+        if (!is.null(strict.range) && !is.na(strict.range) && (Rfr.min < -1e-7 ||  Rfr.max > 1)) {
           message.text <-
             paste0(
               "Off-range reflectance values [",
@@ -282,7 +282,7 @@ check.object_spct <-
     if (!all(is.na(x[["Tfr"]]))) {
       Tfr.min <- min(x[["Tfr"]], na.rm = TRUE)
       Tfr.max <- max(x[["Tfr"]], na.rm = TRUE)
-      if (!is.null(strict.range) && !is.na(strict.range) & (Tfr.min < -1e-8 || Tfr.max > 1)) {
+      if (!is.null(strict.range) && !is.na(strict.range) && (Tfr.min < -1e-7 || Tfr.max > 1)) {
         message.text <- paste("Off-range transmittance values [", signif(Tfr.min, 2),
                               "...", signif(Tfr.max, 2), "] instead of  [0..1]", sep="")
         if (strict.range) {
@@ -301,7 +301,7 @@ check.object_spct <-
       Rfr.min <- min(x[["Rfr"]], na.rm = TRUE)
       Rfr.max <- max(x[["Rfr"]], na.rm = TRUE)
       if (!is.na(Rfr.min) && !is.na(Rfr.max)) {
-        if (!is.null(strict.range) && !is.na(strict.range) & (Rfr.min < -1e-8 ||  Rfr.max > 1)) {
+        if (!is.null(strict.range) && !is.na(strict.range) && (Rfr.min < -1e-7 ||  Rfr.max > 1)) {
           message.text <- paste0("Off-range reflectance values [", signif(Rfr.min, 2), "...",
                                  signif(Rfr.max, 2), "] instead of  [0..1]", sep="")
           if (strict.range) {
@@ -334,7 +334,7 @@ check.object_spct <-
     range_check_Rfr(x, strict.range=strict.range)
   } else {
     warning("No reflectance data found in object_spct")
-    x[["Rfr"]] <- NA
+    x[["Rfr"]] <- NA_real_
   }
 
   if (exists("transmittance", x, mode = "numeric", inherits=FALSE)) {
@@ -351,7 +351,6 @@ check.object_spct <-
     warning("No transmittance or absorptance data found in object_spct")
     x[["Tfr"]] <- NA_real_
   }
-
   x
 }
 
@@ -399,7 +398,7 @@ check.source_spct <-
            ...) {
 
     range_check <- function(x, strict.range) {
-      min.limit <- -1e-3 # we accept small negative values
+      min.limit <- -1e-2 # we accept small negative values
       if (exists("s.e.irrad", x, inherits = FALSE) &&
           !all(is.na(x[["s.e.irrad"]]))) {
         s.e.range <- range(x$s.e.irrad, na.rm = TRUE)
