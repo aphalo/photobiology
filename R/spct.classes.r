@@ -787,7 +787,6 @@ setChromaSpct <- function(x, multiple.wl = 1L) {
   invisible(x)
 }
 
-
 # is functions for spct classes --------------------------------------------
 
 #' Query class of spectrum objects
@@ -918,7 +917,7 @@ is_tagged <- function(x) {
 #' @rdname is_photon_based
 #'
 is_photon_based <- function(x) {
-  if (is.source_spct(x)) {
+  if (is.source_spct(x) || is.summary_source_spct(x)) {
     return("s.q.irrad" %in% names(x))
   } else if (is.response_spct(x)) {
     return("s.q.response" %in% names(x))
@@ -939,7 +938,7 @@ is_photon_based <- function(x) {
 #' @export
 #'
 is_energy_based <- function(x) {
-  if (is.source_spct(x)) {
+  if (is.source_spct(x) || is.summary_source_spct(x)) {
     return("s.e.irrad" %in% names(x))
   } else if (is.response_spct(x)) {
     return("s.e.response" %in% names(x))
@@ -968,7 +967,7 @@ is_energy_based <- function(x) {
 #' @rdname is_absorbance_based
 #'
 is_absorbance_based <- function(x) {
-  if (is.filter_spct(x)) {
+  if (is.filter_spct(x) || is.summary_filter_spct(x)) {
     return("A" %in% names(x))
   } else {
     return(NA)
@@ -987,7 +986,7 @@ is_absorbance_based <- function(x) {
 #' @export
 #'
 is_transmittance_based <- function(x) {
-  if (is.filter_spct(x)) {
+  if (is.filter_spct(x) || is.summary_source_spct(x)) {
     return("Tfr" %in% names(x))
   } else {
     return(NA)
@@ -1021,7 +1020,8 @@ is_transmittance_based <- function(x) {
 setTimeUnit <- function(x,
                         time.unit = c("second", "hour", "day", "exposure", "none"),
                         override.ok = FALSE) {
-  if (!(class(x)[1] %in% c("source_spct", "response_spct"))) {
+  if (!(is.source_spct(x) || is.response_spct(x) ||
+        is.summary_source_spct(x) || is.summary_response_spct(x))) {
     return(invisible(x))
   }
   name <- substitute(x)
@@ -1076,7 +1076,8 @@ setTimeUnit <- function(x,
 #' @family time attribute functions
 #'
 getTimeUnit <- function(x, force.duration = FALSE) {
-  if (is.source_spct(x) || is.response_spct(x)) {
+  if (is.source_spct(x) || is.response_spct(x) ||
+      is.summary_source_spct(x) || is.summary_response_spct(x)) {
     time.unit <- attr(x, "time.unit", exact = TRUE)
     if (is.null(time.unit)) {
       # need to handle objects created with old versions
@@ -1229,7 +1230,7 @@ setBSWFUsed <- function(x, bswf.used=c("none", "unknown")) {
       bswf.used <- bswf.used[[1]]
     }
   }
-  if (is.source_spct(x)) {
+  if (is.source_spct(x) || is.summary_source_spct(x)) {
     name <- substitute(x)
     if  (!(is.character(bswf.used))) {
       warning("Only character strings are valid vlues for 'bswf.used' argument")
@@ -1258,7 +1259,7 @@ setBSWFUsed <- function(x, bswf.used=c("none", "unknown")) {
 #' @family BSWF attribute functions
 #'
 getBSWFUsed <- function(x) {
-  if (is.source_spct(x)) {
+  if (is.source_spct(x) || is.summary_source_spct(x)) {
     bswf.used <- attr(x, "bswf.used", exact = TRUE)
     if (is.null(bswf.used) || length(bswf.used) < 1) {
       # need to handle objects created with old versions
@@ -1302,7 +1303,8 @@ setTfrType <- function(x, Tfr.type=c("total", "internal")) {
       Tfr.type <- Tfr.type[[1]]
     }
   }
-  if (is.filter_spct(x) || is.object_spct(x)) {
+  if (is.filter_spct(x) || is.object_spct(x) ||
+      is.summary_filter_spct(x) || is.summary_object_spct(x)) {
     if  (!(Tfr.type %in% c("total", "internal", "unknown"))) {
       warning("Invalid 'Tfr.type' argument, only 'total' and 'internal' supported.")
       return(x)
@@ -1332,7 +1334,8 @@ setTfrType <- function(x, Tfr.type=c("total", "internal")) {
 #' @family Tfr attribute functions
 #'
 getTfrType <- function(x) {
-  if (is.filter_spct(x) || is.object_spct(x)) {
+  if (is.filter_spct(x) || is.object_spct(x)||
+      is.summary_filter_spct(x) || is.summary_object_spct(x)) {
     Tfr.type <- attr(x, "Tfr.type", exact = TRUE)
     if (is.null(Tfr.type) || is.na(Tfr.type)) {
       # need to handle objects created with old versions
@@ -1373,7 +1376,8 @@ setRfrType <- function(x, Rfr.type=c("total", "specular")) {
       Rfr.type <- Rfr.type[[1]]
     }
   }
-  if (is.reflector_spct(x) || is.object_spct(x)) {
+  if (is.reflector_spct(x) || is.object_spct(x) ||
+      is.summary_reflector_spct(x) || is.summary_object_spct(x)) {
     if  (!(Rfr.type %in% c("total", "specular", "unknown"))) {
       warning("Invalid 'Rfr.type' argument, only 'total' and 'internal' supported.")
       return(x)
@@ -1402,7 +1406,8 @@ setRfrType <- function(x, Rfr.type=c("total", "specular")) {
 #' @family Rfr attribute functions
 #'
 getRfrType <- function(x) {
-  if (is.reflector_spct(x) || is.object_spct(x)) {
+  if (is.reflector_spct(x) || is.object_spct(x) ||
+      is.summary_reflector_spct(x) || is.summary_object_spct(x)) {
     Rfr.type <- attr(x, "Rfr.type", exact = TRUE)
     if (is.null(Rfr.type) || is.na(Rfr.type)) {
       # need to handle objects created with old versions

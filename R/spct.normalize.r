@@ -264,7 +264,7 @@ normalize.reflector_mspct <- function(x,
 #' @family rescaling functions
 #'
 is_normalized <- function(x) {
-  if (!is.any_spct(x)) {
+  if (!is.any_spct(x) && !is.any_summary_spct(x)) {
     return(NA)
   }
   spct.attr <- attr(x, "normalized", exact = TRUE)
@@ -288,7 +288,7 @@ is_normalized <- function(x) {
 #' @family rescaling functions
 #'
 getNormalized <- function(x) {
-  if (is.generic_spct(x)) {
+  if (is.any_spct(x) || is.any_summary_spct(x)) {
     normalized <- attr(x, "normalized", exact = TRUE)
     if (is.null(normalized) || is.na(normalized)) {
       # need to handle objects created with old versions
@@ -315,7 +315,8 @@ getNormalized <- function(x) {
 #'
 setNormalized <- function(x, norm = FALSE) {
   name <- substitute(x)
-  if (is.any_spct(x) && (is.na(norm) || norm)) {
+  if ((is.any_spct(x) || is.any_summary_spct(x)) &&
+      (is.na(norm) || is.numeric(norm) || is.logical(norm))) {
     attr(x, "normalized") <- norm
     if (is.name(name)) {
       name <- as.character(name)

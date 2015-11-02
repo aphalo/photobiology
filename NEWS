@@ -4,6 +4,12 @@ TODO
 Add test cases for chroma_spct and improve tests for the _mspct
 classes.
 
+Make sun_angles() generic and implement method for spectral objects having
+"when.measured" and "where.measured" attributes defined. Add support for
+geocode() data to sun_angles().
+
+DOCCUMENT maxsum in summary()
+
 photobiology 0.8.10
 ===================
 
@@ -14,6 +20,12 @@ of ggmap::geocode() and the last two with POSIXct objects as returned by
 many functions in package lubridate, such as lubridate::now() and
 lubridate::today(). All these methods are implemented for both generic_spct
 and generic_mspct classes.
+
+Implement methods to 'get' and 'set' attributes of summary objects of spectra.
+
+Revise print() method for spectra to include the new attributes when available.
+Rewrite summary() methods and print() method for spectral summaries. Now
+output parallels the output of the print() method for spectra.
 
 photobiology 0.8.9
 ==================
