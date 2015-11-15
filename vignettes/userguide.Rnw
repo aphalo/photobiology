@@ -120,19 +120,27 @@ To load the package into the workspace we use \verb!library(photobiology)!.
 
 This package defines a family of classes based on data frames which impose some restrictions on the naming of the vectors, something that allows methods and some functions to `find' the data when passed one of these objects as argument. In addition, as the data is checked when the object is built, there is no need to test for the validity of the data each time a calculation is carried out. The other advantage of using \texttt{spct} objects, is that specialized versions of generic functions like \texttt{print} and operators like \texttt{+} can be defined for spectra. \texttt{\_\_\_spct} objects are \texttt{data.frame} objects, as a result of how classes have been derived. In this package we define a \textit{generic} or \emph{base} spectrum class, derived from \texttt{data.frame}, from which specialized types of spectra are in turn derived. This `parenthood' hierarchy means that spectra objects can be used almost anywhere where a \texttt{data.frame} is expected.
 
-\subsection{Printing}
+\subsection{\texttt{print()}}
 
-Spectral objects are printed in the current version of the package by the function defined in package \texttt{dplyr}, consequently, it is possible to the options from this package to control printing.  \texttt{dplyr.print\_max}, the number of rows in the spectral object above which only \texttt{dplyr.print\_min} rows are printed, are both set to 5, instead of the default 20 and 10.
+The \texttt{print()} method for spectra is based in the current version of the package on the function defined in package \texttt{dplyr}, consequently, it is possible to the options from this package to control printing.  \texttt{dplyr.print\_max}, the number of rows in the spectral object above which only \texttt{dplyr.print\_min} rows are printed, are both set to 5, instead of the default 20 and 10.
 
 <<set-up-printing>>=
-options(dplyr.print_max = 5)
-options(dplyr.print_min = 5)
+options(dplyr.print_max = 4)
+options(dplyr.print_min = 4)
 @
 
 For explicit calls to \texttt{print()} its argument \texttt{n} can be used to control the number of lines printed. If \texttt{n} is set to \verb|Inf| the whole spectrum is always printed.
 
 <<>>=
 print(sun.spct, n = 3)
+@
+
+\subsection{\texttt{summary()}}
+
+The \texttt{summary()} method for spectra is based on base R's \texttt{summary()} method for data frames, and accepts the same arguments, and obeys R's global \texttt{digits} option for its default.
+
+<<>>=
+summary(sun.spct)
 @
 
 \subsection{Classes}

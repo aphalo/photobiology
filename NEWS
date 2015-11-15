@@ -4,11 +4,16 @@ TODO
 Add test cases for chroma_spct and improve tests for the _mspct
 classes.
 
+Add test cases for smooth_spct().
+
 Make sun_angles() generic and implement method for spectral objects having
 "when.measured" and "where.measured" attributes defined. Add support for
 geocode() data to sun_angles().
 
-DOCCUMENT maxsum in summary()
+photobiology 0.8.11
+===================
+
+Clean-up code and vignette.
 
 photobiology 0.8.10
 ===================

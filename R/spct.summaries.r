@@ -149,7 +149,8 @@ is.any_summary_spct <- function(x) {
 #'
 #' @param object An object of one of the spectral classes for which a summary is
 #'   desired
-#' @param digits integer Used for number formatting with \code{signif()}
+#' @param maxsum integer Indicates how many levels should be shown for factors.
+#' @param digits integer Used for number formatting with \code{\link{format}()}.
 #' @param ... additional arguments affecting the summary produced, ignored in
 #'   current version
 #'
