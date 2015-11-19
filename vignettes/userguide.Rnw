@@ -1076,7 +1076,7 @@ normalize(sun.spct, norm = 600.3)
 
 \subsection{Rescaling a spectrum}
 
-Function \texttt{f\_scale} rescales a spectrum by dividing each spectral data value by a value calculated with a function (f) selected by a character string ("total" or "mean"), or an actual R function which can accept the spectrum object supplied as its first argument.
+Function \texttt{fscale()} rescales a spectrum by dividing each spectral data value by a value calculated with a function (f) selected by a character string ("total" or "mean"), or an actual R function which can accept the spectrum object supplied as its first argument.
 
 <<>>=
 fscale(sun.spct)
@@ -1085,6 +1085,18 @@ fscale(sun.spct, range = PAR(), f = irrad)
 @
 
 In the third example, the spectral data is rescaled so that the corresponding photosynthetically-active irradiance is equal to one.
+
+\subsection{Replacing off-range spectral data values}
+
+Method \texttt{clean()} should be used with care as off-range values stem almost always from calibration errors or measuring noise. This function allows one to replace such values, but in many cases a zero shift or rescaling could be the option to be preferred. Even when the off-range values are the result of random noise, replacing them with the boundary values can cause bias, by censoring the data. Here we create \emph{artificial} off-range values by subtracting a constant from each spectrum.
+
+<<>>=
+clean(sun.spct - 0.01, range = c(280.5, 282))
+@
+
+<<>>=
+clean(polythene.new.spct - 0.053)
+@
 
 \subsection{Wavelength interpolation}
 

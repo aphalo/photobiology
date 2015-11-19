@@ -13,6 +13,8 @@ geocode() data to sun_angles().
 photobiology 0.8.11
 ===================
 
+Add method clean() for removing off-range spectral observations.
+
 Clean-up code and vignette.
 
 photobiology 0.8.10
