@@ -4,7 +4,9 @@ TODO
 Add test cases for chroma_spct and improve tests for the _mspct
 classes.
 
-Add test cases for smooth_spct().
+Add test cases for smooth_spct(), clean() and fshift().
+
+Add clean() methods for collections of spectra.
 
 Make sun_angles() generic and implement method for spectral objects having
 "when.measured" and "where.measured" attributes defined. Add support for
@@ -14,6 +16,8 @@ photobiology 0.8.11
 ===================
 
 Add method clean() for removing off-range spectral observations.
+Add method fshift() for rshifting the zero of the scale used to express
+spectral data.
 
 Clean-up code and vignette.
 

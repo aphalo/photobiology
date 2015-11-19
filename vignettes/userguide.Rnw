@@ -955,8 +955,10 @@ In this section we describe methods and functions that take one or more spectral
     subset & + & + & + & + & + & + \\
     trim\_spct & + & + & + & + & + & + \\
     interpolate\_spct & + & + & + & + & + & + \\
-    f\_scale & + & + & + & + & -- & --  \\
+    fscale & + & + & + & + & -- & --  \\
+    fshift & + & + & + & + & -- & --  \\
     normalize & + & + & + & + & -- & --  \\
+    clean & + & + & + & + & -- & --  \\
     \emph{math operators} & + & + & + & + & + & +  \\
     \emph{math functions} & + & + & + & + & + & +  \\
     tag & + & + & + & + & + & +  \\
@@ -991,8 +993,10 @@ In this section we describe methods and functions that take one or more spectral
     A2T, T2A & -- & -- & + & -- & -- & -- \\
     trim\_spct & + & + & + & + & + & + \\
     interpolate\_spct & + & + &+ & + & + & + \\
-    f\_scale & + & + & + & + & -- & -- \\
+    fscale & + & + & + & + & -- & -- \\
+    fshift & + & + & + & + & -- & -- \\
     normalize & + & + & + & + & -- & -- \\
+    clean & -- & -- & -- & -- & -- & -- \\
     tag & + & + & + & + & + & + \\
     untag & + & + & + & + & + & + \\
    \bottomrule
