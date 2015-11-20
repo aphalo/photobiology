@@ -262,12 +262,6 @@ fshift_spct <- function(spct, range, var.name, f, ...) {
     # implemented in this way to ensure that all returned
     # values folow the same copy/reference semantics
   }
-  out.spct <- spct
-  out.spct[[var.name]] <- out.spct[[var.name]] - summary.value
-  class(out.spct) <- class(spct)
-  comment(out.spct) <- comment(spct)
-  setScaled(out.spct, getScaled(spct))
-  setTimeUnit(out.spct, getTimeUnit(spct))
-  setTfrType(out.spct, getTfrType(spct))
-  out.spct
+  spct[[var.name]] <- spct[[var.name]] - summary.value
+  spct
 }

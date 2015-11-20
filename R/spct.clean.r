@@ -36,7 +36,8 @@ clean.source_spct <-
            range = x,
            range.s.data = c(0,NA),
            fill = range.s.data,
-           unit.out = getOption("photobiology.radiation.unit", default = "energy", ...),
+           unit.out = getOption("photobiology.radiation.unit",
+                                default = "energy"),
            ...) {
     stopifnot(length(range) >= 2L &&
                 length(range.s.data) == 2L &&
@@ -102,7 +103,7 @@ clean.filter_spct <-
            range = x,
            range.s.data = NULL,
            fill = range.s.data,
-           qty.out = getOption("photobiology.filter.qty", default = "transmittance", ...),
+           qty.out = getOption("photobiology.filter.qty", default = "transmittance"),
            ...) {
     if (is.null(range.s.data)) {
       if (qty.out == "transmittance") {
@@ -213,7 +214,7 @@ clean.response_spct <-
            range = x,
            range.s.data = c(0,NA),
            fill = range.s.data,
-           unit.out = getOption("photobiology.radiation.unit", default = "energy", ...),
+           unit.out = getOption("photobiology.radiation.unit", default = "energy"),
            ...) {
     stopifnot(length(range) >= 2L &&
                 length(range.s.data) == 2L &&
@@ -266,4 +267,89 @@ clean.response_spct <-
       stop("unit.out: '", unit.out, "' not supported")
     }
     x
+  }
+
+#' @describeIn clean
+#'
+#' @export
+#'
+clean.source_mspct <-
+  function(x,
+           range = x,
+           range.s.data = c(0,NA),
+           fill = range.s.data,
+           unit.out = getOption("photobiology.radiation.unit",
+                                default = "energy"),
+           ...) {
+    msmsply(x,
+            clean,
+            range = range,
+            f = f,
+            range.s.data = range.s.data,
+            fill = fill,
+            unit.out = unit.out,
+            ...)
+  }
+
+#' @describeIn clean
+#'
+#' @export
+#'
+clean.filter_mspct <-
+  function(x,
+           range = x,
+           range.s.data = NULL,
+           fill = range.s.data,
+           qty.out = getOption("photobiology.filter.qty",
+                               default = "transmittance"),
+           ...) {
+    msmsply(x,
+            clean,
+            range = range,
+            f = f,
+            range.s.data = range.s.data,
+            fill = fill,
+            qty.out = qty.out,
+            ...)
+  }
+
+#' @describeIn clean
+#'
+#' @export
+#'
+clean.reflector_mspct <-
+  function(x,
+           range = x,
+           range.s.data = c(0, 1),
+           fill = range.s.data,
+           ...) {
+    msmsply(x,
+            clean,
+            range = range,
+            f = f,
+            range.s.data = range.s.data,
+            fill = fill,
+            ...)
+  }
+
+#' @describeIn clean
+#'
+#' @export
+#'
+clean.response_mspct <-
+  function(x,
+           range = x,
+           range.s.data = c(0,NA),
+           fill = range.s.data,
+           unit.out = getOption("photobiology.radiation.unit",
+                                default = "energy"),
+           ...) {
+    msmsply(x,
+            clean,
+            range = range,
+            f = f,
+            range.s.data = range.s.data,
+            fill = fill,
+            unit.out = unit.out,
+            ...)
   }

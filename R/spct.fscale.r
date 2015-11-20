@@ -242,14 +242,9 @@ fscale_spct <- function(spct, range, var.name, f, ...) {
     summary.value <- 1 # implemented in this way to ensure that all returned
     # values folow the same copy/reference semantics
   }
-  out.spct <- spct
-  out.spct[[var.name]] <- out.spct[[var.name]] / summary.value
-  class(out.spct) <- class(spct)
-  comment(out.spct) <- comment(spct)
-  setScaled(out.spct, list(multiplier = 1 / summary.value, f = f))
-  setTimeUnit(out.spct, getTimeUnit(spct))
-  setTfrType(out.spct, getTfrType(spct))
-  out.spct
+  spct[[var.name]] <- spct[[var.name]] / summary.value
+  setScaled(spct, list(multiplier = 1 / summary.value, f = f))
+  spct
 }
 
 # is_scaled function ----------------------------------------------------

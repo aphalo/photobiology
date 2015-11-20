@@ -996,7 +996,7 @@ In this section we describe methods and functions that take one or more spectral
     fscale & + & + & + & + & -- & -- \\
     fshift & + & + & + & + & -- & -- \\
     normalize & + & + & + & + & -- & -- \\
-    clean & -- & -- & -- & -- & -- & -- \\
+    clean & + & + & + & + & -- & -- \\
     tag & + & + & + & + & + & + \\
     untag & + & + & + & + & + & + \\
    \bottomrule
@@ -1638,6 +1638,15 @@ sun_angles(now(), lat = 34, lon = 0)
 sun_angles(ymd_hms("2014-01-01 0:0:0", tz = "UTC"))
 @
 
+When spectra contain suitable metadata, the position of the sun for the
+spectral irradiance data measurement can be easily obtained.
+
+<<>>=
+sun_angles(getWhenMeasured(sun.spct), geocode = getWhereMeasured(sun.spct))
+@
+
+The object to be supplied as argument for \texttt{geocode} is a data frame with variables \texttt{lon} and \texttt{lat}. This matches the return value of function \texttt{ggmap::geocode()}, function that can be used to find the coordinates using any `address' entered as a character string understood by the Google maps API. We will not demonstrate this below, but all functions taking \texttt{lat} and \texttt{lon} arguments described can alternatively be supplied a geocode argument instead of separate latitude and longitude numeric values.
+
 \subsection{Times of sunrise, solar noon and sunset}
 
 Functions \texttt{sunrise\_time}, \texttt{sunset\_time}, \texttt{noon\_time}, \texttt{day\_length} and \texttt{night\_length} have all the same parameter signature. In addition, function \texttt{day\_night} returns a list containing all the quantities returned by the other functions. They are all vectorized for the
@@ -1673,7 +1682,7 @@ sunrise_time(today(tzone = "UTC"), tz = "UTC", lat = 60, lon = 0)
 sunrise_time(today(tzone = "EET"), tz = "EET", lat = 60, lon = 25)
 @
 
-Southern hemisphere latitudes are given as negative numbers.
+Southern hemisphere latitudes as well as longitudes to the West of the Greenwich meridian should be supplied as negative numbers.
 
 <<>>=
 sunrise_time(dates, lat =  60)
