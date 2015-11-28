@@ -853,7 +853,7 @@ is.chroma_spct <- function(x) inherits(x, "chroma_spct")
 #' @export
 #'
 is.any_spct <- function(x) {
-  inherits(x, spct_classes())
+  inherits(x, "generic_spct")
 }
 
 #' Query which is the class of an spectrum

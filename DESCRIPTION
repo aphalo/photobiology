@@ -40,3 +40,4 @@ URL: http://www.r4photobiology.info/,
     https://bitbucket.org/aphalo/photobiology
 BugReports: https://bitbucket.org/aphalo/photobiology
 Roxygen: list(wrap = FALSE)
+RoxygenNote: 5.0.1
