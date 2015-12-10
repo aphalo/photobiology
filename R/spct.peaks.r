@@ -113,7 +113,7 @@ get_peaks <- function(x,
   }
 }
 
-#' @describeIn get_peaks
+#' @rdname get_peaks
 #' @export
 #'
 get_valleys <- function(x, y,

@@ -423,8 +423,8 @@ Objects of these classes, except for those of class \texttt{generic\_mspct}, can
 
 We can construct a collection using a list of spectral objects as a starting point, in this case the spectral transmittance for two glass filters.
 <<>>=
-two_filters.mspct <- filter_mspct(list(gg400 = gg400.spct, og550 = og550.spct))
-two_filters.mspct
+two_suns.mspct <- source_mspct(list(sun1 = sun.spct, sun2 = sun.spct))
+two_suns.mspct
 @
 
 We can also create heterogeneous collections, but this reduces the number of methods that can be used on the resulting collection.
@@ -438,7 +438,7 @@ mixed.mspct <- generic_mspct(list(filter = clear.spct, source = sun.spct))
 The \texttt{as} functions for collections of spectra, not only change the class of the collection object, but also apply the corresponding {as} functions to the member objects. They copy the original objects and then convert the copy, which is returned.
 
 <<>>=
-two_gen.mscpt <- as.generic_mspct(two_filters.mspct)
+two_gen.mscpt <- as.generic_mspct(two_suns.mspct)
 class(two_gen.mscpt)
 lapply(two_gen.mscpt, class_spct)
 @
@@ -476,8 +476,8 @@ split2source_mspct(test2.df, spct.data.var = "s.q.irrad")
 \texttt{is.} functions are defined for these classes. R's \texttt{class} method can also be used.
 
 <<>>=
-is.filter_mspct(two_filters.mspct)
-class(two_filters.mspct)
+is.source_mspct(two_suns.mspct)
+class(two_suns.mspct)
 @
 
 In addition to using \texttt{class} to query the class of the collection, we can use base R's \texttt{lapply} together with \texttt{class} or \texttt{class\_spct} to query the class of each of the members of the collection.
@@ -500,12 +500,12 @@ Methods \texttt{`[`}, and \texttt{`[<-`}, extract and replace `parts' of the col
 \end{framed}
 
 <<>>=
-two_filters.mspct[1]
-two_filters.mspct[2:1]
+two_suns.mspct[1]
+two_suns.mspct[2:1]
 @
 
 <<>>=
-two_filters.mspct[1:2] <- two_filters.mspct[2:1]
+two_suns.mspct[1:2] <- two_suns.mspct[2:1]
 @
 
 \begin{framed}
@@ -514,22 +514,22 @@ Methods \texttt{`[[`}, \verb|$| and \texttt{`[[<-`}, extract and replace individ
 \end{framed}
 
 <<>>=
-two_filters.mspct[[1]]
-two_filters.mspct$gg400
-two_filters.mspct[["gg400"]]
+two_suns.mspct[[1]]
+two_suns.mspct$sun1
+two_suns.mspct[["sun1"]]
 @
 
 
 <<>>=
-two_filters.mspct[["bg3"]] <- bg3.spct
-two_filters.mspct[["gg400"]] <- NULL
-two_filters.mspct
+two_suns.mspct[["sun1"]] <- sun.spct * 2
+two_suns.mspct[["sun2"]] <- NULL
+two_suns.mspct
 @
 
 We can use the combine method \texttt{c()} with collections of spectra (but not to create new collections from individual spectra).
 
 <<>>=
-c(two_filters.mspct, mixed.mspct)
+c(two_suns.mspct, mixed.mspct)
 @
 
 \subsection{Transform or \emph{apply} functions}\label{sec:apply}
@@ -808,14 +808,15 @@ sun.spct * sun.spct
 When meaningful, operations between different spectra are also allowed. For example, it is possible to simulate the effect of a filter on a light source by multiplying (or convolving) the two spectra.
 
 <<>>=
-sun.spct * polyester.new.spct
+polyester.spct <- mcdermit.mspct[["Autostat_CT5_125um"]]
+sun.spct * polyester.spct
 @
 
 If we have two layers of the filter, this can be approximated using either of these two statements.
 
 <<>>=
-sun.spct * polyester.new.spct * polyester.new.spct
-sun.spct * polyester.new.spct^2
+sun.spct * polyester.spct * polyester.spct
+sun.spct * polyester.spct^2
 @
 
 Operators are also defined for operations between a spectrum and a numeric vector (with normal recycling).
@@ -841,7 +842,7 @@ sun.spct * CIE()
 And of course these operations can be combined into more complex statements, including parentheses, when needed. The example below estimates the difference in effective spectral irradiance according to the CIE98 definition, between sunlight and sunlight filtered with a polyester film. Of course, the result is valid only for the solar spectral data used, which corresponds to Southern Finland.
 
 <<warning=TRUE, purl=FALSE>>=
-sun.spct * CIE() - sun.spct * polyester.new.spct * CIE()
+sun.spct * CIE() - sun.spct * polyester.spct * CIE()
 @
 
 \subsection{Unary operators and maths functions}
@@ -1110,7 +1111,7 @@ clean(sun.spct - 0.01, range = c(280.5, 282))
 @
 
 <<>>=
-clean(polythene.new.spct - 0.053)
+clean(polyester.spct - 0.053)
 @
 
 \subsection{Wavelength interpolation}
@@ -1341,8 +1342,8 @@ Collections of spectra can be useful not only for time-series of spectra or spec
 
 <<>>=
 filters.mspct <- filter_mspct(list(none = clear.spct,
-                                   ug1 = ug1.spct,
-                                   gg400 = gg400.spct))
+                                   ug1 = schott.mspct[["UG1"]],
+                                   gg400 = schott.mspct[["GG400"]]))
 range(filters.mspct)
 @
 
@@ -1443,8 +1444,8 @@ Collections of spectra can be useful not only for time-series of spectra or spec
 We first create a collection of filter spectra:
 <<>>=
 filters.mspct <- filter_mspct(list(none = clear.spct,
-                                   ug1 = ug1.spct,
-                                   gg400 = gg400.spct))
+                                   ug1 = schott.mspct[["UG1"]],
+                                   gg400 = schott.mspct[["GG400"]]))
 @
 
 We then convolve each filter's spectral transmittance by the spectral irradiance of the light source
@@ -1561,13 +1562,13 @@ normalized_diff_ind(sun.spct,
 The functions \texttt{transmittance}, \texttt{absorptance} and \texttt{absorbance} take \texttt{filter\_spct} as argument, while function \texttt{reflectance} takes \texttt{reflector\_spct} objects as argument. Functions \texttt{transmittance}, \texttt{reflectance} and \texttt{absorptance} are also implemented for \texttt{object\_spct}. These functions return as default an average value for these quantities \textbf{assuming} a light source with a flat spectral energy output, but this can be changed as described above for \texttt{irrad()}.
 
 <<>>=
-transmittance(polyester.new.spct, list(UVB(), UVA(), PAR()))
+transmittance(polyester.spct, list(UVB(), UVA(), PAR()))
 @
 
 It is more likely that we would like to calculate these values with reference to light of a certain spectral quality. This needs to be calculated by hand, which is not difficult.
 
 <<>>=
-irrad(sun.spct * polyester.new.spct, list(UVB(), UVA(), PAR()), wb.trim = TRUE) /
+irrad(sun.spct * polyester.spct, list(UVB(), UVA(), PAR()), wb.trim = TRUE) /
   irrad(sun.spct, list(UVB(), UVA(), PAR()), wb.trim = TRUE)
 @
 
@@ -1576,9 +1577,9 @@ irrad(sun.spct * polyester.new.spct, list(UVB(), UVA(), PAR()), wb.trim = TRUE) 
 Here we construct a collection of filter spectra, and then we calculate the transmittance of these filters for two wavebands, obtaining the results as a data frame, with one row per filter, and one column per waveband.
 
 <<>>=
-filters.mspct <- filter_mspct(list(clear = clear.spct,
-                                   ug1 = ug1.spct,
-                                   gg400 = gg400.spct))
+filters.mspct <- filter_mspct(list(none = clear.spct,
+                                   ug1 = schott.mspct[["UG1"]],
+                                   gg400 = schott.mspct[["GG400"]]))
 transmittance(filters.mspct, list(UVA(), VIS()))
 @
 
@@ -1760,7 +1761,7 @@ And also a \texttt{color} method for \texttt{source\_spct}.
 
 <<>>=
 color(sun.spct)
-color(sun.spct * rg630.spct)
+color(sun.spct * schott.mspct[["RG630"]])
 @
 
 \section{Optimizing performance}

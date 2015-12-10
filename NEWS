@@ -4,6 +4,24 @@ TODO
 Add test cases for chroma_spct and improve tests for the _mspct
 classes. Add test cases for smooth_spct().
 
+photobiology 0.8.12
+===================
+
+Add new classes raw_spct and raw_mspct to store raw counts from spectrometers,
+constructors raw_spct() and raw_mspct(), and corresponding setRawSpct() and
+is.raw_spct() and as.raw_spct() functions.
+
+Add methods getInstrDesc() and getInstrSettings(), and the corresponding
+setInstrDesc() and setInstrSettings() to handle metadata about instrument and
+instrument settings used to acquire the spectral data. These classes and
+methods are building blocks to be used in the development of spectral-data
+acquisition packages.
+
+All spectral object constructors return an object of length equal to zero when
+called without arguments, or with argument "w.length" of length equal to zero.
+Earlier behaviour was to return NA, which is not consistent with R usual
+expectations.
+
 photobiology 0.8.11
 ===================
 

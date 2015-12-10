@@ -13,7 +13,7 @@
 #' mspct_classes()
 #'
 mspct_classes <- function() {
-  c("cps_mspct",
+  c("raw_mspct", "cps_mspct",
     "filter_mspct", "reflector_mspct",
     "source_mspct", "object_mspct",
     "response_mspct", "chroma_mspct", "generic_mspct")
@@ -145,6 +145,15 @@ generic_mspct <- function(l, class = "generic_spct",
   dim(l) <- dim
   attr(l, "mspct.byrow") <- as.logical(byrow)
   l
+}
+
+#' @describeIn generic_mspct Specialization for collections of \code{raw_spct} objects.
+#'
+#' @export
+#' @exportClass raw_mspct
+#'
+raw_mspct <- function(l, ncol = 1, byrow = FALSE, ...) {
+  generic_mspct(l, class = "raw_spct", ncol = ncol, byrow = byrow)
 }
 
 #' @describeIn generic_mspct Specialization for collections of \code{cps_spct} objects.
@@ -302,6 +311,17 @@ as.generic_mspct <- function(x) {
 #'
 #' @export
 #'
+as.raw_mspct <- function(x) {
+  y <- x
+  rmDerivedMspct(y)
+  z <- plyr::llply(y, setRawSpct)
+  raw_mspct(z)
+}
+
+#' @rdname as.generic_mspct
+#'
+#' @export
+#'
 as.cps_mspct <- function(x) {
   y <- x
   rmDerivedMspct(y)
@@ -451,7 +471,7 @@ split2mspct <- function(x,
   do.call(collection.constr, margs)
 }
 
-#' @describeIn split2mspct
+#' @rdname split2mspct
 #' @export
 #'
 split2source_mspct <- function(x,
@@ -467,7 +487,7 @@ split2source_mspct <- function(x,
               ...)
 }
 
-#' @describeIn split2mspct
+#' @rdname split2mspct
 #' @export
 #'
 split2response_mspct <- function(x,
@@ -483,7 +503,7 @@ split2response_mspct <- function(x,
               ...)
 }
 
-#' @describeIn split2mspct
+#' @rdname split2mspct
 #' @export
 #'
 split2filter_mspct <- function(x,
@@ -499,7 +519,7 @@ split2filter_mspct <- function(x,
               ...)
 }
 
-#' @describeIn split2mspct
+#' @rdname split2mspct
 #' @export
 #'
 split2reflector_mspct <- function(x,
@@ -515,7 +535,7 @@ split2reflector_mspct <- function(x,
               ...)
 }
 
-#' @describeIn split2mspct
+#' @rdname split2mspct
 #' @export
 #'
 split2cps_mspct <- function(x,
@@ -524,6 +544,22 @@ split2cps_mspct <- function(x,
                             ncol = 1, byrow = FALSE, ...) {
   split2mspct(x = x,
               member.class = "cps_spct",
+              spct.data.var = spct.data.var,
+              w.length.var = w.length.var,
+              idx.var = idx.var,
+              ncol = ncol, byrow = byrow,
+              ...)
+}
+
+#' @rdname split2mspct
+#' @export
+#'
+split2raw_mspct <- function(x,
+                            spct.data.var = "count",
+                            w.length.var = "w.length", idx.var = NULL,
+                            ncol = 1, byrow = FALSE, ...) {
+  split2mspct(x = x,
+              member.class = "raw_spct",
               spct.data.var = spct.data.var,
               w.length.var = w.length.var,
               idx.var = idx.var,
