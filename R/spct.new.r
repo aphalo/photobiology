@@ -71,8 +71,8 @@ source_spct <- function(w.length = NULL, s.e.irrad = NULL, s.q.irrad = NULL,
 #'
 #' @export
 #'
-raw_spct <- function(w.length = NULL, counts=NULL, comment=NULL,
-                     instr.desc, instr.settings) {
+raw_spct <- function(w.length = NULL, counts = NA, comment = NULL,
+                     instr.desc = NA, instr.settings = NA) {
   if (length(w.length) == 0) {
     z <- dplyr::data_frame(w.length = numeric(), counts = numeric())
   } else {
@@ -93,7 +93,7 @@ raw_spct <- function(w.length = NULL, counts=NULL, comment=NULL,
 #'
 #' @export
 #'
-cps_spct <- function(w.length = NULL, cps=NULL, comment=NULL) {
+cps_spct <- function(w.length = NULL, cps = NA, comment = NULL) {
   if (length(w.length) == 0) {
     z <- dplyr::data_frame(w.length = numeric(), cps = numeric())
   } else {

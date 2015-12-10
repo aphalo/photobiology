@@ -31,18 +31,37 @@ oper.e.generic_spct <- function(e1, e2, oper) {
   } else {
     class2 <- class_spct(e2)[1]
   }
-  if (class1 == "cps_spct") {
+  if (class1 == "raw_spct") {
+    if (is.numeric(e2)) {
+      z <- e1
+      z[["counts"]] <- oper(z[["counts"]], e2)
+      return(z)
+    } else if (class2 == "raw_spct") {
+      z <- oper_spectra(e1$w.length, e2$w.length,
+                        e1$counts, e2$counts,
+                        bin.oper=oper, trim="intersection")
+      names(z)[2] <- "counts"
+      setRawSpct(z, strict.range = FALSE)
+      return(z)
+    } else {
+      warning("operation between 'raw_spct' and ", class(e2)[1],
+              " objects not implemented")
+    }
+  } else if (class1 == "cps_spct") {
     if (is.numeric(e2)) {
     z <- e1
     z[["cps"]] <- oper(z[["cps"]], e2)
     return(z)
     } else if (class2 == "cps_spct") {
-      z <- oper_spectra(e1$w.length, e2$w.length, e1$cps, e2$cps, bin.oper=oper, trim="intersection")
+      z <- oper_spectra(e1$w.length, e2$w.length,
+                        e1$cps, e2$cps,
+                        bin.oper=oper, trim="intersection")
     names(z)[2] <- "cps"
     setCpsSpct(z, strict.range = FALSE)
     return(z)
     } else {
-      warning("operation between 'cps_spct' and ", class(e2)[1], " objects not implemented")
+      warning("operation between 'cps_spct' and ", class(e2)[1],
+              " objects not implemented")
     }
   } else if (class1 == "source_spct") {
     q2e(e1, action = "add", byref = TRUE)
@@ -62,14 +81,20 @@ oper.e.generic_spct <- function(e1, e2, oper) {
       } else {
         stop("Failed assertion! BUG IN PACKAGE CODE")
       }
-      e1 <- trim_spct(e1, low.limit=min(e2), high.limit=max(e2) - 1e-12, verbose=FALSE,
-                      use.hinges = getOption("photobiology.use.hinges", default=NULL))
+      e1 <- trim_spct(e1, low.limit=min(e2), high.limit=max(e2) - 1e-12,
+                      verbose=FALSE,
+                      use.hinges = getOption("photobiology.use.hinges",
+                                             default=NULL))
       mult <-
         calc_multipliers(w.length=e1$w.length, w.band=e2, unit.out="energy",
                          unit.in="energy",
-                         use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE))
-      return(source_spct(w.length=e1$w.length, s.e.irrad = e1$s.e.irrad * mult,
-                           time.unit=getTimeUnit(e1), bswf.used=bswf.used, strict.range = FALSE))
+                         use.cached.mult = getOption("photobiology.use.cached.mult",
+                                                     default = FALSE))
+      return(source_spct(w.length=e1$w.length,
+                         s.e.irrad = e1$s.e.irrad * mult,
+                          time.unit=getTimeUnit(e1),
+                         bswf.used=bswf.used,
+                         strict.range = FALSE))
     }
     if (is.numeric(e2)) {
       z <- e1
@@ -90,9 +115,12 @@ oper.e.generic_spct <- function(e1, e2, oper) {
        } else {
         bswf.used <- "none"
       }
-      z <- oper_spectra(e1$w.length, e2$w.length, e1$s.e.irrad, e2$s.e.irrad, bin.oper=oper, trim="intersection")
+      z <- oper_spectra(e1$w.length, e2$w.length,
+                        e1$s.e.irrad, e2$s.e.irrad,
+                        bin.oper=oper, trim="intersection")
       names(z)[2] <- "s.e.irrad"
-      setSourceSpct(z, time.unit=getTimeUnit(e1), bswf.used = bswf.used, strict.range = FALSE)
+      setSourceSpct(z, time.unit=getTimeUnit(e1), bswf.used = bswf.used,
+                    strict.range = FALSE)
       return(z)
     } else if (class2 == "filter_spct") {
       filter.quantity <- getOption("photobiology.filter.qty", default="transmittance")
@@ -102,16 +130,21 @@ oper.e.generic_spct <- function(e1, e2, oper) {
           return(NA)
         }
         A2T(e2, action = "replace", byref = TRUE)
-        z <- oper_spectra(e1$w.length, e2$w.length, e1$s.e.irrad, e2$Tfr, bin.oper=oper, trim="intersection")
+        z <- oper_spectra(e1$w.length, e2$w.length,
+                          e1$s.e.irrad, e2$Tfr,
+                          bin.oper=oper, trim="intersection")
         names(z)[2] <- "s.e.irrad"
-        setSourceSpct(z, time.unit=getTimeUnit(e1), bswf.used = getBSWFUsed(e1), strict.range = FALSE)
+        setSourceSpct(z, time.unit=getTimeUnit(e1), bswf.used = getBSWFUsed(e1),
+                      strict.range = FALSE)
       } else if (filter.quantity=="absorbance") {
         if (!identical(oper, `*`) && !identical(oper, `/`)) {
           warning("Only '*' and '/' are allowed between source_spct and filter_spct objects")
           return(NA)
         }
         T2A(e2, action = "add", byref = TRUE)
-        z <- oper_spectra(e1$w.length, e2$w.length, e1$s.e.irrad, e2$A, bin.oper=oper, trim="intersection")
+        z <- oper_spectra(e1$w.length, e2$w.length,
+                          e1$s.e.irrad, e2$A,
+                          bin.oper=oper, trim="intersection")
         names(z)[2] <- "s.e.response"
         setResponseSpct(z, time.unit=getTimeUnit(e1))
       }
@@ -121,9 +154,12 @@ oper.e.generic_spct <- function(e1, e2, oper) {
         warning("Only '*' and '/' are allowed between source_spct and reflector_spct objects")
         return(NA)
       }
-      z <- oper_spectra(e1$w.length, e2$w.length, e1$s.e.irrad, e2$s.e.irrad, bin.oper=oper, trim="intersection")
+      z <- oper_spectra(e1$w.length, e2$w.length,
+                        e1$s.e.irrad, e2$s.e.irrad,
+                        bin.oper=oper, trim="intersection")
       names(z)[2] <- "s.e.irrad"
-      setSourceSpct(z, time.unit=getTimeUnit(e1), bswf.used = getBSWFUsed(e1), strict.range = FALSE)
+      setSourceSpct(z, time.unit=getTimeUnit(e1), bswf.used = getBSWFUsed(e1),
+                    strict.range = FALSE)
       return(z)
     } else if (class2 == "response_spct") {
       q2e(e2, action = "replace", byref = TRUE)
@@ -131,7 +167,9 @@ oper.e.generic_spct <- function(e1, e2, oper) {
         warning("Only '*' and '/' are allowed between source_spct and response_spct objects")
         return(NA)
       }
-      z <- oper_spectra(e1$w.length, e2$w.length, e1$s.e.irrad, e2$s.e.response, bin.oper=oper, trim="intersection")
+      z <- oper_spectra(e1$w.length, e2$w.length,
+                        e1$s.e.irrad, e2$s.e.response,
+                        bin.oper=oper, trim="intersection")
       names(z)[2] <- "s.e.response"
       setResponseSpct(z, time.unit=getTimeUnit(e1))
       return(z)
@@ -140,10 +178,17 @@ oper.e.generic_spct <- function(e1, e2, oper) {
         warning("Only '*' and '/' are allowed between source_spct and chroma_spct objects")
         return(NA)
       }
-      x <- oper_spectra(e1$w.length, e2$w.length, e1$s.e.irrad, e2$x, bin.oper=oper, trim="intersection")
-      y <- oper_spectra(e1$w.length, e2$w.length, e1$s.e.irrad, e2$y, bin.oper=oper, trim="intersection")
-      z <- oper_spectra(e1$w.length, e2$w.length, e1$s.e.irrad, e2$z, bin.oper=oper, trim="intersection")
-      z <- dplyr::data_frame(w.length=x$w.length, x=x[["s.irrad"]], y=y[["s.irrad"]], z=z[["s.irrad"]])
+      x <- oper_spectra(e1$w.length, e2$w.length,
+                        e1$s.e.irrad, e2$x,
+                        bin.oper=oper, trim="intersection")
+      y <- oper_spectra(e1$w.length, e2$w.length,
+                        e1$s.e.irrad, e2$y,
+                        bin.oper=oper, trim="intersection")
+      z <- oper_spectra(e1$w.length, e2$w.length,
+                        e1$s.e.irrad, e2$z,
+                        bin.oper=oper, trim="intersection")
+      z <- dplyr::data_frame(w.length=x$w.length, x=x[["s.irrad"]],
+                             y=y[["s.irrad"]], z=z[["s.irrad"]])
       setChromaSpct(z)
       return(z)
     } else { # this traps also e2 == "generic_spct"
@@ -151,8 +196,9 @@ oper.e.generic_spct <- function(e1, e2, oper) {
       return(NA)
     }
   } else if (class1 == "filter_spct") {
-    filter.quantity <- getOption("photobiology.filter.qty", default="transmittance")
-    if (filter.quantity=="transmittance") {
+    filter.quantity <- getOption("photobiology.filter.qty",
+                                 default = "transmittance")
+    if (filter.quantity == "transmittance") {
       e1 <- A2T(e1)
       if (is.numeric(e2)) {
         z <- e1
@@ -168,16 +214,21 @@ oper.e.generic_spct <- function(e1, e2, oper) {
           warning("Only '*' and '/' are allowed between filter_spct and source_spct objects")
           return(NA)
         }
-        z <- oper_spectra(e1$w.length, e2$w.length, e1$Tfr, e2$s.e.irrad, bin.oper=oper, trim="intersection")
+        z <- oper_spectra(e1$w.length, e2$w.length,
+                          e1$Tfr, e2$s.e.irrad,
+                          bin.oper=oper, trim="intersection")
         names(z)[2] <- "s.e.irrad"
-        setSourceSpct(z, time.unit=getTimeUnit(e2), bswf.used = getBSWFUsed(e2), strict.range = FALSE)
+        setSourceSpct(z, time.unit=getTimeUnit(e2), bswf.used = getBSWFUsed(e2),
+                      strict.range = FALSE)
       } else if (class2 == "filter_spct") {
         e2 <- A2T(e2)
         if (!identical(oper, `*`) && !identical(oper, `/`)) {
           warning("Only '*' and '/' are allowed for two filter_spct objects (transmittance)")
           return(NA)
         }
-        z <- oper_spectra(e1$w.length, e2$w.length, e1$Tfr, e2$Tfr, bin.oper=oper, trim="intersection")
+        z <- oper_spectra(e1$w.length, e2$w.length,
+                          e1$Tfr, e2$Tfr,
+                          bin.oper=oper, trim="intersection")
         names(z)[2] <- "Tfr"
         setFilterSpct(z, strict.range = FALSE)
         return(z)
@@ -199,7 +250,9 @@ oper.e.generic_spct <- function(e1, e2, oper) {
         if (!identical(oper, `*`) && !identical(oper, `/`)) {
           warning("Only '*' and '/' are allowed between filter_spct and source_spct objects")
         }
-        z <- oper_spectra(e1$w.length, e2$w.length, e1$A, e2$s.e.irrad, bin.oper=oper, trim="intersection")
+        z <- oper_spectra(e1$w.length, e2$w.length,
+                          e1$A, e2$s.e.irrad,
+                          bin.oper=oper, trim="intersection")
         names(z)[2] <- "s.e.response"
         setResponseSpct(z, time.unit=getTimeUnit(e2))
         return(z)
@@ -209,7 +262,9 @@ oper.e.generic_spct <- function(e1, e2, oper) {
           warning("Only '+' and '-' are allowed for two filter_spct objects (absorbance)")
           return(NA)
         }
-        z <- oper_spectra(e1$w.length, e2$w.length, e1$A, e2$A, bin.oper=oper, trim="intersection")
+        z <- oper_spectra(e1$w.length, e2$w.length,
+                          e1$A, e2$A,
+                          bin.oper=oper, trim="intersection")
         names(z)[2] <- "A"
         setFilterSpct(z, strict.range = FALSE)
         return(z)
@@ -224,7 +279,9 @@ oper.e.generic_spct <- function(e1, e2, oper) {
       z[["Rfr"]] <- oper(z[["Rfr"]], e2)
       return(z)
     } else if (class2 == "reflector_spct") {
-      z <- oper_spectra(e1$w.length, e2$w.length, e1$Rfr, e2$Rfr, bin.oper=oper, trim="intersection")
+      z <- oper_spectra(e1$w.length, e2$w.length,
+                        e1$Rfr, e2$Rfr,
+                        bin.oper=oper, trim="intersection")
       names(z)[2] <- "Rfr"
       setReflectorSpct(z, strict.range = FALSE)
       return(z)
@@ -233,9 +290,12 @@ oper.e.generic_spct <- function(e1, e2, oper) {
         warning("Only '*' and '/' are allowed between reflector_spct and source_spct objects")
         return(NA)
       }
-      z <- oper_spectra(e1$w.length, e2$w.length, e1$Rfr, e2$s.e.irrad, bin.oper=oper, trim="intersection")
+      z <- oper_spectra(e1$w.length, e2$w.length,
+                        e1$Rfr, e2$s.e.irrad,
+                        bin.oper=oper, trim="intersection")
       names(z)[2] <- "s.e.irrad"
-      setSourceSpct(z, time.unit=getTimeUnit(e2), bswf.used = getBSWFUsed(e2), strict.range = FALSE)
+      setSourceSpct(z, time.unit=getTimeUnit(e2), bswf.used = getBSWFUsed(e2),
+                    strict.range = FALSE)
       return(z)
     } else { # this traps optically illegal operations
       warning("The operation attempted in undefined according to Optics laws or the input is malformed")
@@ -249,7 +309,9 @@ oper.e.generic_spct <- function(e1, e2, oper) {
       return(z)
     } else if (class2 == "response_spct") {
       q2e(e2, action = "replace", byref = TRUE)
-      z <- oper_spectra(e1$w.length, e2$w.length, e1$s.e.response, e2$s.e.response, bin.oper=oper, trim="intersection")
+      z <- oper_spectra(e1$w.length, e2$w.length,
+                        e1$s.e.response, e2$s.e.response,
+                        bin.oper=oper, trim="intersection")
       names(z)[2] <- "s.e.response"
       setResponseSpct(z, time.unit=getTimeUnit(e1))
       return(z)
@@ -259,7 +321,9 @@ oper.e.generic_spct <- function(e1, e2, oper) {
         return(NA)
       }
       q2e(e2, action = "replace", byref = TRUE)
-      z <- oper_spectra(e1$w.length, e2$w.length, e1$s.e.response, e2$s.e.irrad, bin.oper=oper, trim="intersection")
+      z <- oper_spectra(e1$w.length, e2$w.length,
+                        e1$s.e.response, e2$s.e.irrad,
+                        bin.oper=oper, trim="intersection")
       names(z)[2] <- "s.e.response"
       setResponseSpct(z, time.unit=getTimeUnit(e2))
       return(z)
@@ -281,19 +345,37 @@ oper.e.generic_spct <- function(e1, e2, oper) {
                              z = oper(e1$z, e2)))
          }
     } else if (class2 == "chroma_spct") {
-      x <- oper_spectra(e1$w.length, e2$w.length, e1$x, e2$x, bin.oper=oper, trim="intersection")
-      y <- oper_spectra(e1$w.length, e2$w.length, e1$y, e2$y, bin.oper=oper, trim="intersection")
-      z <- oper_spectra(e1$w.length, e2$w.length, e1$z, e2$z, bin.oper=oper, trim="intersection")
-      return(chroma_spct(w.length=x$w.length, x=x[["s.irrad"]], y=y[["s.irrad"]], z=z[["s.irrad"]]))
+      x <- oper_spectra(e1$w.length, e2$w.length,
+                        e1$x, e2$x,
+                        bin.oper=oper, trim="intersection")
+      y <- oper_spectra(e1$w.length, e2$w.length,
+                        e1$y, e2$y,
+                        bin.oper=oper, trim="intersection")
+      z <- oper_spectra(e1$w.length, e2$w.length,
+                        e1$z, e2$z,
+                        bin.oper=oper, trim="intersection")
+      return(chroma_spct(w.length=x$w.length,
+                         x=x[["s.irrad"]], y=y[["s.irrad"]], z=z[["s.irrad"]]))
     } else if (class2 == "source_spct") {
       q2e(e2, action = "replace", byref = TRUE)
-      x <- oper_spectra(e1$w.length, e2$w.length, e1$x, e2$s.e.irrad, bin.oper=oper, trim="intersection")
-      y <- oper_spectra(e1$w.length, e2$w.length, e1$y, e2$s.e.irrad, bin.oper=oper, trim="intersection")
-      z <- oper_spectra(e1$w.length, e2$w.length, e1$z, e2$s.e.irrad, bin.oper=oper, trim="intersection")
-      return(chroma_spct(w.length=x$w.length, x=x[["s.irrad"]], y=y[["s.irrad"]], z=z[["s.irrad"]]))
+      x <- oper_spectra(e1$w.length, e2$w.length,
+                        e1$x, e2$s.e.irrad,
+                        bin.oper=oper, trim="intersection")
+      y <- oper_spectra(e1$w.length, e2$w.length,
+                        e1$y, e2$s.e.irrad,
+                        bin.oper=oper, trim="intersection")
+      z <- oper_spectra(e1$w.length, e2$w.length,
+                        e1$z, e2$s.e.irrad,
+                        bin.oper=oper, trim="intersection")
+      return(chroma_spct(w.length=x$w.length,
+                         x=x[["s.irrad"]], y=y[["s.irrad"]], z=z[["s.irrad"]]))
     }
   } else if (is.numeric(e1)) {
-    if (class2 == "cps_spct") {
+    if (class2 == "raw_spct") {
+      z <- e2
+      z[["counts"]] <- oper(e1, z[["counts"]])
+      return(z)
+    } else if (class2 == "cps_spct") {
       z <- e2
       z[["cps"]] <- oper(e1, z[["cps"]])
       return(z)
@@ -303,21 +385,26 @@ oper.e.generic_spct <- function(e1, e2, oper) {
       z[["s.e.irrad"]] <- oper(e1, z[["s.e.irrad"]])
       return(z)
     } else if (class2 == "filter_spct") {
-      filter.quantity <- getOption("photobiology.filter.qty", default="transmittance")
+      filter.quantity <- getOption("photobiology.filter.qty",
+                                   default="transmittance")
       if (filter.quantity=="transmittance") {
         A2T(e2, action = "add", byref = TRUE)
-        return(filter_spct(w.length=e2$w.length, Tfr=oper(e1, e2$Tfr), strict.range = FALSE))
+        return(filter_spct(w.length=e2$w.length, Tfr=oper(e1, e2$Tfr),
+                           strict.range = FALSE))
       } else if (filter.quantity=="absorbance") {
         T2A(e2, action = "add", byref = TRUE)
-        return(filter_spct(w.length=e2$w.length, A=oper(e1, e2$A), strict.range = FALSE))
+        return(filter_spct(w.length=e2$w.length, A=oper(e1, e2$A),
+                           strict.range = FALSE))
       } else {
         stop("Assertion failed: bug in code!")
       }
     } else if (class2 == "reflector_spct") {
-      return(reflector_spct(w.length=e2$w.length, Rfr=oper(e1, e2$Rfr), strict.range = FALSE))
+      return(reflector_spct(w.length=e2$w.length, Rfr=oper(e1, e2$Rfr),
+                            strict.range = FALSE))
     } else if (class2 == "response_spct") {
       q2e(e2, action = "replace", byref = TRUE)
-      return(response_spct(w.length=e2$w.length, s.e.response=oper(e1, e2$s.e.response)))
+      return(response_spct(w.length=e2$w.length,
+                           s.e.response=oper(e1, e2$s.e.response)))
     } else if (class2 == "chroma_spct") {
       if (length(e2) == 3 && names(e2) == c("x", "y", "z")) {
         return(chroma_spct(w.length = e2$w.length,
@@ -370,18 +457,37 @@ oper.q.generic_spct <- function(e1, e2, oper) {
   } else {
     class2 <- class_spct(e2)[1]
   }
-  if (class1 == "cps_spct") {
+  if (class1 == "raw_spct") {
+    if (is.numeric(e2)) {
+      z <- e1
+      z[["counts"]] <- oper(z[["counts"]], e2)
+      return(z)
+    } else if (class2 == "raw_spct") {
+      z <- oper_spectra(e1$w.length, e2$w.length,
+                        e1$counts, e2$counts,
+                        bin.oper=oper, trim="intersection")
+      names(z)[2] <- "counts"
+      setRawSpct(z, strict.range = FALSE)
+      return(z)
+    } else {
+      warning("operation between 'raw_spct' and ", class(e2)[1],
+              " objects not implemented")
+    }
+  } else if (class1 == "cps_spct") {
     if (is.numeric(e2)) {
       z <- e1
       z[["cps"]] <- oper(z[["cps"]], e2)
       return(z)
     } else if (class2 == "cps_spct") {
-      z <- oper_spectra(e1$w.length, e2$w.length, e1$cps, e2$cps, bin.oper=oper, trim="intersection")
+      z <- oper_spectra(e1$w.length, e2$w.length,
+                        e1$cps, e2$cps,
+                        bin.oper=oper, trim="intersection")
       names(z)[2] <- "cps"
       setCpsSpct(z, strict.range = FALSE)
       return(z)
     } else {
-      warning("operation between 'cps_spct' and ", class(e2)[1], " objects not implemented")
+      warning("operation between 'cps_spct' and ", class(e2)[1],
+              " objects not implemented")
     }
   } else if (class1 == "source_spct") {
     e2q(e1, action = "replace", byref = TRUE)
@@ -401,11 +507,18 @@ oper.q.generic_spct <- function(e1, e2, oper) {
       } else {
         stop("Failed assertion! BUG IN PACKAGE CODE")
       }
-      e1 <- trim_spct(e1, low.limit = min(e2), high.limit = max(e2) - 1e-12, verbose=FALSE,
-                      use.hinges = getOption("photobiology.use.hinges", default=NULL))
-      mult <- calc_multipliers(w.length=e1$w.length, w.band=e2, unit.out="photon",
+      e1 <- trim_spct(e1,
+                      low.limit = min(e2),
+                      high.limit = max(e2) - 1e-12,
+                      verbose=FALSE,
+                      use.hinges = getOption("photobiology.use.hinges",
+                                             default=NULL))
+      mult <- calc_multipliers(w.length=e1$w.length,
+                               w.band=e2,
+                               unit.out="photon",
                                unit.in="photon",
-                               use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE))
+                               use.cached.mult = getOption("photobiology.use.cached.mult",
+                                                           default = FALSE))
       return(source_spct(w.length=e1$w.length, s.q.irrad = e1$s.q.irrad * mult,
                          bswf.used = bswf.used, time.unit=getTimeUnit(e1),
                          strict.range = FALSE))
@@ -430,9 +543,12 @@ oper.q.generic_spct <- function(e1, e2, oper) {
       } else {
         bswf.used <- "none"
       }
-      z <- oper_spectra(e1$w.length, e2$w.length, e1$s.q.irrad, e2$s.q.irrad, bin.oper=oper, trim="intersection")
+      z <- oper_spectra(e1$w.length, e2$w.length,
+                        e1$s.q.irrad, e2$s.q.irrad,
+                        bin.oper=oper, trim="intersection")
       names(z)[2] <- "s.q.irrad"
-      setSourceSpct(z, time.unit = getTimeUnit(e1), bswf.used = bswf.used, strict.range = FALSE)
+      setSourceSpct(z, time.unit = getTimeUnit(e1), bswf.used = bswf.used,
+                    strict.range = FALSE)
       return(z)
     } else if (class2 == "filter_spct") {
       filter.quantity <- getOption("photobiology.filter.qty", default="transmittance")
@@ -442,36 +558,53 @@ oper.q.generic_spct <- function(e1, e2, oper) {
           return(NA)
         }
         A2T(e2, action = "add", byref = TRUE)
-        z <- oper_spectra(e1$w.length, e2$w.length, e1$s.q.irrad, e2$Tfr, bin.oper=oper, trim="intersection")
+        z <- oper_spectra(e1$w.length, e2$w.length,
+                          e1$s.q.irrad, e2$Tfr,
+                          bin.oper=oper, trim="intersection")
         names(z)[2] <- "s.q.irrad"
-        setSourceSpct(z, time.unit = getTimeUnit(e1), bswf.used = getBSWFUsed(e1), strict.range = FALSE)
+        setSourceSpct(z, time.unit = getTimeUnit(e1), bswf.used = getBSWFUsed(e1),
+                      strict.range = FALSE)
       } else if (filter.quantity=="absorbance") {
         if (!identical(oper, `*`)) return(NA)
         T2A(e2, action = "add", byref = TRUE)
-        z <- oper_spectra(e1$w.length, e2$w.length, e1$s.q.irrad, e2$A, bin.oper=oper, trim="intersection")
+        z <- oper_spectra(e1$w.length, e2$w.length,
+                          e1$s.q.irrad, e2$A,
+                          bin.oper=oper, trim="intersection")
         names(z)[2] <- "s.q.response"
         setResponseSpct(z)
       }
       return(z)
     } else if (class2 == "reflector_spct") {
       if (!identical(oper, `*`)) return(NA)
-      z <- oper_spectra(e1$w.length, e2$w.length, e1$s.q.irrad, e2$s.q.irrad, bin.oper=oper, trim="intersection")
+      z <- oper_spectra(e1$w.length, e2$w.length,
+                        e1$s.q.irrad, e2$s.q.irrad,
+                        bin.oper=oper, trim="intersection")
       names(z)[2] <- "s.q.irrad"
-      setSourceSpct(z, time.unit = getTimeUnit(e1), bswf.used = getBSWFUsed(e1), strict.range = FALSE)
+      setSourceSpct(z, time.unit = getTimeUnit(e1), bswf.used = getBSWFUsed(e1),
+                    strict.range = FALSE)
       return(z)
     } else if (class2 == "response_spct") {
       if (!identical(oper, `*`)) return(NA)
       e2q(e2, action = "replace", byref = TRUE)
-      z <- oper_spectra(e1$w.length, e2$w.length, e1$s.q.irrad, e2$s.q.response, bin.oper=oper, trim="intersection")
+      z <- oper_spectra(e1$w.length, e2$w.length,
+                        e1$s.q.irrad, e2$s.q.response,
+                        bin.oper=oper, trim="intersection")
       names(z)[2] <- "s.q.response"
       setResponseSpct(z)
       return(z)
     } else if (class2 == "chroma_spct") {
       if (!identical(oper, `*`)) return(NA)
-      x <- oper_spectra(e1$w.length, e2$w.length, e1$s.q.irrad, e2$x, bin.oper=oper, trim="intersection")
-      y <- oper_spectra(e1$w.length, e2$w.length, e1$s.q.irrad, e2$y, bin.oper=oper, trim="intersection")
-      z <- oper_spectra(e1$w.length, e2$w.length, e1$s.q.irrad, e2$z, bin.oper=oper, trim="intersection")
-      z <- dplyr::data_frame(w.length=x$w.length, x=x[["s.irrad"]], y=y[["s.irrad"]], z=z[["s.irrad"]])
+      x <- oper_spectra(e1$w.length, e2$w.length,
+                        e1$s.q.irrad, e2$x,
+                        bin.oper=oper, trim="intersection")
+      y <- oper_spectra(e1$w.length, e2$w.length,
+                        e1$s.q.irrad, e2$y,
+                        bin.oper=oper, trim="intersection")
+      z <- oper_spectra(e1$w.length, e2$w.length,
+                        e1$s.q.irrad, e2$z,
+                        bin.oper=oper, trim="intersection")
+      z <- dplyr::data_frame(w.length=x$w.length,
+                             x=x[["s.irrad"]], y=y[["s.irrad"]], z=z[["s.irrad"]])
       setChromaSpct(z)
       return(z)
     } else { # this traps also e2 == "generic_spct"
@@ -491,13 +624,18 @@ oper.q.generic_spct <- function(e1, e2, oper) {
       } else if (class2 == "source_spct") {
         e2q(e2, action = "replace", byref = TRUE)
         if (!identical(oper, `*`)) return(NA)
-        z <- oper_spectra(e1$w.length, e2$w.length, e1$Tfr, e2$s.q.irrad, bin.oper=oper, trim="intersection")
+        z <- oper_spectra(e1$w.length, e2$w.length,
+                          e1$Tfr, e2$s.q.irrad,
+                          bin.oper=oper, trim="intersection")
         names(z)[2] <- "s.q.irrad"
-        setSourceSpct(z, time.unit = getTimeUnit(e2), bswf.used = getBSWFUsed(e2), strict.range = FALSE)
+        setSourceSpct(z, time.unit = getTimeUnit(e2), bswf.used = getBSWFUsed(e2),
+                      strict.range = FALSE)
       } else if (class2 == "filter_spct") {
         e2 <- A2T(e2)
         if (!identical(oper, `*`)) return(NA)
-        z <- oper_spectra(e1$w.length, e2$w.length, e1$Tfr, e2$Tfr, bin.oper=oper, trim="intersection")
+        z <- oper_spectra(e1$w.length, e2$w.length,
+                          e1$Tfr, e2$Tfr,
+                          bin.oper=oper, trim="intersection")
         names(z)[2] <- "Tfr"
         setFilterSpct(z, strict.range = FALSE)
         return(z)
@@ -516,14 +654,18 @@ oper.q.generic_spct <- function(e1, e2, oper) {
       } else if (class2 == "source_spct") {
         e2q(e2, action = "add", byref = TRUE)
         if (!identical(oper, `*`)) return(NA)
-        z <- oper_spectra(e1$w.length, e2$w.length, e1$A, e2$s.q.irrad, bin.oper=oper, trim="intersection")
+        z <- oper_spectra(e1$w.length, e2$w.length,
+                          e1$A, e2$s.q.irrad,
+                          bin.oper=oper, trim="intersection")
         names(z)[2] <- "s.q.response"
         setResponseSpct(z)
         return(z)
       } else if (class2 == "filter_spct") {
         T2A(e2, action = "add", byref = TRUE)
         if (!identical(oper, `+`) || !identical(oper, `-`)) return(NA)
-        z <- oper_spectra(e1$w.length, e2$w.length, e1$A, e2$A, bin.oper=oper, trim="intersection")
+        z <- oper_spectra(e1$w.length, e2$w.length,
+                          e1$A, e2$A,
+                          bin.oper=oper, trim="intersection")
         names(z)[2] <- "A"
         setFilterSpct(z, strict.range = FALSE)
         return(z)
@@ -538,16 +680,21 @@ oper.q.generic_spct <- function(e1, e2, oper) {
       z[["Rfr"]] <- oper(z[["Rfr"]], e2)
       return(z)
     } else if (class2 == "reflector_spct") {
-      z <- oper_spectra(e1$w.length, e2$w.length, e1$Rfr, e2$Rfr, bin.oper=oper, trim="intersection")
+      z <- oper_spectra(e1$w.length, e2$w.length,
+                        e1$Rfr, e2$Rfr,
+                        bin.oper=oper, trim="intersection")
       names(z)[2] <- "Rfr"
       setReflectorSpct(z, strict.range = FALSE)
       return(z)
     } else if (class2 == "source_spct") {
       if (!identical(oper, `*`)) return(NA)
       e2q(e2, action = "replace", byref = TRUE)
-      z <- oper_spectra(e1$w.length, e2$w.length, e1$Rfr, e2$s.q.irrad, bin.oper=oper, trim="intersection")
+      z <- oper_spectra(e1$w.length, e2$w.length,
+                        e1$Rfr, e2$s.q.irrad,
+                        bin.oper=oper, trim="intersection")
       names(z)[2] <- "s.q.irrad"
-      setSourceSpct(z, time.unit = getTimeUnit(e2), bswf.used = getBSWFUsed(e2), strict.range = FALSE)
+      setSourceSpct(z, time.unit = getTimeUnit(e2), bswf.used = getBSWFUsed(e2),
+                    strict.range = FALSE)
       return(z)
     } else { # this traps optically illegal operations
       warning("The operation attempted is undefined according to Optics laws or the input is malformed")
@@ -564,14 +711,18 @@ oper.q.generic_spct <- function(e1, e2, oper) {
       return(z)
     }  else if (class2 == "response_spct") {
       e2q(e2, action = "replace", byref = TRUE)
-      z <- oper_spectra(e1$w.length, e2$w.length, e1$s.q.response, e2$s.q.response, bin.oper=oper, trim="intersection")
+      z <- oper_spectra(e1$w.length, e2$w.length,
+                        e1$s.q.response, e2$s.q.response,
+                        bin.oper=oper, trim="intersection")
       names(z)[2] <- "s.q.response"
       setResponseSpct(z, time.unit=getTimeUnit(e1))
       return(z)
     } else if (class2 == "source_spct") {
       if (!identical(oper, `*`)) return(NA)
       e2q(e2, action = "replace", byref = TRUE)
-      z <- oper_spectra(e1$w.length, e2$w.length, e1$s.q.response, e2$s.q.irrad, bin.oper=oper, trim="intersection")
+      z <- oper_spectra(e1$w.length, e2$w.length,
+                        e1$s.q.response, e2$s.q.irrad,
+                        bin.oper=oper, trim="intersection")
       names(z)[2] <- "s.q.response"
       setResponseSpct(z)
       return(z)
@@ -828,7 +979,11 @@ oper.q.generic_spct <- function(e1, e2, oper) {
 #' @keywords internal
 #'
 f_dispatcher_spct <- function(x, .fun, ...) {
-  if (is.cps_spct(x)) {
+  if (is.raw_spct(x)) {
+    z <- x
+    z[["counts"]] <- .fun(z[["counts"]], ...)
+    return(z)
+  } else if (is.cps_spct(x)) {
     z <- x
     z[["cps"]] <- .fun(z[["cps"]], ...)
     return(z)

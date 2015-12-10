@@ -105,11 +105,11 @@ check.raw_spct <- function(x,
 
   x <- check.generic_spct(x, multiple.wl = multiple.wl)
 
-  if (exists("count", x, mode = "numeric", inherits=FALSE)) {
+  if (exists("counts", x, mode = "numeric", inherits=FALSE)) {
     return(x)
   } else {
-    warning("No raw counts data found in cps_spct")
-    x[["count"]] = NA_real_
+    warning("No raw 'counts' data found in raw_spct")
+    x[["counts"]] = NA_real_
     return(x)
   }
 }

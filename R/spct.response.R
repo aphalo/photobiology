@@ -96,7 +96,7 @@ resp_spct <-
       unit.out <- "photon"
     }
 
-    data.time.unit <- getTimeUnit(spct)
+    data.time.unit <- getTimeUnit(spct, force.duration = lubridate::is.duration(time.unit))
 
     if (!is.null(time.unit) && time.unit != data.time.unit) {
       if (!lubridate::is.duration(time.unit) && !is.character(time.unit)) {
