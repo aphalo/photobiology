@@ -22,7 +22,7 @@
 #' @export
 #' @examples
 #' require(photobiologyFilters)
-#' data(polythene.new.spct)
+#' polythene.new.spct <- etola.mspct[["Clear_LD_PE_50um"]]
 #' with(polythene.new.spct,
 #'      calc_filter_multipliers(400:500, w.length.in=w.length, transmittance.in=Tfr))
 #' calc_filter_multipliers(400:500, "polythene.new")

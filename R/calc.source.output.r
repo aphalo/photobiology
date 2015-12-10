@@ -46,10 +46,13 @@ calc_source_output <- function(w.length.out,
 
   if (length(w.length.out) < 25) {
     # cubic spline
-    s.irrad.out[!out.fill.selector] <- spline(w.length.in, s.irrad.in, xout=w.length.out[!out.fill.selector])$y
+    s.irrad.out[!out.fill.selector] <-
+      spline(w.length.in, s.irrad.in, xout=w.length.out[!out.fill.selector])$y
   } else {
     # linear interpolation
-    s.irrad.out[!out.fill.selector] <- approx(x = w.length.in, y = s.irrad.in, xout = w.length.out[!out.fill.selector], ties = "ordered")$y
+    s.irrad.out[!out.fill.selector] <-
+      approx(x = w.length.in, y = s.irrad.in,
+             xout = w.length.out[!out.fill.selector], ties = "ordered")$y
   }
 
   # we check unit.in and and convert the output spectrum accordingly

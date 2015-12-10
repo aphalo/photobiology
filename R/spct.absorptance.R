@@ -23,6 +23,7 @@
 #'
 #' @examples
 #' library(photobiologyFilters)
+#' ug1.spct <- schott.mspct[["UG1"]]
 #' absorptance(ug1.spct, new_waveband(400,700))
 #'
 #' @export

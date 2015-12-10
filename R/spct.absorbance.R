@@ -19,7 +19,8 @@
 #'
 #' @examples
 #' library(photobiologyFilters)
-#' absorbance(polyester.new.spct, new_waveband(400,700))
+#' polythene.new.spct <- etola.mspct[["Clear_LD_PE_50um"]]
+#' absorbance(polythene.new.spct, new_waveband(400,700))
 #'
 #' @export
 #'

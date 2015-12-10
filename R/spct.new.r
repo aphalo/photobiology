@@ -43,7 +43,7 @@ source_spct <- function(w.length = NULL, s.e.irrad = NULL, s.q.irrad = NULL,
                         time.unit = c("second", "day", "exposure"),
                         bswf.used = c("none", "unknown"),
                         comment = NULL, strict.range = FALSE) {
-  if (length(w.length == 0)) {
+  if (length(w.length) == 0) {
     z <- dplyr::data_frame(w.length = numeric(), s.e.irrad = numeric())
   } else if (is.null(s.q.irrad) && (is.numeric(s.e.irrad))) {
     z <- dplyr::data_frame(w.length, s.e.irrad)
@@ -66,12 +66,14 @@ source_spct <- function(w.length = NULL, s.e.irrad = NULL, s.q.irrad = NULL,
 #' @rdname source_spct
 #'
 #' @param counts numeric vector with raw counts expressed per scan
+#' @param instr.desc a list
+#' @param instr.settings a list
 #'
 #' @export
 #'
 raw_spct <- function(w.length = NULL, counts=NULL, comment=NULL,
                      instr.desc, instr.settings) {
-  if (length(w.length == 0)) {
+  if (length(w.length) == 0) {
     z <- dplyr::data_frame(w.length = numeric(), counts = numeric())
   } else {
     z <- dplyr::data_frame(w.length = w.length, counts = counts)
@@ -92,7 +94,7 @@ raw_spct <- function(w.length = NULL, counts=NULL, comment=NULL,
 #' @export
 #'
 cps_spct <- function(w.length = NULL, cps=NULL, comment=NULL) {
-  if (length(w.length == 0)) {
+  if (length(w.length) == 0) {
     z <- dplyr::data_frame(w.length = numeric(), cps = numeric())
   } else {
     z <- dplyr::data_frame(w.length = w.length, cps = cps)
@@ -116,7 +118,7 @@ cps_spct <- function(w.length = NULL, cps=NULL, comment=NULL) {
 response_spct <- function(w.length, s.e.response = NULL, s.q.response = NULL,
                           time.unit = c("second", "day", "exposure"),
                           comment = NULL) {
-  if (length(w.length == 0)) {
+  if (length(w.length) == 0) {
     z <- dplyr::data_frame(w.length = numeric(), s.e.response = numeric())
   } else if (is.null(s.q.response) && (is.numeric(s.e.response))) {
     z <- dplyr::data_frame(w.length, s.e.response)
@@ -150,7 +152,7 @@ response_spct <- function(w.length, s.e.response = NULL, s.q.response = NULL,
 filter_spct <- function(w.length=NULL, Tfr=NULL, Tpc=NULL, A=NULL,
                         Tfr.type=c("total", "internal"),
                         comment=NULL, strict.range = FALSE) {
-  if (length(w.length == 0)) {
+  if (length(w.length) == 0) {
     z <- dplyr::data_frame(w.length = numeric(), Tfr = numeric())
   } else if (is.null(Tpc) && is.null(A) && is.numeric(Tfr)) {
     z <- dplyr::data_frame(w.length, Tfr)
@@ -180,7 +182,7 @@ filter_spct <- function(w.length=NULL, Tfr=NULL, Tpc=NULL, A=NULL,
 reflector_spct <- function(w.length = NULL, Rfr=NULL, Rpc=NULL,
                            Rfr.type=c("total", "specular"),
                            comment=NULL, strict.range = FALSE) {
-  if (length(w.length == 0)) {
+  if (length(w.length) == 0) {
     z <- dplyr::data_frame(w.length = numeric(), Rfr = numeric())
   } else if (is.null(Rpc) && is.numeric(Rfr)) {
     z <- dplyr::data_frame(w.length, Rfr)
@@ -205,7 +207,7 @@ object_spct <- function(w.length=NULL, Rfr=NULL, Tfr=NULL,
                         Tfr.type=c("total", "internal"),
                         Rfr.type=c("total", "specular"),
                         comment=NULL, strict.range = FALSE) {
-  if (length(w.length == 0)) {
+  if (length(w.length) == 0) {
     z <- dplyr::data_frame(w.length = numeric(),
                            Rfr = numeric(), Tfr = numeric())
   } else {
@@ -232,7 +234,7 @@ chroma_spct <- function(w.length=NULL,
                         y,
                         z,
                         comment=NULL, strict.range = FALSE) {
-  if (length(w.length == 0)) {
+  if (length(w.length) == 0) {
     z <- dplyr::data_frame(w.length = numeric(),
                            x = numeric(), y = numeric(), z = numeric())
   } else {   z <- dplyr::data_frame(w.length, x, y, z)

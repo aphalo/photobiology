@@ -1781,7 +1781,7 @@ getWhereMeasured.generic_spct <- function(x, ...) {
 #' generic_spct or derived-class object.
 #'
 #' @param x a generic_spct object
-#' @param inst.desc a list
+#' @param instr.desc a list
 #'
 #' @return x
 #'
@@ -1833,7 +1833,7 @@ getInstrDesc <- function(x) {
 #' generic_spct or derived-class object.
 #'
 #' @param x a generic_spct object
-#' @param inst.settings a list
+#' @param instr.settings a list
 #'
 #' @return x
 #'

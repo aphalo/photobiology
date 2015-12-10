@@ -17,6 +17,7 @@
 #' @export transmittance
 #' @examples
 #' library(photobiologyFilters)
+#' polyester.new.spct <- mcdermit.mspct[["Autostat_CT5_125um"]]
 #' transmittance(polyester.new.spct, waveband(c(400, 700)))
 #'
 #' @note The \code{use.hinges} parameter controls speed optimization. The
