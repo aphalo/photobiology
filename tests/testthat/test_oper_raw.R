@@ -3,11 +3,35 @@ context("raw_spct")
 
 test_that("constructor", {
 
+  empty.spct <- raw_spct()
+  expect_true(is.raw_spct(empty.spct))
+  expect_true(is.any_spct(empty.spct))
+  expect_named(empty.spct, c("w.length", "counts"))
+  expect_equal(nrow(empty.spct), 0L)
+
   my.spct <- raw_spct(w.length = 400:409, counts = 64000)
 
   expect_equal(my.spct[["counts"]], rep(64000, length.out = 10))
   expect_equal(my.spct[["w.length"]], 400:409)
   expect_named(my.spct, c("w.length", "counts"))
+  expect_true(is.raw_spct(my.spct))
+  expect_true(is.any_spct(my.spct))
+  expect_false(is.cps_spct(my.spct))
+  expect_false(is.source_spct(my.spct))
+  expect_false(is.filter_spct(my.spct))
+  expect_false(is.reflector_spct(my.spct))
+  expect_false(is.object_spct(my.spct))
+  expect_false(is.response_spct(my.spct))
+  expect_false(is.chroma_spct(my.spct))
+
+  my.df <- data.frame(w.length = 400:409, counts = 64000)
+  my.spct <- as.raw_spct(my.df)
+
+  expect_equal(my.spct[["counts"]], rep(64000, length.out = 10))
+  expect_equal(my.spct[["w.length"]], 400:409)
+  expect_named(my.spct, c("w.length", "counts"))
+  expect_true(is.raw_spct(my.spct))
+  expect_true(is.any_spct(my.spct))
 })
 
 

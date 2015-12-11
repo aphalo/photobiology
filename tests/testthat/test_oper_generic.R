@@ -7,6 +7,8 @@ test_that("constructor", {
   setGenericSpct(my.spct)
   expect_equal(class(my.spct)[1], c("generic_spct") )
   expect_equal(attr(my.spct, "spct.version", exact = TRUE), 2)
+  expect_true(is.any_spct(my.spct))
+  expect_true(is.generic_spct(my.spct))
 
   expect_equal(names(my.spct), c("w.length", "x"))
   expect_is(my.spct, "generic_spct")

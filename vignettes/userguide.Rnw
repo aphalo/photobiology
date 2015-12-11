@@ -156,6 +156,7 @@ The package defines several classes intended to be used to store different types
 \textnormal{Name} & \textnormal{Variables} & \textnormal{Attributes} \\
 \midrule
 generic\_spct & w.length & \\
+raw\_spct & w.length, counts & \\
 cps\_spct & w.length, cps & \\
 source\_spct & w.length, s.e.irrad, s.q.irrad & time.unit, bswf \\
 filter\_spct & w.length, Tfr, A & Tfr.type \\
@@ -192,6 +193,7 @@ An assumption of the package is that wavelengths are always expressed in nanomet
 A: stored & & \\
 \midrule
 w.length & nm &  \\
+counts & n & \\
 cps & \cps & \\
 s.e.irrad &  \wattnm & time.unit = "second" \\
 s.e.irrad &  \jdaynm & time.unit = "day" \\
@@ -403,6 +405,7 @@ The package defines several classes intended to be used to store \emph{collectio
 \textnormal{Name} & \textnormal{Member objects} & \textnormal{Attributes}\\
 \midrule
 generic\_mspct & generic\_spct $+$ \textnormal{any derived} & names, dim, comment \\
+raw\_mspct & raw\_spct & names, dim, comment \\
 cps\_mspct & cps\_spct & names, dim, comment \\
 source\_mspct & source\_spct & names, dim, comment \\
 filter\_mspct & filter\_spct & names, dim, comment \\
@@ -771,6 +774,7 @@ objects belonging to different classes, and meaningless combinations return \tex
 \toprule
 e1 & \verb|+| & \verb|-| & \verb|*| & \verb|/| & \verb|^| & e2 & \textnormal{value} \\
 \midrule
+raw\_spct & \Y & \Y &\Y  & \Y & \Y & raw\_spct & raw\_spct \\
 cps\_spct & \Y & \Y &\Y  & \Y & \Y & cps\_spct & cps\_spct \\
 source\_spct & \Y & \Y &\Y  & \Y & \Y & source\_spct & source\_spct \\
 filter\_spct (T) & \N & \N & \Y & \Y  & \N & filter\_spct & filter\_spct \\
@@ -780,6 +784,7 @@ object\_spct & \N & \N & \N & \N &\N & object\_spct & -- \\
 response\_spct & \Y & \Y & \Y & \Y & \N & response\_spct & response\_spct \\
 chroma\_spct & \Y  & \Y & \Y & \Y & \Y & chroma\_spct & chroma\_spct \\
 \midrule
+raw\_spct & \Y  & \Y &\Y  & \Y & \Y & numeric & raw\_spct \\
 cps\_spct & \Y  & \Y &\Y  & \Y & \Y & numeric & cps\_spct \\
 source\_spct & \Y  & \Y &\Y  & \Y & \Y & numeric & source\_spct \\
 filter\_spct & \Y  &\Y  & \Y &\Y  & \Y & numeric & filter\_spct \\
@@ -860,6 +865,7 @@ The most common maths functions, as well as unary minus and plus, are also imple
 \toprule
 e1 & \verb|+, -| & \verb|log, exp| & trig. & \verb|round| & \verb|sqrt| & \textnormal{value} \\
 \midrule
+raw\_spct & \Y & \Y &\Y  & \Y & \Y & raw\_spct \\
 cps\_spct & \Y & \Y &\Y  & \Y & \Y & cps\_spct \\
 source\_spct & \Y & \Y &\Y  & \Y & \Y & source\_spct \\
 filter\_spct & \Y & \Y & \Y & \Y  & \Y &  filter\_spct \\

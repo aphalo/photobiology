@@ -3,6 +3,24 @@ library(lubridate)
 
 context("waveband")
 
+test_that("construction", {
+
+  wb2.fun <- function(x){x * 2}
+  wb2 <- waveband(c(400,700), SWF.q.fun = wb2.fun,
+                  wb.name = "wb2", norm = 300, weight = "BSWF", SWF.norm = 300)
+
+  expect_true(is.waveband(wb2))
+  expect_true(is_effective(wb2))
+
+  wb2.fun <- function(x){x * 2}
+  wb2 <- waveband(c(400,700), SWF.e.fun = wb2.fun,
+                  wb.name = "wb2", norm = 300, weight = "BSWF", SWF.norm = 300)
+
+  expect_true(is.waveband(wb2))
+  expect_true(is_effective(wb2))
+
+})
+
 test_that("product energy", {
 
   wb1 <- waveband(c(400,700), wb.name = "wb1")
@@ -10,6 +28,11 @@ test_that("product energy", {
   wb2 <- waveband(c(400,700), SWF.q.fun = wb2.fun, SWF.e.fun = wb2.fun,
                   wb.name = "wb2", norm = 300, weight = "BSWF", SWF.norm = 300)
 
+  expect_true(is.waveband(wb1))
+  expect_true(is.waveband(wb2))
+
+  expect_false(is_effective(wb1))
+  expect_true(is_effective(wb2))
 
   my.spct <- source_spct(w.length = 200:420, s.e.irrad = 1)
 
@@ -41,6 +64,12 @@ test_that("product photon", {
   wb2.fun <- function(x){x * 2}
   wb2 <- waveband(c(400,700), SWF.q.fun = wb2.fun, SWF.e.fun = wb2.fun,
                   wb.name = "wb2", norm = 300, weight = "BSWF", SWF.norm = 300)
+
+  expect_true(is.waveband(wb1))
+  expect_true(is.waveband(wb2))
+
+  expect_false(is_effective(wb1))
+  expect_true(is_effective(wb2))
 
   my.spct <- source_spct(w.length = 200:420, s.q.irrad = 1)
 

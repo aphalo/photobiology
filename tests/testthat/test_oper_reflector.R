@@ -3,6 +3,12 @@ context("reflector_spct")
 
 test_that("constructor fraction", {
 
+  empty.spct <- reflector_spct()
+  expect_true(is.reflector_spct(empty.spct))
+  expect_true(is.any_spct(empty.spct))
+  expect_named(empty.spct, c("w.length", "Rfr"))
+  expect_equal(nrow(empty.spct), 0L)
+
   my.spct <- reflector_spct(w.length = 400:409, Rfr = 0.1)
   expect_equal(class(my.spct)[1:2], c("reflector_spct", "generic_spct") )
   expect_equal(attr(my.spct, "spct.version", exact = TRUE), 2)
@@ -13,6 +19,26 @@ test_that("constructor fraction", {
   expect_equal(my.spct[["w.length"]], 400:409)
   expect_named(my.spct, c("w.length", "Rfr"))
   expect_null(attr(my.spct, "time.unit", exact = TRUE))
+
+  expect_true(is.reflector_spct(my.spct))
+  expect_true(is.any_spct(my.spct))
+  expect_false(is.raw_spct(my.spct))
+  expect_false(is.source_spct(my.spct))
+  expect_false(is.cps_spct(my.spct))
+  expect_false(is.filter_spct(my.spct))
+  expect_false(is.object_spct(my.spct))
+  expect_false(is.response_spct(my.spct))
+  expect_false(is.chroma_spct(my.spct))
+
+  my.df <- data.frame(w.length = 400:409, Rfr = 0.1)
+  my.spct <- as.reflector_spct(my.df)
+
+  expect_equal(class(my.spct)[1:2], c("reflector_spct", "generic_spct") )
+  expect_equal(attr(my.spct, "spct.version", exact = TRUE), 2)
+  expect_named(my.spct, c("w.length", "Rfr"))
+  expect_true(is.reflector_spct(my.spct))
+  expect_true(is.any_spct(my.spct))
+
 })
 
 test_that("constructor percent", {
@@ -26,6 +52,10 @@ test_that("constructor percent", {
   expect_equal(my.spct[["w.length"]], 400:409)
   expect_named(my.spct, c("w.length", "Rfr"))
   expect_null(attr(my.spct, "time.unit", exact = TRUE))
+
+  expect_true(is.reflector_spct(my.spct))
+  expect_true(is.any_spct(my.spct))
+
 })
 
 test_that("oper", {

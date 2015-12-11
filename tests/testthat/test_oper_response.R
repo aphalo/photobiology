@@ -4,9 +4,37 @@ context("response_spct")
 
 test_that("constructor energy", {
 
+  empty.spct <- response_spct()
+  expect_true(is.response_spct(empty.spct))
+  expect_true(is.any_spct(empty.spct))
+  expect_named(empty.spct, c("w.length", "s.e.response"))
+  expect_equal(nrow(empty.spct), 0L)
+
   my.spct <- response_spct(w.length = 400:409, s.e.response = 1)
   expect_equal(class(my.spct)[1:2], c("response_spct", "generic_spct") )
   expect_equal(attr(my.spct, "spct.version", exact = TRUE), 2)
+  expect_equal(my.spct[["s.e.response"]], rep(1, length.out = 10))
+  expect_named(my.spct, c("w.length", "s.e.response"))
+
+  expect_true(is.response_spct(my.spct))
+  expect_true(is.any_spct(my.spct))
+  expect_false(is.cps_spct(my.spct))
+  expect_false(is.source_spct(my.spct))
+  expect_false(is.filter_spct(my.spct))
+  expect_false(is.reflector_spct(my.spct))
+  expect_false(is.object_spct(my.spct))
+  expect_false(is.raw_spct(my.spct))
+  expect_false(is.chroma_spct(my.spct))
+
+  my.df <- data.frame(w.length = 400:409, s.e.response = 1)
+  my.spct <- as.response_spct(my.df)
+
+  expect_equal(class(my.spct)[1:2], c("response_spct", "generic_spct") )
+  expect_equal(attr(my.spct, "spct.version", exact = TRUE), 2)
+  expect_equal(my.spct[["s.e.response"]], rep(1, length.out = 10))
+  expect_named(my.spct, c("w.length", "s.e.response"))
+  expect_true(is.response_spct(my.spct))
+  expect_true(is.any_spct(my.spct))
 
   my.s.spct <- response_spct(w.length = 400:409, s.e.response = 1, time.unit = "second")
   my.h.spct <- response_spct(w.length = 400:409, s.e.response = 1, time.unit = "hour")
@@ -37,6 +65,24 @@ test_that("constructor photon", {
 
   my.spct <- response_spct(w.length = 400:409, s.q.response = 1)
   expect_equal(class(my.spct)[1:2], c("response_spct", "generic_spct") )
+
+  expect_equal(class(my.spct)[1:2], c("response_spct", "generic_spct") )
+  expect_equal(attr(my.spct, "spct.version", exact = TRUE), 2)
+  expect_equal(my.spct[["s.q.response"]], rep(1, length.out = 10))
+  expect_named(my.spct, c("w.length", "s.q.response"))
+  expect_true(is.response_spct(my.spct))
+  expect_true(is.any_spct(my.spct))
+
+  my.df <- data.frame(w.length = 400:409, s.q.response = 1)
+  my.spct <- as.response_spct(my.df)
+
+  expect_equal(class(my.spct)[1:2], c("response_spct", "generic_spct") )
+  expect_equal(attr(my.spct, "spct.version", exact = TRUE), 2)
+  expect_equal(my.spct[["s.q.response"]], rep(1, length.out = 10))
+  expect_named(my.spct, c("w.length", "s.q.response"))
+  expect_true(is.response_spct(my.spct))
+  expect_true(is.any_spct(my.spct))
+
 
   my.s.spct <- response_spct(w.length = 400:409, s.q.response = 1, time.unit = "second")
   my.h.spct <- response_spct(w.length = 400:409, s.q.response = 1, time.unit = "hour")

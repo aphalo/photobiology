@@ -115,7 +115,7 @@ cps_spct <- function(w.length = NULL, cps = NA, comment = NULL) {
 #'
 #' @export
 #'
-response_spct <- function(w.length, s.e.response = NULL, s.q.response = NULL,
+response_spct <- function(w.length = NULL, s.e.response = NULL, s.q.response = NULL,
                           time.unit = c("second", "day", "exposure"),
                           comment = NULL) {
   if (length(w.length) == 0) {
@@ -266,6 +266,15 @@ chroma_spct <- function(w.length=NULL,
 as.generic_spct <- function(x) {
   y <- x
   setGenericSpct(y)
+}
+
+#' @rdname as.generic_spct
+#'
+#' @export
+#'
+as.raw_spct <- function(x) {
+  y <- x
+  setRawSpct(y)
 }
 
 #' @rdname as.generic_spct

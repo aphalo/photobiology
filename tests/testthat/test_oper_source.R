@@ -5,9 +5,36 @@ context("source_spct")
 
 test_that("constructor energy", {
 
+  empty.spct <- source_spct()
+  expect_true(is.source_spct(empty.spct))
+  expect_true(is.any_spct(empty.spct))
+  expect_named(empty.spct, c("w.length", "s.e.irrad"))
+  expect_equal(nrow(empty.spct), 0L)
+
   my.spct <- source_spct(w.length = 400:409, s.e.irrad = 1)
   expect_equal(class(my.spct)[1:2], c("source_spct", "generic_spct") )
   expect_equal(attr(my.spct, "spct.version", exact = TRUE), 2)
+  expect_named(my.spct, c("w.length", "s.e.irrad"))
+
+  expect_true(is.source_spct(my.spct))
+  expect_true(is.any_spct(my.spct))
+  expect_false(is.cps_spct(my.spct))
+  expect_false(is.response_spct(my.spct))
+  expect_false(is.filter_spct(my.spct))
+  expect_false(is.reflector_spct(my.spct))
+  expect_false(is.object_spct(my.spct))
+  expect_false(is.raw_spct(my.spct))
+  expect_false(is.chroma_spct(my.spct))
+
+  my.df <- data.frame(w.length = 400:409, s.e.irrad = 1)
+  my.spct <- as.source_spct(my.df)
+
+  expect_equal(class(my.spct)[1:2], c("source_spct", "generic_spct") )
+  expect_equal(attr(my.spct, "spct.version", exact = TRUE), 2)
+  expect_equal(my.spct[["s.e.irrad"]], rep(1, length.out = 10))
+  expect_named(my.spct, c("w.length", "s.e.irrad"))
+  expect_true(is.source_spct(my.spct))
+  expect_true(is.any_spct(my.spct))
 
   my.s.spct <- source_spct(w.length = 400:409, s.e.irrad = 1, time.unit = "second")
   my.h.spct <- source_spct(w.length = 400:409, s.e.irrad = 1, time.unit = "hour")
