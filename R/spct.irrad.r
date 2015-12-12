@@ -35,7 +35,7 @@
 #'   m-2 nm-1] -> [W m-2] If time.unit is day, [J d-1 m-2 nm-1] -> [mol d-1 m-2]
 #'   or [J d-1 m-2 nm-1] -> [J m-2]
 #'
-#' @keywords manip misc
+#'
 #' @export
 #' @examples
 #' irrad(sun.spct, new_waveband(400,700), "photon")
@@ -270,7 +270,7 @@ irrad_spct <- irrad.source_spct
 #'   as argument to spct are flagged as an error
 #' @param ... other arguments (possibly ignored)
 #'
-#' @keywords manip misc
+#'
 #'
 #' @export
 #'
@@ -350,7 +350,7 @@ e_irrad.source_spct <-
 #'   as argument to spct are flagged as an error
 #' @param ... other arguments (possibly ignored)
 #'
-#' @keywords manip misc
+#'
 #'
 #' @export
 #'
@@ -431,7 +431,7 @@ q_irrad.source_spct <-
 #'   as argument to spct are flagged as an error
 #' @param ... other arguments (possibly ignored)
 #'
-#' @keywords manip misc
+#'
 #'
 #' @export
 #'
@@ -527,7 +527,7 @@ fluence.source_spct <-
 #'   as argument to spct are flagged as an error
 #' @param ... other arguments (possibly ignored)
 #'
-#' @keywords manip misc
+#'
 #'
 #' @export
 #'
@@ -617,7 +617,7 @@ q_fluence.source_spct <-
 #'   as argument to spct are flagged as an error
 #' @param ... other arguments (possibly ignored)
 #'
-#' @keywords manip misc
+#'
 #'
 #' @export
 #'

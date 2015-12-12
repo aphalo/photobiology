@@ -20,7 +20,7 @@
 #'
 #' @note When expanding an spectrum, if fill==NULL, then expansion is not
 #'   performed with a warning.
-#' @keywords manip misc
+#'
 #' @family trim functions
 #' @export
 #' @examples

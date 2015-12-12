@@ -15,7 +15,7 @@
 #' data points are available. Otherwise it uses \code{approx}. In the first case
 #' a cubic spline is used, in the second case linear interpolation, which should
 #' be faster.
-#' @keywords manip misc
+#'
 #' @examples
 #' data(sun.data)
 #' my.w.length <- 300:700

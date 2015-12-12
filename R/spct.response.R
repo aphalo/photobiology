@@ -243,7 +243,7 @@ resp_spct <-
 #'   percentage, or a vector of the same length as the list of wave.bands. The
 #'   quantity returned, although always on energy-based units, depends on the
 #'   value of \code{quantity}.
-#' @keywords manip misc
+#'
 #' @export
 #' @examples
 #' library(photobiologySensors)
@@ -303,7 +303,7 @@ e_response.response_spct <-
 #'   percentage, or a vector of the same length as the list of wave.bands. The
 #'   quantity returned, although always on photon-based units, depends on the
 #'   value of \code{quantity}.
-#' @keywords manip misc
+#'
 #' @export
 #' @examples
 #' library(photobiologySensors)

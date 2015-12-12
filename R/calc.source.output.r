@@ -18,7 +18,7 @@
 #' @return a source_spct with three numeric vectors with wavelength values
 #'   (w.length), scaled and interpolated spectral energy irradiance (s.e.irrad),
 #'   scaled and interpolated spectral photon irradiance values (s.q.irrad).
-#' @keywords manip misc
+#'
 #' @export
 #'
 #' @note This is a convenience function that adds no new functionality but makes

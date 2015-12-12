@@ -19,7 +19,7 @@
 #'   function behaves like a wrapper of the functions of the same names from
 #'   base R.
 #'
-#' @keywords manip misc
+#'
 #' @export smooth_spct
 #'
 smooth_spct <- function(x, method, strength, ...) UseMethod("smooth_spct")

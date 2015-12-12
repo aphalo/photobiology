@@ -11,7 +11,7 @@
 #'     values to use at each extreme of the range.
 #' @param ... currently ignored
 #'
-#' @keywords manip misc
+#'
 #' @export
 #'
 clean <- function(x, range, range.s.data, fill, ...) UseMethod("clean")

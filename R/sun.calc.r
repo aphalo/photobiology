@@ -16,7 +16,7 @@
 #'
 #' @family astronomy related functions
 #'
-#' @keywords manip misc
+#'
 #' @export
 #' @examples
 #' require(lubridate)
@@ -169,7 +169,7 @@ sun_angles <- function(time = lubridate::now(),
 #'
 #' @family astronomy related functions
 #'
-#' @keywords manip misc
+#'
 #' @export
 #' @examples
 #' library(lubridate)

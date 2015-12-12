@@ -13,7 +13,7 @@
 #' @param ... additional arguments passed to f
 #'
 #' @return A numeric value for the index
-#' @keywords manip misc
+#'
 #' @export
 #'
 #' @note \code{f} is most frequently \code{\link{reflectance}}, but also

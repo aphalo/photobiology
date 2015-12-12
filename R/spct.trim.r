@@ -28,7 +28,7 @@
 #'   \code{range()} returns a numeric vector of legth two, that can be
 #'   interpreted as wavelengths expressed in nm.
 #' @family trim functions
-#' @keywords manip misc
+#'
 #' @export
 #' @examples
 #' trim_spct(sun.spct, low.limit=300)

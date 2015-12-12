@@ -16,7 +16,7 @@
 #'
 #' @return a waveband objects or a list of waveband objects trimmed or filtered
 #'
-#' @keywords manip misc
+#'
 #' @family trim functions
 #' @export
 #' @examples

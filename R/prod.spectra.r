@@ -25,7 +25,7 @@
 #'   w.length2==NULL, it is assumed that both spectra are measured at the same
 #'   wavelengths, and a simple addition is used, ensuring fast calculation.
 #' @export
-#' @keywords manip misc
+#'
 #' @examples
 #' data(sun.data)
 #' head(sun.data)

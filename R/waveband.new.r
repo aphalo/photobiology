@@ -25,7 +25,7 @@
 #'   for ploting, default is wb.name
 #'
 #' @return a \code{waveband} object
-#' @keywords manip misc
+#'
 #' @export
 #' @examples
 #' waveband(c(400,700))
@@ -114,7 +114,7 @@ new_waveband <- function(w.low, w.high,
 #'   into (ignored if w.length is not numeric).
 #'
 #' @return an un-named list of wabeband objects
-#' @keywords manip misc
+#'
 #' @export
 #' @examples
 #' split_bands(c(400,500,600))

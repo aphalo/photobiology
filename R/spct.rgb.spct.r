@@ -10,7 +10,7 @@
 #'
 #' @return A color defined using \code{rgb()}. The numeric values of the RGB
 #'   components can be obtained
-#' @keywords manip misc
+#'
 #' @export
 #' @examples
 #' rgb_spct(sun.spct)

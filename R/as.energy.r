@@ -9,7 +9,7 @@
 #'
 #' @return A numeric vector of spectral (energy) irradiances
 #' @export
-#' @keywords manip misc
+#'
 #' @examples
 #' with(sun.spct, as_energy(w.length, s.q.irrad))
 #'

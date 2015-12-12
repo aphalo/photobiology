@@ -9,7 +9,7 @@
 #'
 #' @return A numeric array of spectral photon irradiances
 #' @export
-#' @keywords manip misc
+#'
 #' @examples
 #' with(sun.data, as_quantum(w.length, s.e.irrad))
 #'

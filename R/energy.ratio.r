@@ -18,7 +18,7 @@
 #'   interpolation errors
 #'
 #' @return a single numeric value giving the unitless ratio
-#' @keywords manip misc
+#'
 #' @export
 #' @examples
 #' # energy:energy ratio

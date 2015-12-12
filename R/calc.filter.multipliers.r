@@ -18,7 +18,7 @@
 #'   default is 1.0, but can be changed in the call
 #'
 #' @return a numeric vector of fractional transmittances
-#' @keywords manip misc
+#'
 #' @export
 #' @examples
 #' require(photobiologyFilters)

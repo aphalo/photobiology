@@ -13,7 +13,7 @@
 #' @param ... other arguments
 #'
 #' @return A numeric vector with no change in scale factor
-#' @keywords manip misc
+#'
 #' @export transmittance
 #' @examples
 #' library(photobiologyFilters)

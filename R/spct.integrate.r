@@ -7,10 +7,10 @@
 #' @return One or more numeric values with no change in scale factor: e.g. [W
 #'   m-2 nm-1] -> [W m-2]. Each value in the returned vector corresponds to a
 #'   variable in the spectral object, except for wavelenght.
-#' @keywords manip misc
+#'
 #' @export
 #' @examples
-#' data(sun.spct)
+#'
 #' integrate_spct(sun.spct)
 #'
 integrate_spct <- function(spct) {
@@ -37,10 +37,10 @@ integrate_spct <- function(spct) {
 #' @return One or more numeric values with no change in scale factor: e.g. [W
 #'   m-2 nm-1] -> [W m-2 nm-1]. Each value in the returned vector corresponds to a
 #'   variable in the spectral object, except for wavelenght.
-#' @keywords manip misc
+#'
 #' @export
 #' @examples
-#' data(sun.spct)
+#'
 #' average_spct(sun.spct)
 #'
 average_spct <- function(spct) {
@@ -70,10 +70,10 @@ average_spct <- function(spct) {
 #'
 #' @return A new spectral object of the same class as argument \code{spct}.
 #'
-#' @keywords manip misc
+#'
 #' @export
 #' @examples
-#' data(sun.spct)
+#'
 #' interpolate_spct(sun.spct, 400:500, NA)
 #' interpolate_spct(sun.spct, 400:500, NULL)
 #' interpolate_spct(sun.spct, seq(200, 1000, by=0.1), 0)
@@ -188,12 +188,12 @@ interpolate_mspct <- function(mspct,
           length.out = length.out)
 }
 
-#' Map a spectrum to new wavelength values.
+#' Map spectra to new wavelength values.
 #'
-#' This function gives the result of interpolating spectral data from the original set of
+#' This function returns the result of interpolating spectral data from the original set of
 #' wavelengths to a new one.
 #'
-#' @param spct generic_spct
+#' @param x an R object
 #' @param w.length.out numeric array of wavelengths (nm)
 #' @param fill a value to be assigned to out of range wavelengths
 #' @param length.out numeric value
@@ -211,37 +211,13 @@ interpolate_mspct <- function(mspct,
 #'
 #' @return A new spectral object of the same class as argument \code{spct}.
 #'
+#' @family interpolate functions
 #' @export
 #' @examples
-#' data(sun.spct)
 #' interpolate_wl(sun.spct, 400:500, NA)
 #' interpolate_wl(sun.spct, 400:500, NULL)
 #' interpolate_wl(sun.spct, seq(200, 1000, by=0.1), 0)
 #' interpolate_wl(sun.spct, c(400,500), length.out=201)
-#'
-
-#' Clip head and/or tail of a spectrum
-#'
-#' Clipping of head and tail of a spectrum based on wavelength limits, no
-#' interpolation used.
-#'
-#' @param x an R object
-#' @param range a numeric vector of length two, or any other object for which
-#'   function \code{range()} will return range of walengths expressed in
-#'   nanometres.
-#' @param ... not used
-#'
-#' @return an R object of same class as input, most frequently of a shorter
-#'   length, and never longer.
-#'
-#' @note The condition tested is \code{wl >= range[1] & wl < (range[2] + 1e-13)}.
-#'
-#' @family trim functions
-#' @export
-#' @examples
-#' interpolate_wl(sun.spct, range = c(400, 500))
-#' interpolate_wl(sun.spct, range = c(NA, 500))
-#' interpolate_wl(sun.spct, range = c(400, NA))
 #'
 interpolate_wl <- function(x, range, ...) UseMethod("interpolate_wl")
 

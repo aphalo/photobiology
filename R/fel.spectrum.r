@@ -12,7 +12,7 @@
 #' @return a dataframe with four numeric vectors with wavelength values
 #'   (w.length), energy and photon irradiance (s.e.irrad, s.q.irrad) depending
 #'   on the argument passed to unit.out (s.irrad).
-#' @keywords manip misc
+#'
 #' @export FEL_spectrum
 #'
 #' @note This is function is valid for wavelengths in the range 180 nm to 495
