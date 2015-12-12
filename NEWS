@@ -19,6 +19,9 @@ to zero when called without arguments or with a list of length zero as first
 argument "l". Earlier behaviour was to trigger an error , which is not
 consistent with R usual expectations.
 
+Add method clip_wl() to more easily select data for a range of wavelengths from
+a spectrum.
+
 Add support for raw counts spectra, useful for package developers
 -----------------------------------------------------------------
 Add new classes raw_spct and raw_mspct to store raw counts from spectrometers,

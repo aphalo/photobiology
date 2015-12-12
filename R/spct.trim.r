@@ -32,15 +32,16 @@
 #' @export
 #' @examples
 #' trim_spct(sun.spct, low.limit=300)
-#' trim_spct(sun.spct, low.limit=300)
 #' trim_spct(sun.spct, low.limit=300, fill=NULL)
 #' trim_spct(sun.spct, low.limit=300, fill=NA)
 #' trim_spct(sun.spct, low.limit=300, fill=0.0)
-#'
+#' trim_spct(sun.spct, range = c(300, 400))
+#' trim_spct(sun.spct, range = c(300, NA))
+#' trim_spct(sun.spct, range = c(NA, 400))
 trim_spct <- function(spct, range=NULL, low.limit=NULL, high.limit=NULL,
                       use.hinges=TRUE, fill=NULL, byref=FALSE, verbose=TRUE)
 {
-  if (is.null(spct)) {
+  if (length(spct) == 0) {
     return(spct)
   }
   if (is.numeric(range)) {
@@ -75,7 +76,7 @@ trim_spct <- function(spct, range=NULL, low.limit=NULL, high.limit=NULL,
   trim.low <- !is.null(low.limit)
   trim.high <- !is.null(high.limit)
   if (trim.low && trim.high && high.limit - low.limit < 1e-7) {
-    warning("When trimming 'range' must be a finite wavelength interval > 1E-7 nm")
+    warning("When trimming, 'range' must be a finite wavelength interval > 1E-7 nm")
     return(spct[FALSE, ]) # returns a spct object with nrow equal to zero
   }
   names.spct <- names(spct)
@@ -218,4 +219,71 @@ trim_mspct <- function(mspct,
     assign(name, z, parent.frame(), inherits = TRUE)
   }
   z
+}
+
+#' Clip head and/or tail of a spectrum
+#'
+#' Clipping of head and tail of a spectrum based on wavelength limits, no
+#' interpolation used.
+#'
+#' @param spct an object of class "generic_spct"
+#' @param range a numeric vector of length two, or any other object for which
+#'   function \code{range()} will return two
+#' @param ... not used
+#'
+#' @return a spectrum object of same class as input with its tails.
+#'
+#' @note The condition tested is \code{wl >= range[1] & wl < (range[2] + 1e-13)}.
+#'
+#' @family trim functions
+#' @export
+#' @examples
+#' clip_spct(sun.spct, range = c(400, 500))
+#' clip_spct(sun.spct, range = c(NA, 500))
+#' clip_spct(sun.spct, range = c(400, NA))
+#'
+clip_wl <- function(x, range, ...) UseMethod("clip_wl")
+
+#' @describeIn clip_wl Default for generic function
+#'
+#' @export
+#'
+clip_wl.default <- function(x, range, ...) {
+  warning("'clip_wl' is not defined for objects of class ", class(x)[1])
+  x
+}
+
+#' @describeIn clip_wl Clip an object of class "generic_spct" or derived.
+#'
+#' @export
+#'
+clip_spct.generic_spct <- function(x, range = NULL, ...) {
+  if (is.null(range)) {
+    return(x)
+  }
+  guard <- 1e-13
+  stopifnot(is.any_spct(x))
+  stopifnot(!all(is.na(range)))
+  if (is.numeric(range) && length(range) == 2) {
+    if (is.na(range[1])) {
+      x[x[["w.length"]] < range[2] + guard, ]
+    } else if (is.na(range[2])) {
+        x[x[["w.length"]] >= range[1], ]
+    } else {
+      x[x[["w.length"]] >= range[1] & x[["w.length"]] < range[2] + guard, ]
+    }
+  } else {
+    range = range(range)
+    x[x[["w.length"]] >= range[1] & x[["w.length"]] < range[2] + guard, ]
+  }
+}
+
+#' @describeIn clip_wl  Clip an object of class "generic_mspct" or derived.
+#'
+#' @export
+#'
+clip_wl.generic_mspct <- function(x, range = NULL, ...) {
+  msmsply(x = x,
+          .fun = clip_wl,
+          range = range)
 }
