@@ -1003,7 +1003,7 @@ In this section we describe methods and functions that take one or more spectral
     A2T, T2A & -- & -- & + & -- & -- & -- \\
     clip\_wl & + & + & + & + & + & + \\
     trim\_wl & + & + & + & + & + & + \\
-    (trim\_spct) & + & + & + & + & + & + \\
+    (trim\_mspct) & + & + & + & + & + & + \\
     interpolate\_wl & + & + &+ & + & + & + \\
     (interpolate\_mspct) & + & + &+ & + & + & + \\
     fscale & + & + & + & + & -- & -- \\
@@ -1131,7 +1131,7 @@ clean(polyester.spct - 0.053)
 Converting spectra available at a given set of wavelengths values to a different one, is frequently needed when operating with several spectra of different origin. One can increase the \emph{apparent} resolution by interpolation, and reduce it by local averaging or smoothing and resampling. The same function works on all \texttt{spct} objects, interpolating every column except \texttt{w.length} and replacing in this last column the old wavelength values with the new ones supplied as argument. The optional argument \texttt{fill.value} control what value is assigned to wavelengths in the new data that are outside the range of the old wavelengths.
 
 <<>>=
-interpolate_spct(sun.spct, seq(400, 500, by = 0.1))
+interpolate_wl(sun.spct, seq(400, 500, by = 0.1))
 @
 
 \subsection{Trimming and clipping}\label{sec:trim:spct}

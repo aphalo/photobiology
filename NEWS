@@ -6,24 +6,29 @@ classes. Add test cases for smooth_spct().
 
 Add more examples to doccumentation.
 
-photobiology 0.8.12
-===================
+photobiology 0.9.0
+==================
 
+Fix minor bugs
+--------------
 All spectral object constructors return an object with length equal to zero when
 called without arguments, or with argument "w.length" of length equal to zero.
-Earlier behaviour was to return NA, which is not consistent with R usual
+Earlier behaviour was to return NA, which is not consistent with R's usual
 expectations.
 
 All constructors for collections of spectra return an object with length equal
 to zero when called without arguments or with a list of length zero as first
-argument "l". Earlier behaviour was to trigger an error , which is not
-consistent with R usual expectations.
+argument "l". Earlier behaviour was to trigger an error, which is not
+consistent with R's usual expectations.
 
-Add method clip_wl() to more easily select data for a range of wavelengths from
-a single spectrum or from each member of a collection of spectra.
+New functionality
+-----------------
+Add method clip_wl() to more easily select data for a range of wavelengths.
+Add method trim_wl() from trimming, and method interpolate_wl(). All three
+methods are implemented for individual spectra and for collections of spectra.
 
-Add support for raw counts spectra, useful for package developers
------------------------------------------------------------------
+New functionality (only useful to package developers)
+-----------------------------------------------------
 Add new classes raw_spct and raw_mspct to store raw counts from spectrometers,
 constructors raw_spct() and raw_mspct(), and corresponding setRawSpct() and
 is.raw_spct() and as.raw_spct() functions.
@@ -33,6 +38,12 @@ setInstrDesc() and setInstrSettings() to handle metadata about instrument and
 instrument settings used to acquire the spectral data. These classes and
 methods are building blocks to be used in the development of spectral-data
 acquisition packages.
+
+Why "0.9.x" started?
+--------------------
+Changes are backwards compatible except for "suggests" for data examples.
+New classes added and several existing methods implemented for them. These
+classes are being used for re-writing of package MayaCalc.
 
 photobiology 0.8.11
 ===================
@@ -64,7 +75,7 @@ output parallels the output of the print() method for spectra.
 photobiology 0.8.9
 ==================
 
-Small edit to msdply() to allow setting of colum names. Update to _mspct summary
+Small edit to msdply() to allow setting of column names. Update to _mspct summary
 methods to use the names in the list of wavebands, if present, as column names
 for the returned data frame.
 
@@ -84,7 +95,7 @@ and tanpi() methods for generic_mspct and derived classes.
 Make internal changes needed for an update to photobiologyInOut.
 Add option "photobiolgy.strict.range" to allow changing the default behaviour
 for out-of-range values. (Used internally to avoid redundant checks and
-repetead warning messages.)
+repeated warning messages.)
 
 Update package Title in docs.
 Update User Guide, tables and their formatting.

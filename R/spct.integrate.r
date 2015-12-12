@@ -19,7 +19,9 @@ integrate_spct <- function(spct) {
   comment.spct <- comment(spct)
   integrals <- NULL
   for (data.col in names.data) {
-    integrals <- c(integrals, integrate_irradiance(spct[["w.length"]], spct[[eval(data.col)]]))
+    integrals <- c(integrals,
+                   integrate_irradiance(spct[["w.length"]],
+                                        spct[[eval(data.col)]]))
   }
   names(integrals) <- gsub("^s.", x = names.data, replacement = "")
   comment(integrals) <- comment.spct
@@ -80,9 +82,9 @@ average_spct <- function(spct) {
 #' interpolate_spct(sun.spct, c(400,500), length.out=201)
 #'
 interpolate_spct <- function(spct,
-                             w.length.out=NULL,
-                             fill=NA,
-                             length.out=NULL) {
+                             w.length.out = NULL,
+                             fill = NA,
+                             length.out = NULL) {
   stopifnot(is.any_spct(spct))
   if (!is.null(length.out) && (is.na(length.out) || length.out < 1L) ) {
     return(spct[NA])
@@ -177,9 +179,9 @@ interpolate_spct <- function(spct,
 #' @export
 #'
 interpolate_mspct <- function(mspct,
-                             w.length.out=NULL,
-                             fill=NA,
-                             length.out=NULL) {
+                              w.length.out = NULL,
+                              fill = NA,
+                              length.out = NULL) {
 
   msmsply(mspct = mspct,
           .fun = interpolate_spct,
@@ -197,6 +199,7 @@ interpolate_mspct <- function(mspct,
 #' @param w.length.out numeric array of wavelengths (nm)
 #' @param fill a value to be assigned to out of range wavelengths
 #' @param length.out numeric value
+#' @param ... not used
 #'
 #' @details If \code{length.out} it is a numeric value, then gives the number of rows in the
 #' output, if it is \code{NULL}, the values in the numeric vector \code{w.length.out} are used.
@@ -219,48 +222,53 @@ interpolate_mspct <- function(mspct,
 #' interpolate_wl(sun.spct, seq(200, 1000, by=0.1), 0)
 #' interpolate_wl(sun.spct, c(400,500), length.out=201)
 #'
-interpolate_wl <- function(x, range, ...) UseMethod("interpolate_wl")
+interpolate_wl <- function(x,
+                           w.length.out,
+                           fill,
+                           length.out,
+                           ...) UseMethod("interpolate_wl")
 
 #' @describeIn interpolate_wl Default for generic function
 #'
 #' @export
 #'
-interpolate_wl.default <- function(x, range, ...) {
+interpolate_wl.default <- function(x,
+                                   w.length.out,
+                                   fill,
+                                   length.out,
+                                   ...) {
   warning("'interpolate_wl' is not defined for objects of class ", class(x)[1])
   x
 }
 
-#' @describeIn interpolate_wl Clip an object of class "generic_spct" or derived.
+#' @describeIn interpolate_wl  Interpolate wavelength in an object of class
+#'   "generic_spct" or derived.
 #'
 #' @export
 #'
-interpolate_wl.generic_spct <- function(x, range = NULL, ...) {
-  if (is.null(range)) {
-    return(x)
-  }
-  guard <- 1e-13
-  stopifnot(is.any_spct(x))
-  stopifnot(!all(is.na(range)))
-  if (is.numeric(range) && length(range) == 2) {
-    if (is.na(range[1])) {
-      x[x[["w.length"]] < range[2] + guard, ]
-    } else if (is.na(range[2])) {
-      x[x[["w.length"]] >= range[1], ]
-    } else {
-      x[x[["w.length"]] >= range[1] & x[["w.length"]] < range[2] + guard, ]
-    }
-  } else {
-    range = range(range)
-    x[x[["w.length"]] >= range[1] & x[["w.length"]] < range[2] + guard, ]
-  }
+interpolate_wl.generic_spct <- function(x,
+                                        w.length.out = NULL,
+                                        fill = NA,
+                                        length.out = NULL,
+                                        ...) {
+  interpolate_spct(spct = x,
+                   w.length.out = w.length.out,
+                   fill = fill,
+                   length.out = length.out)
 }
 
-#' @describeIn interpolate_wl  Clip an object of class "generic_mspct" or derived.
+#' @describeIn interpolate_wl  Interpolate wavelength in an object of class
+#'   "generic_mspct" or derived.
 #'
 #' @export
 #'
-interpolate_wl.generic_mspct <- function(x, range = NULL, ...) {
-  msmsply(mspct = x,
-          .fun = interpolate_wl,
-          range = range)
+interpolate_wl.generic_mspct <- function(x,
+                                         w.length.out = NULL,
+                                         fill = NA,
+                                         length.out = NULL,
+                                         ...) {
+  interpolate_mspct(mspct = x,
+                    w.length.out = w.length.out,
+                    fill = fill,
+                    length.out = length.out)
 }

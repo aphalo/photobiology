@@ -231,13 +231,12 @@ trim_mspct <- function(mspct,
 #' Triming of head and tail of a spectrum based on wavelength limits,
 #' interpolation used by default. Expansion is also possible.
 #'
-#' @param spct an object of class "generic_spct"
+#' @param x an R object
 #' @param range a numeric vector of length two, or any other object for which
 #'   function range() will return two
 #' @param use.hinges logical, if TRUE (the default) wavelengths in nm.
 #' @param fill if \code{fill == NULL} then tails are deleted, otherwise tails
 #'   are filled with the value of fill.
-#' @param verbose logical
 #' @param ... not used
 #'
 #' @return an R object of same class as input, usually of a different
