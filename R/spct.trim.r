@@ -38,8 +38,13 @@
 #' trim_spct(sun.spct, range = c(300, 400))
 #' trim_spct(sun.spct, range = c(300, NA))
 #' trim_spct(sun.spct, range = c(NA, 400))
-trim_spct <- function(spct, range=NULL, low.limit=NULL, high.limit=NULL,
-                      use.hinges=TRUE, fill=NULL, byref=FALSE, verbose=TRUE)
+trim_spct <- function(spct,
+                      range = NULL,
+                      low.limit = NULL, high.limit = NULL,
+                      use.hinges = TRUE,
+                      fill = NULL,
+                      byref = FALSE,
+                      verbose = getOption("photobiology.verbose", default = TRUE) )
 {
   if (length(spct) == 0) {
     return(spct)
@@ -201,7 +206,7 @@ trim_mspct <- function(mspct,
                        use.hinges = TRUE,
                        fill = NULL,
                        byref = FALSE,
-                       verbose = TRUE) {
+                       verbose = getOption("photobiology.verbose", default = TRUE) ) {
   name <- substitute(mspct)
 
   z <- msmsply(mspct = mspct,
@@ -221,26 +226,108 @@ trim_mspct <- function(mspct,
   z
 }
 
+#' Trim head and/or tail of a spectrum
+#'
+#' Triming of head and tail of a spectrum based on wavelength limits,
+#' interpolation used by default. Expansion is also possible.
+#'
+#' @param spct an object of class "generic_spct"
+#' @param range a numeric vector of length two, or any other object for which
+#'   function range() will return two
+#' @param use.hinges logical, if TRUE (the default) wavelengths in nm.
+#' @param fill if \code{fill == NULL} then tails are deleted, otherwise tails
+#'   are filled with the value of fill.
+#' @param verbose logical
+#' @param ... not used
+#'
+#' @return an R object of same class as input, usually of a different
+#'   length, either shorter or longer.
+#'
+#' @note By default the \code{w.length} values for the first and last rows
+#'   in the returned object are the values supplied as \code{range}.
+#'
+#' @family trim functions
+#' @export
+#' @examples
+#' trim_wl(sun.spct, range = c(400, 500))
+#' trim_wl(sun.spct, range = c(NA, 500))
+#' trim_wl(sun.spct, range = c(400, NA))
+#'
+trim_wl <- function(x, range, use.hinges, fill, ...) UseMethod("trim_wl")
+
+#' @describeIn trim_wl Default for generic function
+#'
+#' @export
+#'
+trim_wl.default <- function(x, range, use.hinges, fill, ...) {
+  warning("'trim_wl' is not defined for objects of class ", class(x)[1])
+  x
+}
+
+#' @describeIn trim_wl Trim an object of class "generic_spct" or derived.
+#'
+#' @export
+#'
+trim_wl.generic_spct <- function(x,
+                                 range = NULL,
+                                 use.hinges = TRUE,
+                                 fill = NULL, ...) {
+  if (is.null(range)) {
+    return(x)
+  }
+  trim_spct(spct = x,
+            range = range,
+            low.limit = NULL,
+            high.limit = NULL,
+            use.hinges = use.hinges,
+            fill = fill,
+            byref = FALSE,
+            verbose = getOption("photobiology.verbose", default = FALSE) )
+}
+
+#' @describeIn trim_wl  Trim an object of class "generic_mspct" or derived.
+#'
+#' @export
+#'
+trim_wl.generic_mspct <- function(x,
+                                  range = NULL,
+                                  use.hinges = TRUE,
+                                  fill = NULL, ...) {
+  if (is.null(range)) {
+    return(x)
+  }
+  trim_mspct(mspct = x,
+             range = range,
+             low.limit = NULL,
+             high.limit = NULL,
+             use.hinges = use.hinges,
+             fill = fill,
+             byref = FALSE,
+             verbose = getOption("photobiology.verbose", default = FALSE) )
+}
+
 #' Clip head and/or tail of a spectrum
 #'
 #' Clipping of head and tail of a spectrum based on wavelength limits, no
 #' interpolation used.
 #'
-#' @param spct an object of class "generic_spct"
+#' @param x an R object
 #' @param range a numeric vector of length two, or any other object for which
-#'   function \code{range()} will return two
+#'   function \code{range()} will return range of walengths expressed in
+#'   nanometres.
 #' @param ... not used
 #'
-#' @return a spectrum object of same class as input with its tails.
+#' @return an R object of same class as input, most frequently of a shorter
+#'   length, and never longer.
 #'
 #' @note The condition tested is \code{wl >= range[1] & wl < (range[2] + 1e-13)}.
 #'
 #' @family trim functions
 #' @export
 #' @examples
-#' clip_spct(sun.spct, range = c(400, 500))
-#' clip_spct(sun.spct, range = c(NA, 500))
-#' clip_spct(sun.spct, range = c(400, NA))
+#' clip_wl(sun.spct, range = c(400, 500))
+#' clip_wl(sun.spct, range = c(NA, 500))
+#' clip_wl(sun.spct, range = c(400, NA))
 #'
 clip_wl <- function(x, range, ...) UseMethod("clip_wl")
 
@@ -257,7 +344,7 @@ clip_wl.default <- function(x, range, ...) {
 #'
 #' @export
 #'
-clip_spct.generic_spct <- function(x, range = NULL, ...) {
+clip_wl.generic_spct <- function(x, range = NULL, ...) {
   if (is.null(range)) {
     return(x)
   }
@@ -268,7 +355,7 @@ clip_spct.generic_spct <- function(x, range = NULL, ...) {
     if (is.na(range[1])) {
       x[x[["w.length"]] < range[2] + guard, ]
     } else if (is.na(range[2])) {
-        x[x[["w.length"]] >= range[1], ]
+      x[x[["w.length"]] >= range[1], ]
     } else {
       x[x[["w.length"]] >= range[1] & x[["w.length"]] < range[2] + guard, ]
     }
@@ -283,7 +370,7 @@ clip_spct.generic_spct <- function(x, range = NULL, ...) {
 #' @export
 #'
 clip_wl.generic_mspct <- function(x, range = NULL, ...) {
-  msmsply(x = x,
+  msmsply(mspct = x,
           .fun = clip_wl,
           range = range)
 }

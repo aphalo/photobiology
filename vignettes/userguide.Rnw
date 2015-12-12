@@ -571,7 +571,7 @@ msmsply(two.mspct, `+`, 0.1)
 
 and continue with a more complex example in which we trim each spectrum
 <<>>=
-msmsply(two.mspct, trim_spct, range = c(281, 500), fill = NA)
+msmsply(two.mspct, trim_wl, range = c(281, 500), fill = NA)
 @
 
 In the second example we pass two arguments by name to the applied function. The number of arguments is not fixed, but the spectrum will be always passed as the first argument to the function.
@@ -960,8 +960,11 @@ In this section we describe methods and functions that take one or more spectral
     e2q, q2e & + & + & -- & -- & -- & -- \\
     A2T, T2A & -- & -- & + & -- & -- & -- \\
     subset & + & + & + & + & + & + \\
-    trim\_spct & + & + & + & + & + & + \\
-    interpolate\_spct & + & + & + & + & + & + \\
+    clip\_wl & + & + & + & + & + & + \\
+    trim\_wl & + & + & + & + & + & + \\
+    (trim\_spct) & + & + & + & + & + & + \\
+    interpolate\_wl & + & + & + & + & + & + \\
+    (interpolate\_spct) & + & + & + & + & + & + \\
     fscale & + & + & + & + & -- & --  \\
     fshift & + & + & + & + & -- & --  \\
     normalize & + & + & + & + & -- & --  \\
@@ -998,8 +1001,11 @@ In this section we describe methods and functions that take one or more spectral
     \midrule
     e2q, q2e & + & + & -- & -- & -- & -- \\
     A2T, T2A & -- & -- & + & -- & -- & -- \\
-    trim\_spct & + & + & + & + & + & + \\
-    interpolate\_spct & + & + &+ & + & + & + \\
+    clip\_wl & + & + & + & + & + & + \\
+    trim\_wl & + & + & + & + & + & + \\
+    (trim\_spct) & + & + & + & + & + & + \\
+    interpolate\_wl & + & + &+ & + & + & + \\
+    (interpolate\_mspct) & + & + &+ & + & + & + \\
     fscale & + & + & + & + & -- & -- \\
     fshift & + & + & + & + & -- & -- \\
     normalize & + & + & + & + & -- & -- \\
@@ -1128,32 +1134,72 @@ Converting spectra available at a given set of wavelengths values to a different
 interpolate_spct(sun.spct, seq(400, 500, by = 0.1))
 @
 
-\subsection{Trimming}\label{sec:trim:spct}
+\subsection{Trimming and clipping}\label{sec:trim:spct}
 
-Sometimes it is desirable to change the range of wavelengths included in a spectrum. If we are interested in a given part of the spectrum, there is no need to do calculations or plotting the whole spectrum. Sometimes we may want to expand the range of wavelengths, filling the expansion of all other variables with a certain value (i.e.\ a number, or NA.) In contrast to indexing, or subsetting, \emph{trimming} ensures that there will be spectral data returned at the boundaries of the trimmed region. These values are obtained by interpolation when they are not already present in the data.
+\subsubsection{Method \texttt{clip\_wl()}}
 
-We can supply the arguments \texttt{band}, \texttt{low.limit}, \texttt{high.limit}, and \texttt{fill}. Either \texttt{band} or \texttt{low.limit} and/or \texttt{high.limit} arguments should supplied, but not both at once.
+Sometimes it is desirable to change the range of wavelengths included in a spectrum. If we are interested in a given part of the spectrum, there is no need to do calculations or plotting the whole spectrum. To select part a spectrum based on a range of wavelengths we may use the \texttt{clip\_wl} method.
 
-<<>>=
-trim_spct(sun.spct, PAR())
-@
-
+The range of wavelengths expressed in nanometres can be given as numeric vector of length two.
 
 <<>>=
-trim_spct(sun.spct, low.limit = 297)
+clip_wl(sun.spct, range = c(400, 402))
+clip_wl(sun.spct, range = c(400, NA))
 @
 
-The default \texttt{fill} value is \texttt{NULL} which means deleting the values outside the trimmed region. However, it is possible to supply a different argument.
+As for \texttt{trim\_wl()} the range can be also supplied as a \texttt{waveband} object, or any other object for which \texttt{range()} returns a numeric range. Even a different spectrum object is acceptable.
 
 <<>>=
-trim_spct(sun.spct, low.limit = 297, fill = 0)
+clip_wl(sun.spct, range = UVA())
 @
 
-In addition, when fill is not \texttt{NULL}, expansion is possible.
+The result can be a spectrum of length zero.
 
 <<>>=
-trim_spct(sun.spct, low.limit = 290, fill = 0)
+clip_wl(sun.spct, range = c(100, 200))
 @
+
+\subsubsection{Method \texttt{trim\_wl()}}
+
+Sometimes, we need more flexibility. We may want to replace the observed values outside a certain range or expand the range of wavelengths, filling the expansion of all other variables with a certain value (i.e.\ a number, or NA.). In contrast to \emph{clipping} (or functionally equivalent, indexing, or subsetting), \emph{trimming} ensures that there will be spectral data returned at the boundaries of the trimmed region. These values are obtained by interpolation when they are not already present in the data.
+
+More flexibility is available in method \texttt{trim\_wl()}, to which we can supply arguments \texttt{range}, \texttt{use.hinges}, and \texttt{fill}. By default interpolation is used at the boundaries of the \texttt{range}.
+
+<<>>=
+trim_wl(sun.spct, c(282.5, NA))
+clip_wl(sun.spct, c(282.5, NA))
+@
+
+As for \texttt{clip\_wl()} the range can be also supplied as a \texttt{waveband} object, or any other object for which \texttt{range()} returns a numeric range. Even a different spectrum object is acceptable.
+
+<<>>=
+trim_wl(sun.spct, PAR())
+@
+
+The default for \texttt{fill} is \texttt{NULL} which results in deletion values outside the trimmed region. However, it is possible to supply a different argument, to be used to replace the off-range data values.
+
+<<>>=
+trim_wl(sun.spct, c(281.5, NA), fill = NA)
+@
+
+Furthermore, when fill is not \texttt{NULL}, expansion is possible.
+
+<<>>=
+trim_wl(sun.spct, c(275, NA), fill = 0)
+@
+
+By default interpolation at the boundaries is used, but setting \texttt{use.hinges} to \texttt{FALSE} results in clipping, a behaviour similar to that of \texttt{clip\_wl} only if \texttt{fill == NULL}.
+
+<<>>=
+trim_wl(sun.spct, c(281.5, NA), fill = NA)
+trim_wl(sun.spct, c(281.5, NA), fill = NA, use.hinges = FALSE)
+@
+
+When \texttt{use.hinges == TRUE} and expanssion or replacement is done, two observations are inserted at each boundary, differing in wavelength by $1 \times 10^{-12}$\,nm to prevent rounding errors in later calculations.
+
+\subsubsection{Functions \texttt{trim\_spct} and \texttt{trim\_spct}}
+
+Functions \texttt{trim\_spct} and \texttt{trim\_spct} are not generic, and add even more flexibility, but \texttt{trim\_wl} should be preferred in user scripts.
 
 \subsection{Convolving weights}
 

@@ -187,3 +187,104 @@ interpolate_mspct <- function(mspct,
           fill = fill,
           length.out = length.out)
 }
+
+#' Map a spectrum to new wavelength values.
+#'
+#' This function gives the result of interpolating spectral data from the original set of
+#' wavelengths to a new one.
+#'
+#' @param spct generic_spct
+#' @param w.length.out numeric array of wavelengths (nm)
+#' @param fill a value to be assigned to out of range wavelengths
+#' @param length.out numeric value
+#'
+#' @details If \code{length.out} it is a numeric value, then gives the number of rows in the
+#' output, if it is \code{NULL}, the values in the numeric vector \code{w.length.out} are used.
+#' If both are not \code{NULL} then the range of \code{w.length.out} and \code{length.out} are
+#' used to generate a vector of wavelength. A value of \code{NULL} for \code{fill} prevents
+#' extrapolation.
+#'
+#' @note The default \code{fill = NA} fills extrpolated values with NA. Giving NULL as
+#' argument for \code{fill} deletes wavelengths outside the input data range from the
+#' returned spectrum. A numerical value can be also be provided as fill. This function calls
+#' \code{interpolate_spectrum} for each non-wavelength column in the input spectra object.
+#'
+#' @return A new spectral object of the same class as argument \code{spct}.
+#'
+#' @export
+#' @examples
+#' data(sun.spct)
+#' interpolate_wl(sun.spct, 400:500, NA)
+#' interpolate_wl(sun.spct, 400:500, NULL)
+#' interpolate_wl(sun.spct, seq(200, 1000, by=0.1), 0)
+#' interpolate_wl(sun.spct, c(400,500), length.out=201)
+#'
+
+#' Clip head and/or tail of a spectrum
+#'
+#' Clipping of head and tail of a spectrum based on wavelength limits, no
+#' interpolation used.
+#'
+#' @param x an R object
+#' @param range a numeric vector of length two, or any other object for which
+#'   function \code{range()} will return range of walengths expressed in
+#'   nanometres.
+#' @param ... not used
+#'
+#' @return an R object of same class as input, most frequently of a shorter
+#'   length, and never longer.
+#'
+#' @note The condition tested is \code{wl >= range[1] & wl < (range[2] + 1e-13)}.
+#'
+#' @family trim functions
+#' @export
+#' @examples
+#' interpolate_wl(sun.spct, range = c(400, 500))
+#' interpolate_wl(sun.spct, range = c(NA, 500))
+#' interpolate_wl(sun.spct, range = c(400, NA))
+#'
+interpolate_wl <- function(x, range, ...) UseMethod("interpolate_wl")
+
+#' @describeIn interpolate_wl Default for generic function
+#'
+#' @export
+#'
+interpolate_wl.default <- function(x, range, ...) {
+  warning("'interpolate_wl' is not defined for objects of class ", class(x)[1])
+  x
+}
+
+#' @describeIn interpolate_wl Clip an object of class "generic_spct" or derived.
+#'
+#' @export
+#'
+interpolate_wl.generic_spct <- function(x, range = NULL, ...) {
+  if (is.null(range)) {
+    return(x)
+  }
+  guard <- 1e-13
+  stopifnot(is.any_spct(x))
+  stopifnot(!all(is.na(range)))
+  if (is.numeric(range) && length(range) == 2) {
+    if (is.na(range[1])) {
+      x[x[["w.length"]] < range[2] + guard, ]
+    } else if (is.na(range[2])) {
+      x[x[["w.length"]] >= range[1], ]
+    } else {
+      x[x[["w.length"]] >= range[1] & x[["w.length"]] < range[2] + guard, ]
+    }
+  } else {
+    range = range(range)
+    x[x[["w.length"]] >= range[1] & x[["w.length"]] < range[2] + guard, ]
+  }
+}
+
+#' @describeIn interpolate_wl  Clip an object of class "generic_mspct" or derived.
+#'
+#' @export
+#'
+interpolate_wl.generic_mspct <- function(x, range = NULL, ...) {
+  msmsply(mspct = x,
+          .fun = interpolate_wl,
+          range = range)
+}

@@ -20,7 +20,7 @@ argument "l". Earlier behaviour was to trigger an error , which is not
 consistent with R usual expectations.
 
 Add method clip_wl() to more easily select data for a range of wavelengths from
-a spectrum.
+a single spectrum or from each member of a collection of spectra.
 
 Add support for raw counts spectra, useful for package developers
 -----------------------------------------------------------------
