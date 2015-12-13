@@ -1,6 +1,6 @@
 %\VignetteEngine{knitr}
 %\VignetteIndexEntry{User guide}
-%\VignetteDepends{knitr, photobiology, photobiologyWavebands, photobiologySun, photobiologyFilters, photobiologyReflectors, photobiologySensors, lubridate}
+%\VignetteDepends{knitr, photobiology, lubridate}
 %\VignetteKeyword{misc}
 
 \documentclass{article}
@@ -78,11 +78,6 @@ opts_chunk$set(fig.path='figure/pos-', fig.align='center', fig.show='hold',
 
 <<example-0-hiden, eval=TRUE, include=FALSE>>=
 library(photobiology)
-library(photobiologyWavebands)
-library(photobiologySun)
-library(photobiologyFilters)
-library(photobiologyReflectors)
-library(photobiologySensors)
 library(lubridate)
 @
 
@@ -131,7 +126,7 @@ options(dplyr.print_min = 4)
 
 For explicit calls to \texttt{print()} its argument \texttt{n} can be used to control the number of lines printed. If \texttt{n} is set to \verb|Inf| the whole spectrum is always printed.
 
-<<>>=
+<<eval=FALSE>>=
 print(sun.spct, n = 3)
 @
 
@@ -139,7 +134,7 @@ print(sun.spct, n = 3)
 
 The \texttt{summary()} method for spectra is based on base R's \texttt{summary()} method for data frames, and accepts the same arguments, and obeys R's global \texttt{digits} option for its default.
 
-<<>>=
+<<eval=FALSE>>=
 summary(sun.spct)
 @
 
@@ -262,14 +257,14 @@ by 10, and each value in the vector of spectral irradiances is divided by 1000.
 
 Before giving examples of how to construct objects to store spectral data we show how to query the class of an object, and how to query the class of a spectrum. Consistently with R design, the package provides `is' functions for querying the type of spectra objects.
 
-<<>>=
+<<eval=FALSE>>=
 is.any_spct(sun.spct)
 is.source_spct(sun.spct)
 @
 
 In addition function \texttt{class.spc} returns directly the spectrum-related class attributes.
 
-<<>>=
+<<eval=FALSE>>=
 class_spct(sun.spct)
 class(sun.spct)
 @
@@ -666,12 +661,17 @@ When defining a waveband which uses a SWF, a function can be supplied either bas
 To create a waveband object we use constructor function \texttt{waveband}, and optionally giving a name to it.
 
 <<>>=
-my_PAR <- waveband(c(400, 700), wb.name = "my_PAR")
+PAR <- waveband(c(400, 700), wb.name = "PAR")
+UVA <- waveband(c(315, 400), wb.name = "UVA")
+UVB <- waveband(c(280, 315), wb.name = "UVB")
+UVC <- waveband(c(100, 280), wb.name = "UVC")
+UV  <- waveband(c(100, 400), wb.name =  "UV")
 @
 
 When including a BSWF, we supply, one or two versions of functions returning the weights as a function of wavelength. Several such functions are defined in package \PBWB as well as constructors using them. Here we give three examples of how equivalent wavebands can be defined based on a SWF. Although the constructor is smart enough to derive the missing function when only one function is supplied, performance may suffer.
 
-<<>>=
+<<eval=FALSE>>=
+# not run
 my_CIE_1 <-
   waveband(c(250, 400), weight = "SWF", SWF.e.fun = CIE_e_fun, SWF.norm = 298)
 my_CIE_2 <-
@@ -685,7 +685,6 @@ The first argument to \texttt{waveband()} does not need to be a numeric vector o
 
 <<>>=
 waveband(sun.spct)
-waveband(my_CIE_1)
 @
 
 \subsection{Querying the class}
@@ -693,12 +692,10 @@ waveband(my_CIE_1)
 The function \texttt{is.waveband} can the used to query any R object. This function returns a logical value.
 
 <<>>=
-is.waveband(PAR())
-PAR <- PAR()
 is.waveband(PAR)
 @
 
-Above, we demonstrate that \texttt{PAR()} is a waveband constructor returning a waveband object, and \texttt{PAR} is a waveband object.
+Above, we demonstrate that \texttt{PAR} is a waveband object, the function \texttt{photobiologyWavebands::PAR()} is a waveband constructor returning a waveband object. See package \PBWB for details on pre-defined waveband constructors for frequently used wavelength ranges and biological spectral weighting functions (BSWFs).
 
 \subsection{Retrieving properties}
 
@@ -813,7 +810,6 @@ sun.spct * sun.spct
 When meaningful, operations between different spectra are also allowed. For example, it is possible to simulate the effect of a filter on a light source by multiplying (or convolving) the two spectra.
 
 <<>>=
-polyester.spct <- mcdermit.mspct[["Autostat_CT5_125um"]]
 sun.spct * polyester.spct
 @
 
@@ -1150,7 +1146,7 @@ clip_wl(sun.spct, range = c(400, NA))
 As for \texttt{trim\_wl()} the range can be also supplied as a \texttt{waveband} object, or any other object for which \texttt{range()} returns a numeric range. Even a different spectrum object is acceptable.
 
 <<>>=
-clip_wl(sun.spct, range = UVA())
+clip_wl(sun.spct, range = UVA)
 @
 
 The result can be a spectrum of length zero.
@@ -1383,7 +1379,7 @@ spread(sun.spct)
 stepsize(sun.spct)
 @
 
-\subsubsection{Collections of spectra}
+\subsubsection{Collections of spectra}\label{sec:collections}
 
 \begin{framed}
 \noindent
@@ -1394,8 +1390,8 @@ Collections of spectra can be useful not only for time-series of spectra or spec
 
 <<>>=
 filters.mspct <- filter_mspct(list(none = clear.spct,
-                                   ug1 = schott.mspct[["UG1"]],
-                                   gg400 = schott.mspct[["GG400"]]))
+                                   pet = polyester.spct,
+                                   yellow = yellow.gel.spct))
 range(filters.mspct)
 @
 
@@ -1493,22 +1489,20 @@ irrad(sun.spct, UV_bands(), quantity = "average")
 
 Collections of spectra can be useful not only for time-series of spectra or spectral images, but also when dealing with a small group of related spectra. In the example below we show how to use a collection of spectra for estimating irradiances under different filters set up in sunlight.
 
-We first create a collection of filter spectra:
+We reuse collection of filter spectra \texttt{filters.mspct} from section \ref{sec:collections} on page \pageref{sec:collections}.
 <<>>=
-filters.mspct <- filter_mspct(list(none = clear.spct,
-                                   ug1 = schott.mspct[["UG1"]],
-                                   gg400 = schott.mspct[["GG400"]]))
+names(filters.mspct)
 @
 
 We then convolve each filter's spectral transmittance by the spectral irradiance of the light source
 <<>>=
 filtered_sun <- convolve_each(filters.mspct, sun.spct)
-irrad(filtered_sun, list(UVA(), VIS()))
+irrad(filtered_sun, list(UVA, PAR))
 @
 
 The code above can also be written as a single statement
 <<>>=
-irrad(convolve_each(filters.mspct, sun.spct), list(UVA(), VIS()))
+irrad(convolve_each(filters.mspct, sun.spct), list(UVA, PAR))
 @
 
 It is also possible to use an `apply' function. Syntax parallels that of base R's and package \texttt{plyr}'s. See sections \ref{sec:apply} and \ref{sec:convolve} for more details.
@@ -1517,7 +1511,7 @@ One thing to remember, is that operators in R are just normal functions with spe
 
 <<>>=
 filtered_sun <- msmsply(filters.mspct, `*`, sun.spct)
-irrad(filtered_sun, list(UVA(), VIS()))
+irrad(filtered_sun, list(UVA, PAR))
 @
 
 \subsubsection{Numeric vectors}
@@ -1529,7 +1523,7 @@ Function \texttt{irradiance} takes an array of wavelengths (sorted in strictly i
 The functions taking numerical vectors as arguments can be used with data stored as vectors, or using \texttt{with} with data frames, data tables, lists, and spectra objects.
 
 <<>>=
-with(sun.spct, photon_irradiance(w.length, s.e.irrad, PAR()))
+with(sun.spct, photon_irradiance(w.length, s.e.irrad, PAR))
 @
 
 The recommended practice is to use \texttt{with}, as above.
@@ -1546,10 +1540,10 @@ fluence(sun.spct, exposure.time = 3600) # seconds
 fluence(sun.spct, exposure.time = hms("01:00:00"))
 @
 
-and, to obtain the photon fluence for a range of wavelengths, in the example, photosynthetically active radiation, we use \texttt{PAR()} that is a predefined waveband constructor, for 25 minutes of exposure we use.
+and, to obtain the photon fluence for a range of wavelengths, in the example, photosynthetically active radiation, we use the \texttt{PAR} waveband object earlier defined, for 25 minutes of exposure.
 
 <<>>=
-e_fluence(sun.spct, PAR(), exposure.time = hms("00:25:00"))
+e_fluence(sun.spct, PAR, exposure.time = hms("00:25:00"))
 @
 
 \subsection{Photon and energy ratios}
@@ -1559,25 +1553,25 @@ e_fluence(sun.spct, PAR(), exposure.time = hms("00:25:00"))
 The functions described here, in there simplest use, calculate a ratio between two wavebands. The function \texttt{q\_ratio} returning photon ratios. However both waveband parameters can take lists of wavebands as arguments, with normal recycling rules in effect. The corresponding function \texttt{e\_ratio} returns energy ratios.
 
 <<>>=
-q_ratio(sun.spct, UVB(), PAR())
+q_ratio(sun.spct, UVB, PAR)
 q_ratio(sun.spct,
-        list(UVC(), UVB(), UVA()),
-        UV())
+        list(UVC, UVB, UVA,
+        UV))
 q_ratio(sun.spct,
-        UVB(),
-        list(UV(), PAR()))
+        UVB,
+        list(UV, PAR))
 @
 
 Function \texttt{qe\_ratio}, has only one waveband parameter, and returns the `photon' to `energy' ratio, while its complement \texttt{eq\_ratio} returns the `energy' to `photon' ratio.
 
 <<>>=
-qe_ratio(sun.spct, list(Blue(), Green(), Red()))
+qe_ratio(sun.spct, list(UVB, PAR))
 @
 
 \subsubsection{Collections of spectra}
 
 <<>>=
-q_ratio(filtered_sun, list(UVB(), UVA()), PAR())
+q_ratio(filtered_sun, list(UVB, UVA, PAR))
 @
 
 \subsubsection{Vectors}
@@ -1591,8 +1585,7 @@ To calculate the photon ratio between UVB and PAR photon irradiance in these to 
 
 <<example-ratios-01>>=
 with(sun.data,
-     photon_ratio(w.length, s.e.irrad, UVB(), PAR())
-)
+     photon_ratio(w.length, s.e.irrad, UVB, PAR))
 @
 
 \subsection{Normalized difference indexes}
@@ -1614,25 +1607,22 @@ normalized_diff_ind(sun.spct,
 The functions \texttt{transmittance}, \texttt{absorptance} and \texttt{absorbance} take \texttt{filter\_spct} as argument, while function \texttt{reflectance} takes \texttt{reflector\_spct} objects as argument. Functions \texttt{transmittance}, \texttt{reflectance} and \texttt{absorptance} are also implemented for \texttt{object\_spct}. These functions return as default an average value for these quantities \textbf{assuming} a light source with a flat spectral energy output, but this can be changed as described above for \texttt{irrad()}.
 
 <<>>=
-transmittance(polyester.spct, list(UVB(), UVA(), PAR()))
+transmittance(polyester.spct, list(UVB, UVA, PAR))
 @
 
 It is more likely that we would like to calculate these values with reference to light of a certain spectral quality. This needs to be calculated by hand, which is not difficult.
 
 <<>>=
-irrad(sun.spct * polyester.spct, list(UVB(), UVA(), PAR()), wb.trim = TRUE) /
-  irrad(sun.spct, list(UVB(), UVA(), PAR()), wb.trim = TRUE)
+irrad(sun.spct * polyester.spct, list(UVB, UVA, PAR, wb.trim = TRUE)) /
+  irrad(sun.spct, list(UVB, UVA, PAR, wb.trim = TRUE))
 @
 
 \subsubsection{Collections of spectra}
 
-Here we construct a collection of filter spectra, and then we calculate the transmittance of these filters for two wavebands, obtaining the results as a data frame, with one row per filter, and one column per waveband.
+Here we construct a collection of filter spectra, and then we calculate the transmittance of these filters for two wavebands, obtaining the results as a data frame, with one row per filter, and one column per waveband. We reuse once more \texttt{filters.mspct} from section \ref{sec:collections} on page \pageref{sec:collections}.
 
 <<>>=
-filters.mspct <- filter_mspct(list(none = clear.spct,
-                                   ug1 = schott.mspct[["UG1"]],
-                                   gg400 = schott.mspct[["GG400"]]))
-transmittance(filters.mspct, list(UVA(), VIS()))
+transmittance(filters.mspct, list(UVA, PAR))
 @
 
 \subsection{Integrated response}
@@ -1642,13 +1632,13 @@ transmittance(filters.mspct, list(UVA(), VIS()))
 The functions  \texttt{response}, \texttt{e\_response} and \texttt{q\_response} take \texttt{response\_spct} objects as arguments, and return the integrated value for each waveband (integrated over wavelength) \textbf{assuming} a light source with a flat spectral energy or photon output respectively. If no waveband is supplied as argument, the whole spectrum is integrated.
 
 <<>>=
-response(Vital_BW_20.spct)
+response(photodiode.spct)
 @
 
 When a waveband, or list of wavebands, is supplied the response is calculated for the wavebands.
 
 <<>>=
-e_response(Vital_BW_20.spct, list(UVB(), UVA()))
+e_response(photodiode.spct, list(UVB, UVA))
 @
 
 This function has an additional argument \texttt{quantity}, with default \texttt{"total"}, as described for \texttt{irrad()}.
@@ -1656,9 +1646,9 @@ This function has an additional argument \texttt{quantity}, with default \texttt
 \subsubsection{Collections of spectra}
 
 <<>>=
-sensors <- response_mspct(list(BW20 = Vital_BW_20.spct,
-                               Berger = Berger_UV_erythemal.spct))
-response(sensors, list(UVC(), UVB(), UVA()), quantity = "contribution")
+sensors <- response_mspct(list(GaAsP = photodiode.spct,
+                               CCD = ccd.spct))
+response(sensors, list(UVB, UVA, PAR), quantity = "contribution")
 @
 
 \subsection{Integration over wavelengths}
@@ -1813,7 +1803,7 @@ And also a \texttt{color} method for \texttt{source\_spct}.
 
 <<>>=
 color(sun.spct)
-color(sun.spct * schott.mspct[["RG630"]])
+color(sun.spct * yellow.gel.spct)
 @
 
 \section{Optimizing performance}

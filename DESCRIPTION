@@ -2,7 +2,7 @@ Package: photobiology
 Type: Package
 Title: Base Photobiological Calculations
 Version: 0.9.0
-Date: 2015-12-12
+Date: 2015-12-13
 Author: Pedro J. Aphalo <pedro.aphalo@helsinki.fi>
 Maintainer: Pedro J. Aphalo <pedro.aphalo@helsinki.fi>
 Description: Calculation of effective (weighted) and unweighted
@@ -15,21 +15,16 @@ VignetteBuilder: knitr
 Depends:
     R (>= 3.2.0)
 Imports:
-    Rcpp (>= 0.12.1),
-    lubridate (>= 1.3.3),
+    Rcpp (>= 0.12.2),
+    lubridate (>= 1.5.0),
     plyr (>= 1.8.3),
     dplyr (>= 0.4.3),
     splus2R (>= 1.2-0),
     caTools (>= 1.17.1)
 Suggests:
-    photobiologyWavebands (>= 0.3.3),
-    photobiologySun (>= 0.3.6),
-    photobiologyFilters (>= 0.4.0),
-    photobiologyReflectors (>= 0.3.1),
-    photobiologySensors (>= 0.3.2),
-    photobiologyPlants (>= 0.3.2),
     knitr (>= 1.11),
-    testthat (>= 0.10.0)
+    testthat (>= 0.11.0),
+    roxygen2 (>= 5.0.1)
 LazyLoad: yes
 LazyData: yes
 ByteCompile: true

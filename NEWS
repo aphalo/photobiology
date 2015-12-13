@@ -4,7 +4,8 @@ TODO
 Add test cases for chroma_spct and improve tests for the _mspct
 classes. Add test cases for smooth_spct().
 
-Add more examples to doccumentation.
+Add more examples to documentation by moving them from the User Guide to
+help pages. Use only built-in example spectra.
 
 photobiology 0.9.0
 ==================
@@ -20,6 +21,19 @@ All constructors for collections of spectra return an object with length equal
 to zero when called without arguments or with a list of length zero as first
 argument "l". Earlier behaviour was to trigger an error, which is not
 consistent with R's usual expectations.
+
+Removed functionality
+---------------------
+Function calc_filter_multipliers() has been deleted.
+
+New data
+--------
+Add example data to make this package's documentation independent of other
+packages in the suite.
+
+Filters: clear.spct, opaque.spct, polyester.spct, yellow.gel.spct
+Sensors: photodiode.spct, ccd.spct
+Objects: black_body.spct, white_body.spct, clear_body.spct
 
 New functionality
 -----------------
@@ -41,9 +55,10 @@ acquisition packages.
 
 Why "0.9.x" started?
 --------------------
-Changes are backwards compatible except for "suggests" for data examples.
-New classes added and several existing methods implemented for them. These
-classes are being used for re-writing of package MayaCalc.
+Changes are backwards compatible but new classes added and several existing
+methods implemented for them. A couple of new methods were added and
+implemented for all spectral classes and collections of spectra clasess.
+The new classes are being used for re-writing package MayaCalc.
 
 photobiology 0.8.11
 ===================
