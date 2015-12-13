@@ -34,5 +34,5 @@ NULL
 #' @docType data
 #' @keywords datasets
 #' @format A \code{object_spct} object with 4 rows and 3 variables
-#' @name opaque.spct
+#' @name clear_body.spct
 NULL

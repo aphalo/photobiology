@@ -27,7 +27,7 @@ NULL
 #' @docType data
 #' @keywords datasets
 #' @format A \code{filter_spct} object with 611 rows and 2 variables
-#' @name yellow.gel.spct
+#' @name yellow_gel.spct
 NULL
 
 #' @title Theoretical spectrum of a clear clear material

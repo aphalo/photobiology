@@ -104,6 +104,8 @@ shared_member_class <- function(l, target.set = spct_classes()) {
 #' @note Setting class = source_spct or class = source_mspct makes no difference
 #'
 #' @family collections of spectra classes family
+#' @examples
+#' filter_mspct(list(polyester.spct, yellow_gel.spct))
 #'
 generic_mspct <- function(l = NULL, class = "generic_spct",
                           ncol = 1, byrow = FALSE,
@@ -239,6 +241,11 @@ chroma_mspct <- function(l = NULL, ncol = 1, byrow = FALSE, ...) {
 #'
 #' @export
 #' @rdname is.generic_mspct
+#' @examples
+#' my.mspct <- filter_mspct(list(polyester.spct, yellow_gel.spct))
+#' is.any_mspct(my.mspct)
+#' is.filter_mspct(my.mspct)
+#' is.source_mspct(my.mspct)
 #'
 is.generic_mspct <- function(x) inherits(x, "generic_mspct")
 

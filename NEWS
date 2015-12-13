@@ -10,6 +10,10 @@ help pages. Use only built-in example spectra.
 photobiology 0.9.0
 ==================
 
+This version removes all two-way dependencies between this package and other
+packages in the r4photobiology suite. This should make installation of the
+source distribution a lot easier.
+
 Fix minor bugs
 --------------
 All spectral object constructors return an object with length equal to zero when
@@ -21,6 +25,9 @@ All constructors for collections of spectra return an object with length equal
 to zero when called without arguments or with a list of length zero as first
 argument "l". Earlier behaviour was to trigger an error, which is not
 consistent with R's usual expectations.
+
+Function trim_waveband() was not returning the values described in some
+cases. Now the function really behaves as originally documented.
 
 Removed functionality
 ---------------------
@@ -40,6 +47,8 @@ New functionality
 Add method clip_wl() to more easily select data for a range of wavelengths.
 Add method trim_wl() from trimming, and method interpolate_wl(). All three
 methods are implemented for individual spectra and for collections of spectra.
+Methods clip_wl() and trim_wl() have been also implemented for individual
+waveband objects and for lists of waveband objects.
 
 New functionality (only useful to package developers)
 -----------------------------------------------------
@@ -55,10 +64,11 @@ acquisition packages.
 
 Why "0.9.x" started?
 --------------------
-Changes are backwards compatible but new classes added and several existing
-methods implemented for them. A couple of new methods were added and
-implemented for all spectral classes and collections of spectra clasess.
-The new classes are being used for re-writing package MayaCalc.
+Changes are backwards compatible but new classes were added and several existing
+methods were implemented for them. Seven new methods were added and
+implemented for all spectral classes and collections of spectra classes.
+The new classes are being used for writing a new package intended to
+replace package MayaCalc.
 
 photobiology 0.8.11
 ===================

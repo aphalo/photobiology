@@ -276,8 +276,6 @@ trim_wl.generic_spct <- function(x,
   }
   trim_spct(spct = x,
             range = range,
-            low.limit = NULL,
-            high.limit = NULL,
             use.hinges = use.hinges,
             fill = fill,
             byref = FALSE,
@@ -297,12 +295,59 @@ trim_wl.generic_mspct <- function(x,
   }
   trim_mspct(mspct = x,
              range = range,
-             low.limit = NULL,
-             high.limit = NULL,
              use.hinges = use.hinges,
              fill = fill,
              byref = FALSE,
              verbose = getOption("photobiology.verbose", default = FALSE) )
+}
+
+#' @describeIn trim_wl Trim an object of class "waveband".
+#' @param trim logical (default is TRUE which trims the wavebands at the
+#'   boundary, while FALSE discards wavebands that are partly off-boundary).
+#'
+#' @note trim_wl when applied to waveband objects always inserts hinges when
+#'   trimming.
+#'
+#' @export
+#'
+trim_wl.waveband <- function(x,
+                             range = NULL,
+                             use.hinges = TRUE,
+                             fill = NULL,
+                             trim = getOption("photobiology.waveband.trim",
+                                              default = TRUE),
+                             ...) {
+  if (is.null(range)) {
+    return(x)
+  }
+  trim_waveband(w.band = x,
+            range = range,
+            trim = trim,
+            use.hinges = use.hinges)
+}
+
+#' @describeIn trim_wl Trim a list (of "waveband" objects).
+#'
+#' @note trim_wl when applied to waveband objects always inserts hinges when
+#'   trimming.
+#'
+#' @export
+#'
+trim_wl.list <- function(x,
+                         range = NULL,
+                         use.hinges = TRUE,
+                         fill = NULL,
+                         trim = getOption("photobiology.waveband.trim",
+                                          default = TRUE),
+                         ...) {
+  stopifnot(all(sapply(x, is.waveband)))
+  if (is.null(range)) {
+    return(x)
+  }
+  trim_waveband(w.band = x,
+                range = range,
+                trim = trim,
+                use.hinges = use.hinges)
 }
 
 #' Clip head and/or tail of a spectrum
@@ -372,4 +417,31 @@ clip_wl.generic_mspct <- function(x, range = NULL, ...) {
   msmsply(mspct = x,
           .fun = clip_wl,
           range = range)
+}
+
+#' @describeIn clip_wl Clip an object of class "waveband".
+#'
+#' @export
+#'
+clip_wl.waveband <- function(x, range = NULL, ...) {
+  if (is.null(range)) {
+    return(x)
+  }
+  trim_waveband(w.band = x,
+                range = range,
+                trim = FALSE)
+}
+
+#' @describeIn clip_wl Clip a list (of objects of class "waveband").
+#'
+#' @export
+#'
+clip_wl.list <- function(x, range = NULL, ...) {
+  stopifnot(all(sapply(x, is.waveband)))
+  if (is.null(range)) {
+    return(x)
+  }
+  trim_waveband(w.band = x,
+                range = range,
+                trim = FALSE)
 }

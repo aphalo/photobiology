@@ -18,9 +18,8 @@
 #'   the wavebands is used and all BSWFs are ignored.
 #'
 #' @examples
-#' library(photobiologyFilters)
-#' polythene.new.spct <- etola.mspct[["Clear_LD_PE_50um"]]
-#' absorbance(polythene.new.spct, new_waveband(400,700))
+#' absorbance(polyester.spct, new_waveband(400,700))
+#' absorbance(yellow_gel.spct, new_waveband(400,700))
 #'
 #' @export
 #'
