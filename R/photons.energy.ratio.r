@@ -16,7 +16,7 @@
 #'   interpolation errors
 #'
 #' @return A single numeric value giving the ratio moles-photons per Joule.
-#' @keywords manip misc
+#'
 #' @export
 #' @examples
 #' # photons:energy ratio

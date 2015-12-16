@@ -20,8 +20,8 @@
 #' @return A single numeric value with no change in scale factor
 #'
 #' @examples
-#' library(photobiologyReflectors)
-#' reflectance(gold.spct, waveband(c(400,700)))
+#' reflectance(black_body.spct, waveband(c(400,700)))
+#' reflectance(white_body.spct, waveband(c(400,700)))
 #'
 #' @export
 #'

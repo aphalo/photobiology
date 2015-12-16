@@ -13,7 +13,7 @@
 #' mspct_classes()
 #'
 mspct_classes <- function() {
-  c("cps_mspct",
+  c("raw_mspct", "cps_mspct",
     "filter_mspct", "reflector_mspct",
     "source_mspct", "object_mspct",
     "response_mspct", "chroma_mspct", "generic_mspct")
@@ -104,12 +104,17 @@ shared_member_class <- function(l, target.set = spct_classes()) {
 #' @note Setting class = source_spct or class = source_mspct makes no difference
 #'
 #' @family collections of spectra classes family
+#' @examples
+#' filter_mspct(list(polyester.spct, yellow_gel.spct))
 #'
-generic_mspct <- function(l, class = "generic_spct",
+generic_mspct <- function(l = NULL, class = "generic_spct",
                           ncol = 1, byrow = FALSE,
                           dim = c(length(l) %/% ncol, ncol)) {
   if (is.any_spct(l)) {
     l <- list(l)
+  }
+  if (is.null(l)) {
+    l <- list()
   }
   stopifnot(is.list(l))
 
@@ -137,7 +142,7 @@ generic_mspct <- function(l, class = "generic_spct",
     multi_class <- c(multi_class, class(l))
     class(l) <- multi_class
   }
-  if (is.null(names(l))) {
+  if (length(l) > 0 && is.null(names(l))) {
     attr(l, "names") <- paste("spct", 1:length(l), sep = "_")
   }
   attr(l, "mspct.version") <- 2
@@ -147,12 +152,21 @@ generic_mspct <- function(l, class = "generic_spct",
   l
 }
 
+#' @describeIn generic_mspct Specialization for collections of \code{raw_spct} objects.
+#'
+#' @export
+#' @exportClass raw_mspct
+#'
+raw_mspct <- function(l = NULL, ncol = 1, byrow = FALSE, ...) {
+  generic_mspct(l, class = "raw_spct", ncol = ncol, byrow = byrow)
+}
+
 #' @describeIn generic_mspct Specialization for collections of \code{cps_spct} objects.
 #'
 #' @export
 #' @exportClass cps_mspct
 #'
-cps_mspct <- function(l, ncol = 1, byrow = FALSE, ...) {
+cps_mspct <- function(l = NULL, ncol = 1, byrow = FALSE, ...) {
   generic_mspct(l, class = "cps_spct", ncol = ncol, byrow = byrow)
 }
 
@@ -161,7 +175,7 @@ cps_mspct <- function(l, ncol = 1, byrow = FALSE, ...) {
 #' @export
 #' @exportClass source_mspct
 #'
-source_mspct <- function(l, ncol = 1, byrow = FALSE, ...) {
+source_mspct <- function(l = NULL, ncol = 1, byrow = FALSE, ...) {
   generic_mspct(l, class = "source_spct", ncol = ncol, byrow = byrow)
 }
 
@@ -170,7 +184,7 @@ source_mspct <- function(l, ncol = 1, byrow = FALSE, ...) {
 #' @export
 #' @exportClass filter_mspct
 #'
-filter_mspct <- function(l, ncol = 1, byrow = FALSE, ...) {
+filter_mspct <- function(l = NULL, ncol = 1, byrow = FALSE, ...) {
   generic_mspct(l, class = "filter_spct", ncol = ncol, byrow = byrow)
 }
 
@@ -179,7 +193,7 @@ filter_mspct <- function(l, ncol = 1, byrow = FALSE, ...) {
 #' @export
 #' @exportClass reflector_mspct
 #'
-reflector_mspct <- function(l, ncol = 1, byrow = FALSE, ...) {
+reflector_mspct <- function(l = NULL, ncol = 1, byrow = FALSE, ...) {
   generic_mspct(l, class = "reflector_spct", ncol = ncol, byrow = byrow)
 }
 
@@ -188,7 +202,7 @@ reflector_mspct <- function(l, ncol = 1, byrow = FALSE, ...) {
 #' @export
 #' @exportClass object_mspct
 #'
-object_mspct <- function(l, ncol = 1, byrow = FALSE, ...) {
+object_mspct <- function(l = NULL, ncol = 1, byrow = FALSE, ...) {
   generic_mspct(l, class = "object_spct", ncol = ncol, byrow = byrow)
 }
 
@@ -197,7 +211,7 @@ object_mspct <- function(l, ncol = 1, byrow = FALSE, ...) {
 #' @export
 #' @exportClass response_mspct
 #'
-response_mspct <- function(l, ncol = 1, byrow = FALSE, ...) {
+response_mspct <- function(l = NULL, ncol = 1, byrow = FALSE, ...) {
   generic_mspct(l, class = "response_spct", ncol = ncol, byrow = byrow)
 }
 
@@ -206,7 +220,7 @@ response_mspct <- function(l, ncol = 1, byrow = FALSE, ...) {
 #' @export
 #' @exportClass chroma_mspct
 #'
-chroma_mspct <- function(l, ncol = 1, byrow = FALSE, ...) {
+chroma_mspct <- function(l = NULL, ncol = 1, byrow = FALSE, ...) {
   generic_mspct(l, class = "chroma_spct", ncol = ncol, byrow = byrow)
 }
 
@@ -227,8 +241,18 @@ chroma_mspct <- function(l, ncol = 1, byrow = FALSE, ...) {
 #'
 #' @export
 #' @rdname is.generic_mspct
+#' @examples
+#' my.mspct <- filter_mspct(list(polyester.spct, yellow_gel.spct))
+#' is.any_mspct(my.mspct)
+#' is.filter_mspct(my.mspct)
+#' is.source_mspct(my.mspct)
 #'
 is.generic_mspct <- function(x) inherits(x, "generic_mspct")
+
+#' @rdname is.generic_mspct
+#' @export
+#'
+is.raw_mspct <- function(x) inherits(x, "raw_mspct")
 
 #' @rdname is.generic_mspct
 #' @export
@@ -280,22 +304,43 @@ is.any_mspct <- function(x) {
 #' @description Return a copy of an R object with its class set to a given type
 #'   of spectrum.
 #'
-#' @param x an R object
+#' @param x a list of spectral objects or a list of objects such as data frames
+#'   that can be converted into spectral objects.
+#' @param force.spct.class logical indicating whether to change the class
+#'   of members to \code{generic_spct} or retain the existing class.
 #'
 #' @return These functions return a copy of \code{x} converted into a given
-#'   class of spectral object, if \code{x} is a valid argument to the
-#'   correcponding set function.
+#'   class of spectral collection object, if \code{x} is a valid argument to the
+#'   corresponding set function.
+#'
+#' @note Members of \code{generic_mspct} objects can be heterogeneous: they can
+#'   belong any class derived from \code{generic_spct} and class is not
+#'   enforced. In this case when \code{x} is a list of data frames,
+#'   \code{force.spct.class = TRUE} needs to be supplied.
 #'
 #' @export
 #'
 #' @family creation of spectral objects functions
 #' @rdname as.generic_mspct
 #'
-as.generic_mspct <- function(x) {
+as.generic_mspct <- function(x, force.spct.class = FALSE) {
   y <- x
   rmDerivedMspct(y)
-  z <- plyr::llply(y, setGenericSpct)
-  generic_mspct(z)
+  if (force.spct.class) {
+    y <- plyr::llply(y, setGenericSpct)
+  }
+  generic_mspct(y)
+}
+
+#' @rdname as.generic_mspct
+#'
+#' @export
+#'
+as.raw_mspct <- function(x) {
+  y <- x
+  rmDerivedMspct(y)
+  z <- plyr::llply(y, setRawSpct)
+  raw_mspct(z)
 }
 
 #' @rdname as.generic_mspct
@@ -451,7 +496,7 @@ split2mspct <- function(x,
   do.call(collection.constr, margs)
 }
 
-#' @describeIn split2mspct
+#' @rdname split2mspct
 #' @export
 #'
 split2source_mspct <- function(x,
@@ -467,7 +512,7 @@ split2source_mspct <- function(x,
               ...)
 }
 
-#' @describeIn split2mspct
+#' @rdname split2mspct
 #' @export
 #'
 split2response_mspct <- function(x,
@@ -483,7 +528,7 @@ split2response_mspct <- function(x,
               ...)
 }
 
-#' @describeIn split2mspct
+#' @rdname split2mspct
 #' @export
 #'
 split2filter_mspct <- function(x,
@@ -499,7 +544,7 @@ split2filter_mspct <- function(x,
               ...)
 }
 
-#' @describeIn split2mspct
+#' @rdname split2mspct
 #' @export
 #'
 split2reflector_mspct <- function(x,
@@ -515,7 +560,7 @@ split2reflector_mspct <- function(x,
               ...)
 }
 
-#' @describeIn split2mspct
+#' @rdname split2mspct
 #' @export
 #'
 split2cps_mspct <- function(x,
@@ -524,6 +569,22 @@ split2cps_mspct <- function(x,
                             ncol = 1, byrow = FALSE, ...) {
   split2mspct(x = x,
               member.class = "cps_spct",
+              spct.data.var = spct.data.var,
+              w.length.var = w.length.var,
+              idx.var = idx.var,
+              ncol = ncol, byrow = byrow,
+              ...)
+}
+
+#' @rdname split2mspct
+#' @export
+#'
+split2raw_mspct <- function(x,
+                            spct.data.var = "count",
+                            w.length.var = "w.length", idx.var = NULL,
+                            ncol = 1, byrow = FALSE, ...) {
+  split2mspct(x = x,
+              member.class = "raw_spct",
               spct.data.var = spct.data.var,
               w.length.var = w.length.var,
               idx.var = idx.var,

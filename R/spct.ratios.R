@@ -18,7 +18,7 @@
 #'   pairs of wavebands, with name attribute set to the name of the wavebands
 #'   unless a named list of wavebands is supplied in which case the names of the
 #'   list elements are used, with "(q:q)" appended.
-#' @keywords manip misc
+#'
 #' @export
 #' @examples
 #' q_ratio(sun.spct, new_waveband(400,500), new_waveband(400,700))
@@ -97,7 +97,7 @@ q_ratio.source_spct <-
 #'   unless a named list of wavebands is supplied in which case the names of the
 #'   list elements are used, with "(e:e)" appended.
 #'
-#' @keywords manip misc
+#'
 #' @export e_ratio
 #' @examples
 #' e_ratio(sun.spct, new_waveband(400,500), new_waveband(400,700))
@@ -171,7 +171,7 @@ e_ratio.source_spct <-
 #'   waveband unless a named list of wavebands is supplied in which case the
 #'   names of the list elements are used, with "q:e" prepended..
 #'
-#' @keywords manip misc
+#'
 #' @export
 #' @examples
 #' qe_ratio(sun.spct, new_waveband(400,700))
@@ -247,7 +247,7 @@ qe_ratio.source_spct <-
 #'   named list of wavebands is supplied in which case the names of the list
 #'   elements are used, with "e:q" prepended..
 #'
-#' @keywords manip misc
+#'
 #' @export
 #' @examples
 #' eq_ratio(sun.spct, new_waveband(400,700))

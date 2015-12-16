@@ -17,7 +17,7 @@
 #'   interpolation errors
 #'
 #' @return a single numeric value giving the unitless ratio
-#' @keywords manip misc
+#'
 #' @export
 #' @examples
 #' # photon:photon ratio

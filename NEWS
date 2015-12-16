@@ -4,6 +4,81 @@ TODO
 Add test cases for chroma_spct and improve tests for the _mspct
 classes. Add test cases for smooth_spct().
 
+Add more examples to documentation by moving them from the User Guide to
+help pages.
+
+photobiology 0.9.0
+==================
+
+This version removes all two-way dependencies between this package and other
+packages in the r4photobiology suite. This should make installation of the
+source distribution a lot easier.
+
+Fix minor bugs
+--------------
+All spectral object constructors return an object with length equal to zero when
+called without arguments, or with argument "w.length" of length equal to zero.
+Earlier behaviour was to return NA, which is not consistent with R's usual
+expectations.
+
+All constructors for collections of spectra return an object with length equal
+to zero when called without arguments or with a list of length zero as first
+argument "l". Earlier behaviour was to trigger an error, which is not
+consistent with R's usual expectations.
+
+Function trim_waveband() was not returning the values described in some
+cases. Now the function really behaves as originally documented.
+
+Several functions and methods have a 'range' argument, but semantics was not
+identical in all. Now they all use the same semantics, similar to that used
+in recent versions of ggplot2 for xlim() and ylim(). Setting a boundary to
+NA means that the range extends to include all available data on a given
+'end'. Whenever it makes sense a NULL range means that the range includes the
+whole available range of wavelengths. The default value of 'range' for the
+recently added method 'fshift()' has changed to be the first 10 nm at the
+short wavelength end of the spectrum.
+
+Removed functionality
+---------------------
+Function calc_filter_multipliers() has been deleted.
+
+New data
+--------
+Add example data to make this package's documentation independent of other
+packages in the suite.
+
+Filters: clear.spct, opaque.spct, polyester.spct, yellow.gel.spct
+Sensors: photodiode.spct, ccd.spct
+Objects: black_body.spct, white_body.spct, clear_body.spct
+
+New functionality
+-----------------
+Add method clip_wl() to more easily select data for a range of wavelengths.
+Add method trim_wl() from trimming, and method interpolate_wl(). All three
+methods are implemented for individual spectra and for collections of spectra.
+Methods clip_wl() and trim_wl() have been also implemented for individual
+waveband objects and for lists of waveband objects.
+
+New functionality (only useful to package developers)
+-----------------------------------------------------
+Add new classes raw_spct and raw_mspct to store raw counts from spectrometers,
+constructors raw_spct() and raw_mspct(), and corresponding setRawSpct() and
+is.raw_spct() and as.raw_spct() functions.
+
+Add methods getInstrDesc() and getInstrSettings(), and the corresponding
+setInstrDesc() and setInstrSettings() to handle metadata about instrument and
+instrument settings used to acquire the spectral data. These classes and
+methods are building blocks to be used in the development of spectral-data
+acquisition packages.
+
+Why "0.9.x" started?
+--------------------
+Changes are backwards compatible but new classes were added and several existing
+methods were implemented for them. Seven new methods were added and
+implemented for all spectral classes and collections of spectra classes.
+The new classes are being used for writing a new package intended to
+replace package MayaCalc.
+
 photobiology 0.8.11
 ===================
 
@@ -34,7 +109,7 @@ output parallels the output of the print() method for spectra.
 photobiology 0.8.9
 ==================
 
-Small edit to msdply() to allow setting of colum names. Update to _mspct summary
+Small edit to msdply() to allow setting of column names. Update to _mspct summary
 methods to use the names in the list of wavebands, if present, as column names
 for the returned data frame.
 
@@ -54,7 +129,7 @@ and tanpi() methods for generic_mspct and derived classes.
 Make internal changes needed for an update to photobiologyInOut.
 Add option "photobiolgy.strict.range" to allow changing the default behaviour
 for out-of-range values. (Used internally to avoid redundant checks and
-repetead warning messages.)
+repeated warning messages.)
 
 Update package Title in docs.
 Update User Guide, tables and their formatting.

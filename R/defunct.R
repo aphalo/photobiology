@@ -12,7 +12,7 @@
 #' @note Function \code{f_mscpt} has been renamed \code{msdply()}.
 #'
 f_mspct <- function(...) {
-  stop("Function 'f_mspct()' is defunct, please use 'msdply()' instead.")
+  stop("Function 'photobiology::f_mspct()' is defunct, please use 'msdply()' instead.")
 }
 
 #' @rdname defunct
@@ -22,5 +22,16 @@ f_mspct <- function(...) {
 #' @note Function \code{mutate_mscpt} has been renamed \code{msmsply()}.
 #'
 mutate_mspct <- function(...) {
-  stop("Function 'mutate_mspct()' is defunct, please use 'msdply()' instead.")
+  stop("Function 'photobiology::mutate_mspct()' is defunct, please use 'msdply()' instead.")
+}
+
+#' @rdname defunct
+#'
+#' @export
+#'
+#' @note Function \code{calc_filter_multipliers} has been removed.
+#'
+calc_filter_multipliers <- function(...) {
+  stop("Function 'photobiology::calc_filter_multipliers()' is defunct, please use
+       'interpolate_wl()' instead.")
 }

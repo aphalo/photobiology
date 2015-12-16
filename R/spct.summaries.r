@@ -95,6 +95,9 @@ summary_spct_classes <- function() {
 #'
 #' @export is.summary_generic_spct
 #' @rdname is.summary_generic_spct
+#' @examples
+#' sm <- summary(sun.spct)
+#' is.summary_source_spct(sm)
 #'
 is.summary_generic_spct <- function(x) inherits(x, "summary_generic_spct")
 
@@ -158,6 +161,8 @@ is.any_summary_spct <- function(x) {
 #'
 #' @export
 #' @method summary generic_spct
+#' @examples
+#' summary(sun.spct)
 #'
 summary.generic_spct <- function(object,
                                  maxsum = 7,
@@ -210,6 +215,8 @@ summary.generic_spct <- function(object,
 #' @param ... not used in current version
 #'
 #' @export
+#' @examples
+#' print(summary(sun.spct))
 #'
 print.summary_generic_spct <- function(x, ...) {
   cat("Summary of object: ", x[["orig.class"]], " ", x[["orig.dim_desc"]], "\n", sep = "")
@@ -271,6 +278,8 @@ print.summary_generic_spct <- function(x, ...) {
 #' @param x an object of class "source_spct"
 #' @param ... not used in current version
 #' @export
+#' @examples
+#' color(sun.spct)
 #'
 color.source_spct <- function(x, ...) {
 #  x.name <- as.character(substitute(x))
@@ -293,6 +302,8 @@ color.source_spct <- function(x, ...) {
 #' @param na.rm a logical indicating whether missing values should be removed.
 #' @export
 #' @family wavelength summaries
+#' @examples
+#' range(sun.spct)
 #'
 range.generic_spct <- function(..., na.rm = FALSE) {
   x <- list(...)[[1]]
@@ -307,6 +318,8 @@ range.generic_spct <- function(..., na.rm = FALSE) {
 #' @param na.rm a logical indicating whether missing values should be removed.
 #' @export
 #' @family wavelength summaries
+#' @examples
+#' max(sun.spct)
 #'
 max.generic_spct <- function(..., na.rm=FALSE) {
   x <- list(...)[[1]]
@@ -321,6 +334,8 @@ max.generic_spct <- function(..., na.rm=FALSE) {
 #' @param na.rm a logical indicating whether missing values should be removed.
 #' @export
 #' @family wavelength summaries
+#' @examples
+#' min(sun.spct)
 #'
 min.generic_spct <- function(..., na.rm = FALSE) {
   x <- list(...)[[1]]
@@ -338,6 +353,9 @@ min.generic_spct <- function(..., na.rm = FALSE) {
 #' @return A numeric vector of length 2 with min and maximum stepsize values.
 #' @export
 #' @family wavelength summaries
+#' @examples
+#' stepsize(sun.spct)
+#'
 stepsize <- function(x, ...) UseMethod("stepsize")
 
 #' @describeIn stepsize Default function usable on numeric vectors.
@@ -398,6 +416,8 @@ midpoint.generic_spct <- function(x, ...) {
 #' @param ... not used in current version
 #'
 #' @export
+#' @examples
+#' labels(sun.spct)
 #'
 labels.generic_spct <- function(object, ...) {
   return(names(object))
@@ -407,6 +427,7 @@ labels.generic_spct <- function(object, ...) {
 
 #' @describeIn setWhenMeasured summary_generic_spct
 #' @export
+#'
 setWhenMeasured.summary_generic_spct <-
   function(x,
            when.measured = lubridate::now(),
@@ -466,7 +487,7 @@ setWhereMeasured.summary_generic_spct <- function(x,
   invisible(x)
 }
 
-#' @describeIn getWhenMeasured summary_generic_spct
+#' @describeIn getWhereMeasured summary_generic_spct
 #' @export
 getWhereMeasured.summary_generic_spct <- function(x, ...) {
   where.measured <- attr(x, "where.measured", exact = TRUE)
@@ -485,6 +506,8 @@ getWhereMeasured.summary_generic_spct <- function(x, ...) {
 #'   a summary of effective spectral irradiance values.
 #'
 #' @export
+#' @examples
+#' is_effective(summary(sun.spct))
 #'
 is_effective.summary_generic_spct <- function(x) {
   FALSE

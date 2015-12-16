@@ -39,7 +39,7 @@ fshift.default <- function(x, ...) {
 #'
 fshift.source_spct <-
   function(x,
-           range = c(min(x), 250),
+           range = c(min(x), min(x) + 10),
            f = "mean",
            unit.out = getOption("photobiology.radiation.unit",
                                 default = "energy"),
@@ -69,7 +69,7 @@ fshift.source_spct <-
 #'
 fshift.response_spct <-
   function(x,
-           range = x,
+           range = c(min(x), min(x) + 10),
            f = "mean",
            unit.out = getOption("photobiology.radiation.unit",
                                 default = "energy"),
@@ -102,7 +102,7 @@ fshift.response_spct <-
 #' @export
 #'
 fshift.filter_spct <- function(x,
-                               range = x,
+                               range = c(min(x), min(x) + 10),
                                f = "min",
                                qty.out = getOption("photobiology.filter.qty",
                                                    default = "transmittance"),
@@ -129,7 +129,7 @@ fshift.filter_spct <- function(x,
 #' @export
 #'
 fshift.reflector_spct <- function(x,
-                                  range = x,
+                                  range = c(min(x), min(x) + 10),
                                   f = "min",
                                   qty.out = NULL,
                                   ...) {
@@ -146,7 +146,7 @@ fshift.reflector_spct <- function(x,
 #'
 fshift.source_mspct <-
   function(x,
-           range =  c(min(x), 250),
+           range =  c(min(x), min(x) + 10),
            f = "mean",
            unit.out = getOption("photobiology.radiation.unit",
                                 default = "energy"),
@@ -165,7 +165,7 @@ fshift.source_mspct <-
 #'
 fshift.response_mspct <-
   function(x,
-           range = x,
+           range = c(min(x), min(x) + 10),
            f = "mean",
            unit.out = getOption("photobiology.radiation.unit",
                                 default = "energy"),
@@ -184,7 +184,7 @@ fshift.response_mspct <-
 #'
 fshift.filter_mspct <-
   function(x,
-           range = x,
+           range = c(min(x), min(x) + 10),
            f = "min",
            qty.out = getOption("photobiology.filter.qty",
                                default = "transmittance"),
@@ -203,7 +203,7 @@ fshift.filter_mspct <-
 #'
 fshift.reflector_mspct <-
   function(x,
-           range = x,
+           range = c(min(x), min(x) + 10),
            f = "min",
            qty.out = NULL,
            ...) {
@@ -233,8 +233,11 @@ fshift.reflector_mspct <-
 #' @keywords internal
 #'
 fshift_spct <- function(spct, range, var.name, f, ...) {
-  if (is.null(range) || is.na(range)) {
-    range <- spct
+  if (is.null(range) ||
+      (!is.null(range) && max(range) < min(spct)) ||
+      (!is.null(range) && min(range) < min(spct)) ) {
+      warning("'range' does not fully overlap spectral data or is NULL, skipping fshifting...")
+      return(spct)
   }
   tmp.spct <- trim_spct(spct, range, byref = FALSE)
   tmp.spct <- tmp.spct[, c("w.length", var.name)]

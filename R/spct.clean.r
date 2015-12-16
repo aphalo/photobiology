@@ -11,7 +11,7 @@
 #'     values to use at each extreme of the range.
 #' @param ... currently ignored
 #'
-#' @keywords manip misc
+#'
 #' @export
 #'
 clean <- function(x, range, range.s.data, fill, ...) UseMethod("clean")
@@ -33,26 +33,17 @@ clean.default <- function(x, range, range.s.data, fill, ...) {
 #'
 clean.source_spct <-
   function(x,
-           range = x,
+           range = NULL,
            range.s.data = c(0,NA),
            fill = range.s.data,
            unit.out = getOption("photobiology.radiation.unit",
                                 default = "energy"),
            ...) {
-    stopifnot(length(range) >= 2L &&
-                length(range.s.data) == 2L &&
+    stopifnot(length(range.s.data) == 2L &&
                 length(fill) <= 2L)
-    # wavelength range
-    if (is.any_spct(range) || is.numeric(range) && length(range) > 2L) {
-      range <- range(range, na.rm = TRUE)
-    } else {
-      if (is.na(range[1])) {
-        range[1] <- min(x)
-      }
-      if (is.na(range[2])) {
-        range[2] <- max(x)
-      }
-    }
+
+    range <- normalize_range_arg(range)
+
     selector <- x[["w.length"]] >= range[1] & x[["w.length"]] <= range[2]
 
     if (unit.out == "quantum") {

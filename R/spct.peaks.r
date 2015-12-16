@@ -16,7 +16,7 @@
 #'
 #' @return an object like s.irrad of logical values. Values that are TRUE
 #'   correspond to local peaks in the data.
-#' @keywords manip misc
+#'
 #' @export
 #' @examples
 #' with(sun.data, w.length[find_peaks(s.e.irrad)])
@@ -77,7 +77,7 @@ find_peaks <-
 #'
 #' @return A data frame with variables w.length and s.irrad with their values at
 #'   the peaks or valleys plus a character variable of labels.
-#' @keywords manip misc
+#'
 #' @export
 #' @examples
 #' with(sun.spct, get_peaks(w.length, s.e.irrad))
@@ -113,7 +113,7 @@ get_peaks <- function(x,
   }
 }
 
-#' @describeIn get_peaks
+#' @rdname get_peaks
 #' @export
 #'
 get_valleys <- function(x, y,
@@ -154,7 +154,7 @@ get_valleys <- function(x, y,
 #'
 #' @return a subset of x with rows corresponding to local maxima.
 #'
-#' @keywords manip misc
+#'
 #' @export
 #'
 #' @family peaks and valleys functions
@@ -316,7 +316,7 @@ peaks.generic_mspct <- function(x, span = 5, ignore_threshold = 0, strict = TRUE
 #'
 #' @return a subset of x with rows corresponding to local maxima.
 #'
-#' @keywords manip misc
+#'
 #' @export
 #'
 #' @family peaks and valleys functions

@@ -7,10 +7,10 @@
 #' @return One or more numeric values with no change in scale factor: e.g. [W
 #'   m-2 nm-1] -> [W m-2]. Each value in the returned vector corresponds to a
 #'   variable in the spectral object, except for wavelenght.
-#' @keywords manip misc
+#'
 #' @export
 #' @examples
-#' data(sun.spct)
+#'
 #' integrate_spct(sun.spct)
 #'
 integrate_spct <- function(spct) {
@@ -19,7 +19,9 @@ integrate_spct <- function(spct) {
   comment.spct <- comment(spct)
   integrals <- NULL
   for (data.col in names.data) {
-    integrals <- c(integrals, integrate_irradiance(spct[["w.length"]], spct[[eval(data.col)]]))
+    integrals <- c(integrals,
+                   integrate_irradiance(spct[["w.length"]],
+                                        spct[[eval(data.col)]]))
   }
   names(integrals) <- gsub("^s.", x = names.data, replacement = "")
   comment(integrals) <- comment.spct
@@ -37,10 +39,10 @@ integrate_spct <- function(spct) {
 #' @return One or more numeric values with no change in scale factor: e.g. [W
 #'   m-2 nm-1] -> [W m-2 nm-1]. Each value in the returned vector corresponds to a
 #'   variable in the spectral object, except for wavelenght.
-#' @keywords manip misc
+#'
 #' @export
 #' @examples
-#' data(sun.spct)
+#'
 #' average_spct(sun.spct)
 #'
 average_spct <- function(spct) {
@@ -70,19 +72,19 @@ average_spct <- function(spct) {
 #'
 #' @return A new spectral object of the same class as argument \code{spct}.
 #'
-#' @keywords manip misc
+#'
 #' @export
 #' @examples
-#' data(sun.spct)
+#'
 #' interpolate_spct(sun.spct, 400:500, NA)
 #' interpolate_spct(sun.spct, 400:500, NULL)
 #' interpolate_spct(sun.spct, seq(200, 1000, by=0.1), 0)
 #' interpolate_spct(sun.spct, c(400,500), length.out=201)
 #'
 interpolate_spct <- function(spct,
-                             w.length.out=NULL,
-                             fill=NA,
-                             length.out=NULL) {
+                             w.length.out = NULL,
+                             fill = NA,
+                             length.out = NULL) {
   stopifnot(is.any_spct(spct))
   if (!is.null(length.out) && (is.na(length.out) || length.out < 1L) ) {
     return(spct[NA])
@@ -177,13 +179,96 @@ interpolate_spct <- function(spct,
 #' @export
 #'
 interpolate_mspct <- function(mspct,
-                             w.length.out=NULL,
-                             fill=NA,
-                             length.out=NULL) {
+                              w.length.out = NULL,
+                              fill = NA,
+                              length.out = NULL) {
 
   msmsply(mspct = mspct,
           .fun = interpolate_spct,
           w.length.out = w.length.out,
           fill = fill,
           length.out = length.out)
+}
+
+#' Map spectra to new wavelength values.
+#'
+#' This function returns the result of interpolating spectral data from the original set of
+#' wavelengths to a new one.
+#'
+#' @param x an R object
+#' @param w.length.out numeric array of wavelengths (nm)
+#' @param fill a value to be assigned to out of range wavelengths
+#' @param length.out numeric value
+#' @param ... not used
+#'
+#' @details If \code{length.out} it is a numeric value, then gives the number of rows in the
+#' output, if it is \code{NULL}, the values in the numeric vector \code{w.length.out} are used.
+#' If both are not \code{NULL} then the range of \code{w.length.out} and \code{length.out} are
+#' used to generate a vector of wavelength. A value of \code{NULL} for \code{fill} prevents
+#' extrapolation.
+#'
+#' @note The default \code{fill = NA} fills extrpolated values with NA. Giving NULL as
+#' argument for \code{fill} deletes wavelengths outside the input data range from the
+#' returned spectrum. A numerical value can be also be provided as fill. This function calls
+#' \code{interpolate_spectrum} for each non-wavelength column in the input spectra object.
+#'
+#' @return A new spectral object of the same class as argument \code{spct}.
+#'
+#' @family interpolate functions
+#' @export
+#' @examples
+#' interpolate_wl(sun.spct, 400:500, NA)
+#' interpolate_wl(sun.spct, 400:500, NULL)
+#' interpolate_wl(sun.spct, seq(200, 1000, by=0.1), 0)
+#' interpolate_wl(sun.spct, c(400,500), length.out=201)
+#'
+interpolate_wl <- function(x,
+                           w.length.out,
+                           fill,
+                           length.out,
+                           ...) UseMethod("interpolate_wl")
+
+#' @describeIn interpolate_wl Default for generic function
+#'
+#' @export
+#'
+interpolate_wl.default <- function(x,
+                                   w.length.out,
+                                   fill,
+                                   length.out,
+                                   ...) {
+  warning("'interpolate_wl' is not defined for objects of class ", class(x)[1])
+  x
+}
+
+#' @describeIn interpolate_wl  Interpolate wavelength in an object of class
+#'   "generic_spct" or derived.
+#'
+#' @export
+#'
+interpolate_wl.generic_spct <- function(x,
+                                        w.length.out = NULL,
+                                        fill = NA,
+                                        length.out = NULL,
+                                        ...) {
+  interpolate_spct(spct = x,
+                   w.length.out = w.length.out,
+                   fill = fill,
+                   length.out = length.out)
+}
+
+#' @describeIn interpolate_wl  Interpolate wavelength in an object of class
+#'   "generic_mspct" or derived.
+#'
+#' @export
+#'
+interpolate_wl.generic_mspct <- function(x,
+                                         w.length.out = NULL,
+                                         fill = NA,
+                                         length.out = NULL,
+                                         ...) {
+  interpolate_mspct(mspct = x,
+                    w.length.out = w.length.out,
+                    fill = fill,
+                    length.out = length.out)
 }

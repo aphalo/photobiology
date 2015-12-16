@@ -18,8 +18,8 @@
 #'   the wavebands is used and all BSWFs are ignored.
 #'
 #' @examples
-#' library(photobiologyFilters)
-#' absorbance(polyester.new.spct, new_waveband(400,700))
+#' absorbance(polyester.spct, new_waveband(400,700))
+#' absorbance(yellow_gel.spct, new_waveband(400,700))
 #'
 #' @export
 #'

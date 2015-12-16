@@ -30,8 +30,8 @@ normalize.default <- function(x, ...) {
 #'
 normalize_spct <- function(spct, range, norm, var.name) {
   stopifnot(is.any_spct(spct), !is.null(var.name), length(var.name) == 1, var.name %in% names(spct))
-  if (is.null(range) || is.na(range)) {
-    range <- spct
+  if (is.null(range) || all(is.na(range))) {
+    range <- range(spct)
   }
   tmp.spct <- trim_spct(spct, range)
   # rescaling needed

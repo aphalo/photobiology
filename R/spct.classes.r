@@ -6,9 +6,11 @@
 #' @export
 #'
 #' @return A \code{character} vector of class names.
+#' @examples
+#' spct_classes()
 #'
 spct_classes <- function() {
-  c("cps_spct",
+  c("raw_spct", "cps_spct",
     "filter_spct", "reflector_spct",
     "source_spct", "object_spct",
     "response_spct", "chroma_spct", "generic_spct")
@@ -27,6 +29,8 @@ spct_classes <- function() {
 #'   error instead of a warning, \code{NA} disables the test.
 #' @param ... additional param possible in derived methods
 #' @export
+#' @examples
+#' check(sun.spct)
 #'
 #' @family data validity check functions
 #'
@@ -93,6 +97,25 @@ check.generic_spct <-
     }
   }
   x
+}
+
+#' @describeIn check Specialization for cps_spct.
+#' @export
+check.raw_spct <- function(x,
+                           byref=TRUE,
+                           strict.range = getOption("photobiology.strict.range", default = FALSE),
+                           multiple.wl = 1L,
+                           ...) {
+
+  x <- check.generic_spct(x, multiple.wl = multiple.wl)
+
+  if (exists("counts", x, mode = "numeric", inherits=FALSE)) {
+    return(x)
+  } else {
+    warning("No raw 'counts' data found in raw_spct")
+    x[["counts"]] = NA_real_
+    return(x)
+  }
 }
 
 #' @describeIn check Specialization for cps_spct.
@@ -511,6 +534,12 @@ check.chroma_spct <-
 #'   This is different to the behaviour of function \code{unlist} in base R!
 #'
 #' @family set and unset spectral class functions
+#' @examples
+#' my.spct <- sun.spct
+#' removed <- rmDerivedSpct(my.spct)
+#' removed
+#' class(sun.spct)
+#' class(my.spct)
 #'
 rmDerivedSpct <- function(x) {
   name <- substitute(x)
@@ -535,6 +564,11 @@ rmDerivedSpct <- function(x) {
 #' @export
 #' @exportClass generic_spct
 #' @family set and unset spectral class functions
+#' @examples
+#' my.df <- data.frame(w.length = 300:309, s.e.irrad = rep(100, 10))
+#' is.source_spct(my.df)
+#' setSourceSpct(my.df)
+#' is.source_spct(my.df)
 #'
 setGenericSpct <- function(x, multiple.wl = 1L) {
   name <- substitute(x)
@@ -549,6 +583,31 @@ setGenericSpct <- function(x, multiple.wl = 1L) {
   }
   x <- check(x)
   attr(x, "spct.version") <- 2
+  if (is.name(name)) {
+    name <- as.character(name)
+    assign(name, x, parent.frame(), inherits = TRUE)
+  }
+  invisible(x)
+}
+
+#' @describeIn setGenericSpct Set class of a an object to "cps_spct".
+#'
+#' @export
+#' @exportClass cps_spct
+#'
+setRawSpct <- function(x, strict.range = FALSE, multiple.wl = 1L) {
+  name <- substitute(x)
+  rmDerivedSpct(x)
+  if (!is.data.frame(x) || inherits(x, "data.table")) {
+    x <- dplyr::as_data_frame(x)
+  }
+  if (!is.generic_spct(x)) {
+    setGenericSpct(x, multiple.wl = multiple.wl)
+  }
+  if (!is.cps_spct(x)) {
+    class(x) <- c("raw_spct", class(x))
+  }
+  x <- check(x, strict.range = strict.range)
   if (is.name(name)) {
     name <- as.character(name)
     assign(name, x, parent.frame(), inherits = TRUE)
@@ -810,8 +869,18 @@ setChromaSpct <- function(x, multiple.wl = 1L) {
 #'
 #' @export is.generic_spct
 #' @rdname is.generic_spct
+#' @examples
+#' is.source_spct(sun.spct)
+#' is.filter_spct(sun.spct)
+#' is.generic_spct(sun.spct)
+#' is.any_spct(sun.spct)
 #'
 is.generic_spct <- function(x) inherits(x, "generic_spct")
+
+#' @rdname is.generic_spct
+#' @export
+#'
+is.raw_spct <- function(x) inherits(x, "raw_spct")
 
 #' @rdname is.generic_spct
 #' @export
@@ -867,6 +936,9 @@ is.any_spct <- function(x) {
 #'   classes.
 #'
 #' @export
+#' @examples
+#' class_spct(sun.spct)
+#' class(sun.spct)
 #'
 class_spct <- function(x) {
   #  intersect(spct_classes(), class(x)) # alters order!
@@ -886,6 +958,8 @@ class_spct <- function(x) {
 #' @export
 #'
 #' @family tagging and related functions
+#' @examples
+#' is_tagged(sun.spct)
 #'
 is_tagged <- function(x) {
   if (!is.any_spct(x)) {
@@ -915,6 +989,11 @@ is_tagged <- function(x) {
 #' @family query units functions
 #'
 #' @rdname is_photon_based
+#' @examples
+#' is_photon_based(sun.spct)
+#' my.spct <- dplyr::select(sun.spct, w.length, s.e.irrad)
+#' is.source_spct(my.spct)
+#' is_photon_based(my.spct)
 #'
 is_photon_based <- function(x) {
   if (is.source_spct(x) || is.summary_source_spct(x)) {
@@ -936,6 +1015,11 @@ is_photon_based <- function(x) {
 #' including those belonging other \code{generic_spct}-derived classes
 #'
 #' @export
+#' @examples
+#' is_energy_based(sun.spct)
+#' my.spct <- dplyr::select(sun.spct, w.length, s.q.irrad)
+#' is.source_spct(my.spct)
+#' is_energy_based(my.spct)
 #'
 is_energy_based <- function(x) {
   if (is.source_spct(x) || is.summary_source_spct(x)) {
@@ -965,6 +1049,11 @@ is_energy_based <- function(x) {
 #' @family query units functions
 #'
 #' @rdname is_absorbance_based
+#' @examples
+#' is_absorbance_based(polyester.spct)
+#' my.spct <- T2A(polyester.spct)
+#' is.filter_spct(my.spct)
+#' is_absorbance_based(my.spct)
 #'
 is_absorbance_based <- function(x) {
   if (is.filter_spct(x) || is.summary_filter_spct(x)) {
@@ -984,6 +1073,8 @@ is_absorbance_based <- function(x) {
 #' other \code{generic_spct}-derived classes.
 #'
 #' @export
+#' @examples
+#' is_transmittance_based(polyester.spct)
 #'
 is_transmittance_based <- function(x) {
   if (is.filter_spct(x) || is.summary_source_spct(x)) {
@@ -1016,6 +1107,10 @@ is_transmittance_based <- function(x) {
 #'
 #' @export
 #' @family time attribute functions
+#' @examples
+#' my.spct <- sun.spct
+#' setTimeUnit(my.spct, time.unit = "second")
+#' setTimeUnit(my.spct, time.unit = lubridate::duration(1, "seconds"))
 #'
 setTimeUnit <- function(x,
                         time.unit = c("second", "hour", "day", "exposure", "none"),
@@ -1074,6 +1169,8 @@ setTimeUnit <- function(x,
 #'
 #' @export
 #' @family time attribute functions
+#' @examples
+#' getTimeUnit(sun.spct)
 #'
 getTimeUnit <- function(x, force.duration = FALSE) {
   if (is.source_spct(x) || is.response_spct(x) ||
@@ -1115,6 +1212,10 @@ getTimeUnit <- function(x, force.duration = FALSE) {
 #'
 #' @export
 #' @family time attribute functions
+#' @examples
+#' my.spct <- sun.spct
+#' my.spct
+#' convertTimeUnit(my.spct, "day")
 #'
 convertTimeUnit <- function(x, time.unit = NULL, byref = FALSE) {
   #  if (!byref) x.out <- x else x.out <- copy(x) # needs fixing!
@@ -1257,6 +1358,8 @@ setBSWFUsed <- function(x, bswf.used=c("none", "unknown")) {
 #'
 #' @export
 #' @family BSWF attribute functions
+#' @examples
+#' getBSWFUsed(sun.spct)
 #'
 getBSWFUsed <- function(x) {
   if (is.source_spct(x) || is.summary_source_spct(x)) {
@@ -1293,6 +1396,11 @@ getBSWFUsed <- function(x) {
 #'
 #' @export
 #' @family Tfr attribute functions
+#' @examples
+#' my.spct <- polyester.spct
+#' getTfrType(my.spct)
+#' setTfrType(my.spct, "internal")
+#' getTfrType(my.spct)
 #'
 setTfrType <- function(x, Tfr.type=c("total", "internal")) {
   name <- substitute(x)
@@ -1332,9 +1440,11 @@ setTfrType <- function(x, Tfr.type=c("total", "internal")) {
 #'
 #' @export
 #' @family Tfr attribute functions
+#' @examples
+#' getTfrType(polyester.spct)
 #'
 getTfrType <- function(x) {
-  if (is.filter_spct(x) || is.object_spct(x)||
+  if (is.filter_spct(x) || is.object_spct(x) ||
       is.summary_filter_spct(x) || is.summary_object_spct(x)) {
     Tfr.type <- attr(x, "Tfr.type", exact = TRUE)
     if (is.null(Tfr.type) || is.na(Tfr.type)) {
@@ -1366,6 +1476,10 @@ getTfrType <- function(x) {
 #'
 #' @export
 #' @family Rfr attribute functions
+#' my.spct <- reflector_spct(w.length = 400:409, Rfr = 0.1)
+#' getRfrType(my.spct)
+#' setRfrType(my.spct, "specular")
+#' getRfrType(my.spct)
 #'
 setRfrType <- function(x, Rfr.type=c("total", "specular")) {
   name <- substitute(x)
@@ -1394,7 +1508,7 @@ setRfrType <- function(x, Rfr.type=c("total", "specular")) {
 #' Get the "Rfr.type" attribute
 #'
 #' Function to read the "Rfr.type" attribute of an existing reflector_spct
-#' object.
+#' object or object_spct object.
 #'
 #' @param x a source_spct object
 #'
@@ -1418,10 +1532,6 @@ getRfrType <- function(x) {
     return(NA)
   }
 }
-
-
-# generic_spct attributes -------------------------------------------------
-
 
 # spct.version ------------------------------------------------------------
 
@@ -1526,6 +1636,8 @@ setMultipleWl <- function(x, multiple.wl = NULL) {
 #'
 #' @export
 #' @family multiple.wl attribute functions
+#' @examples
+#' getMultipleWl(sun.spct)
 #'
 getMultipleWl <- function(x) {
   if (is.any_spct(x)) {
@@ -1539,6 +1651,7 @@ getMultipleWl <- function(x) {
     return(NA)
   }
 }
+
 
 # when.measured ---------------------------------------------------------------
 
@@ -1559,7 +1672,12 @@ getMultipleWl <- function(x) {
 #'   instant in time (date plus time-of-day plus time zone).
 #'
 #' @export
-#' @family when.measured attribute functions
+#' @family measurement metadata functions
+#' @examples
+#' my.spct <- sun.spct
+#' getWhenMeasured(my.spct)
+#' setWhenMeasured(my.spct, lubridate::ymd_hms("2015-12-12 08:00:00"))
+#' getWhenMeasured(my.spct)
 #'
 setWhenMeasured <- function(x, when.measured, ...) UseMethod("setWhenMeasured")
 
@@ -1604,7 +1722,9 @@ setWhenMeasured.generic_spct <-
 #'   \code{NA} is returned.
 #'
 #' @export
-#' @family when.measured attribute functions
+#' @family measurement metadata functions
+#' @examples
+#' getWhenMeasured(sun.spct)
 #'
 getWhenMeasured <- function(x, ...) UseMethod("getWhenMeasured")
 
@@ -1650,7 +1770,7 @@ getWhenMeasured.generic_spct <- function(x, ...) {
 #'   instant in time (date plus time-of-day plus time zone).
 #'
 #' @export
-#' @family where.measured attribute functions
+#' @family measurement metadata functions
 #'
 setWhereMeasured <-
   function(x, where.measured, lat, lon, ...) UseMethod("setWhereMeasured")
@@ -1705,7 +1825,9 @@ setWhereMeasured.generic_spct <- function(x,
 #'
 #' @export
 #'
-#' @family where.measured attribute functions
+#' @family measurement metadata functions
+#' @examples
+#' getWhereMeasured(sun.spct)
 #'
 getWhereMeasured <- function(x, ...) UseMethod("getWhereMeasured")
 
@@ -1726,3 +1848,111 @@ getWhereMeasured.generic_spct <- function(x, ...) {
   }
   where.measured
 }
+
+# how measured attributes -------------------------------------------------
+
+#' Set the "instr.desc" attribute
+#'
+#' Function to set by reference the "instr.desc" attribute  of an existing
+#' generic_spct or derived-class object.
+#'
+#' @param x a generic_spct object
+#' @param instr.desc a list
+#'
+#' @return x
+#'
+#' @note if x is not a generic_spct x is not modified.
+#'
+#' @export
+#' @family measurement metadata functions
+#'
+setInstrDesc <- function(x, instr.desc) {
+  name <- substitute(x)
+  if (is.any_spct(x)) {
+    attr(x, "instr.desc") <- instr.desc
+    if (is.name(name)) {
+      name <- as.character(name)
+      assign(name, x, parent.frame(), inherits = TRUE)
+    }
+  }
+  invisible(x)
+}
+
+#' Get the "instr.desc" attribute
+#'
+#' Function to read the "instr.desc" attribute of an existing generic_spct
+#' object.
+#'
+#' @param x a generic_spct object
+#'
+#' @return list (depends on instrument type)
+#'
+#' @export
+#' @family measurement metadata functions
+#'
+getInstrDesc <- function(x) {
+  if (is.any_spct(x)) {
+    instr.desc <- attr(x, "instr.desc", exact = TRUE)
+    if (is.null(instr.desc) || is.na(instr.desc)) {
+      # need to handle objects created with old versions
+      instr.desc <- "unknown"
+    }
+    return(instr.desc[[1]])
+  } else {
+    return(NA)
+  }
+}
+
+#' Set the "instr.settings" attribute
+#'
+#' Function to set by reference the "instr.settings" attribute  of an existing
+#' generic_spct or derived-class object.
+#'
+#' @param x a generic_spct object
+#' @param instr.settings a list
+#'
+#' @return x
+#'
+#' @note if x is not a generic_spct x is not modified.
+#'
+#' @export
+#' @family measurement metadata functions
+#'
+setInstrSettings <- function(x, instr.settings) {
+  name <- substitute(x)
+  if (is.any_spct(x)) {
+    attr(x, "instr.settings") <- instr.settings
+    if (is.name(name)) {
+      name <- as.character(name)
+      assign(name, x, parent.frame(), inherits = TRUE)
+    }
+  }
+  invisible(x)
+}
+
+#' Get the "instr.settings" attribute
+#'
+#' Function to read the "instr.desc" attribute of an existing generic_spct
+#' object.
+#'
+#' @param x a generic_spct object
+#'
+#' @return list (depends on instrument type)
+#'
+#' @export
+#' @family measurement metadata functions
+#'
+getInstrSettings <- function(x) {
+  if (is.any_spct(x)) {
+    instr.settings <- attr(x, "instr.settings", exact = TRUE)
+    if (is.null(instr.settings) || is.na(instr.settings)) {
+      # need to handle objects created with old versions
+      instr.settings <- "unknown"
+    }
+    return(instr.settings[[1]])
+  } else {
+    return(NA)
+  }
+}
+
+

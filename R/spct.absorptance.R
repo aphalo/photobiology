@@ -22,8 +22,8 @@
 #' case of percentages (absorptance is the fraction absorbed)
 #'
 #' @examples
-#' library(photobiologyFilters)
-#' absorptance(ug1.spct, new_waveband(400,700))
+#' absorptance(yellow_gel.spct, new_waveband(400,500))
+#' absorptance(yellow_gel.spct, new_waveband(300,400))
 #'
 #' @export
 #'

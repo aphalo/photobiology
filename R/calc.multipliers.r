@@ -15,7 +15,7 @@
 #'   the range of the waveband are set to NA
 #'
 #' @return a numeric array of multipliers of the same length as \code{w.length}
-#' @keywords manip misc
+#'
 #' @export
 #' @examples
 #' with(sun.data, calc_multipliers(w.length, new_waveband(400,700),"photon"))

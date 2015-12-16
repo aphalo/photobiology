@@ -13,11 +13,12 @@
 #' @param ... other arguments
 #'
 #' @return A numeric vector with no change in scale factor
-#' @keywords manip misc
+#'
 #' @export transmittance
 #' @examples
-#' library(photobiologyFilters)
-#' transmittance(polyester.new.spct, waveband(c(400, 700)))
+#' transmittance(polyester.spct, waveband(c(280, 315)))
+#' transmittance(polyester.spct, waveband(c(315, 400)))
+#' transmittance(polyester.spct, waveband(c(400, 700)))
 #'
 #' @note The \code{use.hinges} parameter controls speed optimization. The
 #'   defaults should be suitable in mosts cases. Only the range of wavelengths

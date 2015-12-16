@@ -3,11 +3,35 @@ context("cps_spct")
 
 test_that("constructor", {
 
+  empty.spct <- cps_spct()
+  expect_true(is.cps_spct(empty.spct))
+  expect_true(is.any_spct(empty.spct))
+  expect_named(empty.spct, c("w.length", "cps"))
+  expect_equal(nrow(empty.spct), 0L)
+
   my.spct <- cps_spct(w.length = 400:409, cps = 1)
 
   expect_equal(my.spct[["cps"]], rep(1, length.out = 10))
   expect_equal(my.spct[["w.length"]], 400:409)
   expect_named(my.spct, c("w.length", "cps"))
+  expect_true(is.cps_spct(my.spct))
+  expect_true(is.any_spct(my.spct))
+  expect_false(is.raw_spct(my.spct))
+  expect_false(is.source_spct(my.spct))
+  expect_false(is.filter_spct(my.spct))
+  expect_false(is.reflector_spct(my.spct))
+  expect_false(is.object_spct(my.spct))
+  expect_false(is.response_spct(my.spct))
+  expect_false(is.chroma_spct(my.spct))
+
+  my.df <- data.frame(w.length = 400:409, cps = 1)
+  my.spct <- as.cps_spct(my.df)
+
+  expect_equal(my.spct[["cps"]], rep(1, length.out = 10))
+  expect_equal(my.spct[["w.length"]], 400:409)
+  expect_named(my.spct, c("w.length", "cps"))
+  expect_true(is.cps_spct(my.spct))
+  expect_true(is.any_spct(my.spct))
 })
 
 

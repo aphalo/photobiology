@@ -21,7 +21,7 @@
 #'
 #' @return a single numeric value with no change in scale factor: [W m-2 nm-1]
 #'   -> [mol s-1 m-2]
-#' @keywords manip misc
+#'
 #' @export
 #' @examples
 #' data(sun.data)

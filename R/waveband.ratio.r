@@ -22,7 +22,7 @@
 #'   interpolation errors
 #'
 #' @return a single numeric value giving the ratio
-#' @keywords manip misc
+#'
 #' @export
 #' @examples
 #' # photon:photon ratio
@@ -57,8 +57,10 @@ waveband_ratio <-
            unit.out.num=NULL, unit.out.denom=unit.out.num,
            unit.in="energy",
            check.spectrum=TRUE,
-           use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
-           use.hinges = getOption("photobiology.use.hinges", default=NULL) ) {
+           use.cached.mult = getOption("photobiology.use.cached.mult",
+                                       default = FALSE),
+           use.hinges = getOption("photobiology.use.hinges",
+                                  default=NULL) ) {
     # We duplicate code from irradiance() here to avoid repeated checks
     # and calculations on the same data
     #
@@ -107,8 +109,12 @@ waveband_ratio <-
       }
     }
     # calculate the multipliers
-    mult.num <- calc_multipliers(w.length, w.band.num, unit.out.num, unit.in, use.cached.mult=use.cached.mult)
-    mult.denom <- calc_multipliers(w.length, w.band.denom, unit.out.denom, unit.in, use.cached.mult=use.cached.mult)
+    mult.num <- calc_multipliers(w.length, w.band.num,
+                                 unit.out.num, unit.in,
+                                 use.cached.mult=use.cached.mult)
+    mult.denom <- calc_multipliers(w.length, w.band.denom,
+                                   unit.out.denom, unit.in,
+                                   use.cached.mult=use.cached.mult)
 
     # calculate weighted spectral irradiance
     irrad.num <- integrate_irradiance(w.length, s.irrad * mult.num)

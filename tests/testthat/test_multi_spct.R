@@ -2,6 +2,89 @@ library(photobiology)
 
 context("multi_spct")
 
+test_that("constructors", {
+
+  my.mspct <- source_mspct(list(sun1 = sun.spct, sun2 = sun.spct))
+  expect_true(is.source_mspct(my.mspct))
+  expect_true(is.any_mspct(my.mspct))
+  expect_named(my.mspct, c("sun1", "sun2"))
+  expect_true(is.source_spct(my.mspct[["sun1"]]))
+  expect_true(is.source_spct(my.mspct[["sun2"]]))
+
+  my.mspct <- as.generic_mspct(my.mspct)
+  expect_false(is.source_mspct(my.mspct))
+  expect_true(is.any_mspct(my.mspct))
+  expect_named(my.mspct, c("sun1", "sun2"))
+  expect_true(is.source_spct(my.mspct[["sun1"]]))
+  expect_true(is.source_spct(my.mspct[["sun2"]]))
+  expect_true(is.any_spct(my.mspct[["sun1"]]))
+  expect_true(is.any_spct(my.mspct[["sun2"]]))
+
+  my.mspct <- as.generic_mspct(my.mspct, force.spct.class = TRUE)
+  expect_false(is.source_mspct(my.mspct))
+  expect_true(is.any_mspct(my.mspct))
+  expect_named(my.mspct, c("sun1", "sun2"))
+  expect_false(is.source_spct(my.mspct[["sun1"]]))
+  expect_false(is.source_spct(my.mspct[["sun2"]]))
+  expect_true(is.any_spct(my.mspct[["sun1"]]))
+  expect_true(is.any_spct(my.mspct[["sun2"]]))
+
+  my.mspct <- as.source_mspct(my.mspct)
+  expect_true(is.source_mspct(my.mspct))
+  expect_true(is.any_mspct(my.mspct))
+  expect_named(my.mspct, c("sun1", "sun2"))
+  expect_true(is.source_spct(my.mspct[["sun1"]]))
+  expect_true(is.source_spct(my.mspct[["sun2"]]))
+
+  expect_error(as.filter_spct(my.mspct))
+  expect_error(as.reflector_spct(my.mspct))
+  expect_error(as.object_spct(my.mspct))
+  expect_error(as.response_spct(my.mspct))
+  expect_error(as.cps_spct(my.mspct))
+  expect_error(as.raw_spct(my.mspct))
+
+  empty.mspct <- source_mspct()
+  expect_true(is.source_mspct(empty.mspct))
+  expect_true(is.any_mspct(empty.mspct))
+  expect_true(is.null(names(empty.mspct)))
+
+  empty.mspct <- response_mspct()
+  expect_true(is.response_mspct(empty.mspct))
+  expect_true(is.any_mspct(empty.mspct))
+  expect_true(is.null(names(empty.mspct)))
+
+  empty.mspct <- filter_mspct()
+  expect_true(is.filter_mspct(empty.mspct))
+  expect_true(is.any_mspct(empty.mspct))
+  expect_true(is.null(names(empty.mspct)))
+
+  empty.mspct <- reflector_mspct()
+  expect_true(is.reflector_mspct(empty.mspct))
+  expect_true(is.any_mspct(empty.mspct))
+  expect_true(is.null(names(empty.mspct)))
+
+  empty.mspct <- object_mspct()
+  expect_true(is.object_mspct(empty.mspct))
+  expect_true(is.any_mspct(empty.mspct))
+  expect_true(is.null(names(empty.mspct)))
+
+  empty.mspct <- cps_mspct()
+  expect_true(is.cps_mspct(empty.mspct))
+  expect_true(is.any_mspct(empty.mspct))
+  expect_true(is.null(names(empty.mspct)))
+
+  empty.mspct <- raw_mspct()
+  expect_true(is.raw_mspct(empty.mspct))
+  expect_true(is.any_mspct(empty.mspct))
+  expect_true(is.null(names(empty.mspct)))
+
+  empty.mspct <- chroma_mspct()
+  expect_true(is.chroma_mspct(empty.mspct))
+  expect_true(is.any_mspct(empty.mspct))
+  expect_true(is.null(names(empty.mspct)))
+
+  })
+
 test_that("source_mspct", {
 
   my1.spct <- source_spct(w.length = 400:410, s.e.irrad = 1)
