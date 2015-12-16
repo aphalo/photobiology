@@ -6,7 +6,7 @@
 #' @param w.length numeric Vector of wavelengths (nm)
 #'
 #' @return A numeric array of multipliers
-#' @keywords manip misc
+#'
 #' @export
 #' @examples
 #' with(sun.data, e2qmol_multipliers(w.length))

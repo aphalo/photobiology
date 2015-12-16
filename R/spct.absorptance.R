@@ -1,4 +1,4 @@
-#' Calculate summary absorptance from spectral data.
+#' Absorptance
 #'
 #' Function to calculate the mean, total, or other summary of absorptance for
 #' spectral data stored in a \code{filter_spct} or in an \code{object_spct}.
@@ -22,8 +22,8 @@
 #' case of percentages (absorptance is the fraction absorbed)
 #'
 #' @examples
-#' library(photobiologyFilters)
-#' absorptance(ug1.spct, new_waveband(400,700))
+#' absorptance(yellow_gel.spct, new_waveband(400,500))
+#' absorptance(yellow_gel.spct, new_waveband(300,400))
 #'
 #' @export
 #'

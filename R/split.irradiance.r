@@ -1,15 +1,8 @@
-#' Split a spectrum into contiguous bands and calculate energy or photon
-#' (quantum) irradiance from spectral (energy) or photon irradiance.
+#' Energy or photon irradiance for split spectrum regions
 #'
 #' This function returns the energy or photon irradiance for a series of
 #' contiguous wavebands from a radiation spectrum. The returned values can be
 #' either absolute or relative to their sum.
-#'
-#' @usage split_irradiance(w.length, s.irrad, cut.w.length=range(w.length),
-#'   unit.out=getOption("photobiology.base.unit", default="energy"),
-#'   unit.in="energy", scale = "absolute", check.spectrum=TRUE, use.cached.mult
-#'   = getOption("photobiology.use.cached.mult", default = FALSE),
-#'   use.hinges=getOption("photobiology.use.hinges", default = NULL) )
 #'
 #' @param w.length numeric Vector of wavelengths (nm)
 #' @param s.irrad numeric Corresponding vector of spectral (energy) irradiances (W m-2 nm-1)
@@ -30,7 +23,7 @@
 #' @return a numeric array of irradiances with no change in scale factor: [W m-2
 #'   nm-1] -> [mol s-1 m-2] or relative values (fraction of one) if scale =
 #'   "relative" or scale = "percent"
-#' @keywords manip misc
+#'
 #' @export
 #' @examples
 #' with(sun.data,

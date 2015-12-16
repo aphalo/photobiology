@@ -40,7 +40,9 @@
 #'
 #' @family color functions
 #'
-s_e_irrad2rgb <- function(w.length, s.e.irrad, sens=ciexyzCMF2.spct, color.name=NULL, check=TRUE) {
+s_e_irrad2rgb <- function(w.length, s.e.irrad,
+                          sens=photobiology::ciexyzCMF2.spct,
+                          color.name=NULL, check=TRUE) {
   low.limit <- min(sens$w.length)
   high.limit <- max(sens$w.length)
   if (single_wl <- length(w.length) == 1) {
@@ -60,7 +62,7 @@ if (!single_wl) {
   if ((max(w.length) <= low.limit) || (min(w.length) >= high.limit)) {
     return("black")
   }
-  sens$s.e.irrad <- interpolate_spectrum(w.length, s.e.irrad, sens$w.length, fill.value=0.0)
+  sens$s.e.irrad <- interpolate_spectrum(w.length, s.e.irrad, sens$w.length, fill=0.0)
   sens$s.e.irrad.norm <- with(sens, s.e.irrad / integrate_irradiance(w.length, s.e.irrad))
 
   X <- with(sens, integrate_irradiance(w.length, s.e.irrad.norm * x))

@@ -1,4 +1,4 @@
-#' Calculate moles of photons per Joule ratio
+#' Photon:energy ratio
 #'
 #' This function gives the photons:energy ratio between for one given waveband
 #' of a radiation spectrum.
@@ -16,7 +16,7 @@
 #'   interpolation errors
 #'
 #' @return A single numeric value giving the ratio moles-photons per Joule.
-#' @keywords manip misc
+#'
 #' @export
 #' @examples
 #' # photons:energy ratio

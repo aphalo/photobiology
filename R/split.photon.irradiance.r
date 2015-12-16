@@ -1,5 +1,4 @@
-#' Split a spectrum into contiguous bands and calculate photon irradiance from
-#' spectral (energy) or photon irradiance.
+#' Photon irradiance for split spectrum regions
 #'
 #' This function returns the photon irradiance for a series of contiguous
 #' wavebands from a radiation spectrum. The returned values can be either
@@ -23,7 +22,7 @@
 #' @return a numeric array of photon irradiances with no change in scale factor:
 #'   [W m-2 nm-1] -> [mol s-1 m-2] or relative values (fraction of one) if scale
 #'   = "relative" or scale = "percent"
-#' @keywords manip misc
+#'
 #' @export
 #' @examples
 #' with(sun.data,

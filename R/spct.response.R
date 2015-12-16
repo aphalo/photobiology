@@ -1,7 +1,7 @@
 # response methods --------------------------------------------------------
 
 
-#' Calculate response from spectral response
+#' Integrated response
 #'
 #' Calculate average photon- or energy-based photo-response.
 #'
@@ -96,7 +96,7 @@ resp_spct <-
       unit.out <- "photon"
     }
 
-    data.time.unit <- getTimeUnit(spct)
+    data.time.unit <- getTimeUnit(spct, force.duration = lubridate::is.duration(time.unit))
 
     if (!is.null(time.unit) && time.unit != data.time.unit) {
       if (!lubridate::is.duration(time.unit) && !is.character(time.unit)) {
@@ -224,7 +224,7 @@ resp_spct <-
 
 # e_response methods --------------------------------------------------------
 
-#' Calculate energy or photon based response from spectral response
+#' Energy-based photo-response
 #'
 #' This function returns the mean, total, or contribution of response for each
 #' waveband and a response spectrum.
@@ -243,12 +243,11 @@ resp_spct <-
 #'   percentage, or a vector of the same length as the list of wave.bands. The
 #'   quantity returned, although always on energy-based units, depends on the
 #'   value of \code{quantity}.
-#' @keywords manip misc
+#'
 #' @export
 #' @examples
-#' library(photobiologySensors)
-#' e_response(Vital_BW_20.spct, new_waveband(200,300))
-#' e_response(Vital_BW_20.spct)
+#' e_response(ccd.spct, new_waveband(200,300))
+#' e_response(photodiode.spct)
 #'
 #' @note The parameter \code{use.hinges} controls speed optimization. The
 #'   defaults should be suitable in mosts cases. Only the range of wavelengths
@@ -284,7 +283,7 @@ e_response.response_spct <-
 
 # q_response methods --------------------------------------------------------
 
-##' Calculate photon-based photo-response from spectral response
+##' Photon-based photo-response
 #'
 #' This function returns the mean response for a given
 #' waveband and a response spectrum.
@@ -303,12 +302,11 @@ e_response.response_spct <-
 #'   percentage, or a vector of the same length as the list of wave.bands. The
 #'   quantity returned, although always on photon-based units, depends on the
 #'   value of \code{quantity}.
-#' @keywords manip misc
+#'
 #' @export
 #' @examples
-#' library(photobiologySensors)
-#' q_response(Vital_BW_20.spct, new_waveband(200,300)) * 1e-6
-#' q_response(Vital_BW_20.spct) * 1e-6
+#' q_response(ccd.spct, new_waveband(200,300))
+#' q_response(photodiode.spct)
 #'
 #' @note The parameter \code{use.hinges} controls speed optimization. The
 #'   defaults should be suitable in mosts cases. Only the range of wavelengths
@@ -316,7 +314,13 @@ e_response.response_spct <-
 #'
 #' @family response functions
 #'
-q_response <- function(spct, w.band, quantity, time.unit, wb.trim, use.hinges, ...) UseMethod("q_response")
+q_response <- function(spct,
+                       w.band,
+                       quantity,
+                       time.unit,
+                       wb.trim,
+                       use.hinges,
+                       ...) UseMethod("q_response")
 
 #' @describeIn q_response Default method for generic function
 #'

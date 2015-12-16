@@ -19,7 +19,7 @@ fscale <- function(x, ...) UseMethod("fscale")
 #' @return a new object of the same class as \code{x}.
 #'
 fscale.default <- function(x, ...) {
-  warning("'fscale' is not defined for objects of class ", class(spct)[1])
+  warning("'fscale' is not defined for objects of class ", class(x)[1])
   return(x)
 }
 
@@ -37,18 +37,18 @@ fscale.default <- function(x, ...) {
 #' @export
 #'
 fscale.source_spct <- function(x,
-                               range = x,
+                               range = NULL,
                                f = "mean",
                                unit.out = getOption("photobiology.radiation.unit", default="energy"),
                                ...) {
   if (unit.out == "energy") {
     return(fscale_spct(spct = q2e(x, action = "replace"),
-                       range = range(range),
+                       range = range,
                        f = f,
                        var.name = "s.e.irrad"))
   } else if (unit.out %in% c("photon", "quantum") ) {
     return(fscale_spct(spct = e2q(x, action = "replace"),
-                       range = range(range),
+                       range = range,
                        f = f,
                        var.name = "s.q.irrad"))
   } else {
@@ -61,19 +61,19 @@ fscale.source_spct <- function(x,
 #' @export
 #'
 fscale.response_spct <- function(x,
-                                 range = x,
+                                 range = NULL,
                                  f = "mean",
                                  unit.out = getOption("photobiology.radiation.unit", default="energy"),
                                  ...) {
   if (unit.out == "energy") {
     return(fscale_spct(spct = q2e(x, action = "replace"),
-                       range = range(range),
+                       range = range,
                        f = f,
                        var.name = "s.e.response",
                        ...))
   } else if (unit.out %in% c("photon", "quantum") ) {
     return(fscale_spct(spct = e2q(x, action = "replace"),
-                       range = range(range),
+                       range = range,
                        f = f,
                        var.name = "s.q.response",
                        ...))
@@ -89,24 +89,25 @@ fscale.response_spct <- function(x,
 #' @export
 #'
 fscale.filter_spct <- function(x,
-                               range = x,
+                               range = NULL,
                                f = "mean",
-                               qty.out = getOption("photobiology.filter.qty", default="transmittance"),
+                               qty.out = getOption("photobiology.filter.qty",
+                                                   default = "transmittance"),
                                ...) {
   if (qty.out == "transmittance") {
     return(fscale_spct(spct = A2T(x, action = "replace"),
-                       range = range(range),
+                       range = range,
                        f = f,
                        var.name = "Tfr",
                        ...))
   } else if (qty.out == "absorbance") {
     return(fscale_spct(spct = T2A(x, action = "replace"),
-                       range = range(range),
+                       range = range,
                        f = f,
                        var.name = "A",
                        ...))
   } else {
-    stop("'qty.out ", unit.out, " is unknown")
+    stop("'qty.out ", qty.out, " is unknown")
   }
 }
 
@@ -115,16 +116,88 @@ fscale.filter_spct <- function(x,
 #' @export
 #'
 fscale.reflector_spct <- function(x,
-                                  range = x,
+                                  range = NULL,
                                   f = "mean",
                                   qty.out = NULL,
                                   ...) {
   return(fscale_spct(spct = x,
-                     range = range(range),
+                     range = range,
                      f = f,
                      var.name = "Rfr",
                      ...))
 }
+
+#' @describeIn fscale
+#'
+#' @export
+#'
+fscale.source_mspct <- function(x,
+                                 range = NULL,
+                                 f = "mean",
+                                 unit.out = getOption("photobiology.radiation.unit",
+                                                      default = "energy"),
+                                 ...) {
+  msmsply(x,
+          fscale,
+          range = range,
+          f = f,
+          unit.out = unit.out,
+          ...)
+}
+
+#' @describeIn fscale
+#'
+#' @export
+#'
+fscale.response_mspct <- function(x,
+                                  range = NULL,
+                                  f = "mean",
+                                  unit.out = getOption("photobiology.radiation.unit",
+                                                       default = "energy"),
+                                  ...) {
+  msmsply(x,
+          fscale,
+          range = range,
+          f = f,
+          unit.out = unit.out,
+          ...)
+}
+
+#' @describeIn fscale
+#'
+#' @export
+#'
+fscale.filter_mspct <- function(x,
+                                  range = NULL,
+                                  f = "mean",
+                                  qty.out = getOption("photobiology.filter.qty",
+                                                      default = "transmittance"),
+                                  ...) {
+  msmsply(x,
+          fscale,
+          range = range,
+          f = f,
+          qty.out = qty.out,
+          ...)
+}
+
+#' @describeIn fscale
+#'
+#' @export
+#'
+fscale.reflector_mspct <- function(x,
+                                  range = NULL,
+                                  f = "mean",
+                                  qty.out = NULL,
+                                  ...) {
+  msmsply(x,
+          fscale,
+          range = range,
+          f = f,
+          qty.out = qty.out,
+          ...)
+}
+
 
 #' fscale a spectrum
 #'
@@ -143,6 +216,17 @@ fscale.reflector_spct <- function(x,
 #' @keywords internal
 #'
 fscale_spct <- function(spct, range, var.name, f, ...) {
+  if (is.null(range) || all(is.na(range))) {
+    range <- range(spct)
+  } else {
+    if (max(range) < min(spct)) {
+      warning("'range' does not overlap spectral data, skipping scaling...")
+      return(spct)
+    }
+    if (min(range) < min(spct)) {
+      warning("'range' is only partly within spectral data, continuing scaling...")
+    }
+  }
   tmp.spct <- trim_spct(spct, range, byref = FALSE)
   tmp.spct <- tmp.spct[ , c("w.length", var.name)]
   # rescaling needed
@@ -166,14 +250,9 @@ fscale_spct <- function(spct, range, var.name, f, ...) {
     summary.value <- 1 # implemented in this way to ensure that all returned
     # values folow the same copy/reference semantics
   }
-  out.spct <- spct
-  out.spct[[var.name]] <- out.spct[[var.name]] / summary.value
-  class(out.spct) <- class(spct)
-  comment(out.spct) <- comment(spct)
-  setScaled(out.spct, list(multiplier = 1 / summary.value, f = f))
-  setTimeUnit(out.spct, getTimeUnit(spct))
-  setTfrType(out.spct, getTfrType(spct))
-  out.spct
+  spct[[var.name]] <- spct[[var.name]] / summary.value
+  setScaled(spct, list(multiplier = 1 / summary.value, f = f))
+  spct
 }
 
 # is_scaled function ----------------------------------------------------
@@ -193,7 +272,7 @@ fscale_spct <- function(spct, range, var.name, f, ...) {
 #' @family rescaling functions
 #'
 is_scaled <- function(x) {
-  if (!is.any_spct(x)) {
+  if (!is.any_spct(x) && !is.any_summary_spct(x)) {
     return(NA)
   }
   spct.attr <- attr(x, "scaled", exact = TRUE)
@@ -217,7 +296,7 @@ is_scaled <- function(x) {
 #' @family Rfr attribute functions
 #'
 getScaled <- function(x) {
-  if (is.any_spct(x)) {
+  if (is.any_spct(x) || is.any_summary_spct(x)) {
     scaled <- attr(x, "scaled", exact = TRUE)
     if (is.null(scaled) || is.na(scaled)) {
       # need to handle objects created with old versions
@@ -245,7 +324,7 @@ getScaled <- function(x) {
 #'
 setScaled <- function(x, scaled = FALSE) {
   name <- substitute(x)
-  if (is.any_spct(x) && !is.null(scaled)) {
+  if ((is.any_spct(x) || is.any_summary_spct(x)) && !is.null(scaled)) {
     attr(x, "scaled") <- scaled
     if (is.name(name)) {
       name <- as.character(name)

@@ -1,9 +1,11 @@
-#' Calculate solar angles
+#' Solar angles
 #'
 #' This function returns the solar angles for a given time and location.
 #'
 #' @param time POSIXct Time, any valid time zone (TZ) is allowed, default is
 #'   current time
+#' @param geocode data frame with variables lon and lat as numeric values
+#'   (degrees).
 #' @param lon numeric Vector of longitudes (degrees)
 #' @param lat numeric Vector of latitudes (degrees)
 #' @param use_refraction logical Flag indicating whether to correct for
@@ -14,7 +16,7 @@
 #'
 #' @family astronomy related functions
 #'
-#' @keywords manip misc
+#'
 #' @export
 #' @examples
 #' require(lubridate)
@@ -22,15 +24,22 @@
 #' sun_angles(ymd_hms("2014-09-23 12:00:00"))
 #' sun_angles(ymd_hms("2014-09-23 12:00:00"), lat=60, lon=0)
 #'
-sun_angles <- function(time = lubridate::now(), lon = 0, lat = 0, use_refraction = FALSE)
+sun_angles <- function(time = lubridate::now(),
+                       geocode = NULL,
+                       lon = 0, lat = 0,
+                       use_refraction = FALSE)
 {
-  if (!lubridate::is.POSIXct(time)) {
-    warning("Argument time is not a POSIXct time.")
-    return(NA)
-  }
+  stopifnot(lubridate::is.POSIXct(time))
+  stopifnot(is.null(geocode) || is.data.frame(geocode))
   tz <- lubridate::tz(time)
   t <- lubridate::with_tz(time, "UTC")
   nt <- length(t)
+
+  if (!is.null(geocode)) {
+    lon <- geocode[["lon"]]
+    lat <- geocode[["lat"]]
+    geocode <- NULL
+  }
   nlon <- length(lon)
   nlat <- length(lat)
   if (nlon != nlat)
@@ -43,10 +52,10 @@ sun_angles <- function(time = lubridate::now(), lon = 0, lat = 0, use_refraction
     if (nt != nlon)
       stop("lengths of t, latitude and longitude must match, unless last two are of length 1")
   }
-  year <- year(t)
+  year <- lubridate::year(t)
   if (any(year < 1950) || any(year > 2050))
     stop("year=", year, " is outside acceptable range")
-  day <- yday(t)
+  day <- lubridate::yday(t)
   if (any(day < 1) || any(day > 366))
     stop("day is not in range 1 to 366")
   hour <- lubridate::hour(t) + lubridate::minute(t) / 60 + lubridate::second(t) / 3600
@@ -69,21 +78,21 @@ sun_angles <- function(time = lubridate::now(), lon = 0, lat = 0, use_refraction
     lon[lon > 180] <- 180
   }
   delta <- year - 1949
-  leap <- delta%/%4
+  leap <- delta %/% 4
   jd <- 32916.5 + (delta * 365 + leap + day) + hour / 24
-  jd <- jd + ifelse(0 == (year%%100) & 0 != (year%%400), 1,
+  jd <- jd + ifelse(0 == (year %% 100) & 0 != (year %% 400), 1,
                     0)
   time <- jd - 51545
   mnlong <- 280.46 + 0.9856474 * time
-  mnlong <- mnlong%%360
+  mnlong <- mnlong %% 360
   mnlong <- mnlong + ifelse(mnlong < 0, 360, 0)
   mnanom <- 357.528 + 0.9856003 * time
-  mnanom <- mnanom%%360
+  mnanom <- mnanom %% 360
   mnanom <- mnanom + ifelse(mnanom < 0, 360, 0)
   rpd <- pi/180
   mnanom <- mnanom * rpd
   eclong <- mnlong + 1.915 * sin(mnanom) + 0.02 * sin(2 * mnanom)
-  eclong <- eclong%%360
+  eclong <- eclong %% 360
   eclong <- eclong + ifelse(eclong < 0, 360, 0)
   oblqec <- 23.439 - 4e-07 * time
   eclong <- eclong * rpd
@@ -94,10 +103,10 @@ sun_angles <- function(time = lubridate::now(), lon = 0, lat = 0, use_refraction
   ra <- ra + ifelse(den < 0, pi, ifelse(num < 0, 2 * pi, 0))
   dec <- asin(sin(oblqec) * sin(eclong))
   gmst <- 6.697375 + 0.0657098242 * time + hour
-  gmst <- gmst%%24
+  gmst <- gmst %% 24
   gmst <- gmst + ifelse(gmst < 0, 24, 0)
   lmst <- gmst + lon/15
-  lmst <- lmst%%24
+  lmst <- lmst %% 24
   lmst <- lmst + ifelse(lmst < 0, 24, 0)
   lmst <- lmst * 15 * rpd
   ha <- lmst - ra
@@ -131,7 +140,7 @@ sun_angles <- function(time = lubridate::now(), lon = 0, lat = 0, use_refraction
 }
 
 
-#' Times of sunrise, sunset and solar noon. Day length and night length.
+#' Times for sun positions
 #'
 #' Functions for calculating the timing of solar positions by means of function
 #' \code{sun_angles}, given geographical coordinates and dates. They can be also
@@ -142,6 +151,8 @@ sun_angles <- function(time = lubridate::now(), lon = 0, lat = 0, use_refraction
 #'   default is current date
 #' @param tz character string incading time zone to be used in output, default
 #'   is system time zone
+#' @param geocode data frame with variables lon and lat as numeric values
+#'   (degrees).
 #' @param lon numeric array of longitudes (degrees)
 #' @param lat numeric array of latitudes (degrees)
 #' @param twilight character string, one of "none", "civil", "nautical",
@@ -158,7 +169,7 @@ sun_angles <- function(time = lubridate::now(), lon = 0, lat = 0, use_refraction
 #'
 #' @family astronomy related functions
 #'
-#' @keywords manip misc
+#' @name day_night
 #' @export
 #' @examples
 #' library(lubridate)
@@ -168,22 +179,37 @@ sun_angles <- function(time = lubridate::now(), lon = 0, lat = 0, use_refraction
 #' day_length(ymd("2015-05-30"), lat = 60, lon = 25, twilight = "civil")
 #' sunrise_time(ymd("2015-05-30"), lat = 60, lon = 25, tz = "EET")
 #' day_night(ymd("2015-05-30"), lat = 60, lon = 25, twilight = "civil")
+#'
+day_night <- function(date = lubridate::today(),
+                      tz = "UTC",
+                      geocode = NULL, lon = 0, lat = 0,
+                      twilight = "none",
+                      unit.out = "date") {
+  stopifnot(is.null(geocode) || is.data.frame(geocode))
+  if (!is.null(geocode)) {
+    lon <- geocode[["lon"]]
+    lat <- geocode[["lat"]]
+    geocode <- NULL
+  }
 
-day_night <- function(date = lubridate::today(), tz = "UTC", lon = 0, lat = 0,
-                      twilight = "none", unit.out = "date") {
   list(day         = as.Date(date),
-       sunrise     = sunrise_time(date = date, tz = tz, lon = lon, lat = lat,
+       sunrise     = sunrise_time(date = date, tz = tz,
+                                  lon = lon, lat = lat,
                                   twilight = twilight,
                                   unit.out = unit.out),
-       noon        = noon_time(date = date, tz = tz, lon = lon, lat = lat,
+       noon        = noon_time(date = date, tz = tz,
+                               lon = lon, lat = lat,
                                unit.out = unit.out),
-       sunset      = sunset_time(date = date, tz = tz, lon = lon, lat = lat,
+       sunset      = sunset_time(date = date, tz = tz,
+                                 lon = lon, lat = lat,
                                  twilight = twilight,
                                  unit.out = unit.out),
-       daylength   = day_length(date = date, tz = tz, lon = lon, lat = lat,
+       daylength   = day_length(date = date, tz = tz,
+                                lon = lon, lat = lat,
                                 twilight = twilight,
                                 unit.out = unit.out),
-       nightlength = night_length(date = date, tz = tz, lon = lon, lat = lat,
+       nightlength = night_length(date = date, tz = tz,
+                                  lon = lon, lat = lat,
                                   twilight = twilight,
                                   unit.out = unit.out) )
 }
@@ -194,13 +220,13 @@ day_night <- function(date = lubridate::today(), tz = "UTC", lon = 0, lat = 0,
 #' @keywords internal
 twilight2angle <- function(twilight) {
   if (!is.numeric(twilight)) {
-    if (twilight=="none") {
+    if (twilight == "none") {
       twilight_angle <- c(0, 0)
-    } else if (twilight=="civil") {
+    } else if (twilight == "civil") {
       twilight_angle <- c(-6, -6)
-    } else if (twilight=="nautical") {
+    } else if (twilight == "nautical") {
       twilight_angle <- c(-12, -12)
-    } else if (twilight=="astronomical") {
+    } else if (twilight == "astronomical") {
       twilight_angle <- c(-18, -18)
     } else {
       twilight_angle <- c(NA, NA)
@@ -217,7 +243,7 @@ twilight2angle <- function(twilight) {
     twilight_angle <- ifelse(twilight_angle > -90, twilight_angle, NA)
   }
   if (any(is.na(twilight_angle))) {
-    error("Unrecognized argument value for 'twilight': ", twilight)
+    stop("Unrecognized argument value for 'twilight': ", twilight)
   }
   twilight_angle
 }
@@ -229,16 +255,16 @@ twilight2angle <- function(twilight) {
 date2seconds <- function(t, tz) {
   if (!lubridate::is.POSIXct(t)) {
     if (lubridate::is.instant(t)) {
-      t <- as.POSIXct(t, tz="UTC")
+      t <- as.POSIXct(t, tz = "UTC")
     } else {
       warning("t is not a valid time or date")
     }
   }
-  t <- as.POSIXct(t, tz=tz)
+  t <- as.POSIXct(t, tz = tz)
   lubridate::hour(t) <- 0
   lubridate::minute(t) <- 0
   lubridate::second(t) <- 0
-  as.numeric(t, tz=tz)
+  as.numeric(t, tz = tz)
 }
 
 #' time argument check and conversion
@@ -248,13 +274,13 @@ date2seconds <- function(t, tz) {
 time2seconds <- function(t, tz) {
   if (!lubridate::is.POSIXct(t)) {
     if (lubridate::is.instant(t)) {
-      t <- as.POSIXct(t, tz="UTC")
+      t <- as.POSIXct(t, tz = "UTC")
     } else {
       warning("t is not a valid time or date")
     }
   }
-  t <- as.POSIXct(t, tz=tz)
-  as.numeric(t, tz=tz)
+  t <- as.POSIXct(t, tz = tz)
+  as.numeric(t, tz = tz)
 }
 
 #' function to be numerically minimized
@@ -268,20 +294,28 @@ altitude <- function(x, lon, lat, twlght_angl = 0){
                     lat = lat)$elevation - twlght_angl)
 }
 
-#' @describeIn day_night Calculate time coordinates at local noon
+#' @rdname day_night
 #' @export
 #' @return \code{noon_time}, \code{sunrise_time} and \code{sunset_time} return a
 #'   vector of POSIXct times
-noon_time <- function(date = lubridate::today(), tz = "UTC", lon = 0, lat = 0,
+noon_time <- function(date = lubridate::today(), tz = "UTC",
+                      geocode = NULL, lon = 0, lat = 0,
                       twilight = NA, unit.out = "date") {
+  stopifnot(is.null(geocode) || is.data.frame(geocode))
+  if (!is.null(geocode)) {
+    lon <- geocode[["lon"]]
+    lat <- geocode[["lat"]]
+    geocode <- NULL
+  }
   date_num <- sapply(date, date2seconds, tz = tz)
   times <- numeric()
   twlght_angl <- 0
   for (t_num in date_num) {
     noon <- try(
-      optimize(f=altitude, interval=c(t_num + 7200, t_num + 86400 - 7200),
-               lon = lon, lat = lat, twlght_angl = twlght_angl,
-               maximum=TRUE)$maximum
+      optimize(f = altitude, interval = c(t_num + 7200, t_num + 86400 - 7200),
+               lon = lon, lat = lat,
+               twlght_angl = twlght_angl,
+               maximum = TRUE)$maximum
     )
     if (inherits(noon, "try-error")) {
       noon <- NA
@@ -295,21 +329,29 @@ noon_time <- function(date = lubridate::today(), tz = "UTC", lon = 0, lat = 0,
   times
 }
 
-#' @describeIn day_night Calculate time at sunrise
+#' @rdname day_night
 #'
 #' @export
-sunrise_time <- function(date = lubridate::today(), tz = "UTC", lon = 0, lat = 0,
+sunrise_time <- function(date = lubridate::today(), tz = "UTC",
+                         geocode = NULL, lon = 0, lat = 0,
                          twilight = "none", unit.out = "date") {
-  noon <- noon_time(date = date, tz = tz, lon = lon, lat = lat)
+  stopifnot(is.null(geocode) || is.data.frame(geocode))
+  if (!is.null(geocode)) {
+    lon <- geocode[["lon"]]
+    lat <- geocode[["lat"]]
+    geocode <- NULL
+  }
+  noon <- noon_time(date = date, tz = tz,
+                    lon = lon, lat = lat)
   noon_num <- sapply(noon, time2seconds, tz = tz)
   times <- numeric()
   twlght_angl <- twilight2angle(twilight)[1]
   for (t_num in noon_num) {
      rise <- try(
-      uniroot(f=altitude,
+      uniroot(f = altitude,
               lon = lon, lat = lat, twlght_angl = twlght_angl,
               lower = t_num - 86400/2, upper = t_num)$root,
-      silent=TRUE)
+      silent = TRUE)
     if (inherits(rise, "try-error")) {
       rise <- NA # never
     }
@@ -322,24 +364,33 @@ sunrise_time <- function(date = lubridate::today(), tz = "UTC", lon = 0, lat = 0
   times
 }
 
-#' @describeIn day_night Calculate time at sunrise
+#' @rdname day_night
 #' @export
 #'
 #' @note \code{night_length} returns the length of night-time conditions in one
 #'   day (00:00:00 to 23:59:59), rather than the length of the night between two
 #'   consequtive days.
-sunset_time <- function(date = lubridate::today(), tz = "UTC", lon = 0, lat = 0,
+sunset_time <- function(date = lubridate::today(), tz = "UTC",
+                        geocode = NULL, lon = 0, lat = 0,
                         twilight = "none", unit.out = "date") {
-  noon <- noon_time(date = date, tz = tz, lon = lon, lat = lat)
+  stopifnot(is.null(geocode) || is.data.frame(geocode))
+  if (!is.null(geocode)) {
+    lon <- geocode[["lon"]]
+    lat <- geocode[["lat"]]
+    geocode <- NULL
+  }
+  noon <- noon_time(date = date, tz = tz,
+                    lon = lon, lat = lat)
   noon_num <- sapply(noon, time2seconds, tz = tz)
   times <- numeric()
   twlght_angl <- twilight2angle(twilight)[2]
   for (t_num in noon_num) {
     set <- try(
-      uniroot(f=altitude,
-              lon = lon, lat = lat, twlght_angl = twlght_angl,
-              lower = t_num, upper = t_num + 86400/2)$root,
-      silent=TRUE)
+      uniroot(f = altitude,
+              lon = lon, lat = lat,
+              twlght_angl = twlght_angl,
+              lower = t_num, upper = t_num + 86400 / 2)$root,
+      silent = TRUE)
     if (inherits(set, "try-error")) {
       set <- NA # never
     }
@@ -352,16 +403,27 @@ sunset_time <- function(date = lubridate::today(), tz = "UTC", lon = 0, lat = 0,
   times
 }
 
-#' @describeIn day_night Calculate day length
+#' @rdname day_night
+#'
 #' @export
 #' @return \code{day_length} and \code{night_length} return numeric a vector
 #'   giving the length in hours
-day_length <- function(date = lubridate::today(), tz = "UTC", lon = 0, lat = 0,
+day_length <- function(date = lubridate::today(), tz = "UTC",
+                       geocode = NULL, lon = 0, lat = 0,
                        twilight = "none", unit.out = "hour") {
-  noon <- noon_time(date = date, tz = tz, lon = lon, lat = lat)
-  rise_time <- sunrise_time(date = date, tz = tz, lon = lon, lat = lat,
+  stopifnot(is.null(geocode) || is.data.frame(geocode))
+  if (!is.null(geocode)) {
+    lon <- geocode[["lon"]]
+    lat <- geocode[["lat"]]
+    geocode <- NULL
+  }
+  noon <- noon_time(date = date, tz = tz,
+                    lon = lon, lat = lat)
+  rise_time <- sunrise_time(date = date, tz = tz,
+                            lon = lon, lat = lat,
                             twilight = twilight, unit.out = "date")
-  set_time <- sunset_time(date = date, tz = tz, lon = lon, lat = lat,
+  set_time <- sunset_time(date = date, tz = tz,
+                          lon = lon, lat = lat,
                           twilight = twilight, unit.out = "date")
   hours <- ifelse(is.na(rise_time) | is.na(set_time),
          ifelse(altitude(noon, lon = lon, lat = lat) > 0, 24, 0),
@@ -373,11 +435,20 @@ day_length <- function(date = lubridate::today(), tz = "UTC", lon = 0, lat = 0,
          "second" = hours * 3600)
 }
 
-#' @describeIn day_night Calculate night length
+#' @rdname day_night
+#'
 #' @export
-night_length <- function(date = lubridate::today(), tz = "UTC", lon = 0, lat = 0,
+night_length <- function(date = lubridate::today(), tz = "UTC",
+                         geocode = NULL, lon = 0, lat = 0,
                          twilight = "none", unit.out = "hour") {
-  hours <- 24 - day_length(date = date, tz = tz, lon = lon, lat = lat,
+  stopifnot(is.null(geocode) || is.data.frame(geocode))
+  if (!is.null(geocode)) {
+    lon <- geocode[["lon"]]
+    lat <- geocode[["lat"]]
+    geocode <- NULL
+  }
+  hours <- 24 - day_length(date = date, tz = tz,
+                           lon = lon, lat = lat,
                            twilight = twilight, unit.out = "hour")
   switch(unit.out,
          "date" = hours,

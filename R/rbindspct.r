@@ -1,7 +1,7 @@
 
 # rbind -------------------------------------------------------------------
 
-#' Makes one spectral object from a list of many
+#' Row-bind spectra
 #'
 #' A wrapper on \code{dplyr::rbind_fill} that preserves class and other
 #' attributes of spectral objects.
@@ -92,11 +92,13 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
     stop("Argument 'l' should be a list of spectra or an _mspct object")
     return(NULL)
   }
+  # list may have member which already have multiple spectra in long form
+  mltpl.wl <- sum(sapply(l, FUN = getMultipleWl))
   # we find the lowest common class
   # and in the same loop we make sure that all spectral data use consistent units
   l.class <- spct_classes()
-  photon.based.input <- any(sapply(l, FUN=is_photon_based))
-  absorbance.based.input <- any(sapply(l, FUN=is_absorbance_based))
+  photon.based.input <- any(sapply(l, FUN = is_photon_based))
+  absorbance.based.input <- any(sapply(l, FUN = is_absorbance_based))
   scaled.input <- sapply(l, FUN = is_scaled)
   normalized.input <- sapply(l, FUN = is_normalized)
   effective.input <- sapply(l, FUN = is_effective)
@@ -154,9 +156,9 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
     temp <- comment(l[[i]])
     comments.found <- comments.found || !is.null(temp)
     if (add.idfactor) {
-      temp <- paste("\n", idfactor , "= ", names.spct[i], ":\n", comment(l[[i]]), sep="")
+      temp <- paste("\n", idfactor , "= ", names.spct[i], ":\n", comment(l[[i]]), sep = "")
     } else {
-      temp <- paste("\n spectrum = ", names.spct[i], ":\n", comment(l[[i]]), sep="")
+      temp <- paste("\n spectrum = ", names.spct[i], ":\n", comment(l[[i]]), sep = "")
     }
     comment.ans <- paste(comment.ans, temp)
   }
@@ -186,7 +188,7 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
       add.bswf <- FALSE
       bswf.used <- rep("none", length(l))
     }
-    setSourceSpct(ans, time.unit = time.unit[1], bswf.used = bswf.used, multiple.wl = length(l))
+    setSourceSpct(ans, time.unit = time.unit[1], bswf.used = bswf.used, multiple.wl = mltpl.wl)
     if (photon.based.input) {
       e2q(ans, action = "add", byref = TRUE)
     }
@@ -196,7 +198,7 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
       warning("Inconsistent 'Tfr.type' among filter spectra in rbindspct")
       return(NA)
     }
-    setFilterSpct(ans, Tfr.type = Tfr.type[1], multiple.wl = length(l))
+    setFilterSpct(ans, Tfr.type = Tfr.type[1], multiple.wl = mltpl.wl)
     if (absorbance.based.input) {
       T2A(ans, action = "add", byref = TRUE)
     }
@@ -206,23 +208,23 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
       warning("Inconsistent 'Rfr.type' among reflector spectra in rbindspct")
       return(NA)
     }
-    setReflectorSpct(ans, Rfr.type = Rfr.type[1], multiple.wl = length(l))
+    setReflectorSpct(ans, Rfr.type = Rfr.type[1], multiple.wl = mltpl.wl)
   } else if (l.class == "response_spct") {
     time.unit <- sapply(l, FUN = getTimeUnit)
     if (length(unique(time.unit)) > 1L) {
       warning("Inconsistent time units among respose spectra in rbindspct")
       return(NA)
     }
-    setResponseSpct(ans, time.unit = time.unit[1], multiple.wl = length(l))
+    setResponseSpct(ans, time.unit = time.unit[1], multiple.wl = mltpl.wl)
     if (photon.based.input) {
       e2q(ans, action = "add", byref = TRUE)
     }
   } else if (l.class == "chroma_spct") {
-    setChromSpct(ans, multiple.wl = length(l))
+    setChromaSpct(ans, multiple.wl = mltpl.wl)
   } else if (l.class == "cps_spct") {
-    setCpsSpct(ans, multiple.wl = length(l))
+    setCpsSpct(ans, multiple.wl = mltpl.wl)
   } else if (l.class == "generic_spct") {
-    setGenericSpct(ans, multiple.wl = length(l))
+    setGenericSpct(ans, multiple.wl = mltpl.wl)
   }
   if (any(scaled.input)) {
     attr(ans, "scaled") <- TRUE
@@ -243,13 +245,21 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
 
 # Extract ------------------------------------------------------------------
 
-#' Extract or Replace Parts of a Spectrum
+# $ operator for extraction does not need any wrapping as it always extracts
+# single columns returning objects of the underlying classes (e.g. numeric)
+# rather than spectral objects.
+#
+# [ needs special handling as it can be used to extract rows, or groups of
+# columns which are returned as spectral objects. Such returned objects
+# can easily become invalid, for example, lack a w.length variable.
+
+#' Extract or replace parts of a spectrum
 #'
 #' Just like extraction and replacement with indexes in base R, but preserving
 #' the special attributes used in spectral classes and checking for validity of
 #' remaining spectral data.
 #'
-#' @param x	spectral object from which to extract element(s)
+#' @param x	spectral object from which to extract element(s) or in which to replace element(s)
 #' @param i index for rows,
 #' @param j index for columns, specifying elements to extract or replace. Indices are
 #'   numeric or character vectors or empty (missing) or NULL. Please, see
@@ -268,10 +278,7 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
 #'   subset of rows and columns that are selected. See details for special
 #'   cases.
 #'
-#' @method "[" generic_spct
-#'
-#' @note Currently only extract methods are implemented. Replacement methods
-#'   may be implemented in the future.
+#' @method [ generic_spct
 #'
 #' @examples
 #' sun.spct[sun.spct$w.length > 400, ]
@@ -287,7 +294,7 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
 #' @seealso \code{\link[base]{subset.data.frame}} and \code{\link{trim_spct}}
 #'
 "[.generic_spct" <-
-  function (x, i, j, drop = NULL) {
+  function(x, i, j, drop = NULL) {
     if (is.null(drop)) {
       xx <- `[.data.frame`(x, i, j)
     } else {
@@ -295,7 +302,7 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
     }
     if (is.data.frame(xx)) {
       if ("w.length" %in% names(xx)) {
-        setGenericSpct(xx)
+        setGenericSpct(xx, multiple.wl = getMultipleWl(x))
         setNormalized(xx, getNormalized(x))
         setScaled(xx, getScaled(x))
         comment <- comment(x)
@@ -313,7 +320,7 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
 #' @rdname extract
 #'
 "[.cps_spct" <-
-  function (x, i, j, drop = NULL) {
+  function(x, i, j, drop = NULL) {
     if (is.null(drop)) {
       xx <- `[.data.frame`(x, i, j)
     } else {
@@ -321,7 +328,7 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
     }
     if (is.data.frame(xx)) {
       if ("w.length" %in% names(xx)) {
-        setCpsSPct(xx)
+        setCpsSpct(xx, multiple.wl = getMultipleWl(x))
         setNormalized(xx, getNormalized(x))
         setScaled(xx, getScaled(x))
         comment <- comment(x)
@@ -339,7 +346,7 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
 #' @rdname extract
 #'
 "[.source_spct" <-
-  function (x, i, j, drop = NULL) {
+  function(x, i, j, drop = NULL) {
     if (is.null(drop)) {
       xx <- `[.data.frame`(x, i, j)
     } else {
@@ -350,14 +357,13 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
         time.unit <- getTimeUnit(x)
         bswf.used <- getBSWFUsed(x)
         setSourceSpct(x = xx, time.unit = time.unit, bswf.used = bswf.used,
-                      multiple.wl = Inf, strict.range = NULL)
+                      multiple.wl = getMultipleWl(x), strict.range = NA)
         setNormalized(xx, getNormalized(x))
         setScaled(xx, getScaled(x))
         comment <- comment(x)
         if (!is.null(comment)) {
           comment(xx) <- comment
         }
-
       } else {
         xx <- dplyr::as_data_frame(xx)
       }
@@ -369,7 +375,7 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
 #' @rdname extract
 #'
 "[.response_spct" <-
-  function (x, i, j, drop = NULL) {
+  function(x, i, j, drop = NULL) {
     if (is.null(drop)) {
       xx <- `[.data.frame`(x, i, j)
     } else {
@@ -379,7 +385,7 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
       if ("w.length" %in% names(xx)) {
         time.unit <- getTimeUnit(x)
         setResponseSpct(x = xx, time.unit = time.unit,
-                        multiple.wl = Inf)
+                        multiple.wl = getMultipleWl(x))
         setNormalized(xx, getNormalized(x))
         setScaled(xx, getScaled(x))
         comment <- comment(x)
@@ -397,7 +403,7 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
 #' @rdname extract
 #'
 "[.filter_spct" <-
-  function (x, i, j, drop = NULL) {
+  function(x, i, j, drop = NULL) {
     if (is.null(drop)) {
       xx <- `[.data.frame`(x, i, j)
     } else {
@@ -407,7 +413,7 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
       if ("w.length" %in% names(xx)) {
         Tfr.type <- getTfrType(x)
         setFilterSpct(x = xx, Tfr.type = Tfr.type,
-                      multiple.wl = Inf, strict.range = NULL)
+                      multiple.wl = getMultipleWl(x), strict.range = NA)
         setNormalized(xx, getNormalized(x))
         setScaled(xx, getScaled(x))
         comment <- comment(x)
@@ -425,7 +431,7 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
 #' @rdname extract
 #'
 "[.reflector_spct" <-
-  function (x, i, j, drop = NULL) {
+  function(x, i, j, drop = NULL) {
     if (is.null(drop)) {
       xx <- `[.data.frame`(x, i, j)
     } else {
@@ -435,7 +441,7 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
       if ("w.length" %in% names(xx)) {
         Rfr.type <- getRfrType(x)
         setReflectorSpct(x = xx, Rfr.type = Rfr.type,
-                         multiple.wl = Inf, strict.range = NULL)
+                         multiple.wl = getMultipleWl(x), strict.range = NA)
         setNormalized(xx, getNormalized(x))
         setScaled(xx, getScaled(x))
         comment <- comment(x)
@@ -453,7 +459,7 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
 #' @rdname extract
 #'
 "[.object_spct" <-
-  function (x, i, j, drop = NULL) {
+  function(x, i, j, drop = NULL) {
     if (is.null(drop)) {
       xx <- `[.data.frame`(x, i, j)
     } else {
@@ -464,7 +470,7 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
         Tfr.type <- getTfrType(x)
         Rfr.type <- getRfrType(x)
         setObjectSpct(x = xx, Tfr.type = Tfr.type, Rfr.type = Rfr.type,
-                      multiple.wl = Inf, strict.range = NULL)
+                      multiple.wl = getMultipleWl(x), strict.range = NA)
         setNormalized(xx, getNormalized(x))
         setScaled(xx, getScaled(x))
         comment <- comment(x)
@@ -482,7 +488,7 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
 #' @rdname extract
 #'
 "[.chroma_spct" <-
-  function (x, i, j, drop = NULL) {
+  function(x, i, j, drop = NULL) {
     if (is.null(drop)) {
       xx <- `[.data.frame`(x, i, j)
     } else {
@@ -490,7 +496,7 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
     }
     if (is.data.frame(xx)) {
       if ("w.length" %in% names(xx)) {
-        setChromaSpct(xx)
+        setChromaSpct(xx, multiple.wl = getMultipleWl(x))
         setNormalized(xx, getNormalized(x))
         setScaled(xx, getScaled(x))
         comment <- comment(x)
@@ -507,13 +513,30 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
 
 # replace -----------------------------------------------------------------
 
+# We need to wrap the replace functions adding a call to our check method
+# to make sure that the object is still a valid spectrum after the
+# replacement.
+
 #' @param value	A suitable replacement value: it will be repeated a whole number
 #'   of times if necessary and it may be coerced: see the Coercion section. If
 #'   NULL, deletes the column if a single column is selected.
 #'
 #' @export
+#' @method [<- generic_spct
 #' @rdname extract
 #'
 "[<-.generic_spct" <- function(x, i, j, value) {
-  check(`[<-.data.frame`(x, i, j, value))
+  check(`[<-.data.frame`(x, i, j, value), byref = FALSE)
+}
+
+#' @param name A literal character string or a name (possibly backtick quoted).
+#'   For extraction, this is normally (see under ‘Environments’) partially
+#'   matched to the names of the object.
+#'
+#' @export
+#' @method $<- generic_spct
+#' @rdname extract
+#'
+"$<-.generic_spct" <- function(x, name, value) {
+  check(`$<-.data.frame`(x, name, value), byref = FALSE)
 }

@@ -1,4 +1,4 @@
-#' Calculate light source output by interpolation from lamp data
+#' Light-source spectral output
 #'
 #' @description Calculate interpolated values by interpolation from
 #' user-supplied spectral emission data or by name for light source data
@@ -18,7 +18,7 @@
 #' @return a source_spct with three numeric vectors with wavelength values
 #'   (w.length), scaled and interpolated spectral energy irradiance (s.e.irrad),
 #'   scaled and interpolated spectral photon irradiance values (s.q.irrad).
-#' @keywords manip misc
+#'
 #' @export
 #'
 #' @note This is a convenience function that adds no new functionality but makes
@@ -46,10 +46,13 @@ calc_source_output <- function(w.length.out,
 
   if (length(w.length.out) < 25) {
     # cubic spline
-    s.irrad.out[!out.fill.selector] <- spline(w.length.in, s.irrad.in, xout=w.length.out[!out.fill.selector])$y
+    s.irrad.out[!out.fill.selector] <-
+      spline(w.length.in, s.irrad.in, xout=w.length.out[!out.fill.selector])$y
   } else {
     # linear interpolation
-    s.irrad.out[!out.fill.selector] <- approx(x = w.length.in, y = s.irrad.in, xout = w.length.out[!out.fill.selector], ties = "ordered")$y
+    s.irrad.out[!out.fill.selector] <-
+      approx(x = w.length.in, y = s.irrad.in,
+             xout = w.length.out[!out.fill.selector], ties = "ordered")$y
   }
 
   # we check unit.in and and convert the output spectrum accordingly
@@ -84,8 +87,8 @@ calc_source_output <- function(w.length.out,
       warning("Ignoring unsupported scaled argument: ", scaled)
       e.div <- q.div <- 1.0
     }
-    out.data[!out.fill.selector, "s.e.irrad"] <- out.data[!out.fill.selector, s.e.irrad] / e.div
-    out.data[!out.fill.selector, "s.q.irrad"] <- out.data[!out.fill.selector, s.q.irrad] / q.div
+    out.data[!out.fill.selector, "s.e.irrad"] <- out.data[!out.fill.selector, "s.e.irrad"] / e.div
+    out.data[!out.fill.selector, "s.q.irrad"] <- out.data[!out.fill.selector, "s.q.irrad"] / q.div
   }
   out.data[out.fill.selector, "s.e.irrad"] <- fill
   out.data[out.fill.selector, "s.q.irrad"] <- fill

@@ -1,4 +1,4 @@
-#' Calculate RGB values from spectral irradiance.
+#' RGB color values
 #'
 #' This function returns the RGB values for a source spectrum.
 #'
@@ -10,7 +10,7 @@
 #'
 #' @return A color defined using \code{rgb()}. The numeric values of the RGB
 #'   components can be obtained
-#' @keywords manip misc
+#'
 #' @export
 #' @examples
 #' rgb_spct(sun.spct)
@@ -18,7 +18,7 @@
 #' @family color functions
 #'
 rgb_spct <-
-  function(spct, sens=ciexyzCMF2.spct, color.name=NULL){
+  function(spct, sens=photobiology::ciexyzCMF2.spct, color.name=NULL){
     if (is(spct, "source_spct")) {
       return(s_e_irrad2rgb(spct$w.length, spct$s.e.irrad, sens=sens, color.name=color.name))
     } else {

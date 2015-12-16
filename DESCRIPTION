@@ -1,40 +1,38 @@
 Package: photobiology
 Type: Package
-Title: Light and Radiation Quantification for Photobiology Research
-Version: 0.8.0
-Date: 2015-07-29
+Title: Base Photobiological Calculations
+Version: 0.9.0
+Date: 2015-12-16
 Author: Pedro J. Aphalo <pedro.aphalo@helsinki.fi>
 Maintainer: Pedro J. Aphalo <pedro.aphalo@helsinki.fi>
 Description: Calculation of effective (weighted) and unweighted
-    irradiances/doses and other derived quantities from spectral irradiance
-    data, as used in photobiology.
+    irradiances/doses, transmittance, reflectance, diverse ratios and other
+    derived quantities from spectral irradiance data, as used in photobiology.
+    Astronomical calcualtions related solar angles and daylength. Colours and
+    vision.
 License: GPL (>=2)
 VignetteBuilder: knitr
 Depends:
     R (>= 3.2.0)
 Imports:
-    Rcpp (>= 0.12.0),
-    lubridate (>= 1.3.3),
+    Rcpp (>= 0.12.2),
+    lubridate (>= 1.5.0),
     plyr (>= 1.8.3),
-    dplyr (>= 0.4.2),
+    dplyr (>= 0.4.3),
     splus2R (>= 1.2-0),
     caTools (>= 1.17.1)
 Suggests:
-    photobiologyWavebands (>= 0.3.1),
-    photobiologySun (>= 0.3.0),
-    photobiologyFilters (>= 0.3.0),
-    photobiologyReflectors (>= 0.3.0),
-    photobiologySensors (>= 0.3.0),
-    photobiologyPlants (>= 0.3.0),
-    knitr (>= 1.10.5),
-    testthat (>= 0.10.0)
+    knitr (>= 1.11),
+    testthat (>= 0.11.0),
+    roxygen2 (>= 5.0.1)
 LazyLoad: yes
 LazyData: yes
 ByteCompile: true
 NeedsCompilation: yes
 Encoding: UTF-8
 LinkingTo: Rcpp
-URL: http://uv4growth.dyndns.org,
+URL: http://www.r4photobiology.info/,
     https://bitbucket.org/aphalo/photobiology
 BugReports: https://bitbucket.org/aphalo/photobiology
 Roxygen: list(wrap = FALSE)
+RoxygenNote: 5.0.1

@@ -19,7 +19,9 @@
 #'
 #' @family color functions
 #'
-w_length2rgb <- function(w.length, sens = ciexyzCMF2.spct, color.name = NULL) {
+w_length2rgb <- function(w.length,
+                         sens = photobiology::ciexyzCMF2.spct,
+                         color.name = NULL) {
   len.wl <- length(w.length)
   generate.names <- is.null(color.name)
   if (!generate.names) {

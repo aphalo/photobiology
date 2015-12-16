@@ -2,7 +2,216 @@ TODO
 ====
 
 Add test cases for chroma_spct and improve tests for the _mspct
-classes.
+classes. Add test cases for smooth_spct().
+
+Add more examples to documentation by moving them from the User Guide to
+help pages.
+
+photobiology 0.9.0
+==================
+
+This version removes all two-way dependencies between this package and other
+packages in the r4photobiology suite. This should make installation of the
+source distribution a lot easier.
+
+Fix minor bugs
+--------------
+All spectral object constructors return an object with length equal to zero when
+called without arguments, or with argument "w.length" of length equal to zero.
+Earlier behaviour was to return NA, which is not consistent with R's usual
+expectations.
+
+All constructors for collections of spectra return an object with length equal
+to zero when called without arguments or with a list of length zero as first
+argument "l". Earlier behaviour was to trigger an error, which is not
+consistent with R's usual expectations.
+
+Function trim_waveband() was not returning the values described in some
+cases. Now the function really behaves as originally documented.
+
+Several functions and methods have a 'range' argument, but semantics was not
+identical in all. Now they all use the same semantics, similar to that used
+in recent versions of ggplot2 for xlim() and ylim(). Setting a boundary to
+NA means that the range extends to include all available data on a given
+'end'. Whenever it makes sense a NULL range means that the range includes the
+whole available range of wavelengths. The default value of 'range' for the
+recently added method 'fshift()' has changed to be the first 10 nm at the
+short wavelength end of the spectrum.
+
+Removed functionality
+---------------------
+Function calc_filter_multipliers() has been deleted.
+
+New data
+--------
+Add example data to make this package's documentation independent of other
+packages in the suite.
+
+Filters: clear.spct, opaque.spct, polyester.spct, yellow.gel.spct
+Sensors: photodiode.spct, ccd.spct
+Objects: black_body.spct, white_body.spct, clear_body.spct
+
+New functionality
+-----------------
+Add method clip_wl() to more easily select data for a range of wavelengths.
+Add method trim_wl() from trimming, and method interpolate_wl(). All three
+methods are implemented for individual spectra and for collections of spectra.
+Methods clip_wl() and trim_wl() have been also implemented for individual
+waveband objects and for lists of waveband objects.
+
+New functionality (only useful to package developers)
+-----------------------------------------------------
+Add new classes raw_spct and raw_mspct to store raw counts from spectrometers,
+constructors raw_spct() and raw_mspct(), and corresponding setRawSpct() and
+is.raw_spct() and as.raw_spct() functions.
+
+Add methods getInstrDesc() and getInstrSettings(), and the corresponding
+setInstrDesc() and setInstrSettings() to handle metadata about instrument and
+instrument settings used to acquire the spectral data. These classes and
+methods are building blocks to be used in the development of spectral-data
+acquisition packages.
+
+Why "0.9.x" started?
+--------------------
+Changes are backwards compatible but new classes were added and several existing
+methods were implemented for them. Seven new methods were added and
+implemented for all spectral classes and collections of spectra classes.
+The new classes are being used for writing a new package intended to
+replace package MayaCalc.
+
+photobiology 0.8.11
+===================
+
+Add method clean() for removing out-of-range spectral observations.
+Add method fshift() for shifting the zero of the scale used to express
+spectral data.
+Add 'geocode' formal parameter to all functions related to sun angles.
+
+Clean-up code and vignette. Update vignette.
+
+photobiology 0.8.10
+===================
+
+Add support for "when.measured" and "where.measured" attributes in generic_spct
+objects. Add methods setWhereMeasured(), getWhereMeasured(), setWhenMeasured()
+and getWhenMeasured(). The first two methods are compatible with the output
+of ggmap::geocode() and the last two with POSIXct objects as returned by
+many functions in package lubridate, such as lubridate::now() and
+lubridate::today(). All these methods are implemented for both generic_spct
+and generic_mspct classes.
+
+Implement methods to 'get' and 'set' attributes of summary objects of spectra.
+
+Revise print() method for spectra to include the new attributes when available.
+Rewrite summary() methods and print() method for spectral summaries. Now
+output parallels the output of the print() method for spectra.
+
+photobiology 0.8.9
+==================
+
+Small edit to msdply() to allow setting of column names. Update to _mspct summary
+methods to use the names in the list of wavebands, if present, as column names
+for the returned data frame.
+
+photobiology 0.8.8
+==================
+
+Add function trim_mspct().
+Implement normalize(), fscale(), peaks(), valleys(), tag() and untag() methods
+for generic_mspct and derived classes.
+Implement dim<- for generic_mspct and derived classes.
+Fix bugs in msmsply() and mslply().
+Implement sign(), round(), signif(), floor(), ceiling() methods for
+generic_mspct and derived classes.
+Implement log2(), cos(), sin(), tan(), acos(), asin(), acos(), cospi(), sinpi()
+and tanpi() methods for generic_mspct and derived classes.
+
+Make internal changes needed for an update to photobiologyInOut.
+Add option "photobiolgy.strict.range" to allow changing the default behaviour
+for out-of-range values. (Used internally to avoid redundant checks and
+repeated warning messages.)
+
+Update package Title in docs.
+Update User Guide, tables and their formatting.
+
+photobiology 0.8.7
+==================
+
+Many bug fixes, mostly minor.
+Rename f_mspct() to msdply() to respect name conventions in common use.
+Add mslply() and msaply().
+Implement operators %/% and %%, and function abs() for spectra.
+Update documentation. Revise titles of help files.
+
+photobiology 0.8.6
+==================
+
+Bug fixes related to imports from other packages.
+Rename mutate_mspct() to msmsply() to respect name conventions in common use.
+Add constructor chroma_spct().
+Update documentation.
+
+photobiology 0.8.5
+==================
+
+Implement extract and replacement methods for collections of spectra.
+(Please, let me know if you encounter any errors with these methods, as
+some testthat tests give infinite recursion errors that I cannot reproduce
+outside testthat.)
+
+Implement combine method c() for collections of spectra.
+
+Add function convolve_each().
+
+Add helper function shared_member_class().
+
+photobiology 0.8.4
+==================
+
+Expand sun.spct and sun.daily.spct down to 280 nm with zeros.
+
+Add methods for construction of collections of spectra from
+data frames with different spectra in side-by-side columns
+('untidy' or wide data):
+split2source_mspct(), split2response_mscpt(),
+split2filter_mspct(), split2reflector_mspct(), and
+split2cps_mspsct()
+
+Add method for construction of collections of spectra from
+data frames with spectral data for different spectra in a
+single column ('tidy' or long data), and spectral objects
+containing several spectra, such as those returned by
+function rbindspct():
+subset2mspct()
+
+Add print() method for collections of spectra.
+
+Fix minor bug in trim_spct() which was inserting hinges on
+head and/or tail expansion even if use.hinges was set to
+FALSE.
+
+Fix bug in rare borderline cases where NA was being returned
+instead of empty spectral objects (objects with zero rows).
+
+photobiology 0.8.3
+==================
+
+Improve handling of multiple.wl > 1 to avoid spurious warnings.
+Fix minor bugs in spread().
+
+photobiology 0.8.2
+==================
+
+Fix bugs in trim_spct() and reduce trimming rounding protection
+in operators for spectra.
+
+photobiology 0.8.1
+==================
+
+tag() and untag() by default use copy semantics.
+Spectral objects with zero rows are handled cleanly.
+$<- defined for spectra.
+Fix bugs.
 
 photobiology 0.8.0
 ==================
@@ -13,17 +222,17 @@ limited compared to the complications introduced. **
 
 Extract and replacement methods "[" and "[<-" and the subset()
 function should now work as expected when applied to spectral
-objetcs!  Subscripting of spectra can be used without
+objects!  Subscripting of spectra can be used without
 any restrictions.
 
 Argument passing and assignment semantics follows normal
-R semantics of passing of making, `lazyly', a copy, except in
+R semantics of passing of making, `lazily', a copy, except in
 a few exceptions.
 
-Improved accuracy of returned values (fron the ealier level
+Improved accuracy of returned values (from the earlier level
 of approximately 4 significant digits to close to 7 or 8
-signicant digits when using hinges) and improved
-consistency of returned values betwenn functions and
+significant digits when using hinges) and improved
+consistency of returned values between functions and
 operators.
 
 New print method for spectral objects.
@@ -44,7 +253,7 @@ photobiology 0.7.1
 Fix bug in new code added in 0.7.0.
 Update rbinspct() to work well with _mspct objects as argument.
 Add is. and as. functions for all _mspct classes.
-Add function mutate_mspct() and improve code of function f_mspct()
+Add function msmsply() and improve code of function f_mspct()
 using package plyr.
 Implement e2q() and q2e() methods for objects of classes
 source_mspct and response_mspct.
@@ -53,7 +262,7 @@ filter_mspct.
 Implement min(), max(), range(), spread(), midpoint() and
 stepsize() for objects of class generic_mspct and derived classes.
 Implement dim() for objects of class generic_mspct and derived
-classes, which also makes avialble functions ncol() and nrow()
+classes, which also makes available functions ncol() and nrow()
 for objects of these classes.
 Add function rmDerivedMspct().
 Change returned value of rmDerivedSpct() into a character vector
@@ -83,9 +292,9 @@ Changed upgrade() method into upgrade_spct() function, and now it
 also adds the attribute 'spct.version' during object update.
 
 Add function normalized_diff_ind() usable for calculation of indexes
-similar to NDVI (normalized difference vegetaion index) for
+similar to NDVI (normalized difference vegetation index) for
 reflectance and any other spectral summary quantity and two
-waveband objetcs. This was inspired by a poster in Aalborg about
+waveband objects. This was inspired by a poster in Aalborg about
 package hsdar for analysis of hyperspectral images.
 
 Revise User Guide and Upgrade Guide.
@@ -100,7 +309,7 @@ but its default value preserves earlier behaviour.
 New generic functions peaks() and valleys().
 
 subset() methods for spectral objects gain a new parameter 'idx'.
-During subsetting, tags are removed from the returned spectrum.
+During sub-setting, tags are removed from the returned spectrum.
 
 Functions is.photon_based(), is.energy_based(), is.absorbance_based()
 and is.transmittance_based() have been renamed by replacing the dot
@@ -120,7 +329,7 @@ photobiology 0.6.6
 ==================
 
 Package 'lubridate' is no longer imported, so to use functions from
-this pacakge, users must explicitly load it.
+this package, users must explicitly load it.
 
 A user reported that day_night() was not vectorized as stated in the
 documentation. This bug has been fixed, and now day_night() and the
@@ -136,7 +345,7 @@ minor).
 photobiology 0.6.5
 ==================
 
-Add suport for "twilight" definition as angle in degrees in function
+Add support for "twilight" definition as angle in degrees in function
 day_night(), and different angles for sunrise and sunset.
 
 Fix bug in calc_multipliers() that resulted in NAs in cases where
@@ -150,18 +359,18 @@ photobiology 0.6.4
 ==================
 
 Add support for lubridate::duration:
-Parameter "time.unit" in methods and fucntions related for source_spct and
+Parameter "time.unit" in methods and functions related for source_spct and
 response_spect objects accepts durations.
 
 New function convertTimeUnit()
-can be used to modify the time.unit attribute, reexpressing the spectral
+can be used to modify the time.unit attribute, re-expressing the spectral
 data using the new "time.unit".
 
 Old function setTimeUnit() issues a warning when it is used to override an
 already set "time.unit" attribute.
 
 Methods irrad(), e_irrad() and q_irrad(), and response(), e_response() and
-q_response() gain parameter 'time.unit' which can be used to obtain ther
+q_response() gain parameter 'time.unit' which can be used to obtain their
 result expressed on a different time-unit basis.
 
 New methods fluence(), e_fluence() and q_fluence().
@@ -184,7 +393,7 @@ photobiology 0.6.2
 ==================
 
 Added new class cps_spct for uncalibrated spectral data in counts per second.
-These are not raw instrument counts, but data linerized and re-expresed per unit
+These are not raw instrument counts, but data linerized and re-expressed per unit
 time in seconds. Maths operators and functions are supported.
 
 Added new accepted value for attribute time.unit: "exposure", meaning the

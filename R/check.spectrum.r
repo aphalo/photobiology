@@ -11,7 +11,7 @@
 #'   not
 #' @export
 #'
-#' @keywords manip misc
+#'
 #'
 #' @examples
 #' with(sun.data, check_spectrum(w.length, s.e.irrad))
@@ -52,13 +52,11 @@ check_spectrum <- function(w.length, s.irrad) {
 #'
 #' This function checks a w.length vector for compliance with assumptions used in calculations.
 #'
-#' @usage check_w.length(w.length)
-#'
 #' @param w.length numeric array of wavelength (nm)
 #'
 #' @return a single logical value indicating whether test was passed or not
 #'
-#' @keywords manip misc
+#'
 #'
 #' @examples
 #' data(sun.data)

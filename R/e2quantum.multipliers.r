@@ -8,7 +8,7 @@
 #'   numbers
 #'
 #' @return A numeric array of multipliers
-#' @keywords manip misc
+#'
 #' @export
 #' @examples
 #' with(sun.data, e2quantum_multipliers(w.length))

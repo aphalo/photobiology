@@ -1,7 +1,7 @@
-#' Calculate incandescent "FEL" lamp output spectrum from fitted constants
+#' Incandescent "FEL" lamp emission spectrum
 #'
 #' @description Calculate values by means of a nth degree polynomial from
-#' user-supplied constants (for example from a lamp calibartion certificate).
+#' user-supplied constants (for example from a lamp calibration certificate).
 #'
 #' @param w.length numeric vector of wavelengths (nm) for output
 #' @param k a numeric vector with n constants for the polynomial
@@ -12,7 +12,7 @@
 #' @return a dataframe with four numeric vectors with wavelength values
 #'   (w.length), energy and photon irradiance (s.e.irrad, s.q.irrad) depending
 #'   on the argument passed to unit.out (s.irrad).
-#' @keywords manip misc
+#'
 #' @export FEL_spectrum
 #'
 #' @note This is function is valid for wavelengths in the range 180 nm to 495

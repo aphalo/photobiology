@@ -18,7 +18,9 @@
 #'
 #' @family color functions
 #'
-w_length_range2rgb <- function(w.length, sens=ciexyzCMF2.spct, color.name=NULL) {
+w_length_range2rgb <- function(w.length,
+                               sens=photobiology::ciexyzCMF2.spct,
+                               color.name=NULL) {
   if (is.null(w.length) || !is.numeric(w.length)) {
     warning("Bad wlength input, must be numeric")
     return("black")

@@ -1,4 +1,4 @@
-#' Insert new wavelengths into a spectrum
+#' Insert new wavelength values into a spectrum
 #'
 #' Insert new wavelength values into a spectrum interpolating the corresponding
 #' spectral data values.
@@ -22,7 +22,7 @@
 #' @export
 #'
 #' @examples
-#' data(sun.spct)
+#'
 #' insert_spct_hinges(sun.spct, c(399.99,400.00,699.99,700.00))
 #' insert_spct_hinges(sun.spct,
 #'                    c(199.99,200.00,399.50,399.99,400.00,699.99,
@@ -32,7 +32,7 @@ insert_spct_hinges <- function(spct, hinges=NULL, byref=FALSE) {
     warning("Only objects derived from 'generic_spct' are supported")
     return(spct)
   }
-  if (is.null(hinges)) {
+  if (is.null(hinges) || length(hinges) == 0) {
     return(spct)
   }
   hinges <- hinges[hinges > min(spct) & hinges < max(spct)]

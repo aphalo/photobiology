@@ -1,7 +1,7 @@
 
 # irradiance --------------------------------------------------------------
 
-#' Calculate irradiance from spectral irradiance.
+#' Irradiance
 #'
 #' This function returns the irradiance for a given waveband of a light source
 #' spectrum.
@@ -35,7 +35,7 @@
 #'   m-2 nm-1] -> [W m-2] If time.unit is day, [J d-1 m-2 nm-1] -> [mol d-1 m-2]
 #'   or [J d-1 m-2 nm-1] -> [J m-2]
 #'
-#' @keywords manip misc
+#'
 #' @export
 #' @examples
 #' irrad(sun.spct, new_waveband(400,700), "photon")
@@ -73,7 +73,7 @@ irrad.default <- function(spct, w.band, unit.out, quantity, time.unit, wb.trim,
 irrad.source_spct <-
   function(spct, w.band = NULL,
            unit.out = getOption("photobiology.radiation.unit", default = "energy"),
-           quantity="total",
+           quantity = "total",
            time.unit = NULL,
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
@@ -86,7 +86,8 @@ irrad.source_spct <-
       return(NA)
     }
 
-    data.time.unit <- getTimeUnit(spct)
+    data.time.unit <-
+      getTimeUnit(spct, force.duration = lubridate::is.duration(time.unit))
 
     if (!is.null(time.unit) && time.unit != data.time.unit) {
       if (!lubridate::is.duration(time.unit) && !is.character(time.unit)) {
@@ -230,7 +231,7 @@ irrad.source_spct <-
       quantity <- "total"
     }
     if (length(irrad) == 0) {
-      irrad <- NA
+      irrad <- NA_real_
       names(irrad) <- "out of range"
     }
     names(irrad) <- paste(names(irrad), wb.name)
@@ -250,7 +251,7 @@ irrad_spct <- irrad.source_spct
 # energy irradiance -------------------------------------------------------
 
 
-#' Calculate energy irradiance from spectral irradiance.
+#' Energy irradiance
 #'
 #' This function returns the energy irradiance for a given waveband of a light
 #' source spectrum.
@@ -269,7 +270,7 @@ irrad_spct <- irrad.source_spct
 #'   as argument to spct are flagged as an error
 #' @param ... other arguments (possibly ignored)
 #'
-#' @keywords manip misc
+#'
 #'
 #' @export
 #'
@@ -330,7 +331,7 @@ e_irrad.source_spct <-
 # photon irradiance -------------------------------------------------------
 
 
-#' Calculate photon irradiance from spectral irradiance.
+#' Photon irradiance
 #'
 #' This function returns the photon irradiance (or quantum irradiance) for a
 #' given waveband of a light source spectrum.
@@ -349,7 +350,7 @@ e_irrad.source_spct <-
 #'   as argument to spct are flagged as an error
 #' @param ... other arguments (possibly ignored)
 #'
-#' @keywords manip misc
+#'
 #'
 #' @export
 #'
@@ -410,7 +411,7 @@ q_irrad.source_spct <-
 
 # fluence -----------------------------------------------------------------
 
-#' Calculate energy or photon fluence from spectral irradiance
+#' Fluence
 #'
 #' This function returns the energy or photon fluence for a given waveband of a
 #' light source spectrum and the duration of the exposure.
@@ -430,7 +431,7 @@ q_irrad.source_spct <-
 #'   as argument to spct are flagged as an error
 #' @param ... other arguments (possibly ignored)
 #'
-#' @keywords manip misc
+#'
 #'
 #' @export
 #'
@@ -438,7 +439,7 @@ q_irrad.source_spct <-
 #' library(lubridate)
 #' fluence(sun.spct,
 #'         w.band = new_waveband(400,700),
-#'         exposure.time = duration(3, "minutes") )
+#'         exposure.time = lubridate::duration(3, "minutes") )
 #'
 #' @return One numeric value for each waveband with no change in scale factor,
 #'   with name attribute set to the name of each waveband unless a named list is
@@ -484,7 +485,7 @@ fluence.source_spct <-
            use.hinges=getOption("photobiology.use.hinges", default=NULL),
            allow.scaled = FALSE, ...) {
     if (!lubridate::is.duration(exposure.time) &&
-        !is.period(exposure.time) &&
+        !lubridate::is.period(exposure.time) &&
         !is.numeric(exposure.time) ) {
       warning("Invalid value ", exposure.time, " for 'exposure.time'")
       exposure.time <- lubridate::duration(NA)
@@ -508,7 +509,7 @@ fluence.source_spct <-
 
 # photon fluence ----------------------------------------------------------
 
-#' Calculate photon fluence from spectral irradiance.
+#' Photon fluence
 #'
 #' This function returns the photon irradiance (or quantum irradiance) for a
 #' given waveband of a light source spectrum.
@@ -526,7 +527,7 @@ fluence.source_spct <-
 #'   as argument to spct are flagged as an error
 #' @param ... other arguments (possibly ignored)
 #'
-#' @keywords manip misc
+#'
 #'
 #' @export
 #'
@@ -534,7 +535,7 @@ fluence.source_spct <-
 #' library(lubridate)
 #' q_fluence(sun.spct,
 #'           w.band = new_waveband(400,700),
-#'           exposure.time = duration(3, "minutes") )
+#'           exposure.time = lubridate::duration(3, "minutes") )
 #'
 #' @return One numeric value for each waveband with no change in scale factor,
 #'   with name attribute set to the name of each waveband unless a named list is
@@ -578,7 +579,7 @@ q_fluence.source_spct <-
            use.hinges = getOption("photobiology.use.hinges", default = NULL),
            allow.scaled = FALSE, ...) {
     if (!lubridate::is.duration(exposure.time) &&
-        !is.period(exposure.time) &&
+        !lubridate::is.period(exposure.time) &&
         !is.numeric(exposure.time) ) {
       warning("Invalid value ", exposure.time, " for 'exposure.time'")
       exposure.time <- lubridate::duration(NA)
@@ -598,7 +599,7 @@ q_fluence.source_spct <-
 
 # energy fluence ----------------------------------------------------------
 
-#' Calculate energy fluence from spectral irradiance.
+#' Energy fluence
 #'
 #' This function returns the energy flurnce for a given waveband of a light
 #' source spectrum given the duration of the exposure.
@@ -616,14 +617,14 @@ q_fluence.source_spct <-
 #'   as argument to spct are flagged as an error
 #' @param ... other arguments (possibly ignored)
 #'
-#' @keywords manip misc
+#'
 #'
 #' @export
 #'
 #' @examples
 #' library(lubridate)
 #' e_fluence(sun.spct, w.band = new_waveband(400,700),
-#'           exposure.time = duration(3, "minutes") )
+#'           exposure.time = lubridate::duration(3, "minutes") )
 #'
 #' @return One numeric value for each waveband with no change in scale factor,
 #'   with name attribute set to the name of each waveband unless a named list is
@@ -667,7 +668,7 @@ e_fluence.source_spct <-
            use.hinges = getOption("photobiology.use.hinges", default = NULL),
            allow.scaled = FALSE, ...) {
     if (!lubridate::is.duration(exposure.time) &&
-        !is.period(exposure.time) &&
+        !lubridate::is.period(exposure.time) &&
         !is.numeric(exposure.time) ) {
       warning("Invalid value ", exposure.time, " for 'exposure.time'")
       exposure.time <- lubridate::duration(NA)

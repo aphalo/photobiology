@@ -1,4 +1,4 @@
-#' Calculate summary reflectance from spectral data.
+#' Reflectance
 #'
 #' Function to calculate the mean, total, or other summary of reflectance for
 #' spectral data stored in a \code{reflector_spct} or in an \code{object_spct}.
@@ -20,8 +20,8 @@
 #' @return A single numeric value with no change in scale factor
 #'
 #' @examples
-#' library(photobiologyReflectors)
-#' reflectance(gold.spct, waveband(c(400,700)))
+#' reflectance(black_body.spct, waveband(c(400,700)))
+#' reflectance(white_body.spct, waveband(c(400,700)))
 #'
 #' @export
 #'

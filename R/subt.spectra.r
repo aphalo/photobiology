@@ -1,8 +1,9 @@
-#' Subtract two spectra, even if the wavelengths values differ
+#' Subtract two spectra
 #'
 #' The wavelength vectors of the two spectra are merged, and the missing
 #' spectral values are calculated by interpolation. After this, the two spectral
-#' values at each wavelength are added.
+#' values at each wavelength are added. This is 'parallel' operation between two
+#' spectra.
 #'
 #' @param w.length1 numeric array of wavelength (nm)
 #' @param w.length2 numeric array of wavelength (nm)
@@ -25,7 +26,7 @@
 #'   w.length2==NULL, it is assumed that both spectra are measured at the same
 #'   wavelengths, and a simple addition is used, ensuring fast calculation.
 #' @export
-#' @keywords manip misc
+#'
 #' @examples
 #' data(sun.data)
 #' head(sun.data)

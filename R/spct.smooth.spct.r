@@ -1,4 +1,4 @@
-#' Smooth a spectrum using one of several different methods
+#' Smooth a spectrum
 #'
 #' These functions implement one original methods and acts as a wrapper for
 #' other common R smoothing functions. The advantage of using this function for
@@ -19,7 +19,7 @@
 #'   function behaves like a wrapper of the functions of the same names from
 #'   base R.
 #'
-#' @keywords manip misc
+#'
 #' @export smooth_spct
 #'
 smooth_spct <- function(x, method, strength, ...) UseMethod("smooth_spct")
@@ -29,14 +29,13 @@ smooth_spct <- function(x, method, strength, ...) UseMethod("smooth_spct")
 #' @export
 #'
 smooth_spct.default <- function(x, method, strength, ...) {
-  warning("'smooth_spct' is not defined for objects of class ", class(spct)[1])
+  warning("'smooth_spct' is not defined for objects of class ", class(x)[1])
   return(x)
 }
 
 #' @describeIn smooth_spct Smooth a source spectrum
 #'
 #' @export
-#' @importFrom caTools runmad runmin
 #'
 smooth_spct.source_spct <- function(x, method = "custom", strength = 1, ...) {
   if (method == "lowess") {
@@ -90,11 +89,11 @@ smooth_spct.source_spct <- function(x, method = "custom", strength = 1, ...) {
     out.spct[["zero_limit"]] <-  (zero_limit_cnst * 600) / out.spct[["w.length"]]
     smooth_limit <- 1e-3 * smoothing_coef # just a guess for runmadmed
     smooth_threshold <- 5e-2 * max_irrad / strength # for s.e.irrad
-    out.spct[["runmad"]] <- runmad(out.spct[["s.e.irrad"]], 7, endrule="mad")
+    out.spct[["runmad"]] <- caTools::runmad(out.spct[["s.e.irrad"]], 7, endrule="mad")
     out.spct[["runmed3"]] <- runmed(out.spct[["s.e.irrad"]], 3, endrule="median")
     out.spct[["runmed7"]] <- runmed(out.spct[["s.e.irrad"]], 7, endrule="median")
     out.spct[["runmed19"]] <- runmed(out.spct[["s.e.irrad"]], 19, endrule="median")
-    out.spct[["runmin5"]] <- runmin(out.spct[["s.e.irrad"]], 5)
+    out.spct[["runmin5"]] <- caTools::runmin(out.spct[["s.e.irrad"]], 5)
     # we need to avoid division by 0.0 and we use zero_limit / 10 close enough to zero
     out.spct[["runmadmed"]] <- with(out.spct,
                                     ifelse(runmad < zero_limit_cnst * 1e-1 | runmed7 < zero_limit * 1e-1,
@@ -185,11 +184,11 @@ smooth_spct.filter_spct <- function(x, method = "custom", strength = 1, ...) {
     out.spct[["zero_limit"]] <-  (zero_limit_cnst * 600) / out.spct[["w.length"]]
     smooth_limit <- 1e-3 * smoothing_coef # just a guess for runmadmed
     smooth_threshold <- 5e-2 * max_Tfr / strength # for Tfr
-    out.spct[["runmad"]] <- runmad(out.spct[["Tfr"]], 7, endrule="mad")
+    out.spct[["runmad"]] <- caTools::runmad(out.spct[["Tfr"]], 7, endrule="mad")
     out.spct[["runmed3"]] <- runmed(out.spct[["Tfr"]], 3, endrule="median")
     out.spct[["runmed7"]] <- runmed(out.spct[["Tfr"]], 7, endrule="median")
     out.spct[["runmed19"]] <- runmed(out.spct[["Tfr"]], 19, endrule="median")
-    out.spct[["runmin5"]] <- runmin(out.spct[["Tfr"]], 5)
+    out.spct[["runmin5"]] <- caTools::runmin(out.spct[["Tfr"]], 5)
     # we need to avoid division by 0.0 and we use zero_limit / 10 close enough to zero
     out.spct[["runmadmed"]] <- with(out.spct,
                                     ifelse(runmad < zero_limit_cnst * 1e-1 | runmed7 < zero_limit * 1e-1,
@@ -268,11 +267,11 @@ smooth_spct.reflector_spct <- function(x, method = "custom", strength = 1, ...) 
     out.spct[["zero_limit"]] <-  (zero_limit_cnst * 600) / out.spct[["w.length"]]
     smooth_limit <- 1e-3 * smoothing_coef # just a guess for runmadmed
     smooth_threshold <- 5e-2 * max_Rfr / strength # for Rfr
-    out.spct[["runmad"]] <- runmad(out.spct[["Rfr"]], 7, endrule="mad")
+    out.spct[["runmad"]] <- caTools::runmad(out.spct[["Rfr"]], 7, endrule="mad")
     out.spct[["runmed3"]] <- runmed(out.spct[["Rfr"]], 3, endrule="median")
     out.spct[["runmed7"]] <- runmed(out.spct[["Rfr"]], 7, endrule="median")
     out.spct[["runmed19"]] <- runmed(out.spct[["Rfr"]], 19, endrule="median")
-    out.spct[["runmin5"]] <- runmin(out.spct[["Rfr"]], 5)
+    out.spct[["runmin5"]] <- caTools::runmin(out.spct[["Rfr"]], 5)
     # we need to avoid division by 0.0 and we use zero_limit / 10 close enough to zero
     out.spct[["runmadmed"]] <- with(out.spct,
                                     ifelse(runmad < zero_limit_cnst * 1e-1 | runmed7 < zero_limit * 1e-1,
@@ -360,14 +359,14 @@ smooth_spct.response_spct <- function(x, method = "custom", strength = 1, ...) {
     smoothing_hi_lim <- max(out.spct$w.length)
     # this could be tweeked in many ways...
     zero_limit_cnst <- max_response * 3e-4 / strength
-    out.spct[["zero_limit"]] <-  (zero_limit_cnst * 600) / w.length
+    out.spct[["zero_limit"]] <-  (zero_limit_cnst * 600) / out.spct[["w.length"]]
     smooth_limit <- 1e-3 * smoothing_coef # just a guess for runmadmed
     smooth_threshold <- 5e-2 * max_response / strength # for s.e.response
-    out.spct[["runmad"]] <- runmad(out.spct[["s.e.response"]], 7, endrule="mad")
+    out.spct[["runmad"]] <- caTools::runmad(out.spct[["s.e.response"]], 7, endrule="mad")
     out.spct[["runmed3"]] <- runmed(out.spct[["s.e.response"]], 3, endrule="median")
     out.spct[["runmed7"]] <- runmed(out.spct[["s.e.response"]], 7, endrule="median")
     out.spct[["runmed19"]] <- runmed(out.spct[["s.e.response"]], 19, endrule="median")
-    out.spct[["runmin5"]] <- runmin(out.spct[["s.e.response"]], 5)
+    out.spct[["runmin5"]] <- caTools::runmin(out.spct[["s.e.response"]], 5)
     # we need to avoid division by 0.0 and we use zero_limit / 10 close enough to zero
     out.spct[["runmadmed"]] <- with(out.spct,
                                     ifelse(runmad < zero_limit_cnst * 1e-1 | runmed7 < zero_limit * 1e-1,

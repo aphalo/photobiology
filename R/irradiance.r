@@ -1,4 +1,4 @@
-#' Calculate photon (quantum) irradiance from spectral (energy) irradiance.
+#' Photon (quantum) irradiance from spectral (energy) irradiance.
 #'
 #' This function returns the energy irradiance for a given waveband of a
 #' radiation spectrum.
@@ -21,7 +21,7 @@
 #'
 #' @return a single numeric value with no change in scale factor: [W m-2 nm-1]
 #'   -> [mol s-1 m-2]
-#' @keywords manip misc
+#'
 #' @export
 #' @examples
 #' data(sun.data)

@@ -13,7 +13,7 @@
 #' @param ... additional arguments passed to f
 #'
 #' @return A numeric value for the index
-#' @keywords manip misc
+#'
 #' @export
 #'
 #' @note \code{f} is most frequently \code{\link{reflectance}}, but also
@@ -23,23 +23,6 @@
 #'   should be of the class expected by \code{f}. When using two wavebands of
 #'   different widths do consider passing to \code{f} a suitable \code{quantity}
 #'   argument. Wavebands can describe weighting functions if desired.
-#'
-#' @examples
-#' library(photobiologyPlants)
-#'
-#' normalized_diff_ind(Solidago_upper_adax.spct,
-#'                     waveband(c(700, 1100)), waveband(c(400, 700)),
-#'                     transmittance)
-#'
-#' # NDVI-like value for a single leaf
-#' normalized_diff_ind(Solidago_upper_adax.spct,
-#'                     waveband(c(700, 1100)), waveband(c(400, 700)),
-#'                     reflectance)
-#'
-#' # transmittance-based equivalent
-#' normalized_diff_ind(Solidago_upper_adax.spct,
-#'                     waveband(c(700, 1100)), waveband(c(400, 700)),
-#'                     transmittance)
 #'
 #' @export
 #'

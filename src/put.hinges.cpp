@@ -2,23 +2,18 @@
 using namespace Rcpp;
 using namespace std;
 
-#undef DEBUG
-#ifdef DEBUG
-#include <iostream>
-#endif
-
 //' Insert interpolated spectral irradiance values.
 //'
-//' Inserting wavelengths values immediately bafore and after a discontinuity in the SWF,
-//' gretaly reduces the errors caused by interpolating the weighted irradiance during
-//' integration of the effective spectral irradiance. This is specially true when data
-//' has a large wavelength step size.
-//'
-//' @usage put_hinges(w_length, s_irrad, hinges)
+//' Inserting wavelengths values immediately bafore and after a discontinuity in
+//' the SWF, gretaly reduces the errors caused by interpolating the weighted
+//' irradiance during integration of the effective spectral irradiance. This is
+//' specially true when data has a large wavelength step size.
 //'
 //' @param w_length numeric array of wavelength (nm)
 //' @param s_irrad numeric array of spectral irradiance values
-//' @param hinges a numeric array giving the wavelengths at which the s.irrad should be inserted by interpolation, no interpolation is indicated by an empty array (numeric(0))
+//' @param hinges a numeric array giving the wavelengths at which the s.irrad
+//'   should be inserted by interpolation, no interpolation is indicated by an
+//'   empty array (numeric(0))
 //'
 //' @return a numeric vector
 //' @name put_hinges
@@ -44,10 +39,6 @@ NumericVector put_hinges(NumericVector w_length, NumericVector s_irrad, NumericV
 
     vector<double>::iterator h_low = lower_bound(hinges_in.begin(), hinges_in.end(), w_length_in.front());
     vector<double>::iterator h_high = lower_bound(hinges_in.begin(), hinges_in.end(), w_length_in.back());
-#ifdef DEBUG
-  cout << "h_low idx: " << distance(hinges_in.begin(), h_low) <<  "\n";
-  cout << "h_high idx: " << distance(hinges_in.begin(), h_high) <<  "\n";
-#endif
 
     vector<double>::iterator w_length_in_it = w_length_in.begin();
     vector<double>::iterator s_irrad_in_it = s_irrad_in.begin();
@@ -66,16 +57,8 @@ NumericVector put_hinges(NumericVector w_length, NumericVector s_irrad, NumericV
       wl_next_chunk_begin_it = lower_bound(w_length_in_it-1, w_length_in.end(), *it);
       vector<double>::size_type num_elements = distance(w_length_in_it, wl_next_chunk_begin_it);
       si_next_chunk_begin_it = si_next_chunk_begin_it + num_elements;
-#ifdef DEBUG
-  cout << "num_elements: " << num_elements <<  "\n";
-  cout << "it idx: " << distance(hinges_in.begin(), it) <<  "\n";
-#endif
       w_length_out_it = copy(w_length_in_it, wl_next_chunk_begin_it, w_length_out_it);
       s_irrad_out_it = copy(s_irrad_in_it, si_next_chunk_begin_it, s_irrad_out_it);
-#ifdef DEBUG
-  cout << "w_length_out.size(): " << w_length_out.size() <<  "\n";
-  cout << "s_irrad_out.size(): " << s_irrad_out.size() <<  "\n";
-#endif
       if (*it < *wl_next_chunk_begin_it) {
         *w_length_out_it = *it;
          double interpol_irrad = *(si_next_chunk_begin_it-1) +
@@ -92,12 +75,6 @@ NumericVector put_hinges(NumericVector w_length, NumericVector s_irrad, NumericV
     s_irrad_out_it = copy(s_irrad_in_it, s_irrad_in.end(), s_irrad_out_it);
     w_length_out.erase(w_length_out_it,  w_length_out.end());
     s_irrad_out.erase(s_irrad_out_it,  s_irrad_out.end());
-#ifdef DEBUG
-  cout << "w_length_in.size(): " << w_length_in.size() <<  "\n";
-  cout << "s_irrad_in.size(): " << s_irrad_in.size() <<  "\n";
-  cout << "w_length_out.size(): " << w_length_out.size() <<  "\n";
-  cout << "s_irrad_out.size(): " << s_irrad_out.size() <<  "\n";
-#endif
 
     return Rcpp::wrap(s_irrad_out);
 }

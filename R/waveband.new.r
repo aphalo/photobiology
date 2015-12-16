@@ -25,7 +25,7 @@
 #'   for ploting, default is wb.name
 #'
 #' @return a \code{waveband} object
-#' @keywords manip misc
+#'
 #' @export
 #' @examples
 #' waveband(c(400,700))
@@ -99,11 +99,10 @@ new_waveband <- function(w.low, w.high,
   return(w_band)
 }
 
+#' List-of-wavebands constructor
+#'
 #' Build a list of unweighted "waveband" objects that can be used as imput when
 #' calculating irradiances.
-#'
-#' @usage split_bands(x, list.names=NULL, short.names=is.null(list.names),
-#'   length.out=NULL)
 #'
 #' @param x a numeric array of wavelengths to split at (nm), or a range of
 #'   wavelengths or a generic_spct or a waveband.
@@ -115,7 +114,7 @@ new_waveband <- function(w.low, w.high,
 #'   into (ignored if w.length is not numeric).
 #'
 #' @return an un-named list of wabeband objects
-#' @keywords manip misc
+#'
 #' @export
 #' @examples
 #' split_bands(c(400,500,600))
@@ -210,8 +209,6 @@ split_bands <- function(x, list.names=NULL, short.names=is.null(list.names), len
 #'
 #' Functions to check if an object is waveband.
 #'
-#' @usage is.waveband(x)
-#'
 #' @param x any R object
 #'
 #' @return is.waveband returns TRUE if its argument is a waveband and FALSE otherwise.
@@ -220,4 +217,15 @@ split_bands <- function(x, list.names=NULL, short.names=is.null(list.names), len
 #'
 is.waveband <- function(x) {
   inherits(x, "waveband")
+}
+
+### I need to add a check.waveband() method and use it in the constructor and maybe also
+### add non-functional replacement operators.
+###
+
+check.waveband <- function(x, byref = FALSE, strict.range = FALSE, ...) {
+  stopifnot(x[["low"]] < x[["high"]])
+  stopifnot(x[["weight"]] == "none" && !(is.null(x[["SWF.e.fun"]] && is.null(x[["SWF.q.fun"]]))))
+  stopifnot(x[["weight"]] != "none" && (is.null(x[["SWF.e.fun"]] || is.null(x[["SWF.q.fun"]]))))
+  x
 }

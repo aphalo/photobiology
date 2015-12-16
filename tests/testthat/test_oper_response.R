@@ -4,9 +4,37 @@ context("response_spct")
 
 test_that("constructor energy", {
 
+  empty.spct <- response_spct()
+  expect_true(is.response_spct(empty.spct))
+  expect_true(is.any_spct(empty.spct))
+  expect_named(empty.spct, c("w.length", "s.e.response"))
+  expect_equal(nrow(empty.spct), 0L)
+
   my.spct <- response_spct(w.length = 400:409, s.e.response = 1)
   expect_equal(class(my.spct)[1:2], c("response_spct", "generic_spct") )
   expect_equal(attr(my.spct, "spct.version", exact = TRUE), 2)
+  expect_equal(my.spct[["s.e.response"]], rep(1, length.out = 10))
+  expect_named(my.spct, c("w.length", "s.e.response"))
+
+  expect_true(is.response_spct(my.spct))
+  expect_true(is.any_spct(my.spct))
+  expect_false(is.cps_spct(my.spct))
+  expect_false(is.source_spct(my.spct))
+  expect_false(is.filter_spct(my.spct))
+  expect_false(is.reflector_spct(my.spct))
+  expect_false(is.object_spct(my.spct))
+  expect_false(is.raw_spct(my.spct))
+  expect_false(is.chroma_spct(my.spct))
+
+  my.df <- data.frame(w.length = 400:409, s.e.response = 1)
+  my.spct <- as.response_spct(my.df)
+
+  expect_equal(class(my.spct)[1:2], c("response_spct", "generic_spct") )
+  expect_equal(attr(my.spct, "spct.version", exact = TRUE), 2)
+  expect_equal(my.spct[["s.e.response"]], rep(1, length.out = 10))
+  expect_named(my.spct, c("w.length", "s.e.response"))
+  expect_true(is.response_spct(my.spct))
+  expect_true(is.any_spct(my.spct))
 
   my.s.spct <- response_spct(w.length = 400:409, s.e.response = 1, time.unit = "second")
   my.h.spct <- response_spct(w.length = 400:409, s.e.response = 1, time.unit = "hour")
@@ -37,6 +65,24 @@ test_that("constructor photon", {
 
   my.spct <- response_spct(w.length = 400:409, s.q.response = 1)
   expect_equal(class(my.spct)[1:2], c("response_spct", "generic_spct") )
+
+  expect_equal(class(my.spct)[1:2], c("response_spct", "generic_spct") )
+  expect_equal(attr(my.spct, "spct.version", exact = TRUE), 2)
+  expect_equal(my.spct[["s.q.response"]], rep(1, length.out = 10))
+  expect_named(my.spct, c("w.length", "s.q.response"))
+  expect_true(is.response_spct(my.spct))
+  expect_true(is.any_spct(my.spct))
+
+  my.df <- data.frame(w.length = 400:409, s.q.response = 1)
+  my.spct <- as.response_spct(my.df)
+
+  expect_equal(class(my.spct)[1:2], c("response_spct", "generic_spct") )
+  expect_equal(attr(my.spct, "spct.version", exact = TRUE), 2)
+  expect_equal(my.spct[["s.q.response"]], rep(1, length.out = 10))
+  expect_named(my.spct, c("w.length", "s.q.response"))
+  expect_true(is.response_spct(my.spct))
+  expect_true(is.any_spct(my.spct))
+
 
   my.s.spct <- response_spct(w.length = 400:409, s.q.response = 1, time.unit = "second")
   my.h.spct <- response_spct(w.length = 400:409, s.q.response = 1, time.unit = "hour")
@@ -81,7 +127,9 @@ test_that("oper energy energy", {
   expect_equal(-my.2e.spct / -2L, my.e.spct)
   expect_equal( 2 * my.e.spct, my.2e.spct)
   expect_equal( 1 / (2 / my.2e.spct), my.e.spct)
-  expect_equal( 1 / my.e.spct, my.e.spct^-1)
+  expect_equal( 1 / my.e.spct, my.e.spct ^ -1)
+  expect_equal(my.2e.spct %/% 2L, my.e.spct)
+  expect_equal(my.2e.spct %% 2L, my.e.spct %% 1L)
 
   options(photobiology.radiation.unit = NULL)
 })
@@ -104,7 +152,9 @@ test_that("oper energy energy", {
   expect_equal(-my.2e.spct / -2L, my.e.spct)
   expect_equal( 2 * my.e.spct, my.2e.spct)
   expect_equal( 1 / (2 / my.2e.spct), my.e.spct)
-  expect_equal( 1 / my.e.spct, my.e.spct^-1)
+  expect_equal( 1 / my.e.spct, my.e.spct ^ -1)
+  expect_equal(my.2e.spct %/% 2L, my.e.spct)
+  expect_equal(my.2e.spct %% 2L, my.e.spct %% 1L)
 
 })
 
@@ -126,7 +176,9 @@ test_that("oper photon energy", {
   expect_equal(-my.2q.spct / -2L, +my.q.spct)
   expect_equal( 2 * my.q.spct, +my.2q.spct)
   expect_equal( sum((1 / (2 / my.2q.spct) - my.q.spct)[["s.e.response"]]), 0)
-  expect_equal( 1 / my.q.spct, my.q.spct^-1)
+  expect_equal( 1 / my.q.spct, my.q.spct ^ -1)
+  expect_equal(my.2q.spct %/% 2L, my.q.spct %/% 1L)
+  expect_equal(my.2q.spct %% 2L / 2, my.q.spct %% 1L)
 
   options(photobiology.radiation.unit = NULL)
 })
@@ -149,7 +201,9 @@ test_that("oper photon photon", {
   expect_equal(-my.2q.spct / -2L, my.q.spct)
   expect_equal( 2 * my.q.spct, my.2q.spct)
   expect_equal( 1 / (2 / my.2q.spct), my.q.spct)
-  expect_equal( 1 / my.q.spct, my.q.spct^-1)
+  expect_equal( 1 / my.q.spct, my.q.spct ^ -1)
+  expect_equal(my.2q.spct %/% 2L, my.q.spct %/% 1L)
+  expect_equal(my.2q.spct %% 2L, my.q.spct %% 1L)
 
   options(photobiology.radiation.unit = NULL)
 })
@@ -173,6 +227,8 @@ test_that("oper energy photon", {
   expect_equal( 2 * my.e.spct, +my.2e.spct)
   expect_equal( 1 / (2 / my.2e.spct), +my.e.spct)
   expect_equal( 1 / my.e.spct, my.e.spct^-1)
+  expect_equal(my.2e.spct %/% 2L, my.e.spct %/% 1L)
+  expect_equal(my.2e.spct %% 2L / 2, my.e.spct %% 1L)
 
   options(photobiology.radiation.unit = NULL)
 })

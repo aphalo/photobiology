@@ -1,6 +1,6 @@
 # print -------------------------------------------------------------------
 
-#' print a spectral object
+#' Print a spectral object
 #'
 #' Print method for objects of spectral classes.
 #'
@@ -27,10 +27,23 @@
 print.generic_spct <- function(x, ..., n = NULL, width = NULL)
 {
   cat("Object: ", class_spct(x)[1], " ", dplyr::dim_desc(x), "\n", sep = "")
-  cat("Wavelength (nm): range ", paste(signif(range(x), 8), sep="", collapse = " to "), ", step ",
-      paste(unique(signif(stepsize(x), 7)), sep="", collapse = " to "), "\n", sep = "")
+  if (nrow(x)) {
+    cat("Wavelength (nm): range ",
+        paste(signif(range(x), 8), sep = "", collapse = " to "), ", step ",
+        paste(unique(signif(stepsize(x), 7)), sep = "", collapse = " to "),
+        "\n", sep = "")
+  }
+  if (!any(is.na(getWhenMeasured(x)))) {
+    cat("Measured on: ", as.character(getWhenMeasured(x)), " UTC\n", sep = "")
+  }
+  if (!any(is.na(getWhereMeasured(x)))) {
+    where.measured <- getWhereMeasured(x)
+    cat("Measured at: ", where.measured[["lat"]], " N, ",
+        where.measured[["lon"]], " E\n", sep = "")
+  }
   if (class_spct(x)[1] %in% c("source_spct", "response_spct")) {
-    cat("Time unit: ", as.character(getTimeUnit(x, force.duration = TRUE)), "\n", sep = "")
+    cat("Time unit: ", as.character(getTimeUnit(x, force.duration = TRUE)),
+        "\n", sep = "")
   }
   if (is_scaled(x)) {
     scaling <- getScaled(x)[["f"]]
@@ -38,7 +51,8 @@ print.generic_spct <- function(x, ..., n = NULL, width = NULL)
   }
   if (is_normalized(x)) {
     norm <- getNormalized(x)
-    cat("Data normalized to ", norm, ifelse(is.numeric(norm), " nm \n", " \n"), sep = "")
+    cat("Spectral data normalized to 1 at ", norm,
+        ifelse(is.numeric(norm), " nm \n", " \n"), sep = "")
   }
   if (is_effective(x)) {
     BSWF <- getBSWFUsed(x)
@@ -49,6 +63,87 @@ print.generic_spct <- function(x, ..., n = NULL, width = NULL)
   invisible(x)
 }
 
+# names of all spectral summary classes -------------------------------------------
+
+#' Function that returns a vector containing the names of spectral summary
+#' classes.
+#'
+#' @export
+#'
+#' @return A \code{character} vector of class names.
+#'
+summary_spct_classes <- function() {
+  c("summary_cps_spct",
+    "summary_filter_spct", "summary_reflector_spct",
+    "summary_source_spct", "summary_object_spct",
+    "summary_response_spct", "summary_chroma_spct", "summary_generic_spct")
+}
+# is functions for spct summary classes --------------------------------------------
+
+#' Query class of spectrum summary objects
+#'
+#' Functions to check if an object is of a given type of spectrum, or coerce it if
+#' possible.
+#'
+#' @param x an R object.
+#'
+#' @return These functions return \code{TRUE} if its argument is a of the queried type
+#'   of spectrum and \code{FALSE} otherwise.
+#'
+#' @note Derived types also return TRUE for a query for a base type such as
+#' \code{generic_spct}.
+#'
+#' @export is.summary_generic_spct
+#' @rdname is.summary_generic_spct
+#' @examples
+#' sm <- summary(sun.spct)
+#' is.summary_source_spct(sm)
+#'
+is.summary_generic_spct <- function(x) inherits(x, "summary_generic_spct")
+
+#' @rdname is.summary_generic_spct
+#' @export
+#'
+is.summary_cps_spct <- function(x) inherits(x, "summary_cps_spct")
+
+#' @rdname is.summary_generic_spct
+#' @export
+#'
+is.summary_source_spct <- function(x) inherits(x, "summary_source_spct")
+
+#' @rdname is.summary_generic_spct
+#' @export
+#'
+is.summary_response_spct <- function(x) inherits(x, "summary_response_spct")
+
+#' @rdname is.summary_generic_spct
+#' @export
+#'
+is.summary_filter_spct <- function(x) inherits(x, "summary_filter_spct")
+
+#' @rdname is.summary_generic_spct
+#' @export
+#'
+is.summary_reflector_spct <- function(x) inherits(x, "summary_reflector_spct")
+
+#' @rdname is.summary_generic_spct
+#' @export
+#'
+is.summary_object_spct <- function(x) inherits(x, "summary_object_spct")
+
+#' @rdname is.summary_generic_spct
+#' @export
+#'
+is.summary_chroma_spct <- function(x) inherits(x, "summary_chroma_spct")
+
+#' @rdname is.summary_generic_spct
+#'
+#' @export
+#'
+is.any_summary_spct <- function(x) {
+  inherits(x, summary_spct_classes())
+}
+
 # summary -----------------------------------------------------------------
 
 #' Summary of a spectral object
@@ -57,7 +152,8 @@ print.generic_spct <- function(x, ..., n = NULL, width = NULL)
 #'
 #' @param object An object of one of the spectral classes for which a summary is
 #'   desired
-#' @param digits integer Used for number formatting with \code{signif()}
+#' @param maxsum integer Indicates how many levels should be shown for factors.
+#' @param digits integer Used for number formatting with \code{\link{format}()}.
 #' @param ... additional arguments affecting the summary produced, ignored in
 #'   current version
 #'
@@ -65,291 +161,53 @@ print.generic_spct <- function(x, ..., n = NULL, width = NULL)
 #'
 #' @export
 #' @method summary generic_spct
+#' @examples
+#' summary(sun.spct)
 #'
-summary.generic_spct <- function(object, digits = max(3, getOption("digits")-3), ...) {
-  z <- c(
-    max.w.length = max(object),
-    min.w.length = min(object),
-    midpoint.w.length = midpoint(object),
-    w.length.step = stepsize(object)[1]
-  )
-  z <- signif(z, digits)
-  comment(z) <- comment(object)
+summary.generic_spct <- function(object,
+                                 maxsum = 7,
+                                 digits = max(3, getOption("digits") - 3),
+                                 ...) {
+  z <- list()
   class(z) <- c("summary_generic_spct", class(z))
-  return(z)
-}
-
-#' @method summary cps_spct
-#' @export
-#' @rdname summary.generic_spct
-#'
-summary.cps_spct <- function(object, digits = max(3, getOption("digits")-3), ...) {
-  z <- c(
-    max.w.length = max(object),
-    min.w.length = min(object),
-    midpoint.w.length = midpoint(object),
-    w.length.step = stepsize(object)[1],
-    max.cps = max(object$cps),
-    min.cps = min(object$cps)
-  )
-  z <- signif(z, digits)
+  z[["orig.class"]] <- class_spct(object)[1]
+  z[["orig.dim_desc"]] <- dplyr::dim_desc(object)
+  z[["wl.range"]] <- range(object)
+  z[["wl.stepsize"]] <- stepsize(object)
+  z[["summary"]] <- summary(as.data.frame(object), maxsum = maxsum, digits = digits, ...)
   comment(z) <- comment(object)
-  attr(z, "normalized") <- getNormalized(object)
-  attr(z, "scaled") <- getScaled(object)
-  class(z) <- c("summary_generic_spct", class(z))
-  return(z)
-}
-
-# @describeIn summary.generic_spct Summary of a "source_spct" object.
-#'
-#' @param time.unit character or lubridate::duration
-#'
-#' @method summary source_spct
-#' @export
-#' @rdname summary.generic_spct
-#'
-summary.source_spct <- function(object,
-                                digits = max(3, getOption("digits")-3),
-                                time.unit = NULL,
-                                ...) {
-  if (!is.null(time.unit)) {
-    object <- convertTimeUnit(object, time.unit = time.unit, byref = FALSE)
-  } else {
-    time.unit <- getTimeUnit(object)
+  setNormalized(z, getNormalized(object))
+  setScaled(z, getScaled(object))
+  setWhenMeasured(z, getWhenMeasured(object))
+  setWhereMeasured(z, getWhereMeasured(object))
+  if (is.source_spct(object)) {
+    class(z) <- c("summary_source_spct", class(z))
+    setTimeUnit(z, getTimeUnit(object))
+    setBSWFUsed(z, getBSWFUsed(object))
+  } else if (is.response_spct(object)) {
+    class(z) <- c("summary_response_spct", class(z))
+    setTimeUnit(z, getTimeUnit(object))
+  } else if (is.filter_spct(object)) {
+    class(z) <- c("summary_filter_spct", class(z))
+    setTfrType(z, getTfrType(object))
+  } else if (is.reflector_spct(object)) {
+    class(z) <- c("summary_reflector_spct", class(z))
+    setRfrType(z, getRfrType(object))
+  } else if (is.object_spct(object)) {
+    class(z) <- c("summary_object_spct", class(z))
+    setTfrType(z, getTfrType(object))
+    setRfrType(z, getRfrType(object))
+  } else if (is.chroma_spct(object)) {
+    class(z) <- c("summary_chroma_spct", class(z))
+  } else if (is.cps_spct(object)) {
+    class(z) <- c("summary_cps_spct", class(z))
   }
-  z <- c(
-    max.w.length = max(object),
-    min.w.length = min(object),
-    midpoint.w.length = midpoint(object),
-    w.length.step = stepsize(object)[1]
-  )
-
-  if (exists("s.e.irrad", object, inherits = FALSE)) {
-    z <- c(z,
-           max.s.e.irrad = max(object$s.e.irrad, ...),
-           min.s.e.irrad = min(object$s.e.irrad, ...),
-           e.irrad = as.numeric(e_irrad(object)) )
-  } else {
-    z <- c(z,
-           max.s.e.irrad = NA,
-           min.s.e.irrad = NA,
-           e.irrad = NA )
-  }
-
-  if (exists("s.q.irrad", object, inherits = FALSE)) {
-    z <- c(z,
-           max.s.q.irrad = max(object$s.q.irrad, ...),
-           min.s.q.irrad = min(object$s.q.irrad, ...),
-           q.irrad = as.numeric(q_irrad(object)) )
-  } else {
-    z <- c(z,
-           max.s.q.irrad = NA,
-           min.s.q.irrad = NA,
-           q.irrad = NA )
-  }
-
-  z <- signif(z, digits)
-  attr(z, "time.unit") <- time.unit
-  attr(z, "bswf.used") <- getBSWFUsed(object)
-  attr(z, "normalized") <- getNormalized(object)
-  attr(z, "scaled") <- getScaled(object)
-  comment(z) <- comment(object)
-  class(z) <- c("summary_source_spct", class(z))
-  return(z)
-}
-
-# @describeIn summary.generic_spct Summary of a \code{filter_spct} object.
-#'
-#' @method summary filter_spct
-#' @export
-#' @rdname summary.generic_spct
-#'
-summary.filter_spct <- function(object, digits = max(3, getOption("digits")-3), ...) {
-  Tfr.type <- getTfrType(object)
-  z <- c(
-    max.w.length = max(object),
-    min.w.length = min(object),
-    midpoint.w.length = midpoint(object),
-    w.length.step = stepsize(object)[1] )
-
-  if (exists("Tfr", object, inherits = FALSE)) {
-    z <- c(z,
-    max.Tfr = max(object$Tfr),
-    min.Tfr = min(object$Tfr),
-    mean.Tfr = as.numeric(transmittance(object, quantity = "mean")) )
-  } else {
-    z <- c(z,
-           max.Tfr = NA,
-           min.Tfr = NA,
-           mean.Tfr = NA )
-  }
-
-  if (exists("A", object, inherits = FALSE)) {
-    z <- c(z,
-           max.A = max(object$A),
-           min.A = min(object$A),
-           mean.A = as.numeric(absorbance(object, quantity = "mean")) )
-  } else {
-    z <- c(z,
-           max.A = NA,
-           min.A = NA,
-           mean.A = NA )
-  }
-
-  z <- signif(z, digits)
-  attr(z, "Tfr.type") <- Tfr.type
-  attr(z, "normalized") <- getNormalized(object)
-  attr(z, "scaled") <- getScaled(object)
-  comment(z) <- comment(object)
-  class(z) <- c("summary_filter_spct", class(z))
-  return(z)
-}
-
-# @describeIn summary.generic_spct Summary of a "reflector_spct" object.
-#'
-#' @method summary reflector_spct
-#' @export
-#' @rdname summary.generic_spct
-#'
-summary.reflector_spct <- function(object, digits = max(3, getOption("digits")-3), ...) {
-  Rfr.type <- getRfrType(object)
-  z <- c(
-    max.w.length = max(object),
-    min.w.length = min(object),
-    midpoint.w.length = midpoint(object),
-    w.length.step = stepsize(object)[1],
-    max.Rfr = max(object$Rfr),
-    min.Rfr = min(object$Rfr),
-    mean.Rfr = as.numeric(reflectance(object, quantity = "mean"))
-  )
-  z <- signif(z, digits)
-  attr(z, "Rfr.type") <- Rfr.type
-  attr(z, "normalized") <- getNormalized(object)
-  attr(z, "scaled") <- getScaled(object)
-  comment(z) <- comment(object)
-  class(z) <- c("summary_reflector_spct", class(z))
-  return(z)
-}
-
-# @describeIn summary.generic_spct Summary of a \code{filter_spct} object.
-#'
-#' @method summary object_spct
-#' @export
-#' @rdname summary.generic_spct
-#'
-summary.object_spct <- function(object, digits = max(3, getOption("digits")-3), ...) {
-  Tfr.type <- getTfrType(object)
-  Rfr.type <- getRfrType(object)
-  z <- c(
-    max.w.length = max(object),
-    min.w.length = min(object),
-    midpoint.w.length = midpoint(object),
-    w.length.step = stepsize(object)[1],
-    max.Tfr = max(object$Tfr),
-    min.Tfr = min(object$Tfr),
-    mean.Tfr = as.numeric(transmittance(object, quantity = "mean")),
-    max.Rfr = max(object$Rfr),
-    min.Rfr = min(object$Rfr),
-    mean.Rfr = as.numeric(reflectance(object, quantity = "mean"))
-  )
-  z <- signif(z, digits)
-  attr(z, "Tfr.type") <- Tfr.type
-  attr(z, "Rfr.type") <- Rfr.type
-  attr(z, "normalized") <- getNormalized(object)
-  attr(z, "scaled") <- getScaled(object)
-  comment(z) <- comment(object)
-  class(z) <- c("summary_object_spct", class(z))
-  return(z)
-}
-
-# @describeIn summary.generic_spct Summary of a "response_spct" object.
-#'
-#' @method summary response_spct
-#' @export
-#' @rdname summary.generic_spct
-#'
-summary.response_spct <- function(object,
-                                  digits = max(3, getOption("digits")-3),
-                                  time.unit = NULL,
-                                  ...) {
-  if (!is.null(time.unit)) {
-    object <- convertTimeUnit(object, time.unit = time.unit, byref = FALSE)
-  } else {
-    time.unit <- getTimeUnit(object)
-  }
-  z <- c(
-    max.w.length = max(object),
-    min.w.length = min(object),
-    midpoint.w.length = midpoint(object),
-    w.length.step = stepsize(object)[1]
-  )
-
-  if (exists("s.e.response", object, inherits = FALSE)) {
-    z <- c(z,
-           max.s.e.response = max(object$s.e.response, ...),
-           min.s.e.response = min(object$s.e.response, ...),
-           total.e.response = as.numeric(e_response(object, quantity = "total")),
-           mean.e.response = as.numeric(e_response(object, quantity = "mean")) )
-  } else {
-    z <- c(z,
-           max.s.e.response = NA,
-           min.s.e.response = NA,
-           total.e.response = NA,
-           mean.e.response = NA )
-  }
-
-  if (exists("s.q.response", object, inherits = FALSE)) {
-    z <- c(z,
-           max.s.q.response = max(object$s.q.response, ...),
-           min.s.q.response = min(object$s.q.response, ...),
-           total.q.response = as.numeric(q_response(object, quantity = "total")),
-           mean.q.response = as.numeric(q_response(object, quantity = "mean")) )
-  } else {
-    z <- c(z,
-           max.s.q.response = NA,
-           min.s.q.response = NA,
-           total.q.response = NA,
-           mean.q.response = NA )
-  }
-
-  z <- signif(z, digits)
-  comment(z) <- comment(object)
-  attr(z, "time.unit") <- time.unit
-  attr(z, "normalized") <- getNormalized(object)
-  attr(z, "scaled") <- getScaled(object)
-  comment(z) <- comment(object)
-  class(z) <- c("summary_response_spct", class(z))
-  return(z)
-}
-
-# @describeIn summary.generic_spct Summary of a "chroma_spct" object.
-#'
-#' @method summary chroma_spct
-#' @export
-#' @rdname summary.generic_spct
-#'
-summary.chroma_spct <- function(object, digits = max(3, getOption("digits")-3), ...) {
-  z <- c(
-    max.w.length = max(object),
-    min.w.length = min(object),
-    midpoint.w.length = midpoint(object),
-    w.length.step = stepsize(object)[1],
-    x.max = max(object[["x"]]),
-    y.max = max(object[["y"]]),
-    z.max = max(object[["z"]])
-  )
-  z <- signif(z, digits)
-  attr(z, "time.unit") <- time.unit
-  attr(z, "normalized") <- getNormalized(object)
-  attr(z, "scaled") <- getScaled(object)
-  comment(z) <- comment(object)
-  class(z) <- c("summary_chroma_spct", class(z))
-  return(z)
+  z
 }
 
 # Print spectral summaries ------------------------------------------------
 
-#' Print a summary object of a spectrum.
+#' Print spectral summary
 #'
 #' A function to nicely print objects of classes "summary...spct".
 #'
@@ -357,247 +215,62 @@ summary.chroma_spct <- function(object, digits = max(3, getOption("digits")-3), 
 #' @param ... not used in current version
 #'
 #' @export
+#' @examples
+#' print(summary(sun.spct))
 #'
 print.summary_generic_spct <- function(x, ...) {
-  time.unit <- attr(x, "time.unit")
-  cat("wavelength ranges from", x[["min.w.length"]], "to", x[["max.w.length"]], "nm \n")
-  cat("largest wavelength step size is", x[["w.length.step"]], "nm \n")
+  cat("Summary of object: ", x[["orig.class"]], " ", x[["orig.dim_desc"]], "\n", sep = "")
+  cat(
+    "Wavelength (nm): range ",
+    paste(signif(x[["wl.range"]], 8), sep = "", collapse = " to "),
+    ", step ",
+    paste(unique(signif(x[["wl.stepsize"]], 7)), sep = "", collapse = " to "),
+    "\n",
+    sep = ""
+  )
+  if (!any(is.na(getWhenMeasured(x)))) {
+    cat("Measured on: ",
+        as.character(getWhenMeasured(x)),
+        " UTC\n",
+        sep = "")
+  }
+  if (!any(is.na(getWhereMeasured(x)))) {
+    where.measured <- getWhereMeasured(x)
+    cat("Measured at: ",
+        where.measured[["lat"]],
+        " N, ",
+        where.measured[["lon"]],
+        " E\n",
+        sep = "")
+  }
+  if (class(x)[1] %in% c("summary_source_spct", "summary_response_spct")) {
+    cat("Time unit: ", as.character(getTimeUnit(x, force.duration = TRUE)),
+        "\n", sep = "")
+  }
+  if (is_scaled(x)) {
+    scaling <- getScaled(x)[["f"]]
+    cat("Rescaled to '", scaling, "' = 1 \n", sep = "")
+  }
+  if (is_normalized(x)) {
+    norm <- getNormalized(x)
+    cat("Spectral data normalized to 1 at ",
+        norm,
+        ifelse(is.numeric(norm), " nm \n", " \n"),
+        sep = "")
+  }
+  if (is_effective(x)) {
+    BSWF <- getBSWFUsed(x)
+    cat("Data weighted using '", BSWF, "' BSWF\n", sep = "")
+  }
+  cat("\n")
+  print(x[["summary"]])
+  invisible(x)
 }
 
-#' Print a summary object of a spectrum.
-#'
-#' A function to nicely print objects of classes "summary...spct".
-#'
-#' @param x An object of one of the summary classes for spectra
-#' @param ... not used in current version
-#'
-#' @export
-#'
-print.summary_cps_spct <- function(x, ...) {
-  time.unit <- attr(x, "time.unit")
-  cat("wavelength ranges from", x[["min.w.length"]], "to", x[["max.w.length"]], "nm \n")
-  cat("largest wavelength step size is", x[["w.length.step"]], "nm \n")
-  cat("Counts per second range from", x[["min.cps"]], "to", x[["max.cps"]], "\n")
-  if (as.logical(attr(x, "normalized"))) {
-    cat("data have been normalized to: ", attr(x, "normalized"), " nm \n")
-  }
-  if (as.logical(attr(x, "scaled"))) {
-    cat("data have been scaled: ", attr(x, "scaled"), "\n")
-  }
-}
-
-# @describeIn print.summary_generic_spct Print a "summary_source_spct" object.
-#'
-#' @export
-#' @rdname print.summary_generic_spct
-#'
-print.summary_source_spct <- function(x, ...) {
-  time.unit <- attr(x, "time.unit")
-  bswf.used <- attr(x, "bswf.used")
-  cat("wavelength ranges from", x[["min.w.length"]], "to", x[["max.w.length"]], "nm \n")
-  cat("largest wavelength step size is", x[["w.length.step"]], "nm \n")
-  if (bswf.used != "none") {
-    cat("effective irradiances based on BSWF =", bswf.used, "\n")
-  }
-  if (!is.na(x[["max.s.e.irrad"]]) || !is.na(x[["min.s.e.irrad"]])) {
-    if (as.logical(attr(x, "normalized")) || as.logical(attr(x, "scaled"))) {
-      cat("spectral energy irradiance ranges from", x[["min.s.e.irrad"]],
-          "to", x[["max.s.e.irrad"]], "relative units \n")
-    } else if (time.unit == "day" || time.unit == lubridate::duration(1, "days")) {
-      cat("spectral energy irradiance ranges from", x[["min.s.e.irrad"]] * 1e-3,
-          "to", x[["max.s.e.irrad"]] * 1e-3, "kJ d-1 m-2 nm-1 \n")
-      cat("energy irradiance is", x[["e.irrad"]] * 1e-6, "MJ d-1 m-2 \n")
-    } else if (time.unit == "second" || time.unit == lubridate::duration(1, "seconds")) {
-      cat("spectral irradiance ranges from", x[["min.s.e.irrad"]],
-          "to", x[["max.s.e.irrad"]], "W m-2 nm-1 \n")
-      cat("energy irradiance is", x[["e.irrad"]], "W m-2 \n")
-     } else {
-      cat("spectral irradiance ranges from", x[["min.s.e.irrad"]],
-          "to", x[["max.s.e.irrad"]], "J m-2 nm-1 per", as.character(time.unit), "\n")
-      cat("energy irradiance is", x[["e.irrad"]], "J m-2 per", as.character(time.unit), "\n")
-    }
-  }
-  if (!is.na(x[["max.s.q.irrad"]]) || !is.na(x[["min.s.q.irrad"]])) {
-    if (as.logical(attr(x, "normalized")) || as.logical(attr(x, "scaled"))) {
-      cat("spectral photom irradiance ranges from", x[["min.s.q.irrad"]],
-          "to", x[["max.s.q.irrad"]], "relative units \n")
-    } else if (time.unit == "day" || time.unit == lubridate::duration(1, "days")) {
-        cat("spectral photom irradiance ranges from", x[["min.s.q.irrad"]] * 1e3,
-          "to", x[["max.s.q.irrad"]] * 1e3, "mmol d-1 m-2 nm-1 \n")
-      cat("photon irradiance is", x[["q.irrad"]], "mol d-1 m-2 \n")
-    } else if (time.unit == "second" || time.unit == lubridate::duration(1, "seconds")) {
-      cat("spectral photon irradiance ranges from", x[["min.s.q.irrad"]] * 1e6,
-          "to", x[["max.s.q.irrad"]] * 1e6, "umol s-1 m-2 nm-1 \n")
-      cat("photon irradiance is", x[["q.irrad"]] * 1e6, "umol s-1 m-2\n")
-    } else {
-      cat("spectral photon irradiance ranges from", x[["min.s.q.irrad"]],
-          "to", x[["max.s.q.irrad"]], "mol m-2 nm-1 per", as.character(time.unit), "\n")
-      cat("photon irradiance is", x[["q.irrad"]], "mol m-2 per", as.character(time.unit), "\n")
-    }
-  }
-  if (as.logical(attr(x, "normalized"))) {
-    cat("data have been normalized to: ", attr(x, "normalized"), " nm \n")
-  }
-  if (as.logical(attr(x, "scaled"))) {
-    cat("data have been scaled: ", attr(x, "scaled"), "\n")
-  }
-}
-
-# @describeIn print.summary_generic_spct Print a "summary_filter_spct" object.
-#'
-#' @export
-#' @rdname print.summary_generic_spct
-#'
-print.summary_filter_spct <- function(x, ...) {
-  Tfr.type <- attr(x, "Tfr.type")
-  cat("wavelength ranges from", x[["min.w.length"]], "to", x[["max.w.length"]], "nm \n")
-  cat("largest wavelength step size is", x[["w.length.step"]], "nm \n")
-  if (!is.na(x[["min.Tfr"]]) || !is.na( x[["max.Tfr"]])) {
-    if (as.logical(attr(x, "normalized")) || as.logical(attr(x, "scaled"))) {
-      cat("spectral transmittance ranges from", x[["min.Tfr"]],
-          "to", x[["max.Tfr"]], "arbitrary units \n")
-    } else {
-      cat("Spectral transmittance ranges from", x[["min.Tfr"]], "to", x[["max.Tfr"]], "\n")
-      cat("Mean transmittance is", x[["mean.Tfr"]], "\n")
-    }
-  }
-
-  if (!is.na(x[["min.A"]]) || !is.na( x[["max.A"]])) {
-    if (as.logical(attr(x, "normalized")) || as.logical(attr(x, "scaled"))) {
-      cat("spectral absorbance ranges from", x[["min.A"]],
-          "to", x[["max.A"]], "arbitrary units \n")
-    } else {
-      cat("Spectral absorbance ranges from", x[["min.A"]], "to", x[["max.A"]], "\n")
-      cat("Mean absorbance is", x[["mean.A"]], "\n")
-    }
-  }
-  cat("Quantity is", Tfr.type, "\n")
-  if (as.logical(attr(x, "normalized"))) {
-    cat("data have been normalized to: ", attr(x, "normalized"), " nm \n")
-  }
-  if (as.logical(attr(x, "scaled"))) {
-    cat("data have been scaled: ", attr(x, "scaled"), "\n")
-  }
-}
-
-# @describeIn print.summary_generic_spct Print a "summary_reflector_spct" object.
-#'
-#' @export
-#' @rdname print.summary_generic_spct
-#'
-print.summary_reflector_spct <- function(x, ...) {
-  Rfr.type <- attr(x, "Rfr.type")
-  cat("wavelength ranges from", x[["min.w.length"]], "to", x[["max.w.length"]], "nm \n")
-  cat("largest wavelength step size is", x[["w.length.step"]], "nm \n")
-  if (as.logical(attr(x, "normalized")) || as.logical(attr(x, "scaled"))) {
-    cat("spectral reflectance ranges from", x[["min.Rfr"]],
-        "to", x[["max.Rfr"]], "arbitrary units \n")
-  } else {
-  cat("Spectral reflectance ranges from", x[["min.Rfr"]], "to", x[["max.Rfr"]], "\n")
-  cat("Mean reflectance is", x[["mean.Rfr"]], "\n")
-  }
-  cat("Quantity is", Rfr.type, "\n")
-  if (as.logical(attr(x, "normalized"))) {
-    cat("data have been normalized to: ", attr(x, "normalized"), " nm \n")
-  }
-  if (as.logical(attr(x, "scaled"))) {
-    cat("data have been scaled: ", attr(x, "scaled"), "\n")
-  }
-}
-
-# @describeIn print.summary_generic_spct Print a "summary_filter_spct" object.
-#'
-#' @export
-#' @rdname print.summary_generic_spct
-#'
-print.summary_object_spct <- function(x, ...) {
-  Tfr.type <- attr(x, "Tfr.type")
-  Rfr.type <- attr(x, "Rfr.type")
-  cat("wavelength ranges from", x[["min.w.length"]], "to", x[["max.w.length"]], "nm \n")
-  cat("largest wavelength step size is", x[["w.length.step"]], "nm \n")
-  cat("Spectral transmittance ranges from", x[["min.Tfr"]], "to", x[["max.Tfr"]], "\n")
-  cat("Mean transmittance is", x[["mean.Tfr"]], "\n")
-  cat("Quantity is", Tfr.type, "\n")
-  cat("Spectral reflectance ranges from", x[["min.Rfr"]], "to", x[["max.Rfr"]], "\n")
-  cat("Mean reflectance is", x[["mean.Rfr"]], "\n")
-  cat("Quantity is", Rfr.type, "\n")
-  if (as.logical(attr(x, "normalized"))) {
-    cat("data have been normalized to: ", attr(x, "normalized"), " nm \n")
-  }
-  if (as.logical(attr(x, "scaled"))) {
-    cat("data have been scaled: ", attr(x, "scaled"), "\n")
-  }
-}
-
-# @describeIn print.summary_generic_spct Print a "summary_response_spct" object.
-#'
-#' @export
-#' @rdname print.summary_generic_spct
-#'
-print.summary_response_spct <- function(x, ...) {
-  time.unit <- attr(x, "time.unit")
-  cat("wavelength ranges from", x[["min.w.length"]], "to", x[["max.w.length"]], "nm \n")
-  cat("largest wavelength step size is", x[["w.length.step"]], "nm \n")
-
-  if (!is.na(x[["max.s.e.response"]]) || !is.na(x[["min.s.e.response"]])) {
-    if (as.logical(attr(x, "normalized")) || as.logical(attr(x, "scaled"))) {
-      cat("spectral energy response ranges from", x[["min.s.e.response"]],
-          "to", x[["max.s.e.response"]], "relative units \n")
-    } else {
-      cat("Spectral response ranges from", x[["min.s.e.response"]],
-          "to", x[["max.s.e.response"]], "response units J-1 nm-1 per", as.character(time.unit), "\n")
-      cat("Mean response is", x[["mean.e.response"]], "response units J-1 nm-1 per",
-          as.character(time.unit), "\n")
-      cat("Total response is", x[["total.e.response"]], "response units J-1 per",
-          as.character(time.unit), "\n")
-    }
-  }
-
-
-  if (!is.na(x[["max.s.q.response"]]) || !is.na(x[["min.s.q.response"]])) {
-    if (as.logical(attr(x, "normalized")) || as.logical(attr(x, "scaled"))) {
-      cat("spectral quantum response ranges from", x[["min.s.e.response"]],
-          "to", x[["max.s.e.response"]], "relative units \n")
-    } else {
-      cat("Spectral quantum response ranges from", x[["min.s.q.response"]],
-          "to", x[["max.s.q.response"]], "response units mol-1 nm-1 per", as.character(time.unit), "\n")
-      cat("Mean quantum response is", x[["mean.q.response"]], "response units mol-1 nm-1 per",
-          as.character(time.unit), "\n")
-      cat("Total quantum response is", x[["total.q.response"]], "response units mol-1 per",
-          as.character(time.unit), "\n")
-    }
-  }
-  if (as.logical(attr(x, "normalized"))) {
-    cat("data have been normalized to: ", attr(x, "normalized"), " nm \n")
-  }
-  if (as.logical(attr(x, "scaled"))) {
-    cat("data have been scaled: ", attr(x, "scaled"), "\n")
-  }
-}
-
-# @describeIn print.summary_generic_spct Print a "summary_chrome.spct" object.
-#'
-#' @export
-#' @rdname print.summary_generic_spct
-#'
-print.summary_chroma_spct <- function(x, ...) {
-  time.unit <- attr(x, "time.unit")
-  cat("wavelength ranges from", x[["min.w.length"]], "to", x[["max.w.length"]], "nm \n")
-  cat("largest wavelength step size is", x[["w.length.step"]], "nm \n")
-  cat(paste("maximum (x, y, z) values are (",
-            paste(x[["x.max"]], x[["y.max"]], x[["z.max"]], sep=", "),
-            ")", sep=""), "\n")
-  if (as.logical(attr(x, "normalized"))) {
-    cat("data have been normalized to: ", attr(x, "normalized"), " nm \n")
-  }
-  if (as.logical(attr(x, "scaled"))) {
-    cat("data have been scaled: ", attr(x, "scaled"), "\n")
-  }
-}
 
 # Color -------------------------------------------------------------------
 
-#' Color of a source_spct object.
+#' Color
 #'
 #' A function that returns the equivalent RGB colour of an object of class
 #' "source_spct".
@@ -605,21 +278,23 @@ print.summary_chroma_spct <- function(x, ...) {
 #' @param x an object of class "source_spct"
 #' @param ... not used in current version
 #' @export
+#' @examples
+#' color(sun.spct)
 #'
 color.source_spct <- function(x, ...) {
 #  x.name <- as.character(substitute(x))
   x.name <- "source"
   q2e(x, byref=TRUE)
   color <- c(s_e_irrad2rgb(x[["w.length"]], x[["s.e.irrad"]],
-                           sens=ciexyzCMF2.spct, color.name=paste(x.name, "CMF")),
+                           sens=photobiology::ciexyzCMF2.spct, color.name=paste(x.name, "CMF")),
              s_e_irrad2rgb(x[["w.length"]], x[["s.e.irrad"]],
-                           sens=ciexyzCC2.spct, color.name=paste(x.name, "CC")))
+                           sens=photobiology::ciexyzCC2.spct, color.name=paste(x.name, "CC")))
   return(color)
 }
 
 # w.length summaries ------------------------------------------------------
 
-#' "range" function for spectra
+#' Range of wavelength
 #'
 #' Range function for spectra, returning wavelength range.
 #'
@@ -627,13 +302,15 @@ color.source_spct <- function(x, ...) {
 #' @param na.rm a logical indicating whether missing values should be removed.
 #' @export
 #' @family wavelength summaries
+#' @examples
+#' range(sun.spct)
 #'
 range.generic_spct <- function(..., na.rm = FALSE) {
   x <- list(...)[[1]]
   range(x[["w.length"]], na.rm = na.rm)
 }
 
-#' "max" function for spectra
+#' Maximun wavelength
 #'
 #' Maximun function for spectra, returning wavelength maximum.
 #'
@@ -641,13 +318,15 @@ range.generic_spct <- function(..., na.rm = FALSE) {
 #' @param na.rm a logical indicating whether missing values should be removed.
 #' @export
 #' @family wavelength summaries
+#' @examples
+#' max(sun.spct)
 #'
 max.generic_spct <- function(..., na.rm=FALSE) {
   x <- list(...)[[1]]
   max(x[["w.length"]], na.rm=na.rm)
 }
 
-#' "min" function for spectra
+#' Minimum wavelength
 #'
 #' Minimun function for spectra, returning wavelength minimum.
 #'
@@ -655,23 +334,28 @@ max.generic_spct <- function(..., na.rm=FALSE) {
 #' @param na.rm a logical indicating whether missing values should be removed.
 #' @export
 #' @family wavelength summaries
+#' @examples
+#' min(sun.spct)
 #'
 min.generic_spct <- function(..., na.rm = FALSE) {
   x <- list(...)[[1]]
   min(x[["w.length"]], na.rm = na.rm)
 }
 
-#' Generic function
+#' Stepsize
 #'
-#' Function that returns the range of step sizes in an object.
+#' Function that returns the range of step sizes in an object. Range of
+#' differences between succesive sorted values.
 #'
 #' @param x an R object
 #' @param ... not used in current version
 #'
-#' @return A numeric vector of length 2 with min and maximum
-#'   stepsize values.
+#' @return A numeric vector of length 2 with min and maximum stepsize values.
 #' @export
 #' @family wavelength summaries
+#' @examples
+#' stepsize(sun.spct)
+#'
 stepsize <- function(x, ...) UseMethod("stepsize")
 
 #' @describeIn stepsize Default function usable on numeric vectors.
@@ -724,7 +408,7 @@ midpoint.generic_spct <- function(x, ...) {
 
 # Labels ------------------------------------------------------------------
 
-#' Labels of a "generic_spct" object
+#' Find labels from spectral object
 #'
 #' A function to obtain the labels of a spectrum. Currently returns 'names'.
 #'
@@ -732,7 +416,111 @@ midpoint.generic_spct <- function(x, ...) {
 #' @param ... not used in current version
 #'
 #' @export
+#' @examples
+#' labels(sun.spct)
 #'
 labels.generic_spct <- function(object, ...) {
   return(names(object))
 }
+
+# When --------------------------------------------------------------------
+
+#' @describeIn setWhenMeasured summary_generic_spct
+#' @export
+#'
+setWhenMeasured.summary_generic_spct <-
+  function(x,
+           when.measured = lubridate::now(),
+           ...) {
+    name <- substitute(x)
+    stopifnot(is.null(when.measured) ||
+                lubridate::is.POSIXct(when.measured))
+    if (!is.null(when.measured)) {
+      when.measured <- lubridate::with_tz(when.measured, "UTC")
+    }
+    attr(x, "when.measured") <- when.measured
+    if (is.name(name)) {
+      name <- as.character(name)
+      assign(name, x, parent.frame(), inherits = TRUE)
+    }
+    invisible(x)
+  }
+
+#' @describeIn getWhenMeasured summary_generic_spct
+#' @export
+getWhenMeasured.summary_generic_spct <- function(x, ...) {
+  when.measured <- attr(x, "when.measured", exact = TRUE)
+  if (is.null(when.measured) ||
+      !lubridate::is.POSIXct(when.measured)) {
+    # need to handle invalid attribute values
+    # we return an NA of class POSIXct
+    when.measured <- suppressWarnings(lubridate::ymd(NA_character_))
+  }
+  when.measured
+}
+
+# Where -------------------------------------------------------------------
+
+#' @describeIn setWhereMeasured summary_generic_spct
+#' @export
+setWhereMeasured.summary_generic_spct <- function(x,
+                                          where.measured = NA,
+                                          lat = NA,
+                                          lon = NA,
+                                          ...) {
+  name <- substitute(x)
+  if (!is.null(where.measured)) {
+    if (any(is.na(where.measured))) {
+      where.measured <- data.frame(lon = lon, lat = lat)
+    } else {
+      stopifnot(
+        is.data.frame(where.measured) && nrow(where.measured) == 1 &&
+          all(c("lon", "lat") %in% names(where.measured))
+      )
+    }
+  }
+  attr(x, "where.measured") <- where.measured
+  if (is.name(name)) {
+    name <- as.character(name)
+    assign(name, x, parent.frame(), inherits = TRUE)
+  }
+  invisible(x)
+}
+
+#' @describeIn getWhereMeasured summary_generic_spct
+#' @export
+getWhereMeasured.summary_generic_spct <- function(x, ...) {
+  where.measured <- attr(x, "where.measured", exact = TRUE)
+  if (is.null(where.measured) ||
+      !is.data.frame(where.measured)) {
+    # need to handle invalid or missing attribute values
+    where.measured <- data.frame(lon = NA_real_, lat = NA_real_)
+  }
+  where.measured
+}
+
+
+# is_effective ------------------------------------------------------------
+
+#' @describeIn is_effective Does a \code{summary_generic_spct} object contain
+#'   a summary of effective spectral irradiance values.
+#'
+#' @export
+#' @examples
+#' is_effective(summary(sun.spct))
+#'
+is_effective.summary_generic_spct <- function(x) {
+  FALSE
+}
+
+#' @describeIn is_effective Does a \code{summary_source_spct} object contain
+#'   a summary of effective spectral irradiance values.
+#'
+#' @export
+#'
+is_effective.summary_source_spct <- function(x) {
+  bswf.used <- getBSWFUsed(x)
+  !is.null(bswf.used) && (bswf.used != "none")
+}
+
+

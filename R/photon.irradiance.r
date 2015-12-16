@@ -1,4 +1,4 @@
-#' Calculate photon irradiance from spectral irradiance
+#' Photon irradiance
 #'
 #' This function returns the photon irradiance for a given waveband of a
 #' radiation spectrum, optionally applies a BSWF.
@@ -17,7 +17,7 @@
 #'
 #' @return A single numeric value with no change in scale factor: [W m-2 nm-1]
 #'   -> [W m-2]
-#' @keywords manip misc
+#'
 #' @export
 #' @examples
 #' with(sun.data, photon_irradiance(w.length, s.e.irrad))

@@ -1,4 +1,4 @@
-#' Calculate energy ratio from spectral (energy or photon) irradiance.
+#' Energy:energy ratio
 #'
 #' This function gives the energy ratio between two given wavebands of a
 #' radiation spectrum.
@@ -18,7 +18,7 @@
 #'   interpolation errors
 #'
 #' @return a single numeric value giving the unitless ratio
-#' @keywords manip misc
+#'
 #' @export
 #' @examples
 #' # energy:energy ratio
