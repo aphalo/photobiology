@@ -37,7 +37,7 @@ test_that("fscale", {
   expect_true(is.na(irrad(fscale(my.spct, f = "mean"))))
   expect_named(fscale(my.spct), names(my.spct))
   expect_equal(class(fscale(my.spct)), class(my.spct))
-  expect_error(fscale(my.spct, range = 100))
+  expect_error(fscale(my.spct, range = 281))
   expect_true(is_scaled(fscale(my.spct)))
   expect_false(is_scaled(my.spct))
   expect_equal(is.source_spct(fscale(my.spct)), is.source_spct(my.spct))

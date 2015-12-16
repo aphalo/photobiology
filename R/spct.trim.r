@@ -49,37 +49,23 @@ trim_spct <- function(spct,
   if (length(spct) == 0) {
     return(spct)
   }
-  if (is.numeric(range)) {
-    stopifnot(length(range) > 1)
-  }
-  if (!is.null(range) &&
-      (!is.numeric(range) || (is.numeric(range) && length(range) != 2))) {
-    range <- range(range, na.rm = TRUE)
-  }
+  stopifnot(is.any_spct(spct))
   if (is.null(use.hinges)) {
     use.hinges <- auto_hinges(spct)
   }
-  stopifnot(is.any_spct(spct))
   if (byref) {
     name <- substitute(spct)
   }
   class_spct <- class(spct)
-  if (!is.null(range)) {
-    if (length(range) == 2 && is.na(range[1])) {
-      low.limit <- NULL
-    } else {
-      low.limit <- ifelse(!is.null(low.limit), max(min(range, na.rm = TRUE), low.limit),
-                          min(range, na.rm = TRUE))
-    }
-    if (length(range) == 2 && is.na(range[2])) {
-      high.limit <- NULL
-    } else {
-      high.limit <- ifelse(!is.null(high.limit), min(max(range, na.rm = TRUE), high.limit),
-                           max(range, na.rm = TRUE))
-    }
+  if (is.null(range)) {
+    range[1] <- ifelse(is.null(low.limit), NA, low.limit)
+    range[2] <- ifelse(is.null(high.limit), NA, high.limit)
   }
-  trim.low <- !is.null(low.limit)
-  trim.high <- !is.null(high.limit)
+  range <- normalize_range_arg(range)
+  low.limit <- range[1]
+  high.limit <- range[2]
+  trim.low <- low.limit > min(spct, na.rm = TRUE)
+  trim.high <- high.limit < max(spct, na.rm = TRUE)
   if (trim.low && trim.high && high.limit - low.limit < 1e-7) {
     warning("When trimming, 'range' must be a finite wavelength interval > 1E-7 nm")
     return(spct[FALSE, ]) # returns a spct object with nrow equal to zero

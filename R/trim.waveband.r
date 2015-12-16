@@ -37,26 +37,11 @@ trim_waveband <-
     if (input.was.waveband) {
       w.band <- list(w.band)
     }
-    if (is.numeric(range)) {
-      stopifnot(length(range) > 1)
-    }
-    if (!is.null(range) &&
-        (!is.numeric(range) || (is.numeric(range) && length(range) != 2))) {
-      range <- range(range, na.rm = TRUE)
-    }
-    stopifnot(is.null(range) || length(range) == 2)
-    if (!is.null(range)) {
-      if (is.na(range[1])) {
-        range[1] <- 0
-      }
-      if (is.na(range[2])) {
-        range[2] <- Inf
-      }
-      low.limit <- ifelse(!is.null(low.limit), max(min(range), low.limit),
-                          min(range))
-      high.limit <- ifelse(!is.null(high.limit), min(max(range), high.limit),
-                           max(range))
-    }
+
+    range <- normalize_range_arg(range)
+    low.limit <- range[1]
+    high.limit <- range[2]
+
     w.band.out <- list()
     i <- 0
     for (wb in w.band) {

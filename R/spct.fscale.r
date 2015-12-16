@@ -216,8 +216,16 @@ fscale.reflector_mspct <- function(x,
 #' @keywords internal
 #'
 fscale_spct <- function(spct, range, var.name, f, ...) {
-  if (is.null(range) || is.na(range)) {
-    range <- spct
+  if (is.null(range) || all(is.na(range))) {
+    range <- range(spct)
+  } else {
+    if (max(range) < min(spct)) {
+      warning("'range' does not overlap spectral data, skipping scaling...")
+      return(spct)
+    }
+    if (min(range) < min(spct)) {
+      warning("'range' is only partly within spectral data, continuing scaling...")
+    }
   }
   tmp.spct <- trim_spct(spct, range, byref = FALSE)
   tmp.spct <- tmp.spct[ , c("w.length", var.name)]
