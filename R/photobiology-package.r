@@ -36,7 +36,8 @@
 #' 978-952-10-8362-4 (paperback). Open access PDF download available at
 #' http://hdl.handle.net/10138/37558
 #'
-#' @note This package is still under development, but is by now stable.
+#' @note This package is still under development, but current functionality
+#'  is mostly stable.
 #'
 #' @importFrom Rcpp evalCpp
 #'
@@ -50,6 +51,16 @@
 #' # simulating the effect of a filter on solar irradiance
 #' e_irrad(sun.spct * yellow_gel.spct, waveband(c(400,500)))
 #' e_irrad(sun.spct * yellow_gel.spct, waveband(c(500,700)))
+#' # daylength
 #' sunrise_time(lubridate::today(tzone = "EET"), tz = "EET",
 #'              lat = 60, lon = 25, unit.out = "hour")
+#' day_length(lubridate::today(tzone = "EET"), tz = "EET",
+#'               lat = 60, lon = 25, unit.out = "hour")
+#' # colour as seen by humans
+#' color(sun.spct)
+#' color(sun.spct * yellow_gel.spct)
+#' # filter transmittance
+#' transmittance(yellow_gel.spct)
+#' transmittance(yellow_gel.spct, waveband(c(400,500)))
+#' transmittance(yellow_gel.spct, waveband(c(500,700)))
 NULL

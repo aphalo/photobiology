@@ -52,7 +52,7 @@ sun_angles <- function(time = lubridate::now(),
     if (nt != nlon)
       stop("lengths of t, latitude and longitude must match, unless last two are of length 1")
   }
-  year <- year(t)
+  year <- lubridate::year(t)
   if (any(year < 1950) || any(year > 2050))
     stop("year=", year, " is outside acceptable range")
   day <- lubridate::yday(t)
@@ -169,7 +169,7 @@ sun_angles <- function(time = lubridate::now(),
 #'
 #' @family astronomy related functions
 #'
-#'
+#' @name day_night
 #' @export
 #' @examples
 #' library(lubridate)
@@ -179,7 +179,7 @@ sun_angles <- function(time = lubridate::now(),
 #' day_length(ymd("2015-05-30"), lat = 60, lon = 25, twilight = "civil")
 #' sunrise_time(ymd("2015-05-30"), lat = 60, lon = 25, tz = "EET")
 #' day_night(ymd("2015-05-30"), lat = 60, lon = 25, twilight = "civil")
-
+#'
 day_night <- function(date = lubridate::today(),
                       tz = "UTC",
                       geocode = NULL, lon = 0, lat = 0,
@@ -294,7 +294,7 @@ altitude <- function(x, lon, lat, twlght_angl = 0){
                     lat = lat)$elevation - twlght_angl)
 }
 
-#' @describeIn day_night Time coordinates at local noon
+#' @rdname day_night
 #' @export
 #' @return \code{noon_time}, \code{sunrise_time} and \code{sunset_time} return a
 #'   vector of POSIXct times
@@ -329,7 +329,7 @@ noon_time <- function(date = lubridate::today(), tz = "UTC",
   times
 }
 
-#' @describeIn day_night Time coordinates at sunrise
+#' @rdname day_night
 #'
 #' @export
 sunrise_time <- function(date = lubridate::today(), tz = "UTC",
@@ -364,7 +364,7 @@ sunrise_time <- function(date = lubridate::today(), tz = "UTC",
   times
 }
 
-#' @describeIn day_night Calculate time at sunrise
+#' @rdname day_night
 #' @export
 #'
 #' @note \code{night_length} returns the length of night-time conditions in one
@@ -403,7 +403,8 @@ sunset_time <- function(date = lubridate::today(), tz = "UTC",
   times
 }
 
-#' @describeIn day_night Day length (photoperiod)
+#' @rdname day_night
+#'
 #' @export
 #' @return \code{day_length} and \code{night_length} return numeric a vector
 #'   giving the length in hours
@@ -434,7 +435,8 @@ day_length <- function(date = lubridate::today(), tz = "UTC",
          "second" = hours * 3600)
 }
 
-#' @describeIn day_night Night length (scotoperiod)
+#' @rdname day_night
+#'
 #' @export
 night_length <- function(date = lubridate::today(), tz = "UTC",
                          geocode = NULL, lon = 0, lat = 0,
