@@ -15,7 +15,7 @@
 #' Package: \tab photobiology\cr
 #' Type: \tab Package\cr
 #' Version: \tab 0.9.0\cr
-#' Date: \tab 2015-12-13\cr
+#' Date: \tab 2015-12-16\cr
 #' License: \tab GPL (>= 3.0)\cr
 #' URL: \tab \url{http://www.r4photobiology.info},\cr
 #' \tab \url{https://bitbucket.org/aphalo/photobiology}\cr
@@ -47,5 +47,9 @@
 #' q_irrad(sun.spct, waveband(c(400,700)))
 #' # energy irradiance 400 nm to 700 nm
 #' e_irrad(sun.spct, waveband(c(400,700)))
-#'
+#' # simulating the effect of a filter on solar irradiance
+#' e_irrad(sun.spct * yellow_gel.spct, waveband(c(400,500)))
+#' e_irrad(sun.spct * yellow_gel.spct, waveband(c(500,700)))
+#' sunrise_time(lubridate::today(tzone = "EET"), tz = "EET",
+#'              lat = 60, lon = 25, unit.out = "hour")
 NULL
