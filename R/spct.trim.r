@@ -84,7 +84,7 @@ trim_spct <- function(spct,
       low.tail.length <-  trunc(low.end - low.limit) + ifelse(use.hinges, 2, 1)
       low.tail.w.length <- seq(from = low.limit,
                                to = ifelse(use.hinges, low.end - 1e-12, low.end - 1),
-                               length = low.tail.length)
+                               length.out = low.tail.length)
       spct.top <- dplyr::data_frame(w.length = low.tail.w.length)
       for (data.col in names.data) {
         spct.top[[data.col]] <- fill
@@ -109,7 +109,7 @@ trim_spct <- function(spct,
       high.tail.length <- trunc(high.limit - high.end) + ifelse(use.hinges, 2, 1)
       high.tail.w.length <- seq(from = ifelse(use.hinges, high.end + 1e-12, high.end + 1),
                                 to = high.limit,
-                                length = high.tail.length)
+                                length.out = high.tail.length)
       spct.bottom <- dplyr::data_frame(w.length = high.tail.w.length)
       for (data.col in names.data) {
         spct.bottom[[data.col]] <- fill

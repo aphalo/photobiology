@@ -9,8 +9,8 @@ using namespace std;
 //' irradiance during integration of the effective spectral irradiance. This is
 //' specially true when data has a large wavelength step size.
 //'
-//' @param w_length numeric array of wavelength (nm)
-//' @param s_irrad numeric array of spectral irradiance values
+//' @param x numeric array
+//' @param y numeric array
 //' @param hinges a numeric array giving the wavelengths at which the s.irrad
 //'   should be inserted by interpolation, no interpolation is indicated by an
 //'   empty array (numeric(0))
@@ -29,7 +29,7 @@ using namespace std;
 //
 // I have tried to optimize this function as much as possible.
 // It assumes that hinges are sorted in increasing order.
-// It uses binary search to find the insertion point, and also does this search in the w_length
+// It uses binary search to find the insertion point, and also does this search in the x
 // vector only in the "tail" starting at the previously inserted hinge.
 // The second example tests several boundary conditions: response for hinges outside the range of the spectrum, two succesive
 // insertions between the a single pair of values in the spectral data, and for insertion of
@@ -38,50 +38,50 @@ using namespace std;
 // with(sun.data, insert_hinges(w.length, s.e.irrad, c())) in Rcpp
 //
 // [[Rcpp::export]]
-DataFrame insert_hinges(NumericVector w_length, NumericVector s_irrad, NumericVector hinges) {
+DataFrame insert_hinges(NumericVector x, NumericVector y, NumericVector hinges) {
 
-    vector<double> w_length_in = Rcpp::as< vector<double> >(w_length);
-    vector<double> s_irrad_in = Rcpp::as< vector<double> >(s_irrad);
+    vector<double> x_in = Rcpp::as< vector<double> >(x);
+    vector<double> y_in = Rcpp::as< vector<double> >(y);
     vector<double> hinges_in = Rcpp::as< vector<double> >(sort_unique(hinges));
 
-    vector<double>::iterator h_low = lower_bound(hinges_in.begin(), hinges_in.end(), w_length_in.front());
-    vector<double>::iterator h_high = lower_bound(hinges_in.begin(), hinges_in.end(), w_length_in.back());
+    vector<double>::iterator h_low = lower_bound(hinges_in.begin(), hinges_in.end(), x_in.front());
+    vector<double>::iterator h_high = lower_bound(hinges_in.begin(), hinges_in.end(), x_in.back());
 
-    vector<double>::iterator w_length_in_it = w_length_in.begin();
-    vector<double>::iterator s_irrad_in_it = s_irrad_in.begin();
+    vector<double>::iterator x_in_it = x_in.begin();
+    vector<double>::iterator y_in_it = y_in.begin();
 
-    vector<double>::size_type max_len = w_length_in.size() + distance(h_low, h_high);
-    vector<double> w_length_out (max_len); // w_length_out.reserve(max_len);
-    vector<double> s_irrad_out (max_len); //s_irrad_out.reserve(max_len);
+    vector<double>::size_type max_len = x_in.size() + distance(h_low, h_high);
+    vector<double> x_out (max_len); // x_out.reserve(max_len);
+    vector<double> y_out (max_len); //y_out.reserve(max_len);
 
-    vector<double>::iterator w_length_out_it = w_length_out.begin();
-    vector<double>::iterator s_irrad_out_it = s_irrad_out.begin();
+    vector<double>::iterator x_out_it = x_out.begin();
+    vector<double>::iterator y_out_it = y_out.begin();
 
     vector<double>::iterator wl_next_chunk_begin_it;
-    vector<double>::iterator si_next_chunk_begin_it = s_irrad_in_it;
+    vector<double>::iterator si_next_chunk_begin_it = y_in_it;
 
     for (vector<double>::iterator it=h_low; it<h_high; it++) {
-      wl_next_chunk_begin_it = lower_bound(w_length_in_it-1, w_length_in.end(), *it);
-      vector<double>::size_type num_elements = distance(w_length_in_it, wl_next_chunk_begin_it);
+      wl_next_chunk_begin_it = lower_bound(x_in_it-1, x_in.end(), *it);
+      vector<double>::size_type num_elements = distance(x_in_it, wl_next_chunk_begin_it);
       si_next_chunk_begin_it = si_next_chunk_begin_it + num_elements;
-      w_length_out_it = copy(w_length_in_it, wl_next_chunk_begin_it, w_length_out_it);
-      s_irrad_out_it = copy(s_irrad_in_it, si_next_chunk_begin_it, s_irrad_out_it);
+      x_out_it = copy(x_in_it, wl_next_chunk_begin_it, x_out_it);
+      y_out_it = copy(y_in_it, si_next_chunk_begin_it, y_out_it);
       if (*it < *wl_next_chunk_begin_it) {
-        *w_length_out_it = *it;
+        *x_out_it = *it;
          double interpol_irrad = *(si_next_chunk_begin_it-1) +
                (*si_next_chunk_begin_it - *(si_next_chunk_begin_it-1)) /
                (*wl_next_chunk_begin_it - *(wl_next_chunk_begin_it-1)) * (*it - *(wl_next_chunk_begin_it-1));
-        *s_irrad_out_it = interpol_irrad;
-        ++w_length_out_it;
-        ++s_irrad_out_it;
+        *y_out_it = interpol_irrad;
+        ++x_out_it;
+        ++y_out_it;
       }
-    w_length_in_it = wl_next_chunk_begin_it;
-    s_irrad_in_it = si_next_chunk_begin_it;
+    x_in_it = wl_next_chunk_begin_it;
+    y_in_it = si_next_chunk_begin_it;
     }
-    w_length_out_it = copy(w_length_in_it, w_length_in.end(), w_length_out_it);
-    s_irrad_out_it = copy(s_irrad_in_it, s_irrad_in.end(), s_irrad_out_it);
-    w_length_out.erase(w_length_out_it,  w_length_out.end());
-    s_irrad_out.erase(s_irrad_out_it,  s_irrad_out.end());
+    x_out_it = copy(x_in_it, x_in.end(), x_out_it);
+    y_out_it = copy(y_in_it, y_in.end(), y_out_it);
+    x_out.erase(x_out_it,  x_out.end());
+    y_out.erase(y_out_it,  y_out.end());
 
-    return DataFrame::create(_["w.length"] = w_length_out, _["s.irrad"] = s_irrad_out);
+    return DataFrame::create(_["x"] = x_out, _["y"] = y_out);
 }
