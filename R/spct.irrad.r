@@ -187,9 +187,9 @@ irrad.source_spct <-
         # calculate weighted spectral irradiance
         # the ifelse is needed to overrride NAs in spectral data for regions where mult == 0
         if (unit.out == "energy") {
-          irr <- with(spct, integrate_irradiance(w.length, ifelse(mult == 0, 0, s.e.irrad * mult)))
+          irr <- with(spct, integrate_xy(w.length, ifelse(mult == 0, 0, s.e.irrad * mult)))
         } else {
-          irr <- with(spct, integrate_irradiance(w.length, ifelse(mult == 0, 0, s.q.irrad * mult)))
+          irr <- with(spct, integrate_xy(w.length, ifelse(mult == 0, 0, s.q.irrad * mult)))
         }
         irrad[i] <- irr
       }

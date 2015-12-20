@@ -20,7 +20,7 @@ integrate_spct <- function(spct) {
   integrals <- NULL
   for (data.col in names.data) {
     integrals <- c(integrals,
-                   integrate_irradiance(spct[["w.length"]],
+                   integrate_xy(spct[["w.length"]],
                                         spct[[eval(data.col)]]))
   }
   names(integrals) <- gsub("^s.", x = names.data, replacement = "")

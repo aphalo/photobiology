@@ -31,7 +31,7 @@ ByteCompile: true
 NeedsCompilation: yes
 Encoding: UTF-8
 LinkingTo: Rcpp
-URL: http://www.r4photobiology.info/,
+URL: http://www.r4photobiology.info,
     https://bitbucket.org/aphalo/photobiology
 BugReports: https://bitbucket.org/aphalo/photobiology
 Roxygen: list(wrap = FALSE)

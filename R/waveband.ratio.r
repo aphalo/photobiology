@@ -103,9 +103,9 @@ waveband_ratio <-
     if (use.hinges) {
       merged.hinges <- c(w.band.denom$hinges, w.band.num$hinges)
       if (length(merged.hinges) > 0){
-        new.data <- insert_hinges(w.length, s.irrad, merged.hinges)
-        w.length <- new.data$w.length
-        s.irrad <- new.data$s.irrad
+        new.data <- insert_hinges(x = w.length, y = s.irrad, merged.hinges)
+        w.length <- new.data$x
+        s.irrad <- new.data$y
       }
     }
     # calculate the multipliers
@@ -117,8 +117,8 @@ waveband_ratio <-
                                    use.cached.mult=use.cached.mult)
 
     # calculate weighted spectral irradiance
-    irrad.num <- integrate_irradiance(w.length, s.irrad * mult.num)
-    irrad.denom <- integrate_irradiance(w.length, s.irrad * mult.denom)
+    irrad.num <- integrate_xy(w.length, s.irrad * mult.num)
+    irrad.denom <- integrate_xy(w.length, s.irrad * mult.denom)
 
     return(irrad.num / irrad.denom)
   }

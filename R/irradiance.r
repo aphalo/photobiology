@@ -60,7 +60,7 @@ irradiance <-
     # if the waveband is undefined then use all data
     if (is.null(w.band)){
 #      w.band <- new_waveband(min(w.length), max(w.length))
-      w.band <- new_waveband(min(w.length), max(w.length) + 0.001)
+      w.band <- new_waveband(min(w.length), max(w.length) + 1e-12)
       # we need to add a small number as the test is "<"
       # this affects signifcantly the result only when no hinges are used
     }
@@ -92,9 +92,9 @@ irradiance <-
         }
       }
       if (!is.null(all.hinges)) {
-        new.data <- insert_hinges(w.length, s.irrad, all.hinges)
-        w.length <- new.data$w.length
-        s.irrad <- new.data$s.irrad
+        new.data <- insert_hinges(x = w.length, y = s.irrad, all.hinges)
+        w.length <- new.data$x
+        s.irrad <- new.data$y
       }
     }
     wb_name <- names(w.band)
@@ -111,7 +111,7 @@ irradiance <-
       mult <- calc_multipliers(w.length=w.length, w.band=wb, unit.out=unit.out,
                                unit.in=unit.in, use.cached.mult=use.cached.mult)
       # calculate weighted spectral irradiance
-      irr <- integrate_irradiance(w.length, s.irrad * mult)
+      irr <- integrate_xy(w.length, s.irrad * mult)
       irrad[i] <- irr
     }
     names(irrad) <- wb_name

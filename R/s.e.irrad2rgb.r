@@ -63,11 +63,11 @@ if (!single_wl) {
     return("black")
   }
   sens$s.e.irrad <- interpolate_spectrum(w.length, s.e.irrad, sens$w.length, fill=0.0)
-  sens$s.e.irrad.norm <- with(sens, s.e.irrad / integrate_irradiance(w.length, s.e.irrad))
+  sens$s.e.irrad.norm <- with(sens, s.e.irrad / integrate_xy(w.length, s.e.irrad))
 
-  X <- with(sens, integrate_irradiance(w.length, s.e.irrad.norm * x))
-  Y <- with(sens, integrate_irradiance(w.length, s.e.irrad.norm * y))
-  Z <- with(sens, integrate_irradiance(w.length, s.e.irrad.norm * z))
+  X <- with(sens, integrate_xy(w.length, s.e.irrad.norm * x))
+  Y <- with(sens, integrate_xy(w.length, s.e.irrad.norm * y))
+  Z <- with(sens, integrate_xy(w.length, s.e.irrad.norm * z))
 } else {
   X <- approx(sens$w.length, sens$x, w.length)$y
   Y <- approx(sens$w.length, sens$y, w.length)$y

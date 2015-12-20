@@ -79,10 +79,10 @@ calc_source_output <- function(w.length.out,
     } else if (scaled == "area") {
       s.irrad.na.sub <- out.data$s.e.irrad
       s.irrad.na.sub[is.na(s.irrad.na.sub)] <- 0.0
-      e.div <- integrate_irradiance(w.length.out, s.irrad.na.sub)
+      e.div <- integrate_xy(w.length.out, s.irrad.na.sub)
       s.irrad.na.sub <- out.data$s.q.irrad
       s.irrad.na.sub[is.na(s.irrad.na.sub)] <- 0.0
-      q.div <- integrate_irradiance(w.length.out, s.irrad.na.sub)
+      q.div <- integrate_xy(w.length.out, s.irrad.na.sub)
     } else {
       warning("Ignoring unsupported scaled argument: ", scaled)
       e.div <- q.div <- 1.0

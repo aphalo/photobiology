@@ -145,7 +145,7 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
     names.spct <- paste("spct", 1:length(l), sep = "_")
   }
   if (add.idfactor) {
-    ans[[idfactor]] <- factor(rep.int(names.spct, sapply(l, FUN = nrow)),
+    ans[[idfactor]] <- factor(rep(names.spct, times = sapply(l, FUN = nrow)),
                                 levels = names.spct)
   }
 
@@ -179,14 +179,14 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
       if (length(unique(bswfs.input)) > 1L) {
         add.bswf <- TRUE
         bswf.used <- "multiple"
-        ans[["BSWF"]] <- factor(rep.int(bswfs.input, sapply(l, FUN = nrow)), levels = bswfs.input)
+        ans[["BSWF"]] <- factor(rep(bswfs.input, times = sapply(l, FUN = nrow)), levels = bswfs.input)
       } else {
         add.bswf <- FALSE
         bswf.used <- bswfs.input[1]
       }
     } else {
       add.bswf <- FALSE
-      bswf.used <- rep("none", length(l))
+      bswf.used <- rep("none", times = length(l))
     }
     setSourceSpct(ans, time.unit = time.unit[1], bswf.used = bswf.used, multiple.wl = mltpl.wl)
     if (photon.based.input) {

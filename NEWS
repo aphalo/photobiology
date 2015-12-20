@@ -7,6 +7,11 @@ classes. Add test cases for smooth_spct().
 Add more examples to documentation by moving them from the User Guide to
 help pages.
 
+photobiology 0.9.1
+==================
+
+Rename some "low level" functions and their formal parameters.
+
 photobiology 0.9.0
 ==================
 
