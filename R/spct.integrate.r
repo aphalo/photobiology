@@ -15,15 +15,15 @@
 #'
 integrate_spct <- function(spct) {
   names.spct <- names(spct)
-  names.data <- names.spct[names.spct != "w.length"]
+  data.cols <- names.spct[names.spct != "w.length"]
   comment.spct <- comment(spct)
   integrals <- NULL
-  for (data.col in names.data) {
+  for (data.col in data.cols) {
     integrals <- c(integrals,
                    integrate_xy(spct[["w.length"]],
                                         spct[[eval(data.col)]]))
   }
-  names(integrals) <- gsub("^s.", x = names.data, replacement = "")
+  names(integrals) <- gsub("^s.", x = data.cols, replacement = "")
   comment(integrals) <- comment.spct
   return(integrals)
 }
@@ -86,8 +86,55 @@ interpolate_spct <- function(spct,
                              fill = NA,
                              length.out = NULL) {
   stopifnot(is.any_spct(spct))
-  if (!is.null(length.out) && (is.na(length.out) || length.out < 1L) ) {
-    return(spct[NA])
+  if (any(is.na(w.length.out))) {
+    warning("NAs omited from 'w.length.out'.")
+    w.length.out <- na.omit(w.length.out)
+  }
+  if (is.null(fill)) {
+    if (!is.null(w.length.out)) {
+      w.length.out <-
+        unique(sort(c(ifelse(min(spct) > min(w.length.out), min(spct), min(w.length.out)),
+                      w.length.out,
+                      ifelse(max(spct) < max(w.length.out), max(spct), max(w.length.out)))))
+      w.length.out <- w.length.out[w.length.out >= min(spct) & w.length.out <= max(spct)]
+      fill <- NA_real_
+    }
+  } else if (is.na(fill)) {
+    fill <- NA_real_
+  }
+  names.spct <- names(spct)
+  numeric.cols <- names.spct[sapply(spct[ ,names.spct], is.numeric)]
+  other.cols <- setdiff(names.spct, numeric.cols)
+  data.cols <- setdiff(numeric.cols, "w.length")
+  if (nrow(spct) == 0) {
+    new.spct <- dplyr::data_frame(w.length = w.length.out)
+    new.spct[ , data.cols] <- fill
+  }
+  if (!is.null(length.out)) {
+    if (!is.numeric(length.out) ||
+        length(length.out) == 0 ||
+        is.na(length.out) ||
+        length.out == 0) {
+      return(spct[FALSE, numeric.cols]) # same columns as in other cases
+    } else{
+      length.out <- round(length.out, 0)
+    }
+  }
+  if (is.null(w.length.out)) {
+    if (is.null(length.out)) {
+      return(spct[ , numeric.cols]) # same columns as in other cases
+    } else {
+      w.length.out <- range(spct)
+    }
+  }
+  if (length(w.length.out) == 0) {
+    return(spct[FALSE, numeric.cols]) # same columns as in other cases
+  }
+  if (length(w.length.out) == 0) {
+    # we can get here only if all(is.na(w.length.out))
+    out.spct <- spct[1, numeric.cols]
+    out.spct[ , ] <- NA_real_
+    return(out.spct)
   }
   if (length(w.length.out) > 1L) {
     step.ratio <- stepsize(spct)[1] / max(diff(w.length.out), na.rm = TRUE)
@@ -116,8 +163,6 @@ interpolate_spct <- function(spct,
     # nothing to do
     return(spct)
   }
-  names.spct <- names(spct)
-  names.data <- setdiff(names.spct, "w.length")
   max.spct <- max(spct)
   min.spct <- min(spct)
   max.wl.out <- max(w.length.out)
@@ -133,7 +178,7 @@ interpolate_spct <- function(spct,
   w.length.out <- unique(sort(w.length.out))
   new.spct <- dplyr::data_frame(w.length = w.length.out)
 
-  for (data.col in names.data) {
+  for (data.col in data.cols) {
     temp.values <-  with(spct, get(data.col))
     if (is.numeric(temp.values)) {
       new.values <- interpolate_spectrum(spct$w.length,
@@ -163,9 +208,19 @@ interpolate_spct <- function(spct,
     )
   } else if (class_spct[1] == "chroma_spct") {
     setChromaSpct(new.spct)
+  } else if (class_spct[1] == "raw_spct") {
+    setRawSpct(new.spct)
+    setInstrDesc(new.spct, getInstrDesc(spct))
+    setInstrSettings(new.spct, getInstrSettings(spct))
+  } else if (class_spct[1] == "cps_spct") {
+    setCpsSpct(new.spct)
+    setInstrDesc(new.spct, getInstrDesc(spct))
+    setInstrSettings(new.spct, getInstrSettings(spct))
   } else if (class_spct[1] == "generic_spct") {
     setGenericSpct(new.spct)
   }
+  setWhenMeasured(new.spct, getWhenMeasured(spct))
+  setWhereMeasured(new.spct, getWhereMeasured(spct))
   setNormalized(new.spct, getNormalized(spct))
   setScaled(new.spct, getScaled(spct))
   comment(new.spct) <- comment(spct)
@@ -237,8 +292,7 @@ interpolate_wl.default <- function(x,
                                    fill,
                                    length.out,
                                    ...) {
-  warning("'interpolate_wl' is not defined for objects of class ", class(x)[1])
-  x
+  stop("'interpolate_wl()' is not defined for objects of class '", class(x)[1], "'.")
 }
 
 #' @describeIn interpolate_wl  Interpolate wavelength in an object of class

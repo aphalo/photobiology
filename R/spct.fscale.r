@@ -19,7 +19,7 @@ fscale <- function(x, ...) UseMethod("fscale")
 #' @return a new object of the same class as \code{x}.
 #'
 fscale.default <- function(x, ...) {
-  warning("'fscale' is not defined for objects of class ", class(x)[1])
+  warning("'fscale()' is not defined for objects of class '", class(x)[1], "'.")
   return(x)
 }
 

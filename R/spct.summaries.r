@@ -276,20 +276,32 @@ print.summary_generic_spct <- function(x, ...) {
 #' "source_spct".
 #'
 #' @param x an object of class "source_spct"
+#' @param type character telling whether "CMF", "CC", or "both" should be returned.
 #' @param ... not used in current version
 #' @export
 #' @examples
 #' color(sun.spct)
 #'
-color.source_spct <- function(x, ...) {
-#  x.name <- as.character(substitute(x))
+color.source_spct <- function(x, type = "CMF", ...) {
+  if (length(x) == 0) {
+    return(character())
+  }
   x.name <- "source"
-  q2e(x, byref=TRUE)
-  color <- c(s_e_irrad2rgb(x[["w.length"]], x[["s.e.irrad"]],
-                           sens=photobiology::ciexyzCMF2.spct, color.name=paste(x.name, "CMF")),
-             s_e_irrad2rgb(x[["w.length"]], x[["s.e.irrad"]],
-                           sens=photobiology::ciexyzCC2.spct, color.name=paste(x.name, "CC")))
-  return(color)
+  q2e(x, byref = TRUE)
+  if (type %in% c("CMF", "CC")) {
+    s_e_irrad2rgb(x[["w.length"]], x[["s.e.irrad"]],
+                    sens = photobiology::ciexyzCMF2.spct, color.name = paste(x.name, type))
+  } else if (type == "both") {
+    c(s_e_irrad2rgb(x[["w.length"]], x[["s.e.irrad"]],
+                    sens = photobiology::ciexyzCMF2.spct, color.name = paste(x.name, "CMF")),
+      s_e_irrad2rgb(x[["w.length"]], x[["s.e.irrad"]],
+                    sens = photobiology::ciexyzCC2.spct, color.name = paste(x.name, "CC")))
+  } else {
+    warning("Color 'type' = ", type, " not implemented for 'source_spct'.")
+    color.out <- NA_character_
+    names(color.out) <- paste(x.name, type)
+    color.out
+  }
 }
 
 # w.length summaries ------------------------------------------------------
@@ -323,7 +335,7 @@ range.generic_spct <- function(..., na.rm = FALSE) {
 #'
 max.generic_spct <- function(..., na.rm=FALSE) {
   x <- list(...)[[1]]
-  max(x[["w.length"]], na.rm=na.rm)
+  max(x[["w.length"]], na.rm = na.rm)
 }
 
 #' Minimum wavelength
@@ -361,10 +373,17 @@ stepsize <- function(x, ...) UseMethod("stepsize")
 #' @describeIn stepsize Default function usable on numeric vectors.
 #' @export
 stepsize.default <- function(x, ...) {
+  warning("'stepsize()' not implemented for class '", class(x), "'.")
+  c(NA_real_, NA_real_)
+}
+
+#' @describeIn stepsize Method for numeric vectors.
+#' @export
+stepsize.numeric <- function(x, ...) {
   if (length(x) > 1) {
     range(diff(x))
   } else {
-    c(NA, NA)
+    c(NA_real_, NA_real_)
   }
 }
 
@@ -380,7 +399,7 @@ stepsize.generic_spct <- function(x, ...) {
   if (length(wl) > 1) {
     range(diff(wl))
   } else {
-    c(NA, NA)
+    c(NA_real_, NA_real_)
   }
 }
 

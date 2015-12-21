@@ -89,7 +89,22 @@ midpoint <- function(x, ...) UseMethod("midpoint")
 #' @family wavelength summaries
 #'
 midpoint.default <- function(x, ...) {
-  return(min(x) + (max(x) - min(x)) / 2)
+  warning("'midpoint()' not implemented for class '", class(x), "'.")
+  NA_real_
+}
+
+#' @describeIn midpoint Default method for generic function
+#'
+#' @export
+#'
+#' @family wavelength summaries
+#'
+midpoint.numeric <- function(x, ...) {
+  if (length(x) > 0) {
+    min(x) + (max(x) - min(x)) / 2
+  } else {
+    NA_real_
+  }
 }
 
 #' @describeIn midpoint Wavelength at center of a "waveband" object.
@@ -157,6 +172,14 @@ spread.waveband <- function(x, ...) {
 #' @param ... not used in current version
 #' @export color
 #'
+#' @examples
+#' wavelengths <- c(300, 420, 500, 600, NA) # nanometres
+#' color(wavelengths)
+#' color(waveband(c(300,400)))
+#' color(list(blue = waveband(c(400,480)), red = waveband(c(600,700))))
+#' color(numeric())
+#' color(NA_real_)
+#'
 color <- function(x, ...) UseMethod("color")
 
 #' @describeIn color Default method (returns always "black").
@@ -164,7 +187,12 @@ color <- function(x, ...) UseMethod("color")
 #' @export
 #'
 color.default <- function(x, ...) {
-  return(rep("#000000", length(x)))
+  if (length(x) == 0) {
+    return(character())
+  }
+  ifelse(is.na(x),
+         NA_character_,
+         rep("#000000", length(x)))
 }
 
 #' @describeIn color Method that returns Color definitions corresponding to
@@ -175,17 +203,25 @@ color.default <- function(x, ...) {
 #' @export
 #'
 color.numeric <- function(x, type="CMF", ...) {
-  if (type=="CMF") {
-    color.out <- w_length2rgb(x, sens=photobiology::ciexyzCMF2.spct, color.name=NULL)
-  } else if (type=="CC") {
-    color.out <- w_length2rgb(x, sens=photobiology::ciexyzCC2.spct, color.name=NULL)
-  } else {
-    color.our <- rep(NA, length(x))
+  if (length(x) == 0) {
+    return(character())
   }
-  if (!is.null(names(x))){
-    names(color.out) <- paste(names(x), type, sep=".")
+  color.out <- rep(NA_character_, length(x))
+  if (!all(is.na(x))) {
+    if (type == "CMF") {
+      color.out[!is.na(x)] <-
+        w_length2rgb(x[!is.na(x)], sens = photobiology::ciexyzCMF2.spct, color.name = NULL)
+    } else if (type == "CC") {
+      color.out[!is.na(x)] <-
+        w_length2rgb(x[!is.na(x)], sens = photobiology::ciexyzCC2.spct, color.name = NULL)
+    } else {
+      warning("Color 'type' = ", type, " not implemented for 'numeric'.")
+    }
   }
-  return(color.out)
+  if (!is.null(names(x))) {
+    names(color.out) <- paste(names(x), type, sep = ".")
+  }
+  color.out
 }
 
 #' @describeIn color Method that returns Color of elements in a list.
@@ -199,12 +235,12 @@ color.numeric <- function(x, type="CMF", ...) {
 #' @export
 #'
 color.list <- function(x, short.names=TRUE, type="CMF", ...) {
-  color.out <- numeric(0)
+  color.out <- character(0)
   for (xi in x) {
     color.out <- c(color.out, color(xi, short.names = short.names, type = type, ...))
   }
   if (!is.null(names(x))) {
-    names(color.out) <- paste(names(x), type, sep=".")
+    names(color.out) <- paste(names(x), type, sep = ".")
   }
   return(color.out)
 }
@@ -213,24 +249,24 @@ color.list <- function(x, short.names=TRUE, type="CMF", ...) {
 #'
 #' @export
 #'
-color.waveband <- function(x, short.names=TRUE, type="both", ...) {
+color.waveband <- function(x, short.names = TRUE, type = "CMF", ...) {
   idx <- ifelse(!short.names, "name", "label")
   name <- labels(x)[[idx]]
   if (type == "both") {
     color <- list(CMF = w_length_range2rgb(range(x),
-                                           sens=photobiology::ciexyzCMF2.spct,
-                                           color.name=paste(name, "CMF", sep=".")),
+                                           sens = photobiology::ciexyzCMF2.spct,
+                                           color.name = paste(name, "CMF", sep = ".")),
                   CC  = w_length_range2rgb(range(x),
-                                           sens=photobiology::ciexyzCC2.spct,
-                                           color.name=paste(name, "CC", sep=".")))
+                                           sens = photobiology::ciexyzCC2.spct,
+                                           color.name = paste(name, "CC", sep = ".")))
   } else if (type == "CMF") {
     color <- w_length_range2rgb(range(x),
-                                sens=photobiology::ciexyzCMF2.spct,
-                                color.name=paste(name, "CMF", sep="."))
+                                sens = photobiology::ciexyzCMF2.spct,
+                                color.name = paste(name, "CMF", sep = "."))
   } else if (type == "CC") {
     color <- w_length_range2rgb(range(x),
-                                sens=photobiology::ciexyzCC2.spct,
-                                color.name=paste(name, "CC", sep="."))
+                                sens = photobiology::ciexyzCC2.spct,
+                                color.name = paste(name, "CC", sep = "."))
   } else {
     color <- NA
   }
@@ -256,7 +292,8 @@ normalization <- function(x) UseMethod("normalization")
 #' @export
 #'
 normalization.default <- function(x) {
-  return(NA)
+  warning("'normalization()' not implemented for class '", class(x), "'.")
+  return(NA_real_)
 }
 
 #' @describeIn normalization Normalization of a \code{\link{waveband}} object.
@@ -264,7 +301,7 @@ normalization.default <- function(x) {
 #' @export
 #'
 normalization.waveband <- function(x) {
-  return(ifelse(is.null(x$norm), NA, x$norm))
+  return(ifelse(is.null(x$norm), NA_real_, x$norm))
 }
 
 # is_effective -----------------------------------------------------------
@@ -289,7 +326,8 @@ is_effective <- function(x) UseMethod("is_effective")
 #' @export
 #'
 is_effective.default <- function(x) {
-  NA
+  warning("'is_effective()' not implemented for class '", class(x), "'.")
+  NA_integer_
 }
 
 #' @describeIn is_effective Is a \code{waveband} object defining a method for

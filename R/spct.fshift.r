@@ -19,7 +19,7 @@ fshift <- function(x, ...) UseMethod("fshift")
 #' @return a new object of the same class as \code{x}.
 #'
 fshift.default <- function(x, ...) {
-  warning("'fshift' is not defined for objects of class ", class(x)[1])
+  warning("'fshift()' is not defined for objects of class '", class(x)[1], "'.")
   return(x)
 }
 

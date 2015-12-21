@@ -12,6 +12,20 @@ photobiology 0.9.1
 
 Rename some "low level" functions and their formal parameters.
 
+Rename the default methods for midpoint() and stepsize() as methods for
+numeric and add a new default method that handles unsuported classes more
+gracefully.
+
+Revise color() method to work correctly in borderline cases. Returned value
+is allways of class character (character() or NA_character_ in some cases).
+The default for the formal parameter 'type' is now consistently "CMF", instead
+of in a few cases "both".
+
+Revise interpolate_spct() (interpolate_wl.generic_spct()) to work corrently
+in borderline cases and to handle gracefully numeric(). Also returned value
+always has the same class and columns, irrespective of the values of
+other arguments.
+
 photobiology 0.9.0
 ==================
 

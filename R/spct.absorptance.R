@@ -35,7 +35,7 @@ absorptance <- function(spct, w.band, quantity, wb.trim, use.hinges, ...) UseMet
 #'
 absorptance.default <- function(spct, w.band, quantity, wb.trim, use.hinges, ...) {
   warning("'absorptance' is not defined for objects of class ", class(spct)[1])
-  return(NA)
+  return(NA_real_)
 }
 
 #' @describeIn absorptance Specialization for object spectra
@@ -45,8 +45,8 @@ absorptance.default <- function(spct, w.band, quantity, wb.trim, use.hinges, ...
 absorptance.object_spct <-
   function(spct, w.band=NULL,
            quantity="average",
-           wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
-           use.hinges=getOption("photobiology.use.hinges", default=NULL), ...)  {
+           wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
+           use.hinges=getOption("photobiology.use.hinges", default = NULL), ...)  {
     absorptance_spct(spct = spct, w.band = w.band, quantity = quantity,
                      wb.trim = wb.trim, use.hinges = use.hinges)
   }

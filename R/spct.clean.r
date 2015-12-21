@@ -21,7 +21,7 @@ clean <- function(x, range, range.s.data, fill, ...) UseMethod("clean")
 #' @export
 #'
 clean.default <- function(x, range, range.s.data, fill, ...) {
-  warning("'clean' is not defined for objects of class ", class(x)[1])
+  warning("'clean()' is not defined for objects of class '", class(x)[1], "'.")
   return(x)
 }
 
