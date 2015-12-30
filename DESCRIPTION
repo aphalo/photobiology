@@ -2,7 +2,7 @@ Package: photobiology
 Type: Package
 Title: Base Photobiological Calculations
 Version: 0.9.1
-Date: 2015-12-21
+Date: 2015-12-30
 Author: Pedro J. Aphalo <pedro.aphalo@helsinki.fi>
 Maintainer: Pedro J. Aphalo <pedro.aphalo@helsinki.fi>
 Description: Calculation of effective (weighted) and unweighted

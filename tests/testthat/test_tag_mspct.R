@@ -16,8 +16,8 @@ test_that("source_mspct", {
   tagged.mspct <- tag(my.mspct)
 
   expect_equal(length(tagged.mspct), length(my.mspct))
-  expect_equal(names(tagged.mspct[[1]]), c("w.length", "s.e.irrad", "wl.color"))
-  expect_equal(names(tagged.mspct[[5]]), c("w.length", "s.e.irrad", "wl.color"))
+  expect_equal(names(tagged.mspct[[1]]), c("w.length", "s.e.irrad", "wl.color", "wb.color", "wb.f"))
+  expect_equal(names(tagged.mspct[[5]]), c("w.length", "s.e.irrad", "wl.color", "wb.color", "wb.f"))
   expect_equal(min(tagged.mspct[[1]]), 400)
   expect_equal(max(tagged.mspct[[1]]), 410)
   expect_equal(min(tagged.mspct[[5]]), 400)
@@ -33,8 +33,8 @@ test_that("source_mspct", {
 
   tagged.mspct <- tag(my.mspct, w.band = waveband(c(402:410)))
 
-  expect_equal(names(tagged.mspct[[1]]), c("w.length", "s.e.irrad", "wl.color", "wb.f"))
-  expect_equal(names(tagged.mspct[[5]]), c("w.length", "s.e.irrad", "wl.color", "wb.f"))
+  expect_equal(names(tagged.mspct[[1]]), c("w.length", "s.e.irrad", "wl.color", "wb.color", "wb.f"))
+  expect_equal(names(tagged.mspct[[5]]), c("w.length", "s.e.irrad", "wl.color", "wb.color", "wb.f"))
   expect_equal(min(tagged.mspct[[1]]), 400)
   expect_equal(max(tagged.mspct[[1]]), 410)
   expect_equal(min(tagged.mspct[[5]]), 400)
@@ -48,10 +48,25 @@ test_that("source_mspct", {
   expect_equal(min(tagged.mspct[[5]][["s.e.irrad"]]), 5)
   expect_equal(max(tagged.mspct[[5]][["s.e.irrad"]]), 5)
 
+  untagged.mspct <- untag(tagged.mspct)
+  expect_false(is_tagged(untagged.mspct[[1]]))
+  expect_true(is_tagged(tagged.mspct[[1]]))
+  expect_false(is_tagged(untagged.mspct[[5]]))
+  expect_true(is_tagged(tagged.mspct[[5]]))
+#  expect_equivalent(untagged.mspct, my.mspct)
+#  expect_equivalent(untagged.mspct[[1]], my.mspct[[1]])
+  untag(tagged.mspct, byref = TRUE)
+  expect_equal(tagged.mspct, untagged.mspct)
+#  expect_equivalent(tagged.mspct, my.mspct)
+  expect_false(is_tagged(untagged.mspct[[1]]))
+  expect_false(is_tagged(tagged.mspct[[1]]))
+  expect_false(is_tagged(untagged.mspct[[5]]))
+  expect_false(is_tagged(tagged.mspct[[5]]))
+
   tag(my.mspct, w.band = waveband(c(402:410)), byref = TRUE)
 
-  expect_equal(names(my.mspct[[1]]), c("w.length", "s.e.irrad", "wl.color", "wb.f"))
-  expect_equal(names(my.mspct[[5]]), c("w.length", "s.e.irrad", "wl.color", "wb.f"))
+  expect_equal(names(my.mspct[[1]]), c("w.length", "s.e.irrad", "wl.color", "wb.color", "wb.f"))
+  expect_equal(names(my.mspct[[5]]), c("w.length", "s.e.irrad", "wl.color", "wb.color", "wb.f"))
   expect_equal(min(my.mspct[[1]]), 400)
   expect_equal(max(my.mspct[[1]]), 410)
   expect_equal(min(my.mspct[[5]]), 400)
@@ -64,19 +79,6 @@ test_that("source_mspct", {
   expect_equal(max(my.mspct[[1]][["s.e.irrad"]]), 1)
   expect_equal(min(my.mspct[[5]][["s.e.irrad"]]), 5)
   expect_equal(max(my.mspct[[5]][["s.e.irrad"]]), 5)
-
-  untagged.mspct <- untag(tagged.mspct)
-
-#  expect_equal(untagged.mspct, my.mspct)
-
-#  expect_equal(untagged.mspct[[1]], my.mspct[[1]])
-
-#  expect_true(identical(untagged.mspct[[1]], my.mspct[[1]]))
-
-  untag(tagged.mspct, byref = TRUE)
-
-#  expect_equal(tagged.mspct, my.mspct)
-  expect_equal(tagged.mspct, untagged.mspct)
 
   })
 

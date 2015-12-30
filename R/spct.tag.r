@@ -54,7 +54,7 @@ tag.default <- function(x, ...) {
 #' tag(sun.spct, list(A = waveband(c(300,3005))))
 #'
 tag.generic_spct <- function(x,
-                             w.band = NA,
+                             w.band = NULL,
                              wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
                              use.hinges = TRUE,
                              short.names = TRUE,
@@ -64,60 +64,49 @@ tag.generic_spct <- function(x,
     warning("Overwriting old tags in spectrum")
     untag(x, byref = TRUE)
   }
- # we add a waveband for the whole spectrum
+  # we add a waveband for the whole spectrum
   if (is.null(w.band)) {
-     return(x)
+    w.band <- waveband(x)
   }
-  if (!is.null(w.band) && is.na(w.band[1])) {
-    x[["wl.color"]] <- w_length2rgb(x[["w.length"]])
-    tag.data <- list(wl.color = TRUE)
-    attr(x, "spct.tags") <- tag.data
+  # If the waveband is a missing value we add missing values as tags
+  if (all(is.na(w.band))) {
+    x$wl.color <- NA_character_
+    x$wb.color <- NA_character_
+    x$wb.f <- factor(NA_character_)
     return(x)
   }
-  if (!is.null(w.band) && is(w.band, "waveband")) {
-    # if the argument is a single w.band, we enclose it in a list
-    # so that the for loop works as expected.This is a bit of a
-    # cludge but lets us avoid treating it as a special case
+  if (is.waveband(w.band)) {
+    # if the argument is a single w.band, we enclose it in a list so that the
+    # for loop works as expected. This lets us treat as any other case.
     w.band <- list(w.band)
   }
   # we delete or trim the wavebands that are not fully within the
   # spectral data wavelngth range
   w.band <- trim_waveband(w.band = w.band, range = x, trim = wb.trim)
-  # we check if the list elements are named, if not we set a flag
-  # and an empty vector that will be later filled in with data from
-  # the waveband definitions.
-  wbs.number <- length(w.band) # number of wavebands in list
+  # we check if the list members are named, if not we use the names of the
+  # wavbands
+  wbs.number <- length(w.band) # number of wavebands
   wbs.name <- names(w.band) # their names in the list
   if (is.null(wbs.name)) {
     wbs.name <- character(wbs.number)
   }
-  # if the w.band includes 'hinges' we insert them
-  # choose whether to use hinges or not
-  # if the user has specified its value, we leave it alone
-  # but if it was not requested, we decide whether to use
-  # it or not based of the wavelength resolution of the
-  # spectrum. This will produce small errors for high
-  # spectral resolution data, and speed up the calculations
-  # a lot in such cases
+  # The default is calculated based of the stepsize
   if (is.null(use.hinges)) {
     use.hinges <- auto_hinges(x)
   }
   # we collect all hinges and insert them in one go
-  # this may alter a little the returned values
-  # but should be faster
   if (use.hinges) {
-    all.hinges <- NULL
+    all.hinges <- numeric()
     for (wb in w.band) {
-      if (!is.null(wb$hinges) & length(wb$hinges) > 0) {
-        all.hinges <- c(all.hinges, wb[["hinges"]])
+      if (length(wb$hinges) > 0) {
+        all.hinges <- c(all.hinges, wb$hinges)
       }
     }
-    if (!is.null(all.hinges)) {
-      x <- insert_spct_hinges(x, all.hinges)
-    }
+    x <- insert_spct_hinges(x, all.hinges)
   }
 
-  # We iterate through the list of wavebands adding the tags
+  # We iterate through the list of wavebands collecting their names, colors and
+  # boundaries
   wbs.rgb <- character(wbs.number)
   wbs.wl.low <- wbs.wl.high <- numeric(wbs.number)
   i <- 0L
@@ -137,15 +126,19 @@ tag.generic_spct <- function(x,
     wbs.wl.high[i] <- max(wb)
     wbs.rgb[i] <- color(wb)[1]
   }
+  # We add the waveband-independent tags to the spectrum
+  x[["wl.color"]] <- w_length2rgb(x[["w.length"]])
+  # We add the waveband-dependent tags to the spectrum
   n <- i
-  x[["wl.color"]] <- NA
+  x[["wb.color"]] <- NA
   x[["wb.f"]] <- NA
   for (i in 1L:n) {
     selector <- x[["w.length"]] >= wbs.wl.low[i] & x[["w.length"]] < wbs.wl.high[i]
     x[selector, "wb.f"] <- wbs.name[i]
+    x[selector, "wb.color"] <- wbs.rgb[i]
   }
-  x[["wl.color"]] <-  w_length2rgb(x[["w.length"]])
   x[["wb.f"]] <- factor(x[["wb.f"]], levels = wbs.name)
+  # We add an attribute with tagging data
   tag.data <- list(time.unit = getTimeUnit(x),
                    wb.key.name = "Bands",
                    wl.color = TRUE,
@@ -155,7 +148,7 @@ tag.generic_spct <- function(x,
                    wb.names = wbs.name[1:n],
                    wb.list = w.band)
   attr(x, "spct.tags") <- tag.data
-  # to work by reference we need to assign the new data frame to the old one
+  # to assign by reference we need to assign the new data frame to the old one
   if (byref & is.name(name)) {
     name <- as.character(name)
     assign(name, x, parent.frame(), inherits = TRUE)
@@ -223,11 +216,15 @@ wb2spct <- function(w.band) {
     w.length <- c(w.length, wb$hinges)
   }
   if (is.null(w.length) || length(w.length) < 2) {
-    new.spct <- dplyr::data_frame(w.length = numeric(0), s.e.irrad = numeric(0), s.q.irrad = numeric(0),
+    new.spct <- dplyr::data_frame(w.length = numeric(0),
+                                  counts = 0, cps = 0,
+                                  s.e.irrad = numeric(0), s.q.irrad = numeric(0),
                                   Tfr = numeric(0), Rfl = numeric(0), s.e.response = numeric(0))
   } else {
     w.length <- unique(sort(w.length))
-    new.spct <- dplyr::data_frame(w.length = w.length, s.e.irrad = 0, s.q.irrad = 0,
+    new.spct <- dplyr::data_frame(w.length = w.length,
+                                  counts = 0, cps = 0,
+                                  s.e.irrad = 0, s.q.irrad = 0,
                                   Tfr = 0, Rfl = 0, s.e.response = 0)
   }
   setGenericSpct(new.spct)
@@ -278,11 +275,13 @@ wb2tagged_spct <-
 #' @export
 #'
 #' @return A \code{generic.spectrum} object, with columns w.length, wl.low,
-#'   wl.hi, and wl.color. The w.length values are such that at the midppoint of
-#'   the wavebands, wl.low and wl.high give the boundaries of the wavebands, and
-#'   wl.color the color definition corresponding to the wavebands. Different
-#'   spectral data variables are set to zero and added making the returned value
-#'   compatible with classes derived from \code{generic_spct}.
+#'   wl.hi, wl.color, wb.color and wb.name. The w.length values are the
+#'   midppoint of the wavebands, wl.low and wl.high give the boundaries of the
+#'   wavebands, wl.color the color definition corresponding to the wavelength at
+#'   the center of the waveband and wb.color the color of the waveband as a
+#'   whole (assuming a flat energy irradiance spectrum). Different spectral data
+#'   variables are set to zero and added making the returned value compatible
+#'   with classes derived from \code{generic_spct}.
 #'
 #' @family tagging and related functions
 #'
@@ -316,8 +315,13 @@ wb2rect_spct <- function(w.band, short.names = TRUE) {
     wbs.rgb[i] <- color(wb)[1]
   }
   new.spct <- dplyr::data_frame(w.length = wbs.wl.mid,
-                                s.e.irrad = 0, s.q.irrad = 0, Tfr = 0, Rfl = 0, s.e.response = 0,
+                                counts = 0, cps = 0,
+                                s.e.irrad = 0, s.q.irrad = 0,
+                                Tfr = 0, Rfl = 0,
+                                s.e.response = 0,
                                 wl.color = w_length2rgb(wbs.wl.mid),
+                                wb.color = wbs.rgb,
+                                wb.name = wbs.name,
                                 wb.f = factor(wbs.name, levels = wbs.name),
                                 wl.high = wbs.wl.high, wl.low = wbs.wl.low,
                                 y = 0)
@@ -384,6 +388,7 @@ untag.generic_spct <- function(x,
     return(x)
   }
   x[["wl.color"]] <- NULL
+  x[["wb.color"]] <- NULL
   x[["wb.f"]] <- NULL
   tag.data <- NA
   attr(x, "spct.tags") <- tag.data
