@@ -7,6 +7,18 @@ classes. Add test cases for smooth_spct().
 Add more examples to documentation by moving them from the User Guide to
 help pages.
 
+photobiology 0.9.2
+==================
+
+Change tag.generic_spct() and wb2rect_spct() so that "wb.color" is also added
+as a column to make it easier to define new ggplot2 stats based on them.
+Make tagging compatible with raw_spct and cps_spct objects. Change
+behaviour of w.band = NULL as argument to using a single waveband covering the
+whole wavelength range of the spectral object, for consistency with other
+methods. In addition change behaviour so that the same columns are added
+independently of the value supplied as argument for "w.band", filling the
+unused columns with NAs when w.band = NA.
+
 photobiology 0.9.1
 ==================
 
@@ -25,15 +37,6 @@ Revise interpolate_spct() (interpolate_wl.generic_spct()) to work corrently
 in borderline cases and to handle gracefully numeric(). Also returned value
 always has the same class and columns, irrespective of the values of
 other arguments.
-
-Change tag.generic_spct() and wb2rect_spct() so that "wb.color" is also added
-as a column to make it easier to define new ggplot2 stats based on them.
-Make tagging compatible with raw_spct and cps_spct objects. Change
-behaviour of w.band = NULL as argument to using a single waveband covering the
-whole wavelength range of the spectral object, for consistency with other
-methods. In addition change behaviour so that the same columns are added
-independently of the value supplied as argument for "w.band", filling the
-unused columns with NAs when w.band = NA.
 
 photobiology 0.9.0
 ==================
