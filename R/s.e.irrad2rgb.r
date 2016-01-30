@@ -19,8 +19,9 @@
 #' @param color.name character string for naming the rgb color definition
 #' @param check logical indicating whether to check or not spectral data
 #'
-#' @return A color defined using \code{rgb()}. The numeric values of the RGB
-#'   components can be obtained using function \code{col2rgb()}.
+#' @return A color defined using \code{\link[grDevices]{rgb}}. The numeric
+#'   values of the RGB components can be obtained using function
+#'   \code{\link[grDevices]{col2rgb}}.
 #'
 #' @export
 #'
@@ -47,7 +48,7 @@ s_e_irrad2rgb <- function(w.length, s.e.irrad,
   high.limit <- max(sens$w.length)
   if (single_wl <- length(w.length) == 1) {
     if (w.length < low.limit || w.length > high.limit) {
-      return(rgb(0, 0, 0, names=color.name))
+      return(grDevices::rgb(0, 0, 0, names=color.name))
     } else {
       s.e.irrad = 1.0
     }
@@ -69,9 +70,9 @@ if (!single_wl) {
   Y <- with(sens, integrate_xy(w.length, s.e.irrad.norm * y))
   Z <- with(sens, integrate_xy(w.length, s.e.irrad.norm * z))
 } else {
-  X <- approx(sens$w.length, sens$x, w.length)$y
-  Y <- approx(sens$w.length, sens$y, w.length)$y
-  Z <- approx(sens$w.length, sens$z, w.length)$y
+  X <- stats::approx(sens$w.length, sens$x, w.length)$y
+  Y <- stats::approx(sens$w.length, sens$y, w.length)$y
+  Z <- stats::approx(sens$w.length, sens$z, w.length)$y
 }
 
 XYZ <- rbind(X, Y, Z)
@@ -94,7 +95,7 @@ if (anyNA(rgb1[ , 1])) {
   return("black")
 }
 
-rgb.color <- rgb(red=rgb1[1,1], green=rgb1[2,1], blue=rgb1[3,1], names=color.name)
+rgb.color <- grDevices::rgb(red=rgb1[1,1], green=rgb1[2,1], blue=rgb1[3,1], names=color.name)
 
 rgb.color
 

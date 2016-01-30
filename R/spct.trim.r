@@ -175,7 +175,7 @@ trim_spct <- function(spct,
     name <- as.character(name)
     assign(name, spct, parent.frame(), inherits = TRUE)
   }
-  check(spct)
+  check_spct(spct)
   spct
 }
 

@@ -6,8 +6,6 @@
 #' @details \itemize{ \item w.length (nm). \item Tfr
 #' (0..1)  }
 #'
-#' @seealso \code{\link[photobiologyFilters]{photobiologyFilters-package}}
-#'
 #' @docType data
 #' @keywords datasets
 #' @format A \code{filter_spct} object with 611 rows and 2 variables
@@ -21,8 +19,6 @@ NULL
 #'
 #' @details \itemize{ \item w.length (nm). \item Tfr
 #' (0..1)  }
-#'
-#' @seealso \code{\link[photobiologyFilters]{photobiologyFilters-package}}
 #'
 #' @docType data
 #' @keywords datasets

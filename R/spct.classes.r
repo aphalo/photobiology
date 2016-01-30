@@ -30,24 +30,24 @@ spct_classes <- function() {
 #' @param ... additional param possible in derived methods
 #' @export
 #' @examples
-#' check(sun.spct)
+#' check_spct(sun.spct)
 #'
 #' @family data validity check functions
 #'
-check <- function(x, byref, strict.range, ...) UseMethod("check")
+check_spct <- function(x, byref, strict.range, ...) UseMethod("check_spct")
 
-#' @describeIn check Default for generic function.
+#' @describeIn check_spct Default for generic function.
 #' @export
-check.default <- function(x, byref=FALSE, strict.range = NA, ...) {
+check_spct.default <- function(x, byref=FALSE, strict.range = NA, ...) {
   return(x)
 }
 
-#' @describeIn check Specialization for generic_spct.
+#' @describeIn check_spct Specialization for generic_spct.
 #'
 #' @param multiple.wl numeric Maximum number of repeated w.length entries with same value.
 #'
 #' @export
-check.generic_spct <-
+check_spct.generic_spct <-
   function(x,
            byref = TRUE,
            strict.range = NA,
@@ -99,15 +99,15 @@ check.generic_spct <-
   x
 }
 
-#' @describeIn check Specialization for cps_spct.
+#' @describeIn check_spct Specialization for cps_spct.
 #' @export
-check.raw_spct <- function(x,
+check_spct.raw_spct <- function(x,
                            byref=TRUE,
                            strict.range = getOption("photobiology.strict.range", default = FALSE),
                            multiple.wl = 1L,
                            ...) {
 
-  x <- check.generic_spct(x, multiple.wl = multiple.wl)
+  x <- check_spct.generic_spct(x, multiple.wl = multiple.wl)
 
   if (exists("counts", x, mode = "numeric", inherits=FALSE)) {
     return(x)
@@ -118,9 +118,9 @@ check.raw_spct <- function(x,
   }
 }
 
-#' @describeIn check Specialization for cps_spct.
+#' @describeIn check_spct Specialization for cps_spct.
 #' @export
-check.cps_spct <- function(x,
+check_spct.cps_spct <- function(x,
                            byref=TRUE,
                            strict.range = getOption("photobiology.strict.range", default = FALSE),
                            multiple.wl = getMultipleWl(x),
@@ -138,7 +138,7 @@ check.cps_spct <- function(x,
     }
   }
 
-  x <- check.generic_spct(x, multiple.wl = multiple.wl)
+  x <- check_spct.generic_spct(x, multiple.wl = multiple.wl)
 
   if (exists("cps", x, mode = "numeric", inherits=FALSE)) {
     range_check(x)
@@ -155,9 +155,9 @@ check.cps_spct <- function(x,
   }
 }
 
-#' @describeIn check Specialization for filter_spct.
+#' @describeIn check_spct Specialization for filter_spct.
 #' @export
-check.filter_spct <-
+check_spct.filter_spct <-
   function(x,
            byref = TRUE,
            strict.range = getOption("photobiology.strict.range", default = FALSE),
@@ -181,7 +181,7 @@ check.filter_spct <-
     }
   }
 
-  x <- check.generic_spct(x, multiple.wl = multiple.wl)
+  x <- check_spct.generic_spct(x, multiple.wl = multiple.wl)
 
   range_check_A <- function(x, strict.range) {
     if (!all(is.na(x[["A"]]))) {
@@ -236,9 +236,9 @@ check.filter_spct <-
   x
 }
 
-#' @describeIn check Specialization for reflector_spct.
+#' @describeIn check_spct Specialization for reflector_spct.
 #' @export
-check.reflector_spct <-
+check_spct.reflector_spct <-
   function(x,
            byref = TRUE,
            strict.range = getOption("photobiology.strict.range", default = FALSE),
@@ -268,7 +268,7 @@ check.reflector_spct <-
       }
     }
 
-  x <- check.generic_spct(x, multiple.wl = multiple.wl)
+  x <- check_spct.generic_spct(x, multiple.wl = multiple.wl)
 
   if (is.null(getRfrType(x))) {
     setRfrType(x, "total")
@@ -291,10 +291,10 @@ check.reflector_spct <-
   x
 }
 
-#' @describeIn check Specialization for object_spct.
+#' @describeIn check_spct Specialization for object_spct.
 #' @export
 
-check.object_spct <-
+check_spct.object_spct <-
   function(x,
            byref = TRUE,
            strict.range = getOption("photobiology.strict.range", default = FALSE),
@@ -317,7 +317,7 @@ check.object_spct <-
     }
   }
 
-  x <- check.generic_spct(x, multiple.wl = multiple.wl)
+  x <- check_spct.generic_spct(x, multiple.wl = multiple.wl)
 
   range_check_Rfr <- function(x, strict.range) {
     if (!all(is.na(x$Rfr))) {
@@ -377,16 +377,16 @@ check.object_spct <-
   x
 }
 
-#' @describeIn check Specialization for response_spct.
+#' @describeIn check_spct Specialization for response_spct.
 #' @export
-check.response_spct <-
+check_spct.response_spct <-
   function(x,
            byref = TRUE,
            strict.range = NA,
            multiple.wl = getMultipleWl(x),
            ...) {
 
-  x <- check.generic_spct(x, multiple.wl = multiple.wl)
+  x <- check_spct.generic_spct(x, multiple.wl = multiple.wl)
 
   x <- checkTimeUnit(x)
 
@@ -411,9 +411,9 @@ check.response_spct <-
   }
 }
 
-#' @describeIn check Specialization for source_spct.
+#' @describeIn check_spct Specialization for source_spct.
 #' @export
-check.source_spct <-
+check_spct.source_spct <-
   function(x,
            byref = TRUE,
            strict.range = getOption("photobiology.strict.range", default = FALSE),
@@ -456,7 +456,7 @@ check.source_spct <-
       }
     }
 
-  x <- check.generic_spct(x, multiple.wl = multiple.wl)
+  x <- check_spct.generic_spct(x, multiple.wl = multiple.wl)
   x <- checkTimeUnit(x)
 
   if (is.null(is_effective(x))) {
@@ -482,10 +482,10 @@ check.source_spct <-
   return(x)
 }
 
-#' @describeIn check Specialization for chroma_spct.
+#' @describeIn check_spct Specialization for chroma_spct.
 #' @export
 
-check.chroma_spct <-
+check_spct.chroma_spct <-
   function(x,
            byref = TRUE,
            strict.range = getOption("photobiology.strict.range", default = FALSE),
@@ -494,7 +494,7 @@ check.chroma_spct <-
 
   names_x <- names(x)
 
-  x <- check.generic_spct(x, multiple.wl = multiple.wl)
+  x <- check_spct.generic_spct(x, multiple.wl = multiple.wl)
 
   idxs <- grep("[XYZ]", names_x)
   names(x)[idxs] <- tolower(names_x[idxs])
@@ -581,7 +581,7 @@ setGenericSpct <- function(x, multiple.wl = 1L) {
     attr(x, "spct.tags") <- NA
     setMultipleWl(x, multiple.wl = multiple.wl)
   }
-  x <- check(x)
+  x <- check_spct(x)
   attr(x, "spct.version") <- 2
   if (is.name(name)) {
     name <- as.character(name)
@@ -607,7 +607,7 @@ setRawSpct <- function(x, strict.range = FALSE, multiple.wl = 1L) {
   if (!is.cps_spct(x)) {
     class(x) <- c("raw_spct", class(x))
   }
-  x <- check(x, strict.range = strict.range)
+  x <- check_spct(x, strict.range = strict.range)
   if (is.name(name)) {
     name <- as.character(name)
     assign(name, x, parent.frame(), inherits = TRUE)
@@ -632,7 +632,7 @@ setCpsSpct <- function(x, strict.range = FALSE, multiple.wl = 1L) {
   if (!is.cps_spct(x)) {
     class(x) <- c("cps_spct", class(x))
   }
-  x <- check(x, strict.range = strict.range)
+  x <- check_spct(x, strict.range = strict.range)
   if (is.name(name)) {
     name <- as.character(name)
     assign(name, x, parent.frame(), inherits = TRUE)
@@ -670,7 +670,7 @@ setFilterSpct <- function(x, Tfr.type=c("total", "internal"),
     class(x) <- c("filter_spct", class(x))
   }
   setTfrType(x, Tfr.type[1])
-  x <- check(x, strict.range = strict.range)
+  x <- check_spct(x, strict.range = strict.range)
   #  setkey_spct(x, w.length)
   if (is.name(name)) {
     name <- as.character(name)
@@ -707,7 +707,7 @@ setReflectorSpct <- function(x, Rfr.type=c("total", "specular"),
     class(x) <- c("reflector_spct", class(x))
   }
   setRfrType(x, Rfr.type[1])
-  x <- check(x, strict.range = strict.range)
+  x <- check_spct(x, strict.range = strict.range)
   #  setkey_spct(x, w.length)
   if (is.name(name)) {
     name <- as.character(name)
@@ -754,7 +754,7 @@ setObjectSpct <- function(x,
   }
   setTfrType(x, Tfr.type)
   setRfrType(x, Rfr.type)
-  x <- check(x, strict.range = strict.range)
+  x <- check_spct(x, strict.range = strict.range)
   if (is.name(name)) {
     name <- as.character(name)
     assign(name, x, parent.frame(), inherits = TRUE)
@@ -781,7 +781,7 @@ setResponseSpct <- function(x, time.unit="second", multiple.wl = 1L) {
     class(x) <- c("response_spct", class(x))
   }
   setTimeUnit(x, time.unit)
-  x <- check(x)
+  x <- check_spct(x)
   #  setkey_spct(x, w.length)
   if (is.name(name)) {
     name <- as.character(name)
@@ -811,7 +811,7 @@ setSourceSpct <- function(x, time.unit="second", bswf.used=c("none", "unknown"),
   }
   setTimeUnit(x, time.unit)
   setBSWFUsed(x, bswf.used = bswf.used)
-  x <- check(x, strict.range = strict.range)
+  x <- check_spct(x, strict.range = strict.range)
   #  setkey_spct(x, w.length)
   if (is.name(name)) {
     name <- as.character(name)
@@ -837,7 +837,7 @@ setChromaSpct <- function(x, multiple.wl = 1L) {
   if (!is.chroma_spct(x)) {
     class(x) <- c("chroma_spct", class(x))
   }
-  x <- check(x)
+  x <- check_spct(x)
   #  setkey_spct(x, w.length)
   if (is.name(name)) {
     name <- as.character(name)

@@ -64,7 +64,7 @@ irradiance <-
       # we need to add a small number as the test is "<"
       # this affects signifcantly the result only when no hinges are used
     }
-    if (is(w.band, "waveband")) {
+    if (is.waveband(w.band)) {
       # if the argument is a single w.band, we enclose it in a list
       # so that the for loop works as expected.This is a bit of a
       # cludge but let's us avoid treating it as a special case

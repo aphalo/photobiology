@@ -4,4 +4,11 @@
 ^test/*
 ^data-raw$
 ^vignettes/figure/*
+^vignettes/backups/*
+^vignettes/*\.tex$
+^vignettes/*\.toc$
+^vignettes/*\.log$
+^vignettes/*\.synctex\.gz$
 ^.*\.o$
+^.*\.bak$
+cran-check.bat

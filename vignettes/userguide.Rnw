@@ -229,7 +229,7 @@ Energy irradiances are assumed to be expressed in \watt and photon irradiances i
 The default time unit used is \emph{second}, but \emph{day} and \emph{exposure} can be used by supplying the arguments \texttt{"day"} or \texttt{"exposure"}\footnote{The meaning of \texttt{"exposure"} is the total exposure  time, in other words, fluence instead of irradiance.}
 to a parameter of the constructor of \texttt{source\_spct} objects.
 
-The attributes are normally set when an object spectral object is created, either using default values of values supplied as arguments to the constructor.
+The attributes are normally set when a spectral object is created, either using default values or with values supplied as arguments to the constructor.
 
 \begin{framed}
 \noindent
@@ -1805,13 +1805,13 @@ color(sun.spct * yellow_gel.spct)
 
 \section{Optimizing performance}
 
-When developing the current version of \PB quite a lot of effort was spent in optimizing performance, especially of the functions accepting vectors as arguments, as in one of our experiments, we need to process several hundred thousands of measured spectra. The defaults should provide good performance in most cases, however, some further improvements are achievable, when a series of different calculations are done on the same spectrum, or when a series of spectra measured at exactly the same wavelengths are used for calculating weighted irradiances or exposures.
+When developing package \PB quite a lot of effort was spent in optimizing performance, especially of the functions accepting vectors as arguments, as in one of our experiments, we need to process several hundred thousands of measured spectra. The defaults should provide good performance in most cases, however, some further improvements are achievable, when a series of different calculations are done on the same spectrum, or when a series of spectra measured at exactly the same wavelengths are used for calculating weighted irradiances or exposures.
 
 In the case of doing calculations repeatedly on the same spectrum, a small improvement in performance can be achieved by setting the parameter \texttt{check.spectrum = FALSE} for all but the first call to \texttt{irradiance()}, or \texttt{photon\_irradiance()}, or \texttt{energy\_irradiance()}, or the equivalent function for ratios. It is also possible to set this parameter to FALSE in all calls, and do the check beforehand by explicitly calling \texttt{check\_spectrum()}.
 
 In the case of calculating weighted irradiances on many spectra having exactly the same wavelength values, then a significant improvement in the performance can be achieved by setting \texttt{use.cached.mult = TRUE}, as this reuses the multipliers calculated during successive calls based on the same waveband. However, to achieve this increase in performance, the tests to ensure that the wavelength values have not changed, have to be kept to the minimum. Currently only the length of the wavelength array is checked, and the cached values discarded and recalculated if the length changes. For this reason, this is not the default, and when using caching the user is responsible for making sure that the array of wavelengths has not changed between calls.
 
-You can use the package \texttt{microbenchmark} to time the code and find the parts that slow it down. I have used it, and also
+You can use the package \texttt{microbenchmark} to time the code and find the `regions' that slow it down. I have used it, and also
 I have used profiling to optimize the code for speed. The choice of defaults is based on what is
 best when processing a moderate number of spectra, say less than a few hundreds, as opposed to many thousands.
 
@@ -1833,6 +1833,15 @@ sun.data & data.frame & \wattnm & solar spectral irradiance \\
 sun.daily.data & data.frame & \jdaynm & solar spectral exposure\\
 D65.illuminant.spct & source\_spct & (norm. 560 nm) & CIE standard \\
 A.illuminant.spct & source\_spct & (norm. 560 nm)  & CIE standard \\
+clear.spct & filter\_spct & fraction & ideal transparent filter \\
+opaque.spct & filter\_spct & fraction & ideal opaque filter \\
+polyester.spct & filter\_spct & fraction & plastic film \\
+yellow\_gel.spct & filter\_spct & fraction & theatrical ``gel'' filter \\
+clear\_body.spct & object\_spct & fraction & ideal transparent body \\
+black\_body.spct & object\_spct & fraction & ideal black body \\
+white\_body.spct & object\_spct & fraction & ideal white body \\
+photodiode.spct & response\_spct &  A / W  & typical Si photodiode \\
+ccd.spct & response\_spct &  A / W & typical CCD array \\
 \bottomrule
 \end{tabular}
 \end{footnotesize}

@@ -4,8 +4,16 @@ TODO
 Add test cases for chroma_spct and improve tests for the _mspct
 classes. Add test cases for smooth_spct().
 
-Add more examples to documentation by moving them from the User Guide to
-help pages.
+photobiology 0.9.4
+==================
+
+Prepare for CRAN submission.
+Rename check() -> check_spct() to avoid name clash with 'devtools'.
+
+photobiology 0.9.3
+==================
+
+Cosmetic changes.
 
 photobiology 0.9.2
 ==================

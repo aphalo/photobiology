@@ -286,7 +286,7 @@ wb2tagged_spct <-
 #' @family tagging and related functions
 #'
 wb2rect_spct <- function(w.band, short.names = TRUE) {
-  if (is(w.band, "waveband")) {
+  if (is.waveband(w.band)) {
     w.band <- list(w.band)
   }
   wbs.number <- length(w.band) # number of wavebands in list

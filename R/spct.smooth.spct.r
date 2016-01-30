@@ -41,10 +41,10 @@ smooth_spct.source_spct <- function(x, method = "custom", strength = 1, ...) {
   if (method == "lowess") {
     span = 1/50 * strength
     if ("s.e.irrad" %in% names(x)) {
-      out.spct <- lowess(x$w.length, x$s.e.irrad, f = span, ...)
+      out.spct <- stats::lowess(x$w.length, x$s.e.irrad, f = span, ...)
       names(out.spct) <- c("w.length", "s.e.irrad")
     } else if ("s.q.irrad" %in% names(x)) {
-      out.spct <- lowess(x$w.length, x$s.q.irrad, f = span, ...)
+      out.spct <- stats::lowess(x$w.length, x$s.q.irrad, f = span, ...)
       names(out.spct) <- c("w.length", "s.q.irrad")
     }
     setSourceSpct(out.spct, time.unit = getTimeUnit(x), bswf.used = getBSWFUsed(x))
@@ -60,10 +60,10 @@ smooth_spct.source_spct <- function(x, method = "custom", strength = 1, ...) {
   } else if (method == "supsmu") {
     span = 1/50 * strength
     if ("s.e.irrad" %in% names(x)) {
-      out.spct <- supsmu(x$w.length, x$s.e.irrad, span = span, ...)
+      out.spct <- stats::supsmu(x$w.length, x$s.e.irrad, span = span, ...)
       names(out.spct) <- c("w.length", "s.e.irrad")
     } else if ("s.q.irrad" %in% names(x)) {
-      out.spct <- supsmu(x$w.length, x$s.q.irrad, span = span, ...)
+      out.spct <- stats::supsmu(x$w.length, x$s.q.irrad, span = span, ...)
       names(out.spct) <- c("w.length", "s.q.irrad")
     }
     setSourceSpct(out.spct, time.unit = attr(x, "time.unit", exact = TRUE))
@@ -90,9 +90,9 @@ smooth_spct.source_spct <- function(x, method = "custom", strength = 1, ...) {
     smooth_limit <- 1e-3 * smoothing_coef # just a guess for runmadmed
     smooth_threshold <- 5e-2 * max_irrad / strength # for s.e.irrad
     out.spct[["runmad"]] <- caTools::runmad(out.spct[["s.e.irrad"]], 7, endrule="mad")
-    out.spct[["runmed3"]] <- runmed(out.spct[["s.e.irrad"]], 3, endrule="median")
-    out.spct[["runmed7"]] <- runmed(out.spct[["s.e.irrad"]], 7, endrule="median")
-    out.spct[["runmed19"]] <- runmed(out.spct[["s.e.irrad"]], 19, endrule="median")
+    out.spct[["runmed3"]] <- stats::runmed(out.spct[["s.e.irrad"]], 3, endrule="median")
+    out.spct[["runmed7"]] <- stats::runmed(out.spct[["s.e.irrad"]], 7, endrule="median")
+    out.spct[["runmed19"]] <- stats::runmed(out.spct[["s.e.irrad"]], 19, endrule="median")
     out.spct[["runmin5"]] <- caTools::runmin(out.spct[["s.e.irrad"]], 5)
     # we need to avoid division by 0.0 and we use zero_limit / 10 close enough to zero
     out.spct[["runmadmed"]] <- with(out.spct,
@@ -136,10 +136,10 @@ smooth_spct.filter_spct <- function(x, method = "custom", strength = 1, ...) {
   if (method == "lowess") {
     span = 1/50 * strength
     if ("Tfr" %in% names(x)) {
-      out.spct <- lowess(x$w.length, x$Tfr, f = span, ...)
+      out.spct <- stats::lowess(x$w.length, x$Tfr, f = span, ...)
       names(out.spct) <- c("w.length", "Tfr")
     } else if ("A" %in% names(x)) {
-      out.spct <- lowess(x$w.length, x$A, f = span, ...)
+      out.spct <- stats::lowess(x$w.length, x$A, f = span, ...)
       names(out.spct) <- c("w.length", "A")
     }
     setFilterSpct(out.spct, Tfr.type = attr(x, "Tfr.type", exact = TRUE))
@@ -155,10 +155,10 @@ smooth_spct.filter_spct <- function(x, method = "custom", strength = 1, ...) {
   } else if (method == "supsmu") {
     span = 1/50 * strength
     if ("Tfr" %in% names(x)) {
-      out.spct <- supsmu(x$w.length, x$Tfr, span = span, ...)
+      out.spct <- stats::supsmu(x$w.length, x$Tfr, span = span, ...)
       names(out.spct) <- c("w.length", "Tfr")
     } else if ("A" %in% names(x)) {
-      out.spct <- supsmu(x$w.length, x$A, span = span, ...)
+      out.spct <- stats::supsmu(x$w.length, x$A, span = span, ...)
       names(out.spct) <- c("w.length", "A")
     }
     setFilterSpct(out.spct, Tfr.type = attr(x, "Tfr.type", exact = TRUE))
@@ -185,9 +185,9 @@ smooth_spct.filter_spct <- function(x, method = "custom", strength = 1, ...) {
     smooth_limit <- 1e-3 * smoothing_coef # just a guess for runmadmed
     smooth_threshold <- 5e-2 * max_Tfr / strength # for Tfr
     out.spct[["runmad"]] <- caTools::runmad(out.spct[["Tfr"]], 7, endrule="mad")
-    out.spct[["runmed3"]] <- runmed(out.spct[["Tfr"]], 3, endrule="median")
-    out.spct[["runmed7"]] <- runmed(out.spct[["Tfr"]], 7, endrule="median")
-    out.spct[["runmed19"]] <- runmed(out.spct[["Tfr"]], 19, endrule="median")
+    out.spct[["runmed3"]] <- stats::runmed(out.spct[["Tfr"]], 3, endrule="median")
+    out.spct[["runmed7"]] <- stats::runmed(out.spct[["Tfr"]], 7, endrule="median")
+    out.spct[["runmed19"]] <- stats::runmed(out.spct[["Tfr"]], 19, endrule="median")
     out.spct[["runmin5"]] <- caTools::runmin(out.spct[["Tfr"]], 5)
     # we need to avoid division by 0.0 and we use zero_limit / 10 close enough to zero
     out.spct[["runmadmed"]] <- with(out.spct,
@@ -232,7 +232,7 @@ smooth_spct.reflector_spct <- function(x, method = "custom", strength = 1, ...) 
   if (method == "lowess") {
     span = 1/50 * strength
     if ("Rfr" %in% names(x)) {
-      out.spct <- lowess(x$w.length, x$Rfr, f = span, ...)
+      out.spct <- stats::lowess(x$w.length, x$Rfr, f = span, ...)
       names(out.spct) <- c("w.length", "Rfr")
     }
     setReflectorSpct(out.spct)
@@ -245,7 +245,7 @@ smooth_spct.reflector_spct <- function(x, method = "custom", strength = 1, ...) 
   } else if (method == "supsmu") {
     span = 1/50 * strength
     if ("Rfr" %in% names(x)) {
-      out.spct <- supsmu(x$w.length, x$Rfr, span = span, ...)
+      out.spct <- stats::supsmu(x$w.length, x$Rfr, span = span, ...)
       names(out.spct) <- c("w.length", "Rfr")
     }
     setReflectorSpct(out.spct)
@@ -268,9 +268,9 @@ smooth_spct.reflector_spct <- function(x, method = "custom", strength = 1, ...) 
     smooth_limit <- 1e-3 * smoothing_coef # just a guess for runmadmed
     smooth_threshold <- 5e-2 * max_Rfr / strength # for Rfr
     out.spct[["runmad"]] <- caTools::runmad(out.spct[["Rfr"]], 7, endrule="mad")
-    out.spct[["runmed3"]] <- runmed(out.spct[["Rfr"]], 3, endrule="median")
-    out.spct[["runmed7"]] <- runmed(out.spct[["Rfr"]], 7, endrule="median")
-    out.spct[["runmed19"]] <- runmed(out.spct[["Rfr"]], 19, endrule="median")
+    out.spct[["runmed3"]] <- stats::runmed(out.spct[["Rfr"]], 3, endrule="median")
+    out.spct[["runmed7"]] <- stats::runmed(out.spct[["Rfr"]], 7, endrule="median")
+    out.spct[["runmed19"]] <- stats::runmed(out.spct[["Rfr"]], 19, endrule="median")
     out.spct[["runmin5"]] <- caTools::runmin(out.spct[["Rfr"]], 5)
     # we need to avoid division by 0.0 and we use zero_limit / 10 close enough to zero
     out.spct[["runmadmed"]] <- with(out.spct,
@@ -314,10 +314,10 @@ smooth_spct.response_spct <- function(x, method = "custom", strength = 1, ...) {
   if (method == "lowess") {
     span = 1/50 * strength
     if ("s.e.response" %in% names(x)) {
-      out.spct <- lowess(x$w.length, x$s.e.response, f = span, ...)
+      out.spct <- stats::lowess(x$w.length, x$s.e.response, f = span, ...)
       names(out.spct) <- c("w.length", "s.e.response")
     } else if ("s.q.response" %in% names(x)) {
-      out.spct <- lowess(x$w.length, x$s.q.response, f = span, ...)
+      out.spct <- stats::lowess(x$w.length, x$s.q.response, f = span, ...)
       names(out.spct) <- c("w.length", "s.q.response")
     }
     setResponseSpct(out.spct, time.unit = attr(x, "time.unit", exact = TRUE))
@@ -333,10 +333,10 @@ smooth_spct.response_spct <- function(x, method = "custom", strength = 1, ...) {
   } else if (method == "supsmu") {
     span = 1/50 * strength
     if ("s.e.response" %in% names(x)) {
-      out.spct <- supsmu(x$w.length, x$s.e.response, span = span, ...)
+      out.spct <- stats::supsmu(x$w.length, x$s.e.response, span = span, ...)
       names(out.spct) <- c("w.length", "s.e.response")
     } else if ("s.q.response" %in% names(x)) {
-      out.spct <- supsmu(x$w.length, x$s.q.response, span = span, ...)
+      out.spct <- stats::supsmu(x$w.length, x$s.q.response, span = span, ...)
       names(out.spct) <- c("w.length", "s.q.response")
     }
     setResponseSpct(out.spct, time.unit = attr(x, "time.unit", exact = TRUE))
@@ -363,9 +363,9 @@ smooth_spct.response_spct <- function(x, method = "custom", strength = 1, ...) {
     smooth_limit <- 1e-3 * smoothing_coef # just a guess for runmadmed
     smooth_threshold <- 5e-2 * max_response / strength # for s.e.response
     out.spct[["runmad"]] <- caTools::runmad(out.spct[["s.e.response"]], 7, endrule="mad")
-    out.spct[["runmed3"]] <- runmed(out.spct[["s.e.response"]], 3, endrule="median")
-    out.spct[["runmed7"]] <- runmed(out.spct[["s.e.response"]], 7, endrule="median")
-    out.spct[["runmed19"]] <- runmed(out.spct[["s.e.response"]], 19, endrule="median")
+    out.spct[["runmed3"]] <- stats::runmed(out.spct[["s.e.response"]], 3, endrule="median")
+    out.spct[["runmed7"]] <- stats::runmed(out.spct[["s.e.response"]], 7, endrule="median")
+    out.spct[["runmed19"]] <- stats::runmed(out.spct[["s.e.response"]], 19, endrule="median")
     out.spct[["runmin5"]] <- caTools::runmin(out.spct[["s.e.response"]], 5)
     # we need to avoid division by 0.0 and we use zero_limit / 10 close enough to zero
     out.spct[["runmadmed"]] <- with(out.spct,

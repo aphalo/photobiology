@@ -312,7 +312,7 @@ noon_time <- function(date = lubridate::today(), tz = "UTC",
   twlght_angl <- 0
   for (t_num in date_num) {
     noon <- try(
-      optimize(f = altitude, interval = c(t_num + 7200, t_num + 86400 - 7200),
+      stats::optimize(f = altitude, interval = c(t_num + 7200, t_num + 86400 - 7200),
                lon = lon, lat = lat,
                twlght_angl = twlght_angl,
                maximum = TRUE)$maximum
@@ -348,7 +348,7 @@ sunrise_time <- function(date = lubridate::today(), tz = "UTC",
   twlght_angl <- twilight2angle(twilight)[1]
   for (t_num in noon_num) {
      rise <- try(
-      uniroot(f = altitude,
+      stats::uniroot(f = altitude,
               lon = lon, lat = lat, twlght_angl = twlght_angl,
               lower = t_num - 86400/2, upper = t_num)$root,
       silent = TRUE)
@@ -386,7 +386,7 @@ sunset_time <- function(date = lubridate::today(), tz = "UTC",
   twlght_angl <- twilight2angle(twilight)[2]
   for (t_num in noon_num) {
     set <- try(
-      uniroot(f = altitude,
+      stats::uniroot(f = altitude,
               lon = lon, lat = lat,
               twlght_angl = twlght_angl,
               lower = t_num, upper = t_num + 86400 / 2)$root,

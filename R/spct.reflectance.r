@@ -91,7 +91,7 @@ reflectance_spct <-
     if (is.null(w.band)){
       w.band <- waveband(spct)
     }
-    if (is(w.band, "waveband")) {
+    if (is.waveband(w.band)) {
       # if the argument is a single w.band, we enclose it in a list
       # so that the for loop works as expected.This is a bit of a
       # cludge but let's us avoid treating it as a special case

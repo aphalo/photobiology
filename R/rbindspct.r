@@ -526,7 +526,7 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
 #' @rdname extract
 #'
 "[<-.generic_spct" <- function(x, i, j, value) {
-  check(`[<-.data.frame`(x, i, j, value), byref = FALSE)
+  check_spct(`[<-.data.frame`(x, i, j, value), byref = FALSE)
 }
 
 #' @param name A literal character string or a name (possibly backtick quoted).
@@ -538,5 +538,5 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
 #' @rdname extract
 #'
 "$<-.generic_spct" <- function(x, name, value) {
-  check(`$<-.data.frame`(x, name, value), byref = FALSE)
+  check_spct(`$<-.data.frame`(x, name, value), byref = FALSE)
 }

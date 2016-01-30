@@ -7,10 +7,8 @@
 #' @details \itemize{ \item w.length (nm). \item s.e.response
 #' (A/W)  }
 #'
-#' @seealso \code{\link[photobiologySensors]{photobiologySensors-package}}
-#'
 #' @references
-#' Product documentation at \url{http://www.hamamatsu.com/}.
+#' Product documentation at \url{http://www.hamamatsu.com/us/en/}.
 #'
 #' @docType data
 #' @keywords datasets
@@ -28,10 +26,8 @@ NULL
 #' @details \itemize{ \item w.length (nm). \item s.e.response
 #' (A/W)  }
 #'
-#' @seealso \code{\link[photobiologySensors]{photobiologySensors-package}}
-#'
 #' @references
-#' Product documentation at \url{http://www.hamamatsu.com/}.
+#' Product documentation at \url{http://www.hamamatsu.com/us/en/}.
 #'
 #' @docType data
 #' @keywords datasets

@@ -88,7 +88,7 @@ interpolate_spct <- function(spct,
   stopifnot(is.any_spct(spct))
   if (any(is.na(w.length.out))) {
     warning("NAs omited from 'w.length.out'.")
-    w.length.out <- na.omit(w.length.out)
+    w.length.out <- stats::na.omit(w.length.out)
   }
   if (is.null(fill)) {
     if (!is.null(w.length.out)) {

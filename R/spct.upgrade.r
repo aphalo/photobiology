@@ -24,7 +24,7 @@ upgrade_spct <-
     if (version <= 1L) {
       attr(object, "spct.version") <- 2L
     }
-    check(object)
+    check_spct(object)
     if (is.name(name)) {
       name <- as.character(name)
       assign(name, object, parent.frame(), inherits = TRUE)

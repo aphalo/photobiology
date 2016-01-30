@@ -37,9 +37,9 @@ interpolate_spectrum <- function(w.length.in, s.irrad, w.length.out, fill=NA) {
   if (sum(selector) < 1) {
     NULL
   } else if (sum(selector) <= 25) {
-    s.irrad.out[selector] <- spline(w.length.in, s.irrad, xout=w.length.out[selector])$y
+    s.irrad.out[selector] <- stats::spline(w.length.in, s.irrad, xout=w.length.out[selector])$y
   } else {
-    s.irrad.out[selector] <- approx(w.length.in, s.irrad, xout=w.length.out[selector])$y
+    s.irrad.out[selector] <- stats::approx(w.length.in, s.irrad, xout=w.length.out[selector])$y
   }
   return(s.irrad.out)
 }

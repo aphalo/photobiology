@@ -1,14 +1,17 @@
 Package: photobiology
 Type: Package
-Title: Base Photobiological Calculations
-Version: 0.9.2
-Date: 2015-12-30
-Author: Pedro J. Aphalo <pedro.aphalo@helsinki.fi>
+Title: Photobiological Calculations
+Version: 0.9.4
+Date: 2016-01-30
+Author: Pedro J. Aphalo
 Maintainer: Pedro J. Aphalo <pedro.aphalo@helsinki.fi>
-Description: Calculation of effective (weighted) and unweighted
-    irradiances/doses, transmittance, reflectance, diverse ratios and other
-    derived quantities from spectral irradiance data, as used in photobiology.
-    Astronomical calcualtions related solar angles and daylength. Colours and
+Description: Definitions of classes, methods, operators and functions for use in
+    photobiology and radiation meteorology and climatology. Calculation of
+    effective (weighted) and not-weighted irradiances/doses, fluence rates,
+    transmittance, reflectance, absorptance, absorbance and diverse ratios and
+    other derived quantities from spectral data. Local maxima and minima.
+    Conversion between energy- and photon-based units. Wavelength interpolation.
+    Astronomical calculations related solar angles and day length. Colours and
     vision.
 License: GPL (>= 3)
 VignetteBuilder: knitr
@@ -29,10 +32,10 @@ LazyLoad: yes
 LazyData: yes
 ByteCompile: true
 NeedsCompilation: yes
-Encoding: UTF-8
 LinkingTo: Rcpp
-URL: http://www.r4photobiology.info,
+URL: http://www.r4photobiology.info/,
     https://bitbucket.org/aphalo/photobiology
-BugReports: https://bitbucket.org/aphalo/photobiology
+BugReports: https://bitbucket.org/aphalo/photobiology/issues
+Encoding: UTF-8
 Roxygen: list(wrap = FALSE)
 RoxygenNote: 5.0.1
