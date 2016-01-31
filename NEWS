@@ -9,6 +9,7 @@ photobiology 0.9.4
 
 Prepare for CRAN submission.
 Rename check() -> check_spct() to avoid name clash with 'devtools'.
+Fix bug in clean() methods for collections of spectra.
 
 photobiology 0.9.3
 ==================

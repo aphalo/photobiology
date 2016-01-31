@@ -120,7 +120,7 @@ clear_photobio.cache <- function(pattern = "*") {
   }
   objects.to.rm <- try(ls(pattern = pattern, name = ".photobio.cache"))
   if (length(objects.to.rm) > 0) {
-    rm(list=, envir = ".photobio.cache")
+    rm(list = objects.to.rm, envir = ".photobio.cache")
   } else {
     warning("No objects found in cache!")
   }

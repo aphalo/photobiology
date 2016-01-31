@@ -33,7 +33,7 @@ clean.default <- function(x, range, range.s.data, fill, ...) {
 #'
 clean.source_spct <-
   function(x,
-           range = NULL,
+           range = x,
            range.s.data = c(0,NA),
            fill = range.s.data,
            unit.out = getOption("photobiology.radiation.unit",
@@ -266,20 +266,28 @@ clean.response_spct <-
 #'
 clean.source_mspct <-
   function(x,
-           range = x,
+           range = NULL,
            range.s.data = c(0,NA),
            fill = range.s.data,
            unit.out = getOption("photobiology.radiation.unit",
                                 default = "energy"),
            ...) {
-    msmsply(x,
-            clean,
-            range = range,
-            f = f,
-            range.s.data = range.s.data,
-            fill = fill,
-            unit.out = unit.out,
-            ...)
+    if (is.null(range)) {
+      msmsply(mspct = x,
+              clean,
+              range.s.data = range.s.data,
+              fill = fill,
+              unit.out = unit.out,
+              ...)
+    } else {
+      msmsply(mspct = x,
+              .fun = clean,
+              range = range,
+              range.s.data = range.s.data,
+              fill = fill,
+              unit.out = unit.out,
+              ...)
+    }
   }
 
 #' @describeIn clean
@@ -288,21 +296,29 @@ clean.source_mspct <-
 #'
 clean.filter_mspct <-
   function(x,
-           range = x,
+           range = NULL,
            range.s.data = NULL,
            fill = range.s.data,
            qty.out = getOption("photobiology.filter.qty",
                                default = "transmittance"),
            ...) {
-    msmsply(x,
-            clean,
-            range = range,
-            f = f,
-            range.s.data = range.s.data,
-            fill = fill,
-            qty.out = qty.out,
-            ...)
-  }
+    if (is.null(range)) {
+      msmsply(mspct = x,
+              .fun = clean,
+              range.s.data = range.s.data,
+              fill = fill,
+              qty.out = qty.out,
+              ...)
+    } else {
+      msmsply(mspct = x,
+              .fun = clean,
+              range = range,
+              range.s.data = range.s.data,
+              fill = fill,
+              qty.out = qty.out,
+              ...)
+    }
+   }
 
 #' @describeIn clean
 #'
@@ -310,18 +326,25 @@ clean.filter_mspct <-
 #'
 clean.reflector_mspct <-
   function(x,
-           range = x,
+           range = NULL,
            range.s.data = c(0, 1),
            fill = range.s.data,
            ...) {
-    msmsply(x,
-            clean,
-            range = range,
-            f = f,
-            range.s.data = range.s.data,
-            fill = fill,
-            ...)
-  }
+    if (is.null(range)) {
+      msmsply(mspct = x,
+              .fun = clean,
+              range.s.data = range.s.data,
+              fill = fill,
+              ...)
+    } else {
+      msmsply(mspct = x,
+              .fun = clean,
+              range = range,
+              range.s.data = range.s.data,
+              fill = fill,
+              ...)
+    }
+   }
 
 #' @describeIn clean
 #'
@@ -329,18 +352,26 @@ clean.reflector_mspct <-
 #'
 clean.response_mspct <-
   function(x,
-           range = x,
+           range = NULL,
            range.s.data = c(0,NA),
            fill = range.s.data,
            unit.out = getOption("photobiology.radiation.unit",
                                 default = "energy"),
            ...) {
-    msmsply(x,
-            clean,
-            range = range,
-            f = f,
-            range.s.data = range.s.data,
-            fill = fill,
-            unit.out = unit.out,
-            ...)
+    if (is.null(range)) {
+      msmsply(mspct = x,
+              .fun = clean,
+              range.s.data = range.s.data,
+              fill = fill,
+              unit.out = unit.out,
+              ...)
+    } else {
+      msmsply(mspct = x,
+              .fun = clean,
+              range = range,
+              range.s.data = range.s.data,
+              fill = fill,
+              unit.out = unit.out,
+              ...)
+    }
   }

@@ -216,6 +216,9 @@ test_that("source_mspct", {
 
   expect_equal(print(my.mspct), my.mspct)
 
+  # clean -------------------------------------------------------------------
+
+  expect_equal(clean(my.mspct), my.mspct)
 })
 
 

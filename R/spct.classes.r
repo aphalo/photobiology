@@ -62,11 +62,14 @@ check_spct.generic_spct <-
   class(x) <- union(class.x, class(x))
   # check variables
   if (exists("wl", x, mode = "numeric", inherits = FALSE)) {
-    x <- dplyr::rename(x, w.length = wl)
+    dots <- list(~wl)
+    x <- dplyr::rename_(x, .dots = setNames(dots, "w.length"))
   } else if (exists("wavelength", x, mode = "numeric", inherits = FALSE)) {
-    x <- dplyr::rename(x, w.length = wavelength)
+    dots <- list(~wavelength)
+    x <- dplyr::rename_(x, .dots = setNames(dots, "w.length"))
   } else if (exists("Wavelength", x, mode = "numeric", inherits = FALSE)) {
-    x <- dplyr::rename(x, w.length = Wavelength)
+    dots <- list(~Wavelength)
+    x <- dplyr::rename_(x, .dots = setNames(dots, "w.length"))
   }
   if (!exists("w.length", x, mode = "numeric", inherits = FALSE)) {
     stop("No wavelength data found in generic_spct")
@@ -144,7 +147,8 @@ check_spct.cps_spct <- function(x,
     range_check(x)
     return(x)
   } else if (exists("counts.per.second", x, mode = "numeric", inherits=FALSE)) {
-    x <- dplyr::rename(x, cps = counts.per.second)
+    dots <- list(~counts.per.second)
+    x <- dplyr::rename_(x, .dots = setNames(dots, "cps"))
     warning("Found variable 'counts.per.second', renamed it to 'cps'")
     range_check(x)
     return(x)
@@ -210,14 +214,17 @@ check_spct.filter_spct <-
   }
   # check and replace 'other' quantity names
   if (exists("transmittance", x, mode = "numeric", inherits = FALSE)) {
-    x <- dplyr::rename(x, Tpc = transmittance)
+    dots <- list(~transmittance)
+    x <- dplyr::rename_(x, .dots = setNames(dots, "Tpc"))
     warning("Found variable 'transmittance', I am assuming it is expressed as percent")
   }
   if (exists("absorbance", x, mode = "numeric", inherits = FALSE)) {
-    x <- dplyr::rename(x, A = absorbance)
+    dots <- list(~absorbance)
+    x <- dplyr::rename_(x, .dots = setNames(dots, "A"))
     warning("Found variable 'absorbance', I am assuming it is in log10-based absorbance units")
   } else if (exists("Absorbance", x, mode = "numeric", inherits = FALSE)) {
-    x <- dplyr::rename(x, A = Absorbance)
+    dots <- list(~Absorbance)
+    x <- dplyr::rename_(x, .dots = setNames(dots, "A"))
     warning("Found variable 'Absorbance', I am assuming it is in log10-based absorbance units")
   }
   # look for percentages and change them into fractions of one
@@ -275,7 +282,8 @@ check_spct.reflector_spct <-
     warning("Missing Rfr.type attribute replaced by 'total'")
   }
   if (exists("reflectance", x, mode = "numeric", inherits=FALSE)) {
-    x <- dplyr::rename(x, Rpc = reflectance)
+    dots <- list(~reflectance)
+    x <- dplyr::rename_(x, .dots = setNames(dots, "Rpc"))
     warning("Found variable 'reflectance', I am assuming it is expressed as percent")
   }
   if (exists("Rfr", x, mode = "numeric", inherits=FALSE)) {
@@ -346,7 +354,8 @@ check_spct.object_spct <-
     warning("Missing Rfr.type attribute replaced by 'total'")
   }
   if (exists("reflectance", x, mode = "numeric", inherits=FALSE)) {
-    x <- dplyr::rename(x, Rpc = reflectance)
+    dots <- list(~reflectance)
+    x <- dplyr::rename_(x, .dots = setNames(dots, "Rpc"))
     warning("Found variable 'reflectance', I am assuming it is expressed as percent")
   }
   if (exists("Rfr", x, mode = "numeric", inherits=FALSE)) {
@@ -361,7 +370,8 @@ check_spct.object_spct <-
   }
 
   if (exists("transmittance", x, mode = "numeric", inherits=FALSE)) {
-    x <- dplyr::rename(x, Tpc = transmittance)
+    dots <- list(~transmittance)
+    x <- dplyr::rename_(x, .dots = setNames(dots, "Tpc"))
     warning("Found variable 'transmittance', I am assuming it expressed as percent")
   }
   if (exists("Tfr", x, mode = "numeric", inherits=FALSE)) {
