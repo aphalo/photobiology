@@ -11,7 +11,7 @@ ccd.spct <- read.csv("hamamatsu_S10420-1.csv", col.names = c("w.length","s.q.res
 setResponseSpct(ccd.spct, time.unit = "second")
 
 ccd.spct <- trim_wl(ccd.spct, range = c(200, 1200), fill = 0)
-comment(ccd.spct) <- "Spectral response of CCD.\nHamamatsu S10420-1\nSource: CCD image sensors datasheet,\n document at http://www.hamamatsu.com/, Hamamatsu (2010), Hamamatsu City, Japan.\nResponse expressed quantum efficiency (as fraction of one)."
+comment(ccd.spct) <- "Spectral response of CCD.\nHamamatsu S10420-1\nSource: CCD image sensors datasheet,\n document at http://www.hamamatsu.com/, Hamamatsu (2014), Hamamatsu City, Japan.\nResponse expressed quantum efficiency (as fraction of one)."
 
 setwd("../../data")
 

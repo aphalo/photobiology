@@ -10,8 +10,8 @@
 #' @references
 #' Hamamatsu (2011) Datasheet: GaAsP Photodiodes G5645 G5842 G6262. Hamamatsu
 #' Photonics KK, Hamamatsu, City.
-#' \url{http://www.hamamatsu.com/resources/pdf/ssd/g5645_etc_kgpd1004e.pdf}.
-#' Visited 2015-02-01.
+#' http://www.hamamatsu.com/resources/pdf/ssd/g5645_etc_kgpd1004e.pdf.
+#' Visited 2016-02-01.
 #'
 #' @docType data
 #' @keywords datasets
@@ -31,10 +31,10 @@ NULL
 #' (A/W)  }
 #'
 #' @references
-#' Hamamatsu (2013) Datasheet: CCD Image Sensors S11071/S10420-01 Series.
+#' Hamamatsu (2014) Datasheet: CCD Image Sensors S11071/S10420-01 Series.
 #' Hamamatsu Photonics KK, Hamamatsu, City.
-#' \url{http://www.hamamatsu.com/resources/pdf/ssd/s11071-1004_etc_kmpd1120e.pdf}.
-#' Visited 2015-02-01.
+#' http://www.hamamatsu.com/resources/pdf/ssd/s11071-1004_etc_kmpd1120e.pdf.
+#' Visited 2016-02-01.
 #'
 #' @docType data
 #' @keywords datasets
