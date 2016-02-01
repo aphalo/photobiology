@@ -6,8 +6,6 @@
 #'
 #' @details \itemize{ \item w.length (nm) \item x \item y \item z }
 #'
-#' @author ???
-#'
 #' @docType data
 #' @keywords datasets
 #' @format A data frame with 81 rows and 4 variables

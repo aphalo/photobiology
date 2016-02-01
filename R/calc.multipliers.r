@@ -93,6 +93,8 @@ calc_multipliers <-
     return(mult)
   }
 
+globalVariables(".photobio.cache")
+
 .onLoad <- function(libname, pkgname) {
   .photobio.cache <<- new.env(parent = emptyenv())
 }
