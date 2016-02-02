@@ -1666,7 +1666,6 @@ The function \texttt{average\_spct} integrates every column holding numeric valu
 average_spct(sun.spct)
 @
 
-
 \section{Astronomy}
 
 \subsection{Position of the sun}

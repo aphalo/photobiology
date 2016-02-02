@@ -112,7 +112,7 @@ transmittance_spct <-
       # cludge but let's us avoid treating it as a special case
       w.band <- list(w.band)
     }
-    w.band <- trim_waveband(w.band=w.band, range=spct, trim=wb.trim)
+    w.band <- trim_waveband(w.band = w.band, range = spct, trim = wb.trim)
 
     # if the w.band includes 'hinges' we insert them
     # choose whether to use hinges or not
