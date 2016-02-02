@@ -30,7 +30,6 @@ Suggests:
 LazyLoad: yes
 LazyData: yes
 ByteCompile: true
-NeedsCompilation: yes
 URL: http://www.r4photobiology.info/,
     https://bitbucket.org/aphalo/photobiology
 BugReports: https://bitbucket.org/aphalo/photobiology/issues

@@ -7,7 +7,7 @@
 #'
 #' @param x numeric array (sorted in increasing order)
 #' @param y numeric array
-#' @param hinges a numeric array giving the wavelengths at which the y values
+#' @param h a numeric array giving the wavelengths at which the y values
 #'   should be inserted by interpolation, no interpolation is indicated by an
 #'   empty array (numeric(0))
 #'

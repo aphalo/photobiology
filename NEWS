@@ -4,6 +4,11 @@ TODO
 Add test cases for chroma_spct and improve tests for the _mspct
 classes. Add test cases for smooth_spct().
 
+photobiology 0.9.5
+==================
+
+Removed buggy C++ code and replaced it with R code.
+
 photobiology 0.9.4
 ==================
 

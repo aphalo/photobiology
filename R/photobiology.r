@@ -36,8 +36,6 @@
 #'   Tutorials by Hadley Wickham comments on my presentation at UseR!2015
 #'   allowed me to significantly improving the coding and functionality.
 #'
-#' @importFrom Rcpp evalCpp
-#'
 #' @examples
 #' # irradiance of the whole spectrum
 #' irrad(sun.spct)
