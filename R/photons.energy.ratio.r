@@ -30,7 +30,7 @@ photons_energy_ratio <- function(w.length, s.irrad,
                            w.band=NULL,
                            unit.in="energy",
                            check.spectrum=TRUE,
-                           use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
+                           use.cached.mult = FALSE,
                            use.hinges = getOption("photobiology.use.hinges", default=NULL) ){
   return(waveband_ratio(w.length, s.irrad, w.band, w.band,
                         unit.out.num="photon", unit.out.denom="energy",

@@ -55,7 +55,7 @@ q_ratio.source_spct <-
   function(spct,
            w.band.num = NULL, w.band.denom = NULL,
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
-           use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
+           use.cached.mult = FALSE,
            use.hinges = getOption("photobiology.use.hinges", default = NULL), ... ) {
     q.irrad.num <- irrad_spct(spct, w.band = w.band.num,
                               unit.out = "photon", quantity = "total",
@@ -134,7 +134,7 @@ e_ratio.source_spct <-
   function(spct,
            w.band.num = NULL, w.band.denom = NULL,
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
-           use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
+           use.cached.mult = FALSE,
            use.hinges=getOption("photobiology.use.hinges", default = NULL), ...) {
     e.irrad.num <- irrad_spct(spct, w.band = w.band.num, unit.out = "energy", quantity = "total",
                               wb.trim = wb.trim,
@@ -206,7 +206,7 @@ qe_ratio.default <- function(spct, w.band, wb.trim,
 qe_ratio.source_spct <-
   function(spct, w.band = NULL,
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
-           use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
+           use.cached.mult = FALSE,
            use.hinges = getOption("photobiology.use.hinges", default = NULL), ...) {
     q.irrad <- irrad_spct(spct, w.band=w.band, unit.out = "photon",
                           quantity ="total",
@@ -282,7 +282,7 @@ eq_ratio.default <- function(spct, w.band, wb.trim,
 eq_ratio.source_spct <-
   function(spct, w.band=NULL,
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
-           use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
+           use.cached.mult =FALSE,
            use.hinges  = getOption("photobiology.use.hinges", default = NULL), ...) {
     ratio <- 1 / qe_ratio(spct = spct, w.band = w.band, wb.trim = wb.trim,
                           use.cached.mult = use.cached.mult, use.hinges = use.hinges)

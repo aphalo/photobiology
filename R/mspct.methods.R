@@ -383,7 +383,7 @@ irrad.source_mspct <-
            quantity = "total",
            time.unit = NULL,
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
-           use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
+           use.cached.mult = FALSE,
            use.hinges = getOption("photobiology.use.hinges", default = NULL),
            allow.scaled = FALSE,
            ...,
@@ -415,7 +415,7 @@ q_irrad.source_mspct <-
            quantity = "total",
            time.unit = NULL,
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
-           use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
+           use.cached.mult = FALSE,
            use.hinges = getOption("photobiology.use.hinges", default = NULL),
            allow.scaled = FALSE,
            ..., idx = !is.null(names(spct))) {
@@ -445,7 +445,7 @@ e_irrad.source_mspct <-
            quantity = "total",
            time.unit = NULL,
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
-           use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
+           use.cached.mult = FALSE,
            use.hinges = getOption("photobiology.use.hinges", default = NULL),
            allow.scaled = FALSE,
            ..., idx = !is.null(names(spct))) {
@@ -474,7 +474,7 @@ fluence.source_mspct <-
            unit.out = getOption("photobiology.radiation.unit", default = "energy"),
            exposure.time = NA,
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
-           use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
+           use.cached.mult = FALSE,
            use.hinges = getOption("photobiology.use.hinges", default = NULL),
            allow.scaled = FALSE,
            ..., idx = !is.null(names(spct))) {
@@ -503,7 +503,7 @@ e_fluence.source_mspct <-
   function(spct, w.band = NULL,
            exposure.time = NA,
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
-           use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
+           use.cached.mult = FALSE,
            use.hinges = getOption("photobiology.use.hinges", default = NULL),
            allow.scaled = FALSE,
            ..., idx = !is.null(names(spct))) {
@@ -532,7 +532,7 @@ q_fluence.source_mspct <-
   function(spct, w.band = NULL,
            exposure.time = NA,
            wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
-           use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
+           use.cached.mult = FALSE,
            use.hinges = getOption("photobiology.use.hinges", default = NULL),
            allow.scaled = FALSE,
            ..., idx = !is.null(names(spct))) {
@@ -561,7 +561,7 @@ q_ratio.source_mspct <-
   function(spct,
            w.band.num = NULL, w.band.denom = NULL,
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
-           use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
+           use.cached.mult = FALSE,
            use.hinges = getOption("photobiology.use.hinges", default = NULL),
            ..., idx = !is.null(names(spct))) {
     msdply(
@@ -587,7 +587,7 @@ e_ratio.source_mspct <-
   function(spct,
            w.band.num = NULL, w.band.denom = NULL,
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
-           use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
+           use.cached.mult = FALSE,
            use.hinges = getOption("photobiology.use.hinges", default = NULL),
            ..., idx = !is.null(names(spct))) {
     msdply(
@@ -612,7 +612,7 @@ e_ratio.source_mspct <-
 eq_ratio.source_mspct <-
   function(spct, w.band = NULL,
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
-           use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
+           use.cached.mult = FALSE,
            use.hinges = getOption("photobiology.use.hinges", default = NULL),
            ...,
            idx = !is.null(names(spct))) {
@@ -638,7 +638,7 @@ eq_ratio.source_mspct <-
 qe_ratio.source_mspct <-
   function(spct, w.band=NULL,
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
-           use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
+           use.cached.mult = FALSE,
            use.hinges=getOption("photobiology.use.hinges", default = NULL),
            ...,
            idx = !is.null(names(spct))) {

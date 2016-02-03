@@ -10,8 +10,8 @@ data(sun.data)
 attach(sun.data)
 
 test.calc_multipliers <- function(w.band=new_waveband(400,700)) {
-microbenchmark(calc_multipliers(w.length, w.band,"photon", use.cached.mult=FALSE),
-               calc_multipliers(w.length, w.band,"photon", use.cached.mult=TRUE))
+microbenchmark(calc_multipliers(w.length, w.band,"photon", use.cached.mult = FALSE),
+               calc_multipliers(w.length, w.band,"photon", use.cached.mult = TRUE))
 }
 
 test.calc_multipliers()
@@ -19,10 +19,13 @@ test.calc_multipliers(DNA.N())
 test.calc_multipliers(CIE())
 test.calc_multipliers(CIE(300))
 
-test.irradiance <- function(w.band=new_waveband(400,700)) {
-  microbenchmark(irradiance(w.length, s.e.irrad, w.band,"photon", check.spectrum=TRUE, use.cached.mult=FALSE),
-                 irradiance(w.length, s.e.irrad, w.band,"photon", check.spectrum=TRUE, use.cached.mult=TRUE),
-                 irradiance(w.length, s.e.irrad, w.band,"photon", check.spectrum=FALSE, use.cached.mult=TRUE))
+test.irradiance <- function(w.band = new_waveband(400,700)) {
+  microbenchmark(irradiance(w.length, s.e.irrad, w.band,"photon",
+                            check.spectrum = TRUE, use.cached.mult = FALSE),
+                 irradiance(w.length, s.e.irrad, w.band,"photon",
+                            check.spectrum = TRUE, use.cached.mult = TRUE),
+                 irradiance(w.length, s.e.irrad, w.band,"photon",
+                            check.spectrum = FALSE, use.cached.mult = TRUE))
 }
 
 test.irradiance()
@@ -39,10 +42,10 @@ test.integrate_irradiance()
 detach(sun.data)
 
 test.irrad <- function(w.band=new_waveband(400,700)) {
-  microbenchmark(e_irrad(sun.spct, w.band, use.cached.mult=FALSE, use.hinges = TRUE),
-                 e_irrad(sun.spct, w.band, use.cached.mult=TRUE, use.hinges = TRUE),
-                 e_irrad(sun.spct, w.band, use.cached.mult=TRUE, use.hinges = FALSE),
-                 e_irrad(sun.spct, w.band, use.cached.mult=FALSE, use.hinges = FALSE))
+  microbenchmark(e_irrad(sun.spct, w.band, use.cached.mult = FALSE, use.hinges = TRUE),
+                 e_irrad(sun.spct, w.band, use.cached.mult = TRUE, use.hinges = TRUE),
+                 e_irrad(sun.spct, w.band, use.cached.mult = TRUE, use.hinges = FALSE),
+                 e_irrad(sun.spct, w.band, use.cached.mult = FALSE, use.hinges = FALSE))
 }
 
 test.irrad()
@@ -61,6 +64,8 @@ test.irrad(DNA.N())
 test.irrad(CIE())
 test.irrad(CIE(300))
 test.irrad(UV_bands())
+uv_all <- UV_bands()
+test.irrad(uv_all)
 test.irrad(VIS_bands())
 test.irrad(GEN_G(300))
 test.irrad(DNA.N())

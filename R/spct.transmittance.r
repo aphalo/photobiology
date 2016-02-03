@@ -95,11 +95,10 @@ transmittance_spct <-
       warning("The spectral data has been normalized or scaled, making impossible to calculate transmittance")
       return(NA)
     }
-    if (is.filter_spct(spct)) {
-      spct <- A2T(spct, action="replace", byref=FALSE)
-    } else {
+    if (!is.filter_spct(spct)) {
       spct <- as.filter_spct(spct)
     }
+    spct <- A2T(spct, action="replace", byref=FALSE)
     Tfr.type <- getTfrType(spct)
     spct <- spct[ , c("w.length", "Tfr")]
     # if the waveband is undefined then use all data
@@ -132,9 +131,9 @@ transmittance_spct <-
     if (use.hinges) {
       all.hinges <- NULL
       for (wb in w.band) {
-        if (!is.null(wb$hinges) & length(wb$hinges)>0) {
+#       if (!is.null(wb$hinges) & length(wb$hinges)>0) {
           all.hinges <- c(all.hinges, wb$hinges)
-        }
+ #       }
       }
       if (!is.null(all.hinges)) {
         spct <- insert_spct_hinges(spct, all.hinges)

@@ -57,8 +57,7 @@ waveband_ratio <-
            unit.out.num=NULL, unit.out.denom=unit.out.num,
            unit.in="energy",
            check.spectrum=TRUE,
-           use.cached.mult = getOption("photobiology.use.cached.mult",
-                                       default = FALSE),
+           use.cached.mult = FALSE,
            use.hinges = getOption("photobiology.use.hinges",
                                   default=NULL) ) {
     # We duplicate code from irradiance() here to avoid repeated checks

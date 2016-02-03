@@ -76,7 +76,7 @@ irrad.source_spct <-
            quantity = "total",
            time.unit = NULL,
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
-           use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
+           use.cached.mult = FALSE,
            use.hinges = getOption("photobiology.use.hinges", default = NULL),
            allow.scaled = FALSE, ...){
     # we have a default, but we check for invalid arguments
@@ -101,7 +101,7 @@ irrad.source_spct <-
 
     if (is.null(unit.out) || is.na(unit.out)){
       warning("'unit.out' set to an invalid value")
-      return(NA)
+      return(NA_real_)
     }
     if (unit.out == "quantum") {
       unit.out <- "photon"
@@ -124,6 +124,7 @@ irrad.source_spct <-
     if (is.null(wb.name)) {
       wb.name <- character(wb.number)
     }
+
     # if the w.band includes 'hinges' we insert them
     # choose whether to use hinges or not
     # if the user has specified its value, we leave it alone
@@ -135,29 +136,28 @@ irrad.source_spct <-
     if (is.null(use.hinges)) {
       use.hinges <- auto_hinges(spct)
     }
+
     # we collect all hinges and insert them in one go
-    # this may alter a little the returned values
-    # but should be faster
-    if (use.hinges) {
-      all.hinges <- NULL
-      for (wb in w.band) {
-        if (!is.null(wb$hinges) & length(wb$hinges)>0) {
-          all.hinges <- c(all.hinges, wb$hinges)
-        }
-      }
-      if (!is.null(all.hinges)) {
-        spct <- insert_spct_hinges(spct, all.hinges)
-      }
+    all.hinges <- NULL
+    all.max <- 0
+    all.min <- Inf
+    for (wb in w.band) {
+      all.hinges <- c(all.hinges, wb$hinges)
+      all.min <- min(all.min, min(wb))
+      all.max <- max(all.max, max(wb))
+    }
+
+    if (use.hinges && !is.null(all.hinges)) {
+      spct <- insert_spct_hinges(spct, all.hinges)
     }
 
     # "source_spct" objects are not guaranteed to contain spectral irradiance
-    # expressed in the needed type of scale, if the needed one is missing
-    # we add the missing it.
-    # As spectra are passed by reference the changes propagate to the argument
+    # expressed in the needed type of scale.
     if (unit.out == "energy") {
-      q2e(spct, byref = TRUE)
+      spct <- dplyr::select_(q2e(spct), "w.length", "s.e.irrad")
     } else if (unit.out == "photon") {
       e2q(spct, byref = TRUE)
+      spct <- dplyr::select_(e2q(spct), "w.length", "s.q.irrad")
     } else {
       stop("Unrecognized value for unit.out")
     }
@@ -182,16 +182,22 @@ irrad.source_spct <-
           wb.name[i] <- paste(getBSWFUsed(spct), "*", wb.name[i])
         }
         # calculate the multipliers
-        mult <- calc_multipliers(w.length=spct$w.length, w.band=wb, unit.out=unit.out,
-                                 unit.in=unit.in, use.cached.mult=use.cached.mult)
+        mult <- calc_multipliers(w.length=spct$w.length,
+                                 w.band=wb,
+                                 unit.out=unit.out,
+                                 unit.in=unit.in,
+                                 use.cached.mult=use.cached.mult)
         # calculate weighted spectral irradiance
         # the ifelse is needed to overrride NAs in spectral data for regions where mult == 0
         if (unit.out == "energy") {
-          irr <- with(spct, integrate_xy(w.length, ifelse(mult == 0, 0, s.e.irrad * mult)))
+          irrad[i] <- with(spct,
+                      integrate_xy(w.length,
+                                   ifelse(mult == 0, 0, s.e.irrad * mult)))
         } else {
-          irr <- with(spct, integrate_xy(w.length, ifelse(mult == 0, 0, s.q.irrad * mult)))
+          irrad[i] <- with(spct,
+                      integrate_xy(w.length,
+                                   ifelse(mult == 0, 0, s.q.irrad * mult)))
         }
-        irrad[i] <- irr
       }
     }
     if (quantity %in% c("contribution", "contribution.pc")) {
@@ -319,7 +325,7 @@ e_irrad.source_spct <-
            quantity="total",
            time.unit = NULL,
            wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
-           use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
+           use.cached.mult = FALSE,
            use.hinges=getOption("photobiology.use.hinges", default=NULL),
            allow.scaled = FALSE, ...) {
     irrad_spct(spct, w.band=w.band, unit.out="energy", quantity=quantity,
@@ -398,13 +404,13 @@ q_irrad.source_spct <-
   function(spct, w.band = NULL,
            quantity = "total",
            time.unit = NULL,
-           wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
-           use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
-           use.hinges=getOption("photobiology.use.hinges", default=NULL),
+           wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
+           use.cached.mult = FALSE,
+           use.hinges = getOption("photobiology.use.hinges", default = NULL),
            allow.scaled = FALSE, ...) {
-    irrad_spct(spct, w.band=w.band, unit.out="photon", quantity=quantity,
-               time.unit = time.unit, wb.trim=wb.trim,
-               use.cached.mult=use.cached.mult, use.hinges=use.hinges,
+    irrad_spct(spct, w.band = w.band, unit.out = "photon", quantity = quantity,
+               time.unit = time.unit, wb.trim = wb.trim,
+               use.cached.mult = use.cached.mult, use.hinges = use.hinges,
                allow.scaled = allow.scaled)
   }
 
@@ -481,7 +487,7 @@ fluence.source_spct <-
            unit.out = getOption("photobiology.radiation.unit", default = "energy"),
            exposure.time = NA,
            wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
-           use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
+           use.cached.mult = FALSE,
            use.hinges=getOption("photobiology.use.hinges", default=NULL),
            allow.scaled = FALSE, ...) {
     if (!lubridate::is.duration(exposure.time) &&
@@ -575,7 +581,7 @@ q_fluence.source_spct <-
   function(spct, w.band = NULL,
            exposure.time = NA,
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
-           use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
+           use.cached.mult = FALSE,
            use.hinges = getOption("photobiology.use.hinges", default = NULL),
            allow.scaled = FALSE, ...) {
     if (!lubridate::is.duration(exposure.time) &&
@@ -664,7 +670,7 @@ e_fluence.source_spct <-
   function(spct, w.band = NULL,
            exposure.time = NA,
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
-           use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
+           use.cached.mult = FALSE,
            use.hinges = getOption("photobiology.use.hinges", default = NULL),
            allow.scaled = FALSE, ...) {
     if (!lubridate::is.duration(exposure.time) &&

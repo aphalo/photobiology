@@ -48,7 +48,7 @@ split_irradiance <- function(w.length, s.irrad,
                              unit.in="energy",
                              scale="absolute",
                              check.spectrum=TRUE,
-                             use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
+                             use.cached.mult = FALSE,
                              use.hinges=getOption("photobiology.use.hinges", default=NULL) )
 {
   # what output? seems safer to not have a default here

@@ -15,5 +15,6 @@
 #' with(sun.data, integrate_xy(w.length, s.e.irrad))
 #'
 integrate_xy <- function(x, y) {
-  sum(caTools::runmean(y, 2, alg = "fast", endrule = "trim") * diff(x))
+  j <- length(x)
+  sum((y[1:j-1] + y[2:j]) * diff(x)) / 2
 }

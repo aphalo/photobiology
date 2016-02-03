@@ -318,8 +318,10 @@ color.source_spct <- function(x, type = "CMF", ...) {
 #' range(sun.spct)
 #'
 range.generic_spct <- function(..., na.rm = FALSE) {
-  x <- list(...)[[1]]
-  range(x[["w.length"]], na.rm = na.rm)
+  wl <- list(...)[[1]][["w.length"]]
+  # guaranteed to be sorted
+  wl[c(1, length(wl))]
+#  range(x[["w.length"]], na.rm = na.rm)
 }
 
 #' Maximun wavelength
@@ -334,8 +336,9 @@ range.generic_spct <- function(..., na.rm = FALSE) {
 #' max(sun.spct)
 #'
 max.generic_spct <- function(..., na.rm=FALSE) {
-  x <- list(...)[[1]]
-  max(x[["w.length"]], na.rm = na.rm)
+  wl <- list(...)[[1]][["w.length"]]
+  # guaranteed to be sorted
+  wl[length(wl)]
 }
 
 #' Minimum wavelength
@@ -350,8 +353,9 @@ max.generic_spct <- function(..., na.rm=FALSE) {
 #' min(sun.spct)
 #'
 min.generic_spct <- function(..., na.rm = FALSE) {
-  x <- list(...)[[1]]
-  min(x[["w.length"]], na.rm = na.rm)
+  wl <- list(...)[[1]][["w.length"]]
+  # guaranteed to be sorted
+  wl[1]
 }
 
 #' Stepsize
@@ -411,7 +415,8 @@ stepsize.generic_spct <- function(x, ...) {
 #' spread(sun.spct)
 #'
 spread.generic_spct <- function(x, ...) {
-  spread(x[["w.length"]])
+  wl <- x[["w.length"]]
+  wl[length(wl)] - wl[1]
 }
 
 #' @describeIn midpoint Method for "generic_spct" objects.
@@ -422,7 +427,8 @@ spread.generic_spct <- function(x, ...) {
 #' midpoint(sun.spct)
 #'
 midpoint.generic_spct <- function(x, ...) {
-  midpoint(x[["w.length"]])
+  wl <- x[["w.length"]]
+  wl[1] + (wl[length(wl)] - wl[1]) / 2
 }
 
 # Labels ------------------------------------------------------------------

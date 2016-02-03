@@ -25,7 +25,7 @@ calc_multipliers <-
            w.band,
            unit.out = "energy",
            unit.in = "energy",
-           use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
+           use.cached.mult = FALSE,
            fill = 0) {
     cache.needs.saving <- FALSE
     if (use.cached.mult && !is.null(w.band$name)) {
