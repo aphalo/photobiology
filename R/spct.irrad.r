@@ -139,12 +139,8 @@ irrad.source_spct <-
 
     # we collect all hinges and insert them in one go
     all.hinges <- NULL
-    all.max <- 0
-    all.min <- Inf
     for (wb in w.band) {
       all.hinges <- c(all.hinges, wb$hinges)
-      all.min <- min(all.min, min(wb))
-      all.max <- max(all.max, max(wb))
     }
 
     if (use.hinges && !is.null(all.hinges)) {
@@ -154,14 +150,16 @@ irrad.source_spct <-
     # "source_spct" objects are not guaranteed to contain spectral irradiance
     # expressed in the needed type of scale.
     if (unit.out == "energy") {
-      spct <- dplyr::select_(q2e(spct), "w.length", "s.e.irrad")
+      q2e(spct, byref = TRUE)
+      w.length <- spct[["w.length"]]
+      s.irrad <- spct[["s.e.irrad"]]
     } else if (unit.out == "photon") {
       e2q(spct, byref = TRUE)
-      spct <- dplyr::select_(e2q(spct), "w.length", "s.q.irrad")
+      w.length <- spct[["w.length"]]
+      s.irrad <- spct[["s.q.irrad"]]
     } else {
       stop("Unrecognized value for unit.out")
     }
-    unit.in <- unit.out
 
     # We iterate through the list of wavebands collecting the integrated irradiances,
     # possibly weighted depending on the waveband definition
@@ -175,29 +173,24 @@ irrad.source_spct <-
         wb.name[i] <- wb$name
       }
       if (is.effective.spectrum && is_effective(wb)) {
-        warning("Effective spectral irradiance is not compatible with a BSWF: ", wb.name[i])
-        irrad[i] <- NA
+        warning("Effective spectral irradiance is not compatible with a BSWF: ",
+                wb.name[i])
+        irrad[i] <- NA_real_
       } else {
         if (is.effective.spectrum) {
           wb.name[i] <- paste(getBSWFUsed(spct), "*", wb.name[i])
         }
         # calculate the multipliers
-        mult <- calc_multipliers(w.length=spct$w.length,
+        mult <- calc_multipliers(w.length=w.length,
                                  w.band=wb,
                                  unit.out=unit.out,
-                                 unit.in=unit.in,
+                                 unit.in=unit.out,
                                  use.cached.mult=use.cached.mult)
         # calculate weighted spectral irradiance
-        # the ifelse is needed to overrride NAs in spectral data for regions where mult == 0
-        if (unit.out == "energy") {
-          irrad[i] <- with(spct,
-                      integrate_xy(w.length,
-                                   ifelse(mult == 0, 0, s.e.irrad * mult)))
-        } else {
-          irrad[i] <- with(spct,
-                      integrate_xy(w.length,
-                                   ifelse(mult == 0, 0, s.q.irrad * mult)))
-        }
+        # the ifelse is needed to overrride NAs in spectral data for regions
+        # where mult == 0
+          irrad[i] <- integrate_xy(w.length,
+                                   ifelse(mult == 0, 0, s.irrad * mult))
       }
     }
     if (quantity %in% c("contribution", "contribution.pc")) {
