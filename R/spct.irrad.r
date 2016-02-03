@@ -180,8 +180,16 @@ irrad.source_spct <-
         if (is.effective.spectrum) {
           wb.name[i] <- paste(getBSWFUsed(spct), "*", wb.name[i])
         }
+        wl.selector <- which(w.length >= min(wb) & w.length <= max(wb))
+        if (wl.selector[1] > 1) {
+          wl.selector <- c(wl.selector[1] - 1, wl.selector)
+        }
+        if (wl.selector[length(wl.selector)] < length(w.length)) {
+          wl.selector <- c(wl.selector,  wl.selector[length(wl.selector)] + 1)
+        }
+
         # calculate the multipliers
-        mult <- calc_multipliers(w.length=w.length,
+        mult <- calc_multipliers(w.length=w.length[wl.selector],
                                  w.band=wb,
                                  unit.out=unit.out,
                                  unit.in=unit.out,
@@ -189,8 +197,8 @@ irrad.source_spct <-
         # calculate weighted spectral irradiance
         # the ifelse is needed to overrride NAs in spectral data for regions
         # where mult == 0
-          irrad[i] <- integrate_xy(w.length,
-                                   ifelse(mult == 0, 0, s.irrad * mult))
+          irrad[i] <- integrate_xy(w.length[wl.selector],
+                                   ifelse(mult == 0, 0, s.irrad[wl.selector] * mult))
       }
     }
     if (quantity %in% c("contribution", "contribution.pc")) {

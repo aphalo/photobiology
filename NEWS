@@ -7,8 +7,8 @@ classes. Add test cases for smooth_spct().
 photobiology 0.9.6
 ==================
 
-Optimize of R code for performance.
-Performance: high-level functions almost as fast as in 0.9.4.
+Optimize of R code for performance: high-level functions as fast as in
+0.9.4 (last Rcpp version).
 
 photobiology 0.9.5
 ==================

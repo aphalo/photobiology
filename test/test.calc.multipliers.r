@@ -42,7 +42,8 @@ test.integrate_irradiance()
 detach(sun.data)
 
 test.irrad <- function(w.band=new_waveband(400,700)) {
-  microbenchmark(e_irrad(sun.spct, w.band, use.cached.mult = FALSE, use.hinges = TRUE),
+  microbenchmark(e_irrad(sun.spct, w.band, use.cached.mult = FALSE, use.hinges = NULL),
+                 e_irrad(sun.spct, w.band, use.cached.mult = TRUE, use.hinges = NULL),                   e_irrad(sun.spct, w.band, use.cached.mult = FALSE, use.hinges = TRUE),
                  e_irrad(sun.spct, w.band, use.cached.mult = TRUE, use.hinges = TRUE),
                  e_irrad(sun.spct, w.band, use.cached.mult = TRUE, use.hinges = FALSE),
                  e_irrad(sun.spct, w.band, use.cached.mult = FALSE, use.hinges = FALSE))
@@ -64,8 +65,6 @@ test.irrad(DNA.N())
 test.irrad(CIE())
 test.irrad(CIE(300))
 test.irrad(UV_bands())
-uv_all <- UV_bands()
-test.irrad(uv_all)
 test.irrad(VIS_bands())
 test.irrad(GEN_G(300))
 test.irrad(DNA.N())
