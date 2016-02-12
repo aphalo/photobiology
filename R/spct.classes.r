@@ -106,13 +106,15 @@ check_spct.generic_spct <-
 #' @export
 check_spct.raw_spct <- function(x,
                            byref=TRUE,
-                           strict.range = getOption("photobiology.strict.range", default = FALSE),
+                           strict.range = FALSE,
                            multiple.wl = 1L,
                            ...) {
 
   x <- check_spct.generic_spct(x, multiple.wl = multiple.wl)
 
-  if (exists("counts", x, mode = "numeric", inherits=FALSE)) {
+  counts.cols <- grep("^counts", names(x))
+
+  if (length(counts.cols) >= 1) {
     return(x)
   } else {
     warning("No raw 'counts' data found in raw_spct")
@@ -129,32 +131,37 @@ check_spct.cps_spct <- function(x,
                            multiple.wl = getMultipleWl(x),
                            ...) {
 
-  range_check <- function(x) {
-    cps.min <- min(x$cps, na.rm = TRUE)
-    if (!is.null(strict.range) && !is.na(strict.range) && (cps.min < -1e-8)) {
-      message.text <- paste0("Off-range cps values:", signif(cps.min, 2))
-      if (strict.range) {
-        stop(message.text)
-      } else {
-        warning(message.text)
+  range_check <- function(x, cps.cols) {
+    for (col in cps.cols) {
+      stopifnot(is.numeric(x[[col]]))
+      if (all(is.na(x[[col]]))) {
+        next()
+      }
+      cps.range <- range(x[[col]], na.rm = TRUE)
+      stopifnot(cps.range[2] > 0)
+      cps.spread <- diff(cps.range)
+      if (!is.null(strict.range) && !is.na(strict.range) &&
+          cps.range[1] < -0.05 * cps.spread) {
+        message.text <- paste0("Off-range cps values:", signif(cps.spread[1], 2))
+        if (strict.range) {
+          stop(message.text)
+        } else {
+          warning(message.text)
+        }
       }
     }
   }
 
   x <- check_spct.generic_spct(x, multiple.wl = multiple.wl)
 
-  if (exists("cps", x, mode = "numeric", inherits=FALSE)) {
-    range_check(x)
-    return(x)
-  } else if (exists("counts.per.second", x, mode = "numeric", inherits=FALSE)) {
-    dots <- list(~counts.per.second)
-    x <- dplyr::rename_(x, .dots = stats::setNames(dots, "cps"))
-    warning("Found variable 'counts.per.second', renamed it to 'cps'")
-    range_check(x)
+  cps.cols <- grep("^cps", names(x))
+
+  if (length(cps.cols) >= 1) {
+    range_check(x, cps.cols)
     return(x)
   } else {
     warning("No counts per second data found in cps_spct")
-    x[["cps"]] = NA_real_
+    x[["cps_1"]] = NA_real_
     return(x)
   }
 }
@@ -173,7 +180,7 @@ check_spct.filter_spct <-
     if (!all(is.na(x[["Tfr"]]))) {
       Tfr.min <- min(x[["Tfr"]], na.rm = TRUE)
       Tfr.max <- max(x[["Tfr"]], na.rm = TRUE)
-      if (!is.null(strict.range) && !is.na(strict.range) && (Tfr.min < -1e-7 || Tfr.max > 1)) {
+      if (!is.null(strict.range) && !is.na(strict.range) && (Tfr.min < -1e-4 || Tfr.max > 1 + 1e-6)) {
         message.text <- paste("Off-range transmittance values [", signif(Tfr.min, 2),
                               "...", signif(Tfr.max, 2), "] instead of  [0..1]", sep="")
         if (strict.range) {
@@ -191,7 +198,8 @@ check_spct.filter_spct <-
     if (!all(is.na(x[["A"]]))) {
       A.min <- min(x[["A"]], na.rm = TRUE)
       A.max <- max(x[["A"]], na.rm = TRUE)
-      if (!is.null(strict.range) && !is.na(strict.range) && (A.min < -1e-7 || A.max > 20)) {
+      if (!is.null(strict.range) && !is.na(strict.range) &&
+          (A.min < -1e-7 || A.max > 20)) {
         message.text <- paste("Off-range absorbance values [", signif(A.min, 2),
                               "...", signif(A.max, 2), "] instead of  [0..1]", sep="")
         if (strict.range) {
@@ -256,7 +264,7 @@ check_spct.reflector_spct <-
       if (!all(is.na(x$Rfr))) {
         Rfr.min <- min(x$Rfr, na.rm = TRUE)
         Rfr.max <- max(x$Rfr, na.rm = TRUE)
-        if (!is.null(strict.range) && !is.na(strict.range) && (Rfr.min < -1e-7 ||  Rfr.max > 1)) {
+        if (!is.null(strict.range) && !is.na(strict.range) && (Rfr.min < -1e-4 ||  Rfr.max > 1 + 1e-6)) {
           message.text <-
             paste0(
               "Off-range reflectance values [",
@@ -313,7 +321,7 @@ check_spct.object_spct <-
     if (!all(is.na(x[["Tfr"]]))) {
       Tfr.min <- min(x[["Tfr"]], na.rm = TRUE)
       Tfr.max <- max(x[["Tfr"]], na.rm = TRUE)
-      if (!is.null(strict.range) && !is.na(strict.range) && (Tfr.min < -1e-7 || Tfr.max > 1)) {
+      if (!is.null(strict.range) && !is.na(strict.range) && (Tfr.min < -1e-4 || Tfr.max > 1 + 1e-6)) {
         message.text <- paste("Off-range transmittance values [", signif(Tfr.min, 2),
                               "...", signif(Tfr.max, 2), "] instead of  [0..1]", sep="")
         if (strict.range) {
@@ -332,7 +340,7 @@ check_spct.object_spct <-
       Rfr.min <- min(x[["Rfr"]], na.rm = TRUE)
       Rfr.max <- max(x[["Rfr"]], na.rm = TRUE)
       if (!is.na(Rfr.min) && !is.na(Rfr.max)) {
-        if (!is.null(strict.range) && !is.na(strict.range) && (Rfr.min < -1e-7 ||  Rfr.max > 1)) {
+        if (!is.null(strict.range) && !is.na(strict.range) && (Rfr.min < -1e-4 ||  Rfr.max > 1 + 1e-6)) {
           message.text <- paste0("Off-range reflectance values [", signif(Rfr.min, 2), "...",
                                  signif(Rfr.max, 2), "] instead of  [0..1]", sep="")
           if (strict.range) {
@@ -431,11 +439,13 @@ check_spct.source_spct <-
            ...) {
 
     range_check <- function(x, strict.range) {
-      min.limit <- -1e-2 # we accept small negative values
+      min.limit <- -0.05 # we accept small negative values
       if (exists("s.e.irrad", x, inherits = FALSE) &&
           !all(is.na(x[["s.e.irrad"]]))) {
         s.e.range <- range(x$s.e.irrad, na.rm = TRUE)
-        if (s.e.range[1] < min.limit * s.e.range[2]) {
+#        stopifnot(s.e.range[2] > 0)
+        s.e.spread <- diff(s.e.range)
+        if (s.e.range[1] < min.limit * s.e.spread) {
           message.text <-
             paste(
               "Negative spectral energy irradiance values; minimun s.e.irrad =",
@@ -451,7 +461,9 @@ check_spct.source_spct <-
       if (exists("s.q.irrad", x, inherits = FALSE) &&
           !all(is.na(x[["s.q.irrad"]]))) {
         s.q.range <- range(x$s.q.irrad, na.rm = TRUE)
-        if (s.q.range[1] < min.limit * s.q.range[2]) {
+#        stopifnot(s.q.range[2] > 0)
+        s.q.spread <- diff(s.q.range)
+        if (s.q.range[1] < min.limit * s.q.spread) {
           message.text <-
             paste(
               "Negative spectral photon irradiance values; minimun s.q.irrad =",
@@ -1905,9 +1917,9 @@ getInstrDesc <- function(x) {
     instr.desc <- attr(x, "instr.desc", exact = TRUE)
     if (is.null(instr.desc) || is.na(instr.desc)) {
       # need to handle objects created with old versions
-      instr.desc <- "unknown"
+      instr.desc <- NA
     }
-    return(instr.desc[[1]])
+    return(instr.desc)
   } else {
     return(NA)
   }
@@ -1915,7 +1927,7 @@ getInstrDesc <- function(x) {
 
 #' Set the "instr.settings" attribute
 #'
-#' Function to set by reference the "instr.settings" attribute  of an existing
+#' Function to set by reference the "what.measured" attribute  of an existing
 #' generic_spct or derived-class object.
 #'
 #' @param x a generic_spct object
@@ -1942,14 +1954,15 @@ setInstrSettings <- function(x, instr.settings) {
 
 #' Get the "instr.settings" attribute
 #'
-#' Function to read the "instr.desc" attribute of an existing generic_spct
+#' Function to read the "instr.settings" attribute of an existing generic_spct
 #' object.
 #'
 #' @param x a generic_spct object
 #'
-#' @return list (depends on instrument type)
+#' @return list
 #'
 #' @export
+#'
 #' @family measurement metadata functions
 #'
 getInstrSettings <- function(x) {
@@ -1959,10 +1972,64 @@ getInstrSettings <- function(x) {
       # need to handle objects created with old versions
       instr.settings <- "unknown"
     }
-    return(instr.settings[[1]])
+    return(instr.settings)
   } else {
     return(NA)
   }
 }
 
+# what measured attributes -------------------------------------------------
+
+#' Set the "what.measured" attribute
+#'
+#' Function to set by reference the "what.measured" attribute  of an existing
+#' generic_spct or derived-class object.
+#'
+#' @param x a generic_spct object
+#' @param what.measured a list
+#'
+#' @return x
+#'
+#' @note if x is not a generic_spct x is not modified.
+#'
+#' @export
+#' @family measurement metadata functions
+#'
+setWhatMeasured <- function(x, what.measured) {
+  name <- substitute(x)
+  if (is.any_spct(x)) {
+    attr(x, "what.measured") <- what.measured
+    if (is.name(name)) {
+      name <- as.character(name)
+      assign(name, x, parent.frame(), inherits = TRUE)
+    }
+  }
+  invisible(x)
+}
+
+#' Get the "what.measured" attribute
+#'
+#' Function to read the "what.measured" attribute of an existing generic_spct
+#' object.
+#'
+#' @param x a generic_spct object
+#'
+#' @return list
+#'
+#' @export
+#'
+#' @family measurement metadata functions
+#'
+getWhatMeasured <- function(x) {
+  if (is.any_spct(x)) {
+    what.measured <- attr(x, "what.measured", exact = TRUE)
+    if (is.null(what.measured) || is.na(what.measured)) {
+      # need to handle objects created with old versions
+      what.measured <- NA
+    }
+    return(what.measured)
+  } else {
+    return(NA)
+  }
+}
 
