@@ -188,7 +188,7 @@ absorptance_spct <-
       }
       absorptance[i] <-
         integrate_spct(trim_spct(temp.spct, wb,
-                                 use.hinges = use.hinges))
+                                 use.hinges = FALSE))
     }
 
     if (quantity %in% c("contribution", "contribution.pc")) {

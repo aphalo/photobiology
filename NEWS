@@ -14,6 +14,7 @@ Allow multiple "countsXXXX" columns in "raw_spct" objects.
 Allow multiple "cpsXXXX" columns in "cps_spct" objects.
 Fix bug getInstrSettings().
 Allow small rounding and instrument errors to pass validity checks.
+Fix bug in setRawSpct().
 
 photobiology 0.9.5
 ==================

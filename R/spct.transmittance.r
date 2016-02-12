@@ -162,7 +162,7 @@ transmittance_spct <-
         }
       }
       # we calculate the average transmittance.
-      transmittance[i] <- integrate_spct(trim_spct(spct, wb, use.hinges=use.hinges))
+      transmittance[i] <- integrate_spct(trim_spct(spct, wb, use.hinges=FALSE))
     }
 
     if (quantity %in% c("contribution", "contribution.pc")) {

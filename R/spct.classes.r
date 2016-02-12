@@ -107,7 +107,7 @@ check_spct.generic_spct <-
 check_spct.raw_spct <- function(x,
                            byref=TRUE,
                            strict.range = FALSE,
-                           multiple.wl = 1L,
+                           multiple.wl = getMultipleWl(x),
                            ...) {
 
   x <- check_spct.generic_spct(x, multiple.wl = multiple.wl)
@@ -598,10 +598,10 @@ setGenericSpct <- function(x, multiple.wl = 1L) {
   if (!is.data.frame(x) || inherits(x, "data.table")) {
     x <- dplyr::as_data_frame(x)
   }
-  if (!is.generic_spct(x)){
+  if (!is.generic_spct(x)) {
     class(x) <- c("generic_spct", class(x))
     attr(x, "spct.tags") <- NA
-    setMultipleWl(x, multiple.wl = multiple.wl)
+    x <- setMultipleWl(x, multiple.wl = multiple.wl)
   }
   x <- check_spct(x)
   attr(x, "spct.version") <- 2
@@ -623,12 +623,8 @@ setRawSpct <- function(x, strict.range = FALSE, multiple.wl = 1L) {
   if (!is.data.frame(x) || inherits(x, "data.table")) {
     x <- dplyr::as_data_frame(x)
   }
-  if (!is.generic_spct(x)) {
-    setGenericSpct(x, multiple.wl = multiple.wl)
-  }
-  if (!is.cps_spct(x)) {
-    class(x) <- c("raw_spct", class(x))
-  }
+  setGenericSpct(x, multiple.wl = multiple.wl)
+  class(x) <- c("raw_spct", class(x))
   x <- check_spct(x, strict.range = strict.range)
   if (is.name(name)) {
     name <- as.character(name)
@@ -648,12 +644,8 @@ setCpsSpct <- function(x, strict.range = FALSE, multiple.wl = 1L) {
   if (!is.data.frame(x) || inherits(x, "data.table")) {
     x <- dplyr::as_data_frame(x)
   }
-  if (!is.generic_spct(x)) {
-    setGenericSpct(x, multiple.wl = multiple.wl)
-  }
-  if (!is.cps_spct(x)) {
-    class(x) <- c("cps_spct", class(x))
-  }
+  setGenericSpct(x, multiple.wl = multiple.wl)
+  class(x) <- c("cps_spct", class(x))
   x <- check_spct(x, strict.range = strict.range)
   if (is.name(name)) {
     name <- as.character(name)
@@ -685,12 +677,8 @@ setFilterSpct <- function(x, Tfr.type=c("total", "internal"),
   if (!is.data.frame(x) || inherits(x, "data.table")) {
     x <- dplyr::as_data_frame(x)
   }
-  if (!is.generic_spct(x)) {
-    setGenericSpct(x, multiple.wl = multiple.wl)
-  }
-  if (!is.filter_spct(x)) {
-    class(x) <- c("filter_spct", class(x))
-  }
+  setGenericSpct(x, multiple.wl = multiple.wl)
+  class(x) <- c("filter_spct", class(x))
   setTfrType(x, Tfr.type[1])
   x <- check_spct(x, strict.range = strict.range)
   #  setkey_spct(x, w.length)
@@ -722,12 +710,8 @@ setReflectorSpct <- function(x, Rfr.type=c("total", "specular"),
   if (!is.data.frame(x) || inherits(x, "data.table")) {
     x <- dplyr::as_data_frame(x)
   }
-  if (!is.generic_spct(x)) {
-    setGenericSpct(x, multiple.wl = multiple.wl)
-  }
-  if (!is.reflector_spct(x)) {
-    class(x) <- c("reflector_spct", class(x))
-  }
+  setGenericSpct(x, multiple.wl = multiple.wl)
+  class(x) <- c("reflector_spct", class(x))
   setRfrType(x, Rfr.type[1])
   x <- check_spct(x, strict.range = strict.range)
   #  setkey_spct(x, w.length)
@@ -768,12 +752,8 @@ setObjectSpct <- function(x,
   if (!is.data.frame(x) || inherits(x, "data.table")) {
     x <- dplyr::as_data_frame(x)
   }
-  if (!is.generic_spct(x)) {
-    setGenericSpct(x, multiple.wl = multiple.wl)
-  }
-  if (!is.object_spct(x)) {
-    class(x) <- c("object_spct", class(x))
-  }
+  setGenericSpct(x, multiple.wl = multiple.wl)
+  class(x) <- c("object_spct", class(x))
   setTfrType(x, Tfr.type)
   setRfrType(x, Rfr.type)
   x <- check_spct(x, strict.range = strict.range)
@@ -796,12 +776,8 @@ setResponseSpct <- function(x, time.unit="second", multiple.wl = 1L) {
   if (!is.data.frame(x) || inherits(x, "data.table")) {
     x <- dplyr::as_data_frame(x)
   }
-  if (!is.generic_spct(x)) {
-    setGenericSpct(x, multiple.wl = multiple.wl)
-  }
-  if (!is.response_spct(x)) {
-    class(x) <- c("response_spct", class(x))
-  }
+  setGenericSpct(x, multiple.wl = multiple.wl)
+  class(x) <- c("response_spct", class(x))
   setTimeUnit(x, time.unit)
   x <- check_spct(x)
   #  setkey_spct(x, w.length)
@@ -825,12 +801,8 @@ setSourceSpct <- function(x, time.unit="second", bswf.used=c("none", "unknown"),
   if (!is.data.frame(x) || inherits(x, "data.table")) {
     x <- dplyr::as_data_frame(x)
   }
-  if (!is.generic_spct(x)) {
-    setGenericSpct(x, multiple.wl = multiple.wl)
-  }
-  if (!is.source_spct(x)) {
-    class(x) <- c("source_spct", class(x))
-  }
+  setGenericSpct(x, multiple.wl = multiple.wl)
+  class(x) <- c("source_spct", class(x))
   setTimeUnit(x, time.unit)
   setBSWFUsed(x, bswf.used = bswf.used)
   x <- check_spct(x, strict.range = strict.range)
@@ -853,12 +825,8 @@ setChromaSpct <- function(x, multiple.wl = 1L) {
   if (!is.data.frame(x) || inherits(x, "data.table")) {
     x <- dplyr::as_data_frame(x)
   }
-  if (!is.generic_spct(x)) {
-    setGenericSpct(x, multiple.wl = multiple.wl)
-  }
-  if (!is.chroma_spct(x)) {
-    class(x) <- c("chroma_spct", class(x))
-  }
+  setGenericSpct(x, multiple.wl = multiple.wl)
+  class(x) <- c("chroma_spct", class(x))
   x <- check_spct(x)
   #  setkey_spct(x, w.length)
   if (is.name(name)) {

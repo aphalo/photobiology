@@ -63,7 +63,7 @@ img {
 <div id="header">
 <h1 class="title">test.calc.multipliers.r</h1>
 <h4 class="author"><em>aphalo</em></h4>
-<h4 class="date"><em>Wed Feb 03 22:29:57 2016</em></h4>
+<h4 class="date"><em>Fri Feb 12 14:01:28 2016</em></h4>
 </div>
 
 
@@ -77,9 +77,9 @@ Sys.info()</code></pre>
 ##          login           user effective_user 
 ##       &quot;aphalo&quot;       &quot;aphalo&quot;       &quot;aphalo&quot;</code></pre>
 <pre class="r"><code>Sys.time()</code></pre>
-<pre><code>## [1] &quot;2016-02-03 22:29:58 EET&quot;</code></pre>
+<pre><code>## [1] &quot;2016-02-12 14:01:28 EET&quot;</code></pre>
 <pre class="r"><code>sessionInfo()</code></pre>
-<pre><code>## R version 3.2.3 Patched (2016-01-26 r70013)
+<pre><code>## R version 3.2.3 (2015-12-10)
 ## Platform: x86_64-w64-mingw32/x64 (64-bit)
 ## Running under: Windows 10 x64 (build 10240)
 ## 
@@ -95,7 +95,7 @@ Sys.info()</code></pre>
 ## 
 ## other attached packages:
 ## [1] microbenchmark_1.4-2.1      photobiologyWavebands_0.4.0
-## [3] photobiology_0.9.5.9004    
+## [3] photobiology_0.9.5.9007    
 ## 
 ## loaded via a namespace (and not attached):
 ##  [1] Rcpp_0.12.3      digest_0.6.9     plyr_1.8.3       grid_3.2.3      
@@ -116,33 +116,33 @@ test.calc_multipliers()</code></pre>
 ##                                                                   expr
 ##  calc_multipliers(w.length, w.band, &quot;photon&quot;, use.cached.mult = FALSE)
 ##   calc_multipliers(w.length, w.band, &quot;photon&quot;, use.cached.mult = TRUE)
-##     min      lq     mean median      uq      max neval cld
-##  41.053 43.5235 47.13872 46.945 49.0355   63.100   100   a
-##  12.164 13.3050 26.85937 14.825 15.5850 1198.516   100   a</code></pre>
+##     min     lq     mean median     uq      max neval cld
+##  39.913 43.904 59.26080 47.705 50.176 1155.184   100   b
+##  12.164 13.305 15.41012 14.445 15.585   71.462   100  a</code></pre>
 <pre class="r"><code>test.calc_multipliers(DNA.N())</code></pre>
 <pre><code>## Unit: microseconds
 ##                                                                   expr
 ##  calc_multipliers(w.length, w.band, &quot;photon&quot;, use.cached.mult = FALSE)
 ##   calc_multipliers(w.length, w.band, &quot;photon&quot;, use.cached.mult = TRUE)
-##      min      lq      mean   median      uq      max neval cld
-##  256.580 267.604 331.53654 286.4205 303.146 1937.849   100   b
-##   12.544  13.684  20.77367  17.4860  18.626  390.003   100  a</code></pre>
+##      min      lq     mean  median      uq      max neval cld
+##  262.283 271.405 369.5296 294.783 313.409 4502.897   100   b
+##   12.544  14.065  20.1921  17.486  18.816  318.541   100  a</code></pre>
 <pre class="r"><code>test.calc_multipliers(CIE())</code></pre>
 <pre><code>## Unit: microseconds
 ##                                                                   expr
 ##  calc_multipliers(w.length, w.band, &quot;photon&quot;, use.cached.mult = FALSE)
 ##   calc_multipliers(w.length, w.band, &quot;photon&quot;, use.cached.mult = TRUE)
-##     min      lq     mean median     uq     max neval cld
-##  84.007 88.3780 95.25430 94.650 98.831 133.802   100   b
-##  12.163 13.1145 18.70576 15.395 16.725 339.826   100  a</code></pre>
+##     min     lq     mean  median     uq     max neval cld
+##  84.006 90.088 98.55375 96.9305 99.212 336.406   100   b
+##  12.544 13.684 16.99526 15.5850 16.725 123.159   100  a</code></pre>
 <pre class="r"><code>test.calc_multipliers(CIE(300))</code></pre>
 <pre><code>## Unit: microseconds
 ##                                                                   expr
 ##  calc_multipliers(w.length, w.band, &quot;photon&quot;, use.cached.mult = FALSE)
 ##   calc_multipliers(w.length, w.band, &quot;photon&quot;, use.cached.mult = TRUE)
-##     min      lq      mean  median       uq     max neval cld
-##  96.931 101.872 109.53533 105.483 114.4165 218.188   100   b
-##  11.783  12.924  16.51255  13.685  16.5355 142.925   100  a</code></pre>
+##      min       lq      mean  median       uq     max neval cld
+##  102.253 104.5330 109.64560 106.053 110.4245 226.552   100   b
+##   12.544  13.4945  17.49697  16.345  16.7260 151.288   100  a</code></pre>
 <pre class="r"><code>test.irradiance &lt;- function(w.band = new_waveband(400,700)) {
   microbenchmark(irradiance(w.length, s.e.irrad, w.band,&quot;photon&quot;,
                             check.spectrum = TRUE, use.cached.mult = FALSE),
@@ -158,40 +158,40 @@ test.irradiance()</code></pre>
 ##  irradiance(w.length, s.e.irrad, w.band, &quot;photon&quot;, check.spectrum = TRUE,      use.cached.mult = FALSE)
 ##   irradiance(w.length, s.e.irrad, w.band, &quot;photon&quot;, check.spectrum = TRUE,      use.cached.mult = TRUE)
 ##  irradiance(w.length, s.e.irrad, w.band, &quot;photon&quot;, check.spectrum = FALSE,      use.cached.mult = TRUE)
-##      min       lq     mean  median       uq      max neval cld
-##  745.035 772.2130 820.3284 778.485 787.4180 2612.941   100   a
-##  717.666 745.2240 819.9671 753.397 769.7420 2528.935   100   a
-##  696.379 718.4255 747.5582 726.028 739.1425 2472.297   100   a</code></pre>
+##      min       lq     mean   median       uq      max neval cld
+##  729.069 756.8185 820.5757 762.1400 771.6430 2750.926   100   a
+##  713.104 731.7300 783.5672 736.6720 750.5460 2571.129   100   a
+##  689.917 700.3700 736.3411 706.8325 722.9875 2429.344   100   a</code></pre>
 <pre class="r"><code>test.irradiance(DNA.N())</code></pre>
 <pre><code>## Unit: microseconds
 ##                                                                                                    expr
 ##  irradiance(w.length, s.e.irrad, w.band, &quot;photon&quot;, check.spectrum = TRUE,      use.cached.mult = FALSE)
 ##   irradiance(w.length, s.e.irrad, w.band, &quot;photon&quot;, check.spectrum = TRUE,      use.cached.mult = TRUE)
 ##  irradiance(w.length, s.e.irrad, w.band, &quot;photon&quot;, check.spectrum = FALSE,      use.cached.mult = TRUE)
-##       min       lq      mean   median        uq      max neval cld
-##  1003.516 1039.627 1114.0504 1052.551 1146.4405 2824.667   100   b
-##   733.251  749.786  850.0803  772.973  805.8530 2653.994   100  a 
-##   702.841  723.748  802.7782  747.125  783.9965 2652.474   100  a</code></pre>
+##      min      lq      mean  median        uq      max neval cld
+##  952.580 985.080 1037.5822 994.203 1018.9105 2624.346   100   b
+##  688.396 714.435  753.2945 721.657  734.5810 2472.678   100  a 
+##  649.245 688.396  768.7349 694.098  707.5925 2433.145   100  a</code></pre>
 <pre class="r"><code>test.irradiance(CIE())</code></pre>
 <pre><code>## Unit: microseconds
 ##                                                                                                    expr
 ##  irradiance(w.length, s.e.irrad, w.band, &quot;photon&quot;, check.spectrum = TRUE,      use.cached.mult = FALSE)
 ##   irradiance(w.length, s.e.irrad, w.band, &quot;photon&quot;, check.spectrum = TRUE,      use.cached.mult = TRUE)
 ##  irradiance(w.length, s.e.irrad, w.band, &quot;photon&quot;, check.spectrum = FALSE,      use.cached.mult = TRUE)
-##      min      lq     mean   median       uq      max neval cld
-##  800.531 838.544 894.2653 855.0785 894.9910 2526.274   100   b
-##  720.707 760.239 851.0229 778.6745 841.0140 2633.468   100  ab
-##  689.917 722.797 783.3806 743.8940 790.2685 2430.104   100  a</code></pre>
+##      min      lq     mean  median       uq      max neval cld
+##  747.695 790.458 856.4932 796.541 808.3245 2674.141   100   b
+##  679.654 707.023 763.5881 721.467 735.7215 2448.351   100  a 
+##  649.245 683.835 697.1585 692.578 707.2125  774.304   100  a</code></pre>
 <pre class="r"><code>test.irradiance(CIE(300))</code></pre>
 <pre><code>## Unit: microseconds
 ##                                                                                                    expr
 ##  irradiance(w.length, s.e.irrad, w.band, &quot;photon&quot;, check.spectrum = TRUE,      use.cached.mult = FALSE)
 ##   irradiance(w.length, s.e.irrad, w.band, &quot;photon&quot;, check.spectrum = TRUE,      use.cached.mult = TRUE)
 ##  irradiance(w.length, s.e.irrad, w.band, &quot;photon&quot;, check.spectrum = FALSE,      use.cached.mult = TRUE)
-##      min      lq     mean   median      uq      max neval cld
-##  830.181 858.120 959.3911 875.6055 921.029 2755.105   100   b
-##  731.730 748.075 790.0328 768.4115 804.903 1057.872   100  a 
-##  688.777 718.806 786.6802 744.0835 795.780 2462.794   100  a</code></pre>
+##      min       lq     mean   median       uq      max neval cld
+##  766.322 815.9270 858.7359 820.2980 833.2220 2590.135   100   c
+##  686.496 718.4260 777.8122 724.3175 737.8125 2458.234   100  b 
+##  661.028 683.8355 698.6980 692.0080 699.8005 1098.545   100 a</code></pre>
 <pre class="r"><code>test.integrate_irradiance &lt;- function() {
   microbenchmark(integrate_xy(w.length, s.e.irrad))
 }
@@ -199,9 +199,9 @@ test.irradiance()</code></pre>
 test.integrate_irradiance()</code></pre>
 <pre><code>## Unit: microseconds
 ##                               expr    min     lq     mean median     uq
-##  integrate_xy(w.length, s.e.irrad) 25.848 26.608 29.45939 26.988 27.749
+##  integrate_xy(w.length, s.e.irrad) 25.468 26.229 28.06818 26.988 27.369
 ##     max neval
-##  72.983   100</code></pre>
+##  67.282   100</code></pre>
 <pre class="r"><code>detach(sun.data)
 
 test.irrad &lt;- function(w.band=new_waveband(400,700)) {
@@ -221,13 +221,13 @@ test.irrad()</code></pre>
 ##    e_irrad(sun.spct, w.band, use.cached.mult = TRUE, use.hinges = TRUE)
 ##   e_irrad(sun.spct, w.band, use.cached.mult = TRUE, use.hinges = FALSE)
 ##  e_irrad(sun.spct, w.band, use.cached.mult = FALSE, use.hinges = FALSE)
-##       min        lq      mean    median       uq        max neval cld
-##  2043.902 2116.3150 2248.8437 2171.4320 2222.748   4591.463   100   a
-##  2039.721 2119.7365 2323.0279 2158.5085 2244.796   7637.360   100   a
-##  1824.193 1887.4835 2014.5686 1926.8250 1979.092   4411.667   100   a
-##  1832.176 1891.4745 3904.4692 1929.8670 2003.419 184703.081   100   a
-##   425.354  463.7460  591.0137  480.0910  499.477   2831.890   100   a
-##   431.816  446.6405 2100.9925  459.3745  473.439 155154.115   100   a</code></pre>
+##       min        lq      mean    median        uq        max neval cld
+##  1996.768 2054.9270 2214.2348 2087.0475 2147.2960   4074.122   100   a
+##  1995.628 2055.6870 2262.0842 2092.3690 2137.4125   7267.126   100   a
+##  1767.937 1835.2170 3764.3928 1873.6095 1918.0830 178467.669   100   a
+##  1780.860 1841.3000 2000.9953 1871.7095 1920.7445   4423.452   100   a
+##   413.950  449.8715  472.4508  472.6785  485.7930    623.776   100   a
+##   422.694  443.9800 1893.6722  452.7225  467.9275 142270.782   100   a</code></pre>
 <pre class="r"><code>test.irrad(DNA.N())</code></pre>
 <pre><code>## Unit: microseconds
 ##                                                                    expr
@@ -237,13 +237,13 @@ test.irrad()</code></pre>
 ##    e_irrad(sun.spct, w.band, use.cached.mult = TRUE, use.hinges = TRUE)
 ##   e_irrad(sun.spct, w.band, use.cached.mult = TRUE, use.hinges = FALSE)
 ##  e_irrad(sun.spct, w.band, use.cached.mult = FALSE, use.hinges = FALSE)
-##       min        lq      mean    median       uq       max neval cld
-##  2450.250 2596.5960 2904.7018 2715.1930 2826.569  5207.637   100   b
-##  2208.494 2382.5880 2674.8627 2495.6740 2714.813  4995.530   100   b
-##  2301.623 2409.5770 3149.2327 2492.2530 2573.028 56605.487   100   b
-##  2040.861 2159.8395 2411.8428 2325.7605 2502.897  4986.027   100   b
-##   650.764  726.7885  926.1079  965.3135 1006.746  2763.089   100  a 
-##   894.421  945.1670  985.1747  969.4945 1006.556  1218.663   100  a</code></pre>
+##       min       lq      mean    median       uq       max neval cld
+##  2464.316 2507.459 2709.8195 2543.9500 2623.015  4832.840   100   b
+##  2180.367 2271.405 2508.2687 2415.2805 2564.477  4575.879   100   b
+##  2234.723 2304.095 2979.3166 2335.0745 2406.727 53792.624   100   b
+##  1993.347 2058.729 2294.9456 2124.1085 2347.619  4447.019   100   b
+##   634.040  707.403  912.6672  957.5210  981.659  2716.334   100  a 
+##   898.983  925.972 1030.3523  941.9365  975.767  3024.612   100  a</code></pre>
 <pre class="r"><code>test.irrad(CIE())</code></pre>
 <pre><code>## Unit: microseconds
 ##                                                                    expr
@@ -253,13 +253,13 @@ test.irrad()</code></pre>
 ##    e_irrad(sun.spct, w.band, use.cached.mult = TRUE, use.hinges = TRUE)
 ##   e_irrad(sun.spct, w.band, use.cached.mult = TRUE, use.hinges = FALSE)
 ##  e_irrad(sun.spct, w.band, use.cached.mult = FALSE, use.hinges = FALSE)
-##       min        lq      mean   median        uq      max neval cld
-##  2289.460 2336.5945 2564.3163 2400.264 2546.6100 5335.737   100   c
-##  2244.605 2345.3370 2520.4962 2449.680 2543.9495 5125.910   100   c
-##  2091.418 2165.7305 2297.6930 2240.614 2336.9750 4488.451   100  b 
-##  2055.306 2150.5260 2297.4801 2214.196 2297.4420 4935.472   100  b 
-##   652.285  708.5425  832.9863  755.108  801.4815 3371.659   100 a  
-##   695.238  726.2180  794.1761  738.002  768.0315 3361.016   100 a</code></pre>
+##       min        lq      mean   median       uq      max neval cld
+##  2243.466 2289.6505 2394.4001 2316.450 2359.592 4689.155   100   c
+##  2181.886 2261.1415 2421.9473 2312.267 2369.666 4520.382   100   c
+##  2019.956 2085.9065 2188.3942 2120.688 2166.682 4106.052   100  b 
+##  1962.938 2027.9385 2163.2227 2063.289 2135.131 4113.654   100  b 
+##   643.162  720.3265  776.0066  748.075  764.611 2721.656   100 a  
+##   680.034  713.4840  754.4729  729.829  746.745 2598.117   100 a</code></pre>
 <pre class="r"><code>test.irrad(CIE(300))</code></pre>
 <pre><code>## Unit: microseconds
 ##                                                                    expr
@@ -269,13 +269,13 @@ test.irrad()</code></pre>
 ##    e_irrad(sun.spct, w.band, use.cached.mult = TRUE, use.hinges = TRUE)
 ##   e_irrad(sun.spct, w.band, use.cached.mult = TRUE, use.hinges = FALSE)
 ##  e_irrad(sun.spct, w.band, use.cached.mult = FALSE, use.hinges = FALSE)
-##       min       lq      mean    median       uq      max neval cld
-##  2299.343 2366.053 2572.5003 2412.8085 2484.651 5127.812   100   c
-##  2229.781 2304.284 2514.8513 2366.8140 2457.472 4824.476   100   c
-##  2111.564 2151.096 2426.2988 2190.0580 2297.442 5733.722   100   c
-##  2014.633 2100.730 2212.8123 2147.6755 2233.392 3801.955   100  b 
-##   656.087  721.467  832.2412  770.3125  793.119 3313.501   100 a  
-##   716.905  740.093  829.8542  756.6280  786.468 3142.068   100 a</code></pre>
+##       min        lq      mean   median       uq      max neval  cld
+##  2234.723 2308.2765 2459.1952 2337.546 2380.119 4654.564   100    d
+##  2175.805 2250.4975 2365.4616 2289.270 2347.809 4337.164   100   cd
+##  2043.904 2108.1440 2242.9946 2140.073 2177.135 4219.327   100  bc 
+##  1978.143 2051.8855 2185.9691 2095.789 2169.912 4252.018   100  b  
+##   646.583  688.0165  753.1501  769.363  786.848  878.456   100 a   
+##   710.064  739.5230  793.3858  748.455  758.909 2872.184   100 a</code></pre>
 <pre class="r"><code>test.irrad(UV_bands())</code></pre>
 <pre><code>## Unit: microseconds
 ##                                                                    expr
@@ -285,13 +285,13 @@ test.irrad()</code></pre>
 ##    e_irrad(sun.spct, w.band, use.cached.mult = TRUE, use.hinges = TRUE)
 ##   e_irrad(sun.spct, w.band, use.cached.mult = TRUE, use.hinges = FALSE)
 ##  e_irrad(sun.spct, w.band, use.cached.mult = FALSE, use.hinges = FALSE)
-##       min       lq      mean   median       uq      max neval cld
-##  2107.763 2152.046 2249.0035 2200.132 2269.884 4646.200   100  bc
-##  2107.003 2182.076 2335.7239 2226.359 2280.907 4898.219   100   c
-##  1873.989 1940.130 2116.8740 1991.255 2036.110 4553.451   100  b 
-##  1880.071 1944.691 2090.5088 1979.092 2038.771 4745.791   100  b 
-##   489.594  533.498  614.6951  559.536  585.384 3119.641   100 a  
-##   493.776  514.492  575.5960  523.045  535.398 3081.629   100 a</code></pre>
+##       min        lq      mean   median        uq      max neval cld
+##  2032.500 2112.1350 2171.5055 2141.214 2194.2405 2675.282   100  b 
+##  2071.272 2122.3975 2359.1972 2163.831 2213.2465 6237.383   100   c
+##  1807.849 1899.8375 2047.8374 1923.215 1963.3180 4316.638   100  b 
+##  1850.423 1910.1010 2043.4204 1943.172 2004.3705 4094.648   100  b 
+##   491.495  525.8955  604.8578  562.197  576.4515 2811.365   100 a  
+##   488.074  511.0710  535.6571  520.574  531.2175 1074.978   100 a</code></pre>
 <pre class="r"><code>test.irrad(VIS_bands())</code></pre>
 <pre><code>## Unit: microseconds
 ##                                                                    expr
@@ -301,13 +301,13 @@ test.irrad()</code></pre>
 ##    e_irrad(sun.spct, w.band, use.cached.mult = TRUE, use.hinges = TRUE)
 ##   e_irrad(sun.spct, w.band, use.cached.mult = TRUE, use.hinges = FALSE)
 ##  e_irrad(sun.spct, w.band, use.cached.mult = FALSE, use.hinges = FALSE)
-##       min        lq     mean    median       uq      max neval  cld
-##  2562.006 2646.0115 2835.931 2704.3600 2787.796 5435.328   100   c 
-##  2527.034 2692.5760 3090.930 2761.3780 2912.476 5577.493   100    d
-##  2349.899 2428.2035 2574.599 2480.8495 2530.075 5354.362   100  b  
-##  2341.916 2462.2240 2641.633 2534.2565 2621.684 5246.409   100  bc 
-##   947.638 1011.1180 1142.913 1102.7265 1140.548 3853.271   100 a   
-##   938.895  968.7345 1134.946  988.1205 1032.405 3614.176   100 a</code></pre>
+##       min       lq     mean   median       uq      max neval cld
+##  2519.053 2580.061 2800.048 2617.504 2726.788 4847.665   100   c
+##  2509.550 2615.413 2870.785 2722.796 2847.286 4949.538   100   c
+##  2299.343 2355.032 2497.390 2387.341 2431.056 4708.161   100  b 
+##  2303.905 2379.549 2545.452 2414.710 2519.243 4792.548   100  b 
+##   929.773 1029.174 1225.255 1096.265 1121.733 3279.292   100 a  
+##   923.310  956.191 1062.073  971.966  995.913 3130.285   100 a</code></pre>
 <pre class="r"><code>test.irrad(GEN_G(300))</code></pre>
 <pre><code>## Unit: microseconds
 ##                                                                    expr
@@ -317,13 +317,13 @@ test.irrad()</code></pre>
 ##    e_irrad(sun.spct, w.band, use.cached.mult = TRUE, use.hinges = TRUE)
 ##   e_irrad(sun.spct, w.band, use.cached.mult = TRUE, use.hinges = FALSE)
 ##  e_irrad(sun.spct, w.band, use.cached.mult = FALSE, use.hinges = FALSE)
-##       min        lq      mean    median        uq      max neval  cld
-##  2279.196 2343.8160 2560.9941 2387.3400 2440.7470 5073.455   100    d
-##  2247.266 2299.1525 2399.4965 2345.9075 2379.1680 4916.845   100   c 
-##  2070.511 2124.1075 2203.4005 2158.1285 2224.2695 4619.211   100  b  
-##  1997.528 2092.9375 2198.4360 2135.5115 2188.5380 4702.457   100  b  
-##   645.823  714.0545  749.1775  728.1185  744.4640 3110.897   100 a   
-##   686.496  695.9990  771.1712  708.1625  731.9205 3275.109   100 a</code></pre>
+##       min        lq      mean    median        uq      max neval cld
+##  2243.846 2293.0715 2386.9915 2315.3090 2354.0815 4586.143   100   c
+##  2214.957 2261.9020 2396.9126 2290.0310 2326.3320 4545.850   100   c
+##  2032.120 2086.8565 2181.8258 2115.9355 2143.3045 4167.252   100  b 
+##  2004.370 2062.9090 2173.5049 2088.7570 2137.9825 4399.885   100  b 
+##   639.361  662.5485  711.5307  723.5575  733.4405  936.234   100 a  
+##   675.092  695.6190  730.9511  702.8410  712.7250 2804.522   100 a</code></pre>
 <pre class="r"><code>test.irrad(DNA.N())</code></pre>
 <pre><code>## Unit: microseconds
 ##                                                                    expr
@@ -334,12 +334,12 @@ test.irrad()</code></pre>
 ##   e_irrad(sun.spct, w.band, use.cached.mult = TRUE, use.hinges = FALSE)
 ##  e_irrad(sun.spct, w.band, use.cached.mult = FALSE, use.hinges = FALSE)
 ##       min        lq      mean   median       uq       max neval cld
-##  2453.671 2533.1160 2658.4149 2570.938 2644.110  4731.727   100   b
-##  2235.862 2284.3280 2973.2679 2336.024 2560.105 54103.161   100   b
-##  2282.998 2328.4220 2534.6594 2360.732 2422.692  4750.733   100   b
-##  2029.838 2088.5660 2339.9052 2157.938 2383.919  4847.283   100   b
-##   653.045  701.1305  950.1467  952.009  979.188  2989.640   100  a 
-##   902.784  921.4100 1041.8201  936.044  959.041  3146.628   100  a</code></pre>
+##  2389.052 2508.2195 2626.5276 2550.032 2605.530  5168.106   100   b
+##  2183.408 2251.4485 2495.8464 2311.698 2516.962  5114.129   100   b
+##  2243.085 2302.1950 2457.9789 2332.414 2362.823  4511.259   100   b
+##  1967.499 2058.9175 2805.7541 2167.631 2373.847 53396.540   100   b
+##   648.864  684.0250  919.8287  956.761  982.799  2805.662   100  a 
+##   901.644  925.7815 1019.4466  934.714  963.983  2833.031   100  a</code></pre>
 <pre class="r"><code>sun.spct &lt;- q2e(sun.spct, action = &quot;replace&quot;)
 
 test.irrad()</code></pre>
@@ -351,13 +351,13 @@ test.irrad()</code></pre>
 ##    e_irrad(sun.spct, w.band, use.cached.mult = TRUE, use.hinges = TRUE)
 ##   e_irrad(sun.spct, w.band, use.cached.mult = TRUE, use.hinges = FALSE)
 ##  e_irrad(sun.spct, w.band, use.cached.mult = FALSE, use.hinges = FALSE)
-##       min       lq      mean   median       uq      max neval cld
-##  1574.454 1596.501 1709.1807 1610.756 1648.007 3963.886   100   c
-##  1563.431 1597.642 1691.2466 1616.268 1642.687 3925.494   100   c
-##  1351.325 1378.884 1459.0392 1395.039 1425.258 3306.279   100  b 
-##  1349.044 1378.313 1492.6760 1401.501 1424.308 3714.908   100  b 
-##   412.050  428.965  500.0662  457.284  467.167 2820.867   100 a  
-##   415.851  431.436  478.8823  436.567  442.269 2788.937   100 a</code></pre>
+##       min        lq      mean    median        uq      max neval cld
+##  1566.853 1588.7100 1639.8664 1607.5260 1640.0260 3554.498   100   c
+##  1556.590 1586.9995 1689.8789 1613.6080 1645.3480 3730.494   100   c
+##  1326.238 1372.9920 1491.2284 1386.2960 1419.5570 3401.691   100  b 
+##  1338.782 1381.5440 1454.5088 1398.2700 1428.3000 3499.762   100  b 
+##   416.992  453.1025  537.1472  461.6555  468.1175 2490.924   100 a  
+##   428.395  436.3770  504.0805  441.6990  452.7230 2534.638   100 a</code></pre>
 <pre class="r"><code>test.irrad(DNA.N())</code></pre>
 <pre><code>## Unit: microseconds
 ##                                                                    expr
@@ -367,13 +367,13 @@ test.irrad()</code></pre>
 ##    e_irrad(sun.spct, w.band, use.cached.mult = TRUE, use.hinges = TRUE)
 ##   e_irrad(sun.spct, w.band, use.cached.mult = TRUE, use.hinges = FALSE)
 ##  e_irrad(sun.spct, w.band, use.cached.mult = FALSE, use.hinges = FALSE)
-##       min       lq      mean    median        uq      max neval  cld
-##  2034.399 2078.873 2207.6199 2104.7215 2147.2950 4418.889   100    d
-##  1795.684 1851.562 2010.4138 1917.7030 2100.7300 4135.319   100   c 
-##  1825.333 1875.510 2006.1679 1905.7290 1963.8870 4231.870   100   c 
-##  1591.561 1626.151 1833.2631 1685.8300 1913.3310 4201.080   100  b  
-##   642.782  678.894  948.1396  939.4650  970.8255 3401.689   100 a   
-##   883.018  912.857  999.9385  928.0615  955.2400 3092.652   100 a</code></pre>
+##       min        lq      mean    median        uq      max neval  cld
+##  2032.500 2064.2390 2254.7860 2087.0470 2159.4595 4096.169   100    d
+##  1771.357 1824.0035 2098.7392 1888.2445 2132.8510 6049.983   100   cd
+##  1809.749 1857.6445 2030.8232 1881.2120 1932.1480 3994.297   100   c 
+##  1547.847 1614.5580 1813.6077 1697.6140 1904.9695 3810.699   100  b  
+##   631.759  915.8985  959.5056  951.6295  976.7175 2882.827   100 a   
+##   881.118  917.7990 1003.2346  927.3020  951.0590 2930.342   100 a</code></pre>
 <pre class="r"><code>test.irrad(CIE())</code></pre>
 <pre><code>## Unit: microseconds
 ##                                                                    expr
@@ -383,13 +383,13 @@ test.irrad()</code></pre>
 ##    e_irrad(sun.spct, w.band, use.cached.mult = TRUE, use.hinges = TRUE)
 ##   e_irrad(sun.spct, w.band, use.cached.mult = TRUE, use.hinges = FALSE)
 ##  e_irrad(sun.spct, w.band, use.cached.mult = FALSE, use.hinges = FALSE)
-##       min        lq      mean    median       uq      max neval cld
-##  1833.316 1878.3600 2066.2307 1901.3575 1940.700 4419.269   100   c
-##  1788.462 1827.0440 1946.3790 1863.1550 1908.010 4450.439   100   c
-##  1639.836 1668.9145 1737.8796 1696.8530 1726.503 4296.110   100  b 
-##  1563.051 1627.6710 1733.2612 1670.8155 1719.660 4367.573   100  b 
-##   648.484  676.6125  756.3200  739.3325  751.686 3161.834   100 a  
-##   692.197  713.8645  749.2725  722.6070  737.431 2714.433   100 a</code></pre>
+##       min        lq      mean   median        uq      max neval cld
+##  1831.037 1851.5630 1985.5130 1882.162 1941.8405 3967.309   100   c
+##  1762.995 1815.2610 1926.2106 1851.183 1907.8205 4015.584   100   c
+##  1598.783 1648.7690 1734.6037 1673.286 1712.0590 4041.432   100  b 
+##  1561.152 1605.6255 1728.2062 1663.213 1714.7195 3621.019   100  b 
+##   635.560  691.8175  767.9064  739.523  750.3565 2759.668   100 a  
+##   688.016  714.6250  737.3941  724.698  740.8535 1133.897   100 a</code></pre>
 <pre class="r"><code>test.irrad(CIE(300))</code></pre>
 <pre><code>## Unit: microseconds
 ##                                                                    expr
@@ -399,13 +399,13 @@ test.irrad()</code></pre>
 ##    e_irrad(sun.spct, w.band, use.cached.mult = TRUE, use.hinges = TRUE)
 ##   e_irrad(sun.spct, w.band, use.cached.mult = TRUE, use.hinges = FALSE)
 ##  e_irrad(sun.spct, w.band, use.cached.mult = FALSE, use.hinges = FALSE)
-##       min       lq      mean    median       uq      max neval cld
-##  1888.814 1930.246 2005.4268 1968.4485 2005.320 4202.220   100   c
-##  1818.112 1868.857 2074.7719 1922.0740 1981.563 4494.532   100   c
-##  1661.122 1716.429 1789.9863 1740.5670 1789.983 4366.812   100  b 
-##  1615.888 1658.271 1793.9929 1709.0175 1767.555 4427.631   100  b 
-##   649.245  695.239  805.7774  770.1225  790.839 3238.618   100 a  
-##   701.321  740.473  789.0141  750.5460  783.806 3191.103   100 a</code></pre>
+##       min        lq      mean   median        uq      max neval cld
+##  1844.341 1894.1360 1969.4150 1920.554 1958.5665 3980.613   100   c
+##  1780.861 1844.1500 2025.2963 1885.013 1956.8560 4096.929   100   c
+##  1630.333 1685.0700 1816.9300 1702.746 1740.3775 3941.460   100  b 
+##  1540.245 1638.8860 1784.3233 1687.161 1736.7665 3979.852   100  b 
+##   653.046  677.1830  752.8232  755.108  773.9235 1259.716   100 a  
+##   715.005  734.7715  805.2911  747.125  772.9740 2909.056   100 a</code></pre>
 <pre class="r"><code>test.irrad(UV_bands())</code></pre>
 <pre><code>## Unit: microseconds
 ##                                                                    expr
@@ -415,30 +415,13 @@ test.irrad()</code></pre>
 ##    e_irrad(sun.spct, w.band, use.cached.mult = TRUE, use.hinges = TRUE)
 ##   e_irrad(sun.spct, w.band, use.cached.mult = TRUE, use.hinges = FALSE)
 ##  e_irrad(sun.spct, w.band, use.cached.mult = FALSE, use.hinges = FALSE)
-##       min        lq      mean   median       uq      max neval cld
-##  1635.274 1669.6750 1744.3911 1691.532 1715.669 4191.197   100   c
-##  1637.934 1678.2280 1806.5900 1701.605 1727.073 4258.478   100   c
-##  1426.589 1451.8665 1554.2174 1468.972 1494.250 4138.741   100  b 
-##  1427.349 1467.2610 1565.3168 1481.515 1511.735 4066.899   100  b 
-##   488.833  510.1205  536.5159  543.571  550.413  632.139   100 a  
-##   479.711  499.4770  533.2659  504.609  510.121 3118.500   100 a</code></pre>
-<pre class="r"><code>uv_all &lt;- UV_bands()
-test.irrad(uv_all)</code></pre>
-<pre><code>## Unit: microseconds
-##                                                                    expr
-##   e_irrad(sun.spct, w.band, use.cached.mult = FALSE, use.hinges = NULL)
-##    e_irrad(sun.spct, w.band, use.cached.mult = TRUE, use.hinges = NULL)
-##   e_irrad(sun.spct, w.band, use.cached.mult = FALSE, use.hinges = TRUE)
-##    e_irrad(sun.spct, w.band, use.cached.mult = TRUE, use.hinges = TRUE)
-##   e_irrad(sun.spct, w.band, use.cached.mult = TRUE, use.hinges = FALSE)
-##  e_irrad(sun.spct, w.band, use.cached.mult = FALSE, use.hinges = FALSE)
-##       min        lq      mean   median       uq      max neval  cld
-##  1618.928 1667.9640 1726.0541 1687.921 1713.769 4427.631   100   cd
-##  1633.753 1684.4995 1830.7998 1710.918 1739.427 4366.432   100    d
-##  1425.067 1449.9660 1599.9076 1469.162 1495.581 4072.600   100  bc 
-##  1420.126 1473.9130 1557.3457 1500.712 1529.601 4760.236   100  b  
-##   486.553  519.6235  541.2826  546.992  556.115  604.770   100 a   
-##   485.033  498.3365  508.2426  504.798  512.211  591.086   100 a</code></pre>
+##       min        lq      mean    median        uq      max neval cld
+##  1599.543 1655.4205 1775.4246 1670.0555 1705.4065 3841.109   100   c
+##  1594.602 1682.4095 1755.9474 1707.4975 1741.7080 3801.576   100   c
+##  1417.846 1449.0155 1558.8021 1465.5510 1492.7300 3715.670   100  b 
+##  1426.969 1459.4690 1537.3596 1487.7885 1513.0660 3749.499   100  b 
+##   498.717  527.6065  569.7044  551.3635  561.4365 2682.884   100 a  
+##   475.530  503.4685  533.6463  509.5500  514.4920 2681.744   100 a</code></pre>
 <pre class="r"><code>test.irrad(VIS_bands())</code></pre>
 <pre><code>## Unit: microseconds
 ##                                                                    expr
@@ -448,13 +431,13 @@ test.irrad(uv_all)</code></pre>
 ##    e_irrad(sun.spct, w.band, use.cached.mult = TRUE, use.hinges = TRUE)
 ##   e_irrad(sun.spct, w.band, use.cached.mult = TRUE, use.hinges = FALSE)
 ##  e_irrad(sun.spct, w.band, use.cached.mult = FALSE, use.hinges = FALSE)
-##       min       lq     mean   median       uq       max neval cld
-##  2072.411 2142.734 2440.717 2194.620 2299.343  4926.729   100   b
-##  2116.125 2162.499 2914.551 2267.983 2335.834 54634.189   100   b
-##  1872.849 1914.282 2140.909 1946.022 2036.490  4665.586   100   b
-##  1893.375 1981.753 2174.169 2066.899 2180.936  4592.223   100   b
-##   918.368 1049.890 1104.973 1079.729 1122.683  3581.105   100  a 
-##   919.129  943.457 1005.880  966.074  994.773  3506.222   100  a</code></pre>
+##       min        lq     mean    median        uq      max neval cld
+##  2083.056 2126.0090 2283.310 2149.0065 2246.3165 4474.388   100   c
+##  2100.921 2167.2520 2307.638 2242.8955 2317.5890 5037.725   100   c
+##  1872.089 1907.4400 1975.295 1931.5775 1970.1600 4098.449   100  b 
+##  1885.774 1925.4965 2229.812 1975.4815 2094.0785 4935.853   100   c
+##   943.837  979.3785 1194.682 1079.1600 1104.4375 3447.304   100 a  
+##   916.089  948.3980 1075.921  961.1325  987.3605 3125.724   100 a</code></pre>
 <pre class="r"><code>test.irrad(GEN_G(300))</code></pre>
 <pre><code>## Unit: microseconds
 ##                                                                    expr
@@ -464,13 +447,13 @@ test.irrad(uv_all)</code></pre>
 ##    e_irrad(sun.spct, w.band, use.cached.mult = TRUE, use.hinges = TRUE)
 ##   e_irrad(sun.spct, w.band, use.cached.mult = TRUE, use.hinges = FALSE)
 ##  e_irrad(sun.spct, w.band, use.cached.mult = FALSE, use.hinges = FALSE)
-##       min        lq      mean   median       uq      max neval cld
-##  1782.380 1853.4630 1969.8779 1877.600 1896.986 6172.380   100   c
-##  1764.894 1829.8950 1950.7807 1862.395 1910.291 4580.439   100   c
-##  1604.104 1655.8010 1702.4829 1671.385 1696.854 4300.671   100  b 
-##  1560.010 1622.3500 1653.9303 1643.066 1687.541 1870.948   100  b 
-##   620.355  666.3495  774.4212  712.914  725.268 3293.735   100 a  
-##   660.268  683.0750  700.3968  691.057  703.791 1075.738   100 a</code></pre>
+##       min       lq      mean   median       uq       max neval cld
+##  1783.142 1838.258 1965.6176 1856.124 1887.864  4355.411   100   b
+##  1752.351 1812.410 1896.2343 1844.341 1885.393  4041.812   100   b
+##  1593.841 1625.392 2196.7379 1650.099 1680.129 53617.770   100   b
+##  1560.771 1605.815 1641.7784 1633.184 1665.114  1832.937   100   b
+##   623.776  660.648  751.8539  715.005  730.780  2928.822   100  a 
+##   662.929  684.976  720.7145  695.999  709.873  2886.629   100  a</code></pre>
 <pre class="r"><code>test.irrad(DNA.N())</code></pre>
 <pre><code>## Unit: microseconds
 ##                                                                    expr
@@ -480,13 +463,13 @@ test.irrad(uv_all)</code></pre>
 ##    e_irrad(sun.spct, w.band, use.cached.mult = TRUE, use.hinges = TRUE)
 ##   e_irrad(sun.spct, w.band, use.cached.mult = TRUE, use.hinges = FALSE)
 ##  e_irrad(sun.spct, w.band, use.cached.mult = FALSE, use.hinges = FALSE)
-##       min        lq      mean    median        uq      max neval   cld
-##  2061.768 2108.3320 2259.3503 2159.2685 2206.7840 6149.572   100     e
-##  1782.761 1867.9070 2048.5360 1959.7060 2141.4025 4053.594   100    d 
-##  1819.252 1884.0620 2035.5132 1927.0160 1986.1245 4131.898   100   cd 
-##  1594.981 1640.9755 1870.5641 1722.7010 1954.0035 4145.203   100   c  
-##   651.525  737.4315  911.3403  951.2490  968.1640 2939.464   100 a    
-##   887.579  923.5010 1087.6549  944.7875  981.2785 2953.528   100  b</code></pre>
+##       min       lq      mean   median        uq      max neval  cld
+##  1986.885 2057.968 2206.5145 2100.731 2135.8925 4290.030   100    d
+##  1761.094 1819.062 2029.0176 1882.922 2097.6905 5576.735   100   c 
+##  1810.129 1848.902 1961.7441 1878.361 1928.5370 3997.338   100  bc 
+##  1536.064 1607.526 1856.5803 1670.055 1904.3995 4220.468   100  b  
+##   642.022  696.759  921.6456  940.606  959.0420 2849.377   100 a   
+##   868.193  918.369  976.7402  932.053  951.4395 2735.721   100 a</code></pre>
 
 
 </div>

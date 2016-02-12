@@ -177,7 +177,7 @@ resp_spct <-
         }
       }
       # we calculate the integrated response.
-      response[i] <- integrate_spct(trim_spct(spct, wb, use.hinges = use.hinges))
+      response[i] <- integrate_spct(trim_spct(spct, wb, use.hinges = FALSE))
     }
     if (quantity %in% c("contribution", "contribution.pc")) {
       if (any(sapply(w.band, is_effective))) {
