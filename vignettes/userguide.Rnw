@@ -950,29 +950,29 @@ In this section we describe methods and functions that take one or more spectral
 
   \centering
   \begin{footnotesize}
-  \begin{tabular}{>{\ttfamily}lcccccc}
+  \begin{tabular}{>{\ttfamily}lccccccc}
     \toprule
-    \textnormal{methods} & source & response & filter & reflector & object & chroma \\
+    \textnormal{methods} & raw/cps & source & response & filter & reflector & object & chroma \\
     \midrule
-    merge & + & + & + & + & + & + \\
-    rbindspct & + & + & + & + & + & + \\
+    merge & + & + & + & + & + & + & + \\
+    rbindspct & + & + & + & + & + & + & + \\
     \midrule
-    e2q, q2e & + & + & -- & -- & -- & -- \\
-    A2T, T2A & -- & -- & + & -- & -- & -- \\
-    subset & + & + & + & + & + & + \\
-    clip\_wl & + & + & + & + & + & + \\
-    trim\_wl & + & + & + & + & + & + \\
-    (trim\_spct) & + & + & + & + & + & + \\
-    interpolate\_wl & + & + & + & + & + & + \\
-    (interpolate\_spct) & + & + & + & + & + & + \\
-    fscale & + & + & + & + & -- & --  \\
-    fshift & + & + & + & + & -- & --  \\
-    normalize & + & + & + & + & -- & --  \\
-    clean & + & + & + & + & -- & --  \\
-    \emph{math operators} & + & + & + & + & + & +  \\
-    \emph{math functions} & + & + & + & + & + & +  \\
-    tag & + & + & + & + & + & +  \\
-    untag & + & + & + & + & + & +  \\
+    e2q, q2e & -- & + & + & -- & -- & -- & -- \\
+    A2T, T2A & -- & -- & -- & + & -- & -- & -- \\
+    subset & + & + & + & + & + & + & + \\
+    clip\_wl & + & + & + & + & + & + & + \\
+    trim\_wl & + & + & + & + & + & + & + \\
+    (trim\_spct) & + & + & + & + & + & + & + \\
+    interpolate\_wl & -- & + & + & + & + & + & + \\
+    (interpolate\_spct) & -- & + & + & + & + & + & + \\
+    fscale & + & + & + & + & + & -- & --  \\
+    fshift & + & + & + & + & + & -- & --  \\
+    normalize & + & + & + & + & + & -- & --  \\
+    clean & -- & + & + & + & + & -- & --  \\
+    \emph{math operators} & + & + & + & + & + & + & +  \\
+    \emph{math functions} & + & + & + & + & + & + & +  \\
+    tag & -- & + & + & + & + & + & +  \\
+    untag & -- & + & + & + & + & + & +  \\
     \bottomrule
   \end{tabular}
   \end{footnotesize}
@@ -983,35 +983,35 @@ In this section we describe methods and functions that take one or more spectral
   \caption[Transformation methods for collections of spectra]{Transformation methods for collections of spectra. Key: + available, -- not available, \textbf{ms} use \texttt{msmsply()} or \texttt{convolve\_each()} to apply function or operator to collection members.}\label{tab:transform:mspct}
   \centering
   \begin{footnotesize}
-  \begin{tabular}{>{\ttfamily}lcccccc}
+  \begin{tabular}{>{\ttfamily}lccccccc}
     \toprule
-    \textnormal{methods} & source & response & filter & reflector & object & chroma \\
+    \textnormal{methods} & raw/cps & source & response & filter & reflector & object & chroma \\
     \midrule
-    convolve\_each & + & + & + & + & + & + \\
-    msmsply & + & + & + & + & + & + \\
-    msdply & + & + & + & + & + & + \\
-    mslply & + & + & + & + & + & + \\
-    msaply & + & + & + & + & + & + \\
+    convolve\_each & -- & + & + & + & + & + & + \\
+    msmsply & + & + & + & + & + & + & + \\
+    msdply & + & + & + & + & + & + & + \\
+    mslply & + & + & + & + & + & + & + \\
+    msaply & + & + & + & + & + & + & + \\
     \midrule
-    rbindspct & + & + & + & + & + & + \\
-    c & + & + & + & + & + & + \\
+    rbindspct & + & + & + & + & + & + & + \\
+    c & + & + & + & + & + & + & + \\
     \midrule
-    \emph{math operators} & ms & ms & ms & ms & ms & ms \\
-    \emph{math functions} & ms & ms & ms & ms & ms & ms \\
+    \emph{math operators} & ms & ms & ms & ms & ms & ms & ms \\
+    \emph{math functions} & ms & ms & ms & ms & ms & ms & ms \\
     \midrule
-    e2q, q2e & + & + & -- & -- & -- & -- \\
-    A2T, T2A & -- & -- & + & -- & -- & -- \\
-    clip\_wl & + & + & + & + & + & + \\
-    trim\_wl & + & + & + & + & + & + \\
-    (trim\_mspct) & + & + & + & + & + & + \\
-    interpolate\_wl & + & + &+ & + & + & + \\
-    (interpolate\_mspct) & + & + &+ & + & + & + \\
-    fscale & + & + & + & + & -- & -- \\
-    fshift & + & + & + & + & -- & -- \\
-    normalize & + & + & + & + & -- & -- \\
-    clean & + & + & + & + & -- & -- \\
-    tag & + & + & + & + & + & + \\
-    untag & + & + & + & + & + & + \\
+    e2q, q2e & -- & + & + & -- & -- & -- & -- \\
+    A2T, T2A & -- & -- & -- & + & -- & -- & -- \\
+    clip\_wl & + & + & + & + & + & + & + \\
+    trim\_wl & + & + & + & + & + & + & + \\
+    (trim\_mspct) & + & + & + & + & + & + & + \\
+    interpolate\_wl & -- & + & + &+ & + & + & + \\
+    (interpolate\_mspct) & -- & + & + &+ & + & + & + \\
+    fscale & + & + & + & + & + & -- & -- \\
+    fshift & + & + & + & + & + & -- & -- \\
+    normalize & + & + & + & + & + & -- & -- \\
+    clean & -- & + & + & + & + & -- & -- \\
+    tag & -- & + & + & + & + & + & + \\
+    untag & -- & + & + & + & + & + & + \\
    \bottomrule
   \end{tabular}
   \end{footnotesize}
@@ -1266,41 +1266,41 @@ Summaries can be calculated both from individual spectral objects (Table \ref{ta
   \caption[Summary methods for spectra]{Summary methods for spectra.  Key: + available, -- not available.}\label{tab:summaries:spct}
   \centering
   \begin{footnotesize}
-  \begin{tabular}{>{\ttfamily}lcccccc}
+  \begin{tabular}{>{\ttfamily}lccccccc}
     \toprule
-    \textnormal{methods} & source & response & filter & reflector & object & chroma \\
+    \textnormal{methods} & raw/cps & source & response & filter & reflector & object & chroma \\
     \midrule
-    irrad & + & -- & -- & -- & -- & -- \\
-    e\_irrad & + & -- & -- & -- & -- & -- \\
-    q\_irrad & + & -- & -- & -- & -- & -- \\
-    fluence & + & -- & -- & -- & -- & -- \\
-    e\_fluence & + & -- & -- & -- & -- & -- \\
-    q\_fluence & + & -- & -- & -- & -- & -- \\
-    ratio & + & -- & -- & -- & -- & -- \\
-    e\_ratio & + & -- & -- & -- & -- & -- \\
-    q\_ratio & + & -- & -- & -- & -- & -- \\
-    qe\_ratio & + & -- & -- & -- & -- & -- \\
-    eq\_ratio & + & -- & -- & -- & -- & -- \\
-    response & -- & + & -- & -- & -- & -- \\
-    e\_response & -- & + & -- & -- & -- & -- \\
-    q\_response & -- & + & -- & -- & -- & -- \\
-    transmittance & -- & -- & + & -- & + & -- \\
-    absorptance & -- & -- & + & -- & + & -- \\
-    absorbance & -- & -- & + & -- & + & -- \\
-    reflectance & -- & -- & -- & + & + & -- \\
-    range & + & + & + & + & + & + \\
-    min & + & + & + & + & + & + \\
-    max & + & + & + & + & + & + \\
-    stepsize & + & + & + & + & + & + \\
-    spread & + & + & + & + & + & + \\
-    midpoint & + & + & + & + & + & + \\
-    labels & + & + & + & + & + & + \\
-    summary & + & + & + & + & + & + \\
-    peaks & + & + & + & + & (+) & (+) \\
-    valleys & + & + & + & + & (+) & (+) \\
-    integrate\_spct & + & + & + & + & + & + \\
-    average\_spct & + & + & + & + & + & + \\
-    color & + & -- & -- & -- & -- & -- \\
+    irrad & -- & + & -- & -- & -- & -- & -- \\
+    e\_irrad & -- & + & -- & -- & -- & -- & -- \\
+    q\_irrad & -- & + & -- & -- & -- & -- & -- \\
+    fluence & -- & + & -- & -- & -- & -- & -- \\
+    e\_fluence & -- & + & -- & -- & -- & -- & -- \\
+    q\_fluence & -- & + & -- & -- & -- & -- & -- \\
+    ratio & -- & + & -- & -- & -- & -- & -- \\
+    e\_ratio & -- & + & -- & -- & -- & -- & -- \\
+    q\_ratio & -- & + & -- & -- & -- & -- & -- \\
+    qe\_ratio & -- & + & -- & -- & -- & -- & -- \\
+    eq\_ratio & -- & + & -- & -- & -- & -- & -- \\
+    response & -- & -- & + & -- & -- & -- & -- \\
+    e\_response & -- & -- & + & -- & -- & -- & -- \\
+    q\_response & -- & -- & + & -- & -- & -- & -- \\
+    transmittance & -- & -- & -- & + & -- & + & -- \\
+    absorptance & -- & -- & -- & + & -- & + & -- \\
+    absorbance & -- & -- & -- & + & -- & + & -- \\
+    reflectance & -- & -- & -- & -- & + & + & -- \\
+    range & + & + & + & + & + & + & + \\
+    min & + & + & + & + & + & + & + \\
+    max & + & + & + & + & + & + & + \\
+    stepsize & + & + & + & + & + & + & + \\
+    spread & + & + & + & + & + & + & + \\
+    midpoint & + & + & + & + & + & + & + \\
+    labels & + & + & + & + & + & + & + \\
+    summary & + & + & + & + & + & + & + \\
+    peaks & -- & + & + & + & + & (+) & (+) \\
+    valleys & -- & + & + & + & + & (+) & (+) \\
+    integrate\_spct & + & + & + & + & + & + & + \\
+    average\_spct & + & + & + & + & + & + & + \\
+    color & -- & + & -- & -- & -- & -- & -- \\
     \bottomrule
   \end{tabular}
   \end{footnotesize}
@@ -1311,43 +1311,43 @@ Summaries can be calculated both from individual spectral objects (Table \ref{ta
   \caption[Summary methods for collections of spectra]{Summary methods for collections of spectra. Key: + available, -- not available, \textbf{ms} use \texttt{msmsply()} to apply function to collection members, \textbf{d} use \texttt{msdply()}, \textbf{l} use \texttt{mslply} to apply function to collection members, \textbf{a} use \texttt{msaply} to apply function to collection members.}\label{tab:summaries:mspct}
   \centering
   \begin{footnotesize}
-  \begin{tabular}{>{\ttfamily}lcccccc}
+  \begin{tabular}{>{\ttfamily}lccccccc}
     \toprule
-    \textnormal{methods} & source & response & filter & reflector & object & chroma \\
+    \textnormal{methods} & raw/cps & source & response & filter & reflector & object & chroma \\
     \midrule
-    f\_mspct & + & + & + & + & + & + \\
+    f\_mspct & + & + & + & + & + & + & + \\
     \midrule
-    irrad & + & -- & -- & -- & -- & -- \\
-    e\_irrad & + & -- & -- & -- & -- & -- \\
-    q\_irrad & + & -- & -- & -- & -- & -- \\
-    fluence & + & -- & -- & -- & -- & -- \\
-    e\_fluence & + & -- & -- & -- & -- & -- \\
-    q\_fluence & + & -- & -- & -- & -- & -- \\
-    ratio & + & -- & -- & -- & -- & -- \\
-    e\_ratio & + & -- & -- & -- & -- & -- \\
-    q\_ratio & + & -- & -- & -- & -- & -- \\
-    qe\_ratio & + & -- & -- & -- & -- & -- \\
-    eq\_ratio & + & -- & -- & -- & -- & -- \\
-    response & -- & + & -- & -- & -- & -- \\
-    e\_response & -- & + & -- & -- & -- & -- \\
-    q\_response & -- & + & -- & -- & -- & -- \\
-    transmittance & -- & -- & + & -- & + & -- \\
-    absorptance & -- & -- & + & -- & + & -- \\
-    absorbance & -- & -- & + & -- & + & -- \\
-    reflectance & -- & -- & -- & + & + & -- \\
-    range & + & + & + & + & + & + \\
-    min & + & + & + & + & + & + \\
-    max & + & + & + & + & + & + \\
-    stepsize & + & + & + & + & + & + \\
-    spread & + & + & + & + & + & + \\
-    midpoint & + & + & + & + & + & + \\
-    labels & \textbf{l} & \textbf{l} & \textbf{l} & \textbf{l} & \textbf{l} & \textbf{l} \\
-    summary & \textbf{l} & \textbf{l} & \textbf{l} & \textbf{l} & \textbf{l} & \textbf{l} \\
-    peaks & + & + & + & + & (+) & (+) \\
-    valleys & + & + & + & + & (+) & (+) \\
-    integrate\_spct & \textbf{a, d, l} & \textbf{a, d, l} & \textbf{a, d, l} & \textbf{a, d, l} & \textbf{a, d, l} & \textbf{a, d, l} \\
-    average\_spct & \textbf{a, d, l} & \textbf{a, d, l} & \textbf{a, d, l} & \textbf{a, d, l} & \textbf{a, d, l} & \textbf{a, d, l} \\
-    color & + & -- & -- & -- & -- & -- \\
+    irrad & -- & + & -- & -- & -- & -- & -- \\
+    e\_irrad & -- & + & -- & -- & -- & -- & -- \\
+    q\_irrad & -- & + & -- & -- & -- & -- & -- \\
+    fluence & -- & + & -- & -- & -- & -- & -- \\
+    e\_fluence & -- & + & -- & -- & -- & -- & -- \\
+    q\_fluence & -- & + & -- & -- & -- & -- & -- \\
+    ratio & -- & + & -- & -- & -- & -- & -- \\
+    e\_ratio & -- & + & -- & -- & -- & -- & -- \\
+    q\_ratio & -- & + & -- & -- & -- & -- & -- \\
+    qe\_ratio & -- & + & -- & -- & -- & -- & -- \\
+    eq\_ratio & -- & + & -- & -- & -- & -- & -- \\
+    response & -- & -- & + & -- & -- & -- & -- \\
+    e\_response & -- & -- & + & -- & -- & -- & -- \\
+    q\_response & -- & -- & + & -- & -- & -- & -- \\
+    transmittance & -- & -- & -- & + & -- & + & -- \\
+    absorptance & -- & -- & -- & + & -- & + & -- \\
+    absorbance & -- & -- & -- & + & -- & + & -- \\
+    reflectance & -- & -- & -- & -- & + & + & -- \\
+    range & + & + & + & + & + & + & + \\
+    min & + & + & + & + & + & + & + \\
+    max & + & + & + & + & + & + & + \\
+    stepsize & + & + & + & + & + & + & + \\
+    spread & + & + & + & + & + & + & + \\
+    midpoint & + & + & + & + & + & + & + \\
+    labels & \textbf{l} & \textbf{l} & \textbf{l} & \textbf{l} & \textbf{l} & \textbf{l} & \textbf{l} \\
+    summary & \textbf{l} & \textbf{l} & \textbf{l} & \textbf{l} & \textbf{l} & \textbf{l} & \textbf{l} \\
+    peaks & -- & + & + & + & + & (+) & (+) \\
+    valleys & -- & + & + & + & + & (+) & (+) \\
+    integrate\_spct & \textbf{a, d, l} & \textbf{a, d, l} & \textbf{a, d, l} & \textbf{a, d, l} & \textbf{a, d, l} & \textbf{a, d, l} & \textbf{a, d, l} \\
+    average\_spct & \textbf{a, d, l} & \textbf{a, d, l} & \textbf{a, d, l} & \textbf{a, d, l} & \textbf{a, d, l} & \textbf{a, d, l} & \textbf{a, d, l} \\
+    color & -- & + & -- & -- & -- & -- & -- \\
     \bottomrule
   \end{tabular}
   \end{footnotesize}

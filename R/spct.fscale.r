@@ -45,12 +45,12 @@ fscale.source_spct <- function(x,
     return(fscale_spct(spct = q2e(x, action = "replace"),
                        range = range,
                        f = f,
-                       var.name = "s.e.irrad"))
+                       col.names = "s.e.irrad"))
   } else if (unit.out %in% c("photon", "quantum") ) {
     return(fscale_spct(spct = e2q(x, action = "replace"),
                        range = range,
                        f = f,
-                       var.name = "s.q.irrad"))
+                       col.names = "s.q.irrad"))
   } else {
     stop("'unit.out ", unit.out, " is unknown")
   }
@@ -69,13 +69,13 @@ fscale.response_spct <- function(x,
     return(fscale_spct(spct = q2e(x, action = "replace"),
                        range = range,
                        f = f,
-                       var.name = "s.e.response",
+                       col.names = "s.e.response",
                        ...))
   } else if (unit.out %in% c("photon", "quantum") ) {
     return(fscale_spct(spct = e2q(x, action = "replace"),
                        range = range,
                        f = f,
-                       var.name = "s.q.response",
+                       col.names = "s.q.response",
                        ...))
   } else {
     stop("'unit.out ", unit.out, " is unknown")
@@ -98,13 +98,13 @@ fscale.filter_spct <- function(x,
     return(fscale_spct(spct = A2T(x, action = "replace"),
                        range = range,
                        f = f,
-                       var.name = "Tfr",
+                       col.names = "Tfr",
                        ...))
   } else if (qty.out == "absorbance") {
     return(fscale_spct(spct = T2A(x, action = "replace"),
                        range = range,
                        f = f,
-                       var.name = "A",
+                       col.names = "A",
                        ...))
   } else {
     stop("'qty.out ", qty.out, " is unknown")
@@ -123,9 +123,60 @@ fscale.reflector_spct <- function(x,
   return(fscale_spct(spct = x,
                      range = range,
                      f = f,
-                     var.name = "Rfr",
+                     col.names = "Rfr",
                      ...))
 }
+
+#' @describeIn fscale
+#'
+#' @export
+#'
+fscale.raw_spct <- function(x,
+                            range = NULL,
+                            f = "mean",
+                            ...) {
+  return(fscale_spct(spct = x,
+                     range = range,
+                     f = f,
+                     col.names = grep("^counts", names(x), value = TRUE),
+                     ...))
+}
+
+#' @describeIn fscale
+#'
+#' @export
+#'
+fscale.cps_spct <- function(x,
+                            range = NULL,
+                            f = "mean",
+                            ...) {
+  return(fscale_spct(spct = x,
+                     range = range,
+                     f = f,
+                     col.names = grep("^cps", names(x), value = TRUE),
+                     ...))
+}
+
+#' @describeIn fscale
+#'
+#' @param col.names character vector containing the names of columns or
+#'   variables to which to apply the scaling.
+#'
+#' @export
+#'
+fscale.generic_spct <- function(x,
+                            range = NULL,
+                            f = "mean",
+                            col.names,
+                            ...) {
+  return(fscale_spct(spct = x,
+                     range = range,
+                     f = f,
+                     col.names = col.names,
+                     ...))
+}
+
+# Collections of spectra --------------------------------------------------
 
 #' @describeIn fscale
 #'
@@ -198,6 +249,55 @@ fscale.reflector_mspct <- function(x,
           ...)
 }
 
+#' @describeIn fscale
+#'
+#' @export
+#'
+fscale.raw_mspct <- function(x,
+                             range = NULL,
+                             f = "mean",
+                             ...) {
+  msmsply(x,
+          fscale,
+          range = range,
+          f = f,
+          ...)
+}
+
+#' @describeIn fscale
+#'
+#' @export
+#'
+fscale.cps_mspct <- function(x,
+                             range = NULL,
+                             f = "mean",
+                             ...) {
+  msmsply(x,
+          fscale,
+          range = range,
+          f = f,
+          ...)
+}
+
+#' @describeIn fscale
+#'
+#' @export
+#'
+fscale.generic_mspct <- function(x,
+                             range = NULL,
+                             f = "mean",
+                             col.names,
+                             ...) {
+  msmsply(x,
+          fscale,
+          range = range,
+          f = f,
+          col.names = col.names,
+          ...)
+}
+
+
+# PRIVATE -----------------------------------------------------------------
 
 #' fscale a spectrum
 #'
@@ -207,7 +307,7 @@ fscale.reflector_mspct <- function(x,
 #' @param spct generic_spct The spectrum to be normalized
 #' @param range an R object on which range() returns a vector of length 2, with
 #'   min annd max wavelengths (nm)
-#' @param var.name character The name of the variable to fscale
+#' @param col.names character The name of the variable to fscale
 #' @param f function A summary function to be applied to \code{spct}
 #' @param ... other arguments passed to f()
 #'
@@ -215,7 +315,7 @@ fscale.reflector_mspct <- function(x,
 #'
 #' @keywords internal
 #'
-fscale_spct <- function(spct, range, var.name, f, ...) {
+fscale_spct <- function(spct, range, col.names, f, ...) {
   if (is.null(range) || all(is.na(range))) {
     range <- range(spct)
   } else {
@@ -228,30 +328,35 @@ fscale_spct <- function(spct, range, var.name, f, ...) {
     }
   }
   tmp.spct <- trim_spct(spct, range, byref = FALSE)
-  tmp.spct <- tmp.spct[ , c("w.length", var.name)]
-  # rescaling needed
-  if (!is.null(f)) {
-    if (is.character(f)) {
-      if (f %in% c("mean", "average")) {
-        summary.value <- average_spct(tmp.spct)
-      } else if (f %in% c("total", "integral")) {
-        summary.value <- integrate_spct(tmp.spct)
+  multipliers <- numeric(length(col.names))
+  i <- 0L
+  for (col in col.names) {
+    i <- i + 1L
+    # rescaling needed
+    if (!is.null(f)) {
+      if (is.character(f)) {
+        if (f %in% c("mean", "average")) {
+          summary.value <- average_spct(tmp.spct[, c("w.length", col)])
+        } else if (f %in% c("total", "integral")) {
+          summary.value <- integrate_spct(tmp.spct[, c("w.length", col)])
+        } else {
+          warning("Invalid character '", f, "'value in 'f'")
+          summary.value <- NA_real_
+        }
+      } else if (is.function(f)) {
+        summary.value <- f(tmp.spct[, c("w.length", col)], ...)
+        f <- "a user supplied R function"
       } else {
-        warning("Invalid character '", f, "'value in 'f'")
-        summary.value <- NA_real_
+        stop("'f' should be a function name or character")
       }
-    } else if (is.function(f)) {
-      summary.value <- f(tmp.spct, ...)
-      f <- "a user supplied R function"
     } else {
-      stop("'f' should be a function name or character")
+      summary.value <- 1 # implemented in this way to ensure that all returned
+      # values folow the same copy/reference semantics
     }
-  } else {
-    summary.value <- 1 # implemented in this way to ensure that all returned
-    # values folow the same copy/reference semantics
+    multipliers[i] <- 1 / summary.value
+    spct[[col]] <- spct[[col]] * multipliers[i]
   }
-  spct[[var.name]] <- spct[[var.name]] / summary.value
-  setScaled(spct, list(multiplier = 1 / summary.value, f = f))
+  setScaled(spct, list(multiplier = multipliers, f = f))
   spct
 }
 

@@ -260,6 +260,9 @@ clean.response_spct <-
     x
   }
 
+
+# Collections of spectra --------------------------------------------------
+
 #' @describeIn clean
 #'
 #' @export

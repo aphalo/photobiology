@@ -171,7 +171,7 @@ fshift.raw_spct <- function(x,
   return(fshift_spct(spct = x,
                      range = range,
                      f = f,
-                     col.names = grep("^counts", names(x)),
+                     col.names = grep("^counts", names(x), value = TRUE),
                      ...))
 }
 
@@ -187,9 +187,30 @@ fshift.cps_spct <- function(x,
   return(fshift_spct(spct = x,
                      range = range,
                      f = f,
-                     col.names = grep("^cps", names(x)),
+                     col.names = grep("^cps", names(x), value = TRUE),
                      ...))
 }
+
+#' @describeIn fshift
+#'
+#' @param col.names character vector containing the names of columns or
+#'   variables to which to apply the scale shift.
+#'
+#' @export
+#'
+fshift.generic_spct <- function(x,
+                                range = c(min(x), min(x) + 10),
+                                f = "mean",
+                                col.names,
+                                ...) {
+  return(fshift_spct(spct = x,
+                     range = range,
+                     f = f,
+                     col.names = col.names,
+                     ...))
+}
+
+# Collections of spectra --------------------------------------------------
 
 #' @describeIn fshift
 #'
@@ -247,6 +268,58 @@ fshift.reflector_mspct <-
             ...)
   }
 
+#' @describeIn fshift
+#'
+#' @export
+#'
+fshift.raw_mspct <-
+  function(x,
+           range = c(min(x), min(x) + 10),
+           f = "min",
+           ...) {
+    msmsply(x,
+            fshift,
+            range = range,
+            f = f,
+            ...)
+  }
+
+#' @describeIn fshift
+#'
+#' @export
+#'
+fshift.cps_mspct <-
+  function(x,
+           range = c(min(x), min(x) + 10),
+           f = "min",
+           ...) {
+    msmsply(x,
+            fshift,
+            range = range,
+            f = f,
+            ...)
+  }
+
+#' @describeIn fshift
+#'
+#' @export
+#'
+fshift.generic_mspct <-
+  function(x,
+           range = c(min(x), min(x) + 10),
+           f = "min",
+           col.names,
+           ...) {
+    msmsply(x,
+            fshift,
+            range = range,
+            f = f,
+            col.names = col.names,
+            ...)
+  }
+
+
+# PRIVATE -----------------------------------------------------------------
 
 #' fshift a spectrum
 #'
@@ -272,9 +345,8 @@ fshift_spct <- function(spct, range, col.names, f, ...) {
       return(spct)
   }
   tmp.spct <- trim_spct(spct, range, byref = FALSE)
-  tmp.spct <- tmp.spct[, c("w.length", col.names)]
   for (col in col.names) {
-    # rescaling needed
+    # shifting needed
     if (!is.null(f)) {
       if (is.character(f)) {
         if (f %in% c("mean", "average")) {
