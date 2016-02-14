@@ -49,13 +49,13 @@ irradiance <-
     # what output? seems safer to not have a default here
     if (is.null(unit.out)){
       warning("'unit.out' has no default value")
-      return(NA)
+      return(NA_real_)
     }
     # make code a bit simpler further down
     if (unit.in=="quantum") {unit.in <- "photon"}
     # sanity check for spectral data and abort if check fails
     if (check.spectrum && !check_spectrum(w.length, s.irrad)) {
-      return(NA)
+      return(NA_real_)
     }
     # if the waveband is undefined then use all data
     if (is.null(w.band)){
@@ -87,7 +87,7 @@ irradiance <-
     if (use.hinges) {
       all.hinges <- NULL
       for (wb in w.band) {
-        if (!is.null(wb$hinges) & length(wb$hinges)>0) {
+        if (!is.null(wb$hinges) & length(wb$hinges) > 0) {
           all.hinges <- c(all.hinges, wb$hinges)
         }
       }

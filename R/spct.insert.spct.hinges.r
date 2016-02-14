@@ -59,12 +59,11 @@ insert_spct_hinges <- function(spct, hinges=NULL, byref=FALSE) {
       temp.data <- spct[[data.col]]
       if (first.iter) {
         new.spct <- insert_hinges(old.w.length, temp.data, hinges)
-        new.spct <- dplyr::as_data_frame(new.spct)
         names(new.spct) <- c("w.length", names.spct[data.col])
         first.iter <- FALSE
       } else {
         new.spct[ , names.spct[data.col] ] <-
-          insert_hinges(old.w.length, temp.data, hinges)[["y"]]
+          v_insert_hinges(old.w.length, temp.data, hinges)
       }
     }
     if(class_spct[1] == "source_spct") {

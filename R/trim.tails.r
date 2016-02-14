@@ -71,16 +71,17 @@ trim_tails <- function(x, y,
   # insert hinges
   if (use.hinges) {
     new.data <- insert_hinges(x, y, c(low.limit, high.limit))
-    x <- new.data$x
-    y <- new.data$y
+  } else {
+    new.data <- dplyr::data_frame(x = x, y = y)
   }
 
-  trimmed.selector <- (x >= low.limit) & (x <= high.limit)
+  trimmed.selector <- with(new.data, (x >= low.limit) & (x <= high.limit))
+
   if (is.null(fill)) {
-    return(dplyr::data_frame(x = x[trimmed.selector], y = y[trimmed.selector]))
+    new.data[trimmed.selector, ]
   }
   else {
-    y[!trimmed.selector] <- fill
-    return(dplyr::data_frame(x = x, y=y))
+    new.data[!trimmed.selector, ] <- fill
+    new.data
   }
 }
