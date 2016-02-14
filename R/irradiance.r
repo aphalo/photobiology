@@ -92,7 +92,7 @@ irradiance <-
         }
       }
       if (!is.null(all.hinges)) {
-        new.data <- insert_hinges(x = w.length, y = s.irrad, all.hinges)
+        new.data <- l_insert_hinges(x = w.length, y = s.irrad, all.hinges)
         w.length <- new.data$x
         s.irrad <- new.data$y
       }
