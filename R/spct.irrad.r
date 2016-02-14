@@ -125,6 +125,20 @@ irrad.source_spct <-
       wb.name <- character(wb.number)
     }
 
+    # "source_spct" objects are not guaranteed to contain spectral irradiance
+    # expressed in the needed type of scale.
+    if (unit.out == "energy") {
+      q2e(spct, byref = TRUE)
+      w.length <- spct[["w.length"]]
+      s.irrad <- spct[["s.e.irrad"]]
+    } else if (unit.out == "photon") {
+      e2q(spct, byref = TRUE)
+      w.length <- spct[["w.length"]]
+      s.irrad <- spct[["s.q.irrad"]]
+    } else {
+      stop("Unrecognized value for unit.out")
+    }
+
     # if the w.band includes 'hinges' we insert them
     # choose whether to use hinges or not
     # if the user has specified its value, we leave it alone
@@ -138,27 +152,18 @@ irrad.source_spct <-
     }
 
     # we collect all hinges and insert them in one go
-    all.hinges <- NULL
-    for (wb in w.band) {
-      all.hinges <- c(all.hinges, wb$hinges)
-    }
 
-    if (use.hinges && !is.null(all.hinges)) {
-      spct <- insert_spct_hinges(spct, all.hinges)
-    }
+    if (use.hinges) {
+      all.hinges <- NULL
+      for (wb in w.band) {
+        all.hinges <- c(all.hinges, wb$hinges)
+      }
+      if (!is.null(all.hinges)) {
 
-    # "source_spct" objects are not guaranteed to contain spectral irradiance
-    # expressed in the needed type of scale.
-    if (unit.out == "energy") {
-      q2e(spct, byref = TRUE)
-      w.length <- spct[["w.length"]]
-      s.irrad <- spct[["s.e.irrad"]]
-    } else if (unit.out == "photon") {
-      e2q(spct, byref = TRUE)
-      w.length <- spct[["w.length"]]
-      s.irrad <- spct[["s.q.irrad"]]
-    } else {
-      stop("Unrecognized value for unit.out")
+      }
+      lst <- l_insert_hinges(w.length, s.irrad, all.hinges)
+      w.length <- lst[["x"]]
+      s.irrad <- lst[["y"]]
     }
 
     # We iterate through the list of wavebands collecting the integrated irradiances,
@@ -207,9 +212,9 @@ irrad.source_spct <-
                 "' not supported when using BSWFs, returning 'total' instead")
         quantity <- "total"
       } else {
-        total <- irrad_spct(spct, w.band=NULL,
-                            unit.out=unit.out,
-                            quantity="total",
+        total <- irrad_spct(spct, w.band = NULL,
+                            unit.out = unit.out,
+                            quantity = "total",
                             time.unit = time.unit,
                             use.cached.mult = use.cached.mult,
                             wb.trim = wb.trim,

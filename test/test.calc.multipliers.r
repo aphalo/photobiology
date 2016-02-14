@@ -19,19 +19,43 @@ test.calc_multipliers(DNA.N())
 test.calc_multipliers(CIE())
 test.calc_multipliers(CIE(300))
 
-test.irradiance <- function(w.band = new_waveband(400,700)) {
-  microbenchmark(irradiance(w.length, s.e.irrad, w.band,"photon",
+test.irradiance <- function(w.band = new_waveband(400,700), unit.out = "energy") {
+  microbenchmark(irradiance(w.length, s.e.irrad, w.band,unit.out,
                             check.spectrum = TRUE, use.cached.mult = FALSE),
-                 irradiance(w.length, s.e.irrad, w.band,"photon",
+                 irradiance(w.length, s.e.irrad, w.band,unit.out,
                             check.spectrum = TRUE, use.cached.mult = TRUE),
-                 irradiance(w.length, s.e.irrad, w.band,"photon",
-                            check.spectrum = FALSE, use.cached.mult = TRUE))
+                 irradiance(w.length, s.e.irrad, w.band,unit.out,
+                            check.spectrum = FALSE, use.cached.mult = TRUE),
+                 irradiance(w.length, s.e.irrad, w.band,unit.out,
+                            check.spectrum = TRUE, use.cached.mult = FALSE,
+                            use.hinges = TRUE),
+                 irradiance(w.length, s.e.irrad, w.band,unit.out,
+                            check.spectrum = TRUE, use.cached.mult = TRUE,
+                            use.hinges = TRUE),
+                 irradiance(w.length, s.e.irrad, w.band,unit.out,
+                            check.spectrum = FALSE, use.cached.mult = TRUE,
+                            use.hinges = TRUE),
+                 irradiance(w.length, s.e.irrad, w.band,unit.out,
+                            check.spectrum = TRUE, use.cached.mult = FALSE,
+                            use.hinges = FALSE),
+                 irradiance(w.length, s.e.irrad, w.band,unit.out,
+                            check.spectrum = TRUE, use.cached.mult = TRUE,
+                            use.hinges = FALSE),
+                 irradiance(w.length, s.e.irrad, w.band,unit.out,
+                            check.spectrum = FALSE, use.cached.mult = TRUE,
+                            use.hinges = FALSE))
 }
 
-test.irradiance()
-test.irradiance(DNA.N())
-test.irradiance(CIE())
-test.irradiance(CIE(300))
+test.irradiance(unit.out = "energy")
+test.irradiance(DNA.N(), unit.out = "energy")
+test.irradiance(CIE(), unit.out = "energy")
+test.irradiance(CIE(300), unit.out = "energy")
+
+test.irradiance(unit.out = "photon")
+test.irradiance(DNA.N(), unit.out = "photon")
+test.irradiance(CIE(), unit.out = "photon")
+test.irradiance(CIE(300), unit.out = "photon")
+
 
 test.integrate_irradiance <- function() {
   microbenchmark(integrate_xy(w.length, s.e.irrad))
