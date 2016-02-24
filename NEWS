@@ -15,8 +15,8 @@ Allow multiple "cpsXXXX" columns in "cps_spct" objects.
 Fix bug getInstrSettings().
 Allow small rounding and instrument errors to pass validity checks.
 Fix bug in setRawSpct().
-Implement normalize(), fscale() and fshift() methods for "generic_spct",
-raw_spct" and "cps_spct" objects.
+Implement clean(), normalize(), fscale() and fshift() methods for
+"generic_spct", raw_spct" and "cps_spct" objects.
 
 photobiology 0.9.5
 ==================
