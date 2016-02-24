@@ -17,6 +17,7 @@ Allow small rounding and instrument errors to pass validity checks.
 Fix bug in setRawSpct().
 Implement clean(), normalize(), fscale() and fshift() methods for
 "generic_spct", raw_spct" and "cps_spct" objects.
+New functions: cps2irrad(), cps2Tfr() and cps2Rfr().
 
 photobiology 0.9.5
 ==================

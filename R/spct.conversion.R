@@ -21,7 +21,9 @@
 #' @export
 #'
 cps2irrad <- function(x.sample, pre.fun = NULL, ...) {
-  stopifnot(is.cps_spct(x.sample))
+  stopifnot(is.cps_spct(x.sample) &&
+              !is.null(getInstrDesc(x.sample)) &&
+              !is.null(getInstrSettings(x.sample)))
   irrad.mult <- getInstrDesc(x.sample)$inst.calib$irrad.mult
   if (!is.null(pre.fun)) {
     x.sample <- pre.fun(x.sample, ...)
@@ -38,12 +40,22 @@ cps2irrad <- function(x.sample, pre.fun = NULL, ...) {
 #' @rdname cps2irrad
 #' @export
 cps2Rfr <- function(x.sample, x.white, x.black = NULL) {
+  # we make sure that all input spectra have been measured with the same
+  # instrument by comparing serial numbers
+  stopifnot(is.cps_spct(x.sample) &&
+              !is.null(getInstrDesc(x.sample)))
+  stopifnot(is.cps_spct(x.white) &&
+              !is.null(getInstrDesc(x.white)))
+  stopifnot(getInstrDesc(x.sample)$spectrometer.sn ==
+              getInstrDesc(x.white)$spectrometer.sn)
   if (!is.null(x.black)) {
+    stopifnot(is.cps_spct(x.black) &&
+                !is.null(getInstrDesc(x.black)))
+    stopifnot(getInstrDesc(x.sample)$spectrometer.sn ==
+                getInstrDesc(x.black)$spectrometer.sn)
     x.sample <- x.sample - x.black
     x.white <- x.white - x.black
   }
-  stopifnot(is.cps_spct(x.sample) &&
-              is.cps_spct(x.white))
   cps.col.sample <- grep("^cps", names(x.sample), value = TRUE)
   cps.col.white <- grep("^cps", names(x.white), value = TRUE)
   stopifnot(length(cps.col.sample) == 1 && length(cps.col.white) == 1)
@@ -57,12 +69,22 @@ cps2Rfr <- function(x.sample, x.white, x.black = NULL) {
 #' @rdname cps2irrad
 #' @export
 cps2Tfr <- function(x.sample, x.clear, x.opaque = NULL) {
+  # we make sure that all input spectra have been measured with the same
+  # instrument by comparing serial numbers
+  stopifnot(is.cps_spct(x.sample) &&
+              !is.null(getInstrDesc(x.sample)))
+  stopifnot(is.cps_spct(x.clear) &&
+              !is.null(getInstrDesc(x.clear)))
+  stopifnot(getInstrDesc(x.sample)$spectrometer.sn ==
+              getInstrDesc(x.clear)$spectrometer.sn)
   if (!is.null(x.opaque)) {
+    stopifnot(is.cps_spct(x.opaque) &&
+                !is.null(getInstrDesc(x.opaque)))
+    stopifnot(getInstrDesc(x.sample)$spectrometer.sn ==
+                getInstrDesc(x.opaque)$spectrometer.sn)
     x.sample <- x.sample - x.opaque
     x.clear <- x.clear - x.opaque
   }
-  stopifnot(is.cps_spct(x.sample) &&
-              is.cps_spct(x.clear))
   cps.col.sample <- grep("^cps", names(x.sample), value = TRUE)
   cps.col.clear <- grep("^cps", names(x.clear), value = TRUE)
   stopifnot(length(cps.col.sample) == 1 && length(cps.col.clear) == 1)

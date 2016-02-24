@@ -161,7 +161,7 @@ clean.cps_spct <-
                range = range,
                range.s.data = range.s.data,
                fill = fill,
-               col.names = "cps",
+               col.names = grep("^cps", names(x), value = TRUE),
                ...)
   }
 
@@ -179,7 +179,7 @@ clean.raw_spct <-
                range = range,
                range.s.data = range.s.data,
                fill = fill,
-               col.names = "counts",
+               col.names = grep("^counts", names(x), value = TRUE),
                ...)
   }
 
@@ -204,68 +204,6 @@ clean.generic_spct <-
                ...)
   }
 
-
-# PRIVATE -----------------------------------------------------------------
-
-#' Clean a spectrum
-#'
-#' These functions implement the equivalent of replace() but for spectral
-#' objects instead of vectors.
-#'
-#' @param x an R object
-#' @param range numeric vector of wavelengths
-#' @param range.s.data numeric vector of length two giving the allowable
-#'     range for the spectral data.
-#' @param fill numeric vector of length 1 or 2, giving the replacement
-#'     values to use at each extreme of the range.
-#' @param ... currently ignored
-#'
-#' @keywords internal
-#'
-clean_spct <-
-  function(x,
-           range,
-           range.s.data,
-           fill,
-           col.names,
-           ...) {
-    stopifnot(length(range) >= 2L &&
-                length(range.s.data) == 2L &&
-                length(fill) <= 2L)
-    if (length(fill) == 1) {
-      fill <- c(fill, fill)
-    }
-    # wavelength range
-    if (is.any_spct(range) || is.numeric(range) && length(range) > 2L) {
-      range <- range(range, na.rm = TRUE)
-    } else {
-      if (is.na(range[1])) {
-        range[1] <- min(x)
-      }
-      if (is.na(range[2])) {
-        range[2] <- max(x)
-      }
-    }
-    selector <- x[["w.length"]] >= range[1] & x[["w.length"]] <= range[2]
-
-   if (is.na(range.s.data[1])) {
-      range.s.data[1] <- -Inf
-    }
-    if (is.na(range.s.data[2])) {
-      range.s.data[2] <- Inf
-    }
-
-    for (col in col.names) {
-     x[selector, col] <- with(x[selector, ],
-                                  ifelse(cps < range.s.data[1],
-                                         fill[1],
-                                         ifelse(cps  > range.s.data[2],
-                                                fill[2],
-                                                cps)))
-    }
-    x
-  }
-
 # Collections of spectra --------------------------------------------------
 
 #' @describeIn clean
@@ -282,7 +220,7 @@ clean.source_mspct <-
            ...) {
     if (is.null(range)) {
       msmsply(mspct = x,
-              clean,
+              .fun = clean,
               range.s.data = range.s.data,
               fill = fill,
               unit.out = unit.out,
@@ -415,3 +353,93 @@ clean.cps_mspct <-
 #' @export
 #'
 clean.raw_mspct <- clean.cps_mspct
+
+#' @describeIn clean
+#'
+#' @export
+#'
+clean.generic_mspct <-
+  function(x,
+           range = x,
+           range.s.data = c(NA_real_, NA_real_),
+           fill = range.s.data,
+           col.names,
+           ...) {
+    if (is.null(range)) {
+      msmsply(mspct = x,
+              .fun = clean,
+              range.s.data = range.s.data,
+              fill = fill,
+              ...)
+    } else {
+      msmsply(mspct = x,
+              .fun = clean,
+              range = range,
+              range.s.data = range.s.data,
+              fill = fill,
+              ...)
+    }
+  }
+
+# PRIVATE -----------------------------------------------------------------
+
+#' Clean a spectrum
+#'
+#' These functions implement the equivalent of replace() but for spectral
+#' objects instead of vectors.
+#'
+#' @param x an R object
+#' @param range numeric vector of wavelengths
+#' @param range.s.data numeric vector of length two giving the allowable
+#'     range for the spectral data.
+#' @param fill numeric vector of length 1 or 2, giving the replacement
+#'     values to use at each extreme of the range.
+#' @param col.names character The name of the variable to clean.
+#' @param ... currently ignored
+#'
+#' @keywords internal
+#'
+clean_spct <-
+  function(x,
+           range,
+           range.s.data,
+           fill,
+           col.names,
+           col.pattern = NULL,
+           ...) {
+    stopifnot(length(range) >= 2L &&
+                length(range.s.data) == 2L &&
+                length(fill) <= 2L)
+    if (length(fill) == 1) {
+      fill <- c(fill, fill)
+    }
+    # wavelength range
+    if (is.any_spct(range) || is.numeric(range) && length(range) > 2L) {
+      range <- range(range, na.rm = TRUE)
+    } else {
+      if (is.na(range[1])) {
+        range[1] <- min(x)
+      }
+      if (is.na(range[2])) {
+        range[2] <- max(x)
+      }
+    }
+    selector <- x[["w.length"]] >= range[1] & x[["w.length"]] <= range[2]
+
+    if (is.na(range.s.data[1])) {
+      range.s.data[1] <- -Inf
+    }
+    if (is.na(range.s.data[2])) {
+      range.s.data[2] <- Inf
+    }
+
+    for (col in col.names) {
+      x[selector, col] <-  ifelse(x[selector, col] < range.s.data[1],
+                                  fill[1],
+                                  ifelse(x[selector, col] > range.s.data[2],
+                                         fill[2],
+                                         x[selector, col]))
+    }
+    x
+  }
+

@@ -10,6 +10,7 @@
 #'
 #' @docType data
 #' @keywords datasets
-#' @format A \code{cps.mspct} object with 611 rows and 2 variables
-#' @name polyester.spct
+#' @format A \code{filter_cps.mspct} object with 611 rows and 2 variables
+#' @name filter_cps.mspct
+#'
 NULL
