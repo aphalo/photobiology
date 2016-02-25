@@ -1938,7 +1938,7 @@ getInstrSettings <- function(x) {
     instr.settings <- attr(x, "instr.settings", exact = TRUE)
     if (is.null(instr.settings) || is.na(instr.settings)) {
       # need to handle objects created with old versions
-      instr.settings <- "unknown"
+      instr.settings <- NA
     }
     return(instr.settings)
   } else {

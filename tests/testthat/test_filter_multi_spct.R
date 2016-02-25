@@ -199,7 +199,36 @@ test_that("filter_mspct", {
   expect_equal(class(my2_df.mspct[[2]])[1:2], c("filter_spct", "generic_spct") )
   expect_equal(class(my2_df.mspct[[3]])[1:2], c("filter_spct", "generic_spct") )
 
-  # constructor methods for 'long' spct objects -----------------------------
+  expect_equal(ncol(my2_df.mspct[[1]]), 2L )
+  expect_equal(ncol(my2_df.mspct[[2]]), 2L )
+  expect_equal(ncol(my2_df.mspct[[3]]), 2L )
+
+  expect_named(my2_df.mspct[[1]], c("w.length", "Tfr") )
+  expect_named(my2_df.mspct[[2]], c("w.length", "Tfr") )
+  expect_named(my2_df.mspct[[3]], c("w.length", "Tfr") )
+
+  my_long.df <- data.frame(w.length = rep(300:310, 3),
+                           Tfr = c(rep(1, 11), rep(2, 11), rep(3, 11)),
+                           other = c(rep("one", 11), rep("two", 11), rep("three", 11) ),
+                           spct.idx = c(rep("A", 11), rep("B", 11), rep("C", 11)) )
+  my2_df.mspct <- subset2mspct(my_long.df, member.class = "filter_spct")
+
+  expect_equal(c("A", "B", "C"), names(my2_df.mspct))
+  expect_equal(levels(factor(my_long.df[["spct.idx"]])), names(my2_df.mspct))
+  expect_equal(class(my2_df.mspct)[1:2], c("filter_mspct", "generic_mspct") )
+  expect_equal(class(my2_df.mspct[[1]])[1:2], c("filter_spct", "generic_spct") )
+  expect_equal(class(my2_df.mspct[[2]])[1:2], c("filter_spct", "generic_spct") )
+  expect_equal(class(my2_df.mspct[[3]])[1:2], c("filter_spct", "generic_spct") )
+
+  expect_equal(ncol(my2_df.mspct[[1]]), 3L )
+  expect_equal(ncol(my2_df.mspct[[2]]), 3L )
+  expect_equal(ncol(my2_df.mspct[[3]]), 3L )
+
+  expect_named(my2_df.mspct[[1]], c("w.length", "Tfr", "other") )
+  expect_named(my2_df.mspct[[2]], c("w.length", "Tfr", "other") )
+  expect_named(my2_df.mspct[[3]], c("w.length", "Tfr", "other") )
+
+    # constructor methods for 'long' spct objects -----------------------------
 
   my_long.spct <- rbindspct(spct.l)
   my3_df.mspct <- subset2mspct(my_long.spct)
@@ -211,6 +240,14 @@ test_that("filter_mspct", {
   expect_equal(class(my3_df.mspct[[3]])[1:2], c("filter_spct", "generic_spct") )
   expect_equal(class(my3_df.mspct[[4]])[1:2], c("filter_spct", "generic_spct") )
   expect_equal(class(my3_df.mspct[[5]])[1:2], c("filter_spct", "generic_spct") )
+
+  expect_equal(ncol(my3_df.mspct[[1]]), 2L )
+  expect_equal(ncol(my3_df.mspct[[2]]), 2L )
+  expect_equal(ncol(my3_df.mspct[[3]]), 2L )
+
+  expect_named(my3_df.mspct[[1]], c("w.length", "Tfr") )
+  expect_named(my3_df.mspct[[2]], c("w.length", "Tfr") )
+  expect_named(my3_df.mspct[[3]], c("w.length", "Tfr") )
 
   # print -------------------------------------------------------------------
 

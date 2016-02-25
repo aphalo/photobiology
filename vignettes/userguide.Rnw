@@ -949,7 +949,7 @@ In this section we describe methods and functions that take one or more spectral
   \caption[Transformation methods for spectra]{Transformation methods for spectra. Key: + available, -- not available, f available in the future.}\label{tab:transform:spct}
 
   \centering
-  \begin{footnotesize}
+  \begin{tiny}
   \begin{tabular}{>{\ttfamily}lccccccc}
     \toprule
     \textnormal{methods} & raw/cps & source & response & filter & reflector & object & chroma \\
@@ -975,14 +975,14 @@ In this section we describe methods and functions that take one or more spectral
     untag & -- & + & + & + & + & + & +  \\
     \bottomrule
   \end{tabular}
-  \end{footnotesize}
+  \end{tiny}
 
 \end{table}
 
 \begin{table}
   \caption[Transformation methods for collections of spectra]{Transformation methods for collections of spectra. Key: + available, -- not available, \textbf{ms} use \texttt{msmsply()} or \texttt{convolve\_each()} to apply function or operator to collection members.}\label{tab:transform:mspct}
   \centering
-  \begin{footnotesize}
+  \begin{tiny}
   \begin{tabular}{>{\ttfamily}lccccccc}
     \toprule
     \textnormal{methods} & raw/cps & source & response & filter & reflector & object & chroma \\
@@ -1014,7 +1014,7 @@ In this section we describe methods and functions that take one or more spectral
     untag & -- & + & + & + & + & + & + \\
    \bottomrule
   \end{tabular}
-  \end{footnotesize}
+  \end{tiny}
 
 \end{table}
 
@@ -1265,7 +1265,7 @@ Summaries can be calculated both from individual spectral objects (Table \ref{ta
 \begin{table}
   \caption[Summary methods for spectra]{Summary methods for spectra.  Key: + available, -- not available.}\label{tab:summaries:spct}
   \centering
-  \begin{footnotesize}
+  \begin{tiny}
   \begin{tabular}{>{\ttfamily}lccccccc}
     \toprule
     \textnormal{methods} & raw/cps & source & response & filter & reflector & object & chroma \\
@@ -1303,14 +1303,14 @@ Summaries can be calculated both from individual spectral objects (Table \ref{ta
     color & -- & + & -- & -- & -- & -- & -- \\
     \bottomrule
   \end{tabular}
-  \end{footnotesize}
+  \end{tiny}
 
 \end{table}
 
 \begin{table}
   \caption[Summary methods for collections of spectra]{Summary methods for collections of spectra. Key: + available, -- not available, \textbf{ms} use \texttt{msmsply()} to apply function to collection members, \textbf{d} use \texttt{msdply()}, \textbf{l} use \texttt{mslply} to apply function to collection members, \textbf{a} use \texttt{msaply} to apply function to collection members.}\label{tab:summaries:mspct}
   \centering
-  \begin{footnotesize}
+  \begin{tiny}
   \begin{tabular}{>{\ttfamily}lccccccc}
     \toprule
     \textnormal{methods} & raw/cps & source & response & filter & reflector & object & chroma \\
@@ -1350,7 +1350,7 @@ Summaries can be calculated both from individual spectral objects (Table \ref{ta
     color & -- & + & -- & -- & -- & -- & -- \\
     \bottomrule
   \end{tabular}
-  \end{footnotesize}
+  \end{tiny}
 
 \end{table}
 
@@ -1853,7 +1853,7 @@ black\_body.spct & object\_spct & fraction & ideal black body \\
 white\_body.spct & object\_spct & fraction & ideal white body \\
 photodiode.spct & response\_spct &  A / W  & typical Si photodiode \\
 ccd.spct & response\_spct &  A / W & typical CCD array \\
-filter_cps.mspct & cps\_spct & counts / s & example ``raw`` data \\
+filter\_cps.mspct & cps\_spct & counts / s & example ``raw`` data \\
 \bottomrule
 \end{tabular}
 \end{footnotesize}

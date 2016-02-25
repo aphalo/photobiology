@@ -60,7 +60,6 @@ source_spct <- function(w.length = NULL, s.e.irrad = NULL, s.q.irrad = NULL,
                 time.unit = time.unit,
                 bswf.used = bswf.used,
                 strict.range = strict.range)
-  z
 }
 
 #' @rdname source_spct
@@ -84,7 +83,6 @@ raw_spct <- function(w.length = NULL, counts = NA, comment = NULL,
   setRawSpct(z)
   setInstrDesc(z, instr.desc)
   setInstrSettings(z, instr.settings)
-  z
 }
 
 #' @rdname source_spct
@@ -103,7 +101,24 @@ cps_spct <- function(w.length = NULL, cps = NA, comment = NULL) {
     comment(z) <- comment
   }
   setCpsSpct(z)
-  return(z)
+}
+
+#' @rdname source_spct
+#'
+#' @param cps numeric vector with linearized raw counts expressed per second
+#'
+#' @export
+#'
+generic_spct <- function(w.length = NULL, comment = NULL) {
+  if (length(w.length) == 0) {
+    z <- dplyr::data_frame(w.length = numeric(), cps = numeric())
+  } else {
+    z <- dplyr::data_frame(w.length = w.length, cps = cps)
+  }
+  if (!is.null(comment)) {
+    comment(z) <- comment
+  }
+  setGenericSpct(z)
 }
 
 #' @rdname source_spct
@@ -132,7 +147,6 @@ response_spct <- function(w.length = NULL, s.e.response = NULL, s.q.response = N
     comment(z) <- comment
   }
   setResponseSpct(z, time.unit)
-  z
 }
 
 #' @rdname source_spct
@@ -168,7 +182,6 @@ filter_spct <- function(w.length=NULL, Tfr=NULL, Tpc=NULL, A=NULL,
     comment(z) <- comment
   }
   setFilterSpct(z, Tfr.type, strict.range = strict.range)
-  z
 }
 
 #' @rdname source_spct
@@ -195,8 +208,7 @@ reflector_spct <- function(w.length = NULL, Rfr=NULL, Rpc=NULL,
   if (!is.null(comment)) {
     comment(z) <- comment
   }
-  setReflectorSpct(z, Rfr.type = Rfr.type, strict.range=strict.range)
-  z
+  setReflectorSpct(z, Rfr.type = Rfr.type, strict.range = strict.range)
 }
 
 #' @rdname source_spct
@@ -219,8 +231,7 @@ object_spct <- function(w.length=NULL, Rfr=NULL, Tfr=NULL,
   setObjectSpct(z,
                 Tfr.type = Tfr.type,
                 Rfr.type = Rfr.type,
-                strict.range=strict.range)
-  z
+                strict.range = strict.range)
 }
 
 #' @rdname source_spct
@@ -242,8 +253,8 @@ chroma_spct <- function(w.length=NULL,
     comment(z) <- comment
   }
   setChromaSpct(z)
-  z
   }
+  z
 }
 
 # as functions for spct classes --------------------------------------------

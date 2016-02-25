@@ -89,13 +89,13 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
     return(l)
   }
   if (!is.list(l) || is.any_spct(l) || is.waveband(l)) {
-    stop("Argument 'l' should be a list of spectra or an _mspct object")
-    return(NULL)
+    warning("Argument 'l' should be a list or a collection of spectra.")
+    return(generic_spct())
   }
   # list may have member which already have multiple spectra in long form
   mltpl.wl <- sum(sapply(l, FUN = getMultipleWl))
-  # we find the lowest common class
-  # and in the same loop we make sure that all spectral data use consistent units
+  # we find the most derived common class
+  # and we make sure that all spectral data use consistent units
   l.class <- spct_classes()
   photon.based.input <- any(sapply(l, FUN = is_photon_based))
   absorbance.based.input <- any(sapply(l, FUN = is_absorbance_based))
@@ -109,7 +109,7 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
     warning("Spectra being row-bound have been differently normalized")
   }
   for (i in 1:length(l)) {
-    class_spct <- class(l[[i]])
+    class_spct <- class(l[[i]])[1]
     l.class <- intersect(l.class, class_spct)
     if (photon.based.input && ("source_spct" %in% class_spct ||
         "response_spct" %in% class_spct )) {
@@ -119,15 +119,11 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
       l[[i]] <- A2T(l[[i]], action = "replace", byref = FALSE)
     }
   }
-  if (length(l.class) < 1L) {
-    warning("Argument 'l' contains objects which are not spectra")
-    return(NA)
-  }
-  # safer than l.class[1] which depends on order of class names in l.class
-  if (length(l.class) > 1L) {
-    l.class <- setdiff(l.class, "generic_spct")
-  }
+  # check class is same for all spectra
   #  print(l.class)
+  if (length(l.class) != 1L) {
+    stop("All spectra in 'l' should belong to the same spectral class.")
+  }
 
   # Here we do the actual binding
   if (length(l) < 2) {
@@ -137,7 +133,7 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
     ans <- dplyr::as_data_frame(ans)
   }
   if (is.null(ans)) {
-    return(NULL)
+    return(generic_spct())
   }
 
   names.spct <- names(l)
@@ -172,7 +168,7 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
     time.unit <- sapply(l, FUN = getTimeUnit)
     if (length(unique(time.unit)) > 1L) {
       warning("Inconsistent time units among source spectra in rbindspct")
-      return(NA)
+      return(source_spct())
     }
     if (any(effective.input)) {
       bswfs.input <- sapply(l, FUN = getBSWFUsed)
@@ -186,7 +182,7 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
       }
     } else {
       add.bswf <- FALSE
-      bswf.used <- rep("none", times = length(l))
+      bswf.used <- "none"
     }
     setSourceSpct(ans, time.unit = time.unit[1], bswf.used = bswf.used, multiple.wl = mltpl.wl)
     if (photon.based.input) {
@@ -196,7 +192,7 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
     Tfr.type <- sapply(l, FUN = getTfrType)
     if (length(unique(Tfr.type)) > 1L) {
       warning("Inconsistent 'Tfr.type' among filter spectra in rbindspct")
-      return(NA)
+      return(filter_spct())
     }
     setFilterSpct(ans, Tfr.type = Tfr.type[1], multiple.wl = mltpl.wl)
     if (absorbance.based.input) {
@@ -206,14 +202,14 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
     Rfr.type <- sapply(l, FUN = getRfrType)
     if (length(unique(Rfr.type)) > 1L) {
       warning("Inconsistent 'Rfr.type' among reflector spectra in rbindspct")
-      return(NA)
+      return(reflector_spct())
     }
     setReflectorSpct(ans, Rfr.type = Rfr.type[1], multiple.wl = mltpl.wl)
   } else if (l.class == "response_spct") {
     time.unit <- sapply(l, FUN = getTimeUnit)
     if (length(unique(time.unit)) > 1L) {
       warning("Inconsistent time units among respose spectra in rbindspct")
-      return(NA)
+      return(response_spct())
     }
     setResponseSpct(ans, time.unit = time.unit[1], multiple.wl = mltpl.wl)
     if (photon.based.input) {
@@ -221,8 +217,23 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
     }
   } else if (l.class == "chroma_spct") {
     setChromaSpct(ans, multiple.wl = mltpl.wl)
-  } else if (l.class == "cps_spct") {
-    setCpsSpct(ans, multiple.wl = mltpl.wl)
+  } else if (l.class == "cps_spct" || l.class == "raw_spct") {
+    warning("Row binding cps_spct objects removes instrument attributes.")
+    instr.desc <- sapply(l, getInstrDesc)
+    instr.settings <- sapply(l, getInstrSettings)
+    sn <- ifelse(is.na(instr.desc), NA_character_, instr.desc$spectrometer.sn)
+    ch.index <- ifelse(is.na(instr.desc), NA_integer_, instr.desc$ch.index)
+    integ.time <- ifelse(is.na(instr.settings), NA_real_, instr.settings$integ.time)
+
+    ans[["integ.time"]] <- rep(integ.time, times = sapply(l, FUN = nrow))
+    ans[["sn"]] <- factor(rep(sn, times = sapply(l, FUN = nrow)))
+    ans[["ch.index"]] <- factor(rep(ch.index, times = sapply(l, FUN = nrow)))
+
+    if (l.class == "cps_spct") {
+      setCpsSpct(ans, multiple.wl = mltpl.wl)
+    } else {
+      setRawSpct(ans, multiple.wl = mltpl.wl)
+    }
   } else if (l.class == "generic_spct") {
     setGenericSpct(ans, multiple.wl = mltpl.wl)
   }
@@ -235,7 +246,7 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
   if (!is.null(comment.ans)) {
     comment(ans) <- comment.ans
   }
-  return(ans)
+  ans
 }
 
 # Subset ------------------------------------------------------------------
@@ -305,6 +316,36 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
         setGenericSpct(xx, multiple.wl = getMultipleWl(x))
         setNormalized(xx, getNormalized(x))
         setScaled(xx, getScaled(x))
+        setInstrDesc(xx, getInstrDesc(x))
+        setInstrSettings(xx, getInstrSettings(x))
+        comment <- comment(x)
+        if (!is.null(comment)) {
+          comment(xx) <- comment
+        }
+      } else {
+        xx <- dplyr::as_data_frame(xx)
+      }
+    }
+    xx
+  }
+
+#' @export
+#' @rdname extract
+#'
+"[.raw_spct" <-
+  function(x, i, j, drop = NULL) {
+    if (is.null(drop)) {
+      xx <- `[.data.frame`(x, i, j)
+    } else {
+      xx <- `[.data.frame`(x, i, j, drop = drop)
+    }
+    if (is.data.frame(xx)) {
+      if ("w.length" %in% names(xx)) {
+        setRawSpct(xx, multiple.wl = getMultipleWl(x))
+        setNormalized(xx, getNormalized(x))
+        setScaled(xx, getScaled(x))
+        setInstrDesc(xx, getInstrDesc(x))
+        setInstrSettings(xx, getInstrSettings(x))
         comment <- comment(x)
         if (!is.null(comment)) {
           comment(xx) <- comment
@@ -330,6 +371,8 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
       if ("w.length" %in% names(xx)) {
         setCpsSpct(xx, multiple.wl = getMultipleWl(x))
         setNormalized(xx, getNormalized(x))
+        setInstrDesc(xx, getInstrDesc(x))
+        setInstrSettings(xx, getInstrSettings(x))
         setScaled(xx, getScaled(x))
         comment <- comment(x)
         if (!is.null(comment)) {
