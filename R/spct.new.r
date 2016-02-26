@@ -22,6 +22,7 @@
 #'   object created.
 #' @param strict.range logical Flag indicating whether off-range values result
 #'   in an error instead of a warning.
+#' @param ... other arguments passed to \code{data_frame()}
 #'
 #' @return A object of class generic_spct or a class derived from it, depending
 #'   on the function used. In other words an object of a class with the same
@@ -42,16 +43,16 @@
 source_spct <- function(w.length = NULL, s.e.irrad = NULL, s.q.irrad = NULL,
                         time.unit = c("second", "day", "exposure"),
                         bswf.used = c("none", "unknown"),
-                        comment = NULL, strict.range = FALSE) {
+                        comment = NULL, strict.range = FALSE, ...) {
   if (length(w.length) == 0) {
-    z <- dplyr::data_frame(w.length = numeric(), s.e.irrad = numeric())
+    z <- dplyr::data_frame(w.length = numeric(), s.e.irrad = numeric(), ...)
   } else if (is.null(s.q.irrad) && (is.numeric(s.e.irrad))) {
-    z <- dplyr::data_frame(w.length, s.e.irrad)
+    z <- dplyr::data_frame(w.length, s.e.irrad, ...)
   } else if (is.null(s.e.irrad) && (is.numeric(s.q.irrad))) {
-    z <- dplyr::data_frame(w.length, s.q.irrad)
+    z <- dplyr::data_frame(w.length, s.q.irrad, ...)
   } else {
     warning("Only one of s.e.irrad or s.q.irrad should be different from NULL.")
-    z <- dplyr::data_frame(w.length)
+    z <- dplyr::data_frame(w.length, ...)
   }
   if (!is.null(comment)) {
     comment(z) <- comment
@@ -60,6 +61,7 @@ source_spct <- function(w.length = NULL, s.e.irrad = NULL, s.q.irrad = NULL,
                 time.unit = time.unit,
                 bswf.used = bswf.used,
                 strict.range = strict.range)
+  z
 }
 
 #' @rdname source_spct
@@ -70,12 +72,12 @@ source_spct <- function(w.length = NULL, s.e.irrad = NULL, s.q.irrad = NULL,
 #'
 #' @export
 #'
-raw_spct <- function(w.length = NULL, counts = NA, comment = NULL,
-                     instr.desc = NA, instr.settings = NA) {
+raw_spct <- function(w.length = NULL, counts = NA_real_, comment = NULL,
+                     instr.desc = NA, instr.settings = NA, ...) {
   if (length(w.length) == 0) {
-    z <- dplyr::data_frame(w.length = numeric(), counts = numeric())
+    z <- dplyr::data_frame(w.length = numeric(), counts = numeric(), ...)
   } else {
-    z <- dplyr::data_frame(w.length = w.length, counts = counts)
+    z <- dplyr::data_frame(w.length = w.length, counts = counts, ...)
   }
   if (!is.null(comment)) {
     comment(z) <- comment
@@ -83,6 +85,7 @@ raw_spct <- function(w.length = NULL, counts = NA, comment = NULL,
   setRawSpct(z)
   setInstrDesc(z, instr.desc)
   setInstrSettings(z, instr.settings)
+  z
 }
 
 #' @rdname source_spct
@@ -91,34 +94,45 @@ raw_spct <- function(w.length = NULL, counts = NA, comment = NULL,
 #'
 #' @export
 #'
-cps_spct <- function(w.length = NULL, cps = NA, comment = NULL) {
-  if (length(w.length) == 0) {
-    z <- dplyr::data_frame(w.length = numeric(), cps = numeric())
+cps_spct <- function(w.length = NULL, cps = NA_real_, comment = NULL,
+                     instr.desc = NA, instr.settings = NA, ...) {
+  if (any(grepl("^cps", names(list(...)))) && is.na(cps)) {
+    if (length(w.length) == 0) {
+      z <- dplyr::data_frame(w.length = numeric(), ...)
+    } else {
+      z <- dplyr::data_frame(w.length = w.length, ...)
+    }
   } else {
-    z <- dplyr::data_frame(w.length = w.length, cps = cps)
+    if (length(w.length) == 0) {
+      z <- dplyr::data_frame(w.length = numeric(), cps = numeric(), ...)
+    } else {
+      z <- dplyr::data_frame(w.length = w.length, cps = cps, ...)
+    }
   }
   if (!is.null(comment)) {
     comment(z) <- comment
   }
   setCpsSpct(z)
+  setInstrDesc(z, instr.desc)
+  setInstrSettings(z, instr.settings)
+  z
 }
 
 #' @rdname source_spct
 #'
-#' @param cps numeric vector with linearized raw counts expressed per second
-#'
 #' @export
 #'
-generic_spct <- function(w.length = NULL, comment = NULL) {
+generic_spct <- function(w.length = NULL, comment = NULL, ...) {
   if (length(w.length) == 0) {
-    z <- dplyr::data_frame(w.length = numeric(), cps = numeric())
+    z <- dplyr::data_frame(w.length = numeric(), ...)
   } else {
-    z <- dplyr::data_frame(w.length = w.length, cps = cps)
+    z <- dplyr::data_frame(w.length = w.length, ...)
   }
   if (!is.null(comment)) {
     comment(z) <- comment
   }
   setGenericSpct(z)
+  z
 }
 
 #' @rdname source_spct
@@ -132,21 +146,22 @@ generic_spct <- function(w.length = NULL, comment = NULL) {
 #'
 response_spct <- function(w.length = NULL, s.e.response = NULL, s.q.response = NULL,
                           time.unit = c("second", "day", "exposure"),
-                          comment = NULL) {
+                          comment = NULL, ...) {
   if (length(w.length) == 0) {
-    z <- dplyr::data_frame(w.length = numeric(), s.e.response = numeric())
+    z <- dplyr::data_frame(w.length = numeric(), s.e.response = numeric(), ...)
   } else if (is.null(s.q.response) && (is.numeric(s.e.response))) {
-    z <- dplyr::data_frame(w.length, s.e.response)
+    z <- dplyr::data_frame(w.length, s.e.response, ...)
   } else if (is.null(s.e.response) && (is.numeric(s.q.response))) {
-    z <- dplyr::data_frame(w.length, s.q.response)
+    z <- dplyr::data_frame(w.length, s.q.response, ...)
   } else {
     warning("Only one of s.e.response or s.q.response should be different from NULL.")
-    z <- dplyr::data_frame(w.length)
+    z <- dplyr::data_frame(w.length, ...)
   }
   if (!is.null(comment)) {
     comment(z) <- comment
   }
   setResponseSpct(z, time.unit)
+  z
 }
 
 #' @rdname source_spct
@@ -165,23 +180,24 @@ response_spct <- function(w.length = NULL, s.e.response = NULL, s.q.response = N
 #'
 filter_spct <- function(w.length=NULL, Tfr=NULL, Tpc=NULL, A=NULL,
                         Tfr.type=c("total", "internal"),
-                        comment=NULL, strict.range = FALSE) {
+                        comment=NULL, strict.range = FALSE, ...) {
   if (length(w.length) == 0) {
     z <- dplyr::data_frame(w.length = numeric(), Tfr = numeric())
   } else if (is.null(Tpc) && is.null(A) && is.numeric(Tfr)) {
-    z <- dplyr::data_frame(w.length, Tfr)
+    z <- dplyr::data_frame(w.length, Tfr, ...)
   } else if (is.null(Tfr) && is.null(A) && is.numeric(Tpc)) {
-    z <- dplyr::data_frame(w.length, Tpc)
+    z <- dplyr::data_frame(w.length, Tpc, ...)
   } else if (is.null(Tpc) && is.null(Tfr) && is.numeric(A)) {
-    z <- dplyr::data_frame(w.length, A)
+    z <- dplyr::data_frame(w.length, A, ...)
   } else {
     warning("Only one of Tfr, Tpc or A should be different from NULL.")
-    z <- dplyr::data_frame(w.length)
+    z <- dplyr::data_frame(w.length, ...)
   }
   if (!is.null(comment)) {
     comment(z) <- comment
   }
   setFilterSpct(z, Tfr.type, strict.range = strict.range)
+  z
 }
 
 #' @rdname source_spct
@@ -194,21 +210,22 @@ filter_spct <- function(w.length=NULL, Tfr=NULL, Tpc=NULL, A=NULL,
 #'
 reflector_spct <- function(w.length = NULL, Rfr=NULL, Rpc=NULL,
                            Rfr.type=c("total", "specular"),
-                           comment=NULL, strict.range = FALSE) {
+                           comment=NULL, strict.range = FALSE, ...) {
   if (length(w.length) == 0) {
-    z <- dplyr::data_frame(w.length = numeric(), Rfr = numeric())
+    z <- dplyr::data_frame(w.length = numeric(), Rfr = numeric(), ...)
   } else if (is.null(Rpc) && is.numeric(Rfr)) {
-    z <- dplyr::data_frame(w.length, Rfr)
+    z <- dplyr::data_frame(w.length, Rfr, ...)
   } else if (is.null(Rfr) && is.numeric(Rpc)) {
-    z <- dplyr::data_frame(w.length, Rpc)
+    z <- dplyr::data_frame(w.length, Rpc, ...)
   } else {
     warning("Only one of Rfr, or Rpc should be different from NULL.")
-    z <- dplyr::data_frame(w.length)
+    z <- dplyr::data_frame(w.length, ...)
   }
   if (!is.null(comment)) {
     comment(z) <- comment
   }
   setReflectorSpct(z, Rfr.type = Rfr.type, strict.range = strict.range)
+  z
 }
 
 #' @rdname source_spct
@@ -218,12 +235,12 @@ reflector_spct <- function(w.length = NULL, Rfr=NULL, Rpc=NULL,
 object_spct <- function(w.length=NULL, Rfr=NULL, Tfr=NULL,
                         Tfr.type=c("total", "internal"),
                         Rfr.type=c("total", "specular"),
-                        comment=NULL, strict.range = FALSE) {
+                        comment=NULL, strict.range = FALSE, ...) {
   if (length(w.length) == 0) {
     z <- dplyr::data_frame(w.length = numeric(),
-                           Rfr = numeric(), Tfr = numeric())
+                           Rfr = numeric(), Tfr = numeric(), ...)
   } else {
-    z <- dplyr::data_frame(w.length, Rfr, Tfr)
+    z <- dplyr::data_frame(w.length, Rfr, Tfr, ...)
   }
   if (!is.null(comment)) {
     comment(z) <- comment
@@ -232,6 +249,7 @@ object_spct <- function(w.length=NULL, Rfr=NULL, Tfr=NULL,
                 Tfr.type = Tfr.type,
                 Rfr.type = Rfr.type,
                 strict.range = strict.range)
+  z
 }
 
 #' @rdname source_spct
@@ -244,11 +262,12 @@ chroma_spct <- function(w.length=NULL,
                         x,
                         y,
                         z,
-                        comment=NULL, strict.range = FALSE) {
+                        comment=NULL, strict.range = FALSE, ...) {
   if (length(w.length) == 0) {
     z <- dplyr::data_frame(w.length = numeric(),
-                           x = numeric(), y = numeric(), z = numeric())
-  } else {   z <- dplyr::data_frame(w.length, x, y, z)
+                           x = numeric(), y = numeric(), z = numeric(), ...)
+  } else {
+    z <- dplyr::data_frame(w.length, x, y, z, ...)
   if (!is.null(comment)) {
     comment(z) <- comment
   }

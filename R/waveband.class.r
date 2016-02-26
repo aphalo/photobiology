@@ -9,21 +9,36 @@
 #'
 #' @export
 #'
+#' @name labels
+#'
 #' @family waveband attributes
 #'
 labels.waveband <- function(object, ...) {
   return(list(label = object$label, name = object$name))
 }
 
+#' @describeIn labels
+#'
+#' @export
+#'
+#' @examples
+#' labels(sun.spct)
+#'
+labels.generic_spct <- function(object, ...) {
+  return(names(object))
+}
+
 # range -------------------------------------------------------------------
 
 #' Wavelength range
 #'
-#' A function that returns the wavelength range from objects of class "waveband".
+#' A function that returns the wavelength range.
 #'
 #' @param ... not used in current version
 #' @param na.rm ignored
 #' @export
+#'
+#' @name range
 #'
 #' @family wavelength summaries
 #'
@@ -32,21 +47,80 @@ range.waveband <- function(..., na.rm = FALSE) {
   return(c(x$low, x$high)) # we are using double precision
 }
 
+#' @describeIn range
+#'
+#' @export
+#'
+#' @examples
+#' range(sun.spct)
+#'
+range.generic_spct <- function(..., na.rm = FALSE) {
+  wl <- list(...)[[1]][["w.length"]]
+  # guaranteed to be sorted
+  wl[c(1, length(wl))]
+  #  range(x[["w.length"]], na.rm = na.rm)
+}
+
+#' @describeIn range
+#'
+#' @param idx logical whether to add a column with the names of the elements of
+#'   spct
+#'
+#' @export
+#'
+range.generic_mspct <- function(..., na.rm = FALSE, idx = NULL) {
+  mspct <- list(...)[[1]]
+  if (is.null(idx)) {
+    idx <- !is.null(names(mspct))
+  }
+  msdply(mspct = mspct, .fun = range, na.rm = na.rm, idx = idx)
+}
+
 # min ---------------------------------------------------------------------
 
 #' Wavelength minimum
 #'
-#' A function that returns the wavelength minimum from objects of class "waveband".
+#' A function that returns the wavelength minimum.
 #'
 #' @param ... not used in current version
 #' @param na.rm ignored
 #' @export
+#'
+#' @name min
 #'
 #' @family wavelength summaries
 #'
 min.waveband <- function(..., na.rm = FALSE) {
   x <- c(...)
     return(x$low)
+}
+
+#' @describeIn min
+#'
+#' @export
+#'
+#' @examples
+#' min(sun.spct)
+#'
+min.generic_spct <- function(..., na.rm = FALSE) {
+  wl <- list(...)[[1]][["w.length"]]
+  # guaranteed to be sorted
+  wl[1]
+}
+
+#' @describeIn min
+#'
+#' @param idx logical whether to add a column with the names of the elements of
+#'   spct
+#'
+#' @export
+#'
+min.generic_mspct <- function(..., na.rm = FALSE, idx = NULL) {
+  mspct <- list(...)[[1]]
+  if (is.null(idx)) {
+    idx <- !is.null(names(mspct))
+  }
+  msdply(mspct = mspct, .fun = min, na.rm = na.rm, idx = idx)
 }
 
 # max ---------------------------------------------------------------------
@@ -59,10 +133,41 @@ min.waveband <- function(..., na.rm = FALSE) {
 #' @param na.rm ignored
 #' @export
 #'
+#' @name max
+#'
 max.waveband <- function(..., na.rm = FALSE) {
   x <- c(...)
   return(x$high)
 }
+
+#' @describeIn max
+#'
+#' @export
+#'
+#' @examples
+#' max(sun.spct)
+#'
+max.generic_spct <- function(..., na.rm=FALSE) {
+  wl <- list(...)[[1]][["w.length"]]
+  # guaranteed to be sorted
+  wl[length(wl)]
+}
+
+#' @describeIn max
+#'
+#' @param idx logical whether to add a column with the names of the elements of
+#'   spct
+#'
+#' @export
+#'
+max.generic_mspct <- function(..., na.rm = FALSE, idx = NULL) {
+  mspct <- list(...)[[1]]
+  if (is.null(idx)) {
+    idx <- !is.null(names(mspct))
+  }
+  msdply(mspct = mspct, .fun = max, ..., na.rm = na.rm, idx = idx)
+}
+
 
 # midpoint ------------------------------------------------------------------
 
@@ -107,12 +212,34 @@ midpoint.numeric <- function(x, ...) {
   }
 }
 
-#' @describeIn midpoint Wavelength at center of a "waveband" object.
+#' @describeIn midpoint Wavelength at center of a "waveband".
 #'
 #' @export
 #'
 midpoint.waveband <- function(x, ...) {
   return(x$low + (x$high - x$low) / 2)
+}
+
+#' @describeIn midpoint Method for "generic_spct".
+#'
+#' @export
+#'
+#' @examples
+#' midpoint(sun.spct)
+#'
+midpoint.generic_spct <- function(x, ...) {
+  wl <- x[["w.length"]]
+  wl[1] + (wl[length(wl)] - wl[1]) / 2
+}
+
+#' @describeIn midpoint Method for "generic_mspct" objects.
+#'
+#' @param idx logical whether to add a column with the names of the elements of spct
+#'
+#' @export
+#'
+midpoint.generic_mspct <- function(x, ..., idx = !is.null(names(x))) {
+  msdply(mspct = x, .fun = midpoint, ..., idx = idx)
 }
 
 # spread ------------------------------------------------------------------
@@ -141,7 +268,7 @@ spread.default <- function(x, ...) {
   NA
 }
 
-#' @describeIn spread Default method for generic function
+#' @describeIn spread Method for "numeric"
 #'
 #' @export
 #'
@@ -153,12 +280,34 @@ spread.numeric <- function(x, ...) {
   }
 }
 
-#' @describeIn spread Wavelength spread in nm.
+#' @describeIn spread Method for "waveband"
 #'
 #' @export
 #'
 spread.waveband <- function(x, ...) {
   return(x$high - x$low)
+}
+
+#' @describeIn spread  Method for "generic_spct"
+#'
+#' @export
+#'
+#' @examples
+#' spread(sun.spct)
+#'
+spread.generic_spct <- function(x, ...) {
+  wl <- x[["w.length"]]
+  wl[length(wl)] - wl[1]
+}
+
+#' @describeIn spread  Method for "generic_mspct" objects.
+#'
+#' @param idx logical whether to add a column with the names of the elements of spct
+#'
+#' @export
+#'
+spread.generic_mspct <- function(x, ..., idx = !is.null(names(x))) {
+  msdply(mspct = x, .fun = spread, ..., idx = idx)
 }
 
 # color -------------------------------------------------------------------
@@ -179,6 +328,9 @@ spread.waveband <- function(x, ...) {
 #' color(list(blue = waveband(c(400,480)), red = waveband(c(600,700))))
 #' color(numeric())
 #' color(NA_real_)
+#'
+#' color(sun.spct)
+#'
 #'
 color <- function(x, ...) UseMethod("color")
 
@@ -273,6 +425,46 @@ color.waveband <- function(x, short.names = TRUE, type = "CMF", ...) {
   return(color)
 }
 
+#' @describeIn color
+#'
+#' @export
+#'
+color.source_spct <- function(x, type = "CMF", ...) {
+  if (length(x) == 0) {
+    return(character())
+  }
+  x.name <- "source"
+  q2e(x, byref = TRUE)
+  if (type %in% c("CMF", "CC")) {
+    s_e_irrad2rgb(x[["w.length"]], x[["s.e.irrad"]],
+                  sens = photobiology::ciexyzCMF2.spct, color.name = paste(x.name, type))
+  } else if (type == "both") {
+    c(s_e_irrad2rgb(x[["w.length"]], x[["s.e.irrad"]],
+                    sens = photobiology::ciexyzCMF2.spct, color.name = paste(x.name, "CMF")),
+      s_e_irrad2rgb(x[["w.length"]], x[["s.e.irrad"]],
+                    sens = photobiology::ciexyzCC2.spct, color.name = paste(x.name, "CC")))
+  } else {
+    warning("Color 'type' = ", type, " not implemented for 'source_spct'.")
+    color.out <- NA_character_
+    names(color.out) <- paste(x.name, type)
+    color.out
+  }
+}
+
+#' @describeIn color
+#'
+#' @export
+#'
+#' @param idx logical whether to add a column with the names of the elements of
+#'   spct
+#'
+#' @export
+#'
+color.source_mspct <- function(x, ..., idx = !is.null(names(x))) {
+  msdply(mspct = x, color, ..., idx = idx)
+}
+
+
 # normalization -----------------------------------------------------------
 
 #' Normalization of an R object
@@ -357,5 +549,89 @@ is_effective.source_spct <- function(x) {
   bswf.used <- getBSWFUsed(x)
   !is.null(bswf.used) && (bswf.used != "none")
 }
+
+#' @describeIn is_effective Method for "summary_generic_spct".
+#'
+#' @export
+#' @examples
+#' is_effective(summary(sun.spct))
+#'
+is_effective.summary_generic_spct <- function(x) {
+  FALSE
+}
+
+#' @describeIn is_effective Method for "summary_source_spct".
+#'
+#' @export
+#'
+is_effective.summary_source_spct <- function(x) {
+  bswf.used <- getBSWFUsed(x)
+  !is.null(bswf.used) && (bswf.used != "none")
+}
+
+# w.length summaries ------------------------------------------------------
+
+#' Stepsize
+#'
+#' Function that returns the range of step sizes in an object. Range of
+#' differences between succesive sorted values.
+#'
+#' @param x an R object
+#' @param ... not used in current version
+#'
+#' @return A numeric vector of length 2 with min and maximum stepsize values.
+#' @export
+#' @family wavelength summaries
+#' @examples
+#' stepsize(sun.spct)
+#'
+stepsize <- function(x, ...) UseMethod("stepsize")
+
+#' @describeIn stepsize Default function usable on numeric vectors.
+#' @export
+stepsize.default <- function(x, ...) {
+  warning("'stepsize()' not implemented for class '", class(x), "'.")
+  c(NA_real_, NA_real_)
+}
+
+#' @describeIn stepsize Method for numeric vectors.
+#' @export
+stepsize.numeric <- function(x, ...) {
+  if (length(x) > 1) {
+    range(diff(x))
+  } else {
+    c(NA_real_, NA_real_)
+  }
+}
+
+#' @describeIn stepsize  Method for "generic_spct" objects.
+#'
+#' @export
+#'
+#' @examples
+#' stepsize(sun.spct)
+#'
+stepsize.generic_spct <- function(x, ...) {
+  wl <- x[["w.length"]]
+  if (length(wl) > 1) {
+    range(diff(wl))
+  } else {
+    c(NA_real_, NA_real_)
+  }
+}
+
+#' @describeIn stepsize  Method for "generic_mspct" objects.
+#'
+#' @param idx logical whether to add a column with the names of the elements of spct
+#'
+#' @export
+#'
+stepsize.generic_mspct <- function(x, ..., idx = !is.null(names(x))) {
+  msdply(mspct = x, .fun = stepsize, ..., idx = idx)
+}
+
+
+
+
 
 

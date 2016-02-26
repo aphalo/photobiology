@@ -51,7 +51,7 @@ trim_spct <- function(spct,
   }
   stopifnot(is.any_spct(spct))
   if (is.null(use.hinges)) {
-    use.hinges <- auto_hinges(spct)
+    use.hinges <- auto_hinges(spct[["w.length"]])
   }
   if (byref) {
     name <- substitute(spct)

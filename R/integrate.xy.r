@@ -1,7 +1,7 @@
 #' Gives irradiance from spectral irradiance.
 #'
 #' This function gives the result of integrating spectral irradiance over
-#' wavelengths. Coded in C++.
+#' wavelengths.
 #'
 #' @param x numeric array
 #' @param y numeric array

@@ -7,7 +7,7 @@ classes. Add test cases for smooth_spct().
 photobiology 0.9.6
 ==================
 
-Optimize R code for performance: high-level functions as fast as in
+Optimize R code for performance: high-level functions a lot faster than in
 0.9.4 (last version using Rcpp).
 Add support for "what.measured" attribute.
 Allow multiple "countsXXXX" columns in "raw_spct" objects.
@@ -18,6 +18,8 @@ Fix bug in setRawSpct().
 Implement clean(), normalize(), fscale() and fshift() methods for
 "generic_spct", raw_spct" and "cps_spct" objects.
 New functions: cps2irrad(), cps2Tfr() and cps2Rfr().
+Constructors for _spct objects gain a ... formal argument which allows
+addition of arbitraty columns to the objects created.
 
 photobiology 0.9.5
 ==================

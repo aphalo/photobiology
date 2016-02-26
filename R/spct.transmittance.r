@@ -98,11 +98,11 @@ transmittance_spct <-
     if (!is.filter_spct(spct)) {
       spct <- as.filter_spct(spct)
     }
-    spct <- A2T(spct, action="replace", byref=FALSE)
+    spct <- A2T(spct, action = "replace", byref = FALSE)
     Tfr.type <- getTfrType(spct)
     spct <- spct[ , c("w.length", "Tfr")]
     # if the waveband is undefined then use all data
-    if (is.null(w.band)){
+    if (is.null(w.band)) {
       w.band <- waveband(spct)
     }
     if (is.waveband(w.band)) {
@@ -122,7 +122,7 @@ transmittance_spct <-
     # spectral resolution data, and speed up the calculations
     # a lot in such cases
     if (is.null(use.hinges)) {
-      use.hinges <- auto_hinges(spct)
+      use.hinges <- auto_hinges(spct[["w.length"]])
     }
 
     # we collect all hinges and insert them in one go
@@ -131,9 +131,7 @@ transmittance_spct <-
     if (use.hinges) {
       all.hinges <- NULL
       for (wb in w.band) {
-#       if (!is.null(wb$hinges) & length(wb$hinges)>0) {
-          all.hinges <- c(all.hinges, wb$hinges)
- #       }
+        all.hinges <- c(all.hinges, wb$hinges)
       }
       if (!is.null(all.hinges)) {
         spct <- insert_spct_hinges(spct, all.hinges)
@@ -156,18 +154,18 @@ transmittance_spct <-
         if (is_effective(wb)) {
           warning("Using only wavelength range from a weighted waveband object.")
           wb.name[i] <- paste("range", as.character(signif(min(wb), 4)),
-                              as.character(signif(max(wb), 4)), sep=".")
+                              as.character(signif(max(wb), 4)), sep = ".")
         } else {
           wb.name[i] <- wb$name
         }
       }
       # we calculate the average transmittance.
-      transmittance[i] <- integrate_spct(trim_spct(spct, wb, use.hinges=FALSE))
+      transmittance[i] <- integrate_spct(trim_spct(spct, wb, use.hinges = FALSE))
     }
 
     if (quantity %in% c("contribution", "contribution.pc")) {
-      total <- transmittance_spct(spct, w.band=NULL,
-                                quantity="total", use.hinges=use.hinges)
+      total <- transmittance_spct(spct, w.band = NULL, wb.trim = wb.trim,
+                                quantity = "total", use.hinges = use.hinges)
       transmittance <- transmittance / total
       if (quantity == "contribution.pc") {
         transmittance <- transmittance * 1e2
@@ -196,4 +194,56 @@ transmittance_spct <-
     attr(transmittance, "radiation.unit") <- paste("transmittance", quantity)
     return(transmittance)
   }
+
+# filter_mspct methods -----------------------------------------------
+
+#' @describeIn transmittance Calculates transmittance from a \code{filter_mspct}
+#'
+#' @param idx logical whether to add a column with the names of the elements of
+#'   spct
+#'
+#' @export
+#'
+transmittance.filter_mspct <-
+  function(spct, w.band = NULL,
+           quantity = "average",
+           wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
+           use.hinges = getOption("photobiology.use.hinges", default = NULL),
+           ..., idx = !is.null(names(spct)) ) {
+    msdply(
+      mspct = spct,
+      .fun = transmittance,
+      w.band = w.band,
+      quantity = quantity,
+      wb.trim = wb.trim,
+      use.hinges = use.hinges,
+      idx = idx,
+      col.names = names(w.band)
+    )
+  }
+
+# object_mspct methods -----------------------------------------------
+
+#' @describeIn transmittance Calculates transmittance from a \code{object_mspct}
+#'
+#' @export
+#'
+transmittance.object_mspct <-
+  function(spct, w.band = NULL,
+           quantity = "average",
+           wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
+           use.hinges = getOption("photobiology.use.hinges", default = NULL),
+           ..., idx = !is.null(names(spct)) ) {
+    msdply(
+      mspct = spct,
+      .fun = transmittance,
+      w.band = w.band,
+      quantity = quantity,
+      wb.trim = wb.trim,
+      use.hinges = use.hinges,
+      idx = idx,
+      col.names = names(w.band)
+    )
+  }
+
 

@@ -136,7 +136,7 @@ resp_spct <-
     # spectrum. This can produce small errors for high
     # spectral resolution data, but speed up the calculations.
     if (is.null(use.hinges)) {
-      use.hinges <- auto_hinges(spct)
+      use.hinges <- auto_hinges(spct[["w.length"]])
     }
 
     # we collect all hinges and insert them in one go
@@ -346,3 +346,89 @@ q_response.response_spct <-
               use.hinges = use.hinges )
   }
 
+# response_mspct methods -----------------------------------------------
+
+#' @describeIn response Calculates response from a \code{response_mspct}
+#'
+#' @param idx logical whether to add a column with the names of the elements of
+#'   spct
+#'
+#' @export
+#'
+response.response_mspct <-
+  function(spct, w.band = NULL,
+           unit.out = getOption("photobiology.radiation.unit", default = "energy"),
+           quantity = "total",
+           time.unit = NULL,
+           wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
+           use.hinges = getOption("photobiology.use.hinges", default = NULL),
+           ..., idx = !is.null(names(spct))) {
+    msdply(
+      mspct = spct,
+      .fun = response,
+      w.band = w.band,
+      unit.out = unit.out,
+      quantity = quantity,
+      time.unit = time.unit,
+      wb.trim = wb.trim,
+      use.hinges = use.hinges,
+      idx = idx,
+      col.names = names(w.band)
+    )
+  }
+
+#' @describeIn q_response Calculates photon (quantum) response from a
+#'   \code{response_mspct}
+#'
+#' @param idx logical whether to add a column with the names of the elements of
+#'   spct
+#'
+#' @export
+#'
+q_response.response_mspct <-
+  function(spct, w.band = NULL,
+           quantity = "total",
+           time.unit = NULL,
+           wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
+           use.hinges = getOption("photobiology.use.hinges", default = NULL),
+           ..., idx = !is.null(names(spct))) {
+    msdply(
+      mspct = spct,
+      .fun = q_response,
+      w.band = w.band,
+      quantity = quantity,
+      time.unit = time.unit,
+      wb.trim = wb.trim,
+      use.hinges = use.hinges,
+      idx = idx,
+      col.names = names(w.band)
+    )
+  }
+
+#' @describeIn e_response Calculates energy response from a
+#'   \code{response_mspct}
+#'
+#' @param idx logical whether to add a column with the names of the elements of
+#'   spct
+#'
+#' @export
+#'
+e_response.response_mspct <-
+  function(spct, w.band = NULL,
+           quantity = "total",
+           time.unit = NULL,
+           wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
+           use.hinges = getOption("photobiology.use.hinges", default = NULL),
+           ..., idx = !is.null(names(spct))) {
+    msdply(
+      mspct = spct,
+      .fun = e_response,
+      w.band = w.band,
+      quantity = quantity,
+      time.unit = time.unit,
+      wb.trim = wb.trim,
+      use.hinges = use.hinges,
+      idx = idx,
+      col.names = names(w.band)
+    )
+  }

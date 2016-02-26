@@ -92,7 +92,7 @@ tag.generic_spct <- function(x,
   }
   # The default is calculated based of the stepsize
   if (is.null(use.hinges)) {
-    use.hinges <- auto_hinges(x)
+    use.hinges <- auto_hinges(x[["w.length"]])
   }
   # we collect all hinges and insert them in one go
   if (use.hinges) {

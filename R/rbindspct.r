@@ -583,3 +583,152 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
 "$<-.generic_spct" <- function(x, name, value) {
   check_spct(`$<-.data.frame`(x, name, value), byref = FALSE)
 }
+
+# Extract ------------------------------------------------------------------
+
+# $ operator for extraction does not need any wrapping as it always extracts
+# single objects of the underlying classes (e.g. generic_spct)
+# rather than collections of spectral objects.
+#
+# [ needs special handling as it can be used to extract members, or groups of
+# members which must be returned as collections of spectral objects.
+#
+# In the case of replacement, collections of objects can easily become invalid,
+# if the replacement or added member belongs to a class other than the expected
+# one(s) for the collection.
+
+#' Extract or replace members of a collection of spectra
+#'
+#' Just like extraction and replacement with indexes for base R lists, but
+#' preserving the special attributes used in spectral classes.
+#'
+#' @param x	Collection of spectra object from which to extract member(s) or in
+#'   which to replace member(s)
+#' @param i Index specifying elements to extract or replace. Indices are numeric
+#'   or character vectors. Please, see \code{\link[base]{Extract}} for
+#'   more details.
+#' @param drop If TRUE the result is coerced to the lowest possible dimension
+#'   (see the examples). This only works for extracting elements, not for the
+#'   replacement.
+#'
+#' @details This method is a wrapper on base R's extract method for lists that
+#'   sets additional attributes used by these classes.
+#'
+#' @return An object of the same class as \code{x} but containing only the
+#'   subset of members that are selected.
+#'
+#' @method [ generic_mspct
+#' @export
+#'
+#' @rdname extract_mspct
+#' @name Extract_mspct
+#'
+"[.generic_mspct" <-
+  function(x, i, drop = NULL) {
+    xx <- `[.listof`(x, i)
+    generic_mspct(xx, class = class(x))
+  }
+
+# Not exported
+# Check if class_spct is compatible with class_mspct
+#
+is.member_class <- function(l, x) {
+  class(l)[1] == "generic_mscpt" && is.any_spct(x) ||
+    sub("_mspct", "", class(l)[1], fixed = TRUE) == sub("_spct", "", class(x)[1], fixed = TRUE)
+}
+
+#' @param value	A suitable replacement value: it will be repeated a whole number
+#'   of times if necessary and it may be coerced: see the Coercion section. If
+#'   NULL, deletes the column if a single column is selected.
+#'
+#' @export
+#' @method [<- generic_mspct
+#' @rdname extract_mspct
+#'
+"[<-.generic_mspct" <- function(x, i, value) {
+  # could be improved to accept derived classes as valid for replacement.
+  stopifnot(class(x) == class(value))
+  # could not find a better way of avoiding infinite recursion as '[[<-' is
+  # a primitive with no explicit default method.
+  old.class <- class(x)
+  class(x) <- "list"
+  x[i] <- value
+  class(x) <- old.class
+  x
+}
+
+#' @param name A literal character string or a name (possibly backtick quoted).
+#'   For extraction, this is normally (see under ‘Environments’) partially
+#'   matched to the names of the object.
+#'
+#' @export
+#' @method $<- generic_mspct
+#' @rdname extract_mspct
+#'
+"$<-.generic_mspct" <- function(x, name, value) {
+  x[[name]] <- value
+}
+
+#' @export
+#' @method [[<- generic_mspct
+#' @rdname extract_mspct
+#'
+"[[<-.generic_mspct" <- function(x, name, value) {
+  stopifnot(is.member_class(x, value) || is.null(value))
+  # could not find a better way of avoiding infinite recursion as '[[<-' is
+  # a primitive with no explicit default method.
+  if (is.character(name) && !(name %in% names(x)) ) {
+    if (ncol(x) == 1) {
+      dimension <- c(nrow(x) + 1, 1)
+    } else {
+      stop("Appending to a matrix-like collection not supported.")
+    }
+  } else if (is.numeric(name) && (name > length(x)) ) {
+    stop("Appending to a collection using numeric indexing not supported.")
+  } else if (is.null(value)) {
+    if (ncol(x) != 1) {
+      stop("Deleting members from a matrix-like collection not supported.")
+    } else {
+      dimension <- attr(x, "mspct.dim", exact = TRUE)
+    }
+  } else {
+    dimension <- attr(x, "mspct.dim", exact = TRUE)
+  }
+  old.class <- class(x)
+  old.byrow <- attr(x, "mspct.byrow", exact = TRUE)
+  class(x) <- "list"
+  x[[name]] <- value
+  class(x) <- old.class
+  attr(x, "mspct.dim") <- dimension
+  attr(x, "mspct.byrow") <- old.byrow
+  x
+}
+
+# Combine -----------------------------------------------------------------
+
+#' Combine collections of spectra
+#'
+#' Combine two or more generic_mspct objects into a single object.
+#'
+#' @param ... one or more generic_mspct objects to combine.
+#' @param recursive logical ignored as nesting of collections of spectra is
+#' not supported.
+#' @param ncol numeric Virtual number of columns
+#' @param byrow logical When object has two dimensions, how to map member
+#' objects to columns and rows.
+#'
+#' @return A collection of spectra object belonging to the most derived class
+#' shared among the combined objects.
+#'
+#' @export
+#' @method c generic_mspct
+#'
+c.generic_mspct <- function(..., recursive = FALSE, ncol = 1, byrow = FALSE) {
+  l <- list(...)
+  shared.class <- shared_member_class(l, target.set = mspct_classes())
+  stopifnot(length(shared.class) > 0)
+  shared.class <- shared.class[1]
+  ul <- unlist(l, recursive = FALSE)
+  do.call(shared.class, list(l = ul, ncol = ncol, byrow = byrow))
+}
+

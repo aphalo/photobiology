@@ -38,19 +38,6 @@ absorptance.default <- function(spct, w.band, quantity, wb.trim, use.hinges, ...
   return(NA_real_)
 }
 
-#' @describeIn absorptance Specialization for object spectra
-#'
-#' @export
-#'
-absorptance.object_spct <-
-  function(spct, w.band=NULL,
-           quantity="average",
-           wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
-           use.hinges=getOption("photobiology.use.hinges", default = NULL), ...)  {
-    absorptance_spct(spct = spct, w.band = w.band, quantity = quantity,
-                     wb.trim = wb.trim, use.hinges = use.hinges)
-  }
-
 #' @describeIn absorptance Specialization for filter spectra
 #'
 #' @export
@@ -67,6 +54,19 @@ absorptance.filter_spct <-
       absorptance_spct(spct = spct, w.band = w.band, quantity = quantity,
                        wb.trim = wb.trim, use.hinges = use.hinges)
     }
+  }
+
+#' @describeIn absorptance Specialization for object spectra
+#'
+#' @export
+#'
+absorptance.object_spct <-
+  function(spct, w.band=NULL,
+           quantity="average",
+           wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
+           use.hinges=getOption("photobiology.use.hinges", default = NULL), ...)  {
+    absorptance_spct(spct = spct, w.band = w.band, quantity = quantity,
+                     wb.trim = wb.trim, use.hinges = use.hinges)
   }
 
 #' Calculate absorptance from spectral absorptance.
@@ -128,7 +128,7 @@ absorptance_spct <-
     }
     temp.spct <- setGenericSpct(temp.spct)
     # if the waveband is undefined then use all data
-    if (is.null(w.band)){
+    if (is.null(w.band)) {
       w.band <- waveband(spct)
     }
     if (is.waveband(w.band)) {
@@ -137,7 +137,7 @@ absorptance_spct <-
       # cludge but let's us avoid treating it as a special case
       w.band <- list(w.band)
     }
-    w.band <- trim_waveband(w.band=w.band, range=spct, trim=wb.trim)
+    w.band <- trim_waveband(w.band = w.band, range = spct, trim = wb.trim)
 
     # if the w.band includes 'hinges' we insert them
     # choose whether to use hinges or not
@@ -148,7 +148,7 @@ absorptance_spct <-
     # spectral resolution data, and speed up the calculations
     # a lot in such cases
     if (is.null(use.hinges)) {
-      use.hinges <- auto_hinges(spct)
+      use.hinges <- auto_hinges(spct[["w.length"]])
     }
     # we collect all hinges and insert them in one go
     # this may alter a little the returned values
@@ -156,7 +156,7 @@ absorptance_spct <-
     if (use.hinges) {
       all.hinges <- NULL
       for (wb in w.band) {
-        if (!is.null(wb$hinges) & length(wb$hinges)>0) {
+        if (!is.null(wb$hinges) & length(wb$hinges) > 0) {
           all.hinges <- c(all.hinges, wb$hinges)
         }
       }
@@ -181,7 +181,7 @@ absorptance_spct <-
       if (no_names_flag) {
         if (is_effective(wb)) {
           warning("Using only wavelength range from a weighted waveband object.")
-          wb.name[i] <- paste("range", as.character(signif(min(wb), 4)), as.character(signif(max(wb), 4)), sep=".")
+          wb.name[i] <- paste("range", as.character(signif(min(wb), 4)), as.character(signif(max(wb), 4)), sep = ".")
         } else {
           wb.name[i] <- wb$name
         }
@@ -218,3 +218,49 @@ absorptance_spct <-
     return(absorptance)
   }
 
+#' @describeIn absorptance Calculates absorptance from a \code{filter_mspct}
+#'
+#' @param idx logical whether to add a column with the names of the elements of
+#'   spct
+#'
+#' @export
+#'
+absorptance.filter_mspct <-
+  function(spct, w.band = NULL,
+           quantity = "average",
+           wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
+           use.hinges = getOption("photobiology.use.hinges", default = NULL),
+           ..., idx = !is.null(names(spct)) ) {
+    msdply(
+      mspct = spct,
+      .fun = absorptance,
+      w.band = w.band,
+      quantity = quantity,
+      wb.trim = wb.trim,
+      use.hinges = use.hinges,
+      idx = idx,
+      col.names = names(w.band)
+    )
+  }
+
+#' @describeIn absorptance Calculates absorptance from a \code{object_mspct}
+#'
+#' @export
+#'
+absorptance.object_mspct <-
+  function(spct, w.band=NULL,
+           quantity="average",
+           wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
+           use.hinges=getOption("photobiology.use.hinges", default=NULL),
+           ..., idx = !is.null(names(spct)) ) {
+    msdply(
+      mspct = spct,
+      .fun = absorptance,
+      w.band = w.band,
+      quantity = quantity,
+      wb.trim = wb.trim,
+      use.hinges = use.hinges,
+      idx = idx,
+      col.names = names(w.band)
+    )
+  }

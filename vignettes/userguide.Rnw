@@ -141,7 +141,7 @@ summary(sun.spct)
 The package defines several classes intended to be used to store different types of spectral data. They are all derived from \texttt{generic\_spct}, which in turn is derived from \texttt{data.frame} and internally created using \texttt{dplyr::data\_frame}. Table \ref{tab:spct:classes} lists them. Attributes are used in objects of these classes to keep \emph{metadata} such as information about units of expression.
 
 \begin{table}
-\caption[Classes for spectral data]{Classes for spectral data. In addition to the attributes listed, all spectral objects have attributes \texttt{normalized} and \texttt{scaled}, plus the normal attributes of \texttt{data.frame} objects.}\label{tab:spct:classes}
+\caption[Classes for spectral data]{Classes for spectral data. In addition to the required variables listed in the table, additional arbitrary variables are partly supported---some operations will not include them in returned values to avoid ambiguity and other possible conflicts. In addition to the attributes listed, all spectral objects have attributes \texttt{multiple.wl}, \texttt{normalized}, \texttt{scaled}, \texttt{when.measured}, \texttt{where.measured}, \texttt{what.measured} plus the normal attributes of \texttt{data\_frame} objects including \texttt{comment}.}\label{tab:spct:classes}
 \centering
 \begin{footnotesize}
 \begin{tabular}{>{\ttfamily}l>{\ttfamily}l>{\ttfamily}l}
@@ -149,13 +149,24 @@ The package defines several classes intended to be used to store different types
 \textnormal{Name} & \textnormal{Variables} & \textnormal{Attributes} \\
 \midrule
 generic\_spct & w.length & \\
-raw\_spct & w.length, counts & \\
-cps\_spct & w.length, cps & \\
-source\_spct & w.length, s.e.irrad, s.q.irrad & time.unit, bswf \\
-filter\_spct & w.length, Tfr, A & Tfr.type \\
+\addlinespace
+raw\_spct & w.length, counts & instr.desc, instr.settings, linearized \\
+\addlinespace
+cps\_spct & w.length, cps & instr.desc, instr.settings, linearized \\
+\addlinespace
+source\_spct & w.length, s.e.irrad & time.unit, bswf \\
+             & w.length,  s.q.irrad & time.unit, bswf \\
+\addlinespace
+filter\_spct & w.length, Tfr & Tfr.type \\
+             & w.length, A & Tfr.type \\
+\addlinespace
 reflector\_spct & w.length, Rfr & Rfr.type \\
+\addlinespace
 object\_spct & w.length, Tfr, Rfr & Tfr.type, Rfr.type \\
-response\_spct & w.length, s.e.response, s.q.response & time.unit \\
+\addlinespace
+response\_spct & w.length, s.e.response & time.unit \\
+               & w.length, s.q.response & time.unit \\
+\addlinespace
 chroma\_spct & w.length, x, y, z & \\
 \bottomrule
 \end{tabular}
@@ -239,8 +250,7 @@ Not respecting these assumptions will yield completely wrong results! It is extr
 If spectral irradiance data is in \wattnm, and the wavelength in nm, as is the case for many
 Macam spectroradiometers, the data can be used directly and functions in the package will return irradiances in \watt.
 
-If, for example, the spectral irradiance data output by a spectroradiometer is expressed in \mwattnm,
-and the wavelengths are in Ångstrom then to obtain correct results when using any of the packages in the suite, we need to rescale the data when creating a new object.
+If, for example, the spectral irradiance data output by a spectroradiometer is expressed in \mwattnm, and the wavelengths are in Ångstrom then to obtain correct results when using any of the packages in the suite, we need to rescale the data when creating a new object.
 
 <<example-1, eval=FALSE>>=
 # not run
@@ -271,7 +281,7 @@ class(sun.spct)
 
 There are basically two different approaches to the creation of spectra by users, a constructor similar to \texttt{data.frame} constructor that takes vectors as arguments, and a constructor that converts \texttt{list} objects into spectral objects, which works similarly to \texttt{as.data.frame} from base R. In contrast to the data frame constructors spectral constructor require the variables or the vector arguments should be suitably named so that they can be recognized.
 
-Here we briefly describe the `as' constructor functions for spectra. In the first example we create an object to store spectral irradiance data for `light source', by first creting a data frame, and creating the spectral object as a copy of it. In the example below we supply a single value, 1, for the spectral irradiance. This value gets recycled as is normal in R, but of course in real use it is more usual to supply a vector of the same length as the \texttt{w.length} vector.
+Here we briefly describe the `as' constructor functions for spectra. In the first example we create an object to store spectral irradiance data for `light source', by first creating a data frame, and creating the spectral object as a copy of it. In the example below we supply a single value, 1, for the spectral irradiance. This value gets recycled as is normal in R, but of course in real use it is more usual to supply a vector of the same length as the \texttt{w.length} vector.
 
 <<>>=
 my.df <- data.frame(w.length = 400:410, s.e.irrad = 1)
@@ -288,7 +298,7 @@ my.g.spct <- as.generic_spct(my.spct)
 class(my.g.spct)
 @
 
-When cronstructing spectral objetcs from numeric vectors the names of the arguments are meaningful and convey information on the nature of the spectral data and basis of expression.
+When constructing spectral objects from numeric vectors the names of the arguments are meaningful and convey information on the nature of the spectral data and basis of expression.
 
 <<>>=
 source_spct(w.length = 300:305, s.e.irrad = 1)
@@ -328,10 +338,10 @@ comment(my.cm.spct)
 
 \subsection{Special attributes}
 
-Spectral objects have several attributes used to store metadata, such as the time unit used or type of spectral quantity. Some attributes are meaningful for all the classes of spectra defined in the package. These are \emph{time of measurement} using attribute \texttt{"when.measured"}, \emph{place of measurement} using attrinute \texttt{"where.measured"} and free-text \emph{comments}. One can set and get comments stored in spectra by means of base R's \texttt{comment()} and \verb|comment() <-| functions. Some of the functions in this package append additional information to comments or merge comments.
+Spectral objects have several attributes used to store metadata, such as the time unit used or type of spectral quantity. Some attributes are meaningful for all the classes of spectra defined in the package. These are \emph{time of measurement} using attribute \texttt{"when.measured"}, \emph{place of measurement} using attribute \texttt{"where.measured"} and free-text \emph{comments}. One can set and get comments stored in spectra by means of base R's \texttt{comment()} and \verb|comment() <-| functions. Some of the functions in this package append additional information to comments or merge comments.
 
 Functions \texttt{setWhenMeasured()} and \texttt{getWhenMeasured()} are used for setting or getting a date as a \texttt{POSIXct} value. This format is compatible with many functions
-from pacakge \texttt{lubridate}.
+from package \texttt{lubridate}.
 
 <<>>=
 my.spct <- sun.spct
@@ -341,8 +351,8 @@ setWhenMeasured(my.spct, ymd_hms("2015-10-31 22:55:00", tz = "EET"))
 getWhenMeasured(my.spct)
 @
 
-Functions \texttt{setWhereMeasured()} and \texttt{getWhereMeasured()} are used for setting or getting a geocode as a \texttt{data.frame} value. This format is comaptible with function
-\texttt{geocode()} from pacakge \texttt{ggmap}. It is also possible, to simply pass latitude
+Functions \texttt{setWhereMeasured()} and \texttt{getWhereMeasured()} are used for setting or getting a geocode as a \texttt{data.frame} value. This format is compatible with function
+\texttt{geocode()} from package \texttt{ggmap}. It is also possible, to simply pass latitude
 and longitude coordinates, as shown below. The returned value is always a data frame with columns \texttt{"lon"} and \texttt{"lat"}.
 
 <<>>=
@@ -355,7 +365,7 @@ my.spct
 @
 
 Similar functions exist for other attributes which are not shared by all spectral classes.
-Spectral objects may have several other attributes used to store metadata, such as the time unit used. There functions available for quering and setting the state if these attributes. \texttt{is\_} functions return a logical value, and \texttt{get} functions return the values of the attributes themselves. In addition \texttt{set} functions can be used to set the value attributes, but many of the \texttt{set} functions are very rarely needed in user code.
+Spectral objects may have several other attributes used to store metadata, such as the time unit used. There functions available for querying and setting the state if these attributes. \texttt{is\_} functions return a logical value, and \texttt{get} functions return the values of the attributes themselves. In addition \texttt{set} functions can be used to set the value attributes, but many of the \texttt{set} functions are very rarely needed in user code.
 
 The attributes described below are set automatically, and consequently function \texttt{setBSWFUsed()} and other \emph{set} functions for these attributes are mainly of use to programmers extending the package. One exception is when a wrong value has been assigned by mistake and needs to be overwritten.
 
@@ -366,7 +376,7 @@ is_effective(sun.spct)
 is_effective(sun.spct * waveband(c(400, 700)))
 @
 
-Sometimes it may be desired to change the time unit used for expresing spectral irradiance or spectral response, and this can be achieved with the \emph{conversion} function \texttt{convertTimeUnit}. This function both converts spectral data to the new unit of expression and sets the \texttt{time.unit} attribute, preserving the validity of the data object.
+Sometimes it may be desired to change the time unit used for expressing spectral irradiance or spectral response, and this can be achieved with the \emph{conversion} function \texttt{convertTimeUnit}. This function both converts spectral data to the new unit of expression and sets the \texttt{time.unit} attribute, preserving the validity of the data object.
 
 <<>>=
 ten.minutes.spct <-
@@ -387,14 +397,14 @@ Spectral objects created with earlier (pre-release) versions of this package are
 The package defines several classes intended to be used to store \emph{collections} of different types of spectral data. They are all derived from \texttt{generic\_mspct}, which in turn is derived from \texttt{list}. Table \ref{tab:mspct:classes} lists them.
 
 \begin{table}
-\caption[Classes for collections of spectral objects]{Classes for collections of spectral objects. Objects of class \texttt{generic\_mspct} can have member objects of any class derived from \texttt{generic\_spct} and can be heterogeneous. Atributes can be queried and set with the normal R methods of the same names.}\label{tab:mspct:classes}
+\caption[Classes for collections of spectral objects]{Classes for collections of spectral objects. Objects of class \texttt{generic\_mspct} can have member objects of any class derived from \texttt{generic\_spct} and can be heterogeneous. Attributes can be queried and set with the normal R methods of the same names. See table \ref{tab:spct:classes} for the attributes used in individual member spectra of collections.}\label{tab:mspct:classes}
 \centering
-\begin{small}
+\begin{footnotesize}
 \begin{tabular}{>{\ttfamily}l>{\ttfamily}l>{\ttfamily}l}
 \toprule
 \textnormal{Name} & \textnormal{Member objects} & \textnormal{Attributes}\\
 \midrule
-generic\_mspct & generic\_spct $+$ \textnormal{any derived} & names, dim, comment \\
+generic\_mspct & generic\_spct & names, dim, comment \\
 raw\_mspct & raw\_spct & names, dim, comment \\
 cps\_mspct & cps\_spct & names, dim, comment \\
 source\_mspct & source\_spct & names, dim, comment \\
@@ -405,10 +415,10 @@ response\_mspct & response\_spct & names, dim, comment \\
 chroma\_mspct & chroma\_spct & names, dim, comment \\
 \bottomrule
 \end{tabular}
-\end{small}
+\end{footnotesize}
 \end{table}
 
-Objects of these classes, except for those of class \texttt{generic\_mspct}, can contain members belonging to one of the classes. Being all other spectral object classes derived from \texttt{generic\_spct}, \texttt{generic\_mspct} objects can contain heterogeneous collections of spectra. In all cases, there are no restrictions on the lengths, wavelength range and/or wavelength step size, or attributes other than \texttt{class} of the contained spectra. Mimicking R's arrays and matrixes, a \texttt{dim} attribute is always present and \texttt{dim} methods are provided. These allows the storage of time series of spectral data, or (hyper)spectral image data, or even higher dimensional spectral data. The handling of 1D and 2D spectral collections is already implemented in the summary methods. Handling of 3D and higher dimensional data can be implemented in the future without changing the class definition. By having implemented \texttt{dim}, also methods \texttt{ncol} and \texttt{nrow} are available as they use \texttt{dim} internally. Array-like subscripting is \textbf{not} implemented.
+Objects of these classes, except for those of class \texttt{generic\_mspct}, can contain members belonging to one of the classes. Being all other spectral object classes derived from \texttt{generic\_spct}, \texttt{generic\_mspct} objects can contain heterogeneous collections of spectra. In all cases, there are no restrictions on the lengths, wavelength range and/or wavelength step size, or attributes other than \texttt{class} of the contained spectra. Mimicking R's arrays and matrices, a \texttt{dim} attribute is always present and \texttt{dim} methods are provided. These allows the storage of time series of spectral data, or (hyper)spectral image data, or even higher dimensional spectral data. The handling of 1D and 2D spectral collections is already implemented in the summary methods. Handling of 3D and higher dimensional data can be implemented in the future without changing the class definition. By having implemented \texttt{dim}, also methods \texttt{ncol} and \texttt{nrow} are available as they use \texttt{dim} internally. Array-like subscripting is \textbf{not} implemented.
 
 \subsection{Construction}
 
@@ -489,7 +499,7 @@ R's extraction and replacement methods have specializations for collections of s
 
 \begin{framed}
 \noindent
-Methods \texttt{`[`}, and \texttt{`[<-`}, extract and replace `parts' of the collection, respectively. Even when only one member is extrated, the returned value is a collection of spectra. The expected replacement value is also, always a collection of spectra.
+Methods \texttt{`[`}, and \texttt{`[<-`}, extract and replace `parts' of the collection, respectively. Even when only one member is extracted, the returned value is a collection of spectra. The expected replacement value is also, always a collection of spectra.
 \end{framed}
 
 <<>>=
@@ -503,7 +513,7 @@ two_suns.mspct[1:2] <- two_suns.mspct[2:1]
 
 \begin{framed}
 \noindent
-Methods \texttt{`[[`}, \verb|$| and \texttt{`[[<-`}, extract and replace individual members of the collection, respectively. They allways return or expect objects of one of the spectral classes.
+Methods \texttt{`[[`}, \verb|$| and \texttt{`[[<-`}, extract and replace individual members of the collection, respectively. They always return or expect objects of one of the spectral classes.
 \end{framed}
 
 <<>>=
@@ -527,10 +537,10 @@ c(two_suns.mspct, mixed.mspct)
 
 \subsection{Transform or \emph{apply} functions}\label{sec:apply}
 
-For our `apply' functions we follow the namimg convention used in package \texttt{plyr}, but using  \texttt{ms} as prefix for \texttt{\_mspct} objects. The `apply' functions implemented in the \PB package are \texttt{msmsply}, \texttt{msdply}, \texttt{mslply}  and \texttt{msaply} which both accepts a collections of spectra as first argument and return a collection of spectra, a data frame, a list, or an array respectively (Table \ref{tab:apply}).
+For our `apply' functions we follow the naming convention used in package \texttt{plyr}, but using  \texttt{ms} as prefix for \texttt{\_mspct} objects. The `apply' functions implemented in the \PB package are \texttt{msmsply}, \texttt{msdply}, \texttt{mslply}  and \texttt{msaply} which both accepts a collections of spectra as first argument and return a collection of spectra, a data frame, a list, or an array respectively (Table \ref{tab:apply}).
 
 \begin{table}
-  \caption[Apply functions for collections of spectra]{Apply fucntions for collections of spectra. Key: v., value returned by `apply' function; f.v., value returned by the applied function (argument \texttt{.fun}). In the table \texttt{generic\_mspct} and \texttt{generic\_spct} indicate objects of these classes or any class derived from them. The exact class of the collection of spectra object returned  will be determined by the class(es) of the values returned by the applied function.}\label{tab:apply}
+  \caption[Apply functions for collections of spectra]{Apply functions for collections of spectra. Key: v., value returned by `apply' function; f.v., value returned by the applied function (argument \texttt{.fun}). In the table \texttt{generic\_mspct} and \texttt{generic\_spct} indicate objects of these classes or any class derived from them. The exact class of the collection of spectra object returned  will be determined by the class(es) of the values returned by the applied function.}\label{tab:apply}
   \centering
   \begin{scriptsize}
   \begin{tabular}{>{\ttfamily}l>{\ttfamily}l>{\ttfamily}l>{\ttfamily}lll}
@@ -549,7 +559,7 @@ For our `apply' functions we follow the namimg convention used in package \textt
   \end{scriptsize}
 \end{table}
 
-Functions \texttt{msmsply()}, \texttt{msdply} and \texttt{mslply} can be used to apply a function to each member spectrum in a collection. The `apply' fucntion to use depends on the return value of the applied function.
+Functions \texttt{msmsply()}, \texttt{msdply} and \texttt{mslply} can be used to apply a function to each member spectrum in a collection. The `apply' function to use depends on the return value of the applied function.
 
 In the case of \texttt{msmsply()} the applied function is expected to return a `transformed' spectrum as another object of class \texttt{generic\_spct} or a class derived from it. The value returned by \texttt{msmsply} is a collection of spectra, of a type determined by the class(es) of the member spectra in the new collection.
 
@@ -600,7 +610,7 @@ str(msaply(two.mspct, range))
 
 \subsection{Convolution}\label{sec:convolve}
 
-By convolution we normally mean the multiplication value by value at matching wavelengths of two spectra. The function described in this section facilitates this and similar operations among collections of spectra. An example use case could be the covolution of spectral irradiance by spectral transmittance for all combinations of light sources and filters in a collection of source spectra and a collection of filter spectra.
+By convolution we normally mean the multiplication value by value at matching wavelengths of two spectra. The function described in this section facilitates this and similar operations among collections of spectra. An example use case could be the convolution of spectral irradiance by spectral transmittance for all combinations of light sources and filters in a collection of source spectra and a collection of filter spectra.
 
 Default operator (or function) is that for multiplication, either one or both of the two first arguments must be a collection of spectra. When only one argument is a collection of spectra, the other one can be a spectrum, or even a numeric vector. For multiplication the order of the operands does not affect the returned value. With operators or functions for non-transitive operations the order does matter.
 
@@ -943,7 +953,7 @@ The other options listed in Table \ref{tab:options} can be set similarly, to uns
 
 \section{Transformations: methods and functions}
 
-In this section we describe methods and functions that take one or more spectral objects, and in some cases also waveband objects, as arguments and return another spectral object (Table \ref{tab:transform:spct}) or that take a collection of spectral objects, and in some cases also waveband objects, as argumnents and return a collection of spectral objects (Table \ref{tab:transform:mspct}).
+In this section we describe methods and functions that take one or more spectral objects, and in some cases also waveband objects, as arguments and return another spectral object (Table \ref{tab:transform:spct}) or that take a collection of spectral objects, and in some cases also waveband objects, as arguments and return a collection of spectral objects (Table \ref{tab:transform:mspct}).
 
 \begin{table}
   \caption[Transformation methods for spectra]{Transformation methods for spectra. Key: + available, -- not available, f available in the future.}\label{tab:transform:spct}
@@ -1027,7 +1037,7 @@ Sometimes, especially for plotting, we may want to row-bind spectra. When the ai
 shade.spct <- sun.spct
 @
 
-By default an ID factor named \texttt{spct.idx} is added allow to idetify the source of the observations after the binding. If the supplied list has named members, then these names are used as factor levels. If a character value is supplied to as \texttt{idfactor} argument, this is used as name for the factor.
+By default an ID factor named \texttt{spct.idx} is added allow to identify the source of the observations after the binding. If the supplied list has named members, then these names are used as factor levels. If a character value is supplied to as \texttt{idfactor} argument, this is used as name for the factor.
 
 <<>>=
 rbindspct(list(sun.spct, shade.spct))
@@ -1189,7 +1199,7 @@ trim_wl(sun.spct, c(281.5, NA), fill = NA)
 trim_wl(sun.spct, c(281.5, NA), fill = NA, use.hinges = FALSE)
 @
 
-When \texttt{use.hinges == TRUE} and expanssion or replacement is done, two observations are inserted at each boundary, differing in wavelength by $1 \times 10^{-12}$\,nm to prevent rounding errors in later calculations.
+When \texttt{use.hinges == TRUE} and expansion or replacement is done, two observations are inserted at each boundary, differing in wavelength by $1 \times 10^{-12}$\,nm to prevent rounding errors in later calculations.
 
 \subsubsection{Functions \texttt{trim\_spct} and \texttt{trim\_spct}}
 
@@ -1197,7 +1207,7 @@ Functions \texttt{trim\_spct} and \texttt{trim\_spct} are not generic, and add e
 
 \subsection{Convolving weights}
 
-It is very instructive to look at weighted spectral data to understand how effective irradiances are calculated. Plotting effective spectral irradiance data can be very instructive when analyzing the interaction of photoreceptors and ambient radiation. It can also illustrate what a large effect that small measuring errors can have on the estimated effective irradiances or exposures when SWFs have a steep slope.
+It is very instructive to look at weighted spectral data to understand how effective irradiances are calculated. Plotting effective spectral irradiance data can be very instructive when analysing the interaction of photoreceptors and ambient radiation. It can also illustrate what a large effect that small measuring errors can have on the estimated effective irradiances or exposures when SWFs have a steep slope.
 
 \subsubsection{Individual spectra}
 
@@ -1454,7 +1464,7 @@ e_irrad(sun.spct, PAR) # W m-2
 q_irrad(sun.spct, PAR) * 1e6 # umol s-1 m-2
 @
 
-It is also possible to supply a time unit to use as basis of expression for the returned value, but be aware that conversion into a loger time unit is only valid for sources like lamps, which have an output the remains constant in time.
+It is also possible to supply a time unit to use as basis of expression for the returned value, but be aware that conversion into a logger time unit is only valid for sources like lamps, which have an output the remains constant in time.
 
 <<>>=
 irrad(sun.spct, PAR, time.unit = "hour")
@@ -1473,7 +1483,7 @@ Lists of wavebands are also accepted as argument.
 e_irrad(sun.spct, UV_bands) # W m-2
 @
 
-These functions have an additional argument \texttt{quantity}, with default \texttt{"total"}, which can take values controlling the output. The value "total" yields \textbf{irradiance} in \watt, integrated over wavelengths for each waveband, while "average" yields the mean \textbf{spectral irradiance} within each waveband in \wattnm. The value "contribution" is relative to the irradiance for the whole spectrum, expressed as a fraction of one, while the value "relative" is relative to the sum of the irradiances for the different wavbands given as argument, also expressed as a fraction of one.
+These functions have an additional argument \texttt{quantity}, with default \texttt{"total"}, which can take values controlling the output. The value "total" yields \textbf{irradiance} in \watt, integrated over wavelengths for each waveband, while "average" yields the mean \textbf{spectral irradiance} within each waveband in \wattnm. The value "contribution" is relative to the irradiance for the whole spectrum, expressed as a fraction of one, while the value "relative" is relative to the sum of the irradiances for the different wavebands given as argument, also expressed as a fraction of one.
 
 <<>>=
 irrad(sun.spct, UV_bands, quantity = "total")
@@ -1589,7 +1599,7 @@ with(sun.data,
 
 \subsection{Individual spectra}
 
-These indexes are frequently used to summarize reflectance data, for example in remote rensing the NDVI (normalized difference vegetation index). Here we give an \emph{unusual} example to demonstrate that function \texttt{normalized\_diff\_ind()} can be used to calculate, or define any similar index.
+These indexes are frequently used to summarize reflectance data, for example in remote sensing the NDVI (normalized difference vegetation index). Here we give an \emph{unusual} example to demonstrate that function \texttt{normalized\_diff\_ind()} can be used to calculate, or define any similar index.
 
 <<>>=
 normalized_diff_ind(sun.spct,
@@ -1668,9 +1678,9 @@ average_spct(sun.spct)
 
 \section{Conversion of ``raw'' spectral data}
 
-In this section we cover the final steps of the conversion of raw data. Once the spectral data have been linearized, zero-correted, and raw counts converted to counts-per-second we can apply the functions included in this package. Earlier steps of the data flow are more dependent on instrument hardware and firmware features and are handled by separate packages---at the moment only package available is \textsl{ooacquire} instruments from Ocean Optics, and which has not yet been released.
+In this section we cover the final steps of the conversion of raw data. Once the spectral data have been linearised, zero-corrected, and raw counts converted to counts-per-second we can apply the functions included in this package. Earlier steps of the data flow are more dependent on instrument hardware and firmware features and are handled by separate packages---at the moment only package available is \textsl{ooacquire} instruments from Ocean Optics, and which has not yet been released.
 
-At the moment three conversion fucntions are available: \texttt{cps2irrad()} for irradiance, \texttt{cps2Tfr} for transmittance, and \texttt{cps2Rfr()} for reflectance. These functions expect an instrument descriptor to be present in the \texttt{cps\_spct} objects supplied as arguments.
+At the moment three conversion functions are available: \texttt{cps2irrad()} for irradiance, \texttt{cps2Tfr} for transmittance, and \texttt{cps2Rfr()} for reflectance. These functions expect an instrument descriptor to be present in the \texttt{cps\_spct} objects supplied as arguments.
 
 <<>>=
 my_filter.spct <- cps2Tfr(filter_cps.mspct$filter, filter_cps.mspct$no.filter)
@@ -1709,7 +1719,7 @@ We create a vector of dates to use in the examples---default time zone of \textt
 dates <- seq(from = ymd("2015-03-01"), to = ymd("2015-07-1"), length.out = 3)
 @
 
-Default latitude is zero (the Equator), the default longitude is zero (Greenwich), and default time zone for the functions in the \texttt{photobiology} package is \texttt{"UTC"}. Be also aware that for summer dates the times are expressed accrodingly. In the examples below this can be recognized for example, by the time zone being reported as EEST instead of EET for Eastern Europe.
+Default latitude is zero (the Equator), the default longitude is zero (Greenwich), and default time zone for the functions in the \texttt{photobiology} package is \texttt{"UTC"}. Be also aware that for summer dates the times are expressed accordingly. In the examples below this can be recognized for example, by the time zone being reported as EEST instead of EET for Eastern Europe.
 
 <<>>=
 noon_time(dates, tz = "UTC", lat =  60)
@@ -1751,7 +1761,7 @@ sunrise_time(today(tzone = "EET"), tz = "EET", lat = 60, lon = 25,
              twilight = +12)
 @
 
-Parameter \texttt{unit.out} can be used to obtain the returned value expresed as time-of-day in hours, minutes, or seconds since midnight.
+Parameter \texttt{unit.out} can be used to obtain the returned value expressed as time-of-day in hours, minutes, or seconds since midnight.
 
 <<>>=
 sunrise_time(today(tzone = "EET"), tz = "EET", lat = 60, lon = 25,

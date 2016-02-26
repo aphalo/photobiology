@@ -1698,6 +1698,58 @@ setWhenMeasured.generic_spct <-
     invisible(x)
   }
 
+#' @describeIn setWhenMeasured summary_generic_spct
+#' @export
+#'
+setWhenMeasured.summary_generic_spct <-
+  function(x,
+           when.measured = lubridate::now(),
+           ...) {
+    name <- substitute(x)
+    stopifnot(is.null(when.measured) ||
+                lubridate::is.POSIXct(when.measured))
+    if (!is.null(when.measured)) {
+      when.measured <- lubridate::with_tz(when.measured, "UTC")
+    }
+    attr(x, "when.measured") <- when.measured
+    if (is.name(name)) {
+      name <- as.character(name)
+      assign(name, x, parent.frame(), inherits = TRUE)
+    }
+    invisible(x)
+  }
+
+#' @describeIn setWhenMeasured generic_mspct
+#' @export
+setWhenMeasured.generic_mspct <-
+  function(x,
+           when.measured = lubridate::now(),
+           ...) {
+    name <- substitute(x)
+    stopifnot((lubridate::is.POSIXct(when.measured) && length(when.measured) == 1) ||
+                is.list(when.measured))
+    if (lubridate::is.POSIXct(when.measured) || length(when.measured) == 1) {
+      if (is.list(when.measured)) {
+        when.measured <- when.measured[[1]]
+        stopifnot(lubridate::is.POSIXct(when.measured))
+      }
+      when <- lubridate::with_tz(when.measured, "UTC")
+      x <- msmsply(mspct = x, .fun = setWhenMeasured, when.measured = when)
+    } else if (length(when.measured) == length(x)) {
+      for (i in 1:length(x)) {
+        when <- when.measured[[i]]
+        stopifnot(lubridate::is.POSIXct(when))
+        when <- lubridate::with_tz(when, "UTC")
+        x[[i]] <- setWhenMeasured(x[[i]], when.measured = when)
+      }
+    }
+    if (is.name(name)) {
+      name <- as.character(name)
+      assign(name, x, parent.frame(), inherits = TRUE)
+    }
+    invisible(x)
+  }
+
 #' Get the "when.measured" attribute
 #'
 #' Function to read the "when.measured" attribute of an existing generic_spct
@@ -1736,6 +1788,33 @@ getWhenMeasured.generic_spct <- function(x, ...) {
     when.measured <- suppressWarnings(lubridate::ymd(NA_character_))
   }
   when.measured
+}
+
+#' @describeIn getWhenMeasured summary_generic_spct
+#' @export
+getWhenMeasured.summary_generic_spct <- function(x, ...) {
+  when.measured <- attr(x, "when.measured", exact = TRUE)
+  if (is.null(when.measured) ||
+      !lubridate::is.POSIXct(when.measured)) {
+    # need to handle invalid attribute values
+    # we return an NA of class POSIXct
+    when.measured <- suppressWarnings(lubridate::ymd(NA_character_))
+  }
+  when.measured
+}
+
+#' @describeIn getWhenMeasured generic_mspct
+#' @param idx logical whether to add a column with the names of the elements of
+#'   spct
+#' @note The method for collections of spectra returns the
+#'   a data_frame with the correct times in TZ = "UTC".
+#' @export
+getWhenMeasured.generic_mspct <- function(x,
+                                          ...,
+                                          idx = !is.null(names(x))) {
+  z <- msdply(mspct = x, .fun = getWhenMeasured, ..., idx = idx)
+  z[["when.measured"]] <- lubridate::with_tz(z[["when.measured"]], "UTC")
+  z
 }
 
 # where.measured ---------------------------------------------------------------
@@ -1801,6 +1880,77 @@ setWhereMeasured.generic_spct <- function(x,
   invisible(x)
 }
 
+#' @describeIn setWhereMeasured summary_generic_spct
+#' @export
+setWhereMeasured.summary_generic_spct <- function(x,
+                                                  where.measured = NA,
+                                                  lat = NA,
+                                                  lon = NA,
+                                                  ...) {
+  name <- substitute(x)
+  if (!is.null(where.measured)) {
+    if (any(is.na(where.measured))) {
+      where.measured <- data.frame(lon = lon, lat = lat)
+    } else {
+      stopifnot(
+        is.data.frame(where.measured) && nrow(where.measured) == 1 &&
+          all(c("lon", "lat") %in% names(where.measured))
+      )
+    }
+  }
+  attr(x, "where.measured") <- where.measured
+  if (is.name(name)) {
+    name <- as.character(name)
+    assign(name, x, parent.frame(), inherits = TRUE)
+  }
+  invisible(x)
+}
+
+#' @describeIn setWhereMeasured generic_mspct
+#' @note Method for collections of spectra recycles the location information
+#'   only if it is of length one.
+#' @export
+setWhereMeasured.generic_mspct <- function(x,
+                                           where.measured = NA,
+                                           lat = NA,
+                                           lon = NA,
+                                           ...) {
+  name <- substitute(x)
+  stopifnot(is.null(where.measured) || is.na(where.measured) ||
+              is.data.frame(where.measured) ||
+              (is.list(where.measured) && is.data.frame(where.measured[[1]])) )
+  if (is.null(where.measured) ||
+      (!is.na(where.measured) && is.data.frame(where.measured) && nrow(where.measured) == 1) ||
+      (is.na(where.measured) && length(lat) == 1 && length(lon) == 1)) {
+    x <- msmsply(mspct = x,
+                 .fun = setWhereMeasured,
+                 where.measured = where.measured,
+                 lat = lat,
+                 lon = lon)
+  } else if (!is.na(where.measured) && !is.data.frame(where.measured) &&
+             is.list(where.measured) && length(where.measured) == length(x)) {
+    for (i in 1:length(x)) {
+      x[[i]] <- setWhereMeasured(x[[i]], where.measured = where.measured[[i]])
+    }
+  } else if (!is.na(where.measured) && is.data.frame(where.measured) &&
+             nrow(where.measured) == length(x)) {
+    for (i in 1:length(x)) {
+      x[[i]] <- setWhereMeasured(x[[i]], where.measured = where.measured[i, ])
+    }
+  } else if (is.na(where.measured) && length(lat) == length(x) && length(lon) == length(x)) {
+    for (i in 1:length(x)) {
+      x[[i]] <- setWhereMeasured(x[[i]], lon = lon[i], lat = lat[i])
+    }
+  } else {
+    stop("Length of geocode information must be either 1, or equal to the number of spectra.")
+  }
+  if (is.name(name)) {
+    name <- as.character(name)
+    assign(name, x, parent.frame(), inherits = TRUE)
+  }
+  invisible(x)
+}
+
 #' Get the "where.measured" attribute
 #'
 #' Function to read the "where.measured" attribute of an existing generic_spct.
@@ -1838,6 +1988,29 @@ getWhereMeasured.generic_spct <- function(x, ...) {
   }
   where.measured
 }
+
+#' @describeIn getWhereMeasured summary_generic_spct
+#' @export
+getWhereMeasured.summary_generic_spct <- function(x, ...) {
+  where.measured <- attr(x, "where.measured", exact = TRUE)
+  if (is.null(where.measured) ||
+      !is.data.frame(where.measured)) {
+    # need to handle invalid or missing attribute values
+    where.measured <- data.frame(lon = NA_real_, lat = NA_real_)
+  }
+  where.measured
+}
+
+#' @describeIn getWhereMeasured generic_mspct
+#' @param idx logical whether to add a column with the names of the elements of
+#'   spct
+#' @export
+getWhereMeasured.generic_mspct <- function(x,
+                                           ...,
+                                           idx = !is.null(names(x))) {
+  msdply(mspct = x, .fun = getWhereMeasured, ..., idx = idx)
+}
+
 
 # how measured attributes -------------------------------------------------
 
@@ -2000,4 +2173,6 @@ getWhatMeasured <- function(x) {
     return(NA)
   }
 }
+
+
 

@@ -102,7 +102,7 @@ absorbance_spct <-
     # spectral resolution data, and speed up the calculations
     # a lot in such cases
     if (is.null(use.hinges)) {
-      use.hinges <- auto_hinges(spct)
+      use.hinges <- auto_hinges(spct[["w.length"]])
     }
 
     # we collect all hinges and insert them in one go
@@ -172,3 +172,53 @@ absorbance_spct <-
     return(absorbance)
   }
 
+# filter_mspct methods -----------------------------------------------
+
+#' @describeIn absorbance Calculates absorbance from a \code{filter_mspct}
+#'
+#' @param idx logical whether to add a column with the names of the elements of
+#'   spct
+#'
+#' @export
+#'
+absorbance.filter_mspct <-
+  function(spct, w.band=NULL,
+           quantity = "average",
+           wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
+           use.hinges = getOption("photobiology.use.hinges", default = NULL),
+           ..., idx = !is.null(names(spct))) {
+    msdply(
+      mspct = spct,
+      .fun = absorbance,
+      w.band = w.band,
+      quantity = quantity,
+      wb.trim = wb.trim,
+      use.hinges = use.hinges,
+      idx = idx,
+      col.names = names(w.band)
+    )
+  }
+
+# object_mspct methods -----------------------------------------------
+
+#' @describeIn absorbance Calculates absorbance from a \code{object_mspct}
+#'
+#' @export
+#'
+absorbance.object_mspct <-
+  function(spct, w.band=NULL,
+           quantity="average",
+           wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
+           use.hinges=getOption("photobiology.use.hinges", default = NULL),
+           ..., idx = !is.null(names(spct))) {
+    msdply(
+      mspct = spct,
+      .fun = absorbance,
+      w.band = w.band,
+      quantity = quantity,
+      wb.trim = wb.trim,
+      use.hinges = use.hinges,
+      col.names = names(w.band),
+      idx = idx
+    )
+  }

@@ -6,73 +6,129 @@ Sys.info()
 Sys.time()
 sessionInfo()
 
-data(sun.data)
-attach(sun.data)
+UV_bands <- UV_bands()
+VIS_bands <- VIS_bands()
+PAR <- PAR()
+CIE <- CIE()
+DNA.N <- DNA_N()
+wb.sun <- waveband(sun.spct)
+wb.50 <- waveband(c(400,450))
+wb.200 <- waveband(c(400,600))
+wb.400 <- waveband(c(400,800))
 
-test.calc_multipliers <- function(w.band=new_waveband(400,700)) {
-microbenchmark(calc_multipliers(w.length, w.band,"photon", use.cached.mult = FALSE),
-               calc_multipliers(w.length, w.band,"photon", use.cached.mult = TRUE))
+test.irrad.all <- function(w.band=wb.sun) {
+  microbenchmark(e_irrad(sun.spct, w.band),
+                 e_irrad(sun.spct, w.band,
+                         use.cached.mult = FALSE,
+                         use.hinges = FALSE,
+                         wb.trim = FALSE,
+                         idx = FALSE) )
 }
 
-test.calc_multipliers()
-test.calc_multipliers(DNA.N())
-test.calc_multipliers(CIE())
-test.calc_multipliers(CIE(300))
+test.irrad.all()
+test.irrad.all(wb.sun)
+test.irrad.all(wb.50)
+test.irrad.all(wb.200)
+test.irrad.all(wb.400)
 
-test.irradiance <- function(w.band = new_waveband(400,700), unit.out = "energy") {
-  microbenchmark(irradiance(w.length, s.e.irrad, w.band,unit.out,
-                            check.spectrum = TRUE, use.cached.mult = FALSE),
-                 irradiance(w.length, s.e.irrad, w.band,unit.out,
-                            check.spectrum = TRUE, use.cached.mult = TRUE),
-                 irradiance(w.length, s.e.irrad, w.band,unit.out,
-                            check.spectrum = FALSE, use.cached.mult = TRUE),
-                 irradiance(w.length, s.e.irrad, w.band,unit.out,
-                            check.spectrum = TRUE, use.cached.mult = FALSE,
-                            use.hinges = TRUE),
-                 irradiance(w.length, s.e.irrad, w.band,unit.out,
-                            check.spectrum = TRUE, use.cached.mult = TRUE,
-                            use.hinges = TRUE),
-                 irradiance(w.length, s.e.irrad, w.band,unit.out,
-                            check.spectrum = FALSE, use.cached.mult = TRUE,
-                            use.hinges = TRUE),
-                 irradiance(w.length, s.e.irrad, w.band,unit.out,
-                            check.spectrum = TRUE, use.cached.mult = FALSE,
-                            use.hinges = FALSE),
-                 irradiance(w.length, s.e.irrad, w.band,unit.out,
-                            check.spectrum = TRUE, use.cached.mult = TRUE,
-                            use.hinges = FALSE),
-                 irradiance(w.length, s.e.irrad, w.band,unit.out,
-                            check.spectrum = FALSE, use.cached.mult = TRUE,
-                            use.hinges = FALSE))
+test.irrad.all(DNA.N)
+
+test.irrad.cache <- function(w.band=wb.sun) {
+  microbenchmark(e_irrad(sun.spct, w.band),
+                 e_irrad(sun.spct, w.band,
+                         use.cached.mult = FALSE,
+                         use.hinges = FALSE,
+                         wb.trim = FALSE,
+                         idx = FALSE),
+                 e_irrad(sun.spct, w.band,
+                         use.cached.mult = TRUE,
+                         use.hinges = FALSE,
+                         wb.trim = FALSE,
+                         idx = FALSE),
+                 e_irrad(sun.spct, w.band,
+                         use.hinges = FALSE,
+                         wb.trim = FALSE,
+                         idx = FALSE))
 }
 
-test.irradiance(PAR())
-test.irradiance(CIE())
-test.irradiance(VIS_bands())
+test.irrad.cache()
+test.irrad.cache(VIS_bands)
+test.irrad.cache(CIE)
+test.irrad.cache(DNA.N)
 
-
-test.integrate_irradiance <- function() {
-  microbenchmark(integrate_xy(w.length, s.e.irrad))
+test.irrad.hinges <- function(w.band=wb.sun) {
+  microbenchmark(e_irrad(sun.spct, w.band),
+                 e_irrad(sun.spct, w.band,
+                         use.cached.mult = FALSE,
+                         use.hinges = NULL,
+                         wb.trim = FALSE,
+                         idx = FALSE),
+                 e_irrad(sun.spct, w.band,
+                         use.cached.mult = FALSE,
+                         use.hinges = FALSE,
+                         wb.trim = FALSE,
+                         idx = FALSE),
+                 e_irrad(sun.spct, w.band,
+                         use.cached.mult = FALSE,
+                         use.hinges = TRUE,
+                         wb.trim = FALSE,
+                         idx = FALSE),
+                 e_irrad(sun.spct, w.band,
+                         use.cached.mult = FALSE,
+                         wb.trim = FALSE,
+                         idx = FALSE))
 }
 
-test.integrate_irradiance()
+test.irrad.hinges()
+test.irrad.hinges(VIS_bands)
+test.irrad.hinges(CIE)
+test.irrad.hinges(DNA.N)
 
-detach(sun.data)
-
-test.integrate_irradiance <- function() {
-  microbenchmark(integrate_xy(sun.data$w.length, sun.data$s.e.irrad))
+test.irrad.trim <- function(w.band=wb.sun) {
+  microbenchmark(e_irrad(sun.spct, w.band),
+                 e_irrad(sun.spct, w.band,
+                         use.cached.mult = FALSE,
+                         use.hinges = FALSE,
+                         wb.trim = FALSE,
+                         idx = FALSE),
+                 e_irrad(sun.spct, w.band,
+                         use.cached.mult = FALSE,
+                         use.hinges = FALSE,
+                         wb.trim = TRUE,
+                         idx = FALSE),
+                 e_irrad(sun.spct, w.band,
+                         use.cached.mult = FALSE,
+                         use.hinges = FALSE,
+                         idx = FALSE))
 }
 
-test.integrate_irradiance()
-test.irrad <- function(w.band=new_waveband(400,700)) {
-  microbenchmark(e_irrad(sun.spct, w.band, use.cached.mult = FALSE, use.hinges = NULL),
-                 e_irrad(sun.spct, w.band, use.cached.mult = TRUE, use.hinges = NULL),                   e_irrad(sun.spct, w.band, use.cached.mult = FALSE, use.hinges = TRUE),
-                 e_irrad(sun.spct, w.band, use.cached.mult = TRUE, use.hinges = TRUE),
-                 e_irrad(sun.spct, w.band, use.cached.mult = TRUE, use.hinges = FALSE),
-                 e_irrad(sun.spct, w.band, use.cached.mult = FALSE, use.hinges = FALSE))
+test.irrad.trim()
+test.irrad.trim(VIS_bands)
+test.irrad.trim(CIE)
+test.irrad.trim(DNA.N)
+
+test.irrad.idx <- function(w.band=wb.sun) {
+  microbenchmark(e_irrad(sun.spct, w.band),
+                 e_irrad(sun.spct, w.band,
+                         use.cached.mult = FALSE,
+                         use.hinges = FALSE,
+                         wb.trim = FALSE,
+                         idx = FALSE),
+                 e_irrad(sun.spct, w.band,
+                         use.cached.mult = FALSE,
+                         use.hinges = FALSE,
+                         wb.trim = FALSE,
+                         idx = TRUE),
+                 e_irrad(sun.spct, w.band,
+                         use.cached.mult = FALSE,
+                         use.hinges = FALSE,
+                         wb.trim = FALSE))
 }
 
-test.irrad(PAR())
-test.irrad(CIE())
-test.irrad(VIS_bands())
+
+test.irrad.idx()
+test.irrad.idx(VIS_bands)
+test.irrad.idx(CIE)
+test.irrad.idx(DNA.N)
+
 

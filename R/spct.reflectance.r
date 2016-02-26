@@ -88,7 +88,7 @@ reflectance_spct <-
     }
     spct <- spct[ , c("w.length", "Rfr")]
     # if the waveband is undefined then use all data
-    if (is.null(w.band)){
+    if (is.null(w.band)) {
       w.band <- waveband(spct)
     }
     if (is.waveband(w.band)) {
@@ -97,7 +97,7 @@ reflectance_spct <-
       # cludge but let's us avoid treating it as a special case
       w.band <- list(w.band)
     }
-    w.band <- trim_waveband(w.band=w.band, range=spct, trim=wb.trim)
+    w.band <- trim_waveband(w.band = w.band, range = spct, trim = wb.trim)
 
     # if the w.band includes 'hinges' we insert them
     # choose whether to use hinges or not
@@ -108,7 +108,7 @@ reflectance_spct <-
     # spectral resolution data, and speed up the calculations
     # a lot in such cases
     if (is.null(use.hinges)) {
-      use.hinges <- auto_hinges(spct)
+      use.hinges <- auto_hinges(spct[["w.length"]])
     }
 
     # we collect all hinges and insert them in one go
@@ -117,7 +117,7 @@ reflectance_spct <-
     if (use.hinges) {
       all.hinges <- NULL
       for (wb in w.band) {
-        if (!is.null(wb$hinges) && length(wb$hinges)>0) {
+        if (!is.null(wb$hinges) && length(wb$hinges) > 0) {
           all.hinges <- c(all.hinges, wb$hinges)
         }
       }
@@ -141,18 +141,20 @@ reflectance_spct <-
       if (no_names_flag) {
         if (is_effective(wb)) {
           warning("Using only wavelength range from a weighted waveband object.")
-          wb.name[i] <- paste("range", as.character(signif(min(wb), 4)), as.character(signif(max(wb), 4)), sep=".")
+          wb.name[i] <- paste("range",
+                              as.character(signif(min(wb), 4)),
+                              as.character(signif(max(wb), 4)), sep=".")
         } else {
           wb.name[i] <- wb$name
         }
       }
       # we calculate the average reflectance.
-      reflectance[i] <- integrate_spct(trim_spct(spct, wb, use.hinges=FALSE))
+      reflectance[i] <- integrate_spct(trim_spct(spct, wb, use.hinges = FALSE))
     }
 
    if (quantity %in% c("contribution", "contribution.pc")) {
-     total <- reflectance_spct(spct, w.band=NULL,
-                                 quantity="total", use.hinges=use.hinges)
+     total <- reflectance_spct(spct, w.band = NULL, wb.trim = wb.trim,
+                                quantity = "total", use.hinges = use.hinges)
      reflectance <- reflectance / total
      if (quantity == "contribution.pc") {
        reflectance <- reflectance * 1e2
@@ -180,4 +182,53 @@ reflectance_spct <-
    return(reflectance)
   }
 
+# reflector_mspct methods -----------------------------------------------
 
+#' @describeIn reflectance Calculates reflectance from a \code{reflector_mspct}
+#'
+#' @param idx logical whether to add a column with the names of the elements of
+#'   spct
+#'
+#' @export
+#'
+reflectance.reflector_mspct <-
+  function(spct, w.band = NULL,
+           quantity = "average",
+           wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
+           use.hinges = getOption("photobiology.use.hinges", default = NULL),
+           ..., idx = !is.null(names(spct))) {
+    msdply(
+      mspct = spct,
+      .fun = reflectance,
+      w.band = w.band,
+      quantity = quantity,
+      wb.trim = wb.trim,
+      use.hinges = use.hinges,
+      idx = idx,
+      col.names = names(w.band)
+    )
+  }
+
+# object_mspct methods -----------------------------------------------
+
+#' @describeIn reflectance Calculates reflectance from a \code{object_mspct}
+#'
+#' @export
+#'
+reflectance.object_mspct <-
+  function(spct, w.band = NULL,
+           quantity = "average",
+           wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
+           use.hinges= getOption("photobiology.use.hinges", default = NULL),
+           ..., idx = !is.null(names(spct))) {
+    msdply(
+      mspct = spct,
+      .fun = reflectance,
+      w.band = w.band,
+      quantity = quantity,
+      wb.trim = wb.trim,
+      use.hinges = use.hinges,
+      idx = idx,
+      col.names = names(w.band)
+    )
+  }

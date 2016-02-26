@@ -19,6 +19,8 @@
 #'
 #' @note At the moment just a modified copy of dplyr:::print.tbl_df.
 #'
+#' @name print
+#'
 #' @examples
 #'
 #' print(sun.spct)
@@ -63,7 +65,24 @@ print.generic_spct <- function(x, ..., n = NULL, width = NULL)
   invisible(x)
 }
 
-# names of all spectral summary classes -------------------------------------------
+# print method ------------------------------------------------------------
+
+#' @describeIn print
+#'
+#' @export
+#'
+print.generic_mspct <- function(x, ..., n = NULL, width = NULL)  {
+  cat("Object: ", class(x)[1], " ", dplyr::dim_desc(x), "\n", sep = "")
+  member.names <- names(x)
+  for (name in member.names) {
+    cat("--- Member:", name, "---\n")
+    print(x[[name]], n = n, width = width)
+  }
+  cat("--- END ---")
+  invisible(x)
+}
+
+# names of all spectral summary classes -----------------------------------
 
 #' Function that returns a vector containing the names of spectral summary
 #' classes.
@@ -161,6 +180,9 @@ is.any_summary_spct <- function(x) {
 #'
 #' @export
 #' @method summary generic_spct
+#'
+#' @name summary
+#'
 #' @examples
 #' summary(sun.spct)
 #'
@@ -267,285 +289,5 @@ print.summary_generic_spct <- function(x, ...) {
   invisible(x)
 }
 
-
-# Color -------------------------------------------------------------------
-
-#' Color
-#'
-#' A function that returns the equivalent RGB colour of an object of class
-#' "source_spct".
-#'
-#' @param x an object of class "source_spct"
-#' @param type character telling whether "CMF", "CC", or "both" should be returned.
-#' @param ... not used in current version
-#' @export
-#' @examples
-#' color(sun.spct)
-#'
-color.source_spct <- function(x, type = "CMF", ...) {
-  if (length(x) == 0) {
-    return(character())
-  }
-  x.name <- "source"
-  q2e(x, byref = TRUE)
-  if (type %in% c("CMF", "CC")) {
-    s_e_irrad2rgb(x[["w.length"]], x[["s.e.irrad"]],
-                    sens = photobiology::ciexyzCMF2.spct, color.name = paste(x.name, type))
-  } else if (type == "both") {
-    c(s_e_irrad2rgb(x[["w.length"]], x[["s.e.irrad"]],
-                    sens = photobiology::ciexyzCMF2.spct, color.name = paste(x.name, "CMF")),
-      s_e_irrad2rgb(x[["w.length"]], x[["s.e.irrad"]],
-                    sens = photobiology::ciexyzCC2.spct, color.name = paste(x.name, "CC")))
-  } else {
-    warning("Color 'type' = ", type, " not implemented for 'source_spct'.")
-    color.out <- NA_character_
-    names(color.out) <- paste(x.name, type)
-    color.out
-  }
-}
-
-# w.length summaries ------------------------------------------------------
-
-#' Range of wavelength
-#'
-#' Range function for spectra, returning wavelength range.
-#'
-#' @param ... not used in current version
-#' @param na.rm a logical indicating whether missing values should be removed.
-#' @export
-#' @family wavelength summaries
-#' @examples
-#' range(sun.spct)
-#'
-range.generic_spct <- function(..., na.rm = FALSE) {
-  wl <- list(...)[[1]][["w.length"]]
-  # guaranteed to be sorted
-  wl[c(1, length(wl))]
-#  range(x[["w.length"]], na.rm = na.rm)
-}
-
-#' Maximun wavelength
-#'
-#' Maximun function for spectra, returning wavelength maximum.
-#'
-#' @param ... not used in current version
-#' @param na.rm a logical indicating whether missing values should be removed.
-#' @export
-#' @family wavelength summaries
-#' @examples
-#' max(sun.spct)
-#'
-max.generic_spct <- function(..., na.rm=FALSE) {
-  wl <- list(...)[[1]][["w.length"]]
-  # guaranteed to be sorted
-  wl[length(wl)]
-}
-
-#' Minimum wavelength
-#'
-#' Minimun function for spectra, returning wavelength minimum.
-#'
-#' @param ... not used in current version
-#' @param na.rm a logical indicating whether missing values should be removed.
-#' @export
-#' @family wavelength summaries
-#' @examples
-#' min(sun.spct)
-#'
-min.generic_spct <- function(..., na.rm = FALSE) {
-  wl <- list(...)[[1]][["w.length"]]
-  # guaranteed to be sorted
-  wl[1]
-}
-
-#' Stepsize
-#'
-#' Function that returns the range of step sizes in an object. Range of
-#' differences between succesive sorted values.
-#'
-#' @param x an R object
-#' @param ... not used in current version
-#'
-#' @return A numeric vector of length 2 with min and maximum stepsize values.
-#' @export
-#' @family wavelength summaries
-#' @examples
-#' stepsize(sun.spct)
-#'
-stepsize <- function(x, ...) UseMethod("stepsize")
-
-#' @describeIn stepsize Default function usable on numeric vectors.
-#' @export
-stepsize.default <- function(x, ...) {
-  warning("'stepsize()' not implemented for class '", class(x), "'.")
-  c(NA_real_, NA_real_)
-}
-
-#' @describeIn stepsize Method for numeric vectors.
-#' @export
-stepsize.numeric <- function(x, ...) {
-  if (length(x) > 1) {
-    range(diff(x))
-  } else {
-    c(NA_real_, NA_real_)
-  }
-}
-
-#' @describeIn stepsize  Method for "generic_spct" objects.
-#'
-#' @export
-#'
-#' @examples
-#' stepsize(sun.spct)
-#'
-stepsize.generic_spct <- function(x, ...) {
-  wl <- x[["w.length"]]
-  if (length(wl) > 1) {
-    range(diff(wl))
-  } else {
-    c(NA_real_, NA_real_)
-  }
-}
-
-#' @describeIn spread  Method for "generic_spct" objects.
-#'
-#' @export
-#'
-#' @examples
-#' spread(sun.spct)
-#'
-spread.generic_spct <- function(x, ...) {
-  wl <- x[["w.length"]]
-  wl[length(wl)] - wl[1]
-}
-
-#' @describeIn midpoint Method for "generic_spct" objects.
-#'
-#' @export
-#'
-#' @examples
-#' midpoint(sun.spct)
-#'
-midpoint.generic_spct <- function(x, ...) {
-  wl <- x[["w.length"]]
-  wl[1] + (wl[length(wl)] - wl[1]) / 2
-}
-
-# Labels ------------------------------------------------------------------
-
-#' Find labels from spectral object
-#'
-#' A function to obtain the labels of a spectrum. Currently returns 'names'.
-#'
-#' @param object an object of generic_spct
-#' @param ... not used in current version
-#'
-#' @export
-#' @examples
-#' labels(sun.spct)
-#'
-labels.generic_spct <- function(object, ...) {
-  return(names(object))
-}
-
-# When --------------------------------------------------------------------
-
-#' @describeIn setWhenMeasured summary_generic_spct
-#' @export
-#'
-setWhenMeasured.summary_generic_spct <-
-  function(x,
-           when.measured = lubridate::now(),
-           ...) {
-    name <- substitute(x)
-    stopifnot(is.null(when.measured) ||
-                lubridate::is.POSIXct(when.measured))
-    if (!is.null(when.measured)) {
-      when.measured <- lubridate::with_tz(when.measured, "UTC")
-    }
-    attr(x, "when.measured") <- when.measured
-    if (is.name(name)) {
-      name <- as.character(name)
-      assign(name, x, parent.frame(), inherits = TRUE)
-    }
-    invisible(x)
-  }
-
-#' @describeIn getWhenMeasured summary_generic_spct
-#' @export
-getWhenMeasured.summary_generic_spct <- function(x, ...) {
-  when.measured <- attr(x, "when.measured", exact = TRUE)
-  if (is.null(when.measured) ||
-      !lubridate::is.POSIXct(when.measured)) {
-    # need to handle invalid attribute values
-    # we return an NA of class POSIXct
-    when.measured <- suppressWarnings(lubridate::ymd(NA_character_))
-  }
-  when.measured
-}
-
-# Where -------------------------------------------------------------------
-
-#' @describeIn setWhereMeasured summary_generic_spct
-#' @export
-setWhereMeasured.summary_generic_spct <- function(x,
-                                          where.measured = NA,
-                                          lat = NA,
-                                          lon = NA,
-                                          ...) {
-  name <- substitute(x)
-  if (!is.null(where.measured)) {
-    if (any(is.na(where.measured))) {
-      where.measured <- data.frame(lon = lon, lat = lat)
-    } else {
-      stopifnot(
-        is.data.frame(where.measured) && nrow(where.measured) == 1 &&
-          all(c("lon", "lat") %in% names(where.measured))
-      )
-    }
-  }
-  attr(x, "where.measured") <- where.measured
-  if (is.name(name)) {
-    name <- as.character(name)
-    assign(name, x, parent.frame(), inherits = TRUE)
-  }
-  invisible(x)
-}
-
-#' @describeIn getWhereMeasured summary_generic_spct
-#' @export
-getWhereMeasured.summary_generic_spct <- function(x, ...) {
-  where.measured <- attr(x, "where.measured", exact = TRUE)
-  if (is.null(where.measured) ||
-      !is.data.frame(where.measured)) {
-    # need to handle invalid or missing attribute values
-    where.measured <- data.frame(lon = NA_real_, lat = NA_real_)
-  }
-  where.measured
-}
-
-
-# is_effective ------------------------------------------------------------
-
-#' @describeIn is_effective Does a \code{summary_generic_spct} object contain
-#'   a summary of effective spectral irradiance values.
-#'
-#' @export
-#' @examples
-#' is_effective(summary(sun.spct))
-#'
-is_effective.summary_generic_spct <- function(x) {
-  FALSE
-}
-
-#' @describeIn is_effective Does a \code{summary_source_spct} object contain
-#'   a summary of effective spectral irradiance values.
-#'
-#' @export
-#'
-is_effective.summary_source_spct <- function(x) {
-  bswf.used <- getBSWFUsed(x)
-  !is.null(bswf.used) && (bswf.used != "none")
-}
 
 
