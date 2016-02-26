@@ -3,23 +3,25 @@ TODO
 
 Add test cases for chroma_spct and improve tests for the _mspct
 classes. Add test cases for smooth_spct().
+Replace filter_cps.mspct data with newly measured data.
 
 photobiology 0.9.6
 ==================
 
-Optimize R code for performance: high-level functions a lot faster than in
-0.9.4 (last version using Rcpp).
+Optimize R code for performance: high-level functions faster than in version
+0.9.4 (last version using Rcpp and C++).
 Add support for "what.measured" attribute.
 Allow multiple "countsXXXX" columns in "raw_spct" objects.
 Allow multiple "cpsXXXX" columns in "cps_spct" objects.
-Fix bug getInstrSettings().
+Fix bug in getInstrSettings().
 Allow small rounding and instrument errors to pass validity checks.
 Fix bug in setRawSpct().
 Implement clean(), normalize(), fscale() and fshift() methods for
 "generic_spct", raw_spct" and "cps_spct" objects.
 New functions: cps2irrad(), cps2Tfr() and cps2Rfr().
 Constructors for _spct objects gain a ... formal argument which allows
-addition of arbitraty columns to the objects created.
+addition of arbitrary columns to the objects created.
+Reorganize documentation into fewer help files.
 
 photobiology 0.9.5
 ==================
@@ -57,7 +59,7 @@ photobiology 0.9.1
 Rename some "low level" functions and their formal parameters.
 
 Rename the default methods for midpoint() and stepsize() as methods for
-numeric and add a new default method that handles unsuported classes more
+numeric and add a new default method that handles unsupported classes more
 gracefully.
 
 Revise color() method to work correctly in borderline cases. Returned value
@@ -65,7 +67,7 @@ is always of class character (character() or NA_character_ in some cases).
 The default for the formal parameter 'type' is now consistently "CMF", instead
 of in a few cases "both".
 
-Revise interpolate_spct() (interpolate_wl.generic_spct()) to work corrently
+Revise interpolate_spct() (interpolate_wl.generic_spct()) to work correctly
 in borderline cases and to handle gracefully numeric(). Also returned value
 always has the same class and columns, irrespective of the values of
 other arguments.

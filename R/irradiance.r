@@ -24,7 +24,7 @@
 #'
 #' @export
 #' @examples
-#' data(sun.data)
+#' 
 #' with(sun.data, irradiance(w.length, s.e.irrad, new_waveband(400,700), "photon"))
 #' @note The last three parameters control speed optimizations. The defaults
 #'   should be suitable in mosts cases. If you set \code{check.spectrum=FALSE}

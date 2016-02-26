@@ -2,7 +2,7 @@ library(ggplot2)
 library(photobiologyAll)
 library(profr)
 
-test <- copy(sun.spct)
+test <- sun.spct
 
 Rprof(interval = 0.0001)
 z <- test * 2

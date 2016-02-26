@@ -17,7 +17,7 @@
 #' be faster.
 #'
 #' @examples
-#' data(sun.data)
+#' 
 #' my.w.length <- 300:700
 #' my.s.e.irrad <-
 #'   with(sun.data, interpolate_spectrum(w.length, s.e.irrad, my.w.length))

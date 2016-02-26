@@ -9,7 +9,7 @@ test_that("normalize", {
   expect_equal(max(normalize(my.spct)$s.e.irrad), 1, tolerance = 1e-5)
   expect_equal(max(normalize(my.spct, norm = "max")$s.e.irrad), 1, 1, tolerance = 1e-5)
   expect_warning(irrad(normalize(my.spct, norm = "max")))
-  expect_equal(irrad(normalize(my.spct, norm = "max")), NA)
+  expect_equal(irrad(normalize(my.spct, norm = "max")), NA_real_)
   expect_named(normalize(my.spct), names(my.spct))
   expect_equal(class(normalize(my.spct)), class(my.spct))
   expect_error(normalize(my.spct, range = 100))

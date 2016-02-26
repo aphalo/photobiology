@@ -60,7 +60,7 @@ irrad <- function(spct, w.band, unit.out, quantity, time.unit, wb.trim,
 irrad.default <- function(spct, w.band, unit.out, quantity, time.unit, wb.trim,
                           use.cached.mult, use.hinges, allow.scaled, ...) {
   warning("'irrad' is not defined for objects of class ", class(spct)[1])
-  return(NA)
+  return(NA_real_)
 }
 
 #' @describeIn irrad  Calculates irradiance from a \code{source_spct}
@@ -75,14 +75,14 @@ irrad.source_spct <-
            quantity = "total",
            time.unit = NULL,
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
-           use.cached.mult = FALSE,
-           use.hinges = NULL,
+           use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
+           use.hinges = getOption("photobiology.use.hinges"),
            allow.scaled = FALSE, ...){
     # we have a default, but we check for invalid arguments
     if (!allow.scaled && (is_normalized(spct) || is_scaled(spct))) {
       warning("The spectral data has been normalized or scaled, ",
               "making impossible to calculate irradiance")
-      return(NA)
+      return(NA_real_)
     }
 
     data.time.unit <-
@@ -98,7 +98,7 @@ irrad.source_spct <-
       time.unit <- data.time.unit
     }
 
-    if (is.null(unit.out) || is.na(unit.out)){
+    if (is.null(unit.out) || is.na(unit.out)) {
       warning("'unit.out' set to an invalid value")
       return(NA_real_)
     }
@@ -328,7 +328,7 @@ e_irrad.source_spct <-
            quantity = "total",
            time.unit = NULL,
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
-           use.cached.mult = FALSE,
+           use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
            use.hinges = NULL,
            allow.scaled = FALSE, ...) {
     irrad_spct(spct, w.band = w.band, unit.out = "energy", quantity = quantity,
@@ -408,7 +408,7 @@ q_irrad.source_spct <-
            quantity = "total",
            time.unit = NULL,
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
-           use.cached.mult = FALSE,
+           use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
            use.hinges = NULL,
            allow.scaled = FALSE, ...) {
     irrad_spct(spct, w.band = w.band, unit.out = "photon", quantity = quantity,
@@ -488,15 +488,16 @@ fluence.default <- function(spct, w.band, unit.out, exposure.time,
 fluence.source_spct <-
   function(spct, w.band = NULL,
            unit.out = getOption("photobiology.radiation.unit", default = "energy"),
-           exposure.time = NA,
+           exposure.time,
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
-           use.cached.mult = FALSE,
+           use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
            use.hinges = NULL,
            allow.scaled = FALSE, ...) {
     if (!lubridate::is.duration(exposure.time) &&
         !lubridate::is.period(exposure.time) &&
         !is.numeric(exposure.time) ) {
-      warning("Invalid value ", exposure.time, " for 'exposure.time'")
+      stop("Invalid value ", exposure.time, " for 'exposure.time'")
+    } else if (is.na(exposure.time)) {
       return.value <- NA_real_
     } else {
       return.value <-
@@ -579,15 +580,16 @@ q_fluence.default <- function(spct, w.band, exposure.time, wb.trim,
 #'
 q_fluence.source_spct <-
   function(spct, w.band = NULL,
-           exposure.time = NA,
+           exposure.time,
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
-           use.cached.mult = FALSE,
+           use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
            use.hinges = NULL,
            allow.scaled = FALSE, ...) {
     if (!lubridate::is.duration(exposure.time) &&
         !lubridate::is.period(exposure.time) &&
         !is.numeric(exposure.time) ) {
-      warning("Invalid value ", exposure.time, " for 'exposure.time'")
+      stop("Invalid value ", exposure.time, " for 'exposure.time'")
+    } else if (is.na(exposure.time)) {
       return.value <- NA_real_
     } else {
       return.value <-
@@ -666,13 +668,14 @@ e_fluence.source_spct <-
   function(spct, w.band = NULL,
            exposure.time,
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
-           use.cached.mult = FALSE,
+           use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
            use.hinges = NULL,
            allow.scaled = FALSE, ...) {
     if (!lubridate::is.duration(exposure.time) &&
         !lubridate::is.period(exposure.time) &&
         !is.numeric(exposure.time) ) {
-      warning("Invalid value ", exposure.time, " for 'exposure.time'")
+      stop("Invalid value ", exposure.time, " for 'exposure.time'")
+    } else if (is.na(exposure.time)) {
       return.value <- NA_real_
     } else {
       return.value <-
@@ -702,8 +705,8 @@ irrad.source_mspct <-
            quantity = "total",
            time.unit = NULL,
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
-           use.cached.mult = FALSE,
-           use.hinges = getOption("photobiology.use.hinges", default = NULL),
+           use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
+           use.hinges = NULL,
            allow.scaled = FALSE,
            ...,
            idx = !is.null(names(spct))) {
@@ -734,8 +737,8 @@ q_irrad.source_mspct <-
            quantity = "total",
            time.unit = NULL,
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
-           use.cached.mult = FALSE,
-           use.hinges = getOption("photobiology.use.hinges", default = NULL),
+           use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
+           use.hinges = NULL,
            allow.scaled = FALSE,
            ..., idx = !is.null(names(spct))) {
     msdply(
@@ -764,8 +767,8 @@ e_irrad.source_mspct <-
            quantity = "total",
            time.unit = NULL,
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
-           use.cached.mult = FALSE,
-           use.hinges = getOption("photobiology.use.hinges", default = NULL),
+           use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
+           use.hinges = NULL,
            allow.scaled = FALSE,
            ..., idx = !is.null(names(spct))) {
     msdply(
@@ -791,10 +794,10 @@ e_irrad.source_mspct <-
 fluence.source_mspct <-
   function(spct, w.band = NULL,
            unit.out = getOption("photobiology.radiation.unit", default = "energy"),
-           exposure.time = NA,
+           exposure.time,
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
-           use.cached.mult = FALSE,
-           use.hinges = getOption("photobiology.use.hinges", default = NULL),
+           use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
+           use.hinges = NULL,
            allow.scaled = FALSE,
            ..., idx = !is.null(names(spct))) {
     msdply(
@@ -820,10 +823,10 @@ fluence.source_mspct <-
 #'
 e_fluence.source_mspct <-
   function(spct, w.band = NULL,
-           exposure.time = NA,
+           exposure.time,
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
-           use.cached.mult = FALSE,
-           use.hinges = getOption("photobiology.use.hinges", default = NULL),
+           use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
+           use.hinges = NULL,
            allow.scaled = FALSE,
            ..., idx = !is.null(names(spct))) {
     msdply(
@@ -849,10 +852,10 @@ e_fluence.source_mspct <-
 #'
 q_fluence.source_mspct <-
   function(spct, w.band = NULL,
-           exposure.time = NA,
-           wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
-           use.cached.mult = FALSE,
-           use.hinges = getOption("photobiology.use.hinges", default = NULL),
+           exposure.time,
+           wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
+           use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
+           use.hinges = NULL,
            allow.scaled = FALSE,
            ..., idx = !is.null(names(spct))) {
     msdply(

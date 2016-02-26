@@ -1,6 +1,7 @@
 library(photobiology)
 library(photobiologyWavebands)
 library(microbenchmark)
+library(caTools)
 
 Sys.info()
 Sys.time()
@@ -58,7 +59,8 @@ test.irradiance(CIE(300), unit.out = "photon")
 
 
 test.integrate_irradiance <- function() {
-  microbenchmark(integrate_xy(w.length, s.e.irrad))
+  microbenchmark(integrate_xy(w.length, s.e.irrad),
+                 trapz(w.length, s.e.irrad))
 }
 
 test.integrate_irradiance()

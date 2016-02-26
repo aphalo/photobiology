@@ -1,6 +1,5 @@
 library(photobiology)
-library(photobiologyUV)
-library(photobiologyVIS)
+library(photobiologyWavebands)
 library(microbenchmark)
 
 data(sun.spct)

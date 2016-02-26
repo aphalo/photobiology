@@ -29,7 +29,7 @@
 #' @export
 #'
 #' @examples
-#' data(sun.data)
+#' 
 #' head(sun.data)
 #' result.data <-
 #'     with(sun.data,

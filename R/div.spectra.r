@@ -30,7 +30,7 @@
 #' @export
 #'
 #' @examples
-#' data(sun.data)
+#' 
 #' head(sun.data)
 #' one.data <- with(sun.data, div_spectra(w.length, w.length, s.e.irrad, s.e.irrad))
 #' head(one.data)

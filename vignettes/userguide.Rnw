@@ -917,24 +917,24 @@ photobiology.filter.qty & \texttt{\underline{"transmittance"}} & output ($/1$) \
                         & \texttt{"absorptance"} & output ($/1$) \\
                         & \texttt{"absorbance"} & output (a.u. $\log_{10}$ base) \\
 \addlinespace
-photobiology.use.hinges & \texttt{\underline{NULL}} & guess automatically \\
-                        & \texttt{TRUE} & do not insert hinges \\
-                        & \texttt{FALSE} & do insert hinges \\
+%photobiology.use.hinges & \texttt{\underline{NULL}} & guess automatically \\
+%                        & \texttt{TRUE} & do not insert hinges \\
+%                        & \texttt{FALSE} & do insert hinges \\
 \addlinespace
 photobiology.strict.range & \texttt{NA} &  skip range test \\
                         & \texttt{TRUE} & trigger and error \\
                         & \texttt{\underline{FALSE}} & trigger a warning \\
 \addlinespace
-photobiology.auto.hinges.limit & \texttt{\underline{0.5}} & wavelength step (nm) \\
-\addlinespace
+%photobiology.auto.hinges.limit & \texttt{\underline{0.5}} & wavelength step (nm) \\
+%\addlinespace
 photobiology.waveband.trim & \texttt{FALSE} & exclude \\
                            & \texttt{\underline{TRUE}} & trim or exclude \\
 \addlinespace
 photobiology.use.cached.mult & \texttt{\underline{FALSE}} & do not cache intermediate results \\
-                             & \texttt{TRUE} & cache intermediate results \\
-\addlinespace
-photobiology.verbose & \texttt{\underline{FALSE}} & do not give verbose output \\
-                     & \texttt{TRUE} & give verbose output \\
+                            & \texttt{TRUE} & cache intermediate results \\
+%\addlinespace
+%photobiology.verbose & \texttt{\underline{FALSE}} & do not give verbose output \\
+%                     & \texttt{TRUE} & give verbose output \\
 \bottomrule
 \end{tabular}
 \end{footnotesize}

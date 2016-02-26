@@ -27,7 +27,7 @@
 #' @export
 #'
 #' @examples
-#' data(sun.data)
+#' 
 #' head(sun.data)
 #' square.sun.data <-
 #'   with(sun.data, prod_spectra(w.length, w.length, s.e.irrad, s.e.irrad))

@@ -28,7 +28,7 @@
 #' @export
 #'
 #' @examples
-#' data(sun.data)
+#' 
 #' head(sun.data)
 #' twice.sun.data <- with(sun.data, sum_spectra(w.length, w.length, s.e.irrad, s.e.irrad))
 #' head(twice.sun.data)

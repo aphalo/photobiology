@@ -59,7 +59,7 @@ check_spectrum <- function(w.length, s.irrad) {
 #'
 #'
 #' @examples
-#' data(sun.data)
+#' 
 #' with(sun.data, photobiology:::check_w.length(w.length))
 #'
 #' @family data validity check functions

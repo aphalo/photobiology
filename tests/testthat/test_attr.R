@@ -199,7 +199,7 @@ test_that("fscale", {
   expect_less_than(abs(integrate_spct(fscale(my.spct, f = "total")) - 1), 1e-6)
   expect_less_than(abs(average_spct(fscale(my.spct, f = "mean")) - 1), 1e-6)
   expect_warning(irrad(fscale(my.spct, f = "mean")))
-  expect_equal(irrad(fscale(my.spct, f = "mean")), NA)
+  expect_equal(irrad(fscale(my.spct, f = "mean")), NA_real_)
   expect_named(fscale(my.spct), names(my.spct))
   expect_equal(class(fscale(my.spct)), class(my.spct))
   expect_warning(fscale(my.spct, range = 100))
