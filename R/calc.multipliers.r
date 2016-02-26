@@ -1,3 +1,13 @@
+globalVariables(".photobio.cache")
+
+.onLoad <- function(libname, pkgname) {
+  .photobio.cache <<- new.env(parent = emptyenv())
+}
+
+.onUnload <- function(libpath) {
+  rm(.photobio.cache, envir = emptyenv())
+}
+
 #' Spectral weights
 #'
 #' Calculate multipliers for selecting a range of wavelengths and optionally
@@ -92,16 +102,6 @@ calc_multipliers <-
     }
     return(mult)
   }
-
-globalVariables(".photobio.cache")
-
-.onLoad <- function(libname, pkgname) {
-  .photobio.cache <<- new.env(parent = emptyenv())
-}
-
-.onUnload <- function(libpath) {
-  rm(.photobio.cache, envir = emptyenv())
-}
 
 #' clear the spectral weights cache
 #'

@@ -11,6 +11,8 @@ VIS_bands <- VIS_bands()
 PAR <- PAR()
 CIE <- CIE()
 DNA.N <- DNA_N()
+DNA.N.trim <- trim_wl(DNA.N, sun.spct)
+
 wb.sun <- waveband(sun.spct)
 wb.50 <- waveband(c(400,450))
 wb.200 <- waveband(c(400,600))
@@ -48,6 +50,10 @@ test.irrad.cache <- function(w.band=wb.sun) {
                  e_irrad(sun.spct, w.band,
                          use.hinges = FALSE,
                          wb.trim = FALSE,
+                         idx = FALSE),
+                 e_irrad(sun.spct, w.band,
+                         use.hinges = TRUE,
+                         wb.trim = TRUE,
                          idx = FALSE))
 }
 
@@ -55,6 +61,7 @@ test.irrad.cache()
 test.irrad.cache(VIS_bands)
 test.irrad.cache(CIE)
 test.irrad.cache(DNA.N)
+test.irrad.cache(DNA.N.trim)
 
 test.irrad.hinges <- function(w.band=wb.sun) {
   microbenchmark(e_irrad(sun.spct, w.band),
@@ -83,6 +90,7 @@ test.irrad.hinges()
 test.irrad.hinges(VIS_bands)
 test.irrad.hinges(CIE)
 test.irrad.hinges(DNA.N)
+test.irrad.hinges(DNA.N.trim)
 
 test.irrad.trim <- function(w.band=wb.sun) {
   microbenchmark(e_irrad(sun.spct, w.band),
