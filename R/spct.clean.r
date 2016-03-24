@@ -22,7 +22,7 @@ clean <- function(x, range, range.s.data, fill, ...) UseMethod("clean")
 #'
 clean.default <- function(x, range, range.s.data, fill, ...) {
   warning("'clean()' is not defined for objects of class '", class(x)[1], "'.")
-  return(x)
+  x
 }
 
 #' @describeIn clean Replace off-range values in a source spectrum
