@@ -70,11 +70,14 @@ test_that("oper", {
   expect_equal(my.2e.spct / 2L, my.e.spct)
   expect_warning(-my.e.spct)
   expect_equal(my.e.spct + 0.1, my.2e.spct)
-  expect_equal(-my.2e.spct / -2, my.e.spct)
-  expect_equal(-my.2e.spct / -2L, my.e.spct)
-  expect_equal( 2 * my.e.spct, my.2e.spct)
-  expect_equal( 1 / (2 / my.2e.spct), my.e.spct)
-  expect_equal( 1 / my.e.spct, my.e.spct^-1)
+  expect_equal(suppressWarnings(-my.2e.spct / -2), my.e.spct)
+  expect_equal(suppressWarnings(-my.2e.spct / -2L), my.e.spct)
+  expect_equal(2 * my.e.spct, my.2e.spct)
+  expect_equal(suppressWarnings( 1 / (2 / my.2e.spct)), my.e.spct)
+  expect_warning(1 / my.e.spct)
+  expect_warning(my.e.spct^-1)
+  expect_equal(suppressWarnings( 1 / my.e.spct),
+               suppressWarnings(my.e.spct^-1))
   expect_equal(my.2e.spct %/% 2L, my.e.spct %/% 1L)
   expect_equal(my.2e.spct %% 2L / 2, my.e.spct %% 1L)
 
@@ -86,10 +89,18 @@ test_that("math", {
   my.e.spct <- reflector_spct(w.length = 400:409, Rfr = 0.1)
   my.2e.spct <- reflector_spct(w.length = 400:409, Rfr = 0.2)
 
-  expect_equal(log10(my.e.spct)[["Rfr"]],  rep(log10(0.1), length.out = 10))
-  expect_equal(log(my.e.spct)[["Rfr"]],  rep(log(0.1), length.out = 10))
-  expect_equal(log(my.e.spct, 2)[["Rfr"]],  rep(log(0.1, 2), length.out = 10))
-  expect_equal(exp(my.e.spct)[["Rfr"]],  rep(exp(0.1), length.out = 10))
+  expect_warning(log10(my.e.spct))
+  expect_equal(suppressWarnings(log10(my.e.spct)[["Rfr"]]),
+               rep(log10(0.1), length.out = 10))
+  expect_warning(log(my.e.spct))
+  expect_equal(suppressWarnings(log(my.e.spct)[["Rfr"]]),
+               rep(log(0.1), length.out = 10))
+  expect_warning(log(my.e.spct, 2))
+  expect_equal(suppressWarnings(log(my.e.spct, 2)[["Rfr"]]),
+               rep(log(0.1, 2), length.out = 10))
+  expect_warning(exp(my.e.spct))
+  expect_equal(suppressWarnings(exp(my.e.spct)[["Rfr"]]),
+               rep(exp(0.1), length.out = 10))
   expect_equal(sqrt(my.e.spct)[["Rfr"]],  rep(sqrt(0.1), length.out = 10))
 
 })
@@ -116,7 +127,7 @@ test_that("reflectance", {
                                           w.band = split_bands(c(400, 600), length.out = 3)))), 1)
   expect_equal(sum(as.numeric(reflectance(my.spct, quantity = "contribution",
                                           w.band = split_bands(my.spct, length.out = 3)))), 1)
-  expect_less_than(sum(as.numeric(reflectance(my.spct, quantity = "contribution",
+  expect_lt(sum(as.numeric(reflectance(my.spct, quantity = "contribution",
                                               w.band = split_bands(c(400, 600), length.out = 3)))), 1)
   expect_equal(sum(as.numeric(reflectance(trim_spct(my.spct, range = c(400, 600)),
                                           quantity = "contribution",

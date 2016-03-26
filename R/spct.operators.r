@@ -102,6 +102,7 @@ oper.e.generic_spct <- function(e1, e2, oper) {
         z[["s.q.irrad"]] <- NULL
       }
       z[["s.e.irrad"]] <- oper(z[["s.e.irrad"]], e2)
+      check_spct(z)
       return(z)
     } else if (class2 == "source_spct") {
       q2e(e2, action = "replace", byref = TRUE)
@@ -206,6 +207,7 @@ oper.e.generic_spct <- function(e1, e2, oper) {
           z[["A"]] <- NULL
         }
         z[["Tfr"]] <- oper(z[["Tfr"]], e2)
+        check_spct(z)
         return(z)
       }
       else if (class2 == "source_spct") {
@@ -244,6 +246,7 @@ oper.e.generic_spct <- function(e1, e2, oper) {
           z[["Tfr"]] <- NULL
         }
         z[["A"]] <- oper(z[["A"]], e2)
+        check_spct(z)
         return(z)
       } else if (class2 == "source_spct") {
         q2e(e2, action = "add", byref = TRUE)
@@ -277,6 +280,7 @@ oper.e.generic_spct <- function(e1, e2, oper) {
     if (is.numeric(e2)) {
       z <- e1
       z[["Rfr"]] <- oper(z[["Rfr"]], e2)
+      check_spct(z)
       return(z)
     } else if (class2 == "reflector_spct") {
       z <- oper_spectra(e1$w.length, e2$w.length,
@@ -306,6 +310,7 @@ oper.e.generic_spct <- function(e1, e2, oper) {
     if (is.numeric(e2)) {
       z <- e1
       z[["s.e.response"]] <- oper(z[["s.e.response"]], e2)
+      check_spct(z)
       return(z)
     } else if (class2 == "response_spct") {
       q2e(e2, action = "replace", byref = TRUE)
@@ -982,10 +987,12 @@ f_dispatcher_spct <- function(x, .fun, ...) {
   if (is.raw_spct(x)) {
     z <- x
     z[["counts"]] <- .fun(z[["counts"]], ...)
+    check_spct(z)
     return(z)
   } else if (is.cps_spct(x)) {
     z <- x
     z[["cps"]] <- .fun(z[["cps"]], ...)
+    check_spct(z)
     return(z)
   } else if (is.filter_spct(x)) {
     filter.qty <- getOption("photobiology.filter.qty", default="transmittance")
@@ -998,23 +1005,27 @@ f_dispatcher_spct <- function(x, .fun, ...) {
     } else {
       stop("Unrecognized 'filter.qty': ", filter.qty)
     }
+    check_spct(z)
     return(z)
   } else if (is.reflector_spct(x)) {
     z <- x
     z[["Rfr"]] <- .fun(z[["Rfr"]], ...)
+    check_spct(z)
     return(z)
   } else if (is.source_spct(x)) {
     unit <- getOption("photobiology.radiation.unit", default = "energy")
     if (unit == "energy") {
       z <- q2e(x, action = "replace", byref = FALSE)
       z[["s.e.irrad"]] <- .fun(z[["s.e.irrad"]], ...)
+      check_spct(z)
       return(z)
     } else if (unit == "photon" || unit == "quantum") {
       z <- e2q(x, action = "replace", byref = FALSE)
       z[["s.q.irrad"]] <- .fun(z[["s.q.irrad"]], ...)
+      check_spct(z)
       return(z)
     } else {
-      return(NA)
+      return(source_mspct())
     }
   } else if (is.response_spct(x)) {
     unit <- getOption("photobiology.radiation.unit", default = "energy")
@@ -1025,6 +1036,7 @@ f_dispatcher_spct <- function(x, .fun, ...) {
     } else if (unit == "photon" || unit == "quantum") {
       z <- e2q(x, action = "replace", byref = FALSE)
       z[["s.q.response"]] <- .fun(z[["s.q.response"]], ...)
+      check_spct(z)
       return(z)
     }
   } else if (is.chroma_spct(x)) {
@@ -1032,6 +1044,7 @@ f_dispatcher_spct <- function(x, .fun, ...) {
     z[["x"]] <- .fun(z[["x"]], ...)
     z[["y"]] <- .fun(z[["y"]], ...)
     z[["z"]] <- .fun(z[["z"]], ...)
+    check_spct(z)
     return(z)
   } else {
       warning("Function not implemented for ", class(x)[1], " objects.")

@@ -20,10 +20,10 @@ test_that("source_spct", {
   expect_equal(class(my_z.spct[ FALSE, ])[1], "source_spct")
   expect_equal(class(my_z.spct[ , 1])[1], "integer")
   expect_equal(class(my_z.spct[ , -1])[1], "tbl_df")
-  expect_equal(class(my_z.spct[ , -2])[1], "source_spct")
   expect_warning(my_z.spct[ , -2])
-#  expect_equal(class(my_z.spct[ FALSE, -2])[1], "source_spct")
-#  expect_warning(my_z.spct[ FALSE , -2])
+  expect_equal(suppressWarnings(class(my_z.spct[ , -2])[1]), "source_spct")
+  expect_warning(my_z.spct[ 1 , -2])
+  expect_equal(suppressWarnings(class(my_z.spct[ 1, -2])[1]), "source_spct")
 
   expect_equal(getTimeUnit(my_z.spct), getTimeUnit(my.spct))
   expect_equal(getTimeUnit(my.spct[1:10, ]), getTimeUnit(my.spct))

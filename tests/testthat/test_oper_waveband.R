@@ -40,7 +40,8 @@ test_that("product energy", {
   my.h.spct <- source_spct(w.length = 200:420, s.e.irrad = 1, time.unit = "hour")
   my.d.spct <- source_spct(w.length = 200:420, s.e.irrad = 1, time.unit = "day")
   my.e.spct <- source_spct(w.length = 200:420, s.e.irrad = 1, time.unit = "exposure")
-  my.b.spct <- source_spct(w.length = 200:420, s.e.irrad = 1, time.unit = "zzz")
+  expect_warning(my.b.spct <- source_spct(w.length = 200:420, s.e.irrad = 1,
+                                          time.unit = "zzz"))
   my.ds.spct <- source_spct(w.length = 200:420, s.e.irrad = 1, time.unit = duration(1, "seconds"))
   my.dh.spct <- source_spct(w.length = 200:420, s.e.irrad = 1, time.unit = duration(1, "hours"))
 
@@ -77,7 +78,8 @@ test_that("product photon", {
   my.h.spct <- source_spct(w.length = 200:420, s.q.irrad = 1, time.unit = "hour")
   my.d.spct <- source_spct(w.length = 200:420, s.q.irrad = 1, time.unit = "day")
   my.e.spct <- source_spct(w.length = 200:420, s.q.irrad = 1, time.unit = "exposure")
-  my.b.spct <- source_spct(w.length = 200:420, s.q.irrad = 1, time.unit = "zzz")
+  expect_warning(my.b.spct <- source_spct(w.length = 200:420, s.q.irrad = 1,
+                                          time.unit = "zzz"))
   my.ds.spct <- source_spct(w.length = 200:420, s.q.irrad = 1, time.unit = duration(1, "seconds"))
   my.dh.spct <- source_spct(w.length = 200:420, s.q.irrad = 1, time.unit = duration(1, "hours"))
 

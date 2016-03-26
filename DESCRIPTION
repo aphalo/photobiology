@@ -1,8 +1,8 @@
 Package: photobiology
 Type: Package
 Title: Photobiological Calculations
-Version: 0.9.5.9011
-Date: 2016-02-26
+Version: 0.9.5.9012
+Date: 2016-03-26
 Author: Pedro J. Aphalo [aut, cre]
 Maintainer: Pedro J. Aphalo <pedro.aphalo@helsinki.fi>
 Description: Definitions of classes, methods, operators and functions for use in
@@ -25,7 +25,7 @@ Imports:
     caTools (>= 1.17.1)
 Suggests:
     knitr (>= 1.11),
-    testthat (>= 0.11.0),
+    testthat (>= 0.11.0.9000),
     roxygen2 (>= 5.0.1)
 LazyLoad: yes
 LazyData: yes

@@ -22,6 +22,8 @@ New functions: cps2irrad(), cps2Tfr() and cps2Rfr().
 Constructors for _spct objects gain a ... formal argument which allows
 addition of arbitrary columns to the objects created.
 Reorganize documentation into fewer help files.
+Update for compatibility with dplyr (>= 0.4.3.9001) and fix a bug.
+Update tests for testthat (>= 0.11.0.9000).
 
 photobiology 0.9.5
 ==================

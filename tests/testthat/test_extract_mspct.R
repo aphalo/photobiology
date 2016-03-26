@@ -56,17 +56,17 @@ test_that("source_mspct", {
   expect_error(my_z.mspct[1] <- 1)
   expect_error(my_z.mspct[1] <- "a")
   expect_error(my_z.mspct[1] <- TRUE)
-  expect_error(my_z.mspct[1] <- as.generic_spct(my1.spct))
+  expect_error(suppressWarnings(my_z.mspct[1] <- as.generic_spct(my1.spct)))
 
-  expect_error(my_z.mspct[1] <- my1.spct)
-#  expect_equal(my_z.mspct[1:2] <- my.mspct[1:2], my.mspct)
+  expect_error(suppressWarnings(my_z.mspct[1] <- my1.spct))
+  expect_equal(my_z.mspct[1:2] <- my.mspct[1:2], my.mspct)
 
   my_z.mspct <- my.mspct
 
-#  expect_error(my_z.mspct["spct_1"] <- 1)
-#  expect_error(my_z.mspct["spct_1"] <- "a")
-#  expect_error(my_z.mspct["spct_1"] <- TRUE)
-#  expect_error(my_z.mspct["spct_1"] <- as.generic_spct(my1.spct))
+  expect_error(my_z.mspct["spct_1"] <- 1)
+  expect_error(my_z.mspct["spct_1"] <- "a")
+  expect_error(my_z.mspct["spct_1"] <- TRUE)
+  expect_error(my_z.mspct["spct_1"] <- as.generic_spct(my1.spct))
 
   my_z.mspct <- my.mspct
 

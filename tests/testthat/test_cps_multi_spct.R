@@ -281,14 +281,14 @@ test_that("raw_mspct", {
   my_long.df <- data.frame(w.length = rep(300:310, 3),
                            cps = c(rep(1, 11), rep(2, 11), rep(3, 11)),
                            spct.idx = c(rep("A", 11), rep("B", 11), rep("C", 11)) )
-  my2_df.mspct <- subset2mspct(my_long.df, member.class = "raw_spct")
+  my2_df.mspct <- subset2mspct(my_long.df, member.class = "cps_spct")
 
   expect_equal(c("A", "B", "C"), names(my2_df.mspct))
   expect_equal(levels(factor(my_long.df[["spct.idx"]])), names(my2_df.mspct))
-  expect_equal(class(my2_df.mspct)[1:2], c("raw_mspct", "generic_mspct") )
-  expect_equal(class(my2_df.mspct[[1]])[1:2], c("raw_spct", "generic_spct") )
-  expect_equal(class(my2_df.mspct[[2]])[1:2], c("raw_spct", "generic_spct") )
-  expect_equal(class(my2_df.mspct[[3]])[1:2], c("raw_spct", "generic_spct") )
+  expect_equal(class(my2_df.mspct)[1:2], c("cps_mspct", "generic_mspct") )
+  expect_equal(class(my2_df.mspct[[1]])[1:2], c("cps_spct", "generic_spct") )
+  expect_equal(class(my2_df.mspct[[2]])[1:2], c("cps_spct", "generic_spct") )
+  expect_equal(class(my2_df.mspct[[3]])[1:2], c("cps_spct", "generic_spct") )
 
   # constructor methods for 'long' spct objects -----------------------------
 

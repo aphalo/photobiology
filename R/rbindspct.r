@@ -323,7 +323,7 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
           comment(xx) <- comment
         }
       } else {
-        xx <- dplyr::as_data_frame(xx)
+        rmDerivedSpct(xx)
       }
     }
     xx
@@ -351,7 +351,7 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
           comment(xx) <- comment
         }
       } else {
-        xx <- dplyr::as_data_frame(xx)
+        rmDerivedSpct(xx)
       }
     }
     xx
@@ -379,7 +379,7 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
           comment(xx) <- comment
         }
       } else {
-        xx <- dplyr::as_data_frame(xx)
+        rmDerivedSpct(xx)
       }
     }
     xx
@@ -408,7 +408,7 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
           comment(xx) <- comment
         }
       } else {
-        xx <- dplyr::as_data_frame(xx)
+        rmDerivedSpct(xx)
       }
     }
     xx
@@ -436,7 +436,7 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
           comment(xx) <- comment
         }
       } else {
-        xx <- dplyr::as_data_frame(xx)
+        rmDerivedSpct(xx)
       }
     }
     xx
@@ -464,7 +464,7 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
           comment(xx) <- comment
         }
       } else {
-        xx <- dplyr::as_data_frame(xx)
+        rmDerivedSpct(xx)
       }
     }
     xx
@@ -492,7 +492,7 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
           comment(xx) <- comment
         }
       } else {
-        xx <- dplyr::as_data_frame(xx)
+        rmDerivedSpct(xx)
       }
     }
     xx
@@ -521,7 +521,7 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
           comment(xx) <- comment
         }
       } else {
-        xx <- dplyr::as_data_frame(xx)
+        rmDerivedSpct(xx)
       }
     }
     xx
@@ -547,7 +547,7 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
           comment(xx) <- comment
         }
       } else {
-        xx <- dplyr::as_data_frame(xx)
+        rmDerivedSpct(xx)
       }
     }
     xx

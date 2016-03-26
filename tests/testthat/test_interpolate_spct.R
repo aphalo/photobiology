@@ -38,13 +38,14 @@ test_that("source_spct", {
   expect_equal(nrow(my1.spct), 0)
   expect_named(my1.spct, names(my.spct))
 
-  my1.spct <- interpolate_wl(my.spct, length.out = numeric())
+  my1.spct <- interpolate_wl(my.spct, w.length.out = numeric())
   expect_equal(nrow(my1.spct), 0)
   expect_named(my1.spct, names(my.spct))
 
   expect_warning(interpolated.spct <-
-                   interpolate_wl(my.spct, w.length.out = c(398:409, NA, 250), fill = 0))
-
+                   interpolate_wl(my.spct,
+                                  w.length.out = c(398:409, NA, 250),
+                                  fill = 0))
   expect_equal(nrow(interpolated.spct), length(c(398:409, 250)))
   expect_equal(min(interpolated.spct), 250)
   expect_equal(max(interpolated.spct), 409)
@@ -53,7 +54,9 @@ test_that("source_spct", {
   expect_named(interpolated.spct, names(my.spct))
 
   expect_warning(interpolated.spct <-
-                   interpolate_wl(my.spct, w.length.out = c(398:409, NA, 250), fill = NA))
+                   interpolate_wl(my.spct,
+                                  w.length.out = c(398:409, NA, 250),
+                                  fill = NA))
 
   expect_equal(nrow(interpolated.spct), length(c(398:409, 250)))
   expect_equal(min(interpolated.spct), 250)

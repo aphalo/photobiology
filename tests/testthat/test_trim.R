@@ -62,7 +62,8 @@ test_that("source_spct", {
   expect_equal(getNormalized(my_z.spct), getNormalized(my.spct))
   expect_equal(getScaled(my_z.spct), getScaled(my.spct))
 
-  my_z.spct <- trim_spct(setTimeUnit(my.spct, time.unit = "day"), range = c(min(my.spct) + 0.2, max(my.spct) - 0.2))
+  my_z.spct <- trim_spct(setTimeUnit(my.spct, time.unit = "second"),
+                         range = c(min(my.spct) + 0.2, max(my.spct) - 0.2))
 
 })
 

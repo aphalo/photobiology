@@ -176,7 +176,7 @@ test_that("filter_mspct", {
 
   # constructor methods for 'wide' data frames ------------------------------
 
-  my_wide.df <- data.frame(w.length = 300:400, A = 1, B = 2, C = 3)
+  my_wide.df <- data.frame(w.length = 300:400, A = 1, B = 0.5, C = 0.1)
   my1_df.mspct <- split2filter_mspct(my_wide.df)
   expect_equal(c("A", "B", "C"), names(my1_df.mspct))
   expect_equal(nrow(my_wide.df), nrow(my1_df.mspct[[1]]))
@@ -188,7 +188,7 @@ test_that("filter_mspct", {
 # constructor methods for 'long' data frames --------------------------------
 
   my_long.df <- data.frame(w.length = rep(300:310, 3),
-                           Tfr = c(rep(1, 11), rep(2, 11), rep(3, 11)),
+                           Tfr = c(rep(1, 11), rep(0.5, 11), rep(0.1, 11)),
                            spct.idx = c(rep("A", 11), rep("B", 11), rep("C", 11)) )
   my2_df.mspct <- subset2mspct(my_long.df, member.class = "filter_spct")
 
@@ -208,7 +208,7 @@ test_that("filter_mspct", {
   expect_named(my2_df.mspct[[3]], c("w.length", "Tfr") )
 
   my_long.df <- data.frame(w.length = rep(300:310, 3),
-                           Tfr = c(rep(1, 11), rep(2, 11), rep(3, 11)),
+                           Tfr = c(rep(1, 11), rep(0.5, 11), rep(0.1, 11)),
                            other = c(rep("one", 11), rep("two", 11), rep("three", 11) ),
                            spct.idx = c(rep("A", 11), rep("B", 11), rep("C", 11)) )
   my2_df.mspct <- subset2mspct(my_long.df, member.class = "filter_spct")

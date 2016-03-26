@@ -40,7 +40,7 @@ test_that("constructor energy", {
   my.h.spct <- response_spct(w.length = 400:409, s.e.response = 1, time.unit = "hour")
   my.d.spct <- response_spct(w.length = 400:409, s.e.response = 1, time.unit = "day")
   my.e.spct <- response_spct(w.length = 400:409, s.e.response = 1, time.unit = "exposure")
-  my.b.spct <- response_spct(w.length = 400:409, s.e.response = 1, time.unit = "zzz")
+  expect_warning(my.b.spct <- response_spct(w.length = 400:409, s.e.response = 1, time.unit = "zzz"))
   my.ds.spct <- response_spct(w.length = 400:409, s.e.response = 1, time.unit = duration(1, "seconds"))
   my.dh.spct <- response_spct(w.length = 400:409, s.e.response = 1, time.unit = duration(1, "hours"))
 
@@ -88,7 +88,7 @@ test_that("constructor photon", {
   my.h.spct <- response_spct(w.length = 400:409, s.q.response = 1, time.unit = "hour")
   my.d.spct <- response_spct(w.length = 400:409, s.q.response = 1, time.unit = "day")
   my.e.spct <- response_spct(w.length = 400:409, s.q.response = 1, time.unit = "exposure")
-  my.b.spct <- response_spct(w.length = 400:409, s.q.response = 1, time.unit = "zzz")
+  expect_warning(my.b.spct <- response_spct(w.length = 400:409, s.q.response = 1, time.unit = "zzz"))
   my.ds.spct <- response_spct(w.length = 400:409, s.q.response = 1, time.unit = duration(1, "seconds"))
   my.dh.spct <- response_spct(w.length = 400:409, s.q.response = 1, time.unit = duration(1, "hours"))
 
@@ -297,7 +297,7 @@ test_that("response e_response q_response", {
                                       w.band = split_bands(c(400, 600), length.out = 3)))), 1)
   expect_equal(sum(as.numeric(response(my.spct, quantity = "contribution",
                                       w.band = split_bands(my.spct, length.out = 3)))), 1)
-  expect_less_than(sum(as.numeric(response(my.spct, quantity = "contribution",
+  expect_lt(sum(as.numeric(response(my.spct, quantity = "contribution",
                                           w.band = split_bands(c(400, 600), length.out = 3)))), 1)
   expect_equal(sum(as.numeric(response(trim_spct(my.spct, range = c(400, 600)),
                                       quantity = "contribution",

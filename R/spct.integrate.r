@@ -59,11 +59,14 @@ average_spct <- function(spct) {
 #' @param fill a value to be assigned to out of range wavelengths
 #' @param length.out numeric value
 #'
-#' @details If \code{length.out} it is a numeric value, then gives the number of rows in the
-#' output, if it is \code{NULL}, the values in the numeric vector \code{w.length.out} are used.
-#' If both are not \code{NULL} then the range of \code{w.length.out} and \code{length.out} are
-#' used to generate a vector of wavelength. A value of \code{NULL} for \code{fill} prevents
-#' extrapolation.
+#' @details If \code{length.out} it is a numeric value, then gives the number of
+#'   rows in the output, if it is \code{NULL}, the values in the numeric vector
+#'   \code{w.length.out} are used. If both are not \code{NULL} then the range of
+#'   \code{w.length.out} and \code{length.out} are used to generate a vector of
+#'   wavelength. A value of \code{NULL} for \code{fill} prevents extrapolation.
+#'   If both \code{w.length.out} and \code{length.out} are \code{NULL} the input
+#'   is returned as is. If \code{w.length.out} has length equal to zero, zero
+#'   rows from the input are returned.
 #'
 #' @note The default \code{fill = NA} fills extrpolated values with NA. Giving NULL as
 #' argument for \code{fill} deletes wavelengths outside the input data range from the
@@ -71,7 +74,6 @@ average_spct <- function(spct) {
 #' \code{interpolate_spectrum} for each non-wavelength column in the input spectra object.
 #'
 #' @return A new spectral object of the same class as argument \code{spct}.
-#'
 #'
 #' @export
 #' @examples
@@ -86,7 +88,16 @@ interpolate_spct <- function(spct,
                              fill = NA,
                              length.out = NULL) {
   stopifnot(is.any_spct(spct))
-  if (any(is.na(w.length.out))) {
+  if (length(w.length.out) == 0 && is.null(length.out)) {
+    if (is.null(w.length.out)) {
+      # with default we return the imput
+      return(spct)
+    } else {
+      # with no wavelengths we return a spectrum of length zero
+      return(spct[FALSE, ])
+    }
+  }
+  if (!is.null(w.length.out) && any(is.na(w.length.out))) {
     warning("NAs omited from 'w.length.out'.")
     w.length.out <- stats::na.omit(w.length.out)
   }

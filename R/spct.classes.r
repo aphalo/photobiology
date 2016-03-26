@@ -138,7 +138,7 @@ check_spct.cps_spct <- function(x,
         next()
       }
       cps.range <- range(x[[col]], na.rm = TRUE)
-      stopifnot(cps.range[2] > 0)
+      stopifnot(cps.range[2] >= 0)
       cps.spread <- diff(cps.range)
       if (!is.null(strict.range) && !is.na(strict.range) &&
           cps.range[1] < -0.05 * cps.spread) {
@@ -445,7 +445,7 @@ check_spct.source_spct <-
         s.e.range <- range(x$s.e.irrad, na.rm = TRUE)
 #        stopifnot(s.e.range[2] > 0)
         s.e.spread <- diff(s.e.range)
-        if (s.e.range[1] < min.limit * s.e.spread) {
+        if (s.e.range[1] < min.limit * (s.e.spread + 1e-14) ) {
           message.text <-
             paste(
               "Negative spectral energy irradiance values; minimun s.e.irrad =",
@@ -463,7 +463,7 @@ check_spct.source_spct <-
         s.q.range <- range(x$s.q.irrad, na.rm = TRUE)
 #        stopifnot(s.q.range[2] > 0)
         s.q.spread <- diff(s.q.range)
-        if (s.q.range[1] < min.limit * s.q.spread) {
+        if (s.q.range[1] < min.limit * (s.q.spread + 1e-20) ) {
           message.text <-
             paste(
               "Negative spectral photon irradiance values; minimun s.q.irrad =",

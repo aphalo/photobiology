@@ -40,7 +40,8 @@ test_that("constructor energy", {
   my.h.spct <- source_spct(w.length = 400:409, s.e.irrad = 1, time.unit = "hour")
   my.d.spct <- source_spct(w.length = 400:409, s.e.irrad = 1, time.unit = "day")
   my.e.spct <- source_spct(w.length = 400:409, s.e.irrad = 1, time.unit = "exposure")
-  my.b.spct <- source_spct(w.length = 400:409, s.e.irrad = 1, time.unit = "zzz")
+  expect_warning(my.b.spct <- source_spct(w.length = 400:409, s.e.irrad = 1,
+                                          time.unit = "zzz"))
   my.ds.spct <- source_spct(w.length = 400:409, s.e.irrad = 1, time.unit = duration(1, "seconds"))
   my.dh.spct <- source_spct(w.length = 400:409, s.e.irrad = 1, time.unit = duration(1, "hours"))
 
@@ -70,7 +71,8 @@ test_that("constructor photon", {
   my.h.spct <- source_spct(w.length = 400:409, s.q.irrad = 1, time.unit = "hour")
   my.d.spct <- source_spct(w.length = 400:409, s.q.irrad = 1, time.unit = "day")
   my.e.spct <- source_spct(w.length = 400:409, s.q.irrad = 1, time.unit = "exposure")
-  my.b.spct <- source_spct(w.length = 400:409, s.q.irrad = 1, time.unit = "zzz")
+  expect_warning(my.b.spct <- source_spct(w.length = 400:409, s.q.irrad = 1,
+                                          time.unit = "zzz"))
   my.ds.spct <- source_spct(w.length = 400:409, s.q.irrad = 1, time.unit = duration(1, "seconds"))
   my.dh.spct <- source_spct(w.length = 400:409, s.q.irrad = 1, time.unit = duration(1, "hours"))
 
@@ -285,7 +287,7 @@ test_that("irrad e_irrad q_irrad", {
                                     w.band = split_bands(c(400, 600), length.out = 3)))), 1)
   expect_equal(sum(as.numeric(irrad(sun.spct, quantity = "contribution",
                                     w.band = split_bands(sun.spct, length.out = 3)))), 1)
-  expect_less_than(sum(as.numeric(irrad(sun.spct, quantity = "contribution",
+  expect_lt(sum(as.numeric(irrad(sun.spct, quantity = "contribution",
                                         w.band = split_bands(c(400, 600), length.out = 3)))), 1)
   expect_equal(sum(as.numeric(irrad(trim_spct(sun.spct, range = c(400, 600)),
                                     quantity = "contribution",
@@ -312,7 +314,7 @@ test_that("irrad e_irrad q_irrad", {
                                       w.band = split_bands(c(400, 600), length.out = 3)))), 1)
   expect_equal(sum(as.numeric(e_irrad(sun.spct, quantity = "contribution",
                                       w.band = split_bands(sun.spct, length.out = 3)))), 1)
-  expect_less_than(sum(as.numeric(e_irrad(sun.spct, quantity = "contribution",
+  expect_lt(sum(as.numeric(e_irrad(sun.spct, quantity = "contribution",
                                           w.band = split_bands(c(400, 600), length.out = 3)))), 1)
   expect_equal(sum(as.numeric(e_irrad(trim_spct(sun.spct, range = c(400, 600)),
                                       quantity = "contribution",
@@ -346,7 +348,7 @@ test_that("irrad e_irrad q_irrad", {
                                       w.band = split_bands(c(400, 600), length.out = 3)))), 1)
   expect_equal(sum(as.numeric(q_irrad(sun.spct, quantity = "contribution",
                                       w.band = split_bands(sun.spct, length.out = 3)))), 1)
-  expect_less_than(sum(as.numeric(q_irrad(sun.spct, quantity = "contribution",
+  expect_lt(sum(as.numeric(q_irrad(sun.spct, quantity = "contribution",
                                           w.band = split_bands(c(400, 600), length.out = 3)))), 1)
   expect_equal(sum(as.numeric(q_irrad(trim_spct(sun.spct, range = c(400, 600)),
                                       quantity = "contribution",

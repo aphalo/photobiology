@@ -20,8 +20,8 @@ test_that("filter_spct", {
   expect_equal(class(my_z.spct[ FALSE, ])[1], "filter_spct")
   expect_equal(class(my_z.spct[ , 1])[1], "integer")
   expect_equal(class(my_z.spct[ , -1])[1], "tbl_df")
-  expect_equal(class(my_z.spct[ , -2])[1], "filter_spct")
   expect_warning(my_z.spct[ , -2])
+  expect_equal(suppressWarnings(class(my_z.spct[ , -2])[1]), "filter_spct")
 #  expect_equal(class(my_z.spct[ FALSE, -2])[1], "filter_spct")
 #  expect_warning(my_z.spct[ FALSE , -2])
 
