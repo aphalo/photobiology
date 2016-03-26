@@ -519,9 +519,9 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
         comment <- comment(x)
         if (!is.null(comment)) {
           comment(xx) <- comment
-        } else {
-          xx <- dplyr::as_data_frame(xx)
         }
+      } else {
+        xx <- dplyr::as_data_frame(xx)
       }
     }
     xx
