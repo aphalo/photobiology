@@ -252,7 +252,7 @@ test_that("integrate_spct", {
 context("return same attributes")
 
 
-test_that("various attr", {
+test_that("trim_wl attr", {
 
   my.spct <- source_spct(w.length=100:200, s.e.irrad = 1)
   tested.time <- ymd_hms("2015-12-31 23:59:59")
@@ -294,3 +294,188 @@ test_that("various attr", {
                character(0) )
 
 })
+
+test_that("clip_wl attr", {
+
+  my.spct <- source_spct(w.length=100:200, s.e.irrad = 1)
+  tested.time <- ymd_hms("2015-12-31 23:59:59")
+  setWhenMeasured(my.spct, tested.time)
+  tested.location <- data.frame(lon = 24.93545, lat = 60.16952)
+  setWhereMeasured(my.spct, tested.location)
+  tested.what <- "user message"
+  setWhatMeasured(my.spct, tested.what)
+
+  expect_equal(setdiff(names(attributes(my.spct)),
+                       names(attributes(clip_wl(my.spct, range = 110:200)))),
+               character(0) )
+
+  expect_equal(setdiff(names(attributes(my.spct)),
+                       names(attributes(clip_wl(my.spct, range = 100:190)))),
+               character(0) )
+
+
+  expect_equal(setdiff(names(attributes(my.spct)),
+                       names(attributes(clip_wl(my.spct, range = 90:210)))),
+               character(0) )
+
+  expect_equal(setdiff(names(attributes(my.spct)),
+                       names(attributes(clip_wl(my.spct)))),
+               character(0) )
+
+})
+
+test_that("clean attr", {
+
+  my.spct <- source_spct(w.length=100:200, s.e.irrad = 1)
+  tested.time <- ymd_hms("2015-12-31 23:59:59")
+  setWhenMeasured(my.spct, tested.time)
+  tested.location <- data.frame(lon = 24.93545, lat = 60.16952)
+  setWhereMeasured(my.spct, tested.location)
+  tested.what <- "user message"
+  setWhatMeasured(my.spct, tested.what)
+
+  expect_equal(setdiff(names(attributes(my.spct)),
+                       names(attributes(clean(my.spct, range = 110:200)))),
+               character(0) )
+
+  expect_equal(setdiff(names(attributes(my.spct)),
+                       names(attributes(clean(my.spct, range = 100:190)))),
+               character(0) )
+
+
+  expect_equal(setdiff(names(attributes(my.spct)),
+                       names(attributes(clean(my.spct, range = 90:210)))),
+               character(0) )
+
+  expect_equal(setdiff(names(attributes(my.spct)),
+                       names(attributes(clean(my.spct)))),
+               character(0) )
+
+  expect_equal(setdiff(names(attributes(my.spct)),
+                       names(attributes(clean(my.spct, range.s.data = c(0,0.9))))),
+               character(0) )
+})
+
+test_that("fshift attr", {
+
+  my.spct <- source_spct(w.length=100:200, s.e.irrad = 1)
+  tested.time <- ymd_hms("2015-12-31 23:59:59")
+  setWhenMeasured(my.spct, tested.time)
+  tested.location <- data.frame(lon = 24.93545, lat = 60.16952)
+  setWhereMeasured(my.spct, tested.location)
+  tested.what <- "user message"
+  setWhatMeasured(my.spct, tested.what)
+
+  expect_equal(setdiff(names(attributes(my.spct)),
+                       names(attributes(fshift(my.spct)))),
+               character(0) )
+
+  expect_equal(setdiff(names(attributes(my.spct)),
+                       names(attributes(fshift(my.spct, range = 100:105)))),
+               character(0) )
+
+
+  expect_equal(setdiff(names(attributes(my.spct)),
+                       names(attributes(fshift(my.spct, range = 195:200)))),
+               character(0) )
+
+  expect_equal(setdiff(names(attributes(my.spct)),
+                       names(attributes(fshift(my.spct, range = 145:150)))),
+               character(0) )
+
+})
+
+test_that("fscale attr", {
+
+  my.spct <- source_spct(w.length=100:200, s.e.irrad = 1)
+  tested.time <- ymd_hms("2015-12-31 23:59:59")
+  setWhenMeasured(my.spct, tested.time)
+  tested.location <- data.frame(lon = 24.93545, lat = 60.16952)
+  setWhereMeasured(my.spct, tested.location)
+  tested.what <- "user message"
+  setWhatMeasured(my.spct, tested.what)
+
+  expect_equal(setdiff(names(attributes(fscale(my.spct))),
+               names(attributes(my.spct))),
+               "scaled" )
+
+  expect_equal(setdiff(names(attributes(fscale(my.spct, range = 100:110))),
+                       names(attributes(my.spct))),
+               "scaled" )
+
+  expect_equal(setdiff(names(attributes(fscale(my.spct, f = "total"))),
+                       names(attributes(my.spct))),
+               "scaled" )
+
+})
+
+test_that("normalize attr", {
+
+  my.spct <- source_spct(w.length=100:200, s.e.irrad = 1)
+  tested.time <- ymd_hms("2015-12-31 23:59:59")
+  setWhenMeasured(my.spct, tested.time)
+  tested.location <- data.frame(lon = 24.93545, lat = 60.16952)
+  setWhereMeasured(my.spct, tested.location)
+  tested.what <- "user message"
+  setWhatMeasured(my.spct, tested.what)
+
+  expect_equal(setdiff(names(attributes(normalize(my.spct))),
+                       names(attributes(my.spct))),
+               "normalized" )
+
+  expect_equal(setdiff(names(attributes(normalize(my.spct, range = 100:110))),
+                       names(attributes(my.spct))),
+               "normalized" )
+
+  expect_equal(setdiff(names(attributes(normalize(my.spct, norm = "max"))),
+                       names(attributes(my.spct))),
+               "normalized" )
+
+  expect_equal(setdiff(names(attributes(normalize(my.spct, norm = 150))),
+                       names(attributes(my.spct))),
+               "normalized" )
+})
+
+
+test_that("peaks attr", {
+
+  my.spct <- source_spct(w.length=100:200, s.e.irrad = 1)
+  tested.time <- ymd_hms("2015-12-31 23:59:59")
+  setWhenMeasured(my.spct, tested.time)
+  tested.location <- data.frame(lon = 24.93545, lat = 60.16952)
+  setWhereMeasured(my.spct, tested.location)
+  tested.what <- "user message"
+  setWhatMeasured(my.spct, tested.what)
+
+  # scaled = FALSE and normalized = FALSE is being added
+  # this is valid but inconsistent, could be fixed.
+  #
+  expect_equal(setdiff(names(attributes(peaks(my.spct))),
+                       names(attributes(my.spct))),
+                c("normalized", "scaled")  )
+
+  expect_equal(setdiff(names(attributes(valleys(my.spct))),
+                       names(attributes(my.spct))),
+                c("normalized", "scaled")  )
+
+})
+
+test_that("smooth_spct attr", {
+
+  my.spct <- source_spct(w.length=100:200, s.e.irrad = 1)
+  tested.time <- ymd_hms("2015-12-31 23:59:59")
+  setWhenMeasured(my.spct, tested.time)
+  tested.location <- data.frame(lon = 24.93545, lat = 60.16952)
+  setWhereMeasured(my.spct, tested.location)
+  tested.what <- "user message"
+  setWhatMeasured(my.spct, tested.what)
+
+  # scaled = FALSE and normalized = FALSE is being added
+  # this is valid but inconsistent, could be fixed.
+  #
+  expect_equal(setdiff(setdiff(names(attributes(smooth_spct(my.spct))),
+                       names(attributes(my.spct))), "comment"),
+               c("normalized", "scaled") )
+
+})
+
