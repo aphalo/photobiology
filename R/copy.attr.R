@@ -47,8 +47,10 @@ copy_attributes.generic_spct <- function(x, y,
                    cps_spct = c("instr.desc", "instr.settings"),
                    source_spct,
                    response_spct = c("time.unit", "bswf.used"),
-                   filter_spct = c("Tfr.type"),
-                   reflector_spct = c("Rfr.type"),
+                   # need to be copied in case class of object_spct
+                   # is changed temporarily
+                   filter_spct,
+                   reflector_spct,
                    object_spct = c("Tfr.type", "Rfr.type"),
                    chroma_spct = character()
     )
@@ -56,6 +58,7 @@ copy_attributes.generic_spct <- function(x, y,
   }
   attr.x <- attributes(x)
   which.x <- intersect(names(attr.x), which)
+  # this is likely to be slow
   for (w in which.x) {
         attr(y, w) <- attr(x, w)
   }

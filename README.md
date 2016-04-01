@@ -10,5 +10,5 @@ Aphalo, P. J., Albert, A., Björn, L. O., McLeod, A. R., Robson, T. M., & Rosenq
 
 Please, see the web site [R4Photobiology](http://www.r4photobiology.info) for details on other packages available as part of the suite, and on how to install them.
 
-The current release of __photobiology__ is available through [CRAN](https://cran.r-project.org/web/packages/photobiology/index.html) 
+The current release of __photobiology__ is available through [CRAN](https://cran.r-project.org/package=pkgname) 
 for R (>= 3.2.0). 

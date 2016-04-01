@@ -1676,17 +1676,17 @@ The function \texttt{average\_spct} integrates every column holding numeric valu
 average_spct(sun.spct)
 @
 
-\section{Conversion of ``raw'' spectral data}
-
-In this section we cover the final steps of the conversion of raw data. Once the spectral data have been linearised, zero-corrected, and raw counts converted to counts-per-second we can apply the functions included in this package. Earlier steps of the data flow are more dependent on instrument hardware and firmware features and are handled by separate packages---at the moment only package available is \textsl{ooacquire} instruments from Ocean Optics, and which has not yet been released.
-
-At the moment three conversion functions are available: \texttt{cps2irrad()} for irradiance, \texttt{cps2Tfr} for transmittance, and \texttt{cps2Rfr()} for reflectance. These functions expect an instrument descriptor to be present in the \texttt{cps\_spct} objects supplied as arguments.
-
-<<>>=
-my_filter.spct <- cps2Tfr(filter_cps.mspct$filter, filter_cps.mspct$no.filter)
-class_spct(my_filter.spct)
-my_filter.spct
-@
+% \section{Conversion of ``raw'' spectral data}
+%
+% In this section we cover the final steps of the conversion of raw data. Once the spectral data have been linearised, zero-corrected, and raw counts converted to counts-per-second we can apply the functions included in this package. Earlier steps of the data flow are more dependent on instrument hardware and firmware features and are handled by separate packages---at the moment only package available is \textsl{ooacquire} instruments from Ocean Optics, and which has not yet been released.
+%
+% At the moment three conversion functions are available: \texttt{cps2irrad()} for irradiance, \texttt{cps2Tfr} for transmittance, and \texttt{cps2Rfr()} for reflectance. These functions expect an instrument descriptor to be present in the \texttt{cps\_spct} objects supplied as arguments.
+%
+% <<>>=
+% my_filter.spct <- cps2Tfr(filter_cps.mspct$filter, filter_cps.mspct$no.filter)
+% class_spct(my_filter.spct)
+% my_filter.spct
+% @
 
 \section{Astronomy}
 

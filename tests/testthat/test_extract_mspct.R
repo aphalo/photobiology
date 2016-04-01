@@ -17,6 +17,7 @@ test_that("source_mspct", {
   my.mspct <- source_mspct(spct.l)
 
   expect_equal(class(my.mspct)[1], "source_mspct")
+  # testthat error!
 #  expect_equal(class(my.mspct[1:3])[1], "source_mspct")
 #  expect_equal(class(my.mspct[-1])[1], "source_mspct")
 #  expect_equal(class(my.mspct[2])[1], "source_mspct")
@@ -66,7 +67,7 @@ test_that("source_mspct", {
   expect_error(my_z.mspct["spct_1"] <- 1)
   expect_error(my_z.mspct["spct_1"] <- "a")
   expect_error(my_z.mspct["spct_1"] <- TRUE)
-  expect_error(my_z.mspct["spct_1"] <- as.generic_spct(my1.spct))
+  expect_error(suppressWarnings(my_z.mspct["spct_1"] <- as.generic_spct(my1.spct)))
 
   my_z.mspct <- my.mspct
 

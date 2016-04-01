@@ -9,7 +9,7 @@
 #'  \itemize{ \item w.length (nm). \item cps (counts/s)  }
 #'
 #' @docType data
-#' @keywords datasets
+#' @keywords datasets internal
 #' @format A \code{filter_cps.mspct} object with 611 rows and 2 variables
 #' @name filter_cps.mspct
 #'

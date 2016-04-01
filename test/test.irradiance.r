@@ -9,9 +9,9 @@ test.irrad <- function(w.band=new_waveband(400,700)) {
                  irrad(sun.spct, w.band,"photon"),
                  irrad(sun.spct, w.band,"photon", use.cached.mult=FALSE),
                  irrad(sun.spct, w.band,"photon", use.cached.mult=TRUE),
-                  irrad(sun.spct, w.band,"photon", use.cached.mult=FALSE,
-                        use.hinges=TRUE),
-                  irrad(sun.spct, w.band,"photon", use.cached.mult=TRUE,
+                 irrad(sun.spct, w.band,"photon", use.cached.mult=FALSE,
+                       use.hinges=TRUE),
+                 irrad(sun.spct, w.band,"photon", use.cached.mult=TRUE,
                        use.hinges=TRUE),
                  irrad(sun.spct, w.band,"photon", use.cached.mult=TRUE,
                        use.hinges=FALSE)
