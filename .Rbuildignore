@@ -9,6 +9,4 @@
 ^vignettes/*\.toc$
 ^vignettes/*\.log$
 ^vignettes/*\.synctex\.gz$
-^.*\.o$
 ^.*\.bak$
-cran-check.bat
