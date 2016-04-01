@@ -41,6 +41,11 @@ test_that("any_spct", {
   setWhereMeasured(my.spct, tested.location)
   getWhenMeasured(my.spct)
 
+  tested.what <- "user message"
+
+  setWhatMeasured(my.spct, tested.what)
+  expect_equal(getWhatMeasured(my.spct), tested.what)
+
   expect_equal(getSpctVersion(my.spct), 2L)
 })
 
@@ -241,5 +246,51 @@ test_that("integrate_spct", {
 
   expect_equivalent(average_spct(my.spct), 1.2538837047156523583e-05)
   expect_named(average_spct(my.spct), "q.irrad")
+
+})
+
+context("return same attributes")
+
+
+test_that("various attr", {
+
+  my.spct <- source_spct(w.length=100:200, s.e.irrad = 1)
+  tested.time <- ymd_hms("2015-12-31 23:59:59")
+  setWhenMeasured(my.spct, tested.time)
+  tested.location <- data.frame(lon = 24.93545, lat = 60.16952)
+  setWhereMeasured(my.spct, tested.location)
+  tested.what <- "user message"
+  setWhatMeasured(my.spct, tested.what)
+
+  expect_equal(setdiff(names(attributes(my.spct)),
+                       names(attributes(trim_wl(my.spct, range = 110:200)))),
+               character(0) )
+
+  expect_equal(setdiff(names(attributes(my.spct)),
+                       names(attributes(trim_wl(my.spct, range = 110:200,
+                                                fill = 0)))),
+               character(0) )
+
+  expect_equal(setdiff(names(attributes(my.spct)),
+                       names(attributes(trim_wl(my.spct, range = 100:190)))),
+               character(0) )
+
+  expect_equal(setdiff(names(attributes(my.spct)),
+                       names(attributes(trim_wl(my.spct, range = 100:190,
+                                                fill = 0)))),
+               character(0) )
+
+    expect_equal(setdiff(names(attributes(my.spct)),
+                       names(attributes(trim_wl(my.spct, range = 90:210)))),
+               character(0) )
+
+  expect_equal(setdiff(names(attributes(my.spct)),
+                       names(attributes(trim_wl(my.spct, range = 90:210,
+                                                fill = 0)))),
+               character(0) )
+
+  expect_equal(setdiff(names(attributes(my.spct)),
+                       names(attributes(trim_wl(my.spct)))),
+               character(0) )
 
 })

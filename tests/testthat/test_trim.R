@@ -48,9 +48,10 @@ test_that("source_spct", {
   expect_equal(getTimeUnit(my_z.spct), getTimeUnit(my.spct))
   expect_equal(getBSWFUsed(my_z.spct), getBSWFUsed(my.spct))
   expect_equal(is_effective(my_z.spct), is_effective(my.spct))
-  expect_equal(is_normalized(my_z.spct), is_normalized(my.spct))
-  expect_equal(getNormalized(my_z.spct), getNormalized(my.spct))
-  expect_equal(getScaled(my_z.spct), getScaled(my.spct))
+  expect_equal(is_normalized(my_z.spct), TRUE)
+  expect_equal(getNormalized(my_z.spct), 400)
+  expect_equal(is_scaled(my_z.spct), FALSE)
+  expect_equal(getScaled(my_z.spct), FALSE)
 
   my_z.spct <- trim_spct(fscale(my.spct), range = c(min(my.spct) + 0.2, max(my.spct) - 0.2))
 
@@ -58,9 +59,10 @@ test_that("source_spct", {
   expect_equal(getTimeUnit(my_z.spct), getTimeUnit(my.spct))
   expect_equal(getBSWFUsed(my_z.spct), getBSWFUsed(my.spct))
   expect_equal(is_effective(my_z.spct), is_effective(my.spct))
-  expect_equal(is_normalized(my_z.spct), is_normalized(my.spct))
-  expect_equal(getNormalized(my_z.spct), getNormalized(my.spct))
-  expect_equal(getScaled(my_z.spct), getScaled(my.spct))
+  expect_equal(is_normalized(my_z.spct), FALSE)
+  expect_equal(getNormalized(my_z.spct), FALSE)
+  expect_equal(is_scaled(my_z.spct), TRUE)
+  expect_equal(getScaled(my_z.spct), list(multiplier=2, f="mean"))
 
   my_z.spct <- trim_spct(setTimeUnit(my.spct, time.unit = "second"),
                          range = c(min(my.spct) + 0.2, max(my.spct) - 0.2))

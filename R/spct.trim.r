@@ -46,10 +46,11 @@ trim_spct <- function(spct,
                       byref = FALSE,
                       verbose = getOption("photobiology.verbose", default = TRUE) )
 {
-  if (length(spct) == 0) {
+  if (nrow(spct) == 0) {
     return(spct)
   }
   stopifnot(is.any_spct(spct))
+  x <- spct
   if (is.null(use.hinges)) {
     use.hinges <- auto_hinges(spct[["w.length"]])
   }
@@ -72,10 +73,14 @@ trim_spct <- function(spct,
   }
   names.spct <- names(spct)
   names.data <- names.spct[names.spct != "w.length"]
-  comment.spct <- comment(spct)
-  time.unit.spct <- getTimeUnit(spct)
-  Tfr.type.spct <- getTfrType(spct)
-  Rfr.type.spct <- getRfrType(spct)
+  # comment.spct <- comment(spct)
+  # time.unit.spct <- getTimeUnit(spct)
+  # Tfr.type.spct <- getTfrType(spct)
+  # Rfr.type.spct <- getRfrType(spct)
+  # when.measured.spct <- getWhenMeasured(spct)
+  # where.measured.spct <- getWhereMeasured(spct)
+  # what.measured.spct <- getWhatMeasured(spct)
+  # instr.settings.spct <- getInstrSettings(spct)
   # check whether we should expand the low end
   low.end <- min(spct, na.rm = TRUE)
   if (trim.low && low.end > low.limit) {
@@ -156,21 +161,35 @@ trim_spct <- function(spct,
       spct[!within.selector, data.col] <- fill
     }
   }
+  #
+  spct <- copy_attributes(x, spct)
   # we now use plyr::rbind.fill which does not remove attributes
   # most of the code below may be redundant!!!
-  class(spct) <- class_spct
-  if (!is.null(comment.spct)) {
-    comment(spct) <- comment.spct
-  }
-  if (!is.null(time.unit.spct) && !is.na(time.unit.spct)) {
-    setTimeUnit(spct, time.unit.spct)
-  }
-  if (!is.null(Tfr.type.spct)) {
-    setTfrType(spct, Tfr.type.spct)
-  }
-  if (!is.null(Rfr.type.spct)) {
-    setRfrType(spct, Rfr.type.spct)
-  }
+  # class(spct) <- class_spct
+  # if (!is.null(comment.spct)) {
+  #   comment(spct) <- comment.spct
+  # }
+  # if (!is.null(time.unit.spct) && !is.na(time.unit.spct)) {
+  #   setTimeUnit(spct, time.unit.spct)
+  # }
+  # if (!is.null(Tfr.type.spct)) {
+  #   setTfrType(spct, Tfr.type.spct)
+  # }
+  # if (!is.null(Rfr.type.spct)) {
+  #   setRfrType(spct, Rfr.type.spct)
+  # }
+  # if (!is.null(when.measured.spct)) {
+  #   setWhenMeasured(spct, when.measured.spct)
+  # }
+  # if (!is.null(where.measured.spct)) {
+  #   setWhereMeasured(spct, where.measured.spct)
+  # }
+  # if (!is.null(what.measured.spct)) {
+  #   setWhatMeasured(spct, what.measured.spct)
+  # }
+  # if (!is.null(instr.settings.spct)) {
+  #   setInstrSettings(spct, instr.settings.spct)
+  # }
   if (byref && is.name(name)) {
     name <- as.character(name)
     assign(name, spct, parent.frame(), inherits = TRUE)
