@@ -447,16 +447,13 @@ test_that("peaks attr", {
   tested.what <- "user message"
   setWhatMeasured(my.spct, tested.what)
 
-  # scaled = FALSE and normalized = FALSE is being added
-  # this is valid but inconsistent, could be fixed.
-  #
   expect_equal(setdiff(names(attributes(peaks(my.spct))),
                        names(attributes(my.spct))),
-                c("normalized", "scaled")  )
+               character(0)  )
 
   expect_equal(setdiff(names(attributes(valleys(my.spct))),
                        names(attributes(my.spct))),
-                c("normalized", "scaled")  )
+               character(0)  )
 
 })
 
@@ -470,12 +467,24 @@ test_that("smooth_spct attr", {
   tested.what <- "user message"
   setWhatMeasured(my.spct, tested.what)
 
-  # scaled = FALSE and normalized = FALSE is being added
-  # this is valid but inconsistent, could be fixed.
-  #
   expect_equal(setdiff(setdiff(names(attributes(smooth_spct(my.spct))),
                        names(attributes(my.spct))), "comment"),
-               c("normalized", "scaled") )
+               character(0) )
 
 })
 
+test_that("extract attr", {
+
+  my.spct <- source_spct(w.length=100:200, s.e.irrad = 1)
+  tested.time <- ymd_hms("2015-12-31 23:59:59")
+  setWhenMeasured(my.spct, tested.time)
+  tested.location <- data.frame(lon = 24.93545, lat = 60.16952)
+  setWhereMeasured(my.spct, tested.location)
+  tested.what <- "user message"
+  setWhatMeasured(my.spct, tested.what)
+
+  expect_equal(setdiff(names(attributes(my.spct)),
+                       names(attributes(my.spct[2:50, ]))),
+               character(0) )
+
+})

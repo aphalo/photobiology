@@ -313,15 +313,9 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
     }
     if (is.data.frame(xx)) {
       if ("w.length" %in% names(xx)) {
-        setGenericSpct(xx, multiple.wl = getMultipleWl(x))
-        setNormalized(xx, getNormalized(x))
-        setScaled(xx, getScaled(x))
-        setInstrDesc(xx, getInstrDesc(x))
-        setInstrSettings(xx, getInstrSettings(x))
-        comment <- comment(x)
-        if (!is.null(comment)) {
-          comment(xx) <- comment
-        }
+        setGenericSpct(x = xx,
+                       multiple.wl = getMultipleWl(x))
+        # other attributes remain unchanged
       } else {
         rmDerivedSpct(xx)
       }
@@ -341,15 +335,9 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
     }
     if (is.data.frame(xx)) {
       if ("w.length" %in% names(xx)) {
-        setRawSpct(xx, multiple.wl = getMultipleWl(x))
-        setNormalized(xx, getNormalized(x))
-        setScaled(xx, getScaled(x))
-        setInstrDesc(xx, getInstrDesc(x))
-        setInstrSettings(xx, getInstrSettings(x))
-        comment <- comment(x)
-        if (!is.null(comment)) {
-          comment(xx) <- comment
-        }
+        setRawSpct(x = xx,
+                   multiple.wl = getMultipleWl(x))
+        # other attributes remain unchanged
       } else {
         rmDerivedSpct(xx)
       }
@@ -369,15 +357,9 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
     }
     if (is.data.frame(xx)) {
       if ("w.length" %in% names(xx)) {
-        setCpsSpct(xx, multiple.wl = getMultipleWl(x))
-        setNormalized(xx, getNormalized(x))
-        setInstrDesc(xx, getInstrDesc(x))
-        setInstrSettings(xx, getInstrSettings(x))
-        setScaled(xx, getScaled(x))
-        comment <- comment(x)
-        if (!is.null(comment)) {
-          comment(xx) <- comment
-        }
+        setCpsSpct(x = xx,
+                   multiple.wl = getMultipleWl(x))
+        # other attributes remain unchanged
       } else {
         rmDerivedSpct(xx)
       }
@@ -397,16 +379,12 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
     }
     if (is.data.frame(xx)) {
       if ("w.length" %in% names(xx)) {
-        time.unit <- getTimeUnit(x)
-        bswf.used <- getBSWFUsed(x)
-        setSourceSpct(x = xx, time.unit = time.unit, bswf.used = bswf.used,
-                      multiple.wl = getMultipleWl(x), strict.range = NA)
-        setNormalized(xx, getNormalized(x))
-        setScaled(xx, getScaled(x))
-        comment <- comment(x)
-        if (!is.null(comment)) {
-          comment(xx) <- comment
-        }
+        setSourceSpct(x = xx,
+                      time.unit = getTimeUnit(x),
+                      bswf.used = getBSWFUsed(x),
+                      multiple.wl = getMultipleWl(x),
+                      strict.range = NA)
+        # other attributes remain unchanged
       } else {
         rmDerivedSpct(xx)
       }
@@ -426,15 +404,10 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
     }
     if (is.data.frame(xx)) {
       if ("w.length" %in% names(xx)) {
-        time.unit <- getTimeUnit(x)
-        setResponseSpct(x = xx, time.unit = time.unit,
+        setResponseSpct(x = xx,
+                        time.unit = getTimeUnit(x),
                         multiple.wl = getMultipleWl(x))
-        setNormalized(xx, getNormalized(x))
-        setScaled(xx, getScaled(x))
-        comment <- comment(x)
-        if (!is.null(comment)) {
-          comment(xx) <- comment
-        }
+        # other attributes remain unchanged
       } else {
         rmDerivedSpct(xx)
       }
@@ -454,15 +427,11 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
     }
     if (is.data.frame(xx)) {
       if ("w.length" %in% names(xx)) {
-        Tfr.type <- getTfrType(x)
-        setFilterSpct(x = xx, Tfr.type = Tfr.type,
-                      multiple.wl = getMultipleWl(x), strict.range = NA)
-        setNormalized(xx, getNormalized(x))
-        setScaled(xx, getScaled(x))
-        comment <- comment(x)
-        if (!is.null(comment)) {
-          comment(xx) <- comment
-        }
+        setFilterSpct(x = xx,
+                      Tfr.type = getTfrType(x),
+                      multiple.wl = getMultipleWl(x),
+                      strict.range = NA)
+        # other attributes remain unchanged
       } else {
         rmDerivedSpct(xx)
       }
@@ -483,14 +452,11 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
     if (is.data.frame(xx)) {
       if ("w.length" %in% names(xx)) {
         Rfr.type <- getRfrType(x)
-        setReflectorSpct(x = xx, Rfr.type = Rfr.type,
-                         multiple.wl = getMultipleWl(x), strict.range = NA)
-        setNormalized(xx, getNormalized(x))
-        setScaled(xx, getScaled(x))
-        comment <- comment(x)
-        if (!is.null(comment)) {
-          comment(xx) <- comment
-        }
+        setReflectorSpct(x = xx,
+                         Rfr.type = getRfrType(x),
+                         multiple.wl = getMultipleWl(x),
+                         strict.range = NA)
+        # other attributes remain unchanged
       } else {
         rmDerivedSpct(xx)
       }
@@ -510,16 +476,12 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
     }
     if (is.data.frame(xx)) {
       if ("w.length" %in% names(xx)) {
-        Tfr.type <- getTfrType(x)
-        Rfr.type <- getRfrType(x)
-        setObjectSpct(x = xx, Tfr.type = Tfr.type, Rfr.type = Rfr.type,
-                      multiple.wl = getMultipleWl(x), strict.range = NA)
-        setNormalized(xx, getNormalized(x))
-        setScaled(xx, getScaled(x))
-        comment <- comment(x)
-        if (!is.null(comment)) {
-          comment(xx) <- comment
-        }
+        setObjectSpct(x = xx,
+                      Tfr.type = getTfrType(x),
+                      Rfr.type = getRfrType(x),
+                      multiple.wl = getMultipleWl(x),
+                      strict.range = NA)
+        # other attributes remain unchanged
       } else {
         rmDerivedSpct(xx)
       }
@@ -539,13 +501,9 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
     }
     if (is.data.frame(xx)) {
       if ("w.length" %in% names(xx)) {
-        setChromaSpct(xx, multiple.wl = getMultipleWl(x))
-        setNormalized(xx, getNormalized(x))
-        setScaled(xx, getScaled(x))
-        comment <- comment(x)
-        if (!is.null(comment)) {
-          comment(xx) <- comment
-        }
+        setChromaSpct(xx,
+                      multiple.wl = getMultipleWl(x))
+        # other attributes remain unchanged
       } else {
         rmDerivedSpct(xx)
       }
