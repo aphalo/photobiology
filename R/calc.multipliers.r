@@ -110,10 +110,9 @@ calc_multipliers <-
 #' @param pattern character string passed to ls() for selecting within the
 #'   environment .photobio.cache the objects to be deleted
 #'
-#' @examples
-#' clear_photobio.cache()
-#'
 #' @export
+#'
+#' @keywords internal
 #'
 clear_photobio.cache <- function(pattern = "*") {
   if (!exists(".photobio.cache", mode = "environment")) {

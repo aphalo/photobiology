@@ -22,8 +22,8 @@
 #' case of percentages (absorptance is the fraction absorbed)
 #'
 #' @examples
-#' absorptance(yellow_gel.spct, new_waveband(400,500))
-#' absorptance(yellow_gel.spct, new_waveband(300,400))
+#' absorptance(black_body.spct, new_waveband(400,500))
+#' absorptance(white_body.spct, new_waveband(300,400))
 #'
 #' @export
 #'
