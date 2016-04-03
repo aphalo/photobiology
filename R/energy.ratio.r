@@ -40,6 +40,7 @@ energy_ratio <- function(w.length, s.irrad,
   return(waveband_ratio(w.length, s.irrad, w.band.num, w.band.denom,
                         unit.out.num = "energy", unit.out.denom = "energy",
                         unit.in = unit.in,
-                        check.spectrum = check.spectrum, use.cached.mult = use.cached.mult,
+                        check.spectrum = check.spectrum,
+                        use.cached.mult = use.cached.mult,
                         use.hinges = use.hinges))
 }

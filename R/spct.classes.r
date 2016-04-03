@@ -181,8 +181,11 @@ check_spct.filter_spct <-
       Tfr.min <- min(x[["Tfr"]], na.rm = TRUE)
       Tfr.max <- max(x[["Tfr"]], na.rm = TRUE)
       if (!is.null(strict.range) && !is.na(strict.range) && (Tfr.min < -1e-4 || Tfr.max > 1 + 1e-6)) {
-        message.text <- paste("Off-range transmittance values [", signif(Tfr.min, 2),
-                              "...", signif(Tfr.max, 2), "] instead of  [0..1]", sep="")
+        message.text <- paste("Off-range transmittance values [",
+                              signif(Tfr.min, 2),
+                              "...",
+                              signif(Tfr.max, 2),
+                              "] instead of  [0..1]", sep = "")
         if (strict.range) {
           stop(message.text)
         } else {
@@ -200,8 +203,11 @@ check_spct.filter_spct <-
       A.max <- max(x[["A"]], na.rm = TRUE)
       if (!is.null(strict.range) && !is.na(strict.range) &&
           (A.min < -1e-7 || A.max > 20)) {
-        message.text <- paste("Off-range absorbance values [", signif(A.min, 2),
-                              "...", signif(A.max, 2), "] instead of  [0..1]", sep="")
+        message.text <- paste("Off-range absorbance values [",
+                              signif(A.min, 2),
+                              "...",
+                              signif(A.max, 2),
+                              "] instead of  [0..20]", sep = "")
         if (strict.range) {
           stop(message.text)
         } else {
