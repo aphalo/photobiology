@@ -644,11 +644,11 @@ Some of the \texttt{set} and \texttt{get} functions used with attributes have me
 
 <<>>=
 getWhenMeasured(two.mspct)
-setWhenMeasured(two.mspct, ymd("2015-10-31"))
+setWhenMeasured(two.mspct, ymd("2015-10-31", tz = "EET"))
 getWhenMeasured(two.mspct)
 setWhenMeasured(two.mspct,
-                list(ymd_hm("2015-10-31 10:00"),
-                     ymd_hm("2015-10-31 11:00")))
+                list(ymd_hm("2015-10-31 10:00", tz = "EET"),
+                     ymd_hm("2015-10-31 11:00", tz = "EET")))
 getWhenMeasured(two.mspct)
 two.mspct
 @
@@ -1544,13 +1544,12 @@ The calculation of fluence values (time-integrated irradiance) is identical to t
 <<>>=
 fluence(sun.spct, exposure.time = duration(1, "hours"))
 fluence(sun.spct, exposure.time = 3600) # seconds
-fluence(sun.spct, exposure.time = hms("01:00:00"))
 @
 
 and, to obtain the photon fluence for a range of wavelengths, in the example, photosynthetically active radiation, we use the \texttt{PAR} waveband object earlier defined, for 25 minutes of exposure.
 
 <<>>=
-e_fluence(sun.spct, PAR, exposure.time = hms("00:25:00"))
+e_fluence(sun.spct, PAR, exposure.time = duration(25, "minutes"))
 @
 
 \subsection{Photon and energy ratios}
@@ -1739,8 +1738,8 @@ sunrise_time(lat = 60)
 Both latitude and longitude can be supplied, but be aware that if the returned value is desired in the local time coordinates, the time zone should match the longitude.
 
 <<>>=
-sunrise_time(today(tzone = "UTC"), tz = "UTC", lat = 60, lon = 0)
-sunrise_time(today(tzone = "EET"), tz = "EET", lat = 60, lon = 25)
+sunrise_time(today(tz = "UTC"), tz = "UTC", lat = 60, lon = 0)
+sunrise_time(today(tz = "EET"), tz = "EET", lat = 60, lon = 25)
 @
 
 Southern hemisphere latitudes as well as longitudes to the West of the Greenwich meridian should be supplied as negative numbers.
@@ -1753,18 +1752,18 @@ sunrise_time(dates, lat = -60)
 The angle used in the twilight calculation can be supplied, either as the name of a standard definition, or as an angle in degrees (negative for sun positions below the horizon). Positive angles can be used when the time of sun occlusion behind a building, mountain, or other obstacle needs to be calculated.
 
 <<>>=
-sunrise_time(today(tzone = "EET"), tz = "EET", lat = 60, lon = 25,
+sunrise_time(today(tz = "EET"), tz = "EET", lat = 60, lon = 25,
              twilight = "civil")
-sunrise_time(today(tzone = "EET"), tz = "EET", lat = 60, lon = 25,
+sunrise_time(today(tz = "EET"), tz = "EET", lat = 60, lon = 25,
              twilight = -10)
-sunrise_time(today(tzone = "EET"), tz = "EET", lat = 60, lon = 25,
+sunrise_time(today(tz = "EET"), tz = "EET", lat = 60, lon = 25,
              twilight = +12)
 @
 
 Parameter \texttt{unit.out} can be used to obtain the returned value expressed as time-of-day in hours, minutes, or seconds since midnight.
 
 <<>>=
-sunrise_time(today(tzone = "EET"), tz = "EET", lat = 60, lon = 25,
+sunrise_time(today(tz = "EET"), tz = "EET", lat = 60, lon = 25,
              unit.out = "hour")
 @
 
