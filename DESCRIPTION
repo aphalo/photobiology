@@ -1,8 +1,8 @@
 Package: photobiology
 Type: Package
 Title: 'Photobiological' Calculations
-Version: 0.9.6.9000
-Date: 2016-04-03
+Version: 0.9.7.9000
+Date: 2016-04-11
 Author: Pedro J. Aphalo [aut, cre]
 Maintainer: Pedro J. Aphalo <pedro.aphalo@helsinki.fi>
 Description: Definitions of classes, methods, operators and functions for use in

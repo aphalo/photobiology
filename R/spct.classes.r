@@ -1688,7 +1688,7 @@ setWhenMeasured.default <- function(x, when.measured, ...) {
 #' @export
 setWhenMeasured.generic_spct <-
   function(x,
-           when.measured = lubridate::now(),
+           when.measured = lubridate::now(tz = "UTC"),
            ...) {
     name <- substitute(x)
     stopifnot(is.null(when.measured) ||
@@ -1709,7 +1709,7 @@ setWhenMeasured.generic_spct <-
 #'
 setWhenMeasured.summary_generic_spct <-
   function(x,
-           when.measured = lubridate::now(),
+           when.measured = lubridate::now(tz = "UTC"),
            ...) {
     name <- substitute(x)
     stopifnot(is.null(when.measured) ||
@@ -1729,7 +1729,7 @@ setWhenMeasured.summary_generic_spct <-
 #' @export
 setWhenMeasured.generic_mspct <-
   function(x,
-           when.measured = lubridate::now(),
+           when.measured = lubridate::now(tz = "UTC"),
            ...) {
     name <- substitute(x)
     stopifnot((lubridate::is.POSIXct(when.measured) && length(when.measured) == 1) ||
@@ -1780,7 +1780,8 @@ getWhenMeasured <- function(x, ...) UseMethod("getWhenMeasured")
 #' @export
 getWhenMeasured.default <- function(x, ...) {
   # we return an NA of class POSIXct
-  suppressWarnings(lubridate::ymd(NA_character_))
+  suppressWarnings(lubridate::ymd_hms(NA_character_,
+                                  tz = "UTC"))
 }
 
 #' @describeIn getWhenMeasured generic_spct
@@ -1791,7 +1792,8 @@ getWhenMeasured.generic_spct <- function(x, ...) {
       !lubridate::is.POSIXct(when.measured)) {
     # need to handle invalid attribute values
     # we return an NA of class POSIXct
-    when.measured <- suppressWarnings(lubridate::ymd(NA_character_))
+    when.measured <- suppressWarnings(lubridate::ymd_hms(NA_character_,
+                                                     tz = "UTC"))
   }
   when.measured
 }
@@ -1804,7 +1806,8 @@ getWhenMeasured.summary_generic_spct <- function(x, ...) {
       !lubridate::is.POSIXct(when.measured)) {
     # need to handle invalid attribute values
     # we return an NA of class POSIXct
-    when.measured <- suppressWarnings(lubridate::ymd(NA_character_))
+    when.measured <- suppressWarnings(lubridate::ymd_hms(NA_character_,
+                                                     tz = "UTC"))
   }
   when.measured
 }

@@ -5,6 +5,17 @@ Add test cases for chroma_spct and improve tests for the _mspct
 classes. Add test cases for smooth_spct().
 Replace filter_cps.mspct data with newly measured data.
 
+photobiology 0.9.8
+==================
+
+Fix bug: insert_hinges() would fail with "raw_spct" and "cps_spct" objects.
+
+photobiology 0.9.7
+==================
+
+Edit to track changes to the behaviour of functions in package 'lubridate'
+which triggered errors in several use cases of package 'photobiology'.
+
 photobiology 0.9.6
 ==================
 

@@ -66,7 +66,7 @@ insert_spct_hinges <- function(spct, hinges=NULL, byref=FALSE) {
           v_insert_hinges(old.w.length, temp.data, hinges)
       }
     }
-    if(class_spct[1] == "source_spct") {
+    if (class_spct[1] == "source_spct") {
       setSourceSpct(new.spct, time.unit = time.unit, bswf.used = bswf.used)
     } else if (class_spct[1] == "filter_spct") {
       setFilterSpct(new.spct, Tfr.type = Tfr.type)
@@ -80,6 +80,12 @@ insert_spct_hinges <- function(spct, hinges=NULL, byref=FALSE) {
       setChromaSpct(new.spct)
     } else if (class_spct[1] == "generic_spct") {
       setGenericSpct(new.spct)
+    } else if (class_spct[1] == "cps_spct") {
+      setCpsSpct(new.spct)
+    } else if (class_spct[1] == "raw_spct") {
+      setRawSpct(new.spct)
+    } else {
+      stop("Failed assertion: report to package maintainer")
     }
     comment(new.spct) <- comment.spct
     if (byref && is.name(name)) {
