@@ -6,7 +6,7 @@
 #'   current time
 #' @param geocode data frame with variables lon and lat as numeric values
 #'   (degrees).
-#' @param lon numeric Vector of longitudes (degrees)
+#' @param lon numeric Vector of longitudes (degrees) W is < 0, and E is > 0
 #' @param lat numeric Vector of latitudes (degrees)
 #' @param use_refraction logical Flag indicating whether to correct for
 #'   fraction in the atmosphere
@@ -16,6 +16,26 @@
 #'
 #' @family astronomy related functions
 #'
+#' @references
+#' Michalsky, J. J., 1988. "The Astronomical Almanac's algorithm for approximate
+#' solar position (1950--2050)". Solar Energy, 227--235.
+#'
+#' Spencer, J. W., 1989. "Comments on The Astronomical Almanac's algorithm for
+#' approximate solar position (1950--2050)." Solar Energy, 42, 353.
+#'
+#' Vignola, F.; Michalsky, J. & Stoffel, T., 2012 (Eds.) "Solar and infrared
+#' radiation measurements." Boca Raton, CRC Press, ISBN 9781439851890.
+#'
+#' @note Several implementations of this algorithm are available in the
+#'   internet. I have found FORTRAN, Perl and R versions. Not all these
+#'   implementations correctly handle year 2000, which is an exception to the
+#'   normal leap-year rule. They also differ on the handling of refraction. The
+#'   algorithm used only accepts dates for years 1950 to 2050. A listing is also
+#'   available in an appendix in Vignola et al. (2012). This implementation is
+#'   not a direct copy or translation of any of these examples. The current
+#'   version of the code owes much to Josh O'Brien's asnwer to a question in
+#'   StackOverflow
+#'   \url{http://stackoverflow.com/questions/8708048/position-of-the-sun-given-time-of-day-latitude-and-longitude}
 #'
 #' @export
 #' @examples
@@ -29,116 +49,138 @@ sun_angles <- function(time = lubridate::now(),
                        lon = 0, lat = 0,
                        use_refraction = FALSE)
 {
+  # validate arguments
   stopifnot(lubridate::is.POSIXct(time))
   stopifnot(is.null(geocode) || is.data.frame(geocode))
+  stopifnot(abs(lat) <= 90 + 1e-20)
+  stopifnot(abs(lon) <= 180 + 1e-20)
+  # take care of time zone
   tz <- lubridate::tz(time)
   t <- lubridate::with_tz(time, "UTC")
+  # input can be a vector of times
   nt <- length(t)
 
+  # if geocode argument supplied override lat and lon
+  # locations can be also vectors
   if (!is.null(geocode)) {
     lon <- geocode[["lon"]]
     lat <- geocode[["lat"]]
     geocode <- NULL
   }
+  # do recycling of arguments if needed
   nlon <- length(lon)
   nlat <- length(lat)
-  if (nlon != nlat)
+  # lat and lon of different lengths
+  if (nlon == 1 && nlat > 1) {
+    lon <- rep(lon, nlat)
+    nlon <- nlat
+  } else if (nlat == 1 && nlon > 1) {
+    lat <- rep(lat, nlon)
+    nlat <- nlon
+  } else if (nlon != nlat) {
     stop("lengths of longitude and latitude must match")
-  if (nlon == 1) {
-    lon <- rep(lon, nt)
-    lat <- rep(lat, nt)
   }
-  else {
-    if (nt != nlon)
-      stop("lengths of t, latitude and longitude must match, unless last two are of length 1")
+  # number of locations different from number of times
+  if (nlon == 1 && nt > 1) {
+    lon <- rep(lon, nt)
+    nlon <- nt
+    lat <- rep(lat, nt)
+    nlat <- nt
+  } else if (nt == 1 && nlon > 1) {
+    t <- rep(t, nlon)
+    nt <- nlon
+  } else if (nt != nlon) {
+    stop("lengths of t, latitude and longitude must match, or have length 1")
   }
   year <- lubridate::year(t)
   if (any(year < 1950) || any(year > 2050))
     stop("year=", year, " is outside acceptable range")
-  day <- lubridate::yday(t)
-  if (any(day < 1) || any(day > 366))
-    stop("day is not in range 1 to 366")
+  # this already corrects for leap years
   hour <- lubridate::hour(t) + lubridate::minute(t) / 60 + lubridate::second(t) / 3600
-  if (any(hour < -13) || any(hour > 36))
-    stop("hour outside range -13 to 36")
-  if (any(lat < -90)) {
-    warning("latitude(s) trimmed to range -90 to 90")
-    lat[lat < -90] <- -90
-  }
-  if (any(lat > 90)) {
-    warning("latitude(s) trimmed to range -90 to 90")
-    lat[lat > 90] <- 90
-  }
-  if (any(lon < -180)) {
-    warning("longitude(s) trimmed to range -180 to 180")
-    lon[lon < -180] <- -180
-  }
-  if (any(lon > 180)) {
-    warning("longitude(s) trimmed to range -180 to 180")
-    lon[lon > 180] <- 180
-  }
-  delta <- year - 1949
-  leap <- delta %/% 4
-  jd <- 32916.5 + (delta * 365 + leap + day) + hour / 24
-  jd <- jd + ifelse(0 == (year %% 100) & 0 != (year %% 400), 1,
-                    0)
-  time <- jd - 51545
+  time <- as.numeric(lubridate::as.duration(
+    t - lubridate::ymd_hms("2000-01-01 12:00:00", tz = "UTC"))) / 3600 / 24
+  # Ecliptic coordinates
+  # Mean longitude
   mnlong <- 280.46 + 0.9856474 * time
   mnlong <- mnlong %% 360
-  mnlong <- mnlong + ifelse(mnlong < 0, 360, 0)
+  mnlong <- ifelse(mnlong < 0, mnlong + 360, mnlong)
+  # Mean anomaly
   mnanom <- 357.528 + 0.9856003 * time
   mnanom <- mnanom %% 360
-  mnanom <- mnanom + ifelse(mnanom < 0, 360, 0)
+  mnanom <- ifelse(mnanom < 0, mnanom + 360, mnanom)
   rpd <- pi/180
   mnanom <- mnanom * rpd
+  # Ecliptic longitude and obliquity of ecliptic
   eclong <- mnlong + 1.915 * sin(mnanom) + 0.02 * sin(2 * mnanom)
   eclong <- eclong %% 360
-  eclong <- eclong + ifelse(eclong < 0, 360, 0)
+  eclong <- ifelse(eclong < 0, eclong + 360, eclong)
   oblqec <- 23.439 - 4e-07 * time
   eclong <- eclong * rpd
   oblqec <- oblqec * rpd
+  # Celestial coordinates
+  # Right ascension and declination
   num <- cos(oblqec) * sin(eclong)
   den <- cos(eclong)
-  ra <- atan(num/den)
-  ra <- ra + ifelse(den < 0, pi, ifelse(num < 0, 2 * pi, 0))
+  ra <- atan(num / den)
+  ra <- ifelse(den < 0, ra + pi, ifelse(num < 0, ra + 2 * pi, ra))
   dec <- asin(sin(oblqec) * sin(eclong))
+  # Local coordinates
+  # Greenwich mean sidereal time
+  # $h = $hour + $min / 60 + $sec / 3600;
   gmst <- 6.697375 + 0.0657098242 * time + hour
   gmst <- gmst %% 24
-  gmst <- gmst + ifelse(gmst < 0, 24, 0)
-  lmst <- gmst + lon/15
+  gmst <- ifelse(gmst < 0, gmst + 24, gmst)
+  # Local mean sidereal time
+  lmst <- gmst + lon / 15
   lmst <- lmst %% 24
-  lmst <- lmst + ifelse(lmst < 0, 24, 0)
+  lmst <- ifelse(lmst < 0, lmst + 24, lmst)
   lmst <- lmst * 15 * rpd
+  # Hour angle
   ha <- lmst - ra
-  ha <- ha + ifelse(ha < (-pi), 2 * pi, 0)
-  ha <- ha - ifelse(ha > pi, 2 * pi, 0)
-  el <- asin(sin(dec) * sin(lat * rpd) + cos(dec) * cos(lat *
-                                                          rpd) * cos(ha))
-  az <- asin(-cos(dec) * sin(ha)/cos(el))
-  az <- ifelse(sin(dec) - sin(el) * sin(lat * rpd) > 0,
-               ifelse(sin(az) < 0, az + 2 * pi, az), pi - az)
+  ha <- ifelse(ha < (-pi), ha + 2 * pi, ha)
+  ha <- ifelse(ha > pi, ha - 2 * pi, ha)
+  # Latitude to radians
+  lat <- lat * rpd
+  # Solar zenith angle
+  za <- acos(sin(lat) * sin(dec) + cos(lat) * cos(dec) * cos(ha))
+  # Solar azimuth
+  az <- acos(((sin(lat) * cos(za)) - sin(dec)) / (cos(lat) * sin(za)))
+  # Solar elevation
+  el <- asin(sin(dec) * sin(lat) + cos(dec) * cos(lat) * cos(ha))
+  # Latitude to radians
   el <- el/rpd
   az <- az/rpd
+  lat <- lat/rpd
+
+  az <- ifelse(ha > 0, az + 180, 540 - az)
+  az <- az %% 360
+  # refraction correction
   if (use_refraction) {
-    refrac <- ifelse(el >= 19.225, 0.00452 * 3.51823/tan(el * rpd),
-                     ifelse(el > (-0.766) & el < 19.225,
-                            3.51823 * (0.1594 + el * (0.0196 + 2e-05 * el))/(1 + el * (0.505 + 0.0845 * el)),
-                            0))
+    refrac <-
+      ifelse(el >= 19.225, 0.00452 * 3.51823/tan(el * rpd),
+             ifelse(el > (-0.766) & el < 19.225,
+                    3.51823 * (0.1594 + el * (0.0196 + 2e-05 * el)) /
+                      (1 + el * (0.505 + 0.0845 * el)),
+                    0))
     el <- el + refrac
   }
+  # solar distance and diameter
   soldst <- 1.00014 - 0.01671 * cos(mnanom) - 0.00014 * cos(2 * mnanom)
-  soldia <- 0.5332/soldst
+  soldia <- 0.5332 / soldst
+  # assertion
   if (any(el < (-90)) || any(el > 90))
     stop("output el out of range")
   if (any(az < 0) || any(az > 360))
     stop("output az out of range")
+  # return values
   return(list(time = lubridate::with_tz(t, tz),
+              longitude = lon,
+              latitude = lat,
               azimuth = az,
               elevation = el,
               diameter = soldia,
               distance = soldst))
 }
-
 
 #' Times for sun positions
 #'
@@ -473,4 +515,5 @@ date2tod <- function(date, unit.out) {
     stop("Unrecognized 'unit.out': ", unit.out)
   }
 }
+
 

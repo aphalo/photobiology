@@ -9,6 +9,8 @@ photobiology 0.9.8
 ==================
 
 Fix bug: insert_hinges() would fail with "raw_spct" and "cps_spct" objects.
+Fix bug: leap year detection was wrong for year 2000.
+Test and document function sun_angles().
 
 photobiology 0.9.7
 ==================
