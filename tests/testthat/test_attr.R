@@ -281,11 +281,11 @@ test_that("trim_wl attr", {
                character(0) )
 
     expect_equal(setdiff(names(attributes(my.spct)),
-                       names(attributes(trim_wl(my.spct, range = 90:210)))),
+                       names(attributes(trim_wl(my.spct, range = 100:210)))),
                character(0) )
 
   expect_equal(setdiff(names(attributes(my.spct)),
-                       names(attributes(trim_wl(my.spct, range = 90:210,
+                       names(attributes(trim_wl(my.spct, range = 100:210,
                                                 fill = 0)))),
                character(0) )
 
@@ -315,7 +315,7 @@ test_that("clip_wl attr", {
 
 
   expect_equal(setdiff(names(attributes(my.spct)),
-                       names(attributes(clip_wl(my.spct, range = 90:210)))),
+                       names(attributes(clip_wl(my.spct, range = 100:210)))),
                character(0) )
 
   expect_equal(setdiff(names(attributes(my.spct)),
@@ -344,7 +344,7 @@ test_that("clean attr", {
 
 
   expect_equal(setdiff(names(attributes(my.spct)),
-                       names(attributes(clean(my.spct, range = 90:210)))),
+                       names(attributes(clean(my.spct, range = 100:210)))),
                character(0) )
 
   expect_equal(setdiff(names(attributes(my.spct)),

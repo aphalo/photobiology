@@ -25,11 +25,18 @@ copy_attributes.default <- function(x, y,
 
 #' @describeIn copy_attributes
 #'
+#' @param copy.class logical If TRUE class attributes are also copied.
+#'
 #' @export
 #'
 copy_attributes.generic_spct <- function(x, y,
                                          which = NULL,
+                                         copy.class = FALSE,
                                          ...) {
+  if (copy.class) {
+    class(y) <- class(x)
+    check_spct(y)
+  }
   stopifnot(is.any_spct(y))
   if (length(which) == 0) {
     which <- c("comment",

@@ -4,53 +4,55 @@
 #' with a flexible syntax. To ensure that all functions and methods behave
 #' in the same way this code has been factored out into a separate function.
 #'
-#' @param range a numeric vector of length two, or any other object for which
-#'   function range() will return two
-#' @param default.range a numeric vector of length two, missing values are
-#'   not allowed, but Inf amd -Inf are.
+#' @param arg.range a numeric vector of length two, or any other object for
+#'   which function range() will return a range of wavelengths (nm).
+#' @param wl.range a numeric vector of length two, or any other object for which
+#'   function range() will return a range of wavelengths (nm), missing values
+#'   are not allowed.
+#' @param trim logical If TRUE the range returned is bound within
+#'   \code{wl.range} while if FALSE it can be broader.
 #'
 #' @return a numeric vector of length two, guaranteed not to have missing
 #'   values.
 #'
-#' @details The \code{range} argument can contain NAs which are replaced by
-#'   the value at the same position in \code{default.range}. In addition
-#'   a NULL argument for \code{range} is converted into \code{default.range}.
-#'   The \code{default.range} is also the limit to which the returned value
-#'   is trimmed. The idea is that the value supplied as default is the whole
-#'   valid range, and as we use range only for wavelength, the default is
-#'   0 to Inf.
+#' @details The \code{arg.range} argument can contain NAs which are replaced by
+#'   the value at the same position in \code{wl.range}. In addition
+#'   a NULL argument for \code{range} is converted into \code{wl.range}.
+#'   The \code{wl.range} is also the limit to which the returned value
+#'   is trimmed if \code{trim == TRUE}. The idea is that the value supplied as
+#'   \code{wl.range} is the wavelength range of the data.
 #'
 #' @family auxiliary functions
 #'
 #' @export
 #' @examples
-#' normalize_range_arg(sun.spct)
-#' normalize_range_arg(c(NA, 500))
-#' normalize_range_arg(c(NA, 500), c(100, Inf))
-#' normalize_range_arg(c(-100, 500), c(-Inf, Inf))
+#' normalize_range_arg(c(NA, 500), range(sun.spct))
+#' normalize_range_arg(c(300, NA), range(sun.spct))
+#' normalize_range_arg(c(100, 5000), range(sun.spct), FALSE)
+#' normalize_range_arg(c(NA, NA), range(sun.spct))
+#' normalize_range_arg(c(NA, NA), sun.spct)
 #'
-normalize_range_arg <- function(range, default.range = c(0, Inf)) {
-  stopifnot(is.numeric(default.range) &&
-              length(default.range) == 2 &&
-                 default.range[1] < default.range[2])
-  if (is.null(range) || all(is.na(range))) {
-    return(default.range)
+normalize_range_arg <- function(arg.range, wl.range, trim = TRUE) {
+  if (!is.numeric(wl.range) || (is.numeric(wl.range) && length(wl.range) != 2)) {
+    wl.range <- range(wl.range)
   }
-  if (!is.numeric(range) || (is.numeric(range) && length(range) != 2)) {
-    range <- range(range, na.rm = TRUE)
+  stopifnot(is.numeric(wl.range) && length(wl.range) == 2)
+
+  if (is.null(arg.range) || all(is.na(arg.range))) {
+    return(wl.range)
   }
-  stopifnot(is.numeric(range) && length(range) == 2)
+  if (!is.numeric(arg.range) || (is.numeric(arg.range) && length(arg.range) != 2)) {
+    arg.range <- range(arg.range, na.rm = TRUE)
+  }
+  stopifnot(is.numeric(arg.range) && length(arg.range) == 2)
 
-  if (is.na(range[1]))
-    range[1] <- default.range[1]
-  else
-      range[1] <- max(range[1], default.range[1])
+  if (is.na(arg.range[1]) || trim && arg.range[1] < wl.range[1])
+    arg.range[1] <- wl.range[1]
 
-  if (is.na(range[2]))
-    range[2] <- default.range[2]
-  else
-    range[2] <- min(range[2], default.range[2])
-  # simplest here as all NAs have been replaced above
-  stopifnot(range[1] < range[2])
-  range
+  if (is.na(arg.range[2]) || trim && arg.range[2] > wl.range[2])
+    arg.range[2] <- wl.range[2]
+
+  # NAs have been replaced above
+  stopifnot(arg.range[2] - arg.range[1] > 1e-3)
+  arg.range
 }

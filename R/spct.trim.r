@@ -57,12 +57,12 @@ trim_spct <- function(spct,
   if (byref) {
     name <- substitute(spct)
   }
-  class_spct <- class(spct)
+  # class_spct <- class(spct)
   if (is.null(range)) {
     range[1] <- ifelse(is.null(low.limit), NA, low.limit)
     range[2] <- ifelse(is.null(high.limit), NA, high.limit)
   }
-  range <- normalize_range_arg(range)
+  range <- normalize_range_arg(range, range(spct), trim = FALSE) # trim = is.null(fill)?
   low.limit <- range[1]
   high.limit <- range[2]
   trim.low <- low.limit > min(spct, na.rm = TRUE)
@@ -73,17 +73,10 @@ trim_spct <- function(spct,
   }
   names.spct <- names(spct)
   names.data <- names.spct[names.spct != "w.length"]
-  # comment.spct <- comment(spct)
-  # time.unit.spct <- getTimeUnit(spct)
-  # Tfr.type.spct <- getTfrType(spct)
-  # Rfr.type.spct <- getRfrType(spct)
-  # when.measured.spct <- getWhenMeasured(spct)
-  # where.measured.spct <- getWhereMeasured(spct)
-  # what.measured.spct <- getWhatMeasured(spct)
-  # instr.settings.spct <- getInstrSettings(spct)
+
   # check whether we should expand the low end
   low.end <- min(spct, na.rm = TRUE)
-  if (trim.low && low.end > low.limit) {
+  if (!trim.low && low.end > low.limit) {
     if (!is.null(fill)) {
       # expand short tail
       low.tail.length <-  trunc(low.end - low.limit) + ifelse(use.hinges, 2, 1)
@@ -92,7 +85,24 @@ trim_spct <- function(spct,
                                length.out = low.tail.length)
       spct.top <- dplyr::data_frame(w.length = low.tail.w.length)
       for (data.col in names.data) {
-        spct.top[[data.col]] <- fill
+        col.class <- class(spct[[data.col]])[1]
+        if ("numeric" %in% col.class) {
+          spct.top[[data.col]] <- fill
+        } else if ("character" %in% col.class) {
+          if (length(unique(spct.top[[data.col]])) == 1L) {
+            spct.top[[data.col]] <- spct[1, data.col]
+          } else {
+            spct.top[[data.col]] <- NA_character_
+          }
+        } else if ("factor" %in% col.class) {
+          if (length(levels(spct.top[[data.col]])) == 1L) {
+            spct.top[[data.col]] <- spct[1, data.col]
+          } else {
+            spct.top[[data.col]] <- NA
+          }
+        } else {
+          spct.top[[data.col]] <- NA
+        }
       }
       spct <- plyr::rbind.fill(list(spct.top, spct))
       spct <- dplyr::as_data_frame(spct)
@@ -108,7 +118,7 @@ trim_spct <- function(spct,
 
   # check whether we should expand the high end
   high.end <- max(spct, na.rm = TRUE)
-  if (trim.high && high.end < high.limit) {
+  if (!trim.high && high.end < high.limit) {
     if (!is.null(fill)) {
       # expand short tail
       high.tail.length <- trunc(high.limit - high.end) + ifelse(use.hinges, 2, 1)
@@ -117,7 +127,24 @@ trim_spct <- function(spct,
                                 length.out = high.tail.length)
       spct.bottom <- dplyr::data_frame(w.length = high.tail.w.length)
       for (data.col in names.data) {
-        spct.bottom[[data.col]] <- fill
+        col.class <- class(spct[[data.col]])[1]
+        if ("numeric" %in% col.class) {
+          spct.bottom[[data.col]] <- fill
+        } else if ("character" %in% col.class) {
+          if (length(unique(spct.bottom[[data.col]])) == 1L) {
+            spct.bottom[[data.col]] <- spct[1, data.col]
+          } else {
+            spct.bottom[[data.col]] <- NA_character_
+          }
+        } else if ("factor" %in% col.class) {
+          if (length(levels(spct.bottom[[data.col]])) == 1L) {
+            spct.bottom[[data.col]] <- spct[1, data.col]
+          } else {
+            spct.bottom[[data.col]] <- NA
+          }
+        } else {
+          spct.bottom[[data.col]] <- NA
+        }
       }
       spct <- plyr::rbind.fill(list(spct, spct.bottom))
       spct <- dplyr::as_data_frame(spct)
@@ -142,9 +169,8 @@ trim_spct <- function(spct,
       hinges <- c(hinges, high.limit - 1e-12, high.limit)
     }
     spct <- insert_spct_hinges(spct, hinges)
-  } else {
-
   }
+
   if (trim.low && trim.high) {
     within.selector <- with(spct, w.length >= low.limit & w.length < high.limit)
   } else if (trim.low) {
@@ -158,43 +184,19 @@ trim_spct <- function(spct,
     spct <- spct[within.selector, ]
   } else {
     for (data.col in names.data) {
-      spct[!within.selector, data.col] <- fill
+      if (is.numeric(spct[[data.col]])) {
+       spct[!within.selector, data.col] <- fill
+      }
     }
   }
-  #
-  spct <- copy_attributes(x, spct)
-  # we now use plyr::rbind.fill which does not remove attributes
-  # most of the code below may be redundant!!!
-  # class(spct) <- class_spct
-  # if (!is.null(comment.spct)) {
-  #   comment(spct) <- comment.spct
-  # }
-  # if (!is.null(time.unit.spct) && !is.na(time.unit.spct)) {
-  #   setTimeUnit(spct, time.unit.spct)
-  # }
-  # if (!is.null(Tfr.type.spct)) {
-  #   setTfrType(spct, Tfr.type.spct)
-  # }
-  # if (!is.null(Rfr.type.spct)) {
-  #   setRfrType(spct, Rfr.type.spct)
-  # }
-  # if (!is.null(when.measured.spct)) {
-  #   setWhenMeasured(spct, when.measured.spct)
-  # }
-  # if (!is.null(where.measured.spct)) {
-  #   setWhereMeasured(spct, where.measured.spct)
-  # }
-  # if (!is.null(what.measured.spct)) {
-  #   setWhatMeasured(spct, what.measured.spct)
-  # }
-  # if (!is.null(instr.settings.spct)) {
-  #   setInstrSettings(spct, instr.settings.spct)
-  # }
+  # we still need to copy all attributes as when we use row bind to
+  # data.frames to extend the spectra.
+  spct <- copy_attributes(x, spct, copy.class = TRUE)
+  check_spct(spct)
   if (byref && is.name(name)) {
     name <- as.character(name)
     assign(name, spct, parent.frame(), inherits = TRUE)
   }
-  check_spct(spct)
   spct
 }
 
@@ -409,7 +411,7 @@ clip_wl.generic_spct <- function(x, range = NULL, ...) {
       x[x[["w.length"]] >= range[1] & x[["w.length"]] < range[2] + guard, ]
     }
   } else {
-    range = range(range)
+    range = range(range, na.rm = TRUE)
     x[x[["w.length"]] >= range[1] & x[["w.length"]] < range[2] + guard, ]
   }
 }

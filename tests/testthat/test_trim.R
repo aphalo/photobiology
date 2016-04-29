@@ -67,5 +67,41 @@ test_that("source_spct", {
   my_z.spct <- trim_spct(setTimeUnit(my.spct, time.unit = "second"),
                          range = c(min(my.spct) + 0.2, max(my.spct) - 0.2))
 
+  not.trimmed.sun.spct <- trim_wl(sun.spct)
+  expect_equivalent(not.trimmed.sun.spct, sun.spct)
+  trimmed.sun.spct <- trim_wl(sun.spct, range = c(min(sun.spct) + 20, NA))
+  expect_equal(min(trimmed.sun.spct) - 20, min(sun.spct))
+  expect_equal(max(trimmed.sun.spct), max(sun.spct))
+  clipped.sun.spct <- clip_wl(sun.spct, range = c(min(sun.spct) + 20, NA))
+  expect_equal(min(clipped.sun.spct) - 20, min(sun.spct))
+  expect_equal(max(clipped.sun.spct), max(sun.spct))
+  expanded.sun.spct <- trim_wl(sun.spct, range = c(min(sun.spct) - 20, NA))
+  expect_equal(min(expanded.sun.spct), min(sun.spct))
+  expect_equal(max(expanded.sun.spct), max(sun.spct))
+
+  expanded.sun.spct <- trim_wl(sun.spct, range = c(min(sun.spct) - 20, NA), fill = 1)
+  expect_equal(min(expanded.sun.spct) + 20, min(sun.spct))
+  expect_equal(max(expanded.sun.spct), max(sun.spct))
+  expanded.sun.spct <- trim_wl(sun.spct, range = c(min(sun.spct) - 20, NA), fill = NA)
+  expect_equal(min(expanded.sun.spct) + 20, min(sun.spct))
+  expect_equal(max(expanded.sun.spct), max(sun.spct))
+
+  trimmed.sun.spct <- trim_wl(sun.spct, range = c(NA, max(sun.spct) - 20))
+  expect_equal(max(trimmed.sun.spct) + 20, max(sun.spct))
+  expect_equal(min(trimmed.sun.spct), min(sun.spct))
+  clipped.sun.spct <- clip_wl(sun.spct, range = c(NA, max(sun.spct) - 20))
+  expect_equal(max(clipped.sun.spct) + 20, max(sun.spct))
+  expect_equal(min(clipped.sun.spct), min(sun.spct))
+  expanded.sun.spct <- trim_wl(sun.spct, range = c(NA, max(sun.spct) + 20))
+  expect_equal(max(expanded.sun.spct), max(sun.spct))
+  expect_equal(min(expanded.sun.spct), min(sun.spct))
+
+  expanded.sun.spct <- trim_wl(sun.spct, range = c(NA, max(sun.spct) + 20), fill = 1)
+  expect_equal(max(expanded.sun.spct) - 20, max(sun.spct))
+  expect_equal(min(expanded.sun.spct), min(sun.spct))
+  expanded.sun.spct <- trim_wl(sun.spct, range = c(NA, max(sun.spct) + 20), fill = NA)
+  expect_equal(max(expanded.sun.spct) - 20, max(sun.spct))
+  expect_equal(min(expanded.sun.spct), min(sun.spct))
+
 })
 

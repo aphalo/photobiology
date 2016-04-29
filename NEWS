@@ -8,9 +8,10 @@ Replace filter_cps.mspct data with newly measured data.
 photobiology 0.9.8
 ==================
 
-Fix bug: insert_hinges() would fail with "raw_spct" and "cps_spct" objects.
-Fix bug: leap year detection was wrong for year 2000.
-Test and document function sun_angles().
+Fix bug: insert_hinges() would fail for "raw_spct" and "cps_spct" objects.
+Fix bug: leap year for year 2000.
+Test, imporve and document function sun_angles().
+Clean code for handling of "range" arguments.
 
 photobiology 0.9.7
 ==================
