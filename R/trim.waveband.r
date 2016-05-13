@@ -40,11 +40,11 @@ trim_waveband <-
     if (is.null(range)) {
       range <- c(low.limit, high.limit)
     }
-    wb.range <-  c(min(sapply(UV_bands(), min), na.rm = TRUE),
-                   max(sapply(UV_bands(), max), na.rm = TRUE))
+    wb.range <- c(min(sapply(w.band, min), na.rm = TRUE),
+                  max(sapply(w.band, max), na.rm = TRUE))
     range <- normalize_range_arg(range, wb.range)
-    low.limit <- wb.range[1]
-    high.limit <- wb.range[2]
+    low.limit <- range[1]
+    high.limit <- range[2]
 
     w.band.out <- list()
     i <- 0
