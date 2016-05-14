@@ -38,6 +38,12 @@ smooth_spct.default <- function(x, method, strength, ...) {
 #' @export
 #'
 smooth_spct.source_spct <- function(x, method = "custom", strength = 1, ...) {
+  num.spectra <- getMultipleWl(x)
+  if (num.spectra != 1) {
+    warning("Skipping smoothing as object contains ",
+            num.spectra, " spectra")
+    return(x)
+  }
   if (method == "lowess") {
     span = 1/50 * strength
     if ("s.e.irrad" %in% names(x)) {
@@ -133,6 +139,12 @@ smooth_spct.source_spct <- function(x, method = "custom", strength = 1, ...) {
 #' @export
 #'
 smooth_spct.filter_spct <- function(x, method = "custom", strength = 1, ...) {
+  num.spectra <- getMultipleWl(x)
+  if (num.spectra != 1) {
+    warning("Skipping smoothing as object contains ",
+            num.spectra, " spectra")
+    return(x)
+  }
   if (method == "lowess") {
     span = 1/50 * strength
     if ("Tfr" %in% names(x)) {
@@ -229,6 +241,12 @@ smooth_spct.filter_spct <- function(x, method = "custom", strength = 1, ...) {
 #' @export
 #'
 smooth_spct.reflector_spct <- function(x, method = "custom", strength = 1, ...) {
+  num.spectra <- getMultipleWl(x)
+  if (num.spectra != 1) {
+    warning("Skipping smoothing as object contains ",
+            num.spectra, " spectra")
+    return(x)
+  }
   if (method == "lowess") {
     span = 1/50 * strength
     if ("Rfr" %in% names(x)) {
@@ -311,6 +329,12 @@ smooth_spct.reflector_spct <- function(x, method = "custom", strength = 1, ...) 
 #' @export
 #'
 smooth_spct.response_spct <- function(x, method = "custom", strength = 1, ...) {
+  num.spectra <- getMultipleWl(x)
+  if (num.spectra != 1) {
+    warning("Skipping smoothing as object contains ",
+            num.spectra, " spectra")
+    return(x)
+  }
   if (method == "lowess") {
     span = 1/50 * strength
     if ("s.e.response" %in% names(x)) {

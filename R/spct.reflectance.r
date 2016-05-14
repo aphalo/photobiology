@@ -82,6 +82,12 @@ reflectance.object_spct <-
 #'
 reflectance_spct <-
   function(spct, w.band, quantity, wb.trim, use.hinges){
+    num.spectra <- getMultipleWl(spct)
+    if (num.spectra != 1) {
+      warning("Skipping reflectance calculation as object contains ",
+              num.spectra, " spectra")
+      return(NA_real_)
+    }
     Rfr.type <- getRfrType(spct)
     if (is.object_spct(spct)) {
       spct <- as.reflector_spct(spct)

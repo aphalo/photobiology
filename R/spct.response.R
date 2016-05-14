@@ -86,6 +86,12 @@ response.response_spct <-
 #'
 resp_spct <-
   function(spct, w.band, unit.out, quantity, time.unit, wb.trim, use.hinges, ...) {
+    num.spectra <- getMultipleWl(spct)
+    if (num.spectra != 1) {
+      warning("Skipping response calculation as object contains ",
+              num.spectra, " spectra")
+      return(NA_real_)
+    }
     if (is_normalized(spct) || is_scaled(spct)) {
       warning("The spectral data has been normalized or scaled, ",
               "making impossible to calculate integrated response")

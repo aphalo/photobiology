@@ -12,6 +12,10 @@ Fix bug: insert_hinges() would fail for "raw_spct" and "cps_spct" objects.
 Fix bug: leap year for year 2000.
 Test, improve and document function sun_angles().
 Clean code for handling of "range" arguments.
+Add guard code to summary functions triggering errors or warnings when the
+spct object passed as argument contains data for multiple spectra.
+Fix bug in stepsize.generic_spct() and improve print() output for spct objects
+containg data for multiple spectra (in long form) and their summaries.
 
 photobiology 0.9.7
 ==================

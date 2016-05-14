@@ -51,6 +51,12 @@ trim_spct <- function(spct,
   }
   stopifnot(is.any_spct(spct))
   x <- spct
+  num.spectra <- getMultipleWl(x)
+  if (num.spectra != 1) {
+    warning("Skipping trim operation as object contains ",
+            num.spectra, " spectra")
+    return(x)
+  }
   if (is.null(use.hinges)) {
     use.hinges <- auto_hinges(spct[["w.length"]])
   }
@@ -396,6 +402,11 @@ clip_wl.default <- function(x, range, ...) {
 #' @export
 #'
 clip_wl.generic_spct <- function(x, range = NULL, ...) {
+  num.spectra <- getMultipleWl(x)
+  if (num.spectra != 1) {
+    warning("Clip may an object that contains ",
+            num.spectra, " spectra")
+  }
   if (is.null(range)) {
     return(x)
   }

@@ -298,6 +298,11 @@ normalize.cps_mspct <- function(x,
 normalize_spct <- function(spct, range, norm, col.names) {
   stopifnot(is.any_spct(spct), !is.null(col.names),
             col.names %in% names(spct))
+  num.spectra <- getMultipleWl(spct)
+  if (num.spectra != 1) {
+    stop("Normalization not possible as object contains data for ",
+         num.spectra, " spectra")
+  }
   if (is.null(range) || all(is.na(range))) {
     range <- range(spct)
   }

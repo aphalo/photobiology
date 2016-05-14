@@ -91,6 +91,12 @@ transmittance.object_spct <-
 
 transmittance_spct <-
   function(spct, w.band, quantity, wb.trim, use.hinges) {
+    num.spectra <- getMultipleWl(spct)
+    if (num.spectra != 1) {
+      warning("Skipping transmittance calculation as object contains ",
+              num.spectra, " spectra")
+      return(NA_real_)
+    }
     if (is_normalized(spct) || is_scaled(spct)) {
       warning("The spectral data has been normalized or scaled, making impossible to calculate transmittance")
       return(NA)

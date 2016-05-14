@@ -32,29 +32,32 @@ print.generic_spct <- function(x, ..., n = NULL, width = NULL)
   if (nrow(x)) {
     m.wl <- getMultipleWl(x)
     if (m.wl > 1) {
-      cat("Containing: ", m.wl, " spectra in long form\n")
+      cat("containing ", m.wl, " spectra in long form\n")
     }
-    cat("Wavelength (nm): range ",
-        paste(signif(range(x), 8), sep = "", collapse = " to "), ", step ",
+    cat("Wavelength range ",
+        paste(signif(range(x), 8), sep = "", collapse = " to "), " nm, step ",
         paste(unique(signif(stepsize(x), 7)), sep = "", collapse = " to "),
-        "\n", sep = "")
+        " nm \n", sep = "")
+  }
+  if (!any(is.na(getWhatMeasured(x)))) {
+    cat("Label: ", getWhatMeasured(x), "\n", sep = "")
   }
   when.measured <- getWhenMeasured(x)
   if (!any(is.na(when.measured))) {
     if (length(when.measured) > 1) {
-      cat("Measured between: ", as.character(min(when.measured)),
+      cat("Measured between ", as.character(min(when.measured)),
           " and ", as.character(max(when.measured)), " UTC\n", sep = "")
     } else {
-      cat("Measured on: ", as.character(when.measured), " UTC\n", sep = "")
+      cat("Measured on ", as.character(when.measured), " UTC\n", sep = "")
     }
   }
   if (!any(is.na(getWhereMeasured(x)))) {
     where.measured <- getWhereMeasured(x)
-    cat("Measured at: ", where.measured[["lat"]], " N, ",
+    cat("Measured at ", where.measured[["lat"]], " N, ",
         where.measured[["lon"]], " E\n", sep = "")
   }
   if (class_spct(x)[1] %in% c("source_spct", "response_spct")) {
-    cat("Time unit: ", as.character(getTimeUnit(x, force.duration = TRUE)),
+    cat("Time unit ", as.character(getTimeUnit(x, force.duration = TRUE)),
         "\n", sep = "")
   }
   if (is_scaled(x)) {
@@ -102,7 +105,7 @@ print.generic_mspct <- function(x, ..., n = NULL, width = NULL)  {
 #' @return A \code{character} vector of class names.
 #'
 summary_spct_classes <- function() {
-  c("summary_cps_spct",
+  c("summary_raw_spct", "summary_cps_spct",
     "summary_filter_spct", "summary_reflector_spct",
     "summary_source_spct", "summary_object_spct",
     "summary_response_spct", "summary_chroma_spct", "summary_generic_spct")
@@ -129,6 +132,11 @@ summary_spct_classes <- function() {
 #' is.summary_source_spct(sm)
 #'
 is.summary_generic_spct <- function(x) inherits(x, "summary_generic_spct")
+
+#' @rdname is.summary_generic_spct
+#' @export
+#'
+is.summary_raw_spct <- function(x) inherits(x, "summary_raw_spct")
 
 #' @rdname is.summary_generic_spct
 #' @export
@@ -212,6 +220,8 @@ summary.generic_spct <- function(object,
   setScaled(z, getScaled(object))
   setWhenMeasured(z, getWhenMeasured(object))
   setWhereMeasured(z, getWhereMeasured(object))
+  setWhatMeasured(z, getWhatMeasured(object))
+  setMultipleWl(z, getMultipleWl(object))
   if (is.source_spct(object)) {
     class(z) <- c("summary_source_spct", class(z))
     setTimeUnit(z, getTimeUnit(object))
@@ -233,6 +243,8 @@ summary.generic_spct <- function(object,
     class(z) <- c("summary_chroma_spct", class(z))
   } else if (is.cps_spct(object)) {
     class(z) <- c("summary_cps_spct", class(z))
+  } else if (is.raw_spct(object)) {
+    class(z) <- c("summary_raw_spct", class(z))
   }
   z
 }
@@ -252,23 +264,29 @@ summary.generic_spct <- function(object,
 #'
 print.summary_generic_spct <- function(x, ...) {
   cat("Summary of object: ", x[["orig.class"]], " ", x[["orig.dim_desc"]], "\n", sep = "")
-  cat(
-    "Wavelength (nm): range ",
-    paste(signif(x[["wl.range"]], 8), sep = "", collapse = " to "),
-    ", step ",
-    paste(unique(signif(x[["wl.stepsize"]], 7)), sep = "", collapse = " to "),
-    "\n",
-    sep = ""
-  )
-  if (!any(is.na(getWhenMeasured(x)))) {
-    cat("Measured on: ",
-        as.character(getWhenMeasured(x)),
-        " UTC\n",
-        sep = "")
+  m.wl <- getMultipleWl(x)
+  if (m.wl > 1) {
+    cat("containg ", m.wl, " spectra in long form\n")
+  }
+  cat("Wavelength range ",
+      paste(signif(x[["wl.range"]], 8), sep = "", collapse = " to "), " nm, step ",
+      paste(unique(signif(x[["wl.stepsize"]], 7)), sep = "", collapse = " to "),
+      " nm\n", sep = "")
+  if (!any(is.na(getWhatMeasured(x)))) {
+    cat("Label: ", getWhatMeasured(x), "\n", sep = "")
+  }
+  when.measured <- getWhenMeasured(x)
+  if (!any(is.na(when.measured))) {
+    if (length(when.measured) > 1) {
+      cat("Measured between ", as.character(min(when.measured)),
+          " and ", as.character(max(when.measured)), " UTC\n", sep = "")
+    } else {
+      cat("Measured on ", as.character(when.measured), " UTC\n", sep = "")
+    }
   }
   if (!any(is.na(getWhereMeasured(x)))) {
     where.measured <- getWhereMeasured(x)
-    cat("Measured at: ",
+    cat("Measured at ",
         where.measured[["lat"]],
         " N, ",
         where.measured[["lon"]],

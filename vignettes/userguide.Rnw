@@ -434,6 +434,8 @@ We can also create heterogeneous collections, but this reduces the number of met
 
 <<>>=
 mixed.mspct <- generic_mspct(list(filter = clear.spct, source = sun.spct))
+class(mixed.mspct)
+lapply(mixed.mspct, class_spct)
 @
 
 \subsubsection{Using `as' functions}
@@ -461,6 +463,12 @@ test1.df <- data.frame(w.length = rep(200:210, 2),
                        s.e.irrad = rep(c(1, 2), c(11, 11)),
                        spectrum = factor(rep(c("A", "B"), c(11,11))))
 subset2mspct(test1.df, member.class = "source_spct", idx.var = "spectrum")
+@
+
+To convert a `tidy' data frame into a long form spectral object we need to pass the number of spectra through parameter \texttt{multiple.wl} to override the usual check for unique wavelength values.
+<<>>=
+setSourceSpct(test1.df, multiple.wl = 2L)
+test1.df
 @
 
 \subsubsection{Converting `untidy' data frames}
@@ -1366,10 +1374,14 @@ Summaries can be calculated both from individual spectral objects (Table \ref{ta
 
 \subsection{Summary}
 
-Specialized definitions of \texttt{summary} and the corresponding \texttt{print} methods are available for spectral objects. In the case of \texttt{source\_spct} objects the \texttt{time.unit} attribute makes it possible to print the summary using the correct units.
+Specialized definitions of \texttt{summary} and the corresponding \texttt{print} methods are available for spectral objects. Attributes \texttt{"what.measured"}, \texttt{"when.measured"} and \texttt{"where.measured"} are included in the summary print out only if set in the spectral object summarized.
 
 <<>>=
 summary(sun.spct)
+@
+
+<<>>=
+summary(two_suns.spct)
 @
 
 \subsection{Wavelength}
