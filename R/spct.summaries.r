@@ -30,13 +30,23 @@ print.generic_spct <- function(x, ..., n = NULL, width = NULL)
 {
   cat("Object: ", class_spct(x)[1], " ", dplyr::dim_desc(x), "\n", sep = "")
   if (nrow(x)) {
+    m.wl <- getMultipleWl(x)
+    if (m.wl > 1) {
+      cat("Containing: ", m.wl, " spectra in long form\n")
+    }
     cat("Wavelength (nm): range ",
         paste(signif(range(x), 8), sep = "", collapse = " to "), ", step ",
         paste(unique(signif(stepsize(x), 7)), sep = "", collapse = " to "),
         "\n", sep = "")
   }
-  if (!any(is.na(getWhenMeasured(x)))) {
-    cat("Measured on: ", as.character(getWhenMeasured(x)), " UTC\n", sep = "")
+  when.measured <- getWhenMeasured(x)
+  if (!any(is.na(when.measured))) {
+    if (length(when.measured) > 1) {
+      cat("Measured between: ", as.character(min(when.measured)),
+          " and ", as.character(max(when.measured)), " UTC\n", sep = "")
+    } else {
+      cat("Measured on: ", as.character(when.measured), " UTC\n", sep = "")
+    }
   }
   if (!any(is.na(getWhereMeasured(x)))) {
     where.measured <- getWhereMeasured(x)

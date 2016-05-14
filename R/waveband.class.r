@@ -612,7 +612,12 @@ stepsize.numeric <- function(x, ...) {
 #' stepsize(sun.spct)
 #'
 stepsize.generic_spct <- function(x, ...) {
-  wl <- x[["w.length"]]
+  num.spectra <- getMultipleWl(x)
+  if (num.spectra > 1) {
+    wl <- unique(x[["w.length"]])
+  } else {
+    wl <- x[["w.length"]]
+  }
   if (length(wl) > 1) {
     range(diff(wl))
   } else {

@@ -10,7 +10,7 @@ photobiology 0.9.8
 
 Fix bug: insert_hinges() would fail for "raw_spct" and "cps_spct" objects.
 Fix bug: leap year for year 2000.
-Test, imporve and document function sun_angles().
+Test, improve and document function sun_angles().
 Clean code for handling of "range" arguments.
 
 photobiology 0.9.7
