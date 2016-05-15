@@ -474,6 +474,10 @@ split2mspct <- function(x,
                         ncol = 1, byrow = FALSE, ...) {
   stopifnot(!is.null(member.class) || !is.character(member.class))
   stopifnot(!is.null(spct.data.var) || !is.character(spct.data.var))
+  if (is.any_spct(x) && getMultipleWl(x) != 1) {
+    stop("'split2mspct()' is for slicing vertically wide data in data frames ",
+         "'subset2mspct()' is used in the case of tidy data in long form.")
+  }
   collection.class <- sub("_spct", "_mspct", member.class, fixed = TRUE)
   member.constr <- member.class
   collection.constr <- collection.class
@@ -623,21 +627,33 @@ subset2mspct <- function(x,
   if (is.any_spct(x) && is.null(member.class)) {
     member.class <- class(x)[1]
   }
-  stopifnot(!is.null(member.class) || !is.character(member.class))
+  stopifnot(is.character(member.class))
   stopifnot(idx.var %in% names(x))
   collection.class <- sub("_spct", "_mspct", member.class, fixed = TRUE)
   member.constr <- paste("as", member.class, sep = ".")
   collection.constr <- collection.class
   if (is.factor(x[[idx.var]])) {
     groups <- levels(x[[idx.var]])
+    idx <- idx.var
   } else {
-    groups <- unique(x[[idx.var]])
+    # would hang or slowdown to a crawl if idexing by dates
+    # could try benchmarking with as.numeric() to see how much faster it is
+    if (lubridate::is.instant(x[[idx.var]])) {
+    x[["tmp.idx"]] <- as.character(x[[idx.var]], tz = "UTC")
+    idx <- "tmp.idx"
+    } else {
+      idx <- idx.var
+    }
+    groups <- unique(x[[idx]])
   }
   l <- list()
   for (grp in groups) {
-    slice <- subset(x, x[[idx.var]] == grp)
+    slice <- subset(x, x[[idx]] == grp)
     if (drop.idx) {
       slice[[idx.var]] <- NULL
+    }
+    if (idx != idx.var) {
+      slice[[idx]] <- NULL
     }
     args <- list(x = slice)
     args.ellipsis <- list(...)

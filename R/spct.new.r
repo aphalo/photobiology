@@ -22,6 +22,8 @@
 #'   object created.
 #' @param strict.range logical Flag indicating whether off-range values result
 #'   in an error instead of a warning.
+#' @param multiple.wl	numeric Maximum number of repeated w.length entries with
+#'   same value.
 #' @param ... other arguments passed to \code{data_frame()}
 #'
 #' @return A object of class generic_spct or a class derived from it, depending
@@ -37,13 +39,18 @@
 #' @note The functions can be used to add only one spectral quantity to a
 #'   spectral object. Some of the functions have different arguments, for the
 #'   same quantity expressed in different units. An actual parameter can be
-#'   supplied to only one of these formal parameters in a given call to any
-#'   of these functions.
+#'   supplied to only one of these formal parameters in a given call to any of
+#'   these functions.
 #'
-source_spct <- function(w.length = NULL, s.e.irrad = NULL, s.q.irrad = NULL,
+source_spct <- function(w.length = NULL,
+                        s.e.irrad = NULL,
+                        s.q.irrad = NULL,
                         time.unit = c("second", "day", "exposure"),
                         bswf.used = c("none", "unknown"),
-                        comment = NULL, strict.range = FALSE, ...) {
+                        comment = NULL,
+                        strict.range = FALSE,
+                        multiple.wl = 1L,
+                        ...) {
   if (length(w.length) == 0) {
     z <- dplyr::data_frame(w.length = numeric(), s.e.irrad = numeric(), ...)
   } else if (is.null(s.q.irrad) && (is.numeric(s.e.irrad))) {
@@ -60,7 +67,8 @@ source_spct <- function(w.length = NULL, s.e.irrad = NULL, s.q.irrad = NULL,
   setSourceSpct(z,
                 time.unit = time.unit,
                 bswf.used = bswf.used,
-                strict.range = strict.range)
+                strict.range = strict.range,
+                multiple.wl = multiple.wl)
   z
 }
 
@@ -72,8 +80,13 @@ source_spct <- function(w.length = NULL, s.e.irrad = NULL, s.q.irrad = NULL,
 #'
 #' @export
 #'
-raw_spct <- function(w.length = NULL, counts = NA_real_, comment = NULL,
-                     instr.desc = NA, instr.settings = NA, ...) {
+raw_spct <- function(w.length = NULL,
+                     counts = NA_real_,
+                     comment = NULL,
+                     instr.desc = NA,
+                     instr.settings = NA,
+                     multiple.wl = 1L,
+                     ...) {
   if (length(w.length) == 0) {
     z <- dplyr::data_frame(w.length = numeric(), counts = numeric(), ...)
   } else {
@@ -82,7 +95,8 @@ raw_spct <- function(w.length = NULL, counts = NA_real_, comment = NULL,
   if (!is.null(comment)) {
     comment(z) <- comment
   }
-  setRawSpct(z)
+  setRawSpct(z,
+             multiple.wl = multiple.wl)
   setInstrDesc(z, instr.desc)
   setInstrSettings(z, instr.settings)
   z
@@ -94,8 +108,13 @@ raw_spct <- function(w.length = NULL, counts = NA_real_, comment = NULL,
 #'
 #' @export
 #'
-cps_spct <- function(w.length = NULL, cps = NA_real_, comment = NULL,
-                     instr.desc = NA, instr.settings = NA, ...) {
+cps_spct <- function(w.length = NULL,
+                     cps = NA_real_,
+                     comment = NULL,
+                     instr.desc = NA,
+                     instr.settings = NA,
+                     multiple.wl = 1L,
+                     ...) {
   if (any(grepl("^cps", names(list(...)))) && is.na(cps)) {
     if (length(w.length) == 0) {
       z <- dplyr::data_frame(w.length = numeric(), ...)
@@ -112,7 +131,8 @@ cps_spct <- function(w.length = NULL, cps = NA_real_, comment = NULL,
   if (!is.null(comment)) {
     comment(z) <- comment
   }
-  setCpsSpct(z)
+  setCpsSpct(z,
+             multiple.wl = multiple.wl)
   setInstrDesc(z, instr.desc)
   setInstrSettings(z, instr.settings)
   z
@@ -122,7 +142,10 @@ cps_spct <- function(w.length = NULL, cps = NA_real_, comment = NULL,
 #'
 #' @export
 #'
-generic_spct <- function(w.length = NULL, comment = NULL, ...) {
+generic_spct <- function(w.length = NULL,
+                         comment = NULL,
+                         multiple.wl = 1L,
+                         ...) {
   if (length(w.length) == 0) {
     z <- dplyr::data_frame(w.length = numeric(), ...)
   } else {
@@ -131,7 +154,8 @@ generic_spct <- function(w.length = NULL, comment = NULL, ...) {
   if (!is.null(comment)) {
     comment(z) <- comment
   }
-  setGenericSpct(z)
+  setGenericSpct(z,
+                 multiple.wl = multiple.wl)
   z
 }
 
@@ -144,9 +168,13 @@ generic_spct <- function(w.length = NULL, comment = NULL, ...) {
 #'
 #' @export
 #'
-response_spct <- function(w.length = NULL, s.e.response = NULL, s.q.response = NULL,
+response_spct <- function(w.length = NULL,
+                          s.e.response = NULL,
+                          s.q.response = NULL,
                           time.unit = c("second", "day", "exposure"),
-                          comment = NULL, ...) {
+                          comment = NULL,
+                          multiple.wl = 1L,
+                          ...) {
   if (length(w.length) == 0) {
     z <- dplyr::data_frame(w.length = numeric(), s.e.response = numeric(), ...)
   } else if (is.null(s.q.response) && (is.numeric(s.e.response))) {
@@ -160,7 +188,9 @@ response_spct <- function(w.length = NULL, s.e.response = NULL, s.q.response = N
   if (!is.null(comment)) {
     comment(z) <- comment
   }
-  setResponseSpct(z, time.unit)
+  setResponseSpct(z,
+                  time.unit,
+                  multiple.wl = multiple.wl)
   z
 }
 
@@ -178,9 +208,15 @@ response_spct <- function(w.length = NULL, s.e.response = NULL, s.q.response = N
 #'
 #' @export
 #'
-filter_spct <- function(w.length=NULL, Tfr=NULL, Tpc=NULL, A=NULL,
+filter_spct <- function(w.length=NULL,
+                        Tfr=NULL,
+                        Tpc=NULL,
+                        A=NULL,
                         Tfr.type=c("total", "internal"),
-                        comment=NULL, strict.range = FALSE, ...) {
+                        comment=NULL,
+                        strict.range = FALSE,
+                        multiple.wl = 1L,
+                        ...) {
   if (length(w.length) == 0) {
     z <- dplyr::data_frame(w.length = numeric(), Tfr = numeric())
   } else if (is.null(Tpc) && is.null(A) && is.numeric(Tfr)) {
@@ -196,7 +232,10 @@ filter_spct <- function(w.length=NULL, Tfr=NULL, Tpc=NULL, A=NULL,
   if (!is.null(comment)) {
     comment(z) <- comment
   }
-  setFilterSpct(z, Tfr.type, strict.range = strict.range)
+  setFilterSpct(z,
+                Tfr.type,
+                strict.range = strict.range,
+                multiple.wl = multiple.wl)
   z
 }
 
@@ -208,9 +247,14 @@ filter_spct <- function(w.length=NULL, Tfr=NULL, Tpc=NULL, A=NULL,
 #'
 #' @export
 #'
-reflector_spct <- function(w.length = NULL, Rfr=NULL, Rpc=NULL,
+reflector_spct <- function(w.length = NULL,
+                           Rfr=NULL,
+                           Rpc=NULL,
                            Rfr.type=c("total", "specular"),
-                           comment=NULL, strict.range = FALSE, ...) {
+                           comment=NULL,
+                           strict.range = FALSE,
+                           multiple.wl = 1L,
+                           ...) {
   if (length(w.length) == 0) {
     z <- dplyr::data_frame(w.length = numeric(), Rfr = numeric(), ...)
   } else if (is.null(Rpc) && is.numeric(Rfr)) {
@@ -224,7 +268,10 @@ reflector_spct <- function(w.length = NULL, Rfr=NULL, Rpc=NULL,
   if (!is.null(comment)) {
     comment(z) <- comment
   }
-  setReflectorSpct(z, Rfr.type = Rfr.type, strict.range = strict.range)
+  setReflectorSpct(z,
+                   Rfr.type = Rfr.type,
+                   strict.range = strict.range,
+                   multiple.wl = multiple.wl)
   z
 }
 
@@ -232,10 +279,15 @@ reflector_spct <- function(w.length = NULL, Rfr=NULL, Rpc=NULL,
 #'
 #' @export
 #'
-object_spct <- function(w.length=NULL, Rfr=NULL, Tfr=NULL,
+object_spct <- function(w.length=NULL,
+                        Rfr=NULL,
+                        Tfr=NULL,
                         Tfr.type=c("total", "internal"),
                         Rfr.type=c("total", "specular"),
-                        comment=NULL, strict.range = FALSE, ...) {
+                        comment=NULL,
+                        strict.range = FALSE,
+                        multiple.wl = 1L,
+                        ...) {
   if (length(w.length) == 0) {
     z <- dplyr::data_frame(w.length = numeric(),
                            Rfr = numeric(), Tfr = numeric(), ...)
@@ -248,7 +300,8 @@ object_spct <- function(w.length=NULL, Rfr=NULL, Tfr=NULL,
   setObjectSpct(z,
                 Tfr.type = Tfr.type,
                 Rfr.type = Rfr.type,
-                strict.range = strict.range)
+                strict.range = strict.range,
+                multiple.wl = multiple.wl)
   z
 }
 
@@ -262,7 +315,10 @@ chroma_spct <- function(w.length=NULL,
                         x,
                         y,
                         z,
-                        comment=NULL, strict.range = FALSE, ...) {
+                        comment=NULL,
+                        strict.range = FALSE,
+                        multiple.wl = 1L,
+                        ...) {
   if (length(w.length) == 0) {
     z <- dplyr::data_frame(w.length = numeric(),
                            x = numeric(), y = numeric(), z = numeric(), ...)
@@ -271,7 +327,8 @@ chroma_spct <- function(w.length=NULL,
   if (!is.null(comment)) {
     comment(z) <- comment
   }
-  setChromaSpct(z)
+  setChromaSpct(z,
+                multiple.wl = multiple.wl)
   }
   z
 }
@@ -283,6 +340,7 @@ chroma_spct <- function(w.length=NULL,
 #' Return a copy of an R object with its class set to a given type of spectrum.
 #'
 #' @param x an R object
+#' @param ... other arguments passed to "set" functions
 #'
 #' @return These functions return a copy of \code{x} converted into a given
 #'   class of spectral object, if \code{x} is a valid argument to the
@@ -293,27 +351,24 @@ chroma_spct <- function(w.length=NULL,
 #' @family creation of spectral objects functions
 #' @rdname as.generic_spct
 #'
-as.generic_spct <- function(x) {
-  y <- x
-  setGenericSpct(y)
+as.generic_spct <- function(x, ...) {
+  setGenericSpct(x, ...)
 }
 
 #' @rdname as.generic_spct
 #'
 #' @export
 #'
-as.raw_spct <- function(x) {
-  y <- x
-  setRawSpct(y)
+as.raw_spct <- function(x, ...) {
+  setRawSpct(x, ...)
 }
 
 #' @rdname as.generic_spct
 #'
 #' @export
 #'
-as.cps_spct <- function(x) {
-  y <- x
-  setCpsSpct(y)
+as.cps_spct <- function(x, ...) {
+  setCpsSpct(x, ...)
 }
 
 #' @rdname as.generic_spct
@@ -328,18 +383,21 @@ as.cps_spct <- function(x) {
 as.source_spct <- function(x,
                            time.unit=c("second", "day", "exposure"),
                            bswf.used=c("none", "unknown"),
-                           strict.range = FALSE) {
-  y <- x
-  setSourceSpct(y, time.unit, strict.range = strict.range, bswf.used = bswf.used)
+                           strict.range = FALSE,
+                           ...) {
+  setSourceSpct(x,
+                time.unit = time.unit,
+                strict.range = strict.range,
+                bswf.used = bswf.used,
+                ...)
 }
 
 #' @rdname as.generic_spct
 #'
 #' @export
 #'
-as.response_spct <- function(x, time.unit = "second") {
-  y <- x
-  setResponseSpct(y, time.unit = time.unit)
+as.response_spct <- function(x, time.unit = "second", ...) {
+  setResponseSpct(x, time.unit = time.unit, ...)
 }
 
 #' @rdname as.generic_spct
@@ -348,9 +406,14 @@ as.response_spct <- function(x, time.unit = "second") {
 #'
 #' @export
 #'
-as.filter_spct <- function(x, Tfr.type=c("total", "internal"), strict.range = FALSE) {
-  y <- x
-  setFilterSpct(y, Tfr.type, strict.range = strict.range)
+as.filter_spct <- function(x,
+                           Tfr.type = c("total", "internal"),
+                           strict.range = FALSE,
+                           ...) {
+  setFilterSpct(x,
+                Tfr.type = Tfr.type,
+                strict.range = strict.range,
+                ...)
 }
 
 #' @rdname as.generic_spct
@@ -359,9 +422,14 @@ as.filter_spct <- function(x, Tfr.type=c("total", "internal"), strict.range = FA
 #'
 #' @export
 #'
-as.reflector_spct <- function(x, Rfr.type = c("total", "specular"), strict.range = FALSE) {
-  y <- x
-  setReflectorSpct(y, Rfr.type = Rfr.type, strict.range = strict.range)
+as.reflector_spct <- function(x,
+                              Rfr.type = c("total", "specular"),
+                              strict.range = FALSE,
+                              ...) {
+  setReflectorSpct(x,
+                   Rfr.type = Rfr.type,
+                   strict.range = strict.range,
+                   ...)
 }
 
 #' @rdname as.generic_spct
@@ -371,19 +439,21 @@ as.reflector_spct <- function(x, Rfr.type = c("total", "specular"), strict.range
 as.object_spct <- function(x,
                            Tfr.type=c("total", "internal"),
                            Rfr.type=c("total", "specular"),
-                           strict.range = FALSE) {
-  y <- x
-  setObjectSpct(y, Tfr.type = Tfr.type, Rfr.type = Rfr.type,
-                strict.range = strict.range)
+                           strict.range = FALSE,
+                           ...) {
+  setObjectSpct(x,
+                Tfr.type = Tfr.type,
+                Rfr.type = Rfr.type,
+                strict.range = strict.range,
+                ...)
 }
 
 #' @rdname as.generic_spct
 #'
 #' @export
 #'
-as.chroma_spct <- function(x) {
-  y <- x
-  setChromaSpct(y)
+as.chroma_spct <- function(x, ...) {
+  setChromaSpct(x, ...)
 }
 
 
