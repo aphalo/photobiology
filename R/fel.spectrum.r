@@ -27,7 +27,7 @@ FEL_spectrum <- function(w.length, k=FEL, fill=NA) {
   if (is.null(fill)) {
     w.length <- w.length[!fill.selector]
     fill.selector <- rep(FALSE, length(w.length))
-    indexes <- 1:length(w.length)
+    indexes <- seq_along(w.length)
   } else {
     indexes <- which(w.length >= 250 & w.length <= 900)
   }

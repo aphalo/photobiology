@@ -1742,7 +1742,7 @@ setWhenMeasured.generic_mspct <-
       when <- lubridate::with_tz(when.measured, "UTC")
       x <- msmsply(mspct = x, .fun = setWhenMeasured, when.measured = when)
     } else if (length(when.measured) == length(x)) {
-      for (i in 1:length(x)) {
+      for (i in seq_along(x)) {
         when <- when.measured[[i]]
         stopifnot(lubridate::is.POSIXct(when))
         when <- lubridate::with_tz(when, "UTC")
@@ -1938,16 +1938,16 @@ setWhereMeasured.generic_mspct <- function(x,
                  lon = lon)
   } else if (!is.na(where.measured) && !is.data.frame(where.measured) &&
              is.list(where.measured) && length(where.measured) == length(x)) {
-    for (i in 1:length(x)) {
+    for (i in seq_along(x)) {
       x[[i]] <- setWhereMeasured(x[[i]], where.measured = where.measured[[i]])
     }
   } else if (!is.na(where.measured) && is.data.frame(where.measured) &&
              nrow(where.measured) == length(x)) {
-    for (i in 1:length(x)) {
+    for (i in seq_along(x)) {
       x[[i]] <- setWhereMeasured(x[[i]], where.measured = where.measured[i, ])
     }
   } else if (is.na(where.measured) && length(lat) == length(x) && length(lon) == length(x)) {
-    for (i in 1:length(x)) {
+    for (i in seq_along(x)) {
       x[[i]] <- setWhereMeasured(x[[i]], lon = lon[i], lat = lat[i])
     }
   } else {

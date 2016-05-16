@@ -108,7 +108,7 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
   if (any(normalized.input) && length(unique(normalized.input)) > 1L) {
     warning("Spectra being row-bound have been differently normalized")
   }
-  for (i in 1:length(l)) {
+  for (i in seq_along(l)) {
     class_spct <- class(l[[i]])[1]
     l.class <- intersect(l.class, class_spct)
     if (photon.based.input && ("source_spct" %in% class_spct ||
@@ -138,7 +138,7 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
 
   names.spct <- names(l)
   if (is.null(names.spct) || anyNA(names.spct) || length(names.spct) < length(l)) {
-    names.spct <- paste("spct", 1:length(l), sep = "_")
+    names.spct <- paste("spct", seq_along(l), sep = "_")
   }
   if (add.idfactor) {
     ans[[idfactor]] <- factor(rep(names.spct, times = sapply(l, FUN = nrow)),
@@ -148,7 +148,7 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
   comment.ans <- "rbindspct: concatenated comments"
   comments.found <- FALSE
 
-  for (i in 1:length(l)) {
+  for (i in seq_along(l)) {
     temp <- comment(l[[i]])
     comments.found <- comments.found || !is.null(temp)
     if (add.idfactor) {

@@ -193,7 +193,7 @@ split_bands <- function(x, list.names=NULL, short.names=is.null(list.names), len
     return(bands.out[[1]])
   } else {
     if (short.names) {
-      names(bands.out) <- paste("wb", 1:length(bands.out), sep="")
+      names(bands.out) <- paste("wb", seq_along(bands.out), sep="")
     } else {
       if (!is.null(list.names) && length(list.names) >= num.bands)  {
         names(bands.out) <- list.names[1:num.bands]

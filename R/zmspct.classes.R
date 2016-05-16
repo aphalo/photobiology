@@ -74,7 +74,7 @@ rmDerivedMspct <- function(x) {
 #'
 shared_member_class <- function(l, target.set = spct_classes()) {
   l.class <- target.set
-  for (i in 1:length(l)) {
+  for (i in seq_along(l)) {
     member_class <- class(l[[i]])
     l.class <- intersect(l.class, member_class)
   }
@@ -143,7 +143,7 @@ generic_mspct <- function(l = NULL, class = "generic_spct",
     class(l) <- multi_class
   }
   if (length(l) > 0 && is.null(names(l))) {
-    attr(l, "names") <- paste("spct", 1:length(l), sep = "_")
+    attr(l, "names") <- paste("spct", seq_along(l), sep = "_")
   }
   attr(l, "mspct.version") <- 2
 

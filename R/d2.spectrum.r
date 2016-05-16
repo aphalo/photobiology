@@ -27,7 +27,7 @@ D2_spectrum <- function(w.length, k=D2.UV653, fill=NULL) {
   if (is.null(fill)) {
     w.length <- w.length[!fill.selector]
     fill.selector <- rep(FALSE, length(w.length))
-    indexes <- 1:length(w.length)
+    indexes <- seq_along(w.length)
   } else {
     indexes <- which(w.length >= 190 & w.length <= 450)
   }
