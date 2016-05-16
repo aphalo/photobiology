@@ -1466,6 +1466,12 @@ and, to integrate a range of wavelengths, in the example, photosynthetically act
 irrad(sun.spct, PAR)
 @
 
+It is also valid to pass as argument for \texttt{w.band} a numeric range representing wavelengths in nanometres.
+
+<<>>=
+irrad(sun.spct, c(400, 700))
+@
+
 The default for \texttt{irrad}, when no argument \texttt{unit.out} is supplied, is to return the irradiance value in energy irradiance units, unless the R option \texttt{photobiology.radiation.unit} is set.
 
 \sloppy

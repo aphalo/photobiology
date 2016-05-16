@@ -3,8 +3,10 @@
 #' Summary transmittance for supplied wavebands from filter or object spectrum.
 #'
 #' @param spct an R object
-#' @param w.band waveband or list of waveband objects The waveband(s) determine
-#'   the region(s) of the spectrum that are summarized.
+#' @param w.band waveband or list of waveband objects or a numeric vector of
+#'   length two. The waveband(s) determine the region(s) of the spectrum that
+#'   are summarized. If a numeric range is supplied a waveband object is
+#'   constructed on the fly from it.
 #' @param quantity character
 #' @param wb.trim logical Flag indicating if wavebands crossing spectral data boundaries
 #'   are trimmed or ignored
@@ -43,8 +45,8 @@ transmittance.default <- function(spct, w.band, quantity, wb.trim, use.hinges, .
 transmittance.filter_spct <-
   function(spct, w.band=NULL,
            quantity="average",
-           wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
-           use.hinges=getOption("photobiology.use.hinges", default=NULL), ...) {
+           wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
+           use.hinges=getOption("photobiology.use.hinges", default = NULL), ...) {
     transmittance_spct(spct = spct,
                        w.band = w.band,
                        quantity = quantity,
@@ -59,8 +61,8 @@ transmittance.filter_spct <-
 transmittance.object_spct <-
   function(spct, w.band=NULL,
            quantity="average",
-           wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
-           use.hinges=getOption("photobiology.use.hinges", default=NULL), ...) {
+           wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
+           use.hinges=getOption("photobiology.use.hinges", default = NULL), ...) {
     transmittance_spct(spct = spct,
                        w.band = w.band,
                        quantity = quantity,
@@ -74,8 +76,10 @@ transmittance.object_spct <-
 #' transmittance spectrum.
 #'
 #' @param spct an object of class "generic_spct"
-#' @param w.band waveband or list of waveband objects The waveband(s) determine
-#'   the region(s) of the spectrum that are summarized.
+#' @param w.band waveband or list of waveband objects or a numeric vector of
+#'   length two. The waveband(s) determine the region(s) of the spectrum that
+#'   are summarized. If a numeric range is supplied a waveband object is
+#'   constructed on the fly from it.
 #' @param quantity character
 #' @param wb.trim logical Flag indicating if wavebands crossing spectral data boundaries
 #'   are trimmed or ignored
@@ -110,6 +114,9 @@ transmittance_spct <-
     # if the waveband is undefined then use all data
     if (is.null(w.band)) {
       w.band <- waveband(spct)
+    }
+    if (is.numeric(w.band)) {
+      w.band <- waveband(w.band)
     }
     if (is.waveband(w.band)) {
       # if the argument is a single w.band, we enclose it in a list

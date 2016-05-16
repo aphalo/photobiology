@@ -4,8 +4,10 @@
 #' spectral data stored in a \code{filter_spct} or in an \code{object_spct}.
 #'
 #' @param spct an R object
-#' @param w.band waveband or list of waveband objects The waveband(s) determine
-#'   the region(s) of the spectrum that are summarized.
+#' @param w.band waveband or list of waveband objects or a numeric vector of
+#'   length two. The waveband(s) determine the region(s) of the spectrum that
+#'   are summarized. If a numeric range is supplied a waveband object is
+#'   constructed on the fly from it.
 #' @param quantity character
 #' @param wb.trim logical Flag indicating if wavebands crossing spectral data
 #'   boundaries are trimmed or ignored
@@ -64,8 +66,10 @@ absorbance.object_spct <-
 #' waveband of a absorbance spectrum.
 #'
 #' @param spct filter_spct
-#' @param w.band waveband or list of waveband objects The wavebands determine
-#'   the region(s) of the spectrum that are summarized.
+#' @param w.band waveband or list of waveband objects or a numeric vector of
+#'   length two. The waveband(s) determine the region(s) of the spectrum that
+#'   are summarized. If a numeric range is supplied a waveband object is
+#'   constructed on the fly from it.
 #' @param quantity character
 #' @param wb.trim logical Flag if wavebands crossing spectral data boundaries
 #'   are trimmed or ignored
@@ -85,12 +89,16 @@ absorbance_spct <-
       warning("The spectral data has been normalized or scaled, making impossible to calculate absorbance")
       return(NA_real_)
     }
-    spct <- T2A(spct, action="replace", byref=FALSE)
+    spct <- T2A(spct, action = "replace", byref = FALSE)
     spct <- spct[ , c("w.length", "A")]
     # if the waveband is undefined then use all data
-    if (is.null(w.band)){
+    if (is.null(w.band)) {
       w.band <- waveband(spct)
     }
+    if (is.numeric(w.band)) {
+      w.band <- waveband(w.band)
+    }
+
     if (is.waveband(w.band)) {
       # if the argument is a single w.band, we enclose it in a list
       # so that the for loop works as expected.This is a bit of a

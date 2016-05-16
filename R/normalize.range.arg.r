@@ -36,7 +36,7 @@ normalize_range_arg <- function(arg.range, wl.range, trim = TRUE) {
   if (!is.numeric(wl.range) || (is.numeric(wl.range) && length(wl.range) != 2)) {
     wl.range <- range(wl.range)
   }
-  stopifnot(is.numeric(wl.range) && length(wl.range) == 2)
+  stopifnot(is.numeric(wl.range) && length(unique(wl.range)) == 2)
 
   if (is.null(arg.range) || all(is.na(arg.range))) {
     return(wl.range)
@@ -53,6 +53,10 @@ normalize_range_arg <- function(arg.range, wl.range, trim = TRUE) {
     arg.range[2] <- wl.range[2]
 
   # NAs have been replaced above
-  stopifnot(arg.range[2] - arg.range[1] > 1e-3)
-  arg.range
+  if (diff(arg.range) < 1e-3) {
+#    warning("'range' too small or outside data boundaries")
+    c(1,2) # nm
+  } else {
+    arg.range
+  }
 }

@@ -5,8 +5,10 @@
 #' Absorptance is a different quantity than absorbance.
 #'
 #' @param spct an R object
-#' @param w.band waveband or list of waveband objects The waveband(s) determine
-#'   the region(s) of the spectrum that are summarized.
+#' @param w.band waveband or list of waveband objects or a numeric vector of
+#'   length two. The waveband(s) determine the region(s) of the spectrum that
+#'   are summarized. If a numeric range is supplied a waveband object is
+#'   constructed on the fly from it.
 #' @param quantity character
 #' @param wb.trim logical Flag if wavebands crossing spectral data boundaries
 #'   are trimmed or ignored
@@ -75,8 +77,10 @@ absorptance.object_spct <-
 #' \code{object_spct} object
 #'
 #' @param spct object_spct
-#' @param w.band waveband or list of waveband objects The wavebands determine
-#'   the region(s) of the spectrum that are summarized.
+#' @param w.band waveband or list of waveband objects or a numeric vector of
+#'   length two. The waveband(s) determine the region(s) of the spectrum that
+#'   are summarized. If a numeric range is supplied a waveband object is
+#'   constructed on the fly from it.
 #' @param quantity character string
 #' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries
 #'   are trimmed, if FALSE, they are discarded
@@ -137,6 +141,9 @@ absorptance_spct <-
     if (is.null(w.band)) {
       w.band <- waveband(spct)
     }
+    if (is.numeric(w.band)) {
+      w.band <- waveband(w.band)
+    }
     if (is.waveband(w.band)) {
       # if the argument is a single w.band, we enclose it in a list
       # so that the for loop works as expected.This is a bit of a
@@ -187,7 +194,8 @@ absorptance_spct <-
       if (no_names_flag) {
         if (is_effective(wb)) {
           warning("Using only wavelength range from a weighted waveband object.")
-          wb.name[i] <- paste("range", as.character(signif(min(wb), 4)), as.character(signif(max(wb), 4)), sep = ".")
+          wb.name[i] <- paste("range", as.character(signif(min(wb), 4)),
+                              as.character(signif(max(wb), 4)), sep = ".")
         } else {
           wb.name[i] <- wb$name
         }
@@ -256,8 +264,8 @@ absorptance.filter_mspct <-
 absorptance.object_mspct <-
   function(spct, w.band=NULL,
            quantity="average",
-           wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
-           use.hinges=getOption("photobiology.use.hinges", default=NULL),
+           wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
+           use.hinges=getOption("photobiology.use.hinges", default = NULL),
            ..., idx = !is.null(names(spct)) ) {
     msdply(
       mspct = spct,

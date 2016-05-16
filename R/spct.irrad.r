@@ -112,6 +112,9 @@ irrad.source_spct <-
     if (unit.out == "quantum") {
       unit.out <- "photon"
     }
+    if (is.numeric(w.band)) {
+      w.band <- waveband(w.band)
+    }
     if (is.null(w.band)) {
       w.band <- waveband(spct)
     }

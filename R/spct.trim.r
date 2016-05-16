@@ -44,7 +44,7 @@ trim_spct <- function(spct,
                       use.hinges = TRUE,
                       fill = NULL,
                       byref = FALSE,
-                      verbose = getOption("photobiology.verbose", default = TRUE) )
+                      verbose = getOption("photobiology.verbose", default = FALSE) )
 {
   if (nrow(spct) == 0) {
     return(spct)

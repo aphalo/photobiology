@@ -32,7 +32,7 @@ print.generic_spct <- function(x, ..., n = NULL, width = NULL)
   if (nrow(x)) {
     m.wl <- getMultipleWl(x)
     if (m.wl > 1) {
-      cat("containing ", m.wl, " spectra in long form\n")
+      cat("containing ", m.wl, " spectra in long form\n", sep = "")
     }
     cat("Wavelength range ",
         paste(signif(range(x), 8), sep = "", collapse = " to "), " nm, step ",
@@ -82,16 +82,28 @@ print.generic_spct <- function(x, ..., n = NULL, width = NULL)
 
 #' @describeIn print
 #'
+#' @param n.members	numeric Number of members of the collection to print.
+#'
 #' @export
 #'
-print.generic_mspct <- function(x, ..., n = NULL, width = NULL)  {
+print.generic_mspct <- function(x, ..., n = NULL, width = NULL, n.members = 10)  {
   cat("Object: ", class(x)[1], " ", dplyr::dim_desc(x), "\n", sep = "")
   member.names <- names(x)
+  if (length(member.names) > n.members) {
+    skipped.members <- length(member.names) - n.members
+    member.names <- member.names[1:n.members]
+  } else {
+    skipped.members <- 0
+  }
   for (name in member.names) {
     cat("--- Member:", name, "---\n")
     print(x[[name]], n = n, width = width)
   }
-  cat("--- END ---")
+  if (skipped.members > 0) {
+    cat("..........................\n",
+        skipped.members, " other member spectra not shown\n", sep = "")
+  }
+  cat("\n--- END ---")
   invisible(x)
 }
 

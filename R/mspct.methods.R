@@ -297,4 +297,3 @@ convolve_each <- function(e1, e2, oper = `*`, ...) {
   }
   z
 }
-

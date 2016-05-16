@@ -4,8 +4,10 @@
 #' spectral data stored in a \code{reflector_spct} or in an \code{object_spct}.
 #'
 #' @param spct an R object
-#' @param w.band waveband or list of waveband objects The waveband(s) determine
-#'   the region(s) of the spectrum that are summarized.
+#' @param w.band waveband or list of waveband objects or a numeric vector of
+#'   length two. The waveband(s) determine the region(s) of the spectrum that
+#'   are summarized. If a numeric range is supplied a waveband object is
+#'   constructed on the fly from it.
 #' @param quantity character
 #' @param wb.trim logical Flag telling if wavebands crossing spectral data boundaries
 #'   are trimmed or ignored
@@ -70,7 +72,10 @@ reflectance.object_spct <-
 #' reflectance spectrum.
 #'
 #' @param spct an object of class generic_spct"
-#' @param w.band list of waveband definitions created with new_waveband()
+#' @param w.band waveband or list of waveband objects or a numeric vector of
+#'   length two. The waveband(s) determine the region(s) of the spectrum that
+#'   are summarized. If a numeric range is supplied a waveband object is
+#'   constructed on the fly from it.
 #' @param quantity character string
 #' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries
 #'   are trimmed, if FALSE, they are discarded
@@ -96,6 +101,9 @@ reflectance_spct <-
     # if the waveband is undefined then use all data
     if (is.null(w.band)) {
       w.band <- waveband(spct)
+    }
+    if (is.numeric(w.band)) {
+      w.band <- waveband(w.band)
     }
     if (is.waveband(w.band)) {
       # if the argument is a single w.band, we enclose it in a list

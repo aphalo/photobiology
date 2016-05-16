@@ -6,8 +6,10 @@
 #' Calculate average photon- or energy-based photo-response.
 #'
 #' @param spct an R object of class "generic_spct"
-#' @param w.band waveband or list of waveband objects The waveband(s) determine
-#'   the region(s) of the spectrum that are summarized
+#' @param w.band waveband or list of waveband objects or a numeric vector of
+#'   length two. The waveband(s) determine the region(s) of the spectrum that
+#'   are summarized. If a numeric range is supplied a waveband object is
+#'   constructed on the fly from it.
 #' @param unit.out character Allowed values "energy", and "photon", or its alias
 #'   "quantum"
 #' @param quantity character Allowed values ""
@@ -63,7 +65,10 @@ response.response_spct <-
 #' spectrum.
 #'
 #' @param spct an object of class response_spct"
-#' @param w.band a waveband object or a list of waveband objects
+#' @param w.band waveband or list of waveband objects or a numeric vector of
+#'   length two. The waveband(s) determine the region(s) of the spectrum that
+#'   are summarized. If a numeric range is supplied a waveband object is
+#'   constructed on the fly from it.
 #' @param unit.out character with allowed values "energy", and "photon", or its
 #'   alias "quantum"
 #' @param quantity character with allowed values "total", "average" ("mean"),
@@ -114,10 +119,10 @@ resp_spct <-
       time.unit <- data.time.unit
     }
 
-    if (unit.out=="photon") {
+    if (unit.out == "photon") {
       spct <- e2q(spct)
       spct <- spct[ , c("w.length", "s.q.response")]
-    } else if (unit.out=="energy") {
+    } else if (unit.out == "energy") {
       spct <- q2e(spct)
       spct <- spct[ , c("w.length", "s.e.response")]
     } else {
@@ -125,8 +130,11 @@ resp_spct <-
     }
 
     # if the waveband is undefined then use all data
-    if (is.null(w.band)){
+    if (is.null(w.band)) {
       w.band <- waveband(spct)
+    }
+    if (is.numeric(w.band)) {
+      w.band <- waveband(w.band)
     }
     if (is.waveband(w.band)) {
       # if the argument is a single w.band, we enclose it in a list
@@ -134,7 +142,7 @@ resp_spct <-
       # cludge but it let's us avoid treating it as a special case
       w.band <- list(w.band)
     }
-    w.band <- trim_waveband(w.band=w.band, range=spct, trim=wb.trim)
+    w.band <- trim_waveband(w.band = w.band, range = spct, trim = wb.trim)
 
     # if the w.band includes 'hinges' we insert them,
     # but if not, we decide whether to insert hinges or not
@@ -151,7 +159,7 @@ resp_spct <-
     if (use.hinges) {
       all.hinges <- NULL
       for (wb in w.band) {
-        if (!is.null(wb$hinges) && length(wb$hinges)>0) {
+        if (!is.null(wb$hinges) && length(wb$hinges) > 0) {
           all.hinges <- c(all.hinges, wb$hinges)
         }
       }
@@ -177,7 +185,7 @@ resp_spct <-
         if (is_effective(wb)) {
           warning("Using only wavelength range from a weighted waveband object.")
           wb_name[i] <- paste("range", as.character(signif(min(wb), 4)),
-                              as.character(signif(max(wb), 4)), sep=".")
+                              as.character(signif(max(wb), 4)), sep = ".")
         } else {
           wb_name[i] <- wb$name
         }
@@ -236,7 +244,10 @@ resp_spct <-
 #' waveband and a response spectrum.
 #'
 #' @param spct an R object
-#' @param w.band a waveband object or a list of waveband objects
+#' @param w.band waveband or list of waveband objects or a numeric vector of
+#'   length two. The waveband(s) determine the region(s) of the spectrum that
+#'   are summarized. If a numeric range is supplied a waveband object is
+#'   constructed on the fly from it.
 #' @param quantity character
 #' @param time.unit character or lubridate::duration
 #' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries
@@ -280,11 +291,11 @@ e_response.response_spct <-
   function(spct, w.band = NULL,
            quantity = "total",
            time.unit = NULL,
-           wb.trim = getOption("photobiology.waveband.trim", default =TRUE),
-           use.hinges=getOption("photobiology.use.hinges", default=NULL), ...) {
-    resp_spct(spct=spct, w.band=w.band, unit.out="energy",
-              quantity=quantity, time.unit=time.unit, wb.trim=wb.trim,
-              use.hinges=use.hinges )
+           wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
+           use.hinges = getOption("photobiology.use.hinges", default = NULL), ...) {
+    resp_spct(spct = spct, w.band = w.band, unit.out = "energy",
+              quantity = quantity, time.unit = time.unit, wb.trim = wb.trim,
+              use.hinges = use.hinges )
   }
 
 # q_response methods --------------------------------------------------------
@@ -295,7 +306,10 @@ e_response.response_spct <-
 #' waveband and a response spectrum.
 #'
 #' @param spct an R object
-#' @param w.band a waveband object or a list of waveband objects
+#' @param w.band waveband or list of waveband objects or a numeric vector of
+#'   length two. The waveband(s) determine the region(s) of the spectrum that
+#'   are summarized. If a numeric range is supplied a waveband object is
+#'   constructed on the fly from it.
 #' @param quantity character
 #' @param time.unit character or lubridate::duration
 #' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries
