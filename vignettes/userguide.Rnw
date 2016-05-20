@@ -18,14 +18,16 @@
 \usepackage{array}
 \usepackage[font={small,sf},labelfont=bf]{caption}
 
-\newcommand{\PB}{\textsf{photobiology}\xspace}
-\newcommand{\PBPla}{\textsf{photobiologyPlants}\xspace}
-\newcommand{\PBFLT}{\textsf{photobiologyFilters}\xspace}
-\newcommand{\PBSU}{\textsf{photobiologySun}\xspace}
-\newcommand{\PBLA}{\textsf{photobiologyLamps}\xspace}
-\newcommand{\PBLD}{\textsf{photobiologyLEDs}\xspace}
-\newcommand{\PBSN}{\textsf{photobiologySensors}\xspace}
-\newcommand{\PBWB}{\textsf{photobiologyWavebands}\xspace}
+\newcommand{\PB}{\textsf{'photobiology'}\xspace}
+\newcommand{\PBPla}{\textsf{'photobiologyPlants'}\xspace}
+\newcommand{\PBFLT}{\textsf{'photobiologyFilters'}\xspace}
+\newcommand{\PBSU}{\textsf{'photobiologySun'}\xspace}
+\newcommand{\PBLA}{\textsf{'photobiologyLamps'}\xspace}
+\newcommand{\PBLD}{\textsf{'photobiologyLEDs'}\xspace}
+\newcommand{\PBSN}{\textsf{'photobiologySensors'}\xspace}
+\newcommand{\PBWB}{\textsf{'photobiologyWavebands'}\xspace}
+\newcommand{\PBIO}{\textsf{'photobiologyInOut'}\xspace}
+\newcommand{\GGSP}{\textsf{'ggspectra'}\xspace}
 
 \newcommand{\UV}{UV\xspace}
 \newcommand{\UVB}{UV-B\xspace}
@@ -97,44 +99,27 @@ my_version <- packageVersion("photobiology")
 
 \sloppy
 We have developed a set of packages to
-facilitate the calculation of many different quantities that can be derived from spectral irradiance data. The base package in this suite is called \PB, and is the package described here. There other specialized packages for quantification of ultraviolet radiation and visible radiation (\PBWB), or plant photoreceptors (\PBPla). Other packages in the suite provide example spectral data for filters (\PBFLT), lamps (\PBLA), LEDs (\PBLD), sunlight (\PBSU) and broadband sensors (\PBSN). In the future it will be submitted to CRAN (Comprehensive R archive network), it is meanwhile available from \url{https://www.r4photobiology.info/}. There is also a public Git repository at \url{https://bitbucket.org/aphalo/} from where the source code of the current an earlier versions can be cloned.
+facilitate the calculation of many different quantities that can be derived from spectral irradiance data. The core package in this suite is called \PB, and is the package described here. Other specialized packages for quantification of ultraviolet radiation and visible radiation (\PBWB), plant photoreceptors and other plant photobiology related calculations (\PBPla), example spectral data for filters (\PBFLT), lamps (\PBLA), LEDs (\PBLD), sunlight (\PBSU), broadband sensors (\PBSN) and for exchange of data in `foreign' formats (\PBIO) are part of the suite. One additional package, (\GGSP), implements facilities for plotting spectral data built on top of package `ggplot2', providing both ggplot statistics in addition to specializations of \texttt{plot()}. All packages that can comply with the repository rules have been submitted or will in coming months be submitted to CRAN (Comprehensive R archive network). The packages not yet in CRAN, and development versions of those already in CRAN, are available through a CRAN-like repository at \url{https://www.r4photobiology.info/R/} while the Web site at \url{http://www.r4photobiology.info} provides news about the development of the suite and some additional information. Each package has its own public Git repository at my Bitbucket account (\url{https://bitbucket.org/aphalo/}) from where the source code of the current and previous versions can be cloned.
 
-Package \PB provides two sets of functions for many operations: functions programmed following a functional paradigm, and functions using an object-oriented paradigm. The former functions take as arguments numeric vectors and are probably faster. The later ones take `spectra' objects as arguments, are easier to use, and at least at the moment, to some extent slower. For everyday use `spectra' objects are recommended, but when maximum performance or flexibility in scripts is desired, the use of the functions taking numeric vectors as arguments may allow optimizations that are not possible with the object-oriented higher level functions.
+Package \PB provides two sets of functions for many operations: low-level functions programmed following a functional paradigm, and higher-level functions using an object-oriented paradigm. The former functions take as arguments numeric vectors and are sometimes faster. The later ones take `spectra' objects as arguments, are easier to use, and at least at the moment, to some extent slower. For everyday use `spectra' objects are recommended, but when maximum performance or flexibility in scripts is desired, the use of the functions taking numeric vectors as arguments may allow optimizations that are not possible with the object-oriented functions. The differences in performance becomes relevant only in extreme cases such as processing in a single script tenths of thousands of spectra. In this vignette we emphasize the use of the object-oriented classes and methods.
 
 \section{Installation and use}
 
-The functions in the package \PB are
-made available by installing the packages \verb!photobiology! (once) and
+The functions in package \PB are
+made available by installing the package \verb!photobiology! (once) in a computer system and
 loading it from the library when needed.
 
 To load the package into the workspace we use \verb!library(photobiology)!.
 
 \section{Spectra}
 
-This package defines a family of classes based on data frames which impose some restrictions on the naming of the vectors, something that allows methods and some functions to `find' the data when passed one of these objects as argument. In addition, as the data is checked when the object is built, there is no need to test for the validity of the data each time a calculation is carried out. The other advantage of using \texttt{spct} objects, is that specialized versions of generic functions like \texttt{print} and operators like \texttt{+} can be defined for spectra. \texttt{\_\_\_spct} objects are \texttt{data.frame} objects, as a result of how classes have been derived. In this package we define a \textit{generic} or \emph{base} spectrum class, derived from \texttt{data.frame}, from which specialized types of spectra are in turn derived. This `parenthood' hierarchy means that spectra objects can be used almost anywhere where a \texttt{data.frame} is expected.
+Package \PB defines a family of classes based on data frames which by imposing some restrictions on the naming of the vectors, allows methods to `find' the data when passed one of these objects as argument. In addition, as the data is checked when the object is built, there is no need to test for the validity of the data each time a calculation is carried out. The other advantage of using \texttt{spct} objects, is that specialized versions of generic functions like \texttt{print} and operators like \texttt{+} are defined for spectra. \texttt{\_\_\_spct} objects are \texttt{data.frame} objects, as a result of how classes have been derived. In this package we define a \emph{generic} or \emph{base} spectrum class, derived from \texttt{data.frame} from which specialized types of spectra are in turn derived. This `parenthood' hierarchy means that spectra objects can be used almost anywhere where a \texttt{data.frame} is expected. Specializations of many methods including extraction (indexing) methods and partial assignment methods are defined to ensure that the expectations on the variables contained in objects of these classes is guaranteed in most situations. Other specializations of methods and functions are related to achieving a convenient and concise syntax tailored for spectral data as in the case of mathematical operators and functions.
 
-\subsection{\texttt{print()}}
+Another important aspect is that spectral data as stored in objects of these classes is always of known physical quantities expressed using known units. Furthermore, attributes are used to keep track of both metadata related to the origin of the data and of later transformations that affect their interpretation, such as normalization or re-scaling. Although sanity tests are applied at the time of object creation, to a large extent the responsibility of ensuring that the numbers provided as argument to object constructors comply with expectations remains with the users of the packages.
 
-The \texttt{print()} method for spectra is based in the current version of the package on the function defined in package \texttt{dplyr}, consequently, it is possible to the options from this package to control printing.  \texttt{dplyr.print\_max}, the number of rows in the spectral object above which only \texttt{dplyr.print\_min} rows are printed, are both set to 5, instead of the default 20 and 10.
+In addition to the classes for storing individual spectra, classes for storing collections of spectra are defined. These classes are derived from class \texttt{list} and can contain member spectra of different lengths and measured at different wavelength values.
 
-<<set-up-printing>>=
-options(dplyr.print_max = 4)
-options(dplyr.print_min = 4)
-@
-
-For explicit calls to \texttt{print()} its argument \texttt{n} can be used to control the number of lines printed. If \texttt{n} is set to \verb|Inf| the whole spectrum is always printed.
-
-<<eval=FALSE>>=
-print(sun.spct, n = 3)
-@
-
-\subsection{\texttt{summary()}}
-
-The \texttt{summary()} method for spectra is based on base R's \texttt{summary()} method for data frames, and accepts the same arguments, and obeys R's global \texttt{digits} option for its default.
-
-<<eval=FALSE>>=
-summary(sun.spct)
-@
+We give in this vignette brief descriptions and examples of the use of different classes, methods, functions and operators. We start with the simplest and most frequently used methods.
 
 \subsection{Classes}
 
@@ -175,16 +160,17 @@ chroma\_spct & w.length, x, y, z & \\
 
 The \emph{design} imposes that data from different observations are never present as different
 \emph{data columns}, if present, additional data columns represent different properties from
-the same observation event.
-In most cases, one spectral object corresponds to one spectral observation, but some functions
+the same observation event. In other words, the storage format is `tidy' as defined by Hadley Wickham.
+In most cases, one spectral object should correspond to one spectral observation, but some functions
 are compatible or can be used to create spectral objects where the spectral data from different
 observations are stored ``longitudinally'' and ``tagged'' with a factor with a level for each
 observation event. These observations must use consistent units of expression
-and attribute values.
+and attribute values. This long format is useful, for example, when producing
+plots with package 'ggplot2'.
 
 \subsection{Data assumptions}
 
-An assumption of the package is that wavelengths are always expressed in nanometres ($1~\Unit{nm} = 1 \cdot 10^{-9}\,\Unit{m}$). If the data to be analysed uses different units for wavelengths, e.g.\ Ångstrom ($1~\Unit{Å} = 1 \cdot 10^{-10}\,\Unit{m}$), the values need to be re-scaled before any calculations. Table \ref{tab:spct:units} lists the units of expression for the different variables listed in  Table  \ref{tab:spct:classes}.
+An assumption of the package is that wavelengths are always expressed in nanometres ($1~\Unit{nm} = 1 \cdot 10^{-9}\,\Unit{m}$). If the data to be analysed uses different units for wavelengths, e.g.\ Ångstrom ($1~\textrm{Å} = 1 \cdot 10^{-10}\,\Unit{m}$), the values need to be re-scaled before creating objects of the spectral classes. The same applies to all spectral quantities, as there is an expectation in every case, of using base SI units for expression. Table \ref{tab:spct:units} lists the units of expression for the different variables listed in  Table  \ref{tab:spct:classes} and the metadata attributes that may determine variations in the expression of the quantities.
 
 \begin{table}
 \caption[Variables for spectral data]{Variables used for spectral data and their units of expression: A: as stored in objects of the spectral classes, B: also recognized by the \texttt{set} family of functions for spectra and automatically converted. \texttt{time.unit} accepts in addition to the character strings listed in the table, objects of classes \texttt{lubridate::duration} and \texttt{period}, in addition \texttt{numeric} values are interpreted as seconds. \texttt{exposure.time} accepts these same values, but not the character strings.}\label{tab:spct:units}
@@ -235,16 +221,15 @@ counts.per.second $\to$ cps & \cps &  \\
 \end{footnotesize}
 \end{table}
 
-Energy irradiances are assumed to be expressed in \watt and photon irradiances in \mol, that is to say using second as unit for time. This is the default, but it is possible to set the unit for time to day in the case of \texttt{source\_spct} objects.
+Energy irradiance is assumed to be expressed in \watt and photon irradiances in \mol, that is to say using second as unit for time. This is the default, but it is possible to set the unit for time to day in the case of \texttt{source\_spct} objects.
 
-The default time unit used is \emph{second}, but \emph{day} and \emph{exposure} can be used by supplying the arguments \texttt{"day"} or \texttt{"exposure"}\footnote{The meaning of \texttt{"exposure"} is the total exposure  time, in other words, fluence instead of irradiance.}
-to a parameter of the constructor of \texttt{source\_spct} objects.
+The default time unit used is \emph{second}, but \emph{day} and \emph{exposure} can be used by supplying the arguments \texttt{"day"} or \texttt{"exposure"}\footnote{The meaning of \texttt{"exposure"} is the total exposure  time, in other words, fluence instead of irradiance.} to a parameter of the constructor of \texttt{source\_spct} objects. In addition to these character constants objects of class \texttt{lubridate:duration} are also accepted.
 
-The attributes are normally set when a spectral object is created, either using default values or with values supplied as arguments to the constructor.
+The attributes are normally set when a spectral object is created, either using default values or with values supplied as arguments to the constructor. However, methods for quering and setting most of these attributes are also available.
 
 \begin{framed}
 \noindent
-Not respecting these assumptions will yield completely wrong results! It is extremely important to make sure that the wavelengths are in nanometres as this is what all functions expect. If wavelength values are in the wrong units, the action-spectra weights and quantum conversions will be wrongly calculated, and the values returned by most functions completely wrong, without warning.
+Not respecting the expectations about data inputs or setting erroneous values in the metadata attributes will yield completely wrong results if calculations are attempted! It is extremely important to make sure that the wavelengths are in nanometres as this is what all functions expect. If wavelength values are in the wrong units, the action-spectra weights and quantum to/from energy units conversions will be wrongly calculated, and the values returned by most functions wrong, without warning. Errors in some cases will be triggered at the time of object creation as the data input to constructors is tested to be within the expected range of values, which in the case of some quantities frequently allows detection of mistakes in the use unit scaling factors.
 \end{framed}
 
 If spectral irradiance data is in \wattnm, and the wavelength in nm, as is the case for many
@@ -257,20 +242,21 @@ If, for example, the spectral irradiance data output by a spectroradiometer is e
 my.spct <- source_spct(w.length = wavelength/10, s.e.irrad = irrad/1000)
 @
 
-In the example above, we take advantage of the behaviour of the S language: an operation between a scalar and vector, is equivalent to applying this operation to each member of the vector.
+In the example above, we take advantage of the behaviour of the S language: an operation between a scalar and vector, is equivalent to applying this operation to each element of the vector.
 Consequently, in the code above, each value from the vector of wavelengths is divided
 by 10, and each value in the vector of spectral irradiances is divided by 1000.
 
 \subsection{Querying the class}
 
-Before giving examples of how to construct objects to store spectral data we show how to query the class of an object, and how to query the class of a spectrum. Consistently with R design, the package provides `is' functions for querying the type of spectra objects.
+Before giving examples of how to construct objects to store spectral data we show how to query the class of an object, and how to query the class of a spectrum. Consistently with R, the package provides `is' functions for querying the type of spectra objects. The only `unusual' function provided as another name for \texttt{is.generic\_spct} is \texttt{is.any\_spct()}.
 
 <<>>=
 is.any_spct(sun.spct)
+is.generic_spct(sun.spct)
 is.source_spct(sun.spct)
 @
 
-In addition function \texttt{class.spc} returns directly the spectrum-related class attributes.
+In addition function \texttt{class\_spc()} returns directly the spectrum-related class attributes. It filters out from the output of \texttt{class()} the underlying classes inherited.
 
 <<>>=
 class_spct(sun.spct)
@@ -279,7 +265,8 @@ class(sun.spct)
 
 \subsection{Construction}
 
-There are basically two different approaches to the creation of spectra by users, a constructor similar to \texttt{data.frame} constructor that takes vectors as arguments, and a constructor that converts \texttt{list} objects into spectral objects, which works similarly to \texttt{as.data.frame} from base R. In contrast to the data frame constructors spectral constructor require the variables or the vector arguments should be suitably named so that they can be recognized.
+There are basically two different approaches to the creation of spectra by users, a constructor similar to \texttt{data.frame} constructor that takes vectors as arguments, and a constructor that converts \texttt{list}
+objects into spectral objects, which works similarly to \texttt{as.data.frame} from base R. In contrast to the data frame constructors spectral constructor require the variables or the vector arguments to be suitably named so that they can be recognized. As data frames and spectral objects are also lists, they are acceptable arguments.
 
 Here we briefly describe the `as' constructor functions for spectra. In the first example we create an object to store spectral irradiance data for `light source', by first creating a data frame, and creating the spectral object as a copy of it. In the example below we supply a single value, 1, for the spectral irradiance. This value gets recycled as is normal in R, but of course in real use it is more usual to supply a vector of the same length as the \texttt{w.length} vector.
 
@@ -774,6 +761,35 @@ In case b) if we supply a numeric value to \texttt{length.out}, this value is us
 split_bands(UV_bands, length.out  =  2)
 split_bands(list(c(100, 150, 200), c(800, 825)), length.out = 1)
 @
+
+\section{Object `inspection' methods}
+
+\subsection{\texttt{print()}}
+
+The \texttt{print()} method for spectra is based on the method defined in package \texttt{dplyr}, consequently, it is possible to use the options from this package to control printing.  In the code chunk below, \texttt{dplyr.print\_max}, the number of rows in the spectral object above which only \texttt{dplyr.print\_min} rows are printed, are both set to 5, instead of the default 20 and 10, to avoid excessive clutter in our examples.
+
+<<set-up-printing>>=
+options(dplyr.print_max = 4)
+options(dplyr.print_min = 4)
+@
+
+For explicit calls to \texttt{print()} its argument \texttt{n} can be used to control the number of lines printed. If \texttt{n} is set to \verb|Inf| the whole spectrum is always printed. The output differs from that of the \texttt{print()} method from package 'dplyr' in that additional metadata specific to spectra are shown.
+
+<<eval=FALSE>>=
+print(sun.spct, n = 3)
+@
+
+Specialized \texttt{print()} methods for collections of spectra and for \texttt{waveband} objects are also defined.
+
+\subsection{\texttt{summary()}}
+
+The \texttt{summary()} method for spectra is based on base R's \texttt{summary()} method for data frames, and accepts the same arguments. The main difference is that the attributes containing metadata and dimensions of the original spectrum object are copied to the summary object.
+
+<<eval=FALSE>>=
+summary(sun.spct)
+@
+
+Specialized \texttt{print()} methods for summaries of spectra are defined. The output differs from that of the \texttt{print()} method from base R in that additional metadata specific to spectra are shown.
 
 \section{Transformations: using operators}
 
@@ -1907,5 +1923,6 @@ beesxyzCMF.spct &  chroma\_spct &  bee colour matching function \\
 \end{footnotesize}
 \end{table}
 
+%\bibliography{vignettes}
 
 \end{document}
