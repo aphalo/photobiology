@@ -114,7 +114,7 @@ q_ratio.source_spct <-
 #' @family photon and energy ratio functions
 #'
 e_ratio <- function(spct, w.band.num, w.band.denom, wb.trim,
-                    use.cached.mult, use.hinges, ...) UseMethod("q_ratio")
+                    use.cached.mult, use.hinges, ...) UseMethod("e_ratio")
 
 #' @describeIn e_ratio Default for generic function
 #'

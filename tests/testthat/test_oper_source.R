@@ -399,3 +399,24 @@ test_that("fluence e_fluence q_fluence", {
                fluence.result * 60, tolerance = 1e-6)
 })
 
+test_that("ratio q_ratio e_ratio", {
+  red.wb <- waveband(c(600,700))
+  blue.wb <- waveband(c(400,500))
+
+  q.ratio.result <- 0.83169703201068901
+  expect_equal(
+    as.numeric(q_ratio(sun.spct, blue.wb, red.wb)),
+    q.ratio.result, tolerance = 1e-12)
+  e.ratio.result <- 1.1922198464802185
+  expect_equal(
+    as.numeric(e_ratio(sun.spct, blue.wb, red.wb)),
+    e.ratio.result, tolerance = 1e-112)
+  eq.ratio.result <- 264631.91378474719
+  expect_equal(
+    as.numeric(eq_ratio(sun.spct, blue.wb)),
+    eq.ratio.result, tolerance = 1e-12)
+  qe.ratio.result <- 1 / eq.ratio.result
+  expect_equal(
+    as.numeric(qe_ratio(sun.spct, blue.wb)),
+    qe.ratio.result, tolerance = 1e-12)
+})
