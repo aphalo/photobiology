@@ -205,6 +205,19 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
       return(reflector_spct())
     }
     setReflectorSpct(ans, Rfr.type = Rfr.type[1], multiple.wl = mltpl.wl)
+  } else if (l.class == "object_spct") {
+    Tfr.type <- sapply(l, FUN = getTfrType)
+    Rfr.type <- sapply(l, FUN = getRfrType)
+    if (length(unique(Tfr.type)) > 1L) {
+      warning("Inconsistent 'Tfr.type' among filter spectra in rbindspct")
+      return(filter_spct())
+    }
+    if (length(unique(Rfr.type)) > 1L) {
+      warning("Inconsistent 'Rfr.type' among reflector spectra in rbindspct")
+      return(reflector_spct())
+    }
+    setObjectSpct(ans, Tfr.type = Tfr.type[1], Rfr.type = Rfr.type[1],
+                  multiple.wl = mltpl.wl)
   } else if (l.class == "response_spct") {
     time.unit <- sapply(l, FUN = getTimeUnit)
     if (length(unique(time.unit)) > 1L) {
