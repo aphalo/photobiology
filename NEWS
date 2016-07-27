@@ -11,6 +11,7 @@ photobiology 0.9.9
 Fix bug in rbindspct() affecting binding of object_spct objects.
 Fix bug in sunrise_time() and sunset_time() with vector of dates input at
 polar region latitudes.
+Fix bug in e_ratio().
 
 photobiology 0.9.8
 ==================
@@ -25,7 +26,7 @@ on-the-fly into a waveband object.
 Add "guard code" to summary functions triggering errors or warnings when the
 spct object passed as argument contains data for multiple spectra in long form.
 Fix bug in stepsize.generic_spct() and improve print() output for spct objects
-contain data for multiple spectra (in long form) and their summaries.
+containing data for multiple spectra (in long form) and their summaries.
 Improve how print() handles large collections of spectra.
 
 photobiology 0.9.7
