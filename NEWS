@@ -9,6 +9,8 @@ photobiology 0.9.9
 ==================
 
 Fix bug in rbindspct() affecting binding of object_spct objects.
+Fix bug in sunrise_time() and sunset_time() with vector of dates input at
+polar region latitudes.
 
 photobiology 0.9.8
 ==================

@@ -431,7 +431,7 @@ sunset_time <- function(date = lubridate::today(), tz = "UTC",
       stats::uniroot(f = altitude,
               lon = lon, lat = lat,
               twlght_angl = twlght_angl,
-              lower = t_num, upper = t_num + 86400 / 2)$root,
+              lower = t_num - 1, upper = t_num + 86400 / 2)$root,
       silent = TRUE)
     if (inherits(set, "try-error")) {
       set <- NA # never

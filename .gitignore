@@ -15,3 +15,4 @@ src/RcppExports.cpp
 vignettes/userguide.toc
 vignettes/*.pdf
 vignettes/figure/
+vignettes/backups/
