@@ -16,3 +16,4 @@ vignettes/userguide.toc
 vignettes/*.pdf
 vignettes/figure/
 vignettes/backups/
+inst/web

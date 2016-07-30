@@ -10,3 +10,4 @@
 ^vignettes/*\.log$
 ^vignettes/*\.synctex\.gz$
 ^.*\.bak$
+^inst/web/*
