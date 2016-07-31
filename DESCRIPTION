@@ -14,7 +14,6 @@ Description: Definitions of classes, methods, operators and functions for use in
     interpolation. Astronomical calculations related solar angles and day
     length. Colours and vision.
 License: GPL (>= 3)
-VignetteBuilder: knitr
 Depends:
     R (>= 3.2.0)
 Imports:
@@ -25,6 +24,7 @@ Imports:
     caTools (>= 1.17.1)
 Suggests:
     knitr (>= 1.12.3),
+    rmarkdown (>= 0.9.6),
     testthat (>= 0.11.0),
     roxygen2 (>= 5.0.1)
 LazyLoad: yes
@@ -34,5 +34,5 @@ URL: http://www.r4photobiology.info/,
     https://bitbucket.org/aphalo/photobiology
 BugReports: https://bitbucket.org/aphalo/photobiology/issues
 Encoding: UTF-8
-Roxygen: list(wrap = FALSE)
 RoxygenNote: 5.0.1
+VignetteBuilder: knitr

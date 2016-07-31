@@ -1,5 +1,5 @@
 ---
-title: "`photobiology` `r packageVersion('photobiology')`<br>User Guide"
+title: "photobiology `r packageVersion('photobiology')`: User Guide"
 author: "Pedro J. Aphalo"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
@@ -9,11 +9,10 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r, setup, include=FALSE, cache=FALSE}
+```{r, include=FALSE, echo=FALSE}
 library(knitr)
 opts_chunk$set(fig.path = 'figure/pos-', fig.align = 'center', fig.show = 'hold',
-               fig.width = 7, fig.height = 6, size = "footnotesize")
-# options(replace.assign=TRUE,width=60)
+               fig.width = 7, fig.height = 4)
 # options(warnPartialMatchArgs = FALSE)
 ```
 
@@ -22,17 +21,7 @@ options(tibble.print_max = 6)
 options(tibble.print_min = 4)
 ```
 
-```{r, example-0-hiden, eval=TRUE, include=FALSE}
-library(photobiology)
-library(lubridate)
-```
-
-```{r, own-set-up, echo=FALSE, include=FALSE}
-my_version <- packageVersion("photobiology")
-```
-
 ## Introduction
-
 
 We have developed a set of packages to
 facilitate the calculation of many different quantities that can be derived from spectral irradiance data. The core package in this suite is called '**photobiology**', and is the package described here. Other specialized packages for quantification of ultraviolet radiation and visible radiation ('**photobiologyWavebands**'), plant photoreceptors and other plant photobiology related calculations ('**photobiologyPlants**'), example spectral data for filters ('**photobiologyFilters**'), lamps ('**photobiologyLamps**'), LEDs ('**photobiologyLEDs**'), sunlight ('**photobiologySun**'), light sensors ('**photobiologySensors**') and for exchange of data in _foreign_ formats ('**photobiologyInOut**') are part of the suite. One additional package, ('*ggspectra*'), implements facilities for plotting spectral data by extending package '**ggplot2**', providing both ggplot statistics in addition to specializations of `plot()`. All packages that can comply with the repository rules have been submitted or will in coming months be submitted to **CRAN** (Comprehensive R archive network). The packages not yet in **CRAN**, and development versions of those already in **CRAN**, are available through a CRAN-like repository at <http://www.r4photobiology.info/R/> while the Web site at <http://www.r4photobiology.info> provides news about the development of the suite and some additional information. Each package has its own public Git repository at my Bitbucket account (<https://bitbucket.org/aphalo/>) from where the source code of the current and previous versions can be cloned or forked.
@@ -49,12 +38,22 @@ In addition to the classes for storing individual spectra, classes for storing c
 
 We give in this vignette brief descriptions and examples of the use of different classes, methods, functions and operators. We start with the simplest and most frequently used methods.
 
+### Getting started
+
+We load two packages, our '**photobiology**' and '**lubridate**', as they will be used in the examples.
+
+```{r, pkg-load, eval=TRUE}
+library(photobiology)
+library(lubridate)
+```
+
 ### Classes
 
 The package defines several classes intended to be used to store different types of spectral data. They are all derived from `generic_spct`, which in turn is derived from `data.frame` and internally created using `dplyr::data_frame`. Table \ref{tab:spct:classes} lists them. Attributes are used in objects of these classes to keep _metadata_ such as information about units of expression.
 
 <hr>
-**Table. _Classes for spectral data_** In addition to the required variables listed in the table, additional arbitrary variables are partly supported---some operations will not include them in returned values to avoid ambiguity and other possible conflicts. In addition to the attributes listed, all spectral objects have attributes `multiple.wl`, `normalized`, `scaled`, `when.measured`, `where.measured`, `what.measured` plus the normal attributes of `data_frame` objects including `comment`.}\label{tab:spct:classes}
+
+**Table. _Classes for spectral data_** In addition to the required variables listed in the table, additional arbitrary variables are partly supported---some operations will not include them in returned values to avoid ambiguity and other possible conflicts. In addition to the attributes listed, all spectral objects have attributes `multiple.wl`, `normalized`, `scaled`, `when.measured`, `where.measured`, `what.measured` plus the normal attributes of `data_frame` objects including `comment`.
 
 | Class name | Required variables | Attributes                 |
 |:-----------|:----------------|:---------------------------|
@@ -287,7 +286,7 @@ Spectral objects created with earlier (pre-release) versions of this package are
 
 ### Classes
 
-The package defines several classes intended to be used to store _collections_ of different types of spectral data. They are all derived from `generic_mspct`, which in turn is derived from `list`. Table \ref{tab:mspct:classes} lists them.
+The package defines several classes intended to be used to store _collections_ of different types of spectral data. They are all derived from `generic_mspct`, which in turn is derived from `list`. The table below lists them.
 
 <hr>
 
@@ -348,6 +347,7 @@ subset2mspct(two_suns.spct)
 ```
 
 Data frame containing _tidy_ spectral data (target class and index variable need to be supplied as arguments).
+
 ```{r, bind-2}
 test1.df <- data.frame(w.length = rep(200:210, 2),
                        s.e.irrad = rep(c(1, 2), c(11, 11)),
@@ -433,7 +433,7 @@ c(two_suns.mspct, mixed.mspct)
 
 ### Transform or _apply_ functions
 
-For our _apply_ functions we follow the naming convention used in package `plyr`, but using  `ms` as prefix for `_mspct` objects. The _apply_ functions implemented in the '**photobiology**' package are `msmsply`, `msdply`, `mslply`  and `msaply` which both accepts a collections of spectra as first argument and return a collection of spectra, a data frame, a list, or an array respectively (Table \ref{tab:apply}).
+For our _apply_ functions we follow the naming convention used in package `plyr`, but using  `ms` as prefix for `_mspct` objects. The _apply_ functions implemented in the '**photobiology**' package are `msmsply`, `msdply`, `mslply`  and `msaply` which both accepts a collections of spectra as first argument and return a collection of spectra, a data frame, a list, or an array respectively (see Table below).
 
 <hr>
 
@@ -663,7 +663,7 @@ split_bands(list(c(100, 150, 200), c(800, 825)), length.out = 1)
 
 The `print()` method for spectra is based on the method defined in package '**tibble**', consequently, it is possible to use the options from this package to control printing.  In the code chunk below, `tibble.print_max`, the number of rows in the spectral object above which only `tibble.print_min` rows are printed, are both set to 5, instead of the default 20 and 10, to avoid excessive clutter in our examples.
 
-```{r, set-up-printing}
+```{r, set-up-printing, eval=FALSE}
 options(tibble.print_max = 4)
 options(tibble.print_min = 4)
 ```
@@ -691,7 +691,7 @@ Specialized `print()` methods for summaries of spectra are defined. The output d
 ### Binary operators
 
 The basic maths operators have definitions for spectra. It is possible to sum, subtract, multiply and divide spectra. These operators can be used even if the spectral data is on different arbitrary sets of wavelengths. Operators by default use values expressed in energy units. Only certain operations are meaningful for a given combination of
-objects belonging to different classes, and meaningless combinations return `NA` also issuing a warning (see Table \ref{tab:operators}). By default operations are carried out on spectral energy irradiance for `source_spct` objects and transmittance for `filter_spct` objects.
+objects belonging to different classes, and meaningless combinations return `NA` also issuing a warning (see Table below). By default operations are carried out on spectral energy irradiance for `source_spct` objects and transmittance for `filter_spct` objects.
 
 <hr>
 
@@ -836,11 +836,11 @@ options(photobiology.radiation.unit = "energy")
 sun.spct * UVB
 ```
 
-The other options listed in Table \ref{tab:options} can be set similarly, to unset any option, they can be given a `NULL` value.
+The other options listed in the Table above can be set similarly, to unset any option, they can be given a `NULL` value.
 
 ## Transformations: methods and functions
 
-In this section we describe methods and functions that take one or more spectral objects, and in some cases also waveband objects, as arguments and return another spectral object (Table \ref{tab:transform:spct}) or that take a collection of spectral objects, and in some cases also waveband objects, as arguments and return a collection of spectral objects (Table \ref{tab:transform:mspct}).
+In this section we describe methods and functions that take one or more spectral objects, and in some cases also waveband objects, as arguments and return another spectral object (see Table below) or that take a collection of spectral objects, and in some cases also waveband objects, as arguments and return a collection of spectral objects.
 
 <hr>
 
@@ -1142,7 +1142,7 @@ In the chuck above, we can see how this works, using in this case the default `b
 
 ## Summaries
 
-Summaries can be calculated both from individual spectral objects (Table \ref{tab:summaries:spct}) and from collections of spectral objects (Table \ref{tab:summaries:mspct}). They return a _simpler_ object than the spectral data in their arguments. For example a vector of numeric values, possibly of length one, in the case of individual spectra, or a data frame containing one row of summary data for each spectrum the collection of multiple spectra supplied as argument.
+Summaries can be calculated both from individual spectral objects (see Table below) and from collections of spectral objects (see separate Table). They return a _simpler_ object than the spectral data in their arguments. For example a vector of numeric values, possibly of length one, in the case of individual spectra, or a data frame containing one row of summary data for each spectrum the collection of multiple spectra supplied as argument.
 
 <hr>
 
@@ -1255,7 +1255,7 @@ stepsize(sun.spct)
 #### Collections of spectra
 
 <hr>
-Most frequently used summary methods are implemented for collections of spectra. See Table \ref{tab:summaries:mspct} where methods that need to be applied with functions `msaply`, `msdply` or `mslply` to members in a collection and obtain the results in an array (vector, or matrix), a data frame or a list object are indicated. In many cases depending of the class desired for the result, one can chose a suitable _apply_ function, and sometimes it is best to use such a function, even when the corresponding method is implemented for collections of spectra.
+Most frequently used summary methods are implemented for collections of spectra. See the Table for those methods that need to be applied with functions `msaply`, `msdply` or `mslply` to members in a collection returning the results in an array (vector, or matrix), a data frame or a list object. In many cases depending of the class desired for the result, one can chose a suitable _apply_ function, and sometimes it is best to use such a function, even when the corresponding method is implemented for collections of spectra.
 <hr>
 
 Collections of spectra can be useful not only for time-series of spectra or spectral images, but also when dealing with a small group of related spectra. In the example below we show how to use a collection of spectra for calculating summaries. The spectra in a collection do **not** need to have been measured at the same wavelength values, or have the same number of rows or even of columns. Consequently, in many cases applying the wavelength summary functions described above to collections of spectra can be useful. The value returned is a data frame, with a number of data columns equal to the length of the returned value by the corresponding method for individual spectra.
@@ -1366,23 +1366,26 @@ irrad(sun.spct, UV_bands, quantity = "average")
 
 Collections of spectra can be useful not only for time-series of spectra or spectral images, but also when dealing with a small group of related spectra. In the example below we show how to use a collection of spectra for estimating irradiances under different filters set up in sunlight.
 
-We reuse collection of filter spectra `filters.mspct` from section \ref{sec:collections} on page \pageref{sec:collections}.
+We reuse collection of filter spectra `filters.mspct` from an earlier section.
+
 ```{r, col-names-1}
 names(filters.mspct)
 ```
 
-We then convolve each filter's spectral transmittance by the spectral irradiance of the light source
+We then convolve each filter's spectral transmittance by the spectral irradiance of the light source.
+
 ```{r, col-convolve-1}
 filtered_sun <- convolve_each(filters.mspct, sun.spct)
 irrad(filtered_sun, list(UVA, PAR))
 ```
 
-The code above can also be written as a single statement
+The code above can also be written as a single statement.
+
 ```{r, col-convolve-2}
 irrad(convolve_each(filters.mspct, sun.spct), list(UVA, PAR))
 ```
 
-It is also possible to use an _apply_ function. Syntax parallels that of base R's and package `plyr`'s. See sections \ref{sec:apply} and \ref{sec:convolve} for more details.
+It is also possible to use an _apply_ function. Syntax parallels that of base R's and package `plyr`'s. See sections _apply_ functions and `convolve` for more details.
 
 One thing to remember, is that operators in R are just normal functions with special names and call syntax. They can also be called with the usual function call syntax by enclosing their _name_ in backquotes. We use this to pass as argument the multiplication operator `*` in a call to `msmsply` which returns, in this case, a `source_multi_spct` object. After this we just call the `irrad` method on the _collection of spectra_ and obtain the result as a data frame with one row per spectrum and one column by waveband.
 
@@ -1491,7 +1494,7 @@ irrad(sun.spct * polyester.spct, list(UVB, UVA, PAR, wb.trim = TRUE)) /
 
 #### Collections of spectra
 
-Here we construct a collection of filter spectra, and then we calculate the transmittance of these filters for two wavebands, obtaining the results as a data frame, with one row per filter, and one column per waveband. We reuse once more `filters.mspct` from section \ref{sec:collections} on page \pageref{sec:collections}.
+Here we construct a collection of filter spectra, and then we calculate the transmittance of these filters for two wavebands, obtaining the results as a data frame, with one row per filter, and one column per waveband. We reuse once more `filters.mspct` from an earlier section.
 
 ```{r}
 transmittance(filters.mspct, list(UVA, PAR))
@@ -1703,11 +1706,11 @@ best when processing a moderate number of spectra, say less than a few hundreds,
 
 ## Example data
 
-A few example spectra are included in this package for use in examples and vignettes, and testing (Tables \ref{tab:data:spct} and \ref{tab:data:chroma}).
+A few example spectra are included in this package for use in examples and vignettes, and testing (see next two tables below).
 
 <hr>
 
-**Table. _Data sets included in the package: spectra._** The CIE standard illuminant data in this package are normalized to one at $\lambda = 560\,$nm, while in the CIE standard they are normalized to 100 at the same wavelength.}\label{tab:data:spct}
+**Table. _Data sets included in the package: spectra._** The CIE standard illuminant data in this package are normalized to one at $\lambda = 560\,$nm, while in the CIE standard they are normalized to 100 at the same wavelength.
  
 | Object | class | units      | data description          |
 |:--------|:-------|:----------|:---------------------------|
