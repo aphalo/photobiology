@@ -127,7 +127,7 @@ msdply <- function(mspct, .fun, ..., idx = NULL, col.names = NULL) {
       z$row <- rep(1:mspct.nrow, mspct.ncol)
     }
   }
-  dplyr::as_data_frame(z)
+  tibble::as_tibble(z)
 }
 
 #' @rdname  msmsply

@@ -111,15 +111,15 @@ absorptance_spct <-
       Afr.type <- Tfr.type
       Rfr.type <- "unknown" # otherwise NA would require special handling
       A2T(spct, action = "add", byref = TRUE)
-      temp.spct <- dplyr::data_frame(w.length = spct[["w.length"]],
+      temp.spct <- tibble::tibble(w.length = spct[["w.length"]],
                                      Afr = 1 - spct[["Tfr"]])
     } else if (Tfr.type == "total" && Rfr.type == "total") {
       Afr.type <- "total"
-      temp.spct <- dplyr::data_frame(w.length = spct[["w.length"]],
+      temp.spct <- tibble::tibble(w.length = spct[["w.length"]],
                                Afr = 1 - spct[["Tfr"]] - spct[["Rfr"]])
      } else if (Tfr.type == "internal" && Rfr.type == "total") {
       Afr.type <- "total"
-      temp.spct <- dplyr::data_frame(w.length = spct[["w.length"]],
+      temp.spct <- tibble::tibble(w.length = spct[["w.length"]],
                                    Afr = (1 - spct[["Tfr"]]) * (1 - spct[["Rfr"]]))
     } else if (Tfr.type == "unknown" || Rfr.type == "unknown") {
       warning("'unknown' Tfr.type or Rfr.type, skipping absorptance calculation")

@@ -118,7 +118,7 @@ interpolate_spct <- function(spct,
   other.cols <- setdiff(names.spct, numeric.cols)
   data.cols <- setdiff(numeric.cols, "w.length")
   if (nrow(spct) == 0) {
-    new.spct <- dplyr::data_frame(w.length = w.length.out)
+    new.spct <- tibble::tibble(w.length = w.length.out)
     new.spct[ , data.cols] <- fill
   }
   if (!is.null(length.out)) {
@@ -187,7 +187,7 @@ interpolate_spct <- function(spct,
     }
   }
   w.length.out <- unique(sort(w.length.out))
-  new.spct <- dplyr::data_frame(w.length = w.length.out)
+  new.spct <- tibble::tibble(w.length = w.length.out)
 
   for (data.col in data.cols) {
     temp.values <-  with(spct, get(data.col))

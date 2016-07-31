@@ -24,7 +24,7 @@
 #'   in an error instead of a warning.
 #' @param multiple.wl	numeric Maximum number of repeated w.length entries with
 #'   same value.
-#' @param ... other arguments passed to \code{data_frame()}
+#' @param ... other arguments passed to \code{tibble()}
 #'
 #' @return A object of class generic_spct or a class derived from it, depending
 #'   on the function used. In other words an object of a class with the same
@@ -52,14 +52,14 @@ source_spct <- function(w.length = NULL,
                         multiple.wl = 1L,
                         ...) {
   if (length(w.length) == 0) {
-    z <- dplyr::data_frame(w.length = numeric(), s.e.irrad = numeric(), ...)
+    z <- tibble::tibble(w.length = numeric(), s.e.irrad = numeric(), ...)
   } else if (is.null(s.q.irrad) && (is.numeric(s.e.irrad))) {
-    z <- dplyr::data_frame(w.length, s.e.irrad, ...)
+    z <- tibble::tibble(w.length, s.e.irrad, ...)
   } else if (is.null(s.e.irrad) && (is.numeric(s.q.irrad))) {
-    z <- dplyr::data_frame(w.length, s.q.irrad, ...)
+    z <- tibble::tibble(w.length, s.q.irrad, ...)
   } else {
     warning("Only one of s.e.irrad or s.q.irrad should be different from NULL.")
-    z <- dplyr::data_frame(w.length, ...)
+    z <- tibble::tibble(w.length, ...)
   }
   if (!is.null(comment)) {
     comment(z) <- comment
@@ -88,9 +88,9 @@ raw_spct <- function(w.length = NULL,
                      multiple.wl = 1L,
                      ...) {
   if (length(w.length) == 0) {
-    z <- dplyr::data_frame(w.length = numeric(), counts = numeric(), ...)
+    z <- tibble::tibble(w.length = numeric(), counts = numeric(), ...)
   } else {
-    z <- dplyr::data_frame(w.length = w.length, counts = counts, ...)
+    z <- tibble::tibble(w.length = w.length, counts = counts, ...)
   }
   if (!is.null(comment)) {
     comment(z) <- comment
@@ -117,15 +117,15 @@ cps_spct <- function(w.length = NULL,
                      ...) {
   if (any(grepl("^cps", names(list(...)))) && is.na(cps)) {
     if (length(w.length) == 0) {
-      z <- dplyr::data_frame(w.length = numeric(), ...)
+      z <- tibble::tibble(w.length = numeric(), ...)
     } else {
-      z <- dplyr::data_frame(w.length = w.length, ...)
+      z <- tibble::tibble(w.length = w.length, ...)
     }
   } else {
     if (length(w.length) == 0) {
-      z <- dplyr::data_frame(w.length = numeric(), cps = numeric(), ...)
+      z <- tibble::tibble(w.length = numeric(), cps = numeric(), ...)
     } else {
-      z <- dplyr::data_frame(w.length = w.length, cps = cps, ...)
+      z <- tibble::tibble(w.length = w.length, cps = cps, ...)
     }
   }
   if (!is.null(comment)) {
@@ -147,9 +147,9 @@ generic_spct <- function(w.length = NULL,
                          multiple.wl = 1L,
                          ...) {
   if (length(w.length) == 0) {
-    z <- dplyr::data_frame(w.length = numeric(), ...)
+    z <- tibble::tibble(w.length = numeric(), ...)
   } else {
-    z <- dplyr::data_frame(w.length = w.length, ...)
+    z <- tibble::tibble(w.length = w.length, ...)
   }
   if (!is.null(comment)) {
     comment(z) <- comment
@@ -176,14 +176,14 @@ response_spct <- function(w.length = NULL,
                           multiple.wl = 1L,
                           ...) {
   if (length(w.length) == 0) {
-    z <- dplyr::data_frame(w.length = numeric(), s.e.response = numeric(), ...)
+    z <- tibble::tibble(w.length = numeric(), s.e.response = numeric(), ...)
   } else if (is.null(s.q.response) && (is.numeric(s.e.response))) {
-    z <- dplyr::data_frame(w.length, s.e.response, ...)
+    z <- tibble::tibble(w.length, s.e.response, ...)
   } else if (is.null(s.e.response) && (is.numeric(s.q.response))) {
-    z <- dplyr::data_frame(w.length, s.q.response, ...)
+    z <- tibble::tibble(w.length, s.q.response, ...)
   } else {
     warning("Only one of s.e.response or s.q.response should be different from NULL.")
-    z <- dplyr::data_frame(w.length, ...)
+    z <- tibble::tibble(w.length, ...)
   }
   if (!is.null(comment)) {
     comment(z) <- comment
@@ -218,16 +218,16 @@ filter_spct <- function(w.length=NULL,
                         multiple.wl = 1L,
                         ...) {
   if (length(w.length) == 0) {
-    z <- dplyr::data_frame(w.length = numeric(), Tfr = numeric())
+    z <- tibble::tibble(w.length = numeric(), Tfr = numeric())
   } else if (is.null(Tpc) && is.null(A) && is.numeric(Tfr)) {
-    z <- dplyr::data_frame(w.length, Tfr, ...)
+    z <- tibble::tibble(w.length, Tfr, ...)
   } else if (is.null(Tfr) && is.null(A) && is.numeric(Tpc)) {
-    z <- dplyr::data_frame(w.length, Tpc, ...)
+    z <- tibble::tibble(w.length, Tpc, ...)
   } else if (is.null(Tpc) && is.null(Tfr) && is.numeric(A)) {
-    z <- dplyr::data_frame(w.length, A, ...)
+    z <- tibble::tibble(w.length, A, ...)
   } else {
     warning("Only one of Tfr, Tpc or A should be different from NULL.")
-    z <- dplyr::data_frame(w.length, ...)
+    z <- tibble::tibble(w.length, ...)
   }
   if (!is.null(comment)) {
     comment(z) <- comment
@@ -256,14 +256,14 @@ reflector_spct <- function(w.length = NULL,
                            multiple.wl = 1L,
                            ...) {
   if (length(w.length) == 0) {
-    z <- dplyr::data_frame(w.length = numeric(), Rfr = numeric(), ...)
+    z <- tibble::tibble(w.length = numeric(), Rfr = numeric(), ...)
   } else if (is.null(Rpc) && is.numeric(Rfr)) {
-    z <- dplyr::data_frame(w.length, Rfr, ...)
+    z <- tibble::tibble(w.length, Rfr, ...)
   } else if (is.null(Rfr) && is.numeric(Rpc)) {
-    z <- dplyr::data_frame(w.length, Rpc, ...)
+    z <- tibble::tibble(w.length, Rpc, ...)
   } else {
     warning("Only one of Rfr, or Rpc should be different from NULL.")
-    z <- dplyr::data_frame(w.length, ...)
+    z <- tibble::tibble(w.length, ...)
   }
   if (!is.null(comment)) {
     comment(z) <- comment
@@ -289,10 +289,10 @@ object_spct <- function(w.length=NULL,
                         multiple.wl = 1L,
                         ...) {
   if (length(w.length) == 0) {
-    z <- dplyr::data_frame(w.length = numeric(),
+    z <- tibble::tibble(w.length = numeric(),
                            Rfr = numeric(), Tfr = numeric(), ...)
   } else {
-    z <- dplyr::data_frame(w.length, Rfr, Tfr, ...)
+    z <- tibble::tibble(w.length, Rfr, Tfr, ...)
   }
   if (!is.null(comment)) {
     comment(z) <- comment
@@ -320,10 +320,10 @@ chroma_spct <- function(w.length=NULL,
                         multiple.wl = 1L,
                         ...) {
   if (length(w.length) == 0) {
-    z <- dplyr::data_frame(w.length = numeric(),
+    z <- tibble::tibble(w.length = numeric(),
                            x = numeric(), y = numeric(), z = numeric(), ...)
   } else {
-    z <- dplyr::data_frame(w.length, x, y, z, ...)
+    z <- tibble::tibble(w.length, x, y, z, ...)
   if (!is.null(comment)) {
     comment(z) <- comment
   }

@@ -115,7 +115,7 @@ l_insert_hinges <- function(x, y, h) {
 #' irradiance during integration of the effective spectral irradiance. This is
 #' specially true when data have a large wavelength step size. This fucntion
 #' differs from \code{insert_hinges()} in that it returns a vector of \code{y}
-#' values instead of a \code{data_frame}.
+#' values instead of a \code{tibble}.
 #'
 #' @param x numeric array (sorted in increasing order)
 #' @param y numeric array

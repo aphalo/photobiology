@@ -130,7 +130,7 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
     ans <- l[[1]]
   } else {
     ans <- plyr::rbind.fill(l)
-    ans <- dplyr::as_data_frame(ans)
+    ans <- tibble::as_tibble(ans)
   }
   if (is.null(ans)) {
     return(generic_spct())
@@ -287,7 +287,7 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
 #' @param i index for rows,
 #' @param j index for columns, specifying elements to extract or replace. Indices are
 #'   numeric or character vectors or empty (missing) or NULL. Please, see
-#'   \code{\link[base]{Extract.data.frame}} for more details.
+#'   \code{\link[base]{Extract}} for more details.
 #' @param drop logical. If TRUE the result is coerced to the lowest possible
 #'   dimension. The default is FALSE unless the result is a single column.
 #'

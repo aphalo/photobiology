@@ -216,13 +216,13 @@ wb2spct <- function(w.band) {
     w.length <- c(w.length, wb$hinges)
   }
   if (is.null(w.length) || length(w.length) < 2) {
-    new.spct <- dplyr::data_frame(w.length = numeric(0),
+    new.spct <- tibble::tibble(w.length = numeric(0),
                                   counts = 0, cps = 0,
                                   s.e.irrad = numeric(0), s.q.irrad = numeric(0),
                                   Tfr = numeric(0), Rfl = numeric(0), s.e.response = numeric(0))
   } else {
     w.length <- unique(sort(w.length))
-    new.spct <- dplyr::data_frame(w.length = w.length,
+    new.spct <- tibble::tibble(w.length = w.length,
                                   counts = 0, cps = 0,
                                   s.e.irrad = 0, s.q.irrad = 0,
                                   Tfr = 0, Rfl = 0, s.e.response = 0)
@@ -314,7 +314,7 @@ wb2rect_spct <- function(w.band, short.names = TRUE) {
     wbs.wl.high[i] <- max(wb)
     wbs.rgb[i] <- color(wb)[1]
   }
-  new.spct <- dplyr::data_frame(w.length = wbs.wl.mid,
+  new.spct <- tibble::tibble(w.length = wbs.wl.mid,
                                 counts = 0, cps = 0,
                                 s.e.irrad = 0, s.q.irrad = 0,
                                 Tfr = 0, Rfl = 0,

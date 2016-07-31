@@ -72,7 +72,7 @@ trim_tails <- function(x, y,
   if (use.hinges) {
     new.data <- insert_hinges(x, y, c(low.limit, high.limit))
   } else {
-    new.data <- dplyr::data_frame(x = x, y = y)
+    new.data <- tibble::tibble(x = x, y = y)
   }
 
   trimmed.selector <- with(new.data, (x >= low.limit) & (x <= high.limit))

@@ -188,7 +188,7 @@ oper.e.generic_spct <- function(e1, e2, oper) {
       z <- oper_spectra(e1$w.length, e2$w.length,
                         e1$s.e.irrad, e2$z,
                         bin.oper=oper, trim="intersection")
-      z <- dplyr::data_frame(w.length=x$w.length, x=x[["s.irrad"]],
+      z <- tibble::tibble(w.length=x$w.length, x=x[["s.irrad"]],
                              y=y[["s.irrad"]], z=z[["s.irrad"]])
       setChromaSpct(z)
       return(z)
@@ -608,7 +608,7 @@ oper.q.generic_spct <- function(e1, e2, oper) {
       z <- oper_spectra(e1$w.length, e2$w.length,
                         e1$s.q.irrad, e2$z,
                         bin.oper=oper, trim="intersection")
-      z <- dplyr::data_frame(w.length=x$w.length,
+      z <- tibble::tibble(w.length=x$w.length,
                              x=x[["s.irrad"]], y=y[["s.irrad"]], z=z[["s.irrad"]])
       setChromaSpct(z)
       return(z)

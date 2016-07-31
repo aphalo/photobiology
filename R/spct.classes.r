@@ -57,7 +57,7 @@ check_spct.generic_spct <-
   # fix old class attributes
   class.x <- class_spct(x)
   if (!("tbl_df") %in% class(x)) {
-    x <- dplyr::as_data_frame(x)
+    x <- tibble::as_tibble(x)
   }
   class(x) <- union(class.x, class(x))
   # check variables
@@ -602,7 +602,7 @@ setGenericSpct <- function(x, multiple.wl = 1L) {
   name <- substitute(x)
   rmDerivedSpct(x)
   if (!is.data.frame(x) || inherits(x, "data.table")) {
-    x <- dplyr::as_data_frame(x)
+    x <- tibble::as_tibble(x)
   }
   if (!is.generic_spct(x)) {
     class(x) <- c("generic_spct", class(x))
@@ -627,7 +627,7 @@ setRawSpct <- function(x, strict.range = FALSE, multiple.wl = 1L) {
   name <- substitute(x)
   rmDerivedSpct(x)
   if (!is.data.frame(x) || inherits(x, "data.table")) {
-    x <- dplyr::as_data_frame(x)
+    x <- tibble::as_tibble(x)
   }
   setGenericSpct(x, multiple.wl = multiple.wl)
   class(x) <- c("raw_spct", class(x))
@@ -648,7 +648,7 @@ setCpsSpct <- function(x, strict.range = FALSE, multiple.wl = 1L) {
   name <- substitute(x)
   rmDerivedSpct(x)
   if (!is.data.frame(x) || inherits(x, "data.table")) {
-    x <- dplyr::as_data_frame(x)
+    x <- tibble::as_tibble(x)
   }
   setGenericSpct(x, multiple.wl = multiple.wl)
   class(x) <- c("cps_spct", class(x))
@@ -681,7 +681,7 @@ setFilterSpct <- function(x, Tfr.type=c("total", "internal"),
   }
   rmDerivedSpct(x)
   if (!is.data.frame(x) || inherits(x, "data.table")) {
-    x <- dplyr::as_data_frame(x)
+    x <- tibble::as_tibble(x)
   }
   setGenericSpct(x, multiple.wl = multiple.wl)
   class(x) <- c("filter_spct", class(x))
@@ -714,7 +714,7 @@ setReflectorSpct <- function(x, Rfr.type=c("total", "specular"),
   }
   rmDerivedSpct(x)
   if (!is.data.frame(x) || inherits(x, "data.table")) {
-    x <- dplyr::as_data_frame(x)
+    x <- tibble::as_tibble(x)
   }
   setGenericSpct(x, multiple.wl = multiple.wl)
   class(x) <- c("reflector_spct", class(x))
@@ -756,7 +756,7 @@ setObjectSpct <- function(x,
   }
   rmDerivedSpct(x)
   if (!is.data.frame(x) || inherits(x, "data.table")) {
-    x <- dplyr::as_data_frame(x)
+    x <- tibble::as_tibble(x)
   }
   setGenericSpct(x, multiple.wl = multiple.wl)
   class(x) <- c("object_spct", class(x))
@@ -780,7 +780,7 @@ setResponseSpct <- function(x, time.unit="second", multiple.wl = 1L) {
   name <- substitute(x)
   rmDerivedSpct(x)
   if (!is.data.frame(x) || inherits(x, "data.table")) {
-    x <- dplyr::as_data_frame(x)
+    x <- tibble::as_tibble(x)
   }
   setGenericSpct(x, multiple.wl = multiple.wl)
   class(x) <- c("response_spct", class(x))
@@ -805,7 +805,7 @@ setSourceSpct <- function(x, time.unit="second", bswf.used=c("none", "unknown"),
   name <- substitute(x)
   rmDerivedSpct(x)
   if (!is.data.frame(x) || inherits(x, "data.table")) {
-    x <- dplyr::as_data_frame(x)
+    x <- tibble::as_tibble(x)
   }
   setGenericSpct(x, multiple.wl = multiple.wl)
   class(x) <- c("source_spct", class(x))
@@ -829,7 +829,7 @@ setChromaSpct <- function(x, multiple.wl = 1L) {
   name <- substitute(x)
   rmDerivedSpct(x)
   if (!is.data.frame(x) || inherits(x, "data.table")) {
-    x <- dplyr::as_data_frame(x)
+    x <- tibble::as_tibble(x)
   }
   setGenericSpct(x, multiple.wl = multiple.wl)
   class(x) <- c("chroma_spct", class(x))
@@ -1816,7 +1816,7 @@ getWhenMeasured.summary_generic_spct <- function(x, ...) {
 #' @param idx logical whether to add a column with the names of the elements of
 #'   spct
 #' @note The method for collections of spectra returns the
-#'   a data_frame with the correct times in TZ = "UTC".
+#'   a tibble with the correct times in TZ = "UTC".
 #' @export
 getWhenMeasured.generic_mspct <- function(x,
                                           ...,

@@ -55,7 +55,7 @@ oper_spectra <- function(w.length1, w.length2=NULL, s.irrad1, s.irrad2, trim="un
     } else {
       stop("Mismatch in the length of input vectors")
     }
-    invisible(dplyr::data_frame(w.length, s.irrad=s.irrad.result))
+    invisible(tibble::tibble(w.length, s.irrad=s.irrad.result))
   }
   if (length(w.length2) != length(s.irrad2) | length(w.length1) != length(s.irrad1)){
     stop("Mismatch in the length of input vectors")
@@ -80,5 +80,5 @@ oper_spectra <- function(w.length1, w.length2=NULL, s.irrad1, s.irrad2, trim="un
   s.irrad1.int <- interpolate_spectrum(w.length1, s.irrad1, w.length, fill=0.0)
   s.irrad2.int <- interpolate_spectrum(w.length2, s.irrad2, w.length, fill=0.0)
   s.irrad.result <- bin.oper(s.irrad1.int, s.irrad2.int, ...)
-  invisible(dplyr::data_frame(w.length, s.irrad=s.irrad.result))
+  invisible(tibble::tibble(w.length, s.irrad=s.irrad.result))
 }

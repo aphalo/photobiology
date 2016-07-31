@@ -1748,7 +1748,7 @@ A few example spectra are included in this package for use in examples and vigne
 
 <hr>
 
-### References
+
 
 
 

@@ -89,7 +89,7 @@ trim_spct <- function(spct,
       low.tail.w.length <- seq(from = low.limit,
                                to = ifelse(use.hinges, low.end - 1e-12, low.end - 1),
                                length.out = low.tail.length)
-      spct.top <- dplyr::data_frame(w.length = low.tail.w.length)
+      spct.top <- tibble::tibble(w.length = low.tail.w.length)
       for (data.col in names.data) {
         col.class <- class(spct[[data.col]])[1]
         if ("numeric" %in% col.class) {
@@ -111,7 +111,7 @@ trim_spct <- function(spct,
         }
       }
       spct <- plyr::rbind.fill(list(spct.top, spct))
-      spct <- dplyr::as_data_frame(spct)
+      spct <- tibble::as_tibble(spct)
       setGenericSpct(spct)
       low.end <- min(spct)
     } else {
@@ -131,7 +131,7 @@ trim_spct <- function(spct,
       high.tail.w.length <- seq(from = ifelse(use.hinges, high.end + 1e-12, high.end + 1),
                                 to = high.limit,
                                 length.out = high.tail.length)
-      spct.bottom <- dplyr::data_frame(w.length = high.tail.w.length)
+      spct.bottom <- tibble::tibble(w.length = high.tail.w.length)
       for (data.col in names.data) {
         col.class <- class(spct[[data.col]])[1]
         if ("numeric" %in% col.class) {
@@ -153,7 +153,7 @@ trim_spct <- function(spct,
         }
       }
       spct <- plyr::rbind.fill(list(spct, spct.bottom))
-      spct <- dplyr::as_data_frame(spct)
+      spct <- tibble::as_tibble(spct)
       setGenericSpct(spct)
       low.end <- max(spct)
     } else {

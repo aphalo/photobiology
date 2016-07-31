@@ -33,7 +33,7 @@
 #'   and exchanges of ideas that lead to the development of this package. The
 #'   contributins of Andy McLeod, Lars Olof Björn, Nigel Paul, Lasse Ylianttila,
 #'   T. Matthew Robson and Titta Kotilainen were specially significant.
-#'   Tutorials by Hadley Wickham comments on my presentation at UseR!2015
+#'   Tutorials by Hadley Wickham and comments on my presentation at UseR!2015
 #'   allowed me to significantly improving the coding and functionality.
 #'
 #' @examples

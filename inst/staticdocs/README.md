@@ -1,4 +1,4 @@
-# ggspectra #
+# photobiolgy #
 
 Package '**photobiolgy**' defines a system of classes for storing spectral data and accompanying metdata. For each of these classes specialised summary methods, maths operators and functions are provided. In addition, classes for storing collections of objects of the classes for individual spectra are defined as well as 'apply' functions. Extraction and replacement operators are also implemented.
 
