@@ -12,6 +12,9 @@ Fix bug in rbindspct() affecting binding of object_spct objects.
 Fix bug in sunrise_time() and sunset_time() with vector of dates input at
 polar region latitudes.
 Fix bug in e_ratio().
+Convert User Guide from PDF (Rnw) to HTML (Rmd).
+Fix some minor mistakes in documentation and build a documentation web site
+with package 'staticdocs'.
 
 photobiology 0.9.8
 ==================

@@ -17,6 +17,7 @@ opts_chunk$set(fig.path = 'figure/pos-', fig.align = 'center', fig.show = 'hold'
 ```
 
 ```{r, printing-spectra, eval=TRUE, include=FALSE}
+library(tibble)
 options(tibble.print_max = 6)
 options(tibble.print_min = 4)
 ```
@@ -49,11 +50,11 @@ library(lubridate)
 
 ### Classes
 
-The package defines several classes intended to be used to store different types of spectral data. They are all derived from `generic_spct`, which in turn is derived from `data.frame` and internally created using `dplyr::data_frame`. Table \ref{tab:spct:classes} lists them. Attributes are used in objects of these classes to keep _metadata_ such as information about units of expression.
+The package defines several classes intended to be used to store different types of spectral data. They are all derived from `generic_spct`, which in turn is derived from `data.frame` and internally created using `tibble::tibble`. Table 1 lists them. Attributes are used in objects of these classes to keep _metadata_ such as information about units of expression.
 
 <hr>
 
-**Table. _Classes for spectral data_** In addition to the required variables listed in the table, additional arbitrary variables are partly supported---some operations will not include them in returned values to avoid ambiguity and other possible conflicts. In addition to the attributes listed, all spectral objects have attributes `multiple.wl`, `normalized`, `scaled`, `when.measured`, `where.measured`, `what.measured` plus the normal attributes of `data_frame` objects including `comment`.
+**Table 1. Classes for spectral data.** In addition to the required variables listed in the table, additional arbitrary variables are partly supported---some operations will not include them in returned values to avoid ambiguity and other possible conflicts. In addition to the attributes listed, all spectral objects have attributes `multiple.wl`, `normalized`, `scaled`, `when.measured`, `where.measured`, `what.measured` plus the normal attributes of `tibble` (and `data.frame`) objects including `comment`.
 
 | Class name | Required variables | Attributes                 |
 |:-----------|:----------------|:---------------------------|
@@ -84,11 +85,11 @@ plots with package 'ggplot2'.
 
 ### Data assumptions
 
-An assumption of the package is that wavelengths are always expressed in nanometres ($1~\mathrm{nm} = 1 \cdot 10^{-9}\,\mathrm{m}$). If the data to be analysed uses different units for wavelengths, e.g.\ Ångstrom ($1~\textrm{Å} = 1 \cdot 10^{-10}\,\mathrm{m}$), the values need to be re-scaled before creating objects of the spectral classes. The same applies to all spectral quantities, as there is an expectation in every case, of using base SI units for expression. The table below lists the units of expression for the different variables and the metadata attributes that may determine variations in the expression of the quantities.
+An assumption of the package is that wavelengths are always expressed in nanometres ($1~\mathrm{nm} = 1 \cdot 10^{-9}\,\mathrm{m}$). If the data to be analysed uses different units for wavelengths, e.g.\ Ångstrom ($1~\textrm{Å} = 1 \cdot 10^{-10}\,\mathrm{m}$), the values need to be re-scaled before creating objects of the spectral classes. The same applies to all spectral quantities, as there is an expectation in every case, of using base SI units for expression. Table 2 lists the units of expression for the different variables and the metadata attributes that may determine variations in the expression of the quantities.
 
 <hr>
 
-**Table. _Variables for spectral data_** Variables used for spectral data and their units of expression: **A:** as stored in objects of the spectral classes, **B:** also recognized by the `set` family of functions for spectra and automatically converted. `time.unit` accepts in addition to the character strings listed in the table, objects of classes `lubridate::duration` and `period`, in addition `numeric` values are interpreted as seconds. `exposure.time` accepts these same values, but not the character strings.
+**Table 2. Variables used for spectral data and their units of expression.** **A:** as stored in objects of the spectral classes, **B:** also recognized by the `set` family of functions for spectra and automatically converted. `time.unit` accepts in addition to the character strings listed in the table, objects of classes `lubridate::duration` and `period`, in addition `numeric` values are interpreted as seconds. `exposure.time` accepts these same values, but not the character strings.
 
 | Variables          | Unit of expression | Attribute value  |
 |:-------------------|:-------------------|:-----------------|
@@ -132,7 +133,7 @@ Energy irradiance is assumed to be expressed in $W\,m^{-2}$ and photon irradianc
 
 The default time unit used is _second_, but _day_ and _exposure_ can be used by supplying the arguments `"day"` or `"exposure"`---The meaning of `"exposure"` is the total exposure time, in other words, fluence instead of irradiance---to a parameter of the constructor of `source_spct` objects. In addition to these character constants objects of class `lubridate:duration` are also accepted.
 
-The attributes are normally set when a spectral object is created, either using default values or with values supplied as arguments to the constructor. However, methods for quering and setting most of these attributes are also available.
+The attributes are normally set when a spectral object is created, either using default values or with values supplied as arguments to the constructor. However, methods for querying and setting most of these attributes are also available.
 
 <hr>
 Not respecting the expectations about data inputs or setting erroneous values in the metadata attributes will yield completely wrong results if calculations are attempted! It is extremely important to make sure that the wavelengths are in nanometres as this is what all functions expect. If wavelength values are in the wrong units, the action-spectra weights and quantum to/from energy units conversions will be wrongly calculated, and the values returned by most functions wrong, without warning. Errors in some cases will be triggered at the time of object creation as the data input to constructors is tested to be within the expected range of values, which in the case of some quantities frequently allows detection of mistakes in the use unit scaling factors._
@@ -286,11 +287,11 @@ Spectral objects created with earlier (pre-release) versions of this package are
 
 ### Classes
 
-The package defines several classes intended to be used to store _collections_ of different types of spectral data. They are all derived from `generic_mspct`, which in turn is derived from `list`. The table below lists them.
+The package defines several classes intended to be used to store _collections_ of different types of spectral data. They are all derived from `generic_mspct`, which in turn is derived from `list`. Table 3 lists them.
 
 <hr>
 
-**Table. _Classes for collections of spectral objects_** Classes for collections of spectral objects. Objects of class `generic_mspct` can have member objects of any class derived from `generic_spct` and can be heterogeneous. Attributes can be queried and set with the normal R methods of the same names. See table xxx for the attributes used in individual member spectra of collections.
+**Table 3. Classes for collections of spectral objects.** Objects of class `generic_mspct` can have member objects of any class derived from `generic_spct` and can be heterogeneous. Attributes can be queried and set with the normal R methods `attr` and `attributes` as well as with functions defined in this package. See table 1 for the attributes used in individual member spectra of collections.
 
 
 | Class name       | Class of member objects        | Attributes         |
@@ -327,7 +328,7 @@ class(mixed.mspct)
 lapply(mixed.mspct, class_spct)
 ```
 
-\subsubsection{Using _as_ functions}
+#### Using _as_ functions
 
 The `as` functions for collections of spectra, not only change the class of the collection object, but also apply the corresponding {as} functions to the member objects. They copy the original objects and then convert the copy, which is returned.
 
@@ -337,7 +338,7 @@ class(two_gen.mscpt)
 lapply(two_gen.mscpt, class_spct)
 ```
 
-\subsubsection{Converting _tidy_ data}
+#### Converting _tidy_ data
 
 Spectral objects containing multiple spectra identified by a factor (class of the argument is replicated to collection members).
 
@@ -361,7 +362,7 @@ setSourceSpct(test1.df, multiple.wl = 2L)
 test1.df
 ```
 
-\subsubsection{Converting _untidy_ data frames}
+#### Converting _untidy_ data frames
 
 Data frame containing _untidy_ or _wide_ spectral data (class is determined by the function used,
 columns which are not `numeric` are skipped.
@@ -433,11 +434,11 @@ c(two_suns.mspct, mixed.mspct)
 
 ### Transform or _apply_ functions
 
-For our _apply_ functions we follow the naming convention used in package `plyr`, but using  `ms` as prefix for `_mspct` objects. The _apply_ functions implemented in the '**photobiology**' package are `msmsply`, `msdply`, `mslply`  and `msaply` which both accepts a collections of spectra as first argument and return a collection of spectra, a data frame, a list, or an array respectively (see Table below).
+For our _apply_ functions we follow the naming convention used in package `plyr`, but using  `ms` as prefix for `_mspct` objects. The _apply_ functions implemented in the '**photobiology**' package are `msmsply`, `msdply`, `mslply`  and `msaply` which both accepts a collections of spectra as first argument and return a collection of spectra, a data frame, a list, or an array respectively (see Table 4).
 
 <hr>
 
-**Table. _Apply functions for collections of spectra_** Apply functions for collections of spectra. Key: v., value returned by _apply_ function; f.v., value returned by the applied function (argument `.fun`). In the table `generic_mspct` and `generic_spct` indicate objects of these classes or any class derived from them. The exact class of the collection of spectra object returned  will be determined by the class(es) of the values returned by the applied function.
+**Table 4. Apply functions for collections of spectra.** Key: v., value returned by _apply_ function; f.v., value returned by the applied function (argument `.fun`). In the table `generic_mspct` and `generic_spct` indicate objects of these classes or any class derived from them. The exact class of the collection of spectra object returned  will be determined by the class(es) of the values returned by the applied function.
 
 | _apply_ function | first arg. class | v. class | f.v. class | f.v. length | f.v. dims |
 |:-------------|:--------|:-------|:-----|:-----|:----|
@@ -553,18 +554,18 @@ When a range of wavelengths or a range of wavelengths plus a spectral weighting 
 
 When defining a waveband which uses a SWF, a function can be supplied either based on energy effectiveness, on photon effectiveness, or one function for each one. If only one function is supplied the other one is built automatically, but if performance is a concern it is better to provide two separate functions. Another case when you might want to enter the same function twice, is if you are using an absorptance spectrum as SWF, as the percent of radiation absorbed will be independent of whether photon or energy units are used for the spectral irradiance.
 
-To create a waveband object we use constructor function `waveband`, and optionally giving a name to it.
+To create a waveband object we use constructor function `waveband`, and optionally giving a name to it. **We will use these objects in many of the examples below, so you will need to run the code chunk bellow to be able to reproduce those examples.** It should be noted that waveband constructors for the most frequently used wavelength-range definitions are provided by package '**photobiologyWavebands**'.
 
 ```{r, wb-1}
-PAR <- waveband(c(400, 700), wb.name = "PAR")
-UVA <- waveband(c(315, 400), wb.name = "UVA")
-UVB <- waveband(c(280, 315), wb.name = "UVB")
-UVC <- waveband(c(100, 280), wb.name = "UVC")
-UV  <- waveband(c(100, 400), wb.name =  "UV")
-UV_bands <- list(UVC, UVB, UVA)
+PAR.wb <- waveband(c(400, 700), wb.name = "PAR")
+UVA.wb <- waveband(c(315, 400), wb.name = "UVA")
+UVB.wb <- waveband(c(280, 315), wb.name = "UVB")
+UVC.wb <- waveband(c(100, 280), wb.name = "UVC")
+UV.wb  <- waveband(c(100, 400), wb.name =  "UV")
+UV_bands.lst <- list(UVC.wb, UVB.wb, UVA.wb)
 ```
 
-When including a BSWF, we supply, one or two versions of functions returning the weights as a function of wavelength. Several such functions are defined in package '**photobiologyWavebands**' as well as constructors using them. Here we give three examples of how equivalent wavebands can be defined based on a SWF. Although the constructor is smart enough to derive the missing function when only one function is supplied, performance may suffer.
+When including a BSWF, we can supply, one or two versions of functions returning the weights as a function of wavelength. Several such functions are defined in package '**photobiologyWavebands**' as well as waveband constructors using them. Here we show how a waveband can be defined based on a SWF, using the CIE definition for the erythemal spectral weighting function. Although the constructor is smart enough to derive the missing function when only one function is supplied, performance may suffer unless two performance-optimized function are provided, one for energy-based effect and a second one for photon-based effect.
 
 ```{r, wb-2}
 CIE_e_fun <-
@@ -581,8 +582,8 @@ function(w.length){
 ```
 
 ```{r, wb-3}
-CIE <- waveband(c(250, 400), weight = "SWF",
-                SWF.e.fun = CIE_e_fun, SWF.norm = 298)
+CIE.wb <- waveband(c(250, 400), weight = "SWF",
+                   SWF.e.fun = CIE_e_fun, SWF.norm = 298)
 ```
 
 The first argument to `waveband()` does not need to be a numeric vector of length two. Any R object of a class that supplies a `range()` method definition that can be interpreted as a range of wavelengths in nanometres can be used. As a consequence, when wanting to construct a waveband covering the whole range of a spectrum one can simply supply the spectrum as argument, or to construct an unweighted waveband which covers exactly the same range of wavelengths as an existing effective (weighted) waveband, one can supply a waveband object as an argument.
@@ -596,10 +597,10 @@ waveband(sun.spct)
 The function `is.waveband` can the used to query any R object. This function returns a logical value.
 
 ```{r, wb-5}
-is.waveband(PAR)
+is.waveband(PAR.wb)
 ```
 
-Above, we demonstrate that `PAR` is a waveband object, the function `photobiologyWavebands::PAR()` is a waveband constructor returning a waveband object. See package '**photobiologyWavebands**' for details on pre-defined waveband constructors for frequently used wavelength ranges and biological spectral weighting functions (BSWFs).
+Above, we demonstrate that `PAR.wb` is a waveband object, the function `photobiologyWavebands::PAR()` is a waveband constructor returning a waveband object. See package '**photobiologyWavebands**' for details on pre-defined waveband constructors for frequently used wavelength ranges and biological spectral weighting functions (BSWFs).
 
 ### Retrieving properties
 
@@ -639,7 +640,7 @@ In both examples above, the output is a list of two wavebands, but the _split_ b
 
 ```{r, wb-split-2}
 split_bands(sun.spct, length.out = 2)
-split_bands(PAR, length.out = 2)
+split_bands(PAR.wb, length.out = 2)
 split_bands(c(200, 800), length.out = 3)
 ```
 
@@ -653,7 +654,7 @@ split_bands(list(c(100, 150, 200), c(800, 825)))
 In case b) if we supply a numeric value to `length.out`, this value is used recursively for each element of the list.
 
 ```{r, wb-split-4}
-split_bands(UV_bands, length.out  =  2)
+split_bands(UV_bands.lst, length.out  =  2)
 split_bands(list(c(100, 150, 200), c(800, 825)), length.out = 1)
 ```
 
@@ -690,12 +691,12 @@ Specialized `print()` methods for summaries of spectra are defined. The output d
 
 ### Binary operators
 
-The basic maths operators have definitions for spectra. It is possible to sum, subtract, multiply and divide spectra. These operators can be used even if the spectral data is on different arbitrary sets of wavelengths. Operators by default use values expressed in energy units. Only certain operations are meaningful for a given combination of
-objects belonging to different classes, and meaningless combinations return `NA` also issuing a warning (see Table below). By default operations are carried out on spectral energy irradiance for `source_spct` objects and transmittance for `filter_spct` objects.
+All of R's built-in maths operators have definitions for spectra. It is possible to sum, subtract, multiply and divide spectra. These operators can be used even if the spectral data is on different arbitrary sets of wavelengths. Operators by default return values expressed in energy units. Only certain operations are meaningful for a given combination of
+objects belonging to different classes, and meaningless combinations return `NA` also issuing a warning (see Table 5). By default operations are carried out on spectral energy irradiance for `source_spct` objects and transmittance for `filter_spct` objects.
 
 <hr>
 
-**Table. _Binary operators_** Binary operators and operands. Validity and class of result. All operations marked `\Y' are allowed, those marked `\N' are forbidden and return `NA` and issue a warning. Operators `%/%` and `%%` follow `/`.
+**Table 5. Binary operators and their operands.** Validity and class of result. All operations marked `\Y' are allowed, those marked `\N' are forbidden and return `NA` and issue a warning. Operators `%/%` and `%%` follow `/`.
 
 | e1     | `+` | `-` | `*` | `/` | `^` | e2         | value        |
 |:--------|:--:|:--:|:--:|:--:|:--:|:------------|:---------------|
@@ -756,26 +757,26 @@ There is one special case, for `chroma_spct`: if the numeric operand has length 
 Operators are also defined for operations between an spectrum and a `waveband` object. The next to code chunks demonstrate how the class of the result depends on whether the `waveband` object describes a range of wavelengths or a range of wavelengths plus a BSWF.
 
 ```{r, bin-oper-5}
-sun.spct * UVB
+sun.spct * UVB.wb
 ```
 
 ```{r, bin-oper-6, eval=FALSE}
-sun.spct * CIE
+sun.spct * CIE.wb
 ```
 
 And of course these operations can be combined into more complex statements, including parentheses, when needed. The example below estimates the difference in effective spectral irradiance according to the CIE98 definition, between sunlight and sunlight filtered with a polyester film. Of course, the result is valid only for the solar spectral data used, which corresponds to Southern Finland.
 
 ```{r, bin-oper-7, warning=TRUE, purl=FALSE}
-sun.spct * CIE - sun.spct * polyester.spct * CIE
+sun.spct * CIE.wb - sun.spct * polyester.spct * CIE.wb
 ```
 
 ### Unary operators and maths functions
 
-The most common maths functions, as well as unary minus and plus, are also implemented for spectral objects (see Table below).
+Many common maths functions, as well as unary minus and plus, are implemented for spectral objects (see Table 6).
 
 <hr>
 
-**Table. _Unary operators_** Unary operators and maths functions for spectra. Classes for which they are implemented and class of the result. All operations marked Y are allowed, those marked N are not implemented and return `NA` and issue a warning. Additional supported functions: `log2, log10, sin, cos, tan, asin, acos, atan, sinpi, cospi, tanpi, signif, floor, ceiling, trunc, sign, abs`.
+**Table 6. Unary operators and maths functions for spectra.**  Classes for which they are implemented and class of the result. All operations marked Y are allowed, those marked N are not implemented and return `NA` and issue a warning. Additional supported functions: `log2, log10, sin, cos, tan, asin, acos, atan, sinpi, cospi, tanpi, signif, floor, ceiling, trunc, sign, abs`.
 
 | e1 | `+, -` | `log, exp` | trig. | `round` | `sqrt` | value |
 |:-----|:--:|:--:|:--:|:--:|:--:|:-------|
@@ -797,11 +798,11 @@ sqrt(sun.spct)
 
 ### Options
 
-The table below lists all the recognized options affecting maths operators and functions, and their default values. Within the suite all functions have a default value which is used when the options are undefined. Options are set using base R's function `options`, and queried with functions `options` and `getOption`.
+Table 7 lists all the recognized options affecting maths operators and functions, and their default values. Within the suite all functions have a default value which is used when the options are undefined. Options are set using base R's function `options`, and queried with functions `options` and `getOption`.
 
 <hr>
 
-**Table. _Options_** Options recognized by functions in the '**photobiology**' package and the values they can take.
+**Table 7. Options used in the 'r4photobiology suite' and recognized by methods, operators and functions in the 'photobiology' package.** Option names, accepted and default values, and the purpose of the options are given.
 
 | Option | `values`, **default** | _function_                        |
 |:------|:---------------------|:------------------------------------|
@@ -831,20 +832,20 @@ The behaviour of the operators defined in this package depends on the value of t
 
 ```{r, options-1}
 options(photobiology.radiation.unit = "photon")
-sun.spct * UVB
+sun.spct * UVB.wb
 options(photobiology.radiation.unit = "energy")
-sun.spct * UVB
+sun.spct * UVB.wb
 ```
 
 The other options listed in the Table above can be set similarly, to unset any option, they can be given a `NULL` value.
 
 ## Transformations: methods and functions
 
-In this section we describe methods and functions that take one or more spectral objects, and in some cases also waveband objects, as arguments and return another spectral object (see Table below) or that take a collection of spectral objects, and in some cases also waveband objects, as arguments and return a collection of spectral objects.
+In this section we describe methods and functions that take one or more spectral objects, and in some cases also waveband objects, as arguments and return another spectral object (see Tables 8 and 9) or that take a collection of spectral objects, and in some cases also waveband objects, as arguments and return a collection of spectral objects.
 
 <hr>
 
-**Table. _Transformation methods for spectra_** Transformation methods for spectra. Key: + available, -- not available, f available in the future.
+**Table 8. Transformation methods for spectra.** Key: + available, -- not available, f available in the future.
 
 | methods |  raw/cps | source | response | filter | reflector | object | chroma |
 |:--------|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
@@ -871,7 +872,7 @@ In this section we describe methods and functions that take one or more spectral
 
 <hr>
 
-**Table. _Transformation methods for collections of spectra_** Transformation methods for collections of spectra. Key: + available, -- not available, **ms** use `msmsply()` or `convolve_each()` to apply function or operator to collection members.
+**Table 9. Transformation methods for collections of spectra.** Key: + available, -- not available, **ms** use `msmsply()` or `convolve_each()` to apply function or operator to collection members.
 
 | methods |  raw/cps | source | response | filter | reflector | object | chroma |
 |:--------|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
@@ -958,7 +959,7 @@ normalize(sun.spct)
 Which is equivalent to supplying `"max"` as argument to `norm`, it is also possible to give a range within which the maximum should be searched.
 
 ```{r, manip-7}
-normalize(sun.spct, range = PAR, norm = "max")
+normalize(sun.spct, range = PAR.wb, norm = "max")
 ```
 
 It is also possible to normalize to an arbitrary wavelength within the range of the data, even if it is not one of the wavelength values present in the spectral object, as interpolation is used when needed.
@@ -974,7 +975,7 @@ Function `fscale()` rescales a spectrum by dividing each spectral data value by 
 ```{r, manip-9}
 fscale(sun.spct)
 fscale(sun.spct, f = "total")
-fscale(sun.spct, range = PAR, f = irrad)
+fscale(sun.spct, range = PAR.wb, f = irrad)
 ```
 
 In the third example, the spectral data is rescaled so that the corresponding photosynthetically-active irradiance is equal to one.
@@ -984,7 +985,7 @@ In the third example, the spectral data is rescaled so that the corresponding ph
 Function `fshift()` shifts the zero of the scale of a spectrum by subtracting from each spectral data value a value calculated with a function (f) selected by a character string ("mean", "min" or "max"), or an actual R function which can accept the spectrum object supplied as its first argument. The range argument selects a region of the spectrum to be used as _reference_ in the calculation of the summary.
 
 ```{r, manip-10}
-fshift(sun.spct, range = UVB, f = "mean")
+fshift(sun.spct, range = UVB.wb, f = "mean")
 fshift(sun.spct, range = c(280,290), f = "min")
 ```
 
@@ -1026,7 +1027,7 @@ clip_wl(sun.spct, range = c(400, NA))
 As for `trim_wl()` the range can be also supplied as a `waveband` object, or any other object for which `range()` returns a numeric range. Even a different spectrum object is acceptable.
 
 ```{r, trim-2}
-clip_wl(sun.spct, range = UVA)
+clip_wl(sun.spct, range = UVA.wb)
 ```
 
 The result can be a spectrum of length zero.
@@ -1049,7 +1050,7 @@ clip_wl(sun.spct, c(282.5, NA))
 As for `clip_wl()` the range can be also supplied as a `waveband` object, or any other object for which `range()` returns a numeric range. Even a different spectrum object is acceptable.
 
 ```{r, trim-5}
-trim_wl(sun.spct, PAR)
+trim_wl(sun.spct, PAR.wb)
 ```
 
 The default for `fill` is `NULL` which results in deletion values outside the trimmed region. However, it is possible to supply a different argument, to be used to replace the off-range data values.
@@ -1086,19 +1087,19 @@ It is very instructive to look at weighted spectral data to understand how effec
 The multiplication operator is defined for operations between a `source_spct` and a `waveband`, so this is the easiest way of doing the calculations.
 
 ```{r, weights-1}
-sun.spct * CIE
+sun.spct * CIE.wb
 ```
 
-#### Vectors
+<!-- #### Vectors -->
 
-It is also possible to use vectors.
+<!-- It is also possible to use vectors. -->
 
-```{r, vectors-1, tidy=FALSE}
-weighted.s.e.irrad <-
-  with(sun.spct,
-       s.e.irrad * calc_multipliers(w.length, CIE)
-  )
-```
+<!-- ```{r, vectors-1, tidy=FALSE} -->
+<!-- weighted.s.e.irrad <- -->
+<!--   with(sun.spct, -->
+<!--        s.e.irrad * calc_multipliers(w.length, CIE.wb) -->
+<!--   ) -->
+<!-- ``` -->
 
 ### Tagging with bands and colours
 
@@ -1109,22 +1110,22 @@ We call tagging, to the process of adding reference information to spectral data
 The function `tag` can be used to tag different parts of a spectrum according to wavebands.
 
 ```{r, tag-1}
-tag(sun.spct, PAR, byref = FALSE)
-tag(sun.spct, UV_bands, byref = FALSE)
+tag(sun.spct, PAR.wb)
+tag(sun.spct, UV_bands.lst)
 ```
 
 The added factor and colour data can be used for further processing or for plotting. Information about the tagging and wavebands is stored in an attribute `tag.attr` in every tagged spectrum, this yields a more compact output and keeps a _trace_ of the tagging.
 
 ```{r, tag-2}
-tg.sun.spct <- tag(sun.spct, PAR, byref = FALSE)
+tg.sun.spct <- tag(sun.spct, PAR.wb)
 attr(tg.sun.spct, "spct.tags")
 ```
 
 Additional functions are available which return a tagged spectrum and take as input a list of wavebands, but no spectral data. They _build_ a spectrum from the data in the wavebands, and are useful for plotting the boundaries of wavebands.
 
 ```{r, tag-3}
-wb2tagged_spct(UV_bands)
-wb2rect_spct(UV_bands)
+wb2tagged_spct(UV_bands.lst)
+wb2rect_spct(UV_bands.lst)
 ```
 
 Function `wb2tagged_spct` returns a tagged spectrum, with two rows for each waveband, corresponding to the low and high wavelength boundaries, while function `wb2rect_spct` returns a spectrum with only one row per waveband, with `w.length` set to its midpoint but with additional columns  `xmin` and `xmax` corresponding to the low and high wavelength boundaries of the wavebands.
@@ -1134,19 +1135,26 @@ Function `is_tagged` can be used to query if an spectrum is tagged or not, and f
 ```{r, tag-4}
 tg.sun.spct
 is_tagged(tg.sun.spct)
-untag(tg.sun.spct)
-is_tagged(tg.sun.spct)
+untg.sun.spct <- untag(tg.sun.spct)
+is_tagged(untg.sun.spct)
 ```
 
-In the chuck above, we can see how this works, using in this case the default `byref = TRUE` which adds the tags in place, or "by reference"", to the spct object supplied as argument.
+In the chuck above, we can see how this works, using in this case the default `byref = FALSE` which adds the tags to a copy of the spectrum object. In contrast, setting `byref = TRUE` adds the tags in place, or "by reference"", to the spct object supplied as argument. Passing arguments by reference is unusual for R and is best avoided.
+
+```{r}
+is_tagged(untg.sun.spct)
+untag(tg.sun.spct, byref = TRUE)
+is_tagged(untg.sun.spct)
+
+```
 
 ## Summaries
 
-Summaries can be calculated both from individual spectral objects (see Table below) and from collections of spectral objects (see separate Table). They return a _simpler_ object than the spectral data in their arguments. For example a vector of numeric values, possibly of length one, in the case of individual spectra, or a data frame containing one row of summary data for each spectrum the collection of multiple spectra supplied as argument.
+Summaries can be calculated both from individual spectral objects (Table 10) and from collections of spectral objects (Table 11). They return a _simpler_ object than the spectral data in their arguments. For example a vector of numeric values, possibly of length one, in the case of individual spectra, or a data frame containing one row of summary data for each spectrum the collection of multiple spectra supplied as argument.
 
 <hr>
 
-**Table. _Summary methods for spectra_** Summary methods for spectra.  Key: + available, - not available.
+**Table 10. Summary methods for spectra.** Key: + available, - not available.
 
 | methods | raw/cps | source | response | filter | reflector | object | chroma |
 |:--------|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
@@ -1186,7 +1194,7 @@ Summaries can be calculated both from individual spectral objects (see Table bel
 
 <hr>
 
-**Table. _Summary methods for collections of spectra_** Summary methods for collections of spectra. Key: + available, -- not available, **ms** use `msmsply()` to apply function to collection members, **d** use `msdply()`, **l** use `mslply` to apply function to collection members, **a** use `msaply` to apply function to collection members.
+**Table 11. Summary methods for collections of spectra.** Key: + available, -- not available, **ms** use `msmsply()` to apply function to collection members, **d** use `msdply()`, **l** use `mslply` to apply function to collection members, **a** use `msaply` to apply function to collection members.
 
 | methods |  raw/cps |  source |  response  |  filter  |  reflector  |  object  |  chroma | 
 |:--------|:----:|:-----:|:----:|:----:|:----:|:----:|:----:|
@@ -1312,10 +1320,10 @@ The code using `spct` objects is simple, to integrate the whole spectrum we can 
 irrad(sun.spct)
 ```
 
-and, to integrate a range of wavelengths, in the example, photosynthetically active radiation, we use the waveband `PAR` we earlier defined.
+and, to integrate a range of wavelengths, in the example, photosynthetically active radiation, we use the waveband `PAR.wb` we earlier defined.
 
 ```{r, irrad-2}
-irrad(sun.spct, PAR)
+irrad(sun.spct, PAR.wb)
 ```
 
 It is also valid to pass as argument for `w.band` a numeric range representing wavelengths in nanometres.
@@ -1330,36 +1338,36 @@ The default for `irrad`, when no argument `unit.out` is supplied, is to return t
 Functions `e_irrad` and `q_irrad` save some typing, and always return the same type of spectral irradiance quantity, independently of global option `photobiology.radiation.unit`.
 
 ```{r, irrad-4}
-e_irrad(sun.spct, PAR) # W m-2
-q_irrad(sun.spct, PAR) * 1e6 # umol s-1 m-2
+e_irrad(sun.spct, PAR.wb) # W m-2
+q_irrad(sun.spct, PAR.wb) * 1e6 # umol s-1 m-2
 ```
 
 It is also possible to supply a time unit to use as basis of expression for the returned value, but be aware that conversion into a logger time unit is only valid for sources like lamps, which have an output the remains constant in time.
 
 ```{r, irrad-5}
-irrad(sun.spct, PAR, time.unit = "hour")
-irrad(sun.spct, PAR, time.unit = duration(8, "hours"))
+irrad(sun.spct, PAR.wb, time.unit = "hour")
+irrad(sun.spct, PAR.wb, time.unit = duration(8, "hours"))
 ```
 
 Using a shorter time unit than the original, yields an average value re-expressed on a new time unit base.
 
 ```{r, irrad-6}
-irrad(sun.daily.spct, PAR, time.unit = "second")
+irrad(sun.daily.spct, PAR.wb, time.unit = "second")
 ```
 
 Lists of wavebands are also accepted as argument.
 
 ```{r, irrad-7}
-e_irrad(sun.spct, UV_bands) # W m-2
+e_irrad(sun.spct, UV_bands.lst) # W m-2
 ```
 
 These functions have an additional argument `quantity`, with default `"total"`, which can take values controlling the output. The value "total" yields **irradiance** in $W\,m^{-2}$, integrated over wavelengths for each waveband, while "average" yields the mean **spectral irradiance** within each waveband in $W\,m^{-2}\,nm^{-1}$. The value "contribution" is relative to the irradiance for the whole spectrum, expressed as a fraction of one, while the value "relative" is relative to the sum of the irradiances for the different wavebands given as argument, also expressed as a fraction of one.
 
 ```{r, irrad-8}
-irrad(sun.spct, UV_bands, quantity = "total")
-irrad(sun.spct, UV_bands, quantity = "contribution")
-irrad(sun.spct, UV_bands, quantity = "relative")
-irrad(sun.spct, UV_bands, quantity = "average")
+irrad(sun.spct, UV_bands.lst, quantity = "total")
+irrad(sun.spct, UV_bands.lst, quantity = "contribution")
+irrad(sun.spct, UV_bands.lst, quantity = "relative")
+irrad(sun.spct, UV_bands.lst, quantity = "average")
 ```
 
 #### Collections of spectra
@@ -1376,13 +1384,13 @@ We then convolve each filter's spectral transmittance by the spectral irradiance
 
 ```{r, col-convolve-1}
 filtered_sun <- convolve_each(filters.mspct, sun.spct)
-irrad(filtered_sun, list(UVA, PAR))
+irrad(filtered_sun, list(UVA.wb, PAR.wb))
 ```
 
 The code above can also be written as a single statement.
 
 ```{r, col-convolve-2}
-irrad(convolve_each(filters.mspct, sun.spct), list(UVA, PAR))
+irrad(convolve_each(filters.mspct, sun.spct), list(UVA.wb, PAR.wb))
 ```
 
 It is also possible to use an _apply_ function. Syntax parallels that of base R's and package `plyr`'s. See sections _apply_ functions and `convolve` for more details.
@@ -1391,22 +1399,22 @@ One thing to remember, is that operators in R are just normal functions with spe
 
 ```{r, col-convolve-3}
 filtered_sun <- msmsply(filters.mspct, `*`, sun.spct)
-irrad(filtered_sun, list(UVA, PAR))
+irrad(filtered_sun, list(UVA.wb, PAR.wb))
 ```
 
-#### Numeric vectors
+<!-- #### Numeric vectors -->
 
-The code using numeric vectors is more complicated, but adds some additional flexibility for tweaking performance. Under normal circumstances it is easier to use the functions described above.
+<!-- The code using numeric vectors is more complicated, but adds some additional flexibility for tweaking performance. Under normal circumstances it is easier to use the functions described above. -->
 
-Function `irradiance` takes an array of wavelengths (sorted in strictly increasing order), and the corresponding values of spectral irradiance. By default the input is assumed to be in energy units, but parameter `unit.in` can be used to change this default. The type of unit used for the returned quantity is set by `unit.out` with no default. The behaviour with respect to wavebands is as described above for spectral objects. The functions `photon_irradiance()` and `energy_irradiance()`, just call `irradiance()` with the `unit.out` set to `"photon"` or `"energy"` respectively.
+<!-- Function `irradiance` takes an array of wavelengths (sorted in strictly increasing order), and the corresponding values of spectral irradiance. By default the input is assumed to be in energy units, but parameter `unit.in` can be used to change this default. The type of unit used for the returned quantity is set by `unit.out` with no default. The behaviour with respect to wavebands is as described above for spectral objects. The functions `photon_irradiance()` and `energy_irradiance()`, just call `irradiance()` with the `unit.out` set to `"photon"` or `"energy"` respectively. -->
 
-The functions taking numerical vectors as arguments can be used with data stored as vectors, or using `with` with data frames, data tables, lists, and spectra objects.
+<!-- The functions taking numerical vectors as arguments can be used with data stored as vectors, or using `with` with data frames, data tables, lists, and spectra objects. -->
 
-```{r, vector-irrad-1}
-with(sun.spct, photon_irradiance(w.length, s.e.irrad, PAR))
-```
+<!-- ```{r, vector-irrad-1} -->
+<!-- with(sun.spct, photon_irradiance(w.length, s.e.irrad, PAR.wb)) -->
+<!-- ``` -->
 
-The recommended practice is to use `with`, as above.
+<!-- The recommended practice is to use `with`, as above. -->
 
 ### Fluence
 
@@ -1419,10 +1427,10 @@ fluence(sun.spct, exposure.time = duration(1, "hours"))
 fluence(sun.spct, exposure.time = 3600) # seconds
 ```
 
-and, to obtain the photon fluence for a range of wavelengths, in the example, photosynthetically active radiation, we use the `PAR` waveband object earlier defined, for 25 minutes of exposure.
+and, to obtain the photon fluence for a range of wavelengths, in the example, photosynthetically active radiation, we use the `PAR.wb` waveband object earlier defined, for 25 minutes of exposure.
 
 ```{r, fluence-2}
-e_fluence(sun.spct, PAR, exposure.time = duration(25, "minutes"))
+q_fluence(sun.spct, PAR.wb, exposure.time = duration(25, "minutes"))
 ```
 
 ### Photon and energy ratios
@@ -1432,36 +1440,36 @@ e_fluence(sun.spct, PAR, exposure.time = duration(25, "minutes"))
 The functions described here, in there simplest use, calculate a ratio between two wavebands. The function `q_ratio` returning photon ratios. However both waveband parameters can take lists of wavebands as arguments, with normal recycling rules in effect. The corresponding function `e_ratio` returns energy ratios.
 
 ```{r}
-q_ratio(sun.spct, UVB, PAR)
-q_ratio(sun.spct, list(UVC, UVB, UVA, UV))
-q_ratio(sun.spct, UVB, list(UV, PAR))
+q_ratio(sun.spct, UVB.wb, PAR.wb)
+q_ratio(sun.spct, list(UVC.wb, UVB.wb, UVA.wb, UV.wb))
+q_ratio(sun.spct, UVB.wb, list(UV.wb, PAR.wb))
 ```
 
 Function `qe_ratio`, has only one waveband parameter, and returns the _photon_ to _energy_ ratio, while its complement `eq_ratio` returns the _energy_ to _photon_ ratio.
 
 ```{r, ratios-2}
-qe_ratio(sun.spct, list(UVB, PAR))
+qe_ratio(sun.spct, list(UVB.wb, PAR.wb))
 ```
 
 #### Collections of spectra
 
 ```{r, ratios-3}
-q_ratio(filtered_sun, list(UVB, UVA, PAR))
+q_ratio(filtered_sun, list(UVB.wb, UVA.wb, PAR.wb))
 ```
 
-#### Vectors
+<!-- #### Vectors -->
 
-The function `waveband_ratio()` takes basically the same parameters as `irradiance`, but two waveband definitions instead of one, and two `unit.out` definitions instead of one. This is the base function used in all the vector based _ratio_ functions in the '**photobiology**' package.
+<!-- The function `waveband_ratio()` takes basically the same parameters as `irradiance`, but two waveband definitions instead of one, and two `unit.out` definitions instead of one. This is the base function used in all the vector based _ratio_ functions in the '**photobiology**' package. -->
 
 
-Similar functions `photon_ratio()`, `energy_ratio()`, and `photons_energy_ratio` return the other ratios described above. In contrast to the functions described in the previous section, these functions only accept individual waveband definitions (not lists of them).
+<!-- Similar functions `photon_ratio()`, `energy_ratio()`, and `photons_energy_ratio` return the other ratios described above. In contrast to the functions described in the previous section, these functions only accept individual waveband definitions (not lists of them). -->
 
-To calculate the photon ratio between UVB and PAR photon irradiance in these to regions we use.
+<!-- To calculate the photon ratio between UVB and PAR photon irradiance in these to regions we use. -->
 
-```{r, example-ratios-01}
-with(sun.data,
-     photon_ratio(w.length, s.e.irrad, UVB, PAR))
-```
+<!-- ```{r, example-ratios-01} -->
+<!-- with(sun.data, -->
+<!--      photon_ratio(w.length, s.e.irrad, UVB.wb, PAR.wb)) -->
+<!-- ``` -->
 
 ### Normalized difference indexes
 
@@ -1482,14 +1490,14 @@ normalized_diff_ind(sun.spct,
 The functions `transmittance`, `absorptance` and `absorbance` take `filter_spct` as argument, while function `reflectance` takes `reflector_spct` objects as argument. Functions `transmittance`, `reflectance` and `absorptance` are also implemented for `object_spct`. These functions return as default an average value for these quantities **assuming** a light source with a flat spectral energy output, but this can be changed as described above for `irrad()`.
 
 ```{r}
-transmittance(polyester.spct, list(UVB, UVA, PAR))
+transmittance(polyester.spct, list(UVB.wb, UVA.wb, PAR.wb))
 ```
 
 It is more likely that we would like to calculate these values with reference to light of a certain spectral quality. This needs to be calculated by hand, which is not difficult.
 
 ```{r}
-irrad(sun.spct * polyester.spct, list(UVB, UVA, PAR, wb.trim = TRUE)) /
-  irrad(sun.spct, list(UVB, UVA, PAR, wb.trim = TRUE))
+irrad(sun.spct * polyester.spct, list(UVB.wb, UVA.wb, PAR.wb, wb.trim = TRUE)) /
+  irrad(sun.spct, list(UVB.wb, UVA.wb, PAR.wb, wb.trim = TRUE))
 ```
 
 #### Collections of spectra
@@ -1497,7 +1505,7 @@ irrad(sun.spct * polyester.spct, list(UVB, UVA, PAR, wb.trim = TRUE)) /
 Here we construct a collection of filter spectra, and then we calculate the transmittance of these filters for two wavebands, obtaining the results as a data frame, with one row per filter, and one column per waveband. We reuse once more `filters.mspct` from an earlier section.
 
 ```{r}
-transmittance(filters.mspct, list(UVA, PAR))
+transmittance(filters.mspct, list(UVA.wb, PAR.wb))
 ```
 
 ### Integrated response
@@ -1513,7 +1521,7 @@ response(photodiode.spct)
 When a waveband, or list of wavebands, is supplied the response is calculated for the wavebands.
 
 ```{r}
-e_response(photodiode.spct, list(UVB, UVA))
+e_response(photodiode.spct, list(UVB.wb, UVA.wb))
 ```
 
 This function has an additional argument `quantity`, with default `"total"`, as described for `irrad()`.
@@ -1523,7 +1531,7 @@ This function has an additional argument `quantity`, with default `"total"`, as 
 ```{r}
 sensors <- response_mspct(list(GaAsP = photodiode.spct,
                                CCD = ccd.spct))
-response(sensors, list(UVB, UVA, PAR), quantity = "contribution")
+response(sensors, list(UVB.wb, UVA.wb, PAR.wb), quantity = "contribution")
 ```
 
 ### Integration over wavelengths
@@ -1692,25 +1700,25 @@ color(sun.spct)
 color(sun.spct * yellow_gel.spct)
 ```
 
-## Optimizing performance
+<!-- ## Optimizing performance -->
 
-When developing package '**photobiology**' quite a lot of effort was spent in optimizing performance, especially of the functions accepting vectors as arguments, as in one of our experiments, we need to process several hundred thousands of measured spectra. The defaults should provide good performance in most cases, however, some further improvements are achievable, when a series of different calculations are done on the same spectrum, or when a series of spectra measured at exactly the same wavelengths are used for calculating weighted irradiances or exposures.
+<!-- When developing package '**photobiology**' quite a lot of effort was spent in optimizing performance, especially of the functions accepting vectors as arguments, as in one of our experiments, we need to process several hundred thousands of measured spectra. The defaults should provide good performance in most cases, however, some further improvements are achievable, when a series of different calculations are done on the same spectrum, or when a series of spectra measured at exactly the same wavelengths are used for calculating weighted irradiances or exposures. -->
 
-In the case of doing calculations repeatedly on the same spectrum, a small improvement in performance can be achieved by setting the parameter `check.spectrum = FALSE` for all but the first call to `irradiance()`, or `photon_irradiance()`, or `energy_irradiance()`, or the equivalent function for ratios. It is also possible to set this parameter to FALSE in all calls, and do the check beforehand by explicitly calling `check_spectrum()`.
+<!-- In the case of doing calculations repeatedly on the same spectrum, a small improvement in performance can be achieved by setting the parameter `check.spectrum = FALSE` for all but the first call to `irradiance()`, or `photon_irradiance()`, or `energy_irradiance()`, or the equivalent function for ratios. It is also possible to set this parameter to FALSE in all calls, and do the check beforehand by explicitly calling `check_spectrum()`. -->
 
-In the case of calculating weighted irradiances on many spectra having exactly the same wavelength values, then a significant improvement in the performance can be achieved by setting `use.cached.mult = TRUE`, as this reuses the multipliers calculated during successive calls based on the same waveband. However, to achieve this increase in performance, the tests to ensure that the wavelength values have not changed, have to be kept to the minimum. Currently only the length of the wavelength array is checked, and the cached values discarded and recalculated if the length changes. For this reason, this is not the default, and when using caching the user is responsible for making sure that the array of wavelengths has not changed between calls.
+<!-- In the case of calculating weighted irradiances on many spectra having exactly the same wavelength values, then a significant improvement in the performance can be achieved by setting `use.cached.mult = TRUE`, as this reuses the multipliers calculated during successive calls based on the same waveband. However, to achieve this increase in performance, the tests to ensure that the wavelength values have not changed, have to be kept to the minimum. Currently only the length of the wavelength array is checked, and the cached values discarded and recalculated if the length changes. For this reason, this is not the default, and when using caching the user is responsible for making sure that the array of wavelengths has not changed between calls. -->
 
-You can use the package `microbenchmark` to time the code and find the _regions_ that slow it down. I have used it, and also
-I have used profiling to optimize the code for speed. The choice of defaults is based on what is
-best when processing a moderate number of spectra, say less than a few hundreds, as opposed to many thousands.
+<!-- You can use the package `microbenchmark` to time the code and find the _regions_ that slow it down. I have used it, and also -->
+<!-- I have used profiling to optimize the code for speed. The choice of defaults is based on what is -->
+<!-- best when processing a moderate number of spectra, say less than a few hundreds, as opposed to many thousands. -->
 
 ## Example data
 
-A few example spectra are included in this package for use in examples and vignettes, and testing (see next two tables below).
+Data for several spectra are included in this package for use in examples and vignettes, and in testing (Tables 12 and 13). Other packages in the '**r4photobiology suite**' provide many additional data sets.
 
 <hr>
 
-**Table. _Data sets included in the package: spectra._** The CIE standard illuminant data in this package are normalized to one at $\lambda = 560\,$nm, while in the CIE standard they are normalized to 100 at the same wavelength.
+**Table 12. Data sets included in the package: spectra.** The CIE standard illuminant data in this package are normalized to one at $\lambda = 560\,$nm, while in the CIE standard they are normalized to 100 at the same wavelength.
  
 | Object | class | units      | data description          |
 |:--------|:-------|:----------|:---------------------------|
@@ -1735,7 +1743,7 @@ A few example spectra are included in this package for use in examples and vigne
 
 <hr>
 
-**Table. _Data sets included in the package: chromaticity data_**
+**Table 13. Data sets included in the package: chromaticity data.**
 
 | Object  | class  | data description                 |
 |:--------|:-------|:-------------------------------|

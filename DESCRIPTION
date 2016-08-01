@@ -1,10 +1,13 @@
 Package: photobiology
 Type: Package
 Title: 'Photobiological' Calculations
-Version: 0.9.8.9002
-Date: 2016-07-31
+Version: 0.9.9
+Date: 2016-08-01
 Authors@R:
-    person("Pedro J.", "Aphalo", email = "pedro.aphalo@helsinki.fi", role = c("aut", "cre"))
+   c(
+    person("Pedro J.", "Aphalo", email = "pedro.aphalo@helsinki.fi", role = c("aut", "cre")),
+    person("Titta K.", "Kotilainen", email = "titta.kotilainen@helsinki.fi", role = "ctb")
+    )
 Maintainer: Pedro J. Aphalo <pedro.aphalo@helsinki.fi>
 Description: Definitions of classes, methods, operators and functions for use in
     'photobiology' and radiation meteorology and climatology. Calculation of
@@ -19,15 +22,15 @@ Depends:
     R (>= 3.2.0)
 Imports:
     tibble (>= 1.1),
-    lubridate (>= 1.5.0),
-    plyr (>= 1.8.3),
-    dplyr (>= 0.4.3),
-    splus2R (>= 1.2-0),
+    lubridate (>= 1.5.6),
+    plyr (>= 1.8.4),
+    dplyr (>= 0.5.0),
+    splus2R (>= 1.2-1),
     caTools (>= 1.17.1)
 Suggests:
-    knitr (>= 1.12.3),
-    rmarkdown (>= 0.9.6),
-    testthat (>= 0.11.0),
+    knitr (>= 1.13),
+    rmarkdown (>= 1.0),
+    testthat (>= 1.0.2),
     roxygen2 (>= 5.0.1)
 LazyLoad: yes
 LazyData: yes
