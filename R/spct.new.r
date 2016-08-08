@@ -48,7 +48,7 @@ source_spct <- function(w.length = NULL,
                         time.unit = c("second", "day", "exposure"),
                         bswf.used = c("none", "unknown"),
                         comment = NULL,
-                        strict.range = FALSE,
+                        strict.range = getOption("photobiology.strict.range", default = FALSE),
                         multiple.wl = 1L,
                         ...) {
   if (length(w.length) == 0) {
@@ -214,7 +214,7 @@ filter_spct <- function(w.length=NULL,
                         A=NULL,
                         Tfr.type=c("total", "internal"),
                         comment=NULL,
-                        strict.range = FALSE,
+                        strict.range = getOption("photobiology.strict.range", default = FALSE),
                         multiple.wl = 1L,
                         ...) {
   if (length(w.length) == 0) {
@@ -252,7 +252,7 @@ reflector_spct <- function(w.length = NULL,
                            Rpc=NULL,
                            Rfr.type=c("total", "specular"),
                            comment=NULL,
-                           strict.range = FALSE,
+                           strict.range = getOption("photobiology.strict.range", default = FALSE),
                            multiple.wl = 1L,
                            ...) {
   if (length(w.length) == 0) {
@@ -285,7 +285,7 @@ object_spct <- function(w.length=NULL,
                         Tfr.type=c("total", "internal"),
                         Rfr.type=c("total", "specular"),
                         comment=NULL,
-                        strict.range = FALSE,
+                        strict.range = getOption("photobiology.strict.range", default = FALSE),
                         multiple.wl = 1L,
                         ...) {
   if (length(w.length) == 0) {
@@ -316,7 +316,7 @@ chroma_spct <- function(w.length=NULL,
                         y,
                         z,
                         comment=NULL,
-                        strict.range = FALSE,
+                        strict.range = getOption("photobiology.strict.range", default = FALSE),
                         multiple.wl = 1L,
                         ...) {
   if (length(w.length) == 0) {
@@ -383,7 +383,7 @@ as.cps_spct <- function(x, ...) {
 as.source_spct <- function(x,
                            time.unit=c("second", "day", "exposure"),
                            bswf.used=c("none", "unknown"),
-                           strict.range = FALSE,
+                           strict.range = getOption("photobiology.strict.range", default = FALSE),
                            ...) {
   setSourceSpct(x,
                 time.unit = time.unit,
@@ -408,7 +408,7 @@ as.response_spct <- function(x, time.unit = "second", ...) {
 #'
 as.filter_spct <- function(x,
                            Tfr.type = c("total", "internal"),
-                           strict.range = FALSE,
+                           strict.range = getOption("photobiology.strict.range", default = FALSE),
                            ...) {
   setFilterSpct(x,
                 Tfr.type = Tfr.type,
@@ -424,7 +424,7 @@ as.filter_spct <- function(x,
 #'
 as.reflector_spct <- function(x,
                               Rfr.type = c("total", "specular"),
-                              strict.range = FALSE,
+                              strict.range = getOption("photobiology.strict.range", default = FALSE),
                               ...) {
   setReflectorSpct(x,
                    Rfr.type = Rfr.type,
@@ -439,7 +439,7 @@ as.reflector_spct <- function(x,
 as.object_spct <- function(x,
                            Tfr.type=c("total", "internal"),
                            Rfr.type=c("total", "specular"),
-                           strict.range = FALSE,
+                           strict.range = getOption("photobiology.strict.range", default = FALSE),
                            ...) {
   setObjectSpct(x,
                 Tfr.type = Tfr.type,

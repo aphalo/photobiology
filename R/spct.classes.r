@@ -38,7 +38,7 @@ check_spct <- function(x, byref, strict.range, ...) UseMethod("check_spct")
 
 #' @describeIn check_spct Default for generic function.
 #' @export
-check_spct.default <- function(x, byref=FALSE, strict.range = NA, ...) {
+check_spct.default <- function(x, byref = FALSE, strict.range = NA, ...) {
   return(x)
 }
 
@@ -105,8 +105,8 @@ check_spct.generic_spct <-
 #' @describeIn check_spct Specialization for cps_spct.
 #' @export
 check_spct.raw_spct <- function(x,
-                           byref=TRUE,
-                           strict.range = FALSE,
+                           byref = TRUE,
+                           strict.range = getOption("photobiology.strict.range", default = FALSE),
                            multiple.wl = getMultipleWl(x),
                            ...) {
 
@@ -126,7 +126,7 @@ check_spct.raw_spct <- function(x,
 #' @describeIn check_spct Specialization for cps_spct.
 #' @export
 check_spct.cps_spct <- function(x,
-                           byref=TRUE,
+                           byref = TRUE,
                            strict.range = getOption("photobiology.strict.range", default = FALSE),
                            multiple.wl = getMultipleWl(x),
                            ...) {
@@ -140,13 +140,17 @@ check_spct.cps_spct <- function(x,
       cps.range <- range(x[[col]], na.rm = TRUE)
       stopifnot(cps.range[2] >= 0)
       cps.spread <- diff(cps.range)
-      if (!is.null(strict.range) && !is.na(strict.range) &&
-          cps.range[1] < -0.05 * cps.spread) {
+      if (cps.range[1] < -0.05 * cps.spread) {
         message.text <- paste0("Off-range cps values:", signif(cps.spread[1], 2))
-        if (strict.range) {
+
+        if (is.null(strict.range) || is.na(strict.range)) {
+          message(message.text)
+        } else if (strict.range) {
           stop(message.text)
-        } else {
+        } else if (!strict.range) {
           warning(message.text)
+        } else {
+          stop ("Bad argument for 'strict.range': ", strict.range)
         }
       }
     }
@@ -176,47 +180,53 @@ check_spct.filter_spct <-
            ...)
   {
 
-  range_check <- function(x, strict.range) {
-    if (!all(is.na(x[["Tfr"]]))) {
-      Tfr.min <- min(x[["Tfr"]], na.rm = TRUE)
-      Tfr.max <- max(x[["Tfr"]], na.rm = TRUE)
-      if (!is.null(strict.range) && !is.na(strict.range) && (Tfr.min < -1e-4 || Tfr.max > 1 + 1e-6)) {
-        message.text <- paste("Off-range transmittance values [",
-                              signif(Tfr.min, 2),
+    range_check <- function(x, strict.range) {
+      if (!all(is.na(x[["Tfr"]]))) {
+        Tfr.min <- min(x[["Tfr"]], na.rm = TRUE)
+        Tfr.max <- max(x[["Tfr"]], na.rm = TRUE)
+        if (Tfr.min < -1e-4 || Tfr.max > 1 + 1e-6) {
+          message.text <- paste("Off-range transmittance values [",
+                                signif(Tfr.min, 2),
+                                "...",
+                                signif(Tfr.max, 2),
+                                "] instead of  [0..1]", sep = "")
+          if (is.null(strict.range) || is.na(strict.range)) {
+            message(message.text)
+          } else if (strict.range) {
+            stop(message.text)
+          } else if (!strict.range) {
+            warning(message.text)
+          } else {
+            stop ("Bad argument for 'strict.range': ", strict.range)
+          }
+        }
+      }
+    }
+
+  range_check_A <- function(x, strict.range) {
+    if (!all(is.na(x[["A"]]))) {
+      A.min <- min(x[["A"]], na.rm = TRUE)
+      A.max <- max(x[["A"]], na.rm = TRUE)
+      if (A.min < -1e-7 || A.max > 20) {
+        message.text <- paste("Off-range absorbance values [",
+                              signif(A.min, 2),
                               "...",
-                              signif(Tfr.max, 2),
-                              "] instead of  [0..1]", sep = "")
-        if (strict.range) {
+                              signif(A.max, 2),
+                              "] instead of  [0..20]", sep = "")
+        if (is.null(strict.range) || is.na(strict.range)) {
+          message(message.text)
+        } else if (strict.range) {
           stop(message.text)
-        } else {
+        } else if (!strict.range) {
           warning(message.text)
+        } else {
+          stop ("Bad argument for 'strict.range': ", strict.range)
         }
       }
     }
   }
 
   x <- check_spct.generic_spct(x, multiple.wl = multiple.wl)
-
-  range_check_A <- function(x, strict.range) {
-    if (!all(is.na(x[["A"]]))) {
-      A.min <- min(x[["A"]], na.rm = TRUE)
-      A.max <- max(x[["A"]], na.rm = TRUE)
-      if (!is.null(strict.range) && !is.na(strict.range) &&
-          (A.min < -1e-7 || A.max > 20)) {
-        message.text <- paste("Off-range absorbance values [",
-                              signif(A.min, 2),
-                              "...",
-                              signif(A.max, 2),
-                              "] instead of  [0..20]", sep = "")
-        if (strict.range) {
-          stop(message.text)
-        } else {
-          warning(message.text)
-        }
-      }
-    }
-  }
-
 
   if (is.null(getTfrType(x))) {
     setTfrType(x, "total")
@@ -270,7 +280,7 @@ check_spct.reflector_spct <-
       if (!all(is.na(x$Rfr))) {
         Rfr.min <- min(x$Rfr, na.rm = TRUE)
         Rfr.max <- max(x$Rfr, na.rm = TRUE)
-        if (!is.null(strict.range) && !is.na(strict.range) && (Rfr.min < -1e-4 ||  Rfr.max > 1 + 1e-6)) {
+        if (Rfr.min < -1e-4 ||  Rfr.max > 1 + 1e-6) {
           message.text <-
             paste0(
               "Off-range reflectance values [",
@@ -280,10 +290,14 @@ check_spct.reflector_spct <-
               "] instead of  [0..1]",
               sep = ""
             )
-          if (strict.range) {
+          if (is.null(strict.range) || is.na(strict.range)) {
+            message(message.text)
+          } else if (strict.range) {
             stop(message.text)
-          } else {
+          } else if (!strict.range) {
             warning(message.text)
+          } else {
+            stop ("Bad argument for 'strict.range': ", strict.range)
           }
         }
       }
@@ -327,13 +341,17 @@ check_spct.object_spct <-
     if (!all(is.na(x[["Tfr"]]))) {
       Tfr.min <- min(x[["Tfr"]], na.rm = TRUE)
       Tfr.max <- max(x[["Tfr"]], na.rm = TRUE)
-      if (!is.null(strict.range) && !is.na(strict.range) && (Tfr.min < -1e-4 || Tfr.max > 1 + 1e-6)) {
+      if (Tfr.min < -1e-4 || Tfr.max > 1 + 1e-6) {
         message.text <- paste("Off-range transmittance values [", signif(Tfr.min, 2),
                               "...", signif(Tfr.max, 2), "] instead of  [0..1]", sep="")
-        if (strict.range) {
+        if (is.null(strict.range) || is.na(strict.range)) {
+          message(message.text)
+        } else if (strict.range) {
           stop(message.text)
-        } else {
+        } else if (!strict.range) {
           warning(message.text)
+        } else {
+          stop ("Bad argument for 'strict.range': ", strict.range)
         }
       }
     }
@@ -346,13 +364,17 @@ check_spct.object_spct <-
       Rfr.min <- min(x[["Rfr"]], na.rm = TRUE)
       Rfr.max <- max(x[["Rfr"]], na.rm = TRUE)
       if (!is.na(Rfr.min) && !is.na(Rfr.max)) {
-        if (!is.null(strict.range) && !is.na(strict.range) && (Rfr.min < -1e-4 ||  Rfr.max > 1 + 1e-6)) {
+        if (Rfr.min < -1e-4 ||  Rfr.max > 1 + 1e-6) {
           message.text <- paste0("Off-range reflectance values [", signif(Rfr.min, 2), "...",
                                  signif(Rfr.max, 2), "] instead of  [0..1]", sep="")
-          if (strict.range) {
+          if (is.null(strict.range) || is.na(strict.range)) {
+            message(message.text)
+          } else if (strict.range) {
             stop(message.text)
-          } else {
+          } else if (!strict.range) {
             warning(message.text)
+          } else {
+            stop ("Bad argument for 'strict.range': ", strict.range)
           }
         }
       }
@@ -457,10 +479,14 @@ check_spct.source_spct <-
               "Negative spectral energy irradiance values; minimun s.e.irrad =",
               signif(s.e.range[1], 2)
             )
-          if (strict.range) {
+          if (is.null(strict.range) || is.na(strict.range)) {
+            message(message.text)
+          } else if (strict.range) {
             stop(message.text)
-          } else {
+          } else if (!strict.range) {
             warning(message.text)
+          } else {
+            stop ("Bad argument for 'strict.range': ", strict.range)
           }
         }
       }
@@ -475,10 +501,14 @@ check_spct.source_spct <-
               "Negative spectral photon irradiance values; minimun s.q.irrad =",
               signif(s.q.range[1], 2)
             )
-          if (strict.range) {
+          if (is.null(strict.range) || is.na(strict.range)) {
+            message(message.text)
+          } else if (strict.range) {
             stop(message.text)
-          } else {
+          } else if (!strict.range) {
             warning(message.text)
+          } else {
+            stop ("Bad argument for 'strict.range': ", strict.range)
           }
         }
       }
@@ -623,7 +653,7 @@ setGenericSpct <- function(x, multiple.wl = 1L) {
 #' @export
 #' @exportClass cps_spct
 #'
-setRawSpct <- function(x, strict.range = FALSE, multiple.wl = 1L) {
+setRawSpct <- function(x, strict.range = getOption("photobiology.strict.range", default = FALSE), multiple.wl = 1L) {
   name <- substitute(x)
   rmDerivedSpct(x)
   if (!is.data.frame(x) || inherits(x, "data.table")) {
@@ -644,7 +674,7 @@ setRawSpct <- function(x, strict.range = FALSE, multiple.wl = 1L) {
 #' @export
 #' @exportClass cps_spct
 #'
-setCpsSpct <- function(x, strict.range = FALSE, multiple.wl = 1L) {
+setCpsSpct <- function(x, strict.range = getOption("photobiology.strict.range", default = FALSE), multiple.wl = 1L) {
   name <- substitute(x)
   rmDerivedSpct(x)
   if (!is.data.frame(x) || inherits(x, "data.table")) {
@@ -669,7 +699,7 @@ setCpsSpct <- function(x, strict.range = FALSE, multiple.wl = 1L) {
 #' @exportClass filter_spct
 #'
 setFilterSpct <- function(x, Tfr.type=c("total", "internal"),
-                          strict.range = FALSE, multiple.wl = 1L) {
+                          strict.range = getOption("photobiology.strict.range", default = FALSE), multiple.wl = 1L) {
   name <- substitute(x)
   if ((is.object_spct(x) || is.filter_spct(x)) && getTfrType(x) != "unknown") {
     if (length(Tfr.type) > 1) {
@@ -702,7 +732,7 @@ setFilterSpct <- function(x, Tfr.type=c("total", "internal"),
 #' @exportClass reflector_spct
 #'
 setReflectorSpct <- function(x, Rfr.type=c("total", "specular"),
-                             strict.range = FALSE, multiple.wl = 1L) {
+                             strict.range = getOption("photobiology.strict.range", default = FALSE), multiple.wl = 1L) {
   name <- substitute(x)
   if ((is.object_spct(x) || is.reflector_spct(c)) && getRfrType(x) != "unknown") {
     if (length(Rfr.type) > 1) {
@@ -736,7 +766,7 @@ setReflectorSpct <- function(x, Rfr.type=c("total", "specular"),
 setObjectSpct <- function(x,
                           Tfr.type=c("total", "internal"),
                           Rfr.type=c("total", "specular"),
-                          strict.range = FALSE, multiple.wl = 1L) {
+                          strict.range = getOption("photobiology.strict.range", default = FALSE), multiple.wl = 1L) {
   name <- substitute(x)
   if ((is.filter_spct(x) || is.object_spct(x)) && getTfrType(x) != "unknown") {
     if (length(Tfr.type) > 1) {
@@ -801,7 +831,7 @@ setResponseSpct <- function(x, time.unit="second", multiple.wl = 1L) {
 #' @exportClass source_spct
 #'
 setSourceSpct <- function(x, time.unit="second", bswf.used=c("none", "unknown"),
-                          strict.range = FALSE, multiple.wl = 1L) {
+                          strict.range = getOption("photobiology.strict.range", default = FALSE), multiple.wl = 1L) {
   name <- substitute(x)
   rmDerivedSpct(x)
   if (!is.data.frame(x) || inherits(x, "data.table")) {

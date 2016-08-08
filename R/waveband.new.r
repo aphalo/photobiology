@@ -223,7 +223,7 @@ is.waveband <- function(x) {
 ### add non-functional replacement operators.
 ###
 
-check.waveband <- function(x, byref = FALSE, strict.range = FALSE, ...) {
+check.waveband <- function(x, byref = FALSE, strict.range = getOption("photobiology.strict.range", default = FALSE), ...) {
   stopifnot(x[["low"]] < x[["high"]])
   stopifnot(x[["weight"]] == "none" && !(is.null(x[["SWF.e.fun"]] && is.null(x[["SWF.q.fun"]]))))
   stopifnot(x[["weight"]] != "none" && (is.null(x[["SWF.e.fun"]] || is.null(x[["SWF.q.fun"]]))))

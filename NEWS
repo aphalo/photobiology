@@ -4,6 +4,15 @@ TODO
 Add test cases for chroma_spct and improve tests for the _mspct
 classes. Add test cases for smooth_spct().
 Replace filter_cps.mspct data with newly measured data.
+Add na.rm parameter to clean().
+
+photobiology 0.9.10
+===================
+
+Argument range.check = NA and range.check = NULL now trigger a message instead
+of skipping the test altogether. Logical values retain earlier behaviour.
+Fix bug in set functions for spectral classes: option "photobiology.strict.range"
+was not obeyed.
 
 photobiology 0.9.9
 ==================

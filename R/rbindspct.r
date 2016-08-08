@@ -396,7 +396,7 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
                       time.unit = getTimeUnit(x),
                       bswf.used = getBSWFUsed(x),
                       multiple.wl = getMultipleWl(x),
-                      strict.range = NA)
+                      strict.range = NA_integer_)
         # other attributes remain unchanged
       } else {
         rmDerivedSpct(xx)
@@ -443,7 +443,7 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
         setFilterSpct(x = xx,
                       Tfr.type = getTfrType(x),
                       multiple.wl = getMultipleWl(x),
-                      strict.range = NA)
+                      strict.range = NA_integer_)
         # other attributes remain unchanged
       } else {
         rmDerivedSpct(xx)
@@ -468,7 +468,7 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
         setReflectorSpct(x = xx,
                          Rfr.type = getRfrType(x),
                          multiple.wl = getMultipleWl(x),
-                         strict.range = NA)
+                         strict.range = NA_integer_)
         # other attributes remain unchanged
       } else {
         rmDerivedSpct(xx)
@@ -493,7 +493,7 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
                       Tfr.type = getTfrType(x),
                       Rfr.type = getRfrType(x),
                       multiple.wl = getMultipleWl(x),
-                      strict.range = NA)
+                      strict.range = NA_integer_)
         # other attributes remain unchanged
       } else {
         rmDerivedSpct(xx)

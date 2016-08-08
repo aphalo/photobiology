@@ -366,7 +366,7 @@ as.cps_mspct <- function(x) {
 as.source_mspct <- function(x,
                             time.unit=c("second", "day", "exposure"),
                             bswf.used=c("none", "unknown"),
-                            strict.range = FALSE) {
+                            strict.range = getOption("photobiology.strict.range", default = FALSE)) {
   y <- x
   rmDerivedMspct(y)
   z <- plyr::llply(y, setSourceSpct, time.unit = time.unit,

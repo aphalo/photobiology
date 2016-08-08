@@ -372,7 +372,7 @@ untag.default <- function(x, ...) {
 #' @return if \code{x} contains tag data they are removed and the "spct.tags"
 #'   atrribute is set to \code{NA}, while if \code{x} has no tags, it is not
 #'   modified. In either case, the byref argument is respected: in all cases if
-#'   \code{byref=FALSE} a copy of \code{x} is returned.
+#'   \code{byref = FALSE} a copy of \code{x} is returned.
 #'
 #' @export
 #'
