@@ -44,6 +44,8 @@ smooth_spct.source_spct <- function(x, method = "custom", strength = 1, ...) {
             num.spectra, " spectra")
     return(x)
   }
+  # we disable range checks for spectra until end of function
+  old.options <- options(photobiology.strict.range = NA_integer_)
   if (method == "lowess") {
     span = 1/50 * strength
     if ("s.e.irrad" %in% names(x)) {
@@ -62,7 +64,6 @@ smooth_spct.source_spct <- function(x, method = "custom", strength = 1, ...) {
     } else {
       comment(out.spct) <- paste("Smoothed using 'lowess', f =", signif(span, 3))
     }
-    return(out.spct)
   } else if (method == "supsmu") {
     span = 1/50 * strength
     if ("s.e.irrad" %in% names(x)) {
@@ -81,7 +82,6 @@ smooth_spct.source_spct <- function(x, method = "custom", strength = 1, ...) {
     } else {
       comment(out.spct) <-  paste("Smoothed using 'supsmu', span =", signif(span, 3))
     }
-    return(out.spct)
   } else if (method == "custom") {
     # my own and inefficient method!
     # as the spectrum is already in energy units, we need to normalize thresholds
@@ -110,12 +110,12 @@ smooth_spct.source_spct <- function(x, method = "custom", strength = 1, ...) {
                               ifelse(runmadmed < 2 * smooth_limit, runmed3,
                                      ifelse(runmadmed < 4 * smooth_limit, runmed7, runmed19)))))
     out.spct[["s.e.irrad"]] <- with(out.spct, ifelse(w.length < smoothing_hi_lim, s.e.irrad.sm, s.e.irrad))
-    out.spct[["s.e.irrad.good"]] <- out.spct[["runmadmed"]] < 1.0
+    out.spct[["s.e.irrad.good"]] <- out.spct[["runmadmed"]] / out.spct[["runmed19"]] * max(out.spct[["runmed19"]]) < 1.0
     if (with(out.spct, any(is.na(s.e.irrad)))) {
       warning(sum(with(out.spct, any(is.na(s.e.irrad)))), " NAs in spectral irradiance")
     }
-    num_bad <- with(out.spct, sum(!s.e.irrad.good, na.rm=TRUE))
-    if (num_bad > 50) {
+    num_bad <- with(out.spct, sum(!s.e.irrad.good, na.rm = TRUE))
+    if (num_bad > length(out.spct) / 20) {
       warning(num_bad, " 'bad' estimates in spectral irradiance")
     }
     out.spct <- out.spct[ , c("w.length", "s.e.irrad")]
@@ -130,8 +130,9 @@ smooth_spct.source_spct <- function(x, method = "custom", strength = 1, ...) {
       comment(out.spct) <-  paste("Smoothed using 'custom', smooth_limit =",
                                   signif(smooth_limit, 3))
     }
-    return(out.spct)
   }
+  options(old.options)
+  check_spct(out.spct)
 }
 
 #' @describeIn smooth_spct Smooth a filter spectrum
@@ -145,6 +146,8 @@ smooth_spct.filter_spct <- function(x, method = "custom", strength = 1, ...) {
             num.spectra, " spectra")
     return(x)
   }
+  # we disable range checks for spectra until end of function
+  old.options <- options(photobiology.strict.range = NA_integer_)
   if (method == "lowess") {
     span = 1/50 * strength
     if ("Tfr" %in% names(x)) {
@@ -163,7 +166,6 @@ smooth_spct.filter_spct <- function(x, method = "custom", strength = 1, ...) {
     } else {
       comment(out.spct) <- paste("Smoothed using 'lowess', f =", signif(span, 3))
     }
-    return(out.spct)
   } else if (method == "supsmu") {
     span = 1/50 * strength
     if ("Tfr" %in% names(x)) {
@@ -182,7 +184,6 @@ smooth_spct.filter_spct <- function(x, method = "custom", strength = 1, ...) {
     } else {
       comment(out.spct) <-  paste("Smoothed using 'supsmu', span =", signif(span, 3))
     }
-    return(out.spct)
   } else if (method == "custom") {
     # my own and inefficient method!
     # as the spectrum is already in energy units, we need to normalize thresholds
@@ -212,12 +213,12 @@ smooth_spct.filter_spct <- function(x, method = "custom", strength = 1, ...) {
                                      ifelse(runmadmed < 4 * smooth_limit, runmed7, runmed19)))))
     out.spct[["Tfr"]] <- with(out.spct,
                               ifelse(w.length < smoothing_hi_lim, Tfr.sm, Tfr))
-    out.spct[["Tfr.good"]] <- out.spct[["runmadmed"]] < 1.0
+    out.spct[["Tfr.good"]] <- out.spct[["runmadmed"]] / out.spct[["runmed19"]] * max(out.spct[["runmed19"]]) < 1.0
     if (any(is.na(out.spct[["Tfr"]]))) {
       warning(sum(is.na(out.spct[["Tfr"]])), " NAs in spectral irradiance")
     }
     num_bad <- sum(!out.spct[["Tfr.good"]], na.rm=TRUE)
-    if (num_bad > 50) {
+    if (num_bad > length(out.spct) / 20) {
       warning(num_bad, " 'bad' estimates in spectral irradiance")
     }
     out.spct <- out.spct[ , c("w.length", "Tfr")]
@@ -231,8 +232,9 @@ smooth_spct.filter_spct <- function(x, method = "custom", strength = 1, ...) {
     } else {
       comment(out.spct) <- paste("Smoothed using 'custom', smooth_limit =", signif(smooth_limit, 3))
     }
-    return(out.spct)
   }
+  options(old.options)
+  check_spct(out.spct)
 }
 
 
@@ -247,6 +249,8 @@ smooth_spct.reflector_spct <- function(x, method = "custom", strength = 1, ...) 
             num.spectra, " spectra")
     return(x)
   }
+  # we disable range checks for spectra until end of function
+  old.options <- options(photobiology.strict.range = NA_integer_)
   if (method == "lowess") {
     span = 1/50 * strength
     if ("Rfr" %in% names(x)) {
@@ -259,7 +263,6 @@ smooth_spct.reflector_spct <- function(x, method = "custom", strength = 1, ...) 
     } else {
       comment(out.spct) <- paste("Smoothed using 'lowess', f =", signif(span, 3))
     }
-    return(out.spct)
   } else if (method == "supsmu") {
     span = 1/50 * strength
     if ("Rfr" %in% names(x)) {
@@ -272,7 +275,6 @@ smooth_spct.reflector_spct <- function(x, method = "custom", strength = 1, ...) 
     } else {
       comment(out.spct) <- paste("Smoothed using 'supsmu', span =", signif(span, 3))
     }
-    return(out.spct)
   } else if (method == "custom") {
     # my own and inefficient method!
     # as the spectrum is already in energy units, we need to normalize thresholds
@@ -301,12 +303,12 @@ smooth_spct.reflector_spct <- function(x, method = "custom", strength = 1, ...) 
                                      ifelse(runmadmed < 4 * smooth_limit, runmed7, runmed19)))))
     out.spct[["Rfr"]] <- with(out.spct,
                               ifelse(w.length < smoothing_hi_lim, Rfr.sm, Rfr))
-    out.spct[["Rfr.good"]] <- out.spct[["runmadmed"]] < 1.0
+    out.spct[["Rfr.good"]] <- out.spct[["runmadmed"]] / out.spct[["runmed19"]] * max(out.spct[["runmed19"]]) < 1.0
     if (anyNA(out.spct[["Rfr"]])) {
       warning(sum(is.na(out.spct[["Rfr"]])), " NAs in spectral irradiance")
     }
     num_bad <- sum(!out.spct[["Rfr.good"]], na.rm=TRUE)
-    if (num_bad > 50) {
+    if (num_bad > length(out.spct) / 20) {
       warning(num_bad, " 'bad' estimates in spectral irradiance")
     }
     out.spct <- out.spct[ , c("w.length", "Rfr")]
@@ -320,8 +322,9 @@ smooth_spct.reflector_spct <- function(x, method = "custom", strength = 1, ...) 
     } else {
       comment(out.spct) <- paste("Smoothed using 'custom', smooth_limit =", signif(smooth_limit, 3))
     }
-    return(out.spct)
   }
+  options(old.options)
+  check_spct(out.spct)
 }
 
 #' @describeIn smooth_spct Smooth a response spectrum
@@ -335,6 +338,8 @@ smooth_spct.response_spct <- function(x, method = "custom", strength = 1, ...) {
             num.spectra, " spectra")
     return(x)
   }
+  # we disable range checks for spectra until end of function
+  old.options <- options(photobiology.strict.range = NA_integer_)
   if (method == "lowess") {
     span = 1/50 * strength
     if ("s.e.response" %in% names(x)) {
@@ -353,7 +358,6 @@ smooth_spct.response_spct <- function(x, method = "custom", strength = 1, ...) {
     } else {
       comment(out.spct) <- paste("Smoothed using 'lowess', f =", signif(span, 3))
     }
-    return(out.spct)
   } else if (method == "supsmu") {
     span = 1/50 * strength
     if ("s.e.response" %in% names(x)) {
@@ -372,7 +376,6 @@ smooth_spct.response_spct <- function(x, method = "custom", strength = 1, ...) {
     } else {
       comment(out.spct) <- paste("Smoothed using 'supsmu', span =", signif(span, 3))
     }
-    return(out.spct)
   } else if (method == "custom") {
     # my own and inefficient method!
     # as the spectrum is already in energy units, we need to normalize thresholds
@@ -402,12 +405,12 @@ smooth_spct.response_spct <- function(x, method = "custom", strength = 1, ...) {
                                      ifelse(runmadmed < 4 * smooth_limit, runmed7, runmed19)))))
     out.spct[["s.e.response"]] <- with(out.spct,
                                        ifelse(w.length < smoothing_hi_lim, s.e.response.sm, s.e.response))
-    out.spct[["s.e.response.good"]] <- out.spct[["runmadmed"]] < 1.0
+    out.spct[["s.e.response.good"]] <- out.spct[["runmadmed"]] / out.spct[["runmed19"]] * max(out.spct[["runmed19"]]) < 1.0
     if (anyNA(out.spct[["s.e.response"]])) {
       warning(sum(is.na(out.spct[["s.e.response"]])), " NAs in spectral responseiance")
     }
     num_bad <- sum(!out.spct[["s.e.response.good"]], na.rm=TRUE)
-    if (num_bad > 50) {
+    if (num_bad > length(out.spct) / 20) {
       warning(num_bad, " 'bad' estimates in spectral responseiance")
     }
     out.spct <- out.spct[ , c("w.length", "s.e.response")]
@@ -421,6 +424,7 @@ smooth_spct.response_spct <- function(x, method = "custom", strength = 1, ...) {
     } else {
       comment(out.spct) <- paste("Smoothed using 'custom', smooth_limit =", signif(smooth_limit, 3))
     }
-    return(out.spct)
   }
+  options(old.options)
+  check_spct(out.spct)
 }

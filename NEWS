@@ -13,6 +13,9 @@ Argument range.check = NA and range.check = NULL now trigger a message instead
 of skipping the test altogether. Logical values retain earlier behaviour.
 Fix bug in set functions for spectral classes: option "photobiology.strict.range"
 was not obeyed.
+Revise irrad(), e_irrad() and q_irrad() to accept as input scaled or
+normalized source_spct objects as long as returned quantity is not "total" or
+"mean", or its synonim "average".
 
 photobiology 0.9.9
 ==================

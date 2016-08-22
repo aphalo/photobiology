@@ -77,7 +77,8 @@ irrad.source_spct <-
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
            use.hinges = getOption("photobiology.use.hinges"),
-           allow.scaled = FALSE, ...) {
+           allow.scaled = !quantity  %in% c("average", "mean", "total"),
+           ...) {
     # we look for multiple spectra and return with a warning
     num.spectra <- getMultipleWl(spct)
     if (num.spectra != 1) {
@@ -337,7 +338,8 @@ e_irrad.source_spct <-
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
            use.hinges = NULL,
-           allow.scaled = FALSE, ...) {
+           allow.scaled = !quantity  %in% c("average", "mean", "total"),
+           ...) {
     irrad_spct(spct, w.band = w.band, unit.out = "energy", quantity = quantity,
                time.unit = time.unit, wb.trim = wb.trim,
                use.cached.mult = use.cached.mult, use.hinges = use.hinges,
@@ -417,7 +419,8 @@ q_irrad.source_spct <-
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
            use.hinges = NULL,
-           allow.scaled = FALSE, ...) {
+           allow.scaled = !quantity  %in% c("average", "mean", "total"),
+           ...) {
     irrad_spct(spct, w.band = w.band, unit.out = "photon", quantity = quantity,
                time.unit = time.unit, wb.trim = wb.trim,
                use.cached.mult = use.cached.mult, use.hinges = use.hinges,
@@ -714,7 +717,7 @@ irrad.source_mspct <-
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
            use.hinges = NULL,
-           allow.scaled = FALSE,
+           allow.scaled = !quantity  %in% c("average", "mean", "total"),
            ...,
            idx = !is.null(names(spct))) {
     msdply(
@@ -746,8 +749,9 @@ q_irrad.source_mspct <-
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
            use.hinges = NULL,
-           allow.scaled = FALSE,
-           ..., idx = !is.null(names(spct))) {
+           allow.scaled = !quantity  %in% c("average", "mean", "total"),
+           ...,
+           idx = !is.null(names(spct))) {
     msdply(
       mspct = spct,
       .fun = q_irrad,
@@ -776,8 +780,9 @@ e_irrad.source_mspct <-
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
            use.hinges = NULL,
-           allow.scaled = FALSE,
-           ..., idx = !is.null(names(spct))) {
+           allow.scaled = !quantity  %in% c("average", "mean", "total"),
+           ...,
+           idx = !is.null(names(spct))) {
     msdply(
       mspct = spct,
       .fun = e_irrad,
