@@ -11,7 +11,8 @@
 #'   the region(s) of the spectrum that are summarized.
 #' @param unit.out character string with allowed values "energy", and "photon",
 #'   or its alias "quantum"
-#' @param quantity character string
+#' @param quantity character string One of "total", "average" or "mean",
+#'   "contribution", "contribution.pc", "relative" or "relative.pc"
 #' @param time.unit character or lubridate::duration
 #' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries
 #'   are trimmed, if FALSE, they are discarded
@@ -37,8 +38,16 @@
 #'
 #' @export
 #' @examples
-#' irrad(sun.spct, waveband(c(400,700)), "photon")
+#' irrad(sun.spct, waveband(c(400,700)))
 #' irrad(sun.spct, waveband(c(400,700)), "energy")
+#' irrad(sun.spct, waveband(c(400,700)), "photon")
+#' irrad(sun.spct, split_bands(c(400,700), length.out = 3))
+#' irrad(sun.spct, split_bands(c(400,700), length.out = 3), quantity = "total")
+#' irrad(sun.spct, split_bands(c(400,700), length.out = 3), quantity = "average")
+#' irrad(sun.spct, split_bands(c(400,700), length.out = 3), quantity = "relative")
+#' irrad(sun.spct, split_bands(c(400,700), length.out = 3), quantity = "relative.pc")
+#' irrad(sun.spct, split_bands(c(400,700), length.out = 3), quantity = "contribution")
+#' irrad(sun.spct, split_bands(c(400,700), length.out = 3), quantity = "contribution.pc")
 #'
 #' @note The last two parameters control speed optimizations. The defaults
 #'   should be suitable in mosts cases. If you will use repeatedly the same SWFs
@@ -277,7 +286,8 @@ irrad_spct <- irrad.source_spct
 #'
 #' @param spct an R object
 #' @param w.band a list of \code{waveband} objects or a \code{waveband} object
-#' @param quantity character string
+#' @param quantity character string One of "total", "average" or "mean",
+#'   "contribution", "contribution.pc", "relative" or "relative.pc"
 #' @param time.unit character or lubridate::duration
 #' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries
 #'   are trimmed, if FALSE, they are discarded
@@ -293,13 +303,27 @@ irrad_spct <- irrad.source_spct
 #'
 #' @examples
 #' e_irrad(sun.spct, waveband(c(400,700)))
+#' e_irrad(sun.spct, split_bands(c(400,700), length.out = 3))
+#' e_irrad(sun.spct, split_bands(c(400,700), length.out = 3),
+#'         quantity = "total")
+#' e_irrad(sun.spct, split_bands(c(400,700), length.out = 3),
+#'         quantity = "average")
+#' e_irrad(sun.spct, split_bands(c(400,700), length.out = 3),
+#'         quantity = "relative")
+#' e_irrad(sun.spct, split_bands(c(400,700), length.out = 3),
+#'         quantity = "relative.pc")
+#' e_irrad(sun.spct, split_bands(c(400,700), length.out = 3),
+#'         quantity = "contribution")
+#' e_irrad(sun.spct, split_bands(c(400,700), length.out = 3),
+#'         quantity = "contribution.pc")
 #'
 #' @return One numeric value for each waveband with no change in scale factor,
 #'   with name attribute set to the name of each waveband unless a named list is
 #'   supplied in which case the names of the list elements are used. The
 #'   time.unit attribute is copied from the spectrum object to the output. Units
-#'   are as follows: If time.unit is second, [W m-2 nm-1] -> [W m-2] If
-#'   time.unit is day, [J d-1 m-2 nm-1] -> [J m-2]
+#'   are as follows: If units are absolute and time.unit is second, [W m-2 nm-1]
+#'   -> [W m-2] If time.unit is day, [J d-1 m-2 nm-1] -> [J m-2]; if units are
+#'   relative, fraction of one or percent.
 #'
 #' @note The last two parameters control speed optimizations. The defaults
 #'   should be suitable in mosts cases. If you will use repeatedly the same SWFs
@@ -313,7 +337,8 @@ irrad_spct <- irrad.source_spct
 #'
 e_irrad <- function(spct, w.band,
                     quantity, time.unit, wb.trim,
-                    use.cached.mult, use.hinges, allow.scaled, ...) UseMethod("e_irrad")
+                    use.cached.mult, use.hinges, allow.scaled,
+                    ...) UseMethod("e_irrad")
 
 #' @describeIn e_irrad Default for generic function
 #'
@@ -356,7 +381,8 @@ e_irrad.source_spct <-
 #'
 #' @param spct an R object
 #' @param w.band a list of \code{waveband} objects or a \code{waveband} object
-#' @param quantity character string
+#' @param quantity character string One of "total", "average" or "mean",
+#'   "contribution", "contribution.pc", "relative" or "relative.pc"
 #' @param time.unit character or lubridate::duration
 #' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries
 #'   are trimmed, if FALSE, they are discarded
@@ -374,6 +400,13 @@ e_irrad.source_spct <-
 #'
 #' @examples
 #' q_irrad(sun.spct, waveband(c(400,700)))
+#' q_irrad(sun.spct, split_bands(c(400,700), length.out = 3))
+#' q_irrad(sun.spct, split_bands(c(400,700), length.out = 3), quantity = "total")
+#' q_irrad(sun.spct, split_bands(c(400,700), length.out = 3), quantity = "average")
+#' q_irrad(sun.spct, split_bands(c(400,700), length.out = 3), quantity = "relative")
+#' q_irrad(sun.spct, split_bands(c(400,700), length.out = 3), quantity = "relative.pc")
+#' q_irrad(sun.spct, split_bands(c(400,700), length.out = 3), quantity = "contribution")
+#' q_irrad(sun.spct, split_bands(c(400,700), length.out = 3), quantity = "contribution.pc")
 #'
 #' @return One numeric value for each waveband with no change in scale factor,
 #'   with name attribute set to the name of each waveband unless a named list is

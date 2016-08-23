@@ -12,7 +12,8 @@
 #'   constructed on the fly from it.
 #' @param unit.out character Allowed values "energy", and "photon", or its alias
 #'   "quantum"
-#' @param quantity character Allowed values ""
+#' @param quantity character string One of "total", "average" or "mean",
+#'   "contribution", "contribution.pc", "relative" or "relative.pc"
 #' @param time.unit character or lubridate::duration
 #' @param wb.trim logical Flag telling if wavebands crossing spectral data boundaries
 #'   are trimmed or ignored
@@ -71,8 +72,8 @@ response.response_spct <-
 #'   constructed on the fly from it.
 #' @param unit.out character with allowed values "energy", and "photon", or its
 #'   alias "quantum"
-#' @param quantity character with allowed values "total", "average" ("mean"),
-#'   "contibution", "contribution.pc", "relative", "relative.pc"
+#' @param quantity character string One of "total", "average" or "mean",
+#'   "contribution", "contribution.pc", "relative" or "relative.pc"
 #' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries
 #'   are trimmed, if FALSE, they are discarded
 #' @param use.hinges logical indicating whether to use hinges to reduce
@@ -248,7 +249,8 @@ resp_spct <-
 #'   length two. The waveband(s) determine the region(s) of the spectrum that
 #'   are summarized. If a numeric range is supplied a waveband object is
 #'   constructed on the fly from it.
-#' @param quantity character
+#' @param quantity character string One of "total", "average" or "mean",
+#'   "contribution", "contribution.pc", "relative" or "relative.pc"
 #' @param time.unit character or lubridate::duration
 #' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries
 #'   are trimmed, if FALSE, they are discarded
@@ -310,7 +312,8 @@ e_response.response_spct <-
 #'   length two. The waveband(s) determine the region(s) of the spectrum that
 #'   are summarized. If a numeric range is supplied a waveband object is
 #'   constructed on the fly from it.
-#' @param quantity character
+#' @param quantity character string One of "total", "average" or "mean",
+#'   "contribution", "contribution.pc", "relative" or "relative.pc"
 #' @param time.unit character or lubridate::duration
 #' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries
 #'   are trimmed, if FALSE, they are discarded

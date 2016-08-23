@@ -8,7 +8,8 @@
 #'   length two. The waveband(s) determine the region(s) of the spectrum that
 #'   are summarized. If a numeric range is supplied a waveband object is
 #'   constructed on the fly from it.
-#' @param quantity character
+#' @param quantity character string One of "total", "average" or "mean",
+#'   "contribution", "contribution.pc", "relative" or "relative.pc"
 #' @param wb.trim logical Flag telling if wavebands crossing spectral data boundaries
 #'   are trimmed or ignored
 #' @param use.hinges logical Flag indicating whether to use hinges to reduce
@@ -76,7 +77,8 @@ reflectance.object_spct <-
 #'   length two. The waveband(s) determine the region(s) of the spectrum that
 #'   are summarized. If a numeric range is supplied a waveband object is
 #'   constructed on the fly from it.
-#' @param quantity character string
+#' @param quantity character string One of "total", "average" or "mean",
+#'   "contribution", "contribution.pc", "relative" or "relative.pc"
 #' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries
 #'   are trimmed, if FALSE, they are discarded
 #' @param use.hinges logical indicating whether to use hinges to reduce

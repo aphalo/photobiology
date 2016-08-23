@@ -12,9 +12,9 @@
 
 <meta name="author" content="Pedro J. Aphalo" />
 
-<meta name="date" content="2016-08-08" />
+<meta name="date" content="2016-08-23" />
 
-<title>photobiology 0.9.9.9001: User Guide</title>
+<title>photobiology 0.9.10: User Guide</title>
 
 
 
@@ -68,9 +68,9 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 
 
-<h1 class="title toc-ignore">photobiology 0.9.9.9001: User Guide</h1>
+<h1 class="title toc-ignore">photobiology 0.9.10: User Guide</h1>
 <h4 class="author"><em>Pedro J. Aphalo</em></h4>
-<h4 class="date"><em>2016-08-08</em></h4>
+<h4 class="date"><em>2016-08-23</em></h4>
 
 
 
@@ -401,7 +401,7 @@ my.spct &lt;-<span class="st"> </span><span class="kw">as.source_spct</span>(my.
 ## Wavelength range 400 to 410 nm, step 1 nm 
 ## Time unit 1s
 ## 
-## # A tibble: 11 x 2
+## # A tibble: 11 × 2
 ##   w.length s.e.irrad
 ##      &lt;int&gt;     &lt;dbl&gt;
 ## 1      400         1
@@ -419,7 +419,7 @@ my.spct &lt;-<span class="st"> </span><span class="kw">as.source_spct</span>(my.
 ## Wavelength range 300 to 305 nm, step 1 nm 
 ## Time unit 1s
 ## 
-## # A tibble: 6 x 2
+## # A tibble: 6 × 2
 ##   w.length s.e.irrad
 ##      &lt;int&gt;     &lt;dbl&gt;
 ## 1      300         1
@@ -435,7 +435,7 @@ y &lt;-<span class="st"> </span><span class="dv">2</span>
 ## Wavelength range 300 to 305 nm, step 1 nm 
 ## Time unit 1s
 ## 
-## # A tibble: 6 x 2
+## # A tibble: 6 × 2
 ##   w.length s.e.irrad
 ##      &lt;int&gt;     &lt;dbl&gt;
 ## 1      300         2
@@ -451,7 +451,7 @@ s.e.irrad &lt;-<span class="st"> </span><span class="dv">1</span>
 ## Wavelength range 300 to 305 nm, step 1 nm 
 ## Time unit 1s
 ## 
-## # A tibble: 6 x 2
+## # A tibble: 6 × 2
 ##   w.length s.e.irrad
 ##      &lt;int&gt;     &lt;dbl&gt;
 ## 1      300         1
@@ -470,7 +470,7 @@ s.e.irrad &lt;-<span class="st"> </span><span class="dv">1</span>
 ## Wavelength range 300 to 305 nm, step 1 nm 
 ## Time unit 1s
 ## 
-## # A tibble: 6 x 2
+## # A tibble: 6 × 2
 ##   w.length s.e.irrad
 ##      &lt;int&gt;     &lt;dbl&gt;
 ## 1      300        -1
@@ -484,7 +484,7 @@ s.e.irrad &lt;-<span class="st"> </span><span class="dv">1</span>
 ## Wavelength range 300 to 305 nm, step 1 nm 
 ## Time unit 1s
 ## 
-## # A tibble: 6 x 2
+## # A tibble: 6 × 2
 ##   w.length s.e.irrad
 ##      &lt;int&gt;     &lt;dbl&gt;
 ## 1      300        -1
@@ -528,7 +528,7 @@ s.e.irrad &lt;-<span class="st"> </span><span class="dv">1</span>
 ## Measured at 60 N, -10 E
 ## Time unit 1s
 ## 
-## # A tibble: 522 x 3
+## # A tibble: 522 × 3
 ##   w.length s.e.irrad s.q.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
 ## 1 280.0000         0         0
@@ -553,7 +553,7 @@ ten.minutes.spct</code></pre></div>
 ## Measured at 60.20942 N, 24.96424 E
 ## Time unit 600s (~10 minutes)
 ## 
-## # A tibble: 522 x 3
+## # A tibble: 522 × 3
 ##   w.length s.e.irrad s.q.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
 ## 1 280.0000         0         0
@@ -649,7 +649,7 @@ two_suns.mspct</code></pre></div>
 ## Measured at 60.20942 N, 24.96424 E
 ## Time unit 1s
 ## 
-## # A tibble: 522 x 3
+## # A tibble: 522 × 3
 ##   w.length s.e.irrad s.q.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
 ## 1 280.0000         0         0
@@ -664,7 +664,7 @@ two_suns.mspct</code></pre></div>
 ## Measured at 60.20942 N, 24.96424 E
 ## Time unit 1s
 ## 
-## # A tibble: 522 x 3
+## # A tibble: 522 × 3
 ##   w.length s.e.irrad s.q.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
 ## 1 280.0000         0         0
@@ -709,7 +709,7 @@ two_suns.mspct</code></pre></div>
 ## Wavelength range 280 to 800 nm, step 0.9230769 to 1 nm 
 ## Time unit 1s
 ## 
-## # A tibble: 522 x 3
+## # A tibble: 522 × 3
 ##   w.length s.e.irrad s.q.irrad
 ## *    &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
 ## 1 280.0000         0         0
@@ -722,7 +722,7 @@ two_suns.mspct</code></pre></div>
 ## Wavelength range 280 to 800 nm, step 0.9230769 to 1 nm 
 ## Time unit 1s
 ## 
-## # A tibble: 522 x 3
+## # A tibble: 522 × 3
 ##   w.length s.e.irrad s.q.irrad
 ## *    &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
 ## 1 280.0000         0         0
@@ -743,7 +743,7 @@ two_suns.mspct</code></pre></div>
 ## Wavelength range 200 to 210 nm, step 1 nm 
 ## Time unit 1s
 ## 
-## # A tibble: 11 x 2
+## # A tibble: 11 × 2
 ##   w.length s.e.irrad
 ## *    &lt;int&gt;     &lt;dbl&gt;
 ## 1      200         1
@@ -756,7 +756,7 @@ two_suns.mspct</code></pre></div>
 ## Wavelength range 200 to 210 nm, step 1 nm 
 ## Time unit 1s
 ## 
-## # A tibble: 11 x 2
+## # A tibble: 11 × 2
 ##   w.length s.e.irrad
 ## *    &lt;int&gt;     &lt;dbl&gt;
 ## 1      200         2
@@ -774,7 +774,7 @@ test1.df</code></pre></div>
 ## Wavelength range 200 to 210 nm, step 1 nm 
 ## Time unit 1s
 ## 
-## # A tibble: 22 x 3
+## # A tibble: 22 × 3
 ##   w.length s.e.irrad spectrum
 ##      &lt;int&gt;     &lt;dbl&gt;   &lt;fctr&gt;
 ## 1      200         1        A
@@ -794,7 +794,7 @@ test1.df</code></pre></div>
 ## Wavelength range 200 to 210 nm, step 1 nm 
 ## Time unit 1s
 ## 
-## # A tibble: 11 x 2
+## # A tibble: 11 × 2
 ##   w.length s.e.irrad
 ##      &lt;int&gt;     &lt;dbl&gt;
 ## 1      200         1
@@ -807,7 +807,7 @@ test1.df</code></pre></div>
 ## Wavelength range 200 to 210 nm, step 1 nm 
 ## Time unit 1s
 ## 
-## # A tibble: 11 x 2
+## # A tibble: 11 × 2
 ##   w.length s.e.irrad
 ##      &lt;int&gt;     &lt;dbl&gt;
 ## 1      200         2
@@ -824,7 +824,7 @@ test1.df</code></pre></div>
 ## Wavelength range 200 to 210 nm, step 1 nm 
 ## Time unit 1s
 ## 
-## # A tibble: 11 x 2
+## # A tibble: 11 × 2
 ##   w.length s.q.irrad
 ##      &lt;int&gt;     &lt;dbl&gt;
 ## 1      200         1
@@ -837,7 +837,7 @@ test1.df</code></pre></div>
 ## Wavelength range 200 to 210 nm, step 1 nm 
 ## Time unit 1s
 ## 
-## # A tibble: 11 x 2
+## # A tibble: 11 × 2
 ##   w.length s.q.irrad
 ##      &lt;int&gt;     &lt;dbl&gt;
 ## 1      200         2
@@ -893,7 +893,7 @@ Methods <code>[</code>, and <code>[&lt;-</code>, extract and replace <em>parts</
 ## Measured at 60.20942 N, 24.96424 E
 ## Time unit 1s
 ## 
-## # A tibble: 522 x 3
+## # A tibble: 522 × 3
 ##   w.length s.e.irrad s.q.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
 ## 1 280.0000         0         0
@@ -912,7 +912,7 @@ Methods <code>[</code>, and <code>[&lt;-</code>, extract and replace <em>parts</
 ## Measured at 60.20942 N, 24.96424 E
 ## Time unit 1s
 ## 
-## # A tibble: 522 x 3
+## # A tibble: 522 × 3
 ##   w.length s.e.irrad s.q.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
 ## 1 280.0000         0         0
@@ -927,7 +927,7 @@ Methods <code>[</code>, and <code>[&lt;-</code>, extract and replace <em>parts</
 ## Measured at 60.20942 N, 24.96424 E
 ## Time unit 1s
 ## 
-## # A tibble: 522 x 3
+## # A tibble: 522 × 3
 ##   w.length s.e.irrad s.q.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
 ## 1 280.0000         0         0
@@ -948,7 +948,7 @@ Methods <code>[[</code>, <code>$</code> and <code>[[&lt;-</code>, extract and re
 ## Measured at 60.20942 N, 24.96424 E
 ## Time unit 1s
 ## 
-## # A tibble: 522 x 3
+## # A tibble: 522 × 3
 ##   w.length s.e.irrad s.q.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
 ## 1 280.0000         0         0
@@ -963,7 +963,7 @@ Methods <code>[[</code>, <code>$</code> and <code>[[&lt;-</code>, extract and re
 ## Measured at 60.20942 N, 24.96424 E
 ## Time unit 1s
 ## 
-## # A tibble: 522 x 3
+## # A tibble: 522 × 3
 ##   w.length s.e.irrad s.q.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
 ## 1 280.0000         0         0
@@ -978,7 +978,7 @@ Methods <code>[[</code>, <code>$</code> and <code>[[&lt;-</code>, extract and re
 ## Measured at 60.20942 N, 24.96424 E
 ## Time unit 1s
 ## 
-## # A tibble: 522 x 3
+## # A tibble: 522 × 3
 ##   w.length s.e.irrad s.q.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
 ## 1 280.0000         0         0
@@ -997,7 +997,7 @@ two_suns.mspct</code></pre></div>
 ## Measured at 60.20942 N, 24.96424 E
 ## Time unit 1s
 ## 
-## # A tibble: 522 x 2
+## # A tibble: 522 × 2
 ##   w.length s.e.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;
 ## 1 280.0000         0
@@ -1017,7 +1017,7 @@ two_suns.mspct</code></pre></div>
 ## Measured at 60.20942 N, 24.96424 E
 ## Time unit 1s
 ## 
-## # A tibble: 522 x 2
+## # A tibble: 522 × 2
 ##   w.length s.e.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;
 ## 1 280.0000         0
@@ -1029,7 +1029,7 @@ two_suns.mspct</code></pre></div>
 ## Object: filter_spct [4 x 2]
 ## Wavelength range 100 to 5000 nm, step 1 to 4898 nm 
 ## 
-## # A tibble: 4 x 2
+## # A tibble: 4 × 2
 ##   w.length   Tfr
 ## *    &lt;dbl&gt; &lt;dbl&gt;
 ## 1      100     1
@@ -1043,7 +1043,7 @@ two_suns.mspct</code></pre></div>
 ## Measured at 60.20942 N, 24.96424 E
 ## Time unit 1s
 ## 
-## # A tibble: 522 x 3
+## # A tibble: 522 × 3
 ##   w.length s.e.irrad s.q.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
 ## 1 280.0000         0         0
@@ -1135,7 +1135,7 @@ two_suns.mspct</code></pre></div>
 ## Measured at 60.20942 N, 24.96424 E
 ## Time unit 1s
 ## 
-## # A tibble: 522 x 2
+## # A tibble: 522 × 2
 ##   w.length s.e.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;
 ## 1 280.0000       0.1
@@ -1150,7 +1150,7 @@ two_suns.mspct</code></pre></div>
 ## Measured at 60.20942 N, 24.96424 E
 ## Time unit 1s
 ## 
-## # A tibble: 522 x 2
+## # A tibble: 522 × 2
 ##   w.length s.e.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;
 ## 1 280.0000       0.1
@@ -1170,7 +1170,7 @@ two_suns.mspct</code></pre></div>
 ## Measured at 60.20942 N, 24.96424 E
 ## Time unit 1s
 ## 
-## # A tibble: 525 x 2
+## # A tibble: 525 × 2
 ##   w.length s.e.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;
 ## 1 280.0000        NA
@@ -1185,7 +1185,7 @@ two_suns.mspct</code></pre></div>
 ## Measured at 60.20942 N, 24.96424 E
 ## Time unit 1s
 ## 
-## # A tibble: 525 x 2
+## # A tibble: 525 × 2
 ##   w.length s.e.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;
 ## 1 280.0000        NA
@@ -1198,14 +1198,14 @@ two_suns.mspct</code></pre></div>
 <p>In the second example we pass two arguments by name to the applied function. The number of arguments is not fixed, but the spectrum will be always passed as the first argument to the function.</p>
 <p>In the case of <code>msdply()</code> the applied function is expected to return an R object of the same length for each of the member spectra.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">msdply</span>(two.mspct, max)</code></pre></div>
-<pre><code>## # A tibble: 2 x 2
+<pre><code>## # A tibble: 2 × 2
 ##   spct.idx max.wl
 ##     &lt;fctr&gt;  &lt;dbl&gt;
 ## 1        A    800
 ## 2        B    800</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ranges.df &lt;-<span class="st"> </span><span class="kw">msdply</span>(two.mspct, range)
 ranges.df</code></pre></div>
-<pre><code>## # A tibble: 2 x 3
+<pre><code>## # A tibble: 2 × 3
 ##   spct.idx min.wl max.wl
 ##     &lt;fctr&gt;  &lt;dbl&gt;  &lt;dbl&gt;
 ## 1        A    280    800
@@ -1213,7 +1213,7 @@ ranges.df</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">cat</span>(<span class="kw">comment</span>(ranges.df))</code></pre></div>
 <pre><code>## Applied function: 'range'.</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">msdply</span>(two.mspct, range, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>)</code></pre></div>
-<pre><code>## # A tibble: 2 x 3
+<pre><code>## # A tibble: 2 × 3
 ##   spct.idx min.wl max.wl
 ##     &lt;fctr&gt;  &lt;dbl&gt;  &lt;dbl&gt;
 ## 1        A    280    800
@@ -1246,7 +1246,7 @@ ranges.df</code></pre></div>
 ## Wavelength range 280 to 800 nm, step 0.9230769 to 1 nm 
 ## Time unit 1s
 ## 
-## # A tibble: 522 x 2
+## # A tibble: 522 × 2
 ##   w.length s.e.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;
 ## 1 280.0000         0
@@ -1259,7 +1259,7 @@ ranges.df</code></pre></div>
 ## Wavelength range 280 to 800 nm, step 0.9230769 to 1 nm 
 ## Time unit 1s
 ## 
-## # A tibble: 522 x 2
+## # A tibble: 522 × 2
 ##   w.length s.e.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;
 ## 1 280.0000         0
@@ -1276,7 +1276,7 @@ ranges.df</code></pre></div>
 ## Wavelength range 280 to 800 nm, step 0.9230769 to 1 nm 
 ## Time unit 1s
 ## 
-## # A tibble: 522 x 2
+## # A tibble: 522 × 2
 ##   w.length s.e.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;
 ## 1 280.0000         0
@@ -1289,7 +1289,7 @@ ranges.df</code></pre></div>
 ## Wavelength range 280 to 800 nm, step 0.9230769 to 1 nm 
 ## Time unit 1s
 ## 
-## # A tibble: 522 x 2
+## # A tibble: 522 × 2
 ##   w.length s.e.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;
 ## 1 280.0000         0
@@ -1308,7 +1308,7 @@ ranges.df</code></pre></div>
 ## Wavelength range 280 to 800 nm, step 0.9230769 to 1 nm 
 ## Time unit 1s
 ## 
-## # A tibble: 522 x 2
+## # A tibble: 522 × 2
 ##   w.length s.e.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;
 ## 1 280.0000         0
@@ -1321,7 +1321,7 @@ ranges.df</code></pre></div>
 ## Wavelength range 280 to 800 nm, step 0.9230769 to 1 nm 
 ## Time unit 1s
 ## 
-## # A tibble: 522 x 2
+## # A tibble: 522 × 2
 ##   w.length s.e.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;
 ## 1 280.0000         0
@@ -1334,7 +1334,7 @@ ranges.df</code></pre></div>
 ## Wavelength range 280 to 800 nm, step 0.9230769 to 1 nm 
 ## Time unit 1s
 ## 
-## # A tibble: 522 x 2
+## # A tibble: 522 × 2
 ##   w.length s.e.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;
 ## 1 280.0000         0
@@ -1347,7 +1347,7 @@ ranges.df</code></pre></div>
 ## Wavelength range 280 to 800 nm, step 0.9230769 to 1 nm 
 ## Time unit 1s
 ## 
-## # A tibble: 522 x 2
+## # A tibble: 522 × 2
 ##   w.length s.e.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;
 ## 1 280.0000         0
@@ -1365,7 +1365,7 @@ ranges.df</code></pre></div>
 ## Wavelength range 280 to 800 nm, step 0.9230769 to 1 nm 
 ## Time unit 1s
 ## 
-## # A tibble: 522 x 2
+## # A tibble: 522 × 2
 ##   w.length s.e.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;
 ## 1 280.0000         0
@@ -1378,7 +1378,7 @@ ranges.df</code></pre></div>
 ## Wavelength range 280 to 800 nm, step 0.9230769 to 1 nm 
 ## Time unit 1s
 ## 
-## # A tibble: 522 x 2
+## # A tibble: 522 × 2
 ##   w.length s.e.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;
 ## 1 280.0000         0
@@ -1396,25 +1396,25 @@ There are cases where functions <code>convolve_each()</code> and <code>msmsply()
 <h3>Attributes</h3>
 <p>Some of the <code>set</code> and <code>get</code> functions used with attributes have method definitions for collections of spectra. Some examples follow.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">getWhenMeasured</span>(two.mspct)</code></pre></div>
-<pre><code>## # A tibble: 2 x 2
+<pre><code>## # A tibble: 2 × 2
 ##   spct.idx       when.measured
-##     &lt;fctr&gt;              &lt;time&gt;
+##     &lt;fctr&gt;              &lt;dttm&gt;
 ## 1        A 2010-06-22 09:51:00
 ## 2        B 2010-06-22 09:51:00</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">setWhenMeasured</span>(two.mspct, <span class="kw">ymd</span>(<span class="st">&quot;2015-10-31&quot;</span>, <span class="dt">tz =</span> <span class="st">&quot;EET&quot;</span>))
 <span class="kw">getWhenMeasured</span>(two.mspct)</code></pre></div>
-<pre><code>## # A tibble: 2 x 2
+<pre><code>## # A tibble: 2 × 2
 ##   spct.idx       when.measured
-##     &lt;fctr&gt;              &lt;time&gt;
+##     &lt;fctr&gt;              &lt;dttm&gt;
 ## 1        A 2015-10-30 22:00:00
 ## 2        B 2015-10-30 22:00:00</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">setWhenMeasured</span>(two.mspct,
                 <span class="kw">list</span>(<span class="kw">ymd_hm</span>(<span class="st">&quot;2015-10-31 10:00&quot;</span>, <span class="dt">tz =</span> <span class="st">&quot;EET&quot;</span>),
                      <span class="kw">ymd_hm</span>(<span class="st">&quot;2015-10-31 11:00&quot;</span>, <span class="dt">tz =</span> <span class="st">&quot;EET&quot;</span>)))
 <span class="kw">getWhenMeasured</span>(two.mspct)</code></pre></div>
-<pre><code>## # A tibble: 2 x 2
+<pre><code>## # A tibble: 2 × 2
 ##   spct.idx       when.measured
-##     &lt;fctr&gt;              &lt;time&gt;
+##     &lt;fctr&gt;              &lt;dttm&gt;
 ## 1        A 2015-10-31 08:00:00
 ## 2        B 2015-10-31 09:00:00</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">two.mspct</code></pre></div>
@@ -1426,7 +1426,7 @@ There are cases where functions <code>convolve_each()</code> and <code>msmsply()
 ## Measured at 60.20942 N, 24.96424 E
 ## Time unit 1s
 ## 
-## # A tibble: 522 x 2
+## # A tibble: 522 × 2
 ##   w.length s.e.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;
 ## 1 280.0000         0
@@ -1441,7 +1441,7 @@ There are cases where functions <code>convolve_each()</code> and <code>msmsply()
 ## Measured at 60.20942 N, 24.96424 E
 ## Time unit 1s
 ## 
-## # A tibble: 522 x 2
+## # A tibble: 522 × 2
 ##   w.length s.e.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;
 ## 1 280.0000         0
@@ -1971,7 +1971,7 @@ wavebands</code></pre></div>
 ## Wavelength range 280 to 800 nm, step 0.9230769 to 1 nm 
 ## Time unit 1s
 ## 
-## # A tibble: 522 x 2
+## # A tibble: 522 × 2
 ##   w.length s.e.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;
 ## 1 280.0000         0
@@ -1985,7 +1985,7 @@ wavebands</code></pre></div>
 ## Wavelength range 280 to 800 nm, step 0.07692308 to 1 nm 
 ## Time unit 1s
 ## 
-## # A tibble: 533 x 2
+## # A tibble: 533 × 2
 ##   w.length s.e.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;
 ## 1 280.0000         0
@@ -1999,7 +1999,7 @@ wavebands</code></pre></div>
 ## Wavelength range 280 to 800 nm, step 0.07692308 to 1 nm 
 ## Time unit 1s
 ## 
-## # A tibble: 533 x 2
+## # A tibble: 533 × 2
 ##   w.length s.e.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;
 ## 1 280.0000         0
@@ -2012,7 +2012,7 @@ wavebands</code></pre></div>
 ## Wavelength range 280 to 800 nm, step 0.07692308 to 1 nm 
 ## Time unit 1s
 ## 
-## # A tibble: 533 x 2
+## # A tibble: 533 × 2
 ##   w.length s.e.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;
 ## 1 280.0000         0
@@ -2028,7 +2028,7 @@ wavebands</code></pre></div>
 ## Measured at 60.20942 N, 24.96424 E
 ## Time unit 1s
 ## 
-## # A tibble: 522 x 2
+## # A tibble: 522 × 2
 ##   w.length s.e.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;
 ## 1 280.0000         0
@@ -2043,7 +2043,7 @@ wavebands</code></pre></div>
 ## Measured at 60.20942 N, 24.96424 E
 ## Time unit 1s
 ## 
-## # A tibble: 522 x 2
+## # A tibble: 522 × 2
 ##   w.length s.e.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;
 ## 1 280.0000         0
@@ -2058,7 +2058,7 @@ wavebands</code></pre></div>
 ## Measured at 60.20942 N, 24.96424 E
 ## Time unit 1s
 ## 
-## # A tibble: 522 x 2
+## # A tibble: 522 × 2
 ##   w.length s.e.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;
 ## 1 280.0000         0
@@ -2073,7 +2073,7 @@ wavebands</code></pre></div>
 ## Wavelength range 280 to 315 nm, step 0.9230769 to 1 nm 
 ## Time unit 1s
 ## 
-## # A tibble: 37 x 2
+## # A tibble: 37 × 2
 ##   w.length s.e.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;
 ## 1 280.0000         0
@@ -2089,7 +2089,7 @@ wavebands</code></pre></div>
 ## Time unit 1s
 ## Data weighted using 'range.250.400.wtd' BSWF
 ## 
-## # A tibble: 133 x 2
+## # A tibble: 133 × 2
 ##   w.length s.e.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;
 ## 1 280.0000         0
@@ -2198,7 +2198,7 @@ wavebands</code></pre></div>
 ## Measured at 60.20942 N, 24.96424 E
 ## Time unit 1s
 ## 
-## # A tibble: 522 x 2
+## # A tibble: 522 × 2
 ##   w.length s.e.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;
 ## 1 280.0000         0
@@ -2213,7 +2213,7 @@ wavebands</code></pre></div>
 ## Measured at 60.20942 N, 24.96424 E
 ## Time unit 1s
 ## 
-## # A tibble: 522 x 2
+## # A tibble: 522 × 2
 ##   w.length s.e.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;
 ## 1 280.0000         0
@@ -2346,7 +2346,7 @@ sun.spct *<span class="st"> </span>UVB.wb</code></pre></div>
 ## Wavelength range 280 to 315 nm, step 0.9230769 to 1 nm 
 ## Time unit 1s
 ## 
-## # A tibble: 37 x 2
+## # A tibble: 37 × 2
 ##   w.length s.q.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;
 ## 1 280.0000         0
@@ -2360,7 +2360,7 @@ sun.spct *<span class="st"> </span>UVB.wb</code></pre></div>
 ## Wavelength range 280 to 315 nm, step 0.9230769 to 1 nm 
 ## Time unit 1s
 ## 
-## # A tibble: 37 x 2
+## # A tibble: 37 × 2
 ##   w.length s.e.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;
 ## 1 280.0000         0
@@ -2824,7 +2824,7 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 ## Wavelength range 280 to 800 nm, step 0.9230769 to 1 nm 
 ## Time unit 1s
 ## 
-## # A tibble: 1,044 x 4
+## # A tibble: 1,044 × 4
 ##   w.length s.e.irrad spct.idx s.q.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;   &lt;fctr&gt;     &lt;dbl&gt;
 ## 1 280.0000         0   spct_1         0
@@ -2838,7 +2838,7 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 ## Wavelength range 280 to 800 nm, step 0.9230769 to 1 nm 
 ## Time unit 1s
 ## 
-## # A tibble: 1,044 x 4
+## # A tibble: 1,044 × 4
 ##   w.length s.e.irrad   site s.q.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt; &lt;fctr&gt;     &lt;dbl&gt;
 ## 1 280.0000         0      A         0
@@ -2854,7 +2854,7 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 ## Measured at 60.20942 N, 24.96424 E
 ## Time unit 1s
 ## 
-## # A tibble: 10 x 3
+## # A tibble: 10 × 3
 ##   w.length s.e.irrad s.q.irrad
 ## *    &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
 ## 1 280.0000         0         0
@@ -2877,7 +2877,7 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 ## Wavelength range 324 to 800 nm, step 1 to 3 nm 
 ## Time unit 1s
 ## 
-## # A tibble: 475 x 3
+## # A tibble: 475 × 3
 ##   w.length s.e.irrad    s.q.irrad
 ## *    &lt;dbl&gt;     &lt;dbl&gt;        &lt;dbl&gt;
 ## 1      324 0.2075508 5.621282e-07
@@ -2890,7 +2890,7 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 ## Wavelength range 601 to 800 nm, step 1 nm 
 ## Time unit 1s
 ## 
-## # A tibble: 200 x 3
+## # A tibble: 200 × 3
 ##   w.length s.e.irrad    s.q.irrad
 ## *    &lt;dbl&gt;     &lt;dbl&gt;        &lt;dbl&gt;
 ## 1      601 0.6295837 3.162962e-06
@@ -2903,7 +2903,7 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 ## Wavelength range 280 to 779 nm, step 99 to 100 nm 
 ## Time unit 1s
 ## 
-## # A tibble: 6 x 3
+## # A tibble: 6 × 3
 ##   w.length s.e.irrad    s.q.irrad
 ## *    &lt;dbl&gt;     &lt;dbl&gt;        &lt;dbl&gt;
 ## 1      280 0.0000000 0.000000e+00
@@ -2924,7 +2924,7 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 ## Measured at 60.20942 N, 24.96424 E
 ## Time unit 1s
 ## 
-## # A tibble: 522 x 3
+## # A tibble: 522 × 3
 ##   w.length s.e.irrad s.q.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
 ## 1 280.0000         0         0
@@ -2939,7 +2939,7 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 ## Measured at 60.20942 N, 24.96424 E
 ## Time unit 1s
 ## 
-## # A tibble: 522 x 2
+## # A tibble: 522 × 2
 ##   w.length s.q.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;
 ## 1 280.0000         0
@@ -2960,7 +2960,7 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 ## Time unit 1s
 ## Spectral data normalized to 1 at 451 nm 
 ## 
-## # A tibble: 522 x 2
+## # A tibble: 522 × 2
 ##   w.length s.e.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;
 ## 1 280.0000         0
@@ -2977,7 +2977,7 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 ## Time unit 1s
 ## Spectral data normalized to 1 at 451 nm 
 ## 
-## # A tibble: 522 x 2
+## # A tibble: 522 × 2
 ##   w.length s.e.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;
 ## 1 280.0000         0
@@ -2994,7 +2994,7 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 ## Time unit 1s
 ## Spectral data normalized to 1 at 600.3 nm 
 ## 
-## # A tibble: 522 x 2
+## # A tibble: 522 × 2
 ##   w.length s.e.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;
 ## 1 280.0000         0
@@ -3014,7 +3014,7 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 ## Time unit 1s
 ## Rescaled to 'mean' = 1 
 ## 
-## # A tibble: 522 x 2
+## # A tibble: 522 × 2
 ##   w.length s.e.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;
 ## 1 280.0000         0
@@ -3030,7 +3030,7 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 ## Time unit 1s
 ## Rescaled to 'total' = 1 
 ## 
-## # A tibble: 522 x 2
+## # A tibble: 522 × 2
 ##   w.length s.e.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;
 ## 1 280.0000         0
@@ -3046,7 +3046,7 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 ## Time unit 1s
 ## Rescaled to 'a user supplied R function' = 1 
 ## 
-## # A tibble: 522 x 2
+## # A tibble: 522 × 2
 ##   w.length s.e.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;
 ## 1 280.0000         0
@@ -3066,7 +3066,7 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 ## Measured at 60.20942 N, 24.96424 E
 ## Time unit 1s
 ## 
-## # A tibble: 522 x 2
+## # A tibble: 522 × 2
 ##   w.length   s.e.irrad
 ##      &lt;dbl&gt;       &lt;dbl&gt;
 ## 1 280.0000 -0.01841458
@@ -3081,7 +3081,7 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 ## Measured at 60.20942 N, 24.96424 E
 ## Time unit 1s
 ## 
-## # A tibble: 522 x 2
+## # A tibble: 522 × 2
 ##   w.length s.e.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;
 ## 1 280.0000         0
@@ -3101,7 +3101,7 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 ## Measured at 60.20942 N, 24.96424 E
 ## Time unit 1s
 ## 
-## # A tibble: 522 x 2
+## # A tibble: 522 × 2
 ##   w.length s.e.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;
 ## 1 280.0000     -0.01
@@ -3115,7 +3115,7 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 <pre><code>## Object: filter_spct [611 x 2]
 ## Wavelength range 190 to 800 nm, step 1 nm 
 ## 
-## # A tibble: 611 x 2
+## # A tibble: 611 × 2
 ##   w.length   Tfr
 ##      &lt;int&gt; &lt;dbl&gt;
 ## 1      190     0
@@ -3134,7 +3134,7 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 ## Measured at 60.20942 N, 24.96424 E
 ## Time unit 1s
 ## 
-## # A tibble: 1,001 x 3
+## # A tibble: 1,001 × 3
 ##   w.length s.e.irrad    s.q.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;        &lt;dbl&gt;
 ## 1    400.0 0.6081049 2.033314e-06
@@ -3156,7 +3156,7 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 ## Measured at 60.20942 N, 24.96424 E
 ## Time unit 1s
 ## 
-## # A tibble: 3 x 3
+## # A tibble: 3 × 3
 ##   w.length s.e.irrad    s.q.irrad
 ## *    &lt;dbl&gt;     &lt;dbl&gt;        &lt;dbl&gt;
 ## 1      400 0.6081049 2.033314e-06
@@ -3169,7 +3169,7 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 ## Measured at 60.20942 N, 24.96424 E
 ## Time unit 1s
 ## 
-## # A tibble: 401 x 3
+## # A tibble: 401 × 3
 ##   w.length s.e.irrad    s.q.irrad
 ## *    &lt;dbl&gt;     &lt;dbl&gt;        &lt;dbl&gt;
 ## 1      400 0.6081049 2.033314e-06
@@ -3185,7 +3185,7 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 ## Measured at 60.20942 N, 24.96424 E
 ## Time unit 1s
 ## 
-## # A tibble: 86 x 3
+## # A tibble: 86 × 3
 ##   w.length s.e.irrad    s.q.irrad
 ## *    &lt;dbl&gt;     &lt;dbl&gt;        &lt;dbl&gt;
 ## 1      315 0.1127901 2.969940e-07
@@ -3200,7 +3200,7 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 ## Measured at 60.20942 N, 24.96424 E
 ## Time unit 1s
 ## 
-## # A tibble: 0 x 3
+## # A tibble: 0 × 3
 ## # ... with 3 variables: w.length &lt;dbl&gt;, s.e.irrad &lt;dbl&gt;, s.q.irrad &lt;dbl&gt;</code></pre>
 </div>
 <div id="method-trim_wl" class="section level4">
@@ -3214,7 +3214,7 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 ## Measured at 60.20942 N, 24.96424 E
 ## Time unit 1s
 ## 
-## # A tibble: 520 x 3
+## # A tibble: 520 × 3
 ##   w.length s.e.irrad s.q.irrad
 ## *    &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
 ## 1 282.5000         0         0
@@ -3229,7 +3229,7 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 ## Measured at 60.20942 N, 24.96424 E
 ## Time unit 1s
 ## 
-## # A tibble: 519 x 3
+## # A tibble: 519 × 3
 ##   w.length s.e.irrad s.q.irrad
 ## *    &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
 ## 1 282.7692         0         0
@@ -3245,7 +3245,7 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 ## Measured at 60.20942 N, 24.96424 E
 ## Time unit 1s
 ## 
-## # A tibble: 301 x 3
+## # A tibble: 301 × 3
 ##   w.length s.e.irrad    s.q.irrad
 ## *    &lt;dbl&gt;     &lt;dbl&gt;        &lt;dbl&gt;
 ## 1      400 0.6081049 2.033314e-06
@@ -3261,7 +3261,7 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 ## Measured at 60.20942 N, 24.96424 E
 ## Time unit 1s
 ## 
-## # A tibble: 524 x 3
+## # A tibble: 524 × 3
 ##   w.length s.e.irrad s.q.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
 ## 1 280.0000        NA        NA
@@ -3277,7 +3277,7 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 ## Measured at 60.20942 N, 24.96424 E
 ## Time unit 1s
 ## 
-## # A tibble: 529 x 3
+## # A tibble: 529 × 3
 ##   w.length s.e.irrad s.q.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
 ## 1 275.0000         0         0
@@ -3293,7 +3293,7 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 ## Measured at 60.20942 N, 24.96424 E
 ## Time unit 1s
 ## 
-## # A tibble: 524 x 3
+## # A tibble: 524 × 3
 ##   w.length s.e.irrad s.q.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
 ## 1 280.0000        NA        NA
@@ -3308,7 +3308,7 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 ## Measured at 60.20942 N, 24.96424 E
 ## Time unit 1s
 ## 
-## # A tibble: 522 x 3
+## # A tibble: 522 × 3
 ##   w.length s.e.irrad s.q.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
 ## 1 280.0000        NA        NA
@@ -3335,7 +3335,7 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 ## Time unit 1s
 ## Data weighted using 'range.250.400.wtd' BSWF
 ## 
-## # A tibble: 122 x 2
+## # A tibble: 122 × 2
 ##   w.length s.e.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;
 ## 1 280.0000         0
@@ -3364,7 +3364,7 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 ## Wavelength range 280 to 800 nm, step 1.023182e-12 to 1 nm 
 ## Time unit 1s
 ## 
-## # A tibble: 524 x 6
+## # A tibble: 524 × 6
 ##   w.length s.e.irrad s.q.irrad wl.color wb.color   wb.f
 ##      &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;chr&gt;    &lt;chr&gt; &lt;fctr&gt;
 ## 1 280.0000         0         0  #000000     &lt;NA&gt;     NA
@@ -3377,7 +3377,7 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 ## Wavelength range 280 to 800 nm, step 1.023182e-12 to 1 nm 
 ## Time unit 1s
 ## 
-## # A tibble: 524 x 6
+## # A tibble: 524 × 6
 ##   w.length s.e.irrad s.q.irrad wl.color wb.color   wb.f
 ##      &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;chr&gt;    &lt;chr&gt; &lt;fctr&gt;
 ## 1 280.0000         0         0  #000000    black    UVB
@@ -3420,7 +3420,7 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 <pre><code>## Object: generic_spct [8 x 12]
 ## Wavelength range 100 to 400 nm, step 9.947598e-13 to 180 nm 
 ## 
-## # A tibble: 8 x 12
+## # A tibble: 8 × 12
 ##   w.length counts   cps s.e.irrad s.q.irrad   Tfr   Rfl s.e.response
 ##      &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;        &lt;dbl&gt;
 ## 1      100      0     0         0         0     0     0            0
@@ -3433,7 +3433,7 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 <pre><code>## Object: generic_spct [3 x 15]
 ## Wavelength range 190 to 357.5 nm, step 60 to 107.5 nm 
 ## 
-## # A tibble: 3 x 15
+## # A tibble: 3 × 15
 ##   w.length counts   cps s.e.irrad s.q.irrad   Tfr   Rfl s.e.response
 ##      &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;        &lt;dbl&gt;
 ## 1    190.0      0     0         0         0     0     0            0
@@ -3448,7 +3448,7 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 ## Wavelength range 280 to 800 nm, step 1.023182e-12 to 1 nm 
 ## Time unit 1s
 ## 
-## # A tibble: 524 x 6
+## # A tibble: 524 × 6
 ##   w.length s.e.irrad s.q.irrad wl.color wb.color   wb.f
 ##      &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;chr&gt;    &lt;chr&gt; &lt;fctr&gt;
 ## 1 280.0000         0         0  #000000     &lt;NA&gt;     NA
@@ -3469,7 +3469,7 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 ## Wavelength range 280 to 800 nm, step 1.023182e-12 to 1 nm 
 ## Time unit 1s
 ## 
-## # A tibble: 524 x 3
+## # A tibble: 524 × 3
 ##   w.length s.e.irrad s.q.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
 ## 1 280.0000         0         0
@@ -4212,7 +4212,7 @@ Most frequently used summary methods are implemented for collections of spectra.
                                    <span class="dt">pet =</span> polyester.spct,
                                    <span class="dt">yellow =</span> yellow_gel.spct))
 <span class="kw">range</span>(filters.mspct)</code></pre></div>
-<pre><code>## # A tibble: 3 x 3
+<pre><code>## # A tibble: 3 × 3
 ##   spct.idx min.wl max.wl
 ##     &lt;fctr&gt;  &lt;dbl&gt;  &lt;dbl&gt;
 ## 1     none    100   5000
@@ -4232,7 +4232,7 @@ Most frequently used summary methods are implemented for collections of spectra.
 ## Measured at 60.20942 N, 24.96424 E
 ## Time unit 1s
 ## 
-## # A tibble: 3 x 2
+## # A tibble: 3 × 2
 ##   w.length s.e.irrad
 ## *    &lt;dbl&gt;     &lt;dbl&gt;
 ## 1      451 0.8204633
@@ -4245,7 +4245,7 @@ Most frequently used summary methods are implemented for collections of spectra.
 ## Measured at 60.20942 N, 24.96424 E
 ## Time unit 1s
 ## 
-## # A tibble: 9 x 2
+## # A tibble: 9 × 2
 ##   w.length s.e.irrad
 ## *    &lt;dbl&gt;     &lt;dbl&gt;
 ## 1      358 0.2544907
@@ -4261,7 +4261,7 @@ Most frequently used summary methods are implemented for collections of spectra.
 ## Measured at 60.20942 N, 24.96424 E
 ## Time unit 1s
 ## 
-## # A tibble: 7 x 2
+## # A tibble: 7 × 2
 ##   w.length    s.q.irrad
 ## *    &lt;dbl&gt;        &lt;dbl&gt;
 ## 1      451 3.093155e-06
@@ -4277,7 +4277,7 @@ Most frequently used summary methods are implemented for collections of spectra.
 ## Measured at 60.20942 N, 24.96424 E
 ## Time unit 1s
 ## 
-## # A tibble: 18 x 2
+## # A tibble: 18 × 2
 ##   w.length s.e.irrad
 ## *    &lt;dbl&gt;     &lt;dbl&gt;
 ## 1      354 0.3758625
@@ -4295,13 +4295,13 @@ Most frequently used summary methods are implemented for collections of spectra.
 ## --- Member: none ---
 ## Object: filter_spct [0 x 2]
 ## 
-## # A tibble: 0 x 2
+## # A tibble: 0 × 2
 ## # ... with 2 variables: w.length &lt;dbl&gt;, Tfr &lt;dbl&gt;
 ## --- Member: pet ---
 ## Object: filter_spct [8 x 2]
 ## Wavelength range 453 to 648 nm, step 6 to 76 nm 
 ## 
-## # A tibble: 8 x 2
+## # A tibble: 8 × 2
 ##   w.length   Tfr
 ## *    &lt;int&gt; &lt;dbl&gt;
 ## 1      453 0.926
@@ -4313,7 +4313,7 @@ Most frequently used summary methods are implemented for collections of spectra.
 ## Object: filter_spct [5 x 2]
 ## Wavelength range 642 to 755 nm, step 8 to 64 nm 
 ## 
-## # A tibble: 5 x 2
+## # A tibble: 5 × 2
 ##   w.length    Tfr
 ## *    &lt;int&gt;  &lt;dbl&gt;
 ## 1      642 0.8980
@@ -4440,7 +4440,7 @@ Most frequently used summary methods are implemented for collections of spectra.
 <p>We then convolve each filter’s spectral transmittance by the spectral irradiance of the light source.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">filtered_sun &lt;-<span class="st"> </span><span class="kw">convolve_each</span>(filters.mspct, sun.spct)
 <span class="kw">irrad</span>(filtered_sun, <span class="kw">list</span>(UVA.wb, PAR.wb))</code></pre></div>
-<pre><code>## # A tibble: 3 x 3
+<pre><code>## # A tibble: 3 × 3
 ##   spct.idx   irrad_UVA irrad_PAR
 ##     &lt;fctr&gt;       &lt;dbl&gt;     &lt;dbl&gt;
 ## 1     none 27.98420611  196.6343
@@ -4448,7 +4448,7 @@ Most frequently used summary methods are implemented for collections of spectra.
 ## 3   yellow  0.03726539  106.9680</code></pre>
 <p>The code above can also be written as a single statement.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">irrad</span>(<span class="kw">convolve_each</span>(filters.mspct, sun.spct), <span class="kw">list</span>(UVA.wb, PAR.wb))</code></pre></div>
-<pre><code>## # A tibble: 3 x 3
+<pre><code>## # A tibble: 3 × 3
 ##   spct.idx   irrad_UVA irrad_PAR
 ##     &lt;fctr&gt;       &lt;dbl&gt;     &lt;dbl&gt;
 ## 1     none 27.98420611  196.6343
@@ -4458,7 +4458,7 @@ Most frequently used summary methods are implemented for collections of spectra.
 <p>One thing to remember, is that operators in R are just normal functions with special names and call syntax. They can also be called with the usual function call syntax by enclosing their <em>name</em> in backquotes. We use this to pass as argument the multiplication operator <code>*</code> in a call to <code>msmsply</code> which returns, in this case, a <code>source_multi_spct</code> object. After this we just call the <code>irrad</code> method on the <em>collection of spectra</em> and obtain the result as a data frame with one row per spectrum and one column by waveband.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">filtered_sun &lt;-<span class="st"> </span><span class="kw">msmsply</span>(filters.mspct, <span class="st">`</span><span class="dt">*</span><span class="st">`</span>, sun.spct)
 <span class="kw">irrad</span>(filtered_sun, <span class="kw">list</span>(UVA.wb, PAR.wb))</code></pre></div>
-<pre><code>## # A tibble: 3 x 3
+<pre><code>## # A tibble: 3 × 3
 ##   spct.idx   irrad_UVA irrad_PAR
 ##     &lt;fctr&gt;       &lt;dbl&gt;     &lt;dbl&gt;
 ## 1     none 27.98420611  196.6343
@@ -4534,13 +4534,13 @@ Most frequently used summary methods are implemented for collections of spectra.
 <div id="collections-of-spectra-4" class="section level4">
 <h4>Collections of spectra</h4>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">q_ratio</span>(filtered_sun, <span class="kw">list</span>(UVB.wb, UVA.wb, PAR.wb))</code></pre></div>
-<pre><code>## # A tibble: 3 x 4
-##   spct.idx q_ratio_UVB:Total(q:q) q_ratio_UVA:Total(q:q)
-##     &lt;fctr&gt;                  &lt;dbl&gt;                  &lt;dbl&gt;
-## 1     none           1.334593e-03           0.0675673430
-## 2      pet           3.700698e-05           0.0614239749
-## 3   yellow           2.540715e-06           0.0001339225
-## # ... with 1 more variables: q_ratio_PAR:Total(q:q) &lt;dbl&gt;</code></pre>
+<pre><code>## # A tibble: 3 × 4
+##   spct.idx `q_ratio_UVB:Total(q:q)` `q_ratio_UVA:Total(q:q)`
+##     &lt;fctr&gt;                    &lt;dbl&gt;                    &lt;dbl&gt;
+## 1     none             1.334593e-03             0.0675673430
+## 2      pet             3.700698e-05             0.0614239749
+## 3   yellow             2.540715e-06             0.0001339225
+## # ... with 1 more variables: `q_ratio_PAR:Total(q:q)` &lt;dbl&gt;</code></pre>
 <!-- #### Vectors -->
 <!-- The function `waveband_ratio()` takes basically the same parameters as `irradiance`, but two waveband definitions instead of one, and two `unit.out` definitions instead of one. This is the base function used in all the vector based _ratio_ functions in the '**photobiology**' package. -->
 <!-- Similar functions `photon_ratio()`, `energy_ratio()`, and `photons_energy_ratio` return the other ratios described above. In contrast to the functions described in the previous section, these functions only accept individual waveband definitions (not lists of them). -->
@@ -4589,7 +4589,7 @@ Most frequently used summary methods are implemented for collections of spectra.
 <h4>Collections of spectra</h4>
 <p>Here we construct a collection of filter spectra, and then we calculate the transmittance of these filters for two wavebands, obtaining the results as a data frame, with one row per filter, and one column per waveband. We reuse once more <code>filters.mspct</code> from an earlier section.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">transmittance</span>(filters.mspct, <span class="kw">list</span>(UVA.wb, PAR.wb))</code></pre></div>
-<pre><code>## # A tibble: 3 x 3
+<pre><code>## # A tibble: 3 × 3
 ##   spct.idx transmittance_UVA transmittance_PAR
 ##     &lt;fctr&gt;             &lt;dbl&gt;             &lt;dbl&gt;
 ## 1     none       1.000000000         1.0000000
@@ -4624,7 +4624,7 @@ Most frequently used summary methods are implemented for collections of spectra.
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sensors &lt;-<span class="st"> </span><span class="kw">response_mspct</span>(<span class="kw">list</span>(<span class="dt">GaAsP =</span> photodiode.spct,
                                <span class="dt">CCD =</span> ccd.spct))
 <span class="kw">response</span>(sensors, <span class="kw">list</span>(UVB.wb, UVA.wb, PAR.wb), <span class="dt">quantity =</span> <span class="st">&quot;contribution&quot;</span>)</code></pre></div>
-<pre><code>## # A tibble: 2 x 4
+<pre><code>## # A tibble: 2 × 4
 ##   spct.idx response_UVB response_UVA response_PAR.tr.hi
 ##     &lt;fctr&gt;        &lt;dbl&gt;        &lt;dbl&gt;              &lt;dbl&gt;
 ## 1    GaAsP   0.02759684   0.23574173          0.7152528
@@ -4662,7 +4662,7 @@ Most frequently used summary methods are implemented for collections of spectra.
 <p>In photobiology research we sometimes need to calculate the position on the sun at arbitrary locations and positions. The function <code>sun_angles</code> returns the azimuth in degrees eastwards, altitude in degrees above the horizon, solar disk diameter in degrees and sun to earth distance in astronomical units. The time should be a <code>POSIXct</code> vector, possibly of length one, and it is easiest to use package <code>lubridate</code> for working with time and dates.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sun_angles</span>(<span class="kw">now</span>(), <span class="dt">lat =</span> <span class="dv">34</span>, <span class="dt">lon =</span> <span class="dv">0</span>)</code></pre></div>
 <pre><code>## $time
-## [1] &quot;2016-08-08 11:41:39 EEST&quot;
+## [1] &quot;2016-08-23 22:20:19 EEST&quot;
 ## 
 ## $longitude
 ## [1] 0
@@ -4671,16 +4671,16 @@ Most frequently used summary methods are implemented for collections of spectra.
 ## [1] 34
 ## 
 ## $azimuth
-## [1] 98.40145
+## [1] 290.3083
 ## 
 ## $elevation
-## [1] 40.96151
+## [1] -9.419343
 ## 
 ## $diameter
-## [1] 0.5258749
+## [1] 0.5273679
 ## 
 ## $distance
-## [1] 1.013929</code></pre>
+## [1] 1.011059</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sun_angles</span>(<span class="kw">ymd_hms</span>(<span class="st">&quot;2014-01-01 0:0:0&quot;</span>, <span class="dt">tz =</span> <span class="st">&quot;UTC&quot;</span>))</code></pre></div>
 <pre><code>## $time
 ## [1] &quot;2014-01-01 UTC&quot;
@@ -4761,12 +4761,14 @@ Most frequently used summary methods are implemented for collections of spectra.
 ## [1] 13.782215  8.296180  5.644636</code></pre>
 <p>The default for <code>date</code> is the current day.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sunrise_time</span>(<span class="dt">lat =</span> <span class="dv">60</span>)</code></pre></div>
-<pre><code>## [1] &quot;2016-08-08 04:06:19 UTC&quot;</code></pre>
+<pre><code>## [1] &quot;2016-08-23 04:41:36 UTC&quot;</code></pre>
 <p>Both latitude and longitude can be supplied, but be aware that if the returned value is desired in the local time coordinates, the time zone should match the longitude.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sunrise_time</span>(<span class="kw">today</span>(<span class="dt">tz =</span> <span class="st">&quot;UTC&quot;</span>), <span class="dt">tz =</span> <span class="st">&quot;UTC&quot;</span>, <span class="dt">lat =</span> <span class="dv">60</span>, <span class="dt">lon =</span> <span class="dv">0</span>)</code></pre></div>
-<pre><code>## [1] &quot;2016-08-08 04:06:19 UTC&quot;</code></pre>
+<pre><code>## Warning in today(tz = &quot;UTC&quot;): partial argument match of 'tz' to 'tzone'</code></pre>
+<pre><code>## [1] &quot;2016-08-23 04:41:36 UTC&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sunrise_time</span>(<span class="kw">today</span>(<span class="dt">tz =</span> <span class="st">&quot;EET&quot;</span>), <span class="dt">tz =</span> <span class="st">&quot;EET&quot;</span>, <span class="dt">lat =</span> <span class="dv">60</span>, <span class="dt">lon =</span> <span class="dv">25</span>)</code></pre></div>
-<pre><code>## [1] &quot;2016-08-08 05:26:09 EEST&quot;</code></pre>
+<pre><code>## Warning in today(tz = &quot;EET&quot;): partial argument match of 'tz' to 'tzone'</code></pre>
+<pre><code>## [1] &quot;2016-08-23 06:01:27 EEST&quot;</code></pre>
 <p>Southern hemisphere latitudes as well as longitudes to the West of the Greenwich meridian should be supplied as negative numbers.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sunrise_time</span>(dates, <span class="dt">lat =</span>  <span class="dv">60</span>)</code></pre></div>
 <pre><code>## [1] &quot;2015-03-01 07:06:26 UTC&quot; &quot;2015-05-01 04:06:51 UTC&quot;
@@ -4777,17 +4779,21 @@ Most frequently used summary methods are implemented for collections of spectra.
 <p>The angle used in the twilight calculation can be supplied, either as the name of a standard definition, or as an angle in degrees (negative for sun positions below the horizon). Positive angles can be used when the time of sun occlusion behind a building, mountain, or other obstacle needs to be calculated.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sunrise_time</span>(<span class="kw">today</span>(<span class="dt">tz =</span> <span class="st">&quot;EET&quot;</span>), <span class="dt">tz =</span> <span class="st">&quot;EET&quot;</span>, <span class="dt">lat =</span> <span class="dv">60</span>, <span class="dt">lon =</span> <span class="dv">25</span>,
              <span class="dt">twilight =</span> <span class="st">&quot;civil&quot;</span>)</code></pre></div>
-<pre><code>## [1] &quot;2016-08-08 04:22:44 EEST&quot;</code></pre>
+<pre><code>## Warning in today(tz = &quot;EET&quot;): partial argument match of 'tz' to 'tzone'</code></pre>
+<pre><code>## [1] &quot;2016-08-23 05:06:17 EEST&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sunrise_time</span>(<span class="kw">today</span>(<span class="dt">tz =</span> <span class="st">&quot;EET&quot;</span>), <span class="dt">tz =</span> <span class="st">&quot;EET&quot;</span>, <span class="dt">lat =</span> <span class="dv">60</span>, <span class="dt">lon =</span> <span class="dv">25</span>,
              <span class="dt">twilight =</span> -<span class="dv">10</span>)</code></pre></div>
-<pre><code>## [1] &quot;2016-08-08 03:28:16 EEST&quot;</code></pre>
+<pre><code>## Warning in today(tz = &quot;EET&quot;): partial argument match of 'tz' to 'tzone'</code></pre>
+<pre><code>## [1] &quot;2016-08-23 04:24:22 EEST&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sunrise_time</span>(<span class="kw">today</span>(<span class="dt">tz =</span> <span class="st">&quot;EET&quot;</span>), <span class="dt">tz =</span> <span class="st">&quot;EET&quot;</span>, <span class="dt">lat =</span> <span class="dv">60</span>, <span class="dt">lon =</span> <span class="dv">25</span>,
              <span class="dt">twilight =</span> +<span class="dv">12</span>)</code></pre></div>
-<pre><code>## [1] &quot;2016-08-08 07:10:46 EEST&quot;</code></pre>
+<pre><code>## Warning in today(tz = &quot;EET&quot;): partial argument match of 'tz' to 'tzone'</code></pre>
+<pre><code>## [1] &quot;2016-08-23 07:40:29 EEST&quot;</code></pre>
 <p>Parameter <code>unit.out</code> can be used to obtain the returned value expressed as time-of-day in hours, minutes, or seconds since midnight.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sunrise_time</span>(<span class="kw">today</span>(<span class="dt">tz =</span> <span class="st">&quot;EET&quot;</span>), <span class="dt">tz =</span> <span class="st">&quot;EET&quot;</span>, <span class="dt">lat =</span> <span class="dv">60</span>, <span class="dt">lon =</span> <span class="dv">25</span>,
              <span class="dt">unit.out =</span> <span class="st">&quot;hour&quot;</span>)</code></pre></div>
-<pre><code>## [1] 5.435911</code></pre>
+<pre><code>## Warning in today(tz = &quot;EET&quot;): partial argument match of 'tz' to 'tzone'</code></pre>
+<pre><code>## [1] 6.024187</code></pre>
 <p>Functions <code>day_length</code> and <code>night_length</code> return by default the length of time in hours.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">day_length</span>(dates, <span class="dt">lat =</span> <span class="dv">60</span>)</code></pre></div>
 <pre><code>## [1] 10.21778 15.70382 18.35536</code></pre>
