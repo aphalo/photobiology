@@ -1612,8 +1612,8 @@ sunrise_time(lat = 60)
 Both latitude and longitude can be supplied, but be aware that if the returned value is desired in the local time coordinates, the time zone should match the longitude.
 
 ```{r}
-sunrise_time(today(tz = "UTC"), tz = "UTC", lat = 60, lon = 0)
-sunrise_time(today(tz = "EET"), tz = "EET", lat = 60, lon = 25)
+sunrise_time(today("UTC"), tz = "UTC", lat = 60, lon = 0)
+sunrise_time(today("EET"), tz = "EET", lat = 60, lon = 25)
 ```
 
 Southern hemisphere latitudes as well as longitudes to the West of the Greenwich meridian should be supplied as negative numbers.
@@ -1626,18 +1626,18 @@ sunrise_time(dates, lat = -60)
 The angle used in the twilight calculation can be supplied, either as the name of a standard definition, or as an angle in degrees (negative for sun positions below the horizon). Positive angles can be used when the time of sun occlusion behind a building, mountain, or other obstacle needs to be calculated.
 
 ```{r}
-sunrise_time(today(tz = "EET"), tz = "EET", lat = 60, lon = 25,
+sunrise_time(today("EET"), tz = "EET", lat = 60, lon = 25,
              twilight = "civil")
-sunrise_time(today(tz = "EET"), tz = "EET", lat = 60, lon = 25,
+sunrise_time(today("EET"), tz = "EET", lat = 60, lon = 25,
              twilight = -10)
-sunrise_time(today(tz = "EET"), tz = "EET", lat = 60, lon = 25,
+sunrise_time(today("EET"), tz = "EET", lat = 60, lon = 25,
              twilight = +12)
 ```
 
 Parameter `unit.out` can be used to obtain the returned value expressed as time-of-day in hours, minutes, or seconds since midnight.
 
 ```{r}
-sunrise_time(today(tz = "EET"), tz = "EET", lat = 60, lon = 25,
+sunrise_time(today("EET"), tz = "EET", lat = 60, lon = 25,
              unit.out = "hour")
 ```
 

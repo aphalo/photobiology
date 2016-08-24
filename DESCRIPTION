@@ -2,7 +2,7 @@ Package: photobiology
 Type: Package
 Title: 'Photobiological' Calculations
 Version: 0.9.10
-Date: 2016-08-23
+Date: 2016-08-24
 Authors@R:
    c(
     person("Pedro J.", "Aphalo", email = "pedro.aphalo@helsinki.fi", role = c("aut", "cre")),
@@ -28,7 +28,7 @@ Imports:
     splus2R (>= 1.2-1),
     caTools (>= 1.17.1)
 Suggests:
-    knitr (>= 1.13),
+    knitr (>= 1.14),
     rmarkdown (>= 1.0),
     testthat (>= 1.0.2),
     roxygen2 (>= 5.0.1)

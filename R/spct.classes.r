@@ -1718,7 +1718,7 @@ setWhenMeasured.default <- function(x, when.measured, ...) {
 #' @export
 setWhenMeasured.generic_spct <-
   function(x,
-           when.measured = lubridate::now(tz = "UTC"),
+           when.measured = lubridate::now(tzone = "UTC"),
            ...) {
     name <- substitute(x)
     stopifnot(is.null(when.measured) ||
@@ -1739,7 +1739,7 @@ setWhenMeasured.generic_spct <-
 #'
 setWhenMeasured.summary_generic_spct <-
   function(x,
-           when.measured = lubridate::now(tz = "UTC"),
+           when.measured = lubridate::now(tzone = "UTC"),
            ...) {
     name <- substitute(x)
     stopifnot(is.null(when.measured) ||
@@ -1759,7 +1759,7 @@ setWhenMeasured.summary_generic_spct <-
 #' @export
 setWhenMeasured.generic_mspct <-
   function(x,
-           when.measured = lubridate::now(tz = "UTC"),
+           when.measured = lubridate::now(tzone = "UTC"),
            ...) {
     name <- substitute(x)
     stopifnot((lubridate::is.POSIXct(when.measured) && length(when.measured) == 1) ||
