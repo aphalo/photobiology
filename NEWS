@@ -5,6 +5,7 @@ Add test cases for chroma_spct and improve tests for the _mspct
 classes. Add test cases for smooth_spct().
 Replace filter_cps.mspct data with newly measured data.
 Add na.rm parameter to clean().
+Fix bug in cps2irrad().
 
 photobiology 0.9.10
 ===================

@@ -24,7 +24,7 @@ cps2irrad <- function(x.sample, pre.fun = NULL, ...) {
   stopifnot(is.cps_spct(x.sample) &&
               !is.null(getInstrDesc(x.sample)) &&
               !is.null(getInstrSettings(x.sample)))
-  irrad.mult <- getInstrDesc(x.sample)$inst.calib$irrad.mult
+  irrad.mult <- getInstrDesc(x.sample)[["inst.calib"]][["irrad.mult"]]
   if (!is.null(pre.fun)) {
     x.sample <- pre.fun(x.sample, ...)
   }
