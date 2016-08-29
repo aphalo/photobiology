@@ -5,7 +5,6 @@ Add test cases for chroma_spct and improve tests for the _mspct
 classes. Add test cases for smooth_spct().
 Replace filter_cps.mspct data with newly measured data.
 Add na.rm parameter to clean().
-Fix bug in cps2irrad().
 
 photobiology 0.9.10
 ===================
@@ -17,6 +16,7 @@ was not obeyed.
 Revise irrad(), e_irrad() and q_irrad() to accept as input scaled or
 normalized source_spct objects as long as returned quantity is not "total" or
 "mean", or its synonim "average".
+Fix bug in cps2irrad().
 
 photobiology 0.9.9
 ==================
