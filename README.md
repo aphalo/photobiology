@@ -1,3 +1,7 @@
+
+
+[![](http://www.r-pkg.org/badges/version/photobiology)](https://cran.r-project.org/package=photobiology) [![](http://cranlogs.r-pkg.org/badges/photobiology)](http://cran.rstudio.com/web/packages/photobiology/index.html) [![](http://cranlogs.r-pkg.org/badges/grand-total/photobiology)](http://cran.rstudio.com/web/packages/photobiology/index.html)
+
 Package __photobiology__ is a set of tools designed to facilitate photobiology-related data analysis and simulation. It is the core a suite of packages with additional packages providing support for plotting spectra with pacakge 'ggplot2', example data sets and definitions that are specific to certain subject areas.
 
 We have attempted to keep a good balance between fast computation, easy to maintain code, and a clear interface. The package has in addition to user-friendly methods and objects, also functions optimized for raw performance.
@@ -11,4 +15,4 @@ Aphalo, P. J., Albert, A., Björn, L. O., McLeod, A. R., Robson, T. M., & Rosenq
 Please, see the web site [R4Photobiology](http://www.r4photobiology.info) for details on other packages available as part of the suite, and on how to install them.
 
 The current release of __photobiology__ is available through [CRAN](https://cran.r-project.org/package=photobiology) 
-for R (>= 3.2.0). 
+for R (>= 3.2.0).
