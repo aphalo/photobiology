@@ -17,6 +17,7 @@ Revise irrad(), e_irrad() and q_irrad() to accept as input scaled or
 normalized source_spct objects as long as returned quantity is not "total" or
 "mean", or its synonim "average".
 Fix bug in cps2irrad().
+Fix bug in print.generic_spct().
 
 photobiology 0.9.9
 ==================

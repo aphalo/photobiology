@@ -40,7 +40,7 @@ print.generic_spct <- function(x, ..., n = NULL, width = NULL)
         " nm \n", sep = "")
   }
   if (!any(is.na(getWhatMeasured(x)))) {
-    cat("Label: ", getWhatMeasured(x), "\n", sep = "")
+    cat("Label: ", paste(getWhatMeasured(x), collapse = " for "), "\n", sep = "")
   }
   when.measured <- getWhenMeasured(x)
   if (!any(is.na(when.measured))) {
