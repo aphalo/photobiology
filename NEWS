@@ -4,9 +4,13 @@ TODO
 Add test cases for chroma_spct and improve tests for the _mspct
 classes. Add test cases for smooth_spct().
 Replace filter_cps.mspct data with newly measured data.
-Add na.rm parameter to clean().
 
-photobiology 0.9.10
+photobiology 0.9.11
+===================
+
+Fix bug in print.generic_spct().
+
+photobiology 0.9.10 (not submitted to CRAN)
 ===================
 
 Argument range.check = NA and range.check = NULL now trigger a message instead
@@ -15,9 +19,10 @@ Fix bug in set functions for spectral classes: option "photobiology.strict.range
 was not obeyed.
 Revise irrad(), e_irrad() and q_irrad() to accept as input scaled or
 normalized source_spct objects as long as returned quantity is not "total" or
-"mean", or its synonim "average".
+"mean", or its synonim "average". If the returned value will be in relative
+units linear scaling or normalization will not invalidate the result, so earlier
+restriction was unecessarily strict.
 Fix bug in cps2irrad().
-Fix bug in print.generic_spct().
 
 photobiology 0.9.9
 ==================
