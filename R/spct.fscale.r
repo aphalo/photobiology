@@ -31,6 +31,7 @@ fscale.default <- function(x, ...) {
 #' @param f character string "mean" or "total" for scaling so taht this summary
 #'   value becomes 1 for the returned object, or the name of a function taking
 #'   \code{x} as first argument and returning a numeric value.
+#' @param target numeric A constant used as target value for scaling.
 #' @param unit.out character Alowed values "energy", and "photon", or its alias
 #'   "quantum"
 #'
@@ -39,17 +40,20 @@ fscale.default <- function(x, ...) {
 fscale.source_spct <- function(x,
                                range = NULL,
                                f = "mean",
+                               target = 1,
                                unit.out = getOption("photobiology.radiation.unit", default="energy"),
                                ...) {
   if (unit.out == "energy") {
     return(fscale_spct(spct = q2e(x, action = "replace"),
                        range = range,
                        f = f,
+                       target = target,
                        col.names = "s.e.irrad"))
   } else if (unit.out %in% c("photon", "quantum") ) {
     return(fscale_spct(spct = e2q(x, action = "replace"),
                        range = range,
                        f = f,
+                       target = target,
                        col.names = "s.q.irrad"))
   } else {
     stop("'unit.out ", unit.out, " is unknown")
@@ -63,18 +67,21 @@ fscale.source_spct <- function(x,
 fscale.response_spct <- function(x,
                                  range = NULL,
                                  f = "mean",
+                                 target = 1,
                                  unit.out = getOption("photobiology.radiation.unit", default="energy"),
                                  ...) {
   if (unit.out == "energy") {
     return(fscale_spct(spct = q2e(x, action = "replace"),
                        range = range,
                        f = f,
+                       target = target,
                        col.names = "s.e.response",
                        ...))
   } else if (unit.out %in% c("photon", "quantum") ) {
     return(fscale_spct(spct = e2q(x, action = "replace"),
                        range = range,
                        f = f,
+                       target = target,
                        col.names = "s.q.response",
                        ...))
   } else {
@@ -91,6 +98,7 @@ fscale.response_spct <- function(x,
 fscale.filter_spct <- function(x,
                                range = NULL,
                                f = "mean",
+                               target = 1,
                                qty.out = getOption("photobiology.filter.qty",
                                                    default = "transmittance"),
                                ...) {
@@ -98,12 +106,14 @@ fscale.filter_spct <- function(x,
     return(fscale_spct(spct = A2T(x, action = "replace"),
                        range = range,
                        f = f,
+                       target = target,
                        col.names = "Tfr",
                        ...))
   } else if (qty.out == "absorbance") {
     return(fscale_spct(spct = T2A(x, action = "replace"),
                        range = range,
                        f = f,
+                       target = target,
                        col.names = "A",
                        ...))
   } else {
@@ -118,11 +128,13 @@ fscale.filter_spct <- function(x,
 fscale.reflector_spct <- function(x,
                                   range = NULL,
                                   f = "mean",
+                                  target = 1,
                                   qty.out = NULL,
                                   ...) {
   return(fscale_spct(spct = x,
                      range = range,
                      f = f,
+                     target = target,
                      col.names = "Rfr",
                      ...))
 }
@@ -134,10 +146,12 @@ fscale.reflector_spct <- function(x,
 fscale.raw_spct <- function(x,
                             range = NULL,
                             f = "mean",
+                            target = 1,
                             ...) {
   return(fscale_spct(spct = x,
                      range = range,
                      f = f,
+                     target = target,
                      col.names = grep("^counts", names(x), value = TRUE),
                      ...))
 }
@@ -149,10 +163,12 @@ fscale.raw_spct <- function(x,
 fscale.cps_spct <- function(x,
                             range = NULL,
                             f = "mean",
+                            target = 1,
                             ...) {
   return(fscale_spct(spct = x,
                      range = range,
                      f = f,
+                     target = target,
                      col.names = grep("^cps", names(x), value = TRUE),
                      ...))
 }
@@ -167,11 +183,13 @@ fscale.cps_spct <- function(x,
 fscale.generic_spct <- function(x,
                             range = NULL,
                             f = "mean",
+                            target = 1,
                             col.names,
                             ...) {
   return(fscale_spct(spct = x,
                      range = range,
                      f = f,
+                     target = target,
                      col.names = col.names,
                      ...))
 }
@@ -185,13 +203,15 @@ fscale.generic_spct <- function(x,
 fscale.source_mspct <- function(x,
                                  range = NULL,
                                  f = "mean",
-                                 unit.out = getOption("photobiology.radiation.unit",
+                                target = 1,
+                                unit.out = getOption("photobiology.radiation.unit",
                                                       default = "energy"),
                                  ...) {
   msmsply(x,
           fscale,
           range = range,
           f = f,
+          target = target,
           unit.out = unit.out,
           ...)
 }
@@ -203,6 +223,7 @@ fscale.source_mspct <- function(x,
 fscale.response_mspct <- function(x,
                                   range = NULL,
                                   f = "mean",
+                                  target = 1,
                                   unit.out = getOption("photobiology.radiation.unit",
                                                        default = "energy"),
                                   ...) {
@@ -210,6 +231,7 @@ fscale.response_mspct <- function(x,
           fscale,
           range = range,
           f = f,
+          target = target,
           unit.out = unit.out,
           ...)
 }
@@ -221,13 +243,15 @@ fscale.response_mspct <- function(x,
 fscale.filter_mspct <- function(x,
                                   range = NULL,
                                   f = "mean",
-                                  qty.out = getOption("photobiology.filter.qty",
+                                target = 1,
+                                qty.out = getOption("photobiology.filter.qty",
                                                       default = "transmittance"),
                                   ...) {
   msmsply(x,
           fscale,
           range = range,
           f = f,
+          target = target,
           qty.out = qty.out,
           ...)
 }
@@ -239,12 +263,14 @@ fscale.filter_mspct <- function(x,
 fscale.reflector_mspct <- function(x,
                                   range = NULL,
                                   f = "mean",
+                                  target = 1,
                                   qty.out = NULL,
                                   ...) {
   msmsply(x,
           fscale,
           range = range,
           f = f,
+          target = target,
           qty.out = qty.out,
           ...)
 }
@@ -256,11 +282,13 @@ fscale.reflector_mspct <- function(x,
 fscale.raw_mspct <- function(x,
                              range = NULL,
                              f = "mean",
+                             target = 1,
                              ...) {
   msmsply(x,
           fscale,
           range = range,
           f = f,
+          target = target,
           ...)
 }
 
@@ -271,11 +299,13 @@ fscale.raw_mspct <- function(x,
 fscale.cps_mspct <- function(x,
                              range = NULL,
                              f = "mean",
+                             target = 1,
                              ...) {
   msmsply(x,
           fscale,
           range = range,
           f = f,
+          target = target,
           ...)
 }
 
@@ -286,12 +316,14 @@ fscale.cps_mspct <- function(x,
 fscale.generic_mspct <- function(x,
                              range = NULL,
                              f = "mean",
+                             target = 1,
                              col.names,
                              ...) {
   msmsply(x,
           fscale,
           range = range,
           f = f,
+          target = target,
           col.names = col.names,
           ...)
 }
@@ -315,7 +347,12 @@ fscale.generic_mspct <- function(x,
 #'
 #' @keywords internal
 #'
-fscale_spct <- function(spct, range, col.names, f, ...) {
+fscale_spct <- function(spct, range, col.names, f, target, ...) {
+  # re-scaling will wipe out any existing normalization
+  if (is_normalized(spct)) {
+    setNormalized(spct, norm = FALSE)
+  }
+
   if (is.null(range) || all(is.na(range))) {
     range <- range(spct)
   } else {
@@ -353,7 +390,7 @@ fscale_spct <- function(spct, range, col.names, f, ...) {
       summary.value <- 1 # implemented in this way to ensure that all returned
       # values folow the same copy/reference semantics
     }
-    multipliers[i] <- 1 / summary.value
+    multipliers[i] <- target / summary.value
     spct[[col]] <- spct[[col]] * multipliers[i]
   }
   setScaled(spct, list(multiplier = multipliers, f = f))

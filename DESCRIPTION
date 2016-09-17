@@ -1,8 +1,8 @@
 Package: photobiology
 Type: Package
-Title: 'Photobiological' Calculations
-Version: 0.9.11
-Date: 2016-09-10
+Title: Photobiological Calculations
+Version: 0.9.11.9000
+Date: 2016-09-17
 Authors@R:
    c(
     person("Pedro J.", "Aphalo", email = "pedro.aphalo@helsinki.fi", role = c("aut", "cre")),
@@ -10,11 +10,11 @@ Authors@R:
     )
 Maintainer: Pedro J. Aphalo <pedro.aphalo@helsinki.fi>
 Description: Definitions of classes, methods, operators and functions for use in
-    'photobiology' and radiation meteorology and climatology. Calculation of
-    effective (weighted) and not-weighted 'irradiances'/doses, 'fluence' rates,
-    'transmittance', 'reflectance', 'absorptance', 'absorbance' and diverse
-    ratios and other derived quantities from spectral data. Local 'maxima' and
-    'minima'. Conversion between energy- and photon-based units. Wavelength
+    photobiology and radiation meteorology and climatology. Calculation of
+    effective (weighted) and not-weighted irradiances/doses, fluence rates,
+    transmittance, reflectance, absorptance, absorbance and diverse
+    ratios and other derived quantities from spectral data. Local maxima and
+    minima. Conversion between energy- and photon-based units. Wavelength
     interpolation. Astronomical calculations related solar angles and day
     length. Colours and vision.
 License: GPL (>= 3)

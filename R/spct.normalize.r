@@ -299,6 +299,12 @@ normalize_spct <- function(spct, range, norm, col.names) {
   stopifnot(is.any_spct(spct), !is.null(col.names),
             col.names %in% names(spct))
   num.spectra <- getMultipleWl(spct)
+
+  # normalization will wipe out any existing scaling
+  if (is_scaled(spct)) {
+    setScaled(spct, scaled = FALSE)
+  }
+
   if (num.spectra != 1) {
     stop("Normalization not possible as object contains data for ",
          num.spectra, " spectra")
@@ -424,4 +430,3 @@ setNormalized <- function(x, norm = FALSE) {
   }
   invisible(x)
 }
-

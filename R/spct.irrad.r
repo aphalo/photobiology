@@ -95,11 +95,14 @@ irrad.source_spct <-
               num.spectra, " spectra")
       return(NA_real_)
     }
-    # we have a default, but we check for invalid arguments
-    if (!allow.scaled && (is_normalized(spct) || is_scaled(spct))) {
+
+    if (!allow.scaled && is_normalized(spct)) {
       warning("The spectral data has been normalized or scaled, ",
               "making impossible to calculate irradiance")
       return(NA_real_)
+    }
+    if (!allow.scaled && is_scaled(spct)) {
+      warning("Summarized spectral data have been rescaled")
     }
 
     data.time.unit <-
