@@ -103,9 +103,12 @@ transmittance_spct <-
               num.spectra, " spectra")
       return(NA_real_)
     }
-    if (is_normalized(spct) || is_scaled(spct)) {
-      warning("The spectral data has been normalized or scaled, making impossible to calculate transmittance")
-      return(NA)
+    if (is_normalized(spct)) {
+      warning("The spectral data has been normalized, making impossible to calculate absorbance")
+      return(NA_real_)
+    }
+    if (is_scaled(spct)) {
+      warning("Summary calculated from rescaled data")
     }
     if (!is.filter_spct(spct)) {
       spct <- as.filter_spct(spct)

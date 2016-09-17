@@ -100,9 +100,12 @@ absorbance_spct <-
               num.spectra, " spectra")
       return(NA_real_)
     }
-    if (is_normalized(spct) || is_scaled(spct)) {
-      warning("The spectral data has been normalized or scaled, making impossible to calculate absorbance")
+    if (is_normalized(spct)) {
+      warning("The spectral data has been normalized, making impossible to calculate absorbance")
       return(NA_real_)
+    }
+    if (is_scaled(spct)) {
+      warning("Summary calculated from rescaled data")
     }
     spct <- T2A(spct, action = "replace", byref = FALSE)
     spct <- spct[ , c("w.length", "A")]
