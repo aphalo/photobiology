@@ -259,6 +259,7 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
   if (!is.null(comment.ans)) {
     comment(ans) <- comment.ans
   }
+  attr(ans, "idfactor") <- idfactor
   ans
 }
 

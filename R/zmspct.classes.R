@@ -621,13 +621,16 @@ split2raw_mspct <- function(x,
 #'
 subset2mspct <- function(x,
                          member.class = NULL,
-                         idx.var = "spct.idx",
+                         idx.var = attr(x, "idfactor"),
                          drop.idx = TRUE,
                          ncol = 1, byrow = FALSE, ...) {
   if (is.any_spct(x) && is.null(member.class)) {
     member.class <- class(x)[1]
   }
   stopifnot(is.character(member.class))
+  if (is.null(idx.var)) {
+    idx.var <- "spct.idx"
+  }
   stopifnot(idx.var %in% names(x))
   collection.class <- sub("_spct", "_mspct", member.class, fixed = TRUE)
   member.constr <- paste("as", member.class, sep = ".")

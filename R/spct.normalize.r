@@ -306,8 +306,9 @@ normalize_spct <- function(spct, range, norm, col.names) {
   }
 
   if (num.spectra != 1) {
-    stop("Normalization not possible as object contains data for ",
-         num.spectra, " spectra")
+    warning("Object contains data for ",
+         num.spectra, " spectra; skipping normalization")
+    return(spct)
   }
   if (is.null(range) || all(is.na(range))) {
     range <- range(spct)
