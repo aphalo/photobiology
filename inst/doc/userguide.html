@@ -12,7 +12,7 @@
 
 <meta name="author" content="Pedro J. Aphalo" />
 
-<meta name="date" content="2016-09-17" />
+<meta name="date" content="2016-09-25" />
 
 <title>photobiology 0.9.11.9000: User Guide</title>
 
@@ -70,7 +70,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">photobiology 0.9.11.9000: User Guide</h1>
 <h4 class="author"><em>Pedro J. Aphalo</em></h4>
-<h4 class="date"><em>2016-09-17</em></h4>
+<h4 class="date"><em>2016-09-25</em></h4>
 
 
 
@@ -501,7 +501,7 @@ s.e.irrad &lt;-<span class="st"> </span><span class="dv">1</span>
 </div>
 <div id="special-attributes" class="section level3">
 <h3>Special attributes</h3>
-<p>Spectral objects have several attributes used to store metadata, such as the time unit used or type of spectral quantity. Some attributes are meaningful for all the classes of spectra defined in the package. These are  using attribute <code>&quot;when.measured&quot;</code>, <em>place of measurement</em> using attribute <code>&quot;where.measured&quot;</code> and free-text <em>comments</em>. One can set and get comments stored in spectra by means of base R’s <code>comment()</code> and <code>comment() &lt;-</code> functions. Some of the functions in this package append additional information to comments or merge comments.</p>
+<p>Spectral objects have several attributes used to store metadata, such as the time unit used or type of spectral quantity. Some attributes are meaningful for all the classes of spectra defined in the package. These are <em>time of measurement</em> using attribute <code>&quot;when.measured&quot;</code>, <em>place of measurement</em> using attribute <code>&quot;where.measured&quot;</code>, a <em>user supplied label</em> using attribute <code>&quot;what-measured&quot;</code>, and free-text <em>comments</em>. One can set and get comments stored in spectra by means of base R’s <code>comment()</code> and <code>comment() &lt;-</code> functions. Some of the functions in this package append additional information to comments or merge comments.</p>
 <p>Functions <code>setWhenMeasured()</code> and <code>getWhenMeasured()</code> are used for setting or getting a date as a <code>POSIXct</code> value. This format is compatible with many functions from package <code>lubridate</code>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">my.spct &lt;-<span class="st"> </span>sun.spct
 <span class="kw">setWhenMeasured</span>(my.spct, <span class="ot">NULL</span>)
@@ -524,6 +524,26 @@ s.e.irrad &lt;-<span class="st"> </span><span class="dv">1</span>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">my.spct</code></pre></div>
 <pre><code>## Object: source_spct [522 x 3]
 ## Wavelength range 280 to 800 nm, step 0.9230769 to 1 nm 
+## Measured on 2015-10-31 20:55:00 UTC
+## Measured at 60 N, -10 E
+## Time unit 1s
+## 
+## # A tibble: 522 × 3
+##   w.length s.e.irrad s.q.irrad
+##      &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+## 1 280.0000         0         0
+## 2 280.9231         0         0
+## 3 281.8462         0         0
+## 4 282.7692         0         0
+## # ... with 518 more rows</code></pre>
+<p>Functions <code>setWhatMeasured()</code> and <code>getWhatMeasured()</code> are used for setting or getting a text value.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">setWhatMeasured</span>(my.spct, <span class="st">&quot;something&quot;</span>)
+<span class="kw">getWhatMeasured</span>(my.spct)</code></pre></div>
+<pre><code>## [1] &quot;something&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">my.spct</code></pre></div>
+<pre><code>## Object: source_spct [522 x 3]
+## Wavelength range 280 to 800 nm, step 0.9230769 to 1 nm 
+## Label: something
 ## Measured on 2015-10-31 20:55:00 UTC
 ## Measured at 60 N, -10 E
 ## Time unit 1s
@@ -3002,17 +3022,25 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 ## 3 281.8462         0
 ## 4 282.7692         0
 ## # ... with 518 more rows</code></pre>
+<p>The normalization status of a spectral object can be tested with method <code>is_normalized()</code> and the normalization used can be recelled with method <code>getNormalized()</code>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">my.spct &lt;-<span class="st"> </span><span class="kw">normalize</span>(sun.spct)
+<span class="kw">is_normalized</span>(my.spct)</code></pre></div>
+<pre><code>## [1] TRUE</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">getNormalized</span>(my.spct)</code></pre></div>
+<pre><code>## [1] 451</code></pre>
+<p>Once a spectrum is normalized, summary methods that return values in absolute units such as <code>irrad()</code>, will trigger an error if applied. Ratios and similar summaries that are invariant with respect to normalization can be calcualted.</p>
+<p>Applying method <code>fscale()</code> removes the normalization and clears the corresponding attribute where the normalization information is stored. This attribute also can be cleared with method <code>setNormalized()</code>, but this is rarely valid or of any use.</p>
 </div>
 <div id="rescaling-a-spectrum" class="section level3">
 <h3>Rescaling a spectrum</h3>
-<p>Function <code>fscale()</code> rescales a spectrum by dividing each spectral data value by a value calculated with a function (f) selected by a character string (“total” or “mean”), or an actual R function which can accept the spectrum object supplied as its first argument.</p>
+<p>Function <code>fscale()</code> rescales a spectrum by dividing each spectral data value by a value calculated with a function (f) selected by a character string (“total” or “mean”), or an actual R function which can accept the spectrum object supplied as its first argument. Additional named arguments can be also passed.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">fscale</span>(sun.spct)</code></pre></div>
 <pre><code>## Object: source_spct [522 x 2]
 ## Wavelength range 280 to 800 nm, step 0.9230769 to 1 nm 
 ## Measured on 2010-06-22 09:51:00 UTC
 ## Measured at 60.20942 N, 24.96424 E
 ## Time unit 1s
-## Rescaled to 'mean' = 1 
+## Rescaled to 'mean' = 1
 ## 
 ## # A tibble: 522 × 2
 ##   w.length s.e.irrad
@@ -3028,7 +3056,7 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 ## Measured on 2010-06-22 09:51:00 UTC
 ## Measured at 60.20942 N, 24.96424 E
 ## Time unit 1s
-## Rescaled to 'total' = 1 
+## Rescaled to 'total' = 1
 ## 
 ## # A tibble: 522 × 2
 ##   w.length s.e.irrad
@@ -3044,7 +3072,23 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 ## Measured on 2010-06-22 09:51:00 UTC
 ## Measured at 60.20942 N, 24.96424 E
 ## Time unit 1s
-## Rescaled to 'a user supplied R function' = 1 
+## Rescaled to 'a user supplied R function' = 1
+## 
+## # A tibble: 522 × 2
+##   w.length s.e.irrad
+##      &lt;dbl&gt;     &lt;dbl&gt;
+## 1 280.0000         0
+## 2 280.9231         0
+## 3 281.8462         0
+## 4 282.7692         0
+## # ... with 518 more rows</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">fscale</span>(sun.spct, <span class="dt">range =</span> PAR.wb, <span class="dt">f =</span> q_irrad, <span class="dt">target =</span> <span class="fl">800e-6</span>)</code></pre></div>
+<pre><code>## Object: source_spct [522 x 2]
+## Wavelength range 280 to 800 nm, step 0.9230769 to 1 nm 
+## Measured on 2010-06-22 09:51:00 UTC
+## Measured at 60.20942 N, 24.96424 E
+## Time unit 1s
+## Rescaled to 'a user supplied R function' = 8e-04
 ## 
 ## # A tibble: 522 × 2
 ##   w.length s.e.irrad
@@ -3055,6 +3099,21 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 ## 4 282.7692         0
 ## # ... with 518 more rows</code></pre>
 <p>In the third example, the spectral data is rescaled so that the corresponding photosynthetically-active irradiance is equal to one.</p>
+<p>The normalization status of a spectral object can be tested with method <code>is_normalized()</code> and the normalization used can be recelled with method <code>getNormalized()</code>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">my.spct &lt;-<span class="st"> </span><span class="kw">fscale</span>(sun.spct)
+<span class="kw">is_scaled</span>(my.spct)</code></pre></div>
+<pre><code>## [1] TRUE</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">getScaled</span>(my.spct)</code></pre></div>
+<pre><code>## $multiplier
+## [1] 1.932188
+## 
+## $f
+## [1] &quot;mean&quot;
+## 
+## $target
+## [1] 1</code></pre>
+<p>Once a spectrum is scaled, summary methods that return values in absolute units such as <code>irrad()</code>, will trigger a warning if applied. Ratios and similar summaries that are invariant with respect to normalization do not trigger warnings.</p>
+<p>Applying method <code>normalize()</code> removes the scaling and clears the corresponding attribute where the scaling information is stored. This attribute also can be cleared with method <code>setScaled()</code>, and this can be useful is some cases such as when irradiance has been measured separately from the emission spectrum.</p>
 </div>
 <div id="shifting-the-zero-of-the-spectral-data-scale" class="section level3">
 <h3>Shifting the zero of the spectral data scale</h3>
@@ -4662,7 +4721,7 @@ Most frequently used summary methods are implemented for collections of spectra.
 <p>In photobiology research we sometimes need to calculate the position on the sun at arbitrary locations and positions. The function <code>sun_angles</code> returns the azimuth in degrees eastwards, altitude in degrees above the horizon, solar disk diameter in degrees and sun to earth distance in astronomical units. The time should be a <code>POSIXct</code> vector, possibly of length one, and it is easiest to use package <code>lubridate</code> for working with time and dates.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sun_angles</span>(<span class="kw">now</span>(), <span class="dt">lat =</span> <span class="dv">34</span>, <span class="dt">lon =</span> <span class="dv">0</span>)</code></pre></div>
 <pre><code>## $time
-## [1] &quot;2016-09-17 18:27:16 EEST&quot;
+## [1] &quot;2016-09-25 00:08:16 EEST&quot;
 ## 
 ## $longitude
 ## [1] 0
@@ -4671,16 +4730,16 @@ Most frequently used summary methods are implemented for collections of spectra.
 ## [1] 34
 ## 
 ## $azimuth
-## [1] 249.0507
+## [1] 302.0757
 ## 
 ## $elevation
-## [1] 30.96297
+## [1] -39.4659
 ## 
 ## $diameter
-## [1] 0.5305856
+## [1] 0.5316508
 ## 
 ## $distance
-## [1] 1.004927</code></pre>
+## [1] 1.002914</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sun_angles</span>(<span class="kw">ymd_hms</span>(<span class="st">&quot;2014-01-01 0:0:0&quot;</span>, <span class="dt">tz =</span> <span class="st">&quot;UTC&quot;</span>))</code></pre></div>
 <pre><code>## $time
 ## [1] &quot;2014-01-01 UTC&quot;
@@ -4761,12 +4820,12 @@ Most frequently used summary methods are implemented for collections of spectra.
 ## [1] 13.782215  8.296180  5.644636</code></pre>
 <p>The default for <code>date</code> is the current day.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sunrise_time</span>(<span class="dt">lat =</span> <span class="dv">60</span>)</code></pre></div>
-<pre><code>## [1] &quot;2016-09-17 05:40:00 UTC&quot;</code></pre>
+<pre><code>## [1] &quot;2016-09-25 05:58:45 UTC&quot;</code></pre>
 <p>Both latitude and longitude can be supplied, but be aware that if the returned value is desired in the local time coordinates, the time zone should match the longitude.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sunrise_time</span>(<span class="kw">today</span>(<span class="st">&quot;UTC&quot;</span>), <span class="dt">tz =</span> <span class="st">&quot;UTC&quot;</span>, <span class="dt">lat =</span> <span class="dv">60</span>, <span class="dt">lon =</span> <span class="dv">0</span>)</code></pre></div>
-<pre><code>## [1] &quot;2016-09-17 05:40:00 UTC&quot;</code></pre>
+<pre><code>## [1] &quot;2016-09-24 05:56:24 UTC&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sunrise_time</span>(<span class="kw">today</span>(<span class="st">&quot;EET&quot;</span>), <span class="dt">tz =</span> <span class="st">&quot;EET&quot;</span>, <span class="dt">lat =</span> <span class="dv">60</span>, <span class="dt">lon =</span> <span class="dv">25</span>)</code></pre></div>
-<pre><code>## [1] &quot;2016-09-17 06:59:50 EEST&quot;</code></pre>
+<pre><code>## [1] &quot;2016-09-25 07:18:36 EEST&quot;</code></pre>
 <p>Southern hemisphere latitudes as well as longitudes to the West of the Greenwich meridian should be supplied as negative numbers.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sunrise_time</span>(dates, <span class="dt">lat =</span>  <span class="dv">60</span>)</code></pre></div>
 <pre><code>## [1] &quot;2015-03-01 07:06:26 UTC&quot; &quot;2015-05-01 04:06:51 UTC&quot;
@@ -4777,17 +4836,17 @@ Most frequently used summary methods are implemented for collections of spectra.
 <p>The angle used in the twilight calculation can be supplied, either as the name of a standard definition, or as an angle in degrees (negative for sun positions below the horizon). Positive angles can be used when the time of sun occlusion behind a building, mountain, or other obstacle needs to be calculated.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sunrise_time</span>(<span class="kw">today</span>(<span class="st">&quot;EET&quot;</span>), <span class="dt">tz =</span> <span class="st">&quot;EET&quot;</span>, <span class="dt">lat =</span> <span class="dv">60</span>, <span class="dt">lon =</span> <span class="dv">25</span>,
              <span class="dt">twilight =</span> <span class="st">&quot;civil&quot;</span>)</code></pre></div>
-<pre><code>## [1] &quot;2016-09-17 06:11:01 EEST&quot;</code></pre>
+<pre><code>## [1] &quot;2016-09-25 06:30:22 EEST&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sunrise_time</span>(<span class="kw">today</span>(<span class="st">&quot;EET&quot;</span>), <span class="dt">tz =</span> <span class="st">&quot;EET&quot;</span>, <span class="dt">lat =</span> <span class="dv">60</span>, <span class="dt">lon =</span> <span class="dv">25</span>,
              <span class="dt">twilight =</span> -<span class="dv">10</span>)</code></pre></div>
-<pre><code>## [1] &quot;2016-09-17 05:37:10 EEST&quot;</code></pre>
+<pre><code>## [1] &quot;2016-09-25 05:57:34 EEST&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sunrise_time</span>(<span class="kw">today</span>(<span class="st">&quot;EET&quot;</span>), <span class="dt">tz =</span> <span class="st">&quot;EET&quot;</span>, <span class="dt">lat =</span> <span class="dv">60</span>, <span class="dt">lon =</span> <span class="dv">25</span>,
              <span class="dt">twilight =</span> +<span class="dv">12</span>)</code></pre></div>
-<pre><code>## [1] &quot;2016-09-17 08:37:09 EEST&quot;</code></pre>
+<pre><code>## [1] &quot;2016-09-25 08:57:50 EEST&quot;</code></pre>
 <p>Parameter <code>unit.out</code> can be used to obtain the returned value expressed as time-of-day in hours, minutes, or seconds since midnight.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sunrise_time</span>(<span class="kw">today</span>(<span class="st">&quot;EET&quot;</span>), <span class="dt">tz =</span> <span class="st">&quot;EET&quot;</span>, <span class="dt">lat =</span> <span class="dv">60</span>, <span class="dt">lon =</span> <span class="dv">25</span>,
              <span class="dt">unit.out =</span> <span class="st">&quot;hour&quot;</span>)</code></pre></div>
-<pre><code>## [1] 6.997361</code></pre>
+<pre><code>## [1] 7.310027</code></pre>
 <p>Functions <code>day_length</code> and <code>night_length</code> return by default the length of time in hours.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">day_length</span>(dates, <span class="dt">lat =</span> <span class="dv">60</span>)</code></pre></div>
 <pre><code>## [1] 10.21778 15.70382 18.35536</code></pre>

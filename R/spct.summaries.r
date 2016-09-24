@@ -61,8 +61,8 @@ print.generic_spct <- function(x, ..., n = NULL, width = NULL)
         "\n", sep = "")
   }
   if (is_scaled(x)) {
-    scaling <- getScaled(x)[["f"]]
-    cat("Rescaled to '", scaling, "' = 1 \n", sep = "")
+    scaling <- getScaled(x)
+    cat("Rescaled to '", scaling[["f"]], "' = ", scaling[["target"]], "\n", sep = "")
   }
   if (is_normalized(x)) {
     norm <- getNormalized(x)
@@ -310,8 +310,8 @@ print.summary_generic_spct <- function(x, ...) {
         "\n", sep = "")
   }
   if (is_scaled(x)) {
-    scaling <- getScaled(x)[["f"]]
-    cat("Rescaled to '", scaling, "' = 1 \n", sep = "")
+    scaling <- getScaled(x)
+    cat("Rescaled to '", scaling[["f"]], "' = ", scaling[["target"]], "\n", sep = "")
   }
   if (is_normalized(x)) {
     norm <- getNormalized(x)

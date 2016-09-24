@@ -389,11 +389,15 @@ fscale_spct <- function(spct, range, col.names, f, target, ...) {
     } else {
       summary.value <- 1 # implemented in this way to ensure that all returned
       # values folow the same copy/reference semantics
+      if (target != 1) {
+        warning("No summary function supplied\n",
+                "spectral values multiplied by 'target'")
+      }
     }
     multipliers[i] <- target / summary.value
     spct[[col]] <- spct[[col]] * multipliers[i]
   }
-  setScaled(spct, list(multiplier = multipliers, f = f))
+  setScaled(spct, list(multiplier = multipliers, f = f, range = range, target = target))
   spct
 }
 
@@ -443,6 +447,15 @@ getScaled <- function(x) {
     if (is.null(scaled) || is.na(scaled)) {
       # need to handle objects created with old versions
       scaled <- FALSE
+    } else if (is.list(scaled)) {
+      if (!"target" %in% names(scaled)) {
+        # cater for objects scaled before version 0.9.12
+        scaled <- c(scaled, list(target = 1))
+      }
+      if (!"range" %in% names(scaled)) {
+        # cater for objects scaled before version 0.9.12
+        scaled <- c(scaled, list(range = c(NA_real_, NA_real_)))
+      }
     }
     return(scaled)
   } else {

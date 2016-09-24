@@ -74,6 +74,11 @@ getWhereMeasured(my.spct)
 getWhereMeasured(my.spct)$lon
 my.spct
 
+## ---- attr-2a------------------------------------------------------------
+setWhatMeasured(my.spct, "something")
+getWhatMeasured(my.spct)
+my.spct
+
 ## ---- attr-3-------------------------------------------------------------
 is_effective(sun.spct)
 is_effective(sun.spct * waveband(c(400, 700)))

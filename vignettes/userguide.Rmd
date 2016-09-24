@@ -229,7 +229,7 @@ comment(my.cm.spct)
 
 ### Special attributes
 
-Spectral objects have several attributes used to store metadata, such as the time unit used or type of spectral quantity. Some attributes are meaningful for all the classes of spectra defined in the package. These are \emph{time of measurement} using attribute `"when.measured"`, _place of measurement_ using attribute `"where.measured"` and free-text _comments_. One can set and get comments stored in spectra by means of base R's `comment()` and `comment() <-` functions. Some of the functions in this package append additional information to comments or merge comments.
+Spectral objects have several attributes used to store metadata, such as the time unit used or type of spectral quantity. Some attributes are meaningful for all the classes of spectra defined in the package. These are _time of measurement_ using attribute `"when.measured"`, _place of measurement_ using attribute `"where.measured"`, a _user supplied label_ using attribute `"what-measured"`, and free-text _comments_. One can set and get comments stored in spectra by means of base R's `comment()` and `comment() <-` functions. Some of the functions in this package append additional information to comments or merge comments.
 
 Functions `setWhenMeasured()` and `getWhenMeasured()` are used for setting or getting a date as a `POSIXct` value. This format is compatible with many functions
 from package `lubridate`.
@@ -252,6 +252,14 @@ getWhereMeasured(my.spct)
 setWhereMeasured(my.spct, lat = 60, lon = -10)
 getWhereMeasured(my.spct)
 getWhereMeasured(my.spct)$lon
+my.spct
+```
+
+Functions `setWhatMeasured()` and `getWhatMeasured()` are used for setting or getting a text value. 
+
+```{r, attr-2a}
+setWhatMeasured(my.spct, "something")
+getWhatMeasured(my.spct)
 my.spct
 ```
 
@@ -965,17 +973,42 @@ It is also possible to normalize to an arbitrary wavelength within the range of 
 normalize(sun.spct, norm = 600.3)
 ```
 
+The normalization status of a spectral object can be tested with method `is_normalized()` and the normalization used can be recelled with method `getNormalized()`.
+
+```{r}
+my.spct <- normalize(sun.spct)
+is_normalized(my.spct)
+getNormalized(my.spct)
+```
+
+Once a spectrum is normalized, summary methods that return values in absolute units such as `irrad()`, will trigger an error if applied. Ratios and similar summaries that are invariant with respect to normalization can be calcualted.
+
+Applying method `fscale()` removes the normalization and clears the corresponding attribute where the normalization information is stored. This attribute also can be cleared with method `setNormalized()`, but this is rarely valid or of any use.
+
 ### Rescaling a spectrum
 
-Function `fscale()` rescales a spectrum by dividing each spectral data value by a value calculated with a function (f) selected by a character string ("total" or "mean"), or an actual R function which can accept the spectrum object supplied as its first argument.
+Function `fscale()` rescales a spectrum by dividing each spectral data value by a value calculated with a function (f) selected by a character string ("total" or "mean"), or an actual R function which can accept the spectrum object supplied as its first argument. Additional named arguments can be also passed.
 
 ```{r, manip-9}
 fscale(sun.spct)
 fscale(sun.spct, f = "total")
 fscale(sun.spct, range = PAR.wb, f = irrad)
+fscale(sun.spct, range = PAR.wb, f = q_irrad, target = 800e-6)
 ```
 
 In the third example, the spectral data is rescaled so that the corresponding photosynthetically-active irradiance is equal to one.
+
+The normalization status of a spectral object can be tested with method `is_normalized()` and the normalization used can be recelled with method `getNormalized()`.
+
+```{r}
+my.spct <- fscale(sun.spct)
+is_scaled(my.spct)
+getScaled(my.spct)
+```
+
+Once a spectrum is scaled, summary methods that return values in absolute units such as `irrad()`, will trigger a warning if applied. Ratios and similar summaries that are invariant with respect to normalization do not trigger warnings.
+
+Applying method `normalize()` removes the scaling and clears the corresponding attribute where the scaling information is stored. This attribute also can be cleared with method `setScaled()`, and this can be useful is some cases such as when irradiance has been measured separately from the emission spectrum.
 
 ### Shifting the zero of the spectral data scale
 
