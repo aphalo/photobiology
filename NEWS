@@ -13,6 +13,8 @@ Revise cbindspct() so that it stores the name of "idfactor" as an attribute and
 set the retrieved value of the attribute as default in subset2mspct(). This
 makes the conversion from a long form spectral object back into a collection of
 spectra 'automatic' in many additional use cases.
+New class "solar_time":
+Constructor solar_time() and is.solar_time(), format() and print() methods.
 Fix two bugs:
 normalize() sets scaled attribute to FALSE.
 fscale() sets normalized attribute to FALSE.

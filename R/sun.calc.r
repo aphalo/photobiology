@@ -354,10 +354,11 @@ noon_time <- function(date = lubridate::today(), tz = "UTC",
   twlght_angl <- 0
   for (t_num in date_num) {
     noon <- try(
-      stats::optimize(f = altitude, interval = c(t_num + 7200, t_num + 86400 - 7200),
-               lon = lon, lat = lat,
-               twlght_angl = twlght_angl,
-               maximum = TRUE)$maximum
+      stats::optimize(f = altitude,
+                      interval = c(t_num + 7200, t_num + 86400 - 7200),
+                      lon = lon, lat = lat,
+                      twlght_angl = twlght_angl,
+                      maximum = TRUE)$maximum
     )
     if (inherits(noon, "try-error")) {
       noon <- NA
@@ -508,6 +509,7 @@ night_length <- function(date = lubridate::today(), tz = "UTC",
 #' @param date a date object accepted by lubridate functions
 #'
 #' @keywords internal
+#'
 date2tod <- function(date, unit.out) {
   if (unit.out == "hour") {
     lubridate::hour(date) + lubridate::minute(date) / 60 + lubridate::second(date) / 3600
@@ -520,4 +522,129 @@ date2tod <- function(date, unit.out) {
   }
 }
 
+#' Local solar time
+#'
+#' \code{as_solar_time} returns a "solar_time" object derived from class
+#' "list". The actual moment of time measured does not change, but
+#' \code{print()} will display the local solar time instead of the of time in
+#' a given time zone.
+#'
+#' @param time POSIXct Time, any valid time zone (TZ) is allowed, default is
+#'   current time
+#' @param geocode data frame with variables lon and lat as numeric values
+#'   (degrees).
+#'
+#' @family astronomy related functions
+#'
+#' @note The algorithm is approximate, it calculates the difference between
+#'   local solar noon and noon in the time zone of \code{time} and uses this
+#'   value for the whole day when converting times into solar time. Days are not
+#'   exactly 24 h long. Between succesive days the shift is only a few seconds,
+#'   and this leads to a small jump at midnight.
+#'
+#' @export
+#'
+#' @examples
+#' # BA.geocode <- ggmap::geocode("Buenos Aires, Argentina")
+#' BA.geocode <- data.frame(lon = -58.38156, lat = -34.60368)
+#' sol_t <- solar_time(lubridate::dmy_hms("21/06/2016 10:00:00", tz = "UTC"),
+#'                     BA.geocode)
+#' sol_t
+#' str(sol_t)
+#'
+solar_time <- function(time = lubridate::now(), geocode = NULL)
+{
+  if (lubridate::is.POSIXlt(time))
+    new <- as.POSIXct(time)
+  else new <- time
+  solar.noon <- noon_time(date = lubridate::as_date(new),
+                          tz = lubridate::tz(time),
+                          geocode = geocode,
+                          twilight = NA,
+                          unit.out = "date")
+  solar.time <- new -
+    (lubridate::with_tz(solar.noon, tzone = lubridate::tz(new)) -
+       lubridate::hours(12))
+  z <- list(solar.time = solar.time,
+            solar.noon = solar.noon)
+  attr(new, "solar") <- z
+  class(new) <- c("solar_time", class(new))
+  new
+}
 
+#' Query class
+#'
+#' @param x an R object.
+#'
+#' @family astronomy related functions
+#'
+#' @export
+#'
+is.solar_time <- function(x) {
+  inherits(x, "solar_time")
+}
+
+#' Encode in a Common Format
+#'
+#' Format a \code{solar_time} object for pretty printing
+#'
+#' @param x an R object
+#' @param ... ignored
+#'
+#' @family astronomy related functions
+#'
+#' @export
+#'
+format.solar_time <- function(x, ..., usetz = length(x) == 1) {
+  y <- attr(x, "solar")
+  if (units(y[["solar.time"]]) == "secs") {
+    z <- as.numeric(y[["solar.time"]]) / 3600
+  } else if (units(y[["solar.time"]]) == "mins") {
+    z <- as.numeric(y[["solar.time"]]) / 60
+  } else if (units(y[["solar.time"]]) == "hours") {
+    z <- as.numeric(y[["solar.time"]])
+  } else if (units(y[["solar.time"]]) == "days") {
+    z <- as.numeric(y[["solar.time"]]) * 24
+  } else {
+    warning("units: ", units(y[["solar.time"]]))
+    return("NA:NA:NA local solar time")
+  }
+  date <- lubridate::as_date(x)
+  for (i in 1:length(z)) {
+    if (sign(z[i]) < 0) {
+      z[i] <- z[i] + 24
+      date[i] <-  date[i] - lubridate::days(1)
+    }
+  }
+  hours <- as.integer(trunc(z))
+  minutes <- as.integer((z * 60) %% 60)
+  seconds <- as.integer((z * 3600) %% 60)
+  fmt <- "%s %02d:%02d:%02d"
+  if (usetz) {
+    fmt <- paste(fmt, "solar time")
+  }
+  time_string <-
+    sprintf(fmt = fmt, format(date), hours, minutes, seconds)
+  time_string
+}
+
+#' Print a solar time object
+#'
+#' @param x an R object
+#' @param ... ignored
+#' @param prn.qty character
+#'
+#' @family astronomy related functions
+#'
+#' @note Default is to print the underlying POSIXct as a solar time.
+#'
+#' @export
+#'
+print.solar_time <- function(x, ..., prn.qty = "solar.time") {
+  z <- x
+  if (prn.qty != "solar.time") {
+    class(z) <- setdiff(class(z), "solar_time")
+  }
+  print(format(z, ...))
+  invisible(x)
+}

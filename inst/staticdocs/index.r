@@ -16,7 +16,8 @@ sd_section("Constructors",
     "split_bands",
     "wb2rect_spct",
     "wb2spct",
-    "wb2tagged_spct")
+    "wb2tagged_spct",
+    "solar_time")
 )
 
 sd_section("Class", "",

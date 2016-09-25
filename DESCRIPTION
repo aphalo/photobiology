@@ -1,7 +1,7 @@
 Package: photobiology
 Type: Package
 Title: Photobiological Calculations
-Version: 0.9.11.9000
+Version: 0.9.11.9002
 Date: 2016-09-25
 Authors@R:
    c(
@@ -26,12 +26,14 @@ Imports:
     plyr (>= 1.8.4),
     dplyr (>= 0.5.0),
     splus2R (>= 1.2-1),
-    caTools (>= 1.17.1)
+    caTools (>= 1.17.1),
+    memoise (>= 1.0.0)
 Suggests:
     knitr (>= 1.14),
     rmarkdown (>= 1.0),
     testthat (>= 1.0.2),
-    roxygen2 (>= 5.0.1)
+    roxygen2 (>= 5.0.1),
+    ggmap (>= 2.6.1)
 LazyLoad: yes
 LazyData: yes
 ByteCompile: true
