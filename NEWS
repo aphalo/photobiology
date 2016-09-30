@@ -8,16 +8,22 @@ Replace filter_cps.mspct data with newly measured data.
 photobiology 0.9.12
 ===================
 
-Allow all summary calculations on re-scaled data, with a warning.
+Enhancements:
+Overhaul the astronomy related functions. Non-backward compatible changes
+in their parameters. Backward compatible changes in returned values, as long
+as indexing has been done by name. Add classes "solar_time" and "solar_date",
+constructor solar_time() and methods is.solar_time(), is.solar_date(),
+as.solar_date(), format() and print(). Add conversion function as_tod()
+returning 'time of day' from a datetime object. sun_angles() and day_night()
+now return a data.frame instead of a list.
 Revise cbindspct() so that it stores the name of "idfactor" as an attribute and
 set the retrieved value of the attribute as default in subset2mspct(). This
 makes the conversion from a long form spectral object back into a collection of
 spectra 'automatic' in many additional use cases.
-New class "solar_time":
-Constructor solar_time() and is.solar_time(), format() and print() methods.
-Fix two bugs:
-normalize() sets scaled attribute to FALSE.
-fscale() sets normalized attribute to FALSE.
+Fix three bugs:
+normalize() now sets scaled attribute to FALSE.
+fscale() now sets normalized attribute to FALSE.
+Allow all summary calculations on re-scaled data, with a warning.
 
 photobiology 0.9.11
 ===================

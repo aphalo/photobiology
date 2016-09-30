@@ -48,9 +48,9 @@
 #' e_irrad(sun.spct * yellow_gel.spct, waveband(c(500,700)))
 #' # daylength
 #' sunrise_time(lubridate::today(tzone = "EET"), tz = "EET",
-#'              lat = 60, lon = 25, unit.out = "hour")
+#'              geocode = data.frame(lat = 60, lon = 25), unit.out = "hour")
 #' day_length(lubridate::today(tzone = "EET"), tz = "EET",
-#'               lat = 60, lon = 25, unit.out = "hour")
+#'            geocode = data.frame(lat = 60, lon = 25), unit.out = "hour")
 #' # colour as seen by humans
 #' color(sun.spct)
 #' color(sun.spct * yellow_gel.spct)

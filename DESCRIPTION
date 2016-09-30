@@ -2,7 +2,7 @@ Package: photobiology
 Type: Package
 Title: Photobiological Calculations
 Version: 0.9.11.9002
-Date: 2016-09-25
+Date: 2016-09-30
 Authors@R:
    c(
     person("Pedro J.", "Aphalo", email = "pedro.aphalo@helsinki.fi", role = c("aut", "cre")),
@@ -26,8 +26,7 @@ Imports:
     plyr (>= 1.8.4),
     dplyr (>= 0.5.0),
     splus2R (>= 1.2-1),
-    caTools (>= 1.17.1),
-    memoise (>= 1.0.0)
+    caTools (>= 1.17.1)
 Suggests:
     knitr (>= 1.14),
     rmarkdown (>= 1.0),

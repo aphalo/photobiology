@@ -973,7 +973,7 @@ It is also possible to normalize to an arbitrary wavelength within the range of 
 normalize(sun.spct, norm = 600.3)
 ```
 
-The normalization status of a spectral object can be tested with method `is_normalized()` and the normalization used can be recelled with method `getNormalized()`.
+The normalization status of a spectral object can be tested with method `is_normalized()` and the normalization used can be recalled with method `getNormalized()`.
 
 ```{r}
 my.spct <- normalize(sun.spct)
@@ -981,7 +981,7 @@ is_normalized(my.spct)
 getNormalized(my.spct)
 ```
 
-Once a spectrum is normalized, summary methods that return values in absolute units such as `irrad()`, will trigger an error if applied. Ratios and similar summaries that are invariant with respect to normalization can be calcualted.
+Once a spectrum is normalized, summary methods that return values in absolute units such as `irrad()`, will trigger an error if applied. Ratios and similar summaries that are invariant with respect to normalization can be calculated.
 
 Applying method `fscale()` removes the normalization and clears the corresponding attribute where the normalization information is stored. This attribute also can be cleared with method `setNormalized()`, but this is rarely valid or of any use.
 
@@ -998,7 +998,7 @@ fscale(sun.spct, range = PAR.wb, f = q_irrad, target = 800e-6)
 
 In the third example, the spectral data is rescaled so that the corresponding photosynthetically-active irradiance is equal to one.
 
-The normalization status of a spectral object can be tested with method `is_normalized()` and the normalization used can be recelled with method `getNormalized()`.
+The normalization status of a spectral object can be tested with method `is_normalized()` and the normalization used can be recalled with method `getNormalized()`.
 
 ```{r}
 my.spct <- fscale(sun.spct)
@@ -1425,7 +1425,7 @@ irrad(convolve_each(filters.mspct, sun.spct), list(UVA.wb, PAR.wb))
 
 It is also possible to use an _apply_ function. Syntax parallels that of base R's and package `plyr`'s. See sections _apply_ functions and `convolve` for more details.
 
-One thing to remember, is that operators in R are just normal functions with special names and call syntax. They can also be called with the usual function call syntax by enclosing their _name_ in backquotes. We use this to pass as argument the multiplication operator `*` in a call to `msmsply` which returns, in this case, a `source_multi_spct` object. After this we just call the `irrad` method on the _collection of spectra_ and obtain the result as a data frame with one row per spectrum and one column by waveband.
+One thing to remember, is that operators in R are just normal functions with special names and call syntax. They can also be called with the usual function call syntax by enclosing their _name_ in back quotes. We use this to pass as argument the multiplication operator `*` in a call to `msmsply` which returns, in this case, a `source_multi_spct` object. After this we just call the `irrad` method on the _collection of spectra_ and obtain the result as a data frame with one row per spectrum and one column by waveband.
 
 ```{r, col-convolve-3}
 filtered_sun <- msmsply(filters.mspct, `*`, sun.spct)
@@ -1596,13 +1596,26 @@ average_spct(sun.spct)
 
 ## Astronomy
 
+The functions and methods described in this section return either values that 
+represent angles or times. In the current version angles are always expressed in
+degrees. In the case of times, the unit of expression, can be changed through 
+parameter `unit.out` which accepts the following arguments `"datetime"`,
+`"hour"`, `"minute"`, `"second"`. For backwards compatibility `"date"` is also
+accepted as equivalent to `"datetime"` but deprecated.
+
 ### Position of the sun
 
-In photobiology research we sometimes need to calculate the position on the sun at arbitrary locations and positions. The function `sun_angles` returns the azimuth in degrees eastwards, altitude in degrees above the horizon, solar disk diameter in degrees and sun to earth distance in astronomical units. The time should be a `POSIXct` vector, possibly of length one, and it is easiest to use package `lubridate` for working with time and dates.
+In photobiology research we sometimes need to calculate the position on the sun at arbitrary geographic locations and times. The function `sun_angles` returns the azimuth in degrees eastwards, altitude in degrees above the horizon, solar disk diameter in degrees and sun to earth distance in astronomical units. The time should be a `POSIXct` vector, possibly of length one. The easiest way create date and time constant values is to use package `lubridate`.
+
+<hr>
+In versions up to 0.9.11 in addition parameter `geocode` most functions also had
+the redundant formal parameters `lon` and `lat` which were removed in version
+0.9.12. This change may require users' scripts to be revised.
+<hr>
 
 ```{r}
-sun_angles(now(), lat = 34, lon = 0)
-sun_angles(ymd_hms("2014-01-01 0:0:0", tz = "UTC"))
+sun_angles(now(), geocode = data.frame(lat = 34, lon = 0))
+sun_angles(ymd_hms("2014-01-01 0:0:0", tz = "UTC") + hours(1:3))
 ```
 
 When spectra contain suitable metadata, the position of the sun for the
@@ -1612,80 +1625,127 @@ spectral irradiance data measurement can be easily obtained.
 sun_angles(getWhenMeasured(sun.spct), geocode = getWhereMeasured(sun.spct))
 ```
 
-The object to be supplied as argument for `geocode` is a data frame with variables `lon` and `lat`. This matches the return value of function `ggmap::geocode()`, function that can be used to find the coordinates using any _address_ entered as a character string understood by the Google maps API. We will not demonstrate this below, but all functions taking `lat` and `lon` arguments described can alternatively be supplied a geocode argument instead of separate latitude and longitude numeric values.
+The object to be supplied as argument for `geocode` is a data frame with variables `lon` and `lat`. This matches the return value of function `ggmap::geocode()`, function that can be used to find the coordinates using any _address_ entered as a character string understood by the Google maps API.
 
 ### Times of sunrise, solar noon and sunset
 
-Functions `sunrise_time`, `sunset_time`, `noon_time`, `day_length` and `night_length` have all the same parameter signature. In addition, function `day_night` returns a list containing all the quantities returned by the other functions. They are all vectorized for the
-`date` parameter.
+Functions `sunrise_time`, `sunset_time`, `noon_time`, `day_length` and `night_length` have all the same parameter signature. In addition, function `day_night` returns a data frame containing all the quantities returned by the other functions. They are all vectorized for the `date` and `geocode` parameters.
 
-We create a vector of dates to use in the examples---default time zone of `ymd` is UTC or GMT.
+We create a vector of dates to use in the examples---default time zone of `ymd` is UTC.
 
 ```{r}
 dates <- seq(from = ymd("2015-03-01"), to = ymd("2015-07-1"), length.out = 3)
 ```
 
-Default latitude is zero (the Equator), the default longitude is zero (Greenwich), and default time zone for the functions in the `photobiology` package is `"UTC"`. Be also aware that for summer dates the times are expressed accordingly. In the examples below this can be recognized for example, by the time zone being reported as EEST instead of EET for Eastern Europe.
+Default latitude is zero (the Equator), the default longitude is zero (Greenwich), and default time zone for the functions in the `photobiology` package is in most cases the time zone returned by the operating system, but values are stored in time zone `"UTC"`. Be also aware that for summer dates the times are formatted for printing accordingly. In the examples below this can be recognized for example, by the time zone being reported as EEST instead of EET for Eastern Europe.
 
 ```{r}
-noon_time(dates, tz = "UTC", lat =  60)
-noon_time(dates, tz = "CET", lat =  60)
+noon_time(dates, tz = "UTC", data.frame(lat = 34, lon = 0))
+```
+```{r}
+noon_time(dates, tz = "CET", data.frame(lat = 34, lon = 0))
 ```
 
 ```{r}
-day_night(dates, lat =  60)
+day_night(dates, geocode = data.frame(lat = 60, lon = 0))
 ```
 
 The default for `date` is the current day.
 
 ```{r}
-sunrise_time(lat = 60)
+sunrise_time(geocode = data.frame(lat = 60, lon = 0))
 ```
 
-Both latitude and longitude can be supplied, but be aware that if the returned value is desired in the local time coordinates, the time zone should match the longitude.
+Both latitude and longitude should be supplied through `geocode`, but be aware that if the returned value is desired in the local time coordinates of the argument passed to `gocode`, the time zone should match the geographic coordinates.
 
 ```{r}
-sunrise_time(today("UTC"), tz = "UTC", lat = 60, lon = 0)
-sunrise_time(today("EET"), tz = "EET", lat = 60, lon = 25)
+sunrise_time(today("UTC"), tz = "UTC", geocode = data.frame(lat = 60, lon = 0))
+sunrise_time(today("EET"), tz = "EET", geocode = data.frame(lat = 60, lon = 25))
 ```
 
 Southern hemisphere latitudes as well as longitudes to the West of the Greenwich meridian should be supplied as negative numbers.
 
 ```{r}
-sunrise_time(dates, lat =  60)
-sunrise_time(dates, lat = -60)
+sunrise_time(dates, geocode = data.frame(lat = 60, lon = 0))
+sunrise_time(dates, geocode = data.frame(lat = -60, lon = 0))
 ```
 
 The angle used in the twilight calculation can be supplied, either as the name of a standard definition, or as an angle in degrees (negative for sun positions below the horizon). Positive angles can be used when the time of sun occlusion behind a building, mountain, or other obstacle needs to be calculated.
 
 ```{r}
-sunrise_time(today("EET"), tz = "EET", lat = 60, lon = 25,
+sunrise_time(today("EET"), tz = "EET", 
+             geocode = data.frame(lat = 60, lon = 25),
              twilight = "civil")
-sunrise_time(today("EET"), tz = "EET", lat = 60, lon = 25,
+sunrise_time(today("EET"), tz = "EET", 
+             geocode = data.frame(lat = 60, lon = 25),
              twilight = -10)
-sunrise_time(today("EET"), tz = "EET", lat = 60, lon = 25,
+sunrise_time(today("EET"), tz = "EET", 
+             geocode = data.frame(lat = 60, lon = 25),
              twilight = +12)
 ```
 
 Parameter `unit.out` can be used to obtain the returned value expressed as time-of-day in hours, minutes, or seconds since midnight.
 
 ```{r}
-sunrise_time(today("EET"), tz = "EET", lat = 60, lon = 25,
+sunrise_time(today("EET"), 
+             tz = "EET", 
+             geocode = data.frame(lat = 60, lon = 25),
              unit.out = "hour")
 ```
 
 Functions `day_length` and `night_length` return by default the length of time in hours.
 
 ```{r}
-day_length(dates, lat = 60)
-night_length(dates, lat = 60)
+day_length(dates, geocode = data.frame(lat = 60, lon = 25))
+night_length(dates, geocode = data.frame(lat = 60, lon = 25))
 ```
 
-Function `day_night` returns a list.
+Function `day_night` returns a data frame.
 
 ```{r}
-day_night(dates, lat = 60)
-day_night(dates, lat = 60, unit.out = "hour")
+day_night(dates, 
+          geocode = data.frame(lat = 60, lon = 25))
+day_night(dates, 
+          geocode = data.frame(lat = 60, lon = 25), 
+          unit.out = "datetime")
+```
+
+### Solar time
+
+In field research it is in many cases preferable to sample or measure, and 
+present and plot data based on local solar time. Two functions are provided.
+They differ in the value returned, either a time of day in hours, or a date.
+
+```{r}
+Paris.geo <- data.frame(lon = 2.352222, lat = 48.85661)
+Paris.time <- ymd_hms("2016-09-30 06:00:00", tz = "UTC")
+solar_time(Paris.time, Paris.geo)
+solar_time(Paris.time, Paris.geo, unit.out = "datetime")
+```
+
+```{r}
+my.solar.t <- solar_time(Paris.time, Paris.geo)
+is.solar_time(my.solar.t)
+is.numeric(my.solar.t)
+```
+
+```{r}
+my.solar.d <- solar_time(Paris.time, Paris.geo, unit.out = "datetime")
+is.solar_date(my.solar.d)
+is.timepoint(my.solar.d)
+```
+
+### Time of day
+
+Function `as_tod()` facilitates conversion of R's time date objects into a
+numeric value representing the time of day in one of hour, minute or second
+as unit of expression.
+
+```{r}
+times <- now() + days(0:1)
+times
+as_tod(times)
+as_tod(times, unit.out = "minute")
 ```
 
 ## RGB colours
