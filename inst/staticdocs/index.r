@@ -17,7 +17,8 @@ sd_section("Constructors",
     "wb2rect_spct",
     "wb2spct",
     "wb2tagged_spct",
-    "solar_time")
+    "solar_time",
+    "as.solar_date")
 )
 
 sd_section("Class", "",
@@ -32,7 +33,9 @@ sd_section("Class", "",
              "summary_spct_classes",
              "rmDerivedSpct",
              "rmDerivedMspct",
-             "shared_member_class"
+             "shared_member_class",
+             "is.solar_time",
+             "is.solar_date"
            )
 )
 
@@ -179,7 +182,9 @@ sd_section("Apply", "",
 sd_section("Astronomy", "",
            c(
              "day_night",
-             "sun_angles"
+             "sun_angles",
+             "solar_time",
+             "as_tod"
            )
 )
 
@@ -187,7 +192,9 @@ sd_section("Output", "",
            c(
              "print",
              "print.summary_generic_spct",
-             "print.waveband"
+             "print.waveband",
+             "print.solar_time",
+             "format.solar_time"
            )
 )
 

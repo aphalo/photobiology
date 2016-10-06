@@ -156,7 +156,7 @@ oper.e.generic_spct <- function(e1, e2, oper) {
         return(NA)
       }
       z <- oper_spectra(e1$w.length, e2$w.length,
-                        e1$s.e.irrad, e2$s.e.irrad,
+                        e1$s.e.irrad, e2$Rfr,
                         bin.oper=oper, trim="intersection")
       names(z)[2] <- "s.e.irrad"
       setSourceSpct(z, time.unit=getTimeUnit(e1), bswf.used = getBSWFUsed(e1),
@@ -215,6 +215,8 @@ oper.e.generic_spct <- function(e1, e2, oper) {
         if (!identical(oper, `*`) && !identical(oper, `/`)) {
           warning("Only '*' and '/' are allowed between filter_spct and source_spct objects")
           return(NA)
+        } else if (identical(oper, `/`)) {
+          warning("Dividing a 'filter.spct' by a 'source.spct' is a very unusual operation!")
         }
         z <- oper_spectra(e1$w.length, e2$w.length,
                           e1$Tfr, e2$s.e.irrad,
@@ -235,7 +237,7 @@ oper.e.generic_spct <- function(e1, e2, oper) {
         setFilterSpct(z, strict.range = getOption("photobiology.strict.range", default = FALSE))
         return(z)
       } else { # this traps optically illegal operations
-        warning("The operation attempted in undefined according to Optics laws or the input is malformed")
+        warning("The operation attempted is undefined according to Optics laws or the input is malformed")
         return(NA)
       }
     } else if (filter.quantity=="absorbance") {
@@ -272,7 +274,7 @@ oper.e.generic_spct <- function(e1, e2, oper) {
         setFilterSpct(z, strict.range = getOption("photobiology.strict.range", default = FALSE))
         return(z)
       } else { # this traps optically illegal operations
-        warning("The operation attempted in undefined according to Optics laws or the input is malformed")
+        warning("The operation attempted is undefined according to Optics laws or the input is malformed")
         return(NA)
       }
     }
@@ -293,6 +295,8 @@ oper.e.generic_spct <- function(e1, e2, oper) {
       if (!identical(oper, `*`) && !identical(oper, `/`)) {
         warning("Only '*' and '/' are allowed between reflector_spct and source_spct objects")
         return(NA)
+      } else if (identical(oper, `/`)) {
+        warning("Dividing a 'reflector.spct' by a 'source.spct' is a very unusual operation!")
       }
       z <- oper_spectra(e1$w.length, e2$w.length,
                         e1$Rfr, e2$s.e.irrad,
@@ -302,7 +306,7 @@ oper.e.generic_spct <- function(e1, e2, oper) {
                     strict.range = getOption("photobiology.strict.range", default = FALSE))
       return(z)
     } else { # this traps optically illegal operations
-      warning("The operation attempted in undefined according to Optics laws or the input is malformed")
+      warning("The operation attempted is undefined according to Optics laws or the input is malformed")
       return(NA)
     }
   } else if (class1 == "response_spct") {
@@ -333,7 +337,7 @@ oper.e.generic_spct <- function(e1, e2, oper) {
       setResponseSpct(z, time.unit=getTimeUnit(e2))
       return(z)
     } else { # this traps optically illegal operations
-      warning("The operation attempted in undefined according to Optics laws or the input is malformed")
+      warning("The operation attempted is undefined according to Optics laws or the input is malformed")
       return(NA)
     }
   } else if (class1 == "chroma_spct") {
@@ -424,7 +428,7 @@ oper.e.generic_spct <- function(e1, e2, oper) {
       }
     }
   } else {
-    warning("The operation attempted in undefined according to Optics laws or the input is malformed")
+    warning("The operation attempted is undefined according to Optics laws or the input is malformed")
     return(NA)
   }
 }
@@ -498,7 +502,7 @@ oper.q.generic_spct <- function(e1, e2, oper) {
     e2q(e1, action = "replace", byref = TRUE)
     if (is.waveband(e2)) {
       if (!identical(oper, `*`)) {
-        warning("The operation attempted in undefined according to Optics laws or the input is malformed")
+        warning("The operation attempted is undefined according to Optics laws or the input is malformed")
         return(NA)
       }
       if (is_effective(e1) && !is_effective(e2)) {
@@ -645,7 +649,7 @@ oper.q.generic_spct <- function(e1, e2, oper) {
         setFilterSpct(z, strict.range = getOption("photobiology.strict.range", default = FALSE))
         return(z)
       } else { # this traps optically illegal operations
-        warning("The operation attempted in undefined according to Optics laws or the input is malformed")
+        warning("The operation attempted is undefined according to Optics laws or the input is malformed")
         return(NA)
       }
     } else if (filter.quantity=="absorbance") {
@@ -675,7 +679,7 @@ oper.q.generic_spct <- function(e1, e2, oper) {
         setFilterSpct(z, strict.range = getOption("photobiology.strict.range", default = FALSE))
         return(z)
       } else { # this traps optically illegal operations
-        warning("The operation attempted in undefined according to Optics laws or the input is malformed")
+        warning("The operation attempted is undefined according to Optics laws or the input is malformed")
         return(NA)
       }
     }
@@ -732,7 +736,7 @@ oper.q.generic_spct <- function(e1, e2, oper) {
       setResponseSpct(z)
       return(z)
     } else { # this traps optically illegal operations
-      warning("The operation attempted in undefined according to Optics laws or the input is malformed")
+      warning("The operation attempted is undefined according to Optics laws or the input is malformed")
       return(NA)
     }
   } else if (class1 == "chroma_spct") {
@@ -800,7 +804,7 @@ oper.q.generic_spct <- function(e1, e2, oper) {
       }
     }
   } else  {
-    warning("The operation attempted in undefined according to Optics laws or the input is malformed")
+    warning("The operation attempted is undefined according to Optics laws or the input is malformed")
     return(NA)
   }
 }
