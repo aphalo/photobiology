@@ -134,7 +134,7 @@ var_y <- function(obliq.corr) {
 eq_of_time <- function(mean.lon,
                        eccent.earth,
                        anom.mean,
-                       vary.y) {
+                       var.y) {
   mean.lon.rad <- mean.lon / 180 * pi
   anom.mean.rad <- anom.mean / 180 * pi
   4 * ((var.y * sin(2 * mean.lon.rad) -
@@ -149,7 +149,7 @@ eq_of_time <- function(mean.lon,
 ha_sunrise <- function(lat, declin, ang = 0) {
   lat.rad <- lat / 180 * pi
   declin.rad <- declin / 180 * pi
-  acos(cos((90.833 + ang) / 180 * pi) /
+  acos(cos((90 + ang) / 180 * pi) /            # 90.833 in NOAAs code
          (cos(lat.rad) * cos(declin.rad)) -
          tan(lat.rad) * tan(declin.rad))  / pi * 180
 }
@@ -216,9 +216,9 @@ tz_time_diff <- function(when = lubridate::now(),
 #'
 #' @param date vector of POSIXct times or Date objects, any valid TZ is allowed,
 #'   default is current date
-#' @param tz character string indicating time zone to be used in output.
-#' @param geocode data frame with variables lon and lat as numeric values
-#'   (degrees).
+#' @param tz vector of character string indicating time zone to be used in output.
+#' @param geocode data frame with one or more rows and variables lon and lat as
+#'   numeric values (degrees).
 #' @param twilight character string, one of "none", "civil", "nautical",
 #'   "astronomical", or a \code{numeric} vector of length one, or two, giving
 #'   solar elevation angle(s) in degrees (negative if below the horizon).
@@ -240,13 +240,34 @@ tz_time_diff <- function(when = lubridate::now(),
 #' my.geocode <- data.frame(lat = 60, lon = 25)
 #' day_night2(ymd("2015-05-30"), geocode = my.geocode, twilight = "civil")
 #'
-day_night2 <- function(date = lubridate::today(),
+day_night <- function(date = lubridate::today(),
                       tz = Sys.timezone(),
                       geocode = data.frame(lon = 0, lat = 0),
                       twilight = "none",
                       unit.out = "hour") {
   stopifnot(! anyNA(date))
   stopifnot(is.data.frame(geocode))
+
+  # if date is a vector or list for convenience we vectorize
+  if (length(date) > 1) {
+    first.iter <- TRUE
+    for (d in date) {
+      zz <- day_night(date = d,
+                      tz = tz,
+                      geocode = geocode,
+                      twilight = twilight,
+                      unit.out = unit.out)
+      if (first.iter) {
+        z <- zz
+        first.iter <- FALSE
+      } else {
+        z <- rbind(z, zz)
+      }
+    }
+    return(z)
+  }
+
+  # from here onwards we are dealing with a single date
 
   if (unit.out %in% c("datetime", "date")) {
     duration.unit.out <- "hour"
@@ -256,8 +277,6 @@ day_night2 <- function(date = lubridate::today(),
 
   twilight.angles <- twilight2angle(twilight)
 
-  lon <- geocode[["lon"]]
-  lat <- geocode[["lat"]]
   date <- lubridate::as_date(date, tz = tz)
 
   noon.of.date <- lubridate::as_datetime(date) + lubridate::hours(12)
@@ -268,7 +287,7 @@ day_night2 <- function(date = lubridate::today(),
   sun.lon.mean <- geom_mean_lon_sun(cent)
   sun.anom.mean <- geom_mean_anom_sun(cent)
   eccent.earth <- eccent_earth_orbit(cent)
-  delta <- sun_eq_of_ctr(cent, anom.mean)
+  delta <- sun_eq_of_ctr(cent, sun.anom.mean)
 
   sun.lon <- sun.lon.mean + delta
   sun.anom <- sun.anom.mean + delta
@@ -279,62 +298,92 @@ day_night2 <- function(date = lubridate::today(),
   rt.ascen <- sun_rt_ascen(sun.app.lon, obliq.corr)
   sun.declin <- sun_declin(sun.app.lon, obliq.corr)
   var.y <- var_y(obliq.corr)
-  eq.of.time <- eq_of_time(sun.lon.mean,
-                           eccent.earth,
-                           sun.anom.mean,
-                           var.y)
+  eq.of.time <- eq_of_time(mean.lon = sun.lon.mean,
+                           eccent.earth = eccent.earth,
+                           anom.mean = sun.anom.mean,
+                           var.y = var.y)
 
-  solar.noon <- solar_noon(lon, eq.of.time)
+  # up to here the calcualtions are not dependent on geographic location
+  # now we vectorize for geocodes
 
-  if (twilight.angles[1] == twilight.angles[2]) {
-    ha.sunrise <- ha_sunrise(lat, sun.declin, ang = -twilight.angles[1])
-    sunrise <- sunrise(solar.noon, ha.sunrise)
-    sunset <- sunset(solar.noon, ha.sunrise)
-  } else {
-    ha.sunrise1 <- ha_sunrise(lat, sun.declin, ang = -twilight.angles[1])
-    ha.sunrise2 <- ha_sunrise(lat, sun.declin, ang = -twilight.angles[2])
-    sunrise <- sunrise(solar.noon, ha.sunrise1)
-    sunset <- sunset(solar.noon, ha.sunrise2)
+  if (length(tz) == 1 && nrow(geocode) > 1) {
+    tz <- rep(tz, nrow(geocode))
   }
 
-  sunrise.time <- lubridate::as_datetime(date, tz = tz) +
-    lubridate::seconds(sunrise * 86400)
-  noon.time    <- lubridate::as_datetime(date, tz = tz) +
-    lubridate::seconds(solar.noon * 86400)
-  sunset.time  <- lubridate::as_datetime(date, tz = tz) +
-    lubridate::seconds(sunset * 86400)
+  stopifnot(length(tz) == nrow(geocode))
 
-  daylength.duration <- sunset.time - sunrise.time
-  daylength.hours <- as.numeric(daylength.duration)
+  first.iter <- TRUE
+  for (i in 1:nrow(geocode)) {
+    lon <- geocode[i, "lon"]
+    lat <- geocode[i, "lat"]
 
-  if (unit.out %in% c("date", "datetime")) {
-    data.frame(day         = date,
-               tz          = tz,
-               twilight1   = twilight[1],
-               twilight2   = twilight[2],
-               longitude   = lon,
-               latitude    = lat,
-               sunrise     = with_tz(sunrise.time, tzone = tz),
-               noon        = with_tz(noon.time, tzone = tz),
-               sunset      = with_tz(sunset.time, tzone = tz),
-               daylength   = daylength.hours,
-               nightlength = 24 - daylength.hours
-    )
-  }  else if (unit.out %in% c("hours", "hour")) {
-    data.frame(day         = date,
-             tz          = tz,
-             twilight1   = twilight[1],
-             twilight2   = twilight[2],
-             longitude   = lon,
-             latitude    = lat,
-             sunrise     = sunrise * 24 + tz.diff,
-             noon        = solar.noon * 24 + tz.diff,
-             sunset      = sunset * 24 + tz.diff,
-             daylength   = daylength.hours,
-             nightlength = 24 - daylength.hours
-             )
+    # we do the calculations
+
+    solar.noon <- solar_noon(lon, eq.of.time)
+
+    if (twilight.angles[1] == twilight.angles[2]) {
+      ha.sunrise <- ha_sunrise(lat, sun.declin, ang = -twilight.angles[1])
+      sunrise <- sunrise(solar.noon, ha.sunrise)
+      sunset <- sunset(solar.noon, ha.sunrise)
+    } else {
+      ha.sunrise1 <- ha_sunrise(lat, sun.declin, ang = -twilight.angles[1])
+      ha.sunrise2 <- ha_sunrise(lat, sun.declin, ang = -twilight.angles[2])
+      sunrise <- sunrise(solar.noon, ha.sunrise1)
+      sunset <- sunset(solar.noon, ha.sunrise2)
+    }
+
+    sunrise.time <- lubridate::as_datetime(date, tz = tz[i]) +
+      lubridate::seconds(sunrise * 86400)
+    noon.time    <- lubridate::as_datetime(date, tz = tz[i]) +
+      lubridate::seconds(solar.noon * 86400)
+    sunset.time  <- lubridate::as_datetime(date, tz = tz[i]) +
+      lubridate::seconds(sunset * 86400)
+
+    daylength.duration <- sunset.time - sunrise.time
+    daylength.hours <- as.numeric(daylength.duration)
+
+    # we assemble the data frame for one geographic location
+
+    if (unit.out %in% c("date", "datetime")) {
+      yy <- data.frame(day           = date,
+                       tz            = tz[i],
+                       twilight.rise = twilight[1],
+                       twilight.set  = ifelse(length(twilight) == 1,
+                                            twilight[1], twilight[2]),
+                       longitude     = lon,
+                       latitude      = lat,
+                       sunrise       = with_tz(sunrise.time, tzone = tz[i]),
+                       noon          = with_tz(noon.time, tzone = tz[i]),
+                       sunset        = with_tz(sunset.time, tzone = tz[i]),
+                       daylength     = daylength.hours,
+                       nightlength   = 24 - daylength.hours
+      )
+    } else if (unit.out %in% c("hours", "hour")) {
+      yy <- data.frame(day           = date,
+                       tz            = tz[i],
+                       twilight.rise = twilight[1],
+                       twilight.set  = ifelse(length(twilight) == 1,
+                                                   twilight[1], twilight[2]),
+                       longitude     = lon,
+                       latitude      = lat,
+                       sunrise       = (sunrise * 24 + tz.diff) %% 24,
+                       noon          = (solar.noon * 24 + tz.diff) %% 24,
+                       sunset        = (sunset * 24 + tz.diff) %% 24,
+                       daylength     = daylength.hours,
+                       nightlength   = 24 - daylength.hours
+      )
+    }
+
+    # we bind the data frames together
+    if (first.iter) {
+      y <- yy
+      first.iter <- FALSE
+    } else {
+      y <- rbind(y, yy)
+    }
   }
-
+  y
 }
+
 
 

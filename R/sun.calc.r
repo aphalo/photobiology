@@ -211,7 +211,7 @@ sun_angles <- function(time = lubridate::now(),
 #' sunrise_time(ymd("2015-05-30"), geocode = my.geocode, tz = "EET")
 #' day_night(ymd("2015-05-30"), geocode = my.geocode, twilight = "civil")
 #'
-day_night <- function(date = lubridate::today(),
+day_night2 <- function(date = lubridate::today(),
                       tz = Sys.timezone(),
                       geocode = data.frame(lon = 0, lat = 0),
                       twilight = "none",
@@ -256,8 +256,10 @@ day_night <- function(date = lubridate::today(),
 #' @keywords internal
 twilight2angle <- function(twilight) {
   if (!is.numeric(twilight)) {
-    if (twilight == "none") {
+    if (twilight == "none") {  # center of solar disk
       twilight_angle <- c(0, 0)
+    } else if (twilight == "sunlight") { # upper rim of solar disk
+      twilight_angle <- c(-0.833, -0.833)
     } else if (twilight == "civil") {
       twilight_angle <- c(-6, -6)
     } else if (twilight == "nautical") {

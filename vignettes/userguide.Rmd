@@ -1642,12 +1642,17 @@ Default latitude is zero (the Equator), the default longitude is zero (Greenwich
 ```{r}
 noon_time(dates, tz = "UTC", data.frame(lat = 34, lon = 0))
 ```
+
 ```{r}
 noon_time(dates, tz = "CET", data.frame(lat = 34, lon = 0))
 ```
 
 ```{r}
 day_night(dates, geocode = data.frame(lat = 60, lon = 0))
+```
+
+```{r}
+day_night2(dates, geocode = data.frame(lat = 60, lon = 0))
 ```
 
 The default for `date` is the current day.
