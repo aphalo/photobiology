@@ -10,12 +10,11 @@ vignette: >
 ---
 
 ```{r, include=FALSE, echo=FALSE}
-library(knitr)
-opts_chunk$set(fig.path = 'figure/pos-', fig.align = 'center', fig.show = 'hold', fig.width = 7, fig.height = 4)
+knitr::opts_chunk$set(fig.width=8, fig.height=4)
 ```
 
 ```{r, printing-spectra, eval=TRUE, include=FALSE}
-library(tibble)
+# library(tibble)
 options(tibble.print_max = 6, tibble.print_min = 4)
 ```
 
@@ -1651,11 +1650,7 @@ noon_time(dates, tz = "CET", data.frame(lat = 34, lon = 0))
 day_night(dates, geocode = data.frame(lat = 60, lon = 0))
 ```
 
-```{r}
-day_night2(dates, geocode = data.frame(lat = 60, lon = 0))
-```
-
-The default for `date` is the current day.
+he default for `date` is the current day.
 
 ```{r}
 sunrise_time(geocode = data.frame(lat = 60, lon = 0))
@@ -1695,7 +1690,7 @@ Parameter `unit.out` can be used to obtain the returned value expressed as time-
 sunrise_time(today("EET"), 
              tz = "EET", 
              geocode = data.frame(lat = 60, lon = 25),
-             unit.out = "hour")
+             unit.out = "hours")
 ```
 
 Functions `day_length` and `night_length` return by default the length of time in hours.
@@ -1750,7 +1745,7 @@ as unit of expression.
 times <- now() + days(0:1)
 times
 as_tod(times)
-as_tod(times, unit.out = "minute")
+as_tod(times, unit.out = "minutes")
 ```
 
 ## RGB colours
