@@ -20,34 +20,6 @@
 #'
 #' @keywords internal
 #'
-#' @examples
-#' format(julian_day(dmy_hms("01/01/2010 12:00:00")), digits = 21)
-#' cent <- julian_century(dmy_hms("01/01/2010 12:00:00"))
-#'
-#' sun.lon.mean <- geom_mean_lon_sun(cent)
-#' sun.anom.mean <- geom_mean_anom_sun(cent)
-#' eccent.earth <- eccent_earth_orbit(cent)
-#' delta <- sun_eq_of_ctr(cent, anom.mean)
-#'
-#' sun.lon <- sun.lon.mean + delta
-#' sun.anom <- sun.anom.mean + delta
-#' sun.dist <- sun_rad_vector(eccent.earth, sun.anom)
-#' sun.app.lon <- sun_app_lon(cent, sun.lon)
-#' sun.ecliptic <- mean_obliq_eclip(cent)
-#' obliq.corr <- obliq_corr(cent, sun.ecliptic)
-#' rt.ascen <- sun_rt_ascen(sun.app.lon, obliq.corr)
-#' sun.declin <- sun_declin(sun.app.lon, obliq.corr)
-#' var.y <- var_y(obliq.corr)
-#' eq.of.time <- eq_of_time(sun.lon.mean,
-#'                          eccent.earth,
-#'                          sun.anom.mean,
-#'                          var.y)
-#' ha.sunrise <- ha_sunrise(40, sun.declin)
-#' solar.noon.utc <- solar_noon_utc(-105, eq.of.time)
-#' sunrise.utc <- sunrise_utc(solar.noon.utc)
-#' sunlight.duration <- sunlight_duration(ha.sunrise)
-#' true_solar_time(now(tzone = "UTC"), lat = 0, lon = 0, eq.of.time)
-#'
 julian_day <- function(time) {
   2440587.79166667 + as.numeric(julian(time))
 }
@@ -190,7 +162,7 @@ sunlight_duration <- function(ha.sunrise, unit.out = "hours") {
 #' @rdname julian_day
 #'
 #' @return datetime
-solar_time <- function(time, lat, lon, eq.of.time) {
+solar_datetime <- function(time, lat, lon, eq.of.time) {
   time + lubridate::seconds((eq.of.time + 4 * lon) * 60)
 }
 
@@ -251,5 +223,5 @@ azimuth_angle <- function(lat, hour.angle, zenith.angle, declin) {
             pi * 180 + 180) %% 360,
          540 - (acos(((sin(lat.rad) * cos(zenith.angle.rad)) -
                         sin(declin.rad)) / (cos(lat.rad) * sin(zenith.angle.rad))) /
-                  pi * 180) %% 360)
+                  pi * 180)) %% 360
 }

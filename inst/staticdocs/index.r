@@ -184,7 +184,8 @@ sd_section("Astronomy", "",
              "day_night",
              "sun_angles",
              "solar_time",
-             "as_tod"
+             "as_tod",
+             "tz_time_diff"
            )
 )
 

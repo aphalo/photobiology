@@ -33,7 +33,8 @@ Revise cbindspct() so that it stores the name of "idfactor" as an attribute and
 set the retrieved value of the attribute as default in subset2mspct(). This
 makes the conversion from a long form spectral object back into a collection of
 spectra 'automatic' in many additional use cases.
-Fix four bugs:
+
+Fix bugs:
 normalize() now sets scaled attribute to FALSE.
 fscale() now sets normalized attribute to FALSE.
 Allow all summary calculations on re-scaled data, with a warning.

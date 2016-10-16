@@ -1717,20 +1717,20 @@ present and plot data based on local solar time. Two functions are provided.
 They differ in the value returned, either a time of day in hours, or a date.
 
 ```{r}
-Paris.geo <- data.frame(lon = 2.352222, lat = 48.85661)
+Paris.geo <- data.frame(lon = 2.352222, lat = 48.85661, address = "Paris")
 Paris.time <- ymd_hms("2016-09-30 06:00:00", tz = "UTC")
-solar_time(Paris.time, Paris.geo)
-solar_time(Paris.time, Paris.geo, unit.out = "datetime")
+solar_time(Paris.time, geocode = Paris.geo)
+solar_time(Paris.time, geocode = Paris.geo, unit.out = "datetime")
 ```
 
 ```{r}
-my.solar.t <- solar_time(Paris.time, Paris.geo)
+my.solar.t <- solar_time(Paris.time, geocode = Paris.geo)
 is.solar_time(my.solar.t)
 is.numeric(my.solar.t)
 ```
 
 ```{r}
-my.solar.d <- solar_time(Paris.time, Paris.geo, unit.out = "datetime")
+my.solar.d <- solar_time(Paris.time, geocode = Paris.geo, unit.out = "datetime")
 is.solar_date(my.solar.d)
 is.timepoint(my.solar.d)
 ```
