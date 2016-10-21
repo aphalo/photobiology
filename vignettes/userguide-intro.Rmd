@@ -1,0 +1,61 @@
+---
+title: "photobiology `r packageVersion('photobiology')`: User Guide (introduction)"
+author: "Pedro J. Aphalo"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{User Guide 1: Introduction}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## Introduction
+
+We have developed a set of packages to
+facilitate the calculation of many different quantities that can be derived from spectral irradiance data. The core package in this suite is called '**photobiology**', and is the package described here. Other specialized packages for quantification of ultraviolet radiation and visible radiation ('**photobiologyWavebands**'), plant photoreceptors and other plant photobiology related calculations ('**photobiologyPlants**'), example spectral data for filters ('**photobiologyFilters**'), lamps ('**photobiologyLamps**'), LEDs ('**photobiologyLEDs**'), sunlight ('**photobiologySun**'), light sensors ('**photobiologySensors**') and for exchange of data in _foreign_ formats ('**photobiologyInOut**') are part of the suite. One additional package, ('*ggspectra*'), implements facilities for plotting spectral data by extending package '**ggplot2**', providing both ggplot statistics in addition to specializations of `plot()`. All packages that can comply with the repository rules have been submitted or will in coming months be submitted to **CRAN** (Comprehensive R archive network). The packages not yet in **CRAN**, and development versions of those already in **CRAN**, are available through a CRAN-like repository at <http://www.r4photobiology.info/R/> while the Web site at <http://www.r4photobiology.info> provides news about the development of the suite and some additional information. Each package has its own public Git repository at my Bitbucket account (<https://bitbucket.org/aphalo/>) from where the source code of the current and previous versions can be cloned or forked.
+
+Package '**photobiology**' provides two sets of functions for many operations: low-level functions programmed following a functional paradigm, and higher-level functions using an object-oriented paradigm. The former functions take as arguments numeric vectors and are sometimes faster. The later ones take _spectra_ objects as arguments, are easier to use, and at least at the moment, to some extent slower. For everyday use _spectra_ objects are recommended, but when maximum performance or flexibility in scripts is desired, the use of the functions taking numeric vectors as arguments may allow optimizations that are not possible with the object-oriented functions. The differences in performance becomes relevant only in extreme cases such as processing in a single script tenths of thousands of spectra. In the vignettes we emphasize the use of the object-oriented classes and methods.
+
+## Example data
+
+Data for several spectra are included in this package for use in examples and vignettes, and in testing (Tables 12 and 13). Other packages in the '**r4photobiology suite**' provide many additional data sets.
+
+<hr>
+
+**Table 12. Data sets included in the package: spectra.** The CIE standard illuminant data in this package are normalized to one at $\lambda = 560\,$nm, while in the CIE standard they are normalized to 100 at the same wavelength.
+ 
+| Object | class | units      | data description          |
+|:--------|:-------|:----------|:---------------------------|
+| `sun.spct` | `source_spct` | $W\,m^{-2}\,nm^{-1}$ | solar spectral irradiance |
+| `sun.daily.spct` | `source_spct` | $J\,m^{-2}\,d^{-1}\,nm^{-1}$  | solar spectral exposure |
+| `sun.data` | `data.frame` | $W\,m^{-2}\,nm^{-1}$ | solar spectral irradiance |
+| `sun.daily.data` | `data.frame` | $J\,m^{-2}\,d^{-1}\,nm^{-1}$  | solar spectral exposure|
+| `D65.illuminant.spct` | `source_spct` | (norm. 560 nm) | CIE standard |
+| `A.illuminant.spct` | `source_spct` | (norm. 560 nm)  | CIE standard |
+| `clear.spct` | `filter_spct` | fraction | ideal transparent filter |
+| `opaque.spct` | `filter_spct` | fraction | ideal opaque filter |
+| `polyester.spct` | `filter_spct` | fraction | plastic film |
+| `yellow_gel.spct` | `filter_spct` | fraction | theatrical _gel_ filter |
+| `clear_body.spct` | `object_spct` | fraction | ideal transparent body |
+| `black_body.spct` | `object_spct` | fraction | ideal black body |
+| `white_body.spct` | `object_spct` | fraction | ideal white body |
+| `photodiode.spct` | `response_spct` |  A / W  | typical Si photodiode |
+| `ccd.spct` | `response_spct` |  A / W | typical CCD array |
+| `filter_cps.mspct` | `cps_spct` | counts / s | example detector counts data |
+
+<hr>
+
+<hr>
+
+**Table 13. Data sets included in the package: chromaticity data.**
+
+| Object  | class  | data description                 |
+|:--------|:-------|:-------------------------------|
+| ciexyzCC2.spct | chroma_spct |  human chromaticity coordinates $2^\circ$ |
+| ciexyzCC10.spct | chroma_spct |   human chromaticity coordinates $10^\circ$  |
+| ciexyzCMF2.spct | chroma_spct |   human colour matching function $2^\circ$ |
+| ciexyzCMF10.spct | chroma_spct |  human colour matching function $10^\circ$ |
+| ciev2.spct | chroma_spct |  human luminous efficiency $2^\circ$ |
+| beesxyzCMF.spct |  chroma_spct |  bee colour matching function |
+
+<hr>

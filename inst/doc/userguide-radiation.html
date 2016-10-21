@@ -12,9 +12,9 @@
 
 <meta name="author" content="Pedro J. Aphalo" />
 
-<meta name="date" content="2016-10-16" />
+<meta name="date" content="2016-10-21" />
 
-<title>photobiology 0.9.11.9003: User Guide</title>
+<title>photobiology 0.9.12: User Guide (radiation)</title>
 
 
 
@@ -68,17 +68,12 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 
 
-<h1 class="title toc-ignore">photobiology 0.9.11.9003: User Guide</h1>
+<h1 class="title toc-ignore">photobiology 0.9.12: User Guide (radiation)</h1>
 <h4 class="author"><em>Pedro J. Aphalo</em></h4>
-<h4 class="date"><em>2016-10-16</em></h4>
+<h4 class="date"><em>2016-10-21</em></h4>
 
 
 
-<div id="introduction" class="section level2">
-<h2>Introduction</h2>
-<p>We have developed a set of packages to facilitate the calculation of many different quantities that can be derived from spectral irradiance data. The core package in this suite is called ‘<strong>photobiology</strong>’, and is the package described here. Other specialized packages for quantification of ultraviolet radiation and visible radiation (‘<strong>photobiologyWavebands</strong>’), plant photoreceptors and other plant photobiology related calculations (‘<strong>photobiologyPlants</strong>’), example spectral data for filters (‘<strong>photobiologyFilters</strong>’), lamps (‘<strong>photobiologyLamps</strong>’), LEDs (‘<strong>photobiologyLEDs</strong>’), sunlight (‘<strong>photobiologySun</strong>’), light sensors (‘<strong>photobiologySensors</strong>’) and for exchange of data in <em>foreign</em> formats (‘<strong>photobiologyInOut</strong>’) are part of the suite. One additional package, (‘<em>ggspectra</em>’), implements facilities for plotting spectral data by extending package ‘<strong>ggplot2</strong>’, providing both ggplot statistics in addition to specializations of <code>plot()</code>. All packages that can comply with the repository rules have been submitted or will in coming months be submitted to <strong>CRAN</strong> (Comprehensive R archive network). The packages not yet in <strong>CRAN</strong>, and development versions of those already in <strong>CRAN</strong>, are available through a CRAN-like repository at <a href="http://www.r4photobiology.info/R/" class="uri">http://www.r4photobiology.info/R/</a> while the Web site at <a href="http://www.r4photobiology.info" class="uri">http://www.r4photobiology.info</a> provides news about the development of the suite and some additional information. Each package has its own public Git repository at my Bitbucket account (<a href="https://bitbucket.org/aphalo/" class="uri">https://bitbucket.org/aphalo/</a>) from where the source code of the current and previous versions can be cloned or forked.</p>
-<p>Package ‘<strong>photobiology</strong>’ provides two sets of functions for many operations: low-level functions programmed following a functional paradigm, and higher-level functions using an object-oriented paradigm. The former functions take as arguments numeric vectors and are sometimes faster. The later ones take <em>spectra</em> objects as arguments, are easier to use, and at least at the moment, to some extent slower. For everyday use <em>spectra</em> objects are recommended, but when maximum performance or flexibility in scripts is desired, the use of the functions taking numeric vectors as arguments may allow optimizations that are not possible with the object-oriented functions. The differences in performance becomes relevant only in extreme cases such as processing in a single script tenths of thousands of spectra. In this vignette we emphasize the use of the object-oriented classes and methods.</p>
-</div>
 <div id="spectra" class="section level2">
 <h2>Spectra</h2>
 <p>Package ‘<strong>photobiology</strong>’ defines a family of classes based on the <code>tibble</code> class, compatible with R’s data frames. The present package by imposing some restrictions on the naming of the member vectors, allows methods to <em>find</em> the data when passed one of these objects as argument. In addition, as the data are checked when the object is built or modified, there is no need to test for their validity each time a calculation is carried out. Other advantage of using spectrum objects, is that specialized versions of generic functions like <code>print</code> and operators like <code>+</code> are defined for spectra. <code>___spct</code> objects are <code>data.frame</code> objects, as a result of how classes have been derived. In this package we define a <em>generic</em> or <em>base</em> spectrum class, derived from <code>data.frame</code> from which specialized types of spectra are in turn derived. This <em>parenthood</em> hierarchy means that spectra objects can be used almost anywhere where a <code>data.frame</code> is expected. Specializations of many methods including extraction (indexing) methods and partial assignment methods are defined to ensure that the expectations on the variables contained in objects of these classes is guaranteed in most situations. Other specializations of methods and functions are related to achieving a convenient and concise syntax tailored for spectral data as in the case of mathematical operators and functions.</p>
@@ -90,11 +85,6 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p>We load two packages, our ‘<strong>photobiology</strong>’ and ‘<strong>lubridate</strong>’, as they will be used in the examples.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(photobiology)
 <span class="kw">library</span>(lubridate)</code></pre></div>
-<pre><code>## 
-## Attaching package: 'lubridate'</code></pre>
-<pre><code>## The following object is masked from 'package:base':
-## 
-##     date</code></pre>
 </div>
 <div id="classes" class="section level3">
 <h3>Classes</h3>
@@ -904,60 +894,12 @@ test1.df</code></pre></div>
 <hr>
 Methods <code>[</code>, and <code>[&lt;-</code>, extract and replace <em>parts</em> of the collection, respectively. Even when only one member is extracted, the returned value is a collection of spectra. The expected replacement value is also, always a collection of spectra.
 <hr>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">two_suns.mspct[<span class="dv">1</span>]</code></pre></div>
-<pre><code>## Object: source_mspct [1 x 1]
-## --- Member: sun1 ---
-## Object: source_spct [522 x 3]
-## Wavelength range 280 to 800 nm, step 0.9230769 to 1 nm 
-## Measured on 2010-06-22 09:51:00 UTC
-## Measured at 60.20942 N, 24.96424 E
-## Time unit 1s
-## 
-## # A tibble: 522 × 3
-##   w.length s.e.irrad s.q.irrad
-##      &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
-## 1 280.0000         0         0
-## 2 280.9231         0         0
-## 3 281.8462         0         0
-## 4 282.7692         0         0
-## # ... with 518 more rows
-## 
-## --- END ---</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">two_suns.mspct[<span class="dv">2</span>:<span class="dv">1</span>]</code></pre></div>
-<pre><code>## Object: source_mspct [2 x 1]
-## --- Member: sun2 ---
-## Object: source_spct [522 x 3]
-## Wavelength range 280 to 800 nm, step 0.9230769 to 1 nm 
-## Measured on 2010-06-22 09:51:00 UTC
-## Measured at 60.20942 N, 24.96424 E
-## Time unit 1s
-## 
-## # A tibble: 522 × 3
-##   w.length s.e.irrad s.q.irrad
-##      &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
-## 1 280.0000         0         0
-## 2 280.9231         0         0
-## 3 281.8462         0         0
-## 4 282.7692         0         0
-## # ... with 518 more rows
-## --- Member: sun1 ---
-## Object: source_spct [522 x 3]
-## Wavelength range 280 to 800 nm, step 0.9230769 to 1 nm 
-## Measured on 2010-06-22 09:51:00 UTC
-## Measured at 60.20942 N, 24.96424 E
-## Time unit 1s
-## 
-## # A tibble: 522 × 3
-##   w.length s.e.irrad s.q.irrad
-##      &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
-## 1 280.0000         0         0
-## 2 280.9231         0         0
-## 3 281.8462         0         0
-## 4 282.7692         0         0
-## # ... with 518 more rows
-## 
-## --- END ---</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">two_suns.mspct[<span class="dv">1</span>:<span class="dv">2</span>] &lt;-<span class="st"> </span>two_suns.mspct[<span class="dv">2</span>:<span class="dv">1</span>]</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># not run as this triggers an error when building the vignette with 'devtools'</span>
+two_suns.mspct[<span class="dv">1</span>]
+two_suns.mspct[<span class="dv">1</span>:<span class="dv">2</span>]</code></pre></div>
+<p>Avoid code like that in the chunck bellow. Collections of spectra are named lists, consequently assigning by position as shown here swapts the values without swapping the names of the slots!</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># not run as this triggers an error when building the vignette with 'devtools'</span>
+two_suns.mspct[<span class="dv">1</span>:<span class="dv">2</span>] &lt;-<span class="st"> </span>two_suns.mspct[<span class="dv">2</span>:<span class="dv">1</span>]</code></pre></div>
 <hr>
 Methods <code>[[</code>, <code>$</code> and <code>[[&lt;-</code>, extract and replace individual members of the collection, respectively. They always return or expect objects of one of the spectral classes.
 <hr>
@@ -4717,156 +4659,6 @@ Most frequently used summary methods are implemented for collections of spectra.
 </div>
 </div>
 </div>
-<div id="astronomy" class="section level2">
-<h2>Astronomy</h2>
-<p>The functions and methods described in this section return either values that represent angles or times. In the current version angles are always expressed in degrees. In the case of times, the unit of expression, can be changed through parameter <code>unit.out</code> which accepts the following arguments <code>&quot;datetime&quot;</code>, <code>&quot;hour&quot;</code>, <code>&quot;minute&quot;</code>, <code>&quot;second&quot;</code>. For backwards compatibility <code>&quot;date&quot;</code> is also accepted as equivalent to <code>&quot;datetime&quot;</code> but deprecated.</p>
-<div id="position-of-the-sun" class="section level3">
-<h3>Position of the sun</h3>
-<p>In photobiology research we sometimes need to calculate the position on the sun at arbitrary geographic locations and times. The function <code>sun_angles</code> returns the azimuth in degrees eastwards, altitude in degrees above the horizon, solar disk diameter in degrees and sun to earth distance in astronomical units. The time should be a <code>POSIXct</code> vector, possibly of length one. The easiest way create date and time constant values is to use package <code>lubridate</code>.</p>
-<hr>
-In versions up to 0.9.11 in addition parameter <code>geocode</code> most functions also had the redundant formal parameters <code>lon</code> and <code>lat</code> which were removed in version 0.9.12. This change may require users’ scripts to be revised.
-<hr>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sun_angles</span>(<span class="kw">now</span>(), <span class="dt">geocode =</span> <span class="kw">data.frame</span>(<span class="dt">lat =</span> <span class="dv">34</span>, <span class="dt">lon =</span> <span class="dv">0</span>))</code></pre></div>
-<pre><code>##                  time              tz solartime longitude latitude address
-## 1 2016-10-16 17:11:48 Europe/Helsinki  14:26:26         0       34    &lt;NA&gt;
-##    azimuth elevation
-## 1 225.5808  34.50796</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sun_angles</span>(<span class="kw">ymd_hms</span>(<span class="st">&quot;2014-01-01 0:0:0&quot;</span>, <span class="dt">tz =</span> <span class="st">&quot;UTC&quot;</span>) +<span class="st"> </span><span class="kw">hours</span>(<span class="dv">1</span>:<span class="dv">3</span>))</code></pre></div>
-<pre><code>##                  time              tz solartime longitude latitude
-## 1 2014-01-01 03:00:00 Europe/Helsinki  00:56:31         0        0
-## 2 2014-01-01 04:00:00 Europe/Helsinki  01:56:30         0        0
-## 3 2014-01-01 05:00:00 Europe/Helsinki  02:56:29         0        0
-##     address  azimuth elevation
-## 1 Greenwich 150.0867 -63.21271
-## 2 Greenwich 131.0784 -53.52901
-## 3 Greenwich 121.3558 -41.36532</code></pre>
-<p>When spectra contain suitable metadata, the position of the sun for the spectral irradiance data measurement can be easily obtained.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sun_angles</span>(<span class="kw">getWhenMeasured</span>(sun.spct), <span class="dt">geocode =</span> <span class="kw">getWhereMeasured</span>(sun.spct))</code></pre></div>
-<pre><code>##                  time              tz solartime longitude latitude
-## 1 2010-06-22 12:51:00 Europe/Helsinki  11:28:50  24.96424 60.20942
-##                 address azimuth elevation
-## 1 Kumpula, Helsinki, FI 168.122  52.82309</code></pre>
-<p>The object to be supplied as argument for <code>geocode</code> is a data frame with variables <code>lon</code> and <code>lat</code>. This matches the return value of function <code>ggmap::geocode()</code>, function that can be used to find the coordinates using any <em>address</em> entered as a character string understood by the Google maps API.</p>
-</div>
-<div id="times-of-sunrise-solar-noon-and-sunset" class="section level3">
-<h3>Times of sunrise, solar noon and sunset</h3>
-<p>Functions <code>sunrise_time</code>, <code>sunset_time</code>, <code>noon_time</code>, <code>day_length</code> and <code>night_length</code> have all the same parameter signature. In addition, function <code>day_night</code> returns a data frame containing all the quantities returned by the other functions. They are all vectorized for the <code>date</code> and <code>geocode</code> parameters.</p>
-<p>We create a vector of dates to use in the examples—default time zone of <code>ymd</code> is UTC.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dates &lt;-<span class="st"> </span><span class="kw">seq</span>(<span class="dt">from =</span> <span class="kw">ymd</span>(<span class="st">&quot;2015-03-01&quot;</span>), <span class="dt">to =</span> <span class="kw">ymd</span>(<span class="st">&quot;2015-07-1&quot;</span>), <span class="dt">length.out =</span> <span class="dv">3</span>)</code></pre></div>
-<p>Default latitude is zero (the Equator), the default longitude is zero (Greenwich), and default time zone for the functions in the <code>photobiology</code> package is in most cases the time zone returned by the operating system, but values are stored in time zone <code>&quot;UTC&quot;</code>. Be also aware that for summer dates the times are formatted for printing accordingly. In the examples below this can be recognized for example, by the time zone being reported as EEST instead of EET for Eastern Europe.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">noon_time</span>(dates, <span class="dt">tz =</span> <span class="st">&quot;UTC&quot;</span>, <span class="kw">data.frame</span>(<span class="dt">lat =</span> <span class="dv">34</span>, <span class="dt">lon =</span> <span class="dv">0</span>))</code></pre></div>
-<pre><code>## [1] &quot;2015-03-01 12:12:20 UTC&quot; &quot;2015-05-01 11:57:06 UTC&quot;
-## [3] &quot;2015-07-01 12:03:52 UTC&quot;</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">noon_time</span>(dates, <span class="dt">tz =</span> <span class="st">&quot;CET&quot;</span>, <span class="kw">data.frame</span>(<span class="dt">lat =</span> <span class="dv">34</span>, <span class="dt">lon =</span> <span class="dv">0</span>))</code></pre></div>
-<pre><code>## [1] &quot;2015-03-01 13:12:20 CET&quot;  &quot;2015-05-01 13:57:06 CEST&quot;
-## [3] &quot;2015-07-01 14:03:52 CEST&quot;</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">day_night</span>(dates, <span class="dt">geocode =</span> <span class="kw">data.frame</span>(<span class="dt">lat =</span> <span class="dv">60</span>, <span class="dt">lon =</span> <span class="dv">0</span>))</code></pre></div>
-<pre><code>##          day              tz twilight.rise twilight.set longitude latitude
-## 1 2015-03-01 Europe/Helsinki          none         none         0       60
-## 2 2015-05-01 Europe/Helsinki          none         none         0       60
-## 3 2015-07-01 Europe/Helsinki          none         none         0       60
-##   address  sunrise     noon     sunset daylength nightlength
-## 1    &lt;NA&gt; 9.082918 14.20557 19.3282169 10.245299   13.754701
-## 2    &lt;NA&gt; 7.086868 14.95169 22.8165183 15.729651    8.270349
-## 3    &lt;NA&gt; 5.892324 15.06447  0.2366178 -5.655707   29.655707</code></pre>
-<p>he default for <code>date</code> is the current day.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sunrise_time</span>(<span class="dt">geocode =</span> <span class="kw">data.frame</span>(<span class="dt">lat =</span> <span class="dv">60</span>, <span class="dt">lon =</span> <span class="dv">0</span>))</code></pre></div>
-<pre><code>## [1] &quot;2016-10-16 09:43:56 EEST&quot;</code></pre>
-<p>Both latitude and longitude should be supplied through <code>geocode</code>, but be aware that if the returned value is desired in the local time coordinates of the argument passed to <code>gocode</code>, the time zone should match the geographic coordinates.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sunrise_time</span>(<span class="kw">today</span>(<span class="st">&quot;UTC&quot;</span>), <span class="dt">tz =</span> <span class="st">&quot;UTC&quot;</span>, <span class="dt">geocode =</span> <span class="kw">data.frame</span>(<span class="dt">lat =</span> <span class="dv">60</span>, <span class="dt">lon =</span> <span class="dv">0</span>))</code></pre></div>
-<pre><code>## [1] &quot;2016-10-16 06:43:56 UTC&quot;</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sunrise_time</span>(<span class="kw">today</span>(<span class="st">&quot;EET&quot;</span>), <span class="dt">tz =</span> <span class="st">&quot;EET&quot;</span>, <span class="dt">geocode =</span> <span class="kw">data.frame</span>(<span class="dt">lat =</span> <span class="dv">60</span>, <span class="dt">lon =</span> <span class="dv">25</span>))</code></pre></div>
-<pre><code>## [1] &quot;2016-10-16 08:03:56 EEST&quot;</code></pre>
-<p>Southern hemisphere latitudes as well as longitudes to the West of the Greenwich meridian should be supplied as negative numbers.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sunrise_time</span>(dates, <span class="dt">geocode =</span> <span class="kw">data.frame</span>(<span class="dt">lat =</span> <span class="dv">60</span>, <span class="dt">lon =</span> <span class="dv">0</span>))</code></pre></div>
-<pre><code>## [1] &quot;2015-03-01 08:58:05 EET&quot;  &quot;2015-05-01 06:57:19 EEST&quot;
-## [3] &quot;2015-07-01 05:42:30 EEST&quot;</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sunrise_time</span>(dates, <span class="dt">geocode =</span> <span class="kw">data.frame</span>(<span class="dt">lat =</span> -<span class="dv">60</span>, <span class="dt">lon =</span> <span class="dv">0</span>))</code></pre></div>
-<pre><code>## [1] &quot;2015-03-01 07:12:45 EET&quot;  &quot;2015-05-01 10:41:14 EEST&quot;
-## [3] &quot;2015-07-01 12:03:42 EEST&quot;</code></pre>
-<p>The angle used in the twilight calculation can be supplied, either as the name of a standard definition, or as an angle in degrees (negative for sun positions below the horizon). Positive angles can be used when the time of sun occlusion behind a building, mountain, or other obstacle needs to be calculated.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sunrise_time</span>(<span class="kw">today</span>(<span class="st">&quot;EET&quot;</span>), <span class="dt">tz =</span> <span class="st">&quot;EET&quot;</span>, 
-             <span class="dt">geocode =</span> <span class="kw">data.frame</span>(<span class="dt">lat =</span> <span class="dv">60</span>, <span class="dt">lon =</span> <span class="dv">25</span>),
-             <span class="dt">twilight =</span> <span class="st">&quot;civil&quot;</span>)</code></pre></div>
-<pre><code>## [1] &quot;2016-10-16 07:21:04 EEST&quot;</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sunrise_time</span>(<span class="kw">today</span>(<span class="st">&quot;EET&quot;</span>), <span class="dt">tz =</span> <span class="st">&quot;EET&quot;</span>, 
-             <span class="dt">geocode =</span> <span class="kw">data.frame</span>(<span class="dt">lat =</span> <span class="dv">60</span>, <span class="dt">lon =</span> <span class="dv">25</span>),
-             <span class="dt">twilight =</span> -<span class="dv">10</span>)</code></pre></div>
-<pre><code>## [1] &quot;2016-10-16 06:49:23 EEST&quot;</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sunrise_time</span>(<span class="kw">today</span>(<span class="st">&quot;EET&quot;</span>), <span class="dt">tz =</span> <span class="st">&quot;EET&quot;</span>, 
-             <span class="dt">geocode =</span> <span class="kw">data.frame</span>(<span class="dt">lat =</span> <span class="dv">60</span>, <span class="dt">lon =</span> <span class="dv">25</span>),
-             <span class="dt">twilight =</span> +<span class="dv">12</span>)</code></pre></div>
-<pre><code>## [1] &quot;2016-10-16 10:04:12 EEST&quot;</code></pre>
-<p>Parameter <code>unit.out</code> can be used to obtain the returned value expressed as time-of-day in hours, minutes, or seconds since midnight.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sunrise_time</span>(<span class="kw">today</span>(<span class="st">&quot;EET&quot;</span>), 
-             <span class="dt">tz =</span> <span class="st">&quot;EET&quot;</span>, 
-             <span class="dt">geocode =</span> <span class="kw">data.frame</span>(<span class="dt">lat =</span> <span class="dv">60</span>, <span class="dt">lon =</span> <span class="dv">25</span>),
-             <span class="dt">unit.out =</span> <span class="st">&quot;hours&quot;</span>)</code></pre></div>
-<pre><code>## [1] 8.065587</code></pre>
-<p>Functions <code>day_length</code> and <code>night_length</code> return by default the length of time in hours.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">day_length</span>(dates, <span class="dt">geocode =</span> <span class="kw">data.frame</span>(<span class="dt">lat =</span> <span class="dv">60</span>, <span class="dt">lon =</span> <span class="dv">25</span>))</code></pre></div>
-<pre><code>## [1] 10.47461 15.99267 18.71209</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">night_length</span>(dates, <span class="dt">geocode =</span> <span class="kw">data.frame</span>(<span class="dt">lat =</span> <span class="dv">60</span>, <span class="dt">lon =</span> <span class="dv">25</span>))</code></pre></div>
-<pre><code>## [1] 13.525392  8.007326  5.287909</code></pre>
-<p>Function <code>day_night</code> returns a data frame.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">day_night</span>(dates, 
-          <span class="dt">geocode =</span> <span class="kw">data.frame</span>(<span class="dt">lat =</span> <span class="dv">60</span>, <span class="dt">lon =</span> <span class="dv">25</span>))</code></pre></div>
-<pre><code>##          day              tz twilight.rise twilight.set longitude latitude
-## 1 2015-03-01 Europe/Helsinki          none         none        25       60
-## 2 2015-05-01 Europe/Helsinki          none         none        25       60
-## 3 2015-07-01 Europe/Helsinki          none         none        25       60
-##   address  sunrise     noon   sunset daylength nightlength
-## 1    &lt;NA&gt; 7.416251 12.53890 17.66155  10.24530   13.754701
-## 2    &lt;NA&gt; 5.420201 13.28503 21.14985  15.72965    8.270349
-## 3    &lt;NA&gt; 4.225658 13.39780 22.56995  18.34429    5.655707</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">day_night</span>(dates, 
-          <span class="dt">geocode =</span> <span class="kw">data.frame</span>(<span class="dt">lat =</span> <span class="dv">60</span>, <span class="dt">lon =</span> <span class="dv">25</span>), 
-          <span class="dt">unit.out =</span> <span class="st">&quot;datetime&quot;</span>)</code></pre></div>
-<pre><code>##          day              tz twilight.rise twilight.set longitude latitude
-## 1 2015-03-01 Europe/Helsinki          none         none        25       60
-## 2 2015-05-01 Europe/Helsinki          none         none        25       60
-## 3 2015-07-01 Europe/Helsinki          none         none        25       60
-##   address             sunrise                noon              sunset
-## 1    &lt;NA&gt; 2015-03-01 07:24:58 2015-03-01 12:32:20 2015-03-01 17:39:41
-## 2    &lt;NA&gt; 2015-05-01 05:25:12 2015-05-01 13:17:06 2015-05-01 21:08:59
-## 3    &lt;NA&gt; 2015-07-01 04:13:32 2015-07-01 13:23:52 2015-07-01 22:34:11
-##   daylength nightlength
-## 1  10.24530   13.754701
-## 2  15.72965    8.270349
-## 3  18.34429    5.655707</code></pre>
-</div>
-<div id="solar-time" class="section level3">
-<h3>Solar time</h3>
-<p>In field research it is in many cases preferable to sample or measure, and present and plot data based on local solar time. Two functions are provided. They differ in the value returned, either a time of day in hours, or a date.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">Paris.geo &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">lon =</span> <span class="fl">2.352222</span>, <span class="dt">lat =</span> <span class="fl">48.85661</span>, <span class="dt">address =</span> <span class="st">&quot;Paris&quot;</span>)
-Paris.time &lt;-<span class="st"> </span><span class="kw">ymd_hms</span>(<span class="st">&quot;2016-09-30 06:00:00&quot;</span>, <span class="dt">tz =</span> <span class="st">&quot;UTC&quot;</span>)
-<span class="kw">solar_time</span>(Paris.time, <span class="dt">geocode =</span> Paris.geo)</code></pre></div>
-<pre><code>## [1] &quot;06:19:33&quot;</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">solar_time</span>(Paris.time, <span class="dt">geocode =</span> Paris.geo, <span class="dt">unit.out =</span> <span class="st">&quot;datetime&quot;</span>)</code></pre></div>
-<pre><code>## [1] &quot;2016-09-30 06:19:33 solar&quot;</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">my.solar.t &lt;-<span class="st"> </span><span class="kw">solar_time</span>(Paris.time, <span class="dt">geocode =</span> Paris.geo)
-<span class="kw">is.solar_time</span>(my.solar.t)</code></pre></div>
-<pre><code>## [1] TRUE</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">is.numeric</span>(my.solar.t)</code></pre></div>
-<pre><code>## [1] TRUE</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">my.solar.d &lt;-<span class="st"> </span><span class="kw">solar_time</span>(Paris.time, <span class="dt">geocode =</span> Paris.geo, <span class="dt">unit.out =</span> <span class="st">&quot;datetime&quot;</span>)
-<span class="kw">is.solar_date</span>(my.solar.d)</code></pre></div>
-<pre><code>## [1] TRUE</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">is.timepoint</span>(my.solar.d)</code></pre></div>
-<pre><code>## [1] TRUE</code></pre>
-</div>
-<div id="time-of-day" class="section level3">
-<h3>Time of day</h3>
-<p>Function <code>as_tod()</code> facilitates conversion of R’s time date objects into a numeric value representing the time of day in one of hour, minute or second as unit of expression.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">times &lt;-<span class="st"> </span><span class="kw">now</span>() +<span class="st"> </span><span class="kw">days</span>(<span class="dv">0</span>:<span class="dv">1</span>)
-times</code></pre></div>
-<pre><code>## [1] &quot;2016-10-16 17:11:49 EEST&quot; &quot;2016-10-17 17:11:49 EEST&quot;</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">as_tod</span>(times)</code></pre></div>
-<pre><code>## [1] 17.19712 17.19712</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">as_tod</span>(times, <span class="dt">unit.out =</span> <span class="st">&quot;minutes&quot;</span>)</code></pre></div>
-<pre><code>## [1] 1031.827 1031.827</code></pre>
-</div>
-</div>
 <div id="rgb-colours" class="section level2">
 <h2>RGB colours</h2>
 <p>Two functions allow calculation of simulated colour of light sources as R colour definitions. Three different functions are available, one for monochromatic light taking as argument wavelength values, and one for polychromatic light taking as argument spectral energy irradiances and the corresponding wave length values. The third function can be used to calculate a representative RGB colour for a band of the spectrum represented as a range of wavelength, based on the assumption of a flat energy irradiance across the range. By default CIE coordinates for <em>typical</em> human vision are used, but the functions have a parameter that can be used for supplying a different chromaticity definition.</p>
@@ -4901,178 +4693,6 @@ times</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">color</span>(sun.spct *<span class="st"> </span>yellow_gel.spct)</code></pre></div>
 <pre><code>## source CMF 
 ##  &quot;#946000&quot;</code></pre>
-<!-- ## Optimizing performance -->
-<!-- When developing package '**photobiology**' quite a lot of effort was spent in optimizing performance, especially of the functions accepting vectors as arguments, as in one of our experiments, we need to process several hundred thousands of measured spectra. The defaults should provide good performance in most cases, however, some further improvements are achievable, when a series of different calculations are done on the same spectrum, or when a series of spectra measured at exactly the same wavelengths are used for calculating weighted irradiances or exposures. -->
-<!-- In the case of doing calculations repeatedly on the same spectrum, a small improvement in performance can be achieved by setting the parameter `check.spectrum = FALSE` for all but the first call to `irradiance()`, or `photon_irradiance()`, or `energy_irradiance()`, or the equivalent function for ratios. It is also possible to set this parameter to FALSE in all calls, and do the check beforehand by explicitly calling `check_spectrum()`. -->
-<!-- In the case of calculating weighted irradiances on many spectra having exactly the same wavelength values, then a significant improvement in the performance can be achieved by setting `use.cached.mult = TRUE`, as this reuses the multipliers calculated during successive calls based on the same waveband. However, to achieve this increase in performance, the tests to ensure that the wavelength values have not changed, have to be kept to the minimum. Currently only the length of the wavelength array is checked, and the cached values discarded and recalculated if the length changes. For this reason, this is not the default, and when using caching the user is responsible for making sure that the array of wavelengths has not changed between calls. -->
-<!-- You can use the package `microbenchmark` to time the code and find the _regions_ that slow it down. I have used it, and also -->
-<!-- I have used profiling to optimize the code for speed. The choice of defaults is based on what is -->
-<!-- best when processing a moderate number of spectra, say less than a few hundreds, as opposed to many thousands. -->
-</div>
-<div id="example-data" class="section level2">
-<h2>Example data</h2>
-<p>Data for several spectra are included in this package for use in examples and vignettes, and in testing (Tables 12 and 13). Other packages in the ‘<strong>r4photobiology suite</strong>’ provide many additional data sets.</p>
-<hr>
-<p><strong>Table 12. Data sets included in the package: spectra.</strong> The CIE standard illuminant data in this package are normalized to one at <span class="math inline">\(\lambda = 560\,\)</span>nm, while in the CIE standard they are normalized to 100 at the same wavelength.</p>
-<table style="width:83%;">
-<colgroup>
-<col width="13%"></col>
-<col width="12%"></col>
-<col width="16%"></col>
-<col width="40%"></col>
-</colgroup>
-<thead>
-<tr class="header">
-<th align="left">Object</th>
-<th align="left">class</th>
-<th align="left">units</th>
-<th align="left">data description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="left"><code>sun.spct</code></td>
-<td align="left"><code>source_spct</code></td>
-<td align="left"><span class="math inline">\(W\,m^{-2}\,nm^{-1}\)</span></td>
-<td align="left">solar spectral irradiance</td>
-</tr>
-<tr class="even">
-<td align="left"><code>sun.daily.spct</code></td>
-<td align="left"><code>source_spct</code></td>
-<td align="left"><span class="math inline">\(J\,m^{-2}\,d^{-1}\,nm^{-1}\)</span></td>
-<td align="left">solar spectral exposure</td>
-</tr>
-<tr class="odd">
-<td align="left"><code>sun.data</code></td>
-<td align="left"><code>data.frame</code></td>
-<td align="left"><span class="math inline">\(W\,m^{-2}\,nm^{-1}\)</span></td>
-<td align="left">solar spectral irradiance</td>
-</tr>
-<tr class="even">
-<td align="left"><code>sun.daily.data</code></td>
-<td align="left"><code>data.frame</code></td>
-<td align="left"><span class="math inline">\(J\,m^{-2}\,d^{-1}\,nm^{-1}\)</span></td>
-<td align="left">solar spectral exposure</td>
-</tr>
-<tr class="odd">
-<td align="left"><code>D65.illuminant.spct</code></td>
-<td align="left"><code>source_spct</code></td>
-<td align="left">(norm. 560 nm)</td>
-<td align="left">CIE standard</td>
-</tr>
-<tr class="even">
-<td align="left"><code>A.illuminant.spct</code></td>
-<td align="left"><code>source_spct</code></td>
-<td align="left">(norm. 560 nm)</td>
-<td align="left">CIE standard</td>
-</tr>
-<tr class="odd">
-<td align="left"><code>clear.spct</code></td>
-<td align="left"><code>filter_spct</code></td>
-<td align="left">fraction</td>
-<td align="left">ideal transparent filter</td>
-</tr>
-<tr class="even">
-<td align="left"><code>opaque.spct</code></td>
-<td align="left"><code>filter_spct</code></td>
-<td align="left">fraction</td>
-<td align="left">ideal opaque filter</td>
-</tr>
-<tr class="odd">
-<td align="left"><code>polyester.spct</code></td>
-<td align="left"><code>filter_spct</code></td>
-<td align="left">fraction</td>
-<td align="left">plastic film</td>
-</tr>
-<tr class="even">
-<td align="left"><code>yellow_gel.spct</code></td>
-<td align="left"><code>filter_spct</code></td>
-<td align="left">fraction</td>
-<td align="left">theatrical <em>gel</em> filter</td>
-</tr>
-<tr class="odd">
-<td align="left"><code>clear_body.spct</code></td>
-<td align="left"><code>object_spct</code></td>
-<td align="left">fraction</td>
-<td align="left">ideal transparent body</td>
-</tr>
-<tr class="even">
-<td align="left"><code>black_body.spct</code></td>
-<td align="left"><code>object_spct</code></td>
-<td align="left">fraction</td>
-<td align="left">ideal black body</td>
-</tr>
-<tr class="odd">
-<td align="left"><code>white_body.spct</code></td>
-<td align="left"><code>object_spct</code></td>
-<td align="left">fraction</td>
-<td align="left">ideal white body</td>
-</tr>
-<tr class="even">
-<td align="left"><code>photodiode.spct</code></td>
-<td align="left"><code>response_spct</code></td>
-<td align="left">A / W</td>
-<td align="left">typical Si photodiode</td>
-</tr>
-<tr class="odd">
-<td align="left"><code>ccd.spct</code></td>
-<td align="left"><code>response_spct</code></td>
-<td align="left">A / W</td>
-<td align="left">typical CCD array</td>
-</tr>
-<tr class="even">
-<td align="left"><code>filter_cps.mspct</code></td>
-<td align="left"><code>cps_spct</code></td>
-<td align="left">counts / s</td>
-<td align="left">example detector counts data</td>
-</tr>
-</tbody>
-</table>
-<hr>
-<hr>
-<p><strong>Table 13. Data sets included in the package: chromaticity data.</strong></p>
-<table>
-<thead>
-<tr class="header">
-<th align="left">Object</th>
-<th align="left">class</th>
-<th align="left">data description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="left">ciexyzCC2.spct</td>
-<td align="left">chroma_spct</td>
-<td align="left">human chromaticity coordinates <span class="math inline">\(2^\circ\)</span></td>
-</tr>
-<tr class="even">
-<td align="left">ciexyzCC10.spct</td>
-<td align="left">chroma_spct</td>
-<td align="left">human chromaticity coordinates <span class="math inline">\(10^\circ\)</span></td>
-</tr>
-<tr class="odd">
-<td align="left">ciexyzCMF2.spct</td>
-<td align="left">chroma_spct</td>
-<td align="left">human colour matching function <span class="math inline">\(2^\circ\)</span></td>
-</tr>
-<tr class="even">
-<td align="left">ciexyzCMF10.spct</td>
-<td align="left">chroma_spct</td>
-<td align="left">human colour matching function <span class="math inline">\(10^\circ\)</span></td>
-</tr>
-<tr class="odd">
-<td align="left">ciev2.spct</td>
-<td align="left">chroma_spct</td>
-<td align="left">human luminous efficiency <span class="math inline">\(2^\circ\)</span></td>
-</tr>
-<tr class="even">
-<td align="left">beesxyzCMF.spct</td>
-<td align="left">chroma_spct</td>
-<td align="left">bee colour matching function</td>
-</tr>
-</tbody>
-</table>
-<hr>
 </div>
 
 

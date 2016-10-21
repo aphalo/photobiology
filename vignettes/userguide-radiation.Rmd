@@ -1,10 +1,10 @@
 ---
-title: "photobiology `r packageVersion('photobiology')`: User Guide"
+title: "photobiology `r packageVersion('photobiology')`: User Guide (radiation)"
 author: "Pedro J. Aphalo"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{User Guide}
+  %\VignetteIndexEntry{User Guide 2: radiation}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -17,13 +17,6 @@ knitr::opts_chunk$set(fig.width=8, fig.height=4)
 # library(tibble)
 options(tibble.print_max = 6, tibble.print_min = 4)
 ```
-
-## Introduction
-
-We have developed a set of packages to
-facilitate the calculation of many different quantities that can be derived from spectral irradiance data. The core package in this suite is called '**photobiology**', and is the package described here. Other specialized packages for quantification of ultraviolet radiation and visible radiation ('**photobiologyWavebands**'), plant photoreceptors and other plant photobiology related calculations ('**photobiologyPlants**'), example spectral data for filters ('**photobiologyFilters**'), lamps ('**photobiologyLamps**'), LEDs ('**photobiologyLEDs**'), sunlight ('**photobiologySun**'), light sensors ('**photobiologySensors**') and for exchange of data in _foreign_ formats ('**photobiologyInOut**') are part of the suite. One additional package, ('*ggspectra*'), implements facilities for plotting spectral data by extending package '**ggplot2**', providing both ggplot statistics in addition to specializations of `plot()`. All packages that can comply with the repository rules have been submitted or will in coming months be submitted to **CRAN** (Comprehensive R archive network). The packages not yet in **CRAN**, and development versions of those already in **CRAN**, are available through a CRAN-like repository at <http://www.r4photobiology.info/R/> while the Web site at <http://www.r4photobiology.info> provides news about the development of the suite and some additional information. Each package has its own public Git repository at my Bitbucket account (<https://bitbucket.org/aphalo/>) from where the source code of the current and previous versions can be cloned or forked.
-
-Package '**photobiology**' provides two sets of functions for many operations: low-level functions programmed following a functional paradigm, and higher-level functions using an object-oriented paradigm. The former functions take as arguments numeric vectors and are sometimes faster. The later ones take _spectra_ objects as arguments, are easier to use, and at least at the moment, to some extent slower. For everyday use _spectra_ objects are recommended, but when maximum performance or flexibility in scripts is desired, the use of the functions taking numeric vectors as arguments may allow optimizations that are not possible with the object-oriented functions. The differences in performance becomes relevant only in extreme cases such as processing in a single script tenths of thousands of spectra. In this vignette we emphasize the use of the object-oriented classes and methods.
 
 ## Spectra
 
@@ -401,15 +394,19 @@ lapply(mixed.mspct, class)
 R's extraction and replacement methods have specializations for collections of spectra and can be used with the same syntax and functionality as for R lists. However they test the class and validity of the returned objects and replacement members.
 
 <hr>
-Methods `[`, and `[<-`, extract and replace _parts_ of the collection, respectively. Even when only one member is extracted, the returned value is a collection of spectra. The expected replacement value is also, always a collection of spectra.
+Methods `[`, and `[<-`, extract and replace _parts_ of the collection, respectively. Even when only one member is extracted, the returned value is a collection of spectra. The expected replacement value is also, always a collection of spectra. 
 <hr>
 
-```{r, extract-1}
+```{r, extract-1, eval=FALSE}
+# not run as this triggers an error when building the vignette with 'devtools'
 two_suns.mspct[1]
-two_suns.mspct[2:1]
+two_suns.mspct[1:2]
 ```
 
-```{r, extract-2}
+Avoid code like that in the chunck bellow. Collections of spectra are named lists, consequently assigning by position as shown here swapts the values without swapping the names of the slots!
+
+```{r, extract-2, eval=FALSE}
+# not run as this triggers an error when building the vignette with 'devtools'
 two_suns.mspct[1:2] <- two_suns.mspct[2:1]
 ```
 
@@ -1593,161 +1590,6 @@ average_spct(sun.spct)
 <!-- my_filter.spct -->
 <!-- ``` -->
 
-## Astronomy
-
-The functions and methods described in this section return either values that 
-represent angles or times. In the current version angles are always expressed in
-degrees. In the case of times, the unit of expression, can be changed through 
-parameter `unit.out` which accepts the following arguments `"datetime"`,
-`"hour"`, `"minute"`, `"second"`. For backwards compatibility `"date"` is also
-accepted as equivalent to `"datetime"` but deprecated.
-
-### Position of the sun
-
-In photobiology research we sometimes need to calculate the position on the sun at arbitrary geographic locations and times. The function `sun_angles` returns the azimuth in degrees eastwards, altitude in degrees above the horizon, solar disk diameter in degrees and sun to earth distance in astronomical units. The time should be a `POSIXct` vector, possibly of length one. The easiest way create date and time constant values is to use package `lubridate`.
-
-<hr>
-In versions up to 0.9.11 in addition parameter `geocode` most functions also had
-the redundant formal parameters `lon` and `lat` which were removed in version
-0.9.12. This change may require users' scripts to be revised.
-<hr>
-
-```{r}
-sun_angles(now(), geocode = data.frame(lat = 34, lon = 0))
-sun_angles(ymd_hms("2014-01-01 0:0:0", tz = "UTC") + hours(1:3))
-```
-
-When spectra contain suitable metadata, the position of the sun for the
-spectral irradiance data measurement can be easily obtained.
-
-```{r}
-sun_angles(getWhenMeasured(sun.spct), geocode = getWhereMeasured(sun.spct))
-```
-
-The object to be supplied as argument for `geocode` is a data frame with variables `lon` and `lat`. This matches the return value of function `ggmap::geocode()`, function that can be used to find the coordinates using any _address_ entered as a character string understood by the Google maps API.
-
-### Times of sunrise, solar noon and sunset
-
-Functions `sunrise_time`, `sunset_time`, `noon_time`, `day_length` and `night_length` have all the same parameter signature. In addition, function `day_night` returns a data frame containing all the quantities returned by the other functions. They are all vectorized for the `date` and `geocode` parameters.
-
-We create a vector of dates to use in the examples---default time zone of `ymd` is UTC.
-
-```{r}
-dates <- seq(from = ymd("2015-03-01"), to = ymd("2015-07-1"), length.out = 3)
-```
-
-Default latitude is zero (the Equator), the default longitude is zero (Greenwich), and default time zone for the functions in the `photobiology` package is in most cases the time zone returned by the operating system, but values are stored in time zone `"UTC"`. Be also aware that for summer dates the times are formatted for printing accordingly. In the examples below this can be recognized for example, by the time zone being reported as EEST instead of EET for Eastern Europe.
-
-```{r}
-noon_time(dates, tz = "UTC", data.frame(lat = 34, lon = 0))
-```
-
-```{r}
-noon_time(dates, tz = "CET", data.frame(lat = 34, lon = 0))
-```
-
-```{r}
-day_night(dates, geocode = data.frame(lat = 60, lon = 0))
-```
-
-he default for `date` is the current day.
-
-```{r}
-sunrise_time(geocode = data.frame(lat = 60, lon = 0))
-```
-
-Both latitude and longitude should be supplied through `geocode`, but be aware that if the returned value is desired in the local time coordinates of the argument passed to `gocode`, the time zone should match the geographic coordinates.
-
-```{r}
-sunrise_time(today("UTC"), tz = "UTC", geocode = data.frame(lat = 60, lon = 0))
-sunrise_time(today("EET"), tz = "EET", geocode = data.frame(lat = 60, lon = 25))
-```
-
-Southern hemisphere latitudes as well as longitudes to the West of the Greenwich meridian should be supplied as negative numbers.
-
-```{r}
-sunrise_time(dates, geocode = data.frame(lat = 60, lon = 0))
-sunrise_time(dates, geocode = data.frame(lat = -60, lon = 0))
-```
-
-The angle used in the twilight calculation can be supplied, either as the name of a standard definition, or as an angle in degrees (negative for sun positions below the horizon). Positive angles can be used when the time of sun occlusion behind a building, mountain, or other obstacle needs to be calculated.
-
-```{r}
-sunrise_time(today("EET"), tz = "EET", 
-             geocode = data.frame(lat = 60, lon = 25),
-             twilight = "civil")
-sunrise_time(today("EET"), tz = "EET", 
-             geocode = data.frame(lat = 60, lon = 25),
-             twilight = -10)
-sunrise_time(today("EET"), tz = "EET", 
-             geocode = data.frame(lat = 60, lon = 25),
-             twilight = +12)
-```
-
-Parameter `unit.out` can be used to obtain the returned value expressed as time-of-day in hours, minutes, or seconds since midnight.
-
-```{r}
-sunrise_time(today("EET"), 
-             tz = "EET", 
-             geocode = data.frame(lat = 60, lon = 25),
-             unit.out = "hours")
-```
-
-Functions `day_length` and `night_length` return by default the length of time in hours.
-
-```{r}
-day_length(dates, geocode = data.frame(lat = 60, lon = 25))
-night_length(dates, geocode = data.frame(lat = 60, lon = 25))
-```
-
-Function `day_night` returns a data frame.
-
-```{r}
-day_night(dates, 
-          geocode = data.frame(lat = 60, lon = 25))
-day_night(dates, 
-          geocode = data.frame(lat = 60, lon = 25), 
-          unit.out = "datetime")
-```
-
-### Solar time
-
-In field research it is in many cases preferable to sample or measure, and 
-present and plot data based on local solar time. Two functions are provided.
-They differ in the value returned, either a time of day in hours, or a date.
-
-```{r}
-Paris.geo <- data.frame(lon = 2.352222, lat = 48.85661, address = "Paris")
-Paris.time <- ymd_hms("2016-09-30 06:00:00", tz = "UTC")
-solar_time(Paris.time, geocode = Paris.geo)
-solar_time(Paris.time, geocode = Paris.geo, unit.out = "datetime")
-```
-
-```{r}
-my.solar.t <- solar_time(Paris.time, geocode = Paris.geo)
-is.solar_time(my.solar.t)
-is.numeric(my.solar.t)
-```
-
-```{r}
-my.solar.d <- solar_time(Paris.time, geocode = Paris.geo, unit.out = "datetime")
-is.solar_date(my.solar.d)
-is.timepoint(my.solar.d)
-```
-
-### Time of day
-
-Function `as_tod()` facilitates conversion of R's time date objects into a
-numeric value representing the time of day in one of hour, minute or second
-as unit of expression.
-
-```{r}
-times <- now() + days(0:1)
-times
-as_tod(times)
-as_tod(times, unit.out = "minutes")
-```
-
 ## RGB colours
 
 Two functions allow calculation of simulated colour of light sources as R colour definitions. Three different functions are available, one for monochromatic light taking as argument wavelength values, and one for polychromatic light taking as argument spectral energy irradiances and the corresponding wave length values. The third function can be used to calculate a representative RGB colour for a band of the spectrum represented as a range of wavelength, based on the assumption of a flat energy irradiance across the range.
@@ -1789,59 +1631,3 @@ And also a `color` method for `source_spct`.
 color(sun.spct)
 color(sun.spct * yellow_gel.spct)
 ```
-
-<!-- ## Optimizing performance -->
-
-<!-- When developing package '**photobiology**' quite a lot of effort was spent in optimizing performance, especially of the functions accepting vectors as arguments, as in one of our experiments, we need to process several hundred thousands of measured spectra. The defaults should provide good performance in most cases, however, some further improvements are achievable, when a series of different calculations are done on the same spectrum, or when a series of spectra measured at exactly the same wavelengths are used for calculating weighted irradiances or exposures. -->
-
-<!-- In the case of doing calculations repeatedly on the same spectrum, a small improvement in performance can be achieved by setting the parameter `check.spectrum = FALSE` for all but the first call to `irradiance()`, or `photon_irradiance()`, or `energy_irradiance()`, or the equivalent function for ratios. It is also possible to set this parameter to FALSE in all calls, and do the check beforehand by explicitly calling `check_spectrum()`. -->
-
-<!-- In the case of calculating weighted irradiances on many spectra having exactly the same wavelength values, then a significant improvement in the performance can be achieved by setting `use.cached.mult = TRUE`, as this reuses the multipliers calculated during successive calls based on the same waveband. However, to achieve this increase in performance, the tests to ensure that the wavelength values have not changed, have to be kept to the minimum. Currently only the length of the wavelength array is checked, and the cached values discarded and recalculated if the length changes. For this reason, this is not the default, and when using caching the user is responsible for making sure that the array of wavelengths has not changed between calls. -->
-
-<!-- You can use the package `microbenchmark` to time the code and find the _regions_ that slow it down. I have used it, and also -->
-<!-- I have used profiling to optimize the code for speed. The choice of defaults is based on what is -->
-<!-- best when processing a moderate number of spectra, say less than a few hundreds, as opposed to many thousands. -->
-
-## Example data
-
-Data for several spectra are included in this package for use in examples and vignettes, and in testing (Tables 12 and 13). Other packages in the '**r4photobiology suite**' provide many additional data sets.
-
-<hr>
-
-**Table 12. Data sets included in the package: spectra.** The CIE standard illuminant data in this package are normalized to one at $\lambda = 560\,$nm, while in the CIE standard they are normalized to 100 at the same wavelength.
- 
-| Object | class | units      | data description          |
-|:--------|:-------|:----------|:---------------------------|
-| `sun.spct` | `source_spct` | $W\,m^{-2}\,nm^{-1}$ | solar spectral irradiance |
-| `sun.daily.spct` | `source_spct` | $J\,m^{-2}\,d^{-1}\,nm^{-1}$  | solar spectral exposure |
-| `sun.data` | `data.frame` | $W\,m^{-2}\,nm^{-1}$ | solar spectral irradiance |
-| `sun.daily.data` | `data.frame` | $J\,m^{-2}\,d^{-1}\,nm^{-1}$  | solar spectral exposure|
-| `D65.illuminant.spct` | `source_spct` | (norm. 560 nm) | CIE standard |
-| `A.illuminant.spct` | `source_spct` | (norm. 560 nm)  | CIE standard |
-| `clear.spct` | `filter_spct` | fraction | ideal transparent filter |
-| `opaque.spct` | `filter_spct` | fraction | ideal opaque filter |
-| `polyester.spct` | `filter_spct` | fraction | plastic film |
-| `yellow_gel.spct` | `filter_spct` | fraction | theatrical _gel_ filter |
-| `clear_body.spct` | `object_spct` | fraction | ideal transparent body |
-| `black_body.spct` | `object_spct` | fraction | ideal black body |
-| `white_body.spct` | `object_spct` | fraction | ideal white body |
-| `photodiode.spct` | `response_spct` |  A / W  | typical Si photodiode |
-| `ccd.spct` | `response_spct` |  A / W | typical CCD array |
-| `filter_cps.mspct` | `cps_spct` | counts / s | example detector counts data |
-
-<hr>
-
-<hr>
-
-**Table 13. Data sets included in the package: chromaticity data.**
-
-| Object  | class  | data description                 |
-|:--------|:-------|:-------------------------------|
-| ciexyzCC2.spct | chroma_spct |  human chromaticity coordinates $2^\circ$ |
-| ciexyzCC10.spct | chroma_spct |   human chromaticity coordinates $10^\circ$  |
-| ciexyzCMF2.spct | chroma_spct |   human colour matching function $2^\circ$ |
-| ciexyzCMF10.spct | chroma_spct |  human colour matching function $10^\circ$ |
-| ciev2.spct | chroma_spct |  human luminous efficiency $2^\circ$ |
-| beesxyzCMF.spct |  chroma_spct |  bee colour matching function |
-
-<hr>
