@@ -212,9 +212,21 @@ day_night <- function(date = lubridate::today(),
   stopifnot(is.data.frame(geocode))
   if (unit.out == "date") {
     unit.out <- "datetime"
-  } else if (unit.out == "hour") {
-    unit.out <- "hours"
+  } else if (unit.out == "days") {
+    unit.out <- "day"
+  } else if (unit.out == "hours") {
+    unit.out <- "hour"
+  } else if (unit.out == "minutes") {
+    unit.out <- "minute"
+  } else if (unit.out == "seconds") {
+    unit.out <- "second"
   }
+
+  multiplier <- switch(unit.out,
+                       hour = 1,
+                       minute = 60,
+                       second = 3600,
+                       day = 1/24)
 
   # if date is a vector or list for convenience we vectorize
   if (length(date) > 1) {
@@ -397,7 +409,7 @@ day_night <- function(date = lubridate::today(),
                        daylength     = daylength.hours,
                        nightlength   = 24 - daylength.hours
       )
-    } else if (unit.out == "hours") {
+    } else if (unit.out %in% c("day", "hour", "minute", "second")) {
       sunrise.tod <- (sunrise * 24 + tz.diff) %% 24
       noon.tod <- (solar.noon * 24 + tz.diff) %% 24
       sunset.tod <- (sunset * 24 + tz.diff) %% 24
@@ -424,12 +436,14 @@ day_night <- function(date = lubridate::today(),
                        longitude     = lon,
                        latitude      = lat,
                        address       = address,
-                       sunrise       = sunrise.tod,
-                       noon          = noon.tod,
-                       sunset        = sunset.tod,
-                       daylength     = daylength.hours,
-                       nightlength   = 24 - daylength.hours
+                       sunrise       = sunrise.tod * multiplier,
+                       noon          = noon.tod * multiplier,
+                       sunset        = sunset.tod * multiplier,
+                       daylength     = daylength.hours * multiplier,
+                       nightlength   = (24 - daylength.hours) * multiplier
       )
+    } else {
+      stop("Unit out '", unit.out, "' not recognized")
     }
 
     # we bind the data frames together
@@ -440,6 +454,7 @@ day_night <- function(date = lubridate::today(),
       y <- rbind(y, yy)
     }
   }
+  attr(y, "unit.out") <- unit.out
   y
 }
 
@@ -534,19 +549,11 @@ day_length <- function(date = lubridate::today(),
                        tz = "UTC",
                        geocode = data.frame(lon = 0, lat = 51.5, address = "Greenwich"),
                        twilight = "sunlight", unit.out = "hours") {
-  hours <-
   day_night(date = date,
             tz = tz,
             geocode = geocode,
             twilight = twilight,
-            unit.out = "hours")[["daylength"]]
-  switch(unit.out,
-         "hours" = hours,
-         "minutes" = hours * 60,
-         "seconds" = hours * 3600,
-         "hour" = hours,
-         "minute" = hours * 60,
-         "second" = hours * 3600)
+            unit.out = unit.out)[["daylength"]]
 }
 
 #' @rdname day_night
@@ -559,19 +566,11 @@ night_length <- function(date = lubridate::today(),
                          tz = "UTC",
                          geocode = data.frame(lon = 0, lat = 51.5, address = "Greenwich"),
                          twilight = "sunlight", unit.out = "hours") {
-  hours <-
-    day_night(date = date,
+  day_night(date = date,
               tz = tz,
               geocode = geocode,
               twilight = twilight,
-              unit.out = "hours")[["nightlength"]]
-  switch(unit.out,
-         "hours" = hours,
-         "minutes" = hours * 60,
-         "seconds" = hours * 3600,
-         "hour" = hours,
-         "minute" = hours * 60,
-         "second" = hours * 3600)
+              unit.out = unit.out)[["nightlength"]]
 }
 
 #' Convert date to time-of-day in hours, minutes or seconds
