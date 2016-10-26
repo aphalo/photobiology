@@ -5,7 +5,14 @@ Add test cases for chroma_spct and improve tests for the _mspct
 classes. Add test cases for smooth_spct().
 Replace filter_cps.mspct data with newly measured data.
 
-photobiology 0.10.0
+photobiology 0.9.13
+===================
+
+Change threshold for automatic use of hinges when calculating summaries, so
+that hinges are used by default in more cases.
+Add functions sun_elevation() and sun_azimuth().
+
+photobiology 0.9.12
 ===================
 
 Enhancements:

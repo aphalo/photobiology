@@ -140,6 +140,36 @@ sun_angles <- function(time = lubridate::now(),
   y
 }
 
+#' @rdname sun_angles
+#'
+#' @export
+#'
+sun_elevation <- function(time = lubridate::now(),
+                          tz = lubridate::tz(time),
+                          geocode = data.frame(lon = 0, lat = 51.5, address = "Greenwich"),
+                          use.refraction = FALSE)
+{
+  sun_angles(time = time,
+             tz = tz,
+             geocode = geocode,
+             use.refraction = use.refraction)[["elevation"]]
+}
+
+#' @rdname sun_angles
+#'
+#' @export
+#'
+sun_azimuth <- function(time = lubridate::now(),
+                          tz = lubridate::tz(time),
+                          geocode = data.frame(lon = 0, lat = 51.5, address = "Greenwich"),
+                          use.refraction = FALSE)
+{
+  sun_angles(time = time,
+             tz = tz,
+             geocode = geocode,
+             use.refraction = use.refraction)[["elevation"]] - 90
+}
+
 #' Time difference between two time zones
 #'
 #' Returns the time difference in hours between two time zones at a given
