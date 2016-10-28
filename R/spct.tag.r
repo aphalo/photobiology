@@ -65,7 +65,7 @@ tag.generic_spct <- function(x,
     untag(x, byref = TRUE)
   }
   # we add a waveband for the whole spectrum
-  if (is.null(w.band)) {
+  if (length(w.band) == 0) {
     w.band <- waveband(x)
   }
   # If the waveband is a missing value we add missing values as tags

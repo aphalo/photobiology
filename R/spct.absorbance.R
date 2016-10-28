@@ -110,7 +110,7 @@ absorbance_spct <-
     spct <- T2A(spct, action = "replace", byref = FALSE)
     spct <- spct[ , c("w.length", "A")]
     # if the waveband is undefined then use all data
-    if (is.null(w.band)) {
+    if (length(w.band) == 0) {
       w.band <- waveband(spct)
     }
     if (is.numeric(w.band)) {

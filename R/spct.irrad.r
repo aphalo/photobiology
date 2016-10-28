@@ -128,7 +128,7 @@ irrad.source_spct <-
     if (is.numeric(w.band)) {
       w.band <- waveband(w.band)
     }
-    if (is.null(w.band)) {
+    if (length(w.band) == 0) {
       w.band <- waveband(spct)
     }
     if (is.waveband(w.band)) {

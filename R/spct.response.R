@@ -133,7 +133,7 @@ resp_spct <-
     }
 
     # if the waveband is undefined then use all data
-    if (is.null(w.band)) {
+    if (length(w.band) == 0) {
       w.band <- waveband(spct)
     }
     if (is.numeric(w.band)) {

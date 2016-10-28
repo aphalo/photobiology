@@ -117,7 +117,7 @@ transmittance_spct <-
     Tfr.type <- getTfrType(spct)
     spct <- spct[ , c("w.length", "Tfr")]
     # if the waveband is undefined then use all data
-    if (is.null(w.band)) {
+    if (length(w.band) == 0) {
       w.band <- waveband(spct)
     }
     if (is.numeric(w.band)) {
