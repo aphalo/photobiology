@@ -35,6 +35,9 @@ find_peaks <-
            ignore_threshold = 0.0,
            span = 3,
            strict = TRUE) {
+    if(is.null(span)) {
+      return(x == max(x))
+    }
     range_x <- range(x, finite = TRUE)
     min_x <- range_x[1]
     max_x <- range_x[2]
@@ -170,7 +173,7 @@ peaks.default <- function(x, span, ignore_threshold, strict, ...) {
 #' @describeIn peaks Default function usable on numeric vectors.
 #' @export
 peaks.numeric <- function(x, span = 5, ignore_threshold, strict = TRUE, ...) {
-  splus2R::peaks(x = x, span = span, strict = strict)
+  x[find_peaks(x = x, span = span, strict = strict)]
 }
 
 #' @describeIn peaks  Method for "generic_spct" objects.
@@ -326,13 +329,13 @@ valleys <- function(x, span, ignore_threshold, strict, ...) UseMethod("valleys")
 #' @describeIn valleys Default function usable on numeric vectors.
 #' @export
 valleys.default <- function(x, span, ignore_threshold, strict, ...) {
-  x[which.max(x)]
+  x[NA]
 }
 
 #' @describeIn valleys Default function usable on numeric vectors.
 #' @export
 valleys.numeric <- function(x, span = 5, ignore_threshold, strict = TRUE, ...) {
-  x[splus2R::peaks(x = -x, span = span, strict = strict)]
+  x[find_peaks(x = -x, span = span, strict = strict)]
 }
 
 #' @describeIn valleys  Method for "generic_spct" objects.
