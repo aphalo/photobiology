@@ -1,14 +1,13 @@
 Package: photobiology
 Type: Package
 Title: Photobiological Calculations
-Version: 0.9.12.9000
-Date: 2016-10-26
+Version: 0.9.12.9002
+Date: 2016-11-09
 Authors@R:
    c(
     person("Pedro J.", "Aphalo", email = "pedro.aphalo@helsinki.fi", role = c("aut", "cre")),
-    person("Titta K.", "Kotilainen", email = "titta.kotilainen@helsinki.fi", role = "ctb")
+    person("Titta K.", "Kotilainen", role = "ctb")
     )
-Maintainer: Pedro J. Aphalo <pedro.aphalo@helsinki.fi>
 Description: Definitions of classes, methods, operators and functions for use in
     photobiology and radiation meteorology and climatology. Calculation of
     effective (weighted) and not-weighted irradiances/doses, fluence rates,
@@ -17,7 +16,7 @@ Description: Definitions of classes, methods, operators and functions for use in
     minima. Conversion between energy- and photon-based units. Wavelength
     interpolation. Astronomical calculations related solar angles and day
     length. Colours and vision.
-License: GPL (>= 3)
+License: GPL (>= 2)
 Depends:
     R (>= 3.2.0)
 Imports:

@@ -24,7 +24,8 @@ cps2irrad <- function(x.sample, pre.fun = NULL, ...) {
   stopifnot(is.cps_spct(x.sample) &&
               !is.null(getInstrDesc(x.sample)) &&
               !is.null(getInstrSettings(x.sample)))
-  irrad.mult <- getInstrDesc(x.sample)[["inst.calib"]][["irrad.mult"]]
+  descriptor <- getInstrDesc(x.sample)
+  irrad.mult <- descriptor[["inst.calib"]][["irrad.mult"]]
   if (!is.null(pre.fun)) {
     x.sample <- pre.fun(x.sample, ...)
   }
@@ -34,6 +35,9 @@ cps2irrad <- function(x.sample, pre.fun = NULL, ...) {
   z[[cps.col.sample]] <- NULL
   z[["s.e.irrad"]] <- x.sample[[cps.col.sample]] * irrad.mult
   setSourceSpct(z)
+  if (length(descriptor[["inst.calib"]][["wl.range"]]) == 2) {
+    clip_wl(z, descriptor[["inst.calib"]][["wl.range"]])
+  }
 }
 
 #' @rdname cps2irrad
