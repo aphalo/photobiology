@@ -222,7 +222,11 @@ sd_section("Data", "",
              "A.illuminant.spct",
              "D65.illuminant.spct",
              "D2_spectrum",
+             "D2.UV586",
+             "D2.UV653",
+             "D2.UV654",
              "FEL_spectrum",
+             "FEL.BN.9101.165",
              "ccd.spct",
              "photodiode.spct"
            )
