@@ -17,6 +17,7 @@ Make argument span = NULL behave in the same way in peak and valley related
 summary functions as it has for some time in statistics in pacakge 'ggspectra'.
 Fix bug in the range check for counts per second which triggered warnings
 too easily.
+Change scaling of D2 and FEL spectra so that they are expressed in W m-2 nm-1.
 
 photobiology 0.9.12
 ===================
