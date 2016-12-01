@@ -51,14 +51,22 @@ cps2Rfr <- function(x.sample, x.white, x.black = NULL) {
               !is.null(getInstrDesc(x.white)))
   stopifnot(getInstrDesc(x.sample)$spectrometer.sn ==
               getInstrDesc(x.white)$spectrometer.sn)
+
+  instr.desc <- list(getInstrDesc(x.sample),
+                     getInstrDesc(x.white))
   if (!is.null(x.black)) {
-    stopifnot(is.cps_spct(x.black) &&
-                !is.null(getInstrDesc(x.black)))
-    stopifnot(getInstrDesc(x.sample)$spectrometer.sn ==
-                getInstrDesc(x.black)$spectrometer.sn)
-    x.sample <- x.sample - x.black
-    x.white <- x.white - x.black
+    instr.desc <- c(instr.desc, getInstrDesc(x.black))
   }
+
+  if (anyNA(instr.desc)) {
+    warning("Missing intrument descriptor attributes.")
+  } else {
+    instr.sn <- sapply(instr.desc, `[[`, i = "spectrometer.sn")
+    if (!length(unique(instr.sn)) == 1) {
+      stop("ERROR: serial number mismatch between cps_spct objects")
+    }
+  }
+
   cps.col.sample <- grep("^cps", names(x.sample), value = TRUE)
   cps.col.white <- grep("^cps", names(x.white), value = TRUE)
   stopifnot(length(cps.col.sample) == 1 && length(cps.col.white) == 1)
@@ -66,6 +74,10 @@ cps2Rfr <- function(x.sample, x.white, x.black = NULL) {
   z <- as.generic_spct(x.sample)
   z[[cps.col.sample]] <- NULL
   z[["Rfr"]] <- x.sample[[cps.col.sample]] / x.white[[cps.col.white]]
+  z[["Rfr"]] <- ifelse(x.white[[cps.col.white]] < 1e-3 *
+                         max(x.white[[cps.col.white]], na.rm = TRUE),
+                       NA_real_,
+                       z[["Rfr"]])
   setReflectorSpct(z)
 }
 
@@ -77,7 +89,7 @@ cps2Tfr <- function(x.sample, x.clear, x.opaque = NULL) {
   stopifnot(is.cps_spct(x.sample) &&
               is.cps_spct(x.clear) &&
                (is.null(x.opaque) || is.cps_spct(x.opaque)))
-  instr.desc <- c(getInstrDesc(x.sample),
+  instr.desc <- list(getInstrDesc(x.sample),
                  getInstrDesc(x.clear))
   if (!is.null(x.opaque)) {
     instr.desc <- c(instr.desc, getInstrDesc(x.opaque))
@@ -103,7 +115,8 @@ cps2Tfr <- function(x.sample, x.clear, x.opaque = NULL) {
   z <- as.generic_spct(x.sample)
   z[[cps.col.sample]] <- NULL
   z[["Tfr"]] <- x.sample[[cps.col.sample]] / x.clear[[cps.col.clear]]
-  z[["Tfr"]] <- ifelse(x.clear[[cps.col.clear]] < 1e-3 * max(x.clear[[cps.col.clear]]),
+  z[["Tfr"]] <- ifelse(x.clear[[cps.col.clear]] < 1e-3 *
+                         max(x.clear[[cps.col.clear]], na.rm = TRUE),
                        NA_real_,
                        z[["Tfr"]])
   setFilterSpct(z)
