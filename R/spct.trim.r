@@ -8,7 +8,7 @@
 #'
 #' @param spct an object of class "generic_spct"
 #' @param range a numeric vector of length two, or any other object for which
-#'   function range() will return two
+#'   function range() will return a numeric vector of length two
 #' @param low.limit shortest wavelength to be kept (defaults to shortest
 #'   w.length value)
 #' @param high.limit longest wavelength to be kept (defaults to longest w.length
@@ -206,6 +206,7 @@ trim_spct <- function(spct,
   spct
 }
 
+
 #' @rdname trim_spct
 #'
 #' @param mspct an object of class "generic_mspct"
@@ -237,6 +238,39 @@ trim_mspct <- function(mspct,
     assign(name, z, parent.frame(), inherits = TRUE)
   }
   z
+}
+
+#' @rdname trim_spct
+#'
+#' @export
+#'
+trim2overlap <- function(mspct,
+                         use.hinges = TRUE,
+                         verbose = getOption("photobiology.verbose", default = TRUE)) {
+  ranges <- msdply(mspct, range)
+  range <- with(ranges, c(max(min.wl), min(max.wl)))
+  trim_mspct(mspct,
+             range = range,
+             use.hinges = use.hinges,
+             fill = NULL,
+             verbose = verbose)
+}
+
+#' @rdname trim_spct
+#'
+#' @export
+#'
+expand2extremes <- function(mspct,
+                            use.hinges = TRUE,
+                            fill = 0,
+                            verbose = getOption("photobiology.verbose", default = TRUE)) {
+  ranges <- msdply(mspct, range)
+  range <- with(ranges, c(min(min.wl), max(max.wl)))
+  trim_mspct(mspct,
+             range = range,
+             use.hinges = use.hinges,
+             fill = fill,
+             verbose = verbose)
 }
 
 #' Trim head and/or tail of a spectrum
