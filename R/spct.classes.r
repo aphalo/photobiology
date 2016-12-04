@@ -2097,7 +2097,10 @@ getInstrDesc <- function(x) {
     instr.desc <- attr(x, "instr.desc", exact = TRUE)
     if (is.null(instr.desc) || is.na(instr.desc)) {
       # need to handle objects created with old versions
-      instr.desc <- NA
+      instr.desc <- list(NA)
+    }
+    if (!inherits(instr.desc, "instr_desc")) {
+      class(instr.desc) <- c("instr_desc", class(instr.desc))
     }
     return(instr.desc)
   } else {
@@ -2150,7 +2153,10 @@ getInstrSettings <- function(x) {
     instr.settings <- attr(x, "instr.settings", exact = TRUE)
     if (is.null(instr.settings) || is.na(instr.settings)) {
       # need to handle objects created with old versions
-      instr.settings <- NA
+      instr.settings <- list(NA)
+    }
+    if (!inherits(instr.settings, "instr_settings")) {
+      class(instr.settings) <- c("instr_settings", class(instr.settings))
     }
     return(instr.settings)
   } else {

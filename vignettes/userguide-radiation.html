@@ -12,9 +12,9 @@
 
 <meta name="author" content="Pedro J. Aphalo" />
 
-<meta name="date" content="2016-11-15" />
+<meta name="date" content="2016-12-04" />
 
-<title>photobiology 0.9.12.9003 User Guide: 2 Radiation</title>
+<title>photobiology 0.9.12.9005 User Guide: 2 Radiation</title>
 
 
 
@@ -68,9 +68,9 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 
 
-<h1 class="title toc-ignore">photobiology 0.9.12.9003<br>User Guide: 2 Radiation</h1>
+<h1 class="title toc-ignore">photobiology 0.9.12.9005<br>User Guide: 2 Radiation</h1>
 <h4 class="author"><em>Pedro J. Aphalo</em></h4>
-<h4 class="date"><em>2016-11-15</em></h4>
+<h4 class="date"><em>2016-12-04</em></h4>
 
 
 
@@ -85,6 +85,11 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p>We load two packages, our ‘<strong>photobiology</strong>’ and ‘<strong>lubridate</strong>’, as they will be used in the examples.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(photobiology)
 <span class="kw">library</span>(lubridate)</code></pre></div>
+<pre><code>## 
+## Attaching package: 'lubridate'</code></pre>
+<pre><code>## The following object is masked from 'package:base':
+## 
+##     date</code></pre>
 </div>
 <div id="classes" class="section level3">
 <h3>Classes</h3>
@@ -1196,6 +1201,7 @@ ranges.df</code></pre></div>
 ##   ..$ : NULL
 ##   ..$ : chr [1:2] &quot;1&quot; &quot;2&quot;
 ##  - attr(*, &quot;comment&quot;)= chr &quot;Applied function: 'range'.\n&quot;</code></pre>
+<p>For the most common cases for which one would use the <em>apply</em> functions described in the previous section methods and functions operation on collections of spectra are defined in the package. For example the following statement is equivalent to the second example in the previous section. These are described in a later section and listed in Table 9.</p>
 </div>
 <div id="convolution" class="section level3">
 <h3>Convolution</h3>
@@ -2298,6 +2304,16 @@ wavebands</code></pre></div>
 <td align="left"><code>TRUE</code></td>
 <td align="left">cache intermediate results</td>
 </tr>
+<tr class="even">
+<td align="left">photobiology.verbose</td>
+<td align="left"><strong>FALSE</strong></td>
+<td align="left">minimal warnings and messages</td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left"><code>TRUE</code></td>
+<td align="left">all warnings and messages</td>
+</tr>
 </tbody>
 </table>
 <hr>
@@ -2673,6 +2689,26 @@ sun.spct *<span class="st"> </span>UVB.wb</code></pre></div>
 </tr>
 <tr class="odd">
 <td align="left">trim_wl</td>
+<td align="center">+</td>
+<td align="center">+</td>
+<td align="center">+</td>
+<td align="center">+</td>
+<td align="center">+</td>
+<td align="center">+</td>
+<td align="center">+</td>
+</tr>
+<tr class="even">
+<td align="left">trim2overlap</td>
+<td align="center">+</td>
+<td align="center">+</td>
+<td align="center">+</td>
+<td align="center">+</td>
+<td align="center">+</td>
+<td align="center">+</td>
+<td align="center">+</td>
+</tr>
+<tr class="odd">
+<td align="left">extend2extremes</td>
 <td align="center">+</td>
 <td align="center">+</td>
 <td align="center">+</td>
@@ -3321,6 +3357,78 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 ## 4 282.7692         0         0
 ## # ... with 518 more rows</code></pre>
 <p>When <code>use.hinges == TRUE</code> and expansion or replacement is done, two observations are inserted at each boundary, differing in wavelength by <span class="math inline">\(1 \times 10^{-12}\)</span>,nm to prevent rounding errors in later calculations.</p>
+</div>
+<div id="functions-trim2ovelap-and-extend2extremes" class="section level4">
+<h4>Functions <code>trim2ovelap()</code> and <code>extend2extremes()</code></h4>
+<p>Functions <code>trim2ovelap()</code> and <code>extend2extremes()</code> are defined only for collections of spectra. They are convenience functions, as they handle special use cases of <code>trim_wl()</code> with a simplified syntax. They can be used to make the wavelength range of the different members of a collection of spectra consistent, either by trimming all spectra to the range of overlapping wavelengths, or by extending the wavelength ranges as needed and filling the added spectral values with a constant value.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">trim2overlap</span>(two.mspct)</code></pre></div>
+<pre><code>## Object: source_mspct [2 x 1]
+## --- Member: A ---
+## Object: source_spct [522 x 2]
+## Wavelength range 280 to 800 nm, step 0.9230769 to 1 nm 
+## Measured on 2015-10-31 08:00:00 UTC
+## Measured at 60.20942 N, 24.96424 E
+## Time unit 1s
+## 
+## # A tibble: 522 × 2
+##   w.length s.e.irrad
+## *    &lt;dbl&gt;     &lt;dbl&gt;
+## 1 280.0000         0
+## 2 280.9231         0
+## 3 281.8462         0
+## 4 282.7692         0
+## # ... with 518 more rows
+## --- Member: B ---
+## Object: source_spct [522 x 2]
+## Wavelength range 280 to 800 nm, step 0.9230769 to 1 nm 
+## Measured on 2015-10-31 09:00:00 UTC
+## Measured at 60.20942 N, 24.96424 E
+## Time unit 1s
+## 
+## # A tibble: 522 × 2
+##   w.length s.e.irrad
+## *    &lt;dbl&gt;     &lt;dbl&gt;
+## 1 280.0000         0
+## 2 280.9231         0
+## 3 281.8462         0
+## 4 282.7692         0
+## # ... with 518 more rows
+## 
+## --- END ---</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">extend2extremes</span>(two.mspct, <span class="dt">fill =</span> <span class="dv">0</span>)</code></pre></div>
+<pre><code>## Object: source_mspct [2 x 1]
+## --- Member: A ---
+## Object: source_spct [522 x 2]
+## Wavelength range 280 to 800 nm, step 0.9230769 to 1 nm 
+## Measured on 2015-10-31 08:00:00 UTC
+## Measured at 60.20942 N, 24.96424 E
+## Time unit 1s
+## 
+## # A tibble: 522 × 2
+##   w.length s.e.irrad
+##      &lt;dbl&gt;     &lt;dbl&gt;
+## 1 280.0000         0
+## 2 280.9231         0
+## 3 281.8462         0
+## 4 282.7692         0
+## # ... with 518 more rows
+## --- Member: B ---
+## Object: source_spct [522 x 2]
+## Wavelength range 280 to 800 nm, step 0.9230769 to 1 nm 
+## Measured on 2015-10-31 09:00:00 UTC
+## Measured at 60.20942 N, 24.96424 E
+## Time unit 1s
+## 
+## # A tibble: 522 × 2
+##   w.length s.e.irrad
+##      &lt;dbl&gt;     &lt;dbl&gt;
+## 1 280.0000         0
+## 2 280.9231         0
+## 3 281.8462         0
+## 4 282.7692         0
+## # ... with 518 more rows
+## 
+## --- END ---</code></pre>
 </div>
 <div id="functions-trim_spct-and-trim_spct" class="section level4">
 <h4>Functions <code>trim_spct</code> and <code>trim_spct</code></h4>

@@ -247,6 +247,11 @@ trim_mspct <- function(mspct,
 trim2overlap <- function(mspct,
                          use.hinges = TRUE,
                          verbose = getOption("photobiology.verbose", default = TRUE)) {
+  stopifnot(is.any_mspct(mspct))
+  if (length(mspct) < 2) {
+    # nothing to do
+    return(mspct)
+  }
   ranges <- msdply(mspct, range)
   range <- with(ranges, c(max(min.wl), min(max.wl)))
   trim_mspct(mspct,
@@ -260,10 +265,15 @@ trim2overlap <- function(mspct,
 #'
 #' @export
 #'
-expand2extremes <- function(mspct,
+extend2extremes <- function(mspct,
                             use.hinges = TRUE,
-                            fill = 0,
+                            fill = NA,
                             verbose = getOption("photobiology.verbose", default = TRUE)) {
+  stopifnot(is.any_mspct(mspct))
+  if (length(mspct) < 2) {
+    # nothing to do
+    return(mspct)
+  }
   ranges <- msdply(mspct, range)
   range <- with(ranges, c(min(min.wl), max(max.wl)))
   trim_mspct(mspct,

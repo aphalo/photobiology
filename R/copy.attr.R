@@ -1,6 +1,6 @@
-#' Copy attributes
+#' Copy attributes from one R object to another
 #'
-#' Copy attributes from one R object to another.
+#' Copy attributes from \code{x} to \code{y}.
 #'
 #' @param x,y R objects
 #' @param which character
@@ -40,6 +40,8 @@ copy_attributes.generic_spct <- function(x, y,
   stopifnot(is.any_spct(y))
   if (length(which) == 0) {
     which <- c("comment",
+               "instr.desc",
+               "instr.settings",
                "when.measured",
                "where.measured",
                "what.measured",
@@ -50,14 +52,14 @@ copy_attributes.generic_spct <- function(x, y,
                "spct.version")
     which.add <- c(switch, class(y),
                    generic_spct,
-                   raw_spct,
-                   cps_spct = c("instr.desc", "instr.settings"),
-                   source_spct,
+                   raw_spct = "linearized",
+                   cps_spct = "linearized",
+                   source_spct = "time.unit",
                    response_spct = c("time.unit", "bswf.used"),
                    # need to be copied in case class of object_spct
                    # is changed temporarily
-                   filter_spct,
-                   reflector_spct,
+                   filter_spct = "Tfr.type",
+                   reflector_spct = "Rfr.type",
                    object_spct = c("Tfr.type", "Rfr.type"),
                    chroma_spct = character()
     )
@@ -65,7 +67,7 @@ copy_attributes.generic_spct <- function(x, y,
   }
   attr.x <- attributes(x)
   which.x <- intersect(names(attr.x), which)
-  # this is likely to be slow
+  # this is likely to be very slow
   for (w in which.x) {
         attr(y, w) <- attr(x, w)
   }

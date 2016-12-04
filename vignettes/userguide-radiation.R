@@ -389,6 +389,12 @@ trim_wl(sun.spct, c(275, NA), fill = 0)
 trim_wl(sun.spct, c(281.5, NA), fill = NA)
 trim_wl(sun.spct, c(281.5, NA), fill = NA, use.hinges = FALSE)
 
+## ------------------------------------------------------------------------
+trim2overlap(two.mspct)
+
+## ------------------------------------------------------------------------
+extend2extremes(two.mspct, fill = 0)
+
 ## ---- weights-1----------------------------------------------------------
 sun.spct * CIE.wb
 

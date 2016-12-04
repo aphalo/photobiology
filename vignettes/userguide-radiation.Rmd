@@ -4,7 +4,7 @@ author: "Pedro J. Aphalo"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{User Guide 2: radiation}
+  %\VignetteIndexEntry{User Guide: 2 radiation}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -501,6 +501,8 @@ str(msaply(two.mspct, max))
 str(msaply(two.mspct, range))
 ```
 
+For the most common cases for which one would use the _apply_ functions described in the previous section methods and functions operation on collections of spectra are defined in the package. For example the following statement is equivalent to the second example in the previous section. These are described in a later section and listed in Table 9.
+
 ### Convolution
 
 By convolution we normally mean the multiplication value by value at matching wavelengths of two spectra. The function described in this section facilitates this and similar operations among collections of spectra. An example use case could be the convolution of spectral irradiance by spectral transmittance for all combinations of light sources and filters in a collection of source spectra and a collection of filter spectra.
@@ -826,6 +828,8 @@ Table 7 lists all the recognized options affecting maths operators and functions
 |                            | **TRUE** | trim or exclude
 | photobiology.use.cached.mult | **FALSE** | do not cache intermediate results |
 |                             | `TRUE` | cache intermediate results |
+| photobiology.verbose | **FALSE** | minimal warnings and messages |
+|                             | `TRUE` | all warnings and messages |
 
 <hr>
 
@@ -890,6 +894,8 @@ In this section we describe methods and functions that take one or more spectral
 | A2T, T2A | -- | -- | -- | + | -- | -- | -- |
 | clip_wl | + | + | + | + | + | + | + |
 | trim_wl | + | + | + | + | + | + | + |
+| trim2overlap | + | + | + | + | + | + | + |
+| extend2extremes | + | + | + | + | + | + | + |
 | (trim_mspct) | + | + | + | + | + | + | + |
 | interpolate_wl | -- | + | + |+ | + | + | + |
 | (interpolate_mspct) | -- | + | + |+ | + | + | + |
@@ -1099,6 +1105,18 @@ trim_wl(sun.spct, c(281.5, NA), fill = NA, use.hinges = FALSE)
 ```
 
 When `use.hinges == TRUE` and expansion or replacement is done, two observations are inserted at each boundary, differing in wavelength by $1 \times 10^{-12}$\,nm to prevent rounding errors in later calculations.
+
+#### Functions `trim2ovelap()` and `extend2extremes()`
+
+Functions `trim2ovelap()` and `extend2extremes()` are defined only for collections of spectra. They are convenience functions, as they handle special use cases of `trim_wl()` with a simplified syntax. They can be used to make the wavelength range of the different members of a collection of spectra consistent, either by trimming all spectra to the range of overlapping wavelengths, or by extending the wavelength ranges as needed and filling the added spectral values with a constant value.
+
+```{r}
+trim2overlap(two.mspct)
+```
+
+```{r}
+extend2extremes(two.mspct, fill = 0)
+```
 
 #### Functions `trim_spct` and `trim_spct`
 
