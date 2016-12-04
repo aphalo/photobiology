@@ -10,6 +10,7 @@ photobiology 0.9.13
 
 Add functions sun_elevation() and sun_azimuth().
 Add convenience functions trim2overlap() and extend2extremes().
+Add print() methods for instr_desc and instr_settings classes.
 Change threshold for automatic use of hinges when calculating summaries, so
 that hinges are used by default in more cases.
 Allow lists of length zero as argument to w.band, and treat them as equivalent
