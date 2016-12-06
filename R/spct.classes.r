@@ -2097,7 +2097,10 @@ getInstrDesc <- function(x) {
     instr.desc <- attr(x, "instr.desc", exact = TRUE)
     if (is.null(instr.desc) || is.na(instr.desc)) {
       # need to handle objects created with old versions
-      instr.desc <- list(NA)
+      instr.desc <- list(spectrometer.name = NA_character_,
+                         spectrometer.sn = NA_character_,
+                         bench.grating = NA_character_,
+                         bench.slit = NA_character_)
     }
     if (!inherits(instr.desc, "instr_desc")) {
       class(instr.desc) <- c("instr_desc", class(instr.desc))
@@ -2153,7 +2156,10 @@ getInstrSettings <- function(x) {
     instr.settings <- attr(x, "instr.settings", exact = TRUE)
     if (is.null(instr.settings) || is.na(instr.settings)) {
       # need to handle objects created with old versions
-      instr.settings <- list(NA)
+      instr.settings <- list(integ.time = NA_real_,
+                             tot.time = NA_real_,
+                             num.scans = NA_integer_,
+                             rel.signal = NA_real_)
     }
     if (!inherits(instr.settings, "instr_settings")) {
       class(instr.settings) <- c("instr_settings", class(instr.settings))
