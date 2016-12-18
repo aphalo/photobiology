@@ -96,9 +96,9 @@ In versions up to 0.9.11 in addition parameter <code>geocode</code> most functio
 <hr>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sun_angles</span>(<span class="kw">now</span>(), <span class="dt">geocode =</span> <span class="kw">data.frame</span>(<span class="dt">lat =</span> <span class="dv">34</span>, <span class="dt">lon =</span> <span class="dv">0</span>))</code></pre></div>
 <pre><code>##                  time tz solartime longitude latitude address  azimuth
-## 1 2016-12-18 00:18:58     22:22:16         0       34    &lt;NA&gt; 289.9919
+## 1 2016-12-18 00:49:00     22:52:18         0       34    &lt;NA&gt; 301.2004
 ##   elevation
-## 1 -66.17556</code></pre>
+## 1 -71.79811</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sun_angles</span>(<span class="kw">ymd_hms</span>(<span class="st">&quot;2014-01-01 0:0:0&quot;</span>, <span class="dt">tz =</span> <span class="st">&quot;UTC&quot;</span>) +<span class="st"> </span><span class="kw">hours</span>(<span class="dv">1</span>:<span class="dv">3</span>))</code></pre></div>
 <pre><code>##                  time  tz solartime longitude latitude   address  azimuth
 ## 1 2014-01-01 01:00:00 UTC  00:56:31         0     51.5 Greenwich 26.26506
@@ -115,6 +115,12 @@ In versions up to 0.9.11 in addition parameter <code>geocode</code> most functio
 ##                 address azimuth elevation
 ## 1 Kumpula, Helsinki, FI 168.122  52.82309</code></pre>
 <p>The object to be supplied as argument for <code>geocode</code> is a data frame with variables <code>lon</code> and <code>lat</code>. This matches the return value of function <code>ggmap::geocode()</code>, function that can be used to find the coordinates using any <em>address</em> entered as a character string understood by the Google maps API.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sun_elevation</span>(<span class="kw">ymd_hms</span>(<span class="st">&quot;2014-01-01 0:0:0&quot;</span>, <span class="dt">tz =</span> <span class="st">&quot;UTC&quot;</span>) +<span class="st"> </span><span class="kw">hours</span>(<span class="dv">1</span>:<span class="dv">3</span>))</code></pre></div>
+<pre><code>## [1] -59.47735 -53.73359 -45.80941</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sun_zenith_angle</span>(<span class="kw">ymd_hms</span>(<span class="st">&quot;2014-01-01 0:0:0&quot;</span>, <span class="dt">tz =</span> <span class="st">&quot;UTC&quot;</span>) +<span class="st"> </span><span class="kw">hours</span>(<span class="dv">1</span>:<span class="dv">3</span>))</code></pre></div>
+<pre><code>## [1] 149.4774 143.7336 135.8094</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sun_azimuth</span>(<span class="kw">ymd_hms</span>(<span class="st">&quot;2014-01-01 0:0:0&quot;</span>, <span class="dt">tz =</span> <span class="st">&quot;UTC&quot;</span>) +<span class="st"> </span><span class="kw">hours</span>(<span class="dv">1</span>:<span class="dv">3</span>))</code></pre></div>
+<pre><code>## [1] 26.26506 49.24212 66.84595</code></pre>
 </div>
 <div id="times-of-sunrise-solar-noon-and-sunset" class="section level3">
 <h3>Times of sunrise, solar noon and sunset</h3>
@@ -228,11 +234,11 @@ Paris.time &lt;-<span class="st"> </span><span class="kw">ymd_hms</span>(<span c
 <p>Function <code>as_tod()</code> facilitates conversion of R’s time date objects into a numeric value representing the time of day in one of hour, minute or second as unit of expression.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">times &lt;-<span class="st"> </span><span class="kw">now</span>() +<span class="st"> </span><span class="kw">days</span>(<span class="dv">0</span>:<span class="dv">1</span>)
 times</code></pre></div>
-<pre><code>## [1] &quot;2016-12-18 00:18:58 EET&quot; &quot;2016-12-19 00:18:58 EET&quot;</code></pre>
+<pre><code>## [1] &quot;2016-12-18 00:49:01 EET&quot; &quot;2016-12-19 00:49:01 EET&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">as_tod</span>(times)</code></pre></div>
-<pre><code>## [1] 0.3163843 0.3163843</code></pre>
+<pre><code>## [1] 0.8169499 0.8169499</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">as_tod</span>(times, <span class="dt">unit.out =</span> <span class="st">&quot;minutes&quot;</span>)</code></pre></div>
-<pre><code>## [1] 18.98306 18.98306</code></pre>
+<pre><code>## [1] 49.017 49.017</code></pre>
 </div>
 </div>
 

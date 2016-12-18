@@ -2,7 +2,9 @@
 title: "photobiology `r packageVersion('photobiology')`<br>User Guide: 3 Astronomy"
 author: "Pedro J. Aphalo"
 date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
+output: 
+  rmarkdown::html_vignette:
+    toc: yes
 vignette: >
   %\VignetteIndexEntry{User Guide 3: astronomy}
   %\VignetteEngine{knitr::rmarkdown}
