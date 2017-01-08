@@ -12,9 +12,9 @@
 
 <meta name="author" content="Pedro J. Aphalo" />
 
-<meta name="date" content="2016-12-18" />
+<meta name="date" content="2016-12-28" />
 
-<title>photobiology 0.9.13 User Guide: 2 Radiation</title>
+<title>photobiology 0.9.13.9000 User Guide: 2 Radiation</title>
 
 
 
@@ -68,11 +68,75 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 
 
-<h1 class="title toc-ignore">photobiology 0.9.13<br>User Guide: 2 Radiation</h1>
+<h1 class="title toc-ignore">photobiology 0.9.13.9000<br>User Guide: 2 Radiation</h1>
 <h4 class="author"><em>Pedro J. Aphalo</em></h4>
-<h4 class="date"><em>2016-12-18</em></h4>
+<h4 class="date"><em>2016-12-28</em></h4>
 
 
+<div id="TOC">
+<ul>
+<li><a href="#spectra">Spectra</a><ul>
+<li><a href="#getting-started">Getting started</a></li>
+<li><a href="#classes">Classes</a></li>
+<li><a href="#data-assumptions">Data assumptions</a></li>
+<li><a href="#querying-the-class">Querying the class</a></li>
+<li><a href="#construction">Construction</a></li>
+<li><a href="#special-attributes">Special attributes</a></li>
+</ul></li>
+<li><a href="#collections-of-spectra">Collections of spectra</a><ul>
+<li><a href="#classes-1">Classes</a></li>
+<li><a href="#construction-1">Construction</a></li>
+<li><a href="#querying-the-class-1">Querying the class</a></li>
+<li><a href="#extract-replace-and-combine">Extract, replace and combine</a></li>
+<li><a href="#transform-or-apply-functions">Transform or <em>apply</em> functions</a></li>
+<li><a href="#convolution">Convolution</a></li>
+<li><a href="#attributes">Attributes</a></li>
+</ul></li>
+<li><a href="#wavebands">Wavebands</a><ul>
+<li><a href="#construction-2">Construction</a></li>
+<li><a href="#querying-the-class-2">Querying the class</a></li>
+<li><a href="#retrieving-properties">Retrieving properties</a></li>
+</ul></li>
+<li><a href="#collections-of-wavebands">Collections of wavebands</a><ul>
+<li><a href="#construction-3">Construction</a></li>
+</ul></li>
+<li><a href="#object-inspection-methods">Object <em>inspection</em> methods</a><ul>
+<li><a href="#print"><code>print()</code></a></li>
+<li><a href="#summary"><code>summary()</code></a></li>
+</ul></li>
+<li><a href="#transformations-using-operators">Transformations: using operators</a><ul>
+<li><a href="#binary-operators">Binary operators</a></li>
+<li><a href="#unary-operators-and-maths-functions">Unary operators and maths functions</a></li>
+<li><a href="#options">Options</a></li>
+</ul></li>
+<li><a href="#transformations-methods-and-functions">Transformations: methods and functions</a><ul>
+<li><a href="#manipulating-spectra">Manipulating spectra</a></li>
+<li><a href="#conversions-between-radiation-units">Conversions between radiation units</a></li>
+<li><a href="#normalizing-a-spectrum">Normalizing a spectrum</a></li>
+<li><a href="#rescaling-a-spectrum">Rescaling a spectrum</a></li>
+<li><a href="#shifting-the-zero-of-the-spectral-data-scale">Shifting the zero of the spectral data scale</a></li>
+<li><a href="#replacing-off-range-spectral-data-values">Replacing off-range spectral data values</a></li>
+<li><a href="#wavelength-interpolation">Wavelength interpolation</a></li>
+<li><a href="#trimming-and-clipping">Trimming and clipping</a></li>
+<li><a href="#convolving-weights">Convolving weights</a></li>
+<li><a href="#tagging-with-bands-and-colours">Tagging with bands and colours</a></li>
+</ul></li>
+<li><a href="#summaries">Summaries</a><ul>
+<li><a href="#summary-1">Summary</a></li>
+<li><a href="#wavelength">Wavelength</a></li>
+<li><a href="#peaks-and-valleys">Peaks and valleys</a></li>
+<li><a href="#irradiance">Irradiance</a></li>
+<li><a href="#fluence">Fluence</a></li>
+<li><a href="#photon-and-energy-ratios">Photon and energy ratios</a></li>
+<li><a href="#normalized-difference-indexes">Normalized difference indexes</a></li>
+<li><a href="#individual-spectra-7">Individual spectra</a></li>
+<li><a href="#transmittance-reflectance-absorptance-and-absorbance">Transmittance, reflectance, absorptance and absorbance</a></li>
+<li><a href="#integrated-response">Integrated response</a></li>
+<li><a href="#integration-over-wavelengths">Integration over wavelengths</a></li>
+</ul></li>
+<li><a href="#rgb-colours">RGB colours</a></li>
+</ul>
+</div>
 
 <div id="spectra" class="section level2">
 <h2>Spectra</h2>
@@ -85,11 +149,6 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p>We load two packages, our ‘<strong>photobiology</strong>’ and ‘<strong>lubridate</strong>’, as they will be used in the examples.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(photobiology)
 <span class="kw">library</span>(lubridate)</code></pre></div>
-<pre><code>## 
-## Attaching package: 'lubridate'</code></pre>
-<pre><code>## The following object is masked from 'package:base':
-## 
-##     date</code></pre>
 </div>
 <div id="classes" class="section level3">
 <h3>Classes</h3>

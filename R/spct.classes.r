@@ -2050,7 +2050,6 @@ getWhereMeasured.generic_mspct <- function(x,
   msdply(mspct = x, .fun = getWhereMeasured, ..., idx = idx)
 }
 
-
 # how measured attributes -------------------------------------------------
 
 #' Set the "instr.desc" attribute
@@ -2111,6 +2110,48 @@ getInstrDesc <- function(x) {
   }
 }
 
+#' Check the "instr.desc" attribute
+#'
+#' Function to validate the "instr.settings" attribute of an existing generic_spct
+#' object.
+#'
+#' @param x a generic_spct object
+#'
+#' @return logical TRUE if at least instrument name and serial number is found.
+#'
+#' @export
+#'
+#' @family measurement metadata functions
+#'
+validInstrDesc <- function(x) {
+if (is.any_spct(x)) {
+  instr.desc <- attr(x, "instr.desc", exact = TRUE)
+  if (is.null(instr.desc) || is.na(instr.desc)) {
+    # need to handle objects created with old versions
+      FALSE
+    } else if (is.list(instr.desc)) {
+      spectrometer.name <- instr.desc[["spectrometer.name"]]
+      spectrometer.sn <- instr.desc[["spectrometer.sn"]]
+      if (length(instr.desc) < 4) {
+        FALSE
+      } else if (is.null(spectrometer.name) ||
+                 is.na(spectrometer.name) ||
+                 !is.character(spectrometer.name) ||
+                 is.null(spectrometer.sn) ||
+                 is.na(spectrometer.sn) ||
+                 !is.character(spectrometer.sn)) {
+        FALSE
+      } else
+        TRUE
+    } else {
+      FALSE
+    }
+  }
+  else {
+    NA_integer_
+  }
+}
+
 #' Set the "instr.settings" attribute
 #'
 #' Function to set by reference the "what.measured" attribute  of an existing
@@ -2167,6 +2208,42 @@ getInstrSettings <- function(x) {
     return(instr.settings)
   } else {
     return(NA)
+  }
+}
+
+#' Check the "instr.settings" attribute
+#'
+#' Function to validate the "instr.settings" attribute of an existing generic_spct
+#' object.
+#'
+#' @param x a generic_spct object
+#'
+#' @return logical TRUE if at least integration time data is found.
+#'
+#' @export
+#'
+#' @family measurement metadata functions
+#'
+validInstrSettings <- function(x) {
+  if (is.any_spct(x)) {
+    instr.settings <- attr(x, "instr.settings", exact = TRUE)
+    if (is.null(instr.settings) || is.na(instr.settings)) {
+      # need to handle objects created with old versions
+      FALSE
+    } else if (is.list(instr.settings)) {
+      integ.time <- instr.settings[["integ.time"]]
+      if (length(instr.settings) < 4) {
+        FALSE
+      } else if (is.null(integ.time) || is.na(integ.time) || !is.numeric(integ.time)) {
+        FALSE
+      } else
+        TRUE
+    } else {
+      FALSE
+    }
+  }
+  else {
+    NA_integer_
   }
 }
 

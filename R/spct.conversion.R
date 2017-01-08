@@ -86,8 +86,8 @@ cps2Rfr <- function(x.sample,
     if (is.na(acq_settings)) {
       dyn.range <- 7e2
     } else {
-      integ.range <- range(acq_settings[["integ.time"]])
-      dyn.range <- min(7e2 * integ.range[2] / integ.range[1], 1e4)
+      integ.time <- acq_settings[["integ.time"]]
+      dyn.range <- min(7e2 * max(integ.time) / min(integ.time), 1e4)
     }
   }
   # based on dynamic range and spectrum of light source we set bad data to NA
@@ -143,8 +143,8 @@ cps2Tfr <- function(x.sample,
     if (is.na(acq_settings)) {
       dyn.range <- 7e2
     } else {
-      integ.range <- range(acq_settings[["integ.time"]])
-      dyn.range <- min(7e2 * integ.range[2] / integ.range[1], 1e4)
+      integ.time <- acq_settings[["integ.time"]]
+      dyn.range <- min(7e2 * max(integ.time) / min(integ.time), 1e4)
     }
   }
   # based on dynamic range and spectrum of light source we set bad data to NA
