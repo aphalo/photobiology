@@ -85,14 +85,12 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
   }
   add.idfactor <- is.character(idfactor)
 
-  if (is.null(l) || length(l) < 1) {
-    return(l)
-  }
-  if (!is.list(l) || is.any_spct(l) || is.waveband(l)) {
+  if (is.null(l) || !is.list(l) || length(l) < 1) {
+    # _mspct classes are derived from "list"
     warning("Argument 'l' should be a list or a collection of spectra.")
     return(generic_spct())
   }
-  # list may have member which already have multiple spectra in long form
+  # list may have members which already have multiple spectra in long form
   mltpl.wl <- sum(sapply(l, FUN = getMultipleWl))
   # we find the most derived common class
   # and we make sure that all spectral data use consistent units
@@ -126,7 +124,7 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
   }
 
   # Here we do the actual binding
-  if (length(l) < 2) {
+  if (length(l) == 1) {
     ans <- l[[1]]
   } else {
     ans <- plyr::rbind.fill(l)
@@ -161,6 +159,18 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
   if (!comments.found) {
     comment.ans <- NULL
   }
+
+  # get methods and functions return NA if attr is not set
+  instr.desc <- lapply(l, getInstrDesc)
+  names(instr.desc) <- names.spct
+  instr.settings <- lapply(l, getInstrSettings)
+  names(instr.settings) <- names.spct
+  when.measured <- lapply(l, getWhenMeasured)
+  names(when.measured) <- names.spct
+  where.measured <- lapply(l, getWhereMeasured)
+  names(where.measured) <- names.spct
+  what.measured <- lapply(l, getWhatMeasured)
+  names(what.measured) <- names.spct
 
   add.bswf <- FALSE
 
@@ -230,23 +240,10 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
     }
   } else if (l.class == "chroma_spct") {
     setChromaSpct(ans, multiple.wl = mltpl.wl)
-  } else if (l.class == "cps_spct" || l.class == "raw_spct") {
-    warning("Row binding cps_spct objects removes instrument attributes.")
-    instr.desc <- sapply(l, getInstrDesc)
-    instr.settings <- sapply(l, getInstrSettings)
-    sn <- ifelse(is.na(instr.desc), NA_character_, instr.desc$spectrometer.sn)
-    ch.index <- ifelse(is.na(instr.desc), NA_integer_, instr.desc$ch.index)
-    integ.time <- ifelse(is.na(instr.settings), NA_real_, instr.settings$integ.time)
-
-    ans[["integ.time"]] <- rep(integ.time, times = sapply(l, FUN = nrow))
-    ans[["sn"]] <- factor(rep(sn, times = sapply(l, FUN = nrow)))
-    ans[["ch.index"]] <- factor(rep(ch.index, times = sapply(l, FUN = nrow)))
-
-    if (l.class == "cps_spct") {
-      setCpsSpct(ans, multiple.wl = mltpl.wl)
-    } else {
-      setRawSpct(ans, multiple.wl = mltpl.wl)
-    }
+  } else if (l.class == "cps_spct") {
+    setCpsSpct(ans, multiple.wl = mltpl.wl)
+  } else if (l.class == "raw_spct") {
+    setRawSpct(ans, multiple.wl = mltpl.wl)
   } else if (l.class == "generic_spct") {
     setGenericSpct(ans, multiple.wl = mltpl.wl)
   }
@@ -260,6 +257,11 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
     comment(ans) <- comment.ans
   }
   attr(ans, "idfactor") <- idfactor
+  setWhenMeasured(ans, when.measured)
+  setWhereMeasured(ans, where.measured)
+  setWhatMeasured(ans, what.measured)
+  setInstrDesc(ans, instr.desc)
+  setInstrSettings(ans, instr.settings)
   ans
 }
 

@@ -8,7 +8,9 @@ Replace filter_cps.mspct data with newly measured data.
 photobiology 0.9.14
 ===================
 
-Add methods validIntrDesc() and validInstrSettings().
+Add methods isValidIntrDesc() and isValidInstrSettings().
+Add methods trimIntrDesc() and trimInstrSettings().
+Add example data for white LED bulb as raw_spct, cps_spct and source_spct objects.
 
 photobiology 0.9.13
 ===================

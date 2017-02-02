@@ -47,10 +47,12 @@ sd_section("Metadata attributes", "",
              "is_effective",
              "getInstrDesc",
              "setInstrDesc",
-             "validInstrDesc",
+             "trimInstrDesc",
+             "isValidInstrDesc",
              "getInstrSettings",
              "setInstrSettings",
-             "validInstrSettings",
+             "trimInstrSettings",
+             "isValidInstrSettings",
              "getMultipleWl",
              "setMultipleWl",
              "getNormalized",
@@ -201,26 +203,15 @@ sd_section("Output", "",
            )
 )
 
-sd_section("Data", "",
+sd_section("Data", "radiation sources",
            c(
              "sun.spct",
              "sun.data",
              "sun.daily.spct",
              "sun.daily.data",
-             "yellow_gel.spct",
-             "polyester.spct",
-             "clear.spct",
-             "opaque.spct",
-             "clear_body.spct",
-             "white_body.spct",
-             "black_body.spct",
-             "ciev10.spct",
-             "ciev2.spct",
-             "ciexyzCC10.spct",
-             "ciexyzCC2.spct",
-             "ciexyzCMF10.spct",
-             "ciexyzCMF2.spct",
-             "beesxyzCMF.spct",
+             "white_led.raw.spct",
+             "white_led.cps.spct",
+             "white_led.source.spct",
              "A.illuminant.spct",
              "D65.illuminant.spct",
              "D2_spectrum",
@@ -228,9 +219,38 @@ sd_section("Data", "",
              "D2.UV653",
              "D2.UV654",
              "FEL_spectrum",
-             "FEL.BN.9101.165",
+             "FEL.BN.9101.165"
+           )
+)
+
+sd_section("Data", "objects including filters",
+           c(
+             "yellow_gel.spct",
+             "polyester.spct",
+             "clear.spct",
+             "opaque.spct",
+             "clear_body.spct",
+             "white_body.spct",
+             "black_body.spct"
+           )
+)
+
+sd_section("Data", "light sensors",
+           c(
              "ccd.spct",
              "photodiode.spct"
+           )
+)
+
+sd_section("Data", "human and animal vision",
+           c(
+             "ciev10.spct",
+             "ciev2.spct",
+             "ciexyzCC10.spct",
+             "ciexyzCC2.spct",
+             "ciexyzCMF10.spct",
+             "ciexyzCMF2.spct",
+             "beesxyzCMF.spct"
            )
 )
 
