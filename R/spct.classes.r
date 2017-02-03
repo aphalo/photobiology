@@ -1758,10 +1758,19 @@ setWhenMeasured.summary_generic_spct <-
            when.measured = lubridate::now(tzone = "UTC"),
            ...) {
     name <- substitute(x)
-    stopifnot(is.null(when.measured) ||
-                lubridate::is.POSIXct(when.measured))
     if (!is.null(when.measured)) {
-      when.measured <- lubridate::with_tz(when.measured, "UTC")
+      if (!is.list(when.measured)) {
+        when.measured <- list(when.measured)
+      } else if (length(when.measured) != getMultipleWl(x)) {
+        warning("Length of 'when.measured' does not match spectrum object")
+      }
+      if (all(sapply(when.measured, lubridate::is.instant))) {
+        when.measured <-
+          lapply(when.measured, lubridate::with_tz, tzone = "UTC")
+      }
+      if (is.list(when.measured) && length(when.measured) == 1) {
+        when.measured <- when.measured[[1]]
+      }
     }
     attr(x, "when.measured") <- when.measured
     if (is.name(name)) {
@@ -1835,7 +1844,7 @@ getWhenMeasured.default <- function(x, ...) {
 getWhenMeasured.generic_spct <- function(x, ...) {
   when.measured <- attr(x, "when.measured", exact = TRUE)
   if (is.null(when.measured) ||
-           !any(sapply(when.measured, lubridate::is.instant))) {
+           !all(sapply(when.measured, lubridate::is.instant))) {
     # need to handle invalid attribute values
     # we return an NA of class POSIXct
     when.measured <-
@@ -1849,7 +1858,7 @@ getWhenMeasured.generic_spct <- function(x, ...) {
 getWhenMeasured.summary_generic_spct <- function(x, ...) {
   when.measured <- attr(x, "when.measured", exact = TRUE)
   if (is.null(when.measured) ||
-      !any(sapply(when.measured, lubridate::is.instant))) {
+      !all(sapply(when.measured, lubridate::is.instant))) {
     # need to handle invalid attribute values
     # we return an NA of class POSIXct
     when.measured <- suppressWarnings(lubridate::ymd_hms(NA_character_,
@@ -1951,15 +1960,23 @@ setWhereMeasured.summary_generic_spct <- function(x,
                                                   lat = NA,
                                                   lon = NA,
                                                   ...) {
+  is_valid_geocode <- function(x) {
+    is.data.frame(x) &&
+      nrow(x) == 1 &&
+      all(c("lon", "lat") %in% names(x))
+  }
+
   name <- substitute(x)
   if (!is.null(where.measured)) {
     if (any(is.na(where.measured))) {
       where.measured <- data.frame(lon = lon, lat = lat)
-    } else {
-      stopifnot(
-        is.data.frame(where.measured) && nrow(where.measured) == 1 &&
-          all(c("lon", "lat") %in% names(where.measured))
-      )
+    }
+    if (is.data.frame(where.measured)) {
+      where.measured <- list(where.measured)
+    }
+    stopifnot(all(sapply(where.measured, is_valid_geocode)))
+    if (is.list(where.measured) && length(where.measured) == 1) {
+      where.measured <- where.measured[[1]]
     }
   }
   attr(x, "where.measured") <- where.measured
@@ -2046,7 +2063,8 @@ getWhereMeasured.default <- function(x, ...) {
 getWhereMeasured.generic_spct <- function(x, ...) {
   where.measured <- attr(x, "where.measured", exact = TRUE)
   if (is.null(where.measured) ||
-      !all(sapply(where.measured, is.data.frame))) {
+      !(is.data.frame(where.measured) ||
+      all(sapply(where.measured, is.data.frame)))) {
     # need to handle invalid or missing attribute values
     where.measured <- data.frame(lon = NA_real_, lat = NA_real_)
   }
@@ -2058,7 +2076,8 @@ getWhereMeasured.generic_spct <- function(x, ...) {
 getWhereMeasured.summary_generic_spct <- function(x, ...) {
   where.measured <- attr(x, "where.measured", exact = TRUE)
   if (is.null(where.measured) ||
-      !all(sapply(where.measured, is.data.frame))) {
+      !(is.data.frame(where.measured) ||
+        all(sapply(where.measured, is.data.frame)))) {
     # need to handle invalid or missing attribute values
     where.measured <- data.frame(lon = NA_real_, lat = NA_real_)
   }
@@ -2097,7 +2116,7 @@ getWhereMeasured.generic_mspct <- function(x,
 #'
 setInstrDesc <- function(x, instr.desc) {
   name <- substitute(x)
-  if (is.any_spct(x)) {
+  if (is.any_spct(x) || is.any_summary_spct(x)) {
     attr(x, "instr.desc") <- instr.desc
     if (is.name(name)) {
       name <- as.character(name)
@@ -2120,7 +2139,7 @@ setInstrDesc <- function(x, instr.desc) {
 #' @family measurement metadata functions
 #'
 getInstrDesc <- function(x) {
-  if (is.any_spct(x)) {
+  if (is.any_spct(x) || is.any_summary_spct(x)) {
     if (isValidInstrDesc(x)) {
       instr.desc <- attr(x, "instr.desc", exact = TRUE)
     } else {
@@ -2128,6 +2147,8 @@ getInstrDesc <- function(x) {
                          spectrometer.sn = NA_character_,
                          bench.grating = NA_character_,
                          bench.slit = NA_character_)
+    }
+    if (!inherits(instr.desc, "instr_desc")) {
       class(instr.desc) <- c("instr_desc", class(instr.desc))
     }
     instr.desc
@@ -2164,7 +2185,8 @@ trimInstrDesc <- function(x,
                                      "bench.slit")
                           ) {
   name <- substitute(x)
-  if (is.any_spct(x) && fields[1] != "*") {
+  if ((is.any_spct(x) || is.any_summary_spct(x)) &&
+      fields[1] != "*") {
     instr.desc <- attr(x, "instr.desc", exact = TRUE)
     if (inherits(instr.desc, "instr_desc")) {
       instr.settings <- list(instr.desc)
@@ -2205,9 +2227,15 @@ trimInstrDesc <- function(x,
 #' @family measurement metadata functions
 #'
 isValidInstrDesc <- function(x) {
-  if (is.any_spct(x)) {
+  if (is.any_spct(x) || is.any_summary_spct(x)) {
     instr.desc <- attr(x, "instr.desc", exact = TRUE)
-    if (inherits(instr.desc, "instr_desc")) {
+    if (is.null(instr.desc)) {
+      return(FALSE)
+    }
+    if (inherits(instr.desc, "instr_desc") ||
+        "spectrometer.name" %in% names(instr.desc)) {
+      # need to guard in case of objects created with earlier
+      # versions
       instr.desc <- list(instr.desc)
     }
     valid <- TRUE
@@ -2250,7 +2278,7 @@ isValidInstrDesc <- function(x) {
 #'
 setInstrSettings <- function(x, instr.settings) {
   name <- substitute(x)
-  if (is.any_spct(x)) {
+  if (is.any_spct(x) || is.any_summary_spct(x)) {
     attr(x, "instr.settings") <- instr.settings
     if (is.name(name)) {
       name <- as.character(name)
@@ -2274,7 +2302,7 @@ setInstrSettings <- function(x, instr.settings) {
 #' @family measurement metadata functions
 #'
 getInstrSettings <- function(x) {
-  if (is.any_spct(x)) {
+  if (is.any_spct(x) || is.any_summary_spct(x)) {
     if (isValidInstrSettings(x)) {
       instr.settings <- attr(x, "instr.settings", exact = TRUE)
     } else {
@@ -2282,6 +2310,8 @@ getInstrSettings <- function(x) {
                              tot.time = NA_real_,
                              num.scans = NA_integer_,
                              rel.signal = NA_real_)
+    }
+    if (!inherits(instr.settings, "instr_settings")) {
       class(instr.settings) <- c("instr_settings", class(instr.settings))
     }
     instr.settings
@@ -2312,7 +2342,8 @@ getInstrSettings <- function(x) {
 trimInstrSettings <- function(x,
                               fields = "*" ) {
   name <- substitute(x)
-  if (is.any_spct(x) && fields[1] != "*") {
+  if ((is.any_spct(x) || is.any_summary_spct(x)) &&
+      fields[1] != "*") {
     instr.settings <- attr(x, "instr.settings", exact = TRUE)
     if (inherits(instr.settings, "instr_settings")) {
       instr.settings <- list(instr.settings)
@@ -2356,9 +2387,15 @@ trimInstrSettings <- function(x,
 #' @family measurement metadata functions
 #'
 isValidInstrSettings <- function(x) {
-  if (is.any_spct(x)) {
+  if (is.any_spct(x) || is.any_summary_spct(x)) {
     instr.settings <- attr(x, "instr.settings", exact = TRUE)
-    if (inherits(instr.settings, "instr_settings")) {
+    if (is.null(instr.settings)) {
+      return(FALSE)
+    }
+    if (inherits(instr.settings, "instr_settings") ||
+        "integ.time" %in% names(instr.settings)) {
+      # need to guard in case of objects created with earlier
+      # versions
       instr.settings <- list(instr.settings)
     }
     valid <- TRUE

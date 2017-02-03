@@ -186,7 +186,8 @@ test_that("cps_mspct", {
 
   # constructor methods for 'long' spct objects -----------------------------
 
-  expect_warning(my_long.spct <- rbindspct(spct.l))
+#  expect_warning(my_long.spct <- rbindspct(spct.l))
+  my_long.spct <- rbindspct(spct.l)
   my3_df.mspct <- subset2mspct(my_long.spct)
 
   expect_equal(paste("spct", 1:5, sep = "_"), names(my3_df.mspct))
