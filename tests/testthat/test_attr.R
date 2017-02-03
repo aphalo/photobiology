@@ -46,6 +46,55 @@ test_that("any_spct", {
   setWhatMeasured(my.spct, tested.what)
   expect_equal(getWhatMeasured(my.spct), tested.what)
 
+  setMultipleWl(my.spct, 2)
+  expect_equal(getMultipleWl(my.spct), 2)
+
+  setMultipleWl(my.spct, 1)
+  expect_equal(getMultipleWl(my.spct), 1)
+
+  my.descriptor <- list(spectrometer.name = "fake",
+                        spectrometer.sn = "12345AB c",
+                        bench.grating = "fake 123",
+                        bench.slit = "10um")
+  class(my.descriptor) <- c("instr_desc", class(my.descriptor))
+  expect_true(!isValidInstrDesc(my.spct))
+  expect_equal(length(getInstrDesc(my.spct)), 4)
+  expect_is(getInstrDesc(my.spct), "instr_desc")
+  setInstrDesc(my.spct, my.descriptor)
+  expect_true(isValidInstrDesc(my.spct))
+  expect_equal(getInstrDesc(my.spct), my.descriptor)
+  expect_is(getInstrDesc(my.spct), "instr_desc")
+  expect_equal(length(getInstrDesc(my.spct)), 4)
+  expect_identical(trimInstrDesc(my.spct, c("*")), my.spct)
+  expect_equal(length(getInstrDesc(my.spct)), 4)
+  expect_identical(trimInstrDesc(my.spct, names(my.descriptor)), my.spct)
+  expect_equal(length(getInstrDesc(my.spct)), 4)
+  trimInstrDesc(my.spct, c("-", "bench.slit"))
+  expect_true(isValidInstrDesc(my.spct))
+  expect_is(getInstrDesc(my.spct), "instr_desc")
+  expect_equal(length(getInstrDesc(my.spct)), 3)
+  expect_equal(names(getInstrDesc(my.spct)), setdiff(names(my.descriptor), "bench.slit"))
+
+  my.settings <- list(integ.time = 321,
+                      tot.time = 1000,
+                      num.scans = 50,
+                      rel.signal = 0.86)
+  class(my.settings) <- c("instr_settings", class(my.settings))
+  expect_equal(length(getInstrSettings(my.spct)), 4)
+  expect_is(getInstrSettings(my.spct), "instr_settings")
+  setInstrSettings(my.spct, my.settings)
+  expect_equal(getInstrSettings(my.spct), my.settings)
+  expect_equal(length(getInstrSettings(my.spct)), 4)
+  expect_identical(trimInstrSettings(my.spct, c("*")), my.spct)
+  expect_is(getInstrSettings(my.spct), "instr_settings")
+  expect_identical(trimInstrSettings(my.spct, names(my.settings)), my.spct)
+  expect_is(getInstrSettings(my.spct), "instr_settings")
+  trimInstrSettings(my.spct, c("-", "num.scans"))
+  expect_true(isValidInstrSettings(my.spct))
+  expect_is(getInstrSettings(my.spct), "instr_settings")
+  expect_equal(length(getInstrSettings(my.spct)), 3)
+  expect_equal(names(getInstrSettings(my.spct)), setdiff(names(my.settings), "num.scans"))
+
   expect_equal(getSpctVersion(my.spct), 2L)
 })
 

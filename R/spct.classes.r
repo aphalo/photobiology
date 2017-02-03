@@ -2188,21 +2188,27 @@ trimInstrDesc <- function(x,
   if ((is.any_spct(x) || is.any_summary_spct(x)) &&
       fields[1] != "*") {
     instr.desc <- attr(x, "instr.desc", exact = TRUE)
-    if (inherits(instr.desc, "instr_desc")) {
-      instr.settings <- list(instr.desc)
+    if (inherits(instr.desc, "instr_desc") ||
+        "spectrometer.name" %in% names(instr.desc)) {
+      instr.desc <- list(instr.desc)
     }
     for (i in seq(along.with = instr.desc)) {
       if (!(is.null(instr.desc[[i]]) || is.na(instr.desc[[i]]))) {
         if (fields[1] == "-") {
-          fields <- setdiff(names(instr.desc[[i]]), fields[-1])
+          fields.tmp <- setdiff(names(instr.desc[[i]]), fields[-1])
         } else if (fields[1] == "=") {
-          fields <- fields[-1]
+          fields.tmp <- fields[-1]
+        } else {
+          fields.tmp <- fields
         }
-        instr.desc[[i]] <- instr.desc[[i]][fields]
+        instr.desc[[i]] <- instr.desc[[i]][fields.tmp]
         if (!inherits(instr.desc[[i]], "instr_desc")) {
           class(instr.desc[[i]]) <- c("instr_desc", class(instr.desc[[i]]))
         }
       }
+    }
+    if (length(instr.desc) == 1) {
+      instr.desc <- instr.desc[[1]]
     }
     attr(x, "instr.desc") <- instr.desc
     if (is.name(name)) {
@@ -2240,16 +2246,13 @@ isValidInstrDesc <- function(x) {
     }
     valid <- TRUE
     for (desc in instr.desc) {
-      if (is.null(desc) || is.na(desc)) {
+      if (length(desc) == 0 || is.na(desc)) {
         # need to handle objects created with old versions
         valid <- FALSE
       } else if (is.list(desc)) {
-        spectrometer.name <- desc[["spectrometer.name"]]
-        spectrometer.sn <- desc[["spectrometer.sn"]]
-        if ((is.null(spectrometer.name) || is.na(spectrometer.name)) &&
-            (is.null(spectrometer.sn) || is.na(spectrometer.sn))) {
-          valid <- FALSE
-        } # else we keep valid unchanged
+        valid <- valid &&
+          length(intersect(names(desc),
+                           c("spectrometer.name", "spectrometer.sn"))) != 0
       } else {
         valid <- FALSE
       }
@@ -2345,17 +2348,20 @@ trimInstrSettings <- function(x,
   if ((is.any_spct(x) || is.any_summary_spct(x)) &&
       fields[1] != "*") {
     instr.settings <- attr(x, "instr.settings", exact = TRUE)
-    if (inherits(instr.settings, "instr_settings")) {
+    if (inherits(instr.settings, "instr_settings") ||
+        "integ.time" %in% names(instr.settings)) {
       instr.settings <- list(instr.settings)
     }
     for (i in seq(along.with = instr.settings)) {
       if (!(is.null(instr.settings[[i]]) || is.na(instr.settings[[i]]))) {
         if (fields[1] == "-") {
-          fields <- setdiff(names(instr.settings[[i]]), fields[-1])
+          fields.tmp <- setdiff(names(instr.settings[[i]]), fields[-1])
         } else if (fields[1] == "=") {
-          fields <- fields[-1]
+          fields.tmp <- fields[-1]
+        } else {
+          fields.tmp <- fields
         }
-        instr.settings[[i]] <- instr.settings[[i]][fields]
+        instr.settings[[i]] <- instr.settings[[i]][fields.tmp]
         if (!inherits(instr.settings[[i]], "instr_settings")) {
           class(instr.settings[[i]]) <- c("instr_settings", class(instr.settings[[i]]))
         }
@@ -2400,7 +2406,7 @@ isValidInstrSettings <- function(x) {
     }
     valid <- TRUE
     for (setting in instr.settings) {
-      if (is.null(setting) || is.na(setting)) {
+      if (length(setting) == 0 || is.na(setting)) {
         # need to handle objects created with old versions
         valid <- FALSE
       } else if (is.list(setting)) {
