@@ -10,6 +10,12 @@ photobiology 0.9.14
 
 Add methods isValidIntrDesc() and isValidInstrSettings().
 Add methods trimIntrDesc() and trimInstrSettings().
+Improve handling of metadata atributes when row-binding spectra so
+that all metadata is preserved.
+Revise print methods so that they are compatible with new format
+of attributes in row-bound spectra.
+Fix bugs in print method for summaries of spectra, and make output
+match that of the print method for spectra.
 Add example data for white LED bulb as raw_spct, cps_spct and source_spct objects.
 
 photobiology 0.9.13
