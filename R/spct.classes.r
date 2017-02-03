@@ -1835,11 +1835,11 @@ getWhenMeasured.default <- function(x, ...) {
 getWhenMeasured.generic_spct <- function(x, ...) {
   when.measured <- attr(x, "when.measured", exact = TRUE)
   if (is.null(when.measured) ||
-      !lubridate::is.POSIXct(when.measured)) {
+           !any(sapply(when.measured, lubridate::is.instant))) {
     # need to handle invalid attribute values
     # we return an NA of class POSIXct
-    when.measured <- suppressWarnings(lubridate::ymd_hms(NA_character_,
-                                                     tz = "UTC"))
+    when.measured <-
+      suppressWarnings(lubridate::ymd_hms(NA_character_, tz = "UTC"))
   }
   when.measured
 }
@@ -1849,7 +1849,7 @@ getWhenMeasured.generic_spct <- function(x, ...) {
 getWhenMeasured.summary_generic_spct <- function(x, ...) {
   when.measured <- attr(x, "when.measured", exact = TRUE)
   if (is.null(when.measured) ||
-      !lubridate::is.POSIXct(when.measured)) {
+      !any(sapply(when.measured, lubridate::is.instant))) {
     # need to handle invalid attribute values
     # we return an NA of class POSIXct
     when.measured <- suppressWarnings(lubridate::ymd_hms(NA_character_,
@@ -2046,7 +2046,7 @@ getWhereMeasured.default <- function(x, ...) {
 getWhereMeasured.generic_spct <- function(x, ...) {
   where.measured <- attr(x, "where.measured", exact = TRUE)
   if (is.null(where.measured) ||
-      !is.data.frame(where.measured)) {
+      !all(sapply(where.measured, is.data.frame))) {
     # need to handle invalid or missing attribute values
     where.measured <- data.frame(lon = NA_real_, lat = NA_real_)
   }
@@ -2058,7 +2058,7 @@ getWhereMeasured.generic_spct <- function(x, ...) {
 getWhereMeasured.summary_generic_spct <- function(x, ...) {
   where.measured <- attr(x, "where.measured", exact = TRUE)
   if (is.null(where.measured) ||
-      !is.data.frame(where.measured)) {
+      !all(sapply(where.measured, is.data.frame))) {
     # need to handle invalid or missing attribute values
     where.measured <- data.frame(lon = NA_real_, lat = NA_real_)
   }
@@ -2205,32 +2205,31 @@ trimInstrDesc <- function(x,
 #' @family measurement metadata functions
 #'
 isValidInstrDesc <- function(x) {
-if (is.any_spct(x)) {
-  instr.desc <- attr(x, "instr.desc", exact = TRUE)
-  if (is.null(instr.desc) || is.na(instr.desc)) {
-    # need to handle objects created with old versions
-      FALSE
-    } else if (is.list(instr.desc)) {
-      spectrometer.name <- instr.desc[["spectrometer.name"]]
-      spectrometer.sn <- instr.desc[["spectrometer.sn"]]
-      if (length(instr.desc) < 4) {
-        FALSE
-      } else if (is.null(spectrometer.name) ||
-                 is.na(spectrometer.name) ||
-                 !is.character(spectrometer.name) ||
-                 is.null(spectrometer.sn) ||
-                 is.na(spectrometer.sn) ||
-                 !is.character(spectrometer.sn)) {
-        FALSE
-      } else
-        TRUE
-    } else {
-      FALSE
+  if (is.any_spct(x)) {
+    instr.desc <- attr(x, "instr.desc", exact = TRUE)
+    if (inherits(instr.desc, "instr_desc")) {
+      instr.desc <- list(instr.desc)
     }
+    valid <- TRUE
+    for (desc in instr.desc) {
+      if (is.null(desc) || is.na(desc)) {
+        # need to handle objects created with old versions
+        valid <- FALSE
+      } else if (is.list(desc)) {
+        spectrometer.name <- desc[["spectrometer.name"]]
+        spectrometer.sn <- desc[["spectrometer.sn"]]
+        if ((is.null(spectrometer.name) || is.na(spectrometer.name)) &&
+            (is.null(spectrometer.sn) || is.na(spectrometer.sn))) {
+          valid <- FALSE
+        } # else we keep valid unchanged
+      } else {
+        valid <- FALSE
+      }
+    }
+  } else {
+    valid <- NA_integer_
   }
-  else {
-    NA_integer_
-  }
+  valid
 }
 
 #' Set the "instr.settings" attribute
@@ -2430,11 +2429,11 @@ getWhatMeasured <- function(x) {
     what.measured <- attr(x, "what.measured", exact = TRUE)
     if (is.null(what.measured) || is.na(what.measured)) {
       # need to handle objects created with old versions
-      what.measured <- NA
+      what.measured <- NA_character_
     }
     return(what.measured)
   } else {
-    return(NA)
+    return(NA_character_)
   }
 }
 
