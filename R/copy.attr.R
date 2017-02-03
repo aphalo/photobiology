@@ -58,8 +58,8 @@ copy_attributes.generic_spct <- function(x, y,
                    response_spct = c("time.unit", "bswf.used"),
                    # need to be copied in case class of object_spct
                    # is changed temporarily
-                   filter_spct = "Tfr.type",
-                   reflector_spct = "Rfr.type",
+                   filter_spct = c("Tfr.type", "Rfr.type"),
+                   reflector_spct = c("Tfr.type", "Rfr.type"),
                    object_spct = c("Tfr.type", "Rfr.type"),
                    chroma_spct = character()
     )
@@ -69,7 +69,7 @@ copy_attributes.generic_spct <- function(x, y,
   which.x <- intersect(names(attr.x), which)
   # this is likely to be very slow
   for (w in which.x) {
-        attr(y, w) <- attr(x, w)
+        attr(y, w) <- attr(x, w, exact = TRUE)
   }
   y
 }
@@ -86,7 +86,7 @@ copy_attributes.waveband <- function(x, y, which = NULL, ...) {
   attr.x <- attributes(x)
   which.x <- intersect(names(attr.x), which)
   for (w in which.x) {
-    attr(y, w) <- attr(x, w)
+    attr(y, w) <- attr(x, w, exact = TRUE)
   }
   y
 }
