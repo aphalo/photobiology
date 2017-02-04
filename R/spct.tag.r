@@ -163,7 +163,7 @@ tag.generic_spct <- function(x,
 #' @export
 #'
 tag.generic_mspct <- function(x,
-                              w.band = NA,
+                              w.band = NULL,
                               wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
                               use.hinges = TRUE,
                               short.names = TRUE,

@@ -615,6 +615,12 @@ split2raw_mspct <- function(x,
 #' @note A non-null value for \code{member.class} is mandatory only when
 #'   \code{x} is a data frame.
 #'
+#' @return A collection of spectral objects, each with attributes set if x is a
+#'   spectral object in long form with metadata attributes. If this object
+#'   was created by row binding with 'photobiology' 0.9.14 or later then
+#'   all metadata for each individual spectrum will be preserved, except for
+#'   comments which are merged.
+#'
 #' @export
 #'
 #' @family collections of spectra classes family
@@ -624,6 +630,7 @@ subset2mspct <- function(x,
                          idx.var = attr(x, "idfactor"),
                          drop.idx = TRUE,
                          ncol = 1, byrow = FALSE, ...) {
+  stopifnot(is.data.frame(x))
   if (is.any_spct(x) && is.null(member.class)) {
     member.class <- class(x)[1]
   }
@@ -633,6 +640,7 @@ subset2mspct <- function(x,
   }
   stopifnot(idx.var %in% names(x))
   collection.class <- sub("_spct", "_mspct", member.class, fixed = TRUE)
+  stopifnot(collection.class %in% mspct_classes())
   member.constr <- paste("as", member.class, sep = ".")
   collection.constr <- collection.class
   if (is.factor(x[[idx.var]])) {
@@ -663,7 +671,83 @@ subset2mspct <- function(x,
     l[[grp]] <- do.call(member.constr, c(args, args.ellipsis))
   }
   margs <- list(l = l, ncol = ncol, byrow = byrow)
-  do.call(collection.constr, margs)
+  z <- do.call(collection.constr, margs)
+  # copy metadata
+  comment <- comment(x)
+  if (!is.null(comment)) {
+    msmsply(z, `comment<-`, value = comment)
+  }
+  if (!is.any_spct(x)) {
+    return(z)
+  }
+  if (is_scaled(x)) {
+    setScaled(z, getScaled(x))
+  }
+  if (is_normalized(x)) {
+    setNormalized(z, getNormalized(x))
+  }
+  if (member.class %in% c("source_spct", "response_spct")) {
+    time.unit <- getTimeUnit(x)
+    msmsply(z, setTimeUnit, time.unit = time.unit, override.ok = TRUE)
+  }
+  if (member.class %in% c("filter_spct", "object_spct")) {
+    Tfr.type <- getTfrType(x)
+    msmsply(z, setTfrType, Tfr.type = Tfr.type)
+  }
+  if (member.class %in% c("reflector_spct", "object_spct")) {
+    Rfr.type <- getRfrType(x)
+    msmsply(z, setRfrType, Rfr.type = Rfr.type)
+  }
+  # these methods return NA if attribute is not set
+  when.measured <- getWhenMeasured(x)
+  where.measured <- getWhereMeasured(x)
+  what.measured <- getWhatMeasured(x)
+  # these methods may return an empty list
+  instr.desc <- getInstrDesc(x)
+  instr.settings <- getInstrSettings(x)
+  for (i in seq(along.with = z)) {
+    if (!all(is.na(when.measured))) {
+      if (is.list(when.measured) && length(when.measured) == length(groups)) {
+        setWhenMeasured(z[[i]], when.measured[[i]])
+      } else {
+        setWhenMeasured(z[[i]], when.measured)
+      }
+    }
+    if (!all(is.na(where.measured))) {
+      if (is.list(where.measured) && !is.data.frame(where.measured) &&
+            length(where.measured) == length(groups)) {
+        setWhereMeasured(z[[i]], where.measured[[i]])
+      } else {
+        setWhereMeasured(z[[i]], where.measured)
+      }
+    }
+    if (!all(is.na(what.measured))) {
+      if (is.list(what.measured) && length(what.measured) == length(groups)) {
+        setWhatMeasured(z[[i]], what.measured[[i]])
+      } else {
+        setWhatMeasured(z[[i]], what.measured)
+      }
+    }
+    if (length(instr.desc) > 0) {
+      if (is.list(instr.desc) &&
+          !inherits(instr.desc, "instr_desc") &&
+          length(instr.desc) == length(groups)) {
+        setInstrDesc(z[[i]], instr.desc[[i]])
+      } else {
+        setInstrDesc(z[[i]], instr.desc)
+      }
+    }
+    if (length(instr.settings) > 0) {
+      if (is.list(instr.settings) &&
+          !inherits(instr.settings, "instr_setting") &&
+          length(instr.settings) == length(groups)) {
+        setInstrSettings(z[[i]], instr.settings[[i]])
+      } else {
+        setInstrSettings(z[[i]], instr.settings)
+      }
+    }
+  }
+  z
 }
 
 #' Dimensions of an Object

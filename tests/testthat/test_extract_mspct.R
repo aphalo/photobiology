@@ -17,10 +17,9 @@ test_that("source_mspct", {
   my.mspct <- source_mspct(spct.l)
 
   expect_equal(class(my.mspct)[1], "source_mspct")
-  # testthat error!
-#  expect_equal(class(my.mspct[1:3])[1], "source_mspct")
-#  expect_equal(class(my.mspct[-1])[1], "source_mspct")
-#  expect_equal(class(my.mspct[2])[1], "source_mspct")
+  expect_equal(class(my.mspct[1:3])[1], "source_mspct")
+  expect_equal(class(my.mspct[-1])[1], "source_mspct")
+  expect_equal(class(my.mspct[2])[1], "source_mspct")
   expect_equal(class(my.mspct[[2]])[1], "source_spct")
   expect_equal(class(my.mspct[["spct_2"]])[1], "source_spct")
   expect_equal(class(my.mspct$spct_2)[1], "source_spct")
@@ -30,12 +29,12 @@ test_that("source_mspct", {
   expect_equal(my.mspct[["spct_1"]], my1.spct)
   expect_equal(my.mspct[["spct_5"]], my5.spct)
 
-#  expect_equal(names(my.mspct["spct_1"]), "spct_1")
-#  expect_equal(names(my.mspct[1:2]), c("spct_1", "spct_2"))
-#  expect_equal(names(my.mspct[c(1,5)]), c("spct_1", "spct_5"))
+  expect_equal(names(my.mspct["spct_1"]), "spct_1")
+  expect_equal(names(my.mspct[1:2]), c("spct_1", "spct_2"))
+  expect_equal(names(my.mspct[c(1,5)]), c("spct_1", "spct_5"))
 
-#  expect_equal(length(my.mspct[-1]), length(my.mspct) - 1)
-#  expect_equal(length(my.mspct[-5]), length(my.mspct) - 1)
+  expect_equal(length(my.mspct[-1]), length(my.mspct) - 1)
+  expect_equal(length(my.mspct[-5]), length(my.mspct) - 1)
 
 })
 
@@ -60,7 +59,7 @@ test_that("source_mspct", {
   expect_error(suppressWarnings(my_z.mspct[1] <- as.generic_spct(my1.spct)))
 
   expect_error(suppressWarnings(my_z.mspct[1] <- my1.spct))
-#  expect_equal(my_z.mspct[1:2] <- my.mspct[1:2], my.mspct)
+  expect_equal(my_z.mspct[1:2] <- my.mspct[1:2], my.mspct)
 
   my_z.mspct <- my.mspct
 
@@ -78,7 +77,7 @@ test_that("source_mspct", {
   my_z.mspct[["spct_6"]] <- my5.spct
   expect_equal(length(my_z.mspct), length(my.mspct) + 1)
   my_z.mspct[[6]] <- NULL
-#  expect_equal(my_z.mspct, my.mspct)
+  expect_equal(my_z.mspct, my.mspct)
 
   my_z.mspct <- my.mspct
 
