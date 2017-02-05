@@ -2148,7 +2148,8 @@ getInstrDesc <- function(x) {
                          bench.grating = NA_character_,
                          bench.slit = NA_character_)
     }
-    if (!inherits(instr.desc, "instr_desc")) {
+    if (!inherits(instr.desc, "instr_desc") &&
+        !inherits(instr.desc[[1]], "instr_desc")) {
       class(instr.desc) <- c("instr_desc", class(instr.desc))
     }
     instr.desc
@@ -2314,7 +2315,8 @@ getInstrSettings <- function(x) {
                              num.scans = NA_integer_,
                              rel.signal = NA_real_)
     }
-    if (!inherits(instr.settings, "instr_settings")) {
+    if (!inherits(instr.settings, "instr_settings") &&
+        !inherits(instr.settings[[1]], "instr_settings")) {
       class(instr.settings) <- c("instr_settings", class(instr.settings))
     }
     instr.settings

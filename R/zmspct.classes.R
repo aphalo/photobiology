@@ -675,28 +675,28 @@ subset2mspct <- function(x,
   # copy metadata
   comment <- comment(x)
   if (!is.null(comment)) {
-    msmsply(z, `comment<-`, value = comment)
+    z <- msmsply(z, `comment<-`, value = comment)
   }
   if (!is.any_spct(x)) {
     return(z)
   }
   if (is_scaled(x)) {
-    setScaled(z, getScaled(x))
+    z <- setScaled(z, getScaled(x))
   }
   if (is_normalized(x)) {
-    setNormalized(z, getNormalized(x))
+    z <- setNormalized(z, getNormalized(x))
   }
   if (member.class %in% c("source_spct", "response_spct")) {
     time.unit <- getTimeUnit(x)
-    msmsply(z, setTimeUnit, time.unit = time.unit, override.ok = TRUE)
+    z <- msmsply(z, setTimeUnit, time.unit = time.unit, override.ok = TRUE)
   }
   if (member.class %in% c("filter_spct", "object_spct")) {
     Tfr.type <- getTfrType(x)
-    msmsply(z, setTfrType, Tfr.type = Tfr.type)
+    z <- msmsply(z, setTfrType, Tfr.type = Tfr.type)
   }
   if (member.class %in% c("reflector_spct", "object_spct")) {
     Rfr.type <- getRfrType(x)
-    msmsply(z, setRfrType, Rfr.type = Rfr.type)
+    z <- msmsply(z, setRfrType, Rfr.type = Rfr.type)
   }
   # these methods return NA if attribute is not set
   when.measured <- getWhenMeasured(x)
@@ -708,42 +708,42 @@ subset2mspct <- function(x,
   for (i in seq(along.with = z)) {
     if (!all(is.na(when.measured))) {
       if (is.list(when.measured) && length(when.measured) == length(groups)) {
-        setWhenMeasured(z[[i]], when.measured[[i]])
+        z[[i]] <- setWhenMeasured(z[[i]], when.measured[[i]])
       } else {
-        setWhenMeasured(z[[i]], when.measured)
+        z[[i]] <- setWhenMeasured(z[[i]], when.measured)
       }
     }
     if (!all(is.na(where.measured))) {
       if (is.list(where.measured) && !is.data.frame(where.measured) &&
             length(where.measured) == length(groups)) {
-        setWhereMeasured(z[[i]], where.measured[[i]])
+        z[[i]] <- setWhereMeasured(z[[i]], where.measured[[i]])
       } else {
-        setWhereMeasured(z[[i]], where.measured)
+        z[[i]] <- setWhereMeasured(z[[i]], where.measured)
       }
     }
     if (!all(is.na(what.measured))) {
       if (is.list(what.measured) && length(what.measured) == length(groups)) {
-        setWhatMeasured(z[[i]], what.measured[[i]])
+        z[[i]] <- setWhatMeasured(z[[i]], what.measured[[i]])
       } else {
-        setWhatMeasured(z[[i]], what.measured)
+        z[[i]] <- setWhatMeasured(z[[i]], what.measured)
       }
     }
     if (length(instr.desc) > 0) {
       if (is.list(instr.desc) &&
           !inherits(instr.desc, "instr_desc") &&
           length(instr.desc) == length(groups)) {
-        setInstrDesc(z[[i]], instr.desc[[i]])
+        z[[i]] <- setInstrDesc(z[[i]], instr.desc[[i]])
       } else {
-        setInstrDesc(z[[i]], instr.desc)
+        z[[i]] <- setInstrDesc(z[[i]], instr.desc)
       }
     }
     if (length(instr.settings) > 0) {
       if (is.list(instr.settings) &&
           !inherits(instr.settings, "instr_setting") &&
           length(instr.settings) == length(groups)) {
-        setInstrSettings(z[[i]], instr.settings[[i]])
+        z[[i]] <- setInstrSettings(z[[i]], instr.settings[[i]])
       } else {
-        setInstrSettings(z[[i]], instr.settings)
+        z[[i]] <- setInstrSettings(z[[i]], instr.settings)
       }
     }
   }
