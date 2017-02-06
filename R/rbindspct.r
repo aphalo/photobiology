@@ -176,8 +176,10 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
 
   if (l.class == "source_spct") {
     time.unit <- sapply(l, FUN = getTimeUnit)
-    if (length(unique(time.unit)) > 1L) {
-      warning("Inconsistent time units among source spectra in rbindspct")
+    names(time.unit) <- NULL
+    time.unit <- unique(time.unit)
+    if (length(time.unit) > 1L) {
+      warning("Inconsistent time units among source spectra passed to rbindspct")
       return(source_spct())
     }
     if (any(effective.input)) {
@@ -200,8 +202,10 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
     }
   } else if (l.class == "filter_spct") {
     Tfr.type <- sapply(l, FUN = getTfrType)
-    if (length(unique(Tfr.type)) > 1L) {
-      warning("Inconsistent 'Tfr.type' among filter spectra in rbindspct")
+    names(Tfr.type) <- NULL
+    Tfr.type <- unique(Tfr.type)
+    if (length(Tfr.type) > 1L) {
+      warning("Inconsistent 'Tfr.type' among filter spectra passed to rbindspct")
       return(filter_spct())
     }
     setFilterSpct(ans, Tfr.type = Tfr.type[1], multiple.wl = mltpl.wl)
@@ -210,27 +214,35 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
     }
   } else if (l.class == "reflector_spct") {
     Rfr.type <- sapply(l, FUN = getRfrType)
-    if (length(unique(Rfr.type)) > 1L) {
+    names(Rfr.type) <- NULL
+    Tfr.type <- unique(Rfr.type)
+    if (length(Rfr.type) > 1L) {
       warning("Inconsistent 'Rfr.type' among reflector spectra in rbindspct")
       return(reflector_spct())
     }
     setReflectorSpct(ans, Rfr.type = Rfr.type[1], multiple.wl = mltpl.wl)
   } else if (l.class == "object_spct") {
     Tfr.type <- sapply(l, FUN = getTfrType)
+    names(Tfr.type) <- NULL
+    Tfr.type <- unique(Tfr.type)
     Rfr.type <- sapply(l, FUN = getRfrType)
-    if (length(unique(Tfr.type)) > 1L) {
-      warning("Inconsistent 'Tfr.type' among filter spectra in rbindspct")
+    names(Rfr.type) <- NULL
+    Rfr.type <- unique(Rfr.type)
+    if (length(Tfr.type) > 1L) {
+      warning("Inconsistent 'Tfr.type' among filter spectra passed to rbindspct")
       return(filter_spct())
     }
-    if (length(unique(Rfr.type)) > 1L) {
-      warning("Inconsistent 'Rfr.type' among reflector spectra in rbindspct")
+    if (length(Rfr.type) > 1L) {
+      warning("Inconsistent 'Rfr.type' among reflector spectra passed to rbindspct")
       return(reflector_spct())
     }
     setObjectSpct(ans, Tfr.type = Tfr.type[1], Rfr.type = Rfr.type[1],
                   multiple.wl = mltpl.wl)
   } else if (l.class == "response_spct") {
     time.unit <- sapply(l, FUN = getTimeUnit)
-    if (length(unique(time.unit)) > 1L) {
+    names(time.unit) <- NULL
+    time.unit <- unique(time.unit)
+    if (length(time.unit) > 1L) {
       warning("Inconsistent time units among respose spectra in rbindspct")
       return(response_spct())
     }

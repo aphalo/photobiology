@@ -15,4 +15,5 @@
 #' @keywords datasets
 #' @format A data frame with 81 rows and 4 variables
 #' @name beesxyzCMF.spct
+#' @family Visual response data examples
 NULL

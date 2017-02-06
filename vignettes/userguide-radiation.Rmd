@@ -52,7 +52,7 @@ The package defines several classes intended to be used to store different types
 | `generic_spct` | `w.length` | |
 | `raw_spct` | `w.length`, `counts` | `instr.desc`, `instr.settings`, `linearized `|
 | `cps_spct` | `w.length`, `cps` | `instr.desc`, `instr.settings`, `linearized` |  
-| `source_spct` | `w.length`, `s.e.irrad` | `time.unit`, `bswf` |  
+| `source_spct` | `w.length`, `s.e.irrad` | `instr.desc`, `instr.settings`, `time.unit`, `bswf` |  
 |             | `w.length`,  `s.q.irrad` | `time.unit`, `bswf` |  
 | `filter_spct` | `w.length`, `Tfr` | `Tfr.type` |  
 |             | `w.length`, `A` | `Tfr.type` |  
@@ -73,6 +73,7 @@ observations are stored "longitudinally" and "tagged" with a factor with a level
 observation event. These observations must use consistent units of expression
 and attribute values. This long format is useful, for example, when producing
 plots with package 'ggplot2'.
+If spectra are stored in _long form_, e.g. for plotting with 'ggplot2', attributes are stored as named lists or enforced to be the uniform across spectra. This allows to reconstruct a collection of spectra from a long-form spectral object preserving most of the metadata.
 
 ### Data assumptions
 
@@ -221,7 +222,7 @@ my.cm.spct <- source_spct(w.length = 300:305, s.e.irrad = 1,
 comment(my.cm.spct)
 ```
 
-### Special attributes
+### Metadata attributes
 
 Spectral objects have several attributes used to store metadata, such as the time unit used or type of spectral quantity. Some attributes are meaningful for all the classes of spectra defined in the package. These are _time of measurement_ using attribute `"when.measured"`, _place of measurement_ using attribute `"where.measured"`, a _user supplied label_ using attribute `"what-measured"`, and free-text _comments_. One can set and get comments stored in spectra by means of base R's `comment()` and `comment() <-` functions. Some of the functions in this package append additional information to comments or merge comments.
 
@@ -277,6 +278,10 @@ ten.minutes.spct <-
 ten.minutes.spct
 getTimeUnit(ten.minutes.spct)
 ```
+
+<hr>
+Attributes `instr_desc` and `instr_settings` can be used to store measurement-related metadata, describing the instrument used and settings. These attributes are lists, with a few default fields and possibly unlimited _special_ attributes. The present pakage provides functions for operating on them and print-outs include some of the default fields if the attribute is set. The expectation is that these attributes are set by other packages such as 'ooacquire' used for direct data acquisition or raw instrument data import.
+<hr>
 
 <hr>
 Spectral objects created with earlier (pre-release) versions of this package are missing some attributes. For this reason _summary_ and _plot_ functions may not work as expected with them. These _old_ objects can be updated by adding the missing attribute using functions `setTimeUnit`, `setBSWFUsed`, `setTfrType` and `setRfrType`. However, in many cases function `update_spct` can be used to set the missing attributes to default values, or the scripts re-run to rebuild the data objects from raw data.
@@ -339,20 +344,33 @@ lapply(two_gen.mscpt, class_spct)
 
 #### Converting _tidy_ data
 
-Spectral objects containing multiple spectra identified by a factor (class of the argument is replicated to collection members).
+Spectral objects containing multiple spectra identified by a factor. The class of the spectra in the argument must be consistent, as well as certain attributes line `time.unit`, for binding to succeed. Other metadata attributes are retained as named lists.
 
 ```{r, bind-1}
 two_suns.spct <- rbindspct(list(a = sun.spct, b = sun.spct / 2))
+two_suns.spct
+```
+
+Metadata is set for the individual spectra if it is available in the object being subset. What metadata is automatically stored depends on the version of this package used when creating the long form spectrum object by means of `rbindspct()`. Versions 0.9.14 and later preserve most of the metadata.
+
+```{r, bind-1a}
 subset2mspct(two_suns.spct)
 ```
 
-Data frame containing _tidy_ spectral data (target class and index variable need to be supplied as arguments).
+Data frame containing _tidy_ spectral data (target class and index variable need to be supplied as arguments). A call as the one below adds only default metadata to spectral objects.
 
 ```{r, bind-2}
 test1.df <- data.frame(w.length = rep(200:210, 2),
                        s.e.irrad = rep(c(1, 2), c(11, 11)),
                        spectrum = factor(rep(c("A", "B"), c(11,11))))
 subset2mspct(test1.df, member.class = "source_spct", idx.var = "spectrum")
+```
+
+If all member spectra share the same metadata, and the constructor has a parameter allowing it to be set, it can be passed as a named argument.
+
+```{r, bind-3}
+subset2mspct(test1.df, member.class = "source_spct", idx.var = "spectrum",
+             time.unit = "day")
 ```
 
 To convert a _tidy_ data frame into a long form spectral object we need to pass the number of spectra through parameter `multiple.wl` to override the usual check for unique wavelength values.
@@ -370,6 +388,12 @@ columns which are not `numeric` are skipped.
 test2.df <- data.frame(w.length = 200:210, A = 1, B = 2, z = "A")
 split2source_mspct(test2.df)
 split2source_mspct(test2.df, spct.data.var = "s.q.irrad")
+```
+
+Also in this case, it is possible to pass additional named arguments to the constructor of spectral objects.
+
+```{r, split-2}
+split2source_mspct(test2.df, spct.data.var = "s.q.irrad", time.unit = "day")
 ```
 
 ### Querying the class
@@ -534,7 +558,7 @@ convolve_each(two.mspct, sun.spct, oper = `+`)
 There are cases where functions `convolve_each()` and `msmsply()` can be both used, but there are also cases where their differences matter. An example is convolving two collections of spectra, a case where only `convolve_each()` can be used. In contrast, when one of the arguments is not a spectrum or a collection of spectra, `msmsply()` should be used instead.
 <hr>
 
-### Attributes
+### Metadata attributes
 
 Some of the `set` and `get` functions used with attributes have method definitions for collections of spectra. Some examples follow.
 
@@ -549,7 +573,7 @@ getWhenMeasured(two.mspct)
 two.mspct
 ```
 
-Other methods available are `getWhereMeasured` and `setWhereMeasured`.
+Other methods available are `getWhereMeasured` and `setWhereMeasured`, and `getWhatMeasured` and `setWhatMeasured`.
 
 ## Wavebands
 

@@ -9,6 +9,7 @@
 #' @keywords datasets
 #' @format A \code{object_spct} object with 4 rows and 3 variables
 #' @name black_body.spct
+#' @family Spectral data examples
 NULL
 
 #' @title Theoretical white body
@@ -22,6 +23,7 @@ NULL
 #' @keywords datasets
 #' @format A \code{object_spct} object with 4 rows and 3 variables
 #' @name white_body.spct
+#' @family Spectral data examples
 NULL
 
 #' @title Theoretical clear body
@@ -35,4 +37,5 @@ NULL
 #' @keywords datasets
 #' @format A \code{object_spct} object with 4 rows and 3 variables
 #' @name clear_body.spct
+#' @family Spectral data examples
 NULL

@@ -19,6 +19,7 @@
 #' @keywords datasets
 #' @format A \code{source_spct} object with 508 rows and 3 variables
 #' @name sun.spct
+#' @family Spectral data examples
 NULL
 
 #' @title Solar spectral irradiance (simulated)
@@ -42,6 +43,7 @@ NULL
 #' @keywords datasets
 #' @format A \code{data.frame} object with 508 rows and 3 variables
 #' @name sun.data
+#' @family Spectral data examples
 NULL
 
 #' Daily solar spectral irradiance (simulated)
@@ -67,6 +69,7 @@ NULL
 #' @keywords datasets
 #' @format A \code{source_spct} object with 511 rows and 3 variables
 #' @name sun.daily.spct
+#' @family Spectral data examples
 NULL
 
 #' Daily solar spectral irradiance (simulated)
@@ -88,4 +91,5 @@ NULL
 #' @keywords datasets
 #' @format A \code{data.frame} object with 511 rows and 3 variables
 #' @name sun.daily.data
+#' @family Spectral data examples
 NULL

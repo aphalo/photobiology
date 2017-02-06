@@ -87,9 +87,14 @@ print.generic_spct <- function(x, ..., n = NULL, width = NULL)
   }
   if (class_spct(x)[1] %in% c("raw_spct", "cps_spct") &&
       getMultipleWl(x) == 1) {
-    print(getInstrDesc(x))
-    cat("\n")
-    print(getInstrSettings(x))
+    if (!all(is.na(getInstrDesc(x)))) {
+      print(getInstrDesc(x))
+      cat("\n")
+    }
+    if (!all(is.na(getInstrSettings(x)))) {
+      print(getInstrSettings(x))
+      cat("\n")
+    }
   }
   if (class_spct(x)[1] %in% c("source_spct", "response_spct")) {
     cat("Time unit ", as.character(getTimeUnit(x, force.duration = TRUE)),

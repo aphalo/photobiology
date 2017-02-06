@@ -17,6 +17,7 @@
 #' @keywords datasets
 #' @format A \code{response_spct} object with 311 rows and 2 variables
 #' @name photodiode.spct
+#' @family Spectral data examples
 NULL
 
 #' @title Spectral response of a back-thinned CCD image sensor.
@@ -40,4 +41,5 @@ NULL
 #' @keywords datasets
 #' @format A \code{response_spct} object with 201 rows and 2 variables
 #' @name ccd.spct
+#' @family Spectral data examples
 NULL

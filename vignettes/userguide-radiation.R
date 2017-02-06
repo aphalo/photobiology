@@ -104,6 +104,9 @@ lapply(two_gen.mscpt, class_spct)
 
 ## ---- bind-1-------------------------------------------------------------
 two_suns.spct <- rbindspct(list(a = sun.spct, b = sun.spct / 2))
+two_suns.spct
+
+## ---- bind-1a------------------------------------------------------------
 subset2mspct(two_suns.spct)
 
 ## ---- bind-2-------------------------------------------------------------
@@ -111,6 +114,10 @@ test1.df <- data.frame(w.length = rep(200:210, 2),
                        s.e.irrad = rep(c(1, 2), c(11, 11)),
                        spectrum = factor(rep(c("A", "B"), c(11,11))))
 subset2mspct(test1.df, member.class = "source_spct", idx.var = "spectrum")
+
+## ---- bind-3-------------------------------------------------------------
+subset2mspct(test1.df, member.class = "source_spct", idx.var = "spectrum",
+             time.unit = "day")
 
 ## ---- set-class-1--------------------------------------------------------
 setSourceSpct(test1.df, multiple.wl = 2L)
@@ -120,6 +127,9 @@ test1.df
 test2.df <- data.frame(w.length = 200:210, A = 1, B = 2, z = "A")
 split2source_mspct(test2.df)
 split2source_mspct(test2.df, spct.data.var = "s.q.irrad")
+
+## ---- split-2------------------------------------------------------------
+split2source_mspct(test2.df, spct.data.var = "s.q.irrad", time.unit = "day")
 
 ## ---- col-query-class-1--------------------------------------------------
 is.source_mspct(two_suns.mspct)

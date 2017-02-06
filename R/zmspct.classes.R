@@ -461,7 +461,8 @@ as.chroma_mspct <- function(x) {
 #'   to each spct object
 #' @param ncol integer Number of 'virtual' columns in data
 #' @param byrow logical If \code{ncol > 1} how to read in the data
-#' @param ... additional arguments
+#' @param ... additional named arguments passed to the member constructor
+#'   function.
 #'
 #' @export
 #'
@@ -610,7 +611,8 @@ split2raw_mspct <- function(x,
 #'   the collection members.
 #' @param ncol integer Number of 'virtual' columns in data
 #' @param byrow logical If \code{ncol > 1} how to read in the data
-#' @param ... additional arguments
+#' @param ... additional named arguments passed to the member constructor
+#'   function.
 #'
 #' @note A non-null value for \code{member.class} is mandatory only when
 #'   \code{x} is a data frame.
@@ -681,10 +683,14 @@ subset2mspct <- function(x,
     return(z)
   }
   if (is_scaled(x)) {
-    z <- setScaled(z, getScaled(x))
+    z <- msmsply(z, setScaled, scaled = TRUE)
   }
   if (is_normalized(x)) {
-    z <- setNormalized(z, getNormalized(x))
+     z <- msmsply(z, setNormalized, norm = TRUE)
+  }
+  if (member.class == "source_spct" && is_effective(x)) {
+    bswf.used <- getBSWFUsed(x)
+    z <- msmsply(z, setBSWFUsed, bswf.used = bswf.used)
   }
   if (member.class %in% c("source_spct", "response_spct")) {
     time.unit <- getTimeUnit(x)

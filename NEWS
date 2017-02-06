@@ -1,4 +1,4 @@
-TODO
+printTODO
 ====
 
 Add test cases for chroma_spct and improve tests for the _mspct
@@ -17,7 +17,9 @@ of attributes in row-bound spectra.
 Fix bugs in print method for summaries of spectra, and make output
 match that of the print method for spectra (some metadata was not printed).
 Fix bug in tag.mspct() method (bad default waveband resulted in no tagging).
+Add test cases for all new code, and add additional tests cases for old code.
 Add example data for white LED bulb as raw_spct, cps_spct and source_spct objects.
+Improve documentation.
 
 photobiology 0.9.13
 ===================

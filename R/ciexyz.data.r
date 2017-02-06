@@ -18,6 +18,7 @@
 #' @keywords datasets
 #' @format A chroma_spct object with 441 rows and 4 variables
 #' @name ciexyzCC2.spct
+#' @family Visual response data examples
 NULL
 
 #' @title CIE xyz chromaticity coordinates (CC) 10 deg data
@@ -40,6 +41,7 @@ NULL
 #' @keywords datasets
 #' @format A chroma_spct object with 441 rows and 4 variables
 #' @name ciexyzCC10.spct
+#' @family Visual response data examples
 NULL
 
 #' @title Linear energy CIE xyz colour matching function (CMF) 2 deg data
@@ -62,6 +64,7 @@ NULL
 #' @keywords datasets
 #' @format A chroma_spct object with 441 rows and 4 variables
 #' @name ciexyzCMF2.spct
+#' @family Visual response data examples
 NULL
 
 #' @title Linear energy CIE xyz colour matching function (CMF) 10 deg data
@@ -84,6 +87,7 @@ NULL
 #' @keywords datasets
 #' @format A chroma_spct object with 441 rows and 4 variables
 #' @name ciexyzCMF10.spct
+#' @family Visual response data examples
 NULL
 
 #' @title Linear energy CIE 2008 luminous efficiency function 10 deg data
@@ -105,6 +109,7 @@ NULL
 #' @keywords datasets
 #' @format A chroma_spct object with 441 rows and 4 variables
 #' @name ciev10.spct
+#' @family Visual response data examples
 NULL
 
 #' @title Linear energy CIE 2008 luminous efficiency function 2 deg data
@@ -127,4 +132,5 @@ NULL
 #' @keywords datasets
 #' @format A chroma_spct object with 441 rows and 4 variables
 #' @name ciev2.spct
+#' @family Visual response data examples
 NULL
