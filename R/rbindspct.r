@@ -215,7 +215,7 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
   } else if (l.class == "reflector_spct") {
     Rfr.type <- sapply(l, FUN = getRfrType)
     names(Rfr.type) <- NULL
-    Tfr.type <- unique(Rfr.type)
+    Rfr.type <- unique(Rfr.type)
     if (length(Rfr.type) > 1L) {
       warning("Inconsistent 'Rfr.type' among reflector spectra in rbindspct")
       return(reflector_spct())
