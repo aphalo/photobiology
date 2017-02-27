@@ -79,47 +79,47 @@ test_that("sun_angles_times_vectorized", {
 
 test_that("sunrise_time", {
   expect_lt(
-    abs(as.numeric(sunrise_time(ymd("2016-04-17", tz = "UTC"),
+    abs(as.numeric(sunrise_time(ymd("2016-04-17", tz = "UTC"), tz = "UTC",
                                 geocode = data.frame(lon = 24.93838, lat = 60.16986,
                                                      address = "Helsinki, Finland"),
                                 twilight = "none") -
                      ymd_hms("2016-04-17 03:01:41", tz = "UTC"))), 1
   )
   expect_lt(
-    abs(as.numeric(sunrise_time(ymd("2016-04-17", tz = "UTC"),
+    abs(as.numeric(sunrise_time(ymd("2016-04-17", tz = "UTC"), tz = "UTC",
                                 geocode = data.frame(lon = 25.46508, lat = 65.01209,
                                                      address = "Oulu, Finland"),
                                 twilight = "none") -
                      ymd_hms("2016-04-17 02:40:36", tz = "UTC"))), 1
   )
   expect_lt(
-    abs(as.numeric(sunrise_time(ymd("2016-04-17", tz = "UTC"),
+    abs(as.numeric(sunrise_time(ymd("2016-04-17", tz = "UTC"), tz = "UTC",
                                 geocode = data.frame(lon = 27.02853, lat = 69.90905,
                                                      adress = "Utsjoki, Finland"),
                                 twilight = "none") -
                      ymd_hms("2016-04-17 02:05:09", tz = "UTC"))), 1
   )
   expect_lt(
-    abs(as.numeric(sunrise_time(ymd("2016-04-17", tz = "UTC"),
+    abs(as.numeric(sunrise_time(ymd("2016-04-17", tz = "UTC"), tz = "UTC",
                                 geocode = data.frame(lon = -68.30295, lat = -54.80191,
                                                      address = "Ushuaia, Argentina"),
                                 twilight = "none") -
                      ymd_hms("2016-04-17 11:35:32", tz = "UTC"))), 1
   )
   expect_lt(
-    as.numeric(sunrise_time(ymd("2016-04-17", tz = "UTC"),
+    as.numeric(sunrise_time(ymd("2016-04-17", tz = "UTC"), tz = "UTC",
                             geocode = data.frame(lon = 23.67027, lat = 77.5536),
                             twilight = "none") -
                  ymd_hms("2016-04-17 00:24:26", tz = "UTC")), 1
   )
   expect_lt(
-    as.numeric(sunrise_time(ymd("2016-04-21", tz = "UTC"),
+    as.numeric(sunrise_time(ymd("2016-04-21", tz = "UTC"), tz = "UTC",
                             geocode = data.frame(lon = 23.67027, lat = 77.5536),
                             twilight = "none") -
                  ymd_hms("2016-04-20 23:10:19", tz = "UTC")), 1
   )
   expect_true(
-    is.na(sunrise_time(ymd("2016-04-22", tz = "UTC"),
+    is.na(sunrise_time(ymd("2016-04-22", tz = "UTC"), tz = "UTC",
                        geocode = data.frame(lon = 23.67027, lat = 77.5536),
                        twilight = "none"))
   )
@@ -127,21 +127,21 @@ test_that("sunrise_time", {
 
 test_that("sunset_time", {
   expect_lt(
-    as.numeric(sunset_time(ymd("2016-04-17", tz = "UTC"),
+    as.numeric(sunset_time(ymd("2016-04-17", tz = "UTC"), tz = "UTC",
                            geocode = data.frame(lon = 24.93838, lat = 60.16986),
                            #                            geocode = geocode("Helsinki, Finland"),
                            twilight = "none") -
                  ymd_hms("2016-04-17 17:37:35", tz = "UTC")), 1
   )
   expect_lt(
-    as.numeric(sunset_time(ymd("2016-04-17", tz = "UTC"),
+    as.numeric(sunset_time(ymd("2016-04-17", tz = "UTC"), tz = "UTC",
                            geocode = data.frame(lon = 25.46508, lat = 65.01209),
                            #                           geocode = geocode("Oulu, Finland"),
                            twilight = "none") -
                  ymd_hms("2016-04-17 17:54:27", tz = "UTC")), 1
   )
   expect_lt(
-    as.numeric(sunset_time(ymd("2016-04-17", tz = "UTC"),
+    as.numeric(sunset_time(ymd("2016-04-17", tz = "UTC"), tz = "UTC",
                            geocode = data.frame(lon = 27.02853, lat = 69.90905),
                            #                          geocode = geocode("Utsjoki, Finland"),
                            twilight = "none") -
@@ -156,12 +156,12 @@ test_that("sunrise_time_vectorized", {
                         #                       geocode = geocode("Helsinki, Finland"),
                         twilight = "none")), 6)
   expect_equal(
-    sunrise_time(ymd("2016-04-17", tz = "UTC") + days(0:5),
+    sunrise_time(ymd("2016-04-17", tz = "UTC") + days(0:5), tz = "UTC",
                  geocode = data.frame(lon = 24.93838, lat = 60.16986),
                  #                       geocode = geocode("Helsinki, Finland"),
                  twilight = "none")[1],
     sunrise_time(ymd("2016-04-17", tz = "UTC"),
-                 geocode = data.frame(lon = 24.93838, lat = 60.16986),
+                 geocode = data.frame(lon = 24.93838, lat = 60.16986), tz = "UTC",
                  #                       geocode = geocode("Helsinki, Finland"),
                  twilight = "none"))
   expect_equal(
@@ -170,20 +170,20 @@ test_that("sunrise_time_vectorized", {
                         #                           geocode = geocode("Ushuaia, Argentina"),
                         twilight = "none")), 6)
   expect_equal(
-    sunrise_time(ymd("2016-04-17", tz = "UTC") + days(0:5),
+    sunrise_time(ymd("2016-04-17", tz = "UTC") + days(0:5), tz = "UTC",
                  geocode = data.frame(lon = 23.67027, lat = 77.5536),
                  #                           geocode = geocode("Ushuaia, Argentina"),
                  twilight = "none")[1],
-    sunrise_time(ymd("2016-04-17", tz = "UTC"),
+    sunrise_time(ymd("2016-04-17", tz = "UTC"), tz = "UTC",
                  geocode = data.frame(lon = 23.67027, lat = 77.5536),
                  #                           geocode = geocode("Ushuaia, Argentina"),
                  twilight = "none"))
   expect_equal(
-    sunrise_time(ymd("2016-04-20", tz = "UTC") + days(0:5),
+    sunrise_time(ymd("2016-04-20", tz = "UTC") + days(0:5), tz = "UTC",
                  geocode = data.frame(lon = 23.67027, lat = 77.5536),
                  #                           geocode = geocode("Ushuaia, Argentina"),
                  twilight = "none")[3],
-    sunrise_time(ymd("2016-04-22", tz = "UTC"),
+    sunrise_time(ymd("2016-04-22", tz = "UTC"), tz = "UTC",
                  geocode = data.frame(lon = 23.67027, lat = 77.5536),
                  #                           geocode = geocode("Ushuaia, Argentina"),
                  twilight = "none"))
@@ -191,7 +191,7 @@ test_that("sunrise_time_vectorized", {
 
 test_that("sunset_time_vectorized", {
   expect_equal(
-    length(sunset_time(ymd("2016-04-17", tz = "UTC") + days(0:5),
+    length(sunset_time(ymd("2016-04-17", tz = "UTC") + days(0:5), tz = "UTC",
                        geocode = data.frame(lon = 24.93838, lat = 60.16986),
                        #                     geocode = geocode("Helsinki, Finland"),
                        twilight = "none")), 6)
