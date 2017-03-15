@@ -3,11 +3,8 @@
 ^\.git/*
 ^test/*
 ^data-raw$
-^vignettes/figure/*
 ^vignettes/backups/*
-^vignettes/*\.tex$
-^vignettes/*\.toc$
-^vignettes/*\.log$
-^vignettes/*\.synctex\.gz$
+^vignettes/*.html
+^vignettes/*.R
 ^.*\.bak$
 ^inst/web/*

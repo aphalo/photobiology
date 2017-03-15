@@ -53,7 +53,8 @@
 #'   \code{_spct} classes, an error is triggered. The function sets all data in
 #'   \code{source_spct} and \code{response_spct} objects supplied as arguments
 #'   into energy-based quantities, and all data in \code{filter_spct} objects
-#'   into transmittance before the row binding is done.
+#'   into transmittance before the row binding is done. If any member spectrum
+#'   is tagged, it is untagged before row binding.
 #'
 #' @examples
 #' spct <- rbindspct(list(sun.spct, sun.spct))
@@ -109,6 +110,9 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
   for (i in seq_along(l)) {
     class_spct <- class(l[[i]])[1]
     l.class <- intersect(l.class, class_spct)
+    if (is_tagged(l[[i]])) {
+      l[[i]] <- untag(l[[i]])
+    }
     if (photon.based.input && ("source_spct" %in% class_spct ||
         "response_spct" %in% class_spct )) {
       l[[i]] <- q2e(l[[i]], action = "replace", byref = FALSE)

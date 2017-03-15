@@ -1,6 +1,5 @@
 library("photobiology")
 library("lubridate")
-# library("ggmap")
 
 context("sun_calc")
 
