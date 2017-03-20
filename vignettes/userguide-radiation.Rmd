@@ -1563,6 +1563,10 @@ The functions `transmittance`, `absorptance` and `absorbance` take `filter_spct`
 transmittance(polyester.spct, list(UVB.wb, UVA.wb, PAR.wb))
 ```
 
+```{r}
+reflectance(green_leaf.spct, waveband(c(600, 700)))
+```
+
 It is more likely that we would like to calculate these values with reference to light of a certain spectral quality. This needs to be calculated by hand, which is not difficult.
 
 ```{r}
