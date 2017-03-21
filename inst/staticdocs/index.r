@@ -229,6 +229,7 @@ sd_section("Data", "objects including filters",
              "polyester.spct",
              "clear.spct",
              "opaque.spct",
+             "green_leaf.spct",
              "clear_body.spct",
              "white_body.spct",
              "black_body.spct"

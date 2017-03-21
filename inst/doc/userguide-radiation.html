@@ -12,7 +12,7 @@
 
 <meta name="author" content="Pedro J. Aphalo" />
 
-<meta name="date" content="2017-03-19" />
+<meta name="date" content="2017-03-20" />
 
 <title>photobiology 0.9.14 User Guide: 2 Radiation</title>
 
@@ -70,7 +70,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">photobiology 0.9.14<br>User Guide: 2 Radiation</h1>
 <h4 class="author"><em>Pedro J. Aphalo</em></h4>
-<h4 class="date"><em>2017-03-19</em></h4>
+<h4 class="date"><em>2017-03-20</em></h4>
 
 
 <div id="TOC">
@@ -149,6 +149,11 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p>We load two packages, our ‘<strong>photobiology</strong>’ and ‘<strong>lubridate</strong>’, as they will be used in the examples.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(photobiology)
 <span class="kw">library</span>(lubridate)</code></pre></div>
+<pre><code>## 
+## Attaching package: 'lubridate'</code></pre>
+<pre><code>## The following object is masked from 'package:base':
+## 
+##     date</code></pre>
 </div>
 <div id="classes" class="section level3">
 <h3>Classes</h3>
@@ -4855,6 +4860,13 @@ Most frequently used summary methods are implemented for collections of spectra.
 ## [1] &quot;total&quot;
 ## attr(,&quot;radiation.unit&quot;)
 ## [1] &quot;transmittance average&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">reflectance</span>(green_leaf.spct, <span class="kw">waveband</span>(<span class="kw">c</span>(<span class="dv">600</span>, <span class="dv">700</span>)))</code></pre></div>
+<pre><code>##  range.600.700 
+##       0.089647 
+## attr(,&quot;Rfr.type&quot;)
+## [1] &quot;total&quot;
+## attr(,&quot;radiation.unit&quot;)
+## [1] &quot;reflectance average&quot;</code></pre>
 <p>It is more likely that we would like to calculate these values with reference to light of a certain spectral quality. This needs to be calculated by hand, which is not difficult.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">irrad</span>(sun.spct *<span class="st"> </span>polyester.spct, <span class="kw">list</span>(UVB.wb, UVA.wb, PAR.wb, <span class="dt">wb.trim =</span> <span class="ot">TRUE</span>)) /
 <span class="st">  </span><span class="kw">irrad</span>(sun.spct, <span class="kw">list</span>(UVB.wb, UVA.wb, PAR.wb, <span class="dt">wb.trim =</span> <span class="ot">TRUE</span>))</code></pre></div>

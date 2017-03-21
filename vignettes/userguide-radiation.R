@@ -535,6 +535,9 @@ normalized_diff_ind(sun.spct,
 transmittance(polyester.spct, list(UVB.wb, UVA.wb, PAR.wb))
 
 ## ------------------------------------------------------------------------
+reflectance(green_leaf.spct, waveband(c(600, 700)))
+
+## ------------------------------------------------------------------------
 irrad(sun.spct * polyester.spct, list(UVB.wb, UVA.wb, PAR.wb, wb.trim = TRUE)) /
   irrad(sun.spct, list(UVB.wb, UVA.wb, PAR.wb, wb.trim = TRUE))
 
