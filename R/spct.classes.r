@@ -139,8 +139,9 @@ check_spct.cps_spct <- function(x,
       }
       # we need to include zero as otherwise dark scans may not pass the test
       cps.range <- range(0, x[[col]], na.rm = TRUE)
-#      stopifnot(cps.range[2] >= 0)
-      if (abs(cps.range[1]) > 1.2 * cps.range[2]) {
+      # we need to be very lax here as during processing of scans we can negative
+      # values due to subtraction of dark scans
+      if (abs(cps.range[1]) > (2 * cps.range[2])) {
         message.text <- paste0("Off-range cps values, min = ",
                                cps.range[1], ", max = ", cps.range[2])
         if (is.null(strict.range) || is.na(strict.range)) {

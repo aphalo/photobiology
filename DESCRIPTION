@@ -1,8 +1,8 @@
 Package: photobiology
 Type: Package
 Title: Photobiological Calculations
-Version: 0.9.14-1
-Date: 2017-03-20
+Version: 0.9.14-1.9900
+Date: 2017-04-18
 Authors@R:
    c(
     person("Pedro J.", "Aphalo", email = "pedro.aphalo@helsinki.fi", role = c("aut", "cre")),
