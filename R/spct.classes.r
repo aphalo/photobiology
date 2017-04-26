@@ -468,13 +468,14 @@ check_spct.source_spct <-
            ...) {
 
     range_check <- function(x, strict.range) {
-      min.limit <- -0.05 # we accept small negative values
+      min.limit <- -0.10 # we accept small negative values
       if (exists("s.e.irrad", x, inherits = FALSE) &&
           !all(is.na(x[["s.e.irrad"]]))) {
-        s.e.range <- range(x$s.e.irrad, na.rm = TRUE)
-#        stopifnot(s.e.range[2] > 0)
+        s.e.range <- range(0, x$s.e.irrad, na.rm = TRUE)
         s.e.spread <- diff(s.e.range)
-        if (s.e.range[1] < min.limit * (s.e.spread + 1e-14) ) {
+        # we need to be faily lax as dark reference spectra may have
+        # proportionally lots of noise.
+        if (s.e.range[1] < (min.limit * (max(s.e.spread, 0.04)) )) {
           message.text <-
             paste(
               "Negative spectral energy irradiance values; minimun s.e.irrad =",
@@ -494,9 +495,10 @@ check_spct.source_spct <-
       if (exists("s.q.irrad", x, inherits = FALSE) &&
           !all(is.na(x[["s.q.irrad"]]))) {
         s.q.range <- range(x$s.q.irrad, na.rm = TRUE)
-#        stopifnot(s.q.range[2] > 0)
         s.q.spread <- diff(s.q.range)
-        if (s.q.range[1] < min.limit * (s.q.spread + 1e-20) ) {
+        # we need to be faily lax as dark reference spectra may have
+        # proportionally lots of noise.
+        if (s.q.range[1] < (min.limit * (max(s.q.spread, 1e-5)) )) {
           message.text <-
             paste(
               "Negative spectral photon irradiance values; minimun s.q.irrad =",
