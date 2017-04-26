@@ -10,6 +10,9 @@ photobiology 0.9.15
 
 Laxen range test for cps in check_spct.cps_spct(), so as to avoid espureous
 warnings and/or errors.
+Make waveband() with no arguments valid.
+Add na.omit() methods for source_spct, response_spct, filter_spct, and
+reflector_spct classes.
 
 photobiology 0.9.14
 ===================
