@@ -32,9 +32,12 @@
 #'
 #' @family waveband constructors
 #'
-waveband <- function(x,
-                     weight=NULL, SWF.e.fun=NULL, SWF.q.fun=NULL, norm=NULL,
-                     SWF.norm=NULL, hinges=NULL, wb.name=NULL, wb.label=wb.name) {
+waveband <- function(x = NULL,
+                     weight = NULL, SWF.e.fun = NULL, SWF.q.fun = NULL, norm = NULL,
+                     SWF.norm = NULL, hinges = NULL, wb.name = NULL, wb.label = wb.name) {
+  if (length(x) == 0) {
+    x <- NA_real_
+  }
   if (is.generic_spct(x) && is.null(wb.name)) {
     wb.name = "Total"
   }
@@ -53,8 +56,8 @@ waveband <- function(x,
 #' new_waveband(400,700)
 #'
 new_waveband <- function(w.low, w.high,
-                         weight=NULL, SWF.e.fun=NULL, SWF.q.fun=NULL, norm=NULL,
-                         SWF.norm=NULL, hinges=NULL, wb.name=NULL, wb.label=wb.name){
+                         weight = NULL, SWF.e.fun = NULL, SWF.q.fun = NULL, norm = NULL,
+                         SWF.norm = NULL, hinges = NULL, wb.name = NULL, wb.label = wb.name){
   # we make sure that hinges is not NULL, as this would cause problems elsewhere
   # if we are not using a SWF then we do not need to add hinges as we will be anyway interpolating
   # raw irradiances rather than weighted irradiances
@@ -96,7 +99,7 @@ new_waveband <- function(w.low, w.high,
                  weight = weight, SWF.e.fun = SWF.e.fun, SWF.q.fun = SWF.q.fun, SWF.norm = SWF.norm,
                  norm = norm, hinges = hinges, name = wb.name, label = wb.label)
   class(w_band) <- c("waveband", class(w_band))
-  return(w_band)
+  w_band
 }
 
 #' List-of-wavebands constructor
