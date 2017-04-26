@@ -86,7 +86,7 @@ trim_waveband <-
       if (length(w.band.out) == 1L) {
         w.band.out <- w.band.out[[1]]
       } else {
-        w.band.out <- NULL
+        w.band.out <- waveband()
       }
     }
     w.band.out
