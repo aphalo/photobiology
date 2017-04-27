@@ -109,3 +109,32 @@ test_that("cps_spct", {
   expect_equal(ncol(na.omit(my.spct)), 2)
 
 })
+
+test_that("chroma_spct", {
+
+  my.spct <- my.ref.spct <- beesxyzCMF.spct
+  my.spct[c(4, 8), c("x", "y", "z")] <- NA
+  my.ref.spct <- my.ref.spct[-c(4 ,8), ]
+  expect_equal(na.omit(my.spct), my.ref.spct)
+  expect_equal(as.numeric(na.action(na.omit(my.spct))), c(4, 8))
+  expect_is(na.action(na.omit(my.spct)), "omit")
+  expect_equal(ncol(na.omit(my.spct)), 4)
+
+  my.spct <- my.ref.spct <- beesxyzCMF.spct
+  my.spct[c(4, 8), c("x", "y")] <- NA
+  my.ref.spct <- my.ref.spct[-c(4 ,8), ]
+  expect_equal(na.omit(my.spct), my.ref.spct)
+  expect_equal(as.numeric(na.action(na.omit(my.spct))), c(4, 8))
+  expect_is(na.action(na.omit(my.spct)), "omit")
+  expect_equal(ncol(na.omit(my.spct)), 4)
+
+  my.spct <- my.ref.spct <- beesxyzCMF.spct
+  my.spct[c(4, 8), "z"] <- NA
+  my.ref.spct <- my.ref.spct[-c(4 ,8), ]
+  expect_equal(na.omit(my.spct), my.ref.spct)
+  expect_equal(as.numeric(na.action(na.omit(my.spct))), c(4, 8))
+  expect_is(na.action(na.omit(my.spct)), "omit")
+  expect_equal(ncol(na.omit(my.spct)), 4)
+
+})
+

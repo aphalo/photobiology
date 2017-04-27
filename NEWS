@@ -11,9 +11,9 @@ photobiology 0.9.15
 Laxen range test for cps in check_spct.cps_spct(), so as to avoid espureous
 warnings and/or errors.
 Make waveband() with no arguments valid.
-Add na.omit() and na.exclude() methods for source_spct, response_spct,
-filter_spct, and reflector_spct classes. Default na.pass() and na.fail() work
-as expected also for spectra.
+Add na.omit() and na.exclude() methods for all spectral classes.
+Functions na.pass() and na.fail() as defined in R work as expected for
+spectra.
 
 photobiology 0.9.14
 ===================
