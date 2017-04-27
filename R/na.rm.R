@@ -14,7 +14,7 @@
 #'   "na.action" attribute of the result, which is \code{"exclude"}.
 #'
 #' @export
-#' @importFrom stats na.omit
+#' @importFrom stats na.omit na.exclude
 #'
 #' @note \code{na.fail} and \code{na.pass} do not require a specialisation
 #'   for spectral objetcs. R's definitions work as expected with no need to
@@ -97,6 +97,54 @@ na.omit.reflector_spct <- function(object, action = "omit", ...) {
   z <- dplyr::slice(object, rows_to_keep)
   z <- as.reflector_spct(z)
   z <- copy_attributes(object, z)
+  class(rows_to_omit) <- action
+  attr(z, "na.action") <- rows_to_omit
+  z
+}
+
+#' @rdname na.omit.source_spct
+#'
+#' @export
+#'
+na.omit.cps_spct <- function(object, action = "omit", ...) {
+  stopifnot(action %in% c("omit", "exclude"))
+  data_col <- which(names(object) == "cps")
+  if (length(data_col) == 0) {
+    warning("No spectral data column 'cps' found.")
+    return(object)
+  }
+  rows_to_omit <- which(is.na(object[[data_col]]))
+  rows_to_keep <- setdiff(1:nrow(object), rows_to_omit)
+  z <- dplyr::slice(object, rows_to_keep)
+  z <- as.cps_spct(z)
+  z <- copy_attributes(object, z)
+  class(rows_to_omit) <- action
+  attr(z, "na.action") <- rows_to_omit
+  z
+}
+
+#' @rdname na.omit.source_spct
+#'
+#' @param data.cols character Names of columns with spectral data from which
+#'   to remove NAs.
+#'
+#' @export
+#'
+na.omit.raw_spct <- function(object,
+                             action = "omit",
+                             ...) {
+  stopifnot(action %in% c("omit", "exclude"))
+  data_col <- which(names(object) == "counts")
+  rows_to_omit <- which(is.na(object[[data_col]]))
+  if (length(data_col) == 0) {
+    warning("No spectral data column 'counts' found.")
+    return(object)
+  }
+  rows_to_keep <- setdiff(1:nrow(object), rows_to_omit)
+  z <- dplyr::slice(object, rows_to_keep)
+  z <- as.raw_spct(z)
+  z <- copy_attributes(object, z)
+  rows_to_omit <- sort(rows_to_omit)
   class(rows_to_omit) <- action
   attr(z, "na.action") <- rows_to_omit
   z
