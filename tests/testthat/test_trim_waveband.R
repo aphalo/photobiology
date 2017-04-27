@@ -9,5 +9,8 @@ test_that("waveband", {
   expect_equal(spread(trim_wl(my.wb, my.spct)), spread(my.spct))
   expect_equal(range(trim_wl(my.wb, my.spct)), range(my.spct))
 
+  my.wb <- waveband(c(100, 150))
+  expect_equal(trim_wl(my.wb, my.spct), waveband())
+
 })
 
