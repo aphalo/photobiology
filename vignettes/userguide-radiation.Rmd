@@ -621,6 +621,12 @@ The first argument to `waveband()` does not need to be a numeric vector of lengt
 waveband(sun.spct)
 ```
 
+An "empty" waveband is returned by some functions as a "null" value.
+
+```{r}
+waveband()
+```
+
 ### Querying the class
 
 The function `is.waveband` can the used to query any R object. This function returns a logical value.
@@ -715,6 +721,15 @@ summary(sun.spct)
 ```
 
 Specialized `print()` methods for summaries of spectra are defined. The output differs from that of the `print()` method from base R in that additional metadata specific to spectra are shown.
+
+### Handling `NA`s
+
+Functions `na.omit()` and `na.exclude` are implemented for all spectral classes. These methods test for `NA`s only the spectral data, not wavelength. They set the `"na.action"` attribute in the same way as the corresponding methods for data frames. In the case of `na.fail()`, `na.pass()` and `na.action()`, the methods from base R, can be used with spectra. 
+
+```{r}
+na.omit(sun.spct)
+na.exclude(sun.spct)
+```
 
 ## Transformations: using operators
 
