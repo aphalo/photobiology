@@ -8,7 +8,7 @@ Replace filter_cps.mspct data with newly measured data.
 photobiology 0.9.15
 ===================
 
-Laxen range test for cps in check_spct.cps_spct(), so as to avoid espureous
+Laxen range test for cps in check_spct.cps_spct(), so as to avoid spurious
 warnings and/or errors.
 Make waveband() with no arguments valid.
 Add na.omit() and na.exclude() methods for all spectral classes.
@@ -20,7 +20,7 @@ photobiology 0.9.14
 
 Add methods isValidIntrDesc() and isValidInstrSettings().
 Add methods trimIntrDesc() and trimInstrSettings().
-Improve handling of metadata atributes when row-binding spectra with
+Improve handling of metadata attributes when row-binding spectra with
 rbindspct() so that all metadata can be restored by subset2mspct().
 Revise print methods so that they are compatible with new format
 of attributes in row-bound spectra.
@@ -53,9 +53,9 @@ photobiology 0.9.12
 
 Enhancements:
 Overhaul the astronomy related functions. Non-backward compatible changes
-in their parameters. Code rewritten using Meeus' astronmical algorithms
+in their parameters. Code rewritten using Meeus' astronomical algorithms
 resulting in better accuracy, much faster calculation of times for solar noon,
-sunrise and sunset. In addtion the new algorithm can be used for a broader
+sunrise and sunset. In addition the new algorithm can be used for a broader
 range of years, limited only by function julian() in R, which ignores leap
 seconds.
 Not fully backward compatible as returned values differ slightly from
@@ -66,10 +66,10 @@ conversion function as_tod() returning 'time of day' from a datetime object.
 sun_angles() and day_night() now return a data.frame instead of a list.
 * The default for twilight argument is no longer "none", but instead "sunlight".
 The string "none" is accepted, and is as before interpreted as the center of
-the solar disk at the horizon, without correction for atmospheric difraction,
+the solar disk at the horizon, without correction for atmospheric diffraction,
 which is a solar elevation of zero degrees. In contrast, "sunlight" is
 interpreted as the upper rim of the solar disk at the horizon after approximate
-correction for atmospheric difraction, which is a solar elevation of -0.833
+correction for atmospheric diffraction, which is a solar elevation of -0.833
 degrees, resulting in longer days.
 
 Revise cbindspct() so that it stores the name of "idfactor" as an attribute and
@@ -98,9 +98,9 @@ Fix bug in set functions for spectral classes: option "photobiology.strict.range
 was not obeyed.
 Revise irrad(), e_irrad() and q_irrad() to accept as input scaled or
 normalized source_spct objects as long as returned quantity is not "total" or
-"mean", or its synonim "average". If the returned value will be in relative
+"mean", or its synonym "average". If the returned value will be in relative
 units linear scaling or normalization will not invalidate the result, so earlier
-restriction was unecessarily strict.
+restriction was unnecessarily strict.
 Fix bug in cps2irrad().
 
 photobiology 0.9.9

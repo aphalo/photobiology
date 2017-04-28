@@ -1,7 +1,7 @@
 Package: photobiology
 Type: Package
 Title: Photobiological Calculations
-Version: 0.9.14-1.9001
+Version: 0.9.15
 Date: 2017-04-27
 Authors@R:
    c(

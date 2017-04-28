@@ -8,3 +8,4 @@
 ^vignettes/*.R
 ^.*\.bak$
 ^inst/web/*
+^docs$
