@@ -1,5 +1,5 @@
 ## ---- include=FALSE, echo=FALSE------------------------------------------
-knitr::opts_chunk$set(fig.width=8, fig.height=4)
+knitr::opts_chunk$set(fig.width=7.2, fig.height=4.3)
 
 ## ---- printing-spectra, eval=TRUE, include=FALSE-------------------------
 # library(tibble)

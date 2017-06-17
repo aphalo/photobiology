@@ -48,10 +48,13 @@ In versions up to 0.9.11 in addition parameter `geocode` most functions also had
 the redundant formal parameters `lon` and `lat` which were removed in version
 0.9.12. This change may require users' scripts to be revised.
 <hr>
+In versions 0.9.16 and later the code has been optimized for performance with time vectors, making massive
+calculations such as the sun position for every minute of the year quite fast (couple of seconds). We keep, however, examples with rather short vectors.
+<hr>
 
 ```{r}
 sun_angles(now(), geocode = data.frame(lat = 34, lon = 0))
-sun_angles(ymd_hms("2014-01-01 0:0:0", tz = "UTC") + hours(1:3))
+sun_angles(ymd_hms("2014-01-01 0:0:0", tz = "UTC") + hours(0:23))
 ```
 
 When spectra contain suitable metadata, the position of the sun for the
@@ -64,15 +67,15 @@ sun_angles(getWhenMeasured(sun.spct), geocode = getWhereMeasured(sun.spct))
 The object to be supplied as argument for `geocode` is a data frame with variables `lon` and `lat`. This matches the return value of function `ggmap::geocode()`, function that can be used to find the coordinates using any _address_ entered as a character string understood by the Google maps API.
 
 ```{r}
-sun_elevation(ymd_hms("2014-01-01 0:0:0", tz = "UTC") + hours(1:3))
+sun_elevation(ymd_hms("2014-01-01 0:0:0", tz = "UTC") + hours(0:23))
 ```
 
 ```{r}
-sun_zenith_angle(ymd_hms("2014-01-01 0:0:0", tz = "UTC") + hours(1:3))
+sun_zenith_angle(ymd_hms("2014-01-01 0:0:0", tz = "UTC") + hours(0:23))
 ```
 
 ```{r}
-sun_azimuth(ymd_hms("2014-01-01 0:0:0", tz = "UTC") + hours(1:3))
+sun_azimuth(ymd_hms("2014-01-01 0:0:0", tz = "UTC") + hours(0:23))
 ```
 
 ### Times of sunrise, solar noon and sunset
@@ -99,13 +102,13 @@ noon_time(dates, tz = "CET", data.frame(lat = 34, lon = 0))
 day_night(dates, geocode = data.frame(lat = 60, lon = 0))
 ```
 
-he default for `date` is the current day.
+The default for `date` is the current day.
 
 ```{r}
 sunrise_time(geocode = data.frame(lat = 60, lon = 0))
 ```
 
-Both latitude and longitude should be supplied through `geocode`, but be aware that if the returned value is desired in the local time coordinates of the argument passed to `gocode`, the time zone should match the geographic coordinates.
+Both latitude and longitude should be supplied through `geocode`, but be aware that if the returned value is desired in the local time coordinates of the argument passed to `geocode`, the time zone should match the geographic coordinates.
 
 ```{r}
 sunrise_time(today("UTC"), tz = "UTC", geocode = data.frame(lat = 60, lon = 0))
@@ -163,7 +166,7 @@ day_night(dates,
 
 In field research it is in many cases preferable to sample or measure, and 
 present and plot data based on local solar time. Two functions are provided.
-They differ in the value returned, either a time of day in hours, or a date.
+They differ in the value returned, either a time of day in hours, or a datetime.
 
 ```{r}
 Paris.geo <- data.frame(lon = 2.352222, lat = 48.85661, address = "Paris")

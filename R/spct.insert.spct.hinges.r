@@ -54,6 +54,7 @@ insert_spct_hinges <- function(spct, hinges=NULL, byref = FALSE) {
     if (is.reflector_spct(spct) || is.object_spct(spct)) {
       Rfr.type <- getRfrType(spct)
     }
+    # iteration over data columns
     first.iter <- TRUE
     for (data.col in idx.data) {
       temp.data <- spct[[data.col]]

@@ -76,6 +76,20 @@ test_that("sun_angles_times_vectorized", {
 }
 )
 
+test_that("sun_angles_fast", {
+  expect_equal(
+    sun_angles(ymd_hms("2012-10-22 16:30:00", tz = "UTC") + weeks(0:3),
+                              geocode = data.frame(lon = 0, lat = 41),
+                              use.refraction = FALSE,
+               use.fast.code = TRUE),
+    sun_angles(ymd_hms("2012-10-22 16:30:00", tz = "UTC") + weeks(0:3),
+               geocode = data.frame(lon = 0, lat = 41),
+               use.refraction = FALSE,
+               use.fast.code = FALSE)
+  )
+}
+)
+
 test_that("sunrise_time", {
   expect_lt(
     abs(as.numeric(sunrise_time(ymd("2016-04-17", tz = "UTC"), tz = "UTC",

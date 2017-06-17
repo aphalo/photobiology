@@ -128,9 +128,12 @@ eq_of_time <- function(mean.lon,
 ha_sunrise <- function(lat, declin, ang = 0) {
   lat.rad <- lat / 180 * pi
   declin.rad <- declin / 180 * pi
-  acos(cos((90 + ang) / 180 * pi) /            # 90.833 in NOAAs code
-         (cos(lat.rad) * cos(declin.rad)) -
-         tan(lat.rad) * tan(declin.rad))  / pi * 180
+  suppressWarnings( # NaNs can be produced for polar regions
+    z <-
+      acos(cos((90 + ang) / 180 * pi) /            # 90.833 in NOAAs code
+             (cos(lat.rad) * cos(declin.rad)) -
+             tan(lat.rad) * tan(declin.rad))  / pi * 180)
+  z
 }
 
 #' @rdname julian_day

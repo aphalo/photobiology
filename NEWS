@@ -5,6 +5,17 @@ Add test cases for chroma_spct and improve tests for the _mspct
 classes. Add test cases for smooth_spct().
 Replace filter_cps.mspct data with newly measured data.
 
+photobiology 0.9.16
+===================
+
+Optimize performance of sun_angles() when calculating sun angles for different
+times at a single location and time zone. Other functions returning individual
+angles, sun_azimuth(), sun_zenith_angle(), and sun_elevation(), also benefit.
+Optimize performance of day_night() when for dates at a single location and
+time zone. Other functions returning individual
+times for sun positions, sunsrise_time(), noon_time(), sunset_time(),
+day_length(), night_length(), also benefit.
+
 photobiology 0.9.15
 ===================
 

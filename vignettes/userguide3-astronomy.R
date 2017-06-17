@@ -11,19 +11,19 @@ library(lubridate)
 
 ## ------------------------------------------------------------------------
 sun_angles(now(), geocode = data.frame(lat = 34, lon = 0))
-sun_angles(ymd_hms("2014-01-01 0:0:0", tz = "UTC") + hours(1:3))
+sun_angles(ymd_hms("2014-01-01 0:0:0", tz = "UTC") + hours(0:23))
 
 ## ------------------------------------------------------------------------
 sun_angles(getWhenMeasured(sun.spct), geocode = getWhereMeasured(sun.spct))
 
 ## ------------------------------------------------------------------------
-sun_elevation(ymd_hms("2014-01-01 0:0:0", tz = "UTC") + hours(1:3))
+sun_elevation(ymd_hms("2014-01-01 0:0:0", tz = "UTC") + hours(0:23))
 
 ## ------------------------------------------------------------------------
-sun_zenith_angle(ymd_hms("2014-01-01 0:0:0", tz = "UTC") + hours(1:3))
+sun_zenith_angle(ymd_hms("2014-01-01 0:0:0", tz = "UTC") + hours(0:23))
 
 ## ------------------------------------------------------------------------
-sun_azimuth(ymd_hms("2014-01-01 0:0:0", tz = "UTC") + hours(1:3))
+sun_azimuth(ymd_hms("2014-01-01 0:0:0", tz = "UTC") + hours(0:23))
 
 ## ------------------------------------------------------------------------
 dates <- seq(from = ymd("2015-03-01"), to = ymd("2015-07-1"), length.out = 3)
