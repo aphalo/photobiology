@@ -82,25 +82,7 @@
 spectrum or wavelength.</p>
     
 
-    <pre class="usage"><span class='fu'>color</span>(<span class='no'>x</span>, <span class='no'>...</span>)
-
-<span class='co'># S3 method for default</span>
-<span class='fu'>color</span>(<span class='no'>x</span>, <span class='no'>...</span>)
-
-<span class='co'># S3 method for numeric</span>
-<span class='fu'>color</span>(<span class='no'>x</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"CMF"</span>, <span class='no'>...</span>)
-
-<span class='co'># S3 method for list</span>
-<span class='fu'>color</span>(<span class='no'>x</span>, <span class='kw'>short.names</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"CMF"</span>, <span class='no'>...</span>)
-
-<span class='co'># S3 method for waveband</span>
-<span class='fu'>color</span>(<span class='no'>x</span>, <span class='kw'>short.names</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"CMF"</span>, <span class='no'>...</span>)
-
-<span class='co'># S3 method for source_spct</span>
-<span class='fu'>color</span>(<span class='no'>x</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"CMF"</span>, <span class='no'>...</span>)
-
-<span class='co'># S3 method for source_mspct</span>
-<span class='fu'>color</span>(<span class='no'>x</span>, <span class='no'>...</span>, <span class='kw'>idx</span> <span class='kw'>=</span> !<span class='fu'>is.null</span>(<span class='fu'>names</span>(<span class='no'>x</span>)))</pre>
+    <pre class="usage"><span class='fu'>color</span>(<span class='no'>x</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -113,39 +95,7 @@ spectrum or wavelength.</p>
       <th>...</th>
       <td><p>not used in current version</p></td>
     </tr>
-    <tr>
-      <th>type</th>
-      <td><p>character telling whether "CMF", "CC", or "both" should be returned.</p></td>
-    </tr>
-    <tr>
-      <th>short.names</th>
-      <td><p>logical indicating whether to use short or long names for
-wavebands</p></td>
-    </tr>
-    <tr>
-      <th>idx</th>
-      <td><p>logical whether to add a column with the names of the elements of
-spct</p></td>
-    </tr>
     </table>
-    
-    <h2 class="hasAnchor" id="methods-by-class-"><a class="anchor" href="#methods-by-class-"></a>Methods (by class)</h2>
-
-    <ul>
-<li><p><code>default</code>: Default method (returns always "black").</p></li>
-<li><p><code>numeric</code>: Method that returns Color definitions corresponding to
-numeric values representing a wavelengths in nm.</p></li>
-<li><p><code>list</code>: Method that returns Color of elements in a list.</p></li>
-<li><p><code>waveband</code>: Color at midpoint of a <code><a href='waveband.html'>waveband</a></code> object.</p></li>
-<li><p><code>source_spct</code>:</p></li>
-<li><p><code>source_mspct</code>:</p></li>
-</ul>
-    
-    <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
-
-    <p>When <code>x</code> is a list but not a waveband, if a method  <code>color</code>
-  is not available for the class of each element of the list, then
-  <code>color.default</code> will be called.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
@@ -162,11 +112,7 @@ numeric values representing a wavelengths in nm.</p></li>
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-      
-      <li><a href="#methods-by-class-">Methods (by class)</a></li>
-
-      <li><a href="#note">Note</a></li>
-      
+            
       <li><a href="#examples">Examples</a></li>
     </ul>
 

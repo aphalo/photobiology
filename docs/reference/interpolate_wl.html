@@ -157,18 +157,18 @@ returned spectrum. A numerical value can be also be provided as fill. This funct
 #&gt; Measured at 60.2091078 N, 24.9647354 E 
 #&gt; Time unit 1s
 #&gt; 
-#&gt; # A tibble: 101 × 3
+#&gt; # A tibble: 101 x 3
 #&gt;    w.length s.e.irrad    s.q.irrad
 #&gt;       &lt;int&gt;     &lt;dbl&gt;        &lt;dbl&gt;
-#&gt; 1       400 0.6081049 2.033314e-06
-#&gt; 2       401 0.6261742 2.098967e-06
-#&gt; 3       402 0.6497388 2.183388e-06
-#&gt; 4       403 0.6207287 2.091091e-06
-#&gt; 5       404 0.6370489 2.151395e-06
-#&gt; 6       405 0.6263786 2.120596e-06
-#&gt; 7       406 0.5996440 2.035099e-06
-#&gt; 8       407 0.5951226 2.024729e-06
-#&gt; 9       408 0.6256209 2.133720e-06
+#&gt;  1      400 0.6081049 2.033314e-06
+#&gt;  2      401 0.6261742 2.098967e-06
+#&gt;  3      402 0.6497388 2.183388e-06
+#&gt;  4      403 0.6207287 2.091091e-06
+#&gt;  5      404 0.6370489 2.151395e-06
+#&gt;  6      405 0.6263786 2.120596e-06
+#&gt;  7      406 0.5996440 2.035099e-06
+#&gt;  8      407 0.5951226 2.024729e-06
+#&gt;  9      408 0.6256209 2.133720e-06
 #&gt; 10      409 0.6615421 2.261761e-06
 #&gt; # ... with 91 more rows</div><div class='input'><span class='fu'>interpolate_wl</span>(<span class='no'>sun.spct</span>, <span class='fl'>400</span>:<span class='fl'>500</span>, <span class='kw'>NULL</span>)</div><div class='output co'>#&gt; Object: source_spct [101 x 3]
 #&gt; Wavelength range 400 to 500 nm, step 1 nm 
@@ -176,18 +176,18 @@ returned spectrum. A numerical value can be also be provided as fill. This funct
 #&gt; Measured at 60.2091078 N, 24.9647354 E 
 #&gt; Time unit 1s
 #&gt; 
-#&gt; # A tibble: 101 × 3
+#&gt; # A tibble: 101 x 3
 #&gt;    w.length s.e.irrad    s.q.irrad
 #&gt;       &lt;int&gt;     &lt;dbl&gt;        &lt;dbl&gt;
-#&gt; 1       400 0.6081049 2.033314e-06
-#&gt; 2       401 0.6261742 2.098967e-06
-#&gt; 3       402 0.6497388 2.183388e-06
-#&gt; 4       403 0.6207287 2.091091e-06
-#&gt; 5       404 0.6370489 2.151395e-06
-#&gt; 6       405 0.6263786 2.120596e-06
-#&gt; 7       406 0.5996440 2.035099e-06
-#&gt; 8       407 0.5951226 2.024729e-06
-#&gt; 9       408 0.6256209 2.133720e-06
+#&gt;  1      400 0.6081049 2.033314e-06
+#&gt;  2      401 0.6261742 2.098967e-06
+#&gt;  3      402 0.6497388 2.183388e-06
+#&gt;  4      403 0.6207287 2.091091e-06
+#&gt;  5      404 0.6370489 2.151395e-06
+#&gt;  6      405 0.6263786 2.120596e-06
+#&gt;  7      406 0.5996440 2.035099e-06
+#&gt;  8      407 0.5951226 2.024729e-06
+#&gt;  9      408 0.6256209 2.133720e-06
 #&gt; 10      409 0.6615421 2.261761e-06
 #&gt; # ... with 91 more rows</div><div class='input'><span class='fu'>interpolate_wl</span>(<span class='no'>sun.spct</span>, <span class='fu'>seq</span>(<span class='fl'>200</span>, <span class='fl'>1000</span>, <span class='kw'>by</span><span class='kw'>=</span><span class='fl'>0.1</span>), <span class='fl'>0</span>)</div><div class='output co'>#&gt; Object: source_spct [8,001 x 3]
 #&gt; Wavelength range 200 to 1000 nm, step 0.1 nm 
@@ -195,18 +195,18 @@ returned spectrum. A numerical value can be also be provided as fill. This funct
 #&gt; Measured at 60.2091078 N, 24.9647354 E 
 #&gt; Time unit 1s
 #&gt; 
-#&gt; # A tibble: 8,001 × 3
+#&gt; # A tibble: 8,001 x 3
 #&gt;    w.length s.e.irrad s.q.irrad
 #&gt;       &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
-#&gt; 1     200.0         0         0
-#&gt; 2     200.1         0         0
-#&gt; 3     200.2         0         0
-#&gt; 4     200.3         0         0
-#&gt; 5     200.4         0         0
-#&gt; 6     200.5         0         0
-#&gt; 7     200.6         0         0
-#&gt; 8     200.7         0         0
-#&gt; 9     200.8         0         0
+#&gt;  1    200.0         0         0
+#&gt;  2    200.1         0         0
+#&gt;  3    200.2         0         0
+#&gt;  4    200.3         0         0
+#&gt;  5    200.4         0         0
+#&gt;  6    200.5         0         0
+#&gt;  7    200.6         0         0
+#&gt;  8    200.7         0         0
+#&gt;  9    200.8         0         0
 #&gt; 10    200.9         0         0
 #&gt; # ... with 7,991 more rows</div><div class='input'><span class='fu'>interpolate_wl</span>(<span class='no'>sun.spct</span>, <span class='fu'>c</span>(<span class='fl'>400</span>,<span class='fl'>500</span>), <span class='kw'>length.out</span><span class='kw'>=</span><span class='fl'>201</span>)</div><div class='output co'>#&gt; Object: source_spct [201 x 3]
 #&gt; Wavelength range 400 to 500 nm, step 0.5 nm 
@@ -214,18 +214,18 @@ returned spectrum. A numerical value can be also be provided as fill. This funct
 #&gt; Measured at 60.2091078 N, 24.9647354 E 
 #&gt; Time unit 1s
 #&gt; 
-#&gt; # A tibble: 201 × 3
+#&gt; # A tibble: 201 x 3
 #&gt;    w.length s.e.irrad    s.q.irrad
 #&gt;       &lt;dbl&gt;     &lt;dbl&gt;        &lt;dbl&gt;
-#&gt; 1     400.0 0.6081049 2.033314e-06
-#&gt; 2     400.5 0.6171395 2.066140e-06
-#&gt; 3     401.0 0.6261742 2.098967e-06
-#&gt; 4     401.5 0.6379565 2.141177e-06
-#&gt; 5     402.0 0.6497388 2.183388e-06
-#&gt; 6     402.5 0.6352337 2.137239e-06
-#&gt; 7     403.0 0.6207287 2.091091e-06
-#&gt; 8     403.5 0.6288888 2.121243e-06
-#&gt; 9     404.0 0.6370489 2.151395e-06
+#&gt;  1    400.0 0.6081049 2.033314e-06
+#&gt;  2    400.5 0.6171395 2.066140e-06
+#&gt;  3    401.0 0.6261742 2.098967e-06
+#&gt;  4    401.5 0.6379565 2.141177e-06
+#&gt;  5    402.0 0.6497388 2.183388e-06
+#&gt;  6    402.5 0.6352337 2.137239e-06
+#&gt;  7    403.0 0.6207287 2.091091e-06
+#&gt;  8    403.5 0.6288888 2.121243e-06
+#&gt;  9    404.0 0.6370489 2.151395e-06
 #&gt; 10    404.5 0.6317138 2.135996e-06
 #&gt; # ... with 191 more rows</div><div class='input'>
 </div></pre>

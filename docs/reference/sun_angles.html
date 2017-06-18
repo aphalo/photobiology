@@ -83,7 +83,9 @@
 
     <pre class="usage"><span class='fu'>sun_angles</span>(<span class='kw'>time</span> <span class='kw'>=</span> <span class='kw'>lubridate</span><span class='kw'>::</span><span class='fu'>now</span>(), <span class='kw'>tz</span> <span class='kw'>=</span> <span class='kw'>lubridate</span><span class='kw'>::</span><span class='fu'>tz</span>(<span class='no'>time</span>),
   <span class='kw'>geocode</span> <span class='kw'>=</span> <span class='fu'>data.frame</span>(<span class='kw'>lon</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>lat</span> <span class='kw'>=</span> <span class='fl'>51.5</span>, <span class='kw'>address</span> <span class='kw'>=</span> <span class='st'>"Greenwich"</span>),
-  <span class='kw'>use.refraction</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+  <span class='kw'>use.refraction</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>use.fast.code</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+
+<span class='fu'>sun_angles_fast</span>(<span class='no'>time</span>, <span class='no'>tz</span>, <span class='no'>geocode</span>, <span class='no'>use.refraction</span>)
 
 <span class='fu'>sun_elevation</span>(<span class='kw'>time</span> <span class='kw'>=</span> <span class='kw'>lubridate</span><span class='kw'>::</span><span class='fu'>now</span>(), <span class='kw'>tz</span> <span class='kw'>=</span> <span class='kw'>lubridate</span><span class='kw'>::</span><span class='fu'>tz</span>(<span class='no'>time</span>),
   <span class='kw'>geocode</span> <span class='kw'>=</span> <span class='fu'>data.frame</span>(<span class='kw'>lon</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>lat</span> <span class='kw'>=</span> <span class='fl'>51.5</span>, <span class='kw'>address</span> <span class='kw'>=</span> <span class='st'>"Greenwich"</span>),
@@ -102,22 +104,28 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>time</th>
-      <td><p>POSIXct Time, any valid time zone (TZ) is allowed, default is
-current time</p></td>
+      <td><p>A "vector" of POSIXct Time, with any valid time zone (TZ) is
+allowed, default is current time.</p></td>
     </tr>
     <tr>
       <th>tz</th>
-      <td><p>character string indicating time zone to be used in output.</p></td>
+      <td><p>character string indicating time zone to be used in output, if a
+vector of length 2, first value is used for sunrise and second for sunset.</p></td>
     </tr>
     <tr>
       <th>geocode</th>
       <td><p>data frame with variables lon and lat as numeric values
-(degrees).</p></td>
+(degrees), nrow &gt; 1, allowed.</p></td>
     </tr>
     <tr>
       <th>use.refraction</th>
       <td><p>logical Flag indicating whether to correct for
-fraction in the atmosphere</p></td>
+fraction in the atmosphere.</p></td>
+    </tr>
+    <tr>
+      <th>use.fast.code</th>
+      <td><p>logical Can be used to disable optimizations, for
+testing.</p></td>
     </tr>
     </table>
     
@@ -125,6 +133,12 @@ fraction in the atmosphere</p></td>
 
     <p>A data.frame with variables time (in same TZ as input), TZ, solartime,
   longitude, latitude, address, azimuth, and elevation.</p>
+    
+    <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
+
+    <p>The special, and very frequent case of many time points for a single
+  geocode and time zone is heavily optimized for performance. If the
+  arguments passed fullfil this condition, optimized code is used.</p>
     
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
@@ -136,17 +150,32 @@ fraction in the atmosphere</p></td>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'>library</span>(<span class='no'>lubridate</span>)
-<span class='fu'>sun_angles</span>()</div><div class='output co'>#&gt;                  time tz solartime longitude latitude   address  azimuth
-#&gt; 1 2017-04-29 01:28:56     22:31:34         0     51.5 Greenwich 336.9964
+<span class='fu'>sun_angles</span>()</div><div class='output co'>#&gt;                  time tz solartime longitude latitude   address azimuth
+#&gt; 1 2017-06-18 12:47:52     09:46:38         0     51.5 Greenwich 124.957
 #&gt;   elevation
-#&gt; 1 -21.22489</div><div class='input'><span class='fu'>sun_angles</span>(<span class='fu'>ymd_hms</span>(<span class='st'>"2014-09-23 12:00:00"</span>))</div><div class='output co'>#&gt;                  time  tz solartime longitude latitude   address  azimuth
+#&gt; 1  52.01922</div><div class='input'><span class='fu'>sun_angles</span>(<span class='fu'>ymd_hms</span>(<span class='st'>"2014-09-23 12:00:00"</span>))</div><div class='output co'>#&gt;                  time  tz solartime longitude latitude   address  azimuth
 #&gt; 1 2014-09-23 12:00:00 UTC  12:07:41         0     51.5 Greenwich 182.4467
 #&gt;   elevation
 #&gt; 1  38.20657</div><div class='input'><span class='fu'>sun_angles</span>(<span class='fu'>ymd_hms</span>(<span class='st'>"2014-09-23 12:00:00"</span>),
            <span class='kw'>geocode</span> <span class='kw'>=</span> <span class='fu'>data.frame</span>(<span class='kw'>lat</span><span class='kw'>=</span><span class='fl'>60</span>, <span class='kw'>lon</span><span class='kw'>=</span><span class='fl'>0</span>))</div><div class='output co'>#&gt;                  time  tz solartime longitude latitude address  azimuth
 #&gt; 1 2014-09-23 12:00:00 UTC  12:07:41         0       60    &lt;NA&gt; 182.2136
 #&gt;   elevation
-#&gt; 1  29.71356</div><div class='input'>
+#&gt; 1  29.71356</div><div class='input'><span class='fu'>sun_angles</span>(<span class='fu'>ymd_hms</span>(<span class='st'>"2014-09-23 12:00:00"</span>) + <span class='fu'>minutes</span>((<span class='fl'>0</span>:<span class='fl'>6</span>) * <span class='fl'>10</span>))</div><div class='output co'>#&gt;                  time  tz solartime longitude latitude   address  azimuth
+#&gt; 1 2014-09-23 12:00:00 UTC  12:07:41         0     51.5 Greenwich 182.4467
+#&gt; 2 2014-09-23 12:10:00 UTC  12:17:41         0     51.5 Greenwich 185.6235
+#&gt; 3 2014-09-23 12:20:00 UTC  12:27:41         0     51.5 Greenwich 188.7868
+#&gt; 4 2014-09-23 12:30:00 UTC  12:37:41         0     51.5 Greenwich 191.9294
+#&gt; 5 2014-09-23 12:40:00 UTC  12:47:41         0     51.5 Greenwich 195.0447
+#&gt; 6 2014-09-23 12:50:00 UTC  12:57:42         0     51.5 Greenwich 198.1265
+#&gt; 7 2014-09-23 13:00:00 UTC  13:07:42         0     51.5 Greenwich 201.1693
+#&gt;   elevation
+#&gt; 1  38.20657
+#&gt; 2  38.09432
+#&gt; 3  37.89637
+#&gt; 4  37.61378
+#&gt; 5  37.24803
+#&gt; 6  36.80100
+#&gt; 7  36.27491</div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -155,6 +184,8 @@ fraction in the atmosphere</p></td>
       <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#value">Value</a></li>
+
+      <li><a href="#note">Note</a></li>
 
       <li><a href="#see-also">See also</a></li>
       

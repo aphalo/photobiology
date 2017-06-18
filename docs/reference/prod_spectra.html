@@ -139,7 +139,7 @@ replaced with zeros</p></td>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
-<span class='fu'>head</span>(<span class='no'>sun.data</span>)</div><div class='output co'>#&gt; # A tibble: 6 × 3
+<span class='fu'>head</span>(<span class='no'>sun.data</span>)</div><div class='output co'>#&gt; # A tibble: 6 x 3
 #&gt;   w.length    s.e.irrad    s.q.irrad
 #&gt;      &lt;dbl&gt;        &lt;dbl&gt;        &lt;dbl&gt;
 #&gt; 1      293 2.609665e-06 6.391730e-12
@@ -149,7 +149,7 @@ replaced with zeros</p></td>
 #&gt; 5      297 1.533491e-04 3.807181e-10
 #&gt; 6      298 3.669677e-04 9.141345e-10</div><div class='input'><span class='no'>square.sun.data</span> <span class='kw'>&lt;-</span>
   <span class='fu'>with</span>(<span class='no'>sun.data</span>, <span class='fu'>prod_spectra</span>(<span class='no'>w.length</span>, <span class='no'>w.length</span>, <span class='no'>s.e.irrad</span>, <span class='no'>s.e.irrad</span>))
-<span class='fu'>head</span>(<span class='no'>square.sun.data</span>)</div><div class='output co'>#&gt; # A tibble: 6 × 2
+<span class='fu'>head</span>(<span class='no'>square.sun.data</span>)</div><div class='output co'>#&gt; # A tibble: 6 x 2
 #&gt;   w.length      s.irrad
 #&gt;      &lt;dbl&gt;        &lt;dbl&gt;
 #&gt; 1      293 6.810352e-12
@@ -157,7 +157,7 @@ replaced with zeros</p></td>
 #&gt; 3      295 4.735737e-10
 #&gt; 4      296 4.597001e-09
 #&gt; 5      297 2.351593e-08
-#&gt; 6      298 1.346653e-07</div><div class='input'><span class='fu'>tail</span>(<span class='no'>square.sun.data</span>)</div><div class='output co'>#&gt; # A tibble: 6 × 2
+#&gt; 6      298 1.346653e-07</div><div class='input'><span class='fu'>tail</span>(<span class='no'>square.sun.data</span>)</div><div class='output co'>#&gt; # A tibble: 6 x 2
 #&gt;   w.length   s.irrad
 #&gt;      &lt;dbl&gt;     &lt;dbl&gt;
 #&gt; 1      795 0.1719725

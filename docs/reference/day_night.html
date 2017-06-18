@@ -86,7 +86,9 @@ degrees by supplying "twilight" angle(s) as argument.</p>
 
     <pre class="usage"><span class='fu'>day_night</span>(<span class='kw'>date</span> <span class='kw'>=</span> <span class='kw'>lubridate</span><span class='kw'>::</span><span class='fu'>today</span>(), <span class='kw'>tz</span> <span class='kw'>=</span> <span class='fu'>Sys.timezone</span>(),
   <span class='kw'>geocode</span> <span class='kw'>=</span> <span class='fu'>data.frame</span>(<span class='kw'>lon</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>lat</span> <span class='kw'>=</span> <span class='fl'>51.5</span>, <span class='kw'>address</span> <span class='kw'>=</span> <span class='st'>"Greenwich"</span>),
-  <span class='kw'>twilight</span> <span class='kw'>=</span> <span class='st'>"none"</span>, <span class='kw'>unit.out</span> <span class='kw'>=</span> <span class='st'>"hours"</span>)
+  <span class='kw'>twilight</span> <span class='kw'>=</span> <span class='st'>"none"</span>, <span class='kw'>unit.out</span> <span class='kw'>=</span> <span class='st'>"hours"</span>, <span class='kw'>use.fast.code</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+
+<span class='fu'>day_night_fast</span>(<span class='no'>date</span>, <span class='no'>tz</span>, <span class='no'>geocode</span>, <span class='no'>twilight</span>, <span class='no'>unit.out</span>)
 
 <span class='fu'>noon_time</span>(<span class='kw'>date</span> <span class='kw'>=</span> <span class='kw'>lubridate</span><span class='kw'>::</span><span class='fu'>today</span>(), <span class='kw'>tz</span> <span class='kw'>=</span> <span class='fu'>Sys.timezone</span>(),
   <span class='kw'>geocode</span> <span class='kw'>=</span> <span class='fu'>data.frame</span>(<span class='kw'>lon</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>lat</span> <span class='kw'>=</span> <span class='fl'>51.5</span>, <span class='kw'>address</span> <span class='kw'>=</span> <span class='st'>"Greenwich"</span>),
@@ -113,17 +115,17 @@ degrees by supplying "twilight" angle(s) as argument.</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>date</th>
-      <td><p>vector of POSIXct times or Date objects, any valid TZ is allowed,
+      <td><p>"vector" of POSIXct times or Date objects, any valid TZ is allowed,
 default is current date</p></td>
     </tr>
     <tr>
       <th>tz</th>
-      <td><p>vector of character string indicating time zone to be used in output.</p></td>
+      <td><p>character vector indicating time zone to be used in output.</p></td>
     </tr>
     <tr>
       <th>geocode</th>
       <td><p>data frame with one or more rows and variables lon and lat as
-numeric values (degrees).</p></td>
+numeric values (degrees). If present, address will be copied to the output.</p></td>
     </tr>
     <tr>
       <th>twilight</th>
@@ -133,13 +135,19 @@ solar elevation angle(s) in degrees (negative if below the horizon).</p></td>
     </tr>
     <tr>
       <th>unit.out</th>
-      <td><p>charater string, One of "datetime", "hour", "minute", or "second".</p></td>
+      <td><p>charater string, One of "datetime", "hour", "minute", or
+"second".</p></td>
+    </tr>
+    <tr>
+      <th>use.fast.code</th>
+      <td><p>logical Can be used to disable optimizations, for
+testing.</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A data.fraame with variables day, tz, twilight.rise, twilight.set,
+    <p>A data.frame with variables day, tz, twilight.rise, twilight.set,
   longitude, latitude, address, sunrise, noon, sunset, daylength,
   nightlength.
 
@@ -159,12 +167,16 @@ solar elevation angle(s) in degrees (negative if below the horizon).</p></td>
   are returned as times-of-day in hours since middnight. "date" or "datetime"
   return the same times as datetime objects with TZ set (this is much slower
   the "hours"). Day length and night length are always returned as numeric
-  values expressed in hours.</p>
+  values expressed in hours. If twilight is a numeric vector of length two,
+  the element with index 1 is used for sunrise and that with index 2 for
+  sunset.</p>
     
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 
-    <p>If twilight is a numeric vector of length two, the element with index 1
-  is used for sunrise and that with index 2 for sunset.
+    <p>The special, and very frequent case of many dates for a single geocode
+  and time zone, with same twilight value for sunrise and sunset, is
+  optimized for performance. If the arguments passed fullfil this condition,
+  optimized code is used.
     <code>night_length</code> returns the length of night-time conditions in one
   day (00:00:00 to 23:59:59), rather than the length of the night between two
   consequtive days.</p>
@@ -178,14 +190,30 @@ solar elevation angle(s) in degrees (negative if below the horizon).</p></td>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>library</span>(<span class='no'>lubridate</span>)</div><div class='output co'>#&gt; <span class='message'></span>
-#&gt; <span class='message'>Attaching package: ‘lubridate’</span></div><div class='output co'>#&gt; <span class='message'>The following object is masked from ‘package:base’:</span>
-#&gt; <span class='message'></span>
-#&gt; <span class='message'>    date</span></div><div class='input'><span class='no'>my.geocode</span> <span class='kw'>&lt;-</span> <span class='fu'>data.frame</span>(<span class='kw'>lat</span> <span class='kw'>=</span> <span class='fl'>60</span>, <span class='kw'>lon</span> <span class='kw'>=</span> <span class='fl'>25</span>)
+    <pre class="examples"><div class='input'><span class='fu'>library</span>(<span class='no'>lubridate</span>)
+<span class='no'>my.geocode</span> <span class='kw'>&lt;-</span> <span class='fu'>data.frame</span>(<span class='kw'>lat</span> <span class='kw'>=</span> <span class='fl'>60</span>, <span class='kw'>lon</span> <span class='kw'>=</span> <span class='fl'>25</span>)
 <span class='fu'>day_night</span>(<span class='fu'>ymd</span>(<span class='st'>"2015-05-30"</span>), <span class='kw'>geocode</span> <span class='kw'>=</span> <span class='no'>my.geocode</span>, <span class='kw'>twilight</span> <span class='kw'>=</span> <span class='st'>"civil"</span>)</div><div class='output co'>#&gt;          day              tz twilight.rise twilight.set longitude latitude
 #&gt; 1 2015-05-30 Europe/Helsinki         civil        civil        25       60
 #&gt;   address  sunrise     noon   sunset daylength nightlength
-#&gt; 1    &lt;NA&gt; 2.849374 13.29246 23.73554  20.88617    3.113835</div><div class='input'>
+#&gt; 1    &lt;NA&gt; 2.849374 13.29246 23.73554  20.88617    3.113835</div><div class='input'><span class='fu'>day_night</span>(<span class='fu'>ymd</span>(<span class='st'>"2015-05-30"</span>) + <span class='fu'>days</span>(<span class='fl'>1</span>:<span class='fl'>10</span>), <span class='kw'>geocode</span> <span class='kw'>=</span> <span class='no'>my.geocode</span>, <span class='kw'>twilight</span> <span class='kw'>=</span> <span class='st'>"civil"</span>)</div><div class='output co'>#&gt;           day              tz twilight.rise twilight.set longitude latitude
+#&gt; 1  2015-05-31 Europe/Helsinki         civil        civil        25       60
+#&gt; 2  2015-06-01 Europe/Helsinki         civil        civil        25       60
+#&gt; 3  2015-06-02 Europe/Helsinki         civil        civil        25       60
+#&gt; 4  2015-06-03 Europe/Helsinki         civil        civil        25       60
+#&gt; 5  2015-06-04 Europe/Helsinki         civil        civil        25       60
+#&gt; 6  2015-06-05 Europe/Helsinki         civil        civil        25       60
+#&gt; 7  2015-06-06 Europe/Helsinki         civil        civil        25       60
+#&gt; 8  2015-06-07 Europe/Helsinki         civil        civil        25       60
+#&gt;    address  sunrise     noon       sunset daylength nightlength
+#&gt; 1     &lt;NA&gt; 2.800181 13.29485 2.378952e+01 20.989336    3.010664
+#&gt; 2     &lt;NA&gt; 2.751656 13.29736 2.384305e+01 21.091399    2.908601
+#&gt; 3     &lt;NA&gt; 2.703876 13.29997 2.389606e+01 21.192188    2.807812
+#&gt; 4     &lt;NA&gt; 2.656930 13.30269 2.394845e+01 21.291517    2.708483
+#&gt; 5     &lt;NA&gt; 2.610917 13.30551 9.451228e-05 -2.610823   26.610823
+#&gt; 6     &lt;NA&gt; 2.565953 13.30842 5.088250e-02 -2.515070   26.515070
+#&gt; 7     &lt;NA&gt; 2.522166 13.31142 1.006710e-01 -2.421495   26.421495
+#&gt; 8     &lt;NA&gt; 2.479703 13.31450 1.493024e-01 -2.330400   26.330400
+#&gt;  [ reached getOption("max.print") -- omitted 2 rows ]</div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

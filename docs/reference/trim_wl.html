@@ -174,18 +174,18 @@ boundary, while FALSE discards wavebands that are partly off-boundary).</p></td>
 #&gt; Measured at 60.2091078 N, 24.9647354 E 
 #&gt; Time unit 1s
 #&gt; 
-#&gt; # A tibble: 101 × 3
+#&gt; # A tibble: 101 x 3
 #&gt;    w.length s.e.irrad    s.q.irrad
-#&gt; *     &lt;dbl&gt;     &lt;dbl&gt;        &lt;dbl&gt;
-#&gt; 1       400 0.6081049 2.033314e-06
-#&gt; 2       401 0.6261742 2.098967e-06
-#&gt; 3       402 0.6497388 2.183388e-06
-#&gt; 4       403 0.6207287 2.091091e-06
-#&gt; 5       404 0.6370489 2.151395e-06
-#&gt; 6       405 0.6263786 2.120596e-06
-#&gt; 7       406 0.5996440 2.035099e-06
-#&gt; 8       407 0.5951226 2.024729e-06
-#&gt; 9       408 0.6256209 2.133720e-06
+#&gt;  *    &lt;dbl&gt;     &lt;dbl&gt;        &lt;dbl&gt;
+#&gt;  1      400 0.6081049 2.033314e-06
+#&gt;  2      401 0.6261742 2.098967e-06
+#&gt;  3      402 0.6497388 2.183388e-06
+#&gt;  4      403 0.6207287 2.091091e-06
+#&gt;  5      404 0.6370489 2.151395e-06
+#&gt;  6      405 0.6263786 2.120596e-06
+#&gt;  7      406 0.5996440 2.035099e-06
+#&gt;  8      407 0.5951226 2.024729e-06
+#&gt;  9      408 0.6256209 2.133720e-06
 #&gt; 10      409 0.6615421 2.261761e-06
 #&gt; # ... with 91 more rows</div><div class='input'><span class='fu'>trim_wl</span>(<span class='no'>sun.spct</span>, <span class='kw'>range</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>NA</span>, <span class='fl'>500</span>))</div><div class='output co'>#&gt; Object: source_spct [222 x 3]
 #&gt; Wavelength range 280 to 500 nm, step 0.9230769 to 1 nm 
@@ -193,18 +193,18 @@ boundary, while FALSE discards wavebands that are partly off-boundary).</p></td>
 #&gt; Measured at 60.2091078 N, 24.9647354 E 
 #&gt; Time unit 1s
 #&gt; 
-#&gt; # A tibble: 222 × 3
+#&gt; # A tibble: 222 x 3
 #&gt;    w.length s.e.irrad s.q.irrad
-#&gt; *     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
-#&gt; 1  280.0000         0         0
-#&gt; 2  280.9231         0         0
-#&gt; 3  281.8462         0         0
-#&gt; 4  282.7692         0         0
-#&gt; 5  283.6923         0         0
-#&gt; 6  284.6154         0         0
-#&gt; 7  285.5385         0         0
-#&gt; 8  286.4615         0         0
-#&gt; 9  287.3846         0         0
+#&gt;  *    &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+#&gt;  1 280.0000         0         0
+#&gt;  2 280.9231         0         0
+#&gt;  3 281.8462         0         0
+#&gt;  4 282.7692         0         0
+#&gt;  5 283.6923         0         0
+#&gt;  6 284.6154         0         0
+#&gt;  7 285.5385         0         0
+#&gt;  8 286.4615         0         0
+#&gt;  9 287.3846         0         0
 #&gt; 10 288.3077         0         0
 #&gt; # ... with 212 more rows</div><div class='input'><span class='fu'>trim_wl</span>(<span class='no'>sun.spct</span>, <span class='kw'>range</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>400</span>, <span class='fl'>NA</span>))</div><div class='output co'>#&gt; Object: source_spct [401 x 3]
 #&gt; Wavelength range 400 to 800 nm, step 1 nm 
@@ -212,18 +212,18 @@ boundary, while FALSE discards wavebands that are partly off-boundary).</p></td>
 #&gt; Measured at 60.2091078 N, 24.9647354 E 
 #&gt; Time unit 1s
 #&gt; 
-#&gt; # A tibble: 401 × 3
+#&gt; # A tibble: 401 x 3
 #&gt;    w.length s.e.irrad    s.q.irrad
-#&gt; *     &lt;dbl&gt;     &lt;dbl&gt;        &lt;dbl&gt;
-#&gt; 1       400 0.6081049 2.033314e-06
-#&gt; 2       401 0.6261742 2.098967e-06
-#&gt; 3       402 0.6497388 2.183388e-06
-#&gt; 4       403 0.6207287 2.091091e-06
-#&gt; 5       404 0.6370489 2.151395e-06
-#&gt; 6       405 0.6263786 2.120596e-06
-#&gt; 7       406 0.5996440 2.035099e-06
-#&gt; 8       407 0.5951226 2.024729e-06
-#&gt; 9       408 0.6256209 2.133720e-06
+#&gt;  *    &lt;dbl&gt;     &lt;dbl&gt;        &lt;dbl&gt;
+#&gt;  1      400 0.6081049 2.033314e-06
+#&gt;  2      401 0.6261742 2.098967e-06
+#&gt;  3      402 0.6497388 2.183388e-06
+#&gt;  4      403 0.6207287 2.091091e-06
+#&gt;  5      404 0.6370489 2.151395e-06
+#&gt;  6      405 0.6263786 2.120596e-06
+#&gt;  7      406 0.5996440 2.035099e-06
+#&gt;  8      407 0.5951226 2.024729e-06
+#&gt;  9      408 0.6256209 2.133720e-06
 #&gt; 10      409 0.6615421 2.261761e-06
 #&gt; # ... with 391 more rows</div><div class='input'>
 </div></pre>
