@@ -1274,7 +1274,7 @@ Summaries can be calculated both from individual spectral objects (Table 10) and
 | valleys | -- | + | + | + | + | (+) | (+) |
 | integrate_spct | + | + | + | + | + | + | + |
 | average_spct | + | + | + | + | + | + | + |
-| color | -- | + | -- | -- | -- | -- | -- |
+| color_of | -- | + | -- | -- | -- | -- | -- |
 
 <hr>
 
@@ -1315,7 +1315,7 @@ Summaries can be calculated both from individual spectral objects (Table 10) and
 | valleys |  -- |  + |  + |  + |  + |  (+) |  (+) | 
 | integrate_spct |  **a, d, l** |  **a, d, l** |  **a, d, l** |  **a, d, l** |  **a, d, l** |  **a, d, l** |  **a, d, l** | 
 | average_spct |  **a, d, l** |  **a, d, l** |  **a, d, l** |  **a, d, l** |  **a, d, l** |  **a, d, l** |  **a, d, l** | 
-| color |  -- |  + |  -- |  -- |  -- |  -- |  -- | 
+| color_of |  -- |  + |  -- |  -- |  -- |  -- |  -- | 
 
 <hr>
 
@@ -1689,9 +1689,9 @@ rgb_spct(sun.spct)
 rgb_spct(sun.spct, sens = ciexyzCMF2.spct)
 ```
 
-And also a `color` method for `source_spct`.
+And also a `color_of` method for `source_spct`.
 
 ```{r}
-color(sun.spct)
-color(sun.spct * yellow_gel.spct)
+color_of(sun.spct)
+color_of(sun.spct * yellow_gel.spct)
 ```

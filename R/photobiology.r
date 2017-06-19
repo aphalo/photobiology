@@ -52,8 +52,8 @@
 #' day_length(lubridate::today(tzone = "EET"), tz = "EET",
 #'            geocode = data.frame(lat = 60, lon = 25), unit.out = "hour")
 #' # colour as seen by humans
-#' color(sun.spct)
-#' color(sun.spct * yellow_gel.spct)
+#' color_of(sun.spct)
+#' color_of(sun.spct * yellow_gel.spct)
 #' # filter transmittance
 #' transmittance(yellow_gel.spct)
 #' transmittance(yellow_gel.spct, waveband(c(400,500)))

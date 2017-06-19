@@ -319,26 +319,26 @@ spread.generic_mspct <- function(x, ..., idx = !is.null(names(x))) {
 #'
 #' @param x an R object
 #' @param ... not used in current version
-#' @export color
+#' @export color_of
 #'
 #' @examples
 #' wavelengths <- c(300, 420, 500, 600, NA) # nanometres
-#' color(wavelengths)
-#' color(waveband(c(300,400)))
-#' color(list(blue = waveband(c(400,480)), red = waveband(c(600,700))))
-#' color(numeric())
-#' color(NA_real_)
+#' color_of(wavelengths)
+#' color_of(waveband(c(300,400)))
+#' color_of(list(blue = waveband(c(400,480)), red = waveband(c(600,700))))
+#' color_of(numeric())
+#' color_of(NA_real_)
 #'
-#' color(sun.spct)
+#' color_of(sun.spct)
 #'
 #'
-color <- function(x, ...) UseMethod("color")
+color_of <- function(x, ...) UseMethod("color_of")
 
-#' @describeIn color Default method (returns always "black").
+#' @describeIn color_of Default method (returns always "black").
 #'
 #' @export
 #'
-color.default <- function(x, ...) {
+color_of.default <- function(x, ...) {
   if (length(x) == 0) {
     return(character())
   }
@@ -347,14 +347,14 @@ color.default <- function(x, ...) {
          rep("#000000", length(x)))
 }
 
-#' @describeIn color Method that returns Color definitions corresponding to
+#' @describeIn color_of Method that returns Color definitions corresponding to
 #'   numeric values representing a wavelengths in nm.
 #'
 #' @param type character telling whether "CMF", "CC", or "both" should be returned.
 #'
 #' @export
 #'
-color.numeric <- function(x, type="CMF", ...) {
+color_of.numeric <- function(x, type="CMF", ...) {
   if (length(x) == 0) {
     return(character())
   }
@@ -376,7 +376,7 @@ color.numeric <- function(x, type="CMF", ...) {
   color.out
 }
 
-#' @describeIn color Method that returns Color of elements in a list.
+#' @describeIn color_of Method that returns Color of elements in a list.
 #'
 #' @param short.names logical indicating whether to use short or long names for
 #'   wavebands
@@ -386,10 +386,10 @@ color.numeric <- function(x, type="CMF", ...) {
 #'   \code{color.default} will be called.
 #' @export
 #'
-color.list <- function(x, short.names=TRUE, type="CMF", ...) {
+color_of.list <- function(x, short.names=TRUE, type="CMF", ...) {
   color.out <- character(0)
   for (xi in x) {
-    color.out <- c(color.out, color(xi, short.names = short.names, type = type, ...))
+    color.out <- c(color.out, color_of(xi, short.names = short.names, type = type, ...))
   }
   if (!is.null(names(x))) {
     names(color.out) <- paste(names(x), type, sep = ".")
@@ -397,11 +397,11 @@ color.list <- function(x, short.names=TRUE, type="CMF", ...) {
   return(color.out)
 }
 
-#' @describeIn color Color at midpoint of a \code{\link{waveband}} object.
+#' @describeIn color_of Color at midpoint of a \code{\link{waveband}} object.
 #'
 #' @export
 #'
-color.waveband <- function(x, short.names = TRUE, type = "CMF", ...) {
+color_of.waveband <- function(x, short.names = TRUE, type = "CMF", ...) {
   idx <- ifelse(!short.names, "name", "label")
   name <- labels(x)[[idx]]
   if (type == "both") {
@@ -425,11 +425,11 @@ color.waveband <- function(x, short.names = TRUE, type = "CMF", ...) {
   return(color)
 }
 
-#' @describeIn color
+#' @describeIn color_of
 #'
 #' @export
 #'
-color.source_spct <- function(x, type = "CMF", ...) {
+color_of.source_spct <- function(x, type = "CMF", ...) {
   if (length(x) == 0) {
     return(character())
   }
@@ -451,7 +451,7 @@ color.source_spct <- function(x, type = "CMF", ...) {
   }
 }
 
-#' @describeIn color
+#' @describeIn color_of
 #'
 #' @export
 #'
@@ -460,10 +460,9 @@ color.source_spct <- function(x, type = "CMF", ...) {
 #'
 #' @export
 #'
-color.source_mspct <- function(x, ..., idx = !is.null(names(x))) {
-  msdply(mspct = x, color, ..., idx = idx)
+color_of.source_mspct <- function(x, ..., idx = !is.null(names(x))) {
+  msdply(mspct = x, color_of, ..., idx = idx)
 }
-
 
 # normalization -----------------------------------------------------------
 

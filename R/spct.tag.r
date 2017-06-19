@@ -124,7 +124,7 @@ tag.generic_spct <- function(x,
     }
     wbs.wl.low[i] <- min(wb)
     wbs.wl.high[i] <- max(wb)
-    wbs.rgb[i] <- color(wb)[1]
+    wbs.rgb[i] <- color_of(wb)[1]
   }
   # We add the waveband-independent tags to the spectrum
   x[["wl.color"]] <- w_length2rgb(x[["w.length"]])
@@ -312,7 +312,7 @@ wb2rect_spct <- function(w.band, short.names = TRUE) {
     wbs.wl.low[i] <- min(wb)
     wbs.wl.mid[i] <- midpoint(wb)
     wbs.wl.high[i] <- max(wb)
-    wbs.rgb[i] <- color(wb)[1]
+    wbs.rgb[i] <- color_of(wb)[1]
   }
   new.spct <- tibble::tibble(w.length = wbs.wl.mid,
                                 counts = 0, cps = 0,
