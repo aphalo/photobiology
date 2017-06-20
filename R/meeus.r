@@ -3,7 +3,6 @@
 # partial calculations. All constants are contained in the code itself.
 # They are based in "NOAA Sunrise/Sunset and Solar Position Calculators"
 # available at http://www.esrl.noaa.gov/gmd/grad/solcalc/calcdetails.html
-
 #' Solar astronomy using Meeus' algorithm
 #'
 #' Low level functions based on NOAA's Excell worksheet
