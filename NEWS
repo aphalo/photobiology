@@ -1,13 +1,16 @@
 photobiology 0.9.16
 ===================
 
-Optimize performance of sun_angles() when calculating sun angles for different
-times at a single location and time zone. Other functions returning individual
+Rename S3 method color() to color_of() to avoid a name clash with an S4 method.
+A function color() calling method color_of() maintains backwards compatibility,
+but use of color() is now deprecated.
+Improve performance of sun_angles(). Convenience functions returning individual
 angles, sun_azimuth(), sun_zenith_angle(), and sun_elevation(), also benefit.
-Optimize performance of day_night() when for dates at a single location and
-time zone. Other functions returning individual
-times for sun positions, sunsrise_time(), noon_time(), sunset_time(),
-day_length(), night_length(), also benefit.
+Optimize performance of day_night(). Other functions returning individual times
+for sun positions, sunsrise_time(), noon_time(), sunset_time(), day_length(),
+night_length(), also benefit.
+Revise the docummentation corresponding to these functions and the astronomy"
+vignette.
 
 photobiology 0.9.15
 ===================

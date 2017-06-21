@@ -81,9 +81,9 @@
     <p>This function returns the solar angles for a given time and location.</p>
     
 
-    <pre class="usage"><span class='fu'>sun_angles</span>(<span class='kw'>time</span> <span class='kw'>=</span> <span class='kw'>lubridate</span><span class='kw'>::</span><span class='fu'>now</span>(), <span class='kw'>tz</span> <span class='kw'>=</span> <span class='kw'>lubridate</span><span class='kw'>::</span><span class='fu'>tz</span>(<span class='no'>time</span>),
+    <pre class="usage"><span class='fu'>sun_angles</span>(<span class='kw'>time</span> <span class='kw'>=</span> <span class='kw'>lubridate</span><span class='kw'>::</span><span class='fu'>now</span>(<span class='kw'>tzone</span> <span class='kw'>=</span> <span class='st'>"UTC"</span>), <span class='kw'>tz</span> <span class='kw'>=</span> <span class='kw'>lubridate</span><span class='kw'>::</span><span class='fu'>tz</span>(<span class='no'>time</span>),
   <span class='kw'>geocode</span> <span class='kw'>=</span> <span class='fu'>data.frame</span>(<span class='kw'>lon</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>lat</span> <span class='kw'>=</span> <span class='fl'>51.5</span>, <span class='kw'>address</span> <span class='kw'>=</span> <span class='st'>"Greenwich"</span>),
-  <span class='kw'>use.refraction</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>use.fast.code</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+  <span class='kw'>use.refraction</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
 
 <span class='fu'>sun_angles_fast</span>(<span class='no'>time</span>, <span class='no'>tz</span>, <span class='no'>geocode</span>, <span class='no'>use.refraction</span>)
 
@@ -109,8 +109,7 @@ allowed, default is current time.</p></td>
     </tr>
     <tr>
       <th>tz</th>
-      <td><p>character string indicating time zone to be used in output, if a
-vector of length 2, first value is used for sunrise and second for sunset.</p></td>
+      <td><p>character string indicating time zone to be used in output.</p></td>
     </tr>
     <tr>
       <th>geocode</th>
@@ -122,23 +121,39 @@ vector of length 2, first value is used for sunrise and second for sunset.</p></
       <td><p>logical Flag indicating whether to correct for
 fraction in the atmosphere.</p></td>
     </tr>
-    <tr>
-      <th>use.fast.code</th>
-      <td><p>logical Can be used to disable optimizations, for
-testing.</p></td>
-    </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>A data.frame with variables time (in same TZ as input), TZ, solartime,
-  longitude, latitude, address, azimuth, and elevation.</p>
+  longitude, latitude, address, azimuth, and elevation. If a data frame with
+  multiple rows is passed to <code>geocode</code> and a vector of times longer
+  than one is passed to <code>time</code>, sun position for all combinations of
+  locations and times are returned are returned by <code>sun_angles</code>. In
+  contrast, convenience functions returning a vector, require that either
+  a single time instant or a single location are supplied---i.e. only
+  one of these two arguments can be vectorized in a given call.</p>
     
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 
-    <p>The special, and very frequent case of many time points for a single
-  geocode and time zone is heavily optimized for performance. If the
-  arguments passed fullfil this condition, optimized code is used.</p>
+    <p>This function is an implementation of Meeus equations as used in NOAAs
+  on-line web calculator, which are very precise and valid for a very broad
+  range of dates. For the times of sunrise and sunset the times are affected
+  by refraction in the atmosphere, which does in turn depend on weather
+  conditions. The effect of refraction on the apparent position of the sun
+  is only an estimate based on "typical" conditions. The more tangential to
+  the horizon is the path of the sun, the larger the effect of refraction is
+  on the times of visual occusion of the sun behind the horizon---i.e. the
+  largest timing errors occur at high latitudes.
+  The computation is not defined for latitudes 90 and -90 degrees, i.e. at
+  the poles.
+  There exists a different R implementation of the same algorithms called
+  "AstroCalcPureR" available as function <code>astrocalc4r</code> in package
+  'fishmethods'. Although the equations used are almost all the same, the
+  function signatures and which values are returned differ. In particular,
+  the present implementation splits the calcualtion into two separate
+  functions, one returning angles at given instants in time, and a
+  separate one returning the timing of events for given dates.</p>
     
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
@@ -150,10 +165,10 @@ testing.</p></td>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'>library</span>(<span class='no'>lubridate</span>)
-<span class='fu'>sun_angles</span>()</div><div class='output co'>#&gt;                  time tz solartime longitude latitude   address azimuth
-#&gt; 1 2017-06-18 12:47:52     09:46:38         0     51.5 Greenwich 124.957
+<span class='fu'>sun_angles</span>()</div><div class='output co'>#&gt;                  time  tz solartime longitude latitude   address  azimuth
+#&gt; 1 2017-06-21 22:07:06 UTC  22:05:06         0     51.5 Greenwich 333.3147
 #&gt;   elevation
-#&gt; 1  52.01922</div><div class='input'><span class='fu'>sun_angles</span>(<span class='fu'>ymd_hms</span>(<span class='st'>"2014-09-23 12:00:00"</span>))</div><div class='output co'>#&gt;                  time  tz solartime longitude latitude   address  azimuth
+#&gt; 1 -10.93535</div><div class='input'><span class='fu'>sun_azimuth</span>()</div><div class='output co'>#&gt; [1] 333.3148</div><div class='input'><span class='fu'>sun_elevation</span>()</div><div class='output co'>#&gt; [1] -10.93536</div><div class='input'><span class='fu'>sun_zenith_angle</span>()</div><div class='output co'>#&gt; [1] 100.9354</div><div class='input'><span class='fu'>sun_angles</span>(<span class='fu'>ymd_hms</span>(<span class='st'>"2014-09-23 12:00:00"</span>))</div><div class='output co'>#&gt;                  time  tz solartime longitude latitude   address  azimuth
 #&gt; 1 2014-09-23 12:00:00 UTC  12:07:41         0     51.5 Greenwich 182.4467
 #&gt;   elevation
 #&gt; 1  38.20657</div><div class='input'><span class='fu'>sun_angles</span>(<span class='fu'>ymd_hms</span>(<span class='st'>"2014-09-23 12:00:00"</span>),

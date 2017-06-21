@@ -12,7 +12,7 @@
 
 <meta name="author" content="Pedro J. Aphalo" />
 
-<meta name="date" content="2017-06-18" />
+<meta name="date" content="2017-06-21" />
 
 <title>User Guide: 2 Radiation</title>
 
@@ -69,9 +69,9 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 
 <h1 class="title toc-ignore">User Guide: 2 Radiation</h1>
-<h3 class="subtitle"><em>Package ‘photobiology’ 0.9.15.9000</em></h3>
+<h3 class="subtitle"><em>Package ‘photobiology’ 0.9.16</em></h3>
 <h4 class="author"><em>Pedro J. Aphalo</em></h4>
-<h4 class="date"><em>2017-06-18</em></h4>
+<h4 class="date"><em>2017-06-21</em></h4>
 
 
 <div id="TOC">
@@ -4122,7 +4122,7 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 <td align="center">+</td>
 </tr>
 <tr class="odd">
-<td align="left">color</td>
+<td align="left">color_of</td>
 <td align="center">–</td>
 <td align="center">+</td>
 <td align="center">–</td>
@@ -4461,7 +4461,7 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 <td align="center"><strong>a, d, l</strong></td>
 </tr>
 <tr class="even">
-<td align="left">color</td>
+<td align="left">color_of</td>
 <td align="center">–</td>
 <td align="center">+</td>
 <td align="center">–</td>
@@ -5016,11 +5016,11 @@ Most frequently used summary methods are implemented for collections of spectra.
 <pre><code>## [1] &quot;#544F4B&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">rgb_spct</span>(sun.spct, <span class="dt">sens =</span> ciexyzCMF2.spct)</code></pre></div>
 <pre><code>## [1] &quot;#544F4B&quot;</code></pre>
-<p>And also a <code>color</code> method for <code>source_spct</code>.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">color</span>(sun.spct)</code></pre></div>
+<p>And also a <code>color_of</code> method for <code>source_spct</code>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">color_of</span>(sun.spct)</code></pre></div>
 <pre><code>## source CMF 
 ##  &quot;#544F4B&quot;</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">color</span>(sun.spct <span class="op">*</span><span class="st"> </span>yellow_gel.spct)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">color_of</span>(sun.spct <span class="op">*</span><span class="st"> </span>yellow_gel.spct)</code></pre></div>
 <pre><code>## source CMF 
 ##  &quot;#946000&quot;</code></pre>
 </div>

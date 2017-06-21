@@ -198,7 +198,45 @@ error instead of a warning, <code>NA</code> disables the test.</p></td>
 #&gt;  9 287.3846         0         0
 #&gt; 10 288.3077         0         0
 #&gt; # ... with 512 more rows</div><div class='input'>
-</div></pre>
+<span class='fu'>check_spct</span>(<span class='no'>sun.spct</span>)</div><div class='output co'>#&gt; Object: source_spct [522 x 3]
+#&gt; Wavelength range 280 to 800 nm, step 0.9230769 to 1 nm 
+#&gt; Measured on 2010-06-22 09:51:00 UTC 
+#&gt; Measured at 60.2091078 N, 24.9647354 E 
+#&gt; Time unit 1s
+#&gt; 
+#&gt; # A tibble: 522 x 3
+#&gt;    w.length s.e.irrad s.q.irrad
+#&gt;       &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+#&gt;  1 280.0000         0         0
+#&gt;  2 280.9231         0         0
+#&gt;  3 281.8462         0         0
+#&gt;  4 282.7692         0         0
+#&gt;  5 283.6923         0         0
+#&gt;  6 284.6154         0         0
+#&gt;  7 285.5385         0         0
+#&gt;  8 286.4615         0         0
+#&gt;  9 287.3846         0         0
+#&gt; 10 288.3077         0         0
+#&gt; # ... with 512 more rows</div><div class='input'><span class='fu'>check_spct</span>(-<span class='no'>sun.spct</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: Negative spectral energy irradiance values; minimun s.e.irrad = -0.82</span></div><div class='output co'>#&gt; Object: source_spct [522 x 2]
+#&gt; Wavelength range 280 to 800 nm, step 0.9230769 to 1 nm 
+#&gt; Measured on 2010-06-22 09:51:00 UTC 
+#&gt; Measured at 60.2091078 N, 24.9647354 E 
+#&gt; Time unit 1s
+#&gt; 
+#&gt; # A tibble: 522 x 2
+#&gt;    w.length s.e.irrad
+#&gt;       &lt;dbl&gt;     &lt;dbl&gt;
+#&gt;  1 280.0000         0
+#&gt;  2 280.9231         0
+#&gt;  3 281.8462         0
+#&gt;  4 282.7692         0
+#&gt;  5 283.6923         0
+#&gt;  6 284.6154         0
+#&gt;  7 285.5385         0
+#&gt;  8 286.4615         0
+#&gt;  9 287.3846         0
+#&gt; 10 288.3077         0
+#&gt; # ... with 512 more rows</div><div class='input'><span class='fu'>try</span>(<span class='fu'>check_spct</span>((<span class='no'>sun.spct</span>[<span class='fl'>1</span>, <span class='st'>"w.length"</span>] <span class='kw'>&lt;-</span> <span class='fl'>1000</span>)))</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

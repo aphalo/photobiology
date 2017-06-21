@@ -39,9 +39,9 @@ w_length_range2rgb <- function(w.length,
   num.values <- min(5L, ceiling(spread(w.length)))
   w.length.values <- seq(w.length[1], w.length[2], length.out = num.values)
   s.e.irrad.values <- rep(1.0, length.out = num.values)
-  color <-  s_e_irrad2rgb(w.length.values, s.e.irrad.values, sens=sens,
-                                color.name=ifelse(is.null(color.name),
-                              paste(as.character(w.length[1]), "-", as.character(w.length[2]), " nm", sep=""),
-                           color.name), check=FALSE)
-  return(color)
+  s_e_irrad2rgb(w.length.values, s.e.irrad.values, sens=sens,
+                color.name=ifelse(is.null(color.name),
+                                  paste(as.character(w.length[1]), "-",
+                                        as.character(w.length[2]), " nm", sep=""),
+                                  color.name), check=FALSE)
 }

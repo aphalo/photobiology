@@ -51,10 +51,10 @@
   <div class="col-md-9">
     <div class="page-header toc-ignore">
       <h1>User Guide: 2 Radiation</h1>
-            <h3 class="subtitle">Package ‘photobiology’ 0.9.15.9000</h3>
+            <h3 class="subtitle">Package ‘photobiology’ 0.9.16</h3>
                         <h4 class="author">Pedro J. Aphalo</h4>
             
-            <h4 class="date">2017-06-18</h4>
+            <h4 class="date">2017-06-22</h4>
           </div>
 
     
@@ -4147,7 +4147,7 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 <td align="center">+</td>
 </tr>
 <tr class="odd">
-<td align="left">color</td>
+<td align="left">color_of</td>
 <td align="center">–</td>
 <td align="center">+</td>
 <td align="center">–</td>
@@ -4484,7 +4484,7 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 <td align="center"><strong>a, d, l</strong></td>
 </tr>
 <tr class="even">
-<td align="left">color</td>
+<td align="left">color_of</td>
 <td align="center">–</td>
 <td align="center">+</td>
 <td align="center">–</td>
@@ -5065,11 +5065,11 @@ Most frequently used summary methods are implemented for collections of spectra.
 <pre><code>## [1] "#544F4B"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/rgb_spct.html">rgb_spct</a></span>(sun.spct, <span class="dt">sens =</span> ciexyzCMF2.spct)</code></pre></div>
 <pre><code>## [1] "#544F4B"</code></pre>
-<p>And also a <code>color</code> method for <code>source_spct</code>.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/color.html">color</a></span>(sun.spct)</code></pre></div>
+<p>And also a <code>color_of</code> method for <code>source_spct</code>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/color_of.html">color_of</a></span>(sun.spct)</code></pre></div>
 <pre><code>## source CMF 
 ##  "#544F4B"</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/color.html">color</a></span>(sun.spct <span class="op">*</span><span class="st"> </span>yellow_gel.spct)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/color_of.html">color_of</a></span>(sun.spct <span class="op">*</span><span class="st"> </span>yellow_gel.spct)</code></pre></div>
 <pre><code>## source CMF 
 ##  "#946000"</code></pre>
 </div>

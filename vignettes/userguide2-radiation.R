@@ -344,3 +344,247 @@ e2q(sun.spct, "replace")
 ## ---- manip-6------------------------------------------------------------
 normalize(sun.spct)
 
+## ---- manip-7------------------------------------------------------------
+normalize(sun.spct, range = PAR.wb, norm = "max")
+
+## ---- manip-8------------------------------------------------------------
+normalize(sun.spct, norm = 600.3)
+
+## ------------------------------------------------------------------------
+my.spct <- normalize(sun.spct)
+is_normalized(my.spct)
+getNormalized(my.spct)
+
+## ---- manip-9------------------------------------------------------------
+fscale(sun.spct)
+fscale(sun.spct, f = "total")
+fscale(sun.spct, range = PAR.wb, f = irrad)
+fscale(sun.spct, range = PAR.wb, f = q_irrad, target = 800e-6)
+
+## ------------------------------------------------------------------------
+my.spct <- fscale(sun.spct)
+is_scaled(my.spct)
+getScaled(my.spct)
+
+## ---- manip-10-----------------------------------------------------------
+fshift(sun.spct, range = UVB.wb, f = "mean")
+fshift(sun.spct, range = c(280,290), f = "min")
+
+## ---- manip-11-----------------------------------------------------------
+clean(sun.spct - 0.01, range = c(280.5, 282))
+
+## ---- manip-12-----------------------------------------------------------
+clean(polyester.spct - 0.053)
+
+## ---- manip-13-----------------------------------------------------------
+interpolate_wl(sun.spct, seq(400, 500, by = 0.1))
+
+## ---- trim-1-------------------------------------------------------------
+clip_wl(sun.spct, range = c(400, 402))
+clip_wl(sun.spct, range = c(400, NA))
+
+## ---- trim-2-------------------------------------------------------------
+clip_wl(sun.spct, range = UVA.wb)
+
+## ---- trim-3-------------------------------------------------------------
+clip_wl(sun.spct, range = c(100, 200))
+
+## ---- trim-4-------------------------------------------------------------
+trim_wl(sun.spct, c(282.5, NA))
+clip_wl(sun.spct, c(282.5, NA))
+
+## ---- trim-5-------------------------------------------------------------
+trim_wl(sun.spct, PAR.wb)
+
+## ---- trim-6-------------------------------------------------------------
+trim_wl(sun.spct, c(281.5, NA), fill = NA)
+
+## ---- trim-7-------------------------------------------------------------
+trim_wl(sun.spct, c(275, NA), fill = 0)
+
+## ---- trim-8-------------------------------------------------------------
+trim_wl(sun.spct, c(281.5, NA), fill = NA)
+trim_wl(sun.spct, c(281.5, NA), fill = NA, use.hinges = FALSE)
+
+## ------------------------------------------------------------------------
+trim2overlap(two.mspct)
+
+## ------------------------------------------------------------------------
+extend2extremes(two.mspct, fill = 0)
+
+## ---- weights-1----------------------------------------------------------
+sun.spct * CIE.wb
+
+## ---- tag-1--------------------------------------------------------------
+tag(sun.spct, PAR.wb)
+tag(sun.spct, UV_bands.lst)
+
+## ---- tag-2--------------------------------------------------------------
+tg.sun.spct <- tag(sun.spct, PAR.wb)
+attr(tg.sun.spct, "spct.tags")
+
+## ---- tag-3--------------------------------------------------------------
+wb2tagged_spct(UV_bands.lst)
+wb2rect_spct(UV_bands.lst)
+
+## ---- tag-4--------------------------------------------------------------
+tg.sun.spct
+is_tagged(tg.sun.spct)
+untg.sun.spct <- untag(tg.sun.spct)
+is_tagged(untg.sun.spct)
+
+## ------------------------------------------------------------------------
+is_tagged(untg.sun.spct)
+untag(tg.sun.spct, byref = TRUE)
+is_tagged(untg.sun.spct)
+
+
+## ---- summary-1----------------------------------------------------------
+summary(sun.spct)
+
+## ---- summary-2----------------------------------------------------------
+summary(two_suns.spct)
+
+## ---- summary-3----------------------------------------------------------
+range(sun.spct)
+min(sun.spct)
+max(sun.spct)
+midpoint(sun.spct)
+spread(sun.spct)
+stepsize(sun.spct)
+
+## ---- summary-4----------------------------------------------------------
+filters.mspct <- filter_mspct(list(none = clear.spct,
+                                   pet = polyester.spct,
+                                   yellow = yellow_gel.spct))
+range(filters.mspct)
+
+## ---- summary-5----------------------------------------------------------
+peaks(sun.spct, span = 51)
+valleys(sun.spct, span = 51)
+
+## ---- summary-6----------------------------------------------------------
+peaks(sun.spct, span = 51, unit.out = "photon")
+
+## ---- summary-7----------------------------------------------------------
+peaks(sun.spct, span = 21)
+
+## ---- col-summary-1------------------------------------------------------
+msmsply(filters.mspct, peaks, span = 11)
+
+## ---- irrad-1------------------------------------------------------------
+irrad(sun.spct)
+
+## ---- irrad-2------------------------------------------------------------
+irrad(sun.spct, PAR.wb)
+
+## ---- irrad-3------------------------------------------------------------
+irrad(sun.spct, c(400, 700))
+
+## ---- irrad-4------------------------------------------------------------
+e_irrad(sun.spct, PAR.wb) # W m-2
+q_irrad(sun.spct, PAR.wb) * 1e6 # umol s-1 m-2
+
+## ---- irrad-5------------------------------------------------------------
+irrad(sun.spct, PAR.wb, time.unit = "hour")
+irrad(sun.spct, PAR.wb, time.unit = duration(8, "hours"))
+
+## ---- irrad-6------------------------------------------------------------
+irrad(sun.daily.spct, PAR.wb, time.unit = "second")
+
+## ---- irrad-7------------------------------------------------------------
+e_irrad(sun.spct, UV_bands.lst) # W m-2
+
+## ---- irrad-8------------------------------------------------------------
+irrad(sun.spct, UV_bands.lst, quantity = "total")
+irrad(sun.spct, UV_bands.lst, quantity = "contribution")
+irrad(sun.spct, UV_bands.lst, quantity = "relative")
+irrad(sun.spct, UV_bands.lst, quantity = "average")
+
+## ---- col-names-1--------------------------------------------------------
+names(filters.mspct)
+
+## ---- col-convolve-1-----------------------------------------------------
+filtered_sun <- convolve_each(filters.mspct, sun.spct)
+irrad(filtered_sun, list(UVA.wb, PAR.wb))
+
+## ---- col-convolve-2-----------------------------------------------------
+irrad(convolve_each(filters.mspct, sun.spct), list(UVA.wb, PAR.wb))
+
+## ---- col-convolve-3-----------------------------------------------------
+filtered_sun <- msmsply(filters.mspct, `*`, sun.spct)
+irrad(filtered_sun, list(UVA.wb, PAR.wb))
+
+## ---- fluence-1----------------------------------------------------------
+fluence(sun.spct, exposure.time = duration(1, "hours"))
+fluence(sun.spct, exposure.time = 3600) # seconds
+
+## ---- fluence-2----------------------------------------------------------
+q_fluence(sun.spct, PAR.wb, exposure.time = duration(25, "minutes"))
+
+## ------------------------------------------------------------------------
+q_ratio(sun.spct, UVB.wb, PAR.wb)
+q_ratio(sun.spct, list(UVC.wb, UVB.wb, UVA.wb, UV.wb))
+q_ratio(sun.spct, UVB.wb, list(UV.wb, PAR.wb))
+
+## ---- ratios-2-----------------------------------------------------------
+qe_ratio(sun.spct, list(UVB.wb, PAR.wb))
+
+## ---- ratios-3-----------------------------------------------------------
+q_ratio(filtered_sun, list(UVB.wb, UVA.wb, PAR.wb))
+
+## ------------------------------------------------------------------------
+normalized_diff_ind(sun.spct,
+                    waveband(c(400, 700)), waveband(c(700, 1100)),
+                    irrad)
+
+## ------------------------------------------------------------------------
+transmittance(polyester.spct, list(UVB.wb, UVA.wb, PAR.wb))
+
+## ------------------------------------------------------------------------
+reflectance(green_leaf.spct, waveband(c(600, 700)))
+
+## ------------------------------------------------------------------------
+irrad(sun.spct * polyester.spct, list(UVB.wb, UVA.wb, PAR.wb, wb.trim = TRUE)) /
+  irrad(sun.spct, list(UVB.wb, UVA.wb, PAR.wb, wb.trim = TRUE))
+
+## ------------------------------------------------------------------------
+transmittance(filters.mspct, list(UVA.wb, PAR.wb))
+
+## ------------------------------------------------------------------------
+response(photodiode.spct)
+
+## ------------------------------------------------------------------------
+e_response(photodiode.spct, list(UVB.wb, UVA.wb))
+
+## ------------------------------------------------------------------------
+sensors <- response_mspct(list(GaAsP = photodiode.spct,
+                               CCD = ccd.spct))
+response(sensors, list(UVB.wb, UVA.wb, PAR.wb), quantity = "contribution")
+
+## ------------------------------------------------------------------------
+integrate_spct(sun.spct)
+
+## ------------------------------------------------------------------------
+average_spct(sun.spct)
+
+## ------------------------------------------------------------------------
+w_length2rgb(550) # green
+w_length2rgb(630) # red
+w_length2rgb(c(550, 630, 380, 750)) # vectorized
+
+## ------------------------------------------------------------------------
+w_length_range2rgb(c(400,700))
+
+## ------------------------------------------------------------------------
+with(sun.spct, s_e_irrad2rgb(w.length, s.e.irrad))
+with(sun.spct, s_e_irrad2rgb(w.length, s.e.irrad, sens = ciexyzCMF2.spct))
+
+## ------------------------------------------------------------------------
+rgb_spct(sun.spct)
+rgb_spct(sun.spct, sens = ciexyzCMF2.spct)
+
+## ------------------------------------------------------------------------
+color_of(sun.spct)
+color_of(sun.spct * yellow_gel.spct)
+

@@ -462,7 +462,7 @@ as.chroma_spct <- function(x, ...) {
 
 #' Merge two generic_spct objects
 #'
-#' Relatively quick merge of two spct objects based on w.length.
+#' Merge of two spct objects based on w.length.
 #'
 #' @param x generic_spct (or derived) objects to be merged
 #' @param y generic_spct (or derived) objects to be merged
@@ -470,7 +470,7 @@ as.chroma_spct <- function(x, ...) {
 #' \code{by} defaults to \code{w.length}.
 #' @param ... other arguments passed to \code{dplyr::inner_join()}
 #'
-#' @note if the class of x and y is the same, it is preserved, but
+#' @note If the class of x and y is the same, it is preserved, but
 #' if it differs \code{generic_spct} is used for the returned value,
 #' except when x and y, are one each of classes reflector_spct and
 #' filter_spct in which case an object_spct is returned.

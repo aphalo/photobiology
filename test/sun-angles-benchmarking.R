@@ -35,8 +35,10 @@ z
 
 microbenchmark(day_night())
 microbenchmark(day_night(geocode = my.geocodes))
-microbenchmark(day_night(now(tz = "UTC") + weeks(1:5)))
-microbenchmark(day_night(now() + days(1:365), geocode = my.geocodes) -> z, unit = "ms")
+microbenchmark(day_night(geocode = my.geocodes, unit.out = "datetime"))
+
+microbenchmark(day_night(now(tzone = "UTC") + weeks(1:5)))
+microbenchmark(day_night(now() + days(1:365), geocode = my.geocodes[1:2, ]) -> z, unit = "ms")
 z
 
-profvis(day_night(now() + days(1:365), geocode = my.geocodes) -> z)
+profvis(day_night(now() + days(1:30), geocode = my.geocodes) -> z)

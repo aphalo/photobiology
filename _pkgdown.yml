@@ -88,7 +88,7 @@ reference:
     - reflectance
     - average_spct
     - integrate_spct
-    - color
+    - color_of
     - rgb_spct
     - e_ratio
     - q_ratio

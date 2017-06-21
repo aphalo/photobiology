@@ -10,71 +10,115 @@ library(photobiology)
 library(lubridate)
 
 ## ------------------------------------------------------------------------
-sun_angles(now(), geocode = data.frame(lat = 34, lon = 0))
-sun_angles(ymd_hms("2014-01-01 0:0:0", tz = "UTC") + hours(0:23))
+my.geocode <- data.frame(lat = 60.16, lon = 24.93, address = "Helsinki")
 
 ## ------------------------------------------------------------------------
-sun_angles(getWhenMeasured(sun.spct), geocode = getWhereMeasured(sun.spct))
+sun_angles(time = ymd_hms("2017-06-20 08:00:00", tz = "EET"), geocode = my.geocode)
 
 ## ------------------------------------------------------------------------
-sun_elevation(ymd_hms("2014-01-01 0:0:0", tz = "UTC") + hours(0:23))
+sun_angles()
 
 ## ------------------------------------------------------------------------
-sun_zenith_angle(ymd_hms("2014-01-01 0:0:0", tz = "UTC") + hours(0:23))
+sun_angles(time = ymd_hms("2014-01-01 0:0:0", tz = "EET") + hours(c(0, 6, 12)), 
+           geocode = my.geocode)
 
 ## ------------------------------------------------------------------------
-sun_azimuth(ymd_hms("2014-01-01 0:0:0", tz = "UTC") + hours(0:23))
+my.times <- ymd_hms("2014-01-01 0:0:0", tz = "EET") + hours(c(0, 6, 12))
+sun_angles(time = my.times, geocode = my.geocode)
 
 ## ------------------------------------------------------------------------
-dates <- seq(from = ymd("2015-03-01"), to = ymd("2015-07-1"), length.out = 3)
+two.geocodes <- data.frame(lat = c(60.16, 65.02), 
+                                  lon = c(24.93, 25.47),
+                                  address = c("Helsinki", "Oulu"))
+sun_angles(time = my.times, geocode = two.geocodes)
 
 ## ------------------------------------------------------------------------
-noon_time(dates, tz = "UTC", data.frame(lat = 34, lon = 0))
+sun_angles(time = getWhenMeasured(sun.spct), geocode = getWhereMeasured(sun.spct))
 
 ## ------------------------------------------------------------------------
-noon_time(dates, tz = "CET", data.frame(lat = 34, lon = 0))
+sun_elevation(time = my.times, geocode = my.geocode)
 
 ## ------------------------------------------------------------------------
-day_night(dates, geocode = data.frame(lat = 60, lon = 0))
+sun_zenith_angle(time = my.times, geocode = my.geocode)
 
 ## ------------------------------------------------------------------------
-sunrise_time(geocode = data.frame(lat = 60, lon = 0))
+sun_azimuth(time = my.times, geocode = my.geocode)
 
 ## ------------------------------------------------------------------------
-sunrise_time(today("UTC"), tz = "UTC", geocode = data.frame(lat = 60, lon = 0))
-sunrise_time(today("EET"), tz = "EET", geocode = data.frame(lat = 60, lon = 25))
+dates <- ymd("2015-03-01", tz = "EET") + months(0:5)
+dates
+
+## ------------------------------------------------------------------------
+sunrise_time(now("UTC"), tz = "UTC", geocode = my.geocode)
+sunrise_time(now("EET"), tz = "EET", geocode = my.geocode)
 
 ## ------------------------------------------------------------------------
 sunrise_time(dates, geocode = data.frame(lat = 60, lon = 0))
 sunrise_time(dates, geocode = data.frame(lat = -60, lon = 0))
 
 ## ------------------------------------------------------------------------
-sunrise_time(today("EET"), tz = "EET", 
-             geocode = data.frame(lat = 60, lon = 25),
+sunrise_time(ymd("2017-03-21", tz = "EET"), 
+             tz = "EET", 
+             geocode = my.geocode,
              twilight = "civil")
-sunrise_time(today("EET"), tz = "EET", 
-             geocode = data.frame(lat = 60, lon = 25),
+sunrise_time(ymd("2017-03-21", tz = "EET"), 
+             tz = "EET", 
+             geocode = my.geocode,
              twilight = -10)
-sunrise_time(today("EET"), tz = "EET", 
-             geocode = data.frame(lat = 60, lon = 25),
+sunrise_time(ymd("2017-03-21", tz = "EET"), 
+             tz = "EET", 
+             geocode = my.geocode,
              twilight = +12)
 
 ## ------------------------------------------------------------------------
-sunrise_time(today("EET"), 
+day_night(dates[1:3], 
+          geocode = my.geocode)
+
+## ------------------------------------------------------------------------
+day_night(dates[1:2], 
+          geocode = my.geocode, 
+          unit.out = "days")
+
+## ------------------------------------------------------------------------
+day_night(dates[1:2], 
+          geocode = my.geocode, 
+          unit.out = "datetime")
+
+## ------------------------------------------------------------------------
+day_night(dates[1:3], 
+          geocode = two.geocodes)
+
+## ------------------------------------------------------------------------
+sunrise_time(date = dates, geocode = my.geocode)
+
+## ------------------------------------------------------------------------
+sunrise_time(date = dates, tz = "UTC", geocode = my.geocode)
+
+## ------------------------------------------------------------------------
+noon_time(date = dates, geocode = my.geocode)
+
+## ------------------------------------------------------------------------
+sunset_time(date = dates, geocode = my.geocode)
+
+## ------------------------------------------------------------------------
+noon_time(geocode = my.geocode)
+
+## ------------------------------------------------------------------------
+sunrise_time(ymd("2017-03-21", tz = "EET"), 
              tz = "EET", 
-             geocode = data.frame(lat = 60, lon = 25),
+             geocode = my.geocode)
+sunrise_time(ymd("2017-03-21", tz = "EET"), 
+             tz = "EET", 
+             geocode = my.geocode,
              unit.out = "hours")
 
 ## ------------------------------------------------------------------------
-day_length(dates, geocode = data.frame(lat = 60, lon = 25))
-night_length(dates, geocode = data.frame(lat = 60, lon = 25))
+day_length(dates, geocode = my.geocode)
+night_length(dates, geocode = my.geocode)
 
 ## ------------------------------------------------------------------------
-day_night(dates, 
-          geocode = data.frame(lat = 60, lon = 25))
-day_night(dates, 
-          geocode = data.frame(lat = 60, lon = 25), 
-          unit.out = "datetime")
+day_length(dates, geocode = my.geocode, unit.out = "days")
+night_length(dates, geocode = my.geocode, unit.out = "days")
 
 ## ------------------------------------------------------------------------
 Paris.geo <- data.frame(lon = 2.352222, lat = 48.85661, address = "Paris")
@@ -93,7 +137,7 @@ is.solar_date(my.solar.d)
 is.timepoint(my.solar.d)
 
 ## ------------------------------------------------------------------------
-times <- now() + days(0:1)
+times <- now() + hours(0:6)
 times
 as_tod(times)
 as_tod(times, unit.out = "minutes")
