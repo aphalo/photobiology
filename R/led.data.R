@@ -9,12 +9,12 @@
 #' @docType data
 #' @keywords datasets
 #' @format A \code{source_spct} object with 1421 rows and 2 variables
-#' @name white_led.source_spct
 #' @family Spectral data examples
 #'
 #' @examples
 #' white_led.source_spct
-NULL
+#'
+"white_led.source_spct"
 
 #' @title White led bulb spectrum
 #'
@@ -26,12 +26,12 @@ NULL
 #' @docType data
 #' @keywords datasets
 #' @format A \code{data.frame} object with 2068 rows and 2 variables
-#' @name white_led.cps_spct
 #' @family Spectral data examples
 #'
 #' @examples
 #' white_led.cps_spct
-NULL
+#'
+"white_led.cps_spct"
 
 #' @title White led bulb spectrum
 #'
@@ -45,9 +45,9 @@ NULL
 #' @keywords datasets
 #' @details \itemize{ \item w.length (nm), range 188 to 1117 nm. \item cps }
 #'
-#' @name white_led.raw_spct
 #' @family Spectral data examples
 #'
 #' @examples
 #' white_led.raw_spct
-NULL
+#'
+"white_led.raw_spct"

@@ -9,8 +9,9 @@ angles, sun_azimuth(), sun_zenith_angle(), and sun_elevation(), also benefit.
 Optimize performance of day_night(). Other functions returning individual times
 for sun positions, sunsrise_time(), noon_time(), sunset_time(), day_length(),
 night_length(), also benefit.
-Revise the docummentation corresponding to these functions and the astronomy"
-vignette.
+** Performance optimization does not alter the returned values **
+Revise the docummentation corresponding to these functions and the "astronomy"
+vignette to better describe how vectorization works for these functions.
 
 photobiology 0.9.15
 ===================

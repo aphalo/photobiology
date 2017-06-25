@@ -14,9 +14,12 @@
 #' @docType data
 #' @keywords datasets
 #' @format A source spectrum with 107 rows and 2 variables
-#' @name D65.illuminant.spct
 #' @family Spectral data examples
-NULL
+#'
+#' @examples
+#' D65.illuminant.spct
+#'
+"D65.illuminant.spct"
 
 #' @title CIE A illuminant data
 #'
@@ -35,6 +38,9 @@ NULL
 #' @docType data
 #' @keywords datasets
 #' @format A source spectrum with 96 rows and 2 variables
-#' @name A.illuminant.spct
 #' @family Spectral data examples
-NULL
+#'
+#' @examples
+#' A.illuminant.spct
+#'
+"A.illuminant.spct"

@@ -1,8 +1,9 @@
 #' @title Spectral response of a GaAsP photodiode
 #'
 #' @description A dataset containing wavelengths at a 1 nm interval and
-#'   spectral response as $A W^{-1} nm^{-1}$ for GaAsP photodiode type
+#'   spectral response as \eqn{A / (W / nm)} for GaAsP photodiode type
 #'   G6262 from Hamamatsu. Data digitized from manufacturer's data sheet.
+#'   The value at the peak is 0.19 \eqn{A / W}.
 #'
 #' @details \itemize{ \item w.length (nm). \item s.e.response
 #' (A/W)  }
@@ -15,21 +16,23 @@
 #'
 #' @docType data
 #' @keywords datasets
-#' @format A \code{response_spct} object with 311 rows and 2 variables
-#' @name photodiode.spct
+#' @format A \code{response_spct} object with 94 rows and 2 variables
 #' @family Spectral data examples
-NULL
+#'
+"photodiode.spct"
 
 #' @title Spectral response of a back-thinned CCD image sensor.
 #'
 #' @description A dataset containing wavelengths at a 1 nm interval and
-#'   spectral response as $A W^{-1} nm^{-1}$ for CCD sensor type
+#'   spectral response as quantum efficiency for CCD sensor type
 #'   S11071/S10420 from Hamamatsu (measured without a quartz window). These
 #'   arrays are frequently used as sensors in high-UV-sensitivity array
 #'   spectrometers. Data digitized from manufacturer's data sheet.
+#'   The original data is expressed as percent quantum efficiency with a value
+#'   of 77\% at the peak. The data have been re-expressed as fractions of one.
 #'
-#' @details \itemize{ \item w.length (nm). \item s.e.response
-#' (A/W)  }
+#' @details \itemize{ \item w.length (nm). \item s.q.response
+#' (fractional quantum efficiency)  }
 #'
 #' @references
 #' Hamamatsu (2014) Datasheet: CCD Image Sensors S11071/S10420-01 Series.
@@ -39,7 +42,7 @@ NULL
 #'
 #' @docType data
 #' @keywords datasets
-#' @format A \code{response_spct} object with 201 rows and 2 variables
-#' @name ccd.spct
+#' @format A \code{response_spct} object with 186 rows and 2 variables
 #' @family Spectral data examples
-NULL
+#'
+"ccd.spct"
