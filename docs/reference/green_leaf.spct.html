@@ -81,6 +81,7 @@
     <p>A dataset of spectral reflectance expressed as a fraction of one.</p>
     
 
+    <pre class="usage"><span class='no'>green_leaf.spct</span></pre>
         
     <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
 
@@ -105,7 +106,7 @@ accumulation in birch seedlings Tree Physiology, 1997, 17, 125-132</p>
   <code><a href='black_body.spct.html'>black_body.spct</a></code>, <code><a href='ccd.spct.html'>ccd.spct</a></code>,
   <code><a href='clear.spct.html'>clear.spct</a></code>, <code><a href='clear_body.spct.html'>clear_body.spct</a></code>,
   <code><a href='filter_cps.mspct.html'>filter_cps.mspct</a></code>,
-  <code><a href='photodiode.spct.html'>photodiode.spct</a></code>,
+  <code><a href='opaque.spct.html'>opaque.spct</a></code>, <code><a href='photodiode.spct.html'>photodiode.spct</a></code>,
   <code><a href='polyester.spct.html'>polyester.spct</a></code>,
   <code><a href='sun.daily.data.html'>sun.daily.data</a></code>,
   <code><a href='sun.daily.spct.html'>sun.daily.spct</a></code>, <code><a href='sun.data.html'>sun.data</a></code>,
@@ -116,6 +117,27 @@ accumulation in birch seedlings Tree Physiology, 1997, 17, 125-132</p>
   <code><a href='yellow_gel.spct.html'>yellow_gel.spct</a></code></p>
     
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='no'>green_leaf.spct</span></div><div class='output co'>#&gt; Object: reflector_spct [226 x 2]
+#&gt; Wavelength range 350 to 800 nm, step 2 nm 
+#&gt; Label: File: reflectance.PRN  
+#&gt; Measured on 0000-05-30 13:50:00 UTC 
+#&gt; 
+#&gt; # A tibble: 226 x 2
+#&gt;    w.length     Rfr
+#&gt;       &lt;dbl&gt;   &lt;dbl&gt;
+#&gt;  1      350 0.05135
+#&gt;  2      352 0.04713
+#&gt;  3      354 0.05324
+#&gt;  4      356 0.04740
+#&gt;  5      358 0.04628
+#&gt;  6      360 0.05135
+#&gt;  7      362 0.05033
+#&gt;  8      364 0.04975
+#&gt;  9      366 0.04831
+#&gt; 10      368 0.04932
+#&gt; # ... with 216 more rows</div><div class='input'>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -128,7 +150,9 @@ accumulation in birch seedlings Tree Physiology, 1997, 17, 125-132</p>
       <li><a href="#references">References</a></li>
 
       <li><a href="#see-also">See also</a></li>
-          </ul>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
   </div>
 </div>

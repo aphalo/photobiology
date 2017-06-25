@@ -84,6 +84,7 @@
   cloudy conditions. The variables are as follows:</p>
     
 
+    <pre class="usage"><span class='no'>sun.spct</span></pre>
         
     <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
 
@@ -112,7 +113,7 @@ Radiative Transfer Simulations. Photochemistry and Photobiology, 85:
   <code><a href='black_body.spct.html'>black_body.spct</a></code>, <code><a href='ccd.spct.html'>ccd.spct</a></code>,
   <code><a href='clear.spct.html'>clear.spct</a></code>, <code><a href='clear_body.spct.html'>clear_body.spct</a></code>,
   <code><a href='filter_cps.mspct.html'>filter_cps.mspct</a></code>,
-  <code><a href='green_leaf.spct.html'>green_leaf.spct</a></code>,
+  <code><a href='green_leaf.spct.html'>green_leaf.spct</a></code>, <code><a href='opaque.spct.html'>opaque.spct</a></code>,
   <code><a href='photodiode.spct.html'>photodiode.spct</a></code>,
   <code><a href='polyester.spct.html'>polyester.spct</a></code>,
   <code><a href='sun.daily.data.html'>sun.daily.data</a></code>,
@@ -124,6 +125,28 @@ Radiative Transfer Simulations. Photochemistry and Photobiology, 85:
   <code><a href='yellow_gel.spct.html'>yellow_gel.spct</a></code></p>
     
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='no'>sun.spct</span></div><div class='output co'>#&gt; Object: source_spct [522 x 3]
+#&gt; Wavelength range 280 to 800 nm, step 0.9230769 to 1 nm 
+#&gt; Measured on 2010-06-22 09:51:00 UTC 
+#&gt; Measured at 60.2091078 N, 24.9647354 E 
+#&gt; Time unit 1s
+#&gt; 
+#&gt; # A tibble: 522 x 3
+#&gt;    w.length s.e.irrad s.q.irrad
+#&gt;       &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+#&gt;  1 280.0000         0         0
+#&gt;  2 280.9231         0         0
+#&gt;  3 281.8462         0         0
+#&gt;  4 282.7692         0         0
+#&gt;  5 283.6923         0         0
+#&gt;  6 284.6154         0         0
+#&gt;  7 285.5385         0         0
+#&gt;  8 286.4615         0         0
+#&gt;  9 287.3846         0         0
+#&gt; 10 288.3077         0         0
+#&gt; # ... with 512 more rows</div><div class='input'>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -136,7 +159,9 @@ Radiative Transfer Simulations. Photochemistry and Photobiology, 85:
       <li><a href="#references">References</a></li>
 
       <li><a href="#see-also">See also</a></li>
-          </ul>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
     <h2>Author</h2>
     

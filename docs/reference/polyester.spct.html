@@ -82,6 +82,7 @@
   fractional total transmittance for polyester film.</p>
     
 
+    <pre class="usage"><span class='no'>polyester.spct</span></pre>
         
     <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
 
@@ -102,7 +103,7 @@
   <code><a href='black_body.spct.html'>black_body.spct</a></code>, <code><a href='ccd.spct.html'>ccd.spct</a></code>,
   <code><a href='clear.spct.html'>clear.spct</a></code>, <code><a href='clear_body.spct.html'>clear_body.spct</a></code>,
   <code><a href='filter_cps.mspct.html'>filter_cps.mspct</a></code>,
-  <code><a href='green_leaf.spct.html'>green_leaf.spct</a></code>,
+  <code><a href='green_leaf.spct.html'>green_leaf.spct</a></code>, <code><a href='opaque.spct.html'>opaque.spct</a></code>,
   <code><a href='photodiode.spct.html'>photodiode.spct</a></code>,
   <code><a href='sun.daily.data.html'>sun.daily.data</a></code>,
   <code><a href='sun.daily.spct.html'>sun.daily.spct</a></code>, <code><a href='sun.data.html'>sun.data</a></code>,
@@ -113,6 +114,25 @@
   <code><a href='yellow_gel.spct.html'>yellow_gel.spct</a></code></p>
     
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='no'>polyester.spct</span></div><div class='output co'>#&gt; Object: filter_spct [611 x 2]
+#&gt; Wavelength range 190 to 800 nm, step 1 nm 
+#&gt; 
+#&gt; # A tibble: 611 x 2
+#&gt;    w.length   Tfr
+#&gt;       &lt;int&gt; &lt;dbl&gt;
+#&gt;  1      190 0.011
+#&gt;  2      191 0.010
+#&gt;  3      192 0.011
+#&gt;  4      193 0.015
+#&gt;  5      194 0.016
+#&gt;  6      195 0.012
+#&gt;  7      196 0.011
+#&gt;  8      197 0.011
+#&gt;  9      198 0.011
+#&gt; 10      199 0.011
+#&gt; # ... with 601 more rows</div><div class='input'>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -123,7 +143,9 @@
       <li><a href="#details">Details</a></li>
 
       <li><a href="#see-also">See also</a></li>
-          </ul>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
   </div>
 </div>

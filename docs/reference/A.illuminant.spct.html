@@ -87,6 +87,7 @@
   2014-07-25 The variables are as follows:</p>
     
 
+    <pre class="usage"><span class='no'>A.illuminant.spct</span></pre>
         
     <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
 
@@ -105,7 +106,7 @@
   <code><a href='black_body.spct.html'>black_body.spct</a></code>, <code><a href='ccd.spct.html'>ccd.spct</a></code>,
   <code><a href='clear.spct.html'>clear.spct</a></code>, <code><a href='clear_body.spct.html'>clear_body.spct</a></code>,
   <code><a href='filter_cps.mspct.html'>filter_cps.mspct</a></code>,
-  <code><a href='green_leaf.spct.html'>green_leaf.spct</a></code>,
+  <code><a href='green_leaf.spct.html'>green_leaf.spct</a></code>, <code><a href='opaque.spct.html'>opaque.spct</a></code>,
   <code><a href='photodiode.spct.html'>photodiode.spct</a></code>,
   <code><a href='polyester.spct.html'>polyester.spct</a></code>,
   <code><a href='sun.daily.data.html'>sun.daily.data</a></code>,
@@ -117,6 +118,27 @@
   <code><a href='yellow_gel.spct.html'>yellow_gel.spct</a></code></p>
     
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='no'>A.illuminant.spct</span></div><div class='output co'>#&gt; Object: source_spct [97 x 2]
+#&gt; Wavelength range 300 to 780 nm, step 5 nm 
+#&gt; Time unit 1s
+#&gt; Spectral data normalized to 1 at 560 nm 
+#&gt; 
+#&gt; # A tibble: 97 x 2
+#&gt;    w.length  s.e.irrad
+#&gt;       &lt;dbl&gt;      &lt;dbl&gt;
+#&gt;  1      300 0.00930483
+#&gt;  2      305 0.01128210
+#&gt;  3      310 0.01357690
+#&gt;  4      315 0.01622190
+#&gt;  5      320 0.01925080
+#&gt;  6      325 0.02269800
+#&gt;  7      330 0.02659810
+#&gt;  8      335 0.03098610
+#&gt;  9      340 0.03589680
+#&gt; 10      345 0.04136480
+#&gt; # ... with 87 more rows</div><div class='input'>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -127,7 +149,9 @@
       <li><a href="#details">Details</a></li>
 
       <li><a href="#see-also">See also</a></li>
-          </ul>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
     <h2>Author</h2>
     
