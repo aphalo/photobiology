@@ -12,7 +12,7 @@
 
 <meta name="author" content="Pedro J. Aphalo" />
 
-<meta name="date" content="2017-06-21" />
+<meta name="date" content="2017-06-25" />
 
 <title>User Guide: 2 Radiation</title>
 
@@ -71,7 +71,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <h1 class="title toc-ignore">User Guide: 2 Radiation</h1>
 <h3 class="subtitle"><em>Package ‘photobiology’ 0.9.16</em></h3>
 <h4 class="author"><em>Pedro J. Aphalo</em></h4>
-<h4 class="date"><em>2017-06-21</em></h4>
+<h4 class="date"><em>2017-06-25</em></h4>
 
 
 <div id="TOC">
@@ -4938,15 +4938,15 @@ Most frequently used summary methods are implemented for collections of spectra.
 <p>The functions <code>response</code>, <code>e_response</code> and <code>q_response</code> take <code>response_spct</code> objects as arguments, and return the integrated value for each waveband (integrated over wavelength) <strong>assuming</strong> a light source with a flat spectral energy or photon output respectively. If no waveband is supplied as argument, the whole spectrum is integrated.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">response</span>(photodiode.spct)</code></pre></div>
 <pre><code>##    Total 
-## 25.37446 
+## 24.40478 
 ## attr(,&quot;time.unit&quot;)
 ## [1] &quot;second&quot;
 ## attr(,&quot;radiation.unit&quot;)
 ## [1] &quot;energy response total&quot;</code></pre>
 <p>When a waveband, or list of wavebands, is supplied the response is calculated for the wavebands.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">e_response</span>(photodiode.spct, <span class="kw">list</span>(UVB.wb, UVA.wb))</code></pre></div>
-<pre><code>##       UVB       UVA 
-## 0.7002548 5.9818181 
+<pre><code>##  UVB.tr.lo        UVA 
+##   0.346462   5.981818 
 ## attr(,&quot;time.unit&quot;)
 ## [1] &quot;second&quot;
 ## attr(,&quot;radiation.unit&quot;)
@@ -4959,10 +4959,10 @@ Most frequently used summary methods are implemented for collections of spectra.
                                <span class="dt">CCD =</span> ccd.spct))
 <span class="kw">response</span>(sensors, <span class="kw">list</span>(UVB.wb, UVA.wb, PAR.wb), <span class="dt">quantity =</span> <span class="st">&quot;contribution&quot;</span>)</code></pre></div>
 <pre><code>## # A tibble: 2 x 4
-##   spct.idx response_UVB response_UVA response_PAR
-##     &lt;fctr&gt;        &lt;dbl&gt;        &lt;dbl&gt;        &lt;dbl&gt;
-## 1    GaAsP   0.02759684   0.23574173    0.7152528
-## 2      CCD   0.02146115   0.06323201    0.4098033</code></pre>
+##   spct.idx response_UVB.tr.lo response_UVA response_PAR.tr.hi
+##     &lt;fctr&gt;              &lt;dbl&gt;        &lt;dbl&gt;              &lt;dbl&gt;
+## 1    GaAsP         0.01419648   0.24510842          0.7406951
+## 2      CCD         0.02152008   0.06340564          0.4109286</code></pre>
 </div>
 </div>
 <div id="integration-over-wavelengths" class="section level3">

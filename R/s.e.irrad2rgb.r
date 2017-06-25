@@ -37,7 +37,7 @@
 #' @references Color matching functions obtained from Colour and Vision Research
 #' Laboratory online data respository at \url{http://www.cvrl.org/}.
 #'
-#' @seealso \url{http://www.cs.rit.edu/~ncs/color/t_spectr.html}.
+# @seealso \url{http://www.cs.rit.edu/~ncs/color/t_spectr.html}.
 #'
 #' @family color functions
 #'
