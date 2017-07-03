@@ -56,34 +56,33 @@ cps2Rfr <- function(x.sample,
   stopifnot(is.cps_spct(x.white) &&
               !is.null(getInstrDesc(x.white)))
   stopifnot(getInstrDesc(x.sample)$spectrometer.sn ==
-              getInstrDesc(x.white)$spectrometer.sn)
+            getInstrDesc(x.white)$spectrometer.sn)
 
-  instr.desc <- list(getInstrDesc(x.sample),
-                     getInstrDesc(x.white))
   if (!is.null(x.black)) {
-    instr.desc <- c(instr.desc, getInstrDesc(x.black))
+    stopifnot(getInstrDesc(x.sample)$spectrometer.sn ==
+                getInstrDesc(x.black)$spectrometer.sn)
   }
 
-  if (anyNA(instr.desc)) {
-    warning("Missing intrument descriptor attributes.")
-  } else {
-    instr.sn <- sapply(instr.desc, `[[`, i = "spectrometer.sn")
-    if (!length(unique(instr.sn)) == 1) {
-      stop("ERROR: serial number mismatch between cps_spct objects")
-    }
-  }
+  instr.desc <- getInstrDesc(x.sample)
 
   cps.col.sample <- grep("^cps", names(x.sample), value = TRUE)
   cps.col.white <- grep("^cps", names(x.white), value = TRUE)
-  stopifnot(length(cps.col.sample) == 1 && length(cps.col.white) == 1)
+  stopifnot(length(cps.col.sample) == 1L && length(cps.col.white) == 1)
   other.cols <- setdiff(names(x.sample), cps.col.sample)
   z <- as.generic_spct(x.sample)
   z[[cps.col.sample]] <- NULL
-  z[["Rfr"]] <- x.sample[[cps.col.sample]] / x.white[[cps.col.white]]
+  if (!is.null(x.black)) {
+    cps.col.black <- grep("^cps", names(x.black), value = TRUE)
+    stopifnot(length(cps.col.black) == 1L)
+    z[["Rfr"]] <- (x.sample[[cps.col.sample]] - x.black[[cps.col.black]])  /
+      (x.white[[cps.col.white]] - x.black[[cps.col.black]])
+  } else {
+    z[["Rfr"]] <- x.sample[[cps.col.sample]] / x.white[[cps.col.white]]
+  }
   # guess of dynamic range as a function of bracketing for sample
   if (is.null(dyn.range)) {
     acq_settings <- getInstrSettings(x.sample)
-    if (is.na(acq_settings)) {
+    if (!is.list(acq_settings) && is.na(acq_settings)) {
       dyn.range <- 7e2
     } else {
       integ.time <- acq_settings[["integ.time"]]
@@ -108,39 +107,37 @@ cps2Tfr <- function(x.sample,
   # we make sure that all input spectra have been measured with the same
   # instrument by comparing serial numbers
   stopifnot(is.cps_spct(x.sample) &&
-              is.cps_spct(x.clear) &&
-               (is.null(x.opaque) || is.cps_spct(x.opaque)))
-  instr.desc <- list(getInstrDesc(x.sample),
-                 getInstrDesc(x.clear))
-  if (!is.null(x.opaque)) {
-    instr.desc <- c(instr.desc, getInstrDesc(x.opaque))
-  }
-
-  if (anyNA(instr.desc)) {
-    warning("Missing intrument descriptor attributes.")
-  } else {
-    instr.sn <- sapply(instr.desc, `[[`, i = "spectrometer.sn")
-    if (!length(unique(instr.sn)) == 1) {
-      stop("ERROR: serial number mismatch between cps_spct objects")
-    }
-  }
+              !is.null(getInstrDesc(x.sample)))
+  stopifnot(is.cps_spct(x.clear) &&
+              !is.null(getInstrDesc(x.clear)))
+  stopifnot(getInstrDesc(x.sample)$spectrometer.sn ==
+              getInstrDesc(x.clear)$spectrometer.sn)
 
   if (!is.null(x.opaque)) {
-    x.sample <- x.sample - x.opaque
-    x.clear <- x.clear - x.opaque
+    stopifnot(getInstrDesc(x.sample)$spectrometer.sn ==
+                getInstrDesc(x.opaque)$spectrometer.sn)
   }
+
+  instr.desc <- getInstrDesc(x.sample)
 
   cps.col.sample <- grep("^cps", names(x.sample), value = TRUE)
   cps.col.clear <- grep("^cps", names(x.clear), value = TRUE)
   stopifnot(length(cps.col.sample) == 1 && length(cps.col.clear) == 1)
   z <- as.generic_spct(x.sample)
   z[[cps.col.sample]] <- NULL
-  z[["Tfr"]] <- x.sample[[cps.col.sample]] / x.clear[[cps.col.clear]]
+  if (!is.null(x.opaque)) {
+    cps.col.opaque <- grep("^cps", names(x.opaque), value = TRUE)
+    stopifnot(length(cps.col.opaque) == 1L)
+    z[["Tfr"]] <- (x.sample[[cps.col.sample]] - x.opaque[[cps.col.opaque]])  /
+      (x.clear[[cps.col.clear]] - x.opaque[[cps.col.opaque]])
+  } else {
+    z[["Tfr"]] <- x.sample[[cps.col.sample]] / x.clear[[cps.col.clear]]
+  }
 
   # guess of dynamic range as a function of bracketing for sample
   if (is.null(dyn.range)) {
     acq_settings <- getInstrSettings(x.sample)
-    if (is.na(acq_settings)) {
+    if (!is.list(acq_settings) && is.na(acq_settings)) {
       dyn.range <- 7e2
     } else {
       integ.time <- acq_settings[["integ.time"]]

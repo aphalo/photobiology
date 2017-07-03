@@ -494,7 +494,7 @@ merge.generic_spct <- function(x, y, by = "w.length", ...) {
     setObjectSpct(z, Tfr.type = getTfrType(x), Rfr.type = getRfrType(y))
   } else if ("reflector_spct" %in% class.x && "filter_spct" %in% class.y) {
     yy <- A2T(y, action = "replace", byref = FALSE)
-    z <- dplyr::inner_join(xx, yy, by = "w.length", ...)
+    z <- dplyr::inner_join(x, yy, by = "w.length", ...)
     setObjectSpct(z, Tfr.type = getTfrType(y), Rfr.type = getRfrType(x))
   } else {
     z <- dplyr::inner_join(x, y, by = "w.length", ...)
