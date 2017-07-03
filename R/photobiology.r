@@ -36,6 +36,8 @@
 #'   Tutorials by Hadley Wickham and comments on my presentation at UseR!2015
 #'   allowed me to significantly improve the coding and functionality.
 #'
+#' @importFrom rlang .data
+#'
 #' @examples
 #' # irradiance of the whole spectrum
 #' irrad(sun.spct)

@@ -1,8 +1,11 @@
 photobiology 0.9.17
 ===================
 
-Fix bug in merge.generic_spct().
+Fix bug in merge.generic_spct(), enhance this function to work with spectra
+not sharing the same wavelength values.
 Revise cps2Tfr() and cps2Rfr(): simplify validity tests and fix bug in test.
+Add spectral data for an Arabidopsis leaf as object_spct, filter_spct
+and reflector_spct objects.
 
 photobiology 0.9.16
 ===================

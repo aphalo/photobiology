@@ -469,33 +469,65 @@ as.chroma_spct <- function(x, ...) {
 #' @param by a vector of shared column names in \code{x} and \code{y} to merge on;
 #' \code{by} defaults to \code{w.length}.
 #' @param ... other arguments passed to \code{dplyr::inner_join()}
+#' @param w.length.out numeric array of wavelengths (nm)
+#' @param Tfr.type.out character.
 #'
 #' @note If the class of x and y is the same, it is preserved, but
 #' if it differs \code{generic_spct} is used for the returned value,
 #' except when x and y, are one each of classes reflector_spct and
 #' filter_spct in which case an object_spct is returned.
-#' In the current implementation only wavelengths values shared
-#' by x and y are preserved.
+#' With the default argument for \code{w.length.out} only wavelengths values shared
+#' by \code{x} and \code{y} are preserved. If a numeric vector is supplied, the
+#' two spectra are interpolated to the new wavelength values before merging.
 #'
 #' @seealso \code{\link[dplyr]{join}}
 #'
 #' @export
 #'
-merge.generic_spct <- function(x, y, by = "w.length", ...) {
+merge.generic_spct <- function(x, y,
+                               by = "w.length", ...,
+                               w.length.out = NULL,
+                               Tfr.type.out = "total") {
   class.x <- class(x)
   class.y <- class(y)
+
+  x <- interpolate_spct(spct = x,
+                        w.length.out = w.length.out,
+                        fill = NA,
+                        length.out = NULL)
+  y <- interpolate_spct(spct = y,
+                        w.length.out = w.length.out,
+                        fill = NA,
+                        length.out = NULL)
+
   if (identical(class.x, class.y)) {
     z <- dplyr::inner_join(x, y, by = by, ...)
     class(z) <- class.x
     warning("Attributes lost when merging two objects of class '", class.x, "'.")
-  } else if ("filter_spct" %in% class.x && "reflector_spct" %in% class.y) {
-    xx <- A2T(x, action = "replace", byref = FALSE)
-    z <- dplyr::inner_join(xx, y, by = "w.length", ...)
-    setObjectSpct(z, Tfr.type = getTfrType(x), Rfr.type = getRfrType(y))
-  } else if ("reflector_spct" %in% class.x && "filter_spct" %in% class.y) {
-    yy <- A2T(y, action = "replace", byref = FALSE)
-    z <- dplyr::inner_join(x, yy, by = "w.length", ...)
-    setObjectSpct(z, Tfr.type = getTfrType(y), Rfr.type = getRfrType(x))
+  } else if (("filter_spct" %in% class.x && "reflector_spct" %in% class.y) ||
+             ("reflector_spct" %in% class.x && "filter_spct" %in% class.y)) {
+    if ("filter_spct" %in% class.x && "reflector_spct" %in% class.y) {
+      xx <- x
+      yy <- y
+    } else {
+      xx <- y
+      yy <- x
+    }
+    xx <- A2T(xx, action = "replace", byref = FALSE)
+    z <- dplyr::inner_join(xx, yy, by = "w.length", ...)
+    Tfr.type <- getTfrType(xx)
+    Rfr.type <- getRfrType(yy)
+    if (Tfr.type.out == "internal" && Tfr.type == "total") {
+      stopifnot(Rfr.type == "total")
+      z <- dplyr::mutate(z, Tfr = .data$Tfr / (1 - .data$Rfr))
+      Tfr.type <- "internal"
+    }
+    if (Tfr.type.out == "total" && Tfr.type == "internal") {
+      stopifnot(Rfr.type == "total")
+      z <- dplyr::mutate(z, Tfr = .data$Tfr * (1 - .data$Rfr))
+      Tfr.type <- "total"
+    }
+    setObjectSpct(z, Tfr.type = Tfr.type, Rfr.type = Rfr.type)
   } else {
     z <- dplyr::inner_join(x, y, by = "w.length", ...)
     setGenericSpct(z)

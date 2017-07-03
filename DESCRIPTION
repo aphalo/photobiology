@@ -27,7 +27,8 @@ Imports:
     plyr (>= 1.8.4),
     dplyr (>= 0.7.1),
     splus2R (>= 1.2-2),
-    caTools (>= 1.17.1)
+    caTools (>= 1.17.1),
+    rlang (>= 0.1.1)
 Suggests:
     knitr (>= 1.16),
     rmarkdown (>= 1.6),
