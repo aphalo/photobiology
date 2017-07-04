@@ -33,16 +33,16 @@ test_that("any_spct", {
   expect_silent(check_spct(green_leaf.spct))
   expect_s3_class(green_leaf.spct,
                   c("reflector_spct", "generic_spct", "tbl_df", "tbl", "data.frame"))
-  expect_warning(check_spct(Ler_leaf.spct))
+  expect_silent(check_spct(Ler_leaf.spct))
   expect_s3_class(Ler_leaf.spct,
                   c("object_spct", "generic_spct", "tbl_df", "tbl", "data.frame"))
-  expect_warning(check_spct(Ler_leaf_trns.spct))
+  expect_silent(check_spct(Ler_leaf_trns.spct))
   expect_s3_class(Ler_leaf_trns.spct,
                   c("filter_spct", "generic_spct", "tbl_df", "tbl", "data.frame"))
-  expect_warning(check_spct(Ler_leaf_trns_i.spct))
+  expect_silent(check_spct(Ler_leaf_trns_i.spct))
   expect_s3_class(Ler_leaf_trns_i.spct,
                   c("filter_spct", "generic_spct", "tbl_df", "tbl", "data.frame"))
-  expect_warning(check_spct(Ler_leaf_rflt.spct))
+  expect_silent(check_spct(Ler_leaf_rflt.spct))
   expect_s3_class(Ler_leaf_rflt.spct,
                   c("reflector_spct", "generic_spct", "tbl_df", "tbl", "data.frame"))
   expect_silent(check_spct(clear.spct))
