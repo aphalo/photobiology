@@ -53,7 +53,7 @@
 #'
 #' @docType data
 #' @keywords datasets
-#' @format An \code{reflector_spct} object with 2048 rows and 2 variables
+#' @format An \code{reflector_spct} object with 1750 rows and 2 variables
 #' @family Spectral data examples
 #' @author Aphalo, P. J. & Wang, F (unpublished data)
 #'
@@ -75,7 +75,7 @@
 #'
 #' @docType data
 #' @keywords datasets
-#' @format An \code{filter_spct} object with 2048 rows and 2 variables
+#' @format An \code{filter_spct} object with 1753 rows and 2 variables
 #' @family Spectral data examples
 #' @author
 #' Aphalo, P. J. & Wang, F (unpublished data)
@@ -98,7 +98,7 @@
 #'
 #' @docType data
 #' @keywords datasets
-#' @format An \code{filter_spct} object with 2048 rows and 2 variables
+#' @format An \code{filter_spct} object with 2401 rows and 2 variables
 #' @family Spectral data examples
 #' @author
 #' Aphalo, P. J. & Wang, F (unpublished data)
