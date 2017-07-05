@@ -17,10 +17,10 @@ but use of color() is now deprecated.
 Improve performance of sun_angles(). Convenience functions returning individual
 angles, sun_azimuth(), sun_zenith_angle(), and sun_elevation(), also benefit.
 Optimize performance of day_night(). Other functions returning individual times
-for sun positions, sunsrise_time(), noon_time(), sunset_time(), day_length(),
+for sun positions, sunrise_time(), noon_time(), sunset_time(), day_length(),
 night_length(), also benefit.
 ** Performance optimization does not alter the returned values **
-Revise the docummentation corresponding to these functions and the "astronomy"
+Revise the documentation corresponding to these functions and the "astronomy"
 vignette to better describe how vectorization works for these functions.
 
 photobiology 0.9.15
@@ -74,7 +74,7 @@ Overhaul the astronomy related functions. Non-backward compatible changes
 in their parameters. Code rewritten using Meeus' astronomical algorithms
 resulting in better accuracy, much faster calculation of times for solar noon,
 sunrise and sunset. In addition the new algorithm can be used for a broader
-range of years, limited only by function julian() in R, which ignores leap
+range of years, limited only by function Julian() in R, which ignores leap
 seconds.
 Not fully backward compatible as returned values differ slightly from
 those in older versions, as long as indexing has been done by name.
