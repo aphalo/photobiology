@@ -15,6 +15,7 @@
 #' @param use.hinges logical, if TRUE (the default)
 #' @param fill if fill==NULL then tails are deleted, otherwise tails of y
 #'   are filled with the value of fill
+#' @param verbose logical Use to suppress warnings
 #'
 #' @return a data.frame with variables \code{x} and \code{y}
 #'
@@ -32,7 +33,8 @@
 #'
 trim_tails <- function(x, y,
                        low.limit=min(x), high.limit=max(x),
-                       use.hinges=TRUE, fill=NULL)
+                       use.hinges=TRUE, fill=NULL,
+                       verbose = TRUE)
 {
 #  if (!check_spectrum(w.length, s.irrad)) return(NA)
 
@@ -47,7 +49,7 @@ trim_tails <- function(x, y,
       x <- c(low.tail, x)
       low.end <- low.limit
     } else {
-      warning("Ignoring low.limit as it is too low.")
+      if (verbose) warning("Ignoring low.limit as it is too low.")
       low.limit <- low.end
     }
   }
@@ -63,7 +65,7 @@ trim_tails <- function(x, y,
       x <- c(x, high.tail)
       high.end <- high.limit
     } else {
-      warning("Ignoring high.limit as it is too high.")
+      if (verbose) warning("Ignoring high.limit as it is too high.")
       high.limit <- high.end
     }
   }
