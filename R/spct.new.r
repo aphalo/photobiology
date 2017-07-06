@@ -198,9 +198,10 @@ response_spct <- function(w.length = NULL,
 #'
 #' @param Tfr numeric vector with spectral transmittance as fraction of one
 #' @param Tpc numeric vector with spectral transmittance as percent values
-#' @param A   numeric vector of absorbance values (log10 based)
-#' @param Tfr.type character string indicating whether transmittance values are
-#'   "total" or "internal" values
+#' @param Afr numeric vector of absorptance as fraction of one
+#' @param A   numeric vector of absorbance values (log10 based a.u.)
+#' @param Tfr.type,Afr.type character string indicating whether transmittance
+#'   and absorptance values are "total" or "internal" values
 #'
 #' @note "internal" transmittance is defined as the transmittance of the
 #'   material body itself, while "total" transmittance includes the effects of
@@ -208,32 +209,37 @@ response_spct <- function(w.length = NULL,
 #'
 #' @export
 #'
-filter_spct <- function(w.length=NULL,
-                        Tfr=NULL,
-                        Tpc=NULL,
-                        A=NULL,
-                        Tfr.type=c("total", "internal"),
-                        comment=NULL,
+filter_spct <- function(w.length = NULL,
+                        Tfr = NULL,
+                        Tpc = NULL,
+                        Afr = NULL,
+                        A = NULL,
+                        Tfr.type = c("total", "internal"),
+                        Afr.type = Tfr.type,
+                        comment = NULL,
                         strict.range = getOption("photobiology.strict.range", default = FALSE),
                         multiple.wl = 1L,
                         ...) {
   if (length(w.length) == 0) {
     z <- tibble::tibble(w.length = numeric(), Tfr = numeric())
-  } else if (is.null(Tpc) && is.null(A) && is.numeric(Tfr)) {
+  } else if (is.null(Tpc) && is.null(A) && is.null(Afr) && is.numeric(Tfr)) {
     z <- tibble::tibble(w.length, Tfr, ...)
-  } else if (is.null(Tfr) && is.null(A) && is.numeric(Tpc)) {
+  } else if (is.null(Tfr) && is.null(A) && is.null(Afr) && is.numeric(Tpc)) {
     z <- tibble::tibble(w.length, Tpc, ...)
-  } else if (is.null(Tpc) && is.null(Tfr) && is.numeric(A)) {
+  } else if (is.null(Tpc) && is.null(Tfr) && is.null(Afr) && is.numeric(A)) {
     z <- tibble::tibble(w.length, A, ...)
+  } else if (is.null(Tpc) && is.null(Tfr) && is.null(A) && is.numeric(Afr)) {
+    z <- tibble::tibble(w.length, Afr, ...)
+    Tfr.type <- Afr.type
   } else {
-    warning("Only one of Tfr, Tpc or A should be different from NULL.")
+    warning("Only one of Tfr, Tpc, Afr, or A should be different from NULL.")
     z <- tibble::tibble(w.length, ...)
   }
   if (!is.null(comment)) {
     comment(z) <- comment
   }
-  setFilterSpct(z,
-                Tfr.type,
+  setFilterSpct(x = z,
+                Tfr.type = Tfr.type,
                 strict.range = strict.range,
                 multiple.wl = multiple.wl)
   z
@@ -268,7 +274,7 @@ reflector_spct <- function(w.length = NULL,
   if (!is.null(comment)) {
     comment(z) <- comment
   }
-  setReflectorSpct(z,
+  setReflectorSpct(x = z,
                    Rfr.type = Rfr.type,
                    strict.range = strict.range,
                    multiple.wl = multiple.wl)
@@ -279,20 +285,24 @@ reflector_spct <- function(w.length = NULL,
 #'
 #' @export
 #'
-object_spct <- function(w.length=NULL,
-                        Rfr=NULL,
-                        Tfr=NULL,
-                        Tfr.type=c("total", "internal"),
-                        Rfr.type=c("total", "specular"),
-                        comment=NULL,
+object_spct <- function(w.length = NULL,
+                        Rfr = NULL,
+                        Tfr = NULL,
+                        Afr = NULL,
+                        Tfr.type = c("total", "internal"),
+                        Rfr.type = c("total", "specular"),
+                        Afr.type = c("total", "internal"),
+                        comment = NULL,
                         strict.range = getOption("photobiology.strict.range", default = FALSE),
                         multiple.wl = 1L,
                         ...) {
   if (length(w.length) == 0) {
     z <- tibble::tibble(w.length = numeric(),
                            Rfr = numeric(), Tfr = numeric(), ...)
-  } else {
+  } else if (is.null(Afr)) {
     z <- tibble::tibble(w.length, Rfr, Tfr, ...)
+  } else if (is.null(Tfr)) {
+    z <- tibble::tibble(w.length, Rfr, Afr, ...)
   }
   if (!is.null(comment)) {
     comment(z) <- comment

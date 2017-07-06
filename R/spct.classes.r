@@ -147,8 +147,9 @@ check_spct.cps_spct <- function(x,
       # we need to be very lax here as during processing of scans we can negative
       # values due to subtraction of dark scans
       if (abs(cps.range[1]) > (2 * cps.range[2])) {
-        message.text <- paste0("Off-range cps values, min = ",
-                               cps.range[1], ", max = ", cps.range[2])
+        message.text <- paste("Off-range cps values [",
+                              formatted_range(cps.range),
+                              "] instead of  [0..1]", sep = "")
         if (is.null(strict.range) || is.na(strict.range)) {
           message(message.text)
         } else if (strict.range) {
@@ -186,15 +187,13 @@ check_spct.filter_spct <-
            ...)
   {
 
-    range_check <- function(x, strict.range) {
+    range_check_Tfr <- function(x, strict.range) {
       if (!all(is.na(x[["Tfr"]]))) {
         Tfr.min <- min(x[["Tfr"]], na.rm = TRUE)
         Tfr.max <- max(x[["Tfr"]], na.rm = TRUE)
         if (Tfr.min < -1e-4 || Tfr.max > 1 + 1e-6) {
           message.text <- paste("Off-range transmittance values [",
-                                signif(Tfr.min, 2),
-                                "...",
-                                signif(Tfr.max, 2),
+                                formatted_range(c(Tfr.min, Tfr.max)),
                                 "] instead of  [0..1]", sep = "")
           if (is.null(strict.range) || is.na(strict.range)) {
             message(message.text)
@@ -209,28 +208,51 @@ check_spct.filter_spct <-
       }
     }
 
-  range_check_A <- function(x, strict.range) {
-    if (!all(is.na(x[["A"]]))) {
-      A.min <- min(x[["A"]], na.rm = TRUE)
-      A.max <- max(x[["A"]], na.rm = TRUE)
-      if (A.min < -1e-7 || A.max > 20) {
-        message.text <- paste("Off-range absorbance values [",
-                              signif(A.min, 2),
-                              "...",
-                              signif(A.max, 2),
-                              "] instead of  [0..20]", sep = "")
-        if (is.null(strict.range) || is.na(strict.range)) {
-          message(message.text)
-        } else if (strict.range) {
-          stop(message.text)
-        } else if (!strict.range) {
-          warning(message.text)
-        } else {
-          stop ("Bad argument for 'strict.range': ", strict.range)
+    range_check_Afr <- function(x, strict.range) {
+      if (!all(is.na(x[["Afr"]]))) {
+        Afr.min <- min(x[["Afr"]], na.rm = TRUE)
+        Afr.max <- max(x[["Afr"]], na.rm = TRUE)
+        if (Afr.min < -1e-4 || Afr.max > 1 + 1e-6) {
+          message.text <-
+            paste0(
+              "Off-range absorptance values [",
+              formatted_range(c(Afr.min, Afr.max)),
+              "] instead of  [0..1]",
+              sep = ""
+            )
+          if (is.null(strict.range) || is.na(strict.range)) {
+            message(message.text)
+          } else if (strict.range) {
+            stop(message.text)
+          } else if (!strict.range) {
+            warning(message.text)
+          } else {
+            stop ("Bad argument for 'strict.range': ", strict.range)
+          }
         }
       }
     }
-  }
+
+    range_check_A <- function(x, strict.range) {
+      if (!all(is.na(x[["A"]]))) {
+        A.min <- min(x[["A"]], na.rm = TRUE)
+        A.max <- max(x[["A"]], na.rm = TRUE)
+        if (A.min < -1e-7 || A.max > 20) {
+          message.text <- paste("Off-range absorbance values [",
+                                formatted_range(c(A.min, A.max)),
+                                "] instead of  [0..20]", sep = "")
+          if (is.null(strict.range) || is.na(strict.range)) {
+            message(message.text)
+          } else if (strict.range) {
+            stop(message.text)
+          } else if (!strict.range) {
+            warning(message.text)
+          } else {
+            stop ("Bad argument for 'strict.range': ", strict.range)
+          }
+        }
+      }
+    }
 
   x <- check_spct.generic_spct(x, multiple.wl = multiple.wl)
 
@@ -259,15 +281,17 @@ check_spct.filter_spct <-
   }
   # look for percentages and change them into fractions of one
   if (exists("Tfr", x, mode = "numeric", inherits = FALSE)) {
-    range_check(x, strict.range = strict.range)
+    range_check_Tfr(x, strict.range = strict.range)
   } else if (exists("Tpc", x, mode = "numeric", inherits = FALSE)) {
     x[["Tfr"]] <- x[["Tpc"]] / 100
     x[["Tpc"]] <-  NULL
-    range_check(x, strict.range = strict.range)
+    range_check_Tfr(x, strict.range = strict.range)
   } else if (exists("A", x, mode = "numeric", inherits = FALSE)) {
     range_check_A(x, strict.range = strict.range)
+  } else if (exists("Afr", x, mode = "numeric", inherits = FALSE)) {
+    range_check_Afr(x, strict.range = strict.range)
   } else {
-    warning("No transmittance or absorbance data found in filter_spct")
+    warning("No transmittance, absortance or absorbance data found in filter_spct")
     x[["Tfr"]] <- NA_real_
   }
   x
@@ -290,9 +314,7 @@ check_spct.reflector_spct <-
           message.text <-
             paste0(
               "Off-range reflectance values [",
-              signif(Rfr.min, 2),
-              "...",
-              signif(Rfr.max, 2),
+              formatted_range(c(Rfr.min, Rfr.max)),
               "] instead of  [0..1]",
               sep = ""
             )
@@ -348,8 +370,13 @@ check_spct.object_spct <-
       Tfr.min <- min(x[["Tfr"]], na.rm = TRUE)
       Tfr.max <- max(x[["Tfr"]], na.rm = TRUE)
       if (Tfr.min < -1e-4 || Tfr.max > 1 + 1e-6) {
-        message.text <- paste("Off-range transmittance values [", signif(Tfr.min, 2),
-                              "...", signif(Tfr.max, 2), "] instead of  [0..1]", sep="")
+        message.text <-
+          paste0(
+            "Off-range transmittance values [",
+            formatted_range(c(Tfr.min, Tfr.max)),
+            "] instead of  [0..1]",
+            sep = ""
+          )
         if (is.null(strict.range) || is.na(strict.range)) {
           message(message.text)
         } else if (strict.range) {
@@ -363,7 +390,30 @@ check_spct.object_spct <-
     }
   }
 
-  x <- check_spct.generic_spct(x, multiple.wl = multiple.wl)
+  range_check_Afr <- function(x, strict.range) {
+    if (!all(is.na(x[["Afr"]]))) {
+      Afr.min <- min(x[["Afr"]], na.rm = TRUE)
+      Afr.max <- max(x[["Afr"]], na.rm = TRUE)
+      if (Afr.min < -1e-4 || Afr.max > 1 + 1e-6) {
+        message.text <-
+          paste0(
+            "Off-range absorptance values [",
+            formatted_range(c(Afr.min, Afr.max)),
+            "] instead of  [0..1]",
+            sep = ""
+          )
+        if (is.null(strict.range) || is.na(strict.range)) {
+          message(message.text)
+        } else if (strict.range) {
+          stop(message.text)
+        } else if (!strict.range) {
+          warning(message.text)
+        } else {
+          stop ("Bad argument for 'strict.range': ", strict.range)
+        }
+      }
+    }
+  }
 
   range_check_Rfr <- function(x, strict.range) {
     if (!all(is.na(x$Rfr))) {
@@ -371,8 +421,13 @@ check_spct.object_spct <-
       Rfr.max <- max(x[["Rfr"]], na.rm = TRUE)
       if (!is.na(Rfr.min) && !is.na(Rfr.max)) {
         if (Rfr.min < -1e-4 ||  Rfr.max > 1 + 1e-6) {
-          message.text <- paste0("Off-range reflectance values [", signif(Rfr.min, 2), "...",
-                                 signif(Rfr.max, 2), "] instead of  [0..1]", sep="")
+          message.text <-
+            paste0(
+              "Off-range reflectance values [",
+              formatted_range(c(Rfr.min, Rfr.max)),
+              "] instead of  [0..1]",
+              sep = ""
+            )
           if (is.null(strict.range) || is.na(strict.range)) {
             message(message.text)
           } else if (strict.range) {
@@ -386,6 +441,8 @@ check_spct.object_spct <-
       }
     }
   }
+
+  x <- check_spct.generic_spct(x, multiple.wl = multiple.wl)
 
   if (is.null(getTfrType(x))) {
     setTfrType(x, "total")
@@ -416,11 +473,20 @@ check_spct.object_spct <-
     x <- dplyr::rename_(x, .dots = stats::setNames(dots, "Tpc"))
     warning("Found variable 'transmittance', I am assuming it expressed as percent")
   }
+  if (exists("Afr", x, mode = "numeric", inherits=FALSE)) {
+    dots <- list(~Afr)
+    range_check_Afr(x, strict.range=strict.range)
+  }
+
   if (exists("Tfr", x, mode = "numeric", inherits=FALSE)) {
     range_check_Tfr(x, strict.range=strict.range)
   } else if (exists("Tpc", x, mode = "numeric", inherits=FALSE)) {
     x[["Tfr"]] <- x[["Tpc"]] / 100
     x[["Tpc"]] <- NULL
+    range_check_Tfr(x, strict.range=strict.range)
+  } else if (exists("Afr", x, mode = "numeric", inherits=FALSE)) {
+    x[["Tfr"]] <- 1 - x[["Afr"]]
+    setTfrType(x, getAfrType(x))
     range_check_Tfr(x, strict.range=strict.range)
   } else {
     warning("No transmittance or absorptance data found in object_spct")
@@ -484,7 +550,7 @@ check_spct.source_spct <-
           message.text <-
             paste(
               "Negative spectral energy irradiance values; minimun s.e.irrad =",
-              signif(s.e.range[1], 2)
+              format(s.e.range[1], digits = 3, nsmall = 2)
             )
           if (is.null(strict.range) || is.na(strict.range)) {
             message(message.text)
@@ -643,67 +709,75 @@ rmDerivedSpct <- function(x) {
 #' setSourceSpct(my.df)
 #' is.source_spct(my.df)
 #'
-setGenericSpct <- function(x, multiple.wl = 1L) {
-  name <- substitute(x)
-  rmDerivedSpct(x)
-  if (!is.data.frame(x) || inherits(x, "data.table")) {
-    x <- tibble::as_tibble(x)
+setGenericSpct <-
+  function(x,
+           multiple.wl = 1L) {
+    name <- substitute(x)
+    rmDerivedSpct(x)
+    if (!is.data.frame(x) || inherits(x, "data.table")) {
+      x <- tibble::as_tibble(x)
+    }
+    if (!is.generic_spct(x)) {
+      class(x) <- c("generic_spct", class(x))
+      attr(x, "spct.tags") <- NA
+      x <- setMultipleWl(x, multiple.wl = multiple.wl)
+    }
+    x <- check_spct(x)
+    attr(x, "spct.version") <- 2
+    if (is.name(name)) {
+      name <- as.character(name)
+      assign(name, x, parent.frame(), inherits = TRUE)
+    }
+    invisible(x)
   }
-  if (!is.generic_spct(x)) {
-    class(x) <- c("generic_spct", class(x))
-    attr(x, "spct.tags") <- NA
-    x <- setMultipleWl(x, multiple.wl = multiple.wl)
-  }
-  x <- check_spct(x)
-  attr(x, "spct.version") <- 2
-  if (is.name(name)) {
-    name <- as.character(name)
-    assign(name, x, parent.frame(), inherits = TRUE)
-  }
-  invisible(x)
-}
 
 #' @describeIn setGenericSpct Set class of a an object to "cps_spct".
 #'
 #' @export
 #' @exportClass cps_spct
 #'
-setRawSpct <- function(x, strict.range = getOption("photobiology.strict.range", default = FALSE), multiple.wl = 1L) {
-  name <- substitute(x)
-  rmDerivedSpct(x)
-  if (!is.data.frame(x) || inherits(x, "data.table")) {
-    x <- tibble::as_tibble(x)
+setRawSpct <-
+  function(x,
+           strict.range = getOption("photobiology.strict.range", default = FALSE),
+           multiple.wl = 1L) {
+    name <- substitute(x)
+    rmDerivedSpct(x)
+    if (!is.data.frame(x) || inherits(x, "data.table")) {
+      x <- tibble::as_tibble(x)
+    }
+    setGenericSpct(x, multiple.wl = multiple.wl)
+    class(x) <- c("raw_spct", class(x))
+    x <- check_spct(x, strict.range = strict.range)
+    if (is.name(name)) {
+      name <- as.character(name)
+      assign(name, x, parent.frame(), inherits = TRUE)
+    }
+    invisible(x)
   }
-  setGenericSpct(x, multiple.wl = multiple.wl)
-  class(x) <- c("raw_spct", class(x))
-  x <- check_spct(x, strict.range = strict.range)
-  if (is.name(name)) {
-    name <- as.character(name)
-    assign(name, x, parent.frame(), inherits = TRUE)
-  }
-  invisible(x)
-}
 
 #' @describeIn setGenericSpct Set class of a an object to "cps_spct".
 #'
 #' @export
 #' @exportClass cps_spct
 #'
-setCpsSpct <- function(x, strict.range = getOption("photobiology.strict.range", default = FALSE), multiple.wl = 1L) {
-  name <- substitute(x)
-  rmDerivedSpct(x)
-  if (!is.data.frame(x) || inherits(x, "data.table")) {
-    x <- tibble::as_tibble(x)
+setCpsSpct <-
+  function(x,
+           strict.range = getOption("photobiology.strict.range", default = FALSE),
+           multiple.wl = 1L) {
+    name <- substitute(x)
+    rmDerivedSpct(x)
+    if (!is.data.frame(x) || inherits(x, "data.table")) {
+      x <- tibble::as_tibble(x)
+    }
+    setGenericSpct(x, multiple.wl = multiple.wl)
+    class(x) <- c("cps_spct", class(x))
+    x <- check_spct(x, strict.range = strict.range)
+    if (is.name(name)) {
+      name <- as.character(name)
+      assign(name, x, parent.frame(), inherits = TRUE)
+    }
+    invisible(x)
   }
-  setGenericSpct(x, multiple.wl = multiple.wl)
-  class(x) <- c("cps_spct", class(x))
-  x <- check_spct(x, strict.range = strict.range)
-  if (is.name(name)) {
-    name <- as.character(name)
-    assign(name, x, parent.frame(), inherits = TRUE)
-  }
-  invisible(x)
-}
 
 #' @describeIn setGenericSpct Set class of an object to "filter_spct".
 #'
@@ -713,32 +787,35 @@ setCpsSpct <- function(x, strict.range = getOption("photobiology.strict.range", 
 #' @export
 #' @exportClass filter_spct
 #'
-setFilterSpct <- function(x, Tfr.type=c("total", "internal"),
-                          strict.range = getOption("photobiology.strict.range", default = FALSE), multiple.wl = 1L) {
-  name <- substitute(x)
-  if ((is.object_spct(x) || is.filter_spct(x)) && getTfrType(x) != "unknown") {
-    if (length(Tfr.type) > 1) {
-      Tfr.type <- getTfrType(x)
-    } else if (Tfr.type != getTfrType(x)) {
-      warning("Changing attribute 'Tfr.type' from ", getTfrType(x),
-              " into ", Tfr.type)
+setFilterSpct <-
+  function(x,
+           Tfr.type = c("total", "internal"),
+           strict.range = getOption("photobiology.strict.range", default = FALSE),
+           multiple.wl = 1L) {
+    name <- substitute(x)
+    if ((is.object_spct(x) || is.filter_spct(x)) && getTfrType(x) != "unknown") {
+      if (length(Tfr.type) > 1) {
+        Tfr.type <- getTfrType(x)
+      } else if (Tfr.type != getTfrType(x)) {
+        warning("Changing attribute 'Tfr.type' from ", getTfrType(x),
+                " into ", Tfr.type)
+      }
     }
+    rmDerivedSpct(x)
+    if (!is.data.frame(x) || inherits(x, "data.table")) {
+      x <- tibble::as_tibble(x)
+    }
+    setGenericSpct(x, multiple.wl = multiple.wl)
+    class(x) <- c("filter_spct", class(x))
+    setTfrType(x, Tfr.type[1])
+    x <- check_spct(x, strict.range = strict.range)
+    #  setkey_spct(x, w.length)
+    if (is.name(name)) {
+      name <- as.character(name)
+      assign(name, x, parent.frame(), inherits = TRUE)
+    }
+    invisible(x)
   }
-  rmDerivedSpct(x)
-  if (!is.data.frame(x) || inherits(x, "data.table")) {
-    x <- tibble::as_tibble(x)
-  }
-  setGenericSpct(x, multiple.wl = multiple.wl)
-  class(x) <- c("filter_spct", class(x))
-  setTfrType(x, Tfr.type[1])
-  x <- check_spct(x, strict.range = strict.range)
-  #  setkey_spct(x, w.length)
-  if (is.name(name)) {
-    name <- as.character(name)
-    assign(name, x, parent.frame(), inherits = TRUE)
-  }
-  invisible(x)
-}
 
 #' @describeIn setGenericSpct Set class of a an object to "reflector_spct".
 #'
@@ -746,74 +823,79 @@ setFilterSpct <- function(x, Tfr.type=c("total", "internal"),
 #' @export
 #' @exportClass reflector_spct
 #'
-setReflectorSpct <- function(x, Rfr.type=c("total", "specular"),
-                             strict.range = getOption("photobiology.strict.range", default = FALSE), multiple.wl = 1L) {
-  name <- substitute(x)
-  if ((is.object_spct(x) || is.reflector_spct(c)) && getRfrType(x) != "unknown") {
-    if (length(Rfr.type) > 1) {
-      Rfr.type <- getRfrType(x)
-    } else if (Rfr.type != getRfrType(x)) {
-      warning("Changing attribute 'Rfr.type' from ", getRfrType(x),
-              " into ", Rfr.type)
+setReflectorSpct <-
+  function(x,
+           Rfr.type=c("total", "specular"),
+           strict.range = getOption("photobiology.strict.range", default = FALSE),
+           multiple.wl = 1L) {
+    name <- substitute(x)
+    if ((is.object_spct(x) || is.reflector_spct(c)) && getRfrType(x) != "unknown") {
+      if (length(Rfr.type) > 1) {
+        Rfr.type <- getRfrType(x)
+      } else if (Rfr.type != getRfrType(x)) {
+        warning("Changing attribute 'Rfr.type' from ", getRfrType(x),
+                " into ", Rfr.type)
+      }
     }
+    rmDerivedSpct(x)
+    if (!is.data.frame(x) || inherits(x, "data.table")) {
+      x <- tibble::as_tibble(x)
+    }
+    setGenericSpct(x, multiple.wl = multiple.wl)
+    class(x) <- c("reflector_spct", class(x))
+    setRfrType(x, Rfr.type[1])
+    x <- check_spct(x, strict.range = strict.range)
+    #  setkey_spct(x, w.length)
+    if (is.name(name)) {
+      name <- as.character(name)
+      assign(name, x, parent.frame(), inherits = TRUE)
+    }
+    invisible(x)
   }
-  rmDerivedSpct(x)
-  if (!is.data.frame(x) || inherits(x, "data.table")) {
-    x <- tibble::as_tibble(x)
-  }
-  setGenericSpct(x, multiple.wl = multiple.wl)
-  class(x) <- c("reflector_spct", class(x))
-  setRfrType(x, Rfr.type[1])
-  x <- check_spct(x, strict.range = strict.range)
-  #  setkey_spct(x, w.length)
-  if (is.name(name)) {
-    name <- as.character(name)
-    assign(name, x, parent.frame(), inherits = TRUE)
-  }
-  invisible(x)
-}
 
 #' @describeIn setGenericSpct Set class of an object to "object_spct".
 #'
 #' @export
 #' @exportClass object_spct
 #'
-setObjectSpct <- function(x,
-                          Tfr.type=c("total", "internal"),
-                          Rfr.type=c("total", "specular"),
-                          strict.range = getOption("photobiology.strict.range", default = FALSE), multiple.wl = 1L) {
-  name <- substitute(x)
-  if ((is.filter_spct(x) || is.object_spct(x)) && getTfrType(x) != "unknown") {
-    if (length(Tfr.type) > 1) {
-      Tfr.type <- getTfrType(x)
-    } else if (Tfr.type != getTfrType(x)) {
-      warning("Changing attribute 'Tfr.type' from ", getTfrType(x),
-              " into ", Tfr.type)
+setObjectSpct <-
+  function(x,
+           Tfr.type=c("total", "internal"),
+           Rfr.type=c("total", "specular"),
+           strict.range = getOption("photobiology.strict.range", default = FALSE),
+           multiple.wl = 1L) {
+    name <- substitute(x)
+    if ((is.filter_spct(x) || is.object_spct(x)) && getTfrType(x) != "unknown") {
+      if (length(Tfr.type) > 1) {
+        Tfr.type <- getTfrType(x)
+      } else if (Tfr.type != getTfrType(x)) {
+        warning("Changing attribute 'Tfr.type' from ", getTfrType(x),
+                " into ", Tfr.type)
+      }
     }
-  }
-  if ((is.reflector_spct(x) || is.object_spct(x)) && getRfrType(x) != "unknown") {
-    if (length(Rfr.type) > 1) {
-      Rfr.type <- getRfrType(x)
-    } else if (Rfr.type != getRfrType(x)) {
-      warning("Changing attribute 'Rfr.type' from ", getRfrType(x),
-              " into ", Rfr.type)
+    if ((is.reflector_spct(x) || is.object_spct(x)) && getRfrType(x) != "unknown") {
+      if (length(Rfr.type) > 1) {
+        Rfr.type <- getRfrType(x)
+      } else if (Rfr.type != getRfrType(x)) {
+        warning("Changing attribute 'Rfr.type' from ", getRfrType(x),
+                " into ", Rfr.type)
+      }
     }
+    rmDerivedSpct(x)
+    if (!is.data.frame(x) || inherits(x, "data.table")) {
+      x <- tibble::as_tibble(x)
+    }
+    setGenericSpct(x, multiple.wl = multiple.wl)
+    class(x) <- c("object_spct", class(x))
+    setTfrType(x, Tfr.type)
+    setRfrType(x, Rfr.type)
+    x <- check_spct(x, strict.range = strict.range)
+    if (is.name(name)) {
+      name <- as.character(name)
+      assign(name, x, parent.frame(), inherits = TRUE)
+    }
+    invisible(x)
   }
-  rmDerivedSpct(x)
-  if (!is.data.frame(x) || inherits(x, "data.table")) {
-    x <- tibble::as_tibble(x)
-  }
-  setGenericSpct(x, multiple.wl = multiple.wl)
-  class(x) <- c("object_spct", class(x))
-  setTfrType(x, Tfr.type)
-  setRfrType(x, Rfr.type)
-  x <- check_spct(x, strict.range = strict.range)
-  if (is.name(name)) {
-    name <- as.character(name)
-    assign(name, x, parent.frame(), inherits = TRUE)
-  }
-  invisible(x)
-}
 
 #' @describeIn setGenericSpct Set class of an object to "response_spct".
 #'
@@ -821,23 +903,26 @@ setObjectSpct <- function(x,
 #' @export
 #' @exportClass response_spct
 #'
-setResponseSpct <- function(x, time.unit="second", multiple.wl = 1L) {
-  name <- substitute(x)
-  rmDerivedSpct(x)
-  if (!is.data.frame(x) || inherits(x, "data.table")) {
-    x <- tibble::as_tibble(x)
+setResponseSpct <-
+  function(x,
+           time.unit="second",
+           multiple.wl = 1L) {
+    name <- substitute(x)
+    rmDerivedSpct(x)
+    if (!is.data.frame(x) || inherits(x, "data.table")) {
+      x <- tibble::as_tibble(x)
+    }
+    setGenericSpct(x, multiple.wl = multiple.wl)
+    class(x) <- c("response_spct", class(x))
+    setTimeUnit(x, time.unit)
+    x <- check_spct(x)
+    #  setkey_spct(x, w.length)
+    if (is.name(name)) {
+      name <- as.character(name)
+      assign(name, x, parent.frame(), inherits = TRUE)
+    }
+    invisible(x)
   }
-  setGenericSpct(x, multiple.wl = multiple.wl)
-  class(x) <- c("response_spct", class(x))
-  setTimeUnit(x, time.unit)
-  x <- check_spct(x)
-  #  setkey_spct(x, w.length)
-  if (is.name(name)) {
-    name <- as.character(name)
-    assign(name, x, parent.frame(), inherits = TRUE)
-  }
-  invisible(x)
-}
 
 #' @describeIn setGenericSpct Set class of an object to "source_spct".
 #'
@@ -845,47 +930,53 @@ setResponseSpct <- function(x, time.unit="second", multiple.wl = 1L) {
 #' @export
 #' @exportClass source_spct
 #'
-setSourceSpct <- function(x, time.unit="second", bswf.used=c("none", "unknown"),
-                          strict.range = getOption("photobiology.strict.range", default = FALSE), multiple.wl = 1L) {
-  name <- substitute(x)
-  rmDerivedSpct(x)
-  if (!is.data.frame(x) || inherits(x, "data.table")) {
-    x <- tibble::as_tibble(x)
+setSourceSpct <-
+  function(x,
+           time.unit="second",
+           bswf.used=c("none", "unknown"),
+           strict.range = getOption("photobiology.strict.range", default = FALSE),
+           multiple.wl = 1L) {
+    name <- substitute(x)
+    rmDerivedSpct(x)
+    if (!is.data.frame(x) || inherits(x, "data.table")) {
+      x <- tibble::as_tibble(x)
+    }
+    setGenericSpct(x, multiple.wl = multiple.wl)
+    class(x) <- c("source_spct", class(x))
+    setTimeUnit(x, time.unit)
+    setBSWFUsed(x, bswf.used = bswf.used)
+    x <- check_spct(x, strict.range = strict.range)
+    #  setkey_spct(x, w.length)
+    if (is.name(name)) {
+      name <- as.character(name)
+      assign(name, x, parent.frame(), inherits = TRUE)
+    }
+    invisible(x)
   }
-  setGenericSpct(x, multiple.wl = multiple.wl)
-  class(x) <- c("source_spct", class(x))
-  setTimeUnit(x, time.unit)
-  setBSWFUsed(x, bswf.used = bswf.used)
-  x <- check_spct(x, strict.range = strict.range)
-  #  setkey_spct(x, w.length)
-  if (is.name(name)) {
-    name <- as.character(name)
-    assign(name, x, parent.frame(), inherits = TRUE)
-  }
-  invisible(x)
-}
 
 #' @describeIn setGenericSpct Set class of an object to "chroma_spct".
 #'
 #' @export
 #' @exportClass chroma_spct
 #'
-setChromaSpct <- function(x, multiple.wl = 1L) {
-  name <- substitute(x)
-  rmDerivedSpct(x)
-  if (!is.data.frame(x) || inherits(x, "data.table")) {
-    x <- tibble::as_tibble(x)
+setChromaSpct <-
+  function(x,
+           multiple.wl = 1L) {
+    name <- substitute(x)
+    rmDerivedSpct(x)
+    if (!is.data.frame(x) || inherits(x, "data.table")) {
+      x <- tibble::as_tibble(x)
+    }
+    setGenericSpct(x, multiple.wl = multiple.wl)
+    class(x) <- c("chroma_spct", class(x))
+    x <- check_spct(x)
+    #  setkey_spct(x, w.length)
+    if (is.name(name)) {
+      name <- as.character(name)
+      assign(name, x, parent.frame(), inherits = TRUE)
+    }
+    invisible(x)
   }
-  setGenericSpct(x, multiple.wl = multiple.wl)
-  class(x) <- c("chroma_spct", class(x))
-  x <- check_spct(x)
-  #  setkey_spct(x, w.length)
-  if (is.name(name)) {
-    name <- as.character(name)
-    assign(name, x, parent.frame(), inherits = TRUE)
-  }
-  invisible(x)
-}
 
 # is functions for spct classes --------------------------------------------
 
@@ -1574,6 +1665,86 @@ getRfrType <- function(x) {
   }
 }
 
+# Afr.type attribute ------------------------------------------------------
+
+#' Set the "Afr.type" attribute
+#'
+#' Function to set by reference the "Afr.type" attribute of an existing
+#' filter_spct or object_spct object
+#'
+#' @param x a filter_spct or an object_spct object
+#' @param Afr.type a character string, either "total" or "internal"
+#'
+#' @return x
+#' @note This function alters x itself by reference and in addition
+#'   returns x invisibly. If x is not a filter_spct or an object_spct object, x is not modified
+#'   The behaviour of this function is 'unusual' in that the default for
+#'   parameter \code{Afr.type} is used only if \code{x} does not already have
+#'   this attribute set.
+#'
+#' @export
+#' @family Afr attribute functions
+#' @examples
+#' my.spct <- polyester.spct
+#' getAfrType(my.spct)
+#' setAfrType(my.spct, "internal")
+#' getAfrType(my.spct)
+#'
+setAfrType <- function(x, Afr.type=c("total", "internal")) {
+  name <- substitute(x)
+  if (length(Afr.type) > 1) {
+    if (getAfrType(x) != "unknown") {
+      Afr.type <- getAfrType(x)
+    } else {
+      Afr.type <- Afr.type[[1]]
+    }
+  }
+  if (is.filter_spct(x) || is.object_spct(x) ||
+      is.summary_filter_spct(x) || is.summary_object_spct(x)) {
+    if  (!(Afr.type %in% c("total", "internal", "unknown"))) {
+      warning("Invalid 'Afr.type' argument, only 'total' and 'internal' supported.")
+      return(x)
+    }
+    attr(x, "Afr.type") <- Afr.type
+    if (is.name(name)) {
+      name <- as.character(name)
+      assign(name, x, parent.frame(), inherits = TRUE)
+    }
+  }
+  invisible(x)
+}
+
+#' Get the "Afr.type" attribute
+#'
+#' Function to read the "Afr.type" attribute of an existing filter_spct or
+#' object_spct object.
+#'
+#' @param x a filter_spct or object_spct object
+#'
+#' @return character string
+#'
+#' @note If x is not a \code{filter_spct} or an \code{object_spct} object,
+#'   \code{NA} is returned.
+#'
+#' @export
+#' @family Afr attribute functions
+#' @examples
+#' getAfrType(polyester.spct)
+#'
+getAfrType <- function(x) {
+  if (is.filter_spct(x) || is.object_spct(x) ||
+      is.summary_filter_spct(x) || is.summary_object_spct(x)) {
+    Afr.type <- attr(x, "Afr.type", exact = TRUE)
+    if (is.null(Afr.type) || is.na(Afr.type)) {
+      # need to handle objects created with old versions
+      Afr.type <- "unknown"
+    }
+    return(Afr.type[[1]])
+  } else {
+    return(NA)
+  }
+}
+
 # spct.version ------------------------------------------------------------
 
 #' Get the "spct.version" attribute
@@ -1843,8 +2014,7 @@ getWhenMeasured <- function(x, ...) UseMethod("getWhenMeasured")
 #' @export
 getWhenMeasured.default <- function(x, ...) {
   # we return an NA of class POSIXct
-  suppressWarnings(lubridate::ymd_hms(NA_character_,
-                                  tz = "UTC"))
+  suppressWarnings(lubridate::ymd_hms(NA_character_, tz = "UTC"))
 }
 
 #' @describeIn getWhenMeasured generic_spct

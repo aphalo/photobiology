@@ -54,13 +54,13 @@ copy_attributes.generic_spct <- function(x, y,
                    generic_spct,
                    raw_spct = "linearized",
                    cps_spct = "linearized",
-                   source_spct = "time.unit",
+                   source_spct = c("time.unit", "bswf.used"),
                    response_spct = c("time.unit", "bswf.used"),
                    # need to be copied in case class of object_spct
                    # is changed temporarily
-                   filter_spct = c("Tfr.type", "Rfr.type"),
+                   filter_spct = c("Tfr.type", "Rfr.type", "Afr.type"),
                    reflector_spct = c("Tfr.type", "Rfr.type"),
-                   object_spct = c("Tfr.type", "Rfr.type"),
+                   object_spct = c("Tfr.type", "Rfr.type", "Afr.type"),
                    chroma_spct = character()
     )
     which <- c(which, which.add)

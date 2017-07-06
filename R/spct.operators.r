@@ -1323,7 +1323,7 @@ tanpi.generic_spct <- function(x) {
 
 #' Convert absorbance into transmittance
 #'
-#' Function that coverts absorbance into transmittance (fraction).
+#' Function that coverts absorbance (a.u.) into transmittance (fraction).
 #'
 #' @param x an R object
 #' @param action a character string
@@ -1382,27 +1382,31 @@ A2T.filter_mspct <- function(x, action = "add", byref = FALSE, ...) {
 
 #' Convert transmittance into absorbance.
 #'
-#' Function that coverts transmittance into absorbance (fraction).
+#' Function that coverts transmittance (fraction) into absorbance (a.u.).
 #'
 #' @param x an R object
 #' @param action character Allowed values "replace" and "add"
 #' @param byref logical indicating if new object will be created by reference or by copy of x
+#' @param clean logical replace off-boundary values before conversion
 #' @param ... not used in current version
 #'
 #' @export T2A
 #' @family quantity conversion functions
 #'
-T2A <- function(x, action, byref, ...) UseMethod("T2A")
+T2A <- function(x, action, byref, clean, ...) UseMethod("T2A")
 
 #' @describeIn T2A Default method for generic function
 #'
 #' @export
 #'
-T2A.default <- function(x, action=NULL, byref = FALSE, ...) {
-  if (any(x < 0)) {
-    Tfr.zero <- getOption("photobiology.Tfr.zero", default = 1e-10)
-    warning("Replacing zeros by", Tfr.zero)
-    x <- ifelse(x <= 0, Tfr.zero, x)
+T2A.default <- function(x, action=NULL, byref = FALSE, clean = TRUE, ...) {
+  if (clean) {
+    Tfr.zero <- getOption("photobiology.Tfr.zero", default = 0)
+    if (any(x < Tfr.zero)) {
+      warning("Replacing ", sum(x < Tfr.zero), " values < ",
+              Tfr.zero, " with ", Tfr.zero)
+      x <- ifelse(x <= 0, Tfr.zero, x)
+    }
   }
   return(-log10(x))
 }
@@ -1411,13 +1415,16 @@ T2A.default <- function(x, action=NULL, byref = FALSE, ...) {
 #'
 #' @export
 #'
-T2A.filter_spct <- function(x, action="add", byref = FALSE, ...) {
+T2A.filter_spct <- function(x, action="add", byref = FALSE, clean = TRUE, ...) {
   if (byref) {
     name <- substitute(x)
   }
   if (exists("A", x, inherits=FALSE)) {
     NULL
   } else if (exists("Tfr", x, inherits=FALSE)) {
+    if (clean) {
+      x <- clean(x)
+    }
     x[["A"]] <- -log10(x[["Tfr"]])
   } else {
     x[["A"]] <- NA
@@ -1439,10 +1446,259 @@ T2A.filter_spct <- function(x, action="add", byref = FALSE, ...) {
 #'
 #' @export
 #'
-T2A.filter_mspct <- function(x, action = "add", byref = FALSE, ...) {
-  msmsply(x, T2A, action = action, byref = byref, ...)
+T2A.filter_mspct <- function(x, action = "add", byref = FALSE, clean = TRUE, ...) {
+  msmsply(x, T2A, action = action, byref = byref, clean = clean, ...)
 }
 
+# T2Afr ---------------------------------------------------------------------
+
+#' Convert transmittance into absorptance.
+#'
+#' Function that coverts transmittance (fraction) into absorptance (fraction).
+#' If reflectance (fraction) is available, it allows conversions between
+#' internal and total absorptance.
+#'
+#' @param x an R object
+#' @param action character Allowed values "replace" and "add"
+#' @param byref logical indicating if new object will be created by reference or by copy of x
+#' @param clean logical replace off-boundary values before conversion
+#' @param ... not used in current version
+#'
+#' @export T2Afr
+#' @family quantity conversion functions
+#'
+#' @examples
+#' T2Afr(Ler_leaf.spct)
+#'
+T2Afr <- function(x, action, byref, clean, ...) UseMethod("T2Afr")
+
+#' @describeIn T2Afr Default method for generic function
+#'
+#' @export
+#'
+T2Afr.default <- function(x, action=NULL, byref = FALSE, clean = FALSE, ...) {
+  if (clean) {
+    Tfr.zero <- getOption("photobiology.Tfr.zero", default = 0)
+    if (any(x < Tfr.zero)) {
+      warning("Replacing ", sum(x < Tfr.zero), " values < ",
+              Tfr.zero, " with ", Tfr.zero)
+      x <- ifelse(x <= 0, Tfr.zero, x)
+    }
+  }
+  return(1 - x)
+}
+
+#' @describeIn T2Afr Method for filter spectra
+#'
+#' @export
+#'
+T2Afr.filter_spct <- function(x,
+                              action = "add",
+                              byref = FALSE,
+                              clean = FALSE,
+                              ...) {
+  if (byref) {
+    name <- substitute(x)
+  }
+  Tfr.type <- getTfrType(x)
+  if (exists("Afr", x, inherits=FALSE)) {
+    NULL
+  } else {
+    x <- A2T(x)
+    if (clean) {
+      x <- clean(x)
+    }
+    x[["Afr"]] <- 1 - x[["Tfr"]]
+    setAfrType(x, getTfrType(x))
+  }
+  if (action=="replace" && exists("Tfr", x, inherits=FALSE)) {
+    x[["Tfr"]] <- NULL
+  }
+  if (byref && is.name(name)) {  # this is a temporary safe net
+    name <- as.character(name)
+    assign(name, x, parent.frame(), inherits = TRUE)
+  }
+  if (any(is.infinite(x$A))) {
+    warning("'Inf' absorbance values generated as some Tfr values ",
+            "were equal to zero!")
+  }
+  return(x)
+}
+
+#' @describeIn T2Afr Method for object spectra
+#'
+#' @export
+#'
+T2Afr.object_spct <- function(x,
+                              action = "add",
+                              byref = FALSE,
+                              clean = FALSE, ...) {
+  if (byref) {
+    name <- substitute(x)
+  }
+  if (exists("Afr", x, inherits=FALSE)) {
+    NULL
+  } else {
+    if (clean) {
+      x <- clean(x)
+    }
+    Tfr.type <- getTfrType(x)
+    if (Tfr.type == "total") {
+      x[["Afr"]] <- 1 - x[["Tfr"]]
+    } else if ((Tfr.type == "internal")) {
+      x[["Afr"]] <- 1 - (x[["Tfr"]] / (1 - x[["Rfr"]]))
+    } else {
+      stop("Invalid 'Tfr.type' attribute: ", Tfr.type)
+    }
+    setAfrType(x, "total")
+  }
+  if (byref && is.name(name)) {  # this is a temporary safe net
+    name <- as.character(name)
+    assign(name, x, parent.frame(), inherits = TRUE)
+  }
+  if (any((x[["Afr"]] < 0) | (x[["Afr"]] > 1))) {
+    warning("Off-boundary absorptance values generated (range = ",
+            formatted_range(x[["Afr"]]), ")!",
+            "Possible causes: fluorescence, measurement error or bad estimate of reflectance.")
+  }
+  return(x)
+}
+
+#' @describeIn T2Afr Method for collections of filter spectra
+#'
+#' @export
+#'
+T2Afr.filter_mspct <- function(x, action = "add", byref = FALSE, clean = FALSE, ...) {
+  msmsply(x, T2Afr, action = action, byref = byref, clean = FALSE, ...)
+}
+
+#' @describeIn T2Afr Method for collections of object spectra
+#'
+#' @export
+#'
+T2Afr.object_mspct <- T2Afr.filter_mspct
+
+# T2T ---------------------------------------------------------------------
+
+#' Convert transmittance type.
+#'
+#' Function that allows conversion between internal and total transmittance.
+#'
+#' @param x,y R objects
+#' @param byref logical indicating if new object will be created by reference or by copy of x
+#' @param Tfr.type.out character One of "total" or "internal"
+#' @param ... not used in current version
+#'
+#' @export T2T
+#' @family quantity conversion functions
+#'
+T2T <- function(x, y, byref, Tfr.type.out, ...) UseMethod("T2T")
+
+#' @describeIn T2T Defauly method
+#'
+#' @export
+#'
+T2T.default <- function(x, y, byref = NULL, Tfr.type.out = NULL, ...) {
+  stop("Method 'T2T()' not implemented for class: ", class(x))
+}
+
+#' @describeIn T2T Method for filter spectra
+#'
+#' @export
+#'
+T2T.filter_spct <- function(x, y,
+                            byref = FALSE,
+                            Tfr.type.out = "total",
+                            ...) {
+  stopifnot(exists("Tfr", x, inherits=FALSE))
+  Tfr.type <- getTfrType(x)
+  if (Tfr.type == Tfr.type.out) {
+    return(x)
+  }
+  stopifnot(is.reflector_spct(y) ||
+              (is.numeric(y) && ((length(y) == nrow(x)) || (length(y) != 1))))
+  if (is.reflector_spct(y)) {
+    y <- interpolate_spct(y, w.length.out = x[["w.length"]])[["Rfr"]]
+  }
+  if (byref) {
+    name <- substitute(x)
+  }
+  if (Tfr.type == "total" && Tfr.type.out == "internal") {
+    x[["Tfr"]] <- x[["Tfr"]] / (1 - y)
+    setTfrType(x, "internal")
+  } else if (Tfr.type == "internal" && Tfr.type.out == "total") {
+    x[["Tfr"]] <- x[["Tfr"]] * (1 - y)
+    setTfrType(x, "total")
+  } else if (is.na(Tfr.type)) {
+    warning("Conversion failed because of missing 'Tfr.type' attribute.")
+  }
+  setTfrType(x, Tfr.type.out)
+  if (byref && is.name(name)) {  # this is a temporary safe net
+    name <- as.character(name)
+    assign(name, x, parent.frame(), inherits = TRUE)
+  }
+  if (any((x[["Tfr"]] < 0) | (x[["Tfr"]] > 1))) {
+    warning("Off-boundary transmittance values generated (range = ",
+            formatted_range(x[["Tfr"]]), ")!",
+            "Possible causes: fluorescence, measurement error or bad estimate of reflectance.")
+  }
+  return(x)
+}
+
+#' @describeIn T2T Method for object spectra
+#'
+#' @export
+#'
+T2T.object_spct <- function(x, y = NULL,
+                            byref = FALSE,
+                            Tfr.type.out = "total",
+                            ...) {
+  Tfr.type <- getTfrType(x)
+  if (Tfr.type == Tfr.type.out) {
+    return(x)
+  }
+  stopifnot(is.null(y))
+  if (byref) {
+    name <- substitute(x)
+  }
+  if (Tfr.type == "total" && Tfr.type.out == "internal") {
+    x[["Tfr"]] <- x[["Tfr"]] / (1 - x[["Rfr"]])
+    setTfrType(x, "internal")
+  } else if (Tfr.type == "internal" && Tfr.type.out == "total") {
+    x[["Tfr"]] <- x[["Tfr"]] * (1 - x[["Rfr"]])
+    setTfrType(x, "total")
+  } else if (is.na(Tfr.type)) {
+    warning("Conversion failed because of missing 'Tfr.type' attribute.")
+  }
+  if (byref && is.name(name)) {  # this is a temporary safe net
+    name <- as.character(name)
+    assign(name, x, parent.frame(), inherits = TRUE)
+  }
+  if (any((x[["Tfr"]] < 0) | (x[["Tfr"]] > 1))) {
+    warning("Off-boundary transmittance values generated (range = ",
+            formatted_range(x[["Tfr"]]), ")!",
+            "Possible causes: fluorescence, measurement error or bad estimate of reflectance.")
+  }
+  return(x)
+}
+
+
+#' @describeIn T2T Method for collections of filter spectra
+#'
+#' @export
+#'
+T2T.filter_mspct <- function(x, y,
+                             byref = FALSE,
+                             Tfr.type.out = "total",
+                             ...) {
+  msmsply(x, T2T, y = y, byref = byref, Tfr.type.out = Tfr.type.out, ...)
+}
+
+#' @describeIn T2T Method for collections of object spectra
+#'
+#' @export
+#'
+T2T.object_mspct <- T2T.filter_mspct
 
 # energy - photon and photon - energy conversions -------------------------
 
