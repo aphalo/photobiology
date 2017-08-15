@@ -14,7 +14,7 @@ test_that("default-wl", {
   expect_error(merge2object_spct(data.frame(a = 1:20, b = 20:1), rfr.spct))
   # value
   expect_s3_class(merge2object_spct(rfr.spct, tfr.spct), "object_spct")
-#  expect_equal(merge2object_spct(tfr.spct, rfr.spct), merge2object_spct(rfr.spct, tfr.spct))
+  expect_false(nrow(merge2object_spct(tfr.spct, rfr.spct)) == nrow(merge2object_spct(rfr.spct, tfr.spct)))
   expect_equal(tfr.spct[["Tfr"]], merge2object_spct(tfr.spct, rfr.spct)[["Tfr"]])
   expect_equal(rfr.spct[["Rfr"]], merge2object_spct(rfr.spct, tfr.spct)[["Rfr"]])
   expect_equal(tfr.spct[["w.length"]], merge2object_spct(tfr.spct, rfr.spct)[["w.length"]])
