@@ -134,6 +134,15 @@ test_that("filter_mspct", {
   expect_equal(my.df[["pet1"]], polyester.spct[["Tfr"]])
   expect_equal(my.df[["pet2"]], my.mspct[["pet2"]][["Tfr"]])
 
+  expect_silent(my.df <- join_mspct(my.mspct, qty.out = "absorptance"))
+  expect_is(my.df, "data.frame")
+  expect_named(my.df, c("w.length", "pet1", "pet2"))
+  expect_equal(my.df[["w.length"]], my.mspct[["pet1"]][["w.length"]])
+  expect_equal(my.df[["w.length"]], my.mspct[["pet2"]][["w.length"]])
+  expect_equal(my.df[["pet1"]], T2Afr(my.mspct[["pet1"]])[["Afr"]])
+  expect_equal(my.df[["pet1"]], T2Afr(polyester.spct)[["Afr"]])
+  expect_equal(my.df[["pet2"]], T2Afr(my.mspct[["pet2"]])[["Afr"]])
+
   expect_silent(my.df <- join_mspct(my.mspct, qty.out = "absorbance"))
   expect_is(my.df, "data.frame")
   expect_named(my.df, c("w.length", "pet1", "pet2"))

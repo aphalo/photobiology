@@ -53,9 +53,9 @@ join_mspct.generic_mspct <- function(x, col.name, ...) {
   col.selector <- c("w.length", col.name)
   for (i in names) {
     x[[i]] <- as.data.frame(x[[i]])[col.selector]
+#    x[[i]] <- plyr::rename(x[[i]], replace = c(parse(col.name) = i))) silently failing!!
     col.names <- names(x[[i]])
     names(x[[i]])[col.names == col.name] <- i
-#    x[[i]] <- plyr::rename(x[[i]], replace = c(parse(col.name) = i)))
   }
   if (length(x) == 1L) {
     as.data.frame(x[[i]])
@@ -177,6 +177,13 @@ join_mspct.filter_mspct <- function(x,
       x[[i]] <- as.data.frame(x[[i]])[c("w.length", "A")]
       x[[i]] <- plyr::rename(x[[i]], c(A = i))
     }
+  } else if (qty.out == "absorptance") {
+    x <- T2Afr(x, action = "replace")
+    rmDerivedMspct(x)
+    for (i in names) {
+      x[[i]] <- as.data.frame(x[[i]])[c("w.length", "Afr")]
+      x[[i]] <- plyr::rename(x[[i]], c(Afr = i))
+    }
   } else {
     stop("Unit out '", qty.out, "' unknown")
   }
@@ -229,7 +236,7 @@ join_mspct.object_mspct <- function(x,
   switch(qty.out,
          "transmittance" = join_mspct(as.filter_mspct(x), qty.out = qty.out),
          "absorbance" = join_mspct(as.filter_mspct(x), qty.out = qty.out),
-#         "absorbtance" = join_mspct(as.filter_mspct(x), qty.out = qty.out),
+         "absorbtance" = join_mspct(as.filter_mspct(x), qty.out = qty.out),
          "reflectance" = join_mspct(as.reflector_mspct(x)),
          stop("'qty.out = ", qty.out, " not implemented.")
            )
