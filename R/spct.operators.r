@@ -2039,7 +2039,7 @@ energy_as_default <- function() {
   options(photobiology.radiation.unit = "energy")
 }
 
-#' @rdname use_energy_as_default
+#' @rdname energy_as_default
 #'
 #' @export
 #'
@@ -2053,7 +2053,7 @@ photon_as_default <- function() {
 #'
 quantum_as_default <- photon_as_default
 
-#' @rdname use_energy_as_default
+#' @rdname energy_as_default
 #'
 #' @export
 #'
@@ -2061,7 +2061,7 @@ Tfr_as_default <- function() {
   options(photobiology.filter.qty = "transmittance")
 }
 
-#' @rdname use_energy_as_default
+#' @rdname energy_as_default
 #'
 #' @export
 #'
@@ -2069,7 +2069,7 @@ Afr_as_default <- function() {
   options(photobiology.filter.qty = "absorptance")
 }
 
-#' @rdname use_energy_as_default
+#' @rdname energy_as_default
 #'
 #' @export
 #'
