@@ -25,6 +25,15 @@ join_mspct <- function(x, ...) UseMethod("join_mspct")
 #' @export
 #'
 join_mspct.default <- function(x, ...) {
+  stop("'join_mspct()' is only implemented for collections of spectra, ",
+       "use 'plyr::join_all()' for lists of data frames.")
+}
+
+#' @describeIn join_mspct
+#'
+#' @export
+#'
+join_mspct.generic_spct <- function(x, ...) {
   warning("'join_mspct()' only implemented for homogeneous collections of spectra.")
   data.frame()
 }
@@ -41,7 +50,9 @@ join_mspct.source_mspct <- function(x,
   type <- "full"
   match <- "first"
 
-  stopifnot(is.any_mspct(x))
+  if (length(x) == 0L) {
+    return(data.frame())
+  }
   names <- names(x)
   stopifnot(length(names) == length(x))
   if (unit.out == "energy") {
@@ -61,7 +72,11 @@ join_mspct.source_mspct <- function(x,
   } else {
     stop("Unit out '", unit.out, "' unknown")
   }
-  plyr::join_all(dfs = x, by = by, type = type, match = match)
+  if (length(x) == 1L) {
+    as.data.frame(x[[i]])
+  } else {
+    plyr::join_all(dfs = x, by = by, type = type, match = match)
+  }
 }
 
 #' @describeIn join_mspct
@@ -76,7 +91,9 @@ join_mspct.response_mspct <- function(x,
   type <- "full"
   match <- "first"
 
-  stopifnot(is.any_mspct(x))
+  if (length(x) == 0L) {
+    return(data.frame())
+  }
   names <- names(x)
   stopifnot(length(names) == length(x))
   if (unit.out == "energy") {
@@ -96,7 +113,11 @@ join_mspct.response_mspct <- function(x,
   } else {
     stop("Unit out '", unit.out, "' unknown")
   }
-  plyr::join_all(dfs = x, by = by, type = type, match = match)
+  if (length(x) == 1L) {
+    as.data.frame(x[[i]])
+  } else {
+    plyr::join_all(dfs = x, by = by, type = type, match = match)
+  }
 }
 
 #' @describeIn join_mspct
@@ -111,6 +132,9 @@ join_mspct.filter_mspct <- function(x,
   type <- "full"
   match <- "first"
 
+  if (length(x) == 0L) {
+    return(data.frame())
+  }
   names <- names(x)
   stopifnot(length(names) == length(x))
   if (qty.out == "transmittance") {
@@ -130,7 +154,11 @@ join_mspct.filter_mspct <- function(x,
   } else {
     stop("Unit out '", qty.out, "' unknown")
   }
-  plyr::join_all(dfs = x, by = by, type = type, match = match)
+  if (length(x) == 1L) {
+    as.data.frame(x[[i]])
+  } else {
+    plyr::join_all(dfs = x, by = by, type = type, match = match)
+  }
 }
 
 #' @describeIn join_mspct
@@ -144,6 +172,9 @@ join_mspct.reflector_mspct <- function(x,
   type <- "full"
   match <- "first"
 
+  if (length(x) == 0L) {
+    return(data.frame())
+  }
   names <- names(x)
   stopifnot(length(names) == length(x))
   rmDerivedMspct(x)
@@ -151,6 +182,10 @@ join_mspct.reflector_mspct <- function(x,
     x[[i]] <- as.data.frame(x[[i]])[c("w.length", "Rfr")]
     x[[i]] <- plyr::rename(x[[i]], c(Rfr = i))
   }
-  plyr::join_all(dfs = x, by = by, type = type, match = match)
+  if (length(x) == 1L) {
+    as.data.frame(x[[i]])
+  } else {
+    plyr::join_all(dfs = x, by = by, type = type, match = match)
+  }
 }
 
