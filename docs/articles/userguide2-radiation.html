@@ -51,10 +51,10 @@
   <div class="col-md-9">
     <div class="page-header toc-ignore">
       <h1>User Guide: 2 Radiation</h1>
-            <h3 class="subtitle">Package ‘photobiology’ 0.9.16</h3>
+            <h3 class="subtitle">Package ‘photobiology’ 0.9.16.9001</h3>
                         <h4 class="author">Pedro J. Aphalo</h4>
             
-            <h4 class="date">2017-06-25</h4>
+            <h4 class="date">2017-08-16</h4>
           </div>
 
     
@@ -489,7 +489,7 @@ s.e.irrad &lt;-<span class="st"> </span><span class="dv">1</span>
 <p>Argument <code>strict.range</code> can be used to override or make more strict the validation of the data values.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/source_spct.html">source_spct</a></span>(<span class="dt">w.length =</span> <span class="dv">300</span><span class="op">:</span><span class="dv">305</span>, <span class="dt">s.e.irrad =</span> <span class="op">-</span><span class="dv">1</span>)</code></pre></div>
 <pre><code>## Warning in range_check(x, strict.range = strict.range): Negative spectral
-## energy irradiance values; minimun s.e.irrad = -1</code></pre>
+## energy irradiance values; minimun s.e.irrad = -1.00</code></pre>
 <pre><code>## Object: source_spct [6 x 2]
 ## Wavelength range 300 to 305 nm, step 1 nm 
 ## Time unit 1s
@@ -1005,6 +1005,21 @@ test1.df</code></pre></div>
 ## 
 ## --- END ---</code></pre>
 </div>
+</div>
+<div id="conversion-into-a-wide-data-frame" class="section level3">
+<h3 class="hasAnchor">
+<a href="#conversion-into-a-wide-data-frame" class="anchor"></a>Conversion into a “wide” data frame</h3>
+<p>Sometimes, when exporting spectral data we may need to convert a collection of spectra into a data frame. In the example below we use a collection with only two member spectra, but <code><a href="../reference/join_mspct.html">join_mspct()</a></code> can handle collections of any length.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">my.mspct &lt;-<span class="st"> </span><span class="kw"><a href="../reference/generic_mspct.html">source_mspct</a></span>(<span class="kw">list</span>(<span class="dt">sun1 =</span> sun.spct, <span class="dt">sun2 =</span> sun.spct <span class="op">*</span><span class="st"> </span><span class="dv">2</span>))
+my.df &lt;-<span class="st"> </span><span class="kw"><a href="../reference/join_mspct.html">join_mspct</a></span>(my.mspct)
+<span class="kw">head</span>(my.df)</code></pre></div>
+<pre><code>##   w.length sun1 sun2
+## 1 280.0000    0    0
+## 2 280.9231    0    0
+## 3 281.8462    0    0
+## 4 282.7692    0    0
+## 5 283.6923    0    0
+## 6 284.6154    0    0</code></pre>
 </div>
 <div id="querying-the-class-1" class="section level3">
 <h3 class="hasAnchor">
@@ -3370,8 +3385,8 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 ## 4 282.7692     -0.01
 ## # ... with 518 more rows</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/clean.html">clean</a></span>(polyester.spct <span class="op">-</span><span class="st"> </span><span class="fl">0.053</span>)</code></pre></div>
-<pre><code>## Warning in range_check(x, strict.range = strict.range): Off-range
-## transmittance values [-0.05...0.87] instead of [0..1]</code></pre>
+<pre><code>## Warning in range_check_Tfr(x, strict.range = strict.range): Off-range
+## transmittance values [-0.050..0.873] instead of [0..1]</code></pre>
 <pre><code>## Object: filter_spct [611 x 2]
 ## Wavelength range 190 to 800 nm, step 1 nm 
 ## 

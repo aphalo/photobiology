@@ -131,6 +131,11 @@ split2source_mspct(test2.df, spct.data.var = "s.q.irrad")
 ## ---- split-2------------------------------------------------------------
 split2source_mspct(test2.df, spct.data.var = "s.q.irrad", time.unit = "day")
 
+## ---- join-mspct-01------------------------------------------------------
+my.mspct <- source_mspct(list(sun1 = sun.spct, sun2 = sun.spct * 2))
+my.df <- join_mspct(my.mspct)
+head(my.df)
+
 ## ---- col-query-class-1--------------------------------------------------
 is.source_mspct(two_suns.mspct)
 class(two_suns.mspct)

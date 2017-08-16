@@ -78,19 +78,21 @@
     </div>
 
     
-    <p>Function that coverts transmittance into absorbance (fraction).</p>
+    <p>Function that coverts transmittance (fraction) into absorbance (a.u.).</p>
     
 
-    <pre class="usage"><span class='fu'>T2A</span>(<span class='no'>x</span>, <span class='no'>action</span>, <span class='no'>byref</span>, <span class='no'>...</span>)
+    <pre class="usage"><span class='fu'>T2A</span>(<span class='no'>x</span>, <span class='no'>action</span>, <span class='no'>byref</span>, <span class='no'>clean</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for default</span>
-<span class='fu'>T2A</span>(<span class='no'>x</span>, <span class='kw'>action</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>byref</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)
+<span class='fu'>T2A</span>(<span class='no'>x</span>, <span class='kw'>action</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>byref</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>clean</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for filter_spct</span>
-<span class='fu'>T2A</span>(<span class='no'>x</span>, <span class='kw'>action</span> <span class='kw'>=</span> <span class='st'>"add"</span>, <span class='kw'>byref</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)
+<span class='fu'>T2A</span>(<span class='no'>x</span>, <span class='kw'>action</span> <span class='kw'>=</span> <span class='st'>"add"</span>, <span class='kw'>byref</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>clean</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='no'>...</span>)
 
 <span class='co'># S3 method for filter_mspct</span>
-<span class='fu'>T2A</span>(<span class='no'>x</span>, <span class='kw'>action</span> <span class='kw'>=</span> <span class='st'>"add"</span>, <span class='kw'>byref</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)</pre>
+<span class='fu'>T2A</span>(<span class='no'>x</span>, <span class='kw'>action</span> <span class='kw'>=</span> <span class='st'>"add"</span>, <span class='kw'>byref</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>clean</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -106,6 +108,10 @@
     <tr>
       <th>byref</th>
       <td><p>logical indicating if new object will be created by reference or by copy of x</p></td>
+    </tr>
+    <tr>
+      <th>clean</th>
+      <td><p>logical replace off-boundary values before conversion</p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -124,6 +130,7 @@
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <p>Other quantity conversion functions: <code><a href='A2T.html'>A2T</a></code>,
+  <code><a href='T2Afr.html'>T2Afr</a></code>, <code><a href='T2T.html'>T2T</a></code>,
   <code><a href='as_energy.html'>as_energy</a></code>, <code><a href='as_quantum_mol.html'>as_quantum_mol</a></code>,
   <code><a href='as_quantum.html'>as_quantum</a></code>,
   <code><a href='e2qmol_multipliers.html'>e2qmol_multipliers</a></code>,

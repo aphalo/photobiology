@@ -397,6 +397,19 @@ Also in this case, it is possible to pass additional named arguments to the cons
 split2source_mspct(test2.df, spct.data.var = "s.q.irrad", time.unit = "day")
 ```
 
+### Conversion into a "wide" data frame
+
+Sometimes, when exporting spectral data we may need to convert a collection of 
+spectra into a data frame. In the example below we use a collection with only
+two member spectra, but `join_mspct()` can handle collections of any length.
+
+```{r, join-mspct-01}
+my.mspct <- source_mspct(list(sun1 = sun.spct, sun2 = sun.spct * 2))
+my.df <- join_mspct(my.mspct)
+head(my.df)
+```
+
+
 ### Querying the class
 
 `is.` functions are defined for these classes. R's `class` method can also be used.

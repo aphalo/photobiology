@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>CIE D65 illuminant data — D65.illuminant.spct â€¢ photobiology</title>
+<title>Green Arabidopsis leaf spectral reflectance. — Ler_leaf_rflt.spct â€¢ photobiology</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -74,36 +74,38 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>CIE D65 illuminant data</h1>
+    <h1>Green Arabidopsis leaf spectral reflectance.</h1>
     </div>
 
     
-    <p>A dataset containing wavelengths at a 5 nm interval (300 nm to
-  830 nm) and the corresponding spectral energy irradiance normalized to 1 at
-  560 nm. Spectrum approximates the midday solar spectrum at middle latitude
-  as 'corresponds' to the white point of a black body a 6504 K. Original data
-  from <a href = 'http://files.cie.co.at/204.xls'>http://files.cie.co.at/204.xls</a> downloaded on 2014-07-25 The
-  variables are as follows:</p>
+    <p>A dataset of total spectral reflectance expressed as fractions
+  of one from the upper surface of a leaf of an Arabidopsis thaliana 'Ler'
+  rosette.</p>
     
 
-    <pre class="usage"><span class='no'>D65.illuminant.spct</span></pre>
+    <pre class="usage"><span class='no'>Ler_leaf_rflt.spct</span></pre>
         
     <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
 
-    <p>A source spectrum with 107 rows and 2 variables</p>
+    <p>An <code>reflector_spct</code> object with 1750 rows and 2 variables</p>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <ul>
 <li><p>w.length (nm)</p></li>
-<li><p>s.e.irrad (rel. units)</p></li>
+<li><p>Rfr (0..1)</p></li>
 </ul>
+    
+    <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
+
+    <p>Measured with a Jaz spectrometer from Ocean Optics (USA) configured
+  with a PX Xenon lamp module and Spectroclip double integrating spheres.</p>
     
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <p>Other Spectral data examples: <code><a href='A.illuminant.spct.html'>A.illuminant.spct</a></code>,
+  <code><a href='D65.illuminant.spct.html'>D65.illuminant.spct</a></code>,
   <code><a href='Ler_leaf.spct.html'>Ler_leaf.spct</a></code>,
-  <code><a href='Ler_leaf_rflt.spct.html'>Ler_leaf_rflt.spct</a></code>,
   <code><a href='Ler_leaf_trns.spct.html'>Ler_leaf_trns.spct</a></code>,
   <code><a href='Ler_leaf_trns_i.spct.html'>Ler_leaf_trns_i.spct</a></code>,
   <code><a href='black_body.spct.html'>black_body.spct</a></code>, <code><a href='ccd.spct.html'>ccd.spct</a></code>,
@@ -122,25 +124,23 @@
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>D65.illuminant.spct</span></div><div class='output co'>#&gt; Object: source_spct [107 x 2]
-#&gt; Wavelength range 300 to 830 nm, step 5 nm 
-#&gt; Time unit 1s
-#&gt; Spectral data normalized to 1 at 560 nm 
+    <pre class="examples"><div class='input'><span class='no'>Ler_leaf_rflt.spct</span></div><div class='output co'>#&gt; Object: reflector_spct [1,750 x 2]
+#&gt; Wavelength range 250 to 850 nm, step 0.07635631 to 0.3766982 nm 
 #&gt; 
-#&gt; # A tibble: 107 x 2
-#&gt;    w.length s.e.irrad
-#&gt;       &lt;dbl&gt;     &lt;dbl&gt;
-#&gt;  1      300  0.000341
-#&gt;  2      305  0.016643
-#&gt;  3      310  0.032945
-#&gt;  4      315  0.117652
-#&gt;  5      320  0.202360
-#&gt;  6      325  0.286447
-#&gt;  7      330  0.370535
-#&gt;  8      335  0.385011
-#&gt;  9      340  0.399488
-#&gt; 10      345  0.424302
-#&gt; # ... with 97 more rows</div><div class='input'>
+#&gt; # A tibble: 1,750 x 2
+#&gt;    w.length        Rfr
+#&gt;       &lt;dbl&gt;      &lt;dbl&gt;
+#&gt;  1 250.0000 0.04668778
+#&gt;  2 250.2261 0.04668481
+#&gt;  3 250.6028 0.04667985
+#&gt;  4 250.9794 0.04667489
+#&gt;  5 251.3561 0.04666993
+#&gt;  6 251.7327 0.04666497
+#&gt;  7 252.1092 0.04666001
+#&gt;  8 252.4858 0.04665505
+#&gt;  9 252.8623 0.04665010
+#&gt; 10 253.2387 0.04664514
+#&gt; # ... with 1,740 more rows</div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -151,6 +151,8 @@
 
       <li><a href="#details">Details</a></li>
 
+      <li><a href="#note">Note</a></li>
+
       <li><a href="#see-also">See also</a></li>
       
       <li><a href="#examples">Examples</a></li>
@@ -158,7 +160,7 @@
 
     <h2>Author</h2>
     
-CIE
+Aphalo, P. J. &amp; Wang, F (unpublished data)
 
   </div>
 </div>

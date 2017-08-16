@@ -148,9 +148,10 @@ reference:
     - Extract_mspct
     - c.generic_mspct
     - rbindspct
-    - merge.generic_spct
+    - merge2object_spct
     - split2mspct
     - subset2mspct
+    - join_mspct
   - title: Apply
     contents:
     - msmsply

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>CIE D65 illuminant data — D65.illuminant.spct â€¢ photobiology</title>
+<title>Compute range and format it — formatted_range â€¢ photobiology</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -74,91 +74,59 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>CIE D65 illuminant data</h1>
+    <h1>Compute range and format it</h1>
     </div>
 
     
-    <p>A dataset containing wavelengths at a 5 nm interval (300 nm to
-  830 nm) and the corresponding spectral energy irradiance normalized to 1 at
-  560 nm. Spectrum approximates the midday solar spectrum at middle latitude
-  as 'corresponds' to the white point of a black body a 6504 K. Original data
-  from <a href = 'http://files.cie.co.at/204.xls'>http://files.cie.co.at/204.xls</a> downloaded on 2014-07-25 The
-  variables are as follows:</p>
+    <p>Compute the range of an R object, and format it as string suitable for
+printing.</p>
     
 
-    <pre class="usage"><span class='no'>D65.illuminant.spct</span></pre>
-        
-    <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
-
-    <p>A source spectrum with 107 rows and 2 variables</p>
+    <pre class="usage"><span class='fu'>formatted_range</span>(<span class='no'>x</span>, <span class='kw'>na.rm</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>digits</span> <span class='kw'>=</span> <span class='fl'>3</span>, <span class='kw'>nsmall</span> <span class='kw'>=</span> <span class='fl'>2</span>,
+  <span class='kw'>collapse</span> <span class='kw'>=</span> <span class='st'>".."</span>)</pre>
     
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
-
-    <ul>
-<li><p>w.length (nm)</p></li>
-<li><p>s.e.irrad (rel. units)</p></li>
-</ul>
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>x</th>
+      <td><p>an R object</p></td>
+    </tr>
+    <tr>
+      <th>na.rm</th>
+      <td><p>logical, indicating if <code><a href='http://www.rdocumentation.org/packages/base/topics/NA'>NA</a></code>'s should be
+omitted.</p></td>
+    </tr>
+    <tr>
+      <th>digits, nsmall</th>
+      <td><p>numeric, passed to same name parameters of
+<code>format()</code>.</p></td>
+    </tr>
+    <tr>
+      <th>collapse</th>
+      <td><p>character, passed to same name parameter of <code>paste()</code>.</p></td>
+    </tr>
+    </table>
     
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <p>Other Spectral data examples: <code><a href='A.illuminant.spct.html'>A.illuminant.spct</a></code>,
-  <code><a href='Ler_leaf.spct.html'>Ler_leaf.spct</a></code>,
-  <code><a href='Ler_leaf_rflt.spct.html'>Ler_leaf_rflt.spct</a></code>,
-  <code><a href='Ler_leaf_trns.spct.html'>Ler_leaf_trns.spct</a></code>,
-  <code><a href='Ler_leaf_trns_i.spct.html'>Ler_leaf_trns_i.spct</a></code>,
-  <code><a href='black_body.spct.html'>black_body.spct</a></code>, <code><a href='ccd.spct.html'>ccd.spct</a></code>,
-  <code><a href='clear.spct.html'>clear.spct</a></code>, <code><a href='clear_body.spct.html'>clear_body.spct</a></code>,
-  <code><a href='filter_cps.mspct.html'>filter_cps.mspct</a></code>,
-  <code><a href='green_leaf.spct.html'>green_leaf.spct</a></code>, <code><a href='opaque.spct.html'>opaque.spct</a></code>,
-  <code><a href='photodiode.spct.html'>photodiode.spct</a></code>,
-  <code><a href='polyester.spct.html'>polyester.spct</a></code>,
-  <code><a href='sun.daily.data.html'>sun.daily.data</a></code>,
-  <code><a href='sun.daily.spct.html'>sun.daily.spct</a></code>, <code><a href='sun.data.html'>sun.data</a></code>,
-  <code><a href='sun.spct.html'>sun.spct</a></code>, <code><a href='white_body.spct.html'>white_body.spct</a></code>,
-  <code><a href='white_led.cps_spct.html'>white_led.cps_spct</a></code>,
-  <code><a href='white_led.raw_spct.html'>white_led.raw_spct</a></code>,
-  <code><a href='white_led.source_spct.html'>white_led.source_spct</a></code>,
-  <code><a href='yellow_gel.spct.html'>yellow_gel.spct</a></code></p>
+    <p><code><a href='http://www.rdocumentation.org/packages/base/topics/range'>range</a></code>, <code><a href='http://www.rdocumentation.org/packages/base/topics/format'>format</a></code> and
+  <code><a href='http://www.rdocumentation.org/packages/base/topics/paste'>paste</a></code>.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>D65.illuminant.spct</span></div><div class='output co'>#&gt; Object: source_spct [107 x 2]
-#&gt; Wavelength range 300 to 830 nm, step 5 nm 
-#&gt; Time unit 1s
-#&gt; Spectral data normalized to 1 at 560 nm 
-#&gt; 
-#&gt; # A tibble: 107 x 2
-#&gt;    w.length s.e.irrad
-#&gt;       &lt;dbl&gt;     &lt;dbl&gt;
-#&gt;  1      300  0.000341
-#&gt;  2      305  0.016643
-#&gt;  3      310  0.032945
-#&gt;  4      315  0.117652
-#&gt;  5      320  0.202360
-#&gt;  6      325  0.286447
-#&gt;  7      330  0.370535
-#&gt;  8      335  0.385011
-#&gt;  9      340  0.399488
-#&gt; 10      345  0.424302
-#&gt; # ... with 97 more rows</div><div class='input'>
+    <pre class="examples"><div class='input'><span class='fu'>formatted_range</span>(<span class='fu'>c</span>(<span class='fl'>1</span>, <span class='fl'>3.5</span>, -<span class='fl'>0.01</span>))</div><div class='output co'>#&gt; [1] "-0.01..3.50"</div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
+      <li><a href="#arguments">Arguments</a></li>
       
-      <li><a href="#format">Format</a></li>
-
-      <li><a href="#details">Details</a></li>
-
       <li><a href="#see-also">See also</a></li>
       
       <li><a href="#examples">Examples</a></li>
     </ul>
-
-    <h2>Author</h2>
-    
-CIE
 
   </div>
 </div>

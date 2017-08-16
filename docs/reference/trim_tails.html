@@ -86,7 +86,7 @@ expand the wavelength range.</p>
     
 
     <pre class="usage"><span class='fu'>trim_tails</span>(<span class='no'>x</span>, <span class='no'>y</span>, <span class='kw'>low.limit</span> <span class='kw'>=</span> <span class='fu'><a href='min.html'>min</a></span>(<span class='no'>x</span>), <span class='kw'>high.limit</span> <span class='kw'>=</span> <span class='fu'><a href='max.html'>max</a></span>(<span class='no'>x</span>),
-  <span class='kw'>use.hinges</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>fill</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+  <span class='kw'>use.hinges</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>fill</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -117,6 +117,10 @@ x-value in input)</p></td>
       <th>fill</th>
       <td><p>if fill==NULL then tails are deleted, otherwise tails of y
 are filled with the value of fill</p></td>
+    </tr>
+    <tr>
+      <th>verbose</th>
+      <td><p>logical Use to suppress warnings</p></td>
     </tr>
     </table>
     

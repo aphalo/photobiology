@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Convert absorbance into transmittance — A2T â€¢ photobiology</title>
+<title>Convert transmittance into absorptance. — T2Afr â€¢ photobiology</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -74,23 +74,36 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Convert absorbance into transmittance</h1>
+    <h1>Convert transmittance into absorptance.</h1>
     </div>
 
     
-    <p>Function that coverts absorbance (a.u.) into transmittance (fraction).</p>
+    <p>Function that coverts transmittance (fraction) into absorptance (fraction).
+If reflectance (fraction) is available, it allows conversions between
+internal and total absorptance.</p>
     
 
-    <pre class="usage"><span class='fu'>A2T</span>(<span class='no'>x</span>, <span class='no'>action</span>, <span class='no'>byref</span>, <span class='no'>...</span>)
+    <pre class="usage"><span class='fu'>T2Afr</span>(<span class='no'>x</span>, <span class='no'>action</span>, <span class='no'>byref</span>, <span class='no'>clean</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for default</span>
-<span class='fu'>A2T</span>(<span class='no'>x</span>, <span class='kw'>action</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>byref</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)
+<span class='fu'>T2Afr</span>(<span class='no'>x</span>, <span class='kw'>action</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>byref</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>clean</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='no'>...</span>)
 
 <span class='co'># S3 method for filter_spct</span>
-<span class='fu'>A2T</span>(<span class='no'>x</span>, <span class='kw'>action</span> <span class='kw'>=</span> <span class='st'>"add"</span>, <span class='kw'>byref</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)
+<span class='fu'>T2Afr</span>(<span class='no'>x</span>, <span class='kw'>action</span> <span class='kw'>=</span> <span class='st'>"add"</span>, <span class='kw'>byref</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>clean</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)
+
+<span class='co'># S3 method for object_spct</span>
+<span class='fu'>T2Afr</span>(<span class='no'>x</span>, <span class='kw'>action</span> <span class='kw'>=</span> <span class='st'>"add"</span>, <span class='kw'>byref</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>clean</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for filter_mspct</span>
-<span class='fu'>A2T</span>(<span class='no'>x</span>, <span class='kw'>action</span> <span class='kw'>=</span> <span class='st'>"add"</span>, <span class='kw'>byref</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)</pre>
+<span class='fu'>T2Afr</span>(<span class='no'>x</span>, <span class='kw'>action</span> <span class='kw'>=</span> <span class='st'>"add"</span>, <span class='kw'>byref</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>clean</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)
+
+<span class='co'># S3 method for object_mspct</span>
+<span class='fu'>T2Afr</span>(<span class='no'>x</span>, <span class='kw'>action</span> <span class='kw'>=</span> <span class='st'>"add"</span>, <span class='kw'>byref</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>clean</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -101,11 +114,15 @@
     </tr>
     <tr>
       <th>action</th>
-      <td><p>a character string</p></td>
+      <td><p>character Allowed values "replace" and "add"</p></td>
     </tr>
     <tr>
       <th>byref</th>
       <td><p>logical indicating if new object will be created by reference or by copy of x</p></td>
+    </tr>
+    <tr>
+      <th>clean</th>
+      <td><p>logical replace off-boundary values before conversion</p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -118,12 +135,14 @@
     <ul>
 <li><p><code>default</code>: Default method for generic function</p></li>
 <li><p><code>filter_spct</code>: Method for filter spectra</p></li>
+<li><p><code>object_spct</code>: Method for object spectra</p></li>
 <li><p><code>filter_mspct</code>: Method for collections of filter spectra</p></li>
+<li><p><code>object_mspct</code>: Method for collections of object spectra</p></li>
 </ul>
     
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <p>Other quantity conversion functions: <code><a href='T2Afr.html'>T2Afr</a></code>,
+    <p>Other quantity conversion functions: <code><a href='A2T.html'>A2T</a></code>,
   <code><a href='T2A.html'>T2A</a></code>, <code><a href='T2T.html'>T2T</a></code>,
   <code><a href='as_energy.html'>as_energy</a></code>, <code><a href='as_quantum_mol.html'>as_quantum_mol</a></code>,
   <code><a href='as_quantum.html'>as_quantum</a></code>,
@@ -132,6 +151,25 @@
   <code><a href='q2e.html'>q2e</a></code></p>
     
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='fu'>T2Afr</span>(<span class='no'>Ler_leaf.spct</span>)</div><div class='output co'>#&gt; Object: object_spct [2,401 x 4]
+#&gt; Wavelength range 250 to 850 nm, step 0.25 nm 
+#&gt; 
+#&gt; # A tibble: 2,401 x 4
+#&gt;    w.length   Tfr        Rfr   Afr
+#&gt;  *    &lt;dbl&gt; &lt;dbl&gt;      &lt;dbl&gt; &lt;dbl&gt;
+#&gt;  1   250.00     0 0.04668778     1
+#&gt;  2   250.25     0 0.04668449     1
+#&gt;  3   250.50     0 0.04668120     1
+#&gt;  4   250.75     0 0.04667791     1
+#&gt;  5   251.00     0 0.04667462     1
+#&gt;  6   251.25     0 0.04667132     1
+#&gt;  7   251.50     0 0.04666803     1
+#&gt;  8   251.75     0 0.04666474     1
+#&gt;  9   252.00     0 0.04666145     1
+#&gt; 10   252.25     0 0.04665816     1
+#&gt; # ... with 2,391 more rows</div><div class='input'>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -141,7 +179,9 @@
       <li><a href="#methods-by-class-">Methods (by class)</a></li>
 
       <li><a href="#see-also">See also</a></li>
-          </ul>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
   </div>
 </div>

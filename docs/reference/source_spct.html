@@ -101,20 +101,21 @@ character scalars for attributes, and a logical flag.</p>
   <span class='kw'>time.unit</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"second"</span>, <span class='st'>"day"</span>, <span class='st'>"exposure"</span>), <span class='kw'>comment</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>multiple.wl</span> <span class='kw'>=</span> <span class='fl'>1L</span>, <span class='no'>...</span>)
 
-<span class='fu'>filter_spct</span>(<span class='kw'>w.length</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>Tfr</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>Tpc</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>A</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>Tfr.type</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"total"</span>, <span class='st'>"internal"</span>), <span class='kw'>comment</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>strict.range</span> <span class='kw'>=</span> <span class='fu'>getOption</span>(<span class='st'>"photobiology.strict.range"</span>, <span class='kw'>default</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>),
-  <span class='kw'>multiple.wl</span> <span class='kw'>=</span> <span class='fl'>1L</span>, <span class='no'>...</span>)
+<span class='fu'>filter_spct</span>(<span class='kw'>w.length</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>Tfr</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>Tpc</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>Afr</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>A</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>Tfr.type</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"total"</span>, <span class='st'>"internal"</span>), <span class='kw'>Afr.type</span> <span class='kw'>=</span> <span class='no'>Tfr.type</span>,
+  <span class='kw'>comment</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>strict.range</span> <span class='kw'>=</span> <span class='fu'>getOption</span>(<span class='st'>"photobiology.strict.range"</span>,
+  <span class='kw'>default</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>), <span class='kw'>multiple.wl</span> <span class='kw'>=</span> <span class='fl'>1L</span>, <span class='no'>...</span>)
 
 <span class='fu'>reflector_spct</span>(<span class='kw'>w.length</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>Rfr</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>Rpc</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>Rfr.type</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"total"</span>, <span class='st'>"specular"</span>), <span class='kw'>comment</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>strict.range</span> <span class='kw'>=</span> <span class='fu'>getOption</span>(<span class='st'>"photobiology.strict.range"</span>, <span class='kw'>default</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>),
   <span class='kw'>multiple.wl</span> <span class='kw'>=</span> <span class='fl'>1L</span>, <span class='no'>...</span>)
 
-<span class='fu'>object_spct</span>(<span class='kw'>w.length</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>Rfr</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>Tfr</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+<span class='fu'>object_spct</span>(<span class='kw'>w.length</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>Rfr</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>Tfr</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>Afr</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>Tfr.type</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"total"</span>, <span class='st'>"internal"</span>), <span class='kw'>Rfr.type</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"total"</span>, <span class='st'>"specular"</span>),
-  <span class='kw'>comment</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>strict.range</span> <span class='kw'>=</span> <span class='fu'>getOption</span>(<span class='st'>"photobiology.strict.range"</span>,
-  <span class='kw'>default</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>), <span class='kw'>multiple.wl</span> <span class='kw'>=</span> <span class='fl'>1L</span>, <span class='no'>...</span>)
+  <span class='kw'>Afr.type</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"total"</span>, <span class='st'>"internal"</span>), <span class='kw'>comment</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>strict.range</span> <span class='kw'>=</span> <span class='fu'>getOption</span>(<span class='st'>"photobiology.strict.range"</span>, <span class='kw'>default</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>),
+  <span class='kw'>multiple.wl</span> <span class='kw'>=</span> <span class='fl'>1L</span>, <span class='no'>...</span>)
 
 <span class='fu'>chroma_spct</span>(<span class='kw'>w.length</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>x</span>, <span class='no'>y</span>, <span class='no'>z</span>, <span class='kw'>comment</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>strict.range</span> <span class='kw'>=</span> <span class='fu'>getOption</span>(<span class='st'>"photobiology.strict.range"</span>, <span class='kw'>default</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>),
@@ -202,13 +203,17 @@ m-2 nm-1 or mol d-1 m-2 nm-1</p></td>
       <td><p>numeric vector with spectral transmittance as percent values</p></td>
     </tr>
     <tr>
-      <th>A</th>
-      <td><p>numeric vector of absorbance values (log10 based)</p></td>
+      <th>Afr</th>
+      <td><p>numeric vector of absorptance as fraction of one</p></td>
     </tr>
     <tr>
-      <th>Tfr.type</th>
-      <td><p>character string indicating whether transmittance values are
-"total" or "internal" values</p></td>
+      <th>A</th>
+      <td><p>numeric vector of absorbance values (log10 based a.u.)</p></td>
+    </tr>
+    <tr>
+      <th>Tfr.type, Afr.type</th>
+      <td><p>character string indicating whether transmittance
+and absorptance values are "total" or "internal" values</p></td>
     </tr>
     <tr>
       <th>Rfr</th>
@@ -247,8 +252,7 @@ m-2 nm-1 or mol d-1 m-2 nm-1</p></td>
     
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <p>Other creation of spectral objects functions: <code><a href='as.generic_mspct.html'>as.generic_mspct</a></code>,
-  <code><a href='as.generic_spct.html'>as.generic_spct</a></code></p>
+    <p>Other creation of spectral objects functions: <code><a href='as.generic_spct.html'>as.generic_spct</a></code></p>
     
 
   </div>
