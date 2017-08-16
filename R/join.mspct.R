@@ -18,6 +18,8 @@
 #'
 #' @export
 #'
+#' @family conversion of collections of spectra
+#'
 join_mspct <- function(x, ...) UseMethod("join_mspct")
 
 #' @describeIn join_mspct

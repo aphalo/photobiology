@@ -320,7 +320,8 @@ is.any_mspct <- function(x) {
 #'
 #' @export
 #'
-#' @family creation of spectral objects functions
+#' @family conversion of collections of spectra
+#'
 #' @rdname as.generic_mspct
 #'
 as.generic_mspct <- function(x, force.spct.class = FALSE) {
@@ -466,7 +467,7 @@ as.chroma_mspct <- function(x) {
 #'
 #' @export
 #'
-#' @family collections of spectra classes family
+#' @family conversion of collections of spectra
 #'
 split2mspct <- function(x,
                         member.class = NULL,
@@ -625,7 +626,7 @@ split2raw_mspct <- function(x,
 #'
 #' @export
 #'
-#' @family collections of spectra classes family
+#' @family conversion of collections of spectra
 #'
 subset2mspct <- function(x,
                          member.class = NULL,
