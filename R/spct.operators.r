@@ -142,7 +142,18 @@ oper.e.generic_spct <- function(e1, e2, oper) {
         setSourceSpct(z, time.unit=getTimeUnit(e1), bswf.used = getBSWFUsed(e1),
                       strict.range = getOption("photobiology.strict.range",
                                                default = FALSE))
-      } else if (filter.quantity=="absorbance") {
+      } else if (filter.quantity=="absorptance") {
+        if (!identical(oper, `*`) && !identical(oper, `/`)) {
+          warning("Only '*' and '/' are allowed between source_spct and filter_spct objects")
+          return(NA)
+        }
+        T2Afr(e2, action = "add", byref = TRUE)
+        z <- oper_spectra(e1$w.length, e2$w.length,
+                          e1$s.e.irrad, e2$Afr,
+                          bin.oper=oper, trim="intersection")
+        names(z)[2] <- "s.e.response"
+        setResponseSpct(z, time.unit=getTimeUnit(e1))
+      }  else if (filter.quantity=="absorbance") {
         if (!identical(oper, `*`) && !identical(oper, `/`)) {
           warning("Only '*' and '/' are allowed between source_spct and filter_spct objects")
           return(NA)
@@ -264,7 +275,7 @@ oper.e.generic_spct <- function(e1, e2, oper) {
           warning("Only '*' and '/' are allowed between filter_spct and source_spct objects")
         }
         z <- oper_spectra(e1$w.length, e2$w.length,
-                          e1$A, e2$s.e.irrad,
+                          e1$Afr, e2$s.e.irrad,
                           bin.oper=oper, trim="intersection")
         names(z)[2] <- "s.e.response"
         setResponseSpct(z, time.unit=getTimeUnit(e2))
@@ -1977,12 +1988,17 @@ q2e.response_mspct <- function(x, action = "add", byref = FALSE, ...) {
 #'
 #' @return The value returned by the execution of \code{expression}.
 #'
+#' @references Based on \code{withOptions()} as offered by Thomas Lumley, and
+#'   listed in\url{http://www.burns-stat.com/the-options-mechanism-in-r/},
+#'   section Deep End, of "The Options mechanism in R" by Patrick Burns.
+#'
 #' @export
 #'
 using_Tfr <- function(expr) {
   old <- options(photobiology.filter.qty = "transmittance")
   on.exit(options(old))
-  force(expr)
+  expr <- substitute(expr)
+  eval.parent(expr)
 }
 
 #' @rdname using_Tfr
@@ -1992,7 +2008,8 @@ using_Tfr <- function(expr) {
 using_Afr <- function(expr) {
   old <- options(photobiology.filter.qty = "absorptance")
   on.exit(options(old))
-  force(expr)
+  expr <- substitute(expr)
+  eval.parent(expr)
 }
 
 #' @rdname using_Tfr
@@ -2002,7 +2019,8 @@ using_Afr <- function(expr) {
 using_A <- function(expr) {
   old <- options(photobiology.filter.qty = "absorbance")
   on.exit(options(old))
-  force(expr)
+  expr <- substitute(expr)
+  eval.parent(expr)
 }
 
 #' @rdname using_Tfr
@@ -2012,7 +2030,8 @@ using_A <- function(expr) {
 using_energy <- function(expr) {
   old <- options(photobiology.radiation.unit = "energy")
   on.exit(options(old))
-  force(expr)
+  expr <- substitute(expr)
+  eval.parent(expr)
 }
 
 #' @rdname using_Tfr
@@ -2022,7 +2041,8 @@ using_energy <- function(expr) {
 using_photon <- function(expr) {
   old <- options(photobiology.radiation.unit = "photon")
   on.exit(options(old))
-  force(expr)
+  expr <- substitute(expr)
+  eval.parent(expr)
 }
 
 # Set options -----------------------------------------------------------
