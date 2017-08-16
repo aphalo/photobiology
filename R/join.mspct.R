@@ -33,11 +33,35 @@ join_mspct.default <- function(x, ...) {
 
 #' @describeIn join_mspct
 #'
+#' @param col.name character, name of the column in the spectra to be preserved,
+#'   in addtion to "w.length".
+#'
 #' @export
 #'
-join_mspct.generic_spct <- function(x, ...) {
-  warning("'join_mspct()' only implemented for homogeneous collections of spectra.")
-  data.frame()
+join_mspct.generic_mspct <- function(x, col.name, ...) {
+  # if needed could be added as additional formal parameters
+  by <- "w.length"
+  type <- "full"
+  match <- "first"
+
+  if (length(x) == 0L) {
+    return(data.frame())
+  }
+  names <- names(x)
+  stopifnot(length(names) == length(x))
+  rmDerivedMspct(x)
+  col.selector <- c("w.length", col.name)
+  for (i in names) {
+    x[[i]] <- as.data.frame(x[[i]])[col.selector]
+    col.names <- names(x[[i]])
+    names(x[[i]])[col.names == col.name] <- i
+#    x[[i]] <- plyr::rename(x[[i]], replace = c(parse(col.name) = i)))
+  }
+  if (length(x) == 1L) {
+    as.data.frame(x[[i]])
+  } else {
+    plyr::join_all(dfs = x, by = by, type = type, match = match)
+  }
 }
 
 #' @describeIn join_mspct
@@ -190,4 +214,25 @@ join_mspct.reflector_mspct <- function(x,
     plyr::join_all(dfs = x, by = by, type = type, match = match)
   }
 }
+
+#' @describeIn join_mspct
+#'
+#' @export
+#'
+join_mspct.object_mspct <- function(x,
+                                    qty.out,
+                                    ...) {
+  # # if needed could be added as additional formal parameters
+  # by <- "w.length"
+  # type <- "full"
+  # match <- "first"
+  switch(qty.out,
+         "transmittance" = join_mspct(as.filter_mspct(x), qty.out = qty.out),
+         "absorbance" = join_mspct(as.filter_mspct(x), qty.out = qty.out),
+#         "absorbtance" = join_mspct(as.filter_mspct(x), qty.out = qty.out),
+         "reflectance" = join_mspct(as.reflector_mspct(x)),
+         stop("'qty.out = ", qty.out, " not implemented.")
+           )
+}
+
 

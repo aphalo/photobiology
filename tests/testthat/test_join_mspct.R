@@ -200,26 +200,113 @@ test_that("reflector_mspct", {
 
 })
 
-test_that("generic_mspct", {
-  my.mspct <- generic_mspct(list(ler = Ler_leaf_rflt.spct, pet = polyester.spct))
-  expect_is(my.mspct, "generic_mspct")
-
-  expect_error(my.df <- join_mspct(my.mspct))
-
-})
-
 test_that("object_mspct", {
   my.mspct <- object_mspct(list(ler1 = Ler_leaf.spct, ler2 = Ler_leaf.spct))
   expect_is(my.mspct, "object_mspct")
 
+  expect_silent(my.df <- join_mspct(my.mspct, qty.out = "transmittance"))
+  expect_is(my.df, "data.frame")
+  expect_named(my.df, c("w.length", "ler1", "ler2"))
+
+  # expect_silent(my.df <- join_mspct(my.mspct, qty.out = "absorptance"))
+  # expect_is(my.df, "data.frame")
+  # expect_named(my.df, c("w.length", "ler1", "ler2"))
+
+  expect_warning(my.df <- join_mspct(my.mspct, qty.out = "absorbance"))
+  expect_is(my.df, "data.frame")
+  expect_named(my.df, c("w.length", "ler1", "ler2"))
+
+  expect_silent(my.df <- join_mspct(my.mspct, qty.out = "reflectance"))
+  expect_is(my.df, "data.frame")
+  expect_named(my.df, c("w.length", "ler1", "ler2"))
+
+  expect_error(my.df <- join_mspct(my.mspct, qty.out = "zzzzz"))
+
+  # boundary cases
+
+  my1.mspct <- object_mspct(list(ler1 = Ler_leaf.spct))
+  expect_is(my1.mspct, "object_mspct")
+
+  expect_silent(my.df <- join_mspct(my1.mspct, qty.out = "transmittance"))
+  expect_is(my.df, "data.frame")
+  expect_named(my.df, c("w.length", "ler1"))
+  expect_equal(ncol(my.df), 2L)
+
+  my0.mspct <- object_mspct()
+  expect_is(my0.mspct, "object_mspct")
+
+  expect_silent(my.df <- join_mspct(my0.mspct, qty.out = "transmittance"))
+  expect_is(my.df, "data.frame")
+  expect_equal(nrow(my.df), 0L)
+  expect_equal(ncol(my.df), 0L)
+
+})
+
+test_that("generic_mspct", {
+  my.spct <- generic_spct(w.length = 300:500, s.data = 0.5)
+  my.mspct <- generic_mspct(list(gen1 = my.spct, gen2 = my.spct))
+  expect_is(my.mspct, "generic_mspct")
+
   expect_error(my.df <- join_mspct(my.mspct))
+  expect_error(my.df <- join_mspct(my.mspct, col.name = "zzz"))
+  expect_silent(my.df <- join_mspct(my.mspct, col.name = "s.data"))
+  expect_is(my.df, "data.frame")
+  expect_named(my.df, c("w.length", "gen1", "gen2"))
+  expect_equal(my.df[["w.length"]], my.mspct[["gen1"]][["w.length"]])
+  expect_equal(my.df[["w.length"]], my.mspct[["gen2"]][["w.length"]])
+  expect_equal(my.df[["gen1"]], my.mspct[["gen1"]][["s.data"]])
+  expect_equal(my.df[["gen1"]], my.spct[["s.data"]])
+  expect_equal(my.df[["gen2"]], my.mspct[["gen2"]][["s.data"]])
+
+  # boundary cases
+
+  my1.mspct <- generic_mspct(list(gen1 = my.spct))
+  expect_is(my1.mspct, "generic_mspct")
+
+  expect_error(my.df <- join_mspct(my1.mspct))
+  expect_error(my.df <- join_mspct(my1.mspct, col.name = "zzz"))
+  expect_silent(my.df <- join_mspct(my1.mspct, col.name = "s.data"))
+  expect_is(my.df, "data.frame")
+  expect_named(my.df, c("w.length", "gen1"))
+  expect_equal(ncol(my.df), 2L)
+  expect_equal(my.df[["gen1"]], my1.mspct[["gen1"]][["s.data"]])
+  expect_equal(my.df[["gen1"]], my.spct[["s.data"]])
+
+  my0.mspct <- generic_mspct()
+  expect_is(my0.mspct, "generic_mspct")
+
+  expect_silent(my.df <- join_mspct(my0.mspct, col.name = "s.data"))
+  expect_is(my.df, "data.frame")
+  expect_equal(nrow(my.df), 0L)
+  expect_equal(ncol(my.df), 0L)
 
 })
 
 test_that("chroma_mspct", {
+  # handled by generic_mspct method especialization, already tested above.
   my.mspct <- chroma_mspct(list(cie10 = ciexyzCMF10.spct, cie2 = ciexyzCMF2.spct))
   expect_is(my.mspct, "chroma_mspct")
 
   expect_error(my.df <- join_mspct(my.mspct))
+  expect_error(my.df <- join_mspct(my.mspct, col.name = "missing"))
+  expect_silent(my.df <- join_mspct(my.mspct, col.name = "x"))
+  expect_silent(my.df <- join_mspct(my.mspct, col.name = "y"))
+  expect_silent(my.df <- join_mspct(my.mspct, col.name = "z"))
+  expect_is(my.df, "data.frame")
+  expect_named(my.df, c("w.length", "cie10", "cie2"))
+
+})
+
+test_that("list", {
+  my.lst <- list(list(a = ciexyzCMF10.spct, b = ciexyzCMF2.spct))
+  expect_is(my.lst, "list")
+
+  expect_error(join_mspct(my.list))
+
+})
+
+test_that("numeric", {
+
+  expect_error(join_mspct(1:100))
 
 })
