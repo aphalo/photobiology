@@ -76,7 +76,8 @@ oper_spectra <- function(w.length1, w.length2  =NULL,
     warning("illegal value for 'trim' argument")
     invisible(NA)
   }
-  w.length <- c(w.length1[w.length1 >= wl.low & w.length1 <= wl.hi], w.length2[w.length2 >= wl.low & w.length2 <= wl.hi])
+  w.length <- c(w.length1[w.length1 >= wl.low & w.length1 <= wl.hi],
+                w.length2[w.length2 >= wl.low & w.length2 <= wl.hi])
   w.length <- sort(w.length)
   w.length <- unique(w.length)
   s.irrad1.int <- rep(NA, length(w.length))

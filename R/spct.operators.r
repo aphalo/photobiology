@@ -407,12 +407,12 @@ oper.e.generic_spct <- function(e1, e2, oper) {
                            x = oper(e1$x, e2["x"]),
                            y = oper(e1$y, e2["y"]),
                            z = oper(e1$z, e2["z"])))
-        } else {
-          return(chroma_spct(w.length = e1$w.length,
-                             x = oper(e1$x, e2),
-                             y = oper(e1$y, e2),
-                             z = oper(e1$z, e2)))
-         }
+      } else {
+        return(chroma_spct(w.length = e1$w.length,
+                           x = oper(e1$x, e2),
+                           y = oper(e1$y, e2),
+                           z = oper(e1$z, e2)))
+      }
     } else if (class2 == "chroma_spct") {
       x <- oper_spectra(e1$w.length, e2$w.length,
                         e1$x, e2$x,
