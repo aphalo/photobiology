@@ -1519,7 +1519,8 @@ T2A.filter_spct <- function(x, action="add", byref = FALSE, clean = TRUE, ...) {
     NULL
   } else if (exists("Tfr", x, inherits=FALSE)) {
     if (clean) {
-      x <- clean(x)
+      # we need to avoid infinite recursion
+      using_Tfr(x <- clean(x))
     }
     x[["A"]] <- -log10(x[["Tfr"]])
   } else {
@@ -1602,7 +1603,7 @@ T2Afr.filter_spct <- function(x,
   } else {
     x <- A2T(x)
     if (clean) {
-      x <- clean(x)
+      x <- using_Tfr(clean(x))
     }
     x[["Afr"]] <- 1 - x[["Tfr"]]
     setAfrType(x, getTfrType(x))
@@ -1632,7 +1633,7 @@ T2Afr.object_spct <- function(x,
     NULL
   } else {
     if (clean) {
-      x <- clean(x)
+      x <- using_Tfr(clean(x))
     }
     Tfr.type <- getTfrType(x)
     if (Tfr.type == "total") {

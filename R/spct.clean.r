@@ -72,7 +72,7 @@ clean.filter_spct <-
            qty.out = getOption("photobiology.filter.qty", default = "transmittance"),
            ...) {
     if (is.null(range.s.data)) {
-      if (qty.out == "transmittance") {
+      if (qty.out %in% c("transmittance", "absorptance")) {
         range.s.data <- c(0,1)
       } else {
         range.s.data <- c(0,NA)
@@ -85,6 +85,13 @@ clean.filter_spct <-
                  range.s.data = range.s.data,
                  fill = fill,
                  col.names = "Tfr",
+                 ...)
+    } else if (qty.out == "absorptance") {
+      clean_spct(x = T2Afr(x, action = "replace"),
+                 range = range,
+                 range.s.data = range.s.data,
+                 fill = fill,
+                 col.names = "Afr",
                  ...)
     } else if (qty.out == "absorbance") {
       clean_spct(x = T2A(x, action = "replace"),
