@@ -14,6 +14,8 @@ Add convenience functions for setting options for math: photon_as_default(),
 energy_as_default(), Tfr_as_default(), Afr_as_default(), A_as_default().
 Add convenience functions for setting options for diagnosis:
 verbose_as_default(), strict_range_as_default().
+Add convenience functions for setting options for computation:
+wb_trim_as_default(), use_cached_mult_as_default().
 Add unset_user_defaults() to clear all private options recognized by this
 package.
 Implement new attribute "Afr.type" and methods setAfrType() and

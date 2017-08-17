@@ -862,33 +862,31 @@ Table 7 lists all the recognized options affecting maths operators and functions
 
 **Table 7. Options used in the 'r4photobiology suite' and recognized by methods, operators and functions in the 'photobiology' package.** Option names, accepted and default values, and the purpose of the options are given.
 
-| Option | `values`, **default** | _function_                        |
-|:------|:---------------------|:------------------------------------|
-| **Base R** | | |
-| `digits` | 7 | $d - 3$ used by `summary` |
-| **tibble** | | |
-| tibble.print_max | **20** | Maximum number of rows printed |
-| tibble.print_min | **10** | Number of rows printed if row number threshold is exceeded |
+| Option | `values`, **default** | purpose, _unit_                  | _convenience function_
+|:------|:---------------------|:------------------------------------|------------------|
+| **Base R** | | | |
+| `digits` | 7 | $d - 3$ used by `summary` | |
+| **tibble** | | | |
+| tibble.print_max | **20** | Maximum number of rows printed | |
+| tibble.print_min | **10** | Number of rows printed if row number threshold is exceeded | |
 | tibble.width     | **NULL** | Output width |
-| **r4photobiology** | | |
-| photobiology.radiation.unit | **"energy"** | output ($W\,m^{-2}\,nm^{-1}$) |
-|                             | `"photon"` | output (\molnm) |
-| photobiology.filter.qty | **"transmittance"** | output ($/1$) |
-|                         | `"absorptance"` | output ($/1$) |
-|                         | `"absorbance"` | output (a.u. $\log_{10}$ base) |
-| photobiology.strict.range | `NA` |  skip range test |
-|                        | `TRUE` | trigger an error |
-|                         | **FALSE** | trigger a warning |
-| photobiology.waveband.trim | `FALSE` | exclude |
-|                            | **TRUE** | trim or exclude
-| photobiology.use.cached.mult | **FALSE** | do not cache intermediate results |
-|                             | `TRUE` | cache intermediate results |
-| photobiology.verbose | **FALSE** | minimal warnings and messages |
-|                             | `TRUE` | all warnings and messages |
+| **r4photobiology** | | | |
+| photobiology.radiation.unit | **"energy"** | $W\,m^{-2}\,nm^{-1}$ | `using_energy()`, `energy_as_default()` |
+|                             | `"photon"` |$\mu mol\,m^{-2}\,nm^{-1}$ | `using_photon()`, `photon_as_default()` |
+| photobiology.filter.qty | **"transmittance"** | $/1$ | `using_Tfr()`, `Tfr_as_default()` |
+|                         | `"absorptance"` | $/1$ | `using_Afr()`, `Afr_as_default()` |
+|                         | `"absorbance"` | a.u. $\log_{10}$ base | `using_A()`, `A_as_default()` |
+| photobiology.strict.range | `NA` |  skip range test | `strict_range_as_default(NA)` |
+|                        | `TRUE` | trigger an error | `strict_range_as_default(TRUE)` |
+|                         | **FALSE** | trigger a warning | `strict_range_as_default(FALSE)` |
+| photobiology.waveband.trim | `FALSE` | exclude | `wb_trim_as_default(FALSE)` |
+|                            | **TRUE** | trim or exclude |  `wb_trim_as_default(TRUE)` |
+| photobiology.use.cached.mult | **FALSE** | do not cache intermediate results |  `use_cached_mult_as_default(FALSE)` |
+|                             | `TRUE` | cache intermediate results |  `use_cached_mult_as_default(TRUE)` |
+| photobiology.verbose | **FALSE** | minimal warnings and messages |   `verbose_as_default(FALSE)` |
+|                             | `TRUE` | all warnings and messages |   `verbose_as_default(TRUE)` |
 
-<hr>
-
-The behaviour of the operators defined in this package depends on the value of two global options. For example, if we would like the operators to operate on spectral photon irradiance and return spectral photon irradiance instead of spectral energy irradiance, this behaviour can be set, and will remain active until unset or reset.
+The behaviour of the operators defined in this package depends on the value of two global options. For example, if we would like the operators to operate on spectral photon irradiance and return spectral photon irradiance instead of spectral energy irradiance, this behaviour can be set, and will remain active until unset or reset. It is possible to change options using base R's function `options()` as shown in the next code chunk. The other options listed in the Table above can be set similarly, while to unset any option, they can be given a `NULL` value.
 
 ```{r, options-1}
 options(photobiology.radiation.unit = "photon")
@@ -897,7 +895,21 @@ options(photobiology.radiation.unit = "energy")
 sun.spct * UVB.wb
 ```
 
-The other options listed in the Table above can be set similarly, to unset any option, they can be given a `NULL` value.
+However using convenience functions is easier. The chunk above can be rewritten as below.
+
+```{r, options-2}
+photon_as_default()
+sun.spct * UVB.wb
+energy_as_default()
+sun.spct * UVB.wb
+```
+
+Furthermore, it is possible to temporarily change the options for the evaluation of a single, possibly compound, R expression using a different syntax, reminiscent of that of R's `with()`.
+
+```{r, options-3}
+using_photon(sun.spct * UVB.wb)
+using_energy(sun.spct * UVB.wb)
+```
 
 ## Transformations: methods and functions
 
