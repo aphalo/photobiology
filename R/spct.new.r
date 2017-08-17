@@ -470,7 +470,7 @@ as.chroma_spct <- function(x, ...) {
 # merge -------------------------------------------------------------------
 
 
-#' Merge two generic_spct objects
+#' Merge into object_spct
 #'
 #' Merge a filter_spct with a reflector_spct returning an object_spct object,
 #' even if wavelength values are missmatched.

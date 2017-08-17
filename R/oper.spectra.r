@@ -29,7 +29,7 @@
 #' @export
 #'
 #' @examples
-#' 
+#'
 #' head(sun.data)
 #' result.data <-
 #'     with(sun.data,
@@ -43,7 +43,11 @@
 #' head(result.data)
 #' tail(result.data)
 #'
-oper_spectra <- function(w.length1, w.length2=NULL, s.irrad1, s.irrad2, trim="union", na.rm=FALSE, bin.oper=NULL, ...) {
+oper_spectra <- function(w.length1, w.length2  =NULL,
+                         s.irrad1, s.irrad2,
+                         trim="union",
+                         na.rm=FALSE,
+                         bin.oper=NULL, ...) {
   if (na.rm) {
     ifelse(!is.na(s.irrad1), s.irrad1, 0.0)
     ifelse(!is.na(s.irrad2), s.irrad2, 0.0)

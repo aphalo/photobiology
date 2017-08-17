@@ -282,8 +282,8 @@ oper.e.generic_spct <- function(e1, e2, oper) {
         return(z)
       } else if (class2 == "filter_spct") {
         T2Afr(e2, action = "add", byref = TRUE)
-        if (!identical(oper, `+`) && !identical(oper, `-`)) {
-          warning("Only '+' and '-' are allowed for two filter_spct objects (absorbance)")
+        if (!identical(oper, `*`) && !identical(oper, `/`)) {
+          warning("Only '*' and '/' are allowed for two filter_spct objects (absorptance)")
           return(NA)
         }
         z <- oper_spectra(e1$w.length, e2$w.length,
@@ -2045,6 +2045,12 @@ using_photon <- function(expr) {
   eval.parent(expr)
 }
 
+#' @rdname using_Tfr
+#'
+#' @export
+#'
+using_quantum <- using_photon
+
 # Set options -----------------------------------------------------------
 
 #' Set spectral-data options
@@ -2097,6 +2103,19 @@ A_as_default <- function() {
   options(photobiology.filter.qty = "absorbance")
 }
 
+#' @rdname energy_as_default
+#'
+#' @export
+#'
+unset_user_defaults <- function() {
+  options(photobiology.filter.qty = NULL,
+          photobiology.radiation.unit = NULL,
+          photobiology.verbose = NULL,
+          photobiology.strict.range = NULL,
+          photobiology.waveband.trim = NULL,
+          photobiology.use.cached.mult = NULL)
+}
+
 #' Set error reporting options
 #'
 #' Set error reporting related options easily.
@@ -2118,4 +2137,3 @@ verbose_as_default <- function(flag = TRUE) {
 strict_range_as_default <- function(flag = TRUE) {
   options(photobiology.strict.range = flag)
 }
-
