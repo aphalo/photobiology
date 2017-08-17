@@ -323,6 +323,16 @@ sun.spct * UVB.wb
 options(photobiology.radiation.unit = "energy")
 sun.spct * UVB.wb
 
+## ---- options-2----------------------------------------------------------
+photon_as_default()
+sun.spct * UVB.wb
+energy_as_default()
+sun.spct * UVB.wb
+
+## ---- options-3----------------------------------------------------------
+using_photon(sun.spct * UVB.wb)
+using_energy(sun.spct * UVB.wb)
+
 ## ---- manip-1------------------------------------------------------------
 # STOPGAP
 shade.spct <- sun.spct

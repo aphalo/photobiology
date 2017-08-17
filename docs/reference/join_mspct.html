@@ -88,8 +88,8 @@ in the collection.</p>
 <span class='co'># S3 method for default</span>
 <span class='fu'>join_mspct</span>(<span class='no'>x</span>, <span class='no'>...</span>)
 
-<span class='co'># S3 method for generic_spct</span>
-<span class='fu'>join_mspct</span>(<span class='no'>x</span>, <span class='no'>...</span>)
+<span class='co'># S3 method for generic_mspct</span>
+<span class='fu'>join_mspct</span>(<span class='no'>x</span>, <span class='no'>col.name</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for source_mspct</span>
 <span class='fu'>join_mspct</span>(<span class='no'>x</span>, <span class='kw'>unit.out</span> <span class='kw'>=</span> <span class='st'>"energy"</span>, <span class='no'>...</span>)
@@ -101,7 +101,10 @@ in the collection.</p>
 <span class='fu'>join_mspct</span>(<span class='no'>x</span>, <span class='kw'>qty.out</span> <span class='kw'>=</span> <span class='st'>"transmittance"</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for reflector_mspct</span>
-<span class='fu'>join_mspct</span>(<span class='no'>x</span>, <span class='no'>...</span>)</pre>
+<span class='fu'>join_mspct</span>(<span class='no'>x</span>, <span class='no'>...</span>)
+
+<span class='co'># S3 method for object_mspct</span>
+<span class='fu'>join_mspct</span>(<span class='no'>x</span>, <span class='no'>qty.out</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -114,6 +117,11 @@ generic_mspct.</p></td>
     <tr>
       <th>...</th>
       <td><p>currently ignored.</p></td>
+    </tr>
+    <tr>
+      <th>col.name</th>
+      <td><p>character, name of the column in the spectra to be preserved,
+in addtion to "w.length".</p></td>
     </tr>
     <tr>
       <th>unit.out</th>
@@ -134,11 +142,12 @@ generic_mspct.</p></td>
 
     <ul>
 <li><p><code>default</code>:</p></li>
-<li><p><code>generic_spct</code>:</p></li>
+<li><p><code>generic_mspct</code>:</p></li>
 <li><p><code>source_mspct</code>:</p></li>
 <li><p><code>response_mspct</code>:</p></li>
 <li><p><code>filter_mspct</code>:</p></li>
 <li><p><code>reflector_mspct</code>:</p></li>
+<li><p><code>object_mspct</code>:</p></li>
 </ul>
     
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>

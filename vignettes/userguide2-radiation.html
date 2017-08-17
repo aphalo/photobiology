@@ -2421,7 +2421,7 @@ wavebands</code></pre></div>
 <tr class="header">
 <th align="left">Option</th>
 <th align="left"><code>values</code>, <strong>default</strong></th>
-<th align="left"><em>purpose</em></th>
+<th align="left">purpose, <em>unit</em></th>
 <th><em>convenience function</em></th>
 </tr>
 </thead>
@@ -2471,31 +2471,31 @@ wavebands</code></pre></div>
 <tr class="even">
 <td align="left">photobiology.radiation.unit</td>
 <td align="left"><strong>“energy”</strong></td>
-<td align="left">output (<span class="math inline">\(W\,m^{-2}\,nm^{-1}\)</span>)</td>
+<td align="left"><span class="math inline">\(W\,m^{-2}\,nm^{-1}\)</span></td>
 <td><code>using_energy()</code>, <code>energy_as_default()</code></td>
 </tr>
 <tr class="odd">
 <td align="left"></td>
 <td align="left"><code>&quot;photon&quot;</code></td>
-<td align="left">output ()</td>
+<td align="left"><span class="math inline">\(\mu mol\,m^{-2}\,nm^{-1}\)</span></td>
 <td><code>using_photon()</code>, <code>photon_as_default()</code></td>
 </tr>
 <tr class="even">
 <td align="left">photobiology.filter.qty</td>
 <td align="left"><strong>“transmittance”</strong></td>
-<td align="left">output (<span class="math inline">\(/1\)</span>)</td>
+<td align="left"><span class="math inline">\(/1\)</span></td>
 <td><code>using_Tfr()</code>, <code>Tfr_as_default()</code></td>
 </tr>
 <tr class="odd">
 <td align="left"></td>
 <td align="left"><code>&quot;absorptance&quot;</code></td>
-<td align="left">output (<span class="math inline">\(/1\)</span>)</td>
+<td align="left"><span class="math inline">\(/1\)</span></td>
 <td><code>using_Afr()</code>, <code>Afr_as_default()</code></td>
 </tr>
 <tr class="even">
 <td align="left"></td>
 <td align="left"><code>&quot;absorbance&quot;</code></td>
-<td align="left">output (a.u. <span class="math inline">\(\log_{10}\)</span> base)</td>
+<td align="left">a.u. <span class="math inline">\(\log_{10}\)</span> base</td>
 <td><code>using_A()</code>, <code>A_as_default()</code></td>
 </tr>
 <tr class="odd">
@@ -2554,7 +2554,6 @@ wavebands</code></pre></div>
 </tr>
 </tbody>
 </table>
-<hr>
 <p>The behaviour of the operators defined in this package depends on the value of two global options. For example, if we would like the operators to operate on spectral photon irradiance and return spectral photon irradiance instead of spectral energy irradiance, this behaviour can be set, and will remain active until unset or reset. It is possible to change options using base R’s function <code>options()</code> as shown in the next code chunk. The other options listed in the Table above can be set similarly, while to unset any option, they can be given a <code>NULL</code> value.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">options</span>(<span class="dt">photobiology.radiation.unit =</span> <span class="st">&quot;photon&quot;</span>)
 sun.spct <span class="op">*</span><span class="st"> </span>UVB.wb</code></pre></div>

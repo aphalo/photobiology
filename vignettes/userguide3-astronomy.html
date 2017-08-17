@@ -115,9 +115,9 @@ In versions 0.9.16 and later the code has been optimized for performance with ti
 <p>Functions have defaults for their arguments, but rarely Greenwich will be the location you are interested in.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sun_angles</span>()</code></pre></div>
 <pre><code>##                  time  tz solartime longitude latitude   address  azimuth
-## 1 2017-08-17 09:30:44 UTC  09:26:45         0     51.5 Greenwich 127.0527
+## 1 2017-08-17 20:10:54 UTC  20:07:00         0     51.5 Greenwich 303.1912
 ##   elevation
-## 1  40.86452</code></pre>
+## 1 -8.182283</code></pre>
 <p>A vector of times is accepted as argument, and as performance is optimized for this case, <em>vectorization</em> will markedly improve performance compared to multiple calls to the function. The vector of times can be created on the fly, or stored beforehand.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sun_angles</span>(<span class="dt">time =</span> <span class="kw">ymd_hms</span>(<span class="st">&quot;2014-01-01 0:0:0&quot;</span>, <span class="dt">tz =</span> <span class="st">&quot;EET&quot;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">hours</span>(<span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">6</span>, <span class="dv">12</span>)), 
            <span class="dt">geocode =</span> my.geocode)</code></pre></div>
@@ -327,14 +327,16 @@ Paris.time &lt;-<span class="st"> </span><span class="kw">ymd_hms</span>(<span c
 <p>Function <code>as_tod()</code> facilitates conversion of R’s time date objects into a numeric value representing the time of day in one of hour, minute or second as unit of expression.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">times &lt;-<span class="st"> </span><span class="kw">now</span>() <span class="op">+</span><span class="st"> </span><span class="kw">hours</span>(<span class="dv">0</span><span class="op">:</span><span class="dv">6</span>)
 times</code></pre></div>
-<pre><code>## [1] &quot;2017-08-17 12:30:45 EEST&quot; &quot;2017-08-17 13:30:45 EEST&quot;
-## [3] &quot;2017-08-17 14:30:45 EEST&quot; &quot;2017-08-17 15:30:45 EEST&quot;
-## [5] &quot;2017-08-17 16:30:45 EEST&quot; &quot;2017-08-17 17:30:45 EEST&quot;
-## [7] &quot;2017-08-17 18:30:45 EEST&quot;</code></pre>
+<pre><code>## [1] &quot;2017-08-17 23:10:55 EEST&quot; &quot;2017-08-18 00:10:55 EEST&quot;
+## [3] &quot;2017-08-18 01:10:55 EEST&quot; &quot;2017-08-18 02:10:55 EEST&quot;
+## [5] &quot;2017-08-18 03:10:55 EEST&quot; &quot;2017-08-18 04:10:55 EEST&quot;
+## [7] &quot;2017-08-18 05:10:55 EEST&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">as_tod</span>(times)</code></pre></div>
-<pre><code>## [1] 12.5127 13.5127 14.5127 15.5127 16.5127 17.5127 18.5127</code></pre>
+<pre><code>## [1] 23.1821011  0.1821011  1.1821011  2.1821011  3.1821011  4.1821011
+## [7]  5.1821011</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">as_tod</span>(times, <span class="dt">unit.out =</span> <span class="st">&quot;minutes&quot;</span>)</code></pre></div>
-<pre><code>## [1]  750.7617  810.7617  870.7617  930.7617  990.7617 1050.7617 1110.7617</code></pre>
+<pre><code>## [1] 1390.92606   10.92606   70.92606  130.92606  190.92606  250.92606
+## [7]  310.92606</code></pre>
 </div>
 
 

@@ -58,6 +58,8 @@ reference:
     - is_scaled
     - getTfrType
     - setTfrType
+    - getAfrType
+    - setAfrType
     - is_absorbance_based
     - getTimeUnit
     - setTimeUnit
@@ -124,6 +126,8 @@ reference:
     - q2e
     - T2A
     - A2T
+    - T2Afr
+    - T2T
     - tag
     - untag
     - cps2irrad
@@ -142,6 +146,12 @@ reference:
     - MathFun
     - sign
     - round
+  - title: Options
+    contents:
+    - using_Tfr
+    - energy_as_default
+    - wb_trim_as_default
+    - verbose_as_default
   - title: Extract, replace and combine
     contents:
     - Extract
@@ -192,6 +202,12 @@ reference:
     - clear.spct
     - opaque.spct
     - green_leaf.spct
+    - Ler_leaf.spct
+    - Ler_leaf_rflt.spct
+    - Ler_leaf_trns.spct
+    - Ler_leaf_trns_i.spct
+    - Ler_leaf.spct
+    - Ler_leaf.spct
     - clear_body.spct
     - white_body.spct
     - black_body.spct

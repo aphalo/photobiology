@@ -19,6 +19,7 @@ test_that("T2A", {
 
   expect_true(all(T2A(f.spct)[["A"]] == 1))
 
+  # add "ignore.order = TRUE" if needed!
   expect_named(T2A(f.spct), c("w.length", "Tfr", "A"))
   expect_named(T2A(f.spct, action = "add"), c("w.length", "Tfr", "A"))
   expect_named(T2A(f.spct, action = "replace"), c("w.length", "A"))
@@ -42,6 +43,7 @@ test_that("A2T", {
 
   expect_true(all(A2T(f.spct)[["Tfr"]] == 0.1))
 
+  # add "ignore.order = TRUE" if needed!
   expect_named(A2T(f.spct), c("w.length", "A", "Tfr"))
   expect_named(A2T(f.spct, action = "add"), c("w.length", "A", "Tfr"))
   expect_named(A2T(f.spct, action = "replace"), c("w.length", "Tfr"))
@@ -68,6 +70,7 @@ test_that("e2q", {
 
   expect_equal_to_reference(e2q(s.spct), "e2q.rds")
 
+  # add "ignore.order = TRUE" if needed!
   expect_named(e2q(s.spct), c("w.length", "s.e.irrad", "s.q.irrad"))
   expect_named(e2q(s.spct, action = "add"), c("w.length", "s.e.irrad", "s.q.irrad"))
   expect_named(e2q(s.spct, action = "replace"), c("w.length", "s.q.irrad"))
@@ -85,6 +88,7 @@ test_that("q2e", {
 
   expect_equal_to_reference(q2e(s.spct), "q2e.rds")
 
+  # add "ignore.order = TRUE" if needed!
   expect_named(q2e(s.spct), c("w.length", "s.q.irrad", "s.e.irrad"))
   expect_named(q2e(s.spct, action = "add"), c("w.length", "s.q.irrad", "s.e.irrad"))
   expect_named(q2e(s.spct, action = "replace"), c("w.length", "s.e.irrad"))

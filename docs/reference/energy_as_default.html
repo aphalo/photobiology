@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Merge into object_spct — merge2object_spct â€¢ photobiology</title>
+<title>Set spectral-data options — energy_as_default â€¢ photobiology</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -74,73 +74,38 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Merge into object_spct</h1>
+    <h1>Set spectral-data options</h1>
     </div>
 
     
-    <p>Merge a filter_spct with a reflector_spct returning an object_spct object,
-even if wavelength values are missmatched.</p>
+    <p>Set spectral-data related options easily.</p>
     
 
-    <pre class="usage"><span class='fu'>merge2object_spct</span>(<span class='no'>x</span>, <span class='no'>y</span>, <span class='kw'>by</span> <span class='kw'>=</span> <span class='st'>"w.length"</span>, <span class='no'>...</span>,
-  <span class='kw'>w.length.out</span> <span class='kw'>=</span> <span class='no'>x</span><span class='kw'>[[</span><span class='st'>"w.length"</span>]], <span class='kw'>Tfr.type.out</span> <span class='kw'>=</span> <span class='st'>"total"</span>)</pre>
-    
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
-    <table class="ref-arguments">
-    <colgroup><col class="name" /><col class="desc" /></colgroup>
-    <tr>
-      <th>x, y</th>
-      <td><p>a filter_spct object and a reflector_spct object.</p></td>
-    </tr>
-    <tr>
-      <th>by</th>
-      <td><p>a vector of shared column names in <code>x</code> and <code>y</code> to merge
-on; <code>by</code> defaults to <code>w.length</code>.</p></td>
-    </tr>
-    <tr>
-      <th>...</th>
-      <td><p>other arguments passed to <code>dplyr::inner_join()</code></p></td>
-    </tr>
-    <tr>
-      <th>w.length.out</th>
-      <td><p>numeric array of wavelengths to be used for the returned
-object (nm).</p></td>
-    </tr>
-    <tr>
-      <th>Tfr.type.out</th>
-      <td><p>character string indicating whether transmittance
-values in the returned object should be expressed as "total" or "internal".
-This applies only to the case when an object_spct is returned.</p></td>
-    </tr>
-    </table>
-    
+    <pre class="usage"><span class='fu'>energy_as_default</span>()
+
+<span class='fu'>photon_as_default</span>()
+
+<span class='fu'>quantum_as_default</span>()
+
+<span class='fu'>Tfr_as_default</span>()
+
+<span class='fu'>Afr_as_default</span>()
+
+<span class='fu'>A_as_default</span>()
+
+<span class='fu'>unset_user_defaults</span>()</pre>
+        
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>An object_spct is returned as the result of merging a filter_spct and
-  a reflector_spct object.</p>
-    
-    <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
-
-    <p>If a numeric vector is supplied as argument for <code>w.length.out</code>,
-  the two spectra are interpolated to the new wavelength values before
-  merging. The default argument for <code>w.length.out</code> is x[[w.length]].</p>
-    
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
-
-    <p><code><a href='http://www.rdocumentation.org/packages/dplyr/topics/join'>join</a></code></p>
+    <p>Previous value of the modified option.</p>
     
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
-      <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#value">Value</a></li>
-
-      <li><a href="#note">Note</a></li>
-
-      <li><a href="#see-also">See also</a></li>
           </ul>
 
   </div>

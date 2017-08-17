@@ -425,6 +425,18 @@ classes.</p></td>
         </tr><tr>
           <!--  -->
           <td>
+            <p><code><a href="getAfrType.html">getAfrType</a></code> </p>
+          </td>
+          <td><p>Get the "Afr.type" attribute</p></td>
+        </tr><tr>
+          <!--  -->
+          <td>
+            <p><code><a href="setAfrType.html">setAfrType</a></code> </p>
+          </td>
+          <td><p>Set the "Afr.type" attribute</p></td>
+        </tr><tr>
+          <!--  -->
+          <td>
             <p><code><a href="is_absorbance_based.html">is_absorbance_based</a></code> <code><a href="is_absorbance_based.html">is_transmittance_based</a></code> </p>
           </td>
           <td><p>Query if a spectrum contains absorbance or transmittance data</p></td>
@@ -809,6 +821,18 @@ classes.</p></td>
         </tr><tr>
           <!--  -->
           <td>
+            <p><code><a href="T2Afr.html">T2Afr</a></code> </p>
+          </td>
+          <td><p>Convert transmittance into absorptance.</p></td>
+        </tr><tr>
+          <!--  -->
+          <td>
+            <p><code><a href="T2T.html">T2T</a></code> </p>
+          </td>
+          <td><p>Convert transmittance type.</p></td>
+        </tr><tr>
+          <!--  -->
+          <td>
             <p><code><a href="tag.html">tag</a></code> </p>
           </td>
           <td><p>Tag a spectrum</p></td>
@@ -914,6 +938,38 @@ classes.</p></td>
       </tbody><tbody>
         <tr>
           <th colspan="2">
+            <h2 id="section-options" class="hasAnchor"><a href="#section-options" class="anchor"></a>Options</h2>
+            <p class="section-desc"></p>
+          </th>
+        </tr>
+        <tr>
+          <!--  -->
+          <td>
+            <p><code><a href="using_Tfr.html">using_Tfr</a></code> <code><a href="using_Tfr.html">using_Afr</a></code> <code><a href="using_Tfr.html">using_A</a></code> <code><a href="using_Tfr.html">using_energy</a></code> <code><a href="using_Tfr.html">using_photon</a></code> <code><a href="using_Tfr.html">using_quantum</a></code> </p>
+          </td>
+          <td><p>Use photobiology options</p></td>
+        </tr><tr>
+          <!--  -->
+          <td>
+            <p><code><a href="energy_as_default.html">energy_as_default</a></code> <code><a href="energy_as_default.html">photon_as_default</a></code> <code><a href="energy_as_default.html">quantum_as_default</a></code> <code><a href="energy_as_default.html">Tfr_as_default</a></code> <code><a href="energy_as_default.html">Afr_as_default</a></code> <code><a href="energy_as_default.html">A_as_default</a></code> <code><a href="energy_as_default.html">unset_user_defaults</a></code> </p>
+          </td>
+          <td><p>Set spectral-data options</p></td>
+        </tr><tr>
+          <!--  -->
+          <td>
+            <p><code><a href="wb_trim_as_default.html">wb_trim_as_default</a></code> <code><a href="wb_trim_as_default.html">use_cached_mult_as_default</a></code> </p>
+          </td>
+          <td><p>Set computation options</p></td>
+        </tr><tr>
+          <!--  -->
+          <td>
+            <p><code><a href="verbose_as_default.html">verbose_as_default</a></code> <code><a href="verbose_as_default.html">strict_range_as_default</a></code> </p>
+          </td>
+          <td><p>Set error reporting options</p></td>
+        </tr>
+      </tbody><tbody>
+        <tr>
+          <th colspan="2">
             <h2 id="section-extract-replace-and-combine" class="hasAnchor"><a href="#section-extract-replace-and-combine" class="anchor"></a>Extract, replace and combine</h2>
             <p class="section-desc"></p>
           </th>
@@ -947,7 +1003,7 @@ classes.</p></td>
           <td>
             <p><code><a href="merge2object_spct.html">merge2object_spct</a></code> </p>
           </td>
-          <td><p>Merge two generic_spct objects</p></td>
+          <td><p>Merge into object_spct</p></td>
         </tr><tr>
           <!--  -->
           <td>
@@ -1184,6 +1240,30 @@ classes.</p></td>
             <p><code><a href="green_leaf.spct.html">green_leaf.spct</a></code> </p>
           </td>
           <td><p>Green birch leaf reflectance.</p></td>
+        </tr><tr>
+          <!--  -->
+          <td>
+            <p><code><a href="Ler_leaf.spct.html">Ler_leaf.spct</a></code> </p>
+          </td>
+          <td><p>Green Arabidopsis leaf reflectance and transmittance.</p></td>
+        </tr><tr>
+          <!--  -->
+          <td>
+            <p><code><a href="Ler_leaf_rflt.spct.html">Ler_leaf_rflt.spct</a></code> </p>
+          </td>
+          <td><p>Green Arabidopsis leaf spectral reflectance.</p></td>
+        </tr><tr>
+          <!--  -->
+          <td>
+            <p><code><a href="Ler_leaf_trns.spct.html">Ler_leaf_trns.spct</a></code> </p>
+          </td>
+          <td><p>Green Arabidopsis leaf spectral transmittance.</p></td>
+        </tr><tr>
+          <!--  -->
+          <td>
+            <p><code><a href="Ler_leaf_trns_i.spct.html">Ler_leaf_trns_i.spct</a></code> </p>
+          </td>
+          <td><p>Green Arabidopsis leaf spectral transmittance.</p></td>
         </tr><tr>
           <!--  -->
           <td>
@@ -1570,6 +1650,7 @@ classes.</p></td>
       <li><a href="#section-spectral-features">Spectral features</a></li>
       <li><a href="#section-transformations">Transformations</a></li>
       <li><a href="#section-mathematical-operators-and-functions">Mathematical operators and functions</a></li>
+      <li><a href="#section-options">Options</a></li>
       <li><a href="#section-extract-replace-and-combine">Extract, replace and combine</a></li>
       <li><a href="#section-apply">Apply</a></li>
       <li><a href="#section-astronomy">Astronomy</a></li>

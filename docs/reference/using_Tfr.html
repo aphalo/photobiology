@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Merge into object_spct — merge2object_spct â€¢ photobiology</title>
+<title>Use photobiology options — using_Tfr â€¢ photobiology</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -74,60 +74,44 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Merge into object_spct</h1>
+    <h1>Use photobiology options</h1>
     </div>
 
     
-    <p>Merge a filter_spct with a reflector_spct returning an object_spct object,
-even if wavelength values are missmatched.</p>
+    <p>Execute an R expression, possibly compound, using a certain setting for
+spectral data related options.</p>
     
 
-    <pre class="usage"><span class='fu'>merge2object_spct</span>(<span class='no'>x</span>, <span class='no'>y</span>, <span class='kw'>by</span> <span class='kw'>=</span> <span class='st'>"w.length"</span>, <span class='no'>...</span>,
-  <span class='kw'>w.length.out</span> <span class='kw'>=</span> <span class='no'>x</span><span class='kw'>[[</span><span class='st'>"w.length"</span>]], <span class='kw'>Tfr.type.out</span> <span class='kw'>=</span> <span class='st'>"total"</span>)</pre>
+    <pre class="usage"><span class='fu'>using_Tfr</span>(<span class='no'>expr</span>)
+
+<span class='fu'>using_Afr</span>(<span class='no'>expr</span>)
+
+<span class='fu'>using_A</span>(<span class='no'>expr</span>)
+
+<span class='fu'>using_energy</span>(<span class='no'>expr</span>)
+
+<span class='fu'>using_photon</span>(<span class='no'>expr</span>)
+
+<span class='fu'>using_quantum</span>(<span class='no'>expr</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>x, y</th>
-      <td><p>a filter_spct object and a reflector_spct object.</p></td>
-    </tr>
-    <tr>
-      <th>by</th>
-      <td><p>a vector of shared column names in <code>x</code> and <code>y</code> to merge
-on; <code>by</code> defaults to <code>w.length</code>.</p></td>
-    </tr>
-    <tr>
-      <th>...</th>
-      <td><p>other arguments passed to <code>dplyr::inner_join()</code></p></td>
-    </tr>
-    <tr>
-      <th>w.length.out</th>
-      <td><p>numeric array of wavelengths to be used for the returned
-object (nm).</p></td>
-    </tr>
-    <tr>
-      <th>Tfr.type.out</th>
-      <td><p>character string indicating whether transmittance
-values in the returned object should be expressed as "total" or "internal".
-This applies only to the case when an object_spct is returned.</p></td>
+      <th>expr</th>
+      <td><p>an R expression to execute.</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>An object_spct is returned as the result of merging a filter_spct and
-  a reflector_spct object.</p>
+    <p>The value returned by the execution of <code>expression</code>.</p>
     
-    <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
+    <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
-    <p>If a numeric vector is supplied as argument for <code>w.length.out</code>,
-  the two spectra are interpolated to the new wavelength values before
-  merging. The default argument for <code>w.length.out</code> is x[[w.length]].</p>
-    
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
-
-    <p><code><a href='http://www.rdocumentation.org/packages/dplyr/topics/join'>join</a></code></p>
+    <p>Based on <code>withOptions()</code> as offered by Thomas Lumley, and
+  listed in<a href = 'http://www.burns-stat.com/the-options-mechanism-in-r/'>http://www.burns-stat.com/the-options-mechanism-in-r/</a>,
+  section Deep End, of "The Options mechanism in R" by Patrick Burns.</p>
     
 
   </div>
@@ -138,9 +122,7 @@ This applies only to the case when an object_spct is returned.</p></td>
       
       <li><a href="#value">Value</a></li>
 
-      <li><a href="#note">Note</a></li>
-
-      <li><a href="#see-also">See also</a></li>
+      <li><a href="#references">References</a></li>
           </ul>
 
   </div>
