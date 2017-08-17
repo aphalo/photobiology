@@ -2103,6 +2103,28 @@ A_as_default <- function() {
   options(photobiology.filter.qty = "absorbance")
 }
 
+#' Set computation options
+#'
+#' Set computation related options easily.
+#'
+#' @param flag logical.
+#'
+#' @return Previous value of the modified option.
+#'
+#' @export
+#'
+wb_trim_as_default <- function(flag = TRUE) {
+  options(photobiology.waveband.trim = flag)
+}
+
+#' @rdname wb_trim_as_default
+#'
+#' @export
+#'
+use_cached_mult_as_default <- function(flag = TRUE) {
+  options(photobiology.use.cached.mult = flag)
+}
+
 #' @rdname energy_as_default
 #'
 #' @export

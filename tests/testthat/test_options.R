@@ -63,3 +63,27 @@ test_that("radiation.unit", {
   expect_equal(using_photon(getOption("photobiology.radiation.unit")), "photon")
   expect_equal(using_quantum(getOption("photobiology.radiation.unit")), "photon")
 })
+
+test_that("waveband.trim", {
+  expect_silent(unset_user_defaults())
+  expect_silent(old <- wb_trim_as_default())
+  expect_null(old$photobiology.waveband.trim)
+  expect_equal(getOption("photobiology.waveband.trim"), TRUE)
+  expect_silent(old <- wb_trim_as_default(FALSE))
+  expect_true(old$photobiology.waveband.trim)
+  expect_equal(getOption("photobiology.waveband.trim"), FALSE)
+  expect_silent(unset_user_defaults())
+})
+
+test_that("use.cached.mult", {
+  expect_silent(unset_user_defaults())
+  expect_silent(old <- use_cached_mult_as_default())
+  expect_null(old$photobiology.use.cached.mult)
+  expect_equal(getOption("photobiology.use.cached.mult"), TRUE)
+  expect_silent(old <- use_cached_mult_as_default(FALSE))
+  expect_true(old$photobiology.use.cached.mult)
+  expect_equal(getOption("photobiology.use.cached.mult"), FALSE)
+  expect_silent(unset_user_defaults())
+})
+
+
