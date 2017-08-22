@@ -629,7 +629,7 @@ CIE.wb <- waveband(c(250, 400), weight = "SWF",
                    SWF.e.fun = CIE_e_fun, SWF.norm = 298)
 ```
 
-The first argument to `waveband()` does not need to be a numeric vector of length two. Any R object of a class that supplies a `range()` method definition that can be interpreted as a range of wavelengths in nanometres can be used. As a consequence, when wanting to construct a waveband covering the whole range of a spectrum one can simply supply the spectrum as argument, or to construct an unweighted waveband which covers exactly the same range of wavelengths as an existing effective (weighted) waveband, one can supply a waveband object as an argument.
+The first argument to `waveband()` does not need to be a numeric vector of length two. Any R object of a class that supplies a `range()` method definition that can be interpreted as a range of wavelengths in nanometres can be used. As a consequence, when wanting to construct a waveband covering the whole range of a spectrum one can simply supply the spectrum as argument, or to construct an non-weighed waveband which covers exactly the same range of wavelengths as an existing effective (weighted) waveband, one can supply a waveband object as an argument.
 
 ```{r, wb-4}
 waveband(sun.spct)
@@ -676,7 +676,7 @@ wavebands
 
 #### Special constructor
 
-The function `split_bands` can be used to generate lists of unweighted wavebands in two different ways: a) it can be used to split a range of wavelengths given by an R object into a series of adjacent wavebands, or b) with a list of objects returning ranges, it can be used to create non-adjacent and even overlapping wavebands.
+The function `split_bands` can be used to generate lists of non-weighed wavebands in two different ways: a) it can be used to split a range of wavelengths given by an R object into a series of adjacent wavebands, or b) with a list of objects returning ranges, it can be used to create non-adjacent and even overlapping wavebands.
 
 The code chunk bellow shows an example of two variations of case a). With the default value for `length.out` of `NULL` each numerical value in the input is taken as a wavelength (nm) at the boundary between adjacent wavebands. If a numerical value is supplied to `length.out`, then the whole wavelength range of the input is split into this number of equally spaced adjacent wavebands.
 

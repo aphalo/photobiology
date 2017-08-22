@@ -12,7 +12,7 @@
 
 <meta name="author" content="Pedro J. Aphalo" />
 
-<meta name="date" content="2017-08-17" />
+<meta name="date" content="2017-08-18" />
 
 <title>User Guide: 2 Radiation</title>
 
@@ -71,7 +71,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <h1 class="title toc-ignore">User Guide: 2 Radiation</h1>
 <h3 class="subtitle"><em>Package ‘photobiology’ 0.9.16.9002</em></h3>
 <h4 class="author"><em>Pedro J. Aphalo</em></h4>
-<h4 class="date"><em>2017-08-17</em></h4>
+<h4 class="date"><em>2017-08-18</em></h4>
 
 
 <div id="TOC">
@@ -1624,7 +1624,7 @@ UV_bands.lst &lt;-<span class="st"> </span><span class="kw">list</span>(UVC.wb, 
 }</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">CIE.wb &lt;-<span class="st"> </span><span class="kw">waveband</span>(<span class="kw">c</span>(<span class="dv">250</span>, <span class="dv">400</span>), <span class="dt">weight =</span> <span class="st">&quot;SWF&quot;</span>,
                    <span class="dt">SWF.e.fun =</span> CIE_e_fun, <span class="dt">SWF.norm =</span> <span class="dv">298</span>)</code></pre></div>
-<p>The first argument to <code>waveband()</code> does not need to be a numeric vector of length two. Any R object of a class that supplies a <code>range()</code> method definition that can be interpreted as a range of wavelengths in nanometres can be used. As a consequence, when wanting to construct a waveband covering the whole range of a spectrum one can simply supply the spectrum as argument, or to construct an unweighted waveband which covers exactly the same range of wavelengths as an existing effective (weighted) waveband, one can supply a waveband object as an argument.</p>
+<p>The first argument to <code>waveband()</code> does not need to be a numeric vector of length two. Any R object of a class that supplies a <code>range()</code> method definition that can be interpreted as a range of wavelengths in nanometres can be used. As a consequence, when wanting to construct a waveband covering the whole range of a spectrum one can simply supply the spectrum as argument, or to construct an non-weighed waveband which covers exactly the same range of wavelengths as an existing effective (weighted) waveband, one can supply a waveband object as an argument.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">waveband</span>(sun.spct)</code></pre></div>
 <pre><code>## Total 
 ## low (nm) 280 
@@ -1675,7 +1675,7 @@ wavebands</code></pre></div>
 </div>
 <div id="special-constructor" class="section level4">
 <h4>Special constructor</h4>
-<p>The function <code>split_bands</code> can be used to generate lists of unweighted wavebands in two different ways: a) it can be used to split a range of wavelengths given by an R object into a series of adjacent wavebands, or b) with a list of objects returning ranges, it can be used to create non-adjacent and even overlapping wavebands.</p>
+<p>The function <code>split_bands</code> can be used to generate lists of non-weighed wavebands in two different ways: a) it can be used to split a range of wavelengths given by an R object into a series of adjacent wavebands, or b) with a list of objects returning ranges, it can be used to create non-adjacent and even overlapping wavebands.</p>
 <p>The code chunk bellow shows an example of two variations of case a). With the default value for <code>length.out</code> of <code>NULL</code> each numerical value in the input is taken as a wavelength (nm) at the boundary between adjacent wavebands. If a numerical value is supplied to <code>length.out</code>, then the whole wavelength range of the input is split into this number of equally spaced adjacent wavebands.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">split_bands</span>(<span class="kw">c</span>(<span class="dv">200</span>, <span class="dv">225</span>, <span class="dv">300</span>))</code></pre></div>
 <pre><code>## $wb1
