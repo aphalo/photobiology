@@ -2139,6 +2139,34 @@ unset_user_defaults <- function() {
           photobiology.use.cached.mult = NULL)
 }
 
+#' @rdname energy_as_default
+#'
+#' @export
+#'
+unset_radiation_unit_default <- function() {
+  options(photobiology.radiation.unit = NULL)
+}
+
+#' @rdname energy_as_default
+#'
+#' @export
+#'
+unset_filter_qty_default <- function() {
+  options(photobiology.filter.qty = NULL)
+}
+
+#' @rdname energy_as_default
+#'
+#' @export
+#'
+unset_user_defaults <- function() {
+  options(photobiology.filter.qty = NULL,
+          photobiology.radiation.unit = NULL,
+          photobiology.verbose = NULL,
+          photobiology.strict.range = NULL,
+          photobiology.waveband.trim = NULL,
+          photobiology.use.cached.mult = NULL)
+}
 #' Set error reporting options
 #'
 #' Set error reporting related options easily.
