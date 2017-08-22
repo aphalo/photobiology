@@ -480,6 +480,9 @@ split2mspct <- function(x,
     stop("'split2mspct()' is for slicing vertically wide data in data frames ",
          "'subset2mspct()' is used in the case of tidy data in long form.")
   }
+  if (!is.numeric(x[[w.length.var]])) {
+    stop("Non-numeric variable '", w.length.var, "' is bad for wavelengths.")
+  }
   collection.class <- sub("_spct", "_mspct", member.class, fixed = TRUE)
   member.constr <- member.class
   collection.constr <- collection.class
@@ -488,6 +491,7 @@ split2mspct <- function(x,
   l <- list()
   for (col in data.cols) {
     if (!is.numeric(x[[col]])) {
+      warning("Skipping non-numeric column in x: ", col)
       next
     }
     args <- list(w.length = x[[w.length.var]])
