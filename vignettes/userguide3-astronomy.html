@@ -12,7 +12,7 @@
 
 <meta name="author" content="Pedro J. Aphalo" />
 
-<meta name="date" content="2017-08-17" />
+<meta name="date" content="2017-08-27" />
 
 <title>User Guide: 3 Astronomy</title>
 
@@ -69,9 +69,9 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 
 <h1 class="title toc-ignore">User Guide: 3 Astronomy</h1>
-<h3 class="subtitle"><em>Package ‘photobiology’ 0.9.16.9002</em></h3>
+<h3 class="subtitle"><em>Package ‘photobiology’ 0.9.17</em></h3>
 <h4 class="author"><em>Pedro J. Aphalo</em></h4>
-<h4 class="date"><em>2017-08-17</em></h4>
+<h4 class="date"><em>2017-08-27</em></h4>
 
 
 <div id="TOC">
@@ -115,9 +115,9 @@ In versions 0.9.16 and later the code has been optimized for performance with ti
 <p>Functions have defaults for their arguments, but rarely Greenwich will be the location you are interested in.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sun_angles</span>()</code></pre></div>
 <pre><code>##                  time  tz solartime longitude latitude   address  azimuth
-## 1 2017-08-17 20:10:54 UTC  20:07:00         0     51.5 Greenwich 303.1912
+## 1 2017-08-26 22:11:03 UTC  22:09:30         0     51.5 Greenwich 329.9993
 ##   elevation
-## 1 -8.182283</code></pre>
+## 1 -24.04208</code></pre>
 <p>A vector of times is accepted as argument, and as performance is optimized for this case, <em>vectorization</em> will markedly improve performance compared to multiple calls to the function. The vector of times can be created on the fly, or stored beforehand.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sun_angles</span>(<span class="dt">time =</span> <span class="kw">ymd_hms</span>(<span class="st">&quot;2014-01-01 0:0:0&quot;</span>, <span class="dt">tz =</span> <span class="st">&quot;EET&quot;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">hours</span>(<span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">6</span>, <span class="dv">12</span>)), 
            <span class="dt">geocode =</span> my.geocode)</code></pre></div>
@@ -181,9 +181,9 @@ dates</code></pre></div>
 <pre><code>## [1] &quot;2015-03-01 EET&quot;  &quot;2015-04-01 EEST&quot; &quot;2015-05-01 EEST&quot; &quot;2015-06-01 EEST&quot;
 ## [5] &quot;2015-07-01 EEST&quot; &quot;2015-08-01 EEST&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sunrise_time</span>(<span class="kw">now</span>(<span class="st">&quot;UTC&quot;</span>), <span class="dt">tz =</span> <span class="st">&quot;UTC&quot;</span>, <span class="dt">geocode =</span> my.geocode)</code></pre></div>
-<pre><code>## [1] &quot;2017-08-17 02:40:22 UTC&quot;</code></pre>
+<pre><code>## [1] &quot;2017-08-26 03:02:05 UTC&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sunrise_time</span>(<span class="kw">now</span>(<span class="st">&quot;EET&quot;</span>), <span class="dt">tz =</span> <span class="st">&quot;EET&quot;</span>, <span class="dt">geocode =</span> my.geocode)</code></pre></div>
-<pre><code>## [1] &quot;2017-08-17 05:40:22 EEST&quot;</code></pre>
+<pre><code>## [1] &quot;2017-08-27 06:04:29 EEST&quot;</code></pre>
 <p>Southern hemisphere latitudes as well as longitudes to the West of the Greenwich meridian should be supplied as negative numbers.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sunrise_time</span>(dates, <span class="dt">geocode =</span> <span class="kw">data.frame</span>(<span class="dt">lat =</span> <span class="dv">60</span>, <span class="dt">lon =</span> <span class="dv">0</span>))</code></pre></div>
 <pre><code>## [1] &quot;2015-03-01 08:58:05 EET&quot;  &quot;2015-04-01 08:24:46 EEST&quot;
@@ -281,7 +281,7 @@ dates</code></pre></div>
 ## [5] &quot;2015-07-01 22:47:17 EEST&quot; &quot;2015-08-01 21:52:45 EEST&quot;</code></pre>
 <p>The default for <code>date</code> is the current day, using the system time zone settings.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">noon_time</span>(<span class="dt">geocode =</span> my.geocode)</code></pre></div>
-<pre><code>## [1] &quot;2017-08-17 13:24:14 EEST&quot;</code></pre>
+<pre><code>## [1] &quot;2017-08-27 13:21:40 EEST&quot;</code></pre>
 <p>Parameter <code>unit.out</code> can be used to obtain the returned value expressed as time-of-day in hours, minutes, or seconds since midnight, instead of the default <code>datetime</code>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sunrise_time</span>(<span class="kw">ymd</span>(<span class="st">&quot;2017-03-21&quot;</span>, <span class="dt">tz =</span> <span class="st">&quot;EET&quot;</span>), 
              <span class="dt">tz =</span> <span class="st">&quot;EET&quot;</span>, 
@@ -327,16 +327,14 @@ Paris.time &lt;-<span class="st"> </span><span class="kw">ymd_hms</span>(<span c
 <p>Function <code>as_tod()</code> facilitates conversion of R’s time date objects into a numeric value representing the time of day in one of hour, minute or second as unit of expression.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">times &lt;-<span class="st"> </span><span class="kw">now</span>() <span class="op">+</span><span class="st"> </span><span class="kw">hours</span>(<span class="dv">0</span><span class="op">:</span><span class="dv">6</span>)
 times</code></pre></div>
-<pre><code>## [1] &quot;2017-08-17 23:10:55 EEST&quot; &quot;2017-08-18 00:10:55 EEST&quot;
-## [3] &quot;2017-08-18 01:10:55 EEST&quot; &quot;2017-08-18 02:10:55 EEST&quot;
-## [5] &quot;2017-08-18 03:10:55 EEST&quot; &quot;2017-08-18 04:10:55 EEST&quot;
-## [7] &quot;2017-08-18 05:10:55 EEST&quot;</code></pre>
+<pre><code>## [1] &quot;2017-08-27 01:11:04 EEST&quot; &quot;2017-08-27 02:11:04 EEST&quot;
+## [3] &quot;2017-08-27 03:11:04 EEST&quot; &quot;2017-08-27 04:11:04 EEST&quot;
+## [5] &quot;2017-08-27 05:11:04 EEST&quot; &quot;2017-08-27 06:11:04 EEST&quot;
+## [7] &quot;2017-08-27 07:11:04 EEST&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">as_tod</span>(times)</code></pre></div>
-<pre><code>## [1] 23.1821011  0.1821011  1.1821011  2.1821011  3.1821011  4.1821011
-## [7]  5.1821011</code></pre>
+<pre><code>## [1] 1.184666 2.184666 3.184666 4.184666 5.184666 6.184666 7.184666</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">as_tod</span>(times, <span class="dt">unit.out =</span> <span class="st">&quot;minutes&quot;</span>)</code></pre></div>
-<pre><code>## [1] 1390.92606   10.92606   70.92606  130.92606  190.92606  250.92606
-## [7]  310.92606</code></pre>
+<pre><code>## [1]  71.07993 131.07993 191.07993 251.07993 311.07993 371.07993 431.07993</code></pre>
 </div>
 
 

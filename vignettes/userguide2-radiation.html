@@ -12,7 +12,7 @@
 
 <meta name="author" content="Pedro J. Aphalo" />
 
-<meta name="date" content="2017-08-18" />
+<meta name="date" content="2017-08-27" />
 
 <title>User Guide: 2 Radiation</title>
 
@@ -69,9 +69,9 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 
 <h1 class="title toc-ignore">User Guide: 2 Radiation</h1>
-<h3 class="subtitle"><em>Package ‘photobiology’ 0.9.16.9002</em></h3>
+<h3 class="subtitle"><em>Package ‘photobiology’ 0.9.17</em></h3>
 <h4 class="author"><em>Pedro J. Aphalo</em></h4>
-<h4 class="date"><em>2017-08-18</em></h4>
+<h4 class="date"><em>2017-08-27</em></h4>
 
 
 <div id="TOC">
@@ -933,6 +933,8 @@ test1.df</code></pre></div>
 <p>Data frame containing <em>untidy</em> or <em>wide</em> spectral data (class is determined by the function used, columns which are not <code>numeric</code> are skipped.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">test2.df &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">w.length =</span> <span class="dv">200</span><span class="op">:</span><span class="dv">210</span>, <span class="dt">A =</span> <span class="dv">1</span>, <span class="dt">B =</span> <span class="dv">2</span>, <span class="dt">z =</span> <span class="st">&quot;A&quot;</span>)
 <span class="kw">split2source_mspct</span>(test2.df)</code></pre></div>
+<pre><code>## Warning in split2mspct(x = x, member.class = &quot;source_spct&quot;, spct.data.var =
+## spct.data.var, : Skipping non-numeric column in x: z</code></pre>
 <pre><code>## Object: source_mspct [2 x 1]
 ## --- Member: A ---
 ## Object: source_spct [11 x 2]
@@ -963,6 +965,8 @@ test1.df</code></pre></div>
 ## 
 ## --- END ---</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">split2source_mspct</span>(test2.df, <span class="dt">spct.data.var =</span> <span class="st">&quot;s.q.irrad&quot;</span>)</code></pre></div>
+<pre><code>## Warning in split2mspct(x = x, member.class = &quot;source_spct&quot;, spct.data.var =
+## spct.data.var, : Skipping non-numeric column in x: z</code></pre>
 <pre><code>## Object: source_mspct [2 x 1]
 ## --- Member: A ---
 ## Object: source_spct [11 x 2]
@@ -994,6 +998,8 @@ test1.df</code></pre></div>
 ## --- END ---</code></pre>
 <p>Also in this case, it is possible to pass additional named arguments to the constructor of spectral objects.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">split2source_mspct</span>(test2.df, <span class="dt">spct.data.var =</span> <span class="st">&quot;s.q.irrad&quot;</span>, <span class="dt">time.unit =</span> <span class="st">&quot;day&quot;</span>)</code></pre></div>
+<pre><code>## Warning in split2mspct(x = x, member.class = &quot;source_spct&quot;, spct.data.var =
+## spct.data.var, : Skipping non-numeric column in x: z</code></pre>
 <pre><code>## Object: source_mspct [2 x 1]
 ## --- Member: A ---
 ## Object: source_spct [11 x 2]
@@ -3779,10 +3785,10 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 ## # A tibble: 524 x 6
 ##   w.length s.e.irrad s.q.irrad wl.color wb.color   wb.f
 ##      &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;chr&gt;    &lt;chr&gt; &lt;fctr&gt;
-## 1 280.0000         0         0  #000000     &lt;NA&gt;     NA
-## 2 280.9231         0         0  #000000     &lt;NA&gt;     NA
-## 3 281.8462         0         0  #000000     &lt;NA&gt;     NA
-## 4 282.7692         0         0  #000000     &lt;NA&gt;     NA
+## 1 280.0000         0         0  #000000     &lt;NA&gt;   &lt;NA&gt;
+## 2 280.9231         0         0  #000000     &lt;NA&gt;   &lt;NA&gt;
+## 3 281.8462         0         0  #000000     &lt;NA&gt;   &lt;NA&gt;
+## 4 282.7692         0         0  #000000     &lt;NA&gt;   &lt;NA&gt;
 ## # ... with 520 more rows</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">tag</span>(sun.spct, UV_bands.lst)</code></pre></div>
 <pre><code>## Object: source_spct [524 x 6]
@@ -3863,10 +3869,10 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 ## # A tibble: 524 x 6
 ##   w.length s.e.irrad s.q.irrad wl.color wb.color   wb.f
 ##      &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;chr&gt;    &lt;chr&gt; &lt;fctr&gt;
-## 1 280.0000         0         0  #000000     &lt;NA&gt;     NA
-## 2 280.9231         0         0  #000000     &lt;NA&gt;     NA
-## 3 281.8462         0         0  #000000     &lt;NA&gt;     NA
-## 4 282.7692         0         0  #000000     &lt;NA&gt;     NA
+## 1 280.0000         0         0  #000000     &lt;NA&gt;   &lt;NA&gt;
+## 2 280.9231         0         0  #000000     &lt;NA&gt;   &lt;NA&gt;
+## 3 281.8462         0         0  #000000     &lt;NA&gt;   &lt;NA&gt;
+## 4 282.7692         0         0  #000000     &lt;NA&gt;   &lt;NA&gt;
 ## # ... with 520 more rows</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">is_tagged</span>(tg.sun.spct)</code></pre></div>
 <pre><code>## [1] TRUE</code></pre>
