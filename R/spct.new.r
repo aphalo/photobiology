@@ -74,6 +74,32 @@ source_spct <- function(w.length = NULL,
 
 #' @rdname source_spct
 #'
+#' @param irrad.mult numeric vector with multipliers for each detector pixel.
+#'
+#' @export
+#'
+calibration_spct <- function(w.length = NULL,
+                             irrad.mult = NA_real_,
+                             comment = NULL,
+                             instr.desc = NA,
+                             multiple.wl = 1L,
+                             ...) {
+  if (length(w.length) == 0) {
+    z <- tibble::tibble(w.length = numeric(), irrad.mult = numeric(), ...)
+  } else {
+    z <- tibble::tibble(w.length = w.length, irrad.mult = irrad.mult, ...)
+  }
+  if (!is.null(comment)) {
+    comment(z) <- comment
+  }
+  setCalibrationSpct(z,
+             multiple.wl = multiple.wl)
+  setInstrDesc(z, instr.desc)
+  z
+}
+
+#' @rdname source_spct
+#'
 #' @param counts numeric vector with raw counts expressed per scan
 #' @param instr.desc a list
 #' @param instr.settings a list
@@ -363,6 +389,14 @@ chroma_spct <- function(w.length=NULL,
 #'
 as.generic_spct <- function(x, ...) {
   setGenericSpct(x, ...)
+}
+
+#' @rdname as.generic_spct
+#'
+#' @export
+#'
+as.calibration_spct <- function(x, ...) {
+  setCalibrationSpct(x, ...)
 }
 
 #' @rdname as.generic_spct

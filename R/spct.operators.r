@@ -31,7 +31,29 @@ oper.e.generic_spct <- function(e1, e2, oper) {
   } else {
     class2 <- class_spct(e2)[1]
   }
-  if (class1 == "raw_spct") {
+  if (class1 == "calibration_spct") {
+    if (is.numeric(e2)) {
+      z <- e1
+      z[["irrad.mult"]] <- oper(z[["irrad.mult"]], e2)
+      return(z)
+    } else if (class2 == "cps_spct" && identical(oper, `*`)) {
+      z <- oper_spectra(e1$w.length, e2$w.length,
+                        e1$irrad.mult, e2$cps,
+                        bin.oper=oper, trim="intersection")
+      names(z)[2] <- "s.e.irrad"
+      setSourceSpct(z, strict.range = getOption("photobiology.strict.range",
+                                             default = FALSE))
+      return(z)
+    } else {
+      if (identical(oper, `*`)) {
+        warning("operation between 'calibration_spct' and ", class(e2)[1],
+                " objects not implemented")
+      } else {
+        warning("only multiplication between 'calibration_spct' and ",
+                "'cps_spct' objects is implemented")
+      }
+    }
+  } else if (class1 == "raw_spct") {
     if (is.numeric(e2)) {
       z <- e1
       z[["counts"]] <- oper(z[["counts"]], e2)
@@ -53,14 +75,22 @@ oper.e.generic_spct <- function(e1, e2, oper) {
     z <- e1
     z[["cps"]] <- oper(z[["cps"]], e2)
     return(z)
+    } else if (class2 == "calibration_spct" && identical(oper, `*`)) {
+      z <- oper_spectra(e1$w.length, e2$w.length,
+                        e1$cps, e2$irrad.mult,
+                        bin.oper=oper, trim="intersection")
+      names(z)[2] <- "s.e.irrad"
+      setSourceSpct(z, strict.range = getOption("photobiology.strict.range",
+                                                default = FALSE))
+      return(z)
     } else if (class2 == "cps_spct") {
       z <- oper_spectra(e1$w.length, e2$w.length,
                         e1$cps, e2$cps,
                         bin.oper=oper, trim="intersection")
-    names(z)[2] <- "cps"
-    setCpsSpct(z, strict.range = getOption("photobiology.strict.range",
-                                           default = FALSE))
-    return(z)
+      names(z)[2] <- "cps"
+      setCpsSpct(z, strict.range = getOption("photobiology.strict.range",
+                                             default = FALSE))
+      return(z)
     } else {
       warning("operation between 'cps_spct' and ", class(e2)[1],
               " objects not implemented")
@@ -440,7 +470,11 @@ oper.e.generic_spct <- function(e1, e2, oper) {
                          x=x[["s.irrad"]], y=y[["s.irrad"]], z=z[["s.irrad"]]))
     }
   } else if (is.numeric(e1)) {
-    if (class2 == "raw_spct") {
+    if (class2 == "calibration_spct") {
+      z <- e2
+      z[["irrad.mult"]] <- oper(e1, z[["irrad.mult"]])
+      return(z)
+    } else if (class2 == "raw_spct") {
       z <- e2
       z[["counts"]] <- oper(e1, z[["counts"]])
       return(z)
@@ -502,7 +536,7 @@ oper.e.generic_spct <- function(e1, e2, oper) {
 }
 
 # Private function which takes the operator as its third argument
-# The operator must enclosed in backticks to be recognized as such
+# The operator must be enclosed in backticks to be recognized as such
 #
 # This avoids the repetition of very similar code for each operator
 # as in the older versions.
@@ -534,7 +568,30 @@ oper.q.generic_spct <- function(e1, e2, oper) {
   } else {
     class2 <- class_spct(e2)[1]
   }
-  if (class1 == "raw_spct") {
+  if (class1 == "calibration_spct") {
+    if (is.numeric(e2)) {
+      z <- e1
+      z[["irrad.mult"]] <- oper(z[["irrad.mult"]], e2)
+      return(z)
+    } else if (class2 == "cps_spct" && identical(oper, `*`)) {
+      z <- oper_spectra(e1$w.length, e2$w.length,
+                        e1$irrad.mult, e2$cps,
+                        bin.oper=oper, trim="intersection")
+      names(z)[2] <- "s.e.irrad"
+      setSourceSpct(z, strict.range = getOption("photobiology.strict.range",
+                                                default = FALSE))
+      # we store only calibration multipliers in energy units!
+      return(e2q(z))
+    } else {
+      if (identical(oper, `*`)) {
+        warning("operation between 'calibration_spct' and ", class(e2)[1],
+                " objects not implemented")
+      } else {
+        warning("only multiplication between 'calibration_spct' and ",
+                "'cps_spct' objects is implemented")
+      }
+    }
+  } else if (class1 == "raw_spct") {
     if (is.numeric(e2)) {
       z <- e1
       z[["counts"]] <- oper(z[["counts"]], e2)
@@ -556,6 +613,15 @@ oper.q.generic_spct <- function(e1, e2, oper) {
       z <- e1
       z[["cps"]] <- oper(z[["cps"]], e2)
       return(z)
+    } else if (class2 == "calibration_spct" && identical(oper, `*`)) {
+      z <- oper_spectra(e1$w.length, e2$w.length,
+                        e1$cps, e2$irrad.mult,
+                        bin.oper=oper, trim="intersection")
+      names(z)[2] <- "s.e.irrad"
+      setSourceSpct(z, strict.range = getOption("photobiology.strict.range",
+                                                default = FALSE))
+      # we store only calibration multipliers in energy units!
+      return(e2q(z))
     } else if (class2 == "cps_spct") {
       z <- oper_spectra(e1$w.length, e2$w.length,
                         e1$cps, e2$cps,
@@ -883,7 +949,11 @@ oper.q.generic_spct <- function(e1, e2, oper) {
       return(chroma_spct(w.length=x$w.length, x=x[["s.irrad"]], y=y[["s.irrad"]], z=z[["s.irrad"]]))
     }
   } else if (is.numeric(e1)) {
-    if (class2 == "cps_spct") {
+    if (class2 == "calibration_spct") {
+      z <- e2
+      z[["irrad.mult"]] <- oper(e1, z[["irrad.mult"]])
+      return(z)
+    } else if (class2 == "cps_spct") {
       z <- e2
       z[["cps"]] <-  oper(e1, z[["cps"]])
       return(z)
@@ -1109,7 +1179,12 @@ oper.q.generic_spct <- function(e1, e2, oper) {
 #' @keywords internal
 #'
 f_dispatcher_spct <- function(x, .fun, ...) {
-  if (is.raw_spct(x)) {
+  if (is.calibration_spct(x)) {
+    z <- x
+    z[["irrad.mult"]] <- .fun(z[["irrad.mult"]], ...)
+    check_spct(z)
+    return(z)
+  } else if (is.raw_spct(x)) {
     z <- x
     z[["counts"]] <- .fun(z[["counts"]], ...)
     check_spct(z)

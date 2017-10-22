@@ -10,7 +10,8 @@
 #' spct_classes()
 #'
 spct_classes <- function() {
-  c("raw_spct", "cps_spct",
+  c("calibration_spct",
+    "raw_spct", "cps_spct",
     "filter_spct", "reflector_spct",
     "source_spct", "object_spct",
     "response_spct", "chroma_spct", "generic_spct")
@@ -107,7 +108,30 @@ check_spct.generic_spct <-
   x
 }
 
-#' @describeIn check_spct Specialization for cps_spct.
+#' @describeIn check_spct Specialization for calibration_spct.
+#' @export
+check_spct.calibration_spct <- function(x,
+                                byref = TRUE,
+                                strict.range = getOption("photobiology.strict.range", default = FALSE),
+                                multiple.wl = getMultipleWl(x),
+                                ...) {
+
+  x <- check_spct.generic_spct(x, multiple.wl = multiple.wl)
+
+  mult.cols <- grep("^irrad.mult$", names(x))
+
+  if (length(mult.cols) == 1 &&
+      is.numeric(x[["irrad.mult"]]) &&
+      all(na.omit(x[["irrad.mult"]]) >= 0)) {
+    return(x)
+  } else {
+    warning("No valid 'irrad.mult' data found in calibration_spct")
+    x[["irrad.mult"]] = NA_real_
+    return(x)
+  }
+}
+
+#' @describeIn check_spct Specialization for raw_spct.
 #' @export
 check_spct.raw_spct <- function(x,
                            byref = TRUE,
@@ -731,7 +755,31 @@ setGenericSpct <-
     invisible(x)
   }
 
-#' @describeIn setGenericSpct Set class of a an object to "cps_spct".
+#' @describeIn setGenericSpct Set class of a an object to "calibration_spct".
+#'
+#' @export
+#' @exportClass calibration_spct
+#'
+setCalibrationSpct <-
+  function(x,
+           strict.range = getOption("photobiology.strict.range", default = FALSE),
+           multiple.wl = 1L) {
+    name <- substitute(x)
+    rmDerivedSpct(x)
+    if (!is.data.frame(x) || inherits(x, "data.table")) {
+      x <- tibble::as_tibble(x)
+    }
+    setGenericSpct(x, multiple.wl = multiple.wl)
+    class(x) <- c("calibration_spct", class(x))
+    x <- check_spct(x, strict.range = strict.range)
+    if (is.name(name)) {
+      name <- as.character(name)
+      assign(name, x, parent.frame(), inherits = TRUE)
+    }
+    invisible(x)
+  }
+
+#' @describeIn setGenericSpct Set class of a an object to "raw_spct".
 #'
 #' @export
 #' @exportClass cps_spct
@@ -1013,6 +1061,11 @@ is.generic_spct <- function(x) inherits(x, "generic_spct")
 #' @export
 #'
 is.raw_spct <- function(x) inherits(x, "raw_spct")
+
+#' @rdname is.generic_spct
+#' @export
+#'
+is.calibration_spct <- function(x) inherits(x, "calibration_spct")
 
 #' @rdname is.generic_spct
 #' @export
