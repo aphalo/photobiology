@@ -90,6 +90,11 @@
 <span class='fu'>check_spct</span>(<span class='no'>x</span>, <span class='kw'>byref</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>strict.range</span> <span class='kw'>=</span> <span class='fl'>NA</span>,
   <span class='kw'>multiple.wl</span> <span class='kw'>=</span> <span class='fu'><a href='getMultipleWl.html'>getMultipleWl</a></span>(<span class='no'>x</span>), <span class='no'>...</span>)
 
+<span class='co'># S3 method for calibration_spct</span>
+<span class='fu'>check_spct</span>(<span class='no'>x</span>, <span class='kw'>byref</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>strict.range</span> <span class='kw'>=</span> <span class='fu'>getOption</span>(<span class='st'>"photobiology.strict.range"</span>, <span class='kw'>default</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>),
+  <span class='kw'>multiple.wl</span> <span class='kw'>=</span> <span class='fu'><a href='getMultipleWl.html'>getMultipleWl</a></span>(<span class='no'>x</span>), <span class='no'>...</span>)
+
 <span class='co'># S3 method for raw_spct</span>
 <span class='fu'>check_spct</span>(<span class='no'>x</span>, <span class='kw'>byref</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
   <span class='kw'>strict.range</span> <span class='kw'>=</span> <span class='fu'>getOption</span>(<span class='st'>"photobiology.strict.range"</span>, <span class='kw'>default</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>),
@@ -161,7 +166,8 @@ error instead of a warning, <code>NA</code> disables the test.</p></td>
     <ul>
 <li><p><code>default</code>: Default for generic function.</p></li>
 <li><p><code>generic_spct</code>: Specialization for generic_spct.</p></li>
-<li><p><code>raw_spct</code>: Specialization for cps_spct.</p></li>
+<li><p><code>calibration_spct</code>: Specialization for calibration_spct.</p></li>
+<li><p><code>raw_spct</code>: Specialization for raw_spct.</p></li>
 <li><p><code>cps_spct</code>: Specialization for cps_spct.</p></li>
 <li><p><code>filter_spct</code>: Specialization for filter_spct.</p></li>
 <li><p><code>reflector_spct</code>: Specialization for reflector_spct.</p></li>

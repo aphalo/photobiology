@@ -84,6 +84,9 @@ class to "generic_spct".</p>
 
     <pre class="usage"><span class='fu'>setGenericSpct</span>(<span class='no'>x</span>, <span class='kw'>multiple.wl</span> <span class='kw'>=</span> <span class='fl'>1L</span>)
 
+<span class='fu'>setCalibrationSpct</span>(<span class='no'>x</span>, <span class='kw'>strict.range</span> <span class='kw'>=</span> <span class='fu'>getOption</span>(<span class='st'>"photobiology.strict.range"</span>,
+  <span class='kw'>default</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>), <span class='kw'>multiple.wl</span> <span class='kw'>=</span> <span class='fl'>1L</span>)
+
 <span class='fu'>setRawSpct</span>(<span class='no'>x</span>, <span class='kw'>strict.range</span> <span class='kw'>=</span> <span class='fu'>getOption</span>(<span class='st'>"photobiology.strict.range"</span>, <span class='kw'>default</span> <span class='kw'>=</span>
   <span class='fl'>FALSE</span>), <span class='kw'>multiple.wl</span> <span class='kw'>=</span> <span class='fl'>1L</span>)
 
@@ -151,7 +154,8 @@ error instead of a warning.</p></td>
     <h2 class="hasAnchor" id="functions"><a class="anchor" href="#functions"></a>Functions</h2>
 
     <ul>
-<li><p><code>setRawSpct</code>: Set class of a an object to "cps_spct".</p></li>
+<li><p><code>setCalibrationSpct</code>: Set class of a an object to "calibration_spct".</p></li>
+<li><p><code>setRawSpct</code>: Set class of a an object to "raw_spct".</p></li>
 <li><p><code>setCpsSpct</code>: Set class of a an object to "cps_spct".</p></li>
 <li><p><code>setFilterSpct</code>: Set class of an object to "filter_spct".</p></li>
 <li><p><code>setReflectorSpct</code>: Set class of a an object to "reflector_spct".</p></li>

@@ -51,6 +51,7 @@ The package defines several classes intended to be used to store different types
 | Class name | Required variables | Attributes                 |
 |:-----------|:----------------|:---------------------------|
 | `generic_spct` | `w.length` | |
+| `calibration_spct` | `w.length`, `irrad.mult` | `instr.desc` |
 | `raw_spct` | `w.length`, `counts` | `instr.desc`, `instr.settings`, `linearized `|
 | `cps_spct` | `w.length`, `cps` | `instr.desc`, `instr.settings`, `linearized` |  
 | `source_spct` | `w.length`, `s.e.irrad` | `instr.desc`, `instr.settings`, `time.unit`, `bswf` |  
@@ -90,6 +91,7 @@ An assumption of the package is that wavelengths are always expressed in nanomet
 | w.length | nm |  |
 | counts | $n$ | |
 | cps | $n\,s^{-1}$ | |
+| irrad.mult |$J\,m^{-2}\,nm^{-1}\,n^{-1}$ | |
 | s.e.irrad |  $W\,m^{-2}\,nm^{-1}$ | time.unit = "second" |
 | s.e.irrad |  $J\,m^{-2}\,d^{-1}\,nm^{-1}$  | time.unit = "day" |
 | s.e.irrad |  varies | time.unit = _duration_ |
@@ -118,11 +120,11 @@ An assumption of the package is that wavelengths are always expressed in nanomet
 | Tpc $\to$ Tfr  | [0,100] |  Tfr.type = "internal" |
 | Rpc $\to$ Rfr  | [0,100] |  Rfr.type = "total" |
 | Rpc $\to$ Rfr  | [0,100] |  Rfr.type = "specular" |
-| counts.per.second $\to$ cps | \cps |  |
+| counts.per.second $\to$ cps | $n\,s^{-1}$ |  |
 
 <hr>
 
-Energy irradiance is assumed to be expressed in $W\,m^{-2}$ and photon irradiances in \mol, that is to say using second as unit for time. This is the default, but it is possible to set the unit for time to day in the case of `source_spct` objects.
+Energy irradiance is assumed to be expressed in $W\,m^{-2}$ and photon irradiances in $mol^{-1}\,m^{-2}\,s^{-1}$, that is to say using second as unit for time. This is the default, but it is possible to set the unit for time to day in the case of `source_spct` objects.
 
 The default time unit used is _second_, but _day_ and _exposure_ can be used by supplying the arguments `"day"` or `"exposure"`---The meaning of `"exposure"` is the total exposure time, in other words, fluence instead of irradiance---to a parameter of the constructor of `source_spct` objects. In addition to these character constants objects of class `lubridate:duration` are also accepted.
 
@@ -769,19 +771,21 @@ objects belonging to different classes, and meaningless combinations return `NA`
 | `chroma_spct` | Y  | Y | Y | Y | Y | `chroma_spct` | `chroma_spct` |
 | `raw_spct` | Y  | Y |Y  | Y | Y | `numeric` | `raw_spct` |
 | `cps_spct` | Y  | Y |Y  | Y | Y | `numeric` | `cps_spct` |
+| `calibration_spct` | Y | Y |Y  | Y | Y | `numeric` | `calibration_spct` |
 | `source_spct` | Y  | Y |Y  | Y | Y | `numeric` | `source_spct` |
 | `filter_spct` | Y  |Y  | Y |Y  | Y | `numeric` | `filter_spct` |
 | `reflector_spct` | Y |Y  |Y  |Y  | Y | `numeric` | `reflector_spct` |
 | `object_spct` | N | N | N | N |N | `numeric` | -- |
 | `response_spct` | Y  | Y  | Y  | Y  | Y | `numeric` | `response_spct` |
 | `chroma_spct` | Y | Y  | Y | Y  | Y | `numeric` | `chroma_spct` |
+| `cps_spct` | N | N | Y  | N | N | `calibration_spct` | `source_spct` |
 | `source_spct` | N | N | Y |Y  | N | `response_spct` | `response_spct` |
 | `source_spct` | N | N | Y  | Y  | N | `filter_spct` (T) | `source_spct` |
 | `source_spct` | N | N | Y  | Y | N | `filter_spct` (A) | `source_spct` |
 | `source_spct` | N | N | Y  | Y  | N | `reflector_spct` | `source_spct` |
-| `source_spct` | N | N |N  | N | N | `object_spct` | -- |
-| `source_spct` | N | N |Y  | N | N | `waveband` (no BSWF) | `source_spct` |
-| `source_spct` | N | N |Y  | N | N | `waveband` (BSWF) | `source_spct` (effective) |
+| `source_spct` | N | N | N  | N | N | `object_spct` | -- |
+| `source_spct` | N | N | Y  | N | N | `waveband` (no BSWF) | `source_spct` |
+| `source_spct` | N | N | Y  | N | N | `waveband` (BSWF) | `source_spct` (effective) |
 
 <hr>
 
@@ -840,6 +844,7 @@ Many common maths functions, as well as unary minus and plus, are implemented fo
 |:-----|:--:|:--:|:--:|:--:|:--:|:-------|
 | `raw_spct` | Y | Y |Y  | Y | Y | `raw_spct` |
 | `cps_spct` | Y | Y |Y  | Y | Y | `cps_spct` |
+| `calibration_spct` | Y | Y |Y  | Y | Y | `calibration_spct` |
 | `source_spct` | Y | Y |Y  | Y | Y | `source_spct` |
 | `filter_spct` | Y | Y | Y | Y  | Y |  `filter_spct` |
 | `reflector_spct` | Y | Y | Y |Y  | Y | `reflector_spct` |

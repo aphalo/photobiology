@@ -51,10 +51,10 @@
   <div class="col-md-9">
     <div class="page-header toc-ignore">
       <h1>User Guide: 3 Astronomy</h1>
-            <h3 class="subtitle">Package ‘photobiology’ 0.9.17</h3>
+            <h3 class="subtitle">Package ‘photobiology’ 0.9.17.9001</h3>
                         <h4 class="author">Pedro J. Aphalo</h4>
             
-            <h4 class="date">2017-08-27</h4>
+            <h4 class="date">2017-10-23</h4>
           </div>
 
     
@@ -64,8 +64,10 @@
 <h2 class="hasAnchor">
 <a href="#getting-started" class="anchor"></a>Getting started</h2>
 <p>We load two packages, our ‘<strong>photobiology</strong>’ and ‘<strong>lubridate</strong>’, as they will be used in the examples.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(photobiology)
-<span class="kw">library</span>(lubridate)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(photobiology)</code></pre></div>
+<pre><code>## For news about 'photobiology', please, see http://www.r4photobiology.info/</code></pre>
+<pre><code>## For on-line documentation see http://docs.r4photobiology.info/photobiology/</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(lubridate)</code></pre></div>
 <pre><code>## 
 ## Attaching package: 'lubridate'</code></pre>
 <pre><code>## The following object is masked from 'package:base':
@@ -98,9 +100,9 @@ In versions 0.9.16 and later the code has been optimized for performance with ti
 <p>Functions have defaults for their arguments, but rarely Greenwich will be the location you are interested in.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/sun_angles.html">sun_angles</a></span>()</code></pre></div>
 <pre><code>##                  time  tz solartime longitude latitude   address  azimuth
-## 1 2017-08-26 22:35:56 UTC  22:34:23         0     51.5 Greenwich 336.4753
+## 1 2017-10-22 21:46:51 UTC  22:02:33         0     51.5 Greenwich 318.5863
 ##   elevation
-## 1 -25.79216</code></pre>
+## 1  -43.4108</code></pre>
 <p>A vector of times is accepted as argument, and as performance is optimized for this case, <em>vectorization</em> will markedly improve performance compared to multiple calls to the function. The vector of times can be created on the fly, or stored beforehand.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/sun_angles.html">sun_angles</a></span>(<span class="dt">time =</span> <span class="kw">ymd_hms</span>(<span class="st">"2014-01-01 0:0:0"</span>, <span class="dt">tz =</span> <span class="st">"EET"</span>) <span class="op">+</span><span class="st"> </span><span class="kw">hours</span>(<span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">6</span>, <span class="dv">12</span>)), 
            <span class="dt">geocode =</span> my.geocode)</code></pre></div>
@@ -165,9 +167,9 @@ dates</code></pre></div>
 <pre><code>## [1] "2015-03-01 EET"  "2015-04-01 EEST" "2015-05-01 EEST" "2015-06-01 EEST"
 ## [5] "2015-07-01 EEST" "2015-08-01 EEST"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/day_night.html">sunrise_time</a></span>(<span class="kw">now</span>(<span class="st">"UTC"</span>), <span class="dt">tz =</span> <span class="st">"UTC"</span>, <span class="dt">geocode =</span> my.geocode)</code></pre></div>
-<pre><code>## [1] "2017-08-26 03:02:05 UTC"</code></pre>
+<pre><code>## [1] "2017-10-22 05:19:04 UTC"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/day_night.html">sunrise_time</a></span>(<span class="kw">now</span>(<span class="st">"EET"</span>), <span class="dt">tz =</span> <span class="st">"EET"</span>, <span class="dt">geocode =</span> my.geocode)</code></pre></div>
-<pre><code>## [1] "2017-08-27 06:04:29 EEST"</code></pre>
+<pre><code>## [1] "2017-10-23 08:21:36 EEST"</code></pre>
 <p>Southern hemisphere latitudes as well as longitudes to the West of the Greenwich meridian should be supplied as negative numbers.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/day_night.html">sunrise_time</a></span>(dates, <span class="dt">geocode =</span> <span class="kw">data.frame</span>(<span class="dt">lat =</span> <span class="dv">60</span>, <span class="dt">lon =</span> <span class="dv">0</span>))</code></pre></div>
 <pre><code>## [1] "2015-03-01 08:58:05 EET"  "2015-04-01 08:24:46 EEST"
@@ -265,7 +267,7 @@ dates</code></pre></div>
 ## [5] "2015-07-01 22:47:17 EEST" "2015-08-01 21:52:45 EEST"</code></pre>
 <p>The default for <code>date</code> is the current day, using the system time zone settings.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/day_night.html">noon_time</a></span>(<span class="dt">geocode =</span> my.geocode)</code></pre></div>
-<pre><code>## [1] "2017-08-27 13:21:40 EEST"</code></pre>
+<pre><code>## [1] "2017-10-23 13:04:30 EEST"</code></pre>
 <p>Parameter <code>unit.out</code> can be used to obtain the returned value expressed as time-of-day in hours, minutes, or seconds since midnight, instead of the default <code>datetime</code>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/day_night.html">sunrise_time</a></span>(<span class="kw">ymd</span>(<span class="st">"2017-03-21"</span>, <span class="dt">tz =</span> <span class="st">"EET"</span>), 
              <span class="dt">tz =</span> <span class="st">"EET"</span>, 
@@ -313,14 +315,14 @@ Paris.time &lt;-<span class="st"> </span><span class="kw">ymd_hms</span>(<span c
 <p>Function <code><a href="../reference/as_tod.html">as_tod()</a></code> facilitates conversion of R’s time date objects into a numeric value representing the time of day in one of hour, minute or second as unit of expression.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">times &lt;-<span class="st"> </span><span class="kw">now</span>() <span class="op">+</span><span class="st"> </span><span class="kw">hours</span>(<span class="dv">0</span><span class="op">:</span><span class="dv">6</span>)
 times</code></pre></div>
-<pre><code>## [1] "2017-08-27 01:35:58 EEST" "2017-08-27 02:35:58 EEST"
-## [3] "2017-08-27 03:35:58 EEST" "2017-08-27 04:35:58 EEST"
-## [5] "2017-08-27 05:35:58 EEST" "2017-08-27 06:35:58 EEST"
-## [7] "2017-08-27 07:35:58 EEST"</code></pre>
+<pre><code>## [1] "2017-10-23 00:46:53 EEST" "2017-10-23 01:46:53 EEST"
+## [3] "2017-10-23 02:46:53 EEST" "2017-10-23 03:46:53 EEST"
+## [5] "2017-10-23 04:46:53 EEST" "2017-10-23 05:46:53 EEST"
+## [7] "2017-10-23 06:46:53 EEST"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/as_tod.html">as_tod</a></span>(times)</code></pre></div>
-<pre><code>## [1] 1.599477 2.599477 3.599477 4.599477 5.599477 6.599477 7.599477</code></pre>
+<pre><code>## [1] 0.7815327 1.7815327 2.7815327 3.7815327 4.7815327 5.7815327 6.7815327</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/as_tod.html">as_tod</a></span>(times, <span class="dt">unit.out =</span> <span class="st">"minutes"</span>)</code></pre></div>
-<pre><code>## [1]  95.96864 155.96864 215.96864 275.96864 335.96864 395.96864 455.96864</code></pre>
+<pre><code>## [1]  46.89196 106.89196 166.89196 226.89196 286.89196 346.89196 406.89196</code></pre>
 </div>
 </div>
   </div>

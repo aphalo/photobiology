@@ -51,10 +51,10 @@
   <div class="col-md-9">
     <div class="page-header toc-ignore">
       <h1>User Guide: 2 Radiation</h1>
-            <h3 class="subtitle">Package ‘photobiology’ 0.9.17</h3>
+            <h3 class="subtitle">Package ‘photobiology’ 0.9.17.9001</h3>
                         <h4 class="author">Pedro J. Aphalo</h4>
             
-            <h4 class="date">2017-08-27</h4>
+            <h4 class="date">2017-10-23</h4>
           </div>
 
     
@@ -71,8 +71,10 @@
 <h3 class="hasAnchor">
 <a href="#getting-started" class="anchor"></a>Getting started</h3>
 <p>We load two packages, our ‘<strong>photobiology</strong>’ and ‘<strong>lubridate</strong>’, as they will be used in the examples.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(photobiology)
-<span class="kw">library</span>(lubridate)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(photobiology)</code></pre></div>
+<pre><code>## For news about 'photobiology', please, see http://www.r4photobiology.info/</code></pre>
+<pre><code>## For on-line documentation see http://docs.r4photobiology.info/photobiology/</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(lubridate)</code></pre></div>
 <pre><code>## 
 ## Attaching package: 'lubridate'</code></pre>
 <pre><code>## The following object is masked from 'package:base':
@@ -103,6 +105,13 @@
 <td align="left"></td>
 </tr>
 <tr class="even">
+<td align="left"><code>calibration_spct</code></td>
+<td align="left">
+<code>w.length</code>, <code>irrad.mult</code>
+</td>
+<td align="left"><code>instr.desc</code></td>
+</tr>
+<tr class="odd">
 <td align="left"><code>raw_spct</code></td>
 <td align="left">
 <code>w.length</code>, <code>counts</code>
@@ -111,7 +120,7 @@
 <code>instr.desc</code>, <code>instr.settings</code>, <code>linearized</code>
 </td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left"><code>cps_spct</code></td>
 <td align="left">
 <code>w.length</code>, <code>cps</code>
@@ -120,7 +129,7 @@
 <code>instr.desc</code>, <code>instr.settings</code>, <code>linearized</code>
 </td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left"><code>source_spct</code></td>
 <td align="left">
 <code>w.length</code>, <code>s.e.irrad</code>
@@ -129,7 +138,7 @@
 <code>instr.desc</code>, <code>instr.settings</code>, <code>time.unit</code>, <code>bswf</code>
 </td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left"></td>
 <td align="left">
 <code>w.length</code>, <code>s.q.irrad</code>
@@ -138,28 +147,28 @@
 <code>time.unit</code>, <code>bswf</code>
 </td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left"><code>filter_spct</code></td>
 <td align="left">
 <code>w.length</code>, <code>Tfr</code>
 </td>
 <td align="left"><code>Tfr.type</code></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left"></td>
 <td align="left">
 <code>w.length</code>, <code>A</code>
 </td>
 <td align="left"><code>Tfr.type</code></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left"><code>reflector_spct</code></td>
 <td align="left">
 <code>w.length</code>, <code>Rfr</code>
 </td>
 <td align="left"><code>Rfr.type</code></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left"><code>object_spct</code></td>
 <td align="left">
 <code>w.length</code>, <code>Tfr</code>, <code>Rfr</code>
@@ -168,21 +177,21 @@
 <code>Tfr.type</code>, <code>Rfr.type</code>
 </td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left"><code>response_spct</code></td>
 <td align="left">
 <code>w.length</code>, <code>s.e.response</code>
 </td>
 <td align="left"><code>time.unit</code></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left"></td>
 <td align="left">
 <code>w.length</code>, <code>s.q.response</code>
 </td>
 <td align="left"><code>time.unit</code></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left"><code>chroma_spct</code></td>
 <td align="left">
 <code>w.length</code>, <code>x</code>, <code>y</code>, <code>z</code>
@@ -228,158 +237,163 @@
 <td align="left"></td>
 </tr>
 <tr class="odd">
+<td align="left">irrad.mult</td>
+<td align="left"><span class="math inline">\(J\,m^{-2}\,nm^{-1}\,n^{-1}\)</span></td>
+<td align="left"></td>
+</tr>
+<tr class="even">
 <td align="left">s.e.irrad</td>
 <td align="left"><span class="math inline">\(W\,m^{-2}\,nm^{-1}\)</span></td>
 <td align="left">time.unit = “second”</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">s.e.irrad</td>
 <td align="left"><span class="math inline">\(J\,m^{-2}\,d^{-1}\,nm^{-1}\)</span></td>
 <td align="left">time.unit = “day”</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">s.e.irrad</td>
 <td align="left">varies</td>
 <td align="left">time.unit = <em>duration</em>
 </td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">s.q.irrad</td>
 <td align="left"><span class="math inline">\(mol\,m^{-2}\,s^{-1}\,nm^{-1}\)</span></td>
 <td align="left">time.unit = “second”</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">s.q.irrad</td>
 <td align="left"><span class="math inline">\(mol\,m^{-2}\,d^{-1}\,nm^{-1}\)</span></td>
 <td align="left">time.unit = “day”</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">s.q.irrad</td>
 <td align="left"><span class="math inline">\(mol\,m^{-2}\,nm^{-1}\)</span></td>
 <td align="left">time.unit = “exposure”</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">s.q.irrad</td>
 <td align="left">varies</td>
 <td align="left">time.unit = <em>duration</em>
 </td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">Tfr</td>
 <td align="left">[0,1]</td>
 <td align="left">Tfr.type = “total”</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">Tfr</td>
 <td align="left">[0,1]</td>
 <td align="left">Tfr.type = “internal”</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">A</td>
 <td align="left">a.u.</td>
 <td align="left">Tfr.type = “internal”</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">Rfr</td>
 <td align="left">[0,1]</td>
 <td align="left">Rfr.type = “total”</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">Rfr</td>
 <td align="left">[0,1]</td>
 <td align="left">Rfr.type = “specular”</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">s.e.response</td>
 <td align="left"><span class="math inline">\(\mathit{x}\,J^{-1}\,s^{-1}\,nm^{-1}\)</span></td>
 <td align="left">time.unit = “second”</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">s.e.response</td>
 <td align="left"><span class="math inline">\(\mathit{x}\,mol^{-1}\,d^{-1}\,nm^{-1}\)</span></td>
 <td align="left">time.unit = “day”</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">s.e.response</td>
 <td align="left"><span class="math inline">\(\mathit{x}\,J^{-1}\,nm^{-1}\)</span></td>
 <td align="left">time.unit = “exposure”</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">s.e.response</td>
 <td align="left">varies</td>
 <td align="left">time.unit = <em>duration</em>
 </td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">s.q.response</td>
 <td align="left"><span class="math inline">\(\mathit{x}\,mol^{-1}\,s^{-1}\,nm^{-1}\)</span></td>
 <td align="left">time.unit = “second”</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">s.q.response</td>
 <td align="left"><span class="math inline">\(\mathit{x}\,mol^{-1}\,d^{-1}\,nm^{-1}\)</span></td>
 <td align="left">time.unit = “day”</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">s.q.response</td>
 <td align="left"><span class="math inline">\(\mathit{x}\,mol^{-1}\,nm^{-1}\)</span></td>
 <td align="left">time.unit = “exposure”</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">s.q.response</td>
 <td align="left">varies</td>
 <td align="left">time.unit = <em>duration</em>
 </td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">x, y, z</td>
 <td align="left">[0,1]</td>
 <td align="left"></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left"><strong>B: converted</strong></td>
 <td align="left"></td>
 <td align="left"></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">wl <span class="math inline">\(\to\)</span> w.length</td>
 <td align="left">nm</td>
 <td align="left"></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">wavelength <span class="math inline">\(\to\)</span> w.length</td>
 <td align="left">nm</td>
 <td align="left"></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">Tpc <span class="math inline">\(\to\)</span> Tfr</td>
 <td align="left">[0,100]</td>
 <td align="left">Tfr.type = “total”</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">Tpc <span class="math inline">\(\to\)</span> Tfr</td>
 <td align="left">[0,100]</td>
 <td align="left">Tfr.type = “internal”</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">Rpc <span class="math inline">\(\to\)</span> Rfr</td>
 <td align="left">[0,100]</td>
 <td align="left">Rfr.type = “total”</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">Rpc <span class="math inline">\(\to\)</span> Rfr</td>
 <td align="left">[0,100]</td>
 <td align="left">Rfr.type = “specular”</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">counts.per.second <span class="math inline">\(\to\)</span> cps</td>
-<td align="left"></td>
+<td align="left"><span class="math inline">\(n\,s^{-1}\)</span></td>
 <td align="left"></td>
 </tr>
 </tbody>
 </table>
 <hr>
-<p>Energy irradiance is assumed to be expressed in <span class="math inline">\(W\,m^{-2}\)</span> and photon irradiances in , that is to say using second as unit for time. This is the default, but it is possible to set the unit for time to day in the case of <code>source_spct</code> objects.</p>
+<p>Energy irradiance is assumed to be expressed in <span class="math inline">\(W\,m^{-2}\)</span> and photon irradiances in <span class="math inline">\(mol^{-1}\,m^{-2}\,s^{-1}\)</span>, that is to say using second as unit for time. This is the default, but it is possible to set the unit for time to day in the case of <code>source_spct</code> objects.</p>
 <p>The default time unit used is <em>second</em>, but <em>day</em> and <em>exposure</em> can be used by supplying the arguments <code>"day"</code> or <code>"exposure"</code>—The meaning of <code>"exposure"</code> is the total exposure time, in other words, fluence instead of irradiance—to a parameter of the constructor of <code>source_spct</code> objects. In addition to these character constants objects of class <code>lubridate:duration</code> are also accepted.</p>
 <p>The attributes are normally set when a spectral object is created, either using default values or with values supplied as arguments to the constructor. However, methods for querying and setting most of these attributes are also available.</p>
 <hr>
@@ -2025,26 +2039,36 @@ wavebands</code></pre></div>
 <td align="left"><code>cps_spct</code></td>
 </tr>
 <tr class="even">
-<td align="left"><code>source_spct</code></td>
+<td align="left"><code>calibration_spct</code></td>
 <td align="center">Y</td>
 <td align="center">Y</td>
 <td align="center">Y</td>
 <td align="center">Y</td>
 <td align="center">Y</td>
 <td align="left"><code>numeric</code></td>
-<td align="left"><code>source_spct</code></td>
+<td align="left"><code>calibration_spct</code></td>
 </tr>
 <tr class="odd">
-<td align="left"><code>filter_spct</code></td>
+<td align="left"><code>source_spct</code></td>
 <td align="center">Y</td>
 <td align="center">Y</td>
 <td align="center">Y</td>
 <td align="center">Y</td>
 <td align="center">Y</td>
 <td align="left"><code>numeric</code></td>
-<td align="left"><code>filter_spct</code></td>
+<td align="left"><code>source_spct</code></td>
 </tr>
 <tr class="even">
+<td align="left"><code>filter_spct</code></td>
+<td align="center">Y</td>
+<td align="center">Y</td>
+<td align="center">Y</td>
+<td align="center">Y</td>
+<td align="center">Y</td>
+<td align="left"><code>numeric</code></td>
+<td align="left"><code>filter_spct</code></td>
+</tr>
+<tr class="odd">
 <td align="left"><code>reflector_spct</code></td>
 <td align="center">Y</td>
 <td align="center">Y</td>
@@ -2054,7 +2078,7 @@ wavebands</code></pre></div>
 <td align="left"><code>numeric</code></td>
 <td align="left"><code>reflector_spct</code></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left"><code>object_spct</code></td>
 <td align="center">N</td>
 <td align="center">N</td>
@@ -2064,7 +2088,7 @@ wavebands</code></pre></div>
 <td align="left"><code>numeric</code></td>
 <td align="left">–</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left"><code>response_spct</code></td>
 <td align="center">Y</td>
 <td align="center">Y</td>
@@ -2074,7 +2098,7 @@ wavebands</code></pre></div>
 <td align="left"><code>numeric</code></td>
 <td align="left"><code>response_spct</code></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left"><code>chroma_spct</code></td>
 <td align="center">Y</td>
 <td align="center">Y</td>
@@ -2083,6 +2107,16 @@ wavebands</code></pre></div>
 <td align="center">Y</td>
 <td align="left"><code>numeric</code></td>
 <td align="left"><code>chroma_spct</code></td>
+</tr>
+<tr class="odd">
+<td align="left"><code>cps_spct</code></td>
+<td align="center">N</td>
+<td align="center">N</td>
+<td align="center">Y</td>
+<td align="center">N</td>
+<td align="center">N</td>
+<td align="left"><code>calibration_spct</code></td>
+<td align="left"><code>source_spct</code></td>
 </tr>
 <tr class="even">
 <td align="left"><code>source_spct</code></td>
@@ -2330,24 +2364,33 @@ wavebands</code></pre></div>
 <td align="left"><code>cps_spct</code></td>
 </tr>
 <tr class="odd">
-<td align="left"><code>source_spct</code></td>
+<td align="left"><code>calibration_spct</code></td>
 <td align="center">Y</td>
 <td align="center">Y</td>
 <td align="center">Y</td>
 <td align="center">Y</td>
 <td align="center">Y</td>
-<td align="left"><code>source_spct</code></td>
+<td align="left"><code>calibration_spct</code></td>
 </tr>
 <tr class="even">
-<td align="left"><code>filter_spct</code></td>
+<td align="left"><code>source_spct</code></td>
 <td align="center">Y</td>
 <td align="center">Y</td>
 <td align="center">Y</td>
 <td align="center">Y</td>
 <td align="center">Y</td>
-<td align="left"><code>filter_spct</code></td>
+<td align="left"><code>source_spct</code></td>
 </tr>
 <tr class="odd">
+<td align="left"><code>filter_spct</code></td>
+<td align="center">Y</td>
+<td align="center">Y</td>
+<td align="center">Y</td>
+<td align="center">Y</td>
+<td align="center">Y</td>
+<td align="left"><code>filter_spct</code></td>
+</tr>
+<tr class="even">
 <td align="left"><code>reflector_spct</code></td>
 <td align="center">Y</td>
 <td align="center">Y</td>
@@ -2356,7 +2399,7 @@ wavebands</code></pre></div>
 <td align="center">Y</td>
 <td align="left"><code>reflector_spct</code></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left"><code>object_spct</code></td>
 <td align="center">N</td>
 <td align="center">N</td>
@@ -2365,7 +2408,7 @@ wavebands</code></pre></div>
 <td align="center">N</td>
 <td align="left">–</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left"><code>response_spct</code></td>
 <td align="center">Y</td>
 <td align="center">Y</td>
@@ -2374,7 +2417,7 @@ wavebands</code></pre></div>
 <td align="center">Y</td>
 <td align="left"><code>response_spct</code></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left"><code>chroma_spct</code></td>
 <td align="center">Y</td>
 <td align="center">Y</td>
