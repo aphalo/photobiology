@@ -85,6 +85,8 @@ insert_spct_hinges <- function(spct, hinges=NULL, byref = FALSE) {
       setCpsSpct(new.spct)
     } else if (class_spct[1] == "raw_spct") {
       setRawSpct(new.spct)
+    } else if (class_spct[1] == "calibration_spct") {
+      setCalibrationSpct(new.spct)
     } else {
       stop("Failed assertion: report to package maintainer")
     }

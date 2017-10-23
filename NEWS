@@ -1,8 +1,9 @@
 photobiology 0.9.18
 ===================
 
-* Add calibration_spct class and its methods. Update all operators and maths
+* Add calibration_spct class and its methods. Update all operators and maths.
 functions to support this new class. Add corresponding test cases.
+* Add calibration_mspct class and its methods.
 
 photobiology 0.9.17
 ===================
