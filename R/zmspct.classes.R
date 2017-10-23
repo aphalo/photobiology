@@ -13,7 +13,8 @@
 #' mspct_classes()
 #'
 mspct_classes <- function() {
-  c("raw_mspct", "cps_mspct",
+  c("calibration_mspct",
+    "raw_mspct", "cps_mspct",
     "filter_mspct", "reflector_mspct",
     "source_mspct", "object_mspct",
     "response_mspct", "chroma_mspct", "generic_mspct")
@@ -152,6 +153,15 @@ generic_mspct <- function(l = NULL, class = "generic_spct",
   l
 }
 
+#' @describeIn generic_mspct Specialization for collections of \code{calibration_spct} objects.
+#'
+#' @export
+#' @exportClass calibration_mspct
+#'
+raw_mspct <- function(l = NULL, ncol = 1, byrow = FALSE, ...) {
+  generic_mspct(l, class = "calibration_spct", ncol = ncol, byrow = byrow)
+}
+
 #' @describeIn generic_mspct Specialization for collections of \code{raw_spct} objects.
 #'
 #' @export
@@ -252,6 +262,11 @@ is.generic_mspct <- function(x) inherits(x, "generic_mspct")
 #' @rdname is.generic_mspct
 #' @export
 #'
+is.calibration_mspct <- function(x) inherits(x, "calibration_mspct")
+
+#' @rdname is.generic_mspct
+#' @export
+#'
 is.raw_mspct <- function(x) inherits(x, "raw_mspct")
 
 #' @rdname is.generic_mspct
@@ -331,6 +346,17 @@ as.generic_mspct <- function(x, force.spct.class = FALSE) {
     y <- plyr::llply(y, setGenericSpct)
   }
   generic_mspct(y)
+}
+
+#' @rdname as.generic_mspct
+#'
+#' @export
+#'
+as.calibration_mspct <- function(x) {
+  y <- x
+  rmDerivedMspct(y)
+  z <- plyr::llply(y, setCalibrationSpct)
+  raw_mspct(z)
 }
 
 #' @rdname as.generic_mspct
@@ -595,6 +621,22 @@ split2raw_mspct <- function(x,
                             ncol = 1, byrow = FALSE, ...) {
   split2mspct(x = x,
               member.class = "raw_spct",
+              spct.data.var = spct.data.var,
+              w.length.var = w.length.var,
+              idx.var = idx.var,
+              ncol = ncol, byrow = byrow,
+              ...)
+}
+
+#' @rdname split2mspct
+#' @export
+#'
+split2calibration_mspct <- function(x,
+                            spct.data.var = "irrad.mult",
+                            w.length.var = "w.length", idx.var = NULL,
+                            ncol = 1, byrow = FALSE, ...) {
+  split2mspct(x = x,
+              member.class = "calibration_spct",
               spct.data.var = spct.data.var,
               w.length.var = w.length.var,
               idx.var = idx.var,
