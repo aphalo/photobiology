@@ -2478,7 +2478,7 @@ isValidInstrDesc <- function(x) {
     }
     valid <- TRUE
     for (desc in instr.desc) {
-      if (length(desc) == 0 || is.na(desc)) {
+      if (length(desc) == 0 || (length(desc) == 1 && is.na(desc))) {
         # need to handle objects created with old versions
         valid <- FALSE
       } else if (is.list(desc)) {
@@ -2639,7 +2639,7 @@ isValidInstrSettings <- function(x) {
     }
     valid <- TRUE
     for (setting in instr.settings) {
-      if (length(setting) == 0 || is.na(setting)) {
+      if (length(setting) == 0 || (length(setting) == 1 && is.na(setting))) {
         # need to handle objects created with old versions
         valid <- FALSE
       } else if (is.list(setting)) {
