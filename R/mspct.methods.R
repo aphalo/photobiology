@@ -308,21 +308,22 @@ convolve_each <- function(e1, e2, oper = `*`, ...) {
 #'
 #' @param mspct generir_mspct Any collection of spectra.
 #' @param tb tibble or data.frame to which to add the data (optional).
+#' @param col.names character Name(s) of column(s) to create.
 #'
 #' @return A tibble With the metadata attributes in separate new variables.
 #'
 #' @export
 #'
-when_measured2tb <- function(mspct, tb = NULL) {
+when_measured2tb <- function(mspct, tb = NULL, col.names = "when.measured") {
   if (is.null(tb)) {
     tb <- tibble::tibble(spct.idx = factor(names(mspct)))
   } else {
     stopifnot(nrow(tb) == length(mspct))
   }
-  tb[["when.measured"]] <- lubridate::ymd_hms(NA_character_)
+  tb[[col.names[1]]] <- lubridate::ymd_hms(NA_character_)
   row <- 1L
   for (x in mspct) {
-    tb[row, "when.measured"] <- getWhenMeasured(x)[1]
+    tb[row, col.names[1]] <- getWhenMeasured(x)[1]
     row <- row + 1L
   }
   tb
@@ -332,19 +333,19 @@ when_measured2tb <- function(mspct, tb = NULL) {
 #'
 #' @export
 #'
-lon_lat2tb <- function(mspct, tb = NULL) {
+lon_lat2tb <- function(mspct, tb = NULL, col.names = c(lon = "lon", lat = "lat")) {
   if (is.null(tb)) {
     tb <- tibble::tibble(spct.idx = factor(names(mspct)))
   } else {
     stopifnot(nrow(tb) == length(mspct))
   }
-  tb[["lon"]] <- numeric(nrow(tb))
-  tb[["lat"]] <- numeric(nrow(tb))
+  tb[[col.names["lon"]]] <- numeric(nrow(tb))
+  tb[[col.names["lat"]]] <- numeric(nrow(tb))
   row <- 1L
   for (x in mspct) {
     where.measured <- getWhereMeasured(x)
-    tb[row, "lon"] <- where.measured[["lon"]][1]
-    tb[row, "lat"] <- where.measured[["lat"]][1]
+    tb[row, col.names["lon"]] <- where.measured[["lon"]][1]
+    tb[row, col.names["lon"]] <- where.measured[["lat"]][1]
     row <- row + 1L
   }
   tb
@@ -354,16 +355,54 @@ lon_lat2tb <- function(mspct, tb = NULL) {
 #'
 #' @export
 #'
-lat_lon2tb <- function(mspct, tb = NULL) {
-  message("Use of 'lat_lon2tb()' is deprecated, please, use 'lon_lat2tb()' instead.")
-  lon_lat2tb(mspct = mspct, tb = tb)
+lat_lon2tb <- function(mspct, tb = NULL, col.names = c(lon = "lon", lat = "lat")) {
+  warning("Use of 'lat_lon2tb()' is deprecated, please, use 'lon_lat2tb()' instead.")
+  lon_lat2tb(mspct = mspct, tb = tb, col.names = col.names)
 }
 
 #' @rdname when_measured2tb
 #'
 #' @export
 #'
-geocode2tb <- function(mspct, tb = NULL) {
+lon2tb <- function(mspct, tb = NULL, col.names = "lon") {
+  if (is.null(tb)) {
+    tb <- tibble::tibble(spct.idx = factor(names(mspct)))
+  } else {
+    stopifnot(nrow(tb) == length(mspct))
+  }
+  tb[[col.names[1]]] <- numeric(nrow(tb))
+  row <- 1L
+  for (x in mspct) {
+    tb[row, col.names[1]] <- getWhereMeasured(x)[["lon"]][1]
+    row <- row + 1L
+  }
+  tb
+}
+
+#' @rdname when_measured2tb
+#'
+#' @export
+#'
+lat2tb <- function(mspct, tb = NULL, col.names = "lat") {
+  if (is.null(tb)) {
+    tb <- tibble::tibble(spct.idx = factor(names(mspct)))
+  } else {
+    stopifnot(nrow(tb) == length(mspct))
+  }
+  tb[[col.names[1]]] <- numeric(nrow(tb))
+  row <- 1L
+  for (x in mspct) {
+    tb[row, col.names[1]] <- getWhereMeasured(x)[["lat"]][1]
+    row <- row + 1L
+  }
+  tb
+}
+
+#' @rdname when_measured2tb
+#'
+#' @export
+#'
+geocode2tb <- function(mspct, tb = NULL, col.names = "geocode") {
   if (is.null(tb)) {
     tb <- tibble::tibble(spct.idx = factor(names(mspct)))
   } else {
@@ -378,7 +417,7 @@ geocode2tb <- function(mspct, tb = NULL) {
   if (!tibble::is.tibble(tb)) {
     tb <- tibble::as_tibble(tb)
   }
-  tb[["geocode"]] <- geocodes
+  tb[[col.names[1]]] <- geocodes
   tb
 }
 
@@ -392,16 +431,16 @@ where_measured2tb <- geocode2tb
 #'
 #' @export
 #'
-what_measured2tb <- function(mspct, tb = NULL) {
+what_measured2tb <- function(mspct, tb = NULL, col.names = "what.measured") {
   if (is.null(tb)) {
     tb <- tibble::tibble(spct.idx = factor(names(mspct)))
   } else {
     stopifnot(nrow(tb) == length(mspct))
   }
-  tb[["what.measured"]] <- character(nrow(tb))
+  tb[[col.names[1]]] <- character(nrow(tb))
   row <- 1L
   for (x in mspct) {
-    tb[row, "what.measured"] <- getWhatMeasured(x)[1]
+    tb[row, col.names[1]] <- getWhatMeasured(x)[1]
     row <- row + 1L
   }
   tb
