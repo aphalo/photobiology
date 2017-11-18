@@ -591,6 +591,19 @@ two.mspct
 
 Other methods available are `getWhereMeasured` and `setWhereMeasured`, and `getWhatMeasured` and `setWhatMeasured`.
 
+Functions `when.measured2tb()`, `geocode2tb()`, `lon_lat2tb()` and `what.measured2tb()` extract these same attributes from collection members into a tibble or data frame.  If an existing data frame or tibble is passed as argumented the attribute values are added as a new column.
+
+```{r}
+when_measured2tb(two.mspct)
+```
+
+```{r}
+irrad.tb <- q_irrad(two.mspct)
+irrad.tb <- lon_lat2tb(two.mspct, irrad.tb)
+irrad.tb <- when_measured2tb(two.mspct, irrad.tb)
+irrad.tb
+```
+
 ## Wavebands
 
 When a range of wavelengths or a range of wavelengths plus a spectral weighting function (SWF) is needed for radiation summaries or transformations, methods, operators and functions defined in package '**photobiology**'  use `waveband` objects to store these data. A few other bits of information can be included to fine-tune calculations. The waveband definitions do NOT describe whether input spectral irradiances are photon or energy based, nor whether the output irradiance will be based on photon or energy units. All waveband objects belong to the S3 class `waveband`.

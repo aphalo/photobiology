@@ -307,7 +307,7 @@ convolve_each <- function(e1, e2, oper = `*`, ...) {
 #' members of a generic_mspct object into a tibble or data.frame.
 #'
 #' @param mspct generir_mspct Any collection of spectra.
-#' @param tibble or data.frame to which to add the data (optional).
+#' @param tb tibble or data.frame to which to add the data (optional).
 #'
 #' @return A tibble With the metadata attributes in separate new variables.
 #'
@@ -315,7 +315,7 @@ convolve_each <- function(e1, e2, oper = `*`, ...) {
 #'
 when_measured2tb <- function(mspct, tb = NULL) {
   if (is.null(tb)) {
-    tb <- tibble::tibble(spct.idx = names(mspct))
+    tb <- tibble::tibble(spct.idx = factor(names(mspct)))
   } else {
     stopifnot(nrow(tb) == length(mspct))
   }
@@ -330,14 +330,11 @@ when_measured2tb <- function(mspct, tb = NULL) {
 
 #' @rdname when_measured2tb
 #'
-#' Copy the when.measured attribute from members of a generic_mspct object into
-#' a column of a tibble or data.frame.
-#'
 #' @export
 #'
-where_measured2tb <- function(mspct, tb = NULL) {
+lon_lat2tb <- function(mspct, tb = NULL) {
   if (is.null(tb)) {
-    tb <- tibble::tibble(spct.idx = names(mspct))
+    tb <- tibble::tibble(spct.idx = factor(names(mspct)))
   } else {
     stopifnot(nrow(tb) == length(mspct))
   }
@@ -353,18 +350,22 @@ where_measured2tb <- function(mspct, tb = NULL) {
   tb
 }
 
-lon_lat2tb <- where_measured2tb
-
 #' @rdname when_measured2tb
-#'
-#' Copy the when.measured attribute from members of a generic_mspct object into
-#' a column of a tibble or data.frame.
 #'
 #' @export
 #'
-add_geocode2tb <- function(mspct, tb = NULL) {
+lat_lon2tb <- function(mspct, tb = NULL) {
+  message("Use of 'lat_lon2tb()' is deprecated, please, use 'lon_lat2tb()' instead.")
+  lon_lat2tb(mspct = mspct, tb = tb)
+}
+
+#' @rdname when_measured2tb
+#'
+#' @export
+#'
+geocode2tb <- function(mspct, tb = NULL) {
   if (is.null(tb)) {
-    tb <- tibble::tibble(spct.idx = names(mspct))
+    tb <- tibble::tibble(spct.idx = factor(names(mspct)))
   } else {
     stopifnot(nrow(tb) == length(mspct))
   }
@@ -383,21 +384,24 @@ add_geocode2tb <- function(mspct, tb = NULL) {
 
 #' @rdname when_measured2tb
 #'
-#' Copy the what.measured attribute from members of a generic_mspct object into
-#' a column of a tibble or data.frame.
+#' @export
+#'
+where_measured2tb <- geocode2tb
+
+#' @rdname when_measured2tb
 #'
 #' @export
 #'
 what_measured2tb <- function(mspct, tb = NULL) {
   if (is.null(tb)) {
-    tb <- tibble::tibble(spct.idx = names(mspct))
+    tb <- tibble::tibble(spct.idx = factor(names(mspct)))
   } else {
     stopifnot(nrow(tb) == length(mspct))
   }
-  tb[["what.measured"]] <- numeric(nrow(tb))
+  tb[["what.measured"]] <- character(nrow(tb))
   row <- 1L
   for (x in mspct) {
-    tb[row, "what.measured"] <- getWhereMeasured(x)[1]
+    tb[row, "what.measured"] <- getWhatMeasured(x)[1]
     row <- row + 1L
   }
   tb
