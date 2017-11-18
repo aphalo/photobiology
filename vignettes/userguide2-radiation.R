@@ -220,6 +220,15 @@ setWhenMeasured(two.mspct,
 getWhenMeasured(two.mspct)
 two.mspct
 
+## ------------------------------------------------------------------------
+when_measured2tb(two.mspct)
+
+## ------------------------------------------------------------------------
+irrad.tb <- q_irrad(two.mspct)
+irrad.tb <- lon_lat2tb(two.mspct, irrad.tb)
+irrad.tb <- when_measured2tb(two.mspct, irrad.tb)
+irrad.tb
+
 ## ---- wb-1---------------------------------------------------------------
 PAR.wb <- waveband(c(400, 700), wb.name = "PAR")
 UVA.wb <- waveband(c(315, 400), wb.name = "UVA")

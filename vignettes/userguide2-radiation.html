@@ -12,7 +12,7 @@
 
 <meta name="author" content="Pedro J. Aphalo" />
 
-<meta name="date" content="2017-10-27" />
+<meta name="date" content="2017-11-18" />
 
 <title>User Guide: 2 Radiation</title>
 
@@ -69,9 +69,9 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 
 <h1 class="title toc-ignore">User Guide: 2 Radiation</h1>
-<h3 class="subtitle"><em>Package ‘photobiology’ 0.9.17.9001</em></h3>
+<h3 class="subtitle"><em>Package ‘photobiology’ 0.9.17.9002</em></h3>
 <h4 class="author"><em>Pedro J. Aphalo</em></h4>
-<h4 class="date"><em>2017-10-27</em></h4>
+<h4 class="date"><em>2017-11-18</em></h4>
 
 
 <div id="TOC">
@@ -1611,6 +1611,22 @@ There are cases where functions <code>convolve_each()</code> and <code>msmsply()
 ## 
 ## --- END ---</code></pre>
 <p>Other methods available are <code>getWhereMeasured</code> and <code>setWhereMeasured</code>, and <code>getWhatMeasured</code> and <code>setWhatMeasured</code>.</p>
+<p>Functions <code>when.measured2tb()</code>, <code>geocode2tb()</code>, <code>lon_lat2tb()</code> and <code>what.measured2tb()</code> extract these same attributes from collection members into a tibble or data frame. If an existing data frame or tibble is passed as argumented the attribute values are added as a new column.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">when_measured2tb</span>(two.mspct)</code></pre></div>
+<pre><code>## # A tibble: 2 x 2
+##   spct.idx       when.measured
+##     &lt;fctr&gt;              &lt;dttm&gt;
+## 1        A 2015-10-31 08:00:00
+## 2        B 2015-10-31 09:00:00</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">irrad.tb &lt;-<span class="st"> </span><span class="kw">q_irrad</span>(two.mspct)
+irrad.tb &lt;-<span class="st"> </span><span class="kw">lon_lat2tb</span>(two.mspct, irrad.tb)
+irrad.tb &lt;-<span class="st"> </span><span class="kw">when_measured2tb</span>(two.mspct, irrad.tb)
+irrad.tb</code></pre></div>
+<pre><code>## # A tibble: 2 x 5
+##   spct.idx q_irrad_Total      lon      lat       when.measured
+##     &lt;fctr&gt;         &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;              &lt;dttm&gt;
+## 1        A   0.001255336 24.96474 60.20911 2015-10-31 08:00:00
+## 2        B   0.002510671 24.96474 60.20911 2015-10-31 09:00:00</code></pre>
 </div>
 </div>
 <div id="wavebands" class="section level2">
