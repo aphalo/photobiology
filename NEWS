@@ -1,3 +1,5 @@
+TO DO: add tests cases for the attr2tb formal parameter of summary functions.
+
 photobiology 0.9.18
 ===================
 
@@ -6,6 +8,8 @@ functions to support this new class. Add corresponding test cases.
 * Add calibration_mspct class and its methods.
 * Add functions add_attr2tb(), when_measured2tb(), lon2tb(), lat2tb(),
 geocode2tb() and what_measured2tb().
+* Add a formal parameter "attr2tb" to all summary methods for collections of
+spectra, to automatically call add_attr2tb() to add attributes to their output.
 
 photobiology 0.9.17
 ===================
