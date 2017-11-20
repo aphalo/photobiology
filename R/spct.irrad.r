@@ -740,6 +740,8 @@ e_fluence.source_spct <-
 
 #' @describeIn irrad  Calculates irradiance from a \code{source_mspct}
 #'   object.
+#'
+#' @param attr2tb character vector.
 #' @param idx logical whether to add a column with the names of the elements of
 #'   spct
 #'
@@ -755,24 +757,30 @@ irrad.source_mspct <-
            use.hinges = NULL,
            allow.scaled = !quantity  %in% c("average", "mean", "total"),
            ...,
+           attr2tb = NULL,
            idx = !is.null(names(spct))) {
-    msdply(
-      mspct = spct,
-      .fun = irrad,
-      w.band = w.band,
-      unit.out = unit.out,
-      wb.trim = wb.trim,
-      use.cached.mult = use.cached.mult,
-      use.hinges = use.hinges,
-      allow.scaled = allow.scaled,
-      idx = idx,
-      col.names = names(w.band)
-    )
+    z <-
+      msdply(
+        mspct = spct,
+        .fun = irrad,
+        w.band = w.band,
+        unit.out = unit.out,
+        wb.trim = wb.trim,
+        use.cached.mult = use.cached.mult,
+        use.hinges = use.hinges,
+        allow.scaled = allow.scaled,
+        idx = idx,
+        col.names = names(w.band)
+      )
+    add_attr2tb(tb = z,
+                mspct = spct,
+                col.names = attr2tb)
   }
 
 #' @describeIn q_irrad  Calculates photon (quantum) irradiance from a
 #'   \code{source_mspct} object.
 #'
+#' @param attr2tb character vector.
 #' @param idx logical whether to add a column with the names of the elements of
 #'   spct
 #'
@@ -787,23 +795,29 @@ q_irrad.source_mspct <-
            use.hinges = NULL,
            allow.scaled = !quantity  %in% c("average", "mean", "total"),
            ...,
+           attr2tb = NULL,
            idx = !is.null(names(spct))) {
-    msdply(
-      mspct = spct,
-      .fun = q_irrad,
-      w.band = w.band,
-      wb.trim = wb.trim,
-      use.cached.mult = use.cached.mult,
-      use.hinges = use.hinges,
-      allow.scaled = allow.scaled,
-      idx = idx,
-      col.names = names(w.band)
-    )
+    z <-
+      msdply(
+        mspct = spct,
+        .fun = q_irrad,
+        w.band = w.band,
+        wb.trim = wb.trim,
+        use.cached.mult = use.cached.mult,
+        use.hinges = use.hinges,
+        allow.scaled = allow.scaled,
+        idx = idx,
+        col.names = names(w.band)
+      )
+    add_attr2tb(tb = z,
+                mspct = spct,
+                col.names = attr2tb)
   }
 
 #' @describeIn e_irrad  Calculates energy irradiance from a
 #'   \code{source_mspct} object.
 #'
+#' @param attr2tb character vector.
 #' @param idx logical whether to add a column with the names of the elements of
 #'   spct
 #'
@@ -818,22 +832,29 @@ e_irrad.source_mspct <-
            use.hinges = NULL,
            allow.scaled = !quantity  %in% c("average", "mean", "total"),
            ...,
+           attr2tb = NULL,
            idx = !is.null(names(spct))) {
-    msdply(
-      mspct = spct,
-      .fun = e_irrad,
-      w.band = w.band,
-      wb.trim = wb.trim,
-      use.cached.mult = use.cached.mult,
-      use.hinges = use.hinges,
-      allow.scaled = allow.scaled,
-      idx = idx,
-      col.names = names(w.band)
-    )
+    z <-
+      msdply(
+        mspct = spct,
+        .fun = e_irrad,
+        w.band = w.band,
+        wb.trim = wb.trim,
+        use.cached.mult = use.cached.mult,
+        use.hinges = use.hinges,
+        allow.scaled = allow.scaled,
+        idx = idx,
+        col.names = names(w.band)
+      )
+    add_attr2tb(tb = z,
+                mspct = spct,
+                col.names = attr2tb)
   }
 
 #' @describeIn fluence Calculates fluence from a \code{source_mspct}
 #'   object.
+#'
+#' @param attr2tb character vector.
 #' @param idx logical whether to add a column with the names of the elements of
 #'   spct
 #'
@@ -847,24 +868,32 @@ fluence.source_mspct <-
            use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
            use.hinges = NULL,
            allow.scaled = FALSE,
-           ..., idx = !is.null(names(spct))) {
-    msdply(
-      mspct = spct,
-      .fun = fluence,
-      w.band = w.band,
-      unit.out = unit.out,
-      exposure.time = exposure.time,
-      wb.trim = wb.trim,
-      use.cached.mult = use.cached.mult,
-      use.hinges = use.hinges,
-      allow.scaled = allow.scaled,
-      idx = idx,
-      col.names = names(w.band)
-    )
+           ...,
+           attr2tb = NULL,
+           idx = !is.null(names(spct))) {
+    z <-
+      msdply(
+        mspct = spct,
+        .fun = fluence,
+        w.band = w.band,
+        unit.out = unit.out,
+        exposure.time = exposure.time,
+        wb.trim = wb.trim,
+        use.cached.mult = use.cached.mult,
+        use.hinges = use.hinges,
+        allow.scaled = allow.scaled,
+        idx = idx,
+        col.names = names(w.band)
+      )
+    add_attr2tb(tb = z,
+                mspct = spct,
+                col.names = attr2tb)
   }
 
 #' @describeIn e_fluence Calculates energy fluence from a \code{source_mspct}
 #'   object.
+#'
+#' @param attr2tb character vector.
 #' @param idx logical whether to add a column with the names of the elements of spct
 #'
 #' @export
@@ -876,23 +905,31 @@ e_fluence.source_mspct <-
            use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
            use.hinges = NULL,
            allow.scaled = FALSE,
-           ..., idx = !is.null(names(spct))) {
-    msdply(
-      mspct = spct,
-      .fun = e_fluence,
-      w.band = w.band,
-      exposure.time = exposure.time,
-      wb.trim = wb.trim,
-      use.cached.mult = use.cached.mult,
-      use.hinges = use.hinges,
-      allow.scaled = allow.scaled,
-      idx = idx,
-      col.names = names(w.band)
-    )
+           ...,
+           attr2tb = NULL,
+           idx = !is.null(names(spct))) {
+    z <-
+      msdply(
+        mspct = spct,
+        .fun = e_fluence,
+        w.band = w.band,
+        exposure.time = exposure.time,
+        wb.trim = wb.trim,
+        use.cached.mult = use.cached.mult,
+        use.hinges = use.hinges,
+        allow.scaled = allow.scaled,
+        idx = idx,
+        col.names = names(w.band)
+      )
+    add_attr2tb(tb = z,
+                mspct = spct,
+                col.names = attr2tb)
   }
 
 #' @describeIn q_fluence Calculates photon (quantum) fluence from a
 #'   \code{source_mspct} object.
+#'
+#' @param attr2tb character vector.
 #' @param idx logical whether to add a column with the names of the elements of
 #'   spct
 #'
@@ -905,18 +942,24 @@ q_fluence.source_mspct <-
            use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
            use.hinges = NULL,
            allow.scaled = FALSE,
-           ..., idx = !is.null(names(spct))) {
-    msdply(
-      mspct = spct,
-      .fun = q_fluence,
-      w.band = w.band,
-      exposure.time = exposure.time,
-      wb.trim = wb.trim,
-      use.cached.mult = use.cached.mult,
-      use.hinges = use.hinges,
-      allow.scaled = allow.scaled,
-      idx = idx,
-      col.names = names(w.band)
-    )
+           ...,
+           attr2tb = NULL,
+           idx = !is.null(names(spct))) {
+    z <-
+      msdply(
+        mspct = spct,
+        .fun = q_fluence,
+        w.band = w.band,
+        exposure.time = exposure.time,
+        wb.trim = wb.trim,
+        use.cached.mult = use.cached.mult,
+        use.hinges = use.hinges,
+        allow.scaled = allow.scaled,
+        idx = idx,
+        col.names = names(w.band)
+      )
+    add_attr2tb(tb = z,
+                mspct = spct,
+                col.names = attr2tb)
   }
 
