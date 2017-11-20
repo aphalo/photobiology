@@ -4,7 +4,7 @@ photobiology 0.9.18
 * Add calibration_spct class and its methods. Update all operators and maths.
 functions to support this new class. Add corresponding test cases.
 * Add calibration_mspct class and its methods.
-* Add functions when_measured2tb(), where_measured2tb(), lat_lon2tb(),
+* Add functions add_attr2tb(), when_measured2tb(), lon2tb(), lat2tb(),
 geocode2tb() and what_measured2tb().
 
 photobiology 0.9.17

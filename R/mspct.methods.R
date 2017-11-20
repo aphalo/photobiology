@@ -312,6 +312,92 @@ convolve_each <- function(e1, e2, oper = `*`, ...) {
 #'
 #' @return A tibble With the metadata attributes in separate new variables.
 #'
+#' @details The attributes are copied to a column in a tibble or data frame. If
+#'   the \code{tb} formal parameter receives \code{NULL} as argument, a new
+#'   \code{tibble} will be created. If an existing \code{data.frame} or
+#'   \code{tibble} is passed as argument, new columns are added to it. However,
+#'   the number of rows in the argument passed to \code{tb} must match the
+#'   number of spectra in the argument passed to \code{mspct}. If the argument
+#'   to \code{col.names} is aa named vector, with the names of members matching
+#'   the names of attibutes, then the values are used as names for the columns
+#'   created. This permits setting any valid name fro the new columns.
+#'   If the vector passed to \code{col.names} has no names, then the
+#'   values are interpreted as the names of the attributes to add, and also
+#'   used as names for the new columns.
+#'
+#' @note Currently supported attributes are \code{"when.measured"},
+#'   \code{"what.measured"} and \code{"where.measured"}. In the case of
+#'   \code{"where.measured"}, which has different components the name
+#'   \code{"where.measured"} is ignored, but instead the following
+#'   names are recognized: \code{"lon"} and \code{"lat"} for creating numeric
+#'   columns of longitudes and latitudes respectively, and \code{"geocode"}
+#'   for creating a column of data frames, in which case, if \code{tb} is not
+#'   already a \code{tibble} it is converted into one before adding the new
+#'   column.  The order of the first two arguments is reversed in
+#'   \code{add_attr2tb()} compared to the other functions. This is to allow
+#'   its use in 'pipes', while the functions for single attributes are expected
+#'   to be used mostly to create new tibbles.
+#'
+#' @examples
+#'
+#' library(magrittr)
+#'
+#' my.mspct <- source_mspct(list(sun1 = sun.spct, sun2 = sun.spct * 2))
+#' q_irrad(my.mspct) %>%
+#'   add_attr2tb(my.mspct, c(lat = "latitude",
+#'                           lon = "longitude",
+#'                           when.measured = "time"))
+#'
+#' when_measured2tb(my.mspct)
+#'
+#' @export
+#'
+add_attr2tb <- function(tb,
+                        mspct,
+                        col.names = NULL) {
+  if (length(col.names) < 1L) {
+    return(tb)
+  }
+  if (length(names(col.names)) < 1L) {
+    names(col.names) <- col.names
+  }
+  attributes <- intersect(names(col.names),
+                          c("geocode",
+                            "lon",
+                            "lat",
+                            "when.measured",
+                            "what.measured"))
+  if (length(attributes) < length(col.names)) {
+    warning("Unrecognized attribute(s) '",
+            paste(setdiff(names(col.names), attributes), collapse = ", "),
+            "' where skipped.")
+  }
+  force(tb)
+  for (a in attributes) {
+    tb <-
+      switch(a,
+             geocode = geocode2tb(mspct = mspct,
+                                  tb = tb,
+                                  col.names = col.names["geocode"]),
+             lon = lon2tb(mspct = mspct,
+                          tb = tb,
+                          col.names = col.names["lon"]),
+             lat = lat2tb(mspct = mspct,
+                          tb = tb,
+                          col.names = col.names["lat"]),
+             when.measured = when_measured2tb(mspct = mspct,
+                                              tb = tb,
+                                              col.names = col.names["when.measured"]),
+             what.measured = what_measured2tb(mspct = mspct,
+                                              tb = tb,
+                                              col.names = col.names["what.measured"]),
+             tb)
+  }
+  tb
+}
+
+#' @rdname add_attr2tb
+#'
 #' @export
 #'
 when_measured2tb <- function(mspct, tb = NULL, col.names = "when.measured") {
@@ -320,47 +406,19 @@ when_measured2tb <- function(mspct, tb = NULL, col.names = "when.measured") {
   } else {
     stopifnot(nrow(tb) == length(mspct))
   }
-  tb[[col.names[1]]] <- lubridate::ymd_hms(NA_character_)
+  if (length(names(col.names)) < 1L) {
+    names(col.names) <- col.names
+  }
+  tb[[col.names["when.measured"]]] <- lubridate::ymd_hms(NA_character_)
   row <- 1L
   for (x in mspct) {
-    tb[row, col.names[1]] <- getWhenMeasured(x)[1]
+    tb[row, col.names["when.measured"]] <- getWhenMeasured(x)[1]
     row <- row + 1L
   }
   tb
 }
 
-#' @rdname when_measured2tb
-#'
-#' @export
-#'
-lon_lat2tb <- function(mspct, tb = NULL, col.names = c(lon = "lon", lat = "lat")) {
-  if (is.null(tb)) {
-    tb <- tibble::tibble(spct.idx = factor(names(mspct)))
-  } else {
-    stopifnot(nrow(tb) == length(mspct))
-  }
-  tb[[col.names["lon"]]] <- numeric(nrow(tb))
-  tb[[col.names["lat"]]] <- numeric(nrow(tb))
-  row <- 1L
-  for (x in mspct) {
-    where.measured <- getWhereMeasured(x)
-    tb[row, col.names["lon"]] <- where.measured[["lon"]][1]
-    tb[row, col.names["lon"]] <- where.measured[["lat"]][1]
-    row <- row + 1L
-  }
-  tb
-}
-
-#' @rdname when_measured2tb
-#'
-#' @export
-#'
-lat_lon2tb <- function(mspct, tb = NULL, col.names = c(lon = "lon", lat = "lat")) {
-  warning("Use of 'lat_lon2tb()' is deprecated, please, use 'lon_lat2tb()' instead.")
-  lon_lat2tb(mspct = mspct, tb = tb, col.names = col.names)
-}
-
-#' @rdname when_measured2tb
+#' @rdname add_attr2tb
 #'
 #' @export
 #'
@@ -370,16 +428,19 @@ lon2tb <- function(mspct, tb = NULL, col.names = "lon") {
   } else {
     stopifnot(nrow(tb) == length(mspct))
   }
-  tb[[col.names[1]]] <- numeric(nrow(tb))
+  if (length(names(col.names)) < 1L) {
+    names(col.names) <- col.names
+  }
+  tb[[col.names["lon"]]] <- numeric(nrow(tb))
   row <- 1L
   for (x in mspct) {
-    tb[row, col.names[1]] <- getWhereMeasured(x)[["lon"]][1]
+    tb[row, col.names["lon"]] <- getWhereMeasured(x)[["lon"]][1]
     row <- row + 1L
   }
   tb
 }
 
-#' @rdname when_measured2tb
+#' @rdname add_attr2tb
 #'
 #' @export
 #'
@@ -389,16 +450,19 @@ lat2tb <- function(mspct, tb = NULL, col.names = "lat") {
   } else {
     stopifnot(nrow(tb) == length(mspct))
   }
-  tb[[col.names[1]]] <- numeric(nrow(tb))
+  if (length(names(col.names)) < 1L) {
+    names(col.names) <- col.names
+  }
+  tb[[col.names["lat"]]] <- numeric(nrow(tb))
   row <- 1L
   for (x in mspct) {
-    tb[row, col.names[1]] <- getWhereMeasured(x)[["lat"]][1]
+    tb[row, col.names["lat"]] <- getWhereMeasured(x)[["lat"]][1]
     row <- row + 1L
   }
   tb
 }
 
-#' @rdname when_measured2tb
+#' @rdname add_attr2tb
 #'
 #' @export
 #'
@@ -407,6 +471,9 @@ geocode2tb <- function(mspct, tb = NULL, col.names = "geocode") {
     tb <- tibble::tibble(spct.idx = factor(names(mspct)))
   } else {
     stopifnot(nrow(tb) == length(mspct))
+  }
+  if (length(names(col.names)) < 1L) {
+    names(col.names) <- col.names
   }
   geocodes <- list()
   row <- 1L
@@ -417,17 +484,11 @@ geocode2tb <- function(mspct, tb = NULL, col.names = "geocode") {
   if (!tibble::is.tibble(tb)) {
     tb <- tibble::as_tibble(tb)
   }
-  tb[[col.names[1]]] <- geocodes
+  tb[[col.names["geocode"]]] <- geocodes
   tb
 }
 
-#' @rdname when_measured2tb
-#'
-#' @export
-#'
-where_measured2tb <- geocode2tb
-
-#' @rdname when_measured2tb
+#' @rdname add_attr2tb
 #'
 #' @export
 #'
@@ -437,12 +498,14 @@ what_measured2tb <- function(mspct, tb = NULL, col.names = "what.measured") {
   } else {
     stopifnot(nrow(tb) == length(mspct))
   }
-  tb[[col.names[1]]] <- character(nrow(tb))
+  if (length(names(col.names)) < 1L) {
+    names(col.names) <- col.names
+  }
+  tb[[col.names["what.measured"]]] <- character(nrow(tb))
   row <- 1L
   for (x in mspct) {
-    tb[row, col.names[1]] <- getWhatMeasured(x)[1]
+    tb[row, col.names["what.measured"]] <- getWhatMeasured(x)[1]
     row <- row + 1L
   }
   tb
 }
-

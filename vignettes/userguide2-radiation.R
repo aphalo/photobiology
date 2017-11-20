@@ -8,6 +8,7 @@ options(tibble.print_max = 6, tibble.print_min = 4)
 ## ---- pkg-load, eval=TRUE------------------------------------------------
 library(photobiology)
 library(lubridate)
+library(magrittr)
 
 ## ---- example-1, eval=FALSE----------------------------------------------
 #  # not run
@@ -224,10 +225,26 @@ two.mspct
 when_measured2tb(two.mspct)
 
 ## ------------------------------------------------------------------------
+when_measured2tb(two.mspct, col.names = c(when.measured = "time"))
+
+## ------------------------------------------------------------------------
 irrad.tb <- q_irrad(two.mspct)
-irrad.tb <- lon_lat2tb(two.mspct, irrad.tb)
+irrad.tb <- lon2tb(two.mspct, irrad.tb)
+irrad.tb <- lat2tb(two.mspct, irrad.tb)
 irrad.tb <- when_measured2tb(two.mspct, irrad.tb)
 irrad.tb
+
+## ------------------------------------------------------------------------
+q_irrad(two.mspct) %>%
+  add_attr2tb(two.mspct, 
+              col.names = c("lon", "lat", "when.measured"))
+
+## ------------------------------------------------------------------------
+q_irrad(two.mspct) %>%
+  add_attr2tb(two.mspct, 
+              col.names = c(lon = "longitude", 
+                            lat = "latitude", 
+                            when.measured = "time"))
 
 ## ---- wb-1---------------------------------------------------------------
 PAR.wb <- waveband(c(400, 700), wb.name = "PAR")

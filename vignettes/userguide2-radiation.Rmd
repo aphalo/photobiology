@@ -38,6 +38,7 @@ We load two packages, our '**photobiology**' and '**lubridate**', as they will b
 ```{r, pkg-load, eval=TRUE}
 library(photobiology)
 library(lubridate)
+library(magrittr)
 ```
 
 ### Classes
@@ -591,17 +592,39 @@ two.mspct
 
 Other methods available are `getWhereMeasured` and `setWhereMeasured`, and `getWhatMeasured` and `setWhatMeasured`.
 
-Functions `when.measured2tb()`, `geocode2tb()`, `lon_lat2tb()` and `what.measured2tb()` extract these same attributes from collection members into a tibble or data frame.  If an existing data frame or tibble is passed as argumented the attribute values are added as a new column.
+Functions `when.measured2tb()`, `geocode2tb()`, `lon2tb()`, `lat2tb()` and `what.measured2tb()` extract these same attributes from collection members into a tibble or data frame.  If an existing data frame or tibble with a matching number of rows is passed as second argumented the values for each attribute are added as a new column.
 
 ```{r}
 when_measured2tb(two.mspct)
 ```
 
 ```{r}
+when_measured2tb(two.mspct, col.names = c(when.measured = "time"))
+```
+
+```{r}
 irrad.tb <- q_irrad(two.mspct)
-irrad.tb <- lon_lat2tb(two.mspct, irrad.tb)
+irrad.tb <- lon2tb(two.mspct, irrad.tb)
+irrad.tb <- lat2tb(two.mspct, irrad.tb)
 irrad.tb <- when_measured2tb(two.mspct, irrad.tb)
 irrad.tb
+```
+
+Function `add_attr2tb()` adds one or more columns with attributes to a tibble
+or data frame.
+
+```{r}
+q_irrad(two.mspct) %>%
+  add_attr2tb(two.mspct, 
+              col.names = c("lon", "lat", "when.measured"))
+```
+
+```{r}
+q_irrad(two.mspct) %>%
+  add_attr2tb(two.mspct, 
+              col.names = c(lon = "longitude", 
+                            lat = "latitude", 
+                            when.measured = "time"))
 ```
 
 ## Wavebands
