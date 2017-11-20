@@ -217,6 +217,7 @@ transmittance_spct <-
 
 #' @describeIn transmittance Calculates transmittance from a \code{filter_mspct}
 #'
+#' @param attr2tb character vector.
 #' @param idx logical whether to add a column with the names of the elements of
 #'   spct
 #'
@@ -227,17 +228,23 @@ transmittance.filter_mspct <-
            quantity = "average",
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.hinges = getOption("photobiology.use.hinges", default = NULL),
-           ..., idx = !is.null(names(spct)) ) {
-    msdply(
-      mspct = spct,
-      .fun = transmittance,
-      w.band = w.band,
-      quantity = quantity,
-      wb.trim = wb.trim,
-      use.hinges = use.hinges,
-      idx = idx,
-      col.names = names(w.band)
-    )
+           ...,
+           attr2tb = NULL,
+           idx = !is.null(names(spct)) ) {
+    z <-
+      msdply(
+        mspct = spct,
+        .fun = transmittance,
+        w.band = w.band,
+        quantity = quantity,
+        wb.trim = wb.trim,
+        use.hinges = use.hinges,
+        idx = idx,
+        col.names = names(w.band)
+      )
+    add_attr2tb(tb = z,
+                mspct = spct,
+                col.names = attr2tb)
   }
 
 # object_mspct methods -----------------------------------------------
@@ -251,17 +258,23 @@ transmittance.object_mspct <-
            quantity = "average",
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.hinges = getOption("photobiology.use.hinges", default = NULL),
-           ..., idx = !is.null(names(spct)) ) {
-    msdply(
-      mspct = spct,
-      .fun = transmittance,
-      w.band = w.band,
-      quantity = quantity,
-      wb.trim = wb.trim,
-      use.hinges = use.hinges,
-      idx = idx,
-      col.names = names(w.band)
-    )
+           ...,
+           attr2tb = NULL,
+           idx = !is.null(names(spct)) ) {
+    z <-
+      msdply(
+        mspct = spct,
+        .fun = transmittance,
+        w.band = w.band,
+        quantity = quantity,
+        wb.trim = wb.trim,
+        use.hinges = use.hinges,
+        idx = idx,
+        col.names = names(w.band)
+      )
+    add_attr2tb(tb = z,
+                mspct = spct,
+                col.names = attr2tb)
   }
 
 

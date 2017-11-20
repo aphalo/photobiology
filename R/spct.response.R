@@ -375,6 +375,7 @@ q_response.response_spct <-
 
 #' @describeIn response Calculates response from a \code{response_mspct}
 #'
+#' @param attr2tb character vector.
 #' @param idx logical whether to add a column with the names of the elements of
 #'   spct
 #'
@@ -387,24 +388,31 @@ response.response_mspct <-
            time.unit = NULL,
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.hinges = getOption("photobiology.use.hinges", default = NULL),
-           ..., idx = !is.null(names(spct))) {
-    msdply(
-      mspct = spct,
-      .fun = response,
-      w.band = w.band,
-      unit.out = unit.out,
-      quantity = quantity,
-      time.unit = time.unit,
-      wb.trim = wb.trim,
-      use.hinges = use.hinges,
-      idx = idx,
-      col.names = names(w.band)
-    )
+           ...,
+           attr2tb = NULL,
+           idx = !is.null(names(spct))) {
+    z <-
+      msdply(
+        mspct = spct,
+        .fun = response,
+        w.band = w.band,
+        unit.out = unit.out,
+        quantity = quantity,
+        time.unit = time.unit,
+        wb.trim = wb.trim,
+        use.hinges = use.hinges,
+        idx = idx,
+        col.names = names(w.band)
+      )
+    add_attr2tb(tb = z,
+                mspct = spct,
+                col.names = attr2tb)
   }
 
 #' @describeIn q_response Calculates photon (quantum) response from a
 #'   \code{response_mspct}
 #'
+#' @param attr2tb character vector.
 #' @param idx logical whether to add a column with the names of the elements of
 #'   spct
 #'
@@ -416,23 +424,30 @@ q_response.response_mspct <-
            time.unit = NULL,
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.hinges = getOption("photobiology.use.hinges", default = NULL),
-           ..., idx = !is.null(names(spct))) {
-    msdply(
-      mspct = spct,
-      .fun = q_response,
-      w.band = w.band,
-      quantity = quantity,
-      time.unit = time.unit,
-      wb.trim = wb.trim,
-      use.hinges = use.hinges,
-      idx = idx,
-      col.names = names(w.band)
-    )
+           ...,
+           attr2tb = NULL,
+           idx = !is.null(names(spct))) {
+    z <-
+      msdply(
+        mspct = spct,
+        .fun = q_response,
+        w.band = w.band,
+        quantity = quantity,
+        time.unit = time.unit,
+        wb.trim = wb.trim,
+        use.hinges = use.hinges,
+        idx = idx,
+        col.names = names(w.band)
+      )
+    add_attr2tb(tb = z,
+                mspct = spct,
+                col.names = attr2tb)
   }
 
 #' @describeIn e_response Calculates energy response from a
 #'   \code{response_mspct}
 #'
+#' @param attr2tb character vector.
 #' @param idx logical whether to add a column with the names of the elements of
 #'   spct
 #'
@@ -444,16 +459,22 @@ e_response.response_mspct <-
            time.unit = NULL,
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.hinges = getOption("photobiology.use.hinges", default = NULL),
-           ..., idx = !is.null(names(spct))) {
-    msdply(
-      mspct = spct,
-      .fun = e_response,
-      w.band = w.band,
-      quantity = quantity,
-      time.unit = time.unit,
-      wb.trim = wb.trim,
-      use.hinges = use.hinges,
-      idx = idx,
-      col.names = names(w.band)
-    )
+           ...,
+           attr2tb = NULL,
+           idx = !is.null(names(spct))) {
+    z <-
+      msdply(
+        mspct = spct,
+        .fun = e_response,
+        w.band = w.band,
+        quantity = quantity,
+        time.unit = time.unit,
+        wb.trim = wb.trim,
+        use.hinges = use.hinges,
+        idx = idx,
+        col.names = names(w.band)
+      )
+    add_attr2tb(tb = z,
+                mspct = spct,
+                col.names = attr2tb)
   }
