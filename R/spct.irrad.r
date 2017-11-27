@@ -741,7 +741,7 @@ e_fluence.source_spct <-
 #' @describeIn irrad  Calculates irradiance from a \code{source_mspct}
 #'   object.
 #'
-#' @param attr2tb character vector.
+#' @param attr2tb character vector, see \code{\link{add_attr2tb}} for the syntax for \code{attr2tb} passed as is to formal parameter \code{col.names}.
 #' @param idx logical whether to add a column with the names of the elements of
 #'   spct
 #'
@@ -780,7 +780,7 @@ irrad.source_mspct <-
 #' @describeIn q_irrad  Calculates photon (quantum) irradiance from a
 #'   \code{source_mspct} object.
 #'
-#' @param attr2tb character vector.
+#' @param attr2tb character vector, see \code{\link{add_attr2tb}} for the syntax for \code{attr2tb} passed as is to formal parameter \code{col.names}.
 #' @param idx logical whether to add a column with the names of the elements of
 #'   spct
 #'
@@ -817,7 +817,7 @@ q_irrad.source_mspct <-
 #' @describeIn e_irrad  Calculates energy irradiance from a
 #'   \code{source_mspct} object.
 #'
-#' @param attr2tb character vector.
+#' @param attr2tb character vector, see \code{\link{add_attr2tb}} for the syntax for \code{attr2tb} passed as is to formal parameter \code{col.names}.
 #' @param idx logical whether to add a column with the names of the elements of
 #'   spct
 #'
@@ -854,7 +854,7 @@ e_irrad.source_mspct <-
 #' @describeIn fluence Calculates fluence from a \code{source_mspct}
 #'   object.
 #'
-#' @param attr2tb character vector.
+#' @param attr2tb character vector, see \code{\link{add_attr2tb}} for the syntax for \code{attr2tb} passed as is to formal parameter \code{col.names}.
 #' @param idx logical whether to add a column with the names of the elements of
 #'   spct
 #'
@@ -893,7 +893,7 @@ fluence.source_mspct <-
 #' @describeIn e_fluence Calculates energy fluence from a \code{source_mspct}
 #'   object.
 #'
-#' @param attr2tb character vector.
+#' @param attr2tb character vector, see \code{\link{add_attr2tb}} for the syntax for \code{attr2tb} passed as is to formal parameter \code{col.names}.
 #' @param idx logical whether to add a column with the names of the elements of spct
 #'
 #' @export
@@ -929,7 +929,7 @@ e_fluence.source_mspct <-
 #' @describeIn q_fluence Calculates photon (quantum) fluence from a
 #'   \code{source_mspct} object.
 #'
-#' @param attr2tb character vector.
+#' @param attr2tb character vector, see \code{\link{add_attr2tb}} for the syntax for \code{attr2tb} passed as is to formal parameter \code{col.names}.
 #' @param idx logical whether to add a column with the names of the elements of
 #'   spct
 #'

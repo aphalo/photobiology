@@ -8,5 +8,5 @@
 ^vignettes/*.R
 ^.*\.bak$
 ^inst/web/*
-^docs$
 ^_pkgdown.yml$
+^docs$

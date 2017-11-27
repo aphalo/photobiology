@@ -375,7 +375,7 @@ q_response.response_spct <-
 
 #' @describeIn response Calculates response from a \code{response_mspct}
 #'
-#' @param attr2tb character vector.
+#' @param attr2tb character vector, see \code{\link{add_attr2tb}} for the syntax for \code{attr2tb} passed as is to formal parameter \code{col.names}.
 #' @param idx logical whether to add a column with the names of the elements of
 #'   spct
 #'
@@ -412,7 +412,7 @@ response.response_mspct <-
 #' @describeIn q_response Calculates photon (quantum) response from a
 #'   \code{response_mspct}
 #'
-#' @param attr2tb character vector.
+#' @param attr2tb character vector, see \code{\link{add_attr2tb}} for the syntax for \code{attr2tb} passed as is to formal parameter \code{col.names}.
 #' @param idx logical whether to add a column with the names of the elements of
 #'   spct
 #'
@@ -447,7 +447,7 @@ q_response.response_mspct <-
 #' @describeIn e_response Calculates energy response from a
 #'   \code{response_mspct}
 #'
-#' @param attr2tb character vector.
+#' @param attr2tb character vector, see \code{\link{add_attr2tb}} for the syntax for \code{attr2tb} passed as is to formal parameter \code{col.names}.
 #' @param idx logical whether to add a column with the names of the elements of
 #'   spct
 #'

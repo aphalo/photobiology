@@ -72,6 +72,7 @@ reference:
     - is_tagged
     - dim.generic_mspct
     - labels
+    - add_attr2tb
   - title: Summary quantities
     contents:
     - summary

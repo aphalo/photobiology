@@ -9,7 +9,9 @@ functions to support this new class. Add corresponding test cases.
 * Add functions add_attr2tb(), when_measured2tb(), lon2tb(), lat2tb(),
 geocode2tb() and what_measured2tb().
 * Add a formal parameter "attr2tb" to all summary methods for collections of
-spectra, to automatically call add_attr2tb() to add attributes to their output.
+spectra, used to automatically call add_attr2tb() to add attributes to their
+output.
+* Fix bug in calculation of solar time of day which could result in values > 24 h.
 
 photobiology 0.9.17
 ===================

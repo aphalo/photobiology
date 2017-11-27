@@ -297,7 +297,7 @@ eq_ratio.source_spct <-
 #' @describeIn q_ratio Calculates photon:photon from a \code{source_mspct}
 #'   object.
 #'
-#' @param attr2tb character vector.
+#' @param attr2tb character vector, see \code{\link{add_attr2tb}} for the syntax for \code{attr2tb} passed as is to formal parameter \code{col.names}.
 #' @param idx logical whether to add a column with the names of the elements of spct
 #'
 #' @export
@@ -330,7 +330,7 @@ q_ratio.source_mspct <-
 #' @describeIn e_ratio Calculates energy:energy ratio from a \code{source_mspct}
 #'   object.
 #'
-#' @param attr2tb character vector.
+#' @param attr2tb character vector, see \code{\link{add_attr2tb}} for the syntax for \code{attr2tb} passed as is to formal parameter \code{col.names}.
 #' @param idx logical whether to add a column with the names of the elements of spct
 #'
 #' @export
@@ -363,7 +363,7 @@ e_ratio.source_mspct <-
 #' @describeIn eq_ratio Calculates energy:photon from a \code{source_mspct}
 #'   object.
 #'
-#' @param attr2tb character vector.
+#' @param attr2tb character vector, see \code{\link{add_attr2tb}} for the syntax for \code{attr2tb} passed as is to formal parameter \code{col.names}.
 #' @param idx logical whether to add a column with the names of the elements of spct
 #'
 #' @export
@@ -395,7 +395,7 @@ eq_ratio.source_mspct <-
 #' @describeIn qe_ratio Calculates photon:energy ratio from a
 #'   \code{source_mspct} object.
 #'
-#' @param attr2tb character vector.
+#' @param attr2tb character vector, see \code{\link{add_attr2tb}} for the syntax for \code{attr2tb} passed as is to formal parameter \code{col.names}.
 #' @param idx logical whether to add a column with the names of the elements of spct
 #'
 #' @export

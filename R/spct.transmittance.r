@@ -217,7 +217,7 @@ transmittance_spct <-
 
 #' @describeIn transmittance Calculates transmittance from a \code{filter_mspct}
 #'
-#' @param attr2tb character vector.
+#' @param attr2tb character vector, see \code{\link{add_attr2tb}} for the syntax for \code{attr2tb} passed as is to formal parameter \code{col.names}.
 #' @param idx logical whether to add a column with the names of the elements of
 #'   spct
 #'
