@@ -156,7 +156,7 @@ sun_angles_fast <- function(time,
 
   z <- data.frame(time = lubridate::with_tz(time, tz),
                       tz = rep(tz, length(time)),
-                      solartime = solar.time,
+                      solartime = solar.time %% 24, # needed for DST
                       longitude = rep(lon, length(time)),
                       latitude = rep(lat, length(time)),
                       address = rep(address, length(time)),
