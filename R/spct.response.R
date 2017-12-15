@@ -25,10 +25,20 @@
 #'   defaults should be suitable in mosts cases. Only the range of wavelengths
 #'   in the wavebands is used and all BSWFs are ignored.
 #'
-#' @return A single numeric value expressed either as a fraction of one or a
-#'   percentage, or a vector of the same length as the list of wave.bands. The
-#'   quantity returned depends on the value of \code{quantity}. Whether it is
-#'   expressed in energy-based or photon-based units depends on \code{unit.out}.
+#' @return A named \code{numeric} vector in the case of methods for individual
+#'   spectra, with one value for each \code{waveband} passed to parameter
+#'   \code{w.band}. A \code{data.frame} in the case of collections of spectra,
+#'   containing one column for each \code{waveband} object, an index column with
+#'   the names of the spectra, and optionally additional columns with metadata
+#'   values retrieved from the attributes of the member spectra.
+#'
+#'   Whether returnes values are expressed in energy-based or photon-based units
+#'   depends on \code{unit.out}. By default values are only integrated, but
+#'   depending on the argument passed to parameter \code{quantity} they can be
+#'   re-expressed as relative fractions or percentages. In the case of vector
+#'   output, \code{names} attribute is set to the name of the corresponding
+#'   waveband unless a named list is supplied in which case the names of the
+#'   list members are used.
 #'
 #' @export
 #' @family response functions
@@ -260,10 +270,18 @@ resp_spct <-
 #'   interpolation errors
 #' @param ... other arguments
 #'
-#' @return A single numeric value expressed either as a fraction of one or a
-#'   percentage, or a vector of the same length as the list of wave.bands. The
-#'   quantity returned, although always on energy-based units, depends on the
-#'   value of \code{quantity}.
+#' @return A named \code{numeric} vector in the case of methods for individual
+#'   spectra, with one value for each \code{waveband} passed to parameter
+#'   \code{w.band}. A \code{data.frame} in the case of collections of spectra,
+#'   containing one column for each \code{waveband} object, an index column with
+#'   the names of the spectra, and optionally additional columns with metadata
+#'   values retrieved from the attributes of the member spectra.
+#'
+#'   By default values are only integrated, but depending on the argument passed
+#'   to parameter \code{quantity} they can be re-expressed as relative fractions
+#'   or percentages. In the case of vector output, \code{names} attribute is set
+#'   to the name of the corresponding waveband unless a named list is supplied
+#'   in which case the names of the list members are used.
 #'
 #' @export
 #' @examples
@@ -323,10 +341,18 @@ e_response.response_spct <-
 #'   interpolation errors
 #' @param ... other arguments
 #'
-#' @return A single numeric value expressed either as a fraction of one or a
-#'   percentage, or a vector of the same length as the list of wave.bands. The
-#'   quantity returned, although always on photon-based units, depends on the
-#'   value of \code{quantity}.
+#' @return A named \code{numeric} vector in the case of methods for individual
+#'   spectra, with one value for each \code{waveband} passed to parameter
+#'   \code{w.band}. A \code{data.frame} in the case of collections of spectra,
+#'   containing one column for each \code{waveband} object, an index column with
+#'   the names of the spectra, and optionally additional columns with metadata
+#'   values retrieved from the attributes of the member spectra.
+#'
+#'   By default values are only integrated, but depending on the argument passed
+#'   to parameter \code{quantity} they can be re-expressed as relative fractions
+#'   or percentages. In the case of vector output, \code{names} attribute is set
+#'   to the name of the corresponding waveband unless a named list is supplied
+#'   in which case the names of the list members are used.
 #'
 #' @export
 #' @examples

@@ -49,7 +49,7 @@ trim_spct <- function(spct,
   if (nrow(spct) == 0) {
     return(spct)
   }
-  stopifnot(is.any_spct(spct))
+  stopifnot(is.generic_spct(spct))
   x <- spct
   num.spectra <- getMultipleWl(x)
   if (num.spectra != 1) {
@@ -296,8 +296,9 @@ extend2extremes <- function(mspct,
 #'   are filled with the value of fill.
 #' @param ... not used
 #'
-#' @return an R object of same class as input, usually of a different
-#'   length, either shorter or longer.
+#' @return A copy of \code{x}, usually trimmed or expanded to a different
+#'   length, either shorter or longer. Possibly with some of the original
+#'   spectral data values replaced with \code{fill}.
 #'
 #' @note By default the \code{w.length} values for the first and last rows
 #'   in the returned object are the values supplied as \code{range}.
@@ -418,8 +419,8 @@ trim_wl.list <- function(x,
 #'   nanometres.
 #' @param ... not used
 #'
-#' @return an R object of same class as input, most frequently of a shorter
-#'   length, and never longer.
+#' @return A copy of \code{x}, most frequently of a shorter length, and never
+#'   longer.
 #'
 #' @note The condition tested is \code{wl >= range[1] & wl < (range[2] + 1e-13)}.
 #'
@@ -455,7 +456,7 @@ clip_wl.generic_spct <- function(x, range = NULL, ...) {
     return(x)
   }
   guard <- 1e-13
-  stopifnot(is.any_spct(x))
+  stopifnot(is.generic_spct(x))
   stopifnot(!all(is.na(range)))
   if (is.numeric(range) && length(range) == 2) {
     if (is.na(range[1])) {

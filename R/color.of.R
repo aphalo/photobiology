@@ -9,6 +9,14 @@
 #' @param ... not used in current version
 #' @export color_of
 #'
+#' @return A color definition in hexadecimal format as a \code{character} string
+#'   of 7 characters, "#" followed by the red, blue, and green values in
+#'   hexadecimal (scaled to 0 ... 255). In the case of the especialization for
+#'   \code{list}, a list of such definitions is returned. In the case of a
+#'   collection of spectra, a \code{data.frame} with one column with such
+#'   definitions and by default an additional column with names of the spectra
+#'   as index.
+#'
 #' @examples
 #' wavelengths <- c(300, 420, 500, 600, NA) # nanometres
 #' color_of(wavelengths)

@@ -28,7 +28,7 @@
 #'                    c(199.99,200.00,399.50,399.99,400.00,699.99,
 #'                          700.00,799.99,1000.00))
 insert_spct_hinges <- function(spct, hinges=NULL, byref = FALSE) {
-  if (!is.any_spct(spct)) {
+  if (!is.generic_spct(spct)) {
     warning("Only objects derived from 'generic_spct' are supported")
     return(spct)
   }

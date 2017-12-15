@@ -13,7 +13,7 @@
 #' @param use.hinges logical, if TRUE (the default) hinges are inserted when
 #'   trimming.
 #'
-#' @return a waveband object or a list of waveband objects trimmed or filtered
+#' @return A waveband object or a list of waveband objects trimmed or filtered
 #'   depending on whether a single waveband object or a list of waveband
 #'   objects was supplied as argument to formal parameter \code{w.band}.
 #'

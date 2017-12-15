@@ -12,7 +12,7 @@
 
 <meta name="author" content="Pedro J. Aphalo" />
 
-<meta name="date" content="2017-11-22" />
+<meta name="date" content="2017-12-15" />
 
 <title>User Guide: 2 Radiation</title>
 
@@ -69,9 +69,9 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 
 <h1 class="title toc-ignore">User Guide: 2 Radiation</h1>
-<h3 class="subtitle"><em>Package ‘photobiology’ 0.9.17.9003</em></h3>
+<h3 class="subtitle"><em>Package ‘photobiology’ 0.9.18</em></h3>
 <h4 class="author"><em>Pedro J. Aphalo</em></h4>
-<h4 class="date"><em>2017-11-22</em></h4>
+<h4 class="date"><em>2017-12-15</em></h4>
 
 
 <div id="TOC">
@@ -143,13 +143,13 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <div id="spectra" class="section level2">
 <h2>Spectra</h2>
-<p>Package ‘<strong>photobiology</strong>’ defines a family of classes based on the <code>tibble</code> class, compatible with R’s data frames. The present package by imposing some restrictions on the naming of the member vectors, allows methods to <em>find</em> the data when passed one of these objects as argument. In addition, as the data are checked when the object is built or modified, there is no need to test for their validity each time a calculation is carried out. Other advantage of using spectrum objects, is that specialized versions of generic functions like <code>print</code> and operators like <code>+</code> are defined for spectra. <code>___spct</code> objects are <code>data.frame</code> objects, as a result of how classes have been derived. In this package we define a <em>generic</em> or <em>base</em> spectrum class, derived from <code>data.frame</code> from which specialized types of spectra are in turn derived. This <em>parenthood</em> hierarchy means that spectra objects can be used almost anywhere where a <code>data.frame</code> is expected. Specializations of many methods including extraction (indexing) methods and partial assignment methods are defined to ensure that the expectations on the variables contained in objects of these classes is guaranteed in most situations. Other specializations of methods and functions are related to achieving a convenient and concise syntax tailored for spectral data as in the case of mathematical operators and functions.</p>
-<p>Another important aspect is that spectral data as stored in objects of these classes is always of known physical quantities expressed using known units. Furthermore, attributes are used to keep track of both metadata related to the origin of the data and of later transformations that affect their interpretation, such as normalization or re-scaling. Although sanity tests are applied at the time of object creation, to a large extent the responsibility of ensuring that the numbers provided as argument to object constructors comply with expectations remains with the users of the packages.</p>
+<p>Package ‘<strong>photobiology</strong>’ defines a family of classes based on the <code>tibble</code> class, mostly compatible with R’s data frames. The present package by imposing some restrictions on the naming of the member vectors, allows methods to <em>find</em> the data when passed one of these objects as argument. In addition, as the data are checked when the object is built or modified, there is no need to test for their validity each time a calculation is carried out. Other advantage of using spectrum objects, is that specialized versions of generic functions like <code>print</code> and operators like <code>+</code> are defined for spectra. <code>___spct</code> objects are also <code>tibble</code> and <code>data.frame</code> objects, as a result of how classes have been derived. In this package we define a <em>generic</em> or <em>base</em> spectrum class, derived from <code>tibble</code>, which in turn has been derived from <code>data.frame</code>. Classes for specialized types of spectra are derived from <code>generic_spct</code>. This <em>parenthood</em> hierarchy means that spectra objects can be used almost anywhere where a <code>data.frame</code> is expected. Specializations of many methods including extraction (indexing) methods and partial assignment methods are defined to ensure that the expectations on the variables contained in objects of these classes is guaranteed in most situations. Other specializations of methods and functions are related to achieving a convenient and concise syntax tailored for spectral data as in the case of mathematical operators and functions.</p>
+<p>Another important aspect is that when spectral data are stored in objects of these classes, the physical quantities and units of expression are known. Furthermore, attributes are used to keep track of both metadata related to the origin of the data and of later transformations that affect their interpretation, such as normalization or re-scaling. Although sanity tests are applied at the time of object creation, to a large extent the responsibility of ensuring that the numbers provided as argument to object constructors comply with expectations remains with the users of the package.</p>
 <p>In addition to the classes for storing individual spectra, classes for storing collections of spectra are defined. These classes are derived from class <code>list</code> and can contain member spectra of different lengths and measured at different wavelength values.</p>
 <p>We give in this vignette brief descriptions and examples of the use of different classes, methods, functions and operators. We start with the simplest and most frequently used methods.</p>
 <div id="getting-started" class="section level3">
 <h3>Getting started</h3>
-<p>We load two packages, our ‘<strong>photobiology</strong>’ and ‘<strong>lubridate</strong>’, as they will be used in the examples.</p>
+<p>We load two packages in addition to ‘<strong>photobiology</strong>’, ‘<strong>lubridate</strong>’ and ‘<strong>magrittr</strong>’, as they will be used in the examples.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(photobiology)
 <span class="kw">library</span>(lubridate)</code></pre></div>
 <pre><code>## 
@@ -161,7 +161,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </div>
 <div id="classes" class="section level3">
 <h3>Classes</h3>
-<p>The package defines several classes intended to be used to store different types of spectral data. They are all derived from <code>generic_spct</code>, which in turn is derived from <code>data.frame</code> and internally created using <code>tibble::tibble</code>. Table 1 lists them. Attributes are used in objects of these classes to keep <em>metadata</em> such as information about units of expression.</p>
+<p>Package ‘<strong>photobiology</strong>’ defines several classes intended to be used to store different types of spectral data. They are all derived from <code>generic_spct</code>, which in turn is derived from <code>tibble::tibble</code>. Table 1 lists these classes. Attributes are used in objects of these classes to store <em>metadata</em> such as information about units of expression.</p>
 <hr>
 <p><strong>Table 1. Classes for spectral data.</strong> In addition to the required variables listed in the table, additional arbitrary variables are partly supported—some operations will not include them in returned values to avoid ambiguity and other possible conflicts. In addition to the attributes listed, all spectral objects have attributes <code>multiple.wl</code>, <code>normalized</code>, <code>scaled</code>, <code>when.measured</code>, <code>where.measured</code>, <code>what.measured</code> plus the normal attributes of <code>tibble</code> (and <code>data.frame</code>) objects including <code>comment</code>.</p>
 <table style="width:83%;">
@@ -246,11 +246,11 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </tbody>
 </table>
 <hr>
-<p>The <em>design</em> imposes that data from different observations are never present as different <em>data columns</em>, if present, additional data columns represent different properties from the same observation event. In other words, the storage format is <em>tidy</em> as defined by Hadley Wickham. In most cases, one spectral object should correspond to one spectral observation, but some functions are compatible or can be used to create spectral objects where the spectral data from different observations are stored “longitudinally” and “tagged” with a factor with a level for each observation event. These observations must use consistent units of expression and attribute values. This long format is useful, for example, when producing plots with package ‘ggplot2’. If spectra are stored in <em>long form</em>, e.g. for plotting with ‘ggplot2’, attributes are stored as named lists or enforced to be the uniform across spectra. This allows to reconstruct a collection of spectra from a long-form spectral object preserving most of the metadata.</p>
+<p>The <em>design</em> imposes the restriction that data from different observations are never present as different <em>data columns</em>, if present, additional data columns represent different properties from the same observation event. In other words, the storage format is <em>tidy</em> as defined by Hadley Wickham. In most cases, one spectral object should correspond to one spectral observation, but some functions are compatible or can be used to create spectral objects where the spectral data from different observations are stored “longitudinally” and “tagged” with a factor with a level for each observation event. These observations must use consistent units of expression and attribute values. This long format is useful, for example, when producing plots with package ‘ggplot2’. If spectra are stored in <em>long form</em>, e.g. for plotting with ‘ggplot2’, attributes are stored as named lists or enforced to be the same across spectra. This allows to reconstruct a collection of spectra from a long-form spectral object preserving most of the metadata.</p>
 </div>
 <div id="data-assumptions" class="section level3">
 <h3>Data assumptions</h3>
-<p>An assumption of the package is that wavelengths are always expressed in nanometres (<span class="math inline">\(1~\mathrm{nm} = 1 \cdot 10^{-9}\,\mathrm{m}\)</span>). If the data to be analysed uses different units for wavelengths, e.g. Ångstrom (<span class="math inline">\(1~\textrm{Å} = 1 \cdot 10^{-10}\,\mathrm{m}\)</span>), the values need to be re-scaled before creating objects of the spectral classes. The same applies to all spectral quantities, as there is an expectation in every case, of using base SI units for expression. Table 2 lists the units of expression for the different variables and the metadata attributes that may determine variations in the expression of the quantities.</p>
+<p>A key assumption of the package is that wavelengths are always expressed in nanometres (<span class="math inline">\(1~\mathrm{nm} = 1 \cdot 10^{-9}\,\mathrm{m}\)</span>). If the data to be analysed use different units for wavelengths, e.g. Ångstrom (<span class="math inline">\(1~\textrm{Å} = 1 \cdot 10^{-10}\,\mathrm{m}\)</span>), the values need to be re-scaled before creating objects of the spectral classes. The same applies to all spectral quantities, as there is an expectation in every case, of using base SI units for expression. Table 2 lists the units of expression for the different variables and the metadata attributes that may determine variations in the expression of the quantities.</p>
 <hr>
 <p><strong>Table 2. Variables used for spectral data and their units of expression.</strong> <strong>A:</strong> as stored in objects of the spectral classes, <strong>B:</strong> also recognized by the <code>set</code> family of functions for spectra and automatically converted. <code>time.unit</code> accepts in addition to the character strings listed in the table, objects of classes <code>lubridate::duration</code> and <code>period</code>, in addition <code>numeric</code> values are interpreted as seconds. <code>exposure.time</code> accepts these same values, but not the character strings.</p>
 <table>
@@ -445,18 +445,18 @@ Not respecting the expectations about data inputs or setting erroneous values in
 <p>If, for example, the spectral irradiance data output by a spectroradiometer is expressed in <span class="math inline">\(mW\,m^{-2}\,nm^{-1}\)</span>, and the wavelengths are in Ångstrom then to obtain correct results when using any of the packages in the suite, we need to rescale the data when creating a new object.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># not run</span>
 my.spct &lt;-<span class="st"> </span><span class="kw">source_spct</span>(<span class="dt">w.length =</span> wavelength<span class="op">/</span><span class="dv">10</span>, <span class="dt">s.e.irrad =</span> irrad<span class="op">/</span><span class="dv">1000</span>)</code></pre></div>
-<p>In the example above, we take advantage of the behaviour of the S language: an operation between a scalar and vector, is equivalent to applying this operation to each element of the vector. Consequently, in the code above, each value from the vector of wavelengths is divided by 10, and each value in the vector of spectral irradiances is divided by 1000.</p>
+<p>In the example above, we take advantage of the behaviour of the S language: an operation between a scalar and a vector, is equivalent to applying this operation to each element of the vector. Consequently, in the code above, each value from the vector of wavelengths is divided by 10, and each value in the vector of spectral irradiances is divided by 1000.</p>
 </div>
 <div id="querying-the-class" class="section level3">
 <h3>Querying the class</h3>
-<p>Before giving examples of how to construct objects to store spectral data we show how to query the class of an object, and how to query the class of a spectrum. Consistently with R, the package provides <em>is</em> functions for querying the type of spectra objects. The only <em>unusual</em> function provided as another name for <code>is.generic_spct</code> is <code>is.any_spct()</code>.</p>
+<p>Before giving examples of how to construct objects to store spectral data we show how to query the class of an object, and how to query the class of a spectrum. Consistently with R, the package provides <em>is</em> functions for querying the type of spectra objects. The only <em>unusual</em> function name, defined as a <em>synomin</em> for <code>is.generic_spct</code>, is <code>is.any_spct()</code>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">is.any_spct</span>(sun.spct)</code></pre></div>
 <pre><code>## [1] TRUE</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">is.generic_spct</span>(sun.spct)</code></pre></div>
 <pre><code>## [1] TRUE</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">is.source_spct</span>(sun.spct)</code></pre></div>
 <pre><code>## [1] TRUE</code></pre>
-<p>In addition function <code>class_spc()</code> returns directly the spectrum-related class attributes. It filters out from the output of <code>class()</code> the underlying classes inherited.</p>
+<p>In addition function <code>class_spc()</code> returns directly the spectrum-related class attributes. It filters out from the output of <code>class()</code> the underlying inherited classes.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">class_spct</span>(sun.spct)</code></pre></div>
 <pre><code>## [1] &quot;source_spct&quot;  &quot;generic_spct&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">class</span>(sun.spct)</code></pre></div>
@@ -465,7 +465,7 @@ my.spct &lt;-<span class="st"> </span><span class="kw">source_spct</span>(<span 
 </div>
 <div id="construction" class="section level3">
 <h3>Construction</h3>
-<p>There are basically two different approaches to the creation of spectra by users, a constructor similar to <code>data.frame</code> constructor that takes vectors as arguments, and a constructor that converts <code>list</code> objects into spectral objects, which works similarly to <code>as.data.frame</code> from base R. In contrast to the data frame constructors spectral constructor require the variables or the vector arguments to be suitably named so that they can be recognized. As data frames and spectral objects are also lists, they are acceptable arguments.</p>
+<p>There are basically two different approaches to the creation of spectra by users. The first group are constructors similar to the <code>data.frame()</code> constructor, which take vectors as arguments. The second group are constructors that convert <code>list</code> objects, and because of class derivation also <code>data.frame</code> objects, into spectral objects. Constructors in this second group are similar to <code>as.data.frame</code> from base R. In contrast to the data frame constructors, spectral object constructors require the variables or the vector arguments to be suitably named so that they can be recognized.</p>
 <p>Here we briefly describe the <em>as</em> constructor functions for spectra. In the first example we create an object to store spectral irradiance data for a <em>ficticious light source</em>, by first creating a data frame, and creating the spectral object as a copy of it. In the example below we supply a single value, 1, for the spectral irradiance. This value gets recycled as is normal in R, but of course in real use it is more usual to supply a vector of the same length as the <code>w.length</code> vector.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">my.df &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">w.length =</span> <span class="dv">400</span><span class="op">:</span><span class="dv">410</span>, <span class="dt">s.e.irrad =</span> <span class="dv">1</span>)
 my.spct &lt;-<span class="st"> </span><span class="kw">as.source_spct</span>(my.df)
@@ -522,6 +522,7 @@ y &lt;-<span class="st"> </span><span class="dv">2</span>
 ## 4      303         2
 ## 5      304         2
 ## 6      305         2</code></pre>
+<p>When argument names are not supplied explicitly as above, the names of the variables are used to identify the data vectors.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">w.length &lt;-<span class="st"> </span><span class="dv">300</span><span class="op">:</span><span class="dv">305</span>
 s.e.irrad &lt;-<span class="st"> </span><span class="dv">1</span>
 <span class="kw">source_spct</span>(w.length, s.e.irrad)</code></pre></div>
@@ -538,7 +539,7 @@ s.e.irrad &lt;-<span class="st"> </span><span class="dv">1</span>
 ## 4      303         1
 ## 5      304         1
 ## 6      305         1</code></pre>
-<p>The different constructors have additional arguments to be used in setting non-default values for the attributes. These arguments have the same name as the attributes. Here we used the data frame created in the first chunk of the section.</p>
+<p>The different constructors have additional arguments to be used in setting non-default values for the attributes. These arguments have the same name as the attributes. Here we used the data frame created in the first code chunk of this section.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">my.d.spct &lt;-<span class="st"> </span><span class="kw">as.source_spct</span>(my.df, <span class="dt">time.unit =</span> <span class="st">&quot;day&quot;</span>)</code></pre></div>
 <p>Argument <code>strict.range</code> can be used to override or make more strict the validation of the data values.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">source_spct</span>(<span class="dt">w.length =</span> <span class="dv">300</span><span class="op">:</span><span class="dv">305</span>, <span class="dt">s.e.irrad =</span> <span class="op">-</span><span class="dv">1</span>)</code></pre></div>
@@ -579,7 +580,7 @@ s.e.irrad &lt;-<span class="st"> </span><span class="dv">1</span>
 </div>
 <div id="metadata-attributes" class="section level3">
 <h3>Metadata attributes</h3>
-<p>Spectral objects have several attributes used to store metadata, such as the time unit used or type of spectral quantity. Some attributes are meaningful for all the classes of spectra defined in the package. These are <em>time of measurement</em> using attribute <code>&quot;when.measured&quot;</code>, <em>place of measurement</em> using attribute <code>&quot;where.measured&quot;</code>, a <em>user supplied label</em> using attribute <code>&quot;what-measured&quot;</code>, and free-text <em>comments</em>. One can set and get comments stored in spectra by means of base R’s <code>comment()</code> and <code>comment() &lt;-</code> functions. Some of the functions in this package append additional information to comments or merge comments.</p>
+<p>Spectral objects have several attributes used to store metadata, such as the time unit used or type of spectral quantity. Some attributes are meaningful for all the classes of spectra defined in the package. These are <em>time of measurement</em> using attribute <code>&quot;when.measured&quot;</code>, <em>place of measurement</em> using attribute <code>&quot;where.measured&quot;</code>, a <em>user supplied label</em> using attribute <code>&quot;what.measured&quot;</code>, and free-text <em>comments</em>. One can set and get comments stored in spectra by means of base R’s <code>comment()</code> and <code>comment() &lt;-</code> functions. Some of the functions in this package append additional information to comments or merge comments.</p>
 <p>Functions <code>setWhenMeasured()</code> and <code>getWhenMeasured()</code> are used for setting or getting a date as a <code>POSIXct</code> value. This format is compatible with many functions from package <code>lubridate</code>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">my.spct &lt;-<span class="st"> </span>sun.spct
 <span class="kw">setWhenMeasured</span>(my.spct, <span class="ot">NULL</span>)
@@ -602,6 +603,7 @@ s.e.irrad &lt;-<span class="st"> </span><span class="dv">1</span>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">my.spct</code></pre></div>
 <pre><code>## Object: source_spct [522 x 3]
 ## Wavelength range 280 to 800 nm, step 0.9230769 to 1 nm 
+## Label: sunlight, simulated 
 ## Measured on 2015-10-31 20:55:00 UTC 
 ## Measured at 60 N, -10 E 
 ## Time unit 1s
@@ -634,8 +636,7 @@ s.e.irrad &lt;-<span class="st"> </span><span class="dv">1</span>
 ## 3 281.8462         0         0
 ## 4 282.7692         0         0
 ## # ... with 518 more rows</code></pre>
-<p>Similar functions exist for other attributes which are not shared by all spectral classes. Spectral objects may have several other attributes used to store metadata, such as the time unit used. There functions available for querying and setting the state if these attributes. <code>is_</code> functions return a logical value, and <code>get</code> functions return the values of the attributes themselves. In addition <code>set</code> functions can be used to set the value attributes, but many of the <code>set</code> functions are very rarely needed in user code.</p>
-<p>The attributes described below are set automatically, and consequently function <code>setBSWFUsed()</code> and other <em>set</em> functions for these attributes are mainly of use to programmers extending the package. One exception is when a wrong value has been assigned by mistake and needs to be overwritten.</p>
+<p>Similar functions exist for other attributes which are not shared by all spectral classes. Several other attributes of different spectral objects can be used to store metadata in a consistent way. One example is the time unit used to express spectral irradiance. Functions are available for querying and setting the state if these attributes. <code>is_</code> functions return a logical value, and <code>get</code> functions return the values of the attributes themselves. In addition <code>set</code> functions can be used to set the value attributes. Several of the <code>set</code> functions are very rarely needed in user code, as these attributes are set during construction or as a side effect of applying other functions and/or operators to the objects. Function <code>setBSWFUsed()</code> and other <em>set</em> functions for attributes are examples of those useful to programmers extending the package, but only exceptionally to users. One exception is the case when a wrong value has been assigned by mistake and needs to be overwritten.</p>
 <p>For example function <code>is_effective()</code> returns <code>TRUE</code> if the spectral data has been weighted with a BSWF. The corresponding <code>getBSWFUsed()</code> function can be used, in this case to retrieve the name of the BSWF that was used when generating the data. Here we demonstrate with one example, where we use two different <code>waveband</code> objects—constructed on-the-fly with constructor function—, defining a range of wavelengths.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">is_effective</span>(sun.spct)</code></pre></div>
 <pre><code>## [1] FALSE</code></pre>
@@ -647,8 +648,9 @@ s.e.irrad &lt;-<span class="st"> </span><span class="dv">1</span>
 ten.minutes.spct</code></pre></div>
 <pre><code>## Object: source_spct [522 x 3]
 ## Wavelength range 280 to 800 nm, step 0.9230769 to 1 nm 
+## Label: sunlight, simulated 
 ## Measured on 2010-06-22 09:51:00 UTC 
-## Measured at 60.2091078 N, 24.9647354 E 
+## Measured at 60.203549 N, 24.966423 E 
 ## Time unit 600s (~10 minutes)
 ## 
 ## # A tibble: 522 x 3
@@ -662,7 +664,7 @@ ten.minutes.spct</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">getTimeUnit</span>(ten.minutes.spct)</code></pre></div>
 <pre><code>## [1] &quot;600s (~10 minutes)&quot;</code></pre>
 <hr>
-Attributes <code>instr_desc</code> and <code>instr_settings</code> can be used to store measurement-related metadata, describing the instrument used and settings. These attributes are lists, with a few default fields and possibly unlimited <em>special</em> attributes. The present package provides functions for operating on them and print-outs include some of the default fields if the attribute is set. The expectation is that these attributes are set by other packages such as ‘ooacquire’ used for direct data acquisition or raw instrument data import.
+Attributes <code>instr_desc</code> and <code>instr_settings</code> are used to store measurement-related metadata, describing the instrument used and its settings. These attributes are lists, with a few default fields and possibly unlimited <em>special</em> attributes. The present package provides functions for operating on them and print-outs include some of the default fields if the attribute is set. The expectation is that these attributes are set by other packages such as ‘ooacquire’ used for direct data acquisition or raw instrument data import.
 <hr>
 <hr>
 Spectral objects created with earlier (pre-release) versions of this package are missing some attributes. For this reason <em>summary</em> and <em>plot</em> functions may not work as expected with them. These <em>old</em> objects can be updated by adding the missing attribute using functions <code>setTimeUnit</code>, <code>setBSWFUsed</code>, <code>setTfrType</code> and <code>setRfrType</code>. However, in many cases function <code>update_spct</code> can be used to set the missing attributes to default values, or the scripts re-run to rebuild the data objects from raw data.
@@ -691,41 +693,46 @@ Spectral objects created with earlier (pre-release) versions of this package are
 <td><code>names</code>, <code>dim</code>, <code>comment</code></td>
 </tr>
 <tr class="even">
+<td align="left"><code>calibration_mspct</code></td>
+<td align="left"><code>calibration_spct</code></td>
+<td><code>names</code>, <code>dim</code>, <code>comment</code></td>
+</tr>
+<tr class="odd">
 <td align="left"><code>raw_mspct</code></td>
 <td align="left"><code>raw_spct</code></td>
 <td><code>names</code>, <code>dim</code>, <code>comment</code></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left"><code>cps_mspct</code></td>
 <td align="left"><code>cps_spct</code></td>
 <td><code>names</code>, <code>dim</code>, <code>comment</code></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left"><code>source_mspct</code></td>
 <td align="left"><code>source_spct</code></td>
 <td><code>names</code>, <code>dim</code>, <code>comment</code></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left"><code>filter_mspct</code></td>
 <td align="left"><code>filter_spct</code></td>
 <td><code>names</code>, <code>dim</code>, <code>comment</code></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left"><code>reflector_mspct</code></td>
 <td align="left"><code>reflector_spct</code></td>
 <td><code>names</code>, <code>dim</code>, <code>comment</code></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left"><code>object_mspct</code></td>
 <td align="left"><code>object_spct</code></td>
 <td><code>names</code>, <code>dim</code>, <code>comment</code></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left"><code>response_mspct</code></td>
 <td align="left"><code>response_spct</code></td>
 <td><code>names</code>, <code>dim</code>, <code>comment</code></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left"><code>chroma_mspct</code></td>
 <td align="left"><code>chroma_spct</code></td>
 <td><code>names</code>, <code>dim</code>, <code>comment</code></td>
@@ -733,21 +740,22 @@ Spectral objects created with earlier (pre-release) versions of this package are
 </tbody>
 </table>
 <hr>
-<p>Objects of these classes, except for those of class <code>generic_mspct</code>, can contain members belonging to one of the classes. Being all other spectral object classes derived from <code>generic_spct</code>, <code>generic_mspct</code> objects can contain heterogeneous collections of spectra. In all cases, there are no restrictions on the lengths, wavelength range and/or wavelength step size, or attributes other than <code>class</code> of the contained spectra. Mimicking R’s arrays and matrices, a <code>dim</code> attribute is always present and <code>dim</code> methods are provided. These allows the storage of time series of spectral data, or (hyper)spectral image data, or even higher dimensional spectral data. The handling of 1D and 2D spectral collections is already implemented in the summary methods. Handling of 3D and higher dimensional data can be implemented in the future without changing the class definition. By having implemented <code>dim</code>, also methods <code>ncol</code> and <code>nrow</code> are available as they use <code>dim</code> internally. Array-like subscripting is <strong>not</strong> implemented.</p>
+<p>Objects of these classes, except for those of class <code>generic_mspct</code>, can contain members belonging to a single class of spectra. Being all other spectral object classes derived from <code>generic_spct</code>, <code>generic_mspct</code> objects can contain heterogeneous collections of spectra. In all cases, there are no restrictions on the lengths, wavelength range and/or wavelength step size, or attributes other than <code>class</code> of the contained spectra. Mimicking R’s arrays and matrices, a <code>dim</code> attribute is always present and <code>dim</code> methods are provided. These allows the storage of time series of spectral data, or (hyper)spectral image data, or even higher dimensional spectral data. The handling of 1D and 2D spectral collections is already implemented in the summary methods. Handling of 3D and higher dimensional data can be implemented in the future without changing the class definitions. By having implemented <code>dim</code>, also methods <code>ncol</code> and <code>nrow</code> are available as they use <code>dim</code> internally. Array-like subscripting is <strong>not</strong> implemented.</p>
 </div>
 <div id="construction-1" class="section level3">
 <h3>Construction</h3>
 <div id="constructors" class="section level4">
 <h4>Constructors</h4>
-<p>We can construct a collection using a list of spectral objects as a starting point, in this case the spectral transmittance for two glass filters.</p>
+<p>We can construct a collection using a list of spectral objects as a starting point, in this case the spectral irradiance for sunlight.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">two_suns.mspct &lt;-<span class="st"> </span><span class="kw">source_mspct</span>(<span class="kw">list</span>(<span class="dt">sun1 =</span> sun.spct, <span class="dt">sun2 =</span> sun.spct))
 two_suns.mspct</code></pre></div>
 <pre><code>## Object: source_mspct [2 x 1]
 ## --- Member: sun1 ---
 ## Object: source_spct [522 x 3]
 ## Wavelength range 280 to 800 nm, step 0.9230769 to 1 nm 
+## Label: sunlight, simulated 
 ## Measured on 2010-06-22 09:51:00 UTC 
-## Measured at 60.2091078 N, 24.9647354 E 
+## Measured at 60.203549 N, 24.966423 E 
 ## Time unit 1s
 ## 
 ## # A tibble: 522 x 3
@@ -761,8 +769,9 @@ two_suns.mspct</code></pre></div>
 ## --- Member: sun2 ---
 ## Object: source_spct [522 x 3]
 ## Wavelength range 280 to 800 nm, step 0.9230769 to 1 nm 
+## Label: sunlight, simulated 
 ## Measured on 2010-06-22 09:51:00 UTC 
-## Measured at 60.2091078 N, 24.9647354 E 
+## Measured at 60.203549 N, 24.966423 E 
 ## Time unit 1s
 ## 
 ## # A tibble: 522 x 3
@@ -775,7 +784,7 @@ two_suns.mspct</code></pre></div>
 ## # ... with 518 more rows
 ## 
 ## --- END ---</code></pre>
-<p>We can also create heterogeneous collections, but this reduces the number of methods that can be used on the resulting collection.</p>
+<p>We can also create heterogeneous collections, but this drastically limits the methods that are applicable to the resulting collection.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mixed.mspct &lt;-<span class="st"> </span><span class="kw">generic_mspct</span>(<span class="kw">list</span>(<span class="dt">filter =</span> clear.spct, <span class="dt">source =</span> sun.spct))
 <span class="kw">class</span>(mixed.mspct)</code></pre></div>
 <pre><code>## [1] &quot;generic_mspct&quot; &quot;list&quot;</code></pre>
@@ -801,16 +810,18 @@ two_suns.mspct</code></pre></div>
 </div>
 <div id="converting-tidy-data" class="section level4">
 <h4>Converting <em>tidy</em> data</h4>
-<p>Spectral objects containing multiple spectra identified by a factor. The class of the spectra in the argument must be consistent, as well as certain attributes line <code>time.unit</code>, for binding to succeed. Other metadata attributes are retained as named lists.</p>
+<p>Spectral objects containing multiple spectra identified by a factor can be created by row-binding compatible spectral objects. For for binding to succeed, the list of spectra passed as argument must be homogeneous with respect to member class, as well as for certain attributes such as <code>time.unit</code>. Other metadata attributes are retained as named lists.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">two_suns.spct &lt;-<span class="st"> </span><span class="kw">rbindspct</span>(<span class="kw">list</span>(<span class="dt">a =</span> sun.spct, <span class="dt">b =</span> sun.spct <span class="op">/</span><span class="st"> </span><span class="dv">2</span>))
 two_suns.spct</code></pre></div>
 <pre><code>## Object: source_spct [1,044 x 4]
 ## containing 2 spectra in long form
 ## Wavelength range 280 to 800 nm, step 0.9230769 to 1 nm 
+## a label: sunlight, simulated
+## b label: sunlight, simulated 
 ## a measured on 2010-06-22 09:51:00 UTC
 ## b measured on 2010-06-22 09:51:00 UTC 
-## a measured at 60.2091078 N, 24.9647354 E
-## b measured at 60.2091078 N, 24.9647354 E 
+## a measured at 60.203549 N, 24.966423 E
+## b measured at 60.203549 N, 24.966423 E 
 ## Time unit 1s
 ## 
 ## # A tibble: 1,044 x 4
@@ -821,14 +832,15 @@ two_suns.spct</code></pre></div>
 ## 3 281.8462         0        a         0
 ## 4 282.7692         0        a         0
 ## # ... with 1,040 more rows</code></pre>
-<p>Metadata is set for the individual spectra if it is available in the object being subset. What metadata is automatically stored depends on the version of this package used when creating the long form spectrum object by means of <code>rbindspct()</code>. Versions 0.9.14 and later preserve most of the metadata.</p>
+<p>The reverse operation, separating the individual spectra from a spectrum object containing multiple spectra in <em>long form</em> and storing them as a collection, is implemented in method <code>subset2mspct</code>. In this case, metadata is set for the individual spectra if it is available in the object being subset. What metadata is automatically stored depends on the version of this package used when creating the long form spectrum object by means of <code>rbindspct()</code>. Versions 0.9.14 and later preserve most of the metadata.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">subset2mspct</span>(two_suns.spct)</code></pre></div>
 <pre><code>## Object: source_mspct [2 x 1]
 ## --- Member: a ---
 ## Object: source_spct [522 x 3]
 ## Wavelength range 280 to 800 nm, step 0.9230769 to 1 nm 
+## Label: sunlight, simulated 
 ## Measured on 2010-06-22 09:51:00 UTC 
-## Measured at 60.2091078 N, 24.9647354 E 
+## Measured at 60.203549 N, 24.966423 E 
 ## Time unit 1s
 ## 
 ## # A tibble: 522 x 3
@@ -842,8 +854,9 @@ two_suns.spct</code></pre></div>
 ## --- Member: b ---
 ## Object: source_spct [522 x 3]
 ## Wavelength range 280 to 800 nm, step 0.9230769 to 1 nm 
+## Label: sunlight, simulated 
 ## Measured on 2010-06-22 09:51:00 UTC 
-## Measured at 60.2091078 N, 24.9647354 E 
+## Measured at 60.203549 N, 24.966423 E 
 ## Time unit 1s
 ## 
 ## # A tibble: 522 x 3
@@ -856,7 +869,7 @@ two_suns.spct</code></pre></div>
 ## # ... with 518 more rows
 ## 
 ## --- END ---</code></pre>
-<p>Data frame containing <em>tidy</em> spectral data (target class and index variable need to be supplied as arguments). A call as the one below adds only default metadata to spectral objects.</p>
+<p>If multiple spectra are stored in long form (as <em>tidy</em> data) in an ordinary <code>data.frame</code> or a <code>tibble</code> object with columns with suitable names, the same <code>subset2mspct</code> method can be used. In these case, additional arguments need to be passed indicating the target class for conversion. The name of the index variable encoding the grouping into multiple spectra will also need to be supplied as an argument. A call as in the example below, adds only default metadata to spectral objects.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">test1.df &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">w.length =</span> <span class="kw">rep</span>(<span class="dv">200</span><span class="op">:</span><span class="dv">210</span>, <span class="dv">2</span>),
                        <span class="dt">s.e.irrad =</span> <span class="kw">rep</span>(<span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>), <span class="kw">c</span>(<span class="dv">11</span>, <span class="dv">11</span>)),
                        <span class="dt">spectrum =</span> <span class="kw">factor</span>(<span class="kw">rep</span>(<span class="kw">c</span>(<span class="st">&quot;A&quot;</span>, <span class="st">&quot;B&quot;</span>), <span class="kw">c</span>(<span class="dv">11</span>,<span class="dv">11</span>))))
@@ -922,7 +935,7 @@ two_suns.spct</code></pre></div>
 ## # ... with 7 more rows
 ## 
 ## --- END ---</code></pre>
-<p>To convert a <em>tidy</em> data frame into a long form spectral object we need to pass the number of spectra through parameter <code>multiple.wl</code> to override the usual check for unique wavelength values.</p>
+<p>To directly convert a <em>tidy</em> data frame into a long form spectral object we need to pass the number of spectra through parameter <code>multiple.wl</code> to override the usual check for unique wavelength values.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">setSourceSpct</span>(test1.df, <span class="dt">multiple.wl =</span> 2L)
 test1.df</code></pre></div>
 <pre><code>## Object: source_spct [22 x 3]
@@ -941,7 +954,7 @@ test1.df</code></pre></div>
 </div>
 <div id="converting-untidy-data-frames" class="section level4">
 <h4>Converting <em>untidy</em> data frames</h4>
-<p>Data frame containing <em>untidy</em> or <em>wide</em> spectral data (class is determined by the function used, columns which are not <code>numeric</code> are skipped.</p>
+<p>In a <em>broad form</em> (or <em>untidy</em>) data.frame the spectral values for different spectra are stored side-by-side as columns, and a single additional column used to store the shared wavelength values. To create a collection of spectral objects, with each member containing a single spectrum, we use function <code>split2source_mspct</code> and its equivalents for the remaining classes of spectral objects (class is determined by the function used, and columns which are not <code>numeric</code> are skipped). The column containing wavelength values in nanometres is recognized by means of its name. The names used for the spectra in the collection are derived from the names of the columns containing spectral values.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">test2.df &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">w.length =</span> <span class="dv">200</span><span class="op">:</span><span class="dv">210</span>, <span class="dt">A =</span> <span class="dv">1</span>, <span class="dt">B =</span> <span class="dv">2</span>, <span class="dt">z =</span> <span class="st">&quot;A&quot;</span>)
 <span class="kw">split2source_mspct</span>(test2.df)</code></pre></div>
 <pre><code>## Warning in split2mspct(x = x, member.class = &quot;source_spct&quot;, spct.data.var =
@@ -1044,7 +1057,7 @@ test1.df</code></pre></div>
 </div>
 <div id="conversion-into-a-wide-data-frame" class="section level3">
 <h3>Conversion into a “wide” data frame</h3>
-<p>Sometimes, when exporting spectral data we may need to convert a collection of spectra into a data frame. In the example below we use a collection with only two member spectra, but <code>join_mspct()</code> can handle collections of any length.</p>
+<p>Sometimes, when exporting spectral data we may need to convert a collection of spectra into an <em>untidy</em> or <em>wide form</em> data frame. In the example below we use a collection with only two member spectra, but <code>join_mspct()</code> can handle collections of any length.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">my.mspct &lt;-<span class="st"> </span><span class="kw">source_mspct</span>(<span class="kw">list</span>(<span class="dt">sun1 =</span> sun.spct, <span class="dt">sun2 =</span> sun.spct <span class="op">*</span><span class="st"> </span><span class="dv">2</span>))
 my.df &lt;-<span class="st"> </span><span class="kw">join_mspct</span>(my.mspct)
 <span class="kw">head</span>(my.df)</code></pre></div>
@@ -1058,7 +1071,7 @@ my.df &lt;-<span class="st"> </span><span class="kw">join_mspct</span>(my.mspct)
 </div>
 <div id="querying-the-class-1" class="section level3">
 <h3>Querying the class</h3>
-<p><code>is.</code> functions are defined for these classes. R’s <code>class</code> method can also be used.</p>
+<p><code>is.</code> functions are defined for all the new classes. R’s <code>class</code> method can also be used.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">is.source_mspct</span>(two_suns.mspct)</code></pre></div>
 <pre><code>## [1] TRUE</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">class</span>(two_suns.mspct)</code></pre></div>
@@ -1103,8 +1116,9 @@ Methods <code>[[</code>, <code>$</code> and <code>[[&lt;-</code>, extract and re
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">two_suns.mspct[[<span class="dv">1</span>]]</code></pre></div>
 <pre><code>## Object: source_spct [522 x 3]
 ## Wavelength range 280 to 800 nm, step 0.9230769 to 1 nm 
+## Label: sunlight, simulated 
 ## Measured on 2010-06-22 09:51:00 UTC 
-## Measured at 60.2091078 N, 24.9647354 E 
+## Measured at 60.203549 N, 24.966423 E 
 ## Time unit 1s
 ## 
 ## # A tibble: 522 x 3
@@ -1118,8 +1132,9 @@ Methods <code>[[</code>, <code>$</code> and <code>[[&lt;-</code>, extract and re
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">two_suns.mspct<span class="op">$</span>sun1</code></pre></div>
 <pre><code>## Object: source_spct [522 x 3]
 ## Wavelength range 280 to 800 nm, step 0.9230769 to 1 nm 
+## Label: sunlight, simulated 
 ## Measured on 2010-06-22 09:51:00 UTC 
-## Measured at 60.2091078 N, 24.9647354 E 
+## Measured at 60.203549 N, 24.966423 E 
 ## Time unit 1s
 ## 
 ## # A tibble: 522 x 3
@@ -1133,8 +1148,9 @@ Methods <code>[[</code>, <code>$</code> and <code>[[&lt;-</code>, extract and re
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">two_suns.mspct[[<span class="st">&quot;sun1&quot;</span>]]</code></pre></div>
 <pre><code>## Object: source_spct [522 x 3]
 ## Wavelength range 280 to 800 nm, step 0.9230769 to 1 nm 
+## Label: sunlight, simulated 
 ## Measured on 2010-06-22 09:51:00 UTC 
-## Measured at 60.2091078 N, 24.9647354 E 
+## Measured at 60.203549 N, 24.966423 E 
 ## Time unit 1s
 ## 
 ## # A tibble: 522 x 3
@@ -1152,8 +1168,9 @@ two_suns.mspct</code></pre></div>
 ## --- Member: sun1 ---
 ## Object: source_spct [522 x 2]
 ## Wavelength range 280 to 800 nm, step 0.9230769 to 1 nm 
+## Label: sunlight, simulated 
 ## Measured on 2010-06-22 09:51:00 UTC 
-## Measured at 60.2091078 N, 24.9647354 E 
+## Measured at 60.203549 N, 24.966423 E 
 ## Time unit 1s
 ## 
 ## # A tibble: 522 x 2
@@ -1166,14 +1183,15 @@ two_suns.mspct</code></pre></div>
 ## # ... with 518 more rows
 ## 
 ## --- END ---</code></pre>
-<p>We can use the combine method <code>c()</code> with collections of spectra (but not to create new collections from individual spectra).</p>
+<p>As with R’s <code>list</code> objects, can combine collections of spectra with method <code>c()</code> but we can not create new collections from individual spectra using this method.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">c</span>(two_suns.mspct, mixed.mspct)</code></pre></div>
 <pre><code>## Object: generic_mspct [3 x 1]
 ## --- Member: sun1 ---
 ## Object: source_spct [522 x 2]
 ## Wavelength range 280 to 800 nm, step 0.9230769 to 1 nm 
+## Label: sunlight, simulated 
 ## Measured on 2010-06-22 09:51:00 UTC 
-## Measured at 60.2091078 N, 24.9647354 E 
+## Measured at 60.203549 N, 24.966423 E 
 ## Time unit 1s
 ## 
 ## # A tibble: 522 x 2
@@ -1187,6 +1205,7 @@ two_suns.mspct</code></pre></div>
 ## --- Member: filter ---
 ## Object: filter_spct [4 x 2]
 ## Wavelength range 100 to 5000 nm, step 1 to 4898 nm 
+## Label: theoretical fully transparent object 
 ## 
 ## # A tibble: 4 x 2
 ##   w.length   Tfr
@@ -1198,8 +1217,9 @@ two_suns.mspct</code></pre></div>
 ## --- Member: source ---
 ## Object: source_spct [522 x 3]
 ## Wavelength range 280 to 800 nm, step 0.9230769 to 1 nm 
+## Label: sunlight, simulated 
 ## Measured on 2010-06-22 09:51:00 UTC 
-## Measured at 60.2091078 N, 24.9647354 E 
+## Measured at 60.203549 N, 24.966423 E 
 ## Time unit 1s
 ## 
 ## # A tibble: 522 x 3
@@ -1215,7 +1235,7 @@ two_suns.mspct</code></pre></div>
 </div>
 <div id="transform-or-apply-functions" class="section level3">
 <h3>Transform or <em>apply</em> functions</h3>
-<p>For our <em>apply</em> functions we follow the naming convention used in package <code>plyr</code>, but using <code>ms</code> as prefix for <code>_mspct</code> objects. The <em>apply</em> functions implemented in the ‘<strong>photobiology</strong>’ package are <code>msmsply</code>, <code>msdply</code>, <code>mslply</code> and <code>msaply</code> which both accepts a collections of spectra as first argument and return a collection of spectra, a data frame, a list, or an array respectively (see Table 4).</p>
+<p>For our <em>apply</em> functions we follow the naming convention used in package <code>plyr</code>, but using <code>ms</code> as prefix for <code>_mspct</code> objects. The <em>apply</em> functions implemented in the ‘<strong>photobiology</strong>’ package are <code>msmsply</code>, <code>msdply</code>, <code>mslply</code> and <code>msaply</code> which both accept a collection of spectra as first argument and return a collection of spectra, a data frame, a list, or an array respectively (see Table 4).</p>
 <hr>
 <p><strong>Table 4. Apply functions for collections of spectra.</strong> Key: v., value returned by <em>apply</em> function; f.v., value returned by the applied function (argument <code>.fun</code>). In the table <code>generic_mspct</code> and <code>generic_spct</code> indicate objects of these classes or any class derived from them. The exact class of the collection of spectra object returned will be determined by the class(es) of the values returned by the applied function.</p>
 <table>
@@ -1290,8 +1310,9 @@ two_suns.mspct</code></pre></div>
 ## --- Member: A ---
 ## Object: source_spct [522 x 2]
 ## Wavelength range 280 to 800 nm, step 0.9230769 to 1 nm 
+## Label: sunlight, simulated 
 ## Measured on 2010-06-22 09:51:00 UTC 
-## Measured at 60.2091078 N, 24.9647354 E 
+## Measured at 60.203549 N, 24.966423 E 
 ## Time unit 1s
 ## 
 ## # A tibble: 522 x 2
@@ -1305,8 +1326,9 @@ two_suns.mspct</code></pre></div>
 ## --- Member: B ---
 ## Object: source_spct [522 x 2]
 ## Wavelength range 280 to 800 nm, step 0.9230769 to 1 nm 
+## Label: sunlight, simulated 
 ## Measured on 2010-06-22 09:51:00 UTC 
-## Measured at 60.2091078 N, 24.9647354 E 
+## Measured at 60.203549 N, 24.966423 E 
 ## Time unit 1s
 ## 
 ## # A tibble: 522 x 2
@@ -1325,8 +1347,9 @@ two_suns.mspct</code></pre></div>
 ## --- Member: A ---
 ## Object: source_spct [525 x 2]
 ## Wavelength range 280 to 800 nm, step 1.023182e-12 to 1 nm 
+## Label: sunlight, simulated 
 ## Measured on 2010-06-22 09:51:00 UTC 
-## Measured at 60.2091078 N, 24.9647354 E 
+## Measured at 60.203549 N, 24.966423 E 
 ## Time unit 1s
 ## 
 ## # A tibble: 525 x 2
@@ -1340,8 +1363,9 @@ two_suns.mspct</code></pre></div>
 ## --- Member: B ---
 ## Object: source_spct [525 x 2]
 ## Wavelength range 280 to 800 nm, step 1.023182e-12 to 1 nm 
+## Label: sunlight, simulated 
 ## Measured on 2010-06-22 09:51:00 UTC 
-## Measured at 60.2091078 N, 24.9647354 E 
+## Measured at 60.203549 N, 24.966423 E 
 ## Time unit 1s
 ## 
 ## # A tibble: 525 x 2
@@ -1393,7 +1417,7 @@ ranges.df</code></pre></div>
 ##   ..$ : NULL
 ##   ..$ : chr [1:2] &quot;1&quot; &quot;2&quot;
 ##  - attr(*, &quot;comment&quot;)= chr &quot;Applied function: 'range'.\n&quot;</code></pre>
-<p>For the most common cases for which one would use the <em>apply</em> functions described in the previous section methods and functions operation on collections of spectra are defined in the package. For example the following statement is equivalent to the second example in the previous section. These are described in a later section and listed in Table 9.</p>
+<p>For the most common cases for which one would use the <em>apply</em> functions described in the previous section methods and functions for operations on collections of spectra are defined in the package. For example the following statement is equivalent to the second example in the previous section. These are described in a later section and listed in Table 9.</p>
 </div>
 <div id="convolution" class="section level3">
 <h3>Convolution</h3>
@@ -1582,8 +1606,9 @@ There are cases where functions <code>convolve_each()</code> and <code>msmsply()
 ## --- Member: A ---
 ## Object: source_spct [522 x 2]
 ## Wavelength range 280 to 800 nm, step 0.9230769 to 1 nm 
+## Label: sunlight, simulated 
 ## Measured on 2015-10-31 08:00:00 UTC 
-## Measured at 60.2091078 N, 24.9647354 E 
+## Measured at 60.203549 N, 24.966423 E 
 ## Time unit 1s
 ## 
 ## # A tibble: 522 x 2
@@ -1597,8 +1622,9 @@ There are cases where functions <code>convolve_each()</code> and <code>msmsply()
 ## --- Member: B ---
 ## Object: source_spct [522 x 2]
 ## Wavelength range 280 to 800 nm, step 0.9230769 to 1 nm 
+## Label: sunlight, simulated 
 ## Measured on 2015-10-31 09:00:00 UTC 
-## Measured at 60.2091078 N, 24.9647354 E 
+## Measured at 60.203549 N, 24.966423 E 
 ## Time unit 1s
 ## 
 ## # A tibble: 522 x 2
@@ -1612,19 +1638,21 @@ There are cases where functions <code>convolve_each()</code> and <code>msmsply()
 ## 
 ## --- END ---</code></pre>
 <p>Other methods available are <code>getWhereMeasured</code> and <code>setWhereMeasured</code>, and <code>getWhatMeasured</code> and <code>setWhatMeasured</code>.</p>
-<p>Functions <code>when.measured2tb()</code>, <code>geocode2tb()</code>, <code>lon2tb()</code>, <code>lat2tb()</code> and <code>what.measured2tb()</code> extract these same attributes from collection members into a tibble or data frame. If an existing data frame or tibble with a matching number of rows is passed as second argumented the values for each attribute are added as a new column.</p>
+<p>Functions <code>when.measured2tb()</code>, <code>geocode2tb()</code>, <code>lon2tb()</code>, <code>lat2tb()</code> and <code>what.measured2tb()</code> extract these same attributes from collection members into a tibble or data frame. If an existing data frame or tibble with a matching number of rows is passed as second argument the values for the attribute are saved to a new column.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">when_measured2tb</span>(two.mspct)</code></pre></div>
 <pre><code>## # A tibble: 2 x 2
 ##   spct.idx       when.measured
 ##     &lt;fctr&gt;              &lt;dttm&gt;
 ## 1        A 2015-10-31 08:00:00
 ## 2        B 2015-10-31 09:00:00</code></pre>
+<p>By default the new column is named after the name of the attribute, but this default can be overridden by the user.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">when_measured2tb</span>(two.mspct, <span class="dt">col.names =</span> <span class="kw">c</span>(<span class="dt">when.measured =</span> <span class="st">&quot;time&quot;</span>))</code></pre></div>
 <pre><code>## # A tibble: 2 x 2
 ##   spct.idx                time
 ##     &lt;fctr&gt;              &lt;dttm&gt;
 ## 1        A 2015-10-31 08:00:00
 ## 2        B 2015-10-31 09:00:00</code></pre>
+<p>By passing the same data frame as argument to successive calls in a sequence, multiple attributes can be retrieved and saved to multiple columns. Here we first compute summary values and then add to the data frame returned by <code>q_irrad</code>, attributes retrieved from the original spectral data objects.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">irrad.tb &lt;-<span class="st"> </span><span class="kw">q_irrad</span>(two.mspct)
 irrad.tb &lt;-<span class="st"> </span><span class="kw">lon2tb</span>(two.mspct, irrad.tb)
 irrad.tb &lt;-<span class="st"> </span><span class="kw">lat2tb</span>(two.mspct, irrad.tb)
@@ -1633,17 +1661,18 @@ irrad.tb</code></pre></div>
 <pre><code>## # A tibble: 2 x 5
 ##   spct.idx q_irrad_Total      lon      lat       when.measured
 ##     &lt;fctr&gt;         &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;              &lt;dttm&gt;
-## 1        A   0.001255336 24.96474 60.20911 2015-10-31 08:00:00
-## 2        B   0.002510671 24.96474 60.20911 2015-10-31 09:00:00</code></pre>
-<p>Function <code>add_attr2tb()</code> adds one or more columns with attributes to a tibble or data frame.</p>
+## 1        A   0.001255336 24.96642 60.20355 2015-10-31 08:00:00
+## 2        B   0.002510671 24.96642 60.20355 2015-10-31 09:00:00</code></pre>
+<p>Function <code>add_attr2tb()</code> adds one or more columns with attributes to a tibble or data frame. As retrieval of multiple attributes is a frequent operation, we have defined function <code>add_attr2tb</code> to simplify code as that shown in the previous code chunk. We here also demonstrate that because the data frame object is passed to the first positional argument, we can use a <em>pipe</em>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">q_irrad</span>(two.mspct) <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">add_attr2tb</span>(two.mspct, 
               <span class="dt">col.names =</span> <span class="kw">c</span>(<span class="st">&quot;lon&quot;</span>, <span class="st">&quot;lat&quot;</span>, <span class="st">&quot;when.measured&quot;</span>))</code></pre></div>
 <pre><code>## # A tibble: 2 x 5
 ##   spct.idx q_irrad_Total      lon      lat       when.measured
 ##     &lt;fctr&gt;         &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;              &lt;dttm&gt;
-## 1        A   0.001255336 24.96474 60.20911 2015-10-31 08:00:00
-## 2        B   0.002510671 24.96474 60.20911 2015-10-31 09:00:00</code></pre>
+## 1        A   0.001255336 24.96642 60.20355 2015-10-31 08:00:00
+## 2        B   0.002510671 24.96642 60.20355 2015-10-31 09:00:00</code></pre>
+<p>We can set the desired names for the columns if we wish them to be something else than the default.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">q_irrad</span>(two.mspct) <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">add_attr2tb</span>(two.mspct, 
               <span class="dt">col.names =</span> <span class="kw">c</span>(<span class="dt">lon =</span> <span class="st">&quot;longitude&quot;</span>, 
@@ -1652,8 +1681,8 @@ irrad.tb</code></pre></div>
 <pre><code>## # A tibble: 2 x 5
 ##   spct.idx q_irrad_Total longitude latitude                time
 ##     &lt;fctr&gt;         &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;              &lt;dttm&gt;
-## 1        A   0.001255336  24.96474 60.20911 2015-10-31 08:00:00
-## 2        B   0.002510671  24.96474 60.20911 2015-10-31 09:00:00</code></pre>
+## 1        A   0.001255336  24.96642 60.20355 2015-10-31 08:00:00
+## 2        B   0.002510671  24.96642 60.20355 2015-10-31 09:00:00</code></pre>
 </div>
 </div>
 <div id="wavebands" class="section level2">
@@ -1915,8 +1944,9 @@ wavebands</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">na.omit</span>(sun.spct)</code></pre></div>
 <pre><code>## Object: source_spct [522 x 3]
 ## Wavelength range 280 to 800 nm, step 0.9230769 to 1 nm 
+## Label: sunlight, simulated 
 ## Measured on 2010-06-22 09:51:00 UTC 
-## Measured at 60.2091078 N, 24.9647354 E 
+## Measured at 60.203549 N, 24.966423 E 
 ## Time unit 1s
 ## 
 ## # A tibble: 522 x 3
@@ -1930,8 +1960,9 @@ wavebands</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">na.exclude</span>(sun.spct)</code></pre></div>
 <pre><code>## Object: source_spct [522 x 3]
 ## Wavelength range 280 to 800 nm, step 0.9230769 to 1 nm 
+## Label: sunlight, simulated 
 ## Measured on 2010-06-22 09:51:00 UTC 
-## Measured at 60.2091078 N, 24.9647354 E 
+## Measured at 60.203549 N, 24.966423 E 
 ## Time unit 1s
 ## 
 ## # A tibble: 522 x 3
@@ -2286,8 +2317,9 @@ wavebands</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sun.spct <span class="op">*</span><span class="st"> </span><span class="dv">2</span></code></pre></div>
 <pre><code>## Object: source_spct [522 x 2]
 ## Wavelength range 280 to 800 nm, step 0.9230769 to 1 nm 
+## Label: sunlight, simulated 
 ## Measured on 2010-06-22 09:51:00 UTC 
-## Measured at 60.2091078 N, 24.9647354 E 
+## Measured at 60.203549 N, 24.966423 E 
 ## Time unit 1s
 ## 
 ## # A tibble: 522 x 2
@@ -2301,8 +2333,9 @@ wavebands</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="dv">2</span> <span class="op">*</span><span class="st"> </span>sun.spct</code></pre></div>
 <pre><code>## Object: source_spct [522 x 2]
 ## Wavelength range 280 to 800 nm, step 0.9230769 to 1 nm 
+## Label: sunlight, simulated 
 ## Measured on 2010-06-22 09:51:00 UTC 
-## Measured at 60.2091078 N, 24.9647354 E 
+## Measured at 60.203549 N, 24.966423 E 
 ## Time unit 1s
 ## 
 ## # A tibble: 522 x 2
@@ -2316,8 +2349,9 @@ wavebands</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sun.spct <span class="op">*</span><span class="st"> </span><span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">1</span>)</code></pre></div>
 <pre><code>## Object: source_spct [522 x 2]
 ## Wavelength range 280 to 800 nm, step 0.9230769 to 1 nm 
+## Label: sunlight, simulated 
 ## Measured on 2010-06-22 09:51:00 UTC 
-## Measured at 60.2091078 N, 24.9647354 E 
+## Measured at 60.203549 N, 24.966423 E 
 ## Time unit 1s
 ## 
 ## # A tibble: 522 x 2
@@ -2465,8 +2499,9 @@ wavebands</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="op">-</span>sun.spct</code></pre></div>
 <pre><code>## Object: source_spct [522 x 2]
 ## Wavelength range 280 to 800 nm, step 0.9230769 to 1 nm 
+## Label: sunlight, simulated 
 ## Measured on 2010-06-22 09:51:00 UTC 
-## Measured at 60.2091078 N, 24.9647354 E 
+## Measured at 60.203549 N, 24.966423 E 
 ## Time unit 1s
 ## 
 ## # A tibble: 522 x 2
@@ -2480,8 +2515,9 @@ wavebands</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sqrt</span>(sun.spct)</code></pre></div>
 <pre><code>## Object: source_spct [522 x 2]
 ## Wavelength range 280 to 800 nm, step 0.9230769 to 1 nm 
+## Label: sunlight, simulated 
 ## Measured on 2010-06-22 09:51:00 UTC 
-## Measured at 60.2091078 N, 24.9647354 E 
+## Measured at 60.203549 N, 24.966423 E 
 ## Time unit 1s
 ## 
 ## # A tibble: 522 x 2
@@ -2733,7 +2769,7 @@ sun.spct <span class="op">*</span><span class="st"> </span>UVB.wb</code></pre></
 <h2>Transformations: methods and functions</h2>
 <p>In this section we describe methods and functions that take one or more spectral objects, and in some cases also waveband objects, as arguments and return another spectral object (see Tables 8 and 9) or that take a collection of spectral objects, and in some cases also waveband objects, as arguments and return a collection of spectral objects.</p>
 <hr>
-<p><strong>Table 8. Transformation methods for spectra.</strong> Key: + available, – not available, f available in the future.</p>
+<p><strong>Table 8. Transformation methods for spectra.</strong> Key: + available, – not available.</p>
 <table>
 <thead>
 <tr class="header">
@@ -3200,10 +3236,12 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 <pre><code>## Object: source_spct [1,044 x 4]
 ## containing 2 spectra in long form
 ## Wavelength range 280 to 800 nm, step 0.9230769 to 1 nm 
+## spct_1 label: sunlight, simulated
+## spct_2 label: sunlight, simulated 
 ## spct_1 measured on 2010-06-22 09:51:00 UTC
 ## spct_2 measured on 2010-06-22 09:51:00 UTC 
-## spct_1 measured at 60.2091078 N, 24.9647354 E
-## spct_2 measured at 60.2091078 N, 24.9647354 E 
+## spct_1 measured at 60.203549 N, 24.966423 E
+## spct_2 measured at 60.203549 N, 24.966423 E 
 ## Time unit 1s
 ## 
 ## # A tibble: 1,044 x 4
@@ -3218,10 +3256,12 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 <pre><code>## Object: source_spct [1,044 x 4]
 ## containing 2 spectra in long form
 ## Wavelength range 280 to 800 nm, step 0.9230769 to 1 nm 
+## A label: sunlight, simulated
+## B label: sunlight, simulated 
 ## A measured on 2010-06-22 09:51:00 UTC
 ## B measured on 2010-06-22 09:51:00 UTC 
-## A measured at 60.2091078 N, 24.9647354 E
-## B measured at 60.2091078 N, 24.9647354 E 
+## A measured at 60.203549 N, 24.966423 E
+## B measured at 60.203549 N, 24.966423 E 
 ## Time unit 1s
 ## 
 ## # A tibble: 1,044 x 4
@@ -3236,8 +3276,9 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sun.spct[<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>, ]</code></pre></div>
 <pre><code>## Object: source_spct [10 x 3]
 ## Wavelength range 280 to 288.30769 nm, step 0.9230769 nm 
+## Label: sunlight, simulated 
 ## Measured on 2010-06-22 09:51:00 UTC 
-## Measured at 60.2091078 N, 24.9647354 E 
+## Measured at 60.203549 N, 24.966423 E 
 ## Time unit 1s
 ## 
 ## # A tibble: 10 x 3
@@ -3306,8 +3347,9 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">e2q</span>(sun.spct, <span class="st">&quot;add&quot;</span>)</code></pre></div>
 <pre><code>## Object: source_spct [522 x 3]
 ## Wavelength range 280 to 800 nm, step 0.9230769 to 1 nm 
+## Label: sunlight, simulated 
 ## Measured on 2010-06-22 09:51:00 UTC 
-## Measured at 60.2091078 N, 24.9647354 E 
+## Measured at 60.203549 N, 24.966423 E 
 ## Time unit 1s
 ## 
 ## # A tibble: 522 x 3
@@ -3321,8 +3363,9 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">e2q</span>(sun.spct, <span class="st">&quot;replace&quot;</span>)</code></pre></div>
 <pre><code>## Object: source_spct [522 x 2]
 ## Wavelength range 280 to 800 nm, step 0.9230769 to 1 nm 
+## Label: sunlight, simulated 
 ## Measured on 2010-06-22 09:51:00 UTC 
-## Measured at 60.2091078 N, 24.9647354 E 
+## Measured at 60.203549 N, 24.966423 E 
 ## Time unit 1s
 ## 
 ## # A tibble: 522 x 2
@@ -3341,8 +3384,9 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">normalize</span>(sun.spct)</code></pre></div>
 <pre><code>## Object: source_spct [522 x 2]
 ## Wavelength range 280 to 800 nm, step 0.9230769 to 1 nm 
+## Label: sunlight, simulated 
 ## Measured on 2010-06-22 09:51:00 UTC 
-## Measured at 60.2091078 N, 24.9647354 E 
+## Measured at 60.203549 N, 24.966423 E 
 ## Time unit 1s
 ## Spectral data normalized to 1 at 451 nm 
 ## 
@@ -3358,8 +3402,9 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">normalize</span>(sun.spct, <span class="dt">range =</span> PAR.wb, <span class="dt">norm =</span> <span class="st">&quot;max&quot;</span>)</code></pre></div>
 <pre><code>## Object: source_spct [522 x 2]
 ## Wavelength range 280 to 800 nm, step 0.9230769 to 1 nm 
+## Label: sunlight, simulated 
 ## Measured on 2010-06-22 09:51:00 UTC 
-## Measured at 60.2091078 N, 24.9647354 E 
+## Measured at 60.203549 N, 24.966423 E 
 ## Time unit 1s
 ## Spectral data normalized to 1 at 451 nm 
 ## 
@@ -3375,8 +3420,9 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">normalize</span>(sun.spct, <span class="dt">norm =</span> <span class="fl">600.3</span>)</code></pre></div>
 <pre><code>## Object: source_spct [522 x 2]
 ## Wavelength range 280 to 800 nm, step 0.9230769 to 1 nm 
+## Label: sunlight, simulated 
 ## Measured on 2010-06-22 09:51:00 UTC 
-## Measured at 60.2091078 N, 24.9647354 E 
+## Measured at 60.203549 N, 24.966423 E 
 ## Time unit 1s
 ## Spectral data normalized to 1 at 600.3 nm 
 ## 
@@ -3403,8 +3449,9 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">fscale</span>(sun.spct)</code></pre></div>
 <pre><code>## Object: source_spct [522 x 2]
 ## Wavelength range 280 to 800 nm, step 0.9230769 to 1 nm 
+## Label: sunlight, simulated 
 ## Measured on 2010-06-22 09:51:00 UTC 
-## Measured at 60.2091078 N, 24.9647354 E 
+## Measured at 60.203549 N, 24.966423 E 
 ## Time unit 1s
 ## Rescaled to 'mean' = 1
 ## 
@@ -3419,8 +3466,9 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">fscale</span>(sun.spct, <span class="dt">f =</span> <span class="st">&quot;total&quot;</span>)</code></pre></div>
 <pre><code>## Object: source_spct [522 x 2]
 ## Wavelength range 280 to 800 nm, step 0.9230769 to 1 nm 
+## Label: sunlight, simulated 
 ## Measured on 2010-06-22 09:51:00 UTC 
-## Measured at 60.2091078 N, 24.9647354 E 
+## Measured at 60.203549 N, 24.966423 E 
 ## Time unit 1s
 ## Rescaled to 'total' = 1
 ## 
@@ -3435,8 +3483,9 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">fscale</span>(sun.spct, <span class="dt">range =</span> PAR.wb, <span class="dt">f =</span> irrad)</code></pre></div>
 <pre><code>## Object: source_spct [522 x 2]
 ## Wavelength range 280 to 800 nm, step 0.9230769 to 1 nm 
+## Label: sunlight, simulated 
 ## Measured on 2010-06-22 09:51:00 UTC 
-## Measured at 60.2091078 N, 24.9647354 E 
+## Measured at 60.203549 N, 24.966423 E 
 ## Time unit 1s
 ## Rescaled to 'a user supplied R function' = 1
 ## 
@@ -3451,8 +3500,9 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">fscale</span>(sun.spct, <span class="dt">range =</span> PAR.wb, <span class="dt">f =</span> q_irrad, <span class="dt">target =</span> <span class="fl">800e-6</span>)</code></pre></div>
 <pre><code>## Object: source_spct [522 x 2]
 ## Wavelength range 280 to 800 nm, step 0.9230769 to 1 nm 
+## Label: sunlight, simulated 
 ## Measured on 2010-06-22 09:51:00 UTC 
-## Measured at 60.2091078 N, 24.9647354 E 
+## Measured at 60.203549 N, 24.966423 E 
 ## Time unit 1s
 ## Rescaled to 'a user supplied R function' = 8e-04
 ## 
@@ -3490,8 +3540,9 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">fshift</span>(sun.spct, <span class="dt">range =</span> UVB.wb, <span class="dt">f =</span> <span class="st">&quot;mean&quot;</span>)</code></pre></div>
 <pre><code>## Object: source_spct [522 x 2]
 ## Wavelength range 280 to 800 nm, step 0.9230769 to 1 nm 
+## Label: sunlight, simulated 
 ## Measured on 2010-06-22 09:51:00 UTC 
-## Measured at 60.2091078 N, 24.9647354 E 
+## Measured at 60.203549 N, 24.966423 E 
 ## Time unit 1s
 ## 
 ## # A tibble: 522 x 2
@@ -3505,8 +3556,9 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">fshift</span>(sun.spct, <span class="dt">range =</span> <span class="kw">c</span>(<span class="dv">280</span>,<span class="dv">290</span>), <span class="dt">f =</span> <span class="st">&quot;min&quot;</span>)</code></pre></div>
 <pre><code>## Object: source_spct [522 x 2]
 ## Wavelength range 280 to 800 nm, step 0.9230769 to 1 nm 
+## Label: sunlight, simulated 
 ## Measured on 2010-06-22 09:51:00 UTC 
-## Measured at 60.2091078 N, 24.9647354 E 
+## Measured at 60.203549 N, 24.966423 E 
 ## Time unit 1s
 ## 
 ## # A tibble: 522 x 2
@@ -3525,8 +3577,9 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">clean</span>(sun.spct <span class="op">-</span><span class="st"> </span><span class="fl">0.01</span>, <span class="dt">range =</span> <span class="kw">c</span>(<span class="fl">280.5</span>, <span class="dv">282</span>))</code></pre></div>
 <pre><code>## Object: source_spct [522 x 2]
 ## Wavelength range 280 to 800 nm, step 0.9230769 to 1 nm 
+## Label: sunlight, simulated 
 ## Measured on 2010-06-22 09:51:00 UTC 
-## Measured at 60.2091078 N, 24.9647354 E 
+## Measured at 60.203549 N, 24.966423 E 
 ## Time unit 1s
 ## 
 ## # A tibble: 522 x 2
@@ -3542,6 +3595,7 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 ## transmittance values [-0.050..0.873] instead of [0..1]</code></pre>
 <pre><code>## Object: filter_spct [611 x 2]
 ## Wavelength range 190 to 800 nm, step 1 nm 
+## Label: clear polyester film, 125um thick 
 ## 
 ## # A tibble: 611 x 2
 ##   w.length   Tfr
@@ -3559,7 +3613,7 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 <pre><code>## Object: source_spct [1,001 x 3]
 ## Wavelength range 400 to 500 nm, step 0.1 nm 
 ## Measured on 2010-06-22 09:51:00 UTC 
-## Measured at 60.2091078 N, 24.9647354 E 
+## Measured at 60.203549 N, 24.966423 E 
 ## Time unit 1s
 ## 
 ## # A tibble: 1,001 x 3
@@ -3580,8 +3634,9 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">clip_wl</span>(sun.spct, <span class="dt">range =</span> <span class="kw">c</span>(<span class="dv">400</span>, <span class="dv">402</span>))</code></pre></div>
 <pre><code>## Object: source_spct [3 x 3]
 ## Wavelength range 400 to 402 nm, step 1 nm 
+## Label: sunlight, simulated 
 ## Measured on 2010-06-22 09:51:00 UTC 
-## Measured at 60.2091078 N, 24.9647354 E 
+## Measured at 60.203549 N, 24.966423 E 
 ## Time unit 1s
 ## 
 ## # A tibble: 3 x 3
@@ -3593,8 +3648,9 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">clip_wl</span>(sun.spct, <span class="dt">range =</span> <span class="kw">c</span>(<span class="dv">400</span>, <span class="ot">NA</span>))</code></pre></div>
 <pre><code>## Object: source_spct [401 x 3]
 ## Wavelength range 400 to 800 nm, step 1 nm 
+## Label: sunlight, simulated 
 ## Measured on 2010-06-22 09:51:00 UTC 
-## Measured at 60.2091078 N, 24.9647354 E 
+## Measured at 60.203549 N, 24.966423 E 
 ## Time unit 1s
 ## 
 ## # A tibble: 401 x 3
@@ -3609,8 +3665,9 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">clip_wl</span>(sun.spct, <span class="dt">range =</span> UVA.wb)</code></pre></div>
 <pre><code>## Object: source_spct [86 x 3]
 ## Wavelength range 315 to 400 nm, step 1 nm 
+## Label: sunlight, simulated 
 ## Measured on 2010-06-22 09:51:00 UTC 
-## Measured at 60.2091078 N, 24.9647354 E 
+## Measured at 60.203549 N, 24.966423 E 
 ## Time unit 1s
 ## 
 ## # A tibble: 86 x 3
@@ -3624,8 +3681,9 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 <p>The result can be a spectrum of length zero.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">clip_wl</span>(sun.spct, <span class="dt">range =</span> <span class="kw">c</span>(<span class="dv">100</span>, <span class="dv">200</span>))</code></pre></div>
 <pre><code>## Object: source_spct [0 x 3]
+## Label: sunlight, simulated 
 ## Measured on 2010-06-22 09:51:00 UTC 
-## Measured at 60.2091078 N, 24.9647354 E 
+## Measured at 60.203549 N, 24.966423 E 
 ## Time unit 1s
 ## 
 ## # A tibble: 0 x 3
@@ -3638,8 +3696,9 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">trim_wl</span>(sun.spct, <span class="kw">c</span>(<span class="fl">282.5</span>, <span class="ot">NA</span>))</code></pre></div>
 <pre><code>## Object: source_spct [520 x 3]
 ## Wavelength range 282.5 to 800 nm, step 0.2692308 to 1 nm 
+## Label: sunlight, simulated 
 ## Measured on 2010-06-22 09:51:00 UTC 
-## Measured at 60.2091078 N, 24.9647354 E 
+## Measured at 60.203549 N, 24.966423 E 
 ## Time unit 1s
 ## 
 ## # A tibble: 520 x 3
@@ -3653,8 +3712,9 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">clip_wl</span>(sun.spct, <span class="kw">c</span>(<span class="fl">282.5</span>, <span class="ot">NA</span>))</code></pre></div>
 <pre><code>## Object: source_spct [519 x 3]
 ## Wavelength range 282.76923 to 800 nm, step 0.9230769 to 1 nm 
+## Label: sunlight, simulated 
 ## Measured on 2010-06-22 09:51:00 UTC 
-## Measured at 60.2091078 N, 24.9647354 E 
+## Measured at 60.203549 N, 24.966423 E 
 ## Time unit 1s
 ## 
 ## # A tibble: 519 x 3
@@ -3669,8 +3729,9 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">trim_wl</span>(sun.spct, PAR.wb)</code></pre></div>
 <pre><code>## Object: source_spct [301 x 3]
 ## Wavelength range 400 to 700 nm, step 1 nm 
+## Label: sunlight, simulated 
 ## Measured on 2010-06-22 09:51:00 UTC 
-## Measured at 60.2091078 N, 24.9647354 E 
+## Measured at 60.203549 N, 24.966423 E 
 ## Time unit 1s
 ## 
 ## # A tibble: 301 x 3
@@ -3685,8 +3746,9 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">trim_wl</span>(sun.spct, <span class="kw">c</span>(<span class="fl">281.5</span>, <span class="ot">NA</span>), <span class="dt">fill =</span> <span class="ot">NA</span>)</code></pre></div>
 <pre><code>## Object: source_spct [524 x 3]
 ## Wavelength range 280 to 800 nm, step 1.023182e-12 to 1 nm 
+## Label: sunlight, simulated 
 ## Measured on 2010-06-22 09:51:00 UTC 
-## Measured at 60.2091078 N, 24.9647354 E 
+## Measured at 60.203549 N, 24.966423 E 
 ## Time unit 1s
 ## 
 ## # A tibble: 524 x 3
@@ -3701,8 +3763,9 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">trim_wl</span>(sun.spct, <span class="kw">c</span>(<span class="dv">275</span>, <span class="ot">NA</span>), <span class="dt">fill =</span> <span class="dv">0</span>)</code></pre></div>
 <pre><code>## Object: source_spct [529 x 3]
 ## Wavelength range 275 to 800 nm, step 1.023182e-12 to 1 nm 
+## Label: sunlight, simulated 
 ## Measured on 2010-06-22 09:51:00 UTC 
-## Measured at 60.2091078 N, 24.9647354 E 
+## Measured at 60.203549 N, 24.966423 E 
 ## Time unit 1s
 ## 
 ## # A tibble: 529 x 3
@@ -3717,8 +3780,9 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">trim_wl</span>(sun.spct, <span class="kw">c</span>(<span class="fl">281.5</span>, <span class="ot">NA</span>), <span class="dt">fill =</span> <span class="ot">NA</span>)</code></pre></div>
 <pre><code>## Object: source_spct [524 x 3]
 ## Wavelength range 280 to 800 nm, step 1.023182e-12 to 1 nm 
+## Label: sunlight, simulated 
 ## Measured on 2010-06-22 09:51:00 UTC 
-## Measured at 60.2091078 N, 24.9647354 E 
+## Measured at 60.203549 N, 24.966423 E 
 ## Time unit 1s
 ## 
 ## # A tibble: 524 x 3
@@ -3732,8 +3796,9 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">trim_wl</span>(sun.spct, <span class="kw">c</span>(<span class="fl">281.5</span>, <span class="ot">NA</span>), <span class="dt">fill =</span> <span class="ot">NA</span>, <span class="dt">use.hinges =</span> <span class="ot">FALSE</span>)</code></pre></div>
 <pre><code>## Object: source_spct [522 x 3]
 ## Wavelength range 280 to 800 nm, step 0.9230769 to 1 nm 
+## Label: sunlight, simulated 
 ## Measured on 2010-06-22 09:51:00 UTC 
-## Measured at 60.2091078 N, 24.9647354 E 
+## Measured at 60.203549 N, 24.966423 E 
 ## Time unit 1s
 ## 
 ## # A tibble: 522 x 3
@@ -3754,8 +3819,9 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 ## --- Member: A ---
 ## Object: source_spct [522 x 2]
 ## Wavelength range 280 to 800 nm, step 0.9230769 to 1 nm 
+## Label: sunlight, simulated 
 ## Measured on 2015-10-31 08:00:00 UTC 
-## Measured at 60.2091078 N, 24.9647354 E 
+## Measured at 60.203549 N, 24.966423 E 
 ## Time unit 1s
 ## 
 ## # A tibble: 522 x 2
@@ -3769,8 +3835,9 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 ## --- Member: B ---
 ## Object: source_spct [522 x 2]
 ## Wavelength range 280 to 800 nm, step 0.9230769 to 1 nm 
+## Label: sunlight, simulated 
 ## Measured on 2015-10-31 09:00:00 UTC 
-## Measured at 60.2091078 N, 24.9647354 E 
+## Measured at 60.203549 N, 24.966423 E 
 ## Time unit 1s
 ## 
 ## # A tibble: 522 x 2
@@ -3788,8 +3855,9 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 ## --- Member: A ---
 ## Object: source_spct [522 x 2]
 ## Wavelength range 280 to 800 nm, step 0.9230769 to 1 nm 
+## Label: sunlight, simulated 
 ## Measured on 2015-10-31 08:00:00 UTC 
-## Measured at 60.2091078 N, 24.9647354 E 
+## Measured at 60.203549 N, 24.966423 E 
 ## Time unit 1s
 ## 
 ## # A tibble: 522 x 2
@@ -3803,8 +3871,9 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 ## --- Member: B ---
 ## Object: source_spct [522 x 2]
 ## Wavelength range 280 to 800 nm, step 0.9230769 to 1 nm 
+## Label: sunlight, simulated 
 ## Measured on 2015-10-31 09:00:00 UTC 
-## Measured at 60.2091078 N, 24.9647354 E 
+## Measured at 60.203549 N, 24.966423 E 
 ## Time unit 1s
 ## 
 ## # A tibble: 522 x 2
@@ -3825,7 +3894,7 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 </div>
 <div id="convolving-weights" class="section level3">
 <h3>Convolving weights</h3>
-<p>It is very instructive to look at weighted spectral data to understand how effective irradiances are calculated. Plotting effective spectral irradiance data can be very instructive when analysing the interaction of photoreceptors and ambient radiation. It can also illustrate what a large effect that small measuring errors can have on the estimated effective irradiances or exposures when SWFs have a steep slope.</p>
+<p>It is very instructive to look at weighted spectral data to understand how effective irradiances are calculated. Plotting effective spectral irradiance data can be very instructive when analysing the interaction of photoreceptors and ambient radiation. It can also illustrate the large effect that small measuring errors can have on the estimated effective irradiances or exposures when SWFs have a steep slope.</p>
 <div id="individual-spectra" class="section level4">
 <h4>Individual spectra</h4>
 <p>The multiplication operator is defined for operations between a <code>source_spct</code> and a <code>waveband</code>, so this is the easiest way of doing the calculations.</p>
@@ -3984,7 +4053,7 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 </div>
 <div id="summaries" class="section level2">
 <h2>Summaries</h2>
-<p>Summaries can be calculated both from individual spectral objects (Table 10) and from collections of spectral objects (Table 11). They return a <em>simpler</em> object than the spectral data in their arguments. For example a vector of numeric values, possibly of length one, in the case of individual spectra, or a data frame containing one row of summary data for each spectrum the collection of multiple spectra supplied as argument.</p>
+<p>Summaries can be calculated both from individual spectral objects (Table 10) and from collections of spectral objects (Table 11). They return a <em>simpler</em> object than the spectral data in their arguments. For example a vector of numeric values, possibly of length one, in the case of individual spectra, or a data frame containing one row of summary data for each spectrum in a collection of spectra.</p>
 <hr>
 <p><strong>Table 10. Summary methods for spectra.</strong> Key: + available, - not available.</p>
 <table>
@@ -4314,8 +4383,9 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 </tbody>
 </table>
 <hr>
+<p>As mentioned above, summary methods for collections of spectra return data frame objects. In many cases preserving the attributes from the different members of the collection in the returned value is important, and can be achieved easily by passing a suitable character vector as argument to parameter <code>attr2tb</code>, using the same syntax as described for function <code>add_attr2tb</code>.</p>
 <hr>
-<p><strong>Table 11. Summary methods for collections of spectra.</strong> Key: + available, – not available, <strong>ms</strong> use <code>msmsply()</code> to apply function to collection members, <strong>d</strong> use <code>msdply()</code>, <strong>l</strong> use <code>mslply</code> to apply function to collection members, <strong>a</strong> use <code>msaply</code> to apply function to collection members.</p>
+<p><strong>Table 11. Summary methods for collections of spectra.</strong> Key: + available, * <code>attr2tb</code> supported, – not available, <strong>ms</strong> use <code>msmsply()</code> to apply function to collection members, <strong>d</strong> use <code>msdply()</code>, <strong>l</strong> use <code>mslply</code> to apply function to collection members, <strong>a</strong> use <code>msaply</code> to apply function to collection members.</p>
 <table>
 <thead>
 <tr class="header">
@@ -4331,109 +4401,89 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="left">f_mspct</td>
-<td align="center">+</td>
-<td align="center">+</td>
-<td align="center">+</td>
-<td align="center">+</td>
-<td align="center">+</td>
-<td align="center">+</td>
-<td align="center">+</td>
-</tr>
-<tr class="even">
 <td align="left">irrad</td>
 <td align="center">–</td>
-<td align="center">+</td>
+<td align="center">*</td>
 <td align="center">–</td>
 <td align="center">–</td>
 <td align="center">–</td>
 <td align="center">–</td>
 <td align="center">–</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">e_irrad</td>
 <td align="center">–</td>
-<td align="center">+</td>
+<td align="center">*</td>
 <td align="center">–</td>
 <td align="center">–</td>
 <td align="center">–</td>
 <td align="center">–</td>
 <td align="center">–</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">q_irrad</td>
 <td align="center">–</td>
-<td align="center">+</td>
+<td align="center">*</td>
 <td align="center">–</td>
 <td align="center">–</td>
 <td align="center">–</td>
 <td align="center">–</td>
 <td align="center">–</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">fluence</td>
 <td align="center">–</td>
-<td align="center">+</td>
+<td align="center">*</td>
 <td align="center">–</td>
 <td align="center">–</td>
 <td align="center">–</td>
 <td align="center">–</td>
 <td align="center">–</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">e_fluence</td>
 <td align="center">–</td>
-<td align="center">+</td>
+<td align="center">*</td>
 <td align="center">–</td>
 <td align="center">–</td>
 <td align="center">–</td>
 <td align="center">–</td>
 <td align="center">–</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">q_fluence</td>
 <td align="center">–</td>
-<td align="center">+</td>
+<td align="center">*</td>
 <td align="center">–</td>
 <td align="center">–</td>
 <td align="center">–</td>
 <td align="center">–</td>
 <td align="center">–</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">ratio</td>
 <td align="center">–</td>
-<td align="center">+</td>
+<td align="center">*</td>
 <td align="center">–</td>
 <td align="center">–</td>
 <td align="center">–</td>
 <td align="center">–</td>
 <td align="center">–</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">e_ratio</td>
 <td align="center">–</td>
-<td align="center">+</td>
+<td align="center">*</td>
 <td align="center">–</td>
 <td align="center">–</td>
 <td align="center">–</td>
 <td align="center">–</td>
 <td align="center">–</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">q_ratio</td>
 <td align="center">–</td>
-<td align="center">+</td>
-<td align="center">–</td>
-<td align="center">–</td>
-<td align="center">–</td>
-<td align="center">–</td>
-<td align="center">–</td>
-</tr>
-<tr class="odd">
-<td align="left">qe_ratio</td>
-<td align="center">–</td>
-<td align="center">+</td>
+<td align="center">*</td>
 <td align="center">–</td>
 <td align="center">–</td>
 <td align="center">–</td>
@@ -4441,9 +4491,9 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 <td align="center">–</td>
 </tr>
 <tr class="even">
-<td align="left">eq_ratio</td>
+<td align="left">qe_ratio</td>
 <td align="center">–</td>
-<td align="center">+</td>
+<td align="center">*</td>
 <td align="center">–</td>
 <td align="center">–</td>
 <td align="center">–</td>
@@ -4451,73 +4501,93 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 <td align="center">–</td>
 </tr>
 <tr class="odd">
+<td align="left">eq_ratio</td>
+<td align="center">–</td>
+<td align="center">*</td>
+<td align="center">–</td>
+<td align="center">–</td>
+<td align="center">–</td>
+<td align="center">–</td>
+<td align="center">–</td>
+</tr>
+<tr class="even">
 <td align="left">response</td>
 <td align="center">–</td>
 <td align="center">–</td>
-<td align="center">+</td>
-<td align="center">–</td>
-<td align="center">–</td>
-<td align="center">–</td>
-<td align="center">–</td>
-</tr>
-<tr class="even">
-<td align="left">e_response</td>
-<td align="center">–</td>
-<td align="center">–</td>
-<td align="center">+</td>
+<td align="center">*</td>
 <td align="center">–</td>
 <td align="center">–</td>
 <td align="center">–</td>
 <td align="center">–</td>
 </tr>
 <tr class="odd">
-<td align="left">q_response</td>
+<td align="left">e_response</td>
 <td align="center">–</td>
 <td align="center">–</td>
-<td align="center">+</td>
+<td align="center">*</td>
 <td align="center">–</td>
 <td align="center">–</td>
 <td align="center">–</td>
 <td align="center">–</td>
 </tr>
 <tr class="even">
+<td align="left">q_response</td>
+<td align="center">–</td>
+<td align="center">–</td>
+<td align="center">*</td>
+<td align="center">–</td>
+<td align="center">–</td>
+<td align="center">–</td>
+<td align="center">–</td>
+</tr>
+<tr class="odd">
 <td align="left">transmittance</td>
 <td align="center">–</td>
 <td align="center">–</td>
 <td align="center">–</td>
-<td align="center">+</td>
+<td align="center">*</td>
 <td align="center">–</td>
-<td align="center">+</td>
+<td align="center">*</td>
 <td align="center">–</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">absorptance</td>
 <td align="center">–</td>
 <td align="center">–</td>
 <td align="center">–</td>
-<td align="center">+</td>
+<td align="center">*</td>
 <td align="center">–</td>
-<td align="center">+</td>
+<td align="center">*</td>
 <td align="center">–</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">absorbance</td>
 <td align="center">–</td>
 <td align="center">–</td>
 <td align="center">–</td>
-<td align="center">+</td>
+<td align="center">*</td>
 <td align="center">–</td>
-<td align="center">+</td>
+<td align="center">*</td>
 <td align="center">–</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">reflectance</td>
 <td align="center">–</td>
 <td align="center">–</td>
 <td align="center">–</td>
 <td align="center">–</td>
+<td align="center">*</td>
+<td align="center">*</td>
+<td align="center">–</td>
+</tr>
+<tr class="odd">
+<td align="left">color_of</td>
+<td align="center">–</td>
 <td align="center">+</td>
-<td align="center">+</td>
+<td align="center">–</td>
+<td align="center">–</td>
+<td align="center">–</td>
+<td align="center">–</td>
 <td align="center">–</td>
 </tr>
 <tr class="even">
@@ -4640,16 +4710,6 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 <td align="center"><strong>a, d, l</strong></td>
 <td align="center"><strong>a, d, l</strong></td>
 </tr>
-<tr class="even">
-<td align="left">color_of</td>
-<td align="center">–</td>
-<td align="center">+</td>
-<td align="center">–</td>
-<td align="center">–</td>
-<td align="center">–</td>
-<td align="center">–</td>
-<td align="center">–</td>
-</tr>
 </tbody>
 </table>
 <hr>
@@ -4659,8 +4719,9 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(sun.spct)</code></pre></div>
 <pre><code>## Summary of object: source_spct [522 x 3]
 ## Wavelength range 280 to 800 nm, step 0.9230769 to 1 nm
+## Label: sunlight, simulated 
 ## Measured on 2010-06-22 09:51:00 UTC 
-## Measured at 60.2091078 N, 24.9647354 E 
+## Measured at 60.203549 N, 24.966423 E 
 ## Time unit 1s
 ## 
 ##     w.length       s.e.irrad        s.q.irrad        
@@ -4677,10 +4738,12 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 <pre><code>## Summary of object: source_spct [1,044 x 4]
 ## containg  2  spectra in long form
 ## Wavelength range 280 to 800 nm, step 0.9230769 to 1 nm
+## a label: sunlight, simulated
+## b label: sunlight, simulated 
 ## a measured on 2010-06-22 09:51:00 UTC
 ## b measured on 2010-06-22 09:51:00 UTC 
-## a measured at 60.2091078 N, 24.9647354 E
-## b measured at 60.2091078 N, 24.9647354 E 
+## a measured at 60.203549 N, 24.966423 E
+## b measured at 60.203549 N, 24.966423 E 
 ## Time unit 1s
 ## 
 ##     w.length       s.e.irrad      spct.idx   s.q.irrad        
@@ -4712,7 +4775,7 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 <div id="collections-of-spectra-1" class="section level4">
 <h4>Collections of spectra</h4>
 <hr>
-Most frequently used summary methods are implemented for collections of spectra. See the Table for those methods that need to be applied with functions <code>msaply</code>, <code>msdply</code> or <code>mslply</code> to members in a collection returning the results in an array (vector, or matrix), a data frame or a list object. In many cases depending of the class desired for the result, one can chose a suitable <em>apply</em> function, and sometimes it is best to use such a function, even when the corresponding method is implemented for collections of spectra.
+Most frequently used summary methods are implemented for collections of spectra. See the Table 11 for those methods that need to be applied with functions <code>msaply</code>, <code>msdply</code> or <code>mslply</code> to members in a collection returning the results in an array (vector, or matrix), a data frame or a list object. In many cases depending of the class desired for the result, one can chose a suitable <em>apply</em> function, and sometimes it is best to use such a function, even when the corresponding method is implemented for collections of spectra.
 <hr>
 <p>Collections of spectra can be useful not only for time-series of spectra or spectral images, but also when dealing with a small group of related spectra. In the example below we show how to use a collection of spectra for calculating summaries. The spectra in a collection do <strong>not</strong> need to have been measured at the same wavelength values, or have the same number of rows or even of columns. Consequently, in many cases applying the wavelength summary functions described above to collections of spectra can be useful. The value returned is a data frame, with a number of data columns equal to the length of the returned value by the corresponding method for individual spectra.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">filters.mspct &lt;-<span class="st"> </span><span class="kw">filter_mspct</span>(<span class="kw">list</span>(<span class="dt">none =</span> clear.spct,
@@ -4735,8 +4798,9 @@ Most frequently used summary methods are implemented for collections of spectra.
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">peaks</span>(sun.spct, <span class="dt">span =</span> <span class="dv">51</span>)</code></pre></div>
 <pre><code>## Object: source_spct [3 x 2]
 ## Wavelength range 451 to 747 nm, step 44 to 252 nm 
+## Label: sunlight, simulated 
 ## Measured on 2010-06-22 09:51:00 UTC 
-## Measured at 60.2091078 N, 24.9647354 E 
+## Measured at 60.203549 N, 24.966423 E 
 ## Time unit 1s
 ## 
 ## # A tibble: 3 x 2
@@ -4748,8 +4812,9 @@ Most frequently used summary methods are implemented for collections of spectra.
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">valleys</span>(sun.spct, <span class="dt">span =</span> <span class="dv">51</span>)</code></pre></div>
 <pre><code>## Object: source_spct [9 x 2]
 ## Wavelength range 358 to 761 nm, step 30 to 72 nm 
+## Label: sunlight, simulated 
 ## Measured on 2010-06-22 09:51:00 UTC 
-## Measured at 60.2091078 N, 24.9647354 E 
+## Measured at 60.203549 N, 24.966423 E 
 ## Time unit 1s
 ## 
 ## # A tibble: 9 x 2
@@ -4764,8 +4829,9 @@ Most frequently used summary methods are implemented for collections of spectra.
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">peaks</span>(sun.spct, <span class="dt">span =</span> <span class="dv">51</span>, <span class="dt">unit.out =</span> <span class="st">&quot;photon&quot;</span>)</code></pre></div>
 <pre><code>## Object: source_spct [7 x 2]
 ## Wavelength range 451 to 754 nm, step 36 to 90 nm 
+## Label: sunlight, simulated 
 ## Measured on 2010-06-22 09:51:00 UTC 
-## Measured at 60.2091078 N, 24.9647354 E 
+## Measured at 60.203549 N, 24.966423 E 
 ## Time unit 1s
 ## 
 ## # A tibble: 7 x 2
@@ -4780,8 +4846,9 @@ Most frequently used summary methods are implemented for collections of spectra.
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">peaks</span>(sun.spct, <span class="dt">span =</span> <span class="dv">21</span>)</code></pre></div>
 <pre><code>## Object: source_spct [18 x 2]
 ## Wavelength range 354 to 774 nm, step 11 to 51 nm 
+## Label: sunlight, simulated 
 ## Measured on 2010-06-22 09:51:00 UTC 
-## Measured at 60.2091078 N, 24.9647354 E 
+## Measured at 60.203549 N, 24.966423 E 
 ## Time unit 1s
 ## 
 ## # A tibble: 18 x 2
@@ -4801,12 +4868,14 @@ Most frequently used summary methods are implemented for collections of spectra.
 <pre><code>## Object: filter_mspct [3 x 1]
 ## --- Member: none ---
 ## Object: filter_spct [0 x 2]
+## Label: theoretical fully transparent object 
 ## 
 ## # A tibble: 0 x 2
 ## # ... with 2 variables: w.length &lt;dbl&gt;, Tfr &lt;dbl&gt;
 ## --- Member: pet ---
 ## Object: filter_spct [8 x 2]
 ## Wavelength range 453 to 648 nm, step 6 to 76 nm 
+## Label: clear polyester film, 125um thick 
 ## 
 ## # A tibble: 8 x 2
 ##   w.length   Tfr
@@ -4819,6 +4888,7 @@ Most frequently used summary methods are implemented for collections of spectra.
 ## --- Member: yellow ---
 ## Object: filter_spct [5 x 2]
 ## Wavelength range 642 to 755 nm, step 8 to 64 nm 
+## Label: yellow theatrical 'gel', Rosco supergel no. 312, 'canary yellow' 
 ## 
 ## # A tibble: 5 x 2
 ##   w.length    Tfr
@@ -4944,6 +5014,16 @@ Most frequently used summary methods are implemented for collections of spectra.
 <p>We reuse collection of filter spectra <code>filters.mspct</code> from an earlier section.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">names</span>(filters.mspct)</code></pre></div>
 <pre><code>## [1] &quot;none&quot;   &quot;pet&quot;    &quot;yellow&quot;</code></pre>
+<p>We can add to the returned data frame attributes retrieved from the members of the collection.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">two_suns.mspct &lt;-<span class="st"> </span><span class="kw">source_mspct</span>(<span class="kw">list</span>(<span class="dt">sun1 =</span> sun.spct, <span class="dt">sun2 =</span> sun.spct))
+<span class="kw">q_irrad</span>(two_suns.mspct, 
+        <span class="dt">w.band =</span> <span class="kw">list</span>(<span class="dt">PAR =</span> <span class="kw">waveband</span>(<span class="kw">c</span>(<span class="dv">400</span>,<span class="dv">700</span>))),
+        <span class="dt">attr2tb =</span> <span class="kw">c</span>(<span class="dt">when.measured =</span> <span class="st">&quot;time&quot;</span>, <span class="dt">lon =</span> <span class="st">&quot;lon&quot;</span>, <span class="dt">lat =</span> <span class="st">&quot;lat&quot;</span>))</code></pre></div>
+<pre><code>## # A tibble: 2 x 5
+##   spct.idx          PAR                time      lon      lat
+##     &lt;fctr&gt;        &lt;dbl&gt;              &lt;dttm&gt;    &lt;dbl&gt;    &lt;dbl&gt;
+## 1     sun1 0.0008941352 2010-06-22 09:51:00 24.96642 60.20355
+## 2     sun2 0.0008941352 2010-06-22 09:51:00 24.96642 60.20355</code></pre>
 <p>We then convolve each filter’s spectral transmittance by the spectral irradiance of the light source.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">filtered_sun &lt;-<span class="st"> </span><span class="kw">convolve_each</span>(filters.mspct, sun.spct)
 <span class="kw">irrad</span>(filtered_sun, <span class="kw">list</span>(UVA.wb, PAR.wb))</code></pre></div>
@@ -5102,13 +5182,33 @@ Most frequently used summary methods are implemented for collections of spectra.
 <div id="collections-of-spectra-5" class="section level4">
 <h4>Collections of spectra</h4>
 <p>Here we construct a collection of filter spectra, and then we calculate the transmittance of these filters for two wavebands, obtaining the results as a data frame, with one row per filter, and one column per waveband. We reuse once more <code>filters.mspct</code> from an earlier section.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">transmittance</span>(filters.mspct, <span class="kw">list</span>(UVA.wb, PAR.wb))</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">transmittance</span>(filters.mspct, <span class="dt">w.band =</span> <span class="kw">list</span>(<span class="st">&quot;Tfr(UVA)&quot;</span> =<span class="st"> </span>UVA.wb, <span class="st">&quot;Tfr(PAR)&quot;</span> =<span class="st"> </span>PAR.wb))</code></pre></div>
 <pre><code>## # A tibble: 3 x 3
-##   spct.idx transmittance_UVA transmittance_PAR
-##     &lt;fctr&gt;             &lt;dbl&gt;             &lt;dbl&gt;
-## 1     none       1.000000000         1.0000000
-## 2      pet       0.782682353         0.9202450
-## 3   yellow       0.001601353         0.5655132</code></pre>
+##   spct.idx  `Tfr(UVA)` `Tfr(PAR)`
+##     &lt;fctr&gt;       &lt;dbl&gt;      &lt;dbl&gt;
+## 1     none 1.000000000  1.0000000
+## 2      pet 0.782682353  0.9202450
+## 3   yellow 0.001601353  0.5655132</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">transmittance</span>(filters.mspct,
+              <span class="dt">w.band =</span> <span class="kw">list</span>(<span class="dt">Tfr =</span> <span class="kw">waveband</span>(<span class="kw">c</span>(<span class="dv">350</span>, <span class="dv">550</span>))),
+              <span class="dt">attr2tb =</span> <span class="st">&quot;what.measured&quot;</span>)</code></pre></div>
+<pre><code>## # A tibble: 3 x 3
+##   spct.idx       Tfr
+##     &lt;fctr&gt;     &lt;dbl&gt;
+## 1     none 1.0000000
+## 2      pet 0.9127800
+## 3   yellow 0.1783379
+## # ... with 1 more variables: what.measured &lt;chr&gt;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">transmittance</span>(filters.mspct, 
+              <span class="kw">list</span>(<span class="st">&quot;Tfr(UVA)&quot;</span> =<span class="st"> </span>UVA.wb, <span class="st">&quot;Tfr(PAR)&quot;</span> =<span class="st"> </span>PAR.wb),
+              <span class="dt">attr2tb =</span> <span class="st">&quot;what.measured&quot;</span>)</code></pre></div>
+<pre><code>## # A tibble: 3 x 4
+##   spct.idx  `Tfr(UVA)` `Tfr(PAR)`
+##     &lt;fctr&gt;       &lt;dbl&gt;      &lt;dbl&gt;
+## 1     none 1.000000000  1.0000000
+## 2      pet 0.782682353  0.9202450
+## 3   yellow 0.001601353  0.5655132
+## # ... with 1 more variables: what.measured &lt;chr&gt;</code></pre>
 </div>
 </div>
 <div id="integrated-response" class="section level3">

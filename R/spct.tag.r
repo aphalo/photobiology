@@ -5,10 +5,14 @@
 #'
 #' Spectra are tagged by adding variables and attributes containing color
 #' definitions, labels, and a factor following the wavebands given in
-#' \code{w.band}.
+#' \code{w.band}. This methods are most useful for plotting realistic
+#' computed colors from spectral data.
 #'
 #' @param x an R object
 #' @param ... not used in current version
+#'
+#' @return A copy of \code{x} expanded with additional columns with
+#'   color-related information.
 #'
 #' @export tag
 #'
@@ -139,7 +143,9 @@ tag.generic_spct <- function(x,
   }
   x[["wb.f"]] <- factor(x[["wb.f"]], levels = wbs.name)
   # We add an attribute with tagging data
-  tag.data <- list(time.unit = getTimeUnit(x),
+  #   field "valid" is a patch to solve a bug in a quick and safe way
+  tag.data <- list(valid = TRUE, # NA's in time.unit at position 1 results in bug
+                   time.unit = getTimeUnit(x),
                    wb.key.name = "Bands",
                    wl.color = TRUE,
                    wb.color = TRUE,
@@ -350,6 +356,7 @@ wb2rect_spct <- function(w.band, short.names = TRUE) {
 #'
 #' @param x an R object
 #' @param ... not used in current version
+#'
 #' @export untag
 #'
 #' @family tagging and related functions

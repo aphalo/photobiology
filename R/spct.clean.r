@@ -11,6 +11,8 @@
 #'     values to use at each extreme of the range.
 #' @param ... currently ignored
 #'
+#' @return A copy of \code{x}, possibly with some of the spectral data values
+#'   replaced by the value passed to \code{fill}.
 #'
 #' @export
 #'
@@ -421,7 +423,7 @@ clean_spct <-
       fill <- c(fill, fill)
     }
     # wavelength range
-    if (is.any_spct(range) || is.numeric(range) && length(range) > 2L) {
+    if (is.generic_spct(range) || is.numeric(range) && length(range) > 2L) {
       range <- range(range, na.rm = TRUE)
     } else {
       if (is.na(range[1])) {

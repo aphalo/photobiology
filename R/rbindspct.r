@@ -334,7 +334,7 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
 #' @rdname extract
 #' @name Extract
 #'
-#' @seealso \code{\link[base]{subset.data.frame}} and \code{\link{trim_spct}}
+#' @seealso \code{\link[base]{subset}} and \code{\link{trim_spct}}
 #'
 "[.generic_spct" <-
   function(x, i, j, drop = NULL) {
@@ -615,15 +615,16 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
 #'
 "[.generic_mspct" <-
   function(x, i, drop = NULL) {
-    xx <- `[.listof`(x, i)
-    generic_mspct(xx, class = class(x))
+    spct.class <- rmDerivedMspct(x)[1]
+    xx <- `[`(x, i)
+    generic_mspct(xx, class = spct.class)
   }
 
 # Not exported
 # Check if class_spct is compatible with class_mspct
 #
 is.member_class <- function(l, x) {
-  class(l)[1] == "generic_mscpt" && is.any_spct(x) ||
+  class(l)[1] == "generic_mscpt" && is.generic_spct(x) ||
     sub("_mspct", "", class(l)[1], fixed = TRUE) == sub("_spct", "", class(x)[1], fixed = TRUE)
 }
 
@@ -680,6 +681,7 @@ is.member_class <- function(l, x) {
       stop("Deleting members from a matrix-like collection not supported.")
     } else {
       dimension <- attr(x, "mspct.dim", exact = TRUE)
+      dimension[1] <- dimension[1] - 1L
     }
   } else {
     dimension <- attr(x, "mspct.dim", exact = TRUE)

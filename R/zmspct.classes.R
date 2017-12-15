@@ -111,7 +111,7 @@ shared_member_class <- function(l, target.set = spct_classes()) {
 generic_mspct <- function(l = NULL, class = "generic_spct",
                           ncol = 1, byrow = FALSE,
                           dim = c(length(l) %/% ncol, ncol)) {
-  if (is.any_spct(l)) {
+  if (is.generic_spct(l)) {
     l <- list(l)
   }
   if (is.null(l)) {
@@ -502,7 +502,7 @@ split2mspct <- function(x,
                         ncol = 1, byrow = FALSE, ...) {
   stopifnot(!is.null(member.class) || !is.character(member.class))
   stopifnot(!is.null(spct.data.var) || !is.character(spct.data.var))
-  if (is.any_spct(x) && getMultipleWl(x) != 1) {
+  if (is.generic_spct(x) && getMultipleWl(x) != 1) {
     stop("'split2mspct()' is for slicing vertically wide data in data frames ",
          "'subset2mspct()' is used in the case of tidy data in long form.")
   }
@@ -680,7 +680,7 @@ subset2mspct <- function(x,
                          drop.idx = TRUE,
                          ncol = 1, byrow = FALSE, ...) {
   stopifnot(is.data.frame(x))
-  if (is.any_spct(x) && is.null(member.class)) {
+  if (is.generic_spct(x) && is.null(member.class)) {
     member.class <- class(x)[1]
   }
   stopifnot(is.character(member.class))
@@ -726,7 +726,7 @@ subset2mspct <- function(x,
   if (!is.null(comment)) {
     z <- msmsply(z, `comment<-`, value = comment)
   }
-  if (!is.any_spct(x)) {
+  if (!is.generic_spct(x)) {
     return(z)
   }
   if (is_scaled(x)) {

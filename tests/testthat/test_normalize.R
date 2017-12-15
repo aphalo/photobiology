@@ -7,7 +7,7 @@ test_that("normalize", {
   my.spct <- q2e(sun.spct, action = "replace")
 
   expect_equal(max(normalize(my.spct)$s.e.irrad), 1, tolerance = 1e-5)
-  expect_equal(max(normalize(my.spct, norm = "max")$s.e.irrad), 1, 1, tolerance = 1e-5)
+  expect_equal(max(normalize(my.spct, norm = "max")$s.e.irrad), 1, tolerance = 1e-5)
   expect_warning(irrad(normalize(my.spct, norm = "max")))
   expect_equal(suppressWarnings(irrad(normalize(my.spct, norm = "max"))), NA_real_)
   expect_named(normalize(my.spct), names(my.spct))

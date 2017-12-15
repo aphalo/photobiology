@@ -3,10 +3,18 @@
 #' Shift the scale of a spectrum using a summary function
 #'
 #' These functions return a spectral object of the same class as the one
-#' supplied as argument but with the spectral data on a shift scale.
+#' supplied as argument but with the spectral data on a shifted scale. A range
+#' of wavlengths is taken a reference (zero or another numeric constant) and a
+#' summary is calculated for this waveband. The difference between the computed
+#' and reference value are used to shift the scale so that these two values
+#' match in the returned object.
 #'
 #' @param x An R object
 #' @param ... additonal named arguments passed down to \code{f}.
+#'
+#' @return A copy of \code{x} with the spectral data values replaced with values
+#'   zero-shifted.
+#'
 #' @export fshift
 #' @family rescaling functions
 #'

@@ -12,6 +12,7 @@ geocode2tb() and what_measured2tb().
 spectra, used to automatically call add_attr2tb() to add attributes to their
 output.
 * Fix bug in calculation of solar time of day which could result in values > 24 h.
+* Revise vignettes.
 
 photobiology 0.9.17
 ===================

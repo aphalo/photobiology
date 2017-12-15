@@ -10,6 +10,9 @@
 #' @param strength numeric value to adjust the degree of smoothing
 #' @param ... other parameters passed to the underlying smoothing functions
 #'
+#' @return A copy of \code{x} with spectral data values replaced by smoothed
+#'   ones.
+#'
 #' @note Method "custom" is our home-brewed method which applies strong
 #'   smoothing to low signal regions of the spectral data, and weaker or no
 #'   smoothing to the high signal areas. Values very close to zero are set to

@@ -37,7 +37,7 @@ copy_attributes.generic_spct <- function(x, y,
     class(y) <- class(x)
     check_spct(y)
   }
-  stopifnot(is.any_spct(y))
+  stopifnot(is.generic_spct(y))
   if (length(which) == 0) {
     which <- c("comment",
                "instr.desc",

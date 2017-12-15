@@ -545,6 +545,12 @@ irrad(sun.spct, UV_bands.lst, quantity = "average")
 ## ---- col-names-1--------------------------------------------------------
 names(filters.mspct)
 
+## ------------------------------------------------------------------------
+two_suns.mspct <- source_mspct(list(sun1 = sun.spct, sun2 = sun.spct))
+q_irrad(two_suns.mspct, 
+        w.band = list(PAR = waveband(c(400,700))),
+        attr2tb = c(when.measured = "time", lon = "lon", lat = "lat"))
+
 ## ---- col-convolve-1-----------------------------------------------------
 filtered_sun <- convolve_each(filters.mspct, sun.spct)
 irrad(filtered_sun, list(UVA.wb, PAR.wb))
@@ -590,7 +596,17 @@ irrad(sun.spct * polyester.spct, list(UVB.wb, UVA.wb, PAR.wb, wb.trim = TRUE)) /
   irrad(sun.spct, list(UVB.wb, UVA.wb, PAR.wb, wb.trim = TRUE))
 
 ## ------------------------------------------------------------------------
-transmittance(filters.mspct, list(UVA.wb, PAR.wb))
+transmittance(filters.mspct, w.band = list("Tfr(UVA)" = UVA.wb, "Tfr(PAR)" = PAR.wb))
+
+## ------------------------------------------------------------------------
+transmittance(filters.mspct,
+              w.band = list(Tfr = waveband(c(350, 550))),
+              attr2tb = "what.measured")
+
+## ------------------------------------------------------------------------
+transmittance(filters.mspct, 
+              list("Tfr(UVA)" = UVA.wb, "Tfr(PAR)" = PAR.wb),
+              attr2tb = "what.measured")
 
 ## ------------------------------------------------------------------------
 response(photodiode.spct)

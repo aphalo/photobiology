@@ -155,7 +155,7 @@ get_valleys <- function(x, y,
 #'   all other values in its window to be considered a peak. Default: TRUE.
 #' @param ... ignored
 #'
-#' @return a subset of x with rows corresponding to local maxima.
+#' @return A subset of \code{x} with rows corresponding to local maxima.
 #'
 #'
 #' @export
@@ -317,7 +317,7 @@ peaks.generic_mspct <- function(x, span = 5, ignore_threshold = 0, strict = TRUE
 #'   all other values in its window to be considered a peak. Default: TRUE.
 #' @param ... ignored
 #'
-#' @return a subset of x with rows corresponding to local maxima.
+#' @return A subset of \code{x} with rows corresponding to local minima.
 #'
 #'
 #' @export

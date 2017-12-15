@@ -28,13 +28,22 @@
 #'   of ratios, as rescaling and normalization do not invalidate the calculation
 #'   of ratios.
 #'
-#' @return One numeric value for each waveband with no change in scale factor,
-#'   with name attribute set to the name of each waveband unless a named list is
-#'   supplied in which case the names of the list elements are used. The
-#'   time.unit attribute is copied from the spectrum object to the output. Units
-#'   are as follows: If time.unit is second, [W m-2 nm-1] -> [mol s-1 m-2] or [W
-#'   m-2 nm-1] -> [W m-2] If time.unit is day, [J d-1 m-2 nm-1] -> [mol d-1 m-2]
-#'   or [J d-1 m-2 nm-1] -> [J m-2]
+#' @return A named \code{numeric} vector in the case of methods for individual
+#'   spectra, with one value for each \code{waveband} passed to parameter
+#'   \code{w.band}. A \code{data.frame} in the case of collections of spectra,
+#'   containing one column for each \code{waveband} object, an index column with
+#'   the names of the spectra, and optionally additional columns with metadata
+#'   values retrieved from the attributes of the member spectra.
+#'
+#'   By default values are only integrated, but depending on the argument passed
+#'   to parameter \code{quantity} they can be re-expressed as relative fractions
+#'   or percentages. In the case of vector output, \code{names} attribute is set
+#'   to the name of the corresponding waveband unless a named list is supplied
+#'   in which case the names of the list members are used. The \code{time.unit}
+#'   attribute is copied from the spectrum object to the output. Units are as
+#'   follows: If time.unit is second, [W m-2 nm-1] -> [mol s-1 m-2] or [W m-2
+#'   nm-1] -> [W m-2] If time.unit is day, [J d-1 m-2 nm-1] -> [mol d-1 m-2] or
+#'   [J d-1 m-2 nm-1] -> [J m-2]
 #'
 #' @export
 #' @examples
@@ -320,12 +329,21 @@ irrad_spct <- irrad.source_spct
 #' e_irrad(sun.spct, split_bands(c(400,700), length.out = 3),
 #'         quantity = "contribution.pc")
 #'
-#' @return One numeric value for each waveband with no change in scale factor,
-#'   with name attribute set to the name of each waveband unless a named list is
-#'   supplied in which case the names of the list elements are used. The
-#'   time.unit attribute is copied from the spectrum object to the output. Units
-#'   are as follows: If units are absolute and time.unit is second, [W m-2 nm-1]
-#'   -> [W m-2] If time.unit is day, [J d-1 m-2 nm-1] -> [J m-2]; if units are
+#' @return A named \code{numeric} vector in the case of methods for individual
+#'   spectra, with one value for each \code{waveband} passed to parameter
+#'   \code{w.band}. A \code{data.frame} in the case of collections of spectra,
+#'   containing one column for each \code{waveband} object, an index column with
+#'   the names of the spectra, and optionally additional columns with metadata
+#'   values retrieved from the attributes of the member spectra.
+#'
+#'   By default values are only integrated, but depending on the argument passed
+#'   to parameter \code{quantity} they can be re-expressed as relative fractions
+#'   or percentages. In the case of vector output, \code{names} attribute is set
+#'   to the name of the corresponding waveband unless a named list is supplied
+#'   in which case the names of the list members are used. The  time.unit
+#'   attribute is copied from the spectrum object to the output. Units are as
+#'   follows: If units are absolute and time.unit is second, [W m-2 nm-1] -> [W
+#'   m-2] If time.unit is day, [J d-1 m-2 nm-1] -> [J m-2]; if units are
 #'   relative, fraction of one or percent.
 #'
 #' @note The last two parameters control speed optimizations. The defaults
@@ -397,8 +415,6 @@ e_irrad.source_spct <-
 #'   as argument to spct are flagged as an error
 #' @param ... other arguments (possibly ignored)
 #'
-#'
-#'
 #' @export
 #'
 #' @examples
@@ -411,12 +427,21 @@ e_irrad.source_spct <-
 #' q_irrad(sun.spct, split_bands(c(400,700), length.out = 3), quantity = "contribution")
 #' q_irrad(sun.spct, split_bands(c(400,700), length.out = 3), quantity = "contribution.pc")
 #'
-#' @return One numeric value for each waveband with no change in scale factor,
-#'   with name attribute set to the name of each waveband unless a named list is
-#'   supplied in which case the names of the list elements are used. The
-#'   time.unit attribute is copied from the spectrum object to the output. Units
-#'   are as follows: If time.unit is second, [W m-2 nm-1] -> [mol s-1 m-2] If
-#'   time.unit is day, [J d-1 m-2 nm-1] -> [mol d-1 m-2]
+#' @return A named \code{numeric} vector in the case of methods for individual
+#'   spectra, with one value for each \code{waveband} passed to parameter
+#'   \code{w.band}. A \code{data.frame} in the case of collections of spectra,
+#'   containing one column for each \code{waveband} object, an index column with
+#'   the names of the spectra, and optionally additional columns with metadata
+#'   values retrieved from the attributes of the member spectra.
+#'
+#'   By default values are only integrated, but depending on the argument passed
+#'   to parameter \code{quantity} they can be re-expressed as relative fractions
+#'   or percentages. In the case of vector output, \code{names} attribute is set
+#'   to the name of the corresponding waveband unless a named list is supplied
+#'   in which case the names of the list members are used. The time.unit
+#'   attribute is copied from the spectrum object to the output. Units are as
+#'   follows: If time.unit is second, [W m-2 nm-1] -> [mol s-1 m-2] If time.unit
+#'   is day, [J d-1 m-2 nm-1] -> [mol d-1 m-2]
 #'
 #' @note The last two parameters control speed optimizations. The defaults
 #'   should be suitable in mosts cases. If you will use repeatedly the same SWFs

@@ -138,7 +138,7 @@ new_waveband <- function(w.low, w.high,
 #'
 
 split_bands <- function(x, list.names=NULL, short.names=is.null(list.names), length.out=NULL) {
-  if (!is.any_spct(x) && !is.waveband(x) && is.list(x)) {
+  if (!is.generic_spct(x) && !is.waveband(x) && is.list(x)) {
     x.len <- length(x)
     names.len <- length(list.names)
     if (names.len < x.len) {

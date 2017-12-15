@@ -7,6 +7,11 @@
 #'
 #' @param x An R object
 #' @param ... additonal named arguments passed down to \code{f}.
+#'
+#' @return A copy of \code{x} with the original spectral data values replaced
+#'   with rescaled values, and the \code{"scaled"} attribute set to a list
+#'   describing the scaling applied.
+#'
 #' @export fscale
 #' @family rescaling functions
 #'
@@ -418,7 +423,7 @@ fscale_spct <- function(spct, range, col.names, f, target, ...) {
 #' @family rescaling functions
 #'
 is_scaled <- function(x) {
-  if (!is.any_spct(x) && !is.any_summary_spct(x)) {
+  if (!is.generic_spct(x) && !is.summary_generic_spct(x)) {
     return(NA)
   }
   spct.attr <- attr(x, "scaled", exact = TRUE)
@@ -442,7 +447,7 @@ is_scaled <- function(x) {
 #' @family Rfr attribute functions
 #'
 getScaled <- function(x) {
-  if (is.any_spct(x) || is.any_summary_spct(x)) {
+  if (is.generic_spct(x) || is.summary_generic_spct(x)) {
     scaled <- attr(x, "scaled", exact = TRUE)
     if (is.null(scaled) || is.na(scaled)) {
       # need to handle objects created with old versions
@@ -479,7 +484,7 @@ getScaled <- function(x) {
 #'
 setScaled <- function(x, scaled = FALSE) {
   name <- substitute(x)
-  if ((is.any_spct(x) || is.any_summary_spct(x)) && !is.null(scaled)) {
+  if ((is.generic_spct(x) || is.summary_generic_spct(x)) && !is.null(scaled)) {
     attr(x, "scaled") <- scaled
     if (is.name(name)) {
       name <- as.character(name)

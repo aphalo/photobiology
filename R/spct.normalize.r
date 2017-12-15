@@ -9,7 +9,10 @@
 #'
 #' @param x An R object
 #' @param ... not used in current version
-#' @return A new object of the same class as \code{x}.
+#'
+#' @return A copy of \code{x}, with spectral data values normalized to one for
+#' the criterion specified by the argument passed to \code{norm}.
+#'
 #' @export normalize
 #' @note Accepted values for \code{norm} vary depending on the class of
 #'   \code{x}
@@ -296,7 +299,7 @@ normalize.cps_mspct <- function(x,
 #' @keywords internal
 #'
 normalize_spct <- function(spct, range, norm, col.names) {
-  stopifnot(is.any_spct(spct), !is.null(col.names),
+  stopifnot(is.generic_spct(spct), !is.null(col.names),
             col.names %in% names(spct))
   num.spectra <- getMultipleWl(spct)
 
@@ -370,7 +373,7 @@ normalize_spct <- function(spct, range, norm, col.names) {
 #' @family rescaling functions
 #'
 is_normalized <- function(x) {
-  if (!is.any_spct(x) && !is.any_summary_spct(x)) {
+  if (!is.generic_spct(x) && !is.summary_generic_spct(x)) {
     return(NA)
   }
   spct.attr <- attr(x, "normalized", exact = TRUE)
@@ -394,7 +397,7 @@ is_normalized <- function(x) {
 #' @family rescaling functions
 #'
 getNormalized <- function(x) {
-  if (is.any_spct(x) || is.any_summary_spct(x)) {
+  if (is.generic_spct(x) || is.summary_generic_spct(x)) {
     normalized <- attr(x, "normalized", exact = TRUE)
     if (is.null(normalized) || is.na(normalized)) {
       # need to handle objects created with old versions
@@ -421,7 +424,7 @@ getNormalized <- function(x) {
 #'
 setNormalized <- function(x, norm = FALSE) {
   name <- substitute(x)
-  if ((is.any_spct(x) || is.any_summary_spct(x)) &&
+  if ((is.generic_spct(x) || is.summary_generic_spct(x)) &&
       (is.na(norm) || is.numeric(norm) || is.logical(norm))) {
     attr(x, "normalized") <- norm
     if (is.name(name)) {

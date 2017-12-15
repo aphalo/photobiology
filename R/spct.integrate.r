@@ -6,7 +6,7 @@
 #'
 #' @return One or more numeric values with no change in scale factor: e.g. [W
 #'   m-2 nm-1] -> [W m-2]. Each value in the returned vector corresponds to a
-#'   variable in the spectral object, except for wavelenght.
+#'   variable in the spectral object, except for wavelength.
 #'
 #' @export
 #' @examples
@@ -87,7 +87,7 @@ interpolate_spct <- function(spct,
                              w.length.out = NULL,
                              fill = NA,
                              length.out = NULL) {
-  stopifnot(is.any_spct(spct))
+  stopifnot(is.generic_spct(spct))
   if (length(w.length.out) == 0 && is.null(length.out)) {
     if (is.null(w.length.out)) {
       # with default we return the imput

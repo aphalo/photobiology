@@ -14,17 +14,27 @@
 #'   interpolation errors
 #' @param ... other arguments (possibly ignored)
 #'
-#' @return a single numeric nondimensional value giving a photon ratio between
-#'   pairs of wavebands, with name attribute set to the name of the wavebands
-#'   unless a named list of wavebands is supplied in which case the names of the
-#'   list elements are used, with "(q:q)" appended.
+#' @return In the case of methods for individual spectra, a \code{numeric}
+#'   vector of nondimensional values giving a photon ratio between integrated
+#'   photon irradiances for for pairs of wavebands, with name attribute set to
+#'   the name of the wavebands unless a named list of wavebands is supplied in
+#'   which case the names of the list elements are used, with "(q:q)" appended.
+#'   A \code{data.frame} in the case of collections of spectra, containing one
+#'   column for each ratio definition, an index column with the names of the
+#'   spectra, and optionally additional columns with metadata values retrieved
+#'   from the attributes of the member spectra.
+#'
+#'   Ratio definitions are "assembled" from the arguments passed to
+#'   \code{w.band.num} and \code{w.band.denom}. If both arguments are of equal
+#'   length, then the wavebands are paired to obtain as many ratios as the
+#'   number of wavebands in each list. Recycling for wavebands takes place when
+#'   the number of denominator and numerator wavebands differ.
 #'
 #' @export
 #' @examples
 #' q_ratio(sun.spct, new_waveband(400,500), new_waveband(400,700))
 #'
-#' @note Recycling for wavebans takes place when the number of denominator and
-#'   denominator wavebands differ. The last two parameters control speed
+#' @note The last two parameters control speed
 #'   optimizations. The defaults should be suitable in mosts cases. If you will
 #'   use repeatedly the same SWFs on many spectra measured at exactly the same
 #'   wavelengths you may obtain some speed up by setting
@@ -92,11 +102,21 @@ q_ratio.source_spct <-
 #'   interpolation errors
 #' @param ... other arguments (possibly ignored)
 #'
-#' @return A single numeric nondimensional value giving an energy ratio between
-#'   pairs of wavebands, with name attribute set to the name of each waveband
-#'   unless a named list of wavebands is supplied in which case the names of the
-#'   list elements are used, with "(e:e)" appended.
+#' @return In the case of methods for individual spectra, a \code{numeric}
+#'   vector of nondimensional values giving a energy ratio between between
+#'   integrated energy irradiances for pairs of wavebands, with name attribute
+#'   set to the name of the wavebands unless a named list of wavebands is
+#'   supplied in which case the names of the list elements are used, with
+#'   "(e:e)" appended. A \code{data.frame} in the case of collections of
+#'   spectra, containing one column for each ratio definition, an index column
+#'   with the names of the spectra, and optionally additional columns with
+#'   metadata values retrieved from the attributes of the member spectra.
 #'
+#'   Ratio definitions are "assembled" from the arguments passed to
+#'   \code{w.band.num} and \code{w.band.denom}. If both arguments are of equal
+#'   length, then the wavebands are paired to obtain as many ratios as the
+#'   number of wavebands in each list. Recycling for wavebands takes place when
+#'   the number of denominator and numerator wavebands differ.
 #'
 #' @export e_ratio
 #' @examples
@@ -166,11 +186,21 @@ e_ratio.source_spct <-
 #'   interpolation errors
 #' @param ... other arguments (possibly ignored)
 #'
-#' @return A vector of \code{numeric} values giving number of moles of photons
-#'   per Joule for each waveband, with name attribute set to the name of each
-#'   waveband unless a named list of wavebands is supplied in which case the
-#'   names of the list elements are used, with "q:e" prepended..
+#' @return Computed values are ratios between photon irradiance and energy
+#'   irradiance for a given waveband. A named \code{numeric} vector in the case
+#'   of methods for individual spectra, with one value for each \code{waveband}
+#'   passed to parameter \code{w.band}. A \code{data.frame} in the case of
+#'   collections of spectra, containing one column for each \code{waveband}
+#'   object, an index column with the names of the spectra, and optionally
+#'   additional columns with metadata values retrieved from the attributes of
+#'   the member spectra.
 #'
+#'   By default values are only integrated, but depending on the argument passed
+#'   to parameter \code{quantity} they can be re-expressed as relative fractions
+#'   or percentages. In the case of vector output, \code{names} attribute is set
+#'   to the name of the corresponding waveband unless a named list is supplied
+#'   in which case the names of the list members are used, with "q:e" prepended.
+#'   Units [mol J-1].
 #'
 #' @export
 #' @examples
@@ -242,11 +272,21 @@ qe_ratio.source_spct <-
 #'   interpolation errors
 #' @param ... other arguments (possibly ignored)
 #'
-#' @return a numeric value giving number of Joule per mol of photons for each
-#'   waveband, with name attribute set to the name of each waveband unless a
-#'   named list of wavebands is supplied in which case the names of the list
-#'   elements are used, with "e:q" prepended..
+#' @return Computed values are ratios between energy irradiance and photon
+#'   irradiance for a given waveband. A named \code{numeric} vector in the case
+#'   of methods for individual spectra, with one value for each \code{waveband}
+#'   passed to parameter \code{w.band}. A \code{data.frame} in the case of
+#'   collections of spectra, containing one column for each \code{waveband}
+#'   object, an index column with the names of the spectra, and optionally
+#'   additional columns with metadata values retrieved from the attributes of
+#'   the member spectra.
 #'
+#'   By default values are only integrated, but depending on the argument passed
+#'   to parameter \code{quantity} they can be re-expressed as relative fractions
+#'   or percentages. In the case of vector output, \code{names} attribute is set
+#'   to the name of the corresponding waveband unless a named list is supplied
+#'   in which case the names of the list members are used, with "e:q" prepended.
+#'   Units [J mol-1].
 #'
 #' @export
 #' @examples

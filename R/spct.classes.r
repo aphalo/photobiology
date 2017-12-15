@@ -1045,7 +1045,7 @@ setChromaSpct <-
 #' is.source_spct(sun.spct)
 #' is.filter_spct(sun.spct)
 #' is.generic_spct(sun.spct)
-#' is.any_spct(sun.spct)
+#' is.generic_spct(sun.spct)
 #'
 #' @export is.generic_spct
 #' @rdname is.generic_spct
@@ -1053,7 +1053,7 @@ setChromaSpct <-
 #' is.source_spct(sun.spct)
 #' is.filter_spct(sun.spct)
 #' is.generic_spct(sun.spct)
-#' is.any_spct(sun.spct)
+#' is.generic_spct(sun.spct)
 #'
 is.generic_spct <- function(x) inherits(x, "generic_spct")
 
@@ -1147,7 +1147,7 @@ class_spct <- function(x) {
 #' is_tagged(sun.spct)
 #'
 is_tagged <- function(x) {
-  if (!is.any_spct(x)) {
+  if (!is.generic_spct(x)) {
     return(NA)
   } else {
     tags <- attr(x, "spct.tags", exact=TRUE)
@@ -1404,7 +1404,7 @@ getTimeUnit <- function(x, force.duration = FALSE) {
 #'
 convertTimeUnit <- function(x, time.unit = NULL, byref = FALSE) {
   #  if (!byref) x.out <- x else x.out <- copy(x) # needs fixing!
-  if (is.null(time.unit) || !is.any_spct(x)) {
+  if (is.null(time.unit) || !is.generic_spct(x)) {
     return(invisible(x))
   }
   x.out <- checkTimeUnit(x)
@@ -1815,7 +1815,7 @@ getAfrType <- function(x) {
 #' @export
 #'
 getSpctVersion <- function(x) {
-  if (is.any_spct(x) || is.old_spct(x)) {
+  if (is.generic_spct(x) || is.old_spct(x)) {
     version <- attr(x, "spct.version", exact = TRUE)
     if (is.null(version)) {
       # need to handle objects created with old versions
@@ -1872,7 +1872,7 @@ checkSpctVersion <- function(x) {
 #' @family multiple.wl attribute functions
 #'
 setMultipleWl <- function(x, multiple.wl = NULL) {
-  stopifnot(is.any_spct(x) || is.any_summary_spct(x))
+  stopifnot(is.generic_spct(x) || is.summary_generic_spct(x))
   name <- substitute(x)
   if (is.null(multiple.wl)) {
     multiple.wl <- getMultipleWl(x)
@@ -1905,7 +1905,7 @@ setMultipleWl <- function(x, multiple.wl = NULL) {
 #' getMultipleWl(sun.spct)
 #'
 getMultipleWl <- function(x) {
-  if (is.any_spct(x) || is.any_summary_spct(x)) {
+  if (is.generic_spct(x) || is.summary_generic_spct(x)) {
     multiple.wl <- attr(x, "multiple.wl", exact = TRUE)
     if (is.null(multiple.wl) || is.na(multiple.wl) || !is.numeric(multiple.wl)) {
       # need to handle objects created with old versions
@@ -2347,7 +2347,7 @@ getWhereMeasured.generic_mspct <- function(x,
 #'
 setInstrDesc <- function(x, instr.desc) {
   name <- substitute(x)
-  if (is.any_spct(x) || is.any_summary_spct(x)) {
+  if (is.generic_spct(x) || is.summary_generic_spct(x)) {
     attr(x, "instr.desc") <- instr.desc
     if (is.name(name)) {
       name <- as.character(name)
@@ -2370,7 +2370,7 @@ setInstrDesc <- function(x, instr.desc) {
 #' @family measurement metadata functions
 #'
 getInstrDesc <- function(x) {
-  if (is.any_spct(x) || is.any_summary_spct(x)) {
+  if (is.generic_spct(x) || is.summary_generic_spct(x)) {
     if (isValidInstrDesc(x)) {
       instr.desc <- attr(x, "instr.desc", exact = TRUE)
     } else {
@@ -2417,7 +2417,7 @@ trimInstrDesc <- function(x,
                                      "bench.slit")
                           ) {
   name <- substitute(x)
-  if ((is.any_spct(x) || is.any_summary_spct(x)) &&
+  if ((is.generic_spct(x) || is.summary_generic_spct(x)) &&
       fields[1] != "*") {
     instr.desc <- attr(x, "instr.desc", exact = TRUE)
     if (inherits(instr.desc, "instr_desc") ||
@@ -2465,7 +2465,7 @@ trimInstrDesc <- function(x,
 #' @family measurement metadata functions
 #'
 isValidInstrDesc <- function(x) {
-  if (is.any_spct(x) || is.any_summary_spct(x)) {
+  if (is.generic_spct(x) || is.summary_generic_spct(x)) {
     instr.desc <- attr(x, "instr.desc", exact = TRUE)
     if (is.null(instr.desc)) {
       return(FALSE)
@@ -2513,7 +2513,7 @@ isValidInstrDesc <- function(x) {
 #'
 setInstrSettings <- function(x, instr.settings) {
   name <- substitute(x)
-  if (is.any_spct(x) || is.any_summary_spct(x)) {
+  if (is.generic_spct(x) || is.summary_generic_spct(x)) {
     attr(x, "instr.settings") <- instr.settings
     if (is.name(name)) {
       name <- as.character(name)
@@ -2537,7 +2537,7 @@ setInstrSettings <- function(x, instr.settings) {
 #' @family measurement metadata functions
 #'
 getInstrSettings <- function(x) {
-  if (is.any_spct(x) || is.any_summary_spct(x)) {
+  if (is.generic_spct(x) || is.summary_generic_spct(x)) {
     if (isValidInstrSettings(x)) {
       instr.settings <- attr(x, "instr.settings", exact = TRUE)
     } else {
@@ -2578,7 +2578,7 @@ getInstrSettings <- function(x) {
 trimInstrSettings <- function(x,
                               fields = "*" ) {
   name <- substitute(x)
-  if ((is.any_spct(x) || is.any_summary_spct(x)) &&
+  if ((is.generic_spct(x) || is.summary_generic_spct(x)) &&
       fields[1] != "*") {
     instr.settings <- attr(x, "instr.settings", exact = TRUE)
     if (inherits(instr.settings, "instr_settings") ||
@@ -2626,7 +2626,7 @@ trimInstrSettings <- function(x,
 #' @family measurement metadata functions
 #'
 isValidInstrSettings <- function(x) {
-  if (is.any_spct(x) || is.any_summary_spct(x)) {
+  if (is.generic_spct(x) || is.summary_generic_spct(x)) {
     instr.settings <- attr(x, "instr.settings", exact = TRUE)
     if (is.null(instr.settings)) {
       return(FALSE)
@@ -2677,7 +2677,7 @@ isValidInstrSettings <- function(x) {
 #'
 setWhatMeasured <- function(x, what.measured) {
   name <- substitute(x)
-  if (is.any_spct(x) || is.any_summary_spct(x)) {
+  if (is.generic_spct(x) || is.summary_generic_spct(x)) {
     attr(x, "what.measured") <- what.measured
     if (is.name(name)) {
       name <- as.character(name)
@@ -2701,7 +2701,7 @@ setWhatMeasured <- function(x, what.measured) {
 #' @family measurement metadata functions
 #'
 getWhatMeasured <- function(x) {
-  if (is.any_spct(x) || is.any_summary_spct(x)) {
+  if (is.generic_spct(x) || is.summary_generic_spct(x)) {
     what.measured <- attr(x, "what.measured", exact = TRUE)
     if (is.null(what.measured) || is.na(what.measured)) {
       # need to handle objects created with old versions
