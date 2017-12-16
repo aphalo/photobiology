@@ -1164,7 +1164,7 @@ Methods <code>[[</code>, <code>$</code> and <code>[[&lt;-</code>, extract and re
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">two_suns.mspct[[<span class="st">&quot;sun1&quot;</span>]] &lt;-<span class="st"> </span>sun.spct <span class="op">*</span><span class="st"> </span><span class="dv">2</span>
 two_suns.mspct[[<span class="st">&quot;sun2&quot;</span>]] &lt;-<span class="st"> </span><span class="ot">NULL</span>
 two_suns.mspct</code></pre></div>
-<pre><code>## Object: source_mspct [2 x 1]
+<pre><code>## Object: source_mspct [1 x 1]
 ## --- Member: sun1 ---
 ## Object: source_spct [522 x 2]
 ## Wavelength range 280 to 800 nm, step 0.9230769 to 1 nm 
@@ -1638,7 +1638,7 @@ There are cases where functions <code>convolve_each()</code> and <code>msmsply()
 ## 
 ## --- END ---</code></pre>
 <p>Other methods available are <code>getWhereMeasured</code> and <code>setWhereMeasured</code>, and <code>getWhatMeasured</code> and <code>setWhatMeasured</code>.</p>
-<p>Functions <code>when.measured2tb()</code>, <code>geocode2tb()</code>, <code>lon2tb()</code>, <code>lat2tb()</code> and <code>what.measured2tb()</code> extract these same attributes from collection members into a tibble or data frame. If an existing data frame or tibble with a matching number of rows is passed as second argument the values for the attribute are saved to a new column.</p>
+<p>Functions <code>when.measured2tb()</code>, <code>geocode2tb()</code>, <code>lon2tb()</code>, <code>lat2tb()</code> and <code>what.measured2tb()</code> extract these same attributes from collection members into a tibble or data frame. In contrast to the “get” methods described above, if an existing data frame or tibble with a matching number of rows is passed as second argument, the values for the attribute are saved into a new column appended at the right edge of the tibble or data frame.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">when_measured2tb</span>(two.mspct)</code></pre></div>
 <pre><code>## # A tibble: 2 x 2
 ##   spct.idx       when.measured
@@ -1652,18 +1652,7 @@ There are cases where functions <code>convolve_each()</code> and <code>msmsply()
 ##     &lt;fctr&gt;              &lt;dttm&gt;
 ## 1        A 2015-10-31 08:00:00
 ## 2        B 2015-10-31 09:00:00</code></pre>
-<p>By passing the same data frame as argument to successive calls in a sequence, multiple attributes can be retrieved and saved to multiple columns. Here we first compute summary values and then add to the data frame returned by <code>q_irrad</code>, attributes retrieved from the original spectral data objects.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">irrad.tb &lt;-<span class="st"> </span><span class="kw">q_irrad</span>(two.mspct)
-irrad.tb &lt;-<span class="st"> </span><span class="kw">lon2tb</span>(two.mspct, irrad.tb)
-irrad.tb &lt;-<span class="st"> </span><span class="kw">lat2tb</span>(two.mspct, irrad.tb)
-irrad.tb &lt;-<span class="st"> </span><span class="kw">when_measured2tb</span>(two.mspct, irrad.tb)
-irrad.tb</code></pre></div>
-<pre><code>## # A tibble: 2 x 5
-##   spct.idx q_irrad_Total      lon      lat       when.measured
-##     &lt;fctr&gt;         &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;              &lt;dttm&gt;
-## 1        A   0.001255336 24.96642 60.20355 2015-10-31 08:00:00
-## 2        B   0.002510671 24.96642 60.20355 2015-10-31 09:00:00</code></pre>
-<p>Function <code>add_attr2tb()</code> adds one or more columns with attributes to a tibble or data frame. As retrieval of multiple attributes is a frequent operation, we have defined function <code>add_attr2tb</code> to simplify code as that shown in the previous code chunk. We here also demonstrate that because the data frame object is passed to the first positional argument, we can use a <em>pipe</em>.</p>
+<p>Function <code>add_attr2tb()</code> adds one or more columns with attributes to a tibble or data frame. We here also demonstrate that because the data frame object is passed to the first positional argument, we can use a <em>pipe</em>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">q_irrad</span>(two.mspct) <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">add_attr2tb</span>(two.mspct, 
               <span class="dt">col.names =</span> <span class="kw">c</span>(<span class="st">&quot;lon&quot;</span>, <span class="st">&quot;lat&quot;</span>, <span class="st">&quot;when.measured&quot;</span>))</code></pre></div>
@@ -3957,7 +3946,10 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 <p>The added factor and colour data can be used for further processing or for plotting. Information about the tagging and wavebands is stored in an attribute <code>tag.attr</code> in every tagged spectrum, this yields a more compact output and keeps a <em>trace</em> of the tagging.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">tg.sun.spct &lt;-<span class="st"> </span><span class="kw">tag</span>(sun.spct, PAR.wb)
 <span class="kw">attr</span>(tg.sun.spct, <span class="st">&quot;spct.tags&quot;</span>)</code></pre></div>
-<pre><code>## $time.unit
+<pre><code>## $valid
+## [1] TRUE
+## 
+## $time.unit
 ## [1] &quot;second&quot;
 ## 
 ## $wb.key.name

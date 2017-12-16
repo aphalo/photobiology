@@ -283,12 +283,3 @@ articles:
     - '`userguide2-radiation`'
     - '`userguide3-astronomy`'
 
-navbar:
-  left:
-  - text: Vignettes
-    href: articles/index.html
-  - text: Reference
-    href: reference/index.html
-  - text: About
-    href: reference/photobiology-package.html
-

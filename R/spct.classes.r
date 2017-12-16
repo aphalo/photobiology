@@ -37,8 +37,8 @@ spct_classes <- function() {
 #'
 #' @examples
 #' check_spct(sun.spct)
-#' check_spct(-sun.spct)
-#' try(check_spct((sun.spct[1, "w.length"] <- 1000)))
+#' # try(check_spct(-sun.spct))
+#' # try(check_spct((sun.spct[1, "w.length"] <- 1000)))
 #'
 check_spct <- function(x, byref, strict.range, ...) UseMethod("check_spct")
 

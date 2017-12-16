@@ -597,7 +597,8 @@ two.mspct
 
 Other methods available are `getWhereMeasured` and `setWhereMeasured`, and `getWhatMeasured` and `setWhatMeasured`.
 
-Functions `when.measured2tb()`, `geocode2tb()`, `lon2tb()`, `lat2tb()` and `what.measured2tb()` extract these same attributes from collection members into a tibble or data frame.  If an existing data frame or tibble with a matching number of rows is passed as second argument the values for the attribute are saved to a new column.
+Functions `when.measured2tb()`, `geocode2tb()`, `lon2tb()`, `lat2tb()` and `what.measured2tb()` extract these same attributes from collection members into a tibble or data frame.  In contrast to the "get" methods described above, if an existing data frame or tibble with a matching number of rows is passed as second argument, the values for the attribute are saved into a new column appended at the right edge of the tibble or
+data frame.
 
 ```{r}
 when_measured2tb(two.mspct)
@@ -609,18 +610,8 @@ By default the new column is named after the name of the attribute, but this def
 when_measured2tb(two.mspct, col.names = c(when.measured = "time"))
 ```
 
-By passing the same data frame as argument to successive calls in a sequence, multiple attributes can be retrieved and saved to multiple columns. Here we first compute summary values and then add to the data frame returned by `q_irrad`, attributes retrieved from the original spectral data objects.
-
-```{r}
-irrad.tb <- q_irrad(two.mspct)
-irrad.tb <- lon2tb(two.mspct, irrad.tb)
-irrad.tb <- lat2tb(two.mspct, irrad.tb)
-irrad.tb <- when_measured2tb(two.mspct, irrad.tb)
-irrad.tb
-```
-
 Function `add_attr2tb()` adds one or more columns with attributes to a tibble
-or data frame. As retrieval of multiple attributes is a frequent operation, we have defined function `add_attr2tb` to simplify code as that shown in the previous code chunk. We here also demonstrate that because the data frame object is passed to the first positional argument, we can use a _pipe_.
+or data frame. We here also demonstrate that because the data frame object is passed to the first positional argument, we can use a _pipe_.
 
 ```{r}
 q_irrad(two.mspct) %>%

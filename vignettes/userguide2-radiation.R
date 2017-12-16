@@ -228,13 +228,6 @@ when_measured2tb(two.mspct)
 when_measured2tb(two.mspct, col.names = c(when.measured = "time"))
 
 ## ------------------------------------------------------------------------
-irrad.tb <- q_irrad(two.mspct)
-irrad.tb <- lon2tb(two.mspct, irrad.tb)
-irrad.tb <- lat2tb(two.mspct, irrad.tb)
-irrad.tb <- when_measured2tb(two.mspct, irrad.tb)
-irrad.tb
-
-## ------------------------------------------------------------------------
 q_irrad(two.mspct) %>%
   add_attr2tb(two.mspct, 
               col.names = c("lon", "lat", "when.measured"))
