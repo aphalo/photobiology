@@ -5,7 +5,7 @@ globalVariables(".photobio.cache")
 }
 
 .onUnload <- function(libpath) {
-  rm(.photobio.cache, envir = emptyenv())
+  suppressWarnings(rm(.photobio.cache, envir = emptyenv()))
 }
 
 #' Spectral weights

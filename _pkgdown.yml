@@ -237,6 +237,7 @@ reference:
     - normalize_range_arg
     - upgrade_spct
     - upgrade_spectra
+    - formatted_range
     - defunct
   - title: Low-level functions for numeric vectors
     desc: These functions are for use by developers when maximum flexibility is needed. They are not meant for everyday use.
