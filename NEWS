@@ -17,7 +17,7 @@ infinite recursion in rare occasions).
 * Fix wrong value returned in some cases by is_tagged() due to a bug in the
 definition of tag().
 * Revise vignettes and documentation.
-* Rebuild some of the example data objects adding matadata attributes.
+* Rebuild some of the example data objects adding metadata attributes.
 
 photobiology 0.9.17
 ===================
