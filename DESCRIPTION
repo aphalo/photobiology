@@ -1,11 +1,11 @@
 Package: photobiology
 Type: Package
 Title: Photobiological Calculations
-Version: 0.9.18-1
-Date: 2017-12-16
+Version: 0.9.18-1.9000
+Date: 2017-12-27
 Authors@R:
    c(
-    person("Pedro J.", "Aphalo", email = "pedro.aphalo@helsinki.fi", role = c("aut", "cre")),
+    person("Pedro J.", "Aphalo", email = "pedro.aphalo@helsinki.fi", role = c("aut", "cre"), comment = c(ORCID = "https://orcid.org/0000-0003-3385-972X")),
     person("Titta K.", "Kotilainen", role = "ctb")
     )
 Description: Definitions of classes, methods, operators and functions for use in
