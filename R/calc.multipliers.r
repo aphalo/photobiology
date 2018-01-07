@@ -1,12 +1,15 @@
-globalVariables(".photobio.cache")
+.photobio.cache <- new.env()
 
-.onLoad <- function(libname, pkgname) {
-  .photobio.cache <<- new.env(parent = emptyenv())
-}
+#globalVariables(".photobio.cache")
 
-.onUnload <- function(libpath) {
-  suppressWarnings(rm(.photobio.cache, envir = emptyenv()))
-}
+# .onLoad <- function(libname, pkgname) {
+#   .photobio.cache <<- new.env(parent = emptyenv())
+# }
+
+#.onUnload <- function(libpath) {
+#  suppressWarnings(rm(.photobio.cache, envir = emptyenv()))
+#  rm(.photobio.cache)
+#}
 
 #' Spectral weights
 #'
@@ -29,6 +32,7 @@ globalVariables(".photobio.cache")
 #' @export
 #' @examples
 #' with(sun.data, calc_multipliers(w.length, new_waveband(400,700),"photon"))
+#' with(sun.data, calc_multipliers(w.length, new_waveband(400,700),"photon"), use.cached.mult = TRUE)
 #'
 calc_multipliers <-
   function(w.length,
