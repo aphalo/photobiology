@@ -341,13 +341,22 @@ trim_wl.generic_spct <- function(x,
 }
 
 #' @describeIn trim_wl  Trim an object of class "generic_mspct" or derived.
+#' @param .parallel	if TRUE, apply function in parallel, using parallel backend
+#'   provided by foreach
+#' @param .paropts a list of additional options passed into the foreach function
+#'   when parallel computation is enabled. This is important if (for example)
+#'   your code relies on external data or packages: use the .export and
+#'   .packages arguments to supply them so that all cluster nodes have the
+#'   correct environment set up for computing.
 #'
 #' @export
 #'
 trim_wl.generic_mspct <- function(x,
                                   range = NULL,
                                   use.hinges = TRUE,
-                                  fill = NULL, ...) {
+                                  fill = NULL, ...,
+                                  .parallel = FALSE,
+                                  .paropts = NULL) {
   if (is.null(range)) {
     return(x)
   }
@@ -356,7 +365,9 @@ trim_wl.generic_mspct <- function(x,
              use.hinges = use.hinges,
              fill = fill,
              byref = FALSE,
-             verbose = getOption("photobiology.verbose", default = FALSE) )
+             verbose = getOption("photobiology.verbose", default = FALSE),
+             .parallel = .parallel,
+             .paropts = .paropts)
 }
 
 #' @describeIn trim_wl Trim an object of class "waveband".

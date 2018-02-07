@@ -7,12 +7,20 @@
 #' @param mspct an object of class generic_mspct or a derived class
 #' @param .fun a function
 #' @param ... other arguments passed to .fun
+#' @param .parallel	if TRUE, apply function in parallel, using parallel backend
+#'   provided by foreach
+#' @param .paropts a list of additional options passed into the foreach function
+#'   when parallel computation is enabled. This is important if (for example)
+#'   your code relies on external data or packages: use the .export and
+#'   .packages arguments to supply them so that all cluster nodes have the
+#'   correct environment set up for computing.
 #'
 #' @return a collection of spectra in the case of \code{msmsply}
 #'
 #' @export
 #'
-msmsply <- function(mspct, .fun, ...) {
+msmsply <- function(mspct, .fun, ...,
+                    .parallel = FALSE, .paropts = NULL) {
   stopifnot(is.any_mspct(mspct))
   mspct.class <- class(mspct)
   byrow <- attr(mspct, "mspct.byrow", exact = TRUE)
@@ -21,7 +29,11 @@ msmsply <- function(mspct, .fun, ...) {
   # llply returns a matrix for classes derived from list
   #
   rmDerivedMspct(mspct)
-  y <- plyr::llply(mspct, .fun, ...)
+  y <- plyr::llply(.data = mspct,
+                   .fun = .fun,
+                   ...,
+                   .parallel = .parallel,
+                   .paropts = .paropts)
 
   stopifnot(length(y) == length(mspct))
 
@@ -50,7 +62,8 @@ msmsply <- function(mspct, .fun, ...) {
 #'
 #' @export
 #'
-msdply <- function(mspct, .fun, ..., idx = NULL, col.names = NULL) {
+msdply <- function(mspct, .fun, ..., idx = NULL, col.names = NULL,
+                   .parallel = FALSE, .paropts = NULL) {
   stopifnot(is.any_mspct(mspct))
 
   if ( (is.logical(idx) && idx) ||
@@ -65,7 +78,9 @@ msdply <- function(mspct, .fun, ..., idx = NULL, col.names = NULL) {
   z <- plyr::ldply(.data = mspct,
                    .fun = .fun,
                    ...,
-                   .id = .idx )
+                   .id = .idx,
+                   .parallel = .parallel,
+                   .paropts = .paropts)
 
   f.name <- as.character( substitute(.fun))
 
@@ -136,7 +151,8 @@ msdply <- function(mspct, .fun, ..., idx = NULL, col.names = NULL) {
 #'
 #' @export
 #'
-mslply <- function(mspct, .fun, ...) {
+mslply <- function(mspct, .fun, ...,
+                   .parallel = FALSE, .paropts = NULL) {
   stopifnot(is.any_mspct(mspct))
 
   # llply returns a matrix for classes derived from list
@@ -144,7 +160,9 @@ mslply <- function(mspct, .fun, ...) {
   rmDerivedMspct(mspct)
   z <- plyr::llply(.data = mspct,
                    .fun = .fun,
-                   ...)
+                   ...,
+                   .parallel = .parallel,
+                   .paropts = .paropts )
 
   names(z) <- names(mspct)
 
@@ -164,7 +182,8 @@ mslply <- function(mspct, .fun, ...) {
 #'
 #' @export
 #'
-msaply <- function(mspct, .fun, ..., .drop = TRUE) {
+msaply <- function(mspct, .fun, ..., .drop = TRUE,
+                   .parallel = FALSE, .paropts = NULL) {
   stopifnot(is.any_mspct(mspct))
 
   # As many of our summary functions return nuneric values with names and other
@@ -180,7 +199,9 @@ msaply <- function(mspct, .fun, ..., .drop = TRUE) {
   z <- plyr::laply(.data = mspct,
                    .fun = .ffun,
                    ...,
-                   .drop = .drop)
+                   .drop = .drop,
+                   .parallel = .parallel,
+                   .paropts = .paropts)
 
   f.name <- as.character(substitute(.fun))
 

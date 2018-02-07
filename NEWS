@@ -3,6 +3,11 @@ TO DO: add tests cases for the attr2tb formal parameter of summary functions.
 photobiology 0.9.18
 ===================
 
+* Add support for optionsl parallel execution of apply functions.
+
+photobiology 0.9.18
+===================
+
 * Add calibration_spct class and its methods. Update all operators and maths.
 functions to support this new class. Add corresponding test cases.
 * Add calibration_mspct class and its methods.

@@ -241,19 +241,30 @@ interpolate_spct <- function(spct,
 #' @rdname interpolate_spct
 #'
 #' @param mspct an object of class "generic_mspct"
+#' @param .parallel	if TRUE, apply function in parallel, using parallel backend
+#'   provided by foreach
+#' @param .paropts a list of additional options passed into the foreach function
+#'   when parallel computation is enabled. This is important if (for example)
+#'   your code relies on external data or packages: use the .export and
+#'   .packages arguments to supply them so that all cluster nodes have the
+#'   correct environment set up for computing.
 #'
 #' @export
 #'
 interpolate_mspct <- function(mspct,
                               w.length.out = NULL,
                               fill = NA,
-                              length.out = NULL) {
+                              length.out = NULL,
+                              .parallel = FALSE,
+                              .paropts = NULL) {
 
   msmsply(mspct = mspct,
           .fun = interpolate_spct,
           w.length.out = w.length.out,
           fill = fill,
-          length.out = length.out)
+          length.out = length.out,
+          .parallel = .parallel,
+          .paropts = .paropts)
 }
 
 #' Map spectra to new wavelength values.
@@ -324,6 +335,13 @@ interpolate_wl.generic_spct <- function(x,
 
 #' @describeIn interpolate_wl  Interpolate wavelength in an object of class
 #'   "generic_mspct" or derived.
+#' @param .parallel	if TRUE, apply function in parallel, using parallel backend
+#'   provided by foreach
+#' @param .paropts a list of additional options passed into the foreach function
+#'   when parallel computation is enabled. This is important if (for example)
+#'   your code relies on external data or packages: use the .export and
+#'   .packages arguments to supply them so that all cluster nodes have the
+#'   correct environment set up for computing.
 #'
 #' @export
 #'
@@ -331,9 +349,13 @@ interpolate_wl.generic_mspct <- function(x,
                                          w.length.out = NULL,
                                          fill = NA,
                                          length.out = NULL,
-                                         ...) {
+                                         ...,
+                                         .parallel = FALSE,
+                                         .paropts = NULL) {
   interpolate_mspct(mspct = x,
                     w.length.out = w.length.out,
                     fill = fill,
-                    length.out = length.out)
+                    length.out = length.out,
+                    .parallel = .parallel,
+                    .paropts = .paropts)
 }

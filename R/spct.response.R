@@ -404,6 +404,13 @@ q_response.response_spct <-
 #' @param attr2tb character vector, see \code{\link{add_attr2tb}} for the syntax for \code{attr2tb} passed as is to formal parameter \code{col.names}.
 #' @param idx logical whether to add a column with the names of the elements of
 #'   spct
+#' @param .parallel	if TRUE, apply function in parallel, using parallel backend
+#'   provided by foreach
+#' @param .paropts a list of additional options passed into the foreach function
+#'   when parallel computation is enabled. This is important if (for example)
+#'   your code relies on external data or packages: use the .export and
+#'   .packages arguments to supply them so that all cluster nodes have the
+#'   correct environment set up for computing.
 #'
 #' @export
 #'
@@ -416,7 +423,9 @@ response.response_mspct <-
            use.hinges = getOption("photobiology.use.hinges", default = NULL),
            ...,
            attr2tb = NULL,
-           idx = !is.null(names(spct))) {
+           idx = !is.null(names(spct)),
+           .parallel = FALSE,
+           .paropts = NULL) {
     z <-
       msdply(
         mspct = spct,
@@ -428,7 +437,9 @@ response.response_mspct <-
         wb.trim = wb.trim,
         use.hinges = use.hinges,
         idx = idx,
-        col.names = names(w.band)
+        col.names = names(w.band),
+        .parallel = .parallel,
+        .paropts = .paropts
       )
     add_attr2tb(tb = z,
                 mspct = spct,
@@ -441,6 +452,13 @@ response.response_mspct <-
 #' @param attr2tb character vector, see \code{\link{add_attr2tb}} for the syntax for \code{attr2tb} passed as is to formal parameter \code{col.names}.
 #' @param idx logical whether to add a column with the names of the elements of
 #'   spct
+#' @param .parallel	if TRUE, apply function in parallel, using parallel backend
+#'   provided by foreach
+#' @param .paropts a list of additional options passed into the foreach function
+#'   when parallel computation is enabled. This is important if (for example)
+#'   your code relies on external data or packages: use the .export and
+#'   .packages arguments to supply them so that all cluster nodes have the
+#'   correct environment set up for computing.
 #'
 #' @export
 #'
@@ -452,7 +470,9 @@ q_response.response_mspct <-
            use.hinges = getOption("photobiology.use.hinges", default = NULL),
            ...,
            attr2tb = NULL,
-           idx = !is.null(names(spct))) {
+           idx = !is.null(names(spct)),
+           .parallel = FALSE,
+           .paropts = NULL) {
     z <-
       msdply(
         mspct = spct,
@@ -463,7 +483,9 @@ q_response.response_mspct <-
         wb.trim = wb.trim,
         use.hinges = use.hinges,
         idx = idx,
-        col.names = names(w.band)
+        col.names = names(w.band),
+        .parallel = .parallel,
+        .paropts = .paropts
       )
     add_attr2tb(tb = z,
                 mspct = spct,
@@ -476,6 +498,13 @@ q_response.response_mspct <-
 #' @param attr2tb character vector, see \code{\link{add_attr2tb}} for the syntax for \code{attr2tb} passed as is to formal parameter \code{col.names}.
 #' @param idx logical whether to add a column with the names of the elements of
 #'   spct
+#' @param .parallel	if TRUE, apply function in parallel, using parallel backend
+#'   provided by foreach
+#' @param .paropts a list of additional options passed into the foreach function
+#'   when parallel computation is enabled. This is important if (for example)
+#'   your code relies on external data or packages: use the .export and
+#'   .packages arguments to supply them so that all cluster nodes have the
+#'   correct environment set up for computing.
 #'
 #' @export
 #'
@@ -487,7 +516,9 @@ e_response.response_mspct <-
            use.hinges = getOption("photobiology.use.hinges", default = NULL),
            ...,
            attr2tb = NULL,
-           idx = !is.null(names(spct))) {
+           idx = !is.null(names(spct)),
+           .parallel = FALSE,
+           .paropts = NULL) {
     z <-
       msdply(
         mspct = spct,
@@ -498,7 +529,9 @@ e_response.response_mspct <-
         wb.trim = wb.trim,
         use.hinges = use.hinges,
         idx = idx,
-        col.names = names(w.band)
+        col.names = names(w.band),
+        .parallel = .parallel,
+        .paropts = .paropts
       )
     add_attr2tb(tb = z,
                 mspct = spct,

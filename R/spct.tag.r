@@ -165,6 +165,13 @@ tag.generic_spct <- function(x,
 #' @describeIn tag Tag one of \code{generic_mspct}, and derived classes including
 #'   \code{source_mspct}, \code{filter_mspct}, \code{reflector_mspct},
 #'   \code{object_mspct}, and \code{response_mspct}.
+#' @param .parallel	if TRUE, apply function in parallel, using parallel backend
+#'   provided by foreach
+#' @param .paropts a list of additional options passed into the foreach function
+#'   when parallel computation is enabled. This is important if (for example)
+#'   your code relies on external data or packages: use the .export and
+#'   .packages arguments to supply them so that all cluster nodes have the
+#'   correct environment set up for computing.
 #'
 #' @export
 #'
@@ -174,7 +181,9 @@ tag.generic_mspct <- function(x,
                               use.hinges = TRUE,
                               short.names = TRUE,
                               byref = FALSE,
-                              ...) {
+                              ...,
+                              .parallel = FALSE,
+                              .paropts = NULL) {
   name <- substitute(x)
 
   z <- msmsply(
@@ -185,7 +194,9 @@ tag.generic_mspct <- function(x,
     use.hinges = use.hinges,
     short.names = short.names,
     byref = FALSE,
-    ...
+    ...,
+    .parallel = .parallel,
+    .paropts = .paropts
   )
 
   if (byref & is.name(name)) {

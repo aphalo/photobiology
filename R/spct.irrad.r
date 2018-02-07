@@ -769,6 +769,13 @@ e_fluence.source_spct <-
 #' @param attr2tb character vector, see \code{\link{add_attr2tb}} for the syntax for \code{attr2tb} passed as is to formal parameter \code{col.names}.
 #' @param idx logical whether to add a column with the names of the elements of
 #'   spct
+#' @param .parallel	if TRUE, apply function in parallel, using parallel backend
+#'   provided by foreach
+#' @param .paropts a list of additional options passed into the foreach function
+#'   when parallel computation is enabled. This is important if (for example)
+#'   your code relies on external data or packages: use the .export and
+#'   .packages arguments to supply them so that all cluster nodes have the
+#'   correct environment set up for computing.
 #'
 #' @export
 #'
@@ -783,7 +790,9 @@ irrad.source_mspct <-
            allow.scaled = !quantity  %in% c("average", "mean", "total"),
            ...,
            attr2tb = NULL,
-           idx = !is.null(names(spct))) {
+           idx = !is.null(names(spct)),
+           .parallel = FALSE,
+           .paropts = NULL) {
     z <-
       msdply(
         mspct = spct,
@@ -795,7 +804,9 @@ irrad.source_mspct <-
         use.hinges = use.hinges,
         allow.scaled = allow.scaled,
         idx = idx,
-        col.names = names(w.band)
+        col.names = names(w.band),
+        .parallel = .parallel,
+        .paropts = .paropts
       )
     add_attr2tb(tb = z,
                 mspct = spct,
@@ -808,6 +819,13 @@ irrad.source_mspct <-
 #' @param attr2tb character vector, see \code{\link{add_attr2tb}} for the syntax for \code{attr2tb} passed as is to formal parameter \code{col.names}.
 #' @param idx logical whether to add a column with the names of the elements of
 #'   spct
+#' @param .parallel	if TRUE, apply function in parallel, using parallel backend
+#'   provided by foreach
+#' @param .paropts a list of additional options passed into the foreach function
+#'   when parallel computation is enabled. This is important if (for example)
+#'   your code relies on external data or packages: use the .export and
+#'   .packages arguments to supply them so that all cluster nodes have the
+#'   correct environment set up for computing.
 #'
 #' @export
 #'
@@ -821,7 +839,9 @@ q_irrad.source_mspct <-
            allow.scaled = !quantity  %in% c("average", "mean", "total"),
            ...,
            attr2tb = NULL,
-           idx = !is.null(names(spct))) {
+           idx = !is.null(names(spct)),
+           .parallel = FALSE,
+           .paropts = NULL) {
     z <-
       msdply(
         mspct = spct,
@@ -832,7 +852,9 @@ q_irrad.source_mspct <-
         use.hinges = use.hinges,
         allow.scaled = allow.scaled,
         idx = idx,
-        col.names = names(w.band)
+        col.names = names(w.band),
+        .parallel = .parallel,
+        .paropts = .paropts
       )
     add_attr2tb(tb = z,
                 mspct = spct,
@@ -845,6 +867,13 @@ q_irrad.source_mspct <-
 #' @param attr2tb character vector, see \code{\link{add_attr2tb}} for the syntax for \code{attr2tb} passed as is to formal parameter \code{col.names}.
 #' @param idx logical whether to add a column with the names of the elements of
 #'   spct
+#' @param .parallel	if TRUE, apply function in parallel, using parallel backend
+#'   provided by foreach
+#' @param .paropts a list of additional options passed into the foreach function
+#'   when parallel computation is enabled. This is important if (for example)
+#'   your code relies on external data or packages: use the .export and
+#'   .packages arguments to supply them so that all cluster nodes have the
+#'   correct environment set up for computing.
 #'
 #' @export
 #'
@@ -858,7 +887,9 @@ e_irrad.source_mspct <-
            allow.scaled = !quantity  %in% c("average", "mean", "total"),
            ...,
            attr2tb = NULL,
-           idx = !is.null(names(spct))) {
+           idx = !is.null(names(spct)),
+           .parallel = FALSE,
+           .paropts = NULL) {
     z <-
       msdply(
         mspct = spct,
@@ -869,7 +900,9 @@ e_irrad.source_mspct <-
         use.hinges = use.hinges,
         allow.scaled = allow.scaled,
         idx = idx,
-        col.names = names(w.band)
+        col.names = names(w.band),
+        .parallel = .parallel,
+        .paropts = .paropts
       )
     add_attr2tb(tb = z,
                 mspct = spct,
@@ -882,6 +915,13 @@ e_irrad.source_mspct <-
 #' @param attr2tb character vector, see \code{\link{add_attr2tb}} for the syntax for \code{attr2tb} passed as is to formal parameter \code{col.names}.
 #' @param idx logical whether to add a column with the names of the elements of
 #'   spct
+#' @param .parallel	if TRUE, apply function in parallel, using parallel backend
+#'   provided by foreach
+#' @param .paropts a list of additional options passed into the foreach function
+#'   when parallel computation is enabled. This is important if (for example)
+#'   your code relies on external data or packages: use the .export and
+#'   .packages arguments to supply them so that all cluster nodes have the
+#'   correct environment set up for computing.
 #'
 #' @export
 #'
@@ -895,7 +935,9 @@ fluence.source_mspct <-
            allow.scaled = FALSE,
            ...,
            attr2tb = NULL,
-           idx = !is.null(names(spct))) {
+           idx = !is.null(names(spct)),
+           .parallel = FALSE,
+           .paropts = NULL) {
     z <-
       msdply(
         mspct = spct,
@@ -908,7 +950,9 @@ fluence.source_mspct <-
         use.hinges = use.hinges,
         allow.scaled = allow.scaled,
         idx = idx,
-        col.names = names(w.band)
+        col.names = names(w.band),
+        .parallel = .parallel,
+        .paropts = .paropts
       )
     add_attr2tb(tb = z,
                 mspct = spct,
@@ -920,6 +964,13 @@ fluence.source_mspct <-
 #'
 #' @param attr2tb character vector, see \code{\link{add_attr2tb}} for the syntax for \code{attr2tb} passed as is to formal parameter \code{col.names}.
 #' @param idx logical whether to add a column with the names of the elements of spct
+#' @param .parallel	if TRUE, apply function in parallel, using parallel backend
+#'   provided by foreach
+#' @param .paropts a list of additional options passed into the foreach function
+#'   when parallel computation is enabled. This is important if (for example)
+#'   your code relies on external data or packages: use the .export and
+#'   .packages arguments to supply them so that all cluster nodes have the
+#'   correct environment set up for computing.
 #'
 #' @export
 #'
@@ -932,7 +983,9 @@ e_fluence.source_mspct <-
            allow.scaled = FALSE,
            ...,
            attr2tb = NULL,
-           idx = !is.null(names(spct))) {
+           idx = !is.null(names(spct)),
+           .parallel = FALSE,
+           .paropts = NULL) {
     z <-
       msdply(
         mspct = spct,
@@ -944,7 +997,9 @@ e_fluence.source_mspct <-
         use.hinges = use.hinges,
         allow.scaled = allow.scaled,
         idx = idx,
-        col.names = names(w.band)
+        col.names = names(w.band),
+        .parallel = .parallel,
+        .paropts = .paropts
       )
     add_attr2tb(tb = z,
                 mspct = spct,
@@ -957,6 +1012,13 @@ e_fluence.source_mspct <-
 #' @param attr2tb character vector, see \code{\link{add_attr2tb}} for the syntax for \code{attr2tb} passed as is to formal parameter \code{col.names}.
 #' @param idx logical whether to add a column with the names of the elements of
 #'   spct
+#' @param .parallel	if TRUE, apply function in parallel, using parallel backend
+#'   provided by foreach
+#' @param .paropts a list of additional options passed into the foreach function
+#'   when parallel computation is enabled. This is important if (for example)
+#'   your code relies on external data or packages: use the .export and
+#'   .packages arguments to supply them so that all cluster nodes have the
+#'   correct environment set up for computing.
 #'
 #' @export
 #'
@@ -969,7 +1031,9 @@ q_fluence.source_mspct <-
            allow.scaled = FALSE,
            ...,
            attr2tb = NULL,
-           idx = !is.null(names(spct))) {
+           idx = !is.null(names(spct)),
+           .parallel = FALSE,
+           .paropts = NULL) {
     z <-
       msdply(
         mspct = spct,
@@ -981,7 +1045,9 @@ q_fluence.source_mspct <-
         use.hinges = use.hinges,
         allow.scaled = allow.scaled,
         idx = idx,
-        col.names = names(w.band)
+        col.names = names(w.band),
+        .parallel = .parallel,
+        .paropts = .paropts
       )
     add_attr2tb(tb = z,
                 mspct = spct,

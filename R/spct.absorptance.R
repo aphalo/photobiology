@@ -297,6 +297,13 @@ absorptance.filter_mspct <-
 # object_mspct methods -----------------------------------------------
 
 #' @describeIn absorptance Calculates absorptance from a \code{object_mspct}
+#' @param .parallel	if TRUE, apply function in parallel, using parallel backend
+#'   provided by foreach
+#' @param .paropts a list of additional options passed into the foreach function
+#'   when parallel computation is enabled. This is important if (for example)
+#'   your code relies on external data or packages: use the .export and
+#'   .packages arguments to supply them so that all cluster nodes have the
+#'   correct environment set up for computing.
 #'
 #' @export
 #'
@@ -307,7 +314,9 @@ absorptance.object_mspct <-
            use.hinges=getOption("photobiology.use.hinges", default = NULL),
            ...,
            attr2tb = NULL,
-           idx = !is.null(names(spct)) ) {
+           idx = !is.null(names(spct)),
+           .parallel = FALSE,
+           .paropts = NULL) {
     z <-
       msdply(
         mspct = spct,
@@ -317,7 +326,9 @@ absorptance.object_mspct <-
         wb.trim = wb.trim,
         use.hinges = use.hinges,
         idx = idx,
-        col.names = names(w.band)
+        col.names = names(w.band),
+        .parallel = .parallel,
+        .paropts = .paropts
       )
     add_attr2tb(tb = z,
                 mspct = spct,
