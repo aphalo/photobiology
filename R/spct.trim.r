@@ -210,6 +210,13 @@ trim_spct <- function(spct,
 #' @rdname trim_spct
 #'
 #' @param mspct an object of class "generic_mspct"
+#' @param .parallel	if TRUE, apply function in parallel, using parallel backend
+#'   provided by foreach
+#' @param .paropts a list of additional options passed into the foreach function
+#'   when parallel computation is enabled. This is important if (for example)
+#'   your code relies on external data or packages: use the .export and
+#'   .packages arguments to supply them so that all cluster nodes have the
+#'   correct environment set up for computing.
 #'
 #' @export
 #'
@@ -220,7 +227,9 @@ trim_mspct <- function(mspct,
                        use.hinges = TRUE,
                        fill = NULL,
                        byref = FALSE,
-                       verbose = getOption("photobiology.verbose", default = TRUE) ) {
+                       verbose = getOption("photobiology.verbose", default = TRUE),
+                       .parallel = FALSE,
+                       .paropts = NULL) {
   name <- substitute(mspct)
 
   z <- msmsply(mspct = mspct,
@@ -231,7 +240,9 @@ trim_mspct <- function(mspct,
                use.hinges = use.hinges,
                fill = fill,
                byref = FALSE,
-               verbose = verbose )
+               verbose = verbose,
+               .parallel = .parallel,
+               .paropts = .paropts)
 
   if (byref & is.name(name)) {
     name <- as.character(name)
@@ -246,19 +257,25 @@ trim_mspct <- function(mspct,
 #'
 trim2overlap <- function(mspct,
                          use.hinges = TRUE,
-                         verbose = getOption("photobiology.verbose", default = TRUE)) {
+                         verbose = getOption("photobiology.verbose", default = TRUE),
+                         .parallel = FALSE,
+                         .paropts = NULL) {
   stopifnot(is.any_mspct(mspct))
   if (length(mspct) < 2) {
     # nothing to do
     return(mspct)
   }
-  ranges <- msdply(mspct, range)
+  ranges <- msdply(mspct, range,
+                   .parallel = .parallel,
+                   .paropts = .paropts)
   range <- with(ranges, c(max(min.wl), min(max.wl)))
   trim_mspct(mspct,
              range = range,
              use.hinges = use.hinges,
              fill = NULL,
-             verbose = verbose)
+             verbose = verbose,
+             .parallel = .parallel,
+             .paropts = .paropts)
 }
 
 #' @rdname trim_spct
@@ -268,19 +285,26 @@ trim2overlap <- function(mspct,
 extend2extremes <- function(mspct,
                             use.hinges = TRUE,
                             fill = NA,
-                            verbose = getOption("photobiology.verbose", default = TRUE)) {
+                            verbose = getOption("photobiology.verbose", default = TRUE),
+                            .parallel = FALSE,
+                            .paropts = NULL) {
   stopifnot(is.any_mspct(mspct))
   if (length(mspct) < 2) {
     # nothing to do
     return(mspct)
   }
-  ranges <- msdply(mspct, range)
+  ranges <- msdply(mspct,
+                   .fun = range,
+                   .parallel = .parallel,
+                   .paropts = .paropts)
   range <- with(ranges, c(min(min.wl), max(max.wl)))
   trim_mspct(mspct,
              range = range,
              use.hinges = use.hinges,
              fill = fill,
-             verbose = verbose)
+             verbose = verbose,
+             .parallel = .parallel,
+             .paropts = .paropts)
 }
 
 #' Trim head and/or tail of a spectrum
