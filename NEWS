@@ -1,9 +1,11 @@
 TO DO: add tests cases for the attr2tb formal parameter of summary functions.
 
-photobiology 0.9.18
+photobiology 0.9.19
 ===================
 
-* Add support for optionsl parallel execution of apply functions.
+* Add explicit support for optionsl parallel execution of apply functions, and
+methods for collections of spectra. Apparently of no use under Windows 10, even
+for large collections of spectra, possibly because of overhead.
 
 photobiology 0.9.18
 ===================

@@ -203,6 +203,14 @@ fscale.generic_spct <- function(x,
 
 #' @describeIn fscale
 #'
+#' @param .parallel	if TRUE, apply function in parallel, using parallel backend
+#'   provided by foreach
+#' @param .paropts a list of additional options passed into the foreach function
+#'   when parallel computation is enabled. This is important if (for example)
+#'   your code relies on external data or packages: use the .export and
+#'   .packages arguments to supply them so that all cluster nodes have the
+#'   correct environment set up for computing.
+#'
 #' @export
 #'
 fscale.source_mspct <- function(x,
@@ -211,14 +219,18 @@ fscale.source_mspct <- function(x,
                                 target = 1,
                                 unit.out = getOption("photobiology.radiation.unit",
                                                       default = "energy"),
-                                 ...) {
+                                 ...,
+                                .parallel = FALSE,
+                                .paropts = NULL) {
   msmsply(x,
           fscale,
           range = range,
           f = f,
           target = target,
           unit.out = unit.out,
-          ...)
+          ...,
+          .parallel = .parallel,
+          .paropts = .paropts)
 }
 
 #' @describeIn fscale
@@ -231,14 +243,18 @@ fscale.response_mspct <- function(x,
                                   target = 1,
                                   unit.out = getOption("photobiology.radiation.unit",
                                                        default = "energy"),
-                                  ...) {
+                                  ...,
+                                  .parallel = FALSE,
+                                  .paropts = NULL) {
   msmsply(x,
           fscale,
           range = range,
           f = f,
           target = target,
           unit.out = unit.out,
-          ...)
+          ...,
+          .parallel = .parallel,
+          .paropts = .paropts)
 }
 
 #' @describeIn fscale
@@ -251,14 +267,18 @@ fscale.filter_mspct <- function(x,
                                 target = 1,
                                 qty.out = getOption("photobiology.filter.qty",
                                                       default = "transmittance"),
-                                  ...) {
+                                  ...,
+                                .parallel = FALSE,
+                                .paropts = NULL) {
   msmsply(x,
           fscale,
           range = range,
           f = f,
           target = target,
           qty.out = qty.out,
-          ...)
+          ...,
+          .parallel = .parallel,
+          .paropts = .paropts)
 }
 
 #' @describeIn fscale
@@ -270,14 +290,18 @@ fscale.reflector_mspct <- function(x,
                                   f = "mean",
                                   target = 1,
                                   qty.out = NULL,
-                                  ...) {
+                                  ...,
+                                  .parallel = FALSE,
+                                  .paropts = NULL) {
   msmsply(x,
           fscale,
           range = range,
           f = f,
           target = target,
           qty.out = qty.out,
-          ...)
+          ...,
+          .parallel = .parallel,
+          .paropts = .paropts)
 }
 
 #' @describeIn fscale
@@ -288,13 +312,17 @@ fscale.raw_mspct <- function(x,
                              range = NULL,
                              f = "mean",
                              target = 1,
-                             ...) {
+                             ...,
+                             .parallel = FALSE,
+                             .paropts = NULL) {
   msmsply(x,
           fscale,
           range = range,
           f = f,
           target = target,
-          ...)
+          ...,
+          .parallel = .parallel,
+          .paropts = .paropts)
 }
 
 #' @describeIn fscale
@@ -305,13 +333,17 @@ fscale.cps_mspct <- function(x,
                              range = NULL,
                              f = "mean",
                              target = 1,
-                             ...) {
+                             ...,
+                             .parallel = FALSE,
+                             .paropts = NULL) {
   msmsply(x,
           fscale,
           range = range,
           f = f,
           target = target,
-          ...)
+          ...,
+          .parallel = .parallel,
+          .paropts = .paropts)
 }
 
 #' @describeIn fscale
@@ -323,14 +355,18 @@ fscale.generic_mspct <- function(x,
                              f = "mean",
                              target = 1,
                              col.names,
-                             ...) {
+                             ...,
+                             .parallel = FALSE,
+                             .paropts = NULL) {
   msmsply(x,
           fscale,
           range = range,
           f = f,
           target = target,
           col.names = col.names,
-          ...)
+          ...,
+          .parallel = .parallel,
+          .paropts = .paropts)
 }
 
 

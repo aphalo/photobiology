@@ -222,6 +222,14 @@ fshift.generic_spct <- function(x,
 
 #' @describeIn fshift
 #'
+#' @param .parallel	if TRUE, apply function in parallel, using parallel backend
+#'   provided by foreach
+#' @param .paropts a list of additional options passed into the foreach function
+#'   when parallel computation is enabled. This is important if (for example)
+#'   your code relies on external data or packages: use the .export and
+#'   .packages arguments to supply them so that all cluster nodes have the
+#'   correct environment set up for computing.
+#'
 #' @export
 #'
 fshift.response_mspct <-
@@ -230,13 +238,17 @@ fshift.response_mspct <-
            f = "mean",
            unit.out = getOption("photobiology.radiation.unit",
                                 default = "energy"),
-           ...) {
+           ...,
+           .parallel = FALSE,
+           .paropts = NULL) {
     msmsply(x,
             fshift,
             range = range,
             f = f,
             unit.out = unit.out,
-            ...)
+            ...,
+            .parallel = .parallel,
+            .paropts = .paropts)
   }
 
 #' @describeIn fshift
@@ -249,13 +261,17 @@ fshift.filter_mspct <-
            f = "min",
            qty.out = getOption("photobiology.filter.qty",
                                default = "transmittance"),
-           ...) {
+           ...,
+           .parallel = FALSE,
+           .paropts = NULL) {
     msmsply(x,
             fshift,
             range = range,
             f = f,
             qty.out = qty.out,
-            ...)
+            ...,
+            .parallel = .parallel,
+            .paropts = .paropts)
   }
 
 #' @describeIn fshift
@@ -267,13 +283,17 @@ fshift.reflector_mspct <-
            range = c(min(x), min(x) + 10),
            f = "min",
            qty.out = NULL,
-           ...) {
+           ...,
+           .parallel = FALSE,
+           .paropts = NULL) {
     msmsply(x,
             fshift,
             range = range,
             f = f,
             qty.out = qty.out,
-            ...)
+            ...,
+            .parallel = .parallel,
+            .paropts = .paropts)
   }
 
 #' @describeIn fshift
@@ -284,12 +304,16 @@ fshift.raw_mspct <-
   function(x,
            range = c(min(x), min(x) + 10),
            f = "min",
-           ...) {
+           ...,
+           .parallel = FALSE,
+           .paropts = NULL) {
     msmsply(x,
             fshift,
             range = range,
             f = f,
-            ...)
+            ...,
+            .parallel = .parallel,
+            .paropts = .paropts)
   }
 
 #' @describeIn fshift
@@ -300,12 +324,16 @@ fshift.cps_mspct <-
   function(x,
            range = c(min(x), min(x) + 10),
            f = "min",
-           ...) {
+           ...,
+           .parallel = FALSE,
+           .paropts = NULL) {
     msmsply(x,
             fshift,
             range = range,
             f = f,
-            ...)
+            ...,
+            .parallel = .parallel,
+            .paropts = .paropts)
   }
 
 #' @describeIn fshift
@@ -317,13 +345,17 @@ fshift.generic_mspct <-
            range = c(min(x), min(x) + 10),
            f = "min",
            col.names,
-           ...) {
+           ...,
+           .parallel = FALSE,
+           .paropts = NULL) {
     msmsply(x,
             fshift,
             range = range,
             f = f,
             col.names = col.names,
-            ...)
+            ...,
+            .parallel = .parallel,
+            .paropts = .paropts)
   }
 
 

@@ -297,6 +297,7 @@ absorptance.filter_mspct <-
 # object_mspct methods -----------------------------------------------
 
 #' @describeIn absorptance Calculates absorptance from a \code{object_mspct}
+#'
 #' @param .parallel	if TRUE, apply function in parallel, using parallel backend
 #'   provided by foreach
 #' @param .paropts a list of additional options passed into the foreach function

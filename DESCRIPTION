@@ -15,7 +15,8 @@ Description: Definitions of classes, methods, operators and functions for use in
     ratios and other derived quantities from spectral data. Local maxima and
     minima. Conversion between energy- and photon-based units. Wavelength
     interpolation. Astronomical calculations related solar angles and day
-    length. Colours and vision.
+    length. Colours and vision. This package is part of the
+    'r4photobiology' suite, Aphalo P. J. (2015) <doi:10.19232/uv4pb.2015.1.14>.
 License: GPL (>= 2)
 Depends:
     R (>= 3.3.0)

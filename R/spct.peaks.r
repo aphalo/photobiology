@@ -287,15 +287,31 @@ peaks.cps_spct <- function(x, span = 5, ignore_threshold = 0, strict = TRUE, ...
 
 #' @describeIn peaks  Method for "cps_spct" objects.
 #'
+#' @param .parallel	if TRUE, apply function in parallel, using parallel backend
+#'   provided by foreach
+#' @param .paropts a list of additional options passed into the foreach function
+#'   when parallel computation is enabled. This is important if (for example)
+#'   your code relies on external data or packages: use the .export and
+#'   .packages arguments to supply them so that all cluster nodes have the
+#'   correct environment set up for computing.
+#'
 #' @export
 #'
-peaks.generic_mspct <- function(x, span = 5, ignore_threshold = 0, strict = TRUE, ...) {
+peaks.generic_mspct <- function(x,
+                                span = 5,
+                                ignore_threshold = 0,
+                                strict = TRUE,
+                                ...,
+                                .parallel = FALSE,
+                                .paropts = NULL) {
   msmsply(x,
           .fun = peaks,
           span = span,
           ignore_threshold = ignore_threshold,
           strict = strict,
-          ... )
+          ...,
+          .parallel = .parallel,
+          .paropts = .paropts)
   }
 
 # valleys -------------------------------------------------------------------
@@ -449,13 +465,29 @@ valleys.cps_spct <- function(x, span = 5, ignore_threshold = 0, strict = TRUE, .
 
 #' @describeIn valleys  Method for "generic_mspct" objects.
 #'
+#' @param .parallel	if TRUE, apply function in parallel, using parallel backend
+#'   provided by foreach
+#' @param .paropts a list of additional options passed into the foreach function
+#'   when parallel computation is enabled. This is important if (for example)
+#'   your code relies on external data or packages: use the .export and
+#'   .packages arguments to supply them so that all cluster nodes have the
+#'   correct environment set up for computing.
+#'
 #' @export
 #'
-valleys.generic_mspct <- function(x, span = 5, ignore_threshold = 0, strict = TRUE, ...) {
+valleys.generic_mspct <- function(x,
+                                  span = 5,
+                                  ignore_threshold = 0,
+                                  strict = TRUE,
+                                  ...,
+                                  .parallel = FALSE,
+                                  .paropts = NULL) {
   msmsply(x,
           .fun = valleys,
           span = span,
           ignore_threshold = ignore_threshold,
           strict = strict,
-          ... )
+          ...,
+          .parallel = .parallel,
+          .paropts = .paropts)
 }

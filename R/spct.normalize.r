@@ -188,6 +188,14 @@ normalize.generic_spct <-
 
 #' @describeIn normalize Normalize the members of a source_mspct object.
 #'
+#' @param .parallel	if TRUE, apply function in parallel, using parallel backend
+#'   provided by foreach
+#' @param .paropts a list of additional options passed into the foreach function
+#'   when parallel computation is enabled. This is important if (for example)
+#'   your code relies on external data or packages: use the .export and
+#'   .packages arguments to supply them so that all cluster nodes have the
+#'   correct environment set up for computing.
+#'
 #' @export
 #'
 normalize.source_mspct <-
@@ -196,13 +204,17 @@ normalize.source_mspct <-
            range = NULL,
            norm = "max",
            unit.out = getOption("photobiology.radiation.unit",
-                                default = "energy")) {
+                                default = "energy"),
+           .parallel = FALSE,
+           .paropts = NULL) {
     msmsply(x,
             normalize,
             range = range,
             norm = norm,
             unit.out = unit.out,
-            ...)
+            ...,
+            .parallel = .parallel,
+            .paropts = .paropts)
 
   }
 
@@ -216,13 +228,17 @@ normalize.response_mspct <-
            range = NULL,
            norm = "max",
            unit.out = getOption("photobiology.radiation.unit",
-                                default = "energy")) {
+                                default = "energy"),
+           .parallel = FALSE,
+           .paropts = NULL) {
     msmsply(x,
             normalize,
             range = range,
             norm = norm,
             unit.out = unit.out,
-            ...)
+            ...,
+            .parallel = .parallel,
+            .paropts = .paropts)
 
   }
 
@@ -236,13 +252,17 @@ normalize.filter_mspct <-
            range = NULL,
            norm = "max",
            qty.out = getOption("photobiology.filter.qty",
-                               default = "transmittance")) {
+                               default = "transmittance"),
+           .parallel = FALSE,
+           .paropts = NULL) {
     msmsply(x,
             normalize,
             range = range,
             norm = norm,
             qty.out = qty.out,
-            ...)
+            ...,
+            .parallel = .parallel,
+            .paropts = .paropts)
 
   }
 
@@ -254,13 +274,17 @@ normalize.reflector_mspct <- function(x,
                                       ...,
                                       range = x,
                                       norm = "max",
-                                      qty.out = NULL) {
+                                      qty.out = NULL,
+                                      .parallel = FALSE,
+                                      .paropts = NULL) {
   msmsply(x,
           normalize,
           range = range,
           norm = norm,
           qty.out = qty.out,
-          ...)
+          ...,
+          .parallel = .parallel,
+          .paropts = .paropts)
 
 }
 
@@ -271,12 +295,16 @@ normalize.reflector_mspct <- function(x,
 normalize.raw_mspct <- function(x,
                                 ...,
                                 range = x,
-                                norm = "max") {
+                                norm = "max",
+                                .parallel = FALSE,
+                                .paropts = NULL) {
   msmsply(x,
           normalize,
           range = range,
           norm = norm,
-          ...)
+          ...,
+          .parallel = .parallel,
+          .paropts = .paropts)
 }
 
 #' @describeIn normalize Normalize the members of a cps_mspct object.
@@ -286,12 +314,16 @@ normalize.raw_mspct <- function(x,
 normalize.cps_mspct <- function(x,
                                 ...,
                                 range = x,
-                                norm = "max") {
+                                norm = "max",
+                                .parallel = FALSE,
+                                .paropts = NULL) {
   msmsply(x,
           normalize,
           range = range,
           norm = norm,
-          ...)
+          ...,
+          .parallel = .parallel,
+          .paropts = .paropts)
 }
 
 # PRIVATE -----------------------------------------------------------------

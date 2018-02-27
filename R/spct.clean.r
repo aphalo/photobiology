@@ -217,6 +217,14 @@ clean.generic_spct <-
 
 #' @describeIn clean
 #'
+#' @param .parallel	if TRUE, apply function in parallel, using parallel backend
+#'   provided by foreach
+#' @param .paropts a list of additional options passed into the foreach function
+#'   when parallel computation is enabled. This is important if (for example)
+#'   your code relies on external data or packages: use the .export and
+#'   .packages arguments to supply them so that all cluster nodes have the
+#'   correct environment set up for computing.
+#'
 #' @export
 #'
 clean.source_mspct <-
@@ -226,14 +234,18 @@ clean.source_mspct <-
            fill = range.s.data,
            unit.out = getOption("photobiology.radiation.unit",
                                 default = "energy"),
-           ...) {
+           ...,
+           .parallel = FALSE,
+           .paropts = NULL) {
     if (is.null(range)) {
       msmsply(mspct = x,
               .fun = clean,
               range.s.data = range.s.data,
               fill = fill,
               unit.out = unit.out,
-              ...)
+              ...,
+              .parallel = .parallel,
+              .paropts = .paropts)
     } else {
       msmsply(mspct = x,
               .fun = clean,
@@ -241,7 +253,9 @@ clean.source_mspct <-
               range.s.data = range.s.data,
               fill = fill,
               unit.out = unit.out,
-              ...)
+              ...,
+              .parallel = .parallel,
+              .paropts = .paropts)
     }
   }
 
@@ -256,14 +270,18 @@ clean.filter_mspct <-
            fill = range.s.data,
            qty.out = getOption("photobiology.filter.qty",
                                default = "transmittance"),
-           ...) {
+           ...,
+           .parallel = FALSE,
+           .paropts = NULL) {
     if (is.null(range)) {
       msmsply(mspct = x,
               .fun = clean,
               range.s.data = range.s.data,
               fill = fill,
               qty.out = qty.out,
-              ...)
+              ...,
+              .parallel = .parallel,
+              .paropts = .paropts)
     } else {
       msmsply(mspct = x,
               .fun = clean,
@@ -271,7 +289,9 @@ clean.filter_mspct <-
               range.s.data = range.s.data,
               fill = fill,
               qty.out = qty.out,
-              ...)
+              ...,
+              .parallel = .parallel,
+              .paropts = .paropts)
     }
    }
 
@@ -284,20 +304,26 @@ clean.reflector_mspct <-
            range = NULL,
            range.s.data = c(0, 1),
            fill = range.s.data,
-           ...) {
+           ...,
+           .parallel = FALSE,
+           .paropts = NULL) {
     if (is.null(range)) {
       msmsply(mspct = x,
               .fun = clean,
               range.s.data = range.s.data,
               fill = fill,
-              ...)
+              ...,
+              .parallel = .parallel,
+              .paropts = .paropts)
     } else {
       msmsply(mspct = x,
               .fun = clean,
               range = range,
               range.s.data = range.s.data,
               fill = fill,
-              ...)
+              ...,
+              .parallel = .parallel,
+              .paropts = .paropts)
     }
    }
 
@@ -312,14 +338,18 @@ clean.response_mspct <-
            fill = range.s.data,
            unit.out = getOption("photobiology.radiation.unit",
                                 default = "energy"),
-           ...) {
+           ...,
+           .parallel = FALSE,
+           .paropts = NULL) {
     if (is.null(range)) {
       msmsply(mspct = x,
               .fun = clean,
               range.s.data = range.s.data,
               fill = fill,
               unit.out = unit.out,
-              ...)
+              ...,
+              .parallel = .parallel,
+              .paropts = .paropts)
     } else {
       msmsply(mspct = x,
               .fun = clean,
@@ -327,7 +357,9 @@ clean.response_mspct <-
               range.s.data = range.s.data,
               fill = fill,
               unit.out = unit.out,
-              ...)
+              ...,
+              .parallel = .parallel,
+              .paropts = .paropts)
     }
   }
 
@@ -340,20 +372,26 @@ clean.cps_mspct <-
            range = NULL,
            range.s.data = c(0, NA),
            fill = range.s.data,
-           ...) {
+           ...,
+           .parallel = FALSE,
+           .paropts = NULL) {
     if (is.null(range)) {
       msmsply(mspct = x,
               .fun = clean,
               range.s.data = range.s.data,
               fill = fill,
-              ...)
+              ...,
+              .parallel = .parallel,
+              .paropts = .paropts)
     } else {
       msmsply(mspct = x,
               .fun = clean,
               range = range,
               range.s.data = range.s.data,
               fill = fill,
-              ...)
+              ...,
+              .parallel = .parallel,
+              .paropts = .paropts)
     }
   }
 
@@ -373,20 +411,26 @@ clean.generic_mspct <-
            range.s.data = c(NA_real_, NA_real_),
            fill = range.s.data,
            col.names,
-           ...) {
+           ...,
+           .parallel = FALSE,
+           .paropts = NULL) {
     if (is.null(range)) {
       msmsply(mspct = x,
               .fun = clean,
               range.s.data = range.s.data,
               fill = fill,
-              ...)
+              ...,
+              .parallel = .parallel,
+              .paropts = .paropts)
     } else {
       msmsply(mspct = x,
               .fun = clean,
               range = range,
               range.s.data = range.s.data,
               fill = fill,
-              ...)
+              ...,
+              .parallel = .parallel,
+              .paropts = .paropts)
     }
   }
 
