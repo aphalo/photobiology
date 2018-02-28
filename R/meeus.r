@@ -174,7 +174,7 @@ solar_datetime <- function(time, lat, lon, eq.of.time) {
 solar_tod <- function(time, lat, lon, eq.of.time) {
   stopifnot(lubridate::is.instant(time))
   tod <- as_tod(time, unit.out = "minutes", tz = "UTC")
-  tod + eq.of.time + 4 * lon
+  (tod + eq.of.time + 4 * lon) %% 1440
 }
 
 #' @rdname julian_day
@@ -219,11 +219,17 @@ azimuth_angle <- function(lat, hour.angle, zenith.angle, declin) {
   lat.rad <- lat / 180 * pi
   zenith.angle.rad <- zenith.angle / 180 * pi
   declin.rad <- declin / 180 * pi
+#  hour.angle.rad <- hour.angle / 180 * pi
   ifelse(hour.angle > 0,
          (acos(((sin(lat.rad) * cos(zenith.angle.rad)) -
                   sin(declin.rad)) / (cos(lat.rad) * sin(zenith.angle.rad))) /
             pi * 180 + 180) %% 360,
-         540 - (acos(((sin(lat.rad) * cos(zenith.angle.rad)) -
-                        sin(declin.rad)) / (cos(lat.rad) * sin(zenith.angle.rad))) /
-                  pi * 180)) %% 360
+         (540 - (acos(((sin(lat.rad) * cos(zenith.angle.rad)) -
+                        sin(declin.rad)) / (cos(lat.rad) * sin(zenith.angle.rad)))) /
+                  pi * 180) %% 360)
 }
+
+# IF(AC2>0,MOD(DEGREES(ACOS(((SIN(RADIANS($B$3))*COS(RADIANS(AD2)))-
+#                 SIN(RADIANS(T2)))/(COS(RADIANS($B$3))*SIN(RADIANS(AD2)))))+180,360),
+#    MOD(540-DEGREES(ACOS(((SIN(RADIANS($B$3))*COS(RADIANS(AD2)))-
+#                            SIN(RADIANS(T2)))/(COS(RADIANS($B$3))*SIN(RADIANS(AD2))))), 360))

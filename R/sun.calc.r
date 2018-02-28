@@ -327,7 +327,8 @@ day_night <- function(date = lubridate::now(tzone = "UTC"),
                       twilight = "none",
                       unit.out = "hours") {
   stopifnot(! anyNA(date))
-  date <- lubridate::floor_date(date, unit = "days")
+  date <- as.Date(date)
+#  date <- lubridate::floor_date(date, unit = "days") resulted in error!!
   stopifnot(is.data.frame(geocode))
 
   if (unit.out == "date") {

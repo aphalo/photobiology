@@ -3,6 +3,19 @@ library("lubridate")
 
 context("sun_calc")
 
+test_that("sun_angles_24h", {
+  test.path <- tempfile()
+
+  testthat::expect_known_value(
+    sun_angles(time = ymd_hms("2012-10-22 12:00:00", tz = "UTC") + hours(0:24),
+               geocode = data.frame(lon = 0, lat = c(89, 60, 45, 30, 0),
+                                    address = "test"),
+               use.refraction = FALSE),
+    file = test.path
+  )
+}
+            )
+
 test_that("sun_angles_geocode_vectorized", {
   sun.angles <-
     sun_angles(ymd_hms("2012-12-22 12:00:00", tz = "UTC"),
@@ -198,6 +211,7 @@ test_that("sunset_time_vectorized", {
 
 test_that("daylength", {
 
+  expect_equal(day_length(now()), day_length(today())) # is conversion o.k.?
   expect_equal(day_length(ymd("2014-12-21"),
                           geocode = data.frame(lat = 85, lon = 0)),
                0)
