@@ -12,7 +12,7 @@
 
 <meta name="author" content="Pedro J. Aphalo" />
 
-<meta name="date" content="2017-12-15" />
+<meta name="date" content="2018-03-02" />
 
 <title>User Guide: 2 Radiation</title>
 
@@ -69,9 +69,9 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 
 <h1 class="title toc-ignore">User Guide: 2 Radiation</h1>
-<h3 class="subtitle"><em>Package ‘photobiology’ 0.9.18</em></h3>
+<h3 class="subtitle"><em>Package ‘photobiology’ 0.9.19</em></h3>
 <h4 class="author"><em>Pedro J. Aphalo</em></h4>
-<h4 class="date"><em>2017-12-15</em></h4>
+<h4 class="date"><em>2018-03-02</em></h4>
 
 
 <div id="TOC">
@@ -482,10 +482,10 @@ my.spct &lt;-<span class="st"> </span><span class="kw">as.source_spct</span>(my.
 ## # A tibble: 11 x 2
 ##   w.length s.e.irrad
 ##      &lt;int&gt;     &lt;dbl&gt;
-## 1      400         1
-## 2      401         1
-## 3      402         1
-## 4      403         1
+## 1      400        1.
+## 2      401        1.
+## 3      402        1.
+## 4      403        1.
 ## # ... with 7 more rows</code></pre>
 <p>We can make a `generic_spct’ copy of any spectrum object.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">my.g.spct &lt;-<span class="st"> </span><span class="kw">as.generic_spct</span>(my.spct)
@@ -500,12 +500,12 @@ my.spct &lt;-<span class="st"> </span><span class="kw">as.source_spct</span>(my.
 ## # A tibble: 6 x 2
 ##   w.length s.e.irrad
 ##      &lt;int&gt;     &lt;dbl&gt;
-## 1      300         1
-## 2      301         1
-## 3      302         1
-## 4      303         1
-## 5      304         1
-## 6      305         1</code></pre>
+## 1      300        1.
+## 2      301        1.
+## 3      302        1.
+## 4      303        1.
+## 5      304        1.
+## 6      305        1.</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">z &lt;-<span class="st"> </span><span class="dv">300</span><span class="op">:</span><span class="dv">305</span>
 y &lt;-<span class="st"> </span><span class="dv">2</span>
 <span class="kw">source_spct</span>(<span class="dt">w.length =</span> z, <span class="dt">s.e.irrad =</span> y)</code></pre></div>
@@ -516,12 +516,12 @@ y &lt;-<span class="st"> </span><span class="dv">2</span>
 ## # A tibble: 6 x 2
 ##   w.length s.e.irrad
 ##      &lt;int&gt;     &lt;dbl&gt;
-## 1      300         2
-## 2      301         2
-## 3      302         2
-## 4      303         2
-## 5      304         2
-## 6      305         2</code></pre>
+## 1      300        2.
+## 2      301        2.
+## 3      302        2.
+## 4      303        2.
+## 5      304        2.
+## 6      305        2.</code></pre>
 <p>When argument names are not supplied explicitly as above, the names of the variables are used to identify the data vectors.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">w.length &lt;-<span class="st"> </span><span class="dv">300</span><span class="op">:</span><span class="dv">305</span>
 s.e.irrad &lt;-<span class="st"> </span><span class="dv">1</span>
@@ -533,12 +533,12 @@ s.e.irrad &lt;-<span class="st"> </span><span class="dv">1</span>
 ## # A tibble: 6 x 2
 ##   w.length s.e.irrad
 ##      &lt;int&gt;     &lt;dbl&gt;
-## 1      300         1
-## 2      301         1
-## 3      302         1
-## 4      303         1
-## 5      304         1
-## 6      305         1</code></pre>
+## 1      300        1.
+## 2      301        1.
+## 3      302        1.
+## 4      303        1.
+## 5      304        1.
+## 6      305        1.</code></pre>
 <p>The different constructors have additional arguments to be used in setting non-default values for the attributes. These arguments have the same name as the attributes. Here we used the data frame created in the first code chunk of this section.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">my.d.spct &lt;-<span class="st"> </span><span class="kw">as.source_spct</span>(my.df, <span class="dt">time.unit =</span> <span class="st">&quot;day&quot;</span>)</code></pre></div>
 <p>Argument <code>strict.range</code> can be used to override or make more strict the validation of the data values.</p>
@@ -552,12 +552,12 @@ s.e.irrad &lt;-<span class="st"> </span><span class="dv">1</span>
 ## # A tibble: 6 x 2
 ##   w.length s.e.irrad
 ##      &lt;int&gt;     &lt;dbl&gt;
-## 1      300        -1
-## 2      301        -1
-## 3      302        -1
-## 4      303        -1
-## 5      304        -1
-## 6      305        -1</code></pre>
+## 1      300       -1.
+## 2      301       -1.
+## 3      302       -1.
+## 4      303       -1.
+## 5      304       -1.
+## 6      305       -1.</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">source_spct</span>(<span class="dt">w.length =</span> <span class="dv">300</span><span class="op">:</span><span class="dv">305</span>, <span class="dt">s.e.irrad =</span> <span class="op">-</span><span class="dv">1</span>, <span class="dt">strict.range =</span> <span class="ot">NULL</span>)</code></pre></div>
 <pre><code>## Object: source_spct [6 x 2]
 ## Wavelength range 300 to 305 nm, step 1 nm 
@@ -566,12 +566,12 @@ s.e.irrad &lt;-<span class="st"> </span><span class="dv">1</span>
 ## # A tibble: 6 x 2
 ##   w.length s.e.irrad
 ##      &lt;int&gt;     &lt;dbl&gt;
-## 1      300        -1
-## 2      301        -1
-## 3      302        -1
-## 4      303        -1
-## 5      304        -1
-## 6      305        -1</code></pre>
+## 1      300       -1.
+## 2      301       -1.
+## 3      302       -1.
+## 4      303       -1.
+## 5      304       -1.
+## 6      305       -1.</code></pre>
 <p>Finally argument <code>comment</code> can be used to add a comment to the data at the time of construction.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">my.cm.spct &lt;-<span class="st"> </span><span class="kw">source_spct</span>(<span class="dt">w.length =</span> <span class="dv">300</span><span class="op">:</span><span class="dv">305</span>, <span class="dt">s.e.irrad =</span> <span class="dv">1</span>,
                           <span class="dt">comment =</span> <span class="st">&quot;This is a comment&quot;</span>)
@@ -611,10 +611,10 @@ s.e.irrad &lt;-<span class="st"> </span><span class="dv">1</span>
 ## # A tibble: 522 x 3
 ##   w.length s.e.irrad s.q.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
-## 1 280.0000         0         0
-## 2 280.9231         0         0
-## 3 281.8462         0         0
-## 4 282.7692         0         0
+## 1     280.        0.        0.
+## 2     281.        0.        0.
+## 3     282.        0.        0.
+## 4     283.        0.        0.
 ## # ... with 518 more rows</code></pre>
 <p>Functions <code>setWhatMeasured()</code> and <code>getWhatMeasured()</code> are used for setting or getting a text value.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">setWhatMeasured</span>(my.spct, <span class="st">&quot;something&quot;</span>)
@@ -631,10 +631,10 @@ s.e.irrad &lt;-<span class="st"> </span><span class="dv">1</span>
 ## # A tibble: 522 x 3
 ##   w.length s.e.irrad s.q.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
-## 1 280.0000         0         0
-## 2 280.9231         0         0
-## 3 281.8462         0         0
-## 4 282.7692         0         0
+## 1     280.        0.        0.
+## 2     281.        0.        0.
+## 3     282.        0.        0.
+## 4     283.        0.        0.
 ## # ... with 518 more rows</code></pre>
 <p>Similar functions exist for other attributes which are not shared by all spectral classes. Several other attributes of different spectral objects can be used to store metadata in a consistent way. One example is the time unit used to express spectral irradiance. Functions are available for querying and setting the state if these attributes. <code>is_</code> functions return a logical value, and <code>get</code> functions return the values of the attributes themselves. In addition <code>set</code> functions can be used to set the value attributes. Several of the <code>set</code> functions are very rarely needed in user code, as these attributes are set during construction or as a side effect of applying other functions and/or operators to the objects. Function <code>setBSWFUsed()</code> and other <em>set</em> functions for attributes are examples of those useful to programmers extending the package, but only exceptionally to users. One exception is the case when a wrong value has been assigned by mistake and needs to be overwritten.</p>
 <p>For example function <code>is_effective()</code> returns <code>TRUE</code> if the spectral data has been weighted with a BSWF. The corresponding <code>getBSWFUsed()</code> function can be used, in this case to retrieve the name of the BSWF that was used when generating the data. Here we demonstrate with one example, where we use two different <code>waveband</code> objects—constructed on-the-fly with constructor function—, defining a range of wavelengths.</p>
@@ -656,10 +656,10 @@ ten.minutes.spct</code></pre></div>
 ## # A tibble: 522 x 3
 ##   w.length s.e.irrad s.q.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
-## 1 280.0000         0         0
-## 2 280.9231         0         0
-## 3 281.8462         0         0
-## 4 282.7692         0         0
+## 1     280.        0.        0.
+## 2     281.        0.        0.
+## 3     282.        0.        0.
+## 4     283.        0.        0.
 ## # ... with 518 more rows</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">getTimeUnit</span>(ten.minutes.spct)</code></pre></div>
 <pre><code>## [1] &quot;600s (~10 minutes)&quot;</code></pre>
@@ -761,10 +761,10 @@ two_suns.mspct</code></pre></div>
 ## # A tibble: 522 x 3
 ##   w.length s.e.irrad s.q.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
-## 1 280.0000         0         0
-## 2 280.9231         0         0
-## 3 281.8462         0         0
-## 4 282.7692         0         0
+## 1     280.        0.        0.
+## 2     281.        0.        0.
+## 3     282.        0.        0.
+## 4     283.        0.        0.
 ## # ... with 518 more rows
 ## --- Member: sun2 ---
 ## Object: source_spct [522 x 3]
@@ -777,10 +777,10 @@ two_suns.mspct</code></pre></div>
 ## # A tibble: 522 x 3
 ##   w.length s.e.irrad s.q.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
-## 1 280.0000         0         0
-## 2 280.9231         0         0
-## 3 281.8462         0         0
-## 4 282.7692         0         0
+## 1     280.        0.        0.
+## 2     281.        0.        0.
+## 3     282.        0.        0.
+## 4     283.        0.        0.
 ## # ... with 518 more rows
 ## 
 ## --- END ---</code></pre>
@@ -826,11 +826,11 @@ two_suns.spct</code></pre></div>
 ## 
 ## # A tibble: 1,044 x 4
 ##   w.length s.e.irrad spct.idx s.q.irrad
-##      &lt;dbl&gt;     &lt;dbl&gt;   &lt;fctr&gt;     &lt;dbl&gt;
-## 1 280.0000         0        a         0
-## 2 280.9231         0        a         0
-## 3 281.8462         0        a         0
-## 4 282.7692         0        a         0
+##      &lt;dbl&gt;     &lt;dbl&gt; &lt;fct&gt;        &lt;dbl&gt;
+## 1     280.        0. a               0.
+## 2     281.        0. a               0.
+## 3     282.        0. a               0.
+## 4     283.        0. a               0.
 ## # ... with 1,040 more rows</code></pre>
 <p>The reverse operation, separating the individual spectra from a spectrum object containing multiple spectra in <em>long form</em> and storing them as a collection, is implemented in method <code>subset2mspct</code>. In this case, metadata is set for the individual spectra if it is available in the object being subset. What metadata is automatically stored depends on the version of this package used when creating the long form spectrum object by means of <code>rbindspct()</code>. Versions 0.9.14 and later preserve most of the metadata.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">subset2mspct</span>(two_suns.spct)</code></pre></div>
@@ -846,10 +846,10 @@ two_suns.spct</code></pre></div>
 ## # A tibble: 522 x 3
 ##   w.length s.e.irrad s.q.irrad
 ## *    &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
-## 1 280.0000         0         0
-## 2 280.9231         0         0
-## 3 281.8462         0         0
-## 4 282.7692         0         0
+## 1     280.        0.        0.
+## 2     281.        0.        0.
+## 3     282.        0.        0.
+## 4     283.        0.        0.
 ## # ... with 518 more rows
 ## --- Member: b ---
 ## Object: source_spct [522 x 3]
@@ -862,10 +862,10 @@ two_suns.spct</code></pre></div>
 ## # A tibble: 522 x 3
 ##   w.length s.e.irrad s.q.irrad
 ## *    &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
-## 1 280.0000         0         0
-## 2 280.9231         0         0
-## 3 281.8462         0         0
-## 4 282.7692         0         0
+## 1     280.        0.        0.
+## 2     281.        0.        0.
+## 3     282.        0.        0.
+## 4     283.        0.        0.
 ## # ... with 518 more rows
 ## 
 ## --- END ---</code></pre>
@@ -883,10 +883,10 @@ two_suns.spct</code></pre></div>
 ## # A tibble: 11 x 2
 ##   w.length s.e.irrad
 ## *    &lt;int&gt;     &lt;dbl&gt;
-## 1      200         1
-## 2      201         1
-## 3      202         1
-## 4      203         1
+## 1      200        1.
+## 2      201        1.
+## 3      202        1.
+## 4      203        1.
 ## # ... with 7 more rows
 ## --- Member: B ---
 ## Object: source_spct [11 x 2]
@@ -896,10 +896,10 @@ two_suns.spct</code></pre></div>
 ## # A tibble: 11 x 2
 ##   w.length s.e.irrad
 ## *    &lt;int&gt;     &lt;dbl&gt;
-## 1      200         2
-## 2      201         2
-## 3      202         2
-## 4      203         2
+## 1      200        2.
+## 2      201        2.
+## 3      202        2.
+## 4      203        2.
 ## # ... with 7 more rows
 ## 
 ## --- END ---</code></pre>
@@ -915,10 +915,10 @@ two_suns.spct</code></pre></div>
 ## # A tibble: 11 x 2
 ##   w.length s.e.irrad
 ## *    &lt;int&gt;     &lt;dbl&gt;
-## 1      200         1
-## 2      201         1
-## 3      202         1
-## 4      203         1
+## 1      200        1.
+## 2      201        1.
+## 3      202        1.
+## 4      203        1.
 ## # ... with 7 more rows
 ## --- Member: B ---
 ## Object: source_spct [11 x 2]
@@ -928,10 +928,10 @@ two_suns.spct</code></pre></div>
 ## # A tibble: 11 x 2
 ##   w.length s.e.irrad
 ## *    &lt;int&gt;     &lt;dbl&gt;
-## 1      200         2
-## 2      201         2
-## 3      202         2
-## 4      203         2
+## 1      200        2.
+## 2      201        2.
+## 3      202        2.
+## 4      203        2.
 ## # ... with 7 more rows
 ## 
 ## --- END ---</code></pre>
@@ -945,11 +945,11 @@ test1.df</code></pre></div>
 ## 
 ## # A tibble: 22 x 3
 ##   w.length s.e.irrad spectrum
-##      &lt;int&gt;     &lt;dbl&gt;   &lt;fctr&gt;
-## 1      200         1        A
-## 2      201         1        A
-## 3      202         1        A
-## 4      203         1        A
+##      &lt;int&gt;     &lt;dbl&gt; &lt;fct&gt;   
+## 1      200        1. A       
+## 2      201        1. A       
+## 3      202        1. A       
+## 4      203        1. A       
 ## # ... with 18 more rows</code></pre>
 </div>
 <div id="converting-untidy-data-frames" class="section level4">
@@ -968,10 +968,10 @@ test1.df</code></pre></div>
 ## # A tibble: 11 x 2
 ##   w.length s.e.irrad
 ##      &lt;int&gt;     &lt;dbl&gt;
-## 1      200         1
-## 2      201         1
-## 3      202         1
-## 4      203         1
+## 1      200        1.
+## 2      201        1.
+## 3      202        1.
+## 4      203        1.
 ## # ... with 7 more rows
 ## --- Member: B ---
 ## Object: source_spct [11 x 2]
@@ -981,10 +981,10 @@ test1.df</code></pre></div>
 ## # A tibble: 11 x 2
 ##   w.length s.e.irrad
 ##      &lt;int&gt;     &lt;dbl&gt;
-## 1      200         2
-## 2      201         2
-## 3      202         2
-## 4      203         2
+## 1      200        2.
+## 2      201        2.
+## 3      202        2.
+## 4      203        2.
 ## # ... with 7 more rows
 ## 
 ## --- END ---</code></pre>
@@ -1000,10 +1000,10 @@ test1.df</code></pre></div>
 ## # A tibble: 11 x 2
 ##   w.length s.q.irrad
 ##      &lt;int&gt;     &lt;dbl&gt;
-## 1      200         1
-## 2      201         1
-## 3      202         1
-## 4      203         1
+## 1      200        1.
+## 2      201        1.
+## 3      202        1.
+## 4      203        1.
 ## # ... with 7 more rows
 ## --- Member: B ---
 ## Object: source_spct [11 x 2]
@@ -1013,10 +1013,10 @@ test1.df</code></pre></div>
 ## # A tibble: 11 x 2
 ##   w.length s.q.irrad
 ##      &lt;int&gt;     &lt;dbl&gt;
-## 1      200         2
-## 2      201         2
-## 3      202         2
-## 4      203         2
+## 1      200        2.
+## 2      201        2.
+## 3      202        2.
+## 4      203        2.
 ## # ... with 7 more rows
 ## 
 ## --- END ---</code></pre>
@@ -1033,10 +1033,10 @@ test1.df</code></pre></div>
 ## # A tibble: 11 x 2
 ##   w.length s.q.irrad
 ##      &lt;int&gt;     &lt;dbl&gt;
-## 1      200         1
-## 2      201         1
-## 3      202         1
-## 4      203         1
+## 1      200        1.
+## 2      201        1.
+## 3      202        1.
+## 4      203        1.
 ## # ... with 7 more rows
 ## --- Member: B ---
 ## Object: source_spct [11 x 2]
@@ -1046,10 +1046,10 @@ test1.df</code></pre></div>
 ## # A tibble: 11 x 2
 ##   w.length s.q.irrad
 ##      &lt;int&gt;     &lt;dbl&gt;
-## 1      200         2
-## 2      201         2
-## 3      202         2
-## 4      203         2
+## 1      200        2.
+## 2      201        2.
+## 3      202        2.
+## 4      203        2.
 ## # ... with 7 more rows
 ## 
 ## --- END ---</code></pre>
@@ -1124,10 +1124,10 @@ Methods <code>[[</code>, <code>$</code> and <code>[[&lt;-</code>, extract and re
 ## # A tibble: 522 x 3
 ##   w.length s.e.irrad s.q.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
-## 1 280.0000         0         0
-## 2 280.9231         0         0
-## 3 281.8462         0         0
-## 4 282.7692         0         0
+## 1     280.        0.        0.
+## 2     281.        0.        0.
+## 3     282.        0.        0.
+## 4     283.        0.        0.
 ## # ... with 518 more rows</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">two_suns.mspct<span class="op">$</span>sun1</code></pre></div>
 <pre><code>## Object: source_spct [522 x 3]
@@ -1140,10 +1140,10 @@ Methods <code>[[</code>, <code>$</code> and <code>[[&lt;-</code>, extract and re
 ## # A tibble: 522 x 3
 ##   w.length s.e.irrad s.q.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
-## 1 280.0000         0         0
-## 2 280.9231         0         0
-## 3 281.8462         0         0
-## 4 282.7692         0         0
+## 1     280.        0.        0.
+## 2     281.        0.        0.
+## 3     282.        0.        0.
+## 4     283.        0.        0.
 ## # ... with 518 more rows</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">two_suns.mspct[[<span class="st">&quot;sun1&quot;</span>]]</code></pre></div>
 <pre><code>## Object: source_spct [522 x 3]
@@ -1156,10 +1156,10 @@ Methods <code>[[</code>, <code>$</code> and <code>[[&lt;-</code>, extract and re
 ## # A tibble: 522 x 3
 ##   w.length s.e.irrad s.q.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
-## 1 280.0000         0         0
-## 2 280.9231         0         0
-## 3 281.8462         0         0
-## 4 282.7692         0         0
+## 1     280.        0.        0.
+## 2     281.        0.        0.
+## 3     282.        0.        0.
+## 4     283.        0.        0.
 ## # ... with 518 more rows</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">two_suns.mspct[[<span class="st">&quot;sun1&quot;</span>]] &lt;-<span class="st"> </span>sun.spct <span class="op">*</span><span class="st"> </span><span class="dv">2</span>
 two_suns.mspct[[<span class="st">&quot;sun2&quot;</span>]] &lt;-<span class="st"> </span><span class="ot">NULL</span>
@@ -1176,10 +1176,10 @@ two_suns.mspct</code></pre></div>
 ## # A tibble: 522 x 2
 ##   w.length s.e.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;
-## 1 280.0000         0
-## 2 280.9231         0
-## 3 281.8462         0
-## 4 282.7692         0
+## 1     280.        0.
+## 2     281.        0.
+## 3     282.        0.
+## 4     283.        0.
 ## # ... with 518 more rows
 ## 
 ## --- END ---</code></pre>
@@ -1197,10 +1197,10 @@ two_suns.mspct</code></pre></div>
 ## # A tibble: 522 x 2
 ##   w.length s.e.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;
-## 1 280.0000         0
-## 2 280.9231         0
-## 3 281.8462         0
-## 4 282.7692         0
+## 1     280.        0.
+## 2     281.        0.
+## 3     282.        0.
+## 4     283.        0.
 ## # ... with 518 more rows
 ## --- Member: filter ---
 ## Object: filter_spct [4 x 2]
@@ -1210,10 +1210,10 @@ two_suns.mspct</code></pre></div>
 ## # A tibble: 4 x 2
 ##   w.length   Tfr
 ##      &lt;dbl&gt; &lt;dbl&gt;
-## 1      100     1
-## 2      101     1
-## 3     4999     1
-## 4     5000     1
+## 1     100.    1.
+## 2     101.    1.
+## 3    4999.    1.
+## 4    5000.    1.
 ## --- Member: source ---
 ## Object: source_spct [522 x 3]
 ## Wavelength range 280 to 800 nm, step 0.9230769 to 1 nm 
@@ -1225,10 +1225,10 @@ two_suns.mspct</code></pre></div>
 ## # A tibble: 522 x 3
 ##   w.length s.e.irrad s.q.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
-## 1 280.0000         0         0
-## 2 280.9231         0         0
-## 3 281.8462         0         0
-## 4 282.7692         0         0
+## 1     280.        0.        0.
+## 2     281.        0.        0.
+## 3     282.        0.        0.
+## 4     283.        0.        0.
 ## # ... with 518 more rows
 ## 
 ## --- END ---</code></pre>
@@ -1318,10 +1318,10 @@ two_suns.mspct</code></pre></div>
 ## # A tibble: 522 x 2
 ##   w.length s.e.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;
-## 1 280.0000       0.1
-## 2 280.9231       0.1
-## 3 281.8462       0.1
-## 4 282.7692       0.1
+## 1     280.     0.100
+## 2     281.     0.100
+## 3     282.     0.100
+## 4     283.     0.100
 ## # ... with 518 more rows
 ## --- Member: B ---
 ## Object: source_spct [522 x 2]
@@ -1334,10 +1334,10 @@ two_suns.mspct</code></pre></div>
 ## # A tibble: 522 x 2
 ##   w.length s.e.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;
-## 1 280.0000       0.1
-## 2 280.9231       0.1
-## 3 281.8462       0.1
-## 4 282.7692       0.1
+## 1     280.     0.100
+## 2     281.     0.100
+## 3     282.     0.100
+## 4     283.     0.100
 ## # ... with 518 more rows
 ## 
 ## --- END ---</code></pre>
@@ -1355,10 +1355,10 @@ two_suns.mspct</code></pre></div>
 ## # A tibble: 525 x 2
 ##   w.length s.e.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;
-## 1 280.0000        NA
-## 2 280.9231        NA
-## 3 281.0000        NA
-## 4 281.0000         0
+## 1     280.       NA 
+## 2     281.       NA 
+## 3     281.       NA 
+## 4     281.        0.
 ## # ... with 521 more rows
 ## --- Member: B ---
 ## Object: source_spct [525 x 2]
@@ -1371,10 +1371,10 @@ two_suns.mspct</code></pre></div>
 ## # A tibble: 525 x 2
 ##   w.length s.e.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;
-## 1 280.0000        NA
-## 2 280.9231        NA
-## 3 281.0000        NA
-## 4 281.0000         0
+## 1     280.       NA 
+## 2     281.       NA 
+## 3     281.       NA 
+## 4     281.        0.
 ## # ... with 521 more rows
 ## 
 ## --- END ---</code></pre>
@@ -1383,24 +1383,24 @@ two_suns.mspct</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">msdply</span>(two.mspct, max)</code></pre></div>
 <pre><code>## # A tibble: 2 x 2
 ##   spct.idx max.wl
-##     &lt;fctr&gt;  &lt;dbl&gt;
-## 1        A    800
-## 2        B    800</code></pre>
+##   &lt;fct&gt;     &lt;dbl&gt;
+## 1 A          800.
+## 2 B          800.</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ranges.df &lt;-<span class="st"> </span><span class="kw">msdply</span>(two.mspct, range)
 ranges.df</code></pre></div>
 <pre><code>## # A tibble: 2 x 3
 ##   spct.idx min.wl max.wl
-##     &lt;fctr&gt;  &lt;dbl&gt;  &lt;dbl&gt;
-## 1        A    280    800
-## 2        B    280    800</code></pre>
+##   &lt;fct&gt;     &lt;dbl&gt;  &lt;dbl&gt;
+## 1 A          280.   800.
+## 2 B          280.   800.</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">cat</span>(<span class="kw">comment</span>(ranges.df))</code></pre></div>
 <pre><code>## Applied function: 'range'.</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">msdply</span>(two.mspct, range, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>)</code></pre></div>
 <pre><code>## # A tibble: 2 x 3
 ##   spct.idx min.wl max.wl
-##     &lt;fctr&gt;  &lt;dbl&gt;  &lt;dbl&gt;
-## 1        A    280    800
-## 2        B    280    800</code></pre>
+##   &lt;fct&gt;     &lt;dbl&gt;  &lt;dbl&gt;
+## 1 A          280.   800.
+## 2 B          280.   800.</code></pre>
 <p>In the case of <code>mslply()</code> the applied function is expected to return an R object of any length, possibly variable among members.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">str</span>(<span class="kw">mslply</span>(two.mspct, names))</code></pre></div>
 <pre><code>## List of 2
@@ -1433,10 +1433,10 @@ ranges.df</code></pre></div>
 ## # A tibble: 522 x 2
 ##   w.length s.e.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;
-## 1 280.0000         0
-## 2 280.9231         0
-## 3 281.8462         0
-## 4 282.7692         0
+## 1     280.        0.
+## 2     281.        0.
+## 3     282.        0.
+## 4     283.        0.
 ## # ... with 518 more rows
 ## --- Member: B ---
 ## Object: source_spct [522 x 2]
@@ -1446,10 +1446,10 @@ ranges.df</code></pre></div>
 ## # A tibble: 522 x 2
 ##   w.length s.e.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;
-## 1 280.0000         0
-## 2 280.9231         0
-## 3 281.8462         0
-## 4 282.7692         0
+## 1     280.        0.
+## 2     281.        0.
+## 3     282.        0.
+## 4     283.        0.
 ## # ... with 518 more rows
 ## 
 ## --- END ---</code></pre>
@@ -1463,10 +1463,10 @@ ranges.df</code></pre></div>
 ## # A tibble: 522 x 2
 ##   w.length s.e.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;
-## 1 280.0000         0
-## 2 280.9231         0
-## 3 281.8462         0
-## 4 282.7692         0
+## 1     280.        0.
+## 2     281.        0.
+## 3     282.        0.
+## 4     283.        0.
 ## # ... with 518 more rows
 ## --- Member: B ---
 ## Object: source_spct [522 x 2]
@@ -1476,10 +1476,10 @@ ranges.df</code></pre></div>
 ## # A tibble: 522 x 2
 ##   w.length s.e.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;
-## 1 280.0000         0
-## 2 280.9231         0
-## 3 281.8462         0
-## 4 282.7692         0
+## 1     280.        0.
+## 2     281.        0.
+## 3     282.        0.
+## 4     283.        0.
 ## # ... with 518 more rows
 ## 
 ## --- END ---</code></pre>
@@ -1495,10 +1495,10 @@ ranges.df</code></pre></div>
 ## # A tibble: 522 x 2
 ##   w.length s.e.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;
-## 1 280.0000         0
-## 2 280.9231         0
-## 3 281.8462         0
-## 4 282.7692         0
+## 1     280.        0.
+## 2     281.        0.
+## 3     282.        0.
+## 4     283.        0.
 ## # ... with 518 more rows
 ## --- Member: a_B ---
 ## Object: source_spct [522 x 2]
@@ -1508,10 +1508,10 @@ ranges.df</code></pre></div>
 ## # A tibble: 522 x 2
 ##   w.length s.e.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;
-## 1 280.0000         0
-## 2 280.9231         0
-## 3 281.8462         0
-## 4 282.7692         0
+## 1     280.        0.
+## 2     281.        0.
+## 3     282.        0.
+## 4     283.        0.
 ## # ... with 518 more rows
 ## --- Member: b_A ---
 ## Object: source_spct [522 x 2]
@@ -1521,10 +1521,10 @@ ranges.df</code></pre></div>
 ## # A tibble: 522 x 2
 ##   w.length s.e.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;
-## 1 280.0000         0
-## 2 280.9231         0
-## 3 281.8462         0
-## 4 282.7692         0
+## 1     280.        0.
+## 2     281.        0.
+## 3     282.        0.
+## 4     283.        0.
 ## # ... with 518 more rows
 ## --- Member: b_B ---
 ## Object: source_spct [522 x 2]
@@ -1534,10 +1534,10 @@ ranges.df</code></pre></div>
 ## # A tibble: 522 x 2
 ##   w.length s.e.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;
-## 1 280.0000         0
-## 2 280.9231         0
-## 3 281.8462         0
-## 4 282.7692         0
+## 1     280.        0.
+## 2     281.        0.
+## 3     282.        0.
+## 4     283.        0.
 ## # ... with 518 more rows
 ## 
 ## --- END ---</code></pre>
@@ -1552,10 +1552,10 @@ ranges.df</code></pre></div>
 ## # A tibble: 522 x 2
 ##   w.length s.e.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;
-## 1 280.0000         0
-## 2 280.9231         0
-## 3 281.8462         0
-## 4 282.7692         0
+## 1     280.        0.
+## 2     281.        0.
+## 3     282.        0.
+## 4     283.        0.
 ## # ... with 518 more rows
 ## --- Member: B ---
 ## Object: source_spct [522 x 2]
@@ -1565,10 +1565,10 @@ ranges.df</code></pre></div>
 ## # A tibble: 522 x 2
 ##   w.length s.e.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;
-## 1 280.0000         0
-## 2 280.9231         0
-## 3 281.8462         0
-## 4 282.7692         0
+## 1     280.        0.
+## 2     281.        0.
+## 3     282.        0.
+## 4     283.        0.
 ## # ... with 518 more rows
 ## 
 ## --- END ---</code></pre>
@@ -1581,26 +1581,26 @@ There are cases where functions <code>convolve_each()</code> and <code>msmsply()
 <p>Some of the <code>set</code> and <code>get</code> functions used with attributes have method definitions for collections of spectra. Some examples follow.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">getWhenMeasured</span>(two.mspct)</code></pre></div>
 <pre><code>## # A tibble: 2 x 2
-##   spct.idx       when.measured
-##     &lt;fctr&gt;              &lt;dttm&gt;
-## 1        A 2010-06-22 09:51:00
-## 2        B 2010-06-22 09:51:00</code></pre>
+##   spct.idx when.measured      
+##   &lt;fct&gt;    &lt;dttm&gt;             
+## 1 A        2010-06-22 09:51:00
+## 2 B        2010-06-22 09:51:00</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">setWhenMeasured</span>(two.mspct, <span class="kw">ymd</span>(<span class="st">&quot;2015-10-31&quot;</span>, <span class="dt">tz =</span> <span class="st">&quot;EET&quot;</span>))
 <span class="kw">getWhenMeasured</span>(two.mspct)</code></pre></div>
 <pre><code>## # A tibble: 2 x 2
-##   spct.idx       when.measured
-##     &lt;fctr&gt;              &lt;dttm&gt;
-## 1        A 2015-10-30 22:00:00
-## 2        B 2015-10-30 22:00:00</code></pre>
+##   spct.idx when.measured      
+##   &lt;fct&gt;    &lt;dttm&gt;             
+## 1 A        2015-10-30 22:00:00
+## 2 B        2015-10-30 22:00:00</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">setWhenMeasured</span>(two.mspct,
                 <span class="kw">list</span>(<span class="kw">ymd_hm</span>(<span class="st">&quot;2015-10-31 10:00&quot;</span>, <span class="dt">tz =</span> <span class="st">&quot;EET&quot;</span>),
                      <span class="kw">ymd_hm</span>(<span class="st">&quot;2015-10-31 11:00&quot;</span>, <span class="dt">tz =</span> <span class="st">&quot;EET&quot;</span>)))
 <span class="kw">getWhenMeasured</span>(two.mspct)</code></pre></div>
 <pre><code>## # A tibble: 2 x 2
-##   spct.idx       when.measured
-##     &lt;fctr&gt;              &lt;dttm&gt;
-## 1        A 2015-10-31 08:00:00
-## 2        B 2015-10-31 09:00:00</code></pre>
+##   spct.idx when.measured      
+##   &lt;fct&gt;    &lt;dttm&gt;             
+## 1 A        2015-10-31 08:00:00
+## 2 B        2015-10-31 09:00:00</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">two.mspct</code></pre></div>
 <pre><code>## Object: source_mspct [2 x 1]
 ## --- Member: A ---
@@ -1614,10 +1614,10 @@ There are cases where functions <code>convolve_each()</code> and <code>msmsply()
 ## # A tibble: 522 x 2
 ##   w.length s.e.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;
-## 1 280.0000         0
-## 2 280.9231         0
-## 3 281.8462         0
-## 4 282.7692         0
+## 1     280.        0.
+## 2     281.        0.
+## 3     282.        0.
+## 4     283.        0.
 ## # ... with 518 more rows
 ## --- Member: B ---
 ## Object: source_spct [522 x 2]
@@ -1630,10 +1630,10 @@ There are cases where functions <code>convolve_each()</code> and <code>msmsply()
 ## # A tibble: 522 x 2
 ##   w.length s.e.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;
-## 1 280.0000         0
-## 2 280.9231         0
-## 3 281.8462         0
-## 4 282.7692         0
+## 1     280.        0.
+## 2     281.        0.
+## 3     282.        0.
+## 4     283.        0.
 ## # ... with 518 more rows
 ## 
 ## --- END ---</code></pre>
@@ -1641,26 +1641,26 @@ There are cases where functions <code>convolve_each()</code> and <code>msmsply()
 <p>Functions <code>when.measured2tb()</code>, <code>geocode2tb()</code>, <code>lon2tb()</code>, <code>lat2tb()</code> and <code>what.measured2tb()</code> extract these same attributes from collection members into a tibble or data frame. In contrast to the “get” methods described above, if an existing data frame or tibble with a matching number of rows is passed as second argument, the values for the attribute are saved into a new column appended at the right edge of the tibble or data frame.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">when_measured2tb</span>(two.mspct)</code></pre></div>
 <pre><code>## # A tibble: 2 x 2
-##   spct.idx       when.measured
-##     &lt;fctr&gt;              &lt;dttm&gt;
-## 1        A 2015-10-31 08:00:00
-## 2        B 2015-10-31 09:00:00</code></pre>
+##   spct.idx when.measured      
+##   &lt;fct&gt;    &lt;dttm&gt;             
+## 1 A        2015-10-31 08:00:00
+## 2 B        2015-10-31 09:00:00</code></pre>
 <p>By default the new column is named after the name of the attribute, but this default can be overridden by the user.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">when_measured2tb</span>(two.mspct, <span class="dt">col.names =</span> <span class="kw">c</span>(<span class="dt">when.measured =</span> <span class="st">&quot;time&quot;</span>))</code></pre></div>
 <pre><code>## # A tibble: 2 x 2
-##   spct.idx                time
-##     &lt;fctr&gt;              &lt;dttm&gt;
-## 1        A 2015-10-31 08:00:00
-## 2        B 2015-10-31 09:00:00</code></pre>
+##   spct.idx time               
+##   &lt;fct&gt;    &lt;dttm&gt;             
+## 1 A        2015-10-31 08:00:00
+## 2 B        2015-10-31 09:00:00</code></pre>
 <p>Function <code>add_attr2tb()</code> adds one or more columns with attributes to a tibble or data frame. We here also demonstrate that because the data frame object is passed to the first positional argument, we can use a <em>pipe</em>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">q_irrad</span>(two.mspct) <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">add_attr2tb</span>(two.mspct, 
               <span class="dt">col.names =</span> <span class="kw">c</span>(<span class="st">&quot;lon&quot;</span>, <span class="st">&quot;lat&quot;</span>, <span class="st">&quot;when.measured&quot;</span>))</code></pre></div>
 <pre><code>## # A tibble: 2 x 5
-##   spct.idx q_irrad_Total      lon      lat       when.measured
-##     &lt;fctr&gt;         &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;              &lt;dttm&gt;
-## 1        A   0.001255336 24.96642 60.20355 2015-10-31 08:00:00
-## 2        B   0.002510671 24.96642 60.20355 2015-10-31 09:00:00</code></pre>
+##   spct.idx q_irrad_Total   lon   lat when.measured      
+##   &lt;fct&gt;            &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dttm&gt;             
+## 1 A              0.00126  25.0  60.2 2015-10-31 08:00:00
+## 2 B              0.00251  25.0  60.2 2015-10-31 09:00:00</code></pre>
 <p>We can set the desired names for the columns if we wish them to be something else than the default.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">q_irrad</span>(two.mspct) <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">add_attr2tb</span>(two.mspct, 
@@ -1668,10 +1668,10 @@ There are cases where functions <code>convolve_each()</code> and <code>msmsply()
                             <span class="dt">lat =</span> <span class="st">&quot;latitude&quot;</span>, 
                             <span class="dt">when.measured =</span> <span class="st">&quot;time&quot;</span>))</code></pre></div>
 <pre><code>## # A tibble: 2 x 5
-##   spct.idx q_irrad_Total longitude latitude                time
-##     &lt;fctr&gt;         &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;              &lt;dttm&gt;
-## 1        A   0.001255336  24.96642 60.20355 2015-10-31 08:00:00
-## 2        B   0.002510671  24.96642 60.20355 2015-10-31 09:00:00</code></pre>
+##   spct.idx q_irrad_Total longitude latitude time               
+##   &lt;fct&gt;            &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt; &lt;dttm&gt;             
+## 1 A              0.00126      25.0     60.2 2015-10-31 08:00:00
+## 2 B              0.00251      25.0     60.2 2015-10-31 09:00:00</code></pre>
 </div>
 </div>
 <div id="wavebands" class="section level2">
@@ -1941,10 +1941,10 @@ wavebands</code></pre></div>
 ## # A tibble: 522 x 3
 ##   w.length s.e.irrad s.q.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
-## 1 280.0000         0         0
-## 2 280.9231         0         0
-## 3 281.8462         0         0
-## 4 282.7692         0         0
+## 1     280.        0.        0.
+## 2     281.        0.        0.
+## 3     282.        0.        0.
+## 4     283.        0.        0.
 ## # ... with 518 more rows</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">na.exclude</span>(sun.spct)</code></pre></div>
 <pre><code>## Object: source_spct [522 x 3]
@@ -1957,10 +1957,10 @@ wavebands</code></pre></div>
 ## # A tibble: 522 x 3
 ##   w.length s.e.irrad s.q.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
-## 1 280.0000         0         0
-## 2 280.9231         0         0
-## 3 281.8462         0         0
-## 4 282.7692         0         0
+## 1     280.        0.        0.
+## 2     281.        0.        0.
+## 3     282.        0.        0.
+## 4     283.        0.        0.
 ## # ... with 518 more rows</code></pre>
 </div>
 </div>
@@ -2256,10 +2256,10 @@ wavebands</code></pre></div>
 ## # A tibble: 522 x 2
 ##   w.length s.e.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;
-## 1 280.0000         0
-## 2 280.9231         0
-## 3 281.8462         0
-## 4 282.7692         0
+## 1     280.        0.
+## 2     281.        0.
+## 3     282.        0.
+## 4     283.        0.
 ## # ... with 518 more rows</code></pre>
 <p>When meaningful, operations between different spectra are also allowed. For example, it is possible to simulate the effect of a filter on a light source by multiplying (or convolving) the two spectra.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sun.spct <span class="op">*</span><span class="st"> </span>polyester.spct</code></pre></div>
@@ -2270,10 +2270,10 @@ wavebands</code></pre></div>
 ## # A tibble: 533 x 2
 ##   w.length s.e.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;
-## 1 280.0000         0
-## 2 280.9231         0
-## 3 281.0000         0
-## 4 281.8462         0
+## 1     280.        0.
+## 2     281.        0.
+## 3     281.        0.
+## 4     282.        0.
 ## # ... with 529 more rows</code></pre>
 <p>If we have two layers of the filter, this can be approximated using either of these two statements.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sun.spct <span class="op">*</span><span class="st"> </span>polyester.spct <span class="op">*</span><span class="st"> </span>polyester.spct</code></pre></div>
@@ -2284,10 +2284,10 @@ wavebands</code></pre></div>
 ## # A tibble: 533 x 2
 ##   w.length s.e.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;
-## 1 280.0000         0
-## 2 280.9231         0
-## 3 281.0000         0
-## 4 281.8462         0
+## 1     280.        0.
+## 2     281.        0.
+## 3     281.        0.
+## 4     282.        0.
 ## # ... with 529 more rows</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sun.spct <span class="op">*</span><span class="st"> </span>polyester.spct<span class="op">^</span><span class="dv">2</span></code></pre></div>
 <pre><code>## Object: source_spct [533 x 2]
@@ -2297,10 +2297,10 @@ wavebands</code></pre></div>
 ## # A tibble: 533 x 2
 ##   w.length s.e.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;
-## 1 280.0000         0
-## 2 280.9231         0
-## 3 281.0000         0
-## 4 281.8462         0
+## 1     280.        0.
+## 2     281.        0.
+## 3     281.        0.
+## 4     282.        0.
 ## # ... with 529 more rows</code></pre>
 <p>Operators are also defined for operations between a spectrum and a numeric vector (with normal recycling).</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sun.spct <span class="op">*</span><span class="st"> </span><span class="dv">2</span></code></pre></div>
@@ -2314,10 +2314,10 @@ wavebands</code></pre></div>
 ## # A tibble: 522 x 2
 ##   w.length s.e.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;
-## 1 280.0000         0
-## 2 280.9231         0
-## 3 281.8462         0
-## 4 282.7692         0
+## 1     280.        0.
+## 2     281.        0.
+## 3     282.        0.
+## 4     283.        0.
 ## # ... with 518 more rows</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="dv">2</span> <span class="op">*</span><span class="st"> </span>sun.spct</code></pre></div>
 <pre><code>## Object: source_spct [522 x 2]
@@ -2330,10 +2330,10 @@ wavebands</code></pre></div>
 ## # A tibble: 522 x 2
 ##   w.length s.e.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;
-## 1 280.0000         0
-## 2 280.9231         0
-## 3 281.8462         0
-## 4 282.7692         0
+## 1     280.        0.
+## 2     281.        0.
+## 3     282.        0.
+## 4     283.        0.
 ## # ... with 518 more rows</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sun.spct <span class="op">*</span><span class="st"> </span><span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">1</span>)</code></pre></div>
 <pre><code>## Object: source_spct [522 x 2]
@@ -2346,10 +2346,10 @@ wavebands</code></pre></div>
 ## # A tibble: 522 x 2
 ##   w.length s.e.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;
-## 1 280.0000         0
-## 2 280.9231         0
-## 3 281.8462         0
-## 4 282.7692         0
+## 1     280.        0.
+## 2     281.        0.
+## 3     282.        0.
+## 4     283.        0.
 ## # ... with 518 more rows</code></pre>
 <p>There is one special case, for <code>chroma_spct</code>: if the numeric operand has length three, containing three <em>named</em> values <em>x</em>, <em>y</em> and <em>z</em>, the corresponding value is used for each of the chromaticity <em>columns</em> in the <code>chroma_spct</code>. Un-named values or differently named values are not treated specially.</p>
 <p>Operators are also defined for operations between an spectrum and a <code>waveband</code> object. The next to code chunks demonstrate how the class of the result depends on whether the <code>waveband</code> object describes a range of wavelengths or a range of wavelengths plus a BSWF.</p>
@@ -2361,10 +2361,10 @@ wavebands</code></pre></div>
 ## # A tibble: 37 x 2
 ##   w.length s.e.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;
-## 1 280.0000         0
-## 2 280.9231         0
-## 3 281.8462         0
-## 4 282.7692         0
+## 1     280.        0.
+## 2     281.        0.
+## 3     282.        0.
+## 4     283.        0.
 ## # ... with 33 more rows</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sun.spct <span class="op">*</span><span class="st"> </span>CIE.wb</code></pre></div>
 <p>And of course these operations can be combined into more complex statements, including parentheses, when needed. The example below estimates the difference in effective spectral irradiance according to the CIE98 definition, between sunlight and sunlight filtered with a polyester film. Of course, the result is valid only for the solar spectral data used, which corresponds to Southern Finland.</p>
@@ -2377,10 +2377,10 @@ wavebands</code></pre></div>
 ## # A tibble: 133 x 2
 ##   w.length s.e.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;
-## 1 280.0000         0
-## 2 280.9231         0
-## 3 281.0000         0
-## 4 281.8462         0
+## 1     280.        0.
+## 2     281.        0.
+## 3     281.        0.
+## 4     282.        0.
 ## # ... with 129 more rows</code></pre>
 </div>
 <div id="unary-operators-and-maths-functions" class="section level3">
@@ -2496,10 +2496,10 @@ wavebands</code></pre></div>
 ## # A tibble: 522 x 2
 ##   w.length s.e.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;
-## 1 280.0000         0
-## 2 280.9231         0
-## 3 281.8462         0
-## 4 282.7692         0
+## 1     280.        0.
+## 2     281.        0.
+## 3     282.        0.
+## 4     283.        0.
 ## # ... with 518 more rows</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sqrt</span>(sun.spct)</code></pre></div>
 <pre><code>## Object: source_spct [522 x 2]
@@ -2512,10 +2512,10 @@ wavebands</code></pre></div>
 ## # A tibble: 522 x 2
 ##   w.length s.e.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;
-## 1 280.0000         0
-## 2 280.9231         0
-## 3 281.8462         0
-## 4 282.7692         0
+## 1     280.        0.
+## 2     281.        0.
+## 3     282.        0.
+## 4     283.        0.
 ## # ... with 518 more rows</code></pre>
 </div>
 <div id="options" class="section level3">
@@ -2677,10 +2677,10 @@ sun.spct <span class="op">*</span><span class="st"> </span>UVB.wb</code></pre></
 ## # A tibble: 37 x 2
 ##   w.length s.q.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;
-## 1 280.0000         0
-## 2 280.9231         0
-## 3 281.8462         0
-## 4 282.7692         0
+## 1     280.        0.
+## 2     281.        0.
+## 3     282.        0.
+## 4     283.        0.
 ## # ... with 33 more rows</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">options</span>(<span class="dt">photobiology.radiation.unit =</span> <span class="st">&quot;energy&quot;</span>)
 sun.spct <span class="op">*</span><span class="st"> </span>UVB.wb</code></pre></div>
@@ -2691,10 +2691,10 @@ sun.spct <span class="op">*</span><span class="st"> </span>UVB.wb</code></pre></
 ## # A tibble: 37 x 2
 ##   w.length s.e.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;
-## 1 280.0000         0
-## 2 280.9231         0
-## 3 281.8462         0
-## 4 282.7692         0
+## 1     280.        0.
+## 2     281.        0.
+## 3     282.        0.
+## 4     283.        0.
 ## # ... with 33 more rows</code></pre>
 <p>However using convenience functions is easier. The chunk above can be rewritten as below.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">photon_as_default</span>()
@@ -2706,10 +2706,10 @@ sun.spct <span class="op">*</span><span class="st"> </span>UVB.wb</code></pre></
 ## # A tibble: 37 x 2
 ##   w.length s.q.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;
-## 1 280.0000         0
-## 2 280.9231         0
-## 3 281.8462         0
-## 4 282.7692         0
+## 1     280.        0.
+## 2     281.        0.
+## 3     282.        0.
+## 4     283.        0.
 ## # ... with 33 more rows</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">energy_as_default</span>()
 sun.spct <span class="op">*</span><span class="st"> </span>UVB.wb</code></pre></div>
@@ -2720,10 +2720,10 @@ sun.spct <span class="op">*</span><span class="st"> </span>UVB.wb</code></pre></
 ## # A tibble: 37 x 2
 ##   w.length s.e.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;
-## 1 280.0000         0
-## 2 280.9231         0
-## 3 281.8462         0
-## 4 282.7692         0
+## 1     280.        0.
+## 2     281.        0.
+## 3     282.        0.
+## 4     283.        0.
 ## # ... with 33 more rows</code></pre>
 <p>Furthermore, it is possible to temporarily change the options for the evaluation of a single, possibly compound, R expression using a different syntax, reminiscent of that of R’s <code>with()</code>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">using_photon</span>(sun.spct <span class="op">*</span><span class="st"> </span>UVB.wb)</code></pre></div>
@@ -2734,10 +2734,10 @@ sun.spct <span class="op">*</span><span class="st"> </span>UVB.wb</code></pre></
 ## # A tibble: 37 x 2
 ##   w.length s.q.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;
-## 1 280.0000         0
-## 2 280.9231         0
-## 3 281.8462         0
-## 4 282.7692         0
+## 1     280.        0.
+## 2     281.        0.
+## 3     282.        0.
+## 4     283.        0.
 ## # ... with 33 more rows</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">using_energy</span>(sun.spct <span class="op">*</span><span class="st"> </span>UVB.wb)</code></pre></div>
 <pre><code>## Object: source_spct [37 x 2]
@@ -2747,10 +2747,10 @@ sun.spct <span class="op">*</span><span class="st"> </span>UVB.wb</code></pre></
 ## # A tibble: 37 x 2
 ##   w.length s.e.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;
-## 1 280.0000         0
-## 2 280.9231         0
-## 3 281.8462         0
-## 4 282.7692         0
+## 1     280.        0.
+## 2     281.        0.
+## 3     282.        0.
+## 4     283.        0.
 ## # ... with 33 more rows</code></pre>
 </div>
 </div>
@@ -3235,11 +3235,11 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 ## 
 ## # A tibble: 1,044 x 4
 ##   w.length s.e.irrad spct.idx s.q.irrad
-##      &lt;dbl&gt;     &lt;dbl&gt;   &lt;fctr&gt;     &lt;dbl&gt;
-## 1 280.0000         0   spct_1         0
-## 2 280.9231         0   spct_1         0
-## 3 281.8462         0   spct_1         0
-## 4 282.7692         0   spct_1         0
+##      &lt;dbl&gt;     &lt;dbl&gt; &lt;fct&gt;        &lt;dbl&gt;
+## 1     280.        0. spct_1          0.
+## 2     281.        0. spct_1          0.
+## 3     282.        0. spct_1          0.
+## 4     283.        0. spct_1          0.
 ## # ... with 1,040 more rows</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">rbindspct</span>(<span class="kw">list</span>(<span class="dt">A =</span> sun.spct, <span class="dt">B =</span> shade.spct), <span class="dt">idfactor =</span> <span class="st">&quot;site&quot;</span>)</code></pre></div>
 <pre><code>## Object: source_spct [1,044 x 4]
@@ -3254,12 +3254,12 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 ## Time unit 1s
 ## 
 ## # A tibble: 1,044 x 4
-##   w.length s.e.irrad   site s.q.irrad
-##      &lt;dbl&gt;     &lt;dbl&gt; &lt;fctr&gt;     &lt;dbl&gt;
-## 1 280.0000         0      A         0
-## 2 280.9231         0      A         0
-## 3 281.8462         0      A         0
-## 4 282.7692         0      A         0
+##   w.length s.e.irrad site  s.q.irrad
+##      &lt;dbl&gt;     &lt;dbl&gt; &lt;fct&gt;     &lt;dbl&gt;
+## 1     280.        0. A            0.
+## 2     281.        0. A            0.
+## 3     282.        0. A            0.
+## 4     283.        0. A            0.
 ## # ... with 1,040 more rows</code></pre>
 <p>Special <em>Extract</em> methods for spectral objects have been implemented. These are used by default and preserve the attributes used by this package, except when the returned value is a single column from the spectral object.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sun.spct[<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>, ]</code></pre></div>
@@ -3273,10 +3273,10 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 ## # A tibble: 10 x 3
 ##   w.length s.e.irrad s.q.irrad
 ## *    &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
-## 1 280.0000         0         0
-## 2 280.9231         0         0
-## 3 281.8462         0         0
-## 4 282.7692         0         0
+## 1     280.        0.        0.
+## 2     281.        0.        0.
+## 3     282.        0.        0.
+## 4     283.        0.        0.
 ## # ... with 6 more rows</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sun.spct[<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>, <span class="dv">1</span>]</code></pre></div>
 <pre><code>##  [1] 280.0000 280.9231 281.8462 282.7692 283.6923 284.6154 285.5385
@@ -3294,12 +3294,12 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 ## Time unit 1s
 ## 
 ## # A tibble: 475 x 3
-##   w.length s.e.irrad    s.q.irrad
-## *    &lt;dbl&gt;     &lt;dbl&gt;        &lt;dbl&gt;
-## 1      324 0.2075508 5.621282e-07
-## 2      325 0.2168055 5.890059e-07
-## 3      326 0.2774416 7.560580e-07
-## 4      327 0.2851096 7.793375e-07
+##   w.length s.e.irrad   s.q.irrad
+## *    &lt;dbl&gt;     &lt;dbl&gt;       &lt;dbl&gt;
+## 1     324.     0.208 0.000000562
+## 2     325.     0.217 0.000000589
+## 3     326.     0.277 0.000000756
+## 4     327.     0.285 0.000000779
 ## # ... with 471 more rows</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">subset</span>(sun.spct, w.length <span class="op">&gt;</span><span class="st"> </span><span class="dv">600</span>)</code></pre></div>
 <pre><code>## Object: source_spct [200 x 3]
@@ -3307,12 +3307,12 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 ## Time unit 1s
 ## 
 ## # A tibble: 200 x 3
-##   w.length s.e.irrad    s.q.irrad
-## *    &lt;dbl&gt;     &lt;dbl&gt;        &lt;dbl&gt;
-## 1      601 0.6295837 3.162962e-06
-## 2      602 0.6305890 3.173284e-06
-## 3      603 0.6360329 3.205995e-06
-## 4      604 0.6578140 3.321284e-06
+##   w.length s.e.irrad  s.q.irrad
+## *    &lt;dbl&gt;     &lt;dbl&gt;      &lt;dbl&gt;
+## 1     601.     0.630 0.00000316
+## 2     602.     0.631 0.00000317
+## 3     603.     0.636 0.00000321
+## 4     604.     0.658 0.00000332
 ## # ... with 196 more rows</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">subset</span>(sun.spct, <span class="kw">c</span>(<span class="ot">TRUE</span>, <span class="kw">rep</span>(<span class="ot">FALSE</span>, <span class="dv">99</span>)))</code></pre></div>
 <pre><code>## Object: source_spct [6 x 3]
@@ -3320,14 +3320,14 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 ## Time unit 1s
 ## 
 ## # A tibble: 6 x 3
-##   w.length s.e.irrad    s.q.irrad
-## *    &lt;dbl&gt;     &lt;dbl&gt;        &lt;dbl&gt;
-## 1      280 0.0000000 0.000000e+00
-## 2      379 0.4131498 1.308919e-06
-## 3      479 0.7536975 3.017857e-06
-## 4      579 0.6474340 3.133575e-06
-## 5      679 0.5798542 3.291202e-06
-## 6      779 0.4713172 3.069140e-06</code></pre>
+##   w.length s.e.irrad  s.q.irrad
+## *    &lt;dbl&gt;     &lt;dbl&gt;      &lt;dbl&gt;
+## 1     280.     0.    0.        
+## 2     379.     0.413 0.00000131
+## 3     479.     0.754 0.00000302
+## 4     579.     0.647 0.00000313
+## 5     679.     0.580 0.00000329
+## 6     779.     0.471 0.00000307</code></pre>
 <p>R’s Extract methods <code>$</code> and <code>[[</code> can be used to extract whole columns. Replace methods <code>$&lt;-</code> and <code>[&lt;-</code> have definitions for spectral objects, which allow their safe use. They work identically to those for data frames but check the validity of the spectra after the replacement.</p>
 </div>
 <div id="conversions-between-radiation-units" class="section level3">
@@ -3344,10 +3344,10 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 ## # A tibble: 522 x 3
 ##   w.length s.e.irrad s.q.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
-## 1 280.0000         0         0
-## 2 280.9231         0         0
-## 3 281.8462         0         0
-## 4 282.7692         0         0
+## 1     280.        0.        0.
+## 2     281.        0.        0.
+## 3     282.        0.        0.
+## 4     283.        0.        0.
 ## # ... with 518 more rows</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">e2q</span>(sun.spct, <span class="st">&quot;replace&quot;</span>)</code></pre></div>
 <pre><code>## Object: source_spct [522 x 2]
@@ -3360,10 +3360,10 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 ## # A tibble: 522 x 2
 ##   w.length s.q.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;
-## 1 280.0000         0
-## 2 280.9231         0
-## 3 281.8462         0
-## 4 282.7692         0
+## 1     280.        0.
+## 2     281.        0.
+## 3     282.        0.
+## 4     283.        0.
 ## # ... with 518 more rows</code></pre>
 <p>For <code>filter_spct</code> objects functions <code>T2A</code> and <code>A2T</code> allow conversion between spectral transmittance and spectral absorbance and vice versa.</p>
 </div>
@@ -3382,10 +3382,10 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 ## # A tibble: 522 x 2
 ##   w.length s.e.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;
-## 1 280.0000         0
-## 2 280.9231         0
-## 3 281.8462         0
-## 4 282.7692         0
+## 1     280.        0.
+## 2     281.        0.
+## 3     282.        0.
+## 4     283.        0.
 ## # ... with 518 more rows</code></pre>
 <p>Which is equivalent to supplying <code>&quot;max&quot;</code> as argument to <code>norm</code>, it is also possible to give a range within which the maximum should be searched.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">normalize</span>(sun.spct, <span class="dt">range =</span> PAR.wb, <span class="dt">norm =</span> <span class="st">&quot;max&quot;</span>)</code></pre></div>
@@ -3400,10 +3400,10 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 ## # A tibble: 522 x 2
 ##   w.length s.e.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;
-## 1 280.0000         0
-## 2 280.9231         0
-## 3 281.8462         0
-## 4 282.7692         0
+## 1     280.        0.
+## 2     281.        0.
+## 3     282.        0.
+## 4     283.        0.
 ## # ... with 518 more rows</code></pre>
 <p>It is also possible to normalize to an arbitrary wavelength within the range of the data, even if it is not one of the wavelength values present in the spectral object, as interpolation is used when needed.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">normalize</span>(sun.spct, <span class="dt">norm =</span> <span class="fl">600.3</span>)</code></pre></div>
@@ -3418,10 +3418,10 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 ## # A tibble: 522 x 2
 ##   w.length s.e.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;
-## 1 280.0000         0
-## 2 280.9231         0
-## 3 281.8462         0
-## 4 282.7692         0
+## 1     280.        0.
+## 2     281.        0.
+## 3     282.        0.
+## 4     283.        0.
 ## # ... with 518 more rows</code></pre>
 <p>The normalization status of a spectral object can be tested with method <code>is_normalized()</code> and the normalization used can be recalled with method <code>getNormalized()</code>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">my.spct &lt;-<span class="st"> </span><span class="kw">normalize</span>(sun.spct)
@@ -3447,10 +3447,10 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 ## # A tibble: 522 x 2
 ##   w.length s.e.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;
-## 1 280.0000         0
-## 2 280.9231         0
-## 3 281.8462         0
-## 4 282.7692         0
+## 1     280.        0.
+## 2     281.        0.
+## 3     282.        0.
+## 4     283.        0.
 ## # ... with 518 more rows</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">fscale</span>(sun.spct, <span class="dt">f =</span> <span class="st">&quot;total&quot;</span>)</code></pre></div>
 <pre><code>## Object: source_spct [522 x 2]
@@ -3464,10 +3464,10 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 ## # A tibble: 522 x 2
 ##   w.length s.e.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;
-## 1 280.0000         0
-## 2 280.9231         0
-## 3 281.8462         0
-## 4 282.7692         0
+## 1     280.        0.
+## 2     281.        0.
+## 3     282.        0.
+## 4     283.        0.
 ## # ... with 518 more rows</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">fscale</span>(sun.spct, <span class="dt">range =</span> PAR.wb, <span class="dt">f =</span> irrad)</code></pre></div>
 <pre><code>## Object: source_spct [522 x 2]
@@ -3481,10 +3481,10 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 ## # A tibble: 522 x 2
 ##   w.length s.e.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;
-## 1 280.0000         0
-## 2 280.9231         0
-## 3 281.8462         0
-## 4 282.7692         0
+## 1     280.        0.
+## 2     281.        0.
+## 3     282.        0.
+## 4     283.        0.
 ## # ... with 518 more rows</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">fscale</span>(sun.spct, <span class="dt">range =</span> PAR.wb, <span class="dt">f =</span> q_irrad, <span class="dt">target =</span> <span class="fl">800e-6</span>)</code></pre></div>
 <pre><code>## Object: source_spct [522 x 2]
@@ -3498,10 +3498,10 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 ## # A tibble: 522 x 2
 ##   w.length s.e.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;
-## 1 280.0000         0
-## 2 280.9231         0
-## 3 281.8462         0
-## 4 282.7692         0
+## 1     280.        0.
+## 2     281.        0.
+## 3     282.        0.
+## 4     283.        0.
 ## # ... with 518 more rows</code></pre>
 <p>In the third example, the spectral data is rescaled so that the corresponding photosynthetically-active irradiance is equal to one.</p>
 <p>The normalization status of a spectral object can be tested with method <code>is_normalized()</code> and the normalization used can be recalled with method <code>getNormalized()</code>.</p>
@@ -3535,12 +3535,12 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 ## Time unit 1s
 ## 
 ## # A tibble: 522 x 2
-##   w.length   s.e.irrad
-##      &lt;dbl&gt;       &lt;dbl&gt;
-## 1 280.0000 -0.01841458
-## 2 280.9231 -0.01841458
-## 3 281.8462 -0.01841458
-## 4 282.7692 -0.01841458
+##   w.length s.e.irrad
+##      &lt;dbl&gt;     &lt;dbl&gt;
+## 1     280.   -0.0184
+## 2     281.   -0.0184
+## 3     282.   -0.0184
+## 4     283.   -0.0184
 ## # ... with 518 more rows</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">fshift</span>(sun.spct, <span class="dt">range =</span> <span class="kw">c</span>(<span class="dv">280</span>,<span class="dv">290</span>), <span class="dt">f =</span> <span class="st">&quot;min&quot;</span>)</code></pre></div>
 <pre><code>## Object: source_spct [522 x 2]
@@ -3553,10 +3553,10 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 ## # A tibble: 522 x 2
 ##   w.length s.e.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;
-## 1 280.0000         0
-## 2 280.9231         0
-## 3 281.8462         0
-## 4 282.7692         0
+## 1     280.        0.
+## 2     281.        0.
+## 3     282.        0.
+## 4     283.        0.
 ## # ... with 518 more rows</code></pre>
 <p>In the first example, the spectral data shifted so that the mean spectral irradiance becomes zero for the UV-B region. In the second example the minimum value in the range of wavelengths between 280~nm and 290~nm is used as zero reference for the scale.</p>
 </div>
@@ -3574,10 +3574,10 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 ## # A tibble: 522 x 2
 ##   w.length s.e.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;
-## 1 280.0000     -0.01
-## 2 280.9231      0.00
-## 3 281.8462      0.00
-## 4 282.7692     -0.01
+## 1     280.   -0.0100
+## 2     281.    0.    
+## 3     282.    0.    
+## 4     283.   -0.0100
 ## # ... with 518 more rows</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">clean</span>(polyester.spct <span class="op">-</span><span class="st"> </span><span class="fl">0.053</span>)</code></pre></div>
 <pre><code>## Warning in range_check_Tfr(x, strict.range = strict.range): Off-range
@@ -3589,10 +3589,10 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 ## # A tibble: 611 x 2
 ##   w.length   Tfr
 ##      &lt;int&gt; &lt;dbl&gt;
-## 1      190     0
-## 2      191     0
-## 3      192     0
-## 4      193     0
+## 1      190    0.
+## 2      191    0.
+## 3      192    0.
+## 4      193    0.
 ## # ... with 607 more rows</code></pre>
 </div>
 <div id="wavelength-interpolation" class="section level3">
@@ -3606,12 +3606,12 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 ## Time unit 1s
 ## 
 ## # A tibble: 1,001 x 3
-##   w.length s.e.irrad    s.q.irrad
-##      &lt;dbl&gt;     &lt;dbl&gt;        &lt;dbl&gt;
-## 1    400.0 0.6081049 2.033314e-06
-## 2    400.1 0.6099118 2.039879e-06
-## 3    400.2 0.6117187 2.046445e-06
-## 4    400.3 0.6135257 2.053010e-06
+##   w.length s.e.irrad  s.q.irrad
+##      &lt;dbl&gt;     &lt;dbl&gt;      &lt;dbl&gt;
+## 1     400.     0.608 0.00000203
+## 2     400.     0.610 0.00000204
+## 3     400.     0.612 0.00000205
+## 4     400.     0.614 0.00000205
 ## # ... with 997 more rows</code></pre>
 </div>
 <div id="trimming-and-clipping" class="section level3">
@@ -3629,11 +3629,11 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 ## Time unit 1s
 ## 
 ## # A tibble: 3 x 3
-##   w.length s.e.irrad    s.q.irrad
-## *    &lt;dbl&gt;     &lt;dbl&gt;        &lt;dbl&gt;
-## 1      400 0.6081049 2.033314e-06
-## 2      401 0.6261742 2.098967e-06
-## 3      402 0.6497388 2.183388e-06</code></pre>
+##   w.length s.e.irrad  s.q.irrad
+## *    &lt;dbl&gt;     &lt;dbl&gt;      &lt;dbl&gt;
+## 1     400.     0.608 0.00000203
+## 2     401.     0.626 0.00000210
+## 3     402.     0.650 0.00000218</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">clip_wl</span>(sun.spct, <span class="dt">range =</span> <span class="kw">c</span>(<span class="dv">400</span>, <span class="ot">NA</span>))</code></pre></div>
 <pre><code>## Object: source_spct [401 x 3]
 ## Wavelength range 400 to 800 nm, step 1 nm 
@@ -3643,12 +3643,12 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 ## Time unit 1s
 ## 
 ## # A tibble: 401 x 3
-##   w.length s.e.irrad    s.q.irrad
-## *    &lt;dbl&gt;     &lt;dbl&gt;        &lt;dbl&gt;
-## 1      400 0.6081049 2.033314e-06
-## 2      401 0.6261742 2.098967e-06
-## 3      402 0.6497388 2.183388e-06
-## 4      403 0.6207287 2.091091e-06
+##   w.length s.e.irrad  s.q.irrad
+## *    &lt;dbl&gt;     &lt;dbl&gt;      &lt;dbl&gt;
+## 1     400.     0.608 0.00000203
+## 2     401.     0.626 0.00000210
+## 3     402.     0.650 0.00000218
+## 4     403.     0.621 0.00000209
 ## # ... with 397 more rows</code></pre>
 <p>As for <code>trim_wl()</code> the range can be also supplied as a <code>waveband</code> object, or any other object for which <code>range()</code> returns a numeric range. Even a different spectrum object is acceptable.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">clip_wl</span>(sun.spct, <span class="dt">range =</span> UVA.wb)</code></pre></div>
@@ -3660,12 +3660,12 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 ## Time unit 1s
 ## 
 ## # A tibble: 86 x 3
-##   w.length s.e.irrad    s.q.irrad
-## *    &lt;dbl&gt;     &lt;dbl&gt;        &lt;dbl&gt;
-## 1      315 0.1127901 2.969940e-07
-## 2      316 0.1020587 2.695897e-07
-## 3      317 0.1487690 3.942191e-07
-## 4      318 0.1413919 3.758526e-07
+##   w.length s.e.irrad   s.q.irrad
+## *    &lt;dbl&gt;     &lt;dbl&gt;       &lt;dbl&gt;
+## 1     315.     0.113 0.000000297
+## 2     316.     0.102 0.000000270
+## 3     317.     0.149 0.000000394
+## 4     318.     0.141 0.000000376
 ## # ... with 82 more rows</code></pre>
 <p>The result can be a spectrum of length zero.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">clip_wl</span>(sun.spct, <span class="dt">range =</span> <span class="kw">c</span>(<span class="dv">100</span>, <span class="dv">200</span>))</code></pre></div>
@@ -3693,10 +3693,10 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 ## # A tibble: 520 x 3
 ##   w.length s.e.irrad s.q.irrad
 ## *    &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
-## 1 282.5000         0         0
-## 2 282.7692         0         0
-## 3 283.6923         0         0
-## 4 284.6154         0         0
+## 1     282.        0.        0.
+## 2     283.        0.        0.
+## 3     284.        0.        0.
+## 4     285.        0.        0.
 ## # ... with 516 more rows</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">clip_wl</span>(sun.spct, <span class="kw">c</span>(<span class="fl">282.5</span>, <span class="ot">NA</span>))</code></pre></div>
 <pre><code>## Object: source_spct [519 x 3]
@@ -3709,10 +3709,10 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 ## # A tibble: 519 x 3
 ##   w.length s.e.irrad s.q.irrad
 ## *    &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
-## 1 282.7692         0         0
-## 2 283.6923         0         0
-## 3 284.6154         0         0
-## 4 285.5385         0         0
+## 1     283.        0.        0.
+## 2     284.        0.        0.
+## 3     285.        0.        0.
+## 4     286.        0.        0.
 ## # ... with 515 more rows</code></pre>
 <p>As for <code>clip_wl()</code> the range can be also supplied as a <code>waveband</code> object, or any other object for which <code>range()</code> returns a numeric range. Even a different spectrum object is acceptable.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">trim_wl</span>(sun.spct, PAR.wb)</code></pre></div>
@@ -3724,12 +3724,12 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 ## Time unit 1s
 ## 
 ## # A tibble: 301 x 3
-##   w.length s.e.irrad    s.q.irrad
-## *    &lt;dbl&gt;     &lt;dbl&gt;        &lt;dbl&gt;
-## 1      400 0.6081049 2.033314e-06
-## 2      401 0.6261742 2.098967e-06
-## 3      402 0.6497388 2.183388e-06
-## 4      403 0.6207287 2.091091e-06
+##   w.length s.e.irrad  s.q.irrad
+## *    &lt;dbl&gt;     &lt;dbl&gt;      &lt;dbl&gt;
+## 1     400.     0.608 0.00000203
+## 2     401.     0.626 0.00000210
+## 3     402.     0.650 0.00000218
+## 4     403.     0.621 0.00000209
 ## # ... with 297 more rows</code></pre>
 <p>The default for <code>fill</code> is <code>NULL</code> which results in deletion values outside the trimmed region. However, it is possible to supply a different argument, to be used to replace the off-range data values.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">trim_wl</span>(sun.spct, <span class="kw">c</span>(<span class="fl">281.5</span>, <span class="ot">NA</span>), <span class="dt">fill =</span> <span class="ot">NA</span>)</code></pre></div>
@@ -3743,10 +3743,10 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 ## # A tibble: 524 x 3
 ##   w.length s.e.irrad s.q.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
-## 1 280.0000        NA        NA
-## 2 280.9231        NA        NA
-## 3 281.5000        NA        NA
-## 4 281.5000         0         0
+## 1     280.       NA        NA 
+## 2     281.       NA        NA 
+## 3     281.       NA        NA 
+## 4     282.        0.        0.
 ## # ... with 520 more rows</code></pre>
 <p>Furthermore, when fill is not <code>NULL</code>, expansion is possible.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">trim_wl</span>(sun.spct, <span class="kw">c</span>(<span class="dv">275</span>, <span class="ot">NA</span>), <span class="dt">fill =</span> <span class="dv">0</span>)</code></pre></div>
@@ -3760,10 +3760,10 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 ## # A tibble: 529 x 3
 ##   w.length s.e.irrad s.q.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
-## 1 275.0000         0         0
-## 2 275.8333         0         0
-## 3 276.6667         0         0
-## 4 277.5000         0         0
+## 1     275.        0.        0.
+## 2     276.        0.        0.
+## 3     277.        0.        0.
+## 4     277.        0.        0.
 ## # ... with 525 more rows</code></pre>
 <p>By default interpolation at the boundaries is used, but setting <code>use.hinges</code> to <code>FALSE</code> results in clipping, a behaviour similar to that of <code>clip_wl</code> only if <code>fill == NULL</code>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">trim_wl</span>(sun.spct, <span class="kw">c</span>(<span class="fl">281.5</span>, <span class="ot">NA</span>), <span class="dt">fill =</span> <span class="ot">NA</span>)</code></pre></div>
@@ -3777,10 +3777,10 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 ## # A tibble: 524 x 3
 ##   w.length s.e.irrad s.q.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
-## 1 280.0000        NA        NA
-## 2 280.9231        NA        NA
-## 3 281.5000        NA        NA
-## 4 281.5000         0         0
+## 1     280.       NA        NA 
+## 2     281.       NA        NA 
+## 3     281.       NA        NA 
+## 4     282.        0.        0.
 ## # ... with 520 more rows</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">trim_wl</span>(sun.spct, <span class="kw">c</span>(<span class="fl">281.5</span>, <span class="ot">NA</span>), <span class="dt">fill =</span> <span class="ot">NA</span>, <span class="dt">use.hinges =</span> <span class="ot">FALSE</span>)</code></pre></div>
 <pre><code>## Object: source_spct [522 x 3]
@@ -3793,10 +3793,10 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 ## # A tibble: 522 x 3
 ##   w.length s.e.irrad s.q.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
-## 1 280.0000        NA        NA
-## 2 280.9231        NA        NA
-## 3 281.8462         0         0
-## 4 282.7692         0         0
+## 1     280.       NA        NA 
+## 2     281.       NA        NA 
+## 3     282.        0.        0.
+## 4     283.        0.        0.
 ## # ... with 518 more rows</code></pre>
 <p>When <code>use.hinges == TRUE</code> and expansion or replacement is done, two observations are inserted at each boundary, differing in wavelength by <span class="math inline">\(1 \times 10^{-12}\)</span>,nm to prevent rounding errors in later calculations.</p>
 </div>
@@ -3816,10 +3816,10 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 ## # A tibble: 522 x 2
 ##   w.length s.e.irrad
 ## *    &lt;dbl&gt;     &lt;dbl&gt;
-## 1 280.0000         0
-## 2 280.9231         0
-## 3 281.8462         0
-## 4 282.7692         0
+## 1     280.        0.
+## 2     281.        0.
+## 3     282.        0.
+## 4     283.        0.
 ## # ... with 518 more rows
 ## --- Member: B ---
 ## Object: source_spct [522 x 2]
@@ -3832,10 +3832,10 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 ## # A tibble: 522 x 2
 ##   w.length s.e.irrad
 ## *    &lt;dbl&gt;     &lt;dbl&gt;
-## 1 280.0000         0
-## 2 280.9231         0
-## 3 281.8462         0
-## 4 282.7692         0
+## 1     280.        0.
+## 2     281.        0.
+## 3     282.        0.
+## 4     283.        0.
 ## # ... with 518 more rows
 ## 
 ## --- END ---</code></pre>
@@ -3852,10 +3852,10 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 ## # A tibble: 522 x 2
 ##   w.length s.e.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;
-## 1 280.0000         0
-## 2 280.9231         0
-## 3 281.8462         0
-## 4 282.7692         0
+## 1     280.        0.
+## 2     281.        0.
+## 3     282.        0.
+## 4     283.        0.
 ## # ... with 518 more rows
 ## --- Member: B ---
 ## Object: source_spct [522 x 2]
@@ -3868,10 +3868,10 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 ## # A tibble: 522 x 2
 ##   w.length s.e.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;
-## 1 280.0000         0
-## 2 280.9231         0
-## 3 281.8462         0
-## 4 282.7692         0
+## 1     280.        0.
+## 2     281.        0.
+## 3     282.        0.
+## 4     283.        0.
 ## # ... with 518 more rows
 ## 
 ## --- END ---</code></pre>
@@ -3896,10 +3896,10 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 ## # A tibble: 122 x 2
 ##   w.length s.e.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;
-## 1 280.0000         0
-## 2 280.9231         0
-## 3 281.8462         0
-## 4 282.7692         0
+## 1     280.        0.
+## 2     281.        0.
+## 3     282.        0.
+## 4     283.        0.
 ## # ... with 118 more rows</code></pre>
 <!-- #### Vectors -->
 <!-- It is also possible to use vectors. -->
@@ -3923,12 +3923,12 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 ## Time unit 1s
 ## 
 ## # A tibble: 524 x 6
-##   w.length s.e.irrad s.q.irrad wl.color wb.color   wb.f
-##      &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;chr&gt;    &lt;chr&gt; &lt;fctr&gt;
-## 1 280.0000         0         0  #000000     &lt;NA&gt;   &lt;NA&gt;
-## 2 280.9231         0         0  #000000     &lt;NA&gt;   &lt;NA&gt;
-## 3 281.8462         0         0  #000000     &lt;NA&gt;   &lt;NA&gt;
-## 4 282.7692         0         0  #000000     &lt;NA&gt;   &lt;NA&gt;
+##   w.length s.e.irrad s.q.irrad wl.color wb.color wb.f 
+##      &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;    &lt;chr&gt;    &lt;fct&gt;
+## 1     280.        0.        0. #000000  &lt;NA&gt;     &lt;NA&gt; 
+## 2     281.        0.        0. #000000  &lt;NA&gt;     &lt;NA&gt; 
+## 3     282.        0.        0. #000000  &lt;NA&gt;     &lt;NA&gt; 
+## 4     283.        0.        0. #000000  &lt;NA&gt;     &lt;NA&gt; 
 ## # ... with 520 more rows</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">tag</span>(sun.spct, UV_bands.lst)</code></pre></div>
 <pre><code>## Object: source_spct [524 x 6]
@@ -3936,12 +3936,12 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 ## Time unit 1s
 ## 
 ## # A tibble: 524 x 6
-##   w.length s.e.irrad s.q.irrad wl.color wb.color   wb.f
-##      &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;chr&gt;    &lt;chr&gt; &lt;fctr&gt;
-## 1 280.0000         0         0  #000000    black    UVB
-## 2 280.9231         0         0  #000000    black    UVB
-## 3 281.8462         0         0  #000000    black    UVB
-## 4 282.7692         0         0  #000000    black    UVB
+##   w.length s.e.irrad s.q.irrad wl.color wb.color wb.f 
+##      &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;    &lt;chr&gt;    &lt;fct&gt;
+## 1     280.        0.        0. #000000  black    UVB  
+## 2     281.        0.        0. #000000  black    UVB  
+## 3     282.        0.        0. #000000  black    UVB  
+## 4     283.        0.        0. #000000  black    UVB  
 ## # ... with 520 more rows</code></pre>
 <p>The added factor and colour data can be used for further processing or for plotting. Information about the tagging and wavebands is stored in an attribute <code>tag.attr</code> in every tagged spectrum, this yields a more compact output and keeps a <em>trace</em> of the tagging.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">tg.sun.spct &lt;-<span class="st"> </span><span class="kw">tag</span>(sun.spct, PAR.wb)
@@ -3984,12 +3984,12 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 ## # A tibble: 8 x 12
 ##   w.length counts   cps s.e.irrad s.q.irrad   Tfr   Rfl s.e.response
 ##      &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;        &lt;dbl&gt;
-## 1      100      0     0         0         0     0     0            0
-## 2      100      0     0         0         0     0     0            0
-## 3      280      0     0         0         0     0     0            0
-## 4      280      0     0         0         0     0     0            0
+## 1    100.0     0.    0.        0.        0.    0.    0.           0.
+## 2    100.      0.    0.        0.        0.    0.    0.           0.
+## 3    280.      0.    0.        0.        0.    0.    0.           0.
+## 4    280.      0.    0.        0.        0.    0.    0.           0.
 ## # ... with 4 more rows, and 4 more variables: wl.color &lt;chr&gt;,
-## #   wb.color &lt;chr&gt;, wb.f &lt;fctr&gt;, y &lt;dbl&gt;</code></pre>
+## #   wb.color &lt;chr&gt;, wb.f &lt;fct&gt;, y &lt;dbl&gt;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">wb2rect_spct</span>(UV_bands.lst)</code></pre></div>
 <pre><code>## Object: generic_spct [3 x 15]
 ## Wavelength range 190 to 357.5 nm, step 60 to 107.5 nm 
@@ -3997,11 +3997,11 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 ## # A tibble: 3 x 15
 ##   w.length counts   cps s.e.irrad s.q.irrad   Tfr   Rfl s.e.response
 ##      &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;        &lt;dbl&gt;
-## 1    190.0      0     0         0         0     0     0            0
-## 2    297.5      0     0         0         0     0     0            0
-## 3    357.5      0     0         0         0     0     0            0
+## 1     190.     0.    0.        0.        0.    0.    0.           0.
+## 2     298.     0.    0.        0.        0.    0.    0.           0.
+## 3     358.     0.    0.        0.        0.    0.    0.           0.
 ## # ... with 7 more variables: wl.color &lt;chr&gt;, wb.color &lt;chr&gt;,
-## #   wb.name &lt;chr&gt;, wb.f &lt;fctr&gt;, wl.high &lt;dbl&gt;, wl.low &lt;dbl&gt;, y &lt;dbl&gt;</code></pre>
+## #   wb.name &lt;chr&gt;, wb.f &lt;fct&gt;, wl.high &lt;dbl&gt;, wl.low &lt;dbl&gt;, y &lt;dbl&gt;</code></pre>
 <p>Function <code>wb2tagged_spct</code> returns a tagged spectrum, with two rows for each waveband, corresponding to the low and high wavelength boundaries, while function <code>wb2rect_spct</code> returns a spectrum with only one row per waveband, with <code>w.length</code> set to its midpoint but with additional columns <code>xmin</code> and <code>xmax</code> corresponding to the low and high wavelength boundaries of the wavebands.</p>
 <p>Function <code>is_tagged</code> can be used to query if an spectrum is tagged or not, and function <code>untag</code> removes the tags.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">tg.sun.spct</code></pre></div>
@@ -4010,12 +4010,12 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 ## Time unit 1s
 ## 
 ## # A tibble: 524 x 6
-##   w.length s.e.irrad s.q.irrad wl.color wb.color   wb.f
-##      &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;chr&gt;    &lt;chr&gt; &lt;fctr&gt;
-## 1 280.0000         0         0  #000000     &lt;NA&gt;   &lt;NA&gt;
-## 2 280.9231         0         0  #000000     &lt;NA&gt;   &lt;NA&gt;
-## 3 281.8462         0         0  #000000     &lt;NA&gt;   &lt;NA&gt;
-## 4 282.7692         0         0  #000000     &lt;NA&gt;   &lt;NA&gt;
+##   w.length s.e.irrad s.q.irrad wl.color wb.color wb.f 
+##      &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;    &lt;chr&gt;    &lt;fct&gt;
+## 1     280.        0.        0. #000000  &lt;NA&gt;     &lt;NA&gt; 
+## 2     281.        0.        0. #000000  &lt;NA&gt;     &lt;NA&gt; 
+## 3     282.        0.        0. #000000  &lt;NA&gt;     &lt;NA&gt; 
+## 4     283.        0.        0. #000000  &lt;NA&gt;     &lt;NA&gt; 
 ## # ... with 520 more rows</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">is_tagged</span>(tg.sun.spct)</code></pre></div>
 <pre><code>## [1] TRUE</code></pre>
@@ -4033,10 +4033,10 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 ## # A tibble: 524 x 3
 ##   w.length s.e.irrad s.q.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
-## 1 280.0000         0         0
-## 2 280.9231         0         0
-## 3 281.8462         0         0
-## 4 282.7692         0         0
+## 1     280.        0.        0.
+## 2     281.        0.        0.
+## 3     282.        0.        0.
+## 4     283.        0.        0.
 ## # ... with 520 more rows</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">is_tagged</span>(untg.sun.spct)</code></pre></div>
 <pre><code>## [1] FALSE</code></pre>
@@ -4776,10 +4776,10 @@ Most frequently used summary methods are implemented for collections of spectra.
 <span class="kw">range</span>(filters.mspct)</code></pre></div>
 <pre><code>## # A tibble: 3 x 3
 ##   spct.idx min.wl max.wl
-##     &lt;fctr&gt;  &lt;dbl&gt;  &lt;dbl&gt;
-## 1     none    100   5000
-## 2      pet    190    800
-## 3   yellow    190    800</code></pre>
+##   &lt;fct&gt;     &lt;dbl&gt;  &lt;dbl&gt;
+## 1 none       100.  5000.
+## 2 pet        190.   800.
+## 3 yellow     190.   800.</code></pre>
 </div>
 </div>
 <div id="peaks-and-valleys" class="section level3">
@@ -4798,9 +4798,9 @@ Most frequently used summary methods are implemented for collections of spectra.
 ## # A tibble: 3 x 2
 ##   w.length s.e.irrad
 ## *    &lt;dbl&gt;     &lt;dbl&gt;
-## 1      451 0.8204633
-## 2      495 0.7899872
-## 3      747 0.5025733</code></pre>
+## 1     451.     0.820
+## 2     495.     0.790
+## 3     747.     0.503</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">valleys</span>(sun.spct, <span class="dt">span =</span> <span class="dv">51</span>)</code></pre></div>
 <pre><code>## Object: source_spct [9 x 2]
 ## Wavelength range 358 to 761 nm, step 30 to 72 nm 
@@ -4812,10 +4812,10 @@ Most frequently used summary methods are implemented for collections of spectra.
 ## # A tibble: 9 x 2
 ##   w.length s.e.irrad
 ## *    &lt;dbl&gt;     &lt;dbl&gt;
-## 1      358 0.2544907
-## 2      393 0.2422023
-## 3      431 0.4136900
-## 4      487 0.6511654
+## 1     358.     0.254
+## 2     393.     0.242
+## 3     431.     0.414
+## 4     487.     0.651
 ## # ... with 5 more rows</code></pre>
 <p>In the case of <code>source_spct</code> and <code>response_spct</code> methods <code>unit.out</code> can be used to force peaks to be searched using either energy or photon based spectral irradiance. The default is energy, or the option <code>&quot;photobiology.radiation.unit&quot;</code> if set.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">peaks</span>(sun.spct, <span class="dt">span =</span> <span class="dv">51</span>, <span class="dt">unit.out =</span> <span class="st">&quot;photon&quot;</span>)</code></pre></div>
@@ -4827,12 +4827,12 @@ Most frequently used summary methods are implemented for collections of spectra.
 ## Time unit 1s
 ## 
 ## # A tibble: 7 x 2
-##   w.length    s.q.irrad
-## *    &lt;dbl&gt;        &lt;dbl&gt;
-## 1      451 3.093155e-06
-## 2      495 3.268822e-06
-## 3      531 3.374912e-06
-## 4      621 3.355564e-06
+##   w.length  s.q.irrad
+## *    &lt;dbl&gt;      &lt;dbl&gt;
+## 1     451. 0.00000309
+## 2     495. 0.00000327
+## 3     531. 0.00000337
+## 4     621. 0.00000336
 ## # ... with 3 more rows</code></pre>
 <p>It is possible to approximately set the width of the windows in nanometres by using function <code>step_size</code>. However, here we simply use an odd number of wavelengths <em>steps</em>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">peaks</span>(sun.spct, <span class="dt">span =</span> <span class="dv">21</span>)</code></pre></div>
@@ -4846,10 +4846,10 @@ Most frequently used summary methods are implemented for collections of spectra.
 ## # A tibble: 18 x 2
 ##   w.length s.e.irrad
 ## *    &lt;dbl&gt;     &lt;dbl&gt;
-## 1      354 0.3758625
-## 2      366 0.4491898
-## 3      378 0.4969714
-## 4      416 0.6761818
+## 1     354.     0.376
+## 2     366.     0.449
+## 3     378.     0.497
+## 4     416.     0.676
 ## # ... with 14 more rows</code></pre>
 <p>Low level functions <code>find_peaks</code>, <code>get_peaks</code> and <code>get_valleys</code> take numeric vectors as arguments.</p>
 </div>
@@ -4883,13 +4883,13 @@ Most frequently used summary methods are implemented for collections of spectra.
 ## Label: yellow theatrical 'gel', Rosco supergel no. 312, 'canary yellow' 
 ## 
 ## # A tibble: 5 x 2
-##   w.length    Tfr
-## *    &lt;int&gt;  &lt;dbl&gt;
-## 1      642 0.8980
-## 2      706 0.9005
-## 3      714 0.9005
-## 4      744 0.9015
-## 5      755 0.9020
+##   w.length   Tfr
+## *    &lt;int&gt; &lt;dbl&gt;
+## 1      642 0.898
+## 2      706 0.901
+## 3      714 0.901
+## 4      744 0.902
+## 5      755 0.902
 ## 
 ## --- END ---</code></pre>
 <p>Two of the filters in the collection do not have peaks, and a spectrum object of length zero is returned for them.</p>
@@ -5012,37 +5012,37 @@ Most frequently used summary methods are implemented for collections of spectra.
         <span class="dt">w.band =</span> <span class="kw">list</span>(<span class="dt">PAR =</span> <span class="kw">waveband</span>(<span class="kw">c</span>(<span class="dv">400</span>,<span class="dv">700</span>))),
         <span class="dt">attr2tb =</span> <span class="kw">c</span>(<span class="dt">when.measured =</span> <span class="st">&quot;time&quot;</span>, <span class="dt">lon =</span> <span class="st">&quot;lon&quot;</span>, <span class="dt">lat =</span> <span class="st">&quot;lat&quot;</span>))</code></pre></div>
 <pre><code>## # A tibble: 2 x 5
-##   spct.idx          PAR                time      lon      lat
-##     &lt;fctr&gt;        &lt;dbl&gt;              &lt;dttm&gt;    &lt;dbl&gt;    &lt;dbl&gt;
-## 1     sun1 0.0008941352 2010-06-22 09:51:00 24.96642 60.20355
-## 2     sun2 0.0008941352 2010-06-22 09:51:00 24.96642 60.20355</code></pre>
+##   spct.idx      PAR time                  lon   lat
+##   &lt;fct&gt;       &lt;dbl&gt; &lt;dttm&gt;              &lt;dbl&gt; &lt;dbl&gt;
+## 1 sun1     0.000894 2010-06-22 09:51:00  25.0  60.2
+## 2 sun2     0.000894 2010-06-22 09:51:00  25.0  60.2</code></pre>
 <p>We then convolve each filter’s spectral transmittance by the spectral irradiance of the light source.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">filtered_sun &lt;-<span class="st"> </span><span class="kw">convolve_each</span>(filters.mspct, sun.spct)
 <span class="kw">irrad</span>(filtered_sun, <span class="kw">list</span>(UVA.wb, PAR.wb))</code></pre></div>
 <pre><code>## # A tibble: 3 x 3
-##   spct.idx   irrad_UVA irrad_PAR
-##     &lt;fctr&gt;       &lt;dbl&gt;     &lt;dbl&gt;
-## 1     none 27.98420611  196.6343
-## 2      pet 22.98282851  181.0213
-## 3   yellow  0.03726539  106.9680</code></pre>
+##   spct.idx irrad_UVA irrad_PAR
+##   &lt;fct&gt;        &lt;dbl&gt;     &lt;dbl&gt;
+## 1 none       28.0         197.
+## 2 pet        23.0         181.
+## 3 yellow      0.0373      107.</code></pre>
 <p>The code above can also be written as a single statement.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">irrad</span>(<span class="kw">convolve_each</span>(filters.mspct, sun.spct), <span class="kw">list</span>(UVA.wb, PAR.wb))</code></pre></div>
 <pre><code>## # A tibble: 3 x 3
-##   spct.idx   irrad_UVA irrad_PAR
-##     &lt;fctr&gt;       &lt;dbl&gt;     &lt;dbl&gt;
-## 1     none 27.98420611  196.6343
-## 2      pet 22.98282851  181.0213
-## 3   yellow  0.03726539  106.9680</code></pre>
+##   spct.idx irrad_UVA irrad_PAR
+##   &lt;fct&gt;        &lt;dbl&gt;     &lt;dbl&gt;
+## 1 none       28.0         197.
+## 2 pet        23.0         181.
+## 3 yellow      0.0373      107.</code></pre>
 <p>It is also possible to use an <em>apply</em> function. Syntax parallels that of base R’s and package <code>plyr</code>’s. See sections <em>apply</em> functions and <code>convolve</code> for more details.</p>
 <p>One thing to remember, is that operators in R are just normal functions with special names and call syntax. They can also be called with the usual function call syntax by enclosing their <em>name</em> in back quotes. We use this to pass as argument the multiplication operator <code>*</code> in a call to <code>msmsply</code> which returns, in this case, a <code>source_multi_spct</code> object. After this we just call the <code>irrad</code> method on the <em>collection of spectra</em> and obtain the result as a data frame with one row per spectrum and one column by waveband.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">filtered_sun &lt;-<span class="st"> </span><span class="kw">msmsply</span>(filters.mspct, <span class="st">`</span><span class="dt">*</span><span class="st">`</span>, sun.spct)
 <span class="kw">irrad</span>(filtered_sun, <span class="kw">list</span>(UVA.wb, PAR.wb))</code></pre></div>
 <pre><code>## # A tibble: 3 x 3
-##   spct.idx   irrad_UVA irrad_PAR
-##     &lt;fctr&gt;       &lt;dbl&gt;     &lt;dbl&gt;
-## 1     none 27.98420611  196.6343
-## 2      pet 22.98282851  181.0213
-## 3   yellow  0.03726539  106.9680</code></pre>
+##   spct.idx irrad_UVA irrad_PAR
+##   &lt;fct&gt;        &lt;dbl&gt;     &lt;dbl&gt;
+## 1 none       28.0         197.
+## 2 pet        23.0         181.
+## 3 yellow      0.0373      107.</code></pre>
 <!-- #### Numeric vectors -->
 <!-- The code using numeric vectors is more complicated, but adds some additional flexibility for tweaking performance. Under normal circumstances it is easier to use the functions described above. -->
 <!-- Function `irradiance` takes an array of wavelengths (sorted in strictly increasing order), and the corresponding values of spectral irradiance. By default the input is assumed to be in energy units, but parameter `unit.in` can be used to change this default. The type of unit used for the returned quantity is set by `unit.out` with no default. The behaviour with respect to wavebands is as described above for spectral objects. The functions `photon_irradiance()` and `energy_irradiance()`, just call `irradiance()` with the `unit.out` set to `"photon"` or `"energy"` respectively. -->
@@ -5114,12 +5114,11 @@ Most frequently used summary methods are implemented for collections of spectra.
 <h4>Collections of spectra</h4>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">q_ratio</span>(filtered_sun, <span class="kw">list</span>(UVB.wb, UVA.wb, PAR.wb))</code></pre></div>
 <pre><code>## # A tibble: 3 x 4
-##   spct.idx `q_ratio_UVB:Total(q:q)` `q_ratio_UVA:Total(q:q)`
-##     &lt;fctr&gt;                    &lt;dbl&gt;                    &lt;dbl&gt;
-## 1     none             1.334593e-03             0.0675673430
-## 2      pet             3.700698e-05             0.0614239749
-## 3   yellow             2.540715e-06             0.0001339225
-## # ... with 1 more variables: `q_ratio_PAR:Total(q:q)` &lt;dbl&gt;</code></pre>
+##   spct.idx `q_ratio_UVB:Total(q:q)` `q_ratio_UVA:Total~ `q_ratio_PAR:Tota~
+##   &lt;fct&gt;                       &lt;dbl&gt;               &lt;dbl&gt;              &lt;dbl&gt;
+## 1 none                   0.00133               0.0676                0.712
+## 2 pet                    0.0000370             0.0614                0.720
+## 3 yellow                 0.00000254            0.000134              0.684</code></pre>
 <!-- #### Vectors -->
 <!-- The function `waveband_ratio()` takes basically the same parameters as `irradiance`, but two waveband definitions instead of one, and two `unit.out` definitions instead of one. This is the base function used in all the vector based _ratio_ functions in the '**photobiology**' package. -->
 <!-- Similar functions `photon_ratio()`, `energy_ratio()`, and `photons_energy_ratio` return the other ratios described above. In contrast to the functions described in the previous section, these functions only accept individual waveband definitions (not lists of them). -->
@@ -5176,31 +5175,29 @@ Most frequently used summary methods are implemented for collections of spectra.
 <p>Here we construct a collection of filter spectra, and then we calculate the transmittance of these filters for two wavebands, obtaining the results as a data frame, with one row per filter, and one column per waveband. We reuse once more <code>filters.mspct</code> from an earlier section.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">transmittance</span>(filters.mspct, <span class="dt">w.band =</span> <span class="kw">list</span>(<span class="st">&quot;Tfr(UVA)&quot;</span> =<span class="st"> </span>UVA.wb, <span class="st">&quot;Tfr(PAR)&quot;</span> =<span class="st"> </span>PAR.wb))</code></pre></div>
 <pre><code>## # A tibble: 3 x 3
-##   spct.idx  `Tfr(UVA)` `Tfr(PAR)`
-##     &lt;fctr&gt;       &lt;dbl&gt;      &lt;dbl&gt;
-## 1     none 1.000000000  1.0000000
-## 2      pet 0.782682353  0.9202450
-## 3   yellow 0.001601353  0.5655132</code></pre>
+##   spct.idx `Tfr(UVA)` `Tfr(PAR)`
+##   &lt;fct&gt;         &lt;dbl&gt;      &lt;dbl&gt;
+## 1 none        1.000        1.000
+## 2 pet         0.783        0.920
+## 3 yellow      0.00160      0.566</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">transmittance</span>(filters.mspct,
               <span class="dt">w.band =</span> <span class="kw">list</span>(<span class="dt">Tfr =</span> <span class="kw">waveband</span>(<span class="kw">c</span>(<span class="dv">350</span>, <span class="dv">550</span>))),
               <span class="dt">attr2tb =</span> <span class="st">&quot;what.measured&quot;</span>)</code></pre></div>
 <pre><code>## # A tibble: 3 x 3
-##   spct.idx       Tfr
-##     &lt;fctr&gt;     &lt;dbl&gt;
-## 1     none 1.0000000
-## 2      pet 0.9127800
-## 3   yellow 0.1783379
-## # ... with 1 more variables: what.measured &lt;chr&gt;</code></pre>
+##   spct.idx   Tfr what.measured                                            
+##   &lt;fct&gt;    &lt;dbl&gt; &lt;chr&gt;                                                    
+## 1 none     1.000 theoretical fully transparent object                     
+## 2 pet      0.913 clear polyester film, 125um thick                        
+## 3 yellow   0.178 yellow theatrical 'gel', Rosco supergel no. 312, 'canary~</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">transmittance</span>(filters.mspct, 
               <span class="kw">list</span>(<span class="st">&quot;Tfr(UVA)&quot;</span> =<span class="st"> </span>UVA.wb, <span class="st">&quot;Tfr(PAR)&quot;</span> =<span class="st"> </span>PAR.wb),
               <span class="dt">attr2tb =</span> <span class="st">&quot;what.measured&quot;</span>)</code></pre></div>
 <pre><code>## # A tibble: 3 x 4
-##   spct.idx  `Tfr(UVA)` `Tfr(PAR)`
-##     &lt;fctr&gt;       &lt;dbl&gt;      &lt;dbl&gt;
-## 1     none 1.000000000  1.0000000
-## 2      pet 0.782682353  0.9202450
-## 3   yellow 0.001601353  0.5655132
-## # ... with 1 more variables: what.measured &lt;chr&gt;</code></pre>
+##   spct.idx `Tfr(UVA)` `Tfr(PAR)` what.measured                            
+##   &lt;fct&gt;         &lt;dbl&gt;      &lt;dbl&gt; &lt;chr&gt;                                    
+## 1 none        1.000        1.000 theoretical fully transparent object     
+## 2 pet         0.783        0.920 clear polyester film, 125um thick        
+## 3 yellow      0.00160      0.566 yellow theatrical 'gel', Rosco supergel ~</code></pre>
 </div>
 </div>
 <div id="integrated-response" class="section level3">
@@ -5232,9 +5229,9 @@ Most frequently used summary methods are implemented for collections of spectra.
 <span class="kw">response</span>(sensors, <span class="kw">list</span>(UVB.wb, UVA.wb, PAR.wb), <span class="dt">quantity =</span> <span class="st">&quot;contribution&quot;</span>)</code></pre></div>
 <pre><code>## # A tibble: 2 x 4
 ##   spct.idx response_UVB.tr.lo response_UVA response_PAR.tr.hi
-##     &lt;fctr&gt;              &lt;dbl&gt;        &lt;dbl&gt;              &lt;dbl&gt;
-## 1    GaAsP         0.01419648   0.24510842          0.7406951
-## 2      CCD         0.02152008   0.06340564          0.4109286</code></pre>
+##   &lt;fct&gt;                 &lt;dbl&gt;        &lt;dbl&gt;              &lt;dbl&gt;
+## 1 GaAsP                0.0142       0.245               0.741
+## 2 CCD                  0.0215       0.0634              0.411</code></pre>
 </div>
 </div>
 <div id="integration-over-wavelengths" class="section level3">

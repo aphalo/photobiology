@@ -12,7 +12,7 @@
 
 <meta name="author" content="Pedro J. Aphalo" />
 
-<meta name="date" content="2017-12-15" />
+<meta name="date" content="2018-03-02" />
 
 <title>User Guide: 3 Astronomy</title>
 
@@ -69,9 +69,9 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 
 <h1 class="title toc-ignore">User Guide: 3 Astronomy</h1>
-<h3 class="subtitle"><em>Package ‘photobiology’ 0.9.18</em></h3>
+<h3 class="subtitle"><em>Package ‘photobiology’ 0.9.19</em></h3>
 <h4 class="author"><em>Pedro J. Aphalo</em></h4>
-<h4 class="date"><em>2017-12-15</em></h4>
+<h4 class="date"><em>2018-03-02</em></h4>
 
 
 <div id="TOC">
@@ -114,10 +114,10 @@ In versions 0.9.16 and later the code has been optimized for performance with ti
 ## 1  24.86576</code></pre>
 <p>Functions have defaults for their arguments, but rarely Greenwich will be the location you are interested in.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sun_angles</span>()</code></pre></div>
-<pre><code>##                  time  tz solartime longitude latitude   address  azimuth
-## 1 2017-12-15 00:10:10 UTC  00:15:01         0     51.5 Greenwich 7.274706
+<pre><code>##                  time  tz solartime longitude latitude   address azimuth
+## 1 2018-03-02 16:56:05 UTC  16:44:04         0     51.5 Greenwich 250.752
 ##   elevation
-## 1 -61.62686</code></pre>
+## 1  6.121629</code></pre>
 <p>A vector of times is accepted as argument, and as performance is optimized for this case, <em>vectorization</em> will markedly improve performance compared to multiple calls to the function. The vector of times can be created on the fly, or stored beforehand.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sun_angles</span>(<span class="dt">time =</span> <span class="kw">ymd_hms</span>(<span class="st">&quot;2014-01-01 0:0:0&quot;</span>, <span class="dt">tz =</span> <span class="st">&quot;EET&quot;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">hours</span>(<span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">6</span>, <span class="dv">12</span>)), 
            <span class="dt">geocode =</span> my.geocode)</code></pre></div>
@@ -181,117 +181,117 @@ dates</code></pre></div>
 <pre><code>## [1] &quot;2015-03-01 EET&quot;  &quot;2015-04-01 EEST&quot; &quot;2015-05-01 EEST&quot; &quot;2015-06-01 EEST&quot;
 ## [5] &quot;2015-07-01 EEST&quot; &quot;2015-08-01 EEST&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sunrise_time</span>(<span class="kw">now</span>(<span class="st">&quot;UTC&quot;</span>), <span class="dt">tz =</span> <span class="st">&quot;UTC&quot;</span>, <span class="dt">geocode =</span> my.geocode)</code></pre></div>
-<pre><code>## [1] &quot;2017-12-15 07:19:31 UTC&quot;</code></pre>
+<pre><code>## [1] &quot;2018-03-02 05:14:56 UTC&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sunrise_time</span>(<span class="kw">now</span>(<span class="st">&quot;EET&quot;</span>), <span class="dt">tz =</span> <span class="st">&quot;EET&quot;</span>, <span class="dt">geocode =</span> my.geocode)</code></pre></div>
-<pre><code>## [1] &quot;2017-12-15 09:19:31 EET&quot;</code></pre>
+<pre><code>## [1] &quot;2018-03-02 07:14:56 EET&quot;</code></pre>
 <p>Southern hemisphere latitudes as well as longitudes to the West of the Greenwich meridian should be supplied as negative numbers.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sunrise_time</span>(dates, <span class="dt">geocode =</span> <span class="kw">data.frame</span>(<span class="dt">lat =</span> <span class="dv">60</span>, <span class="dt">lon =</span> <span class="dv">0</span>))</code></pre></div>
-<pre><code>## [1] &quot;2015-03-01 08:58:05 EET&quot;  &quot;2015-04-01 08:24:46 EEST&quot;
-## [3] &quot;2015-05-01 06:57:19 EEST&quot; &quot;2015-06-01 05:48:53 EEST&quot;
-## [5] &quot;2015-07-01 05:42:30 EEST&quot; &quot;2015-08-01 06:41:16 EEST&quot;</code></pre>
+<pre><code>## [1] &quot;2015-02-28 09:01:01 EET&quot;  &quot;2015-03-31 08:27:48 EEST&quot;
+## [3] &quot;2015-04-30 07:00:02 EEST&quot; &quot;2015-05-31 05:50:22 EEST&quot;
+## [5] &quot;2015-06-30 05:41:27 EEST&quot; &quot;2015-07-31 06:38:55 EEST&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sunrise_time</span>(dates, <span class="dt">geocode =</span> <span class="kw">data.frame</span>(<span class="dt">lat =</span> <span class="op">-</span><span class="dv">60</span>, <span class="dt">lon =</span> <span class="dv">0</span>))</code></pre></div>
-<pre><code>## [1] &quot;2015-03-01 07:12:45 EET&quot;  &quot;2015-04-01 09:29:25 EEST&quot;
-## [3] &quot;2015-05-01 10:41:14 EEST&quot; &quot;2015-06-01 11:46:32 EEST&quot;
-## [5] &quot;2015-07-01 12:03:42 EEST&quot; &quot;2015-08-01 11:14:28 EEST&quot;</code></pre>
+<pre><code>## [1] &quot;2015-02-28 07:10:10 EET&quot;  &quot;2015-03-31 09:27:01 EEST&quot;
+## [3] &quot;2015-04-30 10:38:52 EEST&quot; &quot;2015-05-31 11:44:54 EEST&quot;
+## [5] &quot;2015-06-30 12:04:16 EEST&quot; &quot;2015-07-31 11:16:47 EEST&quot;</code></pre>
 <p>The angle used in the twilight calculation can be supplied, either as the name of a standard definition, or as an angle in degrees (negative for sun positions below the horizon). Positive angles can be used when the time of sun occlusion behind a building, mountain, or other obstacle needs to be calculated. The default for <code>twilight</code> is <code>&quot;none&quot;</code> meaning that times correspond to the occlusion of the upper rim of the sun below the theoretical horizon.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sunrise_time</span>(<span class="kw">ymd</span>(<span class="st">&quot;2017-03-21&quot;</span>, <span class="dt">tz =</span> <span class="st">&quot;EET&quot;</span>), 
              <span class="dt">tz =</span> <span class="st">&quot;EET&quot;</span>, 
              <span class="dt">geocode =</span> my.geocode,
              <span class="dt">twilight =</span> <span class="st">&quot;civil&quot;</span>)</code></pre></div>
-<pre><code>## [1] &quot;2017-03-21 05:34:56 EET&quot;</code></pre>
+<pre><code>## [1] &quot;2017-03-20 05:38:03 EET&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sunrise_time</span>(<span class="kw">ymd</span>(<span class="st">&quot;2017-03-21&quot;</span>, <span class="dt">tz =</span> <span class="st">&quot;EET&quot;</span>), 
              <span class="dt">tz =</span> <span class="st">&quot;EET&quot;</span>, 
              <span class="dt">geocode =</span> my.geocode,
              <span class="dt">twilight =</span> <span class="op">-</span><span class="dv">10</span>)</code></pre></div>
-<pre><code>## [1] &quot;2017-03-21 05:01:34 EET&quot;</code></pre>
+<pre><code>## [1] &quot;2017-03-20 05:04:49 EET&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sunrise_time</span>(<span class="kw">ymd</span>(<span class="st">&quot;2017-03-21&quot;</span>, <span class="dt">tz =</span> <span class="st">&quot;EET&quot;</span>), 
              <span class="dt">tz =</span> <span class="st">&quot;EET&quot;</span>, 
              <span class="dt">geocode =</span> my.geocode,
              <span class="dt">twilight =</span> <span class="op">+</span><span class="dv">12</span>)</code></pre></div>
-<pre><code>## [1] &quot;2017-03-21 08:01:58 EET&quot;</code></pre>
+<pre><code>## [1] &quot;2017-03-20 08:05:17 EET&quot;</code></pre>
 <p>Default latitude is zero (the Equator), the default longitude is zero (Greenwich). Be also aware that for summer dates the times are formatted for printing accordingly. In the examples below this can be recognized by the time zone being reported as EEST instead of EET during the summer for Eastern Europe.</p>
 <p>The main function is called <code>day_night</code> and returns a data frame containing both the input values and the results of the calculations. See below for additional convenience functions useful in the case one needs only one of the calculated variables. In other cases it is more efficient to compute the whole data frame and later select the columns of interest.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">day_night</span>(dates[<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>], 
           <span class="dt">geocode =</span> my.geocode)</code></pre></div>
 <pre><code>##          day  tz twilight.rise twilight.set longitude latitude  address
-## 1 2015-03-01 EET             0            0     24.93    60.16 Helsinki
-## 2 2015-04-01 EET             0            0     24.93    60.16 Helsinki
-## 3 2015-05-01 EET             0            0     24.93    60.16 Helsinki
+## 1 2015-02-28 UTC             0            0     24.93    60.16 Helsinki
+## 2 2015-03-31 UTC             0            0     24.93    60.16 Helsinki
+## 3 2015-04-30 UTC             0            0     24.93    60.16 Helsinki
 ##    sunrise     noon   sunset daylength nightlength
-## 1 7.426707 12.54357 17.66043  10.23372   13.766278
-## 2 6.860139 13.40220 19.94426  13.08412   10.915881
-## 3 5.411709 13.28969 21.16768  15.75597    8.244033</code></pre>
+## 1 5.476120 10.54678 15.61744  10.14132   13.858676
+## 2 3.910671 10.40715 16.90363  12.99296   11.007041
+## 3 2.456515 10.29174 18.12696  15.67045    8.329551</code></pre>
 <p>The default for <code>unit.out</code> is <code>&quot;hours&quot;</code> with decimal fractions, as seen above. However other useful units like <code>&quot;seconds&quot;</code>, <code>&quot;minutes&quot;</code>, and <code>&quot;days&quot;</code> can be useful.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">day_night</span>(dates[<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>], 
           <span class="dt">geocode =</span> my.geocode, 
           <span class="dt">unit.out =</span> <span class="st">&quot;days&quot;</span>)</code></pre></div>
 <pre><code>##          day  tz twilight.rise twilight.set longitude latitude  address
-## 1 2015-03-01 EET             0            0     24.93    60.16 Helsinki
-## 2 2015-04-01 EET             0            0     24.93    60.16 Helsinki
+## 1 2015-02-28 UTC             0            0     24.93    60.16 Helsinki
+## 2 2015-03-31 UTC             0            0     24.93    60.16 Helsinki
 ##     sunrise      noon    sunset daylength nightlength
-## 1 0.3094461 0.5226486 0.7358512 0.4264051   0.5735949
-## 2 0.2858391 0.5584249 0.8310108 0.5451716   0.4548284</code></pre>
+## 1 0.2281717 0.4394492 0.6507268 0.4225551   0.5774449
+## 2 0.1629446 0.4336312 0.7043179 0.5413733   0.4586267</code></pre>
 <p>Finally it is also possible to have the timing of solar events returned as <code>POSIXct</code> time values, in which case lengths of time are still returned as fractional hours.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">day_night</span>(dates[<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>], 
           <span class="dt">geocode =</span> my.geocode, 
           <span class="dt">unit.out =</span> <span class="st">&quot;datetime&quot;</span>)</code></pre></div>
 <pre><code>##          day  tz twilight.rise twilight.set longitude latitude  address
-## 1 2015-03-01 EET             0            0     24.93    60.16 Helsinki
-## 2 2015-04-01 EET             0            0     24.93    60.16 Helsinki
+## 1 2015-02-28 UTC             0            0     24.93    60.16 Helsinki
+## 2 2015-03-31 UTC             0            0     24.93    60.16 Helsinki
 ##               sunrise                noon              sunset daylength
-## 1 2015-03-01 07:25:36 2015-03-01 12:32:36 2015-03-01 17:39:37  10.23372
-## 2 2015-04-01 06:51:36 2015-04-01 13:24:07 2015-04-01 19:56:39  13.08412
+## 1 2015-02-28 05:28:34 2015-02-28 10:32:48 2015-02-28 15:37:02  10.14132
+## 2 2015-03-31 03:54:38 2015-03-31 10:24:25 2015-03-31 16:54:13  12.99296
 ##   nightlength
-## 1    13.76628
-## 2    10.91588</code></pre>
+## 1    13.85868
+## 2    11.00704</code></pre>
 <p>When multiple times and locations are supplied as arguments, the values returned are for all combinations of locations and times.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">day_night</span>(dates[<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>], 
           <span class="dt">geocode =</span> two.geocodes)</code></pre></div>
 <pre><code>##          day  tz twilight.rise twilight.set longitude latitude  address
-## 1 2015-03-01 EET             0            0     24.93    60.16 Helsinki
-## 2 2015-04-01 EET             0            0     24.93    60.16 Helsinki
-## 3 2015-05-01 EET             0            0     24.93    60.16 Helsinki
-## 4 2015-03-01 EET             0            0     25.47    65.02     Oulu
-## 5 2015-04-01 EET             0            0     25.47    65.02     Oulu
-## 6 2015-05-01 EET             0            0     25.47    65.02     Oulu
+## 1 2015-02-28 UTC             0            0     24.93    60.16 Helsinki
+## 2 2015-03-31 UTC             0            0     24.93    60.16 Helsinki
+## 3 2015-04-30 UTC             0            0     24.93    60.16 Helsinki
+## 4 2015-02-28 UTC             0            0     25.47    65.02     Oulu
+## 5 2015-03-31 UTC             0            0     25.47    65.02     Oulu
+## 6 2015-04-30 UTC             0            0     25.47    65.02     Oulu
 ##    sunrise     noon   sunset daylength nightlength
-## 1 7.426707 12.54357 17.66043 10.233722   13.766278
-## 2 6.860139 13.40220 19.94426 13.084119   10.915881
-## 3 5.411709 13.28969 21.16768 15.755967    8.244033
-## 4 7.600136 12.50757 17.41500  9.814863   14.185137
-## 5 6.697600 13.36620 20.03480 13.337198   10.662802
-## 6 4.884364 13.25369 21.62302 16.738657    7.261343</code></pre>
+## 1 5.476120 10.54678 15.61744 10.141324   13.858676
+## 2 3.910671 10.40715 16.90363 12.992959   11.007041
+## 3 2.456515 10.29174 18.12696 15.670449    8.329551
+## 4 5.661113 10.51078 15.36045  9.699339   14.300661
+## 5 3.758946 10.37115 16.98335 13.224408   10.775592
+## 6 1.943318 10.25574 18.56816 16.624843    7.375157</code></pre>
 <p>Different convenience functions return the calculated variables individually as vectors.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sunrise_time</span>(<span class="dt">date =</span> dates, <span class="dt">geocode =</span> my.geocode)</code></pre></div>
-<pre><code>## [1] &quot;2015-03-01 07:18:41 EET&quot;  &quot;2015-04-01 06:44:48 EEST&quot;
-## [3] &quot;2015-05-01 05:16:45 EEST&quot; &quot;2015-06-01 04:07:34 EEST&quot;
-## [5] &quot;2015-07-01 04:01:00 EEST&quot; &quot;2015-08-01 05:00:28 EEST&quot;</code></pre>
+<pre><code>## [1] &quot;2015-02-28 07:21:37 EET&quot;  &quot;2015-03-31 06:47:51 EEST&quot;
+## [3] &quot;2015-04-30 05:19:30 EEST&quot; &quot;2015-05-31 04:09:05 EEST&quot;
+## [5] &quot;2015-06-30 03:59:56 EEST&quot; &quot;2015-07-31 04:58:06 EEST&quot;</code></pre>
 <p>As seen above the default for <code>tz</code> is the time zone of the argument passed to <code>date</code>. This can be overridden with an explicit value as argument. In this example, when interpreted in the UTC time zone, the time instants correspond to the previous calendar day compared to the EET time zone. We can also see that “summer time” applies to the EET time zone but not to UTC (universal time coordinates).</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sunrise_time</span>(<span class="dt">date =</span> dates, <span class="dt">tz =</span> <span class="st">&quot;UTC&quot;</span>, <span class="dt">geocode =</span> my.geocode)</code></pre></div>
 <pre><code>## [1] &quot;2015-02-28 05:21:37 UTC&quot; &quot;2015-03-31 03:47:51 UTC&quot;
 ## [3] &quot;2015-04-30 02:19:30 UTC&quot; &quot;2015-05-31 01:09:05 UTC&quot;
 ## [5] &quot;2015-06-30 00:59:56 UTC&quot; &quot;2015-07-31 01:58:06 UTC&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">noon_time</span>(<span class="dt">date =</span> dates, <span class="dt">geocode =</span> my.geocode)</code></pre></div>
-<pre><code>## [1] &quot;2015-03-01 12:32:36 EET&quot;  &quot;2015-04-01 13:24:07 EEST&quot;
-## [3] &quot;2015-05-01 13:17:22 EEST&quot; &quot;2015-06-01 13:18:07 EEST&quot;
-## [5] &quot;2015-07-01 13:24:08 EEST&quot; &quot;2015-08-01 13:26:37 EEST&quot;</code></pre>
+<pre><code>## [1] &quot;2015-02-28 12:32:48 EET&quot;  &quot;2015-03-31 13:24:25 EEST&quot;
+## [3] &quot;2015-04-30 13:17:30 EEST&quot; &quot;2015-05-31 13:17:58 EEST&quot;
+## [5] &quot;2015-06-30 13:23:57 EEST&quot; &quot;2015-07-31 13:26:40 EEST&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sunset_time</span>(<span class="dt">date =</span> dates, <span class="dt">geocode =</span> my.geocode)</code></pre></div>
-<pre><code>## [1] &quot;2015-03-01 17:46:32 EET&quot;  &quot;2015-04-01 20:03:27 EEST&quot;
-## [3] &quot;2015-05-01 21:18:00 EEST&quot; &quot;2015-06-01 22:28:39 EEST&quot;
-## [5] &quot;2015-07-01 22:47:17 EEST&quot; &quot;2015-08-01 21:52:45 EEST&quot;</code></pre>
+<pre><code>## [1] &quot;2015-02-28 17:43:59 EET&quot;  &quot;2015-03-31 20:01:00 EEST&quot;
+## [3] &quot;2015-04-30 21:15:30 EEST&quot; &quot;2015-05-31 22:26:51 EEST&quot;
+## [5] &quot;2015-06-30 22:47:57 EEST&quot; &quot;2015-07-31 21:55:14 EEST&quot;</code></pre>
 <p>The default for <code>date</code> is the current day, using the system time zone settings.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">noon_time</span>(<span class="dt">geocode =</span> my.geocode)</code></pre></div>
-<pre><code>## [1] &quot;2017-12-15 12:15:39 EET&quot;</code></pre>
+<pre><code>## [1] &quot;2018-03-02 12:32:21 EET&quot;</code></pre>
 <p>Parameter <code>unit.out</code> can be used to obtain the returned value expressed as time-of-day in hours, minutes, or seconds since midnight, instead of the default <code>datetime</code>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sunrise_time</span>(<span class="kw">ymd</span>(<span class="st">&quot;2017-03-21&quot;</span>, <span class="dt">tz =</span> <span class="st">&quot;EET&quot;</span>), 
              <span class="dt">tz =</span> <span class="st">&quot;EET&quot;</span>, 
              <span class="dt">geocode =</span> my.geocode)</code></pre></div>
-<pre><code>## [1] &quot;2017-03-21 06:16:50 EET&quot;</code></pre>
+<pre><code>## [1] &quot;2017-03-20 06:19:53 EET&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sunrise_time</span>(<span class="kw">ymd</span>(<span class="st">&quot;2017-03-21&quot;</span>, <span class="dt">tz =</span> <span class="st">&quot;EET&quot;</span>), 
              <span class="dt">tz =</span> <span class="st">&quot;EET&quot;</span>, 
              <span class="dt">geocode =</span> my.geocode,
              <span class="dt">unit.out =</span> <span class="st">&quot;hours&quot;</span>)</code></pre></div>
-<pre><code>## [1] 6.280614</code></pre>
+<pre><code>## [1] 6.331521</code></pre>
 <p>Functions <code>day_length</code> and <code>night_length</code> return by default the length of time in hours.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">day_length</span>(dates, <span class="dt">geocode =</span> my.geocode)</code></pre></div>
 <pre><code>## [1] 10.37265 13.21916 15.93326 18.29610 18.80025 16.95222</code></pre>
@@ -327,14 +327,16 @@ Paris.time &lt;-<span class="st"> </span><span class="kw">ymd_hms</span>(<span c
 <p>Function <code>as_tod()</code> facilitates conversion of R’s time date objects into a numeric value representing the time of day in one of hour, minute or second as unit of expression.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">times &lt;-<span class="st"> </span><span class="kw">now</span>() <span class="op">+</span><span class="st"> </span><span class="kw">hours</span>(<span class="dv">0</span><span class="op">:</span><span class="dv">6</span>)
 times</code></pre></div>
-<pre><code>## [1] &quot;2017-12-15 02:10:11 EET&quot; &quot;2017-12-15 03:10:11 EET&quot;
-## [3] &quot;2017-12-15 04:10:11 EET&quot; &quot;2017-12-15 05:10:11 EET&quot;
-## [5] &quot;2017-12-15 06:10:11 EET&quot; &quot;2017-12-15 07:10:11 EET&quot;
-## [7] &quot;2017-12-15 08:10:11 EET&quot;</code></pre>
+<pre><code>## [1] &quot;2018-03-02 18:56:07 EET&quot; &quot;2018-03-02 19:56:07 EET&quot;
+## [3] &quot;2018-03-02 20:56:07 EET&quot; &quot;2018-03-02 21:56:07 EET&quot;
+## [5] &quot;2018-03-02 22:56:07 EET&quot; &quot;2018-03-02 23:56:07 EET&quot;
+## [7] &quot;2018-03-03 00:56:07 EET&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">as_tod</span>(times)</code></pre></div>
-<pre><code>## [1] 2.169905 3.169905 4.169905 5.169905 6.169905 7.169905 8.169905</code></pre>
+<pre><code>## [1] 18.9352789 19.9352789 20.9352789 21.9352789 22.9352789 23.9352789
+## [7]  0.9352789</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">as_tod</span>(times, <span class="dt">unit.out =</span> <span class="st">&quot;minutes&quot;</span>)</code></pre></div>
-<pre><code>## [1] 130.1943 190.1943 250.1943 310.1943 370.1943 430.1943 490.1943</code></pre>
+<pre><code>## [1] 1136.11673 1196.11673 1256.11673 1316.11673 1376.11673 1436.11673
+## [7]   56.11673</code></pre>
 </div>
 
 
