@@ -371,7 +371,256 @@ test_that("source_mspct", {
   expect_equal(clean(my.mspct), my.mspct)
 })
 
+test_that("source_mspct_attr", {
+
+  my1.spct <- source_spct(w.length = 400:410, s.e.irrad = 1)
+  setWhatMeasured(my1.spct, "first spectrum")
+  setWhenMeasured(my1.spct, lubridate::ymd("2018-03-03", tz = "UTC"))
+  setWhereMeasured(my1.spct, data.frame(lat = -30, lon = +80))
+  my2.spct <- source_spct(w.length = 400:410, s.e.irrad = 2)
+  setWhatMeasured(my2.spct, "second spectrum")
+  setWhenMeasured(my2.spct, lubridate::ymd_hm("2018-03-03 12:30", tz = "UTC"))
+  setWhereMeasured(my2.spct, data.frame(lat = 5, lon = 20))
 
 
-## need to add similar tests for other classes
-## need to add additional methods
+  spct.l <- list(my1.spct, my2.spct)
+  my.mspct <- source_mspct(spct.l)
+
+  expect_equal(paste("spct", 1:length(spct.l), sep = "_"), names(my.mspct))
+
+  expect_equal(class(my.mspct)[1:2], c("source_mspct", "generic_mspct") )
+  expect_equal(attr(my.mspct, "mspct.version", exact = TRUE), 2)
+  expect_equal(ncol(my.mspct), 1)
+  expect_equal(nrow(my.mspct), length(spct.l))
+  expect_equal(attr(my.mspct, "mspct.byrow", exact = TRUE), FALSE)
+
+  named_spct.l <- list(one = my1.spct,
+                       two = my2.spct)
+
+  my_named.mspct <- source_mspct(named_spct.l)
+
+  expect_equal(names(named_spct.l), names(my_named.mspct))
+  expect_equal(class(my_named.mspct)[1:2], c("source_mspct", "generic_mspct") )
+  expect_equal(attr(my_named.mspct, "mspct.version", exact = TRUE), 2)
+  expect_equal(ncol(my_named.mspct), 1)
+  expect_equal(nrow(my.mspct), length(named_spct.l))
+  expect_equal(attr(my_named.mspct, "mspct.byrow", exact = TRUE), FALSE)
+
+  expect_equal(length(my.mspct), 2)
+  expect_equal(length(my_named.mspct), 2)
+
+  expect_true(is.data.frame(irrad(my.mspct)))
+  expect_true(is.data.frame(irrad(my_named.mspct)))
+
+  expect_equal(irrad(my.mspct)[["spct.idx"]],
+               factor(paste("spct", 1:2, sep = "_")))
+  expect_equal(levels(irrad(my_named.mspct)[["spct.idx"]]),
+               c("one", "two"))
+
+  # irrad -------------------------------------------------------------------
+
+  expect_equal(
+    names(
+      irrad(my.mspct,
+          list(waveband(c(400,405), wb.name = "A"),
+               waveband(c(405,410), wb.name = "B")),
+          attr2tb = c(when.measured = "when",
+                      what.measured = "what",
+                      lat = "latitude",
+                      lon = "longitude")
+    )), c("spct.idx", "irrad_A", "irrad_B",
+         "when", "what", "latitude", "longitude")
+  )
+
+  expect_equal(
+    names(
+      irrad(my.mspct,
+            list(waveband(c(400,405), wb.name = "A"),
+                 waveband(c(405,410), wb.name = "B")),
+            attr2tb = c(when.measured = "when",
+                        what.measured = "what",
+                        lat = "latitude",
+                        lon = "longitude"),
+            idx = "spectrum"
+      )), c("spectrum", "irrad_A", "irrad_B",
+            "when", "what", "latitude", "longitude")
+  )
+
+  expect_equal(
+    irrad(my.mspct,
+                list(waveband(c(400,405), wb.name = "A"),
+                     waveband(c(405,410), wb.name = "B")),
+                attr2tb = c(when.measured = "when",
+                            what.measured = "what",
+                            lat = "latitude",
+                            lon = "longitude")
+    )[["when"]], lubridate::ydm_hm(c("2018-03-03 00:00", "2018-03-03 12:30"))
+  )
+  expect_equal(
+    irrad(my.mspct,
+                list(waveband(c(400,405), wb.name = "A"),
+                     waveband(c(405,410), wb.name = "B")),
+          attr2tb = c(when.measured = "when",
+                      what.measured = "what",
+                      lat = "latitude",
+                      lon = "longitude")
+    )[["what"]], c("first spectrum", "second spectrum")
+  )
+  expect_equal(
+    irrad(my.mspct,
+          list(waveband(c(400,405), wb.name = "A"),
+               waveband(c(405,410), wb.name = "B")),
+          attr2tb = c(when.measured = "when",
+                      what.measured = "what",
+                      lat = "latitude",
+                      lon = "longitude")
+    )[["latitude"]], c(-30, 5)
+  )
+  expect_equal(
+    irrad(my.mspct,
+          list(waveband(c(400,405), wb.name = "A"),
+               waveband(c(405,410), wb.name = "B")),
+          attr2tb = c(when.measured = "when",
+                      what.measured = "what",
+                      lat = "latitude",
+                      lon = "longitude")
+    )[["longitude"]], c(80, 20)
+  )
+
+  expect_equal(
+    irrad(my_named.mspct,
+          list(waveband(c(400,405), wb.name = "A"),
+               waveband(c(405,410), wb.name = "B")),
+          attr2tb = c(when.measured = "when",
+                      what.measured = "what",
+                      lat = "latitude",
+                      lon = "longitude")
+    )[["when"]], lubridate::ydm_hm(c("2018-03-03 00:00", "2018-03-03 12:30"))
+  )
+  expect_equal(
+    irrad(my_named.mspct,
+          list(waveband(c(400,405), wb.name = "A"),
+               waveband(c(405,410), wb.name = "B")),
+          attr2tb = c(when.measured = "when",
+                      what.measured = "what",
+                      lat = "latitude",
+                      lon = "longitude")
+    )[["what"]], c("first spectrum", "second spectrum")
+  )
+  expect_equal(
+    irrad(my_named.mspct,
+          list(waveband(c(400,405), wb.name = "A"),
+               waveband(c(405,410), wb.name = "B")),
+          attr2tb = c(when.measured = "when",
+                      what.measured = "what",
+                      lat = "latitude",
+                      lon = "longitude")
+    )[["latitude"]], c(-30, 5)
+  )
+  expect_equal(
+    irrad(my.mspct,
+          list(waveband(c(400,405), wb.name = "A"),
+               waveband(c(405,410), wb.name = "B")),
+          attr2tb = c(when.measured = "when",
+                      what.measured = "what",
+                      lat = "latitude",
+                      lon = "longitude")
+    )[["longitude"]], c(80, 20)
+  )
+
+  # relative
+
+  expect_equal(
+    irrad(my.mspct,
+          list(waveband(c(400,405), wb.name = "A"),
+               waveband(c(405,410), wb.name = "B")),
+          attr2tb = c(when.measured = "when",
+                      what.measured = "what",
+                      lat = "latitude",
+                      lon = "longitude"),
+          quantity = "relative"
+    )[["when"]], lubridate::ydm_hm(c("2018-03-03 00:00", "2018-03-03 12:30"))
+  )
+  expect_equal(
+    irrad(my.mspct,
+          list(waveband(c(400,405), wb.name = "A"),
+               waveband(c(405,410), wb.name = "B")),
+          attr2tb = c(when.measured = "when",
+                      what.measured = "what",
+                      lat = "latitude",
+                      lon = "longitude"),
+          quantity = "relative"
+    )[["what"]], c("first spectrum", "second spectrum")
+  )
+  expect_equal(
+    irrad(my.mspct,
+          list(waveband(c(400,405), wb.name = "A"),
+               waveband(c(405,410), wb.name = "B")),
+          attr2tb = c(when.measured = "when",
+                      what.measured = "what",
+                      lat = "latitude",
+                      lon = "longitude"),
+          quantity = "relative"
+    )[["latitude"]], c(-30, 5)
+  )
+  expect_equal(
+    irrad(my.mspct,
+          list(waveband(c(400,405), wb.name = "A"),
+               waveband(c(405,410), wb.name = "B")),
+          attr2tb = c(when.measured = "when",
+                      what.measured = "what",
+                      lat = "latitude",
+                      lon = "longitude"),
+          quantity = "relative"
+    )[["longitude"]], c(80, 20)
+  )
+
+  expect_equal(
+    irrad(my_named.mspct,
+          list(waveband(c(400,405), wb.name = "A"),
+               waveband(c(405,410), wb.name = "B")),
+          attr2tb = c(when.measured = "when",
+                      what.measured = "what",
+                      lat = "latitude",
+                      lon = "longitude"),
+          quantity = "relative"
+    )[["when"]], lubridate::ydm_hm(c("2018-03-03 00:00", "2018-03-03 12:30"))
+  )
+  expect_equal(
+    irrad(my_named.mspct,
+          list(waveband(c(400,405), wb.name = "A"),
+               waveband(c(405,410), wb.name = "B")),
+          attr2tb = c(when.measured = "when",
+                      what.measured = "what",
+                      lat = "latitude",
+                      lon = "longitude"),
+          quantity = "relative"
+    )[["what"]], c("first spectrum", "second spectrum")
+  )
+  expect_equal(
+    irrad(my_named.mspct,
+          list(waveband(c(400,405), wb.name = "A"),
+               waveband(c(405,410), wb.name = "B")),
+          attr2tb = c(when.measured = "when",
+                      what.measured = "what",
+                      lat = "latitude",
+                      lon = "longitude"),
+          quantity = "relative"
+    )[["latitude"]], c(-30, 5)
+  )
+  expect_equal(
+    irrad(my.mspct,
+          list(waveband(c(400,405), wb.name = "A"),
+               waveband(c(405,410), wb.name = "B")),
+          attr2tb = c(when.measured = "when",
+                      what.measured = "what",
+                      lat = "latitude",
+                      lon = "longitude"),
+          quantity = "relative"
+    )[["longitude"]], c(80, 20)
+  )
+
+})
+
+
+
