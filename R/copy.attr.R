@@ -1,3 +1,32 @@
+
+# attributes used by spectral classes -------------------------------------
+
+private.attributes <- c("spct.version",
+                        "spct.tags")
+
+common.attributes <- c("comment",
+                       "what.measured",
+                       "when.measured",
+                       "where.measured",
+                       "normalized",
+                       "scaled",
+                       "multiple.wl")
+
+source.attributes <- c("bswf.used", "time.unit")
+filter.attributes <- c("Tfr.type")
+reflector.attributes <- c("Rfr.type")
+object.attributes <- union(filter.attributes, reflector.attributes)
+instr.attributes <- c("instr.descriptor", "instr.settings")
+calibration.attributes <- NULL
+all.attributes <- unique(c(private.attributes,
+                           common.attributes,
+                           source.attributes,
+                           filter.attributes,
+                           reflector.attributes,
+                           instr.attributes))
+
+# copy_attributes ---------------------------------------------------------
+
 #' Copy attributes from one R object to another
 #'
 #' Copy attributes from \code{x} to \code{y}.
@@ -80,7 +109,7 @@ copy_attributes.generic_spct <- function(x, y,
 #'
 copy_attributes.waveband <- function(x, y, which = NULL, ...) {
   stopifnot(is.waveband(y))
-  if (length(which) == 0) {
+  if (length(which) == 0L) {
     which <- "comment"
   }
   attr.x <- attributes(x)
@@ -89,5 +118,97 @@ copy_attributes.waveband <- function(x, y, which = NULL, ...) {
     attr(y, w) <- attr(x, w, exact = TRUE)
   }
   y
+}
+
+# get_attributes -----------------------------------------------------------
+
+#' Get the metadata attributes
+#'
+#' Method returning attributes of an object of class generic_spct or derived,
+#' or of class waveband. Only attributes defined and/or set by package
+#' 'photobiology' for objects of the corresponding class are returned.
+#'
+#' @param x a generic_spct object.
+#' @param which character vector Names of attributes to retrieve.
+#' @param allowed character vector Names of attributes accepted by \code{which}.
+#'
+#' @return list
+#'
+#' @export
+#'
+#' @family measurement metadata functions
+#'
+get_attributes <-
+  function(x, which, ...) UseMethod("get_attributes")
+
+#' @describeIn get_attributes generic_spct
+#' @export
+#'
+get_attributes.generic_spct <-
+  function(x,
+           which = NULL,
+           allowed = all.attributes,
+           ...) {
+    if (length(which) == 0L) {
+      which <- allowed
+    }
+    spct.attr <- attributes(x)
+    spct.attr[names(spct.attr) %in% intersect(which, allowed)]
+  }
+
+#' @describeIn get_attributes source_spct
+#' @export
+#'
+get_attributes.source_spct <- function(x,
+                                       which = NULL,
+                                       ...) {
+  get_attributes.generic_spct(x, which = which,
+                              allowed = c(source.attributes,
+                                          common.attributes))
+}
+
+#' @describeIn get_attributes filter_spct
+#' @export
+#'
+get_attributes.filter_spct <- function(x,
+                                       which = NULL,
+                                       ...) {
+  get_attributes.generic_spct(x, which = which,
+                              allowed = c(filter.attributes,
+                                          common.attributes))
+}
+
+
+#' @describeIn get_attributes reflector_spct
+#' @export
+#'
+get_attributes.reflector_spct <- function(x,
+                                          which = NULL,
+                                          ...) {
+  get_attributes.generic_spct(x, which = which,
+                              allowed = c(reflector.attributes,
+                                          common.attributes))
+}
+
+
+#' @describeIn get_attributes object_spct
+#' @export
+#'
+get_attributes.object_spct <- function(x,
+                                       which = NULL,
+                                       ...) {
+  get_attributes.generic_spct(x, which = which,
+                              allowed = c(object.attributes,
+                                          common.attributes))
+}
+
+#' @describeIn get_attributes waveband
+#' @export
+#'
+get_attributes.waveband <- function(x,
+                                    which = NULL,
+                                    ...) {
+  if (length(which) == 0L || which == "comment")
+  list(comment = attr(x, "comment", exact = TRUE))
 }
 

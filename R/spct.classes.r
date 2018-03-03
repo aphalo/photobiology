@@ -2712,6 +2712,3 @@ getWhatMeasured <- function(x) {
     return(NA_character_)
   }
 }
-
-
-
