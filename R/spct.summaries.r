@@ -320,7 +320,7 @@ print.summary_generic_spct <- function(x, ...) {
   cat("Summary of object: ", x[["orig.class"]], " ", x[["orig.dim_desc"]], "\n", sep = "")
   m.wl <- getMultipleWl(x)
   if (m.wl > 1) {
-    cat("containg ", m.wl, " spectra in long form\n")
+    cat("containing ", m.wl, " spectra in long form\n")
   }
   cat("Wavelength range ",
       paste(signif(x[["wl.range"]], 8), sep = "", collapse = " to "), " nm, step ",

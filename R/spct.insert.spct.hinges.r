@@ -6,7 +6,7 @@
 #' @param spct an object of class "generic_spct"
 #' @param hinges numeric vector of wavelengths (nm) at which the
 #'   s.irrad should be inserted by interpolation, no interpolation is indicated
-#'   by an empty array (numeric(0))
+#'   by an empty vector (numeric(0))
 #' @param byref logical indicating if new object will be created by reference or
 #'   by copy of spct
 #'

@@ -7,7 +7,7 @@
 #'   and meteorology. Package 'photobiology' has its main focus in the
 #'   characterization of the light environment in a biologically relevant manner
 #'   and in the manipulation of spectral data to simulate photo-physical,
-#'   photo-chemical and photo-biological interactions and reponses. The focus of
+#'   photo-chemical and photo-biological interactions and responses. The focus of
 #'   package 'pavo' (Maia et al., 2003) is in colour perception by animals and
 #'   assessment of animal coloration. In spite of the different focus, there is
 #'   some degree of overlap.
@@ -18,7 +18,7 @@
 #' @references
 #' Aphalo, P. J., Albert, A., Björn, L. O., McLeod, A. R., Robson, T. M.,
 #' Rosenqvist, E. (Eds.). (2012). Beyond the Visible: A handbook of best
-#' practice in plant UV photobiology (1st ed., p. xxx + 174). Helsinki:
+#' practice in plant UV photobiology (1st ed., p. xx + 174). Helsinki:
 #' University of Helsinki, Department of Biosciences, Division of Plant Biology.
 #' ISBN 978-952-10-8363-1 (PDF), 978-952-10-8362-4 (paperback). Open access PDF
 #' download available at http://hdl.handle.net/10138/37558
@@ -34,7 +34,7 @@
 #' @section Acknowledgements: This work was funded by the Academy of Finland
 #'   (decision 252548). COST Action FA9604 'UV4Growth' facilitated discussions
 #'   and exchanges of ideas that lead to the development of this package. The
-#'   contributins of Andy McLeod, Lars Olof Björn, Nigel Paul, Lasse Ylianttila,
+#'   contributions of Andy McLeod, Lars Olof Björn, Nigel Paul, Lasse Ylianttila,
 #'   T. Matthew Robson and Titta Kotilainen were specially significant.
 #'   Tutorials by Hadley Wickham and comments on my presentation at UseR!2015
 #'   allowed me to significantly improve the coding and functionality.

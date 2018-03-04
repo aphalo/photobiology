@@ -67,7 +67,7 @@
 #' Radiative Transfer Simulations. Photochemistry and Photobiology, 85:
 #' 1233–1239
 #'
-#' @note The simualtions are based on libRadTran using hourly mean global
+#' @note The simulations are based on libRadTran using hourly mean global
 #' radiation measurements to estimate cloud cover. The simulations were for
 #' each hour and the results integrated for the whole day.
 #'

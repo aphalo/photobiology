@@ -3,20 +3,23 @@
 #' This function returns the photon ratio for a given pair of wavebands of a
 #' light source spectrum.
 #'
-#' @param spct an object of class "source_spct"
-#' @param w.band.num waveband definition created with new_waveband()
-#' @param w.band.denom waveband definition created with new_waveband()
+#' @param spct an object of class "source_spct".
+#' @param w.band.num waveband object or a list of waveband objects used to
+#'   compute the numerator(s) of the ratio(s).
+#' @param w.band.denom waveband object or a list of waveband objects used to
+#'   compute the denominator(s) of the ratio(s).
 #' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries
 #'   are trimmed, if FALSE, they are discarded
 #' @param use.cached.mult logical indicating whether multiplier values should be
 #'   cached between calls
-#' @param use.hinges logical indicating whether to use hinges to reduce
-#'   interpolation errors
+#' @param use.hinges logical Flag indicating whether to insert "hinges" into the
+#'   spectral data before integration so as to reduce interpolation errors at
+#'   the boundaries of the wavebands.
 #' @param ... other arguments (possibly ignored)
 #'
 #' @return In the case of methods for individual spectra, a \code{numeric}
 #'   vector of nondimensional values giving a photon ratio between integrated
-#'   photon irradiances for for pairs of wavebands, with name attribute set to
+#'   photon irradiances for pairs of wavebands, with name attribute set to
 #'   the name of the wavebands unless a named list of wavebands is supplied in
 #'   which case the names of the list elements are used, with "(q:q)" appended.
 #'   A \code{data.frame} in the case of collections of spectra, containing one
@@ -35,7 +38,7 @@
 #' q_ratio(sun.spct, new_waveband(400,500), new_waveband(400,700))
 #'
 #' @note The last two parameters control speed
-#'   optimizations. The defaults should be suitable in mosts cases. If you will
+#'   optimizations. The defaults should be suitable in most cases. If you will
 #'   use repeatedly the same SWFs on many spectra measured at exactly the same
 #'   wavelengths you may obtain some speed up by setting
 #'   \code{use.cached.mult=TRUE}. However, be aware that you are responsible for
@@ -91,19 +94,22 @@ q_ratio.source_spct <-
 #' This function returns the photon ratio for a given pair of wavebands of a
 #' light source spectrum.
 #'
-#' @param spct asource_spct
-#' @param w.band.num waveband or list of waveband objects
-#' @param w.band.denom waveband or list of waveband objects
+#' @param spct source_spct
+#' @param w.band.num waveband object or a list of waveband objects used to
+#'   compute the numerator(s) of the ratio(s).
+#' @param w.band.denom waveband object or a list of waveband objects used to
+#'   compute the denominator(s) of the ratio(s).
 #' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries
 #'   are trimmed, if FALSE, they are discarded
 #' @param use.cached.mult logical Flag telling whether multiplier values should be
-#'   cached between calls
-#' @param use.hinges logical Flag telling whether to use hinges to reduce
-#'   interpolation errors
-#' @param ... other arguments (possibly ignored)
+#'   cached between calls.
+#' @param use.hinges logical Flag indicating whether to insert "hinges" into the
+#'   spectral data before integration so as to reduce interpolation errors at
+#'   the boundaries of the wavebands.
+#' @param ... other arguments (possibly used by derived methods).
 #'
 #' @return In the case of methods for individual spectra, a \code{numeric}
-#'   vector of nondimensional values giving a energy ratio between between
+#'   vector of nondimensional values giving a energy ratio between
 #'   integrated energy irradiances for pairs of wavebands, with name attribute
 #'   set to the name of the wavebands unless a named list of wavebands is
 #'   supplied in which case the names of the list elements are used, with
@@ -122,9 +128,9 @@ q_ratio.source_spct <-
 #' @examples
 #' e_ratio(sun.spct, new_waveband(400,500), new_waveband(400,700))
 #'
-#' @note Recycling for wavebans takes place when the number of denominator and
+#' @note Recycling for wavebands takes place when the number of denominator and
 #'   denominator wavebands differ. The last two parameters control speed
-#'   optimizations. The defaults should be suitable in mosts cases. If you will
+#'   optimizations. The defaults should be suitable in most cases. If you will
 #'   use repeatedly the same SWFs on many spectra measured at exactly the same
 #'   wavelengths you may obtain some speed up by setting
 #'   \code{use.cached.mult=TRUE}. However, be aware that you are responsible for
@@ -176,15 +182,16 @@ e_ratio.source_spct <-
 #' This function returns the photon to energy ratio for each waveband of a light
 #' source spectrum.
 #'
-#' @param spct source_spct
-#' @param w.band waveband or list of waveband objects
+#' @param spct source_spct.
+#' @param w.band waveband or list of waveband objects.
 #' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries
-#'   are trimmed, if FALSE, they are discarded
+#'   are trimmed, if FALSE, they are discarded.
 #' @param use.cached.mult logical Flag telling whether multiplier values should be
-#'   cached between calls
-#' @param use.hinges logical Flag telling whether to use hinges to reduce
-#'   interpolation errors
-#' @param ... other arguments (possibly ignored)
+#'   cached between calls.
+#' @param use.hinges logical Flag indicating whether to insert "hinges" into the
+#'   spectral data before integration so as to reduce interpolation errors at
+#'   the boundaries of the wavebands.
+#' @param ... other arguments (possibly used by derived methods).
 #'
 #' @return Computed values are ratios between photon irradiance and energy
 #'   irradiance for a given waveband. A named \code{numeric} vector in the case
@@ -207,7 +214,7 @@ e_ratio.source_spct <-
 #' qe_ratio(sun.spct, new_waveband(400,700))
 #'
 #' @note The last two parameters control speed optimizations. The defaults
-#'   should be suitable in mosts cases. If you will use repeatedly the same SWFs
+#'   should be suitable in most cases. If you will use repeatedly the same SWFs
 #'   on many spectra measured at exactly the same wavelengths you may obtain
 #'   some speed up by setting \code{use.cached.mult=TRUE}. However, be aware
 #'   that you are responsible for ensuring that the wavelengths are the same in
@@ -262,15 +269,16 @@ qe_ratio.source_spct <-
 #' This function returns the energy to mole of photons ratio for each waveband and a
 #' light source spectrum.
 #'
-#' @param spct source_spct
-#' @param w.band waveband or list of waveband objects
+#' @param spct source_spct.
+#' @param w.band waveband or list of waveband objects.
 #' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries
-#'   are trimmed, if FALSE, they are discarded
+#'   are trimmed, if FALSE, they are discarded.
 #' @param use.cached.mult logical Flag telling whether multiplier values should
-#'   be cached between calls
-#' @param use.hinges logical Flag telling whether to use hinges to reduce
-#'   interpolation errors
-#' @param ... other arguments (possibly ignored)
+#'   be cached between calls.
+#' @param use.hinges logical Flag indicating whether to insert "hinges" into the
+#'   spectral data before integration so as to reduce interpolation errors at
+#'   the boundaries of the wavebands.
+#' @param ... other arguments (possibly used by derived methods).
 #'
 #' @return Computed values are ratios between energy irradiance and photon
 #'   irradiance for a given waveband. A named \code{numeric} vector in the case
@@ -293,7 +301,7 @@ qe_ratio.source_spct <-
 #' eq_ratio(sun.spct, new_waveband(400,700))
 #'
 #' @note The last two parameters control speed optimizations. The defaults
-#'   should be suitable in mosts cases. If you will use repeatedly the same SWFs
+#'   should be suitable in most cases. If you will use repeatedly the same SWFs
 #'   on many spectra measured at exactly the same wavelengths you may obtain
 #'   some speed up by setting \code{use.cached.mult=TRUE}. However, be aware
 #'   that you are responsible for ensuring that the wavelengths are the same in
@@ -507,5 +515,3 @@ qe_ratio.source_mspct <-
                 mspct = spct,
                 col.names = attr2tb)
   }
-
-

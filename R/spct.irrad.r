@@ -6,20 +6,21 @@
 #' This function returns the irradiance for a given waveband of a light source
 #' spectrum.
 #'
-#' @param spct an R object
+#' @param spct an R object.
 #' @param w.band waveband or list of waveband objects The waveband(s) determine
 #'   the region(s) of the spectrum that are summarized.
 #' @param unit.out character string with allowed values "energy", and "photon",
-#'   or its alias "quantum"
+#'   or its alias "quantum".
 #' @param quantity character string One of "total", "average" or "mean",
-#'   "contribution", "contribution.pc", "relative" or "relative.pc"
-#' @param time.unit character or lubridate::duration
+#'   "contribution", "contribution.pc", "relative" or "relative.pc".
+#' @param time.unit character or lubridate::duration object.
 #' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries
-#'   are trimmed, if FALSE, they are discarded
+#'   are trimmed, if FALSE, they are discarded.
 #' @param use.cached.mult logical indicating whether multiplier values should be
-#'   cached between calls
-#' @param use.hinges logical indicating whether to use hinges to reduce
-#'   interpolation errors
+#'   cached between calls.
+#' @param use.hinges logical Flag indicating whether to insert "hinges" into the
+#'   spectral data before integration so as to reduce interpolation errors at
+#'   the boundaries of the wavebands.
 #' @param allow.scaled logical indicating whether scaled or normalized spectra
 #'   as argument to spct are flagged as an error
 #' @param ... other arguments (possibly ignored)
@@ -59,7 +60,7 @@
 #' irrad(sun.spct, split_bands(c(400,700), length.out = 3), quantity = "contribution.pc")
 #'
 #' @note The last two parameters control speed optimizations. The defaults
-#'   should be suitable in mosts cases. If you will use repeatedly the same SWFs
+#'   should be suitable in most cases. If you will use repeatedly the same SWFs
 #'   on many spectra measured at exactly the same wavelengths you may obtain
 #'   some speed up by setting \code{use.cached.mult=TRUE}. However, be aware
 #'   that you are responsible for ensuring that the wavelengths are the same in
@@ -143,7 +144,7 @@ irrad.source_spct <-
     if (is.waveband(w.band)) {
       # if the argument is a single w.band, we enclose it in a list
       # so that the for loop works as expected.This is a bit of a
-      # cludge but lets us avoid treating it as a special case
+      # kludge but lets us avoid treating it as a special case
       w.band <- list(w.band)
     }
     w.band <- trim_waveband(w.band = w.band, range = spct, trim = wb.trim)
@@ -228,7 +229,7 @@ irrad.source_spct <-
                                  unit.in = unit.out,
                                  use.cached.mult = use.cached.mult)
         # calculate weighted spectral irradiance
-        # the ifelse is needed to overrride NAs in spectral data for regions
+        # the ifelse is needed to override NAs in spectral data for regions
         # where mult == 0
           irrad[i] <- integrate_xy(w.length[wl.selector],
                                    ifelse(mult == 0, 0, s.irrad[wl.selector] * mult))
@@ -293,23 +294,23 @@ irrad_spct <- irrad.source_spct
 
 #' Energy irradiance
 #'
-#' This function returns the energy irradiance for a given waveband of a light
-#' source spectrum.
+#' Energy irradiance for one or more wavebands of a light source spectrum.
 #'
-#' @param spct an R object
-#' @param w.band a list of \code{waveband} objects or a \code{waveband} object
+#' @param spct an R object.
+#' @param w.band a list of \code{waveband} objects or a \code{waveband} object.
 #' @param quantity character string One of "total", "average" or "mean",
-#'   "contribution", "contribution.pc", "relative" or "relative.pc"
-#' @param time.unit character or lubridate::duration
+#'   "contribution", "contribution.pc", "relative" or "relative.pc".
+#' @param time.unit character or lubridate::duration object.
 #' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries
-#'   are trimmed, if FALSE, they are discarded
+#'   are trimmed, if FALSE, they are discarded.
 #' @param use.cached.mult logical indicating whether multiplier values should be
-#'   cached between calls
-#' @param use.hinges logical indicating whether to use hinges to reduce
-#'   interpolation errors
+#'   cached between calls.
+#' @param use.hinges logical Flag indicating whether to insert "hinges" into the
+#'   spectral data before integration so as to reduce interpolation errors at
+#'   the boundaries of the wavebands.
 #' @param allow.scaled logical indicating whether scaled or normalized spectra
-#'   as argument to spct are flagged as an error
-#' @param ... other arguments (possibly ignored)
+#'   as argument to spct are flagged as an error.
+#' @param ... other arguments (possibly used by derived methods).
 #'
 #' @export
 #'
@@ -347,7 +348,7 @@ irrad_spct <- irrad.source_spct
 #'   relative, fraction of one or percent.
 #'
 #' @note The last two parameters control speed optimizations. The defaults
-#'   should be suitable in mosts cases. If you will use repeatedly the same SWFs
+#'   should be suitable in most cases. If you will use repeatedly the same SWFs
 #'   on many spectra measured at exactly the same wavelengths you may obtain
 #'   some speed up by setting \code{use.cached.mult=TRUE}. However, be aware
 #'   that you are responsible for ensuring that the wavelengths are the same in
@@ -397,23 +398,24 @@ e_irrad.source_spct <-
 
 #' Photon irradiance
 #'
-#' This function returns the photon irradiance (or quantum irradiance) for a
-#' given waveband of a light source spectrum.
+#' Photon irradiance (i.e. quantum irradiance) for one or more wavebands of a
+#' light source spectrum.
 #'
-#' @param spct an R object
-#' @param w.band a list of \code{waveband} objects or a \code{waveband} object
+#' @param spct an R object.
+#' @param w.band a list of \code{waveband} objects or a \code{waveband} object.
 #' @param quantity character string One of "total", "average" or "mean",
-#'   "contribution", "contribution.pc", "relative" or "relative.pc"
-#' @param time.unit character or lubridate::duration
+#'   "contribution", "contribution.pc", "relative" or "relative.pc".
+#' @param time.unit character or lubridate::duration object.
 #' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries
-#'   are trimmed, if FALSE, they are discarded
+#'   are trimmed, if FALSE, they are discarded.
 #' @param use.cached.mult logical indicating whether multiplier values should be
-#'   cached between calls
-#' @param use.hinges logical indicating whether to use hinges to reduce
-#'   interpolation errors
+#'   cached between calls.
+#' @param use.hinges logical Flag indicating whether to insert "hinges" into the
+#'   spectral data before integration so as to reduce interpolation errors at
+#'   the boundaries of the wavebands.
 #' @param allow.scaled logical indicating whether scaled or normalized spectra
-#'   as argument to spct are flagged as an error
-#' @param ... other arguments (possibly ignored)
+#'   as argument to spct are flagged as an error.
+#' @param ... other arguments (possibly ignored).
 #'
 #' @export
 #'
@@ -444,7 +446,7 @@ e_irrad.source_spct <-
 #'   is day, [J d-1 m-2 nm-1] -> [mol d-1 m-2]
 #'
 #' @note The last two parameters control speed optimizations. The defaults
-#'   should be suitable in mosts cases. If you will use repeatedly the same SWFs
+#'   should be suitable in most cases. If you will use repeatedly the same SWFs
 #'   on many spectra measured at exactly the same wavelengths you may obtain
 #'   some speed up by setting \code{use.cached.mult=TRUE}. However, be aware
 #'   that you are responsible for ensuring that the wavelengths are the same in
@@ -493,23 +495,24 @@ q_irrad.source_spct <-
 
 #' Fluence
 #'
-#' This function returns the energy or photon fluence for a given waveband of a
-#' light source spectrum and the duration of the exposure.
+#' Energy or photon fluence for one or more wavebands of a light source spectrum
+#' and a duration of exposure.
 #'
-#' @param spct an R object
-#' @param w.band a list of \code{waveband} objects or a \code{waveband} object
+#' @param spct an R object.
+#' @param w.band a list of \code{waveband} objects or a \code{waveband} object.
 #' @param unit.out character string with allowed values "energy", and "photon",
-#'   or its alias "quantum"
-#' @param exposure.time lubridate::duration
+#'   or its alias "quantum".
+#' @param exposure.time lubridate::duration object.
 #' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries
-#'   are trimmed, if FALSE, they are discarded
+#'   are trimmed, if FALSE, they are discarded.
 #' @param use.cached.mult logical indicating whether multiplier values should be
-#'   cached between calls
-#' @param use.hinges logical indicating whether to use hinges to reduce
-#'   interpolation errors
+#'   cached between calls.
+#' @param use.hinges logical Flag indicating whether to insert "hinges" into the
+#'   spectral data before integration so as to reduce interpolation errors at
+#'   the boundaries of the wavebands.
 #' @param allow.scaled logical indicating whether scaled or normalized spectra
-#'   as argument to spct are flagged as an error
-#' @param ... other arguments (possibly ignored)
+#'   as argument to spct are flagged as an error.
+#' @param ... other arguments (possibly used by derived methods).
 #'
 #'
 #'
@@ -529,7 +532,7 @@ q_irrad.source_spct <-
 #'   time.unit is day, [J d-1 m-2 nm-1] -> [mol d-1 m-2]
 #'
 #' @note The last two parameters control speed optimizations. The defaults
-#'   should be suitable in mosts cases. If you will use repeatedly the same SWFs
+#'   should be suitable in most cases. If you will use repeatedly the same SWFs
 #'   on many spectra measured at exactly the same wavelengths you may obtain
 #'   some speed up by setting \code{use.cached.mult=TRUE}. However, be aware
 #'   that you are responsible for ensuring that the wavelengths are the same in
@@ -592,21 +595,22 @@ fluence.source_spct <-
 
 #' Photon fluence
 #'
-#' This function returns the photon irradiance (or quantum irradiance) for a
-#' given waveband of a light source spectrum.
+#' Photon irradiance (i.e. quantum irradiance) for one or more waveband of a
+#' light source spectrum.
 #'
-#' @param spct an R object
+#' @param spct an R object.
 #' @param w.band a list of \code{waveband} objects or a \code{waveband} object
-#' @param exposure.time lubridate::duration
+#' @param exposure.time lubridate::duration object.
 #' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries
-#'   are trimmed, if FALSE, they are discarded
+#'   are trimmed, if FALSE, they are discarded.
 #' @param use.cached.mult logical indicating whether multiplier values should be
-#'   cached between calls
-#' @param use.hinges logical indicating whether to use hinges to reduce
-#'   interpolation errors
+#'   cached between calls.
+#' @param use.hinges logical Flag indicating whether to insert "hinges" into the
+#'   spectral data before integration so as to reduce interpolation errors at
+#'   the boundaries of the wavebands.
 #' @param allow.scaled logical indicating whether scaled or normalized spectra
-#'   as argument to spct are flagged as an error
-#' @param ... other arguments (possibly ignored)
+#'   as argument to spct are flagged as an error.
+#' @param ... other arguments (possibly ignored).
 #'
 #' @examples
 #' library(lubridate)
@@ -617,11 +621,11 @@ fluence.source_spct <-
 #' @return One numeric value for each waveband with no change in scale factor,
 #'   with name attribute set to the name of each waveband unless a named list is
 #'   supplied in which case the names of the list elements are used. The
-#'   exposure.time is copied from the spectrum object to the output as an attibute.
+#'   exposure.time is copied from the spectrum object to the output as an attribute.
 #'   Units are as follows: moles of photons per exposure.
 #'
 #' @note The last two parameters control speed optimizations. The defaults
-#'   should be suitable in mosts cases. If you will use repeatedly the same SWFs
+#'   should be suitable in most cases. If you will use repeatedly the same SWFs
 #'   on many spectra measured at exactly the same wavelengths you may obtain
 #'   some speed up by setting \code{use.cached.mult=TRUE}. However, be aware
 #'   that you are responsible for ensuring that the wavelengths are the same in
@@ -680,18 +684,19 @@ q_fluence.source_spct <-
 
 #' Energy fluence
 #'
-#' This function returns the energy fluence for a given waveband of a light
-#' source spectrum given the duration of the exposure.
+#' Energy fluence for one or more wavebands of a light source spectrum and a
+#' duration of the exposure.
 #'
 #' @param spct an R object
 #' @param w.band a list of \code{waveband} objects or a \code{waveband} object
-#' @param exposure.time lubridate::duration
+#' @param exposure.time lubridate::duration object.
 #' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries
 #'   are trimmed, if FALSE, they are discarded
 #' @param use.cached.mult logical indicating whether multiplier values should be
 #'   cached between calls
-#' @param use.hinges logical indicating whether to use hinges to reduce
-#'   interpolation errors
+#' @param use.hinges logical Flag indicating whether to insert "hinges" into the
+#'   spectral data before integration so as to reduce interpolation errors at
+#'   the boundaries of the wavebands.
 #' @param allow.scaled logical indicating whether scaled or normalized spectra
 #'   as argument to spct are flagged as an error
 #' @param ... other arguments (possibly ignored)
@@ -708,7 +713,7 @@ q_fluence.source_spct <-
 #'   follows: (J) joules per exposure.
 #'
 #' @note The last two parameters control speed optimizations. The defaults
-#'   should be suitable in mosts cases. If you will use repeatedly the same SWFs
+#'   should be suitable in most cases. If you will use repeatedly the same SWFs
 #'   on many spectra measured at exactly the same wavelengths you may obtain
 #'   some speed up by setting \code{use.cached.mult=TRUE}. However, be aware
 #'   that you are responsible for ensuring that the wavelengths are the same in
@@ -1056,4 +1061,3 @@ q_fluence.source_mspct <-
                 mspct = spct,
                 col.names = attr2tb)
   }
-

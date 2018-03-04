@@ -4,7 +4,7 @@
 
 #' Spectral-object constructor
 #'
-#' These fucntions can be used to create spectral objects derived from
+#' These functions can be used to create spectral objects derived from
 #' \code{generic_spct}. They take as arguments numeric vectors for the data
 #' character scalars for attributes, and a logical flag.
 #'
@@ -231,7 +231,7 @@ response_spct <- function(w.length = NULL,
 #'
 #' @note "internal" transmittance is defined as the transmittance of the
 #'   material body itself, while "total" transmittance includes the effects of
-#'   surface reflectance on the ammount of light transmitted.
+#'   surface reflectance on the amount of light transmitted.
 #'
 #' @export
 #'
@@ -273,7 +273,7 @@ filter_spct <- function(w.length = NULL,
 
 #' @rdname source_spct
 #'
-#' @param Rfr numeric vector with spectral refletance as fraction of one
+#' @param Rfr numeric vector with spectral reflectance as fraction of one
 #' @param Rpc numeric vector with spectral reflectance as percent values
 #' @param Rfr.type character A string, either "total" or "specular".
 #'
@@ -380,7 +380,7 @@ chroma_spct <- function(w.length=NULL,
 #'
 #' @return These functions return a copy of \code{x} converted into a given
 #'   class of spectral object, if \code{x} is a valid argument to the
-#'   correcponding set function.
+#'   corresponding set function.
 #'
 #' @export
 #'
@@ -507,13 +507,13 @@ as.chroma_spct <- function(x, ...) {
 #' Merge into object_spct
 #'
 #' Merge a filter_spct with a reflector_spct returning an object_spct object,
-#' even if wavelength values are missmatched.
+#' even if wavelength values are mismatched.
 #'
 #' @param x,y a filter_spct object and a reflector_spct object.
 #' @param by a vector of shared column names in \code{x} and \code{y} to merge
 #'   on; \code{by} defaults to \code{w.length}.
 #' @param ... other arguments passed to \code{dplyr::inner_join()}
-#' @param w.length.out numeric array of wavelengths to be used for the returned
+#' @param w.length.out numeric vector of wavelengths to be used for the returned
 #'   object (nm).
 #' @param Tfr.type.out character string indicating whether transmittance
 #'   values in the returned object should be expressed as "total" or "internal".
@@ -583,4 +583,3 @@ merge2object_spct <- function(x, y,
                       class_spct(y))
   z
 }
-

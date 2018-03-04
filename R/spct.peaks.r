@@ -4,14 +4,14 @@
 #' selectable size threshold relative to the tallest peak (global maximum). This
 #' a wrapper built on top of function peaks from package splus2R.
 #'
-#' @param x numeric array
+#' @param x numeric vector
 #' @param ignore_threshold numeric value between 0.0 and 1.0 indicating the size
 #'   threshold below which peaks will be ignored.
 #' @param span a peak is defined as an element in a sequence which is greater
 #'   than all other elements within a window of width span centered at that
 #'   element. The default value is 3, meaning that a peak is bigger than both of
 #'   its neighbors. Default: 3.
-#' @param strict ogical flag: if TRUE, an element must be strictly greater than
+#' @param strict logical flag: if TRUE, an element must be strictly greater than
 #'   all other values in its window to be considered a peak. Default: TRUE.
 #'
 #' @return an object like s.irrad of logical values. Values that are TRUE
@@ -42,7 +42,7 @@ find_peaks <-
     min_x <- range_x[1]
     max_x <- range_x[2]
     x <- ifelse(!is.finite(x), min_x, x)
-    # the next two lines catter for the case when max_x < 0, which is quite common with logs
+    # the next two lines cater for the case when max_x < 0, which is quite common with logs
     delta <- max_x - min_x
     top_flag <- ignore_threshold > 0.0
     scaled_threshold <- delta * abs(ignore_threshold)
@@ -145,7 +145,7 @@ get_valleys <- function(x, y,
 #'
 #' @param x an R object
 #' @param ignore_threshold numeric value between 0.0 and 1.0 indicating the
-#'   relative size compared to talelst peakthreshold below which peaks will be
+#'   relative size compared to tallest peak threshold below which peaks will be
 #'   ignored.
 #' @param span a peak is defined as an element in a sequence which is greater
 #'   than all other elements within a window of width span centered at that
@@ -323,7 +323,7 @@ peaks.generic_mspct <- function(x,
 #'
 #' @param x an R object
 #' @param ignore_threshold numeric value between 0.0 and 1.0 indicating the
-#'   relative size compared to talelst peakthreshold below which valleys will be
+#'   relative size compared to tallest peak threshold below which valleys will be
 #'   ignored.
 #' @param span a peak is defined as an element in a sequence which is greater
 #'   than all other elements within a window of width span centered at that

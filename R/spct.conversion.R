@@ -4,9 +4,9 @@
 #' or reflectance.
 #'
 #' @param x.sample,x.clear,x.opaque,x.white,x.black cps_spct objects.
-#' @param pre.fun function A function applied to x.sample before converison.
+#' @param pre.fun function A function applied to x.sample before conversion.
 #' @param dyn.range numeric The effective dynamic range of the instrument,
-#'    if \code{NULL} it is automatically set based on integartion time
+#'    if \code{NULL} it is automatically set based on integration time
 #'    bracketing.
 #' @param ... Additional arguments passed to \code{pre.fun}.
 #'

@@ -2,13 +2,15 @@
 #'
 #' Calculates rgb values from spectra based on human color matching functions
 #'
-#' @param w.length numeric Vector of wavelengths (nm) of length 2. If longer,
+#' @param w.length numeric vector of wavelengths (nm) of length 2. If longer,
 #'   its range is used.
-#' @param sens chroma_spct Used as the chromaticity definition
-#' @param color.name character Used for naming the rgb color definition
+#' @param sens chroma_spct Used as the chromaticity definition.
+#' @param color.name character Used for naming the rgb color definition(s)
+#'   returned.
 #'
 #' @return A vector of colors defined using \code{rgb()}. The numeric values of
-#'   the RGB components can be obtained using function \code{col2rgb()}.
+#'   the RGB components can be obtained by calling function
+#'   \code{\link[grDevices]{col2rgb}}.
 #'
 #' @export
 #' @examples
@@ -19,10 +21,10 @@
 #' @family color functions
 #'
 w_length_range2rgb <- function(w.length,
-                               sens=photobiology::ciexyzCMF2.spct,
-                               color.name=NULL) {
+                               sens = photobiology::ciexyzCMF2.spct,
+                               color.name = NULL) {
   if (is.null(w.length) || !is.numeric(w.length)) {
-    warning("Bad wlength input, must be numeric")
+    warning("Bad 'w.length' input, must be numeric")
     return("black")
   }
   w.length <- unique(sort(w.length))

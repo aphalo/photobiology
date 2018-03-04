@@ -1256,7 +1256,7 @@ f_dispatcher_spct <- function(x, .fun, ...) {
 #'
 #' Logarithms and Exponentials for Spectra. The functions are applied to the
 #' spectral data, not the wavelengths. The quantity in the spectrum to which the
-#' function is appled depends on the class of \code{x} and the current value of
+#' function is applied depends on the class of \code{x} and the current value of
 #' output options
 #'
 #' @name log
@@ -1300,7 +1300,7 @@ exp.generic_spct <- function(x) {
 #' \code{abs(x)} computes the absolute value of \code{x}, \code{sqrt(x)}
 #' computes the (principal) square root of \code{x}. The functions are applied
 #' to the spectral data, not the wavelengths. The quantity in the spectrum to
-#' which the function is appled depends on the class of \code{x} and the current
+#' which the function is applied depends on the class of \code{x} and the current
 #' value of output options.
 #'
 #' @name MathFun
@@ -1354,7 +1354,7 @@ sign.generic_spct <- function(x) {
 #' \code{signif} rounds the values in its first argument to the specified number of
 #' significant digits. \\
 #' The functions are applied to the spectral data, not the wavelengths. The
-#' quantity in the spectrum to which the function is appled depends on the class
+#' quantity in the spectrum to which the function is applied depends on the class
 #' of \code{x} and the current value of output options.
 #'
 #' @param x an object of class "generic_spct" or a derived class.
@@ -1409,7 +1409,7 @@ trunc.generic_spct <- function(x, ...) {
 #' Trigonometric functions for object of \code{generic_spct} and derived
 #' classes.  \\
 #' The functions are applied to the spectral data, not the wavelengths. The
-#' quantity in the spectrum to which the function is appled depends on the class
+#' quantity in the spectrum to which the function is applied depends on the class
 #' of \code{x} and the current value of output options.
 #'
 #' @name Trig
@@ -1494,7 +1494,7 @@ tanpi.generic_spct <- function(x) {
 
 #' Convert absorbance into transmittance
 #'
-#' Function that coverts absorbance (a.u.) into transmittance (fraction).
+#' Function that converts absorbance (a.u.) into transmittance (fraction).
 #'
 #' @param x an R object
 #' @param action a character string
@@ -1572,7 +1572,7 @@ A2T.filter_mspct <- function(x,
 
 #' Convert transmittance into absorbance.
 #'
-#' Function that coverts transmittance (fraction) into absorbance (a.u.).
+#' Function that converts transmittance (fraction) into absorbance (a.u.).
 #'
 #' @param x an R object
 #' @param action character Allowed values "replace" and "add"
@@ -1666,7 +1666,7 @@ T2A.filter_mspct <- function(x,
 
 #' Convert transmittance into absorptance.
 #'
-#' Function that coverts transmittance (fraction) into absorptance (fraction).
+#' Function that converts transmittance (fraction) into absorptance (fraction).
 #' If reflectance (fraction) is available, it allows conversions between
 #' internal and total absorptance.
 #'
@@ -1823,7 +1823,7 @@ T2Afr.object_mspct <- T2Afr.filter_mspct
 #'
 T2T <- function(x, y, byref, Tfr.type.out, ...) UseMethod("T2T")
 
-#' @describeIn T2T Defauly method
+#' @describeIn T2T Default method
 #'
 #' @export
 #'
@@ -1953,7 +1953,7 @@ T2T.object_mspct <- T2T.filter_mspct
 
 #' Convert energy-based quantities into photon-based quantities.
 #'
-#' Function that coverts spectral energy irradiance into spectral photon irradiance (molar).
+#' Function that converts spectral energy irradiance into spectral photon irradiance (molar).
 #'
 #' @param x an R object
 #' @param action a character string
@@ -2050,7 +2050,7 @@ e2q.source_mspct <- function(x,
           .paropts = .paropts)
 }
 
-#' @describeIn e2q Method for for collections of response spectra
+#' @describeIn e2q Method for collections of response spectra
 #'
 #' @export
 #'
@@ -2073,7 +2073,7 @@ e2q.response_mspct <- function(x,
 
 #' Convert photon-based quantities into energy-based quantities
 #'
-#' Function that coverts spectral photon irradiance (molar) into spectral energy irradiance.
+#' Function that converts spectral photon irradiance (molar) into spectral energy irradiance.
 #'
 #' @param x an R object
 #' @param action a character string

@@ -4,13 +4,13 @@
 #'
 #' These functions return a spectral object of the same class as the one
 #' supplied as argument but with the spectral data on a shifted scale. A range
-#' of wavlengths is taken a reference (zero or another numeric constant) and a
+#' of wavelengths is taken a reference (zero or another numeric constant) and a
 #' summary is calculated for this waveband. The difference between the computed
 #' and reference value are used to shift the scale so that these two values
 #' match in the returned object.
 #'
 #' @param x An R object
-#' @param ... additonal named arguments passed down to \code{f}.
+#' @param ... additional named arguments passed down to \code{f}.
 #'
 #' @return A copy of \code{x} with the spectral data values replaced with values
 #'   zero-shifted.
@@ -34,7 +34,7 @@ fshift.default <- function(x, ...) {
 #' @describeIn fshift
 #'
 #' @param range An R object on which \code{range()} returns a numeric vector of
-#'   length 2 with the limits of a range of wavelengths in nm, with min annd max
+#'   length 2 with the limits of a range of wavelengths in nm, with min and max
 #'   wavelengths (nm)
 #' @param f character string "mean", "min" or "max" for scaling so that this
 #'   summary value becomes the origin of the spectral data scale in the returned
@@ -368,7 +368,7 @@ fshift.generic_mspct <-
 #'
 #' @param spct generic_spct The spectrum to be normalized
 #' @param range an R object on which range() returns a vector of length 2, with
-#'   min annd max wavelengths (nm)
+#'   min and max wavelengths (nm)
 #' @param col.names character The name of the variable to fscale
 #' @param f function A summary function to be applied to \code{spct}
 #' @param ... other arguments passed to f()
@@ -408,7 +408,7 @@ fshift_spct <- function(spct, range, col.names, f, ...) {
     } else {
       summary.value <- 0
       # implemented in this way to ensure that all returned
-      # values folow the same copy/reference semantics
+      # values follow the same copy/reference semantics
     }
     spct[[col]] <- spct[[col]] - summary.value
   }

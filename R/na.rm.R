@@ -17,7 +17,7 @@
 #' @importFrom stats na.omit na.exclude
 #'
 #' @note \code{na.fail} and \code{na.pass} do not require a specialisation
-#'   for spectral objetcs. R's definitions work as expected with no need to
+#'   for spectral objects. R's definitions work as expected with no need to
 #'   override them.
 #'
 #' @seealso \code{\link[stats]{na.fail}} and \code{\link[stats]{na.action}}

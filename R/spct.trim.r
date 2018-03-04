@@ -1,31 +1,33 @@
-#' Trim (or expand) head and/or tail
+#' Trim (or expand) head and/or tail of a spectrum
 #'
-#' Trimming of head and tail of a spectrum based on wavelength limits,
-#' interpolating the values at the boundaries. Trimming is needed for example to
+#' Trim head and tail of a spectrum based on wavelength limits, interpolating
+#' the values at the boundaries of the range. Trimming is needed for example to
 #' remove short wavelength noise when the measured spectrum extends beyond the
 #' known emission spectrum of the measured light source. Occasionally one may
 #' want also to expand the wavelength range.
 #'
-#' @param spct an object of class "generic_spct"
+#' @param spct an object of class "generic_spct".
 #' @param range a numeric vector of length two, or any other object for which
-#'   function range() will return a numeric vector of length two
+#'   method range() will return a numeric vector of length two.
 #' @param low.limit shortest wavelength to be kept (defaults to shortest
-#'   w.length value)
+#'   w.length value).
 #' @param high.limit longest wavelength to be kept (defaults to longest w.length
-#'   value)
-#' @param use.hinges logical, if TRUE (the default) wavelengths in nm.
+#'   value).
+#' @param use.hinges logical Flag indicating whether to insert "hinges" into the
+#'   spectral data before integration so as to reduce interpolation errors at
+#'   the boundaries of the wavebands.
 #' @param fill if fill==NULL then tails are deleted, otherwise tails or s.irrad
-#'   are filled with the value of fill
+#'   are filled with the value of fill.
 #' @param byref logical indicating if new object will be created by reference or
-#'   by copy of spct
-#' @param verbose logical
+#'   by copy of spct.
+#' @param verbose logical.
 #'
-#' @return a spectrum of same class as input with its tails trimmed or expanded
+#' @return a spectrum of same class as input with its tails trimmed or expanded.
 #'
 #' @note When expanding an spectrum, if fill==NULL, then expansion is not
 #'   performed. Range can be "waveband" object, a numeric vector or a list of
 #'   numeric vectors, or any other user-defined or built-in object for which
-#'   \code{range()} returns a numeric vector of legth two, that can be
+#'   \code{range()} returns a numeric vector of length two, that can be
 #'   interpreted as wavelengths expressed in nm.
 #' @family trim functions
 #'
@@ -309,16 +311,19 @@ extend2extremes <- function(mspct,
 
 #' Trim head and/or tail of a spectrum
 #'
-#' Triming of head and tail of a spectrum based on wavelength limits,
-#' interpolation used by default. Expansion is also possible.
+#' Trim head and tail of a spectrum based on wavelength limits, with
+#' interpolation at range boundaries used by default. Expansion is also
+#' possible.
 #'
-#' @param x an R object
+#' @param x an R object.
 #' @param range a numeric vector of length two, or any other object for which
-#'   function range() will return two
-#' @param use.hinges logical, if TRUE (the default) wavelengths in nm.
+#'   function range() will return two.
+#' @param use.hinges logical Flag indicating whether to insert "hinges" into the
+#'   spectral data before integration so as to reduce interpolation errors at
+#'   the boundaries of the wavebands.
 #' @param fill if \code{fill == NULL} then tails are deleted, otherwise tails
 #'   are filled with the value of fill.
-#' @param ... not used
+#' @param ... ignored (possibly used by derived methods).
 #'
 #' @return A copy of \code{x}, usually trimmed or expanded to a different
 #'   length, either shorter or longer. Possibly with some of the original
@@ -445,14 +450,14 @@ trim_wl.list <- function(x,
 
 #' Clip head and/or tail of a spectrum
 #'
-#' Clipping of head and tail of a spectrum based on wavelength limits, no
-#' interpolation used.
+#' Clip head and tail of a spectrum based on wavelength limits, no
+#' interpolation used at range boundaries.
 #'
-#' @param x an R object
+#' @param x an R object.
 #' @param range a numeric vector of length two, or any other object for which
-#'   function \code{range()} will return range of walengths expressed in
+#'   function \code{range()} will return range of wavelengths expressed in
 #'   nanometres.
-#' @param ... not used
+#' @param ... ignored (possibly used by derived methods).
 #'
 #' @return A copy of \code{x}, most frequently of a shorter length, and never
 #'   longer.

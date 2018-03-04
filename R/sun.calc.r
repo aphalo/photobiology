@@ -28,7 +28,7 @@
 #'   conditions. The effect of refraction on the apparent position of the sun
 #'   is only an estimate based on "typical" conditions. The more tangential to
 #'   the horizon is the path of the sun, the larger the effect of refraction is
-#'   on the times of visual occusion of the sun behind the horizon---i.e. the
+#'   on the times of visual occlusion of the sun behind the horizon---i.e. the
 #'   largest timing errors occur at high latitudes.
 #'   The computation is not defined for latitudes 90 and -90 degrees, i.e. at
 #'   the poles.
@@ -36,7 +36,7 @@
 #'   "AstroCalcPureR" available as function \code{astrocalc4r} in package
 #'   'fishmethods'. Although the equations used are almost all the same, the
 #'   function signatures and which values are returned differ. In particular,
-#'   the present implementation splits the calcualtion into two separate
+#'   the present implementation splits the calculation into two separate
 #'   functions, one returning angles at given instants in time, and a
 #'   separate one returning the timing of events for given dates.
 #'
@@ -116,7 +116,7 @@ sun_angles_fast <- function(time,
 
   lat <- geocode[1, "lat"]
   if (lat > 89.99 || lat < -89.99) {
-    stop("Latiutde is off-range.")
+    stop("Latitude is off-range.")
   }
 
   address <- geocode[1, "address"]
@@ -135,7 +135,7 @@ sun_angles_fast <- function(time,
   sun.ecliptic <- mean_obliq_eclip(cent)
   obliq.corr <- obliq_corr(cent, sun.ecliptic)
 #  rt.ascen <- sun_rt_ascen(sun.app.lon, obliq.corr)
-  sun.declin <- sun_declin(sun.app.lon, obliq.corr)
+  sun.declin <- sun_decline(sun.app.lon, obliq.corr)
   var.y <- var_y(obliq.corr)
   eq.of.time <- eq_of_time(mean.lon = sun.lon.mean,
                            eccent.earth = eccent.earth,
@@ -260,7 +260,7 @@ tz_time_diff <- function(when = lubridate::now(),
 #' @param twilight character string, one of "none", "civil", "nautical",
 #'   "astronomical", or a \code{numeric} vector of length one, or two, giving
 #'   solar elevation angle(s) in degrees (negative if below the horizon).
-#' @param unit.out charater string, One of "datetime", "day", "hour", "minute",
+#' @param unit.out character string, One of "datetime", "day", "hour", "minute",
 #'   or "second".
 #'
 #' @return A \code{data.frame} with variables day, tz, twilight.rise, twilight.set,
@@ -274,10 +274,10 @@ tz_time_diff <- function(when = lubridate::now(),
 #'   correction. "sunlight": upper rim of solar disk corrected for refraction.
 #'   "civil": -6 degrees, "naval": -12 degrees, and "astronomical": -18 degrees.
 #'   Unit names for output are as follows: "hours" times for sunrise and sunset
-#'   are returned as times-of-day in hours since middnight. "date" or "datetime"
+#'   are returned as times-of-day in hours since midnight. "date" or "datetime"
 #'   return the same times as datetime objects with TZ set (this is much slower
 #'   than the "hours"). Day length and night length are returned as numeric
-#'   values expressed in hours when `"datetime"' is paseed as argument to
+#'   values expressed in hours when `"datetime"' is passed as argument to
 #'   \code{unit.out}. If twilight is a numeric vector of length two,
 #'   the element with index 1 is used for sunrise and that with index 2 for
 #'   sunset.
@@ -299,7 +299,7 @@ tz_time_diff <- function(when = lubridate::now(),
 #'   "AstroCalcPureR" available as function \code{astrocalc4r} in package
 #'   'fishmethods'. Although the equations used are almost all the same, the
 #'   function signatures and which values are returned differ. In particular,
-#'   the present implementation splits the calcualtion into two separate
+#'   the present implementation splits the calculation into two separate
 #'   functions, one returning angles at given instants in time, and a separate
 #'   one returning the timing of events for given dates.
 #'
@@ -404,7 +404,7 @@ day_night_fast <- function(date,
   # twilight.angles is always of length 2
   twilight.angles <- twilight2angle(twilight)
 
-  # geocode passed by day_night() has laways one row
+  # geocode passed by day_night() has always one row
   if (!exists("address", geocode)) {
     geocode[["address"]] <- NA_character_
   }
@@ -416,7 +416,7 @@ day_night_fast <- function(date,
 
   lat <- geocode[1, "lat"]
   if (lat > 89.99 || lat < -89.99) {
-    stop("Latiutde is off-range.")
+    stop("Latitude is off-range.")
   }
 
   address <- geocode[1, "address"]
@@ -440,7 +440,7 @@ day_night_fast <- function(date,
   sun.ecliptic <- mean_obliq_eclip(cent)
   obliq.corr <- obliq_corr(cent, sun.ecliptic)
 #  rt.ascen <- sun_rt_ascen(sun.app.lon, obliq.corr)
-  sun.declin <- sun_declin(sun.app.lon, obliq.corr)
+  sun.declin <- sun_decline(sun.app.lon, obliq.corr)
   var.y <- var_y(obliq.corr)
   eq.of.time <- eq_of_time(mean.lon = sun.lon.mean,
                            eccent.earth = eccent.earth,
@@ -463,7 +463,7 @@ day_night_fast <- function(date,
     ifelse(!low.sunrise.sun & !high.sunrise.sun,
            # normal case
            sunrise(solar.noon,
-                   ha_sunrise(lat, sun.declin, ang = -twilight.angles[1])),
+                   ha_sunrise(lat, sun.declin, nag = -twilight.angles[1])),
            0
     )
   sunrise <- ifelse(day.start == 0, NA_real_, day.start)
@@ -472,7 +472,7 @@ day_night_fast <- function(date,
     ifelse(!low.sunset.sun & !high.sunset.sun,
            # normal case
            sunset(solar.noon,
-                  ha_sunrise(lat, sun.declin, ang = -twilight.angles[2])),
+                  ha_sunrise(lat, sun.declin, nag = -twilight.angles[2])),
            1
     )
   sunset <- ifelse(day.end == 1, NA_real_, day.end)
@@ -482,8 +482,8 @@ day_night_fast <- function(date,
                             (day.end - day.start) * 24)
 
   # we assemble the data frame for one geographic location
-  # the slowest part of calcualtions are the calls to lubridate
-  # so we try to minize them according to output format.
+  # the slowest part of calculations are the calls to lubridate
+  # so we try to minimize them according to output format.
 
   if (unit.out == "datetime") {
     sunrise.time <- lubridate::as_datetime(date, tz = tz) +
@@ -644,7 +644,7 @@ day_length <- function(date = lubridate::now(),
 #' @export
 #' @note \code{night_length} returns the length of night-time conditions in one
 #'   day (00:00:00 to 23:59:59), rather than the length of the night between two
-#'   consequtive days.
+#'   consecutive days.
 night_length <- function(date = lubridate::now(),
                          tz = "UTC",
                          geocode = data.frame(lon = 0, lat = 51.5, address = "Greenwich"),
@@ -660,7 +660,7 @@ night_length <- function(date = lubridate::now(),
 #' Convert date to time-of-day in hours, minutes or seconds
 #'
 #' @param x a datetime object accepted by lubridate functions
-#' @param unit.out charater string, One of "datetime", "hour", "minute", or "second".
+#' @param unit.out character string, One of "datetime", "hour", "minute", or "second".
 #' @param tz character string indicating time zone to be used in output.
 #'
 #' @export
@@ -687,27 +687,27 @@ as_tod <- function(x, unit.out = "hours", tz = NULL) {
 #' in seconds since midnight. \code{solar_date} returns the same instant in time
 #' as a date-time object. Solar time is useful when we want to plot data
 #' according to the local solar time of day, irrespective of the date. Solar
-#' date is useful when we want to plot a time series streching for several days
+#' date is useful when we want to plot a time series stretching for several days
 #' using the local solar time but distinguishing between days.
 #'
 #' @param time POSIXct Time, any valid time zone (TZ) is allowed, default is
 #'   current time
 #' @param geocode data frame with variables lon and lat as numeric values
 #'   (degrees).
-#' @param unit.out charater string, One of "datetime", "hour", "minute", or "second".
+#' @param unit.out character string, One of "datetime", "hour", "minute", or "second".
 #'
 #' @family astronomy related functions
 #'
 #' @note The algorithm is approximate, it calculates the difference between
 #'   local solar noon and noon in the time zone of \code{time} and uses this
 #'   value for the whole day when converting times into solar time. Days are not
-#'   exactly 24 h long. Between succesive days the shift is only a few seconds,
+#'   exactly 24 h long. Between successive days the shift is only a few seconds,
 #'   and this leads to a small jump at midnight.
 #'
 #' @section Warning!:
 #'   Returned values are computed based on the time zone of the argument for
 #'   parameter time. In the case of solar time, this timezone does not affect
-#'   the result. However, in the case of solar dates the date part may be be
+#'   the result. However, in the case of solar dates the date part may be
 #'   off by one day, if the time zone does not match the coordinates of the
 #'   goecode value provided as argument.
 #'
@@ -755,7 +755,7 @@ solar_time <- function(time = lubridate::now(),
 #' @param time an R date time object
 #'
 #' @return For method \code{as.solar_date()} a date-time object with the class attr
-#'   set to "solar.time". This is needed only for unambiguous formating and
+#'   set to "solar.time". This is needed only for unambiguous formatting and
 #'   printing.
 #'
 #' @export

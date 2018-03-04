@@ -38,7 +38,7 @@ integrate_spct <- function(spct) {
 #'
 #' @return One or more numeric values with no change in scale factor: e.g. [W
 #'   m-2 nm-1] -> [W m-2 nm-1]. Each value in the returned vector corresponds to a
-#'   variable in the spectral object, except for wavelenght.
+#'   variable in the spectral object, except for wavelength.
 #'
 #' @export
 #' @examples
@@ -55,7 +55,7 @@ average_spct <- function(spct) {
 #' wavelengths to a new one.
 #'
 #' @param spct generic_spct
-#' @param w.length.out numeric array of wavelengths (nm)
+#' @param w.length.out numeric vector of wavelengths (nm)
 #' @param fill a value to be assigned to out of range wavelengths
 #' @param length.out numeric value
 #'
@@ -68,7 +68,7 @@ average_spct <- function(spct) {
 #'   is returned as is. If \code{w.length.out} has length equal to zero, zero
 #'   rows from the input are returned.
 #'
-#' @note The default \code{fill = NA} fills extrpolated values with NA. Giving NULL as
+#' @note The default \code{fill = NA} fills extrapolated values with NA. Giving NULL as
 #' argument for \code{fill} deletes wavelengths outside the input data range from the
 #' returned spectrum. A numerical value can be also be provided as fill. This function calls
 #' \code{interpolate_spectrum} for each non-wavelength column in the input spectra object.
@@ -90,7 +90,7 @@ interpolate_spct <- function(spct,
   stopifnot(is.generic_spct(spct))
   if (length(w.length.out) == 0 && is.null(length.out)) {
     if (is.null(w.length.out)) {
-      # with default we return the imput
+      # with default we return the input
       return(spct)
     } else {
       # with no wavelengths we return a spectrum of length zero
@@ -98,7 +98,7 @@ interpolate_spct <- function(spct,
     }
   }
   if (!is.null(w.length.out) && any(is.na(w.length.out))) {
-    warning("NAs omited from 'w.length.out'.")
+    warning("NAs omitted from 'w.length.out'.")
     w.length.out <- stats::na.omit(w.length.out)
   }
   if (is.null(fill)) {
@@ -273,7 +273,7 @@ interpolate_mspct <- function(mspct,
 #' wavelengths to a new one.
 #'
 #' @param x an R object
-#' @param w.length.out numeric array of wavelengths (nm)
+#' @param w.length.out numeric vector of wavelengths (nm)
 #' @param fill a value to be assigned to out of range wavelengths
 #' @param length.out numeric value
 #' @param ... not used
@@ -284,7 +284,7 @@ interpolate_mspct <- function(mspct,
 #' used to generate a vector of wavelength. A value of \code{NULL} for \code{fill} prevents
 #' extrapolation.
 #'
-#' @note The default \code{fill = NA} fills extrpolated values with NA. Giving NULL as
+#' @note The default \code{fill = NA} fills extrapolated values with NA. Giving NULL as
 #' argument for \code{fill} deletes wavelengths outside the input data range from the
 #' returned spectrum. A numerical value can be also be provided as fill. This function calls
 #' \code{interpolate_spectrum} for each non-wavelength column in the input spectra object.

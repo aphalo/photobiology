@@ -1,19 +1,19 @@
 #' Convert spectral photon irradiance into spectral energy irradiance
 #'
-#' For example an spectrum [mol s-1 m-2 nm-1] is converted into a spectrum [W
-#' m-2 nm-1]
+#' Convert a spectral photon irradiance [mol s-1 m-2 nm-1] into a spectral
+#' energy irradiance [W m-2 nm-1].
 #'
-#' @param w.length numeric Vector of wavelengths (nm)
-#' @param s.qmol.irrad numeric Corresponding vector of spectral photon
-#'   irradiances
+#' @param w.length numeric vector of wavelengths (nm).
+#' @param s.qmol.irrad numeric vector of spectral photon irradiance values.
 #'
-#' @return A numeric vector of spectral (energy) irradiances
+#' @return A numeric vector of spectral (energy) irradiances.
+#'
 #' @export
 #'
 #' @examples
 #' with(sun.spct, as_energy(w.length, s.q.irrad))
 #'
-#' @family quantity conversion functions
+#' @family low-level functions operating on numeric vectors.
 #'
 as_energy <- function(w.length, s.qmol.irrad){
   return(s.qmol.irrad / e2qmol_multipliers(w.length))

@@ -1,5 +1,3 @@
-TO DO: add tests cases for the attr2tb formal parameter of summary functions.
-
 photobiology 0.9.19
 ===================
 
@@ -8,11 +6,12 @@ in some circumstances.
 * Fix bug in day_night() that resulted in a small time shift when a time was
 passed instead of a date as an argument to parameter "date".
 * Fix bug in irrad(), e_irrad() and q_irrad() methods for collections of
-spectra which was resulting in all arguments for parameter 'quantity' being
+spectra which was resulting in arguments passed to parameter 'quantity' being
 silently ignored.
 * Add explicit support for optional parallel execution of apply functions, and
 methods for collections of spectra. Apparently of no use under Windows 10, even
 for large collections of spectra, possibly because of overhead.
+* Revise documentation.
 
 photobiology 0.9.18
 ===================

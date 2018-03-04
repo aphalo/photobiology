@@ -314,7 +314,7 @@ spread.generic_mspct <- function(x, ..., idx = !is.null(names(x))) {
 
 #' Normalization of an R object
 #'
-#' Normalization wavelength of an R object, retireved from the object's
+#' Normalization wavelength of an R object, retrieved from the object's
 #' attributes.
 #'
 #' @param x an R object
@@ -345,7 +345,7 @@ normalization.waveband <- function(x) {
 
 #' Is an R object "effective"
 #'
-#' A generic function for quering if a biological spectral weighting function
+#' A generic function for querying if a biological spectral weighting function
 #' (BSWF) has been applied to an object or is included in its definition.
 #'
 #' @param x an R object
@@ -368,7 +368,7 @@ is_effective.default <- function(x) {
 }
 
 #' @describeIn is_effective Is a \code{waveband} object defining a method for
-#'   calcualtaing effective irradiance.
+#'   calculating effective irradiance.
 #'
 #' @export
 #'
@@ -419,7 +419,7 @@ is_effective.summary_source_spct <- function(x) {
 #' Stepsize
 #'
 #' Function that returns the range of step sizes in an object. Range of
-#' differences between succesive sorted values.
+#' differences between successive sorted values.
 #'
 #' @param x an R object
 #' @param ... not used in current version
@@ -479,9 +479,3 @@ stepsize.generic_spct <- function(x, ...) {
 stepsize.generic_mspct <- function(x, ..., idx = !is.null(names(x))) {
   msdply(mspct = x, .fun = stepsize, ..., idx = idx)
 }
-
-
-
-
-
-

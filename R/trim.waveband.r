@@ -3,15 +3,16 @@
 #' Trimming of waveband boundaries can be required needed when the spectral data
 #' does not cover the whole waveband.
 #'
-#' @param w.band an object of class "waveband" or a list of such objects
+#' @param w.band an object of class "waveband" or a list of such objects.
 #' @param range a numeric vector of length two, or any other object for which
-#'   function range() will return a numeric vector of two wavelengths (nm)
-#' @param low.limit shortest wavelength to be kept (defaults to 0 nm)
-#' @param high.limit longest wavelength to be kept (defaults to Inf nm)
+#'   function range() will return a numeric vector of two wavelengths (nm).
+#' @param low.limit shortest wavelength to be kept (defaults to 0 nm).
+#' @param high.limit longest wavelength to be kept (defaults to Inf nm).
 #' @param trim logical (default is TRUE which trims the wavebands at the
 #'   boundary, while FALSE discards wavebands that are partly off-boundary).
-#' @param use.hinges logical, if TRUE (the default) hinges are inserted when
-#'   trimming.
+#' @param use.hinges logical Flag indicating whether to insert "hinges" into the
+#'   spectral data before integration so as to reduce interpolation errors at
+#'   the boundaries of the wavebands.
 #'
 #' @return A waveband object or a list of waveband objects trimmed or filtered
 #'   depending on whether a single waveband object or a list of waveband

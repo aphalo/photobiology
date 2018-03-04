@@ -1,19 +1,20 @@
-#' Light-source spectral output
+#' Scaled and/or interpolated light-source spectral output
 #'
-#' @description Calculate interpolated values by interpolation from
-#' user-supplied spectral emission data or by name for light source data
-#' included in the packages photobiologySun, photobiologyLamps, or
-#' photobiologyLEDs, scaling the values.
+#' Values calculated by interpolation from user-supplied spectral emission data
+#' or by name for light source data included in the packages photobiologySun,
+#' photobiologyLamps, or photobiologyLEDs, optionally re-scaling the spectral
+#' data values.
 #'
-#' @param w.length.out numeric vector of wavelengths (nm) for output
-#' @param w.length.in numeric vector of wavelengths (nm) for input
+#' @param w.length.out numeric vector of wavelengths (nm) for output.
+#' @param w.length.in numeric vector of wavelengths (nm) for input.
 #' @param s.irrad.in numeric vector of spectral transmittance value (fractions
-#'   or percent)
-#' @param unit.in a character string "energy" or "photon"
-#' @param scaled NULL, "peak", "area"; div ignored if !is.null(scaled)
+#'   or percent).
+#' @param unit.in a character string "energy" or "photon".
+#' @param scaled NULL, "peak", "area"; div ignored if !is.null(scaled).
 #' @param fill if NA, no extrapolation is done, and NA is returned for
 #'   wavelengths outside the range of the input. If NULL then the tails are
 #'   deleted. If 0 then the tails are set to zero.
+#' @param ... Additional arguments passed to \code{spline} if called.
 #'
 #' @return a source_spct with three numeric vectors with wavelength values
 #'   (w.length), scaled and interpolated spectral energy irradiance (s.e.irrad),
@@ -24,16 +25,24 @@
 #' @note This is a convenience function that adds no new functionality but makes
 #'   it a little easier to plot lamp spectral emission data consistently. It
 #'   automates interpolation, extrapolation/trimming and scaling.
+#'
 #' @examples
-#' with(sun.data, calc_source_output(290:1100, w.length.in=w.length, s.irrad.in=s.e.irrad))
+#'
+#' with(sun.data,
+#'      calc_source_output(290:1100,
+#'                         w.length.in = w.length,
+#'                         s.irrad.in = s.e.irrad)
+#'     )
 #'
 calc_source_output <- function(w.length.out,
                                w.length.in, s.irrad.in,
-                               unit.in="energy",
-                               scaled=NULL, fill=NA) {
+                               unit.in = "energy",
+                               scaled = NULL,
+                               fill = NA,
+                               ...) {
 
   if (!check_spectrum(w.length.in, s.irrad.in)) {
-      return(NA)
+    return(NA)
   }
 
   # we interpolate using a spline or linear interpolation
@@ -47,23 +56,28 @@ calc_source_output <- function(w.length.out,
   if (length(w.length.out) < 25) {
     # cubic spline
     s.irrad.out[!out.fill.selector] <-
-      stats::spline(w.length.in, s.irrad.in, xout=w.length.out[!out.fill.selector])$y
+      stats::spline(x = w.length.in,
+                    y = s.irrad.in,
+                    xout = w.length.out[!out.fill.selector],
+                    ...)$y
   } else {
     # linear interpolation
     s.irrad.out[!out.fill.selector] <-
-      stats::approx(x = w.length.in, y = s.irrad.in,
-             xout = w.length.out[!out.fill.selector], ties = "ordered")$y
+      stats::approx(x = w.length.in,
+                    y = s.irrad.in,
+                    xout = w.length.out[!out.fill.selector],
+                    ties = "ordered")$y
   }
 
-  # we check unit.in and and convert the output spectrum accordingly
+  # we check unit.in and convert the output spectrum accordingly
 
   if (unit.in == "energy") {
     out.data <- e2q(source_spct(w.length = w.length.out,
-                            s.e.irrad = s.irrad.out),
+                                s.e.irrad = s.irrad.out),
                     action = "add")
   } else if (unit.in == "photon") {
     out.data <- q2e(source_spct(w.length = w.length.out,
-                            s.q.irrad = s.irrad.out),
+                                s.q.irrad = s.irrad.out),
                     action = "add")
   } else {
     warning("Bad argument for unit.in: ", unit.in)

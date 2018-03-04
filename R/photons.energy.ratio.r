@@ -3,17 +3,21 @@
 #' This function gives the photons:energy ratio between for one given waveband
 #' of a radiation spectrum.
 #'
-#' @param w.length numeric array of wavelength (nm)
-#' @param s.irrad numeric array of spectral (energy) irradiances (W m-2 nm-1)
-#' @param w.band waveband
+#' @param w.length numeric vector of wavelength (nm).
+#' @param s.irrad numeric vector of spectral (energy) irradiances (W m-2 nm-1).
+#' @param w.band waveband object.
 #' @param unit.in character Allowed values "energy", and "photon", or its alias
-#'   "quantum"
+#'   "quantum".
 #' @param check.spectrum logical Flag telling whether to sanity check input
-#'   data, default is TRUE
+#'   data, default is TRUE.
 #' @param use.cached.mult logical Flag telling whether multiplier values should
-#'   be cached between calls
-#' @param use.hinges logical Flag telling whether to use hinges to reduce
-#'   interpolation errors
+#'   be cached between calls.
+#' @param use.hinges logical Flag indicating whether to insert "hinges" into the
+#'   spectral data before integration so as to reduce interpolation errors at
+#'   the boundaries of the wavebands.
+#'
+#' @note The default for the \code{w.band} parameter is a waveband covering
+#'   the whole range of \code{w.length}.
 #'
 #' @return A single numeric value giving the ratio moles-photons per Joule.
 #'
@@ -24,18 +28,19 @@
 #' # photons:energy ratio for whole spectrum
 #' with(sun.data, photons_energy_ratio(w.length, s.e.irrad))
 #'
-#' @family photon and energy ratio functions
+#' @family low-level functions operating on numeric vectors.
 #'
-photons_energy_ratio <- function(w.length, s.irrad,
-                           w.band=NULL,
-                           unit.in="energy",
-                           check.spectrum=TRUE,
-                           use.cached.mult = FALSE,
-                           use.hinges = getOption("photobiology.use.hinges", default=NULL) ){
-  return(waveband_ratio(w.length, s.irrad, w.band, w.band,
-                        unit.out.num="photon", unit.out.denom="energy",
-                        unit.in=unit.in,
-                        check.spectrum=check.spectrum,
-                        use.cached.mult=use.cached.mult,
-                        use.hinges = use.hinges))
- }
+photons_energy_ratio <-
+  function(w.length, s.irrad,
+           w.band = NULL,
+           unit.in = "energy",
+           check.spectrum = TRUE,
+           use.cached.mult = FALSE,
+           use.hinges = getOption("photobiology.use.hinges", default = NULL) ){
+    return(waveband_ratio(w.length, s.irrad, w.band, w.band,
+                          unit.out.num = "photon", unit.out.denom = "energy",
+                          unit.in = unit.in,
+                          check.spectrum = check.spectrum,
+                          use.cached.mult = use.cached.mult,
+                          use.hinges = use.hinges))
+  }

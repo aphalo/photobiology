@@ -5,14 +5,14 @@
 # available at http://www.esrl.noaa.gov/gmd/grad/solcalc/calcdetails.html
 #' Solar astronomy using Meeus' algorithm
 #'
-#' Low level functions based on NOAA's Excell worksheet
+#' Low level functions based on NOAA's Excel worksheet
 #'
 #' @param time dateTime
 #' @param x numeric Julian century
 #' @param anom numeric Solar anomaly in degrees
-#' @param eccent numric Eccentricity of Earth orbit
+#' @param eccent numeric Eccentricity of Earth orbit
 #' @param eclip numeric Ecliptic
-#' @param app.lon,obliq.corr,mean.lon,ang,declin numeric Angles in degrees
+#' @param app.lon,obliq.corr,mean.lon,nag,decline numeric Angles in degrees
 #' @param eq.of.time,ha.sunrise,noon numeric
 #' @param zenith.angle,elevation.angle,hour.angle numeric Angles in degrees
 #' @param lat,lon numeric Geographic coordinates in degrees
@@ -93,7 +93,7 @@ sun_rt_ascen <- function(app.lon, obliq.corr) {
 
 #' @rdname julian_day
 #'
-sun_declin <- function(app.lon, obliq.corr) {
+sun_decline <- function(app.lon, obliq.corr) {
   app.lon.rad <- app.lon / 180 * pi
   obliq.corr.rad <- obliq.corr / 180 * pi
   asin(sin(obliq.corr.rad) * sin(app.lon.rad)) /
@@ -124,12 +124,12 @@ eq_of_time <- function(mean.lon,
 
 #' @rdname julian_day
 #'
-ha_sunrise <- function(lat, declin, ang = 0) {
+ha_sunrise <- function(lat, decline, nag = 0) {
   lat.rad <- lat / 180 * pi
-  declin.rad <- declin / 180 * pi
+  declin.rad <- decline / 180 * pi
   suppressWarnings( # NaNs can be produced for polar regions
     z <-
-      acos(cos((90 + ang) / 180 * pi) /            # 90.833 in NOAAs code
+      acos(cos((90 + nag) / 180 * pi) /            # 90.833 in NOAA's code
              (cos(lat.rad) * cos(declin.rad)) -
              tan(lat.rad) * tan(declin.rad))  / pi * 180)
   z
@@ -185,18 +185,18 @@ hour_angle <- function(solar.time) {
 
 #' @rdname julian_day
 #'
-zenith_angle <- function(lat, hour.angle, declin) {
+zenith_angle <- function(lat, hour.angle, decline) {
   lat.rad <- lat / 180 * pi
   hour.angle.rad <- hour.angle / 180 * pi
-  declin.rad <- declin / 180 * pi
+  declin.rad <- decline / 180 * pi
   (acos(sin(lat.rad) * sin(declin.rad) +
          cos(lat.rad) * cos(declin.rad) * cos(hour.angle.rad))) / pi * 180
 }
 
 #' @rdname julian_day
 #'
-elevation_angle <- function(lat, hour.angle, declin) {
-  90 - zenith_angle(lat, hour.angle, declin)
+elevation_angle <- function(lat, hour.angle, decline) {
+  90 - zenith_angle(lat, hour.angle, decline)
 }
 
 #' @rdname julian_day
@@ -215,10 +215,10 @@ atm_refraction_approx <- function(elevation.angle) {
 
 #' @rdname julian_day
 #'
-azimuth_angle <- function(lat, hour.angle, zenith.angle, declin) {
+azimuth_angle <- function(lat, hour.angle, zenith.angle, decline) {
   lat.rad <- lat / 180 * pi
   zenith.angle.rad <- zenith.angle / 180 * pi
-  declin.rad <- declin / 180 * pi
+  declin.rad <- decline / 180 * pi
 #  hour.angle.rad <- hour.angle / 180 * pi
   ifelse(hour.angle > 0,
          (acos(((sin(lat.rad) * cos(zenith.angle.rad)) -

@@ -28,7 +28,7 @@
 #' @description A dataset containing wavelengths at a 1 nm interval and
 #'   spectral response as quantum efficiency for CCD sensor type
 #'   S11071/S10420 from Hamamatsu (measured without a quartz window). These
-#'   arrays are frequently used as sensors in high-UV-sensitivity array
+#'   vectors are frequently used as sensors in high-UV-sensitivity vector
 #'   spectrometers. Data digitized from manufacturer's data sheet.
 #'   The original data is expressed as percent quantum efficiency with a value
 #'   of 77\% at the peak. The data have been re-expressed as fractions of one.

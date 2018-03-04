@@ -3,18 +3,19 @@
 #' Function to calculate the mean, total, or other summary of absorbance for
 #' spectral data stored in a \code{filter_spct} or in an \code{object_spct}.
 #'
-#' @param spct an R object
+#' @param spct an R object.
 #' @param w.band waveband or list of waveband objects or a numeric vector of
 #'   length two. The waveband(s) determine the region(s) of the spectrum that
 #'   are summarized. If a numeric range is supplied a waveband object is
 #'   constructed on the fly from it.
 #' @param quantity character string One of "average" or "mean", "total",
-#'   "contribution", "contribution.pc", "relative" or "relative.pc"
+#'   "contribution", "contribution.pc", "relative" or "relative.pc".
 #' @param wb.trim logical Flag indicating if wavebands crossing spectral data
-#'   boundaries are trimmed or ignored
-#' @param use.hinges logical Flag indicating whether to use hinges to reduce
-#'   interpolation errors
-#' @param ... other arguments (possibly ignored)
+#'   boundaries are trimmed or ignored.
+#' @param use.hinges logical Flag indicating whether to insert "hinges" into the
+#'   spectral data before integration so as to reduce interpolation errors at
+#'   the boundaries of the wavebands.
+#' @param ... other arguments (possibly used by derived methods).
 #'
 #' @return A named \code{numeric} vector in the case of methods for individual
 #'   spectra, with one value for each \code{waveband} passed to parameter
@@ -133,7 +134,7 @@ absorbance_spct <-
     if (is.waveband(w.band)) {
       # if the argument is a single w.band, we enclose it in a list
       # so that the for loop works as expected.This is a bit of a
-      # cludge but let's us avoid treating it as a special case
+      # kludge but let's us avoid treating it as a special case
       w.band <- list(w.band)
     }
     w.band <- trim_waveband(w.band=w.band, range=spct, trim=wb.trim)

@@ -8,8 +8,8 @@
 #' \code{w.band}. This methods are most useful for plotting realistic
 #' computed colors from spectral data.
 #'
-#' @param x an R object
-#' @param ... not used in current version
+#' @param x an R object.
+#' @param ... ignored (possibly used by derived methods).
 #'
 #' @return A copy of \code{x} expanded with additional columns with
 #'   color-related information.
@@ -33,12 +33,13 @@ tag.default <- function(x, ...) {
 #'   \code{source_spct}, \code{filter_spct}, \code{reflector_spct},
 #'   \code{object_spct}, and \code{response_spct}.
 #'
-#' @param w.band waveband or list of waveband objects The waveband(s) determine
+#' @param w.band waveband or list of waveband objects. The waveband(s) determine
 #'   the region(s) of the spectrum that are tagged
 #' @param wb.trim logical Flag telling if wavebands crossing spectral data
 #'   boundaries are trimmed or ignored
-#' @param use.hinges logical Flag indicating whether to use hinges to reduce
-#'   interpolation errors
+#' @param use.hinges logical Flag indicating whether to insert "hinges" into the
+#'   spectral data before integration so as to reduce interpolation errors at
+#'   the boundaries of the wavebands.
 #' @param short.names logical Flag indicating whether to use short or long names
 #'   for wavebands
 #' @param byref logical Flag indicating if new object will be created \emph{by
@@ -85,10 +86,10 @@ tag.generic_spct <- function(x,
     w.band <- list(w.band)
   }
   # we delete or trim the wavebands that are not fully within the
-  # spectral data wavelngth range
+  # spectral data wavelength range
   w.band <- trim_waveband(w.band = w.band, range = x, trim = wb.trim)
   # we check if the list members are named, if not we use the names of the
-  # wavbands
+  # wavebands
   wbs.number <- length(w.band) # number of wavebands
   wbs.name <- names(w.band) # their names in the list
   if (is.null(wbs.name)) {
@@ -258,12 +259,14 @@ wb2spct <- function(w.band) {
 #'
 #' @param w.band waveband or list of waveband objects The waveband(s) determine
 #'   the region(s) of the spectrum that are tagged and the wavelengths returned
-#'   in variable \code{w.length}
-#' @param use.hinges logical Flag indicating whether to use hinges to reduce
-#'   interpolation errors
+#'   in variable \code{w.length}.
+#' @param use.hinges logical Flag indicating whether to insert "hinges" into the
+#'   spectral data before integration so as to reduce interpolation errors at
+#'   the boundaries of the wavebands.
 #' @param short.names logical Flag indicating whether to use short or long names
-#'   for wavebands
-#' @param ... not used in current version
+#'   for wavebands.
+#' @param ... ignored (possibly used by derived methods).
+#'
 #' @export
 #'
 #' @return A spectrum as returned by \code{\link{wb2spct}} but additionally
@@ -293,7 +296,7 @@ wb2tagged_spct <-
 #'
 #' @return A \code{generic.spectrum} object, with columns w.length, wl.low,
 #'   wl.hi, wl.color, wb.color and wb.name. The w.length values are the
-#'   midppoint of the wavebands, wl.low and wl.high give the boundaries of the
+#'   midpoint of the wavebands, wl.low and wl.high give the boundaries of the
 #'   wavebands, wl.color the color definition corresponding to the wavelength at
 #'   the center of the waveband and wb.color the color of the waveband as a
 #'   whole (assuming a flat energy irradiance spectrum). Different spectral data
@@ -365,8 +368,8 @@ wb2rect_spct <- function(w.band, short.names = TRUE) {
 #' Remove tags from an R object if present, otherwise return the object
 #' unchanged.
 #'
-#' @param x an R object
-#' @param ... not used in current version
+#' @param x an R object.
+#' @param ... ignored (possibly used by derived methods).
 #'
 #' @export untag
 #'
@@ -388,7 +391,7 @@ untag.default <- function(x, ...) {
 #'   by copy of x
 #'
 #' @return if \code{x} contains tag data they are removed and the "spct.tags"
-#'   atrribute is set to \code{NA}, while if \code{x} has no tags, it is not
+#'   attribute is set to \code{NA}, while if \code{x} has no tags, it is not
 #'   modified. In either case, the byref argument is respected: in all cases if
 #'   \code{byref = FALSE} a copy of \code{x} is returned.
 #'
@@ -439,4 +442,3 @@ untag.generic_mspct <- function(x,
   }
   z
 }
-

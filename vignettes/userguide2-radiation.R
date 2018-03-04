@@ -521,7 +521,6 @@ q_irrad(sun.spct, PAR.wb) * 1e6 # umol s-1 m-2
 
 ## ---- irrad-5------------------------------------------------------------
 irrad(sun.spct, PAR.wb, time.unit = "hour")
-irrad(sun.spct, PAR.wb, time.unit = duration(8, "hours"))
 
 ## ---- irrad-6------------------------------------------------------------
 irrad(sun.daily.spct, PAR.wb, time.unit = "second")
@@ -529,11 +528,25 @@ irrad(sun.daily.spct, PAR.wb, time.unit = "second")
 ## ---- irrad-7------------------------------------------------------------
 e_irrad(sun.spct, UV_bands.lst) # W m-2
 
-## ---- irrad-8------------------------------------------------------------
+## ---- irrad-8a-----------------------------------------------------------
 irrad(sun.spct, UV_bands.lst, quantity = "total")
+
+## ---- irrad-8b-----------------------------------------------------------
+irrad(sun.spct, UV_bands.lst, quantity = "average")
+
+## ---- irrad-8c-----------------------------------------------------------
 irrad(sun.spct, UV_bands.lst, quantity = "contribution")
 irrad(sun.spct, UV_bands.lst, quantity = "relative")
-irrad(sun.spct, UV_bands.lst, quantity = "average")
+
+## ---- irrad-8d-----------------------------------------------------------
+irrad(sun.spct, UV_bands.lst, quantity = "contribution.pc")
+irrad(sun.spct, UV_bands.lst, quantity = "relative.pc")
+
+## ------------------------------------------------------------------------
+irrad(sun.spct, PAR.wb, time.unit = duration(8, "hours"))
+
+## ------------------------------------------------------------------------
+fluence(sun.spct, PAR.wb, exposure.time = duration(8, "hours"))
 
 ## ---- col-names-1--------------------------------------------------------
 names(filters.mspct)

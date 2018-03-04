@@ -34,7 +34,7 @@
 #'
 "yellow_gel.spct"
 
-#' @title Theoretical spectrum of a clear clear material
+#' @title Theoretical spectrum of a clear material
 #'
 #' @description A dataset for a hypothetical object with transmittance 1/1
 #'   (100\%)

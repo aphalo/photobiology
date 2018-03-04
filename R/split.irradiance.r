@@ -4,34 +4,38 @@
 #' contiguous wavebands from a radiation spectrum. The returned values can be
 #' either absolute or relative to their sum.
 #'
-#' @param w.length numeric Vector of wavelengths (nm)
-#' @param s.irrad numeric Corresponding vector of spectral (energy) irradiances (W m-2 nm-1)
-#' @param cut.w.length numeric Vector of wavelengths (nm)
+#' @param w.length numeric Vector of wavelengths (nm).
+#' @param s.irrad numeric vector of spectral (energy or photon) irradiances
+#'   (W m-2 nm-1) or (mol s-1 m-2 nm-1).
+#' @param cut.w.length numeric Vector of wavelengths (nm).
 #' @param unit.out character Allowed values "energy", and "photon",
-#'   or its alias "quantum"
+#'   or its alias "quantum".
 #' @param unit.in character Allowed values "energy", and "photon",
-#'   or its alias "quantum"
+#'   or its alias "quantum".
 #' @param scale a character A string indicating the scale used for the returned
-#'   values ("absolute", "relative", "percent")
+#'   values ("absolute", "relative", "percent").
 #' @param check.spectrum logical Flag indicating whether to sanity check input data,
-#'   default is TRUE
+#'   default is TRUE.
 #' @param use.cached.mult logical Flag indicating whether multiplier values should be
-#'   cached between calls
-#' @param use.hinges logical Flag indicating whether to use hinges to reduce
-#'   interpolation errors
+#'   cached between calls.
+#' @param use.hinges logical Flag indicating whether to insert "hinges" into the
+#'   spectral data before integration so as to reduce interpolation errors at
+#'   the boundaries of the wavebands.
 #'
-#' @return a numeric array of irradiances with no change in scale factor: [W m-2
-#'   nm-1] -> [mol s-1 m-2] or relative values (fraction of one) if scale =
-#'   "relative" or scale = "percent"
+#' @return A numeric vector of irradiances with no change in scale factor: [W m-2
+#'   nm-1] -> [mol s-1 m-2] or [mol s-1 m-2 nm-1] -> [mol s-1 m-2] or relative
+#'   values (as fraction of one if \code{scale == "relative"} or percentages
+#'   if \code{scale == "percent"}.
 #'
 #' @export
+#'
 #' @examples
 #' with(sun.data,
 #'       split_irradiance(w.length, s.e.irrad,
 #'                        cut.w.length = c(300, 400, 500, 600, 700),
 #'                        unit.out = "photon"))
 #' @note The last three parameters control speed optimizations. The defaults
-#'   should be suitable in mosts cases. If you set \code{check.spectrum=FALSE}
+#'   should be suitable in most cases. If you set \code{check.spectrum=FALSE}
 #'   then you should call \code{\link{check_spectrum}} at least once for your
 #'   spectrum before using any of the other functions. If you will use
 #'   repeatedly the same SWFs on many spectra measured at exactly the same
@@ -43,13 +47,13 @@
 #' @family split a spectrum into regions functions
 #'
 split_irradiance <- function(w.length, s.irrad,
-                             cut.w.length=range(w.length),
-                             unit.out=getOption("photobiology.base.unit", default="energy"),
-                             unit.in="energy",
-                             scale="absolute",
-                             check.spectrum=TRUE,
+                             cut.w.length = range(w.length),
+                             unit.out = getOption("photobiology.base.unit", default = "energy"),
+                             unit.in = "energy",
+                             scale = "absolute",
+                             check.spectrum = TRUE,
                              use.cached.mult = FALSE,
-                             use.hinges=getOption("photobiology.use.hinges", default=NULL) )
+                             use.hinges = getOption("photobiology.use.hinges", default = NULL) )
 {
   # what output? seems safer to not have a default here
   if (is.null(unit.out)){

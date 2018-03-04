@@ -1481,7 +1481,8 @@ and, to integrate a range of wavelengths, in the example, photosynthetically act
 irrad(sun.spct, PAR.wb)
 ```
 
-It is also valid to pass as argument for `w.band` a numeric range representing wavelengths in nanometres.
+It is also valid to pass as argument for `w.band` a numeric range representing wavelengths in nanometres,
+which is converted into a waveband on-the-fly.
 
 ```{r, irrad-3}
 irrad(sun.spct, c(400, 700))
@@ -1501,7 +1502,6 @@ It is also possible to supply a time unit to use as basis of expression for the 
 
 ```{r, irrad-5}
 irrad(sun.spct, PAR.wb, time.unit = "hour")
-irrad(sun.spct, PAR.wb, time.unit = duration(8, "hours"))
 ```
 
 Using a shorter time unit than the original, yields an average value re-expressed on a new time unit base.
@@ -1510,19 +1510,47 @@ Using a shorter time unit than the original, yields an average value re-expresse
 irrad(sun.daily.spct, PAR.wb, time.unit = "second")
 ```
 
-Lists of wavebands are also accepted as argument.
+Lists of wavebands are also accepted as argument for parameter `w.band` in which
+case a named numeric vector of summary values is returned.
 
 ```{r, irrad-7}
 e_irrad(sun.spct, UV_bands.lst) # W m-2
 ```
 
-These functions have an additional argument `quantity`, with default `"total"`, which can take values controlling the output. The value "total" yields **irradiance** in $W\,m^{-2}$, integrated over wavelengths for each waveband, while "average" yields the mean **spectral irradiance** within each waveband in $W\,m^{-2}\,nm^{-1}$. The value "contribution" is relative to the irradiance for the whole spectrum, expressed as a fraction of one, while the value "relative" is relative to the sum of the irradiances for the different wavebands given as argument, also expressed as a fraction of one.
+These functions have an additional argument `quantity`, with default `"total"`, which can take values controlling the output. The value "total" yields **irradiance** in $W\,m^{-2}$, integrated over wavelengths for each waveband, while "average" yields the mean **spectral irradiance** within each waveband in $W\,m^{-2}\,nm^{-1}$.
 
-```{r, irrad-8}
+```{r, irrad-8a}
 irrad(sun.spct, UV_bands.lst, quantity = "total")
+```
+
+```{r, irrad-8b}
+irrad(sun.spct, UV_bands.lst, quantity = "average")
+```
+
+The value "contribution" is relative to the irradiance for the whole spectrum, expressed as a fraction of one, while the value "relative" is relative to the sum of the irradiances for the different wavebands given as argument, also expressed as a fraction of one.
+
+```{r, irrad-8c}
 irrad(sun.spct, UV_bands.lst, quantity = "contribution")
 irrad(sun.spct, UV_bands.lst, quantity = "relative")
-irrad(sun.spct, UV_bands.lst, quantity = "average")
+```
+
+In contrast "contribution.pc" and "relative.pc" return the same values expressed as percentages.
+  
+```{r, irrad-8d}
+irrad(sun.spct, UV_bands.lst, quantity = "contribution.pc")
+irrad(sun.spct, UV_bands.lst, quantity = "relative.pc")
+```
+
+The total radiation received on a surface during an exposure event can be also calculated with method `irrad()`, but the value returned is an irradiance expressed on a very unusual time basis. These are no longer W m-2 (J s-1 m-2), but instead J per 8 hours per square metre.
+
+```{r}
+irrad(sun.spct, PAR.wb, time.unit = duration(8, "hours"))
+```
+
+When the intention is to calculate a total fluence or exposure for an event function `fluence()` should be used as this will add the correct metadata attributes to the returned value: expressed as energy or photons per unit area per event. See later sections for details.
+
+```{r}
+fluence(sun.spct, PAR.wb, exposure.time = duration(8, "hours"))
 ```
 
 #### Collections of spectra
@@ -1566,20 +1594,6 @@ filtered_sun <- msmsply(filters.mspct, `*`, sun.spct)
 irrad(filtered_sun, list(UVA.wb, PAR.wb))
 ```
 
-<!-- #### Numeric vectors -->
-
-<!-- The code using numeric vectors is more complicated, but adds some additional flexibility for tweaking performance. Under normal circumstances it is easier to use the functions described above. -->
-
-<!-- Function `irradiance` takes an array of wavelengths (sorted in strictly increasing order), and the corresponding values of spectral irradiance. By default the input is assumed to be in energy units, but parameter `unit.in` can be used to change this default. The type of unit used for the returned quantity is set by `unit.out` with no default. The behaviour with respect to wavebands is as described above for spectral objects. The functions `photon_irradiance()` and `energy_irradiance()`, just call `irradiance()` with the `unit.out` set to `"photon"` or `"energy"` respectively. -->
-
-<!-- The functions taking numerical vectors as arguments can be used with data stored as vectors, or using `with` with data frames, data tables, lists, and spectra objects. -->
-
-<!-- ```{r, vector-irrad-1} -->
-<!-- with(sun.spct, photon_irradiance(w.length, s.e.irrad, PAR.wb)) -->
-<!-- ``` -->
-
-<!-- The recommended practice is to use `with`, as above. -->
-
 ### Fluence
 
 #### Individual spectra
@@ -1620,20 +1634,6 @@ qe_ratio(sun.spct, list(UVB.wb, PAR.wb))
 ```{r, ratios-3}
 q_ratio(filtered_sun, list(UVB.wb, UVA.wb, PAR.wb))
 ```
-
-<!-- #### Vectors -->
-
-<!-- The function `waveband_ratio()` takes basically the same parameters as `irradiance`, but two waveband definitions instead of one, and two `unit.out` definitions instead of one. This is the base function used in all the vector based _ratio_ functions in the '**photobiology**' package. -->
-
-
-<!-- Similar functions `photon_ratio()`, `energy_ratio()`, and `photons_energy_ratio` return the other ratios described above. In contrast to the functions described in the previous section, these functions only accept individual waveband definitions (not lists of them). -->
-
-<!-- To calculate the photon ratio between UVB and PAR photon irradiance in these to regions we use. -->
-
-<!-- ```{r, example-ratios-01} -->
-<!-- with(sun.data, -->
-<!--      photon_ratio(w.length, s.e.irrad, UVB.wb, PAR.wb)) -->
-<!-- ``` -->
 
 ### Normalized difference indexes
 
@@ -1731,18 +1731,6 @@ The function `average_spct` integrates every column holding numeric values from 
 ```{r}
 average_spct(sun.spct)
 ```
-
-<!-- ## Conversion of "raw" spectral data -->
-
-<!-- In this section we cover the final steps of the conversion of raw data. Once the spectral data have been linearised, zero-corrected, and raw counts converted to counts-per-second we can apply the functions included in this package. Earlier steps of the data flow are more dependent on instrument hardware and firmware features and are handled by separate packages---at the moment only package available is '**ooacquire**' instruments from Ocean Optics, and which has not yet been released. -->
-
-<!-- At the moment three conversion functions are available: `cps2irrad()` for irradiance, `cps2Tfr` for transmittance, and `cps2Rfr()` for reflectance. These functions expect an instrument descriptor to be present in the `cps_spct` objects supplied as arguments. -->
-
-<!-- ```{r} -->
-<!-- my_filter.spct <- cps2Tfr(filter_cps.mspct$filter, filter_cps.mspct$no.filter) -->
-<!-- class_spct(my_filter.spct) -->
-<!-- my_filter.spct -->
-<!-- ``` -->
 
 ## RGB colours
 

@@ -1,33 +1,36 @@
 #' Calculate (energy) irradiance from spectral irradiance
 #'
-#' This function gives the energy irradiance for a given waveband of a radiation
-#' spectrum, optionally applies a BSWF.
+#' Energy irradiance for a waveband from a radiation spectrum, optionally
+#' applying a "biological spectral weighting function" or BSWF.
 #'
-#' @param w.length numeric array of wavelength (nm)
-#' @param s.irrad numeric array of spectral irradiances, by default as energy (W
-#'   m-2 nm-1)
-#' @param w.band waveband
+#' @param w.length numeric vector of wavelength (nm).
+#' @param s.irrad numeric vector of spectral irradiances, by default as energy (W
+#'   m-2 nm-1).
+#' @param w.band waveband.
 #' @param unit.in a character Allowed values "photon" or "energy", default is
-#'   "energy"
+#'   "energy".
 #' @param check.spectrum logical Flag indicating whether to sanity check input
-#'   data, default is TRUE
+#'   data, default is TRUE.
 #' @param use.cached.mult logical Flag indicating whether multiplier values
-#'   should be cached between calls
-#' @param use.hinges logical Flag indicating whether to use hinges to reduce
-#'   interpolation errors
+#'   should be cached between calls.
+#' @param use.hinges logical Flag indicating whether to insert "hinges" into the
+#'   spectral data before integration so as to reduce interpolation errors at
+#'   the boundaries of the wavebands.
 #'
 #' @return A single numeric value with no change in scale factor: [W m-2 nm-1]
-#'   -> [W m-2]
+#'   -> [W m-2].
 #'
 #' @export
 #' @examples
 #' with(sun.data, energy_irradiance(w.length, s.e.irrad))
 #' with(sun.data, energy_irradiance(w.length, s.e.irrad, new_waveband(400,700)))
 #'
-#' @family irradiance functions
+#' @family low-level functions operating on numeric vectors.
 #'
 energy_irradiance <-
-  function(w.length, s.irrad, w.band=NULL, unit.in="energy",
+  function(w.length, s.irrad,
+           w.band = NULL,
+           unit.in = "energy",
            check.spectrum = TRUE,
            use.cached.mult = FALSE,
            use.hinges = getOption("photobiology.use.hinges", default = NULL) ) {

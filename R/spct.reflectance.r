@@ -12,8 +12,9 @@
 #'   "contribution", "contribution.pc", "relative" or "relative.pc"
 #' @param wb.trim logical Flag telling if wavebands crossing spectral data boundaries
 #'   are trimmed or ignored
-#' @param use.hinges logical Flag indicating whether to use hinges to reduce
-#'   interpolation errors
+#' @param use.hinges logical Flag indicating whether to insert "hinges" into the
+#'   spectral data before integration so as to reduce interpolation errors at
+#'   the boundaries of the wavebands.
 #' @param ... other arguments
 #'
 #' @note The \code{use.hinges} parameter controls speed optimization. The
@@ -92,8 +93,9 @@ reflectance.object_spct <-
 #'   "contribution", "contribution.pc", "relative" or "relative.pc"
 #' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries
 #'   are trimmed, if FALSE, they are discarded
-#' @param use.hinges logical indicating whether to use hinges to reduce
-#'   interpolation errors
+#' @param use.hinges logical Flag indicating whether to insert "hinges" into the
+#'   spectral data before integration so as to reduce interpolation errors at
+#'   the boundaries of the wavebands.
 #'
 #' @return A single numeric value expressed as a fraction of one
 #' @keywords internal
@@ -121,7 +123,7 @@ reflectance_spct <-
     if (is.waveband(w.band)) {
       # if the argument is a single w.band, we enclose it in a list
       # so that the for loop works as expected.This is a bit of a
-      # cludge but let's us avoid treating it as a special case
+      # kludge but let's us avoid treating it as a special case
       w.band <- list(w.band)
     }
     w.band <- trim_waveband(w.band = w.band, range = spct, trim = wb.trim)

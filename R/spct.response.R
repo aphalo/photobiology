@@ -5,24 +5,25 @@
 #'
 #' Calculate average photon- or energy-based photo-response.
 #'
-#' @param spct an R object of class "generic_spct"
+#' @param spct an R object of class "generic_spct".
 #' @param w.band waveband or list of waveband objects or a numeric vector of
 #'   length two. The waveband(s) determine the region(s) of the spectrum that
 #'   are summarized. If a numeric range is supplied a waveband object is
 #'   constructed on the fly from it.
 #' @param unit.out character Allowed values "energy", and "photon", or its alias
-#'   "quantum"
+#'   "quantum".
 #' @param quantity character string One of "total", "average" or "mean",
-#'   "contribution", "contribution.pc", "relative" or "relative.pc"
-#' @param time.unit character or lubridate::duration
+#'   "contribution", "contribution.pc", "relative" or "relative.pc".
+#' @param time.unit character or lubridate::duration object.
 #' @param wb.trim logical Flag telling if wavebands crossing spectral data boundaries
-#'   are trimmed or ignored
-#' @param use.hinges logical indicating whether to use hinges to reduce
-#'   interpolation errors
-#' @param ... other arguments
+#'   are trimmed or ignored.
+#' @param use.hinges logical Flag indicating whether to insert "hinges" into the
+#'   spectral data before integration so as to reduce interpolation errors at
+#'   the boundaries of the wavebands.
+#' @param ... other arguments (possibly used by derived methods).
 #'
 #' @note The parameter \code{use.hinges} controls speed optimization. The
-#'   defaults should be suitable in mosts cases. Only the range of wavelengths
+#'   defaults should be suitable in most cases. Only the range of wavelengths
 #'   in the wavebands is used and all BSWFs are ignored.
 #'
 #' @return A named \code{numeric} vector in the case of methods for individual
@@ -32,7 +33,7 @@
 #'   the names of the spectra, and optionally additional columns with metadata
 #'   values retrieved from the attributes of the member spectra.
 #'
-#'   Whether returnes values are expressed in energy-based or photon-based units
+#'   Whether returned values are expressed in energy-based or photon-based units
 #'   depends on \code{unit.out}. By default values are only integrated, but
 #'   depending on the argument passed to parameter \code{quantity} they can be
 #'   re-expressed as relative fractions or percentages. In the case of vector
@@ -75,27 +76,29 @@ response.response_spct <-
 #' This function returns the mean response for a given waveband and a response
 #' spectrum.
 #'
-#' @param spct an object of class response_spct"
+#' @param spct an object of class response_spct".
 #' @param w.band waveband or list of waveband objects or a numeric vector of
 #'   length two. The waveband(s) determine the region(s) of the spectrum that
 #'   are summarized. If a numeric range is supplied a waveband object is
 #'   constructed on the fly from it.
 #' @param unit.out character with allowed values "energy", and "photon", or its
-#'   alias "quantum"
+#'   alias "quantum".
 #' @param quantity character string One of "total", "average" or "mean",
-#'   "contribution", "contribution.pc", "relative" or "relative.pc"
+#'   "contribution", "contribution.pc", "relative" or "relative.pc".
 #' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries
-#'   are trimmed, if FALSE, they are discarded
-#' @param use.hinges logical indicating whether to use hinges to reduce
-#'   interpolation errors
-#' @param ... other arguments
+#'   are trimmed, if FALSE, they are discarded.
+#' @param use.hinges logical Flag indicating whether to insert "hinges" into the
+#'   spectral data before integration so as to reduce interpolation errors at
+#'   the boundaries of the wavebands.
+#' @param ... other arguments (possibly used by derived methods).
 #'
 #' @return a single numeric value expressed either as a fraction of one or a
-#'   percentage, or a vector of the same length as the list of wave.bands.
+#'   percentage, or a vector of the same length as the list of \code{waveband}
+#'   objects.
 #' @keywords internal
 #'
 #' @note The parameter \code{use.hinges} controls speed optimization. The
-#'   defaults should be suitable in mosts cases. Only the range of wavelengths
+#'   defaults should be suitable in most cases. Only the range of wavelengths
 #'   in the wavebands is used and all BSWFs are ignored.
 #'
 #' @keywords internal
@@ -152,7 +155,7 @@ resp_spct <-
     if (is.waveband(w.band)) {
       # if the argument is a single w.band, we enclose it in a list
       # so that the for loop works as expected. This is a bit of a
-      # cludge but it let's us avoid treating it as a special case
+      # kludge but it let's us avoid treating it as a special case
       w.band <- list(w.band)
     }
     w.band <- trim_waveband(w.band = w.band, range = spct, trim = wb.trim)
@@ -256,19 +259,20 @@ resp_spct <-
 #' This function returns the mean, total, or contribution of response for each
 #' waveband and a response spectrum.
 #'
-#' @param spct an R object
+#' @param spct an R object.
 #' @param w.band waveband or list of waveband objects or a numeric vector of
 #'   length two. The waveband(s) determine the region(s) of the spectrum that
 #'   are summarized. If a numeric range is supplied a waveband object is
 #'   constructed on the fly from it.
 #' @param quantity character string One of "total", "average" or "mean",
-#'   "contribution", "contribution.pc", "relative" or "relative.pc"
-#' @param time.unit character or lubridate::duration
+#'   "contribution", "contribution.pc", "relative" or "relative.pc".
+#' @param time.unit character or lubridate::duration object.
 #' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries
-#'   are trimmed, if FALSE, they are discarded
-#' @param use.hinges logical indicating whether to use hinges to reduce
-#'   interpolation errors
-#' @param ... other arguments
+#'   are trimmed, if FALSE, they are discarded.
+#' @param use.hinges logical Flag indicating whether to insert "hinges" into the
+#'   spectral data before integration so as to reduce interpolation errors at
+#'   the boundaries of the wavebands.
+#' @param ... other arguments (possibly used by derived methods).
 #'
 #' @return A named \code{numeric} vector in the case of methods for individual
 #'   spectra, with one value for each \code{waveband} passed to parameter
@@ -289,7 +293,7 @@ resp_spct <-
 #' e_response(photodiode.spct)
 #'
 #' @note The parameter \code{use.hinges} controls speed optimization. The
-#'   defaults should be suitable in mosts cases. Only the range of wavelengths
+#'   defaults should be suitable in most cases. Only the range of wavelengths
 #'   in the wavebands is used and all BSWFs are ignored.
 #'
 #' @family response functions
@@ -327,19 +331,20 @@ e_response.response_spct <-
 #' This function returns the mean response for a given
 #' waveband and a response spectrum.
 #'
-#' @param spct an R object
+#' @param spct an R object.
 #' @param w.band waveband or list of waveband objects or a numeric vector of
 #'   length two. The waveband(s) determine the region(s) of the spectrum that
 #'   are summarized. If a numeric range is supplied a waveband object is
 #'   constructed on the fly from it.
 #' @param quantity character string One of "total", "average" or "mean",
-#'   "contribution", "contribution.pc", "relative" or "relative.pc"
-#' @param time.unit character or lubridate::duration
+#'   "contribution", "contribution.pc", "relative" or "relative.pc".
+#' @param time.unit character or lubridate::duration object.
 #' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries
-#'   are trimmed, if FALSE, they are discarded
-#' @param use.hinges logical indicating whether to use hinges to reduce
-#'   interpolation errors
-#' @param ... other arguments
+#'   are trimmed, if FALSE, they are discarded.
+#' @param use.hinges logical Flag indicating whether to insert "hinges" into the
+#'   spectral data before integration so as to reduce interpolation errors at
+#'   the boundaries of the wavebands.
+#' @param ... other arguments (possibly used by derived methods).
 #'
 #' @return A named \code{numeric} vector in the case of methods for individual
 #'   spectra, with one value for each \code{waveband} passed to parameter
@@ -360,7 +365,7 @@ e_response.response_spct <-
 #' q_response(photodiode.spct)
 #'
 #' @note The parameter \code{use.hinges} controls speed optimization. The
-#'   defaults should be suitable in mosts cases. Only the range of wavelengths
+#'   defaults should be suitable in most cases. Only the range of wavelengths
 #'   in the wavebands is used and all BSWFs are ignored.
 #'
 #' @family response functions

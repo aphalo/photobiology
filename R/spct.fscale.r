@@ -6,7 +6,7 @@
 #' as argument but with the spectral data rescaled.
 #'
 #' @param x An R object
-#' @param ... additonal named arguments passed down to \code{f}.
+#' @param ... additional named arguments passed down to \code{f}.
 #'
 #' @return A copy of \code{x} with the original spectral data values replaced
 #'   with rescaled values, and the \code{"scaled"} attribute set to a list
@@ -31,13 +31,13 @@ fscale.default <- function(x, ...) {
 #' @describeIn fscale
 #'
 #' @param range An R object on which \code{range()} returns a numeric vector of
-#'   length 2 with the limits of a range of wavelengths in nm, with min annd max
+#'   length 2 with the limits of a range of wavelengths in nm, with min and max
 #'   wavelengths (nm)
-#' @param f character string "mean" or "total" for scaling so taht this summary
+#' @param f character string "mean" or "total" for scaling so that this summary
 #'   value becomes 1 for the returned object, or the name of a function taking
 #'   \code{x} as first argument and returning a numeric value.
 #' @param target numeric A constant used as target value for scaling.
-#' @param unit.out character Alowed values "energy", and "photon", or its alias
+#' @param unit.out character Allowed values "energy", and "photon", or its alias
 #'   "quantum"
 #'
 #' @export
@@ -379,7 +379,7 @@ fscale.generic_mspct <- function(x,
 #'
 #' @param spct generic_spct The spectrum to be normalized
 #' @param range an R object on which range() returns a vector of length 2, with
-#'   min annd max wavelengths (nm)
+#'   min and max wavelengths (nm)
 #' @param col.names character The name of the variable to fscale
 #' @param f function A summary function to be applied to \code{spct}
 #' @param ... other arguments passed to f()
@@ -429,7 +429,7 @@ fscale_spct <- function(spct, range, col.names, f, target, ...) {
       }
     } else {
       summary.value <- 1 # implemented in this way to ensure that all returned
-      # values folow the same copy/reference semantics
+      # values follow the same copy/reference semantics
       if (target != 1) {
         warning("No summary function supplied\n",
                 "spectral values multiplied by 'target'")
@@ -447,7 +447,7 @@ fscale_spct <- function(spct, range, col.names, f, target, ...) {
 #' Query whether a generic spectrum has been scaled
 #'
 #' This function tests a \code{generic_spct} object for an attribute that
-#' signals whether the spectral data has been rescled or not after the object
+#' signals whether the spectral data has been rescaled or not after the object
 #' was created.
 #'
 #' @param x An R object.
@@ -470,7 +470,7 @@ is_scaled <- function(x) {
 
 #' Get the "scaled" attribute
 #'
-#' Funtion to read the "scaled" attribute of an existing generic_spct
+#' Function to read the "scaled" attribute of an existing generic_spct
 #' object.
 #'
 #' @param x a generic_spct object
@@ -506,7 +506,7 @@ getScaled <- function(x) {
 
 #' Set the "scaled" attribute
 #'
-#' Funtion to write the "scaled" attribute of an existing generic_spct
+#' Function to write the "scaled" attribute of an existing generic_spct
 #' object.
 #'
 #' @param x a generic_spct object
@@ -529,4 +529,3 @@ setScaled <- function(x, scaled = FALSE) {
   }
   invisible(x)
 }
-

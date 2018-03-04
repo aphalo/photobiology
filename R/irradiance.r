@@ -1,33 +1,33 @@
-#' Photon (quantum) irradiance from spectral (energy) irradiance.
+#' Photon or energy irradiance from spectral energy or photon irradiance.
 #'
-#' This function returns the energy irradiance for a given waveband of a
-#' radiation spectrum.
+#' Energy or photon irradiance for one or more wavebands of a radiation
+#' spectrum.
 #'
-#' @param w.length numeric Vector of wavelength (nm)
-#' @param s.irrad numeric Corresponding vector of spectral (energy) irradiances
-#'   (W m-2 nm-1)
+#' @param w.length numeric Vector of wavelength (nm).
+#' @param s.irrad numeric vector of spectral (energy) irradiances (W m-2 nm-1).
 #' @param w.band waveband or list of waveband objects The waveband(s) determine
 #'   the region(s) of the spectrum that are summarized.
 #' @param unit.out character Allowed values "energy", and "photon", or its alias
-#'   "quantum"
+#'   "quantum".
 #' @param unit.in character Allowed values "energy", and "photon", or its alias
-#'   "quantum"
+#'   "quantum".
 #' @param check.spectrum logical Flag indicating whether to sanity check input
-#'   data, default is TRUE
+#'   data, default is TRUE.
 #' @param use.cached.mult logical Flag indicating whether multiplier values
-#'   should be cached between calls
-#' @param use.hinges logical Flag indicating whether to use hinges to reduce
-#'   interpolation errors
+#'   should be cached between calls.
+#' @param use.hinges logical Flag indicating whether to insert "hinges" into the
+#'   spectral data before integration so as to reduce interpolation errors at
+#'   the boundaries of the wavebands.
 #'
-#' @return a single numeric value with no change in scale factor: [W m-2 nm-1]
-#'   -> [mol s-1 m-2]
+#' @return A single numeric value or a vector of numeric values with no change
+#'   in scale factor: [W m-2 nm-1] -> [mol s-1 m-2]
 #'
 #' @export
 #' @examples
-#' 
+#'
 #' with(sun.data, irradiance(w.length, s.e.irrad, new_waveband(400,700), "photon"))
 #' @note The last three parameters control speed optimizations. The defaults
-#'   should be suitable in mosts cases. If you set \code{check.spectrum=FALSE}
+#'   should be suitable in most cases. If you set \code{check.spectrum=FALSE}
 #'   then you should call \code{check_spectrum()} at least once for your
 #'   spectrum before using any of the other functions. If you will use
 #'   repeatedly the same SWFs on many spectra measured at exactly the same
@@ -39,7 +39,7 @@
 #'   speed, or in cases where there is no suitable C++ compiler for building the
 #'   package.
 #'
-#' @family irradiance functions
+#' @family low-level functions operating on numeric vectors.
 #'
 irradiance <-
   function(w.length, s.irrad, w.band = NULL, unit.out = NULL, unit.in = "energy",
@@ -62,28 +62,23 @@ irradiance <-
 #      w.band <- new_waveband(min(w.length), max(w.length))
       w.band <- new_waveband(min(w.length), max(w.length) + 1e-12)
       # we need to add a small number as the test is "<"
-      # this affects signifcantly the result only when no hinges are used
+      # this affects significantly the result only when no hinges are used
     }
     if (is.waveband(w.band)) {
       # if the argument is a single w.band, we enclose it in a list
-      # so that the for loop works as expected.This is a bit of a
-      # cludge but let's us avoid treating it as a special case
+      # so that the for loop works as expected. This is a bit of a
+      # kludge but let's us avoid treating it as a special case
       w.band <- list(w.band)
     }
     # if the w.band includes 'hinges' we insert them
-    # choose whether to use hinges or not
-    # if the user has specified its value, we leave it alone
-    # but if it was not requested, we decide whether to use
-    # it or not based of the wavelength resolution of the
-    # spectrum. This will produce small errors for high
-    # spectral resolution data, and speed up the calculations
-    # a lot in such cases
+    # depending on the value of use.hinges. If no explicit argument
+    # was supplied, we decide based on the step size for w.length
     if (is.null(use.hinges)) {
       use.hinges <- auto_hinges(w.length)
     }
-    # we collect all hinges and insert them in one go
-    # this may alter a little the returned values
-    # but should be faster
+    # we collect all hinges and insert them in one go.
+    # This may alter very slightly the returned values
+    # for overlapping wavebands but should be faster.
     if (use.hinges) {
       all.hinges <- NULL
       for (wb in w.band) {

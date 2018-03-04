@@ -2,10 +2,11 @@
 
 #' Return the First and Last Part of an Object
 #'
-#' Returns the first and last parts of a spectrum, dataframe, vector, function,
-#' table or ftable.
+#' Returns the first and last "parts" (rows or members) of a spectrum,
+#' dataframe, vector, function, table or ftable. In other words, the combined
+#' output from methods \code{head} and \code{tail}.
 #'
-#' @param x an object.
+#' @param x an R object.
 #' @param n a single integer. If positive, half the size for the resulting
 #'   object: number of elements for a vector (including lists), rows for a
 #'   matrix or data frame or lines for a function, to be retained from each
@@ -25,7 +26,7 @@
 #'
 #' @note For some types of input, like functions, the output may be confusing,
 #'  however, we have opted for consistency with existing functions. The code
-#'  is in part a revision of that of head() and tail() from package utils. I
+#'  is in part a revision of that of head() and tail() from package 'utils'. I
 #'  have been missing this method especially when checking spectral data, as
 #'  both ends are of interest.
 #'

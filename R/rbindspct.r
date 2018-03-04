@@ -37,7 +37,7 @@
 #' @note Note that any additional 'user added' attributes that might exist on
 #'   individual items of the input list will not be preserved in the result.
 #'   The attributes used by the \code{photobiology} package are preserved, and
-#'   if they are not consistent accross the bound spectral objetcs, a warning is
+#'   if they are not consistent across the bound spectral objects, a warning is
 #'   issued.
 #'
 #' @return An spectral object of a type common to all bound items containing a
@@ -48,7 +48,7 @@
 #' @export
 #'
 #' @note \code{dplyr::rbind_fill} is called internally and the result returned is
-#'   the highest class in the inheritance hierachy which is common to all
+#'   the highest class in the inheritance hierarchy which is common to all
 #'   elements in the list. If not all members of the list belong to one of the
 #'   \code{_spct} classes, an error is triggered. The function sets all data in
 #'   \code{source_spct} and \code{response_spct} objects supplied as arguments
@@ -247,7 +247,7 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
     names(time.unit) <- NULL
     time.unit <- unique(time.unit)
     if (length(time.unit) > 1L) {
-      warning("Inconsistent time units among respose spectra in rbindspct")
+      warning("Inconsistent time units among response spectra in rbindspct")
       return(response_spct())
     }
     setResponseSpct(ans, time.unit = time.unit[1], multiple.wl = mltpl.wl)
@@ -314,7 +314,7 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
 #'   which copy the additional attributes used by these classes, and validate
 #'   the extracted object as a spectral object. When drop is TRUE and the
 #'   returned object has only one column, then a vector is returned. If the
-#'   extrated columns are more than one but do not include \code{w.length}, a
+#'   extracted columns are more than one but do not include \code{w.length}, a
 #'   data frame is returned instead of a spectral object.
 #'
 #' @return An object of the same class as \code{x} but containing only the
@@ -723,4 +723,3 @@ c.generic_mspct <- function(..., recursive = FALSE, ncol = 1, byrow = FALSE) {
   ul <- unlist(l, recursive = FALSE)
   do.call(shared.class, list(l = ul, ncol = ncol, byrow = byrow))
 }
-

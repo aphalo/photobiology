@@ -1,11 +1,11 @@
 #' Waveband constructor method
 #'
-#' Constructor for "waveband" objects that can be used as imput when calculating
+#' Constructor for "waveband" objects that can be used as input when calculating
 #' irradiances.
 #'
-#' @param x any R object on which applying the function range yields an array of
-#'   two numeric values, describimg a range of wavelengths (nm)
-#' @param weight a character string "SWF" or "BSWF", use NULL (the defalt) to
+#' @param x any R object on which applying the function range yields an vector of
+#'   two numeric values, describing a range of wavelengths (nm)
+#' @param weight a character string "SWF" or "BSWF", use NULL (the default) to
 #'   indicate no weighting used when calculating irradiance
 #' @param SWF.e.fun a function giving multipliers for a spectral weighting
 #'   function (energy) as a function of wavelength (nm)
@@ -15,14 +15,14 @@
 #'   (nm) used by SWF.e.fun and SWF.q.fun
 #' @param norm a single numeric value indicating the wavelength at which the SWF
 #'   should be normalized to 1.0, in nm. "NULL" means no normalization.
-#' @param hinges a numeric array giving the wavelengths at which the s.irrad
+#' @param hinges a numeric vector giving the wavelengths at which the s.irrad
 #'   should be inserted by interpolation, no interpolation is indicated by an
-#'   empty array (numeric(0)), if NULL then interpolation will take place at
+#'   empty vector (numeric(0)), if NULL then interpolation will take place at
 #'   both ends of the band.
 #' @param wb.name character string giving the name for the waveband defined,
 #'   default is NULL
 #' @param wb.label character string giving the label of the waveband to be used
-#'   for ploting, default is wb.name
+#'   for plotting, default is wb.name
 #'
 #' @return a \code{waveband} object
 #'
@@ -104,10 +104,10 @@ new_waveband <- function(w.low, w.high,
 
 #' List-of-wavebands constructor
 #'
-#' Build a list of unweighted "waveband" objects that can be used as imput when
+#' Build a list of unweighted "waveband" objects that can be used as input when
 #' calculating irradiances.
 #'
-#' @param x a numeric array of wavelengths to split at (nm), or a range of
+#' @param x a numeric vector of wavelengths to split at (nm), or a range of
 #'   wavelengths or a generic_spct or a waveband.
 #' @param list.names character vector with names for the component wavebands in
 #'   the returned list (in order of increasing wavelength)
@@ -116,7 +116,7 @@ new_waveband <- function(w.low, w.high,
 #' @param length.out numeric giving the number of regions to split the range
 #'   into (ignored if w.length is not numeric).
 #'
-#' @return an un-named list of wabeband objects
+#' @return an un-named list of waveband objects
 #'
 #' @export
 #' @examples

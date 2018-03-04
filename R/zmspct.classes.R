@@ -24,7 +24,7 @@ mspct_classes <- function() {
 
 #' Remove "generic_mspct" and derived class attributes.
 #'
-#' Removes from an spectrum object the class attibutes "generic_mspct" and any
+#' Removes from an spectrum object the class attributes "generic_mspct" and any
 #' derived class attribute such as "source_mspct". \strong{This operation is done
 #' by reference!}
 #'
@@ -33,7 +33,7 @@ mspct_classes <- function() {
 #'
 #' @note If \code{x} is an object of any of the multi spectral classes defined
 #'   in this package, this function changes by reference the multi spectrum
-#'   object into the underlying lis object. Otherwise, it just leaves \code{x}
+#'   object into the underlying list object. Otherwise, it just leaves \code{x}
 #'   unchanged. The modified \code{x} is also returned invisibly.
 #'
 #' @return A character vector containing the removed class attribute values.
@@ -87,7 +87,7 @@ shared_member_class <- function(l, target.set = spct_classes()) {
 #' @title Collection-of-spectra constructor
 #'
 #' @description Converts a list of spectral objects into a "multi spectrum"
-#'   object by setting the class attibute of the list of spectra to the
+#'   object by setting the class attribute of the list of spectra to the
 #'   corresponding multi-spct class, check that components of the list belong to
 #'   the expected class.
 #'
@@ -96,7 +96,7 @@ shared_member_class <- function(l, target.set = spct_classes()) {
 #'   for the elements of l
 #' @param ncol integer Number of 'virtual' columns in data
 #' @param byrow logical If \code{ncol > 1} how to read in the data
-#' @param dim integer Array of dimensions
+#' @param dim integer vector of dimensions
 #' @param ... ignored
 #'
 #' @export
@@ -234,7 +234,7 @@ chroma_mspct <- function(l = NULL, ncol = 1, byrow = FALSE, ...) {
   generic_mspct(l, class = "chroma_spct", ncol = ncol, byrow = byrow)
 }
 
-# is functions for mmspct classes --------------------------------------------
+# is functions for mspct classes --------------------------------------------
 
 #' Query class of spectrum objects
 #'
@@ -480,7 +480,7 @@ as.chroma_mspct <- function(x) {
 #'
 #' @param x data frame
 #' @param member.class character Class of the collection members
-#' @param spct.data.var character Name of the spctral data argument in the
+#' @param spct.data.var character Name of the spectral data argument in the
 #'   object constructor for \code{member.class}
 #' @param w.length.var character Name of column containing wavelength data in
 #'   nanometres
@@ -647,7 +647,7 @@ split2calibration_mspct <- function(x,
 #' @title Convert 'long' or tidy spectral data into a collection of spectra
 #'
 #' @description Convert a data frame object or spectral object into a collection
-#'   of soectra object of the corresponding class. For data frames converting
+#'   of spectra object of the corresponding class. For data frames converting
 #'   numeric columns other than wavelength into individual spct objects.
 #'
 #' @param x a generic_spct object or a derived class, or a data frame
@@ -696,7 +696,7 @@ subset2mspct <- function(x,
     groups <- levels(x[[idx.var]])
     idx <- idx.var
   } else {
-    # would hang or slowdown to a crawl if idexing by dates
+    # would hang or slowdown to a crawl if indexing by dates
     # could try benchmarking with as.numeric() to see how much faster it is
     if (lubridate::is.instant(x[[idx.var]])) {
     x[["tmp.idx"]] <- as.character(x[[idx.var]], tz = "UTC")

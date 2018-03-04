@@ -2,16 +2,16 @@
 
 #' Color of an object
 #'
-#' A function that returns the equivalent RGB color of an object such as a
-#' spectrum or wavelength.
+#' Equivalent RGB color of an object such as a spectrum, wavelength or waveband.
 #'
-#' @param x an R object
-#' @param ... not used in current version
+#' @param x an R object.
+#' @param ... ignored (possibly used by derived methods).
+#'
 #' @export color_of
 #'
 #' @return A color definition in hexadecimal format as a \code{character} string
 #'   of 7 characters, "#" followed by the red, blue, and green values in
-#'   hexadecimal (scaled to 0 ... 255). In the case of the especialization for
+#'   hexadecimal (scaled to 0 ... 255). In the case of the specialization for
 #'   \code{list}, a list of such definitions is returned. In the case of a
 #'   collection of spectra, a \code{data.frame} with one column with such
 #'   definitions and by default an additional column with names of the spectra
@@ -175,9 +175,10 @@ colour_of <- function(x, ...) {
 #' @export
 #'
 #' @section Deprecated: Use of color() is deprecated as this wrapper function
-#'   may be removed in future versions of the package. Use color_of() instead.
+#'   may be removed in future versions of the package because of name clashes.
+#'   Use color_of() instead.
 #'
 color <- function(x, ...) {
-#  message("Method color() has been renamed color_of(), color() is deprecated.")
+  message("Method photobiology::color() has been renamed color_of(), color() is deprecated and will be removed.")
   color_of(x, ...)
 }

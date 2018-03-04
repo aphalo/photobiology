@@ -5,10 +5,10 @@
 #' smoothing spectral objects is that it simplifies the user interface and sets,
 #' when needed, defaults suitable for spectral data.
 #'
-#' @param x an R object
-#' @param method a character string "custom", "lowess", "supsmu"
-#' @param strength numeric value to adjust the degree of smoothing
-#' @param ... other parameters passed to the underlying smoothing functions
+#' @param x an R object.
+#' @param method a character string "custom", "lowess", "supsmu".
+#' @param strength numeric value to adjust the degree of smoothing.
+#' @param ... other parameters passed to the underlying smoothing functions.
 #'
 #' @return A copy of \code{x} with spectral data values replaced by smoothed
 #'   ones.
@@ -17,11 +17,10 @@
 #'   smoothing to low signal regions of the spectral data, and weaker or no
 #'   smoothing to the high signal areas. Values very close to zero are set to
 #'   zero with a limit which depends on the local variation. This method is an
-#'   ad-hock method suitable for smoothing spectral data obtained with array
+#'   ad-hock method suitable for smoothing spectral data obtained with
 #'   spectrometers. In the cased of methods "lowess" and "supsmu" the current
 #'   function behaves like a wrapper of the functions of the same names from
 #'   base R.
-#'
 #'
 #' @export smooth_spct
 #'
@@ -93,7 +92,7 @@ smooth_spct.source_spct <- function(x, method = "custom", strength = 1, ...) {
     max_irrad <- max(out.spct[["s.e.irrad"]], na.rm=TRUE)
     smoothing_coef <- 1
     smoothing_hi_lim <- max(out.spct$w.length)
-    # this could be tweeked in many ways...
+    # this could be tweaked in many ways...
     zero_limit_cnst <- max_irrad * 3e-4 / strength
     out.spct[["zero_limit"]] <-  (zero_limit_cnst * 600) / out.spct[["w.length"]]
     smooth_limit <- 1e-3 * smoothing_coef # just a guess for runmadmed
@@ -195,7 +194,7 @@ smooth_spct.filter_spct <- function(x, method = "custom", strength = 1, ...) {
     max_Tfr <- 1
     smoothing_coef <- 1
     smoothing_hi_lim <- max(out.spct$w.length)
-    # this could be tweeked in many ways...
+    # this could be tweaked in many ways...
     zero_limit_cnst <- max_Tfr * 3e-4 / strength
     out.spct[["zero_limit"]] <-  (zero_limit_cnst * 600) / out.spct[["w.length"]]
     smooth_limit <- 1e-3 * smoothing_coef # just a guess for runmadmed
@@ -285,7 +284,7 @@ smooth_spct.reflector_spct <- function(x, method = "custom", strength = 1, ...) 
     max_Rfr <- 1
     smoothing_coef <- 1
     smoothing_hi_lim <- max(out.spct$w.length)
-    # this could be tweeked in many ways...
+    # this could be tweaked in many ways...
     zero_limit_cnst <- max_Rfr * 3e-4 / strength
     out.spct[["zero_limit"]] <-  (zero_limit_cnst * 600) / out.spct[["w.length"]]
     smooth_limit <- 1e-3 * smoothing_coef # just a guess for runmadmed
@@ -387,7 +386,7 @@ smooth_spct.response_spct <- function(x, method = "custom", strength = 1, ...) {
     max_response <- max(out.spct[["s.e.response"]], na.rm=TRUE)
     smoothing_coef <- 1
     smoothing_hi_lim <- max(out.spct$w.length)
-    # this could be tweeked in many ways...
+    # this could be tweaked in many ways...
     zero_limit_cnst <- max_response * 3e-4 / strength
     out.spct[["zero_limit"]] <-  (zero_limit_cnst * 600) / out.spct[["w.length"]]
     smooth_limit <- 1e-3 * smoothing_coef # just a guess for runmadmed
@@ -410,11 +409,11 @@ smooth_spct.response_spct <- function(x, method = "custom", strength = 1, ...) {
                                        ifelse(w.length < smoothing_hi_lim, s.e.response.sm, s.e.response))
     out.spct[["s.e.response.good"]] <- out.spct[["runmadmed"]] / out.spct[["runmed19"]] * max(out.spct[["runmed19"]]) < 1.0
     if (anyNA(out.spct[["s.e.response"]])) {
-      warning(sum(is.na(out.spct[["s.e.response"]])), " NAs in spectral responseiance")
+      warning(sum(is.na(out.spct[["s.e.response"]])), " NAs in spectral response")
     }
     num_bad <- sum(!out.spct[["s.e.response.good"]], na.rm=TRUE)
     if (num_bad > length(out.spct) / 20) {
-      warning(num_bad, " 'bad' estimates in spectral responseiance")
+      warning(num_bad, " 'bad' estimates in spectral response")
     }
     out.spct <- out.spct[ , c("w.length", "s.e.response")]
     setResponseSpct(out.spct, time.unit = attr(x, "time.unit", exact = TRUE))

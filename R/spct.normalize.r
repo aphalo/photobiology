@@ -32,10 +32,10 @@ normalize.default <- function(x, ...) {
 #' @describeIn normalize Normalize a \code{source_spct} object.
 #'
 #' @param range An R object on which \code{range()} returns a numeric vector of
-#'   length 2 with the limits of a range of wavelengths in nm, with min annd max
+#'   length 2 with the limits of a range of wavelengths in nm, with min and max
 #'   wavelengths (nm)
 #' @param norm numeric Normalization wavelength (nm) or character string "max",
-#'   or "min" for normalization at the corresponding wavelngth, or "integral" or
+#'   or "min" for normalization at the corresponding wavelength, or "integral" or
 #'   "mean" for rescaling by dividing by these values.
 #' @param unit.out character Allowed values "energy", and "photon",
 #'   or its alias "quantum"
@@ -416,7 +416,7 @@ is_normalized <- function(x) {
 
 #' Get the "normalized" attribute
 #'
-#' Funtion to read the "normalized" attribute of an existing generic_spct
+#' Function to read the "normalized" attribute of an existing generic_spct
 #' object.
 #'
 #' @param x a generic_spct object
@@ -443,7 +443,7 @@ getNormalized <- function(x) {
 
 #' Set the "normalized" attribute
 #'
-#' Funtion to write the "normalized" attribute of an existing generic_spct
+#' Function to write the "normalized" attribute of an existing generic_spct
 #' object.
 #'
 #' @param x a generic_spct object

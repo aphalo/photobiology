@@ -166,14 +166,14 @@ check_spct.cps_spct <- function(x,
       if (all(is.na(x[[col]]))) {
         next()
       }
-      # we need to include zero as otherwise dark scans may not pass the test
-      cps.range <- range(0, x[[col]], na.rm = TRUE)
-      # we need to be very lax here as during processing of scans we can negative
+      # we need to include zero and a reasonably high number as otherwise dark scans may not pass the test
+      cps.range <- range(0, x[[col]], 1e3, na.rm = TRUE)
+      # we need to be very lax here as during processing of scans we can get negative
       # values due to subtraction of dark scans
-      if (abs(cps.range[1]) > (2 * cps.range[2])) {
-        message.text <- paste("Off-range cps values [",
+      if (cps.range[2] < 0 || abs(cps.range[1]) > (cps.range[2] / 10)) {
+        message.text <- paste("Possible off-range cps values [",
                               formatted_range(cps.range),
-                              "] instead of  [0..1]", sep = "")
+                              "]", sep = "")
         if (is.null(strict.range) || is.na(strict.range)) {
           message(message.text)
         } else if (strict.range) {
@@ -189,7 +189,7 @@ check_spct.cps_spct <- function(x,
 
   x <- check_spct.generic_spct(x, multiple.wl = multiple.wl)
 
-  cps.cols <- grep("^cps", names(x))
+  cps.cols <- grep("^cps", names(x), value = TRUE)
 
   if (length(cps.cols) >= 1) {
     range_check(x, cps.cols)
@@ -568,12 +568,12 @@ check_spct.source_spct <-
           !all(is.na(x[["s.e.irrad"]]))) {
         s.e.range <- range(0, x$s.e.irrad, na.rm = TRUE)
         s.e.spread <- diff(s.e.range)
-        # we need to be faily lax as dark reference spectra may have
+        # we need to be fairly lax as dark reference spectra may have
         # proportionally lots of noise.
         if (s.e.range[1] < (min.limit * (max(s.e.spread, 0.04)) )) {
           message.text <-
             paste(
-              "Negative spectral energy irradiance values; minimun s.e.irrad =",
+              "Negative spectral energy irradiance values; minimum s.e.irrad =",
               format(s.e.range[1], digits = 3, nsmall = 2)
             )
           if (is.null(strict.range) || is.na(strict.range)) {
@@ -591,12 +591,12 @@ check_spct.source_spct <-
           !all(is.na(x[["s.q.irrad"]]))) {
         s.q.range <- range(x$s.q.irrad, na.rm = TRUE)
         s.q.spread <- diff(s.q.range)
-        # we need to be faily lax as dark reference spectra may have
+        # we need to be fairly lax as dark reference spectra may have
         # proportionally lots of noise.
         if (s.q.range[1] < (min.limit * (max(s.q.spread, 1e-5)) )) {
           message.text <-
             paste(
-              "Negative spectral photon irradiance values; minimun s.q.irrad =",
+              "Negative spectral photon irradiance values; minimum s.q.irrad =",
               signif(s.q.range[1], 2)
             )
           if (is.null(strict.range) || is.na(strict.range)) {
@@ -617,7 +617,7 @@ check_spct.source_spct <-
 
   if (is.null(is_effective(x))) {
     setBSWFUsed(x, "none")
-    warning("Missing atrribute 'bswf.used' set to 'none'")
+    warning("Missing attribute 'bswf.used' set to 'none'")
   }
   if (exists("s.e.irrad", x, mode = "numeric", inherits=FALSE)) {
     NULL
@@ -674,7 +674,7 @@ check_spct.chroma_spct <-
 
 #' Remove "generic_spct" and derived class attributes.
 #'
-#' Removes from an spectrum object the class attibutes "generic_spct" and any
+#' Removes from an spectrum object the class attributes "generic_spct" and any
 #' derived class attribute such as "source_spct". \strong{This operation is done
 #' by reference!}
 #'
@@ -713,7 +713,7 @@ rmDerivedSpct <- function(x) {
 
 #' Convert an R object into a spectrum object.
 #'
-#' Sets the class attibute of a data.frame or an object of a derived
+#' Sets the class attribute of a data.frame or an object of a derived
 #' class to "generic_spct".
 #'
 #' @param x data.frame, list or generic_spct and derived classes
@@ -1137,7 +1137,7 @@ class_spct <- function(x) {
 #' @param x any R object
 #'
 #' @return is_tagged returns TRUE if its argument is a an spectrum
-#' that contains tags and FALSE if it is an untagged spectrun, but
+#' that contains tags and FALSE if it is an untagged spectrum, but
 #' returns NA for any other R object.
 #'
 #' @export
@@ -1164,7 +1164,7 @@ is_tagged <- function(x) {
 #'
 #' @param x any R object
 #'
-#' @return \code{is_photon_based} returns \code{TRUE} if its argument is a a
+#' @return \code{is_photon_based} returns \code{TRUE} if its argument is a
 #'   \code{source_spct} or a \code{response_spct} object that contains photon
 #'   base data and \code{FALSE} if such an object does not contain such data,
 #'   but returns \code{NA} for any other R object, including those belonging
@@ -1194,7 +1194,7 @@ is_photon_based <- function(x) {
 
 #' @rdname is_photon_based
 #'
-#' @return \code{is_energy_based} returns \code{TRUE} if its argument is a a \code{source_spct} or
+#' @return \code{is_energy_based} returns \code{TRUE} if its argument is a \code{source_spct} or
 #' a \code{response_spct} object that contains energy base data and \code{FALSE} if such an
 #' object does not contain such data, but returns \code{NA} for any other R object,
 #' including those belonging other \code{generic_spct}-derived classes
@@ -1252,7 +1252,7 @@ is_absorbance_based <- function(x) {
 
 #' @rdname is_absorbance_based
 #'
-#' @return \code{is_transmittance_based} returns TRUE if its argument is a a \code{filter_spct}
+#' @return \code{is_transmittance_based} returns TRUE if its argument is a \code{filter_spct}
 #' object that contains spectral transmittance data and FALSE if it does not contain
 #' such data, but returns NA for any other R object, including those belonging
 #' other \code{generic_spct}-derived classes.
@@ -1280,7 +1280,7 @@ is_transmittance_based <- function(x) {
 #' @param time.unit a character string, either "second", "hour", "day",
 #'   "exposure" or "none", or a lubridate::duration
 #' @param override.ok logical Flag that can be used to silence warning when
-#'   overwritting an existing attribute value (used internally)
+#'   overwriting an existing attribute value (used internally)
 #'
 #' @return x
 #' @note This function alters x itself by reference and in addition
@@ -1316,7 +1316,7 @@ setTimeUnit <- function(x,
     override.ok <- override.ok ||
       is.character(old.time.unit) && old.time.unit %in% c("unknown", "none", time.unit)
     if (!override.ok && old.time.unit != time.unit[1]) {
-      warning("Overrriding existing 'time.unit' '", old.time.unit,
+      warning("Overriding existing 'time.unit' '", old.time.unit,
               "' with '", time.unit, "' may invalidate data!")
     }
   }
@@ -1519,7 +1519,7 @@ setBSWFUsed <- function(x, bswf.used=c("none", "unknown")) {
   if (is.source_spct(x) || is.summary_source_spct(x)) {
     name <- substitute(x)
     if  (!(is.character(bswf.used))) {
-      warning("Only character strings are valid vlues for 'bswf.used' argument")
+      warning("Only character strings are valid values for 'bswf.used' argument")
       bswf.used <- "unknown"
     }
     attr(x, "bswf.used") <- bswf.used
@@ -1539,7 +1539,7 @@ setBSWFUsed <- function(x, bswf.used=c("none", "unknown")) {
 #'
 #' @return character string
 #'
-#' @note if x is not a \code{source_spct} object, NA is retruned
+#' @note if x is not a \code{source_spct} object, NA is returned
 #'
 #' @export
 #' @family BSWF attribute functions
@@ -1560,7 +1560,7 @@ getBSWFUsed <- function(x) {
 }
 
 # is_effective.source_spct defined in file "waveband.class.r" to avoid the need
-# of using colate to get the documentation in the correct order.
+# of using collate to get the documentation in the correct order.
 
 # Tfr.type attribute ------------------------------------------------------
 

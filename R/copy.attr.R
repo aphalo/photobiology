@@ -29,7 +29,8 @@ all.attributes <- unique(c(private.attributes,
 
 #' Copy attributes from one R object to another
 #'
-#' Copy attributes from \code{x} to \code{y}.
+#' Copy attributes from \code{x} to \code{y}. Methods defined for spectral
+#' and waveband objects of classes from package 'photobiology'.
 #'
 #' @param x,y R objects
 #' @param which character
@@ -131,8 +132,9 @@ copy_attributes.waveband <- function(x, y, which = NULL, ...) {
 #' @param x a generic_spct object.
 #' @param which character vector Names of attributes to retrieve.
 #' @param allowed character vector Names of attributes accepted by \code{which}.
+#' @param ... currently ignored
 #'
-#' @return list
+#' @return Named \code{list} of attribute values.
 #'
 #' @export
 #'
@@ -164,7 +166,8 @@ get_attributes.source_spct <- function(x,
                                        ...) {
   get_attributes.generic_spct(x, which = which,
                               allowed = c(source.attributes,
-                                          common.attributes))
+                                          common.attributes),
+                              ...)
 }
 
 #' @describeIn get_attributes filter_spct
@@ -175,7 +178,8 @@ get_attributes.filter_spct <- function(x,
                                        ...) {
   get_attributes.generic_spct(x, which = which,
                               allowed = c(filter.attributes,
-                                          common.attributes))
+                                          common.attributes),
+                              ...)
 }
 
 
@@ -187,7 +191,8 @@ get_attributes.reflector_spct <- function(x,
                                           ...) {
   get_attributes.generic_spct(x, which = which,
                               allowed = c(reflector.attributes,
-                                          common.attributes))
+                                          common.attributes),
+                              ...)
 }
 
 
@@ -199,7 +204,8 @@ get_attributes.object_spct <- function(x,
                                        ...) {
   get_attributes.generic_spct(x, which = which,
                               allowed = c(object.attributes,
-                                          common.attributes))
+                                          common.attributes),
+                              ...)
 }
 
 #' @describeIn get_attributes waveband
