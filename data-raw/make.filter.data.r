@@ -11,9 +11,9 @@ setWhatMeasured(opaque.spct, "theoretical fully opaque object")
 
 library(photobiologyFilters)
 
-polyester.spct <- filters.mspct$Autostat_CT5_125um
+polyester.spct <- filters.mspct$PET_Autostat_CT5_125um
 setWhatMeasured(polyester.spct, "clear polyester film, 125um thick")
-yellow_gel.spct <- filters.mspct$Canary_Supergel312
+yellow_gel.spct <- filters.mspct$Canary_Supergel_no312
 setWhatMeasured(yellow_gel.spct, "yellow theatrical 'gel', Rosco supergel no. 312, 'canary yellow'")
 
 save(clear.spct, file = "./data/clear.spct.rda")
