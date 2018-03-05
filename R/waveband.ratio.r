@@ -4,10 +4,11 @@
 #' wavebands of a radiation spectrum.
 #'
 #' @param w.length numeric Vector of wavelengths (nm)
-#' @param s.irrad numeric vector of spectral (energy or photon) irradiances
-#'   (W m-2 nm-1) or (mol s-1 m-2 nm-1).
+#' @param s.irrad numeric vector of spectral (energy or photon) irradiances (W
+#'   m-2 nm-1) or (mol s-1 m-2 nm-1).
 #' @param w.band.num waveband object used to compute the numerator of the ratio.
-#' @param w.band.denom waveband object used to compute the denominator of the ratio.
+#' @param w.band.denom waveband object used to compute the denominator of the
+#'   ratio.
 #' @param unit.out.num character Allowed values "energy", and "photon", or its
 #'   alias "quantum".
 #' @param unit.out.denom character Allowed values "energy", and "photon", or its
@@ -25,7 +26,6 @@
 #' @note The default for both \code{w.band} parameters is a waveband covering
 #'   the whole range of \code{w.length}. From version 9.19 onwards use of this
 #'   default does not trigger a warning, but instead is used silently.
-#'
 #'
 #' @return a single numeric value giving the ratio
 #'
@@ -65,9 +65,7 @@ waveband_ratio <-
            check.spectrum = TRUE,
            use.cached.mult = FALSE,
            use.hinges = getOption("photobiology.use.hinges",
-                                  default = NULL),
-           verbose = getOption("photobiology.verbose",
-                               default = FALSE)) {
+                                  default = NULL)) {
     # We duplicate code from irradiance() here to avoid repeated checks
     # and calculations on the same data
     #
@@ -86,29 +84,21 @@ waveband_ratio <-
     # the whole wavelength range of the spectrum for numerator
     if (is.null(w.band.num)) {
       w.band.num <- new_waveband(min(w.length),max(w.length))
-      if (verbose) {
-        message("'w.band.num' not supplied, using whole range of data instead.")
-      }
     }
     # if the waveband for denominator is undefined then use
     # the whole wavelength range of the spectrum for denominator
     if (is.null(w.band.denom)) {
       w.band.denom <- new_waveband(min(w.length),max(w.length))
-      if (verbose) {
-        message("'w.band.denom' not supplied, using whole range of data instead.")
-      }
     }
     # choose whether to use hinges or not
     # if the user has specified its value, we leave it alone
     # but if it was not requested, we decide whether to use
     # it or not based of the wavelength resolution of the
-    # spectrum. This will produce small errors for high
-    # spectral resolution data, and speed up the calculations
-    # a lot in such cases
+    # spectrum.
     if (is.null(use.hinges)) {
       use.hinges <- auto_hinges(w.length)
     }
-    # if the w.band.num and/or w.band.denom include 'hinges' we insert them
+    # if the w.band.num and/or w.band.denom include 'hinges' we insert them.
     # it is o.k. to have hinges unsorted!
     # in new_waveband() NULL hinges are replaced with numeric(0)
     if (use.hinges) {
