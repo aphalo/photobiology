@@ -73,6 +73,7 @@ reference:
     - dim.generic_mspct
     - labels
     - add_attr2tb
+    - copy_attributes
   - title: Summary quantities
     contents:
     - summary
@@ -177,6 +178,7 @@ reference:
     - tz_time_diff
     - day_night
     - sun_angles
+    - relative_AM
     - print.solar_time
     - format.solar_time
   - title: Data for radiation sources
