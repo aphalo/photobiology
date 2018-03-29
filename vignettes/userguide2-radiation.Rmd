@@ -1330,12 +1330,12 @@ Summaries can be calculated both from individual spectral objects (Table 10) and
 | absorptance | -- | -- | -- | + | -- | + | -- |
 | absorbance | -- | -- | -- | + | -- | + | -- |
 | reflectance | -- | -- | -- | -- | + | + | -- |
-| range | + | + | + | + | + | + | + |
-| min | + | + | + | + | + | + | + |
-| max | + | + | + | + | + | + | + |
-| stepsize | + | + | + | + | + | + | + |
-| spread | + | + | + | + | + | + | + |
-| midpoint | + | + | + | + | + | + | + |
+| wl_range | + | + | + | + | + | + | + |
+| wl_min | + | + | + | + | + | + | + |
+| wl_max | + | + | + | + | + | + | + |
+| wl_stepsize | + | + | + | + | + | + | + |
+| wl_expanse | + | + | + | + | + | + | + |
+| wl_midpoint | + | + | + | + | + | + | + |
 | labels | + | + | + | + | + | + | + |
 | summary | + | + | + | + | + | + | + |
 | peaks | -- | + | + | + | + | (+) | (+) |
@@ -1373,12 +1373,12 @@ As mentioned above, summary methods for collections of spectra return data frame
 | absorbance |  -- |  -- |  -- |  * |  -- |  * |  -- | 
 | reflectance |  -- |  -- |  -- |  -- |  * |  * |  -- | 
 | color_of |  -- |  + |  -- |  -- |  -- |  -- |  -- | 
-| range |  + |  + |  + |  + |  + |  + |  + | 
-| min |  + |  + |  + |  + |  + |  + |  + | 
-| max |  + |  + |  + |  + |  + |  + |  + | 
-| stepsize |  + |  + |  + |  + |  + |  + |  + | 
-| spread |  + |  + |  + |  + |  + |  + |  + | 
-| midpoint |  + |  + |  + |  + |  + |  + |  + | 
+| wl_range |  + |  + |  + |  + |  + |  + |  + | 
+| wl_min |  + |  + |  + |  + |  + |  + |  + | 
+| wl_max |  + |  + |  + |  + |  + |  + |  + | 
+| wl_stepsize |  + |  + |  + |  + |  + |  + |  + | 
+| wl_spread |  + |  + |  + |  + |  + |  + |  + | 
+| wl_midpoint |  + |  + |  + |  + |  + |  + |  + | 
 | labels |  **l** |  **l** |  **l** |  **l** |  **l** |  **l** |  **l** | 
 | summary |  **l** |  **l** |  **l** |  **l** |  **l** |  **l** |  **l** | 
 | peaks |  -- |  + |  + |  + |  + |  (+) |  (+) | 
@@ -1404,15 +1404,16 @@ summary(two_suns.spct)
 
 #### Individual spectra
 
-The _usual_ and a couple of new summary functions are available for spectra, but redefined to return wavelength based summaries in nanometres (nm).
+The _usual_ and three new summary methods are available for spectra, but redefined to return wavelength-based summaries in nanometres (nm). For clarity synonims with clearer names are provided. The three new generic methods `midpoint()`, `expanse()` and  `stepsize()` are
+also defined for `numeric`.
 
 ```{r, summary-3}
-range(sun.spct)
-min(sun.spct)
-max(sun.spct)
-midpoint(sun.spct)
-spread(sun.spct)
-stepsize(sun.spct)
+wl_range(sun.spct)
+wl_min(sun.spct)
+wl_max(sun.spct)
+wl_midpoint(sun.spct)
+wl_expanse(sun.spct)
+wl_stepsize(sun.spct)
 ```
 
 #### Collections of spectra
@@ -1427,7 +1428,7 @@ Collections of spectra can be useful not only for time-series of spectra or spec
 filters.mspct <- filter_mspct(list(none = clear.spct,
                                    pet = polyester.spct,
                                    yellow = yellow_gel.spct))
-range(filters.mspct)
+wl_range(filters.mspct)
 ```
 
 ### Peaks and valleys

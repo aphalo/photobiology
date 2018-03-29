@@ -38,7 +38,7 @@ w_length_range2rgb <- function(w.length,
   } else if (len < 1) {
     stop("Bad assertion!")
   }
-  num.values <- min(5L, ceiling(spread(w.length)))
+  num.values <- min(5L, ceiling(expanse(w.length)))
   w.length.values <- seq(w.length[1], w.length[2], length.out = num.values)
   s.e.irrad.values <- rep(1.0, length.out = num.values)
   s_e_irrad2rgb(w.length.values, s.e.irrad.values, sens=sens,

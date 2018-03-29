@@ -17,5 +17,5 @@
 #'
 integrate_xy <- function(x, y) {
   j <- length(x)
-  sum((y[1:j-1] + y[2:j]) * diff(x)) / 2
+  sum((y[1:(j-1)] + y[2:j]) * diff(x)) / 2
 }

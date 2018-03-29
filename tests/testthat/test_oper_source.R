@@ -264,9 +264,9 @@ test_that("irrad e_irrad q_irrad", {
   expect_equal(as.numeric(irrad(sun.spct)), irrad.result, tolerance = 1e-6)
   expect_equal(as.numeric(irrad(sun.spct, quantity = "total")), irrad.result, tolerance = 1e-6)
   expect_equal(as.numeric(irrad(sun.spct, quantity = "average")),
-               irrad.result / spread(sun.spct), tolerance = 1e-6)
+               irrad.result / expanse(sun.spct), tolerance = 1e-6)
   expect_equal(as.numeric(irrad(sun.spct, quantity = "mean")),
-               irrad.result / spread(sun.spct), tolerance = 1e-6)
+               irrad.result / expanse(sun.spct), tolerance = 1e-6)
   expect_equal(as.numeric(irrad(sun.spct, time.unit = "second")),
                irrad.result, tolerance = 1e-6)
   expect_equal(as.numeric(irrad(sun.spct, time.unit = "hour")),
@@ -366,9 +366,9 @@ test_that("irrad e_irrad q_irrad", {
   expect_equal(as.numeric(irrad(sun.spct)), irrad.result, tolerance = 1e-6)
   expect_equal(as.numeric(irrad(sun.spct, quantity = "total")), irrad.result, tolerance = 1e-6)
   expect_equal(as.numeric(irrad(sun.spct, quantity = "average")),
-               irrad.result / spread(sun.spct), tolerance = 1e-6)
+               irrad.result / expanse(sun.spct), tolerance = 1e-6)
   expect_equal(as.numeric(irrad(sun.spct, quantity = "mean")),
-               irrad.result / spread(sun.spct), tolerance = 1e-6)
+               irrad.result / expanse(sun.spct), tolerance = 1e-6)
   expect_equal(as.numeric(irrad(sun.spct, time.unit = "second")),
                irrad.result, tolerance = 1e-6)
   expect_equal(as.numeric(irrad(sun.spct, time.unit = "hour")),

@@ -13,7 +13,7 @@ test_that("construction", {
   expect_true(is_effective(wb1))
   expect_equal(range(wb1), c(200, 350))
   expect_equal(midpoint(wb1), midpoint(c(200, 350)))
-  expect_equal(spread(wb1), spread(c(200, 350)))
+  expect_equal(expanse(wb1), expanse(c(200, 350)))
   expect_equal(min(wb1), 200)
   expect_equal(max(wb1), 350)
 
@@ -25,7 +25,7 @@ test_that("construction", {
   expect_true(is_effective(wb2))
   expect_equal(range(wb2), c(200, 350))
   expect_equal(midpoint(wb2), midpoint(c(200, 350)))
-  expect_equal(spread(wb2), spread(c(200, 350)))
+  expect_equal(expanse(wb2), expanse(c(200, 350)))
   expect_equal(min(wb2), 200)
   expect_equal(max(wb2), 350)
 
@@ -35,7 +35,7 @@ test_that("construction", {
   expect_false(is_effective(wb3))
   expect_equal(range(wb3), c(300, 310))
   expect_equal(midpoint(wb3), midpoint(c(300, 310)))
-  expect_equal(spread(wb3), spread(c(300, 310)))
+  expect_equal(expanse(wb3), expanse(c(300, 310)))
   expect_equal(min(wb3), 300)
   expect_equal(max(wb3), 310)
 
@@ -45,7 +45,7 @@ test_that("construction", {
   expect_false(is_effective(wb3))
   expect_true(all(is.na(range(wb3))))
   expect_true(all(is.na(midpoint(wb3))))
-  expect_true(all(is.na(spread(wb3))))
+  expect_true(all(is.na(expanse(wb3))))
   expect_true(all(is.na(min(wb3))))
   expect_true(all(is.na(max(wb3))))
 

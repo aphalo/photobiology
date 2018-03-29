@@ -1,3 +1,14 @@
+TODO: Add test cases for the wl_ wrappers on w.length methods.
+
+photobiology 0.9.20
+===================
+
+* To improve clarity of user code, define wrappers for methods max(), min(),
+range(), midpoint(), and spread() with names with wl_ prepended (e.g. wl_max()).
+Rename method spread() to expanse() and deprecate use of spread().
+In the case of wl_expanse() and expanse() the new names prevent a name clash
+with tidyr::spread().
+
 photobiology 0.9.19
 ===================
 
