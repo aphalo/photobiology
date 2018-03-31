@@ -249,7 +249,7 @@ absorptance_spct <-
         absorptance <- absorptance * 1e2
       }
     } else if (quantity %in% c("average", "mean")) {
-      absorptance <- absorptance / sapply(w.band, spread)
+      absorptance <- absorptance / sapply(w.band, wl_expanse)
     }
     if (length(absorptance) == 0) {
       absorptance <- NA

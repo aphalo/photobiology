@@ -43,7 +43,8 @@ wl_range <- function(x, na.rm = FALSE) {
 
 #' Wavelength range
 #'
-#' A function that returns the wavelength range.
+#' A method specialization that returns the wavelength range from objects of
+#' classes "waveband" or of class "generic_spct" or derived.
 #'
 #' @param ... a single R object
 #' @param na.rm ignored
@@ -52,6 +53,10 @@ wl_range <- function(x, na.rm = FALSE) {
 #' @name range
 #'
 #' @family wavelength summaries
+#'
+#' @examples
+#' range(sun.spct)
+#' wl_range(sun.spct)
 #'
 range.waveband <- function(..., na.rm = FALSE) {
   x <- c(...)
@@ -102,7 +107,8 @@ wl_min <- function(x, na.rm = FALSE) {
 
 #' Wavelength minimum
 #'
-#' A function that returns the wavelength minimum.
+#' A method specialization that returns the wavelength minimum from objects of
+#' classes "waveband" or of class "generic_spct" or derived.
 #'
 #' @param ... not used in current version
 #' @param na.rm ignored
@@ -112,6 +118,10 @@ wl_min <- function(x, na.rm = FALSE) {
 #'
 #' @family wavelength summaries
 #'
+#' @examples
+#' min(sun.spct)
+#' wl_min(sun.spct)
+#'
 min.waveband <- function(..., na.rm = FALSE) {
   x <- c(...)
     return(x$low)
@@ -120,9 +130,6 @@ min.waveband <- function(..., na.rm = FALSE) {
 #' @describeIn min
 #'
 #' @export
-#'
-#' @examples
-#' min(sun.spct)
 #'
 min.generic_spct <- function(..., na.rm = FALSE) {
   wl <- list(...)[[1]][["w.length"]]
@@ -160,13 +167,18 @@ wl_max <- function(x, na.rm = FALSE) {
 
 #' Wavelength maximum
 #'
-#' A function that returns the wavelength maximum from objects of class "waveband".
+#' A method specialization that returns the wavelength maximum from objects of
+#' classes "waveband" or of class "generic_spct" or derived.
 #'
 #' @param ... not used in current version
 #' @param na.rm ignored
 #' @export
 #'
 #' @name max
+#'
+#' @examples
+#' max(sun.spct)
+#' wl_max(sun.spct)
 #'
 max.waveband <- function(..., na.rm = FALSE) {
   x <- c(...)
@@ -176,9 +188,6 @@ max.waveband <- function(..., na.rm = FALSE) {
 #' @describeIn max
 #'
 #' @export
-#'
-#' @examples
-#' max(sun.spct)
 #'
 max.generic_spct <- function(..., na.rm=FALSE) {
   wl <- list(...)[[1]][["w.length"]]
@@ -213,9 +222,10 @@ wl_midpoint <- function(x, ...) {
   midpoint(x, ...)
 }
 
-#' Central wavelength value
+#' Midpoint
 #'
-#' A function that returns the wavelength at the center of the wavelength range.
+#' A function that returns the wavelength (or value) at the center of the
+#' of the wavelength range of a waveband or spectrum object (or numeric vector).
 #'
 #' @param x an R object
 #' @param ... not used in current version
@@ -226,6 +236,11 @@ wl_midpoint <- function(x, ...) {
 #' definitions of \code{\link{min}} and \code{\link{max}}.
 #'
 #' @family wavelength summaries
+#'
+#' @examples
+#' midpoint(10:20)
+#' midpoint(sun.spct)
+#' wl_midpoint(sun.spct)
 #'
 midpoint <- function(x, ...) UseMethod("midpoint")
 
@@ -291,8 +306,8 @@ midpoint.generic_mspct <- function(x, ..., idx = !is.null(names(x))) {
 #' @export
 #'
 spread <- function(x, ...) {
-  message("Use of method photobiology::expanse() is deprecated. It has been",
-          "renamed into expanse() to avoid a name clash with 'tidyr::expanse()'.")
+  message("Use of method photobiology::spread() is deprecated. It has been ",
+          "renamed into expanse() to avoid a name clash with 'tidyr::spread()'.")
   expanse(x, ...)
 }
 
@@ -305,7 +320,7 @@ wl_expanse <- function(x, ...) {
   expanse(x, ...)
 }
 
-#' Length of object in wavelength units
+#' Expanse
 #'
 #' A function that returns the expanse (max(x) - min(x)) for R objects.
 #'
@@ -317,6 +332,11 @@ wl_expanse <- function(x, ...) {
 #'   available definitions of \code{\link{min}} and \code{\link{max}}.
 #'
 #' @export expanse
+#'
+#' @examples
+#' expanse(10:20)
+#' expanse(sun.spct)
+#' wl_expanse(sun.spct)
 #'
 expanse <- function(x, ...) UseMethod("expanse")
 
@@ -497,8 +517,10 @@ wl_stepsize <- function(x, ...) {
 #' @return A numeric vector of length 2 with min and maximum stepsize values.
 #' @export
 #' @family wavelength summaries
+#'
 #' @examples
 #' stepsize(sun.spct)
+#' wl_stepsize(sun.spct)
 #'
 stepsize <- function(x, ...) UseMethod("stepsize")
 

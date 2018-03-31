@@ -236,7 +236,7 @@ resp_spct <-
         }
       }
     } else if (quantity %in% c("average", "mean")) {
-      response <- response / sapply(w.band, spread)
+      response <- response / sapply(w.band, wl_expanse)
     } else if (quantity != "total") {
       warning("'quantity '", quantity, "' is invalid, returning 'total' instead")
       quantity <- "total"

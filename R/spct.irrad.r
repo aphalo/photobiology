@@ -266,7 +266,7 @@ irrad.source_spct <-
         }
       }
     } else if (quantity %in% c("average", "mean") ) {
-      irrad <- irrad / sapply(w.band, spread)
+      irrad <- irrad / sapply(w.band, wl_expanse)
     } else if (quantity != "total") {
       warning("'quantity '", quantity, "' is invalid, returning 'total' instead")
       quantity <- "total"

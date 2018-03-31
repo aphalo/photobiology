@@ -36,6 +36,46 @@ test_that("constructors", {
   expect_true(is.filter_spct(my.mspct[["yellow"]]))
   expect_true(is.filter_spct(my.mspct[["pet"]]))
 
+  my.mspct <- as.filter_mspct(polyester.spct)
+  expect_true(is.filter_mspct(my.mspct))
+  expect_true(is.any_mspct(my.mspct))
+  expect_named(my.mspct, c("spct_1"))
+  expect_true(is.filter_spct(my.mspct[["spct_1"]]))
+
+  my.mspct <- as.filter_mspct(data.frame(w.length = 400:500, Tfr = 0.5))
+  expect_true(is.filter_mspct(my.mspct))
+  expect_true(is.any_mspct(my.mspct))
+  expect_named(my.mspct, c("spct_1"))
+  expect_true(is.filter_spct(my.mspct[["spct_1"]]))
+
+  my.mspct <- as.filter_mspct(tibble::tibble(w.length = 400:500, Tfr = 0.5))
+  expect_true(is.filter_mspct(my.mspct))
+  expect_true(is.any_mspct(my.mspct))
+  expect_named(my.mspct, c("spct_1"))
+  expect_true(is.filter_spct(my.mspct[["spct_1"]]))
+
+  my.mspct <- as.filter_mspct(list(data.frame(w.length = 400:500, Tfr = 0.1),
+                                   data.frame(w.length = 400:500, Tfr = 0.2)))
+  expect_true(is.filter_mspct(my.mspct))
+  expect_true(is.any_mspct(my.mspct))
+  expect_named(my.mspct, c("spct_1", "spct_2"))
+  expect_true(is.filter_spct(my.mspct[["spct_1"]]))
+  expect_true(is.filter_spct(my.mspct[["spct_1"]]))
+
+  my.mspct <- as.filter_mspct(list(A = data.frame(w.length = 400:500, Tfr = 0.1),
+                                   B = data.frame(w.length = 400:500, Tfr = 0.2)))
+  expect_true(is.filter_mspct(my.mspct))
+  expect_true(is.any_mspct(my.mspct))
+  expect_named(my.mspct, c("A", "B"))
+  expect_true(is.filter_spct(my.mspct[["A"]]))
+  expect_true(is.filter_spct(my.mspct[["B"]]))
+
+  expect_message(as.filter_mspct(1))
+  expect_message(as.filter_mspct("abc"))
+  expect_message(as.filter_mspct(TRUE))
+  expect_error(as.filter_mspct(list(w.length = 400:500,
+                                    Tfr = rep(0.3, 101))))
+
   expect_error(as.filter_spct(my.mspct))
   expect_error(as.reflector_spct(my.mspct))
   expect_error(as.object_spct(my.mspct))
@@ -45,41 +85,6 @@ test_that("constructors", {
 
   empty.mspct <- filter_mspct()
   expect_true(is.filter_mspct(empty.mspct))
-  expect_true(is.any_mspct(empty.mspct))
-  expect_true(is.null(names(empty.mspct)))
-
-  empty.mspct <- response_mspct()
-  expect_true(is.response_mspct(empty.mspct))
-  expect_true(is.any_mspct(empty.mspct))
-  expect_true(is.null(names(empty.mspct)))
-
-  empty.mspct <- filter_mspct()
-  expect_true(is.filter_mspct(empty.mspct))
-  expect_true(is.any_mspct(empty.mspct))
-  expect_true(is.null(names(empty.mspct)))
-
-  empty.mspct <- reflector_mspct()
-  expect_true(is.reflector_mspct(empty.mspct))
-  expect_true(is.any_mspct(empty.mspct))
-  expect_true(is.null(names(empty.mspct)))
-
-  empty.mspct <- object_mspct()
-  expect_true(is.object_mspct(empty.mspct))
-  expect_true(is.any_mspct(empty.mspct))
-  expect_true(is.null(names(empty.mspct)))
-
-  empty.mspct <- cps_mspct()
-  expect_true(is.cps_mspct(empty.mspct))
-  expect_true(is.any_mspct(empty.mspct))
-  expect_true(is.null(names(empty.mspct)))
-
-  empty.mspct <- raw_mspct()
-  expect_true(is.raw_mspct(empty.mspct))
-  expect_true(is.any_mspct(empty.mspct))
-  expect_true(is.null(names(empty.mspct)))
-
-  empty.mspct <- chroma_mspct()
-  expect_true(is.chroma_mspct(empty.mspct))
   expect_true(is.any_mspct(empty.mspct))
   expect_true(is.null(names(empty.mspct)))
 
@@ -471,11 +476,15 @@ test_that("filter_mspct_internal", {
                c("one", "two", "three", "four", "five"))
   expect_equal(min(my.mspct)[["min.wl"]], rep(400, 5))
   expect_equal(min(my_named.mspct)[["min.wl"]], rep(400, 5))
+  expect_equal(min(my.mspct), wl_min(my.mspct))
+  expect_equal(min(my_named.mspct), wl_min(my_named.mspct))
 
   # max ---------------------------------------------------------------------
 
   expect_equal(max(my.mspct)[["max.wl"]], rep(410, 5))
   expect_equal(max(my_named.mspct)[["max.wl"]], rep(410, 5))
+  expect_equal(max(my.mspct), wl_max(my.mspct))
+  expect_equal(max(my_named.mspct), wl_max(my_named.mspct))
 
   # range -------------------------------------------------------------------
 
@@ -483,6 +492,23 @@ test_that("filter_mspct_internal", {
   expect_equal(range(my_named.mspct)[["min.wl"]], rep(400, 5))
   expect_equal(range(my.mspct)[["max.wl"]], rep(410, 5))
   expect_equal(range(my_named.mspct)[["max.wl"]], rep(410, 5))
+  expect_equal(range(my.mspct), wl_range(my.mspct))
+  expect_equal(range(my_named.mspct), wl_range(my_named.mspct))
+
+  # midpoint ----------------------------------------------------------------
+
+  expect_equal(midpoint(my.mspct)[["midpoint.wl"]], rep(405, 5))
+  expect_equal(midpoint(my_named.mspct)[["midpoint.wl"]], rep(405, 5))
+  expect_equal(midpoint(my.mspct), wl_midpoint(my.mspct))
+  expect_equal(midpoint(my_named.mspct), wl_midpoint(my_named.mspct))
+
+  # expanse -----------------------------------------------------------------
+
+  expect_equal(expanse(my.mspct)[["expanse_V1"]], rep(10, 5))
+  expect_equal(expanse(my_named.mspct)[["expanse_V1"]], rep(10, 5))
+  expect_equal(expanse(my.mspct), wl_expanse(my.mspct))
+  expect_equal(expanse(my_named.mspct), wl_expanse(my_named.mspct))
+  expect_message(spread(my.mspct[[1]]))
 
   # constructor methods for 'wide' data frames ------------------------------
 

@@ -195,7 +195,7 @@ reflectance_spct <-
        reflectance <- reflectance * 1e2
      }
    } else if (quantity %in% c("average", "mean")) {
-     reflectance <- reflectance / sapply(w.band, spread)
+     reflectance <- reflectance / sapply(w.band, wl_expanse)
    } else if (quantity == "total") {
    } else if (quantity != "total") {
      warning("'quantity '", quantity, "' is invalid, returning 'total' instead")

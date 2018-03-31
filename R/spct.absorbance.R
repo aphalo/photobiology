@@ -193,8 +193,10 @@ absorbance_spct <-
     }
 
     if (quantity %in% c("contribution", "contribution.pc")) {
-      total <- absorbance_spct(spct, w.band=NULL,
-                                  quantity="total", use.hinges=use.hinges)
+      total <- absorbance_spct(spct,
+                               w.band = NULL,
+                               quantity = "total",
+                               use.hinges = use.hinges)
       absorbance <- absorbance / total
       if (quantity == "contribution.pc") {
         absorbance <- absorbance * 1e2
@@ -206,7 +208,7 @@ absorbance_spct <-
         absorbance <- absorbance * 1e2
       }
     } else if (quantity %in% c("average", "mean")) {
-      absorbance <- absorbance / sapply(w.band, spread)
+      absorbance <- absorbance / sapply(w.band, wl_expanse)
     }
     if (length(absorbance) == 0) {
       absorbance <- NA
