@@ -32,7 +32,7 @@
 #'
 #' @export
 #'
-#' @family creation of spectral objects functions
+#' @family constructors of spectral objects
 #'
 #' @rdname source_spct
 #'
@@ -369,118 +369,269 @@ chroma_spct <- function(w.length=NULL,
   z
 }
 
-# as functions for spct classes --------------------------------------------
+# as methods for spct classes --------------------------------------------
 
-#' Spectral-object copy constructor
+#' Coerce to a spectrum
 #'
 #' Return a copy of an R object with its class set to a given type of spectrum.
 #'
 #' @param x an R object
 #' @param ... other arguments passed to "set" functions
 #'
-#' @return These functions return a copy of \code{x} converted into a given
-#'   class of spectral object, if \code{x} is a valid argument to the
-#'   corresponding set function.
+#' @return A copy of \code{x} converted into a \code{generic_spct} object.
+#'
+#' @seealso \code{\link{setGenericSpct}}
 #'
 #' @export
 #'
-#' @family creation of spectral objects functions
-#' @rdname as.generic_spct
+#' @family constructors of spectral objects
 #'
-as.generic_spct <- function(x, ...) {
+as.generic_spct <- function(x, ...) {UseMethod("as.generic_spct")}
+
+#' @describeIn as.generic_spct
+#'
+#' @export
+#'
+as.generic_spct.default <- function(x, ...) {
   setGenericSpct(x, ...)
 }
 
-#' @rdname as.generic_spct
+#' Coerce to a spectrum
+#'
+#' Return a copy of an R object with its class set to a given type of spectrum.
+#'
+#' @param x an R object
+#' @param ... other arguments passed to "set" functions
+#'
+#' @return A copy of \code{x} converted into a \code{calibration_spct} object.
+#'
+#' @seealso \code{\link{setGenericSpct}}
 #'
 #' @export
 #'
-as.calibration_spct <- function(x, ...) {
+#' @family constructors of spectral objects
+#'
+as.calibration_spct <- function(x, ...) {UseMethod("as.calibration_spct")}
+
+#'@describeIn as.generic_spct
+#'
+#' @export
+#'
+as.calibration_spct.default <- function(x, ...) {
   setCalibrationSpct(x, ...)
 }
 
-#' @rdname as.generic_spct
+#' Coerce to a spectrum
+#'
+#' Return a copy of an R object with its class set to a given type of spectrum.
+#'
+#' @param x an R object
+#' @param ... other arguments passed to "set" functions
+#'
+#' @return A copy of \code{x} converted into a \code{raw_spct} object.
+#'
+#' @seealso \code{\link{setGenericSpct}}
 #'
 #' @export
 #'
-as.raw_spct <- function(x, ...) {
+#' @family constructors of spectral objects
+#'
+as.raw_spct <- function(x, ...) {UseMethod("as.raw_spct")}
+
+#' @describeIn as.generic_spct
+#'
+#' @export
+#'
+as.raw_spct.default <- function(x, ...) {
   setRawSpct(x, ...)
 }
 
-#' @rdname as.generic_spct
+#' Coerce to a spectrum
+#'
+#' Return a copy of an R object with its class set to a given type of spectrum.
+#'
+#' @param x an R object
+#' @param ... other arguments passed to "set" functions
+#'
+#' @return A copy of \code{x} converted into a \code{cps_spct} object.
+#'
+#' @seealso \code{\link{setGenericSpct}}
 #'
 #' @export
 #'
-as.cps_spct <- function(x, ...) {
+#' @family constructors of spectral objects
+#'
+as.cps_spct <- function(x, ...) {UseMethod("as.cps_spct")}
+
+#' @describeIn as.cps_spct
+#'
+#' @export
+#'
+as.cps_spct.default <- function(x, ...) {
   setCpsSpct(x, ...)
 }
 
-#' @rdname as.generic_spct
+#' Coerce to a spectrum
 #'
+#' Return a copy of an R object with its class set to a given type of spectrum.
+#'
+#' @param x an R object
 #' @param time.unit character A string, "second", "day" or "exposure"
 #' @param bswf.used character
 #' @param strict.range logical Flag indicating whether off-range values result
 #'   in an error instead of a warning
+#' @param ... other arguments passed to "set" functions
+#'
+#' @return A copy of \code{x} converted into a \code{source_spct} object.
+#'
+#' @seealso \code{\link{setGenericSpct}}
 #'
 #' @export
 #'
-as.source_spct <- function(x,
-                           time.unit=c("second", "day", "exposure"),
-                           bswf.used=c("none", "unknown"),
-                           strict.range = getOption("photobiology.strict.range", default = FALSE),
-                           ...) {
-  setSourceSpct(x,
-                time.unit = time.unit,
-                strict.range = strict.range,
-                bswf.used = bswf.used,
-                ...)
-}
+#' @family constructors of spectral objects
+#'
+as.source_spct <- function(x, ...) {UseMethod("as.source_spct")}
 
-#' @rdname as.generic_spct
+#' @describeIn as.source_spct
 #'
 #' @export
 #'
-as.response_spct <- function(x, time.unit = "second", ...) {
+as.source_spct.default <-
+  function(x,
+           time.unit=c("second", "day", "exposure"),
+           bswf.used=c("none", "unknown"),
+           strict.range = getOption("photobiology.strict.range", default = FALSE),
+           ...) {
+    setSourceSpct(x,
+                  time.unit = time.unit,
+                  strict.range = strict.range,
+                  bswf.used = bswf.used,
+                  ...)
+  }
+
+#' Coerce to a spectrum
+#'
+#' Return a copy of an R object with its class set to a given type of spectrum.
+#'
+#' @param x an R object
+#' @param time.unit character A string, "second", "day" or "exposure"
+#' @param ... other arguments passed to "set" functions
+#'
+#' @return A copy of \code{x} converted into a \code{response_spct} object.
+#'
+#' @seealso \code{\link{setGenericSpct}}
+#'
+#' @export
+#'
+#' @family constructors of spectral objects
+#'
+as.response_spct <- function(x, ...) {UseMethod("as.response_spct")}
+
+#' @describeIn as.response_spct
+#'
+#' @export
+#'
+as.response_spct.default <- function(x, time.unit = "second", ...) {
   setResponseSpct(x, time.unit = time.unit, ...)
 }
 
-#' @rdname as.generic_spct
+#' Coerce to a spectrum
 #'
+#' Return a copy of an R object with its class set to a given type of spectrum.
+#'
+#' @param x an R object
 #' @param Tfr.type a character string, either "total" or "internal"
+#' @param strict.range logical Flag indicating whether off-range values result
+#'   in an error instead of a warning
+#' @param ... other arguments passed to "set" functions
+#'
+#' @return A copy of \code{x} converted into a \code{filter_spct} object.
+#'
+#' @seealso \code{\link{setGenericSpct}}
 #'
 #' @export
 #'
-as.filter_spct <- function(x,
-                           Tfr.type = c("total", "internal"),
-                           strict.range = getOption("photobiology.strict.range", default = FALSE),
-                           ...) {
-  setFilterSpct(x,
-                Tfr.type = Tfr.type,
-                strict.range = strict.range,
-                ...)
-}
-
-#' @rdname as.generic_spct
+#' @family constructors of spectral objects
 #'
+as.filter_spct <- function(x, ...) {UseMethod("as.filter_spct")}
+
+#'@describeIn as.filter_spct
+#'
+#' @export
+#'
+as.filter_spct.default <-
+  function(x,
+           Tfr.type = c("total", "internal"),
+           strict.range = getOption("photobiology.strict.range", default = FALSE),
+           ...) {
+    setFilterSpct(x,
+                  Tfr.type = Tfr.type,
+                  strict.range = strict.range,
+                  ...)
+  }
+
+#' Coerce to a spectrum
+#'
+#' Return a copy of an R object with its class set to a given type of spectrum.
+#'
+#' @param x an R object
 #' @param Rfr.type a character string, either "total" or "specular"
+#' @param strict.range logical Flag indicating whether off-range values result
+#'   in an error instead of a warning
+#' @param ... other arguments passed to "set" functions
+#'
+#' @return A copy of \code{x} converted into a \code{reflector_spct} object.
+#'
+#' @seealso \code{\link{setGenericSpct}}
 #'
 #' @export
 #'
-as.reflector_spct <- function(x,
-                              Rfr.type = c("total", "specular"),
-                              strict.range = getOption("photobiology.strict.range", default = FALSE),
-                              ...) {
-  setReflectorSpct(x,
-                   Rfr.type = Rfr.type,
-                   strict.range = strict.range,
-                   ...)
-}
+#' @family constructors of spectral objects
+#'
+as.reflector_spct <- function(x, ...) {UseMethod("as.reflector_spct")}
 
-#' @rdname as.generic_spct
+#' @describeIn as.reflector_spct
+#'
 #'
 #' @export
 #'
-as.object_spct <- function(x,
+as.reflector_spct.default <-
+  function(x,
+           Rfr.type = c("total", "specular"),
+           strict.range = getOption("photobiology.strict.range", default = FALSE),
+           ...) {
+    setReflectorSpct(x,
+                     Rfr.type = Rfr.type,
+                     strict.range = strict.range,
+                     ...)
+  }
+
+#' Coerce to a spectrum
+#'
+#' Return a copy of an R object with its class set to a given type of spectrum.
+#'
+#' @param x an R object
+#' @param Tfr.type a character string, either "total" or "internal"
+#' @param Rfr.type a character string, either "total" or "specular"
+#' @param strict.range logical Flag indicating whether off-range values result
+#'   in an error instead of a warning
+#' @param ... other arguments passed to "set" functions
+#'
+#' @return A copy of \code{x} converted into a \code{object_spct} object.
+#'
+#' @seealso \code{\link{setGenericSpct}}
+#'
+#' @export
+#'
+#' @family constructors of spectral objects
+#'
+as.object_spct <- function(x, ...) {UseMethod("as.object_spct")}
+
+#' @describeIn as.object_spct
+#'
+#' @export
+#'
+as.object_spct.default <- function(x,
                            Tfr.type=c("total", "internal"),
                            Rfr.type=c("total", "specular"),
                            strict.range = getOption("photobiology.strict.range", default = FALSE),
@@ -492,14 +643,30 @@ as.object_spct <- function(x,
                 ...)
 }
 
-#' @rdname as.generic_spct
+#' Coerce to a spectrum
+#'
+#' Return a copy of an R object with its class set to a given type of spectrum.
+#'
+#' @param x an R object
+#' @param ... other arguments passed to "set" functions
+#'
+#' @return A copy of \code{x} converted into a \code{chroma_spct} object.
+#'
+#' @seealso \code{\link{setGenericSpct}}
 #'
 #' @export
 #'
-as.chroma_spct <- function(x, ...) {
+#' @family constructors of spectral objects
+#'
+as.chroma_spct <- function(x, ...) {UseMethod("as.chroma_spct")}
+
+#' @describeIn as.generic_spct
+#'
+#' @export
+#'
+as.chroma_spct.default <- function(x, ...) {
   setChromaSpct(x, ...)
 }
-
 
 # merge -------------------------------------------------------------------
 

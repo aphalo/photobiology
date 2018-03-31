@@ -8,6 +8,9 @@ range(), midpoint(), and spread() with names with wl_ prepended (e.g. wl_max()).
 Rename method spread() to expanse() and deprecate use of spread().
 In the case of wl_expanse() and expanse() the new names prevent a name clash
 with tidyr::spread().
+* Redefine all 'as.' class-coersion functions into generic methods, and add
+specializations. Default behaviour remains unchanged.
+* Add function relative_AM() to compute relative air mass from sun elevation.
 
 photobiology 0.9.19
 ===================
