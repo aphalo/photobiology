@@ -1,14 +1,6 @@
-<<<<<<< HEAD
-# R package 'photobiology' #
-
-[![](http://www.r-pkg.org/badges/version/photobiology)](https://cran.r-project.org/package=photobiology) [![](http://cranlogs.r-pkg.org/badges/photobiology)](http://cran.rstudio.com/web/packages/photobiology/index.html) [![](http://cranlogs.r-pkg.org/badges/grand-total/photobiology)](http://cran.rstudio.com/web/packages/photobiology/index.html)
-
-Package __photobiology__ is a set of tools designed to facilitate photobiology-related data analysis and simulation. It is the core a suite of packages with additional packages providing support for plotting spectra with pacakge 'ggplot2', example data sets and definitions that are specific to certain subject areas.
-=======
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 photobiology
 ============
->>>>>>> calibration_spct
 
 [![](http://www.r-pkg.org/badges/version/photobiology)](https://cran.r-project.org/package=photobiology) [![](http://cranlogs.r-pkg.org/badges/photobiology)](https://cran.r-project.org/package=photobiology) [![](http://cranlogs.r-pkg.org/badges/grand-total/photobiology)](https://cran.r-project.org/package=photobiology)
 
@@ -21,9 +13,6 @@ This package is the core of a suite of R packages for photobiological calculatio
 Example
 -------
 
-<<<<<<< HEAD
-The current release of __photobiology__ is available through [CRAN](https://cran.r-project.org/package=photobiology).
-=======
 This is a basic example which shows you how to calculate solar irradiance under a filter from a measured solar spectrum and a measured filter transmission spectrum:
 
 ``` r
@@ -104,4 +93,3 @@ License
 -------
 
 © 2012-2018 Pedro J. Aphalo (<pedro.aphalo@helsinki.fi>). Released under the GPL, version 2 or greater. This software carries no warranty of any kind.
->>>>>>> calibration_spct
