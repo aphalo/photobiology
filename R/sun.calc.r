@@ -394,12 +394,6 @@ day_night_fast <- function(date,
                        second = 3600,
                        day = 1/24)
 
-  if (unit.out == "datetime") {
-    duration.unit.out <- "hours"
-  } else {
-    duration.unit.out <- unit.out
-  }
-
   # not vectorized, but possibly different angle for sunset and sunrise
   # twilight.angles is always of length 2
   twilight.angles <- twilight2angle(twilight)
@@ -709,7 +703,7 @@ as_tod <- function(x, unit.out = "hours", tz = NULL) {
 #'   parameter time. In the case of solar time, this timezone does not affect
 #'   the result. However, in the case of solar dates the date part may be
 #'   off by one day, if the time zone does not match the coordinates of the
-#'   goecode value provided as argument.
+#'   geocode value provided as argument.
 #'
 #' @return For \code{solar_time()} numeric value in seconds from midnight but
 #'   with an additional class attribute "solar.time".

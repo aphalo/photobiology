@@ -103,7 +103,7 @@ oper.e.generic_spct <- function(e1, e2, oper) {
         return(NA)
       }
       if (is_effective(e1) && !is_effective(e2)) {
-        bwswf.used <- getBSWFUsed(e1)
+        bswf.used <- getBSWFUsed(e1)
       } else if (!is_effective(e1) && is_effective(e2)) {
         bswf.used <- labels(e2)[["name"]]
       } else if (is_effective(e1) && is_effective(e2)) {
@@ -642,7 +642,7 @@ oper.q.generic_spct <- function(e1, e2, oper) {
         return(NA)
       }
       if (is_effective(e1) && !is_effective(e2)) {
-        bwswf.used <- getBSWFUsed(e1)
+        bswf.used <- getBSWFUsed(e1)
       } else if (!is_effective(e1) && is_effective(e2)) {
         bswf.used <- labels(e2)[["name"]]
       } else if (is_effective(e1) && is_effective(e2)) {
@@ -1119,7 +1119,7 @@ oper.q.generic_spct <- function(e1, e2, oper) {
 
 #' Arithmetic Operators
 #'
-#' Substraction operator for generic spectra.
+#' Subtraction operator for generic spectra.
 #'
 #' @param e1 an object of class "generic_spct"
 #' @param e2 an object of class "generic_spct"
@@ -1721,7 +1721,7 @@ T2Afr.filter_spct <- function(x,
       x <- using_Tfr(clean(x))
     }
     x[["Afr"]] <- 1 - x[["Tfr"]]
-    setAfrType(x, getTfrType(x))
+    setAfrType(x, Tfr.type)
   }
   if (action=="replace" && exists("Tfr", x, inherits=FALSE)) {
     x[["Tfr"]] <- NULL

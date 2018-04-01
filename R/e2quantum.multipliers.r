@@ -19,11 +19,11 @@
 e2quantum_multipliers <- function(w.length, molar = FALSE){
   # E = hc / w.length energy of one photon
   # converting (energy) irradiance (I) to photon irradiance (Q): I / E = Q
-  h = 6.626e-34 # Plank's constant (Js)
-  c = 2.998e8 # speed of light in vacuum (m/s), so we convert m/s to nm/s
-  Na = 6.02214129e23 # Avogadro's number, photons per mol
+  h <- 6.626e-34 # Plank's constant (Js)
+  c <- 2.998e8 # speed of light in vacuum (m/s), so we convert m/s to nm/s
+  Na <- 6.02214129e23 # Avogadro's number, photons per mol
 
-  hc = h * c * 1e9
-  if (molar) hc = hc * Na
+  hc <- h * c * 1e9
+  if (molar) hc <- hc * Na
   return(w.length  / hc)
 }

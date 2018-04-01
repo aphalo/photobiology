@@ -99,9 +99,9 @@ class(mixed.mspct)
 lapply(mixed.mspct, class_spct)
 
 ## ---- col-construction-3-------------------------------------------------
-two_gen.mscpt <- as.generic_mspct(two_suns.mspct)
-class(two_gen.mscpt)
-lapply(two_gen.mscpt, class_spct)
+two_gen.mspct <- as.generic_mspct(two_suns.mspct)
+class(two_gen.mspct)
+lapply(two_gen.mspct, class_spct)
 
 ## ---- bind-1-------------------------------------------------------------
 two_suns.spct <- rbindspct(list(a = sun.spct, b = sun.spct / 2))

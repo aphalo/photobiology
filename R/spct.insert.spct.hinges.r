@@ -40,7 +40,6 @@ insert_spct_hinges <- function(spct, hinges=NULL, byref = FALSE) {
     name <- substitute(spct)
     names.spct <- names(spct)
     names.data <- names.spct != "w.length"
-    idx.wl <- which(!names.data)
     idx.data <- which(names.data)
     class_spct <- class(spct)
     comment.spct <- comment(spct)

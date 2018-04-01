@@ -176,8 +176,6 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
   what.measured <- lapply(l, getWhatMeasured)
   names(what.measured) <- names.spct
 
-  add.bswf <- FALSE
-
   if (l.class == "source_spct") {
     time.unit <- sapply(l, FUN = getTimeUnit)
     names(time.unit) <- NULL
@@ -189,15 +187,12 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
     if (any(effective.input)) {
       bswfs.input <- sapply(l, FUN = getBSWFUsed)
       if (length(unique(bswfs.input)) > 1L) {
-        add.bswf <- TRUE
         bswf.used <- "multiple"
         ans[["BSWF"]] <- factor(rep(bswfs.input, times = sapply(l, FUN = nrow)), levels = bswfs.input)
       } else {
-        add.bswf <- FALSE
         bswf.used <- bswfs.input[1]
       }
     } else {
-      add.bswf <- FALSE
       bswf.used <- "none"
     }
     setSourceSpct(ans, time.unit = time.unit[1], bswf.used = bswf.used, multiple.wl = mltpl.wl)
@@ -483,7 +478,6 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
     }
     if (is.data.frame(xx)) {
       if ("w.length" %in% names(xx)) {
-        Rfr.type <- getRfrType(x)
         setReflectorSpct(x = xx,
                          Rfr.type = getRfrType(x),
                          multiple.wl = getMultipleWl(x),
@@ -624,7 +618,7 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
 # Check if class_spct is compatible with class_mspct
 #
 is.member_class <- function(l, x) {
-  class(l)[1] == "generic_mscpt" && is.generic_spct(x) ||
+  class(l)[1] == "generic_mspct" && is.generic_spct(x) ||
     sub("_mspct", "", class(l)[1], fixed = TRUE) == sub("_spct", "", class(x)[1], fixed = TRUE)
 }
 

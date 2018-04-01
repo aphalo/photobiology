@@ -18,7 +18,7 @@
 #' @param ... other arguments (possibly ignored)
 #'
 #' @return In the case of methods for individual spectra, a \code{numeric}
-#'   vector of nondimensional values giving a photon ratio between integrated
+#'   vector of adimensional values giving a photon ratio between integrated
 #'   photon irradiances for pairs of wavebands, with name attribute set to
 #'   the name of the wavebands unless a named list of wavebands is supplied in
 #'   which case the names of the list elements are used, with "(q:q)" appended.
@@ -109,7 +109,7 @@ q_ratio.source_spct <-
 #' @param ... other arguments (possibly used by derived methods).
 #'
 #' @return In the case of methods for individual spectra, a \code{numeric}
-#'   vector of nondimensional values giving a energy ratio between
+#'   vector of adimensional values giving a energy ratio between
 #'   integrated energy irradiances for pairs of wavebands, with name attribute
 #'   set to the name of the wavebands unless a named list of wavebands is
 #'   supplied in which case the names of the list elements are used, with

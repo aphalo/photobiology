@@ -55,7 +55,7 @@ msmsply <- function(mspct, .fun, ...,
 #'
 #' @param idx logical whether to add a column with the names of the elements of
 #'   mspct, if \code{NULL}, the default, a column is added only if all members
-#'   of \code{mscpt} are named.
+#'   of \code{mspct} are named.
 #' @param col.names character Names to be used for data columns.
 #'
 #' @return a data frame in the case of \code{msdply}

@@ -12,7 +12,7 @@
 
 <meta name="author" content="Pedro J. Aphalo" />
 
-<meta name="date" content="2018-03-31" />
+<meta name="date" content="2018-04-01" />
 
 <title>User Guide: 2 Radiation</title>
 
@@ -69,9 +69,9 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 
 <h1 class="title toc-ignore">User Guide: 2 Radiation</h1>
-<h3 class="subtitle"><em>Package ‘photobiology’ 0.9.19.9001</em></h3>
+<h3 class="subtitle"><em>Package ‘photobiology’ 0.9.20</em></h3>
 <h4 class="author"><em>Pedro J. Aphalo</em></h4>
-<h4 class="date"><em>2018-03-31</em></h4>
+<h4 class="date"><em>2018-04-01</em></h4>
 
 
 <div id="TOC">
@@ -798,10 +798,10 @@ two_suns.mspct</code></pre></div>
 <div id="using-as-functions" class="section level4">
 <h4>Using <em>as</em> functions</h4>
 <p>The <code>as</code> functions for collections of spectra, not only change the class of the collection object, but also apply the corresponding {as} functions to the member objects. They copy the original objects and then convert the copy, which is returned.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">two_gen.mscpt &lt;-<span class="st"> </span><span class="kw">as.generic_mspct</span>(two_suns.mspct)
-<span class="kw">class</span>(two_gen.mscpt)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">two_gen.mspct &lt;-<span class="st"> </span><span class="kw">as.generic_mspct</span>(two_suns.mspct)
+<span class="kw">class</span>(two_gen.mspct)</code></pre></div>
 <pre><code>## [1] &quot;generic_mspct&quot; &quot;list&quot;</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">lapply</span>(two_gen.mscpt, class_spct)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">lapply</span>(two_gen.mspct, class_spct)</code></pre></div>
 <pre><code>## $sun1
 ## [1] &quot;source_spct&quot;  &quot;generic_spct&quot;
 ## 
@@ -4972,8 +4972,6 @@ Most frequently used summary methods are implemented for collections of spectra.
 ## attr(,&quot;radiation.unit&quot;)
 ## [1] &quot;energy irradiance total&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">irrad</span>(sun.spct, UV_bands.lst, <span class="dt">quantity =</span> <span class="st">&quot;average&quot;</span>)</code></pre></div>
-<pre><code>## Use of method photobiology::expanse() is deprecated. It has beenrenamed into expanse() to avoid a name clash with 'tidyr::expanse()'.
-## Use of method photobiology::expanse() is deprecated. It has beenrenamed into expanse() to avoid a name clash with 'tidyr::expanse()'.</code></pre>
 <pre><code>##        UVB        UVA 
 ## 0.01841458 0.32922595 
 ## attr(,&quot;time.unit&quot;)
@@ -5158,9 +5156,6 @@ Most frequently used summary methods are implemented for collections of spectra.
 <h4>Individual spectra</h4>
 <p>The functions <code>transmittance</code>, <code>absorptance</code> and <code>absorbance</code> take <code>filter_spct</code> as argument, while function <code>reflectance</code> takes <code>reflector_spct</code> objects as argument. Functions <code>transmittance</code>, <code>reflectance</code> and <code>absorptance</code> are also implemented for <code>object_spct</code>. These functions return as default an average value for these quantities <strong>assuming</strong> a light source with a flat spectral energy output, but this can be changed as described above for <code>irrad()</code>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">transmittance</span>(polyester.spct, <span class="kw">list</span>(UVB.wb, UVA.wb, PAR.wb))</code></pre></div>
-<pre><code>## Use of method photobiology::expanse() is deprecated. It has beenrenamed into expanse() to avoid a name clash with 'tidyr::expanse()'.
-## Use of method photobiology::expanse() is deprecated. It has beenrenamed into expanse() to avoid a name clash with 'tidyr::expanse()'.
-## Use of method photobiology::expanse() is deprecated. It has beenrenamed into expanse() to avoid a name clash with 'tidyr::expanse()'.</code></pre>
 <pre><code>##         UVB         UVA         PAR 
 ## 0.007671429 0.782682353 0.920245000 
 ## attr(,&quot;Tfr.type&quot;)
@@ -5168,7 +5163,6 @@ Most frequently used summary methods are implemented for collections of spectra.
 ## attr(,&quot;radiation.unit&quot;)
 ## [1] &quot;transmittance average&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">reflectance</span>(green_leaf.spct, <span class="kw">waveband</span>(<span class="kw">c</span>(<span class="dv">600</span>, <span class="dv">700</span>)))</code></pre></div>
-<pre><code>## Use of method photobiology::expanse() is deprecated. It has beenrenamed into expanse() to avoid a name clash with 'tidyr::expanse()'.</code></pre>
 <pre><code>##  range.600.700 
 ##       0.089647 
 ## attr(,&quot;Rfr.type&quot;)
@@ -5189,12 +5183,6 @@ Most frequently used summary methods are implemented for collections of spectra.
 <h4>Collections of spectra</h4>
 <p>Here we construct a collection of filter spectra, and then we calculate the transmittance of these filters for two wavebands, obtaining the results as a data frame, with one row per filter, and one column per waveband. We reuse once more <code>filters.mspct</code> from an earlier section.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">transmittance</span>(filters.mspct, <span class="dt">w.band =</span> <span class="kw">list</span>(<span class="st">&quot;Tfr(UVA)&quot;</span> =<span class="st"> </span>UVA.wb, <span class="st">&quot;Tfr(PAR)&quot;</span> =<span class="st"> </span>PAR.wb))</code></pre></div>
-<pre><code>## Use of method photobiology::expanse() is deprecated. It has beenrenamed into expanse() to avoid a name clash with 'tidyr::expanse()'.
-## Use of method photobiology::expanse() is deprecated. It has beenrenamed into expanse() to avoid a name clash with 'tidyr::expanse()'.
-## Use of method photobiology::expanse() is deprecated. It has beenrenamed into expanse() to avoid a name clash with 'tidyr::expanse()'.
-## Use of method photobiology::expanse() is deprecated. It has beenrenamed into expanse() to avoid a name clash with 'tidyr::expanse()'.
-## Use of method photobiology::expanse() is deprecated. It has beenrenamed into expanse() to avoid a name clash with 'tidyr::expanse()'.
-## Use of method photobiology::expanse() is deprecated. It has beenrenamed into expanse() to avoid a name clash with 'tidyr::expanse()'.</code></pre>
 <pre><code>## # A tibble: 3 x 3
 ##   spct.idx `Tfr(UVA)` `Tfr(PAR)`
 ##   &lt;fct&gt;         &lt;dbl&gt;      &lt;dbl&gt;
@@ -5204,9 +5192,6 @@ Most frequently used summary methods are implemented for collections of spectra.
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">transmittance</span>(filters.mspct,
               <span class="dt">w.band =</span> <span class="kw">list</span>(<span class="dt">Tfr =</span> <span class="kw">waveband</span>(<span class="kw">c</span>(<span class="dv">350</span>, <span class="dv">550</span>))),
               <span class="dt">attr2tb =</span> <span class="st">&quot;what.measured&quot;</span>)</code></pre></div>
-<pre><code>## Use of method photobiology::expanse() is deprecated. It has beenrenamed into expanse() to avoid a name clash with 'tidyr::expanse()'.
-## Use of method photobiology::expanse() is deprecated. It has beenrenamed into expanse() to avoid a name clash with 'tidyr::expanse()'.
-## Use of method photobiology::expanse() is deprecated. It has beenrenamed into expanse() to avoid a name clash with 'tidyr::expanse()'.</code></pre>
 <pre><code>## # A tibble: 3 x 3
 ##   spct.idx   Tfr what.measured                                            
 ##   &lt;fct&gt;    &lt;dbl&gt; &lt;chr&gt;                                                    
@@ -5216,12 +5201,6 @@ Most frequently used summary methods are implemented for collections of spectra.
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">transmittance</span>(filters.mspct, 
               <span class="kw">list</span>(<span class="st">&quot;Tfr(UVA)&quot;</span> =<span class="st"> </span>UVA.wb, <span class="st">&quot;Tfr(PAR)&quot;</span> =<span class="st"> </span>PAR.wb),
               <span class="dt">attr2tb =</span> <span class="st">&quot;what.measured&quot;</span>)</code></pre></div>
-<pre><code>## Use of method photobiology::expanse() is deprecated. It has beenrenamed into expanse() to avoid a name clash with 'tidyr::expanse()'.
-## Use of method photobiology::expanse() is deprecated. It has beenrenamed into expanse() to avoid a name clash with 'tidyr::expanse()'.
-## Use of method photobiology::expanse() is deprecated. It has beenrenamed into expanse() to avoid a name clash with 'tidyr::expanse()'.
-## Use of method photobiology::expanse() is deprecated. It has beenrenamed into expanse() to avoid a name clash with 'tidyr::expanse()'.
-## Use of method photobiology::expanse() is deprecated. It has beenrenamed into expanse() to avoid a name clash with 'tidyr::expanse()'.
-## Use of method photobiology::expanse() is deprecated. It has beenrenamed into expanse() to avoid a name clash with 'tidyr::expanse()'.</code></pre>
 <pre><code>## # A tibble: 3 x 4
 ##   spct.idx `Tfr(UVA)` `Tfr(PAR)` what.measured                            
 ##   &lt;fct&gt;         &lt;dbl&gt;      &lt;dbl&gt; &lt;chr&gt;                                    

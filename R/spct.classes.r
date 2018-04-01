@@ -196,7 +196,7 @@ check_spct.cps_spct <- function(x,
     return(x)
   } else {
     warning("No counts per second data found in cps_spct")
-    x[["cps_1"]] = NA_real_
+    x[["cps_1"]] <- NA_real_
     return(x)
   }
 }
@@ -2270,7 +2270,7 @@ setWhereMeasured.generic_mspct <- function(x,
 #' @param x a generic_spct object
 #' @param ... Allows use of additional arguments in methods for other classes.
 #'
-#' @return a data.frane with a single row and at least columns "lon" and "lat".
+#' @return a data.frame with a single row and at least columns "lon" and "lat".
 #'
 #' @note If x is not a \code{generic_spct} or an object of a derived class
 #'   \code{NA} is returned.

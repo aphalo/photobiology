@@ -108,7 +108,6 @@ reflectance_spct <-
               num.spectra, " spectra")
       return(NA_real_)
     }
-    Rfr.type <- getRfrType(spct)
     if (is.object_spct(spct)) {
       spct <- as.reflector_spct(spct)
     }

@@ -126,7 +126,6 @@ transmittance_spct <-
       spct <- as.filter_spct(spct)
     }
     spct <- A2T(spct, action = "replace", byref = FALSE)
-    Tfr.type <- getTfrType(spct)
     spct <- spct[ , c("w.length", "Tfr")]
     # if the waveband is undefined then use all data
     if (length(w.band) == 0) {
