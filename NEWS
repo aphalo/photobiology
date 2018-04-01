@@ -1,20 +1,210 @@
-TODO
-====
+photobiology 0.9.20 (2018-04-02)
+================================
 
-Add test cases for chroma_spct and improve tests for the _mspct
-classes. Add test cases for smooth_spct().
-Replace filter_cps.mspct data with newly measured data.
+* To improve clarity of user code, define wrappers for methods max(), min(),
+range(), midpoint(), and spread() with names with wl_ prepended (e.g. wl_max()).
+Rename method spread() to expanse() and deprecate use of spread().
+In the case of wl_expanse() and expanse() the new names prevent a name clash
+with tidyr::spread().
+* Redefine all 'as.' class-coercion functions into generic methods, and add
+specializations. Default behaviour remains unchanged.
+* Add class-coercion methods to and from matrix (and transfer corresponding
+functions from package 'photobiologyInOut').
+* Add function relative_AM() to compute relative air mass from sun elevation.
 
-photobiology 0.9.9
-==================
+photobiology 0.9.19 (2018-03-05)
+================================
+
+* Fix bug in sun_angles() that resulted in wrong azimuth values returned
+in some circumstances. (Bug introduced in version 0.9.12 when the astronomy
+code was overhauled in December 2016.)
+* Fix bug in day_night() that resulted in a small time shift when a time was
+passed instead of a date as an argument to parameter "date".
+* Fix bug in irrad(), e_irrad() and q_irrad() methods for collections of
+spectra which was resulting in arguments passed to parameter 'quantity' being
+silently ignored.
+* Add explicit support for optional parallel execution of apply functions, and
+methods for collections of spectra. Apparently of no use under Windows 10, even
+for large collections of spectra.
+* Revise documentation.
+
+photobiology 0.9.18 (2017-12-16)
+================================
+
+* Add calibration_spct class and its methods. Update all operators and maths.
+functions to support this new class. Add corresponding test cases.
+* Add calibration_mspct class and its methods.
+* Add functions add_attr2tb(), when_measured2tb(), lon2tb(), lat2tb(),
+geocode2tb() and what_measured2tb().
+* Add a formal parameter "attr2tb" to all summary methods for collections of
+spectra, used to automatically call add_attr2tb() to add attributes to their
+output.
+* Fix bug in calculation of solar time of day which could result in values > 24 h.
+* Fix a bug in the extraction operator for spectral objects (could lead to
+infinite recursion in rare occasions).
+* Fix wrong value returned in some cases by is_tagged() due to a bug in the
+definition of tag().
+* Revise vignettes and documentation.
+* Rebuild some of the example data objects adding metadata attributes.
+
+photobiology 0.9.17 (2017-08-??)
+================================
+
+* Add function merge2object_spct() that constructs an object_spct from a
+filter_spct and a reflector_spct, even if wavelengths differ.
+Add methods T2Afr() and Afr2T() for converting transmittance to absorptance and
+vice versa.
+* Add method T2T() for converting between internal and total transmittance when
+total reflectance is available.
+* Implement maths operators and functions for absorptance (Afr).
+* Add convenience functions for setting options for the evaluation of an
+expression: using_photon(), using_energy(), using_Tfr(), using_Afr(), using_A().
+* Add convenience functions for setting options for maths: photon_as_default(),
+energy_as_default(), Tfr_as_default(), Afr_as_default(), A_as_default().
+*Add convenience functions for setting options for diagnosis:
+verbose_as_default(), strict_range_as_default().
+* Add convenience functions for setting options for computation:
+wb_trim_as_default(), use_cached_mult_as_default().
+* Add unset_user_defaults() to clear all private options recognized by this
+package.
+* Implement new attribute "Afr.type" and methods setAfrType() and getAfrType().
+Update copy_attributes() function and check_spct() methods to support
+this new attribute. (subject to changes)
+* Revise cps2Tfr() and cps2Rfr(): simplify validity tests and fix bug in
+cps2Rfr().
+* Add method join_mspct() to convert a collection of spectra into a data.frame
+with multiple columns. This method is mainly intended for use when exporting
+spectral data.
+* Add spectral data for an Arabidopsis leaf as object_spct, filter_spct
+reflector_spct objects, and two raw_mspct objects with the corresponding raw
+detector counts from the spectrometer.
+
+photobiology 0.9.16 (2017-06-25)
+================================
+
+Rename S3 method color() to color_of() to avoid a name clash with an S4 method.
+A function color() calling method color_of() maintains backwards compatibility,
+but use of color() is now deprecated.
+Improve performance of sun_angles(). Convenience functions returning individual
+angles, sun_azimuth(), sun_zenith_angle(), and sun_elevation(), also benefit.
+Optimize performance of day_night(). Other functions returning individual times
+for sun positions, sunrise_time(), noon_time(), sunset_time(), day_length(),
+night_length(), also benefit.
+** Performance optimization does not alter the returned values **
+Revise the documentation corresponding to these functions and the "astronomy"
+vignette to better describe how vectorization works for these functions.
+
+photobiology 0.9.15 (2017-04-29)
+================================
+
+Laxen range test for cps in check_spct.cps_spct(), so as to avoid spurious
+warnings and/or errors.
+Make waveband() with no arguments valid.
+Add na.omit() and na.exclude() methods for all spectral classes.
+Functions na.pass() and na.fail() as defined in R work as expected for
+spectra.
+
+photobiology 0.9.14 (2017-03-21)
+================================
+
+Add methods isValidIntrDesc() and isValidInstrSettings().
+Add methods trimIntrDesc() and trimInstrSettings().
+Improve handling of metadata attributes when row-binding spectra with
+rbindspct() so that all metadata can be restored by subset2mspct().
+Revise print methods so that they are compatible with new format
+of attributes in row-bound spectra.
+Fix bugs in print method for summaries of spectra, and make output
+match that of the print method for spectra (some metadata was not printed).
+Fix bug in tag.mspct() method (bad default waveband resulted in no tagging).
+Add example data for spectral reflectance.
+Add test cases for all new code, and add additional tests cases for old code.
+Add example data for white LED bulb as raw_spct, cps_spct and source_spct objects.
+Improve documentation.
+
+photobiology 0.9.13 (2016-12-18)
+================================
+
+Add functions sun_elevation() and sun_azimuth().
+Add convenience functions trim2overlap() and extend2extremes().
+Add print() methods for instr_desc and instr_settings classes.
+Change threshold for automatic use of hinges when calculating summaries, so
+that hinges are used by default in more cases.
+Allow lists of length zero as argument to w.band, and treat them as equivalent
+to NULL.
+Make argument span = NULL behave in the same way in peak and valley related
+summary functions as it has for some time in statistics in package 'ggspectra'.
+Fix bug in the range check for counts per second which triggered warnings
+too easily.
+Change scaling of D2 and FEL spectra so that they are expressed in W m-2 nm-1.
+
+photobiology 0.9.12 (2016-10-22)
+================================
+
+Enhancements:
+Overhaul the astronomy related functions. Non-backward compatible changes
+in their parameters. Code rewritten using Meeus' astronomical algorithms
+resulting in better accuracy, much faster calculation of times for solar noon,
+sunrise and sunset. In addition the new algorithm can be used for a broader
+range of years, limited only by function julian() in R, which ignores leap
+seconds.
+Not fully backward compatible as returned values differ slightly from
+those in older versions, as long as indexing has been done by name.
+Add classes "solar_time" and "solar_date", constructor solar_time() and methods
+is.solar_time(), is.solar_date(), as.solar_date(), format() and print(). Add
+conversion function as_tod() returning 'time of day' from a datetime object.
+sun_angles() and day_night() now return a data.frame instead of a list.
+* The default for twilight argument is no longer "none", but instead "sunlight".
+The string "none" is accepted, and is as before interpreted as the center of
+the solar disk at the horizon, without correction for atmospheric diffraction,
+which is a solar elevation of zero degrees. In contrast, "sunlight" is
+interpreted as the upper rim of the solar disk at the horizon after approximate
+correction for atmospheric diffraction, which is a solar elevation of -0.833
+degrees, resulting in longer days.
+
+Revise cbindspct() so that it stores the name of "idfactor" as an attribute and
+set the retrieved value of the attribute as default in subset2mspct(). This
+makes the conversion from a long form spectral object back into a collection of
+spectra 'automatic' in many additional use cases.
+
+Fix bugs:
+normalize() now sets scaled attribute to FALSE.
+fscale() now sets normalized attribute to FALSE.
+Allow all summary calculations on re-scaled data, with a warning.
+Fix bug in operator '*' between reflector.spct and source.spct, which triggered
+an error.
+
+photobiology 0.9.11 (2016-09-10)
+================================
+
+Fix bug in print.generic_spct().
+
+photobiology 0.9.10 (not submitted to CRAN)
+===========================================
+
+Argument range.check = NA and range.check = NULL now trigger a message instead
+of skipping the test altogether. Logical values retain earlier behaviour.
+Fix bug in set functions for spectral classes: option "photobiology.strict.range"
+was not obeyed.
+Revise irrad(), e_irrad() and q_irrad() to accept as input scaled or
+normalized source_spct objects as long as returned quantity is not "total" or
+"mean", or its synonym "average". If the returned value will be in relative
+units linear scaling or normalization will not invalidate the result, so earlier
+restriction was unnecessarily strict.
+Fix bug in cps2irrad().
+
+photobiology 0.9.9 (2016-08-16)
+===============================
 
 Fix bug in rbindspct() affecting binding of object_spct objects.
 Fix bug in sunrise_time() and sunset_time() with vector of dates input at
 polar region latitudes.
 Fix bug in e_ratio().
+Convert User Guide from PDF (Rnw) to HTML (Rmd).
+Fix some minor mistakes in documentation and build a documentation web site
+with package 'staticdocs'.
 
-photobiology 0.9.8
-==================
+photobiology 0.9.8 (2016-05-20)
+===============================
 
 Fix bug: insert_hinges() would fail for "raw_spct" and "cps_spct" objects.
 Fix bug: leap year for year 2000.
@@ -29,14 +219,14 @@ Fix bug in stepsize.generic_spct() and improve print() output for spct objects
 containing data for multiple spectra (in long form) and their summaries.
 Improve how print() handles large collections of spectra.
 
-photobiology 0.9.7
-==================
+photobiology 0.9.7 (2016-04-??)
+===============================
 
 Edit to track changes to the behaviour of functions in package 'lubridate'
 which triggered errors in several use cases of package 'photobiology'.
 
-photobiology 0.9.6
-==================
+photobiology 0.9.6 (2016-04-02)
+===============================
 
 Optimize R code for performance: high-level functions faster than in version
 0.9.4 (last version using Rcpp and C++).
@@ -57,26 +247,26 @@ Fix bug in "extract" operator [.object_spct.
 Update for compatibility with dplyr (>= 0.4.3.9001).
 Update tests for testthat (>= 0.11.0.9000).
 
-photobiology 0.9.5
-==================
+photobiology 0.9.5 (2016-02-03)
+===============================
 
 Remove buggy C++ code and replace it with R code.
 Performance cost: 20 to 30% slower in high-level functions.
 
-photobiology 0.9.4
-==================
+photobiology 0.9.4 (2016-02-01)
+===============================
 
 Prepare for CRAN submission.
 Rename check() -> check_spct() to avoid name clash with 'devtools'.
 Fix bug in clean() methods for collections of spectra.
 
-photobiology 0.9.3
-==================
+photobiology 0.9.3 (??)
+==============================
 
 Cosmetic changes.
 
-photobiology 0.9.2
-==================
+photobiology 0.9.2 (2016-01-03)
+===============================
 
 Change tag.generic_spct() and wb2rect_spct() so that "wb.color" is also added
 as a column to make it easier to define new ggplot2 stats based on them.
@@ -87,8 +277,8 @@ methods. In addition change behaviour so that the same columns are added
 independently of the value supplied as argument for "w.band", filling the
 unused columns with NAs when w.band = NA.
 
-photobiology 0.9.1
-==================
+photobiology 0.9.1 (2015-12-19)
+===============================
 
 Rename some "low level" functions and their formal parameters.
 
@@ -106,8 +296,8 @@ in borderline cases and to handle gracefully numeric(). Also returned value
 always has the same class and columns, irrespective of the values of
 other arguments.
 
-photobiology 0.9.0
-==================
+photobiology 0.9.0 (2015-12-16)
+===============================
 
 This version removes all two-way dependencies between this package and other
 packages in the r4photobiology suite. This should make installation of the
@@ -178,8 +368,8 @@ implemented for all spectral classes and collections of spectra classes.
 The new classes are being used for writing a new package intended to
 replace package MayaCalc.
 
-photobiology 0.8.11
-===================
+photobiology 0.8.11 (2015-11-20)
+================================
 
 Add method clean() for removing out-of-range spectral observations.
 Add method fshift() for shifting the zero of the scale used to express
@@ -312,8 +502,8 @@ Spectral objects with zero rows are handled cleanly.
 $<- defined for spectra.
 Fix bugs.
 
-photobiology 0.8.0
-==================
+photobiology 0.8.0 (2015-07-29)
+===============================
 
 No longer use data.table as a base class for spectral objects.
 ** Given the size of spectral data the advantages were too
@@ -369,8 +559,8 @@ containing the removed class attributes.
 Update and reorganize User Guide.
 Add tests for new code.
 
-photobiology 0.7.0
-==================
+photobiology 0.7.0 (2015-07-03)
+===============================
 
 Make ratio functions into methods, and add 'wb.trim' as a parameter.
 Remove 'pc.out' parameter from methods that had it.
@@ -1116,8 +1306,8 @@ photobiology 0.2.15
 ===================
 Updated NAMESPACE to fix error caused by changes in Rcpp or R.
 
-photobiology 0.2.14
-===================
+photobiology 0.2.14 (2014-01-05)
+================================
 Updated User Guide. Modified interpolate_spectrum so that it uses cubic spline interpolation when the number of data points is small, and linear interpolation otherwise.
 
 photobiology 0.2.13
@@ -1144,13 +1334,13 @@ photobiology 0.2.7 + 0.2.8
 ==========================
 The vignette "Examples" was moved to a separate package because it used a very large data set. An "benign"" error in new_waveband() was fixed (this has no effect on calculations). The data set sun.data was updated to contain instantaneous data, and its documentation updated to better describe the data.
 
-photobiology 0.2.6
-==================
+photobiology 0.2.6 (2013-08-27)
+===============================
 
 A vignette "Examples" was added. Other examples will be added later on. No changes to R or C++ code.
 
-photobiology 0.2.5
-==================
+photobiology 0.2.5 (2013-08-11)
+===============================
 
 A vignette "Manual" was added. No changes to R or C++ code.
 
@@ -1187,3 +1377,6 @@ photobiology 0.2.0
 
 Reimplemented irradiance(), calc_multipliers, e2qmol_multipliers(), and added e2quantum_multipliers().
 Also reimplemented new_waveband(), changing its interface. Some changes in other photobiologyxxxx will be needed.
+
+photobiology 0.1.0 (2013-07-08)
+===============================

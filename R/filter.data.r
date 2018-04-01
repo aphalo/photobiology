@@ -9,8 +9,12 @@
 #' @docType data
 #' @keywords datasets
 #' @format A \code{filter_spct} object with 611 rows and 2 variables
-#' @name polyester.spct
-NULL
+#' @family Spectral data examples
+#'
+#' @examples
+#' polyester.spct
+#'
+"polyester.spct"
 
 #' @title Transmittance spectrum of yellow theatrical gel.
 #'
@@ -23,10 +27,14 @@ NULL
 #' @docType data
 #' @keywords datasets
 #' @format A \code{filter_spct} object with 611 rows and 2 variables
-#' @name yellow_gel.spct
-NULL
+#' @family Spectral data examples
+#'
+#' @examples
+#' yellow_gel.spct
+#'
+"yellow_gel.spct"
 
-#' @title Theoretical spectrum of a clear clear material
+#' @title Theoretical spectrum of a clear material
 #'
 #' @description A dataset for a hypothetical object with transmittance 1/1
 #'   (100\%)
@@ -37,8 +45,12 @@ NULL
 #' @docType data
 #' @keywords datasets
 #' @format A \code{filter_spct} object with 4 rows and 2 variables
-#' @name clear.spct
-NULL
+#' @family Spectral data examples
+#'
+#' @examples
+#' clear.spct
+#'
+"clear.spct"
 
 #' @title Theoretical spectrum of an opaque material
 #'
@@ -51,5 +63,9 @@ NULL
 #' @docType data
 #' @keywords datasets
 #' @format A \code{filter_spct} object with 4 rows and 2 variables
-#' @name opaque.spct
-NULL
+#' @family Spectral data examples
+#'
+#' @examples
+#' opaque.spct
+#'
+"opaque.spct"

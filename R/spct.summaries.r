@@ -39,30 +39,70 @@ print.generic_spct <- function(x, ..., n = NULL, width = NULL)
         paste(unique(signif(stepsize(x), 7)), sep = "", collapse = " to "),
         " nm \n", sep = "")
   }
-  if (!any(is.na(getWhatMeasured(x)))) {
-    cat("Label: ", getWhatMeasured(x), "\n", sep = "")
+  what.measured <- getWhatMeasured(x)
+  if (!any(is.na(what.measured))) {
+    if (!is.list(what.measured)) {
+      what.measured <- list(what.measured)
+    }
+    names <- names(what.measured)
+    if (is.null(names)) {
+      names <- "Label: "
+    } else {
+      names <- paste(names, "label: ")
+    }
+    cat(paste(names,
+              what.measured,
+              sep = "", collapse = "\n"), "\n")
   }
   when.measured <- getWhenMeasured(x)
   if (!any(is.na(when.measured))) {
-    if (length(when.measured) > 1) {
-      cat("Measured between ", as.character(min(when.measured)),
-          " and ", as.character(max(when.measured)), " UTC\n", sep = "")
-    } else {
-      cat("Measured on ", as.character(when.measured), " UTC\n", sep = "")
+    if (!is.list(when.measured)) {
+      when.measured <- list(when.measured)
     }
+    names <- names(when.measured)
+    if (is.null(names)) {
+      names <- "Measured on "
+    } else {
+      names <- paste(names, "measured on ")
+    }
+    cat(paste(names,
+              sapply(when.measured, as.character), " UTC",
+              sep = "", collapse = "\n"), "\n")
   }
-  if (!any(is.na(getWhereMeasured(x)))) {
-    where.measured <- getWhereMeasured(x)
-    cat("Measured at ", where.measured[["lat"]], " N, ",
-        where.measured[["lon"]], " E\n", sep = "")
+  where.measured <- getWhereMeasured(x)
+  if (!any(is.na(where.measured))) {
+    if (is.data.frame(where.measured)) {
+      where.measured <- list(where.measured)
+    }
+    names <- names(where.measured)
+    if (is.null(names)) {
+      names <- "Measured at "
+    } else {
+      names <- paste(names, "measured at ")
+    }
+    cat(paste(names,
+              sapply(where.measured, `[[`, i = "lat"), " N, ",
+              sapply(where.measured, `[[`, i = "lon"), " E",
+              sep = "", collapse = "\n"), "\n")
+  }
+  if (class_spct(x)[1] %in% c("raw_spct", "cps_spct") &&
+      getMultipleWl(x) == 1) {
+    if (!all(is.na(getInstrDesc(x)))) {
+      print(getInstrDesc(x))
+      cat("\n")
+    }
+    if (!all(is.na(getInstrSettings(x)))) {
+      print(getInstrSettings(x))
+      cat("\n")
+    }
   }
   if (class_spct(x)[1] %in% c("source_spct", "response_spct")) {
     cat("Time unit ", as.character(getTimeUnit(x, force.duration = TRUE)),
         "\n", sep = "")
   }
   if (is_scaled(x)) {
-    scaling <- getScaled(x)[["f"]]
-    cat("Rescaled to '", scaling, "' = 1 \n", sep = "")
+    scaling <- getScaled(x)
+    cat("Rescaled to '", scaling[["f"]], "' = ", scaling[["target"]], "\n", sep = "")
   }
   if (is_normalized(x)) {
     norm <- getNormalized(x)
@@ -234,6 +274,8 @@ summary.generic_spct <- function(object,
   setWhereMeasured(z, getWhereMeasured(object))
   setWhatMeasured(z, getWhatMeasured(object))
   setMultipleWl(z, getMultipleWl(object))
+  setInstrDesc(z, getInstrDesc(object))
+  setInstrSettings(z, getInstrSettings(object))
   if (is.source_spct(object)) {
     class(z) <- c("summary_source_spct", class(z))
     setTimeUnit(z, getTimeUnit(object))
@@ -278,40 +320,71 @@ print.summary_generic_spct <- function(x, ...) {
   cat("Summary of object: ", x[["orig.class"]], " ", x[["orig.dim_desc"]], "\n", sep = "")
   m.wl <- getMultipleWl(x)
   if (m.wl > 1) {
-    cat("containg ", m.wl, " spectra in long form\n")
+    cat("containing ", m.wl, " spectra in long form\n")
   }
   cat("Wavelength range ",
       paste(signif(x[["wl.range"]], 8), sep = "", collapse = " to "), " nm, step ",
       paste(unique(signif(x[["wl.stepsize"]], 7)), sep = "", collapse = " to "),
       " nm\n", sep = "")
-  if (!any(is.na(getWhatMeasured(x)))) {
-    cat("Label: ", getWhatMeasured(x), "\n", sep = "")
+  what.measured <- getWhatMeasured(x)
+  if (!any(is.na(what.measured))) {
+    if (!is.list(what.measured)) {
+      what.measured <- list(what.measured)
+    }
+    names <- names(what.measured)
+    if (is.null(names)) {
+      names <- "Label: "
+    } else {
+      names <- paste(names, "label: ")
+    }
+    cat(paste(names,
+              what.measured,
+              sep = "", collapse = "\n"), "\n")
   }
   when.measured <- getWhenMeasured(x)
   if (!any(is.na(when.measured))) {
-    if (length(when.measured) > 1) {
-      cat("Measured between ", as.character(min(when.measured)),
-          " and ", as.character(max(when.measured)), " UTC\n", sep = "")
-    } else {
-      cat("Measured on ", as.character(when.measured), " UTC\n", sep = "")
+    if (!is.list(when.measured)) {
+      when.measured <- list(when.measured)
     }
+    names <- names(when.measured)
+    if (is.null(names)) {
+      names <- "Measured on "
+    } else {
+      names <- paste(names, "measured on ")
+    }
+    cat(paste(names,
+              sapply(when.measured, as.character), " UTC",
+              sep = "", collapse = "\n"), "\n")
   }
-  if (!any(is.na(getWhereMeasured(x)))) {
-    where.measured <- getWhereMeasured(x)
-    cat("Measured at ",
-        where.measured[["lat"]],
-        " N, ",
-        where.measured[["lon"]],
-        " E\n",
-        sep = "")
+  where.measured <- getWhereMeasured(x)
+  if (!any(is.na(where.measured))) {
+    if (is.data.frame(where.measured)) {
+      where.measured <- list(where.measured)
+    }
+    names <- names(where.measured)
+    if (is.null(names)) {
+      names <- "Measured at "
+    } else {
+      names <- paste(names, "measured at ")
+    }
+    cat(paste(names,
+              sapply(where.measured, `[[`, i = "lat"), " N, ",
+              sapply(where.measured, `[[`, i = "lon"), " E",
+              sep = "", collapse = "\n"), "\n")
+  }
+  if (class(x)[1] %in% c("summary_raw_spct", "summary_cps_spct") &&
+      getMultipleWl(x) == 1) {
+    print(getInstrDesc(x))
+    cat("\n")
+    print(getInstrSettings(x))
   }
   if (class(x)[1] %in% c("summary_source_spct", "summary_response_spct")) {
-    cat("Time unit: ", as.character(getTimeUnit(x, force.duration = TRUE)),
+    cat("Time unit ", as.character(getTimeUnit(x, force.duration = TRUE)),
         "\n", sep = "")
   }
   if (is_scaled(x)) {
-    scaling <- getScaled(x)[["f"]]
-    cat("Rescaled to '", scaling, "' = 1 \n", sep = "")
+    scaling <- getScaled(x)
+    cat("Rescaled to '", scaling[["f"]], "' = ", scaling[["target"]], "\n", sep = "")
   }
   if (is_normalized(x)) {
     norm <- getNormalized(x)
@@ -329,5 +402,31 @@ print.summary_generic_spct <- function(x, ...) {
   invisible(x)
 }
 
+# Instrument data ---------------------------------------------------------
 
+#' @export
+#'
+print.instr_desc <- function(x, ...) {
+  cat("Data acquired with '",
+      x[["spectrometer.name"]], "' s.n. ", x[["spectrometer.sn"]],
+            "\ngrating '", x[["bench.grating"]],
+            "', slit '", x[["bench.slit"]], "'", sep = "",
+      ...
+  )
+  invisible(x)
+}
 
+#' @export
+#'
+print.instr_settings <- function(x, ...) {
+  cat("integ. time (s): ",
+      paste(signif(as.numeric(x[["integ.time"]]) * 1e-6, digits = 3), collapse = ", "),
+      "\ntotal time (s): ",
+      paste(signif(as.numeric(x[["tot.time"]]) * 1e-6, digits = 3), collapse = ", "),
+      "\ncounts @ peak (% of max): ",
+      signif(as.numeric(x[["rel.signal"]]) * 100, digits = 3),
+      sep = "",
+      ...
+  )
+  invisible(x)
+}

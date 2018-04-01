@@ -3,8 +3,8 @@ library(photobiology)
 wl <- c(350, 800)
 
 # my.colors <- w_length2rgb(wl[1]:wl[2])
-# my.colors <- w_length2rgb(wl[1]:wl[2], sens=ciexyzCC2.data)
-my.colors <- w_length2rgb(wl[1]:wl[2], sens=ciexyzCMF2.data)
+# my.colors <- w_length2rgb(wl[1]:wl[2], sens=ciexyzCC2.spct)
+my.colors <- w_length2rgb(wl[1]:wl[2], sens=ciexyzCMF2.spct)
 
 colCount <- 25 # number per row
 rowCount <- trunc(length(my.colors) / colCount) + 1
@@ -24,13 +24,13 @@ for (j in 0:(rowCount-1))
 }
 
 w_length2rgb(580)
-w_length2rgb(580, sens=ciexyzCC.data)
-w_length2rgb(580, sens=ciexyz2006CMF.data)
+w_length2rgb(580, sens=ciexyzCC2.spct)
+w_length2rgb(580, sens=ciexyzCMF2.spct)
 
 w_length2rgb(395)
-w_length2rgb(395, sens=ciexyzCC.data)
-w_length2rgb(395, sens=ciexyz2006CMF.data)
+w_length2rgb(395, sens=ciexyzCC2.spct)
+w_length2rgb(395, sens=ciexyzCMF2.spct)
 
 w_length2rgb(750)
-w_length2rgb(750, sens=ciexyzCC.data)
-w_length2rgb(750, sens=ciexyz2006CMF.data)
+w_length2rgb(750, sens=ciexyzCC2.spct)
+w_length2rgb(750, sens=ciexyzCMF2.spct)

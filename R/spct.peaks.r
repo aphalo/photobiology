@@ -4,14 +4,14 @@
 #' selectable size threshold relative to the tallest peak (global maximum). This
 #' a wrapper built on top of function peaks from package splus2R.
 #'
-#' @param x numeric array
+#' @param x numeric vector
 #' @param ignore_threshold numeric value between 0.0 and 1.0 indicating the size
 #'   threshold below which peaks will be ignored.
 #' @param span a peak is defined as an element in a sequence which is greater
 #'   than all other elements within a window of width span centered at that
 #'   element. The default value is 3, meaning that a peak is bigger than both of
 #'   its neighbors. Default: 3.
-#' @param strict ogical flag: if TRUE, an element must be strictly greater than
+#' @param strict logical flag: if TRUE, an element must be strictly greater than
 #'   all other values in its window to be considered a peak. Default: TRUE.
 #'
 #' @return an object like s.irrad of logical values. Values that are TRUE
@@ -35,11 +35,14 @@ find_peaks <-
            ignore_threshold = 0.0,
            span = 3,
            strict = TRUE) {
+    if(is.null(span)) {
+      return(x == max(x))
+    }
     range_x <- range(x, finite = TRUE)
     min_x <- range_x[1]
     max_x <- range_x[2]
     x <- ifelse(!is.finite(x), min_x, x)
-    # the next two lines catter for the case when max_x < 0, which is quite common with logs
+    # the next two lines cater for the case when max_x < 0, which is quite common with logs
     delta <- max_x - min_x
     top_flag <- ignore_threshold > 0.0
     scaled_threshold <- delta * abs(ignore_threshold)
@@ -142,7 +145,7 @@ get_valleys <- function(x, y,
 #'
 #' @param x an R object
 #' @param ignore_threshold numeric value between 0.0 and 1.0 indicating the
-#'   relative size compared to talelst peakthreshold below which peaks will be
+#'   relative size compared to tallest peak threshold below which peaks will be
 #'   ignored.
 #' @param span a peak is defined as an element in a sequence which is greater
 #'   than all other elements within a window of width span centered at that
@@ -152,7 +155,7 @@ get_valleys <- function(x, y,
 #'   all other values in its window to be considered a peak. Default: TRUE.
 #' @param ... ignored
 #'
-#' @return a subset of x with rows corresponding to local maxima.
+#' @return A subset of \code{x} with rows corresponding to local maxima.
 #'
 #'
 #' @export
@@ -170,7 +173,7 @@ peaks.default <- function(x, span, ignore_threshold, strict, ...) {
 #' @describeIn peaks Default function usable on numeric vectors.
 #' @export
 peaks.numeric <- function(x, span = 5, ignore_threshold, strict = TRUE, ...) {
-  splus2R::peaks(x = x, span = span, strict = strict)
+  x[find_peaks(x = x, span = span, strict = strict)]
 }
 
 #' @describeIn peaks  Method for "generic_spct" objects.
@@ -284,15 +287,31 @@ peaks.cps_spct <- function(x, span = 5, ignore_threshold = 0, strict = TRUE, ...
 
 #' @describeIn peaks  Method for "cps_spct" objects.
 #'
+#' @param .parallel	if TRUE, apply function in parallel, using parallel backend
+#'   provided by foreach
+#' @param .paropts a list of additional options passed into the foreach function
+#'   when parallel computation is enabled. This is important if (for example)
+#'   your code relies on external data or packages: use the .export and
+#'   .packages arguments to supply them so that all cluster nodes have the
+#'   correct environment set up for computing.
+#'
 #' @export
 #'
-peaks.generic_mspct <- function(x, span = 5, ignore_threshold = 0, strict = TRUE, ...) {
+peaks.generic_mspct <- function(x,
+                                span = 5,
+                                ignore_threshold = 0,
+                                strict = TRUE,
+                                ...,
+                                .parallel = FALSE,
+                                .paropts = NULL) {
   msmsply(x,
           .fun = peaks,
           span = span,
           ignore_threshold = ignore_threshold,
           strict = strict,
-          ... )
+          ...,
+          .parallel = .parallel,
+          .paropts = .paropts)
   }
 
 # valleys -------------------------------------------------------------------
@@ -304,7 +323,7 @@ peaks.generic_mspct <- function(x, span = 5, ignore_threshold = 0, strict = TRUE
 #'
 #' @param x an R object
 #' @param ignore_threshold numeric value between 0.0 and 1.0 indicating the
-#'   relative size compared to talelst peakthreshold below which valleys will be
+#'   relative size compared to tallest peak threshold below which valleys will be
 #'   ignored.
 #' @param span a peak is defined as an element in a sequence which is greater
 #'   than all other elements within a window of width span centered at that
@@ -314,7 +333,7 @@ peaks.generic_mspct <- function(x, span = 5, ignore_threshold = 0, strict = TRUE
 #'   all other values in its window to be considered a peak. Default: TRUE.
 #' @param ... ignored
 #'
-#' @return a subset of x with rows corresponding to local maxima.
+#' @return A subset of \code{x} with rows corresponding to local minima.
 #'
 #'
 #' @export
@@ -326,13 +345,13 @@ valleys <- function(x, span, ignore_threshold, strict, ...) UseMethod("valleys")
 #' @describeIn valleys Default function usable on numeric vectors.
 #' @export
 valleys.default <- function(x, span, ignore_threshold, strict, ...) {
-  x[which.max(x)]
+  x[NA]
 }
 
 #' @describeIn valleys Default function usable on numeric vectors.
 #' @export
 valleys.numeric <- function(x, span = 5, ignore_threshold, strict = TRUE, ...) {
-  x[splus2R::peaks(x = -x, span = span, strict = strict)]
+  x[find_peaks(x = -x, span = span, strict = strict)]
 }
 
 #' @describeIn valleys  Method for "generic_spct" objects.
@@ -446,13 +465,29 @@ valleys.cps_spct <- function(x, span = 5, ignore_threshold = 0, strict = TRUE, .
 
 #' @describeIn valleys  Method for "generic_mspct" objects.
 #'
+#' @param .parallel	if TRUE, apply function in parallel, using parallel backend
+#'   provided by foreach
+#' @param .paropts a list of additional options passed into the foreach function
+#'   when parallel computation is enabled. This is important if (for example)
+#'   your code relies on external data or packages: use the .export and
+#'   .packages arguments to supply them so that all cluster nodes have the
+#'   correct environment set up for computing.
+#'
 #' @export
 #'
-valleys.generic_mspct <- function(x, span = 5, ignore_threshold = 0, strict = TRUE, ...) {
+valleys.generic_mspct <- function(x,
+                                  span = 5,
+                                  ignore_threshold = 0,
+                                  strict = TRUE,
+                                  ...,
+                                  .parallel = FALSE,
+                                  .paropts = NULL) {
   msmsply(x,
           .fun = valleys,
           span = span,
           ignore_threshold = ignore_threshold,
           strict = strict,
-          ... )
+          ...,
+          .parallel = .parallel,
+          .paropts = .paropts)
 }

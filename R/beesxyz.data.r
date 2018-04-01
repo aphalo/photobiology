@@ -2,7 +2,9 @@
 #'
 #' @description A dataset containing wavelengths at a 5 nm interval (300 nm to
 #'   700 nm) and the corresponding x, y, and z chromaticity coordinates.
-#'   Original data from A chroma_spct object with variables as follows:
+#'   Original data from XXX.
+#'
+#'   A chroma_spct object with variables as follows:
 #'
 #' @details
 #' \itemize{
@@ -14,5 +16,6 @@
 #' @docType data
 #' @keywords datasets
 #' @format A data frame with 81 rows and 4 variables
-#' @name beesxyzCMF.spct
-NULL
+#' @family Visual response data examples
+#'
+"beesxyzCMF.spct"

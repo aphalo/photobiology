@@ -12,5 +12,6 @@
 #' @keywords datasets internal
 #' @format A \code{filter_cps.mspct} object with 611 rows and 2 variables
 #' @name filter_cps.mspct
+#' @family Spectral data examples
 #'
 NULL

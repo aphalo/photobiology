@@ -5,10 +5,14 @@
 #'
 #' Spectra are tagged by adding variables and attributes containing color
 #' definitions, labels, and a factor following the wavebands given in
-#' \code{w.band}.
+#' \code{w.band}. This methods are most useful for plotting realistic
+#' computed colors from spectral data.
 #'
-#' @param x an R object
-#' @param ... not used in current version
+#' @param x an R object.
+#' @param ... ignored (possibly used by derived methods).
+#'
+#' @return A copy of \code{x} expanded with additional columns with
+#'   color-related information.
 #'
 #' @export tag
 #'
@@ -29,12 +33,13 @@ tag.default <- function(x, ...) {
 #'   \code{source_spct}, \code{filter_spct}, \code{reflector_spct},
 #'   \code{object_spct}, and \code{response_spct}.
 #'
-#' @param w.band waveband or list of waveband objects The waveband(s) determine
+#' @param w.band waveband or list of waveband objects. The waveband(s) determine
 #'   the region(s) of the spectrum that are tagged
 #' @param wb.trim logical Flag telling if wavebands crossing spectral data
 #'   boundaries are trimmed or ignored
-#' @param use.hinges logical Flag indicating whether to use hinges to reduce
-#'   interpolation errors
+#' @param use.hinges logical Flag indicating whether to insert "hinges" into the
+#'   spectral data before integration so as to reduce interpolation errors at
+#'   the boundaries of the wavebands.
 #' @param short.names logical Flag indicating whether to use short or long names
 #'   for wavebands
 #' @param byref logical Flag indicating if new object will be created \emph{by
@@ -65,7 +70,7 @@ tag.generic_spct <- function(x,
     untag(x, byref = TRUE)
   }
   # we add a waveband for the whole spectrum
-  if (is.null(w.band)) {
+  if (length(w.band) == 0) {
     w.band <- waveband(x)
   }
   # If the waveband is a missing value we add missing values as tags
@@ -81,10 +86,10 @@ tag.generic_spct <- function(x,
     w.band <- list(w.band)
   }
   # we delete or trim the wavebands that are not fully within the
-  # spectral data wavelngth range
+  # spectral data wavelength range
   w.band <- trim_waveband(w.band = w.band, range = x, trim = wb.trim)
   # we check if the list members are named, if not we use the names of the
-  # wavbands
+  # wavebands
   wbs.number <- length(w.band) # number of wavebands
   wbs.name <- names(w.band) # their names in the list
   if (is.null(wbs.name)) {
@@ -124,7 +129,7 @@ tag.generic_spct <- function(x,
     }
     wbs.wl.low[i] <- min(wb)
     wbs.wl.high[i] <- max(wb)
-    wbs.rgb[i] <- color(wb)[1]
+    wbs.rgb[i] <- color_of(wb)[1]
   }
   # We add the waveband-independent tags to the spectrum
   x[["wl.color"]] <- w_length2rgb(x[["w.length"]])
@@ -139,7 +144,9 @@ tag.generic_spct <- function(x,
   }
   x[["wb.f"]] <- factor(x[["wb.f"]], levels = wbs.name)
   # We add an attribute with tagging data
-  tag.data <- list(time.unit = getTimeUnit(x),
+  #   field "valid" is a patch to solve a bug in a quick and safe way
+  tag.data <- list(valid = TRUE, # NA's in time.unit at position 1 results in bug
+                   time.unit = getTimeUnit(x),
                    wb.key.name = "Bands",
                    wl.color = TRUE,
                    wb.color = TRUE,
@@ -159,16 +166,25 @@ tag.generic_spct <- function(x,
 #' @describeIn tag Tag one of \code{generic_mspct}, and derived classes including
 #'   \code{source_mspct}, \code{filter_mspct}, \code{reflector_mspct},
 #'   \code{object_mspct}, and \code{response_mspct}.
+#' @param .parallel	if TRUE, apply function in parallel, using parallel backend
+#'   provided by foreach
+#' @param .paropts a list of additional options passed into the foreach function
+#'   when parallel computation is enabled. This is important if (for example)
+#'   your code relies on external data or packages: use the .export and
+#'   .packages arguments to supply them so that all cluster nodes have the
+#'   correct environment set up for computing.
 #'
 #' @export
 #'
 tag.generic_mspct <- function(x,
-                              w.band = NA,
+                              w.band = NULL,
                               wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
                               use.hinges = TRUE,
                               short.names = TRUE,
                               byref = FALSE,
-                              ...) {
+                              ...,
+                              .parallel = FALSE,
+                              .paropts = NULL) {
   name <- substitute(x)
 
   z <- msmsply(
@@ -179,7 +195,9 @@ tag.generic_mspct <- function(x,
     use.hinges = use.hinges,
     short.names = short.names,
     byref = FALSE,
-    ...
+    ...,
+    .parallel = .parallel,
+    .paropts = .paropts
   )
 
   if (byref & is.name(name)) {
@@ -216,13 +234,13 @@ wb2spct <- function(w.band) {
     w.length <- c(w.length, wb$hinges)
   }
   if (is.null(w.length) || length(w.length) < 2) {
-    new.spct <- dplyr::data_frame(w.length = numeric(0),
+    new.spct <- tibble::tibble(w.length = numeric(0),
                                   counts = 0, cps = 0,
                                   s.e.irrad = numeric(0), s.q.irrad = numeric(0),
                                   Tfr = numeric(0), Rfl = numeric(0), s.e.response = numeric(0))
   } else {
     w.length <- unique(sort(w.length))
-    new.spct <- dplyr::data_frame(w.length = w.length,
+    new.spct <- tibble::tibble(w.length = w.length,
                                   counts = 0, cps = 0,
                                   s.e.irrad = 0, s.q.irrad = 0,
                                   Tfr = 0, Rfl = 0, s.e.response = 0)
@@ -241,12 +259,14 @@ wb2spct <- function(w.band) {
 #'
 #' @param w.band waveband or list of waveband objects The waveband(s) determine
 #'   the region(s) of the spectrum that are tagged and the wavelengths returned
-#'   in variable \code{w.length}
-#' @param use.hinges logical Flag indicating whether to use hinges to reduce
-#'   interpolation errors
+#'   in variable \code{w.length}.
+#' @param use.hinges logical Flag indicating whether to insert "hinges" into the
+#'   spectral data before integration so as to reduce interpolation errors at
+#'   the boundaries of the wavebands.
 #' @param short.names logical Flag indicating whether to use short or long names
-#'   for wavebands
-#' @param ... not used in current version
+#'   for wavebands.
+#' @param ... ignored (possibly used by derived methods).
+#'
 #' @export
 #'
 #' @return A spectrum as returned by \code{\link{wb2spct}} but additionally
@@ -276,7 +296,7 @@ wb2tagged_spct <-
 #'
 #' @return A \code{generic.spectrum} object, with columns w.length, wl.low,
 #'   wl.hi, wl.color, wb.color and wb.name. The w.length values are the
-#'   midppoint of the wavebands, wl.low and wl.high give the boundaries of the
+#'   midpoint of the wavebands, wl.low and wl.high give the boundaries of the
 #'   wavebands, wl.color the color definition corresponding to the wavelength at
 #'   the center of the waveband and wb.color the color of the waveband as a
 #'   whole (assuming a flat energy irradiance spectrum). Different spectral data
@@ -312,9 +332,9 @@ wb2rect_spct <- function(w.band, short.names = TRUE) {
     wbs.wl.low[i] <- min(wb)
     wbs.wl.mid[i] <- midpoint(wb)
     wbs.wl.high[i] <- max(wb)
-    wbs.rgb[i] <- color(wb)[1]
+    wbs.rgb[i] <- color_of(wb)[1]
   }
-  new.spct <- dplyr::data_frame(w.length = wbs.wl.mid,
+  new.spct <- tibble::tibble(w.length = wbs.wl.mid,
                                 counts = 0, cps = 0,
                                 s.e.irrad = 0, s.q.irrad = 0,
                                 Tfr = 0, Rfl = 0,
@@ -348,8 +368,9 @@ wb2rect_spct <- function(w.band, short.names = TRUE) {
 #' Remove tags from an R object if present, otherwise return the object
 #' unchanged.
 #'
-#' @param x an R object
-#' @param ... not used in current version
+#' @param x an R object.
+#' @param ... ignored (possibly used by derived methods).
+#'
 #' @export untag
 #'
 #' @family tagging and related functions
@@ -370,9 +391,9 @@ untag.default <- function(x, ...) {
 #'   by copy of x
 #'
 #' @return if \code{x} contains tag data they are removed and the "spct.tags"
-#'   atrribute is set to \code{NA}, while if \code{x} has no tags, it is not
+#'   attribute is set to \code{NA}, while if \code{x} has no tags, it is not
 #'   modified. In either case, the byref argument is respected: in all cases if
-#'   \code{byref=FALSE} a copy of \code{x} is returned.
+#'   \code{byref = FALSE} a copy of \code{x} is returned.
 #'
 #' @export
 #'
@@ -421,4 +442,3 @@ untag.generic_mspct <- function(x,
   }
   z
 }
-

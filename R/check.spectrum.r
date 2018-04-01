@@ -1,17 +1,15 @@
-#' Sanity check of a spectrum.
+#' Sanity check a spectrum
 #'
-#' This function checks a spectral radiation data in \code{numeric} vectors for
+#' Checks spectral irradiance data in \code{numeric} vectors for
 #' compliance with assumptions used in calculations.
 #'
-#' @param w.length numeric Vector of wavelengths (nm)
+#' @param w.length numeric vector of wavelengths (nm).
 #' @param s.irrad numeric Corresponding vector of spectral (energy) irradiances
-#'   (W m-2 nm-1)
+#'   (W m-2 nm-1).
 #'
 #' @return A single \code{logical} value indicating whether test was passed or
 #'   not
 #' @export
-#'
-#'
 #'
 #' @examples
 #' with(sun.data, check_spectrum(w.length, s.e.irrad))
@@ -59,7 +57,7 @@ check_spectrum <- function(w.length, s.irrad) {
 #'
 #'
 #' @examples
-#' 
+#'
 #' with(sun.data, photobiology:::check_w.length(w.length))
 #'
 #' @family data validity check functions

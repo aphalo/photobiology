@@ -1,31 +1,33 @@
-#' Trim (or expand) head and/or tail
+#' Trim (or expand) head and/or tail of a spectrum
 #'
-#' Trimming of head and tail of a spectrum based on wavelength limits,
-#' interpolating the values at the boundaries. Trimming is needed for example to
+#' Trim head and tail of a spectrum based on wavelength limits, interpolating
+#' the values at the boundaries of the range. Trimming is needed for example to
 #' remove short wavelength noise when the measured spectrum extends beyond the
 #' known emission spectrum of the measured light source. Occasionally one may
 #' want also to expand the wavelength range.
 #'
-#' @param spct an object of class "generic_spct"
+#' @param spct an object of class "generic_spct".
 #' @param range a numeric vector of length two, or any other object for which
-#'   function range() will return two
+#'   method range() will return a numeric vector of length two.
 #' @param low.limit shortest wavelength to be kept (defaults to shortest
-#'   w.length value)
+#'   w.length value).
 #' @param high.limit longest wavelength to be kept (defaults to longest w.length
-#'   value)
-#' @param use.hinges logical, if TRUE (the default) wavelengths in nm.
+#'   value).
+#' @param use.hinges logical Flag indicating whether to insert "hinges" into the
+#'   spectral data before integration so as to reduce interpolation errors at
+#'   the boundaries of the wavebands.
 #' @param fill if fill==NULL then tails are deleted, otherwise tails or s.irrad
-#'   are filled with the value of fill
+#'   are filled with the value of fill.
 #' @param byref logical indicating if new object will be created by reference or
-#'   by copy of spct
-#' @param verbose logical
+#'   by copy of spct.
+#' @param verbose logical.
 #'
-#' @return a spectrum of same class as input with its tails trimmed or expanded
+#' @return a spectrum of same class as input with its tails trimmed or expanded.
 #'
 #' @note When expanding an spectrum, if fill==NULL, then expansion is not
 #'   performed. Range can be "waveband" object, a numeric vector or a list of
 #'   numeric vectors, or any other user-defined or built-in object for which
-#'   \code{range()} returns a numeric vector of legth two, that can be
+#'   \code{range()} returns a numeric vector of length two, that can be
 #'   interpreted as wavelengths expressed in nm.
 #' @family trim functions
 #'
@@ -49,7 +51,7 @@ trim_spct <- function(spct,
   if (nrow(spct) == 0) {
     return(spct)
   }
-  stopifnot(is.any_spct(spct))
+  stopifnot(is.generic_spct(spct))
   x <- spct
   num.spectra <- getMultipleWl(x)
   if (num.spectra != 1) {
@@ -89,7 +91,7 @@ trim_spct <- function(spct,
       low.tail.w.length <- seq(from = low.limit,
                                to = ifelse(use.hinges, low.end - 1e-12, low.end - 1),
                                length.out = low.tail.length)
-      spct.top <- dplyr::data_frame(w.length = low.tail.w.length)
+      spct.top <- tibble::tibble(w.length = low.tail.w.length)
       for (data.col in names.data) {
         col.class <- class(spct[[data.col]])[1]
         if ("numeric" %in% col.class) {
@@ -111,7 +113,7 @@ trim_spct <- function(spct,
         }
       }
       spct <- plyr::rbind.fill(list(spct.top, spct))
-      spct <- dplyr::as_data_frame(spct)
+      spct <- tibble::as_tibble(spct)
       setGenericSpct(spct)
       low.end <- min(spct)
     } else {
@@ -131,7 +133,7 @@ trim_spct <- function(spct,
       high.tail.w.length <- seq(from = ifelse(use.hinges, high.end + 1e-12, high.end + 1),
                                 to = high.limit,
                                 length.out = high.tail.length)
-      spct.bottom <- dplyr::data_frame(w.length = high.tail.w.length)
+      spct.bottom <- tibble::tibble(w.length = high.tail.w.length)
       for (data.col in names.data) {
         col.class <- class(spct[[data.col]])[1]
         if ("numeric" %in% col.class) {
@@ -153,7 +155,7 @@ trim_spct <- function(spct,
         }
       }
       spct <- plyr::rbind.fill(list(spct, spct.bottom))
-      spct <- dplyr::as_data_frame(spct)
+      spct <- tibble::as_tibble(spct)
       setGenericSpct(spct)
       low.end <- max(spct)
     } else {
@@ -206,9 +208,17 @@ trim_spct <- function(spct,
   spct
 }
 
+
 #' @rdname trim_spct
 #'
 #' @param mspct an object of class "generic_mspct"
+#' @param .parallel	if TRUE, apply function in parallel, using parallel backend
+#'   provided by foreach
+#' @param .paropts a list of additional options passed into the foreach function
+#'   when parallel computation is enabled. This is important if (for example)
+#'   your code relies on external data or packages: use the .export and
+#'   .packages arguments to supply them so that all cluster nodes have the
+#'   correct environment set up for computing.
 #'
 #' @export
 #'
@@ -219,7 +229,9 @@ trim_mspct <- function(mspct,
                        use.hinges = TRUE,
                        fill = NULL,
                        byref = FALSE,
-                       verbose = getOption("photobiology.verbose", default = TRUE) ) {
+                       verbose = getOption("photobiology.verbose", default = TRUE),
+                       .parallel = FALSE,
+                       .paropts = NULL) {
   name <- substitute(mspct)
 
   z <- msmsply(mspct = mspct,
@@ -230,7 +242,9 @@ trim_mspct <- function(mspct,
                use.hinges = use.hinges,
                fill = fill,
                byref = FALSE,
-               verbose = verbose )
+               verbose = verbose,
+               .parallel = .parallel,
+               .paropts = .paropts)
 
   if (byref & is.name(name)) {
     name <- as.character(name)
@@ -239,21 +253,81 @@ trim_mspct <- function(mspct,
   z
 }
 
+#' @rdname trim_spct
+#'
+#' @export
+#'
+trim2overlap <- function(mspct,
+                         use.hinges = TRUE,
+                         verbose = getOption("photobiology.verbose", default = TRUE),
+                         .parallel = FALSE,
+                         .paropts = NULL) {
+  stopifnot(is.any_mspct(mspct))
+  if (length(mspct) < 2) {
+    # nothing to do
+    return(mspct)
+  }
+  ranges <- msdply(mspct, range,
+                   .parallel = .parallel,
+                   .paropts = .paropts)
+  range <- with(ranges, c(max(min.wl), min(max.wl)))
+  trim_mspct(mspct,
+             range = range,
+             use.hinges = use.hinges,
+             fill = NULL,
+             verbose = verbose,
+             .parallel = .parallel,
+             .paropts = .paropts)
+}
+
+#' @rdname trim_spct
+#'
+#' @export
+#'
+extend2extremes <- function(mspct,
+                            use.hinges = TRUE,
+                            fill = NA,
+                            verbose = getOption("photobiology.verbose", default = TRUE),
+                            .parallel = FALSE,
+                            .paropts = NULL) {
+  stopifnot(is.any_mspct(mspct))
+  if (length(mspct) < 2) {
+    # nothing to do
+    return(mspct)
+  }
+  ranges <- msdply(mspct,
+                   .fun = range,
+                   .parallel = .parallel,
+                   .paropts = .paropts)
+  range <- with(ranges, c(min(min.wl), max(max.wl)))
+  trim_mspct(mspct,
+             range = range,
+             use.hinges = use.hinges,
+             fill = fill,
+             verbose = verbose,
+             .parallel = .parallel,
+             .paropts = .paropts)
+}
+
 #' Trim head and/or tail of a spectrum
 #'
-#' Triming of head and tail of a spectrum based on wavelength limits,
-#' interpolation used by default. Expansion is also possible.
+#' Trim head and tail of a spectrum based on wavelength limits, with
+#' interpolation at range boundaries used by default. Expansion is also
+#' possible.
 #'
-#' @param x an R object
+#' @param x an R object.
 #' @param range a numeric vector of length two, or any other object for which
-#'   function range() will return two
-#' @param use.hinges logical, if TRUE (the default) wavelengths in nm.
+#'   function range() will return two.
+#' @param use.hinges logical Flag indicating whether to insert "hinges" into the
+#'   spectral data before integration so as to reduce interpolation errors at
+#'   the boundaries of the wavebands.
 #' @param fill if \code{fill == NULL} then tails are deleted, otherwise tails
 #'   are filled with the value of fill.
-#' @param ... not used
+#' @param ... ignored (possibly used by derived methods).
 #'
-#' @return an R object of same class as input, usually of a different
-#'   length, either shorter or longer.
+#' @return A copy of \code{x}, usually trimmed or expanded to a different
+#'   length, either shorter or longer. Possibly with some of the original
+#'   spectral data values replaced with \code{fill}.
 #'
 #' @note By default the \code{w.length} values for the first and last rows
 #'   in the returned object are the values supplied as \code{range}.
@@ -296,13 +370,22 @@ trim_wl.generic_spct <- function(x,
 }
 
 #' @describeIn trim_wl  Trim an object of class "generic_mspct" or derived.
+#' @param .parallel	if TRUE, apply function in parallel, using parallel backend
+#'   provided by foreach
+#' @param .paropts a list of additional options passed into the foreach function
+#'   when parallel computation is enabled. This is important if (for example)
+#'   your code relies on external data or packages: use the .export and
+#'   .packages arguments to supply them so that all cluster nodes have the
+#'   correct environment set up for computing.
 #'
 #' @export
 #'
 trim_wl.generic_mspct <- function(x,
                                   range = NULL,
                                   use.hinges = TRUE,
-                                  fill = NULL, ...) {
+                                  fill = NULL, ...,
+                                  .parallel = FALSE,
+                                  .paropts = NULL) {
   if (is.null(range)) {
     return(x)
   }
@@ -311,7 +394,9 @@ trim_wl.generic_mspct <- function(x,
              use.hinges = use.hinges,
              fill = fill,
              byref = FALSE,
-             verbose = getOption("photobiology.verbose", default = FALSE) )
+             verbose = getOption("photobiology.verbose", default = FALSE),
+             .parallel = .parallel,
+             .paropts = .paropts)
 }
 
 #' @describeIn trim_wl Trim an object of class "waveband".
@@ -365,17 +450,17 @@ trim_wl.list <- function(x,
 
 #' Clip head and/or tail of a spectrum
 #'
-#' Clipping of head and tail of a spectrum based on wavelength limits, no
-#' interpolation used.
+#' Clip head and tail of a spectrum based on wavelength limits, no
+#' interpolation used at range boundaries.
 #'
-#' @param x an R object
+#' @param x an R object.
 #' @param range a numeric vector of length two, or any other object for which
-#'   function \code{range()} will return range of walengths expressed in
+#'   function \code{range()} will return range of wavelengths expressed in
 #'   nanometres.
-#' @param ... not used
+#' @param ... ignored (possibly used by derived methods).
 #'
-#' @return an R object of same class as input, most frequently of a shorter
-#'   length, and never longer.
+#' @return A copy of \code{x}, most frequently of a shorter length, and never
+#'   longer.
 #'
 #' @note The condition tested is \code{wl >= range[1] & wl < (range[2] + 1e-13)}.
 #'
@@ -411,7 +496,7 @@ clip_wl.generic_spct <- function(x, range = NULL, ...) {
     return(x)
   }
   guard <- 1e-13
-  stopifnot(is.any_spct(x))
+  stopifnot(is.generic_spct(x))
   stopifnot(!all(is.na(range)))
   if (is.numeric(range) && length(range) == 2) {
     if (is.na(range[1])) {

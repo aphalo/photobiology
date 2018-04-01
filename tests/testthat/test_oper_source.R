@@ -264,9 +264,9 @@ test_that("irrad e_irrad q_irrad", {
   expect_equal(as.numeric(irrad(sun.spct)), irrad.result, tolerance = 1e-6)
   expect_equal(as.numeric(irrad(sun.spct, quantity = "total")), irrad.result, tolerance = 1e-6)
   expect_equal(as.numeric(irrad(sun.spct, quantity = "average")),
-               irrad.result / spread(sun.spct), tolerance = 1e-6)
+               irrad.result / expanse(sun.spct), tolerance = 1e-6)
   expect_equal(as.numeric(irrad(sun.spct, quantity = "mean")),
-               irrad.result / spread(sun.spct), tolerance = 1e-6)
+               irrad.result / expanse(sun.spct), tolerance = 1e-6)
   expect_equal(as.numeric(irrad(sun.spct, time.unit = "second")),
                irrad.result, tolerance = 1e-6)
   expect_equal(as.numeric(irrad(sun.spct, time.unit = "hour")),
@@ -353,6 +353,50 @@ test_that("irrad e_irrad q_irrad", {
   expect_equal(sum(as.numeric(q_irrad(trim_spct(sun.spct, range = c(400, 600)),
                                       quantity = "contribution",
                                       w.band = split_bands(c(400, 600), length.out = 3)))), 1)
+
+  # cached multipliers
+  irrad.result <- 269.1249
+
+  expect_equal(as.numeric(irrad(sun.spct, use.cached.mult = TRUE)),
+               irrad.result, tolerance = 1e-6)
+
+  use_cached_mult_as_default(TRUE)
+  expect_true(getOption("photobiology.use.cached.mult"))
+
+  expect_equal(as.numeric(irrad(sun.spct)), irrad.result, tolerance = 1e-6)
+  expect_equal(as.numeric(irrad(sun.spct, quantity = "total")), irrad.result, tolerance = 1e-6)
+  expect_equal(as.numeric(irrad(sun.spct, quantity = "average")),
+               irrad.result / expanse(sun.spct), tolerance = 1e-6)
+  expect_equal(as.numeric(irrad(sun.spct, quantity = "mean")),
+               irrad.result / expanse(sun.spct), tolerance = 1e-6)
+  expect_equal(as.numeric(irrad(sun.spct, time.unit = "second")),
+               irrad.result, tolerance = 1e-6)
+  expect_equal(as.numeric(irrad(sun.spct, time.unit = "hour")),
+               irrad.result * 3600, tolerance = 1e-6)
+  expect_equal(as.numeric(irrad(sun.spct, time.unit = duration(1))),
+               irrad.result, tolerance = 1e-6)
+  expect_equal(as.numeric(irrad(sun.spct, time.unit = duration(0.5))),
+               irrad.result * 0.5, tolerance = 1e-6)
+  expect_equal(as.numeric(irrad(sun.spct, time.unit = duration(1, "minutes"))),
+               irrad.result * 60, tolerance = 1e-6)
+  expect_equal(as.numeric(irrad(sun.spct, time.unit = minutes(1))),
+               irrad.result * 60, tolerance = 1e-6)
+  expect_equal(as.numeric(irrad(sun.spct, time.unit = hms("00:01:00"))),
+               irrad.result * 60, tolerance = 1e-6)
+  expect_equal(sum(as.numeric(irrad(sun.spct, quantity = "relative",
+                                    w.band = split_bands(sun.spct, length.out = 3)))), 1)
+  expect_equal(sum(as.numeric(irrad(sun.spct, quantity = "relative",
+                                    w.band = split_bands(c(400, 600), length.out = 3)))), 1)
+  expect_equal(sum(as.numeric(irrad(sun.spct, quantity = "contribution",
+                                    w.band = split_bands(sun.spct, length.out = 3)))), 1)
+  expect_lt(sum(as.numeric(irrad(sun.spct, quantity = "contribution",
+                                 w.band = split_bands(c(400, 600), length.out = 3)))), 1)
+  expect_equal(sum(as.numeric(irrad(trim_spct(sun.spct, range = c(400, 600)),
+                                    quantity = "contribution",
+                                    w.band = split_bands(c(400, 600), length.out = 3)))), 1)
+
+  use_cached_mult_as_default(FALSE)
+  expect_true(!getOption("photobiology.use.cached.mult"))
 })
 
 test_that("fluence e_fluence q_fluence", {
@@ -397,6 +441,61 @@ test_that("fluence e_fluence q_fluence", {
                fluence.result * 60, tolerance = 1e-6)
   expect_equal(as.numeric(q_fluence(sun.spct, exposure.time = hms("00:01:00"))),
                fluence.result * 60, tolerance = 1e-6)
+
+  # cached multipliers
+  fluence.result <- 269.1249
+
+  expect_equal(as.numeric(fluence(sun.spct,
+                                  exposure.time = duration(1),
+                                  use.cached.mult = TRUE)),
+               fluence.result, tolerance = 1e-6)
+
+  use_cached_mult_as_default(TRUE)
+  expect_true(getOption("photobiology.use.cached.mult"))
+
+  expect_error(fluence(sun.spct))
+  expect_error(fluence(sun.spct, exposure.time = "second"))
+  expect_error(fluence(sun.spct, exposure.time = "hour"))
+  expect_equal(as.numeric(fluence(sun.spct, exposure.time = duration(1))),
+               fluence.result, tolerance = 1e-6)
+  expect_equal(as.numeric(fluence(sun.spct, exposure.time = duration(0.5))),
+               fluence.result * 0.5, tolerance = 1e-6)
+  expect_equal(as.numeric(fluence(sun.spct, exposure.time = duration(1, "minutes"))),
+               fluence.result * 60, tolerance = 1e-6)
+  expect_equal(as.numeric(fluence(sun.spct, exposure.time = minutes(1))),
+               fluence.result * 60, tolerance = 1e-6)
+  expect_equal(as.numeric(fluence(sun.spct, exposure.time = hms("00:01:00"))),
+               fluence.result * 60, tolerance = 1e-6)
+  expect_error(e_fluence(sun.spct))
+  expect_error(e_fluence(sun.spct, exposure.time = "second"))
+  expect_error(e_fluence(sun.spct, exposure.time = "hour"))
+  expect_equal(as.numeric(e_fluence(sun.spct, exposure.time = duration(1))),
+               fluence.result, tolerance = 1e-6)
+  expect_equal(as.numeric(e_fluence(sun.spct, exposure.time = duration(0.5))),
+               fluence.result * 0.5, tolerance = 1e-6)
+  expect_equal(as.numeric(e_fluence(sun.spct, exposure.time = duration(1, "minutes"))),
+               fluence.result * 60, tolerance = 1e-6)
+  expect_equal(as.numeric(e_fluence(sun.spct, exposure.time = minutes(1))),
+               fluence.result * 60, tolerance = 1e-6)
+  expect_equal(as.numeric(e_fluence(sun.spct, exposure.time = hms("00:01:00"))),
+               fluence.result * 60, tolerance = 1e-6)
+  fluence.result <- 0.001255336
+  expect_error(q_fluence(sun.spct))
+  expect_error(q_fluence(sun.spct, exposure.time = "second"))
+  expect_error(q_fluence(sun.spct, exposure.time = "hour"))
+  expect_equal(as.numeric(q_fluence(sun.spct, exposure.time = duration(1))),
+               fluence.result, tolerance = 1e-6)
+  expect_equal(as.numeric(q_fluence(sun.spct, exposure.time = duration(0.5))),
+               fluence.result * 0.5, tolerance = 1e-6)
+  expect_equal(as.numeric(q_fluence(sun.spct, exposure.time = duration(1, "minutes"))),
+               fluence.result * 60, tolerance = 1e-6)
+  expect_equal(as.numeric(q_fluence(sun.spct, exposure.time = minutes(1))),
+               fluence.result * 60, tolerance = 1e-6)
+  expect_equal(as.numeric(q_fluence(sun.spct, exposure.time = hms("00:01:00"))),
+               fluence.result * 60, tolerance = 1e-6)
+
+  use_cached_mult_as_default(FALSE)
+  expect_true(!getOption("photobiology.use.cached.mult"))
 })
 
 test_that("ratio q_ratio e_ratio", {

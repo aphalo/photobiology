@@ -9,7 +9,10 @@
 #'
 #' @param x An R object
 #' @param ... not used in current version
-#' @return A new object of the same class as \code{x}.
+#'
+#' @return A copy of \code{x}, with spectral data values normalized to one for
+#' the criterion specified by the argument passed to \code{norm}.
+#'
 #' @export normalize
 #' @note Accepted values for \code{norm} vary depending on the class of
 #'   \code{x}
@@ -29,10 +32,10 @@ normalize.default <- function(x, ...) {
 #' @describeIn normalize Normalize a \code{source_spct} object.
 #'
 #' @param range An R object on which \code{range()} returns a numeric vector of
-#'   length 2 with the limits of a range of wavelengths in nm, with min annd max
+#'   length 2 with the limits of a range of wavelengths in nm, with min and max
 #'   wavelengths (nm)
 #' @param norm numeric Normalization wavelength (nm) or character string "max",
-#'   or "min" for normalization at the corresponding wavelngth, or "integral" or
+#'   or "min" for normalization at the corresponding wavelength, or "integral" or
 #'   "mean" for rescaling by dividing by these values.
 #' @param unit.out character Allowed values "energy", and "photon",
 #'   or its alias "quantum"
@@ -185,6 +188,14 @@ normalize.generic_spct <-
 
 #' @describeIn normalize Normalize the members of a source_mspct object.
 #'
+#' @param .parallel	if TRUE, apply function in parallel, using parallel backend
+#'   provided by foreach
+#' @param .paropts a list of additional options passed into the foreach function
+#'   when parallel computation is enabled. This is important if (for example)
+#'   your code relies on external data or packages: use the .export and
+#'   .packages arguments to supply them so that all cluster nodes have the
+#'   correct environment set up for computing.
+#'
 #' @export
 #'
 normalize.source_mspct <-
@@ -193,13 +204,17 @@ normalize.source_mspct <-
            range = NULL,
            norm = "max",
            unit.out = getOption("photobiology.radiation.unit",
-                                default = "energy")) {
+                                default = "energy"),
+           .parallel = FALSE,
+           .paropts = NULL) {
     msmsply(x,
             normalize,
             range = range,
             norm = norm,
             unit.out = unit.out,
-            ...)
+            ...,
+            .parallel = .parallel,
+            .paropts = .paropts)
 
   }
 
@@ -213,13 +228,17 @@ normalize.response_mspct <-
            range = NULL,
            norm = "max",
            unit.out = getOption("photobiology.radiation.unit",
-                                default = "energy")) {
+                                default = "energy"),
+           .parallel = FALSE,
+           .paropts = NULL) {
     msmsply(x,
             normalize,
             range = range,
             norm = norm,
             unit.out = unit.out,
-            ...)
+            ...,
+            .parallel = .parallel,
+            .paropts = .paropts)
 
   }
 
@@ -233,13 +252,17 @@ normalize.filter_mspct <-
            range = NULL,
            norm = "max",
            qty.out = getOption("photobiology.filter.qty",
-                               default = "transmittance")) {
+                               default = "transmittance"),
+           .parallel = FALSE,
+           .paropts = NULL) {
     msmsply(x,
             normalize,
             range = range,
             norm = norm,
             qty.out = qty.out,
-            ...)
+            ...,
+            .parallel = .parallel,
+            .paropts = .paropts)
 
   }
 
@@ -251,13 +274,17 @@ normalize.reflector_mspct <- function(x,
                                       ...,
                                       range = x,
                                       norm = "max",
-                                      qty.out = NULL) {
+                                      qty.out = NULL,
+                                      .parallel = FALSE,
+                                      .paropts = NULL) {
   msmsply(x,
           normalize,
           range = range,
           norm = norm,
           qty.out = qty.out,
-          ...)
+          ...,
+          .parallel = .parallel,
+          .paropts = .paropts)
 
 }
 
@@ -268,12 +295,16 @@ normalize.reflector_mspct <- function(x,
 normalize.raw_mspct <- function(x,
                                 ...,
                                 range = x,
-                                norm = "max") {
+                                norm = "max",
+                                .parallel = FALSE,
+                                .paropts = NULL) {
   msmsply(x,
           normalize,
           range = range,
           norm = norm,
-          ...)
+          ...,
+          .parallel = .parallel,
+          .paropts = .paropts)
 }
 
 #' @describeIn normalize Normalize the members of a cps_mspct object.
@@ -283,12 +314,16 @@ normalize.raw_mspct <- function(x,
 normalize.cps_mspct <- function(x,
                                 ...,
                                 range = x,
-                                norm = "max") {
+                                norm = "max",
+                                .parallel = FALSE,
+                                .paropts = NULL) {
   msmsply(x,
           normalize,
           range = range,
           norm = norm,
-          ...)
+          ...,
+          .parallel = .parallel,
+          .paropts = .paropts)
 }
 
 # PRIVATE -----------------------------------------------------------------
@@ -296,12 +331,19 @@ normalize.cps_mspct <- function(x,
 #' @keywords internal
 #'
 normalize_spct <- function(spct, range, norm, col.names) {
-  stopifnot(is.any_spct(spct), !is.null(col.names),
+  stopifnot(is.generic_spct(spct), !is.null(col.names),
             col.names %in% names(spct))
   num.spectra <- getMultipleWl(spct)
+
+  # normalization will wipe out any existing scaling
+  if (is_scaled(spct)) {
+    setScaled(spct, scaled = FALSE)
+  }
+
   if (num.spectra != 1) {
-    stop("Normalization not possible as object contains data for ",
-         num.spectra, " spectra")
+    warning("Object contains data for ",
+         num.spectra, " spectra; skipping normalization")
+    return(spct)
   }
   if (is.null(range) || all(is.na(range))) {
     range <- range(spct)
@@ -363,7 +405,7 @@ normalize_spct <- function(spct, range, norm, col.names) {
 #' @family rescaling functions
 #'
 is_normalized <- function(x) {
-  if (!is.any_spct(x) && !is.any_summary_spct(x)) {
+  if (!is.generic_spct(x) && !is.summary_generic_spct(x)) {
     return(NA)
   }
   spct.attr <- attr(x, "normalized", exact = TRUE)
@@ -374,7 +416,7 @@ is_normalized <- function(x) {
 
 #' Get the "normalized" attribute
 #'
-#' Funtion to read the "normalized" attribute of an existing generic_spct
+#' Function to read the "normalized" attribute of an existing generic_spct
 #' object.
 #'
 #' @param x a generic_spct object
@@ -387,7 +429,7 @@ is_normalized <- function(x) {
 #' @family rescaling functions
 #'
 getNormalized <- function(x) {
-  if (is.any_spct(x) || is.any_summary_spct(x)) {
+  if (is.generic_spct(x) || is.summary_generic_spct(x)) {
     normalized <- attr(x, "normalized", exact = TRUE)
     if (is.null(normalized) || is.na(normalized)) {
       # need to handle objects created with old versions
@@ -401,7 +443,7 @@ getNormalized <- function(x) {
 
 #' Set the "normalized" attribute
 #'
-#' Funtion to write the "normalized" attribute of an existing generic_spct
+#' Function to write the "normalized" attribute of an existing generic_spct
 #' object.
 #'
 #' @param x a generic_spct object
@@ -414,7 +456,7 @@ getNormalized <- function(x) {
 #'
 setNormalized <- function(x, norm = FALSE) {
   name <- substitute(x)
-  if ((is.any_spct(x) || is.any_summary_spct(x)) &&
+  if ((is.generic_spct(x) || is.summary_generic_spct(x)) &&
       (is.na(norm) || is.numeric(norm) || is.logical(norm))) {
     attr(x, "normalized") <- norm
     if (is.name(name)) {
@@ -424,4 +466,3 @@ setNormalized <- function(x, norm = FALSE) {
   }
   invisible(x)
 }
-

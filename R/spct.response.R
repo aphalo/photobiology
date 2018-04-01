@@ -5,29 +5,41 @@
 #'
 #' Calculate average photon- or energy-based photo-response.
 #'
-#' @param spct an R object of class "generic_spct"
+#' @param spct an R object of class "generic_spct".
 #' @param w.band waveband or list of waveband objects or a numeric vector of
 #'   length two. The waveband(s) determine the region(s) of the spectrum that
 #'   are summarized. If a numeric range is supplied a waveband object is
 #'   constructed on the fly from it.
 #' @param unit.out character Allowed values "energy", and "photon", or its alias
-#'   "quantum"
-#' @param quantity character Allowed values ""
-#' @param time.unit character or lubridate::duration
+#'   "quantum".
+#' @param quantity character string One of "total", "average" or "mean",
+#'   "contribution", "contribution.pc", "relative" or "relative.pc".
+#' @param time.unit character or lubridate::duration object.
 #' @param wb.trim logical Flag telling if wavebands crossing spectral data boundaries
-#'   are trimmed or ignored
-#' @param use.hinges logical indicating whether to use hinges to reduce
-#'   interpolation errors
-#' @param ... other arguments
+#'   are trimmed or ignored.
+#' @param use.hinges logical Flag indicating whether to insert "hinges" into the
+#'   spectral data before integration so as to reduce interpolation errors at
+#'   the boundaries of the wavebands.
+#' @param ... other arguments (possibly used by derived methods).
 #'
 #' @note The parameter \code{use.hinges} controls speed optimization. The
-#'   defaults should be suitable in mosts cases. Only the range of wavelengths
+#'   defaults should be suitable in most cases. Only the range of wavelengths
 #'   in the wavebands is used and all BSWFs are ignored.
 #'
-#' @return A single numeric value expressed either as a fraction of one or a
-#'   percentage, or a vector of the same length as the list of wave.bands. The
-#'   quantity returned depends on the value of \code{quantity}. Whether it is
-#'   expressed in energy-based or photon-based units depends on \code{unit.out}.
+#' @return A named \code{numeric} vector in the case of methods for individual
+#'   spectra, with one value for each \code{waveband} passed to parameter
+#'   \code{w.band}. A \code{data.frame} in the case of collections of spectra,
+#'   containing one column for each \code{waveband} object, an index column with
+#'   the names of the spectra, and optionally additional columns with metadata
+#'   values retrieved from the attributes of the member spectra.
+#'
+#'   Whether returned values are expressed in energy-based or photon-based units
+#'   depends on \code{unit.out}. By default values are only integrated, but
+#'   depending on the argument passed to parameter \code{quantity} they can be
+#'   re-expressed as relative fractions or percentages. In the case of vector
+#'   output, \code{names} attribute is set to the name of the corresponding
+#'   waveband unless a named list is supplied in which case the names of the
+#'   list members are used.
 #'
 #' @export
 #' @family response functions
@@ -64,27 +76,29 @@ response.response_spct <-
 #' This function returns the mean response for a given waveband and a response
 #' spectrum.
 #'
-#' @param spct an object of class response_spct"
+#' @param spct an object of class response_spct".
 #' @param w.band waveband or list of waveband objects or a numeric vector of
 #'   length two. The waveband(s) determine the region(s) of the spectrum that
 #'   are summarized. If a numeric range is supplied a waveband object is
 #'   constructed on the fly from it.
 #' @param unit.out character with allowed values "energy", and "photon", or its
-#'   alias "quantum"
-#' @param quantity character with allowed values "total", "average" ("mean"),
-#'   "contibution", "contribution.pc", "relative", "relative.pc"
+#'   alias "quantum".
+#' @param quantity character string One of "total", "average" or "mean",
+#'   "contribution", "contribution.pc", "relative" or "relative.pc".
 #' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries
-#'   are trimmed, if FALSE, they are discarded
-#' @param use.hinges logical indicating whether to use hinges to reduce
-#'   interpolation errors
-#' @param ... other arguments
+#'   are trimmed, if FALSE, they are discarded.
+#' @param use.hinges logical Flag indicating whether to insert "hinges" into the
+#'   spectral data before integration so as to reduce interpolation errors at
+#'   the boundaries of the wavebands.
+#' @param ... other arguments (possibly used by derived methods).
 #'
 #' @return a single numeric value expressed either as a fraction of one or a
-#'   percentage, or a vector of the same length as the list of wave.bands.
+#'   percentage, or a vector of the same length as the list of \code{waveband}
+#'   objects.
 #' @keywords internal
 #'
 #' @note The parameter \code{use.hinges} controls speed optimization. The
-#'   defaults should be suitable in mosts cases. Only the range of wavelengths
+#'   defaults should be suitable in most cases. Only the range of wavelengths
 #'   in the wavebands is used and all BSWFs are ignored.
 #'
 #' @keywords internal
@@ -97,10 +111,12 @@ resp_spct <-
               num.spectra, " spectra")
       return(NA_real_)
     }
-    if (is_normalized(spct) || is_scaled(spct)) {
-      warning("The spectral data has been normalized or scaled, ",
-              "making impossible to calculate integrated response")
-      return(NA)
+    if (is_normalized(spct)) {
+      warning("The spectral data has been normalized, making impossible to calculate absorbance")
+      return(NA_real_)
+    }
+    if (is_scaled(spct)) {
+      warning("Summary calculated from rescaled data")
     }
     # makes "quantum" synonym for "photon" without changes to other code
     if (unit.out == "quantum") {
@@ -130,7 +146,7 @@ resp_spct <-
     }
 
     # if the waveband is undefined then use all data
-    if (is.null(w.band)) {
+    if (length(w.band) == 0) {
       w.band <- waveband(spct)
     }
     if (is.numeric(w.band)) {
@@ -139,7 +155,7 @@ resp_spct <-
     if (is.waveband(w.band)) {
       # if the argument is a single w.band, we enclose it in a list
       # so that the for loop works as expected. This is a bit of a
-      # cludge but it let's us avoid treating it as a special case
+      # kludge but it let's us avoid treating it as a special case
       w.band <- list(w.band)
     }
     w.band <- trim_waveband(w.band = w.band, range = spct, trim = wb.trim)
@@ -220,7 +236,7 @@ resp_spct <-
         }
       }
     } else if (quantity %in% c("average", "mean")) {
-      response <- response / sapply(w.band, spread)
+      response <- response / sapply(w.band, wl_expanse)
     } else if (quantity != "total") {
       warning("'quantity '", quantity, "' is invalid, returning 'total' instead")
       quantity <- "total"
@@ -243,23 +259,33 @@ resp_spct <-
 #' This function returns the mean, total, or contribution of response for each
 #' waveband and a response spectrum.
 #'
-#' @param spct an R object
+#' @param spct an R object.
 #' @param w.band waveband or list of waveband objects or a numeric vector of
 #'   length two. The waveband(s) determine the region(s) of the spectrum that
 #'   are summarized. If a numeric range is supplied a waveband object is
 #'   constructed on the fly from it.
-#' @param quantity character
-#' @param time.unit character or lubridate::duration
+#' @param quantity character string One of "total", "average" or "mean",
+#'   "contribution", "contribution.pc", "relative" or "relative.pc".
+#' @param time.unit character or lubridate::duration object.
 #' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries
-#'   are trimmed, if FALSE, they are discarded
-#' @param use.hinges logical indicating whether to use hinges to reduce
-#'   interpolation errors
-#' @param ... other arguments
+#'   are trimmed, if FALSE, they are discarded.
+#' @param use.hinges logical Flag indicating whether to insert "hinges" into the
+#'   spectral data before integration so as to reduce interpolation errors at
+#'   the boundaries of the wavebands.
+#' @param ... other arguments (possibly used by derived methods).
 #'
-#' @return A single numeric value expressed either as a fraction of one or a
-#'   percentage, or a vector of the same length as the list of wave.bands. The
-#'   quantity returned, although always on energy-based units, depends on the
-#'   value of \code{quantity}.
+#' @return A named \code{numeric} vector in the case of methods for individual
+#'   spectra, with one value for each \code{waveband} passed to parameter
+#'   \code{w.band}. A \code{data.frame} in the case of collections of spectra,
+#'   containing one column for each \code{waveband} object, an index column with
+#'   the names of the spectra, and optionally additional columns with metadata
+#'   values retrieved from the attributes of the member spectra.
+#'
+#'   By default values are only integrated, but depending on the argument passed
+#'   to parameter \code{quantity} they can be re-expressed as relative fractions
+#'   or percentages. In the case of vector output, \code{names} attribute is set
+#'   to the name of the corresponding waveband unless a named list is supplied
+#'   in which case the names of the list members are used.
 #'
 #' @export
 #' @examples
@@ -267,7 +293,7 @@ resp_spct <-
 #' e_response(photodiode.spct)
 #'
 #' @note The parameter \code{use.hinges} controls speed optimization. The
-#'   defaults should be suitable in mosts cases. Only the range of wavelengths
+#'   defaults should be suitable in most cases. Only the range of wavelengths
 #'   in the wavebands is used and all BSWFs are ignored.
 #'
 #' @family response functions
@@ -305,23 +331,33 @@ e_response.response_spct <-
 #' This function returns the mean response for a given
 #' waveband and a response spectrum.
 #'
-#' @param spct an R object
+#' @param spct an R object.
 #' @param w.band waveband or list of waveband objects or a numeric vector of
 #'   length two. The waveband(s) determine the region(s) of the spectrum that
 #'   are summarized. If a numeric range is supplied a waveband object is
 #'   constructed on the fly from it.
-#' @param quantity character
-#' @param time.unit character or lubridate::duration
+#' @param quantity character string One of "total", "average" or "mean",
+#'   "contribution", "contribution.pc", "relative" or "relative.pc".
+#' @param time.unit character or lubridate::duration object.
 #' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries
-#'   are trimmed, if FALSE, they are discarded
-#' @param use.hinges logical indicating whether to use hinges to reduce
-#'   interpolation errors
-#' @param ... other arguments
+#'   are trimmed, if FALSE, they are discarded.
+#' @param use.hinges logical Flag indicating whether to insert "hinges" into the
+#'   spectral data before integration so as to reduce interpolation errors at
+#'   the boundaries of the wavebands.
+#' @param ... other arguments (possibly used by derived methods).
 #'
-#' @return A single numeric value expressed either as a fraction of one or a
-#'   percentage, or a vector of the same length as the list of wave.bands. The
-#'   quantity returned, although always on photon-based units, depends on the
-#'   value of \code{quantity}.
+#' @return A named \code{numeric} vector in the case of methods for individual
+#'   spectra, with one value for each \code{waveband} passed to parameter
+#'   \code{w.band}. A \code{data.frame} in the case of collections of spectra,
+#'   containing one column for each \code{waveband} object, an index column with
+#'   the names of the spectra, and optionally additional columns with metadata
+#'   values retrieved from the attributes of the member spectra.
+#'
+#'   By default values are only integrated, but depending on the argument passed
+#'   to parameter \code{quantity} they can be re-expressed as relative fractions
+#'   or percentages. In the case of vector output, \code{names} attribute is set
+#'   to the name of the corresponding waveband unless a named list is supplied
+#'   in which case the names of the list members are used.
 #'
 #' @export
 #' @examples
@@ -329,7 +365,7 @@ e_response.response_spct <-
 #' q_response(photodiode.spct)
 #'
 #' @note The parameter \code{use.hinges} controls speed optimization. The
-#'   defaults should be suitable in mosts cases. Only the range of wavelengths
+#'   defaults should be suitable in most cases. Only the range of wavelengths
 #'   in the wavebands is used and all BSWFs are ignored.
 #'
 #' @family response functions
@@ -370,8 +406,16 @@ q_response.response_spct <-
 
 #' @describeIn response Calculates response from a \code{response_mspct}
 #'
+#' @param attr2tb character vector, see \code{\link{add_attr2tb}} for the syntax for \code{attr2tb} passed as is to formal parameter \code{col.names}.
 #' @param idx logical whether to add a column with the names of the elements of
 #'   spct
+#' @param .parallel	if TRUE, apply function in parallel, using parallel backend
+#'   provided by foreach
+#' @param .paropts a list of additional options passed into the foreach function
+#'   when parallel computation is enabled. This is important if (for example)
+#'   your code relies on external data or packages: use the .export and
+#'   .packages arguments to supply them so that all cluster nodes have the
+#'   correct environment set up for computing.
 #'
 #' @export
 #'
@@ -382,26 +426,44 @@ response.response_mspct <-
            time.unit = NULL,
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.hinges = getOption("photobiology.use.hinges", default = NULL),
-           ..., idx = !is.null(names(spct))) {
-    msdply(
-      mspct = spct,
-      .fun = response,
-      w.band = w.band,
-      unit.out = unit.out,
-      quantity = quantity,
-      time.unit = time.unit,
-      wb.trim = wb.trim,
-      use.hinges = use.hinges,
-      idx = idx,
-      col.names = names(w.band)
-    )
+           ...,
+           attr2tb = NULL,
+           idx = !is.null(names(spct)),
+           .parallel = FALSE,
+           .paropts = NULL) {
+    z <-
+      msdply(
+        mspct = spct,
+        .fun = response,
+        w.band = w.band,
+        unit.out = unit.out,
+        quantity = quantity,
+        time.unit = time.unit,
+        wb.trim = wb.trim,
+        use.hinges = use.hinges,
+        idx = idx,
+        col.names = names(w.band),
+        .parallel = .parallel,
+        .paropts = .paropts
+      )
+    add_attr2tb(tb = z,
+                mspct = spct,
+                col.names = attr2tb)
   }
 
 #' @describeIn q_response Calculates photon (quantum) response from a
 #'   \code{response_mspct}
 #'
+#' @param attr2tb character vector, see \code{\link{add_attr2tb}} for the syntax for \code{attr2tb} passed as is to formal parameter \code{col.names}.
 #' @param idx logical whether to add a column with the names of the elements of
 #'   spct
+#' @param .parallel	if TRUE, apply function in parallel, using parallel backend
+#'   provided by foreach
+#' @param .paropts a list of additional options passed into the foreach function
+#'   when parallel computation is enabled. This is important if (for example)
+#'   your code relies on external data or packages: use the .export and
+#'   .packages arguments to supply them so that all cluster nodes have the
+#'   correct environment set up for computing.
 #'
 #' @export
 #'
@@ -411,25 +473,43 @@ q_response.response_mspct <-
            time.unit = NULL,
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.hinges = getOption("photobiology.use.hinges", default = NULL),
-           ..., idx = !is.null(names(spct))) {
-    msdply(
-      mspct = spct,
-      .fun = q_response,
-      w.band = w.band,
-      quantity = quantity,
-      time.unit = time.unit,
-      wb.trim = wb.trim,
-      use.hinges = use.hinges,
-      idx = idx,
-      col.names = names(w.band)
-    )
+           ...,
+           attr2tb = NULL,
+           idx = !is.null(names(spct)),
+           .parallel = FALSE,
+           .paropts = NULL) {
+    z <-
+      msdply(
+        mspct = spct,
+        .fun = q_response,
+        w.band = w.band,
+        quantity = quantity,
+        time.unit = time.unit,
+        wb.trim = wb.trim,
+        use.hinges = use.hinges,
+        idx = idx,
+        col.names = names(w.band),
+        .parallel = .parallel,
+        .paropts = .paropts
+      )
+    add_attr2tb(tb = z,
+                mspct = spct,
+                col.names = attr2tb)
   }
 
 #' @describeIn e_response Calculates energy response from a
 #'   \code{response_mspct}
 #'
+#' @param attr2tb character vector, see \code{\link{add_attr2tb}} for the syntax for \code{attr2tb} passed as is to formal parameter \code{col.names}.
 #' @param idx logical whether to add a column with the names of the elements of
 #'   spct
+#' @param .parallel	if TRUE, apply function in parallel, using parallel backend
+#'   provided by foreach
+#' @param .paropts a list of additional options passed into the foreach function
+#'   when parallel computation is enabled. This is important if (for example)
+#'   your code relies on external data or packages: use the .export and
+#'   .packages arguments to supply them so that all cluster nodes have the
+#'   correct environment set up for computing.
 #'
 #' @export
 #'
@@ -439,16 +519,26 @@ e_response.response_mspct <-
            time.unit = NULL,
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.hinges = getOption("photobiology.use.hinges", default = NULL),
-           ..., idx = !is.null(names(spct))) {
-    msdply(
-      mspct = spct,
-      .fun = e_response,
-      w.band = w.band,
-      quantity = quantity,
-      time.unit = time.unit,
-      wb.trim = wb.trim,
-      use.hinges = use.hinges,
-      idx = idx,
-      col.names = names(w.band)
-    )
+           ...,
+           attr2tb = NULL,
+           idx = !is.null(names(spct)),
+           .parallel = FALSE,
+           .paropts = NULL) {
+    z <-
+      msdply(
+        mspct = spct,
+        .fun = e_response,
+        w.band = w.band,
+        quantity = quantity,
+        time.unit = time.unit,
+        wb.trim = wb.trim,
+        use.hinges = use.hinges,
+        idx = idx,
+        col.names = names(w.band),
+        .parallel = .parallel,
+        .paropts = .paropts
+      )
+    add_attr2tb(tb = z,
+                mspct = spct,
+                col.names = attr2tb)
   }

@@ -6,7 +6,7 @@
 #' @param spct an object of class "generic_spct"
 #' @param hinges numeric vector of wavelengths (nm) at which the
 #'   s.irrad should be inserted by interpolation, no interpolation is indicated
-#'   by an empty array (numeric(0))
+#'   by an empty vector (numeric(0))
 #' @param byref logical indicating if new object will be created by reference or
 #'   by copy of spct
 #'
@@ -27,8 +27,8 @@
 #' insert_spct_hinges(sun.spct,
 #'                    c(199.99,200.00,399.50,399.99,400.00,699.99,
 #'                          700.00,799.99,1000.00))
-insert_spct_hinges <- function(spct, hinges=NULL, byref=FALSE) {
-  if (!is.any_spct(spct)) {
+insert_spct_hinges <- function(spct, hinges=NULL, byref = FALSE) {
+  if (!is.generic_spct(spct)) {
     warning("Only objects derived from 'generic_spct' are supported")
     return(spct)
   }
@@ -40,7 +40,6 @@ insert_spct_hinges <- function(spct, hinges=NULL, byref=FALSE) {
     name <- substitute(spct)
     names.spct <- names(spct)
     names.data <- names.spct != "w.length"
-    idx.wl <- which(!names.data)
     idx.data <- which(names.data)
     class_spct <- class(spct)
     comment.spct <- comment(spct)
@@ -54,6 +53,7 @@ insert_spct_hinges <- function(spct, hinges=NULL, byref=FALSE) {
     if (is.reflector_spct(spct) || is.object_spct(spct)) {
       Rfr.type <- getRfrType(spct)
     }
+    # iteration over data columns
     first.iter <- TRUE
     for (data.col in idx.data) {
       temp.data <- spct[[data.col]]
@@ -84,6 +84,8 @@ insert_spct_hinges <- function(spct, hinges=NULL, byref=FALSE) {
       setCpsSpct(new.spct)
     } else if (class_spct[1] == "raw_spct") {
       setRawSpct(new.spct)
+    } else if (class_spct[1] == "calibration_spct") {
+      setCalibrationSpct(new.spct)
     } else {
       stop("Failed assertion: report to package maintainer")
     }

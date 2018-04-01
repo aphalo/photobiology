@@ -2,19 +2,32 @@
 #'
 #' Summary transmittance for supplied wavebands from filter or object spectrum.
 #'
-#' @param spct an R object
+#' @param spct an R object.
 #' @param w.band waveband or list of waveband objects or a numeric vector of
 #'   length two. The waveband(s) determine the region(s) of the spectrum that
 #'   are summarized. If a numeric range is supplied a waveband object is
 #'   constructed on the fly from it.
-#' @param quantity character
+#' @param quantity character string One of "total", "average" or "mean",
+#'   "contribution", "contribution.pc", "relative" or "relative.pc".
 #' @param wb.trim logical Flag indicating if wavebands crossing spectral data boundaries
-#'   are trimmed or ignored
-#' @param use.hinges logical Flag indicating whether to use hinges to reduce
-#'   interpolation errors
-#' @param ... other arguments
+#'   are trimmed or ignored.
+#' @param use.hinges logical Flag indicating whether to insert "hinges" into the
+#'   spectral data before integration so as to reduce interpolation errors at
+#'   the boundaries of the wavebands.
+#' @param ... ignored (possibly used by derived methods).
 #'
-#' @return A numeric vector with no change in scale factor
+#' @return A named \code{numeric} vector in the case of methods for individual
+#'   spectra, with one value for each \code{waveband} passed to parameter
+#'   \code{w.band}. A \code{data.frame} in the case of collections of spectra,
+#'   containing one column for each \code{waveband} object, an index column with
+#'   the names of the spectra, and optionally additional columns with metadata
+#'   values retrieved from the attributes of the member spectra.
+#'
+#'   By default values are only integrated, but depending on the argument passed
+#'   to parameter \code{quantity} they can be re-expressed as relative fractions
+#'   or percentages. In the case of vector output, \code{names} attribute is set
+#'   to the name of the corresponding waveband unless a named list is supplied
+#'   in which case the names of the list members are used.
 #'
 #' @export transmittance
 #' @examples
@@ -23,7 +36,7 @@
 #' transmittance(polyester.spct, waveband(c(400, 700)))
 #'
 #' @note The \code{use.hinges} parameter controls speed optimization. The
-#'   defaults should be suitable in mosts cases. Only the range of wavelengths
+#'   defaults should be suitable in most cases. Only the range of wavelengths
 #'   in the wavebands is used and all BSWFs are ignored.
 #'
 #' @export transmittance
@@ -72,25 +85,26 @@ transmittance.object_spct <-
 
 #' Calculate transmittance from spectral transmittance.
 #'
-#' This function returns the mean transmittance for a given waveband of a
-#' transmittance spectrum.
+#' Mean transmittance for one or more wavebands of a filter or object spectrum.
 #'
-#' @param spct an object of class "generic_spct"
+#' @param spct an object of class "generic_spct".
 #' @param w.band waveband or list of waveband objects or a numeric vector of
 #'   length two. The waveband(s) determine the region(s) of the spectrum that
 #'   are summarized. If a numeric range is supplied a waveband object is
 #'   constructed on the fly from it.
-#' @param quantity character
+#' @param quantity character string One of "total", "average" or "mean",
+#'   "contribution", "contribution.pc", "relative" or "relative.pc".
 #' @param wb.trim logical Flag indicating if wavebands crossing spectral data boundaries
-#'   are trimmed or ignored
-#' @param use.hinges logical Flag indicating whether to use hinges to reduce
-#'   interpolation errors
+#'   are trimmed or ignored.
+#' @param use.hinges logical Flag indicating whether to insert "hinges" into the
+#'   spectral data before integration so as to reduce interpolation errors at
+#'   the boundaries of the wavebands.
 #'
 #' @return a single numeric value
 #' @keywords internal
 #'
 #' @note The last parameter controls speed optimization. The defaults should be
-#'   suitable in mosts cases. Only the range of wavelengths in the wavebands is
+#'   suitable in most cases. Only the range of wavelengths in the wavebands is
 #'   used and all BSWFs are ignored.
 
 transmittance_spct <-
@@ -101,18 +115,20 @@ transmittance_spct <-
               num.spectra, " spectra")
       return(NA_real_)
     }
-    if (is_normalized(spct) || is_scaled(spct)) {
-      warning("The spectral data has been normalized or scaled, making impossible to calculate transmittance")
-      return(NA)
+    if (is_normalized(spct)) {
+      warning("The spectral data has been normalized, making impossible to calculate absorbance")
+      return(NA_real_)
+    }
+    if (is_scaled(spct)) {
+      warning("Summary calculated from rescaled data")
     }
     if (!is.filter_spct(spct)) {
       spct <- as.filter_spct(spct)
     }
     spct <- A2T(spct, action = "replace", byref = FALSE)
-    Tfr.type <- getTfrType(spct)
     spct <- spct[ , c("w.length", "Tfr")]
     # if the waveband is undefined then use all data
-    if (is.null(w.band)) {
+    if (length(w.band) == 0) {
       w.band <- waveband(spct)
     }
     if (is.numeric(w.band)) {
@@ -121,7 +137,7 @@ transmittance_spct <-
     if (is.waveband(w.band)) {
       # if the argument is a single w.band, we enclose it in a list
       # so that the for loop works as expected.This is a bit of a
-      # cludge but let's us avoid treating it as a special case
+      # kludge but let's us avoid treating it as a special case
       w.band <- list(w.band)
     }
     w.band <- trim_waveband(w.band = w.band, range = spct, trim = wb.trim)
@@ -177,8 +193,11 @@ transmittance_spct <-
     }
 
     if (quantity %in% c("contribution", "contribution.pc")) {
-      total <- transmittance_spct(spct, w.band = NULL, wb.trim = wb.trim,
-                                quantity = "total", use.hinges = use.hinges)
+      total <- transmittance_spct(spct,
+                                  w.band = NULL,
+                                  wb.trim = wb.trim,
+                                  quantity = "total",
+                                  use.hinges = use.hinges)
       transmittance <- transmittance / total
       if (quantity == "contribution.pc") {
         transmittance <- transmittance * 1e2
@@ -190,7 +209,7 @@ transmittance_spct <-
         transmittance <- transmittance * 1e2
       }
     } else if (quantity %in% c("average", "mean")) {
-      transmittance <- transmittance / sapply(w.band, spread)
+      transmittance <- transmittance / sapply(w.band, wl_expanse)
     } else if (quantity == "total") {
       NULL
     } else if (quantity != "total") {
@@ -212,6 +231,7 @@ transmittance_spct <-
 
 #' @describeIn transmittance Calculates transmittance from a \code{filter_mspct}
 #'
+#' @param attr2tb character vector, see \code{\link{add_attr2tb}} for the syntax for \code{attr2tb} passed as is to formal parameter \code{col.names}.
 #' @param idx logical whether to add a column with the names of the elements of
 #'   spct
 #'
@@ -222,22 +242,35 @@ transmittance.filter_mspct <-
            quantity = "average",
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.hinges = getOption("photobiology.use.hinges", default = NULL),
-           ..., idx = !is.null(names(spct)) ) {
-    msdply(
-      mspct = spct,
-      .fun = transmittance,
-      w.band = w.band,
-      quantity = quantity,
-      wb.trim = wb.trim,
-      use.hinges = use.hinges,
-      idx = idx,
-      col.names = names(w.band)
-    )
+           ...,
+           attr2tb = NULL,
+           idx = !is.null(names(spct)) ) {
+    z <-
+      msdply(
+        mspct = spct,
+        .fun = transmittance,
+        w.band = w.band,
+        quantity = quantity,
+        wb.trim = wb.trim,
+        use.hinges = use.hinges,
+        idx = idx,
+        col.names = names(w.band)
+      )
+    add_attr2tb(tb = z,
+                mspct = spct,
+                col.names = attr2tb)
   }
 
 # object_mspct methods -----------------------------------------------
 
 #' @describeIn transmittance Calculates transmittance from a \code{object_mspct}
+#' @param .parallel	if TRUE, apply function in parallel, using parallel backend
+#'   provided by foreach
+#' @param .paropts a list of additional options passed into the foreach function
+#'   when parallel computation is enabled. This is important if (for example)
+#'   your code relies on external data or packages: use the .export and
+#'   .packages arguments to supply them so that all cluster nodes have the
+#'   correct environment set up for computing.
 #'
 #' @export
 #'
@@ -246,17 +279,25 @@ transmittance.object_mspct <-
            quantity = "average",
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.hinges = getOption("photobiology.use.hinges", default = NULL),
-           ..., idx = !is.null(names(spct)) ) {
-    msdply(
-      mspct = spct,
-      .fun = transmittance,
-      w.band = w.band,
-      quantity = quantity,
-      wb.trim = wb.trim,
-      use.hinges = use.hinges,
-      idx = idx,
-      col.names = names(w.band)
-    )
+           ...,
+           attr2tb = NULL,
+           idx = !is.null(names(spct)),
+           .parallel = FALSE,
+           .paropts = NULL) {
+    z <-
+      msdply(
+        mspct = spct,
+        .fun = transmittance,
+        w.band = w.band,
+        quantity = quantity,
+        wb.trim = wb.trim,
+        use.hinges = use.hinges,
+        idx = idx,
+        col.names = names(w.band),
+        .parallel = .parallel,
+        .paropts = .paropts
+      )
+    add_attr2tb(tb = z,
+                mspct = spct,
+                col.names = attr2tb)
   }
-
-

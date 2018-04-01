@@ -1,12 +1,15 @@
-globalVariables(".photobio.cache")
+.photobio.cache <- new.env()
 
-.onLoad <- function(libname, pkgname) {
-  .photobio.cache <<- new.env(parent = emptyenv())
-}
+#globalVariables(".photobio.cache")
 
-.onUnload <- function(libpath) {
-  rm(.photobio.cache, envir = emptyenv())
-}
+# .onLoad <- function(libname, pkgname) {
+#   .photobio.cache <<- new.env(parent = emptyenv())
+# }
+
+#.onUnload <- function(libpath) {
+#  suppressWarnings(rm(.photobio.cache, envir = emptyenv()))
+#  rm(.photobio.cache)
+#}
 
 #' Spectral weights
 #'
@@ -15,20 +18,23 @@ globalVariables(".photobio.cache")
 #' normalization. This function returns numeric multipliers that can be used to
 #' select a waveband and apply a weight.
 #'
-#' @param w.length numeric Vector of wavelengths (nm)
-#' @param w.band waveband
-#' @param unit.out character A string: "photon" or "energy", default is "energy"
-#' @param unit.in character A string: "photon" or "energy", default is "energy"
+#' @param w.length numeric vector of wavelengths (nm).
+#' @param w.band waveband object.
+#' @param unit.out character A string: "photon" or "energy", default is "energy".
+#' @param unit.in character A string: "photon" or "energy", default is "energy".
 #' @param use.cached.mult logical Flag indicating whether multiplier values
-#'   should be cached between calls
-#' @param fill numeric If fill==NA then values returned for wavelengths outside
-#'   the range of the waveband are set to NA
+#'   should be cached between calls.
+#' @param fill numeric If \code{fill == NA} then values returned for wavelengths outside
+#'   the range of the waveband are set to \code{NA}.
 #'
-#' @return a numeric array of multipliers of the same length as \code{w.length}
+#' @return a numeric vector of multipliers of the same length as \code{w.length}.
 #'
 #' @export
 #' @examples
 #' with(sun.data, calc_multipliers(w.length, new_waveband(400,700),"photon"))
+#' with(sun.data, calc_multipliers(w.length, new_waveband(400,700),"photon"), use.cached.mult = TRUE)
+#'
+#' @family low-level functions operating on numeric vectors.
 #'
 calc_multipliers <-
   function(w.length,
@@ -103,7 +109,7 @@ calc_multipliers <-
     return(mult)
   }
 
-#' clear the spectral weights cache
+#' Clear the spectral weights cache
 #'
 #' Clear the cache objects stored in environment .photobio.cache
 #'

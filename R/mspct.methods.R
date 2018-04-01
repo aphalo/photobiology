@@ -7,12 +7,20 @@
 #' @param mspct an object of class generic_mspct or a derived class
 #' @param .fun a function
 #' @param ... other arguments passed to .fun
+#' @param .parallel	if TRUE, apply function in parallel, using parallel backend
+#'   provided by foreach
+#' @param .paropts a list of additional options passed into the foreach function
+#'   when parallel computation is enabled. This is important if (for example)
+#'   your code relies on external data or packages: use the .export and
+#'   .packages arguments to supply them so that all cluster nodes have the
+#'   correct environment set up for computing.
 #'
 #' @return a collection of spectra in the case of \code{msmsply}
 #'
 #' @export
 #'
-msmsply <- function(mspct, .fun, ...) {
+msmsply <- function(mspct, .fun, ...,
+                    .parallel = FALSE, .paropts = NULL) {
   stopifnot(is.any_mspct(mspct))
   mspct.class <- class(mspct)
   byrow <- attr(mspct, "mspct.byrow", exact = TRUE)
@@ -21,7 +29,11 @@ msmsply <- function(mspct, .fun, ...) {
   # llply returns a matrix for classes derived from list
   #
   rmDerivedMspct(mspct)
-  y <- plyr::llply(mspct, .fun, ...)
+  y <- plyr::llply(.data = mspct,
+                   .fun = .fun,
+                   ...,
+                   .parallel = .parallel,
+                   .paropts = .paropts)
 
   stopifnot(length(y) == length(mspct))
 
@@ -43,14 +55,15 @@ msmsply <- function(mspct, .fun, ...) {
 #'
 #' @param idx logical whether to add a column with the names of the elements of
 #'   mspct, if \code{NULL}, the default, a column is added only if all members
-#'   of \code{mscpt} are named.
+#'   of \code{mspct} are named.
 #' @param col.names character Names to be used for data columns.
 #'
 #' @return a data frame in the case of \code{msdply}
 #'
 #' @export
 #'
-msdply <- function(mspct, .fun, ..., idx = NULL, col.names = NULL) {
+msdply <- function(mspct, .fun, ..., idx = NULL, col.names = NULL,
+                   .parallel = FALSE, .paropts = NULL) {
   stopifnot(is.any_mspct(mspct))
 
   if ( (is.logical(idx) && idx) ||
@@ -65,7 +78,9 @@ msdply <- function(mspct, .fun, ..., idx = NULL, col.names = NULL) {
   z <- plyr::ldply(.data = mspct,
                    .fun = .fun,
                    ...,
-                   .id = .idx )
+                   .id = .idx,
+                   .parallel = .parallel,
+                   .paropts = .paropts)
 
   f.name <- as.character( substitute(.fun))
 
@@ -127,7 +142,7 @@ msdply <- function(mspct, .fun, ..., idx = NULL, col.names = NULL) {
       z$row <- rep(1:mspct.nrow, mspct.ncol)
     }
   }
-  dplyr::as_data_frame(z)
+  tibble::as_tibble(z)
 }
 
 #' @rdname  msmsply
@@ -136,7 +151,8 @@ msdply <- function(mspct, .fun, ..., idx = NULL, col.names = NULL) {
 #'
 #' @export
 #'
-mslply <- function(mspct, .fun, ...) {
+mslply <- function(mspct, .fun, ...,
+                   .parallel = FALSE, .paropts = NULL) {
   stopifnot(is.any_mspct(mspct))
 
   # llply returns a matrix for classes derived from list
@@ -144,7 +160,9 @@ mslply <- function(mspct, .fun, ...) {
   rmDerivedMspct(mspct)
   z <- plyr::llply(.data = mspct,
                    .fun = .fun,
-                   ...)
+                   ...,
+                   .parallel = .parallel,
+                   .paropts = .paropts )
 
   names(z) <- names(mspct)
 
@@ -160,14 +178,15 @@ mslply <- function(mspct, .fun, ...) {
 #'
 #' @param .drop should extra dimensions of length 1 in the output be dropped,
 #'   simplifying the output. Defaults to TRUE
-#' @return an array in the case of \code{msaply}
+#' @return an vector in the case of \code{msaply}
 #'
 #' @export
 #'
-msaply <- function(mspct, .fun, ..., .drop = TRUE) {
+msaply <- function(mspct, .fun, ..., .drop = TRUE,
+                   .parallel = FALSE, .paropts = NULL) {
   stopifnot(is.any_mspct(mspct))
 
-  # As many of our summary functions return nuneric values with names and other
+  # As many of our summary functions return numeric values with names and other
   # attributes they need to be removed for dply::lapply to accept them.
   .ffun <- function(mspct, ...) {
     z <- .fun(mspct, ...)
@@ -180,7 +199,9 @@ msaply <- function(mspct, .fun, ..., .drop = TRUE) {
   z <- plyr::laply(.data = mspct,
                    .fun = .ffun,
                    ...,
-                   .drop = .drop)
+                   .drop = .drop,
+                   .parallel = .parallel,
+                   .paropts = .paropts)
 
   f.name <- as.character(substitute(.fun))
 
@@ -193,7 +214,7 @@ msaply <- function(mspct, .fun, ..., .drop = TRUE) {
 
 #' Get the "mspct.version" attribute
 #'
-#' Funtion to read the "mspct.version" attribute of an existing generic_mspct
+#' Function to read the "mspct.version" attribute of an existing generic_mspct
 #' object.
 #'
 #' @param x a generic_mspct object
@@ -220,7 +241,7 @@ getMspctVersion <- function(x) {
 
 #' Check that the "mspct.version" attribute is set
 #'
-#' Funtion to check the "mspct.version" attribute of an existing generic_spct
+#' Function to check the "mspct.version" attribute of an existing generic_spct
 #' object.
 #'
 #' @param x a generic_mspct object
@@ -254,7 +275,7 @@ checkMspctVersion <- function(x) {
 #'   \code{numeric}
 #' @param e2 an object of class \code{generic_mspct} or \code{generic_scpt} or
 #'   \code{numeric}
-#' @param oper function, usually but not necesarily an operator with two
+#' @param oper function, usually but not necessarily an operator with two
 #'   arguments.
 #' @param ... additional arguments passed to \code{oper} if present.
 #'
@@ -296,4 +317,216 @@ convolve_each <- function(e1, e2, oper = `*`, ...) {
     stop("At least one of 'e1' and 'e2' should be a collection of spectra.")
   }
   z
+}
+
+
+# utility functions for attributes ----------------------------------------
+
+#' Copy attributes from members of a generic_mspct
+#'
+#' Copy the when.measured, where.measured or what.measured attribute from
+#' members of a generic_mspct object into a tibble or data.frame.
+#'
+#' @param mspct generic_mspct Any collection of spectra.
+#' @param tb tibble or data.frame to which to add the data (optional).
+#' @param col.names character Name(s) of column(s) to create.
+#'
+#' @return A tibble With the metadata attributes in separate new variables.
+#'
+#' @details The attributes are copied to a column in a tibble or data frame. If
+#'   the \code{tb} formal parameter receives \code{NULL} as argument, a new
+#'   \code{tibble} will be created. If an existing \code{data.frame} or
+#'   \code{tibble} is passed as argument, new columns are added to it. However,
+#'   the number of rows in the argument passed to \code{tb} must match the
+#'   number of spectra in the argument passed to \code{mspct}. If the argument
+#'   to \code{col.names} is aa named vector, with the names of members matching
+#'   the names of attributes, then the values are used as names for the columns
+#'   created. This permits setting any valid name for the new columns.
+#'   If the vector passed to \code{col.names} has no names, then the
+#'   values are interpreted as the names of the attributes to add, and also
+#'   used as names for the new columns.
+#'
+#' @note Currently supported attributes are \code{"when.measured"},
+#'   \code{"what.measured"} and \code{"where.measured"}. In the case of
+#'   \code{"where.measured"}, which has different components the name
+#'   \code{"where.measured"} is ignored, but instead the following
+#'   names are recognized: \code{"lon"} and \code{"lat"} for creating numeric
+#'   columns of longitudes and latitudes respectively, and \code{"geocode"}
+#'   for creating a column of data frames, in which case, if \code{tb} is not
+#'   already a \code{tibble} it is converted into one before adding the new
+#'   column.  The order of the first two arguments is reversed in
+#'   \code{add_attr2tb()} compared to the other functions. This is to allow
+#'   its use in 'pipes', while the functions for single attributes are expected
+#'   to be used mostly to create new tibbles.
+#'
+#' @examples
+#'
+#' library(magrittr)
+#'
+#' my.mspct <- source_mspct(list(sun1 = sun.spct, sun2 = sun.spct * 2))
+#' q_irrad(my.mspct) %>%
+#'   add_attr2tb(my.mspct, c(lat = "latitude",
+#'                           lon = "longitude",
+#'                           when.measured = "time"))
+#'
+#' when_measured2tb(my.mspct)
+#'
+#' @export
+#'
+add_attr2tb <- function(tb,
+                        mspct,
+                        col.names = NULL) {
+  if (length(col.names) < 1L) {
+    return(tb)
+  }
+  if (length(names(col.names)) < 1L) {
+    names(col.names) <- col.names
+  }
+  attributes <- intersect(names(col.names),
+                          c("geocode",
+                            "lon",
+                            "lat",
+                            "when.measured",
+                            "what.measured"))
+  if (length(attributes) < length(col.names)) {
+    warning("Unrecognized attribute(s) '",
+            paste(setdiff(names(col.names), attributes), collapse = ", "),
+            "' where skipped.")
+  }
+  force(tb)
+  for (a in attributes) {
+    tb <-
+      switch(a,
+             geocode = geocode2tb(mspct = mspct,
+                                  tb = tb,
+                                  col.names = col.names["geocode"]),
+             lon = lon2tb(mspct = mspct,
+                          tb = tb,
+                          col.names = col.names["lon"]),
+             lat = lat2tb(mspct = mspct,
+                          tb = tb,
+                          col.names = col.names["lat"]),
+             when.measured = when_measured2tb(mspct = mspct,
+                                              tb = tb,
+                                              col.names = col.names["when.measured"]),
+             what.measured = what_measured2tb(mspct = mspct,
+                                              tb = tb,
+                                              col.names = col.names["what.measured"]),
+             tb)
+  }
+  tb
+}
+
+#' @rdname add_attr2tb
+#'
+#' @export
+#'
+when_measured2tb <- function(mspct, tb = NULL, col.names = "when.measured") {
+  if (is.null(tb)) {
+    tb <- tibble::tibble(spct.idx = factor(names(mspct)))
+  } else {
+    stopifnot(nrow(tb) == length(mspct))
+  }
+  if (length(names(col.names)) < 1L) {
+    names(col.names) <- col.names
+  }
+  tb[[col.names["when.measured"]]] <- lubridate::ymd_hms(NA_character_)
+  row <- 1L
+  for (x in mspct) {
+    tb[row, col.names["when.measured"]] <- getWhenMeasured(x)[1]
+    row <- row + 1L
+  }
+  tb
+}
+
+#' @rdname add_attr2tb
+#'
+#' @export
+#'
+lon2tb <- function(mspct, tb = NULL, col.names = "lon") {
+  if (is.null(tb)) {
+    tb <- tibble::tibble(spct.idx = factor(names(mspct)))
+  } else {
+    stopifnot(nrow(tb) == length(mspct))
+  }
+  if (length(names(col.names)) < 1L) {
+    names(col.names) <- col.names
+  }
+  tb[[col.names["lon"]]] <- numeric(nrow(tb))
+  row <- 1L
+  for (x in mspct) {
+    tb[row, col.names["lon"]] <- getWhereMeasured(x)[["lon"]][1]
+    row <- row + 1L
+  }
+  tb
+}
+
+#' @rdname add_attr2tb
+#'
+#' @export
+#'
+lat2tb <- function(mspct, tb = NULL, col.names = "lat") {
+  if (is.null(tb)) {
+    tb <- tibble::tibble(spct.idx = factor(names(mspct)))
+  } else {
+    stopifnot(nrow(tb) == length(mspct))
+  }
+  if (length(names(col.names)) < 1L) {
+    names(col.names) <- col.names
+  }
+  tb[[col.names["lat"]]] <- numeric(nrow(tb))
+  row <- 1L
+  for (x in mspct) {
+    tb[row, col.names["lat"]] <- getWhereMeasured(x)[["lat"]][1]
+    row <- row + 1L
+  }
+  tb
+}
+
+#' @rdname add_attr2tb
+#'
+#' @export
+#'
+geocode2tb <- function(mspct, tb = NULL, col.names = "geocode") {
+  if (is.null(tb)) {
+    tb <- tibble::tibble(spct.idx = factor(names(mspct)))
+  } else {
+    stopifnot(nrow(tb) == length(mspct))
+  }
+  if (length(names(col.names)) < 1L) {
+    names(col.names) <- col.names
+  }
+  geocodes <- list()
+  row <- 1L
+  for (x in mspct) {
+    geocodes[[row]] <- getWhereMeasured(x)
+    row <- row + 1L
+  }
+  if (!tibble::is.tibble(tb)) {
+    tb <- tibble::as_tibble(tb)
+  }
+  tb[[col.names["geocode"]]] <- geocodes
+  tb
+}
+
+#' @rdname add_attr2tb
+#'
+#' @export
+#'
+what_measured2tb <- function(mspct, tb = NULL, col.names = "what.measured") {
+  if (is.null(tb)) {
+    tb <- tibble::tibble(spct.idx = factor(names(mspct)))
+  } else {
+    stopifnot(nrow(tb) == length(mspct))
+  }
+  if (length(names(col.names)) < 1L) {
+    names(col.names) <- col.names
+  }
+  tb[[col.names["what.measured"]]] <- character(nrow(tb))
+  row <- 1L
+  for (x in mspct) {
+    tb[row, col.names["what.measured"]] <- getWhatMeasured(x)[1]
+    row <- row + 1L
+  }
+  tb
 }

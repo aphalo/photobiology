@@ -120,6 +120,29 @@ test_that("oper transmittance", {
 
 })
 
+test_that("oper absorptance", {
+
+  my.e.spct <- filter_spct(w.length = 400:409, Afr = 0.1)
+  my.2e.spct <- filter_spct(w.length = 400:409, Afr = 0.2)
+
+  options(photobiology.filter.qty = "absorptance")
+
+  expect_warning(my.e.spct + my.e.spct)
+  expect_equal(suppressWarnings(my.e.spct + my.e.spct), NA)
+  expect_equal(my.e.spct * 2, my.2e.spct)
+  expect_equal(my.e.spct * 2L, my.2e.spct)
+  expect_equal(my.2e.spct / 2, my.e.spct)
+  expect_equal(my.2e.spct / 2L, my.e.spct)
+  expect_warning(-my.e.spct)
+  expect_equal( 2 * my.e.spct, my.2e.spct)
+  expect_equal(suppressWarnings( 1 / (2 / my.2e.spct)), my.e.spct)
+  expect_equal(suppressWarnings( 1 / my.e.spct),
+               suppressWarnings( my.e.spct^-1))
+
+  options(photobiology.filter.qty = NULL)
+
+})
+
 test_that("oper absorbance", {
 
   my.e.spct <- filter_spct(w.length = 400:409, A = 1)
@@ -244,7 +267,6 @@ test_that("absorptance", {
   expect_equal(sum(as.numeric(absorptance(trim_spct(my.spct, range = c(400, 600)),
                                             quantity = "contribution",
                                             w.band = split_bands(c(400, 600), length.out = 3)))), 1)
-
 
 })
 

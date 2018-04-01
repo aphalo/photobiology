@@ -1,13 +1,12 @@
 #' Convert spectral energy irradiance into spectral photon irradiance
 #'
-#' For example an spectrum [W m-2 nm-1] is converted into a spectrum [s-1 m-2
-#' nm-1]
+#' Convert spectral energy irradiance [W m-2 nm-1] into spectral photon
+#' irradiance expressed as number of photons [s-1 m-2 nm-1]
 #'
-#' @param w.length numeric Vector of wavelengths (nm)
-#' @param s.e.irrad numeric Corresponding vector of spectral (energy)
-#'   irradiances
+#' @param w.length numeric vector of wavelengths (nm).
+#' @param s.e.irrad numeric vector of spectral (energy) irradiance values.
 #'
-#' @return A numeric array of spectral photon irradiances
+#' @return A numeric vector of spectral photon irradiances.
 #' @export
 #'
 #' @examples

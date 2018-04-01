@@ -1,32 +1,43 @@
 Package: photobiology
 Type: Package
-Title: 'Photobiological' Calculations
-Version: 0.9.8.9002
-Date: 2016-07-31
-Author: Pedro J. Aphalo [aut, cre]
-Maintainer: Pedro J. Aphalo <pedro.aphalo@helsinki.fi>
+Title: Photobiological Calculations
+Version: 0.9.20
+Date: 2018-04-02
+Authors@R:
+   c(
+    person("Pedro J.", "Aphalo", email = "pedro.aphalo@helsinki.fi", role = c("aut", "cre"), comment = c(ORCID = "https://orcid.org/0000-0003-3385-972X")),
+    person("Titta K.", "Kotilainen", role = "ctb", comment = c(ORCID = "http://orcid.org/0000-0002-2822-9734")),
+    person("Glenn", "Davis", email = "gdavis@gluonics.com", role = "ctb")
+    )
 Description: Definitions of classes, methods, operators and functions for use in
-    'photobiology' and radiation meteorology and climatology. Calculation of
-    effective (weighted) and not-weighted 'irradiances'/doses, 'fluence' rates,
-    'transmittance', 'reflectance', 'absorptance', 'absorbance' and diverse
-    ratios and other derived quantities from spectral data. Local 'maxima' and
-    'minima'. Conversion between energy- and photon-based units. Wavelength
+    photobiology and radiation meteorology and climatology. Calculation of
+    effective (weighted) and not-weighted irradiances/doses, fluence rates,
+    transmittance, reflectance, absorptance, absorbance and diverse
+    ratios and other derived quantities from spectral data. Local maxima and
+    minima. Conversion between energy- and photon-based units. Wavelength
     interpolation. Astronomical calculations related solar angles and day
-    length. Colours and vision.
-License: GPL (>= 3)
+    length. Colours and vision. This package is part of the
+    'r4photobiology' suite, Aphalo P. J. (2015) <doi:10.19232/uv4pb.2015.1.14>.
+License: GPL (>= 2)
 Depends:
-    R (>= 3.2.0)
+    R (>= 3.3.0)
 Imports:
-    lubridate (>= 1.5.0),
-    plyr (>= 1.8.3),
-    dplyr (>= 0.4.3),
-    splus2R (>= 1.2-0),
-    caTools (>= 1.17.1)
+    stats,
+    polynom (>= 1.3-9),
+    tibble (>= 1.4.2),
+    lubridate (>= 1.7.3),
+    plyr (>= 1.8.4),
+    dplyr (>= 0.7.4),
+    splus2R (>= 1.2-2),
+    caTools (>= 1.17.1),
+    rlang (>= 0.2.0)
 Suggests:
-    knitr (>= 1.12.3),
-    rmarkdown (>= 0.9.6),
-    testthat (>= 0.11.0),
-    roxygen2 (>= 5.0.1)
+    magrittr (>= 1.5),
+    knitr (>= 1.20),
+    rmarkdown (>= 1.9),
+    testthat (>= 2.0.0),
+    roxygen2 (>= 6.0.1),
+    ggmap (>= 2.6.1)
 LazyLoad: yes
 LazyData: yes
 ByteCompile: true
@@ -34,5 +45,5 @@ URL: http://www.r4photobiology.info/,
     https://bitbucket.org/aphalo/photobiology
 BugReports: https://bitbucket.org/aphalo/photobiology/issues
 Encoding: UTF-8
-RoxygenNote: 5.0.1
+RoxygenNote: 6.0.1
 VignetteBuilder: knitr

@@ -16,7 +16,7 @@ test_that("constructor", {
   expect_equal(min(my.spct), 400)
   expect_equal(max(my.spct), 409)
   expect_equal(range(my.spct), c(400, 409))
-  expect_equal(spread(my.spct), 9)
+  expect_equal(expanse(my.spct), 9)
   expect_equal(midpoint(my.spct), (400 + 409) / 2)
   my.b.spct <- data.frame(w.length = 0:101, x = 1)
   expect_error(setGenericSpct(my.b.spct))

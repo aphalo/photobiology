@@ -4,28 +4,53 @@
 #' spectral data stored in a \code{filter_spct} or in an \code{object_spct}.
 #' Absorptance is a different quantity than absorbance.
 #'
-#' @param spct an R object
+#' @param spct an R object.
 #' @param w.band waveband or list of waveband objects or a numeric vector of
 #'   length two. The waveband(s) determine the region(s) of the spectrum that
 #'   are summarized. If a numeric range is supplied a waveband object is
 #'   constructed on the fly from it.
-#' @param quantity character
+#' @param quantity character string One of "average" or "mean", "total",
+#'   "contribution", "contribution.pc", "relative" or "relative.pc".
 #' @param wb.trim logical Flag if wavebands crossing spectral data boundaries
-#'   are trimmed or ignored
-#' @param use.hinges logical Flag indicating whether to use hinges to reduce
-#'   interpolation errors
-#' @param ... other arguments (possibly ignored)
+#'   are trimmed or ignored.
+#' @param use.hinges logical Flag indicating whether to insert "hinges" into the
+#'   spectral data before integration so as to reduce interpolation errors at
+#'   the boundaries of the wavebands.
+#' @param ... other arguments (possibly used by derived methods).
 #'
 #' @note The \code{use.hinges} parameter controls speed optimization. The
 #'   defaults should be suitable in most cases. Only the range of wavelengths
 #'   in the wavebands is used and all BSWFs are ignored.
 #'
-#' @return A single numeric value with no change in scale factor, except in the
-#' case of percentages (absorptance is the fraction absorbed)
+#' @return A named \code{numeric} vector in the case of methods for individual
+#'   spectra, with one value for each \code{waveband} passed to parameter
+#'   \code{w.band}. A \code{data.frame} in the case of collections of spectra,
+#'   containing one column for each \code{waveband} object, an index column with
+#'   the names of the spectra, and optionally additional columns with metadata
+#'   values retrieved from the attributes of the member spectra.
+#'
+#'   By default values are only integrated, but depending on the argument passed
+#'   to parameter \code{quantity} they can be re-expressed as relative fractions
+#'   or percentages. In the case of vector output, \code{names} attribute is set
+#'   to the name of the corresponding waveband unless a named list is supplied
+#'   in which case the names of the list members are used.
 #'
 #' @examples
 #' absorptance(black_body.spct, new_waveband(400,500))
 #' absorptance(white_body.spct, new_waveband(300,400))
+#' absorptance(black_body.spct, split_bands(c(400,700), length.out = 3))
+#' absorptance(black_body.spct, split_bands(c(400,700), length.out = 3),
+#'         quantity = "average")
+#' absorptance(black_body.spct, split_bands(c(400,700), length.out = 3),
+#'         quantity = "total")
+#' absorptance(black_body.spct, split_bands(c(400,700), length.out = 3),
+#'         quantity = "relative")
+#' absorptance(black_body.spct, split_bands(c(400,700), length.out = 3),
+#'         quantity = "relative.pc")
+#' absorptance(black_body.spct, split_bands(c(400,700), length.out = 3),
+#'         quantity = "contribution")
+#' absorptance(black_body.spct, split_bands(c(400,700), length.out = 3),
+#'         quantity = "contribution.pc")
 #'
 #' @export
 #'
@@ -50,7 +75,7 @@ absorptance.filter_spct <-
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.hinges = getOption("photobiology.use.hinges", default = NULL), ... ) {
     if (getTfrType(spct) != "internal") {
-      warning("Internal absorptance cannot be calculed from total transmittance alone")
+      warning("Internal absorptance cannot be calculated from total transmittance alone")
       return(NA)
     } else {
       absorptance_spct(spct = spct, w.band = w.band, quantity = quantity,
@@ -81,7 +106,8 @@ absorptance.object_spct <-
 #'   length two. The waveband(s) determine the region(s) of the spectrum that
 #'   are summarized. If a numeric range is supplied a waveband object is
 #'   constructed on the fly from it.
-#' @param quantity character string
+#' @param quantity character string One of "average" or "mean", "contribution",
+#'   "contribution.pc", "relative" or "relative.pc"
 #' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries
 #'   are trimmed, if FALSE, they are discarded
 #' @param use.hinges logical indicating whether to use hinges to reduce
@@ -99,9 +125,12 @@ absorptance_spct <-
               num.spectra, " spectra")
       return(NA_real_)
     }
-    if (is_normalized(spct) || is_scaled(spct)) {
-      warning("The spectral data has been normalized or scaled, making impossible to calculate absorptance")
-      return(NA)
+    if (is_normalized(spct)) {
+      warning("The spectral data has been normalized, making impossible to calculate absorbance")
+      return(NA_real_)
+    }
+    if (is_scaled(spct)) {
+      warning("Summary calculated from rescaled data")
     }
 
     # we calculate absorptance
@@ -111,15 +140,15 @@ absorptance_spct <-
       Afr.type <- Tfr.type
       Rfr.type <- "unknown" # otherwise NA would require special handling
       A2T(spct, action = "add", byref = TRUE)
-      temp.spct <- dplyr::data_frame(w.length = spct[["w.length"]],
+      temp.spct <- tibble::tibble(w.length = spct[["w.length"]],
                                      Afr = 1 - spct[["Tfr"]])
     } else if (Tfr.type == "total" && Rfr.type == "total") {
       Afr.type <- "total"
-      temp.spct <- dplyr::data_frame(w.length = spct[["w.length"]],
+      temp.spct <- tibble::tibble(w.length = spct[["w.length"]],
                                Afr = 1 - spct[["Tfr"]] - spct[["Rfr"]])
      } else if (Tfr.type == "internal" && Rfr.type == "total") {
       Afr.type <- "total"
-      temp.spct <- dplyr::data_frame(w.length = spct[["w.length"]],
+      temp.spct <- tibble::tibble(w.length = spct[["w.length"]],
                                    Afr = (1 - spct[["Tfr"]]) * (1 - spct[["Rfr"]]))
     } else if (Tfr.type == "unknown" || Rfr.type == "unknown") {
       warning("'unknown' Tfr.type or Rfr.type, skipping absorptance calculation")
@@ -138,7 +167,7 @@ absorptance_spct <-
     }
     temp.spct <- setGenericSpct(temp.spct)
     # if the waveband is undefined then use all data
-    if (is.null(w.band)) {
+    if (length(w.band) == 0) {
       w.band <- waveband(spct)
     }
     if (is.numeric(w.band)) {
@@ -147,7 +176,7 @@ absorptance_spct <-
     if (is.waveband(w.band)) {
       # if the argument is a single w.band, we enclose it in a list
       # so that the for loop works as expected.This is a bit of a
-      # cludge but let's us avoid treating it as a special case
+      # kludge but let's us avoid treating it as a special case
       w.band <- list(w.band)
     }
     w.band <- trim_waveband(w.band = w.band, range = spct, trim = wb.trim)
@@ -220,7 +249,7 @@ absorptance_spct <-
         absorptance <- absorptance * 1e2
       }
     } else if (quantity %in% c("average", "mean")) {
-      absorptance <- absorptance / sapply(w.band, spread)
+      absorptance <- absorptance / sapply(w.band, wl_expanse)
     }
     if (length(absorptance) == 0) {
       absorptance <- NA
@@ -232,8 +261,11 @@ absorptance_spct <-
     return(absorptance)
   }
 
+# filter_mspct methods -----------------------------------------------
+
 #' @describeIn absorptance Calculates absorptance from a \code{filter_mspct}
 #'
+#' @param attr2tb character vector, see \code{\link{add_attr2tb}} for the syntax for \code{attr2tb} passed as is to formal parameter \code{col.names}.
 #' @param idx logical whether to add a column with the names of the elements of
 #'   spct
 #'
@@ -244,20 +276,36 @@ absorptance.filter_mspct <-
            quantity = "average",
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.hinges = getOption("photobiology.use.hinges", default = NULL),
-           ..., idx = !is.null(names(spct)) ) {
-    msdply(
-      mspct = spct,
-      .fun = absorptance,
-      w.band = w.band,
-      quantity = quantity,
-      wb.trim = wb.trim,
-      use.hinges = use.hinges,
-      idx = idx,
-      col.names = names(w.band)
-    )
+           ...,
+           attr2tb = NULL,
+           idx = !is.null(names(spct)) ) {
+    z <-
+      msdply(
+        mspct = spct,
+        .fun = absorptance,
+        w.band = w.band,
+        quantity = quantity,
+        wb.trim = wb.trim,
+        use.hinges = use.hinges,
+        idx = idx,
+        col.names = names(w.band)
+      )
+    add_attr2tb(tb = z,
+                mspct = spct,
+                col.names = attr2tb)
   }
 
+# object_mspct methods -----------------------------------------------
+
 #' @describeIn absorptance Calculates absorptance from a \code{object_mspct}
+#'
+#' @param .parallel	if TRUE, apply function in parallel, using parallel backend
+#'   provided by foreach
+#' @param .paropts a list of additional options passed into the foreach function
+#'   when parallel computation is enabled. This is important if (for example)
+#'   your code relies on external data or packages: use the .export and
+#'   .packages arguments to supply them so that all cluster nodes have the
+#'   correct environment set up for computing.
 #'
 #' @export
 #'
@@ -266,15 +314,25 @@ absorptance.object_mspct <-
            quantity="average",
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.hinges=getOption("photobiology.use.hinges", default = NULL),
-           ..., idx = !is.null(names(spct)) ) {
-    msdply(
-      mspct = spct,
-      .fun = absorptance,
-      w.band = w.band,
-      quantity = quantity,
-      wb.trim = wb.trim,
-      use.hinges = use.hinges,
-      idx = idx,
-      col.names = names(w.band)
-    )
+           ...,
+           attr2tb = NULL,
+           idx = !is.null(names(spct)),
+           .parallel = FALSE,
+           .paropts = NULL) {
+    z <-
+      msdply(
+        mspct = spct,
+        .fun = absorptance,
+        w.band = w.band,
+        quantity = quantity,
+        wb.trim = wb.trim,
+        use.hinges = use.hinges,
+        idx = idx,
+        col.names = names(w.band),
+        .parallel = .parallel,
+        .paropts = .paropts
+      )
+    add_attr2tb(tb = z,
+                mspct = spct,
+                col.names = attr2tb)
   }

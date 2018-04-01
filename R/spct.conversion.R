@@ -4,7 +4,10 @@
 #' or reflectance.
 #'
 #' @param x.sample,x.clear,x.opaque,x.white,x.black cps_spct objects.
-#' @param pre.fun function A function applied to x.sample before converison.
+#' @param pre.fun function A function applied to x.sample before conversion.
+#' @param dyn.range numeric The effective dynamic range of the instrument,
+#'    if \code{NULL} it is automatically set based on integration time
+#'    bracketing.
 #' @param ... Additional arguments passed to \code{pre.fun}.
 #'
 #' @return A source_spct, filter_spct or reflector_spct object containing the
@@ -24,7 +27,8 @@ cps2irrad <- function(x.sample, pre.fun = NULL, ...) {
   stopifnot(is.cps_spct(x.sample) &&
               !is.null(getInstrDesc(x.sample)) &&
               !is.null(getInstrSettings(x.sample)))
-  irrad.mult <- getInstrDesc(x.sample)$inst.calib$irrad.mult
+  descriptor <- getInstrDesc(x.sample)
+  irrad.mult <- descriptor[["inst.calib"]][["irrad.mult"]]
   if (!is.null(pre.fun)) {
     x.sample <- pre.fun(x.sample, ...)
   }
@@ -34,11 +38,17 @@ cps2irrad <- function(x.sample, pre.fun = NULL, ...) {
   z[[cps.col.sample]] <- NULL
   z[["s.e.irrad"]] <- x.sample[[cps.col.sample]] * irrad.mult
   setSourceSpct(z)
+  if (length(descriptor[["inst.calib"]][["wl.range"]]) == 2) {
+    clip_wl(z, descriptor[["inst.calib"]][["wl.range"]])
+  }
 }
 
 #' @rdname cps2irrad
 #' @export
-cps2Rfr <- function(x.sample, x.white, x.black = NULL) {
+cps2Rfr <- function(x.sample,
+                    x.white,
+                    x.black = NULL,
+                    dyn.range = NULL) {
   # we make sure that all input spectra have been measured with the same
   # instrument by comparing serial numbers
   stopifnot(is.cps_spct(x.sample) &&
@@ -46,60 +56,98 @@ cps2Rfr <- function(x.sample, x.white, x.black = NULL) {
   stopifnot(is.cps_spct(x.white) &&
               !is.null(getInstrDesc(x.white)))
   stopifnot(getInstrDesc(x.sample)$spectrometer.sn ==
-              getInstrDesc(x.white)$spectrometer.sn)
+            getInstrDesc(x.white)$spectrometer.sn)
+
   if (!is.null(x.black)) {
-    stopifnot(is.cps_spct(x.black) &&
-                !is.null(getInstrDesc(x.black)))
     stopifnot(getInstrDesc(x.sample)$spectrometer.sn ==
                 getInstrDesc(x.black)$spectrometer.sn)
-    x.sample <- x.sample - x.black
-    x.white <- x.white - x.black
   }
+
+  instr.desc <- getInstrDesc(x.sample)
+
   cps.col.sample <- grep("^cps", names(x.sample), value = TRUE)
   cps.col.white <- grep("^cps", names(x.white), value = TRUE)
-  stopifnot(length(cps.col.sample) == 1 && length(cps.col.white) == 1)
+  stopifnot(length(cps.col.sample) == 1L && length(cps.col.white) == 1)
   other.cols <- setdiff(names(x.sample), cps.col.sample)
   z <- as.generic_spct(x.sample)
   z[[cps.col.sample]] <- NULL
-  z[["Rfr"]] <- x.sample[[cps.col.sample]] / x.white[[cps.col.white]]
+  if (!is.null(x.black)) {
+    cps.col.black <- grep("^cps", names(x.black), value = TRUE)
+    stopifnot(length(cps.col.black) == 1L)
+    z[["Rfr"]] <- (x.sample[[cps.col.sample]] - x.black[[cps.col.black]])  /
+      (x.white[[cps.col.white]] - x.black[[cps.col.black]])
+  } else {
+    z[["Rfr"]] <- x.sample[[cps.col.sample]] / x.white[[cps.col.white]]
+  }
+  # guess of dynamic range as a function of bracketing for sample
+  if (is.null(dyn.range)) {
+    acq_settings <- getInstrSettings(x.sample)
+    if (!is.list(acq_settings) && is.na(acq_settings)) {
+      dyn.range <- 7e2
+    } else {
+      integ.time <- acq_settings[["integ.time"]]
+      dyn.range <- min(7e2 * max(integ.time) / min(integ.time), 1e4)
+    }
+  }
+  # based on dynamic range and spectrum of light source we set bad data to NA
+  z[["Rfr"]] <- ifelse(x.white[[cps.col.white]] <
+                         (max(x.white[[cps.col.white]], na.rm = TRUE)) /
+                         dyn.range,
+                       NA_real_,
+                       z[["Rfr"]])
   setReflectorSpct(z)
 }
 
 #' @rdname cps2irrad
 #' @export
-cps2Tfr <- function(x.sample, x.clear, x.opaque = NULL) {
+cps2Tfr <- function(x.sample,
+                    x.clear,
+                    x.opaque = NULL,
+                    dyn.range = NULL) {
   # we make sure that all input spectra have been measured with the same
   # instrument by comparing serial numbers
   stopifnot(is.cps_spct(x.sample) &&
-              is.cps_spct(x.clear) &&
-               (is.null(x.opaque) || is.cps_spct(x.opaque)))
-  instr.desc <- c(getInstrDesc(x.sample),
-                 getInstrDesc(x.clear))
-  if (!is.null(x.opaque)) {
-    instr.desc <- c(instr.desc, getInstrDesc(x.opaque))
-  }
-
-  if (anyNA(instr.desc)) {
-    warning("Missing intrument descriptor attributes.")
-  } else {
-    instr.sn <- sapply(instr.desc, `[[`, i = "spectrometer.sn")
-    if (!length(unique(instr.sn)) == 1) {
-      stop("ERROR: serial number mismatch between cps_spct objects")
-    }
-  }
+              !is.null(getInstrDesc(x.sample)))
+  stopifnot(is.cps_spct(x.clear) &&
+              !is.null(getInstrDesc(x.clear)))
+  stopifnot(getInstrDesc(x.sample)$spectrometer.sn ==
+              getInstrDesc(x.clear)$spectrometer.sn)
 
   if (!is.null(x.opaque)) {
-    x.sample <- x.sample - x.opaque
-    x.clear <- x.clear - x.opaque
+    stopifnot(getInstrDesc(x.sample)$spectrometer.sn ==
+                getInstrDesc(x.opaque)$spectrometer.sn)
   }
+
+  instr.desc <- getInstrDesc(x.sample)
 
   cps.col.sample <- grep("^cps", names(x.sample), value = TRUE)
   cps.col.clear <- grep("^cps", names(x.clear), value = TRUE)
   stopifnot(length(cps.col.sample) == 1 && length(cps.col.clear) == 1)
   z <- as.generic_spct(x.sample)
   z[[cps.col.sample]] <- NULL
-  z[["Tfr"]] <- x.sample[[cps.col.sample]] / x.clear[[cps.col.clear]]
-  z[["Tfr"]] <- ifelse(x.clear[[cps.col.clear]] < 1e-3 * max(x.clear[[cps.col.clear]]),
+  if (!is.null(x.opaque)) {
+    cps.col.opaque <- grep("^cps", names(x.opaque), value = TRUE)
+    stopifnot(length(cps.col.opaque) == 1L)
+    z[["Tfr"]] <- (x.sample[[cps.col.sample]] - x.opaque[[cps.col.opaque]])  /
+      (x.clear[[cps.col.clear]] - x.opaque[[cps.col.opaque]])
+  } else {
+    z[["Tfr"]] <- x.sample[[cps.col.sample]] / x.clear[[cps.col.clear]]
+  }
+
+  # guess of dynamic range as a function of bracketing for sample
+  if (is.null(dyn.range)) {
+    acq_settings <- getInstrSettings(x.sample)
+    if (!is.list(acq_settings) && is.na(acq_settings)) {
+      dyn.range <- 7e2
+    } else {
+      integ.time <- acq_settings[["integ.time"]]
+      dyn.range <- min(7e2 * max(integ.time) / min(integ.time), 1e4)
+    }
+  }
+  # based on dynamic range and spectrum of light source we set bad data to NA
+  z[["Tfr"]] <- ifelse(x.clear[[cps.col.clear]] <
+                         (max(x.clear[[cps.col.clear]], na.rm = TRUE)) /
+                         dyn.range,
                        NA_real_,
                        z[["Tfr"]])
   setFilterSpct(z)

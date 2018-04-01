@@ -7,7 +7,7 @@ test_that("normalize", {
   my.spct <- q2e(sun.spct, action = "replace")
 
   expect_equal(max(normalize(my.spct)$s.e.irrad), 1, tolerance = 1e-5)
-  expect_equal(max(normalize(my.spct, norm = "max")$s.e.irrad), 1, 1, tolerance = 1e-5)
+  expect_equal(max(normalize(my.spct, norm = "max")$s.e.irrad), 1, tolerance = 1e-5)
   expect_warning(irrad(normalize(my.spct, norm = "max")))
   expect_equal(suppressWarnings(irrad(normalize(my.spct, norm = "max"))), NA_real_)
   expect_named(normalize(my.spct), names(my.spct))
@@ -34,7 +34,7 @@ test_that("fscale", {
   expect_lt(abs(integrate_spct(fscale(my.spct, f = "total")) - 1), 1e6)
   expect_lt(abs(average_spct(fscale(my.spct, f = "mean")) - 1), 1e6)
   expect_warning(irrad(fscale(my.spct, f = "mean")))
-  expect_true(suppressWarnings(is.na(irrad(fscale(my.spct, f = "mean")))))
+  expect_false(suppressWarnings(is.na(irrad(fscale(my.spct, f = "mean")))))
   expect_named(fscale(my.spct), names(my.spct))
   expect_equal(class(fscale(my.spct)), class(my.spct))
   expect_error(fscale(my.spct, range = 281))

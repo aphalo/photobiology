@@ -18,8 +18,12 @@
 #' @docType data
 #' @keywords datasets
 #' @format A \code{source_spct} object with 508 rows and 3 variables
-#' @name sun.spct
-NULL
+#' @family Spectral data examples
+#'
+#' @examples
+#' sun.spct
+#'
+"sun.spct"
 
 #' @title Solar spectral irradiance (simulated)
 #'
@@ -41,8 +45,12 @@ NULL
 #' @docType data
 #' @keywords datasets
 #' @format A \code{data.frame} object with 508 rows and 3 variables
-#' @name sun.data
-NULL
+#' @family Spectral data examples
+#'
+#' @examples
+#' sun.data
+#'
+"sun.data"
 
 #' Daily solar spectral irradiance (simulated)
 #'
@@ -59,15 +67,19 @@ NULL
 #' Radiative Transfer Simulations. Photochemistry and Photobiology, 85:
 #' 1233–1239
 #'
-#' @note The simualtions are based on libRadTran using hourly mean global
+#' @note The simulations are based on libRadTran using hourly mean global
 #' radiation measurements to estimate cloud cover. The simulations were for
 #' each hour and the results integrated for the whole day.
 #'
 #' @docType data
 #' @keywords datasets
 #' @format A \code{source_spct} object with 511 rows and 3 variables
-#' @name sun.daily.spct
-NULL
+#' @family Spectral data examples
+#'
+#' @examples
+#' sun.daily.spct
+#'
+"sun.daily.spct"
 
 #' Daily solar spectral irradiance (simulated)
 #'
@@ -87,5 +99,9 @@ NULL
 #' @docType data
 #' @keywords datasets
 #' @format A \code{data.frame} object with 511 rows and 3 variables
-#' @name sun.daily.data
-NULL
+#' @family Spectral data examples
+#'
+#' @examples
+#' sun.daily.spct
+#'
+"sun.daily.data"

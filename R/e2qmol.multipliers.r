@@ -1,11 +1,11 @@
 #' Calculate energy to quantum (mol) multipliers
 #'
-#' Gives multipliers as a function of wavelength, for converting from energy to
+#' Multipliers as a function of wavelength, for converting from energy to
 #' photon (quantum) molar units.
 #'
 #' @param w.length numeric Vector of wavelengths (nm)
 #'
-#' @return A numeric array of multipliers
+#' @return A numeric vector of multipliers
 #'
 #' @export
 #' @examples

@@ -9,7 +9,7 @@
 #'
 #' @export
 #'
-#' @note Function \code{f_mscpt} has been renamed \code{msdply()}.
+#' @note Function \code{f_mspct} has been renamed \code{msdply()}.
 #'
 f_mspct <- function(...) {
   stop("Function 'photobiology::f_mspct()' is defunct, please use 'msdply()' instead.")
@@ -19,7 +19,7 @@ f_mspct <- function(...) {
 #'
 #' @export
 #'
-#' @note Function \code{mutate_mscpt} has been renamed \code{msmsply()}.
+#' @note Function \code{mutate_mspct} has been renamed \code{msmsply()}.
 #'
 mutate_mspct <- function(...) {
   stop("Function 'photobiology::mutate_mspct()' is defunct, please use 'msdply()' instead.")

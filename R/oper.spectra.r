@@ -4,10 +4,10 @@
 #' spectral values are calculated by interpolation. After this, the two spectral
 #' values at each wavelength are added.
 #'
-#' @param w.length1 numeric array of wavelength (nm)
-#' @param w.length2 numeric array of wavelength (nm)
-#' @param s.irrad1 a numeric array of spectral values
-#' @param s.irrad2 a numeric array of spectral values
+#' @param w.length1 numeric vector of wavelength (nm)
+#' @param w.length2 numeric vector of wavelength (nm)
+#' @param s.irrad1 a numeric vector of spectral values
+#' @param s.irrad2 a numeric vector of spectral values
 #' @param trim a character string with value "union" or "intersection"
 #' @param na.rm a logical value, if TRUE, not the default, NAs in the input are
 #'   replaced with zeros
@@ -23,13 +23,15 @@
 #'   of wavelengths covered by at least one of the input spectra, and missing
 #'   values are set in each input spectrum to zero before addition. If
 #'   trim=="intersection" then the range of wavelengths covered by both input
-#'   spectra is returned, and the non-overlaping regions discarded. If
+#'   spectra is returned, and the non-overlapping regions discarded. If
 #'   w.length2==NULL, it is assumed that both spectra are measured at the same
 #'   wavelengths, and a simple addition is used, ensuring fast calculation.
 #' @export
 #'
+#' @family low-level functions operating on numeric vectors.
+#'
 #' @examples
-#' 
+#'
 #' head(sun.data)
 #' result.data <-
 #'     with(sun.data,
@@ -43,7 +45,11 @@
 #' head(result.data)
 #' tail(result.data)
 #'
-oper_spectra <- function(w.length1, w.length2=NULL, s.irrad1, s.irrad2, trim="union", na.rm=FALSE, bin.oper=NULL, ...) {
+oper_spectra <- function(w.length1, w.length2  =NULL,
+                         s.irrad1, s.irrad2,
+                         trim="union",
+                         na.rm=FALSE,
+                         bin.oper=NULL, ...) {
   if (na.rm) {
     ifelse(!is.na(s.irrad1), s.irrad1, 0.0)
     ifelse(!is.na(s.irrad2), s.irrad2, 0.0)
@@ -55,7 +61,7 @@ oper_spectra <- function(w.length1, w.length2=NULL, s.irrad1, s.irrad2, trim="un
     } else {
       stop("Mismatch in the length of input vectors")
     }
-    invisible(dplyr::data_frame(w.length, s.irrad=s.irrad.result))
+    invisible(tibble::tibble(w.length, s.irrad=s.irrad.result))
   }
   if (length(w.length2) != length(s.irrad2) | length(w.length1) != length(s.irrad1)){
     stop("Mismatch in the length of input vectors")
@@ -72,7 +78,8 @@ oper_spectra <- function(w.length1, w.length2=NULL, s.irrad1, s.irrad2, trim="un
     warning("illegal value for 'trim' argument")
     invisible(NA)
   }
-  w.length <- c(w.length1[w.length1 >= wl.low & w.length1 <= wl.hi], w.length2[w.length2 >= wl.low & w.length2 <= wl.hi])
+  w.length <- c(w.length1[w.length1 >= wl.low & w.length1 <= wl.hi],
+                w.length2[w.length2 >= wl.low & w.length2 <= wl.hi])
   w.length <- sort(w.length)
   w.length <- unique(w.length)
   s.irrad1.int <- rep(NA, length(w.length))
@@ -80,5 +87,5 @@ oper_spectra <- function(w.length1, w.length2=NULL, s.irrad1, s.irrad2, trim="un
   s.irrad1.int <- interpolate_spectrum(w.length1, s.irrad1, w.length, fill=0.0)
   s.irrad2.int <- interpolate_spectrum(w.length2, s.irrad2, w.length, fill=0.0)
   s.irrad.result <- bin.oper(s.irrad1.int, s.irrad2.int, ...)
-  invisible(dplyr::data_frame(w.length, s.irrad=s.irrad.result))
+  invisible(tibble::tibble(w.length, s.irrad=s.irrad.result))
 }

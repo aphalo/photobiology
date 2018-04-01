@@ -6,19 +6,21 @@
 #' This function returns the irradiance for a given waveband of a light source
 #' spectrum.
 #'
-#' @param spct an R object
+#' @param spct an R object.
 #' @param w.band waveband or list of waveband objects The waveband(s) determine
 #'   the region(s) of the spectrum that are summarized.
 #' @param unit.out character string with allowed values "energy", and "photon",
-#'   or its alias "quantum"
-#' @param quantity character string
-#' @param time.unit character or lubridate::duration
+#'   or its alias "quantum".
+#' @param quantity character string One of "total", "average" or "mean",
+#'   "contribution", "contribution.pc", "relative" or "relative.pc".
+#' @param time.unit character or lubridate::duration object.
 #' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries
-#'   are trimmed, if FALSE, they are discarded
+#'   are trimmed, if FALSE, they are discarded.
 #' @param use.cached.mult logical indicating whether multiplier values should be
-#'   cached between calls
-#' @param use.hinges logical indicating whether to use hinges to reduce
-#'   interpolation errors
+#'   cached between calls.
+#' @param use.hinges logical Flag indicating whether to insert "hinges" into the
+#'   spectral data before integration so as to reduce interpolation errors at
+#'   the boundaries of the wavebands.
 #' @param allow.scaled logical indicating whether scaled or normalized spectra
 #'   as argument to spct are flagged as an error
 #' @param ... other arguments (possibly ignored)
@@ -27,21 +29,38 @@
 #'   of ratios, as rescaling and normalization do not invalidate the calculation
 #'   of ratios.
 #'
-#' @return One numeric value for each waveband with no change in scale factor,
-#'   with name attribute set to the name of each waveband unless a named list is
-#'   supplied in which case the names of the list elements are used. The
-#'   time.unit attribute is copied from the spectrum object to the output. Units
-#'   are as follows: If time.unit is second, [W m-2 nm-1] -> [mol s-1 m-2] or [W
-#'   m-2 nm-1] -> [W m-2] If time.unit is day, [J d-1 m-2 nm-1] -> [mol d-1 m-2]
-#'   or [J d-1 m-2 nm-1] -> [J m-2]
+#' @return A named \code{numeric} vector in the case of methods for individual
+#'   spectra, with one value for each \code{waveband} passed to parameter
+#'   \code{w.band}. A \code{data.frame} in the case of collections of spectra,
+#'   containing one column for each \code{waveband} object, an index column with
+#'   the names of the spectra, and optionally additional columns with metadata
+#'   values retrieved from the attributes of the member spectra.
+#'
+#'   By default values are only integrated, but depending on the argument passed
+#'   to parameter \code{quantity} they can be re-expressed as relative fractions
+#'   or percentages. In the case of vector output, \code{names} attribute is set
+#'   to the name of the corresponding waveband unless a named list is supplied
+#'   in which case the names of the list members are used. The \code{time.unit}
+#'   attribute is copied from the spectrum object to the output. Units are as
+#'   follows: If time.unit is second, [W m-2 nm-1] -> [mol s-1 m-2] or [W m-2
+#'   nm-1] -> [W m-2] If time.unit is day, [J d-1 m-2 nm-1] -> [mol d-1 m-2] or
+#'   [J d-1 m-2 nm-1] -> [J m-2]
 #'
 #' @export
 #' @examples
-#' irrad(sun.spct, waveband(c(400,700)), "photon")
+#' irrad(sun.spct, waveband(c(400,700)))
 #' irrad(sun.spct, waveband(c(400,700)), "energy")
+#' irrad(sun.spct, waveband(c(400,700)), "photon")
+#' irrad(sun.spct, split_bands(c(400,700), length.out = 3))
+#' irrad(sun.spct, split_bands(c(400,700), length.out = 3), quantity = "total")
+#' irrad(sun.spct, split_bands(c(400,700), length.out = 3), quantity = "average")
+#' irrad(sun.spct, split_bands(c(400,700), length.out = 3), quantity = "relative")
+#' irrad(sun.spct, split_bands(c(400,700), length.out = 3), quantity = "relative.pc")
+#' irrad(sun.spct, split_bands(c(400,700), length.out = 3), quantity = "contribution")
+#' irrad(sun.spct, split_bands(c(400,700), length.out = 3), quantity = "contribution.pc")
 #'
 #' @note The last two parameters control speed optimizations. The defaults
-#'   should be suitable in mosts cases. If you will use repeatedly the same SWFs
+#'   should be suitable in most cases. If you will use repeatedly the same SWFs
 #'   on many spectra measured at exactly the same wavelengths you may obtain
 #'   some speed up by setting \code{use.cached.mult=TRUE}. However, be aware
 #'   that you are responsible for ensuring that the wavelengths are the same in
@@ -77,7 +96,8 @@ irrad.source_spct <-
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
            use.hinges = getOption("photobiology.use.hinges"),
-           allow.scaled = FALSE, ...) {
+           allow.scaled = !quantity  %in% c("average", "mean", "total"),
+           ...) {
     # we look for multiple spectra and return with a warning
     num.spectra <- getMultipleWl(spct)
     if (num.spectra != 1) {
@@ -85,11 +105,14 @@ irrad.source_spct <-
               num.spectra, " spectra")
       return(NA_real_)
     }
-    # we have a default, but we check for invalid arguments
-    if (!allow.scaled && (is_normalized(spct) || is_scaled(spct))) {
+
+    if (!allow.scaled && is_normalized(spct)) {
       warning("The spectral data has been normalized or scaled, ",
               "making impossible to calculate irradiance")
       return(NA_real_)
+    }
+    if (!allow.scaled && is_scaled(spct)) {
+      warning("Summarized spectral data have been rescaled")
     }
 
     data.time.unit <-
@@ -115,13 +138,13 @@ irrad.source_spct <-
     if (is.numeric(w.band)) {
       w.band <- waveband(w.band)
     }
-    if (is.null(w.band)) {
+    if (length(w.band) == 0) {
       w.band <- waveband(spct)
     }
     if (is.waveband(w.band)) {
       # if the argument is a single w.band, we enclose it in a list
       # so that the for loop works as expected.This is a bit of a
-      # cludge but lets us avoid treating it as a special case
+      # kludge but lets us avoid treating it as a special case
       w.band <- list(w.band)
     }
     w.band <- trim_waveband(w.band = w.band, range = spct, trim = wb.trim)
@@ -206,7 +229,7 @@ irrad.source_spct <-
                                  unit.in = unit.out,
                                  use.cached.mult = use.cached.mult)
         # calculate weighted spectral irradiance
-        # the ifelse is needed to overrride NAs in spectral data for regions
+        # the ifelse is needed to override NAs in spectral data for regions
         # where mult == 0
           irrad[i] <- integrate_xy(w.length[wl.selector],
                                    ifelse(mult == 0, 0, s.irrad[wl.selector] * mult))
@@ -243,7 +266,7 @@ irrad.source_spct <-
         }
       }
     } else if (quantity %in% c("average", "mean") ) {
-      irrad <- irrad / sapply(w.band, spread)
+      irrad <- irrad / sapply(w.band, wl_expanse)
     } else if (quantity != "total") {
       warning("'quantity '", quantity, "' is invalid, returning 'total' instead")
       quantity <- "total"
@@ -271,37 +294,61 @@ irrad_spct <- irrad.source_spct
 
 #' Energy irradiance
 #'
-#' This function returns the energy irradiance for a given waveband of a light
-#' source spectrum.
+#' Energy irradiance for one or more wavebands of a light source spectrum.
 #'
-#' @param spct an R object
-#' @param w.band a list of \code{waveband} objects or a \code{waveband} object
-#' @param quantity character string
-#' @param time.unit character or lubridate::duration
+#' @param spct an R object.
+#' @param w.band a list of \code{waveband} objects or a \code{waveband} object.
+#' @param quantity character string One of "total", "average" or "mean",
+#'   "contribution", "contribution.pc", "relative" or "relative.pc".
+#' @param time.unit character or lubridate::duration object.
 #' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries
-#'   are trimmed, if FALSE, they are discarded
+#'   are trimmed, if FALSE, they are discarded.
 #' @param use.cached.mult logical indicating whether multiplier values should be
-#'   cached between calls
-#' @param use.hinges logical indicating whether to use hinges to reduce
-#'   interpolation errors
+#'   cached between calls.
+#' @param use.hinges logical Flag indicating whether to insert "hinges" into the
+#'   spectral data before integration so as to reduce interpolation errors at
+#'   the boundaries of the wavebands.
 #' @param allow.scaled logical indicating whether scaled or normalized spectra
-#'   as argument to spct are flagged as an error
-#' @param ... other arguments (possibly ignored)
+#'   as argument to spct are flagged as an error.
+#' @param ... other arguments (possibly used by derived methods).
 #'
 #' @export
 #'
 #' @examples
 #' e_irrad(sun.spct, waveband(c(400,700)))
+#' e_irrad(sun.spct, split_bands(c(400,700), length.out = 3))
+#' e_irrad(sun.spct, split_bands(c(400,700), length.out = 3),
+#'         quantity = "total")
+#' e_irrad(sun.spct, split_bands(c(400,700), length.out = 3),
+#'         quantity = "average")
+#' e_irrad(sun.spct, split_bands(c(400,700), length.out = 3),
+#'         quantity = "relative")
+#' e_irrad(sun.spct, split_bands(c(400,700), length.out = 3),
+#'         quantity = "relative.pc")
+#' e_irrad(sun.spct, split_bands(c(400,700), length.out = 3),
+#'         quantity = "contribution")
+#' e_irrad(sun.spct, split_bands(c(400,700), length.out = 3),
+#'         quantity = "contribution.pc")
 #'
-#' @return One numeric value for each waveband with no change in scale factor,
-#'   with name attribute set to the name of each waveband unless a named list is
-#'   supplied in which case the names of the list elements are used. The
-#'   time.unit attribute is copied from the spectrum object to the output. Units
-#'   are as follows: If time.unit is second, [W m-2 nm-1] -> [W m-2] If
-#'   time.unit is day, [J d-1 m-2 nm-1] -> [J m-2]
+#' @return A named \code{numeric} vector in the case of methods for individual
+#'   spectra, with one value for each \code{waveband} passed to parameter
+#'   \code{w.band}. A \code{data.frame} in the case of collections of spectra,
+#'   containing one column for each \code{waveband} object, an index column with
+#'   the names of the spectra, and optionally additional columns with metadata
+#'   values retrieved from the attributes of the member spectra.
+#'
+#'   By default values are only integrated, but depending on the argument passed
+#'   to parameter \code{quantity} they can be re-expressed as relative fractions
+#'   or percentages. In the case of vector output, \code{names} attribute is set
+#'   to the name of the corresponding waveband unless a named list is supplied
+#'   in which case the names of the list members are used. The  time.unit
+#'   attribute is copied from the spectrum object to the output. Units are as
+#'   follows: If units are absolute and time.unit is second, [W m-2 nm-1] -> [W
+#'   m-2] If time.unit is day, [J d-1 m-2 nm-1] -> [J m-2]; if units are
+#'   relative, fraction of one or percent.
 #'
 #' @note The last two parameters control speed optimizations. The defaults
-#'   should be suitable in mosts cases. If you will use repeatedly the same SWFs
+#'   should be suitable in most cases. If you will use repeatedly the same SWFs
 #'   on many spectra measured at exactly the same wavelengths you may obtain
 #'   some speed up by setting \code{use.cached.mult=TRUE}. However, be aware
 #'   that you are responsible for ensuring that the wavelengths are the same in
@@ -312,7 +359,8 @@ irrad_spct <- irrad.source_spct
 #'
 e_irrad <- function(spct, w.band,
                     quantity, time.unit, wb.trim,
-                    use.cached.mult, use.hinges, allow.scaled, ...) UseMethod("e_irrad")
+                    use.cached.mult, use.hinges, allow.scaled,
+                    ...) UseMethod("e_irrad")
 
 #' @describeIn e_irrad Default for generic function
 #'
@@ -337,7 +385,8 @@ e_irrad.source_spct <-
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
            use.hinges = NULL,
-           allow.scaled = FALSE, ...) {
+           allow.scaled = !quantity  %in% c("average", "mean", "total"),
+           ...) {
     irrad_spct(spct, w.band = w.band, unit.out = "energy", quantity = quantity,
                time.unit = time.unit, wb.trim = wb.trim,
                use.cached.mult = use.cached.mult, use.hinges = use.hinges,
@@ -349,39 +398,55 @@ e_irrad.source_spct <-
 
 #' Photon irradiance
 #'
-#' This function returns the photon irradiance (or quantum irradiance) for a
-#' given waveband of a light source spectrum.
+#' Photon irradiance (i.e. quantum irradiance) for one or more wavebands of a
+#' light source spectrum.
 #'
-#' @param spct an R object
-#' @param w.band a list of \code{waveband} objects or a \code{waveband} object
-#' @param quantity character string
-#' @param time.unit character or lubridate::duration
+#' @param spct an R object.
+#' @param w.band a list of \code{waveband} objects or a \code{waveband} object.
+#' @param quantity character string One of "total", "average" or "mean",
+#'   "contribution", "contribution.pc", "relative" or "relative.pc".
+#' @param time.unit character or lubridate::duration object.
 #' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries
-#'   are trimmed, if FALSE, they are discarded
+#'   are trimmed, if FALSE, they are discarded.
 #' @param use.cached.mult logical indicating whether multiplier values should be
-#'   cached between calls
-#' @param use.hinges logical indicating whether to use hinges to reduce
-#'   interpolation errors
+#'   cached between calls.
+#' @param use.hinges logical Flag indicating whether to insert "hinges" into the
+#'   spectral data before integration so as to reduce interpolation errors at
+#'   the boundaries of the wavebands.
 #' @param allow.scaled logical indicating whether scaled or normalized spectra
-#'   as argument to spct are flagged as an error
-#' @param ... other arguments (possibly ignored)
-#'
-#'
+#'   as argument to spct are flagged as an error.
+#' @param ... other arguments (possibly ignored).
 #'
 #' @export
 #'
 #' @examples
 #' q_irrad(sun.spct, waveband(c(400,700)))
+#' q_irrad(sun.spct, split_bands(c(400,700), length.out = 3))
+#' q_irrad(sun.spct, split_bands(c(400,700), length.out = 3), quantity = "total")
+#' q_irrad(sun.spct, split_bands(c(400,700), length.out = 3), quantity = "average")
+#' q_irrad(sun.spct, split_bands(c(400,700), length.out = 3), quantity = "relative")
+#' q_irrad(sun.spct, split_bands(c(400,700), length.out = 3), quantity = "relative.pc")
+#' q_irrad(sun.spct, split_bands(c(400,700), length.out = 3), quantity = "contribution")
+#' q_irrad(sun.spct, split_bands(c(400,700), length.out = 3), quantity = "contribution.pc")
 #'
-#' @return One numeric value for each waveband with no change in scale factor,
-#'   with name attribute set to the name of each waveband unless a named list is
-#'   supplied in which case the names of the list elements are used. The
-#'   time.unit attribute is copied from the spectrum object to the output. Units
-#'   are as follows: If time.unit is second, [W m-2 nm-1] -> [mol s-1 m-2] If
-#'   time.unit is day, [J d-1 m-2 nm-1] -> [mol d-1 m-2]
+#' @return A named \code{numeric} vector in the case of methods for individual
+#'   spectra, with one value for each \code{waveband} passed to parameter
+#'   \code{w.band}. A \code{data.frame} in the case of collections of spectra,
+#'   containing one column for each \code{waveband} object, an index column with
+#'   the names of the spectra, and optionally additional columns with metadata
+#'   values retrieved from the attributes of the member spectra.
+#'
+#'   By default values are only integrated, but depending on the argument passed
+#'   to parameter \code{quantity} they can be re-expressed as relative fractions
+#'   or percentages. In the case of vector output, \code{names} attribute is set
+#'   to the name of the corresponding waveband unless a named list is supplied
+#'   in which case the names of the list members are used. The time.unit
+#'   attribute is copied from the spectrum object to the output. Units are as
+#'   follows: If time.unit is second, [W m-2 nm-1] -> [mol s-1 m-2] If time.unit
+#'   is day, [J d-1 m-2 nm-1] -> [mol d-1 m-2]
 #'
 #' @note The last two parameters control speed optimizations. The defaults
-#'   should be suitable in mosts cases. If you will use repeatedly the same SWFs
+#'   should be suitable in most cases. If you will use repeatedly the same SWFs
 #'   on many spectra measured at exactly the same wavelengths you may obtain
 #'   some speed up by setting \code{use.cached.mult=TRUE}. However, be aware
 #'   that you are responsible for ensuring that the wavelengths are the same in
@@ -417,7 +482,8 @@ q_irrad.source_spct <-
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
            use.hinges = NULL,
-           allow.scaled = FALSE, ...) {
+           allow.scaled = !quantity  %in% c("average", "mean", "total"),
+           ...) {
     irrad_spct(spct, w.band = w.band, unit.out = "photon", quantity = quantity,
                time.unit = time.unit, wb.trim = wb.trim,
                use.cached.mult = use.cached.mult, use.hinges = use.hinges,
@@ -429,23 +495,24 @@ q_irrad.source_spct <-
 
 #' Fluence
 #'
-#' This function returns the energy or photon fluence for a given waveband of a
-#' light source spectrum and the duration of the exposure.
+#' Energy or photon fluence for one or more wavebands of a light source spectrum
+#' and a duration of exposure.
 #'
-#' @param spct an R object
-#' @param w.band a list of \code{waveband} objects or a \code{waveband} object
+#' @param spct an R object.
+#' @param w.band a list of \code{waveband} objects or a \code{waveband} object.
 #' @param unit.out character string with allowed values "energy", and "photon",
-#'   or its alias "quantum"
-#' @param exposure.time lubridate::duration
+#'   or its alias "quantum".
+#' @param exposure.time lubridate::duration object.
 #' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries
-#'   are trimmed, if FALSE, they are discarded
+#'   are trimmed, if FALSE, they are discarded.
 #' @param use.cached.mult logical indicating whether multiplier values should be
-#'   cached between calls
-#' @param use.hinges logical indicating whether to use hinges to reduce
-#'   interpolation errors
+#'   cached between calls.
+#' @param use.hinges logical Flag indicating whether to insert "hinges" into the
+#'   spectral data before integration so as to reduce interpolation errors at
+#'   the boundaries of the wavebands.
 #' @param allow.scaled logical indicating whether scaled or normalized spectra
-#'   as argument to spct are flagged as an error
-#' @param ... other arguments (possibly ignored)
+#'   as argument to spct are flagged as an error.
+#' @param ... other arguments (possibly used by derived methods).
 #'
 #'
 #'
@@ -465,7 +532,7 @@ q_irrad.source_spct <-
 #'   time.unit is day, [J d-1 m-2 nm-1] -> [mol d-1 m-2]
 #'
 #' @note The last two parameters control speed optimizations. The defaults
-#'   should be suitable in mosts cases. If you will use repeatedly the same SWFs
+#'   should be suitable in most cases. If you will use repeatedly the same SWFs
 #'   on many spectra measured at exactly the same wavelengths you may obtain
 #'   some speed up by setting \code{use.cached.mult=TRUE}. However, be aware
 #'   that you are responsible for ensuring that the wavelengths are the same in
@@ -528,21 +595,22 @@ fluence.source_spct <-
 
 #' Photon fluence
 #'
-#' This function returns the photon irradiance (or quantum irradiance) for a
-#' given waveband of a light source spectrum.
+#' Photon irradiance (i.e. quantum irradiance) for one or more waveband of a
+#' light source spectrum.
 #'
-#' @param spct an R object
+#' @param spct an R object.
 #' @param w.band a list of \code{waveband} objects or a \code{waveband} object
-#' @param exposure.time lubridate::duration
+#' @param exposure.time lubridate::duration object.
 #' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries
-#'   are trimmed, if FALSE, they are discarded
+#'   are trimmed, if FALSE, they are discarded.
 #' @param use.cached.mult logical indicating whether multiplier values should be
-#'   cached between calls
-#' @param use.hinges logical indicating whether to use hinges to reduce
-#'   interpolation errors
+#'   cached between calls.
+#' @param use.hinges logical Flag indicating whether to insert "hinges" into the
+#'   spectral data before integration so as to reduce interpolation errors at
+#'   the boundaries of the wavebands.
 #' @param allow.scaled logical indicating whether scaled or normalized spectra
-#'   as argument to spct are flagged as an error
-#' @param ... other arguments (possibly ignored)
+#'   as argument to spct are flagged as an error.
+#' @param ... other arguments (possibly ignored).
 #'
 #' @examples
 #' library(lubridate)
@@ -553,11 +621,11 @@ fluence.source_spct <-
 #' @return One numeric value for each waveband with no change in scale factor,
 #'   with name attribute set to the name of each waveband unless a named list is
 #'   supplied in which case the names of the list elements are used. The
-#'   exposure.time is copied from the spectrum object to the output as an attibute.
+#'   exposure.time is copied from the spectrum object to the output as an attribute.
 #'   Units are as follows: moles of photons per exposure.
 #'
 #' @note The last two parameters control speed optimizations. The defaults
-#'   should be suitable in mosts cases. If you will use repeatedly the same SWFs
+#'   should be suitable in most cases. If you will use repeatedly the same SWFs
 #'   on many spectra measured at exactly the same wavelengths you may obtain
 #'   some speed up by setting \code{use.cached.mult=TRUE}. However, be aware
 #'   that you are responsible for ensuring that the wavelengths are the same in
@@ -616,18 +684,19 @@ q_fluence.source_spct <-
 
 #' Energy fluence
 #'
-#' This function returns the energy fluence for a given waveband of a light
-#' source spectrum given the duration of the exposure.
+#' Energy fluence for one or more wavebands of a light source spectrum and a
+#' duration of the exposure.
 #'
 #' @param spct an R object
 #' @param w.band a list of \code{waveband} objects or a \code{waveband} object
-#' @param exposure.time lubridate::duration
+#' @param exposure.time lubridate::duration object.
 #' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries
 #'   are trimmed, if FALSE, they are discarded
 #' @param use.cached.mult logical indicating whether multiplier values should be
 #'   cached between calls
-#' @param use.hinges logical indicating whether to use hinges to reduce
-#'   interpolation errors
+#' @param use.hinges logical Flag indicating whether to insert "hinges" into the
+#'   spectral data before integration so as to reduce interpolation errors at
+#'   the boundaries of the wavebands.
 #' @param allow.scaled logical indicating whether scaled or normalized spectra
 #'   as argument to spct are flagged as an error
 #' @param ... other arguments (possibly ignored)
@@ -644,7 +713,7 @@ q_fluence.source_spct <-
 #'   follows: (J) joules per exposure.
 #'
 #' @note The last two parameters control speed optimizations. The defaults
-#'   should be suitable in mosts cases. If you will use repeatedly the same SWFs
+#'   should be suitable in most cases. If you will use repeatedly the same SWFs
 #'   on many spectra measured at exactly the same wavelengths you may obtain
 #'   some speed up by setting \code{use.cached.mult=TRUE}. However, be aware
 #'   that you are responsible for ensuring that the wavelengths are the same in
@@ -701,8 +770,17 @@ e_fluence.source_spct <-
 
 #' @describeIn irrad  Calculates irradiance from a \code{source_mspct}
 #'   object.
+#'
+#' @param attr2tb character vector, see \code{\link{add_attr2tb}} for the syntax for \code{attr2tb} passed as is to formal parameter \code{col.names}.
 #' @param idx logical whether to add a column with the names of the elements of
 #'   spct
+#' @param .parallel	if TRUE, apply function in parallel, using parallel backend
+#'   provided by foreach
+#' @param .paropts a list of additional options passed into the foreach function
+#'   when parallel computation is enabled. This is important if (for example)
+#'   your code relies on external data or packages: use the .export and
+#'   .packages arguments to supply them so that all cluster nodes have the
+#'   correct environment set up for computing.
 #'
 #' @export
 #'
@@ -714,28 +792,46 @@ irrad.source_mspct <-
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
            use.hinges = NULL,
-           allow.scaled = FALSE,
+           allow.scaled = !quantity  %in% c("average", "mean", "total"),
            ...,
-           idx = !is.null(names(spct))) {
-    msdply(
-      mspct = spct,
-      .fun = irrad,
-      w.band = w.band,
-      unit.out = unit.out,
-      wb.trim = wb.trim,
-      use.cached.mult = use.cached.mult,
-      use.hinges = use.hinges,
-      allow.scaled = allow.scaled,
-      idx = idx,
-      col.names = names(w.band)
-    )
+           attr2tb = NULL,
+           idx = !is.null(names(spct)),
+           .parallel = FALSE,
+           .paropts = NULL) {
+    z <-
+      msdply(
+        mspct = spct,
+        .fun = irrad,
+        w.band = w.band,
+        quantity = quantity,
+        unit.out = unit.out,
+        wb.trim = wb.trim,
+        use.cached.mult = use.cached.mult,
+        use.hinges = use.hinges,
+        allow.scaled = allow.scaled,
+        idx = idx,
+        col.names = names(w.band),
+        .parallel = .parallel,
+        .paropts = .paropts
+      )
+    add_attr2tb(tb = z,
+                mspct = spct,
+                col.names = attr2tb)
   }
 
 #' @describeIn q_irrad  Calculates photon (quantum) irradiance from a
 #'   \code{source_mspct} object.
 #'
+#' @param attr2tb character vector, see \code{\link{add_attr2tb}} for the syntax for \code{attr2tb} passed as is to formal parameter \code{col.names}.
 #' @param idx logical whether to add a column with the names of the elements of
 #'   spct
+#' @param .parallel	if TRUE, apply function in parallel, using parallel backend
+#'   provided by foreach
+#' @param .paropts a list of additional options passed into the foreach function
+#'   when parallel computation is enabled. This is important if (for example)
+#'   your code relies on external data or packages: use the .export and
+#'   .packages arguments to supply them so that all cluster nodes have the
+#'   correct environment set up for computing.
 #'
 #' @export
 #'
@@ -746,26 +842,45 @@ q_irrad.source_mspct <-
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
            use.hinges = NULL,
-           allow.scaled = FALSE,
-           ..., idx = !is.null(names(spct))) {
-    msdply(
-      mspct = spct,
-      .fun = q_irrad,
-      w.band = w.band,
-      wb.trim = wb.trim,
-      use.cached.mult = use.cached.mult,
-      use.hinges = use.hinges,
-      allow.scaled = allow.scaled,
-      idx = idx,
-      col.names = names(w.band)
-    )
+           allow.scaled = !quantity  %in% c("average", "mean", "total"),
+           ...,
+           attr2tb = NULL,
+           idx = !is.null(names(spct)),
+           .parallel = FALSE,
+           .paropts = NULL) {
+    z <-
+      msdply(
+        mspct = spct,
+        .fun = q_irrad,
+        w.band = w.band,
+        quantity = quantity,
+        wb.trim = wb.trim,
+        use.cached.mult = use.cached.mult,
+        use.hinges = use.hinges,
+        allow.scaled = allow.scaled,
+        idx = idx,
+        col.names = names(w.band),
+        .parallel = .parallel,
+        .paropts = .paropts
+      )
+    add_attr2tb(tb = z,
+                mspct = spct,
+                col.names = attr2tb)
   }
 
 #' @describeIn e_irrad  Calculates energy irradiance from a
 #'   \code{source_mspct} object.
 #'
+#' @param attr2tb character vector, see \code{\link{add_attr2tb}} for the syntax for \code{attr2tb} passed as is to formal parameter \code{col.names}.
 #' @param idx logical whether to add a column with the names of the elements of
 #'   spct
+#' @param .parallel	if TRUE, apply function in parallel, using parallel backend
+#'   provided by foreach
+#' @param .paropts a list of additional options passed into the foreach function
+#'   when parallel computation is enabled. This is important if (for example)
+#'   your code relies on external data or packages: use the .export and
+#'   .packages arguments to supply them so that all cluster nodes have the
+#'   correct environment set up for computing.
 #'
 #' @export
 #'
@@ -776,25 +891,45 @@ e_irrad.source_mspct <-
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
            use.hinges = NULL,
-           allow.scaled = FALSE,
-           ..., idx = !is.null(names(spct))) {
-    msdply(
-      mspct = spct,
-      .fun = e_irrad,
-      w.band = w.band,
-      wb.trim = wb.trim,
-      use.cached.mult = use.cached.mult,
-      use.hinges = use.hinges,
-      allow.scaled = allow.scaled,
-      idx = idx,
-      col.names = names(w.band)
-    )
+           allow.scaled = !quantity  %in% c("average", "mean", "total"),
+           ...,
+           attr2tb = NULL,
+           idx = !is.null(names(spct)),
+           .parallel = FALSE,
+           .paropts = NULL) {
+    z <-
+      msdply(
+        mspct = spct,
+        .fun = e_irrad,
+        w.band = w.band,
+        quantity = quantity,
+        wb.trim = wb.trim,
+        use.cached.mult = use.cached.mult,
+        use.hinges = use.hinges,
+        allow.scaled = allow.scaled,
+        idx = idx,
+        col.names = names(w.band),
+        .parallel = .parallel,
+        .paropts = .paropts
+      )
+    add_attr2tb(tb = z,
+                mspct = spct,
+                col.names = attr2tb)
   }
 
 #' @describeIn fluence Calculates fluence from a \code{source_mspct}
 #'   object.
+#'
+#' @param attr2tb character vector, see \code{\link{add_attr2tb}} for the syntax for \code{attr2tb} passed as is to formal parameter \code{col.names}.
 #' @param idx logical whether to add a column with the names of the elements of
 #'   spct
+#' @param .parallel	if TRUE, apply function in parallel, using parallel backend
+#'   provided by foreach
+#' @param .paropts a list of additional options passed into the foreach function
+#'   when parallel computation is enabled. This is important if (for example)
+#'   your code relies on external data or packages: use the .export and
+#'   .packages arguments to supply them so that all cluster nodes have the
+#'   correct environment set up for computing.
 #'
 #' @export
 #'
@@ -806,25 +941,44 @@ fluence.source_mspct <-
            use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
            use.hinges = NULL,
            allow.scaled = FALSE,
-           ..., idx = !is.null(names(spct))) {
-    msdply(
-      mspct = spct,
-      .fun = fluence,
-      w.band = w.band,
-      unit.out = unit.out,
-      exposure.time = exposure.time,
-      wb.trim = wb.trim,
-      use.cached.mult = use.cached.mult,
-      use.hinges = use.hinges,
-      allow.scaled = allow.scaled,
-      idx = idx,
-      col.names = names(w.band)
-    )
+           ...,
+           attr2tb = NULL,
+           idx = !is.null(names(spct)),
+           .parallel = FALSE,
+           .paropts = NULL) {
+    z <-
+      msdply(
+        mspct = spct,
+        .fun = fluence,
+        w.band = w.band,
+        unit.out = unit.out,
+        exposure.time = exposure.time,
+        wb.trim = wb.trim,
+        use.cached.mult = use.cached.mult,
+        use.hinges = use.hinges,
+        allow.scaled = allow.scaled,
+        idx = idx,
+        col.names = names(w.band),
+        .parallel = .parallel,
+        .paropts = .paropts
+      )
+    add_attr2tb(tb = z,
+                mspct = spct,
+                col.names = attr2tb)
   }
 
 #' @describeIn e_fluence Calculates energy fluence from a \code{source_mspct}
 #'   object.
+#'
+#' @param attr2tb character vector, see \code{\link{add_attr2tb}} for the syntax for \code{attr2tb} passed as is to formal parameter \code{col.names}.
 #' @param idx logical whether to add a column with the names of the elements of spct
+#' @param .parallel	if TRUE, apply function in parallel, using parallel backend
+#'   provided by foreach
+#' @param .paropts a list of additional options passed into the foreach function
+#'   when parallel computation is enabled. This is important if (for example)
+#'   your code relies on external data or packages: use the .export and
+#'   .packages arguments to supply them so that all cluster nodes have the
+#'   correct environment set up for computing.
 #'
 #' @export
 #'
@@ -835,25 +989,44 @@ e_fluence.source_mspct <-
            use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
            use.hinges = NULL,
            allow.scaled = FALSE,
-           ..., idx = !is.null(names(spct))) {
-    msdply(
-      mspct = spct,
-      .fun = e_fluence,
-      w.band = w.band,
-      exposure.time = exposure.time,
-      wb.trim = wb.trim,
-      use.cached.mult = use.cached.mult,
-      use.hinges = use.hinges,
-      allow.scaled = allow.scaled,
-      idx = idx,
-      col.names = names(w.band)
-    )
+           ...,
+           attr2tb = NULL,
+           idx = !is.null(names(spct)),
+           .parallel = FALSE,
+           .paropts = NULL) {
+    z <-
+      msdply(
+        mspct = spct,
+        .fun = e_fluence,
+        w.band = w.band,
+        exposure.time = exposure.time,
+        wb.trim = wb.trim,
+        use.cached.mult = use.cached.mult,
+        use.hinges = use.hinges,
+        allow.scaled = allow.scaled,
+        idx = idx,
+        col.names = names(w.band),
+        .parallel = .parallel,
+        .paropts = .paropts
+      )
+    add_attr2tb(tb = z,
+                mspct = spct,
+                col.names = attr2tb)
   }
 
 #' @describeIn q_fluence Calculates photon (quantum) fluence from a
 #'   \code{source_mspct} object.
+#'
+#' @param attr2tb character vector, see \code{\link{add_attr2tb}} for the syntax for \code{attr2tb} passed as is to formal parameter \code{col.names}.
 #' @param idx logical whether to add a column with the names of the elements of
 #'   spct
+#' @param .parallel	if TRUE, apply function in parallel, using parallel backend
+#'   provided by foreach
+#' @param .paropts a list of additional options passed into the foreach function
+#'   when parallel computation is enabled. This is important if (for example)
+#'   your code relies on external data or packages: use the .export and
+#'   .packages arguments to supply them so that all cluster nodes have the
+#'   correct environment set up for computing.
 #'
 #' @export
 #'
@@ -864,18 +1037,27 @@ q_fluence.source_mspct <-
            use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
            use.hinges = NULL,
            allow.scaled = FALSE,
-           ..., idx = !is.null(names(spct))) {
-    msdply(
-      mspct = spct,
-      .fun = q_fluence,
-      w.band = w.band,
-      exposure.time = exposure.time,
-      wb.trim = wb.trim,
-      use.cached.mult = use.cached.mult,
-      use.hinges = use.hinges,
-      allow.scaled = allow.scaled,
-      idx = idx,
-      col.names = names(w.band)
-    )
+           ...,
+           attr2tb = NULL,
+           idx = !is.null(names(spct)),
+           .parallel = FALSE,
+           .paropts = NULL) {
+    z <-
+      msdply(
+        mspct = spct,
+        .fun = q_fluence,
+        w.band = w.band,
+        exposure.time = exposure.time,
+        wb.trim = wb.trim,
+        use.cached.mult = use.cached.mult,
+        use.hinges = use.hinges,
+        allow.scaled = allow.scaled,
+        idx = idx,
+        col.names = names(w.band),
+        .parallel = .parallel,
+        .paropts = .paropts
+      )
+    add_attr2tb(tb = z,
+                mspct = spct,
+                col.names = attr2tb)
   }
-
