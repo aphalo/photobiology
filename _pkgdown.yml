@@ -35,6 +35,7 @@ reference:
     - as.reflector_mspct
     - as.object_mspct
     - as.chroma_mspct
+    - as.matrix-mspct
     - setGenericSpct
     - mspct_classes
     - rmDerivedMspct

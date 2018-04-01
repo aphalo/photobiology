@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>photobiology: Photobiological Calculations � photobiology-package • photobiology</title>
+<title>photobiology: Photobiological Calculations — photobiology-package • photobiology</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -18,13 +18,27 @@
 <!-- Font Awesome icons -->
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 
+<!-- clipboard.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
 <script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
-  
-  
+<meta property="og:title" content="photobiology: Photobiological Calculations — photobiology-package" />
+
+<meta property="og:description" content="Definitions of classes, methods, operators and functions for use in
+photobiology and radiation meteorology and climatology. Calculation of
+effective (weighted) and not-weighted irradiances/doses, fluence rates,
+transmittance, reflectance, absorptance, absorbance and diverse
+ratios and other derived quantities from spectral data. Local maxima and
+minima. Conversion between energy- and photon-based units. Wavelength
+interpolation. Astronomical calculations related solar angles and day
+length. Colours and vision. This package is part of the
+'r4photobiology' suite, Aphalo P. J. (2015) &lt;doi:10.19232/uv4pb.2015.1.14&gt;." />
+<meta name="twitter:card" content="summary" />
+
+
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
@@ -32,6 +46,8 @@
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
+
+
 
 
   </head>
@@ -47,8 +63,12 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="../index.html">photobiology</a>
+      <span class="navbar-brand">
+        <a class="navbar-link" href="../index.html">photobiology</a>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.9.20</span>
+      </span>
     </div>
+
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
@@ -83,6 +103,7 @@
       <ul class="nav navbar-nav navbar-right">
         
       </ul>
+      
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
@@ -90,10 +111,11 @@
       
       </header>
 
-      <div class="row">
+<div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>photobiology: Photobiological Calculations</h1>
+    
     </div>
 
     
@@ -135,33 +157,33 @@ length. Colours and vision. This package is part of the
     <p>This work was funded by the Academy of Finland
   (decision 252548). COST Action FA9604 'UV4Growth' facilitated discussions
   and exchanges of ideas that lead to the development of this package. The
-  contributions of Andy McLeod, Lars Olof Bj�rn, Nigel Paul, Lasse Ylianttila,
+  contributions of Andy McLeod, Lars Olof Björn, Nigel Paul, Lasse Ylianttila,
   T. Matthew Robson and Titta Kotilainen were specially significant.
   Tutorials by Hadley Wickham and comments on my presentation at UseR!2015
   allowed me to significantly improve the coding and functionality.</p>
     
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
-    <p>Aphalo, P. J., Albert, A., Bj�rn, L. O., McLeod, A. R., Robson, T. M.,
+    <p>Aphalo, P. J., Albert, A., Björn, L. O., McLeod, A. R., Robson, T. M.,
 Rosenqvist, E. (Eds.). (2012). Beyond the Visible: A handbook of best
 practice in plant UV photobiology (1st ed., p. xx + 174). Helsinki:
 University of Helsinki, Department of Biosciences, Division of Plant Biology.
 ISBN 978-952-10-8363-1 (PDF), 978-952-10-8362-4 (paperback). Open access PDF
 download available at http://hdl.handle.net/10138/37558</p>
 <p>Aphalo, Pedro J. (2015) The r4photobiology suite. UV4Plants Bulletin, 2015:1,
-21-29. <a href='http://doi.org/10.19232/uv4pb.2015.1.14'>http://doi.org/10.19232/uv4pb.2015.1.14</a>.</p>
+21-29. <a href='https://doi.org/10.19232/uv4pb.2015.1.14'>https://doi.org/10.19232/uv4pb.2015.1.14</a>.</p>
 <p>Maia, R., Eliason, C. M., Bitton, P. P., Doucet, S. M., Shawkey, M. D. (2013)
 pavo: an R package for the analysis, visualization and organization of
 spectral data. Methods in Ecology and Evolution, 4(10):906-913.
-<a href='http://doi.org/10.1111/2041-210X.12069'>http://doi.org/10.1111/2041-210X.12069</a>.</p>
+<a href='https://doi.org/10.1111/2041-210X.12069'>https://doi.org/10.1111/2041-210X.12069</a>.</p>
     
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <p>Useful links:</p><ul>
+    <div class='dont-index'><p>Useful links:</p><ul>
 <li><p><a href='http://www.r4photobiology.info/'>http://www.r4photobiology.info/</a></p></li>
 <li><p><a href='https://bitbucket.org/aphalo/photobiology'>https://bitbucket.org/aphalo/photobiology</a></p></li>
 <li><p>Report bugs at <a href='https://bitbucket.org/aphalo/photobiology/issues'>https://bitbucket.org/aphalo/photobiology/issues</a></p></li>
-</ul>
+</ul></div>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
@@ -196,8 +218,8 @@ spectral data. Methods in Ecology and Evolution, 4(10):906-913.
 #&gt; attr(,"radiation.unit")
 #&gt; [1] "energy irradiance total"</div><div class='input'><span class='co'># daylength</span>
 <span class='fu'><a href='day_night.html'>sunrise_time</a></span>(<span class='kw pkg'>lubridate</span><span class='kw ns'>::</span><span class='fu'><a href='http://lubridate.tidyverse.org/reference/today.html'>today</a></span>(<span class='kw'>tzone</span> <span class='kw'>=</span> <span class='st'>"EET"</span>), <span class='kw'>tz</span> <span class='kw'>=</span> <span class='st'>"EET"</span>,
-             <span class='kw'>geocode</span> <span class='kw'>=</span> <span class='fu'>data.frame</span>(<span class='kw'>lat</span> <span class='kw'>=</span> <span class='fl'>60</span>, <span class='kw'>lon</span> <span class='kw'>=</span> <span class='fl'>25</span>), <span class='kw'>unit.out</span> <span class='kw'>=</span> <span class='st'>"hour"</span>)</div><div class='output co'>#&gt; [1] 6.78306</div><div class='input'><span class='fu'><a href='day_night.html'>day_length</a></span>(<span class='kw pkg'>lubridate</span><span class='kw ns'>::</span><span class='fu'><a href='http://lubridate.tidyverse.org/reference/today.html'>today</a></span>(<span class='kw'>tzone</span> <span class='kw'>=</span> <span class='st'>"EET"</span>), <span class='kw'>tz</span> <span class='kw'>=</span> <span class='st'>"EET"</span>,
-           <span class='kw'>geocode</span> <span class='kw'>=</span> <span class='fu'>data.frame</span>(<span class='kw'>lat</span> <span class='kw'>=</span> <span class='fl'>60</span>, <span class='kw'>lon</span> <span class='kw'>=</span> <span class='fl'>25</span>), <span class='kw'>unit.out</span> <span class='kw'>=</span> <span class='st'>"hour"</span>)</div><div class='output co'>#&gt; [1] 13.2361</div><div class='input'><span class='co'># colour as seen by humans</span>
+             <span class='kw'>geocode</span> <span class='kw'>=</span> <span class='fu'>data.frame</span>(<span class='kw'>lat</span> <span class='kw'>=</span> <span class='fl'>60</span>, <span class='kw'>lon</span> <span class='kw'>=</span> <span class='fl'>25</span>), <span class='kw'>unit.out</span> <span class='kw'>=</span> <span class='st'>"hour"</span>)</div><div class='output co'>#&gt; [1] 6.682147</div><div class='input'><span class='fu'><a href='day_night.html'>day_length</a></span>(<span class='kw pkg'>lubridate</span><span class='kw ns'>::</span><span class='fu'><a href='http://lubridate.tidyverse.org/reference/today.html'>today</a></span>(<span class='kw'>tzone</span> <span class='kw'>=</span> <span class='st'>"EET"</span>), <span class='kw'>tz</span> <span class='kw'>=</span> <span class='st'>"EET"</span>,
+           <span class='kw'>geocode</span> <span class='kw'>=</span> <span class='fu'>data.frame</span>(<span class='kw'>lat</span> <span class='kw'>=</span> <span class='fl'>60</span>, <span class='kw'>lon</span> <span class='kw'>=</span> <span class='fl'>25</span>), <span class='kw'>unit.out</span> <span class='kw'>=</span> <span class='st'>"hour"</span>)</div><div class='output co'>#&gt; [1] 13.41823</div><div class='input'><span class='co'># colour as seen by humans</span>
 <span class='fu'><a href='color_of.html'>color_of</a></span>(<span class='no'>sun.spct</span>)</div><div class='output co'>#&gt; source CMF 
 #&gt;  "#544F4B" </div><div class='input'><span class='fu'><a href='color_of.html'>color_of</a></span>(<span class='no'>sun.spct</span> * <span class='no'>yellow_gel.spct</span>)</div><div class='output co'>#&gt; source CMF 
 #&gt;  "#946000" </div><div class='input'><span class='co'># filter transmittance</span>
@@ -255,11 +277,14 @@ Other contributors:
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="http://hadley.github.io/pkgdown/">pkgdown</a>.</p>
+  <p>Site built with <a href="http://pkgdown.r-lib.org/">pkgdown</a>.</p>
 </div>
 
       </footer>
    </div>
 
+  
+
   </body>
 </html>
+

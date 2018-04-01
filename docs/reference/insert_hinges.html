@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Insert wavelength values into spectral data. � insert_hinges • photobiology</title>
+<title>Insert wavelength values into spectral data. — insert_hinges • photobiology</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -18,13 +18,22 @@
 <!-- Font Awesome icons -->
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 
+<!-- clipboard.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
 <script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
-  
-  
+<meta property="og:title" content="Insert wavelength values into spectral data. — insert_hinges" />
+
+<meta property="og:description" content="Inserting wavelengths values immediately before and after a discontinuity in
+the SWF, greatly reduces the errors caused by interpolating the weighted
+irradiance during integration of the effective spectral irradiance. This is
+specially true when data have a large wavelength step size." />
+<meta name="twitter:card" content="summary" />
+
+
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
@@ -32,6 +41,8 @@
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
+
+
 
 
   </head>
@@ -47,8 +58,12 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="../index.html">photobiology</a>
+      <span class="navbar-brand">
+        <a class="navbar-link" href="../index.html">photobiology</a>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.9.20</span>
+      </span>
     </div>
+
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
@@ -83,6 +98,7 @@
       <ul class="nav navbar-nav navbar-right">
         
       </ul>
+      
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
@@ -90,10 +106,11 @@
       
       </header>
 
-      <div class="row">
+<div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Insert wavelength values into spectral data.</h1>
+    
     </div>
 
     
@@ -105,7 +122,7 @@ specially true when data have a large wavelength step size.</p>
 
     <pre class="usage"><span class='fu'>insert_hinges</span>(<span class='no'>x</span>, <span class='no'>y</span>, <span class='no'>h</span>)</pre>
     
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
@@ -139,7 +156,7 @@ using R.</p>
     
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <p>Other low-level functions operating on numeric vectors.: <code><a href='as_energy.html'>as_energy</a></code>,
+    <div class='dont-index'><p>Other low-level functions operating on numeric vectors.: <code><a href='as_energy.html'>as_energy</a></code>,
   <code><a href='as_quantum_mol.html'>as_quantum_mol</a></code>,
   <code><a href='calc_multipliers.html'>calc_multipliers</a></code>,
   <code><a href='div_spectra.html'>div_spectra</a></code>,
@@ -155,7 +172,7 @@ using R.</p>
   <code><a href='split_energy_irradiance.html'>split_energy_irradiance</a></code>,
   <code><a href='split_photon_irradiance.html'>split_photon_irradiance</a></code>,
   <code><a href='subt_spectra.html'>subt_spectra</a></code>, <code><a href='sum_spectra.html'>sum_spectra</a></code>,
-  <code><a href='trim_tails.html'>trim_tails</a></code>, <code><a href='v_insert_hinges.html'>v_insert_hinges</a></code></p>
+  <code><a href='trim_tails.html'>trim_tails</a></code>, <code><a href='v_insert_hinges.html'>v_insert_hinges</a></code></p></div>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
@@ -697,11 +714,14 @@ using R.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="http://hadley.github.io/pkgdown/">pkgdown</a>.</p>
+  <p>Site built with <a href="http://pkgdown.r-lib.org/">pkgdown</a>.</p>
 </div>
 
       </footer>
    </div>
 
+  
+
   </body>
 </html>
+
