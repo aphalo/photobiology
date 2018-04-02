@@ -11,6 +11,8 @@ specializations. Default behaviour remains unchanged.
 * Add class-coercion methods to and from matrix (and transfer corresponding
 functions from package 'photobiologyInOut').
 * Add function relative_AM() to compute relative air mass from sun elevation.
+* Add functions for calculation of saturated water vapour pressure from air
+temperature and dew point from water vapour pressure.
 
 photobiology 0.9.19 (2018-03-05)
 ================================

@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
 
 # photobiology
 
-[![](http://www.r-pkg.org/badges/version/photobiology)](https://cran.r-project.org/package=photobiology) 
+[![](http://www.r-pkg.org/badges/version-last-release/photobiology)](https://cran.r-project.org/package=photobiology) 
 [![](http://cranlogs.r-pkg.org/badges/photobiology)](https://cran.r-project.org/package=photobiology) 
 [![](http://cranlogs.r-pkg.org/badges/grand-total/photobiology)](https://cran.r-project.org/package=photobiology)
 
@@ -26,11 +26,20 @@ This package is the core of a suite of R packages for photobiological calculatio
 
 ## Example
 
-This is a basic example which shows you how to calculate solar irradiance under a filter from a measured solar spectrum and a measured filter transmission spectrum:
+This first basic example shows you how to calculate solar irradiance in W/m2 below a filter. We use a measured solar spectrum and a measured filter transmission spectrum.
 
-```{r example}
+```{r example1, message=FALSE}
 library(photobiology)
 e_irrad(sun.spct * yellow_gel.spct)
+```
+
+The second basic example shows some simple astronomical calculations for the sun.
+
+```{r example2}
+geocode <- data.frame(lon = 0, lat = 55)
+date <- lubridate::today(tzone = "UTC")
+sunrise_time(date, tz = "UTC", geocode = geocode)
+day_length(date, tz = "UTC", geocode = geocode)
 ```
 
 ## Installation

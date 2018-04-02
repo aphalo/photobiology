@@ -273,8 +273,20 @@ numeric value representing the time of day in one of hour, minute or second
 as unit of expression.
 
 ```{r}
-times <- now() + hours(0:6)
+times <- now(tzone = "UTC") + hours(0:6)
 times
 as_tod(times)
 as_tod(times, unit.out = "minutes")
+```
+
+## Relative air mass
+
+Solar elevation determines the length of the path of the sun beam through the Earth's atmosphere. This affects the solar spectrum at ground level, specially the UVB region. Function `relative_AM()` can be used to calculate an empirical _estimate_ of this quantity from elevation angles in degrees. This function is vectorised.
+
+```{r}
+relative_AM(33)
+```
+
+```{r}
+relative_AM(c(80, 60, 40, 20))
 ```

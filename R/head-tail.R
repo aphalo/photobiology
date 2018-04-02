@@ -1,5 +1,3 @@
-# head_tail ---------------------------------------------------------------
-
 #' Return the First and Last Part of an Object
 #'
 #' Returns the first and last "parts" (rows or members) of a spectrum,

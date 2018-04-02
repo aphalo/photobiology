@@ -339,15 +339,75 @@ class(mixed.mspct)
 lapply(mixed.mspct, class_spct)
 ```
 
-#### Using _as_ functions
+#### Using _as._ functions
 
-The `as` functions for collections of spectra, not only change the class of the collection object, but also apply the corresponding {as} functions to the member objects. They copy the original objects and then convert the copy, which is returned.
+The `as.` coercion methods for collections of spectra, not only change the class of the collection object, but also apply the corresponding {as} functions to the member objects. They copy the original objects and then convert the copy, which is returned.
 
 ```{r, col-construction-3}
 two_gen.mspct <- as.generic_mspct(two_suns.mspct)
 class(two_gen.mspct)
-lapply(two_gen.mspct, class_spct)
+str(two_gen.mspct, max.level = 1, give.attr = FALSE)
 ```
+
+In addition to coercion methods for lists of spectra objects, coercion methods are available for lists of data frames (or tibbles) and from matrix objects.
+
+One additional feature is that if a single spectrum object or data frame are coerced into a collection of spectra, the behaviour is equivalent to having passed as argument a list containing such object as its only member. 
+
+```{r, col-construction-4}
+one_sun.mspct <- as.source_mspct(sun.spct)
+class(one_sun.mspct)
+str(one_sun.mspct, max.level = 1, give.attr = FALSE)
+```
+
+Sometimes spectral data stored in a matrix need to be coerced into a collection of spectra. Coercion methods are defined also for this cases. Several spectra may be stored in a matrix either by row or by column, but this can be deduced automatically in the case of rectangular matrices. Wavelengths values are not expected to be part of the matrix, and need to be supplied as a separate numeric vector sorted in ascending order. As in a spectrum wavelength values never repeat, the vector of wavelengths is never recycled and uniqueness of values is enforced.
+
+We here use artificial data, in this first example with spectra saved by column. We assume that the values in the matrix are spectral transmittance stored as percentages (hence "Tpc").
+
+```{r, col-construction-5}
+x <- matrix(1:100, ncol = 2)
+wl <- 501:550 # wavelengths in nanometres
+as.filter_mspct(x, wl, "Tpc")
+```
+
+In a second example we supply explicit names for the spectra.
+
+```{r, col-construction-6}
+as.filter_mspct(x, wl, "Tpc", spct.names = c("A", "B"))
+```
+
+There is no change in the call for data stored by row. We create a new matrix, with the same data as above, but stored by row, as some R packages do.
+
+```{r, col-construction-7}
+xrow <- matrix(1:100, nrow = 2, byrow = TRUE)
+as.filter_mspct(xrow, wl, "Tpc")
+```
+
+There is only one case when an explicit argument for `byrow` is needed: square matrices (same number of spectra as of wavelength values in each spectrum).
+
+When coercing collections of spectra into matrices, the metadata contained in the individual spectral objects is discarded, and only the `"comment"` attribute of the collection of spectra copied to the returned object. The wavelength values are preserved in an attribute named "w.length", but are not included as part of the matrix.
+
+```{r, col-construction-8}
+two_suns.mat <- as.matrix(two_suns.mspct, "s.e.irrad")
+class(two_suns.mat)
+dim(two_suns.mat)
+head(dimnames(two_suns.mat)$spct)
+head(dimnames(two_suns.mat)$w.length)
+head(attr(two_suns.mat, "w.length"))
+```
+
+The argument `byrow` in the coercion into matrix methods has the same meaning as in the `matrix` constructor function.
+
+```{r, col-construction-9}
+two_suns.row_mat <- as.matrix(two_suns.mat, "s.e.irrad", byrow = TRUE)
+class(two_suns.row_mat)
+dim(two_suns.row_mat)
+head(dimnames(two_suns.row_mat)$spct)
+head(attr(two_suns.row_mat, "w.length"))
+```
+
+Collections of spectra have a `dim` attribute but it is discarded as it describes dimensions that could require spectral data to be stored in a three dimensional array and cannot be mapped to the two dimensions of a matrix. 
+
+These functions are not fully automatic, the user needs to provide the name of the variable to extract from each spectrum. If the wavelength values are not consistent among spectra, only those with the same values as the first spectrum in the collection are retained and the remaining ones dropped with a warning.
 
 #### Converting _tidy_ data
 
@@ -749,7 +809,7 @@ split_bands(list(c(100, 150, 200), c(800, 825)), length.out = 1)
 
 ## Object _inspection_ methods
 
-### `print()`
+### Printing
 
 The `print()` method for spectra is based on the method defined in package '**tibble**', consequently, it is possible to use the options from this package to control printing.  In the code chunk below, `tibble.print_max`, the number of rows in the spectral object above which only `tibble.print_min` rows are printed, are both set to 5, instead of the default 20 and 10, to avoid excessive clutter in our examples.
 
@@ -766,7 +826,7 @@ print(sun.spct, n = 3)
 
 Specialized `print()` methods for collections of spectra and for `waveband` objects are also defined.
 
-### `summary()`
+### Summary
 
 The `summary()` method for spectra is based on base R's `summary()` method for data frames, and accepts the same arguments. The main difference is that the attributes containing metadata and dimensions of the original spectrum object are copied to the summary object.
 
@@ -1404,7 +1464,7 @@ summary(two_suns.spct)
 
 #### Individual spectra
 
-The _usual_ and three new summary methods are available for spectra, but redefined to return wavelength-based summaries in nanometres (nm). For clarity synonims with clearer names are provided. The three new generic methods `midpoint()`, `expanse()` and  `stepsize()` are
+The _usual_ and three new summary methods are available for spectra, but redefined to return wavelength-based summaries in nanometres (nm). For clarity synonyms with clearer names are provided. The three new generic methods `midpoint()`, `expanse()` and  `stepsize()` are
 also defined for `numeric`.
 
 ```{r, summary-3}

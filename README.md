@@ -1,7 +1,8 @@
+
 photobiology
 ============
 
-[![](http://www.r-pkg.org/badges/version/photobiology)](https://cran.r-project.org/package=photobiology) [![](http://cranlogs.r-pkg.org/badges/photobiology)](https://cran.r-project.org/package=photobiology) [![](http://cranlogs.r-pkg.org/badges/grand-total/photobiology)](https://cran.r-project.org/package=photobiology)
+[![](http://www.r-pkg.org/badges/version-last-release/photobiology)](https://cran.r-project.org/package=photobiology) [![](http://cranlogs.r-pkg.org/badges/photobiology)](https://cran.r-project.org/package=photobiology) [![](http://cranlogs.r-pkg.org/badges/grand-total/photobiology)](https://cran.r-project.org/package=photobiology)
 
 Package '**photobiology**' defines a system of classes for storing spectral data and accompanying metadata. For each of these classes specialised summary methods, maths operators and functions are provided. In addition, classes for storing collections of objects of the classes for individual spectra are defined as well as 'apply' functions. Extraction and replacement operators are also implemented. Functions for calculation of the position of the sun, times of sunrise and sunset, day length and night length are also provided.
 
@@ -12,12 +13,10 @@ This package is the core of a suite of R packages for photobiological calculatio
 Example
 -------
 
-This is a basic example which shows you how to calculate solar irradiance under a filter from a measured solar spectrum and a measured filter transmission spectrum:
+This first basic example shows you how to calculate solar irradiance in W/m2 below a filter. We use a measured solar spectrum and a measured filter transmission spectrum.
 
 ``` r
 library(photobiology)
-#> For news about 'photobiology', please, see http://www.r4photobiology.info/
-#> For on-line documentation see http://docs.r4photobiology.info/photobiology/
 e_irrad(sun.spct * yellow_gel.spct)
 #>    Total 
 #> 146.5044 
@@ -25,6 +24,17 @@ e_irrad(sun.spct * yellow_gel.spct)
 #> [1] "second"
 #> attr(,"radiation.unit")
 #> [1] "energy irradiance total"
+```
+
+The second basic example shows some simple astronomical calculations for the sun.
+
+``` r
+geocode <- data.frame(lon = 0, lat = 55)
+date <- lubridate::today(tzone = "UTC")
+sunrise_time(date, tz = "UTC", geocode = geocode)
+#> [1] "2018-04-02 05:28:08 UTC"
+day_length(date, tz = "UTC", geocode = geocode)
+#> [1] 13.17787
 ```
 
 Installation

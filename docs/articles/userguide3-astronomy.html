@@ -127,9 +127,9 @@ In versions 0.9.16 and later the code has been optimized for performance with ti
 <p>Functions have defaults for their arguments, but rarely Greenwich will be the location you are interested in.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/sun_angles.html">sun_angles</a></span>()</code></pre></div>
 <pre><code>##                  time  tz solartime longitude latitude   address  azimuth
-## 1 2018-04-01 22:42:12 UTC  22:38:34         0     51.5 Greenwich 336.1603
+## 1 2018-04-02 16:26:04 UTC  16:22:39         0     51.5 Greenwich 253.7325
 ##   elevation
-## 1 -30.96108</code></pre>
+## 1   19.0485</code></pre>
 <p>A vector of times is accepted as argument, and as performance is optimized for this case, <em>vectorization</em> will markedly improve performance compared to multiple calls to the function. The vector of times can be created on the fly, or stored beforehand.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/sun_angles.html">sun_angles</a></span>(<span class="dt">time =</span> <span class="kw"><a href="http://lubridate.tidyverse.org/reference/ymd_hms.html">ymd_hms</a></span>(<span class="st">"2014-01-01 0:0:0"</span>, <span class="dt">tz =</span> <span class="st">"EET"</span>) <span class="op">+</span><span class="st"> </span><span class="kw"><a href="http://lubridate.tidyverse.org/reference/period.html">hours</a></span>(<span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">6</span>, <span class="dv">12</span>)), 
            <span class="dt">geocode =</span> my.geocode)</code></pre></div>
@@ -194,9 +194,9 @@ dates</code></pre></div>
 <pre><code>## [1] "2015-03-01 EET"  "2015-04-01 EEST" "2015-05-01 EEST" "2015-06-01 EEST"
 ## [5] "2015-07-01 EEST" "2015-08-01 EEST"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/day_night.html">sunrise_time</a></span>(<span class="kw"><a href="http://lubridate.tidyverse.org/reference/now.html">now</a></span>(<span class="st">"UTC"</span>), <span class="dt">tz =</span> <span class="st">"UTC"</span>, <span class="dt">geocode =</span> my.geocode)</code></pre></div>
-<pre><code>## [1] "2018-04-01 03:43:59 UTC"</code></pre>
+<pre><code>## [1] "2018-04-02 03:40:56 UTC"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/day_night.html">sunrise_time</a></span>(<span class="kw"><a href="http://lubridate.tidyverse.org/reference/now.html">now</a></span>(<span class="st">"EET"</span>), <span class="dt">tz =</span> <span class="st">"EET"</span>, <span class="dt">geocode =</span> my.geocode)</code></pre></div>
-<pre><code>## [1] "2018-04-01 06:43:59 EEST"</code></pre>
+<pre><code>## [1] "2018-04-02 06:40:56 EEST"</code></pre>
 <p>Southern hemisphere latitudes as well as longitudes to the West of the Greenwich meridian should be supplied as negative numbers.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/day_night.html">sunrise_time</a></span>(dates, <span class="dt">geocode =</span> <span class="kw">data.frame</span>(<span class="dt">lat =</span> <span class="dv">60</span>, <span class="dt">lon =</span> <span class="dv">0</span>))</code></pre></div>
 <pre><code>## [1] "2015-02-28 09:01:01 EET"  "2015-03-31 08:27:48 EEST"
@@ -340,16 +340,25 @@ Paris.time &lt;-<span class="st"> </span><span class="kw"><a href="http://lubrid
 <h2 class="hasAnchor">
 <a href="#time-of-day" class="anchor"></a>Time of day</h2>
 <p>Function <code><a href="../reference/as_tod.html">as_tod()</a></code> facilitates conversion of R’s time date objects into a numeric value representing the time of day in one of hour, minute or second as unit of expression.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">times &lt;-<span class="st"> </span><span class="kw"><a href="http://lubridate.tidyverse.org/reference/now.html">now</a></span>() <span class="op">+</span><span class="st"> </span><span class="kw"><a href="http://lubridate.tidyverse.org/reference/period.html">hours</a></span>(<span class="dv">0</span><span class="op">:</span><span class="dv">6</span>)
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">times &lt;-<span class="st"> </span><span class="kw"><a href="http://lubridate.tidyverse.org/reference/now.html">now</a></span>(<span class="dt">tzone =</span> <span class="st">"UTC"</span>) <span class="op">+</span><span class="st"> </span><span class="kw"><a href="http://lubridate.tidyverse.org/reference/period.html">hours</a></span>(<span class="dv">0</span><span class="op">:</span><span class="dv">6</span>)
 times</code></pre></div>
-<pre><code>## [1] "2018-04-02 01:42:16 EEST" "2018-04-02 02:42:16 EEST"
-## [3] "2018-04-02 03:42:16 EEST" "2018-04-02 04:42:16 EEST"
-## [5] "2018-04-02 05:42:16 EEST" "2018-04-02 06:42:16 EEST"
-## [7] "2018-04-02 07:42:16 EEST"</code></pre>
+<pre><code>## [1] "2018-04-02 16:26:08 UTC" "2018-04-02 17:26:08 UTC"
+## [3] "2018-04-02 18:26:08 UTC" "2018-04-02 19:26:08 UTC"
+## [5] "2018-04-02 20:26:08 UTC" "2018-04-02 21:26:08 UTC"
+## [7] "2018-04-02 22:26:08 UTC"</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/as_tod.html">as_tod</a></span>(times)</code></pre></div>
-<pre><code>## [1] 1.704503 2.704503 3.704503 4.704503 5.704503 6.704503 7.704503</code></pre>
+<pre><code>## [1] 16.43563 17.43563 18.43563 19.43563 20.43563 21.43563 22.43563</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/as_tod.html">as_tod</a></span>(times, <span class="dt">unit.out =</span> <span class="st">"minutes"</span>)</code></pre></div>
-<pre><code>## [1] 102.2702 162.2702 222.2702 282.2702 342.2702 402.2702 462.2702</code></pre>
+<pre><code>## [1]  986.1375 1046.1375 1106.1375 1166.1375 1226.1375 1286.1375 1346.1375</code></pre>
+</div>
+<div id="relative-air-mass" class="section level2">
+<h2 class="hasAnchor">
+<a href="#relative-air-mass" class="anchor"></a>Relative air mass</h2>
+<p>Solar elevation determines the length of the path of the sun beam through the Earth’s atmosphere. This affects the solar spectrum at ground level, specially the UVB region. Function <code><a href="../reference/relative_AM.html">relative_AM()</a></code> can be used to calculate an empirical <em>estimate</em> of this quantity from elevation angles in degrees. This function is vectorised.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/relative_AM.html">relative_AM</a></span>(<span class="dv">33</span>)</code></pre></div>
+<pre><code>## [1] 1.83</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/relative_AM.html">relative_AM</a></span>(<span class="kw">c</span>(<span class="dv">80</span>, <span class="dv">60</span>, <span class="dv">40</span>, <span class="dv">20</span>))</code></pre></div>
+<pre><code>## [1] 1.01 1.15 1.55 2.90</code></pre>
 </div>
   </div>
 
@@ -364,6 +373,7 @@ times</code></pre></div>
       <li><a href="#times-of-sunrise-solar-noon-and-sunset">Times of sunrise, solar noon and sunset</a></li>
       <li><a href="#solar-time">Solar time</a></li>
       <li><a href="#time-of-day">Time of day</a></li>
+      <li><a href="#relative-air-mass">Relative air mass</a></li>
       </ul>
 </div>
       </div>

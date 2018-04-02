@@ -806,19 +806,142 @@ two_suns.mspct</code></pre></div>
 ## $source
 ## [1] "source_spct"  "generic_spct"</code></pre>
 </div>
-<div id="using-as-functions" class="section level4">
+<div id="using-as--functions" class="section level4">
 <h4 class="hasAnchor">
-<a href="#using-as-functions" class="anchor"></a>Using <em>as</em> functions</h4>
-<p>The <code>as</code> functions for collections of spectra, not only change the class of the collection object, but also apply the corresponding {as} functions to the member objects. They copy the original objects and then convert the copy, which is returned.</p>
+<a href="#using-as--functions" class="anchor"></a>Using <em>as.</em> functions</h4>
+<p>The <code>as.</code> coercion methods for collections of spectra, not only change the class of the collection object, but also apply the corresponding {as} functions to the member objects. They copy the original objects and then convert the copy, which is returned.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">two_gen.mspct &lt;-<span class="st"> </span><span class="kw"><a href="../reference/as.generic_mspct.html">as.generic_mspct</a></span>(two_suns.mspct)
 <span class="kw">class</span>(two_gen.mspct)</code></pre></div>
 <pre><code>## [1] "generic_mspct" "list"</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">lapply</span>(two_gen.mspct, class_spct)</code></pre></div>
-<pre><code>## $sun1
-## [1] "source_spct"  "generic_spct"
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">str</span>(two_gen.mspct, <span class="dt">max.level =</span> <span class="dv">1</span>, <span class="dt">give.attr =</span> <span class="ot">FALSE</span>)</code></pre></div>
+<pre><code>## List of 2
+##  $ sun1:Classes 'source_spct', 'generic_spct', 'tbl_df', 'tbl' and 'data.frame': 522 obs. of  3 variables:
+##  $ sun2:Classes 'source_spct', 'generic_spct', 'tbl_df', 'tbl' and 'data.frame': 522 obs. of  3 variables:</code></pre>
+<p>In addition to coercion methods for lists of spectra objects, coercion methods are available for lists of data frames (or tibbles) and from matrix objects.</p>
+<p>One additional feature is that if a single spectrum object or data frame are coerced into a collection of spectra, the behaviour is equivalent to having passed as argument a list containing such object as its only member.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">one_sun.mspct &lt;-<span class="st"> </span><span class="kw"><a href="../reference/as.source_mspct.html">as.source_mspct</a></span>(sun.spct)
+<span class="kw">class</span>(one_sun.mspct)</code></pre></div>
+<pre><code>## [1] "source_mspct"  "generic_mspct" "list"</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">str</span>(one_sun.mspct, <span class="dt">max.level =</span> <span class="dv">1</span>, <span class="dt">give.attr =</span> <span class="ot">FALSE</span>)</code></pre></div>
+<pre><code>## List of 1
+##  $ spct_1:Classes 'source_spct', 'generic_spct', 'tbl_df', 'tbl' and 'data.frame':   522 obs. of  3 variables:</code></pre>
+<p>Sometimes spectral data stored in a matrix need to be coerced into a collection of spectra. Coercion methods are defined also for this cases. Several spectra may be stored in a matrix either by row or by column, but this can be deduced automatically in the case of rectangular matrices. Wavelengths values are not expected to be part of the matrix, and need to be supplied as a separate numeric vector sorted in ascending order. As in a spectrum wavelength values never repeat, the vector of wavelengths is never recycled and uniqueness of values is enforced.</p>
+<p>We here use artificial data, in this first example with spectra saved by column. We assume that the values in the matrix are spectral transmittance stored as percentages (hence “Tpc”).</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">x &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">100</span>, <span class="dt">ncol =</span> <span class="dv">2</span>)
+wl &lt;-<span class="st"> </span><span class="dv">501</span><span class="op">:</span><span class="dv">550</span> <span class="co"># wavelengths in nanometres</span>
+<span class="kw"><a href="../reference/as.filter_mspct.html">as.filter_mspct</a></span>(x, wl, <span class="st">"Tpc"</span>)</code></pre></div>
+<pre><code>## Object: filter_mspct [1 x 2]
+## --- Member: spct_1 ---
+## Object: filter_spct [50 x 2]
+## Wavelength range 501 to 550 nm, step 1 nm 
 ## 
-## $sun2
-## [1] "source_spct"  "generic_spct"</code></pre>
+## # A tibble: 50 x 2
+##   w.length    Tfr
+##      &lt;dbl&gt;  &lt;dbl&gt;
+## 1     501. 0.0100
+## 2     502. 0.0200
+## 3     503. 0.0300
+## 4     504. 0.0400
+## # ... with 46 more rows
+## --- Member: spct_2 ---
+## Object: filter_spct [50 x 2]
+## Wavelength range 501 to 550 nm, step 1 nm 
+## 
+## # A tibble: 50 x 2
+##   w.length   Tfr
+##      &lt;dbl&gt; &lt;dbl&gt;
+## 1     501. 0.510
+## 2     502. 0.520
+## 3     503. 0.530
+## 4     504. 0.540
+## # ... with 46 more rows
+## 
+## --- END ---</code></pre>
+<p>In a second example we supply explicit names for the spectra.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/as.filter_mspct.html">as.filter_mspct</a></span>(x, wl, <span class="st">"Tpc"</span>, <span class="dt">spct.names =</span> <span class="kw">c</span>(<span class="st">"A"</span>, <span class="st">"B"</span>))</code></pre></div>
+<pre><code>## Object: filter_mspct [1 x 2]
+## --- Member: A ---
+## Object: filter_spct [50 x 2]
+## Wavelength range 501 to 550 nm, step 1 nm 
+## 
+## # A tibble: 50 x 2
+##   w.length    Tfr
+##      &lt;dbl&gt;  &lt;dbl&gt;
+## 1     501. 0.0100
+## 2     502. 0.0200
+## 3     503. 0.0300
+## 4     504. 0.0400
+## # ... with 46 more rows
+## --- Member: B ---
+## Object: filter_spct [50 x 2]
+## Wavelength range 501 to 550 nm, step 1 nm 
+## 
+## # A tibble: 50 x 2
+##   w.length   Tfr
+##      &lt;dbl&gt; &lt;dbl&gt;
+## 1     501. 0.510
+## 2     502. 0.520
+## 3     503. 0.530
+## 4     504. 0.540
+## # ... with 46 more rows
+## 
+## --- END ---</code></pre>
+<p>There is no change in the call for data stored by row. We create a new matrix, with the same data as above, but stored by row, as some R packages do.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">xrow &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">100</span>, <span class="dt">nrow =</span> <span class="dv">2</span>, <span class="dt">byrow =</span> <span class="ot">TRUE</span>)
+<span class="kw"><a href="../reference/as.filter_mspct.html">as.filter_mspct</a></span>(xrow, wl, <span class="st">"Tpc"</span>)</code></pre></div>
+<pre><code>## Object: filter_mspct [1 x 2]
+## --- Member: spct_1 ---
+## Object: filter_spct [50 x 2]
+## Wavelength range 501 to 550 nm, step 1 nm 
+## 
+## # A tibble: 50 x 2
+##   w.length    Tfr
+##      &lt;dbl&gt;  &lt;dbl&gt;
+## 1     501. 0.0100
+## 2     502. 0.0200
+## 3     503. 0.0300
+## 4     504. 0.0400
+## # ... with 46 more rows
+## --- Member: spct_2 ---
+## Object: filter_spct [50 x 2]
+## Wavelength range 501 to 550 nm, step 1 nm 
+## 
+## # A tibble: 50 x 2
+##   w.length   Tfr
+##      &lt;dbl&gt; &lt;dbl&gt;
+## 1     501. 0.510
+## 2     502. 0.520
+## 3     503. 0.530
+## 4     504. 0.540
+## # ... with 46 more rows
+## 
+## --- END ---</code></pre>
+<p>There is only one case when an explicit argument for <code>byrow</code> is needed: square matrices (same number of spectra as of wavelength values in each spectrum).</p>
+<p>When coercing collections of spectra into matrices, the metadata contained in the individual spectral objects is discarded, and only the <code>"comment"</code> attribute of the collection of spectra copied to the returned object. The wavelength values are preserved in an attribute named “w.length”, but are not included as part of the matrix.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">two_suns.mat &lt;-<span class="st"> </span><span class="kw">as.matrix</span>(two_suns.mspct, <span class="st">"s.e.irrad"</span>)
+<span class="kw">class</span>(two_suns.mat)</code></pre></div>
+<pre><code>## [1] "matrix"</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">dim</span>(two_suns.mat)</code></pre></div>
+<pre><code>## [1] 522   2</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(<span class="kw">dimnames</span>(two_suns.mat)<span class="op">$</span>spct)</code></pre></div>
+<pre><code>## [1] "sun1" "sun2"</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(<span class="kw">dimnames</span>(two_suns.mat)<span class="op">$</span>w.length)</code></pre></div>
+<pre><code>## [1] "280"              "280.923076923077" "281.846153846154"
+## [4] "282.769230769231" "283.692307692308" "284.615384615385"</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(<span class="kw">attr</span>(two_suns.mat, <span class="st">"w.length"</span>))</code></pre></div>
+<pre><code>## [1] 280.0000 280.9231 281.8462 282.7692 283.6923 284.6154</code></pre>
+<p>The argument <code>byrow</code> in the coercion into matrix methods has the same meaning as in the <code>matrix</code> constructor function.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">two_suns.row_mat &lt;-<span class="st"> </span><span class="kw">as.matrix</span>(two_suns.mat, <span class="st">"s.e.irrad"</span>, <span class="dt">byrow =</span> <span class="ot">TRUE</span>)
+<span class="kw">class</span>(two_suns.row_mat)</code></pre></div>
+<pre><code>## [1] "matrix"</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">dim</span>(two_suns.row_mat)</code></pre></div>
+<pre><code>## [1] 522   2</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(<span class="kw">dimnames</span>(two_suns.row_mat)<span class="op">$</span>spct)</code></pre></div>
+<pre><code>## [1] "sun1" "sun2"</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(<span class="kw">attr</span>(two_suns.row_mat, <span class="st">"w.length"</span>))</code></pre></div>
+<pre><code>## [1] 280.0000 280.9231 281.8462 282.7692 283.6923 284.6154</code></pre>
+<p>Collections of spectra have a <code>dim</code> attribute but it is discarded as it describes dimensions that could require spectral data to be stored in a three dimensional array and cannot be mapped to the two dimensions of a matrix.</p>
+<p>These functions are not fully automatic, the user needs to provide the name of the variable to extract from each spectrum. If the wavelength values are not consistent among spectra, only those with the same values as the first spectrum in the collection are retained and the remaining ones dropped with a warning.</p>
 </div>
 <div id="converting-tidy-data" class="section level4">
 <h4 class="hasAnchor">
@@ -1940,10 +2063,9 @@ wavebands</code></pre></div>
 <div id="object-inspection-methods" class="section level2">
 <h2 class="hasAnchor">
 <a href="#object-inspection-methods" class="anchor"></a>Object <em>inspection</em> methods</h2>
-<div id="print" class="section level3">
+<div id="printing" class="section level3">
 <h3 class="hasAnchor">
-<a href="#print" class="anchor"></a><code><a href="../reference/print.html">print()</a></code>
-</h3>
+<a href="#printing" class="anchor"></a>Printing</h3>
 <p>The <code><a href="../reference/print.html">print()</a></code> method for spectra is based on the method defined in package ‘<strong>tibble</strong>’, consequently, it is possible to use the options from this package to control printing. In the code chunk below, <code>tibble.print_max</code>, the number of rows in the spectral object above which only <code>tibble.print_min</code> rows are printed, are both set to 5, instead of the default 20 and 10, to avoid excessive clutter in our examples.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">options</span>(<span class="dt">tibble.print_max =</span> <span class="dv">4</span>)
 <span class="kw">options</span>(<span class="dt">tibble.print_min =</span> <span class="dv">4</span>)</code></pre></div>
@@ -1953,8 +2075,7 @@ wavebands</code></pre></div>
 </div>
 <div id="summary" class="section level3">
 <h3 class="hasAnchor">
-<a href="#summary" class="anchor"></a><code><a href="../reference/summary.html">summary()</a></code>
-</h3>
+<a href="#summary" class="anchor"></a>Summary</h3>
 <p>The <code><a href="../reference/summary.html">summary()</a></code> method for spectra is based on base R’s <code><a href="../reference/summary.html">summary()</a></code> method for data frames, and accepts the same arguments. The main difference is that the attributes containing metadata and dimensions of the original spectrum object are copied to the summary object.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/summary.html">summary</a></span>(sun.spct)</code></pre></div>
 <p>Specialized <code><a href="../reference/print.html">print()</a></code> methods for summaries of spectra are defined. The output differs from that of the <code><a href="../reference/print.html">print()</a></code> method from base R in that additional metadata specific to spectra are shown.</p>
@@ -4820,7 +4941,7 @@ shade.spct &lt;-<span class="st"> </span>sun.spct</code></pre></div>
 <div id="individual-spectra-2" class="section level4">
 <h4 class="hasAnchor">
 <a href="#individual-spectra-2" class="anchor"></a>Individual spectra</h4>
-<p>The <em>usual</em> and three new summary methods are available for spectra, but redefined to return wavelength-based summaries in nanometres (nm). For clarity synonims with clearer names are provided. The three new generic methods <code><a href="../reference/midpoint.html">midpoint()</a></code>, <code><a href="../reference/expanse.html">expanse()</a></code> and <code><a href="../reference/stepsize.html">stepsize()</a></code> are also defined for <code>numeric</code>.</p>
+<p>The <em>usual</em> and three new summary methods are available for spectra, but redefined to return wavelength-based summaries in nanometres (nm). For clarity synonyms with clearer names are provided. The three new generic methods <code><a href="../reference/midpoint.html">midpoint()</a></code>, <code><a href="../reference/expanse.html">expanse()</a></code> and <code><a href="../reference/stepsize.html">stepsize()</a></code> are also defined for <code>numeric</code>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/range.html">wl_range</a></span>(sun.spct)</code></pre></div>
 <pre><code>## [1] 280 800</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/min.html">wl_min</a></span>(sun.spct)</code></pre></div>
