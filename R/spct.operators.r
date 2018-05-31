@@ -2380,6 +2380,7 @@ unset_user_defaults <- function() {
           photobiology.waveband.trim = NULL,
           photobiology.use.cached.mult = NULL)
 }
+
 #' Set error reporting options
 #'
 #' Set error reporting related options easily.

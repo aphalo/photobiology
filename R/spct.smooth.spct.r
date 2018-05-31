@@ -46,6 +46,11 @@ smooth_spct.source_spct <- function(x, method = "custom", strength = 1, ...) {
             num.spectra, " spectra")
     return(x)
   }
+  if (("s.e.irrad" %in% names(x) && anyNA(x[["s.e.irrad"]])) ||
+      ("s.q.irrad" %in% names(x) && anyNA(x[["s.q.irrad"]]))) {
+    warning("NAs encoentered when smoothing, returning input unchanged")
+    return(x)
+  }
   # we disable range checks for spectra until end of function
   old.options <- options(photobiology.strict.range = NA_integer_)
   if (method == "lowess") {
@@ -149,6 +154,11 @@ smooth_spct.filter_spct <- function(x, method = "custom", strength = 1, ...) {
     return(x)
   }
   # we disable range checks for spectra until end of function
+  if (("Tfr" %in% names(x) && anyNA(x[["Tfr"]])) ||
+      ("A" %in% names(x) && anyNA(x[["A"]]))) {
+    warning("NAs encoentered when smoothing, returning input unchanged")
+    return(x)
+  }
   old.options <- options(photobiology.strict.range = NA_integer_)
   if (method == "lowess") {
     span = 1/50 * strength
@@ -251,6 +261,10 @@ smooth_spct.reflector_spct <- function(x, method = "custom", strength = 1, ...) 
             num.spectra, " spectra")
     return(x)
   }
+  if ("Rfr" %in% names(x) && anyNA(x[["Rfr"]])) {
+    warning("NAs encoentered when smoothing, returning input unchanged")
+    return(x)
+  }
   # we disable range checks for spectra until end of function
   old.options <- options(photobiology.strict.range = NA_integer_)
   if (method == "lowess") {
@@ -338,6 +352,11 @@ smooth_spct.response_spct <- function(x, method = "custom", strength = 1, ...) {
   if (num.spectra != 1) {
     warning("Skipping smoothing as object contains ",
             num.spectra, " spectra")
+    return(x)
+  }
+  if (("s.e.response" %in% names(x) && anyNA(x[["s.e.response"]])) ||
+      ("s.q.response" %in% names(x) && anyNA(x[["s.q.response"]]))) {
+    warning("NAs encoentered when smoothing, returning input unchanged")
     return(x)
   }
   # we disable range checks for spectra until end of function
