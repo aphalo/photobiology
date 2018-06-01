@@ -13,6 +13,8 @@
 #'   its neighbors. Default: 3.
 #' @param strict logical flag: if TRUE, an element must be strictly greater than
 #'   all other values in its window to be considered a peak. Default: TRUE.
+#' @param na.rm logical indicating whether \code{NA} values should be stripped
+#'   before searching for peaks.
 #'
 #' @return an object like s.irrad of logical values. Values that are TRUE
 #'   correspond to local peaks in the data.
@@ -34,7 +36,11 @@ find_peaks <-
   function(x,
            ignore_threshold = 0.0,
            span = 3,
-           strict = TRUE) {
+           strict = TRUE,
+           na.rm = FALSE) {
+    if (na.rm) {
+      x <- na.omit(x)
+    }
     if(is.null(span)) {
       return(x == max(x))
     }
@@ -77,6 +83,8 @@ find_peaks <-
 #' @param x_unit character Vector of texts to be pasted at end of labels built
 #'   from x value at peaks.
 #' @param x_digits numeric Number of significant digits in wavelength label.
+#' @param na.rm logical indicating whether \code{NA} values should be stripped
+#'   before searching for peaks.
 #'
 #' @return A data frame with variables w.length and s.irrad with their values at
 #'   the peaks or valleys plus a character variable of labels.
@@ -94,9 +102,14 @@ get_peaks <- function(x,
                       span = 5,
                       strict = TRUE,
                       x_unit = "",
-                      x_digits = 3) {
+                      x_digits = 3,
+                      na.rm = FALSE) {
   stopifnot(length(x) == length(y))
-  selector <- find_peaks(y, ignore_threshold, span, strict)
+  selector <- find_peaks(x = y,
+                         ignore_threshold = ignore_threshold,
+                         span = span,
+                         strict = strict,
+                         na.rm = na.rm)
   if (sum(selector) < 1) {
     return(data.frame(
       x = numeric(0),
@@ -124,13 +137,15 @@ get_valleys <- function(x, y,
                         span = 5,
                         strict = TRUE,
                         x_unit = "",
-                        x_digits = 3) {
-  xy.data <- get_peaks(x, -y,
-                       -ignore_threshold,
+                        x_digits = 3,
+                        na.rm = FALSE) {
+  xy.data <- get_peaks(x = x, y = -y,
+                       ignore_threshold = -ignore_threshold,
                        span = span,
                        strict = strict,
                        x_unit = x_unit,
-                       x_digits = x_digits)
+                       x_digits = x_digits,
+                       na.rm = na.rm)
   xy.data$y <- -xy.data$y
   return(xy.data)
 }
@@ -153,35 +168,71 @@ get_valleys <- function(x, y,
 #'   its neighbors. Default: 3.
 #' @param strict logical flag: if TRUE, an element must be strictly greater than
 #'   all other values in its window to be considered a peak. Default: TRUE.
+#' @param na.rm logical indicating whether \code{NA} values should be stripped
+#'   before searching for peaks.
 #' @param ... ignored
 #'
 #' @return A subset of \code{x} with rows corresponding to local maxima.
 #'
-#'
 #' @export
+#'
+#' @examples
+#' peaks(sun.spct, span = 50)
+#' peaks(sun.spct, span = NULL)
 #'
 #' @family peaks and valleys functions
 #'
-peaks <- function(x, span, ignore_threshold, strict, ...) UseMethod("peaks")
+peaks <- function(x, span, ignore_threshold, strict, na.rm, ...) UseMethod("peaks")
 
-#' @describeIn peaks Default function usable on numeric vectors.
+#' @describeIn peaks Default returning always NA.
 #' @export
-peaks.default <- function(x, span, ignore_threshold, strict, ...) {
+peaks.default <-
+  function(x, span = NA, ignore_threshold = NA, strict = NA, na.rm = FALSE, ...) {
+  warning("Method 'peaks' not implemented for objects of class ", class(x)[1])
   x[NA]
 }
 
 #' @describeIn peaks Default function usable on numeric vectors.
 #' @export
-peaks.numeric <- function(x, span = 5, ignore_threshold, strict = TRUE, ...) {
-  x[find_peaks(x = x, span = span, strict = strict)]
+peaks.numeric <-
+  function(x, span = 5, ignore_threshold = NA, strict = TRUE, na.rm = FALSE, ...) {
+  x[find_peaks(x = x, span = span, strict = strict, na.rm = na.rm)]
 }
+
+#' @describeIn peaks  Method for "data.frame" objects.
+#'
+#' @param var.name Name of column where to look for peaks.
+#'
+#' @export
+#'
+peaks.data.frame <-
+  function(x, span = 5, ignore_threshold = 0, strict = TRUE, na.rm = FALSE, var.name, ...) {
+    if (is.null(var.name)) {
+      return(x[NA, ])
+    }
+    peaks.idx <- find_peaks(x[[var.name]],
+                            span = span, ignore_threshold = ignore_threshold,
+                            strict = strict)
+    x[peaks.idx, ]
+  }
 
 #' @describeIn peaks  Method for "generic_spct" objects.
 #'
 #' @export
 #'
-peaks.generic_spct <- function(x, span, ignore_threshold, strict, ...) {
-  peaks.idx <- find_peaks(x[[names(x)[2]]],
+peaks.generic_spct <-
+  function(x, span = 5, ignore_threshold = 0, strict = TRUE, na.rm = FALSE, var.name = NULL, ...) {
+  if (is.null(var.name)) {
+  # find target variable
+    var.name <- names(x)
+    var.name <- subset(var.name, sapply(x, is.numeric))
+    var.name <- setdiff(var.name, "w.length")
+    if (length(var.name) > 1L) {
+      warning("Multiple numeric data columns found, explicit argument to 'var.name' required.")
+      return(x[NA, ])
+    }
+  }
+  peaks.idx <- find_peaks(x[[var.name]],
                           span = span, ignore_threshold = ignore_threshold,
                           strict = strict)
   x[peaks.idx, ]
@@ -197,7 +248,8 @@ peaks.generic_spct <- function(x, span, ignore_threshold, strict, ...) {
 #' peaks(sun.spct)
 #'
 peaks.source_spct <-
-  function(x, span = 5, ignore_threshold = 0.0, strict = TRUE,
+  function(x, span = 5, ignore_threshold = 0, strict = TRUE,
+           na.rm = FALSE,
            unit.out = getOption("photobiology.radiation.unit", default = "energy"),
            ...) {
     if (unit.out == "energy") {
@@ -211,7 +263,8 @@ peaks.source_spct <-
     }
     peaks.idx <- find_peaks(z[[col.name]],
                             span = span, ignore_threshold = ignore_threshold,
-                            strict = strict)
+                            strict = strict,
+                            na.rm = na.rm)
     z[peaks.idx, ]
   }
 
@@ -221,6 +274,7 @@ peaks.source_spct <-
 #'
 peaks.response_spct <-
   function(x, span = 5, ignore_threshold = 0.0, strict = TRUE,
+           na.rm = FALSE,
            unit.out = getOption("photobiology.radiation.unit", default = "energy"),
            ...) {
     if (unit.out == "energy") {
@@ -234,7 +288,8 @@ peaks.response_spct <-
     }
     peaks.idx <- find_peaks(z[[col.name]],
                             span = span, ignore_threshold = ignore_threshold,
-                            strict = strict)
+                            strict = strict,
+                            na.rm = na.rm)
     z[peaks.idx, ]
   }
 
@@ -246,6 +301,7 @@ peaks.response_spct <-
 #'
 peaks.filter_spct <-
   function(x, span = 5, ignore_threshold = 0, strict = TRUE,
+           na.rm = FALSE,
            filter.qty = getOption("photobiology.filter.qty", default = "transmittance"),
            ...) {
     if (filter.qty == "transmittance") {
@@ -259,7 +315,8 @@ peaks.filter_spct <-
     }
     peaks.idx <- find_peaks(z[[col.name]],
                             span = span, ignore_threshold = ignore_threshold,
-                            strict = strict)
+                            strict = strict,
+                            na.rm = na.rm)
     z[peaks.idx, ]
   }
 
@@ -267,21 +324,27 @@ peaks.filter_spct <-
 #'
 #' @export
 #'
-peaks.reflector_spct <- function(x, span = 5, ignore_threshold = 0, strict = TRUE, ...) {
+peaks.reflector_spct <- function(x, span = 5, ignore_threshold = 0, strict = TRUE,
+                                 na.rm = FALSE,
+                                 ...) {
   peaks.idx <- find_peaks(x[["Rfr"]],
                           span = span, ignore_threshold = ignore_threshold,
-                          strict = strict)
-  subset(x, idx = peaks.idx)
+                          strict = strict,
+                          na.rm = na.rm)
+  x[peaks.idx, ]
 }
 
 #' @describeIn peaks  Method for "cps_spct" objects.
 #'
 #' @export
 #'
-peaks.cps_spct <- function(x, span = 5, ignore_threshold = 0, strict = TRUE, ...) {
+peaks.cps_spct <- function(x, span = 5, ignore_threshold = 0, strict = TRUE,
+                           na.rm = FALSE,
+                           ...) {
   peaks.idx <- find_peaks(x[["cps"]],
                           span = span, ignore_threshold = ignore_threshold,
-                          strict = strict)
+                          strict = strict,
+                          na.rm = na.rm)
   x[peaks.idx, ]
 }
 
@@ -301,6 +364,7 @@ peaks.generic_mspct <- function(x,
                                 span = 5,
                                 ignore_threshold = 0,
                                 strict = TRUE,
+                                na.rm = FALSE,
                                 ...,
                                 .parallel = FALSE,
                                 .paropts = NULL) {
@@ -309,6 +373,7 @@ peaks.generic_mspct <- function(x,
           span = span,
           ignore_threshold = ignore_threshold,
           strict = strict,
+          na.rm = na.rm,
           ...,
           .parallel = .parallel,
           .paropts = .paropts)
@@ -331,10 +396,14 @@ peaks.generic_mspct <- function(x,
 #'   its neighbors. Default: 3.
 #' @param strict logical flag: if TRUE, an element must be strictly greater than
 #'   all other values in its window to be considered a peak. Default: TRUE.
+#' @param na.rm logical indicating whether \code{NA} values should be stripped
+#'   before searching for peaks.
 #' @param ... ignored
 #'
 #' @return A subset of \code{x} with rows corresponding to local minima.
 #'
+#' @examples
+#' valleys(sun.spct, span = 50)
 #'
 #' @export
 #'
@@ -348,22 +417,59 @@ valleys.default <- function(x, span, ignore_threshold, strict, ...) {
   x[NA]
 }
 
+#' @describeIn valleys Default returning always NA.
+#' @export
+valleys.default <-
+  function(x, span = NA, ignore_threshold = NA, strict = NA, na.rm = FALSE, ...) {
+    warning("Method 'valleys' not implemented for objects of class ", class(x)[1])
+    x[NA]
+  }
+
 #' @describeIn valleys Default function usable on numeric vectors.
 #' @export
-valleys.numeric <- function(x, span = 5, ignore_threshold, strict = TRUE, ...) {
-  x[find_peaks(x = -x, span = span, strict = strict)]
-}
+valleys.numeric <-
+  function(x, span = 5, ignore_threshold, strict = TRUE, na.rm = FALSE, ...) {
+    x[find_peaks(x = -x, span = span, strict = strict, na.rm = na.rm)]
+  }
+
+#' @describeIn valleys  Method for "data.frame" objects.
+#'
+#' @param var.name Name of column where to look for peaks.
+#'
+#' @export
+#'
+valleys.data.frame <-
+  function(x, span = 5, ignore_threshold = 0, strict = TRUE, na.rm = FALSE, var.name, ...) {
+    if (is.null(var.name)) {
+      return(x[NA, ])
+    }
+    peaks.idx <- find_peaks(-x[[var.name]],
+                            span = span, ignore_threshold = ignore_threshold,
+                            strict = strict)
+    x[peaks.idx, ]
+  }
 
 #' @describeIn valleys  Method for "generic_spct" objects.
 #'
 #' @export
 #'
-valleys.generic_spct <- function(x, span = 5, ignore_threshold = 0.0, strict = TRUE, ...) {
-  valleys.idx <- find_peaks(-x[names(x)[2]],
-                          span = span, ignore_threshold = ignore_threshold,
-                          strict = strict)
-  x[valleys.idx, ]
-}
+valleys.generic_spct <-
+  function(x, span = 5, ignore_threshold = 0, strict = TRUE, na.rm = FALSE, var.name = NULL, ...) {
+    if (is.null(var.name)) {
+      # find target variable
+      var.name <- names(x)
+      var.name <- subset(var.name, sapply(x, is.numeric))
+      var.name <- setdiff(var.name, "w.length")
+      if (length(var.name) > 1L) {
+        warning("Multiple numeric data columns found, explicit argument to 'var.name' required.")
+        return(x[NA, ])
+      }
+    }
+    peaks.idx <- find_peaks(-x[[var.name]],
+                            span = span, ignore_threshold = ignore_threshold,
+                            strict = strict)
+    x[peaks.idx, ]
+  }
 
 #' @describeIn valleys  Method for "source_spct" objects.
 #'
@@ -375,7 +481,7 @@ valleys.generic_spct <- function(x, span = 5, ignore_threshold = 0.0, strict = T
 #' valleys(sun.spct)
 #'
 valleys.source_spct <-
-  function(x, span = 5, ignore_threshold = 0.0, strict = TRUE,
+  function(x, span = 5, ignore_threshold = 0.0, strict = TRUE, na.rm = FALSE,
            unit.out = getOption("photobiology.radiation.unit", default = "energy"),
            ...) {
     if (unit.out == "energy") {
@@ -389,7 +495,8 @@ valleys.source_spct <-
     }
     valleys.idx <- find_peaks(-z[[col.name]],
                           span = span, ignore_threshold = ignore_threshold,
-                          strict = strict)
+                          strict = strict,
+                          na.rm = na.rm)
     z[valleys.idx, ]
   }
 
@@ -398,7 +505,7 @@ valleys.source_spct <-
 #' @export
 #'
 valleys.response_spct <-
-  function(x, span = 5, ignore_threshold = 0.0, strict = TRUE,
+  function(x, span = 5, ignore_threshold = 0.0, strict = TRUE, na.rm = FALSE,
            unit.out = getOption("photobiology.radiation.unit", default = "energy"),
            ...) {
     if (unit.out == "energy") {
@@ -412,7 +519,8 @@ valleys.response_spct <-
     }
     valleys.idx <- find_peaks(-z[[col.name]],
                             span = span, ignore_threshold = ignore_threshold,
-                            strict = strict)
+                            strict = strict,
+                            na.rm = na.rm)
     z[valleys.idx, ]
   }
 
@@ -423,7 +531,7 @@ valleys.response_spct <-
 #' @export
 #'
 valleys.filter_spct <-
-  function(x, span = 5, ignore_threshold = 0, strict = TRUE,
+  function(x, span = 5, ignore_threshold = 0, strict = TRUE, na.rm = FALSE,
            filter.qty = getOption("photobiology.filter.qty", default = "transmittance"),
            ...) {
     if (filter.qty == "transmittance") {
@@ -437,7 +545,8 @@ valleys.filter_spct <-
     }
     valleys.idx <- find_peaks(-z[[col.name]],
                               span = span, ignore_threshold = ignore_threshold,
-                              strict = strict)
+                              strict = strict,
+                              na.rm = na.rm)
     z[valleys.idx, ]
   }
 
@@ -445,10 +554,12 @@ valleys.filter_spct <-
 #'
 #' @export
 #'
-valleys.reflector_spct <- function(x, span = 5, ignore_threshold = 0, strict = TRUE, ...) {
+valleys.reflector_spct <-
+  function(x, span = 5, ignore_threshold = 0, strict = TRUE, na.rm = FALSE, ...) {
   valleys.idx <- find_peaks(-x[["Rfr"]],
                           span = span, ignore_threshold = ignore_threshold,
-                          strict = strict)
+                          strict = strict,
+                          na.rm = na.rm)
   x[valleys.idx, ]
 }
 
@@ -456,10 +567,12 @@ valleys.reflector_spct <- function(x, span = 5, ignore_threshold = 0, strict = T
 #'
 #' @export
 #'
-valleys.cps_spct <- function(x, span = 5, ignore_threshold = 0, strict = TRUE, ...) {
+valleys.cps_spct <-
+  function(x, span = 5, ignore_threshold = 0, strict = TRUE, na.rm = FALSE, ...) {
   valleys.idx <- find_peaks(-x[["cps"]],
                           span = span, ignore_threshold = ignore_threshold,
-                          strict = strict)
+                          strict = strict,
+                          na.rm = na.rm)
   x[valleys.idx, ]
 }
 
@@ -479,6 +592,7 @@ valleys.generic_mspct <- function(x,
                                   span = 5,
                                   ignore_threshold = 0,
                                   strict = TRUE,
+                                  na.rm = FALSE,
                                   ...,
                                   .parallel = FALSE,
                                   .paropts = NULL) {
@@ -487,6 +601,7 @@ valleys.generic_mspct <- function(x,
           span = span,
           ignore_threshold = ignore_threshold,
           strict = strict,
+          na.rm = na.rm,
           ...,
           .parallel = .parallel,
           .paropts = .paropts)

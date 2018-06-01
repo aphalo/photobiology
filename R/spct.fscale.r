@@ -12,6 +12,12 @@
 #'   with rescaled values, and the \code{"scaled"} attribute set to a list
 #'   describing the scaling applied.
 #'
+#' @examples
+#' fscale(sun.spct, f = "mean")
+#' fscale(sun.spct, f = "mean", na.rm = TRUE)
+#' fscale(sun.spct, f = sum)
+#' fscale(sun.spct, f = function(x) {sum(x) / length(x)})
+#'
 #' @export fscale
 #' @family rescaling functions
 #'
@@ -53,13 +59,15 @@ fscale.source_spct <- function(x,
                        range = range,
                        f = f,
                        target = target,
-                       col.names = "s.e.irrad"))
+                       col.names = "s.e.irrad",
+                       ...))
   } else if (unit.out %in% c("photon", "quantum") ) {
     return(fscale_spct(spct = e2q(x, action = "replace"),
                        range = range,
                        f = f,
                        target = target,
-                       col.names = "s.q.irrad"))
+                       col.names = "s.q.irrad",
+                       ...))
   } else {
     stop("'unit.out ", unit.out, " is unknown")
   }
@@ -186,11 +194,11 @@ fscale.cps_spct <- function(x,
 #' @export
 #'
 fscale.generic_spct <- function(x,
-                            range = NULL,
-                            f = "mean",
-                            target = 1,
-                            col.names,
-                            ...) {
+                                range = NULL,
+                                f = "mean",
+                                target = 1,
+                                col.names,
+                                ...) {
   return(fscale_spct(spct = x,
                      range = range,
                      f = f,
@@ -214,12 +222,12 @@ fscale.generic_spct <- function(x,
 #' @export
 #'
 fscale.source_mspct <- function(x,
-                                 range = NULL,
-                                 f = "mean",
+                                range = NULL,
+                                f = "mean",
                                 target = 1,
                                 unit.out = getOption("photobiology.radiation.unit",
-                                                      default = "energy"),
-                                 ...,
+                                                     default = "energy"),
+                                ...,
                                 .parallel = FALSE,
                                 .paropts = NULL) {
   msmsply(x,
@@ -262,12 +270,12 @@ fscale.response_mspct <- function(x,
 #' @export
 #'
 fscale.filter_mspct <- function(x,
-                                  range = NULL,
-                                  f = "mean",
+                                range = NULL,
+                                f = "mean",
                                 target = 1,
                                 qty.out = getOption("photobiology.filter.qty",
-                                                      default = "transmittance"),
-                                  ...,
+                                                    default = "transmittance"),
+                                ...,
                                 .parallel = FALSE,
                                 .paropts = NULL) {
   msmsply(x,
@@ -286,13 +294,13 @@ fscale.filter_mspct <- function(x,
 #' @export
 #'
 fscale.reflector_mspct <- function(x,
-                                  range = NULL,
-                                  f = "mean",
-                                  target = 1,
-                                  qty.out = NULL,
-                                  ...,
-                                  .parallel = FALSE,
-                                  .paropts = NULL) {
+                                   range = NULL,
+                                   f = "mean",
+                                   target = 1,
+                                   qty.out = NULL,
+                                   ...,
+                                   .parallel = FALSE,
+                                   .paropts = NULL) {
   msmsply(x,
           fscale,
           range = range,
@@ -351,13 +359,13 @@ fscale.cps_mspct <- function(x,
 #' @export
 #'
 fscale.generic_mspct <- function(x,
-                             range = NULL,
-                             f = "mean",
-                             target = 1,
-                             col.names,
-                             ...,
-                             .parallel = FALSE,
-                             .paropts = NULL) {
+                                 range = NULL,
+                                 f = "mean",
+                                 target = 1,
+                                 col.names,
+                                 ...,
+                                 .parallel = FALSE,
+                                 .paropts = NULL) {
   msmsply(x,
           fscale,
           range = range,
