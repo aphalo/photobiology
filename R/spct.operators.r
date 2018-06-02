@@ -2343,19 +2343,6 @@ use_cached_mult_as_default <- function(flag = TRUE) {
 #'
 #' @export
 #'
-unset_user_defaults <- function() {
-  options(photobiology.filter.qty = NULL,
-          photobiology.radiation.unit = NULL,
-          photobiology.verbose = NULL,
-          photobiology.strict.range = NULL,
-          photobiology.waveband.trim = NULL,
-          photobiology.use.cached.mult = NULL)
-}
-
-#' @rdname energy_as_default
-#'
-#' @export
-#'
 unset_radiation_unit_default <- function() {
   options(photobiology.radiation.unit = NULL)
 }
@@ -2375,7 +2362,7 @@ unset_filter_qty_default <- function() {
 unset_user_defaults <- function() {
   options(photobiology.filter.qty = NULL,
           photobiology.radiation.unit = NULL,
-          photobiology.verbose = NULL,
+          photobiology.verbose = getOption("verbose"),
           photobiology.strict.range = NULL,
           photobiology.waveband.trim = NULL,
           photobiology.use.cached.mult = NULL)
@@ -2392,6 +2379,9 @@ unset_user_defaults <- function() {
 #' @export
 #'
 verbose_as_default <- function(flag = TRUE) {
+  if (is.null(flag)) {
+    flag <- getOption("verbose")
+  }
   options(photobiology.verbose = flag)
 }
 

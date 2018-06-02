@@ -5,6 +5,10 @@ photobiology 0.9.21 (2018-XX-XX)
 NAs. (Warn and return as is.)
 * Add parameter na.rm to peaks(), valleys() and related methods and functions.
 * Add parameter na.rm to normalize() methods.
+* Option "photobiology.verbose" is initialized to the value of option "verbose"
+at the time the package is attached.
+* If photobiology.verbose == TRUE, starting from this version the presence of
+NAs in spectral data triggers warnings.
 
 photobiology 0.9.20 (2018-04-02)
 ================================

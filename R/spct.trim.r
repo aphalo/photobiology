@@ -46,7 +46,7 @@ trim_spct <- function(spct,
                       use.hinges = TRUE,
                       fill = NULL,
                       byref = FALSE,
-                      verbose = getOption("photobiology.verbose", default = FALSE) )
+                      verbose = getOption("photobiology.verbose") )
 {
   if (nrow(spct) == 0) {
     return(spct)
@@ -229,7 +229,7 @@ trim_mspct <- function(mspct,
                        use.hinges = TRUE,
                        fill = NULL,
                        byref = FALSE,
-                       verbose = getOption("photobiology.verbose", default = TRUE),
+                       verbose = getOption("photobiology.verbose"),
                        .parallel = FALSE,
                        .paropts = NULL) {
   name <- substitute(mspct)
@@ -259,7 +259,7 @@ trim_mspct <- function(mspct,
 #'
 trim2overlap <- function(mspct,
                          use.hinges = TRUE,
-                         verbose = getOption("photobiology.verbose", default = TRUE),
+                         verbose = getOption("photobiology.verbose"),
                          .parallel = FALSE,
                          .paropts = NULL) {
   stopifnot(is.any_mspct(mspct))
@@ -287,7 +287,7 @@ trim2overlap <- function(mspct,
 extend2extremes <- function(mspct,
                             use.hinges = TRUE,
                             fill = NA,
-                            verbose = getOption("photobiology.verbose", default = TRUE),
+                            verbose = getOption("photobiology.verbose"),
                             .parallel = FALSE,
                             .paropts = NULL) {
   stopifnot(is.any_mspct(mspct))
@@ -366,7 +366,7 @@ trim_wl.generic_spct <- function(x,
             use.hinges = use.hinges,
             fill = fill,
             byref = FALSE,
-            verbose = getOption("photobiology.verbose", default = FALSE) )
+            verbose = getOption("photobiology.verbose") )
 }
 
 #' @describeIn trim_wl  Trim an object of class "generic_mspct" or derived.
@@ -394,7 +394,7 @@ trim_wl.generic_mspct <- function(x,
              use.hinges = use.hinges,
              fill = fill,
              byref = FALSE,
-             verbose = getOption("photobiology.verbose", default = FALSE),
+             verbose = getOption("photobiology.verbose"),
              .parallel = .parallel,
              .paropts = .paropts)
 }

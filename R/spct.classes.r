@@ -29,6 +29,7 @@ spct_classes <- function() {
 #' @param strict.range logical indicating whether off-range values result in an
 #'   error instead of a warning, \code{NA} disables the test.
 #' @param ... additional param possible in derived methods
+#'
 #' @export
 #' @examples
 #' check_spct(sun.spct)
@@ -60,61 +61,64 @@ check_spct.generic_spct <-
            multiple.wl = getMultipleWl(x),
            ...)
   {
-  # fix old class attributes
-  class.x <- class_spct(x)
-  if (!("tbl_df") %in% class(x)) {
-    x <- tibble::as_tibble(x)
-  }
-  class(x) <- union(class.x, class(x))
-  # check variables
-  if (exists("wl", x, mode = "numeric", inherits = FALSE)) {
-    dots <- list(~wl)
-    x <- dplyr::rename_(x, .dots = stats::setNames(dots, "w.length"))
-  } else if (exists("wavelength", x, mode = "numeric", inherits = FALSE)) {
-    dots <- list(~wavelength)
-    x <- dplyr::rename_(x, .dots = stats::setNames(dots, "w.length"))
-  } else if (exists("Wavelength", x, mode = "numeric", inherits = FALSE)) {
-    dots <- list(~Wavelength)
-    x <- dplyr::rename_(x, .dots = stats::setNames(dots, "w.length"))
-  }
-  if (!exists("w.length", x, mode = "numeric", inherits = FALSE)) {
-    stop("No wavelength data found in generic_spct")
-  }
+    # assert that option is set so that we can keep remaining code simpler.
+    stopifnot(!is.null(getOption("photobiology.verbose")))
 
-  if (nrow(x)) {
-    wl.min <- min(x[["w.length"]], na.rm = TRUE)
-    #  wl.max <- max(x$w.length, na.rm = TRUE)
-    if (wl.min == Inf) {
-      warning("No valid 'w.length' values found")
-    } else if ((wl.min < 99.999 || wl.min > 5e3)) {
-      stop("Off-range minimum w.length value ", wl.min, " instead of within 100 nm and 5000 nm")
+    # fix old class attributes
+    class.x <- class_spct(x)
+    if (!("tbl_df") %in% class(x)) {
+      x <- tibble::as_tibble(x)
     }
-    # we use run length encoding to find the maximum number of copies of any w.length value
-    # this be needed. This redundancy needs to be fixed.
-    if (multiple.wl == 1) {
-      if (is.unsorted(x[["w.length"]], na.rm = TRUE, strictly = TRUE)) {
-        stop("'w.length' must be sorted in ascending order and have unique values")
-      }
-    } else if (multiple.wl > 1) {
-      runs <- rle(sort(x[["w.length"]]))
-      num.copies <- max(runs[["lengths"]])
-      if (num.copies > multiple.wl) {
-        stop("Too many copies of w.length values: ", num.copies)
-      }
-    } else {
-      stop("ASSERTION FAILED: invalid 'multiple.wl' value: ", multiple.wl)
+    class(x) <- union(class.x, class(x))
+    # check variables
+    if (exists("wl", x, mode = "numeric", inherits = FALSE)) {
+      dots <- list(~wl)
+      x <- dplyr::rename_(x, .dots = stats::setNames(dots, "w.length"))
+    } else if (exists("wavelength", x, mode = "numeric", inherits = FALSE)) {
+      dots <- list(~wavelength)
+      x <- dplyr::rename_(x, .dots = stats::setNames(dots, "w.length"))
+    } else if (exists("Wavelength", x, mode = "numeric", inherits = FALSE)) {
+      dots <- list(~Wavelength)
+      x <- dplyr::rename_(x, .dots = stats::setNames(dots, "w.length"))
     }
+    if (!exists("w.length", x, mode = "numeric", inherits = FALSE)) {
+      stop("No wavelength data found in generic_spct")
+    }
+
+    if (nrow(x)) {
+      wl.min <- min(x[["w.length"]], na.rm = TRUE)
+      #  wl.max <- max(x$w.length, na.rm = TRUE)
+      if (wl.min == Inf) {
+        warning("No valid 'w.length' values found")
+      } else if ((wl.min < 99.999 || wl.min > 5e3)) {
+        stop("Off-range minimum w.length value ", wl.min, " instead of within 100 nm and 5000 nm")
+      }
+      # we use run length encoding to find the maximum number of copies of any w.length value
+      # this be needed. This redundancy needs to be fixed.
+      if (multiple.wl == 1) {
+        if (is.unsorted(x[["w.length"]], na.rm = TRUE, strictly = TRUE)) {
+          stop("'w.length' must be sorted in ascending order and have unique values")
+        }
+      } else if (multiple.wl > 1) {
+        runs <- rle(sort(x[["w.length"]]))
+        num.copies <- max(runs[["lengths"]])
+        if (num.copies > multiple.wl) {
+          stop("Too many copies of w.length values: ", num.copies)
+        }
+      } else {
+        stop("ASSERTION FAILED: invalid 'multiple.wl' value: ", multiple.wl)
+      }
+    }
+    x
   }
-  x
-}
 
 #' @describeIn check_spct Specialization for calibration_spct.
 #' @export
 check_spct.calibration_spct <- function(x,
-                                byref = TRUE,
-                                strict.range = getOption("photobiology.strict.range", default = FALSE),
-                                multiple.wl = getMultipleWl(x),
-                                ...) {
+                                        byref = TRUE,
+                                        strict.range = getOption("photobiology.strict.range", default = FALSE),
+                                        multiple.wl = getMultipleWl(x),
+                                        ...) {
 
   x <- check_spct.generic_spct(x, multiple.wl = multiple.wl)
 
@@ -123,6 +127,9 @@ check_spct.calibration_spct <- function(x,
   if (length(mult.cols) == 1 &&
       is.numeric(x[["irrad.mult"]]) &&
       all(na.omit(x[["irrad.mult"]]) >= 0)) {
+    if (getOption("photobiology.verbose") && anyNA(x[["irrad.mult"]])) {
+      warning("At least one NA in 'irrad.mult'")
+    }
     return(x)
   } else {
     warning("No valid 'irrad.mult' data found in calibration_spct")
@@ -134,10 +141,10 @@ check_spct.calibration_spct <- function(x,
 #' @describeIn check_spct Specialization for raw_spct.
 #' @export
 check_spct.raw_spct <- function(x,
-                           byref = TRUE,
-                           strict.range = getOption("photobiology.strict.range", default = FALSE),
-                           multiple.wl = getMultipleWl(x),
-                           ...) {
+                                byref = TRUE,
+                                strict.range = getOption("photobiology.strict.range", default = FALSE),
+                                multiple.wl = getMultipleWl(x),
+                                ...) {
 
   x <- check_spct.generic_spct(x, multiple.wl = multiple.wl)
 
@@ -155,10 +162,10 @@ check_spct.raw_spct <- function(x,
 #' @describeIn check_spct Specialization for cps_spct.
 #' @export
 check_spct.cps_spct <- function(x,
-                           byref = TRUE,
-                           strict.range = getOption("photobiology.strict.range", default = FALSE),
-                           multiple.wl = getMultipleWl(x),
-                           ...) {
+                                byref = TRUE,
+                                strict.range = getOption("photobiology.strict.range", default = FALSE),
+                                multiple.wl = getMultipleWl(x),
+                                ...) {
 
   range_check <- function(x, cps.cols) {
     for (col in cps.cols) {
@@ -278,48 +285,56 @@ check_spct.filter_spct <-
       }
     }
 
-  x <- check_spct.generic_spct(x, multiple.wl = multiple.wl)
+    x <- check_spct.generic_spct(x, multiple.wl = multiple.wl)
 
-  if (is.null(getTfrType(x))) {
-    setTfrType(x, "total")
-    warning("Missing Tfr.type attribute replaced by 'total'")
+    if (is.null(getTfrType(x))) {
+      setTfrType(x, "total")
+      warning("Missing Tfr.type attribute replaced by 'total'")
+    }
+    if (is.null(getTfrType(x))) {
+      setTfrType(x, "total")
+      warning("Missing Tfr.type attribute replaced by 'total'")
+    }
+    # check and replace 'other' quantity names
+    if (exists("transmittance", x, mode = "numeric", inherits = FALSE)) {
+      dots <- list(~transmittance)
+      x <- dplyr::rename_(x, .dots = stats::setNames(dots, "Tpc"))
+      warning("Found variable 'transmittance', I am assuming it is expressed as percent")
+    }
+    if (exists("absorbance", x, mode = "numeric", inherits = FALSE)) {
+      dots <- list(~absorbance)
+      x <- dplyr::rename_(x, .dots = stats::setNames(dots, "A"))
+      warning("Found variable 'absorbance', I am assuming it is in log10-based absorbance units")
+    } else if (exists("Absorbance", x, mode = "numeric", inherits = FALSE)) {
+      dots <- list(~Absorbance)
+      x <- dplyr::rename_(x, .dots = stats::setNames(dots, "A"))
+      warning("Found variable 'Absorbance', I am assuming it is in log10-based absorbance units")
+    }
+    # look for percentages and change them into fractions of one
+    if (exists("Tfr", x, mode = "numeric", inherits = FALSE)) {
+      range_check_Tfr(x, strict.range = strict.range)
+    } else if (exists("Tpc", x, mode = "numeric", inherits = FALSE)) {
+      x[["Tfr"]] <- x[["Tpc"]] / 100
+      x[["Tpc"]] <-  NULL
+      range_check_Tfr(x, strict.range = strict.range)
+    } else if (exists("A", x, mode = "numeric", inherits = FALSE)) {
+      range_check_A(x, strict.range = strict.range)
+    } else if (exists("Afr", x, mode = "numeric", inherits = FALSE)) {
+      range_check_Afr(x, strict.range = strict.range)
+    } else {
+      warning("No transmittance, absortance or absorbance data found in filter_spct")
+      x[["Tfr"]] <- NA_real_
+    }
+    if (getOption("photobiology.verbose")) {
+      if (exists("Tfr", x, mode = "numeric", inherits = FALSE) && anyNA(x[["Tfr"]])) {
+        warning("At least one NA in 'Tfr'")
+      }
+      if (exists("A", x, mode = "numeric", inherits = FALSE) && anyNA(x[["A"]])) {
+        warning("At least one NA in 'A'")
+      }
+    }
+    x
   }
-  if (is.null(getTfrType(x))) {
-    setTfrType(x, "total")
-    warning("Missing Tfr.type attribute replaced by 'total'")
-  }
-  # check and replace 'other' quantity names
-  if (exists("transmittance", x, mode = "numeric", inherits = FALSE)) {
-    dots <- list(~transmittance)
-    x <- dplyr::rename_(x, .dots = stats::setNames(dots, "Tpc"))
-    warning("Found variable 'transmittance', I am assuming it is expressed as percent")
-  }
-  if (exists("absorbance", x, mode = "numeric", inherits = FALSE)) {
-    dots <- list(~absorbance)
-    x <- dplyr::rename_(x, .dots = stats::setNames(dots, "A"))
-    warning("Found variable 'absorbance', I am assuming it is in log10-based absorbance units")
-  } else if (exists("Absorbance", x, mode = "numeric", inherits = FALSE)) {
-    dots <- list(~Absorbance)
-    x <- dplyr::rename_(x, .dots = stats::setNames(dots, "A"))
-    warning("Found variable 'Absorbance', I am assuming it is in log10-based absorbance units")
-  }
-  # look for percentages and change them into fractions of one
-  if (exists("Tfr", x, mode = "numeric", inherits = FALSE)) {
-    range_check_Tfr(x, strict.range = strict.range)
-  } else if (exists("Tpc", x, mode = "numeric", inherits = FALSE)) {
-    x[["Tfr"]] <- x[["Tpc"]] / 100
-    x[["Tpc"]] <-  NULL
-    range_check_Tfr(x, strict.range = strict.range)
-  } else if (exists("A", x, mode = "numeric", inherits = FALSE)) {
-    range_check_A(x, strict.range = strict.range)
-  } else if (exists("Afr", x, mode = "numeric", inherits = FALSE)) {
-    range_check_Afr(x, strict.range = strict.range)
-  } else {
-    warning("No transmittance, absortance or absorbance data found in filter_spct")
-    x[["Tfr"]] <- NA_real_
-  }
-  x
-}
 
 #' @describeIn check_spct Specialization for reflector_spct.
 #' @export
@@ -355,29 +370,33 @@ check_spct.reflector_spct <-
       }
     }
 
-  x <- check_spct.generic_spct(x, multiple.wl = multiple.wl)
+    x <- check_spct.generic_spct(x, multiple.wl = multiple.wl)
 
-  if (is.null(getRfrType(x))) {
-    setRfrType(x, "total")
-    warning("Missing Rfr.type attribute replaced by 'total'")
+    if (is.null(getRfrType(x))) {
+      setRfrType(x, "total")
+      warning("Missing Rfr.type attribute replaced by 'total'")
+    }
+    if (exists("reflectance", x, mode = "numeric", inherits=FALSE)) {
+      dots <- list(~reflectance)
+      x <- dplyr::rename_(x, .dots = stats::setNames(dots, "Rpc"))
+      warning("Found variable 'reflectance', I am assuming it is expressed as percent")
+    }
+    if (exists("Rfr", x, mode = "numeric", inherits=FALSE)) {
+      range_check(x, strict.range=strict.range)
+    } else if (exists("Rpc", x, mode = "numeric", inherits=FALSE)) {
+      x[["Rfr"]] <- x[["Rpc"]] / 100
+      x[["Rpc"]] <- NULL
+      range_check(x, strict.range=strict.range)
+    } else {
+      warning("No reflectance data found in reflector_spct")
+      x[["Rfr"]] <- NA_real_
+    }
+    if (getOption("photobiology.verbose") &&
+        exists("Rfr", x, mode = "numeric", inherits = FALSE) && anyNA(x[["Rfr"]])) {
+      warning("At least one NA in 'Tfr'")
+    }
+    x
   }
-  if (exists("reflectance", x, mode = "numeric", inherits=FALSE)) {
-    dots <- list(~reflectance)
-    x <- dplyr::rename_(x, .dots = stats::setNames(dots, "Rpc"))
-    warning("Found variable 'reflectance', I am assuming it is expressed as percent")
-  }
-  if (exists("Rfr", x, mode = "numeric", inherits=FALSE)) {
-    range_check(x, strict.range=strict.range)
-  } else if (exists("Rpc", x, mode = "numeric", inherits=FALSE)) {
-    x[["Rfr"]] <- x[["Rpc"]] / 100
-    x[["Rpc"]] <- NULL
-    range_check(x, strict.range=strict.range)
-  } else {
-    warning("No reflectance data found in reflector_spct")
-    x[["Rfr"]] <- NA_real_
-  }
-  x
-}
 
 #' @describeIn check_spct Specialization for object_spct.
 #' @export
@@ -389,66 +408,15 @@ check_spct.object_spct <-
            multiple.wl = getMultipleWl(x),
            ...) {
 
-  range_check_Tfr <- function(x, strict.range) {
-    if (!all(is.na(x[["Tfr"]]))) {
-      Tfr.min <- min(x[["Tfr"]], na.rm = TRUE)
-      Tfr.max <- max(x[["Tfr"]], na.rm = TRUE)
-      if (Tfr.min < -1e-4 || Tfr.max > 1 + 1e-6) {
-        message.text <-
-          paste0(
-            "Off-range transmittance values [",
-            formatted_range(c(Tfr.min, Tfr.max)),
-            "] instead of  [0..1]",
-            sep = ""
-          )
-        if (is.null(strict.range) || is.na(strict.range)) {
-          message(message.text)
-        } else if (strict.range) {
-          stop(message.text)
-        } else if (!strict.range) {
-          warning(message.text)
-        } else {
-          stop ("Bad argument for 'strict.range': ", strict.range)
-        }
-      }
-    }
-  }
-
-  range_check_Afr <- function(x, strict.range) {
-    if (!all(is.na(x[["Afr"]]))) {
-      Afr.min <- min(x[["Afr"]], na.rm = TRUE)
-      Afr.max <- max(x[["Afr"]], na.rm = TRUE)
-      if (Afr.min < -1e-4 || Afr.max > 1 + 1e-6) {
-        message.text <-
-          paste0(
-            "Off-range absorptance values [",
-            formatted_range(c(Afr.min, Afr.max)),
-            "] instead of  [0..1]",
-            sep = ""
-          )
-        if (is.null(strict.range) || is.na(strict.range)) {
-          message(message.text)
-        } else if (strict.range) {
-          stop(message.text)
-        } else if (!strict.range) {
-          warning(message.text)
-        } else {
-          stop ("Bad argument for 'strict.range': ", strict.range)
-        }
-      }
-    }
-  }
-
-  range_check_Rfr <- function(x, strict.range) {
-    if (!all(is.na(x$Rfr))) {
-      Rfr.min <- min(x[["Rfr"]], na.rm = TRUE)
-      Rfr.max <- max(x[["Rfr"]], na.rm = TRUE)
-      if (!is.na(Rfr.min) && !is.na(Rfr.max)) {
-        if (Rfr.min < -1e-4 ||  Rfr.max > 1 + 1e-6) {
+    range_check_Tfr <- function(x, strict.range) {
+      if (!all(is.na(x[["Tfr"]]))) {
+        Tfr.min <- min(x[["Tfr"]], na.rm = TRUE)
+        Tfr.max <- max(x[["Tfr"]], na.rm = TRUE)
+        if (Tfr.min < -1e-4 || Tfr.max > 1 + 1e-6) {
           message.text <-
             paste0(
-              "Off-range reflectance values [",
-              formatted_range(c(Rfr.min, Rfr.max)),
+              "Off-range transmittance values [",
+              formatted_range(c(Tfr.min, Tfr.max)),
               "] instead of  [0..1]",
               sep = ""
             )
@@ -464,60 +432,119 @@ check_spct.object_spct <-
         }
       }
     }
-  }
 
-  x <- check_spct.generic_spct(x, multiple.wl = multiple.wl)
+    range_check_Afr <- function(x, strict.range) {
+      if (!all(is.na(x[["Afr"]]))) {
+        Afr.min <- min(x[["Afr"]], na.rm = TRUE)
+        Afr.max <- max(x[["Afr"]], na.rm = TRUE)
+        if (Afr.min < -1e-4 || Afr.max > 1 + 1e-6) {
+          message.text <-
+            paste0(
+              "Off-range absorptance values [",
+              formatted_range(c(Afr.min, Afr.max)),
+              "] instead of  [0..1]",
+              sep = ""
+            )
+          if (is.null(strict.range) || is.na(strict.range)) {
+            message(message.text)
+          } else if (strict.range) {
+            stop(message.text)
+          } else if (!strict.range) {
+            warning(message.text)
+          } else {
+            stop ("Bad argument for 'strict.range': ", strict.range)
+          }
+        }
+      }
+    }
 
-  if (is.null(getTfrType(x))) {
-    setTfrType(x, "total")
-    warning("Missing Tfr.type attribute replaced by 'total'")
-  }
-  if (is.null(getRfrType(x))) {
-    setRfrType(x, "total")
-    warning("Missing Rfr.type attribute replaced by 'total'")
-  }
-  if (exists("reflectance", x, mode = "numeric", inherits=FALSE)) {
-    dots <- list(~reflectance)
-    x <- dplyr::rename_(x, .dots = stats::setNames(dots, "Rpc"))
-    warning("Found variable 'reflectance', I am assuming it is expressed as percent")
-  }
-  if (exists("Rfr", x, mode = "numeric", inherits=FALSE)) {
-    range_check_Rfr(x, strict.range=strict.range)
-  } else if (exists("Rpc", x, mode = "numeric", inherits=FALSE)) {
-    x[["Rfr"]] <- x[["Rpc"]] / 100
-    x[["Rpc"]] <- NULL
-    range_check_Rfr(x, strict.range=strict.range)
-  } else {
-    warning("No reflectance data found in object_spct")
-    x[["Rfr"]] <- NA_real_
-  }
+    range_check_Rfr <- function(x, strict.range) {
+      if (!all(is.na(x$Rfr))) {
+        Rfr.min <- min(x[["Rfr"]], na.rm = TRUE)
+        Rfr.max <- max(x[["Rfr"]], na.rm = TRUE)
+        if (!is.na(Rfr.min) && !is.na(Rfr.max)) {
+          if (Rfr.min < -1e-4 ||  Rfr.max > 1 + 1e-6) {
+            message.text <-
+              paste0(
+                "Off-range reflectance values [",
+                formatted_range(c(Rfr.min, Rfr.max)),
+                "] instead of  [0..1]",
+                sep = ""
+              )
+            if (is.null(strict.range) || is.na(strict.range)) {
+              message(message.text)
+            } else if (strict.range) {
+              stop(message.text)
+            } else if (!strict.range) {
+              warning(message.text)
+            } else {
+              stop ("Bad argument for 'strict.range': ", strict.range)
+            }
+          }
+        }
+      }
+    }
 
-  if (exists("transmittance", x, mode = "numeric", inherits=FALSE)) {
-    dots <- list(~transmittance)
-    x <- dplyr::rename_(x, .dots = stats::setNames(dots, "Tpc"))
-    warning("Found variable 'transmittance', I am assuming it expressed as percent")
-  }
-  if (exists("Afr", x, mode = "numeric", inherits=FALSE)) {
-    dots <- list(~Afr)
-    range_check_Afr(x, strict.range=strict.range)
-  }
+    x <- check_spct.generic_spct(x, multiple.wl = multiple.wl)
 
-  if (exists("Tfr", x, mode = "numeric", inherits=FALSE)) {
-    range_check_Tfr(x, strict.range=strict.range)
-  } else if (exists("Tpc", x, mode = "numeric", inherits=FALSE)) {
-    x[["Tfr"]] <- x[["Tpc"]] / 100
-    x[["Tpc"]] <- NULL
-    range_check_Tfr(x, strict.range=strict.range)
-  } else if (exists("Afr", x, mode = "numeric", inherits=FALSE)) {
-    x[["Tfr"]] <- 1 - x[["Afr"]]
-    setTfrType(x, getAfrType(x))
-    range_check_Tfr(x, strict.range=strict.range)
-  } else {
-    warning("No transmittance or absorptance data found in object_spct")
-    x[["Tfr"]] <- NA_real_
+    if (is.null(getTfrType(x))) {
+      setTfrType(x, "total")
+      warning("Missing Tfr.type attribute replaced by 'total'")
+    }
+    if (is.null(getRfrType(x))) {
+      setRfrType(x, "total")
+      warning("Missing Rfr.type attribute replaced by 'total'")
+    }
+    if (exists("reflectance", x, mode = "numeric", inherits=FALSE)) {
+      dots <- list(~reflectance)
+      x <- dplyr::rename_(x, .dots = stats::setNames(dots, "Rpc"))
+      warning("Found variable 'reflectance', I am assuming it is expressed as percent")
+    }
+    if (exists("Rfr", x, mode = "numeric", inherits=FALSE)) {
+      range_check_Rfr(x, strict.range=strict.range)
+    } else if (exists("Rpc", x, mode = "numeric", inherits=FALSE)) {
+      x[["Rfr"]] <- x[["Rpc"]] / 100
+      x[["Rpc"]] <- NULL
+      range_check_Rfr(x, strict.range=strict.range)
+    } else {
+      warning("No reflectance data found in object_spct")
+      x[["Rfr"]] <- NA_real_
+    }
+
+    if (exists("transmittance", x, mode = "numeric", inherits=FALSE)) {
+      dots <- list(~transmittance)
+      x <- dplyr::rename_(x, .dots = stats::setNames(dots, "Tpc"))
+      warning("Found variable 'transmittance', I am assuming it expressed as percent")
+    }
+    if (exists("Afr", x, mode = "numeric", inherits=FALSE)) {
+      dots <- list(~Afr)
+      range_check_Afr(x, strict.range=strict.range)
+    }
+
+    if (exists("Tfr", x, mode = "numeric", inherits=FALSE)) {
+      range_check_Tfr(x, strict.range=strict.range)
+    } else if (exists("Tpc", x, mode = "numeric", inherits=FALSE)) {
+      x[["Tfr"]] <- x[["Tpc"]] / 100
+      x[["Tpc"]] <- NULL
+      range_check_Tfr(x, strict.range=strict.range)
+    } else if (exists("Afr", x, mode = "numeric", inherits=FALSE)) {
+      x[["Tfr"]] <- 1 - x[["Afr"]]
+      setTfrType(x, getAfrType(x))
+      range_check_Tfr(x, strict.range=strict.range)
+    } else {
+      warning("No transmittance or absorptance data found in object_spct")
+      x[["Tfr"]] <- NA_real_
+    }
+    if (getOption("photobiology.verbose")) {
+      if (exists("Tfr", x, mode = "numeric", inherits = FALSE) && anyNA(x[["Tfr"]])) {
+        warning("At least one NA in 'Tfr'")
+      }
+      if (exists("Rfr", x, mode = "numeric", inherits = FALSE) && anyNA(x[["Rfr"]])) {
+        warning("At least one NA in 'Rfr'")
+      }
+    }
+    x
   }
-  x
-}
 
 #' @describeIn check_spct Specialization for response_spct.
 #' @export
@@ -528,30 +555,36 @@ check_spct.response_spct <-
            multiple.wl = getMultipleWl(x),
            ...) {
 
-  x <- check_spct.generic_spct(x, multiple.wl = multiple.wl)
+    x <- check_spct.generic_spct(x, multiple.wl = multiple.wl)
 
-  x <- checkTimeUnit(x)
+    x <- checkTimeUnit(x)
 
-  if (exists("s.e.response", x, mode = "numeric", inherits=FALSE)) {
-    return(x)
-  } else if (exists("s.q.response", x, mode = "numeric", inherits=FALSE)) {
-    return(x)
-  } else if (exists("response", x, mode = "numeric", inherits=FALSE)) {
-    x[["s.e.response"]] <- x[["response"]]
-    x[["response"]] <- NULL
-    warning("Found variable 'response', I am assuming it is expressed on an energy basis")
-    return(x)
-  } else if (exists("signal", x, mode = "numeric", inherits=FALSE)) {
-    x[["s.e.response"]] <- x[["signal"]]
-    x[["signal"]] <- NULL
-    warning("Found variable 'signal', I am assuming it is expressed on an energy basis")
-    return(x)
-  } else {
-    warning("No response data found in response_spct")
-    x[["s.e.response"]] <- NA_real_
-    return(x)
+    if (exists("s.e.response", x, mode = "numeric", inherits=FALSE) ||
+        exists("s.q.response", x, mode = "numeric", inherits=FALSE)) {
+      NULL # nothing to do
+    } else if (exists("response", x, mode = "numeric", inherits=FALSE)) {
+      x[["s.e.response"]] <- x[["response"]]
+      x[["response"]] <- NULL
+      warning("Found variable 'response', I am assuming it is expressed on an energy basis")
+    } else if (exists("signal", x, mode = "numeric", inherits=FALSE)) {
+      x[["s.e.response"]] <- x[["signal"]]
+      x[["signal"]] <- NULL
+      warning("Found variable 'signal', I am assuming it is expressed on an energy basis")
+    } else {
+      warning("No response data found in response_spct")
+      x[["s.e.response"]] <- NA_real_
+      return(x)
+    }
+    if (getOption("photobiology.verbose")) {
+      if (exists("s.e.response", x, mode = "numeric", inherits = FALSE) && anyNA(x[["s.e.response"]])) {
+        warning("At least one NA in 's.e.response'")
+      }
+      if (exists("s.q.response", x, mode = "numeric", inherits = FALSE) && anyNA(x[["s.q.response"]])) {
+        warning("At least one NA in 's.q.response'")
+      }
+    }
+    x
   }
-}
 
 #' @describeIn check_spct Specialization for source_spct.
 #' @export
@@ -612,31 +645,38 @@ check_spct.source_spct <-
       }
     }
 
-  x <- check_spct.generic_spct(x, multiple.wl = multiple.wl)
-  x <- checkTimeUnit(x)
+    x <- check_spct.generic_spct(x, multiple.wl = multiple.wl)
+    x <- checkTimeUnit(x)
 
-  if (is.null(is_effective(x))) {
-    setBSWFUsed(x, "none")
-    warning("Missing attribute 'bswf.used' set to 'none'")
+    if (is.null(is_effective(x))) {
+      setBSWFUsed(x, "none")
+      warning("Missing attribute 'bswf.used' set to 'none'")
+    }
+    if (exists("s.e.irrad", x, mode = "numeric", inherits=FALSE) ||
+        exists("s.q.irrad", x, mode = "numeric", inherits=FALSE)) {
+      NULL
+    } else if (exists("irradiance", x, mode = "numeric", inherits=FALSE)) {
+      x[["s.e.irradiance"]] <- x[["irradiance"]]
+      x[["irradiance"]] <- NULL
+      warning("Found variable 'irradiance', I am assuming it is expressed on an energy basis")
+    } else {
+      warning("No spectral irradiance data found in source_spct")
+      x[["s.e.irrad"]] <- NA_real_
+      return(x)
+    }
+    if (!is.null(strict.range) && !is.na(strict.range)) {
+      range_check(x, strict.range = strict.range)
+    }
+    if (getOption("photobiology.verbose")) {
+      if (exists("s.e.irrad", x, mode = "numeric", inherits = FALSE) && anyNA(x[["s.e.irrad"]])) {
+        warning("At least one NA in 's.e.irrad'")
+      }
+      if (exists("s.q.irrad", x, mode = "numeric", inherits = FALSE) && anyNA(x[["s.q.irrad"]])) {
+        warning("At least one NA in 's.q.irrad'")
+      }
+    }
+    x
   }
-  if (exists("s.e.irrad", x, mode = "numeric", inherits=FALSE)) {
-    NULL
-  } else if (exists("s.q.irrad", x, mode = "numeric", inherits=FALSE)) {
-    NULL
-  } else if (exists("irradiance", x, mode = "numeric", inherits=FALSE)) {
-    x[["s.e.irradiance"]] <- x[["irradiance"]]
-    x[["irradiance"]] <- NULL
-    warning("Found variable 'irradiance', I am assuming it is expressed on an energy basis")
-  } else {
-    warning("No spectral irradiance data found in source_spct")
-    x[["s.e.irrad"]] <- NA_real_
-    return(x)
-  }
-  if (!is.null(strict.range) && !is.na(strict.range)) {
-    range_check(x, strict.range = strict.range)
-  }
-  return(x)
-}
 
 #' @describeIn check_spct Specialization for chroma_spct.
 #' @export
@@ -648,26 +688,29 @@ check_spct.chroma_spct <-
            multiple.wl = getMultipleWl(x),
            ...) {
 
-  names_x <- names(x)
+    names_x <- names(x)
 
-  x <- check_spct.generic_spct(x, multiple.wl = multiple.wl)
+    x <- check_spct.generic_spct(x, multiple.wl = multiple.wl)
 
-  idxs <- grep("[XYZ]", names_x)
-  names(x)[idxs] <- tolower(names_x[idxs])
-  if (!exists("x", x, mode="numeric", inherits=FALSE)) {
-    warning("Chromaticity coordinate 'x' data missing")
-    x[["x"]] <- NA_real_
+    idxs <- grep("[XYZ]", names_x)
+    names(x)[idxs] <- tolower(names_x[idxs])
+    if (!exists("x", x, mode="numeric", inherits=FALSE)) {
+      warning("Chromaticity coordinate 'x' data missing")
+      x[["x"]] <- NA_real_
+    }
+    if (!exists("y", x, mode="numeric", inherits=FALSE)) {
+      warning("Chromaticity coordinate 'y' data missing")
+      x[["y"]] <- NA_real_
+    }
+    if (!exists("z", x, mode="numeric", inherits=FALSE)) {
+      warning("Chromaticity coordinate 'z' data missing")
+      x[["z"]] <- NA_real_
+    }
+    if (getOption("photobiology.verbose") && (anyNA(x[["x"]]) || anyNA(x[["y"]]) || anyNA(x[["z"]]))) {
+      warning("One or more NAs in chromaticity coordinates")
+    }
+    return(x)
   }
-  if (!exists("y", x, mode="numeric", inherits=FALSE)) {
-    warning("Chromaticity coordinate 'y' data missing")
-    x[["y"]] <- NA_real_
-  }
-  if (!exists("z", x, mode="numeric", inherits=FALSE)) {
-    warning("Chromaticity coordinate 'z' data missing")
-    x[["z"]] <- NA_real_
-  }
-  return(x)
-}
 
 
 # set class ---------------------------------------------------------------
@@ -2075,7 +2118,7 @@ getWhenMeasured.default <- function(x, ...) {
 getWhenMeasured.generic_spct <- function(x, ...) {
   when.measured <- attr(x, "when.measured", exact = TRUE)
   if (is.null(when.measured) ||
-           !all(sapply(when.measured, lubridate::is.instant))) {
+      !all(sapply(when.measured, lubridate::is.instant))) {
     # need to handle invalid attribute values
     # we return an NA of class POSIXct
     when.measured <-
@@ -2093,7 +2136,7 @@ getWhenMeasured.summary_generic_spct <- function(x, ...) {
     # need to handle invalid attribute values
     # we return an NA of class POSIXct
     when.measured <- suppressWarnings(lubridate::ymd_hms(NA_character_,
-                                                     tz = "UTC"))
+                                                         tz = "UTC"))
   }
   when.measured
 }
@@ -2152,10 +2195,10 @@ setWhereMeasured.default <- function(x,
 #' @describeIn setWhereMeasured generic_spct
 #' @export
 setWhereMeasured.generic_spct <- function(x,
-                             where.measured = NA,
-                             lat = NA,
-                             lon = NA,
-                             ...) {
+                                          where.measured = NA,
+                                          lat = NA,
+                                          lon = NA,
+                                          ...) {
 
   is_valid_geocode <- function(x) {
     is.data.frame(x) &&
@@ -2295,7 +2338,7 @@ getWhereMeasured.generic_spct <- function(x, ...) {
   where.measured <- attr(x, "where.measured", exact = TRUE)
   if (is.null(where.measured) ||
       !(is.data.frame(where.measured) ||
-      all(sapply(where.measured, is.data.frame)))) {
+        all(sapply(where.measured, is.data.frame)))) {
     # need to handle invalid or missing attribute values
     where.measured <- data.frame(lon = NA_real_, lat = NA_real_)
   }
@@ -2415,7 +2458,7 @@ trimInstrDesc <- function(x,
                                      "spectrometer.sn",
                                      "bench.grating",
                                      "bench.slit")
-                          ) {
+) {
   name <- substitute(x)
   if ((is.generic_spct(x) || is.summary_generic_spct(x)) &&
       fields[1] != "*") {
