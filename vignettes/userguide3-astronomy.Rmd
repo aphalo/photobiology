@@ -52,8 +52,7 @@ In versions 0.9.16 and later the code has been optimized for performance with ti
 calculations such as the sun position for every minute of the year quite fast (couple of seconds). We keep, however, examples with rather short vectors.
 <hr>
 
-For calculation of the position of the sun we need to supply geographic coordinates and a time instant. The object to be supplied as argument for `geocode` is a data frame with variables `lon` and `lat` giving the location of Earth. This matches the return value of function `ggmap::geocode()`, function that can be used to find the coordinates using any _address_ entered as a character string understood by the Google maps API.
-We save the "geocode" for Helsinki.
+For calculation of the position of the sun we need to supply geographic coordinates and a time instant. The object to be supplied as argument for `geocode` is a data frame with variables `lon` and `lat` giving the location of Earth. This matches the return value of function `ggmap::geocode()`, function that can be used to find the coordinates using any _address_ entered as a character string understood by the Google maps API. We use the "geocode" for Helsinki.
 
 Be aware that to obtain results based on local time, the correct time zone needs to be set. In the examples we use functions from package 'lubridate' for working with times and dates. The argument passed to parameter `time` can be a "vector" of `POSIXct` values. The returned value is a `data.frame`.
 

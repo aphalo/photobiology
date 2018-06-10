@@ -33,12 +33,12 @@ We give in this vignette brief descriptions and examples of the use of different
 
 ### Getting started
 
-We load two packages in addition to '**photobiology**', '**lubridate**' and '**magrittr**', as they will be used in the examples.
+We load two packages in addition to '**photobiology**', '**lubridate**' and '**dplyr**', as they will be used in the examples.
 
 ```{r, pkg-load, eval=TRUE}
 library(photobiology)
 library(lubridate)
-library(magrittr)
+library(dplyr)
 ```
 
 ### Classes
@@ -244,9 +244,7 @@ setWhenMeasured(my.spct, ymd_hms("2015-10-31 22:55:00", tz = "EET"))
 getWhenMeasured(my.spct)
 ```
 
-Functions `setWhereMeasured()` and `getWhereMeasured()` are used for setting or getting a geocode as a `data.frame` value. This format is compatible with function
-`geocode()` from package `ggmap`. It is also possible, to simply pass latitude
-and longitude coordinates, as shown below. The returned value is always a data frame with columns `"lon"` and `"lat"`.
+Functions `setWhereMeasured()` and `getWhereMeasured()` are used for setting or getting a geocode stored in a `data.frame`. This format is compatible with function `geocode()` from package `ggmap`. We pass latitude and longitude coordinates, as shown below. The returned value is always a data frame with columns `"lon"` and `"lat"`.
 
 ```{r, attr-2}
 setWhereMeasured(my.spct, NULL)
@@ -963,7 +961,8 @@ Table 7 lists all the recognized options affecting maths operators and functions
 
 <hr>
 
-**Table 7. Options used in the 'r4photobiology suite' and recognized by methods, operators and functions in the 'photobiology' package.** Option names, accepted and default values, and the purpose of the options are given.
+**Table 7. Options used in the 'r4photobiology suite' and recognized by methods, operators and functions in the 'photobiology' package.** Option names, accepted and default values, and the purpose of the options are given. Option `photobiology.verbose` is set to the
+value of R's own `verbose` option at the time the 'photobiology' package is attached to the session.
 
 | Option | `values`, **default** | purpose, _unit_                  | _convenience function_
 |:------|:---------------------|:------------------------------------|------------------|
@@ -986,7 +985,7 @@ Table 7 lists all the recognized options affecting maths operators and functions
 |                            | **TRUE** | trim or exclude |  `wb_trim_as_default(TRUE)` |
 | photobiology.use.cached.mult | **FALSE** | do not cache intermediate results |  `use_cached_mult_as_default(FALSE)` |
 |                             | `TRUE` | cache intermediate results |  `use_cached_mult_as_default(TRUE)` |
-| photobiology.verbose | **FALSE** | minimal warnings and messages |   `verbose_as_default(FALSE)` |
+| photobiology.verbose | `FALSE` | minimal warnings and messages |   `verbose_as_default(FALSE)` |
 |                             | `TRUE` | all warnings and messages |   `verbose_as_default(TRUE)` |
 
 The behaviour of the operators defined in this package depends on the value of two global options. For example, if we would like the operators to operate on spectral photon irradiance and return spectral photon irradiance instead of spectral energy irradiance, this behaviour can be set, and will remain active until unset or reset. It is possible to change options using base R's function `options()` as shown in the next code chunk. The other options listed in the Table above can be set similarly, while to unset any option, they can be given a `NULL` value.
