@@ -1,6 +1,10 @@
 photobiology 0.9.21 (2018-XX-XX)
 ================================
 
+* Inprove handling of attributes in objects containing multiple spectra in tidy
+(longitudinal) form. Revise setMultipleWl() to guess number of copies when
+multiple.wl argument is NULL. Add setIdFactor() and getIdFactor(), and add
+parameter idfactor to setGenericSpct() and equivalent functions.
 * Handle gracefully attempts to apply smooth_spct() method to spectra containing
 NAs. (Warn and return as is.)
 * Add parameter na.rm to peaks(), valleys() and related methods and functions.

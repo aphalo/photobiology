@@ -24,6 +24,8 @@
 #'   in an error instead of a warning.
 #' @param multiple.wl	numeric Maximum number of repeated w.length entries with
 #'   same value.
+#' @param idfactor character Name of factor distinguishing multiple spectra when
+#'   stored logitudinally (required if mulitple.wl > 1).
 #' @param ... other arguments passed to \code{tibble()}
 #'
 #' @return A object of class generic_spct or a class derived from it, depending
@@ -50,6 +52,7 @@ source_spct <- function(w.length = NULL,
                         comment = NULL,
                         strict.range = getOption("photobiology.strict.range", default = FALSE),
                         multiple.wl = 1L,
+                        idfactor = NULL,
                         ...) {
   if (length(w.length) == 0) {
     z <- tibble::tibble(w.length = numeric(), s.e.irrad = numeric(), ...)
@@ -68,7 +71,8 @@ source_spct <- function(w.length = NULL,
                 time.unit = time.unit,
                 bswf.used = bswf.used,
                 strict.range = strict.range,
-                multiple.wl = multiple.wl)
+                multiple.wl = multiple.wl,
+                idfactor = idfactor)
   z
 }
 
@@ -83,6 +87,7 @@ calibration_spct <- function(w.length = NULL,
                              comment = NULL,
                              instr.desc = NA,
                              multiple.wl = 1L,
+                             idfactor = NULL,
                              ...) {
   if (length(w.length) == 0) {
     z <- tibble::tibble(w.length = numeric(), irrad.mult = numeric(), ...)
@@ -93,7 +98,8 @@ calibration_spct <- function(w.length = NULL,
     comment(z) <- comment
   }
   setCalibrationSpct(z,
-             multiple.wl = multiple.wl)
+                     multiple.wl = multiple.wl,
+                     idfactor = idfactor)
   setInstrDesc(z, instr.desc)
   z
 }
@@ -112,6 +118,7 @@ raw_spct <- function(w.length = NULL,
                      instr.desc = NA,
                      instr.settings = NA,
                      multiple.wl = 1L,
+                     idfactor = NULL,
                      ...) {
   if (length(w.length) == 0) {
     z <- tibble::tibble(w.length = numeric(), counts = numeric(), ...)
@@ -122,7 +129,8 @@ raw_spct <- function(w.length = NULL,
     comment(z) <- comment
   }
   setRawSpct(z,
-             multiple.wl = multiple.wl)
+             multiple.wl = multiple.wl,
+             idfactor = idfactor)
   setInstrDesc(z, instr.desc)
   setInstrSettings(z, instr.settings)
   z
@@ -140,6 +148,7 @@ cps_spct <- function(w.length = NULL,
                      instr.desc = NA,
                      instr.settings = NA,
                      multiple.wl = 1L,
+                     idfactor = NULL,
                      ...) {
   if (any(grepl("^cps", names(list(...)))) && is.na(cps)) {
     if (length(w.length) == 0) {
@@ -158,7 +167,8 @@ cps_spct <- function(w.length = NULL,
     comment(z) <- comment
   }
   setCpsSpct(z,
-             multiple.wl = multiple.wl)
+             multiple.wl = multiple.wl,
+             idfactor = idfactor)
   setInstrDesc(z, instr.desc)
   setInstrSettings(z, instr.settings)
   z
@@ -171,6 +181,7 @@ cps_spct <- function(w.length = NULL,
 generic_spct <- function(w.length = NULL,
                          comment = NULL,
                          multiple.wl = 1L,
+                         idfactor = NULL,
                          ...) {
   if (length(w.length) == 0) {
     z <- tibble::tibble(w.length = numeric(), ...)
@@ -181,7 +192,8 @@ generic_spct <- function(w.length = NULL,
     comment(z) <- comment
   }
   setGenericSpct(z,
-                 multiple.wl = multiple.wl)
+                 multiple.wl = multiple.wl,
+                 idfactor = idfactor)
   z
 }
 
@@ -200,6 +212,7 @@ response_spct <- function(w.length = NULL,
                           time.unit = c("second", "day", "exposure"),
                           comment = NULL,
                           multiple.wl = 1L,
+                          idfactor = NULL,
                           ...) {
   if (length(w.length) == 0) {
     z <- tibble::tibble(w.length = numeric(), s.e.response = numeric(), ...)
@@ -216,7 +229,8 @@ response_spct <- function(w.length = NULL,
   }
   setResponseSpct(z,
                   time.unit,
-                  multiple.wl = multiple.wl)
+                  multiple.wl = multiple.wl,
+                  idfactor = idfactor)
   z
 }
 
@@ -245,6 +259,7 @@ filter_spct <- function(w.length = NULL,
                         comment = NULL,
                         strict.range = getOption("photobiology.strict.range", default = FALSE),
                         multiple.wl = 1L,
+                        idfactor = NULL,
                         ...) {
   if (length(w.length) == 0) {
     z <- tibble::tibble(w.length = numeric(), Tfr = numeric())
@@ -267,7 +282,8 @@ filter_spct <- function(w.length = NULL,
   setFilterSpct(x = z,
                 Tfr.type = Tfr.type,
                 strict.range = strict.range,
-                multiple.wl = multiple.wl)
+                multiple.wl = multiple.wl,
+                idfactor = idfactor)
   z
 }
 
@@ -286,6 +302,7 @@ reflector_spct <- function(w.length = NULL,
                            comment=NULL,
                            strict.range = getOption("photobiology.strict.range", default = FALSE),
                            multiple.wl = 1L,
+                           idfactor = NULL,
                            ...) {
   if (length(w.length) == 0) {
     z <- tibble::tibble(w.length = numeric(), Rfr = numeric(), ...)
@@ -303,7 +320,8 @@ reflector_spct <- function(w.length = NULL,
   setReflectorSpct(x = z,
                    Rfr.type = Rfr.type,
                    strict.range = strict.range,
-                   multiple.wl = multiple.wl)
+                   multiple.wl = multiple.wl,
+                   idfactor = idfactor)
   z
 }
 
@@ -321,10 +339,11 @@ object_spct <- function(w.length = NULL,
                         comment = NULL,
                         strict.range = getOption("photobiology.strict.range", default = FALSE),
                         multiple.wl = 1L,
+                        idfactor = NULL,
                         ...) {
   if (length(w.length) == 0) {
     z <- tibble::tibble(w.length = numeric(),
-                           Rfr = numeric(), Tfr = numeric(), ...)
+                        Rfr = numeric(), Tfr = numeric(), ...)
   } else if (is.null(Afr)) {
     z <- tibble::tibble(w.length, Rfr, Tfr, ...)
   } else if (is.null(Tfr)) {
@@ -337,7 +356,8 @@ object_spct <- function(w.length = NULL,
                 Tfr.type = Tfr.type,
                 Rfr.type = Rfr.type,
                 strict.range = strict.range,
-                multiple.wl = multiple.wl)
+                multiple.wl = multiple.wl,
+                idfactor = idfactor)
   z
 }
 
@@ -354,17 +374,19 @@ chroma_spct <- function(w.length=NULL,
                         comment=NULL,
                         strict.range = getOption("photobiology.strict.range", default = FALSE),
                         multiple.wl = 1L,
+                        idfactor = NULL,
                         ...) {
   if (length(w.length) == 0) {
     z <- tibble::tibble(w.length = numeric(),
-                           x = numeric(), y = numeric(), z = numeric(), ...)
+                        x = numeric(), y = numeric(), z = numeric(), ...)
   } else {
     z <- tibble::tibble(w.length, x, y, z, ...)
-  if (!is.null(comment)) {
-    comment(z) <- comment
-  }
-  setChromaSpct(z,
-                multiple.wl = multiple.wl)
+    if (!is.null(comment)) {
+      comment(z) <- comment
+    }
+    setChromaSpct(z,
+                  multiple.wl = multiple.wl,
+                  idfactor = idfactor)
   }
   z
 }
@@ -632,10 +654,10 @@ as.object_spct <- function(x, ...) {UseMethod("as.object_spct")}
 #' @export
 #'
 as.object_spct.default <- function(x,
-                           Tfr.type=c("total", "internal"),
-                           Rfr.type=c("total", "specular"),
-                           strict.range = getOption("photobiology.strict.range", default = FALSE),
-                           ...) {
+                                   Tfr.type=c("total", "internal"),
+                                   Rfr.type=c("total", "specular"),
+                                   strict.range = getOption("photobiology.strict.range", default = FALSE),
+                                   ...) {
   setObjectSpct(x,
                 Tfr.type = Tfr.type,
                 Rfr.type = Rfr.type,

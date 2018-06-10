@@ -761,6 +761,8 @@ rmDerivedSpct <- function(x) {
 #'
 #' @param x data.frame, list or generic_spct and derived classes
 #' @param multiple.wl numeric Maximum number of repeated w.length entries with same value.
+#' @param idfactor character Name of factor distinguishing multiple spectra when
+#'    stored logitudinally (required if mulitple.wl > 1).
 #'
 #' @export
 #' @exportClass generic_spct
@@ -778,8 +780,15 @@ rmDerivedSpct <- function(x) {
 #'
 setGenericSpct <-
   function(x,
-           multiple.wl = 1L) {
+           multiple.wl = 1L,
+           idfactor = NULL) {
     name <- substitute(x)
+    if (is.null(multiple.wl) && is.any_spct(x)) {
+      multiple.wl <- attr(x, "multiple.wl", exact = TRUE)
+    }
+    if (is.null(idfactor) && is.any_spct(x)) {
+      idfactor <- attr(x, "idfactor", exact = TRUE)
+    }
     rmDerivedSpct(x)
     if (!is.data.frame(x) || inherits(x, "data.table")) {
       x <- tibble::as_tibble(x)
@@ -790,6 +799,7 @@ setGenericSpct <-
       x <- setMultipleWl(x, multiple.wl = multiple.wl)
     }
     x <- check_spct(x)
+    attr(x, "idfactor") <- idfactor
     attr(x, "spct.version") <- 2
     if (is.name(name)) {
       name <- as.character(name)
@@ -806,13 +816,10 @@ setGenericSpct <-
 setCalibrationSpct <-
   function(x,
            strict.range = getOption("photobiology.strict.range", default = FALSE),
-           multiple.wl = 1L) {
+           multiple.wl = 1L,
+           idfactor = NULL) {
     name <- substitute(x)
-    rmDerivedSpct(x)
-    if (!is.data.frame(x) || inherits(x, "data.table")) {
-      x <- tibble::as_tibble(x)
-    }
-    setGenericSpct(x, multiple.wl = multiple.wl)
+    setGenericSpct(x, multiple.wl = multiple.wl, idfactor = idfactor)
     class(x) <- c("calibration_spct", class(x))
     x <- check_spct(x, strict.range = strict.range)
     if (is.name(name)) {
@@ -830,13 +837,10 @@ setCalibrationSpct <-
 setRawSpct <-
   function(x,
            strict.range = getOption("photobiology.strict.range", default = FALSE),
-           multiple.wl = 1L) {
+           multiple.wl = 1L,
+           idfactor = NULL) {
     name <- substitute(x)
-    rmDerivedSpct(x)
-    if (!is.data.frame(x) || inherits(x, "data.table")) {
-      x <- tibble::as_tibble(x)
-    }
-    setGenericSpct(x, multiple.wl = multiple.wl)
+    setGenericSpct(x, multiple.wl = multiple.wl, idfactor = idfactor)
     class(x) <- c("raw_spct", class(x))
     x <- check_spct(x, strict.range = strict.range)
     if (is.name(name)) {
@@ -854,13 +858,10 @@ setRawSpct <-
 setCpsSpct <-
   function(x,
            strict.range = getOption("photobiology.strict.range", default = FALSE),
-           multiple.wl = 1L) {
+           multiple.wl = 1L,
+           idfactor = NULL) {
     name <- substitute(x)
-    rmDerivedSpct(x)
-    if (!is.data.frame(x) || inherits(x, "data.table")) {
-      x <- tibble::as_tibble(x)
-    }
-    setGenericSpct(x, multiple.wl = multiple.wl)
+    setGenericSpct(x, multiple.wl = multiple.wl, idfactor = idfactor)
     class(x) <- c("cps_spct", class(x))
     x <- check_spct(x, strict.range = strict.range)
     if (is.name(name)) {
@@ -882,9 +883,11 @@ setFilterSpct <-
   function(x,
            Tfr.type = c("total", "internal"),
            strict.range = getOption("photobiology.strict.range", default = FALSE),
-           multiple.wl = 1L) {
+           multiple.wl = 1L,
+           idfactor = NULL) {
     name <- substitute(x)
-    if ((is.object_spct(x) || is.filter_spct(x)) && getTfrType(x) != "unknown") {
+    if ((is.object_spct(x) || is.filter_spct(x)) &&
+               getTfrType(x) != "unknown") {
       if (length(Tfr.type) > 1) {
         Tfr.type <- getTfrType(x)
       } else if (Tfr.type != getTfrType(x)) {
@@ -892,15 +895,10 @@ setFilterSpct <-
                 " into ", Tfr.type)
       }
     }
-    rmDerivedSpct(x)
-    if (!is.data.frame(x) || inherits(x, "data.table")) {
-      x <- tibble::as_tibble(x)
-    }
-    setGenericSpct(x, multiple.wl = multiple.wl)
+    setGenericSpct(x, multiple.wl = multiple.wl, idfactor = idfactor)
     class(x) <- c("filter_spct", class(x))
     setTfrType(x, Tfr.type[1])
     x <- check_spct(x, strict.range = strict.range)
-    #  setkey_spct(x, w.length)
     if (is.name(name)) {
       name <- as.character(name)
       assign(name, x, parent.frame(), inherits = TRUE)
@@ -918,7 +916,8 @@ setReflectorSpct <-
   function(x,
            Rfr.type=c("total", "specular"),
            strict.range = getOption("photobiology.strict.range", default = FALSE),
-           multiple.wl = 1L) {
+           multiple.wl = 1L,
+           idfactor = NULL) {
     name <- substitute(x)
     if ((is.object_spct(x) || is.reflector_spct(c)) && getRfrType(x) != "unknown") {
       if (length(Rfr.type) > 1) {
@@ -928,11 +927,7 @@ setReflectorSpct <-
                 " into ", Rfr.type)
       }
     }
-    rmDerivedSpct(x)
-    if (!is.data.frame(x) || inherits(x, "data.table")) {
-      x <- tibble::as_tibble(x)
-    }
-    setGenericSpct(x, multiple.wl = multiple.wl)
+    setGenericSpct(x, multiple.wl = multiple.wl, idfactor = idfactor)
     class(x) <- c("reflector_spct", class(x))
     setRfrType(x, Rfr.type[1])
     x <- check_spct(x, strict.range = strict.range)
@@ -954,7 +949,8 @@ setObjectSpct <-
            Tfr.type=c("total", "internal"),
            Rfr.type=c("total", "specular"),
            strict.range = getOption("photobiology.strict.range", default = FALSE),
-           multiple.wl = 1L) {
+           multiple.wl = 1L,
+           idfactor = NULL) {
     name <- substitute(x)
     if ((is.filter_spct(x) || is.object_spct(x)) && getTfrType(x) != "unknown") {
       if (length(Tfr.type) > 1) {
@@ -972,11 +968,7 @@ setObjectSpct <-
                 " into ", Rfr.type)
       }
     }
-    rmDerivedSpct(x)
-    if (!is.data.frame(x) || inherits(x, "data.table")) {
-      x <- tibble::as_tibble(x)
-    }
-    setGenericSpct(x, multiple.wl = multiple.wl)
+    setGenericSpct(x, multiple.wl = multiple.wl, idfactor = idfactor)
     class(x) <- c("object_spct", class(x))
     setTfrType(x, Tfr.type)
     setRfrType(x, Rfr.type)
@@ -997,13 +989,10 @@ setObjectSpct <-
 setResponseSpct <-
   function(x,
            time.unit="second",
-           multiple.wl = 1L) {
+           multiple.wl = 1L,
+           idfactor = NULL) {
     name <- substitute(x)
-    rmDerivedSpct(x)
-    if (!is.data.frame(x) || inherits(x, "data.table")) {
-      x <- tibble::as_tibble(x)
-    }
-    setGenericSpct(x, multiple.wl = multiple.wl)
+    setGenericSpct(x, multiple.wl = multiple.wl, idfactor = idfactor)
     class(x) <- c("response_spct", class(x))
     setTimeUnit(x, time.unit)
     x <- check_spct(x)
@@ -1026,13 +1015,10 @@ setSourceSpct <-
            time.unit="second",
            bswf.used=c("none", "unknown"),
            strict.range = getOption("photobiology.strict.range", default = FALSE),
-           multiple.wl = 1L) {
+           multiple.wl = 1L,
+           idfactor = NULL) {
     name <- substitute(x)
-    rmDerivedSpct(x)
-    if (!is.data.frame(x) || inherits(x, "data.table")) {
-      x <- tibble::as_tibble(x)
-    }
-    setGenericSpct(x, multiple.wl = multiple.wl)
+    setGenericSpct(x, multiple.wl = multiple.wl, idfactor = idfactor)
     class(x) <- c("source_spct", class(x))
     setTimeUnit(x, time.unit)
     setBSWFUsed(x, bswf.used = bswf.used)
@@ -1052,13 +1038,10 @@ setSourceSpct <-
 #'
 setChromaSpct <-
   function(x,
-           multiple.wl = 1L) {
+           multiple.wl = 1L,
+           idfactor = NULL) {
     name <- substitute(x)
-    rmDerivedSpct(x)
-    if (!is.data.frame(x) || inherits(x, "data.table")) {
-      x <- tibble::as_tibble(x)
-    }
-    setGenericSpct(x, multiple.wl = multiple.wl)
+    setGenericSpct(x, multiple.wl = multiple.wl, idfactor = idfactor)
     class(x) <- c("chroma_spct", class(x))
     x <- check_spct(x)
     #  setkey_spct(x, w.length)
@@ -1598,7 +1581,7 @@ getBSWFUsed <- function(x) {
     }
     return(bswf.used[[1]])
   } else {
-    return(NA)
+    return(NA_character_)
   }
 }
 
@@ -1681,7 +1664,7 @@ getTfrType <- function(x) {
     }
     return(Tfr.type[[1]])
   } else {
-    return(NA)
+    return(NA_character_)
   }
 }
 
@@ -1757,7 +1740,7 @@ getRfrType <- function(x) {
     }
     return(Rfr.type[[1]])
   } else {
-    return(NA)
+    return(NA_character_)
   }
 }
 
@@ -1837,7 +1820,7 @@ getAfrType <- function(x) {
     }
     return(Afr.type[[1]])
   } else {
-    return(NA)
+    return(NA_character_)
   }
 }
 
@@ -1850,7 +1833,7 @@ getAfrType <- function(x) {
 #'
 #' @param x a generic_spct object
 #'
-#' @return numeric value
+#' @return integer value
 #'
 #' @note if x is not a \code{generic_spct} object, \code{NA} is returned,
 #'   and if it the attribute is missing, zero is returned with a warning.
@@ -1865,7 +1848,7 @@ getSpctVersion <- function(x) {
       version <- 0L
     }
   } else {
-    version <- NA
+    version <- NA_integer_
   }
   version
 }
@@ -1896,6 +1879,31 @@ checkSpctVersion <- function(x) {
 
 # multiple wl -------------------------------------------------------------
 
+
+#' Find repeated w.length values
+#'
+#' @param x a generic_spct object
+#' @param same.wls logical If TRUE all spectra spected to share same w.length
+#'   values.
+#'
+#' @return integer Number of spectra, guessed from the number of copies of each
+#'   individual w.length value.
+#'
+findMultipleWl <- function(x, same.wls = TRUE) {
+  stopifnot(is.generic_spct(x))
+  if (nrow(x) == 0L) {
+    return(0L)
+  }
+  runs <- rle(sort(x[["w.length"]]))
+  if (same.wls) {
+    num.copies <- unique(runs[["lengths"]])
+    stopifnot(length(num.copies) %in% c(0L, 1L))
+  } else {
+    num.copies <- max(runs[["lengths"]])
+  }
+  num.copies
+}
+
 #' Set the "multiple.wl" attribute
 #'
 #' Function to set by reference the "multiple.wl" attribute  of an existing
@@ -1918,10 +1926,10 @@ setMultipleWl <- function(x, multiple.wl = NULL) {
   stopifnot(is.generic_spct(x) || is.summary_generic_spct(x))
   name <- substitute(x)
   if (is.null(multiple.wl)) {
-    multiple.wl <- getMultipleWl(x)
+    multiple.wl <- findMultipleWl(x)
   } else {
     multiple.wl <- trunc(multiple.wl)
-    stopifnot(multiple.wl > 0)
+    stopifnot(multiple.wl >= 0) # 0L only for empty spectral objects
   }
   attr(x, "multiple.wl") <- multiple.wl
   if (is.name(name)) {
@@ -1956,8 +1964,73 @@ getMultipleWl <- function(x) {
     }
     return(multiple.wl)
   } else {
-    return(NA)
+    return(NA_integer_)
   }
+}
+
+
+# idfactor -------------------------------------------------------------
+
+#' Set the "idfactor" attribute
+#'
+#' Function to set by reference the "idfactor" attribute  of an existing
+#' generic_spct or an object of a class derived from generic_spct.
+#'
+#' @param x a generic_spct object
+#' @param idfactor character The name of a factor identifying multiple
+#'    spectra stored longitudinally.
+#'
+#' @return x
+#'
+#' @note This function alters x itself by reference and in addition
+#'   returns x invisibly. If x is not a generic_spct or an object of a class derived from
+#'   generic_spct, x is not modified.
+#'
+#' @export
+#' @family idfactor attribute functions
+#'
+setIdFactor <- function(x, idfactor) {
+  stopifnot(is.generic_spct(x) || is.summary_generic_spct(x))
+  name <- substitute(x)
+  if (is.null(idfactor) || exists(idfactor, x, inherits = FALSE)) {
+    attr(x, "idfactor") <- idfactor
+  } else {
+    stop("'idfactor' points to a non-existant variable")
+  }
+  if (is.name(name)) {
+    name <- as.character(name)
+    assign(name, x, parent.frame(), inherits = TRUE)
+  }
+  invisible(x)
+}
+
+#' Get the "idfactor" attribute
+#'
+#' Function to read the "idfactor" attribute of an existing generic_spct.
+#'
+#' @param x a generic_spct object
+#'
+#' @return character
+#'
+#' @note If x is not a \code{generic_spct} or an object of a derived class
+#'   \code{NA} is returned.
+#'
+#' @export
+#' @family idfactor attribute functions
+#' @examples
+#' getMultipleWl(sun.spct)
+#'
+getIdFactor <- function(x) {
+  if (is.generic_spct(x) || is.summary_generic_spct(x)) {
+    idfactor <- attr(x, "idfactor", exact = TRUE)
+    if (is.null(idfactor) || is.na(idfactor) || !is.character(idfactor)) {
+      # need to handle objects created with old versions
+      idfactor <- NA_character_
+    }
+  } else {
+    idfactor <- NA_character_
+  }
+  idfactor
 }
 
 

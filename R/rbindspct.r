@@ -340,8 +340,21 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
     }
     if (is.data.frame(xx)) {
       if ("w.length" %in% names(xx)) {
+        if (nrow(xx) == nrow(x)) {
+          multiple.wl <- getMultipleWl(x)
+        } else {
+          # subsetting of rows can decrease the number of spectra
+          # even from one to zero!!
+          multiple.wl <- findMultipleWl(xx, same.wls = FALSE)
+        }
+        idfactor <- getIdFactor(x)
+        if (is.na(idfactor)) {
+          idfactor <- NULL
+        }
+        # that the ID variable has not been deleted is tested when set
         setGenericSpct(x = xx,
-                       multiple.wl = getMultipleWl(x))
+                       multiple.wl = multiple.wl,
+                       idfactor = idfactor)
         # other attributes remain unchanged
       } else {
         rmDerivedSpct(xx)
@@ -362,8 +375,21 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
     }
     if (is.data.frame(xx)) {
       if ("w.length" %in% names(xx)) {
+        if (nrow(xx) == nrow(x)) {
+          multiple.wl <- getMultipleWl(x)
+        } else {
+          # subsetting of rows can decrease the number of spectra
+          # even from one to zero!!
+          multiple.wl <- findMultipleWl(xx, same.wls = FALSE)
+        }
+        idfactor <- getIdFactor(x)
+        if (is.na(idfactor)) {
+          idfactor <- NULL
+        }
+        # that the ID variable has not been deleted is tested when set
         setRawSpct(x = xx,
-                   multiple.wl = getMultipleWl(x))
+                   multiple.wl = multiple.wl,
+                   idfactor = idfactor)
         # other attributes remain unchanged
       } else {
         rmDerivedSpct(xx)
@@ -384,8 +410,21 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
     }
     if (is.data.frame(xx)) {
       if ("w.length" %in% names(xx)) {
+        if (nrow(xx) == nrow(x)) {
+          multiple.wl <- getMultipleWl(x)
+        } else {
+          # subsetting of rows can decrease the number of spectra
+          # even from one to zero!!
+          multiple.wl <- findMultipleWl(xx, same.wls = FALSE)
+        }
+        idfactor <- getIdFactor(x)
+        if (is.na(idfactor)) {
+          idfactor <- NULL
+        }
+        # that the ID variable has not been deleted is tested when set
         setCpsSpct(x = xx,
-                   multiple.wl = getMultipleWl(x))
+                   multiple.wl = multiple.wl,
+                   idfactor = idfactor)
         # other attributes remain unchanged
       } else {
         rmDerivedSpct(xx)
@@ -406,10 +445,23 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
     }
     if (is.data.frame(xx)) {
       if ("w.length" %in% names(xx)) {
+        if (nrow(xx) == nrow(x)) {
+          multiple.wl <- getMultipleWl(x)
+        } else {
+          # subsetting of rows can decrease the number of spectra
+          # even from one to zero!!
+          multiple.wl <- findMultipleWl(xx, same.wls = FALSE)
+        }
+        idfactor <- getIdFactor(x)
+        if (is.na(idfactor)) {
+          idfactor <- NULL
+        }
+        # that the ID variable has not been deleted is tested when set
         setSourceSpct(x = xx,
                       time.unit = getTimeUnit(x),
                       bswf.used = getBSWFUsed(x),
-                      multiple.wl = getMultipleWl(x),
+                      multiple.wl = multiple.wl,
+                      idfactor = idfactor,
                       strict.range = NA_integer_)
         # other attributes remain unchanged
       } else {
@@ -431,9 +483,22 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
     }
     if (is.data.frame(xx)) {
       if ("w.length" %in% names(xx)) {
+        if (nrow(xx) == nrow(x)) {
+          multiple.wl <- getMultipleWl(x)
+        } else {
+          # subsetting of rows can decrease the number of spectra
+          # even from one to zero!!
+          multiple.wl <- findMultipleWl(xx, same.wls = FALSE)
+        }
+        idfactor <- getIdFactor(x)
+        if (is.na(idfactor)) {
+          idfactor <- NULL
+        }
+        # that the ID variable has not been deleted is tested when set
         setResponseSpct(x = xx,
                         time.unit = getTimeUnit(x),
-                        multiple.wl = getMultipleWl(x))
+                        multiple.wl = multiple.wl,
+                        idfactor = idfactor)
         # other attributes remain unchanged
       } else {
         rmDerivedSpct(xx)
@@ -454,9 +519,22 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
     }
     if (is.data.frame(xx)) {
       if ("w.length" %in% names(xx)) {
+        if (nrow(xx) == nrow(x)) {
+          multiple.wl <- getMultipleWl(x)
+        } else {
+          # subsetting of rows can decrease the number of spectra
+          # even from one to zero!!
+          multiple.wl <- findMultipleWl(xx, same.wls = FALSE)
+        }
+        idfactor <- getIdFactor(x)
+        if (is.na(idfactor)) {
+          idfactor <- NULL
+        }
+        # that the ID variable has not been deleted is tested when set
         setFilterSpct(x = xx,
                       Tfr.type = getTfrType(x),
-                      multiple.wl = getMultipleWl(x),
+                      multiple.wl = multiple.wl,
+                      idfactor = idfactor,
                       strict.range = NA_integer_)
         # other attributes remain unchanged
       } else {
@@ -478,9 +556,22 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
     }
     if (is.data.frame(xx)) {
       if ("w.length" %in% names(xx)) {
+        if (nrow(xx) == nrow(x)) {
+          multiple.wl <- getMultipleWl(x)
+        } else {
+          # subsetting of rows can decrease the number of spectra
+          # even from one to zero!!
+          multiple.wl <- findMultipleWl(xx, same.wls = FALSE)
+        }
+        idfactor <- getIdFactor(x)
+        if (is.na(idfactor)) {
+          idfactor <- NULL
+        }
+        # that the ID variable has not been deleted is tested when set
         setReflectorSpct(x = xx,
                          Rfr.type = getRfrType(x),
-                         multiple.wl = getMultipleWl(x),
+                         multiple.wl = multiple.wl,
+                         idfactor = idfactor,
                          strict.range = NA_integer_)
         # other attributes remain unchanged
       } else {
@@ -502,10 +593,23 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
     }
     if (is.data.frame(xx)) {
       if ("w.length" %in% names(xx)) {
+        if (nrow(xx) == nrow(x)) {
+          multiple.wl <- getMultipleWl(x)
+        } else {
+          # subsetting of rows can decrease the number of spectra
+          # even from one to zero!!
+          multiple.wl <- findMultipleWl(xx, same.wls = FALSE)
+        }
+        idfactor <- getIdFactor(x)
+        if (is.na(idfactor)) {
+          idfactor <- NULL
+        }
+        # that the ID variable has not been deleted is tested when set
         setObjectSpct(x = xx,
                       Tfr.type = getTfrType(x),
                       Rfr.type = getRfrType(x),
-                      multiple.wl = getMultipleWl(x),
+                      multiple.wl = multiple.wl,
+                      idfactor = idfactor,
                       strict.range = NA_integer_)
         # other attributes remain unchanged
       } else {
@@ -527,8 +631,21 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
     }
     if (is.data.frame(xx)) {
       if ("w.length" %in% names(xx)) {
+        if (nrow(xx) == nrow(x)) {
+          multiple.wl <- getMultipleWl(x)
+        } else {
+          # subsetting of rows can decrease the number of spectra
+          # even from one to zero!!
+          multiple.wl <- findMultipleWl(xx, same.wls = FALSE)
+        }
+        idfactor <- getIdFactor(x)
+        if (is.na(idfactor)) {
+          idfactor <- NULL
+        }
+        # that the ID variable has not been deleted is tested when set
         setChromaSpct(xx,
-                      multiple.wl = getMultipleWl(x))
+                      multiple.wl = multiple.wl,
+                      idfactor = idfactor)
         # other attributes remain unchanged
       } else {
         rmDerivedSpct(xx)
