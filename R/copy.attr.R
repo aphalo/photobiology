@@ -27,7 +27,7 @@ all.attributes <- unique(c(private.attributes,
 
 # copy_attributes ---------------------------------------------------------
 
-#' Copy attributes from one R object to another
+#' Copy attributes
 #'
 #' Copy attributes from \code{x} to \code{y}. Methods defined for spectral
 #' and waveband objects of classes from package 'photobiology'.
@@ -80,7 +80,7 @@ copy_attributes.generic_spct <- function(x, y,
                "scaled",
                "multiple.wl",
                "spct.version")
-    which.add <- c(switch, class(y),
+    which.add <- switch(class(y)[1],
                    generic_spct,
                    raw_spct = "linearized",
                    cps_spct = "linearized",
@@ -97,7 +97,7 @@ copy_attributes.generic_spct <- function(x, y,
   }
   attr.x <- attributes(x)
   which.x <- intersect(names(attr.x), which)
-  # this is likely to be very slow
+  # this is likely to be slow
   for (w in which.x) {
         attr(y, w) <- attr(x, w, exact = TRUE)
   }
@@ -120,6 +120,97 @@ copy_attributes.waveband <- function(x, y, which = NULL, ...) {
   }
   y
 }
+
+# merge_attributes ---------------------------------------------------------
+
+#' Merge and copy attributes
+#'
+#' Merge attributes from \code{x} and \code{y} and copy them to \code{z}.
+#' Methods defined for spectral objects of classes from package 'photobiology'.
+#'
+#' @param x,y,z R objects
+#' @param which character
+#' @param ... not used
+#'
+#' @return A copy of \code{z} with additional attributes set.
+#'
+#' @export
+#'
+merge_attributes <- function(x, y, z, which, ...) UseMethod("merge_attributes")
+
+#' @describeIn merge_attributes Default for generic function
+#'
+#' @export
+#'
+merge_attributes.default <- function(x, y, z,
+                                    which = NULL,
+                                    ...) {
+  warning("'merge_attributes' is not defined for objects of class ", class(x)[1])
+  z
+}
+
+#' @describeIn merge_attributes
+#'
+#' @param copy.class logical If TRUE class attributes are also copied.
+#'
+#' @export
+#'
+merge_attributes.generic_spct <- function(x, y, z,
+                                         which = NULL,
+                                         copy.class = FALSE,
+                                         ...) {
+  if (copy.class) {
+    stopifnot(class(x) == class(y))
+    class(z) <- class(x)
+    check_spct(z)
+  }
+  stopifnot(is.generic_spct(y) && is.generic_spct(z))
+  if (length(which) == 0) {
+    which <- c("comment",
+               "instr.desc",
+               "instr.settings",
+               "when.measured",
+               "where.measured",
+               "what.measured",
+               "spct.tags",
+               "normalized",
+               "scaled",
+               "spct.version")
+    which.add <- switch(class(z)[1],
+                   generic_spct,
+                   raw_spct = "linearized",
+                   cps_spct = "linearized",
+                   source_spct = c("time.unit", "bswf.used"),
+                   response_spct = c("time.unit", "bswf.used"),
+                   # need to be copied in case class of object_spct
+                   # is changed temporarily
+                   filter_spct = c("Tfr.type", "Rfr.type", "Afr.type"),
+                   reflector_spct = c("Tfr.type", "Rfr.type"),
+                   object_spct = c("Tfr.type", "Rfr.type", "Afr.type"),
+                   chroma_spct = character()
+    )
+    which <- c(which, which.add)
+  }
+  setMultipleWl(z)
+  # this is likely to be slow
+  for (w in which) {
+    att.x <- attr(x, w, exact = TRUE)
+    att.y <- attr(y, w, exact = TRUE)
+    if (length(att.x) == 0L && length(att.y) == 0L) {
+      attr(z, w) <- NULL
+    } else if (length(att.x) == 0L) {
+      attr(z, w) <- att.y
+    } else if (length(att.y) == 0L) {
+      attr(z, w) <- att.x
+    } else if (is.na(att.x) || is.na(att.y) || att.x != att.y) {
+      attr(z, w) <- NA
+    } else {
+      attr(z, w) <- att.x
+    }
+  }
+  z
+}
+
 
 # get_attributes -----------------------------------------------------------
 

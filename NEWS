@@ -1,6 +1,9 @@
 photobiology 0.9.21 (2018-XX-XX)
 ================================
 
+* Fix bugs in copy_attributes() function (some attributes were not copied).
+* Add merge_attributes() function and fix bugs in handling of metadata
+attributes in math operators, affecting operations between two spectral objects.
 * Inprove handling of attributes in objects containing multiple spectra in tidy
 (longitudinal) form. Revise setMultipleWl() to guess number of copies when
 multiple.wl argument is NULL. Add setIdFactor() and getIdFactor(), and add
