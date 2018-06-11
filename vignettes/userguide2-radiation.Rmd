@@ -47,7 +47,7 @@ Package '**photobiology**' defines several classes intended to be used to store 
 
 <hr>
 
-**Table 1. Classes for spectral data.** In addition to the required variables listed in the table, additional arbitrary variables are partly supported---some operations will not include them in returned values to avoid ambiguity and other possible conflicts. In addition to the attributes listed, all spectral objects have attributes `multiple.wl`, `normalized`, `scaled`, `when.measured`, `where.measured`, `what.measured` plus the normal attributes of `tibble` (and `data.frame`) objects including `comment`.
+**Table 1. Classes for spectral data.** In addition to the required variables listed in the table, additional arbitrary variables are partly supported---some operations will not include them in returned values to avoid ambiguity and other possible conflicts. In addition to the attributes listed, all spectral objects have attributes `multiple.wl`, `idfactor`, `normalized`, `scaled`, `when.measured`, `where.measured`, `what.measured` plus the normal attributes of `tibble` (and `data.frame`) objects including `comment`.
 
 | Class name | Required variables | Attributes                 |
 |:-----------|:----------------|:---------------------------|
@@ -1092,6 +1092,8 @@ By default an ID factor named `spct.idx` is added allow to identify the source o
 rbindspct(list(sun.spct, shade.spct))
 rbindspct(list(A = sun.spct, B = shade.spct), idfactor = "site")
 ```
+
+The name of the ID factor is stored as metadata in attribute `"idfactor"` of the spectral data object.
 
 Special _Extract_ methods for spectral objects have been implemented. These are used by default and preserve the attributes used by this package, except when the returned value is a single column from the spectral object.
 
