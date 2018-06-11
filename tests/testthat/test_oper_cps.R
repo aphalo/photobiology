@@ -44,6 +44,7 @@ test_that("oper", {
   expect_equal(attr(my.spct, "spct.version", exact = TRUE), 2)
 
   expect_equal(my.spct + my.spct,  my.2.spct)
+  expect_equal(my.spct + my.spct,  my.spct * 2)
   expect_equal(my.spct * 2, my.2.spct)
   expect_equal(my.spct * 2L, my.2.spct)
   expect_equal(my.2.spct / 2, my.spct)

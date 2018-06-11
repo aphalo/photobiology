@@ -1,5 +1,7 @@
 library(photobiology)
 
+test.print <- FALSE
+
 context("multi_spct")
 
 test_that("constructors", {
@@ -200,7 +202,7 @@ test_that("cps_mspct", {
 
   # print -------------------------------------------------------------------
 
-  expect_equal(print(my.mspct), my.mspct)
+  if (test.print) expect_equal(print(my.mspct), my.mspct)
 
   # clean -------------------------------------------------------------------
 
@@ -357,7 +359,7 @@ test_that("raw_mspct", {
 
   # print -------------------------------------------------------------------
 
-  expect_equal(print(my.mspct), my.mspct)
+  if (test.print) expect_equal(print(my.mspct), my.mspct)
 
   # clean -------------------------------------------------------------------
 

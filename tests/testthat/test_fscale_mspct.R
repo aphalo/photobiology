@@ -18,12 +18,38 @@ test_that("source_mspct", {
 
   scaled.mspct <- fscale(my.mspct)
 
-  expect_equal(scaled.mspct[[1]], scaled.mspct[[2]])
-  expect_equal(scaled.mspct[[1]], scaled.mspct[[3]])
-  expect_equal(scaled.mspct[[1]], scaled.mspct[[4]])
-  expect_equal(scaled.mspct[[1]], scaled.mspct[[5]])
+  expect_equal(scaled.mspct[[1]][["s.e.irrad"]], scaled.mspct[[2]][["s.e.irrad"]])
+  expect_equal(scaled.mspct[[1]][["s.e.irrad"]], scaled.mspct[[3]][["s.e.irrad"]])
+  expect_equal(scaled.mspct[[1]][["s.e.irrad"]], scaled.mspct[[4]][["s.e.irrad"]])
+  expect_equal(scaled.mspct[[1]][["s.e.irrad"]], scaled.mspct[[5]][["s.e.irrad"]])
 
   expect_equal(class(my.mspct), class(scaled.mspct))
+
+  expect_equal(getScaled(scaled.mspct[[1]])$multiplier, 1)
+  expect_equal(getScaled(scaled.mspct[[2]])$multiplier, 1/2)
+  expect_equal(getScaled(scaled.mspct[[3]])$multiplier, 1/3)
+  expect_equal(getScaled(scaled.mspct[[4]])$multiplier, 1/4)
+  expect_equal(getScaled(scaled.mspct[[5]])$multiplier, 1/5)
+
+  expect_equal(getScaled(scaled.mspct[[1]])$f, "mean")
+  expect_equal(getScaled(scaled.mspct[[1]])$target, 1)
+  expect_equal(getScaled(scaled.mspct[[1]])$range, c(400, 410))
+
+  expect_equal(getScaled(scaled.mspct[[2]])$f, "mean")
+  expect_equal(getScaled(scaled.mspct[[2]])$target, 1)
+  expect_equal(getScaled(scaled.mspct[[2]])$range, c(400, 410))
+
+  expect_equal(getScaled(scaled.mspct[[3]])$f, "mean")
+  expect_equal(getScaled(scaled.mspct[[3]])$target, 1)
+  expect_equal(getScaled(scaled.mspct[[3]])$range, c(400, 410))
+
+  expect_equal(getScaled(scaled.mspct[[4]])$f, "mean")
+  expect_equal(getScaled(scaled.mspct[[4]])$target, 1)
+  expect_equal(getScaled(scaled.mspct[[4]])$range, c(400, 410))
+
+  expect_equal(getScaled(scaled.mspct[[5]])$f, "mean")
+  expect_equal(getScaled(scaled.mspct[[5]])$target, 1)
+  expect_equal(getScaled(scaled.mspct[[5]])$range, c(400, 410))
 
 })
 

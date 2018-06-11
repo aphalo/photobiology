@@ -1,4 +1,4 @@
-library(magrittr)
+library(dplyr)
 library(photobiology)
 library(photobiologyLEDs)
 library(plyr)
@@ -18,7 +18,7 @@ join_mspct <- function(mspct, by = "w.length",
     for (i in names) {
       mspct[[i]] <- as.data.frame(mspct[[i]])[c("w.length", "s.e.irrad")]
       mspct[[i]] %>%
-        plyr::rename(c(s.e.irrad = i)) -> mspct[[i]]
+        dplyr::rename(s.e.irrad = i) -> mspct[[i]]
     }
   } else if (unit_out %in% c("photon", "quantum")) {
     mspct <- e2q(mspct, action = "replace")
@@ -26,7 +26,7 @@ join_mspct <- function(mspct, by = "w.length",
     for (i in names) {
       mspct[[i]] <- as.data.frame(mspct[[i]])[c("w.length", "s.q.irrad")]
       mspct[[i]] %>%
-        plyr::rename(c(s.q.irrad = i)) -> mspct[[i]]
+        dplyr::rename(s.q.irrad = i) -> mspct[[i]]
     }
   } else {
     stop("Unit out '", unit_out, "' unknown")

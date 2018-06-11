@@ -5,7 +5,7 @@ context("options")
 test_that("verbose", {
   expect_silent(unset_user_defaults())
   expect_silent(old <- verbose_as_default())
-  expect_null(old$photobiology.verbose)
+  expect_equal(old$photobiology.verbose, getOption("verbose"))
   expect_equal(getOption("photobiology.verbose"), TRUE)
   expect_silent(old <- verbose_as_default(FALSE))
   expect_true(old$photobiology.verbose)
