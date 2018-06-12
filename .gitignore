@@ -3,6 +3,4 @@
 .RData
 man/*.Rd
 photobiology.Rproj
-vignettes/*.html
-vignettes/*.R
 docs
