@@ -5,8 +5,7 @@ output: github_document
 ```{r, echo = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>",
-  fig.path = "man/figures/README-"
+  comment = "#>"
 )
 ```
 
@@ -78,7 +77,6 @@ If you use this package to produce scientific or commercial publications, please
 ```{r}
 citation("photobiology")
 ```
-
 
 ## License
 
