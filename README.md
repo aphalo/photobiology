@@ -1,19 +1,29 @@
 
-photobiology
-============
+# photobiology
 
-[![](http://www.r-pkg.org/badges/version-last-release/photobiology)](https://cran.r-project.org/package=photobiology) [![](http://cranlogs.r-pkg.org/badges/photobiology)](https://cran.r-project.org/package=photobiology) [![](http://cranlogs.r-pkg.org/badges/grand-total/photobiology)](https://cran.r-project.org/package=photobiology)
+[![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version-last-release/photobiology)](https://cran.r-project.org/package=photobiology)
 
-Package '**photobiology**' defines a system of classes for storing spectral data and accompanying metadata. For each of these classes specialised summary methods, maths operators and functions are provided. In addition, classes for storing collections of objects of the classes for individual spectra are defined as well as 'apply' functions. Extraction and replacement operators are also implemented. Functions for calculation of the position of the sun, times of sunrise and sunset, day length and night length are also provided.
+Package ‘**photobiology**’ defines a system of classes for storing
+spectral data and accompanying metadata. For each of these classes
+specialised summary methods, maths operators and functions are provided.
+In addition, classes for storing collections of objects of the classes
+for individual spectra are defined as well as ‘apply’ functions.
+Extraction and replacement operators are also implemented. Functions for
+calculation of the position of the sun, times of sunrise and sunset, day
+length and night length are also provided.
 
-The package supports storage and manipulation of data for radiation quantities and for optical properties of objects.
+The package supports storage and manipulation of data for radiation
+quantities and for optical properties of objects.
 
-This package is the core of a suite of R packages for photobiological calculations described at the [r4photobiology](http://www.r4photobiology.info) web site.
+This package is the core of a suite of R packages for photobiological
+calculations described at the
+[r4photobiology](http://www.r4photobiology.info) web site.
 
-Example
--------
+## Example
 
-This first basic example shows you how to calculate solar irradiance in W/m2 below a filter. We use a measured solar spectrum and a measured filter transmission spectrum.
+This first basic example shows you how to calculate solar irradiance in
+W/m2 below a filter. We use a measured solar spectrum and a measured
+filter transmission spectrum.
 
 ``` r
 library(photobiology)
@@ -26,19 +36,19 @@ e_irrad(sun.spct * yellow_gel.spct)
 #> [1] "energy irradiance total"
 ```
 
-The second basic example shows some simple astronomical calculations for the sun.
+The second basic example shows some simple astronomical calculations for
+the sun.
 
 ``` r
 geocode <- data.frame(lon = 0, lat = 55)
 date <- lubridate::today(tzone = "UTC")
 sunrise_time(date, tz = "UTC", geocode = geocode)
-#> [1] "2018-04-02 05:28:08 UTC"
+#> [1] "2018-06-12 03:21:02 UTC"
 day_length(date, tz = "UTC", geocode = geocode)
-#> [1] 13.17787
+#> [1] 17.29626
 ```
 
-Installation
-------------
+## Installation
 
 Installation of the most recent stable version from CRAN:
 
@@ -53,28 +63,42 @@ Installation of the current unstable version from Bitbucket:
 devtools::install_bitbucket("aphalo/photobiology")
 ```
 
-Documentation
--------------
+## Documentation
 
-HTML documentation is available at (<http://docs.r4photobiology.info/photobiology/>), including a *User Guide*.
+HTML documentation is available at
+(<http://docs.r4photobiology.info/photobiology/>), including a *User
+Guide*.
 
-News on updates to the different packages of the 'r4photobiology' suite are regularly posted at (<http://www.r4photobiology.info/>).
+News on updates to the different packages of the ‘r4photobiology’ suite
+are regularly posted at (<http://www.r4photobiology.info/>).
 
-Two articles introduce the basic ideas behind the design of the suite and its use: Aphalo P. J. (2015) (<https://doi.org/10.19232/uv4pb.2015.1.14>) and Aphalo P. J. (2016) (<https://doi.org/10.19232/uv4pb.2016.1.15>).
+Two articles introduce the basic ideas behind the design of the suite
+and its use: Aphalo P. J. (2015)
+(<https://doi.org/10.19232/uv4pb.2015.1.14>) and Aphalo P. J. (2016)
+(<https://doi.org/10.19232/uv4pb.2016.1.15>).
 
-A book is under preparation, and the draft is currently available at (<https://leanpub.com/r4photobiology/>).
+A book is under preparation, and the draft is currently available at
+(<https://leanpub.com/r4photobiology/>).
 
-A handbook written before the suite was developed contains useful information on the quantification and manipulation of ultraviolet and visible radiation: Aphalo, P. J., Albert, A., Björn, L. O., McLeod, A. R., Robson, T. M., & Rosenqvist, E. (Eds.) (2012) Beyond the Visible: A handbook of best practice in plant UV photobiology (1st ed., p. xxx + 174). Helsinki: University of Helsinki, Department of Biosciences, Division of Plant Biology. ISBN 978-952-10-8363-1 (PDF), 978-952-10-8362-4 (paperback). PDF file available from (<http://hdl.handle.net/10138/37558>).
+A handbook written before the suite was developed contains useful
+information on the quantification and manipulation of ultraviolet and
+visible radiation: Aphalo, P. J., Albert, A., Björn, L. O., McLeod, A.
+R., Robson, T. M., & Rosenqvist, E. (Eds.) (2012) Beyond the Visible: A
+handbook of best practice in plant UV photobiology (1st ed., p. xxx +
+174). Helsinki: University of Helsinki, Department of Biosciences,
+Division of Plant Biology. ISBN 978-952-10-8363-1 (PDF),
+978-952-10-8362-4 (paperback). PDF file available from
+(<http://hdl.handle.net/10138/37558>).
 
-Contributing
-------------
+## Contributing
 
-Pull requests, bug reports, and feature requests are welcome at (<http://bitbucket.org/aphalo/photobiology>).
+Pull requests, bug reports, and feature requests are welcome at
+(<http://bitbucket.org/aphalo/photobiology>).
 
-Citation
---------
+## Citation
 
-If you use this package to produce scientific or commercial publications, please cite according to:
+If you use this package to produce scientific or commercial
+publications, please cite according to:
 
 ``` r
 citation("photobiology")
@@ -98,7 +122,8 @@ citation("photobiology")
 #>   }
 ```
 
-License
--------
+## License
 
-© 2012-2018 Pedro J. Aphalo (<pedro.aphalo@helsinki.fi>). Released under the GPL, version 2 or greater. This software carries no warranty of any kind.
+© 2012-2018 Pedro J. Aphalo (<pedro.aphalo@helsinki.fi>). Released under
+the GPL, version 2 or greater. This software carries no warranty of any
+kind.
