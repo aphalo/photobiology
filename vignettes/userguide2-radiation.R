@@ -8,7 +8,7 @@ options(tibble.print_max = 6, tibble.print_min = 4)
 ## ---- pkg-load, eval=TRUE------------------------------------------------
 library(photobiology)
 library(lubridate)
-library(magrittr)
+library(dplyr)
 
 ## ---- example-1, eval=FALSE----------------------------------------------
 #  # not run
