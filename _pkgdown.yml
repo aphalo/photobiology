@@ -46,6 +46,7 @@ reference:
     - summary_spct_classes
     - print
     - print.summary_generic_spct
+    - head_tail
   - title: Wavebands
     contents:
     - waveband
@@ -262,6 +263,7 @@ reference:
     - check_w.length
     - checkTimeUnit
     - copy_attributes
+    - merge_attributes
     - normalize_range_arg
     - upgrade_spct
     - upgrade_spectra
