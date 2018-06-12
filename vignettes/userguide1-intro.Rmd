@@ -21,11 +21,11 @@ Package '**photobiology**' provides two sets of functions for many operations: l
 
 ## Example data
 
-Data for several spectra are included in this package for use in examples and vignettes, and in testing (Tables 12 and 13). Other packages in the '**r4photobiology suite**' provide many additional data sets.
+Data for several spectra are included in this package for use in examples and vignettes, and in testing (Tables 1 and 2). Other packages in the '**r4photobiology suite**' provide many additional data sets.
 
 <hr>
 
-**Table 12. Data sets included in the package: spectra.** The CIE standard illuminant data in this package are normalized to one at $\lambda = 560\,$nm, while in the CIE standard they are normalized to 100 at the same wavelength.
+**Table 1. Data sets included in the package: spectra.** The CIE standard illuminant data in this package are normalized to one at $\lambda = 560\,$nm, while in the CIE standard they are normalized to 100 at the same wavelength. See documentation for each data object for details and data sources.
  
 | Object | class | units      | data description          |
 |:--------|:-------|:----------|:---------------------------|
@@ -39,26 +39,33 @@ Data for several spectra are included in this package for use in examples and vi
 | `opaque.spct` | `filter_spct` | fraction | ideal opaque filter |
 | `polyester.spct` | `filter_spct` | fraction | plastic film |
 | `yellow_gel.spct` | `filter_spct` | fraction | theatrical _gel_ filter |
+| `green_leaf.spct` | `reflector_spct` | fraction | a birch leaf |
 | `clear_body.spct` | `object_spct` | fraction | ideal transparent body |
 | `black_body.spct` | `object_spct` | fraction | ideal black body |
 | `white_body.spct` | `object_spct` | fraction | ideal white body |
-| `photodiode.spct` | `response_spct` |  A / W  | typical Si photodiode |
-| `ccd.spct` | `response_spct` |  A / W | typical CCD array |
-| `filter_cps.mspct` | `cps_spct` | counts / s | example detector counts data |
-
+| `Ler_leaf.spct` | `object_spct` | fraction | Arabidopsis leaf |
+| `Ler_leaf_trns.spct` | `filter_spct` | fraction | Arabidopsis leaf (T total) |
+| `Ler_leaf_trns_i.spct` | `filter_spct` | fraction | Arabidopsis leaf (T internal) |
+| `Ler_leaf_rflt.spct` | `reflector_spct` | fraction | Arabidopsis leaf (R total) |
+| `photodiode.spct` | `response_spct` |  $A / W$  | typical Si photodiode |
+| `ccd.spct` | `response_spct` |  $A / W$ | typical CCD array |
+| `white_led.raw_spct` | `raw_spct` | counts | example raw detector counts data |
+| `white_led.cps_spct` | `cps_spct` | counts / s | example detector counts data |
+| `white_led.source_spct` | `source_spct` | $W\,m^{-2}\,nm^{-1}$ | spectral irradiance |
+| `filter_cps.mspct` | `cps_mspct` | $\mathrm{counts} / s$ | example detector counts data |
 <hr>
 
 <hr>
 
-**Table 13. Data sets included in the package: chromaticity data.**
+**Table 2. Data sets included in the package: chromaticity data.** See documentation for each data object for details and data sources.
 
 | Object  | class  | data description                 |
 |:--------|:-------|:-------------------------------|
-| ciexyzCC2.spct | chroma_spct |  human chromaticity coordinates $2^\circ$ |
-| ciexyzCC10.spct | chroma_spct |   human chromaticity coordinates $10^\circ$  |
-| ciexyzCMF2.spct | chroma_spct |   human colour matching function $2^\circ$ |
-| ciexyzCMF10.spct | chroma_spct |  human colour matching function $10^\circ$ |
-| ciev2.spct | chroma_spct |  human luminous efficiency $2^\circ$ |
-| beesxyzCMF.spct |  chroma_spct |  bee colour matching function |
+| `ciexyzCC2.spct` | `chroma_spct` |  human chromaticity coordinates $2^\circ$ |
+| `ciexyzCC10.spct` | `chroma_spct` |   human chromaticity coordinates $10^\circ$  |
+| `ciexyzCMF2.spct` | `chroma_spct` |   human colour matching function $2^\circ$ |
+| `ciexyzCMF10.spct` | `chroma_spct` |  human colour matching function $10^\circ$ |
+| `ciev2.spct` | `chroma_spct` |  human luminous efficiency $2^\circ$ |
+| `beesxyzCMF.spct` |  `chroma_spct` |  bee colour matching function |
 
 <hr>

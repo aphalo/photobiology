@@ -171,7 +171,7 @@ class(sun.spct)
 There are basically two different approaches to the creation of spectra by users. The first group are constructors similar to the `data.frame()` constructor, which take vectors as arguments. The second group are constructors that convert `list` objects, and because of class derivation also `data.frame`
 objects, into spectral objects. Constructors in this second group are similar to `as.data.frame` from base R. In contrast to the data frame constructors, spectral object constructors require the variables or the vector arguments to be suitably named so that they can be recognized.
 
-Here we briefly describe the _as_ constructor functions for spectra. In the first example we create an object to store spectral irradiance data for a _ficticious light source_, by first creating a data frame, and creating the spectral object as a copy of it. In the example below we supply a single value, 1, for the spectral irradiance. This value gets recycled as is normal in R, but of course in real use it is more usual to supply a vector of the same length as the `w.length` vector.
+Here we briefly describe the _as_ constructor functions for spectra. In the first example we create an object to store spectral irradiance data for a _fictitious light source_, by first creating a data frame, and creating the spectral object as a copy of it. In the example below we supply a single value, 1, for the spectral irradiance. This value gets recycled as is normal in R, but of course in real use it is more usual to supply a vector of the same length as the `w.length` vector.
 
 ```{r, construction-1}
 my.df <- data.frame(w.length = 400:410, s.e.irrad = 1)
@@ -439,11 +439,20 @@ subset2mspct(test1.df, member.class = "source_spct", idx.var = "spectrum",
              time.unit = "day")
 ```
 
-To directly convert a _tidy_ data frame into a long form spectral object we need to pass the number of spectra through parameter `multiple.wl` to override the usual check for unique wavelength values.
+To directly convert a _tidy_ data frame into a long form spectral object we need to pass the number of spectra through parameter `multiple.wl` to override the usual check for unique wavelength values (default is `multiple.wl = 1L`).
 
 ```{r, set-class-1}
-setSourceSpct(test1.df, multiple.wl = 2L)
-test1.df
+test2.df <- test1.df
+setSourceSpct(test2.df, multiple.wl = 2L)
+getMultipleWl(test2.df)
+```
+
+If `multiple.wl = NULL` a suitable value is guessed from the data frame passed as first argument. This should work in most cases, but is more time consuming. Using this approach in addition disables the check for a fixed number of spectra.
+
+```{r, set-class-2}
+test3.df <- test1.df
+setSourceSpct(test3.df, multiple.wl = NULL)
+getMultipleWl(test3.df)
 ```
 
 #### Converting _untidy_ data frames
@@ -1037,8 +1046,8 @@ In this section we describe methods and functions that take one or more spectral
 | fshift | + | + | + | + | + | -- | --  |
 | normalize | + | + | + | + | + | -- | --  |
 | clean | -- | + | + | + | + | -- | --  |
-| _math operators_ | + | + | + | + | + | + | +  |
-| _math functions_ | + | + | + | + | + | + | +  |
+| _maths operators_ | + | + | + | + | + | + | +  |
+| _maths functions_ | + | + | + | + | + | + | +  |
 | tag | -- | + | + | + | + | + | +  |
 | untag | -- | + | + | + | + | + | +  |
 
@@ -1057,8 +1066,8 @@ In this section we describe methods and functions that take one or more spectral
 | msaply | + | + | + | + | + | + | + |
 | rbindspct | + | + | + | + | + | + | + |
 | c | + | + | + | + | + | + | + |
-| _math operators_ | ms | ms | ms | ms | ms | ms | ms |
-| _math functions_ | ms | ms | ms | ms | ms | ms | ms |
+| _maths operators_ | ms | ms | ms | ms | ms | ms | ms |
+| _maths functions_ | ms | ms | ms | ms | ms | ms | ms |
 | e2q, q2e | -- | + | + | -- | -- | -- | -- |
 | A2T, T2A | -- | -- | -- | + | -- | -- | -- |
 | clip_wl | + | + | + | + | + | + | + |

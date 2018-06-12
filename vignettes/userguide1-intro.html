@@ -232,9 +232,9 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 </div>
 <div id="example-data" class="section level2">
 <h2>Example data</h2>
-<p>Data for several spectra are included in this package for use in examples and vignettes, and in testing (Tables 12 and 13). Other packages in the ‘<strong>r4photobiology suite</strong>’ provide many additional data sets.</p>
+<p>Data for several spectra are included in this package for use in examples and vignettes, and in testing (Tables 1 and 2). Other packages in the ‘<strong>r4photobiology suite</strong>’ provide many additional data sets.</p>
 <hr>
-<p><strong>Table 12. Data sets included in the package: spectra.</strong> The CIE standard illuminant data in this package are normalized to one at <span class="math inline">\(\lambda = 560\,\)</span>nm, while in the CIE standard they are normalized to 100 at the same wavelength.</p>
+<p><strong>Table 1. Data sets included in the package: spectra.</strong> The CIE standard illuminant data in this package are normalized to one at <span class="math inline">\(\lambda = 560\,\)</span>nm, while in the CIE standard they are normalized to 100 at the same wavelength. See documentation for each data object for details and data sources.</p>
 <table>
 <colgroup>
 <col width="16%"></col>
@@ -312,46 +312,94 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <td align="left">theatrical <em>gel</em> filter</td>
 </tr>
 <tr class="odd">
+<td align="left"><code>green_leaf.spct</code></td>
+<td align="left"><code>reflector_spct</code></td>
+<td align="left">fraction</td>
+<td align="left">a birch leaf</td>
+</tr>
+<tr class="even">
 <td align="left"><code>clear_body.spct</code></td>
 <td align="left"><code>object_spct</code></td>
 <td align="left">fraction</td>
 <td align="left">ideal transparent body</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left"><code>black_body.spct</code></td>
 <td align="left"><code>object_spct</code></td>
 <td align="left">fraction</td>
 <td align="left">ideal black body</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left"><code>white_body.spct</code></td>
 <td align="left"><code>object_spct</code></td>
 <td align="left">fraction</td>
 <td align="left">ideal white body</td>
 </tr>
+<tr class="odd">
+<td align="left"><code>Ler_leaf.spct</code></td>
+<td align="left"><code>object_spct</code></td>
+<td align="left">fraction</td>
+<td align="left">Arabidopsis leaf</td>
+</tr>
 <tr class="even">
-<td align="left"><code>photodiode.spct</code></td>
-<td align="left"><code>response_spct</code></td>
-<td align="left">A / W</td>
-<td align="left">typical Si photodiode</td>
+<td align="left"><code>Ler_leaf_trns.spct</code></td>
+<td align="left"><code>filter_spct</code></td>
+<td align="left">fraction</td>
+<td align="left">Arabidopsis leaf (T total)</td>
 </tr>
 <tr class="odd">
+<td align="left"><code>Ler_leaf_trns_i.spct</code></td>
+<td align="left"><code>filter_spct</code></td>
+<td align="left">fraction</td>
+<td align="left">Arabidopsis leaf (T internal)</td>
+</tr>
+<tr class="even">
+<td align="left"><code>Ler_leaf_rflt.spct</code></td>
+<td align="left"><code>reflector_spct</code></td>
+<td align="left">fraction</td>
+<td align="left">Arabidopsis leaf (R total)</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>photodiode.spct</code></td>
+<td align="left"><code>response_spct</code></td>
+<td align="left"><span class="math inline">\(A / W\)</span></td>
+<td align="left">typical Si photodiode</td>
+</tr>
+<tr class="even">
 <td align="left"><code>ccd.spct</code></td>
 <td align="left"><code>response_spct</code></td>
-<td align="left">A / W</td>
+<td align="left"><span class="math inline">\(A / W\)</span></td>
 <td align="left">typical CCD array</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>white_led.raw_spct</code></td>
+<td align="left"><code>raw_spct</code></td>
+<td align="left">counts</td>
+<td align="left">example raw detector counts data</td>
+</tr>
+<tr class="even">
+<td align="left"><code>white_led.cps_spct</code></td>
+<td align="left"><code>cps_spct</code></td>
+<td align="left">counts / s</td>
+<td align="left">example detector counts data</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>white_led.source_spct</code></td>
+<td align="left"><code>source_spct</code></td>
+<td align="left"><span class="math inline">\(W\,m^{-2}\,nm^{-1}\)</span></td>
+<td align="left">spectral irradiance</td>
 </tr>
 <tr class="even">
 <td align="left"><code>filter_cps.mspct</code></td>
-<td align="left"><code>cps_spct</code></td>
-<td align="left">counts / s</td>
+<td align="left"><code>cps_mspct</code></td>
+<td align="left"><span class="math inline">\(\mathrm{counts} / s\)</span></td>
 <td align="left">example detector counts data</td>
 </tr>
 </tbody>
 </table>
 <hr>
 <hr>
-<p><strong>Table 13. Data sets included in the package: chromaticity data.</strong></p>
+<p><strong>Table 2. Data sets included in the package: chromaticity data.</strong> See documentation for each data object for details and data sources.</p>
 <table>
 <thead>
 <tr class="header">
@@ -362,33 +410,33 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 </thead>
 <tbody>
 <tr class="odd">
-<td align="left">ciexyzCC2.spct</td>
-<td align="left">chroma_spct</td>
+<td align="left"><code>ciexyzCC2.spct</code></td>
+<td align="left"><code>chroma_spct</code></td>
 <td align="left">human chromaticity coordinates <span class="math inline">\(2^\circ\)</span></td>
 </tr>
 <tr class="even">
-<td align="left">ciexyzCC10.spct</td>
-<td align="left">chroma_spct</td>
+<td align="left"><code>ciexyzCC10.spct</code></td>
+<td align="left"><code>chroma_spct</code></td>
 <td align="left">human chromaticity coordinates <span class="math inline">\(10^\circ\)</span></td>
 </tr>
 <tr class="odd">
-<td align="left">ciexyzCMF2.spct</td>
-<td align="left">chroma_spct</td>
+<td align="left"><code>ciexyzCMF2.spct</code></td>
+<td align="left"><code>chroma_spct</code></td>
 <td align="left">human colour matching function <span class="math inline">\(2^\circ\)</span></td>
 </tr>
 <tr class="even">
-<td align="left">ciexyzCMF10.spct</td>
-<td align="left">chroma_spct</td>
+<td align="left"><code>ciexyzCMF10.spct</code></td>
+<td align="left"><code>chroma_spct</code></td>
 <td align="left">human colour matching function <span class="math inline">\(10^\circ\)</span></td>
 </tr>
 <tr class="odd">
-<td align="left">ciev2.spct</td>
-<td align="left">chroma_spct</td>
+<td align="left"><code>ciev2.spct</code></td>
+<td align="left"><code>chroma_spct</code></td>
 <td align="left">human luminous efficiency <span class="math inline">\(2^\circ\)</span></td>
 </tr>
 <tr class="even">
-<td align="left">beesxyzCMF.spct</td>
-<td align="left">chroma_spct</td>
+<td align="left"><code>beesxyzCMF.spct</code></td>
+<td align="left"><code>chroma_spct</code></td>
 <td align="left">bee colour matching function</td>
 </tr>
 </tbody>

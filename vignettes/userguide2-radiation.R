@@ -153,8 +153,14 @@ subset2mspct(test1.df, member.class = "source_spct", idx.var = "spectrum",
              time.unit = "day")
 
 ## ---- set-class-1--------------------------------------------------------
-setSourceSpct(test1.df, multiple.wl = 2L)
-test1.df
+test2.df <- test1.df
+setSourceSpct(test2.df, multiple.wl = 2L)
+getMultipleWl(test2.df)
+
+## ---- set-class-2--------------------------------------------------------
+test3.df <- test1.df
+setSourceSpct(test3.df, multiple.wl = NULL)
+getMultipleWl(test3.df)
 
 ## ---- split-1------------------------------------------------------------
 test2.df <- data.frame(w.length = 200:210, A = 1, B = 2, z = "A")
