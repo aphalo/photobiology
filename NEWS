@@ -2,6 +2,8 @@ photobiology 0.9.21 (2018-XX-XX)
 ================================
 
 * Fix bugs in copy_attributes() function (some attributes were not copied).
+* Add copying of attributes to conversion functions cps2irrad(), cps2Tfr() and
+cps2Rfr().
 * Add merge_attributes() function and fix bugs in handling of metadata
 attributes in math operators, affecting operations between two spectral objects.
 * Inprove handling of attributes in objects containing multiple spectra in tidy

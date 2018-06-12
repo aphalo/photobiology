@@ -123,7 +123,7 @@ smooth_spct.source_spct <- function(x, method = "custom", strength = 1, ...) {
     }
     num_bad <- with(out.spct, sum(!s.e.irrad.good, na.rm = TRUE))
     if (num_bad > length(out.spct) / 20) {
-      warning(num_bad, " 'bad' estimates in spectral irradiance")
+      message(num_bad, " possibly 'bad' values in smoothed spectral irradiance")
     }
     out.spct <- out.spct[ , c("w.length", "s.e.irrad")]
     setSourceSpct(out.spct, time.unit = attr(x, "time.unit", exact = TRUE))
@@ -231,7 +231,7 @@ smooth_spct.filter_spct <- function(x, method = "custom", strength = 1, ...) {
     }
     num_bad <- sum(!out.spct[["Tfr.good"]], na.rm=TRUE)
     if (num_bad > length(out.spct) / 20) {
-      warning(num_bad, " 'bad' estimates in spectral irradiance")
+      message(num_bad, " possibly 'bad' values in smoothed spectral Tfr")
     }
     out.spct <- out.spct[ , c("w.length", "Tfr")]
     setFilterSpct(out.spct, Tfr.type = attr(x, "Tfr.type", exact = TRUE))
@@ -325,7 +325,7 @@ smooth_spct.reflector_spct <- function(x, method = "custom", strength = 1, ...) 
     }
     num_bad <- sum(!out.spct[["Rfr.good"]], na.rm=TRUE)
     if (num_bad > length(out.spct) / 20) {
-      warning(num_bad, " 'bad' estimates in spectral irradiance")
+      message(num_bad, " possibly 'bad' values in smoothed spectral Rfr")
     }
     out.spct <- out.spct[ , c("w.length", "Rfr")]
     setReflectorSpct(out.spct)
@@ -432,7 +432,7 @@ smooth_spct.response_spct <- function(x, method = "custom", strength = 1, ...) {
     }
     num_bad <- sum(!out.spct[["s.e.response.good"]], na.rm=TRUE)
     if (num_bad > length(out.spct) / 20) {
-      warning(num_bad, " 'bad' estimates in spectral response")
+      message(num_bad, " possibly 'bad' values in smoothed spectral response")
     }
     out.spct <- out.spct[ , c("w.length", "s.e.response")]
     setResponseSpct(out.spct, time.unit = attr(x, "time.unit", exact = TRUE))
