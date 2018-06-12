@@ -39,9 +39,9 @@
 #'
 #' head_tail(stats::ftable(Titanic))
 #'
-#' @keywords internal
+#' @keywords
 #'
-head_tail <- function(x, ...) UseMethod("head_tail")
+head_tail <- function(x, n, ...) UseMethod("head_tail")
 
 #' @describeIn head_tail
 #'
