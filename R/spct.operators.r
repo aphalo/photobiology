@@ -43,7 +43,7 @@ oper.e.generic_spct <- function(e1, e2, oper) {
       names(z)[2] <- "s.e.irrad"
       setSourceSpct(z, strict.range = getOption("photobiology.strict.range",
                                              default = FALSE))
-      return(z)
+      return(merge_attributes(e1, e2, z))
     } else {
       if (identical(oper, `*`)) {
         warning("operation between 'calibration_spct' and ", class(e2)[1],
@@ -65,7 +65,7 @@ oper.e.generic_spct <- function(e1, e2, oper) {
       names(z)[2] <- "counts"
       setRawSpct(z, strict.range = getOption("photobiology.strict.range",
                                              default = FALSE))
-      return(z)
+      return(merge_attributes(e1, e2, z))
     } else {
       warning("operation between 'raw_spct' and ", class(e2)[1],
               " objects not implemented")
@@ -82,7 +82,7 @@ oper.e.generic_spct <- function(e1, e2, oper) {
       names(z)[2] <- "s.e.irrad"
       setSourceSpct(z, strict.range = getOption("photobiology.strict.range",
                                                 default = FALSE))
-      return(z)
+      return(merge_attributes(e1, e2, z))
     } else if (class2 == "cps_spct") {
       z <- oper_spectra(e1$w.length, e2$w.length,
                         e1$cps, e2$cps,
@@ -156,7 +156,7 @@ oper.e.generic_spct <- function(e1, e2, oper) {
       setSourceSpct(z, time.unit=getTimeUnit(e1), bswf.used = bswf.used,
                     strict.range = getOption("photobiology.strict.range",
                                              default = FALSE))
-      return(z)
+      return(merge_attributes(e1, e2, z))
     } else if (class2 == "filter_spct") {
       filter.quantity <- getOption("photobiology.filter.qty", default="transmittance")
       if (filter.quantity=="transmittance") {
@@ -195,7 +195,7 @@ oper.e.generic_spct <- function(e1, e2, oper) {
         names(z)[2] <- "s.e.response"
         setResponseSpct(z, time.unit=getTimeUnit(e1))
       }
-      return(z)
+      return(merge_attributes(e1, e2, z))
     } else if (class2 == "reflector_spct") {
       if (!identical(oper, `*`) && !identical(oper, `/`)) {
         warning("Only '*' and '/' are allowed between source_spct and reflector_spct objects")
@@ -208,7 +208,7 @@ oper.e.generic_spct <- function(e1, e2, oper) {
       setSourceSpct(z, time.unit=getTimeUnit(e1), bswf.used = getBSWFUsed(e1),
                     strict.range = getOption("photobiology.strict.range",
                                              default = FALSE))
-      return(z)
+      return(merge_attributes(e1, e2, z))
     } else if (class2 == "response_spct") {
       q2e(e2, action = "replace", byref = TRUE)
       if (!identical(oper, `*`) && !identical(oper, `/`)) {
@@ -220,7 +220,7 @@ oper.e.generic_spct <- function(e1, e2, oper) {
                         bin.oper=oper, trim="intersection")
       names(z)[2] <- "s.e.response"
       setResponseSpct(z, time.unit=getTimeUnit(e1))
-      return(z)
+      return(merge_attributes(e1, e2, z))
     } else if (class2 == "chroma_spct") {
       if (!identical(oper, `*`) && !identical(oper, `/`)) {
         warning("Only '*' and '/' are allowed between source_spct and chroma_spct objects")
@@ -238,7 +238,7 @@ oper.e.generic_spct <- function(e1, e2, oper) {
       z <- tibble::tibble(w.length=x$w.length, x=x[["s.irrad"]],
                              y=y[["s.irrad"]], z=z[["s.irrad"]])
       setChromaSpct(z)
-      return(z)
+      return(merge_attributes(e1, e2, z))
     } else { # this traps also e2 == "generic_spct"
       warning("Operations involving generic_spct are undefined and always return NA")
       return(NA)
@@ -272,6 +272,7 @@ oper.e.generic_spct <- function(e1, e2, oper) {
         setSourceSpct(z, time.unit=getTimeUnit(e2), bswf.used = getBSWFUsed(e2),
                       strict.range = getOption("photobiology.strict.range",
                                                default = FALSE))
+        return(merge_attributes(e1, e2, z))
       } else if (class2 == "filter_spct") {
         e2 <- A2T(e2)
         if (!identical(oper, `*`) && !identical(oper, `/`)) {
@@ -284,7 +285,7 @@ oper.e.generic_spct <- function(e1, e2, oper) {
         names(z)[2] <- "Tfr"
         setFilterSpct(z, strict.range = getOption("photobiology.strict.range",
                                                   default = FALSE))
-        return(z)
+        return(merge_attributes(e1, e2, z))
       } else { # this traps optically illegal operations
         warning("The operation attempted is undefined according to Optics laws or the input is malformed")
         return(NA)
@@ -309,7 +310,7 @@ oper.e.generic_spct <- function(e1, e2, oper) {
                           bin.oper=oper, trim="intersection")
         names(z)[2] <- "s.e.response"
         setResponseSpct(z, time.unit=getTimeUnit(e2))
-        return(z)
+        return(merge_attributes(e1, e2, z))
       } else if (class2 == "filter_spct") {
         T2Afr(e2, action = "add", byref = TRUE)
         if (!identical(oper, `*`) && !identical(oper, `/`)) {
@@ -322,7 +323,7 @@ oper.e.generic_spct <- function(e1, e2, oper) {
         names(z)[2] <- "Afr"
         setFilterSpct(z, strict.range = getOption("photobiology.strict.range",
                                                   default = FALSE))
-        return(z)
+        return(merge_attributes(e1, e2, z))
       } else { # this traps optically illegal operations
         warning("The operation attempted is undefined according to Optics laws or the input is malformed")
         return(NA)
@@ -347,7 +348,7 @@ oper.e.generic_spct <- function(e1, e2, oper) {
                           bin.oper=oper, trim="intersection")
         names(z)[2] <- "s.e.response"
         setResponseSpct(z, time.unit=getTimeUnit(e2))
-        return(z)
+        return(merge_attributes(e1, e2, z))
       } else if (class2 == "filter_spct") {
         T2A(e2, action = "add", byref = TRUE)
         if (!identical(oper, `+`) && !identical(oper, `-`)) {
@@ -360,7 +361,7 @@ oper.e.generic_spct <- function(e1, e2, oper) {
         names(z)[2] <- "A"
         setFilterSpct(z, strict.range = getOption("photobiology.strict.range",
                                                   default = FALSE))
-        return(z)
+        return(merge_attributes(e1, e2, z))
       } else { # this traps optically illegal operations
         warning("The operation attempted is undefined according to Optics laws or the input is malformed")
         return(NA)
@@ -379,7 +380,7 @@ oper.e.generic_spct <- function(e1, e2, oper) {
       names(z)[2] <- "Rfr"
       setReflectorSpct(z, strict.range = getOption("photobiology.strict.range",
                                                    default = FALSE))
-      return(z)
+      return(merge_attributes(e1, e2, z))
     } else if (class2 == "source_spct") {
       if (!identical(oper, `*`) && !identical(oper, `/`)) {
         warning("Only '*' and '/' are allowed between reflector_spct and source_spct objects")
@@ -394,7 +395,7 @@ oper.e.generic_spct <- function(e1, e2, oper) {
       setSourceSpct(z, time.unit=getTimeUnit(e2), bswf.used = getBSWFUsed(e2),
                     strict.range = getOption("photobiology.strict.range",
                                              default = FALSE))
-      return(z)
+      return(merge_attributes(e1, e2, z))
     } else { # this traps optically illegal operations
       warning("The operation attempted is undefined according to Optics laws or the input is malformed")
       return(NA)
@@ -413,7 +414,7 @@ oper.e.generic_spct <- function(e1, e2, oper) {
                         bin.oper=oper, trim="intersection")
       names(z)[2] <- "s.e.response"
       setResponseSpct(z, time.unit=getTimeUnit(e1))
-      return(z)
+      return(merge_attributes(e1, e2, z))
     } else if (class2 == "source_spct") {
       if (!identical(oper, `*`) && !identical(oper, `/`)) {
         warning("Only '*' and '/' are allowed between response_spct and source_spct objects")
@@ -425,7 +426,7 @@ oper.e.generic_spct <- function(e1, e2, oper) {
                         bin.oper=oper, trim="intersection")
       names(z)[2] <- "s.e.response"
       setResponseSpct(z, time.unit=getTimeUnit(e2))
-      return(z)
+      return(merge_attributes(e1, e2, z))
     } else { # this traps optically illegal operations
       warning("The operation attempted is undefined according to Optics laws or the input is malformed")
       return(NA)
@@ -453,8 +454,9 @@ oper.e.generic_spct <- function(e1, e2, oper) {
       z <- oper_spectra(e1$w.length, e2$w.length,
                         e1$z, e2$z,
                         bin.oper=oper, trim="intersection")
-      return(chroma_spct(w.length=x$w.length,
-                         x=x[["s.irrad"]], y=y[["s.irrad"]], z=z[["s.irrad"]]))
+      zz <- chroma_spct(w.length=x$w.length,
+                         x=x[["s.irrad"]], y=y[["s.irrad"]], z=z[["s.irrad"]])
+      return(merge_attributes(e1, e2, zz))
     } else if (class2 == "source_spct") {
       q2e(e2, action = "replace", byref = TRUE)
       x <- oper_spectra(e1$w.length, e2$w.length,
@@ -466,8 +468,9 @@ oper.e.generic_spct <- function(e1, e2, oper) {
       z <- oper_spectra(e1$w.length, e2$w.length,
                         e1$z, e2$s.e.irrad,
                         bin.oper=oper, trim="intersection")
-      return(chroma_spct(w.length=x$w.length,
-                         x=x[["s.irrad"]], y=y[["s.irrad"]], z=z[["s.irrad"]]))
+      zz <- chroma_spct(w.length=x$w.length,
+                         x=x[["s.irrad"]], y=y[["s.irrad"]], z=z[["s.irrad"]])
+      return(merge_attributes(e1, e2, zz))
     }
   } else if (is.numeric(e1)) {
     if (class2 == "calibration_spct") {
@@ -580,6 +583,7 @@ oper.q.generic_spct <- function(e1, e2, oper) {
       names(z)[2] <- "s.e.irrad"
       setSourceSpct(z, strict.range = getOption("photobiology.strict.range",
                                                 default = FALSE))
+      z <- merge_attributes(e1, e2, z)
       # we store only calibration multipliers in energy units!
       return(e2q(z))
     } else {
@@ -603,7 +607,7 @@ oper.q.generic_spct <- function(e1, e2, oper) {
       names(z)[2] <- "counts"
       setRawSpct(z, strict.range = getOption("photobiology.strict.range",
                                              default = FALSE))
-      return(z)
+      return(merge_attributes(e1, e2, z))
     } else {
       warning("operation between 'raw_spct' and ", class(e2)[1],
               " objects not implemented")
@@ -620,6 +624,7 @@ oper.q.generic_spct <- function(e1, e2, oper) {
       names(z)[2] <- "s.e.irrad"
       setSourceSpct(z, strict.range = getOption("photobiology.strict.range",
                                                 default = FALSE))
+      z <- merge_attributes(e1, e2, z)
       # we store only calibration multipliers in energy units!
       return(e2q(z))
     } else if (class2 == "cps_spct") {
@@ -629,7 +634,7 @@ oper.q.generic_spct <- function(e1, e2, oper) {
       names(z)[2] <- "cps"
       setCpsSpct(z, strict.range = getOption("photobiology.strict.range",
                                              default = FALSE))
-      return(z)
+      return(merge_attributes(e1, e2, z))
     } else {
       warning("operation between 'cps_spct' and ", class(e2)[1],
               " objects not implemented")
@@ -696,7 +701,7 @@ oper.q.generic_spct <- function(e1, e2, oper) {
       setSourceSpct(z, time.unit = getTimeUnit(e1), bswf.used = bswf.used,
                     strict.range = getOption("photobiology.strict.range",
                                              default = FALSE))
-      return(z)
+      return(merge_attributes(e1, e2, z))
     } else if (class2 == "filter_spct") {
       filter.quantity <- getOption("photobiology.filter.qty", default="transmittance")
       if (filter.quantity=="transmittance") {
@@ -729,7 +734,7 @@ oper.q.generic_spct <- function(e1, e2, oper) {
         names(z)[2] <- "s.q.response"
         setResponseSpct(z)
       }
-      return(z)
+      return(merge_attributes(e1, e2, z))
     } else if (class2 == "reflector_spct") {
       if (!identical(oper, `*`)) return(NA)
       z <- oper_spectra(e1$w.length, e2$w.length,
@@ -739,7 +744,7 @@ oper.q.generic_spct <- function(e1, e2, oper) {
       setSourceSpct(z, time.unit = getTimeUnit(e1), bswf.used = getBSWFUsed(e1),
                     strict.range = getOption("photobiology.strict.range",
                                              default = FALSE))
-      return(z)
+      return(merge_attributes(e1, e2, z))
     } else if (class2 == "response_spct") {
       if (!identical(oper, `*`)) return(NA)
       e2q(e2, action = "replace", byref = TRUE)
@@ -748,7 +753,7 @@ oper.q.generic_spct <- function(e1, e2, oper) {
                         bin.oper=oper, trim="intersection")
       names(z)[2] <- "s.q.response"
       setResponseSpct(z)
-      return(z)
+      return(merge_attributes(e1, e2, z))
     } else if (class2 == "chroma_spct") {
       if (!identical(oper, `*`)) return(NA)
       x <- oper_spectra(e1$w.length, e2$w.length,
@@ -763,7 +768,7 @@ oper.q.generic_spct <- function(e1, e2, oper) {
       z <- tibble::tibble(w.length=x$w.length,
                              x=x[["s.irrad"]], y=y[["s.irrad"]], z=z[["s.irrad"]])
       setChromaSpct(z)
-      return(z)
+      return(merge_attributes(e1, e2, z))
     } else { # this traps also e2 == "generic_spct"
       return(NA)
     }
@@ -797,7 +802,7 @@ oper.q.generic_spct <- function(e1, e2, oper) {
         names(z)[2] <- "Tfr"
         setFilterSpct(z, strict.range = getOption("photobiology.strict.range",
                                                   default = FALSE))
-        return(z)
+        return(merge_attributes(e1, e2, z))
       } else { # this traps optically illegal operations
         warning("The operation attempted is undefined according to Optics laws or the input is malformed")
         return(NA)
@@ -818,7 +823,7 @@ oper.q.generic_spct <- function(e1, e2, oper) {
                           bin.oper=oper, trim="intersection")
         names(z)[2] <- "s.q.response"
         setResponseSpct(z)
-        return(z)
+        return(merge_attributes(e1, e2, z))
       } else if (class2 == "filter_spct") {
         T2A(e2, action = "add", byref = TRUE)
         if (!identical(oper, `+`) || !identical(oper, `-`)) return(NA)
@@ -828,7 +833,7 @@ oper.q.generic_spct <- function(e1, e2, oper) {
         names(z)[2] <- "A"
         setFilterSpct(z, strict.range = getOption("photobiology.strict.range",
                                                   default = FALSE))
-        return(z)
+        return(merge_attributes(e1, e2, z))
       } else { # this traps optically illegal operations
         warning("The operation attempted is undefined according to Optics laws or the input is malformed")
         return(NA)
@@ -849,7 +854,7 @@ oper.q.generic_spct <- function(e1, e2, oper) {
                           bin.oper=oper, trim="intersection")
         names(z)[2] <- "s.q.response"
         setResponseSpct(z)
-        return(z)
+        return(merge_attributes(e1, e2, z))
       } else if (class2 == "filter_spct") {
         T2A(e2, action = "add", byref = TRUE)
         if (!identical(oper, `+`) || !identical(oper, `-`)) return(NA)
@@ -859,7 +864,7 @@ oper.q.generic_spct <- function(e1, e2, oper) {
         names(z)[2] <- "A"
         setFilterSpct(z, strict.range = getOption("photobiology.strict.range",
                                                   default = FALSE))
-        return(z)
+        return(merge_attributes(e1, e2, z))
       } else { # this traps optically illegal operations
         warning("The operation attempted is undefined according to Optics laws or the input is malformed")
         return(NA)
@@ -877,7 +882,7 @@ oper.q.generic_spct <- function(e1, e2, oper) {
       names(z)[2] <- "Rfr"
       setReflectorSpct(z, strict.range = getOption("photobiology.strict.range",
                                                    default = FALSE))
-      return(z)
+      return(merge_attributes(e1, e2, z))
     } else if (class2 == "source_spct") {
       if (!identical(oper, `*`)) return(NA)
       e2q(e2, action = "replace", byref = TRUE)
@@ -888,7 +893,7 @@ oper.q.generic_spct <- function(e1, e2, oper) {
       setSourceSpct(z, time.unit = getTimeUnit(e2), bswf.used = getBSWFUsed(e2),
                     strict.range = getOption("photobiology.strict.range",
                                              default = FALSE))
-      return(z)
+      return(merge_attributes(e1, e2, z))
     } else { # this traps optically illegal operations
       warning("The operation attempted is undefined according to Optics laws or the input is malformed")
       return(NA)
@@ -909,7 +914,7 @@ oper.q.generic_spct <- function(e1, e2, oper) {
                         bin.oper=oper, trim="intersection")
       names(z)[2] <- "s.q.response"
       setResponseSpct(z, time.unit=getTimeUnit(e1))
-      return(z)
+      return(merge_attributes(e1, e2, z))
     } else if (class2 == "source_spct") {
       if (!identical(oper, `*`)) return(NA)
       e2q(e2, action = "replace", byref = TRUE)
@@ -918,7 +923,7 @@ oper.q.generic_spct <- function(e1, e2, oper) {
                         bin.oper=oper, trim="intersection")
       names(z)[2] <- "s.q.response"
       setResponseSpct(z)
-      return(z)
+      return(merge_attributes(e1, e2, z))
     } else { # this traps optically illegal operations
       warning("The operation attempted is undefined according to Optics laws or the input is malformed")
       return(NA)
@@ -940,13 +945,15 @@ oper.q.generic_spct <- function(e1, e2, oper) {
       x <- oper_spectra(e1$w.length, e2$w.length, e1$x, e2$x, bin.oper=oper, trim="intersection")
       y <- oper_spectra(e1$w.length, e2$w.length, e1$y, e2$y, bin.oper=oper, trim="intersection")
       z <- oper_spectra(e1$w.length, e2$w.length, e1$z, e2$z, bin.oper=oper, trim="intersection")
-      return(chroma_spct(w.length=x$w.length, x=x[["s.irrad"]], y=y[["s.irrad"]], z=z[["s.irrad"]]))
+      zz <- chroma_spct(w.length=x$w.length, x=x[["s.irrad"]], y=y[["s.irrad"]], z=z[["s.irrad"]])
+      return(merge_attributes(e1, e2, zz))
     } else if (class2 == "source_spct") {
       e2q(e2, action = "replace", byref = TRUE)
       x <- oper_spectra(e1$w.length, e2$w.length, e1$x, e2$s.q.irrad, bin.oper=oper, trim="intersection")
       y <- oper_spectra(e1$w.length, e2$w.length, e1$y, e2$s.q.irrad, bin.oper=oper, trim="intersection")
       z <- oper_spectra(e1$w.length, e2$w.length, e1$z, e2$s.q.irrad, bin.oper=oper, trim="intersection")
-      return(chroma_spct(w.length=x$w.length, x=x[["s.irrad"]], y=y[["s.irrad"]], z=z[["s.irrad"]]))
+      zz <- chroma_spct(w.length=x$w.length, x=x[["s.irrad"]], y=y[["s.irrad"]], z=z[["s.irrad"]])
+      return(merge_attributes(e1, e2, zz))
     }
   } else if (is.numeric(e1)) {
     if (class2 == "calibration_spct") {
