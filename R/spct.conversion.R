@@ -38,6 +38,7 @@ cps2irrad <- function(x.sample, pre.fun = NULL, ...) {
   z[[cps.col.sample]] <- NULL
   z[["s.e.irrad"]] <- x.sample[[cps.col.sample]] * irrad.mult
   setSourceSpct(z)
+  copy_attributes(x.sample, z)
   if (length(descriptor[["inst.calib"]][["wl.range"]]) == 2) {
     clip_wl(z, descriptor[["inst.calib"]][["wl.range"]])
   }
@@ -96,6 +97,7 @@ cps2Rfr <- function(x.sample,
                        NA_real_,
                        z[["Rfr"]])
   setReflectorSpct(z)
+  copy_attributes(x.sample, z)
 }
 
 #' @rdname cps2irrad
@@ -151,4 +153,5 @@ cps2Tfr <- function(x.sample,
                        NA_real_,
                        z[["Tfr"]])
   setFilterSpct(z)
+  copy_attributes(x.sample, z)
 }
