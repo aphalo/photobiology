@@ -17,20 +17,19 @@ Ler_06_black.tfr_spct %>%
   smooth_spct(method = "supsmu", strength = 3) %>%
   clean() -> Ler_leaf_trns.spct
 
-merge(Ler_leaf_rflt.spct,
-      Ler_leaf_trns.spct,
-      w.length.out = seq(from = 250, to = 850, by = 0.25),
-      Tfr.type.out = "total") %>%
+merge2object_spct(Ler_leaf_rflt.spct,
+                  Ler_leaf_trns.spct,
+                  w.length.out = seq(from = 250, to = 850, by = 0.25),
+                  Tfr.type.out = "total") %>%
   na.omit() -> Ler_leaf.spct
 
-merge(Ler_leaf_rflt.spct,
-      Ler_leaf_trns.spct,
-      w.length.out = seq(from = 250, to = 850, by = 0.25),
-      Tfr.type.out = "internal") %>%
+merge2object_spct(Ler_leaf_rflt.spct,
+                  Ler_leaf_trns.spct,
+                  w.length.out = seq(from = 250, to = 850, by = 0.25),
+                  Tfr.type.out = "internal") %>%
   na.omit() -> Ler_leaf_i.spct
 
-Ler_leaf_trns_i.spct
-  Ler_leaf_i.spct %>%
+Ler_leaf_i.spct %>%
   as.filter_spct() %>%
   select(-Rfr) %>%
   clean() -> Ler_leaf_trns_i.spct
