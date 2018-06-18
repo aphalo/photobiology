@@ -38,8 +38,7 @@ normalize.default <- function(x, ...) {
 #'   length 2 with the limits of a range of wavelengths in nm, with min and max
 #'   wavelengths (nm) used to set boundaries for search for normalization.
 #' @param norm numeric Normalization wavelength (nm) or character string "max",
-#'   or "min" for normalization at the corresponding wavelength, or "integral" or
-#'   "mean" for rescaling by dividing by these values.
+#'   or "min" for normalization at the corresponding wavelength.
 #' @param unit.out character Allowed values "energy", and "photon",
 #'   or its alias "quantum"
 #' @param na.rm logical indicating whether \code{NA} values should be stripped
@@ -379,7 +378,7 @@ normalize.cps_mspct <- function(x,
 normalize_spct <- function(spct, range, norm, col.names, na.rm) {
   stopifnot(is.generic_spct(spct), !is.null(col.names),
             col.names %in% names(spct))
-  if (getMultipleWl(spct) != 1) {
+  if (getMultipleWl(spct) != 1L) {
     warning("Object contains data for ",
             getMultipleWl(spct), " spectra; skipping normalization")
     return(spct)
@@ -387,6 +386,10 @@ normalize_spct <- function(spct, range, norm, col.names, na.rm) {
   # normalization will wipe out any existing scaling
   if (is_scaled(spct)) {
     setScaled(spct, scaled = FALSE)
+  }
+
+  if (is_normalized(spct)) {
+    setNormalized(spct, norm = FALSE)
   }
 
   if (na.rm) {
