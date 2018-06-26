@@ -12,7 +12,7 @@
 
 <meta name="author" content="Pedro J. Aphalo" />
 
-<meta name="date" content="2018-06-12" />
+<meta name="date" content="2018-06-18" />
 
 <title>User Guide: 3 Astronomy</title>
 
@@ -279,9 +279,9 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 
 
 <h1 class="title toc-ignore">User Guide: 3 Astronomy</h1>
-<h3 class="subtitle"><em>Package ‘photobiology’ 0.9.20.9002</em></h3>
+<h3 class="subtitle"><em>Package ‘photobiology’ 0.9.21</em></h3>
 <h4 class="author"><em>Pedro J. Aphalo</em></h4>
-<h4 class="date"><em>2018-06-12</em></h4>
+<h4 class="date"><em>2018-06-18</em></h4>
 
 
 <div id="TOC">
@@ -326,9 +326,9 @@ In versions 0.9.16 and later the code has been optimized for performance with ti
 <p>Functions have defaults for their arguments, but rarely Greenwich will be the location you are interested in.</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="kw">sun_angles</span>()</a></code></pre></div>
 <pre><code>##                  time  tz solartime longitude latitude   address  azimuth
-## 1 2018-06-12 17:34:14 UTC  17:34:15         0     51.5 Greenwich 280.2126
+## 1 2018-06-26 11:53:44 UTC  11:50:48         0     51.5 Greenwich 175.5365
 ##   elevation
-## 1  21.85939</code></pre>
+## 1  61.78059</code></pre>
 <p>A vector of times is accepted as argument, and as performance is optimized for this case, <em>vectorization</em> will markedly improve performance compared to multiple calls to the function. The vector of times can be created on the fly, or stored beforehand.</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="kw">sun_angles</span>(<span class="dt">time =</span> <span class="kw">ymd_hms</span>(<span class="st">&quot;2014-01-01 0:0:0&quot;</span>, <span class="dt">tz =</span> <span class="st">&quot;EET&quot;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">hours</span>(<span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">6</span>, <span class="dv">12</span>)), </a>
 <a class="sourceLine" id="cb7-2" data-line-number="2">           <span class="dt">geocode =</span> my.geocode)</a></code></pre></div>
@@ -392,9 +392,9 @@ In versions 0.9.16 and later the code has been optimized for performance with ti
 <pre><code>## [1] &quot;2015-03-01 EET&quot;  &quot;2015-04-01 EEST&quot; &quot;2015-05-01 EEST&quot; &quot;2015-06-01 EEST&quot;
 ## [5] &quot;2015-07-01 EEST&quot; &quot;2015-08-01 EEST&quot;</code></pre>
 <div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb23-1" data-line-number="1"><span class="kw">sunrise_time</span>(<span class="kw">now</span>(<span class="st">&quot;UTC&quot;</span>), <span class="dt">tz =</span> <span class="st">&quot;UTC&quot;</span>, <span class="dt">geocode =</span> my.geocode)</a></code></pre></div>
-<pre><code>## [1] &quot;2018-06-12 00:55:49 UTC&quot;</code></pre>
+<pre><code>## [1] &quot;2018-06-26 00:56:43 UTC&quot;</code></pre>
 <div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb25-1" data-line-number="1"><span class="kw">sunrise_time</span>(<span class="kw">now</span>(<span class="st">&quot;EET&quot;</span>), <span class="dt">tz =</span> <span class="st">&quot;EET&quot;</span>, <span class="dt">geocode =</span> my.geocode)</a></code></pre></div>
-<pre><code>## [1] &quot;2018-06-12 03:55:49 EEST&quot;</code></pre>
+<pre><code>## [1] &quot;2018-06-26 03:56:43 EEST&quot;</code></pre>
 <p>Southern hemisphere latitudes as well as longitudes to the West of the Greenwich meridian should be supplied as negative numbers.</p>
 <div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb27-1" data-line-number="1"><span class="kw">sunrise_time</span>(dates, <span class="dt">geocode =</span> <span class="kw">data.frame</span>(<span class="dt">lat =</span> <span class="dv">60</span>, <span class="dt">lon =</span> <span class="dv">0</span>))</a></code></pre></div>
 <pre><code>## [1] &quot;2015-02-28 09:01:01 EET&quot;  &quot;2015-03-31 08:27:48 EEST&quot;
@@ -492,7 +492,7 @@ In versions 0.9.16 and later the code has been optimized for performance with ti
 ## [5] &quot;2015-06-30 22:47:57 EEST&quot; &quot;2015-07-31 21:55:14 EEST&quot;</code></pre>
 <p>The default for <code>date</code> is the current day, using the system time zone settings.</p>
 <div class="sourceCode" id="cb53"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb53-1" data-line-number="1"><span class="kw">noon_time</span>(<span class="dt">geocode =</span> my.geocode)</a></code></pre></div>
-<pre><code>## [1] &quot;2018-06-12 13:20:12 EEST&quot;</code></pre>
+<pre><code>## [1] &quot;2018-06-26 13:23:12 EEST&quot;</code></pre>
 <p>Parameter <code>unit.out</code> can be used to obtain the returned value expressed as time-of-day in hours, minutes, or seconds since midnight, instead of the default <code>datetime</code>.</p>
 <div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb55-1" data-line-number="1"><span class="kw">sunrise_time</span>(<span class="kw">ymd</span>(<span class="st">&quot;2017-03-21&quot;</span>, <span class="dt">tz =</span> <span class="st">&quot;EET&quot;</span>), </a>
 <a class="sourceLine" id="cb55-2" data-line-number="2">             <span class="dt">tz =</span> <span class="st">&quot;EET&quot;</span>, </a>
@@ -538,14 +538,14 @@ In versions 0.9.16 and later the code has been optimized for performance with ti
 <p>Function <code>as_tod()</code> facilitates conversion of R’s time date objects into a numeric value representing the time of day in one of hour, minute or second as unit of expression.</p>
 <div class="sourceCode" id="cb79"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb79-1" data-line-number="1">times &lt;-<span class="st"> </span><span class="kw">now</span>(<span class="dt">tzone =</span> <span class="st">&quot;UTC&quot;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">hours</span>(<span class="dv">0</span><span class="op">:</span><span class="dv">6</span>)</a>
 <a class="sourceLine" id="cb79-2" data-line-number="2">times</a></code></pre></div>
-<pre><code>## [1] &quot;2018-06-12 17:34:15 UTC&quot; &quot;2018-06-12 18:34:15 UTC&quot;
-## [3] &quot;2018-06-12 19:34:15 UTC&quot; &quot;2018-06-12 20:34:15 UTC&quot;
-## [5] &quot;2018-06-12 21:34:15 UTC&quot; &quot;2018-06-12 22:34:15 UTC&quot;
-## [7] &quot;2018-06-12 23:34:15 UTC&quot;</code></pre>
+<pre><code>## [1] &quot;2018-06-26 11:53:45 UTC&quot; &quot;2018-06-26 12:53:45 UTC&quot;
+## [3] &quot;2018-06-26 13:53:45 UTC&quot; &quot;2018-06-26 14:53:45 UTC&quot;
+## [5] &quot;2018-06-26 15:53:45 UTC&quot; &quot;2018-06-26 16:53:45 UTC&quot;
+## [7] &quot;2018-06-26 17:53:45 UTC&quot;</code></pre>
 <div class="sourceCode" id="cb81"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb81-1" data-line-number="1"><span class="kw">as_tod</span>(times)</a></code></pre></div>
-<pre><code>## [1] 17.5709 18.5709 19.5709 20.5709 21.5709 22.5709 23.5709</code></pre>
+<pre><code>## [1] 11.89588 12.89588 13.89588 14.89588 15.89588 16.89588 17.89588</code></pre>
 <div class="sourceCode" id="cb83"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb83-1" data-line-number="1"><span class="kw">as_tod</span>(times, <span class="dt">unit.out =</span> <span class="st">&quot;minutes&quot;</span>)</a></code></pre></div>
-<pre><code>## [1] 1054.254 1114.254 1174.254 1234.254 1294.254 1354.254 1414.254</code></pre>
+<pre><code>## [1]  713.7531  773.7531  833.7531  893.7531  953.7531 1013.7531 1073.7531</code></pre>
 </div>
 <div id="relative-air-mass" class="section level2">
 <h2>Relative air mass</h2>

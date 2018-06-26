@@ -2,7 +2,7 @@
 title: "User Guide: 3 Astronomy"
 subtitle: "Package 'photobiology' `r packageVersion('photobiology')` "
 author: "Pedro J. Aphalo"
-date: "`r Sys.Date()`"
+date: "`r packageDate('photobiology')`"
 output: 
   rmarkdown::html_vignette:
     toc: yes

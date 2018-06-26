@@ -2237,7 +2237,7 @@ getWhenMeasured.generic_mspct <- function(x,
 #'
 #' @param x a generic_spct object
 #' @param where.measured A one row data.frame such as returned by
-#'   \code{\link[ggmap]{geocode}} for a location search.
+#'   function \code{geocode} from package 'ggmap' for a location search.
 #' @param lat numeric Latitude in decimal degrees North
 #' @param lon numeric Longitude in decimal degrees West
 #' @param ... Allows use of additional arguments in methods for other classes.

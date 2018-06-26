@@ -1,4 +1,4 @@
-photobiology 0.9.21 (2018-XX-XX)
+photobiology 0.9.21 (2018-06-18)
 ================================
 
 * Fix bugs in copy_attributes() function (some attributes were not copied).
