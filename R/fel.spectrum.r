@@ -18,8 +18,8 @@
 #' @note This is function is valid for wavelengths in the range 250 nm to 900
 #'   nm, for wavelengths outside this range NAs are returned.
 #' @examples
-#' FEL_spectrum(200)
-#' FEL_spectrum(170:220)
+#' FEL_spectrum(400)
+#' FEL_spectrum(250:900)
 
 FEL_spectrum <- function(w.length,
                          k = photobiology::FEL.BN.9101.165,
