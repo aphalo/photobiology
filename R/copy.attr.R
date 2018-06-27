@@ -203,7 +203,7 @@ merge_attributes.generic_spct <- function(x, y, z,
     } else if (length(att.y) == 0L) {
       attr(z, w) <- att.x
     } else if (is.na(att.x) || is.na(att.y) || att.x != att.y) {
-      attr(z, w) <- NA
+      attr(z, w) <- ifelse(w == "comment", NA_character_, NA)
     } else {
       attr(z, w) <- att.x
     }
