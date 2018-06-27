@@ -9,6 +9,9 @@
 #' @param over.ice logical Is the estimate for equilibrium with liquid water or with ice.
 #' @param method character Currently "tetens" and modified "magnus" equations
 #'   are supported.
+#' @param check.range logical Flag indicating whether to check or not that
+#'   arguments for temperature are within the range of validity of the
+#'   \code{method} used.
 #'
 #' @details This is an implementation of Tetens (1930) equation for the cases of
 #'   equilibrium with a water and an ice surface and of the modified Magnus
@@ -63,18 +66,27 @@
 #'
 water_vp_sat <- function(temperature,
                          over.ice = FALSE,
-                         method = "tetens") {
+                         method = "tetens",
+                         check.range = TRUE) {
   method <- tolower(method)
   if (any(temperature > 0) && over.ice) {
     warning("At temperature > 0 C, ice surface will be wet.")
   }
   if (method == "magnus") {
+    if (check.range & any(temperature < -50)) {
+      warning("Out of bounds temperature value(s) set to NA.")
+      temperature <- ifelse(temperature < -50, NA_real_, temperature)
+    }
     if (over.ice) {
       z <- 611.21 * exp(22.587 * temperature / (273.86 + temperature))
     } else {
       z <- 610.94 * exp(17.625 * temperature / (243.04 + temperature))
     }
   } else if (method == "tetens") {
+    if (check.range & any(temperature < -50)) {
+      warning("Out of bounds temperature value(s) set to NA")
+      temperature <- ifelse(temperature < -50, NA_real_, temperature)
+    }
     if (over.ice) {
       z <- 610.78 * exp(21.875 * temperature / (265.5 + temperature))
     } else {
@@ -93,19 +105,32 @@ water_vp_sat <- function(temperature,
 #'
 water_dp <- function(water.vp,
                      over.ice = FALSE,
-                     method = "tetens") {
+                     method = "tetens",
+                     check.range = TRUE) {
   method <- tolower(method)
+  if (any(water.vp <= 0)) {
+    warning("Dew point is not defined for vapour pressure  <= 0 Pa.")
+    water.vp <- ifelse(water.vp <= 0, NA_real_, water.vp)
+  }
   if (method == "magnus") {
     if (over.ice) {
       z <- 273.86 * log(water.vp / 611.21) / (22.587 - log(water.vp / 611.21))
     } else {
       z <- 243.04 * log(water.vp / 610.94) / (17.625 - log(water.vp / 610.94))
     }
+    if (check.range & any((!is.na(z)) & z < -50)) {
+      warning("Out of bounds temperature value(s) set to NA.")
+      z <- ifelse((!is.na(z)) & z < -50, NA_real_, z)
+    }
   } else if (method == "tetens") {
     if (over.ice) {
       z <- 265.5  * log(water.vp / 610.78) / (21.875 - log(water.vp / 610.78))
     } else {
       z <- 237.3  * log(water.vp / 610.78) / (17.269 - log(water.vp / 610.78))
+    }
+    if (check.range & any((!is.na(z)) & z < -50)) {
+      warning("Out of bounds temperature value(s) set to NA.")
+      z <- ifelse((!is.na(z)) & z < -50, NA_real_, z)
     }
   } else {
     warning("Method '", method, "' is unknown.")
