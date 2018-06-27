@@ -19,7 +19,7 @@ The package supports storage and manipulation of data for radiation quantities a
 
 This package is the core of a suite of R packages for photobiological calculations described at the [r4photobiology](http://www.r4photobiology.info) web site.
 
-## Example
+## Examples
 
 This first basic example shows you how to calculate solar irradiance in W/m2 below a filter. We use a measured solar spectrum and a measured filter transmission spectrum.
 
