@@ -62,7 +62,10 @@ check_spct.generic_spct <-
            ...)
   {
     # assert that option is set so that we can keep remaining code simpler.
-    stopifnot(!is.null(getOption("photobiology.verbose")))
+    # defensive code in case the option has been unset by the user
+    if (is.null(getOption("photobiology.verbose"))) {
+      options(photobiology.verbose = getOption("verbose"))
+    }
 
     # fix old class attributes
     class.x <- class_spct(x)
