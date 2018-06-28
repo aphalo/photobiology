@@ -1,6 +1,6 @@
 #' @details Package 'photobiology' is at the core of a suite of packages for
 #'   analysis and plotting of data relevant to photobiology (described at
-#'   \url{http://www.r4photobiology.info/}). The accompanying packages (under
+#'   \url{https://www.r4photobiology.info/}). The accompanying packages (under
 #'   development) provide data and definitions that are to a large extent
 #'   application-area specific while the functions in the present package are
 #'   widely useful in photobiology and radiation quantification in geophysics
