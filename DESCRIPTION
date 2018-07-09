@@ -29,7 +29,7 @@ Imports:
     plyr (>= 1.8.4),
     dplyr (>= 0.7.5),
     splus2R (>= 1.2-2),
-    caTools (>= 1.17.1),
+    zoo (>= 1.8-2),
     rlang (>= 0.2.1)
 Suggests:
     knitr (>= 1.20),
