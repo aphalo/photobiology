@@ -2,7 +2,7 @@ photobiology 0.9.22 (2018-07-09)
 ================================
 
 Remove dependency on 'caTools' which is no longer maintained and is
-schedulled to be archived in CRAN.
+scheduled to be archived in CRAN.
 
 photobiology 0.9.21 (2018-06-27)
 ================================
@@ -12,7 +12,7 @@ photobiology 0.9.21 (2018-06-27)
 cps2Rfr().
 * Add merge_attributes() function and fix bugs in handling of metadata
 attributes in math operators, affecting operations between two spectral objects.
-* Inprove handling of attributes in objects containing multiple spectra in tidy
+* Improve handling of attributes in objects containing multiple spectra in tidy
 (longitudinal) form. Revise setMultipleWl() to guess number of copies when
 multiple.wl argument is NULL. Add setIdFactor() and getIdFactor(), and add
 parameter 'idfactor' to setGenericSpct() and equivalent functions.
