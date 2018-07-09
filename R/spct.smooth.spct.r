@@ -103,7 +103,7 @@ smooth_spct.source_spct <- function(x, method = "custom", strength = 1, ...) {
     smooth_limit <- 1e-3 * smoothing_coef # just a guess for runmadmed
     smooth_threshold <- 5e-2 * max_irrad / strength # for s.e.irrad
 #    out.spct[["runmad"]] <- caTools::runmad(out.spct[["s.e.irrad"]], 7, endrule="mad")
-    out.spct[["runmad"]] <- zoo::rollapply(out.spct[["s.e.irrad"]], width = 7, FUN = mad, partial = TRUE)
+    out.spct[["runmad"]] <- zoo::rollapply(out.spct[["s.e.irrad"]], width = 7, FUN = stats::mad, partial = TRUE)
     out.spct[["runmed3"]] <- stats::runmed(out.spct[["s.e.irrad"]], 3, endrule="median")
     out.spct[["runmed7"]] <- stats::runmed(out.spct[["s.e.irrad"]], 7, endrule="median")
     out.spct[["runmed19"]] <- stats::runmed(out.spct[["s.e.irrad"]], 19, endrule="median")
@@ -212,7 +212,7 @@ smooth_spct.filter_spct <- function(x, method = "custom", strength = 1, ...) {
     smooth_limit <- 1e-3 * smoothing_coef # just a guess for runmadmed
     smooth_threshold <- 5e-2 * max_Tfr / strength # for Tfr
 #    out.spct[["runmad"]] <- caTools::runmad(out.spct[["Tfr"]], 7, endrule="mad")
-    out.spct[["runmad"]] <- zoo::rollapply(out.spct[["Tfr"]], width = 7, FUN = mad, partial = TRUE)
+    out.spct[["runmad"]] <- zoo::rollapply(out.spct[["Tfr"]], width = 7, FUN = stats::mad, partial = TRUE)
     out.spct[["runmed3"]] <- stats::runmed(out.spct[["Tfr"]], 3, endrule="median")
     out.spct[["runmed7"]] <- stats::runmed(out.spct[["Tfr"]], 7, endrule="median")
     out.spct[["runmed19"]] <- stats::runmed(out.spct[["Tfr"]], 19, endrule="median")
@@ -308,7 +308,7 @@ smooth_spct.reflector_spct <- function(x, method = "custom", strength = 1, ...) 
     smooth_limit <- 1e-3 * smoothing_coef # just a guess for runmadmed
     smooth_threshold <- 5e-2 * max_Rfr / strength # for Rfr
 #    out.spct[["runmad"]] <- caTools::runmad(out.spct[["Rfr"]], 7, endrule="mad")
-    out.spct[["runmad"]] <- zoo::rollapply(out.spct[["Rfr"]], width = 7, FUN = mad, partial = TRUE)
+    out.spct[["runmad"]] <- zoo::rollapply(out.spct[["Rfr"]], width = 7, FUN = stats::mad, partial = TRUE)
     out.spct[["runmed3"]] <- stats::runmed(out.spct[["Rfr"]], 3, endrule="median")
     out.spct[["runmed7"]] <- stats::runmed(out.spct[["Rfr"]], 7, endrule="median")
     out.spct[["runmed19"]] <- stats::runmed(out.spct[["Rfr"]], 19, endrule="median")
@@ -417,7 +417,7 @@ smooth_spct.response_spct <- function(x, method = "custom", strength = 1, ...) {
     smooth_limit <- 1e-3 * smoothing_coef # just a guess for runmadmed
     smooth_threshold <- 5e-2 * max_response / strength # for s.e.response
 #    out.spct[["runmad"]] <- caTools::runmad(out.spct[["s.e.response"]], 7, endrule="mad")
-    out.spct[["runmad"]] <- zoo::rollapply(out.spct[["s.e.response"]], width = 7, FUN = mad, partial = TRUE)
+    out.spct[["runmad"]] <- zoo::rollapply(out.spct[["s.e.response"]], width = 7, FUN = stats::mad, partial = TRUE)
     out.spct[["runmed3"]] <- stats::runmed(out.spct[["s.e.response"]], 3, endrule="median")
     out.spct[["runmed7"]] <- stats::runmed(out.spct[["s.e.response"]], 7, endrule="median")
     out.spct[["runmed19"]] <- stats::runmed(out.spct[["s.e.response"]], 19, endrule="median")
