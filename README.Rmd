@@ -11,7 +11,8 @@ knitr::opts_chunk$set(
 
 # photobiology
 
-[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version-last-release/photobiology)](https://cran.r-project.org/package=photobiology) 
+[![CRAN version](http://www.r-pkg.org/badges/version-last-release/photobiology)](https://cran.r-project.org/package=photobiology) 
+[![cran checks](https://cranchecks.info/badges/worst/photobiology)](https://cran.r-project.org/web/checks/check_results_photobiology.html)
 
 Package '**photobiology**' defines a system of classes for storing spectral data and accompanying metadata. For each of these classes specialised summary methods, maths operators and functions are provided. In addition, classes for storing collections of objects of the classes for individual spectra are defined as well as 'apply' functions. Extraction and replacement operators are also implemented. Functions for calculation of the position of the sun, times of sunrise and sunset, day length and night length are also provided.
 
