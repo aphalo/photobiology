@@ -7,7 +7,7 @@
 ^vignettes/*.html
 ^vignettes/*.R
 ^.*\.bak$
-^inst/web/*
+^inst-not
 ^docs$
 ^_pkgdown\.yml$
 ^README\.Rmd$
