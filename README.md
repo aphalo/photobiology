@@ -1,7 +1,12 @@
 
 # photobiology
 
-[![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version-last-release/photobiology)](https://cran.r-project.org/package=photobiology)
+[![CRAN
+version](http://www.r-pkg.org/badges/version-last-release/photobiology)](https://cran.r-project.org/package=photobiology)
+[![cran
+checks](https://cranchecks.info/badges/worst/photobiology)](https://cran.r-project.org/web/checks/check_results_photobiology.html)
+[![Bitbucket
+issues](https://img.shields.io/bitbucket/issues/atlassian/python-bitbucket.svg)](https://bitbucket.org/aphalo/photobiology/issues)
 
 Package ‘**photobiology**’ defines a system of classes for storing
 spectral data and accompanying metadata. For each of these classes
@@ -19,7 +24,7 @@ This package is the core of a suite of R packages for photobiological
 calculations described at the
 [r4photobiology](http://www.r4photobiology.info) web site.
 
-## Example
+## Examples
 
 This first basic example shows you how to calculate solar irradiance in
 W/m2 below a filter. We use a measured solar spectrum and a measured
@@ -43,9 +48,9 @@ the sun.
 geocode <- data.frame(lon = 0, lat = 55)
 date <- lubridate::today(tzone = "UTC")
 sunrise_time(date, tz = "UTC", geocode = geocode)
-#> [1] "2018-06-12 03:21:02 UTC"
+#> [1] "2018-08-10 04:26:03 UTC"
 day_length(date, tz = "UTC", geocode = geocode)
-#> [1] 17.29626
+#> [1] 15.30925
 ```
 
 ## Installation

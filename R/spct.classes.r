@@ -2214,7 +2214,7 @@ getWhenMeasured.summary_generic_spct <- function(x, ...) {
     when.measured <- suppressWarnings(lubridate::ymd_hms(NA_character_,
                                                          tz = "UTC"))
   }
-  when.measured
+  as.POSIXct(when.measured)
 }
 
 #' @describeIn getWhenMeasured generic_mspct
