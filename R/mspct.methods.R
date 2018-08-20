@@ -329,7 +329,9 @@ convolve_each <- function(e1, e2, oper = `*`, ...) {
 #'
 #' @param mspct generic_mspct Any collection of spectra.
 #' @param tb tibble or data.frame to which to add the data (optional).
-#' @param col.names character Name(s) of column(s) to create.
+#' @param col.names named character vector Name(s) of column(s) to create.
+#'   Values are the names of the attributes to copy, while if named, the names
+#'   provide the name for the column.
 #'
 #' @return A tibble With the metadata attributes in separate new variables.
 #'
@@ -341,23 +343,23 @@ convolve_each <- function(e1, e2, oper = `*`, ...) {
 #'   number of spectra in the argument passed to \code{mspct}. If the argument
 #'   to \code{col.names} is aa named vector, with the names of members matching
 #'   the names of attributes, then the values are used as names for the columns
-#'   created. This permits setting any valid name for the new columns.
-#'   If the vector passed to \code{col.names} has no names, then the
-#'   values are interpreted as the names of the attributes to add, and also
-#'   used as names for the new columns.
+#'   created. This permits setting any valid name for the new columns. If the
+#'   vector passed to \code{col.names} has no names, then the values are
+#'   interpreted as the names of the attributes to add, and also used as names
+#'   for the new columns.
 #'
 #' @note Currently supported attributes are \code{"when.measured"},
 #'   \code{"what.measured"} and \code{"where.measured"}. In the case of
 #'   \code{"where.measured"}, which has different components the name
-#'   \code{"where.measured"} is ignored, but instead the following
-#'   names are recognized: \code{"lon"} and \code{"lat"} for creating numeric
-#'   columns of longitudes and latitudes respectively, and \code{"geocode"}
-#'   for creating a column of data frames, in which case, if \code{tb} is not
-#'   already a \code{tibble} it is converted into one before adding the new
-#'   column.  The order of the first two arguments is reversed in
-#'   \code{add_attr2tb()} compared to the other functions. This is to allow
-#'   its use in 'pipes', while the functions for single attributes are expected
-#'   to be used mostly to create new tibbles.
+#'   \code{"where.measured"} is ignored, but instead the following names are
+#'   recognized: \code{"lon"} and \code{"lat"} for creating numeric columns of
+#'   longitudes and latitudes respectively, and \code{"geocode"} for creating a
+#'   column of data frames, in which case, if \code{tb} is not already a
+#'   \code{tibble} it is converted into one before adding the new column.  The
+#'   order of the first two arguments is reversed in \code{add_attr2tb()}
+#'   compared to the other functions. This is to allow its use in 'pipes', while
+#'   the functions for single attributes are expected to be used mostly to
+#'   create new tibbles.
 #'
 #' @examples
 #'
