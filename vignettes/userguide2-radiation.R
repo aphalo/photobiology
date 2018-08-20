@@ -555,7 +555,7 @@ irrad(sun.spct, c(400, 700))
 
 ## ---- irrad-4------------------------------------------------------------
 e_irrad(sun.spct, PAR.wb) # W m-2
-q_irrad(sun.spct, PAR.wb) * 1e6 # umol s-1 m-2
+q_irrad(sun.spct, PAR.wb, scale.factor = 1e6) # umol s-1 m-2
 
 ## ---- irrad-5------------------------------------------------------------
 irrad(sun.spct, PAR.wb, time.unit = "hour")
@@ -593,6 +593,7 @@ names(filters.mspct)
 two_suns.mspct <- source_mspct(list(sun1 = sun.spct, sun2 = sun.spct))
 q_irrad(two_suns.mspct, 
         w.band = list(PAR = waveband(c(400,700))),
+        scale.factor = 1e6, # umol m-2 s-1
         attr2tb = c(when.measured = "time", lon = "lon", lat = "lat"))
 
 ## ---- col-convolve-1-----------------------------------------------------
@@ -600,7 +601,8 @@ filtered_sun <- convolve_each(filters.mspct, sun.spct)
 irrad(filtered_sun, list(UVA.wb, PAR.wb))
 
 ## ---- col-convolve-2-----------------------------------------------------
-irrad(convolve_each(filters.mspct, sun.spct), list(UVA.wb, PAR.wb))
+irrad(convolve_each(filters.mspct, sun.spct), 
+      list(UVA.wb, PAR.wb))
 
 ## ---- col-convolve-3-----------------------------------------------------
 filtered_sun <- msmsply(filters.mspct, `*`, sun.spct)

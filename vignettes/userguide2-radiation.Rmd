@@ -1566,7 +1566,7 @@ Functions `e_irrad` and `q_irrad` save some typing, and always return the same t
 
 ```{r, irrad-4}
 e_irrad(sun.spct, PAR.wb) # W m-2
-q_irrad(sun.spct, PAR.wb) * 1e6 # umol s-1 m-2
+q_irrad(sun.spct, PAR.wb, scale.factor = 1e6) # umol s-1 m-2
 ```
 
 It is also possible to supply a time unit to use as basis of expression for the returned value, but be aware that conversion into a logger time unit is only valid for sources like lamps, which have an output the remains constant in time.
@@ -1640,6 +1640,7 @@ We can add to the returned data frame attributes retrieved from the members of t
 two_suns.mspct <- source_mspct(list(sun1 = sun.spct, sun2 = sun.spct))
 q_irrad(two_suns.mspct, 
         w.band = list(PAR = waveband(c(400,700))),
+        scale.factor = 1e6, # umol m-2 s-1
         attr2tb = c(when.measured = "time", lon = "lon", lat = "lat"))
 ```
 
@@ -1653,7 +1654,8 @@ irrad(filtered_sun, list(UVA.wb, PAR.wb))
 The code above can also be written as a single statement.
 
 ```{r, col-convolve-2}
-irrad(convolve_each(filters.mspct, sun.spct), list(UVA.wb, PAR.wb))
+irrad(convolve_each(filters.mspct, sun.spct), 
+      list(UVA.wb, PAR.wb))
 ```
 
 It is also possible to use an _apply_ function. Syntax parallels that of base R's and package `plyr`'s. See sections _apply_ functions and `convolve` for more details.
