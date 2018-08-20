@@ -1,8 +1,10 @@
-photobiology 0.9.22 (2018-07-xx)
+photobiology 0.9.22 (2018-08-xx)
 ================================
 
 Bug fix: Ensure that getWhenMeasured() always returns an object of class
 "POSIXct".
+Add "scale.factor" as formal parameter to methods irrad(), q_irrad(), e_irrad(),
+response(), q_response() and e_response().
 
 photobiology 0.9.22 (2018-07-09)
 ================================

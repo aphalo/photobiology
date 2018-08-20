@@ -14,6 +14,8 @@
 #' @param quantity character string One of "total", "average" or "mean",
 #'   "contribution", "contribution.pc", "relative" or "relative.pc".
 #' @param time.unit character or lubridate::duration object.
+#' @param scale.factor numeric vector of length 1, or length equal to that of
+#'   \code{w.band}. Numeric multiplier applied to returned values.
 #' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries
 #'   are trimmed, if FALSE, they are discarded.
 #' @param use.cached.mult logical indicating whether multiplier values should be
@@ -22,7 +24,7 @@
 #'   spectral data before integration so as to reduce interpolation errors at
 #'   the boundaries of the wavebands.
 #' @param allow.scaled logical indicating whether scaled or normalized spectra
-#'   as argument to spct are flagged as an error
+#'   as argument to spct are flagged as an error.
 #' @param ... other arguments (possibly ignored)
 #'
 #' @note Formal parameter \code{allow.scaled} is used internally for calculation
@@ -69,14 +71,14 @@
 #'
 #' @family irradiance functions
 #'
-irrad <- function(spct, w.band, unit.out, quantity, time.unit, wb.trim,
+irrad <- function(spct, w.band, unit.out, quantity, time.unit, scale.factor, wb.trim,
                   use.cached.mult, use.hinges, allow.scaled, ...) UseMethod("irrad")
 
 #' @describeIn irrad Default for generic function
 #'
 #' @export
 #'
-irrad.default <- function(spct, w.band, unit.out, quantity, time.unit, wb.trim,
+irrad.default <- function(spct, w.band, unit.out, quantity, time.unit, scale.factor, wb.trim,
                           use.cached.mult, use.hinges, allow.scaled, ...) {
   warning("'irrad' is not defined for objects of class ", class(spct)[1])
   return(NA_real_)
@@ -93,6 +95,7 @@ irrad.source_spct <-
            unit.out = getOption("photobiology.radiation.unit", default = "energy"),
            quantity = "total",
            time.unit = NULL,
+           scale.factor = 1,
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
            use.hinges = getOption("photobiology.use.hinges"),
@@ -274,8 +277,20 @@ irrad.source_spct <-
     if (length(irrad) == 0) {
       irrad <- NA_real_
       names(irrad) <- "out of range"
+    } else {
+      names(irrad) <- paste(names(irrad), wb.name)
     }
-    names(irrad) <- paste(names(irrad), wb.name)
+
+    if (length(scale.factor)  == 1L ||
+        length(scale.factor) == length(w.band)) {
+      if (any(abs(log10(scale.factor) %% 1) > 1e-5)) {
+        warning("Scale factor is not decimal!")
+      }
+      irrad <- irrad * scale.factor
+    } else {
+      stop("'scale.factor' must be of length = 1 or of same length as 'w.band'.")
+    }
+
     attr(irrad, "time.unit") <- getTimeUnit(spct)
     if (is_effective(spct)) {
       attr(irrad, "radiation.unit") <-
@@ -283,7 +298,8 @@ irrad.source_spct <-
     } else {
       attr(irrad, "radiation.unit") <- paste(unit.out, "irradiance", quantity)
     }
-    return(irrad)
+
+    irrad
   }
 
 #' @keywords internal
@@ -301,6 +317,8 @@ irrad_spct <- irrad.source_spct
 #' @param quantity character string One of "total", "average" or "mean",
 #'   "contribution", "contribution.pc", "relative" or "relative.pc".
 #' @param time.unit character or lubridate::duration object.
+#' @param scale.factor numeric vector of length 1, or length equal to that of
+#'   \code{w.band}. Numeric multiplier applied to returned values.
 #' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries
 #'   are trimmed, if FALSE, they are discarded.
 #' @param use.cached.mult logical indicating whether multiplier values should be
@@ -358,7 +376,7 @@ irrad_spct <- irrad.source_spct
 #' @family irradiance functions
 #'
 e_irrad <- function(spct, w.band,
-                    quantity, time.unit, wb.trim,
+                    quantity, time.unit, scale.factor, wb.trim,
                     use.cached.mult, use.hinges, allow.scaled,
                     ...) UseMethod("e_irrad")
 
@@ -367,7 +385,7 @@ e_irrad <- function(spct, w.band,
 #' @export
 #'
 e_irrad.default <- function(spct, w.band,
-                            quantity, time.unit, wb.trim,
+                            quantity, time.unit, scale.factor, wb.trim,
                             use.cached.mult, use.hinges, allow.scaled, ...) {
   warning("'e_irrad' is not defined for objects of class ", class(spct)[1])
   return(NA)
@@ -382,12 +400,15 @@ e_irrad.source_spct <-
   function(spct, w.band = NULL,
            quantity = "total",
            time.unit = NULL,
+           scale.factor = 1,
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
            use.hinges = NULL,
            allow.scaled = !quantity  %in% c("average", "mean", "total"),
            ...) {
-    irrad_spct(spct, w.band = w.band, unit.out = "energy", quantity = quantity,
+    irrad_spct(spct, w.band = w.band, unit.out = "energy",
+               scale.factor = scale.factor,
+               quantity = quantity,
                time.unit = time.unit, wb.trim = wb.trim,
                use.cached.mult = use.cached.mult, use.hinges = use.hinges,
                allow.scaled = allow.scaled)
@@ -406,6 +427,8 @@ e_irrad.source_spct <-
 #' @param quantity character string One of "total", "average" or "mean",
 #'   "contribution", "contribution.pc", "relative" or "relative.pc".
 #' @param time.unit character or lubridate::duration object.
+#' @param scale.factor numeric vector of length 1, or length equal to that of
+#'   \code{w.band}. Numeric multiplier applied to returned values.
 #' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries
 #'   are trimmed, if FALSE, they are discarded.
 #' @param use.cached.mult logical indicating whether multiplier values should be
@@ -456,7 +479,7 @@ e_irrad.source_spct <-
 #' @export
 #' @family irradiance functions
 q_irrad <- function(spct, w.band,
-                    quantity, time.unit, wb.trim,
+                    quantity, time.unit, scale.factor, wb.trim,
                     use.cached.mult, use.hinges, allow.scaled, ...) UseMethod("q_irrad")
 
 #' @describeIn q_irrad Default for generic function
@@ -464,7 +487,7 @@ q_irrad <- function(spct, w.band,
 #' @export
 #'
 q_irrad.default <- function(spct, w.band,
-                            quantity, time.unit, wb.trim,
+                            quantity, time.unit, scale.factor, wb.trim,
                             use.cached.mult, use.hinges, allow.scaled, ...) {
   warning("'q_irrad' is not defined for objects of class ", class(spct)[1])
   return(NA)
@@ -479,13 +502,16 @@ q_irrad.source_spct <-
   function(spct, w.band = NULL,
            quantity = "total",
            time.unit = NULL,
+           scale.factor = 1,
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
            use.hinges = NULL,
            allow.scaled = !quantity  %in% c("average", "mean", "total"),
            ...) {
     irrad_spct(spct, w.band = w.band, unit.out = "photon", quantity = quantity,
-               time.unit = time.unit, wb.trim = wb.trim,
+               time.unit = time.unit,
+               scale.factor = scale.factor,
+               wb.trim = wb.trim,
                use.cached.mult = use.cached.mult, use.hinges = use.hinges,
                allow.scaled = allow.scaled)
   }
@@ -503,6 +529,8 @@ q_irrad.source_spct <-
 #' @param unit.out character string with allowed values "energy", and "photon",
 #'   or its alias "quantum".
 #' @param exposure.time lubridate::duration object.
+#' @param scale.factor numeric vector of length 1, or length equal to that of
+#'   \code{w.band}. Numeric multiplier applied to returned values.
 #' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries
 #'   are trimmed, if FALSE, they are discarded.
 #' @param use.cached.mult logical indicating whether multiplier values should be
@@ -541,14 +569,14 @@ q_irrad.source_spct <-
 #'
 #' @export
 #' @family irradiance functions
-fluence <- function(spct, w.band, unit.out, exposure.time, wb.trim,
+fluence <- function(spct, w.band, unit.out, exposure.time, scale.factor, wb.trim,
                     use.cached.mult, use.hinges, allow.scaled, ...) UseMethod("fluence")
 
 #' @describeIn fluence Default for generic function
 #'
 #' @export
 #'
-fluence.default <- function(spct, w.band, unit.out, exposure.time,
+fluence.default <- function(spct, w.band, unit.out, exposure.time, scale.factor,
                             wb.trim, use.cached.mult, use.hinges, allow.scaled, ...) {
   warning("'fluence' is not defined for objects of class ", class(spct)[1])
   return(NA)
@@ -563,6 +591,7 @@ fluence.source_spct <-
   function(spct, w.band = NULL,
            unit.out = getOption("photobiology.radiation.unit", default = "energy"),
            exposure.time,
+           scale.factor = 1,
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
            use.hinges = NULL,
@@ -576,7 +605,9 @@ fluence.source_spct <-
     } else {
       return.value <-
         irrad_spct(spct, w.band = w.band, unit.out = unit.out, quantity = "total",
-                   time.unit = exposure.time, wb.trim = wb.trim,
+                   time.unit = exposure.time,
+                   scale.factor = scale.factor,
+                   wb.trim = wb.trim,
                    use.cached.mult = use.cached.mult, use.hinges = use.hinges,
                    allow.scaled = allow.scaled)
     }
@@ -601,6 +632,8 @@ fluence.source_spct <-
 #' @param spct an R object.
 #' @param w.band a list of \code{waveband} objects or a \code{waveband} object
 #' @param exposure.time lubridate::duration object.
+#' @param scale.factor numeric vector of length 1, or length equal to that of
+#'   \code{w.band}. Numeric multiplier applied to returned values.
 #' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries
 #'   are trimmed, if FALSE, they are discarded.
 #' @param use.cached.mult logical indicating whether multiplier values should be
@@ -635,14 +668,14 @@ fluence.source_spct <-
 #' @export
 #'
 #' @family irradiance functions
-q_fluence <- function(spct, w.band, exposure.time, wb.trim, use.cached.mult,
+q_fluence <- function(spct, w.band, exposure.time, scale.factor, wb.trim, use.cached.mult,
                       use.hinges, allow.scaled, ...) UseMethod("q_fluence")
 
 #' @describeIn q_fluence Default for generic function
 #'
 #' @export
 #'
-q_fluence.default <- function(spct, w.band, exposure.time, wb.trim,
+q_fluence.default <- function(spct, w.band, exposure.time, scale.factor, wb.trim,
                               use.cached.mult, use.hinges, allow.scaled, ...) {
   warning("'q_fluence' is not defined for objects of class ", class(spct)[1])
   return(NA)
@@ -656,6 +689,7 @@ q_fluence.default <- function(spct, w.band, exposure.time, wb.trim,
 q_fluence.source_spct <-
   function(spct, w.band = NULL,
            exposure.time,
+           scale.factor = 1,
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
            use.hinges = NULL,
@@ -669,7 +703,9 @@ q_fluence.source_spct <-
     } else {
       return.value <-
         irrad_spct(spct, w.band = w.band, unit.out = "photon", quantity = "total",
-                   time.unit = exposure.time, wb.trim = wb.trim,
+                   time.unit = exposure.time,
+                   scale.factor = scale.factor,
+                   wb.trim = wb.trim,
                    use.cached.mult = use.cached.mult, use.hinges = use.hinges,
                    allow.scaled = allow.scaled)
     }
@@ -690,6 +726,8 @@ q_fluence.source_spct <-
 #' @param spct an R object
 #' @param w.band a list of \code{waveband} objects or a \code{waveband} object
 #' @param exposure.time lubridate::duration object.
+#' @param scale.factor numeric vector of length 1, or length equal to that of
+#'   \code{w.band}. Numeric multiplier applied to returned values.
 #' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries
 #'   are trimmed, if FALSE, they are discarded
 #' @param use.cached.mult logical indicating whether multiplier values should be
@@ -722,14 +760,14 @@ q_fluence.source_spct <-
 #'
 #' @export
 #' @family irradiance functions
-e_fluence <- function(spct, w.band, exposure.time, wb.trim, use.cached.mult,
+e_fluence <- function(spct, w.band, exposure.time, scale.factor, wb.trim, use.cached.mult,
                       use.hinges, allow.scaled, ...) UseMethod("e_fluence")
 
 #' @describeIn e_fluence Default for generic function
 #'
 #' @export
 #'
-e_fluence.default <- function(spct, w.band, exposure.time, wb.trim, use.cached.mult,
+e_fluence.default <- function(spct, w.band, exposure.time, scale.factor, wb.trim, use.cached.mult,
                               use.hinges, allow.scaled, ...) {
   warning("'e_fluence' is not defined for objects of class ", class(spct)[1])
   return(NA)
@@ -743,6 +781,7 @@ e_fluence.default <- function(spct, w.band, exposure.time, wb.trim, use.cached.m
 e_fluence.source_spct <-
   function(spct, w.band = NULL,
            exposure.time,
+           scale.factor = 1,
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
            use.hinges = NULL,
@@ -756,7 +795,9 @@ e_fluence.source_spct <-
     } else {
       return.value <-
         irrad_spct(spct, w.band = w.band, unit.out = "energy", quantity = "total",
-                   time.unit = exposure.time, wb.trim = wb.trim,
+                   time.unit = exposure.time,
+                   scale.factor = scale.factor,
+                   wb.trim = wb.trim,
                    use.cached.mult = use.cached.mult, use.hinges = use.hinges,
                    allow.scaled = allow.scaled)
     }
@@ -789,6 +830,7 @@ irrad.source_mspct <-
            unit.out = getOption("photobiology.radiation.unit", default = "energy"),
            quantity = "total",
            time.unit = NULL,
+           scale.factor = 1,
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
            use.hinges = NULL,
@@ -804,7 +846,9 @@ irrad.source_mspct <-
         .fun = irrad,
         w.band = w.band,
         quantity = quantity,
+        time.unit,
         unit.out = unit.out,
+        scale.factor = scale.factor,
         wb.trim = wb.trim,
         use.cached.mult = use.cached.mult,
         use.hinges = use.hinges,
@@ -839,6 +883,7 @@ q_irrad.source_mspct <-
   function(spct, w.band = NULL,
            quantity = "total",
            time.unit = NULL,
+           scale.factor = 1,
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
            use.hinges = NULL,
@@ -854,6 +899,8 @@ q_irrad.source_mspct <-
         .fun = q_irrad,
         w.band = w.band,
         quantity = quantity,
+        time.unit = time.unit,
+        scale.factor = scale.factor,
         wb.trim = wb.trim,
         use.cached.mult = use.cached.mult,
         use.hinges = use.hinges,
@@ -888,6 +935,7 @@ e_irrad.source_mspct <-
   function(spct, w.band = NULL,
            quantity = "total",
            time.unit = NULL,
+           scale.factor = 1,
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
            use.hinges = NULL,
@@ -903,6 +951,8 @@ e_irrad.source_mspct <-
         .fun = e_irrad,
         w.band = w.band,
         quantity = quantity,
+        time.unit = time.unit,
+        scale.factor = scale.factor,
         wb.trim = wb.trim,
         use.cached.mult = use.cached.mult,
         use.hinges = use.hinges,
@@ -937,6 +987,7 @@ fluence.source_mspct <-
   function(spct, w.band = NULL,
            unit.out = getOption("photobiology.radiation.unit", default = "energy"),
            exposure.time,
+           scale.factor = 1,
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
            use.hinges = NULL,
@@ -953,6 +1004,7 @@ fluence.source_mspct <-
         w.band = w.band,
         unit.out = unit.out,
         exposure.time = exposure.time,
+        scale.factor = scale.factor,
         wb.trim = wb.trim,
         use.cached.mult = use.cached.mult,
         use.hinges = use.hinges,
@@ -985,6 +1037,7 @@ fluence.source_mspct <-
 e_fluence.source_mspct <-
   function(spct, w.band = NULL,
            exposure.time,
+           scale.factor = 1,
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
            use.hinges = NULL,
@@ -1000,6 +1053,7 @@ e_fluence.source_mspct <-
         .fun = e_fluence,
         w.band = w.band,
         exposure.time = exposure.time,
+        scale.factor = scale.factor,
         wb.trim = wb.trim,
         use.cached.mult = use.cached.mult,
         use.hinges = use.hinges,
@@ -1033,6 +1087,7 @@ e_fluence.source_mspct <-
 q_fluence.source_mspct <-
   function(spct, w.band = NULL,
            exposure.time,
+           scale.factor = 1,
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
            use.hinges = NULL,
@@ -1048,6 +1103,7 @@ q_fluence.source_mspct <-
         .fun = q_fluence,
         w.band = w.band,
         exposure.time = exposure.time,
+        scale.factor = scale.factor,
         wb.trim = wb.trim,
         use.cached.mult = use.cached.mult,
         use.hinges = use.hinges,
