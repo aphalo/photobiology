@@ -6,14 +6,25 @@ context("set_get")
 test_that("any_spct", {
 
   my.spct <- object_spct(w.length = 400:450, Tfr = 0.5, Rfr = 0.5)
-  tested.time <- ymd_hms("2015-12-31 23:59:59")
+  tested.time <- ymd_hms("2015-12-31 23:59:59", tz = "UTC")
 
   setWhenMeasured(my.spct, tested.time)
   expect_equal(getWhenMeasured(my.spct), tested.time)
+  expect_is(getWhenMeasured(my.spct), "POSIXct")
+
   setWhenMeasured(my.spct, NULL)
   expect_true(is.na(getWhenMeasured(my.spct)))
+  expect_is(getWhenMeasured(my.spct), "POSIXct")
+
   setWhenMeasured(my.spct, tested.time)
   expect_equal(getWhenMeasured(my.spct), tested.time)
+  expect_is(getWhenMeasured(my.spct), "POSIXct")
+
+  tested.date <- ymd("2015-12-30", tz = "UTC")
+  target <- lubridate::as_datetime(tested.date, tz = "UTC")
+  setWhenMeasured(my.spct, tested.date)
+  expect_equal(getWhenMeasured(my.spct), target)
+  expect_is(getWhenMeasured(my.spct), "POSIXct")
 
   tested.location <- data.frame(lon = 24.93545, lat = 60.16952)
 
