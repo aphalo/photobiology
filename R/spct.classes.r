@@ -2224,8 +2224,8 @@ getWhenMeasured.summary_generic_spct <- function(x, ...) {
 }
 
 #' @describeIn getWhenMeasured generic_mspct
-#' @param idx logical whether to add a column with the names of the elements of
-#'   spct
+#' @param idx character Name of the column with the names of the members of the
+#'   collection of spectra.
 #' @note The method for collections of spectra returns the
 #'   a tibble with the correct times in TZ = "UTC".
 #' @export
@@ -2441,8 +2441,8 @@ getWhereMeasured.summary_generic_spct <- function(x, ...) {
 }
 
 #' @describeIn getWhereMeasured generic_mspct
-#' @param idx logical whether to add a column with the names of the elements of
-#'   spct
+#' @param idx character Name of the column with the names of the members of the
+#'   collection of spectra.
 #' @export
 getWhereMeasured.generic_mspct <- function(x,
                                            ...,
@@ -2861,8 +2861,8 @@ getWhatMeasured.summary_generic_spct <- function(x, ...) {
 }
 
 #' @describeIn getWhatMeasured generic_mspct
-#' @param idx logical whether to add a column with the names of the elements of
-#'   spct
+#' @param idx character Name of the column with the names of the members of the
+#'   collection of spectra.
 #' @note The method for collections of spectra returns the
 #'   a tibble with a column of character strings.
 #' @export

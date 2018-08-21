@@ -151,13 +151,13 @@ color_of.source_spct <- function(x, type = "CMF", ...) {
 #'
 #' @export
 #'
-#' @param idx logical whether to add a column with the names of the elements of
-#'   spct
+#' @param idx character Name of the column with the names of the members of the
+#'   collection of spectra.
 #'
 #' @export
 #'
-color_of.source_mspct <- function(x, ..., idx = !is.null(names(x))) {
-  msdply(mspct = x, color_of, ..., idx = idx)
+color_of.source_mspct <- function(x, ..., idx = "spct.idx") {
+  msdply(mspct = x, color_of, ..., idx = idx, col.names = "color")
 }
 
 # compatibility -----------------------------------------------------------

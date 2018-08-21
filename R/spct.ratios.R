@@ -346,7 +346,8 @@ eq_ratio.source_spct <-
 #'   object.
 #'
 #' @param attr2tb character vector, see \code{\link{add_attr2tb}} for the syntax for \code{attr2tb} passed as is to formal parameter \code{col.names}.
-#' @param idx logical whether to add a column with the names of the elements of spct
+#' @param idx character Name of the column with the names of the members of the
+#'   collection of spectra.
 #' @param .parallel	if TRUE, apply function in parallel, using parallel backend
 #'   provided by foreach
 #' @param .paropts a list of additional options passed into the foreach function
@@ -365,7 +366,7 @@ q_ratio.source_mspct <-
            use.hinges = getOption("photobiology.use.hinges"),
            ...,
            attr2tb = NULL,
-           idx = !is.null(names(spct)),
+           idx = "spct.idx",
            .parallel = FALSE,
            .paropts = NULL) {
     z <-
@@ -383,14 +384,16 @@ q_ratio.source_mspct <-
       )
     add_attr2tb(tb = z,
                 mspct = spct,
-                col.names = attr2tb)
+                col.names = attr2tb,
+                idx = idx)
   }
 
 #' @describeIn e_ratio Calculates energy:energy ratio from a \code{source_mspct}
 #'   object.
 #'
 #' @param attr2tb character vector, see \code{\link{add_attr2tb}} for the syntax for \code{attr2tb} passed as is to formal parameter \code{col.names}.
-#' @param idx logical whether to add a column with the names of the elements of spct
+#' @param idx character Name of the column with the names of the members of the
+#'   collection of spectra.
 #' @param .parallel	if TRUE, apply function in parallel, using parallel backend
 #'   provided by foreach
 #' @param .paropts a list of additional options passed into the foreach function
@@ -409,7 +412,7 @@ e_ratio.source_mspct <-
            use.hinges = getOption("photobiology.use.hinges"),
            ...,
            attr2tb = NULL,
-           idx = !is.null(names(spct)),
+           idx = "spct.idx",
            .parallel = FALSE,
            .paropts = NULL) {
     z <-
@@ -427,14 +430,16 @@ e_ratio.source_mspct <-
       )
     add_attr2tb(tb = z,
                 mspct = spct,
-                col.names = attr2tb)
+                col.names = attr2tb,
+                idx = idx)
   }
 
 #' @describeIn eq_ratio Calculates energy:photon from a \code{source_mspct}
 #'   object.
 #'
 #' @param attr2tb character vector, see \code{\link{add_attr2tb}} for the syntax for \code{attr2tb} passed as is to formal parameter \code{col.names}.
-#' @param idx logical whether to add a column with the names of the elements of spct
+#' @param idx character Name of the column with the names of the members of the
+#'   collection of spectra.
 #' @param .parallel	if TRUE, apply function in parallel, using parallel backend
 #'   provided by foreach
 #' @param .paropts a list of additional options passed into the foreach function
@@ -452,7 +457,7 @@ eq_ratio.source_mspct <-
            use.hinges = getOption("photobiology.use.hinges"),
            ...,
            attr2tb = NULL,
-           idx = !is.null(names(spct)),
+           idx = "spct.idx",
            .parallel = FALSE,
            .paropts = NULL) {
     z <-
@@ -470,14 +475,16 @@ eq_ratio.source_mspct <-
       )
     add_attr2tb(tb = z,
                 mspct = spct,
-                col.names = attr2tb)
+                col.names = attr2tb,
+                idx = idx)
   }
 
 #' @describeIn qe_ratio Calculates photon:energy ratio from a
 #'   \code{source_mspct} object.
 #'
 #' @param attr2tb character vector, see \code{\link{add_attr2tb}} for the syntax for \code{attr2tb} passed as is to formal parameter \code{col.names}.
-#' @param idx logical whether to add a column with the names of the elements of spct
+#' @param idx character Name of the column with the names of the members of the
+#'   collection of spectra.
 #' @param .parallel	if TRUE, apply function in parallel, using parallel backend
 #'   provided by foreach
 #' @param .paropts a list of additional options passed into the foreach function
@@ -495,7 +502,7 @@ qe_ratio.source_mspct <-
            use.hinges=getOption("photobiology.use.hinges"),
            ...,
            attr2tb = NULL,
-           idx = !is.null(names(spct)),
+           idx = "spct.idx",
            .parallel = FALSE,
            .paropts = NULL) {
     z <-
@@ -513,5 +520,6 @@ qe_ratio.source_mspct <-
       )
     add_attr2tb(tb = z,
                 mspct = spct,
-                col.names = attr2tb)
+                col.names = attr2tb,
+                idx = idx)
   }

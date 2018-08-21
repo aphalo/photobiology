@@ -79,12 +79,12 @@ range.generic_spct <- function(..., na.rm = FALSE) {
 
 #' @describeIn range
 #'
-#' @param idx logical whether to add a column with the names of the elements of
-#'   spct
+#' @param idx character Name of the column with the names of the members of the
+#'   collection of spectra.
 #'
 #' @export
 #'
-range.generic_mspct <- function(..., na.rm = FALSE, idx = NULL) {
+range.generic_mspct <- function(..., na.rm = FALSE, idx = "spct.idx") {
   mspct <- list(...)[[1]]
   if (is.null(idx)) {
     idx <- !is.null(names(mspct))
@@ -139,12 +139,12 @@ min.generic_spct <- function(..., na.rm = FALSE) {
 
 #' @describeIn min
 #'
-#' @param idx logical whether to add a column with the names of the elements of
-#'   spct
+#' @param idx character Name of the column with the names of the members of the
+#'   collection of spectra.
 #'
 #' @export
 #'
-min.generic_mspct <- function(..., na.rm = FALSE, idx = NULL) {
+min.generic_mspct <- function(..., na.rm = FALSE, idx = "spct.idx") {
   mspct <- list(...)[[1]]
   if (is.null(idx)) {
     idx <- !is.null(names(mspct))
@@ -197,12 +197,12 @@ max.generic_spct <- function(..., na.rm=FALSE) {
 
 #' @describeIn max
 #'
-#' @param idx logical whether to add a column with the names of the elements of
-#'   spct
+#' @param idx character Name of the column with the names of the members of the
+#'   collection of spectra.
 #'
 #' @export
 #'
-max.generic_mspct <- function(..., na.rm = FALSE, idx = NULL) {
+max.generic_mspct <- function(..., na.rm = FALSE, idx = "spct.idx") {
   mspct <- list(...)[[1]]
   if (is.null(idx)) {
     idx <- !is.null(names(mspct))
@@ -291,11 +291,15 @@ midpoint.generic_spct <- function(x, ...) {
 
 #' @describeIn midpoint Method for "generic_mspct" objects.
 #'
-#' @param idx logical whether to add a column with the names of the elements of spct
+#' @param idx character Name of the column with the names of the members of the
+#'   collection of spectra.
 #'
 #' @export
 #'
-midpoint.generic_mspct <- function(x, ..., idx = !is.null(names(x))) {
+midpoint.generic_mspct <- function(x, ..., idx = "spct.idx") {
+  if (is.null(idx)) {
+    idx <- !is.null(names(x))
+  }
   msdply(mspct = x, .fun = midpoint, ..., idx = idx)
 }
 
@@ -383,11 +387,15 @@ expanse.generic_spct <- function(x, ...) {
 
 #' @describeIn expanse  Method for "generic_mspct" objects.
 #'
-#' @param idx logical whether to add a column with the names of the elements of spct
+#' @param idx character Name of the column with the names of the members of the
+#'   collection of spectra.
 #'
 #' @export
 #'
-expanse.generic_mspct <- function(x, ..., idx = !is.null(names(x))) {
+expanse.generic_mspct <- function(x, ..., idx = "spct.idx") {
+  if (is.null(idx)) {
+    idx <- !is.null(names(x))
+  }
   msdply(mspct = x, .fun = expanse, ..., idx = idx)
 }
 
@@ -565,10 +573,14 @@ stepsize.generic_spct <- function(x, ...) {
 
 #' @describeIn stepsize  Method for "generic_mspct" objects.
 #'
-#' @param idx logical whether to add a column with the names of the elements of spct
+#' @param idx character Name of the column with the names of the members of the
+#'   collection of spectra.
 #'
 #' @export
 #'
-stepsize.generic_mspct <- function(x, ..., idx = !is.null(names(x))) {
+stepsize.generic_mspct <- function(x, ..., idx = "spct.idx") {
+  if (is.null(idx)) {
+    idx <- !is.null(names(x))
+  }
   msdply(mspct = x, .fun = stepsize, ..., idx = idx)
 }

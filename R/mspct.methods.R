@@ -53,9 +53,8 @@ msmsply <- function(mspct, .fun, ...,
 
 #' @rdname  msmsply
 #'
-#' @param idx logical whether to add a column with the names of the elements of
-#'   mspct, if \code{NULL}, the default, a column is added only if all members
-#'   of \code{mspct} are named.
+#' @param idx character Name of the column with the names of the members of the
+#'   collection of spectra.
 #' @param col.names character Names to be used for data columns.
 #'
 #' @return a data frame in the case of \code{msdply}
@@ -332,7 +331,8 @@ convolve_each <- function(e1, e2, oper = `*`, ...) {
 #' @param col.names named character vector Name(s) of column(s) to create.
 #'   Values are the names of the attributes to copy, while if named, the names
 #'   provide the name for the column.
-#' @param idx character Name of index factor identifying the spectra.
+#' @param idx character Name of the column with the names of the members of the
+#'   collection of spectra.
 #'
 #' @return A tibble With the metadata attributes in separate new variables.
 #'
