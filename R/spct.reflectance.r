@@ -234,7 +234,7 @@ reflectance.reflector_mspct <-
            use.hinges = getOption("photobiology.use.hinges", default = NULL),
            ...,
            attr2tb = NULL,
-           idx = !is.null(names(spct)),
+           idx = "spct.idx",
            .parallel = FALSE,
            .paropts = NULL) {
     z <-
@@ -252,7 +252,8 @@ reflectance.reflector_mspct <-
       )
     add_attr2tb(tb = z,
                 mspct = spct,
-                col.names = attr2tb)
+                col.names = attr2tb,
+                idx = idx)
   }
 
 # object_mspct methods -----------------------------------------------
@@ -268,7 +269,7 @@ reflectance.object_mspct <-
            use.hinges= getOption("photobiology.use.hinges", default = NULL),
            ...,
            attr2tb = NULL,
-           idx = !is.null(names(spct)),
+           idx = "spct.idx",
            .parallel = FALSE,
            .paropts = NULL) {
     z <-
@@ -286,5 +287,6 @@ reflectance.object_mspct <-
       )
     add_attr2tb(tb = z,
                 mspct = spct,
-                col.names = attr2tb)
+                col.names = attr2tb,
+                idx = idx)
   }

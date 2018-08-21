@@ -332,6 +332,7 @@ convolve_each <- function(e1, e2, oper = `*`, ...) {
 #' @param col.names named character vector Name(s) of column(s) to create.
 #'   Values are the names of the attributes to copy, while if named, the names
 #'   provide the name for the column.
+#' @param idx character Name of index factor identifying the spectra.
 #'
 #' @return A tibble With the metadata attributes in separate new variables.
 #'
@@ -377,7 +378,8 @@ convolve_each <- function(e1, e2, oper = `*`, ...) {
 #'
 add_attr2tb <- function(tb,
                         mspct,
-                        col.names = NULL) {
+                        col.names = NULL,
+                        idx = "spct.idx") {
   if (length(col.names) < 1L) {
     return(tb)
   }
@@ -401,19 +403,24 @@ add_attr2tb <- function(tb,
       switch(a,
              geocode = geocode2tb(mspct = mspct,
                                   tb = tb,
-                                  col.names = col.names["geocode"]),
+                                  col.names = col.names["geocode"],
+                                  idx = idx),
              lon = lon2tb(mspct = mspct,
                           tb = tb,
-                          col.names = col.names["lon"]),
+                          col.names = col.names["lon"],
+                          idx = idx),
              lat = lat2tb(mspct = mspct,
                           tb = tb,
-                          col.names = col.names["lat"]),
+                          col.names = col.names["lat"],
+                          idx = idx),
              when.measured = when_measured2tb(mspct = mspct,
                                               tb = tb,
-                                              col.names = col.names["when.measured"]),
+                                              col.names = col.names["when.measured"],
+                                              idx = idx),
              what.measured = what_measured2tb(mspct = mspct,
                                               tb = tb,
-                                              col.names = col.names["what.measured"]),
+                                              col.names = col.names["what.measured"],
+                                              idx = idx),
              tb)
   }
   tb
@@ -423,73 +430,114 @@ add_attr2tb <- function(tb,
 #'
 #' @export
 #'
-when_measured2tb <- function(mspct, tb = NULL, col.names = "when.measured") {
-  if (is.null(tb)) {
-    tb <- tibble::tibble(spct.idx = factor(names(mspct)))
+when_measured2tb <- function(mspct,
+                             tb = NULL,
+                             col.names = "when.measured",
+                             idx = "spct.idx") {
+  stopifnot(length(col.names) == 1L)
+  when.tb <- getWhenMeasured(mspct, idx = idx)
+  if (col.names == "when.measured") {
+    if (length(names(col.names)) == 1L) {
+      # syntax like in dplyr::rename()
+      names(when.tb)[2L] <- names(col.names)
+    }
   } else {
-    stopifnot(nrow(tb) == length(mspct))
+    # use value directly for column name
+    names(when.tb)[2L] <- col.names
   }
-  if (length(names(col.names)) < 1L) {
-    names(col.names) <- col.names
+  if (is.null(tb)) {
+    when.tb
+  } else {
+    dplyr::full_join(tb, when.tb, by = idx)
   }
-  tb[[col.names["when.measured"]]] <- lubridate::ymd_hms(NA_character_)
-  row <- 1L
-  for (x in mspct) {
-    tb[row, col.names["when.measured"]] <- getWhenMeasured(x)[1]
-    row <- row + 1L
-  }
-  tb
 }
 
 #' @rdname add_attr2tb
 #'
 #' @export
 #'
-lon2tb <- function(mspct, tb = NULL, col.names = "lon") {
-  if (is.null(tb)) {
-    tb <- tibble::tibble(spct.idx = factor(names(mspct)))
+lonlat2tb <- function(mspct,
+                      tb = NULL,
+                      col.names = c("lon", "lat"),
+                      idx = "spct.idx") {
+  stopifnot(length(col.names) == 2L)
+  lonlat.tb <- getWhereMeasured(mspct, idx = idx)[c(idx, "lon", "lat")]
+  if (col.names[1L] == "lon" && col.names[2L] == "lat") {
+    if (length(names(col.names)) == 2L) {
+      # syntax like in dplyr::rename()
+      names(lonlat.tb)[2L:3L] <- names(col.names)
+    }
   } else {
-    stopifnot(nrow(tb) == length(mspct))
+    # use value directly for column name
+    names(lonlat.tb)[2L:3L] <- col.names
   }
-  if (length(names(col.names)) < 1L) {
-    names(col.names) <- col.names
+  if (is.null(tb)) {
+    lonlat.tb
+  } else {
+    dplyr::full_join(tb, lonlat.tb, by = idx)
   }
-  tb[[col.names["lon"]]] <- numeric(nrow(tb))
-  row <- 1L
-  for (x in mspct) {
-    tb[row, col.names["lon"]] <- getWhereMeasured(x)[["lon"]][1]
-    row <- row + 1L
-  }
-  tb
 }
 
 #' @rdname add_attr2tb
 #'
 #' @export
 #'
-lat2tb <- function(mspct, tb = NULL, col.names = "lat") {
-  if (is.null(tb)) {
-    tb <- tibble::tibble(spct.idx = factor(names(mspct)))
+lon2tb <- function(mspct,
+                   tb = NULL,
+                   col.names = "lon",
+                   idx = "spct.idx") {
+  stopifnot(length(col.names) == 1L)
+  lon.tb <- getWhereMeasured(mspct, idx = idx)[c(idx, "lon")]
+  if (col.names == "lon") {
+    if (length(names(col.names)) == 1L) {
+      # syntax like in dplyr::rename()
+      names(lon.tb)[2L] <- names(col.names)
+    }
   } else {
-    stopifnot(nrow(tb) == length(mspct))
+    # use value directly for column name
+    names(lon.tb)[2L] <- col.names
   }
-  if (length(names(col.names)) < 1L) {
-    names(col.names) <- col.names
+  if (is.null(tb)) {
+    lon.tb
+  } else {
+    dplyr::full_join(tb, lon.tb, by = idx)
   }
-  tb[[col.names["lat"]]] <- numeric(nrow(tb))
-  row <- 1L
-  for (x in mspct) {
-    tb[row, col.names["lat"]] <- getWhereMeasured(x)[["lat"]][1]
-    row <- row + 1L
-  }
-  tb
 }
 
 #' @rdname add_attr2tb
 #'
 #' @export
 #'
-geocode2tb <- function(mspct, tb = NULL, col.names = "geocode") {
+lat2tb <- function(mspct,
+                   tb = NULL,
+                   col.names = "lat",
+                   idx = "spct.idx") {
+  stopifnot(length(col.names) == 1L)
+  lat.tb <- getWhereMeasured(mspct, idx = idx)[c(idx, "lat")]
+  if (col.names == "lat") {
+    if (length(names(col.names)) == 1L) {
+      # syntax like in dplyr::rename()
+      names(lat.tb)[2L] <- names(col.names)
+    }
+  } else {
+    # use value directly for column name
+    names(lat.tb)[2L] <- col.names
+  }
+  if (is.null(tb)) {
+    lat.tb
+  } else {
+    dplyr::full_join(tb, lat.tb, by = idx)
+  }
+}
+
+#' @rdname add_attr2tb
+#'
+#' @export
+#'
+geocode2tb <- function(mspct,
+                       tb = NULL,
+                       col.names = "geocode",
+                       idx = "spct.idx") {
   if (is.null(tb)) {
     tb <- tibble::tibble(spct.idx = factor(names(mspct)))
   } else {
@@ -515,20 +563,24 @@ geocode2tb <- function(mspct, tb = NULL, col.names = "geocode") {
 #'
 #' @export
 #'
-what_measured2tb <- function(mspct, tb = NULL, col.names = "what.measured") {
-  if (is.null(tb)) {
-    tb <- tibble::tibble(spct.idx = factor(names(mspct)))
+what_measured2tb <- function(mspct,
+                             tb = NULL,
+                             col.names = "what.measured",
+                             idx = "spct.idx") {
+  stopifnot(length(col.names) == 1L)
+  what.tb <- getWhatMeasured(mspct, idx = idx)
+  if (col.names == "what.measured") {
+    if (length(names(col.names)) == 1L) {
+      # syntax like in dplyr::rename()
+      names(what.tb)[2L] <- names(col.names)
+    }
   } else {
-    stopifnot(nrow(tb) == length(mspct))
+    # use value directly for column name
+    names(what.tb)[2L] <- col.names
   }
-  if (length(names(col.names)) < 1L) {
-    names(col.names) <- col.names
+  if (is.null(tb)) {
+    what.tb
+  } else {
+    dplyr::full_join(tb, what.tb, by = idx)
   }
-  tb[[col.names["what.measured"]]] <- character(nrow(tb))
-  row <- 1L
-  for (x in mspct) {
-    tb[row, col.names["what.measured"]] <- getWhatMeasured(x)[1]
-    row <- row + 1L
-  }
-  tb
 }

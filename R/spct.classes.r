@@ -2199,6 +2199,9 @@ getWhenMeasured.generic_spct <- function(x, ...) {
     # we return an NA of class POSIXct
     when.measured <-
       suppressWarnings(lubridate::ymd_hms(NA_character_, tz = "UTC"))
+  } else if (lubridate::is.POSIXlt(when.measured)) {
+    when.measured <-
+      as.POSIXct(when.measured, tz = "UTC", origin = lubridate::origin)
   }
   when.measured
 }
@@ -2213,6 +2216,9 @@ getWhenMeasured.summary_generic_spct <- function(x, ...) {
     # we return an NA of class POSIXct
     when.measured <- suppressWarnings(lubridate::ymd_hms(NA_character_,
                                                          tz = "UTC"))
+  } else if (lubridate::is.POSIXlt(when.measured)) {
+    when.measured <-
+      as.POSIXct(when.measured, tz = "UTC", origin = lubridate::origin)
   }
   when.measured
 }
@@ -2225,8 +2231,8 @@ getWhenMeasured.summary_generic_spct <- function(x, ...) {
 #' @export
 getWhenMeasured.generic_mspct <- function(x,
                                           ...,
-                                          idx = !is.null(names(x))) {
-  z <- msdply(mspct = x, .fun = getWhenMeasured, ..., idx = idx)
+                                          idx = "spct.idx") {
+  z <- msdply(mspct = x, .fun = getWhenMeasured, ..., idx = idx, col.names = "when.measured")
   z[["when.measured"]] <- lubridate::with_tz(z[["when.measured"]], "UTC")
   z
 }
@@ -2440,7 +2446,7 @@ getWhereMeasured.summary_generic_spct <- function(x, ...) {
 #' @export
 getWhereMeasured.generic_mspct <- function(x,
                                            ...,
-                                           idx = !is.null(names(x))) {
+                                           idx = "spct.idx") {
   msdply(mspct = x, .fun = getWhereMeasured, ..., idx = idx)
 }
 
@@ -2809,25 +2815,61 @@ setWhatMeasured <- function(x, what.measured) {
 #' Get the "what.measured" attribute
 #'
 #' Function to read the "what.measured" attribute of an existing generic_spct
-#' object.
+#' or a generic_mspct.
 #'
 #' @param x a generic_spct object
+#' @param ... Allows use of additional arguments in methods for other classes.
 #'
-#' @return list
+#' @return character vector An object containing a description of the data.
 #'
 #' @export
-#'
 #' @family measurement metadata functions
+#' @examples
+#' getWhatMeasured(sun.spct)
 #'
-getWhatMeasured <- function(x) {
-  if (is.generic_spct(x) || is.summary_generic_spct(x)) {
-    what.measured <- attr(x, "what.measured", exact = TRUE)
-    if (is.null(what.measured) || is.na(what.measured)) {
-      # need to handle objects created with old versions
-      what.measured <- NA_character_
-    }
-    return(what.measured)
+getWhatMeasured <- function(x, ...) UseMethod("getWhatMeasured")
+
+#' @describeIn getWhatMeasured default
+#' @export
+getWhatMeasured.default <- function(x, ...) {
+  # we return an NA of class character
+  NA_character_
+}
+
+#' @describeIn getWhatMeasured generic_spct
+#' @export
+getWhatMeasured.generic_spct <- function(x, ...) {
+  what.measured <- attr(x, "what.measured", exact = TRUE)
+  if (is.null(what.measured) || is.na(what.measured)) {
+    # need to handle objects created with old versions
+    NA_character_
   } else {
-    return(NA_character_)
+    what.measured
   }
 }
+
+#' @describeIn getWhatMeasured summary_generic_spct
+#' @export
+getWhatMeasured.summary_generic_spct <- function(x, ...) {
+  what.measured <- attr(x, "what.measured", exact = TRUE)
+  if (is.null(what.measured) || is.na(what.measured)) {
+    # need to handle objects created with old versions
+    NA_character_
+  } else {
+    what.measured
+  }
+}
+
+#' @describeIn getWhatMeasured generic_mspct
+#' @param idx logical whether to add a column with the names of the elements of
+#'   spct
+#' @note The method for collections of spectra returns the
+#'   a tibble with a column of character strings.
+#' @export
+#'
+getWhatMeasured.generic_mspct <- function(x,
+                                          ...,
+                                          idx = "spct.idx") {
+  msdply(mspct = x, .fun = getWhatMeasured, ..., idx = idx, col.names = "what.measured")
+}
+

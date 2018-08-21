@@ -196,6 +196,7 @@ absorbance_spct <-
       total <- absorbance_spct(spct,
                                w.band = NULL,
                                quantity = "total",
+                               wb.trim = wb.trim,
                                use.hinges = use.hinges)
       absorbance <- absorbance / total
       if (quantity == "contribution.pc") {
@@ -237,7 +238,7 @@ absorbance.filter_mspct <-
            use.hinges = getOption("photobiology.use.hinges", default = NULL),
            ...,
            attr2tb = NULL,
-           idx = !is.null(names(spct))) {
+           idx = "spct.idx") {
     z <-
       msdply(
         mspct = spct,
@@ -251,7 +252,8 @@ absorbance.filter_mspct <-
       )
     add_attr2tb(tb = z,
                 mspct = spct,
-                col.names = attr2tb)
+                col.names = attr2tb,
+                idx = idx)
   }
 
 # object_mspct methods -----------------------------------------------
@@ -274,7 +276,7 @@ absorbance.object_mspct <-
            use.hinges=getOption("photobiology.use.hinges", default = NULL),
            ...,
            attr2tb = NULL,
-           idx = !is.null(names(spct)),
+           idx = "spct.idx",
            .parallel = FALSE,
            .paropts = NULL) {
     z <-
@@ -292,5 +294,6 @@ absorbance.object_mspct <-
       )
     add_attr2tb(tb = z,
                 mspct = spct,
-                col.names = attr2tb)
+                col.names = attr2tb,
+                idx = idx)
   }

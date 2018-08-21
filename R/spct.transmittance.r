@@ -244,7 +244,7 @@ transmittance.filter_mspct <-
            use.hinges = getOption("photobiology.use.hinges", default = NULL),
            ...,
            attr2tb = NULL,
-           idx = !is.null(names(spct)) ) {
+           idx = "spct.idx") {
     z <-
       msdply(
         mspct = spct,
@@ -258,7 +258,8 @@ transmittance.filter_mspct <-
       )
     add_attr2tb(tb = z,
                 mspct = spct,
-                col.names = attr2tb)
+                col.names = attr2tb,
+                idx = idx)
   }
 
 # object_mspct methods -----------------------------------------------
@@ -281,7 +282,7 @@ transmittance.object_mspct <-
            use.hinges = getOption("photobiology.use.hinges", default = NULL),
            ...,
            attr2tb = NULL,
-           idx = !is.null(names(spct)),
+           idx = "spct.idx",
            .parallel = FALSE,
            .paropts = NULL) {
     z <-
@@ -299,5 +300,6 @@ transmittance.object_mspct <-
       )
     add_attr2tb(tb = z,
                 mspct = spct,
-                col.names = attr2tb)
+                col.names = attr2tb,
+                idx = idx)
   }

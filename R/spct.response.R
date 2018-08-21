@@ -481,7 +481,7 @@ response.response_mspct <-
            use.hinges = getOption("photobiology.use.hinges", default = NULL),
            ...,
            attr2tb = NULL,
-           idx = !is.null(names(spct)),
+           idx = "spct.idx",
            .parallel = FALSE,
            .paropts = NULL) {
     z <-
@@ -502,7 +502,8 @@ response.response_mspct <-
       )
     add_attr2tb(tb = z,
                 mspct = spct,
-                col.names = attr2tb)
+                col.names = attr2tb,
+                idx = idx)
   }
 
 #' @describeIn q_response Calculates photon (quantum) response from a
@@ -530,7 +531,7 @@ q_response.response_mspct <-
            use.hinges = getOption("photobiology.use.hinges", default = NULL),
            ...,
            attr2tb = NULL,
-           idx = !is.null(names(spct)),
+           idx = "spct.idx",
            .parallel = FALSE,
            .paropts = NULL) {
     z <-
@@ -550,7 +551,8 @@ q_response.response_mspct <-
       )
     add_attr2tb(tb = z,
                 mspct = spct,
-                col.names = attr2tb)
+                col.names = attr2tb,
+                idx = idx)
   }
 
 #' @describeIn e_response Calculates energy response from a
@@ -578,7 +580,7 @@ e_response.response_mspct <-
            use.hinges = getOption("photobiology.use.hinges", default = NULL),
            ...,
            attr2tb = NULL,
-           idx = !is.null(names(spct)),
+           idx = "spct.idx",
            .parallel = FALSE,
            .paropts = NULL) {
     z <-
@@ -598,5 +600,6 @@ e_response.response_mspct <-
       )
     add_attr2tb(tb = z,
                 mspct = spct,
-                col.names = attr2tb)
+                col.names = attr2tb,
+                idx = idx)
   }

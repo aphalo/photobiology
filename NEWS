@@ -1,10 +1,13 @@
-photobiology 0.9.22 (2018-08-xx)
+photobiology 0.9.23 (2018-08-xx)
 ================================
 
-Bug fix: Ensure that getWhenMeasured() always returns an object of class
+* Bug fix: Ensure that getWhenMeasured() always returns an object of class
 "POSIXct".
-Add "scale.factor" as formal parameter to methods irrad(), q_irrad(), e_irrad(),
+* Add "scale.factor" as formal parameter to methods irrad(), q_irrad(), e_irrad(),
 response(), q_response() and e_response().
+* Change default value for parameter "idx" in the various summary methods. Also
+add parameter "idx" to "add attributes to tibble" methods and rewrite the
+"get" methods for attributes using a simpler, and possibly faster approach.
 
 photobiology 0.9.22 (2018-07-09)
 ================================

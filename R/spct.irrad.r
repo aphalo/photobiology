@@ -809,14 +809,14 @@ e_fluence.source_spct <-
 
 # source_mspct methods -----------------------------------------------
 
-#' @describeIn irrad  Calculates irradiance from a \code{source_mspct}
-#'   object.
+#' @describeIn irrad  Calculates irradiance from a \code{source_mspct} object.
 #'
-#' @param attr2tb character vector, see \code{\link{add_attr2tb}} for the syntax for \code{attr2tb} passed as is to formal parameter \code{col.names}.
-#' @param idx logical whether to add a column with the names of the elements of
-#'   spct
+#' @param attr2tb character vector, see \code{\link{add_attr2tb}} for the syntax
+#'   for \code{attr2tb} passed as is to formal parameter \code{col.names}.
+#' @param idx character Name of the column with the names of the members of the
+#'   collection of spectra.
 #' @param .parallel	if TRUE, apply function in parallel, using parallel backend
-#'   provided by foreach
+#'   provided by foreach.
 #' @param .paropts a list of additional options passed into the foreach function
 #'   when parallel computation is enabled. This is important if (for example)
 #'   your code relies on external data or packages: use the .export and
@@ -837,7 +837,7 @@ irrad.source_mspct <-
            allow.scaled = !quantity  %in% c("average", "mean", "total"),
            ...,
            attr2tb = NULL,
-           idx = !is.null(names(spct)),
+           idx = "spct.idx",
            .parallel = FALSE,
            .paropts = NULL) {
     z <-
@@ -860,7 +860,8 @@ irrad.source_mspct <-
       )
     add_attr2tb(tb = z,
                 mspct = spct,
-                col.names = attr2tb)
+                col.names = attr2tb,
+                idx = idx)
   }
 
 #' @describeIn q_irrad  Calculates photon (quantum) irradiance from a
@@ -890,7 +891,7 @@ q_irrad.source_mspct <-
            allow.scaled = !quantity  %in% c("average", "mean", "total"),
            ...,
            attr2tb = NULL,
-           idx = !is.null(names(spct)),
+           idx = "spct.idx",
            .parallel = FALSE,
            .paropts = NULL) {
     z <-
@@ -912,7 +913,8 @@ q_irrad.source_mspct <-
       )
     add_attr2tb(tb = z,
                 mspct = spct,
-                col.names = attr2tb)
+                col.names = attr2tb,
+                idx = idx)
   }
 
 #' @describeIn e_irrad  Calculates energy irradiance from a
@@ -942,7 +944,7 @@ e_irrad.source_mspct <-
            allow.scaled = !quantity  %in% c("average", "mean", "total"),
            ...,
            attr2tb = NULL,
-           idx = !is.null(names(spct)),
+           idx = "spct.idx",
            .parallel = FALSE,
            .paropts = NULL) {
     z <-
@@ -964,7 +966,8 @@ e_irrad.source_mspct <-
       )
     add_attr2tb(tb = z,
                 mspct = spct,
-                col.names = attr2tb)
+                col.names = attr2tb,
+                idx = idx)
   }
 
 #' @describeIn fluence Calculates fluence from a \code{source_mspct}
@@ -994,7 +997,7 @@ fluence.source_mspct <-
            allow.scaled = FALSE,
            ...,
            attr2tb = NULL,
-           idx = !is.null(names(spct)),
+           idx = "spct.idx",
            .parallel = FALSE,
            .paropts = NULL) {
     z <-
@@ -1016,7 +1019,8 @@ fluence.source_mspct <-
       )
     add_attr2tb(tb = z,
                 mspct = spct,
-                col.names = attr2tb)
+                col.names = attr2tb,
+                idx = idx)
   }
 
 #' @describeIn e_fluence Calculates energy fluence from a \code{source_mspct}
@@ -1044,7 +1048,7 @@ e_fluence.source_mspct <-
            allow.scaled = FALSE,
            ...,
            attr2tb = NULL,
-           idx = !is.null(names(spct)),
+           idx = "spct.idx",
            .parallel = FALSE,
            .paropts = NULL) {
     z <-
@@ -1065,7 +1069,8 @@ e_fluence.source_mspct <-
       )
     add_attr2tb(tb = z,
                 mspct = spct,
-                col.names = attr2tb)
+                col.names = attr2tb,
+                idx = idx)
   }
 
 #' @describeIn q_fluence Calculates photon (quantum) fluence from a
@@ -1094,7 +1099,7 @@ q_fluence.source_mspct <-
            allow.scaled = FALSE,
            ...,
            attr2tb = NULL,
-           idx = !is.null(names(spct)),
+           idx = "spct.idx",
            .parallel = FALSE,
            .paropts = NULL) {
     z <-
@@ -1115,5 +1120,6 @@ q_fluence.source_mspct <-
       )
     add_attr2tb(tb = z,
                 mspct = spct,
-                col.names = attr2tb)
+                col.names = attr2tb,
+                idx = idx)
   }
