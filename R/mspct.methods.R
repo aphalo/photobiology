@@ -263,7 +263,7 @@ checkMspctVersion <- function(x) {
 
 
 
-# convolute ---------------------------------------------------------------
+# convolution ---------------------------------------------------------------
 
 #' Convolve function for collections of spectra
 #'
@@ -276,6 +276,9 @@ checkMspctVersion <- function(x) {
 #'   \code{numeric}
 #' @param oper function, usually but not necessarily an operator with two
 #'   arguments.
+#' @param sep character Used when pasting the names of members of \code{e1} and
+#'   \code{e2} to form the names of members of the returned collection of
+#'   spectra.
 #' @param ... additional arguments passed to \code{oper} if present.
 #'
 #' @note At least one of e1 and e2 must be a \code{generic_mspct} object or
@@ -285,7 +288,7 @@ checkMspctVersion <- function(x) {
 #'
 #' @family math operators and functions
 #'
-convolve_each <- function(e1, e2, oper = `*`, ...) {
+convolve_each <- function(e1, e2, oper = `*`, sep = "_", ...) {
   e3 <- list()
   if (is.any_mspct(e1) & !is.any_mspct(e2)) {
     for (spct.name in names(e1)) {
@@ -304,7 +307,7 @@ convolve_each <- function(e1, e2, oper = `*`, ...) {
   } else if (is.any_mspct(e1) & is.any_mspct(e2)) {
     for (spct.name1 in names(e1)) {
       for (spct.name2 in names(e2)) {
-        combined.name <- paste(spct.name1, spct.name2, sep = "_")
+        combined.name <- paste(spct.name1, spct.name2, sep = sep)
         e3[[combined.name]] <- oper(e1[[spct.name1]], e2[[spct.name2]], ...)
       }
      }

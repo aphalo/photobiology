@@ -1,4 +1,4 @@
-photobiology 0.9.23 (2018-08-xx)
+photobiology 0.9.23 (2018-08-30)
 ================================
 
 * Bug fix: Ensure that getWhenMeasured() always returns an object of class
@@ -9,6 +9,7 @@ e_irrad(), response(), q_response() and e_response().
 collections of spectra. Also add parameter "idx" to "add attributes to tibble"
 methods and rewrite the "get" methods for attributes using a simpler, and
 possibly faster approach.
+* Add parameter "sep" to function convolve_each().
 
 photobiology 0.9.22 (2018-07-09)
 ================================
