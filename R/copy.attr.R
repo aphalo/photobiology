@@ -202,7 +202,10 @@ merge_attributes.generic_spct <- function(x, y, z,
       attr(z, w) <- att.y
     } else if (length(att.y) == 0L) {
       attr(z, w) <- att.x
-    } else if (is.na(att.x) || is.na(att.y) || att.x != att.y) {
+    } else if (is.na(att.x) || is.na(att.y) ||
+               class(att.x) != class(att.y) ||
+               length(att.x) != length(att.y) ||
+               any(unlist(att.x) != unlist(att.y))) {
       attr(z, w) <- ifelse(w == "comment", NA_character_, NA)
     } else {
       attr(z, w) <- att.x
