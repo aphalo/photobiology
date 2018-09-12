@@ -603,6 +603,7 @@ test_that("extract attr", {
 
 test_that("merge attr in operators", {
   expect_equal((white_led.source_spct + white_led.source_spct) / 2, white_led.source_spct)
+  expect_equal(white_led.source_spct + white_led.source_spct, white_led.source_spct * 2)
   expect_equal(white_led.source_spct + 0, white_led.source_spct)
   expect_equal(white_led.source_spct - white_led.source_spct, white_led.source_spct * 0)
 })

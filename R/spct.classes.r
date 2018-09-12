@@ -860,12 +860,14 @@ setRawSpct <-
 #'
 setCpsSpct <-
   function(x,
+           time.unit="second",
            strict.range = getOption("photobiology.strict.range", default = FALSE),
            multiple.wl = 1L,
            idfactor = NULL) {
     name <- substitute(x)
     setGenericSpct(x, multiple.wl = multiple.wl, idfactor = idfactor)
     class(x) <- c("cps_spct", class(x))
+    setTimeUnit(x, time.unit)
     x <- check_spct(x, strict.range = strict.range)
     if (is.name(name)) {
       name <- as.character(name)
@@ -1215,7 +1217,7 @@ is_photon_based <- function(x) {
   } else if (is.response_spct(x)) {
     return("s.q.response" %in% names(x))
   } else {
-    return(NA)
+    return(NA_integer_)
   }
 }
 
@@ -1241,7 +1243,7 @@ is_energy_based <- function(x) {
   } else if (is.response_spct(x)) {
     return("s.e.response" %in% names(x))
   } else {
-    return(NA)
+    return(NA_integer_)
   }
 }
 
@@ -1273,7 +1275,7 @@ is_absorbance_based <- function(x) {
   if (is.filter_spct(x) || is.summary_filter_spct(x)) {
     return("A" %in% names(x))
   } else {
-    return(NA)
+    return(NA_integer_)
   }
 }
 
@@ -1294,7 +1296,7 @@ is_transmittance_based <- function(x) {
   if (is.filter_spct(x) || is.summary_source_spct(x)) {
     return("Tfr" %in% names(x))
   } else {
-    return(NA)
+    return(NA_integer_)
   }
 }
 
@@ -1329,7 +1331,7 @@ is_transmittance_based <- function(x) {
 setTimeUnit <- function(x,
                         time.unit = c("second", "hour", "day", "exposure", "none"),
                         override.ok = FALSE) {
-  if (!(is.source_spct(x) || is.response_spct(x) ||
+  if (!(is.source_spct(x) || is.response_spct(x) || is.cps_spct(x) ||
         is.summary_source_spct(x) || is.summary_response_spct(x))) {
     return(invisible(x))
   }
@@ -1387,7 +1389,7 @@ setTimeUnit <- function(x,
 #' getTimeUnit(sun.spct)
 #'
 getTimeUnit <- function(x, force.duration = FALSE) {
-  if (is.source_spct(x) || is.response_spct(x) ||
+  if (is.source_spct(x) || is.response_spct(x) || is.cps_spct(x) ||
       is.summary_source_spct(x) || is.summary_response_spct(x)) {
     time.unit <- attr(x, "time.unit", exact = TRUE)
     if (is.null(time.unit)) {
@@ -1401,7 +1403,7 @@ getTimeUnit <- function(x, force.duration = FALSE) {
     }
     return(time.unit)
   } else {
-    return(NA)
+    return(NA_character_)
   }
 }
 
@@ -1474,7 +1476,7 @@ convertTimeUnit <- function(x, time.unit = NULL, byref = FALSE) {
 #' @family time attribute functions
 #'
 checkTimeUnit <- function(x) {
-  if (is.source_spct(x) || is.response_spct(x)) {
+  if (is.source_spct(x) || is.response_spct(x) || is.cps_spct(x)) {
     time.unit <- getTimeUnit(x)
     if (is.null(time.unit)) {
       setTimeUnit(x, "second")

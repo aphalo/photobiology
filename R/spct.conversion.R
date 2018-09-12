@@ -37,7 +37,7 @@ cps2irrad <- function(x.sample, pre.fun = NULL, ...) {
   z <- as.generic_spct(x.sample)
   z[[cps.col.sample]] <- NULL
   z[["s.e.irrad"]] <- x.sample[[cps.col.sample]] * irrad.mult
-  setSourceSpct(z)
+  setSourceSpct(z, time.unit = getTimeUnit(x.sample))
   copy_attributes(x.sample, z)
   if (length(descriptor[["inst.calib"]][["wl.range"]]) == 2) {
     clip_wl(z, descriptor[["inst.calib"]][["wl.range"]])

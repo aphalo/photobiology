@@ -179,7 +179,7 @@ merge_attributes.generic_spct <- function(x, y, z,
     which.add <- switch(class(z)[1],
                    generic_spct,
                    raw_spct = "linearized",
-                   cps_spct = "linearized",
+                   cps_spct = c("time.unit", "linearized"),
                    source_spct = c("time.unit", "bswf.used"),
                    response_spct = c("time.unit", "bswf.used"),
                    # need to be copied in case class of object_spct
@@ -191,7 +191,6 @@ merge_attributes.generic_spct <- function(x, y, z,
     )
     which <- c(which, which.add)
   }
-  setMultipleWl(z)
   # this is likely to be slow
   for (w in which) {
     att.x <- attr(x, w, exact = TRUE)
@@ -205,12 +204,15 @@ merge_attributes.generic_spct <- function(x, y, z,
     } else if (is.na(att.x) || is.na(att.y) ||
                class(att.x) != class(att.y) ||
                length(att.x) != length(att.y) ||
-               any(unlist(att.x) != unlist(att.y))) {
-      attr(z, w) <- ifelse(w == "comment", NA_character_, NA)
+               xor(is.atomic(att.x), is.atomic(att.y)) ||
+               (is.atomic(att.x) && (att.x != att.y)) ||
+               isFALSE(all.equal(att.x, att.y))) {
+      attr(z, w) <- ifelse(w %in% c("comment", "time.unit"), NA_character_, NA)
     } else {
       attr(z, w) <- att.x
     }
   }
+  setMultipleWl(z)
   z
 }
 
