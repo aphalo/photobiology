@@ -1,29 +1,36 @@
 
 # attributes used by spectral classes -------------------------------------
 
-private.attributes <- c("spct.version",
-                        "spct.tags")
+all_spct_attr.ls <-
+  list(
+    private = c("spct.version",
+                "spct.tags"),
+    generic_spct = c("comment",
+                     "instr.desc",
+                     "instr.settings",
+                     "when.measured",
+                     "where.measured",
+                     "what.measured",
+                     "spct.tags",
+                     "normalized",
+                     "scaled",
+                     "multiple.wl",
+                     "spct.version"),
+    raw_spct = "linearized",
+    cps_spct = c("time.unit", "linearized"),
+    source_spct = c("time.unit", "bswf.used"),
+    response_spct = c("time.unit", "bswf.used"),
+    object_spct = c("Tfr.type", "Rfr.type", "Afr.type"),
+    filter_spct = c("Tfr.type", "Rfr.type", "Afr.type"),
+    reflector_spct = c("Tfr.type", "Rfr.type", "Afr.type"),
+    calibration_spct = character(),
+    chroma_spct = character())
 
-common.attributes <- c("comment",
-                       "what.measured",
-                       "when.measured",
-                       "where.measured",
-                       "normalized",
-                       "scaled",
-                       "multiple.wl")
+private.attributes <- all_spct_attr.ls[["private"]]
 
-source.attributes <- c("bswf.used", "time.unit")
-filter.attributes <- c("Tfr.type")
-reflector.attributes <- c("Rfr.type")
-object.attributes <- union(filter.attributes, reflector.attributes)
-instr.attributes <- c("instr.descriptor", "instr.settings")
-calibration.attributes <- NULL
-all.attributes <- unique(c(private.attributes,
-                           common.attributes,
-                           source.attributes,
-                           filter.attributes,
-                           reflector.attributes,
-                           instr.attributes))
+common.attributes <- all_spct_attr.ls[["generic_spct"]]
+
+all.attributes <- unique(unlist(all_spct_attr.ls, use.names = FALSE))
 
 # copy_attributes ---------------------------------------------------------
 
@@ -69,31 +76,9 @@ copy_attributes.generic_spct <- function(x, y,
   }
   stopifnot(is.generic_spct(y))
   if (length(which) == 0) {
-    which <- c("comment",
-               "instr.desc",
-               "instr.settings",
-               "when.measured",
-               "where.measured",
-               "what.measured",
-               "spct.tags",
-               "normalized",
-               "scaled",
-               "multiple.wl",
-               "spct.version")
-    which.add <- switch(class(y)[1],
-                   generic_spct,
-                   raw_spct = "linearized",
-                   cps_spct = "linearized",
-                   source_spct = c("time.unit", "bswf.used"),
-                   response_spct = c("time.unit", "bswf.used"),
-                   # need to be copied in case class of object_spct
-                   # is changed temporarily
-                   filter_spct = c("Tfr.type", "Rfr.type", "Afr.type"),
-                   reflector_spct = c("Tfr.type", "Rfr.type"),
-                   object_spct = c("Tfr.type", "Rfr.type", "Afr.type"),
-                   chroma_spct = character()
-    )
-    which <- c(which, which.add)
+    which <- c(all_spct_attr.ls$private,
+               all_spct_attr.ls$generic_spct,
+               all_spct_attr.ls[[class(y)[1]]])
   }
   attr.x <- attributes(x)
   which.x <- intersect(names(attr.x), which)
@@ -166,30 +151,9 @@ merge_attributes.generic_spct <- function(x, y, z,
   }
   stopifnot(is.generic_spct(y) && is.generic_spct(z))
   if (length(which) == 0) {
-    which <- c("comment",
-               "instr.desc",
-               "instr.settings",
-               "when.measured",
-               "where.measured",
-               "what.measured",
-               "spct.tags",
-               "normalized",
-               "scaled",
-               "spct.version")
-    which.add <- switch(class(z)[1],
-                   generic_spct,
-                   raw_spct = "linearized",
-                   cps_spct = c("time.unit", "linearized"),
-                   source_spct = c("time.unit", "bswf.used"),
-                   response_spct = c("time.unit", "bswf.used"),
-                   # need to be copied in case class of object_spct
-                   # is changed temporarily
-                   filter_spct = c("Tfr.type", "Rfr.type", "Afr.type"),
-                   reflector_spct = c("Tfr.type", "Rfr.type"),
-                   object_spct = c("Tfr.type", "Rfr.type", "Afr.type"),
-                   chroma_spct = character()
-    )
-    which <- c(which, which.add)
+    which <- c(all_spct_attr.ls$private,
+               all_spct_attr.ls$generic_spct,
+               all_spct_attr.ls[[class(z)[1]]])
   }
   # this is likely to be slow
   for (w in which) {
@@ -205,7 +169,7 @@ merge_attributes.generic_spct <- function(x, y, z,
                class(att.x) != class(att.y) ||
                length(att.x) != length(att.y) ||
                xor(is.atomic(att.x), is.atomic(att.y)) ||
-               (is.atomic(att.x) && (att.x != att.y)) ||
+               (is.atomic(att.x) && any(att.x != att.y)) ||
                isFALSE(all.equal(att.x, att.y))) {
       attr(z, w) <- ifelse(w %in% c("comment", "time.unit"), NA_character_, NA)
     } else {
@@ -261,8 +225,8 @@ get_attributes.source_spct <- function(x,
                                        which = NULL,
                                        ...) {
   get_attributes.generic_spct(x, which = which,
-                              allowed = c(source.attributes,
-                                          common.attributes),
+                              allowed = c(all_spct_attr.ls["generic_spct"],
+                                          all_spct_attr.ls["source_spct"]),
                               ...)
 }
 
@@ -273,8 +237,8 @@ get_attributes.filter_spct <- function(x,
                                        which = NULL,
                                        ...) {
   get_attributes.generic_spct(x, which = which,
-                              allowed = c(filter.attributes,
-                                          common.attributes),
+                              allowed = c(all_spct_attr.ls["generic_spct"],
+                                          all_spct_attr.ls["filter_spct"]),
                               ...)
 }
 
@@ -286,8 +250,8 @@ get_attributes.reflector_spct <- function(x,
                                           which = NULL,
                                           ...) {
   get_attributes.generic_spct(x, which = which,
-                              allowed = c(reflector.attributes,
-                                          common.attributes),
+                              allowed = c(all_spct_attr.ls["generic_spct"],
+                                          all_spct_attr.ls["reflector_spct"]),
                               ...)
 }
 
@@ -299,8 +263,8 @@ get_attributes.object_spct <- function(x,
                                        which = NULL,
                                        ...) {
   get_attributes.generic_spct(x, which = which,
-                              allowed = c(object.attributes,
-                                          common.attributes),
+                              allowed = c(all_spct_attr.ls["generic_spct"],
+                                          all_spct_attr.ls["object_spct"]),
                               ...)
 }
 
