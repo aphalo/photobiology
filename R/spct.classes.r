@@ -1331,40 +1331,31 @@ is_transmittance_based <- function(x) {
 setTimeUnit <- function(x,
                         time.unit = c("second", "hour", "day", "exposure", "none"),
                         override.ok = FALSE) {
-  if (!(is.source_spct(x) || is.response_spct(x) || is.cps_spct(x) ||
-        is.summary_source_spct(x) || is.summary_response_spct(x))) {
+  if (!(is.any_spct(x) || is.any_summary_spct(x))) {
     return(invisible(x))
   }
   name <- substitute(x)
-  if (length(time.unit) > 1) {
-    if (getTimeUnit(x) != "unknown") {
-      time.unit <- getTimeUnit(x)
-    } else {
-      time.unit <- time.unit[[1]]
+  old.time.unit <- getTimeUnit(x)
+  override.ok <- ifelse(is.na(old.time.unit) || old.time.unit == "unknown",
+                        TRUE, override.ok)
+
+  if (override.ok) {
+    if (is.character(time.unit)) {
+      if (!(time.unit %in% c("second", "hour", "day", "none", "exposure", "unknown"))) {
+        warning("Unrecognized 'time.unit' argument ", time.unit, " set to 'unknown'.")
+        time.unit <- "unknown"
+      }
+    } else if (lubridate::is.duration(time.unit)) {
+      if (time.unit <= lubridate::duration(0, "seconds")) {
+        stop("When 'time.unit' is a duration, it must be > 0")
+      }
     }
-  } else {
-    old.time.unit <- getTimeUnit(x)
-    override.ok <- override.ok ||
-      is.character(old.time.unit) && old.time.unit %in% c("unknown", "none", time.unit)
-    if (!override.ok && old.time.unit != time.unit[1]) {
-      warning("Overriding existing 'time.unit' '", old.time.unit,
-              "' with '", time.unit, "' may invalidate data!")
+    attr(x, "time.unit") <- time.unit
+    if (is.name(name)) {
+      name <- as.character(name)
+      assign(name, x, parent.frame(), inherits = TRUE)
     }
-  }
-  if (is.character(time.unit)) {
-    if (!(time.unit %in% c("second", "hour", "day", "none", "exposure", "unknown"))) {
-      warning("Unrecognized 'time.unit' argument ", time.unit, " set to 'unknown'.")
-      time.unit <- "unknown"
-    }
-  } else if (lubridate::is.duration(time.unit)) {
-    if (time.unit <= lubridate::duration(0, "seconds")) {
-      stop("When 'time.unit' is a duration, it must be > 0")
-    }
-  }
-  attr(x, "time.unit") <- time.unit
-  if (is.name(name)) {
-    name <- as.character(name)
-    assign(name, x, parent.frame(), inherits = TRUE)
+
   }
   invisible(x)
 }
@@ -1389,8 +1380,7 @@ setTimeUnit <- function(x,
 #' getTimeUnit(sun.spct)
 #'
 getTimeUnit <- function(x, force.duration = FALSE) {
-  if (is.source_spct(x) || is.response_spct(x) || is.cps_spct(x) ||
-      is.summary_source_spct(x) || is.summary_response_spct(x)) {
+  if (is.any_spct(x) || is.any_summary_spct(x)) {
     time.unit <- attr(x, "time.unit", exact = TRUE)
     if (is.null(time.unit)) {
       # need to handle objects created with old versions

@@ -16,7 +16,7 @@ all_spct_attr.ls <-
                      "scaled",
                      "multiple.wl",
                      "spct.version"),
-    raw_spct = "linearized",
+    raw_spct = c("time.unit", "linearized"),
     cps_spct = c("time.unit", "linearized"),
     source_spct = c("time.unit", "bswf.used"),
     response_spct = c("time.unit", "bswf.used"),
@@ -76,8 +76,8 @@ copy_attributes.generic_spct <- function(x, y,
   }
   stopifnot(is.generic_spct(y))
   if (length(which) == 0) {
-    which <- c(all_spct_attr.ls$private,
-               all_spct_attr.ls$generic_spct,
+    which <- c(all_spct_attr.l[["private"]],
+               all_spct_attr.ls[["generic_spct"]],
                all_spct_attr.ls[[class(y)[1]]])
   }
   attr.x <- attributes(x)
@@ -151,9 +151,9 @@ merge_attributes.generic_spct <- function(x, y, z,
   }
   stopifnot(is.generic_spct(y) && is.generic_spct(z))
   if (length(which) == 0) {
-    which <- c(all_spct_attr.ls$private,
-               all_spct_attr.ls$generic_spct,
-               all_spct_attr.ls[[class(z)[1]]])
+    which <- c(all_spct_attr.l[["private"]],
+               all_spct_attr.ls[["generic_spct"]],
+               all_spct_attr.ls[[class(y)[1]]])
   }
   # this is likely to be slow
   for (w in which) {
