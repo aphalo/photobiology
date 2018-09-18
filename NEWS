@@ -1,4 +1,4 @@
-photobiology 0.9.24 (2018-09-16)
+photobiology 0.9.24 (2018-09-18)
 ================================
 
 * Fix major bug in internally used method merge_attributes() which in certain
@@ -6,7 +6,7 @@ cases triggered fatal errors when using operators or other methods taking two
 spectra as arguments. This also affected indirectly package 'ooacquire'.
 * Add (experimental) support for spectral measurements where the exposure time
 is dependent on the light source instead of on the integration time settings in
-the spectrometer such as when measuring xenon flashes.
+the spectrometer such as when measuring xenon-tube flashes.
 
 photobiology 0.9.23 (2018-08-30)
 ================================

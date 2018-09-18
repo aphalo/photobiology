@@ -1334,12 +1334,13 @@ setTimeUnit <- function(x,
   if (!(is.any_spct(x) || is.any_summary_spct(x))) {
     return(invisible(x))
   }
-  name <- substitute(x)
   if (is.character(time.unit)) {
     time.unit <- time.unit[1]
   }
+  name <- substitute(x)
   old.time.unit <- getTimeUnit(x)
-  override.ok <- ifelse(is.na(old.time.unit) || (is.character(time.unit) && old.time.unit == "unknown"),
+  override.ok <- ifelse(is.na(old.time.unit) ||
+                          (is.character(old.time.unit) && old.time.unit == "unknown"),
                         TRUE, override.ok)
   if (override.ok) {
     if (is.character(time.unit)) {
@@ -1357,6 +1358,7 @@ setTimeUnit <- function(x,
       name <- as.character(name)
       assign(name, x, parent.frame(), inherits = TRUE)
     }
+
   }
   invisible(x)
 }
@@ -1383,6 +1385,9 @@ setTimeUnit <- function(x,
 getTimeUnit <- function(x, force.duration = FALSE) {
   if (is.any_spct(x) || is.any_summary_spct(x)) {
     time.unit <- attr(x, "time.unit", exact = TRUE)
+    if (is.character(time.unit)) {
+      time.unit <- time.unit[1]
+    }
     if (is.null(time.unit)) {
       # need to handle objects created with old versions
       time.unit <- "unknown"
