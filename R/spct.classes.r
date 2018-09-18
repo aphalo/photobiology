@@ -1017,8 +1017,8 @@ setResponseSpct <-
 #'
 setSourceSpct <-
   function(x,
-           time.unit="second",
-           bswf.used=c("none", "unknown"),
+           time.unit = "second",
+           bswf.used = c("none", "unknown"),
            strict.range = getOption("photobiology.strict.range", default = FALSE),
            multiple.wl = 1L,
            idfactor = NULL) {
@@ -1335,10 +1335,12 @@ setTimeUnit <- function(x,
     return(invisible(x))
   }
   name <- substitute(x)
+  if (is.character(time.unit)) {
+    time.unit <- time.unit[1]
+  }
   old.time.unit <- getTimeUnit(x)
-  override.ok <- ifelse(is.na(old.time.unit) || old.time.unit == "unknown",
+  override.ok <- ifelse(is.na(old.time.unit) || (is.character(time.unit) && old.time.unit == "unknown"),
                         TRUE, override.ok)
-
   if (override.ok) {
     if (is.character(time.unit)) {
       if (!(time.unit %in% c("second", "hour", "day", "none", "exposure", "unknown"))) {
@@ -1355,7 +1357,6 @@ setTimeUnit <- function(x,
       name <- as.character(name)
       assign(name, x, parent.frame(), inherits = TRUE)
     }
-
   }
   invisible(x)
 }

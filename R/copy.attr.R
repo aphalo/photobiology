@@ -76,7 +76,7 @@ copy_attributes.generic_spct <- function(x, y,
   }
   stopifnot(is.generic_spct(y))
   if (length(which) == 0) {
-    which <- c(all_spct_attr.l[["private"]],
+    which <- c(all_spct_attr.ls[["private"]],
                all_spct_attr.ls[["generic_spct"]],
                all_spct_attr.ls[[class(y)[1]]])
   }
@@ -151,7 +151,7 @@ merge_attributes.generic_spct <- function(x, y, z,
   }
   stopifnot(is.generic_spct(y) && is.generic_spct(z))
   if (length(which) == 0) {
-    which <- c(all_spct_attr.l[["private"]],
+    which <- c(all_spct_attr.ls[["private"]],
                all_spct_attr.ls[["generic_spct"]],
                all_spct_attr.ls[[class(y)[1]]])
   }
