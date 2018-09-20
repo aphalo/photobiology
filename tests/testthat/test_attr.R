@@ -569,6 +569,26 @@ test_that("peaks attr", {
 
 })
 
+test_that("wls_at_target attr", {
+
+  my.spct <- sun.spct[200:300, ]
+  tested.time <- ymd_hms("2015-12-31 23:59:59")
+  setWhenMeasured(my.spct, tested.time)
+  tested.location <- data.frame(lon = 24.93545, lat = 60.16952)
+  setWhereMeasured(my.spct, tested.location)
+  tested.what <- "user message"
+  setWhatMeasured(my.spct, tested.what)
+
+  expect_equal(setdiff(names(attributes(wls_at_target(my.spct, 0.7))),
+                       names(attributes(my.spct))),
+               character(0)  )
+
+  expect_equal(setdiff(names(attributes(wls_at_target(my.spct))),
+                       names(attributes(my.spct))),
+               character(0)  )
+
+})
+
 test_that("smooth_spct attr", {
 
   my.spct <- source_spct(w.length=100:200, s.e.irrad = 1)

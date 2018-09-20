@@ -618,18 +618,25 @@ valleys.generic_mspct <- function(x,
 #'
 #' @param x an R object
 #' @param target numeric value indicating the spectral quantity value for which
-#'   wavelngths are to be searched and interpolated if need.
-#' @param na.rm logical indicating whether \code{NA} values should be stripped
-#'   before searching for the target.
+#'   wavelengths are to be searched and interpolated if need. The character
+#'   strings "half.maximum" and "half.range" are also accepted as arguments.
 #' @param col.name character The name of the column in which to search for the
 #'   target value.
 #' @param .fun function A binary comparison function or operator.
+#' @param interpolate logical Indicating whether the nearest wavelength value
+#'   in \code{x} should be returned or a value calculated by linear
+#'   interpolation between wavelength values stradling the target.
+#' @param na.rm logical indicating whether \code{NA} values should be stripped
+#'   before searching for the target.
 #'
 #' @note This function is used internally by method \code{wls_at_target()}, and
 #'   these methods should be preferred in user code and scripts.
 #'
-#' @return An spectrum object of the same class as \code{x} but shorter, or even
-#'   empty.
+#' @return A spectrum object of the same class as \code{x} with fewer rows,
+#'   possibly even no rows. If \code{FALSE} is passed to \code{interpolate} a
+#'   subset of \code{x} is returned, otherwise a new object of the same class
+#'   containing interpolated wavelenths for the \code{target} value is
+#'   returned.
 #'
 #' @export
 #'
@@ -654,6 +661,11 @@ find_wls <- function(x,
       return(x[NULL, ])
     }
   }
+  if (target %in% c("half.maximum", "HM")) {
+    target <- max(x[[col.name]], na.rm = na.rm) / 2
+  } else if (target %in% c("half.range", "HR")) {
+    target <- mean(range(x[[col.name]], na.rm = na.rm))
+  }
   if (na.rm) {
     x <- na.omit(x)
   }
@@ -668,41 +680,66 @@ find_wls <- function(x,
   opening.idx <- cumsum(runs$lengths[-length(runs$lengths)])
   closing.idx <- opening.idx + 1L
   if (max(closing.idx) > nrow(x)) {
-    closing.idx[length(closing.idx)] <- opening.idx[length(opening.idx)]
+    closing.idx[length(closing.idx)] <- nrow(x)
   }
   if (interpolate) {
     # do vectorized interpolation to fetch true intersects
-    wls <- x[["w.length"]][opening.idx] +
-      (x[["w.length"]][closing.idx] - x[["w.length"]][opening.idx]) *
-      (x[[col.name]][closing.idx] - target) / (x[[col.name]][closing.idx] - x[[col.name]][opening.idx])
+    delta.wl <- x[["w.length"]][closing.idx] - x[["w.length"]][opening.idx]
+    delta.col <- x[[col.name]][closing.idx] - x[[col.name]][opening.idx]
+    delta.col.target <- target - x[[col.name]][opening.idx]
+    wl.increment <- delta.wl * abs(delta.col.target / delta.col)
+    wls <- x[["w.length"]][opening.idx] + wl.increment
+
+    # return as a "short" spectrum containing only matching wls and target values
+    z <- tibble::tibble(wls, target)
+    names(z) <- c("w.length", col.name)
+    z <- do.call(paste("as", spct.class, sep = "."), args = list(x = z))
+    # we need to copy our private attributes as we are building a new object
+    z <- copy_attributes(x, z)
   } else {
-    # extract nearest shorter wl value to target
-    wls <- x[["w.length"]][opening.idx]
+    # extract nearest wl value for target
+    idxs <- ifelse(abs((x[[col.name]][closing.idx] - target) /
+                     (x[[col.name]][closing.idx] - x[[col.name]][opening.idx])) > 0.5,
+                   opening.idx,
+                   closing.idx)
+    # if the target value is close to a peak or valley, we may pick the same idx on both sides of it.
+    z <- x[unique(idxs), ]
   }
-  # return as a "short" spectrum containing only the interpolated cross points
-  z <- tibble::tibble(wls, target)
-  names(z) <- c("w.length", col.name)
-  z <- do.call(paste("as", spct.class, sep = "."), args = list(x = z))
-  # we need to copy some attributes
   z
 }
 
 # find wavelengths for a target y ----------------------------------------------
 
-#' Search x values corresponding to a target y value
+#' Find wavelengths values corresponding to a target spectral value
+#'
+#' Find wavelength values corresponding to a target spectral value in a spectrum.
+#' The name of the column of the spectral data to be used is inferred from the
+#' class of \code{x} and the argument passed to \code{unit.out} or
+#' \code{filter.qty} or their defaults that depend on R options set.
 #'
 #' @param x an R object
 #' @param target numeric value indicating the spectral quantity value for which
-#'   wavelngths are to be searched and interpolated if need.
+#'   wavelengths are to be searched and interpolated if need. The character
+#'   string "half.maximum" is also accepted as argument.
+#' @param interpolate logical Indicating whether the nearest wavelength value
+#'   in \code{x} should be returned or a value calculated by linear
+#'   interpolation between wavelength values stradling the target.
 #' @param na.rm logical indicating whether \code{NA} values should be stripped
 #'   before searching for the target.
 #' @param ... currently ignored.
 #'
-#' @return An spectrum object of the same class as \code{x} but shorter, or even
-#'   empty.
+#' @return A spectrum object of the same class as \code{x} with fewer rows,
+#'   possibly even no rows. If \code{FALSE} is passed to \code{interpolate} a
+#'   subset of \code{x} is returned, otherwise a new object of the same class
+#'   containing interpolated wavelenths for the \code{target} value is
+#'   returned.
+#'
+#' @note When interpolation is used, only column \code{w.length} and the column
+#'   against which the target value was compared are included in the returned
+#'   object, otherwise, all columns in \code{x} are returned.
 #'
 #' @examples
-#' wls_at_target(sun.spct, target = 20)
+#' wls_at_target(sun.spct, target = 0.1)
 #'
 #' @export
 #'
@@ -729,6 +766,9 @@ wls_at_target.default <-
   }
 
 #' @describeIn wls_at_target Method for "source_spct" objects.
+#'
+#' @param unit.out character One of "energy" or "photon"
+#'
 #' @export
 #'
 wls_at_target.source_spct <-
@@ -781,6 +821,9 @@ wls_at_target.response_spct <-
   }
 
 #' @describeIn wls_at_target Method for "filter_spct" objects.
+#'
+#' @param filter.qty character One of "transmittance" or "absorbance"
+#'
 #' @export
 #'
 wls_at_target.filter_spct <-
