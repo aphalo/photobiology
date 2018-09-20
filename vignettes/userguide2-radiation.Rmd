@@ -1378,7 +1378,9 @@ Summaries can be calculated both from individual spectral objects (Table 10) and
 
 <hr>
 
-**Table 10. Summary methods for spectra.** Key: + available, - not available.
+**Table 10. Summary methods for spectra.** Key: + available, - not available,
+(+) object_spct objects can be converted into filter_spct or reflector_spct 
+objects before applying these methods.
 
 | methods | raw/cps | source | response | filter | reflector | object | chroma |
 |:--------|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
@@ -1408,8 +1410,9 @@ Summaries can be calculated both from individual spectral objects (Table 10) and
 | wl_midpoint | + | + | + | + | + | + | + |
 | labels | + | + | + | + | + | + | + |
 | summary | + | + | + | + | + | + | + |
-| peaks | -- | + | + | + | + | (+) | (+) |
-| valleys | -- | + | + | + | + | (+) | (+) |
+| peaks | -- | + | + | + | + | (+) | - |
+| valleys | -- | + | + | + | + | (+) | - |
+| wls_at_target | -- | + | + | + | + | (+) | - |
 | integrate_spct | + | + | + | + | + | + | + |
 | average_spct | + | + | + | + | + | + | + |
 | color_of | -- | + | -- | -- | -- | -- | -- |
@@ -1451,8 +1454,9 @@ As mentioned above, summary methods for collections of spectra return data frame
 | wl_midpoint |  + |  + |  + |  + |  + |  + |  + | 
 | labels |  **l** |  **l** |  **l** |  **l** |  **l** |  **l** |  **l** | 
 | summary |  **l** |  **l** |  **l** |  **l** |  **l** |  **l** |  **l** | 
-| peaks |  -- |  + |  + |  + |  + |  (+) |  (+) | 
-| valleys |  -- |  + |  + |  + |  + |  (+) |  (+) | 
+| peaks |  -- |  + |  + |  + |  + |  (+) |  - | 
+| valleys |  -- |  + |  + |  + |  + |  (+) |  - | 
+| wls_at_target |  -- |  + |  + |  + |  + |  (+) |  - | 
 | integrate_spct |  **a, d, l** |  **a, d, l** |  **a, d, l** |  **a, d, l** |  **a, d, l** |  **a, d, l** |  **a, d, l** | 
 | average_spct |  **a, d, l** |  **a, d, l** |  **a, d, l** |  **a, d, l** |  **a, d, l** |  **a, d, l** |  **a, d, l** | 
 
@@ -1505,7 +1509,7 @@ wl_range(filters.mspct)
 
 #### Individual spectra
 
-Functions `peaks` and `valleys` take spectra as first argument and return a subset of the spectral object data corresponding to local maxima and local minima of the measured variable. `span` defines the width of the _window_ used as a number of observations.
+Methods `peaks` and `valleys` take spectra as first argument and return a subset of the spectral object data corresponding to local maxima and local minima of the measured variable. `span` defines the width of the _window_ used as a number of observations.
 
 ```{r, summary-5}
 peaks(sun.spct, span = 51)
@@ -1528,13 +1532,33 @@ Low level functions `find_peaks`, `get_peaks` and `get_valleys` take numeric vec
 
 #### Collections of spectra
 
-We can use `msmsply()` to extract the peaks of a collection of spectra.
+The methods are also implemented for collections of spectra.
 
 ```{r, col-summary-1}
-msmsply(filters.mspct, peaks, span = 11)
+msmsply(filters.mspct, peaks, span = 21)
 ```
 
 Two of the filters in the collection do not have peaks, and a spectrum object of length zero is returned for them.
+
+### Wavelengths at target value
+
+Method `wls_at_target` takes a spectrum as first argument and return a subset of the spectral object data or a new object corresponding to wavelengths at which the spectrum is at the target value.
+
+```{r, find-wls-1}
+wls_at_target(sun.spct, target = "half.maximum")
+wls_at_target(sun.spct, target = "half.maximum", interpolate = TRUE)
+```
+
+As in the case of `source_spct` and `response_spct` methods parameters `unit.out` and
+`filter.qty` allow to change the returned value.
+
+#### Collections of spectra
+
+The method is also implemented for collections of spectra.
+
+```{r, find-wls-2}
+wls_at_target(filters.mspct, target = "half.maximum")
+```
 
 ### Irradiance
 

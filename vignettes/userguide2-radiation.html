@@ -12,7 +12,7 @@
 
 <meta name="author" content="Pedro J. Aphalo" />
 
-<meta name="date" content="2018-08-19" />
+<meta name="date" content="2018-09-20" />
 
 <title>User Guide: 2 Radiation</title>
 
@@ -279,9 +279,9 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 
 
 <h1 class="title toc-ignore">User Guide: 2 Radiation</h1>
-<h3 class="subtitle"><em>Package ‘photobiology’ 0.9.22.9001</em></h3>
+<h3 class="subtitle"><em>Package ‘photobiology’ 0.9.23.1.9001</em></h3>
 <h4 class="author"><em>Pedro J. Aphalo</em></h4>
-<h4 class="date"><em>2018-08-19</em></h4>
+<h4 class="date"><em>2018-09-20</em></h4>
 
 
 <div id="TOC">
@@ -338,6 +338,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <li><a href="#summary-1">Summary</a></li>
 <li><a href="#wavelength">Wavelength</a></li>
 <li><a href="#peaks-and-valleys">Peaks and valleys</a></li>
+<li><a href="#wavelengths-at-target-value">Wavelengths at target value</a></li>
 <li><a href="#irradiance">Irradiance</a></li>
 <li><a href="#fluence">Fluence</a></li>
 <li><a href="#photon-and-energy-ratios">Photon and energy ratios</a></li>
@@ -4428,7 +4429,7 @@ There are cases where functions <code>convolve_each()</code> and <code>msmsply()
 <h2>Summaries</h2>
 <p>Summaries can be calculated both from individual spectral objects (Table 10) and from collections of spectral objects (Table 11). They return a <em>simpler</em> object than the spectral data in their arguments. For example a vector of numeric values, possibly of length one, in the case of individual spectra, or a data frame containing one row of summary data for each spectrum in a collection of spectra.</p>
 <hr>
-<p><strong>Table 10. Summary methods for spectra.</strong> Key: + available, - not available.</p>
+<p><strong>Table 10. Summary methods for spectra.</strong> Key: + available, - not available, (+) object_spct objects can be converted into filter_spct or reflector_spct objects before applying these methods.</p>
 <table>
 <thead>
 <tr class="header">
@@ -4711,7 +4712,7 @@ There are cases where functions <code>convolve_each()</code> and <code>msmsply()
 <td align="center">+</td>
 <td align="center">+</td>
 <td align="center">(+)</td>
-<td align="center">(+)</td>
+<td align="center">-</td>
 </tr>
 <tr class="even">
 <td align="left">valleys</td>
@@ -4721,9 +4722,19 @@ There are cases where functions <code>convolve_each()</code> and <code>msmsply()
 <td align="center">+</td>
 <td align="center">+</td>
 <td align="center">(+)</td>
-<td align="center">(+)</td>
+<td align="center">-</td>
 </tr>
 <tr class="odd">
+<td align="left">wls_at_target</td>
+<td align="center">–</td>
+<td align="center">+</td>
+<td align="center">+</td>
+<td align="center">+</td>
+<td align="center">+</td>
+<td align="center">(+)</td>
+<td align="center">-</td>
+</tr>
+<tr class="even">
 <td align="left">integrate_spct</td>
 <td align="center">+</td>
 <td align="center">+</td>
@@ -4733,7 +4744,7 @@ There are cases where functions <code>convolve_each()</code> and <code>msmsply()
 <td align="center">+</td>
 <td align="center">+</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">average_spct</td>
 <td align="center">+</td>
 <td align="center">+</td>
@@ -4743,7 +4754,7 @@ There are cases where functions <code>convolve_each()</code> and <code>msmsply()
 <td align="center">+</td>
 <td align="center">+</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">color_of</td>
 <td align="center">–</td>
 <td align="center">+</td>
@@ -5051,7 +5062,7 @@ There are cases where functions <code>convolve_each()</code> and <code>msmsply()
 <td align="center">+</td>
 <td align="center">+</td>
 <td align="center">(+)</td>
-<td align="center">(+)</td>
+<td align="center">-</td>
 </tr>
 <tr class="odd">
 <td align="left">valleys</td>
@@ -5061,9 +5072,19 @@ There are cases where functions <code>convolve_each()</code> and <code>msmsply()
 <td align="center">+</td>
 <td align="center">+</td>
 <td align="center">(+)</td>
-<td align="center">(+)</td>
+<td align="center">-</td>
 </tr>
 <tr class="even">
+<td align="left">wls_at_target</td>
+<td align="center">–</td>
+<td align="center">+</td>
+<td align="center">+</td>
+<td align="center">+</td>
+<td align="center">+</td>
+<td align="center">(+)</td>
+<td align="center">-</td>
+</tr>
+<tr class="odd">
 <td align="left">integrate_spct</td>
 <td align="center"><strong>a, d, l</strong></td>
 <td align="center"><strong>a, d, l</strong></td>
@@ -5073,7 +5094,7 @@ There are cases where functions <code>convolve_each()</code> and <code>msmsply()
 <td align="center"><strong>a, d, l</strong></td>
 <td align="center"><strong>a, d, l</strong></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">average_spct</td>
 <td align="center"><strong>a, d, l</strong></td>
 <td align="center"><strong>a, d, l</strong></td>
@@ -5167,7 +5188,7 @@ Most frequently used summary methods are implemented for collections of spectra.
 <h3>Peaks and valleys</h3>
 <div id="individual-spectra-3" class="section level4">
 <h4>Individual spectra</h4>
-<p>Functions <code>peaks</code> and <code>valleys</code> take spectra as first argument and return a subset of the spectral object data corresponding to local maxima and local minima of the measured variable. <code>span</code> defines the width of the <em>window</em> used as a number of observations.</p>
+<p>Methods <code>peaks</code> and <code>valleys</code> take spectra as first argument and return a subset of the spectral object data corresponding to local maxima and local minima of the measured variable. <code>span</code> defines the width of the <em>window</em> used as a number of observations.</p>
 <div class="sourceCode" id="cb394"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb394-1" data-line-number="1"><span class="kw">peaks</span>(sun.spct, <span class="dt">span =</span> <span class="dv">51</span>)</a></code></pre></div>
 <pre><code>## Object: source_spct [3 x 2]
 ## Wavelength range 451 to 747 nm, step 44 to 252 nm 
@@ -5236,8 +5257,8 @@ Most frequently used summary methods are implemented for collections of spectra.
 </div>
 <div id="collections-of-spectra-2" class="section level4">
 <h4>Collections of spectra</h4>
-<p>We can use <code>msmsply()</code> to extract the peaks of a collection of spectra.</p>
-<div class="sourceCode" id="cb402"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb402-1" data-line-number="1"><span class="kw">msmsply</span>(filters.mspct, peaks, <span class="dt">span =</span> <span class="dv">11</span>)</a></code></pre></div>
+<p>The methods are also implemented for collections of spectra.</p>
+<div class="sourceCode" id="cb402"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb402-1" data-line-number="1"><span class="kw">msmsply</span>(filters.mspct, peaks, <span class="dt">span =</span> <span class="dv">21</span>)</a></code></pre></div>
 <pre><code>## Object: filter_mspct [3 x 1]
 ## --- Member: none ---
 ## Object: filter_spct [0 x 2]
@@ -5246,34 +5267,95 @@ Most frequently used summary methods are implemented for collections of spectra.
 ## # A tibble: 0 x 2
 ## # ... with 2 variables: w.length &lt;dbl&gt;, Tfr &lt;dbl&gt;
 ## --- Member: pet ---
-## Object: filter_spct [8 x 2]
-## Wavelength range 453 to 648 nm, step 6 to 76 nm 
+## Object: filter_spct [2 x 2]
+## Wavelength range 503 to 648 nm, step 145 nm 
 ## Label: clear polyester film, 125um thick 
 ## 
-## # A tibble: 8 x 2
+## # A tibble: 2 x 2
 ##   w.length   Tfr
 ## *    &lt;int&gt; &lt;dbl&gt;
-## 1      453 0.926
-## 2      503 0.926
-## 3      579 0.921
-## 4      609 0.919
-## # ... with 4 more rows
+## 1      503 0.926
+## 2      648 0.918
 ## --- Member: yellow ---
-## Object: filter_spct [5 x 2]
-## Wavelength range 642 to 755 nm, step 8 to 64 nm 
+## Object: filter_spct [1 x 2]
+## Wavelength range 755 to 755 nm, step NA nm 
 ## Label: yellow theatrical 'gel', Rosco supergel no. 312, 'canary yellow' 
 ## 
-## # A tibble: 5 x 2
+## # A tibble: 1 x 2
 ##   w.length   Tfr
 ## *    &lt;int&gt; &lt;dbl&gt;
-## 1      642 0.898
-## 2      706 0.901
-## 3      714 0.901
-## 4      744 0.902
-## 5      755 0.902
+## 1      755 0.902
 ## 
 ## --- END ---</code></pre>
 <p>Two of the filters in the collection do not have peaks, and a spectrum object of length zero is returned for them.</p>
+</div>
+</div>
+<div id="wavelengths-at-target-value" class="section level3">
+<h3>Wavelengths at target value</h3>
+<p>Method <code>wls_at_target</code> takes a spectrum as first argument and return a subset of the spectral object data or a new object corresponding to wavelengths at which the spectrum is at the target value.</p>
+<div class="sourceCode" id="cb404"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb404-1" data-line-number="1"><span class="kw">wls_at_target</span>(sun.spct, <span class="dt">target =</span> <span class="st">&quot;half.maximum&quot;</span>)</a></code></pre></div>
+<pre><code>## Object: source_spct [21 x 3]
+## Wavelength range 366 to 800 nm, step 1 to 319 nm 
+## Label: sunlight, simulated 
+## Measured on 2010-06-22 09:51:00 UTC 
+## Measured at 60.20911 N, 24.96474 E 
+## Time unit 1s
+## 
+## # A tibble: 21 x 3
+##   w.length s.e.irrad  s.q.irrad
+## *    &lt;dbl&gt;     &lt;dbl&gt;      &lt;dbl&gt;
+## 1      366     0.449 0.00000137
+## 2      368     0.398 0.00000122
+## 3      369     0.417 0.00000129
+## 4      371     0.409 0.00000127
+## # ... with 17 more rows</code></pre>
+<div class="sourceCode" id="cb406"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb406-1" data-line-number="1"><span class="kw">wls_at_target</span>(sun.spct, <span class="dt">target =</span> <span class="st">&quot;half.maximum&quot;</span>, <span class="dt">interpolate =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
+<pre><code>## Object: source_spct [22 x 2]
+## Wavelength range 365.53069 to 799.71521 nm, step 0.6852733 to 319.3893 nm 
+## Label: sunlight, simulated 
+## Measured on 2010-06-22 09:51:00 UTC 
+## Measured at 60.20911 N, 24.96474 E 
+## Time unit 1s
+## 
+## # A tibble: 22 x 2
+##   w.length s.e.irrad
+##      &lt;dbl&gt;     &lt;dbl&gt;
+## 1     366.     0.410
+## 2     368.     0.410
+## 3     369.     0.410
+## 4     371.     0.410
+## # ... with 18 more rows</code></pre>
+<p>As in the case of <code>source_spct</code> and <code>response_spct</code> methods parameters <code>unit.out</code> and <code>filter.qty</code> allow to change the returned value.</p>
+<div id="collections-of-spectra-3" class="section level4">
+<h4>Collections of spectra</h4>
+<p>The method is also implemented for collections of spectra.</p>
+<div class="sourceCode" id="cb408"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb408-1" data-line-number="1"><span class="kw">wls_at_target</span>(filters.mspct, <span class="dt">target =</span> <span class="st">&quot;half.maximum&quot;</span>)</a></code></pre></div>
+<pre><code>## Object: filter_mspct [3 x 1]
+## --- Member: none ---
+## Object: filter_spct [0 x 2]
+## 
+## # A tibble: 0 x 2
+## # ... with 2 variables: w.length &lt;dbl&gt;, Tfr &lt;dbl&gt;
+## --- Member: pet ---
+## Object: filter_spct [1 x 2]
+## Wavelength range 322 to 322 nm, step NA nm 
+## Label: clear polyester film, 125um thick 
+## 
+## # A tibble: 1 x 2
+##   w.length   Tfr
+## *    &lt;int&gt; &lt;dbl&gt;
+## 1      322 0.472
+## --- Member: yellow ---
+## Object: filter_spct [1 x 2]
+## Wavelength range 509 to 509 nm, step NA nm 
+## Label: yellow theatrical 'gel', Rosco supergel no. 312, 'canary yellow' 
+## 
+## # A tibble: 1 x 2
+##   w.length   Tfr
+## *    &lt;int&gt; &lt;dbl&gt;
+## 1      509 0.458
+## 
+## --- END ---</code></pre>
 </div>
 </div>
 <div id="irradiance" class="section level3">
@@ -5281,7 +5363,7 @@ Most frequently used summary methods are implemented for collections of spectra.
 <div id="individual-spectra-4" class="section level4">
 <h4>Individual spectra</h4>
 <p>The code using <code>spct</code> objects is simple, to integrate the whole spectrum we can use</p>
-<div class="sourceCode" id="cb404"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb404-1" data-line-number="1"><span class="kw">irrad</span>(sun.spct)</a></code></pre></div>
+<div class="sourceCode" id="cb410"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb410-1" data-line-number="1"><span class="kw">irrad</span>(sun.spct)</a></code></pre></div>
 <pre><code>##    Total 
 ## 269.1249 
 ## attr(,&quot;time.unit&quot;)
@@ -5289,7 +5371,7 @@ Most frequently used summary methods are implemented for collections of spectra.
 ## attr(,&quot;radiation.unit&quot;)
 ## [1] &quot;energy irradiance total&quot;</code></pre>
 <p>and, to integrate a range of wavelengths, in the example, photosynthetically active radiation, we use the waveband <code>PAR.wb</code> we earlier defined.</p>
-<div class="sourceCode" id="cb406"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb406-1" data-line-number="1"><span class="kw">irrad</span>(sun.spct, PAR.wb)</a></code></pre></div>
+<div class="sourceCode" id="cb412"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb412-1" data-line-number="1"><span class="kw">irrad</span>(sun.spct, PAR.wb)</a></code></pre></div>
 <pre><code>##      PAR 
 ## 196.6343 
 ## attr(,&quot;time.unit&quot;)
@@ -5297,7 +5379,7 @@ Most frequently used summary methods are implemented for collections of spectra.
 ## attr(,&quot;radiation.unit&quot;)
 ## [1] &quot;energy irradiance total&quot;</code></pre>
 <p>It is also valid to pass as argument for <code>w.band</code> a numeric range representing wavelengths in nanometres, which is converted into a waveband on-the-fly.</p>
-<div class="sourceCode" id="cb408"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb408-1" data-line-number="1"><span class="kw">irrad</span>(sun.spct, <span class="kw">c</span>(<span class="dv">400</span>, <span class="dv">700</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb414"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb414-1" data-line-number="1"><span class="kw">irrad</span>(sun.spct, <span class="kw">c</span>(<span class="dv">400</span>, <span class="dv">700</span>))</a></code></pre></div>
 <pre><code>##  range.400.700 
 ##       196.6343 
 ## attr(,&quot;time.unit&quot;)
@@ -5306,14 +5388,14 @@ Most frequently used summary methods are implemented for collections of spectra.
 ## [1] &quot;energy irradiance total&quot;</code></pre>
 <p>The default for <code>irrad</code>, when no argument <code>unit.out</code> is supplied, is to return the irradiance value in energy irradiance units, unless the R option <code>photobiology.radiation.unit</code> is set.</p>
 <p>Functions <code>e_irrad</code> and <code>q_irrad</code> save some typing, and always return the same type of spectral irradiance quantity, independently of global option <code>photobiology.radiation.unit</code>.</p>
-<div class="sourceCode" id="cb410"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb410-1" data-line-number="1"><span class="kw">e_irrad</span>(sun.spct, PAR.wb) <span class="co"># W m-2</span></a></code></pre></div>
+<div class="sourceCode" id="cb416"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb416-1" data-line-number="1"><span class="kw">e_irrad</span>(sun.spct, PAR.wb) <span class="co"># W m-2</span></a></code></pre></div>
 <pre><code>##      PAR 
 ## 196.6343 
 ## attr(,&quot;time.unit&quot;)
 ## [1] &quot;second&quot;
 ## attr(,&quot;radiation.unit&quot;)
 ## [1] &quot;energy irradiance total&quot;</code></pre>
-<div class="sourceCode" id="cb412"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb412-1" data-line-number="1"><span class="kw">q_irrad</span>(sun.spct, PAR.wb, <span class="dt">scale.factor =</span> <span class="fl">1e6</span>) <span class="co"># umol s-1 m-2</span></a></code></pre></div>
+<div class="sourceCode" id="cb418"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb418-1" data-line-number="1"><span class="kw">q_irrad</span>(sun.spct, PAR.wb, <span class="dt">scale.factor =</span> <span class="fl">1e6</span>) <span class="co"># umol s-1 m-2</span></a></code></pre></div>
 <pre><code>##      PAR 
 ## 894.1352 
 ## attr(,&quot;time.unit&quot;)
@@ -5321,7 +5403,7 @@ Most frequently used summary methods are implemented for collections of spectra.
 ## attr(,&quot;radiation.unit&quot;)
 ## [1] &quot;photon irradiance total&quot;</code></pre>
 <p>It is also possible to supply a time unit to use as basis of expression for the returned value, but be aware that conversion into a logger time unit is only valid for sources like lamps, which have an output the remains constant in time.</p>
-<div class="sourceCode" id="cb414"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb414-1" data-line-number="1"><span class="kw">irrad</span>(sun.spct, PAR.wb, <span class="dt">time.unit =</span> <span class="st">&quot;hour&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb420"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb420-1" data-line-number="1"><span class="kw">irrad</span>(sun.spct, PAR.wb, <span class="dt">time.unit =</span> <span class="st">&quot;hour&quot;</span>)</a></code></pre></div>
 <pre><code>##      PAR 
 ## 707883.4 
 ## attr(,&quot;time.unit&quot;)
@@ -5329,7 +5411,7 @@ Most frequently used summary methods are implemented for collections of spectra.
 ## attr(,&quot;radiation.unit&quot;)
 ## [1] &quot;energy irradiance total&quot;</code></pre>
 <p>Using a shorter time unit than the original, yields an average value re-expressed on a new time unit base.</p>
-<div class="sourceCode" id="cb416"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb416-1" data-line-number="1"><span class="kw">irrad</span>(sun.daily.spct, PAR.wb, <span class="dt">time.unit =</span> <span class="st">&quot;second&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb422"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb422-1" data-line-number="1"><span class="kw">irrad</span>(sun.daily.spct, PAR.wb, <span class="dt">time.unit =</span> <span class="st">&quot;second&quot;</span>)</a></code></pre></div>
 <pre><code>##      PAR 
 ## 92.16251 
 ## attr(,&quot;time.unit&quot;)
@@ -5337,7 +5419,7 @@ Most frequently used summary methods are implemented for collections of spectra.
 ## attr(,&quot;radiation.unit&quot;)
 ## [1] &quot;energy irradiance total&quot;</code></pre>
 <p>Lists of wavebands are also accepted as argument for parameter <code>w.band</code> in which case a named numeric vector of summary values is returned.</p>
-<div class="sourceCode" id="cb418"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb418-1" data-line-number="1"><span class="kw">e_irrad</span>(sun.spct, UV_bands.lst) <span class="co"># W m-2</span></a></code></pre></div>
+<div class="sourceCode" id="cb424"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb424-1" data-line-number="1"><span class="kw">e_irrad</span>(sun.spct, UV_bands.lst) <span class="co"># W m-2</span></a></code></pre></div>
 <pre><code>##        UVB        UVA 
 ##  0.6445105 27.9842061 
 ## attr(,&quot;time.unit&quot;)
@@ -5345,14 +5427,14 @@ Most frequently used summary methods are implemented for collections of spectra.
 ## attr(,&quot;radiation.unit&quot;)
 ## [1] &quot;energy irradiance total&quot;</code></pre>
 <p>These functions have an additional argument <code>quantity</code>, with default <code>&quot;total&quot;</code>, which can take values controlling the output. The value “total” yields <strong>irradiance</strong> in <span class="math inline">\(W\,m^{-2}\)</span>, integrated over wavelengths for each waveband, while “average” yields the mean <strong>spectral irradiance</strong> within each waveband in <span class="math inline">\(W\,m^{-2}\,nm^{-1}\)</span>.</p>
-<div class="sourceCode" id="cb420"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb420-1" data-line-number="1"><span class="kw">irrad</span>(sun.spct, UV_bands.lst, <span class="dt">quantity =</span> <span class="st">&quot;total&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb426"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb426-1" data-line-number="1"><span class="kw">irrad</span>(sun.spct, UV_bands.lst, <span class="dt">quantity =</span> <span class="st">&quot;total&quot;</span>)</a></code></pre></div>
 <pre><code>##        UVB        UVA 
 ##  0.6445105 27.9842061 
 ## attr(,&quot;time.unit&quot;)
 ## [1] &quot;second&quot;
 ## attr(,&quot;radiation.unit&quot;)
 ## [1] &quot;energy irradiance total&quot;</code></pre>
-<div class="sourceCode" id="cb422"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb422-1" data-line-number="1"><span class="kw">irrad</span>(sun.spct, UV_bands.lst, <span class="dt">quantity =</span> <span class="st">&quot;average&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb428"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb428-1" data-line-number="1"><span class="kw">irrad</span>(sun.spct, UV_bands.lst, <span class="dt">quantity =</span> <span class="st">&quot;average&quot;</span>)</a></code></pre></div>
 <pre><code>##        UVB        UVA 
 ## 0.01841458 0.32922595 
 ## attr(,&quot;time.unit&quot;)
@@ -5360,14 +5442,14 @@ Most frequently used summary methods are implemented for collections of spectra.
 ## attr(,&quot;radiation.unit&quot;)
 ## [1] &quot;energy irradiance average&quot;</code></pre>
 <p>The value “contribution” is relative to the irradiance for the whole spectrum, expressed as a fraction of one, while the value “relative” is relative to the sum of the irradiances for the different wavebands given as argument, also expressed as a fraction of one.</p>
-<div class="sourceCode" id="cb424"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb424-1" data-line-number="1"><span class="kw">irrad</span>(sun.spct, UV_bands.lst, <span class="dt">quantity =</span> <span class="st">&quot;contribution&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb430"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb430-1" data-line-number="1"><span class="kw">irrad</span>(sun.spct, UV_bands.lst, <span class="dt">quantity =</span> <span class="st">&quot;contribution&quot;</span>)</a></code></pre></div>
 <pre><code>##         UVB         UVA 
 ## 0.002394838 0.103982226 
 ## attr(,&quot;time.unit&quot;)
 ## [1] &quot;second&quot;
 ## attr(,&quot;radiation.unit&quot;)
 ## [1] &quot;energy irradiance contribution&quot;</code></pre>
-<div class="sourceCode" id="cb426"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb426-1" data-line-number="1"><span class="kw">irrad</span>(sun.spct, UV_bands.lst, <span class="dt">quantity =</span> <span class="st">&quot;relative&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb432"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb432-1" data-line-number="1"><span class="kw">irrad</span>(sun.spct, UV_bands.lst, <span class="dt">quantity =</span> <span class="st">&quot;relative&quot;</span>)</a></code></pre></div>
 <pre><code>##        UVB        UVA 
 ## 0.02251273 0.97748727 
 ## attr(,&quot;time.unit&quot;)
@@ -5375,14 +5457,14 @@ Most frequently used summary methods are implemented for collections of spectra.
 ## attr(,&quot;radiation.unit&quot;)
 ## [1] &quot;energy irradiance relative&quot;</code></pre>
 <p>In contrast “contribution.pc” and “relative.pc” return the same values expressed as percentages.</p>
-<div class="sourceCode" id="cb428"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb428-1" data-line-number="1"><span class="kw">irrad</span>(sun.spct, UV_bands.lst, <span class="dt">quantity =</span> <span class="st">&quot;contribution.pc&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb434"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb434-1" data-line-number="1"><span class="kw">irrad</span>(sun.spct, UV_bands.lst, <span class="dt">quantity =</span> <span class="st">&quot;contribution.pc&quot;</span>)</a></code></pre></div>
 <pre><code>##        UVB        UVA 
 ##  0.2394838 10.3982226 
 ## attr(,&quot;time.unit&quot;)
 ## [1] &quot;second&quot;
 ## attr(,&quot;radiation.unit&quot;)
 ## [1] &quot;energy irradiance contribution.pc&quot;</code></pre>
-<div class="sourceCode" id="cb430"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb430-1" data-line-number="1"><span class="kw">irrad</span>(sun.spct, UV_bands.lst, <span class="dt">quantity =</span> <span class="st">&quot;relative.pc&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb436"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb436-1" data-line-number="1"><span class="kw">irrad</span>(sun.spct, UV_bands.lst, <span class="dt">quantity =</span> <span class="st">&quot;relative.pc&quot;</span>)</a></code></pre></div>
 <pre><code>##       UVB       UVA 
 ##  2.251273 97.748727 
 ## attr(,&quot;time.unit&quot;)
@@ -5390,7 +5472,7 @@ Most frequently used summary methods are implemented for collections of spectra.
 ## attr(,&quot;radiation.unit&quot;)
 ## [1] &quot;energy irradiance relative.pc&quot;</code></pre>
 <p>The total radiation received on a surface during an exposure event can be also calculated with method <code>irrad()</code>, but the value returned is an irradiance expressed on a very unusual time basis. These are no longer W m-2 (J s-1 m-2), but instead J per 8 hours per square metre.</p>
-<div class="sourceCode" id="cb432"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb432-1" data-line-number="1"><span class="kw">irrad</span>(sun.spct, PAR.wb, <span class="dt">time.unit =</span> <span class="kw">duration</span>(<span class="dv">8</span>, <span class="st">&quot;hours&quot;</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb438"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb438-1" data-line-number="1"><span class="kw">irrad</span>(sun.spct, PAR.wb, <span class="dt">time.unit =</span> <span class="kw">duration</span>(<span class="dv">8</span>, <span class="st">&quot;hours&quot;</span>))</a></code></pre></div>
 <pre><code>##     PAR 
 ## 5663067 
 ## attr(,&quot;time.unit&quot;)
@@ -5398,7 +5480,7 @@ Most frequently used summary methods are implemented for collections of spectra.
 ## attr(,&quot;radiation.unit&quot;)
 ## [1] &quot;energy irradiance total&quot;</code></pre>
 <p>When the intention is to calculate a total fluence or exposure for an event function <code>fluence()</code> should be used as this will add the correct metadata attributes to the returned value: expressed as energy or photons per unit area per event. See later sections for details.</p>
-<div class="sourceCode" id="cb434"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb434-1" data-line-number="1"><span class="kw">fluence</span>(sun.spct, PAR.wb, <span class="dt">exposure.time =</span> <span class="kw">duration</span>(<span class="dv">8</span>, <span class="st">&quot;hours&quot;</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb440"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb440-1" data-line-number="1"><span class="kw">fluence</span>(sun.spct, PAR.wb, <span class="dt">exposure.time =</span> <span class="kw">duration</span>(<span class="dv">8</span>, <span class="st">&quot;hours&quot;</span>))</a></code></pre></div>
 <pre><code>##     PAR 
 ## 5663067 
 ## attr(,&quot;radiation.unit&quot;)
@@ -5406,26 +5488,26 @@ Most frequently used summary methods are implemented for collections of spectra.
 ## attr(,&quot;exposure.duration&quot;)
 ## [1] &quot;28800s (~8 hours)&quot;</code></pre>
 </div>
-<div id="collections-of-spectra-3" class="section level4">
+<div id="collections-of-spectra-4" class="section level4">
 <h4>Collections of spectra</h4>
 <p>Collections of spectra can be useful not only for time-series of spectra or spectral images, but also when dealing with a small group of related spectra. In the example below we show how to use a collection of spectra for estimating irradiances under different filters set up in sunlight.</p>
 <p>We reuse collection of filter spectra <code>filters.mspct</code> from an earlier section.</p>
-<div class="sourceCode" id="cb436"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb436-1" data-line-number="1"><span class="kw">names</span>(filters.mspct)</a></code></pre></div>
+<div class="sourceCode" id="cb442"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb442-1" data-line-number="1"><span class="kw">names</span>(filters.mspct)</a></code></pre></div>
 <pre><code>## [1] &quot;none&quot;   &quot;pet&quot;    &quot;yellow&quot;</code></pre>
 <p>We can add to the returned data frame attributes retrieved from the members of the collection.</p>
-<div class="sourceCode" id="cb438"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb438-1" data-line-number="1">two_suns.mspct &lt;-<span class="st"> </span><span class="kw">source_mspct</span>(<span class="kw">list</span>(<span class="dt">sun1 =</span> sun.spct, <span class="dt">sun2 =</span> sun.spct))</a>
-<a class="sourceLine" id="cb438-2" data-line-number="2"><span class="kw">q_irrad</span>(two_suns.mspct, </a>
-<a class="sourceLine" id="cb438-3" data-line-number="3">        <span class="dt">w.band =</span> <span class="kw">list</span>(<span class="dt">PAR =</span> <span class="kw">waveband</span>(<span class="kw">c</span>(<span class="dv">400</span>,<span class="dv">700</span>))),</a>
-<a class="sourceLine" id="cb438-4" data-line-number="4">        <span class="dt">scale.factor =</span> <span class="fl">1e6</span>, <span class="co"># umol m-2 s-1</span></a>
-<a class="sourceLine" id="cb438-5" data-line-number="5">        <span class="dt">attr2tb =</span> <span class="kw">c</span>(<span class="dt">when.measured =</span> <span class="st">&quot;time&quot;</span>, <span class="dt">lon =</span> <span class="st">&quot;lon&quot;</span>, <span class="dt">lat =</span> <span class="st">&quot;lat&quot;</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb444"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb444-1" data-line-number="1">two_suns.mspct &lt;-<span class="st"> </span><span class="kw">source_mspct</span>(<span class="kw">list</span>(<span class="dt">sun1 =</span> sun.spct, <span class="dt">sun2 =</span> sun.spct))</a>
+<a class="sourceLine" id="cb444-2" data-line-number="2"><span class="kw">q_irrad</span>(two_suns.mspct, </a>
+<a class="sourceLine" id="cb444-3" data-line-number="3">        <span class="dt">w.band =</span> <span class="kw">list</span>(<span class="dt">PAR =</span> <span class="kw">waveband</span>(<span class="kw">c</span>(<span class="dv">400</span>,<span class="dv">700</span>))),</a>
+<a class="sourceLine" id="cb444-4" data-line-number="4">        <span class="dt">scale.factor =</span> <span class="fl">1e6</span>, <span class="co"># umol m-2 s-1</span></a>
+<a class="sourceLine" id="cb444-5" data-line-number="5">        <span class="dt">attr2tb =</span> <span class="kw">c</span>(<span class="dt">when.measured =</span> <span class="st">&quot;time&quot;</span>, <span class="dt">lon =</span> <span class="st">&quot;lon&quot;</span>, <span class="dt">lat =</span> <span class="st">&quot;lat&quot;</span>))</a></code></pre></div>
 <pre><code>## # A tibble: 2 x 5
 ##   spct.idx   PAR time                  lon   lat
 ##   &lt;fct&gt;    &lt;dbl&gt; &lt;dttm&gt;              &lt;dbl&gt; &lt;dbl&gt;
 ## 1 sun1      894. 2010-06-22 09:51:00  25.0  60.2
 ## 2 sun2      894. 2010-06-22 09:51:00  25.0  60.2</code></pre>
 <p>We then convolve each filter’s spectral transmittance by the spectral irradiance of the light source.</p>
-<div class="sourceCode" id="cb440"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb440-1" data-line-number="1">filtered_sun &lt;-<span class="st"> </span><span class="kw">convolve_each</span>(filters.mspct, sun.spct)</a>
-<a class="sourceLine" id="cb440-2" data-line-number="2"><span class="kw">irrad</span>(filtered_sun, <span class="kw">list</span>(UVA.wb, PAR.wb))</a></code></pre></div>
+<div class="sourceCode" id="cb446"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb446-1" data-line-number="1">filtered_sun &lt;-<span class="st"> </span><span class="kw">convolve_each</span>(filters.mspct, sun.spct)</a>
+<a class="sourceLine" id="cb446-2" data-line-number="2"><span class="kw">irrad</span>(filtered_sun, <span class="kw">list</span>(UVA.wb, PAR.wb))</a></code></pre></div>
 <pre><code>## # A tibble: 3 x 3
 ##   spct.idx irrad_UVA irrad_PAR
 ##   &lt;fct&gt;        &lt;dbl&gt;     &lt;dbl&gt;
@@ -5433,8 +5515,8 @@ Most frequently used summary methods are implemented for collections of spectra.
 ## 2 pet        23.0         181.
 ## 3 yellow      0.0373      107.</code></pre>
 <p>The code above can also be written as a single statement.</p>
-<div class="sourceCode" id="cb442"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb442-1" data-line-number="1"><span class="kw">irrad</span>(<span class="kw">convolve_each</span>(filters.mspct, sun.spct), </a>
-<a class="sourceLine" id="cb442-2" data-line-number="2">      <span class="kw">list</span>(UVA.wb, PAR.wb))</a></code></pre></div>
+<div class="sourceCode" id="cb448"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb448-1" data-line-number="1"><span class="kw">irrad</span>(<span class="kw">convolve_each</span>(filters.mspct, sun.spct), </a>
+<a class="sourceLine" id="cb448-2" data-line-number="2">      <span class="kw">list</span>(UVA.wb, PAR.wb))</a></code></pre></div>
 <pre><code>## # A tibble: 3 x 3
 ##   spct.idx irrad_UVA irrad_PAR
 ##   &lt;fct&gt;        &lt;dbl&gt;     &lt;dbl&gt;
@@ -5443,8 +5525,8 @@ Most frequently used summary methods are implemented for collections of spectra.
 ## 3 yellow      0.0373      107.</code></pre>
 <p>It is also possible to use an <em>apply</em> function. Syntax parallels that of base R’s and package <code>plyr</code>’s. See sections <em>apply</em> functions and <code>convolve</code> for more details.</p>
 <p>One thing to remember, is that operators in R are just normal functions with special names and call syntax. They can also be called with the usual function call syntax by enclosing their <em>name</em> in back quotes. We use this to pass as argument the multiplication operator <code>*</code> in a call to <code>msmsply</code> which returns, in this case, a <code>source_multi_spct</code> object. After this we just call the <code>irrad</code> method on the <em>collection of spectra</em> and obtain the result as a data frame with one row per spectrum and one column by waveband.</p>
-<div class="sourceCode" id="cb444"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb444-1" data-line-number="1">filtered_sun &lt;-<span class="st"> </span><span class="kw">msmsply</span>(filters.mspct, <span class="st">`</span><span class="dt">*</span><span class="st">`</span>, sun.spct)</a>
-<a class="sourceLine" id="cb444-2" data-line-number="2"><span class="kw">irrad</span>(filtered_sun, <span class="kw">list</span>(UVA.wb, PAR.wb))</a></code></pre></div>
+<div class="sourceCode" id="cb450"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb450-1" data-line-number="1">filtered_sun &lt;-<span class="st"> </span><span class="kw">msmsply</span>(filters.mspct, <span class="st">`</span><span class="dt">*</span><span class="st">`</span>, sun.spct)</a>
+<a class="sourceLine" id="cb450-2" data-line-number="2"><span class="kw">irrad</span>(filtered_sun, <span class="kw">list</span>(UVA.wb, PAR.wb))</a></code></pre></div>
 <pre><code>## # A tibble: 3 x 3
 ##   spct.idx irrad_UVA irrad_PAR
 ##   &lt;fct&gt;        &lt;dbl&gt;     &lt;dbl&gt;
@@ -5458,14 +5540,14 @@ Most frequently used summary methods are implemented for collections of spectra.
 <div id="individual-spectra-5" class="section level4">
 <h4>Individual spectra</h4>
 <p>The calculation of fluence values (time-integrated irradiance) is identical to that for irradiance, except that a <code>exposure.time</code> argument needs to be supplied. The exposure time must be a <code>lubridate::duration</code>, but any argument accepted by <code>as.duration</code> can also be used. Functions <code>fluence</code>, <code>e_fluence</code> and <code>q_fluence</code> correspond to <code>irrad</code>, <code>e_irrad</code> and <code>q_irrad</code>,</p>
-<div class="sourceCode" id="cb446"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb446-1" data-line-number="1"><span class="kw">fluence</span>(sun.spct, <span class="dt">exposure.time =</span> <span class="kw">duration</span>(<span class="dv">1</span>, <span class="st">&quot;hours&quot;</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb452"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb452-1" data-line-number="1"><span class="kw">fluence</span>(sun.spct, <span class="dt">exposure.time =</span> <span class="kw">duration</span>(<span class="dv">1</span>, <span class="st">&quot;hours&quot;</span>))</a></code></pre></div>
 <pre><code>##    Total 
 ## 968849.6 
 ## attr(,&quot;radiation.unit&quot;)
 ## [1] &quot;energy fluence (J m-2)&quot;
 ## attr(,&quot;exposure.duration&quot;)
 ## [1] &quot;3600s (~1 hours)&quot;</code></pre>
-<div class="sourceCode" id="cb448"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb448-1" data-line-number="1"><span class="kw">fluence</span>(sun.spct, <span class="dt">exposure.time =</span> <span class="dv">3600</span>) <span class="co"># seconds</span></a></code></pre></div>
+<div class="sourceCode" id="cb454"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb454-1" data-line-number="1"><span class="kw">fluence</span>(sun.spct, <span class="dt">exposure.time =</span> <span class="dv">3600</span>) <span class="co"># seconds</span></a></code></pre></div>
 <pre><code>## converting 'time.unit' 3600 into a lubridate::duration</code></pre>
 <pre><code>##    Total 
 ## 968849.6 
@@ -5474,7 +5556,7 @@ Most frequently used summary methods are implemented for collections of spectra.
 ## attr(,&quot;exposure.duration&quot;)
 ## [1] 3600</code></pre>
 <p>and, to obtain the photon fluence for a range of wavelengths, in the example, photosynthetically active radiation, we use the <code>PAR.wb</code> waveband object earlier defined, for 25 minutes of exposure.</p>
-<div class="sourceCode" id="cb451"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb451-1" data-line-number="1"><span class="kw">q_fluence</span>(sun.spct, PAR.wb, <span class="dt">exposure.time =</span> <span class="kw">duration</span>(<span class="dv">25</span>, <span class="st">&quot;minutes&quot;</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb457"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb457-1" data-line-number="1"><span class="kw">q_fluence</span>(sun.spct, PAR.wb, <span class="dt">exposure.time =</span> <span class="kw">duration</span>(<span class="dv">25</span>, <span class="st">&quot;minutes&quot;</span>))</a></code></pre></div>
 <pre><code>##      PAR 
 ## 1.341203 
 ## attr(,&quot;radiation.unit&quot;)
@@ -5488,31 +5570,31 @@ Most frequently used summary methods are implemented for collections of spectra.
 <div id="individual-spectra-6" class="section level4">
 <h4>Individual spectra</h4>
 <p>The functions described here, in there simplest use, calculate a ratio between two wavebands. The function <code>q_ratio</code> returning photon ratios. However both waveband parameters can take lists of wavebands as arguments, with normal recycling rules in effect. The corresponding function <code>e_ratio</code> returns energy ratios.</p>
-<div class="sourceCode" id="cb453"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb453-1" data-line-number="1"><span class="kw">q_ratio</span>(sun.spct, UVB.wb, PAR.wb)</a></code></pre></div>
+<div class="sourceCode" id="cb459"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb459-1" data-line-number="1"><span class="kw">q_ratio</span>(sun.spct, UVB.wb, PAR.wb)</a></code></pre></div>
 <pre><code>##  UVB: PAR(q:q) 
 ##    0.001873724 
 ## attr(,&quot;radiation.unit&quot;)
 ## [1] &quot;q:q ratio&quot;</code></pre>
-<div class="sourceCode" id="cb455"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb455-1" data-line-number="1"><span class="kw">q_ratio</span>(sun.spct, <span class="kw">list</span>(UVC.wb, UVB.wb, UVA.wb, UV.wb))</a></code></pre></div>
+<div class="sourceCode" id="cb461"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb461-1" data-line-number="1"><span class="kw">q_ratio</span>(sun.spct, <span class="kw">list</span>(UVC.wb, UVB.wb, UVA.wb, UV.wb))</a></code></pre></div>
 <pre><code>##       UVB: Total(q:q)       UVA: Total(q:q)  UV.tr.lo: Total(q:q) 
 ##           0.001334593           0.067567343           0.068901936 
 ## attr(,&quot;radiation.unit&quot;)
 ## [1] &quot;q:q ratio&quot;</code></pre>
-<div class="sourceCode" id="cb457"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb457-1" data-line-number="1"><span class="kw">q_ratio</span>(sun.spct, UVB.wb, <span class="kw">list</span>(UV.wb, PAR.wb))</a></code></pre></div>
+<div class="sourceCode" id="cb463"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb463-1" data-line-number="1"><span class="kw">q_ratio</span>(sun.spct, UVB.wb, <span class="kw">list</span>(UV.wb, PAR.wb))</a></code></pre></div>
 <pre><code>##  UVB: UV.tr.lo(q:q)       UVB: PAR(q:q) 
 ##         0.019369458         0.001873724 
 ## attr(,&quot;radiation.unit&quot;)
 ## [1] &quot;q:q ratio&quot;</code></pre>
 <p>Function <code>qe_ratio</code>, has only one waveband parameter, and returns the <em>photon</em> to <em>energy</em> ratio, while its complement <code>eq_ratio</code> returns the <em>energy</em> to <em>photon</em> ratio.</p>
-<div class="sourceCode" id="cb459"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb459-1" data-line-number="1"><span class="kw">qe_ratio</span>(sun.spct, <span class="kw">list</span>(UVB.wb, PAR.wb))</a></code></pre></div>
+<div class="sourceCode" id="cb465"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb465-1" data-line-number="1"><span class="kw">qe_ratio</span>(sun.spct, <span class="kw">list</span>(UVB.wb, PAR.wb))</a></code></pre></div>
 <pre><code>##    q:e( UVB)    q:e( PAR) 
 ## 2.599434e-06 4.547199e-06 
 ## attr(,&quot;radiation.unit&quot;)
 ## [1] &quot;q:e ratio&quot;</code></pre>
 </div>
-<div id="collections-of-spectra-4" class="section level4">
+<div id="collections-of-spectra-5" class="section level4">
 <h4>Collections of spectra</h4>
-<div class="sourceCode" id="cb461"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb461-1" data-line-number="1"><span class="kw">q_ratio</span>(filtered_sun, <span class="kw">list</span>(UVB.wb, UVA.wb, PAR.wb))</a></code></pre></div>
+<div class="sourceCode" id="cb467"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb467-1" data-line-number="1"><span class="kw">q_ratio</span>(filtered_sun, <span class="kw">list</span>(UVB.wb, UVA.wb, PAR.wb))</a></code></pre></div>
 <pre><code>## # A tibble: 3 x 4
 ##   spct.idx `q_ratio_UVB:Total(q~ `q_ratio_UVA:Total(~ `q_ratio_PAR:Total(~
 ##   &lt;fct&gt;                    &lt;dbl&gt;                &lt;dbl&gt;                &lt;dbl&gt;
@@ -5527,9 +5609,9 @@ Most frequently used summary methods are implemented for collections of spectra.
 <div id="individual-spectra-7" class="section level3">
 <h3>Individual spectra</h3>
 <p>These indexes are frequently used to summarize reflectance data, for example in remote sensing the NDVI (normalized difference vegetation index). Here we give an <em>unusual</em> example to demonstrate that function <code>normalized_diff_ind()</code> can be used to calculate, or define any similar index.</p>
-<div class="sourceCode" id="cb463"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb463-1" data-line-number="1"><span class="kw">normalized_diff_ind</span>(sun.spct,</a>
-<a class="sourceLine" id="cb463-2" data-line-number="2">                    <span class="kw">waveband</span>(<span class="kw">c</span>(<span class="dv">400</span>, <span class="dv">700</span>)), <span class="kw">waveband</span>(<span class="kw">c</span>(<span class="dv">700</span>, <span class="dv">1100</span>)),</a>
-<a class="sourceLine" id="cb463-3" data-line-number="3">                    irrad)</a></code></pre></div>
+<div class="sourceCode" id="cb469"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb469-1" data-line-number="1"><span class="kw">normalized_diff_ind</span>(sun.spct,</a>
+<a class="sourceLine" id="cb469-2" data-line-number="2">                    <span class="kw">waveband</span>(<span class="kw">c</span>(<span class="dv">400</span>, <span class="dv">700</span>)), <span class="kw">waveband</span>(<span class="kw">c</span>(<span class="dv">700</span>, <span class="dv">1100</span>)),</a>
+<a class="sourceLine" id="cb469-3" data-line-number="3">                    irrad)</a></code></pre></div>
 <pre><code>## NDI  irrad  [ 400.700 ] - [ 700.1100 ] 
 ##                              0.6352382</code></pre>
 </div>
@@ -5538,14 +5620,14 @@ Most frequently used summary methods are implemented for collections of spectra.
 <div id="individual-spectra-8" class="section level4">
 <h4>Individual spectra</h4>
 <p>The functions <code>transmittance</code>, <code>absorptance</code> and <code>absorbance</code> take <code>filter_spct</code> as argument, while function <code>reflectance</code> takes <code>reflector_spct</code> objects as argument. Functions <code>transmittance</code>, <code>reflectance</code> and <code>absorptance</code> are also implemented for <code>object_spct</code>. These functions return as default an average value for these quantities <strong>assuming</strong> a light source with a flat spectral energy output, but this can be changed as described above for <code>irrad()</code>.</p>
-<div class="sourceCode" id="cb465"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb465-1" data-line-number="1"><span class="kw">transmittance</span>(polyester.spct, <span class="kw">list</span>(UVB.wb, UVA.wb, PAR.wb))</a></code></pre></div>
+<div class="sourceCode" id="cb471"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb471-1" data-line-number="1"><span class="kw">transmittance</span>(polyester.spct, <span class="kw">list</span>(UVB.wb, UVA.wb, PAR.wb))</a></code></pre></div>
 <pre><code>##         UVB         UVA         PAR 
 ## 0.007671429 0.782682353 0.920245000 
 ## attr(,&quot;Tfr.type&quot;)
 ## [1] &quot;total&quot;
 ## attr(,&quot;radiation.unit&quot;)
 ## [1] &quot;transmittance average&quot;</code></pre>
-<div class="sourceCode" id="cb467"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb467-1" data-line-number="1"><span class="kw">reflectance</span>(green_leaf.spct, <span class="kw">waveband</span>(<span class="kw">c</span>(<span class="dv">600</span>, <span class="dv">700</span>)))</a></code></pre></div>
+<div class="sourceCode" id="cb473"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb473-1" data-line-number="1"><span class="kw">reflectance</span>(green_leaf.spct, <span class="kw">waveband</span>(<span class="kw">c</span>(<span class="dv">600</span>, <span class="dv">700</span>)))</a></code></pre></div>
 <pre><code>##  range.600.700 
 ##       0.089647 
 ## attr(,&quot;Rfr.type&quot;)
@@ -5553,8 +5635,8 @@ Most frequently used summary methods are implemented for collections of spectra.
 ## attr(,&quot;radiation.unit&quot;)
 ## [1] &quot;reflectance average&quot;</code></pre>
 <p>It is more likely that we would like to calculate these values with reference to light of a certain spectral quality. This needs to be calculated by hand, which is not difficult.</p>
-<div class="sourceCode" id="cb469"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb469-1" data-line-number="1"><span class="kw">irrad</span>(sun.spct <span class="op">*</span><span class="st"> </span>polyester.spct, <span class="kw">list</span>(UVB.wb, UVA.wb, PAR.wb, <span class="dt">wb.trim =</span> <span class="ot">TRUE</span>)) <span class="op">/</span></a>
-<a class="sourceLine" id="cb469-2" data-line-number="2"><span class="st">  </span><span class="kw">irrad</span>(sun.spct, <span class="kw">list</span>(UVB.wb, UVA.wb, PAR.wb, <span class="dt">wb.trim =</span> <span class="ot">TRUE</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb475"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb475-1" data-line-number="1"><span class="kw">irrad</span>(sun.spct <span class="op">*</span><span class="st"> </span>polyester.spct, <span class="kw">list</span>(UVB.wb, UVA.wb, PAR.wb, <span class="dt">wb.trim =</span> <span class="ot">TRUE</span>)) <span class="op">/</span></a>
+<a class="sourceLine" id="cb475-2" data-line-number="2"><span class="st">  </span><span class="kw">irrad</span>(sun.spct, <span class="kw">list</span>(UVB.wb, UVA.wb, PAR.wb, <span class="dt">wb.trim =</span> <span class="ot">TRUE</span>))</a></code></pre></div>
 <pre><code>##        UVB        UVA        PAR 
 ## 0.02506541 0.82127856 0.92059898 
 ## attr(,&quot;time.unit&quot;)
@@ -5562,28 +5644,28 @@ Most frequently used summary methods are implemented for collections of spectra.
 ## attr(,&quot;radiation.unit&quot;)
 ## [1] &quot;energy irradiance total&quot;</code></pre>
 </div>
-<div id="collections-of-spectra-5" class="section level4">
+<div id="collections-of-spectra-6" class="section level4">
 <h4>Collections of spectra</h4>
 <p>Here we construct a collection of filter spectra, and then we calculate the transmittance of these filters for two wavebands, obtaining the results as a data frame, with one row per filter, and one column per waveband. We reuse once more <code>filters.mspct</code> from an earlier section.</p>
-<div class="sourceCode" id="cb471"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb471-1" data-line-number="1"><span class="kw">transmittance</span>(filters.mspct, <span class="dt">w.band =</span> <span class="kw">list</span>(<span class="st">&quot;Tfr(UVA)&quot;</span> =<span class="st"> </span>UVA.wb, <span class="st">&quot;Tfr(PAR)&quot;</span> =<span class="st"> </span>PAR.wb))</a></code></pre></div>
+<div class="sourceCode" id="cb477"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb477-1" data-line-number="1"><span class="kw">transmittance</span>(filters.mspct, <span class="dt">w.band =</span> <span class="kw">list</span>(<span class="st">&quot;Tfr(UVA)&quot;</span> =<span class="st"> </span>UVA.wb, <span class="st">&quot;Tfr(PAR)&quot;</span> =<span class="st"> </span>PAR.wb))</a></code></pre></div>
 <pre><code>## # A tibble: 3 x 3
 ##   spct.idx `Tfr(UVA)` `Tfr(PAR)`
 ##   &lt;fct&gt;         &lt;dbl&gt;      &lt;dbl&gt;
 ## 1 none        1.000        1.000
 ## 2 pet         0.783        0.920
 ## 3 yellow      0.00160      0.566</code></pre>
-<div class="sourceCode" id="cb473"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb473-1" data-line-number="1"><span class="kw">transmittance</span>(filters.mspct,</a>
-<a class="sourceLine" id="cb473-2" data-line-number="2">              <span class="dt">w.band =</span> <span class="kw">list</span>(<span class="dt">Tfr =</span> <span class="kw">waveband</span>(<span class="kw">c</span>(<span class="dv">350</span>, <span class="dv">550</span>))),</a>
-<a class="sourceLine" id="cb473-3" data-line-number="3">              <span class="dt">attr2tb =</span> <span class="st">&quot;what.measured&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb479"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb479-1" data-line-number="1"><span class="kw">transmittance</span>(filters.mspct,</a>
+<a class="sourceLine" id="cb479-2" data-line-number="2">              <span class="dt">w.band =</span> <span class="kw">list</span>(<span class="dt">Tfr =</span> <span class="kw">waveband</span>(<span class="kw">c</span>(<span class="dv">350</span>, <span class="dv">550</span>))),</a>
+<a class="sourceLine" id="cb479-3" data-line-number="3">              <span class="dt">attr2tb =</span> <span class="st">&quot;what.measured&quot;</span>)</a></code></pre></div>
 <pre><code>## # A tibble: 3 x 3
 ##   spct.idx   Tfr what.measured                                            
 ##   &lt;fct&gt;    &lt;dbl&gt; &lt;chr&gt;                                                    
 ## 1 none     1.000 theoretical fully transparent object                     
 ## 2 pet      0.913 clear polyester film, 125um thick                        
 ## 3 yellow   0.178 yellow theatrical 'gel', Rosco supergel no. 312, 'canary~</code></pre>
-<div class="sourceCode" id="cb475"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb475-1" data-line-number="1"><span class="kw">transmittance</span>(filters.mspct, </a>
-<a class="sourceLine" id="cb475-2" data-line-number="2">              <span class="kw">list</span>(<span class="st">&quot;Tfr(UVA)&quot;</span> =<span class="st"> </span>UVA.wb, <span class="st">&quot;Tfr(PAR)&quot;</span> =<span class="st"> </span>PAR.wb),</a>
-<a class="sourceLine" id="cb475-3" data-line-number="3">              <span class="dt">attr2tb =</span> <span class="st">&quot;what.measured&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb481"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb481-1" data-line-number="1"><span class="kw">transmittance</span>(filters.mspct, </a>
+<a class="sourceLine" id="cb481-2" data-line-number="2">              <span class="kw">list</span>(<span class="st">&quot;Tfr(UVA)&quot;</span> =<span class="st"> </span>UVA.wb, <span class="st">&quot;Tfr(PAR)&quot;</span> =<span class="st"> </span>PAR.wb),</a>
+<a class="sourceLine" id="cb481-3" data-line-number="3">              <span class="dt">attr2tb =</span> <span class="st">&quot;what.measured&quot;</span>)</a></code></pre></div>
 <pre><code>## # A tibble: 3 x 4
 ##   spct.idx `Tfr(UVA)` `Tfr(PAR)` what.measured                            
 ##   &lt;fct&gt;         &lt;dbl&gt;      &lt;dbl&gt; &lt;chr&gt;                                    
@@ -5597,7 +5679,7 @@ Most frequently used summary methods are implemented for collections of spectra.
 <div id="individual-spectra-9" class="section level4">
 <h4>Individual spectra</h4>
 <p>The functions <code>response</code>, <code>e_response</code> and <code>q_response</code> take <code>response_spct</code> objects as arguments, and return the integrated value for each waveband (integrated over wavelength) <strong>assuming</strong> a light source with a flat spectral energy or photon output respectively. If no waveband is supplied as argument, the whole spectrum is integrated.</p>
-<div class="sourceCode" id="cb477"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb477-1" data-line-number="1"><span class="kw">response</span>(photodiode.spct)</a></code></pre></div>
+<div class="sourceCode" id="cb483"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb483-1" data-line-number="1"><span class="kw">response</span>(photodiode.spct)</a></code></pre></div>
 <pre><code>##    Total 
 ## 24.40478 
 ## attr(,&quot;time.unit&quot;)
@@ -5605,7 +5687,7 @@ Most frequently used summary methods are implemented for collections of spectra.
 ## attr(,&quot;radiation.unit&quot;)
 ## [1] &quot;energy response total&quot;</code></pre>
 <p>When a waveband, or list of wavebands, is supplied the response is calculated for the wavebands.</p>
-<div class="sourceCode" id="cb479"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb479-1" data-line-number="1"><span class="kw">e_response</span>(photodiode.spct, <span class="kw">list</span>(UVB.wb, UVA.wb))</a></code></pre></div>
+<div class="sourceCode" id="cb485"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb485-1" data-line-number="1"><span class="kw">e_response</span>(photodiode.spct, <span class="kw">list</span>(UVB.wb, UVA.wb))</a></code></pre></div>
 <pre><code>##  UVB.tr.lo        UVA 
 ##   0.346462   5.981818 
 ## attr(,&quot;time.unit&quot;)
@@ -5614,11 +5696,11 @@ Most frequently used summary methods are implemented for collections of spectra.
 ## [1] &quot;energy response total&quot;</code></pre>
 <p>This function has an additional argument <code>quantity</code>, with default <code>&quot;total&quot;</code>, as described for <code>irrad()</code>.</p>
 </div>
-<div id="collections-of-spectra-6" class="section level4">
+<div id="collections-of-spectra-7" class="section level4">
 <h4>Collections of spectra</h4>
-<div class="sourceCode" id="cb481"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb481-1" data-line-number="1">sensors &lt;-<span class="st"> </span><span class="kw">response_mspct</span>(<span class="kw">list</span>(<span class="dt">GaAsP =</span> photodiode.spct,</a>
-<a class="sourceLine" id="cb481-2" data-line-number="2">                               <span class="dt">CCD =</span> ccd.spct))</a>
-<a class="sourceLine" id="cb481-3" data-line-number="3"><span class="kw">response</span>(sensors, <span class="kw">list</span>(UVB.wb, UVA.wb, PAR.wb), <span class="dt">quantity =</span> <span class="st">&quot;contribution&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb487"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb487-1" data-line-number="1">sensors &lt;-<span class="st"> </span><span class="kw">response_mspct</span>(<span class="kw">list</span>(<span class="dt">GaAsP =</span> photodiode.spct,</a>
+<a class="sourceLine" id="cb487-2" data-line-number="2">                               <span class="dt">CCD =</span> ccd.spct))</a>
+<a class="sourceLine" id="cb487-3" data-line-number="3"><span class="kw">response</span>(sensors, <span class="kw">list</span>(UVB.wb, UVA.wb, PAR.wb), <span class="dt">quantity =</span> <span class="st">&quot;contribution&quot;</span>)</a></code></pre></div>
 <pre><code>## # A tibble: 2 x 4
 ##   spct.idx response_UVB.tr.lo response_UVA response_PAR.tr.hi
 ##   &lt;fct&gt;                 &lt;dbl&gt;        &lt;dbl&gt;              &lt;dbl&gt;
@@ -5632,11 +5714,11 @@ Most frequently used summary methods are implemented for collections of spectra.
 <div id="calculation-from-individual-spectra" class="section level4">
 <h4>Calculation from individual spectra</h4>
 <p>We can integrate the values of arbitrary <code>numeric</code> columns other than <code>w.length</code> in an spectral object. All spectral classes are derived from <code>generic_spct</code>, so the examples in this section apply to objects of any of the derived spectral classes as well.</p>
-<div class="sourceCode" id="cb483"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb483-1" data-line-number="1"><span class="kw">integrate_spct</span>(sun.spct)</a></code></pre></div>
+<div class="sourceCode" id="cb489"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb489-1" data-line-number="1"><span class="kw">integrate_spct</span>(sun.spct)</a></code></pre></div>
 <pre><code>##      e.irrad      q.irrad 
 ## 2.691249e+02 1.255336e-03</code></pre>
 <p>The function <code>average_spct</code> integrates every column holding numeric values from a spectrum object, except for <code>w.length</code>, and divides the result by the <em>spread</em> or width of the wavelength range integrated, returning a value expressed in the same units as the spectral data.</p>
-<div class="sourceCode" id="cb485"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb485-1" data-line-number="1"><span class="kw">average_spct</span>(sun.spct)</a></code></pre></div>
+<div class="sourceCode" id="cb491"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb491-1" data-line-number="1"><span class="kw">average_spct</span>(sun.spct)</a></code></pre></div>
 <pre><code>##      e.irrad      q.irrad 
 ## 5.175479e-01 2.414107e-06</code></pre>
 </div>
@@ -5646,34 +5728,34 @@ Most frequently used summary methods are implemented for collections of spectra.
 <h2>RGB colours</h2>
 <p>Two functions allow calculation of simulated colour of light sources as R colour definitions. Three different functions are available, one for monochromatic light taking as argument wavelength values, and one for polychromatic light taking as argument spectral energy irradiances and the corresponding wave length values. The third function can be used to calculate a representative RGB colour for a band of the spectrum represented as a range of wavelength, based on the assumption of a flat energy irradiance across the range. By default CIE coordinates for <em>typical</em> human vision are used, but the functions have a parameter that can be used for supplying a different chromaticity definition.</p>
 <p>Examples for monochromatic light:</p>
-<div class="sourceCode" id="cb487"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb487-1" data-line-number="1"><span class="kw">w_length2rgb</span>(<span class="dv">550</span>) <span class="co"># green</span></a></code></pre></div>
+<div class="sourceCode" id="cb493"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb493-1" data-line-number="1"><span class="kw">w_length2rgb</span>(<span class="dv">550</span>) <span class="co"># green</span></a></code></pre></div>
 <pre><code>## wl.550.nm 
 ## &quot;#00FF00&quot;</code></pre>
-<div class="sourceCode" id="cb489"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb489-1" data-line-number="1"><span class="kw">w_length2rgb</span>(<span class="dv">630</span>) <span class="co"># red</span></a></code></pre></div>
+<div class="sourceCode" id="cb495"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb495-1" data-line-number="1"><span class="kw">w_length2rgb</span>(<span class="dv">630</span>) <span class="co"># red</span></a></code></pre></div>
 <pre><code>## wl.630.nm 
 ## &quot;#FF0000&quot;</code></pre>
-<div class="sourceCode" id="cb491"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb491-1" data-line-number="1"><span class="kw">w_length2rgb</span>(<span class="kw">c</span>(<span class="dv">550</span>, <span class="dv">630</span>, <span class="dv">380</span>, <span class="dv">750</span>)) <span class="co"># vectorized</span></a></code></pre></div>
+<div class="sourceCode" id="cb497"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb497-1" data-line-number="1"><span class="kw">w_length2rgb</span>(<span class="kw">c</span>(<span class="dv">550</span>, <span class="dv">630</span>, <span class="dv">380</span>, <span class="dv">750</span>)) <span class="co"># vectorized</span></a></code></pre></div>
 <pre><code>## wl.550.nm wl.630.nm wl.380.nm wl.750.nm 
 ## &quot;#00FF00&quot; &quot;#FF0000&quot; &quot;#000000&quot; &quot;#000000&quot;</code></pre>
 <p>Examples for wavelength ranges:</p>
-<div class="sourceCode" id="cb493"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb493-1" data-line-number="1"><span class="kw">w_length_range2rgb</span>(<span class="kw">c</span>(<span class="dv">400</span>,<span class="dv">700</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb499"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb499-1" data-line-number="1"><span class="kw">w_length_range2rgb</span>(<span class="kw">c</span>(<span class="dv">400</span>,<span class="dv">700</span>))</a></code></pre></div>
 <pre><code>## 400-700 nm 
 ##  &quot;#735B57&quot;</code></pre>
 <p>Examples for spectra as vectors, in this case for the solar spectrum:</p>
-<div class="sourceCode" id="cb495"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb495-1" data-line-number="1"><span class="kw">with</span>(sun.spct, <span class="kw">s_e_irrad2rgb</span>(w.length, s.e.irrad))</a></code></pre></div>
+<div class="sourceCode" id="cb501"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb501-1" data-line-number="1"><span class="kw">with</span>(sun.spct, <span class="kw">s_e_irrad2rgb</span>(w.length, s.e.irrad))</a></code></pre></div>
 <pre><code>## [1] &quot;#544F4B&quot;</code></pre>
-<div class="sourceCode" id="cb497"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb497-1" data-line-number="1"><span class="kw">with</span>(sun.spct, <span class="kw">s_e_irrad2rgb</span>(w.length, s.e.irrad, <span class="dt">sens =</span> ciexyzCMF2.spct))</a></code></pre></div>
+<div class="sourceCode" id="cb503"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb503-1" data-line-number="1"><span class="kw">with</span>(sun.spct, <span class="kw">s_e_irrad2rgb</span>(w.length, s.e.irrad, <span class="dt">sens =</span> ciexyzCMF2.spct))</a></code></pre></div>
 <pre><code>## [1] &quot;#544F4B&quot;</code></pre>
 <p>Examples with <code>source_spct</code> objects.</p>
-<div class="sourceCode" id="cb499"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb499-1" data-line-number="1"><span class="kw">rgb_spct</span>(sun.spct)</a></code></pre></div>
+<div class="sourceCode" id="cb505"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb505-1" data-line-number="1"><span class="kw">rgb_spct</span>(sun.spct)</a></code></pre></div>
 <pre><code>## [1] &quot;#544F4B&quot;</code></pre>
-<div class="sourceCode" id="cb501"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb501-1" data-line-number="1"><span class="kw">rgb_spct</span>(sun.spct, <span class="dt">sens =</span> ciexyzCMF2.spct)</a></code></pre></div>
+<div class="sourceCode" id="cb507"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb507-1" data-line-number="1"><span class="kw">rgb_spct</span>(sun.spct, <span class="dt">sens =</span> ciexyzCMF2.spct)</a></code></pre></div>
 <pre><code>## [1] &quot;#544F4B&quot;</code></pre>
 <p>And also a <code>color_of</code> method for <code>source_spct</code>.</p>
-<div class="sourceCode" id="cb503"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb503-1" data-line-number="1"><span class="kw">color_of</span>(sun.spct)</a></code></pre></div>
+<div class="sourceCode" id="cb509"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb509-1" data-line-number="1"><span class="kw">color_of</span>(sun.spct)</a></code></pre></div>
 <pre><code>## source CMF 
 ##  &quot;#544F4B&quot;</code></pre>
-<div class="sourceCode" id="cb505"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb505-1" data-line-number="1"><span class="kw">color_of</span>(sun.spct <span class="op">*</span><span class="st"> </span>yellow_gel.spct)</a></code></pre></div>
+<div class="sourceCode" id="cb511"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb511-1" data-line-number="1"><span class="kw">color_of</span>(sun.spct <span class="op">*</span><span class="st"> </span>yellow_gel.spct)</a></code></pre></div>
 <pre><code>## source CMF 
 ##  &quot;#946000&quot;</code></pre>
 </div>

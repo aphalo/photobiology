@@ -542,7 +542,14 @@ peaks(sun.spct, span = 51, unit.out = "photon")
 peaks(sun.spct, span = 21)
 
 ## ---- col-summary-1------------------------------------------------------
-msmsply(filters.mspct, peaks, span = 11)
+msmsply(filters.mspct, peaks, span = 21)
+
+## ---- find-wls-1---------------------------------------------------------
+wls_at_target(sun.spct, target = "half.maximum")
+wls_at_target(sun.spct, target = "half.maximum", interpolate = TRUE)
+
+## ---- find-wls-2---------------------------------------------------------
+wls_at_target(filters.mspct, target = "half.maximum")
 
 ## ---- irrad-1------------------------------------------------------------
 irrad(sun.spct)

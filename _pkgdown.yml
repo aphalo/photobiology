@@ -105,6 +105,8 @@ reference:
     - setWhenMeasured
     - getWhereMeasured
     - setWhereMeasured
+    - getIdFactor
+    - setIdFactor
     - is_tagged
     - dim.generic_mspct
     - labels
@@ -145,6 +147,7 @@ reference:
     contents:
     - peaks
     - valleys
+    - wls_at_target
   - title: Transformations
     contents:
     - normalize
@@ -281,7 +284,7 @@ reference:
     - upgrade_spectra
     - formatted_range
     - defunct
-  - title: Low-level functions for numeric vectors
+  - title: Low-level functions
     desc: These functions are for use by developers when maximum flexibility is needed. They are not meant for everyday use.
     contents:
     - as_energy
@@ -296,7 +299,9 @@ reference:
     - e2quantum_multipliers
     - energy_irradiance
     - energy_ratio
+    - findMultipleWl
     - find_peaks
+    - find_wls
     - get_attributes
     - get_peaks
     - insert_spct_hinges
@@ -316,6 +321,7 @@ reference:
     - sum_spectra
     - trim_tails
     - trim_waveband
+    - v_insert_hinges
     - w_length_range2rgb
     - w_length2rgb
     - waveband_ratio

@@ -5,9 +5,9 @@ photobiology 0.9.24 (2018-09-20)
 cases triggered fatal errors when using operators or other methods taking two
 spectra as arguments. This also affected indirectly package 'ooacquire'.
 * Add method wls_at_target() implementing search and interpolation of
-wavelengths at which the spectral quantity matches a target value. At these
-methods are implemented for all spectral classes and collections of spectra,
-expect raw_spct, chroma_spct and object_spct.
+wavelengths at which the spectral quantity matches a target value. This
+method is implemented for all spectral classes and collections of spectra,
+expect raw_spct, chroma_spct and object_spct and corresponding collections.
 * Add (experimental) support for spectral measurements where the exposure time
 is dependent on the light source instead of on the integration time settings in
 the spectrometer such as when measuring xenon-tube flashes.

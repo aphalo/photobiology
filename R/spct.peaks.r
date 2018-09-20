@@ -674,7 +674,7 @@ find_wls <- function(x,
   # use run length to find transition points
   runs <- rle(true.rows)
   if (length(runs$lengths) < 2) {
-    return(call(spct.class))
+    return(do.call(spct.class, args = list()))
   }
   # accumulate run lengths to get index positions
   opening.idx <- cumsum(runs$lengths[-length(runs$lengths)])
@@ -765,6 +765,28 @@ wls_at_target.default <-
     x[NULL]
   }
 
+#' @describeIn wls_at_target Method for "generic_spct" objects.
+#'
+#' @param col.name character The name of the column in which to search for the
+#'   target value.
+#'
+#' @export
+#'
+wls_at_target.generic_spct <-
+  function(x,
+           target = "half.maximum",
+           interpolate = FALSE,
+           na.rm = FALSE,
+           col.name = NULL,
+           ...) {
+    find_wls(x,
+             target = target,
+             col.name = col.name,
+             interpolate = interpolate,
+             na.rm = na.rm,
+             ...)
+  }
+
 #' @describeIn wls_at_target Method for "source_spct" objects.
 #'
 #' @param unit.out character One of "energy" or "photon"
@@ -773,7 +795,7 @@ wls_at_target.default <-
 #'
 wls_at_target.source_spct <-
   function(x,
-           target = NULL,
+           target = "half.maximum",
            interpolate = FALSE,
            na.rm = FALSE,
            unit.out = getOption("photobiology.radiation.unit", default = "energy"),
@@ -799,7 +821,7 @@ wls_at_target.source_spct <-
 #'
 wls_at_target.response_spct <-
   function(x,
-           target = NULL,
+           target = "half.maximum",
            interpolate = FALSE,
            na.rm = FALSE,
            unit.out = getOption("photobiology.radiation.unit", default = "energy"),
@@ -828,7 +850,7 @@ wls_at_target.response_spct <-
 #'
 wls_at_target.filter_spct <-
   function(x,
-           target = NULL,
+           target = "half.maximum",
            interpolate = FALSE,
            na.rm = FALSE,
            filter.qty = getOption("photobiology.filter.qty", default = "transmittance"),
@@ -854,7 +876,7 @@ wls_at_target.filter_spct <-
 #'
 wls_at_target.reflector_spct <-
   function(x,
-           target = NULL,
+           target = "half.maximum",
            interpolate = FALSE,
            na.rm = FALSE,
            ...) {
@@ -871,7 +893,7 @@ wls_at_target.reflector_spct <-
 #'
 wls_at_target.cps_spct <-
   function(x,
-           target = NULL,
+           target = "half.maximum",
            interpolate = FALSE,
            na.rm = FALSE,
            ...) {
@@ -895,7 +917,7 @@ wls_at_target.cps_spct <-
 #' @export
 #'
 wls_at_target.generic_mspct <- function(x,
-                                        target = NULL,
+                                        target = "half.maximum",
                                         interpolate = FALSE,
                                         na.rm = FALSE,
                                         ...,
