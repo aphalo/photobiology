@@ -606,3 +606,265 @@ valleys.generic_mspct <- function(x,
           .parallel = .parallel,
           .paropts = .paropts)
 }
+
+# find wavelengths for a target y ----------------------------------------------
+
+#' Find wavelength values in a spectrum
+#'
+#' Find wavelength values corresponding to a target y value in any spectrum. The
+#' name of the column of the spectral data to be used to match the target needs
+#' to be passed as argument unless the spectrum contains a single numerical
+#' variable in addition to "w.length".
+#'
+#' @param x an R object
+#' @param target numeric value indicating the spectral quantity value for which
+#'   wavelngths are to be searched and interpolated if need.
+#' @param na.rm logical indicating whether \code{NA} values should be stripped
+#'   before searching for the target.
+#' @param col.name character The name of the column in which to search for the
+#'   target value.
+#' @param .fun function A binary comparison function or operator.
+#'
+#' @note This function is used internally by method \code{wls_at_target()}, and
+#'   these methods should be preferred in user code and scripts.
+#'
+#' @return An spectrum object of the same class as \code{x} but shorter, or even
+#'   empty.
+#'
+#' @export
+#'
+find_wls <- function(x,
+                     target = NULL,
+                     col.name = NULL,
+                     .fun = `<=`,
+                     interpolate = FALSE,
+                     na.rm = FALSE) {
+  stopifnot(is.any_spct(x))
+  spct.class <- class_spct(x)[1]
+  if (is.null(target) || is.na(target)) {
+    return(x[NULL, ])
+  }
+  if (is.null(col.name)) {
+    # find target variable
+    col.name <- names(x)
+    col.name <- subset(col.name, sapply(x, is.numeric))
+    col.name <- setdiff(col.name, "w.length")
+    if (length(col.name) > 1L) {
+      warning("Multiple numeric data columns found, explicit argument to 'col.name' required.")
+      return(x[NULL, ])
+    }
+  }
+  if (na.rm) {
+    x <- na.omit(x)
+  }
+  # test all rows for the condition
+  true.rows <- .fun(x[[col.name]], target)
+  # use run length to find transition points
+  runs <- rle(true.rows)
+  if (length(runs$lengths) < 2) {
+    return(call(spct.class))
+  }
+  # accumulate run lengths to get index positions
+  opening.idx <- cumsum(runs$lengths[-length(runs$lengths)])
+  closing.idx <- opening.idx + 1L
+  if (max(closing.idx) > nrow(x)) {
+    closing.idx[length(closing.idx)] <- opening.idx[length(opening.idx)]
+  }
+  if (interpolate) {
+    # do vectorized interpolation to fetch true intersects
+    wls <- x[["w.length"]][opening.idx] +
+      (x[["w.length"]][closing.idx] - x[["w.length"]][opening.idx]) *
+      (x[[col.name]][closing.idx] - target) / (x[[col.name]][closing.idx] - x[[col.name]][opening.idx])
+  } else {
+    # extract nearest shorter wl value to target
+    wls <- x[["w.length"]][opening.idx]
+  }
+  # return as a "short" spectrum containing only the interpolated cross points
+  z <- tibble::tibble(wls, target)
+  names(z) <- c("w.length", col.name)
+  z <- do.call(paste("as", spct.class, sep = "."), args = list(x = z))
+  # we need to copy some attributes
+  z
+}
+
+# find wavelengths for a target y ----------------------------------------------
+
+#' Search x values corresponding to a target y value
+#'
+#' @param x an R object
+#' @param target numeric value indicating the spectral quantity value for which
+#'   wavelngths are to be searched and interpolated if need.
+#' @param na.rm logical indicating whether \code{NA} values should be stripped
+#'   before searching for the target.
+#' @param ... currently ignored.
+#'
+#' @return An spectrum object of the same class as \code{x} but shorter, or even
+#'   empty.
+#'
+#' @examples
+#' wls_at_target(sun.spct, target = 20)
+#'
+#' @export
+#'
+#' @family peaks and valleys functions
+#'
+wls_at_target <- function(x,
+                          target = NULL,
+                          interpolate = FALSE,
+                          na.rm = FALSE,
+                          ...) UseMethod("wls_at_target")
+
+#' @describeIn wls_at_target Default returning always an empty object of the
+#'   same class as \code{x}.
+#' @export
+#'
+wls_at_target.default <-
+  function(x,
+           target = NULL,
+           interpolate = FALSE,
+           na.rm = FALSE,
+           ...) {
+    warning("Method 'wls_at_target' not implemented for objects of class ", class(x)[1])
+    x[NULL]
+  }
+
+#' @describeIn wls_at_target Method for "source_spct" objects.
+#' @export
+#'
+wls_at_target.source_spct <-
+  function(x,
+           target = NULL,
+           interpolate = FALSE,
+           na.rm = FALSE,
+           unit.out = getOption("photobiology.radiation.unit", default = "energy"),
+           ...) {
+    if (unit.out == "energy") {
+      z <- q2e(x, "replace", FALSE)
+      col.name <- "s.e.irrad"
+    } else if (unit.out %in% c("photon", "quantum")) {
+      z <- e2q(x, "replace", FALSE)
+      col.name <- "s.q.irrad"
+    } else {
+      stop("Unrecognized 'unit.out': ", unit.out)
+    }
+    find_wls(x,
+             target = target,
+             col.name = col.name,
+             interpolate = interpolate,
+             na.rm = na.rm)
+  }
+
+#' @describeIn wls_at_target Method for "response_spct" objects.
+#' @export
+#'
+wls_at_target.response_spct <-
+  function(x,
+           target = NULL,
+           interpolate = FALSE,
+           na.rm = FALSE,
+           unit.out = getOption("photobiology.radiation.unit", default = "energy"),
+           ...) {
+    if (unit.out == "energy") {
+      z <- q2e(x, "replace", FALSE)
+      col.name <- "s.e.response"
+    } else if (unit.out %in% c("photon", "quantum")) {
+      z <- e2q(x, "replace", FALSE)
+      col.name <- "s.q.response"
+    } else {
+      stop("Unrecognized 'unit.out': ", unit.out)
+    }
+    find_wls(x,
+             target = target,
+             col.name = col.name,
+             interpolate = interpolate,
+             na.rm = na.rm)
+  }
+
+#' @describeIn wls_at_target Method for "filter_spct" objects.
+#' @export
+#'
+wls_at_target.filter_spct <-
+  function(x,
+           target = NULL,
+           interpolate = FALSE,
+           na.rm = FALSE,
+           filter.qty = getOption("photobiology.filter.qty", default = "transmittance"),
+           ...) {
+    if (filter.qty == "transmittance") {
+      z <- A2T(x, "replace", FALSE)
+      col.name <- "Tfr"
+    } else if (filter.qty == "absorbance") {
+      z <- T2A(x, "replace", FALSE)
+      col.name <- "A"
+    } else {
+      stop("Unrecognized 'filter.qty': ", filter.qty)
+    }
+    find_wls(x,
+             target = target,
+             col.name = col.name,
+             interpolate = interpolate,
+             na.rm = na.rm)
+  }
+
+#' @describeIn wls_at_target Method for "reflector_spct" objects.
+#' @export
+#'
+wls_at_target.reflector_spct <-
+  function(x,
+           target = NULL,
+           interpolate = FALSE,
+           na.rm = FALSE,
+           ...) {
+    find_wls(x,
+             target = target,
+             col.name = "Rfr",
+             interpolate = interpolate,
+             na.rm = na.rm)
+  }
+
+#' @describeIn wls_at_target Method for "cps_spct" objects.
+#'
+#' @export
+#'
+wls_at_target.cps_spct <-
+  function(x,
+           target = NULL,
+           interpolate = FALSE,
+           na.rm = FALSE,
+           ...) {
+    find_wls(x,
+             target = target,
+             col.name = "cps",
+             interpolate = interpolate,
+             na.rm = na.rm)
+  }
+
+#' @describeIn wls_at_target  Method for "generic_mspct" objects.
+#'
+#' @param .parallel	if TRUE, apply function in parallel, using parallel backend
+#'   provided by foreach
+#' @param .paropts a list of additional options passed into the foreach function
+#'   when parallel computation is enabled. This is important if (for example)
+#'   your code relies on external data or packages: use the .export and
+#'   .packages arguments to supply them so that all cluster nodes have the
+#'   correct environment set up for computing.
+#'
+#' @export
+#'
+wls_at_target.generic_mspct <- function(x,
+                                        target = NULL,
+                                        interpolate = FALSE,
+                                        na.rm = FALSE,
+                                        ...,
+                                        .parallel = FALSE,
+                                        .paropts = NULL) {
+  msmsply(x,
+          .fun = wls_at_target,
+          target = target,
+          interpolate = interpolate,
+          na.rm = na.rm,
+          ...,
+          .parallel = .parallel,
+          .paropts = .paropts)
+}
+
