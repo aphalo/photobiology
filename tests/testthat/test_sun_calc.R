@@ -212,7 +212,7 @@ test_that("sunset_time_vectorized", {
 
 test_that("daylength", {
 
-  expect_equal(day_length(now()), day_length(today())) # is conversion o.k.?
+  expect_equal(day_length(now(tzone = "UTC")), day_length(today(tzone = "UTC"))) # is conversion o.k.?
   expect_equal(day_length(ymd("2014-12-21"),
                           geocode = data.frame(lat = 85, lon = 0)),
                0)

@@ -620,8 +620,11 @@ valleys.generic_mspct <- function(x,
 #' @param target numeric value indicating the spectral quantity value for which
 #'   wavelengths are to be searched and interpolated if need. The character
 #'   strings "half.maximum" and "half.range" are also accepted as arguments.
-#' @param col.name character The name of the column in which to search for the
-#'   target value.
+#' @param col.name.x character The name of the column in which to the
+#'   independent variable is stored. Defaults to "w.length" for objects of
+#'   class \code{"generic_spct"} or derived.
+#' @param col.name character The name of the column in which to
+#'    search for the target value.
 #' @param .fun function A binary comparison function or operator.
 #' @param interpolate logical Indicating whether the nearest wavelength value
 #'   in \code{x} should be returned or a value calculated by linear
@@ -642,39 +645,56 @@ valleys.generic_mspct <- function(x,
 #'
 find_wls <- function(x,
                      target = NULL,
+                     col.name.x = NULL,
                      col.name = NULL,
                      .fun = `<=`,
                      interpolate = FALSE,
                      na.rm = FALSE) {
-  stopifnot(is.any_spct(x))
-  spct.class <- class_spct(x)[1]
+  stopifnot(is.data.frame(x))
+  x.class <- class(x)[1]
   if (is.null(target) || is.na(target)) {
     return(x[NULL, ])
+  }
+  if (is.null(col.name.x)) {
+    if (is.any_spct(x)) {
+      col.name.x <- "w.length"
+    } else {
+      warning("Object is not a \"generic spectrum\" explicit argument to 'col.name' required.")
+      return(x[NULL, ])
+    }
   }
   if (is.null(col.name)) {
     # find target variable
     col.name <- names(x)
     col.name <- subset(col.name, sapply(x, is.numeric))
-    col.name <- setdiff(col.name, "w.length")
+    col.name <- setdiff(col.name, col.name.x)
     if (length(col.name) > 1L) {
       warning("Multiple numeric data columns found, explicit argument to 'col.name' required.")
       return(x[NULL, ])
     }
   }
-  if (target %in% c("half.maximum", "HM")) {
-    target <- max(x[[col.name]], na.rm = na.rm) / 2
-  } else if (target %in% c("half.range", "HR")) {
-    target <- mean(range(x[[col.name]], na.rm = na.rm))
-  }
   if (na.rm) {
     x <- na.omit(x)
+  }
+  if (is.character(target)) {
+    if (target %in% c("half.maximum", "HM")) {
+      target <- max(x[[col.name]]) / 2
+    } else if (target %in% c("half.range", "HR")) {
+      target <- mean(range(x[[col.name]]))
+    } else {
+      warning("Unrecognized character string: '", target, "' passed to 'target'", sep = "")
+      target <- NA_real_
+    }
+    if (is.na(target)) {
+      return(x[NULL, ])
+    }
   }
   # test all rows for the condition
   true.rows <- .fun(x[[col.name]], target)
   # use run length to find transition points
   runs <- rle(true.rows)
   if (length(runs$lengths) < 2) {
-    return(do.call(spct.class, args = list()))
+    return(do.call(x.class, args = list()))
   }
   # accumulate run lengths to get index positions
   opening.idx <- cumsum(runs$lengths[-length(runs$lengths)])
@@ -684,18 +704,20 @@ find_wls <- function(x,
   }
   if (interpolate) {
     # do vectorized interpolation to fetch true intersects
-    delta.wl <- x[["w.length"]][closing.idx] - x[["w.length"]][opening.idx]
+    delta.wl <- x[[col.name.x]][closing.idx] - x[[col.name.x]][opening.idx]
     delta.col <- x[[col.name]][closing.idx] - x[[col.name]][opening.idx]
     delta.col.target <- target - x[[col.name]][opening.idx]
     wl.increment <- delta.wl * abs(delta.col.target / delta.col)
-    wls <- x[["w.length"]][opening.idx] + wl.increment
+    wls <- x[[col.name.x]][opening.idx] + wl.increment
 
     # return as a "short" spectrum containing only matching wls and target values
     z <- tibble::tibble(wls, target)
-    names(z) <- c("w.length", col.name)
-    z <- do.call(paste("as", spct.class, sep = "."), args = list(x = z))
-    # we need to copy our private attributes as we are building a new object
-    z <- copy_attributes(x, z)
+    names(z) <- c(col.name.x, col.name)
+    if (x.class %in% spct_classes()) {
+      z <- do.call(paste("as", x.class, sep = "."), args = list(x = z))
+      # we need to copy our private attributes as we are building a new object
+      z <- copy_attributes(x, z)
+    }
   } else {
     # extract nearest wl value for target
     idxs <- ifelse(abs((x[[col.name]][closing.idx] - target) /
@@ -717,7 +739,7 @@ find_wls <- function(x,
 #' class of \code{x} and the argument passed to \code{unit.out} or
 #' \code{filter.qty} or their defaults that depend on R options set.
 #'
-#' @param x an R object
+#' @param x data.frame or spectrum object.
 #' @param target numeric value indicating the spectral quantity value for which
 #'   wavelengths are to be searched and interpolated if need. The character
 #'   string "half.maximum" is also accepted as argument.
@@ -736,7 +758,9 @@ find_wls <- function(x,
 #'
 #' @note When interpolation is used, only column \code{w.length} and the column
 #'   against which the target value was compared are included in the returned
-#'   object, otherwise, all columns in \code{x} are returned.
+#'   object, otherwise, all columns in \code{x} are returned. We implement
+#'   support for \code{data.frame} to simplify the coding of 'ggplot2' stats
+#'   using this function.
 #'
 #' @examples
 #' wls_at_target(sun.spct, target = 0.1)

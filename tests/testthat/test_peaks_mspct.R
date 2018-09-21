@@ -56,11 +56,25 @@ test_that("source_mspct", {
   wls.mspct <- wls_at_target(my.mspct, 0.5)
 
   expect_equal(length(wls.mspct), length(my.mspct))
-  expect_equal(names(wls.mspct[[1]]), c("w.length", "s.e.irrad"))
+  expect_true(all(c("w.length", "s.e.irrad") %in% names(wls.mspct[[1]])))
   expect_is(wls.mspct[[1]], "source_spct")
   expect_is(wls.mspct, "source_mspct")
 
   wls.mspct <- wls_at_target(my.mspct, target = 1e-6, unit.out = "photon")
+
+  expect_equal(length(wls.mspct), length(my.mspct))
+  expect_true(all(c("w.length", "s.q.irrad") %in% names(wls.mspct[[1]])))
+  expect_is(wls.mspct[[1]], "source_spct")
+  expect_is(wls.mspct, "source_mspct")
+
+  wls.mspct <- wls_at_target(my.mspct, target = 1e-6, interpolate = TRUE)
+
+  expect_equal(length(wls.mspct), length(my.mspct))
+  expect_equal(names(wls.mspct[[1]]), c("w.length", "s.e.irrad"))
+  expect_is(wls.mspct[[1]], "source_spct")
+  expect_is(wls.mspct, "source_mspct")
+
+  wls.mspct <- wls_at_target(my.mspct, target = 1e-6, interpolate = TRUE, unit.out = "photon")
 
   expect_equal(length(wls.mspct), length(my.mspct))
   expect_equal(names(wls.mspct[[1]]), c("w.length", "s.q.irrad"))
