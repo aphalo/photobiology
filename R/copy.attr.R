@@ -93,6 +93,24 @@ copy_attributes.generic_spct <- function(x, y,
 #'
 #' @export
 #'
+copy_attributes.generic_mspct <- function(x, y,
+                                         which = NULL,
+                                         copy.class = FALSE,
+                                         ...) {
+  stopifnot(length(x) == length(y))
+  for (i in seq_along(x)) {
+    y[[i]] <- copy_attributes(x[[i]], y[[i]],
+                              which = which,
+                              copy.class = copy.class,
+                              ...)
+  }
+  y
+}
+
+#' @describeIn copy_attributes
+#'
+#' @export
+#'
 copy_attributes.waveband <- function(x, y, which = NULL, ...) {
   stopifnot(is.waveband(y))
   if (length(which) == 0L) {

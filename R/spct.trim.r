@@ -246,6 +246,8 @@ trim_mspct <- function(mspct,
                .parallel = .parallel,
                .paropts = .paropts)
 
+  z <- copy_attributes(x = mspct, y = z, copy.class = TRUE) # msmsply strips attributes!!
+
   if (byref & is.name(name)) {
     name <- as.character(name)
     assign(name, z, parent.frame(), inherits = TRUE)
