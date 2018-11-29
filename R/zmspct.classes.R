@@ -454,19 +454,23 @@ mat2mspct <- function(x,
   if (byrow) {
     x <- t(x)
   }
-  ncol <- ncol(x)
+  stopifnot(ncol(x) >= 1L)
+  # compatibility with as_tiible() >= 2.0.0
+  if (is.null(colnames(x))) {
+    colnames(x) <- letters[1:ncol(x)]
+  }
   stopifnot(nrow(x) == length(w.length))
   y <- cbind(w.length, x * multiplier)
-  y <- tibble::as_data_frame(y)
-  if (length(spct.names) == ncol) {
+  y <- tibble::as_tibble(y)
+  if (length(spct.names) == ncol(x)) {
     colnames(y) <- c("w.length", spct.names)
   } else {
-    colnames(y) <- c("w.length", paste(spct.names[1], 1:ncol, sep = ""))
+    colnames(y) <- c("w.length", paste(spct.names[1], 1:ncol(x), sep = ""))
   }
   z <- split2mspct(x = y,
                    member.class = member.class,
                    spct.data.var = spct.data.var,
-                   ncol = ncol,
+                   ncol = ncol(y),
                    ...)
   comment(z) <- paste('Converted from an R "matrix" object\n',
                       'with ', length(z), ' spectra stored ',
@@ -544,6 +548,7 @@ as.calibration_mspct.list <- function(x,
                                       byrow = FALSE) {
   y <- x
   rmDerivedMspct(y)
+  stopifnot(all(sapply(y, FUN = is.list)))
   z <- plyr::llply(y, setCalibrationSpct, ...)
   calibration_mspct(z, ncol = ncol, byrow = byrow)
 }
@@ -638,6 +643,7 @@ as.raw_mspct.list <- function(x,
                               byrow = FALSE) {
   y <- x
   rmDerivedMspct(y)
+  stopifnot(all(sapply(y, FUN = is.list)))
   z <- plyr::llply(y, setRawSpct, ...)
   raw_mspct(z, ncol = ncol, byrow = byrow)
 }
@@ -731,6 +737,7 @@ as.cps_mspct.list <- function(x,
                               byrow = FALSE) {
   y <- x
   rmDerivedMspct(y)
+  stopifnot(all(sapply(y, FUN = is.list)))
   z <- plyr::llply(y, setCpsSpct, ...)
   cps_mspct(z, ncol = ncol, byrow = byrow)
 }
@@ -841,6 +848,7 @@ as.source_mspct.list <-
            byrow = FALSE) {
     y <- x
     rmDerivedMspct(y)
+    stopifnot(all(sapply(y, FUN = is.list)))
     z <- plyr::llply(y, setSourceSpct, time.unit = time.unit,
                      strict.range = strict.range, bswf.used = bswf.used, ...)
     source_mspct(z, ncol = ncol, byrow = byrow)
@@ -942,6 +950,7 @@ as.response_mspct.list <- function(x,
                                    byrow = FALSE) {
   y <- x
   rmDerivedMspct(y)
+  stopifnot(all(sapply(y, FUN = is.list)))
   z <- plyr::llply(y, setResponseSpct, time.unit = time.unit, ...)
   response_mspct(z, ncol = ncol, byrow = byrow)
 }
@@ -1047,6 +1056,7 @@ as.filter_mspct.list <- function(x,
                             byrow = FALSE) {
   y <- x
   rmDerivedMspct(y)
+  stopifnot(all(sapply(y, FUN = is.list)))
   z <- plyr::llply(y, setFilterSpct,
                    Tfr.type = Tfr.type,
                    strict.range = strict.range,

@@ -1,3 +1,10 @@
+photobiology 0.9.25 (2018-11-29)
+================================
+
+* Fix bug in merging of attributes which was causing errors in operations
+between spectra which had specific differences in their attributes.
+* Fix incompatibility with tibble (>= 2.0.0).
+
 photobiology 0.9.24 (2018-09-20)
 ================================
 

@@ -186,11 +186,13 @@ merge_attributes.generic_spct <- function(x, y, z,
     } else if (is.na(att.x) || is.na(att.y) ||
                class(att.x) != class(att.y) ||
                length(att.x) != length(att.y) ||
-               xor(is.atomic(att.x), is.atomic(att.y)) ||
-               (is.atomic(att.x) && any(att.x != att.y)) ||
-               !(all.equal(att.x, att.y))) {
+               xor(is.atomic(att.x), is.atomic(att.y))) {
       attr(z, w) <- ifelse(w %in% c("comment", "time.unit"), NA_character_, NA)
     } else {
+      ## Add generic test of equality to warning
+      if (getOption("photobiology.verbose", default = FALSE)) {
+        warning("Keeping attribute ", w, "'s value from lhs operand.")
+      }
       attr(z, w) <- att.x
     }
   }
