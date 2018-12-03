@@ -3,10 +3,8 @@
 
 [![CRAN
 version](http://www.r-pkg.org/badges/version-last-release/photobiology)](https://cran.r-project.org/package=photobiology)
-[![cran
+[![CRAN
 checks](https://cranchecks.info/badges/worst/photobiology)](https://cran.r-project.org/web/checks/check_results_photobiology.html)
-[![Bitbucket
-issues](https://img.shields.io/bitbucket/issues/atlassian/python-bitbucket.svg)](https://bitbucket.org/aphalo/photobiology/issues)
 
 Package ‘**photobiology**’ defines a system of classes for storing
 spectral data and accompanying metadata. For each of these classes

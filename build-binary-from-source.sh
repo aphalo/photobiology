@@ -1,4 +1,4 @@
 cd ..
-R CMD INSTALL --build photobiology_0.9.24.9000.tar.gz
+R CMD INSTALL --build photobiology_0.9.25.tar.gz
 cd ./photobiology
 
