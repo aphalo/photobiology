@@ -184,7 +184,7 @@ merge_attributes.generic_spct <- function(x, y, z,
     } else if (length(att.y) == 0L) {
       attr(z, w) <- att.x
     } else if (is.na(att.x) || is.na(att.y) ||
-               class(att.x) != class(att.y) ||
+               class(att.x)[1] != class(att.y)[1] ||
                length(att.x) != length(att.y) ||
                xor(is.atomic(att.x), is.atomic(att.y))) {
       attr(z, w) <- ifelse(w %in% c("comment", "time.unit"), NA_character_, NA)

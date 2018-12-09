@@ -72,7 +72,7 @@ check_spct.generic_spct <-
     if (!("tbl_df") %in% class(x)) {
       x <- tibble::as_tibble(x)
     }
-    class(x) <- union(class.x, class(x))
+    class(x) <- union(class.x, class(x)) # can change order!! BUG PRONE
     # check variables
     if (exists("wl", x, mode = "numeric", inherits = FALSE)) {
       dots <- list(~wl)
