@@ -36,7 +36,7 @@ relative_AM <- function(elevation.angle = NULL,
   if (is.null(elevation.angle)) {
     elevation.angle <- 90 - zenith.angle
   }
-  stopifnot(all(elevation.angle >= -90 || elevation.angle <= 90))
+  stopifnot(all(elevation.angle >= -90 & elevation.angle <= 90))
   signif(
     ifelse(elevation.angle > 0,
            (sin(elevation.angle * pi / 180) + (0.1500 * (elevation.angle + 3.885)^-1.253))^-1,

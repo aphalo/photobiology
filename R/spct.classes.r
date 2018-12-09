@@ -1992,6 +1992,7 @@ getMultipleWl <- function(x) {
 #'
 setIdFactor <- function(x, idfactor) {
   stopifnot(is.generic_spct(x) || is.summary_generic_spct(x))
+  stopifnot(is.null(idfactor) || is.character(idfactor))
   name <- substitute(x)
   if (is.null(idfactor) || exists(idfactor, x, inherits = FALSE)) {
     attr(x, "idfactor") <- idfactor
@@ -2838,7 +2839,7 @@ getWhatMeasured.default <- function(x, ...) {
 #' @export
 getWhatMeasured.generic_spct <- function(x, ...) {
   what.measured <- attr(x, "what.measured", exact = TRUE)
-  if (is.null(what.measured) || is.na(what.measured)) {
+  if (is.null(what.measured) || (is.atomic(what.measured) && all(is.na(what.measured)))) {
     # need to handle objects created with old versions
     NA_character_
   } else {
@@ -2850,7 +2851,7 @@ getWhatMeasured.generic_spct <- function(x, ...) {
 #' @export
 getWhatMeasured.summary_generic_spct <- function(x, ...) {
   what.measured <- attr(x, "what.measured", exact = TRUE)
-  if (is.null(what.measured) || is.na(what.measured)) {
+  if (is.null(what.measured) || (is.atomic(what.measured) && all(is.na(what.measured)))) {
     # need to handle objects created with old versions
     NA_character_
   } else {

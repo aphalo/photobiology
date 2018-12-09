@@ -493,7 +493,7 @@ is_scaled <- function(x) {
 getScaled <- function(x) {
   if (is.generic_spct(x) || is.summary_generic_spct(x)) {
     scaled <- attr(x, "scaled", exact = TRUE)
-    if (is.null(scaled) || is.na(scaled)) {
+    if (is.null(scaled) || (!is.list(scaled) && all(is.na(scaled)))) {
       # need to handle objects created with old versions
       scaled <- FALSE
     } else if (is.list(scaled)) {

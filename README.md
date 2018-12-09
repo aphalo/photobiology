@@ -3,7 +3,7 @@
 
 [![CRAN
 version](http://www.r-pkg.org/badges/version-last-release/photobiology)](https://cran.r-project.org/package=photobiology)
-[![CRAN
+[![cran
 checks](https://cranchecks.info/badges/worst/photobiology)](https://cran.r-project.org/web/checks/check_results_photobiology.html)
 
 Package ‘**photobiology**’ defines a system of classes for storing
@@ -24,9 +24,9 @@ calculations described at the
 
 ## Examples
 
-This first basic example shows you how to calculate solar irradiance in
-W/m2 below a filter. We use a measured solar spectrum and a measured
-filter transmission spectrum.
+The first example shows you how to estimate solar irradiance in W/m2
+under a filter. We use a measured solar spectrum and a measured filter
+transmission spectrum.
 
 ``` r
 library(photobiology)
@@ -39,16 +39,16 @@ e_irrad(sun.spct * yellow_gel.spct)
 #> [1] "energy irradiance total"
 ```
 
-The second basic example shows some simple astronomical calculations for
-the sun.
+The second example shows some simple astronomical calculations for the
+sun.
 
 ``` r
 geocode <- data.frame(lon = 0, lat = 55)
 date <- lubridate::today(tzone = "UTC")
 sunrise_time(date, tz = "UTC", geocode = geocode)
-#> [1] "2018-08-10 04:26:03 UTC"
+#> [1] "2018-12-09 08:12:45 UTC"
 day_length(date, tz = "UTC", geocode = geocode)
-#> [1] 15.30925
+#> [1] 7.32331
 ```
 
 ## Installation

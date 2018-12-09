@@ -163,7 +163,7 @@ merge_attributes.generic_spct <- function(x, y, z,
                                          copy.class = FALSE,
                                          ...) {
   if (copy.class) {
-    stopifnot(class(x) == class(y))
+    stopifnot(class_spct(x)[1] == class_spct(y)[1])
     class(z) <- class(x)
     check_spct(z)
   }

@@ -1,5 +1,7 @@
 ---
-output: github_document
+output:
+  github_document:
+    html_preview: false
 ---
 
 ```{r, echo = FALSE}
@@ -22,14 +24,14 @@ This package is the core of a suite of R packages for photobiological calculatio
 
 ## Examples
 
-This first basic example shows you how to calculate solar irradiance in W/m2 below a filter. We use a measured solar spectrum and a measured filter transmission spectrum.
+The first example shows you how to estimate solar irradiance in W/m2 under a filter. We use a measured solar spectrum and a measured filter transmission spectrum.
 
 ```{r example1, message=FALSE}
 library(photobiology)
 e_irrad(sun.spct * yellow_gel.spct)
 ```
 
-The second basic example shows some simple astronomical calculations for the sun.
+The second example shows some simple astronomical calculations for the sun.
 
 ```{r example2}
 geocode <- data.frame(lon = 0, lat = 55)
