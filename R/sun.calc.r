@@ -83,9 +83,10 @@ sun_angles <- function(time = lubridate::now(tzone = "UTC"),
   # assertion
   if (any(z[["elevation"]] < (-90)) || any(z[["elevation"]] > 90))
     warning("Returned 'elevation' value(s) off range")
-  if (any(!is.na(z[["azimuth"]]) && z[["azimuth"]] < -1e-10 || any(z[["azimuth"]] > (360 + 1e-10))))
-    warning("Returned 'azimuth' values(s) off range")
-
+  if (any(!is.na(z[["azimuth"]]) & (z[["azimuth"]] < -1e-10 |
+         z[["azimuth"]] > (360 + 1e-10)))) {
+      warning("Returned 'azimuth' values(s) off range")
+  }
   z
 }
 

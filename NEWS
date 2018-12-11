@@ -1,9 +1,8 @@
-photobiology 0.9.25 (2018-12-03)
+photobiology 0.9.25 (2018-12-11)
 ================================
 
 * Fix bug in merging of attributes which was causing errors in operations
 between spectra which had specific differences in their attributes.
-* Fix benign bug detected by CRAN checks under upcoming R (= 3.5.2).
 * Fix incompatibility with tibble (>= 2.0.0).
 
 photobiology 0.9.24 (2018-09-20)

@@ -2768,7 +2768,7 @@ isValidInstrSettings <- function(x) {
         valid <- FALSE
       } else if (is.list(setting)) {
         integ.time <- setting[["integ.time"]]
-        if (is.null(integ.time) || is.na(integ.time) || !is.numeric(integ.time)) {
+        if (is.null(integ.time) || any(is.na(integ.time)) || !is.numeric(integ.time)) {
           valid <- FALSE
         } # else we keep valid unchanged
       } else {

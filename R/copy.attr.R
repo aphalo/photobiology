@@ -183,7 +183,7 @@ merge_attributes.generic_spct <- function(x, y, z,
       attr(z, w) <- att.y
     } else if (length(att.y) == 0L) {
       attr(z, w) <- att.x
-    } else if (is.na(att.x) || is.na(att.y) ||
+    } else if (any(is.na(att.x)) || any(is.na(att.y)) ||
                class(att.x)[1] != class(att.y)[1] ||
                length(att.x) != length(att.y) ||
                xor(is.atomic(att.x), is.atomic(att.y))) {
