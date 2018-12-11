@@ -1,1 +1,0 @@
-devtools::check(cleanup = FALSE, args = c('--as-cran'), build_args = c('--resave-data','--compact-vignettes'), env_vars = c("_R_CHECK_LENGTH_1_CONDITION_=TRUE"=TRUE, "_R_CHECK_LENGTH_1_LOGIC2_"=TRUE))
