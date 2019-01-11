@@ -59,6 +59,13 @@ reference:
     - print
     - print.summary_generic_spct
     - head_tail
+  - title: Summary spectra from collections of spectra
+    contents:
+    - s_mean
+    - s_median
+    - s_range
+    - s_var
+    - s_sd
   - title: Wavebands
     contents:
     - waveband
@@ -173,7 +180,7 @@ reference:
     - untag
     - cps2irrad
     - na.omit.source_spct
-  - title: Mathematical operators and functions
+  - title: Mathematical operators and functions for spectra
     contents:
     - '`plus-.generic_spct`'
     - '`div-.generic_spct`'
@@ -223,6 +230,7 @@ reference:
   - title: Atmosphere
     contents:
     - water_vp_sat
+    - relative_AM
   - title: Data for radiation sources
     contents:
     - sun.spct

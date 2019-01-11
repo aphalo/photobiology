@@ -333,10 +333,10 @@ test_that("source_mspct", {
 
   # range -------------------------------------------------------------------
 
-  expect_equal(range(my.mspct)[["min.wl"]], rep(400, 5))
-  expect_equal(range(my_named.mspct)[["min.wl"]], rep(400, 5))
-  expect_equal(range(my.mspct)[["max.wl"]], rep(410, 5))
-  expect_equal(range(my_named.mspct)[["max.wl"]], rep(410, 5))
+  expect_equal(wl_range(my.mspct)[["min.wl"]], rep(400, 5))
+  expect_equal(wl_range(my_named.mspct)[["min.wl"]], rep(400, 5))
+  expect_equal(wl_range(my.mspct)[["max.wl"]], rep(410, 5))
+  expect_equal(wl_range(my_named.mspct)[["max.wl"]], rep(410, 5))
   expect_equal(range(my.mspct), wl_range(my.mspct))
   expect_equal(range(my_named.mspct), wl_range(my_named.mspct))
 

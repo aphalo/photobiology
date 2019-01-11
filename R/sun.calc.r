@@ -1,6 +1,6 @@
 #' Solar angles
 #'
-#' This function returns the solar angles for a given time and location.
+#' This function returns the solar angles at a given time and location.
 #'
 #' @param time A "vector" of POSIXct Time, with any valid time zone (TZ) is
 #'   allowed, default is current time.

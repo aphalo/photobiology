@@ -43,9 +43,9 @@
 #'
 #' head_tail(stats::ftable(Titanic))
 #'
-head_tail <- function(x, n = 3L, ...) UseMethod("head_tail")
+head_tail <- function(x, n, ...) UseMethod("head_tail")
 
-#' @describeIn head_tail Default method
+#' @describeIn head_tail
 #'
 #' @export
 #'
@@ -67,7 +67,7 @@ head_tail.default <- function(x, n = 3L, ...) {
   x[selector]
 }
 
-#' @describeIn head_tail Specialization for \code{data.frame} objects
+#' @describeIn head_tail
 #'
 #' @export
 #'
@@ -89,13 +89,13 @@ head_tail.data.frame <- function(x, n = 3L, ...) {
   x[selector, , drop = FALSE]
 }
 
-#' @describeIn head_tail  Specialization for \code{matrix}
+#' @describeIn head_tail
 #'
 #' @export
 #'
 head_tail.matrix <- head_tail.data.frame
 
-#' @describeIn head_tail  Specialization for \code{function}
+#' @describeIn head_tail
 #'
 #' @export
 #'
@@ -108,7 +108,7 @@ head_tail.function <- function (x, n = 6L, ...) {
   noquote(head_tail(lines, n = n))
 }
 
-#' @describeIn head_tail Specialization for \code{table}
+#' @describeIn head_tail
 #'
 #' @export
 #'
@@ -118,7 +118,7 @@ head_tail.table <- function (x, n = 6L, ...) {
    else head_tail.default)(x, n = n)
 }
 
-#' @describeIn head_tail Specialization for \code{ftable}
+#' @describeIn head_tail
 #'
 #' @export
 #'
