@@ -5,7 +5,7 @@
 #'
 #' @param x An R object. Currently this package defines methods for collections of
 #'    spectral objects.
-#' @param .fun An R function or a vector or list of functions.
+#' @param .fun An R function or a list of functions.
 #' @param col.name.tag character Vector of extensions to paste to default column
 #'    name for the output from each of the functions. If col.name.tag[1] != "",
 #'    this forces the return of an object of class \code{"generic_spct"}.
@@ -23,6 +23,12 @@
 #' @name rowwise
 #'
 rowwise_filter <- function(x, .fun, col.name.tag = "", .fun.name = "Summary of", ...) {
+
+  # we accept both function objects and lists of functions as input, but we
+  # convert function arguments to lists of length 1..
+  if (is.function(.fun)) {
+    .fun <- list(.fun)
+  }
 
   # validate input
   stopifnot(length(.fun) == length(col.name.tag))
@@ -96,6 +102,12 @@ rowwise_filter <- function(x, .fun, col.name.tag = "", .fun.name = "Summary of",
 #' @export
 #'
 rowwise_source <- function(x, .fun, col.name.tag = "", .fun.name = "Summary of", ...) {
+
+  # we accept both function objects and lists of functions as input, but we
+  # convert function arguments to lists of length 1..
+  if (is.function(.fun)) {
+    .fun <- list(.fun)
+  }
 
   # validate input
   stopifnot(length(.fun) == length(col.name.tag))
@@ -176,6 +188,12 @@ rowwise_source <- function(x, .fun, col.name.tag = "", .fun.name = "Summary of",
 #'
 rowwise_response <- function(x, .fun, col.name.tag = "", .fun.name = "Summary of", ...) {
 
+  # we accept both function objects and lists of functions as input, but we
+  # convert function arguments to lists of length 1..
+  if (is.function(.fun)) {
+    .fun <- list(.fun)
+  }
+
   # validate input
   stopifnot(length(.fun) == length(col.name.tag))
 
@@ -246,6 +264,12 @@ rowwise_response <- function(x, .fun, col.name.tag = "", .fun.name = "Summary of
 #' @rdname rowwise
 #'
 rowwise_reflector <- function(x, .fun, col.name.tag = "", .fun.name = "Summary of", ...) {
+
+  # we accept both function objects and lists of functions as input, but we
+  # convert function arguments to lists of length 1..
+  if (is.function(.fun)) {
+    .fun <- list(.fun)
+  }
 
   # validate input
   stopifnot(length(.fun) == length(col.name.tag))
