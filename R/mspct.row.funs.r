@@ -14,7 +14,9 @@
 #'
 #' @note Omission of NAs is done separately at each wavelength. Interpolation is
 #'   not applied, so all spectra in \code{x} must share the same set of
-#'   wavelengths.
+#'   wavelengths. When defining new public functions using these utility
+#'   functions make sure to return data that is valid for the class of spectral
+#'   returned!!
 #'
 #' @seealso \code{\link[base]{mean}}
 #'
@@ -322,6 +324,59 @@ rowwise_reflector <- function(x, .fun, col.name.tag = "", .fun.name = "Summary o
     zz <- setGenericSpct(zz,
                          multiple.wl = 1L)
   }
+  setWhatMeasured(zz, paste(.fun.name, length(x), class(x[[1]])[1], "objects."))
+
+  zz
+}
+
+#' @rdname rowwise
+#'
+rowwise_calibration <- function(x, .fun, col.name.tag = "", .fun.name = "Summary of", ...) {
+
+  # we accept both function objects and lists of functions as input, but we
+  # convert function arguments to lists of length 1..
+  if (is.function(.fun)) {
+    .fun <- list(.fun)
+  }
+
+  # validate input
+  stopifnot(length(.fun) == length(col.name.tag))
+
+  if (!(length(unique(msaply(x, length))) == 1L &&
+        length(unique(msaply(x, max))) == 1L &&
+        length(unique(msaply(x, min))) == 1L)) {
+    stop("Spectra differ in 'w.length' vector.")
+  }
+
+  if (getMultipleWl(x[[1]]) > 1L) {
+    stop("Multiple spectra in long form not supported.")
+  }
+
+  # infer column name to use as input
+  col.name <- "irrad.mult"
+
+  # allocate memory
+  num.spct <- length(x)
+  w.length <- x[[1]][["w.length"]]
+  M <- matrix(numeric(length(w.length) * num.spct),
+              ncol = num.spct)
+
+  # collect spectra into a matrix
+  for (i in seq_len(num.spct)) {
+    M[ , i] <- x[[i]][[col.name]]
+  }
+
+  # apply the functions and collect results
+  z <- list(w.length)
+  for (f in .fun) {
+    z <- c(z, list(apply(M, MARGIN = 1, FUN = f, ...)))
+  }
+  col.name.out <- paste(col.name, col.name.tag, sep = "")
+  names(z) <- c("w.length", col.name.out)
+  zz <- tibble::as.tibble(z)
+
+  # set class and attributes of spectrum to be returned
+  zz <- setCalibrationSpct(zz, multiple.wl = 1L)
   setWhatMeasured(zz, paste(.fun.name, length(x), class(x[[1]])[1], "objects."))
 
   zz

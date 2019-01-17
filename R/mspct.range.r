@@ -66,3 +66,11 @@ s_range.response_mspct <- function(x, na.rm = FALSE, ...) {
 s_range.reflector_mspct <- function(x, na.rm = FALSE, ...) {
   rowwise_reflector(x, .fun = c(base::min, base::max), na.rm = na.rm, col.name.tag = c(".min", ".max"), .fun.name = "s_range of")
 }
+
+#' @describeIn s_range
+#'
+#' @export
+#'
+s_range.calibration_mspct <- function(x, na.rm = FALSE, ...) {
+  rowwise_calibration(x, .fun = c(base::min, base::max), na.rm = na.rm, col.name.tag = c(".min", ".max"), .fun.name = "s_range of")
+}

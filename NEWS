@@ -2,8 +2,8 @@ photobiology 0.9.26 (2019-01-xx)
 ================================
 
 * Revise cps2irrad() to ensure that all attributes are copied.
-* Implement s_mean(), s_median(), s_range(), s_sd(), s_var(), s_sum() and
-s_mean_se() methods for collections of spectra that operate across spectra
+* Implement s_mean(), s_median(), s_range(), s_sd(), s_var(), s_sum(), s_prod()
+and s_mean_se() methods for collections of spectra that operate across spectra
 returning computed values at each wavelength---i.e. a single computed spectral
 object.
 

@@ -69,3 +69,11 @@ s_mean.response_mspct <- function(x, trim = 0, na.rm = FALSE, ...) {
 s_mean.reflector_mspct <- function(x, trim = 0, na.rm = FALSE, ...) {
   rowwise_reflector(x, .fun = base::mean, trim = trim, na.rm = na.rm, .fun.name = "Mean of")
 }
+
+#' @describeIn s_mean
+#'
+#' @export
+#'
+s_mean.calibration_mspct <- function(x, trim = 0, na.rm = FALSE, ...) {
+  rowwise_calibration(x, .fun = base::mean, trim = trim, na.rm = na.rm, .fun.name = "Mean of")
+}

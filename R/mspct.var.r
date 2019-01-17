@@ -69,3 +69,11 @@ s_var.response_mspct <- function(x, na.rm = FALSE, ...) {
 s_var.reflector_mspct <- function(x, na.rm = FALSE, ...) {
   rowwise_reflector(x = x, .fun = stats::var, na.rm = na.rm, col.name.tag = ".var", .fun.name = "Variance for")
 }
+
+#' @describeIn s_var
+#'
+#' @export
+#'
+s_var.calibration_mspct <- function(x, na.rm = FALSE, ...) {
+  rowwise_calibration(x = x, .fun = stats::var, na.rm = na.rm, col.name.tag = ".var", .fun.name = "Variance for")
+}

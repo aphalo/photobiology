@@ -84,6 +84,18 @@ s_mean_se.reflector_mspct <- function(x, na.rm = FALSE, mult = 1, ...) {
                     .fun.name = "Mean and SEM of")
 }
 
+#' @describeIn s_mean_se
+#'
+#' @export
+#'
+s_mean_se.calibration_mspct <- function(x, na.rm = FALSE, mult = 1, ...) {
+  rowwise_calibration(x,
+                      .fun = list(base::mean, se),
+                      col.name.tag = c("", ".se"),
+                      na.rm = na.rm, mult = mult,
+                      .fun.name = "Mean and SEM of")
+}
+
 # Helper function, not exported
 #
 #' Standard error of the mean

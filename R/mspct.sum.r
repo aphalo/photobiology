@@ -15,13 +15,13 @@
 #'   members of the collection, such as "filter_spct", containing the sum
 #'   of the spectra.
 #'
-#' @note Trimming of extreme values and omission of NAs is done separately at
-#' each wavelength. Interpolation is not applied, so all spectra in \code{x}
-#' must share the same set of wavelengths.
+#' @note Omission of NAs is done separately at each wavelength. Interpolation is
+#'   not applied, so all spectra in \code{x} must share the same set of
+#'   wavelengths.
 #'
 #' A sum of transmitances or reflectances is no longer a well defined
-#' physical quanttiy, and all sum operations return an object of class
-#' return generic_spct objects.
+#' physical quanttiy, and these sum operations return an object of class
+#' generic_spct.
 #'
 #' @seealso See \code{\link[base]{sum}} for the \code{sum()} method used for
 #'   the computations.
@@ -71,4 +71,13 @@ s_sum.response_mspct <- function(x, na.rm = FALSE, ...) {
 s_sum.reflector_mspct <- function(x, na.rm = FALSE, ...) {
   warning("A sum of Rfr values does not yield Rfr values!!")
   rowwise_reflector(x, .fun = base::sum, na.rm = na.rm, col.name.tag = ".sum", .fun.name = "Sum of")
+}
+
+#' @describeIn s_sum
+#'
+#' @export
+#'
+s_sum.calibration_mspct <- function(x, na.rm = FALSE, ...) {
+  warning("A sum of irrad.mult values does not yield irrad.mult values!!")
+  rowwise_calibration(x, .fun = base::sum, na.rm = na.rm, col.name.tag = ".sum", .fun.name = "Sum of")
 }
