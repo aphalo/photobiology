@@ -618,6 +618,55 @@ str(msaply(two.mspct, range))
 
 For the most common cases for which one would use the _apply_ functions described in the previous section methods and functions for operations on collections of spectra are defined in the package. For example the following statement is equivalent to the second example in the previous section. These are described in a later section and listed in Table 9.
 
+### Summary spectra
+
+Starting from a collection of spectra we may want to obtain a single spectrum containing a summary of them. The current implementation of the methods described in this section expects that all spectra in a collection are of the same class, and data is available for each of them at exactly the same set of wavelengths.
+
+| functions | class of argument | class of returned spectrum | variables in spectrum |
+|:--------------------|:----------|:---------------|:------------------------|
+| `sum`| `source_mspct` | `source_spct` | same as input |
+| `sum` | `response_mspct` | `response_spct` | same as input |
+| `sum` | `filter_mspct` | `generic_spct` | input tagged `.sum` |
+| `sum` | `reflector_mspct` | `generic_spct` | input tagged `.sum` |
+| `sum` | `calibration_mspct` | `generic_spct` | input tagged `.sum` |
+| `prod`| `source_mspct` | `source_spct` | input tagged `.prod`  |
+| `prod` | `response_mspct` | `response_spct` | input tagged `.prod`  |
+| `prod` | `filter_mspct` | `filter_spct` | same as input |
+| `prod` | `reflector_mspct` | `reflector_spct` | same as input |
+| `prod` | `calibration_mspct` | `generic_spct` | input tagged `.prod` |
+| `s_mean`, `s_median` or `s_mean_se`| `source_mspct` | `source_spct` | same as input |
+| `s_mean`, `s_median` or `s_mean_se` | `response_mspct` | `response_spct` | same as input |
+| `s_mean`, `s_median` or `s_mean_se` | `filter_mspct` | `filter_spct` | same as input |
+| `s_mean`, `s_median` or `s_mean_se` | `reflector_mspct` | `reflector_spct` | same as input |
+| `s_mean`, `s_median` or `s_mean_se` | `calibration_mspct` | `calibration_spct` | same as input |
+| `s_var`, `s_se` or `s_sd` | `source_mspct` | `generic_spct` | input tagged `.var`, `.se` or `.sd` |
+| `s_var`, `s_se` or `s_sd` | `response_mspct` | `generic_spct` | input tagged `.var`, `.se` or `.sd` |
+| `s_var`, `s_se` or `s_sd` | `filter_mspct` | `generic_spct` | input tagged `.var`, `.se` or `.sd` |
+| `s_var`, `s_se` or `s_sd` | `reflector_mspct` | `reflector_spct` | input tagged `.var`, `.se` or `.sd` |
+| `s_var`, `s_se` or `s_sd` | `calibration_mspct` | `generic_spct` | input tagged `.var`, `.se` or `.sd` |
+
+The calculations are done wavelength by wavelength yielding a spectrum at the same wavelengths than those in the input. Removal of `NA` values is done wavelength by wavelength. As shown in the table above, depending on the operation the returned quantiy may be equivalent or not to the quatitiy in the input. When the quantity changes, even if units of expression remain the same, the name of the variable and class of the returned spectrum are different to those in the input.
+
+Computing the mean returns values of the same quantity as in the input, and we obtain a `source_spct` object.
+
+```{r}
+s_mean(two.mspct)
+```
+
+If we compute the standard error, the quantity returned is not the same. The object returned is in this case a `generic_spct` and the variable name has been tagged with `.se`.
+
+```{r}
+s_se(two.mspct)
+```
+
+We can also compute both the mean and standard error simultaneously.
+
+```{r}
+s_mean_se(two.mspct)
+```
+
+The other functions in these family function in a similar way to those described here.
+
 ### Convolution
 
 By convolution we normally mean the multiplication value by value at matching wavelengths of two spectra. The function described in this section facilitates this and similar operations among collections of spectra. An example use case could be the convolution of spectral irradiance by spectral transmittance for all combinations of light sources and filters in a collection of source spectra and a collection of filter spectra.
@@ -1213,6 +1262,17 @@ clean(sun.spct - 0.01, range = c(280.5, 282))
 
 ```{r, manip-12}
 clean(polyester.spct - 0.053)
+```
+### Smoothing of spectra
+
+We can use smoothing both to remove randon variation among nearby pixels caused by measuring noise, or to filter out the real fine structure of the spectrum to better assess the larger features. The methods described here work by averaging the spectral data from neighbouring wavelengths. The simplest methods are running medians and running means (or "boxcar smoothing" in the terminology used in some software). There are several methods for smoothing available in R using different algorithms. Some of these methods also automatically set the degree of smoothing based on the data being smoothed. Package 'photobiology' defines function `smooth_spct`, which at moment supports three different methods. Two are wrappers on R's own methods and a third one, `"custom"`, is designed to use stronger smoothing of values close to zero, where noise in spectral irardiance measurements is proportionally more.
+
+```{r}
+smooth_spct(sun.spct)
+```
+
+```{r}
+smooth_spct(polyester.spct, method = "supsmu", strength = 2)
 ```
 
 ### Wavelength interpolation

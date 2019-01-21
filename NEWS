@@ -6,6 +6,8 @@ photobiology 0.9.26 (2019-01-xx)
 and s_mean_se() methods for collections of spectra that operate across spectra
 returning computed values at each wavelength---i.e. a single computed spectral
 object.
+* Add parameter na.rm to smooth_spct() methods, with unchanged default
+behaviour.
 
 photobiology 0.9.25 (2018-12-11)
 ================================

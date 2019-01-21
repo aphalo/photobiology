@@ -24,7 +24,7 @@
 #'
 #' @export
 #'
-s_sd <- function(x, na.rm, ...) UseMethod("s_var")
+s_sd <- function(x, na.rm, ...) UseMethod("s_sd")
 
 #' @describeIn s_sd
 #'

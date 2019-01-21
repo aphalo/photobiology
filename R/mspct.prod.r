@@ -44,7 +44,7 @@ s_prod.default <- function(x, na.rm = FALSE, ...) {
 #' @export
 #'
 s_prod.filter_mspct <- function(x, na.rm = FALSE, ...) {
-  rowwise_filter(x, .fun = base::prod, na.rm = na.rm, .fun.name = "Sum of")
+  rowwise_filter(x, .fun = base::prod, na.rm = na.rm, .fun.name = "Product of")
 }
 
 #' @describeIn s_prod
@@ -52,8 +52,8 @@ s_prod.filter_mspct <- function(x, na.rm = FALSE, ...) {
 #' @export
 #'
 s_prod.source_mspct <- function(x, na.rm = FALSE, ...) {
-  warning("A prod of irradiance values does not yield response irradiance!!")
-  rowwise_source(x, .fun = base::prod, na.rm = na.rm, col.name.tag = ".prod", .fun.name = "Sum of")
+  warning("A product of irradiance values does not yield response irradiance!!")
+  rowwise_source(x, .fun = base::prod, na.rm = na.rm, col.name.tag = ".prod", .fun.name = "Product of")
 }
 
 #' @describeIn s_prod
@@ -61,8 +61,8 @@ s_prod.source_mspct <- function(x, na.rm = FALSE, ...) {
 #' @export
 #'
 s_prod.response_mspct <- function(x, na.rm = FALSE, ...) {
-  warning("A prod of response values does not yield response values!!")
-  rowwise_response(x, .fun = base::prod, na.rm = na.rm, col.name.tag = ".prod", .fun.name = "Sum of")
+  warning("A product of response values does not yield response values!!")
+  rowwise_response(x, .fun = base::prod, na.rm = na.rm, col.name.tag = ".prod", .fun.name = "Product of")
 }
 
 #' @describeIn s_prod
@@ -70,7 +70,7 @@ s_prod.response_mspct <- function(x, na.rm = FALSE, ...) {
 #' @export
 #'
 s_prod.reflector_mspct <- function(x, na.rm = FALSE, ...) {
-  rowwise_reflector(x, .fun = base::prod, na.rm = na.rm, .fun.name = "Sum of")
+  rowwise_reflector(x, .fun = base::prod, na.rm = na.rm, .fun.name = "Product of")
 }
 
 #' @describeIn s_prod
@@ -78,6 +78,6 @@ s_prod.reflector_mspct <- function(x, na.rm = FALSE, ...) {
 #' @export
 #'
 s_prod.calibration_mspct <- function(x, na.rm = FALSE, ...) {
-  warning("A prod of irrad.mult values does not yield irrad.mult values!!")
-  rowwise_calibration(x, .fun = base::prod, na.rm = na.rm, col.name.tag = ".prod", .fun.name = "Sum of")
+  warning("A product of irrad.mult values does not yield irrad.mult values!!")
+  rowwise_calibration(x, .fun = base::prod, na.rm = na.rm, col.name.tag = ".prod", .fun.name = "Product of")
 }

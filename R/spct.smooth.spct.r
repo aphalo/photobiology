@@ -8,6 +8,8 @@
 #' @param x an R object.
 #' @param method a character string "custom", "lowess", "supsmu".
 #' @param strength numeric value to adjust the degree of smoothing.
+#' @param na.rm	logical A value indicating whether NA values should be stripped
+#'   before the computation proceeds.
 #' @param ... other parameters passed to the underlying smoothing functions.
 #'
 #' @return A copy of \code{x} with spectral data values replaced by smoothed
@@ -39,18 +41,33 @@ smooth_spct.default <- function(x, method, strength, ...) {
 #'
 #' @export
 #'
-smooth_spct.source_spct <- function(x, method = "custom", strength = 1, ...) {
+smooth_spct.source_spct <- function(x, method = "custom", strength = 1, na.rm = FALSE, ...) {
   num.spectra <- getMultipleWl(x)
   if (num.spectra != 1) {
     warning("Skipping smoothing as object contains ",
-            num.spectra, " spectra")
+            num.spectra, " spectra in long form.")
     return(x)
   }
-  if (("s.e.irrad" %in% names(x) && anyNA(x[["s.e.irrad"]])) ||
-      ("s.q.irrad" %in% names(x) && anyNA(x[["s.q.irrad"]]))) {
-    warning("NAs encoentered when smoothing, returning input unchanged")
-    return(x)
+  e.and.q.input <- all(c("s.e.irrad", "s.q.irrad") %in% names(x))
+
+  if ("s.e.irrad" %in% names(x) && anyNA(x[["s.e.irrad"]])) {
+    if (na.rm) {
+      message("Removing NA values at ", length(is.na(x[["s.e.irrad"]])), " wavelengths.")
+      x <- na.omit(q2e(x, action = "replace"))
+    } else {
+      warning("NAs encountered when smoothing, returning input unchanged.")
+      return(x)
+    }
+  } else if ("s.q.irrad" %in% names(x) && anyNA(x[["s.q.irrad"]])) {
+    if (na.rm) {
+      message("Removing NA values at ", length(is.na(x[["s.q.irrad"]])), " wavelengths.")
+      x <- na.omit(e2q(x, action = "replace"))
+    } else {
+      warning("NAs encountered when smoothing, returning input unchanged.")
+      return(x)
+    }
   }
+
   # we disable range checks for spectra until end of function
   old.options <- options(photobiology.strict.range = NA_integer_)
   if (method == "lowess") {
@@ -63,7 +80,7 @@ smooth_spct.source_spct <- function(x, method = "custom", strength = 1, ...) {
       names(out.spct) <- c("w.length", "s.q.irrad")
     }
     setSourceSpct(out.spct, time.unit = getTimeUnit(x), bswf.used = getBSWFUsed(x))
-    if (all(c("s.e.irrad", "s.q.irrad") %in% names(x))) {
+    if (e.and.q.input) {
       e2q(out.spct, action = "add", byref = TRUE)
     }
     if (!is.null(comment(x))) {
@@ -81,7 +98,7 @@ smooth_spct.source_spct <- function(x, method = "custom", strength = 1, ...) {
       names(out.spct) <- c("w.length", "s.q.irrad")
     }
     setSourceSpct(out.spct, time.unit = attr(x, "time.unit", exact = TRUE))
-    if (all(c("s.e.irrad", "s.q.irrad") %in% names(x))) {
+    if (e.and.q.input) {
       e2q(out.spct, action = "add", byref = TRUE)
     }
     if (!is.null(comment(x))) {
@@ -129,7 +146,7 @@ smooth_spct.source_spct <- function(x, method = "custom", strength = 1, ...) {
     }
     out.spct <- out.spct[ , c("w.length", "s.e.irrad")]
     setSourceSpct(out.spct, time.unit = attr(x, "time.unit", exact = TRUE))
-    if (all(c("s.e.irrad", "s.q.irrad") %in% names(x))) {
+    if (e.and.q.input) {
       e2q(out.spct, action = "add", byref = TRUE)
     }
     if (!is.null(comment(x))) {
@@ -148,19 +165,34 @@ smooth_spct.source_spct <- function(x, method = "custom", strength = 1, ...) {
 #'
 #' @export
 #'
-smooth_spct.filter_spct <- function(x, method = "custom", strength = 1, ...) {
+smooth_spct.filter_spct <- function(x, method = "custom", strength = 1, na.rm = FALSE, ...) {
   num.spectra <- getMultipleWl(x)
   if (num.spectra != 1) {
     warning("Skipping smoothing as object contains ",
             num.spectra, " spectra")
     return(x)
   }
-  # we disable range checks for spectra until end of function
-  if (("Tfr" %in% names(x) && anyNA(x[["Tfr"]])) ||
-      ("A" %in% names(x) && anyNA(x[["A"]]))) {
-    warning("NAs encoentered when smoothing, returning input unchanged")
-    return(x)
+  T.and.A.input <- all(c("Tfr", "A") %in% names(x))
+
+  if ("Tfr" %in% names(x) && anyNA(x[["Tfr"]])) {
+    if (na.rm) {
+      message("Removing NA values at ", length(is.na(x[["Tfr"]])), " wavelengths.")
+      x <- na.omit(A2T(x, action = "replace"))
+    } else {
+      warning("NAs encountered when smoothing, returning input unchanged.")
+      return(x)
+    }
+  } else if ("A" %in% names(x) && anyNA(x[["A"]])) {
+    if (na.rm) {
+      message("Removing NA values at ", length(is.na(x[["A"]])), " wavelengths.")
+      x <- na.omit(T2A(x, action = "replace"))
+    } else {
+      warning("NAs encountered when smoothing, returning input unchanged.")
+      return(x)
+    }
   }
+
+  # we disable range checks for spectra until end of function
   old.options <- options(photobiology.strict.range = NA_integer_)
   if (method == "lowess") {
     span = 1/50 * strength
@@ -172,7 +204,7 @@ smooth_spct.filter_spct <- function(x, method = "custom", strength = 1, ...) {
       names(out.spct) <- c("w.length", "A")
     }
     setFilterSpct(out.spct, Tfr.type = attr(x, "Tfr.type", exact = TRUE))
-    if (all(c("Tfr", "A") %in% names(x))) {
+    if (T.and.A.input) {
       T2A(out.spct, action = "add", byref = TRUE)
     }
     if (!is.null(comment(x))) {
@@ -190,7 +222,7 @@ smooth_spct.filter_spct <- function(x, method = "custom", strength = 1, ...) {
       names(out.spct) <- c("w.length", "A")
     }
     setFilterSpct(out.spct, Tfr.type = attr(x, "Tfr.type", exact = TRUE))
-    if (all(c("Tfr", "A") %in% names(x))) {
+    if (T.and.A.input) {
       T2A(out.spct, action = "add", byref = TRUE)
     }
     if (!is.null(comment(x))) {
@@ -231,7 +263,7 @@ smooth_spct.filter_spct <- function(x, method = "custom", strength = 1, ...) {
                               ifelse(w.length < smoothing_hi_lim, Tfr.sm, Tfr))
     out.spct[["Tfr.good"]] <- out.spct[["runmadmed"]] / out.spct[["runmed19"]] * max(out.spct[["runmed19"]]) < 1.0
     if (any(is.na(out.spct[["Tfr"]]))) {
-      warning(sum(is.na(out.spct[["Tfr"]])), " NAs in spectral irradiance")
+      warning(sum(is.na(out.spct[["Tfr"]])), " NAs in returned spectral irradiance")
     }
     num_bad <- sum(!out.spct[["Tfr.good"]], na.rm=TRUE)
     if (num_bad > length(out.spct) / 20) {
@@ -239,7 +271,7 @@ smooth_spct.filter_spct <- function(x, method = "custom", strength = 1, ...) {
     }
     out.spct <- out.spct[ , c("w.length", "Tfr")]
     setFilterSpct(out.spct, Tfr.type = attr(x, "Tfr.type", exact = TRUE))
-    if (all(c("Tfr", "A") %in% names(x))) {
+    if (T.and.A.input) {
       T2A(out.spct, action = "add", byref = TRUE)
     }
     if (!is.null(comment(x))) {
@@ -258,7 +290,7 @@ smooth_spct.filter_spct <- function(x, method = "custom", strength = 1, ...) {
 #'
 #' @export
 #'
-smooth_spct.reflector_spct <- function(x, method = "custom", strength = 1, ...) {
+smooth_spct.reflector_spct <- function(x, method = "custom", strength = 1, na.rm = FALSE, ...) {
   num.spectra <- getMultipleWl(x)
   if (num.spectra != 1) {
     warning("Skipping smoothing as object contains ",
@@ -266,8 +298,13 @@ smooth_spct.reflector_spct <- function(x, method = "custom", strength = 1, ...) 
     return(x)
   }
   if ("Rfr" %in% names(x) && anyNA(x[["Rfr"]])) {
-    warning("NAs encoentered when smoothing, returning input unchanged")
-    return(x)
+    if (na.rm) {
+      message("Removing NA values at ", length(is.na(x[["Rfr"]])), " wavelengths.")
+      x <- na.omit(x)
+    } else {
+      warning("NAs encountered when smoothing, returning input unchanged.")
+      return(x)
+    }
   }
   # we disable range checks for spectra until end of function
   old.options <- options(photobiology.strict.range = NA_integer_)
@@ -335,9 +372,6 @@ smooth_spct.reflector_spct <- function(x, method = "custom", strength = 1, ...) 
     }
     out.spct <- out.spct[ , c("w.length", "Rfr")]
     setReflectorSpct(out.spct)
-    if (all(c("Rfr", "A") %in% names(x))) {
-      T2A(out.spct, action = "add", byref = TRUE)
-    }
     if (!is.null(comment(x))) {
       comment(out.spct) <- paste("Smoothed using 'custom', smooth_limit =",
                                  signif(smooth_limit, 3), "\n\n", comment(x))
@@ -353,18 +387,33 @@ smooth_spct.reflector_spct <- function(x, method = "custom", strength = 1, ...) 
 #'
 #' @export
 #'
-smooth_spct.response_spct <- function(x, method = "custom", strength = 1, ...) {
+smooth_spct.response_spct <- function(x, method = "custom", strength = 1, na.rm = FALSE, ...) {
   num.spectra <- getMultipleWl(x)
   if (num.spectra != 1) {
     warning("Skipping smoothing as object contains ",
             num.spectra, " spectra")
     return(x)
   }
-  if (("s.e.response" %in% names(x) && anyNA(x[["s.e.response"]])) ||
-      ("s.q.response" %in% names(x) && anyNA(x[["s.q.response"]]))) {
-    warning("NAs encoentered when smoothing, returning input unchanged")
-    return(x)
+  e.and.q.input <- all(c("s.e.irrad", "s.q.irrad") %in% names(x))
+
+  if ("s.e.response" %in% names(x) && anyNA(x[["s.e.response"]])) {
+    if (na.rm) {
+      message("Removing NA values at ", length(is.na(x[["s.e.response"]])), " wavelengths.")
+      x <- na.omit(q2e(x, action = "replace"))
+    } else {
+      warning("NAs encountered when smoothing, returning input unchanged.")
+      return(x)
+    }
+  } else if ("s.q.response" %in% names(x) && anyNA(x[["s.q.response"]])) {
+    if (na.rm) {
+      message("Removing NA values at ", length(is.na(x[["s.q.response"]])), " wavelengths.")
+      x <- na.omit(e2q(x, action = "replace"))
+    } else {
+      warning("NAs encountered when smoothing, returning input unchanged.")
+      return(x)
+    }
   }
+
   # we disable range checks for spectra until end of function
   old.options <- options(photobiology.strict.range = NA_integer_)
   if (method == "lowess") {
@@ -377,7 +426,7 @@ smooth_spct.response_spct <- function(x, method = "custom", strength = 1, ...) {
       names(out.spct) <- c("w.length", "s.q.response")
     }
     setResponseSpct(out.spct, time.unit = attr(x, "time.unit", exact = TRUE))
-    if (all(c("s.e.response", "s.q.response") %in% names(x))) {
+    if (e.and.q.input) {
       e2q(out.spct, action = "add", byref = TRUE)
     }
     if (!is.null(comment(x))) {
@@ -395,7 +444,7 @@ smooth_spct.response_spct <- function(x, method = "custom", strength = 1, ...) {
       names(out.spct) <- c("w.length", "s.q.response")
     }
     setResponseSpct(out.spct, time.unit = attr(x, "time.unit", exact = TRUE))
-    if (all(c("s.e.response", "s.q.response") %in% names(x))) {
+    if (e.and.q.input) {
       e2q(out.spct, action = "add", byref = TRUE)
     }
     if (!is.null(comment(x))) {
@@ -444,7 +493,7 @@ smooth_spct.response_spct <- function(x, method = "custom", strength = 1, ...) {
     }
     out.spct <- out.spct[ , c("w.length", "s.e.response")]
     setResponseSpct(out.spct, time.unit = attr(x, "time.unit", exact = TRUE))
-    if (all(c("s.e.response", "s.q.response") %in% names(x))) {
+    if (e.and.q.input) {
       e2q(out.spct, action = "add", byref = TRUE)
     }
     if (!is.null(comment(x))) {
