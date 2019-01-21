@@ -36,14 +36,6 @@ s_se.default <- function(x, na.rm = FALSE, ...) {
 #'
 #' @export
 #'
-s_se.filter_mspct <- function(x, na.rm = FALSE, ...) {
-  rowwise_filter(x = x, .fun = se, na.rm = na.rm, col.name.tag = ".se", .fun.name = "Standard error for")
-}
-
-#' @describeIn s_se
-#'
-#' @export
-#'
 s_se.source_mspct <- function(x, na.rm = FALSE, ...) {
   rowwise_source(x = x, .fun = se, na.rm = na.rm, col.name.tag = ".se", .fun.name = "Standard error for")
 }
@@ -60,6 +52,22 @@ s_se.response_mspct <- function(x, na.rm = FALSE, ...) {
 #'
 #' @export
 #'
+s_se.filter_mspct <- function(x, na.rm = FALSE, ...) {
+  rowwise_filter(x = x, .fun = se, na.rm = na.rm, col.name.tag = ".se", .fun.name = "Standard error for")
+}
+
+#' @describeIn s_se
+#'
+#' @export
+#'
 s_se.reflector_mspct <- function(x, na.rm = FALSE, ...) {
+  rowwise_reflector(x = x, .fun = se, na.rm = na.rm, col.name.tag = ".se", .fun.name = "Standard error for")
+}
+
+#' @describeIn s_se
+#'
+#' @export
+#'
+s_se.calibration_mspct <- function(x, na.rm = FALSE, ...) {
   rowwise_reflector(x = x, .fun = se, na.rm = na.rm, col.name.tag = ".se", .fun.name = "Standard error for")
 }

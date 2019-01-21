@@ -61,11 +61,15 @@ reference:
     - head_tail
   - title: Summary spectra from collections of spectra
     contents:
+    - s_sum
+    - s_prod
     - s_mean
     - s_median
     - s_range
     - s_var
     - s_sd
+    - s_se
+    - s_mean_se
   - title: Wavebands
     contents:
     - waveband

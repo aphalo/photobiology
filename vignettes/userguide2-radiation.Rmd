@@ -624,26 +624,36 @@ Starting from a collection of spectra we may want to obtain a single spectrum co
 
 | functions | class of argument | class of returned spectrum | variables in spectrum |
 |:--------------------|:----------|:---------------|:------------------------|
-| `sum`| `source_mspct` | `source_spct` | same as input |
-| `sum` | `response_mspct` | `response_spct` | same as input |
-| `sum` | `filter_mspct` | `generic_spct` | input tagged `.sum` |
-| `sum` | `reflector_mspct` | `generic_spct` | input tagged `.sum` |
-| `sum` | `calibration_mspct` | `generic_spct` | input tagged `.sum` |
-| `prod`| `source_mspct` | `source_spct` | input tagged `.prod`  |
-| `prod` | `response_mspct` | `response_spct` | input tagged `.prod`  |
-| `prod` | `filter_mspct` | `filter_spct` | same as input |
-| `prod` | `reflector_mspct` | `reflector_spct` | same as input |
-| `prod` | `calibration_mspct` | `generic_spct` | input tagged `.prod` |
-| `s_mean`, `s_median` or `s_mean_se`| `source_mspct` | `source_spct` | same as input |
-| `s_mean`, `s_median` or `s_mean_se` | `response_mspct` | `response_spct` | same as input |
-| `s_mean`, `s_median` or `s_mean_se` | `filter_mspct` | `filter_spct` | same as input |
-| `s_mean`, `s_median` or `s_mean_se` | `reflector_mspct` | `reflector_spct` | same as input |
-| `s_mean`, `s_median` or `s_mean_se` | `calibration_mspct` | `calibration_spct` | same as input |
+| `s_sum`| `source_mspct` | `source_spct` | same as input |
+| `s_sum` | `response_mspct` | `response_spct` | same as input |
+| `s_sum` | `filter_mspct` | `generic_spct` | input tagged `.sum` |
+| `s_sum` | `reflector_mspct` | `generic_spct` | input tagged `.sum` |
+| `s_sum` | `calibration_mspct` | `generic_spct` | input tagged `.sum` |
+| `s_prod`| `source_mspct` | `source_spct` | input tagged `.prod`  |
+| `s_prod` | `response_mspct` | `response_spct` | input tagged `.prod`  |
+| `s_prod` | `filter_mspct` | `filter_spct` | same as input |
+| `s_prod` | `reflector_mspct` | `reflector_spct` | same as input |
+| `s_prod` | `calibration_mspct` | `generic_spct` | input tagged `.prod` |
+| `s_mean` or `s_median` | `source_mspct` | `source_spct` | same as input |
+| `s_mean` or `s_median` | `response_mspct` | `response_spct` | same as input |
+| `s_mean` or `s_median` | `filter_mspct` | `filter_spct` | same as input |
+| `s_mean` or `s_median` | `reflector_mspct` | `reflector_spct` | same as input |
+| `s_mean` or `s_median` | `calibration_mspct` | `calibration_spct` | same as input |
 | `s_var`, `s_se` or `s_sd` | `source_mspct` | `generic_spct` | input tagged `.var`, `.se` or `.sd` |
 | `s_var`, `s_se` or `s_sd` | `response_mspct` | `generic_spct` | input tagged `.var`, `.se` or `.sd` |
 | `s_var`, `s_se` or `s_sd` | `filter_mspct` | `generic_spct` | input tagged `.var`, `.se` or `.sd` |
-| `s_var`, `s_se` or `s_sd` | `reflector_mspct` | `reflector_spct` | input tagged `.var`, `.se` or `.sd` |
+| `s_var`, `s_se` or `s_sd` | `reflector_mspct` | `generic_spct` | input tagged `.var`, `.se` or `.sd` |
 | `s_var`, `s_se` or `s_sd` | `calibration_mspct` | `generic_spct` | input tagged `.var`, `.se` or `.sd` |
+| `s_mean_se`| `source_mspct` | `source_spct` | same as input plus col. tagged `.se` |
+| `s_mean_se` | `response_mspct` | `response_spct` | same as input plus col. tagged `.se` |
+| `s_mean_se` | `filter_mspct` | `filter_spct` | same as input plus col. tagged `.se` |
+| `s_mean_se` | `reflector_mspct` | `reflector_spct` | same as input plus col. tagged `.se` |
+| `s_mean_se` | `calibration_mspct` | `calibration_spct` | same as input plus col. tagged `.se` |
+| `s_range` | `source_mspct` | `generic_spct` | input tagged `.min` and `.max` |
+| `s_range` | `response_mspct` | `generic_spct` | input tagged `.min` and `.max` |
+| `s_range` | `filter_mspct` | `generic_spct` | input tagged `.min` and `.max` |
+| `s_range` | `reflector_mspct` | `generic_spct` | input tagged `.min` and `.max` |
+| `s_range` | `calibration_mspct` | `generic_spct` | input tagged `.min` and `.max` | 
 
 The calculations are done wavelength by wavelength yielding a spectrum at the same wavelengths than those in the input. Removal of `NA` values is done wavelength by wavelength. As shown in the table above, depending on the operation the returned quantiy may be equivalent or not to the quatitiy in the input. When the quantity changes, even if units of expression remain the same, the name of the variable and class of the returned spectrum are different to those in the input.
 

@@ -42,14 +42,6 @@ s_mean.default <- function(x, trim = 0, na.rm = FALSE, ...) {
 #'
 #' @export
 #'
-s_mean.filter_mspct <- function(x, trim = 0, na.rm = FALSE, ...) {
-  rowwise_filter(x, .fun = base::mean, trim = trim, na.rm = na.rm, .fun.name = "Mean of")
-}
-
-#' @describeIn s_mean
-#'
-#' @export
-#'
 s_mean.source_mspct <- function(x, trim = 0, na.rm = FALSE, ...) {
   rowwise_source(x, .fun = base::mean, trim = trim, na.rm = na.rm, .fun.name = "Mean of")
 }
@@ -60,6 +52,14 @@ s_mean.source_mspct <- function(x, trim = 0, na.rm = FALSE, ...) {
 #'
 s_mean.response_mspct <- function(x, trim = 0, na.rm = FALSE, ...) {
   rowwise_response(x, .fun = base::mean, trim = trim, na.rm = na.rm, .fun.name = "Mean of")
+}
+
+#' @describeIn s_mean
+#'
+#' @export
+#'
+s_mean.filter_mspct <- function(x, trim = 0, na.rm = FALSE, ...) {
+  rowwise_filter(x, .fun = base::mean, trim = trim, na.rm = na.rm, .fun.name = "Mean of")
 }
 
 #' @describeIn s_mean

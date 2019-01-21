@@ -43,14 +43,6 @@ s_prod.default <- function(x, na.rm = FALSE, ...) {
 #'
 #' @export
 #'
-s_prod.filter_mspct <- function(x, na.rm = FALSE, ...) {
-  rowwise_filter(x, .fun = base::prod, na.rm = na.rm, .fun.name = "Product of")
-}
-
-#' @describeIn s_prod
-#'
-#' @export
-#'
 s_prod.source_mspct <- function(x, na.rm = FALSE, ...) {
   warning("A product of irradiance values does not yield response irradiance!!")
   rowwise_source(x, .fun = base::prod, na.rm = na.rm, col.name.tag = ".prod", .fun.name = "Product of")
@@ -63,6 +55,14 @@ s_prod.source_mspct <- function(x, na.rm = FALSE, ...) {
 s_prod.response_mspct <- function(x, na.rm = FALSE, ...) {
   warning("A product of response values does not yield response values!!")
   rowwise_response(x, .fun = base::prod, na.rm = na.rm, col.name.tag = ".prod", .fun.name = "Product of")
+}
+
+#' @describeIn s_prod
+#'
+#' @export
+#'
+s_prod.filter_mspct <- function(x, na.rm = FALSE, ...) {
+  rowwise_filter(x, .fun = base::prod, na.rm = na.rm, .fun.name = "Product of")
 }
 
 #' @describeIn s_prod

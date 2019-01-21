@@ -38,14 +38,6 @@ s_median.default <- function(x, na.rm = FALSE, ...) {
 #'
 #' @export
 #'
-s_median.filter_mspct <- function(x, na.rm = FALSE, ...) {
-  rowwise_filter(x = x, .fun = stats::median, na.rm = na.rm, .fun.name = "Median of")
-}
-
-#' @describeIn s_median
-#'
-#' @export
-#'
 s_median.source_mspct <- function(x, na.rm = FALSE, ...) {
   rowwise_source(x = x, .fun = stats::median, na.rm = na.rm, .fun.name = "Median of")
 }
@@ -62,6 +54,22 @@ s_median.response_mspct <- function(x, na.rm = FALSE, ...) {
 #'
 #' @export
 #'
+s_median.filter_mspct <- function(x, na.rm = FALSE, ...) {
+  rowwise_filter(x = x, .fun = stats::median, na.rm = na.rm, .fun.name = "Median of")
+}
+
+#' @describeIn s_median
+#'
+#' @export
+#'
 s_median.reflector_mspct <- function(x, na.rm = FALSE, ...) {
+  rowwise_reflector(x = x, .fun = stats::median, na.rm = na.rm, .fun.name = "Median of")
+}
+
+#' @describeIn s_median
+#'
+#' @export
+#'
+s_median.calibration_mspct <- function(x, na.rm = FALSE, ...) {
   rowwise_reflector(x = x, .fun = stats::median, na.rm = na.rm, .fun.name = "Median of")
 }
