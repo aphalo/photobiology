@@ -4,6 +4,12 @@ context("smooth_spct")
 
 test_that("source_spct", {
 
+  x <- sun.spct
+  x$s.e.irrad[10:20] <- NA_real_
+  expect_warning(smooth_spct(x))
+
+  expect_known_output(smooth_spct(x, na.rm = TRUE), "./data/smooth-na-output", print = TRUE)
+
   expect_equal(getTimeUnit(sun.spct), getTimeUnit(smooth_spct(sun.spct)))
   expect_equal(getWhenMeasured(sun.spct), getWhenMeasured(smooth_spct(sun.spct)))
   expect_equal(getWhatMeasured(sun.spct), getWhatMeasured(smooth_spct(sun.spct)))
@@ -34,6 +40,12 @@ test_that("source_spct", {
 })
 
 test_that("filter_spct", {
+
+  x <- yellow_gel.spct
+  x$Tfr[10:20] <- NA_real_
+  expect_warning(smooth_spct(x))
+
+  expect_known_output(smooth_spct(x, na.rm = TRUE), "./data/smooth-flt-na-output", print = TRUE)
 
   expect_equal(getTimeUnit(yellow_gel.spct), getTimeUnit(smooth_spct(yellow_gel.spct)))
   expect_equal(getWhenMeasured(yellow_gel.spct), getWhenMeasured(smooth_spct(yellow_gel.spct)))
@@ -66,6 +78,19 @@ test_that("filter_spct", {
 
 test_that("reflector_spct", {
 
+  x <- green_leaf.spct
+  x$Rfr[10:20] <- NA_real_
+  expect_warning(smooth_spct(x))
+
+  expect_known_output(smooth_spct(x, na.rm = TRUE), "./data/smooth-rflt-na-output", print = TRUE)
+
+  expect_equal(getTimeUnit(green_leaf.spct), getTimeUnit(smooth_spct(green_leaf.spct)))
+  expect_equal(getWhenMeasured(green_leaf.spct), getWhenMeasured(smooth_spct(green_leaf.spct)))
+  expect_equal(getWhatMeasured(green_leaf.spct), getWhatMeasured(smooth_spct(green_leaf.spct)))
+  expect_equal(getWhereMeasured(green_leaf.spct), getWhereMeasured(smooth_spct(green_leaf.spct)))
+
+  expect_known_output(comment(smooth_spct(green_leaf.spct)), "./data/smooth-rflt-comment-output", print = TRUE)
+
   expect_known_output(smooth_spct(green_leaf.spct), "./data/smooth-rflt-default-output", print = TRUE)
   expect_known_output(smooth_spct(green_leaf.spct, method = "custom"), "./data/smooth-rflt-custom-output", print = TRUE)
   expect_known_output(smooth_spct(green_leaf.spct, method = "lowess"), "./data/smooth-rflt-lowess-output", print = TRUE)
@@ -89,6 +114,19 @@ test_that("reflector_spct", {
 })
 
 test_that("response_spct", {
+
+  x <- ccd.spct
+  x$s.q.response[10:20] <- NA_real_
+  expect_warning(smooth_spct(x))
+
+  expect_known_output(smooth_spct(x, na.rm = TRUE), "./data/smooth-rsp-na-output", print = TRUE)
+
+  expect_equal(getTimeUnit(ccd.spct), getTimeUnit(smooth_spct(ccd.spct)))
+  expect_equal(getWhenMeasured(ccd.spct), getWhenMeasured(smooth_spct(ccd.spct)))
+  expect_equal(getWhatMeasured(ccd.spct), getWhatMeasured(smooth_spct(ccd.spct)))
+  expect_equal(getWhereMeasured(ccd.spct), getWhereMeasured(smooth_spct(ccd.spct)))
+
+  expect_known_output(comment(smooth_spct(ccd.spct)), "./data/smooth-rsp-comment-output", print = TRUE)
 
   expect_known_output(smooth_spct(ccd.spct), "./data/smooth-rsp-default-output", print = TRUE)
   expect_known_output(smooth_spct(ccd.spct, method = "custom"), "./data/smooth-rsp-custom-output", print = TRUE)
