@@ -1,0 +1,18 @@
+Object: generic_spct [201 x 2]
+Wavelength range 402 to 800 nm, step 0.01 to 2 nm 
+Label: Standard error for 3 source_spct objects. 
+
+# A tibble: 201 x 2
+   w.length s.e.irrad.se
+      <dbl>        <dbl>
+ 1      402     0.000337
+ 2      404     0.000340
+ 3      406     0.000563
+ 4      408     0.000776
+ 5      410     0.00111 
+ 6      412     0.00140 
+ 7      414     0.00185 
+ 8      416     0.00236 
+ 9      418     0.00305 
+10      420     0.00374 
+# ... with 191 more rows

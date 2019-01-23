@@ -1,0 +1,19 @@
+Object: source_spct [201 x 3]
+Wavelength range 402 to 800 nm, step 0.01 to 2 nm 
+Label: Mean and SEM of 3 source_spct objects. 
+Time unit 1s
+
+# A tibble: 201 x 3
+   w.length s.e.irrad s.e.irrad.se
+      <dbl>     <dbl>        <dbl>
+ 1      402  0.000621     0.000337
+ 2      404  0.00104      0.000340
+ 3      406  0.00119      0.000563
+ 4      408  0.00170      0.000776
+ 5      410  0.00230      0.00111 
+ 6      412  0.00299      0.00140 
+ 7      414  0.00395      0.00185 
+ 8      416  0.00526      0.00236 
+ 9      418  0.00665      0.00305 
+10      420  0.00834      0.00374 
+# ... with 191 more rows
