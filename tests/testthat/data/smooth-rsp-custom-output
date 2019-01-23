@@ -1,0 +1,19 @@
+Object: response_spct [186 x 2]
+Wavelength range 205.79574 to 1100 nm, step 0.01435549 to 11.42326 nm 
+Label: CCD linear image sensor 
+Time unit 1s
+
+# A tibble: 186 x 2
+   w.length s.e.response
+ *    <dbl>        <dbl>
+ 1     206.   0.00000107
+ 2     206.   0.00000109
+ 3     208.   0.00000105
+ 4     208.   0.00000107
+ 5     209.   0.00000104
+ 6     211.   0.00000103
+ 7     220.   0.00000106
+ 8     224.   0.00000110
+ 9     227.   0.00000113
+10     229.   0.00000116
+# ... with 176 more rows

@@ -1,0 +1,19 @@
+Object: reflector_spct [226 x 2]
+Wavelength range 350 to 800 nm, step 2 nm 
+Label: File: reflectance.PRN  
+Measured on 0000-05-30 13:50:00 UTC 
+
+# A tibble: 226 x 2
+   w.length    Rfr
+      <dbl>  <dbl>
+ 1      350 0.0511
+ 2      352 0.0501
+ 3      354 0.0491
+ 4      356 0.0491
+ 5      358 0.0497
+ 6      360 0.0490
+ 7      362 0.0492
+ 8      364 0.0498
+ 9      366 0.0492
+10      368 0.0489
+# ... with 216 more rows

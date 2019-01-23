@@ -1,0 +1,21 @@
+Object: source_spct [522 x 3]
+Wavelength range 280 to 800 nm, step 0.9230769 to 1 nm 
+Label: sunlight, simulated 
+Measured on 2010-06-22 09:51:00 UTC 
+Measured at 60.20911 N, 24.96474 E 
+Time unit 1s
+
+# A tibble: 522 x 3
+   w.length   s.e.irrad s.q.irrad
+      <dbl>       <dbl>     <dbl>
+ 1     280  -0.000103   -2.42e-10
+ 2     281. -0.0000865  -2.03e-10
+ 3     282. -0.0000697  -1.64e-10
+ 4     283. -0.0000529  -1.25e-10
+ 5     284. -0.0000360  -8.55e-11
+ 6     285. -0.0000192  -4.57e-11
+ 7     286. -0.00000237 -5.67e-12
+ 8     286.  0.0000145   3.46e-11
+ 9     287.  0.0000313   7.52e-11
+10     288.  0.0000481   1.16e-10
+# ... with 512 more rows

@@ -1,0 +1,18 @@
+Object: filter_spct [611 x 2]
+Wavelength range 190 to 800 nm, step 1 nm 
+Label: yellow theatrical 'gel', Rosco supergel no. 312, 'canary yellow' 
+
+# A tibble: 611 x 2
+   w.length     Tfr
+      <int>   <dbl>
+ 1      190 0.00350
+ 2      191 0      
+ 3      192 0      
+ 4      193 0      
+ 5      194 0      
+ 6      195 0      
+ 7      196 0      
+ 8      197 0      
+ 9      198 0      
+10      199 0      
+# ... with 601 more rows

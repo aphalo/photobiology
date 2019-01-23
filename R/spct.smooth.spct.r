@@ -84,9 +84,9 @@ smooth_spct.source_spct <- function(x, method = "custom", strength = 1, na.rm = 
       e2q(out.spct, action = "add", byref = TRUE)
     }
     if (!is.null(comment(x))) {
-      comment(out.spct) <- paste("Smoothed using 'lowess', f =", signif(span, 3), "\n\n", comment(x))
+      comment.text <- paste("Smoothed using 'lowess', f =", signif(span, 3), "\n\n", comment(x))
     } else {
-      comment(out.spct) <- paste("Smoothed using 'lowess', f =", signif(span, 3))
+      comment.text <- paste("Smoothed using 'lowess', f =", signif(span, 3))
     }
   } else if (method == "supsmu") {
     span = 1/50 * strength
@@ -102,9 +102,9 @@ smooth_spct.source_spct <- function(x, method = "custom", strength = 1, na.rm = 
       e2q(out.spct, action = "add", byref = TRUE)
     }
     if (!is.null(comment(x))) {
-      comment(out.spct) <- paste("Smoothed using 'supsmu', span =", signif(span, 3), "\n\n", comment(x))
+      comment.text <- paste("Smoothed using 'supsmu', span =", signif(span, 3), "\n\n", comment(x))
     } else {
-      comment(out.spct) <-  paste("Smoothed using 'supsmu', span =", signif(span, 3))
+      comment.text <-  paste("Smoothed using 'supsmu', span =", signif(span, 3))
     }
   } else if (method == "custom") {
     # my own and inefficient method!
@@ -150,14 +150,16 @@ smooth_spct.source_spct <- function(x, method = "custom", strength = 1, na.rm = 
       e2q(out.spct, action = "add", byref = TRUE)
     }
     if (!is.null(comment(x))) {
-      comment(out.spct) <- paste("Smoothed using 'custom', smooth_limit =",
+      comment.text <- paste("Smoothed using 'custom', smooth_limit =",
                                  signif(smooth_limit, 3), "\n\n", comment(x))
     } else {
-      comment(out.spct) <-  paste("Smoothed using 'custom', smooth_limit =",
+      comment.text <-  paste("Smoothed using 'custom', smooth_limit =",
                                   signif(smooth_limit, 3))
     }
   }
   options(old.options)
+  out.spct <- copy_attributes(x, out.spct)
+  comment(out.spct) <- comment.text
   check_spct(out.spct)
 }
 
@@ -208,9 +210,9 @@ smooth_spct.filter_spct <- function(x, method = "custom", strength = 1, na.rm = 
       T2A(out.spct, action = "add", byref = TRUE)
     }
     if (!is.null(comment(x))) {
-      comment(out.spct) <- paste("Smoothed using 'lowess', f =", signif(span, 3), "\n\n", comment(x))
+      comment.text <- paste("Smoothed using 'lowess', f =", signif(span, 3), "\n\n", comment(x))
     } else {
-      comment(out.spct) <- paste("Smoothed using 'lowess', f =", signif(span, 3))
+      comment.text <- paste("Smoothed using 'lowess', f =", signif(span, 3))
     }
   } else if (method == "supsmu") {
     span = 1/50 * strength
@@ -226,9 +228,9 @@ smooth_spct.filter_spct <- function(x, method = "custom", strength = 1, na.rm = 
       T2A(out.spct, action = "add", byref = TRUE)
     }
     if (!is.null(comment(x))) {
-      comment(out.spct) <- paste("Smoothed using 'supsmu', span =", signif(span, 3), "\n\n", comment(x))
+      comment.text <- paste("Smoothed using 'supsmu', span =", signif(span, 3), "\n\n", comment(x))
     } else {
-      comment(out.spct) <-  paste("Smoothed using 'supsmu', span =", signif(span, 3))
+      comment.text <-  paste("Smoothed using 'supsmu', span =", signif(span, 3))
     }
   } else if (method == "custom") {
     # my own and inefficient method!
@@ -275,13 +277,15 @@ smooth_spct.filter_spct <- function(x, method = "custom", strength = 1, na.rm = 
       T2A(out.spct, action = "add", byref = TRUE)
     }
     if (!is.null(comment(x))) {
-      comment(out.spct) <- paste("Smoothed using 'custom', smooth_limit =",
+      comment.text <- paste("Smoothed using 'custom', smooth_limit =",
                                  signif(smooth_limit, 3), "\n\n", comment(x))
     } else {
-      comment(out.spct) <- paste("Smoothed using 'custom', smooth_limit =", signif(smooth_limit, 3))
+      comment.text <- paste("Smoothed using 'custom', smooth_limit =", signif(smooth_limit, 3))
     }
   }
   options(old.options)
+  out.spct <- copy_attributes(x, out.spct)
+  comment(out.spct) <- comment.text
   check_spct(out.spct)
 }
 
@@ -316,9 +320,9 @@ smooth_spct.reflector_spct <- function(x, method = "custom", strength = 1, na.rm
     }
     setReflectorSpct(out.spct)
     if (!is.null(comment(x))) {
-      comment(out.spct) <- paste("Smoothed using 'lowess', f =", signif(span, 3), "\n\n", comment(x))
+      comment.text <- paste("Smoothed using 'lowess', f =", signif(span, 3), "\n\n", comment(x))
     } else {
-      comment(out.spct) <- paste("Smoothed using 'lowess', f =", signif(span, 3))
+      comment.text <- paste("Smoothed using 'lowess', f =", signif(span, 3))
     }
   } else if (method == "supsmu") {
     span = 1/50 * strength
@@ -328,9 +332,9 @@ smooth_spct.reflector_spct <- function(x, method = "custom", strength = 1, na.rm
     }
     setReflectorSpct(out.spct)
     if (!is.null(comment(x))) {
-      comment(out.spct) <- paste("Smoothed using 'supsmu', span =", signif(span, 3), "\n\n", comment(x))
+      comment.text <- paste("Smoothed using 'supsmu', span =", signif(span, 3), "\n\n", comment(x))
     } else {
-      comment(out.spct) <- paste("Smoothed using 'supsmu', span =", signif(span, 3))
+      comment.text <- paste("Smoothed using 'supsmu', span =", signif(span, 3))
     }
   } else if (method == "custom") {
     # my own and inefficient method!
@@ -373,13 +377,15 @@ smooth_spct.reflector_spct <- function(x, method = "custom", strength = 1, na.rm
     out.spct <- out.spct[ , c("w.length", "Rfr")]
     setReflectorSpct(out.spct)
     if (!is.null(comment(x))) {
-      comment(out.spct) <- paste("Smoothed using 'custom', smooth_limit =",
+      comment.text <- paste("Smoothed using 'custom', smooth_limit =",
                                  signif(smooth_limit, 3), "\n\n", comment(x))
     } else {
-      comment(out.spct) <- paste("Smoothed using 'custom', smooth_limit =", signif(smooth_limit, 3))
+      comment.text <- paste("Smoothed using 'custom', smooth_limit =", signif(smooth_limit, 3))
     }
   }
   options(old.options)
+  out.spct <- copy_attributes(x, out.spct)
+  comment(out.spct) <- comment.text
   check_spct(out.spct)
 }
 
@@ -430,9 +436,9 @@ smooth_spct.response_spct <- function(x, method = "custom", strength = 1, na.rm 
       e2q(out.spct, action = "add", byref = TRUE)
     }
     if (!is.null(comment(x))) {
-      comment(out.spct) <- paste("Smoothed using 'lowess', f =", signif(span, 3), "\n\n", comment(x))
+      comment.text <- paste("Smoothed using 'lowess', f =", signif(span, 3), "\n\n", comment(x))
     } else {
-      comment(out.spct) <- paste("Smoothed using 'lowess', f =", signif(span, 3))
+      comment.text <- paste("Smoothed using 'lowess', f =", signif(span, 3))
     }
   } else if (method == "supsmu") {
     span = 1/50 * strength
@@ -448,9 +454,9 @@ smooth_spct.response_spct <- function(x, method = "custom", strength = 1, na.rm 
       e2q(out.spct, action = "add", byref = TRUE)
     }
     if (!is.null(comment(x))) {
-      comment(out.spct) <- paste("Smoothed using 'supsmu', span =", signif(span, 3), "\n\n", comment(x))
+      comment.text <- paste("Smoothed using 'supsmu', span =", signif(span, 3), "\n\n", comment(x))
     } else {
-      comment(out.spct) <- paste("Smoothed using 'supsmu', span =", signif(span, 3))
+      comment.text <- paste("Smoothed using 'supsmu', span =", signif(span, 3))
     }
   } else if (method == "custom") {
     # my own and inefficient method!
@@ -497,12 +503,14 @@ smooth_spct.response_spct <- function(x, method = "custom", strength = 1, na.rm 
       e2q(out.spct, action = "add", byref = TRUE)
     }
     if (!is.null(comment(x))) {
-      comment(out.spct) <- paste("Smoothed using 'custom', smooth_limit =",
+      comment.text <- paste("Smoothed using 'custom', smooth_limit =",
                                  signif(smooth_limit, 3), "\n\n", comment(x))
     } else {
-      comment(out.spct) <- paste("Smoothed using 'custom', smooth_limit =", signif(smooth_limit, 3))
+      comment.text <- paste("Smoothed using 'custom', smooth_limit =", signif(smooth_limit, 3))
     }
   }
   options(old.options)
+  out.spct <- copy_attributes(x, out.spct)
+  comment(out.spct) <- comment.text
   check_spct(out.spct)
 }
