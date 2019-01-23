@@ -8,6 +8,7 @@ returning computed values at each wavelength---i.e. a single computed spectral
 object.
 * Add parameter na.rm to smooth_spct() methods, with unchanged default
 behaviour.
+* Fix bug in smooth_spct(): metadata not copied to returned spectrum.
 
 photobiology 0.9.25 (2018-12-11)
 ================================
