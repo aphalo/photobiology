@@ -3,6 +3,19 @@ library("photobiology")
 context("tag_spct")
 
 test_that("source_spct", {
+
+  expect_equal(getTimeUnit(sun.spct), getTimeUnit(tag(sun.spct, use.hinges = TRUE)))
+  expect_equal(getWhenMeasured(sun.spct), getWhenMeasured(tag(sun.spct, use.hinges = TRUE)))
+  expect_equal(getWhatMeasured(sun.spct), getWhatMeasured(tag(sun.spct, use.hinges = TRUE)))
+  expect_equal(getWhereMeasured(sun.spct), getWhereMeasured(tag(sun.spct, use.hinges = TRUE)))
+  expect_equal(comment(sun.spct), comment(tag(sun.spct, use.hinges = TRUE)))
+
+  expect_equal(getTimeUnit(sun.spct), getTimeUnit(tag(sun.spct, use.hinges = FALSE)))
+  expect_equal(getWhenMeasured(sun.spct), getWhenMeasured(tag(sun.spct, use.hinges = FALSE)))
+  expect_equal(getWhatMeasured(sun.spct), getWhatMeasured(tag(sun.spct, use.hinges = FALSE)))
+  expect_equal(getWhereMeasured(sun.spct), getWhereMeasured(tag(sun.spct, use.hinges = FALSE)))
+  expect_equal(comment(sun.spct), comment(tag(sun.spct, use.hinges = FALSE)))
+
   my.spct <- source_spct(w.length = 400:600, s.e.irrad = 1)
 
   tagged.spct <- tag(my.spct)

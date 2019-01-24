@@ -34,68 +34,34 @@ insert_spct_hinges <- function(spct, hinges=NULL, byref = FALSE) {
   }
   if (is.null(hinges) || length(hinges) == 0) {
     return(spct)
-  }
-  old.w.length <- spct[["w.length"]]
-  if (length(hinges) > 0) {
+  } else {
     name <- substitute(spct)
-    names.spct <- names(spct)
-    names.data <- names.spct != "w.length"
-    idx.data <- which(names.data)
-    class_spct <- class(spct)
-    comment.spct <- comment(spct)
-    if (is.source_spct(spct) || is.response_spct(spct)) {
-      time.unit <- getTimeUnit(spct)
-      bswf.used <- getBSWFUsed(spct)
+    old.w.length <- spct[["w.length"]]
+
+    colnames.spct <- names(sapply(spct, is.numeric))
+    if (length(colnames.spct) != ncol(spct)) {
+      warning("Dropping non-numeric columns: ", setdiff(colnames(spct), colnames.spct))
     }
-    if (is.filter_spct(spct) || is.object_spct(spct)) {
-      Tfr.type <- getTfrType(spct)
-    }
-    if (is.reflector_spct(spct) || is.object_spct(spct)) {
-      Rfr.type <- getRfrType(spct)
-    }
-    # iteration over data columns
+
+    idx.data <- which(colnames.spct != "w.length")
+
     first.iter <- TRUE
     for (data.col in idx.data) {
       temp.data <- spct[[data.col]]
       if (first.iter) {
         new.spct <- insert_hinges(old.w.length, temp.data, hinges)
-        names(new.spct) <- c("w.length", names.spct[data.col])
+        names(new.spct) <- c("w.length", colnames.spct[data.col])
         first.iter <- FALSE
       } else {
-        new.spct[ , names.spct[data.col] ] <-
+        new.spct[ , colnames.spct[data.col] ] <-
           v_insert_hinges(old.w.length, temp.data, hinges)
       }
     }
-    if (class_spct[1] == "source_spct") {
-      setSourceSpct(new.spct, time.unit = time.unit, bswf.used = bswf.used)
-    } else if (class_spct[1] == "filter_spct") {
-      setFilterSpct(new.spct, Tfr.type = Tfr.type)
-    } else if (class_spct[1] == "reflector_spct") {
-      setReflectorSpct(new.spct, Rfr.type = Rfr.type)
-    } else if (class_spct[1] == "object_spct") {
-      setObjectSpct(new.spct, Tfr.type = Tfr.type, Rfr.type = Rfr.type)
-    } else if (class_spct[1] == "response_spct") {
-      setResponseSpct(new.spct, time.unit = time.unit)
-    } else if (class_spct[1] == "chroma_spct") {
-      setChromaSpct(new.spct)
-    } else if (class_spct[1] == "generic_spct") {
-      setGenericSpct(new.spct)
-    } else if (class_spct[1] == "cps_spct") {
-      setCpsSpct(new.spct)
-    } else if (class_spct[1] == "raw_spct") {
-      setRawSpct(new.spct)
-    } else if (class_spct[1] == "calibration_spct") {
-      setCalibrationSpct(new.spct)
-    } else {
-      stop("Failed assertion: report to package maintainer")
-    }
-    comment(new.spct) <- comment.spct
+    new.spct <- copy_attributes(spct, new.spct, copy.class = TRUE)
     if (byref && is.name(name)) {
       name <- as.character(name)
       assign(name, new.spct, parent.frame(), inherits = TRUE)
     }
     return(new.spct)
-  } else {
-    return(spct)
   }
 }

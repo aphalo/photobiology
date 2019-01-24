@@ -4,7 +4,8 @@
 all_spct_attr.ls <-
   list(
     private = c("spct.version",
-                "spct.tags"),
+                "spct.tags",
+                "na.action"),
     generic_spct = c("comment",
                      "instr.desc",
                      "instr.settings",
@@ -40,7 +41,12 @@ all.attributes <- unique(unlist(all_spct_attr.ls, use.names = FALSE))
 #' and waveband objects of classes from package 'photobiology'.
 #'
 #' @param x,y R objects
-#' @param which character
+#' @param which character Names of attributes to copy, if NULL all those
+#'    relevant according to the class of \code{x} is used as defaul,
+#' @param which.not character Names of attributes not to be copied. The
+#'    names passed here are removed from the list for \code{which}, which
+#'    is most useful when we want to modify the default.
+#' @param copy.class logical If TRUE class attributes are also copied.
 #' @param ... not used
 #'
 #' @return A copy of \code{y} with additional attributes set.
@@ -62,12 +68,11 @@ copy_attributes.default <- function(x, y,
 
 #' @describeIn copy_attributes
 #'
-#' @param copy.class logical If TRUE class attributes are also copied.
-#'
 #' @export
 #'
 copy_attributes.generic_spct <- function(x, y,
                                          which = NULL,
+                                         which.not = NULL,
                                          copy.class = FALSE,
                                          ...) {
   if (copy.class) {
@@ -80,6 +85,7 @@ copy_attributes.generic_spct <- function(x, y,
                all_spct_attr.ls[["generic_spct"]],
                all_spct_attr.ls[[class(y)[1]]])
   }
+  which <- setdiff(which, which.not)
   attr.x <- attributes(x)
   which.x <- intersect(names(attr.x), which)
   # this is likely to be slow
@@ -95,12 +101,14 @@ copy_attributes.generic_spct <- function(x, y,
 #'
 copy_attributes.generic_mspct <- function(x, y,
                                          which = NULL,
+                                         which.not = NULL,
                                          copy.class = FALSE,
                                          ...) {
   stopifnot(length(x) == length(y))
   for (i in seq_along(x)) {
     y[[i]] <- copy_attributes(x[[i]], y[[i]],
                               which = which,
+                              which.not = which.not,
                               copy.class = copy.class,
                               ...)
   }

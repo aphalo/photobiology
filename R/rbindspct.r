@@ -278,8 +278,66 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
 
 # Subset ------------------------------------------------------------------
 
-# subset.data.frame works as expected with all spectral classes as it
-# calls the Extract methods defined below on the object passed!
+# subset.data.frame() should work as expected with all spectral classes as it
+# calls the Extract methods defined below on the object passed to x!
+#
+# However the methods defined bellow fail to retain attributes when j = TRUE,
+# which is what subset() passes.
+# The extract methods behave as R data.frame does, this may need to be changed
+# but meanwhile we include here our own definition of subset to retain the
+# expected behaviour for subset().
+
+#' Subsetting spectra
+#'
+#' Return subsets of spectra stored in class \code{generic_spct} or derived from
+#' it.
+#'
+#' @param x object to be subsetted.
+#' @param subset logical expression indicating elements or rows to keep: missing
+#'   values are taken as false.
+#' @param drop passed on to \code{[} indexing operator.
+#' @param select expression, indicating columns to select from a spectrum.
+#' @param ...	further arguments to be passed to or from other methods.
+#'
+#' @return An object similar to \code{x} containing just the selected rows and
+#'   columns. Depending on the columns remaining after subsetting the class of
+#'   the object will be simplified to the most derived parent class.
+#'
+#' @export
+#'
+#' @method subset generic_spct
+#'
+#' @name Subset
+#' @rdname subset
+#'
+#' @note This method is copied from \code{base::subset.data.frame()} but ensures
+#'   that all metadata stored in attributes of spectral objects are copied to
+#'   the returned value.
+#'
+#' @examples
+#'
+#' subset(sun.spct, w.length > 400)
+#'
+subset.generic_spct <- function(x, subset, select, drop = FALSE, ...) {
+  r <- if (missing(subset))
+    rep_len(TRUE, nrow(x))
+  else {
+    e <- substitute(subset)
+    r <- eval(e, x, parent.frame())
+    if (!is.logical(r))
+      stop("'subset' must be logical")
+    r & !is.na(r)
+  }
+  vars <- if (missing(select))
+    TRUE
+  else {
+    nl <- as.list(seq_along(x))
+    names(nl) <- names(x)
+    eval(substitute(select), nl, parent.frame())
+  }
+  z <- x[r, vars, drop = drop]
+  copy_attributes(x, z)
+}
 
 # Extract ------------------------------------------------------------------
 
@@ -315,6 +373,12 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
 #' @return An object of the same class as \code{x} but containing only the
 #'   subset of rows and columns that are selected. See details for special
 #'   cases.
+#'
+#' @note If any argument is passed to \code{j}, even \code{TRUE}, some metadata
+#'   attributes are removed from the returned object. This is how the
+#'   extraction operator works with \code{data.frames} in R. For the time
+#'   being we retain this behaviour for spectra, but it may change in the
+#'   future.
 #'
 #' @method [ generic_spct
 #'
@@ -822,6 +886,8 @@ is.member_class <- function(l, x) {
 #'
 #' @return A collection of spectra object belonging to the most derived class
 #' shared among the combined objects.
+#'
+#' @name c
 #'
 #' @export
 #' @method c generic_mspct

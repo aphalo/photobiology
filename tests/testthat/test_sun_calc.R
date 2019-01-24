@@ -5,7 +5,7 @@ context("sun_calc")
 
 test_that("sun_angles_24h", {
   #  test.path <- tempfile()
-  test.path <- "sun-angles-test-value"
+  test.path <- "./data/sun-angles-test-value"
 
   testthat::expect_known_value(
     sun_angles(time = ymd_hms("2012-10-22 12:00:00", tz = "UTC") + hours(0:24),

@@ -24,7 +24,13 @@
 #'   function behaves like a wrapper of the functions of the same names from
 #'   base R.
 #'
-#' @export smooth_spct
+#' @export
+#'
+#' @examples
+#'
+#' my.spct <- clip_wl(sun.spct, c(400, 500))
+#' smooth_spct(my.spct)
+#' smooth_spct(my.spct, method = "supsmu", strength = 4)
 #'
 smooth_spct <- function(x, method, strength, ...) UseMethod("smooth_spct")
 

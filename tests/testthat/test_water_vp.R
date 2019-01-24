@@ -21,7 +21,7 @@ test_that("water_reference_values", {
 
 test_that("water_vp_sat", {
   #  test.path <- tempfile()
-  test.path <- "water-vapour-test-values"
+  test.path <- "./data/water-vapour-test-values"
 
   expect_known_value(
     water_vp_sat(-50:100),
@@ -36,7 +36,7 @@ test_that("water_vp_sat", {
 
 test_that("water_vp_sat_magnus", {
   #  test.path <- tempfile()
-  test.path <- "water-vapour-magnus-test-values"
+  test.path <- "./data/water-vapour-magnus-test-values"
 
   expect_known_value(
     water_vp_sat(-50:100, method = "magnus"),
@@ -51,7 +51,7 @@ test_that("water_vp_sat_magnus", {
 
 test_that("water_vp_sat_ice", {
   #  test.path <- tempfile()
-  test.path <- "water-vapour-ice-test-values"
+  test.path <- "./data/water-vapour-ice-test-values"
 
   expect_known_value(
     signif(water_vp_sat(-30:0, over.ice = TRUE), 12),
@@ -66,7 +66,7 @@ test_that("water_vp_sat_ice", {
 
 test_that("water_vp_sat_ice_magnus", {
   #  test.path <- tempfile()
-  test.path <- "water-vapour-ice-magnus-test-values"
+  test.path <- "./data/water-vapour-ice-magnus-test-values"
 
   expect_known_value(
     signif(water_vp_sat(-30:0, over.ice = TRUE, method = "magnus"), 12),
@@ -81,7 +81,7 @@ test_that("water_vp_sat_ice_magnus", {
 
 test_that("water_vapour_dp", {
   #  test.path <- tempfile()
-  test.path <- "dew-point-test-values"
+  test.path <- "./data/dew-point-test-values"
 
   expect_known_value(
     round(water_dp((20:100) * 10), 6),
@@ -92,7 +92,7 @@ test_that("water_vapour_dp", {
 
 test_that("water_vapour_dp_ice", {
   #  test.path <- tempfile()
-  test.path <- "dew-point-ice-test-values"
+  test.path <- "./data/dew-point-ice-test-values"
 
   expect_known_value(
     water_dp(50:500, over.ice = TRUE),
@@ -103,7 +103,7 @@ test_that("water_vapour_dp_ice", {
 
 test_that("water_vapour_mvc", {
   #  test.path <- tempfile()
-  test.path <- "mvc-test-values"
+  test.path <- "./data/mvc-test-values"
 
   expect_known_value(
     water_vp2mvc((0:200) * 10, 20),
@@ -114,7 +114,7 @@ test_that("water_vapour_mvc", {
 
 test_that("water_vapour_mvc_ice", {
   #  test.path <- tempfile()
-  test.path <- "mvc-ice-test-values"
+  test.path <- "./data/mvc-ice-test-values"
 
   expect_known_value(
     water_dp(50:500, over.ice = TRUE),

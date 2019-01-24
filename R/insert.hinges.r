@@ -113,7 +113,7 @@ l_insert_hinges <- function(x, y, h) {
   list(x = x.out, y = y.out)
 }
 
-#' Insert wavelength values into spectral data.
+#' Insert spectral data values at new wavelength values.
 #'
 #' Inserting wavelengths values immediately before and after a discontinuity in
 #' the SWF, greatly reduces the errors caused by interpolating the weighted
@@ -165,6 +165,42 @@ v_insert_hinges <- function(x, y, h) {
       (y[idxs.in + 1] - y[idxs.in])
   } else {
     y.out[idxs.out] <- NA
+  }
+  y.out
+}
+
+#' Overwrite spectral data values at existing wavelength values.
+#'
+#' Overwriting spectral data with interpolated values at wavelengths values
+#' containing bad data is needed when cleaning spectral data.
+#' This function differs from \code{insert_hinges()} in that it returns a vector
+#' of \code{y} values instead of a \code{tibble}.
+#'
+#' @param x numeric vector (sorted in increasing order).
+#' @param y numeric vector.
+#' @param h a numeric vector giving the wavelengths at which the y values should
+#'   be replaced by interpolation, no interpolation is indicated by an empty
+#'   numeric vector (\code{numeric(0)}).
+#'
+#' @return A numeric vector with the numeric values of \code{y} with values
+#'   at the hinges replaced by interpolation of neighbours.
+#'
+#' @keywords internal.
+#'
+#' @family low-level functions operating on numeric vectors.
+#'
+v_replace_hinges <- function(x, y, h) {
+  # sanitize 'hinges'
+  h.idxs <- which(x %in% h)
+  y.out <- y
+  # we use recycling to interpolate all values and overwrite them into the hinges
+  if (is.numeric(y)) {
+    y.out[h.idxs] <- y[h.idxs + 1] -
+      (x[h.idxs + 1] - x[h.idxs - 1]) /
+      (x[h.idxs + 1] - x[h.idxs]) *
+      (y[h.idxs + 1] - y[h.idxs - 1])
+  } else {
+    y.out[h.idxs] <- NA
   }
   y.out
 }

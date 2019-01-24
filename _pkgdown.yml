@@ -54,11 +54,12 @@ reference:
     - shared_member_class
   - title: Summaries from spectra
     contents:
+    - summary
     - is.summary_generic_spct
-    - summary_spct_classes
     - print
     - print.summary_generic_spct
     - head_tail
+    - summary_spct_classes
   - title: Summary spectra from collections of spectra
     contents:
     - s_sum
@@ -125,7 +126,6 @@ reference:
     - copy_attributes
   - title: Summary quantities
     contents:
-    - summary
     - irrad
     - e_irrad
     - q_irrad
@@ -183,7 +183,7 @@ reference:
     - tag
     - untag
     - cps2irrad
-    - na.omit.source_spct
+    - na.omit
   - title: Mathematical operators and functions for spectra
     contents:
     - '`plus-.generic_spct`'
@@ -208,7 +208,8 @@ reference:
     contents:
     - Extract
     - Extract_mspct
-    - c.generic_mspct
+    - Subset
+    - c
     - rbindspct
     - merge2object_spct
     - split2mspct

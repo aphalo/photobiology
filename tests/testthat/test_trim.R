@@ -4,6 +4,12 @@ context("trim_spct")
 
 test_that("source_spct", {
 
+  expect_equal(getTimeUnit(sun.spct), getTimeUnit(trim_spct(sun.spct)))
+  expect_equal(getWhenMeasured(sun.spct), getWhenMeasured(trim_spct(sun.spct)))
+  expect_equal(getWhatMeasured(sun.spct), getWhatMeasured(trim_spct(sun.spct)))
+  expect_equal(getWhereMeasured(sun.spct), getWhereMeasured(trim_spct(sun.spct)))
+  expect_equal(comment(sun.spct), comment(trim_spct(sun.spct)))
+
   my.spct <- source_spct(w.length = 400:450, s.e.irrad = 0.5, time.unit = "second")
 
   expect_equal(length(trim_spct(my.spct)), length(my.spct))
