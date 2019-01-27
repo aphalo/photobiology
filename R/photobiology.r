@@ -40,6 +40,7 @@
 #'   allowed me to significantly improve the coding and functionality.
 #'
 #' @importFrom rlang .data
+#' @import tibble
 #'
 #' @examples
 #' # irradiance of the whole spectrum

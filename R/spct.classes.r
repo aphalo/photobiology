@@ -783,32 +783,50 @@ rmDerivedSpct <- function(x) {
 #'
 setGenericSpct <-
   function(x,
-           multiple.wl = 1L,
-           idfactor = NULL) {
+           multiple.wl = NULL,
+           idfactor = NA) {
     name <- substitute(x)
-    if (is.null(multiple.wl) && is.any_spct(x)) {
-      multiple.wl <- attr(x, "multiple.wl", exact = TRUE)
+
+    if (is.any_spct(x)) {
+      # Remove attribute for derived class(es)
+      classs.x <- class(x)
+      gs.class.idx <- which(classs.x == "generic_spct")
+      class(x) <- classs.x[gs.class.idx:length(classs.x)]
+
+      # Sometimes we need to change the "multiple.wl" attribute
+      # Old spectral object may have this attribute unset instead of set to 1L
+      if (is.null(multiple.wl) || multiple.wl != getMultipleWl(x)) {
+        x <- setMultipleWl(x, multiple.wl = multiple.wl)
+      }
+      if(!is.na(idfactor)) {
+        setIdFactor(x, idfactor = idfactor)
+      }
+      z <- x
+    } else {
+      # Default for new spectra
+      if (is.null(multiple.wl)) {
+        multiple.wl <- 1L
+      }
+      stopifnot(is.list(x))
+      rows <- ifelse(is.data.frame(x), nrow(x), length(x[[1L]]))
+      z <- tibble::new_tibble(x,
+                              "spct.version" = 2,
+                              "idfactor" = idfactor,
+                              "multiple.wl" = multiple.wl,
+                              "spct.tags" = NA,
+                              nrow = rows,
+                              class = "generic_spct")
+      if (!is.data.frame(x)) {
+        z <- validate_tibble(z)
+      }
+      z <- check_spct(z)
     }
-    if (is.null(idfactor) && is.any_spct(x)) {
-      idfactor <- attr(x, "idfactor", exact = TRUE)
-    }
-    rmDerivedSpct(x)
-    if (!is.data.frame(x) || inherits(x, "data.table")) {
-      x <- tibble::as_tibble(x)
-    }
-    if (!is.generic_spct(x)) {
-      class(x) <- c("generic_spct", class(x))
-      attr(x, "spct.tags") <- NA
-      x <- setMultipleWl(x, multiple.wl = multiple.wl)
-    }
-    x <- check_spct(x)
-    attr(x, "idfactor") <- idfactor
-    attr(x, "spct.version") <- 2
+
     if (is.name(name)) {
       name <- as.character(name)
-      assign(name, x, parent.frame(), inherits = TRUE)
+      assign(x = name, value = z, pos = parent.frame(), inherits = FALSE)
     }
-    invisible(x)
+    invisible(z)
   }
 
 #' @describeIn setGenericSpct Set class of a an object to "calibration_spct".
