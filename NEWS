@@ -15,7 +15,7 @@ behaviour.
 * Fix bug in smooth_spct(): metadata not copied to returned spectrum.
 * Fix bug in insert_hinges_spct(): metadata not fully copied to returned
 spectrum.
-* Implement methods "wexler" and "groff.gratch" for water vapor pressure
+* Implement methods "wexler" and "goff.gratch" for water vapor pressure
 estimates. Add function water_RH() to compute relative humidity from water VP
 and air temperature.
 
