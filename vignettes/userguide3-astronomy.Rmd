@@ -289,3 +289,54 @@ relative_AM(33)
 ```{r}
 relative_AM(c(80, 60, 40, 20))
 ```
+
+## Water vapour-related calculations
+
+There are several different emperical equations in common use to estimate
+water vapour pressure in air over liquid water or ice. This package implements
+some of them as well as their inverses, which are useful to compute the dew point. Some
+anciliary functions help with unit conversion and computation of relative
+humidity.
+
+| Function | parameters | returned value | methods implemented |
+|:--------|:-------|:----------|:---------------------------|
+| water_vp_sat() | temperature, C | vapour pressure, Pa | Tetens, Magnus, Wexler, Goff-Gratch |
+| water_dp() | vapour pressure, Pa | temperature, C | Tetens, Magnus, Wexler |
+| water_fp() | vapour pressure, Pa | temperature, C | Tetens, Magnus, Wexler |
+| water_vp2RH() | vapour pressure, Pa; temperature, C | relative humidity, % | Tetens, Magnus, Wexler, Goff-Gratch |
+| water_RH2vp() | relative humidity, %; temperature, C | vapour pressure, Pa | Tetens, Magnus, Wexler, Goff-Gratch |
+| water_vp2mvc() | vapour pressure, Pa | mass/vol. concentration, g m$^{-3}$ | |
+| water_mvc2vp() | mass/vol. concentration, g m$^{-3}$ | vapour pressure, Pa | |
+
+
+Saturation vapour pressure in Pa at four air temperatures in C, over water,
+computed using Tetens equation (the default method).
+
+```{r}
+water_vp_sat(c(0, 10, 20, 30))
+```
+
+Saturation water vapour mass/volume concentration for air at 20 C, expresed in
+grammes per cubic meter.
+
+```{r}
+water_vp2mvc(water_vp_sat(20), 20)
+```
+
+Vapour pressure for 50% relative humidity in air at a temperature of 20 C.
+
+```{r}
+water_RH2vp(50, 20)
+```
+And the inverse computation, RH from vapour pressure in Pa and air temperarture in C.
+
+```{r}
+water_vp2RH(500, 40)
+```
+
+Dew point for air with a water vapour pressure of 3 kPa.
+
+```{r}
+water_dp(3000)
+```
+

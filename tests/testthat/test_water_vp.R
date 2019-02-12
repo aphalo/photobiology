@@ -10,8 +10,8 @@ test_that("water_reference_values", {
   expect_equal(round(water_vp_sat(20, method = "Tetens"), 3), 2338.023)
   expect_equal(round(water_vp_sat(20, method = "magnus"), 3), 2333.441)
   expect_equal(round(water_vp_sat(20, method = "Magnus"), 3), 2333.441)
-  expect_equal(round(water_vp_sat(20, method = "wexler"), 3), 2338.544)
-  expect_equal(round(water_vp_sat(20, method = "Wexler"), 3), 2338.544)
+  expect_equal(round(water_vp_sat(20, method = "wexler"), 3), 2339.262)
+  expect_equal(round(water_vp_sat(20, method = "Wexler"), 3), 2339.262)
   expect_equal(round(water_vp_sat(20, method = "goff.gratch"), 3), 2335.856)
   expect_equal(round(water_vp_sat(20, method = "Goff.Gratch"), 3), 2335.856)
 
@@ -22,14 +22,14 @@ test_that("water_reference_values", {
   expect_equal(round(water_vp_sat(-30, method = "Magnus"), 3), 51.064)
   expect_equal(round(water_vp_sat(-50, method = "magnus"), 3), 6.359)
   expect_equal(round(water_vp_sat(-50, method = "Magnus"), 3), 6.359)
-  expect_equal(round(water_vp_sat(-50, method = "wexler"), 3), 6.445)
-  expect_equal(round(water_vp_sat(-50, method = "Wexler"), 3), 6.445)
+  expect_equal(round(water_vp_sat(-50, method = "wexler"), 3), 6.438)
+  expect_equal(round(water_vp_sat(-50, method = "Wexler"), 3), 6.438)
   expect_equal(round(water_vp_sat(-50, method = "goff.gratch"), 3), 6.349)
   expect_equal(round(water_vp_sat(-50, method = "Goff.Gratch"), 3), 6.349)
-  expect_equal(round(water_vp_sat(-100, method = "wexler"), 7), 0.0036271)
-  expect_equal(round(water_vp_sat(-100, method = "Wexler"), 7), 0.0036271)
-  expect_equal(round(water_vp_sat(100, method = "wexler"), 0), 101325)
-  expect_equal(round(water_vp_sat(100, method = "Wexler"), 0), 101325)
+  expect_equal(round(water_vp_sat(-100, method = "wexler"), 7), 0.0036174)
+  expect_equal(round(water_vp_sat(-100, method = "Wexler"), 7), 0.0036174)
+  expect_equal(round(water_vp_sat(100, method = "wexler"), 0), 101418)
+  expect_equal(round(water_vp_sat(100, method = "Wexler"), 0), 101418)
 
 })
 
@@ -219,31 +219,31 @@ test_that("water_vapour_RH", {
   test.path <- "./data/rh-test-values"
 
   expect_known_value(
-    round(water_RH((5:100) * 100, 50), 6),
+    round(water_vp2RH((5:100) * 100, 50), 6),
     file = test.path
   )
 
   test.path <- "./data/rh-tetens-test-values"
   expect_known_value(
-    round(water_RH((5:100) * 100, 50, method = "tetens"), 6),
+    round(water_vp2RH((5:100) * 100, 50, method = "tetens"), 6),
     file = test.path
   )
 
   test.path <- "./data/rh-magnus-test-values"
   expect_known_value(
-    round(water_RH((5:100) * 100, 50, method = "magnus"), 6),
+    round(water_vp2RH((5:100) * 100, 50, method = "magnus"), 6),
     file = test.path
   )
 
   test.path <- "./data/rh-wexler-test-values"
   expect_known_value(
-    round(water_RH((5:100) * 100, 50, method = "wexler"), 6),
+    round(water_vp2RH((5:100) * 100, 50, method = "wexler"), 6),
     file = test.path
   )
 
   test.path <- "./data/rh-goff.gratch-test-values"
   expect_known_value(
-    round(water_RH((5:100) * 100, 50, method = "goff.gratch"), 6),
+    round(water_vp2RH((5:100) * 100, 50, method = "goff.gratch"), 6),
     file = test.path
   )
 
@@ -261,10 +261,15 @@ test_that("water_consistency", {
     -80:49
   )
 
-  # not consistent because of ITS68 vs ITS90 coefs
+  # using ITS90 coefs
   expect_equal(
-    round(water_dp(water_vp_sat(-99:99, method = "wexler"), method = "wexler"), 1),
-    -99:99
+    round(water_dp(water_vp_sat(-99:40, method = "wexler"), method = "wexler"), 4),
+    -99:40
+  )
+
+  expect_equal(
+    round(water_dp(water_vp_sat(41:99, method = "wexler"), method = "wexler"), 3),
+    41:99
   )
 
   expect_equal(

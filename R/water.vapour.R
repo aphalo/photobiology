@@ -7,6 +7,8 @@
 #' @param water.vp numeric vector of water vapour pressure in air (Pa).
 #' @param water.mvc numeric vector of water vapour concnetration as mass per
 #'   volume (g m-3).
+#' @param relative.humidity numeric Relative humedity as % (default) or as a
+#'   fraction of 1.
 #' @param over.ice logical Is the estimate for equilibrium with liquid water or
 #'   with ice.
 #' @param method character Currently "tetens", modified "magnus", "wexler" and
@@ -68,13 +70,13 @@
 #'   Zeitschrift fur Geophysik, Vol. 6:297.
 #'
 #'   Goff, J. A., and S. Gratch (1946) Low-pressure properties of water from
-#'   −160 to 212 °F, in Transactions of the American Society of Heating and
-#'   Ventilating Engineers, pp 95–122, presented at the 52nd annual meeting of
+#'   -160 to 212 F, in Transactions of the American Society of Heating and
+#'   Ventilating Engineers, pp 95-122, presented at the 52nd annual meeting of
 #'   the American Society of Heating and Ventilating Engineers, New York, 1946.
 #'
 #'   Wexler, A. (1976) Vapor Pressure Formulation for Water in Range 0 to 100°C.
-#'   A Revision, Journal of Research ofthe National Bureau of Standards – A.
-#'   Physics and Chemistry, September – December 1976, Vol. 80A, Nos.5 and 6,
+#'   A Revision, Journal of Research ofthe National Bureau of Standards: A.
+#'   Physics and Chemistry, September-December 1976, Vol. 80A, Nos.5 and 6,
 #'   775-785
 #'
 #'   Wexler, A.,  Vapor Pressure Formulation for Ice, Journal of Research of the
@@ -125,9 +127,9 @@
 #' water_fp(water.vp = 300) # Pa -> C
 #' water_dp(water.vp = 300, over.ice = TRUE) # Pa -> C
 #'
-#' water_RH(water.vp = 1500, temperature = 20) # Pa, C -> RH %
-#' water_RH(water.vp = 1500, temperature = c(20, 30)) # Pa, C -> RH %
-#' water_RH(water.vp = c(600, 1500), temperature = 20) # Pa, C -> RH %
+#' water_vp2RH(water.vp = 1500, temperature = 20) # Pa, C -> RH %
+#' water_vp2RH(water.vp = 1500, temperature = c(20, 30)) # Pa, C -> RH %
+#' water_vp2RH(water.vp = c(600, 1500), temperature = 20) # Pa, C -> RH %
 #'
 #' water_vp2mvc(water.vp = 1000, temperature = 20) # Pa -> g m-3
 #'
@@ -172,15 +174,19 @@ water_vp_sat <- function(temperature,
     temperature.K <- temperature + 273.15
     if (over.ice) {
       wexler.ice <-  function(temperature.K) {
-        g <- c(-5.8653696e3, 2.224103300e1, 1.3749042e-2, -3.4031775e-5,
-               2.6967687e-8, 6.918651e-1)
+        # g_ITS68 <- c(-5.8653696e3, 2.224103300e1, 1.3749042e-2, -3.4031775e-5,
+        #        2.6967687e-8, 6.918651e-1)
+        g <- c(-5.8666426e3, 2.232870244e1, 1.39387003e-2, -3.4262402e-5,
+               2.7040955e-8, 6.7063522e-1)
         exp(sum(temperature.K^((0:4) - 1) * g[1:5]) + g[6] * log(temperature.K))
       }
       z <- sapply(temperature.K, wexler.ice) # vectorization of temperature argument
     } else {
       wexler.water <-  function(temperature.K) {
-        g <- c(-2.9912729e3, -6.0170128e3, 1.887643854e1, -2.8354721e-2,
-               1.7838301e-5, -8.4150417e-10, 4.4412543e-13, 2.858487)
+        # g_ITS68 <- c(-2.9912729e3, -6.0170128e3, 1.887643854e1, -2.8354721e-2,
+        #        1.7838301e-5, -8.4150417e-10, 4.4412543e-13, 2.858487)
+        g <- c(-2.8365744e3, -6.028076559e3, 1.954263612e1, -2.737830188e-2,
+               1.6261698e-5, 7.0229056e-10, -1.8680009e-13, 2.7150305)
         exp(sum(temperature.K^((0:6) - 2) * g[1:7]) + g[8] * log(temperature.K))
       }
       z <- sapply(temperature.K, wexler.water) # vectorization of temperature argument
@@ -312,7 +318,7 @@ water_mvc2vp <- function(water.mvc,
 #'
 #' @export
 #'
-water_RH <- function(water.vp,
+water_vp2RH <- function(water.vp,
                      temperature,
                      over.ice = FALSE,
                      method = "tetens",
@@ -327,4 +333,23 @@ water_RH <- function(water.vp,
   } else {
     z
   }
+}
+
+#' @rdname water_vp_sat
+#'
+#' @export
+#'
+water_RH2vp <- function(relative.humidity,
+                        temperature,
+                        over.ice = FALSE,
+                        method = "tetens",
+                        pc = TRUE,
+                        check.range = TRUE) {
+  if (pc) {
+    relative.humidity <- relative.humidity * 1e-2
+  }
+  relative.humidity * water_vp_sat(temperature,
+                                   over.ice = over.ice,
+                                   method = method,
+                                   check.range = check.range)
 }
