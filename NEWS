@@ -1,4 +1,4 @@
-photobiology 0.9.26 (2019-02-xx)
+photobiology 0.9.26 (2019-02-11)
 ================================
 
 * Move 'tibble' from Imports: to Depends: as newly defined classes are derived
