@@ -12,7 +12,7 @@
 
 <meta name="author" content="Pedro J. Aphalo" />
 
-<meta name="date" content="2019-01-24" />
+<meta name="date" content="2019-03-15" />
 
 <title>User Guide: 2 Radiation</title>
 
@@ -291,6 +291,9 @@ code > span.al { color: #ff0000; font-weight: bold; }
 code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61717; background-color: #e3d2d2; } 
 </style>
 
+
+
+
 </head>
 
 <body>
@@ -299,9 +302,9 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 
 
 <h1 class="title toc-ignore">User Guide: 2 Radiation</h1>
-<h3 class="subtitle"><em>Package ‘photobiology’ 0.9.25.9001</em></h3>
-<h4 class="author"><em>Pedro J. Aphalo</em></h4>
-<h4 class="date"><em>2019-01-24</em></h4>
+<h3 class="subtitle">Package ‘photobiology’ 0.9.26.9000</h3>
+<h4 class="author">Pedro J. Aphalo</h4>
+<h4 class="date">2019-03-15</h4>
 
 
 <div id="TOC">
@@ -3943,6 +3946,9 @@ There are cases where functions <code>convolve_each()</code> and <code>msmsply()
 <div class="sourceCode" id="cb287"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb287-1" title="1"><span class="kw">subset</span>(sun.spct, s.e.irrad <span class="op">&gt;</span><span class="st"> </span><span class="fl">0.2</span>)</a></code></pre></div>
 <pre><code>## Object: source_spct [475 x 3]
 ## Wavelength range 324 to 800 nm, step 1 to 3 nm 
+## Label: sunlight, simulated 
+## Measured on 2010-06-22 09:51:00 UTC 
+## Measured at 60.20911 N, 24.96474 E 
 ## Time unit 1s
 ## 
 ## # A tibble: 475 x 3
@@ -3956,6 +3962,9 @@ There are cases where functions <code>convolve_each()</code> and <code>msmsply()
 <div class="sourceCode" id="cb289"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb289-1" title="1"><span class="kw">subset</span>(sun.spct, w.length <span class="op">&gt;</span><span class="st"> </span><span class="dv">600</span>)</a></code></pre></div>
 <pre><code>## Object: source_spct [200 x 3]
 ## Wavelength range 601 to 800 nm, step 1 nm 
+## Label: sunlight, simulated 
+## Measured on 2010-06-22 09:51:00 UTC 
+## Measured at 60.20911 N, 24.96474 E 
 ## Time unit 1s
 ## 
 ## # A tibble: 200 x 3
@@ -3969,6 +3978,9 @@ There are cases where functions <code>convolve_each()</code> and <code>msmsply()
 <div class="sourceCode" id="cb291"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb291-1" title="1"><span class="kw">subset</span>(sun.spct, <span class="kw">c</span>(<span class="ot">TRUE</span>, <span class="kw">rep</span>(<span class="ot">FALSE</span>, <span class="dv">99</span>)))</a></code></pre></div>
 <pre><code>## Object: source_spct [6 x 3]
 ## Wavelength range 280 to 779 nm, step 99 to 100 nm 
+## Label: sunlight, simulated 
+## Measured on 2010-06-22 09:51:00 UTC 
+## Measured at 60.20911 N, 24.96474 E 
 ## Time unit 1s
 ## 
 ## # A tibble: 6 x 3
@@ -4606,6 +4618,9 @@ There are cases where functions <code>convolve_each()</code> and <code>msmsply()
 <div class="sourceCode" id="cb363"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb363-1" title="1"><span class="kw">tag</span>(sun.spct, PAR.wb)</a></code></pre></div>
 <pre><code>## Object: source_spct [524 x 6]
 ## Wavelength range 280 to 800 nm, step 1.023182e-12 to 1 nm 
+## Label: sunlight, simulated 
+## Measured on 2010-06-22 09:51:00 UTC 
+## Measured at 60.20911 N, 24.96474 E 
 ## Time unit 1s
 ## 
 ## # A tibble: 524 x 6
@@ -4619,6 +4634,9 @@ There are cases where functions <code>convolve_each()</code> and <code>msmsply()
 <div class="sourceCode" id="cb365"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb365-1" title="1"><span class="kw">tag</span>(sun.spct, UV_bands.lst)</a></code></pre></div>
 <pre><code>## Object: source_spct [524 x 6]
 ## Wavelength range 280 to 800 nm, step 1.023182e-12 to 1 nm 
+## Label: sunlight, simulated 
+## Measured on 2010-06-22 09:51:00 UTC 
+## Measured at 60.20911 N, 24.96474 E 
 ## Time unit 1s
 ## 
 ## # A tibble: 524 x 6
@@ -4693,6 +4711,9 @@ There are cases where functions <code>convolve_each()</code> and <code>msmsply()
 <div class="sourceCode" id="cb373"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb373-1" title="1">tg.sun.spct</a></code></pre></div>
 <pre><code>## Object: source_spct [524 x 6]
 ## Wavelength range 280 to 800 nm, step 1.023182e-12 to 1 nm 
+## Label: sunlight, simulated 
+## Measured on 2010-06-22 09:51:00 UTC 
+## Measured at 60.20911 N, 24.96474 E 
 ## Time unit 1s
 ## 
 ## # A tibble: 524 x 6
@@ -4714,6 +4735,9 @@ There are cases where functions <code>convolve_each()</code> and <code>msmsply()
 <div class="sourceCode" id="cb381"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb381-1" title="1"><span class="kw">untag</span>(tg.sun.spct, <span class="dt">byref =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
 <pre><code>## Object: source_spct [524 x 3]
 ## Wavelength range 280 to 800 nm, step 1.023182e-12 to 1 nm 
+## Label: sunlight, simulated 
+## Measured on 2010-06-22 09:51:00 UTC 
+## Measured at 60.20911 N, 24.96474 E 
 ## Time unit 1s
 ## 
 ## # A tibble: 524 x 3

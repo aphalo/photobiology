@@ -738,7 +738,7 @@ subset.generic_spct <- function(x, subset, select, drop = FALSE, ...) {
 }
 
 #' @param name A literal character string or a name (possibly backtick quoted).
-#'   For extraction, this is normally (see under ‘Environments’) partially
+#'   For extraction, this is normally (see under 'Environments') partially
 #'   matched to the names of the object.
 #'
 #' @export
@@ -824,7 +824,7 @@ is.member_class <- function(l, x) {
 }
 
 #' @param name A literal character string or a name (possibly backtick quoted).
-#'   For extraction, this is normally (see under ‘Environments’) partially
+#'   For extraction, this is normally (see under 'Environments') partially
 #'   matched to the names of the object.
 #'
 #' @export

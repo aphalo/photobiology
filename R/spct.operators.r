@@ -1367,7 +1367,7 @@ sign.generic_spct <- function(x) {
 #' @param x an object of class "generic_spct" or a derived class.
 #' @param digits integer indicating the number of decimal places (round) or
 #'   significant digits (signif) to be used. Negative values are allowed (see
-#'   ‘Details’).
+#'   'Details').
 #'
 #' @name round
 #' @export

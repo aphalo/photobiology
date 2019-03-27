@@ -80,14 +80,14 @@
 #'   775-785
 #'
 #'   Wexler, A.,  Vapor Pressure Formulation for Ice, Journal of Research of the
-#'   National Bureau of Standards –A. Physics and Chemistry, January – February
+#'   National Bureau of Standards - A. Physics and Chemistry, January - February
 #'   1977, Vol. 81A, No. 1, 5-19
 #'
 #'   Alduchov, O. A., Eskridge, R. E., 1996. Improved Magnus Form Approximation
 #'   of Saturation Vapor Pressure. Journal of Applied Meteorology, 35: 601-609 .
 #'
 #'   Hardy, Bob (1998) ITS-90 formulations for vapor pressure, frostpoint
-#'   temperature, dewpoint temperature, andenhancement factors in the range –100
+#'   temperature, dewpoint temperature, andenhancement factors in the range -100
 #'   TO +100 C. The Proceedings of the Third International Symposium on Humidity
 #'   & Moisture, Teddington, London, England, April 1998.
 #'   \url{http://www.decatur.de/javascript/dew/resources/its90formulas.pdf}
