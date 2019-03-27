@@ -12,7 +12,7 @@
 
 <meta name="author" content="Pedro J. Aphalo" />
 
-<meta name="date" content="2019-03-15" />
+<meta name="date" content="2019-03-27" />
 
 <title>User Guide: 1 Introduction</title>
 
@@ -216,9 +216,9 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 
 
 <h1 class="title toc-ignore">User Guide: 1 Introduction</h1>
-<h3 class="subtitle">Package ‘photobiology’ 0.9.26.9000</h3>
+<h3 class="subtitle">Package ‘photobiology’ 0.9.26.9001</h3>
 <h4 class="author">Pedro J. Aphalo</h4>
-<h4 class="date">2019-03-15</h4>
+<h4 class="date">2019-03-27</h4>
 
 
 <div id="TOC">
@@ -230,7 +230,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 
 <div id="introduction" class="section level2">
 <h2>Introduction</h2>
-<p>I have developed a set of packages to facilitate the calculation of many different quantities that can be derived from spectral irradiance data. The core package in this suite is called ‘<strong>photobiology</strong>’, and is the package described here. Other specialized packages for quantification of ultraviolet radiation and visible radiation (‘<strong>photobiologyWavebands</strong>’), plant photoreceptors and other plant photobiology related calculations (‘<strong>photobiologyPlants</strong>’), example spectral data for filters (‘<strong>photobiologyFilters</strong>’), lamps (‘<strong>photobiologyLamps</strong>’), LEDs (‘<strong>photobiologyLEDs</strong>’), sunlight (‘<strong>photobiologySun</strong>’), light sensors (‘<strong>photobiologySensors</strong>’) and for exchange of data in <em>foreign</em> formats (‘<strong>photobiologyInOut</strong>’) are part of the suite. One additional package, (‘<em>ggspectra</em>’), implements facilities for plotting spectral data by extending package ‘<strong>ggplot2</strong>’, providing both ggplot statistics in addition to specializations of <code>plot()</code>. All packages that can comply with the repository rules have been submitted or will in coming months be submitted to <strong>CRAN</strong> (Comprehensive R archive network). The packages not yet in <strong>CRAN</strong>, and development versions of those already in <strong>CRAN</strong>, are available through a CRAN-like repository at <a href="http://www.r4photobiology.info/R/" class="uri">http://www.r4photobiology.info/R/</a> while the Web site at <a href="http://www.r4photobiology.info" class="uri">http://www.r4photobiology.info</a> provides news about the development of the suite and some additional information. Each package has its own public Git repository at my Bitbucket account (<a href="https://bitbucket.org/aphalo/" class="uri">https://bitbucket.org/aphalo/</a>) from where the source code of the current and previous versions can be cloned or forked.</p>
+<p>I have developed a set of packages to facilitate the calculation of many different quantities that can be derived from spectral irradiance data. The core package in this suite is called ‘<strong>photobiology</strong>’, and is the package described here. Other specialized packages for quantification of ultraviolet radiation and visible radiation (‘<strong>photobiologyWavebands</strong>’), plant photoreceptors and other plant photobiology related calculations (‘<strong>photobiologyPlants</strong>’), example spectral data for filters (‘<strong>photobiologyFilters</strong>’), lamps (‘<strong>photobiologyLamps</strong>’), LEDs (‘<strong>photobiologyLEDs</strong>’), sunlight (‘<strong>photobiologySun</strong>’), light sensors (‘<strong>photobiologySensors</strong>’) and for exchange of data in <em>foreign</em> formats (‘<strong>photobiologyInOut</strong>’) are part of the suite. One additional package, (‘<em>ggspectra</em>’), implements facilities for plotting spectral data by extending package ‘<strong>ggplot2</strong>’, providing both ggplot statistics in addition to specializations of <code>plot()</code>. All packages that can comply with the repository rules have been submitted or will in coming months be submitted to <strong>CRAN</strong> (Comprehensive R archive network). The packages not yet in <strong>CRAN</strong>, and development versions of those already in <strong>CRAN</strong>, are available through a CRAN-like repository at <a href="https://www.r4photobiology.info/R/" class="uri">https://www.r4photobiology.info/R/</a> while the Web site at <a href="https://www.r4photobiology.info" class="uri">https://www.r4photobiology.info</a> provides news about the development of the suite and some additional information. Each package has its own public Git repository at my Bitbucket account (<a href="https://bitbucket.org/aphalo/" class="uri">https://bitbucket.org/aphalo/</a>) from where the source code of the current and previous versions can be cloned or forked.</p>
 <p>Package ‘<strong>photobiology</strong>’ provides two sets of functions for many operations: low-level functions programmed following a functional paradigm, and higher-level functions using an object-oriented paradigm. The former functions take as arguments numeric vectors and are sometimes faster. The later ones take <em>spectra</em> objects as arguments, are easier to use, and at least at the moment, to some extent slower. For everyday use <em>spectra</em> objects are recommended, but when maximum performance or flexibility in scripts is desired, the use of the functions taking numeric vectors as arguments may allow optimizations that are not possible with the object-oriented functions. The differences in performance becomes relevant only in extreme cases such as processing in a single script tenths of thousands of spectra. In the vignettes we emphasize the use of the object-oriented classes and methods.</p>
 </div>
 <div id="example-data" class="section level2">

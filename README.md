@@ -2,7 +2,7 @@
 # photobiology
 
 [![CRAN
-version](http://www.r-pkg.org/badges/version-last-release/photobiology)](https://cran.r-project.org/package=photobiology)
+version](https://www.r-pkg.org/badges/version-last-release/photobiology)](https://cran.r-project.org/package=photobiology)
 [![cran
 checks](https://cranchecks.info/badges/worst/photobiology)](https://cran.r-project.org/web/checks/check_results_photobiology.html)
 
@@ -20,7 +20,7 @@ quantities and for optical properties of objects.
 
 This package is the core of a suite of R packages for photobiological
 calculations described at the
-[r4photobiology](http://www.r4photobiology.info) web site.
+[r4photobiology](https://www.r4photobiology.info) web site.
 
 ## Examples
 
@@ -46,9 +46,9 @@ sun.
 geocode <- data.frame(lon = 0, lat = 55)
 date <- lubridate::today(tzone = "UTC")
 sunrise_time(date, tz = "UTC", geocode = geocode)
-#> [1] "2018-12-09 08:12:45 UTC"
+#> [1] "2019-03-27 05:44:01 UTC"
 day_length(date, tz = "UTC", geocode = geocode)
-#> [1] 7.32331
+#> [1] 12.71039
 ```
 
 ## Installation
@@ -69,11 +69,11 @@ devtools::install_bitbucket("aphalo/photobiology")
 ## Documentation
 
 HTML documentation is available at
-(<http://docs.r4photobiology.info/photobiology/>), including a *User
+(<https://docs.r4photobiology.info/photobiology/>), including a *User
 Guide*.
 
 News on updates to the different packages of the ‘r4photobiology’ suite
-are regularly posted at (<http://www.r4photobiology.info/>).
+are regularly posted at (<https://www.r4photobiology.info/>).
 
 Two articles introduce the basic ideas behind the design of the suite
 and its use: Aphalo P. J. (2015)
@@ -91,12 +91,12 @@ handbook of best practice in plant UV photobiology (1st ed., p. xxx +
 174). Helsinki: University of Helsinki, Department of Biosciences,
 Division of Plant Biology. ISBN 978-952-10-8363-1 (PDF),
 978-952-10-8362-4 (paperback). PDF file available from
-(<http://hdl.handle.net/10138/37558>).
+(<https://hdl.handle.net/10138/37558>).
 
 ## Contributing
 
 Pull requests, bug reports, and feature requests are welcome at
-(<http://bitbucket.org/aphalo/photobiology>).
+(<https://bitbucket.org/aphalo/photobiology>).
 
 ## Citation
 

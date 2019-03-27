@@ -21,7 +21,7 @@
 #' practice in plant UV photobiology (1st ed., p. xx + 174). Helsinki:
 #' University of Helsinki, Department of Biosciences, Division of Plant Biology.
 #' ISBN 978-952-10-8363-1 (PDF), 978-952-10-8362-4 (paperback). Open access PDF
-#' download available at http://hdl.handle.net/10138/37558
+#' download available at https://hdl.handle.net/10138/37558
 #'
 #' Aphalo, Pedro J. (2015) The r4photobiology suite. UV4Plants Bulletin, 2015:1,
 #' 21-29. \url{https://doi.org/10.19232/uv4pb.2015.1.14}.
