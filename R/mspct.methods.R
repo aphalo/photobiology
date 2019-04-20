@@ -555,7 +555,7 @@ geocode2tb <- function(mspct,
     geocodes[[row]] <- getWhereMeasured(x)
     row <- row + 1L
   }
-  if (!tibble::is.tibble(tb)) {
+  if (!tibble::is_tibble(tb)) {
     tb <- tibble::as_tibble(tb)
   }
   tb[[col.names["geocode"]]] <- geocodes

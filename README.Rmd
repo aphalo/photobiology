@@ -61,7 +61,7 @@ HTML documentation is available at (https://docs.r4photobiology.info/photobiolog
 
 News on updates to the different packages of the 'r4photobiology' suite are regularly posted at (https://www.r4photobiology.info/).
 
-Two articles introduce the basic ideas behind the design of the suite and its use:
+Two articles introduce the basic ideas behind the design of the suite and describe its use:
 Aphalo P. J. (2015) (https://doi.org/10.19232/uv4pb.2015.1.14) and Aphalo P. J. (2016)  (https://doi.org/10.19232/uv4pb.2016.1.15).
 
 A book is under preparation, and the draft is currently available at (https://leanpub.com/r4photobiology/).

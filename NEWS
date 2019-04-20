@@ -1,7 +1,10 @@
-photobiology 0.9.27 (2019-03-xx)
+photobiology 0.9.27 (2019-04-21)
 ================================
 
 * Replace non-ASCII characters from documentation.
+* Improve performance of sun_angles() and day_night().
+* Make sure functions work correctly when a tibble is passed as argument to
+parameter geocode.
 
 photobiology 0.9.26 (2019-02-11)
 ================================

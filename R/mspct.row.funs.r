@@ -83,7 +83,7 @@ rowwise_filter <- function(x, .fun, col.name.tag = "", .fun.name = "Summary of",
   }
   col.name.out <- paste(col.name, col.name.tag, sep = "")
   names(z) <- c("w.length", col.name.out)
-  zz <- tibble::as.tibble(z)
+  zz <- tibble::as_tibble(z)
 
   # set class and attributes of spectrum to be returned
   if (col.name.tag[1] == "") {
@@ -167,7 +167,7 @@ rowwise_source <- function(x, .fun, col.name.tag = "", .fun.name = "Summary of",
   }
   col.name.out <- paste(col.name, col.name.tag, sep = "")
   names(z) <- c("w.length", col.name.out)
-  zz <- tibble::as.tibble(z)
+  zz <- tibble::as_tibble(z)
 
   # set class and attributes of spectrum to be returned
   if (col.name.tag[1] == "") {
@@ -247,7 +247,7 @@ rowwise_response <- function(x, .fun, col.name.tag = "", .fun.name = "Summary of
   }
   col.name.out <- paste(col.name, col.name.tag, sep = "")
   names(z) <- c("w.length", col.name.out)
-  zz <- tibble::as.tibble(z)
+  zz <- tibble::as_tibble(z)
 
   # set class and attributes of spectrum to be returned
   if (col.name.tag[1] == "") {
@@ -313,7 +313,7 @@ rowwise_reflector <- function(x, .fun, col.name.tag = "", .fun.name = "Summary o
   }
   col.name.out <- paste(col.name, col.name.tag, sep = "")
   names(z) <- c("w.length", col.name.out)
-  zz <- tibble::as.tibble(z)
+  zz <- tibble::as_tibble(z)
 
   # set class and attributes of spectrum to be returned
   if (col.name.tag[1] == "") {
@@ -373,7 +373,7 @@ rowwise_calibration <- function(x, .fun, col.name.tag = "", .fun.name = "Summary
   }
   col.name.out <- paste(col.name, col.name.tag, sep = "")
   names(z) <- c("w.length", col.name.out)
-  zz <- tibble::as.tibble(z)
+  zz <- tibble::as_tibble(z)
 
   # set class and attributes of spectrum to be returned
   zz <- setCalibrationSpct(zz, multiple.wl = 1L)
