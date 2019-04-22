@@ -1,9 +1,17 @@
+#' @rdname julian_day
+#'
+calendar_change <- lubridate::ymd_hms("1582-10-14 22:20:11 UTC") # Julian -> Gregorian
+
 # All functions defined in this file are "internal" and not exported
 # They are organized as very small functions to allow reuse of the results of
 # partial calculations. All constants are contained in the code itself.
 # They are based in "NOAA Sunrise/Sunset and Solar Position Calculators"
 # available at http://www.esrl.noaa.gov/gmd/grad/solcalc/calcdetails.html
 #' Solar astronomy using Meeus' algorithm
+#'
+#' The exact julian day computation is adapted from ode::julianDay() and tested
+#' againts test cases in Redas and Andreas (2008, table A4.1) for validity up
+#' to year 4712 BC.
 #'
 #' Low level functions based on NOAA's Excel worksheet
 #'
@@ -20,13 +28,30 @@
 #' @keywords internal
 #'
 julian_day <- function(time) {
+  time <- lubridate::with_tz(time, tzone = "UTC")
+  y <- as.double(lubridate::year(time))
+  m <- as.double(lubridate::month(time))
+  d <- as.double(lubridate::day(time))
+  selector <- m <= 2
+  m[selector] <- m[selector] + 12
+  y[selector] <- y[selector] - 1
+  d <- d + as_tod(time, unit.out = "hours", tz = "UTC") / 24
+  a <- floor(y / 100)
+  b <- 2 - a + floor(a / 4)
+  jd <- floor(365.25 * y) + floor(30.6001 * (m + 1)) + d + 1720994.5
+  ifelse(time > calendar_change, jd + b, jd)
+}
+
+#' @rdname julian_day
+#'
+julian_day_fast <- function(time) {
   2440587.79166667 + as.numeric(julian(time))
 }
 
 #' @rdname julian_day
 #'
 julian_century <- function(time) {
-  (2440587.79166667 + as.numeric(julian(time)) - 2451545) / 36525
+  (julian_day(time) - 2451545) / 36525
 }
 
 #' @rdname julian_day
@@ -115,9 +140,10 @@ eq_of_time <- function(mean.lon,
                        var.y) {
   mean.lon.rad <- mean.lon / 180 * pi
   anom.mean.rad <- anom.mean / 180 * pi
+  sin.anom.mean.rad <- sin(anom.mean.rad) # avoid computing it twice
   4 * ((var.y * sin(2 * mean.lon.rad) -
-         2 * eccent.earth * sin(anom.mean.rad) +
-         4 * eccent.earth * var.y * sin(anom.mean.rad) * cos(2 * mean.lon.rad) -
+         2 * eccent.earth * sin.anom.mean.rad +
+         4 * eccent.earth * var.y * sin.anom.mean.rad * cos(2 * mean.lon.rad) -
          0.5 * var.y^2 * sin(4 * mean.lon.rad) -
          1.25 * eccent.earth^2 * sin(2 * anom.mean.rad)) / pi * 180)
 }

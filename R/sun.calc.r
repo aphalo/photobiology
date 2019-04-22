@@ -145,7 +145,6 @@ sun_angles_fast <- function(time,
   sun.ecliptic <- mean_obliq_eclip(cent)
   obliq.corr <- obliq_corr(cent, sun.ecliptic)
 #  rt.ascen <- sun_rt_ascen(sun.app.lon, obliq.corr)
-  sun.declin <- sun_decline(sun.app.lon, obliq.corr)
   var.y <- var_y(obliq.corr)
   eq.of.time <- eq_of_time(mean.lon = sun.lon.mean,
                            eccent.earth = eccent.earth,
@@ -154,6 +153,7 @@ sun_angles_fast <- function(time,
 
   solar.time <- solar_tod(time, lat, lon, eq.of.time)
   hour.angle <- hour_angle(solar.time)
+  sun.declin <- sun_decline(sun.app.lon, obliq.corr)
   zenith.angle <- zenith_angle(lat, hour.angle, sun.declin)
   elevation.angle <- 90 - zenith.angle
   if (use.refraction) {
@@ -172,6 +172,9 @@ sun_angles_fast <- function(time,
                       address = rep(address, length(time)),
                       azimuth = azimuth.angle,
                       elevation = elevation.angle,
+                      declination = sun.declin,
+                      eq.of.time = eq.of.time,
+                      hour.angle = hour.angle,
                       .name_repair = "minimal")
   z
 }
@@ -428,9 +431,13 @@ day_night_fast <- function(date,
 
   address <- geocode[["address"]]
 
-  date <- lubridate::as_date(date, tz = tz)
+#  date <- lubridate::floor_date(lubridate::with_tz(date, tzone = tz), unit = "day")
+  date <- lubridate::as_date(date, tz = tz) # discards tz
 
-  noon.of.date <- lubridate::as_datetime(date) + lubridate::hours(12)
+   noon.of.date <- lubridate::as_datetime(date) + 43200 # as_datetime() is needed to obtain correct aswers!!
+#   noon.of.date <- lubridate::as_datetime(date) + lubridate::seconds(43200) # faster
+#  noon.of.date <- lubridate::with_tz(date, tzone = "UTC") + 43200 # faster
+
   cent <- julian_century(noon.of.date)
 
   tz.diff <- tz_time_diff(noon.of.date, tz.target = tz)
