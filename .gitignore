@@ -4,3 +4,5 @@
 man/*.Rd
 photobiology.Rproj
 docs
+test/*.svg
+test/*.png
