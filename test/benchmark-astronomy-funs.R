@@ -1,16 +1,16 @@
 # This are just benchmarks
 # We need to check also if values are correct
+library(microbenchmark)
+library(svglite)
 library(tibble)
 library(dplyr)
-library(lubridate)
 library(ggplot2)
 library(ggpmisc)
-library(photobiology)
-library(solartime)
-library(suncalc)
-library(microbenchmark)
-library(fishmethods)
-library(svglite)
+library(lubridate)
+library(photobiology) # sun_angles() and day_night()
+library(solartime) # computeSunPosition(), computeSunriseHour(), computeSunsetHour()
+library(suncalc) # getSunlightPosition(), getSunlightTimes()
+library(fishmethods) # astrocalc4r()
 
 ## vectorised time points
 
