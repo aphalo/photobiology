@@ -4,9 +4,7 @@ photobiology 0.9.27 (2019-04-22)
 * Replace non-ASCII characters from documentation.
 * Improve performance of sun_angles() and day_night() and implement Meuus
 algorithm for julian day. End result is slightly slower performance but much
-higher precision and range of dates that are handled correctly.
-* Add function sun_incidence_angle() to calculate the incidence angle of
-the solar beam on a plane at an arbitrary position.
+higher precision and broader range of dates that are handled correctly.
 * Make sure functions work correctly when a tibble is passed as argument to
 parameter geocode.
 - Values returned by sun_angles() and day_night() have changed very slightly

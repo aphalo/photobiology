@@ -19,15 +19,14 @@
 #'
 #' @family astronomy related functions
 #'
-#' @details This function is an implementation of Meeus equations as used in NOAAs
-#'   on-line web calculator, which are very precise and valid for a very broad
-#'   range of dates (years -4720 to 3000 at least). The apparent solar
-#'   elevations near sunrise and sunset are affected
-#'   by refraction in the atmosphere, which does in turn depend on weather
-#'   conditions. The effect of refraction on the apparent position of the sun
-#'   is only an estimate based on "typical" conditions.
-#'   The computation is not defined for latitudes 90 and -90 degrees, i.e. at
-#'   the poles.
+#' @details This function is an implementation of Meeus equations as used in
+#'   NOAAs on-line web calculator, which are precise and valid for a very broad
+#'   range of dates (years -1000 to 3000 at least). The apparent solar
+#'   elevations near sunrise and sunset are affected by refraction in the
+#'   atmosphere, which does in turn depend on weather conditions. The effect of
+#'   refraction on the apparent position of the sun is only an estimate based on
+#'   "typical" conditions for the atmosphere. The computation is not defined for
+#'   latitudes 90 and -90 degrees, i.e. exactly at the poles.
 #'
 #'   In the current implementation functions \code{sun_azimuth},
 #'   \code{sun_elevation}, and \code{sun_zenith_angle} are wrappers
@@ -229,79 +228,6 @@ sun_azimuth <- function(time = lubridate::now(),
              tz = tz,
              geocode = geocode,
              use.refraction = use.refraction)[["azimuth"]]
-}
-
-#' Angle of incidence of the direct solar beam
-#'
-#' The angle of incidence of the direct solar beam on a plane oriented to an
-#' arbitrary azimuth and with an arbitrary tilt with respect to the horizontal
-#' are computed either from solar angles passed as argument or by first
-#' computing these angles.
-#'
-#' @param time A "vector" of POSIXct Time, with any valid time zone (TZ) is
-#'   allowed, default is current time.
-#' @param tz character string indicating time zone to be used in output.
-#' @param geocode data frame with variables lon and lat as numeric values
-#'   (degrees), nrow > 1, allowed.
-#' @param use.refraction logical Flag indicating whether to correct for
-#'   fraction in the atmosphere.
-#' @param plane.azimuth The azimuth angle in degrees of the plane surface
-#'   receiving the direct solar beam, measured from North towards East.
-#' @param plane.tilt The tilt angle in degrees from the horizontal of
-#'   the plane surface receiving the direct solar beam.
-#' @param sun.angles The output of function \code{sun_angles()} or a data.frame
-#'   with at least columns named \code{azimuth} and \code{elevation} containing
-#'   values expressed in degrees. If \code{NULL} these are calculated by calling
-#'   \code{sun_angles()}.
-#'
-#' @return Numeric vector of angles in degrees, with 90 degrees indicating
-#'   normal incidence of the beam. The sign is removed and
-#'   if the beam hits the back of the plane, \code{Inf} is returned.
-#'
-#' @examples
-#'
-#' sun_incidence_angle(plane.azimuth = 90, # East facing butirrelevant
-#'                     plane.tilt = 0, # horizontal
-#'                     sun.angles = data.frame(azimuth = 90,
-#'                                             elevation = 45))
-#'
-#' sun_incidence_angle(plane.azimuth = 90, # East facing
-#'                     plane.tilt = 45,
-#'                     sun.angles = data.frame(azimuth = 90,
-#'                                             elevation = 45))
-#'
-#' sun_incidence_angle(plane.azimuth = 90, # West facing
-#'                     plane.tilt = 45,
-#'                     sun.angles = data.frame(azimuth = 0,
-#'                                             elevation = 0))
-#' @export
-#'
-sun_incidence_angle <- function( time = lubridate::now(),
-                                tz = lubridate::tz(time),
-                                geocode = tibble::tibble(lon = 0,
-                                                         lat = 51.5,
-                                                         address = "Greenwich"),
-                                use.refraction = FALSE,
-                                plane.azimuth = 0,
-                                plane.tilt = 0,
-                                sun.angles = NULL) {
-  if (is.null(sun.angles)) {
-    sun.angles <-
-      sun_angles(time = time,
-                 tz = tz,
-                 geocode = geocode,
-                 use.refraction = use.refraction)
-
-  }
-  sun.zenith.angle <- (90 - sun.angles[["elevation"]]) * pi / 180
-  sun.azimuth <- (sun.angles[["azimuth"]]) * pi / 180
-  plane.tilt <- plane.tilt * pi / 180
-  plane.azimuth <- plane.azimuth * pi / 180
-  incidence <-
-    acos(cos(sun.zenith.angle) * cos(plane.tilt) +
-           sin(plane.tilt) * sin(sun.zenith.angle) *
-           cos(sun.azimuth + plane.azimuth)) * 180 / pi
-  incidence
 }
 
 #' Time difference between two time zones

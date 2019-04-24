@@ -46,9 +46,9 @@ sun.
 geocode <- data.frame(lon = 0, lat = 55)
 date <- lubridate::today(tzone = "UTC")
 sunrise_time(date, tz = "UTC", geocode = geocode)
-#> [1] "2019-03-27 05:44:01 UTC"
+#> [1] "2019-04-24 04:35:45 UTC"
 day_length(date, tz = "UTC", geocode = geocode)
-#> [1] 12.71039
+#> [1] 14.74796
 ```
 
 ## Installation
@@ -76,7 +76,7 @@ News on updates to the different packages of the ‘r4photobiology’ suite
 are regularly posted at (<https://www.r4photobiology.info/>).
 
 Two articles introduce the basic ideas behind the design of the suite
-and its use: Aphalo P. J. (2015)
+and describe its use: Aphalo P. J. (2015)
 (<https://doi.org/10.19232/uv4pb.2015.1.14>) and Aphalo P. J. (2016)
 (<https://doi.org/10.19232/uv4pb.2016.1.15>).
 
@@ -127,6 +127,6 @@ citation("photobiology")
 
 ## License
 
-© 2012-2018 Pedro J. Aphalo (<pedro.aphalo@helsinki.fi>). Released under
+© 2012-2019 Pedro J. Aphalo (<pedro.aphalo@helsinki.fi>). Released under
 the GPL, version 2 or greater. This software carries no warranty of any
 kind.
