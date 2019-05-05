@@ -867,10 +867,10 @@ print.solar_date <- function(x, ...) {
 validate_geocode <- function(geocode) {
   geocode <- tibble::as_tibble(geocode, .name_repair = "minimal")
   stopifnot(nrow(geocode) >= 1) # needs to be replace by generation of no output in all fucntions
-  if (any(geocode[["lon"]] > 180 || geocode[["lon"]] < -180)) {
+  if (any(geocode[["lon"]] > 180 | geocode[["lon"]] < -180)) {
     stop("Longitude is off-range.")
   }
-  if (any(geocode[["lat"]] > 89.99 || geocode[["lat"]] < -89.99)) {
+  if (any(geocode[["lat"]] > 89.99 | geocode[["lat"]] < -89.99)) {
     stop("Latitude is off-range.")
   }
   if (!exists("address", geocode)) {
