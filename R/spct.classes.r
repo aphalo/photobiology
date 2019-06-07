@@ -1399,7 +1399,11 @@ getTimeUnit <- function(x, force.duration = FALSE) {
     }
     return(time.unit)
   } else {
-    return(NA_character_)
+    if (force.duration) {
+      lubridate::duration(NA_character_)
+    } else {
+      NA_character_
+    }
   }
 }
 
@@ -1501,9 +1505,9 @@ char2duration <- function(time.unit) {
                             minute  = lubridate::duration(1, "minutes"),
                             hour    = lubridate::duration(1, "hours"),
                             day     = lubridate::duration(1, "days"),
-                            exposure = lubridate::duration(NA),
-                            none    = lubridate::duration(NA),
-                            unknown = lubridate::duration(NA)
+                            exposure = lubridate::duration(NA_character_),
+                            none    = lubridate::duration(NA_character_),
+                            unknown = lubridate::duration(NA_character_)
     )
   } else if (lubridate::is.duration(time.unit)) {
     time.duration <- time.unit
