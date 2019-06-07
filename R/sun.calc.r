@@ -42,6 +42,21 @@
 #'   functions, one returning angles at given instants in time, and a
 #'   separate one returning the timing of events for given dates.
 #'
+#' @references
+#' The primary source for the algorithm used is the book:
+#' Meeus, J. (1998) Astronomical Algorithms, 2 ed., Willmann-Bell, Richmond,
+#' VA, USA. ISBN 978-0943396613.
+#'
+#' A different implementation is available at
+#' \url{https://www.nefsc.noaa.gov/AstroCalc4R/} and in R paclage
+#' \code{\link[fishmethods]{astrocalc4r}}. In 'fishmethods' (= 1.11-0) there
+#' is a bug in function astrocalc4r() that affects sunrise and sunset times.
+#'
+#' An interactive web page using the same algorithms is available at
+#' \url{https://www.esrl.noaa.gov/gmd/grad/solcalc/}. There are small
+#' differences in the returned times compared to our function that seem to be
+#' related to the estimation of atmospheric refraction (about 0.1 degrees).
+#'
 #' @export
 #' @examples
 #' library(lubridate)
@@ -255,19 +270,20 @@ tz_time_diff <- function(when = lubridate::now(),
 
 #' Times for sun positions
 #'
-#' Functions for calculating the timing of solar positions by means of function
-#' \code{sun_angles}, given geographical coordinates and dates. They can be also
-#' used to find the time for an arbitrary solar elevation between 90 and -90
-#' degrees by supplying "twilight" angle(s) as argument.
+#' Functions for calculating the timing of solar positions, given geographical
+#' coordinates and dates. They can be also used to find the time for an
+#' arbitrary solar elevation between 90 and -90 degrees by supplying "twilight"
+#' angle(s) as argument.
 #'
 #' @param date "vector" of POSIXct times or Date objects, any valid TZ is allowed,
 #'   default is current date at Greenwich.
 #' @param tz character vector indicating time zone to be used in output.
 #' @param geocode data frame with one or more rows and variables lon and lat as
 #'   numeric values (degrees). If present, address will be copied to the output.
-#' @param twilight character string, one of "none", "civil", "nautical",
-#'   "astronomical", or a \code{numeric} vector of length one, or two, giving
-#'   solar elevation angle(s) in degrees (negative if below the horizon).
+#' @param twilight character string, one of "none", "rim", "refraction",
+#'   "sunlight", "civil", "nautical", "astronomical", or a \code{numeric} vector
+#'   of length one, or two, giving solar elevation angle(s) in degrees (negative
+#'   if below the horizon).
 #' @param unit.out character string, One of "datetime", "day", "hour", "minute",
 #'   or "second".
 #'
@@ -278,17 +294,19 @@ tz_time_diff <- function(when = lubridate::now(),
 #' @family astronomy related functions
 #'
 #' @details Twilight names are interpreted as follows. "none": solar elevation =
-#'   0 degrees. "refraction": solar elevation = 0 degrees + refraction
+#'   0 degrees. "rim": upper rim of solar disk at the horizon or solar elevation
+#'   = -0.53 / 2. "refraction": solar elevation = 0 degrees + refraction
 #'   correction. "sunlight": upper rim of solar disk corrected for refraction,
-#'   which the value used by the online NOAA Solar Calculator. "civil": -6
-#'   degrees, "naval": -12 degrees, and "astronomical": -18 degrees. Unit names
-#'   for output are as follows: "hours" times for sunrise and sunset are
-#'   returned as times-of-day in hours since midnight. "date" or "datetime"
-#'   return the same times as datetime objects with TZ set (this is much slower
-#'   than the "hours"). Day length and night length are returned as numeric
-#'   values expressed in hours when `"datetime"' is passed as argument to
-#'   \code{unit.out}. If twilight is a numeric vector of length two, the element
-#'   with index 1 is used for sunrise and that with index 2 for sunset.
+#'   which is close to the value used by the online NOAA Solar Calculator.
+#'   "civil": -6 degrees, "naval": -12 degrees, and "astronomical": -18 degrees.
+#'   Unit names for output are as follows: "day", "hours", "minutes" and
+#'   "seconds" times for sunrise and sunset are returned as times-of-day since
+#'   midnight expressed in the chosen unit. "date" or "datetime" return the same
+#'   times as datetime objects with TZ set (this is much slower than "hours").
+#'   Day length and night length are returned as numeric values expressed in
+#'   hours when `"datetime"' is passed as argument to \code{unit.out}. If
+#'   twilight is a numeric vector of length two, the element with index 1 is
+#'   used for sunrise and that with index 2 for sunset.
 #'
 #' @seealso \code{\link{sun_angles}}.
 #'
@@ -317,10 +335,25 @@ tz_time_diff <- function(when = lubridate::now(),
 #'   preferable to directly call \code{day_night} as it will be faster.
 #'
 #' @section Warning: Be aware that R's \code{Date} class does not save time zone
-#'   metadata. This can lead to ambiguities in the current implementation as
+#'   metadata. This can lead to ambiguities in the current implementation
 #'   based on time instants. The argument passed to \code{date} should be
 #'   of class \code{POSIXct}, in other words an instant in time, from which
 #'   the correct date will be computed based on the \code{tz} argument.
+#'
+#' @references
+#' The primary source for the algorithm used is the book:
+#' Meeus, J. (1998) Astronomical Algorithms, 2 ed., Willmann-Bell, Richmond,
+#' VA, USA. ISBN 978-0943396613.
+#'
+#' A different implementation is available at
+#' \url{https://www.nefsc.noaa.gov/AstroCalc4R/} and in R paclage
+#' \code{\link[fishmethods]{astrocalc4r}}. In 'fishmethods' (= 1.11-0) there
+#' is a bug in function astrocalc4r() that affects sunrise and sunset times.
+#'
+#' An interactive web page using the same algorithms is available at
+#' \url{https://www.esrl.noaa.gov/gmd/grad/solcalc/}. There are small
+#' differences in the returned times compared to our function that seem to be
+#' related to the estimation of atmospheric refraction (about 0.1 degrees).
 #'
 #' @export
 #' @examples
@@ -375,7 +408,8 @@ day_night <- function(date = lubridate::now(tzone = "UTC"),
   # for solartime.
 
   # assertion
-  if (any(z[["daylength"]] < 0) || any(z[["nightlength"]] < 0)) {
+  if (any(!is.na(z[["daylength"]]) & z[["daylength"]] < 0) ||
+      any(!is.na(z[["nightlength"]]) & z[["nightlength"]] < 0)) {
     warning("Returned 'daylength/nightlength' value(s) off range")
   }
   attr(z, "unit.out") <- unit.out
@@ -548,36 +582,50 @@ day_night_fast <- function(date,
 #'
 #' @return numeric  Solar elevation angle at sunrise or sunset
 #' @keywords internal
+#'
 twilight2angle <- function(twilight) {
-  if (!is.numeric(twilight)) {
-    if (twilight == "none") { # center of solar disk
-      twilight_angle <- c(0, 0)
-    } else if (twilight == "refraction") { #  center of solar disk, refraction corrected
-      twilight_angle <- c(-0.4819444, -0.4819444)
-    } else if (twilight == "sunlight") { # upper rim of solar disk, refraction corrected
-      twilight_angle <- c(-0.833, -0.833)
-    } else if (twilight == "civil") { # refraction corrected
-      twilight_angle <- c(-6, -6)
-    } else if (twilight == "nautical") { # refraction corrected
-      twilight_angle <- c(-12, -12)
-    } else if (twilight == "astronomical") { # refraction corrected
-      twilight_angle <- c(-18, -18)
-    } else {
-      twilight_angle <- c(NA, NA)
+  # refraction depends on the elevation angle (ha), atmospheric pressure and temperature
+  # we assume atmospheric pressure 1010 hPa and temperature 10 C
+  # constants below are approximate
+  # function atm_refraction_approx() can be used to estimate refraction for other angles
+  if (length(twilight) == 0) {
+    warning("'twilight' too short or NULL")
+    twilight_angle <- c(NA_real_, NA_real_)
+  } else if (is.character(twilight)) {
+    if (length(twilight) != 1) {
+      warning("'twilight' is character but of length > 1, using first value")
+      twilight <- twilight[1L]
     }
-  } else {
+    twilight_angle <-
+      switch(twilight,
+             none = c(0, 0), # center of solar disk
+             rim = c(-0.53/2, -0.53/2), # upper rim of solar disk
+             refraction = c(-0.4819444, -0.4819444), # center of solar disk, refraction corrected
+             sunlight = c(-0.833, -0.833),
+             civil = c(-6, -6),
+             nautical = c(-12, -12),
+             astronomical = c(-18, -18),
+             {warning("Unrecognised 'twilight' value: ", twilight); c(NA_real_, NA_real_)}
+      )
+  } else if (is.numeric(twilight)) {
     if (length(twilight) == 1) {
       twilight_angle <- rep(twilight, 2)
     } else if (length(twilight) == 2) {
       twilight_angle <- twilight
     } else {
-      twilight_angle <- c(NA, NA)
+      stop("'twilight' vector longer than 2")
     }
-    twilight_angle <- ifelse(twilight_angle < 90, twilight_angle, NA)
-    twilight_angle <- ifelse(twilight_angle > -90, twilight_angle, NA)
-  }
-  if (any(is.na(twilight_angle))) {
-    stop("Unrecognized argument value for 'twilight': ", twilight)
+    if (any(!is.na(twilight_angle) &
+            twilight_angle < -90 | twilight_angle > 90 ) ) {
+      warning("Off range twilight angle(s) replaced with NAs.")
+      twilight_angle <-
+        ifelse(!is.na(twilight_angle) &
+                 twilight_angle > 90 | twilight_angle < -90,
+               NA_real_, twilight_angle)
+    }
+  } else {
+    warning("'twilight' must be numeric or character, but is ", class(twilight))
+    twilight_angle <- c(NA_real_, NA_real_)
   }
   twilight_angle
 }

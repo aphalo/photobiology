@@ -228,6 +228,9 @@ elevation_angle <- function(lat, hour.angle, decline) {
 #' @rdname julian_day
 #'
 atm_refraction_approx <- function(elevation.angle) {
+# The effects of variation in atmospheric pressure and temperature are ignored
+# in this implementation.
+#
   elev.rad <- elevation.angle / 180 * pi
   ifelse(elevation.angle > 85,
          0,

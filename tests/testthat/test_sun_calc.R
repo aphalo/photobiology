@@ -316,15 +316,52 @@ test_that("daylength", {
                                geocode = data.frame(lat = 45, lon = 0),
                                twilight = +1), 2), 12)
 
-  expect_error(day_length(ymd("2014-03-21"),
+  expect_equal(night_length(ymd("2014-09-21"),
+                            geocode = data.frame(lat = 45, lon = 0),
+                            twilight = "none"),
+               night_length(ymd("2014-09-21"),
+                            geocode = data.frame(lat = 45, lon = 0),
+                            twilight = 0))
+  expect_equal(night_length(ymd("2014-09-21"),
+                            geocode = data.frame(lat = 45, lon = 0),
+                            twilight = "civil"),
+               night_length(ymd("2014-09-21"),
+                            geocode = data.frame(lat = 45, lon = 0),
+                            twilight = -6))
+  expect_equal(night_length(ymd("2014-09-21"),
+                            geocode = data.frame(lat = 45, lon = 0),
+                            twilight = "civil"),
+               night_length(ymd("2014-09-21"),
+                            geocode = data.frame(lat = 45, lon = 0),
+                            twilight = c(-6, -6)))
+
+  expect_warning(day_length(ymd("2014-03-21"),
                           geocode = data.frame(lat = 45, lon = 0),
-                          twilight = "bad"))
-  expect_error(day_length(ymd("2014-03-21"),
+                          twilight = rep("none", 2)))
+  expect_warning(day_length(ymd("2014-03-21"),
+                            geocode = data.frame(lat = 45, lon = 0),
+                            twilight = "bad"))
+  expect_warning(day_length(ymd("2014-03-21"),
                           geocode = data.frame(lat = 45, lon = 0),
                           twilight = +91))
-  expect_error(day_length(ymd("2014-03-21"),
+  expect_warning(day_length(ymd("2014-03-21"),
                           geocode = data.frame(lat = 45, lon = 0),
                           twilight = -91))
+  expect_warning(day_length(ymd("2014-03-21"),
+                            geocode = data.frame(lat = 45, lon = 0),
+                            twilight = NA))
+  expect_warning(day_length(ymd("2014-03-21"),
+                            geocode = data.frame(lat = 45, lon = 0),
+                            twilight = NULL))
+  expect_error(day_length(ymd("2014-03-21"),
+                            geocode = data.frame(lat = 45, lon = 0),
+                            twilight = rep(0, 3)))
+  expect_warning(day_length(ymd("2014-03-21"),
+                          geocode = data.frame(lat = 45, lon = 0),
+                          twilight = numeric()))
+  expect_warning(day_length(ymd("2014-03-21"),
+                          geocode = data.frame(lat = 45, lon = 0),
+                          twilight = character()))
 
 })
 
