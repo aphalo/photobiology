@@ -1692,6 +1692,7 @@ getTfrType <- function(x) {
 #'
 #' @export
 #' @family Rfr attribute functions
+#' @examples
 #' my.spct <- reflector_spct(w.length = 400:409, Rfr = 0.1)
 #' getRfrType(my.spct)
 #' setRfrType(my.spct, "specular")
