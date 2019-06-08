@@ -20,21 +20,21 @@ Description: Definitions of classes, methods, operators and functions for use in
     'r4photobiology' suite, Aphalo P. J. (2015) <doi:10.19232/uv4pb.2015.1.14>.
 License: GPL (>= 2)
 Depends:
-    R (>= 3.4.0),
-    tibble (>= 2.1.1)
+    R (>= 3.5.0),
+    tibble (>= 2.1.3)
 Imports:
     stats,
     polynom (>= 1.4-0),
     lubridate (>= 1.7.4),
     plyr (>= 1.8.4),
-    dplyr (>= 0.8.0.1),
+    dplyr (>= 0.8.1),
     splus2R (>= 1.2-2),
     zoo (>= 1.8-5),
-    rlang (>= 0.3.2)
+    rlang (>= 0.3.4)
 Suggests:
-    knitr (>= 1.22),
-    rmarkdown (>= 1.12),
-    testthat (>= 2.0.1),
+    knitr (>= 1.23),
+    rmarkdown (>= 1.13),
+    testthat (>= 2.1.1),
     roxygen2 (>= 6.1.1)
 LazyLoad: yes
 LazyData: yes
