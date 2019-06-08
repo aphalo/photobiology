@@ -12,6 +12,7 @@ all_spct_attr.ls <-
                      "when.measured",
                      "where.measured",
                      "what.measured",
+                     "how.measured",
                      "spct.tags",
                      "normalized",
                      "scaled",

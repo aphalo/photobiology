@@ -1,7 +1,8 @@
-photobiology 0.9.28 (2019-06-XX)
+photobiology 0.9.28 (2019-06-08)
 ================================
 
 * Fix bug in getTimeUnit().
+* Add setHowMeasured() and getHowMeasured() using attribute "how.measured".
 
 photobiology 0.9.27 (2019-04-22)
 ================================

@@ -117,6 +117,8 @@ reference:
     - setWhenMeasured
     - getWhereMeasured
     - setWhereMeasured
+    - getHowMeasured
+    - setHowMeasured
     - getIdFactor
     - setIdFactor
     - is_tagged
