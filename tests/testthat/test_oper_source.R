@@ -42,8 +42,8 @@ test_that("constructor energy", {
   my.e.spct <- source_spct(w.length = 400:409, s.e.irrad = 1, time.unit = "exposure")
   expect_warning(my.b.spct <- source_spct(w.length = 400:409, s.e.irrad = 1,
                                           time.unit = "zzz"))
-  my.ds.spct <- source_spct(w.length = 400:409, s.e.irrad = 1, time.unit = duration(1, "seconds"))
-  my.dh.spct <- source_spct(w.length = 400:409, s.e.irrad = 1, time.unit = duration(1, "hours"))
+  my.ds.spct <- source_spct(w.length = 400:409, s.e.irrad = 1, time.unit = lubridate::duration(1, "seconds"))
+  my.dh.spct <- source_spct(w.length = 400:409, s.e.irrad = 1, time.unit = lubridate::duration(1, "hours"))
 
   expect_warning(my.b.spct <- source_spct(w.length = 400:409, s.e.irrad = 1, time.unit = "zzz"))
   expect_equal(my.spct[["s.e.irrad"]], rep(1, length.out = 10))
@@ -52,6 +52,7 @@ test_that("constructor energy", {
   expect_named(my.s.spct, c("w.length", "s.e.irrad"))
   expect_named(my.d.spct, c("w.length", "s.e.irrad"))
   expect_named(my.e.spct, c("w.length", "s.e.irrad"))
+
   expect_equal(getTimeUnit(my.spct), "second")
   expect_equal(getTimeUnit(my.s.spct), "second")
   expect_equal(getTimeUnit(my.h.spct), "hour")
@@ -60,6 +61,15 @@ test_that("constructor energy", {
   expect_equal(getTimeUnit(my.b.spct), "unknown")
   expect_equal(getTimeUnit(my.ds.spct), duration(1, "seconds"))
   expect_equal(getTimeUnit(my.dh.spct), duration(1, "hours"))
+
+  expect_equal(getTimeUnit(my.spct, force.duration = TRUE), lubridate::duration(1, "seconds"))
+  expect_equal(getTimeUnit(my.s.spct, force.duration = TRUE), lubridate::duration(1, "seconds"))
+  expect_equal(getTimeUnit(my.h.spct, force.duration = TRUE), lubridate::duration(1, "hour"))
+  expect_equal(getTimeUnit(my.d.spct, force.duration = TRUE), lubridate::duration(1, "day"))
+  expect_equal(getTimeUnit(my.e.spct, force.duration = TRUE), lubridate::duration(NA_real_))
+  expect_equal(getTimeUnit(my.b.spct, force.duration = TRUE), lubridate::duration(NA_real_))
+  expect_equal(getTimeUnit(my.ds.spct, force.duration = TRUE), lubridate::duration(1, "seconds"))
+  expect_equal(getTimeUnit(my.dh.spct, force.duration = TRUE), lubridate::duration(1, "hours"))
 })
 
 test_that("constructor photon", {
