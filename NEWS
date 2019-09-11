@@ -1,5 +1,9 @@
-photobiology 0.9.29 (2019-0x-xx)
+photobiology 0.9.29 (2019-09-10)
 ================================
+
+* Add clean.object_spct(), na.rm.object_spct() and na.omit.object_spct()
+methods, which were missing.
+* Correct small off-range errors in Ler_leaf.spct data.
 
 photobiology 0.9.28 (2019-06-08)
 ================================

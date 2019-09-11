@@ -125,6 +125,46 @@ clean.reflector_spct <-
                ...)
   }
 
+#' @describeIn clean Replace off-range values in an object spectrum
+#'
+#' @export
+#'
+clean.object_spct <-
+  function(x,
+           range = x,
+           range.s.data = c(0, 1),
+           fill = range.s.data,
+           ...) {
+   y <- clean_spct(x = x,
+                   range = range,
+                   range.s.data = range.s.data,
+                   fill = fill,
+                   col.names = "Tfr",
+                   ...)
+   z <- clean_spct(x = y,
+                   range = range,
+                   range.s.data = range.s.data,
+                   fill = fill,
+                   col.names = "Rfr",
+                   ...)
+   # we need to protect from rounding errors
+   if (getTfrType(z) == "total") {
+     Afr <- 0.99999 - (z$Rfr + z$Tfr)
+   } else if (getTfrType(z) == "internal") {
+     Afr <- 0.99999 - (z$Rfr + z$Tfr * (1 - z$Rfr))
+   } else {
+     stop("Bad Tfr.type attribute: ", getTfrType(z))
+   }
+   if (any(Afr < -1e-5)) {
+     warning("Off-range Afr = 1 - (Tfr + Rfr): ", signif(min(Afr) + 0.00001, 2), " set to 0")
+   }
+   delta <- ifelse(Afr < 0, Afr / 2, 0)
+   if (any(delta != 0)) {
+     z$Rfr <- z$Rfr + delta
+     z$Tfr <- z$Tfr + delta
+   }
+   z
+  }
 
 #' @describeIn clean Replace off-range values in a response spectrum
 #'

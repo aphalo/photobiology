@@ -5,10 +5,6 @@ home:
   links:
   - text: Photobiology packages
     href: https://www.r4photobiology.info/
-  - text: More on 'ggplot2'
-    href: https://r4ds.had.co.nz/data-visualisation.html
-  - text: Other extensions
-    href: https://www.ggplot2-exts.org/gallery/
 
 reference:
   - title: Package overview
