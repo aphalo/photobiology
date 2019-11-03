@@ -244,14 +244,15 @@ setWhenMeasured(my.spct, ymd_hms("2015-10-31 22:55:00", tz = "EET"))
 getWhenMeasured(my.spct)
 ```
 
-Functions `setWhereMeasured()` and `getWhereMeasured()` are used for setting or getting a geocode stored in a `data.frame`. This format is compatible with function `geocode()` from package `ggmap`. We pass latitude and longitude coordinates, as shown below. The returned value is always a data frame with columns `"lon"` and `"lat"`.
+Functions `setWhereMeasured()` and `getWhereMeasured()` are used for setting or getting a geocode stored in a `data.frame`. This format is compatible with function `geocode()` from package `ggmap`. We pass latitude and longitude coordinates, as shown below. The returned value is always a data frame with columns `"lon"`, `"lat"` and `"address"`.
 
 ```{r, attr-2}
 setWhereMeasured(my.spct, NULL)
 getWhereMeasured(my.spct)
 setWhereMeasured(my.spct, lat = 60, lon = -10)
 getWhereMeasured(my.spct)
-getWhereMeasured(my.spct)$lon
+setWhereMeasured(my.spct, lat = 60, lon = -10, address = "Somewhere")
+getWhereMeasured(my.spct)
 my.spct
 ```
 

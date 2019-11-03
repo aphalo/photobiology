@@ -2245,6 +2245,10 @@ getWhenMeasured.generic_mspct <- function(x,
 
 #' utilities
 #'
+#' @param x data.frame
+#'
+#' @keywords internal
+#'
 is_valid_geocode <- function(x) {
   is.data.frame(x) &&
     nrow(x) == 1 &&
@@ -2262,6 +2266,7 @@ is_valid_geocode <- function(x) {
 #'   function \code{geocode} from package 'ggmap' for a location search.
 #' @param lat numeric Latitude in decimal degrees North
 #' @param lon numeric Longitude in decimal degrees West
+#' @param address character Human readable address
 #' @param ... Allows use of additional arguments in methods for other classes.
 #'
 #' @return x
@@ -2275,7 +2280,7 @@ is_valid_geocode <- function(x) {
 #' @family measurement metadata functions
 #'
 setWhereMeasured <-
-  function(x, where.measured, lat, lon, ...) UseMethod("setWhereMeasured")
+  function(x, where.measured, lat, lon, address, ...) UseMethod("setWhereMeasured")
 
 #' @describeIn setWhereMeasured default
 #' @export
@@ -2283,6 +2288,7 @@ setWhereMeasured.default <- function(x,
                                      where.measured,
                                      lat,
                                      lon,
+                                     address,
                                      ...) {
   x
 }
@@ -2293,11 +2299,13 @@ setWhereMeasured.generic_spct <- function(x,
                                           where.measured = NA,
                                           lat = NA,
                                           lon = NA,
+                                          address = NA_character_,
                                           ...) {
   name <- substitute(x)
   if (!is.null(where.measured)) {
     if (any(is.na(where.measured))) {
-      where.measured <- data.frame(lon = lon, lat = lat)
+      where.measured <- data.frame(lon = lon, lat = lat, address = address,
+                                   stringsAsFactors = FALSE)
     }
     if (is.data.frame(where.measured)) {
       where.measured <- list(where.measured)
@@ -2321,11 +2329,13 @@ setWhereMeasured.summary_generic_spct <- function(x,
                                                   where.measured = NA,
                                                   lat = NA,
                                                   lon = NA,
+                                                  address = NA_character_,
                                                   ...) {
   name <- substitute(x)
   if (!is.null(where.measured)) {
     if (any(is.na(where.measured))) {
-      where.measured <- data.frame(lon = lon, lat = lat)
+      where.measured <- data.frame(lon = lon, lat = lat, address = address,
+                                   stringsAsFactors = FALSE)
     }
     if (is.data.frame(where.measured)) {
       where.measured <- list(where.measured)
@@ -2351,6 +2361,7 @@ setWhereMeasured.generic_mspct <- function(x,
                                            where.measured = NA,
                                            lat = NA,
                                            lon = NA,
+                                           address = NA_character_,
                                            ...) {
   name <- substitute(x)
   stopifnot(is.null(where.measured) || is.na(where.measured) ||
@@ -2363,7 +2374,8 @@ setWhereMeasured.generic_mspct <- function(x,
                  .fun = setWhereMeasured,
                  where.measured = where.measured,
                  lat = lat,
-                 lon = lon)
+                 lon = lon,
+                 address = address)
   } else if (!is.na(where.measured) && !is.data.frame(where.measured) &&
              is.list(where.measured) && length(where.measured) == length(x)) {
     for (i in seq_along(x)) {
@@ -2374,9 +2386,10 @@ setWhereMeasured.generic_mspct <- function(x,
     for (i in seq_along(x)) {
       x[[i]] <- setWhereMeasured(x[[i]], where.measured = where.measured[i, ])
     }
-  } else if (is.na(where.measured) && length(lat) == length(x) && length(lon) == length(x)) {
+  } else if (is.na(where.measured) && length(lat) == length(x) &&
+             length(lon) == length(x) && length(address) == length(x)) {
     for (i in seq_along(x)) {
-      x[[i]] <- setWhereMeasured(x[[i]], lon = lon[i], lat = lat[i])
+      x[[i]] <- setWhereMeasured(x[[i]], lon = lon[i], lat = lat[i], address = address[i])
     }
   } else {
     stop("Length of geocode information must be either 1, or equal to the number of spectra.")
