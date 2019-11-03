@@ -1,4 +1,3 @@
-library("photobiology")
 library("lubridate")
 
 context("set_get")
@@ -35,7 +34,8 @@ test_that("any_spct", {
   expect_true(all(is.na(getWhereMeasured(my.spct))))
 
   tested.location <- data.frame(lon = 24.93545, lat = 60.16952,
-                                address = "Helsinki")
+                                address = "Helsinki",
+                                stringsAsFactors = FALSE)
 
   setWhereMeasured(my.spct, tested.location)
   expect_equal(getWhereMeasured(my.spct), tested.location)

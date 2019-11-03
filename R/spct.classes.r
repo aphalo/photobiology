@@ -2243,6 +2243,15 @@ getWhenMeasured.generic_mspct <- function(x,
 
 # where.measured ---------------------------------------------------------------
 
+#' utilities
+#'
+is_valid_geocode <- function(x) {
+  is.data.frame(x) &&
+    nrow(x) == 1 &&
+    all(c("lon", "lat") %in% names(x)) &&
+    if ("address" %in% names(x)) is.character(x[["address"]]) else TRUE
+}
+
 #' Set the "where.measured" attribute
 #'
 #' Function to set by reference the "where.measured" attribute  of an existing
@@ -2285,13 +2294,6 @@ setWhereMeasured.generic_spct <- function(x,
                                           lat = NA,
                                           lon = NA,
                                           ...) {
-
-  is_valid_geocode <- function(x) {
-    is.data.frame(x) &&
-      nrow(x) == 1 &&
-      all(c("lon", "lat") %in% names(x))
-  }
-
   name <- substitute(x)
   if (!is.null(where.measured)) {
     if (any(is.na(where.measured))) {
@@ -2320,12 +2322,6 @@ setWhereMeasured.summary_generic_spct <- function(x,
                                                   lat = NA,
                                                   lon = NA,
                                                   ...) {
-  is_valid_geocode <- function(x) {
-    is.data.frame(x) &&
-      nrow(x) == 1 &&
-      all(c("lon", "lat") %in% names(x))
-  }
-
   name <- substitute(x)
   if (!is.null(where.measured)) {
     if (any(is.na(where.measured))) {
@@ -2428,6 +2424,10 @@ getWhereMeasured.generic_spct <- function(x, ...) {
     # need to handle invalid or missing attribute values
     where.measured <- data.frame(lon = NA_real_, lat = NA_real_)
   }
+  if ("address" %in% names(where.measured) &&
+      !is.character(where.measured[["address"]])) {
+    where.measured[["address"]] <- as.character(where.measured[["address"]])
+  }
   where.measured
 }
 
@@ -2440,6 +2440,10 @@ getWhereMeasured.summary_generic_spct <- function(x, ...) {
         all(sapply(where.measured, is.data.frame)))) {
     # need to handle invalid or missing attribute values
     where.measured <- data.frame(lon = NA_real_, lat = NA_real_)
+  }
+  if ("address" %in% names(where.measured) &&
+      !is.character(where.measured[["address"]])) {
+    where.measured[["address"]] <- as.character(where.measured[["address"]])
   }
   where.measured
 }

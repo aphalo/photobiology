@@ -4,7 +4,8 @@ library(lubridate)
 
 geocode.kumpula <- data.frame(lat = 60.20911,
                               lon = 24.96474,
-                              address = "Kumpula, Helsinki, FI")
+                              address = "Kumpula, Helsinki, FI",
+                              stringsAsFactors = FALSE)
 
 sun.midday.data <- read.table("data-raw/sun_20100622_midday.txt", col.names = c("time_min","w.length","s.e.irrad"))
 sun.midday.data$time_min <- NULL

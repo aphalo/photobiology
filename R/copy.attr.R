@@ -254,8 +254,8 @@ get_attributes.source_spct <- function(x,
                                        which = NULL,
                                        ...) {
   get_attributes.generic_spct(x, which = which,
-                              allowed = c(all_spct_attr.ls["generic_spct"],
-                                          all_spct_attr.ls["source_spct"]),
+                              allowed = c(all_spct_attr.ls[["generic_spct"]],
+                                          all_spct_attr.ls[["source_spct"]]),
                               ...)
 }
 
@@ -266,8 +266,8 @@ get_attributes.filter_spct <- function(x,
                                        which = NULL,
                                        ...) {
   get_attributes.generic_spct(x, which = which,
-                              allowed = c(all_spct_attr.ls["generic_spct"],
-                                          all_spct_attr.ls["filter_spct"]),
+                              allowed = c(all_spct_attr.ls[["generic_spct"]],
+                                          all_spct_attr.ls[["filter_spct"]]),
                               ...)
 }
 
@@ -279,8 +279,8 @@ get_attributes.reflector_spct <- function(x,
                                           which = NULL,
                                           ...) {
   get_attributes.generic_spct(x, which = which,
-                              allowed = c(all_spct_attr.ls["generic_spct"],
-                                          all_spct_attr.ls["reflector_spct"]),
+                              allowed = c(all_spct_attr.ls[["generic_spct"]],
+                                          all_spct_attr.ls[["reflector_spct"]]),
                               ...)
 }
 
@@ -292,8 +292,8 @@ get_attributes.object_spct <- function(x,
                                        which = NULL,
                                        ...) {
   get_attributes.generic_spct(x, which = which,
-                              allowed = c(all_spct_attr.ls["generic_spct"],
-                                          all_spct_attr.ls["object_spct"]),
+                              allowed = c(all_spct_attr.ls[["generic_spct"]],
+                                          all_spct_attr.ls[["object_spct"]]),
                               ...)
 }
 
