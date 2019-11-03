@@ -71,7 +71,8 @@ setWhereMeasured(my.spct, NULL)
 getWhereMeasured(my.spct)
 setWhereMeasured(my.spct, lat = 60, lon = -10)
 getWhereMeasured(my.spct)
-getWhereMeasured(my.spct)$lon
+setWhereMeasured(my.spct, lat = 60, lon = -10, address = "Somewhere")
+getWhereMeasured(my.spct)
 my.spct
 
 ## ---- attr-2a------------------------------------------------------------

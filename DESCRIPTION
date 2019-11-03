@@ -25,6 +25,7 @@ Depends:
 Imports:
     stats,
     polynom (>= 1.4-0),
+    stringr (>= 1.4.0),
     lubridate (>= 1.7.4),
     plyr (>= 1.8.4),
     dplyr (>= 0.8.1),

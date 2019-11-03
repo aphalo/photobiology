@@ -80,10 +80,19 @@ print.generic_spct <- function(x, ..., n = NULL, width = NULL)
     } else {
       names <- paste(names, "measured at ")
     }
-    cat(paste(names,
-              sapply(where.measured, `[[`, i = "lat"), " N, ",
-              sapply(where.measured, `[[`, i = "lon"), " E",
-              sep = "", collapse = "\n"), "\n")
+    if (all(sapply(where.measured,
+                   function(x) {"address" %in% names(x) && !any(is.na(x[["address"]]))}))) {
+      cat(paste(names,
+                sapply(where.measured, `[[`, i = "lat"), " N, ",
+                sapply(where.measured, `[[`, i = "lon"), " E; ",
+                stringr::str_trunc(sapply(where.measured, `[[`, i = "address"), width = 30, side = "right"),
+                sep = "", collapse = "\n"),"\n")
+    } else {
+      cat(paste(names,
+                sapply(where.measured, `[[`, i = "lat"), " N, ",
+                sapply(where.measured, `[[`, i = "lon"), " E",
+                sep = "", collapse = "\n"), "\n")
+    }
   }
   if (class_spct(x)[1] %in% c("raw_spct", "cps_spct") &&
       getMultipleWl(x) == 1) {
@@ -262,6 +271,8 @@ summary.generic_spct <- function(object,
                                  ...) {
   z <- list()
   class(z) <- c("summary_generic_spct", class(z))
+  object.name <- substitute(object)
+  z[["orig.name"]] <- if (is.name(object.name)) as.character(object.name) else "anonymous"
   z[["orig.class"]] <- class_spct(object)[1]
   z[["orig.dim_desc"]] <- dplyr::dim_desc(object)
   z[["wl.range"]] <- range(object)
@@ -317,7 +328,11 @@ summary.generic_spct <- function(object,
 #' print(summary(sun.spct))
 #'
 print.summary_generic_spct <- function(x, ...) {
-  cat("Summary of object: ", x[["orig.class"]], " ", x[["orig.dim_desc"]], "\n", sep = "")
+  # ensure backwards compatibility with summary objects created by versions < 0.9.30
+  if (!exists("orig.name", x) || is.na(x[["orig.name"]])) {
+    x[["orig.name"]] <- "'unknown name'"
+  }
+  cat("Summary of ", x[["orig.class"]], " ", x[["orig.dim_desc"]], " object: ", x[["orig.name"]] ,"\n", sep = "")
   m.wl <- getMultipleWl(x)
   if (m.wl > 1) {
     cat("containing ", m.wl, " spectra in long form\n")
@@ -367,10 +382,19 @@ print.summary_generic_spct <- function(x, ...) {
     } else {
       names <- paste(names, "measured at ")
     }
-    cat(paste(names,
-              sapply(where.measured, `[[`, i = "lat"), " N, ",
-              sapply(where.measured, `[[`, i = "lon"), " E",
-              sep = "", collapse = "\n"), "\n")
+    if (all(sapply(where.measured,
+                   function(x) {"address" %in% names(x) && !any(is.na(x[["address"]]))}))) {
+      cat(paste(names,
+                sapply(where.measured, `[[`, i = "lat"), " N, ",
+                sapply(where.measured, `[[`, i = "lon"), " E; ",
+                stringr::str_trunc(sapply(where.measured, `[[`, i = "address"), width = 30, side = "right"),
+                sep = "", collapse = "\n"),"\n")
+    } else {
+      cat(paste(names,
+                sapply(where.measured, `[[`, i = "lat"), " N, ",
+                sapply(where.measured, `[[`, i = "lon"), " E",
+                sep = "", collapse = "\n"), "\n")
+    }
   }
   if (class(x)[1] %in% c("summary_raw_spct", "summary_cps_spct") &&
       getMultipleWl(x) == 1) {
