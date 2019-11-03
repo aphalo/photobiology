@@ -13,11 +13,11 @@ all_spct_attr.ls <-
                      "where.measured",
                      "what.measured",
                      "how.measured",
-                     "spct.tags",
+#                     "spct.tags",
+#                     "spct.version",
                      "normalized",
                      "scaled",
-                     "multiple.wl",
-                     "spct.version"),
+                     "multiple.wl"),
     raw_spct = c("time.unit", "linearized"),
     cps_spct = c("time.unit", "linearized"),
     source_spct = c("time.unit", "bswf.used"),
@@ -33,6 +33,95 @@ private.attributes <- all_spct_attr.ls[["private"]]
 common.attributes <- all_spct_attr.ls[["generic_spct"]]
 
 all.attributes <- unique(unlist(all_spct_attr.ls, use.names = FALSE))
+
+# select_spct_attributes --------------------------------------------------
+
+#' Merge user supplied attribute names with default ones
+#'
+#' Allow users to add and subract from default attributes in addition to
+#' providing a given set of attributes.
+#'
+#' @param attributes,attributes.default character vector or a list of character
+#'   vectors.
+#'
+#' @details Vectors of character strings passed as argument to \code{attributes}
+#'   are parsed so that if the first member string is \code{"+"}, the remaining
+#'   members are added to those in \code{attributes.default}; if it is
+#'   \code{"-"} the remaining members are removed from in
+#'   \code{attributes.default}; and if it is \code{"="} the remaining members
+#'   replace those in in \code{attributes.default}. If the first member is none
+#'   of these three strings, the behaviour is the same as when the first string
+#'   is \code{"="}. If \code{attributes} is \code{NULL} all the attributes in
+#'   \code{attributes.default} are used and if it is \code{""} no attribute
+#'   names are returned, \code{""} has precedence over other member values. The
+#'   order of the names of annotations has no meaning: the vector is interpreted
+#'   as a set except for the three possible "operators" at position 1.
+#'
+#' @return A character vector of attribute names.
+#'
+#' @seealso \code{\link{get_attributes}}
+#'
+#' @export
+#'
+#' @family measurement metadata functions
+#'
+select_spct_attributes <- function(attributes,
+                                   attributes.default = spct_attributes(TRUE)) {
+  if (length(attributes) == 0L) { # handle character(0) and NULL without delay
+    return(attributes.default)
+  } else if (is.list(attributes)) {
+    attributes.ls <- attributes
+  } else if (is.character(attributes)) {
+    attributes.ls <- list(attributes)
+  }
+  attributes <- NULL
+
+  for (attributes in attributes.ls) {
+    stopifnot(is.character(attributes))
+    # we can receive character(0) from preceeding iteration
+    if (length(attributes) == 0L || attributes[1] == "*") {
+      z <- attributes.default
+    } else if ("" %in% attributes) {
+      # no annotations
+      z <- ""
+    } else if (attributes[1] == "-") {
+      # remove exact matches
+      z <- setdiff(attributes.default, attributes[-1])
+    } else if (attributes[1] == "+") {
+      attributes <- attributes[-1]
+      # merge default with addition
+      z <- union(attributes.default, attributes)
+    } else if (attributes[1] == "=") {
+      # replace
+      z <- attributes[-1]
+      # handle character(0), using "" is a kludge but produces intuitive behaviour
+      if (length(z) == 0L) {
+        z <- ""
+      }
+    } else {
+      z <- attributes
+    }
+    attributes.default <- z
+  }
+
+  unique(z) # remove duplicates
+}
+
+#' @rdname select_spct_attributes
+#'
+#' @param .class character Name of spectral class.
+#' @export
+#'
+spct_attributes <- function(.class = "all", attributes = "*") {
+  if ("all" %in% .class) {
+    attributes.default <- unlist(all_spct_attr.ls, use.names = FALSE)
+  } else {
+    attributes.default <- unlist(all_spct_attr.ls[union("generic_spct", .class)], use.names = FALSE)
+  }
+#  attributes.default <- union(all_spct_attr.ls[["private"]], all_spct_attr.ls[[.class]])
+  select_spct_attributes(attributes = attributes,
+                         attributes.default = attributes.default)
+}
 
 # copy_attributes ---------------------------------------------------------
 
@@ -216,7 +305,8 @@ merge_attributes.generic_spct <- function(x, y, z,
 #'
 #' Method returning attributes of an object of class generic_spct or derived,
 #' or of class waveband. Only attributes defined and/or set by package
-#' 'photobiology' for objects of the corresponding class are returned.
+#' 'photobiology' for objects of the corresponding class are returned. Parameter
+#' \code{which} can be used to subset the list of attributes.
 #'
 #' @param x a generic_spct object.
 #' @param which character vector Names of attributes to retrieve.
@@ -224,6 +314,19 @@ merge_attributes.generic_spct <- function(x, y, z,
 #' @param ... currently ignored
 #'
 #' @return Named \code{list} of attribute values.
+#'
+#' @details Vectors of character strings passed as argument to \code{which} are
+#'   parsed so that if the first member string is \code{"-"} the remaining
+#'   members are removed from the \code{allowed}; and if it is \code{"="} the
+#'   remaining members are used if in \code{allowed}. If the first member is
+#'   none of these three strings, the behaviour is the same as if the first
+#'   string is \code{"="}. If \code{which} is \code{NULL} all the attributes in
+#'   \code{allowed} are used. The string \code{""} means no attributes, and has
+#'   precedence over any other values in the character vector. The order of the
+#'   names of annotations has no meaning: the vector is interpreted as a set
+#'   except for the three possible "operators" at position 1.
+#'
+#' @seealso \code{\link{select_spct_attributes}}
 #'
 #' @export
 #'
@@ -241,10 +344,12 @@ get_attributes.generic_spct <-
            allowed = all.attributes,
            ...) {
     if (length(which) == 0L) {
-      which <- allowed
+      which <- "*"
     }
+    target.attributes <- select_spct_attributes(attributes = which,
+                                                attributes.default = allowed)
     spct.attr <- attributes(x)
-    spct.attr[names(spct.attr) %in% intersect(which, allowed)]
+    spct.attr[names(spct.attr) %in% target.attributes]
   }
 
 #' @describeIn get_attributes source_spct
@@ -306,4 +411,31 @@ get_attributes.waveband <- function(x,
   if (length(which) == 0L || which == "comment")
   list(comment = attr(x, "comment", exact = TRUE))
 }
+
+# attributes2tb -----------------------------------------------------------
+
+#' Copy attributes into a tibble
+#'
+#' Method returning attributes of an object of class generic_spct or derived,
+#' or of class waveband. Only attributes defined and/or set by package
+#' 'photobiology' for objects of the corresponding class are returned.
+#'
+#' @param x a generic_spct object.
+#' @param which character vector Names of attributes to retrieve.
+#' @param ... currently ignored
+#'
+#' @return A tibble with the values stored in the attributes whose names were
+#'   selected through the argument to \code{which} if present in \code{x}.
+#'
+#' @export
+#'
+#' @family measurement metadata functions
+#'
+spct_attributes2tb <-
+  function(x,
+           which = c("-", "names", "row.names", "spct.tags", "spct.version", "comment"),
+           ...) {
+    spct.attr <- get_attributes(x = x, which = which, ...)
+    as_tibble(spct.attr)
+  }
 
