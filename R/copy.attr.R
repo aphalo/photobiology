@@ -66,7 +66,7 @@ all.attributes <- unique(unlist(all_spct_attr.ls, use.names = FALSE))
 #' @family measurement metadata functions
 #'
 select_spct_attributes <- function(attributes,
-                                   attributes.default = spct_attributes(TRUE)) {
+                                   attributes.default = spct_attributes()) {
   if (length(attributes) == 0L) { # handle character(0) and NULL without delay
     return(attributes.default)
   } else if (is.list(attributes)) {
@@ -118,7 +118,6 @@ spct_attributes <- function(.class = "all", attributes = "*") {
   } else {
     attributes.default <- unlist(all_spct_attr.ls[union("generic_spct", .class)], use.names = FALSE)
   }
-#  attributes.default <- union(all_spct_attr.ls[["private"]], all_spct_attr.ls[[.class]])
   select_spct_attributes(attributes = attributes,
                          attributes.default = attributes.default)
 }
@@ -431,7 +430,7 @@ get_attributes.waveband <- function(x,
 #'
 #' @family measurement metadata functions
 #'
-spct_attributes2tb <-
+spct_attr2tb <-
   function(x,
            which = c("-", "names", "row.names", "spct.tags", "spct.version", "comment"),
            ...) {
