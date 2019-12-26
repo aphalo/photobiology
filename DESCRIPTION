@@ -2,7 +2,7 @@ Package: photobiology
 Type: Package
 Title: Photobiological Calculations
 Version: 0.9.29.9000
-Date: 2019-11-03
+Date: 2019-12-19
 Authors@R:
    c(
     person("Pedro J.", "Aphalo", email = "pedro.aphalo@helsinki.fi", role = c("aut", "cre"), comment = c(ORCID = "0000-0003-3385-972X")),
@@ -44,5 +44,5 @@ URL: https://www.r4photobiology.info/,
     https://bitbucket.org/aphalo/photobiology
 BugReports: https://bitbucket.org/aphalo/photobiology/issues
 Encoding: UTF-8
-RoxygenNote: 6.1.1
+RoxygenNote: 7.0.2
 VignetteBuilder: knitr

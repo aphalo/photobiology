@@ -907,14 +907,27 @@ print.solar_date <- function(x, ...) {
 
 #' Validate a geocode
 #'
-#' Convert to tibble, check data bounds, convert address to character if
-#' it is not, or add character NAs if the address column is missing.
+#' Test validity of a geocode or ensure that a geocode is valid.
 #'
-#' @keywords internal
+#' @details
+#' \code{validate_geocode} Converts to tibble, checks data bounds, converts
+#' address to character if it is not already a character vector, or add
+#' character NAs if the address column is missing.
+#'
+#' \code{is_valid_geocode} Checks if a geocode is valid, returning 0L if not,
+#' and the number of row otherwise.
+#'
+#' @param geocode data.frame with geocode data in columns \code{"lat"},
+#'   \code{"lon"}, and possibly also \code{"address"}.
+#'
+#' @return A valid geocode stored in a tibble.
+#'
+#' @export
 #'
 validate_geocode <- function(geocode) {
   geocode <- tibble::as_tibble(geocode, .name_repair = "minimal")
-  stopifnot(nrow(geocode) >= 1) # needs to be replace by generation of no output in all fucntions
+  stopifnot(nrow(geocode) >= 1) # needs to be replace by generation of no output in all functions
+  stopifnot(exists("lon", geocode), exists("lon", geocode))
   if (any(geocode[["lon"]] > 180 | geocode[["lon"]] < -180)) {
     stop("Longitude is off-range.")
   }
@@ -928,3 +941,51 @@ validate_geocode <- function(geocode) {
   }
   geocode
 }
+
+#' @rdname validate_geocode
+#'
+#' @return FALSE for invalid, TRUE for valid.
+#'
+#' @export
+#'
+is_valid_geocode <- function(geocode) {
+  if (!is.list(geocode)) return(FALSE)
+  if (!is.data.frame(geocode)) {
+    # walk list of geocodes using recursion
+    is_valid <- all(sapply(geocode, is_valid_geocode))
+  } else {
+    is_valid <- nrow(geocode) >= 1L &&
+      all(c("lon", "lat") %in% names(geocode)) &&
+      all(c(is.numeric(geocode[["lon"]]), is.numeric(geocode[["lat"]]))) &&
+      if ("address" %in% names(geocode)) is.character(geocode[["address"]]) else TRUE
+
+    if (!is_valid && "address" %in% names(geocode) && is.factor(geocode[["address"]])) {
+      warning("'address' is a factor instead of a character vector.")
+    }
+  }
+  is_valid
+}
+
+#' @rdname validate_geocode
+#'
+#' @return FALSE for invalid, number of rows for valid.
+#'
+#' @export
+#'
+length_geocode <- function(geocode) {
+  if (!is_valid_geocode(geocode)) return(NA_integer_)
+  nrow(geocode)
+}
+
+#' @rdname validate_geocode
+#'
+#' @return A geo_code tibble with all fields set to suitable NAs.
+#'
+#' @export
+#'
+na_geocode <- function() {
+  tibble::tibble(lon = NA_real_,
+                 lat = NA_real_,
+                 address = NA_character_)
+}
+

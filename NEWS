@@ -1,9 +1,10 @@
-photobiology 0.9.30 (2019-11-03)
+photobiology 0.9.30 (2019-12-19)
 ================================
 
 * Fix bug in get_attributes() methods.
 * Add parameter "address" to setWhereMeasured(), revise print() methods to
-display address if available.
+display address if available. Add function na_geocode(), a constructor for a
+valid missing geocode.
 * Revise summary.generic_spct() to store the name of the summarized spectrum
 object and revise print.summary_generic_spct() to display the name of the
 summarized object.

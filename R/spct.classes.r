@@ -2243,19 +2243,6 @@ getWhenMeasured.generic_mspct <- function(x,
 
 # where.measured ---------------------------------------------------------------
 
-#' utilities
-#'
-#' @param x data.frame
-#'
-#' @keywords internal
-#'
-is_valid_geocode <- function(x) {
-  is.data.frame(x) &&
-    nrow(x) == 1 &&
-    all(c("lon", "lat") %in% names(x)) &&
-    if ("address" %in% names(x)) is.character(x[["address"]]) else TRUE
-}
-
 #' Set the "where.measured" attribute
 #'
 #' Function to set by reference the "where.measured" attribute  of an existing
@@ -2274,7 +2261,9 @@ is_valid_geocode <- function(x) {
 #'   returns x invisibly. If x is not a generic_spct or an object of a class derived from
 #'   generic_spct, x is not modified. If \code{where} is not a POSIXct object
 #'   or \code{NULL} an error is triggered. A \code{POSIXct} describes an
-#'   instant in time (date plus time-of-day plus time zone).
+#'   instant in time (date plus time-of-day plus time zone). As expected
+#'   passing \code{NULL} as argument for \code{where.measured} unsets the
+#'   attribute.
 #'
 #' @export
 #' @family measurement metadata functions
@@ -2299,20 +2288,25 @@ setWhereMeasured.generic_spct <- function(x,
                                           where.measured = NA,
                                           lat = NA,
                                           lon = NA,
-                                          address = NA_character_,
+                                          address = NA,
                                           ...) {
   name <- substitute(x)
   if (!is.null(where.measured)) {
-    if (any(is.na(where.measured))) {
-      where.measured <- data.frame(lon = lon, lat = lat, address = address,
-                                   stringsAsFactors = FALSE)
-    }
-    if (is.data.frame(where.measured)) {
-      where.measured <- list(where.measured)
-    }
-    stopifnot(all(sapply(where.measured, is_valid_geocode)))
-    if (is.list(where.measured) && length(where.measured) == 1) {
-      where.measured <- where.measured[[1]]
+    if (is.atomic(where.measured) && all(is.na(where.measured))) {
+      # replace missing geocode with a valid one
+      # type conversion needed for NA
+      where.measured <-
+        validate_geocode(data.frame(lon = as.numeric(lon),
+                                    lat = as.numeric(lat),
+                                    address = as.character(address),
+                                    stringsAsFactors = FALSE))
+      stopifnot(is_valid_geocode(where.measured))
+    } else if (is.list(where.measured) && !is.data.frame(where.measured)) {
+      where.measured <- sapply(where.measured, validate_geocode)
+      stopifnot(all(sapply(where.measured, is_valid_geocode)))
+    } else {
+      where.measured <- validate_geocode(where.measured)
+      stopifnot(is_valid_geocode(where.measured))
     }
   }
   attr(x, "where.measured") <- where.measured
@@ -2324,34 +2318,9 @@ setWhereMeasured.generic_spct <- function(x,
 }
 
 #' @describeIn setWhereMeasured summary_generic_spct
+#'
 #' @export
-setWhereMeasured.summary_generic_spct <- function(x,
-                                                  where.measured = NA,
-                                                  lat = NA,
-                                                  lon = NA,
-                                                  address = NA_character_,
-                                                  ...) {
-  name <- substitute(x)
-  if (!is.null(where.measured)) {
-    if (any(is.na(where.measured))) {
-      where.measured <- data.frame(lon = lon, lat = lat, address = address,
-                                   stringsAsFactors = FALSE)
-    }
-    if (is.data.frame(where.measured)) {
-      where.measured <- list(where.measured)
-    }
-    stopifnot(all(sapply(where.measured, is_valid_geocode)))
-    if (is.list(where.measured) && length(where.measured) == 1) {
-      where.measured <- where.measured[[1]]
-    }
-  }
-  attr(x, "where.measured") <- where.measured
-  if (is.name(name)) {
-    name <- as.character(name)
-    assign(name, x, parent.frame(), inherits = TRUE)
-  }
-  invisible(x)
-}
+setWhereMeasured.summary_generic_spct <- setWhereMeasured.generic_spct
 
 #' @describeIn setWhereMeasured generic_mspct
 #' @note Method for collections of spectra recycles the location information
@@ -2361,38 +2330,52 @@ setWhereMeasured.generic_mspct <- function(x,
                                            where.measured = NA,
                                            lat = NA,
                                            lon = NA,
-                                           address = NA_character_,
+                                           address = NA,
                                            ...) {
   name <- substitute(x)
-  stopifnot(is.null(where.measured) || is.na(where.measured) ||
-              is.data.frame(where.measured) ||
-              (is.list(where.measured) && is.data.frame(where.measured[[1]])) )
+  if (!is.null(where.measured)) {
+    if (is.atomic(where.measured) && all(is.na(where.measured))) {
+      # replace missing geocode with a valid one
+      # type conversion needed for NA
+      where.measured <- data.frame(lon = as.numeric(lon),
+                                   lat = as.numeric(lat),
+                                   address = as.character(address),
+                                   stringsAsFactors = FALSE)
+    } else if (!is_valid_geocode(where.measured)) {
+      stop("Bad 'where.measured' argument of class: ", class(where.measured))
+    }
+  }
   if (is.null(where.measured) ||
-      (!is.na(where.measured) && is.data.frame(where.measured) && nrow(where.measured) == 1) ||
-      (is.na(where.measured) && length(lat) == 1 && length(lon) == 1)) {
+      (is.data.frame(where.measured) && nrow(where.measured) == 1)) {
     x <- msmsply(mspct = x,
                  .fun = setWhereMeasured,
-                 where.measured = where.measured,
-                 lat = lat,
-                 lon = lon,
-                 address = address)
-  } else if (!is.na(where.measured) && !is.data.frame(where.measured) &&
-             is.list(where.measured) && length(where.measured) == length(x)) {
+                 where.measured = where.measured)
+  } else if (is.data.frame(where.measured) &&
+             nrow(where.measured) == length(x)) {
+    if (exists("spct.idx", where.measured)) {
+      if (setequal(where.measured[["spct.idx"]], names(x))) {
+        # we use name matching
+        j <- which(colnames(where.measured) != "spct.idx")
+        for (i in names(x)) {
+          wm <- where.measured[where.measured[["spct.idx"]] == i, j]
+          x[[i]] <- setWhereMeasured(x[[i]],
+                                     where.measured = wm)
+        }
+      } else {
+        stop("'spct-idx' values do not match manes spectra in collection.")
+      }
+    } else {
+      # we match by position
+      for (i in seq_along(x)) {
+        x[[i]] <- setWhereMeasured(x[[i]], where.measured = where.measured[i, ])
+      }
+    }
+  } else if (is.list(where.measured) && length(where.measured) == length(x)) {
     for (i in seq_along(x)) {
       x[[i]] <- setWhereMeasured(x[[i]], where.measured = where.measured[[i]])
     }
-  } else if (!is.na(where.measured) && is.data.frame(where.measured) &&
-             nrow(where.measured) == length(x)) {
-    for (i in seq_along(x)) {
-      x[[i]] <- setWhereMeasured(x[[i]], where.measured = where.measured[i, ])
-    }
-  } else if (is.na(where.measured) && length(lat) == length(x) &&
-             length(lon) == length(x) && length(address) == length(x)) {
-    for (i in seq_along(x)) {
-      x[[i]] <- setWhereMeasured(x[[i]], lon = lon[i], lat = lat[i], address = address[i])
-    }
   } else {
-    stop("Length of geocode information must be either 1, or equal to the number of spectra.")
+    stop("Length of geocode must be either 1, or equal to the number of spectra.")
   }
   if (is.name(name)) {
     name <- as.character(name)
@@ -2424,42 +2407,29 @@ getWhereMeasured <- function(x, ...) UseMethod("getWhereMeasured")
 #' @describeIn getWhereMeasured default
 #' @export
 getWhereMeasured.default <- function(x, ...) {
-  data.frame(lon = NA_real_, lat = NA_real_)
+  na_geocode()
 }
 
 #' @describeIn getWhereMeasured generic_spct
 #' @export
 getWhereMeasured.generic_spct <- function(x, ...) {
   where.measured <- attr(x, "where.measured", exact = TRUE)
-  if (is.null(where.measured) ||
-      !(is.data.frame(where.measured) ||
-        all(sapply(where.measured, is.data.frame)))) {
+  if (is.null(where.measured)) return(na_geocode())
+
+  if (is.list(where.measured) && !is.data.frame(where.measured)) {
+    x <- dplyr::bind_rows(where.measured)
+  }
+  if (!is.data.frame(where.measured)) {
     # need to handle invalid or missing attribute values
-    where.measured <- data.frame(lon = NA_real_, lat = NA_real_)
+    where.measured <- na_geocode()
   }
-  if ("address" %in% names(where.measured) &&
-      !is.character(where.measured[["address"]])) {
-    where.measured[["address"]] <- as.character(where.measured[["address"]])
-  }
-  where.measured
+  # needed to clean inconsistent values from previous versions
+  validate_geocode(where.measured)
 }
 
 #' @describeIn getWhereMeasured summary_generic_spct
 #' @export
-getWhereMeasured.summary_generic_spct <- function(x, ...) {
-  where.measured <- attr(x, "where.measured", exact = TRUE)
-  if (is.null(where.measured) ||
-      !(is.data.frame(where.measured) ||
-        all(sapply(where.measured, is.data.frame)))) {
-    # need to handle invalid or missing attribute values
-    where.measured <- data.frame(lon = NA_real_, lat = NA_real_)
-  }
-  if ("address" %in% names(where.measured) &&
-      !is.character(where.measured[["address"]])) {
-    where.measured[["address"]] <- as.character(where.measured[["address"]])
-  }
-  where.measured
-}
+getWhereMeasured.summary_generic_spct <- getWhereMeasured.generic_spct
 
 #' @describeIn getWhereMeasured generic_mspct
 #' @param idx character Name of the column with the names of the members of the

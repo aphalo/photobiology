@@ -80,8 +80,8 @@
 #' class(spct)
 #'
 rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
-  if ( (is.null(idfactor) && (!is.null(names(l)))) ||
-       (is.logical(idfactor) && idfactor ) ) {
+  if ((is.null(idfactor) && (!is.null(names(l)))) ||
+       (is.logical(idfactor) && idfactor )) {
     idfactor <- "spct.idx"
   }
   add.idfactor <- is.character(idfactor)
@@ -171,8 +171,7 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
   names(instr.settings) <- names.spct
   when.measured <- lapply(l, getWhenMeasured)
   names(when.measured) <- names.spct
-  where.measured <- lapply(l, getWhereMeasured)
-  names(where.measured) <- names.spct
+  where.measured <- dplyr::bind_rows(lapply(l, getWhereMeasured), .id = "spct.idx")
   what.measured <- lapply(l, getWhatMeasured)
   names(what.measured) <- names.spct
 

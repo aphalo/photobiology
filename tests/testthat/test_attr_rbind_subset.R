@@ -6,7 +6,7 @@ context("wide_long_wide_plain")
 test_that("raw_spct", {
 
   my.spct <- white_led.raw_spct
-  tested.location <- data.frame(lon = 24.93545, lat = 60.16952)
+  tested.location <- validate_geocode(data.frame(lon = 24.93545, lat = 60.16952))
   setWhereMeasured(my.spct, tested.location)
   tested.time <- getWhenMeasured(white_led.cps_spct)
   tested.what <- getWhatMeasured(my.spct)
@@ -62,14 +62,14 @@ test_that("raw_spct", {
 
   expect_named(getWhenMeasured(long.spct), c("one", "two"))
   expect_named(getWhatMeasured(long.spct), c("one", "two"))
-  expect_named(getWhereMeasured(long.spct), c("one", "two"))
+  expect_equal(getWhereMeasured(long.spct)$spct.idx, c("one", "two"))
   expect_named(getInstrDesc(long.spct), c("one", "two"))
   expect_named(getInstrSettings(long.spct), c("one", "two"))
 
   expect_equal(getWhenMeasured(long.spct)[["one"]], tested.time)
   expect_equal(getWhenMeasured(long.spct)[["two"]], tested.time)
-  expect_equal(getWhereMeasured(long.spct)[["one"]], tested.location)
-  expect_equal(getWhereMeasured(long.spct)[["two"]], tested.location)
+  expect_equal(getWhereMeasured(long.spct)[1, -1], tested.location)
+  expect_equal(getWhereMeasured(long.spct)[2, -1], tested.location)
   expect_equal(getWhatMeasured(long.spct)[["one"]], tested.what)
   expect_equal(getWhatMeasured(long.spct)[["two"]], tested.what)
   expect_equal(getInstrDesc(long.spct)[["one"]], tested.instr.desc)
@@ -117,7 +117,7 @@ test_that("raw_spct", {
 test_that("cps_spct", {
 
   my.spct <- white_led.cps_spct
-  tested.location <- data.frame(lon = 24.93545, lat = 60.16952)
+  tested.location <- validate_geocode(data.frame(lon = 24.93545, lat = 60.16952))
   setWhereMeasured(my.spct, tested.location)
   tested.time <- getWhenMeasured(white_led.cps_spct)
   tested.what <- getWhatMeasured(my.spct)
@@ -228,7 +228,7 @@ test_that("cps_spct", {
 test_that("source_spct", {
 
   my.spct <- white_led.source_spct
-  tested.location <- data.frame(lon = 24.93545, lat = 60.16952)
+  tested.location <- validate_geocode(data.frame(lon = 24.93545, lat = 60.16952))
   setWhereMeasured(my.spct, tested.location)
   tested.time <- getWhenMeasured(white_led.cps_spct)
   tested.what <- getWhatMeasured(my.spct)

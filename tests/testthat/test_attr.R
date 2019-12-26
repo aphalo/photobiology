@@ -25,7 +25,8 @@ test_that("any_spct", {
   expect_equal(getWhenMeasured(my.spct), target)
   expect_is(getWhenMeasured(my.spct), "POSIXct")
 
-  tested.location <- data.frame(lon = 24.93545, lat = 60.16952)
+  tested.location <-
+    validate_geocode(data.frame(lon = 24.93545, lat = 60.16952))
 
   setWhereMeasured(my.spct, tested.location)
   expect_equal(getWhereMeasured(my.spct), tested.location)
@@ -33,22 +34,27 @@ test_that("any_spct", {
   expect_true(is.data.frame(getWhereMeasured(my.spct)))
   expect_true(all(is.na(getWhereMeasured(my.spct))))
 
-  tested.location <- data.frame(lon = 24.93545, lat = 60.16952,
+  tested.location <-
+    validate_geocode(data.frame(lon = 24.93545, lat = 60.16952,
                                 address = "Helsinki",
-                                stringsAsFactors = FALSE)
+                                stringsAsFactors = FALSE))
 
   setWhereMeasured(my.spct, tested.location)
   expect_equal(getWhereMeasured(my.spct), tested.location)
 
-  tested.location <- data.frame(lon = 1, lat = 2)
+  tested.location <- validate_geocode(data.frame(lon = 1, lat = 2))
+  expected.location <-
+    validate_geocode(data.frame(lon = 1, lat = 2,
+                                address = NA_character_,
+                                stringsAsFactors = FALSE))
 
   setWhereMeasured(my.spct, lon = 1, lat = 2)
-  expect_equal(getWhereMeasured(my.spct), tested.location)
+  expect_equal(getWhereMeasured(my.spct), expected.location)
 
   expect_error(setWhereMeasured(my.spct, 1L))
   expect_error(setWhereMeasured(my.spct, "here"))
 
-  tested.locationz <- data.frame(lat = 2, lon = 1)
+  tested.locationz <- validate_geocode(data.frame(lat = 2, lon = 1))
   setWhereMeasured(my.spct, tested.location)
   getWhenMeasured(my.spct)
 
@@ -159,8 +165,8 @@ test_that("any_mspct", {
   expect_equal(ncol(getWhenMeasured(my.mspct, idx = NULL)), 2L)
   expect_equal(ncol(getWhenMeasured(my.mspct, idx = "abc")), 2L)
 
-  tested.location1 <- data.frame(lon = 10, lat = 20)
-  tested.location2 <- data.frame(lon = 15, lat = 25)
+  tested.location1 <- validate_geocode(data.frame(lon = 10, lat = 20))
+  tested.location2 <- validate_geocode(data.frame(lon = 15, lat = 25))
   my.mspct[["A"]] <- setWhereMeasured(my.mspct[["A"]], tested.location1)
   my.mspct[["B"]] <- setWhereMeasured(my.mspct[["B"]], tested.location2)
   expect_true(is.data.frame(getWhereMeasured(my.mspct[["A"]])))
@@ -218,8 +224,8 @@ test_that("any_mspct", {
   expect_equal(getWhereMeasured(my.mspct[["A"]]), tested.locations[[1]])
   expect_equal(getWhereMeasured(my.mspct[["B"]]), tested.locations[[2]])
 
-  tested.location1z <- data.frame(lat = 20, lon = 10)
-  tested.location2z <- data.frame(lat = 25, lon = 15)
+  tested.location1z <- validate_geocode(data.frame(lat = 20, lon = 10))
+  tested.location2z <- validate_geocode(data.frame(lat = 25, lon = 15))
   tested.locationsz <- rbind(tested.location1z, tested.location2z)
   setWhereMeasured(my.mspct, tested.locationsz)
   expect_equal(getWhereMeasured(my.mspct)[["lon"]][1], tested.location1[["lon"]])
@@ -527,26 +533,22 @@ test_that("normalize attr", {
   my.spct <- source_spct(w.length=100:200, s.e.irrad = 1)
   tested.time <- ymd_hms("2015-12-31 23:59:59")
   setWhenMeasured(my.spct, tested.time)
-  tested.location <- data.frame(lon = 24.93545, lat = 60.16952)
+  tested.location <- validate_geocode(data.frame(lon = 24.93545, lat = 60.16952))
   setWhereMeasured(my.spct, tested.location)
   tested.what <- "user message"
   setWhatMeasured(my.spct, tested.what)
 
   expect_equal(setdiff(names(attributes(normalize(my.spct))),
-                       names(attributes(my.spct))),
-               "normalized" )
+                       c(names(attributes(my.spct)))), "normalized" )
 
-  expect_equal(setdiff(names(attributes(normalize(my.spct, range = 100:110))),
-                       names(attributes(my.spct))),
-               "normalized" )
+  expect_equal(setdiff(names(attributes(normalize(my.spct, range = c(100, 150)))),
+                       names(attributes(my.spct))), "normalized")
 
   expect_equal(setdiff(names(attributes(normalize(my.spct, norm = "max"))),
-                       names(attributes(my.spct))),
-               "normalized" )
+                       names(attributes(my.spct))), "normalized")
 
-  expect_equal(setdiff(names(attributes(normalize(my.spct, norm = 150))),
-                       names(attributes(my.spct))),
-               "normalized" )
+  expect_equal(setdiff(names(attributes(normalize(my.spct, norm = 180))),
+                       names(attributes(my.spct))), "normalized")
 })
 
 test_that("peaks attr", {

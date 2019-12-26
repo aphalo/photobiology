@@ -121,7 +121,8 @@ reference:
     - dim.generic_mspct
     - labels
     - add_attr2tb
-    - copy_attributes
+    - spct_attr2tb
+    - spct_attributes
   - title: Summary quantities
     contents:
     - irrad
@@ -304,6 +305,7 @@ reference:
     - calc_multipliers
     - calc_source_output
     - check_spectrum
+    - copy_attributes
     - div_spectra
     - e2qmol_multipliers
     - e2quantum_multipliers
@@ -319,12 +321,14 @@ reference:
     - integrate_xy
     - interpolate_spectrum
     - irradiance
+    - merge_attributes
     - oper_spectra
     - photon_irradiance
     - photon_ratio
     - photons_energy_ratio
     - prod_spectra
     - s_e_irrad2rgb
+    - select_spct_attributes
     - split_energy_irradiance
     - split_irradiance
     - split_photon_irradiance

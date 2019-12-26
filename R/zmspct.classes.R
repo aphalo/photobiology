@@ -1711,14 +1711,6 @@ subset2mspct <- function(x,
         z[[i]] <- setWhenMeasured(z[[i]], when.measured)
       }
     }
-    if (!all(is.na(where.measured))) {
-      if (is.list(where.measured) && !is.data.frame(where.measured) &&
-            length(where.measured) == length(groups)) {
-        z[[i]] <- setWhereMeasured(z[[i]], where.measured[[i]])
-      } else {
-        z[[i]] <- setWhereMeasured(z[[i]], where.measured)
-      }
-    }
     if (!all(is.na(what.measured))) {
       if (is.list(what.measured) && length(what.measured) == length(groups)) {
         z[[i]] <- setWhatMeasured(z[[i]], what.measured[[i]])
@@ -1745,6 +1737,7 @@ subset2mspct <- function(x,
       }
     }
   }
+  z <- setWhereMeasured(z, where.measured)
   z
 }
 
