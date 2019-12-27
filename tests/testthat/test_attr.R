@@ -547,7 +547,7 @@ test_that("normalize attr", {
   expect_equal(setdiff(names(attributes(normalize(my.spct, norm = "max"))),
                        names(attributes(my.spct))), "normalized")
 
-  expect_equal(setdiff(names(attributes(normalize(my.spct, norm = 180))),
+  expect_equal(setdiff(names(attributes(normalize(my.spct, norm = 130))),
                        names(attributes(my.spct))), "normalized")
 })
 

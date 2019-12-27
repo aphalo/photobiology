@@ -2362,7 +2362,8 @@ setWhereMeasured.generic_mspct <- function(x,
                                      where.measured = wm)
         }
       } else {
-        stop("'spct-idx' values do not match manes spectra in collection.")
+        stop("'spct-idx' values '", where.measured[["spct.idx"]],
+             "' do not match names of spectra in collection.")
       }
     } else {
       # we match by position

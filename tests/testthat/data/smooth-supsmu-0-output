@@ -2,7 +2,7 @@ Object: source_spct [522 x 3]
 Wavelength range 280 to 800 nm, step 0.9230769 to 1 nm 
 Label: sunlight, simulated 
 Measured on 2010-06-22 09:51:00 UTC 
-Measured at 60.20911 N, 24.96474 E 
+Measured at 60.20911 N, 24.96474 E; Kumpula, Helsinki, FI 
 Time unit 1s
 
 # A tibble: 522 x 3
@@ -18,4 +18,4 @@ Time unit 1s
  8     286. -0.000375 -8.97e-10
  9     287.  0.000956  2.30e- 9
 10     288.  0.00229   5.51e- 9
-# ... with 512 more rows
+# … with 512 more rows

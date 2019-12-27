@@ -1644,8 +1644,8 @@ subset2mspct <- function(x,
     # would hang or slowdown to a crawl if indexing by dates
     # could try benchmarking with as.numeric() to see how much faster it is
     if (lubridate::is.instant(x[[idx.var]])) {
-    x[["tmp.idx"]] <- as.character(x[[idx.var]], tz = "UTC")
-    idx <- "tmp.idx"
+      x[["tmp.idx"]] <- as.character(x[[idx.var]], tz = "UTC")
+      idx <- "tmp.idx"
     } else {
       idx <- idx.var
     }
@@ -1698,8 +1698,9 @@ subset2mspct <- function(x,
   }
   # these methods return NA if attribute is not set
   when.measured <- getWhenMeasured(x)
-  where.measured <- getWhereMeasured(x)
   what.measured <- getWhatMeasured(x)
+  # these methods return a data.frame
+  where.measured <- getWhereMeasured(x)
   # these methods may return an empty list
   instr.desc <- getInstrDesc(x)
   instr.settings <- getInstrSettings(x)

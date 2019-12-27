@@ -1,11 +1,10 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 
 <head>
 
 <meta charset="utf-8" />
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
@@ -13,7 +12,7 @@
 
 <meta name="author" content="Pedro J. Aphalo" />
 
-<meta name="date" content="2019-08-30" />
+<meta name="date" content="2019-12-27" />
 
 <title>User Guide: 3 Astronomy</title>
 
@@ -303,9 +302,9 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 
 
 <h1 class="title toc-ignore">User Guide: 3 Astronomy</h1>
-<h3 class="subtitle">Package ‘photobiology’ 0.9.28.9000</h3>
+<h3 class="subtitle">Package ‘photobiology’ 0.9.29.9001</h3>
 <h4 class="author">Pedro J. Aphalo</h4>
-<h4 class="date">2019-08-30</h4>
+<h4 class="date">2019-12-27</h4>
 
 
 <div id="TOC">
@@ -347,16 +346,16 @@ In versions 0.9.16 and later the code has been optimized for performance with ti
 <pre><code>## # A tibble: 1 x 11
 ##   time                tz    solartime longitude latitude address azimuth
 ##   &lt;dttm&gt;              &lt;chr&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt; &lt;chr&gt;     &lt;dbl&gt;
-## 1 2017-06-20 08:00:00 EET        6.64      24.9     60.2 Helsin~    85.8
-## # ... with 4 more variables: elevation &lt;dbl&gt;, declination &lt;dbl&gt;,
+## 1 2017-06-20 08:00:00 EET        6.64      24.9     60.2 Helsin…    85.8
+## # … with 4 more variables: elevation &lt;dbl&gt;, declination &lt;dbl&gt;,
 ## #   eq.of.time &lt;dbl&gt;, hour.angle &lt;dbl&gt;</code></pre>
 <p>Functions have defaults for their arguments, but rarely Greenwich will be the location you are interested in.</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" title="1"><span class="kw">sun_angles</span>()</a></code></pre></div>
 <pre><code>## # A tibble: 1 x 11
 ##   time                tz    solartime longitude latitude address azimuth
 ##   &lt;dttm&gt;              &lt;chr&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt; &lt;chr&gt;     &lt;dbl&gt;
-## 1 2019-08-30 12:14:58 UTC        12.2         0     51.5 Greenw~    185.
-## # ... with 4 more variables: elevation &lt;dbl&gt;, declination &lt;dbl&gt;,
+## 1 2019-12-27 18:36:12 UTC        18.6         0     51.5 Greenw…    261.
+## # … with 4 more variables: elevation &lt;dbl&gt;, declination &lt;dbl&gt;,
 ## #   eq.of.time &lt;dbl&gt;, hour.angle &lt;dbl&gt;</code></pre>
 <p>A vector of times is accepted as argument, and as performance is optimized for this case, <em>vectorization</em> will markedly improve performance compared to multiple calls to the function. The vector of times can be created on the fly, or stored beforehand.</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" title="1"><span class="kw">sun_angles</span>(<span class="dt">time =</span> <span class="kw">ymd_hms</span>(<span class="st">&quot;2014-01-01 0:0:0&quot;</span>, <span class="dt">tz =</span> <span class="st">&quot;EET&quot;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">hours</span>(<span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">6</span>, <span class="dv">12</span>)), </a>
@@ -364,20 +363,20 @@ In versions 0.9.16 and later the code has been optimized for performance with ti
 <pre><code>## # A tibble: 3 x 11
 ##   time                tz    solartime longitude latitude address azimuth
 ##   &lt;dttm&gt;              &lt;chr&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt; &lt;chr&gt;     &lt;dbl&gt;
-## 1 2014-01-01 00:00:00 EET       23.6       24.9     60.2 Helsin~   351. 
-## 2 2014-01-01 06:00:00 EET        5.61      24.9     60.2 Helsin~    97.0
-## 3 2014-01-01 12:00:00 EET       11.6       24.9     60.2 Helsin~   174. 
-## # ... with 4 more variables: elevation &lt;dbl&gt;, declination &lt;dbl&gt;,
+## 1 2014-01-01 00:00:00 EET       23.6       24.9     60.2 Helsin…   351. 
+## 2 2014-01-01 06:00:00 EET        5.61      24.9     60.2 Helsin…    97.0
+## 3 2014-01-01 12:00:00 EET       11.6       24.9     60.2 Helsin…   174. 
+## # … with 4 more variables: elevation &lt;dbl&gt;, declination &lt;dbl&gt;,
 ## #   eq.of.time &lt;dbl&gt;, hour.angle &lt;dbl&gt;</code></pre>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" title="1">my.times &lt;-<span class="st"> </span><span class="kw">ymd_hms</span>(<span class="st">&quot;2014-01-01 0:0:0&quot;</span>, <span class="dt">tz =</span> <span class="st">&quot;EET&quot;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">hours</span>(<span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">6</span>, <span class="dv">12</span>))</a>
 <a class="sourceLine" id="cb9-2" title="2"><span class="kw">sun_angles</span>(<span class="dt">time =</span> my.times, <span class="dt">geocode =</span> my.geocode)</a></code></pre></div>
 <pre><code>## # A tibble: 3 x 11
 ##   time                tz    solartime longitude latitude address azimuth
 ##   &lt;dttm&gt;              &lt;chr&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt; &lt;chr&gt;     &lt;dbl&gt;
-## 1 2014-01-01 00:00:00 EET       23.6       24.9     60.2 Helsin~   351. 
-## 2 2014-01-01 06:00:00 EET        5.61      24.9     60.2 Helsin~    97.0
-## 3 2014-01-01 12:00:00 EET       11.6       24.9     60.2 Helsin~   174. 
-## # ... with 4 more variables: elevation &lt;dbl&gt;, declination &lt;dbl&gt;,
+## 1 2014-01-01 00:00:00 EET       23.6       24.9     60.2 Helsin…   351. 
+## 2 2014-01-01 06:00:00 EET        5.61      24.9     60.2 Helsin…    97.0
+## 3 2014-01-01 12:00:00 EET       11.6       24.9     60.2 Helsin…   174. 
+## # … with 4 more variables: elevation &lt;dbl&gt;, declination &lt;dbl&gt;,
 ## #   eq.of.time &lt;dbl&gt;, hour.angle &lt;dbl&gt;</code></pre>
 <p>Geocodes for several locations can be stored in a data frame with multiple rows.</p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" title="1">two.geocodes &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">lat =</span> <span class="kw">c</span>(<span class="fl">60.16</span>, <span class="fl">65.02</span>), </a>
@@ -387,21 +386,21 @@ In versions 0.9.16 and later the code has been optimized for performance with ti
 <pre><code>## # A tibble: 6 x 11
 ##   time                tz    solartime longitude latitude address azimuth
 ##   &lt;dttm&gt;              &lt;chr&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt; &lt;chr&gt;     &lt;dbl&gt;
-## 1 2014-01-01 00:00:00 EET       23.6       24.9     60.2 Helsin~   351. 
-## 2 2014-01-01 06:00:00 EET        5.61      24.9     60.2 Helsin~    97.0
-## 3 2014-01-01 12:00:00 EET       11.6       24.9     60.2 Helsin~   174. 
+## 1 2014-01-01 00:00:00 EET       23.6       24.9     60.2 Helsin…   351. 
+## 2 2014-01-01 06:00:00 EET        5.61      24.9     60.2 Helsin…    97.0
+## 3 2014-01-01 12:00:00 EET       11.6       24.9     60.2 Helsin…   174. 
 ## 4 2014-01-01 00:00:00 EET       23.6       25.5     65.0 Oulu      353. 
 ## 5 2014-01-01 06:00:00 EET        5.64      25.5     65.0 Oulu       95.4
 ## 6 2014-01-01 12:00:00 EET       11.6       25.5     65.0 Oulu      175. 
-## # ... with 4 more variables: elevation &lt;dbl&gt;, declination &lt;dbl&gt;,
+## # … with 4 more variables: elevation &lt;dbl&gt;, declination &lt;dbl&gt;,
 ## #   eq.of.time &lt;dbl&gt;, hour.angle &lt;dbl&gt;</code></pre>
 <p>When spectra contain suitable metadata, the position of the sun for the spectral irradiance data measurement can be easily obtained.</p>
 <div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" title="1"><span class="kw">sun_angles</span>(<span class="dt">time =</span> <span class="kw">getWhenMeasured</span>(sun.spct), <span class="dt">geocode =</span> <span class="kw">getWhereMeasured</span>(sun.spct))</a></code></pre></div>
 <pre><code>## # A tibble: 1 x 11
 ##   time                tz    solartime longitude latitude address azimuth
 ##   &lt;dttm&gt;              &lt;chr&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt; &lt;chr&gt;     &lt;dbl&gt;
-## 1 2010-06-22 09:51:00 UTC        11.5      25.0     60.2 Kumpul~    168.
-## # ... with 4 more variables: elevation &lt;dbl&gt;, declination &lt;dbl&gt;,
+## 1 2010-06-22 09:51:00 UTC        11.5      25.0     60.2 Kumpul…    168.
+## # … with 4 more variables: elevation &lt;dbl&gt;, declination &lt;dbl&gt;,
 ## #   eq.of.time &lt;dbl&gt;, hour.angle &lt;dbl&gt;</code></pre>
 <p>One what is needed is only one of the solar angles, functions returning vectors instead of data frames can be useful.</p>
 <div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" title="1"><span class="kw">sun_elevation</span>(<span class="dt">time =</span> my.times, <span class="dt">geocode =</span> my.geocode)</a></code></pre></div>
@@ -420,9 +419,9 @@ In versions 0.9.16 and later the code has been optimized for performance with ti
 <pre><code>## [1] &quot;2015-03-01 EET&quot;  &quot;2015-04-01 EEST&quot; &quot;2015-05-01 EEST&quot; &quot;2015-06-01 EEST&quot;
 ## [5] &quot;2015-07-01 EEST&quot; &quot;2015-08-01 EEST&quot;</code></pre>
 <div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb23-1" title="1"><span class="kw">sunrise_time</span>(<span class="kw">now</span>(<span class="st">&quot;UTC&quot;</span>), <span class="dt">tz =</span> <span class="st">&quot;UTC&quot;</span>, <span class="dt">geocode =</span> my.geocode)</a></code></pre></div>
-<pre><code>## [1] &quot;2019-08-30 03:09:48 UTC&quot;</code></pre>
+<pre><code>## [1] &quot;2019-12-27 07:25:21 UTC&quot;</code></pre>
 <div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb25-1" title="1"><span class="kw">sunrise_time</span>(<span class="kw">now</span>(<span class="st">&quot;EET&quot;</span>), <span class="dt">tz =</span> <span class="st">&quot;EET&quot;</span>, <span class="dt">geocode =</span> my.geocode)</a></code></pre></div>
-<pre><code>## [1] &quot;2019-08-30 06:09:48 EEST&quot;</code></pre>
+<pre><code>## [1] &quot;2019-12-27 09:25:21 EET&quot;</code></pre>
 <p>Southern hemisphere latitudes as well as longitudes to the West of the Greenwich meridian should be supplied as negative numbers.</p>
 <div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb27-1" title="1"><span class="kw">sunrise_time</span>(dates, <span class="dt">geocode =</span> <span class="kw">data.frame</span>(<span class="dt">lat =</span> <span class="dv">60</span>, <span class="dt">lon =</span> <span class="dv">0</span>))</a></code></pre></div>
 <pre><code>## [1] &quot;2015-02-28 09:01:52 EET&quot;  &quot;2015-03-31 08:28:41 EEST&quot;
@@ -453,24 +452,24 @@ In versions 0.9.16 and later the code has been optimized for performance with ti
 <div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb37-1" title="1"><span class="kw">day_night</span>(dates[<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>], </a>
 <a class="sourceLine" id="cb37-2" title="2">          <span class="dt">geocode =</span> my.geocode)</a></code></pre></div>
 <pre><code>## # A tibble: 3 x 12
-##   day        tz    twilight.rise twilight.set longitude latitude address
-##   &lt;date&gt;     &lt;chr&gt;         &lt;dbl&gt;        &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt; &lt;chr&gt;  
-## 1 2015-02-28 UTC               0            0      24.9     60.2 Helsin~
-## 2 2015-03-31 UTC               0            0      24.9     60.2 Helsin~
-## 3 2015-04-30 UTC               0            0      24.9     60.2 Helsin~
-## # ... with 5 more variables: sunrise &lt;dbl&gt;, noon &lt;dbl&gt;, sunset &lt;dbl&gt;,
-## #   daylength &lt;dbl&gt;, nightlength &lt;dbl&gt;</code></pre>
+##   day        tz    twilight.rise twilight.set longitude latitude address sunrise
+##   &lt;date&gt;     &lt;chr&gt;         &lt;dbl&gt;        &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt; &lt;chr&gt;     &lt;dbl&gt;
+## 1 2015-02-28 UTC               0            0      24.9     60.2 Helsin…    5.49
+## 2 2015-03-31 UTC               0            0      24.9     60.2 Helsin…    3.93
+## 3 2015-04-30 UTC               0            0      24.9     60.2 Helsin…    2.47
+## # … with 4 more variables: noon &lt;dbl&gt;, sunset &lt;dbl&gt;, daylength &lt;dbl&gt;,
+## #   nightlength &lt;dbl&gt;</code></pre>
 <p>The default for <code>unit.out</code> is <code>&quot;hours&quot;</code> with decimal fractions, as seen above. However other useful units like <code>&quot;seconds&quot;</code>, <code>&quot;minutes&quot;</code>, and <code>&quot;days&quot;</code> can be useful.</p>
 <div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb39-1" title="1"><span class="kw">day_night</span>(dates[<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>], </a>
 <a class="sourceLine" id="cb39-2" title="2">          <span class="dt">geocode =</span> my.geocode, </a>
 <a class="sourceLine" id="cb39-3" title="3">          <span class="dt">unit.out =</span> <span class="st">&quot;days&quot;</span>)</a></code></pre></div>
 <pre><code>## # A tibble: 2 x 12
-##   day        tz    twilight.rise twilight.set longitude latitude address
-##   &lt;date&gt;     &lt;chr&gt;         &lt;dbl&gt;        &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt; &lt;chr&gt;  
-## 1 2015-02-28 UTC               0            0      24.9     60.2 Helsin~
-## 2 2015-03-31 UTC               0            0      24.9     60.2 Helsin~
-## # ... with 5 more variables: sunrise &lt;dbl&gt;, noon &lt;dbl&gt;, sunset &lt;dbl&gt;,
-## #   daylength &lt;dbl&gt;, nightlength &lt;dbl&gt;</code></pre>
+##   day        tz    twilight.rise twilight.set longitude latitude address sunrise
+##   &lt;date&gt;     &lt;chr&gt;         &lt;dbl&gt;        &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt; &lt;chr&gt;     &lt;dbl&gt;
+## 1 2015-02-28 UTC               0            0      24.9     60.2 Helsin…   0.229
+## 2 2015-03-31 UTC               0            0      24.9     60.2 Helsin…   0.164
+## # … with 4 more variables: noon &lt;dbl&gt;, sunset &lt;dbl&gt;, daylength &lt;dbl&gt;,
+## #   nightlength &lt;dbl&gt;</code></pre>
 <p>Finally it is also possible to have the timing of solar events returned as <code>POSIXct</code> time values, in which case lengths of time are still returned as fractional hours.</p>
 <div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb41-1" title="1"><span class="kw">day_night</span>(dates[<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>], </a>
 <a class="sourceLine" id="cb41-2" title="2">          <span class="dt">geocode =</span> my.geocode, </a>
@@ -478,24 +477,24 @@ In versions 0.9.16 and later the code has been optimized for performance with ti
 <pre><code>## # A tibble: 2 x 12
 ##   day        tz    twilight.rise twilight.set longitude latitude address
 ##   &lt;date&gt;     &lt;chr&gt;         &lt;dbl&gt;        &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt; &lt;chr&gt;  
-## 1 2015-02-28 UTC               0            0      24.9     60.2 Helsin~
-## 2 2015-03-31 UTC               0            0      24.9     60.2 Helsin~
-## # ... with 5 more variables: sunrise &lt;dttm&gt;, noon &lt;dttm&gt;, sunset &lt;dttm&gt;,
+## 1 2015-02-28 UTC               0            0      24.9     60.2 Helsin…
+## 2 2015-03-31 UTC               0            0      24.9     60.2 Helsin…
+## # … with 5 more variables: sunrise &lt;dttm&gt;, noon &lt;dttm&gt;, sunset &lt;dttm&gt;,
 ## #   daylength &lt;dbl&gt;, nightlength &lt;dbl&gt;</code></pre>
 <p>When multiple times and locations are supplied as arguments, the values returned are for all combinations of locations and times.</p>
 <div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb43-1" title="1"><span class="kw">day_night</span>(dates[<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>], </a>
 <a class="sourceLine" id="cb43-2" title="2">          <span class="dt">geocode =</span> two.geocodes)</a></code></pre></div>
 <pre><code>## # A tibble: 6 x 12
-##   day        tz    twilight.rise twilight.set longitude latitude address
-##   &lt;date&gt;     &lt;chr&gt;         &lt;dbl&gt;        &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt; &lt;chr&gt;  
-## 1 2015-02-28 UTC               0            0      24.9     60.2 Helsin~
-## 2 2015-03-31 UTC               0            0      24.9     60.2 Helsin~
-## 3 2015-04-30 UTC               0            0      24.9     60.2 Helsin~
-## 4 2015-02-28 UTC               0            0      25.5     65.0 Oulu   
-## 5 2015-03-31 UTC               0            0      25.5     65.0 Oulu   
-## 6 2015-04-30 UTC               0            0      25.5     65.0 Oulu   
-## # ... with 5 more variables: sunrise &lt;dbl&gt;, noon &lt;dbl&gt;, sunset &lt;dbl&gt;,
-## #   daylength &lt;dbl&gt;, nightlength &lt;dbl&gt;</code></pre>
+##   day        tz    twilight.rise twilight.set longitude latitude address sunrise
+##   &lt;date&gt;     &lt;chr&gt;         &lt;dbl&gt;        &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt; &lt;chr&gt;     &lt;dbl&gt;
+## 1 2015-02-28 UTC               0            0      24.9     60.2 Helsin…    5.49
+## 2 2015-03-31 UTC               0            0      24.9     60.2 Helsin…    3.93
+## 3 2015-04-30 UTC               0            0      24.9     60.2 Helsin…    2.47
+## 4 2015-02-28 UTC               0            0      25.5     65.0 Oulu       5.68
+## 5 2015-03-31 UTC               0            0      25.5     65.0 Oulu       3.78
+## 6 2015-04-30 UTC               0            0      25.5     65.0 Oulu       1.96
+## # … with 4 more variables: noon &lt;dbl&gt;, sunset &lt;dbl&gt;, daylength &lt;dbl&gt;,
+## #   nightlength &lt;dbl&gt;</code></pre>
 <p>Different convenience functions return the calculated variables individually as vectors.</p>
 <div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb45-1" title="1"><span class="kw">sunrise_time</span>(<span class="dt">date =</span> dates, <span class="dt">geocode =</span> my.geocode)</a></code></pre></div>
 <pre><code>## [1] &quot;2015-02-28 07:22:28 EET&quot;  &quot;2015-03-31 06:48:44 EEST&quot;
@@ -516,7 +515,7 @@ In versions 0.9.16 and later the code has been optimized for performance with ti
 ## [5] &quot;2015-06-30 22:48:08 EEST&quot; &quot;2015-07-31 21:55:57 EEST&quot;</code></pre>
 <p>The default for <code>date</code> is the current day, using the system time zone settings.</p>
 <div class="sourceCode" id="cb53"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb53-1" title="1"><span class="kw">noon_time</span>(<span class="dt">geocode =</span> my.geocode)</a></code></pre></div>
-<pre><code>## [1] &quot;2019-08-30 10:21:00 UTC&quot;</code></pre>
+<pre><code>## [1] &quot;2019-12-27 10:21:11 UTC&quot;</code></pre>
 <p>Parameter <code>unit.out</code> can be used to obtain the returned value expressed as time-of-day in hours, minutes, or seconds since midnight, instead of the default <code>datetime</code>.</p>
 <div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb55-1" title="1"><span class="kw">sunrise_time</span>(<span class="kw">ymd</span>(<span class="st">&quot;2017-03-21&quot;</span>, <span class="dt">tz =</span> <span class="st">&quot;EET&quot;</span>), </a>
 <a class="sourceLine" id="cb55-2" title="2">             <span class="dt">tz =</span> <span class="st">&quot;EET&quot;</span>, </a>
@@ -562,14 +561,14 @@ In versions 0.9.16 and later the code has been optimized for performance with ti
 <p>Function <code>as_tod()</code> facilitates conversion of R’s time date objects into a numeric value representing the time of day in one of hour, minute or second as unit of expression.</p>
 <div class="sourceCode" id="cb79"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb79-1" title="1">times &lt;-<span class="st"> </span><span class="kw">now</span>(<span class="dt">tzone =</span> <span class="st">&quot;UTC&quot;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">hours</span>(<span class="dv">0</span><span class="op">:</span><span class="dv">6</span>)</a>
 <a class="sourceLine" id="cb79-2" title="2">times</a></code></pre></div>
-<pre><code>## [1] &quot;2019-08-30 12:15:00 UTC&quot; &quot;2019-08-30 13:15:00 UTC&quot;
-## [3] &quot;2019-08-30 14:15:00 UTC&quot; &quot;2019-08-30 15:15:00 UTC&quot;
-## [5] &quot;2019-08-30 16:15:00 UTC&quot; &quot;2019-08-30 17:15:00 UTC&quot;
-## [7] &quot;2019-08-30 18:15:00 UTC&quot;</code></pre>
+<pre><code>## [1] &quot;2019-12-27 18:36:13 UTC&quot; &quot;2019-12-27 19:36:13 UTC&quot;
+## [3] &quot;2019-12-27 20:36:13 UTC&quot; &quot;2019-12-27 21:36:13 UTC&quot;
+## [5] &quot;2019-12-27 22:36:13 UTC&quot; &quot;2019-12-27 23:36:13 UTC&quot;
+## [7] &quot;2019-12-28 00:36:13 UTC&quot;</code></pre>
 <div class="sourceCode" id="cb81"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb81-1" title="1"><span class="kw">as_tod</span>(times)</a></code></pre></div>
-<pre><code>## [1] 12.25003 13.25003 14.25003 15.25003 16.25003 17.25003 18.25003</code></pre>
+<pre><code>## [1] 18.603795 19.603795 20.603795 21.603795 22.603795 23.603795  0.603795</code></pre>
 <div class="sourceCode" id="cb83"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb83-1" title="1"><span class="kw">as_tod</span>(times, <span class="dt">unit.out =</span> <span class="st">&quot;minutes&quot;</span>)</a></code></pre></div>
-<pre><code>## [1]  735.0018  795.0018  855.0018  915.0018  975.0018 1035.0018 1095.0018</code></pre>
+<pre><code>## [1] 1116.2277 1176.2277 1236.2277 1296.2277 1356.2277 1416.2277   36.2277</code></pre>
 </div>
 <div id="relative-air-mass" class="section level2">
 <h2>Relative air mass</h2>

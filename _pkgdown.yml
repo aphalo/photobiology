@@ -231,6 +231,7 @@ reference:
     - relative_AM
     - print.solar_time
     - format.solar_time
+    - validate_geocode
   - title: Atmosphere
     contents:
     - water_vp_sat

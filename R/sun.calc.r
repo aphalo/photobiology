@@ -922,16 +922,35 @@ print.solar_date <- function(x, ...) {
 #'
 #' @return A valid geocode stored in a tibble.
 #'
+#' @examples
+#'
+#' validate_geocode(NA)
+#' validate_geocode(data.frame(lon = -25, lat = 66))
+#'
+#' is_valid_geocode(NA)
+#' is_valid_geocode(1L)
+#' is_valid_geocode(data.frame(lon = -25, lat = 66))
+#'
+#' na_geocode()
+#'
 #' @export
 #'
 validate_geocode <- function(geocode) {
-  geocode <- tibble::as_tibble(geocode, .name_repair = "minimal")
+  if (is.atomic(geocode) && (length(geocode) == 1L) && is.na(geocode)) {
+    geocode <- na_geocode()
+  } else if (is.data.frame(geocode)) {
+    geocode <- tibble::as_tibble(geocode, .name_repair = "minimal")
+  } else {
+    stop("Bad geocode: ", format(geocode))
+  }
   stopifnot(nrow(geocode) >= 1) # needs to be replace by generation of no output in all functions
-  stopifnot(exists("lon", geocode), exists("lon", geocode))
-  if (any(geocode[["lon"]] > 180 | geocode[["lon"]] < -180)) {
+  stopifnot(exists("lon", geocode), exists("lat", geocode))
+  geocode[["lon"]] <- as.numeric(geocode[["lon"]]) # convert logical NA
+  geocode[["lat"]] <- as.numeric(geocode[["lat"]]) # convert logical NA
+  if (any(na.omit(geocode[["lon"]]) > 180 | na.omit(geocode[["lon"]]) < -180)) {
     stop("Longitude is off-range.")
   }
-  if (any(geocode[["lat"]] > 89.99 | geocode[["lat"]] < -89.99)) {
+  if (any(na.omit(geocode[["lat"]]) > 89.99 | na.omit(geocode[["lat"]]) < -89.99)) {
     stop("Latitude is off-range.")
   }
   if (!exists("address", geocode)) {
