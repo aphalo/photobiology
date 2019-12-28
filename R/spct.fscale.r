@@ -82,14 +82,15 @@ fscale.source_spct <- function(x,
                 range = range,
                 f = f,
                 target = target,
-                col.names = "s.e.irrad",
                 set.scaled = set.scaled,
+                col.names = "s.e.irrad",
                 ...)
   } else if (unit.out %in% c("photon", "quantum") ) {
     fscale_spct(spct = e2q(x, action = "replace"),
                 range = range,
                 f = f,
                 target = target,
+                set.scaled = set.scaled,
                 col.names = "s.q.irrad",
                 ...)
   } else {
@@ -113,16 +114,16 @@ fscale.response_spct <- function(x,
                 range = range,
                 f = f,
                 target = target,
-                col.names = "s.e.response",
                 set.scaled = set.scaled,
+                col.names = "s.e.response",
                 ...)
   } else if (unit.out %in% c("photon", "quantum") ) {
     fscale_spct(spct = e2q(x, action = "replace"),
                 range = range,
                 f = f,
                 target = target,
-                col.names = "s.q.response",
                 set.scaled = set.scaled,
+                col.names = "s.q.response",
                 ...)
   } else {
     stop("'unit.out ", unit.out, " is unknown")
@@ -148,16 +149,16 @@ fscale.filter_spct <- function(x,
                 range = range,
                 f = f,
                 target = target,
-                col.names = "Tfr",
                 set.scaled = set.scaled,
+                col.names = "Tfr",
                 ...)
   } else if (qty.out == "absorbance") {
     fscale_spct(spct = T2A(x, action = "replace"),
                 range = range,
                 f = f,
                 target = target,
-                col.names = "A",
                 set.scaled = set.scaled,
+                col.names = "A",
                 ...)
   } else {
     stop("'qty.out ", qty.out, " is unknown")
@@ -198,9 +199,9 @@ fscale.raw_spct <- function(x,
               range = range,
               f = f,
               target = target,
-              col.names = grep("^counts", names(x), value = TRUE),
               set.scaled = set.scaled,
-              ...)
+             col.names = grep("^counts", names(x), value = TRUE),
+               ...)
 }
 
 #' @describeIn fscale
@@ -217,8 +218,8 @@ fscale.cps_spct <- function(x,
               range = range,
               f = f,
               target = target,
-              col.names = grep("^cps", names(x), value = TRUE),
               set.scaled = set.scaled,
+              col.names = grep("^cps", names(x), value = TRUE),
               ...)
 }
 
