@@ -11,6 +11,7 @@ reference:
     contents:
     - '`photobiology-package`'
   - title: Spectra
+    desc: Constructor and query methods for objects used to store spectral data.
     contents:
     - source_spct
     - is.generic_spct
@@ -30,6 +31,7 @@ reference:
     - spct_classes
     - rmDerivedSpct
   - title: Collections of spectra
+    desc: Constructor and query methods for objects used to store multiple spectra.
     contents:
     - generic_mspct
     - is.generic_mspct
@@ -49,6 +51,7 @@ reference:
     - rmDerivedMspct
     - shared_member_class
   - title: Summaries from spectra
+    desc: Methods for summarizing spectral data.
     contents:
     - summary
     - is.summary_generic_spct
@@ -56,7 +59,8 @@ reference:
     - print.summary_generic_spct
     - head_tail
     - summary_spct_classes
-  - title: Summary spectra from collections of spectra
+  - title: Summaries from collections of spectra
+    desc: Methods for summarizing data across members of collections spectra.
     contents:
     - s_sum
     - s_prod
@@ -68,6 +72,7 @@ reference:
     - s_se
     - s_mean_se
   - title: Wavebands
+    desc: Methods for waveband objects used to store descriptions of wavelength ranges and spectral weighting functions.
     contents:
     - waveband
     - is.waveband
@@ -77,6 +82,7 @@ reference:
     - wb2tagged_spct
     - print.waveband
   - title: Metadata attributes
+    desc: Methods for setting and querying metadata from spectral objects.
     contents:
     - is_photon_based
     - getBSWFUsed
@@ -124,6 +130,7 @@ reference:
     - spct_attr2tb
     - spct_attributes
   - title: Summary quantities
+    desc: Methods for the computation of physical summary quantities from spectra.
     contents:
     - irrad
     - e_irrad
@@ -154,11 +161,13 @@ reference:
     - midpoint
     - stepsize
   - title: Spectral features
+    desc: Methods for detection of specific features in spectra.
     contents:
     - peaks
     - valleys
     - wls_at_target
   - title: Transformations
+    desc: Non-summary methods for transforming or modifying spectral data objects.
     contents:
     - normalize
     - normalization
@@ -184,6 +193,7 @@ reference:
     - cps2irrad
     - na.omit
   - title: Mathematical operators and functions for spectra
+    desc: Specializations of all R's mathematical functions and operators for spectral objects.
     contents:
     - '`plus-.generic_spct`'
     - '`div-.generic_spct`'
@@ -198,12 +208,14 @@ reference:
     - sign
     - round
   - title: Options
+    desc: Convenience functions for setting R options recognized by functions in the 'r4photobiology' suite of R packages.
     contents:
     - using_Tfr
     - energy_as_default
     - wb_trim_as_default
     - verbose_as_default
   - title: Extract, replace and combine
+    desc: Functions and operators, both specializations of R's ones and new ones specific to spectra and collections of spectra.
     contents:
     - Extract
     - Extract_mspct
@@ -215,10 +227,12 @@ reference:
     - subset2mspct
     - join_mspct
   - title: Apply
+    desc: Apply functions for collections of spectra.
     contents:
     - msmsply
     - convolve_each
   - title: Astronomy
+    desc: Astronomical computations of interest in photobiology and meteorology.
     contents:
     - solar_time
     - as.solar_date
@@ -228,11 +242,11 @@ reference:
     - tz_time_diff
     - day_night
     - sun_angles
-    - relative_AM
     - print.solar_time
     - format.solar_time
     - validate_geocode
   - title: Atmosphere
+    desc: Computations related to water vapour in air, and on equivalent air mass at different solar elevations.
     contents:
     - water_vp_sat
     - relative_AM
@@ -253,7 +267,7 @@ reference:
     - D2.UV654
     - FEL_spectrum
     - FEL.BN.9101.165
-  - title: Data for objects including filters
+  - title: Data for real objects including filters
     contents:
     - yellow_gel.spct
     - polyester.spct
@@ -266,6 +280,8 @@ reference:
     - Ler_leaf_trns_i.spct
     - Ler_leaf.spct
     - Ler_leaf.spct
+  - title: Data for theoretical physical bodies
+    contents:
     - clear_body.spct
     - white_body.spct
     - black_body.spct
@@ -283,22 +299,25 @@ reference:
     - ciexyzCMF2.spct
     - beesxyzCMF.spct
   - title: Housekeeping and helper functions
+    desc: Utilities mainly used internally in the 'r4photobiology' suite of R packages, but safe to use in user code.
     contents:
-    - getSpctVersion
-    - getMspctVersion
-    - is.old_spct
     - check_spct
     - check_w.length
     - checkTimeUnit
     - copy_attributes
+    - formatted_range
+    - getSpctVersion
+    - getMspctVersion
+    - is.old_spct
     - merge_attributes
     - normalize_range_arg
+    - uncollect
     - upgrade_spct
     - upgrade_spectra
-    - formatted_range
+    - wl_thin
     - defunct
   - title: Low-level functions
-    desc: These functions are for use by developers when maximum flexibility is needed. They are not meant for everyday use.
+    desc: Internal functions available for use by developers when maximum flexibility is needed. They are not meant for everyday use as they lack error handling and data validation features.
     contents:
     - as_energy
     - as_quantum
