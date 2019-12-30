@@ -56,15 +56,15 @@ fscale.default <- function(x, ...) {
 
 #' @describeIn fscale
 #'
-#' @param range An R object on which \code{range()} returns a numeric vector of
-#'   length 2 with the limits of a range of wavelengths in nm, with min and max
-#'   wavelengths (nm)
-#' @param f character string "mean" or "total" for scaling so that this summary
+#' @param range numeric. An R object on which \code{range()} returns a numeric
+#'   vector of length 2 with the limits of a range of wavelengths in nm, with
+#'   min and max wavelengths (nm)
+#' @param f character string. "mean" or "total" for scaling so that this summary
 #'   value becomes 1 for the returned object, or the name of a function taking
 #'   \code{x} as first argument and returning a numeric value.
 #' @param target numeric A constant used as target value for scaling.
-#' @param unit.out character Allowed values "energy", and "photon", or its alias
-#'   "quantum"
+#' @param unit.out character. Allowed values "energy", and "photon", or its alias
+#'   "quantum".
 #' @param set.scaled logical or NULL Flag indicating if the data is to be marked
 #'   as "scaled" or not.
 #'
@@ -132,7 +132,7 @@ fscale.response_spct <- function(x,
 
 #' @describeIn fscale
 #'
-#' @param qty.out character Allowed values "transmittance", and "absorbance"
+#' @param qty.out character. Allowed values "transmittance", and "absorbance".
 #'
 #' @export
 #'

@@ -457,7 +457,7 @@ mat2mspct <- function(x,
   stopifnot(ncol(x) >= 1L)
   # compatibility with as_tiible() >= 2.0.0
   if (is.null(colnames(x))) {
-    colnames(x) <- letters[1:ncol(x)]
+    colnames(x) <- letters[seq_len(ncol(x))]
   }
   stopifnot(nrow(x) == length(w.length))
   y <- cbind(w.length, x * multiplier)
@@ -465,7 +465,7 @@ mat2mspct <- function(x,
   if (length(spct.names) == ncol(x)) {
     colnames(y) <- c("w.length", spct.names)
   } else {
-    colnames(y) <- c("w.length", paste(spct.names[1], 1:ncol(x), sep = ""))
+    colnames(y) <- c("w.length", paste(spct.names[1], seq_len(ncol(x)), sep = ""))
   }
   z <- split2mspct(x = y,
                    member.class = member.class,

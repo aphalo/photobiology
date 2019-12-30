@@ -65,12 +65,12 @@ cps2Rfr <- function(x.sample,
                 getInstrDesc(x.black)$spectrometer.sn)
   }
 
-  instr.desc <- getInstrDesc(x.sample)
+#  instr.desc <- getInstrDesc(x.sample)
 
   cps.col.sample <- grep("^cps", names(x.sample), value = TRUE)
   cps.col.white <- grep("^cps", names(x.white), value = TRUE)
   stopifnot(length(cps.col.sample) == 1L && length(cps.col.white) == 1)
-  other.cols <- setdiff(names(x.sample), cps.col.sample)
+#  other.cols <- setdiff(names(x.sample), cps.col.sample)
   z <- as.generic_spct(x.sample)
   z[[cps.col.sample]] <- NULL
   if (!is.null(x.black)) {
@@ -121,7 +121,7 @@ cps2Tfr <- function(x.sample,
                 getInstrDesc(x.opaque)$spectrometer.sn)
   }
 
-  instr.desc <- getInstrDesc(x.sample)
+#  instr.desc <- getInstrDesc(x.sample)
 
   cps.col.sample <- grep("^cps", names(x.sample), value = TRUE)
   cps.col.clear <- grep("^cps", names(x.clear), value = TRUE)

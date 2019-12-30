@@ -81,7 +81,7 @@ sun_angles <- function(time = lubridate::now(tzone = "UTC"),
   stopifnot(length(tz) == 1)
 
   z <- list(nrow(geocode))
-  for (i in 1:nrow(geocode)) {
+  for (i in seq_len(nrow(geocode))) {
     temp <- sun_angles_fast(time = time,
                             tz = tz,
                             geocode = dplyr::slice(geocode, i),
@@ -391,8 +391,8 @@ day_night <- function(date = lubridate::now(tzone = "UTC"),
     unit.out <- "second"
   }
 
-  z <- list(nrow(geocode))
-  for (i in 1:nrow(geocode)) {
+  z <- list()
+  for (i in seq_len(nrow(geocode))) {
     temp <- day_night_fast(date = date,
                            tz = tz,
                            geocode = dplyr::slice(geocode, i),

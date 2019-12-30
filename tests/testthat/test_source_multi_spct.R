@@ -106,7 +106,7 @@ test_that("source_mspct", {
   spct.l <- list(my1.spct, my2.spct, my3.spct, my4.spct, my5.spct)
   my.mspct <- source_mspct(spct.l)
 
-  expect_equal(paste("spct", 1:length(spct.l), sep = "_"), names(my.mspct))
+  expect_equal(paste("spct", seq_len(length(spct.l)), sep = "_"), names(my.mspct))
 
   expect_equal(class(my.mspct)[1:2], c("source_mspct", "generic_mspct") )
   expect_equal(attr(my.mspct, "mspct.version", exact = TRUE), 2)
@@ -417,7 +417,7 @@ test_that("source_mspct_attr", {
   spct.l <- list(my1.spct, my2.spct)
   my.mspct <- source_mspct(spct.l)
 
-  expect_equal(paste("spct", 1:length(spct.l), sep = "_"), names(my.mspct))
+  expect_equal(paste("spct", seq_len(length(spct.l)), sep = "_"), names(my.mspct))
 
   expect_equal(class(my.mspct)[1:2], c("source_mspct", "generic_mspct") )
   expect_equal(attr(my.mspct, "mspct.version", exact = TRUE), 2)

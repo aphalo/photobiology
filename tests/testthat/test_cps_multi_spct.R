@@ -221,7 +221,7 @@ test_that("raw_mspct", {
   spct.l <- list(my1.spct, my2.spct, my3.spct, my4.spct, my5.spct)
   my.mspct <- raw_mspct(spct.l)
 
-  expect_equal(paste("spct", 1:length(spct.l), sep = "_"), names(my.mspct))
+  expect_equal(paste("spct", seq_len(length(spct.l)), sep = "_"), names(my.mspct))
 
   expect_equal(class(my.mspct)[1:2], c("raw_mspct", "generic_mspct") )
   expect_equal(attr(my.mspct, "mspct.version", exact = TRUE), 2)

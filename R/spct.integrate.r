@@ -115,7 +115,7 @@ interpolate_spct <- function(spct,
   }
   names.spct <- names(spct)
   numeric.cols <- names.spct[sapply(spct[ ,names.spct], is.numeric)]
-  other.cols <- setdiff(names.spct, numeric.cols)
+#  other.cols <- setdiff(names.spct, numeric.cols)
   data.cols <- setdiff(numeric.cols, "w.length")
   if (nrow(spct) == 0) {
     new.spct <- tibble::tibble(w.length = w.length.out)

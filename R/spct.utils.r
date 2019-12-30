@@ -97,14 +97,20 @@ uncollect.generic_mspct <- function(x,
 
 #' Thin the density of wavelength values
 #'
-#' Increase the wavelength step in stored spectral data in featureless
-#' regions to save storage space.
+#' Increase the wavelength step in stored spectral data in featureless regions
+#' to save storage space.
+#'
+#' @details The algorithm used for spectra is "naive" in an effort to keep it
+#'   efficient. It works by iteratively attempting to delete every other
+#'   observation along wavelengths, based on the criteria for maximum wavelength
+#'   step and maximum relative step in the spectral variable between adjacent
+#'   data values.
 #'
 #' @param x An R object
 #' @param ... additional named arguments passed down to \code{f}.
 #'
-#' @return An object of the same class as \code{x} but with a reduced density
-#' of wavelength values in those regions were slope is shallow and featureless.
+#' @return An object of the same class as \code{x} but with a reduced density of
+#'   wavelength values in those regions were slope is shallow and featureless.
 #'
 #' @export
 #'
@@ -130,63 +136,228 @@ wl_thin.default <- function(x, ...) {
 #' @describeIn wl_thin
 #'
 #' @param max.wl.step numeric. Largest allowed wavelength difference between
-#'    adjacent spectral values.
-#' @param delta.var.max numeric in 0 to 1. Largest allowed relative difference
-#'    in spectral quantity betweem adjacent spectral values.
+#'    adjacent spectral values in nanometres (nm).
+#' @param delta.var.max numeric in 0 to 1. Largest allowed change in relative
+#'    slope of the spectral quantity per nm betweem adjacent pairs of values.
 #' @param variable character. Name of the variable conatining the spectral
 #'    data.
 #'
-#' @note Wavelengths are always stored expressed in nanometres in variable
-#'    \code{"w.length"}.
+#' @note The value of \code{delta.var.max} is expressed as relative change in
+#'   the slope of spectral variable per nanometre. This means that values
+#'   between 0.0005 and 0.005 tend to work reasonably well. The best value
+#'   will depend on the wavelength step of the input and noise in data. A
+#'   moderate smoothing before thinning can sometimes help in the case of
+#'   noisy data.
+#'   The amount of thinning is almost always less than the value of criteria
+#'   passed as argument as it is based on existing wavelength values. For
+#'   example if we start with a spectrum with a uniform wavelength step of 1 nm,
+#'   possible steps in the thinned spectrum are 2, 4, 8, 16, 32, etc. nm. The
+#'   algorithm, does work with any step sizes, regular or variable in the input.
+#'   Thinning is most effective for spectra with large "featureless" regions as
+#'   the algorithm attempts not to discard information, contrary to smoothing or
+#'   interpolation.
 #'
 #' @export
 #'
 wl_thin.generic_spct <- function(x,
-                                 max.wl.step = 2.0,
-                                 delta.var.max = 0.01,
+                                 max.wl.step = 10.0,
+                                 delta.var.max = 0.001,
                                  variable,
                                  ...) {
+  # compute stopping criterion
   wl.stepsize <- wl_stepsize(x)
-  # make code simpler as range is fixed
+  max.wl.thinning <- trunc(max.wl.step / min(wl.stepsize))
+  if (max.wl.thinning < 2) {
+    warning("No thinning of wavelengths possible!")
+    return(x)
+  }
+  # make code simpler by setting range to 0..1
   x.norm <- normalize(x)
   # collect peaks and valleys to ensure that they are not removed
   peaks <- find_peaks(x.norm[[variable]], span = 21, strict = FALSE)
   valleys <- find_peaks(-x.norm[[variable]], span = 21, strict = FALSE)
   extremes <- peaks | valleys
 
-  # compute differences as proxi for slope
-  # using all values
-  wl.step1 <- x.norm[["w.length"]]
-  var.step1 <- x.norm[[variable]]
-  diff.wl.step1 <- diff(wl.step1)
-  diff.var.step1 <- diff(var.step1)
-  local.slope.step1 <- diff.var.step1 / diff.wl.step1
-  # using every other value
-  wl.step2 <- wl.step1[c(TRUE, FALSE)]
-  var.step2 <- var.step1[c(TRUE, FALSE)]
-  diff.wl.step2 <- diff(wl.step2)
-  diff.var.step2 <- diff(var.step2)
-  local.slope.step2 <- diff.var.step2 / diff.wl.step2
-  # using every fourth value
-  wl.step4 <- wl.step2[c(TRUE, FALSE)]
-  var.step4 <- var.step2[c(TRUE, FALSE)]
-  diff.wl.step4 <- diff(wl.step4)
-  diff.var.step4 <- diff(var.step4)
-  local.slope.step4 <- diff.var.step4 / diff.wl.step4
-  # using every eights value
-  wl.step8 <- wl.step4[c(TRUE, FALSE)]
-  # check var and wl deltas
-  # if TRUE we cannot discard intermediate skipped values
-  step1.test <- (abs(local.slope.step1) > delta.var.max) | (diff.wl.step1 > max.wl.step)
-  step2.test <- (abs(local.slope.step2) > delta.var.max) | (diff.wl.step2 > max.wl.step)
-  step4.test <- (abs(local.slope.step4) > delta.var.max) | (diff.wl.step4 > max.wl.step)
-  # decide wavelengths to drop
-  wls.to.keep <- unique(c(wl.step1[c(1, length(wl.step1))],
-                          wl.step1[extremes],
-                          wl.step1[-1][step1.test],
-                          wl.step2[-1][step2.test],
-                          wl.step4[-1][step4.test],
-                          wl.step8[TRUE]))
+  # iterative loop
+  thin.factor <- 1L
+  wls.all <- x.norm[["w.length"]]
+  wl.thinned <- wls.all
+  var.thinned <- x.norm[[variable]]
+  wls.to.keep <- c(wls.all[c(1, length(wls.all))],
+                   wls.all[extremes])
+  while (thin.factor < max.wl.thinning / 2) {
+    # compute differences as proxi for slope
+    diff.wl <- diff(wl.thinned)
+    diff.var <- diff(var.thinned)
+    local.slope <- diff.var / diff.wl
+    # select wavelengths to keep based on the local change in slope
+    selector <- (abs(diff(c(0, local.slope))) > delta.var.max) | (diff.wl > max.wl.step)
+    wls.to.keep <- c(wls.to.keep,
+                     wl.thinned[-1][selector])
+    # keep every other value for next iteration
+    wl.thinned <- wl.thinned[c(TRUE, FALSE)]
+    var.thinned <- var.thinned[c(TRUE, FALSE)]
+    thin.factor <- thin.factor * 2L
+  }
+  # add all wavelengths to ensure max wavelength step
+  wls.to.keep <- unique(c(wls.to.keep, wl.thinned))
+  # extract from x the rows to keep, retaining all columns keeping original
+  # ordering
   x[x[["w.length"]] %in% wls.to.keep, ]
 }
 
+#' @describeIn wl_thin
+#'
+#' @param unit.out character Allowed values "energy", and "photon", or its alias
+#'   "quantum".
+#'
+#' @export
+#'
+wl_thin.source_spct <- function(x,
+                                max.wl.step = 10.0,
+                                delta.var.max = 0.001,
+                                unit.out = getOption("photobiology.radiation.unit", default = "energy"),
+                                ...) {
+  if (unit.out == "energy") {
+    wl_thin.generic_spct(x = q2e(x, action = "replace"),
+                         max.wl.step = max.wl.step,
+                         delta.var.max = delta.var.max,
+                         variable = "s.e.irrad",
+                         ...)
+  } else if (unit.out %in% c("photon", "quantum")) {
+    wl_thin.generic_spct(x = e2q(x, action = "replace"),
+                         max.wl.step = max.wl.step,
+                         delta.var.max = delta.var.max,
+                         variable = "s.q.irrad",
+                         ...)
+  } else {
+    stop("'unit.out ", unit.out, " is unknown")
+  }
+}
+
+#' @describeIn wl_thin
+#'
+#' @export
+#'
+wl_thin.response_spct <- function(x,
+                                  max.wl.step = 10.0,
+                                  delta.var.max = 0.001,
+                                  unit.out = getOption("photobiology.radiation.unit", default = "energy"),
+                                  ...) {
+  if (unit.out == "energy") {
+    wl_thin.generic_spct(x = q2e(x, action = "replace"),
+                         max.wl.step = max.wl.step,
+                         delta.var.max = delta.var.max,
+                         variable = "s.e.response",
+                         ...)
+  } else if (unit.out %in% c("photon", "quantum")) {
+    wl_thin.generic_spct(x = e2q(x, action = "replace"),
+                         max.wl.step = max.wl.step,
+                         delta.var.max = delta.var.max,
+                         variable = "s.q.response",
+                         ...)
+  } else {
+    stop("'unit.out ", unit.out, " is unknown")
+  }
+}
+
+#' @describeIn wl_thin
+#'
+#' @param qty.out character Allowed values "transmittance", and "absorbance".
+#'
+#' @export
+#'
+wl_thin.filter_spct <- function(x,
+                                max.wl.step = 10.0,
+                                delta.var.max = 0.001,
+                                qty.out = getOption("photobiology.filter.qty",
+                                                    default = "transmittance"),
+                                ...) {
+  if (qty.out == "transmittance") {
+    wl_thin.generic_spct(x = A2T(x, action = "replace"),
+                         max.wl.step = max.wl.step,
+                         delta.var.max = delta.var.max,
+                         variable = "Tfr",
+                         ...)
+  } else if (qty.out == "absorbance") {
+    wl_thin.generic_spct(x = T2A(x, action = "replace"),
+                         max.wl.step = max.wl.step,
+                         delta.var.max = delta.var.max,
+                         variable = "A",
+                         ...)
+  } else {
+    stop("'unit.out ", qty.out, " is unknown")
+  }
+}
+
+#' @describeIn wl_thin
+#'
+#' @export
+#'
+wl_thin.reflector_spct <- function(x,
+                                   max.wl.step = 10.0,
+                                   delta.var.max = 0.001,
+                                   ...) {
+  wl_thin.generic_spct(x = x,
+                       max.wl.step = max.wl.step,
+                       delta.var.max = delta.var.max,
+                       variable = "Rfr",
+                       ...)
+}
+
+#' @describeIn wl_thin
+#'
+#' @export
+#'
+wl_thin.raw_spct <- wl_thin.generic_spct
+
+#' @describeIn wl_thin
+#'
+#' @export
+#'
+wl_thin.cps_spct <- wl_thin.generic_spct
+
+#' @describeIn wl_thin
+#'
+#' @export
+#'
+wl_thin.object_spct <- wl_thin.generic_spct
+
+#' @describeIn wl_thin
+#'
+#' @export
+#'
+wl_thin.chroma_spct <- wl_thin.default
+
+#' @describeIn wl_thin
+#'
+#' @export
+#'
+wl_thin.calibration_spct <- wl_thin.default
+
+#' @describeIn wl_thin
+#'
+#' @export
+#'
+wl_thin.generic_mspct <- function(x,
+                                  max.wl.step = 10.0,
+                                  delta.var.max = 0.001,
+                                  ...) {
+  msmsply(x,
+          wl_thin,
+          max.wl.step = max.wl.step,
+          delta.var.max = delta.var.max,
+          ...)
+}
+
+#' @describeIn wl_thin
+#'
+#' @export
+#'
+wl_thin.chroma_mspct <- wl_thin.default
+
+#' @describeIn wl_thin
+#'
+#' @export
+#'
+wl_thin.calibration_mspct <- wl_thin.default

@@ -71,7 +71,7 @@ na.omit.generic_spct <- function(object,
   for (col in data_cols) {
     rows_to_omit <- union(rows_to_omit, which(is.na(object[[col]])))
   }
-  rows_to_keep <- setdiff(1:nrow(object), rows_to_omit)
+  rows_to_keep <- setdiff(seq_len(nrow(object)), rows_to_omit)
   if (na.action == "replace") {
     z <- object
     if (!is.null(fill)) {

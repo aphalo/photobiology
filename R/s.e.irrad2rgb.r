@@ -27,7 +27,8 @@
 #'
 #' @examples
 #' my.color <-
-#'     with(sun.data, s_e_irrad2rgb(w.length, s.e.irrad, color.name="sunWhite"))
+#'     with(sun.data,
+#'          s_e_irrad2rgb(w.length, s.e.irrad, color.name = "sunWhite"))
 #' col2rgb(my.color)
 #'
 #' @note Very heavily modified from Chad Eliason's
