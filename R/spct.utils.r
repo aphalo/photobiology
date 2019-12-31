@@ -118,24 +118,24 @@ uncollect.generic_mspct <- function(x,
 #'
 #' nrow(yellow_gel.spct)
 #' wl_stepsize(yellow_gel.spct)
-#' thinned.spct <- wl_thin(yellow_gel.spct)
+#' thinned.spct <- thin_wl(yellow_gel.spct)
 #' nrow(thinned.spct)
 #' wl_stepsize(thinned.spct)
 #'
 #' @family experimental utility functions
 #'
-wl_thin <- function(x, ...) UseMethod("wl_thin")
+thin_wl <- function(x, ...) UseMethod("thin_wl")
 
-#' @describeIn wl_thin Default for generic function
+#' @describeIn thin_wl Default for generic function
 #'
 #' @export
 #'
-wl_thin.default <- function(x, ...) {
-  warning("'wl_thin()' is not defined for objects of class '", class(x)[1], "'.")
+thin_wl.default <- function(x, ...) {
+  warning("'thin_wl()' is not defined for objects of class '", class(x)[1], "'.")
   x
 }
 
-#' @describeIn wl_thin
+#' @describeIn thin_wl
 #'
 #' @param max.wl.step numeric. Largest allowed wavelength difference between
 #'    adjacent spectral values in nanometres (nm).
@@ -162,7 +162,7 @@ wl_thin.default <- function(x, ...) {
 #'
 #' @export
 #'
-wl_thin.generic_spct <- function(x,
+thin_wl.generic_spct <- function(x,
                                  max.wl.step = 10.0,
                                  max.slope.delta = 0.001,
                                  col.names,
@@ -215,26 +215,26 @@ wl_thin.generic_spct <- function(x,
   x[x[["w.length"]] %in% wls.to.keep, ]
 }
 
-#' @describeIn wl_thin
+#' @describeIn thin_wl
 #'
 #' @param unit.out character Allowed values "energy", and "photon", or its alias
 #'   "quantum".
 #'
 #' @export
 #'
-wl_thin.source_spct <- function(x,
+thin_wl.source_spct <- function(x,
                                 max.wl.step = 10.0,
                                 max.slope.delta = 0.001,
                                 unit.out = getOption("photobiology.radiation.unit", default = "energy"),
                                 ...) {
   if (unit.out == "energy") {
-    wl_thin.generic_spct(x = q2e(x, action = "replace"),
+    thin_wl.generic_spct(x = q2e(x, action = "replace"),
                          max.wl.step = max.wl.step,
                          max.slope.delta = max.slope.delta,
                          col.names = "s.e.irrad",
                          ...)
   } else if (unit.out %in% c("photon", "quantum")) {
-    wl_thin.generic_spct(x = e2q(x, action = "replace"),
+    thin_wl.generic_spct(x = e2q(x, action = "replace"),
                          max.wl.step = max.wl.step,
                          max.slope.delta = max.slope.delta,
                          col.names = "s.q.irrad",
@@ -244,23 +244,23 @@ wl_thin.source_spct <- function(x,
   }
 }
 
-#' @describeIn wl_thin
+#' @describeIn thin_wl
 #'
 #' @export
 #'
-wl_thin.response_spct <- function(x,
+thin_wl.response_spct <- function(x,
                                   max.wl.step = 10.0,
                                   max.slope.delta = 0.001,
                                   unit.out = getOption("photobiology.radiation.unit", default = "energy"),
                                   ...) {
   if (unit.out == "energy") {
-    wl_thin.generic_spct(x = q2e(x, action = "replace"),
+    thin_wl.generic_spct(x = q2e(x, action = "replace"),
                          max.wl.step = max.wl.step,
                          max.slope.delta = max.slope.delta,
                          col.names = "s.e.response",
                          ...)
   } else if (unit.out %in% c("photon", "quantum")) {
-    wl_thin.generic_spct(x = e2q(x, action = "replace"),
+    thin_wl.generic_spct(x = e2q(x, action = "replace"),
                          max.wl.step = max.wl.step,
                          max.slope.delta = max.slope.delta,
                          col.names = "s.q.response",
@@ -270,26 +270,26 @@ wl_thin.response_spct <- function(x,
   }
 }
 
-#' @describeIn wl_thin
+#' @describeIn thin_wl
 #'
 #' @param qty.out character Allowed values "transmittance", and "absorbance".
 #'
 #' @export
 #'
-wl_thin.filter_spct <- function(x,
+thin_wl.filter_spct <- function(x,
                                 max.wl.step = 10.0,
                                 max.slope.delta = 0.001,
                                 qty.out = getOption("photobiology.filter.qty",
                                                     default = "transmittance"),
                                 ...) {
   if (qty.out == "transmittance") {
-    wl_thin.generic_spct(x = A2T(x, action = "replace"),
+    thin_wl.generic_spct(x = A2T(x, action = "replace"),
                          max.wl.step = max.wl.step,
                          max.slope.delta = max.slope.delta,
                          col.names = "Tfr",
                          ...)
   } else if (qty.out == "absorbance") {
-    wl_thin.generic_spct(x = T2A(x, action = "replace"),
+    thin_wl.generic_spct(x = T2A(x, action = "replace"),
                          max.wl.step = max.wl.step,
                          max.slope.delta = max.slope.delta,
                          col.names = "A",
@@ -299,74 +299,74 @@ wl_thin.filter_spct <- function(x,
   }
 }
 
-#' @describeIn wl_thin
+#' @describeIn thin_wl
 #'
 #' @export
 #'
-wl_thin.reflector_spct <- function(x,
+thin_wl.reflector_spct <- function(x,
                                    max.wl.step = 10.0,
                                    max.slope.delta = 0.001,
                                    ...) {
-  wl_thin.generic_spct(x = x,
+  thin_wl.generic_spct(x = x,
                        max.wl.step = max.wl.step,
                        max.slope.delta = max.slope.delta,
                        col.names = "Rfr",
                        ...)
 }
 
-#' @describeIn wl_thin
+#' @describeIn thin_wl
 #'
 #' @export
 #'
-wl_thin.raw_spct <- wl_thin.generic_spct
+thin_wl.raw_spct <- thin_wl.generic_spct
 
-#' @describeIn wl_thin
+#' @describeIn thin_wl
 #'
 #' @export
 #'
-wl_thin.cps_spct <- wl_thin.generic_spct
+thin_wl.cps_spct <- thin_wl.generic_spct
 
-#' @describeIn wl_thin
+#' @describeIn thin_wl
 #'
 #' @export
 #'
-wl_thin.object_spct <- wl_thin.generic_spct
+thin_wl.object_spct <- thin_wl.generic_spct
 
-#' @describeIn wl_thin
+#' @describeIn thin_wl
 #'
 #' @export
 #'
-wl_thin.chroma_spct <- wl_thin.default
+thin_wl.chroma_spct <- thin_wl.default
 
-#' @describeIn wl_thin
+#' @describeIn thin_wl
 #'
 #' @export
 #'
-wl_thin.calibration_spct <- wl_thin.default
+thin_wl.calibration_spct <- thin_wl.default
 
-#' @describeIn wl_thin
+#' @describeIn thin_wl
 #'
 #' @export
 #'
-wl_thin.generic_mspct <- function(x,
+thin_wl.generic_mspct <- function(x,
                                   max.wl.step = 10.0,
                                   max.slope.delta = 0.001,
                                   ...) {
   msmsply(x,
-          wl_thin,
+          thin_wl,
           max.wl.step = max.wl.step,
           max.slope.delta = max.slope.delta,
           ...)
 }
 
-#' @describeIn wl_thin
+#' @describeIn thin_wl
 #'
 #' @export
 #'
-wl_thin.chroma_mspct <- wl_thin.default
+thin_wl.chroma_mspct <- thin_wl.default
 
-#' @describeIn wl_thin
+#' @describeIn thin_wl
 #'
 #' @export
 #'
-wl_thin.calibration_mspct <- wl_thin.default
+thin_wl.calibration_mspct <- thin_wl.default
