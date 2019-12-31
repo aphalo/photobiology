@@ -16,7 +16,7 @@
 #'   not applied, so all spectra in \code{x} must share the same set of
 #'   wavelengths. When defining new public functions using these utility
 #'   functions make sure to return data that is valid for the class of spectral
-#'   returned!!
+#'   object returned!!
 #'
 #' @seealso \code{\link[base]{mean}}
 #'

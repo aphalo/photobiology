@@ -1,6 +1,12 @@
-photobiology 0.9.30 (2019-12-19)
+photobiology 0.9.30 (2019-12-31)
 ================================
 
+* Add function compare_spct() for comparisons between pairs of spectra based
+on summaries computed over multiple ranges of wavelengths.
+* Add utility method uncollect() for extracting all members of a collection of
+spectra.
+* Add utility method wl_thin() for reducing the storage size of _spct objects
+by removing data points in regions without features.
 * Fix bug in get_attributes() methods.
 * Add parameter "address" to setWhereMeasured(), revise print() methods to
 display address if available. Add function na_geocode(), a constructor for a
@@ -14,8 +20,6 @@ object and revise print.summary_generic_spct() to display the name of the
 summarized object.
 * Revise fscale() so that by default it sets the "scaled" attribute only when
 the target value for re-scaling is equal to one.
-* Add utility method uncollect for extracting all members of a collection of
-spectra.
 
 photobiology 0.9.29 (2019-09-10)
 ================================
