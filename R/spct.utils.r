@@ -130,19 +130,20 @@ wl_thin <- function(x, ...) UseMethod("wl_thin")
 #'
 wl_thin.default <- function(x, ...) {
   warning("'wl_thin()' is not defined for objects of class '", class(x)[1], "'.")
-  invisible(character())
+  x
 }
 
 #' @describeIn wl_thin
 #'
 #' @param max.wl.step numeric. Largest allowed wavelength difference between
 #'    adjacent spectral values in nanometres (nm).
-#' @param delta.var.max numeric in 0 to 1. Largest allowed change in relative
+#' @param max.slope.delta numeric in 0 to 1. Largest allowed change in relative
 #'    slope of the spectral quantity per nm betweem adjacent pairs of values.
-#' @param variable character. Name of the variable conatining the spectral
-#'    data.
+#' @param col.names character. Name of the column of \code{x} containing the
+#'   spectral data to check against \code{max.slope.delta}. Currently only one
+#'   column supported.
 #'
-#' @note The value of \code{delta.var.max} is expressed as relative change in
+#' @note The value of \code{max.slope.delta} is expressed as relative change in
 #'   the slope of spectral variable per nanometre. This means that values
 #'   between 0.0005 and 0.005 tend to work reasonably well. The best value
 #'   will depend on the wavelength step of the input and noise in data. A
@@ -161,8 +162,8 @@ wl_thin.default <- function(x, ...) {
 #'
 wl_thin.generic_spct <- function(x,
                                  max.wl.step = 10.0,
-                                 delta.var.max = 0.001,
-                                 variable,
+                                 max.slope.delta = 0.001,
+                                 col.names,
                                  ...) {
   # compute stopping criterion
   wl.stepsize <- wl_stepsize(x)
@@ -172,17 +173,22 @@ wl_thin.generic_spct <- function(x,
     return(x)
   }
   # make code simpler by setting range to 0..1
-  x.norm <- normalize(x)
+  # we force use of parent class method as signature varies
+  x.norm <- normalize.generic_spct(x,
+                                   range = NULL,
+                                   norm = "max",
+                                   col.names = col.names,
+                                   na.rm = FALSE)
   # collect peaks and valleys to ensure that they are not removed
-  peaks <- find_peaks(x.norm[[variable]], span = 21, strict = FALSE)
-  valleys <- find_peaks(-x.norm[[variable]], span = 21, strict = FALSE)
+  peaks <- find_peaks(x.norm[[col.names]], span = 21, strict = FALSE)
+  valleys <- find_peaks(-x.norm[[col.names]], span = 21, strict = FALSE)
   extremes <- peaks | valleys
 
   # iterative loop
   thin.factor <- 1L
   wls.all <- x.norm[["w.length"]]
   wl.thinned <- wls.all
-  var.thinned <- x.norm[[variable]]
+  var.thinned <- x.norm[[col.names]]
   wls.to.keep <- c(wls.all[c(1, length(wls.all))],
                    wls.all[extremes])
   while (thin.factor < max.wl.thinning / 2) {
@@ -191,7 +197,8 @@ wl_thin.generic_spct <- function(x,
     diff.var <- diff(var.thinned)
     local.slope <- diff.var / diff.wl
     # select wavelengths to keep based on the local change in slope
-    selector <- (abs(diff(c(0, local.slope))) > delta.var.max) | (diff.wl > max.wl.step)
+    selector <-
+      (abs(diff(c(0, local.slope))) > max.slope.delta) | (diff.wl > max.wl.step)
     wls.to.keep <- c(wls.to.keep,
                      wl.thinned[-1][selector])
     # keep every other value for next iteration
@@ -215,20 +222,20 @@ wl_thin.generic_spct <- function(x,
 #'
 wl_thin.source_spct <- function(x,
                                 max.wl.step = 10.0,
-                                delta.var.max = 0.001,
+                                max.slope.delta = 0.001,
                                 unit.out = getOption("photobiology.radiation.unit", default = "energy"),
                                 ...) {
   if (unit.out == "energy") {
     wl_thin.generic_spct(x = q2e(x, action = "replace"),
                          max.wl.step = max.wl.step,
-                         delta.var.max = delta.var.max,
-                         variable = "s.e.irrad",
+                         max.slope.delta = max.slope.delta,
+                         col.names = "s.e.irrad",
                          ...)
   } else if (unit.out %in% c("photon", "quantum")) {
     wl_thin.generic_spct(x = e2q(x, action = "replace"),
                          max.wl.step = max.wl.step,
-                         delta.var.max = delta.var.max,
-                         variable = "s.q.irrad",
+                         max.slope.delta = max.slope.delta,
+                         col.names = "s.q.irrad",
                          ...)
   } else {
     stop("'unit.out ", unit.out, " is unknown")
@@ -241,20 +248,20 @@ wl_thin.source_spct <- function(x,
 #'
 wl_thin.response_spct <- function(x,
                                   max.wl.step = 10.0,
-                                  delta.var.max = 0.001,
+                                  max.slope.delta = 0.001,
                                   unit.out = getOption("photobiology.radiation.unit", default = "energy"),
                                   ...) {
   if (unit.out == "energy") {
     wl_thin.generic_spct(x = q2e(x, action = "replace"),
                          max.wl.step = max.wl.step,
-                         delta.var.max = delta.var.max,
-                         variable = "s.e.response",
+                         max.slope.delta = max.slope.delta,
+                         col.names = "s.e.response",
                          ...)
   } else if (unit.out %in% c("photon", "quantum")) {
     wl_thin.generic_spct(x = e2q(x, action = "replace"),
                          max.wl.step = max.wl.step,
-                         delta.var.max = delta.var.max,
-                         variable = "s.q.response",
+                         max.slope.delta = max.slope.delta,
+                         col.names = "s.q.response",
                          ...)
   } else {
     stop("'unit.out ", unit.out, " is unknown")
@@ -269,21 +276,21 @@ wl_thin.response_spct <- function(x,
 #'
 wl_thin.filter_spct <- function(x,
                                 max.wl.step = 10.0,
-                                delta.var.max = 0.001,
+                                max.slope.delta = 0.001,
                                 qty.out = getOption("photobiology.filter.qty",
                                                     default = "transmittance"),
                                 ...) {
   if (qty.out == "transmittance") {
     wl_thin.generic_spct(x = A2T(x, action = "replace"),
                          max.wl.step = max.wl.step,
-                         delta.var.max = delta.var.max,
-                         variable = "Tfr",
+                         max.slope.delta = max.slope.delta,
+                         col.names = "Tfr",
                          ...)
   } else if (qty.out == "absorbance") {
     wl_thin.generic_spct(x = T2A(x, action = "replace"),
                          max.wl.step = max.wl.step,
-                         delta.var.max = delta.var.max,
-                         variable = "A",
+                         max.slope.delta = max.slope.delta,
+                         col.names = "A",
                          ...)
   } else {
     stop("'unit.out ", qty.out, " is unknown")
@@ -296,12 +303,12 @@ wl_thin.filter_spct <- function(x,
 #'
 wl_thin.reflector_spct <- function(x,
                                    max.wl.step = 10.0,
-                                   delta.var.max = 0.001,
+                                   max.slope.delta = 0.001,
                                    ...) {
   wl_thin.generic_spct(x = x,
                        max.wl.step = max.wl.step,
-                       delta.var.max = delta.var.max,
-                       variable = "Rfr",
+                       max.slope.delta = max.slope.delta,
+                       col.names = "Rfr",
                        ...)
 }
 
@@ -341,12 +348,12 @@ wl_thin.calibration_spct <- wl_thin.default
 #'
 wl_thin.generic_mspct <- function(x,
                                   max.wl.step = 10.0,
-                                  delta.var.max = 0.001,
+                                  max.slope.delta = 0.001,
                                   ...) {
   msmsply(x,
           wl_thin,
           max.wl.step = max.wl.step,
-          delta.var.max = delta.var.max,
+          max.slope.delta = max.slope.delta,
           ...)
 }
 
