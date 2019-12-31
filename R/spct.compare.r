@@ -40,17 +40,21 @@ compare_spct <- function(x,
     .summary.fun <-
       switch(class(x)[1],
              source_mspct = irrad,
+             response_mspct = response,
              filter_mspct = transmittance,
              reflector_mspct = reflectance,
-             object_mspct = absorptance
+             object_mspct = absorptance,
+             NULL
       )
     # temporary kludge
     f.name <-
       switch(class(x)[1],
              source_mspct = "irrad",
+             response_mspct = "response",
              filter_mspct = "transmittance",
              reflector_mspct = "reflectance",
-             object_mspct = "absorptance"
+             object_mspct = "absorptance",
+             stop("No default '.summary.fun' available for class ", class(x)[1])
       )
   } else {
      f.name <- substitute(.summary.fun)
