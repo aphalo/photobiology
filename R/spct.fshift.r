@@ -2,12 +2,12 @@
 
 #' Shift the scale of a spectrum using a summary function
 #'
-#' These functions return a spectral object of the same class as the one
-#' supplied as argument but with the spectral data on a shifted scale. A range
-#' of wavelengths is taken a reference (zero or another numeric constant) and a
-#' summary is calculated for this waveband. The difference between the computed
-#' and reference value are used to shift the scale so that these two values
-#' match in the returned object.
+#' The \code{fshift()} methods return a spectral object of the same class as the
+#' one supplied as argument but with the spectral data on a zero-shifted scale.
+#' A range of wavelengths is taken as a zero reference and the summary
+#' calculated with \code{f} for this waveband is substracted. This results in a
+#' zero shift (= additive correction) to the values in the returned object.
+#' Metadata attributes are retained unchanged.
 #'
 #' @param x An R object
 #' @param ... additional named arguments passed down to \code{f}.
@@ -20,7 +20,7 @@
 #'
 fshift <- function(x, ...) UseMethod("fshift")
 
-#' @describeIn fscale Default for generic function
+#' @describeIn fshift Default for generic function
 #'
 #' @export
 #'
@@ -363,13 +363,18 @@ fshift.generic_mspct <-
 
 #' fshift a spectrum
 #'
-#' These function returns a spectral object of the same class as the one
-#' supplied as argument but with the spectral data on a shifted scale.
+#' This function returns a spectral object of the same class as the one
+#' supplied as argument but with the spectral data expressed on a zero-shifted
+#' scale.
+#'
+#' @details This private function is used internally to implement the
+#'   \code{hshift()} methods that are exported.
 #'
 #' @param spct generic_spct The spectrum to be normalized
 #' @param range an R object on which range() returns a vector of length 2, with
 #'   min and max wavelengths (nm)
-#' @param col.names character The name of the variable to fscale
+#' @param col.names character The name of the variable to shift with respect to
+#'   zero.
 #' @param f function A summary function to be applied to \code{spct}
 #' @param ... other arguments passed to f()
 #'

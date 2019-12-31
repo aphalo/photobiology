@@ -62,6 +62,7 @@ reference:
   - title: Summaries from collections of spectra
     desc: Methods for summarizing data across members of collections spectra.
     contents:
+    - compare_spct
     - s_sum
     - s_prod
     - s_mean
@@ -166,21 +167,14 @@ reference:
     - peaks
     - valleys
     - wls_at_target
-  - title: Transformations
-    desc: Non-summary methods for transforming or modifying spectral data objects.
+  - title: Transformations, radiation-related
+    desc: Non-summary methods for transforming or modifying the radiation-related quantity of spectral data objects.
     contents:
+    - clean
     - normalize
     - normalization
     - fscale
     - fshift
-    - clean
-    - insert_hinges
-    - interpolate_wl
-    - interpolate_spct
-    - smooth_spct
-    - trim_wl
-    - trim_spct
-    - clip_wl
     - convertTimeUnit
     - e2q
     - q2e
@@ -191,6 +185,17 @@ reference:
     - tag
     - untag
     - cps2irrad
+    - smooth_spct
+  - title: Transformations, wavelength-related
+    desc: Non-summary methods for transforming or modifying the wavelengths of spectral data objects.
+    contents:
+    - insert_hinges
+    - interpolate_wl
+    - interpolate_spct
+    - clip_wl
+    - thin_wl
+    - trim_wl
+    - trim_spct
     - na.omit
   - title: Mathematical operators and functions for spectra
     desc: Specializations of all R's mathematical functions and operators for spectral objects.
@@ -314,7 +319,6 @@ reference:
     - uncollect
     - upgrade_spct
     - upgrade_spectra
-    - wl_thin
     - defunct
   - title: Low-level functions
     desc: Internal functions available for use by developers when maximum flexibility is needed. They are not meant for everyday use as they lack error handling and data validation features.
