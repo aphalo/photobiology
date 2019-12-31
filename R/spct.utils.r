@@ -116,9 +116,11 @@ uncollect.generic_mspct <- function(x,
 #'
 #' @examples
 #'
-#' my.mscpt <- source_mspct(list(sun1 = sun.spct, sun2 = sun.spct))
-#' uncollect(my.mscpt)
-#' ls(pattern = "*.spct")
+#' nrow(yellow_gel.spct)
+#' wl_stepsize(yellow_gel.spct)
+#' thinned.spct <- wl_thin(yellow_gel.spct)
+#' nrow(thinned.spct)
+#' wl_stepsize(thinned.spct)
 #'
 #' @family experimental utility functions
 #'
