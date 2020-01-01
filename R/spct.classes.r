@@ -2052,7 +2052,7 @@ getIdFactor <- function(x) {
 #' generic_spct or an object of a class derived from generic_spct.
 #'
 #' @param x a generic_spct object
-#' @param when.measured POSIXct to add as attribute, or a list of POSIXct.
+#' @param when.measured,value POSIXct to add as attribute, or a list of POSIXct.
 #' @param ... Allows use of additional arguments in methods for other classes.
 #'
 #' @return x
@@ -2069,8 +2069,18 @@ getIdFactor <- function(x) {
 #' getWhenMeasured(my.spct)
 #' setWhenMeasured(my.spct, lubridate::ymd_hms("2015-12-12 08:00:00"))
 #' getWhenMeasured(my.spct)
+#' when_measured(my.spct) <- lubridate::ymd_hms("2019-12-12 08:00:00")
+#' getWhenMeasured(my.spct)
 #'
 setWhenMeasured <- function(x, when.measured, ...) UseMethod("setWhenMeasured")
+
+#' @rdname setWhenMeasured
+#'
+#' @export
+#'
+`when_measured<-` <- function(x, value) {
+  setWhenMeasured(x, when.measured = value)
+}
 
 #' @describeIn setWhenMeasured default
 #' @export
@@ -2189,6 +2199,12 @@ setWhenMeasured.generic_mspct <-
 #'
 getWhenMeasured <- function(x, ...) UseMethod("getWhenMeasured")
 
+#' @rdname getWhenMeasured
+#'
+#' @export
+#'
+when_measured <- getWhenMeasured
+
 #' @describeIn getWhenMeasured default
 #' @export
 getWhenMeasured.default <- function(x, ...) {
@@ -2252,7 +2268,7 @@ getWhenMeasured.generic_mspct <- function(x,
 #' generic_spct or an object of a class derived from generic_spct.
 #'
 #' @param x a generic_spct object
-#' @param where.measured A one row data.frame such as returned by
+#' @param where.measured,value A one row data.frame such as returned by
 #'   function \code{geocode} from package 'ggmap' for a location search.
 #' @param lat numeric Latitude in decimal degrees North
 #' @param lon numeric Longitude in decimal degrees West
@@ -2273,6 +2289,14 @@ getWhenMeasured.generic_mspct <- function(x,
 #'
 setWhereMeasured <-
   function(x, where.measured, lat, lon, address, ...) UseMethod("setWhereMeasured")
+
+#' @rdname setWhereMeasured
+#'
+#' @export
+#'
+`where_measured<-` <- function(x, value) {
+  setWhereMeasured(x, where.measured = value)
+}
 
 #' @describeIn setWhereMeasured default
 #' @export
@@ -2408,6 +2432,12 @@ setWhereMeasured.generic_mspct <- function(x,
 #'
 getWhereMeasured <- function(x, ...) UseMethod("getWhereMeasured")
 
+#' @rdname getWhereMeasured
+#'
+#' @export
+#'
+where_measured <- getWhereMeasured
+
 #' @describeIn getWhereMeasured default
 #' @export
 getWhereMeasured.default <- function(x, ...) {
@@ -2453,7 +2483,7 @@ getWhereMeasured.generic_mspct <- function(x,
 #' generic_spct or derived-class object.
 #'
 #' @param x a generic_spct object
-#' @param how.measured a list
+#' @param how.measured,value a list
 #'
 #' @return x
 #' @note This function alters x itself by reference and in addition
@@ -2475,6 +2505,14 @@ setHowMeasured <- function(x, how.measured) {
   invisible(x)
 }
 
+#' @rdname setHowMeasured
+#'
+#' @export
+#'
+`how_measured<-` <- function(x, value) {
+  setHowMeasured(x, how.measured = value)
+}
+
 #' Get the "how.measured" attribute
 #'
 #' Function to read the "how.measured" attribute of an existing generic_spct
@@ -2491,6 +2529,12 @@ setHowMeasured <- function(x, how.measured) {
 #' getHowMeasured(sun.spct)
 #'
 getHowMeasured <- function(x, ...) UseMethod("getHowMeasured")
+
+#' @rdname getHowMeasured
+#'
+#' @export
+#'
+how_measured <- getHowMeasured
 
 #' @describeIn getHowMeasured default
 #' @export
@@ -2876,7 +2920,7 @@ isValidInstrSettings <- function(x) {
 #' generic_spct or derived-class object.
 #'
 #' @param x a generic_spct object
-#' @param what.measured a list
+#' @param what.measured,value a list
 #'
 #' @return x
 #' @note This function alters x itself by reference and in addition
@@ -2898,6 +2942,14 @@ setWhatMeasured <- function(x, what.measured) {
   invisible(x)
 }
 
+#' @rdname setWhatMeasured
+#'
+#' @export
+#'
+`what_measured<-` <- function(x, value) {
+  setWhatMeasured(x, what.measured = value)
+}
+
 #' Get the "what.measured" attribute
 #'
 #' Function to read the "what.measured" attribute of an existing generic_spct
@@ -2914,6 +2966,12 @@ setWhatMeasured <- function(x, what.measured) {
 #' getWhatMeasured(sun.spct)
 #'
 getWhatMeasured <- function(x, ...) UseMethod("getWhatMeasured")
+
+#' @rdname getWhatMeasured
+#'
+#' @export
+#'
+what_measured <- getWhatMeasured
 
 #' @describeIn getWhatMeasured default
 #' @export

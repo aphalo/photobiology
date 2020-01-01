@@ -1,4 +1,4 @@
-photobiology 0.9.30 (2019-12-31)
+photobiology 0.9.30 (2020-01-01)
 ================================
 
 * Add function compare_spct() for comparisons between pairs of spectra based
@@ -7,19 +7,35 @@ on summaries computed over multiple ranges of wavelengths.
 spectra.
 * Add utility method wl_thin() for reducing the storage size of _spct objects
 by removing data points in regions with only minor features.
-* Fix bug in get_attributes() methods.
-* Add parameter "address" to setWhereMeasured(), revise print() methods to
-display address if available. Add function na_geocode(), a constructor for a
-valid missing geocode. Revise logic for consistency in returned and set values,
-Some of these changes are potentially code breaking as the returned value for
-missing geocode data is a data.frame containing NAs instead of a bare NA.
-Handling of objects created with earlier versions is the same as for
-new objects.
+* Add when_measured() and when_measured<-(), where_measured() and
+where_measured<-(), what_measured() and what_measured<-(), how_measured() and
+how_measured<-() as an alternative syntax consistent with base R for setting
+and querying the attributes when.measured, where.measured, how.measured and
+what.measured used to store metadata in spectral objects and collections.
+* Add spelling synonyms for all normalization-related methods and functions.
+* Add specialization for collections of spectra and spelling synonyms for
+normalized_difference_ind().
 * Revise summary.generic_spct() to store the name of the summarized spectrum
 object and revise print.summary_generic_spct() to display the name of the
 summarized object.
 * Revise fscale() so that by default it sets the "scaled" attribute only when
 the target value for re-scaling is equal to one.
+* Fix bug in get_attributes() methods.
+* Add parameter "address" to setWhereMeasured(), revise print() methods for
+spectra to display address when available.
+* Revise getWhereMeasured() to consistently return a data.frame, even when a
+geocode is missing.
+* Add function na_geocode(), a constructor for a valid but missing geocode
+data frame.
+* Revise all logic used for geocodes for consistency in returned and set values.
+
+*******************************************************************************
+One of these changes to handling of geocodes is potentially code-breaking as
+the returned value for missing geocode data is a data.frame containing NAs
+instead of a bare NA.
+In contrast, handling of geocodes stored in objects created with earlier
+versions of the package is the consistent with that for new objects.
+*******************************************************************************
 
 photobiology 0.9.29 (2019-09-10)
 ================================
