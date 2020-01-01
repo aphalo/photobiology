@@ -182,6 +182,14 @@ na.omit.chroma_spct <- function(object, na.action = "omit", fill = NULL, ...) {
                        target.colnames = c("x", "y", "z"))
 }
 
+#' @rdname na.omit
+#'
+#' @export
+#'
+na.omit.generic_mspct <- function(object, na.action = "omit", fill = NULL, ...) {
+  msmsply(object, na.omit, na.action = na.action, fill = fill, ...)
+}
+
 # exclude
 
 #' @rdname na.omit
@@ -281,5 +289,13 @@ na.exclude.chroma_spct <- function(object, na.action = "exclude", fill = NULL, .
                        na.action = na.action,
                        fill = fill,
                        target.colnames = c("x", "y", "z"))
+}
+
+#' @rdname na.omit
+#'
+#' @export
+#'
+na.exclude.generic_mspct <- function(object, na.action = "exclude", fill = NULL, ...) {
+  msmsply(object, na.exclude, na.action = na.action, fill = fill, ...)
 }
 

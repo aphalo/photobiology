@@ -1410,14 +1410,13 @@ getTimeUnit <- function(x, force.duration = FALSE) {
 #' Convert the "time.unit" attribute of an existing source_spct object
 #'
 #' Function to set the "time.unit" attribute and simultaneously rescaling the
-#' spectral data to be expressed in the new time unit. The change is done
-#' by reference ('in place')
+#' spectral data to be expressed using the new time unit as basis of expression.
+#' The change is done by reference ('in place').
 #'
-#' @param x a source_spct object
+#' @param x source_spct or response_spct object
 #' @param time.unit a character string, either "second", "hour", "day",
 #'   "exposure" or "none", or a lubridate::duration
-#' @param byref logical indicating if new object will be created by reference or
-#'   by copy of \code{x} (currently ignored)
+#' @param ... (currently ignored)
 #'
 #' @return x possibly with the \code{time.unit} attribute modified
 #'
@@ -1429,35 +1428,39 @@ getTimeUnit <- function(x, force.duration = FALSE) {
 #' @export
 #' @family time attribute functions
 #' @examples
+#'
 #' my.spct <- sun.spct
 #' my.spct
 #' convertTimeUnit(my.spct, "day")
+#' my.spct
 #'
-convertTimeUnit <- function(x, time.unit = NULL, byref = FALSE) {
-  #  if (!byref) x.out <- x else x.out <- copy(x) # needs fixing!
-  if (is.null(time.unit) || !is.generic_spct(x)) {
+convertTimeUnit <- function(x, time.unit = NULL, ...) {
+  if (!is.generic_spct(x)) {
+    warning("'convertTimeUnit()' mot applicable to class '", class(x)[1], "'. Skipping!")
     return(invisible(x))
   }
+  if (is.null(time.unit)) {
+    # nothing to do
+    return(invisible(x))
+  }
+  columns <- intersect(names(x), c("s.e.irrad", "s.q.irrad", "s.e.response", "s.q.response") )
+  if (length(columns) == 0) {
+    warning("No column to convert to new time unit.")
+    return(invisible(x))
+  }
+
   x.out <- checkTimeUnit(x)
 
   new.time.unit <- char2duration(time.unit)
   old.time.unit <- getTimeUnit(x.out, force.duration = TRUE)
 
-  factor <- as.numeric(new.time.unit) / as.numeric(old.time.unit)
-
-  columns <- intersect(names(x.out), c("s.e.irrad", "s.q.irrad", "s.e.response", "s.q.response") )
+  multiplier <- as.numeric(new.time.unit) / as.numeric(old.time.unit)
 
   for (col in columns) {
-    x.out[[col]] <- x.out[[col]] * factor
+    x.out[[col]] <- x.out[[col]] * multiplier
   }
 
-  if (length(columns) > 0) {
-    setTimeUnit(x.out, time.unit, override.ok = TRUE)
-  } else {
-    warning("Nothing to convert to new time unit")
-  }
-
-  invisible(x.out)
+  setTimeUnit(x.out, time.unit, override.ok = TRUE)
 }
 
 

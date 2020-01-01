@@ -520,3 +520,13 @@ smooth_spct.response_spct <- function(x, method = "custom", strength = 1, na.rm 
   comment(out.spct) <- comment.text
   check_spct(out.spct)
 }
+
+#' @describeIn smooth_spct
+#'
+#' @export
+#'
+smooth_spct.generic_mspct <-
+  function(x, method = "custom", strength = 1, na.rm = FALSE, ...) {
+    msmsply(x, smooth_spct, method = method, strength = strength,
+            na.rm = na.rm, ...)
+  }

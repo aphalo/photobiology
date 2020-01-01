@@ -3,9 +3,17 @@
 
 #' Normalize spectral data
 #'
-#' These functions return a spectral object of the same class as the one
-#' supplied as argument but with the spectral data normalized to 1.o a certain
-#' wavelength.
+#' This method returns a spectral object of the same class as the one
+#' supplied as argument but with the spectral data normalized to 1.0 at a
+#' specific wavelength.
+#'
+#' @details By default normalization is done based on the maximum of the
+#'   spectral data. It is possible to also do the normalization based on a
+#'   user-supplied wavelength expressed in nanometres or a wavelength retrieved
+#'   using an arbitrary R function applied to the spectrum. By default the
+#'   function is applied to the whole spectrum, but by passing a range of
+#'   wavelengths as input, the search can be limited to a region of interest
+#'   within the spectrum.
 #'
 #' @param x An R object
 #' @param ... not used in current version
@@ -14,7 +22,10 @@
 #' the criterion specified by the argument passed to \code{norm}.
 #'
 #' @examples
+#'
 #' normalize(sun.spct)
+#' normalise(sun.spct) # equivalent
+#'
 #' normalize(sun.spct, norm = "max")
 #' normalize(sun.spct, norm = 400)
 #'
@@ -24,11 +35,20 @@
 #'
 normalize <- function(x, ...) UseMethod("normalize")
 
+#' @rdname normalize
+#'
+#' @note \code{normalise()} is a synonym for this \code{normalize()} method.
+#'
+#' @export
+#'
+normalise <- normalize
+
 #' @describeIn normalize Default for generic function
 #'
 #' @export
+#'
 normalize.default <- function(x, ...) {
-  warning("'normalize' is not defined for objects of class ", class(x)[1])
+  warning("'normalize' is not defined for objects of class '", class(x)[1], "'.")
   x
 }
 
@@ -467,6 +487,15 @@ is_normalized <- function(x) {
   as.logical(!is.null(spct.attr) && as.logical(spct.attr))
 }
 
+#' @rdname is_normalized
+#'
+#' @note \code{is_normalised()} is a synonym for this \code{is_normalized()}
+#'   method.
+#'
+#' @export
+#'
+is_normalised <- is_normalized
+
 # getNormalized -----------------------------------------------------------
 
 #' Get the "normalized" attribute
@@ -496,6 +525,15 @@ getNormalized <- function(x) {
   }
 }
 
+#' @rdname getNormalized
+#'
+#' @note \code{getNormalised()} is a synonym for this \code{getNormalized()}
+#'   method.
+#'
+#' @export
+#'
+getNormalised <- getNormalized
+
 #' Set the "normalized" attribute
 #'
 #' Function to write the "normalized" attribute of an existing generic_spct
@@ -521,3 +559,12 @@ setNormalized <- function(x, norm = FALSE) {
   }
   invisible(x)
 }
+
+#' @rdname setNormalized
+#'
+#' @note \code{setNormalised()} is a synonym for this \code{setNormalized()}
+#'   method.
+#'
+#' @export
+#'
+setNormalised <- setNormalized

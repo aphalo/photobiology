@@ -6,7 +6,7 @@ on summaries computed over multiple ranges of wavelengths.
 * Add utility method uncollect() for extracting all members of a collection of
 spectra.
 * Add utility method wl_thin() for reducing the storage size of _spct objects
-by removing data points in regions without features.
+by removing data points in regions with only minor features.
 * Fix bug in get_attributes() methods.
 * Add parameter "address" to setWhereMeasured(), revise print() methods to
 display address if available. Add function na_geocode(), a constructor for a
