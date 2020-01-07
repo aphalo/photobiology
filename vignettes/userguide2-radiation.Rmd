@@ -47,7 +47,7 @@ Package '**photobiology**' defines several classes intended to be used to store 
 
 <hr>
 
-**Table 1. Classes for spectral data.** In addition to the required variables listed in the table, additional arbitrary variables are partly supported---some operations will not include them in returned values to avoid ambiguity and other possible conflicts. In addition to the attributes listed, all spectral objects have attributes `multiple.wl`, `idfactor`, `normalized`, `scaled`, `when.measured`, `where.measured`, `what.measured` plus the normal attributes of `tibble` (and `data.frame`) objects including `comment`.
+**Table 1. Classes for spectral data.** In addition to the required variables listed in the table, additional arbitrary variables are partly supported---some operations will not include them in returned values to avoid ambiguity and other possible conflicts. In addition to the attributes listed in the table, all spectral objects support attributes `multiple.wl`, `idfactor`, `normalized`, `scaled`, `when.measured`, `where.measured`, `what.measured`, `how.measured` plus the normal attributes of `tibble` (and `data.frame`) objects including `comment`. All these attributes plus attributes `instrument.descriptor` and `instrument.settings` are retained across operations on spectra as long as they remain valid.
 
 | Class name | Required variables | Attributes                 |
 |:-----------|:----------------|:---------------------------|
@@ -76,7 +76,7 @@ observations are stored "longitudinally" and "tagged" with a factor with a level
 observation event. These observations must use consistent units of expression
 and attribute values. This long format is useful, for example, when producing
 plots with package 'ggplot2'.
-If spectra are stored in _long form_, e.g. for plotting with 'ggplot2', attributes are stored as named lists or enforced to be the same across spectra. This allows to reconstruct a collection of spectra from a long-form spectral object preserving most of the metadata.
+If spectra are stored in _long form_, e.g. for plotting with 'ggplot2', attributes are stored as named lists or enforced to be the same across spectra. This allows to reconstruct a collection of spectra from a long-form spectral object and _vice versa_ preserving most of the metadata.
 
 ### Data assumptions
 
@@ -125,11 +125,11 @@ A key assumption of the package is that wavelengths are always expressed in nano
 
 <hr>
 
-Energy irradiance is assumed to be expressed in $W\,m^{-2}$ and photon irradiances in $mol^{-1}\,m^{-2}\,s^{-1}$, that is to say using second as unit for time. This is the default, but it is possible to set the unit for time to day in the case of `source_spct` objects.
+Energy irradiance is assumed to be expressed in $W\,m^{-2}$ and photon irradiances in $mol^{-1}\,m^{-2}\,s^{-1}$, that is to say using second as unit for time and no SI scale factors for the measured variables. With respect to time, second is the default, but it is possible to set the unit for time to an arbitrary time duration such as day. Obviously, this applies only to rate variables like irradiance and response rates, but not to time-invariant intensive properties like transmittance of filters.
 
-The default time unit used is _second_, but _day_ and _exposure_ can be used by supplying the arguments `"day"` or `"exposure"`---The meaning of `"exposure"` is the total exposure time, in other words, fluence instead of irradiance---to a parameter of the constructor of `source_spct` objects. In addition to these character constants objects of class `lubridate:duration` are also accepted.
+The default time unit used is _second_, but _minute_, _hour_, _day_ and _exposure_ can be used by supplying as arguments `"minute"`, `"hour"`, `"day"`,  or `"exposure"`---The meaning of `"exposure"` is the total exposure time, in other words, fluence instead of irradiance---to the constructor `source_spct()`. In addition to these character constants objects of class `lubridate:duration` are also accepted.
 
-The attributes are normally set when a spectral object is created, either using default values or with values supplied as arguments to the constructor. However, methods for querying and setting most of these attributes are also available.
+Most attributes are set when a spectral object is created, either using default values or with values supplied as arguments to the constructor. However, methods for querying and setting these attributes are also available.
 
 <hr>
 Not respecting the expectations about data inputs or setting erroneous values in the metadata attributes will yield completely wrong results if calculations are attempted! It is extremely important to make sure that the wavelengths are in nanometres as this is what all functions expect. If wavelength values are in the wrong units, the action-spectra weights and quantum to/from energy units conversions will be wrongly calculated, and the values returned by most functions wrong, without warning. Errors in some cases will be triggered at the time of object creation as the data input to constructors is tested to be within the expected range of values, which in the case of some quantities frequently allows detection of mistakes in the use unit scaling factors._
@@ -145,13 +145,13 @@ If, for example, the spectral irradiance data output by a spectroradiometer is e
 my.spct <- source_spct(w.length = wavelength/10, s.e.irrad = irrad/1000)
 ```
 
-In the example above, we take advantage of the behaviour of the S language: an operation between a scalar and a vector, is equivalent to applying this operation to each element of the vector.
+In the example above, we take advantage of the behaviour of the R language: an operation between a scalar and a vector, is equivalent to applying this operation to each element of the vector.
 Consequently, in the code above, each value from the vector of wavelengths is divided
 by 10, and each value in the vector of spectral irradiances is divided by 1000.
 
 ### Querying the class
 
-Before giving examples of how to construct objects to store spectral data we show how to query the class of an object, and how to query the class of a spectrum. Consistently with R, the package provides _is_ functions for querying the type of spectra objects. The only _unusual_ function name, defined as a _synomin_ for `is.generic_spct`, is `is.any_spct()`.
+Before giving examples of how to construct objects to store spectral data we show how to query the class of an object, and how to query the class of a spectrum. Consistently with R, the package provides _is_ functions for querying the type of spectra objects. The only _unusual_ function name, defined as a _synonym_ for `is.generic_spct`: `is.any_spct()`.
 
 ```{r, query-class-1}
 is.any_spct(sun.spct)
@@ -159,7 +159,7 @@ is.generic_spct(sun.spct)
 is.source_spct(sun.spct)
 ```
 
-In addition function `class_spc()` returns directly the spectrum-related class attributes. It filters out from the output of `class()` the underlying inherited classes.
+In addition function `class_spct()` returns directly the spectrum-related class attributes---i.e. it filters out from the output of `class()` the underlying inherited classes.
 
 ```{r, query-class-2}
 class_spct(sun.spct)
@@ -168,7 +168,7 @@ class(sun.spct)
 
 ### Construction
 
-There are basically two different approaches to the creation of spectra by users. The first group are constructors similar to the `data.frame()` constructor, which take vectors as arguments. The second group are constructors that convert `list` objects, and because of class derivation also `data.frame`
+There are two different approaches to the creation of spectral objects by users. The first group are constructors similar to the `data.frame()` constructor, which take vectors as arguments. The second group are constructors that convert `list` objects, and because of class derivation also `data.frame`
 objects, into spectral objects. Constructors in this second group are similar to `as.data.frame` from base R. In contrast to the data frame constructors, spectral object constructors require the variables or the vector arguments to be suitably named so that they can be recognized.
 
 Here we briefly describe the _as_ constructor functions for spectra. In the first example we create an object to store spectral irradiance data for a _fictitious light source_, by first creating a data frame, and creating the spectral object as a copy of it. In the example below we supply a single value, 1, for the spectral irradiance. This value gets recycled as is normal in R, but of course in real use it is more usual to supply a vector of the same length as the `w.length` vector.
@@ -231,43 +231,44 @@ comment(my.cm.spct)
 
 ### Metadata attributes
 
-Spectral objects have several attributes used to store metadata, such as the time unit used or type of spectral quantity. Some attributes are meaningful for all the classes of spectra defined in the package. These are _time of measurement_ using attribute `"when.measured"`, _place of measurement_ using attribute `"where.measured"`, a _user supplied label_ using attribute `"what.measured"`, and free-text _comments_. One can set and get comments stored in spectra by means of base R's `comment()` and `comment() <-` functions. Some of the functions in this package append additional information to comments or merge comments.
+Spectral objects have several attributes used to store metadata, such as the time unit used or type of spectral quantity. Some attributes are meaningful for all the classes of spectra defined in the package. These are _time of measurement_ using attribute `"when.measured"`, _place of measurement_ using attribute `"where.measured"`, a _user supplied label_ using attribute `"what.measured"`, another label describing origin of the data using attribute `"how.measured"` and free-text _comments_. One can set and get comments stored in spectra by means of base R's `comment()` and `comment() <-` functions and the other attributes listed above with functions following the same syntax. Some other functions in this package append additional information to comments, merge comments or set or unset other attributes.
 
-Functions `setWhenMeasured()` and `getWhenMeasured()` are used for setting or getting a date as a `POSIXct` value. This format is compatible with many functions
-from package `lubridate`.
+Functions `when_measured()` and `when_measured<-()` are used for retrieving and setting the `"when.measured"` attribute to a date supplied as a `POSIXct` value. Note: we use `POSIXct` objects which describes instants in time in absolute terms as they include time zone information. Package `lubridate` makes entering and operating on `POSIXct` objects rather easy.
 
 ```{r, attr-1}
 my.spct <- sun.spct
-setWhenMeasured(my.spct, NULL)
-getWhenMeasured(my.spct)
-setWhenMeasured(my.spct, ymd_hms("2015-10-31 22:55:00", tz = "EET"))
-getWhenMeasured(my.spct)
+when_measured(my.spct) <-  NULL
+when_measured(my.spct)
+when_measured(my.spct) <- lubridate::ymd_hms("2015-10-31 22:55:00", tz = "EET")
+when_measured(my.spct)
 ```
 
-Functions `setWhereMeasured()` and `getWhereMeasured()` are used for setting or getting a geocode stored in a `data.frame`. This format is compatible with function `geocode()` from package `ggmap`. We pass latitude and longitude coordinates, as shown below. The returned value is always a data frame with columns `"lon"`, `"lat"` and `"address"`.
+Functions `where_measured()` and `where_measured<-()` are used for retrieving and setting a geocode stored in a `data.frame`. This format is compatible with function `geocode()` from package `ggmap`. We pass latitude and longitude coordinates, as shown below. The returned value is always a data frame with columns `"lon"`, `"lat"` and `"address"`.
 
 ```{r, attr-2}
-setWhereMeasured(my.spct, NULL)
-getWhereMeasured(my.spct)
-setWhereMeasured(my.spct, lat = 60, lon = -10)
-getWhereMeasured(my.spct)
-setWhereMeasured(my.spct, lat = 60, lon = -10, address = "Somewhere")
-getWhereMeasured(my.spct)
+where_measured(my.spct) <- NULL
+where_measured(my.spct)
+where_measured(my.spct) <- data.frame(lat = 60, lon = -10)
+where_measured(my.spct)
+where_measured(my.spct) <- data.frame(lat = 60, lon = -10, address = "Somewhere")
+where_measured(my.spct)
 my.spct
 ```
 
-Functions `setWhatMeasured()` and `getWhatMeasured()` are used for setting or getting a text value. 
+Functions `what_measured()` and `where_measured<-()` are used for retrieving or setting a text value containing information about what was measured to obtain the data. 
 
 ```{r, attr-2a}
-setWhatMeasured(my.spct, "something")
-getWhatMeasured(my.spct)
+what_measured(my.spct) <- "something"
+what_measured(my.spct)
 my.spct
 ```
 
-Similar functions exist for other attributes which are not shared by all spectral classes.
-Several other attributes of different spectral objects can be used to store metadata in a consistent way. One example is the time unit used to express spectral irradiance. Functions are available for querying and setting the state if these attributes. `is_` functions return a logical value, and `get` functions return the values of the attributes themselves. In addition `set` functions can be used to set the value attributes. Several of the `set` functions are very rarely needed in user code, as these attributes are set during construction or as a side effect of applying other functions and/or operators to the objects. Function `setBSWFUsed()` and other _set_ functions for attributes are examples of those useful to programmers extending the package, but only exceptionally to users. One exception is the case when a wrong value has been assigned by mistake and needs to be overwritten.
+Functions using a different syntax are also available, for these and other attributes which are not likely to be set by users. Many of these additional attributes are meaningful only some types of spectra. 
+These attributes of different spectral objects are used to store metadata in a consistently. 
 
-For example function `is_effective()` returns `TRUE` if the spectral data has been weighted with a BSWF. The corresponding `getBSWFUsed()` function can be used, in this case to retrieve the name of the BSWF that was used when generating the data. Here we demonstrate with one example, where we use two different `waveband` objects---constructed on-the-fly with constructor function---, defining a range of wavelengths.
+One example is the time unit used to express spectral irradiance. Functions are available for querying and setting the state if these attributes. `is_` functions return a logical value, and `get` functions return the values of the attributes themselves. In addition `set` functions can be used to set the value stored in the attributes. Several of the `set` functions are very rarely needed in user code, as these attributes are set during construction or as a side effect of applying other functions and/or operators to the objects. Function `setBSWFUsed()` and other _set_ functions are mainly useful to programmers extending the package, but only exceptionally to users. One exception is the case when a wrong value has been assigned by mistake and needs to be overwritten.
+
+For example function `is_effective()` returns `TRUE` if the spectral data has been weighted with a BSWF. The corresponding `getBSWFUsed()` function can be used, in this case to retrieve the name of the BSWF that was used when generating the data. Here we demonstrate with one example, where we use two different `waveband` objects---constructed on-the-fly with a constructor function---, defining a range of wavelengths.
 
 ```{r, attr-3}
 is_effective(sun.spct)
@@ -285,10 +286,12 @@ getTimeUnit(ten.minutes.spct)
 
 <hr>
 Attributes `instr_desc` and `instr_settings` are used to store measurement-related metadata, describing the instrument used and its settings. These attributes are lists, with a few default fields and possibly unlimited _special_ attributes. The present package provides functions for operating on them and print-outs include some of the default fields if the attribute is set. The expectation is that these attributes are set by other packages such as 'ooacquire' used for direct data acquisition or raw instrument data import.
+
+These instrument-specific attributes can contain lots of information and bloat the size of spectral objects. Two methods, `trimInstrDesc()` and `trimInstrSettings()` can be used to discard parts of these metadata, such as instrument calibration information, once the raw data has been converted into physical units.
 <hr>
 
 <hr>
-Spectral objects created with earlier (pre-release) versions of this package are missing some attributes. For this reason _summary_ and _plot_ functions may not work as expected with them. These _old_ objects can be updated by adding the missing attribute using functions `setTimeUnit`, `setBSWFUsed`, `setTfrType` and `setRfrType`. However, in many cases function `update_spct` can be used to set the missing attributes to default values, or the scripts re-run to rebuild the data objects from raw data.
+Spectral objects created with earlier (pre-release) versions of this package are missing some attributes. For this reason _summary_ and _plot_ functions may not work as expected with them. These _very old_ objects can be updated by adding the missing attributes using functions `setTimeUnit`, `setBSWFUsed`, `setTfrType` and `setRfrType`. However, in many cases function `update_spct` can be used to set the missing attributes to default values, or the scripts re-run to rebuild the data objects from raw data.
 <hr>
 
 ## Collections of spectra
@@ -299,7 +302,7 @@ The package defines several classes intended to be used to store _collections_ o
 
 <hr>
 
-**Table 3. Classes for collections of spectral objects.** Objects of class `generic_mspct` can have member objects of any class derived from `generic_spct` and can be heterogeneous. Attributes can be queried and set with the normal R methods `attr` and `attributes` as well as with functions defined in this package. See table 1 for the attributes used in individual member spectra of collections.
+**Table 3. Classes for collections of spectral objects.** Objects of class `generic_mspct` can have member objects of any class derived from `generic_spct` and can be heterogeneous, while the other classes support homogeneous collections of spectral objects. Attributes of these objects can be queried and set with the normal R methods `attr` and `attributes` as well as with functions defined in this package. See table 1 for the attributes used in individual member spectra of collections.
 
 
 | Class name       | Class of member objects        | Attributes         |
@@ -317,7 +320,7 @@ The package defines several classes intended to be used to store _collections_ o
 
 <hr>
 
-Objects of these classes, except for those of class `generic_mspct`, can contain members belonging to a single class of spectra. Being all other spectral object classes derived from `generic_spct`, `generic_mspct` objects can contain heterogeneous collections of spectra. In all cases, there are no restrictions on the lengths, wavelength range and/or wavelength step size, or attributes other than `class` of the contained spectra. Mimicking R's arrays and matrices, a `dim` attribute is always present and `dim` methods are provided. These allows the storage of time series of spectral data, or (hyper)spectral image data, or even higher dimensional spectral data. The handling of 1D and 2D spectral collections is already implemented in the summary methods. Handling of 3D and higher dimensional data can be implemented in the future without changing the class definitions. By having implemented `dim`, also methods `ncol` and `nrow` are available as they use `dim` internally. Array-like subscripting is **not** implemented.
+Objects of these classes, except for class `generic_mspct`, can only contain members belonging the matching class of spectra. As all other spectral object classes are derived from `generic_spct`, `generic_mspct` objects can contain heterogeneous collections of spectra. In all cases, there are no restrictions on the lengths, wavelength range and/or wavelength step size, or attributes other than `class` of the contained spectra. Mimicking R's arrays and matrices, a `dim` attribute is always present and `dim` methods are provided. This approach allows the storage of time series of spectral data, or (hyper)spectral image data, or even higher dimensional spectral data. The handling of 1D and 2D spectral collections is already implemented in the summary methods. Handling of 3D and higher dimensional data can be implemented in the future without changing the class definitions. By having implemented `dim`, also methods `ncol` and `nrow` are available as they use `dim` internally. Array-like subscripting collections of spectra is **not** implemented.
 
 ### Construction
 
@@ -333,14 +336,14 @@ two_suns.mspct
 We can also create heterogeneous collections, but this drastically limits the methods that are applicable to the resulting collection.
 
 ```{r, col-construction-2}
-mixed.mspct <- generic_mspct(list(filter = clear.spct, source = sun.spct))
+mixed.mspct <- generic_mspct(list(filter = polyester.spct, source = sun.spct))
 class(mixed.mspct)
 lapply(mixed.mspct, class_spct)
 ```
 
 #### Using _as._ functions
 
-The `as.` coercion methods for collections of spectra, not only change the class of the collection object, but also apply the corresponding {as} functions to the member objects. They copy the original objects and then convert the copy, which is returned.
+The `as.` coercion methods for collections of spectra, not only change the class of the collection object, but can also optionally apply the corresponding `as.` functions to the member objects. A copy of the original object is made and then class-converted and returned.
 
 ```{r, col-construction-3}
 two_gen.mspct <- as.generic_mspct(two_suns.mspct)
@@ -410,7 +413,7 @@ These functions are not fully automatic, the user needs to provide the name of t
 
 #### Converting _tidy_ data
 
-Spectral objects containing multiple spectra identified by a factor can be created by row-binding compatible spectral objects. For for binding to succeed, the list of spectra passed as argument must be homogeneous with respect to member class, as well as for certain attributes such as `time.unit`.  Other metadata attributes are retained as named lists.
+Spectral objects containing multiple spectra identified by a factor can be created by row-binding compatible spectral objects. For for binding to succeed, the list of spectra passed as argument must be homogeneous with respect to member class, as well as for certain attributes such as `time.unit`.  Other metadata attributes are retained as named lists or multi-row data frames.
 
 ```{r, bind-1}
 two_suns.spct <- rbindspct(list(a = sun.spct, b = sun.spct / 2))
@@ -424,7 +427,7 @@ The reverse operation, separating the individual spectra from a spectrum object 
 subset2mspct(two_suns.spct)
 ```
 
-If multiple spectra are stored in long form (as _tidy_ data) in an ordinary `data.frame` or a `tibble` object with columns with suitable names, the same `subset2mspct` method can be used. In these case, additional arguments need to be passed indicating the target class for conversion. The name of the index variable encoding the grouping into multiple spectra will also need to be supplied as an argument. A call as in the example below, adds only default metadata to spectral objects.
+If multiple spectra are stored in long form (as _tidy_ data) in an ordinary `data.frame` or a `tibble` object with columns with suitable names, the same `subset2mspct` method can be used. In these case, arguments indicating the target class for conversion and supplying the name of the index variable encoding the grouping into multiple spectra need to be supplied. A call as in the example below, adds only default metadata to spectral objects.
 
 ```{r, bind-2}
 test1.df <- data.frame(w.length = rep(200:210, 2),
@@ -617,7 +620,7 @@ str(msaply(two.mspct, max))
 str(msaply(two.mspct, range))
 ```
 
-For the most common cases for which one would use the _apply_ functions described in the previous section methods and functions for operations on collections of spectra are defined in the package. For example the following statement is equivalent to the second example in the previous section. These are described in a later section and listed in Table 9.
+For the most common cases for which one would use the _apply_ functions described in the previous section methods and functions for operations on collections of spectra are defined in the package. These methods are described in a later section and listed in Table 9.
 
 ### Summary spectra
 
@@ -656,7 +659,7 @@ Starting from a collection of spectra we may want to obtain a single spectrum co
 | `s_range` | `reflector_mspct` | `generic_spct` | input tagged `.min` and `.max` |
 | `s_range` | `calibration_mspct` | `generic_spct` | input tagged `.min` and `.max` | 
 
-The calculations are done wavelength by wavelength yielding a spectrum at the same wavelengths than those in the input. Removal of `NA` values is done wavelength by wavelength. As shown in the table above, depending on the operation the returned quantiy may be equivalent or not to the quatitiy in the input. When the quantity changes, even if units of expression remain the same, the name of the variable and class of the returned spectrum are different to those in the input.
+The calculations are done wavelength by wavelength yielding a spectrum at the same wavelengths than those in the input. Removal of `NA` values is done wavelength by wavelength. As shown in the table above, depending on the operation the returned quantity may be equivalent or not to the quantity in the input. When the quantity changes, even if units of expression remain the same, the name of the variable and class of the returned spectrum are different to those in the input.
 
 Computing the mean returns values of the same quantity as in the input, and we obtain a `source_spct` object.
 
@@ -712,13 +715,12 @@ There are cases where functions `convolve_each()` and `msmsply()` can be both us
 Some of the `set` and `get` functions used with attributes have method definitions for collections of spectra. Some examples follow.
 
 ```{r, col-attr-1}
-getWhenMeasured(two.mspct)
-setWhenMeasured(two.mspct, ymd("2015-10-31", tz = "EET"))
-getWhenMeasured(two.mspct)
-setWhenMeasured(two.mspct,
-                list(ymd_hm("2015-10-31 10:00", tz = "EET"),
-                     ymd_hm("2015-10-31 11:00", tz = "EET")))
-getWhenMeasured(two.mspct)
+when_measured(two.mspct)
+when_measured(two.mspct) <- ymd("2015-10-31", tz = "EET")
+when_measured(two.mspct)
+when_measured(two.mspct) <- list(ymd_hm("2015-10-31 10:00", tz = "EET"),
+                                 ymd_hm("2015-10-31 11:00", tz = "EET"))
+when_measured(two.mspct)
 two.mspct
 ```
 
@@ -1073,6 +1075,7 @@ photon_as_default()
 sun.spct * UVB.wb
 energy_as_default()
 sun.spct * UVB.wb
+unset_radiation_unit_default()
 ```
 
 Furthermore, it is possible to temporarily change the options for the evaluation of a single, possibly compound, R expression using a different syntax, reminiscent of that of R's `with()`.
@@ -1100,6 +1103,7 @@ In this section we describe methods and functions that take one or more spectral
 | clip_wl | + | + | + | + | + | + | + |
 | trim_wl | + | + | + | + | + | + | + |
 | (trim_spct) | + | + | + | + | + | + | + |
+| thin_wl | + | + | + | + | + | -- | -- |
 | interpolate_wl | -- | + | + | + | + | + | + |
 | (interpolate_spct) | -- | + | + | + | + | + | + |
 | fscale | + | + | + | + | + | -- | --  |
@@ -1135,6 +1139,7 @@ In this section we describe methods and functions that take one or more spectral
 | trim2overlap | + | + | + | + | + | + | + |
 | extend2extremes | + | + | + | + | + | + | + |
 | (trim_mspct) | + | + | + | + | + | + | + |
+| thin_wl | + | + | + | + | + | -- | -- |
 | interpolate_wl | -- | + | + |+ | + | + | + |
 | (interpolate_mspct) | -- | + | + |+ | + | + | + |
 | fscale | + | + | + | + | + | -- | -- |
@@ -1197,7 +1202,7 @@ For `filter_spct` objects functions `T2A` and `A2T` allow conversion between spe
 
 ### Normalizing a spectrum
 
-Function `normalize` permits normalizing a spectrum to a value of one at an arbitrary wavelength (nm) or to the wavelength of either the maximum or the minimum spectral value. It supports the different spectral classes, we use a `source_spct` object as an example.
+Function `normalize` permits normalizing a spectrum to a value of one at an arbitrary wavelength (nm) or to the wavelength of either the maximum or the minimum spectral value. It supports the different spectral classes, we use a `source_spct` object as an example. (Equivalent functions with names spelled with "s" instead of "z" are also available.)
 
 ```{r, manip-6}
 normalize(sun.spct)
@@ -1231,10 +1236,20 @@ Applying method `fscale()` removes the normalization and clears the correspondin
 
 Function `fscale()` rescales a spectrum by dividing each spectral data value by a value calculated with a function (f) selected by a character string ("total" or "mean"), or an actual R function which can accept the spectrum object supplied as its first argument. Additional named arguments can be also passed.
 
+How metadata is set in the returned object is controlled by a logical argument to parameter `set.scaled`. If `TRUE`, the data are labelled as being expressed in relative units and if `FALSE` this attribute is not set. The default argument depends on the value passed as argument to `target`. If this value is one, then the data are marked as no longer being expressed in absolute units. If the `target` is any other numeric value then it is assumed that the intention is to re-scale the data and that absolute physical units remain meaningful. It is important that the metadata matches the actual use as printing of summaries and plot labelling depends on them. 
+
 ```{r, manip-9}
 fscale(sun.spct)
-fscale(sun.spct, f = "total")
-fscale(sun.spct, range = PAR.wb, f = irrad)
+fscale(sun.spct, set.scaled = FALSE)
+fscale(sun.spct, target = 100)
+fscale(sun.spct, target = 100, set.scaled = TRUE)
+```
+
+The default for `f` can be overridden. R functions passed as argument should be suitable for summarizing spectral objects as they will receive as first argument a spectrum rather than a numeric vector. Behind this requirement is the need to take into account wavelength steps for integration to be meaningful. In the example below we compute energy and photon irradiances. (The character arguments `"mean"` and `"total"` call functions specific to spectral data.)
+
+```{r, manip-9a}
+fscale(sun.spct, f = "integral")
+fscale(sun.spct, range = PAR.wb, f = e_irrad)
 fscale(sun.spct, range = PAR.wb, f = q_irrad, target = 800e-6)
 ```
 
@@ -1242,7 +1257,7 @@ In the third example, the spectral data is rescaled so that the corresponding ph
 
 The normalization status of a spectral object can be tested with method `is_normalized()` and the normalization used can be recalled with method `getNormalized()`.
 
-```{r}
+```{r, manip-9b}
 my.spct <- fscale(sun.spct)
 is_scaled(my.spct)
 getScaled(my.spct)
@@ -1257,7 +1272,7 @@ Applying method `normalize()` removes the scaling and clears the corresponding a
 Function `fshift()` shifts the zero of the scale of a spectrum by subtracting from each spectral data value a value calculated with a function (f) selected by a character string ("mean", "min" or "max"), or an actual R function which can accept the spectrum object supplied as its first argument. The range argument selects a region of the spectrum to be used as _reference_ in the calculation of the summary.
 
 ```{r, manip-10}
-fshift(sun.spct, range = UVB.wb, f = "mean")
+fshift(white_led.source_spct, range = UVB.wb, f = "mean")
 fshift(sun.spct, range = c(280,290), f = "min")
 ```
 
@@ -1265,7 +1280,7 @@ In the first example, the spectral data shifted so that the mean spectral irradi
 
 ### Replacing off-range spectral data values
 
-Method `clean()` should be used with care as off-range values stem almost always from calibration errors or measuring noise. This function allows one to replace such values, but in many cases a zero shift or rescaling could be the option to be preferred. Even when the off-range values are the result of random noise, replacing them with the boundary values can cause bias, by censoring the data. Here we create _artificial_ off-range values by subtracting a constant from each spectrum.
+Method `clean()` should be used with care as off-range values stem almost always from calibration errors or measuring noise. This function allows one to replace such values, but in many cases a zero shift or rescaling could be a better option. Even when the off-range values are the result of random noise, replacing them with the boundary values can cause bias, by censoring the data. In such cases smoothing may applied first to reduce the possible bias caused by `clean()`. Here we create _artificial_ off-range values by subtracting a constant from each spectrum. 
 
 ```{r, manip-11}
 clean(sun.spct - 0.01, range = c(280.5, 282))
@@ -1274,9 +1289,10 @@ clean(sun.spct - 0.01, range = c(280.5, 282))
 ```{r, manip-12}
 clean(polyester.spct - 0.053)
 ```
+
 ### Smoothing of spectra
 
-We can use smoothing both to remove randon variation among nearby pixels caused by measuring noise, or to filter out the real fine structure of the spectrum to better assess the larger features. The methods described here work by averaging the spectral data from neighbouring wavelengths. The simplest methods are running medians and running means (or "boxcar smoothing" in the terminology used in some software). There are several methods for smoothing available in R using different algorithms. Some of these methods also automatically set the degree of smoothing based on the data being smoothed. Package 'photobiology' defines function `smooth_spct`, which at moment supports three different methods. Two are wrappers on R's own methods and a third one, `"custom"`, is designed to use stronger smoothing of values close to zero, where noise in spectral irardiance measurements is proportionally more.
+We can use smoothing both to average out random variation among nearby pixels caused by measuring noise, or to filter out the real fine structure of a spectrum to better assess the larger features. The methods described here work by averaging the spectral data from neighbouring wavelengths. The simplest methods are running medians and running means (or "boxcar smoothing" in the terminology used in some software). There are several methods for smoothing available in R based on different algorithms. Some of these methods also automatically set the degree of smoothing based on the data being smoothed. Package 'photobiology' defines function `smooth_spct`, which at the moment supports three different methods. Two are wrappers on R's own methods and a third one, `"custom"`, is designed to use stronger smoothing of values close to zero, where noise in spectral irradiance measurements is proportionally more.
 
 ```{r}
 smooth_spct(sun.spct)
@@ -1288,17 +1304,17 @@ smooth_spct(polyester.spct, method = "supsmu", strength = 2)
 
 ### Wavelength interpolation
 
-Converting spectra available at a given set of wavelengths values to a different one, is frequently needed when operating with several spectra of different origin. One can increase the _apparent_ resolution by interpolation, and reduce it by local averaging or smoothing and resampling. The same function works on all `spct` objects, interpolating every column except `w.length` and replacing in this last column the old wavelength values with the new ones supplied as argument. The optional argument `fill.value` control what value is assigned to wavelengths in the new data that are outside the range of the old wavelengths.
+Converting spectra available at a given set of wavelengths values to a different one, is frequently needed when operating with several spectra of different origin. One can increase the _apparent_ resolution by interpolation, and reduce it by local averaging or smoothing and resampling. The same function works on all `spct` objects, interpolating every numeric column except `w.length` which is set to the new wavelength values supplied as argument. The optional argument `fill.value` controls what value is assigned to the "interpolated" data columns at wavelengths in the new data that are outside the range of wavelengths in the original spectrum being interpolated.
 
 ```{r, manip-13}
 interpolate_wl(sun.spct, seq(400, 500, by = 0.1))
 ```
 
-### Trimming and clipping
+### Trimming, clipping and thining
 
 #### Method `clip_wl()`
 
-Sometimes it is desirable to change the range of wavelengths included in a spectrum. If we are interested in a given part of the spectrum, there is no need to do calculations or plotting the whole spectrum. To select part a spectrum based on a range of wavelengths we may use the `clip_wl` method.
+Sometimes it is desirable to change the range of wavelengths included in a spectrum. If we are interested in a given part of the spectrum, there is no need to do calculations or plotting the whole spectrum. To select part of a spectrum based on a range of wavelengths we may use the `clip_wl()` method. Method `clip_wl()` simply selects a range from the existing spectrum, and unless the range exactly matches the wavelength values present in the spectrum, the range of wavelengths in the returned clipped spectrum will be slightly narrower than the requested by `range`.
 
 The range of wavelengths expressed in nanometres can be given as numeric vector of length two.
 
@@ -1307,7 +1323,7 @@ clip_wl(sun.spct, range = c(400, 402))
 clip_wl(sun.spct, range = c(400, NA))
 ```
 
-As for `trim_wl()` the range can be also supplied as a `waveband` object, or any other object for which `range()` returns a numeric range. Even a different spectrum object is acceptable.
+As for other methods in the package, the range can be also supplied as a `waveband` object, or any other object for which `range()` returns a numeric range. Even a different spectrum object is acceptable, and in many cases useful.
 
 ```{r, trim-2}
 clip_wl(sun.spct, range = UVA.wb)
@@ -1323,7 +1339,7 @@ clip_wl(sun.spct, range = c(100, 200))
 
 Sometimes, we need more flexibility. We may want to replace the observed values outside a certain range or expand the range of wavelengths, filling the expansion of all other variables with a certain value (i.e. a number, or NA.). In contrast to _clipping_ (or functionally equivalent, indexing, or subsetting), _trimming_ ensures that there will be spectral data returned at the boundaries of the trimmed region. These values are obtained by interpolation when they are not already present in the data.
 
-More flexibility is available in method `trim_wl()`, to which we can supply arguments `range`, `use.hinges`, and `fill`. By default interpolation is used at the boundaries of the `range`.
+More flexibility is available in method `trim_wl()`, to which we can supply arguments `range`, `use.hinges`, and `fill`. By default interpolation is used at the boundaries of the `range`, in which case the range of wavelengths in the returned spectrum is that passed as argument to `range`.
 
 ```{r, trim-4}
 trim_wl(sun.spct, c(282.5, NA))
@@ -1369,13 +1385,23 @@ trim2overlap(two.mspct)
 extend2extremes(two.mspct, fill = 0)
 ```
 
-#### Functions `trim_spct` and `trim_spct`
+#### Method `thin_wl()`
 
-Functions `trim_spct` and `trim_spct` are not generic, and add even more flexibility, but `trim_wl` should be preferred in user scripts.
+One possible way of decreasing the storage space occupied by spectral data is to vary the density of wavelength values stored based on the local change in slope (second derivative) of the plot a spectrum. Method `thin_wl()` can be used to remove or "thin" down the wavelength values stored in those regions of the spectrum where this would result in minimal loss of information. The algorithm currently in use is suboptimal in the removal of wavelength values but fast and easy to implement. **Which wavelength values are retained or not could change with future implementations.**
+
+```{r}
+nrow(yellow_gel.spct)
+wl_stepsize(yellow_gel.spct)
+thinned.spct <- thin_wl(yellow_gel.spct)
+nrow(thinned.spct)
+wl_stepsize(thinned.spct)
+```
+
+The strength of the thinning can be adjusted by passing arguments to parameters `max.wl.step` and `max.slope.delta`. This method is implemented for objects of all spectral classes that a single default data column in addition to wavelengths and also for collections of those objects.
 
 ### Convolving weights
 
-It is very instructive to look at weighted spectral data to understand how effective irradiances are calculated. Plotting effective spectral irradiance data can be very instructive when analysing the interaction of photoreceptors and ambient radiation. It can also illustrate the large effect that small measuring errors can have on the estimated effective irradiances or exposures when SWFs have a steep slope.
+It is very instructive to look at weighted spectral data to understand how effective irradiances are calculated. Plotting effective spectral irradiance data can be very informative when analysing interactions among photoreceptors and ambient radiation. It can also illustrate the large effect that small measuring errors can have on the estimated effective irradiances or exposures when SWFs have a steep slope.
 
 #### Individual spectra
 
@@ -1898,6 +1924,27 @@ The function `average_spct` integrates every column holding numeric values from 
 
 ```{r}
 average_spct(sun.spct)
+```
+
+## Comparison of spectra
+
+Comparison of spectra for which data is expressed at different discrete wavelength values can be easily affected by bias if interpolation is used. Function `compare_spct()` does a coarse grained comparison by first summarizing each spectrum over consecutive ranges of wavelengths, and then applying a comparison function to these summary values.
+
+The function can be used to compare pairs of spectra, stored as a collection. In the next example we compare two `source_spct` objects using defaults for most arguments.
+
+```{r, eval=FALSE}
+compare_spct(source_mspct(list(sun1 = sun.spct, sun2 = sun.spct * 2)))
+```
+
+The value returned by default is a `generic_spct` object containing the computed summaries for each waveband plus the relsult of the comparison between the summaries. The first three columns contain the wavelength at the midpoint of the wavelength range of waveband plus its extremes.
+
+In this example we compare two `filter_spct` objects, using summaries over 50-nm-wide bands, and using an operator returning a logical value for the comparison instead of the default division operator.
+
+```{r, eval=FALSE}
+compare_spct(filter_mspct(list(pet = polyester.spct,
+                              yllw = yellow_gel.spct)),
+             w.band = 50,
+            .comparison.fun = `<`)
 ```
 
 ## RGB colours

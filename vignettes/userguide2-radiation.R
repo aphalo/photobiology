@@ -61,23 +61,23 @@ comment(my.cm.spct)
 
 ## ---- attr-1------------------------------------------------------------------
 my.spct <- sun.spct
-setWhenMeasured(my.spct, NULL)
-getWhenMeasured(my.spct)
-setWhenMeasured(my.spct, ymd_hms("2015-10-31 22:55:00", tz = "EET"))
-getWhenMeasured(my.spct)
+when_measured(my.spct) <-  NULL
+when_measured(my.spct)
+when_measured(my.spct) <- lubridate::ymd_hms("2015-10-31 22:55:00", tz = "EET")
+when_measured(my.spct)
 
 ## ---- attr-2------------------------------------------------------------------
-setWhereMeasured(my.spct, NULL)
-getWhereMeasured(my.spct)
-setWhereMeasured(my.spct, lat = 60, lon = -10)
-getWhereMeasured(my.spct)
-setWhereMeasured(my.spct, lat = 60, lon = -10, address = "Somewhere")
-getWhereMeasured(my.spct)
+where_measured(my.spct) <- NULL
+where_measured(my.spct)
+where_measured(my.spct) <- data.frame(lat = 60, lon = -10)
+where_measured(my.spct)
+where_measured(my.spct) <- data.frame(lat = 60, lon = -10, address = "Somewhere")
+where_measured(my.spct)
 my.spct
 
 ## ---- attr-2a-----------------------------------------------------------------
-setWhatMeasured(my.spct, "something")
-getWhatMeasured(my.spct)
+what_measured(my.spct) <- "something"
+what_measured(my.spct)
 my.spct
 
 ## ---- attr-3------------------------------------------------------------------
@@ -95,7 +95,7 @@ two_suns.mspct <- source_mspct(list(sun1 = sun.spct, sun2 = sun.spct))
 two_suns.mspct
 
 ## ---- col-construction-2------------------------------------------------------
-mixed.mspct <- generic_mspct(list(filter = clear.spct, source = sun.spct))
+mixed.mspct <- generic_mspct(list(filter = polyester.spct, source = sun.spct))
 class(mixed.mspct)
 lapply(mixed.mspct, class_spct)
 
@@ -260,13 +260,12 @@ convolve_each(another_two.mspct, two.mspct)
 convolve_each(two.mspct, sun.spct, oper = `+`)
 
 ## ---- col-attr-1--------------------------------------------------------------
-getWhenMeasured(two.mspct)
-setWhenMeasured(two.mspct, ymd("2015-10-31", tz = "EET"))
-getWhenMeasured(two.mspct)
-setWhenMeasured(two.mspct,
-                list(ymd_hm("2015-10-31 10:00", tz = "EET"),
-                     ymd_hm("2015-10-31 11:00", tz = "EET")))
-getWhenMeasured(two.mspct)
+when_measured(two.mspct)
+when_measured(two.mspct) <- ymd("2015-10-31", tz = "EET")
+when_measured(two.mspct)
+when_measured(two.mspct) <- list(ymd_hm("2015-10-31 10:00", tz = "EET"),
+                                 ymd_hm("2015-10-31 11:00", tz = "EET"))
+when_measured(two.mspct)
 two.mspct
 
 ## -----------------------------------------------------------------------------
@@ -395,6 +394,7 @@ photon_as_default()
 sun.spct * UVB.wb
 energy_as_default()
 sun.spct * UVB.wb
+unset_radiation_unit_default()
 
 ## ---- options-3---------------------------------------------------------------
 using_photon(sun.spct * UVB.wb)
@@ -439,17 +439,22 @@ getNormalized(my.spct)
 
 ## ---- manip-9-----------------------------------------------------------------
 fscale(sun.spct)
-fscale(sun.spct, f = "total")
-fscale(sun.spct, range = PAR.wb, f = irrad)
+fscale(sun.spct, set.scaled = FALSE)
+fscale(sun.spct, target = 100)
+fscale(sun.spct, target = 100, set.scaled = TRUE)
+
+## ---- manip-9a----------------------------------------------------------------
+fscale(sun.spct, f = "integral")
+fscale(sun.spct, range = PAR.wb, f = e_irrad)
 fscale(sun.spct, range = PAR.wb, f = q_irrad, target = 800e-6)
 
-## -----------------------------------------------------------------------------
+## ---- manip-9b----------------------------------------------------------------
 my.spct <- fscale(sun.spct)
 is_scaled(my.spct)
 getScaled(my.spct)
 
 ## ---- manip-10----------------------------------------------------------------
-fshift(sun.spct, range = UVB.wb, f = "mean")
+fshift(white_led.source_spct, range = UVB.wb, f = "mean")
 fshift(sun.spct, range = c(280,290), f = "min")
 
 ## ---- manip-11----------------------------------------------------------------
@@ -499,6 +504,13 @@ trim2overlap(two.mspct)
 
 ## -----------------------------------------------------------------------------
 extend2extremes(two.mspct, fill = 0)
+
+## -----------------------------------------------------------------------------
+nrow(yellow_gel.spct)
+wl_stepsize(yellow_gel.spct)
+thinned.spct <- thin_wl(yellow_gel.spct)
+nrow(thinned.spct)
+wl_stepsize(thinned.spct)
 
 ## ---- weights-1---------------------------------------------------------------
 sun.spct * CIE.wb
@@ -693,6 +705,15 @@ integrate_spct(sun.spct)
 
 ## -----------------------------------------------------------------------------
 average_spct(sun.spct)
+
+## ---- eval=FALSE--------------------------------------------------------------
+#  compare_spct(source_mspct(list(sun1 = sun.spct, sun2 = sun.spct * 2)))
+
+## ---- eval=FALSE--------------------------------------------------------------
+#  compare_spct(filter_mspct(list(pet = polyester.spct,
+#                                yllw = yellow_gel.spct)),
+#               w.band = 50,
+#              .comparison.fun = `<`)
 
 ## -----------------------------------------------------------------------------
 w_length2rgb(550) # green

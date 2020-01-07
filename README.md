@@ -46,9 +46,9 @@ sun.
 geocode <- data.frame(lon = 0, lat = 55)
 date <- lubridate::today(tzone = "UTC")
 sunrise_time(date, tz = "UTC", geocode = geocode)
-#> [1] "2019-06-08 03:23:05 UTC"
+#> [1] "2020-01-06 08:23:09 UTC"
 day_length(date, tz = "UTC", geocode = geocode)
-#> [1] 17.19741
+#> [1] 7.415046
 ```
 
 ## Installation
@@ -108,8 +108,8 @@ citation("photobiology")
 #> 
 #> To cite package 'photobiology' in publications, please use:
 #> 
-#>   Aphalo, Pedro J. (2015) The r4photobiology suite. UV4Plants
-#>   Bulletin, 2015:1, 21-29. DOI:10.19232/uv4pb.2015.1.14
+#>   Aphalo, Pedro J. (2015) The r4photobiology suite. UV4Plants Bulletin,
+#>   2015:1, 21-29. DOI:10.19232/uv4pb.2015.1.14
 #> 
 #> A BibTeX entry for LaTeX users is
 #> 

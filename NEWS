@@ -1,4 +1,4 @@
-photobiology 0.9.30 (2020-01-01)
+photobiology 0.9.30 (2020-01-06)
 ================================
 
 * Add function compare_spct() for comparisons between pairs of spectra based
@@ -25,16 +25,16 @@ the target value for re-scaling is equal to one.
 spectra to display address when available.
 * Revise getWhereMeasured() to consistently return a data.frame, even when a
 geocode is missing.
-* Add function na_geocode(), a constructor for a valid but missing geocode
-data frame.
+* Add function na_geocode(), a constructor for a valid geocode data frame with
+all fields set to NAs of correct modes.
 * Revise all logic used for geocodes for consistency in returned and set values.
 
 *******************************************************************************
 One of these changes to handling of geocodes is potentially code-breaking as
-the returned value for missing geocode data is a data.frame containing NAs
+the returned value for missing geocode data is now a data.frame containing NAs
 instead of a bare NA.
 In contrast, handling of geocodes stored in objects created with earlier
-versions of the package is the consistent with that for new objects.
+versions of the package is fully consistent with that for new objects.
 *******************************************************************************
 
 photobiology 0.9.29 (2019-09-10)
@@ -53,7 +53,7 @@ photobiology 0.9.28 (2019-06-08)
 photobiology 0.9.27 (2019-04-22)
 ================================
 
-* Replace non-ASCII characters from documentation.
+* Replace non-ASCII characters in documentation.
 * Improve performance of sun_angles() and day_night() and implement Meuus
 algorithm for julian day. End result is slightly slower performance but much
 higher precision and broader range of dates that are handled correctly.
@@ -67,7 +67,7 @@ photobiology 0.9.26 (2019-02-11)
 
 * Move 'tibble' from Imports: to Depends: as newly defined classes are derived
 from those exported by package 'tibble', making visibility of private
-especialized methods allways necessary.
+specialized methods always necessary.
 * Revise cps2irrad() to ensure that all attributes are copied.
 * Implement s_mean(), s_median(), s_range(), s_sd(), s_var(), s_sum(), s_prod()
 and s_mean_se() methods for collections of spectra that operate across spectra

@@ -5,14 +5,34 @@
 #' Compare two spectra using a specified summary function pre-applied to
 #' wavelength intervals.
 #'
+#' @details Summaries are computed for each of the wavebands in \code{w.band} by
+#'   applying function \code{.summary.fun} separately to each spectrum, after
+#'   trimming them to the overlapping wavelength region. Next the matching
+#'   summaries are compared by means of \code{.comparison.fun}. Both the
+#'   summaries and the result of the comparison are returned. Columns containing
+#'   summary values are named by concatenating the name each member spectrum
+#'   with the name of the argument passed to \code{.summary.fun}.
+#'
+#'   Tagging is useful for plotting using wavelength based colours, or when
+#'   names for wavebands are used as annotations. When tagging is requested, the
+#'   spectrum is passed to method \code{\link{tag}} with \code{use.hinges} and
+#'   \code{short.names} as additional arguments.
+#'
 #' @param x A collection of two spectral objects of the same type.
 #' @param .summary.fun function. The summary function to use.
+#' @param ... additional named arguments passed down to \code{.summary.fun}.
 #' @param .comparison.fun function. The comparison function to use.
 #' @param w.band waveband object or a numeric stepsize in nanometres.
-#' @param ... additional named arguments passed down to \code{.summary.fun}.
+#' @param returned.value character One of "data.frame", "spectrum", "tagged
+#'   spectrum".
+#' @param use.hinges logical Flag indicating whether to insert "hinges" into the
+#'   returned spectrum when tagging it.
+#' @param short.names logical Flag indicating whether to use short or long names
+#'   for wavebands when tagging.
 #'
-#' @return A data frame containing the summary values per waveband for each
-#'   spectrum and the result of applying the comparison function to these
+#' @return A \code{generic_spct}, tagged or not with the wavebdans, or a
+#'   \code{data.frame} object containing the summary values per waveband for
+#'   each spectrum and the result of applying the comparison function to these
 #'   summaries.
 #'
 #' @export
@@ -30,11 +50,24 @@
 #'              w.band = 50,
 #'              .comparison.fun = `<`)
 #'
+#' head(
+#'   compare_spct(source_mspct(list(sun1 = sun.spct, sun2 = sun.spct * 2)),
+#'                returned.value = "data.frame")
+#' )
+#' compare_spct(source_mspct(list(sun1 = sun.spct, sun2 = sun.spct * 2)),
+#'              returned.value = "tagged spectrum")
+#' compare_spct(source_mspct(list(sun1 = sun.spct, sun2 = sun.spct * 2)),
+#'              returned.value = "tagged spectrum",
+#'              use.hinges = TRUE)
+#'
 compare_spct <- function(x,
                          w.band = 10,
                          .summary.fun = NULL,
+                         ...,
                          .comparison.fun = `/`,
-                         ...) {
+                         returned.value = "spectrum",
+                         use.hinges = FALSE,
+                         short.names = TRUE) {
   # summary function default depends on class of x
   if (is.null(.summary.fun)) {
     .summary.fun <-
@@ -76,7 +109,9 @@ compare_spct <- function(x,
   } else if (is.numeric(w.band)) {
     if (length(w.band) == 1L) {
       # w.band gives the stepsize
-      w.band <- split_bands(seq(from = wl.range[1], to = wl.range[2], by = w.band))
+      w.band <- split_bands(seq(from = wl.range[1],
+                                to = wl.range[2],
+                                by = w.band))
     } else {
       # w.band gives the boundaries of the bands
       w.band <- split_bands(w.band)
@@ -90,9 +125,21 @@ compare_spct <- function(x,
   wl.mid <- sapply(w.band, wl_midpoint)
   wl.min <- sapply(w.band, wl_min)
   wl.max <- sapply(w.band, wl_max)
-  summaries.tb <- .summary.fun(x, w.band = w.band)
+  summaries.tb <- .summary.fun(x, w.band = w.band, ...)
   z <- cbind(wl.mid, wl.min, wl.max, as.data.frame(t(summaries.tb[-1])))
-  names(z) <- c("w.length", "wl.min", "wl.max", paste(names(x), f.name, sep = "."))
+  names(z) <- c("w.length", "wl.min", "wl.max",
+                paste(names(x), f.name, sep = "."))
   z[["comparison.result"]] <- .comparison.fun(z[[5]], z[[4]])
+  if (returned.value %in% c("spectrum", "tagged spectrum")) {
+    z <- as.generic_spct(z)
+    if (returned.value == "tagged spectrum") {
+      z <- tag(z[ , -c(2, 3)],
+               w.band = w.band,
+               use.hinges = use.hinges,
+               short.names = short.names)
+    }
+  } else if (!returned.value == "data.frame") {
+    warning("Returning a data frame as argument \"", returned.value, "\" passed to 'returned.value' is unknown.")
+  }
   z
 }

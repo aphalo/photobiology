@@ -2066,11 +2066,9 @@ getIdFactor <- function(x) {
 #' @family measurement metadata functions
 #' @examples
 #' my.spct <- sun.spct
-#' getWhenMeasured(my.spct)
-#' setWhenMeasured(my.spct, lubridate::ymd_hms("2015-12-12 08:00:00"))
-#' getWhenMeasured(my.spct)
-#' when_measured(my.spct) <- lubridate::ymd_hms("2019-12-12 08:00:00")
-#' getWhenMeasured(my.spct)
+#' when_measured(my.spct)
+#' when_measured(my.spct) <- lubridate::ymd_hms("2020-01-01 08:00:00")
+#' when_measured(my.spct)
 #'
 setWhenMeasured <- function(x, when.measured, ...) UseMethod("setWhenMeasured")
 
@@ -2195,7 +2193,8 @@ setWhenMeasured.generic_mspct <-
 #' @export
 #' @family measurement metadata functions
 #' @examples
-#' getWhenMeasured(sun.spct)
+#'
+#' when_measured(sun.spct)
 #'
 getWhenMeasured <- function(x, ...) UseMethod("getWhenMeasured")
 
@@ -2285,7 +2284,15 @@ getWhenMeasured.generic_mspct <- function(x,
 #'   attribute.
 #'
 #' @export
+#'
 #' @family measurement metadata functions
+#'
+#' @examples
+#'
+#' my.spct <- sun.spct
+#' where_measured(my.spct)
+#' where_measured(my.spct) <- data.frame(lon = 0, lat = -60)
+#' where_measured(my.spct)
 #'
 setWhereMeasured <-
   function(x, where.measured, lat, lon, address, ...) UseMethod("setWhereMeasured")
@@ -2427,8 +2434,9 @@ setWhereMeasured.generic_mspct <- function(x,
 #' @export
 #'
 #' @family measurement metadata functions
+#'
 #' @examples
-#' getWhereMeasured(sun.spct)
+#' where_measured(sun.spct)
 #'
 getWhereMeasured <- function(x, ...) UseMethod("getWhereMeasured")
 
@@ -2493,6 +2501,13 @@ getWhereMeasured.generic_mspct <- function(x,
 #' @export
 #' @family measurement metadata functions
 #'
+#' @examples
+#'
+#' my.spct <- sun.spct
+#' how_measured(my.spct)
+#' how_measured(my.spct) <- "simulated with a radiation transfer model"
+#' how_measured(my.spct)
+#'
 setHowMeasured <- function(x, how.measured) {
   name <- substitute(x)
   if (is.generic_spct(x) || is.summary_generic_spct(x)) {
@@ -2525,8 +2540,9 @@ setHowMeasured <- function(x, how.measured) {
 #'
 #' @export
 #' @family measurement metadata functions
+#'
 #' @examples
-#' getHowMeasured(sun.spct)
+#' how_measured(sun.spct)
 #'
 getHowMeasured <- function(x, ...) UseMethod("getHowMeasured")
 
@@ -2928,6 +2944,13 @@ isValidInstrSettings <- function(x) {
 #'   modified.
 #'
 #' @export
+#'
+#' @examples
+#' my.spct <- sun.spct
+#' what_measured(my.spct)
+#' what_measured(my.spct) <- "Sun"
+#' what_measured(my.spct)
+#'
 #' @family measurement metadata functions
 #'
 setWhatMeasured <- function(x, what.measured) {
@@ -2961,9 +2984,12 @@ setWhatMeasured <- function(x, what.measured) {
 #' @return character vector An object containing a description of the data.
 #'
 #' @export
+#'
 #' @family measurement metadata functions
+#'
 #' @examples
-#' getWhatMeasured(sun.spct)
+#'
+#' what_measured(sun.spct)
 #'
 getWhatMeasured <- function(x, ...) UseMethod("getWhatMeasured")
 

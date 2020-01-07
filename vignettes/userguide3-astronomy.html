@@ -12,7 +12,7 @@
 
 <meta name="author" content="Pedro J. Aphalo" />
 
-<meta name="date" content="2019-12-27" />
+<meta name="date" content="2020-01-06" />
 
 <title>User Guide: 3 Astronomy</title>
 
@@ -302,9 +302,9 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 
 
 <h1 class="title toc-ignore">User Guide: 3 Astronomy</h1>
-<h3 class="subtitle">Package ‘photobiology’ 0.9.29.9001</h3>
+<h3 class="subtitle">Package ‘photobiology’ 0.9.30</h3>
 <h4 class="author">Pedro J. Aphalo</h4>
-<h4 class="date">2019-12-27</h4>
+<h4 class="date">2020-01-06</h4>
 
 
 <div id="TOC">
@@ -354,7 +354,7 @@ In versions 0.9.16 and later the code has been optimized for performance with ti
 <pre><code>## # A tibble: 1 x 11
 ##   time                tz    solartime longitude latitude address azimuth
 ##   &lt;dttm&gt;              &lt;chr&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt; &lt;chr&gt;     &lt;dbl&gt;
-## 1 2019-12-27 18:36:12 UTC        18.6         0     51.5 Greenw…    261.
+## 1 2020-01-06 16:36:29 UTC        16.5         0     51.5 Greenw…    239.
 ## # … with 4 more variables: elevation &lt;dbl&gt;, declination &lt;dbl&gt;,
 ## #   eq.of.time &lt;dbl&gt;, hour.angle &lt;dbl&gt;</code></pre>
 <p>A vector of times is accepted as argument, and as performance is optimized for this case, <em>vectorization</em> will markedly improve performance compared to multiple calls to the function. The vector of times can be created on the fly, or stored beforehand.</p>
@@ -419,9 +419,9 @@ In versions 0.9.16 and later the code has been optimized for performance with ti
 <pre><code>## [1] &quot;2015-03-01 EET&quot;  &quot;2015-04-01 EEST&quot; &quot;2015-05-01 EEST&quot; &quot;2015-06-01 EEST&quot;
 ## [5] &quot;2015-07-01 EEST&quot; &quot;2015-08-01 EEST&quot;</code></pre>
 <div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb23-1" title="1"><span class="kw">sunrise_time</span>(<span class="kw">now</span>(<span class="st">&quot;UTC&quot;</span>), <span class="dt">tz =</span> <span class="st">&quot;UTC&quot;</span>, <span class="dt">geocode =</span> my.geocode)</a></code></pre></div>
-<pre><code>## [1] &quot;2019-12-27 07:25:21 UTC&quot;</code></pre>
+<pre><code>## [1] &quot;2020-01-06 07:20:48 UTC&quot;</code></pre>
 <div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb25-1" title="1"><span class="kw">sunrise_time</span>(<span class="kw">now</span>(<span class="st">&quot;EET&quot;</span>), <span class="dt">tz =</span> <span class="st">&quot;EET&quot;</span>, <span class="dt">geocode =</span> my.geocode)</a></code></pre></div>
-<pre><code>## [1] &quot;2019-12-27 09:25:21 EET&quot;</code></pre>
+<pre><code>## [1] &quot;2020-01-06 09:20:48 EET&quot;</code></pre>
 <p>Southern hemisphere latitudes as well as longitudes to the West of the Greenwich meridian should be supplied as negative numbers.</p>
 <div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb27-1" title="1"><span class="kw">sunrise_time</span>(dates, <span class="dt">geocode =</span> <span class="kw">data.frame</span>(<span class="dt">lat =</span> <span class="dv">60</span>, <span class="dt">lon =</span> <span class="dv">0</span>))</a></code></pre></div>
 <pre><code>## [1] &quot;2015-02-28 09:01:52 EET&quot;  &quot;2015-03-31 08:28:41 EEST&quot;
@@ -515,7 +515,7 @@ In versions 0.9.16 and later the code has been optimized for performance with ti
 ## [5] &quot;2015-06-30 22:48:08 EEST&quot; &quot;2015-07-31 21:55:57 EEST&quot;</code></pre>
 <p>The default for <code>date</code> is the current day, using the system time zone settings.</p>
 <div class="sourceCode" id="cb53"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb53-1" title="1"><span class="kw">noon_time</span>(<span class="dt">geocode =</span> my.geocode)</a></code></pre></div>
-<pre><code>## [1] &quot;2019-12-27 10:21:11 UTC&quot;</code></pre>
+<pre><code>## [1] &quot;2020-01-06 10:25:53 UTC&quot;</code></pre>
 <p>Parameter <code>unit.out</code> can be used to obtain the returned value expressed as time-of-day in hours, minutes, or seconds since midnight, instead of the default <code>datetime</code>.</p>
 <div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb55-1" title="1"><span class="kw">sunrise_time</span>(<span class="kw">ymd</span>(<span class="st">&quot;2017-03-21&quot;</span>, <span class="dt">tz =</span> <span class="st">&quot;EET&quot;</span>), </a>
 <a class="sourceLine" id="cb55-2" title="2">             <span class="dt">tz =</span> <span class="st">&quot;EET&quot;</span>, </a>
@@ -561,14 +561,14 @@ In versions 0.9.16 and later the code has been optimized for performance with ti
 <p>Function <code>as_tod()</code> facilitates conversion of R’s time date objects into a numeric value representing the time of day in one of hour, minute or second as unit of expression.</p>
 <div class="sourceCode" id="cb79"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb79-1" title="1">times &lt;-<span class="st"> </span><span class="kw">now</span>(<span class="dt">tzone =</span> <span class="st">&quot;UTC&quot;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">hours</span>(<span class="dv">0</span><span class="op">:</span><span class="dv">6</span>)</a>
 <a class="sourceLine" id="cb79-2" title="2">times</a></code></pre></div>
-<pre><code>## [1] &quot;2019-12-27 18:36:13 UTC&quot; &quot;2019-12-27 19:36:13 UTC&quot;
-## [3] &quot;2019-12-27 20:36:13 UTC&quot; &quot;2019-12-27 21:36:13 UTC&quot;
-## [5] &quot;2019-12-27 22:36:13 UTC&quot; &quot;2019-12-27 23:36:13 UTC&quot;
-## [7] &quot;2019-12-28 00:36:13 UTC&quot;</code></pre>
+<pre><code>## [1] &quot;2020-01-06 16:36:30 UTC&quot; &quot;2020-01-06 17:36:30 UTC&quot;
+## [3] &quot;2020-01-06 18:36:30 UTC&quot; &quot;2020-01-06 19:36:30 UTC&quot;
+## [5] &quot;2020-01-06 20:36:30 UTC&quot; &quot;2020-01-06 21:36:30 UTC&quot;
+## [7] &quot;2020-01-06 22:36:30 UTC&quot;</code></pre>
 <div class="sourceCode" id="cb81"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb81-1" title="1"><span class="kw">as_tod</span>(times)</a></code></pre></div>
-<pre><code>## [1] 18.603795 19.603795 20.603795 21.603795 22.603795 23.603795  0.603795</code></pre>
+<pre><code>## [1] 16.60851 17.60851 18.60851 19.60851 20.60851 21.60851 22.60851</code></pre>
 <div class="sourceCode" id="cb83"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb83-1" title="1"><span class="kw">as_tod</span>(times, <span class="dt">unit.out =</span> <span class="st">&quot;minutes&quot;</span>)</a></code></pre></div>
-<pre><code>## [1] 1116.2277 1176.2277 1236.2277 1296.2277 1356.2277 1416.2277   36.2277</code></pre>
+<pre><code>## [1]  996.5107 1056.5107 1116.5107 1176.5107 1236.5107 1296.5107 1356.5107</code></pre>
 </div>
 <div id="relative-air-mass" class="section level2">
 <h2>Relative air mass</h2>
@@ -580,7 +580,7 @@ In versions 0.9.16 and later the code has been optimized for performance with ti
 </div>
 <div id="water-vapour-related-calculations" class="section level2">
 <h2>Water vapour-related calculations</h2>
-<p>There are several different emperical equations in common use to estimate water vapour pressure in air over liquid water or ice. This package implements some of them as well as their inverses, which are useful to compute the dew point. Some anciliary functions help with unit conversion and computation of relative humidity.</p>
+<p>There are several different empirical equations in common use to estimate water vapour pressure in air over liquid water or ice. This package implements some of them as well as their inverses, which are useful to compute the dew point. Some ancillary functions help with unit conversion and computation of relative humidity.</p>
 <table>
 <colgroup>
 <col width="16%"></col>
@@ -644,13 +644,13 @@ In versions 0.9.16 and later the code has been optimized for performance with ti
 <p>Saturation vapour pressure in Pa at four air temperatures in C, over water, computed using Tetens equation (the default method).</p>
 <div class="sourceCode" id="cb89"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb89-1" title="1"><span class="kw">water_vp_sat</span>(<span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">10</span>, <span class="dv">20</span>, <span class="dv">30</span>))</a></code></pre></div>
 <pre><code>## [1]  610.780 1227.873 2338.023 4242.450</code></pre>
-<p>Saturation water vapour mass/volume concentration for air at 20 C, expresed in grammes per cubic meter.</p>
+<p>Saturation water vapour mass/volume concentration for air at 20 C, expressed in grammes per cubic meter.</p>
 <div class="sourceCode" id="cb91"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb91-1" title="1"><span class="kw">water_vp2mvc</span>(<span class="kw">water_vp_sat</span>(<span class="dv">20</span>), <span class="dv">20</span>)</a></code></pre></div>
 <pre><code>## [1] 17.27438</code></pre>
 <p>Vapour pressure for 50% relative humidity in air at a temperature of 20 C.</p>
 <div class="sourceCode" id="cb93"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb93-1" title="1"><span class="kw">water_RH2vp</span>(<span class="dv">50</span>, <span class="dv">20</span>)</a></code></pre></div>
 <pre><code>## [1] 1169.011</code></pre>
-<p>And the inverse computation, RH from vapour pressure in Pa and air temperarture in C.</p>
+<p>And the inverse computation, RH from vapour pressure in Pa and air temperature in C.</p>
 <div class="sourceCode" id="cb95"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb95-1" title="1"><span class="kw">water_vp2RH</span>(<span class="dv">500</span>, <span class="dv">40</span>)</a></code></pre></div>
 <pre><code>## [1] 6.780297</code></pre>
 <p>Dew point for air with a water vapour pressure of 3 kPa.</p>

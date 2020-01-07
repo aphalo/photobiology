@@ -14,6 +14,15 @@ test_that("source_mspct", {
   expect_is(unique(na.omit(compare_spct(my.mspct)[["comparison.result"]])), "numeric")
   expect_is(unique(na.omit(compare_spct(my.mspct, .comparison.fun = `>`)[["comparison.result"]])), "logical")
 
+  default.spct <- compare_spct(my.mspct)
+  expect_equal(nrow(default.spct), 10)
+  expect_known_value(compare_spct(my.mspct, returned.value = "data.frame"), "./data/compare-spct-df-value-e")
+  expect_known_value(compare_spct(my.mspct, returned.value = "spectrum"), "./data/compare-spct-spct-value-e")
+  expect_known_value(compare_spct(my.mspct, returned.value = "tagged spectrum"), "./data/compare-spct-tag-value-e")
+  expect_warning(compare_spct(my.mspct, returned.value = "zzz"))
+  expect_equal(suppressWarnings(compare_spct(my.mspct, returned.value = "zzz")),
+               compare_spct(my.mspct, returned.value = "data.frame"))
+
   photon_as_default()
   expect_known_value(compare_spct(my.mspct), "./data/compare-spct-default-value-q")
   expect_named(compare_spct(my.mspct),
@@ -22,6 +31,15 @@ test_that("source_mspct", {
   expect_equal(unique(na.omit(compare_spct(my.mspct)[["comparison.result"]])), 2)
   expect_is(unique(na.omit(compare_spct(my.mspct)[["comparison.result"]])), "numeric")
   expect_is(unique(na.omit(compare_spct(my.mspct, .comparison.fun = `>`)[["comparison.result"]])), "logical")
+
+  default.spct <- compare_spct(my.mspct)
+  expect_equal(nrow(default.spct), 10)
+  expect_known_value(compare_spct(my.mspct, returned.value = "data.frame"), "./data/compare-spct-df-value-e")
+  expect_known_value(compare_spct(my.mspct, returned.value = "spectrum"), "./data/compare-spct-spct-value-e")
+  expect_known_value(compare_spct(my.mspct, returned.value = "tagged spectrum"), "./data/compare-spct-tag-value-e")
+  expect_warning(compare_spct(my.mspct, returned.value = "zzz"))
+  expect_equal(suppressWarnings(compare_spct(my.mspct, returned.value = "zzz")),
+               compare_spct(my.mspct, returned.value = "data.frame"))
 
   unset_radiation_unit_default()
 
