@@ -157,6 +157,12 @@ normalize.filter_spct <-
                             norm = norm,
                             col.names = "A",
                             na.rm = na.rm))
+    } else if (qty.out == "absorptance") {
+      return(normalize_spct(spct = T2Afr(x, action = "replace"),
+                            range = range,
+                            norm = norm,
+                            col.names = "Afr",
+                            na.rm = na.rm))
     } else {
       stop("'qty.out ", qty.out, " is unknown")
     }
