@@ -1,7 +1,12 @@
 photobiology 0.9.31 (2020-02-xx)
 ================================
 
-
+* Revise trim_waveband() so that it preserves the names of list members. This
+bug affected computations of irradiances and ratios so that names used in
+lists of wavebands where not reflected in the output, and the label from the
+waveband definitions could not be overriden as intended by design.
+* Revise irrad(), q_irrad() and e_irrad() to use shorter names for returned
+numeric values or columns in returned data frames.
 
 photobiology 0.9.30 (2020-01-06)
 ================================

@@ -673,8 +673,8 @@ transmittance(polyester.spct, list(UVB.wb, UVA.wb, PAR.wb))
 reflectance(green_leaf.spct, waveband(c(600, 700)))
 
 ## -----------------------------------------------------------------------------
-irrad(sun.spct * polyester.spct, list(UVB.wb, UVA.wb, PAR.wb, wb.trim = TRUE)) /
-  irrad(sun.spct, list(UVB.wb, UVA.wb, PAR.wb, wb.trim = TRUE))
+q_irrad(sun.spct * polyester.spct, list(UVB.wb, UVA.wb, PAR.wb), wb.trim = TRUE) /
+  q_irrad(sun.spct, list(UVB.wb, UVA.wb, PAR.wb), wb.trim = TRUE)
 
 ## -----------------------------------------------------------------------------
 transmittance(filters.mspct, w.band = list("Tfr(UVA)" = UVA.wb, "Tfr(PAR)" = PAR.wb))

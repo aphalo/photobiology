@@ -81,26 +81,27 @@ msdply <- function(mspct, .fun, ..., idx = NULL, col.names = NULL,
                    .parallel = .parallel,
                    .paropts = .paropts)
 
-  f.name <- as.character( substitute(.fun))
+  f.name <- as.character(substitute(.fun))
 
-  if (f.name %in% c("min",
-                    "max",
-                    "range",
-                    "spread",
-                    "midpoint",
-                    "stepsize",
-                    "getWhenMeasured",
-                    "getWhereMeasured")) {
-    qty.names <- switch(
-      f.name,
-      min = "min.wl",
-      max = "max.wl",
-      range = c("min.wl", "max.wl"),
-      spread = "spread.wl",
-      midpoint = "midpoint.wl",
-      stepsize = c("min.step.wl", "max.step.wl"),
-      getWhenMeasured = "when.measured",
-      getWhereMeasured = NULL
+  if (f.name %in% c("min", "max", "range",
+                    "min_wl", "max_wl", "range_wl",
+                    "spread", "midpoint", "stepsize",
+                    "spread_wl", "midpoint_wl", "stepsize_wl",
+                    "getWhenMeasured", "getWhereMeasured",
+                    "irrad", "q_irrad", "e_irrad",
+                    "fluence", "q_fluence", "e_fluence",
+                    "q_ratio", "e_ratio", "eq_ratio", "qe_ratio")) {
+    qty.names <-
+      switch(f.name,
+             min = "min.wl", min_wl = "min.wl",
+             max = "max.wl", max_wl = "max.wl",
+             range = c("min.wl", "max.wl"), range_wl = c("min.wl", "max.wl"),
+             spread = "spread.wl", spread_wl = "spread.wl",
+             midpoint = "midpoint.wl", midpoint_wl = "midpoint.wl",
+             stepsize = c("min.step.wl", "max.step.wl"),
+             stepsize_wl = c("min.step.wl", "max.step.wl"),
+             getWhenMeasured = "when.measured",
+             NULL # default: use name of returned numeric values
     )
   } else if (!is.null(col.names) &&
              !any(col.names == "") &&

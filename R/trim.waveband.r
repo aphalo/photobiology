@@ -1,7 +1,14 @@
 #' Trim (or expand) head and/or tail
 #'
-#' Trimming of waveband boundaries can be required needed when the spectral data
-#' does not cover the whole waveband.
+#' Trimming of waveband boundaries can be needed when the spectral data do not
+#' cover the whole waveband, or wavebands may have to be removed altogether.
+#'
+#' @details This function will accept both individual wavebands or list of
+#'   wavebands. When the input is a list, wavebands outisde the range of the
+#'   range range will be removed from the list, and those partly outside the
+#'   target range either "trimmed" to this edge of removed (if \code{trim =
+#'   TRUE} is passed) or discarded (if \code{trim = FALSE}). If the list of
+#'   wavebands has named members, names are preserved in the returned list.
 #'
 #' @param w.band an object of class "waveband" or a list of such objects.
 #' @param range a numeric vector of length two, or any other object for which
@@ -14,9 +21,12 @@
 #'   spectral data before integration so as to reduce interpolation errors at
 #'   the boundaries of the wavebands.
 #'
-#' @return A waveband object or a list of waveband objects trimmed or filtered
-#'   depending on whether a single waveband object or a list of waveband
-#'   objects was supplied as argument to formal parameter \code{w.band}.
+#' @return The returned value is a waveband object or a list of waveband objects
+#'   depending on whether a single waveband object or a list of waveband objects
+#'   was supplied as argument to formal parameter \code{w.band}. If no waveband
+#'   is retained, in the first case,  a NULL waveband object is returned, and in
+#'   the second case, a list of length zero is returned. If the input is a
+#'   named, list, names are preserved in the returned list.
 #'
 #' @family trim functions
 #' @export
@@ -37,6 +47,9 @@ trim_waveband <-
     input.was.waveband <- is.waveband(w.band)
     if (input.was.waveband) {
       w.band <- list(w.band)
+      w.band.names <- list("")
+    } else {
+      w.band.names <- names(w.band)
     }
     if (is.null(range)) {
       range <- c(low.limit, high.limit)
@@ -51,6 +64,8 @@ trim_waveband <-
     i <- 0
     for (wb in w.band) {
       if (min(wb) >= high.limit || max(wb) <= low.limit) {
+        # delete name of skipped waveband
+        w.band.names[i + 1] <- NULL
         next
       }
       if (min(wb) >= (low.limit - 5e-12) && max(wb) <= (high.limit + 5e-12)) {
@@ -87,8 +102,14 @@ trim_waveband <-
       if (length(w.band.out) == 1L) {
         w.band.out <- w.band.out[[1]]
       } else {
+        # empty list -> return empty waveband
         w.band.out <- waveband()
       }
+    } else if (length(w.band.names) == length(w.band.out)) {
+      # restore member names from input
+      names(w.band.out) <- unlist(w.band.names)
+    } else if (length(w.band.names) != 0L) {
+      warning("Bug: names from list of wavebands discarded!")
     }
     w.band.out
   }

@@ -15,6 +15,9 @@
 #' @param use.hinges logical Flag indicating whether to insert "hinges" into the
 #'   spectral data before integration so as to reduce interpolation errors at
 #'   the boundaries of the wavebands.
+#' @param naming character one of "long", "default", "short" or "none". Used to
+#'   select the type of names to assign to returned value.
+#' @param name.tag character Used to tag the name of the returned values.
 #' @param ... other arguments (possibly ignored)
 #'
 #' @return In the case of methods for individual spectra, a \code{numeric}
@@ -69,21 +72,26 @@ q_ratio.source_spct <-
            w.band.num = NULL, w.band.denom = NULL,
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.cached.mult = FALSE,
-           use.hinges = getOption("photobiology.use.hinges"), ... ) {
+           use.hinges = getOption("photobiology.use.hinges"),
+           naming = "short",
+           name.tag = ifelse(naming == "short", "(q:q)", ""),
+           ... ) {
     q.irrad.num <- irrad_spct(spct, w.band = w.band.num,
                               unit.out = "photon", quantity = "total",
                               wb.trim = wb.trim,
                               use.cached.mult = use.cached.mult,
                               use.hinges = use.hinges,
-                              allow.scaled = TRUE)
+                              allow.scaled = TRUE,
+                              naming = naming)
     q.irrad.denom <- irrad_spct(spct, w.band = w.band.denom,
                                 unit.out = "photon", quantity = "total",
                                 wb.trim = wb.trim,
                                 use.cached.mult = use.cached.mult,
                                 use.hinges = use.hinges,
-                                allow.scaled = TRUE)
+                                allow.scaled = TRUE,
+                                naming = naming)
     ratio <- q.irrad.num / q.irrad.denom
-    names(ratio) <- paste(names(q.irrad.num), ":", names(q.irrad.denom), "(q:q)", sep = "")
+    names(ratio) <- paste(names(q.irrad.num), ":", names(q.irrad.denom), name.tag, sep = "")
     attr(ratio, "time.unit") <- NULL
     attr(ratio, "radiation.unit") <- "q:q ratio"
     return(ratio)
@@ -106,6 +114,9 @@ q_ratio.source_spct <-
 #' @param use.hinges logical Flag indicating whether to insert "hinges" into the
 #'   spectral data before integration so as to reduce interpolation errors at
 #'   the boundaries of the wavebands.
+#' @param naming character one of "long", "default", "short" or "none". Used to
+#'   select the type of names to assign to returned value.
+#' @param name.tag character Used to tag the name of the returned values.
 #' @param ... other arguments (possibly used by derived methods).
 #'
 #' @return In the case of methods for individual spectra, a \code{numeric}
@@ -161,17 +172,22 @@ e_ratio.source_spct <-
            w.band.num = NULL, w.band.denom = NULL,
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.cached.mult = FALSE,
-           use.hinges=getOption("photobiology.use.hinges"), ...) {
+           use.hinges=getOption("photobiology.use.hinges"),
+           naming = "short",
+           name.tag = ifelse(naming == "short", "(e:e)", ""),
+            ...) {
     e.irrad.num <- irrad_spct(spct, w.band = w.band.num, unit.out = "energy", quantity = "total",
                               wb.trim = wb.trim,
                               use.cached.mult = use.cached.mult, use.hinges = use.hinges,
-                              allow.scaled=TRUE)
+                              allow.scaled=TRUE,
+                              naming = naming)
     e.irrad.denom <- irrad_spct(spct, w.band = w.band.denom, unit.out = "energy", quantity = "total",
                                 wb.trim = wb.trim,
                                 use.cached.mult = use.cached.mult, use.hinges = use.hinges,
-                                allow.scaled = TRUE)
+                                allow.scaled = TRUE,
+                                naming = naming)
     ratio <- e.irrad.num / e.irrad.denom
-    names(ratio) <- paste(names(e.irrad.num), ":", names(e.irrad.denom), "(e:e)", sep="")
+    names(ratio) <- paste(names(e.irrad.num), ":", names(e.irrad.denom), name.tag, sep="")
     attr(ratio, "time.unit") <- NULL
     attr(ratio, "radiation.unit") <- "e:e ratio"
     return(ratio)
@@ -191,6 +207,9 @@ e_ratio.source_spct <-
 #' @param use.hinges logical Flag indicating whether to insert "hinges" into the
 #'   spectral data before integration so as to reduce interpolation errors at
 #'   the boundaries of the wavebands.
+#' @param naming character one of "long", "default", "short" or "none". Used to
+#'   select the type of names to assign to returned value.
+#' @param name.tag character Used to tag the name of the returned values.
 #' @param ... other arguments (possibly used by derived methods).
 #'
 #' @return Computed values are ratios between photon irradiance and energy
@@ -244,21 +263,26 @@ qe_ratio.source_spct <-
   function(spct, w.band = NULL,
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.cached.mult = FALSE,
-           use.hinges = getOption("photobiology.use.hinges"), ...) {
+           use.hinges = getOption("photobiology.use.hinges"),
+           naming = "short",
+           name.tag = ifelse(naming == "short", "(q:e)", ""),
+           ...) {
     q.irrad <- irrad_spct(spct, w.band=w.band, unit.out = "photon",
                           quantity ="total",
                           wb.trim = wb.trim,
                           use.cached.mult = use.cached.mult,
                           use.hinges = use.hinges,
-                          allow.scaled = TRUE)
+                          allow.scaled = TRUE,
+                          naming = naming)
     e.irrad <- irrad_spct(spct, w.band=w.band, unit.out = "energy",
                           quantity = "total",
                           wb.trim = wb.trim,
                           use.cached.mult = use.cached.mult,
                           use.hinges = use.hinges,
-                          allow.scaled = TRUE)
+                          allow.scaled = TRUE,
+                          naming = naming)
     ratio <- q.irrad / e.irrad
-    names(ratio) <- paste("q:e(", names(q.irrad), ")", sep = "")
+    names(ratio) <- paste(names(q.irrad), name.tag, sep = "")
     attr(ratio, "time.unit") <- NULL
     attr(ratio, "radiation.unit") <- "q:e ratio"
     return(ratio)
@@ -278,6 +302,9 @@ qe_ratio.source_spct <-
 #' @param use.hinges logical Flag indicating whether to insert "hinges" into the
 #'   spectral data before integration so as to reduce interpolation errors at
 #'   the boundaries of the wavebands.
+#' @param naming character one of "long", "default", "short" or "none". Used to
+#'   select the type of names to assign to returned value.
+#' @param name.tag character Used to tag the name of the returned values.
 #' @param ... other arguments (possibly used by derived methods).
 #'
 #' @return Computed values are ratios between energy irradiance and photon
@@ -331,7 +358,10 @@ eq_ratio.source_spct <-
   function(spct, w.band=NULL,
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.cached.mult =FALSE,
-           use.hinges  = getOption("photobiology.use.hinges"), ...) {
+           use.hinges  = getOption("photobiology.use.hinges"),
+           naming = "short",
+           name.tag = ifelse(naming == "short", "(e:q)", ""),
+           ...) {
     ratio <- 1 / qe_ratio(spct = spct, w.band = w.band, wb.trim = wb.trim,
                           use.cached.mult = use.cached.mult, use.hinges = use.hinges)
     names(ratio) <- gsub("q:e", "e:q", names(ratio), fixed = TRUE )
@@ -364,11 +394,17 @@ q_ratio.source_mspct <-
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.cached.mult = FALSE,
            use.hinges = getOption("photobiology.use.hinges"),
+           naming = "short",
+           name.tag = ifelse(naming == "short", "(q:q)", ""),
            ...,
            attr2tb = NULL,
            idx = "spct.idx",
            .parallel = FALSE,
            .paropts = NULL) {
+    if (naming == "none") {
+      # need names for columns
+      naming <- "short"
+    }
     z <-
       msdply(
         mspct = spct,
@@ -378,6 +414,8 @@ q_ratio.source_mspct <-
         wb.trim = wb.trim,
         use.cached.mult = use.cached.mult,
         use.hinges = use.hinges,
+        naming = naming,
+        name.tag = name.tag,
         idx = idx,
         .parallel = .parallel,
         .paropts = .paropts
@@ -391,11 +429,12 @@ q_ratio.source_mspct <-
 #' @describeIn e_ratio Calculates energy:energy ratio from a \code{source_mspct}
 #'   object.
 #'
-#' @param attr2tb character vector, see \code{\link{add_attr2tb}} for the syntax for \code{attr2tb} passed as is to formal parameter \code{col.names}.
+#' @param attr2tb character vector, see \code{\link{add_attr2tb}} for the syntax
+#'   for \code{attr2tb} passed as is to formal parameter \code{col.names}.
 #' @param idx character Name of the column with the names of the members of the
 #'   collection of spectra.
 #' @param .parallel	if TRUE, apply function in parallel, using parallel backend
-#'   provided by foreach
+#'   provided by foreach.
 #' @param .paropts a list of additional options passed into the foreach function
 #'   when parallel computation is enabled. This is important if (for example)
 #'   your code relies on external data or packages: use the .export and
@@ -410,11 +449,17 @@ e_ratio.source_mspct <-
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.cached.mult = FALSE,
            use.hinges = getOption("photobiology.use.hinges"),
+           naming = "short",
+           name.tag = ifelse(naming == "short", "(e:e)", ""),
            ...,
            attr2tb = NULL,
            idx = "spct.idx",
            .parallel = FALSE,
            .paropts = NULL) {
+    if (naming == "none") {
+      # need names for coloumns
+      naming <- "short"
+    }
     z <-
       msdply(
         mspct = spct,
@@ -424,6 +469,8 @@ e_ratio.source_mspct <-
         wb.trim = wb.trim,
         use.cached.mult = use.cached.mult,
         use.hinges = use.hinges,
+        naming = naming,
+        name.tag = name.tag,
         idx = idx,
         .parallel = .parallel,
         .paropts = .paropts
@@ -437,7 +484,8 @@ e_ratio.source_mspct <-
 #' @describeIn eq_ratio Calculates energy:photon from a \code{source_mspct}
 #'   object.
 #'
-#' @param attr2tb character vector, see \code{\link{add_attr2tb}} for the syntax for \code{attr2tb} passed as is to formal parameter \code{col.names}.
+#' @param attr2tb character vector, see \code{\link{add_attr2tb}} for the syntax
+#'   for \code{attr2tb} passed as is to formal parameter \code{col.names}.
 #' @param idx character Name of the column with the names of the members of the
 #'   collection of spectra.
 #' @param .parallel	if TRUE, apply function in parallel, using parallel backend
@@ -455,11 +503,17 @@ eq_ratio.source_mspct <-
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.cached.mult = FALSE,
            use.hinges = getOption("photobiology.use.hinges"),
+           naming = "short",
+           name.tag = ifelse(naming == "short", "(e:q)", ""),
            ...,
            attr2tb = NULL,
            idx = "spct.idx",
            .parallel = FALSE,
            .paropts = NULL) {
+    if (naming == "none") {
+      # need names for coloumns
+      naming <- "short"
+    }
     z <-
       msdply(
         mspct = spct,
@@ -468,6 +522,8 @@ eq_ratio.source_mspct <-
         wb.trim = wb.trim,
         use.cached.mult = use.cached.mult,
         use.hinges = use.hinges,
+        naming = naming,
+        name.tag = name.tag,
         idx = idx,
         col.names = names(w.band),
         .parallel = .parallel,
@@ -482,7 +538,8 @@ eq_ratio.source_mspct <-
 #' @describeIn qe_ratio Calculates photon:energy ratio from a
 #'   \code{source_mspct} object.
 #'
-#' @param attr2tb character vector, see \code{\link{add_attr2tb}} for the syntax for \code{attr2tb} passed as is to formal parameter \code{col.names}.
+#' @param attr2tb character vector, see \code{\link{add_attr2tb}} for the syntax
+#'   for \code{attr2tb} passed as is to formal parameter \code{col.names}.
 #' @param idx character Name of the column with the names of the members of the
 #'   collection of spectra.
 #' @param .parallel	if TRUE, apply function in parallel, using parallel backend
@@ -500,11 +557,17 @@ qe_ratio.source_mspct <-
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.cached.mult = FALSE,
            use.hinges=getOption("photobiology.use.hinges"),
+           naming = "short",
+           name.tag = ifelse(naming == "short", "(q:e)", ""),
            ...,
            attr2tb = NULL,
            idx = "spct.idx",
            .parallel = FALSE,
            .paropts = NULL) {
+    if (naming == "none") {
+      # need names for coloumns
+      naming <- "short"
+    }
     z <-
       msdply(
         spct,
@@ -513,6 +576,8 @@ qe_ratio.source_mspct <-
         wb.trim = wb.trim,
         use.cached.mult = use.cached.mult,
         use.hinges = use.hinges,
+        naming = naming,
+        name.tag = name.tag,
         idx = idx,
         col.names = names(w.band),
         .parallel = .parallel,

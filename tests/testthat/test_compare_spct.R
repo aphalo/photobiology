@@ -34,9 +34,9 @@ test_that("source_mspct", {
 
   default.spct <- compare_spct(my.mspct)
   expect_equal(nrow(default.spct), 10)
-  expect_known_value(compare_spct(my.mspct, returned.value = "data.frame"), "./data/compare-spct-df-value-e")
-  expect_known_value(compare_spct(my.mspct, returned.value = "spectrum"), "./data/compare-spct-spct-value-e")
-  expect_known_value(compare_spct(my.mspct, returned.value = "tagged spectrum"), "./data/compare-spct-tag-value-e")
+  expect_known_value(compare_spct(my.mspct, returned.value = "data.frame"), "./data/compare-spct-df-value-e2")
+  expect_known_value(compare_spct(my.mspct, returned.value = "spectrum"), "./data/compare-spct-spct-value-e2")
+  expect_known_value(compare_spct(my.mspct, returned.value = "tagged spectrum"), "./data/compare-spct-tag-value-e2")
   expect_warning(compare_spct(my.mspct, returned.value = "zzz"))
   expect_equal(suppressWarnings(compare_spct(my.mspct, returned.value = "zzz")),
                compare_spct(my.mspct, returned.value = "data.frame"))

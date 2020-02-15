@@ -140,8 +140,8 @@ test_that("source_mspct", {
   expect_equal(levels(irrad(my_named.mspct)[["spct.idx"]]),
                c("one", "two", "three", "four", "five"))
 
-  expect_equal(round(irrad(my.mspct)[["irrad_Total"]], 3), 1:5 * 10)
-  expect_equal(round(irrad(my_named.mspct)[["irrad_Total"]], 3), 1:5 * 10)
+  expect_equal(round(irrad(my.mspct)[["E_Total"]], 3), 1:5 * 10)
+  expect_equal(round(irrad(my_named.mspct)[["E_Total"]], 3), 1:5 * 10)
 
 # irrad -------------------------------------------------------------------
 
@@ -149,23 +149,41 @@ test_that("source_mspct", {
     round(irrad(my.mspct,
                 list(waveband(c(400,405), wb.name = "A"),
                      waveband(c(405,410), wb.name = "B"))
-    )[["irrad_A"]], 3), 1:5 * 5
+    )[["E_A"]], 3), 1:5 * 5
   )
   expect_equal(
     round(irrad(my.mspct,
                 list(waveband(c(400,405), wb.name = "A"),
                      waveband(c(405,410), wb.name = "B"))
-    )[["irrad_B"]], 3), 1:5 * 5
+    )[["E_B"]], 3), 1:5 * 5
   )
 
   expect_equal(round(irrad(my_named.mspct,
                            list(waveband(c(400,405), wb.name = "A"),
                                 waveband(c(405,410), wb.name = "B"))
-  )[["irrad_A"]], 3), 1:5 * 5)
+  )[["E_A"]], 3), 1:5 * 5)
   expect_equal(round(irrad(my_named.mspct,
                            list(waveband(c(400,405), wb.name = "A"),
                                 waveband(c(405,410), wb.name = "B"))
-  )[["irrad_B"]], 3), 1:5 * 5)
+  )[["E_B"]], 3), 1:5 * 5)
+
+  expect_equal(round(irrad(my_named.mspct,
+                           list(A = waveband(c(400,405)),
+                                B = waveband(c(405,410)))
+  )[["E_A"]], 3), 1:5 * 5)
+  expect_equal(round(irrad(my_named.mspct,
+                           list(A = waveband(c(400,405)),
+                                B = waveband(c(405,410)))
+  )[["E_B"]], 3), 1:5 * 5)
+
+  expect_equal(round(irrad(my_named.mspct,
+                           list(waveband(c(400,405)),
+                                waveband(c(405,410)))
+  )[["E_range.400.405"]], 3), 1:5 * 5)
+  expect_equal(round(irrad(my_named.mspct,
+                           list(waveband(c(400,405)),
+                                waveband(c(405,410)))
+  )[["E_range.405.410"]], 3), 1:5 * 5)
 
   # relative
 
@@ -174,14 +192,14 @@ test_that("source_mspct", {
                 list(waveband(c(400,405), wb.name = "A"),
                      waveband(c(405,410), wb.name = "B")),
                 quantity = "relative"
-    )[["irrad_A"]], 3), rep(0.5, 5)
+    )[["E/Esum_A"]], 3), rep(0.5, 5)
   )
   expect_equal(
     round(irrad(my.mspct,
                 list(waveband(c(400,405), wb.name = "A"),
                      waveband(c(405,410), wb.name = "B")),
                 quantity = "relative"
-    )[["irrad_B"]], 3), rep(0.5, 5)
+    )[["E/Esum_B"]], 3), rep(0.5, 5)
   )
 
   expect_equal(
@@ -189,39 +207,39 @@ test_that("source_mspct", {
                 list(waveband(c(400,405), wb.name = "A"),
                      waveband(c(405,410), wb.name = "B")),
                 quantity = "relative"
-    )[["irrad_A"]], 3), rep(0.5, 5)
+    )[["E/Esum_A"]], 3), rep(0.5, 5)
   )
   expect_equal(
     round(irrad(my_named.mspct,
                 list(waveband(c(400,405), wb.name = "A"),
                      waveband(c(405,410), wb.name = "B")),
                 quantity = "relative"
-    )[["irrad_B"]], 3), rep(0.5, 5)
+    )[["E/Esum_B"]], 3), rep(0.5, 5)
   )
 
   # e_irrad -----------------------------------------------------------------
 
   expect_equal(
     round(e_irrad(my.mspct,
-                list(waveband(c(400,405), wb.name = "A"),
-                     waveband(c(405,410), wb.name = "B"))
-    )[["e_irrad_A"]], 3), 1:5 * 5
+                  list(waveband(c(400,405), wb.name = "A"),
+                       waveband(c(405,410), wb.name = "B"))
+    )[["E_A"]], 3), 1:5 * 5
   )
   expect_equal(
     round(e_irrad(my.mspct,
-                list(waveband(c(400,405), wb.name = "A"),
-                     waveband(c(405,410), wb.name = "B"))
-    )[["e_irrad_B"]], 3), 1:5 * 5
+                  list(waveband(c(400,405), wb.name = "A"),
+                       waveband(c(405,410), wb.name = "B"))
+    )[["E_B"]], 3), 1:5 * 5
   )
 
   expect_equal(round(e_irrad(my_named.mspct,
                            list(waveband(c(400,405), wb.name = "A"),
                                 waveband(c(405,410), wb.name = "B"))
-  )[["e_irrad_A"]], 3), 1:5 * 5)
+  )[["E_A"]], 3), 1:5 * 5)
   expect_equal(round(e_irrad(my_named.mspct,
                            list(waveband(c(400,405), wb.name = "A"),
                                 waveband(c(405,410), wb.name = "B"))
-  )[["e_irrad_B"]], 3), 1:5 * 5)
+  )[["E_B"]], 3), 1:5 * 5)
 
   # relative
 
@@ -230,14 +248,14 @@ test_that("source_mspct", {
                 list(waveband(c(400,405), wb.name = "A"),
                      waveband(c(405,410), wb.name = "B")),
                 quantity = "relative"
-    )[["e_irrad_A"]], 3), rep(0.5, 5)
+    )[["E/Esum_A"]], 3), rep(0.5, 5)
   )
   expect_equal(
     round(e_irrad(my.mspct,
                 list(waveband(c(400,405), wb.name = "A"),
                      waveband(c(405,410), wb.name = "B")),
                 quantity = "relative"
-    )[["e_irrad_B"]], 3), rep(0.5, 5)
+    )[["E/Esum_B"]], 3), rep(0.5, 5)
   )
 
   expect_equal(
@@ -245,14 +263,31 @@ test_that("source_mspct", {
                 list(waveband(c(400,405), wb.name = "A"),
                      waveband(c(405,410), wb.name = "B")),
                 quantity = "relative"
-    )[["e_irrad_A"]], 3), rep(0.5, 5)
+    )[["E/Esum_A"]], 3), rep(0.5, 5)
   )
   expect_equal(
     round(e_irrad(my_named.mspct,
                 list(waveband(c(400,405), wb.name = "A"),
                      waveband(c(405,410), wb.name = "B")),
                 quantity = "relative"
-    )[["e_irrad_B"]], 3), rep(0.5, 5)
+    )[["E/Esum_B"]], 3), rep(0.5, 5)
+  )
+
+  # contribution --------------------------------------------------------------
+
+  expect_equal(
+    round(e_irrad(my_named.mspct,
+                  list(waveband(c(400,405), wb.name = "A"),
+                       waveband(c(405,410), wb.name = "B")),
+                  quantity = "contribution"
+    )[["E/Etot_A"]], 3), rep(0.5, 5)
+  )
+  expect_equal(
+    round(e_irrad(my_named.mspct,
+                  list(waveband(c(400,405), wb.name = "A"),
+                       waveband(c(405,410), wb.name = "B")),
+                  quantity = "contribution"
+    )[["E/Etot_B"]], 3), rep(0.5, 5)
   )
 
   # q_irrad -------------------------------------------------------------------
@@ -261,24 +296,24 @@ test_that("source_mspct", {
     round(q_irrad(my.mspct,
                 list(waveband(c(400,405), wb.name = "A"),
                      waveband(c(405,410), wb.name = "B"))
-    )[["q_irrad_A"]], 7), c(1.68e-5, 3.36e-5,5.05e-5, 6.73e-5,8.41e-5)
+    )[["Q_A"]], 7), c(1.68e-5, 3.36e-5,5.05e-5, 6.73e-5,8.41e-5)
   )
   expect_equal(
     round(q_irrad(my.mspct,
                 list(waveband(c(400,405), wb.name = "A"),
                      waveband(c(405,410), wb.name = "B"))
-    )[["q_irrad_B"]], 7), c(1.70e-5,3.41e-5,5.11e-5,6.81e-5,8.52e-5)
+    )[["Q_B"]], 7), c(1.70e-5,3.41e-5,5.11e-5,6.81e-5,8.52e-5)
   )
 
   expect_equal(round(q_irrad(my_named.mspct,
                              list(waveband(c(400,405), wb.name = "A"),
                                   waveband(c(405,410), wb.name = "B"))
-    )[["q_irrad_A"]], 7), c(1.68e-5, 3.36e-5,5.05e-5, 6.73e-5,8.41e-5)
+    )[["Q_A"]], 7), c(1.68e-5, 3.36e-5,5.05e-5, 6.73e-5,8.41e-5)
   )
   expect_equal(round(q_irrad(my_named.mspct,
                            list(waveband(c(400,405), wb.name = "A"),
                                 waveband(c(405,410), wb.name = "B"))
-    )[["q_irrad_B"]], 7), c(1.70e-5,3.41e-5,5.11e-5,6.81e-5,8.52e-5)
+    )[["Q_B"]], 7), c(1.70e-5,3.41e-5,5.11e-5,6.81e-5,8.52e-5)
   )
 
   # relative
@@ -288,14 +323,14 @@ test_that("source_mspct", {
                 list(waveband(c(400,405), wb.name = "A"),
                      waveband(c(405,410), wb.name = "B")),
                 quantity = "relative"
-    )[["q_irrad_A"]], 3), rep(0.497, 5)
+    )[["Q/Qsum_A"]], 3), rep(0.497, 5)
   )
   expect_equal(
     round(q_irrad(my.mspct,
                 list(waveband(c(400,405), wb.name = "A"),
                      waveband(c(405,410), wb.name = "B")),
                 quantity = "relative"
-    )[["q_irrad_B"]], 3), rep(0.503, 5)
+    )[["Q/Qsum_B"]], 3), rep(0.503, 5)
   )
 
   expect_equal(
@@ -303,14 +338,58 @@ test_that("source_mspct", {
                 list(waveband(c(400,405), wb.name = "A"),
                      waveband(c(405,410), wb.name = "B")),
                 quantity = "relative"
-    )[["q_irrad_A"]], 3), rep(0.497, 5)
+    )[["Q/Qsum_A"]], 3), rep(0.497, 5)
   )
   expect_equal(
     round(q_irrad(my_named.mspct,
                 list(waveband(c(400,405), wb.name = "A"),
                      waveband(c(405,410), wb.name = "B")),
                 quantity = "relative"
-    )[["q_irrad_B"]], 3), rep(0.503, 5)
+    )[["Q/Qsum_B"]], 3), rep(0.503, 5)
+  )
+
+  # contribution ------------------------------------------------------------
+
+  expect_equal(
+    round(q_irrad(my.mspct,
+                  list(waveband(c(400,405), wb.name = "A"),
+                       waveband(c(405,410), wb.name = "B")),
+                  quantity = "contribution"
+    )[["Q/Qtot_A"]], 3), rep(0.497, 5)
+  )
+  expect_equal(
+    round(q_irrad(my.mspct,
+                  list(waveband(c(400,405), wb.name = "A"),
+                       waveband(c(405,410), wb.name = "B")),
+                  quantity = "contribution"
+    )[["Q/Qtot_B"]], 3), rep(0.503, 5)
+  )
+
+  # ratios ------------------------------------------------------------------
+
+  expect_equal(
+    round(q_ratio(my.mspct,
+                  waveband(c(400,405), wb.name = "A"),
+                  waveband(c(405,410), wb.name = "B")
+    )[["A:B(q:q)"]], 3), rep(0.988, 5)
+  )
+  expect_equal(
+    round(e_ratio(my.mspct,
+                  waveband(c(400,405), wb.name = "A"),
+                  waveband(c(405,410), wb.name = "B")
+    )[["A:B(e:e)"]], 3), rep(1.000, 5)
+  )
+
+  expect_equal(
+    round(eq_ratio(my.mspct,
+                  waveband(c(400,405), wb.name = "A"
+    ))[["A(e:q)"]], -2), rep(297200, 5)
+  )
+  expect_equal(
+    round(qe_ratio(my.mspct,
+                  waveband(c(400,405), wb.name = "A"),
+                  waveband(c(405,410), wb.name = "B")
+    )[["A(q:e)"]], 9), rep(3.365e-06, 5)
   )
 
   # min ---------------------------------------------------------------------
@@ -459,7 +538,7 @@ test_that("source_mspct_attr", {
                       what.measured = "what",
                       lat = "latitude",
                       lon = "longitude")
-    )), c("spct.idx", "irrad_A", "irrad_B",
+    )), c("spct.idx", "E_A", "E_B",
          "when", "what", "latitude", "longitude")
   )
 
@@ -473,7 +552,7 @@ test_that("source_mspct_attr", {
                         lat = "latitude",
                         lon = "longitude"),
             idx = "spectrum"
-      )), c("spectrum", "irrad_A", "irrad_B",
+      )), c("spectrum", "E_A", "E_B",
             "when", "what", "latitude", "longitude")
   )
 

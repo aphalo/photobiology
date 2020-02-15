@@ -25,6 +25,8 @@
 #'   the boundaries of the wavebands.
 #' @param allow.scaled logical indicating whether scaled or normalized spectra
 #'   as argument to spct are flagged as an error.
+#' @param naming character one of "long", "default", "short" or "none". Used to
+#'   select the type of names to assign to returned value.
 #' @param ... other arguments (possibly ignored)
 #'
 #' @note Formal parameter \code{allow.scaled} is used internally for calculation
@@ -36,7 +38,10 @@
 #'   \code{w.band}. A \code{data.frame} in the case of collections of spectra,
 #'   containing one column for each \code{waveband} object, an index column with
 #'   the names of the spectra, and optionally additional columns with metadata
-#'   values retrieved from the attributes of the member spectra.
+#'   values retrieved from the attributes of the member spectra. If
+#'   \code{naming = "long"} the names generated reflect both quantity and
+#'   waveband, if \code{naming = "short"}, names are based only on the wavebands,
+#'   and if \code{naming = "none"} the returned vector has no names.
 #'
 #'   By default values are only integrated, but depending on the argument passed
 #'   to parameter \code{quantity} they can be re-expressed as relative fractions
@@ -99,8 +104,29 @@ irrad.source_spct <-
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
            use.hinges = getOption("photobiology.use.hinges"),
-           allow.scaled = !quantity  %in% c("average", "mean", "total"),
+           allow.scaled = !quantity %in% c("average", "mean", "total"),
+           naming = "default",
            ...) {
+    if (unit.out == "quantum") {
+      unit.out <- "photon"
+    }
+    if (quantity == "total") {
+      summary.name <- switch(unit.out,
+                             photon = "Q",
+                             energy = "E")
+    } else if (quantity %in% c("average", "mean")) {
+      summary.name <- switch(unit.out,
+                             photon = "Q(wl)",
+                             energy = "E(wl)")
+    } else if (quantity %in% c("contribution", "contribution.pc")) {
+      summary.name <- switch(unit.out,
+                             photon = "Q/Qtot",
+                             energy = "E/Etot")
+    } else if (quantity %in% c("relative", "relative.pc")) {
+      summary.name <- switch(unit.out,
+                             photon = "Q/Qsum",
+                             energy = "E/Esum")
+    }
     # we look for multiple spectra and return with a warning
     num.spectra <- getMultipleWl(spct)
     if (num.spectra != 1) {
@@ -135,33 +161,30 @@ irrad.source_spct <-
       warning("'unit.out' set to an invalid value")
       return(NA_real_)
     }
-    if (unit.out == "quantum") {
-      unit.out <- "photon"
-    }
     if (is.numeric(w.band)) {
+      # range of wavelengths
       w.band <- waveband(w.band)
     }
     if (length(w.band) == 0) {
+      # whole range of spectrum
       w.band <- waveband(spct)
     }
     if (is.waveband(w.band)) {
       # if the argument is a single w.band, we enclose it in a list
-      # so that the for loop works as expected.This is a bit of a
-      # kludge but lets us avoid treating it as a special case
+      # so that it can be handled below as a normal case.
       w.band <- list(w.band)
     }
+    # we trim the wavebands so that they are within the range of spct
     w.band <- trim_waveband(w.band = w.band, range = spct, trim = wb.trim)
-    # we check if the list elements are named, if not we set a flag
-    # and an empty vector that will be later filled in with data from
-    # the waveband definitions.
+    # if the elements of the list are named we collect them
     wb.number <- length(w.band) # number of wavebands in list
     wb.name <- names(w.band) # their names in the list
+    # if no names returned, we fill the vector with "".
     if (is.null(wb.name)) {
       wb.name <- character(wb.number)
     }
-
     # "source_spct" objects are not guaranteed to contain spectral irradiance
-    # expressed in the needed type of scale.
+    # expressed in t for he needed type of units.
     if (unit.out == "energy") {
       q2e(spct, byref = TRUE)
       w.length <- spct[["w.length"]]
@@ -174,20 +197,14 @@ irrad.source_spct <-
       stop("Unrecognized value for unit.out")
     }
 
-    # if the w.band includes 'hinges' we insert them
-    # choose whether to use hinges or not
-    # if the user has specified its value, we leave it alone
-    # but if it was not requested, we decide whether to use
-    # it or not based of the wavelength resolution of the
-    # spectrum. This will produce small errors for high
-    # spectral resolution data, and speed up the calculations
-    # a lot in such cases
+    # if the w.band includes 'hinges' we insert them.
+    # we decide whether to use hinges or not automatically, unless an argument
+    # has been passed explicitly.
     if (is.null(use.hinges)) {
        use.hinges <- auto_hinges(w.length)
     }
 
     # we collect all hinges and insert them in one go
-
     if (use.hinges) {
       all.hinges <- NULL
       for (wb in w.band) {
@@ -198,8 +215,8 @@ irrad.source_spct <-
       s.irrad <- lst[["y"]]
     }
 
-    # We iterate through the list of wavebands collecting the integrated irradiances,
-    # possibly weighted depending on the waveband definition
+    # We iterate through the list of wavebands collecting the irradiances,
+    # and waveband names.
     irrad <- numeric(wb.number)
     i <- 0L
     is.effective.spectrum <- is_effective(spct)
@@ -207,7 +224,11 @@ irrad.source_spct <-
       i <- i + 1L
       # get names from wb if needed
       if (wb.name[i] == "") {
-        wb.name[i] <- wb$name
+        if (naming %in% "long") {
+          wb.name[i] <- labels(wb)[["label"]] # short name
+        } else {
+          wb.name[i] <- labels(wb)[["name"]] # full name
+        }
       }
       if (is.effective.spectrum && is_effective(wb)) {
         warning("Effective spectral irradiance is not compatible with a BSWF: ",
@@ -215,7 +236,7 @@ irrad.source_spct <-
         irrad[i] <- NA_real_
       } else {
         if (is.effective.spectrum) {
-          wb.name[i] <- paste(getBSWFUsed(spct), "*", wb.name[i])
+          wb.name[i] <- paste(getBSWFUsed(spct), "*", wb.name[i], sep = "")
         }
         wl.selector <- which(w.length >= min(wb) & w.length <= max(wb))
         if (wl.selector[1] > 1) {
@@ -244,6 +265,7 @@ irrad.source_spct <-
                 "' not supported when using BSWFs, returning 'total' instead")
         quantity <- "total"
       } else {
+        # recursive call
         total <- irrad_spct(spct, w.band = NULL,
                             unit.out = unit.out,
                             quantity = "total",
@@ -277,8 +299,12 @@ irrad.source_spct <-
     if (length(irrad) == 0) {
       irrad <- NA_real_
       names(irrad) <- "out of range"
-    } else {
-      names(irrad) <- paste(names(irrad), wb.name)
+    } else if (naming %in% c("long", "default")) {
+      names(irrad) <- paste(summary.name, wb.name, sep = "_")
+    } else if (naming == "short") {
+      names(irrad) <- wb.name
+    } else if (naming != "none") {
+      warning("Argument to 'naming' unrecognized, assuming \"none\".")
     }
 
     if (length(scale.factor)  == 1L ||
@@ -328,6 +354,8 @@ irrad_spct <- irrad.source_spct
 #'   the boundaries of the wavebands.
 #' @param allow.scaled logical indicating whether scaled or normalized spectra
 #'   as argument to spct are flagged as an error.
+#' @param naming character one of "long", "default", "short" or "none". Used to
+#'   select the type of names to assign to returned value.
 #' @param ... other arguments (possibly used by derived methods).
 #'
 #' @export
@@ -405,13 +433,15 @@ e_irrad.source_spct <-
            use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
            use.hinges = NULL,
            allow.scaled = !quantity  %in% c("average", "mean", "total"),
+           naming = "default",
            ...) {
     irrad_spct(spct, w.band = w.band, unit.out = "energy",
                scale.factor = scale.factor,
                quantity = quantity,
                time.unit = time.unit, wb.trim = wb.trim,
                use.cached.mult = use.cached.mult, use.hinges = use.hinges,
-               allow.scaled = allow.scaled)
+               allow.scaled = allow.scaled,
+               naming = naming)
   }
 
 # photon irradiance -------------------------------------------------------
@@ -438,6 +468,8 @@ e_irrad.source_spct <-
 #'   the boundaries of the wavebands.
 #' @param allow.scaled logical indicating whether scaled or normalized spectra
 #'   as argument to spct are flagged as an error.
+#' @param naming character one of "long", "default", "short" or "none". Used to
+#'   select the type of names to assign to returned value.
 #' @param ... other arguments (possibly ignored).
 #'
 #' @export
@@ -507,13 +539,15 @@ q_irrad.source_spct <-
            use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
            use.hinges = NULL,
            allow.scaled = !quantity  %in% c("average", "mean", "total"),
+           naming = "default",
            ...) {
     irrad_spct(spct, w.band = w.band, unit.out = "photon", quantity = quantity,
                time.unit = time.unit,
                scale.factor = scale.factor,
                wb.trim = wb.trim,
                use.cached.mult = use.cached.mult, use.hinges = use.hinges,
-               allow.scaled = allow.scaled)
+               allow.scaled = allow.scaled,
+               naming = naming)
   }
 
 
@@ -540,9 +574,9 @@ q_irrad.source_spct <-
 #'   the boundaries of the wavebands.
 #' @param allow.scaled logical indicating whether scaled or normalized spectra
 #'   as argument to spct are flagged as an error.
+#' @param naming character one of "long", "default", "short" or "none". Used to
+#'   select the type of names to assign to returned value.
 #' @param ... other arguments (possibly used by derived methods).
-#'
-#'
 #'
 #' @export
 #'
@@ -595,7 +629,9 @@ fluence.source_spct <-
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
            use.hinges = NULL,
-           allow.scaled = FALSE, ...) {
+           allow.scaled = FALSE,
+           naming = "default",
+           ...) {
     if (!lubridate::is.duration(exposure.time) &&
         !lubridate::is.period(exposure.time) &&
         !is.numeric(exposure.time) ) {
@@ -609,7 +645,8 @@ fluence.source_spct <-
                    scale.factor = scale.factor,
                    wb.trim = wb.trim,
                    use.cached.mult = use.cached.mult, use.hinges = use.hinges,
-                   allow.scaled = allow.scaled)
+                   allow.scaled = allow.scaled,
+                   naming = naming)
     }
     if (unit.out %in% c("photon", "quantum")) {
       attr(return.value, "radiation.unit") <- "photon fluence (mol m-2)"
@@ -643,6 +680,8 @@ fluence.source_spct <-
 #'   the boundaries of the wavebands.
 #' @param allow.scaled logical indicating whether scaled or normalized spectra
 #'   as argument to spct are flagged as an error.
+#' @param naming character one of "long", "default", "short" or "none". Used to
+#'   select the type of names to assign to returned value.
 #' @param ... other arguments (possibly ignored).
 #'
 #' @examples
@@ -693,7 +732,9 @@ q_fluence.source_spct <-
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
            use.hinges = NULL,
-           allow.scaled = FALSE, ...) {
+           allow.scaled = FALSE,
+           naming = "default",
+           ...) {
     if (!lubridate::is.duration(exposure.time) &&
         !lubridate::is.period(exposure.time) &&
         !is.numeric(exposure.time) ) {
@@ -707,7 +748,8 @@ q_fluence.source_spct <-
                    scale.factor = scale.factor,
                    wb.trim = wb.trim,
                    use.cached.mult = use.cached.mult, use.hinges = use.hinges,
-                   allow.scaled = allow.scaled)
+                   allow.scaled = allow.scaled,
+                   naming = naming)
     }
     attr(return.value, "radiation.unit") <- "photon fluence (mol m-2)"
     attr(return.value, "exposure.duration") <- exposure.time
@@ -737,6 +779,8 @@ q_fluence.source_spct <-
 #'   the boundaries of the wavebands.
 #' @param allow.scaled logical indicating whether scaled or normalized spectra
 #'   as argument to spct are flagged as an error
+#' @param naming character one of "long", "default", "short" or "none". Used to
+#'   select the type of names to assign to returned value.
 #' @param ... other arguments (possibly ignored)
 #'
 #' @examples
@@ -785,7 +829,9 @@ e_fluence.source_spct <-
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
            use.hinges = NULL,
-           allow.scaled = FALSE, ...) {
+           allow.scaled = FALSE,
+           naming = "default",
+           ...) {
     if (!lubridate::is.duration(exposure.time) &&
         !lubridate::is.period(exposure.time) &&
         !is.numeric(exposure.time) ) {
@@ -799,7 +845,8 @@ e_fluence.source_spct <-
                    scale.factor = scale.factor,
                    wb.trim = wb.trim,
                    use.cached.mult = use.cached.mult, use.hinges = use.hinges,
-                   allow.scaled = allow.scaled)
+                   allow.scaled = allow.scaled,
+                   naming = naming)
     }
     attr(return.value, "radiation.unit") <- "energy fluence (J m-2)"
     attr(return.value, "exposure.duration") <- exposure.time
@@ -835,6 +882,7 @@ irrad.source_mspct <-
            use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
            use.hinges = NULL,
            allow.scaled = !quantity  %in% c("average", "mean", "total"),
+           naming = "default",
            ...,
            attr2tb = NULL,
            idx = "spct.idx",
@@ -853,6 +901,7 @@ irrad.source_mspct <-
         use.cached.mult = use.cached.mult,
         use.hinges = use.hinges,
         allow.scaled = allow.scaled,
+        naming = naming,
         idx = idx,
         col.names = names(w.band),
         .parallel = .parallel,
@@ -889,6 +938,7 @@ q_irrad.source_mspct <-
            use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
            use.hinges = NULL,
            allow.scaled = !quantity  %in% c("average", "mean", "total"),
+           naming = "default",
            ...,
            attr2tb = NULL,
            idx = "spct.idx",
@@ -906,6 +956,7 @@ q_irrad.source_mspct <-
         use.cached.mult = use.cached.mult,
         use.hinges = use.hinges,
         allow.scaled = allow.scaled,
+        naming = naming,
         idx = idx,
         col.names = names(w.band),
         .parallel = .parallel,
@@ -942,6 +993,7 @@ e_irrad.source_mspct <-
            use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
            use.hinges = NULL,
            allow.scaled = !quantity  %in% c("average", "mean", "total"),
+           naming = "default",
            ...,
            attr2tb = NULL,
            idx = "spct.idx",
@@ -959,6 +1011,7 @@ e_irrad.source_mspct <-
         use.cached.mult = use.cached.mult,
         use.hinges = use.hinges,
         allow.scaled = allow.scaled,
+        naming = naming,
         idx = idx,
         col.names = names(w.band),
         .parallel = .parallel,
@@ -995,6 +1048,7 @@ fluence.source_mspct <-
            use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
            use.hinges = NULL,
            allow.scaled = FALSE,
+           naming = "default",
            ...,
            attr2tb = NULL,
            idx = "spct.idx",
@@ -1012,6 +1066,7 @@ fluence.source_mspct <-
         use.cached.mult = use.cached.mult,
         use.hinges = use.hinges,
         allow.scaled = allow.scaled,
+        naming = naming,
         idx = idx,
         col.names = names(w.band),
         .parallel = .parallel,
@@ -1098,6 +1153,7 @@ q_fluence.source_mspct <-
            use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
            use.hinges = NULL,
            allow.scaled = FALSE,
+           naming = "default",
            ...,
            attr2tb = NULL,
            idx = "spct.idx",
@@ -1114,6 +1170,7 @@ q_fluence.source_mspct <-
         use.cached.mult = use.cached.mult,
         use.hinges = use.hinges,
         allow.scaled = allow.scaled,
+        naming = naming,
         idx = idx,
         col.names = names(w.band),
         .parallel = .parallel,
