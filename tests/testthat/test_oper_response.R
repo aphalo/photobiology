@@ -303,6 +303,8 @@ test_that("response e_response q_response", {
                                       quantity = "contribution",
                                       w.band = split_bands(c(400, 600), length.out = 3)))), 1)
 
+  expect_error(response(my.spct, quantity = "bad input",
+                        w.band = split_bands(my.spct, length.out = 3)))
   expect_equal(as.numeric(e_response(my.spct)), response.result, tolerance = 1e-6)
   expect_equal(as.numeric(e_response(my.spct, time.unit = "second")),
                response.result, tolerance = 1e-6)

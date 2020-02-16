@@ -371,25 +371,25 @@ test_that("source_mspct", {
     round(q_ratio(my.mspct,
                   waveband(c(400,405), wb.name = "A"),
                   waveband(c(405,410), wb.name = "B")
-    )[["A:B(q:q)"]], 3), rep(0.988, 5)
+    )[["A:B[q:q]"]], 3), rep(0.988, 5)
   )
   expect_equal(
     round(e_ratio(my.mspct,
                   waveband(c(400,405), wb.name = "A"),
                   waveband(c(405,410), wb.name = "B")
-    )[["A:B(e:e)"]], 3), rep(1.000, 5)
+    )[["A:B[e:e]"]], 3), rep(1.000, 5)
   )
 
   expect_equal(
     round(eq_ratio(my.mspct,
                   waveband(c(400,405), wb.name = "A"
-    ))[["A(e:q)"]], -2), rep(297200, 5)
+    ))[["A[e:q]"]], -2), rep(297200, 5)
   )
   expect_equal(
     round(qe_ratio(my.mspct,
                   waveband(c(400,405), wb.name = "A"),
                   waveband(c(405,410), wb.name = "B")
-    )[["A(q:e)"]], 9), rep(3.365e-06, 5)
+    )[["A[q:e]"]], 9), rep(3.365e-06, 5)
   )
 
   # min ---------------------------------------------------------------------

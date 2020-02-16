@@ -302,6 +302,8 @@ test_that("irrad e_irrad q_irrad", {
   expect_equal(sum(as.numeric(irrad(trim_spct(sun.spct, range = c(400, 600)),
                                     quantity = "contribution",
                                     w.band = split_bands(c(400, 600), length.out = 3)))), 1)
+  expect_error(irrad(sun.spct, quantity = "bad input",
+                     w.band = split_bands(sun.spct, length.out = 3)))
 
   expect_equal(as.numeric(e_irrad(sun.spct)), irrad.result, tolerance = 1e-6)
   expect_equal(as.numeric(e_irrad(sun.spct, time.unit = "second")),

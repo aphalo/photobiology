@@ -12,7 +12,7 @@
 
 <meta name="author" content="Pedro J. Aphalo" />
 
-<meta name="date" content="2020-02-15" />
+<meta name="date" content="2020-02-16" />
 
 <title>User Guide: 2 Radiation</title>
 
@@ -304,7 +304,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <h1 class="title toc-ignore">User Guide: 2 Radiation</h1>
 <h3 class="subtitle">Package ‘photobiology’ 0.9.30.9000</h3>
 <h4 class="author">Pedro J. Aphalo</h4>
-<h4 class="date">2020-02-15</h4>
+<h4 class="date">2020-02-16</h4>
 
 
 <div id="TOC">
@@ -5783,7 +5783,7 @@ Most frequently used summary methods are implemented for collections of spectra.
 ## attr(,&quot;time.unit&quot;)
 ## [1] &quot;second&quot;
 ## attr(,&quot;radiation.unit&quot;)
-## [1] &quot;energy irradiance total&quot;</code></pre>
+## [1] &quot;total energy irradiance&quot;</code></pre>
 <p>and, to integrate a range of wavelengths, in the example, photosynthetically active radiation, we use the waveband <code>PAR.wb</code> we earlier defined.</p>
 <div class="sourceCode" id="cb437"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb437-1"><a href="#cb437-1"></a><span class="kw">irrad</span>(sun.spct, PAR.wb)</span></code></pre></div>
 <pre><code>##    E_PAR 
@@ -5791,7 +5791,7 @@ Most frequently used summary methods are implemented for collections of spectra.
 ## attr(,&quot;time.unit&quot;)
 ## [1] &quot;second&quot;
 ## attr(,&quot;radiation.unit&quot;)
-## [1] &quot;energy irradiance total&quot;</code></pre>
+## [1] &quot;total energy irradiance&quot;</code></pre>
 <p>It is also valid to pass as argument for <code>w.band</code> a numeric range representing wavelengths in nanometres, which is converted into a waveband on-the-fly.</p>
 <div class="sourceCode" id="cb439"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb439-1"><a href="#cb439-1"></a><span class="kw">irrad</span>(sun.spct, <span class="kw">c</span>(<span class="dv">400</span>, <span class="dv">700</span>))</span></code></pre></div>
 <pre><code>## E_range.400.700 
@@ -5799,7 +5799,7 @@ Most frequently used summary methods are implemented for collections of spectra.
 ## attr(,&quot;time.unit&quot;)
 ## [1] &quot;second&quot;
 ## attr(,&quot;radiation.unit&quot;)
-## [1] &quot;energy irradiance total&quot;</code></pre>
+## [1] &quot;total energy irradiance&quot;</code></pre>
 <p>The default for <code>irrad</code>, when no argument <code>unit.out</code> is supplied, is to return the irradiance value in energy irradiance units, unless the R option <code>photobiology.radiation.unit</code> is set.</p>
 <p>Functions <code>e_irrad</code> and <code>q_irrad</code> save some typing, and always return the same type of spectral irradiance quantity, independently of global option <code>photobiology.radiation.unit</code>.</p>
 <div class="sourceCode" id="cb441"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb441-1"><a href="#cb441-1"></a><span class="kw">e_irrad</span>(sun.spct, PAR.wb) <span class="co"># W m-2</span></span></code></pre></div>
@@ -5808,14 +5808,14 @@ Most frequently used summary methods are implemented for collections of spectra.
 ## attr(,&quot;time.unit&quot;)
 ## [1] &quot;second&quot;
 ## attr(,&quot;radiation.unit&quot;)
-## [1] &quot;energy irradiance total&quot;</code></pre>
+## [1] &quot;total energy irradiance&quot;</code></pre>
 <div class="sourceCode" id="cb443"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb443-1"><a href="#cb443-1"></a><span class="kw">q_irrad</span>(sun.spct, PAR.wb, <span class="dt">scale.factor =</span> <span class="fl">1e6</span>) <span class="co"># umol s-1 m-2</span></span></code></pre></div>
 <pre><code>##    Q_PAR 
 ## 894.1352 
 ## attr(,&quot;time.unit&quot;)
 ## [1] &quot;second&quot;
 ## attr(,&quot;radiation.unit&quot;)
-## [1] &quot;photon irradiance total&quot;</code></pre>
+## [1] &quot;total photon irradiance&quot;</code></pre>
 <p>It is also possible to supply a time unit to use as basis of expression for the returned value, but be aware that conversion into a logger time unit is only valid for sources like lamps, which have an output the remains constant in time.</p>
 <div class="sourceCode" id="cb445"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb445-1"><a href="#cb445-1"></a><span class="kw">irrad</span>(sun.spct, PAR.wb, <span class="dt">time.unit =</span> <span class="st">&quot;hour&quot;</span>)</span></code></pre></div>
 <pre><code>##    E_PAR 
@@ -5823,7 +5823,7 @@ Most frequently used summary methods are implemented for collections of spectra.
 ## attr(,&quot;time.unit&quot;)
 ## [1] &quot;hour&quot;
 ## attr(,&quot;radiation.unit&quot;)
-## [1] &quot;energy irradiance total&quot;</code></pre>
+## [1] &quot;total energy irradiance&quot;</code></pre>
 <p>Using a shorter time unit than the original, yields an average value re-expressed on a new time unit base.</p>
 <div class="sourceCode" id="cb447"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb447-1"><a href="#cb447-1"></a><span class="kw">irrad</span>(sun.daily.spct, PAR.wb, <span class="dt">time.unit =</span> <span class="st">&quot;second&quot;</span>)</span></code></pre></div>
 <pre><code>##    E_PAR 
@@ -5831,7 +5831,7 @@ Most frequently used summary methods are implemented for collections of spectra.
 ## attr(,&quot;time.unit&quot;)
 ## [1] &quot;second&quot;
 ## attr(,&quot;radiation.unit&quot;)
-## [1] &quot;energy irradiance total&quot;</code></pre>
+## [1] &quot;total energy irradiance&quot;</code></pre>
 <p>Lists of wavebands are also accepted as argument for parameter <code>w.band</code> in which case a named numeric vector of summary values is returned.</p>
 <div class="sourceCode" id="cb449"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb449-1"><a href="#cb449-1"></a><span class="kw">e_irrad</span>(sun.spct, UV_bands.lst) <span class="co"># W m-2</span></span></code></pre></div>
 <pre><code>##      E_UVB      E_UVA 
@@ -5839,7 +5839,7 @@ Most frequently used summary methods are implemented for collections of spectra.
 ## attr(,&quot;time.unit&quot;)
 ## [1] &quot;second&quot;
 ## attr(,&quot;radiation.unit&quot;)
-## [1] &quot;energy irradiance total&quot;</code></pre>
+## [1] &quot;total energy irradiance&quot;</code></pre>
 <p>These functions have an additional argument <code>quantity</code>, with default <code>&quot;total&quot;</code>, which can take values controlling the output. The value “total” yields <strong>irradiance</strong> in <span class="math inline">\(W\,m^{-2}\)</span>, integrated over wavelengths for each waveband, while “average” yields the mean <strong>spectral irradiance</strong> within each waveband in <span class="math inline">\(W\,m^{-2}\,nm^{-1}\)</span>.</p>
 <div class="sourceCode" id="cb451"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb451-1"><a href="#cb451-1"></a><span class="kw">irrad</span>(sun.spct, UV_bands.lst, <span class="dt">quantity =</span> <span class="st">&quot;total&quot;</span>)</span></code></pre></div>
 <pre><code>##      E_UVB      E_UVA 
@@ -5847,14 +5847,14 @@ Most frequently used summary methods are implemented for collections of spectra.
 ## attr(,&quot;time.unit&quot;)
 ## [1] &quot;second&quot;
 ## attr(,&quot;radiation.unit&quot;)
-## [1] &quot;energy irradiance total&quot;</code></pre>
+## [1] &quot;total energy irradiance&quot;</code></pre>
 <div class="sourceCode" id="cb453"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb453-1"><a href="#cb453-1"></a><span class="kw">irrad</span>(sun.spct, UV_bands.lst, <span class="dt">quantity =</span> <span class="st">&quot;average&quot;</span>)</span></code></pre></div>
 <pre><code>##  E(wl)_UVB  E(wl)_UVA 
 ## 0.01841458 0.32922595 
 ## attr(,&quot;time.unit&quot;)
 ## [1] &quot;second&quot;
 ## attr(,&quot;radiation.unit&quot;)
-## [1] &quot;energy irradiance average&quot;</code></pre>
+## [1] &quot;average energy irradiance&quot;</code></pre>
 <p>The value “contribution” is relative to the irradiance for the whole spectrum, expressed as a fraction of one, while the value “relative” is relative to the sum of the irradiances for the different wavebands given as argument, also expressed as a fraction of one.</p>
 <div class="sourceCode" id="cb455"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb455-1"><a href="#cb455-1"></a><span class="kw">irrad</span>(sun.spct, UV_bands.lst, <span class="dt">quantity =</span> <span class="st">&quot;contribution&quot;</span>)</span></code></pre></div>
 <pre><code>##  E/Etot_UVB  E/Etot_UVA 
@@ -5862,14 +5862,14 @@ Most frequently used summary methods are implemented for collections of spectra.
 ## attr(,&quot;time.unit&quot;)
 ## [1] &quot;second&quot;
 ## attr(,&quot;radiation.unit&quot;)
-## [1] &quot;energy irradiance contribution&quot;</code></pre>
+## [1] &quot;contribution energy irradiance&quot;</code></pre>
 <div class="sourceCode" id="cb457"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb457-1"><a href="#cb457-1"></a><span class="kw">irrad</span>(sun.spct, UV_bands.lst, <span class="dt">quantity =</span> <span class="st">&quot;relative&quot;</span>)</span></code></pre></div>
 <pre><code>## E/Esum_UVB E/Esum_UVA 
 ## 0.02251273 0.97748727 
 ## attr(,&quot;time.unit&quot;)
 ## [1] &quot;second&quot;
 ## attr(,&quot;radiation.unit&quot;)
-## [1] &quot;energy irradiance relative&quot;</code></pre>
+## [1] &quot;relative energy irradiance&quot;</code></pre>
 <p>In contrast “contribution.pc” and “relative.pc” return the same values expressed as percentages.</p>
 <div class="sourceCode" id="cb459"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb459-1"><a href="#cb459-1"></a><span class="kw">irrad</span>(sun.spct, UV_bands.lst, <span class="dt">quantity =</span> <span class="st">&quot;contribution.pc&quot;</span>)</span></code></pre></div>
 <pre><code>## E/Etot_UVB E/Etot_UVA 
@@ -5877,14 +5877,14 @@ Most frequently used summary methods are implemented for collections of spectra.
 ## attr(,&quot;time.unit&quot;)
 ## [1] &quot;second&quot;
 ## attr(,&quot;radiation.unit&quot;)
-## [1] &quot;energy irradiance contribution.pc&quot;</code></pre>
+## [1] &quot;contribution.pc energy irradiance&quot;</code></pre>
 <div class="sourceCode" id="cb461"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb461-1"><a href="#cb461-1"></a><span class="kw">irrad</span>(sun.spct, UV_bands.lst, <span class="dt">quantity =</span> <span class="st">&quot;relative.pc&quot;</span>)</span></code></pre></div>
 <pre><code>## E/Esum_UVB E/Esum_UVA 
 ##   2.251273  97.748727 
 ## attr(,&quot;time.unit&quot;)
 ## [1] &quot;second&quot;
 ## attr(,&quot;radiation.unit&quot;)
-## [1] &quot;energy irradiance relative.pc&quot;</code></pre>
+## [1] &quot;relative.pc energy irradiance&quot;</code></pre>
 <p>The total radiation received on a surface during an exposure event can be also calculated with method <code>irrad()</code>, but the value returned is an irradiance expressed on a very unusual time basis. These are no longer W m-2 (J s-1 m-2), but instead J per 8 hours per square metre.</p>
 <div class="sourceCode" id="cb463"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb463-1"><a href="#cb463-1"></a><span class="kw">irrad</span>(sun.spct, PAR.wb, <span class="dt">time.unit =</span> <span class="kw">duration</span>(<span class="dv">8</span>, <span class="st">&quot;hours&quot;</span>))</span></code></pre></div>
 <pre><code>##   E_PAR 
@@ -5892,7 +5892,7 @@ Most frequently used summary methods are implemented for collections of spectra.
 ## attr(,&quot;time.unit&quot;)
 ## [1] &quot;28800s (~8 hours)&quot;
 ## attr(,&quot;radiation.unit&quot;)
-## [1] &quot;energy irradiance total&quot;</code></pre>
+## [1] &quot;total energy irradiance&quot;</code></pre>
 <p>When the intention is to calculate a total fluence or exposure for an event function <code>fluence()</code> should be used as this will add the correct metadata attributes to the returned value: expressed as energy or photons per unit area per event. See later sections for details.</p>
 <div class="sourceCode" id="cb465"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb465-1"><a href="#cb465-1"></a><span class="kw">fluence</span>(sun.spct, PAR.wb, <span class="dt">exposure.time =</span> <span class="kw">duration</span>(<span class="dv">8</span>, <span class="st">&quot;hours&quot;</span>))</span></code></pre></div>
 <pre><code>##   E_PAR 
@@ -5985,23 +5985,23 @@ Most frequently used summary methods are implemented for collections of spectra.
 <h4>Individual spectra</h4>
 <p>The functions described here, in there simplest use, calculate a ratio between two wavebands. The function <code>q_ratio</code> returning photon ratios. However both waveband parameters can take lists of wavebands as arguments, with normal recycling rules in effect. The corresponding function <code>e_ratio</code> returns energy ratios.</p>
 <div class="sourceCode" id="cb484"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb484-1"><a href="#cb484-1"></a><span class="kw">q_ratio</span>(sun.spct, UVB.wb, PAR.wb)</span></code></pre></div>
-<pre><code>## UVB:PAR(q:q) 
+<pre><code>## UVB:PAR[q:q] 
 ##  0.001873724 
 ## attr(,&quot;radiation.unit&quot;)
 ## [1] &quot;q:q ratio&quot;</code></pre>
 <div class="sourceCode" id="cb486"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb486-1"><a href="#cb486-1"></a><span class="kw">q_ratio</span>(sun.spct, <span class="kw">list</span>(UVC.wb, UVB.wb, UVA.wb, UV.wb))</span></code></pre></div>
-<pre><code>##      UVB:Total(q:q)      UVA:Total(q:q) UV.tr.lo:Total(q:q) 
-##         0.001334593         0.067567343         0.068901936 
+<pre><code>##       UVB:Total[q:q]       UVA:Total[q:q] UV .tr.lo:Total[q:q] 
+##          0.001334593          0.067567343          0.068901936 
 ## attr(,&quot;radiation.unit&quot;)
 ## [1] &quot;q:q ratio&quot;</code></pre>
 <div class="sourceCode" id="cb488"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb488-1"><a href="#cb488-1"></a><span class="kw">q_ratio</span>(sun.spct, UVB.wb, <span class="kw">list</span>(UV.wb, PAR.wb))</span></code></pre></div>
-<pre><code>## UVB:UV.tr.lo(q:q)      UVB:PAR(q:q) 
-##       0.019369458       0.001873724 
+<pre><code>## UVB:UV .tr.lo[q:q]       UVB:PAR[q:q] 
+##        0.019369458        0.001873724 
 ## attr(,&quot;radiation.unit&quot;)
 ## [1] &quot;q:q ratio&quot;</code></pre>
 <p>Function <code>qe_ratio</code>, has only one waveband parameter, and returns the <em>photon</em> to <em>energy</em> ratio, while its complement <code>eq_ratio</code> returns the <em>energy</em> to <em>photon</em> ratio.</p>
 <div class="sourceCode" id="cb490"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb490-1"><a href="#cb490-1"></a><span class="kw">qe_ratio</span>(sun.spct, <span class="kw">list</span>(UVB.wb, PAR.wb))</span></code></pre></div>
-<pre><code>##     UVB(q:e)     PAR(q:e) 
+<pre><code>##     UVB[q:e]     PAR[q:e] 
 ## 2.599434e-06 4.547199e-06 
 ## attr(,&quot;radiation.unit&quot;)
 ## [1] &quot;q:e ratio&quot;</code></pre>
@@ -6010,7 +6010,7 @@ Most frequently used summary methods are implemented for collections of spectra.
 <h4>Collections of spectra</h4>
 <div class="sourceCode" id="cb492"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb492-1"><a href="#cb492-1"></a><span class="kw">q_ratio</span>(filtered_sun, <span class="kw">list</span>(UVB.wb, UVA.wb, PAR.wb))</span></code></pre></div>
 <pre><code>## # A tibble: 3 x 4
-##   spct.idx `UVB:Total(q:q)` `UVA:Total(q:q)` `PAR:Total(q:q)`
+##   spct.idx `UVB:Total[q:q]` `UVA:Total[q:q]` `PAR:Total[q:q]`
 ##   &lt;fct&gt;               &lt;dbl&gt;            &lt;dbl&gt;            &lt;dbl&gt;
 ## 1 none           0.00133            0.0676              0.712
 ## 2 pet            0.0000370          0.0614              0.720
@@ -6056,7 +6056,7 @@ Most frequently used summary methods are implemented for collections of spectra.
 ## attr(,&quot;time.unit&quot;)
 ## [1] &quot;second&quot;
 ## attr(,&quot;radiation.unit&quot;)
-## [1] &quot;photon irradiance total&quot;</code></pre>
+## [1] &quot;total photon irradiance&quot;</code></pre>
 </div>
 <div id="collections-of-spectra-6" class="section level4">
 <h4>Collections of spectra</h4>
@@ -6094,20 +6094,20 @@ Most frequently used summary methods are implemented for collections of spectra.
 <h4>Individual spectra</h4>
 <p>The functions <code>response</code>, <code>e_response</code> and <code>q_response</code> take <code>response_spct</code> objects as arguments, and return the integrated value for each waveband (integrated over wavelength) <strong>assuming</strong> a light source with a flat spectral energy or photon output respectively. If no waveband is supplied as argument, the whole spectrum is integrated.</p>
 <div class="sourceCode" id="cb508"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb508-1"><a href="#cb508-1"></a><span class="kw">response</span>(photodiode.spct)</span></code></pre></div>
-<pre><code>##    Total 
-## 24.40478 
+<pre><code>## R[/e]_Total 
+##    24.40478 
 ## attr(,&quot;time.unit&quot;)
 ## [1] &quot;second&quot;
 ## attr(,&quot;radiation.unit&quot;)
-## [1] &quot;energy response total&quot;</code></pre>
+## [1] &quot;total energy response&quot;</code></pre>
 <p>When a waveband, or list of wavebands, is supplied the response is calculated for the wavebands.</p>
 <div class="sourceCode" id="cb510"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb510-1"><a href="#cb510-1"></a><span class="kw">e_response</span>(photodiode.spct, <span class="kw">list</span>(UVB.wb, UVA.wb))</span></code></pre></div>
-<pre><code>##  UVB.tr.lo        UVA 
-##   0.346462   5.981818 
+<pre><code>## R[/e]_UVB.tr.lo       R[/e]_UVA 
+##        0.346462        5.981818 
 ## attr(,&quot;time.unit&quot;)
 ## [1] &quot;second&quot;
 ## attr(,&quot;radiation.unit&quot;)
-## [1] &quot;energy response total&quot;</code></pre>
+## [1] &quot;total energy response&quot;</code></pre>
 <p>This function has an additional argument <code>quantity</code>, with default <code>&quot;total&quot;</code>, as described for <code>irrad()</code>.</p>
 </div>
 <div id="collections-of-spectra-7" class="section level4">
@@ -6116,10 +6116,10 @@ Most frequently used summary methods are implemented for collections of spectra.
 <span id="cb512-2"><a href="#cb512-2"></a>                               <span class="dt">CCD =</span> ccd.spct))</span>
 <span id="cb512-3"><a href="#cb512-3"></a><span class="kw">response</span>(sensors, <span class="kw">list</span>(UVB.wb, UVA.wb, PAR.wb), <span class="dt">quantity =</span> <span class="st">&quot;contribution&quot;</span>)</span></code></pre></div>
 <pre><code>## # A tibble: 2 x 4
-##   spct.idx response_UVB.tr.lo response_UVA response_PAR.tr.hi
-##   &lt;fct&gt;                 &lt;dbl&gt;        &lt;dbl&gt;              &lt;dbl&gt;
-## 1 GaAsP                0.0142       0.245               0.741
-## 2 CCD                  0.0215       0.0634              0.411</code></pre>
+##   spct.idx `R/Rtot[/e]_UVB.tr.lo` `R/Rtot[/e]_UVA` `R/Rtot[/e]_PAR.tr.hi`
+##   &lt;fct&gt;                     &lt;dbl&gt;            &lt;dbl&gt;                  &lt;dbl&gt;
+## 1 GaAsP                    0.0142           0.245                   0.741
+## 2 CCD                      0.0215           0.0634                  0.411</code></pre>
 </div>
 </div>
 <div id="integration-over-wavelengths" class="section level3">

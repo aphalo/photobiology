@@ -90,7 +90,8 @@ msdply <- function(mspct, .fun, ..., idx = NULL, col.names = NULL,
                     "getWhenMeasured", "getWhereMeasured",
                     "irrad", "q_irrad", "e_irrad",
                     "fluence", "q_fluence", "e_fluence",
-                    "q_ratio", "e_ratio", "eq_ratio", "qe_ratio")) {
+                    "q_ratio", "e_ratio", "eq_ratio", "qe_ratio",
+                    "response", "q_response", "e_response")) {
     qty.names <-
       switch(f.name,
              min = "min.wl", min_wl = "min.wl",

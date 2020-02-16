@@ -31,7 +31,7 @@ transmission spectrum.
 ``` r
 library(photobiology)
 e_irrad(sun.spct * yellow_gel.spct)
-#>    Total 
+#>  E_Total 
 #> 146.5044 
 #> attr(,"time.unit")
 #> [1] "second"
@@ -46,9 +46,9 @@ sun.
 geocode <- data.frame(lon = 0, lat = 55)
 date <- lubridate::today(tzone = "UTC")
 sunrise_time(date, tz = "UTC", geocode = geocode)
-#> [1] "2020-01-06 08:23:09 UTC"
+#> [1] "2020-02-15 07:23:23 UTC"
 day_length(date, tz = "UTC", geocode = geocode)
-#> [1] 7.415046
+#> [1] 9.692155
 ```
 
 ## Installation

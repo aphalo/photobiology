@@ -126,6 +126,8 @@ irrad.source_spct <-
       summary.name <- switch(unit.out,
                              photon = "Q/Qsum",
                              energy = "E/Esum")
+    } else {
+      stop("Unrecognized 'quantity' : \"", quantity, "\"")
     }
     # we look for multiple spectra and return with a warning
     num.spectra <- getMultipleWl(spct)
@@ -161,6 +163,21 @@ irrad.source_spct <-
       warning("'unit.out' set to an invalid value")
       return(NA_real_)
     }
+
+    # "source_spct" objects are not guaranteed to contain spectral irradiance
+    # expressed in the needed units.
+    if (unit.out == "energy") {
+      q2e(spct, byref = TRUE)
+      w.length <- spct[["w.length"]]
+      s.irrad <- spct[["s.e.irrad"]]
+    } else if (unit.out == "photon") {
+      e2q(spct, byref = TRUE)
+      w.length <- spct[["w.length"]]
+      s.irrad <- spct[["s.q.irrad"]]
+    } else {
+      stop("Unrecognized value", unit.out, " for unit.out")
+    }
+
     if (is.numeric(w.band)) {
       # range of wavelengths
       w.band <- waveband(w.band)
@@ -183,27 +200,12 @@ irrad.source_spct <-
     if (is.null(wb.name)) {
       wb.name <- character(wb.number)
     }
-    # "source_spct" objects are not guaranteed to contain spectral irradiance
-    # expressed in t for he needed type of units.
-    if (unit.out == "energy") {
-      q2e(spct, byref = TRUE)
-      w.length <- spct[["w.length"]]
-      s.irrad <- spct[["s.e.irrad"]]
-    } else if (unit.out == "photon") {
-      e2q(spct, byref = TRUE)
-      w.length <- spct[["w.length"]]
-      s.irrad <- spct[["s.q.irrad"]]
-    } else {
-      stop("Unrecognized value for unit.out")
-    }
-
     # if the w.band includes 'hinges' we insert them.
     # we decide whether to use hinges or not automatically, unless an argument
     # has been passed explicitly.
     if (is.null(use.hinges)) {
        use.hinges <- auto_hinges(w.length)
     }
-
     # we collect all hinges and insert them in one go
     if (use.hinges) {
       all.hinges <- NULL
@@ -224,7 +226,7 @@ irrad.source_spct <-
       i <- i + 1L
       # get names from wb if needed
       if (wb.name[i] == "") {
-        if (naming %in% "long") {
+        if (naming == "short") {
           wb.name[i] <- labels(wb)[["label"]] # short name
         } else {
           wb.name[i] <- labels(wb)[["name"]] # full name
@@ -272,7 +274,8 @@ irrad.source_spct <-
                             time.unit = time.unit,
                             use.cached.mult = use.cached.mult,
                             wb.trim = wb.trim,
-                            use.hinges = use.hinges)
+                            use.hinges = use.hinges,
+                            naming = naming)
         irrad <- irrad / total
         if (quantity == "contribution.pc") {
           irrad <- irrad * 1e2
@@ -322,7 +325,7 @@ irrad.source_spct <-
       attr(irrad, "radiation.unit") <-
               paste(unit.out, "irradiance", quantity, "effective:", getBSWFUsed(spct))
     } else {
-      attr(irrad, "radiation.unit") <- paste(unit.out, "irradiance", quantity)
+      attr(irrad, "radiation.unit") <- paste(quantity, unit.out, "irradiance")
     }
 
     irrad

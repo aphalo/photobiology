@@ -5,8 +5,26 @@ photobiology 0.9.31 (2020-02-xx)
 bug affected computations of irradiances and ratios so that names used in
 lists of wavebands where not reflected in the output, and the label from the
 waveband definitions could not be overriden as intended by design.
-* Revise irrad(), q_irrad() and e_irrad() to use shorter names for returned
-numeric values or columns in returned data frames.
+* Revise irrad(), q_irrad() and e_irrad(); fluence(), q_fluence(), and
+e_fluence(); q_ratio(), e_ratio(), qe_ratio() and eq_ratio(); response(),
+q_response(), and e_response() methods so that they add shorter but still
+informative names to returned numeric values and to columns
+in returned data frames. Add formal parameters naming and name.tag to allow
+user control of the names. In most cases, this change removes the need to rename
+columns in an additional step.
+* [TODO] Revise absorbance(), absorptance(), transmittance() and reflectance() so
+that they create shorter, and more informative names for returned values.
+* Revise msdply() to treat as special cases the methods described above, to
+support the especializations of these methods for collections of spectra.
+
+********************************************************************************
+By changing the default names, this update can break older code. It also
+changes the behaviour of irrad(), fluence(), ratio() and response() which now
+always tag the data according to the units used, which depends on options
+settings, i.e., independly of the use of methods irrad() or e_irrad()/q_irrad()
+the names are now the same if the unit in which the returned values are
+expressed is the same.
+********************************************************************************
 
 photobiology 0.9.30 (2020-01-06)
 ================================

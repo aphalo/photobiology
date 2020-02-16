@@ -22,6 +22,8 @@
 #' @param use.hinges logical Flag indicating whether to insert "hinges" into the
 #'   spectral data before integration so as to reduce interpolation errors at
 #'   the boundaries of the wavebands.
+#' @param naming character one of "long", "default", "short" or "none". Used to
+#'   select the type of names to assign to returned value.
 #' @param ... other arguments (possibly used by derived methods).
 #'
 #' @note The parameter \code{use.hinges} controls speed optimization. The
@@ -68,7 +70,9 @@ response.response_spct <-
            time.unit = NULL,
            scale.factor = 1,
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
-           use.hinges = getOption("photobiology.use.hinges", default = NULL), ... ) {
+           use.hinges = getOption("photobiology.use.hinges", default = NULL),
+           naming = "default",
+           ... ) {
     resp_spct(spct = spct,
               w.band = w.band,
               unit.out = unit.out,
@@ -76,7 +80,8 @@ response.response_spct <-
               time.unit = time.unit,
               scale.factor = scale.factor,
               wb.trim = wb.trim,
-              use.hinges = use.hinges )
+              use.hinges = use.hinges,
+              naming = naming)
   }
 
 #' Calculate response from spectral response
@@ -100,6 +105,8 @@ response.response_spct <-
 #' @param use.hinges logical Flag indicating whether to insert "hinges" into the
 #'   spectral data before integration so as to reduce interpolation errors at
 #'   the boundaries of the wavebands.
+#' @param naming character one of "long", "default", "short" or "none". Used to
+#'   select the type of names to assign to returned value.
 #' @param ... other arguments (possibly used by derived methods).
 #'
 #' @return a single numeric value expressed either as a fraction of one or a
@@ -122,23 +129,54 @@ resp_spct <-
            scale.factor,
            wb.trim,
            use.hinges,
+           allow.scaled = !quantity %in% c("average", "mean", "total"),
+           naming,
            ...) {
+    if (unit.out == "quantum") {
+      unit.out <- "photon"
+    }
+
+    if (unit.out == "photon") {
+      spct <- e2q(spct, action = "replace")
+    } else if (unit.out == "energy") {
+      spct <- q2e(spct, action = "replace")
+    } else {
+      stop("Unrecognized value", unit.out, " for unit.out")
+    }
+
+    if (quantity == "total") {
+      summary.name <- switch(unit.out,
+                             photon = "R[/q]",
+                             energy = "R[/e]")
+    } else if (quantity %in% c("average", "mean")) {
+      summary.name <- switch(unit.out,
+                             photon = "R(wl)[/q]",
+                             energy = "R(wl)[/e]")
+    } else if (quantity %in% c("contribution", "contribution.pc")) {
+      summary.name <- switch(unit.out,
+                             photon = "R/Rtot[/q]",
+                             energy = "R/Rtot[/e]")
+    } else if (quantity %in% c("relative", "relative.pc")) {
+      summary.name <- switch(unit.out,
+                             photon = "R/Rsum[/q]",
+                             energy = "R/Rsum[/e]")
+    } else {
+      stop("Unrecognized 'quantity' : \"", quantity, "\"")
+    }
+
+    # we look for multiple spectra and return with a warning
     num.spectra <- getMultipleWl(spct)
     if (num.spectra != 1) {
       warning("Skipping response calculation as object contains ",
               num.spectra, " spectra")
       return(NA_real_)
     }
-    if (is_normalized(spct)) {
-      warning("The spectral data has been normalized, making impossible to calculate absorbance")
+    if (!allow.scaled && is_normalized(spct)) {
+      warning("The spectral data has been normalized, making impossible to calculate response")
       return(NA_real_)
     }
-    if (is_scaled(spct)) {
+    if (!allow.scaled && is_scaled(spct) && quantity == "total") {
       warning("Summary calculated from rescaled data")
-    }
-    # makes "quantum" synonym for "photon" without changes to other code
-    if (unit.out == "quantum") {
-      unit.out <- "photon"
     }
 
     data.time.unit <- getTimeUnit(spct, force.duration = lubridate::is.duration(time.unit))
@@ -153,30 +191,54 @@ resp_spct <-
       time.unit <- data.time.unit
     }
 
-    if (unit.out == "photon") {
-      spct <- e2q(spct)
-      spct <- spct[ , c("w.length", "s.q.response")]
-    } else if (unit.out == "energy") {
-      spct <- q2e(spct)
-      spct <- spct[ , c("w.length", "s.e.response")]
+    # "source_spct" objects are not guaranteed to contain spectral irradiance
+    # expressed in t for he needed type of units.
+    if (unit.out == "energy") {
+      q2e(spct, byref = TRUE)
+      w.length <- spct[["w.length"]]
+      s.irrad <- spct[["s.e.irrad"]]
+    } else if (unit.out == "photon") {
+      e2q(spct, byref = TRUE)
+      w.length <- spct[["w.length"]]
+      s.irrad <- spct[["s.q.irrad"]]
     } else {
-      stop("Invalid 'unit.out'")
+      stop("Unrecognized value for unit.out")
     }
 
-    # if the waveband is undefined then use all data
-    if (length(w.band) == 0) {
-      w.band <- waveband(spct)
-    }
     if (is.numeric(w.band)) {
+      # range of wavelengths
       w.band <- waveband(w.band)
+    }
+    if (length(w.band) == 0) {
+      # whole range of spectrum
+      w.band <- waveband(spct)
     }
     if (is.waveband(w.band)) {
       # if the argument is a single w.band, we enclose it in a list
-      # so that the for loop works as expected. This is a bit of a
-      # kludge but it let's us avoid treating it as a special case
+      # so that it can be handled below as a normal case.
       w.band <- list(w.band)
     }
+
+    # convert effective wavebands
+    flag.effective <- FALSE
+    for (i in seq_along(w.band)) {
+      if (is_effective(w.band[[i]])) {
+        flag.effective <- TRUE
+        w.band[[i]] <- waveband(range(w.band[[i]]))
+      }
+    }
+    if (flag.effective) {
+      warning("Using only wavelength range for effective waveband(s)")
+    }
+    # we trim the wavebands so that they are within the range of spct
     w.band <- trim_waveband(w.band = w.band, range = spct, trim = wb.trim)
+    # if the elements of the list are named we collect them
+    wb.number <- length(w.band) # number of wavebands in list
+    wb.name <- names(w.band) # their names in the list
+    # if no names returned, we fill the vector with "".
+    if (is.null(wb.name)) {
+      wb.name <- character(wb.number)
+    }
 
     # if the w.band includes 'hinges' we insert them,
     # but if not, we decide whether to insert hinges or not
@@ -186,7 +248,6 @@ resp_spct <-
     if (is.null(use.hinges)) {
       use.hinges <- auto_hinges(spct[["w.length"]])
     }
-
     # we collect all hinges and insert them in one go
     # this may alter very slightly the returned values
     # but improves calculation speed
@@ -202,61 +263,41 @@ resp_spct <-
       }
     }
 
-    # we prepare labels for output
-    wb_name <- names(w.band)
-    no_names_flag <- is.null(wb_name)
-    if (no_names_flag) {
-      wb_name <- character(length(w.band))
-    }
-
     # we iterate through the list of wavebands
     response <- double(length(w.band))
     i <- 0
     for (wb in w.band) {
       i <- i + 1
       # we get names from wb if needed
-      if (no_names_flag) {
-        if (is_effective(wb)) {
-          warning("Using only wavelength range from a weighted waveband object.")
-          wb_name[i] <- paste("range", as.character(signif(min(wb), 4)),
-                              as.character(signif(max(wb), 4)), sep = ".")
+      if (wb.name[i] == "") {
+        if (naming == "short") {
+          wb.name[i] <- labels(wb)[["label"]] # short name
         } else {
-          wb_name[i] <- wb$name
+          wb.name[i] <- labels(wb)[["name"]] # full name
         }
       }
       # we calculate the integrated response.
       response[i] <- integrate_spct(trim_spct(spct, wb, use.hinges = FALSE))
     }
     if (quantity %in% c("contribution", "contribution.pc")) {
-      if (any(sapply(w.band, is_effective))) {
-        warning("'quantity '", quantity,
-                "' not supported when using BSWFs, returning 'total' instead")
-        quantity <- "total"
-      } else {
-        total <- resp_spct(spct,
-                           w.band = NULL,
-                           unit.out = unit.out,
-                           quantity = "total",
-                           time.unit = time.unit,
-                           scale.factor = scale.factor,
-                           wb.trim = FALSE,
-                           use.hinges = use.hinges)
-        response <- response / total
-        if (quantity == "contribution.pc") {
-          response <- response * 1e2
-        }
+      total <- resp_spct(spct,
+                         w.band = NULL,
+                         unit.out = unit.out,
+                         quantity = "total",
+                         time.unit = time.unit,
+                         scale.factor = scale.factor,
+                         wb.trim = FALSE,
+                         use.hinges = use.hinges,
+                         naming = naming)
+      response <- response / total
+      if (quantity == "contribution.pc") {
+        response <- response * 1e2
       }
     } else if (quantity %in% c("relative", "relative.pc")) {
-      if (any(sapply(w.band, is_effective))) {
-        warning("'quantity '", quantity,
-                "' not supported when using BSWFs, returning 'total' instead")
-        quantity <- "total"
-      } else {
-        total <- sum(response)
-        response <- response / total
-        if (quantity == "relative.pc") {
-          response <- response * 1e2
-        }
+      total <- sum(response)
+      response <- response / total
+      if (quantity == "relative.pc") {
+        response <- response * 1e2
       }
     } else if (quantity %in% c("average", "mean")) {
       response <- response / sapply(w.band, wl_expanse)
@@ -266,10 +307,14 @@ resp_spct <-
     }
 
     if (length(response) == 0) {
-      response <- NA
+      response <- NA_real_
       names(response) <- "out of range"
-    } else {
-      names(response) <- paste(names(response), wb_name)
+    } else if (naming %in% c("long", "default")) {
+      names(response) <- paste(summary.name, wb.name, sep = "_")
+    } else if (naming == "short") {
+      names(response) <- wb.name
+    } else if (naming != "none") {
+      warning("Argument to 'naming' unrecognized, assuming \"none\".")
     }
 
     if (length(scale.factor)  == 1L ||
@@ -283,7 +328,7 @@ resp_spct <-
     }
 
     attr(response, "time.unit") <- getTimeUnit(spct)
-    attr(response, "radiation.unit") <- paste(unit.out, "response", quantity)
+    attr(response, "radiation.unit") <- paste(quantity, unit.out, "response")
     response
   }
 
@@ -309,6 +354,8 @@ resp_spct <-
 #' @param use.hinges logical Flag indicating whether to insert "hinges" into the
 #'   spectral data before integration so as to reduce interpolation errors at
 #'   the boundaries of the wavebands.
+#' @param naming character one of "long", "default", "short" or "none". Used to
+#'   select the type of names to assign to returned value.
 #' @param ... other arguments (possibly used by derived methods).
 #'
 #' @return A named \code{numeric} vector in the case of methods for individual
@@ -356,7 +403,9 @@ e_response.response_spct <-
            time.unit = NULL,
            scale.factor = 1,
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
-           use.hinges = getOption("photobiology.use.hinges", default = NULL), ...) {
+           use.hinges = getOption("photobiology.use.hinges", default = NULL),
+           naming = "default",
+           ...) {
     resp_spct(spct = spct,
               w.band = w.band,
               unit.out = "energy",
@@ -364,7 +413,8 @@ e_response.response_spct <-
               time.unit = time.unit,
               scale.factor = scale.factor,
               wb.trim = wb.trim,
-              use.hinges = use.hinges )
+              use.hinges = use.hinges,
+              naming = naming)
   }
 
 # q_response methods --------------------------------------------------------
@@ -389,6 +439,8 @@ e_response.response_spct <-
 #' @param use.hinges logical Flag indicating whether to insert "hinges" into the
 #'   spectral data before integration so as to reduce interpolation errors at
 #'   the boundaries of the wavebands.
+#' @param naming character one of "long", "default", "short" or "none". Used to
+#'   select the type of names to assign to returned value.
 #' @param ... other arguments (possibly used by derived methods).
 #'
 #' @return A named \code{numeric} vector in the case of methods for individual
@@ -443,7 +495,9 @@ q_response.response_spct <-
            time.unit = NULL,
            scale.factor = 1,
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
-           use.hinges = getOption("photobiology.use.hinges", default = NULL), ... ) {
+           use.hinges = getOption("photobiology.use.hinges", default = NULL),
+           naming = "default",
+           ... ) {
     resp_spct(spct = spct,
               w.band = w.band,
               unit.out = "photon",
@@ -451,7 +505,8 @@ q_response.response_spct <-
               time.unit = time.unit,
               scale.factor = scale.factor,
               wb.trim = wb.trim,
-              use.hinges = use.hinges )
+              use.hinges = use.hinges,
+              naming = naming)
   }
 
 # response_mspct methods -----------------------------------------------
@@ -479,6 +534,7 @@ response.response_mspct <-
            scale.factor = 1,
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.hinges = getOption("photobiology.use.hinges", default = NULL),
+           naming = "default",
            ...,
            attr2tb = NULL,
            idx = "spct.idx",
@@ -495,6 +551,7 @@ response.response_mspct <-
         scale.factor = scale.factor,
         wb.trim = wb.trim,
         use.hinges = use.hinges,
+        naming = naming,
         idx = idx,
         col.names = names(w.band),
         .parallel = .parallel,
@@ -529,6 +586,7 @@ q_response.response_mspct <-
            scale.factor = 1,
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.hinges = getOption("photobiology.use.hinges", default = NULL),
+           naming = "default",
            ...,
            attr2tb = NULL,
            idx = "spct.idx",
@@ -544,6 +602,7 @@ q_response.response_mspct <-
         scale.factor = scale.factor,
         wb.trim = wb.trim,
         use.hinges = use.hinges,
+        naming = naming,
         idx = idx,
         col.names = names(w.band),
         .parallel = .parallel,
@@ -578,6 +637,7 @@ e_response.response_mspct <-
            scale.factor = 1,
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.hinges = getOption("photobiology.use.hinges", default = NULL),
+           naming = "default",
            ...,
            attr2tb = NULL,
            idx = "spct.idx",
@@ -593,6 +653,7 @@ e_response.response_mspct <-
         scale.factor = scale.factor,
         wb.trim = wb.trim,
         use.hinges = use.hinges,
+        naming = naming,
         idx = idx,
         col.names = names(w.band),
         .parallel = .parallel,

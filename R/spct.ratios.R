@@ -74,7 +74,7 @@ q_ratio.source_spct <-
            use.cached.mult = FALSE,
            use.hinges = getOption("photobiology.use.hinges"),
            naming = "short",
-           name.tag = ifelse(naming == "short", "(q:q)", ""),
+           name.tag = ifelse(naming != "none", "[q:q]", ""),
            ... ) {
     q.irrad.num <- irrad_spct(spct, w.band = w.band.num,
                               unit.out = "photon", quantity = "total",
@@ -174,7 +174,7 @@ e_ratio.source_spct <-
            use.cached.mult = FALSE,
            use.hinges=getOption("photobiology.use.hinges"),
            naming = "short",
-           name.tag = ifelse(naming == "short", "(e:e)", ""),
+           name.tag = ifelse(naming != "none", "[e:e]", ""),
             ...) {
     e.irrad.num <- irrad_spct(spct, w.band = w.band.num, unit.out = "energy", quantity = "total",
                               wb.trim = wb.trim,
@@ -265,7 +265,7 @@ qe_ratio.source_spct <-
            use.cached.mult = FALSE,
            use.hinges = getOption("photobiology.use.hinges"),
            naming = "short",
-           name.tag = ifelse(naming == "short", "(q:e)", ""),
+           name.tag = ifelse(naming != "none", "[q:e]", ""),
            ...) {
     q.irrad <- irrad_spct(spct, w.band=w.band, unit.out = "photon",
                           quantity ="total",
@@ -360,7 +360,7 @@ eq_ratio.source_spct <-
            use.cached.mult =FALSE,
            use.hinges  = getOption("photobiology.use.hinges"),
            naming = "short",
-           name.tag = ifelse(naming == "short", "(e:q)", ""),
+           name.tag = ifelse(naming != "none", "[e:q]", ""),
            ...) {
     ratio <- 1 / qe_ratio(spct = spct, w.band = w.band, wb.trim = wb.trim,
                           use.cached.mult = use.cached.mult, use.hinges = use.hinges)
@@ -395,7 +395,7 @@ q_ratio.source_mspct <-
            use.cached.mult = FALSE,
            use.hinges = getOption("photobiology.use.hinges"),
            naming = "short",
-           name.tag = ifelse(naming == "short", "(q:q)", ""),
+           name.tag = ifelse(naming != "none", "[q:q]", ""),
            ...,
            attr2tb = NULL,
            idx = "spct.idx",
@@ -450,7 +450,7 @@ e_ratio.source_mspct <-
            use.cached.mult = FALSE,
            use.hinges = getOption("photobiology.use.hinges"),
            naming = "short",
-           name.tag = ifelse(naming == "short", "(e:e)", ""),
+           name.tag = ifelse(naming != "none", "[e:e]", ""),
            ...,
            attr2tb = NULL,
            idx = "spct.idx",
@@ -504,7 +504,7 @@ eq_ratio.source_mspct <-
            use.cached.mult = FALSE,
            use.hinges = getOption("photobiology.use.hinges"),
            naming = "short",
-           name.tag = ifelse(naming == "short", "(e:q)", ""),
+           name.tag = ifelse(naming != "none", "[e:q]", ""),
            ...,
            attr2tb = NULL,
            idx = "spct.idx",
@@ -558,14 +558,14 @@ qe_ratio.source_mspct <-
            use.cached.mult = FALSE,
            use.hinges=getOption("photobiology.use.hinges"),
            naming = "short",
-           name.tag = ifelse(naming == "short", "(q:e)", ""),
+           name.tag = ifelse(naming != "none", "[q:e]", ""),
            ...,
            attr2tb = NULL,
            idx = "spct.idx",
            .parallel = FALSE,
            .paropts = NULL) {
     if (naming == "none") {
-      # need names for coloumns
+      # need names for columns
       naming <- "short"
     }
     z <-
