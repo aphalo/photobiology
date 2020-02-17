@@ -431,20 +431,20 @@ test_that("filter_mspct_internal", {
   expect_equal(round(absorbance(my.mspct,
                                  list(waveband(c(400,405), wb.name = "A"),
                                       waveband(c(405,410), wb.name = "B"))
-  )[["absorbance_A"]], 3), c(0, 0.699, 0.523, 0.398, 0.301))
+  )[["A(wl)_A"]], 3), c(0, 0.699, 0.523, 0.398, 0.301))
   expect_equal(round(absorbance(my.mspct,
                                  list(waveband(c(400,405), wb.name = "A"),
                                       waveband(c(405,410), wb.name = "B"))
-  )[["absorbance_B"]], 3),  c(0, 0.699, 0.523, 0.398, 0.301))
+  )[["A(wl)_B"]], 3),  c(0, 0.699, 0.523, 0.398, 0.301))
 
   expect_equal(round(absorbance(my_named.mspct,
                                  list(waveband(c(400,405), wb.name = "A"),
                                       waveband(c(405,410), wb.name = "B"))
-  )[["absorbance_A"]], 3),  c(0, 0.699, 0.523, 0.398, 0.301))
+  )[["A(wl)_A"]], 3),  c(0, 0.699, 0.523, 0.398, 0.301))
   expect_equal(round(absorbance(my_named.mspct,
                                  list(waveband(c(400,405), wb.name = "A"),
                                       waveband(c(405,410), wb.name = "B"))
-  )[["absorbance_B"]], 3),  c(0, 0.699, 0.523, 0.398, 0.301))
+  )[["A(wl)_B"]], 3),  c(0, 0.699, 0.523, 0.398, 0.301))
 
   # relative
 
@@ -452,23 +452,47 @@ test_that("filter_mspct_internal", {
                                  list(waveband(c(400,405), wb.name = "A"),
                                       waveband(c(405,410), wb.name = "B")),
                                  quantity = "relative"
-  )[["absorbance_A"]], 4), c(NaN, rep(0.5, 4)))
+  )[["A/Asum_A"]], 4), c(NaN, rep(0.5, 4)))
   expect_equal(round(absorbance(my.mspct,
                                  list(waveband(c(400,405), wb.name = "A"),
                                       waveband(c(405,410), wb.name = "B")),
                                  quantity = "relative"
-  )[["absorbance_A"]], 4), c(NaN, rep(0.5, 4)))
+  )[["A/Asum_A"]], 4), c(NaN, rep(0.5, 4)))
 
   expect_equal(round(absorbance(my_named.mspct,
                                  list(waveband(c(400,405), wb.name = "A"),
                                       waveband(c(405,410), wb.name = "B")),
                                  quantity = "relative"
-  )[["absorbance_A"]], 4), c(NaN, rep(0.5, 4)))
+  )[["A/Asum_A"]], 4), c(NaN, rep(0.5, 4)))
   expect_equal(round(absorbance(my_named.mspct,
                                  list(waveband(c(400,405), wb.name = "A"),
                                       waveband(c(405,410), wb.name = "B")),
                                  quantity = "relative"
-  )[["absorbance_A"]], 4), c(NaN, rep(0.5, 4)))
+  )[["A/Asum_A"]], 4), c(NaN, rep(0.5, 4)))
+
+  # contribution
+
+  expect_equal(round(absorbance(my.mspct,
+                                list(waveband(c(400,405), wb.name = "A"),
+                                     waveband(c(405,410), wb.name = "B")),
+                                quantity = "contribution"
+  )[["A/Atot_A"]], 4), c(NaN, rep(0.5, 4)))
+  expect_equal(round(absorbance(my.mspct,
+                                list(waveband(c(400,405), wb.name = "A"),
+                                     waveband(c(405,410), wb.name = "B")),
+                                quantity = "contribution"
+  )[["A/Atot_A"]], 4), c(NaN, rep(0.5, 4)))
+
+  expect_equal(round(absorbance(my_named.mspct,
+                                list(waveband(c(400,405), wb.name = "A"),
+                                     waveband(c(405,410), wb.name = "B")),
+                                quantity = "contribution"
+  )[["A/Atot_A"]], 4), c(NaN, rep(0.5, 4)))
+  expect_equal(round(absorbance(my_named.mspct,
+                                list(waveband(c(400,405), wb.name = "A"),
+                                     waveband(c(405,410), wb.name = "B")),
+                                quantity = "contribution"
+  )[["A/Atot_A"]], 4), c(NaN, rep(0.5, 4)))
 
   # min ---------------------------------------------------------------------
 
@@ -1060,7 +1084,7 @@ expect_equal(
                               what.measured = "what",
                               lat = "latitude",
                               lon = "longitude")
-    )), c("spct.idx", "absorbance_A", "absorbance_B",
+    )), c("spct.idx", "A(wl)_A", "A(wl)_B",
           "when", "what", "latitude", "longitude")
 )
 
@@ -1074,7 +1098,7 @@ expect_equal(
                               lat = "latitude",
                               lon = "longitude"),
                   idx = "spectrum"
-    )), c("spectrum", "absorbance_A", "absorbance_B",
+    )), c("spectrum", "A(wl)_A", "A(wl)_B",
           "when", "what", "latitude", "longitude")
 )
 

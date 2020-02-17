@@ -178,13 +178,13 @@ irrad.source_spct <-
       stop("Unrecognized value", unit.out, " for unit.out")
     }
 
-    if (is.numeric(w.band)) {
-      # range of wavelengths
-      w.band <- waveband(w.band)
-    }
     if (length(w.band) == 0) {
       # whole range of spectrum
       w.band <- waveband(spct)
+    }
+    if (is.numeric(w.band)) {
+      # range of wavelengths
+      w.band <- waveband(w.band)
     }
     if (is.waveband(w.band)) {
       # if the argument is a single w.band, we enclose it in a list
@@ -200,9 +200,8 @@ irrad.source_spct <-
     if (is.null(wb.name)) {
       wb.name <- character(wb.number)
     }
-    # if the w.band includes 'hinges' we insert them.
-    # we decide whether to use hinges or not automatically, unless an argument
-    # has been passed explicitly.
+
+    # hinges
     if (is.null(use.hinges)) {
        use.hinges <- auto_hinges(w.length)
     }
