@@ -176,7 +176,7 @@ absorbance_spct <-
       w.band <- list(w.band)
     }
     # we trim the wavebands so that they are within the range of spct
-    w.band <- trim_waveband(w.band=w.band, range=spct, trim=wb.trim)
+    w.band <- trim_waveband(w.band = w.band, range = spct, trim = wb.trim)
     # if the elements of the list are named we collect them
     wb.number <- length(w.band) # number of wavebands in list
     wb.name <- names(w.band) # their names in the list

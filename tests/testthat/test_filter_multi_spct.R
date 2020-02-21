@@ -145,20 +145,20 @@ test_that("filter_mspct", {
   expect_equal(round(transmittance(my.mspct,
                            list(waveband(c(400,405), wb.name = "A"),
                                 waveband(c(405,410), wb.name = "B"))
-                           )[["transmittance_A"]], 4), c(1, 2:5 * 0.1))
+                           )[["Tfr(wl)_A"]], 4), c(1, 2:5 * 0.1))
   expect_equal(round(transmittance(my.mspct,
                            list(waveband(c(400,405), wb.name = "A"),
                                 waveband(c(405,410), wb.name = "B"))
-                           )[["transmittance_B"]], 4), c(1, 2:5 * 0.1))
+                           )[["Tfr(wl)_B"]], 4), c(1, 2:5 * 0.1))
 
   expect_equal(round(transmittance(my_named.mspct,
                            list(waveband(c(400,405), wb.name = "A"),
                                 waveband(c(405,410), wb.name = "B"))
-  )[["transmittance_A"]], 4), c(1, 2:5 * 0.1))
+  )[["Tfr(wl)_A"]], 4), c(1, 2:5 * 0.1))
   expect_equal(round(transmittance(my_named.mspct,
                            list(waveband(c(400,405), wb.name = "A"),
                                 waveband(c(405,410), wb.name = "B"))
-  )[["transmittance_B"]], 4), c(1, 2:5 * 0.1))
+  )[["Tfr(wl)_B"]], 4), c(1, 2:5 * 0.1))
 
   # relative
 
@@ -166,23 +166,47 @@ test_that("filter_mspct", {
                                    list(waveband(c(400,405), wb.name = "A"),
                                         waveband(c(405,410), wb.name = "B")),
                                    quantity = "relative"
-  )[["transmittance_A"]], 4), rep(0.5, 5))
+  )[["Tfr/Tfrsum_A"]], 4), rep(0.5, 5))
   expect_equal(round(transmittance(my.mspct,
                                    list(waveband(c(400,405), wb.name = "A"),
                                         waveband(c(405,410), wb.name = "B")),
                                    quantity = "relative"
-  )[["transmittance_A"]], 4), rep(0.5, 5))
+  )[["Tfr/Tfrsum_A"]], 4), rep(0.5, 5))
 
   expect_equal(round(transmittance(my_named.mspct,
                                    list(waveband(c(400,405), wb.name = "A"),
                                         waveband(c(405,410), wb.name = "B")),
                                    quantity = "relative"
-  )[["transmittance_A"]], 4), rep(0.5, 5))
+  )[["Tfr/Tfrsum_A"]], 4), rep(0.5, 5))
   expect_equal(round(transmittance(my_named.mspct,
                                    list(waveband(c(400,405), wb.name = "A"),
                                         waveband(c(405,410), wb.name = "B")),
                                    quantity = "relative"
-  )[["transmittance_A"]], 4), rep(0.5, 5))
+  )[["Tfr/Tfrsum_A"]], 4), rep(0.5, 5))
+
+  # contribution
+
+  expect_equal(round(transmittance(my.mspct,
+                                   list(waveband(c(400,405), wb.name = "A"),
+                                        waveband(c(405,410), wb.name = "B")),
+                                   quantity = "contribution"
+  )[["Tfr/Tfrtot_A"]], 4), rep(0.5, 5))
+  expect_equal(round(transmittance(my.mspct,
+                                   list(waveband(c(400,405), wb.name = "A"),
+                                        waveband(c(405,410), wb.name = "B")),
+                                   quantity = "contribution"
+  )[["Tfr/Tfrtot_A"]], 4), rep(0.5, 5))
+
+  expect_equal(round(transmittance(my_named.mspct,
+                                   list(waveband(c(400,405), wb.name = "A"),
+                                        waveband(c(405,410), wb.name = "B")),
+                                   quantity = "contribution"
+  )[["Tfr/Tfrtot_A"]], 4), rep(0.5, 5))
+  expect_equal(round(transmittance(my_named.mspct,
+                                   list(waveband(c(400,405), wb.name = "A"),
+                                        waveband(c(405,410), wb.name = "B")),
+                                   quantity = "contribution"
+  )[["Tfr/Tfrtot_A"]], 4), rep(0.5, 5))
 
   # min ---------------------------------------------------------------------
 
@@ -343,20 +367,20 @@ test_that("filter_mspct_internal", {
   expect_equal(round(transmittance(my.mspct,
                                    list(waveband(c(400,405), wb.name = "A"),
                                         waveband(c(405,410), wb.name = "B"))
-  )[["transmittance_A"]], 4), c(1, 2:5 * 0.1))
+  )[["Tfr(wl)_A"]], 4), c(1, 2:5 * 0.1))
   expect_equal(round(transmittance(my.mspct,
                                    list(waveband(c(400,405), wb.name = "A"),
                                         waveband(c(405,410), wb.name = "B"))
-  )[["transmittance_B"]], 4), c(1, 2:5 * 0.1))
+  )[["Tfr(wl)_B"]], 4), c(1, 2:5 * 0.1))
 
   expect_equal(round(transmittance(my_named.mspct,
                                    list(waveband(c(400,405), wb.name = "A"),
                                         waveband(c(405,410), wb.name = "B"))
-  )[["transmittance_A"]], 4), c(1, 2:5 * 0.1))
+  )[["Tfr(wl)_A"]], 4), c(1, 2:5 * 0.1))
   expect_equal(round(transmittance(my_named.mspct,
                                    list(waveband(c(400,405), wb.name = "A"),
                                         waveband(c(405,410), wb.name = "B"))
-  )[["transmittance_B"]], 4), c(1, 2:5 * 0.1))
+  )[["Tfr(wl)_B"]], 4), c(1, 2:5 * 0.1))
 
   # relative
 
@@ -364,43 +388,45 @@ test_that("filter_mspct_internal", {
                                    list(waveband(c(400,405), wb.name = "A"),
                                         waveband(c(405,410), wb.name = "B")),
                                    quantity = "relative"
-  )[["transmittance_A"]], 4), rep(0.5, 5))
+  )[["Tfr/Tfrsum_A"]], 4), rep(0.5, 5))
   expect_equal(round(transmittance(my.mspct,
                                    list(waveband(c(400,405), wb.name = "A"),
                                         waveband(c(405,410), wb.name = "B")),
                                    quantity = "relative"
-  )[["transmittance_A"]], 4), rep(0.5, 5))
+  )[["Tfr/Tfrsum_A"]], 4), rep(0.5, 5))
 
   expect_equal(round(transmittance(my_named.mspct,
                                    list(waveband(c(400,405), wb.name = "A"),
                                         waveband(c(405,410), wb.name = "B")),
                                    quantity = "relative"
-  )[["transmittance_A"]], 4), rep(0.5, 5))
+  )[["Tfr/Tfrsum_A"]], 4), rep(0.5, 5))
   expect_equal(round(transmittance(my_named.mspct,
                                    list(waveband(c(400,405), wb.name = "A"),
                                         waveband(c(405,410), wb.name = "B")),
                                    quantity = "relative"
-  )[["transmittance_A"]], 4), rep(0.5, 5))
+  )[["Tfr/Tfrsum_A"]], 4), rep(0.5, 5))
 
   # absorptance -------------------------------------------------------------------
 
   expect_equal(round(absorptance(my.mspct,
                                    list(waveband(c(400,405), wb.name = "A"),
                                         waveband(c(405,410), wb.name = "B"))
-  )[["absorptance_A"]], 4), 1 - c(1, 2:5 * 0.1))
+  )[["Afr(wl)_A"]], 4), 1 - c(1, 2:5 * 0.1))
   expect_equal(round(absorptance(my.mspct,
                                    list(waveband(c(400,405), wb.name = "A"),
                                         waveband(c(405,410), wb.name = "B"))
-  )[["absorptance_B"]], 4), 1 - c(1, 2:5 * 0.1))
+  )[["Afr(wl)_B"]], 4), 1 - c(1, 2:5 * 0.1))
 
   expect_equal(round(absorptance(my_named.mspct,
                                    list(waveband(c(400,405), wb.name = "A"),
                                         waveband(c(405,410), wb.name = "B"))
-  )[["absorptance_A"]], 4), 1 - c(1, 2:5 * 0.1))
+  )[["Afr(wl)_A"]], 4), 1 - c(1, 2:5 * 0.1))
   expect_equal(round(absorptance(my_named.mspct,
                                    list(waveband(c(400,405), wb.name = "A"),
                                         waveband(c(405,410), wb.name = "B"))
-  )[["absorptance_B"]], 4), 1 - c(1, 2:5 * 0.1))
+  )[["Afr(wl)_B"]], 4), 1 - c(1, 2:5 * 0.1))
+
+  # total
 
   # relative
 
@@ -408,23 +434,47 @@ test_that("filter_mspct_internal", {
                                    list(waveband(c(400,405), wb.name = "A"),
                                         waveband(c(405,410), wb.name = "B")),
                                    quantity = "relative"
-  )[["absorptance_A"]], 4), c(NaN, rep(0.5, 4)))
+  )[["Afr/Afrsum_A"]], 4), c(NaN, rep(0.5, 4)))
   expect_equal(round(absorptance(my.mspct,
                                    list(waveband(c(400,405), wb.name = "A"),
                                         waveband(c(405,410), wb.name = "B")),
                                    quantity = "relative"
-  )[["absorptance_A"]], 4), c(NaN, rep(0.5, 4)))
+  )[["Afr/Afrsum_B"]], 4), c(NaN, rep(0.5, 4)))
 
   expect_equal(round(absorptance(my_named.mspct,
                                    list(waveband(c(400,405), wb.name = "A"),
                                         waveband(c(405,410), wb.name = "B")),
                                    quantity = "relative"
-  )[["absorptance_A"]], 4), c(NaN, rep(0.5, 4)))
+  )[["Afr/Afrsum_A"]], 4), c(NaN, rep(0.5, 4)))
   expect_equal(round(absorptance(my_named.mspct,
                                    list(waveband(c(400,405), wb.name = "A"),
                                         waveband(c(405,410), wb.name = "B")),
                                    quantity = "relative"
-  )[["absorptance_A"]], 4), c(NaN, rep(0.5, 4)))
+  )[["Afr/Afrsum_B"]], 4), c(NaN, rep(0.5, 4)))
+
+  # contribution
+
+  expect_equal(round(absorptance(my.mspct,
+                                 list(waveband(c(400,405), wb.name = "A"),
+                                      waveband(c(405,410), wb.name = "B")),
+                                 quantity = "contribution"
+  )[["Afr/Afrtot_A"]], 4), c(NaN, rep(0.5, 4)))
+  expect_equal(round(absorptance(my.mspct,
+                                 list(waveband(c(400,405), wb.name = "A"),
+                                      waveband(c(405,410), wb.name = "B")),
+                                 quantity = "contribution"
+  )[["Afr/Afrtot_B"]], 4), c(NaN, rep(0.5, 4)))
+
+  expect_equal(round(absorptance(my_named.mspct,
+                                 list(waveband(c(400,405), wb.name = "A"),
+                                      waveband(c(405,410), wb.name = "B")),
+                                 quantity = "contribution"
+  )[["Afr/Afrtot_A"]], 4), c(NaN, rep(0.5, 4)))
+  expect_equal(round(absorptance(my_named.mspct,
+                                 list(waveband(c(400,405), wb.name = "A"),
+                                      waveband(c(405,410), wb.name = "B")),
+                                 quantity = "contribution"
+  )[["Afr/Afrtot_B"]], 4), c(NaN, rep(0.5, 4)))
 
   # absorbance -------------------------------------------------------------------
 
@@ -676,7 +726,7 @@ test_that("filter_mspct_attr", {
                         what.measured = "what",
                         lat = "latitude",
                         lon = "longitude")
-      )), c("spct.idx", "transmittance_A", "transmittance_B",
+      )), c("spct.idx", "Tfr(wl)_A", "Tfr(wl)_B",
             "when", "what", "latitude", "longitude")
   )
 
@@ -690,7 +740,7 @@ test_that("filter_mspct_attr", {
                         lat = "latitude",
                         lon = "longitude"),
             idx = "spectrum"
-      )), c("spectrum", "transmittance_A", "transmittance_B",
+      )), c("spectrum", "Tfr(wl)_A", "Tfr(wl)_B",
             "when", "what", "latitude", "longitude")
   )
 
@@ -880,7 +930,7 @@ expect_equal(
                               what.measured = "what",
                               lat = "latitude",
                               lon = "longitude")
-    )), c("spct.idx", "absorptance_A", "absorptance_B",
+    )), c("spct.idx", "Afr(wl)_A", "Afr(wl)_B",
           "when", "what", "latitude", "longitude")
 )
 
@@ -894,7 +944,7 @@ expect_equal(
                               lat = "latitude",
                               lon = "longitude"),
                   idx = "spectrum"
-    )), c("spectrum", "absorptance_A", "absorptance_B",
+    )), c("spectrum", "Afr(wl)_A", "Afr(wl)_B",
           "when", "what", "latitude", "longitude")
 )
 

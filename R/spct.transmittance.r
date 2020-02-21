@@ -14,6 +14,8 @@
 #' @param use.hinges logical Flag indicating whether to insert "hinges" into the
 #'   spectral data before integration so as to reduce interpolation errors at
 #'   the boundaries of the wavebands.
+#' @param naming character one of "long", "default", "short" or "none". Used to
+#'   select the type of names to assign to returned value.
 #' @param ... ignored (possibly used by derived methods).
 #'
 #' @return A named \code{numeric} vector in the case of methods for individual
@@ -59,12 +61,15 @@ transmittance.filter_spct <-
   function(spct, w.band=NULL,
            quantity="average",
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
-           use.hinges=getOption("photobiology.use.hinges", default = NULL), ...) {
+           use.hinges = NULL,
+           naming = "default",
+           ...) {
     transmittance_spct(spct = spct,
                        w.band = w.band,
                        quantity = quantity,
                        wb.trim = wb.trim,
-                       use.hinges = use.hinges)
+                       use.hinges = use.hinges,
+                       naming = naming)
   }
 
 #' @describeIn transmittance Method for object spectra
@@ -75,12 +80,15 @@ transmittance.object_spct <-
   function(spct, w.band=NULL,
            quantity="average",
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
-           use.hinges=getOption("photobiology.use.hinges", default = NULL), ...) {
+           use.hinges = NULL,
+           naming = "default",
+           ...) {
     transmittance_spct(spct = spct,
                        w.band = w.band,
                        quantity = quantity,
                        wb.trim = wb.trim,
-                       use.hinges = use.hinges)
+                       use.hinges = use.hinges,
+                       naming = naming)
   }
 
 #' Calculate transmittance from spectral transmittance.
@@ -99,6 +107,8 @@ transmittance.object_spct <-
 #' @param use.hinges logical Flag indicating whether to insert "hinges" into the
 #'   spectral data before integration so as to reduce interpolation errors at
 #'   the boundaries of the wavebands.
+#' @param naming character one of "long", "default", "short" or "none". Used to
+#'   select the type of names to assign to returned value.
 #'
 #' @return a single numeric value
 #' @keywords internal
@@ -108,7 +118,25 @@ transmittance.object_spct <-
 #'   used and all BSWFs are ignored.
 
 transmittance_spct <-
-  function(spct, w.band, quantity, wb.trim, use.hinges) {
+  function(spct,
+           w.band,
+           quantity,
+           wb.trim,
+           use.hinges,
+           naming) {
+    summary.name <-
+      switch(quantity,
+             total = "Tfr",
+             average = "Tfr(wl)",
+             mean = "Tfr(wl)",
+             contribution = "Tfr/Tfrtot",
+             contribution.pc = "Tfr/Tfrtot[%]",
+             relative = "Tfr/Tfrsum",
+             relative.pc = "Tfr/Tfrsum[%]",
+             stop("Unrecognized 'quantity' : \"", quantity, "\"")
+      )
+
+    # we look for multiple spectra and return with a warning
     num.spectra <- getMultipleWl(spct)
     if (num.spectra != 1) {
       warning("Skipping transmittance calculation as object contains ",
@@ -116,19 +144,22 @@ transmittance_spct <-
       return(NA_real_)
     }
     if (is_normalized(spct)) {
-      warning("The spectral data has been normalized, making impossible to calculate absorbance")
+      warning("The spectral data has been normalized,",
+              "making impossible to calculate transmittance")
       return(NA_real_)
     }
     if (is_scaled(spct)) {
-      warning("Summary calculated from rescaled data")
+      warning("Transmittance calculated from rescaled data")
     }
+
     if (!is.filter_spct(spct)) {
       spct <- as.filter_spct(spct)
     }
     spct <- A2T(spct, action = "replace", byref = FALSE)
     spct <- spct[ , c("w.length", "Tfr")]
-    # if the waveband is undefined then use all data
+
     if (length(w.band) == 0) {
+      # whole range of spectrum
       w.band <- waveband(spct)
     }
     if (is.numeric(w.band)) {
@@ -136,27 +167,24 @@ transmittance_spct <-
     }
     if (is.waveband(w.band)) {
       # if the argument is a single w.band, we enclose it in a list
-      # so that the for loop works as expected.This is a bit of a
-      # kludge but let's us avoid treating it as a special case
+      # so that it can be handled below as a normal case.
       w.band <- list(w.band)
     }
+    # we trim the wavebands so that they are within the range of spct
     w.band <- trim_waveband(w.band = w.band, range = spct, trim = wb.trim)
+    # if the elements of the list are named we collect them
+    wb.number <- length(w.band) # number of wavebands in list
+    wb.name <- names(w.band) # their names in the list
+    # if no names returned, we fill the vector with "".
+    if (is.null(wb.name)) {
+      wb.name <- character(wb.number)
+    }
 
-    # if the w.band includes 'hinges' we insert them
-    # choose whether to use hinges or not
-    # if the user has specified its value, we leave it alone
-    # but if it was not requested, we decide whether to insert
-    # hinges or not based of the wavelength resolution of the
-    # spectrum. This will produce small errors for high
-    # spectral resolution data, and speed up the calculations
-    # a lot in such cases
+    # hinges
     if (is.null(use.hinges)) {
       use.hinges <- auto_hinges(spct[["w.length"]])
     }
-
     # we collect all hinges and insert them in one go
-    # this may alter a little the returned values
-    # but should be faster
     if (use.hinges) {
       all.hinges <- NULL
       for (wb in w.band) {
@@ -167,27 +195,26 @@ transmittance_spct <-
       }
     }
 
-    # we prepare labels for output
-    wb.name <- names(w.band)
-    no_names_flag <- is.null(wb.name)
-    if (no_names_flag) {
-      wb.name <- character(length(w.band))
-    }
-    # we iterate through the list of wavebands
+    # We iterate through the list of wavebands collecting the transmittances,
+    # and waveband names.
     transmittance <- numeric(length(w.band))
-    i <- 0
+    i <- 0L
     for (wb in w.band) {
-      i <- i + 1
+      i <- i + 1L
+      # weighting functions are not meaningful
+      if (is_effective(wb)) {
+        warning("Using wavelength range from a weighted waveband object.")
+        wb <- waveband(wl_range(wb))
+      }
       # we get names from wb if needed
-      if (no_names_flag) {
-        if (is_effective(wb)) {
-          warning("Using only wavelength range from a weighted waveband object.")
-          wb.name[i] <- paste("range", as.character(signif(min(wb), 4)),
-                              as.character(signif(max(wb), 4)), sep = ".")
+      if (wb.name[i] == "") {
+        if (naming == "short") {
+          wb.name[i] <- labels(wb)[["label"]] # short name
         } else {
-          wb.name[i] <- wb$name
+          wb.name[i] <- labels(wb)[["name"]] # full name
         }
       }
+
       # we calculate the average transmittance.
       transmittance[i] <- integrate_spct(trim_spct(spct, wb, use.hinges = FALSE))
     }
@@ -197,7 +224,8 @@ transmittance_spct <-
                                   w.band = NULL,
                                   wb.trim = wb.trim,
                                   quantity = "total",
-                                  use.hinges = use.hinges)
+                                  use.hinges = use.hinges,
+                                  naming = naming)
       transmittance <- transmittance / total
       if (quantity == "contribution.pc") {
         transmittance <- transmittance * 1e2
@@ -218,13 +246,20 @@ transmittance_spct <-
     }
 
     if (length(transmittance) == 0) {
-      transmittance <- NA
+      transmittance <- NA_real_
       names(transmittance) <- "out of range"
+    } else if (naming %in% c("long", "default")) {
+      names(transmittance) <- paste(summary.name, wb.name, sep = "_")
+    } else if (naming == "short") {
+      names(transmittance) <- wb.name
+    } else if (naming != "none") {
+      warning("Argument to 'naming' unrecognized, assuming \"none\".")
     }
-    names(transmittance) <- paste(names(transmittance), wb.name)
+
     attr(transmittance, "Tfr.type") <- getTfrType(spct)
     attr(transmittance, "radiation.unit") <- paste("transmittance", quantity)
-    return(transmittance)
+
+    transmittance
   }
 
 # filter_mspct methods -----------------------------------------------
@@ -242,6 +277,7 @@ transmittance.filter_mspct <-
            quantity = "average",
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.hinges = getOption("photobiology.use.hinges", default = NULL),
+           naming = "default",
            ...,
            attr2tb = NULL,
            idx = "spct.idx") {
@@ -253,6 +289,7 @@ transmittance.filter_mspct <-
         quantity = quantity,
         wb.trim = wb.trim,
         use.hinges = use.hinges,
+        naming = naming,
         idx = idx,
         col.names = names(w.band)
       )
@@ -280,6 +317,7 @@ transmittance.object_mspct <-
            quantity = "average",
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.hinges = getOption("photobiology.use.hinges", default = NULL),
+           naming = "default",
            ...,
            attr2tb = NULL,
            idx = "spct.idx",
@@ -293,6 +331,7 @@ transmittance.object_mspct <-
         quantity = quantity,
         wb.trim = wb.trim,
         use.hinges = use.hinges,
+        naming = naming,
         idx = idx,
         col.names = names(w.band),
         .parallel = .parallel,

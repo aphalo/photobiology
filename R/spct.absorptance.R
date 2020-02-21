@@ -16,6 +16,8 @@
 #' @param use.hinges logical Flag indicating whether to insert "hinges" into the
 #'   spectral data before integration so as to reduce interpolation errors at
 #'   the boundaries of the wavebands.
+#' @param naming character one of "long", "default", "short" or "none". Used to
+#'   select the type of names to assign to returned value.
 #' @param ... other arguments (possibly used by derived methods).
 #'
 #' @note The \code{use.hinges} parameter controls speed optimization. The
@@ -73,13 +75,19 @@ absorptance.filter_spct <-
   function(spct, w.band = NULL,
            quantity = "average",
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
-           use.hinges = getOption("photobiology.use.hinges", default = NULL), ... ) {
+           use.hinges = NULL,
+           naming = "default",
+           ... ) {
     if (getTfrType(spct) != "internal") {
       warning("Internal absorptance cannot be calculated from total transmittance alone")
       return(NA)
     } else {
-      absorptance_spct(spct = spct, w.band = w.band, quantity = quantity,
-                       wb.trim = wb.trim, use.hinges = use.hinges)
+      absorptance_spct(spct = spct,
+                       w.band = w.band,
+                       quantity = quantity,
+                       wb.trim = wb.trim,
+                       use.hinges = use.hinges,
+                       naming = naming)
     }
   }
 
@@ -88,12 +96,18 @@ absorptance.filter_spct <-
 #' @export
 #'
 absorptance.object_spct <-
-  function(spct, w.band=NULL,
-           quantity="average",
+  function(spct, w.band = NULL,
+           quantity = "average",
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
-           use.hinges=getOption("photobiology.use.hinges", default = NULL), ...)  {
-    absorptance_spct(spct = spct, w.band = w.band, quantity = quantity,
-                     wb.trim = wb.trim, use.hinges = use.hinges)
+           use.hinges = NULL,
+           naming = "default",
+           ...)  {
+    absorptance_spct(spct = spct,
+                     w.band = w.band,
+                     quantity = quantity,
+                     wb.trim = wb.trim,
+                     use.hinges = use.hinges,
+                     naming = naming)
   }
 
 #' Calculate absorptance from spectral absorptance.
@@ -112,13 +126,31 @@ absorptance.object_spct <-
 #'   are trimmed, if FALSE, they are discarded
 #' @param use.hinges logical indicating whether to use hinges to reduce
 #'   interpolation errors
+#' @param naming character one of "long", "default", "short" or "none". Used to
+#'   select the type of names to assign to returned value.
 #'
 #' @keywords internal
 #'
 absorptance_spct <-
-  function(spct, w.band = NULL, quantity = "average",
-           wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
-           use.hinges = getOption("photobiology.use.hinges", default = NULL) ) {
+  function(spct,
+           w.band,
+           quantity,
+           wb.trim,
+           use.hinges,
+           naming) {
+    summary.name <-
+      switch(quantity,
+             total = "Afr",
+             average = "Afr(wl)",
+             mean = "Afr(wl)",
+             contribution = "Afr/Afrtot",
+             contribution.pc = "Afr/Afrtot[%]",
+             relative = "Afr/Afrsum",
+             relative.pc = "Afr/Afrsum[%]",
+             stop("Unrecognized 'quantity' : \"", quantity, "\"")
+      )
+
+    # we look for multiple spectra and return with a warning
     num.spectra <- getMultipleWl(spct)
     if (num.spectra != 1) {
       warning("Skipping absorptance calculation as object contains ",
@@ -126,7 +158,8 @@ absorptance_spct <-
       return(NA_real_)
     }
     if (is_normalized(spct)) {
-      warning("The spectral data has been normalized, making impossible to calculate absorbance")
+      warning("The spectral data has been normalized,",
+              "making impossible to calculate absorptance")
       return(NA_real_)
     }
     if (is_scaled(spct)) {
@@ -166,8 +199,9 @@ absorptance_spct <-
       stop("Failed assertion with Tfr.type: ", Tfr.type, "and Rfr.type: ", Rfr.type)
     }
     temp.spct <- setGenericSpct(temp.spct)
-    # if the waveband is undefined then use all data
+
     if (length(w.band) == 0) {
+      # whole range of spectrum
       w.band <- waveband(spct)
     }
     if (is.numeric(w.band)) {
@@ -175,60 +209,55 @@ absorptance_spct <-
     }
     if (is.waveband(w.band)) {
       # if the argument is a single w.band, we enclose it in a list
-      # so that the for loop works as expected.This is a bit of a
-      # kludge but let's us avoid treating it as a special case
+      # so that it can be handled below as a normal case.
       w.band <- list(w.band)
     }
+    # we trim the wavebands so that they are within the range of spct
     w.band <- trim_waveband(w.band = w.band, range = spct, trim = wb.trim)
+    # if the elements of the list are named we collect them
+    wb.number <- length(w.band) # number of wavebands in list
+    wb.name <- names(w.band) # their names in the list
+    # if no names returned, we fill the vector with "".
+    if (is.null(wb.name)) {
+      wb.name <- character(wb.number)
+    }
 
-    # if the w.band includes 'hinges' we insert them
-    # choose whether to use hinges or not
-    # if the user has specified its value, we leave it alone
-    # but if it was not requested, we decide whether to insert
-    # hinges or not based of the wavelength resolution of the
-    # spectrum. This will produce small errors for high
-    # spectral resolution data, and speed up the calculations
-    # a lot in such cases
+    # hinges
     if (is.null(use.hinges)) {
-      use.hinges <- auto_hinges(spct[["w.length"]])
+      use.hinges <- auto_hinges(temp.spct[["w.length"]])
     }
     # we collect all hinges and insert them in one go
-    # this may alter a little the returned values
-    # but should be faster
     if (use.hinges) {
       all.hinges <- NULL
       for (wb in w.band) {
-        if (!is.null(wb$hinges) & length(wb$hinges) > 0) {
-          all.hinges <- c(all.hinges, wb$hinges)
-        }
+        all.hinges <- c(all.hinges, wb$hinges)
       }
       if (!is.null(all.hinges)) {
         temp.spct <- insert_spct_hinges(temp.spct, all.hinges)
       }
     }
 
-    # we prepare labels for output
-    wb.name <- names(w.band)
-    no_names_flag <- is.null(wb.name)
-    if (no_names_flag) {
-      wb.name <- character(length(w.band))
-    }
-    #
-    # we iterate through the list of wavebands
+    # We iterate through the list of wavebands collecting the absorptances,
+    # and waveband names.
     absorptance <- numeric(length(w.band))
-    i <- 0
+    i <- 0L
     for (wb in w.band) {
-      i <- i + 1
+      i <- i + 1L
+      # weighting functions are not meaningful
+      if (is_effective(wb)) {
+        warning("Using wavelength range from a weighted waveband object.")
+        wb <- waveband(wl_range(wb))
+      }
       # we get names from wb if needed
-      if (no_names_flag) {
-        if (is_effective(wb)) {
-          warning("Using only wavelength range from a weighted waveband object.")
-          wb.name[i] <- paste("range", as.character(signif(min(wb), 4)),
-                              as.character(signif(max(wb), 4)), sep = ".")
+      if (wb.name[i] == "") {
+        if (naming == "short") {
+          wb.name[i] <- labels(wb)[["label"]] # short name
         } else {
-          wb.name[i] <- wb$name
+          wb.name[i] <- labels(wb)[["name"]] # full name
         }
       }
+
+      # we calculate the average absorptance.
       absorptance[i] <-
         integrate_spct(trim_spct(temp.spct, wb,
                                  use.hinges = FALSE))
@@ -238,7 +267,8 @@ absorptance_spct <-
       total <- absorptance_spct(spct, w.band = NULL,
                                 quantity = "total",
                                 wb.trim = wb.trim,
-                                use.hinges = use.hinges)
+                                use.hinges = use.hinges,
+                                naming = naming)
       absorptance <- absorptance / total
       if (quantity == "contribution.pc") {
         absorptance <- absorptance * 1e2
@@ -252,11 +282,18 @@ absorptance_spct <-
     } else if (quantity %in% c("average", "mean")) {
       absorptance <- absorptance / sapply(w.band, wl_expanse)
     }
+
     if (length(absorptance) == 0) {
-      absorptance <- NA
+      absorptance <- NA_real_
       names(absorptance) <- "out of range"
+    } else if (naming %in% c("long", "default")) {
+      names(absorptance) <- paste(summary.name, wb.name, sep = "_")
+    } else if (naming == "short") {
+      names(absorptance) <- wb.name
+    } else if (naming != "none") {
+      warning("Argument to 'naming' unrecognized, assuming \"none\".")
     }
-    names(absorptance) <- paste(names(absorptance), wb.name)
+
     attr(absorptance, "Afr.type") <- Afr.type
     attr(absorptance, "radiation.unit") <- paste("absorptance", quantity)
     return(absorptance)
@@ -276,7 +313,8 @@ absorptance.filter_mspct <-
   function(spct, w.band = NULL,
            quantity = "average",
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
-           use.hinges = getOption("photobiology.use.hinges", default = NULL),
+           use.hinges = NULL,
+           naming = "default",
            ...,
            attr2tb = NULL,
            idx = "spct.idx" ) {
@@ -288,6 +326,7 @@ absorptance.filter_mspct <-
         quantity = quantity,
         wb.trim = wb.trim,
         use.hinges = use.hinges,
+        naming = naming,
         idx = idx,
         col.names = names(w.band)
       )
@@ -315,7 +354,8 @@ absorptance.object_mspct <-
   function(spct, w.band=NULL,
            quantity="average",
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
-           use.hinges=getOption("photobiology.use.hinges", default = NULL),
+           use.hinges = NULL,
+           naming = "default",
            ...,
            attr2tb = NULL,
            idx = "spct.idx",
@@ -329,6 +369,7 @@ absorptance.object_mspct <-
         quantity = quantity,
         wb.trim = wb.trim,
         use.hinges = use.hinges,
+        naming = naming,
         idx = idx,
         col.names = names(w.band),
         .parallel = .parallel,
