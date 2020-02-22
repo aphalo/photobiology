@@ -8,10 +8,10 @@
 #'   compute the numerator(s) of the ratio(s).
 #' @param w.band.denom waveband object or a list of waveband objects used to
 #'   compute the denominator(s) of the ratio(s).
-#' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries
-#'   are trimmed, if FALSE, they are discarded
 #' @param scale.factor numeric vector of length 1, or length equal to that of
 #'   \code{w.band}. Numeric multiplier applied to returned values.
+#' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries
+#'   are trimmed, if FALSE, they are discarded
 #' @param use.cached.mult logical indicating whether multiplier values should be
 #'   cached between calls
 #' @param use.hinges logical Flag indicating whether to insert "hinges" into the
@@ -52,14 +52,14 @@
 #'
 #' @family photon and energy ratio functions
 #'
-q_ratio <- function(spct, w.band.num, w.band.denom, wb.trim,
+q_ratio <- function(spct, w.band.num, w.band.denom, scale.factor, wb.trim,
                   use.cached.mult, use.hinges, ...) UseMethod("q_ratio")
 
 #' @describeIn q_ratio Default for generic function
 #'
 #' @export
 #'
-q_ratio.default <- function(spct, w.band.num, w.band.denom, wb.trim,
+q_ratio.default <- function(spct, w.band.num, w.band.denom, scale.factor, wb.trim,
                             use.cached.mult, use.hinges, ...) {
   warning("'q_ratio' is not defined for objects of class ", class(spct)[1])
   return(NA)
@@ -72,8 +72,8 @@ q_ratio.default <- function(spct, w.band.num, w.band.denom, wb.trim,
 q_ratio.source_spct <-
   function(spct,
            w.band.num = NULL, w.band.denom = NULL,
-           wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            scale.factor = 1,
+           wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.cached.mult = FALSE,
            use.hinges = NULL,
            naming = "short",
@@ -110,10 +110,10 @@ q_ratio.source_spct <-
 #'   compute the numerator(s) of the ratio(s).
 #' @param w.band.denom waveband object or a list of waveband objects used to
 #'   compute the denominator(s) of the ratio(s).
-#' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries
-#'   are trimmed, if FALSE, they are discarded
 #' @param scale.factor numeric vector of length 1, or length equal to that of
 #'   \code{w.band}. Numeric multiplier applied to returned values.
+#' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries
+#'   are trimmed, if FALSE, they are discarded
 #' @param use.cached.mult logical Flag telling whether multiplier values should be
 #'   cached between calls.
 #' @param use.hinges logical Flag indicating whether to insert "hinges" into the
@@ -155,14 +155,14 @@ q_ratio.source_spct <-
 #'
 #' @family photon and energy ratio functions
 #'
-e_ratio <- function(spct, w.band.num, w.band.denom, wb.trim,
+e_ratio <- function(spct, w.band.num, w.band.denom, scale.factor, wb.trim,
                     use.cached.mult, use.hinges, ...) UseMethod("e_ratio")
 
 #' @describeIn e_ratio Default for generic function
 #'
 #' @export
 #'
-e_ratio.default <- function(spct, w.band.num, w.band.denom, wb.trim,
+e_ratio.default <- function(spct, w.band.num, w.band.denom, scale.factor, wb.trim,
                             use.cached.mult, use.hinges, ...) {
   warning("'e_ratio' is not defined for objects of class ", class(spct)[1])
   return(NA)
@@ -175,8 +175,8 @@ e_ratio.default <- function(spct, w.band.num, w.band.denom, wb.trim,
 e_ratio.source_spct <-
   function(spct,
            w.band.num = NULL, w.band.denom = NULL,
-           wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            scale.factor = 1,
+           wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.cached.mult = FALSE,
            use.hinges = NULL,
            naming = "short",
@@ -206,10 +206,10 @@ e_ratio.source_spct <-
 #'
 #' @param spct source_spct.
 #' @param w.band waveband or list of waveband objects.
-#' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries
-#'   are trimmed, if FALSE, they are discarded.
 #' @param scale.factor numeric vector of length 1, or length equal to that of
 #'   \code{w.band}. Numeric multiplier applied to returned values.
+#' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries
+#'   are trimmed, if FALSE, they are discarded.
 #' @param use.cached.mult logical Flag telling whether multiplier values should be
 #'   cached between calls.
 #' @param use.hinges logical Flag indicating whether to insert "hinges" into the
@@ -250,14 +250,14 @@ e_ratio.source_spct <-
 #'
 #' @family photon and energy ratio functions
 #'
-qe_ratio <- function(spct, w.band, wb.trim,
+qe_ratio <- function(spct, w.band, scale.factor, wb.trim,
                      use.cached.mult, use.hinges, ...) UseMethod("qe_ratio")
 
 #' @describeIn qe_ratio Default for generic function
 #'
 #' @export
 #'
-qe_ratio.default <- function(spct, w.band, wb.trim,
+qe_ratio.default <- function(spct, w.band, scale.factor, wb.trim,
                              use.cached.mult, use.hinges, ...) {
   warning("'qe_ratio' is not defined for objects of class ", class(spct)[1])
   return(NA)
@@ -269,10 +269,10 @@ qe_ratio.default <- function(spct, w.band, wb.trim,
 #'
 qe_ratio.source_spct <-
   function(spct, w.band = NULL,
-           wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            scale.factor = 1,
+           wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.cached.mult = FALSE,
-           use.hinges = getOption("photobiology.use.hinges"),
+           use.hinges = NULL,
            naming = "short",
            name.tag = ifelse(naming != "none", "[q:e]", ""),
            ...) {
@@ -304,10 +304,10 @@ qe_ratio.source_spct <-
 #'
 #' @param spct source_spct.
 #' @param w.band waveband or list of waveband objects.
-#' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries
-#'   are trimmed, if FALSE, they are discarded.
 #' @param scale.factor numeric vector of length 1, or length equal to that of
 #'   \code{w.band}. Numeric multiplier applied to returned values.
+#' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries
+#'   are trimmed, if FALSE, they are discarded.
 #' @param use.cached.mult logical Flag telling whether multiplier values should
 #'   be cached between calls.
 #' @param use.hinges logical Flag indicating whether to insert "hinges" into the
@@ -348,14 +348,14 @@ qe_ratio.source_spct <-
 #'
 #' @family photon and energy ratio functions
 #'
-eq_ratio <- function(spct, w.band, wb.trim,
+eq_ratio <- function(spct, w.band, scale.factor, wb.trim,
                      use.cached.mult, use.hinges, ...) UseMethod("eq_ratio")
 
 #' @describeIn eq_ratio Default for generic function
 #'
 #' @export
 #'
-eq_ratio.default <- function(spct, w.band, wb.trim,
+eq_ratio.default <- function(spct, w.band, scale.factor, wb.trim,
                              use.cached.mult, use.hinges, ...) {
   warning("'eq_ratio' is not defined for objects of class ", class(spct)[1])
   return(NA)
@@ -367,10 +367,10 @@ eq_ratio.default <- function(spct, w.band, wb.trim,
 #'
 eq_ratio.source_spct <-
   function(spct, w.band=NULL,
-           wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            scale.factor = 1,
-           use.cached.mult =FALSE,
-           use.hinges  = getOption("photobiology.use.hinges"),
+           wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
+           use.cached.mult = FALSE,
+           use.hinges  = NULL,
            naming = "short",
            name.tag = ifelse(naming != "none", "[e:q]", ""),
            ...) {
@@ -404,10 +404,10 @@ eq_ratio.source_spct <-
 q_ratio.source_mspct <-
   function(spct,
            w.band.num = NULL, w.band.denom = NULL,
-           wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            scale.factor = 1,
+           wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.cached.mult = FALSE,
-           use.hinges = getOption("photobiology.use.hinges"),
+           use.hinges = NULL,
            naming = "short",
            name.tag = ifelse(naming != "none", "[q:q]", ""),
            ...,
@@ -461,8 +461,8 @@ q_ratio.source_mspct <-
 e_ratio.source_mspct <-
   function(spct,
            w.band.num = NULL, w.band.denom = NULL,
-           wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            scale.factor = 1,
+           wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.cached.mult = FALSE,
            use.hinges = NULL,
            naming = "short",
@@ -517,8 +517,8 @@ e_ratio.source_mspct <-
 #'
 eq_ratio.source_mspct <-
   function(spct, w.band = NULL,
-           wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            scale.factor = 1,
+           wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.cached.mult = FALSE,
            use.hinges = NULL,
            naming = "short",
@@ -573,8 +573,8 @@ eq_ratio.source_mspct <-
 #'
 qe_ratio.source_mspct <-
   function(spct, w.band=NULL,
-           wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            scale.factor = 1,
+           wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.cached.mult = FALSE,
            use.hinges = NULL,
            naming = "short",

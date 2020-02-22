@@ -387,9 +387,8 @@ test_that("source_mspct", {
   )
   expect_equal(
     round(qe_ratio(my.mspct,
-                  waveband(c(400,405), wb.name = "A"),
-                  waveband(c(405,410), wb.name = "B")
-    )[["A[q:e]"]], 9), rep(3.365e-06, 5)
+                  waveband(c(400,405), wb.name = "A"
+    ))[["A[q:e]"]], 9), rep(3.365e-06, 5)
   )
 
   # min ---------------------------------------------------------------------

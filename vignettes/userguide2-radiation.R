@@ -580,71 +580,96 @@ wls_at_target(sun.spct, target = "half.maximum", interpolate = TRUE)
 wls_at_target(filters.mspct, target = "half.maximum")
 
 ## ---- irrad-1-----------------------------------------------------------------
-irrad(sun.spct)
+e_irrad(sun.spct)
 
 ## ---- irrad-2-----------------------------------------------------------------
-irrad(sun.spct, PAR.wb)
+e_irrad(sun.spct, PAR.wb)
 
 ## ---- irrad-3-----------------------------------------------------------------
-irrad(sun.spct, c(400, 700))
+e_irrad(sun.spct, c(400, 700))
 
-## ---- irrad-4-----------------------------------------------------------------
-e_irrad(sun.spct, PAR.wb) # W m-2
+## ---- irrad-4a----------------------------------------------------------------
 q_irrad(sun.spct, PAR.wb, scale.factor = 1e6) # umol s-1 m-2
 
 ## ---- irrad-5-----------------------------------------------------------------
-irrad(sun.spct, PAR.wb, time.unit = "hour")
+q_irrad(white_led.source_spct, PAR.wb, time.unit = "hour")
 
 ## ---- irrad-6-----------------------------------------------------------------
-irrad(sun.daily.spct, PAR.wb, time.unit = "second")
+e_irrad(sun.daily.spct, PAR.wb, time.unit = "second")
 
 ## ---- irrad-7-----------------------------------------------------------------
 e_irrad(sun.spct, UV_bands.lst) # W m-2
 
+## ---- irrad-7a----------------------------------------------------------------
+q_irrad(sun.spct, UV_bands.lst) # mol s-1 m-2
+
+## ---- irrad-7b----------------------------------------------------------------
+q_irrad(sun.spct, UV_bands.lst, scale.factor = 1e6) # umol s-1 m-2
+
 ## ---- irrad-8a----------------------------------------------------------------
-irrad(sun.spct, UV_bands.lst, quantity = "total")
+e_irrad(sun.spct, UV_bands.lst, quantity = "total") # watt m-2
 
 ## ---- irrad-8b----------------------------------------------------------------
-irrad(sun.spct, UV_bands.lst, quantity = "average")
+e_irrad(sun.spct, UV_bands.lst, quantity = "average") # watt m-2 nm-1
 
 ## ---- irrad-8c----------------------------------------------------------------
-irrad(sun.spct, UV_bands.lst, quantity = "contribution")
-irrad(sun.spct, UV_bands.lst, quantity = "relative")
+e_irrad(sun.spct, UV_bands.lst, quantity = "contribution")
+
+## ---- irrad-8cc---------------------------------------------------------------
+e_irrad(sun.spct, UV_bands.lst, quantity = "relative")
 
 ## ---- irrad-8d----------------------------------------------------------------
-irrad(sun.spct, UV_bands.lst, quantity = "contribution.pc")
-irrad(sun.spct, UV_bands.lst, quantity = "relative.pc")
+e_irrad(sun.spct, UV_bands.lst, quantity = "contribution.pc")
+
+## ---- irrad-8dd---------------------------------------------------------------
+e_irrad(sun.spct, UV_bands.lst, quantity = "relative.pc")
 
 ## -----------------------------------------------------------------------------
-irrad(sun.spct, PAR.wb, time.unit = duration(8, "hours"))
+e_irrad(sun.spct, PAR.wb, time.unit = duration(8, "hours"))
 
 ## -----------------------------------------------------------------------------
-fluence(sun.spct, PAR.wb, exposure.time = duration(8, "hours"))
-
-## ---- col-names-1-------------------------------------------------------------
-names(filters.mspct)
+e_fluence(sun.spct, PAR.wb, exposure.time = duration(8, "hours"))
 
 ## -----------------------------------------------------------------------------
-two_suns.mspct <- source_mspct(list(sun1 = sun.spct, sun2 = sun.spct))
+q_irrad(sun.spct, UV_bands.lst, naming = "short")
+
+## -----------------------------------------------------------------------------
+q_irrad(sun.spct, UV_bands.lst, naming = "none")
+
+## -----------------------------------------------------------------------------
+names(UV_bands.lst) <- c("UV-C", "UV-B", "UV-A")
+q_irrad(sun.spct, UV_bands.lst, naming = "short", scale.factor = 1e6)
+
+## -----------------------------------------------------------------------------
+two_suns.mspct <- source_mspct(list(sun1 = sun.spct, sun2 = sun.spct * 2))
+
+## -----------------------------------------------------------------------------
+e_irrad(two_suns.mspct, w.band = PAR.wb)
+
+## -----------------------------------------------------------------------------
 q_irrad(two_suns.mspct, 
-        w.band = list(PAR = waveband(c(400,700))),
+        w.band = PAR.wb,
         scale.factor = 1e6, # umol m-2 s-1
         attr2tb = c(when.measured = "time", lon = "lon", lat = "lat"))
 
 ## ---- col-convolve-1----------------------------------------------------------
 filtered_sun <- convolve_each(filters.mspct, sun.spct)
-irrad(filtered_sun, list(UVA.wb, PAR.wb))
+q_irrad(filtered_sun,
+        list(UVA.wb, PAR.wb),
+        scale.factor = 1e6,
+        idx = "Filter")
 
 ## ---- col-convolve-2----------------------------------------------------------
-irrad(convolve_each(filters.mspct, sun.spct), 
-      list(UVA.wb, PAR.wb))
-
-## ---- col-convolve-3----------------------------------------------------------
-filtered_sun <- msmsply(filters.mspct, `*`, sun.spct)
-irrad(filtered_sun, list(UVA.wb, PAR.wb))
+q_irrad(convolve_each(filters.mspct, sun.spct), 
+        list("UV-A" = UVA.wb, PAR.wb),
+        scale.factor = 1e6,  # umol m-2 s-1
+        naming = "short",
+        attr2tb = c(what.measured = "Filter type"))[ , c(4, 2, 3)]
 
 ## ---- fluence-1---------------------------------------------------------------
 fluence(sun.spct, exposure.time = duration(1, "hours"))
+
+## ---- fluence-1a--------------------------------------------------------------
 fluence(sun.spct, exposure.time = 3600) # seconds
 
 ## ---- fluence-2---------------------------------------------------------------
@@ -666,7 +691,17 @@ qe_ratio(sun.spct,
          name.tag = " (umol/J)")
 
 ## ---- ratios-3----------------------------------------------------------------
-q_ratio(filtered_sun, list(UVB.wb, UVA.wb, PAR.wb))
+q_ratio(filtered_sun, 
+        list(UVB.wb, UVA.wb),
+        PAR.wb)
+
+## ---- ratios-3a---------------------------------------------------------------
+q_ratio(filtered_sun, 
+        list(UVB.wb, UVA.wb),
+        PAR.wb, 
+        scale.factor = 100, 
+        name.tag = " (% photons)", 
+        idx = "Filter")
 
 ## -----------------------------------------------------------------------------
 normalized_diff_ind(sun.spct,
