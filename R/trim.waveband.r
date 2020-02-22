@@ -49,7 +49,7 @@ trim_waveband <-
       w.band <- list(w.band)
       w.band.names <- list("")
     } else {
-      w.band.names <- names(w.band)
+      w.band.names <- as.list(names(w.band))
     }
     if (is.null(range)) {
       range <- c(low.limit, high.limit)

@@ -652,11 +652,18 @@ q_fluence(sun.spct, PAR.wb, exposure.time = duration(25, "minutes"))
 
 ## -----------------------------------------------------------------------------
 q_ratio(sun.spct, UVB.wb, PAR.wb)
-q_ratio(sun.spct, list(UVC.wb, UVB.wb, UVA.wb, UV.wb))
-q_ratio(sun.spct, UVB.wb, list(UV.wb, PAR.wb))
+
+## -----------------------------------------------------------------------------
+q_ratio(sun.spct, list(UVC.wb, UVB.wb, UVA.wb))
+
+## -----------------------------------------------------------------------------
+q_ratio(sun.spct, list(UVC.wb, UVB.wb, UVA.wb), PAR.wb)
 
 ## ---- ratios-2----------------------------------------------------------------
-qe_ratio(sun.spct, list(UVB.wb, PAR.wb))
+qe_ratio(sun.spct,
+         list("UV-B" = UVB.wb, PAR.wb), 
+         scale.factor = 1e6,
+         name.tag = " (umol/J)")
 
 ## ---- ratios-3----------------------------------------------------------------
 q_ratio(filtered_sun, list(UVB.wb, UVA.wb, PAR.wb))
@@ -670,6 +677,16 @@ normalized_diff_ind(sun.spct,
 transmittance(polyester.spct, list(UVB.wb, UVA.wb, PAR.wb))
 
 ## -----------------------------------------------------------------------------
+transmittance(polyester.spct, 
+              list(UVB.wb, UVA.wb, PAR.wb),
+              naming = "none")
+
+## -----------------------------------------------------------------------------
+transmittance(polyester.spct, 
+              list(UVB.wb, UVA.wb, PAR.wb),
+              naming = "short")
+
+## -----------------------------------------------------------------------------
 reflectance(green_leaf.spct, waveband(c(600, 700)))
 
 ## -----------------------------------------------------------------------------
@@ -677,17 +694,33 @@ q_irrad(sun.spct * polyester.spct, list(UVB.wb, UVA.wb, PAR.wb), wb.trim = TRUE)
   q_irrad(sun.spct, list(UVB.wb, UVA.wb, PAR.wb), wb.trim = TRUE)
 
 ## -----------------------------------------------------------------------------
-transmittance(filters.mspct, w.band = list("Tfr(UVA)" = UVA.wb, "Tfr(PAR)" = PAR.wb))
-
-## -----------------------------------------------------------------------------
-transmittance(filters.mspct,
-              w.band = list(Tfr = waveband(c(350, 550))),
-              attr2tb = "what.measured")
+transmittance(filters.mspct, 
+              w.band = list(UVA.wb, PAR.wb))
 
 ## -----------------------------------------------------------------------------
 transmittance(filters.mspct, 
-              list("Tfr(UVA)" = UVA.wb, "Tfr(PAR)" = PAR.wb),
-              attr2tb = "what.measured")
+              w.band = list(UVA.wb, PAR.wb),
+              naming = "short")
+
+## -----------------------------------------------------------------------------
+transmittance(filters.mspct, 
+              w.band = list("UV-A" = UVA.wb, PAR = PAR.wb))
+
+## -----------------------------------------------------------------------------
+transmittance(filters.mspct, 
+              w.band = list(UVA = UVA.wb, PAR = PAR.wb),
+              naming = "short")
+
+## -----------------------------------------------------------------------------
+transmittance(filters.mspct, 
+              w.band = UVA.wb,
+              naming = "short",
+              attr2tb = c("what.measured" = "Filter type"))
+
+## -----------------------------------------------------------------------------
+transmittance(filters.mspct,
+              w.band = UVA.wb,
+              attr2tb = "what.measured")[ , c(3, 2)]
 
 ## -----------------------------------------------------------------------------
 response(photodiode.spct)

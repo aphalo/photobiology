@@ -1,4 +1,4 @@
-photobiology 0.9.31 (2020-02-xx)
+photobiology 0.10.1 (2020-02-xx)
 ================================
 
 * Revise trim_waveband() so that it preserves the names of list members. This
@@ -12,9 +12,9 @@ informative names to returned numeric values and to columns
 in returned data frames. Add formal parameters naming and name.tag to allow
 user control of the names. In most cases, this change removes the need to rename
 columns in an additional step.
-* Revise absorbance(), [TODO] absorptance(), transmittance() and reflectance() so
+* Revise absorbance(), absorptance(), transmittance() and reflectance() so
 that they create shorter, and more informative names for returned values.
-* Revise msdply() to treat as special cases the methods described above, to
+* Revise msdply() to treat as special cases all the methods described above, to
 support the especializations of these methods for collections of spectra.
 
 ********************************************************************************

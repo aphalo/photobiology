@@ -1661,7 +1661,7 @@ wls_at_target(filters.mspct, target = "half.maximum")
 
 #### Individual spectra
 
-The code using `spct` objects is simple, to integrate the whole spectrum we can use
+The code using `spct` objects is simple; to integrate the whole spectrum we can use
 
 ```{r, irrad-1}
 irrad(sun.spct)
@@ -1673,56 +1673,69 @@ and, to integrate a range of wavelengths, in the example, photosynthetically act
 irrad(sun.spct, PAR.wb)
 ```
 
-It is also valid to pass as argument for `w.band` a numeric range representing wavelengths in nanometres,
-which is converted into a waveband on-the-fly.
+It is also valid to pass as argument for `w.band` a numeric range representing wavelengths in nanometres, which is converted into a waveband on-the-fly.
 
 ```{r, irrad-3}
 irrad(sun.spct, c(400, 700))
 ```
 
-The default for `irrad`, when no argument `unit.out` is supplied, is to return the irradiance value in energy irradiance units, unless the R option `photobiology.radiation.unit` is set.
+The default for `irrad`, when no argument `unit.out` is supplied, is to return energy irradiance, unless the R option `photobiology.radiation.unit` is set to `"photon"`.
 
-
-Functions `e_irrad` and `q_irrad` save some typing, and always return the same type of spectral irradiance quantity, independently of global option `photobiology.radiation.unit`.
+Functions `e_irrad` and `q_irrad` can save some typing, and always return the same type of spectral irradiance quantity, independently of global option `photobiology.radiation.unit`.
 
 ```{r, irrad-4}
 e_irrad(sun.spct, PAR.wb) # W m-2
+```
+
+```{r, irrad-4a}
 q_irrad(sun.spct, PAR.wb, scale.factor = 1e6) # umol s-1 m-2
 ```
 
 It is also possible to supply a time unit to use as basis of expression for the returned value, but be aware that conversion into a logger time unit is only valid for sources like lamps, which have an output the remains constant in time.
 
 ```{r, irrad-5}
-irrad(sun.spct, PAR.wb, time.unit = "hour")
+q_irrad(white_led.source_spct, PAR.wb, time.unit = "hour")
 ```
 
 Using a shorter time unit than the original, yields an average value re-expressed on a new time unit base.
 
 ```{r, irrad-6}
-irrad(sun.daily.spct, PAR.wb, time.unit = "second")
+e_irrad(sun.daily.spct, PAR.wb, time.unit = "second")
 ```
 
 Lists of wavebands are also accepted as argument for parameter `w.band` in which
-case a named numeric vector of summary values is returned.
+case a named numeric vector of summary values is returned by default.
 
 ```{r, irrad-7}
 e_irrad(sun.spct, UV_bands.lst) # W m-2
 ```
 
+```{r, irrad-7a}
+q_irrad(sun.spct, UV_bands.lst) # mol s-1 m-2
+```
+
+
+```{r, irrad-7b}
+q_irrad(sun.spct, UV_bands.lst, scale.factor = 1e6) # umol s-1 m-2
+```
+
 These functions have an additional argument `quantity`, with default `"total"`, which can take values controlling the output. The value "total" yields **irradiance** in $W\,m^{-2}$, integrated over wavelengths for each waveband, while "average" yields the mean **spectral irradiance** within each waveband in $W\,m^{-2}\,nm^{-1}$.
 
 ```{r, irrad-8a}
-irrad(sun.spct, UV_bands.lst, quantity = "total")
+irrad(sun.spct, UV_bands.lst, quantity = "total") # watt m-2
 ```
 
 ```{r, irrad-8b}
-irrad(sun.spct, UV_bands.lst, quantity = "average")
+irrad(sun.spct, UV_bands.lst, quantity = "average") # watt m-2 nm-1
 ```
 
 The value "contribution" is relative to the irradiance for the whole spectrum, expressed as a fraction of one, while the value "relative" is relative to the sum of the irradiances for the different wavebands given as argument, also expressed as a fraction of one.
 
 ```{r, irrad-8c}
 irrad(sun.spct, UV_bands.lst, quantity = "contribution")
+```
+
+```{r, irrad-8cc}
 irrad(sun.spct, UV_bands.lst, quantity = "relative")
 ```
 
@@ -1730,6 +1743,9 @@ In contrast "contribution.pc" and "relative.pc" return the same values expressed
   
 ```{r, irrad-8d}
 irrad(sun.spct, UV_bands.lst, quantity = "contribution.pc")
+```
+
+```{r, irrad-8dd}
 irrad(sun.spct, UV_bands.lst, quantity = "relative.pc")
 ```
 
@@ -1739,10 +1755,29 @@ The total radiation received on a surface during an exposure event can be also c
 irrad(sun.spct, PAR.wb, time.unit = duration(8, "hours"))
 ```
 
-When the intention is to calculate a total fluence or exposure for an event function `fluence()` should be used as this will add the correct metadata attributes to the returned value: expressed as energy or photons per unit area per event. See later sections for details.
+When the intention is to calculate a total fluence or exposure for an event, function `fluence()` should be used as this will add the correct metadata attributes to the returned value: expressed as energy or photons per unit area per event. See later sections for details.
 
 ```{r}
 fluence(sun.spct, PAR.wb, exposure.time = duration(8, "hours"))
+```
+
+The naming of the values can be an abbreviation of the physical quantity plus the name of the wavelength, the default as in the examples above, or only the name of the waveband as shown 
+below.
+
+```{r}
+q_irrad(sun.spct, UV_bands.lst, naming = "short")
+```
+Naming can also be suppressed. 
+
+```{r}
+q_irrad(sun.spct, UV_bands.lst, naming = "none")
+```
+
+Names of members of a list of wavebands, override the labels in waveband definitions.
+
+```{r}
+names(UV_bands.lst) <- c("UV-C", "UV-B", "UV-A")
+q_irrad(sun.spct, UV_bands.lst, naming = "short", scale.factor = 1e6)
 ```
 
 #### Collections of spectra
@@ -1769,7 +1804,7 @@ We then convolve each filter's spectral transmittance by the spectral irradiance
 
 ```{r, col-convolve-1}
 filtered_sun <- convolve_each(filters.mspct, sun.spct)
-irrad(filtered_sun, list(UVA.wb, PAR.wb))
+q_irrad(filtered_sun, list(UVA.wb, PAR.wb))
 ```
 
 The code above can also be written as a single statement.
@@ -1811,22 +1846,50 @@ q_fluence(sun.spct, PAR.wb, exposure.time = duration(25, "minutes"))
 
 The functions described here, in there simplest use, calculate a ratio between two wavebands. The function `q_ratio` returning photon ratios. However both waveband parameters can take lists of wavebands as arguments, with normal recycling rules in effect. The corresponding function `e_ratio` returns energy ratios.
 
+A single ratio.
+
 ```{r}
 q_ratio(sun.spct, UVB.wb, PAR.wb)
-q_ratio(sun.spct, list(UVC.wb, UVB.wb, UVA.wb, UV.wb))
-q_ratio(sun.spct, UVB.wb, list(UV.wb, PAR.wb))
 ```
 
-Function `qe_ratio`, has only one waveband parameter, and returns the _photon_ to _energy_ ratio, while its complement `eq_ratio` returns the _energy_ to _photon_ ratio.
+If no waveband is passed as numerator, the whole spectrum is used. The waveband fully outside the wavelength range of the spectrum is dropped silently.
+
+```{r}
+q_ratio(sun.spct, list(UVC.wb, UVB.wb, UVA.wb))
+```
+Three denominators (one skipped) and a single denominator.
+
+```{r}
+q_ratio(sun.spct, list(UVC.wb, UVB.wb, UVA.wb), PAR.wb)
+```
+
+Function `qe_ratio`, has only one waveband parameter, and returns the _photon_ to _energy_ ratio, while its complement `eq_ratio` returns the _energy_ to _photon_ ratio. Here we show how parameters `scale.factor` and `name.tag` make scaling the returned value easy.
 
 ```{r, ratios-2}
-qe_ratio(sun.spct, list(UVB.wb, PAR.wb))
+qe_ratio(sun.spct,
+         list("UV-B" = UVB.wb, PAR.wb), 
+         scale.factor = 1e6,
+         name.tag = " (umol/J)")
 ```
 
 #### Collections of spectra
 
+As other summary methods, `q_ratio()`, `e_ratio()`, `qe_ratio()` and `eq_ratio()` when applied to a collection of spectra, they return a data frame.
+
 ```{r, ratios-3}
-q_ratio(filtered_sun, list(UVB.wb, UVA.wb, PAR.wb))
+q_ratio(filtered_sun, 
+        list(UVB.wb, UVA.wb),
+        PAR.wb)
+```
+Additional parameters allow the scaling and customized column names possible.
+
+```{r, ratios-3a}
+q_ratio(filtered_sun, 
+        list(UVB.wb, UVA.wb),
+        PAR.wb, 
+        scale.factor = 100, 
+        name.tag = " (% photons)", 
+        idx = "Filter")
 ```
 
 ### Normalized difference indexes
@@ -1850,6 +1913,20 @@ The functions `transmittance`, `absorptance` and `absorbance` take `filter_spct`
 ```{r}
 transmittance(polyester.spct, list(UVB.wb, UVA.wb, PAR.wb))
 ```
+We can obtain numerical values without names if needed,
+
+```{r}
+transmittance(polyester.spct, 
+              list(UVB.wb, UVA.wb, PAR.wb),
+              naming = "none")
+```
+or named only according to the wavebands.
+
+```{r}
+transmittance(polyester.spct, 
+              list(UVB.wb, UVA.wb, PAR.wb),
+              naming = "short")
+```
 
 ```{r}
 reflectance(green_leaf.spct, waveband(c(600, 700)))
@@ -1864,22 +1941,50 @@ q_irrad(sun.spct * polyester.spct, list(UVB.wb, UVA.wb, PAR.wb), wb.trim = TRUE)
 
 #### Collections of spectra
 
-Here we construct a collection of filter spectra, and then we calculate the transmittance of these filters for two wavebands, obtaining the results as a data frame, with one row per filter, and one column per waveband. We reuse once more `filters.mspct` from an earlier section.
+Here we calculate the transmittance of a collection of spectra for three filters in two wavebands, obtaining the results as a data frame, with one row per filter, and one column per waveband. We reuse once more `filters.mspct` from an earlier section.
 
-```{r}
-transmittance(filters.mspct, w.band = list("Tfr(UVA)" = UVA.wb, "Tfr(PAR)" = PAR.wb))
-```
-
-```{r}
-transmittance(filters.mspct,
-              w.band = list(Tfr = waveband(c(350, 550))),
-              attr2tb = "what.measured")
-```
+Column names formed from quantity abbreviation and label in waveband definitions.
 
 ```{r}
 transmittance(filters.mspct, 
-              list("Tfr(UVA)" = UVA.wb, "Tfr(PAR)" = PAR.wb),
-              attr2tb = "what.measured")
+              w.band = list(UVA.wb, PAR.wb))
+```
+With `naming = "short"` column names are the labels of waveband definitions.
+
+```{r}
+transmittance(filters.mspct, 
+              w.band = list(UVA.wb, PAR.wb),
+              naming = "short")
+```
+
+If list members are named, column names are formed from quantity abbreviation and name of list members, overriding the labels in the waveband definitions.
+
+```{r}
+transmittance(filters.mspct, 
+              w.band = list("UV-A" = UVA.wb, PAR = PAR.wb))
+```
+If list members are named, with `naming = "short"` column names are the names of list members.
+
+```{r}
+transmittance(filters.mspct, 
+              w.band = list(UVA = UVA.wb, PAR = PAR.wb),
+              naming = "short")
+```
+
+We can add metadata attributes as columns, changing the name if desired.
+
+```{r}
+transmittance(filters.mspct, 
+              w.band = UVA.wb,
+              naming = "short",
+              attr2tb = c("what.measured" = "Filter type"))
+```
+We can add metadata attributes as a column, and select and rearrange the columns.
+
+```{r}
+transmittance(filters.mspct,
+              w.band = UVA.wb,
+              attr2tb = "what.measured")[ , c(3, 2)]
 ```
 
 ### Integrated response

@@ -298,6 +298,7 @@ irrad.source_spct <-
       warning("'quantity '", quantity, "' is invalid, returning 'total' instead")
       quantity <- "total"
     }
+
     if (length(irrad) == 0) {
       irrad <- NA_real_
       names(irrad) <- "out of range"
