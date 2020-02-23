@@ -9,6 +9,8 @@ waveband definitions could not be overriden as intended by design.
 interpolation is implemented. Default behaviour remains unchanged. This feature
 is still experimental and returned values may not be reproducible with future
 versions of the package.
+* Revise q_ratio(), e_ratio(), qe_ratio() and eq_ratio() adding new parameter
+scale factor.
 * Revise irrad(), q_irrad() and e_irrad(); fluence(), q_fluence(), and
 e_fluence(); q_ratio(), e_ratio(), qe_ratio() and eq_ratio(); response(),
 q_response(), and e_response() methods so that they add shorter but still
@@ -19,15 +21,17 @@ columns in an additional step.
 * Revise absorbance(), absorptance(), transmittance() and reflectance() so
 that they create shorter, and more informative names for returned values.
 * Revise msdply() to treat as special cases all the methods described above, to
-support the especializations of these methods for collections of spectra.
+support the especializations of these methods for collections of spectra. For
+those functions not handled as special cases, returned values are, as earlier,
+tagged with the name of the applied function.
 
 ********************************************************************************
-By changing the default names, this update can break older code. It also
-changes the behaviour of irrad(), fluence(), ratio() and response() which now
-always tag the data according to the units used, which depends on options
-settings, i.e., independly of the use of methods irrad() or e_irrad()/q_irrad()
-the names are now the same if the unit in which the returned values are
-expressed is the same.
+By changing the default names, this update can break older code. It additionally
+corrects the behaviour of irrad(), fluence(), ratio() and response(), as results
+are now always tagged according to the units used, even when these are selected
+by setting R options, i.e., independly of which of irrad(), e_irrad() or
+q_irrad() nethods is used, the names used to label returned values now depend
+only on the base of expression used.
 ********************************************************************************
 
 photobiology 0.9.30 (2020-01-06)
