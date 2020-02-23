@@ -36,7 +36,7 @@ e_irrad(sun.spct * yellow_gel.spct)
 #> attr(,"time.unit")
 #> [1] "second"
 #> attr(,"radiation.unit")
-#> [1] "energy irradiance total"
+#> [1] "total energy irradiance"
 ```
 
 The second example shows some simple astronomical calculations for the
@@ -46,9 +46,9 @@ sun.
 geocode <- data.frame(lon = 0, lat = 55)
 date <- lubridate::today(tzone = "UTC")
 sunrise_time(date, tz = "UTC", geocode = geocode)
-#> [1] "2020-02-15 07:23:23 UTC"
+#> [1] "2020-02-23 07:05:13 UTC"
 day_length(date, tz = "UTC", geocode = geocode)
-#> [1] 9.692155
+#> [1] 10.27333
 ```
 
 ## Installation
