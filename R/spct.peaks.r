@@ -168,9 +168,31 @@ get_valleys <- function(x, y,
 #'
 #' @keywords internal
 #'
-fit_peaks_spct  <- function(x, peaks.idx, span, col.name, method, maximum = TRUE) {
+fit_peaks_spct  <- function(x,
+                            peaks.idx,
+                            span,
+                            x.col.name = NULL,
+                            y.col.name,
+                            method,
+                            maximum = TRUE,
+                            keep.cols = NULL) {
+  if (is.null(x.col.name) && is.any_spct(x)) {
+    x.col.name <- "w.length"
+  }
+  if (is.any_spct(x)) {
+    x <- untag(x)
+  }
+  if (is.null(keep.cols) && !is.any_spct(x)) {
+    # treat data frames as special case, needed by ggspectra::stat_peaks().
+    z <- x[peaks.idx, ]
+  } else {
+    # delete numeric columns which would be invalidated
+    cols2rm <- names(x)[sapply(X = x, FUN = is.numeric)]
+    cols2rm <- setdiff(cols2rm, c(x.col.name, y.col.name, keep.cols))
+    z <- x[peaks.idx , setdiff(colnames(x), cols2rm)]
+  }
   if (method == "spline") {
-    f <- stats::splinefun(x[["w.length"]], x[[col.name]])
+    f <- stats::splinefun(x[[x.col.name]], x[[y.col.name]])
   } else {
     stop("'method' ", method, " is not implemented")
   }
@@ -180,17 +202,20 @@ fit_peaks_spct  <- function(x, peaks.idx, span, col.name, method, maximum = TRUE
   half.interval <- min(span %/% 2L, 5L)
   for (p in peaks.idx) {
     # we need to avoid off-range indexes!
-    interval.p <- c(x[["w.length"]][max(p - half.interval, 0L)],
-                    x[["w.length"]][min(p + half.interval, nrow(x))])
+    interval.p <- c(x[[x.col.name]][max(p - half.interval, 0L)],
+                    x[[x.col.name]][min(p + half.interval, nrow(x))])
     temp <- stats::optimize(f,
                             interval = interval.p,
-                            maximum = TRUE)
+                            maximum = maximum)
     w.length <- c(w.length, temp[["maximum"]])
     var <- c(var, temp[["objective"]])
   }
-  z <- generic_spct(w.length = w.length,
-                    var = var)
-  names(z)[2L] <- col.name
+  # replace columns of same name
+  z[[x.col.name]] <- w.length
+  z[[y.col.name]] <- var
+  if (is.any_spct(x)) {
+     z <- copy_attributes(x, z, copy.class = FALSE)
+  }
   z
 }
 
@@ -206,14 +231,14 @@ fit_peaks_spct  <- function(x, peaks.idx, span, col.name, method, maximum = TRUE
 #'   relative size compared to tallest peak threshold below which peaks will be
 #'   ignored.
 #' @param span a peak is defined as an element in a sequence which is greater
-#'   than all other elements within a window of width span centered at that
-#'   element. The default value is 3, meaning that a peak is bigger than both of
-#'   its neighbors. Default: 3.
+#'   than all other elements within a window of width \code{span} centered at
+#'   that element. Use \code{NULL} for the global peak.
 #' @param strict logical flag: if TRUE, an element must be strictly greater than
 #'   all other values in its window to be considered a peak. Default: TRUE.
 #' @param na.rm logical indicating whether \code{NA} values should be stripped
 #'   before searching for peaks.
-#' @param var.name Name of column where to look for peaks.
+#' @param var.name,x.var.name,y.var.name character Name of column where to look
+#'   for peaks.
 #' @param fitted logical Flag indicating if peak location should be refined by
 #'   fitting a function.
 #' @param method character String with the name of a method. Currently only
@@ -225,8 +250,9 @@ fit_peaks_spct  <- function(x, peaks.idx, span, col.name, method, maximum = TRUE
 #' @export
 #'
 #' @examples
-#' peaks(sun.spct, span = 50)
+#' peaks(sun.spct, span = 51)
 #' peaks(sun.spct, span = NULL)
+#' peaks(sun.spct, span = 51, fitted = TRUE)
 #'
 #' @family peaks and valleys functions
 #'
@@ -252,14 +278,40 @@ peaks.numeric <-
 #' @export
 #'
 peaks.data.frame <-
-  function(x, span = 5, ignore_threshold = 0, strict = TRUE, na.rm = FALSE, var.name, ...) {
-    if (is.null(var.name)) {
+  function(x,
+           span = 5,
+           ignore_threshold = 0,
+           strict = TRUE,
+           na.rm = FALSE,
+           x.var.name = NULL,
+           y.var.name = NULL,
+           var.name = y.var.name,
+           fitted = FALSE,
+           method = "spline",
+           ...) {
+    if (is.null(var.name) || (fitted && is.null(x.var.name))) {
+      warning("Variable (column) names required.")
       return(x[NA, ])
     }
-    peaks.idx <- find_peaks(x[[var.name]],
-                            span = span, ignore_threshold = ignore_threshold,
-                            strict = strict)
-    x[peaks.idx, ]
+    peaks.idx <-
+      which(find_peaks(x[[var.name]],
+                       span = span,
+                       ignore_threshold = ignore_threshold,
+                       strict = strict))
+    peaks.idx <-
+      which(find_peaks(x[[var.name]],
+                       span = span, ignore_threshold = ignore_threshold,
+                       strict = strict))
+    if (fitted && length(peaks.idx > 0L)) {
+      fit_peaks_spct(x = x,
+                     peaks.idx = peaks.idx,
+                     span = span,
+                     x.col.name = x.var.name,
+                     y.col.name = y.var.name,
+                     method = method)
+    } else {
+      x[peaks.idx, ]
+    }
   }
 
 #' @describeIn peaks  Method for "generic_spct" objects.
@@ -294,7 +346,7 @@ peaks.generic_spct <-
       fit_peaks_spct(x = x,
                      peaks.idx = peaks.idx,
                      span = span,
-                     col.name = var.name,
+                     y.col.name = var.name,
                      method = method)
     } else {
       x[peaks.idx, ]
@@ -338,7 +390,7 @@ peaks.source_spct <-
       fit_peaks_spct(x = z,
                      peaks.idx = peaks.idx,
                      span = span,
-                     col.name = col.name,
+                     y.col.name = col.name,
                      method = method)
     } else {
       z[peaks.idx, ]
@@ -377,7 +429,7 @@ peaks.response_spct <-
       fit_peaks_spct(x = z,
                      peaks.idx = peaks.idx,
                      span = span,
-                     col.name = col.name,
+                     y.col.name = col.name,
                      method = method)
     } else {
       z[peaks.idx, ]
@@ -419,7 +471,7 @@ peaks.filter_spct <-
       fit_peaks_spct(x = z,
                      peaks.idx = peaks.idx,
                      span = span,
-                     col.name = col.name,
+                     y.col.name = col.name,
                      method = method)
     } else {
       z[peaks.idx, ]
@@ -448,7 +500,7 @@ peaks.reflector_spct <- function(x,
     fit_peaks_spct(x = x,
                    peaks.idx = peaks.idx,
                    span = span,
-                   col.name = col.name,
+                   y.col.name = col.name,
                    method = method)
   } else {
     x[peaks.idx, ]
@@ -476,7 +528,7 @@ peaks.cps_spct <- function(x, span = 5,
     fit_peaks_spct(x = x,
                    peaks.idx = peaks.idx,
                    span = span,
-                   col.name = var.name,
+                   y.col.name = var.name,
                    method = method)
   } else {
     x[peaks.idx, ]
@@ -504,7 +556,7 @@ peaks.raw_spct <- function(x, span = 5,
     fit_peaks_spct(x = x,
                    peaks.idx = peaks.idx,
                    span = span,
-                   col.name = var.name,
+                   y.col.name = var.name,
                    method = method)
   } else {
     x[peaks.idx, ]
