@@ -5,6 +5,10 @@ photobiology 0.10.1 (2020-02-xx)
 bug affected computations of irradiances and ratios so that names used in
 lists of wavebands where not reflected in the output, and the label from the
 waveband definitions could not be overriden as intended by design.
+* Revise peaks() methods to support peak fitting. Currently only spline
+interpolation is implemented. Default behaviour remains unchanged. This feature
+is still experimental and returned values may not be reproducible with future
+versions of the package.
 * Revise irrad(), q_irrad() and e_irrad(); fluence(), q_fluence(), and
 e_fluence(); q_ratio(), e_ratio(), qe_ratio() and eq_ratio(); response(),
 q_response(), and e_response() methods so that they add shorter but still
