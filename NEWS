@@ -24,6 +24,7 @@ that they create shorter, and more informative names for returned values.
 support the especializations of these methods for collections of spectra. For
 those functions not handled as special cases, returned values are, as earlier,
 tagged with the name of the applied function.
+* Add data for cone fundamentals for human vision.
 
 ********************************************************************************
 By changing the default names, this update can break older code. It additionally

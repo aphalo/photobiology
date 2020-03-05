@@ -155,27 +155,51 @@ get_valleys <- function(x, y,
 
 #' Refine peak position and value by fitting
 #'
-#' Private function implementing fitting of peaks in a class-agnostic way.
+#' Functions implementing fitting of peaks in a class-agnostic way. The fitting
+#' refines the location of peaks and value of peaks based on the location of
+#' maxima and minima supplied. This function is to be used together with
+#' \code{find_peaks()} or \code{find_valleys()}.
 #'
-#' @param x spectrum
-#' @param peaks.idx integer Indexes into \code{x} selecting global or local
-#'   maxima.
-#' @param span odd integer The span used when searching for the maxima of
-#'   \code{x}.
-#' @param col.name character Name of the column of \code{x} on which to
-#'   operate.
+#' @param x generic_spct or data.frame object.
+#' @param peaks.idx,valleys.idx integer Indexes into \code{x} selecting global
+#'   or local extremes.
+#' @param span odd integer The span used when searching for the maxima or minima
+#'   of \code{x}.
+#' @param x.col.name,y.col.name character Name of the column of \code{x} on
+#'   which to operate.
 #' @param method character The method to use for the fit.
+#' @param keep.cols logical Keep unrecognized columns in data frames
 #'
-#' @keywords internal
+#' @note These functions are not meant for everyday use. Use option
+#'   \code{fitted = TRUE} of methods \code{peaks()} and \code{valleys()} instead.
 #'
-fit_peaks_spct  <- function(x,
-                            peaks.idx,
-                            span,
-                            x.col.name = NULL,
-                            y.col.name,
-                            method,
-                            maximum = TRUE,
-                            keep.cols = NULL) {
+#' @return An R object of the same class as \code{x} containing the fitted
+#'   values for the peaks, and optionally the values for at \code{peaks.idx} or
+#'   \code{valleys.idx} for other retained columns.
+#'
+#' @examples
+#'
+#' peaks <- find_peaks(sun.spct$s.e.irrad, span = 31)
+#' fit_peaks(sun.spct, peaks, span = 31,
+#'           y.col.name = "s.e.irrad", method = "spline")
+#'
+#' @export
+#'
+fit_peaks <- function(x,
+                      peaks.idx,
+                      span,
+                      x.col.name = NULL,
+                      y.col.name,
+                      method,
+                      max.span = 5L,
+                      maximum = TRUE,
+                      keep.cols = NULL) {
+  if (is.null(span)) {
+    span <- max.span
+  }
+  if (is.logical(peaks.idx)) {
+    peaks.idx <- which(peaks.idx)
+  }
   if (is.null(x.col.name) && is.any_spct(x)) {
     x.col.name <- "w.length"
   }
@@ -199,7 +223,7 @@ fit_peaks_spct  <- function(x,
   w.length <- numeric()
   var <- numeric()
   # interval should not be wider than span used to locate maxima
-  half.interval <- min(span %/% 2L, 5L)
+  half.interval <- min(span %/% 2L, max.span)
   for (p in peaks.idx) {
     # we need to avoid off-range indexes!
     interval.p <- c(x[[x.col.name]][max(p - half.interval, 0L)],
@@ -207,7 +231,11 @@ fit_peaks_spct  <- function(x,
     temp <- stats::optimize(f,
                             interval = interval.p,
                             maximum = maximum)
-    w.length <- c(w.length, temp[["maximum"]])
+    if (maximum) {
+      w.length <- c(w.length, temp[["maximum"]])
+    } else {
+      w.length <- c(w.length, temp[["minimum"]])
+    }
     var <- c(var, temp[["objective"]])
   }
   # replace columns of same name
@@ -217,6 +245,30 @@ fit_peaks_spct  <- function(x,
      z <- copy_attributes(x, z, copy.class = FALSE)
   }
   z
+}
+
+#' @rdname fit_peaks
+#'
+#' @export
+#'
+fit_valleys <- function(x,
+                        valleys.idx,
+                        span,
+                        x.col.name = NULL,
+                        y.col.name,
+                        method,
+                        max.span = 5L,
+                        maximum = FALSE,
+                        keep.cols = NULL) {
+  fit_peaks(x = x,
+            peaks.idx = valleys.idx,
+            span = span,
+            x.col.name = x.col.name,
+            y.col.name = y.col.name,
+            method = method,
+            max.span = max.span,
+            maximum = maximum,
+            keep.cols = keep.cols)
 }
 
 # peaks -------------------------------------------------------------------
@@ -303,12 +355,12 @@ peaks.data.frame <-
                        span = span, ignore_threshold = ignore_threshold,
                        strict = strict))
     if (fitted && length(peaks.idx > 0L)) {
-      fit_peaks_spct(x = x,
-                     peaks.idx = peaks.idx,
-                     span = span,
-                     x.col.name = x.var.name,
-                     y.col.name = y.var.name,
-                     method = method)
+      fit_peaks(x = x,
+                peaks.idx = peaks.idx,
+                span = span,
+                x.col.name = x.var.name,
+                y.col.name = y.var.name,
+                method = method)
     } else {
       x[peaks.idx,  , drop = FALSE]
     }
@@ -343,11 +395,11 @@ peaks.generic_spct <-
                        span = span, ignore_threshold = ignore_threshold,
                        strict = strict))
     if (fitted && length(peaks.idx > 0L)) {
-      fit_peaks_spct(x = x,
-                     peaks.idx = peaks.idx,
-                     span = span,
-                     y.col.name = var.name,
-                     method = method)
+      fit_peaks(x = x,
+                peaks.idx = peaks.idx,
+                span = span,
+                y.col.name = var.name,
+                method = method)
     } else {
       x[peaks.idx,  , drop = FALSE]
     }
@@ -387,11 +439,11 @@ peaks.source_spct <-
                        strict = strict,
                        na.rm = na.rm))
     if (fitted && length(peaks.idx > 0L)) {
-      fit_peaks_spct(x = z,
-                     peaks.idx = peaks.idx,
-                     span = span,
-                     y.col.name = col.name,
-                     method = method)
+      fit_peaks(x = z,
+                peaks.idx = peaks.idx,
+                span = span,
+                y.col.name = col.name,
+                method = method)
     } else {
       z[peaks.idx,  , drop = FALSE]
     }
@@ -426,11 +478,11 @@ peaks.response_spct <-
                             strict = strict,
                             na.rm = na.rm))
     if (fitted && length(peaks.idx > 0L)) {
-      fit_peaks_spct(x = z,
-                     peaks.idx = peaks.idx,
-                     span = span,
-                     y.col.name = col.name,
-                     method = method)
+      fit_peaks(x = z,
+                peaks.idx = peaks.idx,
+                span = span,
+                y.col.name = col.name,
+                method = method)
     } else {
       z[peaks.idx,  , drop = FALSE]
     }
@@ -468,11 +520,11 @@ peaks.filter_spct <-
                             strict = strict,
                             na.rm = na.rm))
     if (fitted && length(peaks.idx > 0L)) {
-      fit_peaks_spct(x = z,
-                     peaks.idx = peaks.idx,
-                     span = span,
-                     y.col.name = col.name,
-                     method = method)
+      fit_peaks(x = z,
+                peaks.idx = peaks.idx,
+                span = span,
+                y.col.name = col.name,
+                method = method)
     } else {
       z[peaks.idx,  , drop = FALSE]
     }
@@ -497,11 +549,11 @@ peaks.reflector_spct <- function(x,
                      strict = strict,
                      na.rm = na.rm))
   if (fitted && length(peaks.idx > 0L)) {
-    fit_peaks_spct(x = x,
-                   peaks.idx = peaks.idx,
-                   span = span,
-                   y.col.name = col.name,
-                   method = method)
+    fit_peaks(x = x,
+              peaks.idx = peaks.idx,
+              span = span,
+              y.col.name = col.name,
+              method = method)
   } else {
     x[peaks.idx,  , drop = FALSE]
   }
@@ -525,11 +577,11 @@ peaks.cps_spct <- function(x, span = 5,
                      strict = strict,
                      na.rm = na.rm))
   if (fitted && length(peaks.idx > 0L)) {
-    fit_peaks_spct(x = x,
-                   peaks.idx = peaks.idx,
-                   span = span,
-                   y.col.name = var.name,
-                   method = method)
+    fit_peaks(x = x,
+              peaks.idx = peaks.idx,
+              span = span,
+              y.col.name = var.name,
+              method = method)
   } else {
     x[peaks.idx,  , drop = FALSE]
   }
@@ -553,11 +605,11 @@ peaks.raw_spct <- function(x, span = 5,
                      strict = strict,
                      na.rm = na.rm))
   if (fitted && length(peaks.idx > 0L)) {
-    fit_peaks_spct(x = x,
-                   peaks.idx = peaks.idx,
-                   span = span,
-                   y.col.name = var.name,
-                   method = method)
+    fit_peaks(x = x,
+              peaks.idx = peaks.idx,
+              span = span,
+              y.col.name = var.name,
+              method = method)
   } else {
     x[peaks.idx,  , drop = FALSE]
   }
