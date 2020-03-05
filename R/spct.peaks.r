@@ -310,7 +310,7 @@ peaks.data.frame <-
                      y.col.name = y.var.name,
                      method = method)
     } else {
-      x[peaks.idx, ]
+      x[peaks.idx,  , drop = FALSE]
     }
   }
 
@@ -349,7 +349,7 @@ peaks.generic_spct <-
                      y.col.name = var.name,
                      method = method)
     } else {
-      x[peaks.idx, ]
+      x[peaks.idx,  , drop = FALSE]
     }
   }
 
@@ -393,7 +393,7 @@ peaks.source_spct <-
                      y.col.name = col.name,
                      method = method)
     } else {
-      z[peaks.idx, ]
+      z[peaks.idx,  , drop = FALSE]
     }
   }
 
@@ -432,7 +432,7 @@ peaks.response_spct <-
                      y.col.name = col.name,
                      method = method)
     } else {
-      z[peaks.idx, ]
+      z[peaks.idx,  , drop = FALSE]
     }
   }
 
@@ -474,7 +474,7 @@ peaks.filter_spct <-
                      y.col.name = col.name,
                      method = method)
     } else {
-      z[peaks.idx, ]
+      z[peaks.idx,  , drop = FALSE]
     }
   }
 
@@ -503,7 +503,7 @@ peaks.reflector_spct <- function(x,
                    y.col.name = col.name,
                    method = method)
   } else {
-    x[peaks.idx, ]
+    x[peaks.idx,  , drop = FALSE]
   }
 }
 
@@ -531,7 +531,7 @@ peaks.cps_spct <- function(x, span = 5,
                    y.col.name = var.name,
                    method = method)
   } else {
-    x[peaks.idx, ]
+    x[peaks.idx,  , drop = FALSE]
   }
 }
 
@@ -559,7 +559,7 @@ peaks.raw_spct <- function(x, span = 5,
                    y.col.name = var.name,
                    method = method)
   } else {
-    x[peaks.idx, ]
+    x[peaks.idx,  , drop = FALSE]
   }
 }
 

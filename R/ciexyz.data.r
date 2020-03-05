@@ -152,3 +152,38 @@
 #' ciev2.spct
 #'
 "ciev2.spct"
+
+#' @title Ten-degree cone fundaamentals
+#'
+#' @description A dataset containing wavelengths at a 1 nm interval (390 nm to
+#'   830 nm) and the corresponding response values for a 2 degrees target.
+#'   Original data from \url{http://www.cvrl.org/} downloaded on 2014-04-29 The
+#'   variables are as follows:
+#'
+#' @details
+#' \itemize{
+#'   \item w.length (nm)
+#'   \item x
+#'   \item y
+#'   \item z }
+#'
+#' @author CIE
+#'
+#' @return A \code{chroma_spct} object.
+#' @docType data
+#' @keywords datasets
+#' @format A chroma_spct object with 440 rows and 4 variables
+#' @family Visual response data examples
+#'
+#' @examples
+#' cone_fundamentals10.spct
+#'
+"cone_fundamentals10.spct"
+
+
+#' @rdname cone_fundamentals10.spct
+#'
+#' @return A \code{response_mspct} object containing the same data in three
+#' \code{response_spct} objects.
+#'
+"cone_fundamentals10.mspct"
