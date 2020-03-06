@@ -163,15 +163,19 @@ get_valleys <- function(x, y,
 #' @param x generic_spct or data.frame object.
 #' @param peaks.idx,valleys.idx integer Indexes into \code{x} selecting global
 #'   or local extremes.
-#' @param span odd integer The span used when searching for the maxima or minima
-#'   of \code{x}.
+#' @param span odd integer The span used when refining the location of maxima or
+#'   minima of \code{x}.
 #' @param x.col.name,y.col.name character Name of the column of \code{x} on
 #'   which to operate.
 #' @param method character The method to use for the fit.
+#' @param max.span odd integer The maximum number of data points used when
+#'   when refining the location of maxima and minima.
+#' @param maximum logical A flag indicating whether to search for maxima or
+#'   minima.
 #' @param keep.cols logical Keep unrecognized columns in data frames
 #'
 #' @note These functions are not meant for everyday use. Use option
-#'   \code{fitted = TRUE} of methods \code{peaks()} and \code{valleys()} instead.
+#'   \code{refine.wl = TRUE} of methods \code{peaks()} and \code{valleys()} instead.
 #'
 #' @return An R object of the same class as \code{x} containing the fitted
 #'   values for the peaks, and optionally the values for at \code{peaks.idx} or
@@ -291,7 +295,7 @@ fit_valleys <- function(x,
 #'   before searching for peaks.
 #' @param var.name,x.var.name,y.var.name character Name of column where to look
 #'   for peaks.
-#' @param fitted logical Flag indicating if peak location should be refined by
+#' @param refine.wl logical Flag indicating if peak location should be refined by
 #'   fitting a function.
 #' @param method character String with the name of a method. Currently only
 #'   spline interpolation is implemented.
@@ -304,7 +308,7 @@ fit_valleys <- function(x,
 #' @examples
 #' peaks(sun.spct, span = 51)
 #' peaks(sun.spct, span = NULL)
-#' peaks(sun.spct, span = 51, fitted = TRUE)
+#' peaks(sun.spct, span = 51, refine.wl = TRUE)
 #'
 #' @family peaks and valleys functions
 #'
@@ -338,10 +342,10 @@ peaks.data.frame <-
            x.var.name = NULL,
            y.var.name = NULL,
            var.name = y.var.name,
-           fitted = FALSE,
+           refine.wl = FALSE,
            method = "spline",
            ...) {
-    if (is.null(var.name) || (fitted && is.null(x.var.name))) {
+    if (is.null(var.name) || (refine.wl && is.null(x.var.name))) {
       warning("Variable (column) names required.")
       return(x[NA, ])
     }
@@ -350,16 +354,12 @@ peaks.data.frame <-
                        span = span,
                        ignore_threshold = ignore_threshold,
                        strict = strict))
-    peaks.idx <-
-      which(find_peaks(x[[var.name]],
-                       span = span, ignore_threshold = ignore_threshold,
-                       strict = strict))
-    if (fitted && length(peaks.idx > 0L)) {
+    if (refine.wl && length(peaks.idx > 0L)) {
       fit_peaks(x = x,
                 peaks.idx = peaks.idx,
                 span = span,
                 x.col.name = x.var.name,
-                y.col.name = y.var.name,
+                y.col.name = var.name,
                 method = method)
     } else {
       x[peaks.idx,  , drop = FALSE]
@@ -377,7 +377,7 @@ peaks.generic_spct <-
            strict = TRUE,
            na.rm = FALSE,
            var.name = NULL,
-           fitted = FALSE,
+           refine.wl = FALSE,
            method = "spline",
            ...) {
     if (is.null(var.name)) {
@@ -394,7 +394,7 @@ peaks.generic_spct <-
       which(find_peaks(x[[var.name]],
                        span = span, ignore_threshold = ignore_threshold,
                        strict = strict))
-    if (fitted && length(peaks.idx > 0L)) {
+    if (refine.wl && length(peaks.idx > 0L)) {
       fit_peaks(x = x,
                 peaks.idx = peaks.idx,
                 span = span,
@@ -421,7 +421,7 @@ peaks.source_spct <-
            strict = TRUE,
            na.rm = FALSE,
            unit.out = getOption("photobiology.radiation.unit", default = "energy"),
-           fitted = FALSE,
+           refine.wl = FALSE,
            method = "spline",
            ...) {
     if (unit.out == "energy") {
@@ -438,7 +438,7 @@ peaks.source_spct <-
                        span = span, ignore_threshold = ignore_threshold,
                        strict = strict,
                        na.rm = na.rm))
-    if (fitted && length(peaks.idx > 0L)) {
+    if (refine.wl && length(peaks.idx > 0L)) {
       fit_peaks(x = z,
                 peaks.idx = peaks.idx,
                 span = span,
@@ -460,7 +460,7 @@ peaks.response_spct <-
            strict = TRUE,
            na.rm = FALSE,
            unit.out = getOption("photobiology.radiation.unit", default = "energy"),
-           fitted = FALSE,
+           refine.wl = FALSE,
            method = "spline",
            ...) {
     if (unit.out == "energy") {
@@ -477,7 +477,7 @@ peaks.response_spct <-
                             span = span, ignore_threshold = ignore_threshold,
                             strict = strict,
                             na.rm = na.rm))
-    if (fitted && length(peaks.idx > 0L)) {
+    if (refine.wl && length(peaks.idx > 0L)) {
       fit_peaks(x = z,
                 peaks.idx = peaks.idx,
                 span = span,
@@ -502,7 +502,7 @@ peaks.filter_spct <-
            na.rm = FALSE,
            filter.qty = getOption("photobiology.filter.qty",
                                   default = "transmittance"),
-           fitted = FALSE,
+           refine.wl = FALSE,
            method = "spline",
            ...) {
     if (filter.qty == "transmittance") {
@@ -519,7 +519,7 @@ peaks.filter_spct <-
                             span = span, ignore_threshold = ignore_threshold,
                             strict = strict,
                             na.rm = na.rm))
-    if (fitted && length(peaks.idx > 0L)) {
+    if (refine.wl && length(peaks.idx > 0L)) {
       fit_peaks(x = z,
                 peaks.idx = peaks.idx,
                 span = span,
@@ -539,7 +539,7 @@ peaks.reflector_spct <- function(x,
                                  ignore_threshold = 0,
                                  strict = TRUE,
                                  na.rm = FALSE,
-                                 fitted = FALSE,
+                                 refine.wl = FALSE,
                                  method = "spline",
                                  ...) {
   col.name <- "Rfr"
@@ -548,7 +548,7 @@ peaks.reflector_spct <- function(x,
                      span = span, ignore_threshold = ignore_threshold,
                      strict = strict,
                      na.rm = na.rm))
-  if (fitted && length(peaks.idx > 0L)) {
+  if (refine.wl && length(peaks.idx > 0L)) {
     fit_peaks(x = x,
               peaks.idx = peaks.idx,
               span = span,
@@ -568,7 +568,7 @@ peaks.cps_spct <- function(x, span = 5,
                            strict = TRUE,
                            na.rm = FALSE,
                            var.name = "cps",
-                           fitted = FALSE,
+                           refine.wl = FALSE,
                            method = "spline",
                            ...) {
   peaks.idx <-
@@ -576,7 +576,7 @@ peaks.cps_spct <- function(x, span = 5,
                      span = span, ignore_threshold = ignore_threshold,
                      strict = strict,
                      na.rm = na.rm))
-  if (fitted && length(peaks.idx > 0L)) {
+  if (refine.wl && length(peaks.idx > 0L)) {
     fit_peaks(x = x,
               peaks.idx = peaks.idx,
               span = span,
@@ -596,7 +596,7 @@ peaks.raw_spct <- function(x, span = 5,
                            strict = TRUE,
                            na.rm = FALSE,
                            var.name = "counts",
-                           fitted = FALSE,
+                           refine.wl = FALSE,
                            method = "spline",
                            ...) {
   peaks.idx <-
@@ -604,7 +604,7 @@ peaks.raw_spct <- function(x, span = 5,
                      span = span, ignore_threshold = ignore_threshold,
                      strict = strict,
                      na.rm = na.rm))
-  if (fitted && length(peaks.idx > 0L)) {
+  if (refine.wl && length(peaks.idx > 0L)) {
     fit_peaks(x = x,
               peaks.idx = peaks.idx,
               span = span,
@@ -633,7 +633,7 @@ peaks.generic_mspct <- function(x,
                                 strict = TRUE,
                                 na.rm = FALSE,
                                 var.name = NULL,
-                                fitted = FALSE,
+                                refine.wl = FALSE,
                                 method = "spline",
                                 ...,
                                 .parallel = FALSE,
@@ -645,7 +645,7 @@ peaks.generic_mspct <- function(x,
           strict = strict,
           na.rm = na.rm,
           var.name = var.name,
-          fitted = fitted,
+          refine.wl = refine.wl,
           method = method,
           ...,
           .parallel = .parallel,
@@ -664,7 +664,7 @@ peaks.source_mspct <-
            na.rm = FALSE,
            unit.out = getOption("photobiology.radiation.unit",
                                 default = "energy"),
-           fitted = FALSE,
+           refine.wl = FALSE,
            method = "spline",
            ...,
            .parallel = FALSE,
@@ -676,7 +676,7 @@ peaks.source_mspct <-
             strict = strict,
             unit.out = unit.out,
             na.rm = na.rm,
-            fitted = fitted,
+            refine.wl = refine.wl,
             method = method,
             ...,
             .parallel = .parallel,
@@ -695,7 +695,7 @@ peaks.response_mspct <-
            na.rm = FALSE,
            unit.out = getOption("photobiology.radiation.unit",
                                 default = "energy"),
-           fitted = FALSE,
+           refine.wl = FALSE,
            method = "spline",
            ...,
            .parallel = FALSE,
@@ -707,7 +707,7 @@ peaks.response_mspct <-
             strict = strict,
             unit.out = unit.out,
             na.rm = na.rm,
-            fitted = fitted,
+            refine.wl = refine.wl,
             method = method,
             ...,
             .parallel = .parallel,
@@ -726,7 +726,7 @@ peaks.filter_mspct <-
            na.rm = FALSE,
            filter.qty = getOption("photobiology.filter.qty",
                                   default = "transmittance"),
-           fitted = FALSE,
+           refine.wl = FALSE,
            method = "spline",
            ...,
            .parallel = FALSE,
@@ -738,7 +738,7 @@ peaks.filter_mspct <-
             strict = strict,
             filter.qty = filter.qty,
             na.rm = na.rm,
-            fitted = fitted,
+            refine.wl = refine.wl,
             method = method,
             ...,
             .parallel = .parallel,
@@ -756,7 +756,7 @@ peaks.reflector_mspct <-
            ignore_threshold = 0,
            strict = TRUE,
            na.rm = FALSE,
-           fitted = FALSE,
+           refine.wl = FALSE,
            method = "spline",
            ...,
            .parallel = FALSE,
@@ -767,7 +767,7 @@ peaks.reflector_mspct <-
             ignore_threshold = ignore_threshold,
             strict = strict,
             na.rm = na.rm,
-            fitted = fitted,
+            refine.wl = refine.wl,
             method = method,
             ...,
             .parallel = .parallel,
@@ -785,7 +785,7 @@ peaks.cps_mspct <- function(x,
                             strict = TRUE,
                             na.rm = FALSE,
                             var.name = "cps",
-                            fitted = FALSE,
+                            refine.wl = FALSE,
                             method = "spline",
                             ...,
                             .parallel = FALSE,
@@ -797,7 +797,7 @@ peaks.cps_mspct <- function(x,
           strict = strict,
           na.rm = na.rm,
           var.name = var.name,
-          fitted = fitted,
+          refine.wl = refine.wl,
           method = method,
           ...,
           .parallel = .parallel,
@@ -814,7 +814,7 @@ peaks.raw_mspct <- function(x,
                             strict = TRUE,
                             na.rm = FALSE,
                             var.name = "counts",
-                            fitted = FALSE,
+                            refine.wl = FALSE,
                             method = "spline",
                             ...,
                             .parallel = FALSE,
@@ -826,7 +826,7 @@ peaks.raw_mspct <- function(x,
           strict = strict,
           na.rm = na.rm,
           var.name = var.name,
-          fitted = fitted,
+          refine.wl = refine.wl,
           method = method,
           ...,
           .parallel = .parallel,
@@ -852,6 +852,12 @@ peaks.raw_mspct <- function(x,
 #'   all other values in its window to be considered a peak. Default: TRUE.
 #' @param na.rm logical indicating whether \code{NA} values should be stripped
 #'   before searching for peaks.
+#' @param var.name,x.var.name,y.var.name character Name of column where to look
+#'   for valleys.
+#' @param refine.wl logical Flag indicating if valley location should be refined by
+#'   fitting a function.
+#' @param method character String with the name of a method. Currently only
+#'   spline interpolation is implemented.
 #' @param ... ignored
 #'
 #' @return A subset of \code{x} with rows corresponding to local minima.
@@ -888,19 +894,39 @@ valleys.numeric <-
 
 #' @describeIn valleys  Method for "data.frame" objects.
 #'
-#' @param var.name Name of column where to look for peaks.
-#'
 #' @export
 #'
 valleys.data.frame <-
-  function(x, span = 5, ignore_threshold = 0, strict = TRUE, na.rm = FALSE, var.name, ...) {
-    if (is.null(var.name)) {
+  function(x,
+           span = 5,
+           ignore_threshold = 0,
+           strict = TRUE,
+           na.rm = FALSE,
+           x.var.name = NULL,
+           y.var.name = NULL,
+           var.name = y.var.name,
+           refine.wl = FALSE,
+           method = "spline",
+           ...) {
+    if (is.null(var.name) || (refine.wl && is.null(x.var.name))) {
+      warning("Variable (column) names required.")
       return(x[NA, ])
     }
-    peaks.idx <- find_peaks(-x[[var.name]],
-                            span = span, ignore_threshold = ignore_threshold,
-                            strict = strict)
-    x[peaks.idx, ]
+    valleys.idx <-
+      which(find_peaks(-x[[var.name]],
+                       span = span,
+                       ignore_threshold = ignore_threshold,
+                       strict = strict))
+    if (refine.wl && length(valleys.idx > 0L)) {
+      fit_valleys(x = x,
+                valleys.idx = valleys.idx,
+                span = span,
+                x.col.name = x.var.name,
+                y.col.name = y.var.name,
+                method = method)
+    } else {
+      x[valleys.idx,  , drop = FALSE]
+    }
   }
 
 #' @describeIn valleys  Method for "generic_spct" objects.
@@ -908,7 +934,15 @@ valleys.data.frame <-
 #' @export
 #'
 valleys.generic_spct <-
-  function(x, span = 5, ignore_threshold = 0, strict = TRUE, na.rm = FALSE, var.name = NULL, ...) {
+  function(x,
+           span = 5,
+           ignore_threshold = 0,
+           strict = TRUE,
+           na.rm = FALSE,
+           var.name = NULL,
+           refine.wl = FALSE,
+           method = "spline",
+           ...) {
     if (is.null(var.name)) {
       # find target variable
       var.name <- names(x)
@@ -919,10 +953,20 @@ valleys.generic_spct <-
         return(x[NA, ])
       }
     }
-    peaks.idx <- find_peaks(-x[[var.name]],
-                            span = span, ignore_threshold = ignore_threshold,
-                            strict = strict)
-    x[peaks.idx, ]
+    valleys.idx <-
+      which(find_peaks(-x[[var.name]],
+                       span = span,
+                       ignore_threshold = ignore_threshold,
+                       strict = strict))
+    if (refine.wl && length(valleys.idx > 0L)) {
+      fit_valleys(x = x,
+                  valleys.idx = valleys.idx,
+                  span = span,
+                  y.col.name = var.name,
+                  method = method)
+    } else {
+      x[valleys.idx,  , drop = FALSE]
+    }
   }
 
 #' @describeIn valleys  Method for "source_spct" objects.
@@ -935,8 +979,14 @@ valleys.generic_spct <-
 #' valleys(sun.spct)
 #'
 valleys.source_spct <-
-  function(x, span = 5, ignore_threshold = 0.0, strict = TRUE, na.rm = FALSE,
+  function(x,
+           span = 5,
+           ignore_threshold = 0,
+           strict = TRUE,
+           na.rm = FALSE,
            unit.out = getOption("photobiology.radiation.unit", default = "energy"),
+           refine.wl = FALSE,
+           method = "spline",
            ...) {
     if (unit.out == "energy") {
       z <- q2e(x, "replace", FALSE)
@@ -947,11 +997,21 @@ valleys.source_spct <-
     } else {
       stop("Unrecognized 'unit.out': ", unit.out)
     }
-    valleys.idx <- find_peaks(-z[[col.name]],
-                          span = span, ignore_threshold = ignore_threshold,
-                          strict = strict,
-                          na.rm = na.rm)
-    z[valleys.idx, ]
+    valleys.idx <-
+      which(find_peaks(-z[[col.name]],
+                       span = span,
+                       ignore_threshold = ignore_threshold,
+                       strict = strict,
+                       na.rm = na.rm))
+    if (refine.wl && length(valleys.idx > 0L)) {
+      fit_valleys(x = z,
+                  valleys.idx = valleys.idx,
+                  span = span,
+                  y.col.name = col.name,
+                  method = method)
+    } else {
+      z[valleys.idx,  , drop = FALSE]
+    }
   }
 
 #' @describeIn valleys  Method for "response_spct" objects.
@@ -959,8 +1019,14 @@ valleys.source_spct <-
 #' @export
 #'
 valleys.response_spct <-
-  function(x, span = 5, ignore_threshold = 0.0, strict = TRUE, na.rm = FALSE,
+  function(x,
+           span = 5,
+           ignore_threshold = 0,
+           strict = TRUE,
+           na.rm = FALSE,
            unit.out = getOption("photobiology.radiation.unit", default = "energy"),
+           refine.wl = FALSE,
+           method = "spline",
            ...) {
     if (unit.out == "energy") {
       z <- q2e(x, "replace", FALSE)
@@ -971,11 +1037,21 @@ valleys.response_spct <-
     } else {
       stop("Unrecognized 'unit.out': ", unit.out)
     }
-    valleys.idx <- find_peaks(-z[[col.name]],
-                            span = span, ignore_threshold = ignore_threshold,
-                            strict = strict,
-                            na.rm = na.rm)
-    z[valleys.idx, ]
+    valleys.idx <-
+      which(find_peaks(-z[[col.name]],
+                       span = span,
+                       ignore_threshold = ignore_threshold,
+                       strict = strict,
+                       na.rm = na.rm))
+    if (refine.wl && length(valleys.idx > 0L)) {
+      fit_valleys(x = z,
+                  valleys.idx = valleys.idx,
+                  span = span,
+                  y.col.name = col.name,
+                  method = method)
+    } else {
+      z[valleys.idx,  , drop = FALSE]
+    }
   }
 
 #' @describeIn valleys  Method for "filter_spct" objects.
@@ -985,8 +1061,14 @@ valleys.response_spct <-
 #' @export
 #'
 valleys.filter_spct <-
-  function(x, span = 5, ignore_threshold = 0, strict = TRUE, na.rm = FALSE,
+  function(x,
+           span = 5,
+           ignore_threshold = 0,
+           strict = TRUE,
+           na.rm = FALSE,
            filter.qty = getOption("photobiology.filter.qty", default = "transmittance"),
+           refine.wl = FALSE,
+           method = "spline",
            ...) {
     if (filter.qty == "transmittance") {
       z <- A2T(x, "replace", FALSE)
@@ -997,11 +1079,21 @@ valleys.filter_spct <-
     } else {
       stop("Unrecognized 'filter.qty': ", filter.qty)
     }
-    valleys.idx <- find_peaks(-z[[col.name]],
-                              span = span, ignore_threshold = ignore_threshold,
-                              strict = strict,
-                              na.rm = na.rm)
-    z[valleys.idx, ]
+    valleys.idx <-
+      which(find_peaks(-z[[col.name]],
+                       span = span,
+                       ignore_threshold = ignore_threshold,
+                       strict = strict,
+                       na.rm = na.rm))
+    if (refine.wl && length(valleys.idx > 0L)) {
+      fit_valleys(x = z,
+                  valleys.idx = valleys.idx,
+                  span = span,
+                  y.col.name = col.name,
+                  method = method)
+    } else {
+      z[valleys.idx,  , drop = FALSE]
+    }
   }
 
 #' @describeIn valleys  Method for "reflector_spct".
@@ -1009,25 +1101,89 @@ valleys.filter_spct <-
 #' @export
 #'
 valleys.reflector_spct <-
-  function(x, span = 5, ignore_threshold = 0, strict = TRUE, na.rm = FALSE, ...) {
-  valleys.idx <- find_peaks(-x[["Rfr"]],
-                          span = span, ignore_threshold = ignore_threshold,
-                          strict = strict,
-                          na.rm = na.rm)
-  x[valleys.idx, ]
-}
+  function(x,
+           span = 5,
+           ignore_threshold = 0,
+           strict = TRUE,
+           na.rm = FALSE,
+           refine.wl = FALSE,
+           method = "spline",
+           ...) {
+    col.name <- "Rfr"
+    valleys.idx <-
+      which(find_peaks(-x[[col.name]],
+                       span = span,
+                       ignore_threshold = ignore_threshold,
+                       strict = strict,
+                       na.rm = na.rm))
+    if (refine.wl && length(valleys.idx > 0L)) {
+      fit_valleys(x = x,
+                  valleys.idx = valleys.idx,
+                  span = span,
+                  y.col.name = col.name,
+                  method = method)
+    } else {
+      x[valleys.idx,  , drop = FALSE]
+    }
+  }
 
 #' @describeIn valleys  Method for "cps_spct" objects.
 #'
 #' @export
 #'
 valleys.cps_spct <-
-  function(x, span = 5, ignore_threshold = 0, strict = TRUE, na.rm = FALSE, ...) {
-  valleys.idx <- find_peaks(-x[["cps"]],
-                          span = span, ignore_threshold = ignore_threshold,
-                          strict = strict,
-                          na.rm = na.rm)
-  x[valleys.idx, ]
+  function(x,
+           span = 5,
+           ignore_threshold = 0,
+           strict = TRUE,
+           na.rm = FALSE,
+           refine.wl = FALSE,
+           method = "spline",
+           ...) {
+    col.name <- "cps"
+    valleys.idx <-
+      which(find_peaks(-x[[col.name]],
+                       span = span,
+                       ignore_threshold = ignore_threshold,
+                       strict = strict,
+                       na.rm = na.rm))
+    if (refine.wl && length(valleys.idx > 0L)) {
+      fit_valleys(x = x,
+                  valleys.idx = valleys.idx,
+                  span = span,
+                  y.col.name = col.name,
+                  method = method)
+    } else {
+      x[valleys.idx,  , drop = FALSE]
+    }
+  }
+
+#' @describeIn valleys  Method for "raw_spct" objects.
+#'
+#' @export
+#'
+valleys.raw_spct <- function(x, span = 5,
+                             ignore_threshold = 0,
+                             strict = TRUE,
+                             na.rm = FALSE,
+                             var.name = "counts",
+                             refine.wl = FALSE,
+                             method = "spline",
+                             ...) {
+  valleys.idx <-
+    which(find_peaks(-x[[var.name]],
+                     span = span, ignore_threshold = ignore_threshold,
+                     strict = strict,
+                     na.rm = na.rm))
+  if (refine.wl && length(valleys.idx > 0L)) {
+    fit_valleys(x = x,
+                valleys.idx = valleys.idx,
+                span = span,
+                y.col.name = var.name,
+                method = method)
+  } else {
+    x[valleys.idx,  , drop = FALSE]
+  }
 }
 
 #' @describeIn valleys  Method for "generic_mspct" objects.
