@@ -1,4 +1,5 @@
 library(photobiology)
+library(dplyr)
 
 oldwd <- setwd("data-raw/humans")
 
@@ -9,6 +10,7 @@ ciev2.spct <- read.csv(file="linCIE2008v2e_1.csv", comment.char = "#")
 ciexyzCMF10.spct <- read.csv(file="lin2012xyz10e_1_7sf.csv", comment.char = "#")
 ciexyzCC10.spct <- read.csv(file="cc2012xyz10_1_5dp.csv", comment.char = "#")
 ciev10.spct <- read.csv(file="linCIE2008v10e_1.csv", comment.char = "#")
+cone_fundamentals10.spct <- read.csv(file="linss10e_1.csv", col.names = c("w.length", "x", "y", "z"))
 setChromaSpct(ciexyzCMF2.spct)
 comment(ciexyzCMF2.spct) <- "CIE 2012 2 degrees CMF (color matching function) from lin2012xyz2e_1_7sf.csv"
 setChromaSpct(ciexyzCC2.spct)
@@ -21,7 +23,14 @@ setChromaSpct(ciexyzCC10.spct)
 comment(ciexyzCC10.spct) <- "CIE 2012 10 degrees CC (color coordinates) from cc2012xyz10_1_5dp.csv"
 setResponseSpct(ciev10.spct)
 comment(ciev10.spct) <- "CIE 2008 10 degrees V from linCIE2008v10e_1.csv"
-
+cone_fundamentals10.spct %>%
+  split2response_mspct() %>%
+  msmsply(`what_measured<-`, value = "Human vision. Cone fundamentals 10 degrees.") %>%
+  msmsply(normalize, norm = "max") %>%
+  msmsply(na.omit) ->
+  cone_fundamentals10.mspct
+setChromaSpct(cone_fundamentals10.spct) %>% mutate(z = ifelse(is.na(z), 0, z)) -> cone_fundamentals10.spct
+comment(cone_fundamentals10.spct) <- "10-deg fundamentals based on the Stiles & Burch 10-deg CMFs; Stockman & Sharpe (2000)"
 setwd(oldwd)
 
 olwd <- setwd("data")
@@ -33,6 +42,7 @@ save(ciexyzCC2.spct, file="ciexyzCC2.spct.rda")
 save(ciexyzCC10.spct, file="ciexyzCC10.spct.rda")
 save(ciev2.spct, file="ciev2.spct.rda")
 save(ciev10.spct, file="ciev10.spct.rda")
+save(cone_fundamentals10.spct, cone_fundamentals10.mspct, file="cone_fundamentals10.spct.rda")
 
 setwd(olwd)
 
@@ -51,3 +61,4 @@ setwd(oldwd)
 olwd <- setwd("data")
 save(beesxyzCMF.spct, file="beesxyz.spct.rda")
 setwd(olwd)
+

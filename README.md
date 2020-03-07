@@ -69,8 +69,8 @@ devtools::install_bitbucket("aphalo/photobiology")
 ## Documentation
 
 HTML documentation is available at
-(<https://docs.r4photobiology.info/photobiology/>), including a *User
-Guide*.
+(<https://docs.r4photobiology.info/photobiology/>), including three
+*User Guides*.
 
 News on updates to the different packages of the ‘r4photobiology’ suite
 are regularly posted at (<https://www.r4photobiology.info/>).
@@ -127,6 +127,6 @@ citation("photobiology")
 
 ## License
 
-© 2012-2019 Pedro J. Aphalo (<pedro.aphalo@helsinki.fi>). Released under
+© 2012-2020 Pedro J. Aphalo (<pedro.aphalo@helsinki.fi>). Released under
 the GPL, version 2 or greater. This software carries no warranty of any
 kind.

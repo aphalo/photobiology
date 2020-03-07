@@ -1,0 +1,79 @@
+From:	Agnese Fazio <agnese.fazio@uni-jena.de>
+Sent:	Monday, 2 March 2020 10.00
+To:	Aphalo, Pedro J
+Subject:	Re: despinking R
+Attachments:	Raman Spectra script 200302 + despiking.R; Single Spectrum_013.txt; Single 
+Spectrum_012.txt
+
+Dear Pedro,
+
+thank you for your quick answer. Raman spikes are randomly distributed and not all the spectra show 
+them. They are usually ~4/5 "pixel" wide.  
+On Friday, I found an algorithm that does exactly what I was looking for 
+https://chemrxiv.org/articles/A_Simple_Algorithm_for_Despiking_Raman_Spectra/5993011/2. I send 
+you a part of my script and two spectra files to test it. Could it be maybe possible to implement the 
+algorithm in your package?
+
+Best regards,
+Agnese
+
+
+Quoting "Aphalo, Pedro J" <pedro.aphalo@helsinki.fi>:
+
+> Hi Agnese,
+>
+> I am not familiar with Raman. How wide are what you call spikes?  
+> Single "pixel" or broader? Are the spikes at the same position in all 
+> spectra?
+> Let me know this so that I work out what would be a reasonable 
+> approach, i.e., would the code I have using for replacing data for bad 
+> and hot pixels in array spectrometers work also in your case.
+>
+> Best wishes,
+>
+> Pedro.
+>
+> -----Original Message-----
+> From: Agnese Fazio <agnese.fazio@uni-jena.de>
+> Sent: Friday, 28 February 2020 9.43
+> To: Aphalo, Pedro J <pedro.aphalo@helsinki.fi>
+> Subject: despinking R
+>
+>
+> Dear Dr. Aphalo,
+>
+> I am a postdoc of the University of Jena (Germany), I work on 
+> mineralogy and I am a relatively new R user. Working on Raman Spectra, 
+> I used your great packages "photobiology" and "ggspectra".
+> Thanks to them, I solved a lot of problems and I saved a lot of time!
+>
+> I would like to ask you if there is a way to recognize spikes and 
+> remove/ignore them using the get_peaks function.
+>
+> Thank you in advance.
+>
+> Kind regards,
+> Agnese Fazio
+>
+> --
+> Dr. Agnese Fazio
+> Analytische Mineralogie der Mikro- und Nanostrukturen Institut für 
+> Geowissenschaften Friedrich-Schiller-Universität Jena 
+> Carl-Zeiss-Promenade 10
+> 07745 Jena, Germany
+>
+> Phone +49(0)3641-948738
+> Email agnese.fazio@uni-jena.de
+> http://www.mingeoch.uni-jena.de/
+
+
+
+--
+Dr. Agnese Fazio
+Analytische Mineralogie der Mikro- und Nanostrukturen Institut für Geowissenschaften Friedrich-
+Schiller-Universität Jena Carl-Zeiss-Promenade 10
+07745 Jena, Germany
+
+Phone +49(0)3641-948738
+Email agnese.fazio@uni-jena.de
+http://www.mingeoch.uni-jena.de/
