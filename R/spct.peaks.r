@@ -1203,6 +1203,9 @@ valleys.generic_mspct <- function(x,
                                   ignore_threshold = 0,
                                   strict = TRUE,
                                   na.rm = FALSE,
+                                  var.name = NULL,
+                                  refine.wl = FALSE,
+                                  method = "spline",
                                   ...,
                                   .parallel = FALSE,
                                   .paropts = NULL) {
@@ -1212,6 +1215,190 @@ valleys.generic_mspct <- function(x,
           ignore_threshold = ignore_threshold,
           strict = strict,
           na.rm = na.rm,
+          var.name = var.name,
+          refine.wl = refine.wl,
+          method = method,
+          ...,
+          .parallel = .parallel,
+          .paropts = .paropts)
+}
+
+#' @describeIn valleys  Method for "source_mspct" objects.
+#'
+#' @export
+#'
+valleys.source_mspct <-
+  function(x,
+           span = 5,
+           ignore_threshold = 0,
+           strict = TRUE,
+           na.rm = FALSE,
+           unit.out = getOption("photobiology.radiation.unit",
+                                default = "energy"),
+           refine.wl = FALSE,
+           method = "spline",
+           ...,
+           .parallel = FALSE,
+           .paropts = NULL) {
+    msmsply(x,
+            .fun = valleys,
+            span = span,
+            ignore_threshold = ignore_threshold,
+            strict = strict,
+            unit.out = unit.out,
+            na.rm = na.rm,
+            refine.wl = refine.wl,
+            method = method,
+            ...,
+            .parallel = .parallel,
+            .paropts = .paropts)
+  }
+
+#' @describeIn valleys  Method for "cps_mspct" objects.
+#'
+#' @export
+#'
+valleys.response_mspct <-
+  function(x,
+           span = 5,
+           ignore_threshold = 0,
+           strict = TRUE,
+           na.rm = FALSE,
+           unit.out = getOption("photobiology.radiation.unit",
+                                default = "energy"),
+           refine.wl = FALSE,
+           method = "spline",
+           ...,
+           .parallel = FALSE,
+           .paropts = NULL) {
+    msmsply(x,
+            .fun = valleys,
+            span = span,
+            ignore_threshold = ignore_threshold,
+            strict = strict,
+            unit.out = unit.out,
+            na.rm = na.rm,
+            refine.wl = refine.wl,
+            method = method,
+            ...,
+            .parallel = .parallel,
+            .paropts = .paropts)
+  }
+
+#' @describeIn valleys  Method for "filter_mspct" objects.
+#'
+#' @export
+#'
+valleys.filter_mspct <-
+  function(x,
+           span = 5,
+           ignore_threshold = 0,
+           strict = TRUE,
+           na.rm = FALSE,
+           filter.qty = getOption("photobiology.filter.qty",
+                                  default = "transmittance"),
+           refine.wl = FALSE,
+           method = "spline",
+           ...,
+           .parallel = FALSE,
+           .paropts = NULL) {
+    msmsply(x,
+            .fun = valleys,
+            span = span,
+            ignore_threshold = ignore_threshold,
+            strict = strict,
+            filter.qty = filter.qty,
+            na.rm = na.rm,
+            refine.wl = refine.wl,
+            method = method,
+            ...,
+            .parallel = .parallel,
+            .paropts = .paropts)
+  }
+
+
+#' @describeIn valleys  Method for "reflector_mspct" objects.
+#'
+#' @export
+#'
+valleys.reflector_mspct <-
+  function(x,
+           span = 5,
+           ignore_threshold = 0,
+           strict = TRUE,
+           na.rm = FALSE,
+           refine.wl = FALSE,
+           method = "spline",
+           ...,
+           .parallel = FALSE,
+           .paropts = NULL) {
+    msmsply(x,
+            .fun = valleys,
+            span = span,
+            ignore_threshold = ignore_threshold,
+            strict = strict,
+            na.rm = na.rm,
+            refine.wl = refine.wl,
+            method = method,
+            ...,
+            .parallel = .parallel,
+            .paropts = .paropts)
+  }
+
+
+#' @describeIn valleys  Method for "cps_mspct" objects.
+#'
+#' @export
+#'
+valleys.cps_mspct <- function(x,
+                              span = 5,
+                              ignore_threshold = 0,
+                              strict = TRUE,
+                              na.rm = FALSE,
+                              var.name = "cps",
+                              refine.wl = FALSE,
+                              method = "spline",
+                              ...,
+                              .parallel = FALSE,
+                              .paropts = NULL) {
+  msmsply(x,
+          .fun = valleys,
+          span = span,
+          ignore_threshold = ignore_threshold,
+          strict = strict,
+          na.rm = na.rm,
+          var.name = var.name,
+          refine.wl = refine.wl,
+          method = method,
+          ...,
+          .parallel = .parallel,
+          .paropts = .paropts)
+}
+
+#' @describeIn valleys  Method for "raw_mspct" objects.
+#'
+#' @export
+#'
+valleys.raw_mspct <- function(x,
+                              span = 5,
+                              ignore_threshold = 0,
+                              strict = TRUE,
+                              na.rm = FALSE,
+                              var.name = "counts",
+                              refine.wl = FALSE,
+                              method = "spline",
+                              ...,
+                              .parallel = FALSE,
+                              .paropts = NULL) {
+  msmsply(x,
+          .fun = valleys,
+          span = span,
+          ignore_threshold = ignore_threshold,
+          strict = strict,
+          na.rm = na.rm,
+          var.name = var.name,
+          refine.wl = refine.wl,
+          method = method,
           ...,
           .parallel = .parallel,
           .paropts = .paropts)
