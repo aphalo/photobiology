@@ -3,15 +3,25 @@
 #' This function finds all spikes (narrow local maxima) in a spectrum, using the
 #' algorithm of Whitaker and Hayes (2018).
 #'
+#' @details Spikes are detected based on a modified Z score calculated from the
+#' differenced spectrum. The Z threshold used should be adjusted to the
+#' characteristics of the input and desired sensitivity. The lower the threshold
+#' the more stringent the test becomes, resulting in most cases in more spikes
+#' being detected.
+#'
 #' @param x numeric vector containing spectral data.
 #' @param x.is.delta logical Flag indicating if x contains already differences.
-#' @param z.threshold numeirc Modified Z values larger than \code{z.threshold}
+#' @param z.threshold numeric Modified Z values larger than \code{z.threshold}
 #'   are considered to be spikes.
 #' @param na.rm logical indicating whether \code{NA} values should be stripped
 #'   before searching for peaks.
 #'
 #' @return A logical vector of the same length as \code{x}. Values that are TRUE
 #'   correspond to local spikes in the data.
+#'
+#' @references
+#' Whitaker, D. A.; Hayes, K. (2018) A simple algorithm for despiking Raman
+#' spectra. Chemometrics and Intelligent Laboratory Systems, 179, 82-84.
 #'
 #' @export
 #' @examples
@@ -44,10 +54,20 @@ find_spikes <-
   }
 
 
-#' Replace spikes in a spectrum
+#' Replace bad pixels in a spectrum
 #'
-#' This function replaces data for bad pixels by a local estimate in spectra, by
+#' This function replaces data for bad pixels by a local estimate, by either
 #' simple interpolation or using the algorithm of Whitaker and Hayes (2018).
+#'
+#' @details
+#' Simple interpolation replaces values of isolated bad pixels by the mean of
+#' their two closest neighbors. The running mean approach allows the replacement
+#' of short runs of bad pixels by the running mean of neighboring pixels within
+#' a window of user-specified width. The first approach works well for spectra
+#' from array spectrometers to correct for hot and dead pixels in an instrument.
+#' The second approach is most suitable for Raman spectra in which spikes
+#' triggered by radiation are wider than a single pixel but usually not more
+#' than five pixels wide.
 #'
 #' @param x R object containing spectral data.
 #' @param bad.pix.idx logical vector or integer. Index into bad pixels in
@@ -60,6 +80,10 @@ find_spikes <-
 #'
 #' @return A logical vector of the same length as \code{x}. Values that are TRUE
 #'   correspond to local spikes in the data.
+#'
+#' @references
+#' Whitaker, D. A.; Hayes, K. (2018) A simple algorithm for despiking Raman
+#' spectra. Chemometrics and Intelligent Laboratory Systems, 179, 82-84.
 #'
 #' @export
 #'
