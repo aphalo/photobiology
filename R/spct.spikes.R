@@ -1,0 +1,113 @@
+#' Find spikes in a spectrum
+#'
+#' This function finds all spikes (narrow local maxima) in a spectrum, using the
+#' algorithm of Whitaker and Hayes (2018).
+#'
+#' @param x numeric vector containing spectral data.
+#' @param x.is.delta logical Flag indicating if x contains already differences.
+#' @param z.threshold numeirc Modified Z values larger than \code{z.threshold}
+#'   are considered to be spikes.
+#' @param na.rm logical indicating whether \code{NA} values should be stripped
+#'   before searching for peaks.
+#'
+#' @return A logical vector of the same length as \code{x}. Values that are TRUE
+#'   correspond to local spikes in the data.
+#'
+#' @export
+#' @examples
+#' with(sun.data, w.length[find_spikes(s.e.irrad)])
+#'
+#' @family peaks and valleys functions
+#'
+find_spikes <-
+  function(x,
+           x.is.delta = FALSE,
+           z.threshold = 6,
+           na.rm = FALSE) {
+    if (na.rm) {
+      x <- na.omit(x)
+    }
+    if (x.is.delta) {
+      d.var <- x
+    } else {
+      d.var <- diff(x)
+    }
+    z <- (d.var -  stats::median(d.var)) / stats::mad(d.var) * 0.6745
+    outcomes <- z > z.threshold
+    if (x.is.delta) {
+      # same length as input
+      outcomes
+    } else {
+      # same length as input
+      c(FALSE, outcomes)
+    }
+  }
+
+
+#' Replace spikes in a spectrum
+#'
+#' This function replaces data for bad pixels by a local estimate in spectra, by
+#' simple interpolation or using the algorithm of Whitaker and Hayes (2018).
+#'
+#' @param x R object containing spectral data.
+#' @param bad.pix.idx logical vector or integer. Index into bad pixels in
+#'   \code{x}.
+#' @param window.width integer. The full width of the window used for the
+#'   running mean.
+#' @param method character The name of the method: \code{"run.mean"} is running
+#'  mean as described in Whitaker and Hayes (2018); \code{"adj.mean"} is mean
+#'  of adjacent neighbors (isolated bad pixels only).
+#'
+#' @return A logical vector of the same length as \code{x}. Values that are TRUE
+#'   correspond to local spikes in the data.
+#'
+#' @export
+#'
+#' @family peaks and valleys functions
+#'
+replace_bad_pixs <-
+  function(x,
+           bad.pix.idx = FALSE,
+           window.width = 11,
+           method = "run.mean") {
+    if (is.logical(bad.pix.idx)) {
+      bad.pix.idx <- which(bad.pix.idx)
+    }
+    if (length(bad.pix.idx) == 0L) {
+      # nothing to do
+      return(x)
+    }
+    n <- length(x)
+    z <- x
+    if (method == "run.mean") {
+      bad.pix.idx <- unique(c(1L, bad.pix.idx, n))
+      max.spike.width <- max(rle(diff(bad.pix.idx))[["lengths"]]) + 1L
+      needed.window.width <- 2L * max.spike.width + 1L
+      if (window.width < needed.window.width) {
+        warning("Increasing 'window.width' from ", window.width, " to ", needed.window.width)
+        window.width <- needed.window.width
+      }
+      half.window.width <- window.width %/% 2 # half window
+      # running mean method of Whitaker and Hayes (2018)
+      # fast but biased.
+      for(i in bad.pix.idx) {
+        window.idx <- seq(max(1 , i - half.window.width),
+                          min(n, i + half.window.width))
+        window.idx <- setdiff(window.idx, bad.pix.idx)
+        z[i] = mean(x[window.idx])
+      }
+    } else if (method == "adj.mean") {
+      # simple mean of neighbors, for isolated bad pixels.
+      x[bad.pix.idx] <- NA_integer_
+      if (1L %in% bad.pix.idx) {
+        x[1L] <- x[2L]
+        bad.pix.idx <- setdiff(bad.pix.idx, 1L)
+      }
+      if (n %in% bad.pix.idx) {
+        x[n] <- x[n - 1L]
+        bad.pix.idx <- setdiff(bad.pix.idx, n)
+      }
+      x[bad.pix.idx] <- (x[bad.pix.idx - 1] + x[bad.pix.idx + 1]) / 2
+    }
+    z
+  }

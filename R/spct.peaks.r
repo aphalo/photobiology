@@ -16,7 +16,7 @@
 #' @param na.rm logical indicating whether \code{NA} values should be stripped
 #'   before searching for peaks.
 #'
-#' @return an object like s.irrad of logical values. Values that are TRUE
+#' @return a logical vector of the same length as \code{x}. Values that are TRUE
 #'   correspond to local peaks in the data.
 #'
 #' @export
@@ -153,7 +153,7 @@ get_valleys <- function(x, y,
 
 # fit peaks ---------------------------------------------------------------
 
-#' Refine peak position and value by fitting
+#' Refine position and value of extremes by fitting
 #'
 #' Functions implementing fitting of peaks in a class-agnostic way. The fitting
 #' refines the location of peaks and value of peaks based on the location of
