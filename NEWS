@@ -26,6 +26,7 @@ those functions not handled as special cases, returned values are, as earlier,
 tagged with the name of the applied function.
 * Add function find_spikes() for numeric vectors, useful for Raman spectra.
 * Add function replace_bad_pixs() operating on numeric vectors.
+* Add methods despike() for vectors, data frames and spectra.
 * Add data for cone fundamentals for human vision.
 
 ********************************************************************************
