@@ -95,11 +95,19 @@ replace_bad_pixs <-
            window.width = 11,
            method = "run.mean") {
     if (is.logical(bad.pix.idx)) {
-      bad.pix.idx <- which(bad.pix.idx)
+      if (length(bad.pix.idx) == length(x)) {
+         bad.pix.idx <- which(bad.pix.idx)
+      } else {
+        stop("Logical 'bad.pix.idx' has wrong length.")
+      }
     }
     if (length(bad.pix.idx) == 0L) {
       # nothing to do
       return(x)
+    }
+    if (length(window.width) == 0L) {
+      # force computation of a wide enough window
+      window.width <- 0L
     }
     n <- length(x)
     z <- x
@@ -108,7 +116,9 @@ replace_bad_pixs <-
       max.spike.width <- max(rle(diff(bad.pix.idx))[["lengths"]]) + 1L
       needed.window.width <- 2L * max.spike.width + 1L
       if (window.width < needed.window.width) {
-        warning("Increasing 'window.width' from ", window.width, " to ", needed.window.width)
+        if (window.width > 0L) {
+          warning("Increasing 'window.width' from ", window.width, " to ", needed.window.width)
+        }
         window.width <- needed.window.width
       }
       half.window.width <- window.width %/% 2 # half window
@@ -135,3 +145,486 @@ replace_bad_pixs <-
     }
     z
   }
+
+# despike -------------------------------------------------------------------
+
+#' Remove spikes from spectrum
+#'
+#' Function that returns an R object with observations corresponding to spikes,
+#' narrow local maxima, replaced by values computed from neighbouring pixels.
+#'
+#' @param x an R object
+#' @param z.threshold numeric Modified Z values larger than \code{z.threshold}
+#'   are considered to correspond to spikes.
+#' @param window.width integer. The full width of the window used for the
+#'   running mean.
+#' @param method character The name of the method: \code{"run.mean"} is running
+#'  mean as described in Whitaker and Hayes (2018); \code{"adj.mean"} is mean
+#'  of adjacent neighbors (isolated bad pixels only).
+#' @param na.rm logical indicating whether \code{NA} values should be stripped
+#'   before searching for despike.
+#' @param var.name,y.var.name character Names of columns where to look
+#'   for spikes to remove.
+#' @param ... Arguments passed by name to \code{find_spikes()}.
+#'
+#' @return A subset of \code{x} with rows corresponding to local maxima.
+#'
+#' @export
+#'
+#' @examples
+#' despike(sun.spct)
+#'
+#' @family despike and valleys functions
+#'
+despike <- function(x,
+                    z.threshold,
+                    window.width,
+                    method,
+                    na.rm,
+                    ...) UseMethod("despike")
+
+#' @describeIn despike Default returning always NA.
+#' @export
+despike.default <-
+  function(x,
+           z.threshold = NA,
+           window.width = NA,
+           method = "run.mean",
+           na.rm = FALSE,
+           ...) {
+    warning("Method 'despike' not implemented for objects of class ", class(x)[1])
+    x[NA]
+  }
+
+#' @describeIn despike Default function usable on numeric vectors.
+#' @export
+despike.numeric <-
+  function(x,
+           z.threshold = 6,
+           window.width = 11,
+           method = "run.mean",
+           na.rm = FALSE,
+           ...) {
+   spike.idxs <- find_spikes(x = x,
+                             z.threshold = z.threshold,
+                             na.rm = na.rm)
+   replace_bad_pixs(x,
+                    bad.pix.idx = spike.idxs,
+                    window.width = window.width,
+                    method = method,
+                    ...)
+  }
+
+#' @describeIn despike  Method for "data.frame" objects.
+#'
+#' @export
+#'
+despike.data.frame <-
+  function(x,
+           z.threshold = 6,
+           window.width = 11,
+           method = "run.mean",
+           na.rm = FALSE,
+           ...,
+           y.var.name = NULL,
+           var.name = y.var.name) {
+    if (is.null(var.name)) {
+      warning("Variable (column) names required.")
+      return(x[NA, ])
+    }
+    for (colname in var.name) {
+      if (!is.numeric(x[[colname]])) {
+        next()
+      }
+      x[[colname]] <- despike(x[[colname]],
+                              z.threshold = z.threshold,
+                              window.width = window.width,
+                              method = "method",
+                              ...
+      )
+    }
+    x
+  }
+
+#' @describeIn despike  Method for "generic_spct" objects.
+#'
+#' @export
+#'
+despike.generic_spct <-
+  function(x,
+           z.threshold = 6,
+           window.width = 11,
+           method = "run.mean",
+           na.rm = FALSE,
+           ...,
+           y.var.name = NULL,
+           var.name = y.var.name) {
+    if (is.null(var.name)) {
+      # find target variable
+      var.name <- names(x)
+      var.name <- subset(var.name, sapply(x, is.numeric))
+      var.name <- setdiff(var.name, "w.length")
+    }
+    if (length(var.name) == 0L) {
+      warning("No data columns found, skipping.")
+    }
+    for (colname in var.name) {
+      if (!is.numeric(x[[colname]])) {
+        next()
+      }
+      x[[colname]] <- despike(x[[colname]],
+                              z.threshold = z.threshold,
+                              window.width = window.width,
+                              method = "method",
+                              ...
+      )
+    }
+    x
+  }
+
+#' @describeIn despike  Method for "source_spct" objects.
+#'
+#' @param unit.out character One of "energy" or "photon"
+#'
+#' @export
+#'
+#' @examples
+#' despike(sun.spct)
+#'
+despike.source_spct <-
+  function(x,
+           z.threshold = 6,
+           window.width = 11,
+           method = "run.mean",
+           na.rm = FALSE,
+           unit.out = getOption("photobiology.radiation.unit", default = "energy"),
+           ...) {
+    if (unit.out == "energy") {
+      z <- q2e(x, action = "replace", byref = FALSE)
+      colname <- "s.e.irrad"
+    } else if (unit.out %in% c("photon", "quantum")) {
+      z <- e2q(x, action = "replace", byref = FALSE)
+      colname <- "s.q.irrad"
+    } else {
+      stop("Unrecognized 'unit.out': ", unit.out)
+    }
+    x[[colname]] <- despike(x[[colname]],
+                            z.threshold = z.threshold,
+                            window.width = window.width,
+                            method = "method",
+                            ...)
+    x
+  }
+
+#' @describeIn despike  Method for "response_spct" objects.
+#'
+#' @export
+#'
+despike.response_spct <-
+  function(x,
+           z.threshold = 6,
+           window.width = 11,
+           method = "run.mean",
+           na.rm = FALSE,
+           unit.out = getOption("photobiology.radiation.unit", default = "energy"),
+           ...) {
+    if (unit.out == "energy") {
+      z <- q2e(x, action = "replace", byref = FALSE)
+      colname <- "s.e.response"
+    } else if (unit.out %in% c("photon", "quantum")) {
+      z <- e2q(x, action = "replace", byref = FALSE)
+      colname <- "s.q.response"
+    } else {
+      stop("Unrecognized 'unit.out': ", unit.out)
+    }
+    x[[colname]] <- despike(x[[colname]],
+                            z.threshold = z.threshold,
+                            window.width = window.width,
+                            method = method,
+                            ...)
+    x
+  }
+
+#' @describeIn despike  Method for "filter_spct" objects.
+#'
+#' @param filter.qty character One of "transmittance" or "absorbance"
+#'
+#' @export
+#'
+despike.filter_spct <-
+  function(x,
+           z.threshold = 6,
+           window.width = 11,
+           method = "run.mean",
+           na.rm = FALSE,
+           filter.qty = getOption("photobiology.filter.qty",
+                                  default = "transmittance"),
+           ...) {
+    if (filter.qty == "transmittance") {
+      z <- A2T(x, action = "replace", byref = FALSE)
+      colname <- "Tfr"
+    } else if (filter.qty == "absorbance") {
+      z <- T2A(x, action = "replace", byref = FALSE)
+      colname <- "A"
+    }  else if (filter.qty == "absorptance") {
+      z <- T2Afr(x, action = "replace", byref = FALSE)
+      colname <- "Afr"
+    } else {
+      stop("Unrecognized 'filter.qty': ", filter.qty)
+    }
+    x[[colname]] <- despike(x[[colname]],
+                            z.threshold = z.threshold,
+                            window.width = window.width,
+                            method = method,
+                            ...)
+    x
+  }
+
+#' @describeIn despike  Method for "reflector_spct" objects.
+#'
+#' @export
+#'
+despike.reflector_spct <- function(x,
+                                   z.threshold = 6,
+                                   window.width = 11,
+                                   method = "run.mean",
+                                   na.rm = FALSE,
+                                   ...) {
+  colname <- "Rfr"
+  x[[colname]] <- despike(x[[colname]],
+                          z.threshold = z.threshold,
+                          window.width = window.width,
+                          method = method,
+                          ...
+  )
+  x
+}
+
+#' @describeIn despike  Method for "cps_spct" objects.
+#'
+#' @export
+#'
+despike.cps_spct <- function(x,
+                             z.threshold = 6,
+                             window.width = 11,
+                             method = "run.mean",
+                             na.rm = FALSE,
+                             ...) {
+  var.name <- grep("cps", colnames(x), value = TRUE)
+  for (colname in var.name) {
+    x[[colname]] <- despike(x[[colname]],
+                            z.threshold = z.threshold,
+                            window.width = window.width,
+                            method = method,
+                            ...
+    )
+  }
+  x
+}
+
+#' @describeIn despike  Method for "raw_spct" objects.
+#'
+#' @export
+#'
+despike.raw_spct <- function(x,
+                             z.threshold = 6,
+                             window.width = 11,
+                             method = "run.mean",
+                             na.rm = FALSE,
+                             ...) {
+  var.name <- grep("counts", colnames(x), value = TRUE)
+  for (colname in var.name) {
+    x[[colname]] <- despike(x[[colname]],
+                            z.threshold = z.threshold,
+                            window.width = window.width,
+                            method = method,
+                            ...
+    )
+  }
+  x
+}
+
+#' @describeIn despike  Method for "generic_mspct" objects.
+#'
+#' @param .parallel	if TRUE, apply function in parallel, using parallel backend
+#'   provided by foreach
+#' @param .paropts a list of additional options passed into the foreach function
+#'   when parallel computation is enabled. This is important if (for example)
+#'   your code relies on external data or packages: use the .export and
+#'   .packages arguments to supply them so that all cluster nodes have the
+#'   correct environment set up for computing.
+#'
+#' @export
+#'
+despike.generic_mspct <- function(x,
+                                  z.threshold = 6,
+                                  window.width = 11,
+                                  method = "run.mean",
+                                  na.rm = FALSE,
+                                  ...,
+                                  y.var.name = NULL,
+                                  var.name = y.var.name,
+                                  .parallel = FALSE,
+                                  .paropts = NULL) {
+  msmsply(x,
+          .fun = despike,
+          z.threshold = z.threshold,
+          window.width = window.width,
+          method = method,
+          na.rm = na.rm,
+          var.name = var.name,
+          ...,
+          .parallel = .parallel,
+          .paropts = .paropts)
+}
+
+#' @describeIn despike  Method for "source_mspct" objects.
+#'
+#' @export
+#'
+despike.source_mspct <-
+  function(x,
+           z.threshold = 6,
+           window.width = 11,
+           method = "run.mean",
+           na.rm = FALSE,
+           unit.out = getOption("photobiology.radiation.unit",
+                                default = "energy"),
+           ...,
+           .parallel = FALSE,
+           .paropts = NULL) {
+    msmsply(x,
+            z.threshold = z.threshold,
+            window.width = window.width,
+            method = method,
+            na.rm = na.rm,
+            unit.out = unit.out,
+            ...,
+            .parallel = .parallel,
+            .paropts = .paropts)
+  }
+
+#' @describeIn despike  Method for "cps_mspct" objects.
+#'
+#' @export
+#'
+despike.response_mspct <-
+  function(x,
+           z.threshold = 6,
+           window.width = 11,
+           method = "run.mean",
+           na.rm = FALSE,
+           unit.out = getOption("photobiology.radiation.unit",
+                                default = "energy"),
+           ...,
+           .parallel = FALSE,
+           .paropts = NULL) {
+    msmsply(x,
+            z.threshold = z.threshold,
+            window.width = window.width,
+            method = method,
+            na.rm = na.rm,
+            unit.out = unit.out,
+            ...,
+            .parallel = .parallel,
+            .paropts = .paropts)
+  }
+
+#' @describeIn despike  Method for "filter_mspct" objects.
+#'
+#' @export
+#'
+despike.filter_mspct <-
+  function(x,
+           z.threshold = 6,
+           window.width = 11,
+           method = "run.mean",
+           na.rm = FALSE,
+           filter.qty = getOption("photobiology.filter.qty",
+                                  default = "transmittance"),
+           ...,
+           .parallel = FALSE,
+           .paropts = NULL) {
+    msmsply(x,
+            .fun = despike,
+            z.threshold = z.threshold,
+            window.width = window.width,
+            method = method,
+            filter.qty = filter.qty,
+            na.rm = na.rm,
+            ...,
+            .parallel = .parallel,
+            .paropts = .paropts)
+  }
+
+
+#' @describeIn despike  Method for "reflector_mspct" objects.
+#'
+#' @export
+#'
+despike.reflector_mspct <-
+  function(x,
+           z.threshold = 6,
+           window.width = 11,
+           method = "run.mean",
+           na.rm = FALSE,
+           ...,
+           .parallel = FALSE,
+           .paropts = NULL) {
+    msmsply(x,
+            .fun = despike,
+            z.threshold = z.threshold,
+            window.width = window.width,
+            method = method,
+            na.rm = na.rm,
+            ...,
+            .parallel = .parallel,
+            .paropts = .paropts)
+  }
+
+
+#' @describeIn despike  Method for "cps_mspct" objects.
+#'
+#' @export
+#'
+despike.cps_mspct <- function(x,
+                              z.threshold = 6,
+                              window.width = 11,
+                              method = "run.mean",
+                              na.rm = FALSE,
+                              ...,
+                              .parallel = FALSE,
+                              .paropts = NULL) {
+  msmsply(x,
+          .fun = despike,
+          z.threshold = z.threshold,
+          window.width = window.width,
+          method = method,
+          na.rm = na.rm,
+          ...,
+          .parallel = .parallel,
+          .paropts = .paropts)
+}
+
+#' @describeIn despike  Method for "raw_mspct" objects.
+#'
+#' @export
+#'
+despike.raw_mspct <- function(x,
+                              z.threshold = 6,
+                              window.width = 11,
+                              method = "run.mean",
+                              na.rm = FALSE,
+                              ...,
+                              .parallel = FALSE,
+                              .paropts = NULL) {
+  msmsply(x,
+          .fun = despike,
+          z.threshold = z.threshold,
+          window.width = window.width,
+          method = method,
+          na.rm = na.rm,
+          ...,
+          .parallel = .parallel,
+          .paropts = .paropts)
+}
