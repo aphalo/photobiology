@@ -93,14 +93,20 @@ check_spct.generic_spct <-
       #  wl.max <- max(x$w.length, na.rm = TRUE)
       if (wl.min == Inf) {
         warning("No valid 'w.length' values found")
-      } else if ((wl.min < 99.999 || wl.min > 5e3)) {
-        stop("Off-range minimum w.length value ", wl.min, " instead of within 100 nm and 5000 nm")
+      } else if ((wl.min < 99.999 || wl.min > 2.8e3) &&
+                 getOption("photobiology.verbose")) { # catch use of Angstrom
+        warning("Possibly off-range w.length values, minimum = ", signif(wl.min, 4), " nm. (Nanometers expected.)")
       }
       # we use run length encoding to find the maximum number of copies of any w.length value
       # this be needed. This redundancy needs to be fixed.
       if (multiple.wl == 1) {
         if (is.unsorted(x[["w.length"]], na.rm = TRUE, strictly = TRUE)) {
-          stop("'w.length' must be sorted in ascending order and have unique values")
+          if (is.unsorted(-x[["w.length"]], na.rm = TRUE, strictly = TRUE)) {
+            stop("'w.length' must be sorted and have unique values")
+          } else {
+            # w.length in decreasing order, which we reverse
+            x <- x[nrow(x):1, ]
+          }
         }
       } else if (multiple.wl > 1) {
         runs <- rle(sort(x[["w.length"]]))

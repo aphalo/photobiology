@@ -1,7 +1,11 @@
-#' Find spikes in a spectrum
+#' Find spikes
 #'
-#' This function finds all spikes (narrow local maxima) in a spectrum, using the
-#' algorithm of Whitaker and Hayes (2018).
+#' This function finds spikes in a numeric vector using the algorithm of
+#' Whitaker and Hayes (2018). Spikes are values in spectra that are unusually
+#' high compared to neighbors. They are usually individual values or very short
+#' runs of similar "unusual" values. Spikes caused by cosmic radiation are a
+#' frequent problem in Raman spectra. Another source of spikes are "hot pixels"
+#' in CCD and diode arrays.
 #'
 #' @details Spikes are detected based on a modified Z score calculated from the
 #' differenced spectrum. The Z threshold used should be adjusted to the
@@ -14,7 +18,7 @@
 #' @param z.threshold numeric Modified Z values larger than \code{z.threshold}
 #'   are considered to be spikes.
 #' @param na.rm logical indicating whether \code{NA} values should be stripped
-#'   before searching for peaks.
+#'   before searching for spikes.
 #'
 #' @return A logical vector of the same length as \code{x}. Values that are TRUE
 #'   correspond to local spikes in the data.
@@ -35,6 +39,7 @@ find_spikes <-
            z.threshold = 6,
            na.rm = FALSE) {
     if (na.rm) {
+      na.idx <- which(is.na(x))
       x <- na.omit(x)
     }
     if (x.is.delta) {
@@ -42,17 +47,22 @@ find_spikes <-
     } else {
       d.var <- diff(x)
     }
-    z <- (d.var -  stats::median(d.var)) / stats::mad(d.var) * 0.6745
+    z <- (d.var - stats::median(d.var)) / stats::mad(d.var) * 0.6745
     outcomes <- z > z.threshold
-    if (x.is.delta) {
-      # same length as input
-      outcomes
-    } else {
-      # same length as input
-      c(FALSE, outcomes)
+    if (!x.is.delta) {
+      # ensure same length as input
+      outcomes <- c(FALSE, outcomes)
     }
+    if (na.rm) {
+      # restore length of logical vector
+      for (i in rev(na.idx)) {
+        outcomes <- append(outcomes, FALSE, after = i - 1L)
+      }
+    }
+    # check assertion
+    stopifnot(length(outcomes) == length(x))
+    outcomes
   }
-
 
 #' Replace bad pixels in a spectrum
 #'
@@ -69,7 +79,7 @@ find_spikes <-
 #' triggered by radiation are wider than a single pixel but usually not more
 #' than five pixels wide.
 #'
-#' @param x R object containing spectral data.
+#' @param x numeric vector containing spectral data.
 #' @param bad.pix.idx logical vector or integer. Index into bad pixels in
 #'   \code{x}.
 #' @param window.width integer. The full width of the window used for the
@@ -77,6 +87,12 @@ find_spikes <-
 #' @param method character The name of the method: \code{"run.mean"} is running
 #'  mean as described in Whitaker and Hayes (2018); \code{"adj.mean"} is mean
 #'  of adjacent neighbors (isolated bad pixels only).
+#' @param na.rm logical Treat \code{NA} values as additional bad pixels and
+#'  replace them.
+#'
+#' @note In the current implementation \code{NA} values are not removed, and
+#'   if they are in the neighborhood of bad pixels, they will result in the
+#'   generation of additional \code{NA}s during their replacement.
 #'
 #' @return A logical vector of the same length as \code{x}. Values that are TRUE
 #'   correspond to local spikes in the data.
@@ -93,13 +109,17 @@ replace_bad_pixs <-
   function(x,
            bad.pix.idx = FALSE,
            window.width = 11,
-           method = "run.mean") {
+           method = "run.mean",
+           na.rm = TRUE) {
     if (is.logical(bad.pix.idx)) {
       if (length(bad.pix.idx) == length(x)) {
          bad.pix.idx <- which(bad.pix.idx)
       } else {
         stop("Logical 'bad.pix.idx' has wrong length.")
       }
+    }
+    if (na.rm) {
+      bad.pix.idx <- union(bad.pix.idx, which(is.na(x)))
     }
     if (length(bad.pix.idx) == 0L) {
       # nothing to do
@@ -117,7 +137,8 @@ replace_bad_pixs <-
       needed.window.width <- 2L * max.spike.width + 1L
       if (window.width < needed.window.width) {
         if (window.width > 0L) {
-          warning("Increasing 'window.width' from ", window.width, " to ", needed.window.width)
+          warning("Increasing 'window.width' from ", window.width,
+                  " to ", needed.window.width)
         }
         window.width <- needed.window.width
       }
@@ -150,8 +171,12 @@ replace_bad_pixs <-
 
 #' Remove spikes from spectrum
 #'
-#' Function that returns an R object with observations corresponding to spikes,
-#' narrow local maxima, replaced by values computed from neighbouring pixels.
+#' Function that returns an R object with observations corresponding to spikes
+#' replaced by values computed from neighboring pixels. Spikes are values in
+#' spectra that are unusually high compared to neighbors. They are usually
+#' individual values or very short runs of similar "unusual" values. Spikes
+#' caused by cosmic radiation are a frequent problem in Raman spectra. Another
+#' source of spikes are "hot pixels" in CCD and diode arrays.
 #'
 #' @param x an R object
 #' @param z.threshold numeric Modified Z values larger than \code{z.threshold}
@@ -161,8 +186,8 @@ replace_bad_pixs <-
 #' @param method character The name of the method: \code{"run.mean"} is running
 #'  mean as described in Whitaker and Hayes (2018); \code{"adj.mean"} is mean
 #'  of adjacent neighbors (isolated bad pixels only).
-#' @param na.rm logical indicating whether \code{NA} values should be stripped
-#'   before searching for despike.
+#' @param na.rm logical indicating whether \code{NA} values should be treated
+#'   as spikes and replaced.
 #' @param var.name,y.var.name character Names of columns where to look
 #'   for spikes to remove.
 #' @param ... Arguments passed by name to \code{find_spikes()}.
@@ -192,7 +217,8 @@ despike.default <-
            method = "run.mean",
            na.rm = FALSE,
            ...) {
-    warning("Method 'despike' not implemented for objects of class ", class(x)[1])
+    warning("Method 'despike' not implemented for objects of class ",
+            class(x)[1])
     x[NA]
   }
 
@@ -212,6 +238,7 @@ despike.numeric <-
                     bad.pix.idx = spike.idxs,
                     window.width = window.width,
                     method = method,
+                    na.rm = na.rm,
                     ...)
   }
 
@@ -240,6 +267,7 @@ despike.data.frame <-
                               z.threshold = z.threshold,
                               window.width = window.width,
                               method = "method",
+                              na.rm = na.rm,
                               ...
       )
     }
@@ -276,6 +304,7 @@ despike.generic_spct <-
                               z.threshold = z.threshold,
                               window.width = window.width,
                               method = "method",
+                              na.rm = na.rm,
                               ...
       )
     }
@@ -297,7 +326,8 @@ despike.source_spct <-
            window.width = 11,
            method = "run.mean",
            na.rm = FALSE,
-           unit.out = getOption("photobiology.radiation.unit", default = "energy"),
+           unit.out = getOption("photobiology.radiation.unit",
+                                default = "energy"),
            ...) {
     if (unit.out == "energy") {
       z <- q2e(x, action = "replace", byref = FALSE)
@@ -312,6 +342,7 @@ despike.source_spct <-
                             z.threshold = z.threshold,
                             window.width = window.width,
                             method = "method",
+                            na.rm = na.rm,
                             ...)
     x
   }
@@ -326,7 +357,8 @@ despike.response_spct <-
            window.width = 11,
            method = "run.mean",
            na.rm = FALSE,
-           unit.out = getOption("photobiology.radiation.unit", default = "energy"),
+           unit.out = getOption("photobiology.radiation.unit",
+                                default = "energy"),
            ...) {
     if (unit.out == "energy") {
       z <- q2e(x, action = "replace", byref = FALSE)
@@ -341,6 +373,7 @@ despike.response_spct <-
                             z.threshold = z.threshold,
                             window.width = window.width,
                             method = method,
+                            na.rm = na.rm,
                             ...)
     x
   }
@@ -376,6 +409,7 @@ despike.filter_spct <-
                             z.threshold = z.threshold,
                             window.width = window.width,
                             method = method,
+                            na.rm = na.rm,
                             ...)
     x
   }
@@ -395,6 +429,7 @@ despike.reflector_spct <- function(x,
                           z.threshold = z.threshold,
                           window.width = window.width,
                           method = method,
+                          na.rm = na.rm,
                           ...
   )
   x
@@ -416,6 +451,7 @@ despike.cps_spct <- function(x,
                             z.threshold = z.threshold,
                             window.width = window.width,
                             method = method,
+                            na.rm = na.rm,
                             ...
     )
   }
@@ -438,6 +474,7 @@ despike.raw_spct <- function(x,
                             z.threshold = z.threshold,
                             window.width = window.width,
                             method = method,
+                            na.rm = na.rm,
                             ...
     )
   }
@@ -494,6 +531,7 @@ despike.source_mspct <-
            .parallel = FALSE,
            .paropts = NULL) {
     msmsply(x,
+            .fun = despike,
             z.threshold = z.threshold,
             window.width = window.width,
             method = method,
@@ -520,6 +558,7 @@ despike.response_mspct <-
            .parallel = FALSE,
            .paropts = NULL) {
     msmsply(x,
+            .fun = despike,
             z.threshold = z.threshold,
             window.width = window.width,
             method = method,
@@ -628,3 +667,407 @@ despike.raw_mspct <- function(x,
           .parallel = .parallel,
           .paropts = .paropts)
 }
+
+# spikes -------------------------------------------------------------------
+
+#' Spikes
+#'
+#' Function that returns a subset of an R object with observations corresponding
+#' to spikes. Spikes are values in spectra that are unusually high compared to
+#' neighbors. They are usually individual values or very short runs of similar
+#' "unusual" values. Spikes caused by cosmic radiation are a frequent problem in
+#' Raman spectra. Another source of spikes are "hot pixels" in CCD and diode
+#' arrays.
+#'
+#' @param x an R object
+#' @param z.threshold numeric Modified Z values larger than \code{z.threshold}
+#'   are considered to correspond to spikes.
+#' @param na.rm logical indicating whether \code{NA} values should be stripped
+#'   before searching for spikes.
+#' @param var.name,y.var.name character Name of column where to look
+#'   for spikes.
+#' @param ... ignored
+#'
+#' @return A subset of \code{x} with rows corresponding to spikes.
+#'
+#' @export
+#'
+#' @examples
+#' spikes(sun.spct)
+#'
+#' @family peaks and valleys functions
+#'
+spikes <- function(x, z.threshold, na.rm, ...) UseMethod("spikes")
+
+#' @describeIn spikes Default returning always NA.
+#' @export
+spikes.default <-
+  function(x,
+           z.threshold = NA,
+           na.rm = FALSE,
+           ...) {
+    warning("Method 'spikes' not implemented for objects of class ",
+            class(x)[1])
+    x[NA]
+  }
+
+#' @describeIn spikes Default function usable on numeric vectors.
+#' @export
+spikes.numeric <-
+  function(x,
+           z.threshold = NA,
+           na.rm = FALSE,
+           ...) {
+    x[find_spikes(x = x,
+                  z.threshold = z.threshold,
+                  na.rm = na.rm)]
+  }
+
+#' @describeIn spikes  Method for "data.frame" objects.
+#'
+#' @export
+#'
+spikes.data.frame <-
+  function(x,
+           z.threshold = 6,
+           na.rm = FALSE,
+           ...,
+           y.var.name = NULL,
+           var.name = y.var.name) {
+    if (is.null(var.name)) {
+      warning("Variable (column) names required.")
+      return(x[NA, ])
+    }
+    spikes.idx <-
+      which(find_spikes(x[[var.name]],
+                        z.threshold = z.threshold,
+                        na.rm = na.rm))
+    x[spikes.idx,  , drop = FALSE]
+  }
+
+#' @describeIn spikes  Method for "generic_spct" objects.
+#'
+#' @export
+#'
+spikes.generic_spct <-
+  function(x,
+           z.threshold = 6,
+           na.rm = FALSE,
+           ...,
+           var.name = NULL) {
+    if (is.null(var.name)) {
+      # find target variable
+      var.name <- names(x)
+      var.name <- subset(var.name, sapply(x, is.numeric))
+      var.name <- setdiff(var.name, "w.length")
+      if (length(var.name) > 1L) {
+        warning("Multiple numeric data columns found, explicit argument to",
+                "'var.name' required.")
+        return(x[NA, ])
+      }
+    }
+    spikes.idx <-
+      which(find_spikes(x[[var.name]],
+                        z.threshold = z.threshold,
+                        na.rm = na.rm))
+    x[spikes.idx,  , drop = FALSE]
+  }
+
+#' @describeIn spikes  Method for "source_spct" objects.
+#'
+#' @param unit.out character One of "energy" or "photon"
+#'
+#' @export
+#'
+#' @examples
+#' spikes(sun.spct)
+#'
+spikes.source_spct <-
+  function(x,
+           z.threshold = 6,
+           na.rm = FALSE,
+           unit.out = getOption("photobiology.radiation.unit",
+                                default = "energy"),
+           ...) {
+    if (unit.out == "energy") {
+      z <- q2e(x, "replace", FALSE)
+      col.name <- "s.e.irrad"
+    } else if (unit.out %in% c("photon", "quantum")) {
+      z <- e2q(x, "replace", FALSE)
+      col.name <- "s.q.irrad"
+    } else {
+      stop("Unrecognized 'unit.out': ", unit.out)
+    }
+    spikes.idx <-
+      which(find_spikes(x[[col.name]],
+                        z.threshold = z.threshold,
+                        na.rm = na.rm))
+    x[spikes.idx,  , drop = FALSE]
+  }
+
+#' @describeIn spikes  Method for "response_spct" objects.
+#'
+#' @export
+#'
+spikes.response_spct <-
+  function(x,
+           z.threshold = 6,
+           na.rm = FALSE,
+           unit.out = getOption("photobiology.radiation.unit",
+                                default = "energy"),
+           ...) {
+    if (unit.out == "energy") {
+      z <- q2e(x, "replace", FALSE)
+      col.name <- "s.e.response"
+    } else if (unit.out %in% c("photon", "quantum")) {
+      z <- e2q(x, "replace", FALSE)
+      col.name <- "s.q.response"
+    } else {
+      stop("Unrecognized 'unit.out': ", unit.out)
+    }
+    spikes.idx <-
+      which(find_spikes(x[[col.name]],
+                        z.threshold = z.threshold,
+                        na.rm = na.rm))
+    x[spikes.idx,  , drop = FALSE]
+  }
+
+#' @describeIn spikes  Method for "filter_spct" objects.
+#'
+#' @param filter.qty character One of "transmittance" or "absorbance"
+#'
+#' @export
+#'
+spikes.filter_spct <-
+  function(x,
+           z.threshold = 6,
+           na.rm = FALSE,
+           filter.qty = getOption("photobiology.filter.qty",
+                                  default = "transmittance"),
+           ...) {
+    if (filter.qty == "transmittance") {
+      z <- A2T(x, "replace", FALSE)
+      col.name <- "Tfr"
+    } else if (filter.qty == "absorbance") {
+      z <- T2A(x, "replace", FALSE)
+      col.name <- "A"
+    } else {
+      stop("Unrecognized 'filter.qty': ", filter.qty)
+    }
+    spikes.idx <-
+      which(find_spikes(x[[col.name]],
+                        z.threshold = z.threshold,
+                        na.rm = na.rm))
+    x[spikes.idx,  , drop = FALSE]
+  }
+
+#' @describeIn spikes  Method for "reflector_spct" objects.
+#'
+#' @export
+#'
+spikes.reflector_spct <- function(x,
+                                  z.threshold = 6,
+                                  na.rm = FALSE,
+                                  ...) {
+  col.name <- "Rfr"
+  spikes.idx <-
+    which(find_spikes(x[[col.name]],
+                      z.threshold = z.threshold,
+                      na.rm = na.rm))
+  x[spikes.idx,  , drop = FALSE]
+}
+
+#' @describeIn spikes  Method for "cps_spct" objects.
+#'
+#' @export
+#'
+spikes.cps_spct <- function(x,
+                            z.threshold = 6,
+                            na.rm = FALSE,
+                            ...,
+                            var.name = "cps") {
+  spikes.idx <-
+    which(find_spikes(x[[var.name]],
+                      z.threshold = z.threshold,
+                      na.rm = na.rm))
+  x[spikes.idx,  , drop = FALSE]
+}
+
+#' @describeIn spikes  Method for "raw_spct" objects.
+#'
+#' @export
+#'
+spikes.raw_spct <- function(x,
+                           z.threshold = 6,
+                           na.rm = FALSE,
+                            ...,
+                           var.name = "counts") {
+  spikes.idx <-
+    which(find_spikes(x[[var.name]],
+                      z.threshold = z.threshold,
+                      na.rm = na.rm))
+  x[spikes.idx,  , drop = FALSE]
+}
+
+#' @describeIn spikes  Method for "generic_mspct" objects.
+#'
+#' @param .parallel	if TRUE, apply function in parallel, using parallel backend
+#'   provided by foreach
+#' @param .paropts a list of additional options passed into the foreach function
+#'   when parallel computation is enabled. This is important if (for example)
+#'   your code relies on external data or packages: use the .export and
+#'   .packages arguments to supply them so that all cluster nodes have the
+#'   correct environment set up for computing.
+#'
+#' @export
+#'
+spikes.generic_mspct <- function(x,
+                                 z.threshold = 6,
+                                 na.rm = FALSE,
+                                 ...,
+                                 var.name = NULL,
+                                 .parallel = FALSE,
+                                 .paropts = NULL) {
+  msmsply(x,
+          .fun = spikes,
+          z.threshold = z.threshold,
+          na.rm = na.rm,
+          var.name = var.name,
+          ...,
+          .parallel = .parallel,
+          .paropts = .paropts)
+}
+
+#' @describeIn spikes  Method for "source_mspct" objects.
+#'
+#' @export
+#'
+spikes.source_mspct <-
+  function(x,
+           z.threshold = 6,
+           na.rm = FALSE,
+           unit.out = getOption("photobiology.radiation.unit",
+                                default = "energy"),
+           ...,
+           .parallel = FALSE,
+           .paropts = NULL) {
+    msmsply(x,
+            .fun = spikes,
+            z.threshold = z.threshold,
+            unit.out = unit.out,
+            na.rm = na.rm,
+            ...,
+            .parallel = .parallel,
+            .paropts = .paropts)
+  }
+
+#' @describeIn spikes  Method for "cps_mspct" objects.
+#'
+#' @export
+#'
+spikes.response_mspct <-
+  function(x,
+           z.threshold = 6,
+           na.rm = FALSE,
+           unit.out = getOption("photobiology.radiation.unit",
+                                default = "energy"),
+           ...,
+           .parallel = FALSE,
+           .paropts = NULL) {
+    msmsply(x,
+            .fun = spikes,
+            z.threshold = z.threshold,
+            unit.out = unit.out,
+            na.rm = na.rm,
+            ...,
+            .parallel = .parallel,
+            .paropts = .paropts)
+  }
+
+#' @describeIn spikes  Method for "filter_mspct" objects.
+#'
+#' @export
+#'
+spikes.filter_mspct <-
+  function(x,
+           z.threshold = 6,
+           na.rm = FALSE,
+           filter.qty = getOption("photobiology.filter.qty",
+                                  default = "transmittance"),
+           ...,
+           .parallel = FALSE,
+           .paropts = NULL) {
+    msmsply(x,
+            .fun = spikes,
+            z.threshold = z.threshold,
+            filter.qty = filter.qty,
+            na.rm = na.rm,
+            ...,
+            .parallel = .parallel,
+            .paropts = .paropts)
+  }
+
+
+#' @describeIn spikes  Method for "reflector_mspct" objects.
+#'
+#' @export
+#'
+spikes.reflector_mspct <-
+  function(x,
+           z.threshold = 6,
+           na.rm = FALSE,
+           ...,
+           .parallel = FALSE,
+           .paropts = NULL) {
+    msmsply(x,
+            .fun = spikes,
+            z.threshold = z.threshold,
+            na.rm = na.rm,
+            ...,
+            .parallel = .parallel,
+            .paropts = .paropts)
+  }
+
+
+#' @describeIn spikes  Method for "cps_mspct" objects.
+#'
+#' @export
+#'
+spikes.cps_mspct <- function(x,
+                             z.threshold = 6,
+                             na.rm = FALSE,
+                             ...,
+                             var.name = "cps",
+                             .parallel = FALSE,
+                             .paropts = NULL) {
+  msmsply(x,
+          .fun = spikes,
+          z.threshold = z.threshold,
+          na.rm = na.rm,
+          var.name = var.name,
+          ...,
+          .parallel = .parallel,
+          .paropts = .paropts)
+}
+
+#' @describeIn spikes  Method for "raw_mspct" objects.
+#'
+#' @export
+#'
+spikes.raw_mspct <- function(x,
+                             z.threshold = 6,
+                             na.rm = FALSE,
+                             ...,
+                             var.name = "counts",
+                             .parallel = FALSE,
+                             .paropts = NULL) {
+  msmsply(x,
+          .fun = spikes,
+          z.threshold = z.threshold,
+          na.rm = na.rm,
+          var.name = var.name,
+          ...,
+          .parallel = .parallel,
+          .paropts = .paropts)
+}
+

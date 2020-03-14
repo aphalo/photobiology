@@ -1443,8 +1443,11 @@ mspct2mat <- function(x,
 split2mspct <- function(x,
                         member.class = NULL,
                         spct.data.var = NULL,
-                        w.length.var = "w.length", idx.var = NULL,
-                        ncol = 1, byrow = FALSE, ...) {
+                        w.length.var = "w.length",
+                        idx.var = NULL,
+                        ncol = 1,
+                        byrow = FALSE,
+                        ...) {
   stopifnot(!is.null(member.class) || !is.character(member.class))
   stopifnot(!is.null(spct.data.var) || !is.character(spct.data.var))
   if (is.generic_spct(x) && getMultipleWl(x) != 1) {
