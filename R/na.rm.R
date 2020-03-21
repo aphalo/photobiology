@@ -84,8 +84,9 @@ na.omit.generic_spct <- function(object,
     }
   } else {
     # removes rows with NAs in data
-    z <- dplyr::slice(object, rows_to_keep)
-    z <- copy_attributes(object, z, copy.class = TRUE)
+ #   z <- dplyr::slice(.data = object, rows_to_keep)
+    z <- object[rows_to_keep, ]
+#    z <- copy_attributes(object, z, copy.class = TRUE)
   }
   class(rows_to_omit) <- na.action
   attr(z, "na.action") <- rows_to_omit

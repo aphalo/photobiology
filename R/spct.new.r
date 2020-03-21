@@ -747,9 +747,12 @@ merge2object_spct <- function(x, y,
                          fill = NA,
                          length.out = NULL)
 
-  z <- dplyr::inner_join(xx, yy, by = "w.length", ...)
+  # strip class attributes so that within dplyr code they are tibbles
   Tfr.type <- getTfrType(xx)
   Rfr.type <- getRfrType(yy)
+  rmDerivedSpct(xx)
+  rmDerivedSpct(yy)
+  z <- dplyr::inner_join(xx, yy, by = "w.length", ...)
   if (Tfr.type.out == "internal" && Tfr.type == "total") {
     stopifnot(Rfr.type == "total")
     z <- dplyr::mutate(z, Tfr = .data$Tfr / (1 - .data$Rfr))
@@ -761,14 +764,15 @@ merge2object_spct <- function(x, y,
     Tfr.type <- "total"
   }
   setObjectSpct(z, Tfr.type = Tfr.type, Rfr.type = Rfr.type)
+  zz <- merge_attributes(x, y, z)
 
-  comment(z) <- paste("Merged spectrum\ncomment(x):\n",
+  comment(zz) <- paste("Merged spectrum\ncomment(x):\n",
                       comment(x),
                       "\nclass: ",
-                      class_spct(x),
+                      class_spct(x)[1L],
                       "\n\ncomment(y):\n",
                       comment(y),
                       "\nclass: ",
-                      class_spct(y))
-  z
+                      class_spct(y)[1L])
+  zz
 }

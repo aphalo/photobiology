@@ -256,9 +256,9 @@ merge_attributes.default <- function(x, y, z,
 #' @export
 #'
 merge_attributes.generic_spct <- function(x, y, z,
-                                         which = NULL,
-                                         copy.class = FALSE,
-                                         ...) {
+                                          which = NULL,
+                                          copy.class = FALSE,
+                                          ...) {
   if (copy.class) {
     stopifnot(class_spct(x)[1] == class_spct(y)[1])
     class(z) <- class(x)
