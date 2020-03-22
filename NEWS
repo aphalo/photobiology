@@ -40,21 +40,26 @@ selected by setting R options; i.e., values returned by irrad() and response()
 are always labelled identically as those returned by q_irrad(), e_irrad(),
 q_response() and e_response().
 * Relax check for w.length range allowing longer wavelengths (IR). In addition
-instead of triggering, as earlier, an error for off-range wavelengths,
-triggering a warning, and only when verbose output is enabled.
-** Compatibility with 'dplyr' (>= 1.0.0)
-Some small internal changes were needed to avoids errors in calls to 'dplyr',
+triggering of an error for unlikely wavelengths has been replaced by a
+warning, emitted only when verbose output is enabled. An error is trigegred now
+only for wavelengths < 1 nm.
+** Compatibility with 'dplyr' (>= 1.0.0):
+Some small internal changes were needed to avoid errors in calls to 'dplyr'
+methods.
 From user's perspective as 'dplyr' now seems to retain classes derived from
 tibble, it may be necessary in cerain cases to disable some checks during calls
 to dplyr methods on spectral objects in users' scripts. We have implemented
 R option "photobiology.check.spct" to allow checks to be enabled and disabled
-as needed.
+as needed. This option might be also useful for optimizing performance.
 
 ********************************************************************************
 By changing the labels used for values returned by summary functions, this
 update can break older code. Additionally, bug fixes that correct the behaviour
 of irrad(), fluence(), ratio() and response(), and trim_waveband() can
 potentially break old code.
+The order in which attributes are stored has in some cases changed, and while
+a fixed order is not normally expected, equality tests can return FALSE for
+objects that are functionally identical.
 ********************************************************************************
 
 photobiology 0.9.30 (2020-01-06)
