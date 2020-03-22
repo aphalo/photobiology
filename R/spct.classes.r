@@ -41,12 +41,18 @@ spct_classes <- function() {
 #' # try(check_spct(-sun.spct))
 #' # try(check_spct((sun.spct[1, "w.length"] <- 1000)))
 #'
-check_spct <- function(x, byref, strict.range, ...) UseMethod("check_spct")
+check_spct <- function(x, byref, strict.range, ...) {
+  if (getOption("photobiology.check.spct", TRUE)) {
+    UseMethod("check_spct")
+  } else {
+    x
+  }
+}
 
 #' @describeIn check_spct Default for generic function.
 #' @export
 check_spct.default <- function(x, byref = FALSE, strict.range = NA, ...) {
-  return(x)
+  x
 }
 
 #' @describeIn check_spct Specialization for generic_spct.
@@ -1214,8 +1220,9 @@ is_tagged <- function(x) {
 #'
 #' @rdname is_photon_based
 #' @examples
+#' colnames(sun.spct)
 #' is_photon_based(sun.spct)
-#' my.spct <- dplyr::select(sun.spct, w.length, s.e.irrad)
+#' my.spct <- sun.spct[ , c("w.length", "s.e.irrad")]
 #' is.source_spct(my.spct)
 #' is_photon_based(my.spct)
 #'
@@ -1240,8 +1247,9 @@ is_photon_based <- function(x) {
 #'
 #' @export
 #' @examples
+#' colnames(sun.spct)
 #' is_energy_based(sun.spct)
-#' my.spct <- dplyr::select(sun.spct, w.length, s.q.irrad)
+#' my.spct <- sun.spct[ , c("w.length", "s.q.irrad")]
 #' is.source_spct(my.spct)
 #' is_energy_based(my.spct)
 #'
