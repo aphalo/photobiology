@@ -12,7 +12,7 @@
 
 <meta name="author" content="Pedro J. Aphalo" />
 
-<meta name="date" content="2020-02-22" />
+<meta name="date" content="2020-03-23" />
 
 <title>User Guide: 2 Radiation</title>
 
@@ -302,9 +302,9 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 
 <h1 class="title toc-ignore">User Guide: 2 Radiation</h1>
-<h3 class="subtitle">Package ‘photobiology’ 0.9.30.9001</h3>
+<h3 class="subtitle">Package ‘photobiology’ 0.9.30.9003</h3>
 <h4 class="author">Pedro J. Aphalo</h4>
-<h4 class="date">2020-02-22</h4>
+<h4 class="date">2020-03-23</h4>
 
 
 <div id="TOC">
@@ -2307,7 +2307,7 @@ There are cases where functions <code>convolve_each()</code> and <code>msmsply()
 <span id="cb197-3"><a href="#cb197-3"></a>              <span class="dt">col.names =</span> <span class="kw">c</span>(<span class="st">&quot;lon&quot;</span>, <span class="st">&quot;lat&quot;</span>, <span class="st">&quot;when.measured&quot;</span>))</span></code></pre></div>
 <pre><code>## # A tibble: 2 x 5
 ##   spct.idx Q_Total   lon   lat when.measured      
-##   &lt;fct&gt;      &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dttm&gt;             
+## * &lt;fct&gt;      &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dttm&gt;             
 ## 1 A        0.00126  25.0  60.2 2015-10-31 08:00:00
 ## 2 B        0.00251  25.0  60.2 2015-10-31 09:00:00</code></pre>
 <p>We can set the desired names for the columns if we wish them to be something else than the default.</p>
@@ -2318,7 +2318,7 @@ There are cases where functions <code>convolve_each()</code> and <code>msmsply()
 <span id="cb199-5"><a href="#cb199-5"></a>                            <span class="dt">when.measured =</span> <span class="st">&quot;time&quot;</span>))</span></code></pre></div>
 <pre><code>## # A tibble: 2 x 5
 ##   spct.idx Q_Total longitude latitude time               
-##   &lt;fct&gt;      &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt; &lt;dttm&gt;             
+## * &lt;fct&gt;      &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt; &lt;dttm&gt;             
 ## 1 A        0.00126      25.0     60.2 2015-10-31 08:00:00
 ## 2 B        0.00251      25.0     60.2 2015-10-31 09:00:00</code></pre>
 </div>
@@ -2589,7 +2589,7 @@ There are cases where functions <code>convolve_each()</code> and <code>msmsply()
 ## 
 ## # A tibble: 522 x 3
 ##   w.length s.e.irrad s.q.irrad
-##      &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+## *    &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
 ## 1     280          0         0
 ## 2     281.         0         0
 ## 3     282.         0         0
@@ -2605,7 +2605,7 @@ There are cases where functions <code>convolve_each()</code> and <code>msmsply()
 ## 
 ## # A tibble: 522 x 3
 ##   w.length s.e.irrad s.q.irrad
-##      &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+## *    &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
 ## 1     280          0         0
 ## 2     281.         0         0
 ## 3     282.         0         0
@@ -5952,7 +5952,7 @@ Most frequently used summary methods are implemented for collections of spectra.
 <span id="cb478-4"><a href="#cb478-4"></a>        <span class="dt">attr2tb =</span> <span class="kw">c</span>(<span class="dt">when.measured =</span> <span class="st">&quot;time&quot;</span>, <span class="dt">lon =</span> <span class="st">&quot;lon&quot;</span>, <span class="dt">lat =</span> <span class="st">&quot;lat&quot;</span>))</span></code></pre></div>
 <pre><code>## # A tibble: 2 x 5
 ##   spct.idx Q_PAR time                  lon   lat
-##   &lt;fct&gt;    &lt;dbl&gt; &lt;dttm&gt;              &lt;dbl&gt; &lt;dbl&gt;
+## * &lt;fct&gt;    &lt;dbl&gt; &lt;dttm&gt;              &lt;dbl&gt; &lt;dbl&gt;
 ## 1 sun1      894. 2010-06-22 09:51:00  25.0  60.2
 ## 2 sun2     1788. 2010-06-22 09:51:00  25.0  60.2</code></pre>
 <p>For a more advanced example, we reuse the collection of filter spectra <code>filters.mspct</code> from an earlier section. We convolve each filter’s spectral transmittance by the spectral irradiance of the light source so as to predict the irradiances under the filters. We specify the name of the column where the names of the spectra (their index) is stored.</p>
@@ -6181,7 +6181,7 @@ Most frequently used summary methods are implemented for collections of spectra.
 <span id="cb523-4"><a href="#cb523-4"></a>              <span class="dt">attr2tb =</span> <span class="kw">c</span>(<span class="st">&quot;what.measured&quot;</span> =<span class="st"> &quot;Filter type&quot;</span>))</span></code></pre></div>
 <pre><code>## # A tibble: 3 x 3
 ##   spct.idx     UVA `Filter type`                                                
-##   &lt;fct&gt;      &lt;dbl&gt; &lt;chr&gt;                                                        
+## * &lt;fct&gt;      &lt;dbl&gt; &lt;chr&gt;                                                        
 ## 1 none     1.00    theoretical fully transparent object                         
 ## 2 pet      0.783   clear polyester film, 125um thick                            
 ## 3 yellow   0.00160 yellow theatrical &#39;gel&#39;, Rosco supergel no. 312, &#39;canary yel~</code></pre>

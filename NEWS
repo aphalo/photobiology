@@ -1,4 +1,4 @@
-photobiology 0.10.1 (2020-03-22)
+photobiology 0.10.0 (2020-03-23)
 ================================
 
 ** Enhance functionality of peak- and valley-related functions:
@@ -43,6 +43,9 @@ q_response() and e_response().
 triggering of an error for unlikely wavelengths has been replaced by a
 warning, emitted only when verbose output is enabled. An error is trigegred now
 only for wavelengths < 1 nm.
+* Update clean.object_spct() adding parameter min.Afr that cen be used to
+set a different target than the default of zero and in addition implement
+clean.object_mspct(), which was missing.
 ** Compatibility with 'dplyr' (>= 1.0.0):
 Some small internal changes were needed to avoid errors in calls to 'dplyr'
 methods.

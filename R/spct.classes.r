@@ -1398,19 +1398,26 @@ setTimeUnit <- function(x,
 #' @examples
 #' getTimeUnit(sun.spct)
 #'
-getTimeUnit <- function(x, force.duration = FALSE) {
+getTimeUnit <- function(x,
+                        force.duration = FALSE) {
   if (is.any_spct(x) || is.any_summary_spct(x)) {
+
     time.unit <- attr(x, "time.unit", exact = TRUE)
-    if (is.character(time.unit)) {
-      time.unit <- time.unit[1]
-    }
-    if (is.null(time.unit)) {
-      # need to handle objects created with old versions
+
+    # need to handle objects created with old versions
+    if (!length(time.unit)) {
       time.unit <- "unknown"
     }
-    # needed because of bad handling of defaults in constructor
-    if (force.duration && is.character(time.unit)) {
+    if (is.character(time.unit)) {
       time.unit <- time.unit[[1]]
+    }
+    # this is safe in case class attribute is lost, as duration is stored as seconds
+    if (!lubridate::is.duration(time.unit) && is.numeric(time.unit)) {
+      time.unit <- lubridate::duration(seconds = time.unit)
+    }
+
+    # convert strings to durations
+    if (force.duration && is.character(time.unit)) {
       time.unit <- char2duration(time.unit)
     }
     return(time.unit)
@@ -1497,20 +1504,23 @@ convertTimeUnit <- function(x, time.unit = NULL, ...) {
 checkTimeUnit <- function(x) {
   if (is.source_spct(x) || is.response_spct(x) || is.cps_spct(x)) {
     time.unit <- getTimeUnit(x)
-    if (is.null(time.unit)) {
-      setTimeUnit(x, "second")
-      warning("Missing attribute 'time.unit' set to 'second'")
-    }
+    ## Handled already in getTimeUnit()
+    # if (!length(time.unit)) {
+    #   setTimeUnit(x, "second")
+    #   warning("Missing attribute 'time.unit' set to 'second'")
+    # }
 
-    if (is.character(time.unit) &&
-        !(time.unit %in% c("second", "minute", "hour", "day", "exposure", "none", "unknown"))) {
-      stop("'time.unit' ",  time.unit, " is unknown")
+    if (is.character(time.unit)) {
+      if (!(time.unit %in% c("second", "minute", "hour", "day", "exposure", "none", "unknown"))) {
+        stop("'time.unit' ",  time.unit, " is unknown")
+      }
     } else if (lubridate::is.duration(time.unit)) {
       if (time.unit <= lubridate::duration(0, "seconds")) {
         stop("When 'time.unit' is a duration, it must be > 0")
       }
-    } else if (!is.character(time.unit)) {
-      stop("'time.unit' must be of class character or lubridate::duration")
+    } else {
+      stop("'time.unit' must be of class character or lubridate::duration, but found class '",
+           class(time.unit), "' instead.")
     }
   }
   invisible(x)

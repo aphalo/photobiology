@@ -167,6 +167,7 @@ reference:
     - peaks
     - valleys
     - wls_at_target
+    - spikes
   - title: Transformations, radiation-related
     desc: Non-summary methods for transforming or modifying the radiation-related quantity of spectral data objects.
     contents:
@@ -330,6 +331,7 @@ reference:
     - calc_source_output
     - check_spectrum
     - copy_attributes
+    - despike
     - div_spectra
     - e2qmol_multipliers
     - e2quantum_multipliers
@@ -338,7 +340,9 @@ reference:
     - energy_ratio
     - findMultipleWl
     - find_peaks
+    - find_spikes
     - find_wls
+    - fit_peaks
     - get_attributes
     - get_peaks
     - insert_spct_hinges
@@ -351,6 +355,7 @@ reference:
     - photon_ratio
     - photons_energy_ratio
     - prod_spectra
+    - replace_bad_pixs
     - s_e_irrad2rgb
     - select_spct_attributes
     - split_energy_irradiance

@@ -127,6 +127,16 @@ clean.reflector_spct <-
 
 #' @describeIn clean Replace off-range values in an object spectrum
 #'
+#' @param min.Afr numeric Gives the minimum value accepted for the computed
+#'   absorptance. The default \code{NULL} sets a valid value (Afr >= 0) with
+#'   a warning. If an integer value is passed to \code{digits} values are
+#'   adjusted silently.
+#'
+#' @note In the case of \code{object_spct} objects, cleaning is done first
+#'   on the Rfr and Tfr columns and subsequently Afr estimated and if needed
+#'   half of deviation of Afr from the expected minimum value subtracted from
+#'   each of Rfr and Tfr.
+#'
 #' @export
 #'
 clean.object_spct <-
@@ -134,6 +144,7 @@ clean.object_spct <-
            range = x,
            range.s.data = c(0, 1),
            fill = range.s.data,
+           min.Afr = NULL,
            ...) {
    y <- clean_spct(x = x,
                    range = range,
@@ -149,20 +160,28 @@ clean.object_spct <-
                    ...)
    # we need to protect from rounding errors
    if (getTfrType(z) == "total") {
-     Afr <- 0.99999 - (z$Rfr + z$Tfr)
+     Afr <- 1 - (z$Rfr + z$Tfr)
    } else if (getTfrType(z) == "internal") {
-     Afr <- 0.99999 - (z$Rfr + z$Tfr * (1 - z$Rfr))
+     Afr <- 1 - (z$Rfr + z$Tfr * (1 - z$Rfr))
    } else {
      stop("Bad Tfr.type attribute: ", getTfrType(z))
    }
-   if (any(Afr < -1e-5)) {
-     warning("Off-range Afr = 1 - (Tfr + Rfr): ", signif(min(Afr) + 0.00001, 2), " set to 0")
+
+   # By default retain old behaviour, but warn only in case of relevant deviations
+   if (!length(min.Afr) && any(Afr < -1e-5)) {
+     warning("Off-range Afr = 1 - (Tfr + Rfr): ", signif(min(Afr), 2), " set to 0")
    }
-   delta <- ifelse(Afr < 0, Afr / 2, 0)
+
+   if (!length(min.Afr)) {
+     min.Afr = 0
+   }
+
+   delta <- ifelse(Afr < min.Afr, (-Afr + min.Afr) / 2, 0)
    if (any(delta != 0)) {
      z$Rfr <- z$Rfr + delta
      z$Tfr <- z$Tfr + delta
    }
+
    z
   }
 
@@ -366,6 +385,41 @@ clean.reflector_mspct <-
               .paropts = .paropts)
     }
    }
+
+#' @describeIn clean
+#'
+#' @export
+#'
+clean.object_mspct <-
+  function(x,
+           range = NULL,
+           range.s.data = c(0, 1),
+           fill = range.s.data,
+           min.Afr = NULL,
+           ...,
+           .parallel = FALSE,
+           .paropts = NULL) {
+    if (is.null(range)) {
+      msmsply(mspct = x,
+              .fun = clean,
+              range.s.data = range.s.data,
+              fill = fill,
+              min.Afr = min.Afr,
+              ...,
+              .parallel = .parallel,
+              .paropts = .paropts)
+    } else {
+      msmsply(mspct = x,
+              .fun = clean,
+              range = range,
+              range.s.data = range.s.data,
+              fill = fill,
+              min.Afr = min.Afr,
+              ...,
+              .parallel = .parallel,
+              .paropts = .paropts)
+    }
+  }
 
 #' @describeIn clean
 #'
