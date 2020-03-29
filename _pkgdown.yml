@@ -1,16 +1,19 @@
 destination: ../photobiology-docs
+url: https://docs.r4photobiology.info/photobiology/
 
 home:
   strip_header: true
   links:
-  - text: Photobiology packages
+  - text: R for Photobiology website
     href: https://www.r4photobiology.info/
 
 reference:
   - title: Package overview
     contents:
     - '`photobiology-package`'
-  - title: Spectra
+
+  - title: Radiation
+  - subtitle: Spectra
     desc: Constructor and query methods for objects used to store spectral data.
     contents:
     - source_spct
@@ -30,7 +33,7 @@ reference:
     - class_spct
     - spct_classes
     - rmDerivedSpct
-  - title: Collections of spectra
+  - subtitle: Collections of spectra
     desc: Constructor and query methods for objects used to store multiple spectra.
     contents:
     - generic_mspct
@@ -50,7 +53,7 @@ reference:
     - mspct_classes
     - rmDerivedMspct
     - shared_member_class
-  - title: Summaries from spectra
+  - subtitle: Summaries from spectra
     desc: Methods for summarizing spectral data.
     contents:
     - summary
@@ -59,7 +62,7 @@ reference:
     - print.summary_generic_spct
     - head_tail
     - summary_spct_classes
-  - title: Summaries from collections of spectra
+  - subtitle: Summaries from collections of spectra
     desc: Methods for summarizing data across members of collections spectra.
     contents:
     - compare_spct
@@ -72,7 +75,7 @@ reference:
     - s_sd
     - s_se
     - s_mean_se
-  - title: Wavebands
+  - subtitle: Wavebands
     desc: Methods for waveband objects used to store descriptions of wavelength ranges and spectral weighting functions.
     contents:
     - waveband
@@ -82,7 +85,7 @@ reference:
     - wb2rect_spct
     - wb2tagged_spct
     - print.waveband
-  - title: Metadata attributes
+  - subtitle: Metadata attributes
     desc: Methods for setting and querying metadata from spectral objects.
     contents:
     - is_photon_based
@@ -130,7 +133,7 @@ reference:
     - add_attr2tb
     - spct_attr2tb
     - spct_attributes
-  - title: Summary quantities
+  - subtitle: Summary quantities
     desc: Methods for the computation of physical summary quantities from spectra.
     contents:
     - irrad
@@ -161,14 +164,14 @@ reference:
     - expanse
     - midpoint
     - stepsize
-  - title: Spectral features
+  - subtitle: Spectral features
     desc: Methods for detection of specific features in spectra.
     contents:
     - peaks
     - valleys
     - wls_at_target
     - spikes
-  - title: Transformations, radiation-related
+  - subtitle: Transformations, radiation-related
     desc: Non-summary methods for transforming or modifying the radiation-related quantity of spectral data objects.
     contents:
     - clean
@@ -187,7 +190,7 @@ reference:
     - untag
     - cps2irrad
     - smooth_spct
-  - title: Transformations, wavelength-related
+  - subtitle: Transformations, wavelength-related
     desc: Non-summary methods for transforming or modifying the wavelengths of spectral data objects.
     contents:
     - insert_hinges
@@ -198,7 +201,7 @@ reference:
     - trim_wl
     - trim_spct
     - na.omit
-  - title: Mathematical operators and functions for spectra
+  - subtitle: Mathematical operators and functions for spectra
     desc: Specializations of all R's mathematical functions and operators for spectral objects.
     contents:
     - '`plus-.generic_spct`'
@@ -213,14 +216,14 @@ reference:
     - MathFun
     - sign
     - round
-  - title: Options
+  - subtitle: Options
     desc: Convenience functions for setting R options recognized by functions in the 'r4photobiology' suite of R packages.
     contents:
     - using_Tfr
     - energy_as_default
     - wb_trim_as_default
     - verbose_as_default
-  - title: Extract, replace and combine
+  - subtitle: Extract, replace and combine
     desc: Functions and operators, both specializations of R's ones and new ones specific to spectra and collections of spectra.
     contents:
     - Extract
@@ -232,11 +235,12 @@ reference:
     - split2mspct
     - subset2mspct
     - join_mspct
-  - title: Apply
+  - subtitle: Apply
     desc: Apply functions for collections of spectra.
     contents:
     - msmsply
     - convolve_each
+
   - title: Astronomy
     desc: Astronomical computations of interest in photobiology and meteorology.
     contents:
@@ -251,12 +255,15 @@ reference:
     - print.solar_time
     - format.solar_time
     - validate_geocode
+
   - title: Atmosphere
     desc: Computations related to water vapour in air, and on equivalent air mass at different solar elevations.
     contents:
     - water_vp_sat
     - relative_AM
-  - title: Data for radiation sources
+
+  - title: Datasets
+  - subtitle: Data for radiation sources
     contents:
     - sun.spct
     - sun.data
@@ -273,7 +280,7 @@ reference:
     - D2.UV654
     - FEL_spectrum
     - FEL.BN.9101.165
-  - title: Data for real objects including filters
+  - subtitle: Data for real objects including filters
     contents:
     - yellow_gel.spct
     - polyester.spct
@@ -286,16 +293,16 @@ reference:
     - Ler_leaf_trns_i.spct
     - Ler_leaf.spct
     - Ler_leaf.spct
-  - title: Data for theoretical physical bodies
+  - subtitle: Data for theoretical physical bodies
     contents:
     - clear_body.spct
     - white_body.spct
     - black_body.spct
-  - title: Data for light sensors
+  - subtitle: Data for light sensors
     contents:
     - ccd.spct
     - photodiode.spct
-  - title: Data for human and animal vision
+  - subtitle: Data for human vision
     contents:
     - ciev10.spct
     - ciev2.spct
@@ -303,7 +310,11 @@ reference:
     - ciexyzCC2.spct
     - ciexyzCMF10.spct
     - ciexyzCMF2.spct
+    - cone_fundamentals10.spct
+ - subtitle: Data for animal vision
+    contents:
     - beesxyzCMF.spct
+
   - title: Housekeeping and helper functions
     desc: Utilities mainly used internally in the 'r4photobiology' suite of R packages, but safe to use in user code.
     contents:
@@ -321,6 +332,7 @@ reference:
     - upgrade_spct
     - upgrade_spectra
     - defunct
+
   - title: Low-level functions
     desc: Internal functions available for use by developers when maximum flexibility is needed. They are not meant for everyday use as they lack error handling and data validation features.
     contents:

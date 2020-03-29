@@ -32,17 +32,17 @@ Imports:
     plyr (>= 1.8.4),
     dplyr (>= 0.8.1),
     splus2R (>= 1.2-2),
-    zoo (>= 1.8-5),
-    rlang (>= 0.3.4)
+    zoo (>= 1.8-7),
+    rlang (>= 0.4.5)
 Suggests:
-    knitr (>= 1.23),
-    rmarkdown (>= 1.13),
-    testthat (>= 2.1.1),
-    roxygen2 (>= 6.1.1)
+    knitr (>= 1.28),
+    rmarkdown (>= 2.1),
+    testthat (>= 2.3.2),
+    roxygen2 (>= 7.1.0)
 LazyLoad: yes
 LazyData: yes
 ByteCompile: true
-URL: https://www.r4photobiology.info/,
+URL: https://docs.r4photobiology.info/photobiology,
     https://bitbucket.org/aphalo/photobiology
 BugReports: https://bitbucket.org/aphalo/photobiology/issues
 Encoding: UTF-8
