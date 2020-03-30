@@ -311,7 +311,7 @@ reference:
     - ciexyzCMF10.spct
     - ciexyzCMF2.spct
     - cone_fundamentals10.spct
- - subtitle: Data for animal vision
+  - subtitle: Data for animal vision
     contents:
     - beesxyzCMF.spct
 
