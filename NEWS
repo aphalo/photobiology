@@ -1,4 +1,4 @@
-photobiology 0.10.0 (2020-03-23)
+photobiology 0.10.0 (2020-03-30)
 ================================
 
 ** Enhance functionality of peak- and valley-related functions:
@@ -56,13 +56,29 @@ R option "photobiology.check.spct" to allow checks to be enabled and disabled
 as needed. This option might be also useful for optimizing performance.
 
 ********************************************************************************
+_Code-breaking changes in R for photobiology_
 By changing the labels used for values returned by summary functions, this
 update can break older code. Additionally, bug fixes that correct the behaviour
 of irrad(), fluence(), ratio() and response(), and trim_waveband() can
 potentially break old code.
 The order in which attributes are stored has in some cases changed, and while
 a fixed order is not normally expected, equality tests can return FALSE for
-objects that are functionally identical.
+objects that are functionally identical but differ in their structure because
+of their vintage.
+********************************************************************************
+_Code breaking changes in the tidyverse_
+Packages in the tidyverse are eveolving to use package 'vctrs' for their
+implementation (see https://www.tidyverse.org/blog/ for news).
+'tibble' (1.5.0) seems to handle row names differently than previous versions.
+The 'photobiology' code is not affected, but user could might be affected.
+Contrary to earlier versions, 'tibble' (1.5.0) retains member names in vectors,
+which means that "wl.colors" column created by tag() after the update to
+'tibble't will contain named color values.
+dplyr (1.0.0), not yet released, better preserves object attributes, causing
+some differences in the returned values, as now columns retain S3 class
+attributes.
+The use of 'dplyr' verb select() on spectral objects now fails, while extraction
+with [ and [[ works as expected. However, filter() and mutate() work correctly.
 ********************************************************************************
 
 photobiology 0.9.30 (2020-01-06)
