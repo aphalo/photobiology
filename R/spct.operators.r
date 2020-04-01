@@ -1469,30 +1469,6 @@ atan.generic_spct <- function(x) {
   f_dispatcher_spct(x, atan)
 }
 
-#' @name Trig
-#'
-#' @export
-#'
-cospi.generic_spct <- function(x) {
-  f_dispatcher_spct(x, cospi)
-}
-
-#' @rdname Trig
-#'
-#' @export
-#'
-sinpi.generic_spct <- function(x) {
-  f_dispatcher_spct(x, sinpi)
-}
-
-#' @rdname Trig
-#'
-#' @export
-#'
-tanpi.generic_spct <- function(x) {
-  f_dispatcher_spct(x, tanpi)
-}
-
 # transmittance and absorbance --------------------------------------------
 
 

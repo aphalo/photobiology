@@ -15,7 +15,7 @@ Description: Definitions of classes, methods, operators and functions for use in
     effective (weighted) and not-weighted irradiances/doses, fluence rates,
     transmittance, reflectance, absorptance, absorbance and diverse
     ratios and other derived quantities from spectral data. Local maxima and
-    minima: peaks, valleys and splikes; despiking. Conversion between energy- 
+    minima: peaks, valleys and spikes; de-spiking. Conversion between energy- 
     and photon-based units. Wavelength interpolation. Astronomical calculations
     related solar angles and day length. Colours and vision. This package is 
     part of the 'r4photobiology' suite, Aphalo P. J. (2015) 
