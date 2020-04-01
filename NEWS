@@ -27,7 +27,6 @@ tagged with the name of the applied function.
 * Add method spikes() for vectors, data frames and spectra.
 * Add method despike() for vectors, data frames and spectra.
 ** Add example data:
-* Add example data for Raman spectra.
 * Add data for cone fundamentals for human vision.
 ** Fix bugs:
 * Revise trim_waveband() so that it preserves the names of list members. This

@@ -175,6 +175,7 @@ reference:
     desc: Non-summary methods for transforming or modifying the radiation-related quantity of spectral data objects.
     contents:
     - clean
+    - despike
     - normalize
     - normalization
     - fscale
@@ -343,7 +344,6 @@ reference:
     - calc_source_output
     - check_spectrum
     - copy_attributes
-    - despike
     - div_spectra
     - e2qmol_multipliers
     - e2quantum_multipliers
