@@ -69,10 +69,10 @@ _Code breaking changes in the tidyverse_
 Packages in the tidyverse are eveolving to use package 'vctrs' for their
 implementation (see https://www.tidyverse.org/blog/ for news).
 'tibble' (1.5.0) seems to handle row names differently than previous versions.
-The 'photobiology' code is not affected, but user could might be affected.
+The 'photobiology' code is not affected, but user code might be affected.
 Contrary to earlier versions, 'tibble' (1.5.0) retains member names in vectors,
 which means that "wl.colors" column created by tag() after the update to
-'tibble't will contain named color values.
+'tibble' will contain named color values.
 dplyr (1.0.0), not yet released, better preserves object attributes, causing
 some differences in the returned values, as now columns retain S3 class
 attributes.
