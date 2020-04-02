@@ -1052,6 +1052,8 @@ value of R's own `verbose` option at the time the 'photobiology' package is atta
 | photobiology.strict.range | `NA` |  skip range test | `strict_range_as_default(NA)` |
 |                        | `TRUE` | trigger an error | `strict_range_as_default(TRUE)` |
 |                         | **FALSE** | trigger a warning | `strict_range_as_default(FALSE)` |
+| photobiology.check.spct | **TRUE** |  enable `check_spct()` |  |
+|                         | `FALSE` | disable `check_spct()` |  |
 | photobiology.waveband.trim | `FALSE` | exclude | `wb_trim_as_default(FALSE)` |
 |                            | **TRUE** | trim or exclude |  `wb_trim_as_default(TRUE)` |
 | photobiology.use.cached.mult | **FALSE** | do not cache intermediate results |  `use_cached_mult_as_default(FALSE)` |
@@ -1110,6 +1112,7 @@ In this section we describe methods and functions that take one or more spectral
 | fshift | + | + | + | + | + | -- | --  |
 | normalize | + | + | + | + | + | -- | --  |
 | clean | -- | + | + | + | + | -- | --  |
+| despike | -- | + | + | + | + | -- | --  |
 | _maths operators_ | + | + | + | + | + | + | +  |
 | _maths functions_ | + | + | + | + | + | + | +  |
 | tag | -- | + | + | + | + | + | +  |
@@ -1146,6 +1149,7 @@ In this section we describe methods and functions that take one or more spectral
 | fshift | + | + | + | + | + | -- | -- |
 | normalize | + | + | + | + | + | -- | -- |
 | clean | -- | + | + | + | + | -- | -- |
+| despike | -- | + | + | + | + | -- | -- |
 | tag | -- | + | + | + | + | + | + |
 | untag | -- | + | + | + | + | + | + |
 
@@ -1280,14 +1284,29 @@ In the first example, the spectral data shifted so that the mean spectral irradi
 
 ### Replacing off-range spectral data values
 
-Method `clean()` should be used with care as off-range values stem almost always from calibration errors or measuring noise. This function allows one to replace such values, but in many cases a zero shift or rescaling could be a better option. Even when the off-range values are the result of random noise, replacing them with the boundary values can cause bias, by censoring the data. In such cases smoothing may applied first to reduce the possible bias caused by `clean()`. Here we create _artificial_ off-range values by subtracting a constant from each spectrum. 
+Method `clean()` should be used with care as off-range values stem almost always from calibration errors or measuring noise. This function allows one to replace such values, but in many cases a zero shift or rescaling could be a better option. Even when the off-range values are the result of random noise, replacing them with the boundary values can cause bias, by censoring the data. In such cases smoothing may be applied first to reduce the possible bias caused by `clean()`. Here we create _artificial_ off-range values by subtracting a constant from each spectrum. 
 
 ```{r, manip-11}
-clean(sun.spct - 0.01, range = c(280.5, 282))
+clean(polyester.spct - 0.053)
 ```
 
+It is possible to restrict the _cleaning_ to a range of wavelengths and to provide a value to be used as replacement for the off-range data.
+
+```{r, manip-11a}
+clean(sun.spct - 0.01, range = c(280.5, 282), fill = NA)
+```
+
+### Removing spikes
+
+Method `despike()` replaces spikes (very narrow peaks, or valleys) by values estimated from neighbouring pixels. This method should be also used carefully and the results inspected as it can remove features of interest from the data. Usually one knows from theory or experience if spikes can be real features or not. 
+
 ```{r, manip-12}
-clean(polyester.spct - 0.053)
+spikes(sun.spct)
+```
+
+```{r, manip-12a}
+my_sun.spct <- despike(sun.spct)
+spikes(my_sun.spct)
 ```
 
 ### Smoothing of spectra
@@ -1508,6 +1527,7 @@ objects before applying these methods.
 | labels | + | + | + | + | + | + | + |
 | summary | + | + | + | + | + | + | + |
 | peaks | -- | + | + | + | + | (+) | - |
+| spikes | -- | + | + | + | + | (+) | - |
 | valleys | -- | + | + | + | + | (+) | - |
 | wls_at_target | -- | + | + | + | + | (+) | - |
 | integrate_spct | + | + | + | + | + | + | + |
@@ -1553,6 +1573,7 @@ As mentioned above, summary methods for collections of spectra return data frame
 | summary |  **l** |  **l** |  **l** |  **l** |  **l** |  **l** |  **l** | 
 | peaks |  -- |  + |  + |  + |  + |  (+) |  - | 
 | valleys |  -- |  + |  + |  + |  + |  (+) |  - | 
+| spikes |  -- |  + |  + |  + |  + |  (+) |  - | 
 | wls_at_target |  -- |  + |  + |  + |  + |  (+) |  - | 
 | integrate_spct |  **a, d, l** |  **a, d, l** |  **a, d, l** |  **a, d, l** |  **a, d, l** |  **a, d, l** |  **a, d, l** | 
 | average_spct |  **a, d, l** |  **a, d, l** |  **a, d, l** |  **a, d, l** |  **a, d, l** |  **a, d, l** |  **a, d, l** | 
@@ -1602,7 +1623,7 @@ filters.mspct <- filter_mspct(list(none = clear.spct,
 wl_range(filters.mspct)
 ```
 
-### Peaks and valleys
+### Peaks, valleys and spikes
 
 #### Individual spectra
 
@@ -1619,13 +1640,38 @@ In the case of `source_spct` and `response_spct` methods `unit.out` can be used 
 peaks(sun.spct, span = 51, unit.out = "photon")
 ```
 
-It is possible to approximately set the width of the windows in nanometres by using function `step_size`. However, here we simply use an odd number of wavelengths _steps_.
+It is possible to approximately set the width in nanometres of the moving window within which a maximum is searched by passing an ood number as argument to `span`. However, even numbers if
+passed are increased with a warling.
 
 ```{r, summary-7}
 peaks(sun.spct, span = 21)
 ```
 
-Low level functions `find_peaks`, `get_peaks` and `get_valleys` take numeric vectors as arguments.
+A value of `NULL` as argument to `span` searches for a single maximum for the whole spectrum.
+
+```{r, summary-8}
+peaks(sun.spct, span = NULL)
+```
+
+The position of peaks can be refined by spline interpolation. This is still
+an experimental feature, that may fail, especially in the estimate of the 
+value of the spectral quantity at the peak.
+
+```{r, summary-9}
+peaks(sun.spct, span = NULL, refine.wl = TRUE)
+```
+
+Method `spikes` differs from `peaks` in that it uses a different algorithm 
+that detects only narrow peaks or spikes. The value returned is as in the case
+of `peaks` a subset of the original spectrum. The parameters controlling the
+sensitivity also differ.
+
+```{r, summary-10}
+spikes(sun.spct)
+```
+
+Low level functions `find_peaks`, `get_peaks`, `get_valleys`, `fit_peaks`,
+`fit_valleys`, and `find_spikes` take numeric vectors as first argument.
 
 #### Collections of spectra
 
