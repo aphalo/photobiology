@@ -80,7 +80,7 @@ If spectra are stored in _long form_, e.g. for plotting with 'ggplot2', attribut
 
 ### Data assumptions
 
-A key assumption of the package is that wavelengths are always expressed in nanometres ($1~\mathrm{nm} = 1 \cdot 10^{-9}\,\mathrm{m}$). If the data to be analysed use different units for wavelengths, e.g.\ Ångstrom ($1~\textrm{Å} = 1 \cdot 10^{-10}\,\mathrm{m}$), the values need to be re-scaled before creating objects of the spectral classes. The same applies to all spectral quantities, as there is an expectation in every case, of using base SI units for expression. Table 2 lists the units of expression for the different variables and the metadata attributes that may determine variations in the expression of the quantities.
+A key assumption of the package is that wavelengths are always expressed in manometers ($1~\mathrm{nm} = 1 \cdot 10^{-9}\,\mathrm{m}$). If the data to be analyzed use different units for wavelengths, e.g.\ Ångstrom ($1~\textrm{Å} = 1 \cdot 10^{-10}\,\mathrm{m}$), the values need to be re-scaled before creating objects of the spectral classes. The same applies to all spectral quantities, as there is an expectation in every case, of using base SI units for expression. Table 2 lists the units of expression for the different variables and the metadata attributes that may determine variations in the expression of the quantities.
 
 <hr>
 
@@ -145,7 +145,7 @@ If, for example, the spectral irradiance data output by a spectroradiometer is e
 my.spct <- source_spct(w.length = wavelength/10, s.e.irrad = irrad/1000)
 ```
 
-In the example above, we take advantage of the behaviour of the R language: an operation between a scalar and a vector, is equivalent to applying this operation to each element of the vector.
+In the example above, we take advantage of the behavior of the R language: an operation between a scalar and a vector, is equivalent to applying this operation to each element of the vector.
 Consequently, in the code above, each value from the vector of wavelengths is divided
 by 10, and each value in the vector of spectral irradiances is divided by 1000.
 
@@ -353,7 +353,7 @@ str(two_gen.mspct, max.level = 1, give.attr = FALSE)
 
 In addition to coercion methods for lists of spectra objects, coercion methods are available for lists of data frames (or tibbles) and from matrix objects.
 
-One additional feature is that if a single spectrum object or data frame are coerced into a collection of spectra, the behaviour is equivalent to having passed as argument a list containing such object as its only member. 
+One additional feature is that if a single spectrum object or data frame are coerced into a collection of spectra, the behavior is equivalent to having passed as argument a list containing such object as its only member. 
 
 ```{r, col-construction-4}
 one_sun.mspct <- as.source_mspct(sun.spct)
@@ -1061,7 +1061,7 @@ value of R's own `verbose` option at the time the 'photobiology' package is atta
 | photobiology.verbose | `FALSE` | minimal warnings and messages |   `verbose_as_default(FALSE)` |
 |                             | `TRUE` | all warnings and messages |   `verbose_as_default(TRUE)` |
 
-The behaviour of the operators defined in this package depends on the value of two global options. For example, if we would like the operators to operate on spectral photon irradiance and return spectral photon irradiance instead of spectral energy irradiance, this behaviour can be set, and will remain active until unset or reset. It is possible to change options using base R's function `options()` as shown in the next code chunk. The other options listed in the Table above can be set similarly, while to unset any option, they can be given a `NULL` value.
+The behavior of the operators defined in this package depends on the value of two global options. For example, if we would like the operators to operate on spectral photon irradiance and return spectral photon irradiance instead of spectral energy irradiance, this behavior can be set, and will remain active until unset or reset. It is possible to change options using base R's function `options()` as shown in the next code chunk. The other options listed in the Table above can be set similarly, while to unset any option, they can be given a `NULL` value.
 
 ```{r, options-1}
 options(photobiology.radiation.unit = "photon")
@@ -1240,7 +1240,7 @@ Applying method `fscale()` removes the normalization and clears the correspondin
 
 Function `fscale()` rescales a spectrum by dividing each spectral data value by a value calculated with a function (f) selected by a character string ("total" or "mean"), or an actual R function which can accept the spectrum object supplied as its first argument. Additional named arguments can be also passed.
 
-How metadata is set in the returned object is controlled by a logical argument to parameter `set.scaled`. If `TRUE`, the data are labelled as being expressed in relative units and if `FALSE` this attribute is not set. The default argument depends on the value passed as argument to `target`. If this value is one, then the data are marked as no longer being expressed in absolute units. If the `target` is any other numeric value then it is assumed that the intention is to re-scale the data and that absolute physical units remain meaningful. It is important that the metadata matches the actual use as printing of summaries and plot labelling depends on them. 
+How metadata is set in the returned object is controlled by a logical argument to parameter `set.scaled`. If `TRUE`, the data are labeled as being expressed in relative units and if `FALSE` this attribute is not set. The default argument depends on the value passed as argument to `target`. If this value is one, then the data are marked as no longer being expressed in absolute units. If the `target` is any other numeric value then it is assumed that the intention is to re-scale the data and that absolute physical units remain meaningful. It is important that the metadata matches the actual use as printing of summaries and plot labeling depends on them. 
 
 ```{r, manip-9}
 fscale(sun.spct)
@@ -1298,7 +1298,7 @@ clean(sun.spct - 0.01, range = c(280.5, 282), fill = NA)
 
 ### Removing spikes
 
-Method `despike()` replaces spikes (very narrow peaks, or valleys) by values estimated from neighbouring pixels. This method should be also used carefully and the results inspected as it can remove features of interest from the data. Usually one knows from theory or experience if spikes can be real features or not. 
+Method `despike()` replaces spikes (very narrow peaks, or valleys) by values estimated from neighboring pixels. This method should be also used carefully and the results inspected as it can remove features of interest from the data. Usually one knows from theory or experience if spikes can be real features or not. 
 
 ```{r, manip-12}
 spikes(sun.spct)
@@ -1311,7 +1311,7 @@ spikes(my_sun.spct)
 
 ### Smoothing of spectra
 
-We can use smoothing both to average out random variation among nearby pixels caused by measuring noise, or to filter out the real fine structure of a spectrum to better assess the larger features. The methods described here work by averaging the spectral data from neighbouring wavelengths. The simplest methods are running medians and running means (or "boxcar smoothing" in the terminology used in some software). There are several methods for smoothing available in R based on different algorithms. Some of these methods also automatically set the degree of smoothing based on the data being smoothed. Package 'photobiology' defines function `smooth_spct`, which at the moment supports three different methods. Two are wrappers on R's own methods and a third one, `"custom"`, is designed to use stronger smoothing of values close to zero, where noise in spectral irradiance measurements is proportionally more.
+We can use smoothing both to average out random variation among nearby pixels caused by measuring noise, or to filter out the real fine structure of a spectrum to better assess the larger features. The methods described here work by averaging the spectral data from neighboring wavelengths. The simplest methods are running medians and running means (or "boxcar smoothing" in the terminology used in some software). There are several methods for smoothing available in R based on different algorithms. Some of these methods also automatically set the degree of smoothing based on the data being smoothed. Package 'photobiology' defines function `smooth_spct`, which at the moment supports three different methods. Two are wrappers on R's own methods and a third one, `"custom"`, is designed to use stronger smoothing of values close to zero, where noise in spectral irradiance measurements is proportionally more.
 
 ```{r}
 smooth_spct(sun.spct)
@@ -1383,7 +1383,7 @@ Furthermore, when fill is not `NULL`, expansion is possible.
 trim_wl(sun.spct, c(275, NA), fill = 0)
 ```
 
-By default interpolation at the boundaries is used, but setting `use.hinges` to `FALSE` results in clipping, a behaviour similar to that of `clip_wl` only if `fill == NULL`.
+By default interpolation at the boundaries is used, but setting `use.hinges` to `FALSE` results in clipping, a behavior similar to that of `clip_wl` only if `fill == NULL`.
 
 ```{r, trim-8}
 trim_wl(sun.spct, c(281.5, NA), fill = NA)
@@ -1420,7 +1420,7 @@ The strength of the thinning can be adjusted by passing arguments to parameters 
 
 ### Convolving weights
 
-It is very instructive to look at weighted spectral data to understand how effective irradiances are calculated. Plotting effective spectral irradiance data can be very informative when analysing interactions among photoreceptors and ambient radiation. It can also illustrate the large effect that small measuring errors can have on the estimated effective irradiances or exposures when SWFs have a steep slope.
+It is very instructive to look at weighted spectral data to understand how effective irradiances are calculated. Plotting effective spectral irradiance data can be very informative when analyzing interactions among photoreceptors and ambient radiation. It can also illustrate the large effect that small measuring errors can have on the estimated effective irradiances or exposures when SWFs have a steep slope.
 
 #### Individual spectra
 
@@ -1443,7 +1443,7 @@ sun.spct * CIE.wb
 
 ### Tagging with bands and colours
 
-We call tagging, to the process of adding reference information to spectral data. For example we can add a factor indicating regions or bands in the spectrum. We can add also information on the colour, as seen by humans, for each observed value, or for individual regions or bands of the spectrum. In most cases this additional information is used for annotations when plotting the spectral data.
+We call tagging, to the process of adding reference information to spectral data. For example we can add a factor indicating regions or bands in the spectrum. We can add also information on the color, as seen by humans, for each observed value, or for individual regions or bands of the spectrum. In most cases this additional information is used for annotations when plotting the spectral data.
 
 #### Individual spectra
 
@@ -1454,7 +1454,7 @@ tag(sun.spct, PAR.wb)
 tag(sun.spct, UV_bands.lst)
 ```
 
-The added factor and colour data can be used for further processing or for plotting. Information about the tagging and wavebands is stored in an attribute `tag.attr` in every tagged spectrum, this yields a more compact output and keeps a _trace_ of the tagging.
+The added factor and color data can be used for further processing or for plotting. Information about the tagging and wavebands is stored in an attribute `tag.attr` in every tagged spectrum, this yields a more compact output and keeps a _trace_ of the tagging.
 
 ```{r, tag-2}
 tg.sun.spct <- tag(sun.spct, PAR.wb)
@@ -1640,8 +1640,8 @@ In the case of `source_spct` and `response_spct` methods `unit.out` can be used 
 peaks(sun.spct, span = 51, unit.out = "photon")
 ```
 
-It is possible to approximately set the width in nanometres of the moving window within which a maximum is searched by passing an ood number as argument to `span`. However, even numbers if
-passed are increased with a warling.
+It is possible to approximately set the width in nanometres of the moving window within which a maximum is searched by passing an odd number as argument to `span`. However, even numbers if
+passed are increased with a warning.
 
 ```{r, summary-7}
 peaks(sun.spct, span = 21)
@@ -1721,7 +1721,7 @@ To integrate one restricted range of wavelengths from a spectrum, we can provide
 e_irrad(sun.spct, PAR.wb)
 ```
 
-It is also valid to pass as argument for `w.band` a numeric range representing wavelengths in nanometres (nm), which is converted into a waveband definition on-the-fly. Note, however, that the automatically assigned name gives only the range.
+It is also valid to pass as argument for `w.band` a numeric range representing wavelengths in manometers (nm), which is converted into a waveband definition on-the-fly. Note, however, that the automatically assigned name gives only the range.
 
 ```{r, irrad-3}
 e_irrad(sun.spct, c(400, 700))
@@ -1791,7 +1791,7 @@ e_irrad(sun.spct, UV_bands.lst, quantity = "contribution.pc")
 e_irrad(sun.spct, UV_bands.lst, quantity = "relative.pc")
 ```
 
-The total radiation received on a surface during an exposure event can be also calculated with methods `irrad()`, `e_irrad()` and `q_irrad()`, but the values returned are irradiances expressed on a very unusual time basis. These are no longer W m-2 (J s-1 m-2), but instead J per 8 hours per square metre.
+The total radiation received on a surface during an exposure event can be also calculated with methods `irrad()`, `e_irrad()` and `q_irrad()`, but the values returned are irradiances expressed on a very unusual time basis. These are no longer W m-2 (J s-1 m-2), but instead J per 8 hours per square meter.
 
 ```{r}
 e_irrad(sun.spct, PAR.wb, time.unit = duration(8, "hours"))
@@ -1857,7 +1857,7 @@ q_irrad(filtered_sun,
         idx = "Filter")
 ```
 
-The code above example can also be written as a single statement. Here we also tweak column names, delete one column, and swap the position of the remnaining columns.
+The code above example can also be written as a single statement. Here we also tweak column names, delete one column, and swap the position of the remaining columns.
 
 ```{r, col-convolve-2}
 q_irrad(convolve_each(filters.mspct, sun.spct), 
@@ -2095,7 +2095,7 @@ The function can be used to compare pairs of spectra, stored as a collection. In
 compare_spct(source_mspct(list(sun1 = sun.spct, sun2 = sun.spct * 2)))
 ```
 
-The value returned by default is a `generic_spct` object containing the computed summaries for each waveband plus the relsult of the comparison between the summaries. The first three columns contain the wavelength at the midpoint of the wavelength range of waveband plus its extremes.
+The value returned by default is a `generic_spct` object containing the computed summaries for each waveband plus the result of the comparison between the summaries. The first three columns contain the wavelength at the midpoint of the wavelength range of waveband plus its extremes.
 
 In this example we compare two `filter_spct` objects, using summaries over 50-nm-wide bands, and using an operator returning a logical value for the comparison instead of the default division operator.
 
@@ -2108,7 +2108,7 @@ compare_spct(filter_mspct(list(pet = polyester.spct,
 
 ## RGB colours
 
-Two functions allow calculation of simulated colour of light sources as R colour definitions. Three different functions are available, one for monochromatic light taking as argument wavelength values, and one for polychromatic light taking as argument spectral energy irradiances and the corresponding wave length values. The third function can be used to calculate a representative RGB colour for a band of the spectrum represented as a range of wavelength, based on the assumption of a flat energy irradiance across the range.
+Two functions allow calculation of simulated color of light sources as R color definitions. Three different functions are available, one for monochromatic light taking as argument wavelength values, and one for polychromatic light taking as argument spectral energy irradiances and the corresponding wave length values. The third function can be used to calculate a representative RGB color for a band of the spectrum represented as a range of wavelength, based on the assumption of a flat energy irradiance across the range.
 By default CIE coordinates for _typical_ human vision are used, but the functions
 have a parameter that can be used for supplying a different chromaticity definition.
 

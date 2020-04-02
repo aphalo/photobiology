@@ -49,7 +49,7 @@ clean.object_mspct(), which was missing.
 Some small internal changes were needed to avoid errors in calls to 'dplyr'
 methods.
 From user's perspective as 'dplyr' now seems to retain classes derived from
-tibble, it may be necessary in cerain cases to disable some checks during calls
+tibble, it may be necessary in certain cases to disable some checks during calls
 to dplyr methods on spectral objects in users' scripts. We have implemented
 R option "photobiology.check.spct" to allow checks to be enabled and disabled
 as needed. This option might be also useful for optimizing performance.

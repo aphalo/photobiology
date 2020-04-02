@@ -2,18 +2,20 @@
 #'
 #' This function finds spikes in a numeric vector using the algorithm of
 #' Whitaker and Hayes (2018). Spikes are values in spectra that are unusually
-#' high compared to neighbors. They are usually individual values or very short
-#' runs of similar "unusual" values. Spikes caused by cosmic radiation are a
-#' frequent problem in Raman spectra. Another source of spikes are "hot pixels"
-#' in CCD and diode arrays.
+#' high or low compared to neighbors. They are usually individual values or very
+#' short runs of similar "unusual" values. Spikes caused by cosmic radiation are
+#' a frequent problem in Raman spectra. Another source of spikes are "hot
+#' pixels" in CCD and diode arrays. Other kinds of accidental "outlayers" will
+#' be also detected.
 #'
 #' @details Spikes are detected based on a modified Z score calculated from the
-#' differenced spectrum. The Z threshold used should be adjusted to the
-#' characteristics of the input and desired sensitivity. The lower the threshold
-#' the more stringent the test becomes, resulting in most cases in more spikes
-#' being detected. By default the original algorithm is used, but if a value
-#' large than zero is passed to \code{max.spike.width} an additional step filters out
-#' broader spikes (or falsely detected slopes) from the returned values.
+#'   differenced spectrum. The Z threshold used should be adjusted to the
+#'   characteristics of the input and desired sensitivity. The lower the
+#'   threshold the more stringent the test becomes, resulting in most cases in
+#'   more spikes being detected. A modified version of the algorithm is used if
+#'   a value different from \code{NULL} is passed as argument to
+#'   \code{max.spike.width}. In such a case, an additional step filters out
+#'   broader spikes (or falsely detected steep slopes) from the returned values.
 #'
 #' @param x numeric vector containing spectral data.
 #' @param x.is.delta logical Flag indicating if x contains already differences.
@@ -365,9 +367,6 @@ despike.generic_spct <-
 #' @param unit.out character One of "energy" or "photon"
 #'
 #' @export
-#'
-#' @examples
-#' despike(sun.spct)
 #'
 despike.source_spct <-
   function(x,
@@ -865,9 +864,6 @@ spikes.generic_spct <-
 #' @param unit.out character One of "energy" or "photon"
 #'
 #' @export
-#'
-#' @examples
-#' spikes(sun.spct)
 #'
 spikes.source_spct <-
   function(x,

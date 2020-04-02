@@ -458,10 +458,17 @@ fshift(white_led.source_spct, range = UVB.wb, f = "mean")
 fshift(sun.spct, range = c(280,290), f = "min")
 
 ## ---- manip-11----------------------------------------------------------------
-clean(sun.spct - 0.01, range = c(280.5, 282))
+clean(polyester.spct - 0.053)
+
+## ---- manip-11a---------------------------------------------------------------
+clean(sun.spct - 0.01, range = c(280.5, 282), fill = NA)
 
 ## ---- manip-12----------------------------------------------------------------
-clean(polyester.spct - 0.053)
+spikes(sun.spct)
+
+## ---- manip-12a---------------------------------------------------------------
+my_sun.spct <- despike(sun.spct)
+spikes(my_sun.spct)
 
 ## -----------------------------------------------------------------------------
 smooth_spct(sun.spct)
@@ -568,6 +575,15 @@ peaks(sun.spct, span = 51, unit.out = "photon")
 
 ## ---- summary-7---------------------------------------------------------------
 peaks(sun.spct, span = 21)
+
+## ---- summary-8---------------------------------------------------------------
+peaks(sun.spct, span = NULL)
+
+## ---- summary-9---------------------------------------------------------------
+peaks(sun.spct, span = NULL, refine.wl = TRUE)
+
+## ---- summary-10--------------------------------------------------------------
+spikes(sun.spct)
 
 ## ---- col-summary-1-----------------------------------------------------------
 msmsply(filters.mspct, peaks, span = 21)
