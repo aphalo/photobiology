@@ -313,7 +313,7 @@ despike.data.frame <-
                               z.threshold = z.threshold,
                               max.spike.width = max.spike.width,
                               window.width = window.width,
-                              method = "method",
+                              method = method,
                               na.rm = na.rm,
                               ...
       )
@@ -352,7 +352,7 @@ despike.generic_spct <-
                               z.threshold = z.threshold,
                               max.spike.width = max.spike.width,
                               window.width = window.width,
-                              method = "method",
+                              method = method,
                               na.rm = na.rm,
                               ...
       )
@@ -388,14 +388,14 @@ despike.source_spct <-
     } else {
       stop("Unrecognized 'unit.out': ", unit.out)
     }
-    x[[colname]] <- despike(x[[colname]],
+    z[[colname]] <- despike(z[[colname]],
                             z.threshold = z.threshold,
                             max.spike.width = max.spike.width,
                             window.width = window.width,
-                            method = "method",
+                            method = method,
                             na.rm = na.rm,
                             ...)
-    x
+    z
   }
 
 #' @describeIn despike  Method for "response_spct" objects.
@@ -421,14 +421,14 @@ despike.response_spct <-
     } else {
       stop("Unrecognized 'unit.out': ", unit.out)
     }
-    x[[colname]] <- despike(x[[colname]],
+    z[[colname]] <- despike(z[[colname]],
                             z.threshold = z.threshold,
                             max.spike.width = max.spike.width,
                             window.width = window.width,
                             method = method,
                             na.rm = na.rm,
                             ...)
-    x
+    z
   }
 
 #' @describeIn despike  Method for "filter_spct" objects.
@@ -459,14 +459,14 @@ despike.filter_spct <-
     } else {
       stop("Unrecognized 'filter.qty': ", filter.qty)
     }
-    x[[colname]] <- despike(x[[colname]],
+    z[[colname]] <- despike(z[[colname]],
                             z.threshold = z.threshold,
                             max.spike.width = max.spike.width,
                             window.width = window.width,
                             method = method,
                             na.rm = na.rm,
                             ...)
-    x
+    z
   }
 
 #' @describeIn despike  Method for "reflector_spct" objects.
@@ -887,11 +887,11 @@ spikes.source_spct <-
       stop("Unrecognized 'unit.out': ", unit.out)
     }
     spikes.idx <-
-      which(find_spikes(x[[col.name]],
+      which(find_spikes(z[[col.name]],
                         z.threshold = z.threshold,
                         max.spike.width = max.spike.width,
                         na.rm = na.rm))
-    x[spikes.idx,  , drop = FALSE]
+    z[spikes.idx,  , drop = FALSE]
   }
 
 #' @describeIn spikes  Method for "response_spct" objects.
@@ -916,11 +916,11 @@ spikes.response_spct <-
       stop("Unrecognized 'unit.out': ", unit.out)
     }
     spikes.idx <-
-      which(find_spikes(x[[col.name]],
+      which(find_spikes(z[[col.name]],
                         z.threshold = z.threshold,
                         max.spike.width = max.spike.width,
                         na.rm = na.rm))
-    x[spikes.idx,  , drop = FALSE]
+    z[spikes.idx,  , drop = FALSE]
   }
 
 #' @describeIn spikes  Method for "filter_spct" objects.
@@ -947,11 +947,11 @@ spikes.filter_spct <-
       stop("Unrecognized 'filter.qty': ", filter.qty)
     }
     spikes.idx <-
-      which(find_spikes(x[[col.name]],
+      which(find_spikes(z[[col.name]],
                         z.threshold = z.threshold,
                         max.spike.width = max.spike.width,
                         na.rm = na.rm))
-    x[spikes.idx,  , drop = FALSE]
+    z[spikes.idx,  , drop = FALSE]
   }
 
 #' @describeIn spikes  Method for "reflector_spct" objects.
