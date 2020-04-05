@@ -58,19 +58,19 @@ find_spikes <-
     }
     z <- (d.var - stats::median(d.var)) / stats::mad(d.var) * 0.6745
     outcomes <- abs(z) > z.threshold
+    if (!x.is.delta) {
+      # ensure same length as input
+      outcomes <- c(FALSE, outcomes)
+    }
     if (!is.null(max.spike.width) && max.spike.width > 0) {
       # ignore broad peaks using run length encoding
       runs <- rle(outcomes)
       runs$values <- ifelse(runs$lengths > max.spike.width, FALSE, runs$values)
       outcomes <- inverse.rle(runs)
     }
-    if (!x.is.delta) {
-      # ensure same length as input
-      outcomes <- c(FALSE, outcomes)
-    }
     if (na.rm) {
       # restore length of logical vector
-      for (i in rev(na.idx)) {
+      for (i in na.idx) {
         outcomes <- append(outcomes, FALSE, after = i - 1L)
       }
     }

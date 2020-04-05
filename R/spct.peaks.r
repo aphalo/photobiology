@@ -1,23 +1,25 @@
 #' Find peaks in a spectrum
 #'
 #' This function finds all peaks (local maxima) in a spectrum, using a user
-#' selectable size threshold relative to the tallest peak (global maximum). This
-#' a wrapper built on top of function peaks from package splus2R.
+#' provided size threshold relative to the tallest peak (global maximum) bellow
+#' which found peaks are ignored---i.e., not included in the returned value. This
+#' is a wrapper built on top of function \code{peaks()} from package 'splus2R'.
 #'
 #' @param x numeric vector
-#' @param ignore_threshold numeric value between 0.0 and 1.0 indicating the size
-#'   threshold below which peaks will be ignored.
-#' @param span a peak is defined as an element in a sequence which is greater
-#'   than all other elements within a window of width span centered at that
-#'   element. The default value is 3, meaning that a peak is bigger than both of
-#'   its neighbors. Default: 3.
-#' @param strict logical flag: if TRUE, an element must be strictly greater than
-#'   all other values in its window to be considered a peak. Default: TRUE.
+#' @param ignore_threshold numeric Value between 0.0 and 1.0 indicating the
+#'   relative size compared to tallest peak threshold below which peaks will be
+#'   ignored. Negative values set a threshold so that the tallest peaks are
+#'   ignored, instead of the shortest.
+#' @param span integer A peak is defined as an element in a sequence which is
+#'   greater than all other elements within a window of width \code{span}
+#'   centered at that element. Use \code{NULL} for the global peak.
+#' @param strict logical If \code{TRUE}, an element must be strictly greater
+#'   than all other values in its window to be considered a peak.
 #' @param na.rm logical indicating whether \code{NA} values should be stripped
 #'   before searching for peaks.
 #'
-#' @return a logical vector of the same length as \code{x}. Values that are TRUE
-#'   correspond to local peaks in the data.
+#' @return A logical vector of the same length as \code{x}. Values that are
+#'   \code{TRUE} correspond to local peaks in the data.
 #'
 #' @export
 #' @examples
@@ -25,8 +27,9 @@
 #'
 #' @note This function is a wrapper built on function
 #'   \code{\link[splus2R]{peaks}} from \pkg{splus2R} and handles non-finite
-#'   (including NA) values differently than \code{peaks}, instead of giving an
-#'   error they are replaced with the smallest finite value in \code{x}.
+#'   (including \code{NA}) values differently than \code{splus2R::peaks},
+#'   instead of giving an error they are replaced with the smallest finite value
+#'   in \code{x}.
 #'
 #' @seealso \code{\link[splus2R]{peaks}}
 #'
@@ -34,31 +37,41 @@
 #'
 find_peaks <-
   function(x,
-           ignore_threshold = 0.0,
+           ignore_threshold = 0,
            span = 3,
            strict = TRUE,
            na.rm = FALSE) {
     if (na.rm) {
       x <- na.omit(x)
     }
+    # find peaks
     if(is.null(span)) {
-      return(x == max(x))
-    }
-    range_x <- range(x, finite = TRUE)
-    min_x <- range_x[1]
-    max_x <- range_x[2]
-    x <- ifelse(!is.finite(x), min_x, x)
-    # the next two lines cater for the case when max_x < 0, which is quite common with logs
-    delta <- max_x - min_x
-    top_flag <- ignore_threshold > 0.0
-    scaled_threshold <- delta * abs(ignore_threshold)
-    pks <- splus2R::peaks(x = x, span = span, strict = strict)
-    if (abs(ignore_threshold) < 1e-5)
-      return(pks)
-    if (top_flag) {
-      return(ifelse(x - min_x > scaled_threshold, pks , FALSE))
+      pks <- x == max(x)
+      if (strict) {
+        target <- which(pks)[1]
+        pks <- logical(length(x))
+        pks[target] <- TRUE
+      }
     } else {
-      return(ifelse(max_x - x > scaled_threshold, pks , FALSE))
+      pks <- splus2R::peaks(x = x, span = span, strict = strict)
+    }
+    # apply threshold to found peaks
+    if (abs(ignore_threshold) < 1e-5) {
+      pks
+    } else {
+      range_x <- range(x, finite = TRUE)
+      min_x <- range_x[1]
+      max_x <- range_x[2]
+      x <- ifelse(!is.finite(x), min_x, x)
+      # this can cater for the case when max_x < 0, as with logs
+      delta <- max_x - min_x
+      top_flag <- ignore_threshold > 0.0
+      scaled_threshold <- delta * abs(ignore_threshold)
+      if (top_flag) {
+        ifelse(x - min_x > scaled_threshold, pks , FALSE)
+      } else {
+        ifelse(max_x - x > scaled_threshold, pks , FALSE)
+      }
     }
   }
 
@@ -72,14 +85,14 @@ find_peaks <-
 #' @param x numeric
 #' @param y numeric
 #' @param ignore_threshold numeric Value between 0.0 and 1.0 indicating the
-#'   relative size compared to tallest peak or deepest valley of the peaks
-#'   to return.
-#' @param span numeric A peak is defined as an element in a sequence which is
+#'   relative size compared to tallest peak threshold below which peaks will be
+#'   ignored. Negative values set a threshold so that the tallest peaks are
+#'   ignored, instead of the shortest.
+#' @param span integer A peak is defined as an element in a sequence which is
 #'   greater than all other elements within a window of width \code{span}
-#'   centered at that element. For example, a value of 3 means that a peak is
-#'   bigger than both of its neighbors.
-#' @param strict logical Flag: if TRUE, an element must be strictly greater than
-#'   all other values in its window to be considered a peak. Default: TRUE.
+#'   centered at that element. Use \code{NULL} for the global peak.
+#' @param strict logical If \code{TRUE}, an element must be strictly greater
+#'   than all other values in its window to be considered a peak.
 #' @param x_unit character Vector of texts to be pasted at end of labels built
 #'   from x value at peaks.
 #' @param x_digits numeric Number of significant digits in wavelength label.
@@ -98,7 +111,7 @@ find_peaks <-
 #'
 get_peaks <- function(x,
                       y,
-                      ignore_threshold = 0.0,
+                      ignore_threshold = 0,
                       span = 5,
                       strict = TRUE,
                       x_unit = "",
@@ -133,7 +146,7 @@ get_peaks <- function(x,
 #' @export
 #'
 get_valleys <- function(x, y,
-                        ignore_threshold = 0.0,
+                        ignore_threshold = 0,
                         span = 5,
                         strict = TRUE,
                         x_unit = "",
@@ -161,8 +174,8 @@ get_valleys <- function(x, y,
 #' \code{find_peaks()} or \code{find_valleys()}.
 #'
 #' @param x generic_spct or data.frame object.
-#' @param peaks.idx,valleys.idx integer Indexes into \code{x} selecting global
-#'   or local extremes.
+#' @param peaks.idx,valleys.idx logical or integer Indexes into \code{x}
+#'   selecting global or local extremes.
 #' @param span odd integer The span used when refining the location of maxima or
 #'   minima of \code{x}.
 #' @param x.col.name,y.col.name character Name of the column of \code{x} on
@@ -283,14 +296,15 @@ fit_valleys <- function(x,
 #' to local maxima.
 #'
 #' @param x an R object
-#' @param ignore_threshold numeric value between 0.0 and 1.0 indicating the
+#' @param ignore_threshold numeric Value between 0.0 and 1.0 indicating the
 #'   relative size compared to tallest peak threshold below which peaks will be
-#'   ignored.
-#' @param span a peak is defined as an element in a sequence which is greater
-#'   than all other elements within a window of width \code{span} centered at
-#'   that element. Use \code{NULL} for the global peak.
-#' @param strict logical flag: if TRUE, an element must be strictly greater than
-#'   all other values in its window to be considered a peak. Default: TRUE.
+#'   ignored. Negative values set a threshold so that the tallest peaks are
+#'   ignored, instead of the shortest.
+#' @param span integer A peak is defined as an element in a sequence which is
+#'   greater than all other elements within a window of width \code{span}
+#'   centered at that element. Use \code{NULL} for the global peak.
+#' @param strict logical If \code{TRUE}, an element must be strictly greater
+#'   than all other values in its window to be considered a peak.
 #' @param na.rm logical indicating whether \code{NA} values should be stripped
 #'   before searching for peaks.
 #' @param var.name,x.var.name,y.var.name character Name of column where to look
@@ -302,6 +316,10 @@ fit_valleys <- function(x,
 #' @param ... ignored
 #'
 #' @return A subset of \code{x} with rows corresponding to local maxima.
+#'
+#' @note Thresholds for ignoring peaks are applied after peaks are searched for,
+#' and negative threshold values can in some cases result in no peaks being
+#' returned.
 #'
 #' @export
 #'
@@ -841,15 +859,15 @@ peaks.raw_mspct <- function(x,
 #' to local maxima.
 #'
 #' @param x an R object
-#' @param ignore_threshold numeric value between 0.0 and 1.0 indicating the
-#'   relative size compared to tallest peak threshold below which valleys will be
-#'   ignored.
-#' @param span a peak is defined as an element in a sequence which is greater
-#'   than all other elements within a window of width span centered at that
-#'   element. The default value is 3, meaning that a peak is bigger than both of
-#'   its neighbors. Default: 3.
-#' @param strict logical flag: if TRUE, an element must be strictly greater than
-#'   all other values in its window to be considered a peak. Default: TRUE.
+#' @param ignore_threshold numeric Value between 0.0 and 1.0 indicating the
+#'   relative size compared to tallest peak threshold below which peaks will be
+#'   ignored. Negative values set a threshold so that the tallest peaks are
+#'   ignored, instead of the shortest.
+#' @param span integer A valley is defined as an element in a sequence which is smaller
+#'   than all other elements within a window of width \code{span} centered at that
+#'   element. Use \code{NULL} for the global peak.
+#' @param strict logical If \code{TRUE}, an element must be strictly greater
+#'   than all other values in its window to be considered a peak.
 #' @param na.rm logical indicating whether \code{NA} values should be stripped
 #'   before searching for peaks.
 #' @param var.name,x.var.name,y.var.name character Name of column where to look
