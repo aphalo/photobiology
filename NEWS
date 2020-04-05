@@ -4,7 +4,8 @@ photobiology 0.10.1 (2020-04-xx)
 ** Fix bugs
 * Revise find_peaks() so that ignore.threshold and strict arguments are
 respected also when span = NULL. This affects all peaks- and valleys-related
-methods. Possibly code-breaking in boundary use-cases.
+methods. Change return values for the previously undocumented use of negative
+threshold values, and only in conjunction with span passed NULL as argument.
 
 photobiology 0.10.0 (2020-04-02)
 ================================
@@ -40,17 +41,17 @@ tagged with the name of the applied function.
 * Revise trim_waveband() so that it preserves the names of list members. This
 bug affected computations of irradiances and ratios so that names used in
 lists of wavebands where not reflected in the output, and the label from the
-waveband definitions could not be overriden as intended by design.
+waveband definitions could not be overridden as intended by design.
 * Ensure that irrad() and response() always label the returned values correctly.
 Values are now always tagged according to the units used, even when these are
 selected by setting R options; i.e., values returned by irrad() and response()
-are always labelled identically as those returned by q_irrad(), e_irrad(),
+are always labeled identically as those returned by q_irrad(), e_irrad(),
 q_response() and e_response().
 * Relax check for w.length range allowing longer wavelengths (IR). In addition
 triggering of an error for unlikely wavelengths has been replaced by a
-warning, emitted only when verbose output is enabled. An error is trigegred now
+warning, emitted only when verbose output is enabled. An error is triggered now
 only for wavelengths < 1 nm.
-* Update clean.object_spct() adding parameter min.Afr that cen be used to
+* Update clean.object_spct() adding parameter min.Afr that can be used to
 set a different target than the default of zero and in addition implement
 clean.object_mspct(), which was missing.
 ** Compatibility with 'dplyr' (>= 1.0.0):
@@ -74,7 +75,7 @@ objects that are functionally identical but differ in their structure because
 of their vintage.
 ********************************************************************************
 _Code breaking changes in the tidyverse_
-Packages in the tidyverse are eveolving to use package 'vctrs' for their
+Packages in the tidyverse are evolving to use package 'vctrs' for their
 implementation (see https://www.tidyverse.org/blog/ for news).
 'tibble' (3.0.0) seems to handle row names differently than previous versions.
 The 'photobiology' code is not affected, but user code might be affected.
