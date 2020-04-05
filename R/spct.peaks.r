@@ -1558,16 +1558,19 @@ find_wls <- function(x,
 #'   string "half.maximum" is also accepted as argument.
 #' @param interpolate logical Indicating whether the nearest wavelength value
 #'   in \code{x} should be returned or a value calculated by linear
-#'   interpolation between wavelength values stradling the target.
+#'   interpolation between wavelength values straddling the target.
+#' @param x.var.name,y.var.name,col.name character The name of the columns in
+#'   which to search for the target value. Use of \code{col.name} is deprecated,
+#'   and is a synonym for \code{y.var.name}.
 #' @param na.rm logical indicating whether \code{NA} values should be stripped
 #'   before searching for the target.
 #' @param ... currently ignored.
 #'
-#' @return A spectrum object of the same class as \code{x} with fewer rows,
-#'   possibly even no rows. If \code{FALSE} is passed to \code{interpolate} a
-#'   subset of \code{x} is returned, otherwise a new object of the same class
-#'   containing interpolated wavelenths for the \code{target} value is
-#'   returned.
+#' @return A data.frame or an spectrum object of the same class as \code{x} with
+#'   fewer rows, possibly even no rows. If \code{FALSE} is passed to
+#'   \code{interpolate} a subset of \code{x} is returned, otherwise a new object
+#'   of the same class containing interpolated wavelengths for the \code{target}
+#'   value is returned.
 #'
 #' @note When interpolation is used, only column \code{w.length} and the column
 #'   against which the target value was compared are included in the returned
@@ -1602,10 +1605,32 @@ wls_at_target.default <-
     x[NULL]
   }
 
-#' @describeIn wls_at_target Method for "generic_spct" objects.
+#' @describeIn wls_at_target  Method for "data.frame" objects.
 #'
-#' @param col.name character The name of the column in which to search for the
-#'   target value.
+#' @export
+#'
+wls_at_target.data.frame <-
+  function(x,
+           target = "half.maximum",
+           interpolate = FALSE,
+           na.rm = FALSE,
+           x.var.name = NULL,
+           y.var.name = NULL,
+           ...) {
+    if (is.null(y.var.name) || is.null(x.var.name)) {
+      warning("Variable (column) names required.")
+      return(x[NA, ])
+    }
+    find_wls(x,
+             target = target,
+             col.name.x = x.var.name,
+             col.name = y.var.name,
+             .fun = `<=`,
+             interpolate = interpolate,
+             na.rm = na.rm)
+  }
+
+#' @describeIn wls_at_target Method for "generic_spct" objects.
 #'
 #' @export
 #'
@@ -1615,6 +1640,7 @@ wls_at_target.generic_spct <-
            interpolate = FALSE,
            na.rm = FALSE,
            col.name = NULL,
+           y.var.name = col.name,
            ...) {
     find_wls(x,
              target = target,
@@ -1661,7 +1687,8 @@ wls_at_target.response_spct <-
            target = "half.maximum",
            interpolate = FALSE,
            na.rm = FALSE,
-           unit.out = getOption("photobiology.radiation.unit", default = "energy"),
+           unit.out = getOption("photobiology.radiation.unit",
+                                default = "energy"),
            ...) {
     if (unit.out == "energy") {
       z <- q2e(x, "replace", FALSE)
@@ -1690,7 +1717,8 @@ wls_at_target.filter_spct <-
            target = "half.maximum",
            interpolate = FALSE,
            na.rm = FALSE,
-           filter.qty = getOption("photobiology.filter.qty", default = "transmittance"),
+           filter.qty = getOption("photobiology.filter.qty",
+                                  default = "transmittance"),
            ...) {
     if (filter.qty == "transmittance") {
       z <- A2T(x, "replace", FALSE)
