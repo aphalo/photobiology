@@ -47,10 +47,8 @@ find_peaks <-
     # find peaks
     if(is.null(span)) {
       pks <- x == max(x)
-      if (strict) {
-        target <- which(pks)[1]
+      if (strict && sum(pks) != 1L) {
         pks <- logical(length(x))
-        pks[target] <- TRUE
       }
     } else {
       pks <- splus2R::peaks(x = x, span = span, strict = strict)

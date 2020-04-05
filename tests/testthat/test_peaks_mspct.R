@@ -64,7 +64,7 @@ test_that("source_spct", {
   my.spct <- sun.spct
 
   valleys.spct <- valleys(sun.spct, span = NULL, strict = TRUE)
-  expect_equal(nrow(valleys.spct), 1)
+  expect_equal(nrow(valleys.spct), 0)
 
   valleys.spct <- valleys(sun.spct, span = NULL, strict = FALSE)
   expect_equal(nrow(valleys.spct), 14)
@@ -73,7 +73,7 @@ test_that("source_spct", {
   expect_equal(nrow(valleys.spct), 0)
 
   valleys.spct <- valleys(sun.spct, span = NULL, ignore_threshold = 0.1)
-  expect_equal(nrow(valleys.spct), 1)
+  expect_equal(nrow(valleys.spct), 0)
 
   valleys.spct <- valleys(sun.spct)
 
@@ -83,7 +83,7 @@ test_that("source_spct", {
 
   valleys.spct <- valleys(sun.spct, span = NULL,
                           unit.out = "photon")
-  expect_equal(nrow(valleys.spct), 1)
+  expect_equal(nrow(valleys.spct), 0)
 
   valleys.spct <- valleys(my.spct, unit.out = "photon")
 
