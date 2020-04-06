@@ -7,7 +7,7 @@ test_that("source_mspct", {
   my.spct <- sun.spct
   my.mspct <- source_mspct(list(sun1 = my.spct, sun2 = my.spct))
   long.spct <- rbindspct(my.mspct)
-  expect_named(long.spct, c("w.length", "s.e.irrad", "spct.idx", "s.q.irrad"))
+  expect_named(long.spct, c("w.length", "s.e.irrad", "s.q.irrad", "spct.idx"))
   expect_equal(is_normalized(my.spct), is_normalized(long.spct))
   expect_equal(is_scaled(my.spct), is_scaled(long.spct))
   expect_equal(getTimeUnit(my.spct), getTimeUnit(long.spct))
@@ -64,7 +64,7 @@ test_that("source_mspct", {
   my.spct <- tag(sun.spct)
   my.mspct <- source_mspct(list(sun1 = my.spct, sun2 = my.spct))
   long.spct <- rbindspct(my.mspct)
-  expect_named(long.spct, c("w.length", "s.e.irrad", "spct.idx", "s.q.irrad"))
+  expect_named(long.spct, c("w.length", "s.e.irrad", "s.q.irrad", "spct.idx"))
   expect_equal(is_normalized(my.spct), is_normalized(long.spct))
   expect_equal(is_scaled(my.spct), is_scaled(long.spct))
   expect_equal(getTimeUnit(my.spct), getTimeUnit(long.spct))

@@ -1272,10 +1272,10 @@ is_energy_based <- function(x) {
 #'
 #' @param x an R object
 #'
-#' @return \code{is_absorbance_based} returns TRUE if its argument is a \code{filter_spct}
-#' object that contains spectral absorbance data and FALSE if it does not contain
-#' such data, but returns NA for any other R object, including those belonging
-#' other \code{generic_spct}-derived classes.
+#' @return \code{is_absorbance_based} returns TRUE if its argument is a
+#'   \code{filter_spct} object that contains spectral absorbance data and FALSE
+#'   if it does not contain such data, but returns NA for any other R object,
+#'   including those belonging other \code{generic_spct}-derived classes.
 #'
 #' @export
 #' @family query units functions
@@ -1295,14 +1295,36 @@ is_absorbance_based <- function(x) {
   }
 }
 
+# is_absorptance_based ---------------------------------------------------------
+
+#' @rdname is_absorbance_based
+#'
+#' @return \code{is_absorptance_based} returns TRUE if its argument is a
+#'   \code{filter_spct} object that contains spectral absorptance and FALSE if
+#'   it does not contain such data, but returns NA for any other R object,
+#'   including those belonging other \code{generic_spct}-derived classes.
+#'
+#' @export
+#' @examples
+#' is_absorptance_based(polyester.spct)
+#'
+is_absorptance_based <- function(x) {
+  if (is.filter_spct(x) || is.summary_source_spct(x)) {
+    return("Afr" %in% names(x))
+  } else {
+    return(NA_integer_)
+  }
+}
+
 # is_transmittance_based ---------------------------------------------------------
 
 #' @rdname is_absorbance_based
 #'
-#' @return \code{is_transmittance_based} returns TRUE if its argument is a \code{filter_spct}
-#' object that contains spectral transmittance data and FALSE if it does not contain
-#' such data, but returns NA for any other R object, including those belonging
-#' other \code{generic_spct}-derived classes.
+#' @return \code{is_transmittance_based} returns TRUE if its argument is a
+#'   \code{filter_spct} object that contains spectral transmittance data and
+#'   FALSE if it does not contain such data, but returns NA for any other R
+#'   object, including those belonging other \code{generic_spct}-derived
+#'   classes.
 #'
 #' @export
 #' @examples

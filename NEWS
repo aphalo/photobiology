@@ -1,12 +1,17 @@
 photobiology 0.10.1 (2020-04-xx)
 ================================
 
-** Fix bugs
+** Fix bugs and "polish rough edges".
 * Revise find_peaks() so that ignore.threshold and strict arguments are
 respected also when span = NULL. This affects all peaks- and valleys-related
 methods. Changes return values for the previously undocumented use of negative
 threshold values and with span = NULL and strict = TRUE as arguments.
 * Add wls_at_target() method for data frames.
+* Revise wls_at_target() methods for consistentcy, add examples.
+* Revise rbindspct() to not add columns to returned value when input is
+consistent.
+* Revise rbindspct() to allow control of metadata copying.
+* Add is_absorptance_based().
 
 photobiology 0.10.0 (2020-04-02)
 ================================

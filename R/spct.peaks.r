@@ -1489,9 +1489,11 @@ find_wls <- function(x,
                      na.rm = FALSE) {
   stopifnot(is.data.frame(x))
   x.class <- class(x)[1]
-  if (is.null(target) || is.na(target)) {
+  target <- na.omit(target)
+  if (!length(target)) {
     return(x[NULL, ])
   }
+
   if (is.null(col.name.x)) {
     if (is.any_spct(x)) {
       col.name.x <- "w.length"
@@ -1612,6 +1614,10 @@ find_wls <- function(x,
 #' @param x.var.name,y.var.name,col.name character The name of the columns in
 #'   which to search for the target value. Use of \code{col.name} is deprecated,
 #'   and is a synonym for \code{y.var.name}.
+#' @param idfactor logical or character Generates an index column of factor
+#'   type. If \code{idfactor = TRUE} then the column is auto named spct.idx.
+#'   Alternatively the column name can be directly passed as argument to
+#'   \code{idfactor} as a character string.
 #' @param na.rm logical indicating whether \code{NA} values should be stripped
 #'   before searching for the target.
 #' @param ... currently ignored.
@@ -1630,6 +1636,11 @@ find_wls <- function(x,
 #'
 #' @examples
 #' wls_at_target(sun.spct, target = 0.1)
+#' wls_at_target(sun.spct, target = 2e-6, unit.out = "photon")
+#' wls_at_target(polyester.spct, target = "HM")
+#' wls_at_target(polyester.spct, target = "HM", interpolate = TRUE)
+#' wls_at_target(polyester.spct, target = "HM", idfactor = "target")
+#' wls_at_target(polyester.spct, target = "HM", filter.qty = "absorbance")
 #'
 #' @export
 #'
@@ -1638,6 +1649,7 @@ find_wls <- function(x,
 wls_at_target <- function(x,
                           target = NULL,
                           interpolate = FALSE,
+                          idfactor = FALSE,
                           na.rm = FALSE,
                           ...) UseMethod("wls_at_target")
 
@@ -1649,6 +1661,7 @@ wls_at_target.default <-
   function(x,
            target = NULL,
            interpolate = FALSE,
+           idfactor = FALSE,
            na.rm = FALSE,
            ...) {
     warning("Method 'wls_at_target' not implemented for objects of class ", class(x)[1])
@@ -1663,6 +1676,7 @@ wls_at_target.data.frame <-
   function(x,
            target = "half.maximum",
            interpolate = FALSE,
+           idfactor = FALSE,
            na.rm = FALSE,
            x.var.name = NULL,
            y.var.name = NULL,
@@ -1677,6 +1691,7 @@ wls_at_target.data.frame <-
              col.name = y.var.name,
              .fun = `<=`,
              interpolate = interpolate,
+             idfactor = idfactor,
              na.rm = na.rm)
   }
 
@@ -1688,6 +1703,7 @@ wls_at_target.generic_spct <-
   function(x,
            target = "half.maximum",
            interpolate = FALSE,
+           idfactor = FALSE,
            na.rm = FALSE,
            col.name = NULL,
            y.var.name = col.name,
@@ -1696,6 +1712,7 @@ wls_at_target.generic_spct <-
              target = target,
              col.name = col.name,
              interpolate = interpolate,
+             idfactor = idfactor,
              na.rm = na.rm,
              ...)
   }
@@ -1710,6 +1727,7 @@ wls_at_target.source_spct <-
   function(x,
            target = "half.maximum",
            interpolate = FALSE,
+           idfactor = FALSE,
            na.rm = FALSE,
            unit.out = getOption("photobiology.radiation.unit", default = "energy"),
            ...) {
@@ -1726,6 +1744,7 @@ wls_at_target.source_spct <-
              target = target,
              col.name = col.name,
              interpolate = interpolate,
+             idfactor = idfactor,
              na.rm = na.rm)
   }
 
@@ -1736,6 +1755,7 @@ wls_at_target.response_spct <-
   function(x,
            target = "half.maximum",
            interpolate = FALSE,
+           idfactor = FALSE,
            na.rm = FALSE,
            unit.out = getOption("photobiology.radiation.unit",
                                 default = "energy"),
@@ -1753,6 +1773,7 @@ wls_at_target.response_spct <-
              target = target,
              col.name = col.name,
              interpolate = interpolate,
+             idfactor = idfactor,
              na.rm = na.rm)
   }
 
@@ -1766,6 +1787,7 @@ wls_at_target.filter_spct <-
   function(x,
            target = "half.maximum",
            interpolate = FALSE,
+           idfactor = FALSE,
            na.rm = FALSE,
            filter.qty = getOption("photobiology.filter.qty",
                                   default = "transmittance"),
@@ -1783,6 +1805,7 @@ wls_at_target.filter_spct <-
              target = target,
              col.name = col.name,
              interpolate = interpolate,
+             idfactor = idfactor,
              na.rm = na.rm)
   }
 
@@ -1793,12 +1816,14 @@ wls_at_target.reflector_spct <-
   function(x,
            target = "half.maximum",
            interpolate = FALSE,
+           idfactor = FALSE,
            na.rm = FALSE,
            ...) {
     find_wls(x,
              target = target,
              col.name = "Rfr",
              interpolate = interpolate,
+             idfactor = idfactor,
              na.rm = na.rm)
   }
 
@@ -1810,12 +1835,14 @@ wls_at_target.cps_spct <-
   function(x,
            target = "half.maximum",
            interpolate = FALSE,
+           idfactor = FALSE,
            na.rm = FALSE,
            ...) {
     find_wls(x,
              target = target,
              col.name = "cps",
              interpolate = interpolate,
+             idfactor = idfactor,
              na.rm = na.rm)
   }
 
@@ -1834,6 +1861,7 @@ wls_at_target.cps_spct <-
 wls_at_target.generic_mspct <- function(x,
                                         target = "half.maximum",
                                         interpolate = FALSE,
+                                        idfactor = FALSE,
                                         na.rm = FALSE,
                                         ...,
                                         .parallel = FALSE,
@@ -1842,6 +1870,7 @@ wls_at_target.generic_mspct <- function(x,
           .fun = wls_at_target,
           target = target,
           interpolate = interpolate,
+          idfactor = idfactor,
           na.rm = na.rm,
           ...,
           .parallel = .parallel,
