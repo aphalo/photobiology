@@ -582,11 +582,13 @@ test_that("wls_at_target attr", {
   setWhatMeasured(my.spct, tested.what)
 
   expect_equal(setdiff(names(attributes(wls_at_target(my.spct, 0.7))),
-                       names(attributes(my.spct))),
+                       c(names(attributes(my.spct)),
+                       "idfactor", "instr.desc", "instr.settings")),
                character(0)  )
 
   expect_equal(setdiff(names(attributes(wls_at_target(my.spct))),
-                       names(attributes(my.spct))),
+                       c(names(attributes(my.spct)),
+                         "idfactor", "instr.desc", "instr.settings")),
                character(0)  )
 
 })
