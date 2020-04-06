@@ -2123,7 +2123,7 @@ setWhenMeasured.generic_spct <-
     if (!is.null(when.measured)) {
       if (!is.list(when.measured)) {
         when.measured <- list(when.measured)
-      } else if (length(when.measured) != getMultipleWl(x)) {
+      } else if (!length(when.measured) %in% c(1L, getMultipleWl(x))) {
         warning("Length of 'when.measured' does not match spectrum object")
       }
       if (all(sapply(when.measured, lubridate::is.instant))) {
@@ -2153,7 +2153,7 @@ setWhenMeasured.summary_generic_spct <-
     if (!is.null(when.measured)) {
       if (!is.list(when.measured)) {
         when.measured <- list(when.measured)
-      } else if (length(when.measured) != getMultipleWl(x)) {
+      } else if (!length(when.measured) %in% c(1L, getMultipleWl(x))) {
         warning("Length of 'when.measured' does not match spectrum object")
       }
       if (all(sapply(when.measured, lubridate::is.instant))) {

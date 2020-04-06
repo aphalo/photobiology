@@ -28,6 +28,9 @@
 #'   named \code{spct.idx}. Alternatively the column name can be directly
 #'   provided to \code{idfactor} as a character string.
 #'
+#' @param attrs.source integer Index into the members of the list from which
+#'   attributes should be copied. If \code{NULL}, all attributes are merged.
+#'
 #' @details Each item of \code{l} should be a spectrum, including \code{NULL}
 #'   (skipped) or an empty object (0 rows). \code{rbindspc} is most useful when
 #'   there are a variable number of (potentially many) objects to stack.
@@ -80,7 +83,7 @@
 #' head(spct)
 #' class(spct)
 #'
-rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
+rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE, attrs.source = NULL) {
   if ((is.null(idfactor) && (!is.null(names(l)))) ||
        (is.logical(idfactor) && idfactor )) {
     idfactor <- "spct.idx"
@@ -154,30 +157,44 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE) {
   comment.ans <- "rbindspct: concatenated comments"
   comments.found <- FALSE
 
-  for (i in seq_along(l)) {
-    temp <- comment(l[[i]])
-    comments.found <- comments.found || !is.null(temp)
-    if (add.idfactor) {
-      temp <- paste("\n", idfactor , "= ", names.spct[i], ":\n", comment(l[[i]]), sep = "")
-    } else {
-      temp <- paste("\n spectrum = ", names.spct[i], ":\n", comment(l[[i]]), sep = "")
-    }
-    comment.ans <- paste(comment.ans, temp)
-  }
-  if (!comments.found) {
-    comment.ans <- NULL
+  if (length(attrs.source)) {
+    idxs <- intersect(seq_along(l), attrs.source)
+  } else {
+    idxs <- seq_along(l)
   }
 
   # get methods and functions return NA if attr is not set
-  instr.desc <- lapply(l, getInstrDesc)
-  names(instr.desc) <- names.spct
-  instr.settings <- lapply(l, getInstrSettings)
-  names(instr.settings) <- names.spct
-  when.measured <- lapply(l, getWhenMeasured)
-  names(when.measured) <- names.spct
-  where.measured <- dplyr::bind_rows(lapply(l, getWhereMeasured), .id = "spct.idx")
-  what.measured <- lapply(l, getWhatMeasured)
-  names(what.measured) <- names.spct
+  if (length(idxs) == 1L) {
+    comment.ans <- comment(l[[idxs]])
+    instr.desc <- getInstrDesc(l[[idxs]])
+    instr.settings <- getInstrSettings(l[[idxs]])
+    when.measured <- getWhenMeasured(l[[idxs]])
+    where.measured <- getWhereMeasured(l[[idxs]])
+    what.measured <- getWhatMeasured(l[[idxs]])
+  } else {
+    for (i in idxs) {
+      temp <- comment(l[[i]])
+      comments.found <- comments.found || !is.null(temp)
+      if (add.idfactor) {
+        temp <- paste("\n", idfactor , "= ", names.spct[i], ":\n", comment(l[[i]]), sep = "")
+      } else {
+        temp <- paste("\n spectrum = ", names.spct[i], ":\n", comment(l[[i]]), sep = "")
+      }
+      comment.ans <- paste(comment.ans, temp)
+    }
+    if (!comments.found) {
+      comment.ans <- NULL
+    }
+    instr.desc <- lapply(l[idxs], getInstrDesc)
+    names(instr.desc) <- names.spct[idxs]
+    instr.settings <- lapply(l[idxs], getInstrSettings)
+    names(instr.settings) <- names.spct[idxs]
+    when.measured <- lapply(l[idxs], getWhenMeasured)
+    names(when.measured) <- names.spct[idxs]
+    where.measured <- dplyr::bind_rows(lapply(l[idxs], getWhereMeasured), .id = "spct.idx")
+    what.measured <- lapply(l[idxs], getWhatMeasured)
+    names(what.measured) <- names.spct[idxs]
+  }
 
   if (l.class == "source_spct") {
     time.unit <- sapply(l, FUN = getTimeUnit)
