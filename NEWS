@@ -2,6 +2,7 @@ photobiology 0.10.1 (2020-04-xx)
 ================================
 
 ** Fix bugs and "polish rough edges".
+* Major bug in T2Afr() was causing wrong values to be returned!!
 * Revise find_peaks() so that ignore.threshold and strict arguments are
 respected also when span = NULL. This affects all peaks- and valleys-related
 methods. Changes return values for the previously undocumented use of negative
@@ -12,6 +13,18 @@ threshold values and with span = NULL and strict = TRUE as arguments.
 consistent.
 * Revise rbindspct() to allow control of metadata copying.
 * Add is_absorptance_based().
+** New
+* Add setFilterProperties(), getFilterProperties(), filter_properties() and
+filter_properties<-().
+* Add convertTfrType(), convertThickness().
+* Add Afr2T().
+** Defuct
+* T2T(), setAfrType(), getAfrType(). No deprecation as not used.
+
+*****************************************************************************
+Full functionality of convertThickness() and convertTfrType() will require
+adding the "filter.properties" attribute to filter_spct objects.
+*****************************************************************************
 
 photobiology 0.10.0 (2020-04-02)
 ================================

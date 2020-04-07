@@ -1707,6 +1707,10 @@ subset2mspct <- function(x,
   # these methods may return an empty list
   instr.desc <- getInstrDesc(x)
   instr.settings <- getInstrSettings(x)
+  filter.properties <- getFilterProperties(x, return.null = TRUE)
+  if (is.null(filter.properties)) {
+    filter.properties <- list()
+  }
   for (i in seq(along.with = z)) {
     if (!all(is.na(when.measured))) {
       if (is.list(when.measured) && length(when.measured) == length(groups)) {
@@ -1738,6 +1742,15 @@ subset2mspct <- function(x,
         z[[i]] <- setInstrSettings(z[[i]], instr.settings[[i]])
       } else {
         z[[i]] <- setInstrSettings(z[[i]], instr.settings)
+      }
+    }
+    if (length(filter.properties) > 0) {
+      if (is.list(filter.properties) &&
+          !inherits(filter.properties, "filter_properties") &&
+          length(filter.properties) == length(groups)) {
+        z[[i]] <- setFilterProperties(z[[i]], filter.properties[[i]])
+      } else {
+        z[[i]] <- setFilterProperties(z[[i]], filter.properties)
       }
     }
   }

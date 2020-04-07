@@ -534,7 +534,6 @@ check_spct.object_spct <-
       warning("Found variable 'transmittance', I am assuming it expressed as percent")
     }
     if (exists("Afr", x, mode = "numeric", inherits=FALSE)) {
-      dots <- list(~Afr)
       range_check_Afr(x, strict.range=strict.range)
     }
 
@@ -544,14 +543,20 @@ check_spct.object_spct <-
       x[["Tfr"]] <- x[["Tpc"]] / 100
       x[["Tpc"]] <- NULL
       range_check_Tfr(x, strict.range=strict.range)
-    } else if (exists("Afr", x, mode = "numeric", inherits=FALSE)) {
-      x[["Tfr"]] <- 1 - x[["Afr"]]
-      setTfrType(x, getAfrType(x))
-      range_check_Tfr(x, strict.range=strict.range)
-    } else {
-      warning("No transmittance or absorptance data found in object_spct")
+    }
+
+    quantities <- colnames(x)
+    if (!"Rfr" %in% quantities) {
+      x[["Rfr"]] <- NA_real_
+    }
+    if (! any(c("Tfr", "Afr") %in% quantities)) {
       x[["Tfr"]] <- NA_real_
     }
+    ### Creates an endless recursive call!!
+    # if ("Afr" %in% quantities) {
+    #   x <- Afr2T(x, action = "add")
+    # }
+
     if (getOption("photobiology.verbose")) {
       if (exists("Tfr", x, mode = "numeric", inherits = FALSE) && anyNA(x[["Tfr"]])) {
         warning("At least one NA in 'Tfr'")
@@ -922,7 +927,7 @@ setFilterSpct <-
       if (length(Tfr.type) > 1) {
         Tfr.type <- getTfrType(x)
       } else if (Tfr.type != getTfrType(x)) {
-        warning("Changing attribute 'Tfr.type' from ", getTfrType(x),
+        warning("Overwriting attribute 'Tfr.type' from ", getTfrType(x),
                 " into ", Tfr.type)
       }
     }
@@ -958,7 +963,7 @@ setReflectorSpct <-
       if (length(Rfr.type) > 1) {
         Rfr.type <- getRfrType(x)
       } else if (Rfr.type != getRfrType(x)) {
-        warning("Changing attribute 'Rfr.type' from ", getRfrType(x),
+        warning("Overwriting attribute 'Rfr.type' from ", getRfrType(x),
                 " into ", Rfr.type)
       }
     }
@@ -981,17 +986,20 @@ setReflectorSpct <-
 #'
 setObjectSpct <-
   function(x,
-           Tfr.type=c("total", "internal"),
-           Rfr.type=c("total", "specular"),
+           Tfr.type = c("total", "internal"),
+           Rfr.type = c("total", "specular"),
            strict.range = getOption("photobiology.strict.range", default = FALSE),
            multiple.wl = 1L,
            idfactor = NULL) {
     name <- substitute(x)
+    if (Tfr.type == "total" && Rfr.type != "total") {
+      warning("Rfr is not \"total\", making conversions between Afr and Tfr impossible.")
+    }
     if ((is.filter_spct(x) || is.object_spct(x)) && getTfrType(x) != "unknown") {
       if (length(Tfr.type) > 1) {
         Tfr.type <- getTfrType(x)
       } else if (Tfr.type != getTfrType(x)) {
-        warning("Changing attribute 'Tfr.type' from ", getTfrType(x),
+        warning("Overwriting attribute 'Tfr.type' from ", getTfrType(x),
                 " into ", Tfr.type)
       }
     }
@@ -999,7 +1007,7 @@ setObjectSpct <-
       if (length(Rfr.type) > 1) {
         Rfr.type <- getRfrType(x)
       } else if (Rfr.type != getRfrType(x)) {
-        warning("Changing attribute 'Rfr.type' from ", getRfrType(x),
+        warning("Overwriting attribute 'Rfr.type' from ", getRfrType(x),
                 " into ", Rfr.type)
       }
     }
@@ -1812,86 +1820,6 @@ getRfrType <- function(x) {
       Rfr.type <- "unknown"
     }
     return(Rfr.type[[1]])
-  } else {
-    return(NA_character_)
-  }
-}
-
-# Afr.type attribute ------------------------------------------------------
-
-#' Set the "Afr.type" attribute
-#'
-#' Function to set by reference the "Afr.type" attribute of an existing
-#' filter_spct or object_spct object
-#'
-#' @param x a filter_spct or an object_spct object
-#' @param Afr.type a character string, either "total" or "internal"
-#'
-#' @return x
-#' @note This function alters x itself by reference and in addition
-#'   returns x invisibly. If x is not a filter_spct or an object_spct object, x is not modified
-#'   The behaviour of this function is 'unusual' in that the default for
-#'   parameter \code{Afr.type} is used only if \code{x} does not already have
-#'   this attribute set.
-#'
-#' @export
-#' @family Afr attribute functions
-#' @examples
-#' my.spct <- polyester.spct
-#' getAfrType(my.spct)
-#' setAfrType(my.spct, "internal")
-#' getAfrType(my.spct)
-#'
-setAfrType <- function(x, Afr.type=c("total", "internal")) {
-  name <- substitute(x)
-  if (length(Afr.type) > 1) {
-    if (getAfrType(x) != "unknown") {
-      Afr.type <- getAfrType(x)
-    } else {
-      Afr.type <- Afr.type[[1]]
-    }
-  }
-  if (is.filter_spct(x) || is.object_spct(x) ||
-      is.summary_filter_spct(x) || is.summary_object_spct(x)) {
-    if  (!(Afr.type %in% c("total", "internal", "unknown"))) {
-      warning("Invalid 'Afr.type' argument, only 'total' and 'internal' supported.")
-      return(x)
-    }
-    attr(x, "Afr.type") <- Afr.type
-    if (is.name(name)) {
-      name <- as.character(name)
-      assign(name, x, parent.frame(), inherits = TRUE)
-    }
-  }
-  invisible(x)
-}
-
-#' Get the "Afr.type" attribute
-#'
-#' Function to read the "Afr.type" attribute of an existing filter_spct or
-#' object_spct object.
-#'
-#' @param x a filter_spct or object_spct object
-#'
-#' @return character string
-#'
-#' @note If x is not a \code{filter_spct} or an \code{object_spct} object,
-#'   \code{NA} is returned.
-#'
-#' @export
-#' @family Afr attribute functions
-#' @examples
-#' getAfrType(polyester.spct)
-#'
-getAfrType <- function(x) {
-  if (is.filter_spct(x) || is.object_spct(x) ||
-      is.summary_filter_spct(x) || is.summary_object_spct(x)) {
-    Afr.type <- attr(x, "Afr.type", exact = TRUE)
-    if (is.null(Afr.type) || is.na(Afr.type)) {
-      # need to handle objects created with old versions
-      Afr.type <- "unknown"
-    }
-    return(Afr.type[[1]])
   } else {
     return(NA_character_)
   }
@@ -3152,14 +3080,14 @@ setFilterProperties <- function(x,
                                 thickness = NA_real_,
                                 homogeneous = NA) {
   name <- substitute(x)
-  if (is.filter_spct(x) || is.summary_filter_spct(x)) {
-    if (is.null(filter.properties)) {
-      filter.properties <- list(Rfr.factor = Rfr.factor,
-                                thickness = thickness,
-                                homogeneous = homogeneous)
-    } else {
+  if (is.filter_spct(x) || is.object_spct(x)) {
+    if (!is.null(filter.properties)) {
       stopifnot(setequal(names(filter.properties),
                          c("Rfr.factor", "thickness", "homogeneous")))
+      if (class(filter.properties)[1] != "filter_properties") {
+        class(filter.properties) <-
+          c("filter_properties", class(filter.properties))
+      }
     }
     attr(x, "filter.properties") <- filter.properties
     if (is.name(name)) {
@@ -3186,17 +3114,20 @@ setFilterProperties <- function(x,
 #' or a filter_mspct.
 #'
 #' @param x a filter_spct object
+#' @param return.null logical If true, \code{NULL} is returned if the attribute
+#'   is not set, otherwise the expected list is returned with all fields set to
+#'   \code{NA}.
 #' @param ... Allows use of additional arguments in methods for other classes.
 #'
 #' @return a list with fields named "Rfr.factor", "thickness" and "homogeneous".
 #'   If the attribute is not set, and \code{return.null} is FALSE, a list with
-#'   fields set to NA is returned, otherwise, NULL.
+#'   fields set to \code{NA} is returned, otherwise, \code{NULL}.
 #'
 #' @export
 #' @family measurement metadata functions
 #'
 #' @examples
-#' filter.properties(polyester.spct)
+#' filter_properties(polyester.spct)
 #'
 getFilterProperties <- function(x, return.null, ...) UseMethod("getFilterProperties")
 
@@ -3231,6 +3162,8 @@ getFilterProperties.filter_spct <- function(x,
       filter.properties <- list(Rfr.factor = NA_real_,
                                 thickness = NA_real_,
                                 homogeneous = NA)
+      class(filter.properties) <-
+        c("filter_properties", class(filter.properties))
     }
   } else {
     stopifnot(setequal(names(filter.properties),
@@ -3240,23 +3173,10 @@ getFilterProperties.filter_spct <- function(x,
 }
 
 #' @describeIn getFilterProperties summary_generic_spct
+#'
 #' @export
-getFilterProperties.summary_filter_spct <- function(x,
-                                                    return.null = FALSE,
-                                                    ...) {
-  filter.properties <- attr(x, "filter.properties", exact = TRUE)
-  if (is.null(filter.properties) && !return.null) {
-    # need to handle objects created with old versions
-    filter.properties <- list(Rfr.factor = NA_real_,
-                              thickness = NA_real_,
-                              homogeneous = NA)
-
-  } else {
-    stopifnot(setequal(names(filter.properties),
-                       c("Rfr.factor", "thickness", "homogeneous")))
-  }
-  filter.properties
-}
+#'
+getFilterProperties.summary_filter_spct <- getFilterProperties.filter_spct
 
 #' @describeIn getFilterProperties filter_mspct
 #' @param idx character Name of the column with the names of the members of the
@@ -3277,12 +3197,17 @@ getFilterProperties.generic_mspct <- function(x,
 
 # Modify filter properties -----------------------------------------------
 
-#' Convert the "thickness" attribute of an existing filter_spct object
+#' Convert the "thickness" attribute of an existing filter_spct object.
 #'
 #' Function to set the "thickness" attribute and simultaneously converting the
 #' spectral data to correspond to the new thickness.
 #'
-#' @param x filter_spct object
+#' @details For spectral transmittance at a different thickness to be exactly
+#'   computed, it needs to be based on internal transmittance. This function
+#'   will apply \code{converTfrType()} to \code{x} if needed, but to succeed
+#'   metadata should be available. Please, see \code{\link{convertTfrType}}.
+#'
+#' @param x filter_spct object or object_spct object.
 #' @param thickness numeric (m)
 #' @param ... (currently ignored)
 #'
@@ -3305,7 +3230,7 @@ getFilterProperties.generic_mspct <- function(x,
 #' convertThickness(my.spct, thickness = 250e-6)
 #'
 convertThickness <- function(x, thickness = NULL, ...) {
-  if (!is.filter_spct(x)) {
+  if (!(is.filter_spct(x) || is.object_spct(x))) {
     warning("'convertThickness()' mot applicable to class '", class(x)[1], "'. Skipping!")
     return(invisible(x))
   }
@@ -3320,8 +3245,16 @@ convertThickness <- function(x, thickness = NULL, ...) {
     return(invisible(x))
   }
   if ("Tfr" %in% columns || "A" %in% columns) {
+    if (!"Tfr" %in% columns) {
+      .fun <- T2A
+    } else {
+      .fun <- NULL
+    }
     # "A" column converted or deleted as needed
     z <- A2T(x, action = "replace")
+  } else if ("Afr" %in% columns) {
+      .fun <- T2Afr
+    z <- Afr2T(x, action = "replace")
   } else {
     stop("conversion failed")
   }
@@ -3331,13 +3264,24 @@ convertThickness <- function(x, thickness = NULL, ...) {
     thickness <- NA_real_
     warning("Conversion not possible for non-homogeneous materials.")
   }
-  # convert Tfr
+  current.Tfr.type <- getTfrType(x)
+  if (current.Tfr.type == "total") {
+    z <- convertTfrType(z, "internal")
+  }
+  # convert Tfr, formula is valid only for internal transmittance
   z <- using_Tfr(z^(thickness / properties[["thickness"]]))
   properties[["thickness"]] <- thickness
   setFilterProperties(z, properties)
+  if (current.Tfr.type == "total") {
+    z <- convertTfrType(z, "total")
+  }
+  if (!is.null(.fun)) {
+    z <- .fun(z, action = "replace")
+  }
+  z
 }
 
-#' Convert the "Tfr.type" attribute of an existing filter_spct object
+#' Convert the "Tfr.type" attribute
 #'
 #' Function to set the "Tfr.type" attribute and simultaneously converting the
 #' spectral data to correspond to the new type.
@@ -3349,7 +3293,7 @@ convertThickness <- function(x, thickness = NULL, ...) {
 #'   under the hood an object_spct, or if a fixed reflectance factor applicable
 #'   to all wavelengths is known.
 #'
-#' @param x filter_spct object.
+#' @param x filter_spct object or object_spct object.
 #' @param Tfr.type character One of #internal" or "total".
 #' @param ... (currently ignored).
 #'
@@ -3366,7 +3310,7 @@ convertThickness <- function(x, thickness = NULL, ...) {
 #' @examples
 #'
 #' my.spct <- polyester.spct
-#' filter_properties(my.spct) <- list(Rfr.factor = 0.01,
+#' filter_properties(my.spct) <- list(Rfr.factor = 0.07,
 #'                                    thickness = 125e-6,
 #'                                    homogeneous = TRUE)
 #' convertTfrType(my.spct, Tfr.type = "internal")
@@ -3382,7 +3326,7 @@ convertTfrType <- function(x, Tfr.type = NULL, ...) {
     return(invisible(x))
   }
 
-  columns <- intersect(colnames(x), c("Tfr", "Afr", "A", "Rfr") )
+  columns <- intersect(colnames(x), c("Tfr", "Afr", "A") )
   if (length(columns) == 0) {
     warning("No column to convert to new Tfr.type")
     return(invisible(x))
@@ -3393,16 +3337,18 @@ convertTfrType <- function(x, Tfr.type = NULL, ...) {
   } else if (is.filter_spct(x) && ("Tfr" %in% columns || "A" %in% columns)) {
     # "A" column converted or deleted as needed
     z <- A2T(x, action = "replace")
-  } else if (is.object_spct(x)) {
+  } else if (is.filter_spct(x) && "Afr" %in% columns) {
+    z <- Afr2T(x, action = "replace")
+  } else if (is.object_spct(x) && getRfrType(x) == "total") {
     z <- x
   } else {
     stop("conversion of input failed")
   }
 
+  current.Tfr.type <- getTfrType(x)
   if (is.filter_spct(z)) {
     # no spectral Rfr available, we use a factor
     properties <- filter_properties(x)
-    current.Tfr.type <- getTfrType(x)
     if (is.na(current.Tfr.type)) {
       warning("Current Tfr type is not set, returning NAs.")
     }
@@ -3414,9 +3360,9 @@ convertTfrType <- function(x, Tfr.type = NULL, ...) {
     setTfrType(z, Tfr.type)
   } else if (is.object_spct(z)) {
     if (current.Tfr.type == "internal" && Tfr.type == "total") {
-      z <- dplyr::mutate(Tfr = Tfr * (1 - Rfr))
+      z[["Tfr"]] <- z[["Tfr"]] * (1 - z[["Rfr"]])
     } else if (current.Tfr.type == "total" && Tfr.type == "internal") {
-      z <- dplyr::mutate(Tfr = Tfr / (1 - Rfr))
+      z[["Tfr"]] <- z[["Tfr"]] / (1 - z[["Rfr"]])
     }
     setTfrType(z, Tfr.type)
     if (is.filter_spct(x)) {

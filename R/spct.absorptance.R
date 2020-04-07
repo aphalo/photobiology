@@ -170,29 +170,24 @@ absorptance_spct <-
     Tfr.type <- getTfrType(spct)
     Rfr.type <- getRfrType(spct)
     if (is.filter_spct(spct) && Tfr.type == "internal") {
-      Afr.type <- Tfr.type
       Rfr.type <- "unknown" # otherwise NA would require special handling
       A2T(spct, action = "add", byref = TRUE)
       temp.spct <- tibble::tibble(w.length = spct[["w.length"]],
                                      Afr = 1 - spct[["Tfr"]])
     } else if (Tfr.type == "total" && Rfr.type == "total") {
-      Afr.type <- "total"
       temp.spct <- tibble::tibble(w.length = spct[["w.length"]],
                                Afr = 1 - spct[["Tfr"]] - spct[["Rfr"]])
      } else if (Tfr.type == "internal" && Rfr.type == "total") {
-      Afr.type <- "total"
       temp.spct <- tibble::tibble(w.length = spct[["w.length"]],
                                    Afr = (1 - spct[["Tfr"]]) * (1 - spct[["Rfr"]]))
     } else if (Tfr.type == "unknown" || Rfr.type == "unknown") {
       warning("'unknown' Tfr.type or Rfr.type, skipping absorptance calculation")
       absorptance <- NA
-      attr(absorptance, "Afr.type") <- "unknown"
       attr(absorptance, "radiation.unit") <- paste("absorptance", quantity)
       return(absorptance)
     } else if (Rfr.type == "specular") {
       warning("'specular' Rfr.type, skipping absorptance calculation")
       absorptance <- NA
-      attr(absorptance, "Afr.type") <- "unknown"
       attr(absorptance, "radiation.unit") <- paste("absorptance", quantity)
       return(absorptance)
     } else {
@@ -294,7 +289,6 @@ absorptance_spct <-
       warning("Argument to 'naming' unrecognized, assuming \"none\".")
     }
 
-    attr(absorptance, "Afr.type") <- Afr.type
     attr(absorptance, "radiation.unit") <- paste("absorptance", quantity)
     return(absorptance)
   }

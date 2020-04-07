@@ -6,6 +6,7 @@ all_spct_attr.ls <-
     private = c("spct.version",
                 "spct.tags",
                 "na.action"),
+    fragile = c("filter.properties"),
     generic_spct = c("comment",
                      "instr.desc",
                      "instr.settings",
@@ -22,9 +23,9 @@ all_spct_attr.ls <-
     cps_spct = c("time.unit", "linearized"),
     source_spct = c("time.unit", "bswf.used"),
     response_spct = c("time.unit", "bswf.used"),
-    object_spct = c("Tfr.type", "Rfr.type", "Afr.type", "filter.properties"),
-    filter_spct = c("Tfr.type", "Rfr.type", "Afr.type", "filter.properties"),
-    reflector_spct = c("Tfr.type", "Rfr.type", "Afr.type"),
+    object_spct = c("Tfr.type", "Rfr.type", "filter.properties"),
+    filter_spct = c("Tfr.type", "Rfr.type", "filter.properties"),
+    reflector_spct = c("Tfr.type", "Rfr.type", "filter.properties"),
     calibration_spct = character(),
     chroma_spct = character())
 
@@ -78,7 +79,7 @@ select_spct_attributes <- function(attributes,
 
   for (attributes in attributes.ls) {
     stopifnot(is.character(attributes))
-    # we can receive character(0) from preceeding iteration
+    # we can receive character(0) from preceding iteration
     if (length(attributes) == 0L || attributes[1] == "*") {
       z <- attributes.default
     } else if ("" %in% attributes) {
@@ -228,15 +229,20 @@ copy_attributes.waveband <- function(x, y, which = NULL, ...) {
 #' Merge attributes from \code{x} and \code{y} and copy them to \code{z}.
 #' Methods defined for spectral objects of classes from package 'photobiology'.
 #'
-#' @param x,y,z R objects
-#' @param which character
+#' @param x,y,z R objects. Objects \code{x} and {y} must be of the same class,
+#'     \code{z} must be an object with a structure valid for this same class.
+#' @param which character Names of attributes to copy, if NULL all those
+#'    relevant according to the class of \code{x} are used as default,
+#' @param which.not character Names of attributes not to be copied. The
+#'    names passed here are removed from the list for \code{which}, which
+#'    is most useful when we want to modify the default.
 #' @param ... not used
 #'
 #' @return A copy of \code{z} with additional attributes set.
 #'
 #' @export
 #'
-merge_attributes <- function(x, y, z, which, ...) UseMethod("merge_attributes")
+merge_attributes <- function(x, y, z, which, which.not, ...) UseMethod("merge_attributes")
 
 #' @describeIn merge_attributes Default for generic function
 #'
@@ -244,6 +250,7 @@ merge_attributes <- function(x, y, z, which, ...) UseMethod("merge_attributes")
 #'
 merge_attributes.default <- function(x, y, z,
                                     which = NULL,
+                                    which.not = NULL,
                                     ...) {
   warning("'merge_attributes' is not defined for objects of class ", class(x)[1])
   z
@@ -257,6 +264,7 @@ merge_attributes.default <- function(x, y, z,
 #'
 merge_attributes.generic_spct <- function(x, y, z,
                                           which = NULL,
+                                          which.not = NULL,
                                           copy.class = FALSE,
                                           ...) {
   if (copy.class) {
@@ -270,6 +278,8 @@ merge_attributes.generic_spct <- function(x, y, z,
                all_spct_attr.ls[["generic_spct"]],
                all_spct_attr.ls[[class(y)[1]]])
   }
+  # skip attributes that are easily invalidated
+  which <- setdiff(which, which.not)
   # this is likely to be slow
   for (w in which) {
     att.x <- attr(x, w, exact = TRUE)
