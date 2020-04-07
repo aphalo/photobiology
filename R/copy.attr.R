@@ -22,8 +22,8 @@ all_spct_attr.ls <-
     cps_spct = c("time.unit", "linearized"),
     source_spct = c("time.unit", "bswf.used"),
     response_spct = c("time.unit", "bswf.used"),
-    object_spct = c("Tfr.type", "Rfr.type", "Afr.type"),
-    filter_spct = c("Tfr.type", "Rfr.type", "Afr.type"),
+    object_spct = c("Tfr.type", "Rfr.type", "Afr.type", "filter.properties"),
+    filter_spct = c("Tfr.type", "Rfr.type", "Afr.type", "filter.properties"),
     reflector_spct = c("Tfr.type", "Rfr.type", "Afr.type"),
     calibration_spct = character(),
     chroma_spct = character())

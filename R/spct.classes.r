@@ -893,14 +893,26 @@ setCpsSpct <-
 #' @describeIn setGenericSpct Set class of an object to "filter_spct".
 #'
 #' @param Tfr.type character A string, either "total" or "internal".
+#' @param Rfr.factor numeric The value of the reflection factor (/1).
+#' @param thickness numeric The thickness of the material.
+#' @param homogeneous logical If internally homogeneous and non-scattering like
+#'   glass or heterogeneous like biological tissues like plant leaves.
 #' @param strict.range logical Flag indicating whether off-range values result in an
 #'   error instead of a warning.
 #' @export
 #' @exportClass filter_spct
 #'
+#' @note For non-diffusing materials like glass an approximate \code{Rfr.factor}
+#'   value can be used to interconvert "total" and "internal" transmittance
+#'   values. Use \code{NA} if not known, or not applicable, e.g., for materials
+#'   subject to internal scattering.
+#'
 setFilterSpct <-
   function(x,
            Tfr.type = c("total", "internal"),
+           Rfr.factor = NA_real_,
+           thickness = NA_real_,
+           homogeneous = NA,
            strict.range = getOption("photobiology.strict.range", default = FALSE),
            multiple.wl = 1L,
            idfactor = NULL) {
@@ -917,6 +929,10 @@ setFilterSpct <-
     setGenericSpct(x, multiple.wl = multiple.wl, idfactor = idfactor)
     class(x) <- c("filter_spct", class(x))
     setTfrType(x, Tfr.type[1])
+    setFilterProperties(x,
+                        Rfr.factor = Rfr.factor,
+                        thickness = thickness,
+                        homogeneous = homogeneous)
     x <- check_spct(x, strict.range = strict.range)
     if (is.name(name)) {
       name <- as.character(name)
@@ -3090,4 +3106,173 @@ getWhatMeasured.generic_mspct <- function(x,
                                           idx = "spct.idx") {
   msdply(mspct = x, .fun = getWhatMeasured, ..., idx = idx, col.names = "what.measured")
 }
+
+
+# "filter.properties" attribute ----------------------------------------------
+
+#' Set the "filter.properties" attribute
+#'
+#' Function to set by reference the "filter.properties" attribute  of an existing
+#' filter_spct object.
+#'
+#' @param x a filter_spct object
+#' @param filter.properties,value a list with fields named "Rfr.factor",
+#'   "thickness" and "homogeneous".
+#' @param Rfr.factor numeric The value of the reflection factor (/1).
+#' @param thickness numeric The thickness of the material.
+#' @param homogeneous logical If internally homogeneous and non-scattering like
+#'   glass or heterogeneous like biological tissues like plant leaves.
+#'
+#' @details Storing filter properties allows inter-conversion between internal
+#'   and total transmittance, as well as computation of transmittance for
+#'   abitrary thickness of the material. Whether computations are valid depend
+#'   on the homogeneity of the material.
+#'
+#' @return \code{x}
+#' @note This function alters \code{x} itself by reference and in addition
+#'   returns \code{x} invisibly. If \code{x} is not a filter_spct object,
+#'   \code{x} is not modified.
+#'
+#' @export
+#' @family measurement metadata functions
+#'
+#' @examples
+#'
+#' my.spct <- polyester.spct
+#' filter_properties(my.spct)
+#' filter_properties(my.spct, return.null = TRUE)
+#' filter_properties(my.spct) <- list(Rfr.factor = 0.01,
+#'                                    thickness = 125e-6,
+#'                                    homogeneous = TRUE)
+#' filter_properties(my.spct)
+#'
+setFilterProperties <- function(x,
+                                filter.properties = NULL,
+                                Rfr.factor = NA_real_,
+                                thickness = NA_real_,
+                                homogeneous = NA) {
+  name <- substitute(x)
+  if (is.filter_spct(x) || is.summary_filter_spct(x)) {
+    if (is.null(filter.properties)) {
+      filter.properties <- list(Rfr.factor = Rfr.factor,
+                                thickness = thickness,
+                                homogeneous = homogeneous)
+    } else {
+      stopifnot(setequal(names(filter.properties),
+                         c("Rfr.factor", "thickness", "homogeneous")))
+    }
+    attr(x, "filter.properties") <- filter.properties
+    if (is.name(name)) {
+      name <- as.character(name)
+      assign(name, x, parent.frame(), inherits = TRUE)
+    }
+  }
+  invisible(x)
+}
+
+#' @rdname setFilterProperties
+#'
+#' @export
+#'
+`filter_properties<-` <- function(x,
+                                  value = NULL) {
+  setFilterProperties(x = x,
+                      filter.properties = value)
+}
+
+#' Get the "filter.properties" attribute
+#'
+#' Function to read the "filter.properties" attribute of an existing filter_spct
+#' or a filter_mspct.
+#'
+#' @param x a filter_spct object
+#' @param ... Allows use of additional arguments in methods for other classes.
+#'
+#' @return a list with fields named "Rfr.factor", "thickness" and "homogeneous".
+#'   If the attribute is not set, and \code{return.null} is FALSE, a list with
+#'   fields set to NA is returned, otherwise, NULL.
+#'
+#' @export
+#' @family measurement metadata functions
+#'
+#' @examples
+#' filter.properties(polyester.spct)
+#'
+getFilterProperties <- function(x, return.null, ...) UseMethod("getFilterProperties")
+
+#' @rdname getFilterProperties
+#'
+#' @export
+#'
+filter_properties <- getFilterProperties
+
+#' @describeIn getFilterProperties default
+#' @export
+getFilterProperties.default <- function(x,
+                                        return.null = FALSE,
+                                        ...) {
+  if (return.null) {
+    NULL
+  } else {
+    # we return an NA
+    NA
+  }
+}
+
+#' @describeIn getFilterProperties generic_spct
+#' @export
+getFilterProperties.filter_spct <- function(x,
+                                            return.null = FALSE,
+                                            ...) {
+  filter.properties <- attr(x, "filter.properties", exact = TRUE)
+  if (is.null(filter.properties)) {
+    if (!return.null) {
+      # need to handle objects created with old versions
+      filter.properties <- list(Rfr.factor = NA_real_,
+                                thickness = NA_real_,
+                                homogeneous = NA)
+    }
+  } else {
+    stopifnot(setequal(names(filter.properties),
+                       c("Rfr.factor", "thickness", "homogeneous")))
+  }
+  filter.properties
+}
+
+#' @describeIn getFilterProperties summary_generic_spct
+#' @export
+getFilterProperties.summary_filter_spct <- function(x,
+                                                    return.null = FALSE,
+                                                    ...) {
+  filter.properties <- attr(x, "filter.properties", exact = TRUE)
+  if (is.null(filter.properties) && !return.null) {
+    # need to handle objects created with old versions
+    filter.properties <- list(Rfr.factor = NA_real_,
+                              thickness = NA_real_,
+                              homogeneous = NA)
+
+  } else {
+    stopifnot(setequal(names(filter.properties),
+                       c("Rfr.factor", "thickness", "homogeneous")))
+  }
+  filter.properties
+}
+
+#' @describeIn getFilterProperties filter_mspct
+#' @param idx character Name of the column with the names of the members of the
+#'   collection of spectra.
+#' @note The method for collections of spectra returns the
+#'   a tibble with a column of lists.
+#' @export
+#'
+getFilterProperties.generic_mspct <- function(x,
+                                              ...,
+                                              idx = "spct.idx") {
+  msdply(mspct = x,
+         .fun = getFilterProperties,
+         ...,
+         idx = idx,
+         col.names = "filter.properties")
+}
+
 
