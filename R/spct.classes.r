@@ -3275,4 +3275,156 @@ getFilterProperties.generic_mspct <- function(x,
          col.names = "filter.properties")
 }
 
+# Modify filter properties -----------------------------------------------
+
+#' Convert the "thickness" attribute of an existing filter_spct object
+#'
+#' Function to set the "thickness" attribute and simultaneously converting the
+#' spectral data to correspond to the new thickness.
+#'
+#' @param x filter_spct object
+#' @param thickness numeric (m)
+#' @param ... (currently ignored)
+#'
+#' @return \code{x} possibly with the \code{"thickness"} field of the
+#'   \code{"filter.properties"} attribute modified
+#'
+#' @note if x is not a \code{filter_spct} object, \code{x} is returned
+#'   unchanged. If or \code{x} does not have the \code{"filter.properties"}
+#'   attribute set and with no missing data, \code{x} is returned with
+#'   \code{Tfr} set to \code{NA} values.
+#'
+#' @export
+#' @family time attribute functions
+#' @examples
+#'
+#' my.spct <- polyester.spct
+#' filter_properties(my.spct) <- list(Rfr.factor = 0.01,
+#'                                    thickness = 125e-6,
+#'                                    homogeneous = TRUE)
+#' convertThickness(my.spct, thickness = 250e-6)
+#'
+convertThickness <- function(x, thickness = NULL, ...) {
+  if (!is.filter_spct(x)) {
+    warning("'convertThickness()' mot applicable to class '", class(x)[1], "'. Skipping!")
+    return(invisible(x))
+  }
+  if (is.null(thickness)) {
+    # nothing to do
+    return(invisible(x))
+  }
+
+  columns <- intersect(colnames(x), c("Tfr", "Afr", "A") )
+  if (length(columns) == 0) {
+    warning("No column to convert to new thickness.")
+    return(invisible(x))
+  }
+  if ("Tfr" %in% columns || "A" %in% columns) {
+    # "A" column converted or deleted as needed
+    z <- A2T(x, action = "replace")
+  } else {
+    stop("conversion failed")
+  }
+
+  properties <- filter_properties(x)
+  if (!properties[["homogeneous"]]) {
+    thickness <- NA_real_
+    warning("Conversion not possible for non-homogeneous materials.")
+  }
+  # convert Tfr
+  z <- using_Tfr(z^(thickness / properties[["thickness"]]))
+  properties[["thickness"]] <- thickness
+  setFilterProperties(z, properties)
+}
+
+#' Convert the "Tfr.type" attribute of an existing filter_spct object
+#'
+#' Function to set the "Tfr.type" attribute and simultaneously converting the
+#' spectral data to correspond to the new type.
+#'
+#' @details Internal transmittance uses as reference the light entering the
+#'   object while total transmittance takes the incident light as reference.
+#'   The conversion is possible only if reflectance is known. Either as
+#'   spectral data in an object_spct object, or a filter_spct object that is
+#'   under the hood an object_spct, or if a fixed reflectance factor applicable
+#'   to all wavelengths is known.
+#'
+#' @param x filter_spct object.
+#' @param Tfr.type character One of #internal" or "total".
+#' @param ... (currently ignored).
+#'
+#' @return \code{x} possibly with the \code{"thickness"} field of the
+#'   \code{"filter.properties"} attribute modified
+#'
+#' @note if x is not a \code{filter_spct} object, \code{x} is returned
+#'   unchanged. If or \code{x} does not have the \code{"filter.properties"}
+#'   attribute set and with no missing data, \code{x} is returned with
+#'   \code{Tfr} set to \code{NA} values.
+#'
+#' @export
+#' @family time attribute functions
+#' @examples
+#'
+#' my.spct <- polyester.spct
+#' filter_properties(my.spct) <- list(Rfr.factor = 0.01,
+#'                                    thickness = 125e-6,
+#'                                    homogeneous = TRUE)
+#' convertTfrType(my.spct, Tfr.type = "internal")
+#'
+convertTfrType <- function(x, Tfr.type = NULL, ...) {
+  if (!(is.filter_spct(x) || is.object_spct(x))) {
+    warning("'convertTfrType()' mot applicable to class '", class(x)[1], "'. Skipping!")
+    return(invisible(x))
+  }
+
+  if (is.null(Tfr.type)) {
+    # nothing to do
+    return(invisible(x))
+  }
+
+  columns <- intersect(colnames(x), c("Tfr", "Afr", "A", "Rfr") )
+  if (length(columns) == 0) {
+    warning("No column to convert to new Tfr.type")
+    return(invisible(x))
+  }
+
+  if (is.filter_spct(x) && "Rfr" %in% columns) {
+    z <- as.object_spct(x)
+  } else if (is.filter_spct(x) && ("Tfr" %in% columns || "A" %in% columns)) {
+    # "A" column converted or deleted as needed
+    z <- A2T(x, action = "replace")
+  } else if (is.object_spct(x)) {
+    z <- x
+  } else {
+    stop("conversion of input failed")
+  }
+
+  if (is.filter_spct(z)) {
+    # no spectral Rfr available, we use a factor
+    properties <- filter_properties(x)
+    current.Tfr.type <- getTfrType(x)
+    if (is.na(current.Tfr.type)) {
+      warning("Current Tfr type is not set, returning NAs.")
+    }
+    if (current.Tfr.type == "internal" && Tfr.type == "total") {
+      z <- using_Tfr(z * (1 - properties[["Rfr.factor"]]))
+    } else if (current.Tfr.type == "total" && Tfr.type == "internal") {
+      z <- using_Tfr(z / (1 - properties[["Rfr.factor"]]))
+    }
+    setTfrType(z, Tfr.type)
+  } else if (is.object_spct(z)) {
+    if (current.Tfr.type == "internal" && Tfr.type == "total") {
+      z <- dplyr::mutate(Tfr = Tfr * (1 - Rfr))
+    } else if (current.Tfr.type == "total" && Tfr.type == "internal") {
+      z <- dplyr::mutate(Tfr = Tfr / (1 - Rfr))
+    }
+    setTfrType(z, Tfr.type)
+    if (is.filter_spct(x)) {
+      z <- as.filter_spct(z)
+    }
+  }
+  z
+}
+
+
 
