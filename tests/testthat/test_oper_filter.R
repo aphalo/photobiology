@@ -83,8 +83,8 @@ test_that("oper default", {
 
   options(photobiology.filter.qty = NULL)
 
-  expect_warning(my.e.spct + my.e.spct)
-  expect_equal(suppressWarnings(my.e.spct + my.e.spct), NA)
+  expect_error(my.e.spct + my.e.spct)
+#  expect_equal(suppressWarnings(my.e.spct + my.e.spct), NA)
   expect_equal(my.e.spct * 2, my.2e.spct)
   expect_equal(my.e.spct * 2L, my.2e.spct)
   expect_equal(my.2e.spct / 2, my.e.spct)
@@ -104,8 +104,8 @@ test_that("oper transmittance", {
 
   options(photobiology.filter.qty = "transmittance")
 
-  expect_warning(my.e.spct + my.e.spct)
-  expect_equal(suppressWarnings(my.e.spct + my.e.spct), NA)
+  expect_error(my.e.spct + my.e.spct)
+#  expect_equal(suppressWarnings(my.e.spct + my.e.spct), NA)
   expect_equal(my.e.spct * 2, my.2e.spct)
   expect_equal(my.e.spct * 2L, my.2e.spct)
   expect_equal(my.2e.spct / 2, my.e.spct)
@@ -122,13 +122,13 @@ test_that("oper transmittance", {
 
 test_that("oper absorptance", {
 
-  my.e.spct <- filter_spct(w.length = 400:409, Afr = 0.1)
-  my.2e.spct <- filter_spct(w.length = 400:409, Afr = 0.2)
+  my.e.spct <- filter_spct(w.length = 400:409, Afr = 0.1, Tfr.type = "internal")
+  my.2e.spct <- filter_spct(w.length = 400:409, Afr = 0.2, Tfr.type = "internal")
 
   options(photobiology.filter.qty = "absorptance")
 
-  expect_warning(my.e.spct + my.e.spct)
-  expect_equal(suppressWarnings(my.e.spct + my.e.spct), NA)
+  expect_error(my.e.spct + my.e.spct)
+#  expect_equal(suppressWarnings(my.e.spct + my.e.spct), NA)
   expect_equal(my.e.spct * 2, my.2e.spct)
   expect_equal(my.e.spct * 2L, my.2e.spct)
   expect_equal(my.2e.spct / 2, my.e.spct)
@@ -145,14 +145,14 @@ test_that("oper absorptance", {
 
 test_that("oper absorbance", {
 
-  my.e.spct <- filter_spct(w.length = 400:409, A = 1)
-  my.2e.spct <- filter_spct(w.length = 400:409, A = 2)
+  my.e.spct <- filter_spct(w.length = 400:409, A = 1, Tfr.type = "internal")
+  my.2e.spct <- filter_spct(w.length = 400:409, A = 2, Tfr.type = "internal")
 
   options(photobiology.filter.qty = "absorbance")
 
   expect_equal(my.e.spct + my.e.spct, my.2e.spct)
-  expect_warning(my.e.spct * my.e.spct)
-  expect_equal(suppressWarnings(my.e.spct * my.e.spct), NA)
+  expect_error(my.e.spct * my.e.spct)
+#  expect_equal(suppressWarnings(my.e.spct * my.e.spct), NA)
   expect_equal(my.e.spct * 2, my.2e.spct)
   expect_equal(my.e.spct * 2L, my.2e.spct)
   expect_equal(my.2e.spct / 2, my.e.spct)
@@ -173,7 +173,9 @@ test_that("oper absorbance", {
 
 test_that("math default", {
 
-  my.e.spct <- filter_spct(w.length = 400:409, Tfr = 0.1)
+  options(photobiology.filter.qty = NULL)
+
+  my.e.spct <- filter_spct(w.length = 400:409, Tfr = 0.1, Tfr.type = "internal")
 
   expect_warning(log10(my.e.spct))
   expect_equal(suppressWarnings(log10(my.e.spct)[["Tfr"]]),
@@ -193,7 +195,7 @@ test_that("math default", {
 
 test_that("math absorbance", {
 
-  my.e.spct <- filter_spct(w.length = 400:409, A = 1)
+  my.e.spct <- filter_spct(w.length = 400:409, A = 1, Tfr.type = "internal")
 
   options(photobiology.filter.qty = "absorbance")
 
@@ -208,7 +210,7 @@ test_that("math absorbance", {
 })
 
 test_that("transmittance", {
-  my.spct <- filter_spct(w.length = 300:700, Tfr = 1)
+  my.spct <- filter_spct(w.length = 300:700, Tfr = 1, Tfr.type = "internal")
 
   transmittance.result <- 400
   expect_equal(as.numeric(transmittance(my.spct)), 1, tolerance = 1e-6)

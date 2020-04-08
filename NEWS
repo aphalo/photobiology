@@ -3,6 +3,8 @@ photobiology 0.10.1 (2020-04-xx)
 
 ** Fix bugs and "polish rough edges".
 * Major bug in T2Afr() was causing wrong values to be returned!!
+* Rewrite much of the code for dispatching math operations with spectral
+objects as operands.
 * Revise find_peaks() so that ignore.threshold and strict arguments are
 respected also when span = NULL. This affects all peaks- and valleys-related
 methods. Changes return values for the previously undocumented use of negative
@@ -22,8 +24,9 @@ filter_properties<-().
 * T2T(), setAfrType(), getAfrType(). No deprecation as not used.
 
 *****************************************************************************
-Full functionality of convertThickness() and convertTfrType() will require
-adding the "filter.properties" attribute to filter_spct objects.
+Full functionality of convertThickness() and convertTfrType() requires
+filter_spct objects have the new "filter.properties" attribute or that they
+contain like object_spct objects a column "Rfr" with reflectance data.
 *****************************************************************************
 
 photobiology 0.10.0 (2020-04-02)

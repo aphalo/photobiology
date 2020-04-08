@@ -45,11 +45,11 @@
 #' head(result.data)
 #' tail(result.data)
 #'
-oper_spectra <- function(w.length1, w.length2  =NULL,
+oper_spectra <- function(w.length1, w.length2 = NULL,
                          s.irrad1, s.irrad2,
-                         trim="union",
-                         na.rm=FALSE,
-                         bin.oper=NULL, ...) {
+                         trim = "union",
+                         na.rm = FALSE,
+                         bin.oper = NULL, ...) {
   if (na.rm) {
     ifelse(!is.na(s.irrad1), s.irrad1, 0.0)
     ifelse(!is.na(s.irrad2), s.irrad2, 0.0)
@@ -84,8 +84,8 @@ oper_spectra <- function(w.length1, w.length2  =NULL,
   w.length <- unique(w.length)
   s.irrad1.int <- rep(NA, length(w.length))
   s.irrad2.int <- rep(NA, length(w.length))
-  s.irrad1.int <- interpolate_spectrum(w.length1, s.irrad1, w.length, fill=0.0)
-  s.irrad2.int <- interpolate_spectrum(w.length2, s.irrad2, w.length, fill=0.0)
+  s.irrad1.int <- interpolate_spectrum(w.length1, s.irrad1, w.length, fill = 0.0)
+  s.irrad2.int <- interpolate_spectrum(w.length2, s.irrad2, w.length, fill = 0.0)
   s.irrad.result <- bin.oper(s.irrad1.int, s.irrad2.int, ...)
   invisible(tibble::tibble(w.length, s.irrad=s.irrad.result))
 }
