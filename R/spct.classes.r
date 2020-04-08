@@ -1393,8 +1393,9 @@ is_transmittance_based <- function(x) {
 setTimeUnit <- function(x,
                         time.unit = c("second", "hour", "day", "exposure", "none"),
                         override.ok = FALSE) {
-  if (!(is.any_spct(x) || is.any_summary_spct(x))) {
-    return(invisible(x))
+  if (!(is.source_spct(x) || is.response_spct(x) ||
+      is.summary_source_spct(x) || is.summary_response_spct(x))) {
+     return(invisible(x))
   }
   if (is.character(time.unit)) {
     time.unit <- time.unit[1]
@@ -1420,7 +1421,6 @@ setTimeUnit <- function(x,
       name <- as.character(name)
       assign(name, x, parent.frame(), inherits = TRUE)
     }
-
   }
   invisible(x)
 }
@@ -1446,7 +1446,8 @@ setTimeUnit <- function(x,
 #'
 getTimeUnit <- function(x,
                         force.duration = FALSE) {
-  if (is.any_spct(x) || is.any_summary_spct(x)) {
+  if (is.source_spct(x) || is.response_spct(x) ||
+      is.summary_source_spct(x) || is.summary_response_spct(x)) {
 
     time.unit <- attr(x, "time.unit", exact = TRUE)
 
@@ -3046,6 +3047,10 @@ getWhatMeasured.generic_mspct <- function(x,
 #' @param x a filter_spct object
 #' @param filter.properties,value a list with fields named "Rfr.factor",
 #'   "thickness" and "homogeneous".
+#' @param pass.null logical If TRUE, the parameters to the next three
+#'    parameters will be always ignored, otherwise they will be used to
+#'    build an object of class "filter.properties" when the argument to
+#'    filter.properties is NULL.
 #' @param Rfr.factor numeric The value of the reflection factor (/1).
 #' @param thickness numeric The thickness of the material.
 #' @param homogeneous logical If internally homogeneous and non-scattering like
@@ -3053,8 +3058,9 @@ getWhatMeasured.generic_mspct <- function(x,
 #'
 #' @details Storing filter properties allows inter-conversion between internal
 #'   and total transmittance, as well as computation of transmittance for
-#'   abitrary thickness of the material. Whether computations are valid depend
-#'   on the homogeneity of the material.
+#'   arbitrary thickness of the material. Whether computations are valid depend
+#'   on the homogeneity of the material. The parameter \code{pass.null} makes
+#'   it possible to remove the attribute.
 #'
 #' @return \code{x}
 #' @note This function alters \code{x} itself by reference and in addition
@@ -3068,6 +3074,8 @@ getWhatMeasured.generic_mspct <- function(x,
 #'
 #' my.spct <- polyester.spct
 #' filter_properties(my.spct)
+#' filter_properties(my.spct) <- NULL
+#' filter_properties(my.spct)
 #' filter_properties(my.spct, return.null = TRUE)
 #' filter_properties(my.spct) <- list(Rfr.factor = 0.01,
 #'                                    thickness = 125e-6,
@@ -3076,17 +3084,26 @@ getWhatMeasured.generic_mspct <- function(x,
 #'
 setFilterProperties <- function(x,
                                 filter.properties = NULL,
+                                pass.null = FALSE,
                                 Rfr.factor = NA_real_,
                                 thickness = NA_real_,
                                 homogeneous = NA) {
   name <- substitute(x)
   if (is.filter_spct(x) || is.object_spct(x)) {
-    if (!is.null(filter.properties)) {
-      stopifnot(setequal(names(filter.properties),
-                         c("Rfr.factor", "thickness", "homogeneous")))
-      if (class(filter.properties)[1] != "filter_properties") {
+    if (!(pass.null && is.null(filter.properties))) {
+      if (is.null(filter.properties)) {
+        filter.properties <- list(Rfr.factor = Rfr.factor,
+                                  thickness = thickness,
+                                  homogeneous = homogeneous)
         class(filter.properties) <-
           c("filter_properties", class(filter.properties))
+      } else {
+        stopifnot(setequal(names(filter.properties),
+                           c("Rfr.factor", "thickness", "homogeneous")))
+        if (class(filter.properties)[1] != "filter_properties") {
+          class(filter.properties) <-
+            c("filter_properties", class(filter.properties))
+        }
       }
     }
     attr(x, "filter.properties") <- filter.properties
@@ -3105,7 +3122,8 @@ setFilterProperties <- function(x,
 `filter_properties<-` <- function(x,
                                   value = NULL) {
   setFilterProperties(x = x,
-                      filter.properties = value)
+                      filter.properties = value,
+                      pass.null = TRUE)
 }
 
 #' Get the "filter.properties" attribute
@@ -3224,9 +3242,7 @@ getFilterProperties.generic_mspct <- function(x,
 #' @examples
 #'
 #' my.spct <- polyester.spct
-#' filter_properties(my.spct) <- list(Rfr.factor = 0.01,
-#'                                    thickness = 125e-6,
-#'                                    homogeneous = TRUE)
+#' filter_properties(my.spct)
 #' convertThickness(my.spct, thickness = 250e-6)
 #'
 convertThickness <- function(x, thickness = NULL, ...) {

@@ -1,6 +1,26 @@
 photobiology 0.10.1 (2020-04-xx)
 ================================
 
+- This update brings improved handling of conversions among quantities used to
+describe filters. This required adding a mechanism to store properties of
+filters as metadata, revising the code behind mathematical operations and
+mathematical functions. Also adding conversion methods and obviosly methods
+for setting and retrieving the new metada.
+- Reshufling the code and testing brought to light several bugs and rough
+edges in infrequently used functions, which I have corrected.
+- Some methods gained new specializations for data frames, which were needed
+to streamline some of the statstics in package 'ggspectra'.
+- This update also brings some changes to error checking and messages,
+including changing several ealier warnings into errors.
+
+** New
+* Add setFilterProperties(), getFilterProperties(), filter_properties() and
+filter_properties<-().
+* Add convertTfrType(), convertThickness().
+* Add Afr2T(), any2T(), any2A(), and any2Afr().
+* A print method for filter properties.
+* Update example data for filters by adding filter properties.
+
 ** Fix bugs and "polish rough edges".
 * Major bug in T2Afr() was causing wrong values to be returned!!
 * Rewrite much of the code for dispatching math operations with spectral
@@ -15,11 +35,7 @@ threshold values and with span = NULL and strict = TRUE as arguments.
 consistent.
 * Revise rbindspct() to allow control of metadata copying.
 * Add is_absorptance_based().
-** New
-* Add setFilterProperties(), getFilterProperties(), filter_properties() and
-filter_properties<-().
-* Add convertTfrType(), convertThickness().
-* Add Afr2T().
+
 ** Defuct
 * T2T(), setAfrType(), getAfrType(). No deprecation as not used.
 

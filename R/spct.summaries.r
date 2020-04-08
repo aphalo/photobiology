@@ -109,6 +109,13 @@ print.generic_spct <- function(x, ..., n = NULL, width = NULL)
     cat("Time unit ", as.character(getTimeUnit(x, force.duration = TRUE)),
         "\n", sep = "")
   }
+  if (class_spct(x)[1] == "filter_spct") {
+    properties <- filter_properties(x, return.null = TRUE)
+    if (!is.null(properties)) {
+      print(properties)
+      cat("\n")
+    }
+  }
   if (is_scaled(x)) {
     scaling <- getScaled(x)
     cat("Rescaled to '", scaling[["f"]], "' = ", scaling[["target"]], "\n", sep = "")
@@ -450,6 +457,18 @@ print.instr_settings <- function(x, ...) {
       "\ncounts @ peak (% of max): ",
       signif(as.numeric(x[["rel.signal"]]) * 100, digits = 3),
       sep = "",
+      ...
+  )
+  invisible(x)
+}
+
+#' @export
+#'
+print.filter_properties <- function(x, ...) {
+  cat("Rfr factor (/1): ", round(x[["Rfr.factor"]], digits = 4), ", ",
+      "thickness (mm): ", signif(x[["thickness"]] * 1e3, digits = 3), ", ",
+      "homogeneous: ", ifelse(x[["homogeneous"]], "yes", "no"), ".",
+       sep = "",
       ...
   )
   invisible(x)
