@@ -105,11 +105,13 @@ reference:
     - getNormalized
     - setNormalized
     - is_normalized
-    - getRfrType
-    - setRfrType
     - getScaled
     - setScaled
     - is_scaled
+    - getRfrType
+    - setRfrType
+    - getFilterProperties
+    - setFilterProperties
     - getTfrType
     - setTfrType
     - getAfrType
@@ -186,7 +188,10 @@ reference:
     - T2A
     - A2T
     - T2Afr
-    - T2T
+    - Afr2T
+    - any2T
+    - convertTfrType
+    - convertThickness
     - tag
     - untag
     - cps2irrad
