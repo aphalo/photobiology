@@ -994,7 +994,7 @@ A2T.filter_mspct <- function(x,
 #'
 T2A <- function(x, action, byref, clean, ...) UseMethod("T2A")
 
-#' @describeIn A2T Default method for generic function
+#' @describeIn T2A Default method for generic function
 #'
 #' @export
 #'
@@ -1465,13 +1465,16 @@ Afr2T.object_mspct <- Afr2T.filter_mspct
 #'
 any2T <- function(x, action = "add", clean = FALSE) {
   if (is.filter_mspct(x) || is.object_mspct(x)) {
-    return(msmsply(x, .fun =  any2T, x, action = action, byref = FALSE))
+    return(msmsply(mspct = x,
+                   .fun =  any2T,
+                   action = action,
+                   clean = clean))
   }
   stopifnot(is.filter_spct(x) || is.object_spct(x))
   if (any(c("A", "Tfr") %in% colnames(x))) {
-    A2T(x, action = action, byref = FALSE)
+    A2T(x, action = action, clean = clean, byref = FALSE)
   } else {
-    Afr2T(x, action = action, byref = FALSE)
+    Afr2T(x, action = action, clean = clean, byref = FALSE)
   }
 }
 
@@ -1479,16 +1482,19 @@ any2T <- function(x, action = "add", clean = FALSE) {
 #'
 #' @export
 #'
-any2A <- function(x, action = "add") {
+any2A <- function(x, action = "add", clean = FALSE) {
   if (is.filter_mspct(x) || is.object_mspct(x)) {
-    return(msmsply(x, .fun =  any2A, x, action = action, byref = FALSE))
+    return(msmsply(mspct = x,
+                   .fun =  any2A,
+                   action = action,
+                   clean = clean))
   }
   stopifnot(is.filter_spct(x) || is.object_spct(x))
   if (any(c("A", "Tfr") %in% colnames(x))) {
-    T2A(x, action = action, byref = FALSE)
+    T2A(x, action = action, clean = clean, byref = FALSE)
   } else {
     Afr2T(x, action = action)
-    T2A(x, action = action, byref = FALSE)
+    T2A(x, action = action, clean = clean, byref = FALSE)
   }
 }
 
@@ -1496,16 +1502,19 @@ any2A <- function(x, action = "add") {
 #'
 #' @export
 #'
-any2Afr <- function(x, action = "add") {
+any2Afr <- function(x, action = "add", clean = FALSE) {
   if (is.filter_mspct(x) || is.object_mspct(x)) {
-    return(msmsply(x, .fun =  any2Afr, x, action = action, byref = FALSE))
+    return(msmsply(mspct = x,
+                   .fun =  any2Afr,
+                   action = action,
+                   clean = clean))
   }
   stopifnot(is.filter_spct(x) || is.object_spct(x))
   if (any(c("Afr", "Tfr") %in% colnames(x))) {
-    T2Afr(x, action = action, byref = FALSE)
+    T2Afr(x, action = action, clean = clean, byref = FALSE)
   } else {
     A2T(x, action = action)
-    T2Afr(x, action = action, byref = FALSE)
+    T2Afr(x, action = action, clean = clean, byref = FALSE)
   }
 }
 
