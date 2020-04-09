@@ -1178,13 +1178,23 @@ T2Afr.filter_spct <- function(x,
       x <- using_Tfr(clean(x))
     }
     if (current.Tfr.type == "total") {
-      x <- convertTfrType(x, "internal")
+      if (exists("Rfr", x, inherits = FALSE)) {
+        x[["Afr"]] <- 1 - x[["Tfr"]] - x[["Rfr"]]
+      } else {
+        x <- convertTfrType(x, "internal")
+        x[["Afr"]] <- 1 - x[["Tfr"]]
+        if (all(is.na(x[["Afr"]]))) {
+          action <- "add"
+          warning("'Tfr.type' or 'Rfr.factor' not available in ')'.")
+        }
+      }
+    } else if (current.Tfr.type == "internal") {
+      x[["Afr"]] <- 1 - x[["Tfr"]]
     }
-    x[["Afr"]] <- 1 - x[["Tfr"]]
   } else {
     x[["Afr"]] <- NA_real_
     action <- "add"
-    warning("'Tfr' not available in 'T2Afr()', ignoring \"replace\" action.")
+    warning("'Tfr' not available in 'T2Afr()'.")
   }
   if (action == "replace" && exists("A", x, inherits = FALSE)) {
     x[["A"]] <- NULL
