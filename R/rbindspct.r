@@ -257,6 +257,8 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE, attrs.s
       warning("Inconsistent 'Tfr.type' among filter spectra passed to rbindspct")
       return(filter_spct())
     }
+    filter.descriptor <- sapply(l, FUN = getFilterProperties, return.null = TRUE)
+    #
     setFilterSpct(ans, Tfr.type = Tfr.type[1], multiple.wl = mltpl.wl)
     if (!TA.consistent.based) {
       T2A(ans, action = "add", byref = TRUE)

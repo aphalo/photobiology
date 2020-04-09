@@ -3337,7 +3337,7 @@ convertTfrType <- function(x, Tfr.type = NULL, ...) {
     return(invisible(x))
   }
 
-  if (is.null(Tfr.type)) {
+  if (is.null(Tfr.type) || Tfr.type == getTfrType(x)) {
     # nothing to do
     return(invisible(x))
   }
@@ -3348,17 +3348,22 @@ convertTfrType <- function(x, Tfr.type = NULL, ...) {
     return(invisible(x))
   }
 
-  if (is.filter_spct(x) && "Rfr" %in% columns) {
-    z <- as.object_spct(x)
-  } else if (is.filter_spct(x) && ("Tfr" %in% columns || "A" %in% columns)) {
-    # "A" column converted or deleted as needed
-    z <- A2T(x, action = "replace")
-  } else if (is.filter_spct(x) && "Afr" %in% columns) {
-    z <- Afr2T(x, action = "replace")
-  } else if (is.object_spct(x) && getRfrType(x) == "total") {
+  # we keep columns "A" or "Afr" as their values do not depend on "Tfr.type"
+  if (is.filter_spct(x)) {
+    if ("Rfr" %in% columns) {
+      z <- as.object_spct(x)
+    } else if ("Tfr" %in% columns) {
+      z <- x
+    } else if ("A" %in% columns) {
+      # "A" column converted as needed
+      z <- A2T(x, action = "add")
+    } else if ("Afr" %in% columns) {
+      z <- Afr2T(x, action = "add")
+    } else {
+      stop("conversion of input failed")
+    }
+  } else { # user passed an object_spct
     z <- x
-  } else {
-    stop("conversion of input failed")
   }
 
   current.Tfr.type <- getTfrType(x)
@@ -3369,9 +3374,9 @@ convertTfrType <- function(x, Tfr.type = NULL, ...) {
       warning("Current Tfr type is not set, returning NAs.")
     }
     if (current.Tfr.type == "internal" && Tfr.type == "total") {
-      z <- using_Tfr(z * (1 - properties[["Rfr.factor"]]))
+      z[["Tfr"]] <- z[["Tfr"]] * (1 - properties[["Rfr.factor"]])
     } else if (current.Tfr.type == "total" && Tfr.type == "internal") {
-      z <- using_Tfr(z / (1 - properties[["Rfr.factor"]]))
+      z[["Tfr"]] <- z[["Tfr"]] / (1 - properties[["Rfr.factor"]])
     }
     setTfrType(z, Tfr.type)
   } else if (is.object_spct(z)) {
@@ -3387,6 +3392,4 @@ convertTfrType <- function(x, Tfr.type = NULL, ...) {
   }
   z
 }
-
-
 

@@ -173,21 +173,21 @@ join_mspct.filter_mspct <- function(x,
   names <- names(x)
   stopifnot(length(names) == length(x))
   if (qty.out == "transmittance") {
-    x <- A2T(x, action = "replace")
+    x <- any2T(x, action = "replace")
     rmDerivedMspct(x)
     for (i in names) {
       x[[i]] <- as.data.frame(x[[i]])[c("w.length", "Tfr")]
       x[[i]] <- plyr::rename(x[[i]], c(Tfr = i))
     }
   } else if (qty.out == "absorbance") {
-    x <- T2A(x, action = "replace")
+    x <- any2A(x, action = "replace")
     rmDerivedMspct(x)
     for (i in names) {
       x[[i]] <- as.data.frame(x[[i]])[c("w.length", "A")]
       x[[i]] <- plyr::rename(x[[i]], c(A = i))
     }
   } else if (qty.out == "absorptance") {
-    x <- T2Afr(x, action = "replace")
+    x <- any2Afr(x, action = "replace")
     rmDerivedMspct(x)
     for (i in names) {
       x[[i]] <- as.data.frame(x[[i]])[c("w.length", "Afr")]
