@@ -1393,10 +1393,13 @@ is_transmittance_based <- function(x) {
 setTimeUnit <- function(x,
                         time.unit = c("second", "hour", "day", "exposure", "none"),
                         override.ok = FALSE) {
-  if (!(is.source_spct(x) || is.response_spct(x) ||
-      is.summary_source_spct(x) || is.summary_response_spct(x))) {
+  if (!(class(x)[1] %in%
+        c("source_spct", "summary_source_spct",
+          "response_spct", "response_spct",
+          "raw_spct", "cps_spct"))) {
      return(invisible(x))
   }
+
   if (is.character(time.unit)) {
     time.unit <- time.unit[1]
   }
@@ -1446,11 +1449,11 @@ setTimeUnit <- function(x,
 #'
 getTimeUnit <- function(x,
                         force.duration = FALSE) {
-  if (is.source_spct(x) || is.response_spct(x) ||
-      is.summary_source_spct(x) || is.summary_response_spct(x)) {
-
+  if (class(x)[1] %in%
+      c("source_spct", "summary_source_spct",
+        "response_spct", "response_spct",
+        "raw_spct", "cps_spct")) {
     time.unit <- attr(x, "time.unit", exact = TRUE)
-
     # need to handle objects created with old versions
     if (!length(time.unit)) {
       time.unit <- "unknown"
@@ -1462,7 +1465,6 @@ getTimeUnit <- function(x,
     if (!lubridate::is.duration(time.unit) && is.numeric(time.unit)) {
       time.unit <- lubridate::duration(seconds = time.unit)
     }
-
     # convert strings to durations
     if (force.duration && is.character(time.unit)) {
       time.unit <- char2duration(time.unit)
