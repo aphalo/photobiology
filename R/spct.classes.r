@@ -19,6 +19,27 @@ spct_classes <- function() {
 
 # check -------------------------------------------------------------------
 
+#' Enable or disable checks
+#'
+#' Choose between protection against errors or faster performance by enabling
+#' (the default) or disabling data-consistency and sanity checks.
+#'
+#' @family data validity check functions
+#'
+#' @export
+#'
+enable_check_spct <- function() {
+  options(photobiology.check.spct = TRUE)
+}
+
+#' @rdname enable_check_spct
+#'
+#' @export
+#'
+disable_check_spct <- function() {
+  options(photobiology.check.spct = FALSE)
+}
+
 #' Check validity of spectral objects
 #'
 #' Check that an R object contains the expected data members.

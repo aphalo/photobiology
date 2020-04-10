@@ -34,6 +34,11 @@ interpolate_spectrum <- function(w.length.in,
                                  w.length.out,
                                  fill = NA,
                                  ...) {
+  if (length(w.length.in) == length(w.length.out) &&
+      all(w.length.in == w.length.out)) {
+    # nothing to do
+    return(s.irrad)
+  }
   if (is.null(fill) && (w.length.out[1] < w.length.in[1] ||
                         w.length.out[length(w.length.out)] > w.length.in[length(w.length.in)])) {
     stop("Extrapolation attempted with fill == NULL")

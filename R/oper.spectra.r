@@ -54,38 +54,41 @@ oper_spectra <- function(w.length1, w.length2 = NULL,
     ifelse(!is.na(s.irrad1), s.irrad1, 0.0)
     ifelse(!is.na(s.irrad2), s.irrad2, 0.0)
   }
-  if (is.null(w.length2)) {
-    if (length(s.irrad1) == length(s.irrad2) & length(w.length1) == length(s.irrad1)){
+  if (is.null(w.length2) ||
+      (length(w.length1) == length(w.length2) && all(w.length1 == w.length2))) {
+    # we can skip interpolation
+    if (length(s.irrad1) == length(s.irrad2) &
+          length(w.length1) == length(s.irrad1)){
       s.irrad.result <- bin.oper(s.irrad1, s.irrad2, ...)
       w.length <- w.length1
     } else {
       stop("Mismatch in the length of input vectors")
     }
-    invisible(tibble::tibble(w.length, s.irrad=s.irrad.result))
+    return(invisible(tibble::tibble(w.length, s.irrad = s.irrad.result)))
   }
-  if (length(w.length2) != length(s.irrad2) | length(w.length1) != length(s.irrad1)){
+  if (length(w.length2) != length(s.irrad2) |
+        length(w.length1) != length(s.irrad1)){
     stop("Mismatch in the length of input vectors")
+  } else if (trim == "union") {
+    wl.low <- min(w.length1[1], w.length2[1])
+    wl.hi <- max(w.length1[length(w.length1)], w.length2[length(w.length2)])
+  } else if (trim == "intersection") {
+    wl.low <- max(w.length1[1], w.length2[1])
+    wl.hi <- min(w.length1[length(w.length1)], w.length2[length(w.length2)])
+  } else {
+    stop("illegal value for 'trim' argument")
   }
-  else if (trim=="union") {
-    wl.low <- min(w.length1[1],w.length2[1])
-    wl.hi <- max(w.length1[length(w.length1)],w.length2[length(w.length2)])
-  }
-  else if (trim=="intersection") {
-    wl.low <- max(w.length1[1],w.length2[1])
-    wl.hi <- min(w.length1[length(w.length1)],w.length2[length(w.length2)])
-  }
-  else {
-    warning("illegal value for 'trim' argument")
-    invisible(NA)
-  }
+  # extract all wavelength values and merge them
   w.length <- c(w.length1[w.length1 >= wl.low & w.length1 <= wl.hi],
                 w.length2[w.length2 >= wl.low & w.length2 <= wl.hi])
   w.length <- sort(w.length)
   w.length <- unique(w.length)
-  s.irrad1.int <- rep(NA, length(w.length))
-  s.irrad2.int <- rep(NA, length(w.length))
-  s.irrad1.int <- interpolate_spectrum(w.length1, s.irrad1, w.length, fill = 0.0)
-  s.irrad2.int <- interpolate_spectrum(w.length2, s.irrad2, w.length, fill = 0.0)
+#  s.irrad1.int <- rep(NA, length(w.length))
+#  s.irrad2.int <- rep(NA, length(w.length))
+  s.irrad1.int <-
+    interpolate_spectrum(w.length1, s.irrad1, w.length, fill = 0.0)
+  s.irrad2.int <-
+    interpolate_spectrum(w.length2, s.irrad2, w.length, fill = 0.0)
   s.irrad.result <- bin.oper(s.irrad1.int, s.irrad2.int, ...)
-  invisible(tibble::tibble(w.length, s.irrad=s.irrad.result))
+  invisible(tibble::tibble(w.length, s.irrad = s.irrad.result))
 }

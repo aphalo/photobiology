@@ -139,7 +139,8 @@ compare_spct <- function(x,
                short.names = short.names)
     }
   } else if (!returned.value == "data.frame") {
-    warning("Returning a data frame as argument \"", returned.value, "\" passed to 'returned.value' is unknown.")
+    warning("Returning a data frame as argument \"", returned.value,
+            "\" passed to 'returned.value' is unknown.")
   }
   z
 }

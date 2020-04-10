@@ -325,6 +325,7 @@ reference:
     desc: Utilities mainly used internally in the 'r4photobiology' suite of R packages, but safe to use in user code.
     contents:
     - check_spct
+    - enable_check_spct
     - check_w.length
     - checkTimeUnit
     - copy_attributes
