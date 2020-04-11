@@ -1203,7 +1203,12 @@ T2Afr.filter_spct <- function(x,
     x[["Tfr"]] <- NULL
   }
   if (current.Tfr.type == "total") {
-    x <- convertTfrType(x, Tfr.type = "total")
+    if (action == "add") {
+      x <- convertTfrType(x, Tfr.type = "total")
+    } else {
+      # no Tfr stored in object, but keep for future conversion operations
+      x <- setTfrType(x, "total")
+    }
   }
 
   if (byref && is.name(name)) {  # this is a temporary safe net
@@ -1231,12 +1236,12 @@ T2Afr.object_spct <- function(x,
       x <- using_Tfr(clean(x))
     }
     current.Tfr.type <- getTfrType(x)
-    if (current.Tfr.type == "total") {
-      x <- convertTfrType(x, "internal")
+    if (current.Tfr.type == "internal") {
+      x <- convertTfrType(x, "total")
     }
-    x[["Afr"]] <- 1 - x[["Tfr"]]
-    if (current.Tfr.type == "total") {
-      x <- convertTfrType(x, Tfr.type = "total")
+    x[["Afr"]] <- 1 - x[["Tfr"]] - x[["Rfr"]]
+    if (current.Tfr.type == "internal") {
+      x <- convertTfrType(x, Tfr.type = "internal")
     }
   } else {
     x[["Afr"]] <- NA_real_
