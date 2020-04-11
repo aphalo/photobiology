@@ -110,10 +110,24 @@ print.generic_spct <- function(x, ..., n = NULL, width = NULL)
         "\n", sep = "")
   }
   if (class_spct(x)[1] == "filter_spct") {
+    if (exists("Tfr", where = x, inherits = FALSE)) {
+      cat("Transmittance of type '", getTfrType(x), "'\n", sep = "")
+    }
     properties <- filter_properties(x, return.null = TRUE)
     if (!is.null(properties)) {
       print(properties)
       cat("\n")
+    }
+  }
+  if (class_spct(x)[1] == "reflector_spct") {
+    cat("Reflectance of type '", getRfrType(x), "'\n", sep = "")
+   }
+  if (class_spct(x)[1] == "object_spct") {
+    if (getTfrType(x) != "total") {
+      cat("Transmittance of type '", getTfrType(x), "'(!!)\n", sep = "")
+    }
+    if (getRfrType(x) != "total") {
+      cat("Reflectance of type '", getRfrType(x), "'(!!)\n", sep = "")
     }
   }
   if (is_scaled(x)) {
