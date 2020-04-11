@@ -146,25 +146,27 @@ clean.object_spct <-
            fill = range.s.data,
            min.Afr = NULL,
            ...) {
-   y <- clean_spct(x = x,
+   # remember that we should not call here any function that calls clean!!
+   z <- clean_spct(x = x,
                    range = range,
                    range.s.data = range.s.data,
                    fill = fill,
                    col.names = "Tfr",
                    ...)
-   z <- clean_spct(x = y,
+   z <- clean_spct(x = z,
                    range = range,
                    range.s.data = range.s.data,
                    fill = fill,
                    col.names = "Rfr",
                    ...)
+
    # we need to protect from rounding errors
-   if (getTfrType(z) == "total") {
+   if (getTfrType(x) == "total") {
      Afr <- 1 - (z$Rfr + z$Tfr)
-   } else if (getTfrType(z) == "internal") {
+   } else if (getTfrType(x) == "internal") {
      Afr <- 1 - (z$Rfr + z$Tfr * (1 - z$Rfr))
    } else {
-     stop("Bad Tfr.type attribute: ", getTfrType(z))
+     stop("Bad Tfr.type attribute: ", getTfrType(x))
    }
 
    # By default retain old behaviour, but warn only in case of relevant deviations
@@ -176,12 +178,14 @@ clean.object_spct <-
      min.Afr = 0
    }
 
-   delta <- ifelse(Afr < min.Afr, (-Afr + min.Afr) / 2, 0)
-   if (any(delta != 0)) {
-     z$Rfr <- z$Rfr + delta
-     z$Tfr <- z$Tfr + delta
-   }
+   delta <- ifelse(Afr < min.Afr, -Afr + min.Afr, 0)
 
+   if (any(delta != 0)) {
+     # we apply the correction proportionally, which guarantees that
+     # we do not male Rfr < 0 or Tfr < 0!!
+     z$Rfr <- z$Rfr - (delta * z$Rfr) / (z$Rfr + z$Tfr)
+     z$Tfr <- z$Tfr - (delta * z$Tfr) / (z$Rfr + z$Tfr)
+   }
    z
   }
 
