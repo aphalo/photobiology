@@ -3248,9 +3248,8 @@ getFilterProperties.generic_mspct <- function(x,
 #'   will apply \code{converTfrType()} to \code{x} if needed, but to succeed
 #'   metadata should be available. Please, see \code{\link{convertTfrType}}.
 #'
-#' @param x filter_spct object or object_spct object.
+#' @param x a filter_spct, object_spct, filter_mspct or object_mspct object.
 #' @param thickness numeric (m)
-#' @param ... (currently ignored)
 #'
 #' @return \code{x} possibly with the \code{"thickness"} field of the
 #'   \code{"filter.properties"} attribute modified
@@ -3268,7 +3267,12 @@ getFilterProperties.generic_mspct <- function(x,
 #' filter_properties(my.spct)
 #' convertThickness(my.spct, thickness = 250e-6)
 #'
-convertThickness <- function(x, thickness = NULL, ...) {
+convertThickness <- function(x, thickness = NULL) {
+  if (is.filter_mspct(x) || is.object_mspct(x)) {
+    return(msmsply(mspct = x,
+                   .fun =  convertThickness,
+                   thickness = thickness))
+  }
   if (!(is.filter_spct(x) || is.object_spct(x))) {
     warning("'convertThickness()' mot applicable to class '", class(x)[1], "'. Skipping!")
     return(invisible(x))
@@ -3332,9 +3336,8 @@ convertThickness <- function(x, thickness = NULL, ...) {
 #'   under the hood an object_spct, or if a fixed reflectance factor applicable
 #'   to all wavelengths is known.
 #'
-#' @param x filter_spct object or object_spct object.
+#' @param x a filter_spct, object_spct, filter_mspct or object_mspct object.
 #' @param Tfr.type character One of #internal" or "total".
-#' @param ... (currently ignored).
 #'
 #' @return \code{x} possibly with the \code{"thickness"} field of the
 #'   \code{"filter.properties"} attribute modified
@@ -3354,7 +3357,12 @@ convertThickness <- function(x, thickness = NULL, ...) {
 #'                                    homogeneous = TRUE)
 #' convertTfrType(my.spct, Tfr.type = "internal")
 #'
-convertTfrType <- function(x, Tfr.type = NULL, ...) {
+convertTfrType <- function(x, Tfr.type = NULL) {
+  if (is.filter_mspct(x) || is.object_mspct(x)) {
+    return(msmsply(mspct = x,
+                   .fun =  convertTfrType,
+                   Tfr.type = Tfr.type))
+  }
   if (!(is.filter_spct(x) || is.object_spct(x))) {
     warning("'convertTfrType()' mot applicable to class '", class(x)[1], "'. Skipping!")
     return(invisible(x))
