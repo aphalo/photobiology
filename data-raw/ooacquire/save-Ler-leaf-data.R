@@ -28,8 +28,8 @@ getTfrType(Ler_leaf.spct)
 getRfrType(Ler_leaf.spct)
 
 Ler_leaf.spct %>%
-  as.filter_spct() %>%
-  convertTfrType(Tfr.type = "total") -> Ler_leaf_trns_i.spct
+  convertTfrType(Tfr.type = "internal") %>%
+  as.filter_spct()  -> Ler_leaf_trns_i.spct
 
 save(Ler_leaf_rflt.spct,
      Ler_leaf_trns.spct,

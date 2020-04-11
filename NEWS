@@ -23,6 +23,7 @@ filter_properties<-().
 
 ** Fix bugs and "polish rough edges".
 * Major bug in T2Afr() was causing wrong values to be returned!!
+* Major bug in clean.object_spct().
 * Rewrite much of the code for dispatching math operations with spectral
 objects as operands.
 * Revise find_peaks() so that ignore.threshold and strict arguments are
