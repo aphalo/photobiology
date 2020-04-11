@@ -80,6 +80,9 @@ what_measured(my.spct) <- "something"
 what_measured(my.spct)
 my.spct
 
+## -----------------------------------------------------------------------------
+sun.spct
+
 ## ---- attr-3------------------------------------------------------------------
 is_effective(sun.spct)
 is_effective(sun.spct * waveband(c(400, 700)))
@@ -89,6 +92,12 @@ ten.minutes.spct <-
   convertTimeUnit(sun.spct, time.unit = duration(10, "minutes"))
 ten.minutes.spct
 getTimeUnit(ten.minutes.spct)
+
+## -----------------------------------------------------------------------------
+polyester.spct
+
+## -----------------------------------------------------------------------------
+convertThickness(polyester.spct, thickness = 2e-3)
 
 ## ---- col-construction-1------------------------------------------------------
 two_suns.mspct <- source_mspct(list(sun1 = sun.spct, sun2 = sun.spct))
@@ -422,6 +431,10 @@ subset(sun.spct, c(TRUE, rep(FALSE, 99)))
 ## ---- manip-5-----------------------------------------------------------------
 e2q(sun.spct, "add")
 e2q(sun.spct, "replace")
+
+## -----------------------------------------------------------------------------
+any2Afr(polyester.spct, "add")
+any2Afr(polyester.spct, "replace")
 
 ## ---- manip-6-----------------------------------------------------------------
 normalize(sun.spct)

@@ -25,19 +25,11 @@ merge2object_spct(Ler_leaf_rflt.spct,
   clean() -> Ler_leaf.spct
 
 getTfrType(Ler_leaf.spct)
+getRfrType(Ler_leaf.spct)
 
-merge2object_spct(Ler_leaf_rflt.spct,
-                  Ler_leaf_trns.spct,
-                  w.length.out = seq(from = 250, to = 850, by = 0.25),
-                  Tfr.type.out = "internal") %>%
-  na.omit() %>%
-  clean() -> Ler_leaf_i.spct
-lgetTfrType(Ler_leaf_i.spct)
-
-Ler_leaf_i.spct %>%
+Ler_leaf.spct %>%
   as.filter_spct() %>%
-  select(-Rfr) %>%
-  clean() -> Ler_leaf_trns_i.spct
+  convertTfrType(Tfr.type = "total") -> Ler_leaf_trns_i.spct
 
 save(Ler_leaf_rflt.spct,
      Ler_leaf_trns.spct,

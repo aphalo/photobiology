@@ -57,8 +57,8 @@ Package '**photobiology**' defines several classes intended to be used to store 
 | `cps_spct` | `w.length`, `cps` | `instr.desc`, `instr.settings`, `linearized` |  
 | `source_spct` | `w.length`, `s.e.irrad` | `instr.desc`, `instr.settings`, `time.unit`, `bswf` |  
 |             | `w.length`,  `s.q.irrad` | `time.unit`, `bswf` |  
-| `filter_spct` | `w.length`, `Tfr` | `Tfr.type` |  
-|             | `w.length`, `A` | `Tfr.type` |  
+| `filter_spct` | `w.length`, `Tfr` | `Tfr.type`, `filterProperties` |  
+|             | `w.length`, `A` | `Tfr.type`, `filterProperties` |  
 | `reflector_spct` | `w.length`, `Rfr` | `Rfr.type` |  
 | `object_spct` | `w.length`, `Tfr`, `Rfr` | `Tfr.type`, `Rfr.type` |  
 | `response_spct` | `w.length`, `s.e.response` | `time.unit` |  
@@ -102,7 +102,8 @@ A key assumption of the package is that wavelengths are always expressed in mano
 | s.q.irrad |  varies | time.unit = _duration_ |
 | Tfr | [0,1] |  Tfr.type = "total" |
 | Tfr | [0,1] |  Tfr.type = "internal" |
-| A   | a.u.  |  Tfr.type = "internal" |
+| A   | a.u.  |   |
+| Afr | [0,1]  |  |
 | Rfr | [0,1] |  Rfr.type = "total" |
 | Rfr | [0,1] |  Rfr.type = "specular" |
 | s.e.response | $\mathit{x}\,J^{-1}\,s^{-1}\,nm^{-1}$  |  time.unit = "second" |
@@ -231,7 +232,11 @@ comment(my.cm.spct)
 
 ### Metadata attributes
 
-Spectral objects have several attributes used to store metadata, such as the time unit used or type of spectral quantity. Some attributes are meaningful for all the classes of spectra defined in the package. These are _time of measurement_ using attribute `"when.measured"`, _place of measurement_ using attribute `"where.measured"`, a _user supplied label_ using attribute `"what.measured"`, another label describing origin of the data using attribute `"how.measured"` and free-text _comments_. One can set and get comments stored in spectra by means of base R's `comment()` and `comment() <-` functions and the other attributes listed above with functions following the same syntax. Some other functions in this package append additional information to comments, merge comments or set or unset other attributes.
+Metadata attributes are used in the spectral objects to store metadata in a consistently. These metadata are in some cases required for conversion among related physical quantities, while in other cases allow printing of ancillary information needed for interpretation, like units of expression. These metadata are also used in other packages in the suite, for example in 'ggspectra' to automatically produce axis labels, titles and annotations. A few attributes are simply a way or organizing the storage of information which is not used in any calculations, functioning as a kind of specialized comments. The metadata described in this section are stored in spectral objects using attributes, which are a normal feature of the R language. An example, is attribute `time.unit` used to indicate if spectral irradiance is expressed per second or integrated over some other time duration. 
+
+#### Attributes supported by all spectral objects
+
+Some attributes are meaningful for all the classes of spectra defined in the package, while most others a specific to individual classes (Table 1). Those that apply to all spectral objectsa and their summaries are _time of measurement_ using attribute `"when.measured"`, _place of measurement_ using attribute `"where.measured"`, a _user supplied label_ using attribute `"what.measured"`, a label describing origin of the data using attribute `"how.measured"` and free-text _comments_. One can set and get comments stored in spectra by means of base R's `comment()` and `comment() <-` functions and the other attributes listed above with functions following the same syntax and named after the attributes but replacing any `.` by `_`. Functions in this package may set additional attributes to keep track of the actions. For example when a spectrum is normalized or scaled a record of these action is kept in attributes. When spectra are are operated upon the metadata that is not invalidated will be merged when possible---e.g., comments of operands are concatenated comments and set as comment to the returned object.
 
 Functions `when_measured()` and `when_measured<-()` are used for retrieving and setting the `"when.measured"` attribute to a date supplied as a `POSIXct` value. Note: we use `POSIXct` objects which describes instants in time in absolute terms as they include time zone information. Package `lubridate` makes entering and operating on `POSIXct` objects rather easy.
 
@@ -255,7 +260,7 @@ where_measured(my.spct)
 my.spct
 ```
 
-Functions `what_measured()` and `where_measured<-()` are used for retrieving or setting a text value containing information about what was measured to obtain the data. 
+Functions `what_measured()` and `where_measured<-()`, and `how_measured()` and `how_measured<-()` are used for retrieving or setting a text value containing information about what was measured to obtain the data. 
 
 ```{r, attr-2a}
 what_measured(my.spct) <- "something"
@@ -264,11 +269,18 @@ my.spct
 ```
 
 Functions using a different syntax are also available, for these and other attributes which are not likely to be set by users. Many of these additional attributes are meaningful only some types of spectra. 
-These attributes of different spectral objects are used to store metadata in a consistently. 
+
+#### Attributes supported by `source_spct` objects
 
 One example is the time unit used to express spectral irradiance. Functions are available for querying and setting the state if these attributes. `is_` functions return a logical value, and `get` functions return the values of the attributes themselves. In addition `set` functions can be used to set the value stored in the attributes. Several of the `set` functions are very rarely needed in user code, as these attributes are set during construction or as a side effect of applying other functions and/or operators to the objects. Function `setBSWFUsed()` and other _set_ functions are mainly useful to programmers extending the package, but only exceptionally to users. One exception is the case when a wrong value has been assigned by mistake and needs to be overwritten.
 
-For example function `is_effective()` returns `TRUE` if the spectral data has been weighted with a BSWF. The corresponding `getBSWFUsed()` function can be used, in this case to retrieve the name of the BSWF that was used when generating the data. Here we demonstrate with one example, where we use two different `waveband` objects---constructed on-the-fly with a constructor function---, defining a range of wavelengths.
+We can see in the printout that the time unit is reported in the header.
+
+```{r}
+sun.spct
+```
+
+For example function `is_effective()` returns `TRUE` if the spectral data has been weighted with a BSWF. The corresponding `getBSWFUsed()` function can be used, in this case to retrieve the name of the BSWF that was used. Here we demonstrate with one example, where we use a `waveband` object---constructed on-the-fly with a constructor function---, defining a range of wavelengths.
 
 ```{r, attr-3}
 is_effective(sun.spct)
@@ -282,6 +294,26 @@ ten.minutes.spct <-
   convertTimeUnit(sun.spct, time.unit = duration(10, "minutes"))
 ten.minutes.spct
 getTimeUnit(ten.minutes.spct)
+```
+
+#### Attributes supported by `filter_spct` objects
+
+A crucial information is whether transmittance (`Tfr`) is expressed as internal or total, stored in attribute `Tfr.type`, as this affects how absorptances and absorbances are computed. The key step is when a `filter_spct` object is created, when the user has to be careful to set this attribute correctly.
+
+The objects from which transmittance can differ in additional properties that affect possible calculations. Attribute `filter.properties` is used to store these in an object with fields `Rfr.factor`, `thickness` and `homogeneous`. When these metadata are available, in many cases we can use function `convertTfrType()` to convert internal transmittance into total transmittance and _vice versa_ and function `convertThickness()` to compute the spectral transmittance of a filter of the same material but different thickness.
+
+These attributes are also allowed in the case of `object_spct` and `reflector_spct` and retained during class conversions between them and `filter_spct` objects.
+
+They are included in the printout of `filter.spct` objects.
+
+```{r}
+polyester.spct
+```
+
+We estimate the spectral transmittance of 2 mm-thick PET film.
+
+```{r}
+convertThickness(polyester.spct, thickness = 2e-3)
 ```
 
 <hr>
@@ -1052,8 +1084,8 @@ value of R's own `verbose` option at the time the 'photobiology' package is atta
 | photobiology.strict.range | `NA` |  skip range test | `strict_range_as_default(NA)` |
 |                        | `TRUE` | trigger an error | `strict_range_as_default(TRUE)` |
 |                         | **FALSE** | trigger a warning | `strict_range_as_default(FALSE)` |
-| photobiology.check.spct | **TRUE** |  enable `check_spct()` |  |
-|                         | `FALSE` | disable `check_spct()` |  |
+| photobiology.check.spct | **TRUE** |  enable `check_spct()` | `enable_check_spct()` |
+|                         | `FALSE` | disable `check_spct()` | `disable_check_spct()` |
 | photobiology.waveband.trim | `FALSE` | exclude | `wb_trim_as_default(FALSE)` |
 |                            | **TRUE** | trim or exclude |  `wb_trim_as_default(TRUE)` |
 | photobiology.use.cached.mult | **FALSE** | do not cache intermediate results |  `use_cached_mult_as_default(FALSE)` |
@@ -1101,6 +1133,10 @@ In this section we describe methods and functions that take one or more spectral
 | rbindspct | + | + | + | + | + | + | + |
 | e2q, q2e | -- | + | + | -- | -- | -- | -- |
 | A2T, T2A | -- | -- | -- | + | -- | -- | -- |
+| Afr2T, T2Afr | -- | -- | -- | + | -- | -- | -- |
+| any2T, any2A, any2Afr | -- | -- | -- | + | -- | -- | -- |
+| convertTfrType | -- | -- | -- | + | -- | -- | -- |
+| convertThickness | -- | -- | -- | + | -- | -- | -- |
 | subset | + | + | + | + | + | + | + |
 | clip_wl | + | + | + | + | + | + | + |
 | trim_wl | + | + | + | + | + | + | + |
@@ -1137,6 +1173,10 @@ In this section we describe methods and functions that take one or more spectral
 | _maths functions_ | ms | ms | ms | ms | ms | ms | ms |
 | e2q, q2e | -- | + | + | -- | -- | -- | -- |
 | A2T, T2A | -- | -- | -- | + | -- | -- | -- |
+| Afr2T, T2Afr | -- | -- | -- | + | -- | -- | -- |
+| any2T, any2A, any2Afr | -- | -- | -- | + | -- | -- | -- |
+| convertTfrType | -- | -- | -- | + | -- | -- | -- |
+| convertThickness | -- | -- | -- | + | -- | -- | -- |
 | clip_wl | + | + | + | + | + | + | + |
 | trim_wl | + | + | + | + | + | + | + |
 | trim2overlap | + | + | + | + | + | + | + |
@@ -1202,7 +1242,14 @@ e2q(sun.spct, "add")
 e2q(sun.spct, "replace")
 ```
 
-For `filter_spct` objects functions `T2A` and `A2T` allow conversion between spectral transmittance and spectral absorbance and vice versa.
+### Conversions among transmission quantities
+
+For `filter_spct` objects functions `any2T()`, `any2A()`, and `any2Afr()`  allow conversion among spectral transmittance, spectral absorptance and spectral absorbance. Although some conversions require a known reflectance, either as an `Rfr` column in the data or an `Rfr.factor` in the attribute `filter.properties`.
+
+```{r}
+any2Afr(polyester.spct, "add")
+any2Afr(polyester.spct, "replace")
+```
 
 ### Normalizing a spectrum
 

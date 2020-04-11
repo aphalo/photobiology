@@ -26,12 +26,14 @@ setFilterProperties(polyester.spct,
                     Rfr.factor = 0.07,
                     thickness = 125e-6,
                     homogeneous = TRUE)
+setTfrType(polyester.spct, "total")
 yellow_gel.spct <- filters.mspct$Rosco_Canary_Supergel_no312
+setWhatMeasured(yellow_gel.spct, "yellow theatrical 'gel', Rosco supergel no. 312, 'canary yellow'")
 setFilterProperties(yellow_gel.spct,
                     Rfr.factor = 0.07,
                     thickness = 85e-6,
                     homogeneous = TRUE)
-setWhatMeasured(yellow_gel.spct, "yellow theatrical 'gel', Rosco supergel no. 312, 'canary yellow'")
+setTfrType(polyester.spct, "total")
 
 save(clear.spct, file = "./data/clear.spct.rda")
 save(opaque.spct, file = "./data/opaque.spct.rda")
