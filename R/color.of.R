@@ -45,31 +45,34 @@ color_of.default <- function(x, ...) {
 #' @describeIn color_of Method that returns Color definitions corresponding to
 #'   numeric values representing a wavelengths in nm.
 #'
-#' @param type character telling whether "CMF", "CC", or "both" should be returned
+#' @param type,chroma.type character telling whether "CMF", "CC", or "both" should be returned
 #'   for human vision, or an object of class \code{chroma_spct} for any other
 #'   trichromic visual system.
 #'
 #' @export
 #'
-color_of.numeric <- function(x, type = "CMF", ...) {
+color_of.numeric <- function(x,
+                             type = "CMF",
+                             chroma.type = type,
+                             ...) {
   if (length(x) == 0) {
     return(character())
   }
   if (is.character(type)) {
-    if (type == "CMF") {
+    if (chroma.type == "CMF") {
       color.out <-
         w_length2rgb(x, sens = photobiology::ciexyzCMF2.spct, color.name = NULL)
-    } else if (type == "CC") {
+    } else if (chroma.type == "CC") {
       color.out <-
         w_length2rgb(x, sens = photobiology::ciexyzCC2.spct, color.name = NULL)
     } else {
-      warning("Color 'type' = ", type, " not implemented for 'numeric'.")
+      warning("Color 'type' = ", chroma.type, " not implemented for 'numeric'.")
       color.out <- NA_character_
     }
   } else if (is.chroma_spct(type)) {
     #    warning("Using a CC or CMF definition, RGB may not denote red, green, blue!")
     color.out <-
-      w_length2rgb(x, sens = type, color.name = NULL)
+      w_length2rgb(x, sens = chroma.type, color.name = NULL)
   } else {
     warning("Color 'type' of class ", class(type), " not supported.")
     color.out <- NA_character_
@@ -90,13 +93,21 @@ color_of.numeric <- function(x, type = "CMF", ...) {
 #'   \code{color_of.default} will be called.
 #' @export
 #'
-color_of.list <- function(x, short.names = TRUE, type = "CMF", ...) {
+color_of.list <- function(x,
+                          short.names = TRUE,
+                          type = "CMF",
+                          chroma.type = type,
+                          ...) {
   color.out <- character(0)
   for (xi in x) {
-    color.out <- c(color.out, color_of(xi, short.names = short.names, type = type, ...))
+    color.out <- c(color.out,
+                   color_of(xi,
+                            short.names = short.names,
+                            chroma.type = chroma.type,
+                            ...))
   }
   if (!is.null(names(x))) {
-    names(color.out) <- paste(names(x), type, sep = ".")
+    names(color.out) <- paste(names(x), chroma.type, sep = ".")
   }
   return(color.out)
 }
@@ -105,26 +116,40 @@ color_of.list <- function(x, short.names = TRUE, type = "CMF", ...) {
 #'
 #' @export
 #'
-color_of.waveband <- function(x, short.names = TRUE, type = "CMF", ...) {
+color_of.waveband <-  function(x,
+                               short.names = TRUE,
+                               type = "CMF",
+                               chroma.type = type,
+                               ...) {
   idx <- ifelse(!short.names, "name", "label")
   name <- labels(x)[[idx]]
-  if (type == "both") {
-    color <- list(CMF = w_length_range2rgb(range(x),
-                                           sens = photobiology::ciexyzCMF2.spct,
-                                           color.name = paste(name, "CMF", sep = ".")),
-                  CC  = w_length_range2rgb(range(x),
-                                           sens = photobiology::ciexyzCC2.spct,
-                                           color.name = paste(name, "CC", sep = ".")))
-  } else if (type == "CMF") {
+  if (is.character(chroma.type)) {
+    if (type == "both") {
+      color <- list(CMF = w_length_range2rgb(range(x),
+                                             sens = photobiology::ciexyzCMF2.spct,
+                                             color.name = paste(name, "CMF", sep = ".")),
+                    CC  = w_length_range2rgb(range(x),
+                                             sens = photobiology::ciexyzCC2.spct,
+                                             color.name = paste(name, "CC", sep = ".")))
+    } else if (type == "CMF") {
+      color <- w_length_range2rgb(range(x),
+                                  sens = photobiology::ciexyzCMF2.spct,
+                                  color.name = paste(name, "CMF", sep = "."))
+    } else if (type == "CC") {
+      color <- w_length_range2rgb(range(x),
+                                  sens = photobiology::ciexyzCC2.spct,
+                                  color.name = paste(name, "CC", sep = "."))
+    } else {
+      color <- NA_character_
+    }
+  }  else if (is.chroma_spct(chroma.type)) {
+    #    warning("Using a CC or CMF definition, RGB may not denote red, green, blue!")
     color <- w_length_range2rgb(range(x),
-                                sens = photobiology::ciexyzCMF2.spct,
-                                color.name = paste(name, "CMF", sep = "."))
-  } else if (type == "CC") {
-    color <- w_length_range2rgb(range(x),
-                                sens = photobiology::ciexyzCC2.spct,
+                                sens = chroma.type,
                                 color.name = paste(name, "CC", sep = "."))
   } else {
-    color <- NA
+    warning("Color 'type' of class ", class(chroma.type), " not supported.")
+    color <- NA_character_
   }
   return(color)
 }
@@ -133,18 +158,21 @@ color_of.waveband <- function(x, short.names = TRUE, type = "CMF", ...) {
 #'
 #' @export
 #'
-color_of.source_spct <- function(x, type = "CMF", ...) {
+color_of.source_spct <- function(x,
+                                 type = "CMF",
+                                 chroma.type = type,
+                                 ...) {
   if (length(x) == 0) {
     return(character())
   }
   x.name <- "source"
   q2e(x, byref = TRUE)
-  if (is.character(type)) {
-    if (type %in% c("CMF", "CC")) {
+  if (is.character(chroma.type)) {
+    if (chroma.type %in% c("CMF", "CC")) {
       s_e_irrad2rgb(x[["w.length"]], x[["s.e.irrad"]],
                     sens = photobiology::ciexyzCMF2.spct,
                     color.name = paste(x.name, type))
-    } else if (type == "both") {
+    } else if (chroma.type == "both") {
       c(s_e_irrad2rgb(x[["w.length"]], x[["s.e.irrad"]],
                       sens = photobiology::ciexyzCMF2.spct,
                       color.name = paste(x.name, "CMF")),
@@ -152,19 +180,21 @@ color_of.source_spct <- function(x, type = "CMF", ...) {
                       sens = photobiology::ciexyzCC2.spct,
                       color.name = paste(x.name, "CC")))
     } else {
-      warning("Color 'type' = ", type, " not implemented for 'source_spct'.")
+      warning("Color 'type' = ", chroma.type, " not implemented for 'source_spct'.")
       color.out <- NA_character_
       names(color.out) <- paste(x.name, type)
       color.out
     }
   } else if (is.chroma_spct(type)) {
 #    warning("Using a CC or CMF definition, RGB may not denote red, green, blue!")
-    s_e_irrad2rgb(x[["w.length"]], x[["s.e.irrad"]],
-                  sens = type, color.name = paste(x.name, "type"))
+    s_e_irrad2rgb(x[["w.length"]],
+                  x[["s.e.irrad"]],
+                  sens = chroma.type,
+                  color.name = paste(x.name, "type"))
   } else {
-    warning("Color 'type' of class ", class(type), " not supported.")
+    warning("Color 'type' of class ", class(chroma.type), " not supported.")
     color.out <- NA_character_
-    names(color.out) <- paste(x.name, type)
+    names(color.out) <- paste(x.name, chroma.type)
     color.out
   }
 }
@@ -178,7 +208,9 @@ color_of.source_spct <- function(x, type = "CMF", ...) {
 #'
 #' @export
 #'
-color_of.source_mspct <- function(x, ..., idx = "spct.idx") {
+color_of.source_mspct <- function(x,
+                                  ...,
+                                  idx = "spct.idx") {
   msdply(mspct = x, color_of, ..., idx = idx, col.names = "color")
 }
 
