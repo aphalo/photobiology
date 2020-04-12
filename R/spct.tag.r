@@ -42,6 +42,9 @@ tag.default <- function(x, ...) {
 #'   the boundaries of the wavebands.
 #' @param short.names logical Flag indicating whether to use short or long names
 #'   for wavebands
+#' @param color.type character telling whether "CMF", "CC", or "both" should be returned
+#'   for human vision, or an object of class \code{chroma_spct} for any other
+#'   trichromic visual system.
 #' @param byref logical Flag indicating if new object will be created \emph{by
 #'   reference} or \emph{by copy} of \code{x}
 #' @export
@@ -63,6 +66,7 @@ tag.generic_spct <- function(x,
                              wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
                              use.hinges = TRUE,
                              short.names = TRUE,
+                             color.type = "CMF",
                              byref = FALSE, ...) {
   name <- substitute(x)
   if (is_tagged(x)) {
@@ -129,10 +133,10 @@ tag.generic_spct <- function(x,
     }
     wbs.wl.low[i] <- min(wb)
     wbs.wl.high[i] <- max(wb)
-    wbs.rgb[i] <- color_of(wb)[1]
+    wbs.rgb[i] <- color_of(wb, type = color.type)[1]
   }
   # We add the waveband-independent tags to the spectrum
-  x[["wl.color"]] <- w_length2rgb(x[["w.length"]])
+  x[["wl.color"]] <- color_of(x[["w.length"]], type = color.type)
   # We add the waveband-dependent tags to the spectrum
   n <- i
   x[["wb.color"]] <- NA
@@ -181,6 +185,7 @@ tag.generic_mspct <- function(x,
                               wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
                               use.hinges = TRUE,
                               short.names = TRUE,
+                              color.type = "CMF",
                               byref = FALSE,
                               ...,
                               .parallel = FALSE,
@@ -194,6 +199,7 @@ tag.generic_mspct <- function(x,
     wb.trim = wb.trim,
     use.hinges = use.hinges,
     short.names = short.names,
+    color.type = color.type,
     byref = FALSE,
     ...,
     .parallel = .parallel,
@@ -265,6 +271,9 @@ wb2spct <- function(w.band) {
 #'   the boundaries of the wavebands.
 #' @param short.names logical Flag indicating whether to use short or long names
 #'   for wavebands.
+#' @param color.type character telling whether "CMF", "CC", or "both" should be
+#'   returned for human vision, or an object of class \code{chroma_spct} for any
+#'   other trichromic visual system.
 #' @param ... ignored (possibly used by derived methods).
 #'
 #' @export
@@ -275,9 +284,9 @@ wb2spct <- function(w.band) {
 #' @family tagging and related functions
 #'
 wb2tagged_spct <-
-  function(w.band, use.hinges = TRUE, short.names = TRUE, ...) {
+  function(w.band, use.hinges = TRUE, short.names = TRUE, color.type = "CMF", ...) {
   new.spct <- wb2spct(w.band)
-  tag(new.spct, w.band, use.hinges, short.names, byref = TRUE)
+  tag(new.spct, w.band, use.hinges, short.names, color.type = color.type, byref = TRUE)
   new.spct[["y"]] <- 0
   return(new.spct)
 }
@@ -292,6 +301,10 @@ wb2tagged_spct <-
 #'   the wavelengths in variable \code{w.length} of the returned spectrum
 #' @param short.names logical Flag indicating whether to use short or long names
 #'   for wavebands
+#' @param color.type character telling whether "CMF", "CC", or "both" should be
+#'   returned for human vision, or an object of class \code{chroma_spct} for any
+#'   other trichromic visual system.
+#'
 #' @export
 #'
 #' @return A \code{generic.spectrum} object, with columns w.length, wl.low,
@@ -305,7 +318,7 @@ wb2tagged_spct <-
 #'
 #' @family tagging and related functions
 #'
-wb2rect_spct <- function(w.band, short.names = TRUE) {
+wb2rect_spct <- function(w.band, short.names = TRUE, color.type = "CMF") {
   if (is.waveband(w.band)) {
     w.band <- list(w.band)
   }
@@ -332,19 +345,20 @@ wb2rect_spct <- function(w.band, short.names = TRUE) {
     wbs.wl.low[i] <- min(wb)
     wbs.wl.mid[i] <- midpoint(wb)
     wbs.wl.high[i] <- max(wb)
-    wbs.rgb[i] <- color_of(wb)[1]
+    wbs.rgb[i] <- color_of(wb, type = color.type)[1]
   }
   new.spct <- tibble::tibble(w.length = wbs.wl.mid,
-                                counts = 0, cps = 0,
-                                s.e.irrad = 0, s.q.irrad = 0,
-                                Tfr = 0, Rfl = 0,
-                                s.e.response = 0,
-                                wl.color = w_length2rgb(wbs.wl.mid),
-                                wb.color = wbs.rgb,
-                                wb.name = wbs.name,
-                                wb.f = factor(wbs.name, levels = wbs.name),
-                                wl.high = wbs.wl.high, wl.low = wbs.wl.low,
-                                y = 0)
+                             counts = 0, cps = 0,
+                             s.e.irrad = 0, s.q.irrad = 0,
+                             Tfr = 0, Rfl = 0,
+                             s.e.response = 0,
+                             wl.color = color_of(wbs.wl.mid,
+                                                 type = color.type),
+                             wb.color = wbs.rgb,
+                             wb.name = wbs.name,
+                             wb.f = factor(wbs.name, levels = wbs.name),
+                             wl.high = wbs.wl.high, wl.low = wbs.wl.low,
+                             y = 0)
   setGenericSpct(new.spct)
   tag.data <- list(time.unit = "none",
                    wb.key.name = "Bands",

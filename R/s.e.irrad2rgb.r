@@ -45,18 +45,25 @@
 s_e_irrad2rgb <-
   function(w.length, s.e.irrad,
            sens = photobiology::ciexyzCMF2.spct,
-           color.name = NULL, check = TRUE) {
+           color.name = NULL,
+           check = TRUE) {
+    if (anyNA(w.length) || anyNA(s.e.irrad)) {
+      return(NA_character_)
+    }
     low.limit <- min(sens$w.length)
     high.limit <- max(sens$w.length)
     if (single_wl <- length(w.length) == 1) {
       if (w.length < low.limit || w.length > high.limit) {
-        return(grDevices::rgb(0, 0, 0, names=color.name))
+        return(grDevices::rgb(0, 0, 0, names = color.name))
       } else {
         s.e.irrad = 1.0
       }
     } else {
+      if (length(s.e.irrad) == 1L) {
+        s.e.irrad <- rep(s.e.irrad, length(w.length))
+      }
       if (check && !check_spectrum(w.length, s.e.irrad)) {
-        return(NA)
+        return(NA_character_)
       }
     }
 
@@ -66,7 +73,7 @@ s_e_irrad2rgb <-
       if ((max(w.length) <= low.limit) || (min(w.length) >= high.limit)) {
         return("black")
       }
-      sens$s.e.irrad <- interpolate_spectrum(w.length, s.e.irrad, sens$w.length, fill=0.0)
+      sens$s.e.irrad <- interpolate_spectrum(w.length, s.e.irrad, sens$w.length, fill = 0.0)
       sens$s.e.irrad.norm <- with(sens, s.e.irrad / integrate_xy(w.length, s.e.irrad))
 
       X <- with(sens, integrate_xy(w.length, s.e.irrad.norm * x))
@@ -98,7 +105,10 @@ s_e_irrad2rgb <-
       return("black")
     }
 
-    rgb.color <- grDevices::rgb(red=rgb1[1,1], green=rgb1[2,1], blue=rgb1[3,1], names=color.name)
+    rgb.color <- grDevices::rgb(red = rgb1[1, 1],
+                                green = rgb1[2, 1],
+                                blue = rgb1[3, 1],
+                                names = color.name)
 
     rgb.color
 

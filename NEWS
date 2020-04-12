@@ -5,7 +5,8 @@ photobiology 0.10.1 (2020-04-xx)
 describe filters. This required adding a mechanism to store properties of
 filters as metadata, revising the code behind mathematical operations and
 mathematical functions. Also adding conversion methods and obviosly methods
-for setting and retrieving the new metada.
+for setting and retrieving the new metada. It also brings support for
+arbitrary chromaticity definitions to colour ahndling and tagging of spectra.
 - Reshufling the code and testing brought to light several bugs and rough
 edges in infrequently used functions, which I have corrected.
 - Some methods gained new specializations for data frames, which were needed
