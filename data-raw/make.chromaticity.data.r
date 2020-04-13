@@ -53,9 +53,10 @@ oldwd <- setwd("data-raw/bees")
 Maxwell.data <- read.table(file="Maxwell.data", header=TRUE)
 
 beesxyzCMF.spct <- Maxwell.data[ , 1:4]
-names(beesxyzCMF.spct)[1:4] <- c("w.length", "x", "y", "z")
+names(beesxyzCMF.spct)[1:4] <- c("w.length", "z", "y", "x")
 setChromaSpct(beesxyzCMF.spct)
 comment(beesxyzCMF.spct) <- "Maxwell's color matching function for honey bee"
+beesxyzCMF.spct <- interpolate_spct(beesxyzCMF.spct, 300:700)
 setwd(oldwd)
 
 olwd <- setwd("data")
