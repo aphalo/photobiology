@@ -421,9 +421,9 @@ trim_wl.waveband <- function(x,
     return(x)
   }
   trim_waveband(w.band = x,
-            range = range,
-            trim = trim,
-            use.hinges = use.hinges)
+                range = range,
+                trim = trim,
+                use.hinges = use.hinges)
 }
 
 #' @describeIn trim_wl Trim a list (of "waveband" objects).

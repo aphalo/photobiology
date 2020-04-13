@@ -42,7 +42,8 @@ trim_waveband <-
            range = NULL,
            low.limit = 0, high.limit = Inf,
            trim = getOption("photobiology.waveband.trim", default = TRUE),
-           use.hinges = TRUE)
+           use.hinges = TRUE,
+           brief.trunc.names = getOption("photobiology.brief.trunc.names", default = TRUE))
   {
     input.was.waveband <- is.waveband(w.band)
     if (input.was.waveband) {
@@ -87,12 +88,21 @@ trim_waveband <-
           trimmed.high <- TRUE
         }
         if (trimmed.low || trimmed.high) {
-          trimmed.tag <-  paste("tr", ifelse(trimmed.low, ".lo", ""),
-                                ifelse(trimmed.high, ".hi", ""), sep = "")
-          trimmed.wb$label <- paste(wb$label, trimmed.tag, sep = " .")
-          trimmed.wb$name <- paste(wb$name, trimmed.tag, sep = ".")
-          i <- i + 1L
-          w.band.out[[i]] <- trimmed.wb
+          if (brief.trunc.names) {
+            trimmed.wb$label <-  paste(ifelse(trimmed.low, "]", ""),
+                                       wb$label,
+                                       ifelse(trimmed.high, "[", ""), sep = "")
+            trimmed.wb$name <-  paste(ifelse(trimmed.low, "]", ""),
+                                       wb$name,
+                                       ifelse(trimmed.high, "[", ""), sep = "")
+          } else {
+            trimmed.tag <-  paste("tr", ifelse(trimmed.low, ".lo", ""),
+                                  ifelse(trimmed.high, ".hi", ""), sep = "")
+            trimmed.wb$label <- paste(wb$label, trimmed.tag, sep = " .")
+            trimmed.wb$name <- paste(wb$name, trimmed.tag, sep = ".")
+          }
+            i <- i + 1L
+            w.band.out[[i]] <- trimmed.wb
         }
       }
     }
