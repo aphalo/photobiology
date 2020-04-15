@@ -12,7 +12,7 @@
 
 <meta name="author" content="Pedro J. Aphalo" />
 
-<meta name="date" content="2020-04-11" />
+<meta name="date" content="2020-04-15" />
 
 <title>User Guide: 2 Radiation</title>
 
@@ -302,9 +302,9 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 
 <h1 class="title toc-ignore">User Guide: 2 Radiation</h1>
-<h3 class="subtitle">Package ‘photobiology’ 0.10.0.9002</h3>
+<h3 class="subtitle">Package ‘photobiology’ 0.10.0.9004</h3>
 <h4 class="author">Pedro J. Aphalo</h4>
-<h4 class="date">2020-04-11</h4>
+<h4 class="date">2020-04-15</h4>
 
 
 <div id="TOC">
@@ -6569,8 +6569,8 @@ Most frequently used summary methods are implemented for collections of spectra.
 ## [1] &quot;total energy response&quot;</code></pre>
 <p>When a waveband, or list of wavebands, is supplied the response is calculated for the wavebands.</p>
 <div class="sourceCode" id="cb549"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb549-1"><a href="#cb549-1"></a><span class="kw">e_response</span>(photodiode.spct, <span class="kw">list</span>(UVB.wb, UVA.wb))</span></code></pre></div>
-<pre><code>## R[/e]_UVB.tr.lo       R[/e]_UVA 
-##        0.346462        5.981818 
+<pre><code>## R[/e]_]UVB  R[/e]_UVA 
+##   0.346462   5.981818 
 ## attr(,&quot;time.unit&quot;)
 ## [1] &quot;second&quot;
 ## attr(,&quot;radiation.unit&quot;)
@@ -6583,10 +6583,10 @@ Most frequently used summary methods are implemented for collections of spectra.
 <span id="cb551-2"><a href="#cb551-2"></a>                               <span class="dt">CCD =</span> ccd.spct))</span>
 <span id="cb551-3"><a href="#cb551-3"></a><span class="kw">response</span>(sensors, <span class="kw">list</span>(UVB.wb, UVA.wb, PAR.wb), <span class="dt">quantity =</span> <span class="st">&quot;contribution&quot;</span>)</span></code></pre></div>
 <pre><code>## # A tibble: 2 x 4
-##   spct.idx `R/Rtot[/e]_UVB.tr.lo` `R/Rtot[/e]_UVA` `R/Rtot[/e]_PAR.tr.hi`
-##   &lt;fct&gt;                     &lt;dbl&gt;            &lt;dbl&gt;                  &lt;dbl&gt;
-## 1 GaAsP                    0.0142           0.245                   0.741
-## 2 CCD                      0.0215           0.0634                  0.411</code></pre>
+##   spct.idx `R/Rtot[/e]_]UVB` `R/Rtot[/e]_UVA` `R/Rtot[/e]_PAR[`
+##   &lt;fct&gt;                &lt;dbl&gt;            &lt;dbl&gt;             &lt;dbl&gt;
+## 1 GaAsP               0.0142           0.245              0.741
+## 2 CCD                 0.0215           0.0634             0.411</code></pre>
 </div>
 </div>
 <div id="integration-over-wavelengths" class="section level3">
@@ -6619,38 +6619,39 @@ Most frequently used summary methods are implemented for collections of spectra.
 </div>
 <div id="rgb-colours" class="section level2">
 <h2>RGB colours</h2>
-<p>Two functions allow calculation of simulated color of light sources as R color definitions. Three different functions are available, one for monochromatic light taking as argument wavelength values, and one for polychromatic light taking as argument spectral energy irradiances and the corresponding wave length values. The third function can be used to calculate a representative RGB color for a band of the spectrum represented as a range of wavelength, based on the assumption of a flat energy irradiance across the range. By default CIE coordinates for <em>typical</em> human vision are used, but the functions have a parameter that can be used for supplying a different chromaticity definition.</p>
-<p>Examples for monochromatic light:</p>
-<div class="sourceCode" id="cb559"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb559-1"><a href="#cb559-1"></a><span class="kw">w_length2rgb</span>(<span class="dv">550</span>) <span class="co"># green</span></span></code></pre></div>
+<p>Different <code>color_of()</code> methods allow calculation of RGB color values for light sources or objects. The returned values are R color definitions. Method <code>color_of()</code> works rather differently depending on the object. The method for <code>numeric</code> vectors assumes the numbers are wavelengths in nanometers, and returns a vector of color definitions of the same length assuming monochromatic light.</p>
+<div class="sourceCode" id="cb559"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb559-1"><a href="#cb559-1"></a><span class="kw">color_of</span>(<span class="dv">550</span>) <span class="co"># green</span></span></code></pre></div>
 <pre><code>## wl.550.nm 
 ## &quot;#00FF00&quot;</code></pre>
-<div class="sourceCode" id="cb561"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb561-1"><a href="#cb561-1"></a><span class="kw">w_length2rgb</span>(<span class="dv">630</span>) <span class="co"># red</span></span></code></pre></div>
+<div class="sourceCode" id="cb561"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb561-1"><a href="#cb561-1"></a><span class="kw">color_of</span>(<span class="dv">630</span>) <span class="co"># red</span></span></code></pre></div>
 <pre><code>## wl.630.nm 
 ## &quot;#FF0000&quot;</code></pre>
-<div class="sourceCode" id="cb563"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb563-1"><a href="#cb563-1"></a><span class="kw">w_length2rgb</span>(<span class="kw">c</span>(<span class="dv">550</span>, <span class="dv">630</span>, <span class="dv">380</span>, <span class="dv">750</span>)) <span class="co"># vectorized</span></span></code></pre></div>
+<div class="sourceCode" id="cb563"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb563-1"><a href="#cb563-1"></a><span class="kw">color_of</span>(<span class="kw">c</span>(<span class="dv">550</span>, <span class="dv">630</span>, <span class="dv">380</span>, <span class="dv">750</span>)) <span class="co"># vectorized</span></span></code></pre></div>
 <pre><code>## wl.550.nm wl.630.nm wl.380.nm wl.750.nm 
 ## &quot;#00FF00&quot; &quot;#FF0000&quot; &quot;#000000&quot; &quot;#000000&quot;</code></pre>
-<p>Examples for wavelength ranges:</p>
-<div class="sourceCode" id="cb565"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb565-1"><a href="#cb565-1"></a><span class="kw">w_length_range2rgb</span>(<span class="kw">c</span>(<span class="dv">400</span>,<span class="dv">700</span>))</span></code></pre></div>
-<pre><code>## 400-700 nm 
-##  &quot;#735B57&quot;</code></pre>
-<p>Examples for spectra as vectors, in this case for the solar spectrum:</p>
-<div class="sourceCode" id="cb567"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb567-1"><a href="#cb567-1"></a><span class="kw">with</span>(sun.spct, <span class="kw">s_e_irrad2rgb</span>(w.length, s.e.irrad))</span></code></pre></div>
-<pre><code>## [1] &quot;#544F4B&quot;</code></pre>
-<div class="sourceCode" id="cb569"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb569-1"><a href="#cb569-1"></a><span class="kw">with</span>(sun.spct, <span class="kw">s_e_irrad2rgb</span>(w.length, s.e.irrad, <span class="dt">sens =</span> ciexyzCMF2.spct))</span></code></pre></div>
-<pre><code>## [1] &quot;#544F4B&quot;</code></pre>
-<p>Examples with <code>source_spct</code> objects.</p>
-<div class="sourceCode" id="cb571"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb571-1"><a href="#cb571-1"></a><span class="kw">rgb_spct</span>(sun.spct)</span></code></pre></div>
-<pre><code>## [1] &quot;#544F4B&quot;</code></pre>
-<div class="sourceCode" id="cb573"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb573-1"><a href="#cb573-1"></a><span class="kw">rgb_spct</span>(sun.spct, <span class="dt">sens =</span> ciexyzCMF2.spct)</span></code></pre></div>
-<pre><code>## [1] &quot;#544F4B&quot;</code></pre>
-<p>And also a <code>color_of</code> method for <code>source_spct</code>.</p>
-<div class="sourceCode" id="cb575"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb575-1"><a href="#cb575-1"></a><span class="kw">color_of</span>(sun.spct)</span></code></pre></div>
+<p>The method for <code>source_spct</code> objects returns a single colour definition corresponding to the whole spectrum of a light sources.</p>
+<div class="sourceCode" id="cb565"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb565-1"><a href="#cb565-1"></a><span class="kw">color_of</span>(sun.spct)</span></code></pre></div>
 <pre><code>## source CMF 
 ##  &quot;#544F4B&quot;</code></pre>
-<div class="sourceCode" id="cb577"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb577-1"><a href="#cb577-1"></a><span class="kw">color_of</span>(sun.spct <span class="op">*</span><span class="st"> </span>yellow_gel.spct)</span></code></pre></div>
+<div class="sourceCode" id="cb567"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb567-1"><a href="#cb567-1"></a><span class="kw">color_of</span>(sun.spct <span class="op">*</span><span class="st"> </span>yellow_gel.spct)</span></code></pre></div>
 <pre><code>## source CMF 
 ##  &quot;#946000&quot;</code></pre>
+<p>There are no methods for <code>filter_spct</code> and <code>reflector_spct</code> objects so as shown above we need to convolve them with spectral irradiance from a <code>source_spct</code> object.</p>
+<p>The method for <code>waveband</code> objects returns one color definition per waveband, corresponding to their central wavelength.</p>
+<div class="sourceCode" id="cb569"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb569-1"><a href="#cb569-1"></a><span class="kw">color_of</span>(<span class="kw">waveband</span>(<span class="kw">c</span>(<span class="dv">400</span>, <span class="dv">500</span>), <span class="dt">wb.name =</span> <span class="st">&quot;my_BL&quot;</span>))</span></code></pre></div>
+<pre><code>## my_BL.CMF 
+## &quot;#000EFF&quot;</code></pre>
+<p>By default CIE coordinates for <em>typical</em> human vision are used, but the functions have a parameter that can be used for supplying a different chromaticity definition as a <code>chroma_spct</code> object.</p>
+<div class="sourceCode" id="cb571"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb571-1"><a href="#cb571-1"></a><span class="kw">color_of</span>(sun.spct, <span class="dt">chroma.type =</span> <span class="st">&quot;CC&quot;</span>)</span></code></pre></div>
+<pre><code>## source CC 
+## &quot;#B63C37&quot;</code></pre>
+<div class="sourceCode" id="cb573"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb573-1"><a href="#cb573-1"></a><span class="kw">color_of</span>(sun.spct, <span class="dt">chroma.type =</span> <span class="st">&quot;CMF&quot;</span>)</span></code></pre></div>
+<pre><code>## source CMF 
+##  &quot;#544F4B&quot;</code></pre>
+<div class="sourceCode" id="cb575"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb575-1"><a href="#cb575-1"></a><span class="kw">color_of</span>(sun.spct, <span class="dt">chroma.type =</span> beesxyzCMF.spct)</span></code></pre></div>
+<pre><code>## source chroma 
+##     &quot;#CD1F11&quot;</code></pre>
+<p>In the case of bees, the RGB values represent a shift towards longer wavelengths compared to the true sensitivity. In other words, they are translated into colours that humans can see and monitors and printers can generate.</p>
 </div>
 
 

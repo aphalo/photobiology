@@ -4,11 +4,16 @@
 #' cover the whole waveband, or wavebands may have to be removed altogether.
 #'
 #' @details This function will accept both individual wavebands or list of
-#'   wavebands. When the input is a list, wavebands outisde the range of the
-#'   range range will be removed from the list, and those partly outside the
-#'   target range either "trimmed" to this edge of removed (if \code{trim =
-#'   TRUE} is passed) or discarded (if \code{trim = FALSE}). If the list of
-#'   wavebands has named members, names are preserved in the returned list.
+#'   wavebands. When the input is a list, wavebands outside the range of the
+#'   range will be removed from the list, and those partly outside the
+#'   target range either "trimmed" to this edge truncated if \code{trim =
+#'   TRUE} is passed or excluded if \code{trim = FALSE}). Waveband objects
+#'   contain a name and a label that are used to label the returned values of
+#'   calculations that make use of them. When a waveband object is truncated so
+#'   that the definition changes, the name and label are also modified so that
+#'   the change is visible when they are used. The name and label have a string
+#'   prepended or appended, and what strings are used can be set with an R
+#'   option.
 #'
 #' @param w.band an object of class "waveband" or a list of such objects.
 #' @param range a numeric vector of length two, or any other object for which
@@ -20,6 +25,10 @@
 #' @param use.hinges logical Flag indicating whether to insert "hinges" into the
 #'   spectral data before integration so as to reduce interpolation errors at
 #'   the boundaries of the wavebands.
+#' @param trunc.labels character vector of length one or two. The first string
+#'   will be prepended to the waveband name and label on left truncation and the
+#'   second appended on right truncation. If the vector is of length one, the
+#'   same string will be used in both cases.
 #'
 #' @return The returned value is a waveband object or a list of waveband objects
 #'   depending on whether a single waveband object or a list of waveband objects
@@ -28,14 +37,23 @@
 #'   the second case, a list of length zero is returned. If the input is a
 #'   named, list, names are preserved in the returned list.
 #'
+#' @note Modification of the name and label stored in the wavebands passed as
+#'   input is done so that summaries produced with the modified objects can be
+#'   recognized as different from those computed using the original definitions
+#'   when the waveband objects are used. When the input is a named list, the
+#'   names of the retained members of the list are not modified as these are not
+#'   part of the definitions.
+#'
 #' @family trim functions
 #' @export
 #' @examples
-#' VIS <- waveband(c(380, 760)) # nanometres
+#' VIS <- waveband(c(380, 760)) # manometers
 #'
 #' trim_waveband(VIS, c(400,700))
 #' trim_waveband(VIS, low.limit = 400)
 #' trim_waveband(VIS, high.limit = 700)
+#' trim_waveband(VIS, c(400,700), trunc.labels = c(">", "<"))
+#' trim_waveband(VIS, c(400,700), trunc.labels = "!")
 #'
 trim_waveband <-
   function(w.band,
@@ -43,7 +61,8 @@ trim_waveband <-
            low.limit = 0, high.limit = Inf,
            trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.hinges = TRUE,
-           brief.trunc.names = getOption("photobiology.brief.trunc.names", default = TRUE))
+           trunc.labels = getOption("photobiology.brief.trunc.names",
+                                    default = c("]", "[")))
   {
     input.was.waveband <- is.waveband(w.band)
     if (input.was.waveband) {
@@ -88,13 +107,18 @@ trim_waveband <-
           trimmed.high <- TRUE
         }
         if (trimmed.low || trimmed.high) {
-          if (brief.trunc.names) {
-            trimmed.wb$label <-  paste(ifelse(trimmed.low, "]", ""),
-                                       wb$label,
-                                       ifelse(trimmed.high, "[", ""), sep = "")
-            trimmed.wb$name <-  paste(ifelse(trimmed.low, "]", ""),
-                                       wb$name,
-                                       ifelse(trimmed.high, "[", ""), sep = "")
+          if (!is.null(trunc.labels)) {
+            if (length(trunc.labels) == 1L) {
+              trunc.labels <- rep(trunc.labels, 2L)
+            }
+            trimmed.wb$label <-
+              paste(ifelse(trimmed.low, trunc.labels[1], ""),
+                    wb$label,
+                    ifelse(trimmed.high, trunc.labels[2], ""), sep = "")
+            trimmed.wb$name <-
+              paste(ifelse(trimmed.low, trunc.labels[1], ""),
+                    wb$name,
+                    ifelse(trimmed.high, trunc.labels[2], ""), sep = "")
           } else {
             trimmed.tag <-  paste("tr", ifelse(trimmed.low, ".lo", ""),
                                   ifelse(trimmed.high, ".hi", ""), sep = "")

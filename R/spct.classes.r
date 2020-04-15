@@ -3364,7 +3364,7 @@ convertTfrType <- function(x, Tfr.type = NULL) {
                    Tfr.type = Tfr.type))
   }
   if (!(is.filter_spct(x) || is.object_spct(x))) {
-    warning("'convertTfrType()' mot applicable to class '", class(x)[1], "'. Skipping!")
+    warning("'convertTfrType()' mot applicable to class '", class(x)[1L], "'. Skipping!")
     return(invisible(x))
   }
 
@@ -3373,8 +3373,8 @@ convertTfrType <- function(x, Tfr.type = NULL) {
     return(invisible(x))
   }
 
-  columns <- intersect(colnames(x), c("Tfr", "Afr", "A") )
-  if (length(columns) == 0) {
+  columns <- intersect(colnames(x), c("Tfr", "Afr", "A", "Rfr") )
+  if (length(setdiff(columns, "Rfr")) == 0L) {
     warning("No column to convert to new Tfr.type")
     return(invisible(x))
   }

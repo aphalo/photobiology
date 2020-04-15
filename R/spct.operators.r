@@ -1354,7 +1354,7 @@ Afr2T.numeric <- function(x,
     stop("Conversion by reference not supported for \"numeric\" objects.")
   }
   if (is.na(Rfr)) {
-    warning("Convertion requires 'Rfr' to be known.")
+    warning("Convertion requires 'Rfr'.")
   }
   if (any(Rfr > 1) || any(Rfr < 0)) {
     warning("Bad 'Tfr' input valies.")
@@ -1381,23 +1381,24 @@ Afr2T.filter_spct <- function(x,
   current.Tfr.type <- getTfrType(x)
   if (exists("Tfr", x, inherits = FALSE)) {
     NULL
-  } else if (exists("Afr", x, inherits = FALSE)) {
-     x[["Tfr"]] <- 1 - x[["Afr"]]
-   # 1 - Afr is always internal Tfr
-    setTfrType(x, "internal")
+  } else if (current.Tfr.type == "internal") {
+    # we assume this is what is desired
+    x[["Tfr"]] <- 1 - x[["Afr"]]
+  } else if (current.Tfr.type == "total") {
+    if (exists("Rfr", x, inherits = FALSE)) {
+      x[["Tfr"]] <- 1 - x[["Afr"]] - x[["Rfr"]]
+    } else {
+      properties <- getFilterProperties(x, return.null = FALSE)
+      x[["Tfr"]] <- 1 - x[["Afr"]] - properties[["Rfr.factor"]]
+    }
   } else {
-    x[["Tfr"]] <- NA_real_
-    action <- "add"
-    warning("'Afr' not available in 'Afr2T()', ignoring \"replace\" action.")
+    stop("Invalid 'Tfr.type' attribute: ", current.Tfr.type)
   }
-  if (action == "replace" && exists("Afr", x, inherits = FALSE)) {
+  if (action == "replace" && exists("Tfr", x, inherits = FALSE)) {
     x[["Afr"]] <- NULL
   }
   if (action == "replace" && exists("A", x, inherits = FALSE)) {
     x[["A"]] <- NULL
-  }
-  if (current.Tfr.type == "total") {
-    x <- convertTfrType(x, Tfr.type = "total")
   }
 
   if (byref && is.name(name)) {  # this is a temporary safe net
@@ -1418,22 +1419,15 @@ Afr2T.object_spct <- function(x,
   if (byref) {
     name <- substitute(x)
   }
+  current.Tfr.type <- getTfrType(x)
   if (exists("Tfr", x, inherits = FALSE)) {
     NULL
-  } else if (exists("Afr", x, inherits = FALSE)){
-    current.Tfr.type <- getTfrType(x)
-    if (current.Tfr.type == "internal") {
-      # we assume this is what is desired
-       x[["Tfr"]] <- 1 - x[["Afr"]]
-    } else if (current.Tfr.type == "total") {
+  } else if (current.Tfr.type == "internal") {
+    x[["Tfr"]] <- 1 - x[["Afr"]]
+  } else if (current.Tfr.type == "total") {
       x[["Tfr"]] <- 1 - x[["Afr"]] - x[["Rfr"]]
-    } else {
-      stop("Invalid 'Tfr.type' attribute: ", current.Tfr.type)
-    }
   } else {
-    x[["Tfr"]] <- NA_real_
-    action <- "add"
-    warning("'Afr' not available in 'Afr2T()', ignoring \"replace\" action.")
+    stop("Invalid 'Tfr.type' attribute: ", current.Tfr.type)
   }
   if (action == "replace" && exists("Tfr", x, inherits = FALSE)) {
     x[["Afr"]] <- NULL

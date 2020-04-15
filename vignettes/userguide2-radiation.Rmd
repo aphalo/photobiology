@@ -2155,42 +2155,34 @@ compare_spct(filter_mspct(list(pet = polyester.spct,
 
 ## RGB colours
 
-Two functions allow calculation of simulated color of light sources as R color definitions. Three different functions are available, one for monochromatic light taking as argument wavelength values, and one for polychromatic light taking as argument spectral energy irradiances and the corresponding wave length values. The third function can be used to calculate a representative RGB color for a band of the spectrum represented as a range of wavelength, based on the assumption of a flat energy irradiance across the range.
-By default CIE coordinates for _typical_ human vision are used, but the functions
-have a parameter that can be used for supplying a different chromaticity definition.
-
-Examples for monochromatic light:
+Different `color_of()` methods allow calculation of RGB color values for light sources or objects. The returned values are R color definitions. Method `color_of()` works rather differently depending on the object. The method for `numeric` vectors assumes the numbers are wavelengths in nanometers, and returns a vector of color definitions of the same length assuming monochromatic light.
 
 ```{r}
-w_length2rgb(550) # green
-w_length2rgb(630) # red
-w_length2rgb(c(550, 630, 380, 750)) # vectorized
+color_of(550) # green
+color_of(630) # red
+color_of(c(550, 630, 380, 750)) # vectorized
 ```
 
-
-Examples for wavelength ranges:
-
-```{r}
-w_length_range2rgb(c(400,700))
-```
-
-Examples for spectra as vectors, in this case for the solar spectrum:
-
-```{r}
-with(sun.spct, s_e_irrad2rgb(w.length, s.e.irrad))
-with(sun.spct, s_e_irrad2rgb(w.length, s.e.irrad, sens = ciexyzCMF2.spct))
-```
-
-Examples with `source_spct` objects.
-
-```{r}
-rgb_spct(sun.spct)
-rgb_spct(sun.spct, sens = ciexyzCMF2.spct)
-```
-
-And also a `color_of` method for `source_spct`.
+The method for `source_spct` objects returns a single colour definition corresponding to the whole spectrum of a light sources.
 
 ```{r}
 color_of(sun.spct)
 color_of(sun.spct * yellow_gel.spct)
 ```
+There are no methods for `filter_spct` and `reflector_spct` objects so as shown above we need to convolve them with spectral irradiance from a `source_spct` object.
+
+The method for `waveband` objects returns one color definition per waveband,  corresponding to their central wavelength. 
+
+```{r}
+color_of(waveband(c(400, 500), wb.name = "my_BL"))
+```
+
+By default CIE coordinates for _typical_ human vision are used, but the functions
+have a parameter that can be used for supplying a different chromaticity definition as a `chroma_spct` object.
+
+```{r}
+color_of(sun.spct, chroma.type = "CC")
+color_of(sun.spct, chroma.type = "CMF")
+color_of(sun.spct, chroma.type = beesxyzCMF.spct)
+```
+In the case of bees, the RGB values represent a shift towards longer wavelengths compared to the true sensitivity. In other words, they are translated into colours that humans can see and monitors and printers can generate.

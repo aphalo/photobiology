@@ -178,10 +178,11 @@ copy_attributes.generic_spct <- function(x, y,
   which <- setdiff(which, which.not)
   attr.x <- attributes(x)
   which.x <- intersect(names(attr.x), which)
-  # this is likely to be slow
+  # # this is likely to be slow
   for (w in which.x) {
-        attr(y, w) <- attr(x, w, exact = TRUE)
+        attr(y, w) <- attr.x[[w]]
   }
+
   y
 }
 
@@ -210,14 +211,13 @@ copy_attributes.generic_mspct <- function(x, y,
 #' @export
 #'
 copy_attributes.waveband <- function(x, y, which = NULL, ...) {
-  stopifnot(is.waveband(y))
-  if (length(which) == 0L) {
+   if (length(which) == 0L) {
     which <- "comment"
   }
   attr.x <- attributes(x)
   which.x <- intersect(names(attr.x), which)
   for (w in which.x) {
-    attr(y, w) <- attr(x, w, exact = TRUE)
+    attr(y, w) <- attr.x[[w]]
   }
   y
 }
@@ -280,10 +280,12 @@ merge_attributes.generic_spct <- function(x, y, z,
   }
   # skip attributes that are easily invalidated
   which <- setdiff(which, which.not)
+  attr.x <- attributes(x)
+  attr.y <- attributes(y)
   # this is likely to be slow
   for (w in which) {
-    att.x <- attr(x, w, exact = TRUE)
-    att.y <- attr(y, w, exact = TRUE)
+    att.x <- attr.x[[w]]
+    att.y <- attr.y[[w]]
     if (length(att.x) == 0L && length(att.y) == 0L) {
       attr(z, w) <- NULL
     } else if (length(att.x) == 0L) {

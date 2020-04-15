@@ -813,22 +813,19 @@ average_spct(sun.spct)
 #              .comparison.fun = `<`)
 
 ## -----------------------------------------------------------------------------
-w_length2rgb(550) # green
-w_length2rgb(630) # red
-w_length2rgb(c(550, 630, 380, 750)) # vectorized
-
-## -----------------------------------------------------------------------------
-w_length_range2rgb(c(400,700))
-
-## -----------------------------------------------------------------------------
-with(sun.spct, s_e_irrad2rgb(w.length, s.e.irrad))
-with(sun.spct, s_e_irrad2rgb(w.length, s.e.irrad, sens = ciexyzCMF2.spct))
-
-## -----------------------------------------------------------------------------
-rgb_spct(sun.spct)
-rgb_spct(sun.spct, sens = ciexyzCMF2.spct)
+color_of(550) # green
+color_of(630) # red
+color_of(c(550, 630, 380, 750)) # vectorized
 
 ## -----------------------------------------------------------------------------
 color_of(sun.spct)
 color_of(sun.spct * yellow_gel.spct)
+
+## -----------------------------------------------------------------------------
+color_of(waveband(c(400, 500), wb.name = "my_BL"))
+
+## -----------------------------------------------------------------------------
+color_of(sun.spct, chroma.type = "CC")
+color_of(sun.spct, chroma.type = "CMF")
+color_of(sun.spct, chroma.type = beesxyzCMF.spct)
 

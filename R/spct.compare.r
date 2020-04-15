@@ -19,12 +19,13 @@
 #'   \code{short.names} as additional arguments.
 #'
 #' @param x A collection of two spectral objects of the same type.
-#' @param .summary.fun function. The summary function to use.
+#' @param .summary.fun function. The summary function to use. It must be a
+#'   method accepting object \code{x} as first argument.
 #' @param ... additional named arguments passed down to \code{.summary.fun}.
 #' @param .comparison.fun function. The comparison function to use.
 #' @param w.band waveband object or a numeric stepsize in nanometres.
-#' @param returned.value character One of "data.frame", "spectrum", "tagged
-#'   spectrum".
+#' @param returned.value character One of "data.frame", "spectrum",
+#'   "tagged.spectrum".
 #' @param use.hinges logical Flag indicating whether to insert "hinges" into the
 #'   returned spectrum when tagging it.
 #' @param short.names logical Flag indicating whether to use short or long names
@@ -55,9 +56,9 @@
 #'                returned.value = "data.frame")
 #' )
 #' compare_spct(source_mspct(list(sun1 = sun.spct, sun2 = sun.spct * 2)),
-#'              returned.value = "tagged spectrum")
+#'              returned.value = "tagged.spectrum")
 #' compare_spct(source_mspct(list(sun1 = sun.spct, sun2 = sun.spct * 2)),
-#'              returned.value = "tagged spectrum",
+#'              returned.value = "tagged.spectrum",
 #'              use.hinges = TRUE)
 #'
 compare_spct <- function(x,
@@ -118,9 +119,10 @@ compare_spct <- function(x,
     }
   } else if (is.waveband(w.band)) {
     w.band <- list(w.band)
-  }
+  } else if (is.list(w.band)) {
   # we make sure we have a list of wavebands
-  stopifnot(all(sapply(w.band, is.waveband)))
+    stopifnot(all(sapply(w.band, is.waveband)))
+  }
   # compute summaries
   wl.mid <- sapply(w.band, wl_midpoint)
   wl.min <- sapply(w.band, wl_min)
@@ -130,9 +132,9 @@ compare_spct <- function(x,
   names(z) <- c("w.length", "wl.min", "wl.max",
                 paste(names(x), f.name, sep = "."))
   z[["comparison.result"]] <- .comparison.fun(z[[5]], z[[4]])
-  if (returned.value %in% c("spectrum", "tagged spectrum")) {
+  if (returned.value %in% c("spectrum", "tagged.spectrum")) {
     z <- as.generic_spct(z)
-    if (returned.value == "tagged spectrum") {
+    if (returned.value == "tagged.spectrum") {
       z <- tag(z[ , -c(2, 3)],
                w.band = w.band,
                use.hinges = use.hinges,

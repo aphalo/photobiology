@@ -4,7 +4,7 @@ context("smooth_spct")
 
 test_that("source_spct", {
 
-  x <- sun.spct
+  x <- sun.spct[200:300]
   x$s.e.irrad[10:20] <- NA_real_
   expect_warning(smooth_spct(x))
 
@@ -41,7 +41,7 @@ test_that("source_spct", {
 
 test_that("filter_spct", {
 
-  x <- yellow_gel.spct
+  x <- yellow_gel.spct[200:400]
   x$Tfr[10:20] <- NA_real_
   expect_warning(smooth_spct(x))
 
