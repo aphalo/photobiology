@@ -300,7 +300,7 @@ getTimeUnit(ten.minutes.spct)
 
 A crucial information is whether transmittance (`Tfr`) is expressed as internal or total, stored in attribute `Tfr.type`, as this affects how absorptances and absorbances are computed. The key step is when a `filter_spct` object is created, when the user has to be careful to set this attribute correctly.
 
-The objects from which transmittance can differ in additional properties that affect possible calculations. Attribute `filter.properties` is used to store these in an object with fields `Rfr.factor`, `thickness` and `homogeneous`. When these metadata are available, in many cases we can use function `convertTfrType()` to convert internal transmittance into total transmittance and _vice versa_ and function `convertThickness()` to compute the spectral transmittance of a filter of the same material but different thickness.
+The objects from which transmittance can differ in additional properties that affect possible calculations. Attribute `filter.properties` is used to store these in an object with fields `Rfr.constant`, `thickness` and `attenuation.mode`. When these metadata are available, in many cases we can use function `convertTfrType()` to convert internal transmittance into total transmittance and _vice versa_ and function `convertThickness()` to compute the spectral transmittance of a filter of the same material but different thickness.
 
 These attributes are also allowed in the case of `object_spct` and `reflector_spct` and retained during class conversions between them and `filter_spct` objects.
 
@@ -1244,7 +1244,7 @@ e2q(sun.spct, "replace")
 
 ### Conversions among transmission quantities
 
-For `filter_spct` objects functions `any2T()`, `any2A()`, and `any2Afr()`  allow conversion among spectral transmittance, spectral absorptance and spectral absorbance. Although some conversions require a known reflectance, either as an `Rfr` column in the data or an `Rfr.factor` in the attribute `filter.properties`.
+For `filter_spct` objects functions `any2T()`, `any2A()`, and `any2Afr()`  allow conversion among spectral transmittance, spectral absorptance and spectral absorbance. Although some conversions require a known reflectance, either as an `Rfr` column in the data or an `Rfr.constant` in the attribute `filter.properties`.
 
 ```{r}
 any2Afr(polyester.spct, "add")

@@ -155,7 +155,7 @@ test_that("Afr2T_internal", {
 
 test_that("Afr2T_properties", {
   f.spct <- filter_spct(w.length = 300:320, Afr = 0.7, Tfr.type = "total")
-  filter_properties(f.spct) <- list(Rfr.factor = 0.2, thickness = NA_real_, homogeneous = NA)
+  filter_properties(f.spct) <- list(Rfr.constant = 0.2, thickness = NA_real_, attenuation.mode = NA_character_)
   expect_silent(Afr2T(f.spct))
   expect_silent(Afr2T(f.spct, clean = TRUE))
   Tfr_as_default()
@@ -273,7 +273,7 @@ test_that("convertTfrType", {
 
 test_that("convertTfrType_properties", {
   f.spct <- filter_spct(w.length = 300:400, Tfr = 0.5, Tfr.type = "total")
-  filter_properties(f.spct) <- list(Rfr.factor = 0.5, thickness = NA_real_, homogeneous = NA)
+  filter_properties(f.spct) <- list(Rfr.constant = 0.5, thickness = NA_real_, attenuation.mode = NA_character_)
   expect_equal(convertTfrType(f.spct), f.spct)
   expect_silent(convertTfrType(f.spct, Tfr.type = "total"))
   expect_true(all(convertTfrType(f.spct, Tfr.type = "total")[["Tfr"]] == 0.5))
@@ -351,7 +351,7 @@ test_that("e and q values", {
 
 test_that("convertThickness_properties", {
   f.spct <- filter_spct(w.length = 300:400, Tfr = 0.5, Tfr.type = "internal")
-  filter_properties(f.spct) <- list(Rfr.factor = 0.1, thickness = 1e-3, homogeneous = TRUE)
+  filter_properties(f.spct) <- list(Rfr.constant = 0.1, thickness = 1e-3, attenuation.mode = "absorption")
   expect_equal(convertThickness(f.spct), f.spct)
   expect_silent(convertThickness(f.spct, thickness = 2e-3))
   expect_true(all(convertThickness(f.spct, thickness = 2e-3)[["Tfr"]] == 0.25))
@@ -359,7 +359,7 @@ test_that("convertThickness_properties", {
   expect_named(convertThickness(f.spct, thickness = 2e-3), c("w.length", "Tfr"))
 
   f.spct <- filter_spct(w.length = 300:400, Tfr = 0.4, Tfr.type = "total")
-  filter_properties(f.spct) <- list(Rfr.factor = 0.1, thickness = 1e-3, homogeneous = TRUE)
+  filter_properties(f.spct) <- list(Rfr.constant = 0.1, thickness = 1e-3, attenuation.mode = "absorption")
   expect_silent(convertThickness(f.spct, thickness = 2e-3))
   expect_true(all(round(convertThickness(f.spct, thickness = 2e-3)[["Tfr"]], 6) == 0.177778))
   # add "ignore.order = TRUE" if needed!

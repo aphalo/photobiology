@@ -21,7 +21,7 @@
 #'
 #' @return A data.frame with variables \code{x} and \code{y}.
 #'
-#' @note When expanding an spectrum, if \code{fill == NULL}, expansion is
+#' @note When expanding a spectrum, if \code{fill == NULL}, expansion is
 #'   not performed with a warning.
 #'
 #' @family low-level functions operating on numeric vectors.

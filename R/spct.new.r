@@ -390,6 +390,9 @@ chroma_spct <- function(w.length=NULL,
 
 # as methods for spct classes --------------------------------------------
 
+# defined as generics + default as additional methods are defined in other
+# packages of the R for Photobiology suite.
+
 #' Coerce to a spectrum
 #'
 #' Return a copy of an R object with its class set to a given type of spectrum.
@@ -432,7 +435,7 @@ as.generic_spct.default <- function(x, ...) {
 #'
 as.calibration_spct <- function(x, ...) {UseMethod("as.calibration_spct")}
 
-#'@describeIn as.generic_spct
+#' @describeIn as.calibration_spct
 #'
 #' @export
 #'
@@ -457,7 +460,7 @@ as.calibration_spct.default <- function(x, ...) {
 #'
 as.raw_spct <- function(x, ...) {UseMethod("as.raw_spct")}
 
-#' @describeIn as.generic_spct
+#' @describeIn as.raw_spct
 #'
 #' @export
 #'
@@ -679,7 +682,7 @@ as.object_spct.default <- function(x,
 #'
 as.chroma_spct <- function(x, ...) {UseMethod("as.chroma_spct")}
 
-#' @describeIn as.generic_spct
+#' @describeIn as.chroma_spct
 #'
 #' @export
 #'

@@ -760,7 +760,7 @@ check_spct.chroma_spct <-
 
 #' Remove "generic_spct" and derived class attributes.
 #'
-#' Removes from an spectrum object the class attributes "generic_spct" and any
+#' Removes from a spectrum object the class attributes "generic_spct" and any
 #' derived class attribute such as "source_spct". \strong{This operation is done
 #' by reference!}
 #'
@@ -919,16 +919,16 @@ setCpsSpct <-
 #' @describeIn setGenericSpct Set class of an object to "filter_spct".
 #'
 #' @param Tfr.type character A string, either "total" or "internal".
-#' @param Rfr.factor numeric The value of the reflection factor (/1).
+#' @param Rfr.constant numeric The value of the reflection factor (/1).
 #' @param thickness numeric The thickness of the material.
-#' @param homogeneous logical If internally homogeneous and non-scattering like
-#'   glass or heterogeneous like biological tissues like plant leaves.
+#' @param attenuation.mode character One of "reflection", "absorption" or
+#'   "mixed".
 #' @param strict.range logical Flag indicating whether off-range values result in an
 #'   error instead of a warning.
 #' @export
 #' @exportClass filter_spct
 #'
-#' @note For non-diffusing materials like glass an approximate \code{Rfr.factor}
+#' @note For non-diffusing materials like glass an approximate \code{Rfr.constant}
 #'   value can be used to interconvert "total" and "internal" transmittance
 #'   values. Use \code{NA} if not known, or not applicable, e.g., for materials
 #'   subject to internal scattering.
@@ -936,9 +936,9 @@ setCpsSpct <-
 setFilterSpct <-
   function(x,
            Tfr.type = c("total", "internal"),
-           Rfr.factor = NA_real_,
+           Rfr.constant = NA_real_,
            thickness = NA_real_,
-           homogeneous = NA,
+           attenuation.mode = NA,
            strict.range = getOption("photobiology.strict.range", default = FALSE),
            multiple.wl = 1L,
            idfactor = NULL) {
@@ -956,9 +956,9 @@ setFilterSpct <-
     class(x) <- c("filter_spct", class(x))
     setTfrType(x, Tfr.type[1])
     setFilterProperties(x,
-                        Rfr.factor = Rfr.factor,
+                        Rfr.constant = Rfr.constant,
                         thickness = thickness,
-                        homogeneous = homogeneous)
+                        attenuation.mode = attenuation.mode)
     x <- check_spct(x, strict.range = strict.range)
     if (is.name(name)) {
       name <- as.character(name)
@@ -1200,7 +1200,7 @@ is.any_spct <- function(x) {
   inherits(x, "generic_spct")
 }
 
-#' Query which is the class of an spectrum
+#' Query which is the class of a spectrum
 #'
 #' Functions to check if an object is a generic spectrum, or coerce it if
 #' possible.
@@ -1220,13 +1220,13 @@ class_spct <- function(x) {
   class(x)[class(x) %in% spct_classes()] # maintains order
 }
 
-#' Query if it is an spectrum is tagged
+#' Query if a spectrum is tagged
 #'
 #' Functions to check if an spct object contains tags.
 #'
 #' @param x any R object
 #'
-#' @return is_tagged returns TRUE if its argument is a an spectrum
+#' @return is_tagged returns TRUE if its argument is a a spectrum
 #' that contains tags and FALSE if it is an untagged spectrum, but
 #' returns NA for any other R object.
 #'
@@ -3068,16 +3068,16 @@ getWhatMeasured.generic_mspct <- function(x,
 #' filter_spct object.
 #'
 #' @param x a filter_spct object
-#' @param filter.properties,value a list with fields named "Rfr.factor",
-#'   "thickness" and "homogeneous".
+#' @param filter.properties,value a list with fields named "Rfr.constant",
+#'   "thickness" and "attenuation.mode".
 #' @param pass.null logical If TRUE, the parameters to the next three
 #'    parameters will be always ignored, otherwise they will be used to
 #'    build an object of class "filter.properties" when the argument to
 #'    filter.properties is NULL.
-#' @param Rfr.factor numeric The value of the reflection factor (/1).
+#' @param Rfr.constant numeric The value of the reflection factor (/1).
 #' @param thickness numeric The thickness of the material.
-#' @param homogeneous logical If internally homogeneous and non-scattering like
-#'   glass or heterogeneous like biological tissues like plant leaves.
+#' @param attenuation.mode character One of "reflection", "absorption" or
+#'   "mixed".
 #'
 #' @details Storing filter properties allows inter-conversion between internal
 #'   and total transmittance, as well as computation of transmittance for
@@ -3100,29 +3100,29 @@ getWhatMeasured.generic_mspct <- function(x,
 #' filter_properties(my.spct) <- NULL
 #' filter_properties(my.spct)
 #' filter_properties(my.spct, return.null = TRUE)
-#' filter_properties(my.spct) <- list(Rfr.factor = 0.01,
+#' filter_properties(my.spct) <- list(Rfr.constant = 0.01,
 #'                                    thickness = 125e-6,
-#'                                    homogeneous = TRUE)
+#'                                    attenuation.mode = "absorption")
 #' filter_properties(my.spct)
 #'
 setFilterProperties <- function(x,
                                 filter.properties = NULL,
                                 pass.null = FALSE,
-                                Rfr.factor = NA_real_,
+                                Rfr.constant = NA_real_,
                                 thickness = NA_real_,
-                                homogeneous = NA) {
+                                attenuation.mode = NA) {
   name <- substitute(x)
   if (is.filter_spct(x) || is.object_spct(x)) {
     if (!(pass.null && is.null(filter.properties))) {
       if (is.null(filter.properties)) {
-        filter.properties <- list(Rfr.factor = Rfr.factor,
+        filter.properties <- list(Rfr.constant = Rfr.constant,
                                   thickness = thickness,
-                                  homogeneous = homogeneous)
+                                  attenuation.mode = attenuation.mode)
         class(filter.properties) <-
           c("filter_properties", class(filter.properties))
       } else {
         stopifnot(setequal(names(filter.properties),
-                           c("Rfr.factor", "thickness", "homogeneous")))
+                           c("Rfr.constant", "thickness", "attenuation.mode")))
         if (class(filter.properties)[1] != "filter_properties") {
           class(filter.properties) <-
             c("filter_properties", class(filter.properties))
@@ -3160,7 +3160,7 @@ setFilterProperties <- function(x,
 #'   \code{NA}.
 #' @param ... Allows use of additional arguments in methods for other classes.
 #'
-#' @return a list with fields named "Rfr.factor", "thickness" and "homogeneous".
+#' @return a list with fields named "Rfr.constant", "thickness" and "attenuation.mode".
 #'   If the attribute is not set, and \code{return.null} is FALSE, a list with
 #'   fields set to \code{NA} is returned, otherwise, \code{NULL}.
 #'
@@ -3200,15 +3200,15 @@ getFilterProperties.filter_spct <- function(x,
   if (is.null(filter.properties)) {
     if (!return.null) {
       # need to handle objects created with old versions
-      filter.properties <- list(Rfr.factor = NA_real_,
+      filter.properties <- list(Rfr.constant = NA_real_,
                                 thickness = NA_real_,
-                                homogeneous = NA)
+                                attenuation.mode = NA)
       class(filter.properties) <-
         c("filter_properties", class(filter.properties))
     }
   } else {
     stopifnot(setequal(names(filter.properties),
-                       c("Rfr.factor", "thickness", "homogeneous")))
+                       c("Rfr.constant", "thickness", "attenuation.mode")))
   }
   filter.properties
 }
@@ -3282,46 +3282,52 @@ convertThickness <- function(x, thickness = NULL) {
     return(invisible(x))
   }
 
-  columns <- intersect(colnames(x), c("Tfr", "Afr", "A") )
-  if (length(columns) == 0) {
-    warning("No column to convert to new thickness.")
-    return(invisible(x))
-  }
-  if ("Tfr" %in% columns || "A" %in% columns) {
-    if (!"Tfr" %in% columns) {
-      .fun <- T2A
-    } else {
-      .fun <- NULL
-    }
-    # "A" column converted or deleted as needed
-    z <- A2T(x, action = "replace")
-  } else if ("Afr" %in% columns) {
-      .fun <- T2Afr
-    z <- Afr2T(x, action = "replace")
-  } else {
-    stop("conversion failed")
-  }
-
   properties <- filter_properties(x)
-  if (!properties[["homogeneous"]]) {
-    thickness <- NA_real_
-    warning("Conversion not possible for non-homogeneous materials.")
+  if (properties[["attenuation.mode"]] == "mixed") {
+    warning("Conversion not possible for non-absorbent materials.")
+    return(x * NA_real_)
+  } else if (properties[["attenuation.mode"]] == "reflection") {
+    warning("Transmittance remains unchanged for purely reflective materials.")
+    properties[["thickness"]] <- thickness
+    setFilterProperties(x, properties)
+    return(x)
+  } else if (properties[["attenuation.mode"]] == "absorption") {
+    columns <- intersect(colnames(x), c("Tfr", "Afr", "A") )
+    if (length(columns) == 0) {
+      warning("No column to convert to new thickness.")
+      return(invisible(x))
+    }
+    if ("Tfr" %in% columns || "A" %in% columns) {
+      if (!"Tfr" %in% columns) {
+        .fun <- T2A
+      } else {
+        .fun <- NULL
+      }
+      # "A" column converted or deleted as needed
+      z <- A2T(x, action = "replace")
+    } else if ("Afr" %in% columns) {
+      .fun <- T2Afr
+      z <- Afr2T(x, action = "replace")
+    } else {
+      stop("conversion failed")
+    }
+
+    current.Tfr.type <- getTfrType(x)
+    if (current.Tfr.type == "total") {
+      z <- convertTfrType(z, "internal")
+    }
+    # convert Tfr, formula is valid only for internal transmittance
+    z <- using_Tfr(z^(thickness / properties[["thickness"]]))
+    properties[["thickness"]] <- thickness
+    setFilterProperties(z, properties)
+    if (current.Tfr.type == "total") {
+      z <- convertTfrType(z, "total")
+    }
+    if (!is.null(.fun)) {
+      z <- .fun(z, action = "replace")
+    }
+    z
   }
-  current.Tfr.type <- getTfrType(x)
-  if (current.Tfr.type == "total") {
-    z <- convertTfrType(z, "internal")
-  }
-  # convert Tfr, formula is valid only for internal transmittance
-  z <- using_Tfr(z^(thickness / properties[["thickness"]]))
-  properties[["thickness"]] <- thickness
-  setFilterProperties(z, properties)
-  if (current.Tfr.type == "total") {
-    z <- convertTfrType(z, "total")
-  }
-  if (!is.null(.fun)) {
-    z <- .fun(z, action = "replace")
-  }
-  z
 }
 
 #' Convert the "Tfr.type" attribute
@@ -3352,9 +3358,9 @@ convertThickness <- function(x, thickness = NULL) {
 #' @examples
 #'
 #' my.spct <- polyester.spct
-#' filter_properties(my.spct) <- list(Rfr.factor = 0.07,
+#' filter_properties(my.spct) <- list(Rfr.constant = 0.07,
 #'                                    thickness = 125e-6,
-#'                                    homogeneous = TRUE)
+#'                                    attenuation.mode = "absorption")
 #' convertTfrType(my.spct, Tfr.type = "internal")
 #'
 convertTfrType <- function(x, Tfr.type = NULL) {
@@ -3405,9 +3411,9 @@ convertTfrType <- function(x, Tfr.type = NULL) {
       warning("Current Tfr type is not set, returning NAs.")
     }
     if (current.Tfr.type == "internal" && Tfr.type == "total") {
-      z[["Tfr"]] <- z[["Tfr"]] * (1 - properties[["Rfr.factor"]])
+      z[["Tfr"]] <- z[["Tfr"]] * (1 - properties[["Rfr.constant"]])
     } else if (current.Tfr.type == "total" && Tfr.type == "internal") {
-      z[["Tfr"]] <- z[["Tfr"]] / (1 - properties[["Rfr.factor"]])
+      z[["Tfr"]] <- z[["Tfr"]] / (1 - properties[["Rfr.constant"]])
     }
     setTfrType(z, Tfr.type)
   } else if (is.object_spct(z)) {

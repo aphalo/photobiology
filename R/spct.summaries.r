@@ -479,9 +479,9 @@ print.instr_settings <- function(x, ...) {
 #' @export
 #'
 print.filter_properties <- function(x, ...) {
-  cat("Rfr factor (/1): ", round(x[["Rfr.factor"]], digits = 4), ", ",
+  cat("Rfr (/1): ", round(x[["Rfr.constant"]], digits = 3), ", ",
       "thickness (mm): ", signif(x[["thickness"]] * 1e3, digits = 3), ", ",
-      "homogeneous: ", ifelse(x[["homogeneous"]], "yes", "no"), ".",
+      "attenuation mode: ", x[["attenuation.mode"]], ".",
        sep = "",
       ...
   )

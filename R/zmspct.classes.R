@@ -24,7 +24,7 @@ mspct_classes <- function() {
 
 #' Remove "generic_mspct" and derived class attributes.
 #'
-#' Removes from an spectrum object the class attributes "generic_mspct" and any
+#' Removes from a spectrum object the class attributes "generic_mspct" and any
 #' derived class attribute such as "source_mspct". \strong{This operation is done
 #' by reference!}
 #'

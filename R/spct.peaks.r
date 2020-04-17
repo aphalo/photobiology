@@ -1622,7 +1622,7 @@ find_wls <- function(x,
 #'   before searching for the target.
 #' @param ... currently ignored.
 #'
-#' @return A data.frame or an spectrum object of the same class as \code{x} with
+#' @return A data.frame or a spectrum object of the same class as \code{x} with
 #'   fewer rows, possibly even no rows. If \code{FALSE} is passed to
 #'   \code{interpolate} a subset of \code{x} is returned, otherwise a new object
 #'   of the same class containing interpolated wavelengths for the \code{target}

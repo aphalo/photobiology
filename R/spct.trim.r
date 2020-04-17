@@ -24,7 +24,7 @@
 #'
 #' @return a spectrum of same class as input with its tails trimmed or expanded.
 #'
-#' @note When expanding an spectrum, if fill==NULL, then expansion is not
+#' @note When expanding a spectrum, if fill==NULL, then expansion is not
 #'   performed. Range can be "waveband" object, a numeric vector or a list of
 #'   numeric vectors, or any other user-defined or built-in object for which
 #'   \code{range()} returns a numeric vector of length two, that can be

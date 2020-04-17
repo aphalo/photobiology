@@ -12,7 +12,7 @@
 
 <meta name="author" content="Pedro J. Aphalo" />
 
-<meta name="date" content="2020-04-15" />
+<meta name="date" content="2020-04-17" />
 
 <title>User Guide: 2 Radiation</title>
 
@@ -302,9 +302,9 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 
 <h1 class="title toc-ignore">User Guide: 2 Radiation</h1>
-<h3 class="subtitle">Package ‘photobiology’ 0.10.0.9004</h3>
+<h3 class="subtitle">Package ‘photobiology’ 0.10.1</h3>
 <h4 class="author">Pedro J. Aphalo</h4>
-<h4 class="date">2020-04-15</h4>
+<h4 class="date">2020-04-17</h4>
 
 
 <div id="TOC">
@@ -949,7 +949,7 @@ Not respecting the expectations about data inputs or setting erroneous values in
 <div id="attributes-supported-by-filter_spct-objects" class="section level4">
 <h4>Attributes supported by <code>filter_spct</code> objects</h4>
 <p>A crucial information is whether transmittance (<code>Tfr</code>) is expressed as internal or total, stored in attribute <code>Tfr.type</code>, as this affects how absorptances and absorbances are computed. The key step is when a <code>filter_spct</code> object is created, when the user has to be careful to set this attribute correctly.</p>
-<p>The objects from which transmittance can differ in additional properties that affect possible calculations. Attribute <code>filter.properties</code> is used to store these in an object with fields <code>Rfr.factor</code>, <code>thickness</code> and <code>homogeneous</code>. When these metadata are available, in many cases we can use function <code>convertTfrType()</code> to convert internal transmittance into total transmittance and <em>vice versa</em> and function <code>convertThickness()</code> to compute the spectral transmittance of a filter of the same material but different thickness.</p>
+<p>The objects from which transmittance can differ in additional properties that affect possible calculations. Attribute <code>filter.properties</code> is used to store these in an object with fields <code>Rfr.constant</code>, <code>thickness</code> and <code>homogeneous</code>. When these metadata are available, in many cases we can use function <code>convertTfrType()</code> to convert internal transmittance into total transmittance and <em>vice versa</em> and function <code>convertThickness()</code> to compute the spectral transmittance of a filter of the same material but different thickness.</p>
 <p>These attributes are also allowed in the case of <code>object_spct</code> and <code>reflector_spct</code> and retained during class conversions between them and <code>filter_spct</code> objects.</p>
 <p>They are included in the printout of <code>filter.spct</code> objects.</p>
 <div class="sourceCode" id="cb67"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1"></a>polyester.spct</span></code></pre></div>
@@ -957,7 +957,7 @@ Not respecting the expectations about data inputs or setting erroneous values in
 ## Wavelength range 190 to 800 nm, step 1 nm 
 ## Label: clear polyester film 
 ## Transmittance of type &#39;total&#39;
-## Rfr factor (/1): 0.07, thickness (mm): 0.125, homogeneous: yes.
+## Rfr factor (/1): 0.07, thickness (mm): 0.125, attenuation mode: absorption.
 ## 
 ## # A tibble: 611 x 2
 ##   w.length   Tfr
@@ -973,7 +973,7 @@ Not respecting the expectations about data inputs or setting erroneous values in
 ## Wavelength range 190 to 800 nm, step 1 nm 
 ## Label: clear polyester film 
 ## Transmittance of type &#39;total&#39;
-## Rfr factor (/1): 0.07, thickness (mm): 2, homogeneous: yes.
+## Rfr factor (/1): 0.07, thickness (mm): 2, attenuation mode: absorption.
 ## 
 ## # A tibble: 611 x 2
 ##   w.length      Tfr
@@ -1145,7 +1145,7 @@ Spectral objects created with earlier (pre-release) versions of this package are
 ## Object: filter_spct [50 x 2]
 ## Wavelength range 501 to 550 nm, step 1 nm 
 ## Transmittance of type &#39;total&#39;
-## Rfr factor (/1): NA, thickness (mm): NA, homogeneous: NA.
+## Rfr factor (/1): NA, thickness (mm): NA, attenuation mode: NA.
 ## 
 ## # A tibble: 50 x 2
 ##   w.length   Tfr
@@ -1159,7 +1159,7 @@ Spectral objects created with earlier (pre-release) versions of this package are
 ## Object: filter_spct [50 x 2]
 ## Wavelength range 501 to 550 nm, step 1 nm 
 ## Transmittance of type &#39;total&#39;
-## Rfr factor (/1): NA, thickness (mm): NA, homogeneous: NA.
+## Rfr factor (/1): NA, thickness (mm): NA, attenuation mode: NA.
 ## 
 ## # A tibble: 50 x 2
 ##   w.length   Tfr
@@ -1178,7 +1178,7 @@ Spectral objects created with earlier (pre-release) versions of this package are
 ## Object: filter_spct [50 x 2]
 ## Wavelength range 501 to 550 nm, step 1 nm 
 ## Transmittance of type &#39;total&#39;
-## Rfr factor (/1): NA, thickness (mm): NA, homogeneous: NA.
+## Rfr factor (/1): NA, thickness (mm): NA, attenuation mode: NA.
 ## 
 ## # A tibble: 50 x 2
 ##   w.length   Tfr
@@ -1192,7 +1192,7 @@ Spectral objects created with earlier (pre-release) versions of this package are
 ## Object: filter_spct [50 x 2]
 ## Wavelength range 501 to 550 nm, step 1 nm 
 ## Transmittance of type &#39;total&#39;
-## Rfr factor (/1): NA, thickness (mm): NA, homogeneous: NA.
+## Rfr factor (/1): NA, thickness (mm): NA, attenuation mode: NA.
 ## 
 ## # A tibble: 50 x 2
 ##   w.length   Tfr
@@ -1212,7 +1212,7 @@ Spectral objects created with earlier (pre-release) versions of this package are
 ## Object: filter_spct [50 x 2]
 ## Wavelength range 501 to 550 nm, step 1 nm 
 ## Transmittance of type &#39;total&#39;
-## Rfr factor (/1): NA, thickness (mm): NA, homogeneous: NA.
+## Rfr factor (/1): NA, thickness (mm): NA, attenuation mode: NA.
 ## 
 ## # A tibble: 50 x 2
 ##   w.length   Tfr
@@ -1226,7 +1226,7 @@ Spectral objects created with earlier (pre-release) versions of this package are
 ## Object: filter_spct [50 x 2]
 ## Wavelength range 501 to 550 nm, step 1 nm 
 ## Transmittance of type &#39;total&#39;
-## Rfr factor (/1): NA, thickness (mm): NA, homogeneous: NA.
+## Rfr factor (/1): NA, thickness (mm): NA, attenuation mode: NA.
 ## 
 ## # A tibble: 50 x 2
 ##   w.length   Tfr
@@ -1656,7 +1656,7 @@ Methods <code>[[</code>, <code>$</code> and <code>[[&lt;-</code>, extract and re
 ## Wavelength range 190 to 800 nm, step 1 nm 
 ## Label: clear polyester film 
 ## Transmittance of type &#39;total&#39;
-## Rfr factor (/1): 0.07, thickness (mm): 0.125, homogeneous: yes.
+## Rfr factor (/1): 0.07, thickness (mm): 0.125, attenuation mode: absorption.
 ## 
 ## # A tibble: 611 x 2
 ##   w.length   Tfr
@@ -4278,13 +4278,13 @@ There are cases where functions <code>convolve_each()</code> and <code>msmsply()
 </div>
 <div id="conversions-among-transmission-quantities" class="section level3">
 <h3>Conversions among transmission quantities</h3>
-<p>For <code>filter_spct</code> objects functions <code>any2T()</code>, <code>any2A()</code>, and <code>any2Afr()</code> allow conversion among spectral transmittance, spectral absorptance and spectral absorbance. Although some conversions require a known reflectance, either as an <code>Rfr</code> column in the data or an <code>Rfr.factor</code> in the attribute <code>filter.properties</code>.</p>
+<p>For <code>filter_spct</code> objects functions <code>any2T()</code>, <code>any2A()</code>, and <code>any2Afr()</code> allow conversion among spectral transmittance, spectral absorptance and spectral absorbance. Although some conversions require a known reflectance, either as an <code>Rfr</code> column in the data or an <code>Rfr.constant</code> in the attribute <code>filter.properties</code>.</p>
 <div class="sourceCode" id="cb304"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb304-1"><a href="#cb304-1"></a><span class="kw">any2Afr</span>(polyester.spct, <span class="st">&quot;add&quot;</span>)</span></code></pre></div>
 <pre><code>## Object: filter_spct [611 x 3]
 ## Wavelength range 190 to 800 nm, step 1 nm 
 ## Label: clear polyester film 
 ## Transmittance of type &#39;total&#39;
-## Rfr factor (/1): 0.07, thickness (mm): 0.125, homogeneous: yes.
+## Rfr factor (/1): 0.07, thickness (mm): 0.125, attenuation mode: absorption.
 ## 
 ## # A tibble: 611 x 3
 ##   w.length   Tfr   Afr
@@ -4298,7 +4298,7 @@ There are cases where functions <code>convolve_each()</code> and <code>msmsply()
 <pre><code>## Object: filter_spct [611 x 2]
 ## Wavelength range 190 to 800 nm, step 1 nm 
 ## Label: clear polyester film 
-## Rfr factor (/1): 0.07, thickness (mm): 0.125, homogeneous: yes.
+## Rfr factor (/1): 0.07, thickness (mm): 0.125, attenuation mode: absorption.
 ## 
 ## # A tibble: 611 x 2
 ##   w.length   Afr
@@ -4528,10 +4528,10 @@ There are cases where functions <code>convolve_each()</code> and <code>msmsply()
 ## # A tibble: 1,421 x 2
 ##   w.length s.e.irrad
 ##      &lt;dbl&gt;     &lt;dbl&gt;
-## 1     251. -0.000957
-## 2     252. -0.000393
-## 3     252. -0.000520
-## 4     253.  0.000115
+## 1     251.   0.00175
+## 2     252.   0.00228
+## 3     252.   0.00209
+## 4     253.   0.00267
 ## # ... with 1,417 more rows</code></pre>
 <div class="sourceCode" id="cb338"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb338-1"><a href="#cb338-1"></a><span class="kw">fshift</span>(sun.spct, <span class="dt">range =</span> <span class="kw">c</span>(<span class="dv">280</span>,<span class="dv">290</span>), <span class="dt">f =</span> <span class="st">&quot;min&quot;</span>)</span></code></pre></div>
 <pre><code>## Object: source_spct [522 x 2]
@@ -4561,7 +4561,7 @@ There are cases where functions <code>convolve_each()</code> and <code>msmsply()
 ## Wavelength range 190 to 800 nm, step 1 nm 
 ## Label: clear polyester film 
 ## Transmittance of type &#39;total&#39;
-## Rfr factor (/1): 0.07, thickness (mm): 0.125, homogeneous: yes.
+## Rfr factor (/1): 0.07, thickness (mm): 0.125, attenuation mode: absorption.
 ## 
 ## # A tibble: 611 x 2
 ##   w.length   Tfr
@@ -4641,7 +4641,7 @@ There are cases where functions <code>convolve_each()</code> and <code>msmsply()
 ## Wavelength range 190 to 800 nm, step 1 nm 
 ## Label: clear polyester film 
 ## Transmittance of type &#39;total&#39;
-## Rfr factor (/1): 0.07, thickness (mm): 0.125, homogeneous: yes.
+## Rfr factor (/1): 0.07, thickness (mm): 0.125, attenuation mode: absorption.
 ## 
 ## # A tibble: 611 x 2
 ##   w.length    Tfr
@@ -6020,19 +6020,20 @@ Most frequently used summary methods are implemented for collections of spectra.
 <div class="sourceCode" id="cb447"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb447-1"><a href="#cb447-1"></a><span class="kw">msmsply</span>(filters.mspct, peaks, <span class="dt">span =</span> <span class="dv">21</span>)</span></code></pre></div>
 <pre><code>## Object: filter_mspct [3 x 1]
 ## --- Member: none ---
-## Object: filter_spct [0 x 2]
+## Object: filter_spct [0 x 5]
 ## Label: theoretical fully transparent object 
 ## Transmittance of type &#39;internal&#39;
-## Rfr factor (/1): NA, thickness (mm): NA, homogeneous: NA.
+## Rfr factor (/1): NA, thickness (mm): NA, attenuation mode: NA.
 ## 
-## # A tibble: 0 x 2
-## # ... with 2 variables: w.length &lt;dbl&gt;, Tfr &lt;dbl&gt;
+## # A tibble: 0 x 5
+## # ... with 5 variables: w.length &lt;dbl&gt;, Tfr &lt;dbl&gt;, Rfr.constant &lt;dbl&gt;,
+## #   thickness &lt;dbl&gt;, attenuation.mode &lt;chr&gt;
 ## --- Member: pet ---
 ## Object: filter_spct [2 x 2]
 ## Wavelength range 503 to 648 nm, step 145 nm 
 ## Label: clear polyester film 
 ## Transmittance of type &#39;total&#39;
-## Rfr factor (/1): NA, thickness (mm): NA, homogeneous: NA.
+## Rfr factor (/1): NA, thickness (mm): NA, attenuation mode: NA.
 ## 
 ## # A tibble: 2 x 2
 ##   w.length   Tfr
@@ -6044,7 +6045,7 @@ Most frequently used summary methods are implemented for collections of spectra.
 ## Wavelength range 755 to 755 nm, step NA nm 
 ## Label: yellow theatrical &#39;gel&#39;, Rosco supergel no. 312, &#39;canary yellow&#39; 
 ## Transmittance of type &#39;total&#39;
-## Rfr factor (/1): NA, thickness (mm): NA, homogeneous: NA.
+## Rfr factor (/1): NA, thickness (mm): NA, attenuation mode: NA.
 ## 
 ## # A tibble: 1 x 2
 ##   w.length   Tfr
@@ -6097,19 +6098,20 @@ Most frequently used summary methods are implemented for collections of spectra.
 <div class="sourceCode" id="cb453"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb453-1"><a href="#cb453-1"></a><span class="kw">wls_at_target</span>(filters.mspct, <span class="dt">target =</span> <span class="st">&quot;half.maximum&quot;</span>)</span></code></pre></div>
 <pre><code>## Object: filter_mspct [3 x 1]
 ## --- Member: none ---
-## Object: filter_spct [0 x 2]
+## Object: filter_spct [0 x 5]
 ## Label: theoretical fully transparent object 
 ## Transmittance of type &#39;internal&#39;
-## Rfr factor (/1): NA, thickness (mm): NA, homogeneous: NA.
+## Rfr factor (/1): NA, thickness (mm): NA, attenuation mode: NA.
 ## 
-## # A tibble: 0 x 2
-## # ... with 2 variables: w.length &lt;dbl&gt;, Tfr &lt;dbl&gt;
+## # A tibble: 0 x 5
+## # ... with 5 variables: w.length &lt;dbl&gt;, Tfr &lt;dbl&gt;, Rfr.constant &lt;dbl&gt;,
+## #   thickness &lt;dbl&gt;, attenuation.mode &lt;chr&gt;
 ## --- Member: pet ---
 ## Object: filter_spct [1 x 2]
 ## Wavelength range 322 to 322 nm, step NA nm 
 ## Label: clear polyester film 
 ## Transmittance of type &#39;total&#39;
-## Rfr factor (/1): NA, thickness (mm): NA, homogeneous: NA.
+## Rfr factor (/1): NA, thickness (mm): NA, attenuation mode: NA.
 ## 
 ## # A tibble: 1 x 2
 ##   w.length   Tfr
@@ -6120,7 +6122,7 @@ Most frequently used summary methods are implemented for collections of spectra.
 ## Wavelength range 509 to 509 nm, step NA nm 
 ## Label: yellow theatrical &#39;gel&#39;, Rosco supergel no. 312, &#39;canary yellow&#39; 
 ## Transmittance of type &#39;total&#39;
-## Rfr factor (/1): NA, thickness (mm): NA, homogeneous: NA.
+## Rfr factor (/1): NA, thickness (mm): NA, attenuation mode: NA.
 ## 
 ## # A tibble: 1 x 2
 ##   w.length   Tfr
@@ -6170,7 +6172,7 @@ Most frequently used summary methods are implemented for collections of spectra.
 <p>It is possible to supply a time unit to use, instead of the default of seconds, as basis of expression for the returned value. However, be aware that conversion into a different time unit than that used during measurement, is only valid for sources like lamps, which have an output the remains constant in time.</p>
 <div class="sourceCode" id="cb463"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb463-1"><a href="#cb463-1"></a><span class="kw">q_irrad</span>(white_led.source_spct, PAR.wb, <span class="dt">time.unit =</span> <span class="st">&quot;hour&quot;</span>)</span></code></pre></div>
 <pre><code>##    Q_PAR 
-## 1.604526 
+## 1.605632 
 ## attr(,&quot;time.unit&quot;)
 ## [1] &quot;hour&quot;
 ## attr(,&quot;radiation.unit&quot;)

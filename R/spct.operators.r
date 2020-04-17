@@ -1185,7 +1185,7 @@ T2Afr.filter_spct <- function(x,
         x[["Afr"]] <- 1 - x[["Tfr"]]
         if (all(is.na(x[["Afr"]]))) {
           action <- "add"
-          warning("'Tfr.type' or 'Rfr.factor' not available in ')'.")
+          warning("'Tfr.type' or 'Rfr.constant' not available in ')'.")
         }
       }
     } else if (current.Tfr.type == "internal") {
@@ -1389,7 +1389,7 @@ Afr2T.filter_spct <- function(x,
       x[["Tfr"]] <- 1 - x[["Afr"]] - x[["Rfr"]]
     } else {
       properties <- getFilterProperties(x, return.null = FALSE)
-      x[["Tfr"]] <- 1 - x[["Afr"]] - properties[["Rfr.factor"]]
+      x[["Tfr"]] <- 1 - x[["Afr"]] - properties[["Rfr.constant"]]
     }
   } else {
     stop("Invalid 'Tfr.type' attribute: ", current.Tfr.type)
