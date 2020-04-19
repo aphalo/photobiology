@@ -6,7 +6,7 @@ library(microbenchmark)
 
 detectCores()
 
-cluster <- makeCluster(4)
+cluster <- makeCluster(6)
 registerDoParallel(cluster)
 # registerDoParallel(cores=4)
 

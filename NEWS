@@ -1,3 +1,9 @@
+photobiology 0.10.2 (2020-04-20)
+================================
+
+- Fix bug in color_of().
+- Rebuild white LED example spectra.
+
 photobiology 0.10.1 (2020-04-17)
 ================================
 
@@ -6,7 +12,7 @@ describe filters. This required adding a mechanism to store properties of
 filters as metadata, revising the code behind mathematical operations and
 mathematical functions. Also adding conversion methods and obviosly methods
 for setting and retrieving the new metada. It also brings support for
-arbitrary chromaticity definitions to colour ahndling and tagging of spectra.
+arbitrary chromaticity definitions to colour handling and tagging of spectra.
 - Reshufling the code and testing brought to light several bugs and rough
 edges in infrequently used functions, which I have corrected.
 - Some methods gained new specializations for data frames, which were needed
@@ -19,7 +25,7 @@ including changing several ealier warnings into errors.
 filter_properties<-().
 * Add convertTfrType(), convertThickness().
 * Add Afr2T(), any2T(), any2A(), and any2Afr().
-* A print method for filter properties.
+* Add print method for filter properties.
 * Update example data for filters by adding filter properties.
 
 ** Fix bugs and "polish rough edges".
@@ -38,7 +44,7 @@ consistent.
 * Revise rbindspct() to allow control of metadata copying.
 * Add is_absorptance_based().
 
-** Defuct
+** Defunct
 * T2T(), setAfrType(), getAfrType(). No deprecation as not used.
 
 *****************************************************************************

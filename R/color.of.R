@@ -37,7 +37,7 @@ color_of.default <- function(x, ...) {
   if (length(x) == 0) {
     character()
   } else if (is.vector(x)) {
-    warning("'color_of()' not implemented for class ", class(x), ".")
+    warning("'color_of()' not implemented for class \"", class(x)[1], "\".")
     rep(NA_character_, length(x))
   } else if (is.any_spct(x)) {
     warning("To obtain the colour of a filter or reflector, first multiply",
@@ -62,27 +62,37 @@ color_of.numeric <- function(x,
   if (length(x) == 0) {
     return(character())
   }
-  if (is.character(type)) {
+  stopifnot(all(ifelse(is.na(x), Inf, x) > 0)) # w.length > 0 or NA
+  if (is.character(chroma.type)) {
     if (chroma.type == "CMF") {
       color.out <-
-        w_length2rgb(x, sens = photobiology::ciexyzCMF2.spct, color.name = NULL)
+        w_length2rgb(x, sens = photobiology::ciexyzCMF2.spct,
+                     color.name = NULL)
     } else if (chroma.type == "CC") {
       color.out <-
         w_length2rgb(x, sens = photobiology::ciexyzCC2.spct, color.name = NULL)
     } else {
-      warning("Color 'type' = ", chroma.type, " not implemented for 'numeric'.")
+      warning("Chroma type = ", chroma.type, " not implemented for 'numeric'.")
       color.out <- rep(NA_character_, length(x))
     }
-  } else if (is.chroma_spct(type)) {
+    if (!is.null(names(x))) {
+      names(color.out) <- paste(names(x), chroma.type, sep = ".")
+    } else {
+      names(color.out) <- paste(names(color.out), chroma.type, sep = ".")
+    }
+  } else if (is.chroma_spct(chroma.type)) {
     #    warning("Using a CC or CMF definition, RGB may not denote red, green, blue!")
     color.out <-
-      w_length2rgb(x, sens = chroma.type, color.name = NULL)
+      w_length2rgb(x, sens = chroma.type,
+                   color.name = NULL)
+    if (!is.null(names(x))) {
+      names(color.out) <- paste(names(x), "chroma", sep = ".")
+    } else {
+      names(color.out) <- paste(names(color.out), "chroma", sep = ".")
+    }
   } else {
-    warning("Color 'type' of class ", class(type), " not supported.")
+    warning("Chroma type of class \"", class(chroma.type)[1], "\" not supported.")
     color.out <- rep(NA_character_, length(x))
-  }
-  if (!is.null(names(x))) {
-    names(color.out) <- paste(names(x), type, sep = ".")
   }
   color.out
 }
@@ -152,7 +162,7 @@ color_of.waveband <-  function(x,
                                 sens = chroma.type,
                                 color.name = paste(name, "chroma", sep = "."))
   } else {
-    warning("Color 'type' of class ", class(chroma.type), " not supported.")
+    warning("Chroma type of class \"", class(chroma.type)[1], "\" not supported.")
     color <- NA_character_
   }
   return(color)
@@ -175,22 +185,22 @@ color_of.source_spct <- function(x,
     if (chroma.type == "CMF") {
       s_e_irrad2rgb(x[["w.length"]], x[["s.e.irrad"]],
                     sens = photobiology::ciexyzCMF2.spct,
-                    color.name = paste(x.name, "CMF"))
+                    color.name = paste(x.name, "CMF", sep = "."))
     } else if (chroma.type == "CC") {
       s_e_irrad2rgb(x[["w.length"]], x[["s.e.irrad"]],
                     sens = photobiology::ciexyzCC2.spct,
-                    color.name = paste(x.name, "CC"))
+                    color.name = paste(x.name, "CC", sep = "."))
     } else if (chroma.type == "both") {
       c(s_e_irrad2rgb(x[["w.length"]], x[["s.e.irrad"]],
                       sens = photobiology::ciexyzCMF2.spct,
-                      color.name = paste(x.name, "CMF")),
+                      color.name = paste(x.name, "CMF", sep = ".")),
         s_e_irrad2rgb(x[["w.length"]], x[["s.e.irrad"]],
                       sens = photobiology::ciexyzCC2.spct,
-                      color.name = paste(x.name, "CC")))
+                      color.name = paste(x.name, "CC", sep = ".")))
     } else {
-      warning("Color 'type' = ", chroma.type, " not implemented for 'source_spct'.")
+      warning("Chroma type = ", chroma.type, " not implemented for 'source_spct'.")
       color.out <- NA_character_
-      names(color.out) <- paste(x.name, type)
+      names(color.out) <- paste(x.name, chroma.type, sep = ".")
       color.out
     }
   } else if (is.chroma_spct(chroma.type)) {
@@ -198,12 +208,10 @@ color_of.source_spct <- function(x,
     s_e_irrad2rgb(x[["w.length"]],
                   x[["s.e.irrad"]],
                   sens = chroma.type,
-                  color.name = paste(x.name, "chroma"))
+                  color.name = paste(x.name, "chroma", sep = "."))
   } else {
-    warning("Color 'type' of class ", class(chroma.type), " not supported.")
-    color.out <- NA_character_
-    names(color.out) <- paste(x.name, chroma.type)
-    color.out
+    warning("Chroma type of class \"", class(chroma.type)[1], "\" not supported.")
+    NA_character_
   }
 }
 
