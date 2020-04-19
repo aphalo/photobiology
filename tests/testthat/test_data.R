@@ -1,6 +1,6 @@
 library("photobiology")
 
-context("example_data")
+context("example_data_classes")
 
 test_that("any_spct", {
   expect_silent(check_spct(D65.illuminant.spct))
@@ -89,3 +89,50 @@ test_that("any_spct", {
                   c("response_spct", "generic_spct", "tbl_df", "tbl", "data.frame"))
 })
 
+context("example_data_numbers")
+
+test_that("source_spct_data", {
+  expect_equal(round(sun.spct[c(1, 100, 200, 300), "s.e.irrad"], 7),
+               c(0.0000000, 0.4969714, 0.7869773, 0.6573545))
+  expect_equal(sun.spct[c(1, 100, 200, 300), "w.length"],
+               c(280, 378, 478, 578))
+  expect_equal(round(sun.daily.spct[c(1, 100, 200, 300), "s.e.irrad"], 2),
+               c(0.00, 19111.46, 31504.73, 26651.81))
+  expect_equal(sun.daily.spct[c(1, 100, 200, 300), "w.length"],
+               c(280, 378, 478, 578))
+  expect_equal(round(white_led.source_spct[c(1, 100, 200, 300, 500), "s.e.irrad"], 7),
+               c(0, 0, 0, 0, 0.1140273))
+  expect_equal(white_led.source_spct[c(1, 100, 200, 300, 500), "w.length"],
+               c(251.16, 298.05, 345.19, 392.09, 485.15))
+})
+
+test_that("response_spct_data", {
+  expect_equal(round(ccd.spct[c(1, 50, 100, 150), "s.q.response"], 7),
+               c(0.6228370, 0.6164968, 0.7302462, 0.3238695))
+  expect_equal(round(ccd.spct[c(1, 50, 100, 150), "w.length"], 4),
+               c(205.7957, 356.4036, 709.5212, 958.3967))
+  expect_equal(round(photodiode.spct[c(1, 25, 50, 75), "s.e.response"], 8),
+               c(0.02064991, 0.11857684, 0.18065186, 0.06727758))
+  expect_equal(round(photodiode.spct[c(1, 25, 50, 75), "w.length"], 4),
+               c(300.0000, 389.5422, 480.6899, 501.9237))
+})
+
+test_that("filter_spct_data", {
+  expect_equal(round(polyester.spct[c(1, 100, 200, 300), "Tfr"], 3),
+               c(0.011, 0.004, 0.904, 0.925))
+  expect_equal(polyester.spct[c(1, 100, 200, 300), "w.length"],
+               c(190, 289, 389, 489))
+  expect_equal(round(yellow_gel.spct[c(1, 100, 200, 300, 400), "Tfr"], 5),
+               c(0.00100, 0.00001, 0.00001, 0.10100, 0.89300))
+  expect_equal(yellow_gel.spct[c(1, 100, 200, 300, 400), "w.length"],
+               c(190, 289, 389, 489, 589))
+})
+
+test_that("object_spct_data", {
+  expect_equal(round(Ler_leaf.spct[c(1, 500, 1000, 1500, 2000), "Tfr"], 8),
+               c(0.00000000, 0.01057526, 0.03689410, 0.07965146, 0.41962118))
+  expect_equal(round(Ler_leaf.spct[c(1, 500, 1000, 1500, 2000), "Rfr"], 8),
+               c(0.04668778, 0.03785808, 0.06234386, 0.08139910, 0.56057470))
+  expect_equal(Ler_leaf.spct[c(1, 500, 1000, 1500, 2000), "w.length"],
+               c(250.00, 374.75, 499.75, 624.75, 749.75))
+})
