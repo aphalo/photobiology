@@ -282,7 +282,7 @@ test_that("convertTfrType_properties", {
   expect_named(convertTfrType(f.spct), c("w.length", "Tfr"))
 
   expect_silent(convertTfrType(f.spct, Tfr.type = "internal"))
-  expect_true(all(convertTfrType(f.spct, Tfr.type = "internal")[["Tfr"]] == 1))
+  expect_true(all(is.na(convertTfrType(f.spct, Tfr.type = "internal")[["Tfr"]])))
   expect_true(all(convertTfrType(f.spct, Tfr.type = "internal")[["Rfr"]] == 0.5))
   # add "ignore.order = TRUE" if needed!
   expect_named(convertTfrType(f.spct, Tfr.type = "internal"), c("w.length", "Tfr"))

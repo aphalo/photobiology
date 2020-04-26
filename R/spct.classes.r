@@ -3407,6 +3407,13 @@ convertTfrType <- function(x, Tfr.type = NULL) {
   if (is.filter_spct(z)) {
     # no spectral Rfr available, we use a factor
     properties <- filter_properties(x)
+    if (is.na(properties[["attenuation.mode"]]) ||
+        properties[["attenuation.mode"]] != "absorption") {
+      properties[["Rfr.constant"]] <- NA_real_
+      if (!is.na(properties[["attenuation.mode"]])) {
+        warning("Setting internal Tfr to NA as filter is not absorptive")
+      }
+    }
     if (is.na(current.Tfr.type)) {
       warning("Current Tfr type is not set, returning NAs.")
     }
