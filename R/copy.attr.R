@@ -276,7 +276,7 @@ merge_attributes.generic_spct <- function(x, y, z,
   if (length(which) == 0) {
     which <- c(all_spct_attr.ls[["private"]],
                all_spct_attr.ls[["generic_spct"]],
-               all_spct_attr.ls[[class(y)[1]]])
+               all_spct_attr.ls[[class(z)[1]]])
   }
   # skip attributes that are easily invalidated
   which <- setdiff(which, which.not)

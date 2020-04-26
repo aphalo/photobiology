@@ -737,7 +737,7 @@ merge2object_spct <- function(x, y,
     yy <- x
   }
 
-  xx <- A2T(xx, action = "replace", byref = FALSE)
+  xx <- any2T(xx, action = "replace")
   xx <- interpolate_spct(spct = xx,
                          w.length.out = w.length.out,
                          fill = NA,
@@ -764,7 +764,7 @@ merge2object_spct <- function(x, y,
     Tfr.type <- "total"
   }
   setObjectSpct(z, Tfr.type = Tfr.type, Rfr.type = Rfr.type)
-  zz <- merge_attributes(x, y, z)
+  zz <- merge_attributes(x, y, z, which.not = c("Tfr.type", "Rfr.type", "comment"))
 
   comment(zz) <- paste("Merged spectrum\ncomment(x):\n",
                       comment(x),

@@ -199,43 +199,8 @@ interpolate_spct <- function(spct,
       new.spct[[data.col]] <- new.values
     }
   }
-  if (class_spct[1] == "source_spct") {
-    setSourceSpct(new.spct,
-                  time.unit = getTimeUnit(spct),
-                  bswf.used = getBSWFUsed(spct))
-  } else if (class_spct[1] == "filter_spct") {
-    setFilterSpct(new.spct,
-                  Tfr.type = getTfrType(spct))
-  } else if (class_spct[1] == "reflector_spct") {
-    setReflectorSpct(new.spct,
-                     Rfr.type = getRfrType(spct))
-  } else if (class_spct[1] == "object_spct") {
-    setObjectSpct(new.spct,
-                  Tfr.type = getTfrType(spct),
-                  Rfr.type = getRfrType(spct))
-  } else if (class_spct[1] == "response_spct") {
-    setResponseSpct(new.spct,
-                    time.unit = getTimeUnit(spct)
-    )
-  } else if (class_spct[1] == "chroma_spct") {
-    setChromaSpct(new.spct)
-  } else if (class_spct[1] == "raw_spct") {
-    setRawSpct(new.spct)
-    setInstrDesc(new.spct, getInstrDesc(spct))
-    setInstrSettings(new.spct, getInstrSettings(spct))
-  } else if (class_spct[1] == "cps_spct") {
-    setCpsSpct(new.spct)
-    setInstrDesc(new.spct, getInstrDesc(spct))
-    setInstrSettings(new.spct, getInstrSettings(spct))
-  } else if (class_spct[1] == "generic_spct") {
-    setGenericSpct(new.spct)
-  }
-  setWhenMeasured(new.spct, getWhenMeasured(spct))
-  setWhereMeasured(new.spct, getWhereMeasured(spct))
-  setNormalized(new.spct, getNormalized(spct))
-  setScaled(new.spct, getScaled(spct))
-  comment(new.spct) <- comment(spct)
-  return(new.spct)
+  setGenericSpct(new.spct)
+  copy_attributes(spct, new.spct, copy.class = TRUE)
 }
 
 #' @rdname interpolate_spct

@@ -1,7 +1,10 @@
-photobiology 0.10.2 (2020-04-20)
+photobiology 0.10.2 (2020-04-26)
 ================================
 
 - Fix bug in color_of().
+- Fix bug in merge2object_spct().
+- Fix bug in merge_attributes().
+- Fix bug in interpolate_spct().
 - Rebuild white LED example spectra.
 
 photobiology 0.10.1 (2020-04-17)
