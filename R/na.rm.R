@@ -88,6 +88,7 @@ na.omit.generic_spct <- function(object,
     z <- object[rows_to_keep, ]
 #    z <- copy_attributes(object, z, copy.class = TRUE)
   }
+  z <- copy_attributes(object, z)
   class(rows_to_omit) <- na.action
   attr(z, "na.action") <- rows_to_omit
   z
