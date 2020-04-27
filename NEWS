@@ -14,15 +14,15 @@ photobiology 0.10.1 (2020-04-17)
 - This update brings improved handling of conversions among quantities used to
 describe filters. This required adding a mechanism to store properties of
 filters as metadata, revising the code behind mathematical operations and
-mathematical functions. Also adding conversion methods and obviosly methods
-for setting and retrieving the new metada. It also brings support for
+mathematical functions. Also adding conversion methods and obviously methods
+for setting and retrieving the new metadata. It also brings support for
 arbitrary chromaticity definitions to colour handling and tagging of spectra.
-- Reshufling the code and testing brought to light several bugs and rough
+- Reshuffling the code and testing brought to light several bugs and rough
 edges in infrequently used functions, which I have corrected.
 - Some methods gained new specializations for data frames, which were needed
-to streamline some of the statstics in package 'ggspectra'.
+to streamline some of the statistics in package 'ggspectra'.
 - This update also brings some changes to error checking and messages,
-including changing several ealier warnings into errors.
+including changing several earlier warnings into errors.
 
 ** New
 * Add setFilterProperties(), getFilterProperties(), filter_properties() and
@@ -42,7 +42,7 @@ respected also when span = NULL. This affects all peaks- and valleys-related
 methods. Changes return values for the previously undocumented use of negative
 threshold values and with span = NULL and strict = TRUE as arguments.
 * Add wls_at_target() method for data frames.
-* Revise wls_at_target() methods for consistentcy, add examples.
+* Revise wls_at_target() methods for consistency, add examples.
 * Revise rbindspct() to not add columns to returned value when input is
 consistent.
 * Revise rbindspct() to allow control of metadata copying.
