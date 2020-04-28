@@ -15,8 +15,10 @@
 #'   list of wavebands as second argument.
 #' @param ... additional arguments passed to f
 #'
-#' @return A numeric value for the index, or a tibble depending on whether
-#'   a spectrum or a collection of spectra is passed as first argument.
+#' @return A named numeric value for the index, or a tibble depending on whether
+#'   a spectrum or a collection of spectra is passed as first argument. If
+#'   the wavelength range of \code{spct} does not fully overlap with both
+#'   wavebands \code{NA} is silently returned.
 #'
 #' @export
 #'
@@ -72,13 +74,21 @@ normalized_diff_ind.default <-
 #' @export
 #'
 normalized_diff_ind.generic_spct <- function(spct, plus.w.band, minus.w.band, f, ...) {
-  x <- as.numeric(f(spct, list(plus.w.band, minus.w.band), ...))
-  z <- (x[1] - x[2]) / (x[1] + x[2])
-  name <- paste("NDI ", as.character(substitute(f)), " [",
-                sub("range.", "", labels(plus.w.band)$label), "] - [",
-                sub("range.", "", labels(minus.w.band)$label), "]")
-  names(z) <- name
-  z
+  # check that spectral data fully covers both wavebands
+  min.wl.bands <- min(wl_min(plus.w.band), wl_min(minus.w.band))
+  max.wl.bands <- max(wl_max(plus.w.band), wl_max(minus.w.band))
+  if (wl_min(spct) > min.wl.bands || wl_max(spct) < max.wl.bands) {
+    NA_real_
+  } else {
+    x <- as.numeric(f(spct, list(plus.w.band, minus.w.band), ...))
+    z <- (x[1] - x[2]) / (x[1] + x[2])
+    name <- paste("NDI ", as.character(substitute(f)), " [",
+                  sub("range.", "", labels(plus.w.band)$label), "] - [",
+                  sub("range.", "", labels(minus.w.band)$label), "]",
+                  sep = "")
+    names(z) <- name
+    z
+  }
 }
 
 #' @describeIn normalized_diff_ind
@@ -92,3 +102,5 @@ normalized_diff_ind.generic_mspct <- function(spct, plus.w.band, minus.w.band, f
          f = f,
          ...)
 }
+
+
