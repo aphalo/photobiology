@@ -734,8 +734,8 @@ q_ratio(filtered_sun,
 
 ## -----------------------------------------------------------------------------
 normalized_diff_ind(sun.spct,
-                    waveband(c(400, 700)), waveband(c(700, 1100)),
-                    irrad)
+                    waveband(c(400, 500)), waveband(c(600, 700)),
+                    q_irrad)
 
 ## -----------------------------------------------------------------------------
 transmittance(polyester.spct, list(UVB.wb, UVA.wb, PAR.wb))
