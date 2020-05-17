@@ -39,8 +39,8 @@
 #'
 Rfr_from_n <- function(angle_deg, angle = angle_deg / 180 * pi,
                        n = 1.5, p_fraction = 0.5) {
-  stopifnot(p_fraction >= 0 && p_fraction <= 1)
-  stopifnot(angle >= 0 && angle <= pi / 2)
+  stopifnot(all(p_fraction >= 0 & p_fraction <= 1))
+  stopifnot(all(angle >= 0 & angle <= pi / 2))
   if (is.generic_spct(n)) {
     z <- reflector_spct(w.length = n[["w.length"]],
                    Rfr = Rfr_from_n(angle = angle,
