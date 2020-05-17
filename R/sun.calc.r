@@ -722,20 +722,42 @@ night_length <- function(date = lubridate::now(),
               unit.out = unit.out)[["nightlength"]]
 }
 
-#' Convert date to time-of-day in hours, minutes or seconds
+#' Convert datetime to time-of-day
+#'
+#' Convert a datetime into a time of day expressed in hours, minutes or seconds
+#' from midnight in local time for a time zone. This conversion is useful when
+#' time-series data for different days needs to be compared or plotted based on
+#' the local time-of-day.
 #'
 #' @param x a datetime object accepted by lubridate functions
-#' @param unit.out character string, One of "datetime", "hour", "minute", or "second".
+#' @param unit.out character string, One of "tod_time", "hours", "minutes", or "seconds".
 #' @param tz character string indicating time zone to be used in output.
 #'
+#' @return A numeric vector of the same length as \code{x}. If
+#'   \code{unit.out = "tod_time"} an object of class \code{"tod_time"} which
+#'   the same as for \code{unit.out = "hours"} but with the class attribute
+#'   set, which dispatches to special \code{format()} nad \code{print()}
+#'   methods.
+#'
 #' @export
+#'
+#' @examples
+#' library(lubridate)
+#' my_instants <- ymd_hms("2020-05-17 12:05:03") + days(c(0, 30))
+#' my_instants
+#' as_tod(my_instants)
+#' as_tod(my_instants, unit.out = "tod_time")
 #'
 as_tod <- function(x, unit.out = "hours", tz = NULL) {
   stopifnot(lubridate::is.timepoint(x))
   if (!is.null(tz)) {
     x <- lubridate::with_tz(x, tzone = tz[1])
   }
-  if (unit.out == "hours") {
+  if (unit.out == "tod_time") {
+    tod <- lubridate::hour(x) + lubridate::minute(x) / 60 + lubridate::second(x) / 3600
+    class(tod) <- c("tod_time", class(tod))
+    tod
+  } else if (unit.out == "hours") {
     lubridate::hour(x) + lubridate::minute(x) / 60 + lubridate::second(x) / 3600
   } else if (unit.out == "minutes") {
     lubridate::hour(x) * 60 + lubridate::minute(x) + lubridate::second(x) / 60
@@ -744,6 +766,44 @@ as_tod <- function(x, unit.out = "hours", tz = NULL) {
   } else {
     stop("Unrecognized 'unit.out': ", unit.out)
   }
+}
+
+#' Encode in a Common Format
+#'
+#' Format a \code{tod_time} object for pretty printing
+#'
+#' @param x an R object
+#' @param ... ignored
+#' @param sep character used as separator
+#'
+#' @family astronomy related functions
+#'
+#' @export
+#'
+format.tod_time <- function(x, ..., sep = ":") {
+  hours <- as.integer(trunc(x))
+  minutes <- as.integer((x * 60) %% 60)
+  seconds <- as.integer((x * 3600) %% 60)
+  fmt <- paste(rep("%02d", 3), collapse = sep)
+  time_string <-
+    sprintf(fmt = fmt, hours, minutes, seconds)
+  time_string
+}
+
+#' Print time-of-day objects
+#'
+#' @param x an R object
+#' @param ... passed to \code{format} method
+#'
+#' @family astronomy related functions
+#'
+#' @note Default is to print the underlying \code{numeric} vector as a solar time.
+#'
+#' @export
+#'
+print.tod_time <- function(x, ...) {
+  print(format(x, ...))
+  invisible(x)
 }
 
 #' Local solar time
