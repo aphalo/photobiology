@@ -642,11 +642,11 @@ check_spct.source_spct <-
       min.limit <- -0.10 # we accept small negative values
       if (exists("s.e.irrad", x, inherits = FALSE) &&
           !all(is.na(x[["s.e.irrad"]]))) {
-        s.e.range <- range(0, x$s.e.irrad, na.rm = TRUE)
-        s.e.spread <- diff(s.e.range)
+        s.e.range <- range(x$s.e.irrad, na.rm = TRUE)
+        s.e.spread <- s.e.range[2] # for irradiance zero is meaningful
         # we need to be fairly lax as dark reference spectra may have
         # proportionally lots of noise.
-        if (s.e.range[1] < (min.limit * (max(s.e.spread, 0.04)) )) {
+        if (s.e.range[1] < (min.limit * max(s.e.spread, 0.04) )) {
           message.text <-
             paste(
               "Negative spectral energy irradiance values; minimum s.e.irrad =",
@@ -666,7 +666,7 @@ check_spct.source_spct <-
       if (exists("s.q.irrad", x, inherits = FALSE) &&
           !all(is.na(x[["s.q.irrad"]]))) {
         s.q.range <- range(x$s.q.irrad, na.rm = TRUE)
-        s.q.spread <- diff(s.q.range)
+        s.q.spread <- s.q.range[2] # zero is meaningful
         # we need to be fairly lax as dark reference spectra may have
         # proportionally lots of noise.
         if (s.q.range[1] < (min.limit * (max(s.q.spread, 1e-5)) )) {
@@ -765,6 +765,9 @@ check_spct.chroma_spct <-
 #' by reference!}
 #'
 #' @param x an R object.
+#' @param keep.classes character vector Names of classes to keep. Can be used
+#'   to retain base class "generic_spct".
+#'
 #' @export
 #'
 #' @note If \code{x} is an object of any of the spectral classes defined
@@ -785,11 +788,14 @@ check_spct.chroma_spct <-
 #' class(sun.spct)
 #' class(my.spct)
 #'
-rmDerivedSpct <- function(x) {
+rmDerivedSpct <- function(x, keep.classes = NULL) {
   name <- substitute(x)
   allclasses <- class(x)
-  class(x) <- setdiff(allclasses, spct_classes())
-  attr(x, "spct.version") <- NULL
+  classes2remove <- setdiff(spct_classes(), keep.classes)
+  class(x) <- setdiff(allclasses, classes2remove)
+  if (!is.generic_spct(x)) {
+    attr(x, "spct.version") <- NULL
+  }
   if (is.name(name)) {
     name <- as.character(name)
     assign(name, x, parent.frame(), inherits = TRUE)
