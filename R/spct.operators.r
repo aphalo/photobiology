@@ -677,6 +677,17 @@ f_dispatcher_spct <- function(x, .fun, ...) {
 #' @param x an object of class "generic_spct"
 #' @param base a positive number: the base with respect to which logarithms are
 #'   computed. Defaults to e=exp(1).
+#'
+#' @return An object of the same class as \code{x}.
+#'
+#' @note In most cases a logarithm of an spectral quantity will yield off-range
+#'   values. For this reason unless \code{x} is an object of base class
+#'   \code{generic_spct}, checks will not be passed, resulting in warnings or
+#'   errors.
+#'
+#' @examples
+#' log10(as.generic_spct(sun.spct))
+#'
 #' @export
 #' @family math operators and functions
 #'
