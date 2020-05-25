@@ -2138,7 +2138,7 @@ Comparison of spectra for which data is expressed at different discrete waveleng
 
 The function can be used to compare pairs of spectra, stored as a collection. In the next example we compare two `source_spct` objects using defaults for most arguments.
 
-```{r, eval=FALSE}
+```{r}
 compare_spct(source_mspct(list(sun1 = sun.spct, sun2 = sun.spct * 2)))
 ```
 
@@ -2146,7 +2146,7 @@ The value returned by default is a `generic_spct` object containing the computed
 
 In this example we compare two `filter_spct` objects, using summaries over 50-nm-wide bands, and using an operator returning a logical value for the comparison instead of the default division operator.
 
-```{r, eval=FALSE}
+```{r}
 compare_spct(filter_mspct(list(pet = polyester.spct,
                               yllw = yellow_gel.spct)),
              w.band = 50,

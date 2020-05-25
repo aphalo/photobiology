@@ -255,11 +255,13 @@ reference:
     - is.solar_time
     - is.solar_date
     - as_tod
+    - format.tod_time
+    - print.tod_time
     - tz_time_diff
     - day_night
     - sun_angles
-    - print.solar_time
     - format.solar_time
+    - print.solar_time
     - validate_geocode
 
   - title: Atmosphere
@@ -267,6 +269,12 @@ reference:
     contents:
     - water_vp_sat
     - relative_AM
+
+  - title: Optics
+    desc: Computations related to radiation physics.
+    contents:
+    - diffraction_single_slit
+    - Rfr_from_n
 
   - title: Datasets
   - subtitle: Data for radiation sources
