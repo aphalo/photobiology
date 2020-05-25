@@ -3,7 +3,9 @@ photobiology 0.10.3 (2020-05-xx)
 
 * Handle gracefully bad data input in normalised_diff_ind().
 * Implement Fresnel's formulae for computation of reflectance of a plane
-interface.
+interface from relative refractive index.
+* Implement Fraunhofer's formulae for computation of diffraction in a single
+slit and diffraction plus interference in a double slit.
 * Enhance as_tod() and implement format() and print() methods for time-of-day.
 
 photobiology 0.10.2 (2020-04-26)
