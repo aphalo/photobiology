@@ -26,6 +26,10 @@ spct_classes <- function() {
 #'
 #' @family data validity check functions
 #'
+#' @return The previous value of the option, which can be passed as argument
+#'   to function \code{set_check_spct()} to restore the previous state of the
+#'   option.
+#'
 #' @export
 #'
 enable_check_spct <- function() {
