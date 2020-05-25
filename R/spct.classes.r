@@ -29,7 +29,7 @@ spct_classes <- function() {
 #' @export
 #'
 enable_check_spct <- function() {
-  options(photobiology.check.spct = TRUE)
+  options(photobiology.check.spct = TRUE)[[1]]
 }
 
 #' @rdname enable_check_spct
@@ -37,7 +37,18 @@ enable_check_spct <- function() {
 #' @export
 #'
 disable_check_spct <- function() {
-  options(photobiology.check.spct = FALSE)
+  options(photobiology.check.spct = FALSE)[[1]]
+}
+
+#' @rdname enable_check_spct
+#'
+#' @param x logical Flag to enable (TRUE), disable (FALSE) or unset (NULL)
+#'   option.
+#'
+#' @export
+#'
+set_check_spct <- function(x) {
+  options(photobiology.check.spct = x)[[1]]
 }
 
 #' Check validity of spectral objects
