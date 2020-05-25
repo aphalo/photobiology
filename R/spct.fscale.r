@@ -452,6 +452,9 @@ fscale.generic_mspct <- function(x,
 #' @keywords internal
 #'
 fscale_spct <- function(spct, range, col.names, f, target, set.scaled, ...) {
+  # Skip checks for intermediate results
+  prev_state <- disable_check_spct()
+  on.exit(set_check_spct(prev_state), add = TRUE)
   # re-scaling will wipe out any existing normalization
   if (is_normalized(spct)) {
     setNormalized(spct, norm = FALSE)
@@ -509,7 +512,7 @@ fscale_spct <- function(spct, range, col.names, f, target, set.scaled, ...) {
   } else {
     spct <- setScaled(spct, scaled = FALSE)
   }
-  spct
+  check_spct(spct)
 }
 
 # is_scaled function ----------------------------------------------------

@@ -98,6 +98,9 @@ compare_spct <- function(x,
        f.name <- "summary.fun"
      }
   }
+  # Skip checks for intermediate results
+  prev_state <- disable_check_spct()
+  on.exit(set_check_spct(prev_state), add = TRUE)
   # we accept a collection with two members (easy to change to accept more)
   stopifnot(is.any_mspct(x), length(x) == 2)
   # keep overlapping wavelength range
@@ -140,6 +143,7 @@ compare_spct <- function(x,
                use.hinges = use.hinges,
                short.names = short.names)
     }
+    z <- check_spct(z)
   } else if (!returned.value == "data.frame") {
     warning("Returning a data frame as argument \"", returned.value,
             "\" passed to 'returned.value' is unknown.")

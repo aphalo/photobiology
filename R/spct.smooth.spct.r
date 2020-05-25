@@ -74,8 +74,10 @@ smooth_spct.source_spct <- function(x, method = "custom", strength = 1, na.rm = 
     }
   }
 
-  # we disable range checks for spectra until end of function
-  old.options <- options(photobiology.strict.range = NA_integer_)
+  # Skip checks for intermediate results
+  # as intermediate values may be off-range
+  prev_state <- disable_check_spct()
+  on.exit(set_check_spct(prev_state), add = TRUE)
   if (method == "lowess") {
     span = 1/50 * strength
     if ("s.e.irrad" %in% names(x)) {
@@ -163,7 +165,6 @@ smooth_spct.source_spct <- function(x, method = "custom", strength = 1, na.rm = 
                                   signif(smooth_limit, 3))
     }
   }
-  options(old.options)
   out.spct <- copy_attributes(x, out.spct)
   comment(out.spct) <- comment.text
   check_spct(out.spct)
@@ -200,8 +201,10 @@ smooth_spct.filter_spct <- function(x, method = "custom", strength = 1, na.rm = 
     }
   }
 
-  # we disable range checks for spectra until end of function
-  old.options <- options(photobiology.strict.range = NA_integer_)
+  # Skip checks for intermediate results
+  # as intermediate values may be off-range
+  prev_state <- disable_check_spct()
+  on.exit(set_check_spct(prev_state), add = TRUE)
   if (method == "lowess") {
     span = 1/50 * strength
     if ("Tfr" %in% names(x)) {
@@ -289,7 +292,6 @@ smooth_spct.filter_spct <- function(x, method = "custom", strength = 1, na.rm = 
       comment.text <- paste("Smoothed using 'custom', smooth_limit =", signif(smooth_limit, 3))
     }
   }
-  options(old.options)
   out.spct <- copy_attributes(x, out.spct)
   comment(out.spct) <- comment.text
   check_spct(out.spct)
@@ -316,8 +318,11 @@ smooth_spct.reflector_spct <- function(x, method = "custom", strength = 1, na.rm
       return(x)
     }
   }
-  # we disable range checks for spectra until end of function
-  old.options <- options(photobiology.strict.range = NA_integer_)
+
+  # Skip checks for intermediate results
+  # as intermediate values may be off-range
+  prev_state <- disable_check_spct()
+  on.exit(set_check_spct(prev_state), add = TRUE)
   if (method == "lowess") {
     span = 1/50 * strength
     if ("Rfr" %in% names(x)) {
@@ -389,7 +394,6 @@ smooth_spct.reflector_spct <- function(x, method = "custom", strength = 1, na.rm
       comment.text <- paste("Smoothed using 'custom', smooth_limit =", signif(smooth_limit, 3))
     }
   }
-  options(old.options)
   out.spct <- copy_attributes(x, out.spct)
   comment(out.spct) <- comment.text
   check_spct(out.spct)
@@ -426,8 +430,10 @@ smooth_spct.response_spct <- function(x, method = "custom", strength = 1, na.rm 
     }
   }
 
-  # we disable range checks for spectra until end of function
-  old.options <- options(photobiology.strict.range = NA_integer_)
+  # Skip checks for intermediate results
+  # as intermediate values may be off-range
+  prev_state <- disable_check_spct()
+  on.exit(set_check_spct(prev_state), add = TRUE)
   if (method == "lowess") {
     span = 1/50 * strength
     if ("s.e.response" %in% names(x)) {
@@ -515,7 +521,6 @@ smooth_spct.response_spct <- function(x, method = "custom", strength = 1, na.rm 
       comment.text <- paste("Smoothed using 'custom', smooth_limit =", signif(smooth_limit, 3))
     }
   }
-  options(old.options)
   out.spct <- copy_attributes(x, out.spct)
   comment(out.spct) <- comment.text
   check_spct(out.spct)
