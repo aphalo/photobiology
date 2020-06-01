@@ -12,7 +12,7 @@
 
 <meta name="author" content="Pedro J. Aphalo" />
 
-<meta name="date" content="2020-05-11" />
+<meta name="date" content="2020-06-01" />
 
 <title>User Guide: 2 Radiation</title>
 
@@ -304,7 +304,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <h1 class="title toc-ignore">User Guide: 2 Radiation</h1>
 <h3 class="subtitle">Package ‘photobiology’ 0.10.2.9000</h3>
 <h4 class="author">Pedro J. Aphalo</h4>
-<h4 class="date">2020-05-11</h4>
+<h4 class="date">2020-06-01</h4>
 
 
 <div id="TOC">
@@ -2389,7 +2389,7 @@ There are cases where functions <code>convolve_each()</code> and <code>msmsply()
 <span id="cb206-3"><a href="#cb206-3"></a>              <span class="dt">col.names =</span> <span class="kw">c</span>(<span class="st">&quot;lon&quot;</span>, <span class="st">&quot;lat&quot;</span>, <span class="st">&quot;when.measured&quot;</span>))</span></code></pre></div>
 <pre><code>## # A tibble: 2 x 5
 ##   spct.idx Q_Total   lon   lat when.measured      
-## * &lt;fct&gt;      &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dttm&gt;             
+##   &lt;fct&gt;      &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dttm&gt;             
 ## 1 A        0.00126  25.0  60.2 2015-10-31 08:00:00
 ## 2 B        0.00251  25.0  60.2 2015-10-31 09:00:00</code></pre>
 <p>We can set the desired names for the columns if we wish them to be something else than the default.</p>
@@ -2400,7 +2400,7 @@ There are cases where functions <code>convolve_each()</code> and <code>msmsply()
 <span id="cb208-5"><a href="#cb208-5"></a>                            <span class="dt">when.measured =</span> <span class="st">&quot;time&quot;</span>))</span></code></pre></div>
 <pre><code>## # A tibble: 2 x 5
 ##   spct.idx Q_Total longitude latitude time               
-## * &lt;fct&gt;      &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt; &lt;dttm&gt;             
+##   &lt;fct&gt;      &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt; &lt;dttm&gt;             
 ## 1 A        0.00126      25.0     60.2 2015-10-31 08:00:00
 ## 2 B        0.00251      25.0     60.2 2015-10-31 09:00:00</code></pre>
 </div>
@@ -6316,7 +6316,7 @@ Most frequently used summary methods are implemented for collections of spectra.
 <span id="cb504-4"><a href="#cb504-4"></a>        <span class="dt">attr2tb =</span> <span class="kw">c</span>(<span class="dt">when.measured =</span> <span class="st">&quot;time&quot;</span>, <span class="dt">lon =</span> <span class="st">&quot;lon&quot;</span>, <span class="dt">lat =</span> <span class="st">&quot;lat&quot;</span>))</span></code></pre></div>
 <pre><code>## # A tibble: 2 x 5
 ##   spct.idx Q_PAR time                  lon   lat
-## * &lt;fct&gt;    &lt;dbl&gt; &lt;dttm&gt;              &lt;dbl&gt; &lt;dbl&gt;
+##   &lt;fct&gt;    &lt;dbl&gt; &lt;dttm&gt;              &lt;dbl&gt; &lt;dbl&gt;
 ## 1 sun1      894. 2010-06-22 09:51:00  25.0  60.2
 ## 2 sun2     1788. 2010-06-22 09:51:00  25.0  60.2</code></pre>
 <p>For a more advanced example, we reuse the collection of filter spectra <code>filters.mspct</code> from an earlier section. We convolve each filter’s spectral transmittance by the spectral irradiance of the light source so as to predict the irradiances under the filters. We specify the name of the column where the names of the spectra (their index) is stored.</p>
@@ -6545,7 +6545,7 @@ Most frequently used summary methods are implemented for collections of spectra.
 <span id="cb549-4"><a href="#cb549-4"></a>              <span class="dt">attr2tb =</span> <span class="kw">c</span>(<span class="st">&quot;what.measured&quot;</span> =<span class="st"> &quot;Filter type&quot;</span>))</span></code></pre></div>
 <pre><code>## # A tibble: 3 x 3
 ##   spct.idx     UVA `Filter type`                                                
-## * &lt;fct&gt;      &lt;dbl&gt; &lt;chr&gt;                                                        
+##   &lt;fct&gt;      &lt;dbl&gt; &lt;chr&gt;                                                        
 ## 1 none     1.00    theoretical fully transparent object                         
 ## 2 pet      0.783   clear polyester film                                         
 ## 3 yellow   0.00160 yellow theatrical &#39;gel&#39;, Rosco supergel no. 312, &#39;canary yel~</code></pre>
@@ -6616,45 +6616,67 @@ Most frequently used summary methods are implemented for collections of spectra.
 <p>Comparison of spectra for which data is expressed at different discrete wavelength values can be easily affected by bias if interpolation is used. Function <code>compare_spct()</code> does a coarse grained comparison by first summarizing each spectrum over consecutive ranges of wavelengths, and then applying a comparison function to these summary values.</p>
 <p>The function can be used to compare pairs of spectra, stored as a collection. In the next example we compare two <code>source_spct</code> objects using defaults for most arguments.</p>
 <div class="sourceCode" id="cb563"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb563-1"><a href="#cb563-1"></a><span class="kw">compare_spct</span>(<span class="kw">source_mspct</span>(<span class="kw">list</span>(<span class="dt">sun1 =</span> sun.spct, <span class="dt">sun2 =</span> sun.spct <span class="op">*</span><span class="st"> </span><span class="dv">2</span>)))</span></code></pre></div>
+<pre><code>## Object: generic_spct [52 x 6]
+## Wavelength range 285 to 795 nm, step 10 nm 
+## 
+## # Description: generic_spct[,6] [52 x 6]
+##   w.length wl.min wl.max sun1.irrad sun2.irrad comparison.result
+## *    &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;             &lt;dbl&gt;
+## 1      285    280    290    0          0                     NaN
+## 2      295    290    300    0.00204    0.00407                 2
+## 3      305    300    310    0.203      0.406                   2
+## 4      315    310    320    1.13       2.26                    2
+## # ... with 48 more rows</code></pre>
 <p>The value returned by default is a <code>generic_spct</code> object containing the computed summaries for each waveband plus the result of the comparison between the summaries. The first three columns contain the wavelength at the midpoint of the wavelength range of waveband plus its extremes.</p>
 <p>In this example we compare two <code>filter_spct</code> objects, using summaries over 50-nm-wide bands, and using an operator returning a logical value for the comparison instead of the default division operator.</p>
-<div class="sourceCode" id="cb564"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb564-1"><a href="#cb564-1"></a><span class="kw">compare_spct</span>(<span class="kw">filter_mspct</span>(<span class="kw">list</span>(<span class="dt">pet =</span> polyester.spct,</span>
-<span id="cb564-2"><a href="#cb564-2"></a>                              <span class="dt">yllw =</span> yellow_gel.spct)),</span>
-<span id="cb564-3"><a href="#cb564-3"></a>             <span class="dt">w.band =</span> <span class="dv">50</span>,</span>
-<span id="cb564-4"><a href="#cb564-4"></a>            <span class="dt">.comparison.fun =</span> <span class="st">`</span><span class="dt">&lt;</span><span class="st">`</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb565"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb565-1"><a href="#cb565-1"></a><span class="kw">compare_spct</span>(<span class="kw">filter_mspct</span>(<span class="kw">list</span>(<span class="dt">pet =</span> polyester.spct,</span>
+<span id="cb565-2"><a href="#cb565-2"></a>                              <span class="dt">yllw =</span> yellow_gel.spct)),</span>
+<span id="cb565-3"><a href="#cb565-3"></a>             <span class="dt">w.band =</span> <span class="dv">50</span>,</span>
+<span id="cb565-4"><a href="#cb565-4"></a>            <span class="dt">.comparison.fun =</span> <span class="st">`</span><span class="dt">&lt;</span><span class="st">`</span>)</span></code></pre></div>
+<pre><code>## Object: generic_spct [12 x 6]
+## Wavelength range 215 to 765 nm, step 50 nm 
+## 
+## # Description: generic_spct[,6] [12 x 6]
+##   w.length wl.min wl.max pet.transmittance yllw.transmittance comparison.result
+## *    &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;             &lt;dbl&gt;              &lt;dbl&gt; &lt;lgl&gt;            
+## 1      215    190    240           0.00862          0.000169  TRUE             
+## 2      265    240    290           0.00385          0.0000100 TRUE             
+## 3      315    290    340           0.292            0.00221   TRUE             
+## 4      365    340    390           0.861            0.000815  TRUE             
+## # ... with 8 more rows</code></pre>
 </div>
 <div id="rgb-colours" class="section level2">
 <h2>RGB colours</h2>
 <p>Different <code>color_of()</code> methods allow calculation of RGB color values for light sources or objects. The returned values are R color definitions. Method <code>color_of()</code> works rather differently depending on the object. The method for <code>numeric</code> vectors assumes the numbers are wavelengths in nanometers, and returns a vector of color definitions of the same length assuming monochromatic light.</p>
-<div class="sourceCode" id="cb565"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb565-1"><a href="#cb565-1"></a><span class="kw">color_of</span>(<span class="dv">550</span>) <span class="co"># green</span></span></code></pre></div>
+<div class="sourceCode" id="cb567"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb567-1"><a href="#cb567-1"></a><span class="kw">color_of</span>(<span class="dv">550</span>) <span class="co"># green</span></span></code></pre></div>
 <pre><code>## wl.550.nm.CMF 
 ##     &quot;#00FF00&quot;</code></pre>
-<div class="sourceCode" id="cb567"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb567-1"><a href="#cb567-1"></a><span class="kw">color_of</span>(<span class="dv">630</span>) <span class="co"># red</span></span></code></pre></div>
+<div class="sourceCode" id="cb569"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb569-1"><a href="#cb569-1"></a><span class="kw">color_of</span>(<span class="dv">630</span>) <span class="co"># red</span></span></code></pre></div>
 <pre><code>## wl.630.nm.CMF 
 ##     &quot;#FF0000&quot;</code></pre>
-<div class="sourceCode" id="cb569"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb569-1"><a href="#cb569-1"></a><span class="kw">color_of</span>(<span class="kw">c</span>(<span class="dv">550</span>, <span class="dv">630</span>, <span class="dv">380</span>, <span class="dv">750</span>)) <span class="co"># vectorized</span></span></code></pre></div>
+<div class="sourceCode" id="cb571"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb571-1"><a href="#cb571-1"></a><span class="kw">color_of</span>(<span class="kw">c</span>(<span class="dv">550</span>, <span class="dv">630</span>, <span class="dv">380</span>, <span class="dv">750</span>)) <span class="co"># vectorized</span></span></code></pre></div>
 <pre><code>## wl.550.nm.CMF wl.630.nm.CMF wl.380.nm.CMF wl.750.nm.CMF 
 ##     &quot;#00FF00&quot;     &quot;#FF0000&quot;     &quot;#000000&quot;     &quot;#000000&quot;</code></pre>
 <p>The method for <code>source_spct</code> objects returns a single colour definition corresponding to the whole spectrum of a light sources.</p>
-<div class="sourceCode" id="cb571"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb571-1"><a href="#cb571-1"></a><span class="kw">color_of</span>(sun.spct)</span></code></pre></div>
+<div class="sourceCode" id="cb573"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb573-1"><a href="#cb573-1"></a><span class="kw">color_of</span>(sun.spct)</span></code></pre></div>
 <pre><code>## source.CMF 
 ##  &quot;#544F4B&quot;</code></pre>
-<div class="sourceCode" id="cb573"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb573-1"><a href="#cb573-1"></a><span class="kw">color_of</span>(sun.spct <span class="op">*</span><span class="st"> </span>yellow_gel.spct)</span></code></pre></div>
+<div class="sourceCode" id="cb575"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb575-1"><a href="#cb575-1"></a><span class="kw">color_of</span>(sun.spct <span class="op">*</span><span class="st"> </span>yellow_gel.spct)</span></code></pre></div>
 <pre><code>## source.CMF 
 ##  &quot;#946000&quot;</code></pre>
 <p>There are no methods for <code>filter_spct</code> and <code>reflector_spct</code> objects so as shown above we need to convolve them with spectral irradiance from a <code>source_spct</code> object.</p>
 <p>The method for <code>waveband</code> objects returns one color definition per waveband, corresponding to their central wavelength.</p>
-<div class="sourceCode" id="cb575"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb575-1"><a href="#cb575-1"></a><span class="kw">color_of</span>(<span class="kw">waveband</span>(<span class="kw">c</span>(<span class="dv">400</span>, <span class="dv">500</span>), <span class="dt">wb.name =</span> <span class="st">&quot;my_BL&quot;</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb577"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb577-1"><a href="#cb577-1"></a><span class="kw">color_of</span>(<span class="kw">waveband</span>(<span class="kw">c</span>(<span class="dv">400</span>, <span class="dv">500</span>), <span class="dt">wb.name =</span> <span class="st">&quot;my_BL&quot;</span>))</span></code></pre></div>
 <pre><code>## my_BL.CMF 
 ## &quot;#000EFF&quot;</code></pre>
 <p>By default CIE coordinates for <em>typical</em> human vision are used, but the functions have a parameter that can be used for supplying a different chromaticity definition as a <code>chroma_spct</code> object.</p>
-<div class="sourceCode" id="cb577"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb577-1"><a href="#cb577-1"></a><span class="kw">color_of</span>(sun.spct, <span class="dt">chroma.type =</span> <span class="st">&quot;CC&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb579"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb579-1"><a href="#cb579-1"></a><span class="kw">color_of</span>(sun.spct, <span class="dt">chroma.type =</span> <span class="st">&quot;CC&quot;</span>)</span></code></pre></div>
 <pre><code>## source.CC 
 ## &quot;#B63C37&quot;</code></pre>
-<div class="sourceCode" id="cb579"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb579-1"><a href="#cb579-1"></a><span class="kw">color_of</span>(sun.spct, <span class="dt">chroma.type =</span> <span class="st">&quot;CMF&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb581"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb581-1"><a href="#cb581-1"></a><span class="kw">color_of</span>(sun.spct, <span class="dt">chroma.type =</span> <span class="st">&quot;CMF&quot;</span>)</span></code></pre></div>
 <pre><code>## source.CMF 
 ##  &quot;#544F4B&quot;</code></pre>
-<div class="sourceCode" id="cb581"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb581-1"><a href="#cb581-1"></a><span class="kw">color_of</span>(sun.spct, <span class="dt">chroma.type =</span> beesxyzCMF.spct)</span></code></pre></div>
+<div class="sourceCode" id="cb583"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb583-1"><a href="#cb583-1"></a><span class="kw">color_of</span>(sun.spct, <span class="dt">chroma.type =</span> beesxyzCMF.spct)</span></code></pre></div>
 <pre><code>## source.chroma 
 ##     &quot;#CD1F11&quot;</code></pre>
 <p>In the case of bees, the RGB values represent a shift towards longer wavelengths compared to the true sensitivity. In other words, they are translated into colours that humans can see and monitors and printers can generate.</p>

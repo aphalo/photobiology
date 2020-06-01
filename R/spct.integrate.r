@@ -156,7 +156,6 @@ interpolate_spct <- function(spct,
       spct <- smooth_spct(spct, method = "supsmu", strength = step.ratio * 1e-2)
     }
   }
-  class_spct <- class(spct)
   if (!is.null(length.out)  && length.out == 1L) {
     if (is.null(w.length.out)) {
       w.length.out <- midpoint(spct)

@@ -803,14 +803,14 @@ integrate_spct(sun.spct)
 ## -----------------------------------------------------------------------------
 average_spct(sun.spct)
 
-## ---- eval=FALSE--------------------------------------------------------------
-#  compare_spct(source_mspct(list(sun1 = sun.spct, sun2 = sun.spct * 2)))
+## -----------------------------------------------------------------------------
+compare_spct(source_mspct(list(sun1 = sun.spct, sun2 = sun.spct * 2)))
 
-## ---- eval=FALSE--------------------------------------------------------------
-#  compare_spct(filter_mspct(list(pet = polyester.spct,
-#                                yllw = yellow_gel.spct)),
-#               w.band = 50,
-#              .comparison.fun = `<`)
+## -----------------------------------------------------------------------------
+compare_spct(filter_mspct(list(pet = polyester.spct,
+                              yllw = yellow_gel.spct)),
+             w.band = 50,
+            .comparison.fun = `<`)
 
 ## -----------------------------------------------------------------------------
 color_of(550) # green

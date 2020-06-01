@@ -24,7 +24,7 @@
 #' @param unit.in character A string: "photon" or "energy", default is "energy".
 #' @param use.cached.mult logical Flag indicating whether multiplier values
 #'   should be cached between calls.
-#' @param fill numeric If \code{fill == NA} then values returned for wavelengths outside
+#' @param fill numeric If \code{fill = NA} then values returned for wavelengths outside
 #'   the range of the waveband are set to \code{NA}.
 #'
 #' @return a numeric vector of multipliers of the same length as \code{w.length}.

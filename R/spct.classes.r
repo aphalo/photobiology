@@ -148,6 +148,7 @@ check_spct.generic_spct <-
           if (is.unsorted(-x[["w.length"]], na.rm = TRUE, strictly = TRUE)) {
             stop("'w.length' must be sorted and have unique values")
           } else {
+            # if unsorted is TRUE, then nrow >= 1 is TRUE
             # w.length in decreasing order, which we reverse
             x <- x[nrow(x):1, ]
           }

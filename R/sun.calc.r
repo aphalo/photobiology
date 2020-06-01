@@ -479,7 +479,7 @@ day_night_fast <- function(date,
   delta <- sun_eq_of_ctr(cent, sun.anom.mean)
 
   sun.lon <- sun.lon.mean + delta
-  sun.anom <- sun.anom.mean + delta
+#  sun.anom <- sun.anom.mean + delta
 #  sun.dist <- sun_rad_vector(eccent.earth, sun.anom)
   sun.app.lon <- sun_app_lon(cent, sun.lon)
   sun.ecliptic <- mean_obliq_eclip(cent)
