@@ -1,4 +1,4 @@
-photobiology 0.10.3 (2020-05-xx)
+photobiology 0.10.3 (2020-06-xx)
 ================================
 
 * Handle gracefully bad data input in normalised_diff_ind().
@@ -7,6 +7,8 @@ interface from relative refractive index.
 * Implement Fraunhofer's formulae for computation of diffraction in a single
 slit and diffraction plus interference in a double slit.
 * Enhance as_tod() and implement format() and print() methods for time-of-day.
+* Move 'tibble' from depends to imports.
+* BUG FIX: Export all S3 classes defined in the package.
 
 photobiology 0.10.2 (2020-04-26)
 ================================
@@ -62,9 +64,9 @@ consistent.
 * T2T(), setAfrType(), getAfrType(). No deprecation as not used.
 
 *****************************************************************************
-Full functionality of convertThickness() and convertTfrType() requires
+Full functionality of convertThickness() and convertTfrType() requires that
 filter_spct objects have the new "filter.properties" attribute or that they
-contain like object_spct objects a column "Rfr" with reflectance data.
+contain a column "Rfr" with reflectance data like object_spct objects do.
 *****************************************************************************
 
 photobiology 0.10.0 (2020-04-02)
