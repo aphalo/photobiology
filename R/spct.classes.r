@@ -897,7 +897,7 @@ setCalibrationSpct <-
 #' @describeIn setGenericSpct Set class of a an object to "raw_spct".
 #'
 #' @export
-#' @exportClass cps_spct
+#' @exportClass raw_spct
 #'
 setRawSpct <-
   function(x,
@@ -2675,6 +2675,7 @@ setInstrDesc <- function(x, instr.desc) {
 #'
 #' @return list (depends on instrument type)
 #'
+#' @exportClass instr_desc
 #' @export
 #' @family measurement metadata functions
 #'
@@ -2841,6 +2842,7 @@ setInstrSettings <- function(x, instr.settings) {
 #'
 #' @return list
 #'
+#' @exportClass instr_settings
 #' @export
 #'
 #' @family measurement metadata functions
@@ -3112,6 +3114,7 @@ getWhatMeasured.generic_mspct <- function(x,
 #'   returns \code{x} invisibly. If \code{x} is not a filter_spct object,
 #'   \code{x} is not modified.
 #'
+#' @exportClass filter_properties
 #' @export
 #' @family measurement metadata functions
 #'

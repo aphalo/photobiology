@@ -57,7 +57,9 @@
 #' differences in the returned times compared to our function that seem to be
 #' related to the estimation of atmospheric refraction (about 0.1 degrees).
 #'
+#' @exportClass solar_time
 #' @export
+#'
 #' @examples
 #' library(lubridate)
 #' sun_angles()
@@ -740,6 +742,7 @@ night_length <- function(date = lubridate::now(),
 #'   methods.
 #'
 #' @export
+#' @exportClass tod_time
 #'
 #' @examples
 #' library(lubridate)
@@ -885,6 +888,7 @@ solar_time <- function(time = lubridate::now(),
 #'   set to "solar.time". This is needed only for unambiguous formatting and
 #'   printing.
 #'
+#' @exportClass solar_date
 #' @export
 #'
 as.solar_date <- function(x, time)

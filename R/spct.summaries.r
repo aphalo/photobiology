@@ -278,6 +278,15 @@ is.any_summary_spct <- function(x) {
 #'
 #' @return A summary object matching the class of \code{object}.
 #'
+#' @exportClass summary_generic_spct
+#' @exportClass summary_source_spct
+#' @exportClass summary_response_spct
+#' @exportClass summary_filter_spct
+#' @exportClass summary_reflector_spct
+#' @exportClass summary_object_spct
+#' @exportClass summary_chroma_spct
+#' @exportClass summary_cps_spct
+#' @exportClass summary_raw_spct
 #' @export
 #' @method summary generic_spct
 #'
