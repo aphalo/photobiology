@@ -42,8 +42,7 @@
 #'
 #' @family low-level functions operating on numeric vectors.
 #'
-s_e_irrad2rgb <-
-  function(w.length, s.e.irrad,
+s_e_irrad2rgb <- function(w.length, s.e.irrad,
            sens = photobiology::ciexyzCMF2.spct,
            color.name = NULL,
            check = TRUE) {
@@ -87,9 +86,10 @@ s_e_irrad2rgb <-
 
     XYZ <- rbind(X, Y, Z)
 
-    xyzmat <- rbind(c(3.240479, -1.537150, -0.498535),
-                    c(-0.969256, 1.875992, 0.041556),
-                    c(0.055648, -0.204043, 1.057311))
+    xyzmat <- matrix(c(3.240479, -1.537150, -0.498535,
+                       -0.969256, 1.875992, 0.041556,
+                       0.055648, -0.204043, 1.057311),
+                     byrow = TRUE, nrow = 3)
 
     rgb1 <- xyzmat %*% as.matrix(XYZ)
 
@@ -112,4 +112,4 @@ s_e_irrad2rgb <-
 
     rgb.color
 
-  }
+}

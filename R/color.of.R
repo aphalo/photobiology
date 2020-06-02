@@ -252,3 +252,47 @@ color <- function(x, ...) {
   message("Method photobiology::color() has been renamed color_of(), color() is deprecated and will be removed.")
   color_of(x, ...)
 }
+
+# fast version using precomputed colours ----------------------------------
+
+#' @rdname color_of
+#'
+#' @export
+#'
+fast_color_of_wl <- function(x, type = "CMF", ...) {
+  if (anyNA(x) ||
+      !type %in% c("CMF", "CC") ||
+      min(x) < 100 || max(x > 1000)) {
+    color_of(x, type)
+  } else {
+    wls.tb <- tibble::tibble(w.length = round(x, digits = 1))
+    dplyr::left_join(wls.tb,
+                     photobiology::wl_colors.spct,
+                     by = "w.length")[[type]]
+  }
+}
+
+#' @title Precomputed rgb colors
+#'
+#' @description A dataset containing wavelengths at a 0.1 nm interval (100 nm to
+#'   1000 nm) and the corresponding CMF and CC colors for human vision.
+#'
+#' @note Data computed with function \code{color_of()} and used by function
+#'   \code{fast_color_of_wl()}
+#'
+#'   A chroma_spct object with variables as follows:
+#'
+#' @details
+#' \itemize{
+#' \item w.length (nm), numeric vector
+#' \item CMF, named character vector
+#' \item CC, named character vector}
+#'
+#' @docType data
+#' @keywords datasets
+#' @format A \code{generic_spct} object with 9001 rows and 3 variables.
+#'
+#' @examples
+#' wl_colors.spct
+#'
+"wl_colors.spct"

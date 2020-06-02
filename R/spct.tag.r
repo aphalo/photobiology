@@ -136,7 +136,7 @@ tag.generic_spct <- function(x,
     wbs.rgb[i] <- color_of(wb, type = chroma.type)[1]
   }
   # We add the waveband-independent tags to the spectrum
-  x[["wl.color"]] <- color_of(x[["w.length"]], type = chroma.type)
+  x[["wl.color"]] <- fast_color_of_wl(x[["w.length"]], type = chroma.type)
   # We add the waveband-dependent tags to the spectrum
   n <- i
   x[["wb.color"]] <- NA

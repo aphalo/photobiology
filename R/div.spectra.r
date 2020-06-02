@@ -38,9 +38,22 @@
 #'
 #' @family low-level functions operating on numeric vectors.
 #'
-div_spectra <- function(w.length1, w.length2=NULL, s.irrad1, s.irrad2, trim="union", na.rm=FALSE) {
-  return(oper_spectra(w.length1=w.length1, w.length2=w.length2,
-                                  s.irrad1=s.irrad1, s.irrad2=s.irrad2,
-                                  trim="union", na.rm=FALSE,
-                                  bin.oper=`/`))
-}
+div_spectra <-
+  function(w.length1,
+           w.length2 = NULL,
+           s.irrad1,
+           s.irrad2,
+           trim = "union",
+           na.rm = FALSE) {
+    return(
+      oper_spectra(
+        w.length1 = w.length1,
+        w.length2 = w.length2,
+        s.irrad1 = s.irrad1,
+        s.irrad2 = s.irrad2,
+        trim = "union",
+        na.rm = FALSE,
+        bin.oper = `/`
+      )
+    )
+  }

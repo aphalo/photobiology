@@ -7,6 +7,8 @@ interface from relative refractive index.
 * Implement Fraunhofer's formulae for computation of diffraction in a single
 slit and diffraction plus interference in a double slit.
 * Enhance as_tod() and implement format() and print() methods for time-of-day.
+* Update tag() to use precomputed color definitions, when possible, to improve
+performance.
 * BUG FIX: Remove bad class exports from NAMESPACE.
 
 photobiology 0.10.2 (2020-04-26)

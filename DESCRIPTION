@@ -1,8 +1,8 @@
 Package: photobiology
 Type: Package
 Title: Photobiological Calculations
-Version: 0.10.2.9001
-Date: 2020-06-01
+Version: 0.10.3
+Date: 2020-06-03
 Authors@R:
    c(
     person("Pedro J.", "Aphalo", email = "pedro.aphalo@helsinki.fi", role = c("aut", "cre"), comment = c(ORCID = "0000-0003-3385-972X")),
@@ -29,10 +29,11 @@ Imports:
     stringr (>= 1.4.0),
     lubridate (>= 1.7.8),
     plyr (>= 1.8.4),
-    dplyr (>= 0.8.5),
+    dplyr (>= 1.0.0),
     splus2R (>= 1.2-2),
     zoo (>= 1.8-7),
-    rlang (>= 0.4.6)
+    rlang (>= 0.4.6),
+    memoise (>= 1.1.0)
 Suggests:
     knitr (>= 1.28),
     rmarkdown (>= 2.2),

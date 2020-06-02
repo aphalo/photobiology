@@ -83,8 +83,6 @@ oper_spectra <- function(w.length1, w.length2 = NULL,
                 w.length2[w.length2 >= wl.low & w.length2 <= wl.hi])
   w.length <- sort(w.length)
   w.length <- unique(w.length)
-#  s.irrad1.int <- rep(NA, length(w.length))
-#  s.irrad2.int <- rep(NA, length(w.length))
   s.irrad1.int <-
     interpolate_spectrum(w.length1, s.irrad1, w.length, fill = 0.0)
   s.irrad2.int <-
