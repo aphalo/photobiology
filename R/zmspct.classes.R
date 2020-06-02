@@ -100,7 +100,7 @@ shared_member_class <- function(l, target.set = spct_classes()) {
 #' @param ... ignored
 #'
 #' @export
-#' @exportClass generic_mspct
+#'
 #'
 #' @note Setting class = source_spct or class = source_mspct makes no difference
 #'
@@ -156,7 +156,7 @@ generic_mspct <- function(l = NULL, class = "generic_spct",
 #' @describeIn generic_mspct Specialization for collections of \code{calibration_spct} objects.
 #'
 #' @export
-#' @exportClass calibration_mspct
+#'
 #'
 calibration_mspct <- function(l = NULL, ncol = 1, byrow = FALSE, ...) {
   generic_mspct(l, class = "calibration_spct", ncol = ncol, byrow = byrow)
@@ -165,7 +165,7 @@ calibration_mspct <- function(l = NULL, ncol = 1, byrow = FALSE, ...) {
 #' @describeIn generic_mspct Specialization for collections of \code{raw_spct} objects.
 #'
 #' @export
-#' @exportClass raw_mspct
+#'
 #'
 raw_mspct <- function(l = NULL, ncol = 1, byrow = FALSE, ...) {
   generic_mspct(l, class = "raw_spct", ncol = ncol, byrow = byrow)
@@ -174,7 +174,7 @@ raw_mspct <- function(l = NULL, ncol = 1, byrow = FALSE, ...) {
 #' @describeIn generic_mspct Specialization for collections of \code{cps_spct} objects.
 #'
 #' @export
-#' @exportClass cps_mspct
+#'
 #'
 cps_mspct <- function(l = NULL, ncol = 1, byrow = FALSE, ...) {
   generic_mspct(l, class = "cps_spct", ncol = ncol, byrow = byrow)
@@ -183,7 +183,7 @@ cps_mspct <- function(l = NULL, ncol = 1, byrow = FALSE, ...) {
 #' @describeIn generic_mspct Specialization for collections of \code{source_spct} objects.
 #'
 #' @export
-#' @exportClass source_mspct
+#'
 #'
 source_mspct <- function(l = NULL, ncol = 1, byrow = FALSE, ...) {
   generic_mspct(l, class = "source_spct", ncol = ncol, byrow = byrow)
@@ -192,7 +192,7 @@ source_mspct <- function(l = NULL, ncol = 1, byrow = FALSE, ...) {
 #' @describeIn generic_mspct Specialization for collections of \code{filter_spct} objects.
 #'
 #' @export
-#' @exportClass filter_mspct
+#'
 #'
 filter_mspct <- function(l = NULL, ncol = 1, byrow = FALSE, ...) {
   generic_mspct(l, class = "filter_spct", ncol = ncol, byrow = byrow)
@@ -201,7 +201,7 @@ filter_mspct <- function(l = NULL, ncol = 1, byrow = FALSE, ...) {
 #' @describeIn generic_mspct Specialization for collections of \code{reflector_spct} objects.
 #'
 #' @export
-#' @exportClass reflector_mspct
+#'
 #'
 reflector_mspct <- function(l = NULL, ncol = 1, byrow = FALSE, ...) {
   generic_mspct(l, class = "reflector_spct", ncol = ncol, byrow = byrow)
@@ -210,7 +210,7 @@ reflector_mspct <- function(l = NULL, ncol = 1, byrow = FALSE, ...) {
 #' @describeIn generic_mspct Specialization for collections of \code{object_spct} objects.
 #'
 #' @export
-#' @exportClass object_mspct
+#'
 #'
 object_mspct <- function(l = NULL, ncol = 1, byrow = FALSE, ...) {
   generic_mspct(l, class = "object_spct", ncol = ncol, byrow = byrow)
@@ -219,7 +219,7 @@ object_mspct <- function(l = NULL, ncol = 1, byrow = FALSE, ...) {
 #' @describeIn generic_mspct Specialization for collections of \code{response_spct} objects.
 #'
 #' @export
-#' @exportClass response_mspct
+#'
 #'
 response_mspct <- function(l = NULL, ncol = 1, byrow = FALSE, ...) {
   generic_mspct(l, class = "response_spct", ncol = ncol, byrow = byrow)
@@ -228,7 +228,7 @@ response_mspct <- function(l = NULL, ncol = 1, byrow = FALSE, ...) {
 #' @describeIn generic_mspct Specialization for collections of \code{chroma_spct} objects.
 #'
 #' @export
-#' @exportClass chroma_mspct
+#'
 #'
 chroma_mspct <- function(l = NULL, ncol = 1, byrow = FALSE, ...) {
   generic_mspct(l, class = "chroma_spct", ncol = ncol, byrow = byrow)

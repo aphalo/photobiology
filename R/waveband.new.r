@@ -51,7 +51,7 @@ waveband <- function(x = NULL,
 #' @param w.high numeric value, wavelength at the long end of the band (nm)
 #'
 #' @export
-#' @exportClass waveband
+#'
 #' @examples
 #' new_waveband(400,700)
 #'

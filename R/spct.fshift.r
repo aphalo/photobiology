@@ -15,7 +15,7 @@
 #' @return A copy of \code{x} with the spectral data values replaced with values
 #'   zero-shifted.
 #'
-#' @export fshift
+#' @export
 #' @family rescaling functions
 #'
 fshift <- function(x, ...) UseMethod("fshift")

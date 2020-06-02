@@ -14,7 +14,7 @@
 #' @return A copy of \code{x} expanded with additional columns with
 #'   color-related information.
 #'
-#' @export tag
+#' @export
 #'
 #' @family tagging and related functions
 #'
@@ -388,7 +388,7 @@ wb2rect_spct <- function(w.band, short.names = TRUE, chroma.type = "CMF") {
 #' @param x an R object.
 #' @param ... ignored (possibly used by derived methods).
 #'
-#' @export untag
+#' @export
 #'
 #' @family tagging and related functions
 #'

@@ -907,7 +907,7 @@ atan.generic_spct <- function(x) {
 #'   "replace"}, in all cases, the additional columns are removed, even if no
 #'   column needs to be added.
 #'
-#' @export A2T
+#' @export
 #' @family quantity conversion functions
 #'
 A2T <- function(x, action, byref, ...) UseMethod("A2T")
@@ -1005,7 +1005,7 @@ A2T.filter_mspct <- function(x,
 #'   in all cases, the additional columns are removed, even if no column needs
 #'   to be added.
 #'
-#' @export T2A
+#' @export
 #' @family quantity conversion functions
 #'
 T2A <- function(x, action, byref, clean, ...) UseMethod("T2A")
@@ -1120,7 +1120,7 @@ T2A.filter_mspct <- function(x,
 #'   in all cases, the additional columns are removed, even if no column needs
 #'   to be added.
 #'
-#' @export T2Afr
+#' @export
 #' @family quantity conversion functions
 #'
 #' @examples
@@ -1589,7 +1589,7 @@ any2Afr <- function(x, action = "add", clean = FALSE) {
 #' @param byref logical indicating if new object will be created by reference or by copy of x
 #' @param ... not used in current version
 #'
-#' @export e2q
+#' @export
 #' @family quantity conversion functions
 #'
 e2q <- function(x, action, byref, ...) UseMethod("e2q")
@@ -1709,7 +1709,7 @@ e2q.response_mspct <- function(x,
 #' @param byref logical indicating if new object will be created by reference or by copy of x
 #' @param ... not used in current version
 #'
-#' @export q2e
+#' @export
 #' @family quantity conversion functions
 #'
 q2e <- function(x, action, byref, ...) UseMethod("q2e")

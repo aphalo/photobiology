@@ -229,7 +229,7 @@ wl_midpoint <- function(x, ...) {
 #'
 #' @param x an R object
 #' @param ... not used in current version
-#' @export midpoint
+#' @export
 #'
 #' @return A numeric value equal to (max(x) - min(x)) / 2. In the case of spectral
 #' objects a wavelength in nm. For any other R object, according to available
@@ -335,7 +335,7 @@ wl_expanse <- function(x, ...) {
 #'   objects wavelength difference in nm. For any other R object, according to
 #'   available definitions of \code{\link{min}} and \code{\link{max}}.
 #'
-#' @export expanse
+#' @export
 #'
 #' @examples
 #' expanse(10:20)
@@ -407,7 +407,7 @@ expanse.generic_mspct <- function(x, ..., idx = "spct.idx") {
 #' attributes.
 #'
 #' @param x an R object
-#' @export normalization
+#' @export
 #'
 #' @family waveband attributes
 #'
@@ -441,7 +441,7 @@ normalization.waveband <- function(x) {
 #'
 #' @return A \code{logical}.
 #'
-#' @export is_effective
+#' @export
 #'
 #' @family waveband attributes
 #'

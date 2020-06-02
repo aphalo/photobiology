@@ -140,7 +140,7 @@ q_ratio.source_spct <-
 #'   number of wavebands in each list. Recycling for wavebands takes place when
 #'   the number of denominator and numerator wavebands differ.
 #'
-#' @export e_ratio
+#' @export
 #' @examples
 #' e_ratio(sun.spct, new_waveband(400,500), new_waveband(400,700))
 #'

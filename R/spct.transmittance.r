@@ -31,7 +31,8 @@
 #'   to the name of the corresponding waveband unless a named list is supplied
 #'   in which case the names of the list members are used.
 #'
-#' @export transmittance
+#' @export
+#'
 #' @examples
 #' transmittance(polyester.spct, waveband(c(280, 315)))
 #' transmittance(polyester.spct, waveband(c(315, 400)))
@@ -40,8 +41,6 @@
 #' @note The \code{use.hinges} parameter controls speed optimization. The
 #'   defaults should be suitable in most cases. Only the range of wavelengths
 #'   in the wavebands is used and all BSWFs are ignored.
-#'
-#' @export transmittance
 #'
 transmittance <- function(spct, w.band, quantity, wb.trim, use.hinges, ...) UseMethod("transmittance")
 

@@ -13,7 +13,7 @@
 #'   (w.length), energy and photon irradiance (s.e.irrad, s.q.irrad) depending
 #'   on the argument passed to unit.out (s.irrad).
 #'
-#' @export FEL_spectrum
+#' @export
 #'
 #' @note This is function is valid for wavelengths in the range 250 nm to 900
 #'   nm, for wavelengths outside this range NAs are returned.

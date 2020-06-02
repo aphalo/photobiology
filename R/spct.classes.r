@@ -830,7 +830,7 @@ rmDerivedSpct <- function(x, keep.classes = NULL) {
 #'    stored logitudinally (required if mulitple.wl > 1).
 #'
 #' @export
-#' @exportClass generic_spct
+#'
 #'
 #' @return x
 #' @note This method alters x itself by reference and in addition
@@ -876,7 +876,7 @@ setGenericSpct <-
 #' @describeIn setGenericSpct Set class of a an object to "calibration_spct".
 #'
 #' @export
-#' @exportClass calibration_spct
+#'
 #'
 setCalibrationSpct <-
   function(x,
@@ -897,7 +897,7 @@ setCalibrationSpct <-
 #' @describeIn setGenericSpct Set class of a an object to "raw_spct".
 #'
 #' @export
-#' @exportClass raw_spct
+#'
 #'
 setRawSpct <-
   function(x,
@@ -918,7 +918,7 @@ setRawSpct <-
 #' @describeIn setGenericSpct Set class of a an object to "cps_spct".
 #'
 #' @export
-#' @exportClass cps_spct
+#'
 #'
 setCpsSpct <-
   function(x,
@@ -948,7 +948,7 @@ setCpsSpct <-
 #' @param strict.range logical Flag indicating whether off-range values result in an
 #'   error instead of a warning.
 #' @export
-#' @exportClass filter_spct
+#'
 #'
 #' @note For non-diffusing materials like glass an approximate \code{Rfr.constant}
 #'   value can be used to interconvert "total" and "internal" transmittance
@@ -993,7 +993,7 @@ setFilterSpct <-
 #'
 #' @param Rfr.type character A string, either "total" or "specular".
 #' @export
-#' @exportClass reflector_spct
+#'
 #'
 setReflectorSpct <-
   function(x,
@@ -1025,7 +1025,7 @@ setReflectorSpct <-
 #' @describeIn setGenericSpct Set class of an object to "object_spct".
 #'
 #' @export
-#' @exportClass object_spct
+#'
 #'
 setObjectSpct <-
   function(x,
@@ -1070,7 +1070,7 @@ setObjectSpct <-
 #'
 #' @param time.unit character A string "second", "day" or "exposure".
 #' @export
-#' @exportClass response_spct
+#'
 #'
 setResponseSpct <-
   function(x,
@@ -1094,7 +1094,7 @@ setResponseSpct <-
 #'
 #' @param bswf.used character A string, either "none" or the name of a BSWF.
 #' @export
-#' @exportClass source_spct
+#'
 #'
 setSourceSpct <-
   function(x,
@@ -1120,7 +1120,7 @@ setSourceSpct <-
 #' @describeIn setGenericSpct Set class of an object to "chroma_spct".
 #'
 #' @export
-#' @exportClass chroma_spct
+#'
 #'
 setChromaSpct <-
   function(x,
@@ -1159,8 +1159,8 @@ setChromaSpct <-
 #' is.generic_spct(sun.spct)
 #' is.generic_spct(sun.spct)
 #'
-#' @export is.generic_spct
-#' @rdname is.generic_spct
+#' @export
+#'
 #' @examples
 #' is.source_spct(sun.spct)
 #' is.filter_spct(sun.spct)
@@ -2675,7 +2675,7 @@ setInstrDesc <- function(x, instr.desc) {
 #'
 #' @return list (depends on instrument type)
 #'
-#' @exportClass instr_desc
+#'
 #' @export
 #' @family measurement metadata functions
 #'
@@ -2842,7 +2842,7 @@ setInstrSettings <- function(x, instr.settings) {
 #'
 #' @return list
 #'
-#' @exportClass instr_settings
+#'
 #' @export
 #'
 #' @family measurement metadata functions
@@ -3114,7 +3114,7 @@ getWhatMeasured.generic_mspct <- function(x,
 #'   returns \code{x} invisibly. If \code{x} is not a filter_spct object,
 #'   \code{x} is not modified.
 #'
-#' @exportClass filter_properties
+#'
 #' @export
 #' @family measurement metadata functions
 #'

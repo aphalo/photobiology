@@ -38,7 +38,8 @@
 #' s400.spct
 #' e_irrad(s400.spct, c(400, 700))
 #'
-#' @export fscale
+#' @export
+#'
 #' @family rescaling functions
 #'
 fscale <- function(x, ...) UseMethod("fscale")

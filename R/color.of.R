@@ -7,7 +7,7 @@
 #' @param x an R object.
 #' @param ... ignored (possibly used by derived methods).
 #'
-#' @export color_of
+#' @export
 #'
 #' @return A color definition in hexadecimal format as a \code{character} string
 #'   of 7 characters, "#" followed by the red, blue, and green values in
