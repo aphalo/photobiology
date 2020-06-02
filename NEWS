@@ -1,4 +1,4 @@
-photobiology 0.10.3 (2020-06-xx)
+photobiology 0.10.3 (2020-06-03)
 ================================
 
 * Handle gracefully bad data input in normalised_diff_ind().
@@ -10,6 +10,7 @@ slit and diffraction plus interference in a double slit.
 * Update tag() to use precomputed color definitions, when possible, to improve
 performance.
 * BUG FIX: Remove bad class exports from NAMESPACE.
+* New features of dplyr (>= 1.0.0) are used, so this new version is required.
 
 photobiology 0.10.2 (2020-04-26)
 ================================

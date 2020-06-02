@@ -260,6 +260,7 @@ color <- function(x, ...) {
 #' @export
 #'
 fast_color_of_wl <- function(x, type = "CMF", ...) {
+  stopifnot(is.numeric(x))
   if (anyNA(x) ||
       !type %in% c("CMF", "CC") ||
       min(x) < 100 || max(x > 1000)) {
