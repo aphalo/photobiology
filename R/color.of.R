@@ -267,6 +267,11 @@ color <- function(x, ...) {
 #'   default names irrespective of names of \code{x}, which is different from
 #'   the behavior of \code{color_of()} methods.
 #'
+#'   Function \code{fast_color_of_wb()} accepts waveband objects and lists of
+#'   waveband objects. If all wavebands are narrow, it issues a vectotized
+#'   call to \code{fast_color_of_wl()} with a vector of waveband midpoint
+#'   wavelengths.
+#'
 #' @export
 #'
 fast_color_of_wl <- function(x, type = "CMF", ...) {
@@ -284,6 +289,29 @@ fast_color_of_wl <- function(x, type = "CMF", ...) {
     dplyr::left_join(wls.tb,
                      photobiology::wl_colors.spct,
                      by = "w.length")[[type]]
+  }
+}
+
+#' @rdname color_of
+#'
+#' @export
+#'
+fast_color_of_wb <- function(x, type = "CMF", ...) {
+  if (is.waveband(x)) {
+    x <- list(x)
+  }
+  stopifnot(is.list(x) && all(sapply(x, is.waveband)))
+  wb.wds <- sapply(x, wl_expanse)
+  if (all(wb.wds < 10)) { # nm
+    # narrow wavebands -> use midpoint wavelength
+    wb.mid <- sapply(x, midpoint)
+    z <- fast_color_of_wl(wb.mid, type = type)
+    wb.names <- sapply(x, function(x) {labels(x)[["label"]]})
+    color.names <- paste(wb.names, type, sep = ".")
+    names(z) <- color.names
+    z
+  } else  {
+    sapply(x, color_of.waveband, type = type)
   }
 }
 
