@@ -1,6 +1,6 @@
 library(photobiology)
 
-wls <- (1000:10000)/10
+wls <- (100:4000)
 CMF.color <- color_of(x = wls, type = "CMF")
 CC.color <- color_of(x = wls, type = "CC")
 

@@ -280,12 +280,12 @@ fast_color_of_wl <- function(x, type = "CMF", ...) {
   x <- unname(x)
   # fall-back to slower color_of() when pre-computed colors are not available
   if (length(x) == 0 || anyNA(x) ||
-      min(x) < 100 || max(x > 1000) ||
+      min(x) < 100 || max(x > 4000) ||
       !is.character(type) ||
       !type %in% c("CMF", "CC")) {
     color_of.numeric(x, type)
   } else {
-    wls.tb <- tibble::tibble(w.length = round(x, digits = 1))
+    wls.tb <- tibble::tibble(w.length = round(x, digits = 0))
     dplyr::left_join(wls.tb,
                      photobiology::wl_colors.spct,
                      by = "w.length")[[type]]
@@ -317,8 +317,8 @@ fast_color_of_wb <- function(x, type = "CMF", ...) {
 
 #' @title Precomputed rgb colors
 #'
-#' @description A dataset containing wavelengths at a 0.1 nm interval (100 nm to
-#'   1000 nm) and the corresponding CMF and CC colors for human vision.
+#' @description A dataset containing wavelengths at a 1 nm interval (100 nm to
+#'   4000 nm) and the corresponding CMF and CC colors for human vision.
 #'
 #' @note Data computed with function \code{color_of()} and used by function
 #'   \code{fast_color_of_wl()}
@@ -333,7 +333,7 @@ fast_color_of_wb <- function(x, type = "CMF", ...) {
 #'
 #' @docType data
 #' @keywords datasets
-#' @format A \code{generic_spct} object with 9001 rows and 3 variables.
+#' @format A \code{generic_spct} object with 3901 rows and 3 variables.
 #'
 #' @examples
 #' wl_colors.spct
