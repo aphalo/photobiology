@@ -1,7 +1,7 @@
 Package: photobiology
 Type: Package
 Title: Photobiological Calculations
-Version: 0.10.3
+Version: 0.10.3.9000
 Date: 2020-06-03
 Authors@R:
    c(
@@ -32,8 +32,7 @@ Imports:
     dplyr (>= 1.0.0),
     splus2R (>= 1.2-2),
     zoo (>= 1.8-7),
-    rlang (>= 0.4.6),
-    memoise (>= 1.1.0)
+    rlang (>= 0.4.6)
 Suggests:
     knitr (>= 1.28),
     rmarkdown (>= 2.2),

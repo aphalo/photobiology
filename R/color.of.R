@@ -249,7 +249,8 @@ colour_of <- function(x, ...) {
 #'   Use color_of() instead.
 #'
 color <- function(x, ...) {
-  message("Method photobiology::color() has been renamed color_of(), color() is deprecated and will be removed.")
+  message("Method photobiology::color() has been renamed color_of(),",
+          "color() is deprecated and will be removed.")
   color_of(x, ...)
 }
 
@@ -257,14 +258,27 @@ color <- function(x, ...) {
 
 #' @rdname color_of
 #'
+#' @note Function \code{fast_color_of_wl()} should be used only when high
+#'   performance is needed. It speeds up performance by rounding the wavelength
+#'   values in the numeric vector passed as argument to \code{x} and then
+#'   retrieves the corresponding pre-computed color definitions if \code{type}
+#'   is either \code{"CMF"} or \code{"CC"}. In other cases it falls-back to
+#'   calling \code{color_of.numeric()}. Returned color definitions always have
+#'   default names irrespective of names of \code{x}, which is different from
+#'   the behavior of \code{color_of()} methods.
+#'
 #' @export
 #'
 fast_color_of_wl <- function(x, type = "CMF", ...) {
   stopifnot(is.numeric(x))
-  if (anyNA(x) ||
-      !type %in% c("CMF", "CC") ||
-      min(x) < 100 || max(x > 1000)) {
-    color_of(x, type)
+  # ensure default color names are always used
+  x <- unname(x)
+  # fall-back to slower color_of() when pre-computed colors are not available
+  if (length(x) == 0 || anyNA(x) ||
+      min(x) < 100 || max(x > 1000) ||
+      !is.character(type) ||
+      !type %in% c("CMF", "CC")) {
+    color_of.numeric(x, type)
   } else {
     wls.tb <- tibble::tibble(w.length = round(x, digits = 1))
     dplyr::left_join(wls.tb,
