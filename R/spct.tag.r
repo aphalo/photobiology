@@ -390,7 +390,7 @@ fast_wb2rect_spct <- function(w.band, chroma.type = "CMF") {
   if (is.waveband(w.band)) {
     w.band <- list(w.band)
   }
-  wbs.wds <- sapply(expanse(w.band))
+  wbs.wds <- sapply(w.band, expanse)
   if (any(wbs.wds >= 10)) {
     wb2rect_spct(w.band = w.band,
                  short.names = TRUE,
