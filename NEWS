@@ -1,3 +1,10 @@
+photobiology 0.10.4 (2020-06-xx)
+================================
+
+* Handle gracefully and consistently special input in fast_color_of_wl().
+* Add fast_wb2rect_spct() and fast_color_of_wb() that use precomputed color
+definitions for narrow wavebands to improve performance.
+
 photobiology 0.10.3 (2020-06-03)
 ================================
 

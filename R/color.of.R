@@ -249,7 +249,8 @@ colour_of <- function(x, ...) {
 #'   Use color_of() instead.
 #'
 color <- function(x, ...) {
-  message("Method photobiology::color() has been renamed color_of(), color() is deprecated and will be removed.")
+  message("Method photobiology::color() has been renamed color_of(),",
+          "color() is deprecated and will be removed.")
   color_of(x, ...)
 }
 
@@ -257,26 +258,67 @@ color <- function(x, ...) {
 
 #' @rdname color_of
 #'
+#' @note Function \code{fast_color_of_wl()} should be used only when high
+#'   performance is needed. It speeds up performance by rounding the wavelength
+#'   values in the numeric vector passed as argument to \code{x} and then
+#'   retrieves the corresponding pre-computed color definitions if \code{type}
+#'   is either \code{"CMF"} or \code{"CC"}. In other cases it falls-back to
+#'   calling \code{color_of.numeric()}. Returned color definitions always have
+#'   default names irrespective of names of \code{x}, which is different from
+#'   the behavior of \code{color_of()} methods.
+#'
+#'   Function \code{fast_color_of_wb()} accepts waveband objects and lists of
+#'   waveband objects. If all wavebands are narrow, it issues a vectotized
+#'   call to \code{fast_color_of_wl()} with a vector of waveband midpoint
+#'   wavelengths.
+#'
 #' @export
 #'
 fast_color_of_wl <- function(x, type = "CMF", ...) {
   stopifnot(is.numeric(x))
-  if (anyNA(x) ||
-      !type %in% c("CMF", "CC") ||
-      min(x) < 100 || max(x > 1000)) {
-    color_of(x, type)
+  # ensure default color names are always used
+  x <- unname(x)
+  # fall-back to slower color_of() when pre-computed colors are not available
+  if (length(x) == 0 || anyNA(x) ||
+      min(x) < 100 || max(x > 4000) ||
+      !is.character(type) ||
+      !type %in% c("CMF", "CC")) {
+    color_of.numeric(x, type)
   } else {
-    wls.tb <- tibble::tibble(w.length = round(x, digits = 1))
+    wls.tb <- tibble::tibble(w.length = round(x, digits = 0))
     dplyr::left_join(wls.tb,
                      photobiology::wl_colors.spct,
                      by = "w.length")[[type]]
   }
 }
 
+#' @rdname color_of
+#'
+#' @export
+#'
+fast_color_of_wb <- function(x, type = "CMF", ...) {
+  if (is.waveband(x)) {
+    x <- list(x)
+  }
+  stopifnot(is.list(x) && all(sapply(x, is.waveband)))
+  wb.wds <- sapply(x, wl_expanse)
+  if (all(wb.wds < 10)) { # nm
+    # narrow wavebands -> use midpoint wavelength
+    wb.mid <- sapply(x, midpoint)
+    z <- fast_color_of_wl(wb.mid, type = type)
+    wb.names <- sapply(x, function(x) {labels(x)[["label"]]})
+    color.names <- paste(wb.names, type, sep = ".")
+    names(z) <- color.names
+    z
+  } else  {
+    sapply(x, color_of.waveband, type = type)
+  }
+}
+
 #' @title Precomputed rgb colors
 #'
-#' @description A dataset containing wavelengths at a 0.1 nm interval (100 nm to
-#'   1000 nm) and the corresponding CMF and CC colors for human vision.
+#' @description A dataset containing wavelengths at a 1 nm interval (100 nm to
+#'   4000 nm) and the corresponding CMF and CC colors for human vision.
 #'
 #' @note Data computed with function \code{color_of()} and used by function
 #'   \code{fast_color_of_wl()}
@@ -291,7 +333,7 @@ fast_color_of_wl <- function(x, type = "CMF", ...) {
 #'
 #' @docType data
 #' @keywords datasets
-#' @format A \code{generic_spct} object with 9001 rows and 3 variables.
+#' @format A \code{generic_spct} object with 3901 rows and 3 variables.
 #'
 #' @examples
 #' wl_colors.spct

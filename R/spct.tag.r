@@ -373,9 +373,77 @@ wb2rect_spct <- function(w.band, short.names = TRUE, chroma.type = "CMF") {
                    wb.list = w.band)
   attr(new.spct, "spct.tags") <- tag.data
 
-  return(new.spct)
+  new.spct
 }
 
+#' @rdname wb2rect_spct
+#'
+#' @param simplify logical Flag indicating whether to merge neighboring
+#'   rectangles of equal color. Simplification is done only for narrow
+#'   wavebands.
+#'
+#' @note Function \code{fast_wb2rect_spct()} differs from \code{wb2rect_spct()}
+#'   in that it computes colors for narrow wavebands based on the midpoint
+#'   wavelength and uses vectorization when possible. It always returns color
+#'   definitions with short names, which are also used as waveband names for
+#'   narrow wavebands and merged wavebands. The purpose of merging of rectangles
+#'   is to speed up rendering and to reduce the size of vector graphics output.
+#'   This function should be used with care as the color definitions returned
+#'   are only approximate and original waveband names can be lost.
+#'
+#' @export
+#'
+fast_wb2rect_spct <- function(w.band, chroma.type = "CMF", simplify = TRUE) {
+  if (is.waveband(w.band)) {
+    w.band <- list(w.band)
+  }
+  wbs.wds <- sapply(w.band, expanse)
+  if (any(wbs.wds >= 10)) {
+    wb2rect_spct(w.band = w.band,
+                 short.names = TRUE,
+                 chroma.type = chroma.type)
+  } else {
+    wbs.number <- length(w.band) # number of wavebands in list
+    wbs.wl.mid <- sapply(w.band, wl_midpoint)
+    wbs.wl.high <- sapply(w.band, wl_max)
+    wbs.wl.low <- sapply(w.band, wl_min)
+    wbs.rgb <- fast_color_of_wl(wbs.wl.mid)
+    if (simplify) {
+      rgb.rle <- rle(wbs.rgb)
+      new.nrow <- length(rgb.rle$lengths)
+      runs.ends <- cumsum(rgb.rle$lengths)
+      runs.start <- c(1L, runs.ends[-new.nrow] + 1L)
+      wbs.wl.low <- wbs.wl.low[runs.start]
+      wbs.wl.high <- wbs.wl.high[runs.ends]
+      wbs.wl.mid <- wbs.wl.low + (wbs.wl.high - wbs.wl.low) / 2
+      wbs.rgb <- wbs.rgb[runs.ends]
+    }
+    wb.names <- names(wbs.rgb)
+    new.spct <- tibble::tibble(w.length = wbs.wl.mid,
+                               counts = 0, cps = 0,
+                               s.e.irrad = 0, s.q.irrad = 0,
+                               Tfr = 0, Rfl = 0,
+                               s.e.response = 0,
+                               wl.color = wbs.rgb,
+                               wb.color = wbs.rgb,
+                               wb.name = wb.names,
+                               wb.f = factor(wb.names, levels = wb.names),
+                               wl.high = wbs.wl.high, wl.low = wbs.wl.low,
+                               y = 0)
+    setGenericSpct(new.spct)
+    tag.data <- list(time.unit = "none",
+                     wb.key.name = "Bands",
+                     wl.color = TRUE,
+                     wb.color = TRUE,
+                     wb.num = new.nrow,
+                     wb.colors = wbs.rgb,
+                     wb.names = wb.names,
+                     wb.list = if(simplify) list() else w.band)
+    attr(new.spct, "spct.tags") <- tag.data
+
+    new.spct
+  }
+}
 
 # untag -------------------------------------------------------------------
 
