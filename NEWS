@@ -1,9 +1,20 @@
-photobiology 0.10.4 (2020-06-xx)
+photobiology 0.10.4 (2020-06-05)
 ================================
+- Bug fixes.
+- Improved performance in color-related functions, mainly benefiting package
+'ggspectra'.
 
 * Handle gracefully and consistently special input in fast_color_of_wl().
-* Add fast_wb2rect_spct() and fast_color_of_wb() that use precomputed color
-definitions for narrow wavebands to improve performance.
+* Add fast_wb2rect_spct() that uses precomputed color definitions for narrow
+wavebands and optionaly simplifies the returned spectrum by merging neighboring
+rectangles of identical color.
+* Add fast_color_of_wb() that uses precomputed color definitions for narrow
+wavebands.
+* Add parameter force to check_spct() methods, so that critical checks cannot
+be disabled.
+* Implement math functions for class generic_spct.
+* BUG FIX: WARNING in CRAN check because of bad example in docs.
+* BUG FIX: tag() would fail to assign wb.color and wb.name to longest w.length.
 
 photobiology 0.10.3 (2020-06-03)
 ================================

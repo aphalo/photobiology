@@ -1,5 +1,5 @@
 ---
-title: "User Guide: 3 Astronomy"
+title: "User Guide: 3 Astronomy and Atmosphere"
 subtitle: "Package 'photobiology' `r packageVersion('photobiology')` "
 author: "Pedro J. Aphalo"
 date: "`r Sys.Date()`"
@@ -7,7 +7,7 @@ output:
   rmarkdown::html_vignette:
     toc: yes
 vignette: >
-  %\VignetteIndexEntry{User Guide: 3 Astronomy}
+  %\VignetteIndexEntry{User Guide: 3 Astronomy and Atmosphere}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

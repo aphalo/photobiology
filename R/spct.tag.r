@@ -134,7 +134,7 @@ tag.generic_spct <-
       }
       wbs.wl.low[i] <- min(wb)
       wbs.wl.high[i] <- max(wb)
-      wbs.rgb[i] <- color_of(wb, type = chroma.type)[1]
+      wbs.rgb[i] <- fast_color_of_wb(wb, type = chroma.type)[1]
     }
     # We add the waveband-independent tags to the spectrum
     x[["wl.color"]] <- fast_color_of_wl(x[["w.length"]], type = chroma.type)

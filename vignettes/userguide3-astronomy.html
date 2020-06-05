@@ -12,9 +12,9 @@
 
 <meta name="author" content="Pedro J. Aphalo" />
 
-<meta name="date" content="2020-06-01" />
+<meta name="date" content="2020-06-05" />
 
-<title>User Guide: 3 Astronomy</title>
+<title>User Guide: 3 Astronomy and Atmosphere</title>
 
 
 
@@ -301,10 +301,10 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 
 
-<h1 class="title toc-ignore">User Guide: 3 Astronomy</h1>
-<h3 class="subtitle">Package ‘photobiology’ 0.10.2.9000</h3>
+<h1 class="title toc-ignore">User Guide: 3 Astronomy and Atmosphere</h1>
+<h3 class="subtitle">Package ‘photobiology’ 0.10.4</h3>
 <h4 class="author">Pedro J. Aphalo</h4>
-<h4 class="date">2020-06-01</h4>
+<h4 class="date">2020-06-05</h4>
 
 
 <div id="TOC">
@@ -359,7 +359,7 @@ In versions 0.9.16 and later the code has been optimized for performance with ti
 <pre><code>## # A tibble: 1 x 11
 ##   time                tz    solartime longitude latitude address azimuth
 ##   &lt;dttm&gt;              &lt;chr&gt; &lt;solar_t&gt;     &lt;dbl&gt;    &lt;dbl&gt; &lt;chr&gt;     &lt;dbl&gt;
-## 1 2020-06-01 13:16:42 UTC   13:18:46          0     51.5 Greenw~    215.
+## 1 2020-06-05 18:29:01 UTC   18:30:22          0     51.5 Greenw~    290.
 ## # ... with 4 more variables: elevation &lt;dbl&gt;, declination &lt;dbl&gt;,
 ## #   eq.of.time &lt;dbl&gt;, hour.angle &lt;dbl&gt;</code></pre>
 <p>A vector of times is accepted as argument, and as performance is optimized for this case, <em>vectorization</em> will markedly improve performance compared to multiple calls to the function. The vector of times can be created on the fly, or stored beforehand.</p>
@@ -424,9 +424,9 @@ In versions 0.9.16 and later the code has been optimized for performance with ti
 <pre><code>## [1] &quot;2015-03-01 EET&quot;  &quot;2015-04-01 EEST&quot; &quot;2015-05-01 EEST&quot; &quot;2015-06-01 EEST&quot;
 ## [5] &quot;2015-07-01 EEST&quot; &quot;2015-08-01 EEST&quot;</code></pre>
 <div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1"></a><span class="kw">sunrise_time</span>(<span class="kw">now</span>(<span class="st">&quot;UTC&quot;</span>), <span class="dt">tz =</span> <span class="st">&quot;UTC&quot;</span>, <span class="dt">geocode =</span> my.geocode)</span></code></pre></div>
-<pre><code>## [1] &quot;2020-06-01 01:06:50 UTC&quot;</code></pre>
+<pre><code>## [1] &quot;2020-06-05 01:01:40 UTC&quot;</code></pre>
 <div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1"></a><span class="kw">sunrise_time</span>(<span class="kw">now</span>(<span class="st">&quot;EET&quot;</span>), <span class="dt">tz =</span> <span class="st">&quot;EET&quot;</span>, <span class="dt">geocode =</span> my.geocode)</span></code></pre></div>
-<pre><code>## [1] &quot;2020-06-01 04:06:50 EEST&quot;</code></pre>
+<pre><code>## [1] &quot;2020-06-05 04:01:40 EEST&quot;</code></pre>
 <p>Southern hemisphere latitudes as well as longitudes to the West of the Greenwich meridian should be supplied as negative numbers.</p>
 <div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1"></a><span class="kw">sunrise_time</span>(dates, <span class="dt">geocode =</span> <span class="kw">data.frame</span>(<span class="dt">lat =</span> <span class="dv">60</span>, <span class="dt">lon =</span> <span class="dv">0</span>))</span></code></pre></div>
 <pre><code>## [1] &quot;2015-02-28 09:01:52 EET&quot;  &quot;2015-03-31 08:28:41 EEST&quot;
@@ -520,7 +520,7 @@ In versions 0.9.16 and later the code has been optimized for performance with ti
 ## [5] &quot;2015-06-30 22:48:08 EEST&quot; &quot;2015-07-31 21:55:57 EEST&quot;</code></pre>
 <p>The default for <code>date</code> is the current day, using the system time zone settings.</p>
 <div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1"></a><span class="kw">noon_time</span>(<span class="dt">geocode =</span> my.geocode)</span></code></pre></div>
-<pre><code>## [1] &quot;2020-06-01 10:18:12 UTC&quot;</code></pre>
+<pre><code>## [1] &quot;2020-06-05 10:18:52 UTC&quot;</code></pre>
 <p>Parameter <code>unit.out</code> can be used to obtain the returned value expressed as time-of-day in hours, minutes, or seconds since midnight, instead of the default <code>datetime</code>.</p>
 <div class="sourceCode" id="cb57"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1"></a><span class="kw">sunrise_time</span>(<span class="kw">ymd</span>(<span class="st">&quot;2017-03-21&quot;</span>, <span class="dt">tz =</span> <span class="st">&quot;EET&quot;</span>), </span>
 <span id="cb57-2"><a href="#cb57-2"></a>             <span class="dt">tz =</span> <span class="st">&quot;EET&quot;</span>, </span>
@@ -566,14 +566,14 @@ In versions 0.9.16 and later the code has been optimized for performance with ti
 <p>Function <code>as_tod()</code> facilitates conversion of R’s time date objects into a numeric value representing the time of day in one of hour, minute or second as unit of expression.</p>
 <div class="sourceCode" id="cb81"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb81-1"><a href="#cb81-1"></a>times &lt;-<span class="st"> </span><span class="kw">now</span>(<span class="dt">tzone =</span> <span class="st">&quot;UTC&quot;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">hours</span>(<span class="dv">0</span><span class="op">:</span><span class="dv">6</span>)</span>
 <span id="cb81-2"><a href="#cb81-2"></a>times</span></code></pre></div>
-<pre><code>## [1] &quot;2020-06-01 13:16:44 UTC&quot; &quot;2020-06-01 14:16:44 UTC&quot;
-## [3] &quot;2020-06-01 15:16:44 UTC&quot; &quot;2020-06-01 16:16:44 UTC&quot;
-## [5] &quot;2020-06-01 17:16:44 UTC&quot; &quot;2020-06-01 18:16:44 UTC&quot;
-## [7] &quot;2020-06-01 19:16:44 UTC&quot;</code></pre>
+<pre><code>## [1] &quot;2020-06-05 18:29:03 UTC&quot; &quot;2020-06-05 19:29:03 UTC&quot;
+## [3] &quot;2020-06-05 20:29:03 UTC&quot; &quot;2020-06-05 21:29:03 UTC&quot;
+## [5] &quot;2020-06-05 22:29:03 UTC&quot; &quot;2020-06-05 23:29:03 UTC&quot;
+## [7] &quot;2020-06-06 00:29:03 UTC&quot;</code></pre>
 <div class="sourceCode" id="cb83"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb83-1"><a href="#cb83-1"></a><span class="kw">as_tod</span>(times)</span></code></pre></div>
-<pre><code>## [1] 13.27908 14.27908 15.27908 16.27908 17.27908 18.27908 19.27908</code></pre>
+<pre><code>## [1] 18.484224 19.484224 20.484224 21.484224 22.484224 23.484224  0.484224</code></pre>
 <div class="sourceCode" id="cb85"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb85-1"><a href="#cb85-1"></a><span class="kw">as_tod</span>(times, <span class="dt">unit.out =</span> <span class="st">&quot;minutes&quot;</span>)</span></code></pre></div>
-<pre><code>## [1]  796.745  856.745  916.745  976.745 1036.745 1096.745 1156.745</code></pre>
+<pre><code>## [1] 1109.05344 1169.05344 1229.05344 1289.05344 1349.05344 1409.05344   29.05344</code></pre>
 </div>
 <div id="relative-air-mass" class="section level2">
 <h2>Relative air mass</h2>
