@@ -64,6 +64,7 @@ set_check_spct <- function(x) {
 #'   by copy of \code{x}
 #' @param strict.range logical indicating whether off-range values result in an
 #'   error instead of a warning, \code{NA} disables the test.
+#' @param force logical If TRUE check is done even if checks are disabled.
 #' @param ... additional param possible in derived methods
 #'
 #' @export
@@ -77,8 +78,8 @@ set_check_spct <- function(x) {
 #' # try(check_spct(-sun.spct))
 #' # try(check_spct((sun.spct[1, "w.length"] <- 1000)))
 #'
-check_spct <- function(x, byref, strict.range, ...) {
-  if (getOption("photobiology.check.spct", TRUE)) {
+check_spct <- function(x, byref, strict.range, force = FALSE, ...) {
+  if (force || getOption("photobiology.check.spct", TRUE)) {
     UseMethod("check_spct")
   } else {
     x
@@ -87,7 +88,8 @@ check_spct <- function(x, byref, strict.range, ...) {
 
 #' @describeIn check_spct Default for generic function.
 #' @export
-check_spct.default <- function(x, byref = FALSE, strict.range = NA, ...) {
+check_spct.default <-
+  function(x, byref = FALSE, strict.range = NA, force = FALSE, ...) {
   x
 }
 
@@ -100,6 +102,7 @@ check_spct.generic_spct <-
   function(x,
            byref = TRUE,
            strict.range = NA,
+           force = FALSE,
            multiple.wl = getMultipleWl(x),
            ...)
   {
@@ -168,11 +171,13 @@ check_spct.generic_spct <-
 
 #' @describeIn check_spct Specialization for calibration_spct.
 #' @export
-check_spct.calibration_spct <- function(x,
-                                        byref = TRUE,
-                                        strict.range = getOption("photobiology.strict.range", default = FALSE),
-                                        multiple.wl = getMultipleWl(x),
-                                        ...) {
+check_spct.calibration_spct <-
+  function(x,
+           byref = TRUE,
+           strict.range = getOption("photobiology.strict.range", default = FALSE),
+           force = FALSE,
+           multiple.wl = getMultipleWl(x),
+           ...) {
 
   x <- check_spct.generic_spct(x, multiple.wl = multiple.wl)
 
@@ -194,11 +199,13 @@ check_spct.calibration_spct <- function(x,
 
 #' @describeIn check_spct Specialization for raw_spct.
 #' @export
-check_spct.raw_spct <- function(x,
-                                byref = TRUE,
-                                strict.range = getOption("photobiology.strict.range", default = FALSE),
-                                multiple.wl = getMultipleWl(x),
-                                ...) {
+check_spct.raw_spct <-
+  function(x,
+           byref = TRUE,
+           strict.range = getOption("photobiology.strict.range", default = FALSE),
+           force = FALSE,
+           multiple.wl = getMultipleWl(x),
+           ...) {
 
   x <- check_spct.generic_spct(x, multiple.wl = multiple.wl)
 
@@ -215,11 +222,13 @@ check_spct.raw_spct <- function(x,
 
 #' @describeIn check_spct Specialization for cps_spct.
 #' @export
-check_spct.cps_spct <- function(x,
-                                byref = TRUE,
-                                strict.range = getOption("photobiology.strict.range", default = FALSE),
-                                multiple.wl = getMultipleWl(x),
-                                ...) {
+check_spct.cps_spct <-
+  function(x,
+           byref = TRUE,
+           strict.range = getOption("photobiology.strict.range", default = FALSE),
+           force = FALSE,
+           multiple.wl = getMultipleWl(x),
+           ...) {
 
   range_check <- function(x, cps.cols) {
     for (col in cps.cols) {
@@ -268,6 +277,7 @@ check_spct.filter_spct <-
   function(x,
            byref = TRUE,
            strict.range = getOption("photobiology.strict.range", default = FALSE),
+           force = FALSE,
            multiple.wl = getMultipleWl(x),
            ...)
   {
@@ -396,6 +406,7 @@ check_spct.reflector_spct <-
   function(x,
            byref = TRUE,
            strict.range = getOption("photobiology.strict.range", default = FALSE),
+           force = FALSE,
            multiple.wl = getMultipleWl(x),
            ...) {
 
@@ -459,6 +470,7 @@ check_spct.object_spct <-
   function(x,
            byref = TRUE,
            strict.range = getOption("photobiology.strict.range", default = FALSE),
+           force = FALSE,
            multiple.wl = getMultipleWl(x),
            ...) {
 
@@ -611,6 +623,7 @@ check_spct.response_spct <-
   function(x,
            byref = TRUE,
            strict.range = NA,
+           force = FALSE,
            multiple.wl = getMultipleWl(x),
            ...) {
 
@@ -651,6 +664,7 @@ check_spct.source_spct <-
   function(x,
            byref = TRUE,
            strict.range = getOption("photobiology.strict.range", default = FALSE),
+           force = FALSE,
            multiple.wl = getMultipleWl(x),
            ...) {
 
@@ -744,6 +758,7 @@ check_spct.chroma_spct <-
   function(x,
            byref = TRUE,
            strict.range = getOption("photobiology.strict.range", default = FALSE),
+           force = FALSE,
            multiple.wl = getMultipleWl(x),
            ...) {
 

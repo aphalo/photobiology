@@ -167,7 +167,7 @@ smooth_spct.source_spct <- function(x, method = "custom", strength = 1, na.rm = 
   }
   out.spct <- copy_attributes(x, out.spct)
   comment(out.spct) <- comment.text
-  check_spct(out.spct)
+  check_spct(out.spct, force = FALSE)
 }
 
 #' @describeIn smooth_spct Smooth a filter spectrum
@@ -294,7 +294,7 @@ smooth_spct.filter_spct <- function(x, method = "custom", strength = 1, na.rm = 
   }
   out.spct <- copy_attributes(x, out.spct)
   comment(out.spct) <- comment.text
-  check_spct(out.spct)
+  check_spct(out.spct, force = FALSE)
 }
 
 
@@ -396,7 +396,7 @@ smooth_spct.reflector_spct <- function(x, method = "custom", strength = 1, na.rm
   }
   out.spct <- copy_attributes(x, out.spct)
   comment(out.spct) <- comment.text
-  check_spct(out.spct)
+  check_spct(out.spct, force = FALSE)
 }
 
 #' @describeIn smooth_spct Smooth a response spectrum
@@ -523,7 +523,7 @@ smooth_spct.response_spct <- function(x, method = "custom", strength = 1, na.rm 
   }
   out.spct <- copy_attributes(x, out.spct)
   comment(out.spct) <- comment.text
-  check_spct(out.spct)
+  check_spct(out.spct, force = FALSE)
 }
 
 #' @describeIn smooth_spct

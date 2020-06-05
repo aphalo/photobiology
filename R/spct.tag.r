@@ -61,111 +61,116 @@ tag.default <- function(x, ...) {
 #' tag(sun.spct)
 #' tag(sun.spct, list(A = waveband(c(300,3005))))
 #'
-tag.generic_spct <- function(x,
-                             w.band = NULL,
-                             wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
-                             use.hinges = TRUE,
-                             short.names = TRUE,
-                             chroma.type = "CMF",
-                             byref = FALSE, ...) {
-  name <- substitute(x)
-  if (is_tagged(x)) {
-    warning("Overwriting old tags in spectrum")
-    untag(x, byref = TRUE)
-  }
-  # we add a waveband for the whole spectrum
-  if (length(w.band) == 0) {
-    w.band <- waveband(x)
-  }
-  # If the waveband is a missing value we add missing values as tags
-  if (all(is.na(w.band))) {
-    x$wl.color <- NA_character_
-    x$wb.color <- NA_character_
-    x$wb.f <- factor(NA_character_)
+tag.generic_spct <-
+  function(x,
+           w.band = NULL,
+           wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
+           use.hinges = TRUE,
+           short.names = TRUE,
+           chroma.type = "CMF",
+           byref = FALSE, ...) {
+    name <- substitute(x)
+    if (is_tagged(x)) {
+      warning("Overwriting old tags in spectrum")
+      untag(x, byref = TRUE)
+    }
+    # we add a waveband for the whole spectrum
+    if (length(w.band) == 0) {
+      w.band <- waveband(x)
+    }
+    # If the waveband is a missing value we add missing values as tags
+    if (all(is.na(w.band))) {
+      x$wl.color <- NA_character_
+      x$wb.color <- NA_character_
+      x$wb.f <- factor(NA_character_)
+      return(x)
+    }
+    if (is.waveband(w.band)) {
+      # if the argument is a single w.band, we enclose it in a list so that the
+      # for loop works as expected. This lets us treat as any other case.
+      w.band <- list(w.band)
+    }
+    # we delete or trim the wavebands that are not fully within the
+    # spectral data wavelength range
+    w.band <- trim_waveband(w.band = w.band, range = x, trim = wb.trim)
+    # we check if the list members are named, if not we use the names of the
+    # wavebands
+    wbs.number <- length(w.band) # number of wavebands
+    wbs.name <- names(w.band) # their names in the list
+    if (is.null(wbs.name)) {
+      wbs.name <- character(wbs.number)
+    }
+    # The default is calculated based of the stepsize
+    if (is.null(use.hinges)) {
+      use.hinges <- auto_hinges(x[["w.length"]])
+    }
+    # we collect all hinges and insert them in one go
+    if (use.hinges) {
+      all.hinges <- numeric()
+      for (wb in w.band) {
+        if (length(wb$hinges) > 0) {
+          all.hinges <- c(all.hinges, wb$hinges)
+        }
+      }
+      x <- insert_spct_hinges(x, all.hinges)
+    }
+
+    # We iterate through the list of wavebands collecting their names, colors and
+    # boundaries
+    wbs.rgb <- character(wbs.number)
+    wbs.wl.low <- wbs.wl.high <- numeric(wbs.number)
+    i <- 0L
+    for (wb in w.band) {
+      i <- i + 1L
+      if (wbs.name[i] == "") {
+        if (short.names) {
+          name.temp <- labels(wb)[["label"]]
+          wbs.name[i] <- ifelse(grepl("^range.", name.temp, ignore.case = TRUE),
+                                paste("wb", i, sep = ""),
+                                name.temp)
+        } else {
+          wbs.name[i] <- labels(wb)[["name"]]
+        }
+      }
+      wbs.wl.low[i] <- min(wb)
+      wbs.wl.high[i] <- max(wb)
+      wbs.rgb[i] <- color_of(wb, type = chroma.type)[1]
+    }
+    # We add the waveband-independent tags to the spectrum
+    x[["wl.color"]] <- fast_color_of_wl(x[["w.length"]], type = chroma.type)
+    # We add the waveband-dependent tags to the spectrum
+    n <- i
+    x[["wb.color"]] <- NA
+    x[["wb.f"]] <- NA
+    for (i in seq_len(n)) {
+      if (i < n) {
+        selector <- x[["w.length"]] >= wbs.wl.low[i] & x[["w.length"]] < wbs.wl.high[i]
+      } else {
+        selector <- x[["w.length"]] >= wbs.wl.low[i] & x[["w.length"]] <= wbs.wl.high[i]
+      }
+      x[selector, "wb.f"] <- wbs.name[i]
+      x[selector, "wb.color"] <- wbs.rgb[i]
+    }
+    x[["wb.f"]] <- factor(x[["wb.f"]], levels = wbs.name)
+    # We add an attribute with tagging data
+    #   field "valid" is a patch to solve a bug in a quick and safe way
+    tag.data <- list(valid = TRUE, # NA's in time.unit at position 1 results in bug
+                     time.unit = getTimeUnit(x),
+                     wb.key.name = "Bands",
+                     wl.color = TRUE,
+                     wb.color = TRUE,
+                     wb.num = n,
+                     wb.colors = wbs.rgb[1:n],
+                     wb.names = wbs.name[1:n],
+                     wb.list = w.band)
+    attr(x, "spct.tags") <- tag.data
+    # to assign by reference we need to assign the new data frame to the old one
+    if (byref & is.name(name)) {
+      name <- as.character(name)
+      assign(name, x, parent.frame(), inherits = TRUE)
+    }
     return(x)
   }
-  if (is.waveband(w.band)) {
-    # if the argument is a single w.band, we enclose it in a list so that the
-    # for loop works as expected. This lets us treat as any other case.
-    w.band <- list(w.band)
-  }
-  # we delete or trim the wavebands that are not fully within the
-  # spectral data wavelength range
-  w.band <- trim_waveband(w.band = w.band, range = x, trim = wb.trim)
-  # we check if the list members are named, if not we use the names of the
-  # wavebands
-  wbs.number <- length(w.band) # number of wavebands
-  wbs.name <- names(w.band) # their names in the list
-  if (is.null(wbs.name)) {
-    wbs.name <- character(wbs.number)
-  }
-  # The default is calculated based of the stepsize
-  if (is.null(use.hinges)) {
-    use.hinges <- auto_hinges(x[["w.length"]])
-  }
-  # we collect all hinges and insert them in one go
-  if (use.hinges) {
-    all.hinges <- numeric()
-    for (wb in w.band) {
-      if (length(wb$hinges) > 0) {
-        all.hinges <- c(all.hinges, wb$hinges)
-      }
-    }
-    x <- insert_spct_hinges(x, all.hinges)
-  }
-
-  # We iterate through the list of wavebands collecting their names, colors and
-  # boundaries
-  wbs.rgb <- character(wbs.number)
-  wbs.wl.low <- wbs.wl.high <- numeric(wbs.number)
-  i <- 0L
-  for (wb in w.band) {
-    i <- i + 1L
-    if (wbs.name[i] == "") {
-      if (short.names) {
-        name.temp <- labels(wb)[["label"]]
-        wbs.name[i] <- ifelse(grepl("^range.", name.temp, ignore.case = TRUE),
-                              paste("wb", i, sep = ""),
-                              name.temp)
-      } else {
-        wbs.name[i] <- labels(wb)[["name"]]
-      }
-    }
-    wbs.wl.low[i] <- min(wb)
-    wbs.wl.high[i] <- max(wb)
-    wbs.rgb[i] <- color_of(wb, type = chroma.type)[1]
-  }
-  # We add the waveband-independent tags to the spectrum
-  x[["wl.color"]] <- fast_color_of_wl(x[["w.length"]], type = chroma.type)
-  # We add the waveband-dependent tags to the spectrum
-  n <- i
-  x[["wb.color"]] <- NA
-  x[["wb.f"]] <- NA
-  for (i in 1L:n) {
-    selector <- x[["w.length"]] >= wbs.wl.low[i] & x[["w.length"]] < wbs.wl.high[i]
-    x[selector, "wb.f"] <- wbs.name[i]
-    x[selector, "wb.color"] <- wbs.rgb[i]
-  }
-  x[["wb.f"]] <- factor(x[["wb.f"]], levels = wbs.name)
-  # We add an attribute with tagging data
-  #   field "valid" is a patch to solve a bug in a quick and safe way
-  tag.data <- list(valid = TRUE, # NA's in time.unit at position 1 results in bug
-                   time.unit = getTimeUnit(x),
-                   wb.key.name = "Bands",
-                   wl.color = TRUE,
-                   wb.color = TRUE,
-                   wb.num = n,
-                   wb.colors = wbs.rgb[1:n],
-                   wb.names = wbs.name[1:n],
-                   wb.list = w.band)
-  attr(x, "spct.tags") <- tag.data
-  # to assign by reference we need to assign the new data frame to the old one
-  if (byref & is.name(name)) {
-    name <- as.character(name)
-    assign(name, x, parent.frame(), inherits = TRUE)
-  }
-  return(x)
-}
 
 #' @describeIn tag Tag one of \code{generic_mspct}, and derived classes including
 #'   \code{source_mspct}, \code{filter_mspct}, \code{reflector_mspct},

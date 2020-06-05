@@ -143,7 +143,7 @@ compare_spct <- function(x,
                use.hinges = use.hinges,
                short.names = short.names)
     }
-    z <- check_spct(z)
+    z <- check_spct(z, force = TRUE)
   } else if (!returned.value == "data.frame") {
     warning("Returning a data frame as argument \"", returned.value,
             "\" passed to 'returned.value' is unknown.")

@@ -591,6 +591,10 @@ apply_oper <- function(e1, e2, oper) {
 #' @keywords internal
 #'
 f_dispatcher_spct <- function(x, .fun, ...) {
+  # Skip checks for intermediate results
+  prev_state <- disable_check_spct()
+  on.exit(set_check_spct(prev_state), add = TRUE)
+
   # radiation unit
   .unit.irrad <- getOption("photobiology.radiation.unit",
                            default = "energy")
@@ -629,40 +633,36 @@ f_dispatcher_spct <- function(x, .fun, ...) {
   # dispatch
   if (is.calibration_spct(x)) {
     z[["irrad.mult"]] <- .fun(z[["irrad.mult"]], ...)
-    check_spct(z)
-    return(z)
   } else if (is.raw_spct(x)) {
     z[["counts"]] <- .fun(z[["counts"]], ...)
-    check_spct(z)
-    return(z)
   } else if (is.cps_spct(x)) {
     z[["cps"]] <- .fun(z[["cps"]], ...)
-    check_spct(z)
-    return(z)
   } else if (is.filter_spct(x)) {
-     z[[.name.filter.qty]] <- .fun(z[[.name.filter.qty]], ...)
-     check_spct(z)
-    return(z)
+    z[[.name.filter.qty]] <- .fun(z[[.name.filter.qty]], ...)
   } else if (is.reflector_spct(x)) {
     z[["Rfr"]] <- .fun(z[["Rfr"]], ...)
-    check_spct(z)
-    return(z)
   } else if (is.source_spct(x)) {
-      z[[.name.irrad]] <- .fun(z[[.name.irrad]], ...)
-      check_spct(z)
-      return(z)
+    z[[.name.irrad]] <- .fun(z[[.name.irrad]], ...)
   } else if (is.response_spct(x)) {
-      z[[.name.response]] <- .fun(z[[.name.response]], ...)
-      return(z)
+    z[[.name.response]] <- .fun(z[[.name.response]], ...)
   } else if (is.chroma_spct(x)) {
     z[["x"]] <- .fun(z[["x"]], ...)
     z[["y"]] <- .fun(z[["y"]], ...)
     z[["z"]] <- .fun(z[["z"]], ...)
-    check_spct(z)
-    return(z)
+  } else if (is.generic_spct(x)) {
+    numeric.cols <- sapply(x, is.numeric)
+    col.names <- setdiff(colnames(x)[numeric.cols], "w.length")
+    if (length(col.names > 1L)) {
+      .name.response <- col.names[1]
+      warning("Function applied only to numeric column \"",
+              .name.response, "\".")
+    } else if (!length(col.names == 0L)) {
+      z[[.name.response]] <- .fun(z[[.name.response]], ...)
+    }
   } else {
       stop("Function not implemented for ", class(x)[1], " objects.")
   }
+  check_spct(z, force = TRUE)
 }
 
 #' Logarithms and Exponentials
@@ -684,9 +684,6 @@ f_dispatcher_spct <- function(x, .fun, ...) {
 #'   values. For this reason unless \code{x} is an object of base class
 #'   \code{generic_spct}, checks will not be passed, resulting in warnings or
 #'   errors.
-#'
-#' @examples
-#' log10(as.generic_spct(sun.spct))
 #'
 #' @export
 #' @family math operators and functions

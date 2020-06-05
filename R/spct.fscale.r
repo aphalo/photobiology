@@ -513,7 +513,7 @@ fscale_spct <- function(spct, range, col.names, f, target, set.scaled, ...) {
   } else {
     spct <- setScaled(spct, scaled = FALSE)
   }
-  check_spct(spct)
+  check_spct(spct, force = FALSE)
 }
 
 # is_scaled function ----------------------------------------------------
