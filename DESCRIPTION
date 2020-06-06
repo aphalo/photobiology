@@ -9,7 +9,7 @@ Authors@R:
     person("Titta K.", "Kotilainen", role = "ctb", comment = c(ORCID = "0000-0002-2822-9734")),
     person("Glenn", "Davis", email = "gdavis@gluonics.com", role = "ctb"),
     person("Agnese", "Fazio", email = "agnese.fazio@uni-jena.de", role = "ctb")
-  )
+    )
 Description: Definitions of classes, methods, operators and functions for use 
     in photobiology and radiation meteorology and climatology. Calculation of
     effective (weighted) and not-weighted irradiances/doses, fluence rates,
