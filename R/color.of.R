@@ -287,7 +287,7 @@ fast_color_of_wl <- function(x, type = "CMF", ...) {
   } else {
     wls.tb <- tibble::tibble(w.length = round(x, digits = 0))
     dplyr::left_join(wls.tb,
-                     photobiology::wl_colors.spct,
+                     wl_colors.spct,
                      by = "w.length")[[type]]
   }
 }
@@ -315,27 +315,29 @@ fast_color_of_wb <- function(x, type = "CMF", ...) {
   }
 }
 
-#' @title Precomputed rgb colors
-#'
-#' @description A dataset containing wavelengths at a 1 nm interval (100 nm to
-#'   4000 nm) and the corresponding CMF and CC colors for human vision.
-#'
-#' @note Data computed with function \code{color_of()} and used by function
-#'   \code{fast_color_of_wl()}
-#'
-#'   A chroma_spct object with variables as follows:
-#'
-#' @details
-#' \itemize{
-#' \item w.length (nm), numeric vector
-#' \item CMF, named character vector
-#' \item CC, named character vector}
-#'
-#' @docType data
-#' @keywords datasets
-#' @format A \code{generic_spct} object with 3901 rows and 3 variables.
-#'
-#' @examples
-#' wl_colors.spct
-#'
-"wl_colors.spct"
+## Now saved to R/sysdata.rda
+#
+# @title Precomputed rgb colors
+#
+# @description A dataset containing wavelengths at a 1 nm interval (100 nm to
+#   4000 nm) and the corresponding CMF and CC colors for human vision.
+#
+# @note Data computed with function \code{color_of()} and used by function
+#   \code{fast_color_of_wl()}
+#
+#   A chroma_spct object with variables as follows:
+#
+# @details
+# \itemize{
+# \item w.length (nm), numeric vector
+# \item CMF, named character vector
+# \item CC, named character vector}
+#
+# @docType data
+# @keywords datasets
+# @format A \code{generic_spct} object with 3901 rows and 3 variables.
+#
+# @examples
+# wl_colors.spct
+#
+# "wl_colors.spct"

@@ -1,3 +1,8 @@
+photobiology 0.10.5 (2020-06-xx)
+================================
+
+* Make the precomputed color data private.
+
 photobiology 0.10.4 (2020-06-05)
 ================================
 - Bug fixes.
@@ -13,7 +18,7 @@ wavebands.
 * Add parameter force to check_spct() methods, so that critical checks cannot
 be disabled.
 * Implement math functions for class generic_spct.
-* BUG FIX: WARNING in CRAN check because of bad example in docs.
+* BUG FIX: ERROR in CRAN check because of bad example in docs.
 * BUG FIX: tag() would fail to assign wb.color and wb.name to longest w.length.
 
 photobiology 0.10.3 (2020-06-03)

@@ -8,6 +8,6 @@ wl_colors.spct <- generic_spct(w.length = wls,
                                         CMF = CMF.color,
                                         CC = CC.color)
 
-save(wl_colors.spct, file = "./data/colors-spct.rda")
+save(wl_colors.spct, file = "./R/sysdata.rda")
 
 
