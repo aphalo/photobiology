@@ -48,9 +48,9 @@
 #' VA, USA. ISBN 978-0943396613.
 #'
 #' A different implementation is available at
-#' \url{https://www.nefsc.noaa.gov/AstroCalc4R/} and in R paclage
-#' \code{\link[fishmethods]{astrocalc4r}}. In 'fishmethods' (= 1.11-0) there
-#' is a bug in function astrocalc4r() that affects sunrise and sunset times.
+#' \url{https://www.nefsc.noaa.gov/AstroCalc4R/} and in R paclage 'fishmethods'.
+#' In 'fishmethods' (= 1.11-0) there is a bug in function astrocalc4r() that
+#' affects sunrise and sunset times.
 #'
 #' An interactive web page using the same algorithms is available at
 #' \url{https://www.esrl.noaa.gov/gmd/grad/solcalc/}. There are small
@@ -348,9 +348,9 @@ tz_time_diff <- function(when = lubridate::now(),
 #' VA, USA. ISBN 978-0943396613.
 #'
 #' A different implementation is available at
-#' \url{https://www.nefsc.noaa.gov/AstroCalc4R/} and in R paclage
-#' \code{\link[fishmethods]{astrocalc4r}}. In 'fishmethods' (= 1.11-0) there
-#' is a bug in function astrocalc4r() that affects sunrise and sunset times.
+#' \url{https://www.nefsc.noaa.gov/AstroCalc4R/} and in R paclage 'fishmethods'.
+#' In 'fishmethods' (= 1.11-0) there is a bug in function astrocalc4r() that
+#' affects sunrise and sunset times.
 #'
 #' An interactive web page using the same algorithms is available at
 #' \url{https://www.esrl.noaa.gov/gmd/grad/solcalc/}. There are small

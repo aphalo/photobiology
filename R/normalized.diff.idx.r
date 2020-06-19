@@ -33,7 +33,7 @@
 #' @note Some NDxI indexes are directly based on satellite instrument data, such
 #'   as those in the Landsat satellites. To simulate such indexes using spectral
 #'   reflectande as input, \code{waveband} definitions provided by package
-#'   \link[photobiologyWavebands]{photobiologyWavebands} can be used.
+#'   'photobiologyWavebands' can be used.
 #'
 #' @export
 #'
