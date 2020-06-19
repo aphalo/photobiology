@@ -16,23 +16,23 @@
 #' @examples
 #'
 #' my.mscpt <- source_mspct(list(sun1 = sun.spct, sun2 = sun.spct))
-#' uncollect(my.mscpt)
+#' uncollect2spct(my.mscpt)
 #' ls(pattern = "*.spct")
 #'
 #' @family experimental utility functions
 #'
-uncollect <- function(x, ...) UseMethod("uncollect")
+uncollect2spct <- function(x, ...) UseMethod("uncollect2spct")
 
-#' @describeIn uncollect Default for generic function
+#' @describeIn uncollect2spct Default for generic function
 #'
 #' @export
 #'
-uncollect.default <- function(x, ...) {
-  warning("'uncollect()' is not defined for objects of class '", class(x)[1], "'.")
+uncollect2spct.default <- function(x, ...) {
+  warning("'uncollect2spct()' is not defined for objects of class '", class(x)[1], "'.")
   invisible(character())
 }
 
-#' @describeIn uncollect
+#' @describeIn uncollect2spct
 #'
 #' @param name.tag character. A string used as tag for the names of the objects.
 #'   If of length zero, names of members are used as named of objects. Otherwise
@@ -48,7 +48,7 @@ uncollect.default <- function(x, ...) {
 #'
 #' @export
 #'
-uncollect.generic_mspct <- function(x,
+uncollect2spct.generic_mspct <- function(x,
                                     name.tag = ".spct",
                                     ignore.case = FALSE,
                                     check.names = TRUE,
@@ -91,6 +91,68 @@ uncollect.generic_mspct <- function(x,
     assign(obj.names[member.name], x[[member.name]], envir = parent.frame(2))
   }
   invisible(unname(obj.names))
+}
+
+#' Form a new collection
+#'
+#' Form a collection of spectra from separate objects in the parent
+#' frame of the call.
+#'
+#' @details This is a convenience function that simplifies the creation of
+#' collections from existing objects of class \code{generic_spct} or a derived
+#' class. A list of objects con be passed as argument, or a search pattern.
+#' Objects of other R classes are silently discarded, which simplifies the
+#' specification of search patterns. If all the objects are of the same class
+#' then the corresponding collection class will be used by default, otherwise
+#' a \code{generic_spct} object with heterogeneous members will be returned. If
+#' a class is passed to parameter \code{collection.class}, this will be the
+#' class of the object returned. The returned object is created with the
+#' constructor for the class, and validated.
+#'
+#' @param .list list of R objects
+#' @param pattern character an optional regular expression, used if .
+#' @param collection.class character
+#' @param ... additional named arguments passed down to the collection
+#'   constructor.
+#'
+#' @return By default a collection of spectra.
+#'
+#' @export
+#'
+#' @examples
+#' collect2mspct() # returns empty generic_mspct object
+#'
+#' sun1.spct <- sun.spct
+#' sun2.spct <- sun.spct
+#' kk.spct <- 10:30 # ignored
+#' collect2mspct() # returns source_mspct object of length 2
+#'
+#' pet1.spct <- polyester.spct
+#' collect2mspct() # returns generic_mspct object of length 3
+#'
+#' @family experimental utility functions
+#'
+collect2mspct <- function(.list = NULL,
+                    pattern = "*\\.spct$",
+                    collection.class = NULL,
+                    ...)  {
+  if (length(.list) == 0L) {
+    names <- ls(pattern = pattern, envir = parent.frame())
+    .list <- mget(x = names, envir = parent.frame())
+  }
+  if (is.null(collection.class) && length(.list) >= 1L) {
+    # assume we are dealing with generic_spct objects or derived
+    .list <- .list[sapply(.list, is.any_spct)]
+    collection.class <- shared_member_class(.list)[1]
+  }
+  collection.class <- gsub("_spct$", "_mspct", collection.class)
+  if (length(.list) >= 1L) {
+    do.call(what = collection.class, args = list(l = .list))
+  } else if (length(collection.class) == 1L) {
+    do.call(what = collection.class, args = list())
+  } else {
+    generic_mspct()
+  }
 }
 
 # thining of wavelengths --------------------------------------------------
@@ -370,3 +432,151 @@ thin_wl.chroma_mspct <- thin_wl.default
 #' @export
 #'
 thin_wl.calibration_mspct <- thin_wl.default
+
+# drop columns ------------------------------------------------------------
+
+#' Drop user columns
+#'
+#' Remove from spectral object additional columns that are user defined.
+#'
+#' @param x An R object
+#' @param keep.also character Additionlal columns to preserve.
+#' @param ... needed to allow derivation.
+#'
+#' @return A copy of \code{x} possibly with some columns removed.
+#'
+#' @export
+#'
+#' @family experimental utility functions
+#'
+drop_user_cols <- function(x, keep.also, ...) UseMethod("drop_user_cols")
+
+#' @describeIn drop_user_cols
+#'
+#' @export
+#'
+drop_user_cols.default <- function(x, keep.also = NULL, ...) {
+  warning("'drop_user_cols()' is not defined for objects of class '", class(x)[1], "'.")
+  x
+}
+
+#' @describeIn drop_user_cols
+#'
+#' @export
+#'
+drop_user_cols.generic_spct <- function(x, keep.also, ...) {
+  stopifnot(length(keep.also) >= 1L)
+  default.cols <- c("w.length")
+  cols.to.keep <- unique(c(default.cols, keep.also))
+  x[ , intersect(colnames(x), cols.to.keep)]
+}
+
+#' @describeIn drop_user_cols
+#'
+#' @export
+#'
+drop_user_cols.source_spct <- function(x, keep.also = NULL, ...) {
+  default.cols <- c("w.length", "s.e.irrad", "s.q.irrad")
+  cols.to.keep <- unique(c(default.cols, keep.also))
+  x[ , intersect(colnames(x), cols.to.keep)]
+}
+
+#' @describeIn drop_user_cols
+#'
+#' @export
+#'
+drop_user_cols.response_spct <- function(x, keep.also = NULL, ...) {
+  default.cols <- c("w.length", "s.e.response", "s.q.response")
+  cols.to.keep <- unique(c(default.cols, keep.also))
+  x[ , intersect(colnames(x), cols.to.keep)]
+}
+
+#' @describeIn drop_user_cols
+#'
+#' @export
+#'
+drop_user_cols.object_spct <- function(x, keep.also = NULL, ...) {
+  default.cols <- c("w.length", "Tfr", "Rfr", "Afr")
+  cols.to.keep <- unique(c(default.cols, keep.also))
+  x[ , intersect(colnames(x), cols.to.keep)]
+}
+
+#' @describeIn drop_user_cols
+#'
+#' @export
+#'
+drop_user_cols.filter_spct <- function(x, keep.also = NULL, ...) {
+  default.cols <- c("w.length", "Tfr", "Afr", "A")
+  if ("Rfr" %in% colnames(x)) {
+    warning("Deleting 'object_spct' columns from 'filter_spct'.")
+  }
+  cols.to.keep <- unique(c(default.cols, keep.also))
+  x[ , intersect(colnames(x), cols.to.keep)]
+}
+
+#' @describeIn drop_user_cols
+#'
+#' @export
+#'
+drop_user_cols.reflector_spct <- function(x, keep.also = NULL, ...) {
+  default.cols <- c("w.length", "Rfr")
+  if (any(c("Tfr", "Afr", "A") %in% colnames(x))) {
+    warning("Deleting 'object_spct' columns from 'reflector_spct'.")
+  }
+  cols.to.keep <- unique(c(default.cols, keep.also))
+  x[ , intersect(colnames(x), cols.to.keep)]
+}
+
+#' @describeIn drop_user_cols
+#'
+#' @export
+#'
+drop_user_cols.chroma_spct <- function(x, keep.also = NULL, ...) {
+  default.cols <- c("w.length", "x", "y", "z")
+  cols.to.keep <- unique(c(default.cols, keep.also))
+  x[ , intersect(colnames(x), cols.to.keep)]
+}
+
+#' @describeIn drop_user_cols
+#'
+#' @export
+#'
+drop_user_cols.calibration_spct <- function(x, keep.also = NULL, ...) {
+  default.cols <- c("w.length", "irrad.mult")
+  cols.to.keep <- unique(c(default.cols, keep.also))
+  x[ , intersect(colnames(x), cols.to.keep)]
+}
+
+#' @describeIn drop_user_cols
+#'
+#' @export
+#'
+drop_user_cols.cps_spct <- function(x, keep.also = NULL, ...) {
+  cps.cols <- grep("^cps", colnames(x), value = TRUE)
+  stopifnot(length(cps.cols >= 1L) && "w.length" %in% colnames(x))
+  default.cols <- c("w.length", cps.cols)
+  cols.to.keep <- unique(c(default.cols, keep.also))
+  x[ , intersect(colnames(x), cols.to.keep)]
+}
+
+#' @describeIn drop_user_cols
+#'
+#' @export
+#'
+drop_user_cols.raw_spct <- function(x, keep.also = NULL, ...) {
+  counts.cols <- grep("^counts", colnames(x), value = TRUE)
+  stopifnot(length(counts.cols >= 1L) && "w.length" %in% colnames(x))
+  default.cols <- c("w.length", counts.cols)
+  cols.to.keep <- unique(c(default.cols, keep.also))
+  x[ , intersect(colnames(x), cols.to.keep)]
+}
+
+#' @describeIn drop_user_cols
+#'
+#' @export
+#'
+drop_user_cols.generic_mspct <-
+  function(x, keep.also = NULL, ...) {
+    msmsply(x, drop_user_cols, keep.also = keep.also, ...)
+}
+
