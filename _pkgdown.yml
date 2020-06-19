@@ -343,7 +343,9 @@ reference:
     - is.old_spct
     - merge_attributes
     - normalize_range_arg
-    - uncollect
+    - collect2mspct
+    - uncollect2spct
+    - drop_user_cols
     - upgrade_spct
     - upgrade_spectra
     - defunct

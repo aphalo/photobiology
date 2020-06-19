@@ -2,6 +2,9 @@ photobiology 0.10.5 (2020-06-xx)
 ================================
 
 * Make the precomputed color data private.
+* Add method drop_user_cols() to remove from spectra of user-defined columns.
+* Add methos collect2mspct() and rename method uncollect() as uncollect2spct().
+* Revise rbindspct() to gracefully handle duplicate member names in its input.
 
 photobiology 0.10.4 (2020-06-05)
 ================================

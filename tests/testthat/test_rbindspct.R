@@ -2,6 +2,60 @@ library(photobiology)
 
 context("binding")
 
+test_that("unique_names_mspct", {
+  # test shared code only once
+  my.spct <- sun.spct
+  comment(my.spct) <- "TEST"
+  my.mspct <- source_mspct(list(sun = my.spct, sun_1 = my.spct))
+
+  expect_silent(long.spct <- rbindspct(my.mspct))
+  expect_named(long.spct, c("w.length", "s.e.irrad", "s.q.irrad", "spct.idx"))
+  expect_equal(levels(long.spct$spct.idx), c("sun", "sun_1"))
+  expect_equal(attr(long.spct, "idfactor"), "spct.idx")
+  expect_equal(nrow(long.spct), 2 * nrow(my.spct))
+  expect_equal(nrow(where_measured(long.spct)), length(my.mspct))
+  expect_equal(levels(long.spct$spct.idx),
+               where_measured(long.spct)$spct.idx)
+  expect_equal(length(when_measured(long.spct)), length(my.mspct))
+  expect_equal(levels(long.spct$spct.idx),
+               names(when_measured(long.spct)))
+  expect_equal(length(what_measured(long.spct)), length(my.mspct))
+  expect_equal(levels(long.spct$spct.idx),
+               names(what_measured(long.spct)))
+  expect_equal(length(how_measured(long.spct)), length(my.mspct))
+  expect_equal(levels(long.spct$spct.idx),
+               names(how_measured(long.spct)))
+  expect_equal(comment(long.spct),
+               "rbindspct: concatenated comments \nspct.idx= sun:\nTEST \nspct.idx= sun_1:\nTEST")
+})
+
+test_that("duplicated_names_mspct", {
+  # test shared code only once
+  my.spct <- sun.spct
+  comment(my.spct) <- "TEST"
+  my.mspct <- source_mspct(list(sun = my.spct, sun = my.spct))
+
+  expect_warning(long.spct <- rbindspct(my.mspct))
+  expect_named(long.spct, c("w.length", "s.e.irrad", "s.q.irrad", "spct.idx"))
+  expect_equal(levels(long.spct$spct.idx), c("sun", "sun_1"))
+  expect_equal(attr(long.spct, "idfactor"), "spct.idx")
+  expect_equal(nrow(long.spct), 2 * nrow(my.spct))
+  expect_equal(nrow(where_measured(long.spct)), length(my.mspct))
+  expect_equal(levels(long.spct$spct.idx),
+               where_measured(long.spct)$spct.idx)
+  expect_equal(length(when_measured(long.spct)), length(my.mspct))
+  expect_equal(levels(long.spct$spct.idx),
+               names(when_measured(long.spct)))
+  expect_equal(length(what_measured(long.spct)), length(my.mspct))
+  expect_equal(levels(long.spct$spct.idx),
+               names(what_measured(long.spct)))
+  expect_equal(length(how_measured(long.spct)), length(my.mspct))
+  expect_equal(levels(long.spct$spct.idx),
+               names(how_measured(long.spct)))
+  expect_equal(comment(long.spct),
+               "rbindspct: concatenated comments \nspct.idx= sun:\nTEST \nspct.idx= sun_1:\nTEST")
+})
+
 test_that("source_mspct", {
 
   my.spct <- sun.spct

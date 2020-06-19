@@ -28,6 +28,10 @@
 #'
 print.generic_spct <- function(x, ..., n = NULL, width = NULL)
 {
+  # Skip checks of validity as we are only printing
+  prev_state <- disable_check_spct()
+  on.exit(set_check_spct(prev_state), add = TRUE)
+
   cat("Object: ", class_spct(x)[1], " ", dplyr::dim_desc(x), "\n", sep = "")
   if (nrow(x)) {
     m.wl <- getMultipleWl(x)
