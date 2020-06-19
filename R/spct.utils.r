@@ -15,7 +15,7 @@
 #'
 #' @examples
 #'
-#' my.mscpt <- source_mspct(list(sun1 = sun.spct, sun2 = sun.spct))
+#' my.mscpt <- source_mspct(list(sun1.spct = sun.spct, sun2.spct = sun.spct))
 #' uncollect2spct(my.mscpt)
 #' ls(pattern = "*.spct")
 #'
