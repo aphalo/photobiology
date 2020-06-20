@@ -12,10 +12,26 @@
 
 <meta name="author" content="Pedro J. Aphalo" />
 
-<meta name="date" content="2020-06-09" />
+<meta name="date" content="2020-06-20" />
 
 <title>User Guide: 2 Radiation</title>
 
+<script>// Hide empty <a> tag within highlighted CodeBlock for screen reader accessibility (see https://github.com/jgm/pandoc/issues/6352#issuecomment-626106786) -->
+// v0.0.1
+// Written by JooYoung Seo (jooyoung@psu.edu) and Atsushi Yasumoto on June 1st, 2020.
+
+document.addEventListener('DOMContentLoaded', function() {
+  const codeList = document.getElementsByClassName("sourceCode");
+  for (var i = 0; i < codeList.length; i++) {
+    var linkList = codeList[i].getElementsByTagName('a');
+    for (var j = 0; j < linkList.length; j++) {
+      if (linkList[j].innerHTML === "") {
+        linkList[j].setAttribute('aria-hidden', 'true');
+      }
+    }
+  }
+});
+</script>
 
 
 <style type="text/css">code{white-space: pre;}</style>
@@ -302,9 +318,9 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 
 <h1 class="title toc-ignore">User Guide: 2 Radiation</h1>
-<h3 class="subtitle">Package ‘photobiology’ 0.10.4.9000</h3>
+<h3 class="subtitle">Package ‘photobiology’ 0.10.4.9001</h3>
 <h4 class="author">Pedro J. Aphalo</h4>
-<h4 class="date">2020-06-09</h4>
+<h4 class="date">2020-06-20</h4>
 
 
 <div id="TOC">
@@ -2073,7 +2089,7 @@ Methods <code>[[</code>, <code>$</code> and <code>[[&lt;-</code>, extract and re
 </tbody>
 </table>
 <p>The calculations are done wavelength by wavelength yielding a spectrum at the same wavelengths than those in the input. Removal of <code>NA</code> values is done wavelength by wavelength. As shown in the table above, depending on the operation the returned quantity may be equivalent or not to the quantity in the input. When the quantity changes, even if units of expression remain the same, the name of the variable and class of the returned spectrum are different to those in the input.</p>
-<p>Computing the mean returns values of the same quantity as in the input, and we obtain a <code>source_spct</code> object.</p>
+<p>Methods in this “family” are fast and are specially useful for large collections of spectra containing even thousands of individual spectra. Nonetheless, for the example below we use a collection of two spectra. As computing the mean returns values of the same quantity as in the input the returned value is a <code>source_spct</code> object, in other words of the same class as the members of <code>two.mspct</code>.</p>
 <div class="sourceCode" id="cb176"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb176-1"><a href="#cb176-1"></a><span class="kw">s_mean</span>(two.mspct)</span></code></pre></div>
 <pre><code>## Object: source_spct [522 x 2]
 ## Wavelength range 280 to 800 nm, step 0.9230769 to 1 nm 
@@ -2088,7 +2104,7 @@ Methods <code>[[</code>, <code>$</code> and <code>[[&lt;-</code>, extract and re
 ## 3     282.         0
 ## 4     283.         0
 ## # ... with 518 more rows</code></pre>
-<p>If we compute the standard error, the quantity returned is not the same. The object returned is in this case a <code>generic_spct</code> and the variable name has been tagged with <code>.se</code>.</p>
+<p>When we compute the standard error, the quantity returned is not the same. Consequently, the object returned is in this case a <code>generic_spct</code> instead of <code>source_spc</code> as it does not contain spectral irradiance data as the input did. The variable name is in addition tagged with <code>.se</code> to <em>advertise</em> the change in the quantity.</p>
 <div class="sourceCode" id="cb178"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb178-1"><a href="#cb178-1"></a><span class="kw">s_se</span>(two.mspct)</span></code></pre></div>
 <pre><code>## Object: generic_spct [522 x 2]
 ## Wavelength range 280 to 800 nm, step 0.9230769 to 1 nm 
@@ -2117,7 +2133,7 @@ Methods <code>[[</code>, <code>$</code> and <code>[[&lt;-</code>, extract and re
 ## 3     282.         0            0
 ## 4     283.         0            0
 ## # ... with 518 more rows</code></pre>
-<p>The other functions in these family function in a similar way to those described here.</p>
+<p>The other functions in this family work in a similar way to those described here.</p>
 </div>
 <div id="convolution" class="section level3">
 <h3>Convolution</h3>

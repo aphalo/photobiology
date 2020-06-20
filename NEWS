@@ -6,6 +6,8 @@ photobiology 0.10.5 (2020-06-xx)
 * Add methos collect2mspct() and rename method uncollect() as uncollect2spct().
 * Rename method uncollect() into uncollect2spct().
 * Revise rbindspct() to gracefully handle duplicate member names in its input.
+* Revise add_attr2tb() adding support for more attributes.
+* Add method spct_metadata().
 
 photobiology 0.10.4 (2020-06-05)
 ================================

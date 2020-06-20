@@ -452,7 +452,6 @@ fast_wb2rect_spct <- function(w.band, chroma.type = "CMF", simplify = TRUE) {
 
 # untag -------------------------------------------------------------------
 
-
 #' Remove tags
 #'
 #' Remove tags from an R object if present, otherwise return the object

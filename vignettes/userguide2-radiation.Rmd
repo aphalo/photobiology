@@ -693,13 +693,13 @@ Starting from a collection of spectra we may want to obtain a single spectrum co
 
 The calculations are done wavelength by wavelength yielding a spectrum at the same wavelengths than those in the input. Removal of `NA` values is done wavelength by wavelength. As shown in the table above, depending on the operation the returned quantity may be equivalent or not to the quantity in the input. When the quantity changes, even if units of expression remain the same, the name of the variable and class of the returned spectrum are different to those in the input.
 
-Computing the mean returns values of the same quantity as in the input, and we obtain a `source_spct` object.
+Methods in this "family" are fast and are specially useful for large collections of spectra containing even thousands of individual spectra. Nonetheless, for the example below we use a collection of two spectra. As computing the mean returns values of the same quantity as in the input the returned value is a `source_spct` object, in other words of the same class as the members of `two.mspct`.
 
 ```{r}
 s_mean(two.mspct)
 ```
 
-If we compute the standard error, the quantity returned is not the same. The object returned is in this case a `generic_spct` and the variable name has been tagged with `.se`.
+When we compute the standard error, the quantity returned is not the same. Consequently, the object returned is in this case a `generic_spct` instead of `source_spc` as it does not contain spectral irradiance data as the input did. The variable name is in addition tagged with `.se` to _advertise_ the change in the quantity.
 
 ```{r}
 s_se(two.mspct)
@@ -711,7 +711,7 @@ We can also compute both the mean and standard error simultaneously.
 s_mean_se(two.mspct)
 ```
 
-The other functions in these family function in a similar way to those described here.
+The other functions in this family work in a similar way to those described here.
 
 ### Convolution
 
