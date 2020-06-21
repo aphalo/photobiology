@@ -135,7 +135,7 @@ check_spct.generic_spct <-
 
     if (nrow(x)) {
       wl.min <- min(x[["w.length"]], na.rm = TRUE)
-      #  wl.max <- max(x$w.length, na.rm = TRUE)
+      #  wl.max <- max(x[["w.length"]], na.rm = TRUE)
       if (wl.min == Inf) {
         warning("No valid 'w.length' values found") # could be stop()
       } else if (wl.min < 1) {
@@ -411,9 +411,9 @@ check_spct.reflector_spct <-
            ...) {
 
     range_check <- function(x, strict.range) {
-      if (!all(is.na(x$Rfr))) {
-        Rfr.min <- min(x$Rfr, na.rm = TRUE)
-        Rfr.max <- max(x$Rfr, na.rm = TRUE)
+      if (!all(is.na(x[["Rfr"]]))) {
+        Rfr.min <- min(x[["Rfr"]], na.rm = TRUE)
+        Rfr.max <- max(x[["Rfr"]], na.rm = TRUE)
         if (Rfr.min < -1e-4 ||  Rfr.max > 1 + 1e-6) {
           message.text <-
             paste0(
@@ -525,7 +525,7 @@ check_spct.object_spct <-
     }
 
     range_check_Rfr <- function(x, strict.range) {
-      if (!all(is.na(x$Rfr))) {
+      if (!all(is.na(x[["Rfr"]]))) {
         Rfr.min <- min(x[["Rfr"]], na.rm = TRUE)
         Rfr.max <- max(x[["Rfr"]], na.rm = TRUE)
         if (!is.na(Rfr.min) && !is.na(Rfr.max)) {
@@ -672,7 +672,7 @@ check_spct.source_spct <-
       min.limit <- -0.10 # we accept small negative values
       if (exists("s.e.irrad", x, inherits = FALSE) &&
           !all(is.na(x[["s.e.irrad"]]))) {
-        s.e.range <- range(x$s.e.irrad, na.rm = TRUE)
+        s.e.range <- range(x[["s.e.irrad"]], na.rm = TRUE)
         s.e.spread <- s.e.range[2] # for irradiance zero is meaningful
         # we need to be fairly lax as dark reference spectra may have
         # proportionally lots of noise.
@@ -695,7 +695,7 @@ check_spct.source_spct <-
       }
       if (exists("s.q.irrad", x, inherits = FALSE) &&
           !all(is.na(x[["s.q.irrad"]]))) {
-        s.q.range <- range(x$s.q.irrad, na.rm = TRUE)
+        s.q.range <- range(x[["s.q.irrad"]], na.rm = TRUE)
         s.q.spread <- s.q.range[2] # zero is meaningful
         # we need to be fairly lax as dark reference spectra may have
         # proportionally lots of noise.

@@ -162,9 +162,9 @@ clean.object_spct <-
 
    # we need to protect from rounding errors
    if (getTfrType(x) == "total") {
-     Afr <- 1 - (z$Rfr + z$Tfr)
+     Afr <- 1 - (z[["Rfr"]] + z[["Tfr"]])
    } else if (getTfrType(x) == "internal") {
-     Afr <- 1 - (z$Rfr + z$Tfr * (1 - z$Rfr))
+     Afr <- 1 - (z[["Rfr"]] + z[["Tfr"]] * (1 - z[["Rfr"]]))
    } else {
      stop("Bad Tfr.type attribute: ", getTfrType(x))
    }
@@ -183,8 +183,8 @@ clean.object_spct <-
    if (any(delta != 0)) {
      # we apply the correction proportionally, which guarantees that
      # we do not male Rfr < 0 or Tfr < 0!!
-     z$Rfr <- z$Rfr - (delta * z$Rfr) / (z$Rfr + z$Tfr)
-     z$Tfr <- z$Tfr - (delta * z$Tfr) / (z$Rfr + z$Tfr)
+     z[["Rfr"]] <- z[["Rfr"]] - (delta * z[["Rfr"]]) / (z[["Rfr"]] + z[["Tfr"]])
+     z[["Tfr"]] <- z[["Tfr"]] - (delta * z[["Tfr"]]) / (z[["Rfr"]] + z[["Tfr"]])
    }
    z
   }

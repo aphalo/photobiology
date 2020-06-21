@@ -54,11 +54,11 @@ interpolate_spectrum <- function(w.length.in,
     s.irrad.out[selector] <- stats::spline(x = w.length.in,
                                            y = s.irrad,
                                            xout = w.length.out[selector],
-                                           ...)$y
+                                           ...)[["y"]]
   } else {
     s.irrad.out[selector] <- stats::approx(x = w.length.in,
                                            y = s.irrad,
-                                           xout = w.length.out[selector])$y
+                                           xout = w.length.out[selector])[["y"]]
   }
   return(s.irrad.out)
 }

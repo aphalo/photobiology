@@ -80,9 +80,9 @@ tag.generic_spct <-
     }
     # If the waveband is a missing value we add missing values as tags
     if (all(is.na(w.band))) {
-      x$wl.color <- NA_character_
-      x$wb.color <- NA_character_
-      x$wb.f <- factor(NA_character_)
+      x[["wl.color"]] <- NA_character_
+      x[["wb.color"]] <- NA_character_
+      x[["wb.f"]] <- factor(NA_character_)
       return(x)
     }
     if (is.waveband(w.band)) {
@@ -108,8 +108,8 @@ tag.generic_spct <-
     if (use.hinges) {
       all.hinges <- numeric()
       for (wb in w.band) {
-        if (length(wb$hinges) > 0) {
-          all.hinges <- c(all.hinges, wb$hinges)
+        if (length(wb[["hinges"]]) > 0) {
+          all.hinges <- c(all.hinges, wb[["hinges"]])
         }
       }
       x <- insert_spct_hinges(x, all.hinges)
@@ -242,7 +242,7 @@ wb2spct <- function(w.band) {
   w.length <- numeric(0)
   for (wb in w.band) {
     stopifnot(is.waveband(wb))
-    w.length <- c(w.length, wb$hinges)
+    w.length <- c(w.length, wb[["hinges"]])
   }
   if (is.null(w.length) || length(w.length) < 2) {
     new.spct <- tibble::tibble(w.length = numeric(0),
@@ -415,8 +415,8 @@ fast_wb2rect_spct <- function(w.band, chroma.type = "CMF", simplify = TRUE) {
     wbs.rgb <- fast_color_of_wl(wbs.wl.mid)
     if (simplify) {
       rgb.rle <- rle(wbs.rgb)
-      new.nrow <- length(rgb.rle$lengths)
-      runs.ends <- cumsum(rgb.rle$lengths)
+      new.nrow <- length(rgb.rle[["lengths"]])
+      runs.ends <- cumsum(rgb.rle[["lengths"]])
       runs.start <- c(1L, runs.ends[-new.nrow] + 1L)
       wbs.wl.low <- wbs.wl.low[runs.start]
       wbs.wl.high <- wbs.wl.high[runs.ends]

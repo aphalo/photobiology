@@ -184,7 +184,7 @@ reflectance_spct <-
     if (use.hinges) {
       all.hinges <- NULL
       for (wb in w.band) {
-        all.hinges <- c(all.hinges, wb$hinges)
+        all.hinges <- c(all.hinges, wb[["hinges"]])
       }
       if (!is.null(all.hinges)) {
         spct <- insert_spct_hinges(spct, all.hinges)

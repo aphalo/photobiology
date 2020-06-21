@@ -85,8 +85,8 @@ apply_oper <- function(e1, e2, oper) {
       check_spct(z, strict.range = FALSE)
       return(z)
     } else if (class2 == "cps_spct" && identical(oper, `*`)) {
-      z <- oper_spectra(e1$w.length, e2$w.length,
-                        e1$irrad.mult, e2$cps,
+      z <- oper_spectra(e1[["w.length"]], e2[["w.length"]],
+                        e1[["irrad.mult"]], e2[["cps"]],
                         bin.oper=oper, trim="intersection")
       names(z)[2] <- .name.irrad
       setSourceSpct(z, strict.range = getOption("photobiology.strict.range",
@@ -108,8 +108,8 @@ apply_oper <- function(e1, e2, oper) {
       check_spct(z, strict.range = FALSE)
       return(z)
     } else if (class2 == "raw_spct") {
-      z <- oper_spectra(e1$w.length, e2$w.length,
-                        e1$counts, e2$counts,
+      z <- oper_spectra(e1[["w.length"]], e2[["w.length"]],
+                        e1[["counts"]], e2[["counts"]],
                         bin.oper=oper, trim="intersection")
       names(z)[2] <- "counts"
       setRawSpct(z, strict.range = getOption("photobiology.strict.range",
@@ -126,16 +126,16 @@ apply_oper <- function(e1, e2, oper) {
       check_spct(z, strict.range = FALSE)
       return(z)
     } else if (class2 == "calibration_spct" && identical(oper, `*`)) {
-      z <- oper_spectra(e1$w.length, e2$w.length,
-                        e1$cps, e2$irrad.mult,
+      z <- oper_spectra(e1[["w.length"]], e2[["w.length"]],
+                        e1[["cps"]], e2[["irrad.mult"]],
                         bin.oper=oper, trim="intersection")
       names(z)[2] <- .name.irrad
       setSourceSpct(z, strict.range = getOption("photobiology.strict.range",
                                                 default = FALSE))
       return(merge_attributes(e1, e2, z))
     } else if (class2 == "cps_spct") {
-      z <- oper_spectra(e1$w.length, e2$w.length,
-                        e1$cps, e2$cps,
+      z <- oper_spectra(e1[["w.length"]], e2[["w.length"]],
+                        e1[["cps"]], e2[["cps"]],
                         bin.oper=oper, trim="intersection")
       names(z)[2] <- "cps"
       setCpsSpct(z, strict.range = getOption("photobiology.strict.range",
@@ -366,15 +366,15 @@ apply_oper <- function(e1, e2, oper) {
   } else if (class1 == "chroma_spct") {
     if (is.numeric(e2)) {
       if (length(e2) == 3 && names(e2) == c("x", "y", "z")) {
-        return(chroma_spct(w.length = e1$w.length,
-                           x = oper(e1$x, e2["x"]),
-                           y = oper(e1$y, e2["y"]),
-                           z = oper(e1$z, e2["z"])))
+        return(chroma_spct(w.length = e1[["w.length"]],
+                           x = oper(e1[["x"]], e2["x"]),
+                           y = oper(e1[["y"]], e2["y"]),
+                           z = oper(e1[["z"]], e2["z"])))
       } else {
-        return(chroma_spct(w.length = e1$w.length,
-                           x = oper(e1$x, e2),
-                           y = oper(e1$y, e2),
-                           z = oper(e1$z, e2)))
+        return(chroma_spct(w.length = e1[["w.length"]],
+                           x = oper(e1[["x"]], e2),
+                           y = oper(e1[["y"]], e2),
+                           z = oper(e1[["z"]], e2)))
       }
     } else if (class2 == "chroma_spct") {
       x <- oper_spectra(e1[["w.length"]], e2[["w.length"]],
@@ -1063,7 +1063,7 @@ T2A.filter_spct <- function(x, action="add", byref = FALSE, clean = TRUE, ...) {
     name <- as.character(name)
     assign(name, x, parent.frame(), inherits = TRUE)
   }
-  if (any(is.infinite(x$A))) {
+  if (any(is.infinite(x[["A"]]))) {
     warning("'Inf' absorbance values generated as some Tfr values were equal to zero!")
   }
   return(x)

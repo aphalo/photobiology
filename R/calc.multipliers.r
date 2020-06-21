@@ -44,12 +44,12 @@ calc_multipliers <-
            use.cached.mult = FALSE,
            fill = 0) {
     cache.needs.saving <- FALSE
-    if (use.cached.mult && !is.null(w.band$name)) {
+    if (use.cached.mult && !is.null(w.band[["name"]])) {
       # this needs to be changed to something better
       ourEnv <- .photobio.cache
       # search for cached multipliers
       cache.name <-
-        paste(w.band$name, as.character(fill), unit.in, unit.out, sep = ".")
+        paste(w.band[["name"]], as.character(fill), unit.in, unit.out, sep = ".")
       if (exists(cache.name, where = ourEnv)) {
         mult <- get(cache.name, envir = ourEnv)
         if (length(w.length) == length(mult)) {
@@ -62,7 +62,7 @@ calc_multipliers <-
       }
     }
     mult <- numeric(length(w.length))
-    outside.band <- w.length < w.band$low | w.length >= w.band$high
+    outside.band <- w.length < w.band[["low"]] | w.length >= w.band[["high"]]
     inside.band <- !outside.band
     mult[outside.band] <- fill
     if (unit.out == "energy") {
@@ -71,10 +71,10 @@ calc_multipliers <-
       } else if (unit.in == "photon") {
         mult[inside.band] <- 1.0 / e2qmol_multipliers(w.length[inside.band])
       }
-      if (!is.null(w.band$weight) &&
-          (w.band$weight == "BSWF" || w.band$weight == "SWF")) {
+      if (!is.null(w.band[["weight"]]) &&
+          (w.band[["weight"]] == "BSWF" || w.band[["weight"]] == "SWF")) {
         mult[inside.band] <-
-          mult[inside.band] * w.band$SWF.e.fun(w.length[inside.band])
+          mult[inside.band] * w.band[["SWF.e.fun"]](w.length[inside.band])
       }
     }
     else if (unit.out == "photon") {
@@ -83,19 +83,19 @@ calc_multipliers <-
       } else if (unit.in == "energy") {
         mult[inside.band] <- e2qmol_multipliers(w.length[inside.band])
       }
-      if (!is.null(w.band$weight) &&
-          (w.band$weight == "BSWF" || w.band$weight == "SWF")) {
+      if (!is.null(w.band[["weight"]]) &&
+          (w.band[["weight"]] == "BSWF" || w.band[["weight"]] == "SWF")) {
         mult[inside.band] <-
-          mult[inside.band] * w.band$SWF.q.fun(w.length[inside.band])
+          mult[inside.band] * w.band[["SWF.q.fun"]](w.length[inside.band])
       }
     }
-    if (!is.null(w.band$norm) && (!is.null(w.band$weight))) {
+    if (!is.null(w.band[["norm"]]) && (!is.null(w.band[["weight"]]))) {
       if (w.band[["norm"]] != w.band[["SWF.norm"]]) {
         norm.divisor <-
           ifelse(
             unit.out == "energy",
-            w.band$SWF.e.fun(w.band$norm),
-            w.band$SWF.q.fun(w.band$norm)
+            w.band[["SWF.e.fun"]](w.band[["norm"]]),
+            w.band[["SWF.q.fun"]](w.band[["norm"]])
           )
         if (is.na(norm.divisor)) {
           warning("normalization wavelength outside range of SWF")

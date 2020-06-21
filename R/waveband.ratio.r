@@ -102,11 +102,11 @@ waveband_ratio <-
     # it is o.k. to have hinges unsorted!
     # in new_waveband() NULL hinges are replaced with numeric(0)
     if (use.hinges) {
-      merged.hinges <- c(w.band.denom$hinges, w.band.num$hinges)
+      merged.hinges <- c(w.band.denom[["hinges"]], w.band.num[["hinges"]])
       if (length(merged.hinges) > 0) {
         new.data <- l_insert_hinges(x = w.length, y = s.irrad, merged.hinges)
-        w.length <- new.data$x
-        s.irrad <- new.data$y
+        w.length <- new.data[["x"]]
+        s.irrad <- new.data[["y"]]
       }
     }
     # calculate the multipliers

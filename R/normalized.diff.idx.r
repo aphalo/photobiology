@@ -83,8 +83,8 @@ normalized_diff_ind.generic_spct <- function(spct, plus.w.band, minus.w.band, f,
     x <- as.numeric(f(spct, list(plus.w.band, minus.w.band), ...))
     z <- (x[1] - x[2]) / (x[1] + x[2])
     name <- paste("NDI ", as.character(substitute(f)), " [",
-                  sub("range.", "", labels(plus.w.band)$label), "] - [",
-                  sub("range.", "", labels(minus.w.band)$label), "]",
+                  sub("range.", "", labels(plus.w.band)[["label"]]), "] - [",
+                  sub("range.", "", labels(minus.w.band)[["label"]]), "]",
                   sep = "")
     names(z) <- name
     z

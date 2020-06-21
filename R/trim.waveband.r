@@ -95,14 +95,14 @@ trim_waveband <-
         trimmed.wb <- wb
         trimmed.high <- trimmed.low <- FALSE
         if (min(wb) < low.limit) {
-          trimmed.wb$low <- low.limit
-          trimmed.wb$hinges <- unique(sort(c(low.limit - 1e-12, low.limit,
-                                             wb$hinges[wb$hinges >= low.limit])))
+          trimmed.wb[["low"]] <- low.limit
+          trimmed.wb[["hinges"]] <- unique(sort(c(low.limit - 1e-12, low.limit,
+                                             wb[["hinges"]][wb[["hinges"]] >= low.limit])))
           trimmed.low <- TRUE
         }
         if (max(wb) > high.limit) {
-          trimmed.wb$high <- high.limit
-          trimmed.wb$hinges <- unique(sort(c(wb$hinges[wb$hinges <= high.limit],
+          trimmed.wb[["high"]] <- high.limit
+          trimmed.wb[["hinges"]] <- unique(sort(c(wb[["hinges"]][wb[["hinges"]] <= high.limit],
                                              high.limit - 1e-12, high.limit)))
           trimmed.high <- TRUE
         }
@@ -111,19 +111,19 @@ trim_waveband <-
             if (length(trunc.labels) == 1L) {
               trunc.labels <- rep(trunc.labels, 2L)
             }
-            trimmed.wb$label <-
+            trimmed.wb[["label"]] <-
               paste(ifelse(trimmed.low, trunc.labels[1], ""),
-                    wb$label,
+                    wb[["label"]],
                     ifelse(trimmed.high, trunc.labels[2], ""), sep = "")
-            trimmed.wb$name <-
+            trimmed.wb[["name"]] <-
               paste(ifelse(trimmed.low, trunc.labels[1], ""),
-                    wb$name,
+                    wb[["name"]],
                     ifelse(trimmed.high, trunc.labels[2], ""), sep = "")
           } else {
             trimmed.tag <-  paste("tr", ifelse(trimmed.low, ".lo", ""),
                                   ifelse(trimmed.high, ".hi", ""), sep = "")
-            trimmed.wb$label <- paste(wb$label, trimmed.tag, sep = " .")
-            trimmed.wb$name <- paste(wb$name, trimmed.tag, sep = ".")
+            trimmed.wb[["label"]] <- paste(wb[["label"]], trimmed.tag, sep = " .")
+            trimmed.wb[["name"]] <- paste(wb[["name"]], trimmed.tag, sep = ".")
           }
             i <- i + 1L
             w.band.out[[i]] <- trimmed.wb

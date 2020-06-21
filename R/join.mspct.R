@@ -68,7 +68,7 @@ join_mspct.generic_mspct <- function(x,
   } else {
     z <- plyr::join_all(dfs = x, by = by, type = type, match = match)
   }
-  dplyr::arrange(z, .data$w.length)
+  dplyr::arrange(z, .data[["w.length"]])
 }
 
 #' @describeIn join_mspct
@@ -110,7 +110,7 @@ join_mspct.source_mspct <- function(x,
   } else {
     z <- plyr::join_all(dfs = x, by = by, type = type, match = match)
   }
-  dplyr::arrange(z, .data$w.length)
+  dplyr::arrange(z, .data[["w.length"]])
 }
 
 #' @describeIn join_mspct
@@ -152,7 +152,7 @@ join_mspct.response_mspct <- function(x,
   } else {
     z <- plyr::join_all(dfs = x, by = by, type = type, match = match)
   }
-  dplyr::arrange(z, .data$w.length)
+  dplyr::arrange(z, .data[["w.length"]])
 }
 
 #' @describeIn join_mspct
@@ -201,7 +201,7 @@ join_mspct.filter_mspct <- function(x,
   } else {
     z <- plyr::join_all(dfs = x, by = by, type = type, match = match)
   }
-  dplyr::arrange(z, .data$w.length)
+  dplyr::arrange(z, .data[["w.length"]])
 }
 
 #' @describeIn join_mspct
@@ -230,7 +230,7 @@ join_mspct.reflector_mspct <- function(x,
   } else {
     z <- plyr::join_all(dfs = x, by = by, type = type, match = match)
   }
-  dplyr::arrange(z, .data$w.length)
+  dplyr::arrange(z, .data[["w.length"]])
 }
 
 #' @describeIn join_mspct

@@ -57,12 +57,12 @@ cps2Rfr <- function(x.sample,
               !is.null(getInstrDesc(x.sample)))
   stopifnot(is.cps_spct(x.white) &&
               !is.null(getInstrDesc(x.white)))
-  stopifnot(getInstrDesc(x.sample)$spectrometer.sn ==
-            getInstrDesc(x.white)$spectrometer.sn)
+  stopifnot(getInstrDesc(x.sample)[["spectrometer.sn"]] ==
+            getInstrDesc(x.white)[["spectrometer.sn"]])
 
   if (!is.null(x.black)) {
-    stopifnot(getInstrDesc(x.sample)$spectrometer.sn ==
-                getInstrDesc(x.black)$spectrometer.sn)
+    stopifnot(getInstrDesc(x.sample)[["spectrometer.sn"]] ==
+                getInstrDesc(x.black)[["spectrometer.sn"]])
   }
 
 #  instr.desc <- getInstrDesc(x.sample)
@@ -113,12 +113,12 @@ cps2Tfr <- function(x.sample,
               !is.null(getInstrDesc(x.sample)))
   stopifnot(is.cps_spct(x.clear) &&
               !is.null(getInstrDesc(x.clear)))
-  stopifnot(getInstrDesc(x.sample)$spectrometer.sn ==
-              getInstrDesc(x.clear)$spectrometer.sn)
+  stopifnot(getInstrDesc(x.sample)[["spectrometer.sn"]] ==
+              getInstrDesc(x.clear)[["spectrometer.sn"]])
 
   if (!is.null(x.opaque)) {
-    stopifnot(getInstrDesc(x.sample)$spectrometer.sn ==
-                getInstrDesc(x.opaque)$spectrometer.sn)
+    stopifnot(getInstrDesc(x.sample)[["spectrometer.sn"]] ==
+                getInstrDesc(x.opaque)[["spectrometer.sn"]])
   }
 
 #  instr.desc <- getInstrDesc(x.sample)

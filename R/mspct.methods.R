@@ -138,11 +138,11 @@ msdply <- function(mspct, .fun, ..., idx = NULL, col.names = NULL,
   }
   if (mspct.ncol > 1) {
     if (mspct.byrow) {
-      z$col <- rep(1:mspct.ncol, mspct.nrow)
-      z$row <- rep(1:mspct.nrow, rep(mspct.ncol, mspct.nrow))
+      z[["col"]] <- rep(1:mspct.ncol, mspct.nrow)
+      z[["row"]] <- rep(1:mspct.nrow, rep(mspct.ncol, mspct.nrow))
     } else {
-      z$col <- rep(1:mspct.ncol, rep(mspct.nrow, mspct.ncol))
-      z$row <- rep(1:mspct.nrow, mspct.ncol)
+      z[["col"]] <- rep(1:mspct.ncol, rep(mspct.nrow, mspct.ncol))
+      z[["row"]] <- rep(1:mspct.nrow, mspct.ncol)
     }
   }
   tibble::as_tibble(z)

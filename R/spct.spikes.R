@@ -65,7 +65,7 @@ find_spikes <-
     if (!is.null(max.spike.width) && max.spike.width > 0) {
       # ignore broad peaks using run length encoding
       runs <- rle(outcomes)
-      runs$values <- ifelse(runs$lengths > max.spike.width, FALSE, runs$values)
+      runs[["values"]] <- ifelse(runs[["lengths"]] > max.spike.width, FALSE, runs[["values"]])
       outcomes <- inverse.rle(runs)
     }
     if (na.rm) {

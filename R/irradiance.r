@@ -82,14 +82,14 @@ irradiance <-
     if (use.hinges) {
       all.hinges <- NULL
       for (wb in w.band) {
-        if (!is.null(wb$hinges) & length(wb$hinges) > 0) {
-          all.hinges <- c(all.hinges, wb$hinges)
+        if (!is.null(wb[["hinges"]]) & length(wb[["hinges"]]) > 0) {
+          all.hinges <- c(all.hinges, wb[["hinges"]])
         }
       }
       if (!is.null(all.hinges)) {
         new.data <- l_insert_hinges(x = w.length, y = s.irrad, all.hinges)
-        w.length <- new.data$x
-        s.irrad <- new.data$y
+        w.length <- new.data[["x"]]
+        s.irrad <- new.data[["y"]]
       }
     }
     wb_name <- names(w.band)
@@ -101,10 +101,11 @@ irradiance <-
     for (wb in w.band) {
       i <- i + 1
       # get names from wb if needed
-      if (no_names_flag) wb_name[i] <- wb$name
+      if (no_names_flag) wb_name[i] <- wb[["name"]]
       # calculate the multipliers
-      mult <- calc_multipliers(w.length=w.length, w.band=wb, unit.out=unit.out,
-                               unit.in=unit.in, use.cached.mult=use.cached.mult)
+      mult <- calc_multipliers(w.length = w.length, w.band = wb,
+                               unit.out = unit.out, unit.in = unit.in,
+                               use.cached.mult = use.cached.mult)
       # calculate weighted spectral irradiance
       irr <- integrate_xy(w.length, s.irrad * mult)
       irrad[i] <- irr

@@ -225,7 +225,7 @@ absorptance_spct <-
     if (use.hinges) {
       all.hinges <- NULL
       for (wb in w.band) {
-        all.hinges <- c(all.hinges, wb$hinges)
+        all.hinges <- c(all.hinges, wb[["hinges"]])
       }
       if (!is.null(all.hinges)) {
         temp.spct <- insert_spct_hinges(temp.spct, all.hinges)

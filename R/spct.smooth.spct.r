@@ -81,10 +81,10 @@ smooth_spct.source_spct <- function(x, method = "custom", strength = 1, na.rm = 
   if (method == "lowess") {
     span = 1/50 * strength
     if ("s.e.irrad" %in% names(x)) {
-      out.spct <- stats::lowess(x$w.length, x$s.e.irrad, f = span, ...)
+      out.spct <- stats::lowess(x[["w.length"]], x[["s.e.irrad"]], f = span, ...)
       names(out.spct) <- c("w.length", "s.e.irrad")
     } else if ("s.q.irrad" %in% names(x)) {
-      out.spct <- stats::lowess(x$w.length, x$s.q.irrad, f = span, ...)
+      out.spct <- stats::lowess(x[["w.length"]], x[["s.q.irrad"]], f = span, ...)
       names(out.spct) <- c("w.length", "s.q.irrad")
     }
     setSourceSpct(out.spct, time.unit = getTimeUnit(x), bswf.used = getBSWFUsed(x))
@@ -99,10 +99,10 @@ smooth_spct.source_spct <- function(x, method = "custom", strength = 1, na.rm = 
   } else if (method == "supsmu") {
     span = 1/50 * strength
     if ("s.e.irrad" %in% names(x)) {
-      out.spct <- stats::supsmu(x$w.length, x$s.e.irrad, span = span, ...)
+      out.spct <- stats::supsmu(x[["w.length"]], x[["s.e.irrad"]], span = span, ...)
       names(out.spct) <- c("w.length", "s.e.irrad")
     } else if ("s.q.irrad" %in% names(x)) {
-      out.spct <- stats::supsmu(x$w.length, x$s.q.irrad, span = span, ...)
+      out.spct <- stats::supsmu(x[["w.length"]], x[["s.q.irrad"]], span = span, ...)
       names(out.spct) <- c("w.length", "s.q.irrad")
     }
     setSourceSpct(out.spct, time.unit = attr(x, "time.unit", exact = TRUE))
@@ -121,7 +121,7 @@ smooth_spct.source_spct <- function(x, method = "custom", strength = 1, na.rm = 
     q2e(out.spct, action = "replace", byref = TRUE)
     max_irrad <- max(out.spct[["s.e.irrad"]], na.rm=TRUE)
     smoothing_coef <- 1
-    smoothing_hi_lim <- max(out.spct$w.length)
+    smoothing_hi_lim <- max(out.spct[["w.length"]])
     # this could be tweaked in many ways...
     zero_limit_cnst <- max_irrad * 3e-4 / strength
     out.spct[["zero_limit"]] <-  (zero_limit_cnst * 600) / out.spct[["w.length"]]
@@ -208,10 +208,10 @@ smooth_spct.filter_spct <- function(x, method = "custom", strength = 1, na.rm = 
   if (method == "lowess") {
     span = 1/50 * strength
     if ("Tfr" %in% names(x)) {
-      out.spct <- stats::lowess(x$w.length, x$Tfr, f = span, ...)
+      out.spct <- stats::lowess(x[["w.length"]], x[["Tfr"]], f = span, ...)
       names(out.spct) <- c("w.length", "Tfr")
     } else if ("A" %in% names(x)) {
-      out.spct <- stats::lowess(x$w.length, x$A, f = span, ...)
+      out.spct <- stats::lowess(x[["w.length"]], x[["A"]], f = span, ...)
       names(out.spct) <- c("w.length", "A")
     }
     setFilterSpct(out.spct, Tfr.type = attr(x, "Tfr.type", exact = TRUE))
@@ -226,10 +226,10 @@ smooth_spct.filter_spct <- function(x, method = "custom", strength = 1, na.rm = 
   } else if (method == "supsmu") {
     span = 1/50 * strength
     if ("Tfr" %in% names(x)) {
-      out.spct <- stats::supsmu(x$w.length, x$Tfr, span = span, ...)
+      out.spct <- stats::supsmu(x[["w.length"]], x[["Tfr"]], span = span, ...)
       names(out.spct) <- c("w.length", "Tfr")
     } else if ("A" %in% names(x)) {
-      out.spct <- stats::supsmu(x$w.length, x$A, span = span, ...)
+      out.spct <- stats::supsmu(x[["w.length"]], x[["A"]], span = span, ...)
       names(out.spct) <- c("w.length", "A")
     }
     setFilterSpct(out.spct, Tfr.type = attr(x, "Tfr.type", exact = TRUE))
@@ -248,7 +248,7 @@ smooth_spct.filter_spct <- function(x, method = "custom", strength = 1, na.rm = 
     A2T(out.spct, action = "replace", byref = TRUE)
     max_Tfr <- 1
     smoothing_coef <- 1
-    smoothing_hi_lim <- max(out.spct$w.length)
+    smoothing_hi_lim <- max(out.spct[["w.length"]])
     # this could be tweaked in many ways...
     zero_limit_cnst <- max_Tfr * 3e-4 / strength
     out.spct[["zero_limit"]] <-  (zero_limit_cnst * 600) / out.spct[["w.length"]]
@@ -326,7 +326,7 @@ smooth_spct.reflector_spct <- function(x, method = "custom", strength = 1, na.rm
   if (method == "lowess") {
     span = 1/50 * strength
     if ("Rfr" %in% names(x)) {
-      out.spct <- stats::lowess(x$w.length, x$Rfr, f = span, ...)
+      out.spct <- stats::lowess(x[["w.length"]], x[["Rfr"]], f = span, ...)
       names(out.spct) <- c("w.length", "Rfr")
     }
     setReflectorSpct(out.spct)
@@ -338,7 +338,7 @@ smooth_spct.reflector_spct <- function(x, method = "custom", strength = 1, na.rm
   } else if (method == "supsmu") {
     span = 1/50 * strength
     if ("Rfr" %in% names(x)) {
-      out.spct <- stats::supsmu(x$w.length, x$Rfr, span = span, ...)
+      out.spct <- stats::supsmu(x[["w.length"]], x[["Rfr"]], span = span, ...)
       names(out.spct) <- c("w.length", "Rfr")
     }
     setReflectorSpct(out.spct)
@@ -353,7 +353,7 @@ smooth_spct.reflector_spct <- function(x, method = "custom", strength = 1, na.rm
     out.spct <- x # we make a working copy
     max_Rfr <- 1
     smoothing_coef <- 1
-    smoothing_hi_lim <- max(out.spct$w.length)
+    smoothing_hi_lim <- max(out.spct[["w.length"]])
     # this could be tweaked in many ways...
     zero_limit_cnst <- max_Rfr * 3e-4 / strength
     out.spct[["zero_limit"]] <-  (zero_limit_cnst * 600) / out.spct[["w.length"]]
@@ -437,10 +437,10 @@ smooth_spct.response_spct <- function(x, method = "custom", strength = 1, na.rm 
   if (method == "lowess") {
     span = 1/50 * strength
     if ("s.e.response" %in% names(x)) {
-      out.spct <- stats::lowess(x$w.length, x$s.e.response, f = span, ...)
+      out.spct <- stats::lowess(x[["w.length"]], x[["s.e.response"]], f = span, ...)
       names(out.spct) <- c("w.length", "s.e.response")
     } else if ("s.q.response" %in% names(x)) {
-      out.spct <- stats::lowess(x$w.length, x$s.q.response, f = span, ...)
+      out.spct <- stats::lowess(x[["w.length"]], x[["s.q.response"]], f = span, ...)
       names(out.spct) <- c("w.length", "s.q.response")
     }
     setResponseSpct(out.spct, time.unit = attr(x, "time.unit", exact = TRUE))
@@ -455,10 +455,10 @@ smooth_spct.response_spct <- function(x, method = "custom", strength = 1, na.rm 
   } else if (method == "supsmu") {
     span = 1/50 * strength
     if ("s.e.response" %in% names(x)) {
-      out.spct <- stats::supsmu(x$w.length, x$s.e.response, span = span, ...)
+      out.spct <- stats::supsmu(x[["w.length"]], x[["s.e.response"]], span = span, ...)
       names(out.spct) <- c("w.length", "s.e.response")
     } else if ("s.q.response" %in% names(x)) {
-      out.spct <- stats::supsmu(x$w.length, x$s.q.response, span = span, ...)
+      out.spct <- stats::supsmu(x[["w.length"]], x[["s.q.response"]], span = span, ...)
       names(out.spct) <- c("w.length", "s.q.response")
     }
     setResponseSpct(out.spct, time.unit = attr(x, "time.unit", exact = TRUE))
@@ -477,7 +477,7 @@ smooth_spct.response_spct <- function(x, method = "custom", strength = 1, na.rm 
     q2e(out.spct, action = "replace", byref = TRUE)
     max_response <- max(out.spct[["s.e.response"]], na.rm=TRUE)
     smoothing_coef <- 1
-    smoothing_hi_lim <- max(out.spct$w.length)
+    smoothing_hi_lim <- max(out.spct[["w.length"]])
     # this could be tweaked in many ways...
     zero_limit_cnst <- max_response * 3e-4 / strength
     out.spct[["zero_limit"]] <-  (zero_limit_cnst * 600) / out.spct[["w.length"]]

@@ -446,11 +446,11 @@ subset.generic_spct <- function(x, subset, select, drop = FALSE, ...) {
 #' @method [ generic_spct
 #'
 #' @examples
-#' sun.spct[sun.spct$w.length > 400, ]
+#' sun.spct[sun.spct[["w.length"]] > 400, ]
 #' subset(sun.spct, w.length > 400)
 #'
 #' tmp.spct <- sun.spct
-#' tmp.spct[tmp.spct$s.e.irrad < 1e-5 , "s.e.irrad"] <- 0
+#' tmp.spct[tmp.spct[["s.e.irrad"]] < 1e-5 , "s.e.irrad"] <- 0
 #' e2q(tmp.spct[ , c("w.length", "s.e.irrad")]) # restore data consistency!
 #'
 #' @rdname extract

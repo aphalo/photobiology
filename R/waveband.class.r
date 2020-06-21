@@ -14,7 +14,7 @@
 #' @family waveband attributes
 #'
 labels.waveband <- function(object, ...) {
-  return(list(label = object$label, name = object$name))
+  return(list(label = object[["label"]], name = object[["name"]]))
 }
 
 #' @describeIn labels
@@ -60,7 +60,7 @@ wl_range <- function(x, na.rm = FALSE) {
 #'
 range.waveband <- function(..., na.rm = FALSE) {
   x <- c(...)
-  return(c(x$low, x$high)) # we are using double precision
+  return(c(x[["low"]], x[["high"]])) # we are using double precision
 }
 
 #' @describeIn range
@@ -124,7 +124,7 @@ wl_min <- function(x, na.rm = FALSE) {
 #'
 min.waveband <- function(..., na.rm = FALSE) {
   x <- c(...)
-    return(x$low)
+    return(x[["low"]])
 }
 
 #' @describeIn min
@@ -182,7 +182,7 @@ wl_max <- function(x, na.rm = FALSE) {
 #'
 max.waveband <- function(..., na.rm = FALSE) {
   x <- c(...)
-  return(x$high)
+  return(x[["high"]])
 }
 
 #' @describeIn max
@@ -274,7 +274,7 @@ midpoint.numeric <- function(x, ...) {
 #' @export
 #'
 midpoint.waveband <- function(x, ...) {
-  return(x$low + (x$high - x$low) / 2)
+  return(x[["low"]] + (x[["high"]] - x[["low"]]) / 2)
 }
 
 #' @describeIn midpoint Method for "generic_spct".
@@ -370,7 +370,7 @@ expanse.numeric <- function(x, ...) {
 #' @export
 #'
 expanse.waveband <- function(x, ...) {
-  return(x$high - x$low)
+  return(x[["high"]] - x[["low"]])
 }
 
 #' @describeIn expanse  Method for "generic_spct"
@@ -427,7 +427,7 @@ normalization.default <- function(x) {
 #' @export
 #'
 normalization.waveband <- function(x) {
-  return(ifelse(is.null(x$norm), NA_real_, x$norm))
+  return(ifelse(is.null(x[["norm"]]), NA_real_, x[["norm"]]))
 }
 
 # is_effective -----------------------------------------------------------
@@ -462,7 +462,7 @@ is_effective.default <- function(x) {
 #' @export
 #'
 is_effective.waveband <- function(x) {
-  x$weight != "none"
+  x[["weight"]] != "none"
 }
 
 #' @describeIn is_effective Does a \code{source_spct} object contain effective

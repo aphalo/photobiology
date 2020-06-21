@@ -59,14 +59,14 @@ calc_source_output <- function(w.length.out,
       stats::spline(x = w.length.in,
                     y = s.irrad.in,
                     xout = w.length.out[!out.fill.selector],
-                    ...)$y
+                    ...)[["y"]]
   } else {
     # linear interpolation
     s.irrad.out[!out.fill.selector] <-
       stats::approx(x = w.length.in,
                     y = s.irrad.in,
                     xout = w.length.out[!out.fill.selector],
-                    ties = "ordered")$y
+                    ties = "ordered")[["y"]]
   }
 
   # we check unit.in and convert the output spectrum accordingly
@@ -88,13 +88,13 @@ calc_source_output <- function(w.length.out,
 
   if (!is.null(scaled)) {
     if (scaled == "peak") {
-      e.div <- max(out.data$s.e.irrad, na.rm=TRUE)
-      q.div <- max(out.data$s.q.irrad, na.rm=TRUE)
+      e.div <- max(out.data[["s.e.irrad"]], na.rm=TRUE)
+      q.div <- max(out.data[["s.q.irrad"]], na.rm=TRUE)
     } else if (scaled == "area") {
-      s.irrad.na.sub <- out.data$s.e.irrad
+      s.irrad.na.sub <- out.data[["s.e.irrad"]]
       s.irrad.na.sub[is.na(s.irrad.na.sub)] <- 0.0
       e.div <- integrate_xy(w.length.out, s.irrad.na.sub)
-      s.irrad.na.sub <- out.data$s.q.irrad
+      s.irrad.na.sub <- out.data[["s.q.irrad"]]
       s.irrad.na.sub[is.na(s.irrad.na.sub)] <- 0.0
       q.div <- integrate_xy(w.length.out, s.irrad.na.sub)
     } else {

@@ -20,7 +20,7 @@
 rgb_spct <-
   function(spct, sens=photobiology::ciexyzCMF2.spct, color.name=NULL){
     if (is.source_spct(spct)) {
-      return(s_e_irrad2rgb(spct$w.length, spct$s.e.irrad, sens=sens, color.name=color.name))
+      return(s_e_irrad2rgb(spct[["w.length"]], spct[["s.e.irrad"]], sens=sens, color.name=color.name))
     } else {
       return(NA)
     }

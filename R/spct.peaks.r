@@ -157,7 +157,7 @@ get_valleys <- function(x, y,
                        x_unit = x_unit,
                        x_digits = x_digits,
                        na.rm = na.rm)
-  xy.data$y <- -xy.data$y
+  xy.data[["y"]] <- -xy.data[["y"]]
   return(xy.data)
 }
 
@@ -194,7 +194,7 @@ get_valleys <- function(x, y,
 #'
 #' @examples
 #'
-#' peaks <- find_peaks(sun.spct$s.e.irrad, span = 31)
+#' peaks <- find_peaks(sun.spct[["s.e.irrad"]], span = 31)
 #' fit_peaks(sun.spct, peaks, span = 31,
 #'           y.col.name = "s.e.irrad", method = "spline")
 #'
@@ -1536,12 +1536,12 @@ find_wls <- function(x,
     true.rows <- .fun(x[[col.name]], target)
     # use run length to find transition points
     runs <- rle(true.rows)
-    if (length(runs$lengths) < 2) {
+    if (length(runs[["lengths"]]) < 2) {
       next()
       #    return(do.call(x.class, args = list()))
     }
     # accumulate run lengths to get index positions
-    opening.idx <- cumsum(runs$lengths[-length(runs$lengths)])
+    opening.idx <- cumsum(runs[["lengths"]][-length(runs[["lengths"]])])
     closing.idx <- opening.idx + 1L
     if (max(closing.idx) > nrow(x)) {
       closing.idx[length(closing.idx)] <- nrow(x)

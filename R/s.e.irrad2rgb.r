@@ -49,8 +49,8 @@ s_e_irrad2rgb <- function(w.length, s.e.irrad,
     if (anyNA(w.length) || anyNA(s.e.irrad)) {
       return(NA_character_)
     }
-    low.limit <- min(sens$w.length)
-    high.limit <- max(sens$w.length)
+    low.limit <- min(sens[["w.length"]])
+    high.limit <- max(sens[["w.length"]])
     if (single_wl <- length(w.length) == 1) {
       if (w.length < low.limit || w.length > high.limit) {
         return(grDevices::rgb(0, 0, 0, names = color.name))
@@ -72,16 +72,16 @@ s_e_irrad2rgb <- function(w.length, s.e.irrad,
       if ((max(w.length) <= low.limit) || (min(w.length) >= high.limit)) {
         return("black")
       }
-      sens$s.e.irrad <- interpolate_spectrum(w.length, s.e.irrad, sens$w.length, fill = 0.0)
-      sens$s.e.irrad.norm <- with(sens, s.e.irrad / integrate_xy(w.length, s.e.irrad))
+      sens[["s.e.irrad"]] <- interpolate_spectrum(w.length, s.e.irrad, sens[["w.length"]], fill = 0.0)
+      sens[["s.e.irrad.norm"]] <- with(sens, s.e.irrad / integrate_xy(w.length, s.e.irrad))
 
       X <- with(sens, integrate_xy(w.length, s.e.irrad.norm * x))
       Y <- with(sens, integrate_xy(w.length, s.e.irrad.norm * y))
       Z <- with(sens, integrate_xy(w.length, s.e.irrad.norm * z))
     } else {
-      X <- stats::approx(sens$w.length, sens$x, w.length)$y
-      Y <- stats::approx(sens$w.length, sens$y, w.length)$y
-      Z <- stats::approx(sens$w.length, sens$z, w.length)$y
+      X <- stats::approx(sens[["w.length"]], sens[["x"]], w.length)[["y"]]
+      Y <- stats::approx(sens[["w.length"]], sens[["y"]], w.length)[["y"]]
+      Z <- stats::approx(sens[["w.length"]], sens[["z"]], w.length)[["y"]]
     }
 
     XYZ <- rbind(X, Y, Z)

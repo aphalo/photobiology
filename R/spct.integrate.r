@@ -191,7 +191,7 @@ interpolate_spct <- function(spct,
   for (data.col in data.cols) {
     temp.values <-  with(spct, get(data.col))
     if (is.numeric(temp.values)) {
-      new.values <- interpolate_spectrum(spct$w.length,
+      new.values <- interpolate_spectrum(spct[["w.length"]],
                                          temp.values,
                                          w.length.out,
                                          fill)
