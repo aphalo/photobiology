@@ -134,7 +134,7 @@ reference:
     - labels
     - add_attr2tb
     - spct_attr2tb
-    - spct_attributes
+    - spct_metadata
   - subtitle: Summary quantities
     desc: Methods for the computation of physical summary quantities from spectra.
     contents:

@@ -126,10 +126,10 @@ test_that("add_attr2tb", {
   attributes.tb <- add_attr2tb(tb = attributes.tb,
                                mspct = my.mspct,
                                col.names = c("lon",
-                                              "lat",
-                                              "geocode",
-                                              "when.measured",
-                                              "what.measured"))
+                                             "lat",
+                                             "geocode",
+                                             "when.measured",
+                                             "what.measured"))
 
   expect_named(my.mspct, c("one", "two"))
   expect_is(attributes.tb[["spct.idx"]], "factor")

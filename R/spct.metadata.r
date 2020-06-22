@@ -1030,11 +1030,12 @@ getWhatMeasured.generic_mspct <- function(x,
 #'
 #' @param mspct generic_mspct Any collection of spectra.
 #' @param tb tibble or data.frame to which to add the data (optional).
-#' @param col.names named character vector Name(s) of column(s) to create.
-#'   Values are the names of the attributes to copy, while if named, the names
-#'   provide the name for the column.
+#' @param col.names named character vector Name(s) of metadata attributes
+#'   to copy, while if named, the names provide the name for the column.
 #' @param idx character Name of the column with the names of the members of the
 #'   collection of spectra.
+#' @param unnest logical Flag controlling if metadata attributes that are lists
+#'   of values should be returned in a list column or in separate columns.
 #'
 #' @return A tibble With the metadata attributes in separate new variables.
 #'
@@ -1043,20 +1044,23 @@ getWhatMeasured.generic_mspct <- function(x,
 #'   \code{tibble} will be created. If an existing \code{data.frame} or
 #'   \code{tibble} is passed as argument, new columns are added to it. However,
 #'   the number of rows in the argument passed to \code{tb} must match the
-#'   number of spectra in the argument passed to \code{mspct}. If the argument
-#'   to \code{col.names} is aa named vector, with the names of members matching
-#'   the names of attributes, then the values are used as names for the columns
+#'   number of spectra in the argument passed to \code{mspct}. Only in the case
+#'   of method \code{add_attr2tb()} if the argument
+#'   to \code{col.names} is a named vector, the names of members are used as names for the columns
 #'   created. This permits setting any valid name for the new columns. If the
-#'   vector passed to \code{col.names} has no names, then the values are
-#'   interpreted as the names of the attributes to add, and also used as names
-#'   for the new columns.
+#'   vector passed to \code{col.names} has no names the names of the attributes
+#'   are used for the new columns. If the fields of the attributes are unnested
+#'   their names are used as names for the columns.
 #'
-#' @note Currently supported attributes are  \code{"when.measured"},
-#'   \code{"what.measured"}, \code{"where.measured"} and \code{"how.measured"}.
-#'   In the case of \code{"where.measured"}, which has mutiple components within
-#'   a list the following names are also recognized: \code{"lon"} and
-#'   \code{"lat"} for creating numeric columns of longitudes and latitudes
-#'   respectively, and \code{"geocode"}.  The order of the first two arguments
+#'   Valid accepted as argument to \code{col.names} are \code{NULL},
+#'   \code{"lon"}, \code{"lat"}, \code{"address"}, \code{"geocode"},
+#'   \code{"where.measured"}, \code{"when.measured"}, \code{"what.measured"},
+#'   \code{"how.measured"}, \code{"comment"}, \code{"normalised"},
+#'   \code{"normalized"}, \code{"scaled"}, \code{"bswf.used"},
+#'   \code{"instr.desc"}, \code{"instr.settings"}, \code{"filter.properties"},
+#'   \code{"Tfr.type"}, \code{"Rfr.type"}, \code{"time.unit"}.
+#'
+#' @note The order of the first two arguments
 #'   is reversed in \code{add_attr2tb()} compared to the other functions. This
 #'   is to allow its use in 'pipes', while the functions for single attributes
 #'   are expected to be used mostly to create new tibbles.
@@ -1080,8 +1084,10 @@ getWhatMeasured.generic_mspct <- function(x,
 add_attr2tb <- function(tb = NULL,
                         mspct,
                         col.names = NULL,
-                        idx = "spct.idx") {
+                        idx = "spct.idx",
+                        unnest = FALSE) {
   stopifnot(is.generic_mspct(mspct))
+
   force(col.names)
   if (length(col.names) < 1L) {
     return(tb)
@@ -1093,13 +1099,19 @@ add_attr2tb <- function(tb = NULL,
   }
   names.out <- names(col.names)
   if (is.null(names.out)) {
+    # set names
     names(col.names) <- col.names
   } else {
+    # fill-in only missing names
     selector <- names.out == ""
     names(col.names)[selector] <- col.names[selector]
   }
+  if (unnest && any(c("geocode", "where.measured") %in% col.names)) {
+    # setdiff removes names from the vector!
+    col.names <- col.names[!col.names %in% c("lat", "lon")]
+  }
   # We walk the list of attributes adding columns
-  force(tb)
+  tb.cols <- names(tb)
   for (a in names(col.names)) {
     tb <-
       switch(a,
@@ -1120,9 +1132,9 @@ add_attr2tb <- function(tb = NULL,
                                   col.names = col.names["geocode"],
                                   idx = idx),
              where.measured = geocode2tb(mspct = mspct,
-                                  tb = tb,
-                                  col.names = col.names["where.measured"],
-                                  idx = idx),
+                                         tb = tb,
+                                         col.names = col.names["where.measured"],
+                                         idx = idx),
              when.measured = when_measured2tb(mspct = mspct,
                                               tb = tb,
                                               col.names = col.names["when.measured"],
@@ -1132,19 +1144,65 @@ add_attr2tb <- function(tb = NULL,
                                               col.names = col.names["what.measured"],
                                               idx = idx),
              how.measured = how_measured2tb(mspct = mspct,
-                                              tb = tb,
-                                              col.names = col.names["how.measured"],
-                                              idx = idx),
+                                            tb = tb,
+                                            col.names = col.names["how.measured"],
+                                            idx = idx),
+             comment = comment2tb(mspct = mspct,
+                                  tb = tb,
+                                  col.names = col.names["comment"],
+                                  idx = idx),
+             normalized = normalized2tb(mspct = mspct,
+                                        tb = tb,
+                                        col.names = col.names["normalized"],
+                                        idx = idx),
+             normalised = normalized2tb(mspct = mspct,
+                                        tb = tb,
+                                        col.names = col.names["normalised"],
+                                        idx = idx),
+             scaled = scaled2tb(mspct = mspct,
+                                tb = tb,
+                                col.names = col.names["scaled"],
+                                idx = idx),
              instr.desc = instr_desc2tb(mspct = mspct,
                                         tb = tb,
                                         col.names = col.names["instr.desc"],
                                         idx = idx),
              instr.settings = instr_settings2tb(mspct = mspct,
-                                        tb = tb,
-                                        col.names = col.names["instr.settings"],
-                                        idx = idx),
+                                                tb = tb,
+                                                col.names = col.names["instr.settings"],
+                                                idx = idx),
+             filter.properties = filter_properties2tb(mspct = mspct,
+                                                      tb = tb,
+                                                      col.names = col.names["filter.properties"],
+                                                      idx = idx),
+             Tfr.type = Tfr_type2tb(mspct = mspct,
+                                    tb = tb,
+                                    col.names = col.names["Tfr.type"],
+                                    idx = idx),
+             Rfr.type = Rfr_type2tb(mspct = mspct,
+                                    tb = tb,
+                                    col.names = col.names["Rfr.type"],
+                                    idx = idx),
+             time.unit = time_unit2tb(mspct = mspct,
+                                      tb = tb,
+                                      col.names = col.names["time.unit"],
+                                      idx = idx),
+             bswf.used = BSWF_used2tb(mspct = mspct,
+                                      tb = tb,
+                                      col.names = col.names["bswf.used"],
+                                      idx = idx),
              {warning("Skipping unknown metada name: ", a);
                tb})
+  }
+  if (unnest) {
+    list.cols <- colnames(tb)[sapply(tb, is.list)]
+    # do not expand preexisting list columns
+    list.cols <- setdiff(list.cols, tb.cols)
+    # expand metadata fields into columns
+    for (col in list.cols) {
+      # handles lists of lists or lists of dataframes
+      tb <- tidyr::unnest_wider(tb, col)
+    }
   }
   tb
 }
@@ -1159,13 +1217,7 @@ when_measured2tb <- function(mspct,
                              idx = "spct.idx") {
   stopifnot(length(col.names) == 1L)
   when.tb <- getWhenMeasured(mspct, idx = idx)
-  if (col.names == "when.measured" && length(names(col.names)) == 1L) {
-    # syntax like in dplyr::rename()
-    names(when.tb)[2L] <- names(col.names)
-  } else {
-    # use value directly for column name
-    names(when.tb)[2L] <- col.names
-  }
+  names(when.tb)[2L] <- col.names
   if (is.null(tb)) {
     when.tb
   } else {
@@ -1183,14 +1235,7 @@ geocode2tb <- function(mspct,
                        idx = "spct.idx") {
   stopifnot(length(col.names) == 1L)
   where.tb <- getWhereMeasured(mspct, idx = idx, .bind.geocodes = FALSE)
-  if (col.names %in% c("where.measured", "geocode") &&
-      length(names(col.names)) == 1L) {
-    # syntax like in dplyr::rename()
-    names(where.tb)[2L] <- names(col.names)
-  } else {
-    # use value directly for column name
-    names(where.tb)[2L] <- col.names
-  }
+  names(where.tb)[2L] <- col.names
   if (is.null(tb)) {
     where.tb
   } else {
@@ -1208,14 +1253,7 @@ lonlat2tb <- function(mspct,
                       idx = "spct.idx") {
   stopifnot(length(col.names) == 2L)
   lonlat.tb <- getWhereMeasured(mspct, idx = idx)[c(idx, "lon", "lat")]
-  if (col.names[1L] == "lon" && col.names[2L] == "lat" &&
-      length(names(col.names)) == 2L) {
-      # syntax like in dplyr::rename()
-      names(lonlat.tb)[2L:3L] <- names(col.names)
-   } else {
-    # use value directly for column name
-    names(lonlat.tb)[2L:3L] <- col.names
-  }
+  names(lonlat.tb)[2L:3L] <- col.names
   if (is.null(tb)) {
     lonlat.tb
   } else {
@@ -1233,13 +1271,7 @@ lon2tb <- function(mspct,
                    idx = "spct.idx") {
   stopifnot(length(col.names) == 1L)
   lon.tb <- getWhereMeasured(mspct, idx = idx)[c(idx, "lon")]
-  if (col.names == "lon"&& length(names(col.names)) == 1L) {
-    # syntax like in dplyr::rename()
-    names(lon.tb)[2L] <- names(col.names)
-  } else {
-    # use value directly for column name
-    names(lon.tb)[2L] <- col.names
-  }
+  names(lon.tb)[2L] <- col.names
   if (is.null(tb)) {
     lon.tb
   } else {
@@ -1257,13 +1289,7 @@ lat2tb <- function(mspct,
                    idx = "spct.idx") {
   stopifnot(length(col.names) == 1L)
   lat.tb <- getWhereMeasured(mspct, idx = idx)[c(idx, "lat")]
-  if (col.names == "lat" && length(names(col.names)) == 1L) {
-    # syntax like in dplyr::rename()
-    names(lat.tb)[2L] <- names(col.names)
-  } else {
-    # use value directly for column name
-    names(lat.tb)[2L] <- col.names
-  }
+  names(lat.tb)[2L] <- col.names
   if (is.null(tb)) {
     lat.tb
   } else {
@@ -1281,13 +1307,7 @@ address2tb <- function(mspct,
                        idx = "spct.idx") {
   stopifnot(length(col.names) == 1L)
   address.tb <- getWhereMeasured(mspct, idx = idx)[c(idx, "address")]
-  if (col.names == "address" && length(names(col.names)) == 1L) {
-    # syntax like in dplyr::rename()
-    names(address.tb)[2L] <- names(col.names)
-  } else {
-    # use value directly for column name
-    names(address.tb)[2L] <- col.names
-  }
+  names(address.tb)[2L] <- col.names
   if (is.null(tb)) {
     address.tb
   } else {
@@ -1305,13 +1325,7 @@ what_measured2tb <- function(mspct,
                              idx = "spct.idx") {
   stopifnot(length(col.names) == 1L)
   what.tb <- getWhatMeasured(mspct, idx = idx)
-  if (col.names == "what.measured" && length(names(col.names)) == 1L) {
-    # syntax like in dplyr::rename()
-    names(what.tb)[2L] <- names(col.names)
-  } else {
-    # use value directly for column name
-    names(what.tb)[2L] <- col.names
-  }
+  names(what.tb)[2L] <- col.names
   if (is.null(tb)) {
     what.tb
   } else {
@@ -1329,17 +1343,56 @@ how_measured2tb <- function(mspct,
                             idx = "spct.idx") {
   stopifnot(length(col.names) == 1L)
   how.tb <- getHowMeasured(mspct, idx = idx)
-  if (col.names == "how.measured" && length(names(col.names)) == 1L) {
-    # syntax like in dplyr::rename()
-    names(how.tb)[2L] <- names(col.names)
-  } else {
-    # use value directly for column name
-    names(how.tb)[2L] <- col.names
-  }
+  names(how.tb)[2L] <- col.names
   if (is.null(tb)) {
     how.tb
   } else {
     dplyr::full_join(tb, how.tb, by = idx)
+  }
+}
+
+#' @rdname add_attr2tb
+#'
+#' @export
+#'
+normalized2tb <- function(mspct,
+                          tb = NULL,
+                          col.names = "normalized",
+                          idx = "spct.idx") {
+  stopifnot(length(col.names) == 1L)
+  # method not implemented yet for collections
+  normalized.tb <- msdply(mspct = mspct,
+                          .fun = getNormalized,
+                          idx = idx,
+                          .force.numeric = TRUE)
+  names(normalized.tb)[2L] <- col.names
+  if (is.null(tb)) {
+    normalized.tb
+  } else {
+    dplyr::full_join(tb, normalized.tb, by = idx)
+  }
+}
+
+#' @rdname add_attr2tb
+#'
+#' @export
+#'
+scaled2tb <- function(mspct,
+                      tb = NULL,
+                      col.names = "scaled",
+                      idx = "spct.idx") {
+  stopifnot(length(col.names) == 1L)
+  # method not implemented yet for collections
+  l <- mslply(mspct = mspct, .fun = getScaled, .force.list = TRUE)
+  comment(l) <- NULL
+  z <- list(instr.desc = l)
+  z[[idx]] <- factor(names(l), levels = names(l))
+  fscaled.tb <- tibble::as_tibble(z[c(2, 1)])
+  names(fscaled.tb)[2L] <- col.names
+  if (is.null(tb)) {
+    fscaled.tb
+  } else {
+    dplyr::full_join(tb, fscaled.tb, by = idx)
   }
 }
 
@@ -1358,14 +1411,7 @@ instr_desc2tb <- function(mspct,
   z <- list(instr.desc = l)
   z[[idx]] <- factor(names(l), levels = names(l))
   desc.tb <- tibble::as_tibble(z[c(2, 1)])
-  #  desc.tb <- getInstrDesc(mspct, idx = idx)
-  if (col.names == "instr.desc" && length(names(col.names)) == 1L) {
-    # syntax like in dplyr::rename()
-    names(desc.tb)[2L] <- names(col.names)
-  } else {
-    # use value directly for column name
-    names(desc.tb)[2L] <- col.names
-  }
+  names(desc.tb)[2L] <- col.names
   if (is.null(tb)) {
     desc.tb
   } else {
@@ -1382,20 +1428,13 @@ instr_settings2tb <- function(mspct,
                               col.names = "instr.settings",
                               idx = "spct.idx") {
   stopifnot(length(col.names) == 1L)
-# method not implemented yet for collections
+  # method not implemented yet for collections
   l <- mslply(mspct = mspct, .fun = getInstrSettings)
   comment(l) <- NULL
   z <- list(instr.settings = l)
   z[[idx]] <- factor(names(l), levels = names(l))
   settings.tb <- tibble::as_tibble(z[c(2, 1)])
-#  settings.tb <- getInstrSettings(mspct, idx = idx)
-  if (col.names == "instr.settings" && length(names(col.names)) == 1L) {
-    # syntax like in dplyr::rename()
-    names(settings.tb)[2L] <- names(col.names)
-  } else {
-    # use value directly for column name
-    names(settings.tb)[2L] <- col.names
-  }
+  names(settings.tb)[2L] <- col.names
   if (is.null(tb)) {
     settings.tb
   } else {
@@ -1403,29 +1442,153 @@ instr_settings2tb <- function(mspct,
   }
 }
 
+#' @rdname add_attr2tb
+#'
+#' @export
+#'
+BSWF_used2tb <- function(mspct,
+                         tb = NULL,
+                         col.names = "BSWF.used",
+                         idx = "spct.idx") {
+  stopifnot(length(col.names) == 1L)
+  # method not implemented yet for collections
+  bswf.tb <- msdply(mspct = mspct, .fun = getBSWFUsed)
+  names(bswf.tb)[2L] <- col.names
+  if (is.null(tb)) {
+    bswf.tb
+  } else {
+    dplyr::full_join(tb, bswf.tb, by = idx)
+  }
+}
+
+#' @rdname add_attr2tb
+#'
+#' @export
+#'
+filter_properties2tb <- function(mspct,
+                                 tb = NULL,
+                                 col.names = "filter.properties",
+                                 idx = "spct.idx") {
+  stopifnot(length(col.names) == 1L)
+  properties.tb <- getFilterProperties(mspct, idx = idx)
+  names(properties.tb)[2L] <- col.names
+  if (is.null(tb)) {
+    properties.tb
+  } else {
+    dplyr::full_join(tb, properties.tb, by = idx)
+  }
+}
+
+#' @rdname add_attr2tb
+#'
+#' @export
+#'
+Tfr_type2tb <- function(mspct,
+                        tb = NULL,
+                        col.names = "Tfr.type",
+                        idx = "spct.idx") {
+  stopifnot(length(col.names) == 1L)
+  # method not implemented yet for collections
+  tfr_type.tb <-  msdply(mspct = mspct, .fun = getTfrType)
+  names(tfr_type.tb)[2L] <- col.names
+  if (is.null(tb)) {
+    tfr_type.tb
+  } else {
+    dplyr::full_join(tb, tfr_type.tb, by = idx)
+  }
+}
+
+#' @rdname add_attr2tb
+#'
+#' @export
+#'
+Rfr_type2tb <- function(mspct,
+                        tb = NULL,
+                        col.names = "Rfr.type",
+                        idx = "spct.idx") {
+  stopifnot(length(col.names) == 1L)
+  # method not implemented yet for collections
+  rfr_type.tb <- msdply(mspct = mspct, .fun = getRfrType)
+  names(rfr_type.tb)[2L] <- col.names
+  if (is.null(tb)) {
+    rfr_type.tb
+  } else {
+    dplyr::full_join(tb, rfr_type.tb, by = idx)
+  }
+}
+
+#' @rdname add_attr2tb
+#'
+#' @export
+#'
+time_unit2tb <- function(mspct,
+                         tb = NULL,
+                         col.names = "time.unit",
+                         idx = "spct.idx") {
+  stopifnot(length(col.names) == 1L)
+  # method not implemented yet for collections
+  time_unit.tb <- msdply(mspct = mspct, .fun = getTimeUnit, force.duration = TRUE)
+  names(time_unit.tb)[2L] <- col.names
+  if (is.null(tb)) {
+    time_unit.tb
+  } else {
+    dplyr::full_join(tb, time_unit.tb, by = idx)
+  }
+}
+
+#' @rdname add_attr2tb
+#'
+#' @export
+#'
+comment2tb <- function(mspct,
+                       tb = NULL,
+                       col.names = "comment",
+                       idx = "spct.idx") {
+  stopifnot(length(col.names) == 1L)
+  # method not implemented yet for collections
+  l <- mslply(mspct = mspct, .fun = comment)
+  comment(l) <- NULL
+  z <- list(instr.settings = l)
+  z[[idx]] <- factor(names(l), levels = names(l))
+  comments.tb <- tibble::as_tibble(z[c(2, 1)])
+  #  settings.tb <- getInstrSettings(mspct, idx = idx)
+  names(comments.tb)[2L] <- col.names
+  if (is.null(tb)) {
+    comments.tb
+  } else {
+    dplyr::full_join(tb, comments.tb, by = idx)
+  }
+}
+
 # get all metadata --------------------------------------------------------
 
 #' Access metadta
 #'
-#' Return the when.measured, where.measured, what.measured and how.measured
-#' attributes from a single spectrum or a collection of spectra as a tibble.
+#' Return metadata attributes from a single spectrum or a collection of spectra
+#' as a tibble.
 #'
 #' @param x generic_mspct or generic_spct Any collection of spectra or spectrum.
 #' @param col.names named character vector Name(s) of column(s) to create.
 #' @param idx character Name of the column with the names of the members of the
 #'   collection of spectra.
-#' @param na.rm logical Flag controlling deletion of columns containing only
-#'   NA values.
+#' @param na.rm logical Flag controlling deletion of columns containing only NA
+#'   values.
+#' @param unnest logical Flag controlling if metadata attributes that are lists
+#'   of values should be returned in a list column or in separate columns.
 #'
 #' @return A tibble With the metadata attributes and an index column.
 #'
-#' @details Attributes are returned as column in a tibble. If the argument
-#'   to \code{col.names} is a named vector, with the names of members matching
-#'   the names of attributes, then the values are used as names for the columns
+#' @details Attributes are returned as columns in a tibble. If the argument to
+#'   \code{col.names} is a named vector, with the names of members matching the
+#'   names of attributes, then the values are used as names for the columns
 #'   created. This permits setting any valid name for the new columns. If the
 #'   vector passed to \code{col.names} has no names, then the values are
 #'   interpreted as the names of the attributes to add, and also used as names
 #'   for the new columns.
+#'
+#'   Some metadata values are stored in lists or dataframes, these can be
+#'   returned as a list columns or the individual fields unnested into separate
+#'   columns.
 #'
 #' @seealso \code{\link{add_attr2tb}} for more details.
 #'
@@ -1454,14 +1617,19 @@ instr_settings2tb <- function(mspct,
 spct_metadata <- function(x,
                           col.names = NULL,
                           idx = "spct.idx",
-                          na.rm = is.null(col.names)) {
+                          na.rm = is.null(col.names),
+                          unnest = TRUE) {
   if (length(col.names) < 1L) {
-    col.names <- c("lon",
-                   "lat",
-                   "address",
+    col.names <- c("where.measured",
                    "when.measured",
                    "what.measured",
-                   "how.measured")
+                   "how.measured",
+                   "normalized",
+                   "scaled",
+                   "time.unit",
+                   "bswf.used",
+                   "Tfr.type",
+                   "Rfr.type")
   }
   if (is.any_spct(x)) {
     # ensure we operate on a collection of spectra
@@ -1470,13 +1638,20 @@ spct_metadata <- function(x,
     l[[name]] <- x
     x <- generic_mspct(l, class = class(x)[1])
   }
-  z <- add_attr2tb(tb = NULL, mspct = x, col.names = col.names, idx = idx)
+  z <- add_attr2tb(tb = NULL,
+                   mspct = x,
+                   col.names = col.names,
+                   idx = idx,
+                   unnest = unnest)
   if (na.rm) {
     # omit columns with no data
-    filter <- function(x) {(is.atomic(x) & !all(is.na(x))) |
-                              (is.list(x) & !all(is.na(unlist(x))))}
-    col.selector <- sapply(z, filter)
-    z <- z[ , col.selector]
+    col.has.data <-
+      function(x) {
+        (is.atomic(x) & !all(is.na(x))) |
+          (is.list(x) & !all(is.na(unlist(x))))
+      }
+    z <- z[ , sapply(z, col.has.data)]
   }
   z
 }
+

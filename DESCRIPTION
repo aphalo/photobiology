@@ -30,6 +30,7 @@ Imports:
     lubridate (>= 1.7.8),
     plyr (>= 1.8.4),
     dplyr (>= 1.0.0),
+    tidyr (>= 1.1.0),
     splus2R (>= 1.2-2),
     zoo (>= 1.8-7),
     rlang (>= 0.4.6)

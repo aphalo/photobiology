@@ -490,7 +490,7 @@ is_normalized <- function(x) {
     return(NA)
   }
   spct.attr <- attr(x, "normalized", exact = TRUE)
-  as.logical(!is.null(spct.attr) && as.logical(spct.attr))
+  !is.null(spct.attr) && as.logical(spct.attr)
 }
 
 #' @rdname is_normalized
@@ -510,24 +510,35 @@ is_normalised <- is_normalized
 #' object.
 #'
 #' @param x a generic_spct object
+#' @param .force.numeric logical If \code{TRUE} always silently return a
+#'   numeric value, with \code{FALSE} encoded as zero, and character values
+#'   as \code{NA}.
 #'
-#' @return character or numeric or logical
+#' @return numeric or logical (possibly character for objects created with
+#'   earlier versions).
 #'
 #' @note if x is not a \code{generic_spct} object, \code{NA} is returned
 #'
 #' @export
 #' @family rescaling functions
 #'
-getNormalized <- function(x) {
+getNormalized <- function(x,
+                          .force.numeric = FALSE) {
   if (is.generic_spct(x) || is.summary_generic_spct(x)) {
     normalized <- attr(x, "normalized", exact = TRUE)
     if (is.null(normalized) || is.na(normalized)) {
       # need to handle objects created with old versions
       normalized <- FALSE
     }
-    return(normalized[[1]])
   } else {
-    return(NA)
+    warning("Method 'getNormalized()' not implemented for class: ",
+            class(x)[1])
+    normalized <- NA
+  }
+  if (.force.numeric) {
+    suppressWarnings(as.numeric(normalized[[1]]))
+  } else {
+    normalized[[1]]
   }
 }
 

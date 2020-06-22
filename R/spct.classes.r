@@ -2220,11 +2220,20 @@ filter_properties <- getFilterProperties
 getFilterProperties.default <- function(x,
                                         return.null = FALSE,
                                         ...) {
+  if (!is.any_spct(x) && !is.any_summary_spct(x)) {
+    warning("Methods 'getFilterProperties()' not implemented for class: ",
+            class(x)[1])
+  }
   if (return.null) {
     NULL
   } else {
     # we return an NA
-    NA
+    filter.properties <- list(Rfr.constant = NA_real_,
+                              thickness = NA_real_,
+                              attenuation.mode = NA)
+    class(filter.properties) <-
+      c("filter_properties", class(filter.properties))
+    filter.properties
   }
 }
 
@@ -2264,13 +2273,14 @@ getFilterProperties.summary_filter_spct <- getFilterProperties.filter_spct
 #' @export
 #'
 getFilterProperties.generic_mspct <- function(x,
+                                              return.null = FALSE,
                                               ...,
                                               idx = "spct.idx") {
-  msdply(mspct = x,
-         .fun = getFilterProperties,
-         ...,
-         idx = idx,
-         col.names = "filter.properties")
+  l <- mslply(mspct = x, .fun = getFilterProperties, ...)
+  comment(l) <- NULL
+  z <- list(filter.properties = l)
+  z[[idx]] <- factor(names(l), levels = names(l))
+  tibble::as_tibble(z[c(2, 1)])
 }
 
 # Modify filter properties -----------------------------------------------

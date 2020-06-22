@@ -555,6 +555,8 @@ is_scaled <- function(x) {
 #' object.
 #'
 #' @param x a generic_spct object
+#' @param .force.list logical If \code{TRUE} always silently return a
+#'   list, with \code{FALSE} encoded field \code{multiplier = 1}.
 #'
 #' @return logical
 #'
@@ -569,12 +571,20 @@ is_scaled <- function(x) {
 #' scaled.spct <- fscale(sun.spct)
 #' getScaled(scaled.spct)
 #'
-getScaled <- function(x) {
+getScaled <- function(x,
+                      .force.list = FALSE) {
   if (is.generic_spct(x) || is.summary_generic_spct(x)) {
     scaled <- attr(x, "scaled", exact = TRUE)
     if (is.null(scaled) || (!is.list(scaled) && all(is.na(scaled)))) {
       # need to handle objects created with old versions
-      scaled <- FALSE
+      if (.force.list) {
+        scaled <- list(multiplier = 1,
+                       f = NA,
+                       range = c(NA_real_, NA_real_),
+                       target = NA_real_)
+      } else {
+        scaled <- FALSE
+      }
     } else if (is.list(scaled)) {
       if (!"target" %in% names(scaled)) {
         # cater for objects scaled before version 0.9.12
@@ -585,10 +595,12 @@ getScaled <- function(x) {
         scaled <- c(scaled, list(range = c(NA_real_, NA_real_)))
       }
     }
-    return(scaled)
   } else {
-    return(NA)
+    warning("Method 'getScaled()' not implemented for class: ",
+            class(x)[1])
+    scaled <- NA
   }
+  scaled
 }
 
 #' Set the "scaled" attribute
