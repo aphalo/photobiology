@@ -1619,6 +1619,7 @@ spct_metadata <- function(x,
                           idx = "spct.idx",
                           na.rm = is.null(col.names),
                           unnest = TRUE) {
+  force(na.rm) # compute default before assignment to col.names
   if (length(col.names) < 1L) {
     col.names <- c("where.measured",
                    "when.measured",
@@ -1645,12 +1646,13 @@ spct_metadata <- function(x,
                    unnest = unnest)
   if (na.rm) {
     # omit columns with no data
-    col.has.data <-
-      function(x) {
-        (is.atomic(x) & !all(is.na(x))) |
-          (is.list(x) & !all(is.na(unlist(x))))
-      }
-    z <- z[ , sapply(z, col.has.data)]
+    col.has.data <- sapply(X = as.list(z),
+                           FUN = function(x) {
+                             (is.atomic(x) & !all(is.na(x))) |
+                               (is.list(x) & !all(is.na(unlist(x))))
+                           })
+
+    z <- z[ , col.has.data]
   }
   z
 }

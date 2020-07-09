@@ -758,8 +758,7 @@ two.mspct
 
 Other methods available are `getWhereMeasured` and `setWhereMeasured`, and `getWhatMeasured` and `setWhatMeasured`.
 
-Functions `when.measured2tb()`, `geocode2tb()`, `lon2tb()`, `lat2tb()` and `what.measured2tb()` extract these same attributes from collection members into a tibble or data frame.  In contrast to the "get" methods described above, if an existing data frame or tibble with a matching number of rows is passed as second argument, the values for the attribute are saved into a new column appended at the right edge of the tibble or
-data frame.
+Functions `when.measured2tb()`, `geocode2tb()`, `lon2tb()`, `lat2tb()` and `what.measured2tb()` extract these same attributes from collection members into a tibble or data frame.  In contrast to the "get" methods described above, if an existing data frame or tibble with a matching number of rows is passed as second argument, the values for the attribute are saved into a new column appended at the right edge of the tibble or data frame.
 
 ```{r}
 when_measured2tb(two.mspct)
@@ -771,8 +770,23 @@ By default the new column is named after the name of the attribute, but this def
 when_measured2tb(two.mspct, col.names = c(when.measured = "time"))
 ```
 
-Function `add_attr2tb()` adds one or more columns with attributes to a tibble
-or data frame. We here also demonstrate that because the data frame object is passed to the first positional argument, we can use a _pipe_.
+Function `spct_metadata()` returns the metadata in a tibble. Unless the user
+supplies a list of names of attributes, all applicable metadata values are
+returned. A single spectrum or a collection of spectra can be passed. By default
+columns containing only missing data are dropped.
+
+```{r}
+spct_metadata(two.mspct)
+```
+
+```{r}
+spct_metadata(two.mspct, 
+              col.names = c("when.measured" = "time", 
+                            "where.measured" = "geocode"),
+              unnest = FALSE)
+```
+
+Function `add_attr2tb()` adds one or more columns with attributes to a tibble or data frame. We here also demonstrate that because the data frame object is passed to the first positional argument, we can use a _pipe_. This difference in interface is the main difference between this function and `spct_metadata()`.
 
 ```{r}
 q_irrad(two.mspct) %>%
