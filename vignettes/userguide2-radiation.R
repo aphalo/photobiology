@@ -284,6 +284,15 @@ when_measured2tb(two.mspct)
 when_measured2tb(two.mspct, col.names = c(when.measured = "time"))
 
 ## -----------------------------------------------------------------------------
+spct_metadata(two.mspct)
+
+## -----------------------------------------------------------------------------
+spct_metadata(two.mspct, 
+              col.names = c("when.measured" = "time", 
+                            "where.measured" = "geocode"),
+              unnest = FALSE)
+
+## -----------------------------------------------------------------------------
 q_irrad(two.mspct) %>%
   add_attr2tb(two.mspct, 
               col.names = c("lon", "lat", "when.measured"))
