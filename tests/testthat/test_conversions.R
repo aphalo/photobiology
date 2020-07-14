@@ -272,18 +272,18 @@ test_that("convertTfrType", {
 })
 
 test_that("convertTfrType_properties", {
-  f.spct <- filter_spct(w.length = 300:400, Tfr = 0.5, Tfr.type = "total")
-  filter_properties(f.spct) <- list(Rfr.constant = 0.5, thickness = NA_real_, attenuation.mode = NA_character_)
+  f.spct <- filter_spct(w.length = 300:400, Tfr = 0.9, Tfr.type = "total")
+  filter_properties(f.spct) <- list(Rfr.constant = 0.1, thickness = NA_real_, attenuation.mode = NA_character_)
   expect_equal(convertTfrType(f.spct), f.spct)
   expect_silent(convertTfrType(f.spct, Tfr.type = "total"))
-  expect_true(all(convertTfrType(f.spct, Tfr.type = "total")[["Tfr"]] == 0.5))
-  expect_true(all(convertTfrType(f.spct, Tfr.type = "total")[["Rfr"]] == 0.5))
+  expect_true(all(convertTfrType(f.spct, Tfr.type = "total")[["Tfr"]] == 0.9))
+  expect_null(convertTfrType(f.spct, Tfr.type = "total")[["Rfr"]])
   # add "ignore.order = TRUE" if needed!
   expect_named(convertTfrType(f.spct), c("w.length", "Tfr"))
 
   expect_silent(convertTfrType(f.spct, Tfr.type = "internal"))
   expect_true(all(is.na(convertTfrType(f.spct, Tfr.type = "internal")[["Tfr"]])))
-  expect_true(all(convertTfrType(f.spct, Tfr.type = "internal")[["Rfr"]] == 0.5))
+  expect_null(convertTfrType(f.spct, Tfr.type = "internal")[["Rfr"]])
   # add "ignore.order = TRUE" if needed!
   expect_named(convertTfrType(f.spct, Tfr.type = "internal"), c("w.length", "Tfr"))
 })
