@@ -6,7 +6,7 @@ test_that("source_spct", {
 
   x <- sun.spct[200:300]
   x$s.e.irrad[10:20] <- NA_real_
-  expect_warning(smooth_spct(x))
+  expect_error(smooth_spct(x))
 
   expect_known_value(smooth_spct(x, na.rm = TRUE), "./data/smooth-na-value")
 
@@ -24,7 +24,7 @@ test_that("source_spct", {
 
   expect_known_value(smooth_spct(sun.spct, strength = 0), "./data/smooth-default-0-value")
   expect_known_value(smooth_spct(sun.spct, method = "custom", strength = 0), "./data/smooth-custom-0-value")
-  expect_known_value(smooth_spct(sun.spct, method = "lowess", strength = 0.1), "./data/smooth-lowess-0-value")
+  expect_known_value(smooth_spct(sun.spct, method = "lowess", strength = 0), "./data/smooth-lowess-0-value")
   expect_known_value(smooth_spct(sun.spct, method = "supsmu", strength = 0), "./data/smooth-supsmu-0-value")
 
   expect_known_value(smooth_spct(sun.spct, strength = 1), "./data/smooth-default-1-value")
