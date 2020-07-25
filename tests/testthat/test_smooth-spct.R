@@ -43,7 +43,7 @@ test_that("filter_spct", {
 
   x <- yellow_gel.spct[200:400]
   x$Tfr[10:20] <- NA_real_
-  expect_warning(smooth_spct(x))
+  expect_error(smooth_spct(x))
 
   expect_known_value(smooth_spct(x, na.rm = TRUE), "./data/smooth-flt-na-value")
 
@@ -80,7 +80,7 @@ test_that("reflector_spct", {
 
   x <- green_leaf.spct
   x$Rfr[10:20] <- NA_real_
-  expect_warning(smooth_spct(x))
+  expect_error(smooth_spct(x))
 
   expect_known_value(smooth_spct(x, na.rm = TRUE), "./data/smooth-rflt-na-value")
 
@@ -117,7 +117,7 @@ test_that("response_spct", {
 
   x <- ccd.spct
   x$s.q.response[10:20] <- NA_real_
-  expect_warning(smooth_spct(x))
+  expect_error(smooth_spct(x))
 
   expect_known_value(smooth_spct(x, na.rm = TRUE), "./data/smooth-rsp-na-value")
 

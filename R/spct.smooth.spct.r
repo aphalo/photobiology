@@ -34,6 +34,8 @@
 #'
 #' my.spct <- clip_wl(sun.spct, c(400, 500))
 #' smooth_spct(my.spct)
+#' smooth_spct(my.spct, method = "custom", strength = 1)
+#' smooth_spct(my.spct, method = "custom", strength = 4)
 #' smooth_spct(my.spct, method = "supsmu", strength = 4)
 #'
 smooth_spct <- function(x,
@@ -81,14 +83,14 @@ smooth_spct.source_spct <- function(x,
 
   if ("s.e.irrad" %in% names(x) && anyNA(x[["s.e.irrad"]])) {
     if (na.rm) {
-      message("Removing NA values at ", length(is.na(x[["s.e.irrad"]])), " wavelengths.")
+      message("Removing NA values at ", sum(is.na(x[["s.e.irrad"]])), " wavelengths.")
       x <- na.omit(x)
     } else {
       stop("NAs encountered when smoothing.")
     }
   } else if ("s.q.irrad" %in% names(x) && anyNA(x[["s.q.irrad"]])) {
     if (na.rm) {
-      message("Removing NA values at ", length(is.na(x[["s.q.irrad"]])), " wavelengths.")
+      message("Removing NA values at ", sum(is.na(x[["s.q.irrad"]])), " wavelengths.")
       x <- na.omit(x)
     } else {
       stop("NAs encountered when smoothing.")
@@ -132,10 +134,10 @@ smooth_spct.source_spct <- function(x,
     }
     comment.text <-  paste("Smoothed using 'supsmu', span =", signif(span, 3))
   } else if (method == "custom") {
-    zero.limit.cnst <- max(x[["s.e.irrad"]]) * 3e-4 / strength
-    smooth.limit <- 1e-3
-    smooth.threshold <-  max(x[["s.e.irrad"]]) * 5e-2 / strength
+    smooth.limit <- 1e-3 * strength
     if ("s.e.irrad" %in% names(x)) {
+      zero.limit.cnst <- max(x[["s.e.irrad"]]) * 3e-4 * strength
+      smooth.threshold <-  max(x[["s.e.irrad"]]) * 5e-2 * strength
       z <- adaptive_smoothing(xx[["w.length"]], xx[["s.e.irrad"]],
                               zero.limit.cnst = zero.limit.cnst,
                               smooth.limit = smooth.limit,
@@ -143,6 +145,8 @@ smooth_spct.source_spct <- function(x,
                                      ...)
       x[wl.selector, "s.e.irrad"] <- z[["y"]]
     } else if ("s.q.irrad" %in% names(x)) {
+      zero.limit.cnst <- max(x[["s.q.irrad"]]) * 3e-4 * strength
+      smooth.threshold <-  max(x[["s.q.irrad"]]) * 5e-2 * strength
       z <- adaptive_smoothing(xx[["w.length"]], xx[["s.q.irrad"]],
                               zero.limit.cnst = zero.limit.cnst,
                               smooth.limit = smooth.limit,
@@ -181,26 +185,47 @@ smooth_spct.filter_spct <- function(x,
   num.spectra <- getMultipleWl(x)
   if (num.spectra != 1) {
     warning("Skipping smoothing as object contains ",
-            num.spectra, " spectra")
+            num.spectra, " spectra in long form.")
     return(x)
   }
+
+  stopifnot(strength >= 0)
+  if (strength == 0) {
+    return(x)
+  }
+
+  # if both Tfr and A data present, we retain only Tfr and set a flag
   T.and.A.input <- all(c("Tfr", "A") %in% names(x))
+
+  if ("Tfr" %in% names(x) && any(c("Afr", "A") %in% names(x))) {
+    warning("Retaing \"Tfr\", droping \"Afr\" and or  \"A\".")
+    x[ , setdiff(names(x), c("Afr", "A"))]
+  }
+  if ("A" %in% names(x) && "Afr" %in% names(x)) {
+    warning("Retaing \"A\", droping \"Afr\".")
+    x[ , setdiff(names(x), "Afr")]
+  }
 
   if ("Tfr" %in% names(x) && anyNA(x[["Tfr"]])) {
     if (na.rm) {
-      message("Removing NA values at ", length(is.na(x[["Tfr"]])), " wavelengths.")
-      x <- na.omit(A2T(x, action = "replace"))
+      message("Removing NA values at ", sum(is.na(x[["Tfr"]])), " wavelengths.")
+      x <- na.omit(x)
     } else {
-      warning("NAs encountered when smoothing, returning input unchanged.")
-      return(x)
+      stop("NAs encountered when smoothing.")
     }
   } else if ("A" %in% names(x) && anyNA(x[["A"]])) {
     if (na.rm) {
-      message("Removing NA values at ", length(is.na(x[["A"]])), " wavelengths.")
-      x <- na.omit(T2A(x, action = "replace"))
+      message("Removing NA values at ", sum(is.na(x[["A"]])), " wavelengths.")
+      x <- na.omit(x)
     } else {
-      warning("NAs encountered when smoothing, returning input unchanged.")
-      return(x)
+      stop("NAs encountered when smoothing.")
+    }
+  } else if ("Afr" %in% names(x) && anyNA(x[["A"]])) {
+    if (na.rm) {
+      message("Removing NA values at ", length(is.na(x[["Afr"]])), " wavelengths.")
+      x <- na.omit(x)
+    } else {
+      stop("NAs encountered when smoothing.")
     }
   }
 
@@ -208,98 +233,91 @@ smooth_spct.filter_spct <- function(x,
   # as intermediate values may be off-range
   prev_state <- disable_check_spct()
   on.exit(set_check_spct(prev_state), add = TRUE)
+
+  # this needs to be after NAs are omitted
+  if (!is.null(wl.range)) {
+    wl.range <- range(wl.range)
+    wl.selector <-
+      x[["w.length"]] >= wl.range[1] & x[["w.length"]] <= wl.range[2]
+  } else {
+    wl.selector <- TRUE
+  }
+
+  xx <- x[wl.selector, ]
+
   if (method == "lowess") {
     span = 1/50 * strength
     if ("Tfr" %in% names(x)) {
-      out.spct <- stats::lowess(x[["w.length"]], x[["Tfr"]], f = span, ...)
-      names(out.spct) <- c("w.length", "Tfr")
+      z <- stats::lowess(xx[["w.length"]], xx[["Tfr"]], f = span, ...)
+      x[wl.selector, "Tfr"] <- z[["y"]]
     } else if ("A" %in% names(x)) {
-      out.spct <- stats::lowess(x[["w.length"]], x[["A"]], f = span, ...)
-      names(out.spct) <- c("w.length", "A")
+      z <- stats::lowess(xx[["w.length"]], xx[["A"]], f = span, ...)
+      x[wl.selector, "A"] <- z[["y"]]
+    } else if ("Afr" %in% names(x)) {
+      z <- stats::lowess(xx[["w.length"]], xx[["Afr"]], f = span, ...)
+      x[wl.selector, "Afr"] <- z[["y"]]
     }
-    setFilterSpct(out.spct, Tfr.type = attr(x, "Tfr.type", exact = TRUE))
-    if (T.and.A.input) {
-      T2A(out.spct, action = "add", byref = TRUE)
-    }
-    if (!is.null(comment(x))) {
-      comment.text <- paste("Smoothed using 'lowess', f =", signif(span, 3), "\n\n", comment(x))
-    } else {
-      comment.text <- paste("Smoothed using 'lowess', f =", signif(span, 3))
-    }
+    comment.text <- paste("Smoothed using 'lowess', f =", signif(span, 3))
   } else if (method == "supsmu") {
     span = 1/50 * strength
     if ("Tfr" %in% names(x)) {
-      out.spct <- stats::supsmu(x[["w.length"]], x[["Tfr"]], span = span, ...)
-      names(out.spct) <- c("w.length", "Tfr")
+      z <- stats::supsmu(xx[["w.length"]], xx[["Tfr"]], span = span, ...)
+      x[wl.selector, "Tfr"] <- z[["y"]]
     } else if ("A" %in% names(x)) {
-      out.spct <- stats::supsmu(x[["w.length"]], x[["A"]], span = span, ...)
-      names(out.spct) <- c("w.length", "A")
+      z <- stats::supsmu(xx[["w.length"]], xx[["A"]], span = span, ...)
+      x[wl.selector, "A"] <- z[["y"]]
+    } else if ("Afr" %in% names(x)) {
+      z <- stats::supsmu(xx[["w.length"]], xx[["Afr"]], span = span, ...)
+      x[wl.selector, "Afr"] <- z[["y"]]
     }
-    setFilterSpct(out.spct, Tfr.type = attr(x, "Tfr.type", exact = TRUE))
-    if (T.and.A.input) {
-      T2A(out.spct, action = "add", byref = TRUE)
-    }
-    if (!is.null(comment(x))) {
-      comment.text <- paste("Smoothed using 'supsmu', span =", signif(span, 3), "\n\n", comment(x))
-    } else {
-      comment.text <-  paste("Smoothed using 'supsmu', span =", signif(span, 3))
-    }
+    comment.text <-  paste("Smoothed using 'supsmu', span =", signif(span, 3))
   } else if (method == "custom") {
-    # my own and inefficient method!
-    # as the spectrum is already in energy units, we need to normalize thresholds
-    out.spct <- x # just to avoid editing the code
-    A2T(out.spct, action = "replace", byref = TRUE)
-    max_Tfr <- 1
-    smoothing_coef <- 1
-    smoothing_hi_lim <- max(out.spct[["w.length"]])
-    # this could be tweaked in many ways...
-    zero_limit_cnst <- max_Tfr * 3e-4 / strength
-    out.spct[["zero_limit"]] <-  (zero_limit_cnst * 600) / out.spct[["w.length"]]
-    smooth_limit <- 1e-3 * smoothing_coef # just a guess for runmadmed
-    smooth_threshold <- 5e-2 * max_Tfr / strength # for Tfr
-#    out.spct[["runmad"]] <- caTools::runmad(out.spct[["Tfr"]], 7, endrule="mad")
-    out.spct[["runmad"]] <- zoo::rollapply(out.spct[["Tfr"]], width = 7, FUN = stats::mad, partial = TRUE)
-    out.spct[["runmed3"]] <- stats::runmed(out.spct[["Tfr"]], 3, endrule="median")
-    out.spct[["runmed7"]] <- stats::runmed(out.spct[["Tfr"]], 7, endrule="median")
-    out.spct[["runmed19"]] <- stats::runmed(out.spct[["Tfr"]], 19, endrule="median")
-#    out.spct[["runmin5"]] <- caTools::runmin(out.spct[["Tfr"]], 5)
-    out.spct[["runmin5"]] <- zoo::rollapply(out.spct[["Tfr"]], width = 5, FUN = min, partial = TRUE)
-    # we need to avoid division by 0.0 and we use zero_limit / 10 close enough to zero
-    out.spct[["runmadmed"]] <- with(out.spct,
-                                    ifelse(runmad < zero_limit_cnst * 1e-1 | runmed7 < zero_limit * 1e-1,
-                                           0.0, runmad/abs(runmed7)))
-    out.spct[["Tfr.sm"]] <- with(out.spct,
-               ifelse( (runmed19 < zero_limit) | (runmin5 < zero_limit * 5e-2), 0.0,
-                       ifelse((Tfr > smooth_threshold) | (runmadmed < smooth_limit), Tfr,
-                              ifelse(runmadmed < 2 * smooth_limit, runmed3,
-                                     ifelse(runmadmed < 4 * smooth_limit, runmed7, runmed19)))))
-    out.spct[["Tfr"]] <- with(out.spct,
-                              ifelse(w.length < smoothing_hi_lim, Tfr.sm, Tfr))
-    out.spct[["Tfr.good"]] <- out.spct[["runmadmed"]] / out.spct[["runmed19"]] * max(out.spct[["runmed19"]]) < 1.0
-    if (any(is.na(out.spct[["Tfr"]]))) {
-      warning(sum(is.na(out.spct[["Tfr"]])), " NAs in returned spectral irradiance")
+    smooth.limit <- 1e-3 * strength
+    if ("Tfr" %in% names(x)) {
+      zero.limit.cnst <- max(x[["Tfr"]]) * 3e-4 * strength
+      smooth.threshold <-  max(x[["Tfr"]]) * 5e-2 * strength
+      z <- adaptive_smoothing(xx[["w.length"]], xx[["Tfr"]],
+                              zero.limit.cnst = zero.limit.cnst,
+                              smooth.limit = smooth.limit,
+                              smooth.threshold = smooth.threshold,
+                              ...)
+      x[wl.selector, "Tfr"] <- z[["y"]]
+    } else if ("A" %in% names(x)) {
+      zero.limit.cnst <- max(x[["A"]]) * 3e-4 * strength
+      smooth.threshold <-  max(x[["A"]]) * 5e-2 * strength
+      z <- adaptive_smoothing(xx[["w.length"]], xx[["A"]],
+                              zero.limit.cnst = zero.limit.cnst,
+                              smooth.limit = smooth.limit,
+                              smooth.threshold = smooth.threshold,
+                              ...)
+      x[wl.selector, "A"] <- z[["y"]]
+    } else if ("Afr" %in% names(x)) {
+      zero.limit.cnst <- max(x[["Afr"]]) * 3e-4 * strength
+      smooth.threshold <-  max(x[["Afr"]]) * 5e-2 * strength
+      z <- adaptive_smoothing(xx[["w.length"]], xx[["Afr"]],
+                              zero.limit.cnst = zero.limit.cnst,
+                              smooth.limit = smooth.limit,
+                              smooth.threshold = smooth.threshold,
+                              ...)
+      x[wl.selector, "Afr"] <- z[["y"]]
     }
-    num_bad <- sum(!out.spct[["Tfr.good"]], na.rm=TRUE)
-    if (num_bad > length(out.spct) / 20) {
-      message(num_bad, " possibly 'bad' values in smoothed spectral Tfr")
-    }
-    out.spct <- out.spct[ , c("w.length", "Tfr")]
-    setFilterSpct(out.spct, Tfr.type = attr(x, "Tfr.type", exact = TRUE))
-    if (T.and.A.input) {
-      T2A(out.spct, action = "add", byref = TRUE)
-    }
-    if (!is.null(comment(x))) {
-      comment.text <- paste("Smoothed using 'custom', smooth_limit =",
-                                 signif(smooth_limit, 3), "\n\n", comment(x))
-    } else {
-      comment.text <- paste("Smoothed using 'custom', smooth_limit =", signif(smooth_limit, 3))
-    }
+    comment.text <- paste("Smoothed using 'custom', smooth.limit =",
+                          signif(smooth.limit, 3))
   }
-  out.spct <- copy_attributes(x, out.spct)
-  comment(out.spct) <- comment.text
-  check_spct(out.spct, force = FALSE)
-}
 
+  #  out.spct <- copy_attributes(x, out.spct)
+  # restore s.q.irrad if needed
+  if (T.and.A.input) {
+    T2A(x, action = "add", byref = TRUE)
+  }
+
+  if (!is.null(comment(x))) {
+    comment(x) <- paste(comment.text, "\n\n", comment(x))
+  } else {
+    comment(x) <- comment.text
+  }
+  check_spct(x, force = FALSE)
+}
 
 #' @describeIn smooth_spct Smooth a reflector spectrum
 #'
@@ -314,16 +332,21 @@ smooth_spct.reflector_spct <- function(x,
   num.spectra <- getMultipleWl(x)
   if (num.spectra != 1) {
     warning("Skipping smoothing as object contains ",
-            num.spectra, " spectra")
+            num.spectra, " spectra in long form.")
     return(x)
   }
-  if ("Rfr" %in% names(x) && anyNA(x[["Rfr"]])) {
+
+  stopifnot(strength >= 0)
+  if (strength == 0) {
+    return(x)
+  }
+
+  if (anyNA(x[["Rfr"]])) {
     if (na.rm) {
-      message("Removing NA values at ", length(is.na(x[["Rfr"]])), " wavelengths.")
+      message("Removing NA values at ", sum(is.na(x[["Rfr"]])), " wavelengths.")
       x <- na.omit(x)
     } else {
-      warning("NAs encountered when smoothing, returning input unchanged.")
-      return(x)
+      stop("NAs encountered when smoothing.")
     }
   }
 
@@ -331,80 +354,48 @@ smooth_spct.reflector_spct <- function(x,
   # as intermediate values may be off-range
   prev_state <- disable_check_spct()
   on.exit(set_check_spct(prev_state), add = TRUE)
+
+  # this needs to be after NAs are omitted
+  if (!is.null(wl.range)) {
+    wl.range <- range(wl.range)
+    wl.selector <-
+      x[["w.length"]] >= wl.range[1] & x[["w.length"]] <= wl.range[2]
+  } else {
+    wl.selector <- TRUE
+  }
+
+  xx <- x[wl.selector, ]
+
   if (method == "lowess") {
     span = 1/50 * strength
-    if ("Rfr" %in% names(x)) {
-      out.spct <- stats::lowess(x[["w.length"]], x[["Rfr"]], f = span, ...)
-      names(out.spct) <- c("w.length", "Rfr")
-    }
-    setReflectorSpct(out.spct)
-    if (!is.null(comment(x))) {
-      comment.text <- paste("Smoothed using 'lowess', f =", signif(span, 3), "\n\n", comment(x))
-    } else {
-      comment.text <- paste("Smoothed using 'lowess', f =", signif(span, 3))
-    }
+    z <- stats::lowess(xx[["w.length"]], xx[["Rfr"]], f = span, ...)
+    x[wl.selector, "Rfr"] <- z[["y"]]
+    comment.text <- paste("Smoothed using 'lowess', f =", signif(span, 3))
   } else if (method == "supsmu") {
     span = 1/50 * strength
-    if ("Rfr" %in% names(x)) {
-      out.spct <- stats::supsmu(x[["w.length"]], x[["Rfr"]], span = span, ...)
-      names(out.spct) <- c("w.length", "Rfr")
-    }
-    setReflectorSpct(out.spct)
-    if (!is.null(comment(x))) {
-      comment.text <- paste("Smoothed using 'supsmu', span =", signif(span, 3), "\n\n", comment(x))
-    } else {
-      comment.text <- paste("Smoothed using 'supsmu', span =", signif(span, 3))
-    }
+    z <- stats::supsmu(xx[["w.length"]], xx[["Rfr"]], span = span, ...)
+    x[wl.selector, "Rfr"] <- z[["y"]]
+    comment.text <-  paste("Smoothed using 'supsmu', span =", signif(span, 3))
   } else if (method == "custom") {
-    # my own and inefficient method!
-    # as the spectrum is already in energy units, we need to normalize thresholds
-    out.spct <- x # we make a working copy
-    max_Rfr <- 1
-    smoothing_coef <- 1
-    smoothing_hi_lim <- max(out.spct[["w.length"]])
-    # this could be tweaked in many ways...
-    zero_limit_cnst <- max_Rfr * 3e-4 / strength
-    out.spct[["zero_limit"]] <-  (zero_limit_cnst * 600) / out.spct[["w.length"]]
-    smooth_limit <- 1e-3 * smoothing_coef # just a guess for runmadmed
-    smooth_threshold <- 5e-2 * max_Rfr / strength # for Rfr
-#    out.spct[["runmad"]] <- caTools::runmad(out.spct[["Rfr"]], 7, endrule="mad")
-    out.spct[["runmad"]] <- zoo::rollapply(out.spct[["Rfr"]], width = 7, FUN = stats::mad, partial = TRUE)
-    out.spct[["runmed3"]] <- stats::runmed(out.spct[["Rfr"]], 3, endrule="median")
-    out.spct[["runmed7"]] <- stats::runmed(out.spct[["Rfr"]], 7, endrule="median")
-    out.spct[["runmed19"]] <- stats::runmed(out.spct[["Rfr"]], 19, endrule="median")
-#    out.spct[["runmin5"]] <- caTools::runmin(out.spct[["Rfr"]], 5)
-    out.spct[["runmin5"]] <- zoo::rollapply(out.spct[["Rfr"]], width = 5, FUN = min, partial = TRUE)
-    # we need to avoid division by 0.0 and we use zero_limit / 10 close enough to zero
-    out.spct[["runmadmed"]] <- with(out.spct,
-                                    ifelse(runmad < zero_limit_cnst * 1e-1 | runmed7 < zero_limit * 1e-1,
-                                           0.0, runmad/abs(runmed7)))
-    out.spct[["Rfr.sm"]] <- with(out.spct,
-               ifelse( (runmed19 < zero_limit) | (runmin5 < zero_limit * 5e-2), 0.0,
-                       ifelse((Rfr > smooth_threshold) | (runmadmed < smooth_limit), Rfr,
-                              ifelse(runmadmed < 2 * smooth_limit, runmed3,
-                                     ifelse(runmadmed < 4 * smooth_limit, runmed7, runmed19)))))
-    out.spct[["Rfr"]] <- with(out.spct,
-                              ifelse(w.length < smoothing_hi_lim, Rfr.sm, Rfr))
-    out.spct[["Rfr.good"]] <- out.spct[["runmadmed"]] / out.spct[["runmed19"]] * max(out.spct[["runmed19"]]) < 1.0
-    if (anyNA(out.spct[["Rfr"]])) {
-      warning(sum(is.na(out.spct[["Rfr"]])), " NAs in spectral irradiance")
-    }
-    num_bad <- sum(!out.spct[["Rfr.good"]], na.rm=TRUE)
-    if (num_bad > length(out.spct) / 20) {
-      message(num_bad, " possibly 'bad' values in smoothed spectral Rfr")
-    }
-    out.spct <- out.spct[ , c("w.length", "Rfr")]
-    setReflectorSpct(out.spct)
-    if (!is.null(comment(x))) {
-      comment.text <- paste("Smoothed using 'custom', smooth_limit =",
-                                 signif(smooth_limit, 3), "\n\n", comment(x))
-    } else {
-      comment.text <- paste("Smoothed using 'custom', smooth_limit =", signif(smooth_limit, 3))
-    }
+    smooth.limit <- 1e-3 * strength
+    zero.limit.cnst <- max(x[["Rfr"]]) * 3e-4 * strength
+    smooth.threshold <-  max(x[["Rfr"]]) * 5e-2 * strength
+    z <- adaptive_smoothing(xx[["w.length"]], xx[["Rfr"]],
+                            zero.limit.cnst = zero.limit.cnst,
+                            smooth.limit = smooth.limit,
+                            smooth.threshold = smooth.threshold,
+                            ...)
+    x[wl.selector, "Rfr"] <- z[["y"]]
+    comment.text <- paste("Smoothed using 'custom', smooth.limit =",
+                          signif(smooth.limit, 3))
   }
-  out.spct <- copy_attributes(x, out.spct)
-  comment(out.spct) <- comment.text
-  check_spct(out.spct, force = FALSE)
+
+  if (!is.null(comment(x))) {
+    comment(x) <- paste(comment.text, "\n\n", comment(x))
+  } else {
+    comment(x) <- comment.text
+  }
+  check_spct(x, force = FALSE)
 }
 
 #' @describeIn smooth_spct Smooth a response spectrum
@@ -420,26 +411,34 @@ smooth_spct.response_spct <- function(x,
   num.spectra <- getMultipleWl(x)
   if (num.spectra != 1) {
     warning("Skipping smoothing as object contains ",
-            num.spectra, " spectra")
+            num.spectra, " spectra in long form.")
     return(x)
   }
-  e.and.q.input <- all(c("s.e.irrad", "s.q.irrad") %in% names(x))
+
+  stopifnot(strength >= 0)
+  if (strength == 0) {
+    return(x)
+  }
+
+  # if both energy and photon data present, we retain only energy and set a flag
+  e.and.q.input <- all(c("s.e.response", "s.q.response") %in% names(x))
+  if (e.and.q.input) {
+    x <- q2e(x, action = "replace")
+  }
 
   if ("s.e.response" %in% names(x) && anyNA(x[["s.e.response"]])) {
     if (na.rm) {
-      message("Removing NA values at ", length(is.na(x[["s.e.response"]])), " wavelengths.")
-      x <- na.omit(q2e(x, action = "replace"))
+      message("Removing NA values at ", sum(is.na(x[["s.e.response"]])), " wavelengths.")
+      x <- na.omit(x)
     } else {
-      warning("NAs encountered when smoothing, returning input unchanged.")
-      return(x)
+      stop("NAs encountered when smoothing.")
     }
   } else if ("s.q.response" %in% names(x) && anyNA(x[["s.q.response"]])) {
     if (na.rm) {
-      message("Removing NA values at ", length(is.na(x[["s.q.response"]])), " wavelengths.")
-      x <- na.omit(e2q(x, action = "replace"))
+      message("Removing NA values at ", sum(is.na(x[["s.q.response"]])), " wavelengths.")
+      x <- na.omit(x)
     } else {
-      warning("NAs encountered when smoothing, returning input unchanged.")
-      return(x)
+      stop("NAs encountered when smoothing.")
     }
   }
 
@@ -447,97 +446,77 @@ smooth_spct.response_spct <- function(x,
   # as intermediate values may be off-range
   prev_state <- disable_check_spct()
   on.exit(set_check_spct(prev_state), add = TRUE)
+
+  # this needs to be after NAs are omitted
+  if (!is.null(wl.range)) {
+    wl.range <- range(wl.range)
+    wl.selector <-
+      x[["w.length"]] >= wl.range[1] & x[["w.length"]] <= wl.range[2]
+  } else {
+    wl.selector <- TRUE
+  }
+
+  xx <- x[wl.selector, ]
+
   if (method == "lowess") {
     span = 1/50 * strength
     if ("s.e.response" %in% names(x)) {
-      out.spct <- stats::lowess(x[["w.length"]], x[["s.e.response"]], f = span, ...)
-      names(out.spct) <- c("w.length", "s.e.response")
+      z <- stats::lowess(xx[["w.length"]], xx[["s.e.response"]], f = span, ...)
+      x[wl.selector, "s.e.response"] <- z[["y"]]
     } else if ("s.q.response" %in% names(x)) {
-      out.spct <- stats::lowess(x[["w.length"]], x[["s.q.response"]], f = span, ...)
-      names(out.spct) <- c("w.length", "s.q.response")
+      z <- stats::lowess(xx[["w.length"]], xx[["s.q.response"]], f = span, ...)
+      x[wl.selector, "s.q.response"] <- z[["y"]]
     }
-    setResponseSpct(out.spct, time.unit = attr(x, "time.unit", exact = TRUE))
-    if (e.and.q.input) {
-      e2q(out.spct, action = "add", byref = TRUE)
-    }
-    if (!is.null(comment(x))) {
-      comment.text <- paste("Smoothed using 'lowess', f =", signif(span, 3), "\n\n", comment(x))
-    } else {
-      comment.text <- paste("Smoothed using 'lowess', f =", signif(span, 3))
-    }
+    comment.text <- paste("Smoothed using 'lowess', f =", signif(span, 3))
   } else if (method == "supsmu") {
     span = 1/50 * strength
     if ("s.e.response" %in% names(x)) {
-      out.spct <- stats::supsmu(x[["w.length"]], x[["s.e.response"]], span = span, ...)
-      names(out.spct) <- c("w.length", "s.e.response")
+      z <- stats::supsmu(xx[["w.length"]], xx[["s.e.response"]], span = span, ...)
+      x[wl.selector, "s.e.response"] <- z[["y"]]
     } else if ("s.q.response" %in% names(x)) {
-      out.spct <- stats::supsmu(x[["w.length"]], x[["s.q.response"]], span = span, ...)
-      names(out.spct) <- c("w.length", "s.q.response")
+      z <- stats::supsmu(xx[["w.length"]], xx[["s.q.response"]], span = span, ...)
+      x[wl.selector, "s.q.response"] <- z[["y"]]
     }
-    setResponseSpct(out.spct, time.unit = attr(x, "time.unit", exact = TRUE))
-    if (e.and.q.input) {
-      e2q(out.spct, action = "add", byref = TRUE)
-    }
-    if (!is.null(comment(x))) {
-      comment.text <- paste("Smoothed using 'supsmu', span =", signif(span, 3), "\n\n", comment(x))
-    } else {
-      comment.text <- paste("Smoothed using 'supsmu', span =", signif(span, 3))
-    }
+    comment.text <-  paste("Smoothed using 'supsmu', span =", signif(span, 3))
   } else if (method == "custom") {
-    # my own and inefficient method!
-    # as the spectrum is already in energy units, we need to normalize thresholds
-    out.spct <- x # we make a working copy
-    q2e(out.spct, action = "replace", byref = TRUE)
-    max_response <- max(out.spct[["s.e.response"]], na.rm=TRUE)
-    smoothing_coef <- 1
-    smoothing_hi_lim <- max(out.spct[["w.length"]])
-    # this could be tweaked in many ways...
-    zero_limit_cnst <- max_response * 3e-4 / strength
-    out.spct[["zero_limit"]] <-  (zero_limit_cnst * 600) / out.spct[["w.length"]]
-    smooth_limit <- 1e-3 * smoothing_coef # just a guess for runmadmed
-    smooth_threshold <- 5e-2 * max_response / strength # for s.e.response
-#    out.spct[["runmad"]] <- caTools::runmad(out.spct[["s.e.response"]], 7, endrule="mad")
-    out.spct[["runmad"]] <- zoo::rollapply(out.spct[["s.e.response"]], width = 7, FUN = stats::mad, partial = TRUE)
-    out.spct[["runmed3"]] <- stats::runmed(out.spct[["s.e.response"]], 3, endrule="median")
-    out.spct[["runmed7"]] <- stats::runmed(out.spct[["s.e.response"]], 7, endrule="median")
-    out.spct[["runmed19"]] <- stats::runmed(out.spct[["s.e.response"]], 19, endrule="median")
-#    out.spct[["runmin5"]] <- caTools::runmin(out.spct[["s.e.response"]], 5)
-    out.spct[["runmin5"]] <- zoo::rollapply(out.spct[["s.e.response"]], width = 5, FUN = min, partial = TRUE)
-    # we need to avoid division by 0.0 and we use zero_limit / 10 close enough to zero
-    out.spct[["runmadmed"]] <- with(out.spct,
-                                    ifelse(runmad < zero_limit_cnst * 1e-1 | runmed7 < zero_limit * 1e-1,
-                                           0.0, runmad/abs(runmed7)))
-    out.spct[["s.e.response.sm"]] <- with(out.spct,
-               ifelse( (runmed19 < zero_limit) | (runmin5 < zero_limit * 5e-2), 0.0,
-                       ifelse((s.e.response > smooth_threshold) | (runmadmed < smooth_limit), s.e.response,
-                              ifelse(runmadmed < 2 * smooth_limit, runmed3,
-                                     ifelse(runmadmed < 4 * smooth_limit, runmed7, runmed19)))))
-    out.spct[["s.e.response"]] <- with(out.spct,
-                                       ifelse(w.length < smoothing_hi_lim, s.e.response.sm, s.e.response))
-    out.spct[["s.e.response.good"]] <- out.spct[["runmadmed"]] / out.spct[["runmed19"]] * max(out.spct[["runmed19"]]) < 1.0
-    if (anyNA(out.spct[["s.e.response"]])) {
-      warning(sum(is.na(out.spct[["s.e.response"]])), " NAs in spectral response")
+    smooth.limit <- 1e-3 * strength
+    if ("s.e.response" %in% names(x)) {
+      zero.limit.cnst <- max(x[["s.e.response"]]) * 3e-4 * strength
+      smooth.threshold <-  max(x[["s.e.response"]]) * 5e-2 * strength
+      z <- adaptive_smoothing(xx[["w.length"]], xx[["s.e.response"]],
+                              zero.limit.cnst = zero.limit.cnst,
+                              smooth.limit = smooth.limit,
+                              smooth.threshold = smooth.threshold,
+                              ...)
+      x[wl.selector, "s.e.response"] <- z[["y"]]
+    } else if ("s.q.response" %in% names(x)) {
+      zero.limit.cnst <- max(x[["s.q.response"]]) * 3e-4 * strength
+      smooth.threshold <-  max(x[["s.q.response"]]) * 5e-2 * strength
+      z <- adaptive_smoothing(xx[["w.length"]], xx[["s.q.response"]],
+                              zero.limit.cnst = zero.limit.cnst,
+                              smooth.limit = smooth.limit,
+                              smooth.threshold = smooth.threshold,
+                              ...)
+      x[wl.selector, "s.q.response"] <- z[["y"]]
     }
-    num_bad <- sum(!out.spct[["s.e.response.good"]], na.rm=TRUE)
-    if (num_bad > length(out.spct) / 20) {
-      message(num_bad, " possibly 'bad' values in smoothed spectral response")
-    }
-    out.spct <- out.spct[ , c("w.length", "s.e.response")]
-    setResponseSpct(out.spct, time.unit = attr(x, "time.unit", exact = TRUE))
-    if (e.and.q.input) {
-      e2q(out.spct, action = "add", byref = TRUE)
-    }
-    if (!is.null(comment(x))) {
-      comment.text <- paste("Smoothed using 'custom', smooth_limit =",
-                                 signif(smooth_limit, 3), "\n\n", comment(x))
-    } else {
-      comment.text <- paste("Smoothed using 'custom', smooth_limit =", signif(smooth_limit, 3))
-    }
+    comment.text <- paste("Smoothed using 'custom', smooth.limit =",
+                          signif(smooth.limit, 3))
   }
-  out.spct <- copy_attributes(x, out.spct)
-  comment(out.spct) <- comment.text
-  check_spct(out.spct, force = FALSE)
+
+  #  out.spct <- copy_attributes(x, out.spct)
+  # restore s.q.response if needed
+  if (e.and.q.input) {
+    e2q(x, action = "add", byref = TRUE)
+  }
+
+  if (!is.null(comment(x))) {
+    comment(x) <- paste(comment.text, "\n\n", comment(x))
+  } else {
+    comment(x) <- comment.text
+  }
+  check_spct(x, force = FALSE)
 }
+
 
 #' @describeIn smooth_spct
 #'
@@ -603,11 +582,11 @@ adaptive_smoothing <- function(x, y,
                           runmed3,
                           ifelse(runmadmed < 4 * smooth.limit,
                                  runmed7, runmed19))))
-  s.e.response.good <- runmadmed / runmed19 * max(runmed19) < 1.0
+  response.good <- runmadmed / runmed19 * max(runmed19) < 1.0
   if (anyNA(z)) {
-    warning(sum(is.na(z)), " NAs in smoothed spectrum")
+    warning(sum(is.na(z)), " NAs introduced during smoothing")
   }
-  num_bad <- sum(!s.e.response.good, na.rm=TRUE)
+  num_bad <- sum(!response.good, na.rm=TRUE)
   if (num_bad > length(x) / 20) {
     message(num_bad, " possibly 'bad' values in smoothed spectral response")
   }
