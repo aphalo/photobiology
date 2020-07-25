@@ -69,6 +69,30 @@ compare_spct <- function(x,
                          returned.value = "spectrum",
                          use.hinges = FALSE,
                          short.names = TRUE) {
+  # we accept a collection with two members (easy to change to accept more)
+  stopifnot(is.any_mspct(x), length(x) == 2)
+  # We unset the scaled attribute to make sure default functions work
+  if (is_scaled(x[[1]]) || is_scaled(x[[2]])) {
+    warning("At least one of the spectra has been previously scaled.")
+    if (is_scaled(x[[1]])) {
+      setScaled(x[[1]], scaled = FALSE)
+    }
+    if (is_scaled(x[[2]])) {
+      setScaled(x[[2]], scaled = FALSE)
+    }
+  }
+
+  # We unset the normalized attribute to make sure default functions work
+  if (is_normalized(x[[1]]) || is_normalized(x[[2]])) {
+    warning("At least one of the spectra has been previously normalized")
+    if (is_normalized(x[[1]])) {
+      setNormalized(x[[1]], norm = FALSE)
+    }
+    if (is_normalized(x[[2]])) {
+      setNormalized(x[[2]], norm = FALSE)
+    }
+  }
+
   # summary function default depends on class of x
   if (is.null(.summary.fun)) {
     .summary.fun <-
@@ -101,8 +125,6 @@ compare_spct <- function(x,
   # Skip checks for intermediate results
   prev_state <- disable_check_spct()
   on.exit(set_check_spct(prev_state), add = TRUE)
-  # we accept a collection with two members (easy to change to accept more)
-  stopifnot(is.any_mspct(x), length(x) == 2)
   # keep overlapping wavelength range
   x <- trim2overlap(x)
   # w.band can take different arguments
