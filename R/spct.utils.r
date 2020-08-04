@@ -433,7 +433,7 @@ thin_wl.chroma_mspct <- thin_wl.default
 #'
 thin_wl.calibration_mspct <- thin_wl.default
 
-# drop columns ------------------------------------------------------------
+# drop user columns -------------------------------------------------------
 
 #' Drop user columns
 #'
@@ -553,7 +553,6 @@ drop_user_cols.calibration_spct <- function(x, keep.also = NULL, ...) {
 #'
 drop_user_cols.cps_spct <- function(x, keep.also = NULL, ...) {
   cps.cols <- grep("^cps", colnames(x), value = TRUE)
-  stopifnot(length(cps.cols >= 1L) && "w.length" %in% colnames(x))
   default.cols <- c("w.length", cps.cols)
   cols.to.keep <- unique(c(default.cols, keep.also))
   x[ , intersect(colnames(x), cols.to.keep)]
@@ -565,7 +564,6 @@ drop_user_cols.cps_spct <- function(x, keep.also = NULL, ...) {
 #'
 drop_user_cols.raw_spct <- function(x, keep.also = NULL, ...) {
   counts.cols <- grep("^counts", colnames(x), value = TRUE)
-  stopifnot(length(counts.cols >= 1L) && "w.length" %in% colnames(x))
   default.cols <- c("w.length", counts.cols)
   cols.to.keep <- unique(c(default.cols, keep.also))
   x[ , intersect(colnames(x), cols.to.keep)]
