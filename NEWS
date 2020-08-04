@@ -1,4 +1,4 @@
-photobiology 0.10.5 (2020-07-xx)
+photobiology 0.10.5 (2020-08-xx)
 ================================
 
 * Make the precomputed color data private.
@@ -11,6 +11,9 @@ photobiology 0.10.5 (2020-07-xx)
 strength in "custom" method.
 * Revise compare_spct() function to accept scaled and normalized spectra with
 a warning.
+* Implement attribute "response.type" to distinguish between response spectra
+and action spectra stored in response_spct objects. Add methods
+setResponseType() and getResponseType().
 
 photobiology 0.10.4 (2020-06-05)
 ================================

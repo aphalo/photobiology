@@ -203,6 +203,7 @@ generic_spct <- function(w.length = NULL,
 #'   nm-1 or J d-1 m-2 nm-1
 #' @param s.q.response numeric vector with spectral photon irradiance in mol s-1
 #'   m-2 nm-1 or mol d-1 m-2 nm-1
+#' @param response.type a character string, either "response" or "action".
 #'
 #' @export
 #'
@@ -210,6 +211,7 @@ response_spct <- function(w.length = NULL,
                           s.e.response = NULL,
                           s.q.response = NULL,
                           time.unit = c("second", "day", "exposure"),
+                          response.type = c("response", "action"),
                           comment = NULL,
                           multiple.wl = 1L,
                           idfactor = NULL,
@@ -228,7 +230,8 @@ response_spct <- function(w.length = NULL,
     comment(z) <- comment
   }
   setResponseSpct(z,
-                  time.unit,
+                  time.unit = time.unit,
+                  response.type = response.type,
                   multiple.wl = multiple.wl,
                   idfactor = idfactor)
   z
@@ -498,7 +501,9 @@ as.cps_spct.default <- function(x, ...) {
 #' Return a copy of an R object with its class set to a given type of spectrum.
 #'
 #' @param x an R object
-#' @param time.unit character A string, "second", "day" or "exposure"
+#' @param time.unit character string indicating the time unit used for spectral
+#'   irradiance or exposure ("second" , "day" or "exposure") or an object of
+#'   class duration as defined in package lubridate.
 #' @param bswf.used character
 #' @param strict.range logical Flag indicating whether off-range values result
 #'   in an error instead of a warning
@@ -520,8 +525,8 @@ as.source_spct <- function(x, ...) {UseMethod("as.source_spct")}
 #'
 as.source_spct.default <-
   function(x,
-           time.unit=c("second", "day", "exposure"),
-           bswf.used=c("none", "unknown"),
+           time.unit = c("second", "day", "exposure"),
+           bswf.used = c("none", "unknown"),
            strict.range = getOption("photobiology.strict.range", default = FALSE),
            ...) {
     setSourceSpct(x,
@@ -536,7 +541,9 @@ as.source_spct.default <-
 #' Return a copy of an R object with its class set to a given type of spectrum.
 #'
 #' @param x an R object
-#' @param time.unit character A string, "second", "day" or "exposure"
+#' @param time.unit character string indicating the time unit used for spectral
+#'   irradiance or exposure ("second" , "day" or "exposure") or an object of
+#'   class duration as defined in package lubridate.
 #' @param ... other arguments passed to "set" functions
 #'
 #' @return A copy of \code{x} converted into a \code{response_spct} object.

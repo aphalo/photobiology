@@ -1083,18 +1083,23 @@ setObjectSpct <-
 
 #' @describeIn setGenericSpct Set class of an object to "response_spct".
 #'
-#' @param time.unit character A string "second", "day" or "exposure".
+#' @param time.unit character string indicating the time unit used for spectral
+#'   irradiance or exposure ("second" , "day" or "exposure") or an object of
+#'   class duration as defined in package lubridate.
+#' @param response.type a character string, either "response" or "action".
 #' @export
 #'
 #'
 setResponseSpct <-
   function(x,
-           time.unit="second",
+           time.unit = "second",
+           response.type = "response",
            multiple.wl = 1L,
            idfactor = NULL) {
     name <- substitute(x)
     setGenericSpct(x, multiple.wl = multiple.wl, idfactor = idfactor)
     class(x) <- c("response_spct", class(x))
+    setResponseType(x, response.type)
     setTimeUnit(x, time.unit)
     x <- check_spct(x)
     #  setkey_spct(x, w.length)
@@ -1428,8 +1433,9 @@ is_transmittance_based <- function(x) {
 #' Function to set by reference the "time.unit" attribute
 #'
 #' @param x a source_spct object
-#' @param time.unit a character string, either "second", "hour", "day",
-#'   "exposure" or "none", or a lubridate::duration
+#' @param time.unit character string indicating the time unit used for spectral
+#'   irradiance or exposure ("second" , "day" or "exposure") or an object of
+#'   class duration as defined in package lubridate.
 #' @param override.ok logical Flag that can be used to silence warning when
 #'   overwriting an existing attribute value (used internally)
 #'
@@ -1651,6 +1657,96 @@ char2duration <- function(time.unit) {
   return(time.duration)
 }
 
+# response.type attribute ------------------------------------------------------
+
+#' Set the "response.type" attribute
+#'
+#' Function to set by reference the "response.type" attribute of an existing
+#' response_spct object.
+#'
+#' Objects of class \code{response_spct()} can contain data for a response
+#' spectrum or an action spectrum. Response spectra are measured using the
+#' same photon (or energy) irradiance at each wavelength. Action spectra are
+#' derived from dose response curves at each wavelength, and responsivity
+#' at each wavelength is expressed as the reciprocal of the photon fluence
+#' required to obtain a fixed level of response.
+#'
+#' @param x a response_spct object
+#' @param response.type a character string, either "response" or "action"
+#'
+#' @return x
+#' @note This function alters x itself by reference and in addition returns x
+#'   invisibly. If x is not a response_spct object, x is not modified The
+#'   behaviour of this function is 'unusual' in that the default for parameter
+#'   \code{response.type} is used only if \code{x} does not already have this
+#'   attribute set.
+#'
+#' @export
+#' @family response type attribute functions
+#' @examples
+#' my.spct <- ccd.spct
+#' setResponseType(my.spct, "action")
+#'
+setResponseType <- function(x,
+                            response.type = c("response", "action")) {
+  name <- substitute(x)
+  if (length(response.type) > 1) {
+    if (getResponseType(x) != "unknown") {
+      response.type <- getResponseType(x)
+    } else {
+      response.type <- response.type[[1]]
+    }
+  }
+  if (is.response_spct(x) || is.summary_response_spct(x)) {
+    if  (!(response.type %in% c("response", "action", "unknown"))) {
+      warning("Invalid 'response.type' argument, only 'response' and 'action' supported.")
+      return(x)
+    }
+    attr(x, "response.type") <- response.type
+    if (is.name(name)) {
+      name <- as.character(name)
+      assign(name, x, parent.frame(), inherits = TRUE)
+    }
+  }
+  invisible(x)
+}
+
+#' Get the "response.type" attribute
+#'
+#' Function to read the "response.type" attribute of an existing response_spct
+#' object.
+#'
+#' Objects of class \code{response_spct()} can contain data for a response
+#' spectrum or an action spectrum. Response spectra are measured using the
+#' same photon (or energy) irradiance at each wavelength. Action spectra are
+#' derived from dose response curves at each wavelength, and responsivity
+#' at each wavelength is expressed as the reciprocal of the photon fluence
+#' required to obtain a fixed level of response.
+#'
+#' @param x a response_spct object
+#'
+#' @return character string
+#'
+#' @note If x is not a \code{response_spct} object, \code{NA} is returned.
+#'
+#' @export
+#' @family response.type attribute functions
+#' @examples
+#' getResponseType(ccd.spct)
+#' getResponseType(sun.spct)
+#'
+getResponseType <- function(x) {
+  if (is.response_spct(x) || is.summary_response_spct(x)) {
+    response.type <- attr(x, "response.type", exact = TRUE)
+    if (is.null(response.type) || is.na(response.type)) {
+      # need to handle objects created with old versions
+      response.type <- "unknown"
+    }
+    return(response.type[[1]])
+  } else {
+    return(NA_character_)
+  }
+}
 
 # bswf attribute -----------------------------------------------------
 

@@ -21,7 +21,7 @@ all_spct_attr.ls <-
     raw_spct = c("time.unit", "linearized"),
     cps_spct = c("time.unit", "linearized"),
     source_spct = c("time.unit", "bswf.used"),
-    response_spct = c("time.unit", "bswf.used"),
+    response_spct = c("time.unit", "bswf.used", "response.type"),
     object_spct = c("Tfr.type", "Rfr.type", "filter.properties"),
     filter_spct = c("Tfr.type", "Rfr.type", "filter.properties"),
     reflector_spct = c("Tfr.type", "Rfr.type", "filter.properties"),
