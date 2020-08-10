@@ -119,6 +119,8 @@ reference:
     - is_absorbance_based
     - getTimeUnit
     - setTimeUnit
+    - getResponseType
+    - setResponseType
     - getWhatMeasured
     - setWhatMeasured
     - getWhenMeasured
