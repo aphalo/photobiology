@@ -3,7 +3,8 @@ photobiology 0.10.5 (2020-08-xx)
 
 * Make the precomputed color data private.
 * Add method drop_user_cols() to remove user-defined columns from spectra.
-* Add method collect2mspct() and rename method uncollect() into uncollect2spct().
+* Add method collect2mspct() and rename method uncollect() into
+uncollect2spct().
 * Add method spct_metadata() to query the value of metadata attributes.
 * Revise add_attr2tb() expanding support to all metadata attributes.
 * Revise rbindspct() to gracefully handle duplicate member names in its input.

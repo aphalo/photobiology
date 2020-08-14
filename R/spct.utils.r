@@ -99,19 +99,29 @@ uncollect2spct.generic_mspct <- function(x,
 #' frame of the call.
 #'
 #' @details This is a convenience function that simplifies the creation of
-#' collections from existing objects of class \code{generic_spct} or a derived
-#' class. A list of objects con be passed as argument, or a search pattern.
-#' Objects of other R classes are silently discarded, which simplifies the
-#' specification of search patterns. If all the objects are of the same class
-#' then the corresponding collection class will be used by default, otherwise
-#' a \code{generic_spct} object with heterogeneous members will be returned. If
-#' a class is passed to parameter \code{collection.class}, this will be the
-#' class of the object returned. The returned object is created with the
-#' constructor for the class, and validated.
+#'   collections from existing objects of class \code{generic_spct} or a derived
+#'   class. A list of objects con be passed as argument, or a search pattern. If
+#'   a list is passed, no search is done. If \code{collection.class} is
+#'   \code{NULL}, then all objects of class \code{generic_spct} or of a class
+#'   derived from it are added to the collection. If objects of only one derived
+#'   class are to be collected this class or that of the matching collection
+#'   should be passed as argument to \code{collection.class}. Objects of other R
+#'   classes are silently discarded, which simplifies the specification of
+#'   search patterns. By default, i.e., if \code{collection.class} is
+#'   \code{NULL}, if all the objects collected belong to the same class then the
+#'   corresponding collection class will be returned, otherwise a
+#'   \code{generic_mspct} object with heterogeneous members will be returned. To
+#'   force the return of a \code{generic_mspct} even when the collected spectra
+#'   all belong to the same class, pass \code{generic_mspct} as argument to
+#'   \code{collection.class}. If the argument to \code{collection.class} is a
+#'   vector containing two of more class names, only the matching spectra will
+#'   be collected, and a \code{generic_mspct} will be returned. The returned
+#'   object is created with the constructor for the class, and validated.
 #'
 #' @param .list list of R objects
-#' @param pattern character an optional regular expression, used if .
-#' @param collection.class character
+#' @param pattern character an optional regular expression, ignored if
+#'   \code{.list} is not \code{NULL}.
+#' @param collection.class character vector
 #' @param ... additional named arguments passed down to the collection
 #'   constructor.
 #'
@@ -125,28 +135,55 @@ uncollect2spct.generic_mspct <- function(x,
 #' sun1.spct <- sun.spct
 #' sun2.spct <- sun.spct
 #' kk.spct <- 10:30 # ignored
-#' collect2mspct() # returns source_mspct object of length 2
+#' collect2mspct()
+#' collect2mspct(collection.class = "generic_mspct")
 #'
 #' pet1.spct <- polyester.spct
-#' collect2mspct() # returns generic_mspct object of length 3
+#' collect2mspct()
+#' collect2mspct(collection.class = "source_mspct")
+#' collect2mspct(collection.class = "filter_mspct")
+#' collect2mspct(collection.class = "response_mspct")
 #'
 #' @family experimental utility functions
 #'
 collect2mspct <- function(.list = NULL,
-                    pattern = "*\\.spct$",
-                    collection.class = NULL,
-                    ...)  {
+                          pattern = "*\\.spct$",
+                          collection.class = NULL,
+                          ...)  {
+  collection.class <- gsub("_spct$", "_mspct", collection.class) # NULL -> character(0)!!
+  if (length(collection.class) > 0L &&
+      !all(collection.class %in% mspct_classes())) {
+    warning("Discarding unrecognized class(es) in 'collection.class'")
+    collection.class <- intersect(collection.class, spct_classes())
+  }
   if (length(.list) == 0L) {
     names <- ls(pattern = pattern, envir = parent.frame())
     .list <- mget(x = names, envir = parent.frame())
   }
-  if (is.null(collection.class) && length(.list) >= 1L) {
-    # assume we are dealing with generic_spct objects or derived
-    .list <- .list[sapply(.list, is.any_spct)]
-    collection.class <- shared_member_class(.list)[1]
-  }
-  collection.class <- gsub("_spct$", "_mspct", collection.class)
   if (length(.list) >= 1L) {
+    if (length(collection.class) == 0L) {
+      # we keep objects of class generic_spct or derived
+      .list <- .list[sapply(.list, is.any_spct)]
+      members.class <- shared_member_class(.list)[1] # derived class may be used
+      collection.class <- gsub("_spct$", "_mspct", members.class)
+    } else {
+      # we keep objects of the classes in collection.class
+      members.class <- gsub("_mspct$", "_spct", collection.class)
+      if ("generic_spct" %in% members.class) {
+        # we keep objects of class generic_spct or derived
+        .list <-
+          .list[sapply(X = .list, FUN = is.any_spct)]
+        collection.class <- "generic_mspct" # forced
+      } else {
+        # we keep objects of classes listed in collection.class
+        .list <-
+          .list[sapply(.list, function(x) {class(x)[1]}) %in% members.class]
+        if (length(collection.class) > 1L) {
+          collection.class <- "generic_mspct"
+        }
+      }
+    }
+    # call the constructor for the class
     do.call(what = collection.class, args = list(l = .list))
   } else if (length(collection.class) == 1L) {
     do.call(what = collection.class, args = list())
