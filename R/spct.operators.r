@@ -1829,7 +1829,7 @@ q2e.response_mspct <- function(x,
 #' @return The value returned by the execution of \code{expression}.
 #'
 #' @references Based on \code{withOptions()} as offered by Thomas Lumley, and
-#'   listed in\url{http://www.burns-stat.com/the-options-mechanism-in-r/},
+#'   listed in \url{https://www.burns-stat.com/the-options-mechanism-in-r/},
 #'   section Deep End, of "The Options mechanism in R" by Patrick Burns.
 #'
 #' @export
