@@ -56,7 +56,6 @@ rmDerivedMspct <- function(x) {
   invisible(setdiff(allclasses, class(x)))
 }
 
-
 # query member classes ----------------------------------------------------
 
 #' Classes common to all collection members.
@@ -122,9 +121,9 @@ generic_mspct <- function(l = NULL, class = "generic_spct",
   class <- class[1]
   if (class %in% mspct_classes()) {
     multi_class <- class
-    spct_class <- paste(sub("_mspct", "_spct", class))
+    spct_class <- sub("_mspct$", "_spct", class)
   } else if (class %in% spct_classes()) {
-    multi_class <- paste(sub("_spct", "_mspct", class))
+    multi_class <- sub("_spct$", "_mspct", class)
     spct_class <- class
   } else {
     stop("'class' argument '", class, "' is not recognized as a spectral class")

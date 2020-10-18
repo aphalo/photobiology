@@ -48,7 +48,9 @@ collection of spectra.}
 simplifying the output. Defaults to TRUE}
 }
 \value{
-a collection of spectra in the case of \code{msmsply}
+a collection of spectra in the case of \code{msmsply}, belonging to a
+  different class than \code{mspct} if \code{.fun} modifies the class of the
+  member spectra.
 
 a data frame in the case of \code{msdply}
 

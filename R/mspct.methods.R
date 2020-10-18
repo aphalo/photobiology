@@ -15,7 +15,9 @@
 #'   .packages arguments to supply them so that all cluster nodes have the
 #'   correct environment set up for computing.
 #'
-#' @return a collection of spectra in the case of \code{msmsply}
+#' @return a collection of spectra in the case of \code{msmsply}, belonging to a
+#'   different class than \code{mspct} if \code{.fun} modifies the class of the
+#'   member spectra.
 #'
 #' @export
 #'
@@ -37,12 +39,8 @@ msmsply <- function(mspct, .fun, ...,
 
   stopifnot(length(y) == length(mspct))
 
-  if (length(y) > 1) {
-    result.class <- shared_member_class(y)[1]
-  } else {
-    result.class <- mspct.class[1]
-  }
-  stopifnot(length(result.class) == 1)
+  result.class <- shared_member_class(y)[1]
+  stopifnot(length(result.class) == 1) # not a spectrum
 
   generic_mspct(l = y,
                 class = result.class,
