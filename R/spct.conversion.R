@@ -85,6 +85,8 @@ cps2Rfr <- function(x.sample,
   if (is.null(dyn.range)) {
     acq_settings <- getInstrSettings(x.sample)
     if (!is.list(acq_settings) && is.na(acq_settings)) {
+      warning("Spectrometer settings are not available.\n",
+              "Pass a suitable value as argument to 'dyn.range'.")
       dyn.range <- 7e2
     } else {
       integ.time <- acq_settings[["integ.time"]]
@@ -142,15 +144,14 @@ cps2Tfr <- function(x.sample,
   if (is.null(dyn.range)) {
     acq_settings <- getInstrSettings(x.sample)
     if (!is.list(acq_settings) && is.na(acq_settings)) {
+      warning("Spectrometer settings are not available.\n",
+              "Pass a suitable value as argument to 'dyn.range'.")
       dyn.range <- 7e2
     } else {
       integ.time <- acq_settings[["integ.time"]]
       dyn.range <- min(7e2 * max(integ.time) / min(integ.time), 1e4)
       dyn.range <- dyn.range * acq_settings[["rel.signal"]]
     }
-  } else {
-    warning("Spectrometer settings are not available.\n",
-            "Pass a suitable value as argument to 'dyn.range'.\n")
   }
   # based on dynamic range and spectrum of light source we set bad data to NA
   z[["Tfr"]] <- ifelse(x.clear[[cps.col.clear]] <
