@@ -1,3 +1,10 @@
+photobiology 0.10.6 (2020-10-19)
+================================
+
+* Fix coner-case bug in msmsply().
+* Revise the computation of the default for dyn.range in cps2Tfr() and cps2Rfr()
+so that it takes into account the relative signal in the reference spectrum.
+
 photobiology 0.10.5 (2020-08-15)
 ================================
 
