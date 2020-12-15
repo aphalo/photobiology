@@ -8,6 +8,9 @@
 #' @param dyn.range numeric The effective dynamic range of the instrument,
 #'    if \code{NULL} it is automatically set based on integration time
 #'    bracketing.
+#' @param missing.pixs integer Index to positions in the detector
+#'   array or scan missing in \code{x.sample} but present in the embedded
+#'   calibration data. (Use only for emergency recovery of incomplete data!!)
 #' @param ... Additional arguments passed to \code{pre.fun}.
 #'
 #' @return A source_spct, filter_spct or reflector_spct object containing the
@@ -23,12 +26,27 @@
 #'
 #' @export
 #'
-cps2irrad <- function(x.sample, pre.fun = NULL, ...) {
+cps2irrad <- function(x.sample,
+                      pre.fun = NULL,
+                      missing.pixs = numeric(0),
+                      ...) {
   stopifnot(is.cps_spct(x.sample) &&
               !is.null(getInstrDesc(x.sample)) &&
               !is.null(getInstrSettings(x.sample)))
   descriptor <- getInstrDesc(x.sample)
   irrad.mult <- descriptor[["inst.calib"]][["irrad.mult"]]
+  if (length(missing.pixs)) {
+    irrad.mult <- irrad.mult[-missing.pixs]
+  }
+  if (nrow(x.sample) < length(irrad.mult)) {
+    stop("Spectrum and calibration missmatch. Spectrum is ",
+         length(irrad.mult) - nrow(x.sample),
+         " pixels too short!")
+  } else if (nrow(x.sample) > length(irrad.mult)) {
+    stop("Spectrum and calibration missmatch. Spectrum is ",
+         nrow(x.sample) - length(irrad.mult),
+         " pixels too long!")
+  }
   if (!is.null(pre.fun)) {
     x.sample <- pre.fun(x.sample, ...)
   }

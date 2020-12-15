@@ -2,7 +2,7 @@
 % Please edit documentation in R/spct.metadata.r
 \name{spct_metadata}
 \alias{spct_metadata}
-\title{Access metadta}
+\title{Access metadata}
 \usage{
 spct_metadata(
   x,
@@ -42,7 +42,7 @@ Attributes are returned as columns in a tibble. If the argument to
   interpreted as the names of the attributes to add, and also used as names
   for the new columns.
 
-  Some metadata values are stored in lists or dataframes, these can be
+  Some metadata values are stored in lists or data frames, these can be
   returned as a list columns or the individual fields unnested into separate
   columns.
 }

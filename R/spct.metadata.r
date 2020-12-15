@@ -1562,7 +1562,7 @@ comment2tb <- function(mspct,
 
 # get all metadata --------------------------------------------------------
 
-#' Access metadta
+#' Access metadata
 #'
 #' Return metadata attributes from a single spectrum or a collection of spectra
 #' as a tibble.
@@ -1586,7 +1586,7 @@ comment2tb <- function(mspct,
 #'   interpreted as the names of the attributes to add, and also used as names
 #'   for the new columns.
 #'
-#'   Some metadata values are stored in lists or dataframes, these can be
+#'   Some metadata values are stored in lists or data frames, these can be
 #'   returned as a list columns or the individual fields unnested into separate
 #'   columns.
 #'

@@ -6,7 +6,7 @@
 \alias{cps2Tfr}
 \title{Conversion from counts per second to physical quantities}
 \usage{
-cps2irrad(x.sample, pre.fun = NULL, ...)
+cps2irrad(x.sample, pre.fun = NULL, missing.pixs = numeric(0), ...)
 
 cps2Rfr(x.sample, x.white, x.black = NULL, dyn.range = NULL)
 
@@ -16,6 +16,10 @@ cps2Tfr(x.sample, x.clear, x.opaque = NULL, dyn.range = NULL)
 \item{x.sample, x.clear, x.opaque, x.white, x.black}{cps_spct objects.}
 
 \item{pre.fun}{function A function applied to x.sample before conversion.}
+
+\item{missing.pixs}{integer Index to positions in the detector
+array or scan missing in \code{x.sample} but present in the embedded
+calibration data. (Use only for emergency recovery of incomplete data!!)}
 
 \item{...}{Additional arguments passed to \code{pre.fun}.}
 
