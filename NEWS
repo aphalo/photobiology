@@ -1,4 +1,4 @@
-photobiology 0.10.6 (2020-12-15)
+photobiology 0.10.6 (2020-12-19)
 ================================
 
 * Fix coner-case bug in msmsply().
@@ -6,6 +6,7 @@ photobiology 0.10.6 (2020-12-15)
 so that it takes into account the relative signal in the reference spectrum.
 * Add parameter missing.pixs to cps2irrad() so that corrupted too-short spectra
 can be converted if the location of missing pixels is known.
+* Fix handling of na.rm = TRUE in find_peaks().
 
 photobiology 0.10.5 (2020-08-15)
 ================================

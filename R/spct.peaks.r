@@ -41,14 +41,11 @@ find_peaks <-
            span = 3,
            strict = TRUE,
            na.rm = FALSE) {
-    if (na.rm) {
-      x <- na.omit(x)
-    }
     # find peaks
     if(is.null(span)) {
-      pks <- x == max(x)
+      pks <- x == max(x, na.rm = na.rm)
       if (strict && sum(pks) != 1L) {
-        pks <- logical(length(x))
+        pks <- logical(length(x)) # all FALSE
       }
     } else {
       pks <- splus2R::peaks(x = x, span = span, strict = strict)
@@ -57,7 +54,7 @@ find_peaks <-
     if (abs(ignore_threshold) < 1e-5) {
       pks
     } else {
-      range_x <- range(x, finite = TRUE)
+      range_x <- range(x, na.rm = na.rm, finite = TRUE)
       min_x <- range_x[1]
       max_x <- range_x[2]
       x <- ifelse(!is.finite(x), min_x, x)
@@ -369,7 +366,8 @@ peaks.data.frame <-
       which(find_peaks(x[[var.name]],
                        span = span,
                        ignore_threshold = ignore_threshold,
-                       strict = strict))
+                       strict = strict,
+                       na.rm = na.rm))
     if (refine.wl && length(peaks.idx > 0L)) {
       fit_peaks(x = x,
                 peaks.idx = peaks.idx,
@@ -409,7 +407,8 @@ peaks.generic_spct <-
     peaks.idx <-
       which(find_peaks(x[[var.name]],
                        span = span, ignore_threshold = ignore_threshold,
-                       strict = strict))
+                       strict = strict,
+                       na.rm = na.rm))
     if (refine.wl && length(peaks.idx > 0L)) {
       fit_peaks(x = x,
                 peaks.idx = peaks.idx,
@@ -973,7 +972,8 @@ valleys.generic_spct <-
       which(find_peaks(-x[[var.name]],
                        span = span,
                        ignore_threshold = ignore_threshold,
-                       strict = strict))
+                       strict = strict,
+                       na.rm = na.rm))
     if (refine.wl && length(valleys.idx > 0L)) {
       fit_valleys(x = x,
                   valleys.idx = valleys.idx,
@@ -1512,18 +1512,19 @@ find_wls <- function(x,
       return(x[NULL, ])
     }
   }
-  if (na.rm) {
-    x <- na.omit(x)
-  }
+  # This will make a mess of idxs
+  # if (na.rm) {
+  #   x <- na.omit(x)
+  # }
   # .fun may not be vectorized over targets so we need to iterate
   collector.ls <- list()
   targets <- target
   for (target in targets) {
     if (is.character(target)) {
       if (target %in% c("half.maximum", "HM")) {
-        target <- max(x[[col.name]]) / 2
+        target <- max(x[[col.name]], na.rm = na.rm) / 2
       } else if (target %in% c("half.range", "HR")) {
-        target <- mean(range(x[[col.name]]))
+        target <- mean(range(x[[col.name]]), na.rm = na.rm)
       } else {
         warning("Unrecognized character string: '", target, "' passed to 'target'", sep = "")
         target <- NA_real_
@@ -1543,7 +1544,7 @@ find_wls <- function(x,
     # accumulate run lengths to get index positions
     opening.idx <- cumsum(runs[["lengths"]][-length(runs[["lengths"]])])
     closing.idx <- opening.idx + 1L
-    if (max(closing.idx) > nrow(x)) {
+    if (max(closing.idx, na.rm = na.rm) > nrow(x)) {
       closing.idx[length(closing.idx)] <- nrow(x)
     }
     if (interpolate) {
