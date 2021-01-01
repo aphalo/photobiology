@@ -1,5 +1,5 @@
 
-# photobiology
+# photobiology <img src="man/figures/logo.png" align="right" width="120" />
 
 [![CRAN
 version](https://www.r-pkg.org/badges/version-last-release/photobiology)](https://cran.r-project.org/package=photobiology)
@@ -46,9 +46,9 @@ sun.
 geocode <- data.frame(lon = 0, lat = 55)
 date <- lubridate::today(tzone = "UTC")
 sunrise_time(date, tz = "UTC", geocode = geocode)
-#> [1] "2020-07-09 03:34:23 UTC"
+#> [1] "2021-01-01 08:24:45 UTC"
 day_length(date, tz = "UTC", geocode = geocode)
-#> [1] 17.03125
+#> [1] 7.297363
 ```
 
 ## Installation

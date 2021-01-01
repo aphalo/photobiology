@@ -1,17 +1,19 @@
 ---
 output:
   github_document:
-    html_preview: false
+    html_preview: TRUE
 ---
 
 ```{r, echo = FALSE}
 knitr::opts_chunk$set(
+  fig.asp = 2/3,
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  fig.path = "man/figures/README-"
 )
 ```
 
-# photobiology
+# photobiology <img src="man/figures/logo.png" align="right" width="120" />
 
 [![CRAN version](https://www.r-pkg.org/badges/version-last-release/photobiology)](https://cran.r-project.org/package=photobiology) 
 [![cran checks](https://cranchecks.info/badges/worst/photobiology)](https://cran.r-project.org/web/checks/check_results_photobiology.html)

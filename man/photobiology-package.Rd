@@ -6,6 +6,8 @@
 \alias{photobiology-package}
 \title{photobiology: Photobiological Calculations}
 \description{
+\if{html}{\figure{logo.png}{options: align='right' alt='logo' width='120'}}
+
 Definitions of classes, methods, operators and functions for use 
     in photobiology and radiation meteorology and climatology. Calculation of
     effective (weighted) and not-weighted irradiances/doses, fluence rates,
