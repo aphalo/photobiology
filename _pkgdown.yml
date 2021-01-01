@@ -1,12 +1,6 @@
 destination: ../photobiology-docs
 url: https://docs.r4photobiology.info/photobiology/
 
-home:
-  strip_header: true
-  links:
-  - text: R for Photobiology website
-    href: https://www.r4photobiology.info/
-
 reference:
   - title: Package overview
     contents:
@@ -400,9 +394,41 @@ reference:
     - w_length2rgb
     - waveband_ratio
 
-articles:
-  - title: User Guide
-    contents:
-    - '`userguide1-intro`'
-    - '`userguide2-radiation`'
-    - '`userguide3-astronomy`'
+navbar:
+  structure:
+    left:
+    - home
+    - intro
+    - reference
+    - articles
+    - tutorials
+    - news
+    right: github
+  components:
+    home:
+      icon: fas fa-home fa-lg
+      href: index.html
+    reference:
+      text: Reference
+      href: reference/index.html
+    news:
+      text: Changelog
+      href: news/index.html
+    articles:
+      text: User Guide
+      menu:
+      - text: '1 Introduction'
+        href: articles/userguide1-intro.html
+      - text: '2 Radiation'
+        href: articles/userguide2-radiation.html
+      - text: '3 Astronomy and Atmosphere'
+        href: articles/userguide3-astronomy.html
+    tutorials:
+      text: Resources
+      menu:
+      - text: R for Photobiology packages
+        href: https://www.r4photobiology.info/
+      - text: A handbook of methods
+        href: https://doi.org/10.31885/9789521083631
+      - text: Photobiological Sciences Online
+        href: http://photobiology.info/
