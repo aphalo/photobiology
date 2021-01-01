@@ -320,32 +320,32 @@ is.any_mspct <- function(x) {
 #'
 #' @param x a list of spectral objects or a list of objects such as data frames
 #'   that can be converted into spectral objects.
-#' @param force.spct.class logical indicating whether to change the class
-#'   of members to \code{generic_spct} or retain the existing class.
+#' @param force.spct.class logical indicating whether to change the class of
+#'   members to \code{generic_spct} or retain the existing class.
 #' @param ... passed to individual spectrum object constructor
-#' @param w.length numeric A vector of wavelengthvalues sorted in strictly ascending
-#'   order (nm).
+#' @param w.length numeric A vector of wavelengthvalues sorted in strictly
+#'   ascending order (nm).
 #' @param spct.data.var character The name of the variable that will contain the
-#'   spectral data. This indicates what physical quantity is stored in the matrix
-#'   and the units of expression used.
+#'   spectral data. This indicates what physical quantity is stored in the
+#'   matrix and the units of expression used.
 #' @param member.class character The name of the class of the individual spectra
 #'   to be constructed.
-#' @param multiplier numeric A multiplier to be applied to the values in \code{x} to do
-#'   unit or scale conversion.
+#' @param multiplier numeric A multiplier to be applied to the values in
+#'   \code{x} to do unit or scale conversion.
 #' @param ncol integer Number of 'virtual' columns in data
 #' @param byrow logical If \code{ncol > 1} how to read in the data
-#' @param spct.names character Vector of names to be assigned to collection members,
-#'   either of length 1, or with length equal to the number of spectra.
+#' @param spct.names character Vector of names to be assigned to collection
+#'   members, either of length 1, or with length equal to the number of spectra.
 #'
 #' @return A copy of \code{x} converted into a \code{generic_mspct} object.
 #'
 #' @note Members of \code{generic_mspct} objects can be heterogeneous: they can
 #'   belong to any class derived from \code{generic_spct} and class is not
-#'   enforced. When \code{x} is a list of data frames
-#'   \code{force.spct.class = TRUE} needs to be supplied. When \code{x} is a
-#'   square matrix an explicit argument is needed for \code{byrow} to indicate
-#'   how data in \code{x} should be read. In every case the length of the
-#'   \code{w.length} vector must match one of the dimensions of \code{x}.
+#'   enforced. When \code{x} is a list of data frames \code{force.spct.class =
+#'   TRUE} needs to be supplied. When \code{x} is a square matrix an explicit
+#'   argument is needed for \code{byrow} to indicate how data in \code{x} should
+#'   be read. In every case the length of the \code{w.length} vector must match
+#'   one of the dimensions of \code{x}.
 #'
 #' @export
 #'
@@ -486,17 +486,17 @@ mat2mspct <- function(x,
 #' @param x a list of spectral objects or a list of objects such as data frames
 #'   that can be converted into spectral objects.
 #' @param ... passed to individual spectrum object constructor
-#' @param w.length numeric A vector of wavelengthvalues sorted in strictly ascending
-#'   order (nm).
+#' @param w.length numeric A vector of wavelengthvalues sorted in strictly
+#'   ascending order (nm).
 #' @param spct.data.var character The name of the variable that will contain the
-#'   spectral data. This indicates what physical quantity is stored in the matrix
-#'   and the units of expression used.
-#' @param multiplier numeric A multiplier to be applied to the values in \code{x} to do
-#'   unit or scale conversion.
+#'   spectral data. This indicates what physical quantity is stored in the
+#'   matrix and the units of expression used.
+#' @param multiplier numeric A multiplier to be applied to the values in
+#'   \code{x} to do unit or scale conversion.
 #' @param ncol integer Number of 'virtual' columns in data
 #' @param byrow logical If \code{ncol > 1} how to read in the data
-#' @param spct.names character Vector of names to be assigned to collection members,
-#'   either of length 1, or with length equal to the number of spectra.
+#' @param spct.names character Vector of names to be assigned to collection
+#'   members, either of length 1, or with length equal to the number of spectra.
 #'
 #' @note When \code{x} is a square matrix an explicit argument is needed for
 #'   \code{byrow} to indicate how data in \code{x} should be read. In every case
@@ -581,17 +581,17 @@ as.calibration_mspct.matrix <- function(x,
 #' @param x a list of spectral objects or a list of objects such as data frames
 #'   that can be converted into spectral objects.
 #' @param ... passed to individual spectrum object constructor
-#' @param w.length numeric A vector of wavelengthvalues sorted in strictly ascending
-#'   order (nm).
+#' @param w.length numeric A vector of wavelengthvalues sorted in strictly
+#'   ascending order (nm).
 #' @param spct.data.var character The name of the variable that will contain the
-#'   spectral data. This indicates what physical quantity is stored in the matrix
-#'   and the units of expression used.
-#' @param multiplier numeric A multiplier to be applied to the values in \code{x} to do
-#'   unit or scale conversion.
+#'   spectral data. This indicates what physical quantity is stored in the
+#'   matrix and the units of expression used.
+#' @param multiplier numeric A multiplier to be applied to the values in
+#'   \code{x} to do unit or scale conversion.
 #' @param ncol integer Number of 'virtual' columns in data
 #' @param byrow logical If \code{ncol > 1} how to read in the data
-#' @param spct.names character Vector of names to be assigned to collection members,
-#'   either of length 1, or with length equal to the number of spectra.
+#' @param spct.names character Vector of names to be assigned to collection
+#'   members, either of length 1, or with length equal to the number of spectra.
 #'
 #' @note When \code{x} is a square matrix an explicit argument is needed for
 #'   \code{byrow} to indicate how data in \code{x} should be read. In every case
@@ -676,17 +676,17 @@ as.raw_mspct.matrix <- function(x,
 #' @param x a list of spectral objects or a list of objects such as data frames
 #'   that can be converted into spectral objects.
 #' @param ... passed to individual spectrum object constructor
-#' @param w.length numeric A vector of wavelengthvalues sorted in strictly ascending
-#'   order (nm).
+#' @param w.length numeric A vector of wavelengthvalues sorted in strictly
+#'   ascending order (nm).
 #' @param spct.data.var character The name of the variable that will contain the
-#'   spectral data. This indicates what physical quantity is stored in the matrix
-#'   and the units of expression used.
-#' @param multiplier numeric A multiplier to be applied to the values in \code{x} to do
-#'   unit or scale conversion.
+#'   spectral data. This indicates what physical quantity is stored in the
+#'   matrix and the units of expression used.
+#' @param multiplier numeric A multiplier to be applied to the values in
+#'   \code{x} to do unit or scale conversion.
 #' @param ncol integer Number of 'virtual' columns in data
 #' @param byrow logical If \code{ncol > 1} how to read in the data
-#' @param spct.names character Vector of names to be assigned to collection members,
-#'   either of length 1, or with length equal to the number of spectra.
+#' @param spct.names character Vector of names to be assigned to collection
+#'   members, either of length 1, or with length equal to the number of spectra.
 #'
 #' @note When \code{x} is a square matrix an explicit argument is needed for
 #'   \code{byrow} to indicate how data in \code{x} should be read. In every case
@@ -773,17 +773,17 @@ as.cps_mspct.matrix <- function(x,
 #' @param bswf.used character
 #' @param strict.range logical Flag indicating how off-range values are handled
 #' @param ... passed to individual spectrum object constructor
-#' @param w.length numeric A vector of wavelengthvalues sorted in strictly ascending
-#'   order (nm).
+#' @param w.length numeric A vector of wavelengthvalues sorted in strictly
+#'   ascending order (nm).
 #' @param spct.data.var character The name of the variable that will contain the
-#'   spectral data. This indicates what physical quantity is stored in the matrix
-#'   and the units of expression used.
-#' @param multiplier numeric A multiplier to be applied to the values in \code{x} to do
-#'   unit or scale conversion.
+#'   spectral data. This indicates what physical quantity is stored in the
+#'   matrix and the units of expression used.
+#' @param multiplier numeric A multiplier to be applied to the values in
+#'   \code{x} to do unit or scale conversion.
 #' @param ncol integer Number of 'virtual' columns in data
 #' @param byrow logical If \code{ncol > 1} how to read in the data
-#' @param spct.names character Vector of names to be assigned to collection members,
-#'   either of length 1, or with length equal to the number of spectra.
+#' @param spct.names character Vector of names to be assigned to collection
+#'   members, either of length 1, or with length equal to the number of spectra.
 #'
 #' @note When \code{x} is a square matrix an explicit argument is needed for
 #'   \code{byrow} to indicate how data in \code{x} should be read. In every case
@@ -883,17 +883,17 @@ as.source_mspct.matrix <- function(x,
 #'   that can be converted into spectral objects.
 #' @param time.unit character A string, "second", "day" or "exposure"
 #' @param ... passed to individual spectrum object constructor
-#' @param w.length numeric A vector of wavelengthvalues sorted in strictly ascending
-#'   order (nm).
+#' @param w.length numeric A vector of wavelengthvalues sorted in strictly
+#'   ascending order (nm).
 #' @param spct.data.var character The name of the variable that will contain the
-#'   spectral data. This indicates what physical quantity is stored in the matrix
-#'   and the units of expression used.
-#' @param multiplier numeric A multiplier to be applied to the values in \code{x} to do
-#'   unit or scale conversion.
+#'   spectral data. This indicates what physical quantity is stored in the
+#'   matrix and the units of expression used.
+#' @param multiplier numeric A multiplier to be applied to the values in
+#'   \code{x} to do unit or scale conversion.
 #' @param ncol integer Number of 'virtual' columns in data
 #' @param byrow logical If \code{ncol > 1} how to read in the data
-#' @param spct.names character Vector of names to be assigned to collection members,
-#'   either of length 1, or with length equal to the number of spectra.
+#' @param spct.names character Vector of names to be assigned to collection
+#'   members, either of length 1, or with length equal to the number of spectra.
 #'
 #' @note When \code{x} is a square matrix an explicit argument is needed for
 #'   \code{byrow} to indicate how data in \code{x} should be read. In every case
@@ -986,17 +986,17 @@ as.response_mspct.matrix <- function(x,
 #' @param Tfr.type a character string, either "total" or "internal"
 #' @param strict.range logical Flag indicating how off-range values are handled
 #' @param ... passed to individual spectrum object constructor
-#' @param w.length numeric A vector of wavelengthvalues sorted in strictly ascending
-#'   order (nm).
+#' @param w.length numeric A vector of wavelengthvalues sorted in strictly
+#'   ascending order (nm).
 #' @param spct.data.var character The name of the variable that will contain the
-#'   spectral data. This indicates what physical quantity is stored in the matrix
-#'   and the units of expression used.
-#' @param multiplier numeric A multiplier to be applied to the values in \code{x} to do
-#'   unit or scale conversion.
+#'   spectral data. This indicates what physical quantity is stored in the
+#'   matrix and the units of expression used.
+#' @param multiplier numeric A multiplier to be applied to the values in
+#'   \code{x} to do unit or scale conversion.
 #' @param ncol integer Number of 'virtual' columns in data
 #' @param byrow logical If \code{ncol > 1} how to read in the data
-#' @param spct.names character Vector of names to be assigned to collection members,
-#'   either of length 1, or with length equal to the number of spectra.
+#' @param spct.names character Vector of names to be assigned to collection
+#'   members, either of length 1, or with length equal to the number of spectra.
 #'
 #' @note When \code{x} is a square matrix an explicit argument is needed for
 #'   \code{byrow} to indicate how data in \code{x} should be read. In every case
@@ -1094,17 +1094,17 @@ as.filter_mspct.matrix <- function(x,
 #' @param Rfr.type a character string, either "total" or "specular"
 #' @param strict.range logical Flag indicating how off-range values are handled
 #' @param ... passed to individual spectrum object constructor
-#' @param w.length numeric A vector of wavelengthvalues sorted in strictly ascending
-#'   order (nm).
+#' @param w.length numeric A vector of wavelengthvalues sorted in strictly
+#'   ascending order (nm).
 #' @param spct.data.var character The name of the variable that will contain the
-#'   spectral data. This indicates what physical quantity is stored in the matrix
-#'   and the units of expression used.
-#' @param multiplier numeric A multiplier to be applied to the values in \code{x} to do
-#'   unit or scale conversion.
+#'   spectral data. This indicates what physical quantity is stored in the
+#'   matrix and the units of expression used.
+#' @param multiplier numeric A multiplier to be applied to the values in
+#'   \code{x} to do unit or scale conversion.
 #' @param ncol integer Number of 'virtual' columns in data
 #' @param byrow logical If \code{ncol > 1} how to read in the data
-#' @param spct.names character Vector of names to be assigned to collection members,
-#'   either of length 1, or with length equal to the number of spectra.
+#' @param spct.names character Vector of names to be assigned to collection
+#'   members, either of length 1, or with length equal to the number of spectra.
 #'
 #' @note When \code{x} is a square matrix an explicit argument is needed for
 #'   \code{byrow} to indicate how data in \code{x} should be read. In every case
@@ -1336,15 +1336,16 @@ as.chroma_mspct.list <- function(x,
 #' Coerce a collection of spectra into a matrix
 #'
 #' Convert an object of class \code{generic_mspct} or a derived class into an R
-#' matrix with wavelengths saved as an attribute and spectral data in rows
-#' or columns.
+#' matrix with wavelengths saved as an attribute and spectral data in rows or
+#' columns.
 #'
 #' @note Only collections of spectra containing spectra with exactly the same
-#' \code{w.length} values can by converted. If needed, the spectra can be
-#' re-expressed before attempting the conversion to a matrix.
+#'   \code{w.length} values can by converted. If needed, the spectra can be
+#'   re-expressed before attempting the conversion to a matrix.
 #'
 #' @param x generic_mspct object.
-#' @param spct.data.var character The name of the variable containing the spectral data.
+#' @param spct.data.var character The name of the variable containing the
+#'   spectral data.
 #' @param byrow logical. If FALSE (the default) the matrix is filled with the
 #'   spectra stored by columns, otherwise the matrix is filled by rows.
 #' @param ... currently ignored.
@@ -1398,7 +1399,8 @@ mspct2mat <- function(x,
     mat <- c(mat, s.column) # one long numeric vector
   }
   if (any(!spct.selector)) {
-    warning("Spectra dropped: ", sum(!spct.selector), " out of ", length(spct.selector), ".")
+    warning("Spectra dropped: ", sum(!spct.selector), " out of ",
+            length(spct.selector), ".")
   }
   if (byrow) {
     z <- matrix(mat, nrow = sum(spct.selector), byrow = byrow,
@@ -1428,8 +1430,8 @@ mspct2mat <- function(x,
 #'   object constructor for \code{member.class}
 #' @param w.length.var character Name of column containing wavelength data in
 #'   nanometres
-#' @param idx.var character Name of column containing data to be copied unchanged
-#'   to each spct object
+#' @param idx.var character Name of column containing data to be copied
+#'   unchanged to each spct object
 #' @param ncol integer Number of 'virtual' columns in data
 #' @param byrow logical If \code{ncol > 1} how to read in the data
 #' @param ... additional named arguments passed to the member constructor
@@ -1778,7 +1780,8 @@ dim.generic_mspct <- function(x) {
 
 #' @rdname dim.generic_mspct
 #'
-#' @param value Either NULL or a numeric vector, which is coerced to integer (by truncation).
+#' @param value Either NULL or a numeric vector, which is coerced to integer (by
+#'   truncation).
 #'
 #' @export
 #'

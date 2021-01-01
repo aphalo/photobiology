@@ -17,22 +17,30 @@
 #'   spectrum.
 #'
 #' @note Trimming of extreme values and omission of NAs is done separately at
-#' each wavelength. Interpolation is not applied, so all spectra in \code{x}
-#' must share the same set of wavelengths.
+#'   each wavelength. Interpolation is not applied, so all spectra in \code{x}
+#'   must share the same set of wavelengths.
+#'
+#'   Objects of classes raw_spct and cps_spct can contain data from multiple
+#'   scans. This functions are implemented for these classes only for the case
+#'   when all member spectra contain data for a single scan, or spliced into a
+#'   single column in the case of cps_spct members.
 #'
 #' @seealso See \code{\link[base]{mean}} for the \code{mean()} method used for
 #'   the computations.
 #'
 #' @export
 #'
-s_mean_se <- function(x, na.rm, mult, ...) UseMethod("s_mean_se")
+s_mean_se <- function(x, na.rm, mult, ...)
+  UseMethod("s_mean_se")
 
 #' @describeIn s_mean_se
 #'
 #' @export
 #'
 s_mean_se.default <- function(x, na.rm = FALSE, mult = 1, ...) {
-  warning("Metod 's_mean_se()' not implementd for objects of class ", class(x)[1], ".")
+  warning("Metod 's_mean_se()' not implementd for objects of class ",
+          class(x)[1],
+          ".")
   ifelse(is.any_mspct(x), do.call(class(x[[1]])[1], args = list()), NA)
 }
 
@@ -40,60 +48,110 @@ s_mean_se.default <- function(x, na.rm = FALSE, mult = 1, ...) {
 #'
 #' @export
 #'
-s_mean_se.filter_mspct <- function(x, na.rm = FALSE, mult = 1, ...) {
-  rowwise_filter(x,
-                 .fun = list(base::mean, se),
-                 col.name.tag = c("", ".se"),
-                 na.rm = na.rm, mult = mult,
-                 .fun.name = "Mean and SEM of")
+s_mean_se.filter_mspct <-
+  function(x, na.rm = FALSE, mult = 1, ...) {
+    rowwise_filter(
+      x,
+      .fun = list(base::mean, se),
+      col.name.tag = c("", ".se"),
+      na.rm = na.rm,
+      mult = mult,
+      .fun.name = "Mean and SEM of"
+    )
+  }
+
+#' @describeIn s_mean_se
+#'
+#' @export
+#'
+s_mean_se.source_mspct <-
+  function(x, na.rm = FALSE, mult = 1, ...) {
+    rowwise_source(
+      x,
+      .fun = list(base::mean, se),
+      col.name.tag = c("", ".se"),
+      na.rm = na.rm,
+      mult = mult,
+      .fun.name = "Mean and SEM of"
+    )
+  }
+
+#' @describeIn s_mean_se
+#'
+#' @export
+#'
+s_mean_se.response_mspct <-
+  function(x, na.rm = FALSE, mult = 1, ...) {
+    rowwise_response(
+      x,
+      .fun = list(base::mean, se),
+      col.name.tag = c("", ".se"),
+      na.rm = na.rm,
+      mult = mult,
+      .fun.name = "Mean and SEM of"
+    )
+  }
+
+#' @describeIn s_mean_se
+#'
+#' @export
+#'
+s_mean_se.reflector_mspct <-
+  function(x, na.rm = FALSE, mult = 1, ...) {
+    rowwise_reflector(
+      x,
+      .fun = list(base::mean, se),
+      col.name.tag = c("", ".se"),
+      na.rm = na.rm,
+      mult = mult,
+      .fun.name = "Mean and SEM of"
+    )
+  }
+
+#' @describeIn s_mean_se
+#'
+#' @export
+#'
+s_mean_se.calibration_mspct <-
+  function(x, na.rm = FALSE, mult = 1, ...) {
+    rowwise_calibration(
+      x,
+      .fun = list(base::mean, se),
+      col.name.tag = c("", ".se"),
+      na.rm = na.rm,
+      mult = mult,
+      .fun.name = "Mean and SEM of"
+    )
+  }
+
+#' @describeIn s_mean_se
+#'
+#' @export
+#'
+s_mean_se.cps_mspct <- function(x, na.rm = FALSE, mult = 1, ...) {
+  rowwise_cps(
+    x,
+    .fun = list(base::mean, se),
+    col.name.tag = c("", ".se"),
+    na.rm = na.rm,
+    mult = mult,
+    .fun.name = "Mean and SEM of"
+  )
 }
 
 #' @describeIn s_mean_se
 #'
 #' @export
 #'
-s_mean_se.source_mspct <- function(x, na.rm = FALSE, mult = 1, ...) {
-  rowwise_source(x,
-                 .fun =list(base::mean, se),
-                 col.name.tag = c("", ".se"),
-                 na.rm = na.rm, mult = mult,
-                 .fun.name = "Mean and SEM of")
-}
-
-#' @describeIn s_mean_se
-#'
-#' @export
-#'
-s_mean_se.response_mspct <- function(x, na.rm = FALSE, mult = 1, ...) {
-  rowwise_response(x,
-                   .fun = list(base::mean, se),
-                   col.name.tag = c("", ".se"),
-                   na.rm = na.rm, mult = mult,
-                   .fun.name = "Mean and SEM of")
-}
-
-#' @describeIn s_mean_se
-#'
-#' @export
-#'
-s_mean_se.reflector_mspct <- function(x, na.rm = FALSE, mult = 1, ...) {
-  rowwise_reflector(x,
-                    .fun = list(base::mean, se),
-                    col.name.tag = c("", ".se"),
-                    na.rm = na.rm, mult = mult,
-                    .fun.name = "Mean and SEM of")
-}
-
-#' @describeIn s_mean_se
-#'
-#' @export
-#'
-s_mean_se.calibration_mspct <- function(x, na.rm = FALSE, mult = 1, ...) {
-  rowwise_calibration(x,
-                      .fun = list(base::mean, se),
-                      col.name.tag = c("", ".se"),
-                      na.rm = na.rm, mult = mult,
-                      .fun.name = "Mean and SEM of")
+s_mean_se.raw_mspct <- function(x, na.rm = FALSE, mult = 1, ...) {
+  rowwise_raw(
+    x,
+    .fun = list(base::mean, se),
+    col.name.tag = c("", ".se"),
+    na.rm = na.rm,
+    mult = mult,
+    .fun.name = "Mean and SEM of"
+  )
 }
 
 # Helper function, not exported

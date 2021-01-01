@@ -18,6 +18,11 @@
 #'   not applied, so all spectra in \code{x} must share the same set of
 #'   wavelengths.
 #'
+#'   Objects of classes raw_spct and cps_spct can contain data from multiple
+#'   scans. This functions are implemented for these classes only for the case
+#'   when all member spectra contain data for a single scan, or spliced into a
+#'   single column in the case of cps_spct members.
+#'
 #' @seealso See \code{\link[stats]{median}} for the \code{median()} method used
 #'   for the computations.
 #'
@@ -71,5 +76,21 @@ s_median.reflector_mspct <- function(x, na.rm = FALSE, ...) {
 #' @export
 #'
 s_median.calibration_mspct <- function(x, na.rm = FALSE, ...) {
-  rowwise_reflector(x = x, .fun = stats::median, na.rm = na.rm, .fun.name = "Median of")
+  rowwise_calibration(x = x, .fun = stats::median, na.rm = na.rm, .fun.name = "Median of")
+}
+
+#' @describeIn s_median
+#'
+#' @export
+#'
+s_median.cps_mspct <- function(x, na.rm = FALSE, ...) {
+  rowwise_cps(x = x, .fun = stats::median, na.rm = na.rm, .fun.name = "Median of")
+}
+
+#' @describeIn s_median
+#'
+#' @export
+#'
+s_median.raw_mspct <- function(x, na.rm = FALSE, ...) {
+  rowwise_raw(x = x, .fun = stats::median, na.rm = na.rm, .fun.name = "Median of")
 }

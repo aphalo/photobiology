@@ -19,19 +19,27 @@
 #'   not applied, so all spectra in \code{x} must share the same set of
 #'   wavelengths.
 #'
+#'   Objects of classes raw_spct and cps_spct can contain data from multiple
+#'   scans. This functions are implemented for these classes only for the case
+#'   when all member spectra contain data for a single scan, or spliced into a
+#'   single column in the case of cps_spct members.
+#'
 #' @seealso See \code{\link[stats]{sd}} for details about \code{sd()} methods
 #'   for other classes.
 #'
 #' @export
 #'
-s_sd <- function(x, na.rm, ...) UseMethod("s_sd")
+s_sd <- function(x, na.rm, ...)
+  UseMethod("s_sd")
 
 #' @describeIn s_sd
 #'
 #' @export
 #'
 s_sd.default <- function(x, na.rm = FALSE, ...) {
-  warning("Metod 'sd()' not implementd for objects of class ", class(x)[1], ".")
+  warning("Metod 'sd()' not implementd for objects of class ",
+          class(x)[1],
+          ".")
   ifelse(is.any_mspct(x), generic_spct(), NA)
 }
 
@@ -40,7 +48,13 @@ s_sd.default <- function(x, na.rm = FALSE, ...) {
 #' @export
 #'
 s_sd.filter_mspct <- function(x, na.rm = FALSE, ...) {
-  rowwise_filter(x = x, .fun = stats::sd, na.rm = na.rm, col.name.tag = ".sd", .fun.name = "Standard deviation for")
+  rowwise_filter(
+    x = x,
+    .fun = stats::sd,
+    na.rm = na.rm,
+    col.name.tag = ".sd",
+    .fun.name = "Standard deviation for"
+  )
 }
 
 #' @describeIn s_sd
@@ -48,7 +62,13 @@ s_sd.filter_mspct <- function(x, na.rm = FALSE, ...) {
 #' @export
 #'
 s_sd.source_mspct <- function(x, na.rm = FALSE, ...) {
-  rowwise_source(x = x, .fun = stats::sd, na.rm = na.rm, col.name.tag = ".sd", .fun.name = "Standard deviation for")
+  rowwise_source(
+    x = x,
+    .fun = stats::sd,
+    na.rm = na.rm,
+    col.name.tag = ".sd",
+    .fun.name = "Standard deviation for"
+  )
 }
 
 #' @describeIn s_sd
@@ -56,7 +76,13 @@ s_sd.source_mspct <- function(x, na.rm = FALSE, ...) {
 #' @export
 #'
 s_sd.response_mspct <- function(x, na.rm = FALSE, ...) {
-  rowwise_response(x = x, .fun = stats::sd, na.rm = na.rm, col.name.tag = ".sd", .fun.name = "Standard deviation for")
+  rowwise_response(
+    x = x,
+    .fun = stats::sd,
+    na.rm = na.rm,
+    col.name.tag = ".sd",
+    .fun.name = "Standard deviation for"
+  )
 }
 
 #' @describeIn s_sd
@@ -64,5 +90,53 @@ s_sd.response_mspct <- function(x, na.rm = FALSE, ...) {
 #' @export
 #'
 s_sd.reflector_mspct <- function(x, na.rm = FALSE, ...) {
-  rowwise_reflector(x = x, .fun = stats::sd, na.rm = na.rm, col.name.tag = ".sd", .fun.name = "Standard deviation for")
+  rowwise_reflector(
+    x = x,
+    .fun = stats::sd,
+    na.rm = na.rm,
+    col.name.tag = ".sd",
+    .fun.name = "Standard deviation for"
+  )
+}
+
+#' @describeIn s_sd
+#'
+#' @export
+#'
+s_sd.calibration_mspct <- function(x, na.rm = FALSE, ...) {
+  rowwise_calibration(
+    x = x,
+    .fun = stats::sd,
+    na.rm = na.rm,
+    col.name.tag = ".sd",
+    .fun.name = "Standard deviation for"
+  )
+}
+
+#' @describeIn s_sd
+#'
+#' @export
+#'
+s_sd.cps_mspct <- function(x, na.rm = FALSE, ...) {
+  rowwise_cps(
+    x = x,
+    .fun = stats::sd,
+    na.rm = na.rm,
+    col.name.tag = ".sd",
+    .fun.name = "Standard deviation for"
+  )
+}
+
+#' @describeIn s_sd
+#'
+#' @export
+#'
+s_sd.raw_mspct <- function(x, na.rm = FALSE, ...) {
+  rowwise_raw(
+    x = x,
+    .fun = stats::sd,
+    na.rm = na.rm,
+    col.name.tag = ".sd",
+    .fun.name = "Standard deviation for"
+  )
 }

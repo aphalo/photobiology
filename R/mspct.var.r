@@ -22,19 +22,27 @@
 #'   not applied, so all spectra in \code{x} must share the same set of
 #'   wavelengths.
 #'
+#'   Objects of classes raw_spct and cps_spct can contain data from multiple
+#'   scans. This functions are implemented for these classes only for the case
+#'   when all member spectra contain data for a single scan, or spliced into a
+#'   single column in the case of cps_spct members.
+#'
 #' @seealso See \code{\link[stats]{cor}} for details about \code{var()}, which
 #'   is used for the computations.
 #'
 #' @export
 #'
-s_var <- function(x, na.rm, ...) UseMethod("s_var")
+s_var <- function(x, na.rm, ...)
+  UseMethod("s_var")
 
 #' @describeIn s_var
 #'
 #' @export
 #'
 s_var.default <- function(x, na.rm = FALSE, ...) {
-  warning("Metod 's_var()' not implementd for objects of class ", class(x)[1], ".")
+  warning("Metod 's_var()' not implementd for objects of class ",
+          class(x)[1],
+          ".")
   ifelse(is.any_mspct(x), generic_spct(), NA)
 }
 
@@ -43,7 +51,13 @@ s_var.default <- function(x, na.rm = FALSE, ...) {
 #' @export
 #'
 s_var.filter_mspct <- function(x, na.rm = FALSE, ...) {
-  rowwise_filter(x = x, .fun = stats::var, na.rm = na.rm, col.name.tag = ".var", .fun.name = "Variance for")
+  rowwise_filter(
+    x = x,
+    .fun = stats::var,
+    na.rm = na.rm,
+    col.name.tag = ".var",
+    .fun.name = "Variance for"
+  )
 }
 
 #' @describeIn s_var
@@ -51,7 +65,13 @@ s_var.filter_mspct <- function(x, na.rm = FALSE, ...) {
 #' @export
 #'
 s_var.source_mspct <- function(x, na.rm = FALSE, ...) {
-  rowwise_source(x = x, .fun = stats::var, na.rm = na.rm, col.name.tag = ".var", .fun.name = "Variance for")
+  rowwise_source(
+    x = x,
+    .fun = stats::var,
+    na.rm = na.rm,
+    col.name.tag = ".var",
+    .fun.name = "Variance for"
+  )
 }
 
 #' @describeIn s_var
@@ -59,7 +79,13 @@ s_var.source_mspct <- function(x, na.rm = FALSE, ...) {
 #' @export
 #'
 s_var.response_mspct <- function(x, na.rm = FALSE, ...) {
-  rowwise_response(x = x, .fun = stats::var, na.rm = na.rm, col.name.tag = ".var", .fun.name = "Variance for")
+  rowwise_response(
+    x = x,
+    .fun = stats::var,
+    na.rm = na.rm,
+    col.name.tag = ".var",
+    .fun.name = "Variance for"
+  )
 }
 
 #' @describeIn s_var
@@ -67,7 +93,13 @@ s_var.response_mspct <- function(x, na.rm = FALSE, ...) {
 #' @export
 #'
 s_var.reflector_mspct <- function(x, na.rm = FALSE, ...) {
-  rowwise_reflector(x = x, .fun = stats::var, na.rm = na.rm, col.name.tag = ".var", .fun.name = "Variance for")
+  rowwise_reflector(
+    x = x,
+    .fun = stats::var,
+    na.rm = na.rm,
+    col.name.tag = ".var",
+    .fun.name = "Variance for"
+  )
 }
 
 #' @describeIn s_var
@@ -75,5 +107,39 @@ s_var.reflector_mspct <- function(x, na.rm = FALSE, ...) {
 #' @export
 #'
 s_var.calibration_mspct <- function(x, na.rm = FALSE, ...) {
-  rowwise_calibration(x = x, .fun = stats::var, na.rm = na.rm, col.name.tag = ".var", .fun.name = "Variance for")
+  rowwise_calibration(
+    x = x,
+    .fun = stats::var,
+    na.rm = na.rm,
+    col.name.tag = ".var",
+    .fun.name = "Variance for"
+  )
+}
+
+#' @describeIn s_var
+#'
+#' @export
+#'
+s_var.cps_mspct <- function(x, na.rm = FALSE, ...) {
+  rowwise_cps(
+    x = x,
+    .fun = stats::var,
+    na.rm = na.rm,
+    col.name.tag = ".var",
+    .fun.name = "Variance for"
+  )
+}
+
+#' @describeIn s_var
+#'
+#' @export
+#'
+s_var.raw_mspct <- function(x, na.rm = FALSE, ...) {
+  rowwise_raw(
+    x = x,
+    .fun = stats::var,
+    na.rm = na.rm,
+    col.name.tag = ".var",
+    .fun.name = "Variance for"
+  )
 }

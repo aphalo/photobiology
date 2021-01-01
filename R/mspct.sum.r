@@ -19,23 +19,30 @@
 #'   not applied, so all spectra in \code{x} must share the same set of
 #'   wavelengths.
 #'
-#' A sum of transmitances or reflectances is no longer a well defined
-#' physical quanttiy, and these sum operations return an object of class
-#' generic_spct.
+#'   A sum of transmitances or reflectances is no longer a well defined physical
+#'   quanttiy, and these sum operations return an object of class generic_spct.
+#'
+#'   Objects of classes raw_spct and cps_spct can contain data from multiple
+#'   scans. This functions are implemented for these classes only for the case
+#'   when all member spectra contain data for a single scan, or spliced into a
+#'   single column in the case of cps_spct members.
 #'
 #' @seealso See \code{\link[base]{sum}} for the \code{sum()} method used for
 #'   the computations.
 #'
 #' @export
 #'
-s_sum <- function(x, na.rm, ...) UseMethod("s_sum")
+s_sum <- function(x, na.rm, ...)
+  UseMethod("s_sum")
 
 #' @describeIn s_sum
 #'
 #' @export
 #'
 s_sum.default <- function(x, na.rm = FALSE, ...) {
-  warning("Metod 's_sum()' not implementd for objects of class ", class(x)[1], ".")
+  warning("Metod 's_sum()' not implementd for objects of class ",
+          class(x)[1],
+          ".")
   ifelse(is.any_mspct(x), do.call(class(x[[1]])[1], args = list()), NA)
 }
 
@@ -45,7 +52,13 @@ s_sum.default <- function(x, na.rm = FALSE, ...) {
 #'
 s_sum.filter_mspct <- function(x, na.rm = FALSE, ...) {
   warning("A sum of Tfr values does not yield Tfr values, while a summ of A values yields A values!!")
-  rowwise_filter(x, .fun = base::sum, na.rm = na.rm, col.name.tag = ".sum", .fun.name = "Sum of")
+  rowwise_filter(
+    x,
+    .fun = base::sum,
+    na.rm = na.rm,
+    col.name.tag = ".sum",
+    .fun.name = "Sum of"
+  )
 }
 
 #' @describeIn s_sum
@@ -53,7 +66,10 @@ s_sum.filter_mspct <- function(x, na.rm = FALSE, ...) {
 #' @export
 #'
 s_sum.source_mspct <- function(x, na.rm = FALSE, ...) {
-  rowwise_source(x, .fun = base::sum, na.rm = na.rm, .fun.name = "Sum of")
+  rowwise_source(x,
+                 .fun = base::sum,
+                 na.rm = na.rm,
+                 .fun.name = "Sum of")
 }
 
 #' @describeIn s_sum
@@ -61,7 +77,10 @@ s_sum.source_mspct <- function(x, na.rm = FALSE, ...) {
 #' @export
 #'
 s_sum.response_mspct <- function(x, na.rm = FALSE, ...) {
-  rowwise_response(x, .fun = base::sum, na.rm = na.rm, .fun.name = "Sum of")
+  rowwise_response(x,
+                   .fun = base::sum,
+                   na.rm = na.rm,
+                   .fun.name = "Sum of")
 }
 
 #' @describeIn s_sum
@@ -70,7 +89,13 @@ s_sum.response_mspct <- function(x, na.rm = FALSE, ...) {
 #'
 s_sum.reflector_mspct <- function(x, na.rm = FALSE, ...) {
   warning("A sum of Rfr values does not yield Rfr values!!")
-  rowwise_reflector(x, .fun = base::sum, na.rm = na.rm, col.name.tag = ".sum", .fun.name = "Sum of")
+  rowwise_reflector(
+    x,
+    .fun = base::sum,
+    na.rm = na.rm,
+    col.name.tag = ".sum",
+    .fun.name = "Sum of"
+  )
 }
 
 #' @describeIn s_sum
@@ -79,5 +104,39 @@ s_sum.reflector_mspct <- function(x, na.rm = FALSE, ...) {
 #'
 s_sum.calibration_mspct <- function(x, na.rm = FALSE, ...) {
   warning("A sum of irrad.mult values does not yield irrad.mult values!!")
-  rowwise_calibration(x, .fun = base::sum, na.rm = na.rm, col.name.tag = ".sum", .fun.name = "Sum of")
+  rowwise_calibration(
+    x,
+    .fun = base::sum,
+    na.rm = na.rm,
+    col.name.tag = ".sum",
+    .fun.name = "Sum of"
+  )
+}
+
+#' @describeIn s_sum
+#'
+#' @export
+#'
+s_sum.cps_mspct <- function(x, na.rm = FALSE, ...) {
+  rowwise_cps(
+    x,
+    .fun = base::sum,
+    na.rm = na.rm,
+    col.name.tag = ".sum",
+    .fun.name = "Sum of"
+  )
+}
+
+#' @describeIn s_sum
+#'
+#' @export
+#'
+s_sum.raw_mspct <- function(x, na.rm = FALSE, ...) {
+  rowwise_raw(
+    x,
+    .fun = base::sum,
+    na.rm = na.rm,
+    col.name.tag = ".sum",
+    .fun.name = "Sum of"
+  )
 }

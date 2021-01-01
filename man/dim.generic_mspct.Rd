@@ -12,7 +12,8 @@
 \arguments{
 \item{x}{A \code{generic_mspct} object or of a derived class.}
 
-\item{value}{Either NULL or a numeric vector, which is coerced to integer (by truncation).}
+\item{value}{Either NULL or a numeric vector, which is coerced to integer (by
+truncation).}
 }
 \value{
 Either NULL or a numeric vector, which is coerced to integer (by

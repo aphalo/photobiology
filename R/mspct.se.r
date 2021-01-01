@@ -19,16 +19,24 @@
 #'   not applied, so all spectra in \code{x} must share the same set of
 #'   wavelengths.
 #'
+#'   Objects of classes raw_spct and cps_spct can contain data from multiple
+#'   scans. This functions are implemented for these classes only for the case
+#'   when all member spectra contain data for a single scan, or spliced into a
+#'   single column in the case of cps_spct members.
+#'
 #' @export
 #'
-s_se <- function(x, na.rm, ...) UseMethod("s_se")
+s_se <- function(x, na.rm, ...)
+  UseMethod("s_se")
 
 #' @describeIn s_se
 #'
 #' @export
 #'
 s_se.default <- function(x, na.rm = FALSE, ...) {
-  warning("Metod 'se()' not implementd for objects of class ", class(x)[1], ".")
+  warning("Metod 'se()' not implementd for objects of class ",
+          class(x)[1],
+          ".")
   ifelse(is.any_mspct(x), generic_spct(), NA)
 }
 
@@ -37,7 +45,13 @@ s_se.default <- function(x, na.rm = FALSE, ...) {
 #' @export
 #'
 s_se.source_mspct <- function(x, na.rm = FALSE, ...) {
-  rowwise_source(x = x, .fun = se, na.rm = na.rm, col.name.tag = ".se", .fun.name = "Standard error for")
+  rowwise_source(
+    x = x,
+    .fun = se,
+    na.rm = na.rm,
+    col.name.tag = ".se",
+    .fun.name = "Standard error for"
+  )
 }
 
 #' @describeIn s_se
@@ -45,7 +59,13 @@ s_se.source_mspct <- function(x, na.rm = FALSE, ...) {
 #' @export
 #'
 s_se.response_mspct <- function(x, na.rm = FALSE, ...) {
-  rowwise_response(x = x, .fun = se, na.rm = na.rm, col.name.tag = ".se", .fun.name = "Standard error for")
+  rowwise_response(
+    x = x,
+    .fun = se,
+    na.rm = na.rm,
+    col.name.tag = ".se",
+    .fun.name = "Standard error for"
+  )
 }
 
 #' @describeIn s_se
@@ -53,7 +73,13 @@ s_se.response_mspct <- function(x, na.rm = FALSE, ...) {
 #' @export
 #'
 s_se.filter_mspct <- function(x, na.rm = FALSE, ...) {
-  rowwise_filter(x = x, .fun = se, na.rm = na.rm, col.name.tag = ".se", .fun.name = "Standard error for")
+  rowwise_filter(
+    x = x,
+    .fun = se,
+    na.rm = na.rm,
+    col.name.tag = ".se",
+    .fun.name = "Standard error for"
+  )
 }
 
 #' @describeIn s_se
@@ -61,7 +87,13 @@ s_se.filter_mspct <- function(x, na.rm = FALSE, ...) {
 #' @export
 #'
 s_se.reflector_mspct <- function(x, na.rm = FALSE, ...) {
-  rowwise_reflector(x = x, .fun = se, na.rm = na.rm, col.name.tag = ".se", .fun.name = "Standard error for")
+  rowwise_reflector(
+    x = x,
+    .fun = se,
+    na.rm = na.rm,
+    col.name.tag = ".se",
+    .fun.name = "Standard error for"
+  )
 }
 
 #' @describeIn s_se
@@ -69,5 +101,39 @@ s_se.reflector_mspct <- function(x, na.rm = FALSE, ...) {
 #' @export
 #'
 s_se.calibration_mspct <- function(x, na.rm = FALSE, ...) {
-  rowwise_reflector(x = x, .fun = se, na.rm = na.rm, col.name.tag = ".se", .fun.name = "Standard error for")
+  rowwise_reflector(
+    x = x,
+    .fun = se,
+    na.rm = na.rm,
+    col.name.tag = ".se",
+    .fun.name = "Standard error for"
+  )
+}
+
+#' @describeIn s_se
+#'
+#' @export
+#'
+s_se.cps_mspct <- function(x, na.rm = FALSE, ...) {
+  rowwise_cps(
+    x = x,
+    .fun = se,
+    na.rm = na.rm,
+    col.name.tag = ".se",
+    .fun.name = "Standard error for"
+  )
+}
+
+#' @describeIn s_se
+#'
+#' @export
+#'
+s_se.raw_mspct <- function(x, na.rm = FALSE, ...) {
+  rowwise_raw(
+    x = x,
+    .fun = se,
+    na.rm = na.rm,
+    col.name.tag = ".se",
+    .fun.name = "Standard error for"
+  )
 }

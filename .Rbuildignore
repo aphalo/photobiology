@@ -8,6 +8,7 @@
 ^vignettes/*.R
 ^.*\.bak$
 ^inst-not
+^pkgdown$
 ^_pkgdown\.yml$
 ^README\.Rmd$
 ^README-.*\.png$

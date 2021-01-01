@@ -103,8 +103,8 @@ object constructor for \code{member.class}}
 \item{w.length.var}{character Name of column containing wavelength data in
 nanometres}
 
-\item{idx.var}{character Name of column containing data to be copied unchanged
-to each spct object}
+\item{idx.var}{character Name of column containing data to be copied
+unchanged to each spct object}
 
 \item{ncol}{integer Number of 'virtual' columns in data}
 

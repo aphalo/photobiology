@@ -8,6 +8,8 @@
 \alias{s_prod.filter_mspct}
 \alias{s_prod.reflector_mspct}
 \alias{s_prod.calibration_mspct}
+\alias{s_prod.cps_mspct}
+\alias{s_prod.raw_mspct}
 \title{Product from collection of spectra}
 \usage{
 s_prod(x, na.rm, ...)
@@ -23,6 +25,10 @@ s_prod(x, na.rm, ...)
 \method{s_prod}{reflector_mspct}(x, na.rm = FALSE, ...)
 
 \method{s_prod}{calibration_mspct}(x, na.rm = FALSE, ...)
+
+\method{s_prod}{cps_mspct}(x, na.rm = FALSE, ...)
+
+\method{s_prod}{raw_mspct}(x, na.rm = FALSE, ...)
 }
 \arguments{
 \item{x}{An R object. Currently this package defines methods for collections of
@@ -57,6 +63,10 @@ collection returning a spectral object.
 \item \code{reflector_mspct}: 
 
 \item \code{calibration_mspct}: 
+
+\item \code{cps_mspct}: 
+
+\item \code{raw_mspct}: 
 }}
 
 \note{
@@ -64,9 +74,14 @@ Omission of NAs is done separately at each wavelength. Interpolation is
   not applied, so all spectra in \code{x} must share the same set of
   wavelengths.
 
-A product of spectral irradiance or spectral response is no longer a well defined
-physical quanttiy, and these product operations return an object of class
-generic_spct.
+  A product of spectral irradiance or spectral response is no longer a well
+  defined physical quanttiy, and these product operations return an object of
+  class generic_spct.
+
+  Objects of classes raw_spct and cps_spct can contain data from multiple
+  scans. This functions are implemented for these classes only for the case
+  when all member spectra contain data for a single scan, or spliced into a
+  single column in the case of cps_spct members.
 }
 \seealso{
 See \code{\link[base]{prod}} for the \code{prod()} method used for

@@ -8,6 +8,8 @@
 \alias{s_sum.response_mspct}
 \alias{s_sum.reflector_mspct}
 \alias{s_sum.calibration_mspct}
+\alias{s_sum.cps_mspct}
+\alias{s_sum.raw_mspct}
 \title{Sum from collection of spectra}
 \usage{
 s_sum(x, na.rm, ...)
@@ -23,6 +25,10 @@ s_sum(x, na.rm, ...)
 \method{s_sum}{reflector_mspct}(x, na.rm = FALSE, ...)
 
 \method{s_sum}{calibration_mspct}(x, na.rm = FALSE, ...)
+
+\method{s_sum}{cps_mspct}(x, na.rm = FALSE, ...)
+
+\method{s_sum}{raw_mspct}(x, na.rm = FALSE, ...)
 }
 \arguments{
 \item{x}{An R object. Currently this package defines methods for collections of
@@ -57,6 +63,10 @@ collection returning a spectral object.
 \item \code{reflector_mspct}: 
 
 \item \code{calibration_mspct}: 
+
+\item \code{cps_mspct}: 
+
+\item \code{raw_mspct}: 
 }}
 
 \note{
@@ -64,9 +74,13 @@ Omission of NAs is done separately at each wavelength. Interpolation is
   not applied, so all spectra in \code{x} must share the same set of
   wavelengths.
 
-A sum of transmitances or reflectances is no longer a well defined
-physical quanttiy, and these sum operations return an object of class
-generic_spct.
+  A sum of transmitances or reflectances is no longer a well defined physical
+  quanttiy, and these sum operations return an object of class generic_spct.
+
+  Objects of classes raw_spct and cps_spct can contain data from multiple
+  scans. This functions are implemented for these classes only for the case
+  when all member spectra contain data for a single scan, or spliced into a
+  single column in the case of cps_spct members.
 }
 \seealso{
 See \code{\link[base]{sum}} for the \code{sum()} method used for

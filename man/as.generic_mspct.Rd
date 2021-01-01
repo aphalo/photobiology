@@ -48,28 +48,28 @@ that can be converted into spectral objects.}
 
 \item{...}{passed to individual spectrum object constructor}
 
-\item{force.spct.class}{logical indicating whether to change the class
-of members to \code{generic_spct} or retain the existing class.}
+\item{force.spct.class}{logical indicating whether to change the class of
+members to \code{generic_spct} or retain the existing class.}
 
 \item{ncol}{integer Number of 'virtual' columns in data}
 
 \item{byrow}{logical If \code{ncol > 1} how to read in the data}
 
-\item{w.length}{numeric A vector of wavelengthvalues sorted in strictly ascending
-order (nm).}
+\item{w.length}{numeric A vector of wavelengthvalues sorted in strictly
+ascending order (nm).}
 
 \item{member.class}{character The name of the class of the individual spectra
 to be constructed.}
 
 \item{spct.data.var}{character The name of the variable that will contain the
-spectral data. This indicates what physical quantity is stored in the matrix
-and the units of expression used.}
+spectral data. This indicates what physical quantity is stored in the
+matrix and the units of expression used.}
 
-\item{multiplier}{numeric A multiplier to be applied to the values in \code{x} to do
-unit or scale conversion.}
+\item{multiplier}{numeric A multiplier to be applied to the values in
+\code{x} to do unit or scale conversion.}
 
-\item{spct.names}{character Vector of names to be assigned to collection members,
-either of length 1, or with length equal to the number of spectra.}
+\item{spct.names}{character Vector of names to be assigned to collection
+members, either of length 1, or with length equal to the number of spectra.}
 }
 \value{
 A copy of \code{x} converted into a \code{generic_mspct} object.
@@ -94,11 +94,11 @@ Return a copy of an R object with its class set to a given type
 \note{
 Members of \code{generic_mspct} objects can be heterogeneous: they can
   belong to any class derived from \code{generic_spct} and class is not
-  enforced. When \code{x} is a list of data frames
-  \code{force.spct.class = TRUE} needs to be supplied. When \code{x} is a
-  square matrix an explicit argument is needed for \code{byrow} to indicate
-  how data in \code{x} should be read. In every case the length of the
-  \code{w.length} vector must match one of the dimensions of \code{x}.
+  enforced. When \code{x} is a list of data frames \code{force.spct.class =
+  TRUE} needs to be supplied. When \code{x} is a square matrix an explicit
+  argument is needed for \code{byrow} to indicate how data in \code{x} should
+  be read. In every case the length of the \code{w.length} vector must match
+  one of the dimensions of \code{x}.
 }
 \seealso{
 Other Coercion methods for collections of spectra: 

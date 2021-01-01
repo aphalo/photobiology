@@ -8,6 +8,8 @@
 \alias{s_mean_se.response_mspct}
 \alias{s_mean_se.reflector_mspct}
 \alias{s_mean_se.calibration_mspct}
+\alias{s_mean_se.cps_mspct}
+\alias{s_mean_se.raw_mspct}
 \title{Mean and standard error from collection of spectra}
 \usage{
 s_mean_se(x, na.rm, mult, ...)
@@ -23,6 +25,10 @@ s_mean_se(x, na.rm, mult, ...)
 \method{s_mean_se}{reflector_mspct}(x, na.rm = FALSE, mult = 1, ...)
 
 \method{s_mean_se}{calibration_mspct}(x, na.rm = FALSE, mult = 1, ...)
+
+\method{s_mean_se}{cps_mspct}(x, na.rm = FALSE, mult = 1, ...)
+
+\method{s_mean_se}{raw_mspct}(x, na.rm = FALSE, mult = 1, ...)
 }
 \arguments{
 \item{x}{An R object. Currently this package defines methods for collections of
@@ -59,12 +65,21 @@ collection returning a spectral object.
 \item \code{reflector_mspct}: 
 
 \item \code{calibration_mspct}: 
+
+\item \code{cps_mspct}: 
+
+\item \code{raw_mspct}: 
 }}
 
 \note{
 Trimming of extreme values and omission of NAs is done separately at
-each wavelength. Interpolation is not applied, so all spectra in \code{x}
-must share the same set of wavelengths.
+  each wavelength. Interpolation is not applied, so all spectra in \code{x}
+  must share the same set of wavelengths.
+
+  Objects of classes raw_spct and cps_spct can contain data from multiple
+  scans. This functions are implemented for these classes only for the case
+  when all member spectra contain data for a single scan, or spliced into a
+  single column in the case of cps_spct members.
 }
 \seealso{
 See \code{\link[base]{mean}} for the \code{mean()} method used for

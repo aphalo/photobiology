@@ -8,6 +8,8 @@
 \alias{s_mean.filter_mspct}
 \alias{s_mean.reflector_mspct}
 \alias{s_mean.calibration_mspct}
+\alias{s_mean.cps_mspct}
+\alias{s_mean.raw_mspct}
 \title{Mean from collection of spectra}
 \usage{
 s_mean(x, trim, na.rm, ...)
@@ -23,16 +25,20 @@ s_mean(x, trim, na.rm, ...)
 \method{s_mean}{reflector_mspct}(x, trim = 0, na.rm = FALSE, ...)
 
 \method{s_mean}{calibration_mspct}(x, trim = 0, na.rm = FALSE, ...)
+
+\method{s_mean}{cps_mspct}(x, trim = 0, na.rm = FALSE, ...)
+
+\method{s_mean}{raw_mspct}(x, trim = 0, na.rm = FALSE, ...)
 }
 \arguments{
-\item{x}{An R object. Currently this package defines methods for collections of
+\item{x}{An R object Currently this package defines methods for collections of
 spectral objects.}
 
-\item{trim}{numeric. The fraction (0 to 0.5) of observations to be trimmed from
+\item{trim}{numeric The fraction (0 to 0.5) of observations to be trimmed from
 each end of x before the mean is computed. Values of trim outside that
 range are taken as the nearest endpoint.}
 
-\item{na.rm}{logical. A value indicating whether NA values should be stripped
+\item{na.rm}{logical A value indicating whether NA values should be stripped
 before the computation proceeds.}
 
 \item{...}{Further arguments passed to or from other methods.}
@@ -61,12 +67,21 @@ collection returning a spectral object.
 \item \code{reflector_mspct}: 
 
 \item \code{calibration_mspct}: 
+
+\item \code{cps_mspct}: 
+
+\item \code{raw_mspct}: 
 }}
 
 \note{
 Trimming of extreme values and omission of NAs is done separately at
-each wavelength. Interpolation is not applied, so all spectra in \code{x}
-must share the same set of wavelengths.
+  each wavelength. Interpolation is not applied, so all spectra in \code{x}
+  must share the same set of wavelengths.
+
+  Objects of classes raw_spct and cps_spct can contain data from multiple
+  scans. This functions are implemented for these classes only for the case
+  when all member spectra contain data for a single scan, or spliced into a
+  single column in the case of cps_spct members.
 }
 \seealso{
 See \code{\link[base]{mean}} for the \code{mean()} method used for

@@ -50,18 +50,18 @@ that can be converted into spectral objects.}
 
 \item{byrow}{logical If \code{ncol > 1} how to read in the data}
 
-\item{w.length}{numeric A vector of wavelengthvalues sorted in strictly ascending
-order (nm).}
+\item{w.length}{numeric A vector of wavelengthvalues sorted in strictly
+ascending order (nm).}
 
 \item{spct.data.var}{character The name of the variable that will contain the
-spectral data. This indicates what physical quantity is stored in the matrix
-and the units of expression used.}
+spectral data. This indicates what physical quantity is stored in the
+matrix and the units of expression used.}
 
-\item{multiplier}{numeric A multiplier to be applied to the values in \code{x} to do
-unit or scale conversion.}
+\item{multiplier}{numeric A multiplier to be applied to the values in
+\code{x} to do unit or scale conversion.}
 
-\item{spct.names}{character Vector of names to be assigned to collection members,
-either of length 1, or with length equal to the number of spectra.}
+\item{spct.names}{character Vector of names to be assigned to collection
+members, either of length 1, or with length equal to the number of spectra.}
 }
 \value{
 A copy of \code{x} converted into a \code{filter_mspct} object.

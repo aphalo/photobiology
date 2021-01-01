@@ -1,6 +1,6 @@
 ---
-editor_options: 
-  markdown: 
+editor_options:
+  markdown:
     wrap: 72
 ---
 
@@ -13,6 +13,7 @@ editor_options:
 -   Add parameter missing.pixs to `cps2irrad()` so that corrupted
     too-short spectra can be converted if the location of missing pixels
     is known.
+-   Add row-wise summaries for `raw_mspct` and `cps_mspct` objects.
 -   Fix handling of `na.rm = TRUE` in `find_peaks()`.
 -   TODO: replace white LED example data!!!!
 
@@ -188,7 +189,7 @@ reflectance data like `object_spct` objects do.
     special cases, returned values are, as earlier, tagged with the name
     of the applied function.
 
-    ### Add support for extraction of spikes and for despiking: 
+    ### Add support for extraction of spikes and for despiking:
 
 -   Add function `find_spikes()` for numeric vectors, useful for Raman
     spectra.
@@ -199,11 +200,11 @@ reflectance data like `object_spct` objects do.
 
 -   Add method `despike()` for vectors, data frames and spectra.
 
-    ### Add example data: 
+    ### Add example data:
 
 -   Add data for cone fundamentals for human vision.
 
-    ### Fix bugs: 
+    ### Fix bugs:
 
 -   Revise `trim_waveband()` so that it preserves the names of list
     members. This bug affected computations of irradiances and ratios so
@@ -227,7 +228,7 @@ reflectance data like `object_spct` objects do.
     used to set a different target than the default of zero and in
     addition implement `clean.object_mspct()`, which was missing.
 
-    ### Compatibility with 'dplyr' (\>= 1.0.0): 
+    ### Compatibility with 'dplyr' (\>= 1.0.0):
 
     Some small internal changes were needed to avoid errors in calls to
     'dplyr' methods. From user's perspective as 'dplyr' now seems to

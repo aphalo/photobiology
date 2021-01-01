@@ -13,7 +13,8 @@ mspct2mat(x, spct.data.var, byrow = attr(x, "mspct.byrow"), ...)
 \arguments{
 \item{x}{generic_mspct object.}
 
-\item{spct.data.var}{character The name of the variable containing the spectral data.}
+\item{spct.data.var}{character The name of the variable containing the
+spectral data.}
 
 \item{byrow}{logical. If FALSE (the default) the matrix is filled with the
 spectra stored by columns, otherwise the matrix is filled by rows.}
@@ -22,13 +23,13 @@ spectra stored by columns, otherwise the matrix is filled by rows.}
 }
 \description{
 Convert an object of class \code{generic_mspct} or a derived class into an R
-matrix with wavelengths saved as an attribute and spectral data in rows
-or columns.
+matrix with wavelengths saved as an attribute and spectral data in rows or
+columns.
 }
 \note{
 Only collections of spectra containing spectra with exactly the same
-\code{w.length} values can by converted. If needed, the spectra can be
-re-expressed before attempting the conversion to a matrix.
+  \code{w.length} values can by converted. If needed, the spectra can be
+  re-expressed before attempting the conversion to a matrix.
 }
 \section{Warning!}{
  This conversion preserves the spectral data but discards

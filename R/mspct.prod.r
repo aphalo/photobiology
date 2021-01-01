@@ -19,23 +19,31 @@
 #'   not applied, so all spectra in \code{x} must share the same set of
 #'   wavelengths.
 #'
-#' A product of spectral irradiance or spectral response is no longer a well defined
-#' physical quanttiy, and these product operations return an object of class
-#' generic_spct.
+#'   A product of spectral irradiance or spectral response is no longer a well
+#'   defined physical quanttiy, and these product operations return an object of
+#'   class generic_spct.
+#'
+#'   Objects of classes raw_spct and cps_spct can contain data from multiple
+#'   scans. This functions are implemented for these classes only for the case
+#'   when all member spectra contain data for a single scan, or spliced into a
+#'   single column in the case of cps_spct members.
 #'
 #' @seealso See \code{\link[base]{prod}} for the \code{prod()} method used for
 #'   the computations.
 #'
 #' @export
 #'
-s_prod <- function(x, na.rm, ...) UseMethod("s_prod")
+s_prod <- function(x, na.rm, ...)
+  UseMethod("s_prod")
 
 #' @describeIn s_prod
 #'
 #' @export
 #'
 s_prod.default <- function(x, na.rm = FALSE, ...) {
-  warning("Metod 's_prod()' not implementd for objects of class ", class(x)[1], ".")
+  warning("Metod 's_prod()' not implementd for objects of class ",
+          class(x)[1],
+          ".")
   ifelse(is.any_mspct(x), do.call(class(x[[1]])[1], args = list()), NA)
 }
 
@@ -45,7 +53,13 @@ s_prod.default <- function(x, na.rm = FALSE, ...) {
 #'
 s_prod.source_mspct <- function(x, na.rm = FALSE, ...) {
   warning("A product of irradiance values does not yield response irradiance!!")
-  rowwise_source(x, .fun = base::prod, na.rm = na.rm, col.name.tag = ".prod", .fun.name = "Product of")
+  rowwise_source(
+    x,
+    .fun = base::prod,
+    na.rm = na.rm,
+    col.name.tag = ".prod",
+    .fun.name = "Product of"
+  )
 }
 
 #' @describeIn s_prod
@@ -54,7 +68,13 @@ s_prod.source_mspct <- function(x, na.rm = FALSE, ...) {
 #'
 s_prod.response_mspct <- function(x, na.rm = FALSE, ...) {
   warning("A product of response values does not yield response values!!")
-  rowwise_response(x, .fun = base::prod, na.rm = na.rm, col.name.tag = ".prod", .fun.name = "Product of")
+  rowwise_response(
+    x,
+    .fun = base::prod,
+    na.rm = na.rm,
+    col.name.tag = ".prod",
+    .fun.name = "Product of"
+  )
 }
 
 #' @describeIn s_prod
@@ -62,7 +82,10 @@ s_prod.response_mspct <- function(x, na.rm = FALSE, ...) {
 #' @export
 #'
 s_prod.filter_mspct <- function(x, na.rm = FALSE, ...) {
-  rowwise_filter(x, .fun = base::prod, na.rm = na.rm, .fun.name = "Product of")
+  rowwise_filter(x,
+                 .fun = base::prod,
+                 na.rm = na.rm,
+                 .fun.name = "Product of")
 }
 
 #' @describeIn s_prod
@@ -70,7 +93,10 @@ s_prod.filter_mspct <- function(x, na.rm = FALSE, ...) {
 #' @export
 #'
 s_prod.reflector_mspct <- function(x, na.rm = FALSE, ...) {
-  rowwise_reflector(x, .fun = base::prod, na.rm = na.rm, .fun.name = "Product of")
+  rowwise_reflector(x,
+                    .fun = base::prod,
+                    na.rm = na.rm,
+                    .fun.name = "Product of")
 }
 
 #' @describeIn s_prod
@@ -78,6 +104,39 @@ s_prod.reflector_mspct <- function(x, na.rm = FALSE, ...) {
 #' @export
 #'
 s_prod.calibration_mspct <- function(x, na.rm = FALSE, ...) {
-  warning("A product of irrad.mult values does not yield irrad.mult values!!")
-  rowwise_calibration(x, .fun = base::prod, na.rm = na.rm, col.name.tag = ".prod", .fun.name = "Product of")
+  rowwise_calibration(
+    x,
+    .fun = base::prod,
+    na.rm = na.rm,
+    col.name.tag = ".prod",
+    .fun.name = "Product of"
+  )
+}
+
+#' @describeIn s_prod
+#'
+#' @export
+#'
+s_prod.cps_mspct <- function(x, na.rm = FALSE, ...) {
+  rowwise_cps(
+    x,
+    .fun = base::prod,
+    na.rm = na.rm,
+    col.name.tag = ".prod",
+    .fun.name = "Product of"
+  )
+}
+
+#' @describeIn s_prod
+#'
+#' @export
+#'
+s_prod.raw_mspct <- function(x, na.rm = FALSE, ...) {
+  rowwise_raw(
+    x,
+    .fun = base::prod,
+    na.rm = na.rm,
+    col.name.tag = ".prod",
+    .fun.name = "Product of"
+  )
 }

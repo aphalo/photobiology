@@ -8,6 +8,8 @@
 \alias{s_se.filter_mspct}
 \alias{s_se.reflector_mspct}
 \alias{s_se.calibration_mspct}
+\alias{s_se.cps_mspct}
+\alias{s_se.raw_mspct}
 \title{Standard Error of a collection of spectra}
 \usage{
 s_se(x, na.rm, ...)
@@ -23,6 +25,10 @@ s_se(x, na.rm, ...)
 \method{s_se}{reflector_mspct}(x, na.rm = FALSE, ...)
 
 \method{s_se}{calibration_mspct}(x, na.rm = FALSE, ...)
+
+\method{s_se}{cps_mspct}(x, na.rm = FALSE, ...)
+
+\method{s_se}{raw_mspct}(x, na.rm = FALSE, ...)
 }
 \arguments{
 \item{x}{An R object. Currently this package defines methods for collections
@@ -57,10 +63,19 @@ across all the spectra in the collection returning a spectral object.
 \item \code{reflector_mspct}: 
 
 \item \code{calibration_mspct}: 
+
+\item \code{cps_mspct}: 
+
+\item \code{raw_mspct}: 
 }}
 
 \note{
 Omission of NAs is done separately at each wavelength. Interpolation is
   not applied, so all spectra in \code{x} must share the same set of
   wavelengths.
+
+  Objects of classes raw_spct and cps_spct can contain data from multiple
+  scans. This functions are implemented for these classes only for the case
+  when all member spectra contain data for a single scan, or spliced into a
+  single column in the case of cps_spct members.
 }
