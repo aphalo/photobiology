@@ -456,9 +456,11 @@ rowwise_cps <-
 
     # infer column name to use as input
     col.name = "cps"
-    if (!all(sapply(x, function(y) {
-      sum(grepl("^cps$", colnames(x))) == 1L
-    }))) {
+    have.cps.colum <- sapply(x,
+                            FUN = function(y) {
+                              sum(grepl("^cps$", colnames(y))) == 1L
+                            })
+    if (!all(have.cps.colum)) {
       message("Columns differ among spectra.")
       zz <- cps_spct(w.length = x[[1]][["w.length"]], cps = NA_real_)
     } else {
@@ -522,9 +524,11 @@ rowwise_raw <-
 
     # infer column name to use as input
     col.name = "counts"
-    if (!all(sapply(x, function(y) {
-      sum(grepl("^counts$", colnames(x))) == 1L
-    }))) {
+    have.counts.colum <- sapply(x,
+                                FUN = function(y) {
+                                  sum(grepl("^counts$", colnames(y))) == 1L
+                                })
+    if (!all(have.counts.colum)) {
       message("Columns differ among spectra.")
       zz <- cps_spct(w.length = x[[1]][["w.length"]], cps = NA_real_)
     } else {
