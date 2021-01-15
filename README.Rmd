@@ -50,11 +50,11 @@ Installation of the most recent stable version from CRAN:
 install.packages("photobiology")
 ```
 
-Installation of the current unstable version from Bitbucket:
+Installation of the current unstable version from GitHub:
 
 ```{r, eval=FALSE}
 # install.packages("devtools")
-devtools::install_bitbucket("aphalo/photobiology")
+devtools::install_github("aphalo/photobiology")
 ```
 
 ## Documentation 
@@ -73,7 +73,7 @@ Aphalo, P. J., Albert, A., Björn, L. O., McLeod, A. R., Robson, T. M., & Rosenq
 
 ## Contributing
 
-Pull requests, bug reports, and feature requests are welcome at (https://bitbucket.org/aphalo/photobiology).
+Pull requests, bug reports, and feature requests are welcome at (https://github.com/aphalo/photobiology).
 
 ## Citation
 
@@ -85,5 +85,5 @@ citation("photobiology")
 
 ## License
 
-© 2012-2020 Pedro J. Aphalo (pedro.aphalo@helsinki.fi). Released under the GPL, version 2 or greater. This software carries no warranty of any kind.
+© 2012-2021 Pedro J. Aphalo (pedro.aphalo@helsinki.fi). Released under the GPL, version 2 or greater. This software carries no warranty of any kind.
 

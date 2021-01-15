@@ -1,0 +1,110 @@
+---
+title: "The R for Photobiology Suite"
+author: "Pedro J. Aphalo"
+date: "`r Sys.Date()`"
+output: 
+  rmarkdown::html_vignette:
+    toc: yes
+vignette: >
+  %\VignetteIndexEntry{The R for Photobiology Suite}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## Introduction
+
+Package 'photobiology' is at the core of a suite of packages for analysis and
+plotting of data relevant to photobiology (described at
+<https://www.r4photobiology.info/>). The accompanying packages provide data and
+definitions that are to a large extent application-area specific while the
+functions in the package 'photobioloy' are widely useful in photobiology and in
+radiation quantification in geophysics and meteorology. Package 'photobiology'
+has its main focus in the characterization of the light environment in a
+biologically relevant manner and in the manipulation of spectral data to
+simulate photo-physical, photo-chemical and photo-biological interactions and
+responses. In addition it implements the algorithms of Jean Meeus for the
+position of the sun, as this and derived quantities like day- and night length
+are important for most organisms.
+
+Data exchange with packages 'pavo', 'colorSpec' and 'hyperSpec' is supported.
+The focus of package 'pavo' (Maia et al. 2003) is on color perception by
+animals and assessment of animal coloration. The focus of package 'colorSpec'
+(Davis 2019) is on color-related computations: "Calculate with spectral
+properties of light sources, materials, cameras, eyes, and scanners." The focus
+of package 'hyperSpec' (Beleites and Sergo) is the handling of hyperspectral
+data sets, such as spectral images and time series of spectra.
+
+Because of their different focus, these packages mostly complement each other,
+in spite of some overlap and differences in approach or even, in philosophy
+about data handling.
+
+### References
+
+Aphalo, P. J., Albert, A., Björn, L. O., McLeod, A. R., Robson, T. M.,
+Rosenqvist, E. (Eds.). (2012). _Beyond the Visible: A handbook of best practice
+in plant UV photobiology_ (1st ed., p. xx + 174). Helsinki: University of
+Helsinki, Department of Biosciences, Division of Plant Biology. ISBN
+978-952-10-8363-1 (PDF), 978-952-10-8362-4 (paperback). Open access at
+<http://doi.org/10.31885/9789521083631>.
+
+Aphalo, Pedro J. (2015) The r4photobiology suite. _UV4Plants Bulletin_, 2015:1,
+21-29. (<https://doi.org/10.19232/uv4pb.2015.1.14>).
+
+Davis G (2019). _A Centroid for Sections of a Cube in a Function Space, with application to Colorimetry._
+_ArXiv e-prints_. 1811.00990, (<https://arxiv.org/abs/1811.00990>).
+
+Maia, R., Eliason, C. M., Bitton, P. P., Doucet, S. M., Shawkey, M. D. (2013)
+pavo: an R package for the analysis, visualization and organization of
+spectral data. _Methods in Ecology and Evolution_, 4(10):906-913.
+(<https://doi.org/10.1111/2041-210X.12069>).
+
+## Acknowledgements 
+
+This work was funded in part by the Academy of Finland (decision 252548), and
+done when the author was employed at the University of Helsinki, Finland. COST
+Action FA9604 'UV4Growth' facilitated discussions and exchanges of ideas that
+lead to the development of this package. The contributions of Andy McLeod, Lars
+Olof Björn, Nigel Paul, Lasse Ylianttila, Glen Davis, Agnese Fazio, T. Matthew
+Robson and Titta Kotilainen were specially significant. Other members of the
+UV4Plants Association (<https://www.uv4plants.org/>) and participants in
+workshops and training events contributed both problems in need of being solved
+and solutions to implement.
+
+Tutorials by Hadley Wickham and comments on my presentation at _UseR!2015_
+allowed me to significantly improve the coding and functionality. The generous
+on-line help by many members of the R community over more than 20 years is also
+warmly thanked.
+
+## The Packages
+
+The core package in this suite is called
+['**photobiology**'](https://docs.r4photobiology.info/photobiology/). Other
+specialized packages for quantification of ultraviolet-, visible- and infra-red
+radiation
+(['**photobiologyWavebands**'](https://docs.r4photobiology.info/photobiologyWavebands/)),
+properties of plant photoreceptors and other plant photobiology related
+calculations
+(['**photobiologyPlants**'](https://docs.r4photobiology.info/photobiologyPlants/)),
+example spectral data for filters and objects
+(['**photobiologyFilters**'](https://docs.r4photobiology.info/photobiologyFilters/)),
+lamps
+(['**photobiologyLamps**'](https://docs.r4photobiology.info/photobiologyLamps/)),
+LEDs
+(['**photobiologyLEDs**'](https://docs.r4photobiology.info/photobiologyLEDs/)),
+sunlight
+(['**photobiologySun**'](https://docs.r4photobiology.info/photobiologySun/)),
+light sensors
+(['**photobiologySensors**'](https://docs.r4photobiology.info/photobiologySensors/))
+and for exchange of data in _foreign_ formats
+(['**photobiologyInOut**'](https://docs.r4photobiology.info/photobiologyInOut/))
+are part of the suite. One additional package,
+(['**ggspectra**'](https://docs.r4photobiology.info/ggspectra/)), implements
+facilities for plotting spectral data by extending package 'ggplot2', providing
+both ggplot statistics, geometries and scales in addition to specializations of
+`ggplot()` and `autoplot()`.
+For additional information on these and other packages by the author please
+visit (https://www.r4photobiology.info). Each package has its own public Git
+repository at my Bitbucket or GitHub account (<https://bitbucket.org/aphalo/>,
+<https://github.com/aphalo/>) from where the source code of the current and
+earlier versions can be cloned or forked.
+

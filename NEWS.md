@@ -6,7 +6,7 @@ editor_options:
 
 # photobiology 0.10.6
 
--   Fix coner-case bug in `msmsply()`.
+-   Fix boundary-case bug in `msmsply()`.
 -   Revise the computation of the default for `dyn.range` in `cps2Tfr()`
     and `cps2Rfr()` so that it takes into account the relative signal in
     the reference spectrum.

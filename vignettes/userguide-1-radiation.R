@@ -5,7 +5,7 @@ knitr::opts_chunk$set(fig.width=7.2, fig.height=4.3)
 # library(tibble)
 options(tibble.print_max = 6, tibble.print_min = 4)
 
-## ---- pkg-load, eval=TRUE-----------------------------------------------------
+## ---- pkg-load, eval=TRUE, message = FALSE------------------------------------
 library(photobiology)
 library(lubridate)
 library(dplyr)

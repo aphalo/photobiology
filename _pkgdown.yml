@@ -417,12 +417,12 @@ navbar:
     articles:
       text: User Guide
       menu:
-      - text: '1 Introduction'
-        href: articles/userguide1-intro.html
-      - text: '2 Radiation'
-        href: articles/userguide2-radiation.html
-      - text: '3 Astronomy and Atmosphere'
-        href: articles/userguide3-astronomy.html
+      - text: 'The R for Photobiology Suite'
+        href: articles/r4p-introduction.html
+      - text: '1 Radiation'
+        href: articles/userguide-1-radiation.html
+      - text: '2 Astronomy and Atmosphere'
+        href: articles/userguide-2-astronomy.html
     tutorials:
       text: Resources
       menu:

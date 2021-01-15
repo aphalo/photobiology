@@ -1,5 +1,5 @@
 ---
-title: "User Guide: 3 Astronomy and Atmosphere"
+title: "User Guide: 2 Astronomy and Atmosphere"
 subtitle: "Package 'photobiology' `r packageVersion('photobiology')` "
 author: "Pedro J. Aphalo"
 date: "`r Sys.Date()`"
@@ -7,10 +7,14 @@ output:
   rmarkdown::html_vignette:
     toc: yes
 vignette: >
-  %\VignetteIndexEntry{User Guide: 3 Astronomy and Atmosphere}
+  %\VignetteIndexEntry{User Guide: 2 Astronomy and Atmosphere}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
+
+## Radiation, astronomy and atmophere
+
+The User Guide is divided into two volumnes: _1. Radiation_ and _2. Astronomy_. The second volume also describes functions related to water vapour in the atmosphere.
 
 ```{r, include=FALSE, echo=FALSE}
 knitr::opts_chunk$set(fig.width=8, fig.height=4)
@@ -25,7 +29,7 @@ options(tibble.print_max = 6, tibble.print_min = 4)
 
 We load two packages, our '**photobiology**' and '**lubridate**', as they will be used in the examples.
 
-```{r, pkg-load, eval=TRUE}
+```{r, pkg-load, eval=TRUE, message = FALSE}
 library(photobiology)
 library(lubridate)
 ```
