@@ -10,7 +10,7 @@ editor_options:
 -   Revise the computation of the default for `dyn.range` in `cps2Tfr()`
     and `cps2Rfr()` so that it takes into account the relative signal in
     the reference spectrum.
--   Add parameter missing.pixs to `cps2irrad()` so that corrupted
+-   Add parameter `missing.pixs` to `cps2irrad()` so that corrupted
     too-short spectra can be converted if the location of missing pixels
     is known.
 -   Add row-wise summaries for `raw_mspct` and `cps_mspct` objects.
