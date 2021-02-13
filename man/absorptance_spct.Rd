@@ -4,7 +4,7 @@
 \alias{absorptance_spct}
 \title{Calculate absorptance from spectral absorptance.}
 \usage{
-absorptance_spct(spct, w.band, quantity, wb.trim, use.hinges, naming)
+absorptance_spct(spct, w.band, quantity, wb.trim, use.hinges, naming, ...)
 }
 \arguments{
 \item{spct}{object_spct}
@@ -25,6 +25,8 @@ interpolation errors}
 
 \item{naming}{character one of "long", "default", "short" or "none". Used to
 select the type of names to assign to returned value.}
+
+\item{...}{other arguments (possibly used by derived methods).}
 }
 \description{
 This function returns the summary absorptance for a given waveband of a

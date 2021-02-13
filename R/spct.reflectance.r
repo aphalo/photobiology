@@ -109,6 +109,7 @@ reflectance.object_spct <-
 #'   the boundaries of the wavebands.
 #' @param naming character one of "long", "default", "short" or "none". Used to
 #'   select the type of names to assign to returned value.
+#' @param ... other arguments (possibly used by derived methods).
 #'
 #' @return A single numeric value expressed as a fraction of one
 #' @keywords internal
@@ -119,7 +120,26 @@ reflectance_spct <-
            quantity,
            wb.trim,
            use.hinges,
-           naming){
+           naming,
+           ...){
+
+    # we look for multiple spectra in long form
+    num.spectra <- getMultipleWl(spct)
+    if (num.spectra != 1) {
+      message("Object contains ", num.spectra, " spectra in long form")
+      # convert into a collection of spectra
+      mspct <- subset2mspct(x = spct,
+                            idx.var = getIdFactor(spct),
+                            drop.idx = FALSE)
+      # call method on the collection
+      return(reflectance(spct = mspct,
+                         w.band = w.band,
+                         quantity = quantity,
+                         wb.trim = wb.trim,
+                         use.hinges = use.hinges,
+                         naming,
+                         ...))
+    }
 
     summary.name <-
       switch(quantity,
@@ -133,13 +153,6 @@ reflectance_spct <-
              stop("Unrecognized 'quantity' : \"", quantity, "\"")
       )
 
-    # we look for multiple spectra and return with a warning
-    num.spectra <- getMultipleWl(spct)
-    if (num.spectra != 1) {
-      warning("Skipping reflectance calculation as object contains ",
-              num.spectra, " spectra")
-      return(NA_real_)
-    }
     if (is_normalized(spct)) {
       warning("The spectral data has been normalized,",
               "making impossible to calculate reflectance")

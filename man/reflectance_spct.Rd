@@ -4,7 +4,7 @@
 \alias{reflectance_spct}
 \title{Calculate reflectance from spectral reflectance}
 \usage{
-reflectance_spct(spct, w.band, quantity, wb.trim, use.hinges, naming)
+reflectance_spct(spct, w.band, quantity, wb.trim, use.hinges, naming, ...)
 }
 \arguments{
 \item{spct}{an object of class generic_spct"}
@@ -26,6 +26,8 @@ the boundaries of the wavebands.}
 
 \item{naming}{character one of "long", "default", "short" or "none". Used to
 select the type of names to assign to returned value.}
+
+\item{...}{other arguments (possibly used by derived methods).}
 }
 \value{
 A single numeric value expressed as a fraction of one

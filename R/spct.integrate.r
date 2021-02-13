@@ -6,7 +6,8 @@
 #'
 #' @return One or more numeric values with no change in scale factor: e.g. [W
 #'   m-2 nm-1] -> [W m-2]. Each value in the returned vector corresponds to a
-#'   variable in the spectral object, except for wavelength.
+#'   variable in the spectral object, except for wavelength. For non-numeric
+#'   variables the returned value is \code{NA}.
 #'
 #' @export
 #' @examples
@@ -14,14 +15,26 @@
 #' integrate_spct(sun.spct)
 #'
 integrate_spct <- function(spct) {
+
+  # we look for multiple spectra in long form
+  num.spectra <- getMultipleWl(spct)
+  if (num.spectra != 1) {
+    warning("Integrating ", num.spectra, " spectra as one.")
+  }
+
   names.spct <- names(spct)
   data.cols <- names.spct[names.spct != "w.length"]
   comment.spct <- comment(spct)
   integrals <- NULL
   for (data.col in data.cols) {
-    integrals <- c(integrals,
-                   integrate_xy(spct[["w.length"]],
-                                        spct[[eval(data.col)]]))
+    if (is.numeric(spct[[eval(data.col)]])) {
+      integrals <- c(integrals,
+                     integrate_xy(spct[["w.length"]],
+                                  spct[[eval(data.col)]]))
+    } else {
+      message("Skipping non-numeric column ", data.col)
+      integrals <- c(integrals, NA_real_)
+    }
   }
   names(integrals) <- gsub("^s.", x = data.cols, replacement = "")
   comment(integrals) <- comment.spct
@@ -46,7 +59,7 @@ integrate_spct <- function(spct) {
 #' average_spct(sun.spct)
 #'
 average_spct <- function(spct) {
-  return(integrate_spct(spct) / (max(spct) - min(spct)))
+  return(integrate_spct(spct) / (wl_max(spct) - wl_min(spct)))
 }
 
 #' Map a spectrum to new wavelength values.
@@ -87,7 +100,15 @@ interpolate_spct <- function(spct,
                              w.length.out = NULL,
                              fill = NA,
                              length.out = NULL) {
+
   stopifnot(is.generic_spct(spct))
+
+  # we look for multiple spectra in long form
+  num.spectra <- getMultipleWl(spct)
+  if (num.spectra != 1) {
+    stop("Cannot interpolate ", num.spectra, " spectra in long form")
+  }
+
   if (length(w.length.out) == 0 && is.null(length.out)) {
     if (is.null(w.length.out)) {
       # with default we return the input

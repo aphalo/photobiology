@@ -85,11 +85,11 @@ q_ratio.source_spct <-
     if (num.spectra > 1) {
       message("Object contains ", num.spectra, " spectra in long form")
       # convert to a collection of spectra
-      z <- subset2mspct(x = spct,
-                        idx.var = getIdFactor(spct),
-                        drop.idx = FALSE)
+      mspct <- subset2mspct(x = spct,
+                            idx.var = getIdFactor(spct),
+                            drop.idx = FALSE)
       # call method on the collection
-      return(q_ratio(z,
+      return(q_ratio(spct = mspct,
                      w.band.num = w.band.num,
                      w.band.denom = w.band.denom,
                      scale.factor = scale.factor,
@@ -209,11 +209,11 @@ e_ratio.source_spct <-
     if (num.spectra > 1) {
       message("Object contains ", num.spectra, " spectra in long form")
       # convert to a collection of spectra
-      z <- subset2mspct(x = spct,
+      mspct <- subset2mspct(x = spct,
                         idx.var = getIdFactor(spct),
                         drop.idx = FALSE)
       # call method on the collection
-      return(e_ratio(z,
+      return(e_ratio(spct = mspct,
                      w.band.num = w.band.num,
                      w.band.denom = w.band.denom,
                      scale.factor = scale.factor,
@@ -324,11 +324,11 @@ qe_ratio.source_spct <-
     if (num.spectra > 1) {
       message("Object contains ", num.spectra, " spectra in long form")
       # convert to a collection of spectra
-      z <- subset2mspct(x = spct,
-                        idx.var = getIdFactor(spct),
-                        drop.idx = FALSE)
+      mspct <- subset2mspct(x = spct,
+                            idx.var = getIdFactor(spct),
+                            drop.idx = FALSE)
       # call method on the collection
-      return(qe_ratio(z,
+      return(qe_ratio(spct = mspct,
                       w.band = w.band,
                       scale.factor = scale.factor,
                       wb.trim = wb.trim,
@@ -442,11 +442,11 @@ eq_ratio.source_spct <-
     if (num.spectra > 1) {
       message("Object contains ", num.spectra, " spectra in long form")
       # convert to a collection of spectra
-      z <- subset2mspct(x = spct,
-                        idx.var = getIdFactor(spct),
-                        drop.idx = FALSE)
+      mspct <- subset2mspct(x = spct,
+                            idx.var = getIdFactor(spct),
+                            drop.idx = FALSE)
       # call method on the collection
-      return(eq_ratio(z,
+      return(eq_ratio(spct = mspct,
                       w.band = w.band,
                       scale.factor = scale.factor,
                       wb.trim = wb.trim,

@@ -112,11 +112,11 @@ irrad.source_spct <-
     if (num.spectra > 1) {
       message("Object contains ", num.spectra, " spectra in long form")
       # convert to a collection of spectra
-      z <- subset2mspct(x = spct,
-                        idx.var = getIdFactor(spct),
-                        drop.idx = FALSE)
+      mspct <- subset2mspct(x = spct,
+                            idx.var = getIdFactor(spct),
+                            drop.idx = FALSE)
       # call method on the collection
-      return(irrad(z,
+      return(irrad(spct = mspct,
                    w.band = w.band,
                    unit.out = unit.out,
                    quantity = quantity,

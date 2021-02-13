@@ -4,7 +4,7 @@
 \alias{transmittance_spct}
 \title{Calculate transmittance from spectral transmittance.}
 \usage{
-transmittance_spct(spct, w.band, quantity, wb.trim, use.hinges, naming)
+transmittance_spct(spct, w.band, quantity, wb.trim, use.hinges, naming, ...)
 }
 \arguments{
 \item{spct}{an object of class "generic_spct".}
@@ -26,6 +26,8 @@ the boundaries of the wavebands.}
 
 \item{naming}{character one of "long", "default", "short" or "none". Used to
 select the type of names to assign to returned value.}
+
+\item{...}{other arguments (possibly used by derived methods).}
 }
 \value{
 a single numeric value
