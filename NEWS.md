@@ -14,6 +14,9 @@ editor_options:
     too-short spectra can be converted if the location of missing pixels
     is known.
 -   Add row-wise summaries for `raw_mspct` and `cps_mspct` objects.
+-   Add support multiple spectra in long form to `irrad()`, `e_irrad()`, 
+    `q_irrad()`,  `q_ratio()`, `e_ratio()`, `qe_ratio()` and `eq_ratio()` 
+    methods for `source_spct` class.
 -   Fix handling of `na.rm = TRUE` in `find_peaks()`.
 -   TODO: replace white LED example data!!!!
 

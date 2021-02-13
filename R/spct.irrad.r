@@ -107,6 +107,29 @@ irrad.source_spct <-
            allow.scaled = !quantity %in% c("average", "mean", "total"),
            naming = "default",
            ...) {
+    # we look for multiple spectra in long form
+    num.spectra <- getMultipleWl(spct)
+    if (num.spectra > 1) {
+      message("Object contains ", num.spectra, " spectra in long form")
+      # convert to a collection of spectra
+      z <- subset2mspct(x = spct,
+                        idx.var = getIdFactor(spct),
+                        drop.idx = FALSE)
+      # call method on the collection
+      return(irrad(z,
+                   w.band = w.band,
+                   unit.out = unit.out,
+                   quantity = quantity,
+                   time.unit = time.unit,
+                   scale.factor = scale.factor,
+                   wb.trim = wb.trim,
+                   use.cached.mult = use.cached.mult,
+                   use.hinges = use.hinges,
+                   allow.scaled = allow.scaled,
+                   naming = naming,
+                   ...))
+    }
+
     if (unit.out == "quantum") {
       unit.out <- "photon"
     }
@@ -128,13 +151,6 @@ irrad.source_spct <-
                              energy = "E/Esum")
     } else {
       stop("Unrecognized 'quantity' : \"", quantity, "\"")
-    }
-    # we look for multiple spectra and return with a warning
-    num.spectra <- getMultipleWl(spct)
-    if (num.spectra != 1) {
-      warning("Skipping irradiance calculation as object contains ",
-              num.spectra, " spectra")
-      return(NA_real_)
     }
 
     if (!allow.scaled && is_normalized(spct)) {

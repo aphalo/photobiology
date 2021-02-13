@@ -71,7 +71,8 @@ q_ratio.default <- function(spct, w.band.num, w.band.denom, scale.factor, wb.tri
 #'
 q_ratio.source_spct <-
   function(spct,
-           w.band.num = NULL, w.band.denom = NULL,
+           w.band.num = NULL,
+           w.band.denom = NULL,
            scale.factor = 1,
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.cached.mult = FALSE,
@@ -79,20 +80,41 @@ q_ratio.source_spct <-
            naming = "short",
            name.tag = ifelse(naming != "none", "[q:q]", ""),
            ... ) {
-    q.irrad.num <- irrad_spct(spct, w.band = w.band.num,
-                              unit.out = "photon", quantity = "total",
-                              wb.trim = wb.trim,
-                              use.cached.mult = use.cached.mult,
-                              use.hinges = use.hinges,
-                              allow.scaled = TRUE,
-                              naming = naming)
-    q.irrad.denom <- irrad_spct(spct, w.band = w.band.denom,
-                                unit.out = "photon", quantity = "total",
-                                wb.trim = wb.trim,
-                                use.cached.mult = use.cached.mult,
-                                use.hinges = use.hinges,
-                                allow.scaled = TRUE,
-                                naming = naming)
+    # we look for multiple spectra in long form
+    num.spectra <- getMultipleWl(spct)
+    if (num.spectra > 1) {
+      message("Object contains ", num.spectra, " spectra in long form")
+      # convert to a collection of spectra
+      z <- subset2mspct(x = spct,
+                        idx.var = getIdFactor(spct),
+                        drop.idx = FALSE)
+      # call method on the collection
+      return(q_ratio(z,
+                     w.band.num = w.band.num,
+                     w.band.denom = w.band.denom,
+                     scale.factor = scale.factor,
+                     wb.trim = wb.trim,
+                     use.cached.mult = use.cached.mult,
+                     use.hinges = use.hinges,
+                     naming = naming,
+                     name.tag = name.tag,
+                     ...))
+    }
+
+    q.irrad.num <- irrad(spct, w.band = w.band.num,
+                         unit.out = "photon", quantity = "total",
+                         wb.trim = wb.trim,
+                         use.cached.mult = use.cached.mult,
+                         use.hinges = use.hinges,
+                         allow.scaled = TRUE,
+                         naming = naming)
+    q.irrad.denom <- irrad(spct, w.band = w.band.denom,
+                           unit.out = "photon", quantity = "total",
+                           wb.trim = wb.trim,
+                           use.cached.mult = use.cached.mult,
+                           use.hinges = use.hinges,
+                           allow.scaled = TRUE,
+                           naming = naming)
     ratio <- q.irrad.num / q.irrad.denom * scale.factor
     names(ratio) <- paste(names(q.irrad.num), ":", names(q.irrad.denom), name.tag, sep = "")
     attr(ratio, "time.unit") <- NULL
@@ -182,16 +204,37 @@ e_ratio.source_spct <-
            naming = "short",
            name.tag = ifelse(naming != "none", "[e:e]", ""),
             ...) {
-    e.irrad.num <- irrad_spct(spct, w.band = w.band.num, unit.out = "energy", quantity = "total",
-                              wb.trim = wb.trim,
-                              use.cached.mult = use.cached.mult, use.hinges = use.hinges,
-                              allow.scaled=TRUE,
-                              naming = naming)
-    e.irrad.denom <- irrad_spct(spct, w.band = w.band.denom, unit.out = "energy", quantity = "total",
-                                wb.trim = wb.trim,
-                                use.cached.mult = use.cached.mult, use.hinges = use.hinges,
-                                allow.scaled = TRUE,
-                                naming = naming)
+    # we look for multiple spectra in long form
+    num.spectra <- getMultipleWl(spct)
+    if (num.spectra > 1) {
+      message("Object contains ", num.spectra, " spectra in long form")
+      # convert to a collection of spectra
+      z <- subset2mspct(x = spct,
+                        idx.var = getIdFactor(spct),
+                        drop.idx = FALSE)
+      # call method on the collection
+      return(e_ratio(z,
+                     w.band.num = w.band.num,
+                     w.band.denom = w.band.denom,
+                     scale.factor = scale.factor,
+                     wb.trim = wb.trim,
+                     use.cached.mult = use.cached.mult,
+                     use.hinges = use.hinges,
+                     naming = naming,
+                     name.tag = name.tag,
+                     ...))
+    }
+
+    e.irrad.num <- irrad(spct, w.band = w.band.num, unit.out = "energy", quantity = "total",
+                         wb.trim = wb.trim,
+                         use.cached.mult = use.cached.mult, use.hinges = use.hinges,
+                         allow.scaled=TRUE,
+                         naming = naming)
+    e.irrad.denom <- irrad(spct, w.band = w.band.denom, unit.out = "energy", quantity = "total",
+                           wb.trim = wb.trim,
+                           use.cached.mult = use.cached.mult, use.hinges = use.hinges,
+                           allow.scaled = TRUE,
+                           naming = naming)
     ratio <- e.irrad.num / e.irrad.denom * scale.factor
     names(ratio) <- paste(names(e.irrad.num), ":", names(e.irrad.denom), name.tag, sep="")
     attr(ratio, "time.unit") <- NULL
@@ -276,6 +319,25 @@ qe_ratio.source_spct <-
            naming = "short",
            name.tag = ifelse(naming != "none", "[q:e]", ""),
            ...) {
+    # we look for multiple spectra in long form
+    num.spectra <- getMultipleWl(spct)
+    if (num.spectra > 1) {
+      message("Object contains ", num.spectra, " spectra in long form")
+      # convert to a collection of spectra
+      z <- subset2mspct(x = spct,
+                        idx.var = getIdFactor(spct),
+                        drop.idx = FALSE)
+      # call method on the collection
+      return(qe_ratio(z,
+                      w.band = w.band,
+                      scale.factor = scale.factor,
+                      wb.trim = wb.trim,
+                      use.cached.mult = use.cached.mult,
+                      use.hinges = use.hinges,
+                      naming = naming,
+                      name.tag = name.tag,
+                      ...))
+    }
     q.irrad <- irrad_spct(spct, w.band=w.band, unit.out = "photon",
                           quantity ="total",
                           wb.trim = wb.trim,
@@ -366,7 +428,8 @@ eq_ratio.default <- function(spct, w.band, scale.factor, wb.trim,
 #' @export
 #'
 eq_ratio.source_spct <-
-  function(spct, w.band=NULL,
+  function(spct,
+           w.band=NULL,
            scale.factor = 1,
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.cached.mult = FALSE,
@@ -374,6 +437,26 @@ eq_ratio.source_spct <-
            naming = "short",
            name.tag = ifelse(naming != "none", "[e:q]", ""),
            ...) {
+    # we look for multiple spectra in long form
+    num.spectra <- getMultipleWl(spct)
+    if (num.spectra > 1) {
+      message("Object contains ", num.spectra, " spectra in long form")
+      # convert to a collection of spectra
+      z <- subset2mspct(x = spct,
+                        idx.var = getIdFactor(spct),
+                        drop.idx = FALSE)
+      # call method on the collection
+      return(eq_ratio(z,
+                      w.band = w.band,
+                      scale.factor = scale.factor,
+                      wb.trim = wb.trim,
+                      use.cached.mult = use.cached.mult,
+                      use.hinges = use.hinges,
+                      naming = naming,
+                      name.tag = name.tag,
+                      ...))
+    }
+
     ratio <- scale.factor /
       qe_ratio(spct = spct, w.band = w.band, wb.trim = wb.trim,
                use.cached.mult = use.cached.mult, use.hinges = use.hinges)
