@@ -8,6 +8,6 @@
 ^.*\.bak$
 ^inst-not
 ^_pkgdown\.yml$
-^_pkgdown/*
+^pkgdown/*
 ^README\.Rmd$
 ^.*\.sh$
