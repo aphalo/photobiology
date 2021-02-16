@@ -14,14 +14,14 @@ editor_options:
     too-short spectra can be converted if the location of missing pixels
     is known.
 -   Add row-wise summaries for `raw_mspct` and `cps_mspct` objects.
--   Add support multiple spectra in long form to `irrad()`, `e_irrad()`, 
-    `q_irrad()`,  `q_ratio()`, `e_ratio()`, `qe_ratio()`, `eq_ratio()`,
-    `absorbance()`, `absorptance()`, `trasmittance()`, `reflectance()`
-    and add warning for handling of multiple spectra in long form in
-    integrated_spct().
-    methods for `source_spct` class.
+-   Add support of multiple spectra in long form to `irrad()`,
+    `e_irrad()`, `q_irrad()`, `q_ratio()`, `e_ratio()`, `qe_ratio()`,
+    `eq_ratio()`, `absorbance()`, `absorptance()`, `trasmittance()`,
+    `reflectance()` methods.
+-   Add warning for handling of multiple spectra in long form to
+    `integrate_spct()` method.
 -   Fix handling of `na.rm = TRUE` in `find_peaks()`.
--   TODO: replace white LED example data!!!!
+-   **TODO: replace white LED example data!!!!**
 
 # photobiology 0.10.5
 
@@ -43,7 +43,7 @@ editor_options:
     response spectra and action spectra stored in `response_spct`
     objects. Add methods `setResponseType()` and `getResponseType()`.
 
-# photobiology 0.10.4 (2020-06-05)
+# photobiology 0.10.4
 
 -   Bug fixes.
 
@@ -70,7 +70,7 @@ editor_options:
 -   BUG FIX: `tag()` would fail to assign `wb.color` and `wb.name` to
     longest `w.length` value in spectrum.
 
-# photobiology 0.10.3 (2020-06-03)
+# photobiology 0.10.3
 
 -   Handle gracefully bad data input in `normalised_diff_ind()`.
 -   Implement Fresnel's formulae for computation of reflectance of a
@@ -85,7 +85,7 @@ editor_options:
 -   New features of dplyr (\>= 1.0.0) are used, so this new version is
     required.
 
-# photobiology 0.10.2 (2020-04-26)
+# photobiology 0.10.2
 
 -   Fix bug in `color_of()`.
 -   Fix bug in `merge2object_spct()`.
@@ -94,7 +94,7 @@ editor_options:
 -   Fix bug in Extract `[ ]`.
 -   Rebuild white LED example spectra.
 
-# photobiology 0.10.1 (2020-04-17)
+# photobiology 0.10.1
 
 -   This update brings improved handling of conversions among quantities
     used to describe filters. This required adding a mechanism to store
@@ -608,7 +608,7 @@ sets normalized attribute to FALSE. Allow all summary calculations on
 re-scaled data, with a warning. Fix bug in operator '\*' between
 reflector.spct and source.spct, which triggered an error.
 
-# photobiology 0.9.11 (2016-09-10)
+# photobiology 0.9.11
 
 Fix bug in print.generic_spct().
 
@@ -632,7 +632,7 @@ region latitudes. Fix bug in e_ratio(). Convert User Guide from PDF
 (Rnw) to HTML (Rmd). Fix some minor mistakes in documentation and build
 a documentation web site with package 'staticdocs'.
 
-# photobiology 0.9.8 (2016-05-20)
+# photobiology 0.9.8
 
 Fix bug: insert_hinges() would fail for "raw_spct" and "cps_spct"
 objects. Fix bug: leap year for year 2000. Test, improve and document
@@ -675,17 +675,17 @@ testthat (\>= 0.11.0.9000).
 Remove buggy C++ code and replace it with R code. Performance cost: 20
 to 30% slower in high-level functions.
 
-# photobiology 0.9.4 (2016-02-01)
+# photobiology 0.9.4
 
 Prepare for CRAN submission. Rename check() -\> check_spct() to avoid
 name clash with 'devtools'. Fix bug in clean() methods for collections
 of spectra.
 
-# photobiology 0.9.3 (??)
+# photobiology 0.9.3
 
 Cosmetic changes.
 
-# photobiology 0.9.2 (2016-01-03)
+# photobiology 0.9.2
 
 Change tag.generic_spct() and wb2rect_spct() so that "wb.color" is also
 added as a column to make it easier to define new ggplot2 stats based on
@@ -696,7 +696,7 @@ consistency with other methods. In addition change behaviour so that the
 same columns are added independently of the value supplied as argument
 for "w.band", filling the unused columns with NAs when w.band = NA.
 
-# photobiology 0.9.1 (2015-12-19)
+# photobiology 0.9.1
 
 Rename some "low level" functions and their formal parameters.
 
@@ -714,7 +714,7 @@ correctly in borderline cases and to handle gracefully numeric(). Also
 returned value always has the same class and columns, irrespective of
 the values of other arguments.
 
-# photobiology 0.9.0 (2015-12-16)
+# photobiology 0.9.0
 
 This version removes all two-way dependencies between this package and
 other packages in the r4photobiology suite. This should make
@@ -787,7 +787,7 @@ and implemented for all spectral classes and collections of spectra
 classes. The new classes are being used for writing a new package
 intended to replace package MayaCalc.
 
-# photobiology 0.8.11 (2015-11-20)
+# photobiology 0.8.11
 
 Add method clean() for removing out-of-range spectral observations. Add
 method fshift() for shifting the zero of the scale used to express
@@ -901,7 +901,7 @@ operators for spectra.
 tag() and untag() by default use copy semantics. Spectral objects with
 zero rows are handled cleanly. \$\<- defined for spectra. Fix bugs.
 
-# photobiology 0.8.0 (2015-07-29)
+# photobiology 0.8.0
 
 No longer use data.table as a base class for spectral objects. \*\*
 Given the size of spectral data the advantages were too limited compared
@@ -947,7 +947,7 @@ rmDerivedMspct(). Change returned value of rmDerivedSpct() into a
 character vector containing the removed class attributes. Update and
 reorganize User Guide. Add tests for new code.
 
-# photobiology 0.7.0 (2015-07-03)
+# photobiology 0.7.0
 
 Make ratio functions into methods, and add 'wb.trim' as a parameter.
 Remove 'pc.out' parameter from methods that had it.

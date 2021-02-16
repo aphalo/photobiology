@@ -46,9 +46,9 @@ sun.
 geocode <- data.frame(lon = 0, lat = 55)
 date <- lubridate::today(tzone = "UTC")
 sunrise_time(date, tz = "UTC", geocode = geocode)
-#> [1] "2021-01-01 08:24:45 UTC"
+#> [1] "2021-02-15 07:21:43 UTC"
 day_length(date, tz = "UTC", geocode = geocode)
-#> [1] 7.297363
+#> [1] 9.746371
 ```
 
 ## Installation
@@ -59,11 +59,11 @@ Installation of the most recent stable version from CRAN:
 install.packages("photobiology")
 ```
 
-Installation of the current unstable version from Bitbucket:
+Installation of the current unstable version from GitHub:
 
 ``` r
 # install.packages("devtools")
-devtools::install_bitbucket("aphalo/photobiology")
+devtools::install_github("aphalo/photobiology")
 ```
 
 ## Documentation
@@ -96,7 +96,7 @@ Division of Plant Biology. ISBN 978-952-10-8363-1 (PDF),
 ## Contributing
 
 Pull requests, bug reports, and feature requests are welcome at
-(<https://bitbucket.org/aphalo/photobiology>).
+(<https://github.com/aphalo/photobiology>).
 
 ## Citation
 
@@ -127,6 +127,6 @@ citation("photobiology")
 
 ## License
 
-© 2012-2020 Pedro J. Aphalo (<pedro.aphalo@helsinki.fi>). Released under
+© 2012-2021 Pedro J. Aphalo (<pedro.aphalo@helsinki.fi>). Released under
 the GPL, version 2 or greater. This software carries no warranty of any
 kind.

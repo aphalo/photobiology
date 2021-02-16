@@ -442,7 +442,12 @@ e2q(sun.spct, "add")
 e2q(sun.spct, "replace")
 
 ## -----------------------------------------------------------------------------
+polyester.spct
+
+## -----------------------------------------------------------------------------
 any2Afr(polyester.spct, "add")
+
+## -----------------------------------------------------------------------------
 any2Afr(polyester.spct, "replace")
 
 ## ---- manip-6-----------------------------------------------------------------
@@ -593,7 +598,15 @@ peaks(sun.spct, span = 51)
 valleys(sun.spct, span = 51)
 
 ## ---- summary-6---------------------------------------------------------------
-peaks(sun.spct, span = 51, unit.out = "photon")
+peaks(white_led.source_spct, 
+      span = 101, 
+      unit.out = "photon")$w.length
+
+## ---- summary-6a--------------------------------------------------------------
+peaks(white_led.source_spct, 
+      span = 101, 
+      unit.out = "photon", 
+      refine.wl = TRUE)$w.length
 
 ## ---- summary-7---------------------------------------------------------------
 peaks(sun.spct, span = 21)
@@ -611,8 +624,8 @@ spikes(sun.spct)
 msmsply(filters.mspct, peaks, span = 21)
 
 ## ---- find-wls-1--------------------------------------------------------------
-wls_at_target(sun.spct, target = "half.maximum")
-wls_at_target(sun.spct, target = "half.maximum", interpolate = TRUE)
+wls_at_target(Ler_leaf_trns.spct, target = "half.maximum")
+wls_at_target(Ler_leaf_trns.spct, target = "half.maximum", interpolate = TRUE)
 
 ## ---- find-wls-2--------------------------------------------------------------
 wls_at_target(filters.mspct, target = "half.maximum")
@@ -742,11 +755,6 @@ q_ratio(filtered_sun,
         idx = "Filter")
 
 ## -----------------------------------------------------------------------------
-normalized_diff_ind(sun.spct,
-                    waveband(c(400, 500)), waveband(c(600, 700)),
-                    q_irrad)
-
-## -----------------------------------------------------------------------------
 transmittance(polyester.spct, list(UVB.wb, UVA.wb, PAR.wb))
 
 ## -----------------------------------------------------------------------------
@@ -761,10 +769,6 @@ transmittance(polyester.spct,
 
 ## -----------------------------------------------------------------------------
 reflectance(green_leaf.spct, waveband(c(600, 700)))
-
-## -----------------------------------------------------------------------------
-q_irrad(sun.spct * polyester.spct, list(UVB.wb, UVA.wb, PAR.wb), wb.trim = TRUE) /
-  q_irrad(sun.spct, list(UVB.wb, UVA.wb, PAR.wb), wb.trim = TRUE)
 
 ## -----------------------------------------------------------------------------
 transmittance(filters.mspct, 
@@ -794,6 +798,16 @@ transmittance(filters.mspct,
 transmittance(filters.mspct,
               w.band = UVA.wb,
               attr2tb = "what.measured")[ , c(3, 2)]
+
+## -----------------------------------------------------------------------------
+normalized_diff_ind(Ler_leaf_rflt.spct,
+                    waveband(c(740, 840)), waveband(c(590, 690)),
+                    reflectance)
+
+## -----------------------------------------------------------------------------
+normalized_diff_ind(sun.spct,
+                    waveband(c(600, 700)), waveband(c(400, 500)),
+                    q_irrad)
 
 ## -----------------------------------------------------------------------------
 response(photodiode.spct)

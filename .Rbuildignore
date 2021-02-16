@@ -3,13 +3,11 @@
 ^\.git/*
 ^test/*
 ^data-raw$
-^vignettes/backups/*
 ^vignettes/*.html
 ^vignettes/*.R
 ^.*\.bak$
 ^inst-not
-^pkgdown$
 ^_pkgdown\.yml$
+^_pkgdown/*
 ^README\.Rmd$
-^README-.*\.png$
 ^.*\.sh$
