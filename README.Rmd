@@ -50,6 +50,16 @@ Installation of the most recent stable version from CRAN:
 install.packages("photobiology")
 ```
 
+Once package 'photobiology' is installed, installation of the remaining or missing packages in the suite from CRAN:
+
+```{r, eval=FALSE}
+intalled_pkgs <- installed.packages()[ , 1]
+missing_pkgs <- setdiff(photobiology::r4p_pkgs, intalled_pkgs)
+if (length(missing_pkgs) > 0) {
+ install.packages(missing_pkgs)
+}
+```
+
 Installation of the current unstable version from GitHub:
 
 ```{r, eval=FALSE}

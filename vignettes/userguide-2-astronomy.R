@@ -28,8 +28,8 @@ sun_angles(time = my.times, geocode = my.geocode)
 
 ## -----------------------------------------------------------------------------
 two.geocodes <- data.frame(lat = c(60.16, 65.02), 
-                                  lon = c(24.93, 25.47),
-                                  address = c("Helsinki", "Oulu"))
+                           lon = c(24.93, 25.47),
+                           address = c("Helsinki", "Oulu"))
 sun_angles(time = my.times, geocode = two.geocodes)
 
 ## -----------------------------------------------------------------------------

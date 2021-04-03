@@ -132,14 +132,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 
 <h1 class="title toc-ignore">User Guide: 2 Astronomy and Atmosphere</h1>
-<h3 class="subtitle">Package ‘photobiology’ 0.10.5.9001</h3>
+<h3 class="subtitle">Package ‘photobiology’ 0.10.6</h3>
 <h4 class="author">Pedro J. Aphalo</h4>
 <h4 class="date">2021-02-16</h4>
 
 
 <div id="TOC">
 <ul>
-<li><a href="#radiation-astronomy-and-atmophere">Radiation, astronomy and atmophere</a></li>
+<li><a href="#radiation-astronomy-and-atmosphere">Radiation, astronomy and atmosphere</a></li>
 <li><a href="#getting-started">Getting started</a></li>
 <li><a href="#introduction">Introduction</a></li>
 <li><a href="#position-of-the-sun">Position of the sun</a></li>
@@ -151,9 +151,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul>
 </div>
 
-<div id="radiation-astronomy-and-atmophere" class="section level2">
-<h2>Radiation, astronomy and atmophere</h2>
-<p>The User Guide is divided into two volumnes: <em>1. Radiation</em> and <em>2. Astronomy</em>. The second volume also describes functions related to water vapour in the atmosphere.</p>
+<div id="radiation-astronomy-and-atmosphere" class="section level2">
+<h2>Radiation, astronomy and atmosphere</h2>
+<p>The User Guide is divided into two volumes: <em>1. Radiation</em> and <em>2. Astronomy</em>. The second volume also describes functions related to water vapour in the atmosphere.</p>
 </div>
 <div id="getting-started" class="section level2">
 <h2>Getting started</h2>
@@ -163,20 +163,36 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div id="introduction" class="section level2">
 <h2>Introduction</h2>
-<p>The functions and methods described in this section return either values that represent angles or times. In the current version angles are always expressed in degrees. In the case of times, the unit of expression, can be changed through parameter <code>unit.out</code> which accepts the following arguments <code>&quot;datetime&quot;</code>, <code>&quot;hours&quot;</code>, <code>&quot;minutes&quot;</code>, <code>&quot;seconds&quot;</code>. For backwards compatibility <code>&quot;date&quot;</code> is also accepted as equivalent to <code>&quot;datetime&quot;</code> but deprecated.</p>
+<p>Most organisms, including plants and animals, have circadian internal clocks. These clocks are entrained to the day-night cycle through perception of light. For example, night length informs plants about seasons of the year. This information allows the synchronization of developmental events like flowering to take place at the “right” time of the year.</p>
+<p>From the point of view of interactions between light and vegetation, the direction of the direct light beam is of interest. Hence, the position of the sun in the sky is also important for photobiology. This is the reason for the inclusion of astronomical calculations about the sun in this package. On the other hand, such calculations are also highly relevant to other fields including solar energy.</p>
+<p>The functions and methods described in this volume return either values that represent angles or times. In the current version angles are always expressed in degrees. In the case of times, the unit of expression, can be changed through parameter <code>unit.out</code> which accepts the following arguments <code>&quot;datetime&quot;</code>, <code>&quot;hours&quot;</code>, <code>&quot;minutes&quot;</code>, <code>&quot;seconds&quot;</code>. For backwards compatibility <code>&quot;date&quot;</code> is also accepted as equivalent to <code>&quot;datetime&quot;</code> but deprecated.</p>
+<p>All astronomical computations rely on the algorithms of Meuss (1998), and consequently returned values are very precise. However, these algorithms are computationally rather costly. Contrary to other faster algorithms, they give reliable estimates even for latitudes near the poles.</p>
+<p>However, at high latitudes due to the almost tangential path of the sun to the horizon, atmospheric effects that slightly alter the apparent elevation of the sun have much larger effects on the apparent timing of events given that the solar elevation angle changes at a slower rate than at lower latitudes.</p>
 </div>
 <div id="position-of-the-sun" class="section level2">
 <h2>Position of the sun</h2>
-<p>In photobiology research we sometimes need to calculate the position on the sun at arbitrary geographic locations and times. The function <code>sun_angles</code> returns the azimuth in degrees eastwards, altitude in degrees above the horizon, solar disk diameter in degrees and sun to earth distance in astronomical units. The time should be a <code>POSIXct</code> vector, possibly of length one. The easiest way create date and time constant values is to use package <code>lubridate</code>.</p>
-<hr>
-In versions up to 0.9.11 in addition parameter <code>geocode</code> most functions also had the redundant formal parameters <code>lon</code> and <code>lat</code> which were removed in version 0.9.12. This change may require users’ scripts to be revised.
-<hr>
-In versions 0.9.16 and later the code has been optimized for performance with time vectors, making massive calculations such as the sun position for every minute of the year quite fast (couple of seconds). We keep, however, examples with rather short vectors.
-<hr>
-<p>For calculation of the position of the sun we need to supply geographic coordinates and a time instant. The object to be supplied as argument for <code>geocode</code> is a data frame with variables <code>lon</code> and <code>lat</code> giving the location of Earth. This matches the return value of function <code>ggmap::geocode()</code>, function that can be used to find the coordinates using any <em>address</em> entered as a character string understood by the Google maps API. We use the “geocode” for Helsinki.</p>
-<p>Be aware that to obtain results based on local time, the correct time zone needs to be set. In the examples we use functions from package ‘lubridate’ for working with times and dates. The argument passed to parameter <code>time</code> can be a “vector” of <code>POSIXct</code> values. The returned value is a <code>data.frame</code>.</p>
+<p>The position of the sun at an arbitrary geographic locations and time instant can be described with two angles: elevation above the horizon and azimuth angle relative to the geographic North. If expressed in degrees, solar elevation (<span class="math inline">\(h\)</span>) varies between -90 and 90 degrees, while being visible when angles are positive and otherwise occluded below the horizon. Azimuth angle (<span class="math inline">\(\alpha\)</span>) varies clockwise from North between 0 and 360 degrees. Zenith angle (<span class="math inline">\(z\)</span>), provides the same information as the elevation angle but using the zenith as starting point, consequently taking values between 0 and 180 degrees, such that <span class="math inline">\(z = 90 - h\)</span>. Declination angle describes the angle between the plane of the Equator and the plane of the Earth’s orbit around the sun, and varies with the seasons of the year.</p>
+<p>The function <code>sun_angles</code> returns location, civil time, local solar time, the azimuth in degrees eastwards, elevation in degrees above the horizon, declination, the equation of time and the hour angle.</p>
+<table>
+<colgroup>
+<col width="100%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">In versions up to 0.9.11 in addition parameter <code>geocode</code> most functions also had the redundant formal parameters <code>lon</code> and <code>lat</code> which were removed in version 0.9.12. This change may require users’ scripts to be revised.</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">In versions 0.9.16 and later the code has been optimized for performance with time vectors, making massive calculations such as the sun position for every minute of the year quite fast (couple of seconds). We keep, however, examples with rather short vectors.</td>
+</tr>
+</tbody>
+</table>
+<p>For calculation of the position of the sun we need to supply geographic coordinates and a time instant. The time instant passed as argument should be a <code>POSIXct</code> vector, possibly of length one. The easiest way create date and time constant values is to use package ‘lubridate’.</p>
+<p>The object to be supplied as argument for <code>geocode</code> is a data frame with variables <code>lon</code> and <code>lat</code> giving the location on Earth. This matches the return value of functions <code>tidygeocoder::geo_osm()</code>, <code>tidygeocoder::geo_google()</code> and <code>ggmap::geocode()</code>, functions that can be used to find the coordinates using an <em>address</em> entered as a character string understood by the OSM or Google maps APIs (Google requires an API key and registration, while OSM is open). We use the “geocode” for Helsinki, defined explicitly rather than searched for.</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>my.geocode <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">lat =</span> <span class="fl">60.16</span>, <span class="at">lon =</span> <span class="fl">24.93</span>, <span class="at">address =</span> <span class="st">&quot;Helsinki&quot;</span>)</span></code></pre></div>
-<p>The position of the sun at Helsinki, at the given time instant decoded for time zone <em>Eastern European Time</em>.</p>
+<p>Be aware that to obtain correct the time zone must be correctly set for the argument passed to <code>time</code>. To obtain results based on local time, this time zone needs to be set in the <code>POSIXct</code> object or passed as a argument to <code>tz</code>. In the examples we use functions from package ‘lubridate’ for working with times and dates. The argument passed to parameter <code>time</code> can be a “vector” of <code>POSIXct</code> values. The returned value is a <code>data.frame</code>.</p>
+<p>The position of the sun at Helsinki, at the given instant in time for time zone <em>Eastern European Time</em>.</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sun_angles</span>(<span class="at">time =</span> <span class="fu">ymd_hms</span>(<span class="st">&quot;2017-06-20 08:00:00&quot;</span>, <span class="at">tz =</span> <span class="st">&quot;EET&quot;</span>), <span class="at">geocode =</span> my.geocode)</span></code></pre></div>
 <pre><code>## # A tibble: 1 x 11
 ##   time                tz    solartime longitude latitude address azimuth
@@ -184,12 +200,12 @@ In versions 0.9.16 and later the code has been optimized for performance with ti
 ## 1 2017-06-20 08:00:00 EET   06:38:09       24.9     60.2 Helsin~    85.8
 ## # ... with 4 more variables: elevation &lt;dbl&gt;, declination &lt;dbl&gt;,
 ## #   eq.of.time &lt;dbl&gt;, hour.angle &lt;dbl&gt;</code></pre>
-<p>Functions have defaults for their arguments, but rarely Greenwich will be the location you are interested in.</p>
+<p>Functions have defaults for their arguments, but rarely Greenwich will be the location you are interested in. Current UTC time is probably a useful default in some cases.</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sun_angles</span>()</span></code></pre></div>
 <pre><code>## # A tibble: 1 x 11
 ##   time                tz    solartime longitude latitude address azimuth
 ##   &lt;dttm&gt;              &lt;chr&gt; &lt;solar_t&gt;     &lt;dbl&gt;    &lt;dbl&gt; &lt;chr&gt;     &lt;dbl&gt;
-## 1 2021-02-15 22:57:45 UTC   22:43:39          0     51.5 Greenw~    332.
+## 1 2021-02-16 15:24:34 UTC   15:10:31          0     51.5 Greenw~    228.
 ## # ... with 4 more variables: elevation &lt;dbl&gt;, declination &lt;dbl&gt;,
 ## #   eq.of.time &lt;dbl&gt;, hour.angle &lt;dbl&gt;</code></pre>
 <p>A vector of times is accepted as argument, and as performance is optimized for this case, <em>vectorization</em> will markedly improve performance compared to multiple calls to the function. The vector of times can be created on the fly, or stored beforehand.</p>
@@ -215,8 +231,8 @@ In versions 0.9.16 and later the code has been optimized for performance with ti
 ## #   eq.of.time &lt;dbl&gt;, hour.angle &lt;dbl&gt;</code></pre>
 <p>Geocodes for several locations can be stored in a data frame with multiple rows.</p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>two.geocodes <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">lat =</span> <span class="fu">c</span>(<span class="fl">60.16</span>, <span class="fl">65.02</span>), </span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">lon =</span> <span class="fu">c</span>(<span class="fl">24.93</span>, <span class="fl">25.47</span>),</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">address =</span> <span class="fu">c</span>(<span class="st">&quot;Helsinki&quot;</span>, <span class="st">&quot;Oulu&quot;</span>))</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>                           <span class="at">lon =</span> <span class="fu">c</span>(<span class="fl">24.93</span>, <span class="fl">25.47</span>),</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>                           <span class="at">address =</span> <span class="fu">c</span>(<span class="st">&quot;Helsinki&quot;</span>, <span class="st">&quot;Oulu&quot;</span>))</span>
 <span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="fu">sun_angles</span>(<span class="at">time =</span> my.times, <span class="at">geocode =</span> two.geocodes)</span></code></pre></div>
 <pre><code>## # A tibble: 6 x 11
 ##   time                tz    solartime longitude latitude address azimuth
@@ -237,7 +253,7 @@ In versions 0.9.16 and later the code has been optimized for performance with ti
 ## 1 2010-06-22 09:51:00 UTC   11:28:54       25.0     60.2 Kumpul~    168.
 ## # ... with 4 more variables: elevation &lt;dbl&gt;, declination &lt;dbl&gt;,
 ## #   eq.of.time &lt;dbl&gt;, hour.angle &lt;dbl&gt;</code></pre>
-<p>One what is needed is only one of the solar angles, functions returning vectors instead of data frames can be useful.</p>
+<p>If what is needed is only one of the solar angles, functions returning vectors instead of data frames can be useful. (In their current implementation these functions <em>do not</em> have improved performance compared to <code>sun_angles()</code>)</p>
 <div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sun_elevation</span>(<span class="at">time =</span> my.times, <span class="at">geocode =</span> my.geocode)</span></code></pre></div>
 <pre><code>## [1] -52.639345 -22.722495   6.710245</code></pre>
 <div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sun_zenith_angle</span>(<span class="at">time =</span> my.times, <span class="at">geocode =</span> my.geocode)</span></code></pre></div>
@@ -247,16 +263,16 @@ In versions 0.9.16 and later the code has been optimized for performance with ti
 </div>
 <div id="times-of-sunrise-solar-noon-and-sunset" class="section level2">
 <h2>Times of sunrise, solar noon and sunset</h2>
-<p>Functions <code>sunrise_time</code>, <code>sunset_time</code>, <code>noon_time</code>, <code>day_length</code> and <code>night_length</code> have all the same parameter signature. An additional function, <code>day_night</code> returns a data frame containing all the quantities returned by the other functions. They are all vectorized for the <code>date</code> and <code>geocode</code> parameters. As arguments are the same for all these functions, we use <code>sunrise_time</code> in the examples below, but they apply to the other functions described in this section.</p>
+<p>Functions <code>sunrise_time()</code>, <code>sunset_time()</code>, <code>noon_time()</code>, <code>day_length()</code> and <code>night_length()</code> have all the same parameter signature. An additional function, <code>day_night</code> returns a data frame containing all the quantities returned by the other functions. They are all vectorized for the <code>date</code> and <code>geocode</code> parameters. As arguments are the same for all these functions, we use <code>sunrise_time()</code> in the examples below, but these examples are equally relevant to the other functions listed at the start of this paragraph.</p>
 <p>Both latitude and longitude should be supplied through a <code>geocode</code>, but be aware that if the returned value is desired in the local time coordinates of the argument passed to <code>geocode</code>, the time zone should match the geographic coordinates. If geocodes contain a variable <code>&quot;address&quot;</code> it will be copied to the output. We reuse the geocode data frames created above, and create a vector of datetime objects differing in their date. The default time zone of function <code>ymd</code> is UTC, so we override it with EET to match the geocodes for Finnish cities.</p>
 <div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>dates <span class="ot">&lt;-</span> <span class="fu">ymd</span>(<span class="st">&quot;2015-03-01&quot;</span>, <span class="at">tz =</span> <span class="st">&quot;EET&quot;</span>) <span class="sc">+</span> <span class="fu">months</span>(<span class="dv">0</span><span class="sc">:</span><span class="dv">5</span>)</span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>dates</span></code></pre></div>
 <pre><code>## [1] &quot;2015-03-01 EET&quot;  &quot;2015-04-01 EEST&quot; &quot;2015-05-01 EEST&quot; &quot;2015-06-01 EEST&quot;
 ## [5] &quot;2015-07-01 EEST&quot; &quot;2015-08-01 EEST&quot;</code></pre>
 <div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sunrise_time</span>(<span class="fu">now</span>(<span class="st">&quot;UTC&quot;</span>), <span class="at">tz =</span> <span class="st">&quot;UTC&quot;</span>, <span class="at">geocode =</span> my.geocode)</span></code></pre></div>
-<pre><code>## [1] &quot;2021-02-15 05:57:58 UTC&quot;</code></pre>
+<pre><code>## [1] &quot;2021-02-16 05:55:13 UTC&quot;</code></pre>
 <div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sunrise_time</span>(<span class="fu">now</span>(<span class="st">&quot;EET&quot;</span>), <span class="at">tz =</span> <span class="st">&quot;EET&quot;</span>, <span class="at">geocode =</span> my.geocode)</span></code></pre></div>
-<pre><code>## [1] &quot;2021-02-15 07:57:58 EET&quot;</code></pre>
+<pre><code>## [1] &quot;2021-02-16 07:55:13 EET&quot;</code></pre>
 <p>Southern hemisphere latitudes as well as longitudes to the West of the Greenwich meridian should be supplied as negative numbers.</p>
 <div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sunrise_time</span>(dates, <span class="at">geocode =</span> <span class="fu">data.frame</span>(<span class="at">lat =</span> <span class="dv">60</span>, <span class="at">lon =</span> <span class="dv">0</span>))</span></code></pre></div>
 <pre><code>## [1] &quot;2015-02-28 09:01:52 EET&quot;  &quot;2015-03-31 08:28:41 EEST&quot;
@@ -266,7 +282,7 @@ In versions 0.9.16 and later the code has been optimized for performance with ti
 <pre><code>## [1] &quot;2015-02-28 07:09:25 EET&quot;  &quot;2015-03-31 09:26:18 EEST&quot;
 ## [3] &quot;2015-04-30 10:38:10 EEST&quot; &quot;2015-05-31 11:44:25 EEST&quot;
 ## [5] &quot;2015-06-30 12:04:25 EEST&quot; &quot;2015-07-31 11:17:27 EEST&quot;</code></pre>
-<p>The angle used in the twilight calculation can be supplied, either as the name of a standard definition, or as an angle in degrees (negative for sun positions below the horizon). Positive angles can be used when the time of sun occlusion behind a building, mountain, or other obstacle needs to be calculated. The default for <code>twilight</code> is <code>&quot;none&quot;</code> meaning that times correspond to the occlusion of the upper rim of the sun below the theoretical horizon.</p>
+<p>The angle used in the twilight calculation can be supplied, either as the name of a standard definition, or as an angle in degrees (negative for sun positions below the horizon). Positive angles can be used when the time of sun occlusion behind a building, mountain, or other obstacle needs to be calculated. The default for <code>twilight</code> is <code>&quot;none&quot;</code> meaning that times correspond to the occlusion of the upper rim of the sun disk below the theoretical horizon.</p>
 <div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sunrise_time</span>(<span class="fu">ymd</span>(<span class="st">&quot;2017-03-21&quot;</span>, <span class="at">tz =</span> <span class="st">&quot;EET&quot;</span>), </span>
 <span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>             <span class="at">tz =</span> <span class="st">&quot;EET&quot;</span>, </span>
 <span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>             <span class="at">geocode =</span> my.geocode,</span>
@@ -283,7 +299,7 @@ In versions 0.9.16 and later the code has been optimized for performance with ti
 <span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>             <span class="at">twilight =</span> <span class="sc">+</span><span class="dv">12</span>)</span></code></pre></div>
 <pre><code>## [1] &quot;2017-03-20 08:06:15 EET&quot;</code></pre>
 <p>Default latitude is zero (the Equator), the default longitude is zero (Greenwich). Be also aware that for summer dates the times are formatted for printing accordingly. In the examples below this can be recognized by the time zone being reported as EEST instead of EET during the summer for Eastern Europe.</p>
-<p>The main function is called <code>day_night</code> and returns a data frame containing both the input values and the results of the calculations. See below for additional convenience functions useful in the case one needs only one of the calculated variables. In other cases it is more efficient to compute the whole data frame and later select the columns of interest.</p>
+<p>The main function is called <code>day_night()</code> and returns a data frame containing both the input values and the results of the calculations. See below for additional convenience functions useful in the case one needs only one of the calculated variables. In other cases it is more efficient to compute the whole data frame and later select the columns of interest.</p>
 <div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">day_night</span>(dates[<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>], </span>
 <span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>          <span class="at">geocode =</span> my.geocode)</span></code></pre></div>
 <pre><code>## # A tibble: 3 x 12
@@ -361,7 +377,7 @@ In versions 0.9.16 and later the code has been optimized for performance with ti
 <span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a>             <span class="at">geocode =</span> my.geocode,</span>
 <span id="cb57-4"><a href="#cb57-4" aria-hidden="true" tabindex="-1"></a>             <span class="at">unit.out =</span> <span class="st">&quot;hours&quot;</span>)</span></code></pre></div>
 <pre><code>## [1] 6.346365</code></pre>
-<p>Functions <code>day_length</code> and <code>night_length</code> return by default the length of time in hours.</p>
+<p>Functions <code>day_length()</code> and <code>night_length()</code> return by default the length of time in hours.</p>
 <div class="sourceCode" id="cb59"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="fu">day_length</span>(dates, <span class="at">geocode =</span> my.geocode)</span></code></pre></div>
 <pre><code>## [1] 10.34596 13.19241 15.90766 18.27962 18.80811 16.97567</code></pre>
 <div class="sourceCode" id="cb61"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a><span class="fu">night_length</span>(dates, <span class="at">geocode =</span> my.geocode)</span></code></pre></div>
@@ -373,7 +389,7 @@ In versions 0.9.16 and later the code has been optimized for performance with ti
 </div>
 <div id="solar-time" class="section level2">
 <h2>Solar time</h2>
-<p>In field research it is in many cases preferable to sample or measure, and present and plot data based on local solar time. Two functions are provided. They differ in the value returned, either a time of day in hours, or a datetime.</p>
+<p>In field research it is in many cases preferable to sample or measure, and present and plot data based on local solar time, as this are the time coordinates organisms are exposed to in nature. Two functions are provided. They differ in the value returned, either a time of day in hours, or a datetime.</p>
 <div class="sourceCode" id="cb67"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a>Paris.geo <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">lon =</span> <span class="fl">2.352222</span>, <span class="at">lat =</span> <span class="fl">48.85661</span>, <span class="at">address =</span> <span class="st">&quot;Paris&quot;</span>)</span>
 <span id="cb67-2"><a href="#cb67-2" aria-hidden="true" tabindex="-1"></a>Paris.time <span class="ot">&lt;-</span> <span class="fu">ymd_hms</span>(<span class="st">&quot;2016-09-30 06:00:00&quot;</span>, <span class="at">tz =</span> <span class="st">&quot;UTC&quot;</span>)</span>
 <span id="cb67-3"><a href="#cb67-3" aria-hidden="true" tabindex="-1"></a><span class="fu">solar_time</span>(Paris.time, <span class="at">geocode =</span> Paris.geo)</span></code></pre></div>
@@ -393,17 +409,17 @@ In versions 0.9.16 and later the code has been optimized for performance with ti
 </div>
 <div id="time-of-day" class="section level2">
 <h2>Time of day</h2>
-<p>Function <code>as_tod()</code> facilitates conversion of R’s time date objects into a numeric value representing the time of day in one of hour, minute or second as unit of expression.</p>
+<p>Function <code>as_tod()</code> facilitates conversion of R’s time date objects into a numeric value representing the time of day as numerical value with a decimal fraction using one of hour, minute or second as unit of expression.</p>
 <div class="sourceCode" id="cb79"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb79-1"><a href="#cb79-1" aria-hidden="true" tabindex="-1"></a>times <span class="ot">&lt;-</span> <span class="fu">now</span>(<span class="at">tzone =</span> <span class="st">&quot;UTC&quot;</span>) <span class="sc">+</span> <span class="fu">hours</span>(<span class="dv">0</span><span class="sc">:</span><span class="dv">6</span>)</span>
 <span id="cb79-2"><a href="#cb79-2" aria-hidden="true" tabindex="-1"></a>times</span></code></pre></div>
-<pre><code>## [1] &quot;2021-02-15 22:57:46 UTC&quot; &quot;2021-02-15 23:57:46 UTC&quot;
-## [3] &quot;2021-02-16 00:57:46 UTC&quot; &quot;2021-02-16 01:57:46 UTC&quot;
-## [5] &quot;2021-02-16 02:57:46 UTC&quot; &quot;2021-02-16 03:57:46 UTC&quot;
-## [7] &quot;2021-02-16 04:57:46 UTC&quot;</code></pre>
+<pre><code>## [1] &quot;2021-02-16 15:24:35 UTC&quot; &quot;2021-02-16 16:24:35 UTC&quot;
+## [3] &quot;2021-02-16 17:24:35 UTC&quot; &quot;2021-02-16 18:24:35 UTC&quot;
+## [5] &quot;2021-02-16 19:24:35 UTC&quot; &quot;2021-02-16 20:24:35 UTC&quot;
+## [7] &quot;2021-02-16 21:24:35 UTC&quot;</code></pre>
 <div class="sourceCode" id="cb81"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb81-1"><a href="#cb81-1" aria-hidden="true" tabindex="-1"></a><span class="fu">as_tod</span>(times)</span></code></pre></div>
-<pre><code>## [1] 22.9629239 23.9629239  0.9629239  1.9629239  2.9629239  3.9629239  4.9629239</code></pre>
+<pre><code>## [1] 15.40996 16.40996 17.40996 18.40996 19.40996 20.40996 21.40996</code></pre>
 <div class="sourceCode" id="cb83"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb83-1"><a href="#cb83-1" aria-hidden="true" tabindex="-1"></a><span class="fu">as_tod</span>(times, <span class="at">unit.out =</span> <span class="st">&quot;minutes&quot;</span>)</span></code></pre></div>
-<pre><code>## [1] 1377.77543 1437.77543   57.77543  117.77543  177.77543  237.77543  297.77543</code></pre>
+<pre><code>## [1]  924.5977  984.5977 1044.5977 1104.5977 1164.5977 1224.5977 1284.5977</code></pre>
 </div>
 <div id="relative-air-mass" class="section level2">
 <h2>Relative air mass</h2>

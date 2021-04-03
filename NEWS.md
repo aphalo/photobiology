@@ -21,7 +21,6 @@ editor_options:
 -   Add warning for handling of multiple spectra in long form to
     `integrate_spct()` method.
 -   Fix handling of `na.rm = TRUE` in `find_peaks()`.
--   **TODO: replace white LED example data!!!!**
 
 # photobiology 0.10.5
 

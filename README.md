@@ -46,9 +46,9 @@ sun.
 geocode <- data.frame(lon = 0, lat = 55)
 date <- lubridate::today(tzone = "UTC")
 sunrise_time(date, tz = "UTC", geocode = geocode)
-#> [1] "2021-02-15 07:21:43 UTC"
+#> [1] "2021-04-03 05:25:39 UTC"
 day_length(date, tz = "UTC", geocode = geocode)
-#> [1] 9.746371
+#> [1] 13.25112
 ```
 
 ## Installation
@@ -57,6 +57,17 @@ Installation of the most recent stable version from CRAN:
 
 ``` r
 install.packages("photobiology")
+```
+
+Once package ‘photobiology’ is installed, installation of the remaining
+or missing packages in the suite from CRAN:
+
+``` r
+intalled_pkgs <- installed.packages()[ , 1]
+missing_pkgs <- setdiff(photobiology::r4p_pkgs, intalled_pkgs)
+if (length(missing_pkgs) > 0) {
+ install.packages(missing_pkgs)
+}
 ```
 
 Installation of the current unstable version from GitHub:
