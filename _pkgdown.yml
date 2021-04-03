@@ -324,6 +324,9 @@ reference:
   - subtitle: Data for animal vision
     contents:
     - beesxyzCMF.spct
+  - subtitle: Utility data
+    contents:
+    - r4p_pkgs
 
   - title: Housekeeping and helper functions
     desc: Utilities mainly used internally in the 'r4photobiology' suite of R packages, but safe to use in user code.
