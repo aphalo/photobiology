@@ -90,7 +90,7 @@
 #'   temperature, dewpoint temperature, andenhancement factors in the range -100
 #'   TO +100 C. The Proceedings of the Third International Symposium on Humidity
 #'   & Moisture, Teddington, London, England, April 1998.
-#'   \url{http://www.decatur.de/javascript/dew/resources/its90formulas.pdf}
+#'   \url{https://www.decatur.de/javascript/dew/resources/its90formulas.pdf}
 #'
 #'   Monteith, J., Unsworth, M. (2008) Principles of Environmental Physics.
 #'   Academic Press, Amsterdam.
