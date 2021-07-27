@@ -61,7 +61,7 @@
 #'
 #' @note The inverse of the Groff Gratch equation has yet to be implemented.
 #'
-#' @return A numeric vector of partial pressures in pascal (P) for
+#' @return A numeric vector of partial pressures in pascal (Pa) for
 #'   \code{water_vp_sat} and \code{water_mvc2vp}, a numeric vector of dew point
 #'   temperatures (C) for \code{water_dp} and numeric vector of mass per volume
 #'   concentrations (g m-3) for \code{water_vp2mvc}.
@@ -79,9 +79,8 @@
 #'   Physics and Chemistry, September-December 1976, Vol. 80A, Nos.5 and 6,
 #'   775-785
 #'
-#'   Wexler, A.,  Vapor Pressure Formulation for Ice, Journal of Research of the
-#'   National Bureau of Standards - A. Physics and Chemistry, January - February
-#'   1977, Vol. 81A, No. 1, 5-19
+#'   Wexler, A., (1977) Vapor Pressure Formulation for Ice, Journal of Research of the
+#'   National Bureau of Standards - A. Physics and Chemistry, Vol. 81A, No. 1, 5-19
 #'
 #'   Alduchov, O. A., Eskridge, R. E., 1996. Improved Magnus Form Approximation
 #'   of Saturation Vapor Pressure. Journal of Applied Meteorology, 35: 601-609 .
@@ -94,6 +93,10 @@
 #'
 #'   Monteith, J., Unsworth, M. (2008) Principles of Environmental Physics.
 #'   Academic Press, Amsterdam.
+#'
+#'   Allen R G, Pereira L S, Raes D, Smith M. (1998) Crop evapotranspiration:
+#'   Guidelines for computing crop water requirements. FAO Irrigation and
+#'   drainage paper 56. Rome: FAO.
 #'
 #'   [Equations describing the physical properties of moist
 #'   air](http://www.conservationphysics.org/atmcalc/atmoclc2.pdf)
@@ -352,4 +355,53 @@ water_RH2vp <- function(relative.humidity,
                                    over.ice = over.ice,
                                    method = method,
                                    check.range = check.range)
+}
+
+#' @rdname water_vp_sat
+#'
+#' @param temperature.step numeric Delta or step used to estimate the slope
+#'   as a finite difference.
+#'
+#' @export
+#'
+#' @examples
+#'
+#' water_vp_sat_slope(temperature = 20)
+#'
+water_vp_sat_slope <-  function(temperature,
+                                over.ice = FALSE,
+                                method = "tetens",
+                                check.range = TRUE,
+                                temperature.step = 0.1) {
+  vp_sat1 <- water_vp_sat(temperature + temperature.step / 2,
+                          over.ice = over.ice,
+                          method = method,
+                          check.range = check.range)
+  vp_sat2 <- water_vp_sat(temperature - temperature.step / 2,
+                          over.ice = over.ice,
+                          method = method,
+                          check.range = check.range)
+  (vp_sat1 - vp_sat2) / temperature.step
+}
+
+#' @rdname water_vp_sat
+#'
+#' @param atmospheric.pressure numeric Atmospheric pressure (Pa).
+#'
+#' @export
+#'
+#' @examples
+#'
+#' psychrometric_constant(81.8e3)
+#'
+psychrometric_constant <- function(atmospheric.pressure = 101325) {
+  # latent heat of vaporization, 2.45 [MJ kg -1 ],
+  lambda <- 2.45
+  # specific heat at constant pressure, 1.013 10 -3 [MJ kg -1 °C -1 ]
+  C.p <- 1.013e-3
+  # ratio molecular weight of water vapour/dry air = 0.622
+  epsilon <- 0.622
+
+  # Pa -> Pa
+  (C.p * atmospheric.pressure) / (epsilon * lambda)
 }

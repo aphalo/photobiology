@@ -429,7 +429,7 @@ navbar:
     tutorials:
       text: Resources
       menu:
-      - text: R for Photobiology packages
+      - text: R for Photobiology web site
         href: https://www.r4photobiology.info/
       - text: A handbook of methods
         href: https://doi.org/10.31885/9789521083631

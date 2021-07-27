@@ -8,6 +8,8 @@
 \alias{water_mvc2vp}
 \alias{water_vp2RH}
 \alias{water_RH2vp}
+\alias{water_vp_sat_slope}
+\alias{psychrometric_constant}
 \title{Water vapour pressure}
 \usage{
 water_vp_sat(
@@ -42,6 +44,16 @@ water_RH2vp(
   pc = TRUE,
   check.range = TRUE
 )
+
+water_vp_sat_slope(
+  temperature,
+  over.ice = FALSE,
+  method = "tetens",
+  check.range = TRUE,
+  temperature.step = 0.1
+)
+
+psychrometric_constant(atmospheric.pressure = 101325)
 }
 \arguments{
 \item{temperature}{numeric vector of air temperatures (C).}
@@ -65,9 +77,14 @@ volume (g m-3).}
 
 \item{relative.humidity}{numeric Relative humedity as % (default) or as a
 fraction of 1.}
+
+\item{temperature.step}{numeric Delta or step used to estimate the slope
+as a finite difference.}
+
+\item{atmospheric.pressure}{numeric Atmospheric pressure (Pa).}
 }
 \value{
-A numeric vector of partial pressures in pascal (P) for
+A numeric vector of partial pressures in pascal (Pa) for
   \code{water_vp_sat} and \code{water_mvc2vp}, a numeric vector of dew point
   temperatures (C) for \code{water_dp} and numeric vector of mass per volume
   concentrations (g m-3) for \code{water_vp2mvc}.
@@ -157,6 +174,12 @@ water_mvc2vp(water.mvc = 30, temperature = 40) # g m-3 -> Pa
 
 water_dp(water.vp = water_mvc2vp(water.mvc = 10, temperature = 30)) # g m-3 -> C
 
+
+water_vp_sat_slope(temperature = 20)
+
+
+psychrometric_constant(81.8e3)
+
 }
 \references{
 Tetens, O., 1930. Uber einige meteorologische Begriffe.
@@ -172,9 +195,8 @@ Tetens, O., 1930. Uber einige meteorologische Begriffe.
   Physics and Chemistry, September-December 1976, Vol. 80A, Nos.5 and 6,
   775-785
 
-  Wexler, A.,  Vapor Pressure Formulation for Ice, Journal of Research of the
-  National Bureau of Standards - A. Physics and Chemistry, January - February
-  1977, Vol. 81A, No. 1, 5-19
+  Wexler, A., (1977) Vapor Pressure Formulation for Ice, Journal of Research of the
+  National Bureau of Standards - A. Physics and Chemistry, Vol. 81A, No. 1, 5-19
 
   Alduchov, O. A., Eskridge, R. E., 1996. Improved Magnus Form Approximation
   of Saturation Vapor Pressure. Journal of Applied Meteorology, 35: 601-609 .
@@ -187,6 +209,10 @@ Tetens, O., 1930. Uber einige meteorologische Begriffe.
 
   Monteith, J., Unsworth, M. (2008) Principles of Environmental Physics.
   Academic Press, Amsterdam.
+
+  Allen R G, Pereira L S, Raes D, Smith M. (1998) Crop evapotranspiration:
+  Guidelines for computing crop water requirements. FAO Irrigation and
+  drainage paper 56. Rome: FAO.
 
   [Equations describing the physical properties of moist
   air](http://www.conservationphysics.org/atmcalc/atmoclc2.pdf)

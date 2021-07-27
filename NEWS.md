@@ -4,6 +4,14 @@ editor_options:
     wrap: 72
 ---
 
+# photobiology 0.10.7
+
+-   Add function `ET_ref()` for computation of reference
+    evapotranspiration, implementing the original FAO56 formulation of
+    the Penman-Monteith method as well as modified in 2005 for tall and
+    short vegetation according to ASCE-EWRI. The formulation is that for
+    hourly computations in all cases.
+
 # photobiology 0.10.6
 
 -   Fix boundary-case bug in `msmsply()`.
@@ -21,6 +29,8 @@ editor_options:
 -   Add warning for handling of multiple spectra in long form to
     `integrate_spct()` method.
 -   Fix handling of `na.rm = TRUE` in `find_peaks()`.
+-   **Move git repository from Bitbucket to Github.**
+-   Set up Github action for CRAN-checks on Windows, OS X and Ubuntu.
 
 # photobiology 0.10.5
 
