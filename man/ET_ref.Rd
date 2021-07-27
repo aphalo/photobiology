@@ -2,6 +2,7 @@
 % Please edit documentation in R/evapotranspiration.r
 \name{ET_ref}
 \alias{ET_ref}
+\alias{net_lw_radiation}
 \title{Evapotranspiration}
 \usage{
 ET_ref(
@@ -12,8 +13,11 @@ ET_ref(
   nighttime = FALSE,
   atmospheric.pressure = 10.13,
   soil.heat.flux = 0,
-  method = "FAO.PM"
+  method = "FAO.PM",
+  check.range = TRUE
 )
+
+net_lw_radiation(temperature, water.vp)
 }
 \arguments{
 \item{temperature}{numeric vector of air temperatures (C) at 2 m height.}
@@ -33,9 +37,15 @@ daytime- and nighttime canopy conductances.}
 temperature is increasing.}
 
 \item{method}{character The name of an estimation method.}
+
+\item{check.range}{logical Flag indicating whether to check or not that
+arguments for temperature are within range of method. Passed to
+function calls to \code{water_vp_sat()} and \code{water_vp_sat_slope()}.}
 }
 \value{
-A numeric vector of $ET_{ref}$ estimates expressed as mm/h
+A numeric vector of $ET_{ref}$ estimates expressed as mm/h.
+
+A numeric vector of $R_{nl}$ estimates expressed as W / m-2.
 }
 \description{
 Compute an estimate of actual or potential evapotranspiration from
@@ -54,35 +64,37 @@ Currently only one method, based on the Penman-Monteith equation
   Corrections are included to account for the assumption that the vegetation
   has a height of 0.12 m. These input data can be averages over different
   lengths of time. Allen et al. (1998) describes different approaches to
-  estimate input data when not available.
+  estimate input data when not available. The auxiliary function
+  \code{net_lw_radiation()} can be used to estimate the net lw radiation
+  uncorrected for cloudiness.
 }
 \examples{
 # instantaneous
 ET_ref(temperature = 20,
-       water.vp = water_RH2vp(70, 20),
+       water.vp = water_RH2vp(0.7, 20),
        wind.speed = 0,
        radiation = 10)
 
 ET_ref(temperature = 35,
-       water.vp = water_RH2vp(10, 35),
+       water.vp = water_RH2vp(0.1, 35),
        wind.speed = 5,
        radiation = 400)
 
 ET_ref(temperature = 35,
-       water.vp = water_RH2vp(10, 35),
+       water.vp = water_RH2vp(0.1, 35),
        wind.speed = 5,
        radiation = 400,
        method = "ASCE.PM.short")
 
 ET_ref(temperature = 5,
-       water.vp = water_RH2vp(95, 5),
+       water.vp = water_RH2vp(0.95, 5),
        wind.speed = 0.5,
        radiation = -10,
        nighttime = TRUE,
        method = "ASCE.PM.short")
 
 ET_ref(temperature = 35,
-       water.vp = water_RH2vp(10, 35),
+       water.vp = water_RH2vp(0.10, 35),
        wind.speed = 5,
        radiation = 400,
        method = "ASCE.PM.tall")

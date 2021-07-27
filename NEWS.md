@@ -10,7 +10,9 @@ editor_options:
     evapotranspiration, implementing the original FAO56 formulation of
     the Penman-Monteith method as well as modified in 2005 for tall and
     short vegetation according to ASCE-EWRI. The formulation is that for
-    hourly computations in all cases.
+    ET expressed in mm/h, but modified to use as input flux rates in
+    W/m2 and pressures expressed in Pa. Function `net_lw_radiation()`
+    can be used to compute the long wave net radiation under clear sky.
 
 # photobiology 0.10.6
 
