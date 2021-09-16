@@ -84,16 +84,18 @@ sun_angles <- function(time = lubridate::now(tzone = "UTC"),
 
   z <- list(nrow(geocode))
   for (i in seq_len(nrow(geocode))) {
-    z[[i]] <- sun_angles_fast(time = time,
-                              tz = tz,
-                              geocode = dplyr::slice(geocode, i),
-                              use.refraction = use.refraction)
+    temp <- sun_angles_fast(time = time,
+                            tz = tz,
+                            geocode = dplyr::slice(geocode, i),
+                            use.refraction = use.refraction)
+    z[[i]] <- temp # needed so that class attribute is retained
   }
   # we supress warning of dropped attributes and restore them
-  temp.class <- class(z[["solartime"]])
   z <- suppressWarnings(dplyr::bind_rows(z))
-  class(z[["solartime"]]) <- temp.class
+  class(z[["solartime"]]) <- class(temp[["solartime"]])
 
+  # we could use rbind instead of dplyr::bind_rows as the second drops the class attribute
+  # for solartime.
   # first.iter <- TRUE
   # for (i in 1:nrow(geocode)) {
   #   temp <- sun_angles_fast(time = time,
@@ -108,9 +110,6 @@ sun_angles <- function(time = lubridate::now(tzone = "UTC"),
   #                make.row.names = FALSE)
   #   }
   # }
-
-  # we could use rbind instead of dplyr::bind_rows as the second drops the class attribute
-  # for solartime.
 
   # assertion
   if (any(z[["elevation"]] < (-90)) || any(z[["elevation"]] > 90))
@@ -176,11 +175,12 @@ sun_angles_fast <- function(time,
   }
   azimuth.angle <- azimuth_angle(lat, hour.angle, zenith.angle, sun.declin)
   solar.time <- solar.time / 60 # hours
+  solar.time <- solar.time  %% 24 # needed for DST
   class(solar.time) <- c("solar_time", class(solar.time))
 
   tibble::tibble(time = lubridate::with_tz(time, tz),
                  tz = rep(tz, length(time)),
-                 solartime = solar.time %% 24, # needed for DST
+                 solartime = solar.time,
                  longitude = rep(lon, length(time)),
                  latitude = rep(lat, length(time)),
                  address = rep(address, length(time)),
