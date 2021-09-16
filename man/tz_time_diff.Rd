@@ -20,6 +20,14 @@ recognized by functions from package 'lubridate'}
 A \code{numeric} value.
 }
 \description{
-Returns the time difference in hours between two time zones at a given
-instant in time.
+Returns the difference in local time expressed in hours between two time
+zones at a given instant in time. The difference due to daylight saving time
+or Summer and Winter time as well as historical changes in time zones are
+taken into account.
+}
+\note{
+This function is implemented using functions from package 'lubridate'.
+  For details on the handling of time zones, please, consult the
+  documentation for \code{\link{Sys.timezone}} about system differences in
+  time zone names and handling.
 }

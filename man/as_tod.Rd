@@ -34,3 +34,11 @@ as_tod(my_instants)
 as_tod(my_instants, unit.out = "tod_time")
 
 }
+\seealso{
+\code{\link{solar_time}}
+
+Other Time of day functions: 
+\code{\link{format.tod_time}()},
+\code{\link{print.tod_time}()}
+}
+\concept{Time of day functions}

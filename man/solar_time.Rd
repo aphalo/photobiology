@@ -17,19 +17,31 @@ current time}
 \item{geocode}{data frame with variables lon and lat as numeric values
 (degrees).}
 
-\item{unit.out}{character string, One of "datetime", "hour", "minute", or "second".}
+\item{unit.out}{character string, One of "datetime", "time", "hour", "minute", or
+"second".}
 }
 \value{
-For \code{solar_time()} numeric value in seconds from midnight but
-  with an additional class attribute "solar.time".
+In all cases solar time is expressed as time since local astronomical
+  midnight and, thus, lacks date information. If \code{unit.out = "time"}, a
+  numeric value in seconds but with an additional class attribute
+  "solar_time"; if \code{unit.out = "datetime"}, a "POSIXct" value in seconds
+  from midnight but with an additional class attribute "solar_solar"; if
+  \code{unit.out = "hour"} or \code{unit.out = "minute"} or \code{unit.out =
+  "second"}, a numeric value.
 }
 \description{
-\code{solar_time} computes from a time and geocode, the time of day expressed
-in seconds since midnight. \code{solar_date} returns the same instant in time
-as a date-time object. Solar time is useful when we want to plot data
-according to the local solar time of day, irrespective of the date. Solar
-date is useful when we want to plot a time series stretching for several days
-using the local solar time but distinguishing between days.
+\code{solar_time()} computes the time of day expressed in seconds since the
+astronomical midnight using and instant in time and a geocode as input. Solar
+time is useful when we want to plot data according to the local solar time
+rather than the local time in use at a time zone. How the returned instant in
+time is expressed depends on the argument passed to \code{unit.out}.
+}
+\details{
+Solar time is determined by the position of the sun in the sky and
+it almost always differs from the time expressed in the local time
+coordinates in use. The differences can vary from a few minutes up to a
+couple of hours depending on the exact location within the time zone and the
+use or not of daylight saving time.
 }
 \note{
 The algorithm is approximate, it calculates the difference between
@@ -39,12 +51,11 @@ The algorithm is approximate, it calculates the difference between
   and this leads to a small jump at midnight.
 }
 \section{Warning!}{
-
-  Returned values are computed based on the time zone of the argument for
-  parameter time. In the case of solar time, this timezone does not affect
-  the result. However, in the case of solar dates the date part may be
-  off by one day, if the time zone does not match the coordinates of the
-  geocode value provided as argument.
+ Returned values are computed based on the time zone of the
+  argument for parameter time. In the case of solar time, this timezone does
+  not affect the result. However, in the case of solar dates the date part
+  may be off by one day, if the time zone does not match the coordinates of
+  the geocode value provided as argument.
 }
 
 \examples{
@@ -63,13 +74,11 @@ class(sol_d)
 
 }
 \seealso{
-Other astronomy related functions: 
-\code{\link{day_night}()},
-\code{\link{format.solar_time}()},
-\code{\link{format.tod_time}()},
+\code{\link{as_tod}}
+
+Other Local solar time functions: 
+\code{\link{as.solar_date}()},
 \code{\link{is.solar_time}()},
-\code{\link{print.solar_time}()},
-\code{\link{print.tod_time}()},
-\code{\link{sun_angles}()}
+\code{\link{print.solar_time}()}
 }
-\concept{astronomy related functions}
+\concept{Local solar time functions}

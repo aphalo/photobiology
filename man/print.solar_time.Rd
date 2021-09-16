@@ -21,13 +21,9 @@ Print solar time and solar date objects
 Default is to print the underlying POSIXct as a solar time.
 }
 \seealso{
-Other astronomy related functions: 
-\code{\link{day_night}()},
-\code{\link{format.solar_time}()},
-\code{\link{format.tod_time}()},
+Other Local solar time functions: 
+\code{\link{as.solar_date}()},
 \code{\link{is.solar_time}()},
-\code{\link{print.tod_time}()},
-\code{\link{solar_time}()},
-\code{\link{sun_angles}()}
+\code{\link{solar_time}()}
 }
-\concept{astronomy related functions}
+\concept{Local solar time functions}

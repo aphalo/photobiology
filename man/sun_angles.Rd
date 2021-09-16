@@ -6,6 +6,7 @@
 \alias{sun_elevation}
 \alias{sun_zenith_angle}
 \alias{sun_azimuth}
+\alias{distance_to_sun}
 \title{Solar angles}
 \usage{
 sun_angles(
@@ -37,6 +38,13 @@ sun_azimuth(
   geocode = tibble::tibble(lon = 0, lat = 51.5, address = "Greenwich"),
   use.refraction = FALSE
 )
+
+distance_to_sun(
+  time = lubridate::now(),
+  tz = lubridate::tz(time),
+  geocode = tibble::tibble(lon = 0, lat = 51.5, address = "Greenwich"),
+  use.refraction = FALSE
+)
 }
 \arguments{
 \item{time}{A "vector" of POSIXct Time, with any valid time zone (TZ) is
@@ -51,15 +59,23 @@ allowed, default is current time.}
 fraction in the atmosphere.}
 }
 \value{
-A data.frame with variables time (in same TZ as input), TZ, solartime,
-  longitude, latitude, address, azimuth, and elevation. If a data frame with
-  multiple rows is passed to \code{geocode} and a vector of times longer
+A \code{data.frame} with variables \code{time} (in same TZ as input),
+  \code{TZ}, \code{solartime}, \code{longitude}, \code{latitude},
+  \code{address}, \code{azimuth}, \code{elevation}, \code{declination},
+  \code{eq.of.time}, \code{hour.angle}, and \code{distance}. If a data frame
+  with multiple rows is passed to \code{geocode} and a vector of times longer
   than one is passed to \code{time}, sun position for all combinations of
-  locations and times are returned are returned by \code{sun_angles}. In
-  contrast, convenience functions returning a vector.
+  locations and times are returned by \code{sun_angles}. Angles are expressed
+  in degrees, \code{solartime} is a vector of class \code{"solar.time"},
+  \code{distance} is expressed in relative sun units.
 }
 \description{
-This function returns the solar angles at a given time and location.
+Function \code{sun_angles()} returns the solar angles and Sun to Earth
+relative distance for given times and locations using a very precise
+algorithm. Convenience functions \code{sun_azimuth()},
+\code{sun_elevation()}, \code{sun_zenith_angle()} and
+\code{distance_to_sun()} are wrappers on \code{sun_angles()} that return
+individual vectors.
 }
 \details{
 This function is an implementation of Meeus equations as used in
@@ -69,12 +85,14 @@ This function is an implementation of Meeus equations as used in
   atmosphere, which does in turn depend on weather conditions. The effect of
   refraction on the apparent position of the sun is only an estimate based on
   "typical" conditions for the atmosphere. The computation is not defined for
-  latitudes 90 and -90 degrees, i.e. exactly at the poles.
+  latitudes 90 and -90 degrees, i.e. exactly at the poles. The function is
+  vectorized and in particular passing a vector of times for a single geocode
+  enhances performance very much as the equation of time, the most time
+  consuming step, is computed only once.
 
-  In the current implementation functions \code{sun_azimuth},
-  \code{sun_elevation}, and \code{sun_zenith_angle} are wrappers
-  on \code{sun_angles}, so if more than one angle is needed it is
-  preferable to directly call \code{sun_angles} as it will be faster.
+  For improved performance, if more than one angle is needed it
+  is preferable to directly call \code{sun_angles} instead of the wrapper
+  functions as this avoids the unnecesary recalculation.
 }
 \note{
 There exists a different R implementation of the same algorithms called
@@ -82,8 +100,8 @@ There exists a different R implementation of the same algorithms called
   'fishmethods'. Although the equations used are almost all the same, the
   function signatures and which values are returned differ. In particular,
   the present implementation splits the calculation into two separate
-  functions, one returning angles at given instants in time, and a
-  separate one returning the timing of events for given dates.
+  functions, one returning angles at given instants in time, and a separate
+  one returning the timing of events for given dates.
 }
 \examples{
 library(lubridate)
@@ -103,9 +121,7 @@ Meeus, J. (1998) Astronomical Algorithms, 2 ed., Willmann-Bell, Richmond,
 VA, USA. ISBN 978-0943396613.
 
 A different implementation is available at
-\url{https://apps-nefsc.fisheries.noaa.gov/AstroCalc4R/} and in R paclage
-'fishmethods'. In 'fishmethods' (= 1.11-0) there is a bug in function
-astrocalc4r() that affects sunrise and sunset times.
+\url{https://apps-nefsc.fisheries.noaa.gov/AstroCalc4R/}.
 
 An interactive web page using the same algorithms is available at
 \url{https://www.esrl.noaa.gov/gmd/grad/solcalc/}. There are small
@@ -115,11 +131,6 @@ related to the estimation of atmospheric refraction (about 0.1 degrees).
 \seealso{
 Other astronomy related functions: 
 \code{\link{day_night}()},
-\code{\link{format.solar_time}()},
-\code{\link{format.tod_time}()},
-\code{\link{is.solar_time}()},
-\code{\link{print.solar_time}()},
-\code{\link{print.tod_time}()},
-\code{\link{solar_time}()}
+\code{\link{format.solar_time}()}
 }
 \concept{astronomy related functions}

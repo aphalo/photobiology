@@ -1,6 +1,11 @@
 #' Solar angles
 #'
-#' This function returns the solar angles at a given time and location.
+#' Function \code{sun_angles()} returns the solar angles and Sun to Earth
+#' relative distance for given times and locations using a very precise
+#' algorithm. Convenience functions \code{sun_azimuth()},
+#' \code{sun_elevation()}, \code{sun_zenith_angle()} and
+#' \code{distance_to_sun()} are wrappers on \code{sun_angles()} that return
+#' individual vectors.
 #'
 #' @param time A "vector" of POSIXct Time, with any valid time zone (TZ) is
 #'   allowed, default is current time.
@@ -10,12 +15,15 @@
 #' @param use.refraction logical Flag indicating whether to correct for
 #'   fraction in the atmosphere.
 #'
-#' @return A data.frame with variables time (in same TZ as input), TZ, solartime,
-#'   longitude, latitude, address, azimuth, and elevation. If a data frame with
-#'   multiple rows is passed to \code{geocode} and a vector of times longer
+#' @return A \code{data.frame} with variables \code{time} (in same TZ as input),
+#'   \code{TZ}, \code{solartime}, \code{longitude}, \code{latitude},
+#'   \code{address}, \code{azimuth}, \code{elevation}, \code{declination},
+#'   \code{eq.of.time}, \code{hour.angle}, and \code{distance}. If a data frame
+#'   with multiple rows is passed to \code{geocode} and a vector of times longer
 #'   than one is passed to \code{time}, sun position for all combinations of
-#'   locations and times are returned are returned by \code{sun_angles}. In
-#'   contrast, convenience functions returning a vector.
+#'   locations and times are returned by \code{sun_angles}. Angles are expressed
+#'   in degrees, \code{solartime} is a vector of class \code{"solar.time"},
+#'   \code{distance} is expressed in relative sun units.
 #'
 #' @family astronomy related functions
 #'
@@ -26,21 +34,22 @@
 #'   atmosphere, which does in turn depend on weather conditions. The effect of
 #'   refraction on the apparent position of the sun is only an estimate based on
 #'   "typical" conditions for the atmosphere. The computation is not defined for
-#'   latitudes 90 and -90 degrees, i.e. exactly at the poles.
+#'   latitudes 90 and -90 degrees, i.e. exactly at the poles. The function is
+#'   vectorized and in particular passing a vector of times for a single geocode
+#'   enhances performance very much as the equation of time, the most time
+#'   consuming step, is computed only once.
 #'
-#'   In the current implementation functions \code{sun_azimuth},
-#'   \code{sun_elevation}, and \code{sun_zenith_angle} are wrappers
-#'   on \code{sun_angles}, so if more than one angle is needed it is
-#'   preferable to directly call \code{sun_angles} as it will be faster.
+#'   For improved performance, if more than one angle is needed it
+#'   is preferable to directly call \code{sun_angles} instead of the wrapper
+#'   functions as this avoids the unnecesary recalculation.
 #'
-#' @note
-#'   There exists a different R implementation of the same algorithms called
+#' @note There exists a different R implementation of the same algorithms called
 #'   "AstroCalcPureR" available as function \code{astrocalc4r} in package
 #'   'fishmethods'. Although the equations used are almost all the same, the
 #'   function signatures and which values are returned differ. In particular,
 #'   the present implementation splits the calculation into two separate
-#'   functions, one returning angles at given instants in time, and a
-#'   separate one returning the timing of events for given dates.
+#'   functions, one returning angles at given instants in time, and a separate
+#'   one returning the timing of events for given dates.
 #'
 #' @references
 #' The primary source for the algorithm used is the book:
@@ -48,15 +57,12 @@
 #' VA, USA. ISBN 978-0943396613.
 #'
 #' A different implementation is available at
-#' \url{https://apps-nefsc.fisheries.noaa.gov/AstroCalc4R/} and in R paclage
-#' 'fishmethods'. In 'fishmethods' (= 1.11-0) there is a bug in function
-#' astrocalc4r() that affects sunrise and sunset times.
+#' \url{https://apps-nefsc.fisheries.noaa.gov/AstroCalc4R/}.
 #'
 #' An interactive web page using the same algorithms is available at
 #' \url{https://www.esrl.noaa.gov/gmd/grad/solcalc/}. There are small
 #' differences in the returned times compared to our function that seem to be
 #' related to the estimation of atmospheric refraction (about 0.1 degrees).
-#'
 #'
 #' @export
 #'
@@ -247,10 +253,35 @@ sun_azimuth <- function(time = lubridate::now(),
              use.refraction = use.refraction)[["azimuth"]]
 }
 
+#' @rdname sun_angles
+#'
+#' @export
+#'
+distance_to_sun <- function(time = lubridate::now(),
+                            tz = lubridate::tz(time),
+                            geocode = tibble::tibble(lon = 0,
+                                                     lat = 51.5,
+                                                     address = "Greenwich"),
+                            use.refraction = FALSE)
+{
+  stopifnot(length(time) == 1 || nrow(geocode) == 1)
+  90 - sun_angles(time = time,
+                  tz = tz,
+                  geocode = geocode,
+                  use.refraction = use.refraction)[["distance"]]
+}
+
 #' Time difference between two time zones
 #'
-#' Returns the time difference in hours between two time zones at a given
-#' instant in time.
+#' Returns the difference in local time expressed in hours between two time
+#' zones at a given instant in time. The difference due to daylight saving time
+#' or Summer and Winter time as well as historical changes in time zones are
+#' taken into account.
+#'
+#' @note This function is implemented using functions from package 'lubridate'.
+#'   For details on the handling of time zones, please, consult the
+#'   documentation for \code{\link{Sys.timezone}} about system differences in
+#'   time zone names and handling.
 #'
 #' @param when datetime A time instant
 #' @param tz.target,tz.reference character Two time zones using names
@@ -329,7 +360,10 @@ tz_time_diff <- function(when = lubridate::now(),
 #'   function signatures and which values are returned differ. In particular,
 #'   the present implementation splits the calculation into two separate
 #'   functions, one returning angles at given instants in time, and a separate
-#'   one returning the timing of events for given dates.
+#'   one returning the timing of events for given dates. In 'fishmethods' (=
+#'   1.11-0) there is a bug in function astrocalc4r() that affects sunrise and
+#'   sunset times. The times returned by the functions in package 'photobiology'
+#'   have been validated against the NOAA base implementation.
 #'
 #'   In the current implementation functions \code{sunrise_time},
 #'   \code{noon_time}, \code{sunset_time} and \code{day_length} are wrappers
@@ -580,7 +614,7 @@ day_night_fast <- function(date,
 
 #' twilight argument check and conversion
 #'
-#' @return numeric  Solar elevation angle at sunrise or sunset
+#' @return numeric Solar elevation angle at sunrise or sunset
 #' @keywords internal
 #'
 twilight2angle <- function(twilight) {
@@ -739,6 +773,10 @@ night_length <- function(date = lubridate::now(),
 #'   set, which dispatches to special \code{format()} nad \code{print()}
 #'   methods.
 #'
+#' @seealso \code{\link{solar_time}}
+#'
+#' @family Time of day functions
+#'
 #' @export
 #'
 #'
@@ -777,7 +815,7 @@ as_tod <- function(x, unit.out = "hours", tz = NULL) {
 #' @param ... ignored
 #' @param sep character used as separator
 #'
-#' @family astronomy related functions
+#' @family Time of day functions
 #'
 #' @export
 #'
@@ -796,7 +834,7 @@ format.tod_time <- function(x, ..., sep = ":") {
 #' @param x an R object
 #' @param ... passed to \code{format} method
 #'
-#' @family astronomy related functions
+#' @family Time of day functions
 #'
 #' @note Default is to print the underlying \code{numeric} vector as a solar time.
 #'
@@ -809,20 +847,28 @@ print.tod_time <- function(x, ...) {
 
 #' Local solar time
 #'
-#' \code{solar_time} computes from a time and geocode, the time of day expressed
-#' in seconds since midnight. \code{solar_date} returns the same instant in time
-#' as a date-time object. Solar time is useful when we want to plot data
-#' according to the local solar time of day, irrespective of the date. Solar
-#' date is useful when we want to plot a time series stretching for several days
-#' using the local solar time but distinguishing between days.
+#' \code{solar_time()} computes the time of day expressed in seconds since the
+#' astronomical midnight using and instant in time and a geocode as input. Solar
+#' time is useful when we want to plot data according to the local solar time
+#' rather than the local time in use at a time zone. How the returned instant in
+#' time is expressed depends on the argument passed to \code{unit.out}.
+#'
+#' @details Solar time is determined by the position of the sun in the sky and
+#' it almost always differs from the time expressed in the local time
+#' coordinates in use. The differences can vary from a few minutes up to a
+#' couple of hours depending on the exact location within the time zone and the
+#' use or not of daylight saving time.
 #'
 #' @param time POSIXct Time, any valid time zone (TZ) is allowed, default is
 #'   current time
 #' @param geocode data frame with variables lon and lat as numeric values
 #'   (degrees).
-#' @param unit.out character string, One of "datetime", "hour", "minute", or "second".
+#' @param unit.out character string, One of "datetime", "time", "hour", "minute", or
+#'   "second".
 #'
-#' @family astronomy related functions
+#' @seealso \code{\link{as_tod}}
+#'
+#' @family Local solar time functions
 #'
 #' @note The algorithm is approximate, it calculates the difference between
 #'   local solar noon and noon in the time zone of \code{time} and uses this
@@ -830,15 +876,19 @@ print.tod_time <- function(x, ...) {
 #'   exactly 24 h long. Between successive days the shift is only a few seconds,
 #'   and this leads to a small jump at midnight.
 #'
-#' @section Warning!:
-#'   Returned values are computed based on the time zone of the argument for
-#'   parameter time. In the case of solar time, this timezone does not affect
-#'   the result. However, in the case of solar dates the date part may be
-#'   off by one day, if the time zone does not match the coordinates of the
-#'   geocode value provided as argument.
+#' @section Warning!: Returned values are computed based on the time zone of the
+#'   argument for parameter time. In the case of solar time, this timezone does
+#'   not affect the result. However, in the case of solar dates the date part
+#'   may be off by one day, if the time zone does not match the coordinates of
+#'   the geocode value provided as argument.
 #'
-#' @return For \code{solar_time()} numeric value in seconds from midnight but
-#'   with an additional class attribute "solar.time".
+#' @return In all cases solar time is expressed as time since local astronomical
+#'   midnight and, thus, lacks date information. If \code{unit.out = "time"}, a
+#'   numeric value in seconds with an additional class attribute
+#'   "solar_time"; if \code{unit.out = "datetime"}, a "POSIXct" value in seconds
+#'   from midnight but with an additional class attribute "solar_date"; if
+#'   \code{unit.out = "hour"} or \code{unit.out = "minute"} or \code{unit.out =
+#'   "second"}, a numeric value.
 #'
 #' @export
 #'
@@ -886,6 +936,7 @@ solar_time <- function(time = lubridate::now(),
 #'   set to "solar.time". This is needed only for unambiguous formatting and
 #'   printing.
 #'
+#' @family Local solar time functions
 #'
 #' @export
 #'
@@ -904,7 +955,7 @@ as.solar_date <- function(x, time)
 #'
 #' @param x an R object.
 #'
-#' @family astronomy related functions
+#' @family Local solar time functions
 #'
 #' @export
 #'
@@ -947,7 +998,7 @@ format.solar_time <- function(x, ..., sep = ":") {
 #' @param x an R object
 #' @param ... passed to \code{format} method
 #'
-#' @family astronomy related functions
+#' @family Local solar time functions
 #'
 #' @note Default is to print the underlying POSIXct as a solar time.
 #'

@@ -7,7 +7,7 @@
 twilight2angle(twilight)
 }
 \value{
-numeric  Solar elevation angle at sunrise or sunset
+numeric Solar elevation angle at sunrise or sunset
 }
 \description{
 twilight argument check and conversion

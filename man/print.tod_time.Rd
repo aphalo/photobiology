@@ -18,13 +18,8 @@ Print time-of-day objects
 Default is to print the underlying \code{numeric} vector as a solar time.
 }
 \seealso{
-Other astronomy related functions: 
-\code{\link{day_night}()},
-\code{\link{format.solar_time}()},
-\code{\link{format.tod_time}()},
-\code{\link{is.solar_time}()},
-\code{\link{print.solar_time}()},
-\code{\link{solar_time}()},
-\code{\link{sun_angles}()}
+Other Time of day functions: 
+\code{\link{as_tod}()},
+\code{\link{format.tod_time}()}
 }
-\concept{astronomy related functions}
+\concept{Time of day functions}

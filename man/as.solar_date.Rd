@@ -19,3 +19,10 @@ For method \code{as.solar_date()} a date-time object with the class attr
 \description{
 Convert a solar_time object into solar_date object
 }
+\seealso{
+Other Local solar time functions: 
+\code{\link{is.solar_time}()},
+\code{\link{print.solar_time}()},
+\code{\link{solar_time}()}
+}
+\concept{Local solar time functions}
