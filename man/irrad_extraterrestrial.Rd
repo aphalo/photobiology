@@ -8,7 +8,6 @@ irrad_extraterrestrial(
   time = lubridate::now(tzone = "UTC"),
   tz = lubridate::tz(time),
   geocode = tibble::tibble(lon = 0, lat = 51.5, address = "Greenwich"),
-  use.refraction = FALSE,
   solar.constant = "NASA"
 )
 }
@@ -21,11 +20,8 @@ allowed, default is current time.}
 \item{geocode}{data frame with variables lon and lat as numeric values
 (degrees), nrow > 1, allowed.}
 
-\item{use.refraction}{logical Flag indicating whether to correct for
-fraction in the atmosphere.}
-
 \item{solar.constant}{numeric or character If character, "WMO" or "NASA", if
-numeric, a value in the same units as the value to be returned.}
+numeric, an irradiance value in the same units as the value to be returned.}
 }
 \value{
 Numeric vector of extraterrestrial irradiance (in W / m2 if solar

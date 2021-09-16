@@ -46,6 +46,11 @@
 #'        wind.speed = 0,
 #'        net.irradiance = 10)
 #'
+#' ET_ref(temperature = c(5, 20, 35),
+#'        water.vp = water_RH2vp(0.7, 20),
+#'        wind.speed = 0,
+#'        net.irradiance = 10)
+#'
 #' ET_ref(temperature = 35,
 #'        water.vp = water_RH2vp(0.1, 35),
 #'        wind.speed = 5,
@@ -205,15 +210,20 @@ ET_zero <- function(temperature,
 
 #' Net long wave radiation
 #'
-#' Helper function returning the computed long-wave radiation balance if
-#' \code{lw.down.irradiance} is passed a value in W / m2 and if not
-#' it returns an estimate of the net lw radiation uncorrected for cloudiness.
-#' This approach is used in the FAO56 approach.
+#' Estimate net long-wave ration balance. If
+#' \code{lw.down.irradiance} is passed a value in W / m2 the difference is
+#' computed directly and if not an approximate value is estimated, using
+#' \code{R_rel = 0.75} the vales are for clear sky, i.e., uncorrected for
+#' cloudiness. This is the approach to estimation is that recommended by FAO
+#' for hourly estimates while here we use it for instantaneous or mean flux
+#' rates.
 #'
 #' @param temperature numeric vector of air temperatures (C) at 2 m height.
 #' @param water.vp numeric vector of water vapour pressure in air (Pa),
 #'   ignored if \code{lw.down.irradiance} is available.
 #' @param lw.down.irradiance numeric Long wave downwelling radiation (W/m2)
+#' @param R_rel numeric The ratio of short wave irradiance at ground level and
+#'   at the top of the atmosphere (/1).
 #' @param emissivity numeric Emissivity of the surface (ground or vegetation)
 #'   for long wave radiation.
 #'
@@ -226,15 +236,19 @@ ET_zero <- function(temperature,
 net_lw_radiation <- function(temperature,
                              lw.down.irradiance = NULL,
                              water.vp = 0,
+                             R_rel = 0.75,
                              emissivity = 0.98) {
-  stopifnot(temperature >= -273.16)
+  stopifnot(all(is.na(temperature) | temperature >= -273.16))
   sigma <- 5.670374419e-8
-  lw.up.irradiance <- sigma * (temperature + 273.16)^4 * emissivity
+  lw.up.irradiance <-
+    sigma * (temperature + 273.16)^4 * emissivity
   if (!is.null(lw.down.irradiance)) {
     lw.down.irradiance - lw.up.irradiance
   } else {
     # we guess lw.down.irradiance
-    -lw.up.irradiance * (0.34 - 0.14 * sqrt(water.vp * 1e-3))
+    -lw.up.irradiance *
+      (0.34 - 0.14 * sqrt(water.vp * 1e-3)) *
+      (1.35 * R_rel - 0.35)
   }
 }
 

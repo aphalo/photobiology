@@ -82,6 +82,11 @@ ET_ref(temperature = 20,
        wind.speed = 0,
        net.irradiance = 10)
 
+ET_ref(temperature = c(5, 20, 35),
+       water.vp = water_RH2vp(0.7, 20),
+       wind.speed = 0,
+       net.irradiance = 10)
+
 ET_ref(temperature = 35,
        water.vp = water_RH2vp(0.1, 35),
        wind.speed = 5,

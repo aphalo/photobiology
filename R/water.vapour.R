@@ -7,10 +7,10 @@
 #' @param water.vp numeric vector of water vapour pressure in air (Pa).
 #' @param water.mvc numeric vector of water vapour concnetration as mass per
 #'   volume (g m-3).
-#' @param relative.humidity numeric Relative humedity as % (default) or as a
+#' @param relative.humidity numeric Relative humidity as % (default) or as a
 #'   fraction of 1.
-#' @param over.ice logical Is the estimate for equilibrium with liquid water or
-#'   with ice.
+#' @param over.ice logical vector Is the estimate for equilibrium with liquid
+#'   water or with ice.
 #' @param method character Currently "tetens", modified "magnus", "wexler" and
 #'   "goff.gratch" equations  are supported.
 #' @param pc logical flag for result returned as percent or not.
@@ -147,7 +147,17 @@ water_vp_sat <- function(temperature,
                          method = "tetens",
                          check.range = TRUE) {
   method <- tolower(method)
-  if (any(temperature > 0) && over.ice) {
+  if (length(method) > 1L) {
+    if (length(unique(method)) > 1L) {
+      stop("Only one method can be used per function call.")
+    } else {
+      method <- method[1L]
+    }
+  }
+  if (length(over.ice) == 1L && length(temperature > 1)) {
+    over.ice <- rep_len(over.ice, length(temperature))
+  }
+  if (any(temperature > 0 & over.ice)) {
     warning("At temperature > 0 C, ice surface will be wet.")
   }
   if (method == "magnus") {
@@ -156,21 +166,19 @@ water_vp_sat <- function(temperature,
       warning("Out of bounds temperature value(s) set to NA, range: -80 C to +50 C.")
       temperature <- ifelse(temperature < -80, NA_real_, temperature)
     }
-    if (over.ice) {
-      z <- 611.21 * exp(22.587 * temperature / (273.86 + temperature))
-    } else {
-      z <- 610.94 * exp(17.625 * temperature / (243.04 + temperature))
-    }
+    z <-
+      ifelse(over.ice,
+             611.21 * exp(22.587 * temperature / (273.86 + temperature)),
+             610.94 * exp(17.625 * temperature / (243.04 + temperature)))
   } else if (method == "tetens") {
     if (check.range && any(!is.na(temperature) & (temperature < -40))) {
       warning("Out of bounds temperature value(s) set to NA, range: -40 C to +50 C.")
       temperature <- ifelse(temperature < -40, NA_real_, temperature)
     }
-    if (over.ice) {
-      z <- 610.78 * exp(21.875 * temperature / (265.5 + temperature))
-    } else {
-      z <- 610.78 * exp(17.269 * temperature / (237.3 + temperature))
-    }
+    z <-
+      ifelse(over.ice,
+             610.78 * exp(21.875 * temperature / (265.5 + temperature)),
+             610.78 * exp(17.269 * temperature / (237.3 + temperature)))
   } else if (method == "wexler") {
     if (check.range && any(!is.na(temperature) & (temperature < -100 | temperature > 110))) {
       warning("Out of bounds temperature value(s) set to NA, range: -100 C to +100 C")
@@ -178,43 +186,42 @@ water_vp_sat <- function(temperature,
         ifelse(temperature < -100 | temperature > 110, NA_real_, temperature)
     }
     temperature.K <- temperature + 273.15
-    if (over.ice) {
-      wexler.ice <-  function(temperature.K) {
-        # g_ITS68 <- c(-5.8653696e3, 2.224103300e1, 1.3749042e-2, -3.4031775e-5,
-        #        2.6967687e-8, 6.918651e-1)
-        g <- c(-5.8666426e3, 2.232870244e1, 1.39387003e-2, -3.4262402e-5,
-               2.7040955e-8, 6.7063522e-1)
-        exp(sum(temperature.K^((0:4) - 1) * g[1:5]) + g[6] * log(temperature.K))
-      }
-      z <- sapply(temperature.K, wexler.ice) # vectorization of temperature argument
-    } else {
-      wexler.water <-  function(temperature.K) {
-        # g_ITS68 <- c(-2.9912729e3, -6.0170128e3, 1.887643854e1, -2.8354721e-2,
-        #        1.7838301e-5, -8.4150417e-10, 4.4412543e-13, 2.858487)
-        g <- c(-2.8365744e3, -6.028076559e3, 1.954263612e1, -2.737830188e-2,
-               1.6261698e-5, 7.0229056e-10, -1.8680009e-13, 2.7150305)
-        exp(sum(temperature.K^((0:6) - 2) * g[1:7]) + g[8] * log(temperature.K))
-      }
-      z <- sapply(temperature.K, wexler.water) # vectorization of temperature argument
+    wexler.ice <-  function(temperature.K) {
+      # g_ITS68 <- c(-5.8653696e3, 2.224103300e1, 1.3749042e-2, -3.4031775e-5,
+      #        2.6967687e-8, 6.918651e-1)
+      g <- c(-5.8666426e3, 2.232870244e1, 1.39387003e-2, -3.4262402e-5,
+             2.7040955e-8, 6.7063522e-1)
+      exp(sum(temperature.K^((0:4) - 1) * g[1:5]) + g[6] * log(temperature.K))
     }
+    wexler.water <-  function(temperature.K) {
+      # g_ITS68 <- c(-2.9912729e3, -6.0170128e3, 1.887643854e1, -2.8354721e-2,
+      #        1.7838301e-5, -8.4150417e-10, 4.4412543e-13, 2.858487)
+      g <- c(-2.8365744e3, -6.028076559e3, 1.954263612e1, -2.737830188e-2,
+             1.6261698e-5, 7.0229056e-10, -1.8680009e-13, 2.7150305)
+      exp(sum(temperature.K^((0:6) - 2) * g[1:7]) + g[8] * log(temperature.K))
+    }
+    z <-
+      ifelse(over.ice,
+        sapply(temperature.K, wexler.ice),
+        sapply(temperature.K, wexler.water))
   } else if (method == "goff.gratch") {
     if (check.range && any(temperature < -50)) {
       warning("Out of bounds temperature value(s) set to NA, range: -50 C to +100 C")
       temperature <- ifelse(temperature < -50, NA_real_, temperature)
     }
     temperature.K <- temperature + 273.15
-    if (over.ice) {
-      z <- 10^(-9.09718 * (273.16 / temperature.K - 1) -
-                 3.56654 * log10(273.16 / temperature.K) +
-                 0.876793 * (1 - temperature.K / 273.16) +
-                 log10(6.1173) ) * 1e2 # hPa -> Pa
-    } else {
-      z <- 10^(-7.90298 * (373.16 / temperature.K - 1) +
-                 5.02808 * log10(373.16 / temperature.K) -
-                 1.3816e-7 * (10^(11.344 * (1 - temperature.K / 373.16)) - 1) +
-                 8.1328e-3 * (10^(-3.49149 * (373.16 / temperature.K - 1)) - 1) +
-                 log10(1013.25)) * 1e2 # hPa -> Pa
-    }
+    z <-
+      ifelse(over.ice,
+             10^(-9.09718 * (273.16 / temperature.K - 1) -
+                   3.56654 * log10(273.16 / temperature.K) +
+                   0.876793 * (1 - temperature.K / 273.16) +
+                   log10(6.1173) ),
+             10^(-7.90298 * (373.16 / temperature.K - 1) +
+                   5.02808 * log10(373.16 / temperature.K) -
+                   1.3816e-7 * (10^(11.344 * (1 - temperature.K / 373.16)) - 1) +
+                   8.1328e-3 * (10^(-3.49149 * (373.16 / temperature.K - 1)) - 1) +
+                   log10(1013.25)))
+    z <- z * 1e2 # hPa -> Pa
   } else {
     warning("Method '", method,
             "' unavailable; use 'magnus', 'tetens', 'wexler' or 'goff.gratch'.")
@@ -232,46 +239,53 @@ water_dp <- function(water.vp,
                      method = "tetens",
                      check.range = TRUE) {
   method <- tolower(method)
+  if (length(method) > 1L) {
+    if (length(unique(method)) > 1L) {
+      stop("Only one method can be used per function call.")
+    } else {
+      method <- method[1L]
+    }
+  }
+  if (length(over.ice) == 1L && length(water.vp > 1)) {
+    over.ice <- rep_len(over.ice, length(water.vp))
+  }
   if (any(water.vp <= 0)) {
     warning("Dew point is not defined for vapour pressure  <= 0 Pa.")
     water.vp <- ifelse(water.vp <= 0, NA_real_, water.vp)
   }
   if (method == "magnus") {
-    if (over.ice) {
-      z <- 273.86 * log(water.vp / 611.21) / (22.587 - log(water.vp / 611.21))
-    } else {
-      z <- 243.04 * log(water.vp / 610.94) / (17.625 - log(water.vp / 610.94))
-    }
+    z <-
+      ifelse(over.ice,
+             273.86 * log(water.vp / 611.21) / (22.587 - log(water.vp / 611.21)),
+             243.04 * log(water.vp / 610.94) / (17.625 - log(water.vp / 610.94)))
     if (check.range && any((!is.na(z)) & z < -80 | z > 50)) {
       warning("Out of bounds temperature value(s) set to NA, range: -80 C to +50 C.")
       z <- ifelse((!is.na(z)) &  z < -80 | z > 50, NA_real_, z)
     }
   } else if (method == "tetens") {
-    if (over.ice) {
-      z <- 265.5  * log(water.vp / 610.78) / (21.875 - log(water.vp / 610.78))
-    } else {
-      z <- 237.3  * log(water.vp / 610.78) / (17.269 - log(water.vp / 610.78))
-    }
+    z <-
+      ifelse(over.ice,
+             265.5  * log(water.vp / 610.78) / (21.875 - log(water.vp / 610.78)),
+             237.3  * log(water.vp / 610.78) / (17.269 - log(water.vp / 610.78)))
     if (check.range && any((!is.na(z)) & z < -30)) {
       warning("Out of bounds temperature value(s) set to NA, range: -30 C to +50 C.")
       z <- ifelse((!is.na(z)) & z < -30 | z > 50, NA_real_, z)
     }
   } else if (method == "wexler") {
-    if (over.ice) {
-      wexler.inv.ice <-  function(water.vp) {
-        c <- c(2.1257969e2, -1.0264612e1, 1.4354796e-1)
-        d <- c(1, -8.2871619e-2, 2.3540411e-3, -2.4363951e-5)
-        sum(c * log(water.vp)^(0:2)) / sum(d * log(water.vp)^(0:3))
-      }
-      z <- sapply(water.vp, wexler.inv.ice) - 273.15 # vectorization of VP argument
-    } else {
-      wexler.inv.water <-  function(water.vp) {
-        c <- c(2.0798233e2, -2.0156028e1, 4.6778925e-1, -9.2288067e-6)
-        d <- c(1, -1.3319669e-1, 5.6577518e-3, -7.5172865e-5)
-        sum(c * log(water.vp)^(0:3)) / sum(d * log(water.vp)^(0:3))
-      }
-      z <- sapply(water.vp, wexler.inv.water) - 273.15 # vectorization of VP argument
+    wexler.inv.ice <-  function(water.vp) {
+      c <- c(2.1257969e2, -1.0264612e1, 1.4354796e-1)
+      d <- c(1, -8.2871619e-2, 2.3540411e-3, -2.4363951e-5)
+      sum(c * log(water.vp)^(0:2)) / sum(d * log(water.vp)^(0:3))
     }
+    wexler.inv.water <-  function(water.vp) {
+      c <- c(2.0798233e2, -2.0156028e1, 4.6778925e-1, -9.2288067e-6)
+      d <- c(1, -1.3319669e-1, 5.6577518e-3, -7.5172865e-5)
+      sum(c * log(water.vp)^(0:3)) / sum(d * log(water.vp)^(0:3))
+    }
+    z <-
+      ifelse(over.ice,
+             sapply(water.vp, wexler.inv.ice) - 273.15,
+             sapply(water.vp, wexler.inv.water) - 273.15)
     if (check.range && any((!is.na(z)) & z < -100 | z > 100)) {
       warning("Out of bounds temperature value(s) set to NA, -100 C to + 100 C.")
       z <- ifelse((!is.na(z)) & z < -100 | z > 100, NA_real_, z)

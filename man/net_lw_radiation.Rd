@@ -8,6 +8,7 @@ net_lw_radiation(
   temperature,
   lw.down.irradiance = NULL,
   water.vp = 0,
+  R_rel = 0.75,
   emissivity = 0.98
 )
 }
@@ -19,6 +20,9 @@ net_lw_radiation(
 \item{water.vp}{numeric vector of water vapour pressure in air (Pa),
 ignored if \code{lw.down.irradiance} is available.}
 
+\item{R_rel}{numeric The ratio of short wave irradiance at ground level and
+at the top of the atmosphere (/1).}
+
 \item{emissivity}{numeric Emissivity of the surface (ground or vegetation)
 for long wave radiation.}
 }
@@ -26,10 +30,13 @@ for long wave radiation.}
 A numeric vector of $R_{nl}$ estimates expressed as W / m-2.
 }
 \description{
-Helper function returning the computed long-wave radiation balance if
-\code{lw.down.irradiance} is passed a value in W / m2 and if not
-it returns an estimate of the net lw radiation uncorrected for cloudiness.
-This approach is used in the FAO56 approach.
+Estimate net long-wave ration balance. If
+\code{lw.down.irradiance} is passed a value in W / m2 the difference is
+computed directly and if not an approximate value is estimated, using
+\code{R_rel = 0.75} the vales are for clear sky, i.e., uncorrected for
+cloudiness. This is the approach to estimation is that recommended by FAO
+for hourly estimates while here we use it for instantaneous or mean flux
+rates.
 }
 \seealso{
 Other Evapotranspiration and energy balance related functions.: 

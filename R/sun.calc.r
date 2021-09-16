@@ -1030,10 +1030,8 @@ print.solar_date <- function(x, ...) {
 #' @param tz character string indicating time zone to be used in output.
 #' @param geocode data frame with variables lon and lat as numeric values
 #'   (degrees), nrow > 1, allowed.
-#' @param use.refraction logical Flag indicating whether to correct for
-#'   fraction in the atmosphere.
 #' @param solar.constant numeric or character If character, "WMO" or "NASA", if
-#'   numeric, a value in the same units as the value to be returned.
+#'   numeric, an irradiance value in the same units as the value to be returned.
 #'
 #' @return Numeric vector of extraterrestrial irradiance (in W / m2 if solar
 #'   constant is a character value).
@@ -1047,32 +1045,30 @@ print.solar_date <- function(x, ...) {
 #'
 #' irrad_extraterrestrial(ymd_hm("2021-12-21 20:00", tz = "UTC"))
 #'
+#' irrad_extraterrestrial(ymd_hm("2021-06-21 00:00", tz = "UTC") + hours(1:23))
+#'
 #' @export
 #'
 irrad_extraterrestrial <-
   function(time = lubridate::now(tzone = "UTC"),
            tz = lubridate::tz(time),
            geocode = tibble::tibble(lon = 0, lat = 51.5, address = "Greenwich"),
-           use.refraction = FALSE,
            solar.constant = "NASA") {
+    solar.cnst.map <- c(NASA = 1360, WMO = 1367) # W / m2
     if (is.character(solar.constant)) {
-      solar.constant <- switch(solar.constant,
-                               NASA = 1360,  # W / m2
-                               WMO = 1367,  # W / m2
-                               NA_real_)
+      solar.constant <- solar.cnst.map[solar.constant]
     }
     angles <- sun_angles(time = time,
                          tz = tz,
                          geocode = geocode,
-                         use.refraction = use.refraction)
-    print(angles)
+                         use.refraction = FALSE) # no atmosphere!
     rel.distance <- angles[["distance"]]
     sun.elevation <- angles[["elevation"]]
-    if (sun.elevation <= 0) {
-      0
-    } else {
-      solar.constant * cos(sun.elevation) / rel.distance^2
-    }
+    ifelse(sun.elevation <= 0,
+           0,
+           solar.constant *
+             cos((90 - sun.elevation) / 180 * pi) / # degrees -> radians
+             rel.distance^2)
   }
 
 #' Validate a geocode

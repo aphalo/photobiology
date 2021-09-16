@@ -58,8 +58,8 @@ psychrometric_constant(atmospheric.pressure = 101325)
 \arguments{
 \item{temperature}{numeric vector of air temperatures (C).}
 
-\item{over.ice}{logical Is the estimate for equilibrium with liquid water or
-with ice.}
+\item{over.ice}{logical vector Is the estimate for equilibrium with liquid
+water or with ice.}
 
 \item{method}{character Currently "tetens", modified "magnus", "wexler" and
 "goff.gratch" equations  are supported.}
@@ -75,7 +75,7 @@ volume (g m-3).}
 
 \item{pc}{logical flag for result returned as percent or not.}
 
-\item{relative.humidity}{numeric Relative humedity as % (default) or as a
+\item{relative.humidity}{numeric Relative humidity as % (default) or as a
 fraction of 1.}
 
 \item{temperature.step}{numeric Delta or step used to estimate the slope

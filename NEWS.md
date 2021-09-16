@@ -13,10 +13,10 @@ editor_options:
     ET expressed in mm/h, but modified to use as input flux rates in
     W/m2 and pressures expressed in Pa.
 -   Add function `ET_zero()` with Penman-Monteith equation in original
-    form requiring downwelling long wave radiation as input.
+    form requiring down-welling long wave radiation as input.
 -   Add function `net_lw_radiation()` that computes the long wave net radiation 
     balance if downwelling long wave radiation is available and otherwise
-    estimates it for clear sky conditions.
+    estimates it.
 -   Add function `irrad_extraterrestrial()` that computes down-welling solar 
     irradiance on a horizontal plane at the top of the atmosphere.
 -   Revise function `sun_angles()` to also return the Sun to Earth distance.
