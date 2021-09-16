@@ -11,8 +11,15 @@ editor_options:
     the Penman-Monteith method as well as modified in 2005 for tall and
     short vegetation according to ASCE-EWRI. The formulation is that for
     ET expressed in mm/h, but modified to use as input flux rates in
-    W/m2 and pressures expressed in Pa. Function `net_lw_radiation()`
-    can be used to compute the long wave net radiation under clear sky.
+    W/m2 and pressures expressed in Pa.
+-   Add function `ET_zero()` with Penman-Monteith equation in original
+    form requiring downwelling long wave radiation as input.
+-   Add function `net_lw_radiation()` that computes the long wave net radiation 
+    balance if downwelling long wave radiation is available and otherwise
+    estimates it for clear sky conditions.
+-   Add function `irrad_extraterrestrial()` that computes down-welling solar 
+    irradiance on a horizontal plane at the top of the atmosphere.
+-   Revise function `sun_angles()` to also return the Sun to Earth distance.
 
 # photobiology 0.10.6
 
@@ -93,7 +100,7 @@ editor_options:
 -   Update `tag()` to use precomputed color definitions, when possible,
     to improve performance.
 -   BUG FIX: Remove bad class exports from NAMESPACE.
--   New features of dplyr (\>= 1.0.0) are used, so this new version is
+-   New features of dplyr (>= 1.0.0) are used, so this new version is
     required.
 
 # photobiology 0.10.2
@@ -245,7 +252,7 @@ reflectance data like `object_spct` objects do.
     used to set a different target than the default of zero and in
     addition implement `clean.object_mspct()`, which was missing.
 
-    ### Compatibility with 'dplyr' (\>= 1.0.0):
+    ### Compatibility with 'dplyr' (>= 1.0.0):
 
     Some small internal changes were needed to avoid errors in calls to
     'dplyr' methods. From user's perspective as 'dplyr' now seems to
@@ -383,7 +390,7 @@ is fully consistent with that for new objects.
 -   Fix bug in merging of attributes which was causing errors in
     operations between spectra which had specific differences in their
     attributes.
--   Fix incompatibility with tibble (\>= 2.0.0).
+-   Fix incompatibility with tibble (>= 2.0.0).
 
 # photobiology 0.9.24
 
@@ -488,7 +495,7 @@ scheduled to be archived in CRAN.
     collections of spectra, used to automatically call add_attr2tb() to
     add attributes to their output.
 -   Fix bug in calculation of solar time of day which could result in
-    values \> 24 h.
+    values > 24 h.
 -   Fix a bug in the extraction operator for spectral objects (could
     lead to infinite recursion in rare occasions).
 -   Fix wrong value returned in some cases by is_tagged() due to a bug
@@ -672,14 +679,14 @@ version 0.9.4 (last version using Rcpp and C++). Add support for
 objects. Fix bug in getInstrSettings(). Allow small rounding and
 instrument errors to pass validity checks. Fix bug in setRawSpct().
 Implement clean(), normalize(), fscale() and fshift() methods for
-"generic_spct", "raw_spct" and "cps_spct" objects. [New functions:
-cps2irrad(), cps2Tfr() and cps2Rfr(). Preliminary versions.]
+"generic_spct", "raw_spct" and "cps_spct" objects. \[New functions:
+cps2irrad(), cps2Tfr() and cps2Rfr(). Preliminary versions.\]
 Constructors for \_spct objects gain a ... formal argument which allows
 addition of arbitrary columns to the objects created. Reorganize
 documentation into fewer help files. Fix bug leading to loss of special
-attributes. Add test cases. Fix bug in "extract" operator [.object_spct.
-Update for compatibility with dplyr (\>= 0.4.3.9001). Update tests for
-testthat (\>= 0.11.0.9000).
+attributes. Add test cases. Fix bug in "extract" operator
+\[.object_spct. Update for compatibility with dplyr (>= 0.4.3.9001).
+Update tests for testthat (>= 0.11.0.9000).
 
 # photobiology 0.9.5 (2016-02-03)
 
@@ -688,7 +695,7 @@ to 30% slower in high-level functions.
 
 # photobiology 0.9.4
 
-Prepare for CRAN submission. Rename check() -\> check_spct() to avoid
+Prepare for CRAN submission. Rename check() -> check_spct() to avoid
 name clash with 'devtools'. Fix bug in clean() methods for collections
 of spectra.
 
@@ -918,8 +925,8 @@ No longer use data.table as a base class for spectral objects. \*\*
 Given the size of spectral data the advantages were too limited compared
 to the complications introduced. \*\*
 
-Extract and replacement methods "[" and "[\<-" and the subset() function
-should now work as expected when applied to spectral objects!
+Extract and replacement methods "\[" and "\[\<-" and the subset()
+function should now work as expected when applied to spectral objects!
 Subscripting of spectra can be used without any restrictions.
 
 Argument passing and assignment semantics follows normal R semantics of
@@ -1269,8 +1276,8 @@ annotations.
 # photobiology 0.5.11
 
 Changed code of irrad() and set\_\_\_Spct() functions to be able to
-handle locked data.table objects such as .SD when using by within [ ] on
-spct objects. irrad() copies the spectrum only if needed, and the
+handle locked data.table objects such as .SD when using by within \[ \]
+on spct objects. irrad() copies the spectrum only if needed, and the
 sorting key is set to "w.length" only if not already set to this same
 value.
 

@@ -62,9 +62,11 @@
 #' @note The inverse of the Groff Gratch equation has yet to be implemented.
 #'
 #' @return A numeric vector of partial pressures in pascal (Pa) for
-#'   \code{water_vp_sat} and \code{water_mvc2vp}, a numeric vector of dew point
-#'   temperatures (C) for \code{water_dp} and numeric vector of mass per volume
-#'   concentrations (g m-3) for \code{water_vp2mvc}.
+#'   \code{water_vp_sat()} and \code{water_mvc2vp()}, a numeric vector of dew point
+#'   temperatures (C) for \code{water_dp()} and numeric vector of mass per volume
+#'   concentrations ($g m^{-3}$) for \code{water_vp2mvc()}.  \code{water_vp_sat()} and
+#'   \code{psychrometric_constant()} both return numeric vectors of pressure per
+#'   degree of temperature ($Pa C^{-1}$)
 #'
 #' @references Tetens, O., 1930. Uber einige meteorologische Begriffe.
 #'   Zeitschrift fur Geophysik, Vol. 6:297.
@@ -363,13 +365,13 @@ water_RH2vp <- function(relative.humidity,
 #' @rdname water_vp_sat
 #'
 #' @param temperature.step numeric Delta or step used to estimate the slope
-#'   as a finite difference.
+#'   as a finite difference (C).
 #'
 #' @export
 #'
 #' @examples
 #'
-#' water_vp_sat_slope(temperature = 20)
+#' water_vp_sat_slope(temperature = 20) # C -> Pa / C
 #'
 water_vp_sat_slope <-  function(temperature,
                                 over.ice = FALSE,
@@ -395,16 +397,16 @@ water_vp_sat_slope <-  function(temperature,
 #'
 #' @examples
 #'
-#' psychrometric_constant(81.8e3)
+#' psychrometric_constant(atmospheric.pressure = 81.8e3) # Pa -> Pa / C
 #'
 psychrometric_constant <- function(atmospheric.pressure = 101325) {
-  # latent heat of vaporization, 2.45 [MJ kg -1 ],
+  # latent heat of vaporization, 2.45 [MJ kg-1 ],
   lambda <- 2.45
-  # specific heat at constant pressure, 1.013 10 -3 [MJ kg -1 °C -1 ]
+  # specific heat at constant pressure, 1.013 10 -3 [MJ kg-1 °C-1 ]
   C.p <- 1.013e-3
   # ratio molecular weight of water vapour/dry air = 0.622
   epsilon <- 0.622
 
-  # Pa -> Pa
+  # Pa -> Pa / C
   (C.p * atmospheric.pressure) / (epsilon * lambda)
 }

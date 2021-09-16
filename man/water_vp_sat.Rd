@@ -79,15 +79,17 @@ volume (g m-3).}
 fraction of 1.}
 
 \item{temperature.step}{numeric Delta or step used to estimate the slope
-as a finite difference.}
+as a finite difference (C).}
 
 \item{atmospheric.pressure}{numeric Atmospheric pressure (Pa).}
 }
 \value{
 A numeric vector of partial pressures in pascal (Pa) for
-  \code{water_vp_sat} and \code{water_mvc2vp}, a numeric vector of dew point
-  temperatures (C) for \code{water_dp} and numeric vector of mass per volume
-  concentrations (g m-3) for \code{water_vp2mvc}.
+  \code{water_vp_sat()} and \code{water_mvc2vp()}, a numeric vector of dew point
+  temperatures (C) for \code{water_dp()} and numeric vector of mass per volume
+  concentrations ($g m^{-3}$) for \code{water_vp2mvc()}.  \code{water_vp_sat()} and
+  \code{psychrometric_constant()} both return numeric vectors of pressure per
+  degree of temperature ($Pa C^{-1}$)
 }
 \description{
 Approximate water pressure in air as a function of temperature, and its
@@ -175,10 +177,10 @@ water_mvc2vp(water.mvc = 30, temperature = 40) # g m-3 -> Pa
 water_dp(water.vp = water_mvc2vp(water.mvc = 10, temperature = 30)) # g m-3 -> C
 
 
-water_vp_sat_slope(temperature = 20)
+water_vp_sat_slope(temperature = 20) # C -> Pa / C
 
 
-psychrometric_constant(81.8e3)
+psychrometric_constant(atmospheric.pressure = 81.8e3) # Pa -> Pa / C
 
 }
 \references{

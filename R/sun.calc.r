@@ -84,15 +84,15 @@ sun_angles <- function(time = lubridate::now(tzone = "UTC"),
 
   z <- list(nrow(geocode))
   for (i in seq_len(nrow(geocode))) {
-    temp <- sun_angles_fast(time = time,
-                            tz = tz,
-                            geocode = dplyr::slice(geocode, i),
-                            use.refraction = use.refraction)
-    z[[i]] <- temp
+    z[[i]] <- sun_angles_fast(time = time,
+                              tz = tz,
+                              geocode = dplyr::slice(geocode, i),
+                              use.refraction = use.refraction)
   }
   # we supress warning of dropped attributes and restore them
+  temp.class <- class(z[["solartime"]])
   z <- suppressWarnings(dplyr::bind_rows(z))
-  class(z[["solartime"]]) <- class(temp[["solartime"]])
+  class(z[["solartime"]]) <- temp.class
 
   # first.iter <- TRUE
   # for (i in 1:nrow(geocode)) {
@@ -109,7 +109,7 @@ sun_angles <- function(time = lubridate::now(tzone = "UTC"),
   #   }
   # }
 
-  # we use rbind instead of dplyr::bind_rows as the second drops the class attribute
+  # we could use rbind instead of dplyr::bind_rows as the second drops the class attribute
   # for solartime.
 
   # assertion
@@ -153,8 +153,8 @@ sun_angles_fast <- function(time,
   delta <- sun_eq_of_ctr(cent, sun.anom.mean)
 
   sun.lon <- sun.lon.mean + delta
-#  sun.anom <- sun.anom.mean + delta
-#  sun.dist <- sun_rad_vector(eccent.earth, sun.anom)
+  sun.anom <- sun.anom.mean + delta
+  sun.dist <- sun_rad_vector(eccent.earth, sun.anom)
   sun.app.lon <- sun_app_lon(cent, sun.lon)
   sun.ecliptic <- mean_obliq_eclip(cent)
   obliq.corr <- obliq_corr(cent, sun.ecliptic)
@@ -178,19 +178,19 @@ sun_angles_fast <- function(time,
   solar.time <- solar.time / 60 # hours
   class(solar.time) <- c("solar_time", class(solar.time))
 
-  z <- tibble::tibble(time = lubridate::with_tz(time, tz),
-                      tz = rep(tz, length(time)),
-                      solartime = solar.time %% 24, # needed for DST
-                      longitude = rep(lon, length(time)),
-                      latitude = rep(lat, length(time)),
-                      address = rep(address, length(time)),
-                      azimuth = azimuth.angle,
-                      elevation = elevation.angle,
-                      declination = sun.declin,
-                      eq.of.time = eq.of.time,
-                      hour.angle = hour.angle,
-                      .name_repair = "minimal")
-  z
+  tibble::tibble(time = lubridate::with_tz(time, tz),
+                 tz = rep(tz, length(time)),
+                 solartime = solar.time %% 24, # needed for DST
+                 longitude = rep(lon, length(time)),
+                 latitude = rep(lat, length(time)),
+                 address = rep(address, length(time)),
+                 azimuth = azimuth.angle,
+                 elevation = elevation.angle,
+                 declination = sun.declin,
+                 eq.of.time = eq.of.time,
+                 hour.angle = hour.angle,
+                 distance = sun.dist,
+                 .name_repair = "minimal")
 }
 
 #' @rdname sun_angles
@@ -540,44 +540,42 @@ day_night_fast <- function(date,
     sunset.time  <- lubridate::as_datetime(date, tz = tz) +
       lubridate::seconds(sunset * 86400)
 
-    z <- tibble::tibble(day           = date,
-                        tz            = rep(tz, length(date)),
-                        twilight.rise = rep(twilight.angles[1], length(date)),
-                        twilight.set  = rep(twilight.angles[2], length(date)),
-                        longitude     = rep(lon, length(date)),
-                        latitude      = rep(lat, length(date)),
-                        address       = rep(address, length(date)),
-                        sunrise       = sunrise.time, #lubridate::with_tz(sunrise.time, tzone = tz),
-                        noon          = noon.time, #lubridate::with_tz(noon.time, tzone = tz),
-                        sunset        = sunset.time, #lubridate::with_tz(sunset.time, tzone = tz),
-                        daylength     = daylength.hours,
-                        nightlength   = 24 - daylength.hours,
-                        .name_repair  = "minimal"
+    tibble::tibble(day           = date,
+                   tz            = rep(tz, length(date)),
+                   twilight.rise = rep(twilight.angles[1], length(date)),
+                   twilight.set  = rep(twilight.angles[2], length(date)),
+                   longitude     = rep(lon, length(date)),
+                   latitude      = rep(lat, length(date)),
+                   address       = rep(address, length(date)),
+                   sunrise       = sunrise.time, #lubridate::with_tz(sunrise.time, tzone = tz),
+                   noon          = noon.time, #lubridate::with_tz(noon.time, tzone = tz),
+                   sunset        = sunset.time, #lubridate::with_tz(sunset.time, tzone = tz),
+                   daylength     = daylength.hours,
+                   nightlength   = 24 - daylength.hours,
+                   .name_repair  = "minimal"
     )
   } else if (unit.out %in% c("day", "hour", "minute", "second")) {
     sunrise.tod <- (sunrise * 24 + tz.diff) %% 24
     noon.tod <- (solar.noon * 24 + tz.diff) %% 24
     sunset.tod <- (sunset * 24 + tz.diff) %% 24
 
-    z <- tibble::tibble(day           = date,
-                        tz            = rep(tz, length(date)),
-                        twilight.rise = rep(twilight.angles[1], length(date)),
-                        twilight.set  = rep(twilight.angles[2], length(date)),
-                        longitude     = rep(lon, length(date)),
-                        latitude      = rep(lat, length(date)),
-                        address       = rep(address, length(date)),
-                        sunrise       = sunrise.tod * multiplier,
-                        noon          = noon.tod * multiplier,
-                        sunset        = sunset.tod * multiplier,
-                        daylength     = daylength.hours * multiplier,
-                        nightlength   = (24 - daylength.hours) * multiplier,
-                        .name_repair  = "minimal"
+    tibble::tibble(day           = date,
+                   tz            = rep(tz, length(date)),
+                   twilight.rise = rep(twilight.angles[1], length(date)),
+                   twilight.set  = rep(twilight.angles[2], length(date)),
+                   longitude     = rep(lon, length(date)),
+                   latitude      = rep(lat, length(date)),
+                   address       = rep(address, length(date)),
+                   sunrise       = sunrise.tod * multiplier,
+                   noon          = noon.tod * multiplier,
+                   sunset        = sunset.tod * multiplier,
+                   daylength     = daylength.hours * multiplier,
+                   nightlength   = (24 - daylength.hours) * multiplier,
+                   .name_repair  = "minimal"
     )
   } else {
     stop("Unit out '", unit.out, "' not recognized")
   }
-
-  z
 }
 
 #' twilight argument check and conversion
@@ -968,6 +966,63 @@ print.solar_date <- function(x, ...) {
   print(paste(format(x, ...), "solar"))
   invisible(x)
 }
+
+#' Extraterrestrial irradiance
+#'
+#' Estimate of down-welling solar (short wave) irradiance at the top of the
+#' atmosphere above a location on Earth, computed based on angles, Sun-Earth
+#' distance and the solar constant. Astronomical computations are done with
+#' function \code{sun_angles()}.
+#'
+#' @param time A "vector" of POSIXct Time, with any valid time zone (TZ) is
+#'   allowed, default is current time.
+#' @param tz character string indicating time zone to be used in output.
+#' @param geocode data frame with variables lon and lat as numeric values
+#'   (degrees), nrow > 1, allowed.
+#' @param use.refraction logical Flag indicating whether to correct for
+#'   fraction in the atmosphere.
+#' @param solar.constant numeric or character If character, "WMO" or "NASA", if
+#'   numeric, a value in the same units as the value to be returned.
+#'
+#' @return Numeric vector of extraterrestrial irradiance (in W / m2 if solar
+#'   constant is a character value).
+#'
+#' @seealso Function \code{\link{sun_angles}}.
+#'
+#' @examples
+#' library(lubridate)
+#'
+#' irrad_extraterrestrial(ymd_hm("2021-06-21 12:00", tz = "UTC"))
+#'
+#' irrad_extraterrestrial(ymd_hm("2021-12-21 20:00", tz = "UTC"))
+#'
+#' @export
+#'
+irrad_extraterrestrial <-
+  function(time = lubridate::now(tzone = "UTC"),
+           tz = lubridate::tz(time),
+           geocode = tibble::tibble(lon = 0, lat = 51.5, address = "Greenwich"),
+           use.refraction = FALSE,
+           solar.constant = "NASA") {
+    if (is.character(solar.constant)) {
+      solar.constant <- switch(solar.constant,
+                               NASA = 1360,  # W / m2
+                               WMO = 1367,  # W / m2
+                               NA_real_)
+    }
+    angles <- sun_angles(time = time,
+                         tz = tz,
+                         geocode = geocode,
+                         use.refraction = use.refraction)
+    print(angles)
+    rel.distance <- angles[["distance"]]
+    sun.elevation <- angles[["elevation"]]
+    if (sun.elevation <= 0) {
+      0
+    } else {
+      solar.constant * cos(sun.elevation) / rel.distance^2
+    }
+  }
 
 #' Validate a geocode
 #'
