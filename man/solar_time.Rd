@@ -23,9 +23,9 @@ current time}
 \value{
 In all cases solar time is expressed as time since local astronomical
   midnight and, thus, lacks date information. If \code{unit.out = "time"}, a
-  numeric value in seconds but with an additional class attribute
+  numeric value in seconds with an additional class attribute
   "solar_time"; if \code{unit.out = "datetime"}, a "POSIXct" value in seconds
-  from midnight but with an additional class attribute "solar_solar"; if
+  from midnight but with an additional class attribute "solar_date"; if
   \code{unit.out = "hour"} or \code{unit.out = "minute"} or \code{unit.out =
   "second"}, a numeric value.
 }
