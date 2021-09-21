@@ -40,6 +40,8 @@ irrad_extraterrestrial(ymd_hm("2021-06-21 12:00", tz = "UTC"))
 
 irrad_extraterrestrial(ymd_hm("2021-12-21 20:00", tz = "UTC"))
 
+irrad_extraterrestrial(ymd_hm("2021-06-21 00:00", tz = "UTC") + hours(1:23))
+
 }
 \seealso{
 Function \code{\link{sun_angles}}.

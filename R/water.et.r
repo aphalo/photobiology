@@ -51,22 +51,22 @@
 #'        wind.speed = 0,
 #'        net.irradiance = 10)
 #'
+#' # Hot and dry air
 #' ET_ref(temperature = 35,
 #'        water.vp = water_RH2vp(0.1, 35),
 #'        wind.speed = 5,
 #'        net.irradiance = 400)
 #'
 #' ET_ref(temperature = 35,
+#'        water.vp = water_RH2vp(0.10, 35),
+#'        wind.speed = 5,
+#'        net.irradiance = 400,
+#'        method = "FAO.PM")
+#'
+#' ET_ref(temperature = 35,
 #'        water.vp = water_RH2vp(0.1, 35),
 #'        wind.speed = 5,
 #'        net.irradiance = 400,
-#'        method = "ASCE.PM.short")
-#'
-#' ET_ref(temperature = 5,
-#'        water.vp = water_RH2vp(0.95, 5),
-#'        wind.speed = 0.5,
-#'        net.irradiance = -10,
-#'        nighttime = TRUE,
 #'        method = "ASCE.PM.short")
 #'
 #' ET_ref(temperature = 35,
@@ -74,6 +74,14 @@
 #'        wind.speed = 5,
 #'        net.irradiance = 400,
 #'        method = "ASCE.PM.tall")
+#'
+#' # Low temperature and high humidity
+#' ET_ref(temperature = 5,
+#'        water.vp = water_RH2vp(0.95, 5),
+#'        wind.speed = 0.5,
+#'        net.irradiance = -10,
+#'        nighttime = TRUE,
+#'        method = "ASCE.PM.short")
 #'
 #' ET_ref_day(temperature = 35,
 #'            water.vp = water_RH2vp(0.10, 35),
@@ -146,17 +154,18 @@ ET_ref <- function(temperature,
 #'
 #' @param temperature numeric vector of air temperatures (C) at 2 m height.
 #' @param water.vp numeric vector of water vapour pressure in air (Pa).
-#' @param atmospheric.pressure numeric Atmospheric pressure (Pa).
 #' @param wind.speed numeric Wind speed (m/s) at 2 m height.
-#' @param sw.irradiance numeric Global radiation (W/m2).
-#' @param lw.down.irradiance numeric Long wave downwelling radiation (W/m2)
-#' @param albedo numeric Albedo for short wave radiation (/1)
+#' @param net.irradiance numeric Net radiation balance (W/m2).
+#' @param lw.emissivity numeric Emissivity for long wave radiation (/1)
+#' @param Rs numeric Surface resistance (?).
+#' @param atmospheric.pressure numeric Atmospheric pressure (Pa).
 #' @param method character The name of an estimation method.
 #' @param check.range logical Flag indicating whether to check or not that
 #'   arguments for temperature are within range of method. Passed to
 #'   function calls to \code{water_vp_sat()} and \code{water_vp_sat_slope()}.
 #'
-#' @return A numeric vector of $ET_{0}$ estimates expressed as mm / h.
+#' @return A numeric vector of reference evapotranspiration estimates expressed
+#'   as mm / h.
 #'
 #' @export
 #'
@@ -164,40 +173,36 @@ ET_ref <- function(temperature,
 #'
 #' @examples
 #' # instantaneous
-#' ET_zero(temperature = 20,
-#'        water.vp = water_RH2vp(0.7, 20),
-#'        wind.speed = 0,
-#'        sw.irradiance = 13,
-#'        lw.down.irradiance = 3)
+#' ET_PM(temperature = 20,
+#'       water.vp = water_RH2vp(0.7, 20),
+#'       wind.speed = 0,
+#'       net.irradiance = 20)
 #'
-ET_zero <- function(temperature,
-                    water.vp,
-                    wind.speed,
-                    sw.irradiance,
-                    lw.down.irradiance,
-                    albedo = 0.15,
-                    atmospheric.pressure = 1013e-2,
-                    method = "FMI.PM",
-                    check.range = TRUE) {
+ET_PM <- function(temperature,
+                  water.vp,
+                  wind.speed,
+                  net.irradiance,
+                  lw.emissivity = 0.98,
+                  Rs = 0,
+                  atmospheric.pressure = 1013e-2,
+                  method = "FMI.PM",
+                  check.range = TRUE) {
   if (method == "FMI.PM") {
     wind.speed <- max(wind.speed, 0.5)
+    sigma <- 5.670374419e-8 # Stefan–Boltzmann constant (W⋅m−2⋅)−
     rho <- 1.2923 # mean air density
     cp <- 1004 # specific heat
     l <- 2.5e6
-#    Rs <- 0
-    stef <- 5.67e-8 # Stefan–Boltzmann constant 5.670374419...× 10−8 W⋅m−2⋅K−4
-    em <- 0.098 # long wave emissivity, unitless
+    Rs <- 0
     k <- 421.0825 # 0.6 * ((log(8 / 0.0002) / 0.4)^2)
     Ra <-  k / wind.speed
-    lw.up.irradiance <- stef * ((temperature + 273.6)^4) * em
-    net.irradiance <- sw.irradiance * (1 - albedo) + lw.down.irradiance - lw.up.irradiance
     e.sat <- water_vp_sat(temperature,
                           over.ice = temperature <= -5,
                           check.range = check.range) * 10e-2 # Pa -> mbar
     es.slope <- water_vp_sat_slope(temperature,
                                    over.ice = temperature <= -5,
                                    check.range = check.range) * 10e-2  # Pa / K -> mbar / K
-    height.cor <- 4 * stef * em * ((273.1+ temperature)^3)
+    height.cor <- 4 * sigma * lw.emissivity * ((273.15 + temperature)^3)
     (es.slope * net.irradiance + rho * cp * (1 + height.cor * Ra / (rho * cp)) *
       (e.sat - water.vp) / Ra) /
       (es.slope + 0.66 * (1 + height.cor * Ra / (rho * cp))) / l * 3600 * 3 # s -> h
@@ -208,48 +213,54 @@ ET_zero <- function(temperature,
   }
 }
 
-#' Net long wave radiation
+#' Net radiation flux
 #'
-#' Estimate net long-wave ration balance. If
+#' Estimate net radiation balance expressed as a flux in W/m2. If
 #' \code{lw.down.irradiance} is passed a value in W / m2 the difference is
 #' computed directly and if not an approximate value is estimated, using
-#' \code{R_rel = 0.75} the vales are for clear sky, i.e., uncorrected for
-#' cloudiness. This is the approach to estimation is that recommended by FAO
-#' for hourly estimates while here we use it for instantaneous or mean flux
-#' rates.
+#' \code{R_rel = 0.75} which corresponds to clear sky, i.e., uncorrected for
+#' cloudiness. This is the approach to estimation is that recommended by FAO for
+#' hourly estimates while here we use it for instantaneous or mean flux rates.
 #'
 #' @param temperature numeric vector of air temperatures (C) at 2 m height.
-#' @param water.vp numeric vector of water vapour pressure in air (Pa),
-#'   ignored if \code{lw.down.irradiance} is available.
-#' @param lw.down.irradiance numeric Long wave downwelling radiation (W/m2)
-#' @param R_rel numeric The ratio of short wave irradiance at ground level and
-#'   at the top of the atmosphere (/1).
-#' @param emissivity numeric Emissivity of the surface (ground or vegetation)
+#' @param sw.down.irradiance,lw.down.irradiance numeric Down-welling short wave
+#'   and long wave radiation radiation (W/m2).
+#' @param sw.albedo numeric Albedo as a fraction of one (/1).
+#' @param lw.emissivity numeric Emissivity of the surface (ground or vegetation)
 #'   for long wave radiation.
+#' @param water.vp numeric vector of water vapour pressure in air (Pa), ignored
+#'   if \code{lw.down.irradiance} is available.
+#' @param R_rel numeric The ratio of actual and clear sky short wave irradiance
+#'   (/1).
 #'
-#' @return A numeric vector of $R_{nl}$ estimates expressed as W / m-2.
+#' @return A numeric vector of evapotranspiration estimates expressed as
+#'   W / m-2.
 #'
 #' @export
 #'
 #' @family Evapotranspiration and energy balance related functions.
 #'
-net_lw_radiation <- function(temperature,
-                             lw.down.irradiance = NULL,
-                             water.vp = 0,
-                             R_rel = 0.75,
-                             emissivity = 0.98) {
+net_irradiance <- function(temperature,
+                           sw.down.irradiance,
+                           lw.down.irradiance = NULL,
+                           sw.albedo = 0.23,
+                           lw.emissivity = 0.98,
+                           water.vp = 0,
+                           R_rel = 1) {
   stopifnot(all(is.na(temperature) | temperature >= -273.16))
-  sigma <- 5.670374419e-8
+  sigma <- 5.670374419e-8 # Stefan–Boltzmann constant (W⋅m−2 K)
   lw.up.irradiance <-
-    sigma * (temperature + 273.16)^4 * emissivity
+    sigma * (temperature + 273.16)^4 * lw.emissivity
   if (!is.null(lw.down.irradiance)) {
-    lw.down.irradiance - lw.up.irradiance
+    net.lw.irradiance <- lw.down.irradiance - lw.up.irradiance
   } else {
     # we guess lw.down.irradiance
-    -lw.up.irradiance *
+    net.lw.irradiance <-
+      -lw.up.irradiance *
       (0.34 - 0.14 * sqrt(water.vp * 1e-3)) *
       (1.35 * R_rel - 0.35)
   }
+  sw.down.irradiance * (1 - sw.albedo) + net.lw.irradiance
 }
 
 #' @rdname ET_ref

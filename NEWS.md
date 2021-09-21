@@ -12,9 +12,10 @@ editor_options:
     short vegetation according to ASCE-EWRI. The formulation is that for
     ET expressed in mm/h, but modified to use as input flux rates in
     W/m2 and pressures expressed in Pa.
--   Add function `ET_zero()` with Penman-Monteith equation in original
-    form requiring down-welling long wave radiation as input.
--   Add function `net_lw_radiation()` that computes the long wave net radiation 
+-   Add function `ET_PM()` with Penman-Monteith equation in its original
+    form, making fewer assumptions and accepting surface resistance as
+    input.
+-   Add function `net_radiation()` that computes the long wave net radiation 
     balance if downwelling long wave radiation is available and otherwise
     estimates it.
 -   Add function `irrad_extraterrestrial()` that computes down-welling solar 

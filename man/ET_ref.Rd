@@ -87,22 +87,22 @@ ET_ref(temperature = c(5, 20, 35),
        wind.speed = 0,
        net.irradiance = 10)
 
+# Hot and dry air
 ET_ref(temperature = 35,
        water.vp = water_RH2vp(0.1, 35),
        wind.speed = 5,
        net.irradiance = 400)
 
 ET_ref(temperature = 35,
+       water.vp = water_RH2vp(0.10, 35),
+       wind.speed = 5,
+       net.irradiance = 400,
+       method = "FAO.PM")
+
+ET_ref(temperature = 35,
        water.vp = water_RH2vp(0.1, 35),
        wind.speed = 5,
        net.irradiance = 400,
-       method = "ASCE.PM.short")
-
-ET_ref(temperature = 5,
-       water.vp = water_RH2vp(0.95, 5),
-       wind.speed = 0.5,
-       net.irradiance = -10,
-       nighttime = TRUE,
        method = "ASCE.PM.short")
 
 ET_ref(temperature = 35,
@@ -110,6 +110,14 @@ ET_ref(temperature = 35,
        wind.speed = 5,
        net.irradiance = 400,
        method = "ASCE.PM.tall")
+
+# Low temperature and high humidity
+ET_ref(temperature = 5,
+       water.vp = water_RH2vp(0.95, 5),
+       wind.speed = 0.5,
+       net.irradiance = -10,
+       nighttime = TRUE,
+       method = "ASCE.PM.short")
 
 ET_ref_day(temperature = 35,
            water.vp = water_RH2vp(0.10, 35),
@@ -123,7 +131,7 @@ Allen R G, Pereira L S, Raes D, Smith M. 1998. Crop evapotranspiration:
 }
 \seealso{
 Other Evapotranspiration and energy balance related functions.: 
-\code{\link{ET_zero}()},
-\code{\link{net_lw_radiation}()}
+\code{\link{ET_PM}()},
+\code{\link{net_irradiance}()}
 }
 \concept{Evapotranspiration and energy balance related functions.}
