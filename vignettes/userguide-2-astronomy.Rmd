@@ -451,3 +451,45 @@ Dew point for air with a water vapour pressure of 3 kPa.
 water_dp(3000)
 ```
 
+## Reference evapotranspiration
+
+Evapotranspiration is a measure of the water flux between land and atmosphere
+expressed as millimeters of water per unit ground area and unit time. One
+millimeter of evapotranspiration or precipitation is equivalent to one litre
+per square meter. Evapotranspiration is composed of the evaporation from the
+soil surface and other wet surfaces plus transpiration from plants (water 
+evaporated inside leaves and diffusing as vapour to the outside of leaves). The
+condensation of dew represents a negative component.
+
+When not measured, evapotranspiration can be estimated based on energy balance 
+and resistances to mass and heat transport. The Penman-Monteith equation is
+widely used. One special idealized condition is used to compute reference
+evapotranspiration (similar to potential evapotranspiration but with a 
+standardized formulation by FAO that is widely used in agriculture).
+
+As implemented the computation of the energy balance is done with function
+`net_irradiance()` and using the value returned by this function as one 
+argument, reference evapotranspiration is computed with function `ET_ref()`.
+
+```{r}
+r_net <- net_irradiance(temperature = 20, # C
+                        sw.down.irradiance = 800, # W / m2
+                        water.vp = 1500) # Pa
+r_net # W / m2
+```
+```{r}
+ET_ref(temperature = 20, # C
+       water.vp = 1500, # Pa
+       wind.speed = 4, # m / s
+       net.irradiance = r_net
+       )
+```
+This function returns an estimate of reference evapotranspiration expressed in
+mm / h. Can be used with hourly means for the inputs or more frequent
+observations. In all cases the result is expressed as an instantaneous water 
+flux rate expressed per hour.
+
+Function `ET_ref_day()` should be used when the input data are daily meeans or
+less frequent.
+
+

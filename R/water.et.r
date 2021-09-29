@@ -1,20 +1,21 @@
 #' Evapotranspiration
 #'
-#' Compute an estimate of potential evapotranspiration from
+#' Compute an estimate of reference (= potential) evapotranspiration from
 #' meteorologial data. Evapotranspiration from vegetation includes
 #' transpiraction by plants plus evaporation from the soil or other wet
-#' surfaces. $ET_{ref}$ is the reference value assuming no limitation to
+#' surfaces. \eqn{ET_0} is the reference value assuming no limitation to
 #' transpiration due to soil water, similar to potential evapotranspiration
-#' (PET). An actual value $ET_{ref}$ can be estimated only if additional
-#' information on the plants and soil is available.
+#' (PET). An actual evapotranpiration value \eqn{ET} can be estimated only if
+#' additional information on the plants and soil is available.
 #'
-#' @details Currently three methods, based on the Penman-Monteith equation
+#' @details Currently three methods, based on the Penmann-Monteith equation
 #'   formulated as recommended by FAO56 (Allen et al., 1998) as well as modified
-#'   in 2005 for tall and short vegetation according to ASCE-EWRI. The
-#'   computations rely on data measured according WHO standards at 2 m above
-#'   ground level to estimate reference evapotranspiration ($ET_{ref}$). The
-#'   formulations are those for ET expressed in mm/h, but modified to use as
-#'   input flux rates in W/m2 and pressures expressed in Pa.
+#'   in 2005 for tall and short vegetation according to ASCE-EWRI are
+#'   implemented in function \code{ET_ref()}. The computations rely on data
+#'   measured according WHO standards at 2 m above ground level to estimate
+#'   reference evapotranspiration (\eqn{ET_0}). The formulations are those for
+#'   ET expressed in mm/h, but modified to use as input flux rates in W/m2 and
+#'   pressures expressed in Pa.
 #'
 #' @param temperature numeric vector of air temperatures (C) at 2 m height.
 #' @param water.vp numeric vector of water vapour pressure in air (Pa).
@@ -31,60 +32,68 @@
 #'   arguments for temperature are within range of method. Passed to
 #'   function calls to \code{water_vp_sat()} and \code{water_vp_sat_slope()}.
 #'
-#' @return A numeric vector of $ET_{ref}$ estimates expressed as mm/h.
+#' @return A numeric vector of reference evapotranspiration estimates expressed
+#'   in mm/h for \code{ET_ref()} and \code{ET_PM()} and in mm/d for
+#'   \code{ET_ref_day()}.
 #'
 #' @references
 #'   Allen R G, Pereira L S, Raes D, Smith M. 1998. Crop evapotranspiration:
-#'   Guidelines for computing crop water requirements. Rome: FAO.
+#'     Guidelines for computing crop water requirements. Rome: FAO.
+#'  Allen R G, Pruitt W O, Wright J L, Howell T A, Ventura F, Snyder R,
+#'     Itenfisu D, Steduto P, Berengena J, Yrisarry J, et al. 2006. A
+#'     recommendation on standardized surface resistance for hourly calculation
+#'     of reference ETo by the FAO56 Penman-Monteith method. Agricultural Water
+#'     Management 81.
 #'
 #' @family Evapotranspiration and energy balance related functions.
 #'
 #' @examples
 #' # instantaneous
 #' ET_ref(temperature = 20,
-#'        water.vp = water_RH2vp(0.7, 20),
+#'        water.vp = water_RH2vp(relative.humidity = 70,
+#'                               temperature = 20),
 #'        wind.speed = 0,
 #'        net.irradiance = 10)
 #'
 #' ET_ref(temperature = c(5, 20, 35),
-#'        water.vp = water_RH2vp(0.7, 20),
+#'        water.vp = water_RH2vp(70, c(5, 20, 35)),
 #'        wind.speed = 0,
 #'        net.irradiance = 10)
 #'
 #' # Hot and dry air
 #' ET_ref(temperature = 35,
-#'        water.vp = water_RH2vp(0.1, 35),
+#'        water.vp = water_RH2vp(10, 35),
 #'        wind.speed = 5,
 #'        net.irradiance = 400)
 #'
 #' ET_ref(temperature = 35,
-#'        water.vp = water_RH2vp(0.10, 35),
+#'        water.vp = water_RH2vp(10, 35),
 #'        wind.speed = 5,
 #'        net.irradiance = 400,
 #'        method = "FAO.PM")
 #'
 #' ET_ref(temperature = 35,
-#'        water.vp = water_RH2vp(0.1, 35),
+#'        water.vp = water_RH2vp(10, 35),
 #'        wind.speed = 5,
 #'        net.irradiance = 400,
 #'        method = "ASCE.PM.short")
 #'
 #' ET_ref(temperature = 35,
-#'        water.vp = water_RH2vp(0.10, 35),
+#'        water.vp = water_RH2vp(10, 35),
 #'        wind.speed = 5,
 #'        net.irradiance = 400,
 #'        method = "ASCE.PM.tall")
 #'
 #' # Low temperature and high humidity
 #' ET_ref(temperature = 5,
-#'        water.vp = water_RH2vp(0.95, 5),
+#'        water.vp = water_RH2vp(95, 5),
 #'        wind.speed = 0.5,
 #'        net.irradiance = -10,
 #'        nighttime = TRUE,
 #'        method = "ASCE.PM.short")
 #'
 #' ET_ref_day(temperature = 35,
-#'            water.vp = water_RH2vp(0.10, 35),
+#'            water.vp = water_RH2vp(10, 35),
 #'            wind.speed = 5,
 #'            net.radiation = 35e6) # 35 MJ / d / m2
 #'
@@ -123,9 +132,9 @@ ET_ref <- function(temperature,
   delta <- water_vp_sat_slope(temperature,
                               over.ice = temperature <= -5,
                               method = vp.method,
-                              check.range = check.range) * 1e-3 # Pa -> kPa
+                              check.range = check.range) * 1e-3 # Pa / C -> kPa / C
   # psychrometric constant (kPa C-1)
-  gamma <- psychrometric_constant(atmospheric.pressure) * 1e-3 # Pa -> kPa
+  gamma <- psychrometric_constant(atmospheric.pressure) * 1e-3 # Pa / C -> kPa / C
   # water vapour pressure deficit (kPa)
   vp.sat <- water_vp_sat(temperature,
                          over.ice = temperature <= -5,
@@ -133,6 +142,8 @@ ET_ref <- function(temperature,
                          check.range = check.range)
   vpd <- (vp.sat - water.vp) * 1e-3 # Pa -> kPa
   vpd <- ifelse(vpd < 0, 0, vpd)
+  # soil heat flux
+  soil.heat.flux <- soil.heat.flux  * 1e-6 * 3600 # W / m2 = J / m2 /s -> MJ / m2 / h
   # net radiation
   radiation <- net.irradiance * 1e-6 * 3600 # W / m2 = J / m2 /s -> MJ / m2 / h
   # ET0
@@ -141,76 +152,56 @@ ET_ref <- function(temperature,
     (delta + gamma * (1 + Cd * wind.speed))
 }
 
-#' Potential evapotranspiration
-#'
-#' Formulation of the original Penman-Monteith equation used in the computation
-#' of the forest fire index (FFI) by the Finnish Meteorological Institute.
-#' Compared to the simplified formulation used by FAO this formualtion requires
-#' downwelling long wave radiation as input. The present version is based on the
-#' FORTRAN code by Ari Venäläinen from 1996. However, we compute saturated water
-#' vapour pressure and its slope vs. temperature using Tetens' formulation as
-#' implemented in functions \code{water_vp_sat()} and
-#' \code{water_vp_sat_slope()}.
-#'
-#' @param temperature numeric vector of air temperatures (C) at 2 m height.
-#' @param water.vp numeric vector of water vapour pressure in air (Pa).
-#' @param wind.speed numeric Wind speed (m/s) at 2 m height.
-#' @param net.irradiance numeric Net radiation balance (W/m2).
-#' @param lw.emissivity numeric Emissivity for long wave radiation (/1)
-#' @param Rs numeric Surface resistance (?).
-#' @param atmospheric.pressure numeric Atmospheric pressure (Pa).
-#' @param method character The name of an estimation method.
-#' @param check.range logical Flag indicating whether to check or not that
-#'   arguments for temperature are within range of method. Passed to
-#'   function calls to \code{water_vp_sat()} and \code{water_vp_sat_slope()}.
-#'
-#' @return A numeric vector of reference evapotranspiration estimates expressed
-#'   as mm / h.
+#' @rdname ET_ref
 #'
 #' @export
 #'
-#' @family Evapotranspiration and energy balance related functions.
-#'
-#' @examples
-#' # instantaneous
-#' ET_PM(temperature = 20,
-#'       water.vp = water_RH2vp(0.7, 20),
-#'       wind.speed = 0,
-#'       net.irradiance = 20)
-#'
-ET_PM <- function(temperature,
-                  water.vp,
-                  wind.speed,
-                  net.irradiance,
-                  lw.emissivity = 0.98,
-                  Rs = 0,
-                  atmospheric.pressure = 1013e-2,
-                  method = "FMI.PM",
-                  check.range = TRUE) {
-  if (method == "FMI.PM") {
-    wind.speed <- max(wind.speed, 0.5)
-    sigma <- 5.670374419e-8 # Stefan–Boltzmann constant (W⋅m−2⋅)−
-    rho <- 1.2923 # mean air density
-    cp <- 1004 # specific heat
-    l <- 2.5e6
-    Rs <- 0
-    k <- 421.0825 # 0.6 * ((log(8 / 0.0002) / 0.4)^2)
-    Ra <-  k / wind.speed
-    e.sat <- water_vp_sat(temperature,
-                          over.ice = temperature <= -5,
-                          check.range = check.range) * 10e-2 # Pa -> mbar
-    es.slope <- water_vp_sat_slope(temperature,
-                                   over.ice = temperature <= -5,
-                                   check.range = check.range) * 10e-2  # Pa / K -> mbar / K
-    height.cor <- 4 * sigma * lw.emissivity * ((273.15 + temperature)^3)
-    (es.slope * net.irradiance + rho * cp * (1 + height.cor * Ra / (rho * cp)) *
-      (e.sat - water.vp) / Ra) /
-      (es.slope + 0.66 * (1 + height.cor * Ra / (rho * cp))) / l * 3600 * 3 # s -> h
+ET_ref_day <- function(temperature,
+                       water.vp,
+                       wind.speed,
+                       net.radiation,
+                       atmospheric.pressure = 1013e-2,
+                       soil.heat.flux = 0,
+                       method = "FAO.PM",
+                       check.range = TRUE) {
+  if (method == "FAO.PM") {
+    vp.method <- "tetens"
+    Cd <- 0.34
+    Cn <- 900
+    k <- 0.480
+  } else if (method == "ASCE.PM.short") {
+    vp.method <- "tetens"
+    Cd <- 0.34
+    Cn <- 900
+    k <- 0.480
+  } else if (method == "ASCE.PM.tall") {
+    vp.method <- "tetens"
+    Cd <- 0.38
+    Cn <- 1600
+    k <- 0.408
   } else {
     warning("Method '", method,
-            "' unavailable; use 'FMI.PM'")
+            "' unavailable; use 'FAO.PM'.")
     return(NA_real_, length(temperature))
   }
+  # slope of water vapour pressure curve (kPa C-1)
+  delta <- water_vp_sat_slope(temperature,
+                              method = vp.method,
+                              check.range = check.range) * 1e-3 # Pa -> kPa
+  # psychrometric constant (kPa C-1)
+  gamma <- psychrometric_constant(atmospheric.pressure) * 1e-3 # Pa -> kPa
+  # water vapour pressure deficit (kPa)
+  vp.sat <- water_vp_sat(temperature,
+                         method = vp.method,
+                         check.range = check.range)
+  vpd <- (vp.sat - water.vp) * 1e-3 # Pa -> kPa
+  vpd <- ifelse(vpd < 0, 0, vpd)
+  # net radiation
+  radiation <- net.radiation * 1e-6 # J / m2 / d -> MJ / m2 / d
+  # ET0
+  (k * delta * (radiation - soil.heat.flux) +
+      gamma * (Cn / (temperature + 273)) * wind.speed * vpd) /
+    (delta + gamma * (1 + Cd * wind.speed))
 }
 
 #' Net radiation flux
@@ -262,49 +253,4 @@ net_irradiance <- function(temperature,
   }
   sw.down.irradiance * (1 - sw.albedo) + net.lw.irradiance
 }
-
-#' @rdname ET_ref
-#'
-#' @export
-#'
-ET_ref_day <- function(temperature,
-                       water.vp,
-                       wind.speed,
-                       net.radiation,
-                       nighttime = FALSE,
-                       atmospheric.pressure = 1013e-2,
-                       soil.heat.flux = 0,
-                       method = "FAO.PM",
-                       check.range = TRUE) {
-  if (method == "FAO.PM") {
-    vp.method <- "tetens"
-    Cd <- 0.34
-    Cn <- 900
-    k <- 0.480
-  } else {
-    warning("Method '", method,
-            "' unavailable; use 'FAO.PM'.")
-    return(NA_real_, length(temperature))
-  }
-  # slope of water vapour pressure curve (kPa C-1)
-  delta <- water_vp_sat_slope(temperature,
-                              method = vp.method,
-                              check.range = check.range) * 1e-3 # Pa -> kPa
-  # psychrometric constant (kPa C-1)
-  gamma <- psychrometric_constant(atmospheric.pressure) * 1e-3 # Pa -> kPa
-  # water vapour pressure deficit (kPa)
-  vp.sat <- water_vp_sat(temperature,
-                         method = vp.method,
-                         check.range = check.range)
-  vpd <- (vp.sat - water.vp) * 1e-3 # Pa -> kPa
-  vpd <- ifelse(vpd < 0, 0, vpd)
-  # net radiation
-  radiation <- net.radiation * 1e-6 # J / m2 / d -> MJ / m2 / d
-  # ET0
-  (k * delta * (radiation - soil.heat.flux) +
-      gamma * (Cn / (temperature + 273)) * wind.speed * vpd) /
-    (delta + gamma * (1 + Cd * wind.speed))
-}
-
-
 

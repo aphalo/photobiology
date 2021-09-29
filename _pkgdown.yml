@@ -259,6 +259,7 @@ reference:
     - format.solar_time
     - print.solar_time
     - validate_geocode
+    - irrad_extraterrestrial
 
   - title: Atmosphere
     desc: Computations related to water vapour in air, and on equivalent air mass at different solar elevations.
@@ -266,6 +267,7 @@ reference:
     - water_vp_sat
     - relative_AM
     - ET_ref
+    - net_irradiance
 
   - title: Optics
     desc: Computations related to radiation physics.

@@ -71,7 +71,7 @@ arguments for temperature are within the range of validity of the
 \item{water.vp}{numeric vector of water vapour pressure in air (Pa).}
 
 \item{water.mvc}{numeric vector of water vapour concnetration as mass per
-volume (g m-3).}
+volume (\eqn{g m^{-3}}).}
 
 \item{pc}{logical flag for result returned as percent or not.}
 
@@ -87,9 +87,9 @@ as a finite difference (C).}
 A numeric vector of partial pressures in pascal (Pa) for
   \code{water_vp_sat()} and \code{water_mvc2vp()}, a numeric vector of dew point
   temperatures (C) for \code{water_dp()} and numeric vector of mass per volume
-  concentrations ($g m^{-3}$) for \code{water_vp2mvc()}.  \code{water_vp_sat()} and
+  concentrations (\eqn{g m^{-3}}) for \code{water_vp2mvc()}.  \code{water_vp_sat()} and
   \code{psychrometric_constant()} both return numeric vectors of pressure per
-  degree of temperature ($Pa C^{-1}$)
+  degree of temperature (\eqn{Pa C^{-1}})
 }
 \description{
 Approximate water pressure in air as a function of temperature, and its

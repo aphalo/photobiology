@@ -30,12 +30,12 @@ If \code{n} is a numeric vector the returned value is a vector of
   returned value is a \code{reflector_spct} object.
 }
 \description{
-The reflectance at the planar boundary between two media, or interface,
-can be computed from the relative refractive index. Reflectance depends
-on polarization, and the process of reflection can generate polarized
-light through selective reflection of s and p components. A perfectly
-flat (i.e. polished) interface creates specular reflection, and this is
-the case that these functions describe. These function describe a single
+The reflectance at the planar boundary between two media, or interface, can
+be computed from the relative refractive index. Reflectance depends on
+polarization, and the process of reflection can generate polarized light
+through selective reflection of \eqn{s} and \eqn{p} components. A perfectly
+flat (i.e., polished) interface creates specular reflection, and this is the
+case that these functions describe. These function describe a single
 interface, and for example in a glass pane, a light beam will cross two
 air-glass interfaces.
 }
@@ -43,9 +43,9 @@ air-glass interfaces.
 These functions implement Fresnel's formulae. All parameters accept
   vectors as arguments. If both n and angle are vectors with length different
   from one, they should both have the same length. Reflectance depends on
-  polarization, the $s$ and $p$ components need to be computed separately and
-  added up. \code{Rfr_from_n()} is for non-polarized light, i.e., with equal
-  contribution of the two components.
+  polarization, the \eqn{s} and \eqn{p} components need to be computed
+  separately and added up. \code{Rfr_from_n()} is for non-polarized light,
+  i.e., with equal contribution of the two components.
 }
 \examples{
 

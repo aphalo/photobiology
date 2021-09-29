@@ -6,7 +6,7 @@
 #' @param temperature numeric vector of air temperatures (C).
 #' @param water.vp numeric vector of water vapour pressure in air (Pa).
 #' @param water.mvc numeric vector of water vapour concnetration as mass per
-#'   volume (g m-3).
+#'   volume (\eqn{g m^{-3}}).
 #' @param relative.humidity numeric Relative humidity as % (default) or as a
 #'   fraction of 1.
 #' @param over.ice logical vector Is the estimate for equilibrium with liquid
@@ -64,9 +64,9 @@
 #' @return A numeric vector of partial pressures in pascal (Pa) for
 #'   \code{water_vp_sat()} and \code{water_mvc2vp()}, a numeric vector of dew point
 #'   temperatures (C) for \code{water_dp()} and numeric vector of mass per volume
-#'   concentrations ($g m^{-3}$) for \code{water_vp2mvc()}.  \code{water_vp_sat()} and
+#'   concentrations (\eqn{g m^{-3}}) for \code{water_vp2mvc()}.  \code{water_vp_sat()} and
 #'   \code{psychrometric_constant()} both return numeric vectors of pressure per
-#'   degree of temperature ($Pa C^{-1}$)
+#'   degree of temperature (\eqn{Pa C^{-1}})
 #'
 #' @references Tetens, O., 1930. Uber einige meteorologische Begriffe.
 #'   Zeitschrift fur Geophysik, Vol. 6:297.
