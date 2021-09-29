@@ -173,7 +173,7 @@ A different implementation is available at
 astrocalc4r() that affects sunrise and sunset times.
 
 An interactive web page using the same algorithms is available at
-\url{https://www.esrl.noaa.gov/gmd/grad/solcalc/}. There are small
+\url{https://gml.noaa.gov/grad/solcalc/}. There are small
 differences in the returned times compared to our function that seem to be
 related to the estimation of atmospheric refraction (about 0.1 degrees).
 }
