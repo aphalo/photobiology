@@ -282,15 +282,6 @@ is.any_summary_spct <- function(x) {
 #'
 #' @return A summary object matching the class of \code{object}.
 #'
-#'
-#'
-#'
-#'
-#'
-#'
-#'
-#'
-#'
 #' @export
 #' @method summary generic_spct
 #'

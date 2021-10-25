@@ -3,11 +3,17 @@
 \name{getNormalized}
 \alias{getNormalized}
 \alias{getNormalised}
+\alias{getNormalization}
+\alias{getNormalisation}
 \title{Get the "normalized" attribute}
 \usage{
 getNormalized(x, .force.numeric = FALSE)
 
 getNormalised(x, .force.numeric = FALSE)
+
+getNormalization(x)
+
+getNormalisation(x)
 }
 \arguments{
 \item{x}{a generic_spct object}
@@ -29,6 +35,14 @@ if x is not a \code{generic_spct} object, \code{NA} is returned
 
 \code{getNormalised()} is a synonym for this \code{getNormalized()}
   method.
+}
+\examples{
+
+sun_norm.spct <- normalize(sun.spct)
+
+getNormalized(sun.spct)
+getNormalization(sun.spct)
+
 }
 \seealso{
 Other rescaling functions: 

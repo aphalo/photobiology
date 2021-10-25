@@ -3,23 +3,44 @@
 \name{setNormalized}
 \alias{setNormalized}
 \alias{setNormalised}
-\title{Set the "normalized" attribute}
+\title{Set the "normalized" and "normalization" attributes}
 \usage{
-setNormalized(x, norm = FALSE)
+setNormalized(
+  x,
+  norm = FALSE,
+  norm.type = NA_character_,
+  norm.factors = NA_real_,
+  norm.cols = NA_character_
+)
 
-setNormalised(x, norm = FALSE)
+setNormalised(
+  x,
+  norm = FALSE,
+  norm.type = NA_character_,
+  norm.factors = NA_real_,
+  norm.cols = NA_character_
+)
 }
 \arguments{
-\item{x}{a generic_spct object}
+\item{x}{a generic_spct object.}
 
-\item{norm}{numeric or logical}
+\item{norm}{numeric (or logical) Normalization wavelength (nanometres).}
+
+\item{norm.type}{character Type of normalization applied.}
+
+\item{norm.factors}{numeric The scaling factor(s) so that dividing the spectral
+values by this factor reverts the normalization.}
+
+\item{norm.cols}{character The name(s) of the data columns normalized.}
 }
 \description{
 Function to write the "normalized" attribute of an existing generic_spct
 object.
 }
 \note{
-if x is not a \code{generic_spct} object, x is not modified.
+If \code{x} is not a \code{generic_spct} object, \code{x} is not
+  modified. Passing a \code{logical} as argument to \code{norm} is deprecated
+  but kept for backwards compatibility.
 
 \code{setNormalised()} is a synonym for this \code{setNormalized()}
   method.

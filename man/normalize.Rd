@@ -164,7 +164,9 @@ the criterion specified by the argument passed to \code{norm}.
 A copy of \code{x} with the values of the spectral quantity rescaled
   to 1 at the normalization wavelength. If the normalization wavelength is
   not already present in \code{x}, it is added by interpolation---i.e. the
-  returned value may be one row longer than \code{x}.
+  returned value may be one row longer than \code{x}. Attributes
+  \code{normalized} and \code{normalization} are set to keep a log of the
+  compuations taken.
 }
 \description{
 This method returns a spectral object of the same class as the one

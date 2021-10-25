@@ -539,16 +539,20 @@ test_that("normalize attr", {
   setWhatMeasured(my.spct, tested.what)
 
   expect_equal(setdiff(names(attributes(normalize(my.spct))),
-                       c(names(attributes(my.spct)))), "normalized" )
+                       c(names(attributes(my.spct)))),
+               c("normalized", "normalization"))
 
   expect_equal(setdiff(names(attributes(normalize(my.spct, range = c(100, 150)))),
-                       names(attributes(my.spct))), "normalized")
+                       names(attributes(my.spct))),
+               c("normalized", "normalization"))
 
   expect_equal(setdiff(names(attributes(normalize(my.spct, norm = "max"))),
-                       names(attributes(my.spct))), "normalized")
+                       names(attributes(my.spct))),
+               c("normalized", "normalization"))
 
   expect_equal(setdiff(names(attributes(normalize(my.spct, norm = 130))),
-                       names(attributes(my.spct))), "normalized")
+                       names(attributes(my.spct))),
+               c("normalized", "normalization"))
 })
 
 test_that("peaks attr", {

@@ -74,7 +74,9 @@ normalize.default <- function(x, ...) {
 #' @return A copy of \code{x} with the values of the spectral quantity rescaled
 #'   to 1 at the normalization wavelength. If the normalization wavelength is
 #'   not already present in \code{x}, it is added by interpolation---i.e. the
-#'   returned value may be one row longer than \code{x}.
+#'   returned value may be one row longer than \code{x}. Attributes
+#'   \code{normalized} and \code{normalization} are set to keep a log of the
+#'   computations applied.
 #'
 #' @export
 #'
@@ -83,7 +85,7 @@ normalize.source_spct <- function(x,
                                   range = NULL,
                                   norm = "max",
                                   unit.out = getOption("photobiology.radiation.unit",
-                                                       default="energy"),
+                                                       default = "energy"),
                                   na.rm = FALSE) {
   if (unit.out == "energy") {
     return(normalize_spct(spct = q2e(x, action = "replace"),
@@ -111,7 +113,7 @@ normalize.response_spct <- function(x,
                                   range = NULL,
                                   norm = "max",
                                   unit.out = getOption("photobiology.radiation.unit",
-                                                       default="energy"),
+                                                       default = "energy"),
                                   na.rm = FALSE) {
   if (unit.out == "energy") {
     return(normalize_spct(spct = q2e(x, action = "replace"),
@@ -409,12 +411,17 @@ normalize_spct <- function(spct, range, norm, col.names, na.rm) {
             getMultipleWl(spct), " spectra; skipping normalization")
     return(spct)
   }
+  norm.arg <- norm
   # normalization will wipe out any existing scaling
+  scale.is.dirty <- FALSE
+
   if (is_scaled(spct)) {
+    scale.is.dirty <- TRUE
     setScaled(spct, scaled = FALSE)
   }
 
   if (is_normalized(spct)) {
+    scale.is.dirty <- TRUE
     setNormalized(spct, norm = FALSE)
   }
 
@@ -433,6 +440,7 @@ normalize_spct <- function(spct, range, norm, col.names, na.rm) {
 
   # rescaling needed
   if (!is.null(norm)) {
+    scale.factors <- numeric(0)
     for (col in col.names) {
       if (is.character(norm)) {
         if (norm %in% c("max", "maximum")) {
@@ -459,13 +467,27 @@ normalize_spct <- function(spct, range, norm, col.names, na.rm) {
       } else {
         stop("'norm' should be numeric or character")
       }
+      scale.factors <- c(scale.factors, scale.factor)
       spct[[col]] <- spct[ , col, drop = TRUE] * scale.factor
     }
   } else {
     return(spct)
   }
-  spct <- setNormalized(spct, norm)
-  spct
+  setNormalized(spct,
+                norm = norm,
+                norm.type =
+                  if (is.character(norm.arg)) {
+                    norm.arg
+                  } else if (is.numeric(norm.arg)) {
+                    "wavelength"
+                  },
+                norm.factors =
+                  if (scale.is.dirty) {
+                    rep(NA_real_, length(col.names))
+                  } else {
+                    scale.factors
+                  },
+                norm.cols = col.names)
 }
 
 
@@ -520,6 +542,14 @@ is_normalised <- is_normalized
 #' @note if x is not a \code{generic_spct} object, \code{NA} is returned
 #'
 #' @export
+#'
+#' @examples
+#'
+#' sun_norm.spct <- normalize(sun.spct)
+#'
+#' getNormalized(sun.spct)
+#' getNormalization(sun.spct)
+#'
 #' @family rescaling functions
 #'
 getNormalized <- function(x,
@@ -551,24 +581,67 @@ getNormalized <- function(x,
 #'
 getNormalised <- getNormalized
 
-#' Set the "normalized" attribute
+#' @rdname getNormalized
+#'
+#' @export
+#'
+getNormalization <- function(x) {
+  if (is.generic_spct(x) || is.summary_generic_spct(x)) {
+    if (is_normalized(x)) {
+      normalization.list <- attr(x, "normalization", exact = TRUE)
+      if (is.list(normalization.list)) {
+        return(normalization.list)
+      }
+    }
+  } else {
+    warning("Method 'getNormalized()' not implemented for class: ",
+            class(x)[1])
+  }
+  list(norm = NA_real_,
+       norm.type = NA_character_,
+       norm.factors = NA_real_,
+       norm.cols = NA_character_)
+}
+
+#' @rdname getNormalized
+#' @export
+#'
+getNormalisation <- getNormalization
+
+#' Set the "normalized" and "normalization" attributes
 #'
 #' Function to write the "normalized" attribute of an existing generic_spct
 #' object.
 #'
-#' @param x a generic_spct object
-#' @param norm numeric or logical
+#' @param x a generic_spct object.
+#' @param norm numeric (or logical) Normalization wavelength (nanometres).
+#' @param norm.type character Type of normalization applied.
+#' @param norm.factors numeric The scaling factor(s) so that dividing the spectral
+#'   values by this factor reverts the normalization.
+#' @param norm.cols character The name(s) of the data columns normalized.
 #'
-#' @note if x is not a \code{generic_spct} object, x is not modified.
+#' @note If \code{x} is not a \code{generic_spct} object, \code{x} is not
+#'   modified. Passing a \code{logical} as argument to \code{norm} is deprecated
+#'   but kept for backwards compatibility.
 #'
 #' @export
 #' @family rescaling functions
 #'
-setNormalized <- function(x, norm = FALSE) {
+setNormalized <- function(x,
+                          norm = FALSE,
+                          norm.type = NA_character_,
+                          norm.factors = NA_real_,
+                          norm.cols = NA_character_) {
   name <- substitute(x)
   if ((is.generic_spct(x) || is.summary_generic_spct(x)) &&
       (is.na(norm) || is.numeric(norm) || is.logical(norm))) {
     attr(x, "normalized") <- norm
+    attr(x, "normalization") <- list(norm.type = norm.type,
+                                     norm.wl = ifelse(is.numeric(norm),
+                                                      norm,
+                                                      NA_real_),
+                                     norm.factors = norm.factors,
+                                     norm.cols = norm.cols)
     if (is.name(name)) {
       name <- as.character(name)
       assign(name, x, parent.frame(), inherits = TRUE)
