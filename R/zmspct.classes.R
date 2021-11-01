@@ -448,24 +448,31 @@ mat2mspct <- function(x,
       stop("Length of 'w.length' vector is different to that of spectral data.")
     }
   }
-  # spc data (spectra) can be stored as rows or as colums in a matrix,
+  # spc data (spectra) can be stored as rows or as columns in a matrix,
   # consequently if stored by rows we transpose the matrix.
   if (byrow) {
     x <- t(x)
   }
   stopifnot(ncol(x) >= 1L)
-  # compatibility with as_tiible() >= 2.0.0
-  if (is.null(colnames(x))) {
-    colnames(x) <- letters[seq_len(ncol(x))]
-  }
   stopifnot(nrow(x) == length(w.length))
-  y <- cbind(w.length, x * multiplier)
-  y <- tibble::as_tibble(y)
+  # compatibility with as_tibble() >= 2.0.0
+  if (is.null(colnames(x))) {
+    colnames(x) <- as.character(1:ncol(x))
+  }
+
+  if (multiplier != 1) {
+    x <- x * multiplier
+  }
+
+  y <- tibble::as_tibble(cbind(w.length, x))
+
   if (length(spct.names) == ncol(x)) {
     colnames(y) <- c("w.length", spct.names)
   } else {
     colnames(y) <- c("w.length", paste(spct.names[1], seq_len(ncol(x)), sep = ""))
   }
+
+  # y contains the spectra as columns
   z <- split2mspct(x = y,
                    member.class = member.class,
                    spct.data.var = spct.data.var,

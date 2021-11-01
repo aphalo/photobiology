@@ -9,6 +9,8 @@ editor_options:
 -   Update functions `normalize()`, `setNormalized()` and `getNormalized()`,
     and add new function `getNormalization()`. This changes implement the
     storage in attribute `normalization` of the operation done.
+-   Fix bug in `mat2mspct()` affecting matrices with more than 26 columns and
+    without colnames set. 
     
 # photobiology 0.10.7
 

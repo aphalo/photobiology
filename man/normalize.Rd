@@ -166,7 +166,7 @@ A copy of \code{x} with the values of the spectral quantity rescaled
   not already present in \code{x}, it is added by interpolation---i.e. the
   returned value may be one row longer than \code{x}. Attributes
   \code{normalized} and \code{normalization} are set to keep a log of the
-  compuations taken.
+  computations applied.
 }
 \description{
 This method returns a spectral object of the same class as the one
