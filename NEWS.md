@@ -11,6 +11,7 @@ editor_options:
     storage in attribute `normalization` of the operation done.
 -   Fix bug in `mat2mspct()` affecting matrices with more than 26 columns and
     without colnames set. 
+-   Fix bug in `rowwise` methods.
     
 # photobiology 0.10.7
 

@@ -42,9 +42,9 @@ rowwise_filter <-
     # validate input
     stopifnot(length(.fun) == length(col.name.tag))
 
-    if (!(length(unique(msaply(x, length))) == 1L &&
-          length(unique(msaply(x, max))) == 1L &&
-          length(unique(msaply(x, min))) == 1L)) {
+    if (!(length(unique(msaply(x, nrow))) == 1L &&
+          length(unique(msaply(x, wl_max))) == 1L &&
+          length(unique(msaply(x, wl_min))) == 1L)) {
       stop("Spectra differ in 'w.length' vector.")
     }
 
@@ -127,9 +127,9 @@ rowwise_source <-
     # validate input
     stopifnot(length(.fun) == length(col.name.tag))
 
-    if (!(length(unique(msaply(x, length))) == 1L &&
-          length(unique(msaply(x, max))) == 1L &&
-          length(unique(msaply(x, min))) == 1L)) {
+    if (!(length(unique(msaply(x, nrow))) == 1L &&
+          length(unique(msaply(x, wl_max))) == 1L &&
+          length(unique(msaply(x, wl_min))) == 1L)) {
       stop("Spectra differ in 'w.length' vector.")
     }
 
@@ -226,9 +226,9 @@ rowwise_response <-
     # validate input
     stopifnot(length(.fun) == length(col.name.tag))
 
-    if (!(length(unique(msaply(x, length))) == 1L &&
-          length(unique(msaply(x, max))) == 1L &&
-          length(unique(msaply(x, min))) == 1L)) {
+    if (!(length(unique(msaply(x, nrow))) == 1L &&
+          length(unique(msaply(x, wl_max))) == 1L &&
+          length(unique(msaply(x, wl_min))) == 1L)) {
       stop("Spectra differ in 'w.length' vector.")
     }
 
@@ -313,9 +313,9 @@ rowwise_reflector <-
     # validate input
     stopifnot(length(.fun) == length(col.name.tag))
 
-    if (!(length(unique(msaply(x, length))) == 1L &&
-          length(unique(msaply(x, max))) == 1L &&
-          length(unique(msaply(x, min))) == 1L)) {
+    if (!(length(unique(msaply(x, nrow))) == 1L &&
+          length(unique(msaply(x, wl_max))) == 1L &&
+          length(unique(msaply(x, wl_min))) == 1L)) {
       stop("Spectra differ in 'w.length' vector.")
     }
 
@@ -385,9 +385,9 @@ rowwise_calibration <-
     # validate input
     stopifnot(length(.fun) == length(col.name.tag))
 
-    if (!(length(unique(msaply(x, length))) == 1L &&
-          length(unique(msaply(x, max))) == 1L &&
-          length(unique(msaply(x, min))) == 1L)) {
+    if (!(length(unique(msaply(x, nrow))) == 1L &&
+          length(unique(msaply(x, wl_max))) == 1L &&
+          length(unique(msaply(x, wl_min))) == 1L)) {
       stop("Spectra differ in 'w.length' vector.")
     }
 
@@ -444,9 +444,9 @@ rowwise_cps <-
     # validate input
     stopifnot(length(.fun) == length(col.name.tag))
 
-    if (!(length(unique(msaply(x, length))) == 1L &&
-          length(unique(msaply(x, max))) == 1L &&
-          length(unique(msaply(x, min))) == 1L)) {
+    if (!(length(unique(msaply(x, nrow))) == 1L &&
+          length(unique(msaply(x, wl_max))) == 1L &&
+          length(unique(msaply(x, wl_min))) == 1L)) {
       stop("Spectra differ in 'w.length' vector.")
     }
 
@@ -512,9 +512,9 @@ rowwise_raw <-
     # validate input
     stopifnot(length(.fun) == length(col.name.tag))
 
-    if (!(length(unique(msaply(x, length))) == 1L &&
-          length(unique(msaply(x, max))) == 1L &&
-          length(unique(msaply(x, min))) == 1L)) {
+    if (!(length(unique(msaply(x, nrow))) == 1L &&
+          length(unique(msaply(x, wl_max))) == 1L &&
+          length(unique(msaply(x, wl_min))) == 1L)) {
       stop("Spectra differ in 'w.length' vector.")
     }
 
