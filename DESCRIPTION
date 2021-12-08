@@ -33,10 +33,10 @@ Imports:
     tidyr (>= 1.1.2),
     splus2R (>= 1.2-2),
     zoo (>= 1.8-8),
-    rlang (>= 0.4.8),
-    rmarkdown (>= 2.4)
+    rlang (>= 0.4.8)
 Suggests:
     knitr (>= 1.30),
+    rmarkdown (>= 2.4),
     testthat (>= 2.3.2),
     roxygen2 (>= 7.1.1)
 LazyLoad: yes
