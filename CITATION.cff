@@ -1,0 +1,49 @@
+# -----------------------------------------------------------
+# CITATION file created with {cffr} R package, v0.1.1
+# See also: https://docs.ropensci.org/cffr/
+# -----------------------------------------------------------
+ 
+cff-version: 1.2.0
+message: 'To cite package "photobiology" in publications use:'
+type: software
+license: GPL-2.0-or-later
+title: 'photobiology: Photobiological Calculations'
+version: 0.10.8
+doi: 10.19232/uv4pb.2015.1.14
+abstract: 'Definitions of classes, methods, operators and functions for use in photobiology
+  and radiation meteorology and climatology. Calculation of effective (weighted) and
+  not-weighted irradiances/doses, fluence rates, transmittance, reflectance, absorptance,
+  absorbance and diverse ratios and other derived quantities from spectral data. Local
+  maxima and minima: peaks, valleys and spikes. Conversion between energy-and photon-based
+  units. Wavelength interpolation. Astronomical calculations related solar angles
+  and day length. Colours and vision. This package is part of the ''r4photobiology''
+  suite, Aphalo, P. J. (2015) <doi:10.19232/uv4pb.2015.1.14>.'
+authors:
+- family-names: Aphalo
+  given-names: Pedro J.
+  email: pedro.aphalo@helsinki.fi
+  orcid: https://orcid.org/0000-0003-3385-972X
+preferred-citation:
+  type: article
+  title: The r4photobiology suite
+  authors:
+  - family-names: Aphalo
+    given-names: Pedro J.
+  journal: UV4Plants Bulletin
+  volume: '2015'
+  number: '1'
+  pages: 21-29
+  year: '2015'
+  doi: 10.19232/uv4pb.2015.1.14
+repository: https://CRAN.R-project.org/package=photobiology
+repository-code: https://github.com/aphalo/photobiology
+url: https://docs.r4photobiology.info/photobiology/
+date-released: '2021-12-08'
+contact:
+- family-names: Aphalo
+  given-names: Pedro J.
+  email: pedro.aphalo@helsinki.fi
+  orcid: https://orcid.org/0000-0003-3385-972X
+keywords:
+- cran
+- r-package
