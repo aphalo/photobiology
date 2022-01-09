@@ -1,5 +1,5 @@
 # -----------------------------------------------------------
-# CITATION file created with {cffr} R package, v0.1.1
+# CITATION file created with {cffr} R package, v0.2.0
 # See also: https://docs.ropensci.org/cffr/
 # -----------------------------------------------------------
  
@@ -8,7 +8,7 @@ message: 'To cite package "photobiology" in publications use:'
 type: software
 license: GPL-2.0-or-later
 title: 'photobiology: Photobiological Calculations'
-version: 0.10.8
+version: 0.10.8.9000
 doi: 10.19232/uv4pb.2015.1.14
 abstract: 'Definitions of classes, methods, operators and functions for use in photobiology
   and radiation meteorology and climatology. Calculation of effective (weighted) and
@@ -29,16 +29,18 @@ preferred-citation:
   authors:
   - family-names: Aphalo
     given-names: Pedro J.
+    email: pedro.aphalo@helsinki.fi
+    orcid: https://orcid.org/0000-0003-3385-972X
   journal: UV4Plants Bulletin
   volume: '2015'
-  number: '1'
-  pages: 21-29
+  issue: '1'
   year: '2015'
   doi: 10.19232/uv4pb.2015.1.14
+  start: 21-29
 repository: https://CRAN.R-project.org/package=photobiology
 repository-code: https://github.com/aphalo/photobiology
 url: https://docs.r4photobiology.info/photobiology/
-date-released: '2021-12-08'
+date-released: '2022-01-09'
 contact:
 - family-names: Aphalo
   given-names: Pedro J.
@@ -47,3 +49,241 @@ contact:
 keywords:
 - cran
 - r-package
+references:
+- type: software
+  title: 'R: A Language and Environment for Statistical Computing'
+  authors:
+  - name: R Core Team
+  location:
+    name: Vienna, Austria
+  year: '2022'
+  url: https://www.R-project.org/
+  institution:
+    name: R Foundation for Statistical Computing
+  version: '>= 3.6.0'
+  notes: Depends
+- type: software
+  title: 'R: A Language and Environment for Statistical Computing'
+  authors:
+  - name: R Core Team
+  location:
+    name: Vienna, Austria
+  year: '2022'
+  url: https://www.R-project.org/
+  institution:
+    name: R Foundation for Statistical Computing
+  notes: Imports
+- type: software
+  title: 'polynom: A Collection of Functions to Implement a Class for Univariate Polynomial
+    Manipulations'
+  authors:
+  - family-names: Venables
+    given-names: Bill
+    email: Bill.Venables@gmail.com
+  - family-names: Hornik
+    given-names: Kurt
+    email: Kurt.Hornik@R-project.org
+  - family-names: Maechler
+    given-names: Martin
+    email: maechler@stat.math.ethz.ch
+  year: '2022'
+  notes: Imports
+  url: https://CRAN.R-project.org/package=polynom
+  version: '>= 1.4-0'
+- type: software
+  title: 'tibble: Simple Data Frames'
+  authors:
+  - family-names: Müller
+    given-names: Kirill
+    email: krlmlr+r@mailbox.org
+  - family-names: Wickham
+    given-names: Hadley
+    email: hadley@rstudio.com
+  year: '2022'
+  notes: Imports
+  url: https://CRAN.R-project.org/package=tibble
+  version: '>= 3.0.4'
+- type: software
+  title: 'stringr: Simple, Consistent Wrappers for Common String Operations'
+  authors:
+  - family-names: Wickham
+    given-names: Hadley
+    email: hadley@rstudio.com
+  year: '2022'
+  notes: Imports
+  url: https://CRAN.R-project.org/package=stringr
+  version: '>= 1.4.0'
+- type: software
+  title: 'lubridate: Make Dealing with Dates a Little Easier'
+  authors:
+  - family-names: Spinu
+    given-names: Vitalie
+    email: spinuvit@gmail.com
+  - family-names: Grolemund
+    given-names: Garrett
+  - family-names: Wickham
+    given-names: Hadley
+  year: '2022'
+  notes: Imports
+  url: https://CRAN.R-project.org/package=lubridate
+  version: '>= 1.7.8'
+- type: software
+  title: 'plyr: Tools for Splitting, Applying and Combining Data'
+  authors:
+  - family-names: Wickham
+    given-names: Hadley
+    email: hadley@rstudio.com
+  year: '2022'
+  notes: Imports
+  url: https://CRAN.R-project.org/package=plyr
+  version: '>= 1.8.4'
+- type: software
+  title: 'dplyr: A Grammar of Data Manipulation'
+  authors:
+  - family-names: Wickham
+    given-names: Hadley
+    email: hadley@rstudio.com
+    orcid: https://orcid.org/0000-0003-4757-117X
+  - family-names: François
+    given-names: Romain
+    orcid: https://orcid.org/0000-0002-2444-4226
+  - family-names: Henry
+    given-names: Lionel
+  - family-names: Müller
+    given-names: Kirill
+    orcid: https://orcid.org/0000-0002-1416-3412
+  year: '2022'
+  notes: Imports
+  url: https://CRAN.R-project.org/package=dplyr
+  version: '>= 1.0.2'
+- type: software
+  title: 'tidyr: Tidy Messy Data'
+  authors:
+  - family-names: Wickham
+    given-names: Hadley
+    email: hadley@rstudio.com
+  year: '2022'
+  notes: Imports
+  url: https://CRAN.R-project.org/package=tidyr
+  version: '>= 1.1.2'
+- type: software
+  title: 'splus2R: Supplemental S-PLUS Functionality in R'
+  authors:
+  - family-names: Constantine
+    given-names: William
+  - family-names: Hesterberg
+    given-names: Tim
+  year: '2022'
+  notes: Imports
+  url: https://CRAN.R-project.org/package=splus2R
+  version: '>= 1.2-2'
+- type: software
+  title: 'zoo: S3 Infrastructure for Regular and Irregular Time Series (Z''s Ordered
+    Observations)'
+  authors:
+  - family-names: Zeileis
+    given-names: Achim
+    email: Achim.Zeileis@R-project.org
+    orcid: https://orcid.org/0000-0003-0918-3766
+  - family-names: Grothendieck
+    given-names: Gabor
+    email: ggrothendieck@gmail.com
+  - family-names: Ryan
+    given-names: Jeffrey A.
+    email: jeff.a.ryan@gmail.com
+  year: '2022'
+  notes: Imports
+  url: https://CRAN.R-project.org/package=zoo
+  version: '>= 1.8-8'
+- type: software
+  title: 'rlang: Functions for Base Types and Core R and ''Tidyverse'' Features'
+  authors:
+  - family-names: Henry
+    given-names: Lionel
+    email: lionel@rstudio.com
+  - family-names: Wickham
+    given-names: Hadley
+    email: hadley@rstudio.com
+  year: '2022'
+  notes: Imports
+  url: https://CRAN.R-project.org/package=rlang
+  version: '>= 0.4.8'
+- type: software
+  title: 'knitr: A General-Purpose Package for Dynamic Report Generation in R'
+  authors:
+  - family-names: Xie
+    given-names: Yihui
+    email: xie@yihui.name
+    orcid: https://orcid.org/0000-0003-0645-5666
+  year: '2022'
+  notes: Suggests
+  url: https://CRAN.R-project.org/package=knitr
+  version: '>= 1.30'
+- type: software
+  title: 'rmarkdown: Dynamic Documents for R'
+  authors:
+  - family-names: Allaire
+    given-names: JJ
+    email: jj@rstudio.com
+  - family-names: Xie
+    given-names: Yihui
+    email: xie@yihui.name
+    orcid: https://orcid.org/0000-0003-0645-5666
+  - family-names: McPherson
+    given-names: Jonathan
+    email: jonathan@rstudio.com
+  - family-names: Luraschi
+    given-names: Javier
+    email: javier@rstudio.com
+  - family-names: Ushey
+    given-names: Kevin
+    email: kevin@rstudio.com
+  - family-names: Atkins
+    given-names: Aron
+    email: aron@rstudio.com
+  - family-names: Wickham
+    given-names: Hadley
+    email: hadley@rstudio.com
+  - family-names: Cheng
+    given-names: Joe
+    email: joe@rstudio.com
+  - family-names: Chang
+    given-names: Winston
+    email: winston@rstudio.com
+  - family-names: Iannone
+    given-names: Richard
+    email: rich@rstudio.com
+    orcid: https://orcid.org/0000-0003-3925-190X
+  year: '2022'
+  notes: Suggests
+  url: https://CRAN.R-project.org/package=rmarkdown
+  version: '>= 2.4'
+- type: software
+  title: 'testthat: Unit Testing for R'
+  authors:
+  - family-names: Wickham
+    given-names: Hadley
+    email: hadley@rstudio.com
+  year: '2022'
+  notes: Suggests
+  url: https://CRAN.R-project.org/package=testthat
+  version: '>= 2.3.2'
+- type: software
+  title: 'roxygen2: In-Line Documentation for R'
+  authors:
+  - family-names: Wickham
+    given-names: Hadley
+    email: hadley@rstudio.com
+    orcid: https://orcid.org/0000-0003-4757-117X
+  - family-names: Danenberg
+    given-names: Peter
+    email: pcd@roxygen.org
+  - family-names: Csárdi
+    given-names: Gábor
+    email: csardi.gabor@gmail.com
+  - family-names: Eugster
+    given-names: Manuel
+  year: '2022'
+  notes: Suggests
+  url: https://CRAN.R-project.org/package=roxygen2
+  version: '>= 7.1.1'
