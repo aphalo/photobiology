@@ -45,7 +45,7 @@ Rosenqvist, E. (Eds.). (2012). _Beyond the Visible: A handbook of best practice
 in plant UV photobiology_ (1st ed., p. xx + 174). Helsinki: University of
 Helsinki, Department of Biosciences, Division of Plant Biology. ISBN
 978-952-10-8363-1 (PDF), 978-952-10-8362-4 (paperback). Open access at
-<http://doi.org/10.31885/9789521083631>.
+<https://doi.org/10.31885/9789521083631>.
 
 Aphalo, Pedro J. (2015) The r4photobiology suite. _UV4Plants Bulletin_, 2015:1,
 21-29. (<https://doi.org/10.19232/uv4pb.2015.1.14>).

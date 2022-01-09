@@ -569,10 +569,10 @@ clean_spct <-
       range <- range(range, na.rm = TRUE)
     } else {
       if (is.na(range[1])) {
-        range[1] <- min(x)
+        range[1] <- wl_min(x)
       }
       if (is.na(range[2])) {
-        range[2] <- max(x)
+        range[2] <- wl_max(x)
       }
     }
     selector <- x[["w.length"]] >= range[1] & x[["w.length"]] <= range[2]

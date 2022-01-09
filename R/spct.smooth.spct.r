@@ -11,7 +11,8 @@
 #'   method-specific parameters are passed through \code{...}.
 #' @param wl.range any R object on which applying the method \code{range()}
 #'   yields a vector of two numeric values, describing a range of wavelengths
-#'   (nm). \code{NA} is interpreted as data's own min or max value.
+#'   (nm) within which spectral data is to be smoothed. \code{NA} is interpreted
+#'   as the min or max value of \code{x[[w.length]]}.
 #' @param na.rm	logical A flag indicating whether NA values should be stripped
 #'   before the computation proceeds.
 #' @param ... other parameters passed to the underlying smoothing functions.
@@ -102,13 +103,23 @@ smooth_spct.source_spct <- function(x,
   prev_state <- disable_check_spct()
   on.exit(set_check_spct(prev_state), add = TRUE)
 
-  # this needs to be after NAs are omitted
-  if (!is.null(wl.range)) {
-    wl.range <- range(wl.range)
+  # positional selectors are computed after NAs are omitted from the spectrum
+  if (is.null(wl.range) || all(is.na(wl.range))) {
+    wl.selector <- TRUE
+  } else {
+    if (is.generic_spct(wl.range) ||
+        (is.numeric(wl.range) && length(wl.range) > 2L)) {
+      wl.range <- range(wl.range, na.rm = TRUE)
+    } else {
+      if (is.na(wl.range[1])) {
+        wl.range[1] <- wl_min(x)
+      }
+      if (is.na(wl.range[2])) {
+        wl.range[2] <- wl_max(x)
+      }
+    }
     wl.selector <-
       x[["w.length"]] >= wl.range[1] & x[["w.length"]] <= wl.range[2]
-  } else {
-    wl.selector <- TRUE
   }
 
   xx <- x[wl.selector, ]
@@ -234,13 +245,23 @@ smooth_spct.filter_spct <- function(x,
   prev_state <- disable_check_spct()
   on.exit(set_check_spct(prev_state), add = TRUE)
 
-  # this needs to be after NAs are omitted
-  if (!is.null(wl.range)) {
-    wl.range <- range(wl.range)
+  # positional selectors are computed after NAs are omitted from the spectrum
+  if (is.null(wl.range) || all(is.na(wl.range))) {
+    wl.selector <- TRUE
+  } else {
+    if (is.generic_spct(wl.range) ||
+        (is.numeric(wl.range) && length(wl.range) > 2L)) {
+      wl.range <- range(wl.range, na.rm = TRUE)
+    } else {
+      if (is.na(wl.range[1])) {
+        wl.range[1] <- wl_min(x)
+      }
+      if (is.na(wl.range[2])) {
+        wl.range[2] <- wl_max(x)
+      }
+    }
     wl.selector <-
       x[["w.length"]] >= wl.range[1] & x[["w.length"]] <= wl.range[2]
-  } else {
-    wl.selector <- TRUE
   }
 
   xx <- x[wl.selector, ]
@@ -355,13 +376,23 @@ smooth_spct.reflector_spct <- function(x,
   prev_state <- disable_check_spct()
   on.exit(set_check_spct(prev_state), add = TRUE)
 
-  # this needs to be after NAs are omitted
-  if (!is.null(wl.range)) {
-    wl.range <- range(wl.range)
+  # positional selectors are computed after NAs are omitted from the spectrum
+  if (is.null(wl.range) || all(is.na(wl.range))) {
+    wl.selector <- TRUE
+  } else {
+    if (is.generic_spct(wl.range) ||
+        (is.numeric(wl.range) && length(wl.range) > 2L)) {
+      wl.range <- range(wl.range, na.rm = TRUE)
+    } else {
+      if (is.na(wl.range[1])) {
+        wl.range[1] <- wl_min(x)
+      }
+      if (is.na(wl.range[2])) {
+        wl.range[2] <- wl_max(x)
+      }
+    }
     wl.selector <-
       x[["w.length"]] >= wl.range[1] & x[["w.length"]] <= wl.range[2]
-  } else {
-    wl.selector <- TRUE
   }
 
   xx <- x[wl.selector, ]
@@ -447,13 +478,23 @@ smooth_spct.response_spct <- function(x,
   prev_state <- disable_check_spct()
   on.exit(set_check_spct(prev_state), add = TRUE)
 
-  # this needs to be after NAs are omitted
-  if (!is.null(wl.range)) {
-    wl.range <- range(wl.range)
+  # positional selectors are computed after NAs are omitted from the spectrum
+  if (is.null(wl.range) || all(is.na(wl.range))) {
+    wl.selector <- TRUE
+  } else {
+    if (is.generic_spct(wl.range) ||
+        (is.numeric(wl.range) && length(wl.range) > 2L)) {
+      wl.range <- range(wl.range, na.rm = TRUE)
+    } else {
+      if (is.na(wl.range[1])) {
+        wl.range[1] <- wl_min(x)
+      }
+      if (is.na(wl.range[2])) {
+        wl.range[2] <- wl_max(x)
+      }
+    }
     wl.selector <-
       x[["w.length"]] >= wl.range[1] & x[["w.length"]] <= wl.range[2]
-  } else {
-    wl.selector <- TRUE
   }
 
   xx <- x[wl.selector, ]

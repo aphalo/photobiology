@@ -119,8 +119,8 @@ absorbance.object_spct <-
 #'   constructed on the fly from it.
 #' @param quantity character string One of "average" or "mean", "total",
 #'   "contribution", "contribution.pc", "relative" or "relative.pc"
-#' @param wb.trim logical Flag if wavebands crossing spectral data boundaries
-#'   are trimmed or ignored
+#' @param wb.trim logical Flag, if TRUE wavebands crossing spectral data
+#'   boundaries are trimmed and otherwise ignored.
 #' @param use.hinges logical Flag indicating whether to use hinges to reduce
 #'   interpolation errors
 #' @param naming character one of "long", "default", "short" or "none". Used to

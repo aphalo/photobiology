@@ -69,7 +69,8 @@ method-specific parameters are passed through \code{...}.}
 
 \item{wl.range}{any R object on which applying the method \code{range()}
 yields a vector of two numeric values, describing a range of wavelengths
-(nm). \code{NA} is interpreted as data's own min or max value.}
+(nm) within which spectral data is to be smoothed. \code{NA} is interpreted
+as the min or max value of \code{x[[w.length]]}.}
 
 \item{...}{other parameters passed to the underlying smoothing functions.}
 

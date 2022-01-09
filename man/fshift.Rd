@@ -25,7 +25,7 @@ fshift(x, ...)
 
 \method{fshift}{source_spct}(
   x,
-  range = c(min(x), min(x) + 10),
+  range = c(wl_min(x), wl_min(x) + 10),
   f = "mean",
   unit.out = getOption("photobiology.radiation.unit", default = "energy"),
   ...
@@ -33,7 +33,7 @@ fshift(x, ...)
 
 \method{fshift}{response_spct}(
   x,
-  range = c(min(x), min(x) + 10),
+  range = c(wl_min(x), wl_min(x) + 10),
   f = "mean",
   unit.out = getOption("photobiology.radiation.unit", default = "energy"),
   ...
@@ -41,31 +41,43 @@ fshift(x, ...)
 
 \method{fshift}{filter_spct}(
   x,
-  range = c(min(x), min(x) + 10),
+  range = c(wl_min(x), wl_min(x) + 10),
   f = "min",
   qty.out = getOption("photobiology.filter.qty", default = "transmittance"),
   ...
 )
 
-\method{fshift}{reflector_spct}(x, range = c(min(x), min(x) + 10), f = "min", qty.out = NULL, ...)
+\method{fshift}{reflector_spct}(x, range = c(wl_min(x), wl_min(x) + 10), f = "min", qty.out = NULL, ...)
 
 \method{fshift}{source_mspct}(
   x,
-  range = c(min(x), min(x) + 10),
+  range = c(wl_min(x), wl_min(x) + 10),
   f = "mean",
   unit.out = getOption("photobiology.radiation.unit", default = "energy"),
   ...
 )
 
-\method{fshift}{raw_spct}(x, range = c(min(x), min(x) + 10), f = "mean", qty.out = NULL, ...)
+\method{fshift}{raw_spct}(
+  x,
+  range = c(wl_min(x), wl_min(x) + 10),
+  f = "mean",
+  qty.out = NULL,
+  ...
+)
 
-\method{fshift}{cps_spct}(x, range = c(min(x), min(x) + 10), f = "mean", qty.out = NULL, ...)
+\method{fshift}{cps_spct}(
+  x,
+  range = c(wl_min(x), wl_min(x) + 10),
+  f = "mean",
+  qty.out = NULL,
+  ...
+)
 
-\method{fshift}{generic_spct}(x, range = c(min(x), min(x) + 10), f = "mean", col.names, ...)
+\method{fshift}{generic_spct}(x, range = c(wl_min(x), wl_min(x) + 10), f = "mean", col.names, ...)
 
 \method{fshift}{response_mspct}(
   x,
-  range = c(min(x), min(x) + 10),
+  range = c(wl_min(x), wl_min(x) + 10),
   f = "mean",
   unit.out = getOption("photobiology.radiation.unit", default = "energy"),
   ...,
@@ -75,7 +87,7 @@ fshift(x, ...)
 
 \method{fshift}{filter_mspct}(
   x,
-  range = c(min(x), min(x) + 10),
+  range = c(wl_min(x), wl_min(x) + 10),
   f = "min",
   qty.out = getOption("photobiology.filter.qty", default = "transmittance"),
   ...,
@@ -85,7 +97,7 @@ fshift(x, ...)
 
 \method{fshift}{reflector_mspct}(
   x,
-  range = c(min(x), min(x) + 10),
+  range = c(wl_min(x), wl_min(x) + 10),
   f = "min",
   qty.out = NULL,
   ...,
@@ -95,7 +107,7 @@ fshift(x, ...)
 
 \method{fshift}{raw_mspct}(
   x,
-  range = c(min(x), min(x) + 10),
+  range = c(wl_min(x), wl_min(x) + 10),
   f = "min",
   ...,
   .parallel = FALSE,
@@ -104,7 +116,7 @@ fshift(x, ...)
 
 \method{fshift}{cps_mspct}(
   x,
-  range = c(min(x), min(x) + 10),
+  range = c(wl_min(x), wl_min(x) + 10),
   f = "min",
   ...,
   .parallel = FALSE,
@@ -113,7 +125,7 @@ fshift(x, ...)
 
 \method{fshift}{generic_mspct}(
   x,
-  range = c(min(x), min(x) + 10),
+  range = c(wl_min(x), wl_min(x) + 10),
   f = "min",
   col.names,
   ...,

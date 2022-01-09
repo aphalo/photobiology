@@ -17,8 +17,8 @@ constructed on the fly from it.}
 \item{quantity}{character string One of "average" or "mean", "total",
 "contribution", "contribution.pc", "relative" or "relative.pc"}
 
-\item{wb.trim}{logical Flag if wavebands crossing spectral data boundaries
-are trimmed or ignored}
+\item{wb.trim}{logical Flag, if TRUE wavebands crossing spectral data
+boundaries are trimmed and otherwise ignored.}
 
 \item{use.hinges}{logical Flag indicating whether to use hinges to reduce
 interpolation errors}

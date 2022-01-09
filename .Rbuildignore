@@ -13,3 +13,4 @@
 ^.*\.sh$
 ^\.github$
 ^CITATION\.cff$
+^revdep
