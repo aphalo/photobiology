@@ -17,7 +17,9 @@
 #'
 #' @export
 #'
-#' @note At the moment just a modified copy of dplyr:::print.tbl_df.
+#' @note This is simply a wrapper on the print method for tibbles, with
+#'   additional information in the header. Curently, \code{width} applies only
+#'   to the table of data.
 #'
 #' @name print
 #'
@@ -148,7 +150,7 @@ print.generic_spct <- function(x, ..., n = NULL, width = NULL)
     cat("Data weighted using '", BSWF, "' BSWF\n", sep = "")
   }
   cat("\n")
-  print(dplyr::trunc_mat(x, n = n, width = width))
+  print(tibble::as_tibble(x), n = n, width = width)
   invisible(x)
 }
 

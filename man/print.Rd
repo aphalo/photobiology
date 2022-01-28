@@ -37,7 +37,9 @@ Print method for objects of spectral classes.
 }}
 
 \note{
-At the moment just a modified copy of dplyr:::print.tbl_df.
+This is simply a wrapper on the print method for tibbles, with
+  additional information in the header. Curently, \code{width} applies only
+  to the table of data.
 }
 \examples{
 
