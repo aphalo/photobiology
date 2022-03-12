@@ -62,7 +62,7 @@ smooth_spct(x, method, strength, wl.range, ...)
 \arguments{
 \item{x}{an R object.}
 
-\item{method}{a character string "custom", "lowess", "supsmu".}
+\item{method}{a character string "custom", "lowess", "supsmu" or "none"..}
 
 \item{strength}{numeric value to adjust the degree of smoothing. Ignored if
 method-specific parameters are passed through \code{...}.}
@@ -110,7 +110,7 @@ Method "custom" is our home-brewed method which applies strong
   ad-hock method suitable for smoothing spectral data obtained with
   spectrometers. In the cased of methods "lowess" and "supsmu" the current
   function behaves like a wrapper of the functions of the same names from
-  base R.
+  base R. Method "none" returns \code{x} unchanged.
 }
 \examples{
 

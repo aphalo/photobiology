@@ -6,7 +6,7 @@
 #' when needed, defaults suitable for spectral data.
 #'
 #' @param x an R object.
-#' @param method a character string "custom", "lowess", "supsmu".
+#' @param method a character string "custom", "lowess", "supsmu" or "none"..
 #' @param strength numeric value to adjust the degree of smoothing. Ignored if
 #'   method-specific parameters are passed through \code{...}.
 #' @param wl.range any R object on which applying the method \code{range()}
@@ -27,7 +27,7 @@
 #'   ad-hock method suitable for smoothing spectral data obtained with
 #'   spectrometers. In the cased of methods "lowess" and "supsmu" the current
 #'   function behaves like a wrapper of the functions of the same names from
-#'   base R.
+#'   base R. Method "none" returns \code{x} unchanged.
 #'
 #' @export
 #'
@@ -64,6 +64,14 @@ smooth_spct.source_spct <- function(x,
                                     wl.range = NULL,
                                     na.rm = FALSE,
                                     ...) {
+  supported.methods <- c("custom", "lowess", "supsmu")
+  if (!method %in% supported.methods) {
+    if (method != "none") {
+      warning("Method \"", method, "\" not supported. Skiping!")
+    }
+    return(x)
+  }
+
   num.spectra <- getMultipleWl(x)
   if (num.spectra != 1) {
     warning("Skipping smoothing as object contains ",
@@ -193,6 +201,14 @@ smooth_spct.filter_spct <- function(x,
                                     wl.range = NULL,
                                     na.rm = FALSE,
                                     ...) {
+  supported.methods <- c("custom", "lowess", "supsmu")
+  if (!method %in% supported.methods) {
+    if (method != "none") {
+      warning("Method \"", method, "\" not supported. Skiping!")
+    }
+    return(x)
+  }
+
   num.spectra <- getMultipleWl(x)
   if (num.spectra != 1) {
     warning("Skipping smoothing as object contains ",
@@ -350,6 +366,14 @@ smooth_spct.reflector_spct <- function(x,
                                        wl.range = NULL,
                                        na.rm = FALSE,
                                        ...) {
+  supported.methods <- c("custom", "lowess", "supsmu")
+  if (!method %in% supported.methods) {
+    if (method != "none") {
+      warning("Method \"", method, "\" not supported. Skiping!")
+    }
+    return(x)
+  }
+
   num.spectra <- getMultipleWl(x)
   if (num.spectra != 1) {
     warning("Skipping smoothing as object contains ",
@@ -439,6 +463,14 @@ smooth_spct.response_spct <- function(x,
                                       wl.range = NULL,
                                       na.rm = FALSE,
                                       ...) {
+  supported.methods <- c("custom", "lowess", "supsmu")
+  if (!method %in% supported.methods) {
+    if (method != "none") {
+      warning("Method \"", method, "\" not supported. Skiping!")
+    }
+    return(x)
+  }
+
   num.spectra <- getMultipleWl(x)
   if (num.spectra != 1) {
     warning("Skipping smoothing as object contains ",

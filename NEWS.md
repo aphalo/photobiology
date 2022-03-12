@@ -4,6 +4,11 @@ editor_options:
     wrap: 72
 ---
 
+# photobiology 0.10.10
+
+-   Update `smooth_spct()` to handle bad arguments passed to `method` wihtout
+    crashing and add support for `method = "none"`..
+
 # photobiology 0.10.9
 
 -   Update `smooth_spct()` methods so that `NA` values in `wl.range` are handled
