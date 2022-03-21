@@ -134,7 +134,10 @@ length 2 with the limits of a range of wavelengths in nm, with min and max
 wavelengths (nm) used to set boundaries for search for normalization.}
 
 \item{norm}{numeric Normalization wavelength (nm) or character string "max",
-or "min" for normalization at the corresponding wavelength.}
+or "min" for normalization at the corresponding wavelength, "update" to
+update the normalization after modifying units of expression, quantity
+or range but respecting the previously used criterion, or "skip" to force
+return of \code{x} unchanged.}
 
 \item{unit.out}{character Allowed values "energy", and "photon",
 or its alias "quantum"}

@@ -58,7 +58,10 @@ normalize.default <- function(x, ...) {
 #'   length 2 with the limits of a range of wavelengths in nm, with min and max
 #'   wavelengths (nm) used to set boundaries for search for normalization.
 #' @param norm numeric Normalization wavelength (nm) or character string "max",
-#'   or "min" for normalization at the corresponding wavelength.
+#'   or "min" for normalization at the corresponding wavelength, "update" to
+#'   update the normalization after modifying units of expression, quantity
+#'   or range but respecting the previously used criterion, or "skip" to force
+#'   return of \code{x} unchanged.
 #' @param unit.out character Allowed values "energy", and "photon",
 #'   or its alias "quantum"
 #' @param na.rm logical indicating whether \code{NA} values should be stripped
@@ -411,6 +414,29 @@ normalize_spct <- function(spct, range, norm, col.names, na.rm) {
             getMultipleWl(spct), " spectra; skipping normalization")
     return(spct)
   }
+
+  if (is.na(norm) || is.null(norm) || norm == "skip") {
+    return(spct)
+  }
+  if (is_normalized(spct)) {
+    old.normalization.ls <- getNormalization(spct)
+    has.normalization.metadata <- !all(is.na(old.normalization.ls))
+    if (norm == "update") {
+      if (!has.normalization.metadata) {
+        warning("Normalization not updated: unsupported old object)")
+        return(spct)
+      } else {
+        norm <- old.normalization.ls$norm.type
+        if (norm == "wavelength") {
+          norm <- old.normalization.ls$norm.wl
+        }
+      }
+    }
+  } else if (norm == "update") {
+    # not normalized, nothing to update
+    return(spct)
+  }
+
   norm.arg <- norm
   # normalization will wipe out any existing scaling
   scale.is.dirty <- FALSE
@@ -439,40 +465,37 @@ normalize_spct <- function(spct, range, norm, col.names, na.rm) {
   stopifnot(nrow(x) > 2) # too short a slice
 
   # rescaling needed
-  if (!is.null(norm)) {
-    scale.factors <- numeric(0)
-    for (col in col.names) {
-      if (is.character(norm)) {
-        if (norm %in% c("max", "maximum")) {
-          idx <- which.max(x[[col]])
-        } else if (norm %in% c("min", "minimum")) {
-          idx <- which.min(x[[col]])
-        } else {
-          warning("Invalid character '", norm, "'value in 'norm'")
-          idx <- NA
-        }
-        scale.factor <- 1 / x[idx, col, drop = TRUE]
-        norm <- x[idx, "w.length", drop = TRUE]
-      } else if (is.numeric(norm)) {
-        if (norm >= range[1] && norm <= range[2]) {
-          tmp.spct <- spct[ , c("w.length", col)]
-          class(tmp.spct) <- class(spct)
-          scale.factor <- 1 /
-            interpolate_spct(spct = tmp.spct, w.length.out = norm)[ , eval(col)]
-        } else {
-          warning("'norm = ", norm, "' value outside spectral data range of ",
-                  round(min(tmp.spct), 1), " to ", round(max(tmp.spct), 1), " (nm)")
-          scale.factor <- NA
-        }
+  scale.factors <- numeric(0)
+  for (col in col.names) {
+    if (is.character(norm)) {
+      if (norm %in% c("max", "maximum")) {
+        idx <- which.max(x[[col]])
+      } else if (norm %in% c("min", "minimum")) {
+        idx <- which.min(x[[col]])
       } else {
-        stop("'norm' should be numeric or character")
+        warning("Invalid 'norm' value: '", norm, "'")
+        idx <- NA
       }
-      scale.factors <- c(scale.factors, scale.factor)
-      spct[[col]] <- spct[ , col, drop = TRUE] * scale.factor
+      scale.factor <- 1 / x[idx, col, drop = TRUE]
+      norm <- x[idx, "w.length", drop = TRUE]
+    } else if (is.numeric(norm)) {
+      if (norm >= range[1] && norm <= range[2]) {
+        tmp.spct <- spct[ , c("w.length", col)]
+        class(tmp.spct) <- class(spct)
+        scale.factor <- 1 /
+          interpolate_spct(spct = tmp.spct, w.length.out = norm)[ , eval(col)]
+      } else {
+        warning("'norm = ", norm, "' value outside spectral data range of ",
+                round(min(tmp.spct), 1), " to ", round(max(tmp.spct), 1), " (nm)")
+        scale.factor <- NA
+      }
+    } else {
+      stop("'norm' should be numeric or character")
     }
-  } else {
-    return(spct)
+    scale.factors <- c(scale.factors, scale.factor)
+    spct[[col]] <- spct[ , col, drop = TRUE] * scale.factor
   }
+
   setNormalized(spct,
                 norm = norm,
                 norm.type =
