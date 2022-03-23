@@ -73,12 +73,19 @@ rmDerivedMspct <- function(x) {
 #' @family set and unset 'multi spectral' class functions
 #'
 shared_member_class <- function(l, target.set = spct_classes()) {
-  l.class <- target.set
-  for (i in seq_along(l)) {
-    member_class <- class(l[[i]])
-    l.class <- intersect(l.class, member_class)
+  stopifnot(is.generic_mspct(l))
+  if (length(l) == 0) {
+    # we return the least derived allowed member class
+    gsub("_mspct$", "_spct", class(l)[1])
+  } else {
+    # we inspect the classes of members
+    l.class <- target.set
+    for (i in seq_along(l)) {
+      member_class <- class(l[[i]])
+      l.class <- intersect(l.class, member_class)
+    }
+    l.class
   }
-  l.class
 }
 
 # Constructors ------------------------------------------------------------
@@ -107,8 +114,10 @@ shared_member_class <- function(l, target.set = spct_classes()) {
 #' @examples
 #' filter_mspct(list(polyester.spct, yellow_gel.spct))
 #'
-generic_mspct <- function(l = NULL, class = "generic_spct",
-                          ncol = 1, byrow = FALSE,
+generic_mspct <- function(l = NULL,
+                          class = "generic_spct",
+                          ncol = 1,
+                          byrow = FALSE,
                           dim = c(length(l) %/% ncol, ncol)) {
   if (is.generic_spct(l)) {
     l <- list(l)
@@ -157,7 +166,10 @@ generic_mspct <- function(l = NULL, class = "generic_spct",
 #' @export
 #'
 #'
-calibration_mspct <- function(l = NULL, ncol = 1, byrow = FALSE, ...) {
+calibration_mspct <- function(l = NULL,
+                              ncol = 1,
+                              byrow = FALSE,
+                              ...) {
   generic_mspct(l, class = "calibration_spct", ncol = ncol, byrow = byrow)
 }
 
@@ -166,7 +178,10 @@ calibration_mspct <- function(l = NULL, ncol = 1, byrow = FALSE, ...) {
 #' @export
 #'
 #'
-raw_mspct <- function(l = NULL, ncol = 1, byrow = FALSE, ...) {
+raw_mspct <- function(l = NULL,
+                      ncol = 1,
+                      byrow = FALSE,
+                      ...) {
   generic_mspct(l, class = "raw_spct", ncol = ncol, byrow = byrow)
 }
 
@@ -175,7 +190,9 @@ raw_mspct <- function(l = NULL, ncol = 1, byrow = FALSE, ...) {
 #' @export
 #'
 #'
-cps_mspct <- function(l = NULL, ncol = 1, byrow = FALSE, ...) {
+cps_mspct <- function(l = NULL,
+                      ncol = 1,
+                      byrow = FALSE, ...) {
   generic_mspct(l, class = "cps_spct", ncol = ncol, byrow = byrow)
 }
 
@@ -184,7 +201,10 @@ cps_mspct <- function(l = NULL, ncol = 1, byrow = FALSE, ...) {
 #' @export
 #'
 #'
-source_mspct <- function(l = NULL, ncol = 1, byrow = FALSE, ...) {
+source_mspct <- function(l = NULL,
+                         ncol = 1,
+                         byrow = FALSE,
+                         ...) {
   generic_mspct(l, class = "source_spct", ncol = ncol, byrow = byrow)
 }
 
@@ -193,7 +213,10 @@ source_mspct <- function(l = NULL, ncol = 1, byrow = FALSE, ...) {
 #' @export
 #'
 #'
-filter_mspct <- function(l = NULL, ncol = 1, byrow = FALSE, ...) {
+filter_mspct <- function(l = NULL,
+                         ncol = 1,
+                         byrow = FALSE,
+                         ...) {
   generic_mspct(l, class = "filter_spct", ncol = ncol, byrow = byrow)
 }
 
@@ -202,7 +225,10 @@ filter_mspct <- function(l = NULL, ncol = 1, byrow = FALSE, ...) {
 #' @export
 #'
 #'
-reflector_mspct <- function(l = NULL, ncol = 1, byrow = FALSE, ...) {
+reflector_mspct <- function(l = NULL,
+                            ncol = 1,
+                            byrow = FALSE,
+                            ...) {
   generic_mspct(l, class = "reflector_spct", ncol = ncol, byrow = byrow)
 }
 
@@ -211,7 +237,10 @@ reflector_mspct <- function(l = NULL, ncol = 1, byrow = FALSE, ...) {
 #' @export
 #'
 #'
-object_mspct <- function(l = NULL, ncol = 1, byrow = FALSE, ...) {
+object_mspct <- function(l = NULL,
+                         ncol = 1,
+                         byrow = FALSE,
+                         ...) {
   generic_mspct(l, class = "object_spct", ncol = ncol, byrow = byrow)
 }
 
@@ -220,7 +249,10 @@ object_mspct <- function(l = NULL, ncol = 1, byrow = FALSE, ...) {
 #' @export
 #'
 #'
-response_mspct <- function(l = NULL, ncol = 1, byrow = FALSE, ...) {
+response_mspct <- function(l = NULL,
+                           ncol = 1,
+                           byrow = FALSE,
+                           ...) {
   generic_mspct(l, class = "response_spct", ncol = ncol, byrow = byrow)
 }
 
@@ -229,7 +261,10 @@ response_mspct <- function(l = NULL, ncol = 1, byrow = FALSE, ...) {
 #' @export
 #'
 #'
-chroma_mspct <- function(l = NULL, ncol = 1, byrow = FALSE, ...) {
+chroma_mspct <- function(l = NULL,
+                         ncol = 1,
+                         byrow = FALSE,
+                         ...) {
   generic_mspct(l, class = "chroma_spct", ncol = ncol, byrow = byrow)
 }
 

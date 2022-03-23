@@ -7,9 +7,10 @@ editor_options:
 # photobiology 0.10.10
 
 -   Update `normalize()` methods to support updating an already present
-    normalization or to skip the normalization.
+    normalization (`norm = "update"`) and skipping the normalization altogether (`norm = "skip"`).
 -   Update `smooth_spct()` to handle bad arguments passed to `method` wihtout
-    crashing and add support for `method = "none"`.
+    crashing and add support for skipping smoothing (`method = "skip"`).
+-   Fix bugs.
 
 # photobiology 0.10.9
 
