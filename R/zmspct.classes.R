@@ -73,10 +73,13 @@ rmDerivedMspct <- function(x) {
 #' @family set and unset 'multi spectral' class functions
 #'
 shared_member_class <- function(l, target.set = spct_classes()) {
-  stopifnot(is.generic_mspct(l))
   if (length(l) == 0) {
-    # we return the least derived allowed member class
-    gsub("_mspct$", "_spct", class(l)[1])
+    if (is.generic_mspct(l)) {
+      # we return the least derived member class allowed
+      gsub("_mspct$", "_spct", class(l)[1])
+    } else {
+      character()
+    }
   } else {
     # we inspect the classes of members
     l.class <- target.set
