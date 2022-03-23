@@ -7,10 +7,14 @@ editor_options:
 # photobiology 0.10.10
 
 -   Update `normalize()` methods to support updating an already present
-    normalization (`norm = "update"`) and skipping the normalization altogether (`norm = "skip"`).
+    normalization (`norm = "update"`) and skipping the normalization altogether
+    (`norm = "skip"`).
 -   Update `smooth_spct()` to handle bad arguments passed to `method` wihtout
     crashing and add support for skipping smoothing (`method = "skip"`).
--   Fix bugs.
+-   Fix bug in `shared_member_class()` (wrong value returned for empty 
+    collections).
+-   Fix bug in `getNormalization()` (wrong named member in returned value from
+    spectra with no normalization data).
 
 # photobiology 0.10.9
 
