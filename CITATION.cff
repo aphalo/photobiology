@@ -8,7 +8,7 @@ message: 'To cite package "photobiology" in publications use:'
 type: software
 license: GPL-2.0-or-later
 title: 'photobiology: Photobiological Calculations'
-version: 0.10.9002
+version: 0.10.9.9002
 doi: 10.19232/uv4pb.2015.1.14
 abstract: 'Definitions of classes, methods, operators and functions for use in photobiology
   and radiation meteorology and climatology. Calculation of effective (weighted) and
