@@ -6,7 +6,7 @@
 #' when needed, defaults suitable for spectral data.
 #'
 #' @param x an R object.
-#' @param method a character string "custom", "lowess", "supsmu" or "none"..
+#' @param method a character string "custom", "lowess", "supsmu" or "skip"..
 #' @param strength numeric value to adjust the degree of smoothing. Ignored if
 #'   method-specific parameters are passed through \code{...}.
 #' @param wl.range any R object on which applying the method \code{range()}
@@ -27,7 +27,7 @@
 #'   ad-hock method suitable for smoothing spectral data obtained with
 #'   spectrometers. In the cased of methods "lowess" and "supsmu" the current
 #'   function behaves like a wrapper of the functions of the same names from
-#'   base R. Method "none" returns \code{x} unchanged.
+#'   base R. Method "skip" returns \code{x} unchanged.
 #'
 #' @export
 #'
@@ -66,7 +66,7 @@ smooth_spct.source_spct <- function(x,
                                     ...) {
   supported.methods <- c("custom", "lowess", "supsmu")
   if (!method %in% supported.methods) {
-    if (method != "none") {
+    if (method != "skip") {
       warning("Method \"", method, "\" not supported. Skiping!")
     }
     return(x)
@@ -203,7 +203,7 @@ smooth_spct.filter_spct <- function(x,
                                     ...) {
   supported.methods <- c("custom", "lowess", "supsmu")
   if (!method %in% supported.methods) {
-    if (method != "none") {
+    if (method != "skip") {
       warning("Method \"", method, "\" not supported. Skiping!")
     }
     return(x)
@@ -368,7 +368,7 @@ smooth_spct.reflector_spct <- function(x,
                                        ...) {
   supported.methods <- c("custom", "lowess", "supsmu")
   if (!method %in% supported.methods) {
-    if (method != "none") {
+    if (method != "skip") {
       warning("Method \"", method, "\" not supported. Skiping!")
     }
     return(x)
@@ -465,7 +465,7 @@ smooth_spct.response_spct <- function(x,
                                       ...) {
   supported.methods <- c("custom", "lowess", "supsmu")
   if (!method %in% supported.methods) {
-    if (method != "none") {
+    if (method != "skip") {
       warning("Method \"", method, "\" not supported. Skiping!")
     }
     return(x)
