@@ -407,17 +407,22 @@ normalize.cps_mspct <- function(x,
 #' @keywords internal
 #'
 normalize_spct <- function(spct, range, norm, col.names, na.rm) {
-  stopifnot(is.generic_spct(spct), !is.null(col.names),
-            col.names %in% names(spct))
+  stopifnot(is.generic_spct(spct))
+
+  # handle "skip" early so that long-from multiple spectra or missing columns
+  # do not trigger errors
+  if (is.na(norm) || is.null(norm) || norm == "skip") {
+    return(spct)
+  }
+
+  stopifnot(!is.null(col.names), col.names %in% names(spct))
+
   if (getMultipleWl(spct) != 1L) {
     warning("Object contains data for ",
             getMultipleWl(spct), " spectra; skipping normalization")
     return(spct)
   }
 
-  if (is.na(norm) || is.null(norm) || norm == "skip") {
-    return(spct)
-  }
   if (is_normalized(spct)) {
     old.normalization.ls <- getNormalization(spct)
     has.normalization.metadata <- !all(is.na(old.normalization.ls))
@@ -620,8 +625,8 @@ getNormalization <- function(x) {
     warning("Method 'getNormalized()' not implemented for class: ",
             class(x)[1])
   }
-  list(norm = NA_real_,
-       norm.type = NA_character_,
+  list(norm.type = NA_character_,
+       norm.wl = NA_real_,
        norm.factors = NA_real_,
        norm.cols = NA_character_)
 }
