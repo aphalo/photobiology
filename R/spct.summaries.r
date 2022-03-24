@@ -153,7 +153,8 @@ print.generic_spct <- function(x, ..., n = NULL, width = NULL)
     if (!is.na(normalization[["norm.wl"]]) &&
         !is.na(normalization[["norm.cols"]]) &&
         !is.na(normalization[["norm.type"]])) {
-      if (normalization[["norm.type"]] == "wavelength") {
+      if (normalization[["norm.type"]] == "wavelength" ||
+          all(is.na(normalization[["norm.range"]]))) {
         cat("Spectral data normalized to ",  normalization[["norm.cols"]],
             " = 1 at ", normalization[["norm.wl"]], " nm (",
             normalization[["norm.type"]], ")\n", sep = "")
@@ -447,7 +448,8 @@ print.summary_generic_spct <- function(x, ...) {
     if (!is.na(normalization[["norm.wl"]]) &&
         !is.na(normalization[["norm.cols"]]) &&
         !is.na(normalization[["norm.type"]])) {
-      if (normalization[["norm.type"]] == "wavelength") {
+      if (normalization[["norm.type"]] == "wavelength" ||
+          all(is.na(normalization[["norm.range"]]))) {
         cat("Spectral data normalized to ",  normalization[["norm.cols"]],
             " = 1 at ", normalization[["norm.wl"]], " nm (",
             normalization[["norm.type"]], ")\n", sep = "")
