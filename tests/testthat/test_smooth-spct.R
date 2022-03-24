@@ -8,6 +8,8 @@ test_that("source_spct", {
   x$s.e.irrad[10:20] <- NA_real_
   expect_error(smooth_spct(x))
 
+  expect_equal(smooth_spct(sun.spct, method = "skip"), sun.spct)
+
   expect_known_value(smooth_spct(x, na.rm = TRUE), "./data/smooth-na-value")
 
   expect_equal(getTimeUnit(sun.spct), getTimeUnit(smooth_spct(sun.spct)))
