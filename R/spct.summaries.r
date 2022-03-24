@@ -41,8 +41,8 @@ print.generic_spct <- function(x, ..., n = NULL, width = NULL)
       cat("containing ", m.wl, " spectra in long form\n", sep = "")
     }
     cat("Wavelength range ",
-        paste(signif(range(x), 8), sep = "", collapse = " to "), " nm, step ",
-        paste(unique(signif(stepsize(x), 7)), sep = "", collapse = " to "),
+        paste(signif(wl_range(x), 8), sep = "", collapse = "-"), " nm, step ",
+        paste(unique(signif(stepsize(x), 7)), sep = "", collapse = "-"),
         " nm \n", sep = "")
   }
   what.measured <- getWhatMeasured(x)
@@ -137,13 +137,37 @@ print.generic_spct <- function(x, ..., n = NULL, width = NULL)
     }
   }
   if (is_scaled(x)) {
-    scaling <- getScaled(x)
-    cat("Rescaled to '", scaling[["f"]], "' = ", scaling[["target"]], "\n", sep = "")
+    scaling <- getScaling(x)
+    if (all(is.na(scaling[["cols"]]))) {
+      cat("Rescaled to '", scaling[["f"]], "' = ", scaling[["target"]],
+          " for wavelengths in ", paste(scaling[["range"]], collapse = "-"), " nm\n", sep = "")
+    } else {
+      cat("Rescaled to '", scaling[["f"]], " of ",
+          scaling[["cols"]], "' = ", scaling[["target"]],
+          " for wavelengths in ", paste(scaling[["range"]], collapse = "-"), " nm\n", sep = "")
+    }
   }
   if (is_normalized(x)) {
     norm <- getNormalized(x)
-    cat("Spectral data normalized to 1 at ", norm,
-        ifelse(is.numeric(norm), " nm \n", " \n"), sep = "")
+    normalization <- getNormalization(x)
+    if (!is.na(normalization[["norm.wl"]]) &&
+        !is.na(normalization[["norm.cols"]]) &&
+        !is.na(normalization[["norm.type"]])) {
+      if (normalization[["norm.type"]] == "wavelength") {
+        cat("Spectral data normalized to ",  normalization[["norm.cols"]],
+            " = 1 at ", normalization[["norm.wl"]], " nm (",
+            normalization[["norm.type"]], ")\n", sep = "")
+      } else {
+        cat("Spectral data normalized to ",  normalization[["norm.cols"]],
+            " = 1 at ", normalization[["norm.wl"]], " nm (",
+            normalization[["norm.type"]], " in ",
+            paste(round(normalization[["norm.range"]], 2), collapse = "-"),
+            " nm)\n", sep = "")
+      }
+    } else {
+      cat("Spectral data normalized to 1 at ", norm,
+          ifelse(is.numeric(norm), " nm \n", " \n"), sep = "")
+    }
   }
   if (is_effective(x)) {
     BSWF <- getBSWFUsed(x)
@@ -297,7 +321,8 @@ summary.generic_spct <- function(object,
                                  digits = max(3, getOption("digits") - 3),
                                  ...) {
   z <- list()
-  class(z) <- c("summary_generic_spct", class(z))
+  class(z) <- c(paste("summary_", class_spct(object), sep = ""), class(z))
+
   object.name <- substitute(object)
   z[["orig.name"]] <- if (is.name(object.name)) as.character(object.name) else "anonymous"
   z[["orig.class"]] <- class_spct(object)[1]
@@ -305,39 +330,11 @@ summary.generic_spct <- function(object,
   z[["wl.range"]] <- range(object)
   z[["wl.stepsize"]] <- stepsize(object)
   z[["summary"]] <- summary(as.data.frame(object), maxsum = maxsum, digits = digits, ...)
-  comment(z) <- comment(object)
-  setNormalized(z, getNormalized(object))
-  setScaled(z, getScaled(object))
-  setWhenMeasured(z, getWhenMeasured(object))
-  setWhereMeasured(z, getWhereMeasured(object))
-  setWhatMeasured(z, getWhatMeasured(object))
-  setMultipleWl(z, getMultipleWl(object))
-  setInstrDesc(z, getInstrDesc(object))
-  setInstrSettings(z, getInstrSettings(object))
-  if (is.source_spct(object)) {
-    class(z) <- c("summary_source_spct", class(z))
-    setTimeUnit(z, getTimeUnit(object))
-    setBSWFUsed(z, getBSWFUsed(object))
-  } else if (is.response_spct(object)) {
-    class(z) <- c("summary_response_spct", class(z))
-    setTimeUnit(z, getTimeUnit(object))
-  } else if (is.filter_spct(object)) {
-    class(z) <- c("summary_filter_spct", class(z))
-    setTfrType(z, getTfrType(object))
-  } else if (is.reflector_spct(object)) {
-    class(z) <- c("summary_reflector_spct", class(z))
-    setRfrType(z, getRfrType(object))
-  } else if (is.object_spct(object)) {
-    class(z) <- c("summary_object_spct", class(z))
-    setTfrType(z, getTfrType(object))
-    setRfrType(z, getRfrType(object))
-  } else if (is.chroma_spct(object)) {
-    class(z) <- c("summary_chroma_spct", class(z))
-  } else if (is.cps_spct(object)) {
-    class(z) <- c("summary_cps_spct", class(z))
-  } else if (is.raw_spct(object)) {
-    class(z) <- c("summary_raw_spct", class(z))
-  }
+
+  z <- copy_attributes(object, z,
+                       copy.class = FALSE,
+                       which = c(all_spct_attr.ls[["generic_spct"]],
+                                 all_spct_attr.ls[[class(object)[1]]]))
   z
 }
 
@@ -365,8 +362,8 @@ print.summary_generic_spct <- function(x, ...) {
     cat("containing ", m.wl, " spectra in long form\n")
   }
   cat("Wavelength range ",
-      paste(signif(x[["wl.range"]], 8), sep = "", collapse = " to "), " nm, step ",
-      paste(unique(signif(x[["wl.stepsize"]], 7)), sep = "", collapse = " to "),
+      paste(signif(x[["wl.range"]], 8), sep = "", collapse = "-"), " nm, step ",
+      paste(unique(signif(x[["wl.stepsize"]], 7)), sep = "", collapse = "-"),
       " nm\n", sep = "")
   what.measured <- getWhatMeasured(x)
   if (!any(is.na(what.measured))) {
@@ -434,15 +431,37 @@ print.summary_generic_spct <- function(x, ...) {
         "\n", sep = "")
   }
   if (is_scaled(x)) {
-    scaling <- getScaled(x)
-    cat("Rescaled to '", scaling[["f"]], "' = ", scaling[["target"]], "\n", sep = "")
+    scaling <- getScaling(x)
+    if (all(is.na(scaling[["cols"]]))) {
+      cat("Rescaled to '", scaling[["f"]], "' = ", scaling[["target"]],
+          " for wavelengths in ", paste(scaling[["range"]], collapse = "-"), " nm\n", sep = "")
+    } else {
+      cat("Rescaled to '", scaling[["f"]], " of ",
+          scaling[["cols"]], "' = ", scaling[["target"]],
+          " for wavelengths in ", paste(scaling[["range"]], collapse = "-"), " nm\n", sep = "")
+    }
   }
   if (is_normalized(x)) {
     norm <- getNormalized(x)
-    cat("Spectral data normalized to 1 at ",
-        norm,
-        ifelse(is.numeric(norm), " nm \n", " \n"),
-        sep = "")
+    normalization <- getNormalization(x)
+    if (!is.na(normalization[["norm.wl"]]) &&
+        !is.na(normalization[["norm.cols"]]) &&
+        !is.na(normalization[["norm.type"]])) {
+      if (normalization[["norm.type"]] == "wavelength") {
+        cat("Spectral data normalized to ",  normalization[["norm.cols"]],
+            " = 1 at ", normalization[["norm.wl"]], " nm (",
+            normalization[["norm.type"]], ")\n", sep = "")
+      } else {
+        cat("Spectral data normalized to ",  normalization[["norm.cols"]],
+            " = 1 at ", normalization[["norm.wl"]], " nm (",
+            normalization[["norm.type"]], " in ",
+            paste(round(normalization[["norm.range"]], 2), collapse = "-"),
+            " nm)\n", sep = "")
+      }
+    } else {
+      cat("Spectral data normalized to 1 at ", norm,
+          ifelse(is.numeric(norm), " nm \n", " \n"), sep = "")
+    }
   }
   if (is_effective(x)) {
     BSWF <- getBSWFUsed(x)

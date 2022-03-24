@@ -202,8 +202,8 @@ A copy of \code{x} with the original spectral data values replaced
 a new object of the same class as \code{x}.
 }
 \description{
-These functions return a spectral object of the same class as the one
-supplied as argument but with the spectral data rescaled based on summary
+These methods return a spectral object of the same class as the one
+supplied as argument but with the spectral data rescaled based on a summary
 function \code{f} applied over a specific \code{range} or wavelengths and a
 \code{target} value for the summary value.
 }
@@ -241,16 +241,28 @@ function \code{f} applied over a specific \code{range} or wavelengths and a
 }}
 
 \note{
-Sometimes we rescale a spectrum to a "theoretical" value for the
-  summary, while in other cases we rescale the spectrum to a real-world
-  target value of e.g. a reference energy irradiance. In the first case we
-  say that the data are expressed in relative units, while in the second case
-  we retain actual physical units. To indicate this, this pacakge uses an
-  attribute, which will by default be set assuming the first of these two
-  situations when \code{target == 1} and the second situation otherwise.
-  These defaults can be overriden with an explicit \code{logical} argument
-  passed to \code{set.scaled}.
+\strong{The default for \code{set.scaled} depends dynamically on the
+  passed to \code{target}.} Sometimes we rescale a spectrum to a
+  "theoretical" value for the summary, while in other cases we rescale the
+  spectrum to a real-world target value of e.g. a reference energy
+  irradiance. In the first case we say that the data are expressed in
+  relative units, while in the second case we retain actual physical units.
+  To indicate this, this package uses an attribute, which will by default be
+  set assuming the first of these two situations when \code{target == 1} and
+  not set assuming the second situation otherwise. These defaults can be
+  overriden with an explicit \code{logical} argument passed to
+  \code{set.scaled}.
 }
+\section{Important changes}{
+ Metadata describing the rescaling operation are
+  stored in an attribute only if \code{set.scaled = TRUE} is passed to the call.
+  The exact format and data stored in the attribute \code{"scaled"} has changed
+  during the development of the package. Spectra re-scaled with earlier
+  versions will lack some information. To obtain the metadata in a consistent
+  format irrespective of this variation use accessor \code{getScaling()}, which
+  fills missing fields with \code{NA}.
+}
+
 \examples{
 
 fscale(sun.spct)

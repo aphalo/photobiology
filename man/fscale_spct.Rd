@@ -25,7 +25,7 @@ as "scaled" or not.}
 a new object of the same class as \code{spct}.
 }
 \description{
-These functions return a spectral object of the same class as the one
-supplied as argument but with the spectral data scaled.
+This function returns a spectral object of the same class as the one
+supplied as argument but with the spectral data re-scaled.
 }
 \keyword{internal}

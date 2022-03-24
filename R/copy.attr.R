@@ -15,6 +15,7 @@ all_spct_attr.ls <-
                      "what.measured",
                      "how.measured",
                      "normalized",
+                     "normalization",
                      "scaled",
                      "multiple.wl",
                      "spct.idx"),
@@ -168,7 +169,7 @@ copy_attributes.generic_spct <- function(x, y,
     class(y) <- class(x)
     check_spct(y)
   }
-  stopifnot(is.generic_spct(y))
+  stopifnot(is.generic_spct(y) || is.summary_generic_spct(y))
   if (length(which) == 0) {
     which <- c(all_spct_attr.ls[["private"]],
                all_spct_attr.ls[["generic_spct"]],

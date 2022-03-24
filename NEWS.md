@@ -13,13 +13,17 @@ editor_options:
 -   Update `normalize()` methods to correctly handle normalization of
 previously normalized spectra, and add flexibility to the normalization of
 previously scaled spectra.
--   Update `smooth_spct()` to handle bad arguments passed to `method` without
-    crashing and add support for skipping smoothing (`method = "skip"`).
--   Fix bug in `shared_member_class()` (wrong value returned for empty 
-    collections).
+-   Add `getScaling()` and fix minor inconsistency in value returned by `getScaled()`.
 -   Fix bug in `getNormalization()` (wrong named member in returned value from
     spectra with no normalization data).
--   Add `getScaling()` and fix minor inconsistency in value returned by `getScaled()`.
+-   Fix bug resulting in `"normalization"` attribute not being copied.
+-   Fix bug resulting in not all relevant attributes being copied to the
+value returned by `summary.generic_spct()`.
+-   Improve printing of metadata for normalization and rescaling.
+-   Fix bug in `shared_member_class()` (wrong value returned for empty 
+    collections).
+-   Update `smooth_spct()` to handle bad arguments passed to `method` without
+    crashing and add support for skipping smoothing (`method = "skip"`).
 
 # photobiology 0.10.9
 

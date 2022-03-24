@@ -2,23 +2,33 @@
 
 #' Rescale a spectrum using a summary function
 #'
-#' These functions return a spectral object of the same class as the one
-#' supplied as argument but with the spectral data rescaled based on summary
+#' These methods return a spectral object of the same class as the one
+#' supplied as argument but with the spectral data rescaled based on a summary
 #' function \code{f} applied over a specific \code{range} or wavelengths and a
 #' \code{target} value for the summary value.
 #'
 #' @param x An R object
 #' @param ... additional named arguments passed down to \code{f}.
 #'
-#' @note Sometimes we rescale a spectrum to a "theoretical" value for the
-#'   summary, while in other cases we rescale the spectrum to a real-world
-#'   target value of e.g. a reference energy irradiance. In the first case we
-#'   say that the data are expressed in relative units, while in the second case
-#'   we retain actual physical units. To indicate this, this pacakge uses an
-#'   attribute, which will by default be set assuming the first of these two
-#'   situations when \code{target == 1} and the second situation otherwise.
-#'   These defaults can be overriden with an explicit \code{logical} argument
-#'   passed to \code{set.scaled}.
+#' @note \strong{The default for \code{set.scaled} depends dynamically on the
+#'   passed to \code{target}.} Sometimes we rescale a spectrum to a
+#'   "theoretical" value for the summary, while in other cases we rescale the
+#'   spectrum to a real-world target value of e.g. a reference energy
+#'   irradiance. In the first case we say that the data are expressed in
+#'   relative units, while in the second case we retain actual physical units.
+#'   To indicate this, this package uses an attribute, which will by default be
+#'   set assuming the first of these two situations when \code{target == 1} and
+#'   not set assuming the second situation otherwise. These defaults can be
+#'   overriden with an explicit \code{logical} argument passed to
+#'   \code{set.scaled}.
+#'
+#' @section Important changes: Metadata describing the rescaling operation are
+#'   stored in an attribute only if \code{set.scaled = TRUE} is passed to the call.
+#'   The exact format and data stored in the attribute \code{"scaled"} has changed
+#'   during the development of the package. Spectra re-scaled with earlier
+#'   versions will lack some information. To obtain the metadata in a consistent
+#'   format irrespective of this variation use accessor \code{getScaling()}, which
+#'   fills missing fields with \code{NA}.
 #'
 #' @return A copy of \code{x} with the original spectral data values replaced
 #'   with rescaled values, and the \code{"scaled"} attribute set to a list
@@ -436,8 +446,8 @@ fscale.generic_mspct <- function(x,
 
 #' fscale a spectrum
 #'
-#' These functions return a spectral object of the same class as the one
-#' supplied as argument but with the spectral data scaled.
+#' This function returns a spectral object of the same class as the one
+#' supplied as argument but with the spectral data re-scaled.
 #'
 #' @param spct generic_spct The spectrum to be normalized
 #' @param range an R object on which range() returns a vector of length 2, with
@@ -509,7 +519,8 @@ fscale_spct <- function(spct, range, col.names, f, target, set.scaled, ...) {
     spct <- setScaled(spct, scaled = list(multiplier = multipliers,
                                           f = f,
                                           range = range,
-                                          target = target))
+                                          target = target,
+                                          cols = col.names))
   } else {
     spct <- setScaled(spct, scaled = FALSE)
   }
@@ -585,7 +596,8 @@ getScaled <- function(x,
         scaled <- list(multiplier = 1,
                        f = NA,
                        range = c(NA_real_, NA_real_),
-                       target = NA_real_)
+                       target = NA_real_,
+                       cols = NA_character_)
       } else {
         scaled <- FALSE
       }
@@ -598,6 +610,10 @@ getScaled <- function(x,
         # cater for objects scaled before version 0.9.12
         scaled[["range"]] <- c(NA_real_, NA_real_)
       }
+      if (!"cols" %in% names(scaled)) {
+        # cater for objects scaled before version 0.10.10
+        scaled[["cols"]] <- NA_character_
+      }
     }
   } else {
     warning("Method 'getScaled()' not implemented for class: ",
@@ -606,7 +622,8 @@ getScaled <- function(x,
       scaled <- list(multiplier = NA_real_,
                      f = NA,
                      range = c(NA_real_, NA_real_),
-                     target = NA_real_)
+                     target = NA_real_,
+                     cols = NA_character_)
     } else {
       scaled <- NA
     }
