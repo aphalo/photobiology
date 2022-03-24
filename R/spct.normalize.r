@@ -513,7 +513,7 @@ normalize_spct <- function(spct,
   }
 
   if (is.null(range) || all(is.na(range))) {
-    range <- range(spct)
+    range <- wl_range(x)
   } else {
     x <- trim_wl(x, range)
     range <- wl_range(x) # if range was broader x is not expanded
