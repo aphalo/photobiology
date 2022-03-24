@@ -31,6 +31,7 @@ normalise(x, ...)
   range = NULL,
   norm = "max",
   unit.out = getOption("photobiology.radiation.unit", default = "energy"),
+  keep.scaling = FALSE,
   na.rm = FALSE
 )
 
@@ -40,6 +41,7 @@ normalise(x, ...)
   range = NULL,
   norm = "max",
   unit.out = getOption("photobiology.radiation.unit", default = "energy"),
+  keep.scaling = FALSE,
   na.rm = FALSE
 )
 
@@ -49,16 +51,47 @@ normalise(x, ...)
   range = NULL,
   norm = "max",
   qty.out = getOption("photobiology.filter.qty", default = "transmittance"),
+  keep.scaling = FALSE,
   na.rm = FALSE
 )
 
-\method{normalize}{reflector_spct}(x, ..., range = NULL, norm = "max", qty.out = NULL, na.rm = FALSE)
+\method{normalize}{reflector_spct}(
+  x,
+  ...,
+  range = NULL,
+  norm = "max",
+  qty.out = NULL,
+  keep.scaling = FALSE,
+  na.rm = FALSE
+)
 
-\method{normalize}{raw_spct}(x, ..., range = NULL, norm = "max", na.rm = FALSE)
+\method{normalize}{raw_spct}(
+  x,
+  ...,
+  range = NULL,
+  norm = "max",
+  keep.scaling = FALSE,
+  na.rm = FALSE
+)
 
-\method{normalize}{cps_spct}(x, ..., range = NULL, norm = "max", na.rm = FALSE)
+\method{normalize}{cps_spct}(
+  x,
+  ...,
+  range = NULL,
+  norm = "max",
+  keep.scaling = FALSE,
+  na.rm = FALSE
+)
 
-\method{normalize}{generic_spct}(x, ..., range = NULL, norm = "max", col.names, na.rm = FALSE)
+\method{normalize}{generic_spct}(
+  x,
+  ...,
+  range = NULL,
+  norm = "max",
+  col.names,
+  keep.scaling = FALSE,
+  na.rm = FALSE
+)
 
 \method{normalize}{source_mspct}(
   x,
@@ -66,6 +99,7 @@ normalise(x, ...)
   range = NULL,
   norm = "max",
   unit.out = getOption("photobiology.radiation.unit", default = "energy"),
+  keep.scaling = FALSE,
   na.rm = FALSE,
   .parallel = FALSE,
   .paropts = NULL
@@ -142,6 +176,10 @@ return of \code{x} unchanged.}
 \item{unit.out}{character Allowed values "energy", and "photon",
 or its alias "quantum"}
 
+\item{keep.scaling}{logical Flag to indicate if any existing scaling should
+be preserved or not. The default, \code{FALSE}, preserves the behaviour
+of versions (<= 0.10.9).}
+
 \item{na.rm}{logical indicating whether \code{NA} values should be stripped
 before calculating the summary (e.g. "max") used for normalization.}
 
@@ -162,7 +200,9 @@ correct environment set up for computing.}
 }
 \value{
 A copy of \code{x}, with spectral data values normalized to one for
-the criterion specified by the argument passed to \code{norm}.
+  the criterion specified by the argument passed to \code{norm} with
+  information about the normalization applied saved in attributes
+  \code{"normalized"} and \code{"normalization"}.
 
 A copy of \code{x} with the values of the spectral quantity rescaled
   to 1 at the normalization wavelength. If the normalization wavelength is
@@ -179,11 +219,20 @@ specific wavelength.
 \details{
 By default normalization is done based on the maximum of the
   spectral data. It is possible to also do the normalization based on a
-  user-supplied wavelength expressed in nanometres or a wavelength retrieved
-  using an arbitrary R function applied to the spectrum. By default the
-  function is applied to the whole spectrum, but by passing a range of
-  wavelengths as input, the search can be limited to a region of interest
-  within the spectrum.
+  user-supplied wavelength expressed in nanometres or the minimum. It is
+  also possible to update an existing normalization for different units
+  of expression or after a conversion to a related spectral quantity.
+
+  By default the function is applied to the whole spectrum, but by passing a
+  range of wavelengths as input, the search can be limited to a region of
+  interest within the spectrum.
+
+  In 'photobiology' (>= 0.10.8) detailed information about the normalization
+  is stored in an attribute. In 'photobiology' (>= 0.10.10)
+  applying a new normalization to an already normalized spectrum recomputes
+  the multiplier factors stored in the attributes whenever possible. This
+  ensures that the returned object is identical independently of the previous
+  application of a different normalization.
 }
 \section{Methods (by class)}{
 \itemize{
@@ -217,6 +266,12 @@ By default normalization is done based on the maximum of the
 }}
 
 \note{
+If the spectrum passed as argument to \code{x} has been previously
+  scaled, in 'photobiology' (<= 0.10.9) the scaling attribute was always
+  removed and no normalization factors returned. In 'photobiology'
+  (>= 0.10.10) scaling information can be preserved by passing
+  \code{keep.scaling = TRUE} (experimental feature).
+
 \code{normalise()} is a synonym for this \code{normalize()} method.
 
 1) By default if \code{x} contains one or more \code{NA} values and the

@@ -9,12 +9,17 @@ editor_options:
 -   Update `normalize()` methods to support updating an already present
     normalization (`norm = "update"`) and skipping the normalization altogether
     (`norm = "skip"`).
--   Update `smooth_spct()` to handle bad arguments passed to `method` wihtout
+-   Update `normalize()` methods to store `range` in the attribute, and `getNormalized()` to return it.
+-   Update `normalize()` methods to correctly handle normalization of
+previously normalized spectra, and add flexibility to the normalization of
+previously scaled spectra.
+-   Update `smooth_spct()` to handle bad arguments passed to `method` without
     crashing and add support for skipping smoothing (`method = "skip"`).
 -   Fix bug in `shared_member_class()` (wrong value returned for empty 
     collections).
 -   Fix bug in `getNormalization()` (wrong named member in returned value from
     spectra with no normalization data).
+-   Add `getScaling()` and fix minor inconsistency in value returned by `getScaled()`.
 
 # photobiology 0.10.9
 
@@ -28,7 +33,7 @@ editor_options:
     and add new function `getNormalization()`. These changes implement the
     storage in attribute `normalization` of the operation done.
 -   Fix bug in `mat2mspct()` affecting matrices with more than 26 columns and
-    without colnames set. 
+    without `colnames` previously set. 
 -   Fix bug in `rowwise` methods.
     
 # photobiology 0.10.7
@@ -40,7 +45,7 @@ editor_options:
     ET expressed in mm/h, but modified to use as input flux rates in
     W/m2 and pressures expressed in Pa.
 -   Add function `net_radiation()` that computes the long wave net radiation 
-    balance if downwelling long wave radiation is available and otherwise
+    balance if down-welling long wave radiation is available and otherwise
     estimates it.
 -   Add function `irrad_extraterrestrial()` that computes down-welling solar 
     irradiance on a horizontal plane at the top of the atmosphere.

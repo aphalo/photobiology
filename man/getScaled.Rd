@@ -2,9 +2,12 @@
 % Please edit documentation in R/spct.fscale.r
 \name{getScaled}
 \alias{getScaled}
+\alias{getScaling}
 \title{Get the "scaled" attribute}
 \usage{
 getScaled(x, .force.list = FALSE)
+
+getScaling(x)
 }
 \arguments{
 \item{x}{a generic_spct object}

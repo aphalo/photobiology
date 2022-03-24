@@ -10,7 +10,8 @@ setNormalized(
   norm = FALSE,
   norm.type = NA_character_,
   norm.factors = NA_real_,
-  norm.cols = NA_character_
+  norm.cols = NA_character_,
+  norm.range = rep(NA_real_, 2)
 )
 
 setNormalised(
@@ -18,7 +19,8 @@ setNormalised(
   norm = FALSE,
   norm.type = NA_character_,
   norm.factors = NA_real_,
-  norm.cols = NA_character_
+  norm.cols = NA_character_,
+  norm.range = rep(NA_real_, 2)
 )
 }
 \arguments{
@@ -32,6 +34,8 @@ setNormalised(
 values by this factor reverts the normalization.}
 
 \item{norm.cols}{character The name(s) of the data columns normalized.}
+
+\item{norm.range}{numeric The wavelength range used for normalization (nm).}
 }
 \description{
 Function to write the "normalized" attribute of an existing generic_spct

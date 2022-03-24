@@ -2,27 +2,111 @@ library("photobiology")
 
 context("normalize.spct")
 
-test_that("normalize", {
+test_that("normalize source_spct", {
 
   my.spct <- q2e(sun.spct, action = "replace")
+  my_norm_max.spct <- normalize(my.spct, norm = "max")
+  my_norm_emax.spct <- normalize(my.spct, norm = "max", unit.out = "energy")
+  my_norm_qmax.spct <- normalize(my.spct, norm = "max", unit.out = "photon")
+  my_norm_qumax.spct <- normalize(my_norm_emax.spct, norm = "update",
+                                  unit.out = "photon")
+  my_scaled.spct <- fscale(my.spct)
+  my_norm_smax.spct <- normalize(my_scaled.spct, norm = "max")
+  my_norm_ssmax.spct <- normalize(my_scaled.spct, norm = "max", keep.scaling = TRUE)
 
-  expect_equal(max(normalize(my.spct)$s.e.irrad), 1, tolerance = 1e-5)
-  expect_equal(max(normalize(my.spct, norm = "max")$s.e.irrad), 1, tolerance = 1e-5)
+  expect_equal(my_norm_max.spct, my_norm_emax.spct)
+  expect_equal(normalize(my.spct, norm = "skip"), my.spct)
+  expect_equal(normalize(my.spct, norm = "update"), my.spct)
+  expect_equal(normalize(my_norm_qmax.spct, norm = "update"),
+               my_norm_max.spct)
+  expect_equal(normalize(my_norm_emax.spct, norm = "update"),
+               normalize(my_norm_qmax.spct, norm = "update"))
+  expect_equal(normalize(my_norm_qmax.spct, norm = "update"),
+               normalize(my_norm_qmax.spct, norm = "max"))
+  expect_equal(getNormalized(my_norm_max.spct),
+               getNormalization(my_norm_max.spct)[["norm.wl"]])
+  expect_equal(getNormalized(my_norm_qmax.spct),
+               getNormalization(my_norm_qmax.spct)[["norm.wl"]])
+  expect_equal(getNormalized(my_norm_qmax.spct),
+               getNormalized(my_norm_qumax.spct))
+  expect_equal(getNormalized(my_norm_emax.spct),
+               getNormalized(my_norm_max.spct))
+  expect_true(all(is.na(unlist(getNormalization(my.spct)))))
+  expect_false(all(is.na(unlist(getNormalization(my_norm_max.spct)))))
+  expect_equal(getNormalization(my_norm_max.spct)[["norm.type"]], "max")
+  expect_equal(getNormalization(my_norm_max.spct)[["norm.wl"]], 451, tolerance = 1e-4)
+  expect_equal(getNormalization(my_norm_max.spct)[["norm.factors"]], 1.218823, tolerance = 1e-5)
+  expect_equal(getNormalization(my_norm_max.spct)[["norm.cols"]], "s.e.irrad")
+  expect_equal(max(my_norm_max.spct$s.e.irrad), 1, tolerance = 1e-5)
+  expect_equal(max(my_norm_max.spct$s.e.irrad), 1, tolerance = 1e-5)
   expect_warning(irrad(normalize(my.spct, norm = "max")))
   expect_equal(suppressWarnings(irrad(normalize(my.spct, norm = "max"))), NA_real_)
-  expect_named(normalize(my.spct), names(my.spct))
-  expect_equal(class(normalize(my.spct)), class(my.spct))
+  expect_named(my_norm_max.spct, names(my.spct))
+  expect_equal(class(my_norm_max.spct), class(my.spct))
   expect_error(normalize(my.spct, range = 100))
   expect_error(normalize(my.spct, range = c(100, 100)))
-  expect_true(is_normalized(normalize(my.spct)))
+  expect_true(is_normalized(my_norm_max.spct))
   expect_false(is_normalized(my.spct))
-  expect_equal(is.source_spct(normalize(my.spct)), is.source_spct(my.spct))
-  expect_equal(is.filter_spct(normalize(my.spct)), is.filter_spct(my.spct))
-  expect_equal(getTimeUnit(normalize(my.spct)), getTimeUnit(my.spct))
-  expect_equal(comment(normalize(my.spct)), comment(my.spct))
+  expect_equal(is.source_spct(my_norm_max.spct), is.source_spct(my.spct))
+  expect_equal(is.response_spct(my_norm_max.spct), is.response_spct(my.spct))
+  expect_equal(is.filter_spct(my_norm_max.spct), is.filter_spct(my.spct))
+  expect_equal(getTimeUnit(my_norm_max.spct), getTimeUnit(my.spct))
+  expect_equal(comment(my_norm_max.spct), comment(my.spct))
   expect_equal(getNormalized(normalize(my.spct, norm = 400)), 400)
   expect_equal(getNormalized(normalize(my.spct, norm = 400.2)), 400.2)
-  expect_equal(getNormalized(normalize(my.spct, norm = "max")), 451)
+  expect_equal(getNormalized(my_norm_max.spct), 451)
+})
+
+test_that("normalize response_spct", {
+
+  my.spct <- q2e(ccd.spct, action = "replace")
+  my_norm_max.spct <- normalize(my.spct, norm = "max")
+  my_norm_emax.spct <- normalize(my.spct, norm = "max", unit.out = "energy")
+  my_norm_qmax.spct <- normalize(my.spct, norm = "max", unit.out = "photon")
+  my_norm_qumax.spct <- normalize(my_norm_emax.spct, norm = "update",
+                                  unit.out = "photon")
+
+  expect_equal(my_norm_max.spct, my_norm_emax.spct)
+  expect_equal(normalize(my.spct, norm = "skip"), my.spct)
+  expect_equal(normalize(my.spct, norm = "update"), my.spct)
+  expect_equal(normalize(my_norm_qmax.spct, norm = "update"),
+               my_norm_max.spct)
+  expect_equal(normalize(my_norm_emax.spct, norm = "update"),
+               normalize(my_norm_qmax.spct, norm = "update"))
+  expect_equal(normalize(my_norm_qmax.spct, norm = "update"),
+               normalize(my_norm_qmax.spct, norm = "max"))
+  expect_equal(getNormalized(my_norm_max.spct),
+               getNormalization(my_norm_max.spct)[["norm.wl"]])
+  expect_equal(getNormalized(my_norm_qmax.spct),
+               getNormalization(my_norm_qmax.spct)[["norm.wl"]])
+  expect_equal(getNormalized(my_norm_qmax.spct),
+               getNormalized(my_norm_qumax.spct))
+  expect_equal(getNormalized(my_norm_emax.spct),
+               getNormalized(my_norm_max.spct))
+  expect_true(all(is.na(unlist(getNormalization(my.spct)))))
+  expect_false(all(is.na(unlist(getNormalization(my_norm_max.spct)))))
+  expect_equal(getNormalization(my_norm_max.spct)[["norm.type"]], "max")
+  expect_equal(getNormalization(my_norm_max.spct)[["norm.wl"]], 742.6704, tolerance = 1e-4)
+  expect_equal(getNormalization(my_norm_max.spct)[["norm.factors"]], 228805.6, tolerance = 1e-5)
+  expect_equal(getNormalization(my_norm_max.spct)[["norm.cols"]], "s.e.response")
+  expect_equal(max(normalize(my.spct)$s.e.response), 1, tolerance = 1e-5)
+  expect_equal(max(my_norm_max.spct$s.e.response), 1, tolerance = 1e-5)
+  expect_warning(response(normalize(my.spct, norm = "max")))
+  expect_equal(suppressWarnings(response(normalize(my.spct, norm = "max"))), NA_real_)
+  expect_named(my_norm_max.spct, names(my.spct))
+  expect_equal(class(my_norm_max.spct), class(my.spct))
+  expect_error(normalize(my.spct, range = 100))
+  expect_error(normalize(my.spct, range = c(100, 100)))
+  expect_true(is_normalized(my_norm_max.spct))
+  expect_false(is_normalized(my.spct))
+  expect_equal(is.source_spct(my_norm_max.spct), is.source_spct(my.spct))
+  expect_equal(is.response_spct(my_norm_max.spct), is.response_spct(my.spct))
+  expect_equal(is.filter_spct(my_norm_max.spct), is.filter_spct(my.spct))
+  expect_equal(getTimeUnit(my_norm_max.spct), getTimeUnit(my.spct))
+  expect_equal(comment(my_norm_max.spct), comment(my.spct))
+  expect_equal(getNormalized(normalize(my.spct, norm = 400)), 400)
+  expect_equal(getNormalized(normalize(my.spct, norm = 400.2)), 400.2)
+  expect_equal(getNormalized(my_norm_max.spct), 742.6704, tolerance = 1e-4)
 })
 
 context("fscale.spct")

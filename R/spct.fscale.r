@@ -573,9 +573,13 @@ is_scaled <- function(x) {
 #'
 getScaled <- function(x,
                       .force.list = FALSE) {
+
   if (is.generic_spct(x) || is.summary_generic_spct(x)) {
+
     scaled <- attr(x, "scaled", exact = TRUE)
-    if (is.null(scaled) || (!is.list(scaled) && all(is.na(scaled)))) {
+
+    if (is.null(scaled) || (!is.list(scaled) && all(is.na(scaled))) ||
+        (is.logical(scaled) && !scaled)) {
       # need to handle objects created with old versions
       if (.force.list) {
         scaled <- list(multiplier = 1,
@@ -588,19 +592,34 @@ getScaled <- function(x,
     } else if (is.list(scaled)) {
       if (!"target" %in% names(scaled)) {
         # cater for objects scaled before version 0.9.12
-        scaled <- c(scaled, list(target = 1))
+        scaled[["target"]] <- 1
       }
       if (!"range" %in% names(scaled)) {
         # cater for objects scaled before version 0.9.12
-        scaled <- c(scaled, list(range = c(NA_real_, NA_real_)))
+        scaled[["range"]] <- c(NA_real_, NA_real_)
       }
     }
   } else {
     warning("Method 'getScaled()' not implemented for class: ",
             class(x)[1])
-    scaled <- NA
+    if (.force.list) {
+      scaled <- list(multiplier = NA_real_,
+                     f = NA,
+                     range = c(NA_real_, NA_real_),
+                     target = NA_real_)
+    } else {
+      scaled <- NA
+    }
   }
   scaled
+}
+
+#' @rdname getScaled
+#'
+#' @export
+#'
+getScaling <- function(x) {
+  getScaled(x, .force.list = TRUE)
 }
 
 #' Set the "scaled" attribute
