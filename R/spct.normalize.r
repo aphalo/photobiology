@@ -455,7 +455,10 @@ normalize_spct <- function(spct,
 
   # handle "skip" early so that long-from multiple spectra or missing columns
   # do not trigger errors
-  if (is.na(norm) || is.null(norm) || norm == "skip") {
+  if (is.na(norm) ||
+      is.null(norm) ||
+      norm == "skip" ||
+      (norm == "update" && !is_normalized(spct))) {
     return(spct)
   }
 
