@@ -31,13 +31,13 @@ s_mean_se(x, na.rm, mult, ...)
 \method{s_mean_se}{raw_mspct}(x, na.rm = FALSE, mult = 1, ...)
 }
 \arguments{
-\item{x}{An R object. Currently this package defines methods for collections of
+\item{x}{An R object Currently this package defines methods for collections of
 spectral objects.}
 
-\item{na.rm}{logical. A value indicating whether NA values should be stripped
+\item{na.rm}{logical A value indicating whether NA values should be stripped
 before the computation proceeds.}
 
-\item{mult}{numeric number of multiples of standard error}
+\item{mult}{numeric number of multiples of standard error.}
 
 \item{...}{Further arguments passed to or from other methods.}
 }

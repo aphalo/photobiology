@@ -4,6 +4,11 @@ editor_options:
     wrap: 72
 ---
 
+# photobiology 0.10.11
+
+-   Fix bug in `rowwise_filter()` affecting parallel summaries of absorptance.
+-   Add method `s_mean_se_band_band()`.
+
 # photobiology 0.10.10
 
 -   Update `normalize()` methods to support updating an already present

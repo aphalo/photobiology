@@ -4,11 +4,11 @@
 #' spectra. Computes the mean at each wavelength across all the spectra in the
 #' collection returning a spectral object.
 #'
-#' @param x An R object. Currently this package defines methods for collections of
+#' @param x An R object Currently this package defines methods for collections of
 #'    spectral objects.
-#' @param na.rm	logical. A value indicating whether NA values should be stripped
+#' @param na.rm	logical A value indicating whether NA values should be stripped
 #'   before the computation proceeds.
-#' @param mult	numeric number of multiples of standard error
+#' @param mult	numeric number of multiples of standard error.
 #' @param ...	Further arguments passed to or from other methods.
 #'
 #' @return If \code{x} is a collection spectral of objects, such as a

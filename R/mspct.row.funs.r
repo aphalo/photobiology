@@ -52,24 +52,29 @@ rowwise_filter <-
       stop("Multiple spectra in long form not supported.")
     }
 
-    # collect and check consistency of attributes
-    is.Tfr <- unique(msaply(x, is_transmittance_based))
-    if (length(is.Tfr) > 1L) {
-      warning("Some spectra contain A and other Tfr: converting all to Tfr.")
-      x <- A2T(x)
+    # collect and check consistency of quantities
+    is.Tfr <- all(msaply(x, is_transmittance_based))
+    is.Afr <- all(msaply(x, is_absorptance_based))
+    is.A <- all(msaply(x, is_absorbance_based))
+    is.mixed <- !(is.Tfr || is.Afr || is.A)
+    if (is.mixed) {
+      warning("Not all spectra contain the same quantity: converting all to Tfr.")
+      x <- any2T(x)
       is.Tfr <- TRUE
-    }
-
-    Tfr.type <- unique(msaply(x, getTfrType))
-    if (length(Tfr.type) > 1L) {
-      stop("Spectra differ in their Tfr.type: ", Tfr.type, ".")
     }
 
     # infer column name to use as input
     if (is.Tfr) {
       col.name <- "Tfr"
-    } else {
+    } else if (is.A) {
       col.name <- "A"
+    } else {
+      col.name <- "Afr"
+    }
+
+    Tfr.type <- unique(msaply(x, getTfrType))
+    if (length(Tfr.type) > 1L) {
+      stop("Spectra differ in their Tfr.type: ", Tfr.type, ".")
     }
 
     # allocate memory
