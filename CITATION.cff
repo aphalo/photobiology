@@ -8,7 +8,7 @@ message: 'To cite package "photobiology" in publications use:'
 type: software
 license: GPL-2.0-or-later
 title: 'photobiology: Photobiological Calculations'
-version: 0.10.10
+version: 0.10.10.9000
 doi: 10.19232/uv4pb.2015.1.14
 abstract: 'Definitions of classes, methods, operators and functions for use in photobiology
   and radiation meteorology and climatology. Calculation of effective (weighted) and
@@ -40,7 +40,7 @@ preferred-citation:
 repository: https://CRAN.R-project.org/package=photobiology
 repository-code: https://github.com/aphalo/photobiology
 url: https://docs.r4photobiology.info/photobiology/
-date-released: '2022-03-24'
+date-released: '2022-03-31'
 contact:
 - family-names: Aphalo
   given-names: Pedro J.
