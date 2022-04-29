@@ -1,5 +1,5 @@
 # -----------------------------------------------------------
-# CITATION file created with {cffr} R package, v0.2.1
+# CITATION file created with {cffr} R package, v0.2.2
 # See also: https://docs.ropensci.org/cffr/
 # -----------------------------------------------------------
  
@@ -40,7 +40,7 @@ preferred-citation:
 repository: https://CRAN.R-project.org/package=photobiology
 repository-code: https://github.com/aphalo/photobiology
 url: https://docs.r4photobiology.info/photobiology/
-date-released: '2022-03-31'
+date-released: '2022-04-29'
 contact:
 - family-names: Aphalo
   given-names: Pedro J.
