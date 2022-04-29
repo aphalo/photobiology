@@ -673,7 +673,7 @@ trimInstrDesc <- function(x,
       instr.desc <- list(instr.desc)
     }
     for (i in seq(along.with = instr.desc)) {
-      if (!(is.null(instr.desc[[i]]) || is.na(instr.desc[[i]]))) {
+      if (!(is.null(instr.desc[[i]]) || all(is.na(instr.desc[[i]])))) {
         if (fields[1] == "-") {
           fields.tmp <- setdiff(names(instr.desc[[i]]), fields[-1])
         } else if (fields[1] == "=") {
