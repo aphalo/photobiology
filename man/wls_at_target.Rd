@@ -9,6 +9,7 @@
 \alias{wls_at_target.response_spct}
 \alias{wls_at_target.filter_spct}
 \alias{wls_at_target.reflector_spct}
+\alias{wls_at_target.solute_spct}
 \alias{wls_at_target.cps_spct}
 \alias{wls_at_target.generic_mspct}
 \title{Find wavelengths values corresponding to a target spectral value}
@@ -84,6 +85,15 @@ wls_at_target(
 )
 
 \method{wls_at_target}{reflector_spct}(
+  x,
+  target = "half.maximum",
+  interpolate = FALSE,
+  idfactor = FALSE,
+  na.rm = FALSE,
+  ...
+)
+
+\method{wls_at_target}{solute_spct}(
   x,
   target = "half.maximum",
   interpolate = FALSE,
@@ -179,6 +189,8 @@ same class as \code{x}.
 \item \code{filter_spct}: Method for "filter_spct" objects.
 
 \item \code{reflector_spct}: Method for "reflector_spct" objects.
+
+\item \code{solute_spct}: Method for "solute_spct" objects.
 
 \item \code{cps_spct}: Method for "cps_spct" objects.
 

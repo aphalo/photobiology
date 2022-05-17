@@ -307,11 +307,11 @@ despike.data.frame <-
       warning("Variable (column) names required.")
       return(x[NA, ])
     }
-    for (colname in var.name) {
-      if (!is.numeric(x[[colname]])) {
+    for (col.name in var.name) {
+      if (!is.numeric(x[[col.name]])) {
         next()
       }
-      x[[colname]] <- despike(x[[colname]],
+      x[[col.name]] <- despike(x[[col.name]],
                               z.threshold = z.threshold,
                               max.spike.width = max.spike.width,
                               window.width = window.width,
@@ -346,11 +346,11 @@ despike.generic_spct <-
     if (length(var.name) == 0L) {
       warning("No data columns found, skipping.")
     }
-    for (colname in var.name) {
-      if (!is.numeric(x[[colname]])) {
+    for (col.name in var.name) {
+      if (!is.numeric(x[[col.name]])) {
         next()
       }
-      x[[colname]] <- despike(x[[colname]],
+      x[[col.name]] <- despike(x[[col.name]],
                               z.threshold = z.threshold,
                               max.spike.width = max.spike.width,
                               window.width = window.width,
@@ -380,14 +380,14 @@ despike.source_spct <-
            ...) {
     if (unit.out == "energy") {
       z <- q2e(x, action = "replace", byref = FALSE)
-      colname <- "s.e.irrad"
+      col.name <- "s.e.irrad"
     } else if (unit.out %in% c("photon", "quantum")) {
       z <- e2q(x, action = "replace", byref = FALSE)
-      colname <- "s.q.irrad"
+      col.name <- "s.q.irrad"
     } else {
       stop("Unrecognized 'unit.out': ", unit.out)
     }
-    z[[colname]] <- despike(z[[colname]],
+    z[[col.name]] <- despike(z[[col.name]],
                             z.threshold = z.threshold,
                             max.spike.width = max.spike.width,
                             window.width = window.width,
@@ -413,14 +413,14 @@ despike.response_spct <-
            ...) {
     if (unit.out == "energy") {
       z <- q2e(x, action = "replace", byref = FALSE)
-      colname <- "s.e.response"
+      col.name <- "s.e.response"
     } else if (unit.out %in% c("photon", "quantum")) {
       z <- e2q(x, action = "replace", byref = FALSE)
-      colname <- "s.q.response"
+      col.name <- "s.q.response"
     } else {
       stop("Unrecognized 'unit.out': ", unit.out)
     }
-    z[[colname]] <- despike(z[[colname]],
+    z[[col.name]] <- despike(z[[col.name]],
                             z.threshold = z.threshold,
                             max.spike.width = max.spike.width,
                             window.width = window.width,
@@ -448,17 +448,17 @@ despike.filter_spct <-
            ...) {
     if (filter.qty == "transmittance") {
       z <- A2T(x, action = "replace", byref = FALSE)
-      colname <- "Tfr"
+      col.name <- "Tfr"
     } else if (filter.qty == "absorbance") {
       z <- T2A(x, action = "replace", byref = FALSE)
-      colname <- "A"
+      col.name <- "A"
     }  else if (filter.qty == "absorptance") {
       z <- T2Afr(x, action = "replace", byref = FALSE)
-      colname <- "Afr"
+      col.name <- "Afr"
     } else {
       stop("Unrecognized 'filter.qty': ", filter.qty)
     }
-    z[[colname]] <- despike(z[[colname]],
+    z[[col.name]] <- despike(z[[col.name]],
                             z.threshold = z.threshold,
                             max.spike.width = max.spike.width,
                             window.width = window.width,
@@ -479,8 +479,8 @@ despike.reflector_spct <- function(x,
                                    method = "run.mean",
                                    na.rm = FALSE,
                                    ...) {
-  colname <- "Rfr"
-  x[[colname]] <- despike(x[[colname]],
+  col.name <- "Rfr"
+  x[[col.name]] <- despike(x[[col.name]],
                           z.threshold = z.threshold,
                           max.spike.width = max.spike.width,
                           window.width = window.width,
@@ -490,6 +490,35 @@ despike.reflector_spct <- function(x,
   )
   x
 }
+
+#' @describeIn despike  Method for "solute_spct" objects.
+#'
+#' @export
+#'
+despike.filter_spct <-
+  function(x,
+           z.threshold = 9,
+           max.spike.width = 8,
+           window.width = 11,
+           method = "run.mean",
+           na.rm = FALSE,
+           ...) {
+    cols <- intersect(c("K.mole", "K.mass"), names(x))
+    if (length(cols) == 1) {
+      col.name <- cols
+      z <- x
+    } else {
+      stop("Invalid number of columns found:", length(cols))
+    }
+    z[[col.name]] <- despike(z[[col.name]],
+                            z.threshold = z.threshold,
+                            max.spike.width = max.spike.width,
+                            window.width = window.width,
+                            method = method,
+                            na.rm = na.rm,
+                            ...)
+    z
+  }
 
 #' @describeIn despike  Method for "cps_spct" objects.
 #'
@@ -503,8 +532,8 @@ despike.cps_spct <- function(x,
                              na.rm = FALSE,
                              ...) {
   var.name <- grep("cps", colnames(x), value = TRUE)
-  for (colname in var.name) {
-    x[[colname]] <- despike(x[[colname]],
+  for (col.name in var.name) {
+    x[[col.name]] <- despike(x[[col.name]],
                             z.threshold = z.threshold,
                             max.spike.width = max.spike.width,
                             window.width = window.width,
@@ -528,8 +557,8 @@ despike.raw_spct <- function(x,
                              na.rm = FALSE,
                              ...) {
   var.name <- grep("counts", colnames(x), value = TRUE)
-  for (colname in var.name) {
-    x[[colname]] <- despike(x[[colname]],
+  for (col.name in var.name) {
+    x[[col.name]] <- despike(x[[col.name]],
                             z.threshold = z.threshold,
                             max.spike.width = max.spike.width,
                             window.width = window.width,
@@ -691,6 +720,11 @@ despike.reflector_mspct <-
             .paropts = .paropts)
   }
 
+#' @describeIn despike  Method for "solute_mspct" objects.
+#'
+#' @export
+#'
+despike.solute_mspct <- despike.reflector_mspct
 
 #' @describeIn despike  Method for "cps_mspct" objects.
 #'
@@ -968,6 +1002,31 @@ spikes.reflector_spct <- function(x,
   x[spikes.idx,  , drop = FALSE]
 }
 
+#' @describeIn spikes  Method for "solute_spct" objects.
+#'
+#' @export
+#'
+spikes.solute_spct <-
+  function(x,
+           z.threshold = 9,
+           max.spike.width = 8,
+           na.rm = FALSE,
+           ...) {
+    cols <- intersect(c("K.mole", "K.mass"), names(x))
+    if (length(cols) == 1) {
+      col.name <- cols
+      z <- x
+    } else {
+      stop("Invalid number of columns found:", length(cols))
+    }
+    spikes.idx <-
+      which(find_spikes(z[[col.name]],
+                        z.threshold = z.threshold,
+                        max.spike.width = max.spike.width,
+                        na.rm = na.rm))
+    z[spikes.idx,  , drop = FALSE]
+  }
+
 #' @describeIn spikes  Method for "cps_spct" objects.
 #'
 #' @export
@@ -1132,6 +1191,12 @@ spikes.reflector_mspct <-
             .parallel = .parallel,
             .paropts = .paropts)
   }
+
+#' @describeIn spikes  Method for "solute_mspct" objects.
+#'
+#' @export
+#'
+spikes.solute_mspct <- spikes.reflector_mspct
 
 
 #' @describeIn spikes  Method for "cps_mspct" objects.

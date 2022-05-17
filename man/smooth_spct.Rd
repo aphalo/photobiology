@@ -6,6 +6,7 @@
 \alias{smooth_spct.source_spct}
 \alias{smooth_spct.filter_spct}
 \alias{smooth_spct.reflector_spct}
+\alias{smooth_spct.solute_spct}
 \alias{smooth_spct.response_spct}
 \alias{smooth_spct.generic_mspct}
 \title{Smooth a spectrum}
@@ -33,6 +34,15 @@ smooth_spct(x, method, strength, wl.range, ...)
 )
 
 \method{smooth_spct}{reflector_spct}(
+  x,
+  method = "custom",
+  strength = 1,
+  wl.range = NULL,
+  na.rm = FALSE,
+  ...
+)
+
+\method{smooth_spct}{solute_spct}(
   x,
   method = "custom",
   strength = 1,
@@ -96,6 +106,8 @@ when needed, defaults suitable for spectral data.
 \item \code{filter_spct}: Smooth a filter spectrum
 
 \item \code{reflector_spct}: Smooth a reflector spectrum
+
+\item \code{solute_spct}: Smooth a solute attenuation spectrum
 
 \item \code{response_spct}: Smooth a response spectrum
 

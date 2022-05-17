@@ -26,6 +26,7 @@ all_spct_attr.ls <-
     object_spct = c("Tfr.type", "Rfr.type", "filter.properties"),
     filter_spct = c("Tfr.type", "Rfr.type", "filter.properties"),
     reflector_spct = c("Tfr.type", "Rfr.type", "filter.properties"),
+    solute_spct = c("K.type", "solute.properties"),
     calibration_spct = character(),
     chroma_spct = character())
 
@@ -410,6 +411,18 @@ get_attributes.object_spct <- function(x,
   get_attributes.generic_spct(x, which = which,
                               allowed = c(all_spct_attr.ls[["generic_spct"]],
                                           all_spct_attr.ls[["object_spct"]]),
+                              ...)
+}
+
+#' @describeIn get_attributes solute_spct
+#' @export
+#'
+get_attributes.solute_spct <- function(x,
+                                       which = NULL,
+                                       ...) {
+  get_attributes.generic_spct(x, which = which,
+                              allowed = c(all_spct_attr.ls[["generic_spct"]],
+                                          all_spct_attr.ls[["solute_spct"]]),
                               ...)
 }
 

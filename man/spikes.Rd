@@ -10,6 +10,7 @@
 \alias{spikes.response_spct}
 \alias{spikes.filter_spct}
 \alias{spikes.reflector_spct}
+\alias{spikes.solute_spct}
 \alias{spikes.cps_spct}
 \alias{spikes.raw_spct}
 \alias{spikes.generic_mspct}
@@ -17,6 +18,7 @@
 \alias{spikes.response_mspct}
 \alias{spikes.filter_mspct}
 \alias{spikes.reflector_mspct}
+\alias{spikes.solute_mspct}
 \alias{spikes.cps_mspct}
 \alias{spikes.raw_mspct}
 \title{Spikes}
@@ -74,6 +76,8 @@ spikes(x, z.threshold, max.spike.width, na.rm, ...)
 )
 
 \method{spikes}{reflector_spct}(x, z.threshold = 9, max.spike.width = 8, na.rm = FALSE, ...)
+
+\method{spikes}{solute_spct}(x, z.threshold = 9, max.spike.width = 8, na.rm = FALSE, ...)
 
 \method{spikes}{cps_spct}(
   x,
@@ -138,6 +142,16 @@ spikes(x, z.threshold, max.spike.width, na.rm, ...)
 )
 
 \method{spikes}{reflector_mspct}(
+  x,
+  z.threshold = 9,
+  max.spike.width = 8,
+  na.rm = FALSE,
+  ...,
+  .parallel = FALSE,
+  .paropts = NULL
+)
+
+\method{spikes}{solute_mspct}(
   x,
   z.threshold = 9,
   max.spike.width = 8,
@@ -228,6 +242,8 @@ arrays.
 
 \item \code{reflector_spct}: Method for "reflector_spct" objects.
 
+\item \code{solute_spct}: Method for "solute_spct" objects.
+
 \item \code{cps_spct}: Method for "cps_spct" objects.
 
 \item \code{raw_spct}: Method for "raw_spct" objects.
@@ -241,6 +257,8 @@ arrays.
 \item \code{filter_mspct}: Method for "filter_mspct" objects.
 
 \item \code{reflector_mspct}: Method for "reflector_mspct" objects.
+
+\item \code{solute_mspct}: Method for "solute_mspct" objects.
 
 \item \code{cps_mspct}: Method for "cps_mspct" objects.
 

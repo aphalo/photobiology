@@ -8,6 +8,7 @@
 \alias{check_spct.raw_spct}
 \alias{check_spct.cps_spct}
 \alias{check_spct.filter_spct}
+\alias{check_spct.solute_spct}
 \alias{check_spct.reflector_spct}
 \alias{check_spct.object_spct}
 \alias{check_spct.response_spct}
@@ -56,6 +57,15 @@ check_spct(x, byref, strict.range, force = FALSE, ...)
 )
 
 \method{check_spct}{filter_spct}(
+  x,
+  byref = TRUE,
+  strict.range = getOption("photobiology.strict.range", default = FALSE),
+  force = FALSE,
+  multiple.wl = getMultipleWl(x),
+  ...
+)
+
+\method{check_spct}{solute_spct}(
   x,
   byref = TRUE,
   strict.range = getOption("photobiology.strict.range", default = FALSE),
@@ -140,6 +150,8 @@ Check that an R object contains the expected data members.
 \item \code{cps_spct}: Specialization for cps_spct.
 
 \item \code{filter_spct}: Specialization for filter_spct.
+
+\item \code{solute_spct}: Specialization for solute_spct.
 
 \item \code{reflector_spct}: Specialization for reflector_spct.
 

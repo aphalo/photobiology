@@ -9,6 +9,7 @@
 \alias{is.summary_filter_spct}
 \alias{is.summary_reflector_spct}
 \alias{is.summary_object_spct}
+\alias{is.summary_solute_spct}
 \alias{is.summary_chroma_spct}
 \alias{is.any_summary_spct}
 \title{Query class of spectrum summary objects}
@@ -28,6 +29,8 @@ is.summary_filter_spct(x)
 is.summary_reflector_spct(x)
 
 is.summary_object_spct(x)
+
+is.summary_solute_spct(x)
 
 is.summary_chroma_spct(x)
 

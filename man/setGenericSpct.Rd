@@ -6,6 +6,7 @@
 \alias{setRawSpct}
 \alias{setCpsSpct}
 \alias{setFilterSpct}
+\alias{setSoluteSpct}
 \alias{setReflectorSpct}
 \alias{setObjectSpct}
 \alias{setResponseSpct}
@@ -43,6 +44,14 @@ setFilterSpct(
   Rfr.constant = NA_real_,
   thickness = NA_real_,
   attenuation.mode = NA,
+  strict.range = getOption("photobiology.strict.range", default = FALSE),
+  multiple.wl = 1L,
+  idfactor = NULL
+)
+
+setSoluteSpct(
+  x,
+  K.type = c("attenuation", "absorption", "scattering"),
   strict.range = getOption("photobiology.strict.range", default = FALSE),
   multiple.wl = 1L,
   idfactor = NULL
@@ -108,6 +117,8 @@ class duration as defined in package lubridate.}
 \item{attenuation.mode}{character One of "reflection", "absorption" or
 "mixed".}
 
+\item{K.type}{character One of "attenuation", "absorption", or "scattering".}
+
 \item{Rfr.type}{character A string, either "total" or "specular".}
 
 \item{response.type}{a character string, either "response" or "action".}
@@ -131,6 +142,8 @@ class to "generic_spct".
 
 \item \code{setFilterSpct}: Set class of an object to "filter_spct".
 
+\item \code{setSoluteSpct}: Set class of an object to "solute_spct".
+
 \item \code{setReflectorSpct}: Set class of a an object to "reflector_spct".
 
 \item \code{setObjectSpct}: Set class of an object to "object_spct".
@@ -145,6 +158,11 @@ class to "generic_spct".
 \note{
 This method alters x itself by reference and in addition
   returns x invisibly.
+
+For non-diffusing materials like glass an approximate \code{Rfr.constant}
+  value can be used to interconvert "total" and "internal" transmittance
+  values. Use \code{NA} if not known, or not applicable, e.g., for materials
+  subject to internal scattering.
 
 For non-diffusing materials like glass an approximate \code{Rfr.constant}
   value can be used to interconvert "total" and "internal" transmittance

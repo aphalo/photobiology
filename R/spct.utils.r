@@ -417,6 +417,27 @@ thin_wl.reflector_spct <- function(x,
 #'
 #' @export
 #'
+thin_wl.solute_spct <- function(x,
+                                max.wl.step = 10.0,
+                                max.slope.delta = 0.001,
+                                ...) {
+  cols <- intersect(c("K.mole", "K.mass"), names(x))
+  if (length(cols) == 1) {
+    col.name <- cols
+  } else {
+    stop("Invalid number of columns found:", length(cols))
+  }
+  thin_wl.generic_spct(x = x,
+                       max.wl.step = max.wl.step,
+                       max.slope.delta = max.slope.delta,
+                       col.names = col.name,
+                       ...)
+}
+
+#' @describeIn thin_wl
+#'
+#' @export
+#'
 thin_wl.raw_spct <- thin_wl.generic_spct
 
 #' @describeIn thin_wl
@@ -560,6 +581,16 @@ drop_user_cols.reflector_spct <- function(x, keep.also = NULL, ...) {
   if (any(c("Tfr", "Afr", "A") %in% colnames(x))) {
     warning("Deleting 'object_spct' columns from 'reflector_spct'.")
   }
+  cols.to.keep <- unique(c(default.cols, keep.also))
+  x[ , intersect(colnames(x), cols.to.keep)]
+}
+
+#' @describeIn drop_user_cols
+#'
+#' @export
+#'
+drop_user_cols.solute_spct <- function(x, keep.also = NULL, ...) {
+  default.cols <- c("w.length", "K.mole", "K.mass")
   cols.to.keep <- unique(c(default.cols, keep.also))
   x[ , intersect(colnames(x), cols.to.keep)]
 }

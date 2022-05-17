@@ -10,6 +10,7 @@
 \alias{is.filter_spct}
 \alias{is.reflector_spct}
 \alias{is.object_spct}
+\alias{is.solute_spct}
 \alias{is.chroma_spct}
 \alias{is.any_spct}
 \title{Query class of spectrum objects}
@@ -31,6 +32,8 @@ is.filter_spct(x)
 is.reflector_spct(x)
 
 is.object_spct(x)
+
+is.solute_spct(x)
 
 is.chroma_spct(x)
 

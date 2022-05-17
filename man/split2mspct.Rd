@@ -6,6 +6,7 @@
 \alias{split2response_mspct}
 \alias{split2filter_mspct}
 \alias{split2reflector_mspct}
+\alias{split2solute_mspct}
 \alias{split2cps_mspct}
 \alias{split2raw_mspct}
 \alias{split2calibration_mspct}
@@ -55,6 +56,16 @@ split2filter_mspct(
 split2reflector_mspct(
   x,
   spct.data.var = "Rfr",
+  w.length.var = "w.length",
+  idx.var = NULL,
+  ncol = 1,
+  byrow = FALSE,
+  ...
+)
+
+split2solute_mspct(
+  x,
+  spct.data.var = "K.mole",
   w.length.var = "w.length",
   idx.var = NULL,
   ncol = 1,
@@ -129,6 +140,7 @@ Other Coercion methods for collections of spectra:
 \code{\link{as.raw_mspct}()},
 \code{\link{as.reflector_mspct}()},
 \code{\link{as.response_mspct}()},
+\code{\link{as.solute_mspct}()},
 \code{\link{as.source_mspct}()},
 \code{\link{subset2mspct}()}
 }

@@ -8,6 +8,7 @@
 \alias{thin_wl.response_spct}
 \alias{thin_wl.filter_spct}
 \alias{thin_wl.reflector_spct}
+\alias{thin_wl.solute_spct}
 \alias{thin_wl.raw_spct}
 \alias{thin_wl.cps_spct}
 \alias{thin_wl.object_spct}
@@ -49,6 +50,8 @@ thin_wl(x, ...)
 )
 
 \method{thin_wl}{reflector_spct}(x, max.wl.step = 10, max.slope.delta = 0.001, ...)
+
+\method{thin_wl}{solute_spct}(x, max.wl.step = 10, max.slope.delta = 0.001, ...)
 
 \method{thin_wl}{raw_spct}(x, max.wl.step = 10, max.slope.delta = 0.001, col.names, ...)
 
@@ -114,6 +117,8 @@ The algorithm used for spectra is "naive" in an effort to keep it
 \item \code{filter_spct}: 
 
 \item \code{reflector_spct}: 
+
+\item \code{solute_spct}: 
 
 \item \code{raw_spct}: 
 

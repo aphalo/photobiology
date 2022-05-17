@@ -15,6 +15,7 @@
 \alias{clean.filter_mspct}
 \alias{clean.reflector_mspct}
 \alias{clean.object_mspct}
+\alias{clean.solute_mspct}
 \alias{clean.response_mspct}
 \alias{clean.cps_mspct}
 \alias{clean.raw_mspct}
@@ -120,6 +121,16 @@ clean(x, range, range.s.data, fill, ...)
   range.s.data = c(0, 1),
   fill = range.s.data,
   min.Afr = NULL,
+  ...,
+  .parallel = FALSE,
+  .paropts = NULL
+)
+
+\method{clean}{solute_mspct}(
+  x,
+  range = NULL,
+  range.s.data = c(0, NA),
+  fill = range.s.data,
   ...,
   .parallel = FALSE,
   .paropts = NULL
@@ -237,6 +248,8 @@ objects instead of vectors.
 \item \code{reflector_mspct}: 
 
 \item \code{object_mspct}: 
+
+\item \code{solute_mspct}: 
 
 \item \code{response_mspct}: 
 

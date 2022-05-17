@@ -10,6 +10,7 @@
 \alias{peaks.response_spct}
 \alias{peaks.filter_spct}
 \alias{peaks.reflector_spct}
+\alias{peaks.solute_spct}
 \alias{peaks.cps_spct}
 \alias{peaks.raw_spct}
 \alias{peaks.generic_mspct}
@@ -17,6 +18,7 @@
 \alias{peaks.response_mspct}
 \alias{peaks.filter_mspct}
 \alias{peaks.reflector_mspct}
+\alias{peaks.solute_mspct}
 \alias{peaks.cps_mspct}
 \alias{peaks.raw_mspct}
 \title{Peaks or local maxima}
@@ -90,6 +92,17 @@ peaks(x, span, ignore_threshold, strict, na.rm, ...)
 )
 
 \method{peaks}{reflector_spct}(
+  x,
+  span = 5,
+  ignore_threshold = 0,
+  strict = TRUE,
+  na.rm = FALSE,
+  refine.wl = FALSE,
+  method = "spline",
+  ...
+)
+
+\method{peaks}{solute_spct}(
   x,
   span = 5,
   ignore_threshold = 0,
@@ -181,6 +194,19 @@ peaks(x, span, ignore_threshold, strict, na.rm, ...)
 )
 
 \method{peaks}{reflector_mspct}(
+  x,
+  span = 5,
+  ignore_threshold = 0,
+  strict = TRUE,
+  na.rm = FALSE,
+  refine.wl = FALSE,
+  method = "spline",
+  ...,
+  .parallel = FALSE,
+  .paropts = NULL
+)
+
+\method{peaks}{solute_mspct}(
   x,
   span = 5,
   ignore_threshold = 0,
@@ -288,6 +314,8 @@ to local maxima.
 
 \item \code{reflector_spct}: Method for "reflector_spct" objects.
 
+\item \code{solute_spct}: Method for "solute_spct" objects.
+
 \item \code{cps_spct}: Method for "cps_spct" objects.
 
 \item \code{raw_spct}: Method for "raw_spct" objects.
@@ -301,6 +329,8 @@ to local maxima.
 \item \code{filter_mspct}: Method for "filter_mspct" objects.
 
 \item \code{reflector_mspct}: Method for "reflector_mspct" objects.
+
+\item \code{solute_mspct}: Method for "solute_mspct" objects.
 
 \item \code{cps_mspct}: Method for "cps_mspct" objects.
 

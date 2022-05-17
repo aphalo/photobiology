@@ -167,7 +167,7 @@ remain valid.
 
 | Class name          | Required variables         | Attributes                                          |
 |:--------------------|:---------------------------|:----------------------------------------------------|
-| `g eneric_spct`     | `w.length`                 |                                                     |
+| `generic_spct`      | `w.length`                 |                                                     |
 | `calib ration_spct` | `w.length`, `irrad.mult`   | `instr.desc`                                        |
 | `raw_spct`          | `w.length`, `counts`       | `instr.desc`, `instr.settings`, `linearized`        |
 | `cps_spct`          | `w.length`, `cps`          | `instr.desc`, `instr.settings`, `linearized`        |
@@ -180,6 +180,8 @@ remain valid.
 | `re sponse_spct`    | `w.length`, `s.e.response` | `time.unit`                                         |
 |                     | `w.length`, `s.q.response` | `time.unit`                                         |
 | `chroma_spct`       | `w.length`, `x`, `y`, `z`  |                                                     |
+| `solute_spct`       | `w.length`, `K.mole`       | `K.type`                                            |
+|                     | `w.length`, `K.mass`       | `K.type`                                            |
 
 ------------------------------------------------------------------------
 
@@ -265,6 +267,12 @@ not the character strings.
 | s.q.response                | $\mathit{x}\,mol^{-1}\,nm^{-1}$         | time.unit = "exposure" |
 | s.q.response                | varies                                  | time.unit = *duration* |
 | x, y, z                     | [0,1]                                   |                        |
+| K.mole                      |                                         | K.type = "attenuation" |
+| K.mole                      |                                         | K.type = "absorption"  |
+| K.mole                      |                                         | K.type = "scattering"  |
+| K.mass                      |                                         | K.type = "attenuation" |
+| K.mass                      |                                         | K.type = "absorption"  |
+| K.mass                      |                                         | K.type = "scattering"  |
 | **B: converted**            |                                         |                        |
 | wl $\to$ w.length           | nm                                      |                        |
 | wavelength $\to$ w.length   | nm                                      |                        |
@@ -667,6 +675,7 @@ attributes used in individual member spectra of collections.
 | `object_mspct`      | `object_spct`           | `names`, `dim`, `comment` |
 | `response_mspct`    | `response_spct`         | `names`, `dim`, `comment` |
 | `chroma_mspct`      | `chroma_spct`           | `names`, `dim`, `comment` |
+| `solute_mspct`      | `solute_spct`           | `names`, `dim`, `comment` |
 
 ------------------------------------------------------------------------
 

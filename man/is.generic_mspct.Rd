@@ -10,6 +10,7 @@
 \alias{is.filter_mspct}
 \alias{is.reflector_mspct}
 \alias{is.object_mspct}
+\alias{is.solute_mspct}
 \alias{is.chroma_mspct}
 \alias{is.any_mspct}
 \title{Query class of spectrum objects}
@@ -31,6 +32,8 @@ is.filter_mspct(x)
 is.reflector_mspct(x)
 
 is.object_mspct(x)
+
+is.solute_mspct(x)
 
 is.chroma_mspct(x)
 

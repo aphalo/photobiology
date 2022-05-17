@@ -10,6 +10,7 @@
 \alias{valleys.response_spct}
 \alias{valleys.filter_spct}
 \alias{valleys.reflector_spct}
+\alias{valleys.solute_spct}
 \alias{valleys.cps_spct}
 \alias{valleys.raw_spct}
 \alias{valleys.generic_mspct}
@@ -17,6 +18,7 @@
 \alias{valleys.response_mspct}
 \alias{valleys.filter_mspct}
 \alias{valleys.reflector_mspct}
+\alias{valleys.solute_mspct}
 \alias{valleys.cps_mspct}
 \alias{valleys.raw_mspct}
 \title{Valleys or local minima}
@@ -92,6 +94,17 @@ valleys(x, span, ignore_threshold, strict, ...)
 )
 
 \method{valleys}{reflector_spct}(
+  x,
+  span = 5,
+  ignore_threshold = 0,
+  strict = TRUE,
+  na.rm = FALSE,
+  refine.wl = FALSE,
+  method = "spline",
+  ...
+)
+
+\method{valleys}{solute_spct}(
   x,
   span = 5,
   ignore_threshold = 0,
@@ -182,6 +195,19 @@ valleys(x, span, ignore_threshold, strict, ...)
 )
 
 \method{valleys}{reflector_mspct}(
+  x,
+  span = 5,
+  ignore_threshold = 0,
+  strict = TRUE,
+  na.rm = FALSE,
+  refine.wl = FALSE,
+  method = "spline",
+  ...,
+  .parallel = FALSE,
+  .paropts = NULL
+)
+
+\method{valleys}{solute_mspct}(
   x,
   span = 5,
   ignore_threshold = 0,
@@ -291,6 +317,8 @@ to local maxima.
 
 \item \code{reflector_spct}: Method for "reflector_spct".
 
+\item \code{solute_spct}: Method for "solute_spct" objects.
+
 \item \code{cps_spct}: Method for "cps_spct" objects.
 
 \item \code{raw_spct}: Method for "raw_spct" objects.
@@ -304,6 +332,8 @@ to local maxima.
 \item \code{filter_mspct}: Method for "filter_mspct" objects.
 
 \item \code{reflector_mspct}: Method for "reflector_mspct" objects.
+
+\item \code{solute_mspct}: Method for "solute_mspct" objects.
 
 \item \code{cps_mspct}: Method for "cps_mspct" objects.
 

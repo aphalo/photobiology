@@ -574,6 +574,42 @@ peaks.reflector_spct <- function(x,
   }
 }
 
+#' @describeIn peaks  Method for "solute_spct" objects.
+#'
+#' @export
+#'
+peaks.solute_spct <-
+  function(x,
+           span = 5,
+           ignore_threshold = 0,
+           strict = TRUE,
+           na.rm = FALSE,
+           refine.wl = FALSE,
+           method = "spline",
+           ...) {
+    cols <- intersect(c("K.mole", "K.mass"), names(x))
+    if (length(cols) == 1) {
+      col.name <- cols
+      z <- x
+    } else {
+      stop("Invalid number of columns found:", length(cols))
+    }
+    peaks.idx <-
+      which(find_peaks(z[[col.name]],
+                       span = span, ignore_threshold = ignore_threshold,
+                       strict = strict,
+                       na.rm = na.rm))
+    if (refine.wl && length(peaks.idx > 0L)) {
+      fit_peaks(x = z,
+                peaks.idx = peaks.idx,
+                span = span,
+                y.col.name = col.name,
+                method = method)
+    } else {
+      z[peaks.idx,  , drop = FALSE]
+    }
+  }
+
 #' @describeIn peaks  Method for "cps_spct" objects.
 #'
 #' @export
@@ -789,6 +825,12 @@ peaks.reflector_mspct <-
             .paropts = .paropts)
   }
 
+
+#' @describeIn peaks  Method for "solute_mspct" objects.
+#'
+#' @export
+#'
+peaks.solute_mspct <- peaks.reflector_mspct
 
 #' @describeIn peaks  Method for "cps_mspct" objects.
 #'
@@ -1143,6 +1185,43 @@ valleys.reflector_spct <-
     }
   }
 
+#' @describeIn valleys  Method for "solute_spct" objects.
+#'
+#' @export
+#'
+valleys.solute_spct <-
+  function(x,
+           span = 5,
+           ignore_threshold = 0,
+           strict = TRUE,
+           na.rm = FALSE,
+           refine.wl = FALSE,
+           method = "spline",
+           ...) {
+    cols <- intersect(c("K.mole", "K.mass"), names(x))
+    if (length(cols) == 1) {
+      col.name <- cols
+      z <- x
+    } else {
+      stop("Invalid number of columns found:", length(cols))
+    }
+    valleys.idx <-
+      which(find_peaks(-z[[col.name]],
+                       span = span,
+                       ignore_threshold = ignore_threshold,
+                       strict = strict,
+                       na.rm = na.rm))
+    if (refine.wl && length(valleys.idx > 0L)) {
+      fit_valleys(x = z,
+                  valleys.idx = valleys.idx,
+                  span = span,
+                  y.col.name = col.name,
+                  method = method)
+    } else {
+      z[valleys.idx,  , drop = FALSE]
+    }
+  }
+
 #' @describeIn valleys  Method for "cps_spct" objects.
 #'
 #' @export
@@ -1361,6 +1440,12 @@ valleys.reflector_mspct <-
             .paropts = .paropts)
   }
 
+
+#' @describeIn valleys  Method for "solute_mspct" objects.
+#'
+#' @export
+#'
+valleys.solute_mspct <- valleys.reflector_mspct
 
 #' @describeIn valleys  Method for "cps_mspct" objects.
 #'
@@ -1823,6 +1908,32 @@ wls_at_target.reflector_spct <-
     find_wls(x,
              target = target,
              col.name = "Rfr",
+             interpolate = interpolate,
+             idfactor = idfactor,
+             na.rm = na.rm)
+  }
+
+#' @describeIn wls_at_target Method for "solute_spct" objects.
+#'
+#' @export
+#'
+wls_at_target.solute_spct <-
+  function(x,
+           target = "half.maximum",
+           interpolate = FALSE,
+           idfactor = FALSE,
+           na.rm = FALSE,
+           ...) {
+    cols <- intersect(c("K.mole", "K.mass"), names(x))
+    if (length(cols) == 1) {
+      col.name <- cols
+      z <- x
+    } else {
+      stop("Invalid number of columns found:", length(cols))
+    }
+    find_wls(z,
+             target = target,
+             col.name = col.name,
              interpolate = interpolate,
              idfactor = idfactor,
              na.rm = na.rm)

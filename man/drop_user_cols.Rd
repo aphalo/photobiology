@@ -9,6 +9,7 @@
 \alias{drop_user_cols.object_spct}
 \alias{drop_user_cols.filter_spct}
 \alias{drop_user_cols.reflector_spct}
+\alias{drop_user_cols.solute_spct}
 \alias{drop_user_cols.chroma_spct}
 \alias{drop_user_cols.calibration_spct}
 \alias{drop_user_cols.cps_spct}
@@ -31,6 +32,8 @@ drop_user_cols(x, keep.also, ...)
 \method{drop_user_cols}{filter_spct}(x, keep.also = NULL, ...)
 
 \method{drop_user_cols}{reflector_spct}(x, keep.also = NULL, ...)
+
+\method{drop_user_cols}{solute_spct}(x, keep.also = NULL, ...)
 
 \method{drop_user_cols}{chroma_spct}(x, keep.also = NULL, ...)
 
@@ -70,6 +73,8 @@ Remove from spectral object additional columns that are user defined.
 \item \code{filter_spct}: 
 
 \item \code{reflector_spct}: 
+
+\item \code{solute_spct}: 
 
 \item \code{chroma_spct}: 
 

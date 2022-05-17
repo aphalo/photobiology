@@ -296,7 +296,7 @@ water_dp <- function(water.vp,
     z <- rep(NA_real_, length(water.vp))
   }
   method <- tolower(method)
-  if (any(z > 0) && over.ice) {
+  if (any(z > 0 & over.ice)) {
     warning("At dew point temperature > 0 C, ice surface will be wet.")
   }
   z

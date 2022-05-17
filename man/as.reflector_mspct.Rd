@@ -104,6 +104,7 @@ Other Coercion methods for collections of spectra:
 \code{\link{as.object_mspct}()},
 \code{\link{as.raw_mspct}()},
 \code{\link{as.response_mspct}()},
+\code{\link{as.solute_mspct}()},
 \code{\link{as.source_mspct}()},
 \code{\link{split2mspct}()},
 \code{\link{subset2mspct}()}

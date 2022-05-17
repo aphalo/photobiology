@@ -17,6 +17,7 @@
 \alias{despike.response_mspct}
 \alias{despike.filter_mspct}
 \alias{despike.reflector_mspct}
+\alias{despike.solute_mspct}
 \alias{despike.cps_mspct}
 \alias{despike.raw_mspct}
 \title{Remove spikes from spectrum}
@@ -96,11 +97,20 @@ despike(x, z.threshold, max.spike.width, window.width, method, na.rm, ...)
   window.width = 11,
   method = "run.mean",
   na.rm = FALSE,
-  filter.qty = getOption("photobiology.filter.qty", default = "transmittance"),
   ...
 )
 
 \method{despike}{reflector_spct}(
+  x,
+  z.threshold = 9,
+  max.spike.width = 8,
+  window.width = 11,
+  method = "run.mean",
+  na.rm = FALSE,
+  ...
+)
+
+\method{despike}{filter_spct}(
   x,
   z.threshold = 9,
   max.spike.width = 8,
@@ -195,6 +205,18 @@ despike(x, z.threshold, max.spike.width, window.width, method, na.rm, ...)
   .paropts = NULL
 )
 
+\method{despike}{solute_mspct}(
+  x,
+  z.threshold = 9,
+  max.spike.width = 8,
+  window.width = 11,
+  method = "run.mean",
+  na.rm = FALSE,
+  ...,
+  .parallel = FALSE,
+  .paropts = NULL
+)
+
 \method{despike}{cps_mspct}(
   x,
   z.threshold = 9,
@@ -245,8 +267,6 @@ for spikes to remove.}
 
 \item{unit.out}{character One of "energy" or "photon"}
 
-\item{filter.qty}{character One of "transmittance" or "absorbance"}
-
 \item{.parallel}{if TRUE, apply function in parallel, using parallel backend
 provided by foreach}
 
@@ -255,6 +275,8 @@ when parallel computation is enabled. This is important if (for example)
 your code relies on external data or packages: use the .export and
 .packages arguments to supply them so that all cluster nodes have the
 correct environment set up for computing.}
+
+\item{filter.qty}{character One of "transmittance" or "absorbance"}
 }
 \value{
 \code{x} with rows corresponding to spikes replaced by a local
@@ -286,6 +308,8 @@ source of spikes are "hot pixels" in CCD and diode array detectors.
 
 \item \code{reflector_spct}: Method for "reflector_spct" objects.
 
+\item \code{filter_spct}: Method for "solute_spct" objects.
+
 \item \code{cps_spct}: Method for "cps_spct" objects.
 
 \item \code{raw_spct}: Method for "raw_spct" objects.
@@ -299,6 +323,8 @@ source of spikes are "hot pixels" in CCD and diode array detectors.
 \item \code{filter_mspct}: Method for "filter_mspct" objects.
 
 \item \code{reflector_mspct}: Method for "reflector_mspct" objects.
+
+\item \code{solute_mspct}: Method for "solute_mspct" objects.
 
 \item \code{cps_mspct}: Method for "cps_mspct" objects.
 

@@ -284,6 +284,11 @@ is.summary_object_spct <- function(x) inherits(x, "summary_object_spct")
 #' @rdname is.summary_generic_spct
 #' @export
 #'
+is.summary_solute_spct <- function(x) inherits(x, "summary_solute_spct")
+
+#' @rdname is.summary_generic_spct
+#' @export
+#'
 is.summary_chroma_spct <- function(x) inherits(x, "summary_chroma_spct")
 
 #' @rdname is.summary_generic_spct

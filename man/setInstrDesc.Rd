@@ -23,7 +23,8 @@ This function alters x itself by reference and in addition
   returns x invisibly. If x is not a generic_spct object, x is not
   modified.
 
-
+The fields to be passed in the list \code{instr.desc} in part vary
+depending on the instrument brand and model.
 }
 \seealso{
 Other measurement metadata functions: 

@@ -43,7 +43,7 @@ test_that("filter_spct", {
   my.spct <- yellow_gel.spct
 
   Tfr_as_default()
-  expect_equal(nrow(thin_wl(my.spct)), 383L)
+  expect_equal(nrow(thin_wl(my.spct)), 267L)
   expect_known_value(thin_wl(my.spct), "./data/wl-thin-default-value-tfr")
   expect_known_value(thin_wl(my.spct, max.wl.step = 40), "./data/wl-thin-default-value-step-tfr")
   expect_known_value(thin_wl(my.spct, max.slope.delta = 0.003), "./data/wl-thin-default-value-slope-tfr")

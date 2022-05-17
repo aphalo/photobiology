@@ -119,11 +119,11 @@ test_that("response_spct_data", {
 
 test_that("filter_spct_data", {
   expect_equal(round(polyester.spct[c(1, 100, 200, 300), "Tfr"], 3),
-               c(0.011, 0.004, 0.904, 0.925))
+               c(0.005, 0.778, 0.924, 0.923))
   expect_equal(polyester.spct[c(1, 100, 200, 300), "w.length"],
-               c(190, 289, 389, 489))
+               c(240, 339, 439, 539))
   expect_equal(round(yellow_gel.spct[c(1, 100, 200, 300, 400), "Tfr"], 5),
-               c(0.00100, 0.00001, 0.00001, 0.10100, 0.89300))
+               c(0.00271, 0.00001, 0.00001, 0.10357, 0.89314))
   expect_equal(yellow_gel.spct[c(1, 100, 200, 300, 400), "w.length"],
                c(190, 289, 389, 489, 589))
 })

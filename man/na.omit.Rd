@@ -8,6 +8,7 @@
 \alias{na.omit.filter_spct}
 \alias{na.omit.reflector_spct}
 \alias{na.omit.object_spct}
+\alias{na.omit.solute_spct}
 \alias{na.omit.cps_spct}
 \alias{na.omit.raw_spct}
 \alias{na.omit.chroma_spct}
@@ -35,6 +36,8 @@
 \method{na.omit}{reflector_spct}(object, na.action = "omit", fill = NULL, ...)
 
 \method{na.omit}{object_spct}(object, na.action = "omit", fill = NULL, ...)
+
+\method{na.omit}{solute_spct}(object, na.action = "omit", fill = NULL, ...)
 
 \method{na.omit}{cps_spct}(object, na.action = "omit", fill = NULL, ...)
 

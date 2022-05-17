@@ -9,6 +9,7 @@
 \alias{filter_mspct}
 \alias{reflector_mspct}
 \alias{object_mspct}
+\alias{solute_mspct}
 \alias{response_mspct}
 \alias{chroma_mspct}
 \title{Collection-of-spectra constructor}
@@ -34,6 +35,8 @@ filter_mspct(l = NULL, ncol = 1, byrow = FALSE, ...)
 reflector_mspct(l = NULL, ncol = 1, byrow = FALSE, ...)
 
 object_mspct(l = NULL, ncol = 1, byrow = FALSE, ...)
+
+solute_mspct(l = NULL, ncol = 1, byrow = FALSE, ...)
 
 response_mspct(l = NULL, ncol = 1, byrow = FALSE, ...)
 
@@ -74,6 +77,8 @@ Converts a list of spectral objects into a "multi spectrum"
 \item \code{reflector_mspct}: Specialization for collections of \code{reflector_spct} objects.
 
 \item \code{object_mspct}: Specialization for collections of \code{object_spct} objects.
+
+\item \code{solute_mspct}: Specialization for collections of \code{solute_spct} objects.
 
 \item \code{response_mspct}: Specialization for collections of \code{response_spct} objects.
 

@@ -429,6 +429,38 @@ clean.object_mspct <-
 #'
 #' @export
 #'
+clean.solute_mspct <-
+  function(x,
+           range = NULL,
+           range.s.data = c(0, NA),
+           fill = range.s.data,
+           ...,
+           .parallel = FALSE,
+           .paropts = NULL) {
+    if (is.null(range)) {
+      msmsply(mspct = x,
+              .fun = clean,
+              range.s.data = range.s.data,
+              fill = fill,
+              ...,
+              .parallel = .parallel,
+              .paropts = .paropts)
+    } else {
+      msmsply(mspct = x,
+              .fun = clean,
+              range = range,
+              range.s.data = range.s.data,
+              fill = fill,
+              ...,
+              .parallel = .parallel,
+              .paropts = .paropts)
+    }
+  }
+
+#' @describeIn clean
+#'
+#' @export
+#'
 clean.response_mspct <-
   function(x,
            range = NULL,
