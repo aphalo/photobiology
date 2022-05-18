@@ -495,7 +495,7 @@ despike.reflector_spct <- function(x,
 #'
 #' @export
 #'
-despike.filter_spct <-
+despike.solute_spct <-
   function(x,
            z.threshold = 9,
            max.spike.width = 8,
