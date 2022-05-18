@@ -75,6 +75,18 @@ references:
   institution:
     name: R Foundation for Statistical Computing
 - type: software
+  title: grDevices
+  abstract: 'R: A Language and Environment for Statistical Computing'
+  notes: Imports
+  authors:
+  - name: R Core Team
+  location:
+    name: Vienna, Austria
+  year: '2022'
+  url: https://www.R-project.org/
+  institution:
+    name: R Foundation for Statistical Computing
+- type: software
   title: polynom
   abstract: 'polynom: A Collection of Functions to Implement a Class for Univariate
     Polynomial Manipulations'
