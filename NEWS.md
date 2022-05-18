@@ -4,15 +4,15 @@ editor_options:
     wrap: 72
 ---
 
-# photobiology 0.10.11
+# photobiology 0.11.0
 
--   Fix bug in `rowwise_filter()` affecting parallel summaries of absorptance.
--   Add method `s_mean_se_band_band()`.
 -   Add new classes of objects `solute_spct` and `solute_mspct` to be used to
 store molar and mass based coefficients of attenuation describing overall
 attenuation, or attenuation by absorption or by scattering. Implement the
 corresponding methods.
 -   Add example data for two solutes: `water.spct` and `phenylalanine.spct`.
+-   Fix bug in `rowwise_filter()` affecting parallel summaries of absorptance.
+-   Add method `s_mean_se_band_band()`.
 
 # photobiology 0.10.10
 

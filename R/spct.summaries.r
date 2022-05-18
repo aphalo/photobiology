@@ -136,6 +136,18 @@ print.generic_spct <- function(x, ..., n = NULL, width = NULL)
       cat("Reflectance of type '", getRfrType(x), "'(!!)\n", sep = "")
     }
   }
+  if (class_spct(x)[1] == "solute_spct") {
+    if (exists("K.mole", where = x, inherits = FALSE)) {
+      cat("Molar ", getKType(x), " coefficient '", getTfrType(x), "'\n", sep = "")
+    } else if (exists("K.mass", where = x, inherits = FALSE)){
+      cat("Mass ", getKType(x), " coefficient '", getTfrType(x), "'\n", sep = "")
+    }
+    properties <- solute_properties(x, return.null = TRUE)
+    if (!is.null(properties)) {
+      print(properties)
+      cat("\n")
+    }
+  }
   if (is_scaled(x)) {
     scaling <- getScaling(x)
     if (all(is.na(scaling[["cols"]]))) {
@@ -333,8 +345,8 @@ summary.generic_spct <- function(object,
   z[["orig.name"]] <- if (is.name(object.name)) as.character(object.name) else "anonymous"
   z[["orig.class"]] <- class_spct(object)[1]
   z[["orig.dim_desc"]] <- dplyr::dim_desc(object)
-  z[["wl.range"]] <- range(object)
-  z[["wl.stepsize"]] <- stepsize(object)
+  z[["wl.range"]] <- wl_range(object)
+  z[["wl.stepsize"]] <- wl_stepsize(object)
   z[["summary"]] <- summary(as.data.frame(object), maxsum = maxsum, digits = digits, ...)
 
   z <- copy_attributes(object, z,
@@ -435,6 +447,39 @@ print.summary_generic_spct <- function(x, ...) {
   if (class(x)[1] %in% c("summary_source_spct", "summary_response_spct")) {
     cat("Time unit ", as.character(getTimeUnit(x, force.duration = TRUE)),
         "\n", sep = "")
+  }
+  if (class(x)[1] == "summary_filter_spct") {
+    if (any(grepl("Tfr", colnames(x[["summary"]])))) {
+      cat("Transmittance of type '", getTfrType(x), "'\n", sep = "")
+    }
+    properties <- filter_properties(x, return.null = TRUE)
+    if (!is.null(properties)) {
+      print(properties)
+      cat("\n")
+    }
+  }
+  if (class(x)[1] == "summary_reflector_spct") {
+    cat("Reflectance of type '", getRfrType(x), "'\n", sep = "")
+  }
+  if (class(x)[1] == "summary_object_spct") {
+    if (getTfrType(x) != "total") {
+      cat("Transmittance of type '", getTfrType(x), "'(!!)\n", sep = "")
+    }
+    if (getRfrType(x) != "total") {
+      cat("Reflectance of type '", getRfrType(x), "'(!!)\n", sep = "")
+    }
+  }
+  if (class(x)[1] == "summary_solute_spct") {
+    if (any(grepl("K.mole", colnames(x[["summary"]])))) {
+      cat("Molar ", getKType(x), " coefficient\n", sep = "")
+    } else if (any(grepl("K.mole", colnames(x[["summary"]])))) {
+      cat("Mass ", getKType(x), " coefficient\n", sep = "")
+    }
+    properties <- solute_properties(x, return.null = TRUE)
+    if (!is.null(properties)) {
+      print(properties)
+      cat("\n")
+    }
   }
   if (is_scaled(x)) {
     scaling <- getScaling(x)
