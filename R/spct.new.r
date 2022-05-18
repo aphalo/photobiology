@@ -328,6 +328,45 @@ reflector_spct <- function(w.length = NULL,
 
 #' @rdname source_spct
 #'
+#' @param K.mole numeric vector with spectral reflectance as fraction of one
+#' @param K.mass numeric vector with spectral reflectance as percent values
+#' @param K.type character A string, either "attenuation", "absorption" or
+#'   "scattering".
+#'
+#' @export
+#'
+solute_spct <- function(w.length = NULL,
+                        K.mole = NULL,
+                        K.mass = NULL,
+                        K.type = c("attenuation", "absorption", "scattering"),
+                        comment = NULL,
+                        strict.range = getOption("photobiology.strict.range", default = FALSE),
+                        multiple.wl = 1L,
+                        idfactor = NULL,
+                        ...) {
+  if (length(w.length) == 0) {
+    z <- tibble::tibble(w.length = numeric(), Rfr = numeric(), ...)
+  } else if (is.null(K.mass) && is.numeric(K.mole)) {
+    z <- tibble::tibble(w.length, K.mole, ...)
+  } else if (is.null(K.mole) && is.numeric(K.mass)) {
+    z <- tibble::tibble(w.length, K.mass, ...)
+  } else {
+    warning("Only one of K.mole, or K.mass should be different from NULL.")
+    z <- tibble::tibble(w.length, ...)
+  }
+  if (!is.null(comment)) {
+    comment(z) <- comment
+  }
+  setSoluteSpct(x = z,
+                K.type = K.type,
+                strict.range = strict.range,
+                multiple.wl = multiple.wl,
+                idfactor = idfactor)
+  z
+}
+
+#' @rdname source_spct
+#'
 #' @export
 #'
 object_spct <- function(w.length = NULL,
@@ -671,6 +710,77 @@ as.object_spct.default <- function(x,
                 strict.range = strict.range,
                 ...)
 }
+
+#' Coerce to a spectrum
+#'
+#' Return a copy of an R object with its class set to a given type of spectrum.
+#'
+#' @param x an R object
+#' @param Tfr.type a character string, either "total" or "internal"
+#' @param strict.range logical Flag indicating whether off-range values result
+#'   in an error instead of a warning
+#' @param ... other arguments passed to "set" functions
+#'
+#' @return A copy of \code{x} converted into a \code{filter_spct} object.
+#'
+#' @seealso \code{\link{setGenericSpct}}
+#'
+#' @export
+#'
+#' @family constructors of spectral objects
+#'
+as.filter_spct <- function(x, ...) {UseMethod("as.filter_spct")}
+
+#'@describeIn as.filter_spct
+#'
+#' @export
+#'
+as.filter_spct.default <-
+  function(x,
+           Tfr.type = c("total", "internal"),
+           strict.range = getOption("photobiology.strict.range", default = FALSE),
+           ...) {
+    setFilterSpct(x,
+                  Tfr.type = Tfr.type,
+                  strict.range = strict.range,
+                  ...)
+  }
+
+#' Coerce to a spectrum
+#'
+#' Return a copy of an R object with its class set to a given type of spectrum.
+#'
+#' @param x an R object
+#' @param K.type a character string, either "total" or "specular"
+#' @param strict.range logical Flag indicating whether off-range values result
+#'   in an error instead of a warning
+#' @param ... other arguments passed to "set" functions
+#'
+#' @return A copy of \code{x} converted into a \code{solute_spct} object.
+#'
+#' @seealso \code{\link{setSoluteSpct}}
+#'
+#' @export
+#'
+#' @family constructors of spectral objects
+#'
+as.solute_spct <- function(x, ...) {UseMethod("as.solute_spct")}
+
+#' @describeIn as.solute_spct
+#'
+#'
+#' @export
+#'
+as.solute_spct.default <-
+  function(x,
+           K.type = c("attenuation", "absorption", "scattering"),
+           strict.range = getOption("photobiology.strict.range", default = FALSE),
+           ...) {
+    setSoluteSpct(x,
+                  K.type = K.type,
+                  strict.range = strict.range,
+                  ...)
+  }
 
 #' Coerce to a spectrum
 #'

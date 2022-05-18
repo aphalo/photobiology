@@ -211,6 +211,12 @@ Metadata attributes are retained unchanged.
 \item \code{generic_mspct}: 
 }}
 
+\note{
+Method \code{fshift} is not implemented for \code{solute_spct} objects
+  as the spectral data stored in them are a description of an intensive
+  property of a substance. To represent solutions of specific concentrations
+  of solutes, \code{filter_spct} objects can be used.
+}
 \seealso{
 Other rescaling functions: 
 \code{\link{fscale}()},

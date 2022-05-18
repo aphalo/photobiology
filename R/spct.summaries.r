@@ -519,3 +519,15 @@ print.filter_properties <- function(x, ...) {
   )
   invisible(x)
 }
+
+#' @export
+#'
+print.solute_properties <- function(x, ...) {
+  cat("Name: ", x[["name"]][1], ", ",
+      "Molar mass (Da): ", round(x[["mass"]], digits = 2), ", ",
+      "Formula: ", x[["formula"]][1], ".",
+      sep = "",
+      ...
+  )
+  invisible(x)
+}

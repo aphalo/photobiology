@@ -36,6 +36,23 @@ apply_oper <- function(e1, e2, oper) {
     .fun.filter.qty <- any2Afr
     .name.filter.qty <- "Afr"
   }
+  # solutes
+  if (is.solute_spct(e1)) {
+    .name.solute.qty <- intersect(c("K.mole", "K.mass"), names(e1))
+    stopifnot(length(.name.filter.qty) == 1)
+  } else {
+    .name.solute.qty <- NULL
+  }
+  if (is.solute_spct(e2)) {
+    col.name <- intersect(c("K.mole", "K.mass"), names(e2))
+    stopifnot(length(.name.filter.qty) == 1)
+    if (is.null(.name.solute.qty)) {
+      .name.solute.qty <- col.name
+    } else if (.name.solute.qty != col.name) {
+      stop("Both arguments must be on the same base of expression, mole or mass.")
+    }
+  }
+
   # conversion and/or deletion of other quantities
   if (is.filter_spct(e1)) {
     e1 <- .fun.filter.qty(e1, action = "replace")
@@ -101,6 +118,7 @@ apply_oper <- function(e1, e2, oper) {
              "'cps_spct' objects is implemented")
       }
     }
+
   } else if (class1 == "raw_spct") {
     if (is.numeric(e2)) {
       z <- e1
@@ -119,6 +137,7 @@ apply_oper <- function(e1, e2, oper) {
       stop("operation between 'raw_spct' and ", class(e2)[1],
            " objects not implemented")
     }
+
   } else if (class1 == "cps_spct") {
     if (is.numeric(e2)) {
       z <- e1
@@ -145,6 +164,7 @@ apply_oper <- function(e1, e2, oper) {
       stop("operation between 'cps_spct' and ", class(e2)[1],
            " objects not implemented")
     }
+
   } else if (class1 == "source_spct") {
     if (is.waveband(e2)) {
       if (!identical(oper, `*`)) {
@@ -253,6 +273,7 @@ apply_oper <- function(e1, e2, oper) {
     } else { # this traps also e2 == "generic_spct"
       stop("Operations involving generic_spct are undefined and always return NA")
     }
+
   } else if (class1 == "filter_spct") {
     if (is.numeric(e2)) {
       z <- e1
@@ -305,6 +326,7 @@ apply_oper <- function(e1, e2, oper) {
       }
       return(merge_attributes(e1, e2, z))
     }
+
   } else if (class1 == "reflector_spct") {
     if (is.numeric(e2)) {
       z <- e1
@@ -337,6 +359,25 @@ apply_oper <- function(e1, e2, oper) {
     } else { # this traps optically illegal operations
       stop("The operation attempted is undefined according to Optics laws or the input is malformed")
     }
+
+  } else if (class1 == "solute_spct") {
+    if (is.numeric(e2)) {
+      z <- e1
+      z[[.name.solute.qty]] <- oper(z[[.name.solute.qty]], e2)
+      check_spct(z, strict.range = FALSE)
+      return(z)
+    } else if (class2 == "solute_spct") {
+      z <- oper_spectra(e1[["w.length"]], e2[["w.length"]],
+                        e1[[.name.solute.qty]], e2[[.name.solute.qty]],
+                        bin.oper=oper, trim="intersection")
+      names(z)[2] <- .name.solute.qty
+      setSoluteSpct(z, strict.range = getOption("photobiology.strict.range",
+                                                default = FALSE))
+      return(merge_attributes(e1, e2, z))
+    } else { # this traps optically illegal operations
+      stop("The operation attempted is undefined according to Optics laws or the input is malformed")
+    }
+
   } else if (class1 == "response_spct") {
     if (is.numeric(e2)) {
       z <- e1
@@ -363,6 +404,7 @@ apply_oper <- function(e1, e2, oper) {
     } else { # this traps optically illegal operations
       stop("The operation attempted is undefined according to Optics laws or the input is malformed")
     }
+
   } else if (class1 == "chroma_spct") {
     if (is.numeric(e2)) {
       if (length(e2) == 3 && names(e2) == c("x", "y", "z")) {
@@ -403,6 +445,7 @@ apply_oper <- function(e1, e2, oper) {
                         x = x[[2L]], y = y[[2L]], z = z[[2L]])
       return(merge_attributes(e1, e2, zz))
     }
+
   } else if (is.numeric(e1)) {
     if (class2 == "calibration_spct") {
       z <- e2
@@ -432,6 +475,11 @@ apply_oper <- function(e1, e2, oper) {
     } else if (class2 == "reflector_spct") {
       z <- e2
       z[["Rfr"]] <- oper(e1, e2[["Rfr"]])
+      check_spct(z, strict.range = FALSE)
+      return(z)
+    } else if (class2 == "solute_spct") {
+      z <- e2
+      z[[.name.solute.qty]] <- oper(e1, e2[[.name.solute.qty]])
       check_spct(z, strict.range = FALSE)
       return(z)
     } else if (class2 == "response_spct") {
@@ -594,31 +642,42 @@ f_dispatcher_spct <- function(x, .fun, ...) {
   # Skip checks for intermediate results
   prev_state <- disable_check_spct()
   on.exit(set_check_spct(prev_state), add = TRUE)
+  class.x <- class_spct(x)[1]
 
   # radiation unit
-  .unit.irrad <- getOption("photobiology.radiation.unit",
-                           default = "energy")
-  if (.unit.irrad == "energy") {
-    .fun.irrad <- q2e
-    .name.irrad <- "s.e.irrad"
-    .name.response <- "s.e.response"
-  } else if (.unit.irrad == "photon") {
-    .fun.irrad <- e2q
-    .name.irrad <- "s.q.irrad"
-    .name.response <- "s.q.response"
+  if (class.x %in% c("source_spct", "response_spct")) {
+    .unit.irrad <- getOption("photobiology.radiation.unit",
+                             default = "energy")
+    if (.unit.irrad == "energy") {
+      .fun.irrad <- q2e
+      .name.irrad <- "s.e.irrad"
+      .name.response <- "s.e.response"
+    } else if (.unit.irrad == "photon") {
+      .fun.irrad <- e2q
+      .name.irrad <- "s.q.irrad"
+      .name.response <- "s.q.response"
+    }
   }
 
   # filter qty
-  .qty.filter <- getOption("photobiology.filter.qty", default = "transmittance")
-  if (.qty.filter == "transmittance") {
-    .fun.filter.qty <- any2T
-     .name.filter.qty <- "Tfr"
-  } else if (.qty.filter == "absorbance") {
-    .fun.filter.qty <- any2A
-    .name.filter.qty <- "A"
-  } else if (.qty.filter == "absorptance") {
-    .fun.filter.qty <- any2Afr
-    .name.filter.qty <- "Afr"
+  if (class.x == "filter_spct") {
+    .qty.filter <- getOption("photobiology.filter.qty", default = "transmittance")
+    if (.qty.filter == "transmittance") {
+      .fun.filter.qty <- any2T
+      .name.filter.qty <- "Tfr"
+    } else if (.qty.filter == "absorbance") {
+      .fun.filter.qty <- any2A
+      .name.filter.qty <- "A"
+    } else if (.qty.filter == "absorptance") {
+      .fun.filter.qty <- any2Afr
+      .name.filter.qty <- "Afr"
+    }
+  }
+
+  # coeff base
+  if (class.x == "solute_spct") {
+    .name.solute.qty <- intersect(c("K.mole", "K.mass"), names(x))
+    stopifnot(length(.name.solute.qty) == 1)
   }
 
   # conversion and/or deletion of other quantities
@@ -641,6 +700,8 @@ f_dispatcher_spct <- function(x, .fun, ...) {
     z[[.name.filter.qty]] <- .fun(z[[.name.filter.qty]], ...)
   } else if (is.reflector_spct(x)) {
     z[["Rfr"]] <- .fun(z[["Rfr"]], ...)
+  } else if (is.solute_spct(x)) {
+    z[[.name.solute.qty]] <- .fun(z[[.name.solute.qty]], ...)
   } else if (is.source_spct(x)) {
     z[[.name.irrad]] <- .fun(z[[.name.irrad]], ...)
   } else if (is.response_spct(x)) {

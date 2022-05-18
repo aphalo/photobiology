@@ -117,7 +117,8 @@ class duration as defined in package lubridate.}
 \item{attenuation.mode}{character One of "reflection", "absorption" or
 "mixed".}
 
-\item{K.type}{character One of "attenuation", "absorption", or "scattering".}
+\item{K.type}{character A string, either "attenuation", "absorption" or
+"scattering".}
 
 \item{Rfr.type}{character A string, either "total" or "specular".}
 

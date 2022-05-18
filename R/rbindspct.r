@@ -299,6 +299,15 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE, attrs.s
     }
     setObjectSpct(ans, Tfr.type = Tfr.type[1], Rfr.type = Rfr.type[1],
                   multiple.wl = mltpl.wl)
+  } else if (l.class == "solute_spct") {
+    K.type <- sapply(l, FUN = getKType)
+    names(K.type) <- NULL
+    K.type <- unique(K.type)
+    if (length(K.type) > 1L) {
+      warning("Inconsistent 'K.type' among solute spectra in rbindspct")
+      return(reflector_spct())
+    }
+    setSoluteSpct(ans, K.type = K.type, multiple.wl = mltpl.wl)
   } else if (l.class == "response_spct") {
     time.unit <- sapply(l, FUN = getTimeUnit)
     names(time.unit) <- NULL
@@ -627,6 +636,34 @@ subset.generic_spct <- function(x, subset, select, drop = FALSE, ...) {
 #' @rdname extract
 #'
 "[.reflector_spct" <-
+  function(x, i, j, drop = NULL) {
+    if (is.null(drop)) {
+      xx <- `[.data.frame`(x, i, j)
+    } else {
+      xx <- `[.data.frame`(x, i, j, drop = drop)
+    }
+    if (is.data.frame(xx)) {
+      if ("w.length" %in% names(xx)) {
+        if (!(getMultipleWl(x) == 1L || nrow(xx) == nrow(x))) {
+          # subsetting of rows can decrease the number of spectra
+          multiple.wl <- findMultipleWl(xx, same.wls = FALSE)
+          xx <- setMultipleWl(xx, multiple.wl)
+        }
+        if (ncol(xx) != ncol(x)) {
+          xx <- copy_attributes(x, xx)
+        }
+        xx <- check_spct(xx)
+      } else {
+        rmDerivedSpct(xx)
+      }
+    }
+    xx
+  }
+
+#' @export
+#' @rdname extract
+#'
+"[.solute_spct" <-
   function(x, i, j, drop = NULL) {
     if (is.null(drop)) {
       xx <- `[.data.frame`(x, i, j)

@@ -8,6 +8,7 @@
 \alias{normalize.response_spct}
 \alias{normalize.filter_spct}
 \alias{normalize.reflector_spct}
+\alias{normalize.solute_spct}
 \alias{normalize.raw_spct}
 \alias{normalize.cps_spct}
 \alias{normalize.generic_spct}
@@ -61,6 +62,15 @@ normalise(x, ...)
   range = NULL,
   norm = "max",
   qty.out = NULL,
+  keep.scaling = FALSE,
+  na.rm = FALSE
+)
+
+\method{normalize}{solute_spct}(
+  x,
+  ...,
+  range = NULL,
+  norm = "max",
   keep.scaling = FALSE,
   na.rm = FALSE
 )
@@ -245,6 +255,8 @@ By default normalization is done based on the maximum of the
 \item \code{filter_spct}: Normalize a filter spectrum.
 
 \item \code{reflector_spct}: Normalize a reflector spectrum.
+
+\item \code{solute_spct}: Normalize a solute spectrum.
 
 \item \code{raw_spct}: Normalize a raw spectrum.
 

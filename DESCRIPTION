@@ -24,6 +24,7 @@ Depends:
     R (>= 3.6.0)
 Imports:
     stats,
+    grDevices,
     polynom (>= 1.4-0),
     tibble (>= 3.0.4),
     stringr (>= 1.4.0),

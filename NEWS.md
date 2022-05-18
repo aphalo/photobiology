@@ -12,6 +12,7 @@ editor_options:
 store molar and mass based coefficients of attenuation describing overall
 attenuation, or attenuation by absorption or by scattering. Implement the
 corresponding methods.
+-   Add example data for two solutes: `water.spct` and `phenylalanine.spct`.
 
 # photobiology 0.10.10
 

@@ -223,6 +223,31 @@ normalize.reflector_spct <-
                    na.rm = na.rm)
   }
 
+#' @describeIn normalize Normalize a solute spectrum.
+#'
+#' @export
+#'
+normalize.solute_spct <-
+  function(x,
+           ...,
+           range = NULL,
+           norm = "max",
+           keep.scaling = FALSE,
+           na.rm = FALSE) {
+    cols <- intersect(c("K.mole", "K.mass"), names(x))
+    if (length(cols) == 1) {
+      col.name <- cols
+    } else {
+      stop("Invalid number of columns found:", length(cols))
+    }
+    normalize_spct(spct = x,
+                   range = range,
+                   norm = norm,
+                   col.names = col.name,
+                   keep.scaling = keep.scaling,
+                   na.rm = na.rm)
+  }
+
 #' @describeIn normalize Normalize a raw spectrum.
 #'
 #' @export

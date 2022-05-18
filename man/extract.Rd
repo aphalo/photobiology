@@ -9,6 +9,7 @@
 \alias{[.response_spct}
 \alias{[.filter_spct}
 \alias{[.reflector_spct}
+\alias{[.solute_spct}
 \alias{[.object_spct}
 \alias{[.chroma_spct}
 \alias{[<-.generic_spct}
@@ -28,6 +29,8 @@
 \method{[}{filter_spct}(x, i, j, drop = NULL)
 
 \method{[}{reflector_spct}(x, i, j, drop = NULL)
+
+\method{[}{solute_spct}(x, i, j, drop = NULL)
 
 \method{[}{object_spct}(x, i, j, drop = NULL)
 

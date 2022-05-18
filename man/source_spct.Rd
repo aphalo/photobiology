@@ -9,6 +9,7 @@
 \alias{response_spct}
 \alias{filter_spct}
 \alias{reflector_spct}
+\alias{solute_spct}
 \alias{object_spct}
 \alias{chroma_spct}
 \title{Spectral-object constructor}
@@ -97,6 +98,18 @@ reflector_spct(
   Rfr = NULL,
   Rpc = NULL,
   Rfr.type = c("total", "specular"),
+  comment = NULL,
+  strict.range = getOption("photobiology.strict.range", default = FALSE),
+  multiple.wl = 1L,
+  idfactor = NULL,
+  ...
+)
+
+solute_spct(
+  w.length = NULL,
+  K.mole = NULL,
+  K.mass = NULL,
+  K.type = c("attenuation", "absorption", "scattering"),
   comment = NULL,
   strict.range = getOption("photobiology.strict.range", default = FALSE),
   multiple.wl = 1L,
@@ -195,6 +208,13 @@ and absorptance values are "total" or "internal" values}
 
 \item{Rfr.type}{character A string, either "total" or "specular".}
 
+\item{K.mole}{numeric vector with spectral reflectance as fraction of one}
+
+\item{K.mass}{numeric vector with spectral reflectance as percent values}
+
+\item{K.type}{character A string, either "attenuation", "absorption" or
+"scattering".}
+
 \item{x, y, z}{numeric colour coordinates}
 }
 \value{
@@ -229,6 +249,7 @@ Other constructors of spectral objects:
 \code{\link{as.raw_spct}()},
 \code{\link{as.reflector_spct}()},
 \code{\link{as.response_spct}()},
+\code{\link{as.solute_spct}()},
 \code{\link{as.source_spct}()}
 }
 \concept{constructors of spectral objects}

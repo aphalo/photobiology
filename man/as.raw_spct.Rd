@@ -37,6 +37,7 @@ Other constructors of spectral objects:
 \code{\link{as.object_spct}()},
 \code{\link{as.reflector_spct}()},
 \code{\link{as.response_spct}()},
+\code{\link{as.solute_spct}()},
 \code{\link{as.source_spct}()},
 \code{\link{source_spct}()}
 }

@@ -9,7 +9,8 @@ setKType(x, K.type = c("attenuation", "absorption", "scattering"))
 \arguments{
 \item{x}{a solute_spct or a summary_solute_spct object.}
 
-\item{K.type}{a character string, either "attenuation", "absorption" or "scattering".}
+\item{K.type}{character A string, either "attenuation", "absorption" or
+"scattering".}
 }
 \value{
 x

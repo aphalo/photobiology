@@ -13,6 +13,15 @@ as.filter_spct(x, ...)
   strict.range = getOption("photobiology.strict.range", default = FALSE),
   ...
 )
+
+as.filter_spct(x, ...)
+
+\method{as.filter_spct}{default}(
+  x,
+  Tfr.type = c("total", "internal"),
+  strict.range = getOption("photobiology.strict.range", default = FALSE),
+  ...
+)
 }
 \arguments{
 \item{x}{an R object}
@@ -26,16 +35,24 @@ in an error instead of a warning}
 }
 \value{
 A copy of \code{x} converted into a \code{filter_spct} object.
+
+A copy of \code{x} converted into a \code{filter_spct} object.
 }
 \description{
+Return a copy of an R object with its class set to a given type of spectrum.
+
 Return a copy of an R object with its class set to a given type of spectrum.
 }
 \section{Methods (by class)}{
 \itemize{
 \item \code{default}: 
+
+\item \code{default}: 
 }}
 
 \seealso{
+\code{\link{setGenericSpct}}
+
 \code{\link{setGenericSpct}}
 
 Other constructors of spectral objects: 
@@ -47,6 +64,20 @@ Other constructors of spectral objects:
 \code{\link{as.raw_spct}()},
 \code{\link{as.reflector_spct}()},
 \code{\link{as.response_spct}()},
+\code{\link{as.solute_spct}()},
+\code{\link{as.source_spct}()},
+\code{\link{source_spct}()}
+
+Other constructors of spectral objects: 
+\code{\link{as.calibration_spct}()},
+\code{\link{as.chroma_spct}()},
+\code{\link{as.cps_spct}()},
+\code{\link{as.generic_spct}()},
+\code{\link{as.object_spct}()},
+\code{\link{as.raw_spct}()},
+\code{\link{as.reflector_spct}()},
+\code{\link{as.response_spct}()},
+\code{\link{as.solute_spct}()},
 \code{\link{as.source_spct}()},
 \code{\link{source_spct}()}
 }
