@@ -9,6 +9,7 @@
 \alias{join_mspct.filter_mspct}
 \alias{join_mspct.reflector_mspct}
 \alias{join_mspct.object_mspct}
+\alias{join_mspct.solute_mspct}
 \title{Join all spectra in a collection}
 \usage{
 join_mspct(x, type, ...)
@@ -26,6 +27,8 @@ join_mspct(x, type, ...)
 \method{join_mspct}{reflector_mspct}(x, type = "full", ...)
 
 \method{join_mspct}{object_mspct}(x, type = "full", qty.out, ...)
+
+\method{join_mspct}{solute_mspct}(x, type = "full", ...)
 }
 \arguments{
 \item{x}{A generic_mspct object, or an object of a class derived from
@@ -69,6 +72,8 @@ data for missing wave lengths in individual spectra with \code{NA}.
 \item \code{reflector_mspct}: 
 
 \item \code{object_mspct}: 
+
+\item \code{solute_mspct}: 
 }}
 
 \note{
