@@ -53,7 +53,7 @@ test_that("source_mspct", {
   expect_silent(my.df <- join_mspct(my0.mspct))
   expect_is(my.df, "data.frame")
   expect_equal(nrow(my.df), 0L)
-  expect_equal(ncol(my.df), 0L)
+  expect_equal(ncol(my.df), 1L)
 
 })
 
@@ -108,7 +108,7 @@ test_that("response_mspct", {
   expect_silent(my.df <- join_mspct(my0.mspct))
   expect_is(my.df, "data.frame")
   expect_equal(nrow(my.df), 0L)
-  expect_equal(ncol(my.df), 0L)
+  expect_equal(ncol(my.df), 1L)
 
 })
 
@@ -170,7 +170,7 @@ test_that("filter_mspct", {
   expect_silent(my.df <- join_mspct(my0.mspct))
   expect_is(my.df, "data.frame")
   expect_equal(nrow(my.df), 0L)
-  expect_equal(ncol(my.df), 0L)
+  expect_equal(ncol(my.df), 1L)
 
 })
 
@@ -205,7 +205,7 @@ test_that("reflector_mspct", {
   expect_silent(my.df <- join_mspct(my0.mspct))
   expect_is(my.df, "data.frame")
   expect_equal(nrow(my.df), 0L)
-  expect_equal(ncol(my.df), 0L)
+  expect_equal(ncol(my.df), 1L)
 
 })
 
@@ -247,7 +247,42 @@ test_that("object_mspct", {
   expect_silent(my.df <- join_mspct(my0.mspct, qty.out = "transmittance"))
   expect_is(my.df, "data.frame")
   expect_equal(nrow(my.df), 0L)
-  expect_equal(ncol(my.df), 0L)
+  expect_equal(ncol(my.df), 1L)
+
+})
+
+test_that("solute_mspct", {
+  my.mspct <- solute_mspct(list(water1 = water.spct, water2 = water.spct / 2))
+  expect_is(my.mspct, "solute_mspct")
+
+  expect_silent(my.df <- join_mspct(my.mspct))
+  expect_is(my.df, "data.frame")
+  expect_named(my.df, c("w.length", "water1", "water2"))
+  expect_equal(my.df[["w.length"]], my.mspct[["water1"]][["w.length"]])
+  expect_equal(my.df[["w.length"]], my.mspct[["water2"]][["w.length"]])
+  expect_equal(my.df[["water1"]], my.mspct[["water1"]][["K.mole"]])
+  expect_equal(my.df[["water1"]], my.mspct[["water1"]][["K.mole"]])
+  expect_equal(my.df[["water2"]], my.mspct[["water2"]][["K.mole"]])
+
+  # boundary cases
+
+  my1.mspct <- solute_mspct(list(h20 = water.spct))
+  expect_is(my1.mspct, "solute_mspct")
+
+  expect_silent(my.df <- join_mspct(my1.mspct))
+  expect_is(my.df, "data.frame")
+  expect_named(my.df, c("w.length", "h20"))
+  expect_equal(ncol(my.df), 2L)
+  expect_equal(my.df[["h20"]], my1.mspct[["h20"]][["K.mole"]])
+  expect_equal(my.df[["h20"]], water.spct[["K.mole"]])
+
+  my0.mspct <- solute_mspct()
+  expect_is(my0.mspct, "solute_mspct")
+
+  expect_silent(my.df <- join_mspct(my0.mspct))
+  expect_is(my.df, "data.frame")
+  expect_equal(nrow(my.df), 0L)
+  expect_equal(ncol(my.df), 1L)
 
 })
 
@@ -287,7 +322,7 @@ test_that("generic_mspct", {
   expect_silent(my.df <- join_mspct(my0.mspct, col.name = "s.data"))
   expect_is(my.df, "data.frame")
   expect_equal(nrow(my.df), 0L)
-  expect_equal(ncol(my.df), 0L)
+  expect_equal(ncol(my.df), 1L)
 
 })
 

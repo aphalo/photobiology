@@ -16,46 +16,62 @@ join_mspct(x, type, ...)
 
 \method{join_mspct}{default}(x, type = "full", ...)
 
-\method{join_mspct}{generic_mspct}(x, type = "full", col.name, ...)
+\method{join_mspct}{generic_mspct}(x, type = "full", col.name, validate.names = TRUE, ...)
 
-\method{join_mspct}{source_mspct}(x, type = "full", unit.out = "energy", ...)
+\method{join_mspct}{source_mspct}(x, type = "full", unit.out = "energy", validate.names = TRUE, ...)
 
-\method{join_mspct}{response_mspct}(x, type = "full", unit.out = "energy", ...)
+\method{join_mspct}{response_mspct}(x, type = "full", unit.out = "energy", validate.names = TRUE, ...)
 
-\method{join_mspct}{filter_mspct}(x, type = "full", qty.out = "transmittance", ...)
+\method{join_mspct}{filter_mspct}(
+  x,
+  type = "full",
+  qty.out = "transmittance",
+  validate.names = TRUE,
+  ...
+)
 
-\method{join_mspct}{reflector_mspct}(x, type = "full", ...)
+\method{join_mspct}{reflector_mspct}(x, type = "full", validate.names = TRUE, ...)
 
-\method{join_mspct}{object_mspct}(x, type = "full", qty.out, ...)
+\method{join_mspct}{object_mspct}(x, type = "full", qty.out, validate.names = TRUE, ...)
 
-\method{join_mspct}{solute_mspct}(x, type = "full", ...)
+\method{join_mspct}{solute_mspct}(x, type = "full", validate.names = TRUE, ...)
 }
 \arguments{
-\item{x}{A generic_mspct object, or an object of a class derived from
-generic_mspct.}
+\item{x}{generic_mspct object, or an object of a class derived from
+\code{generic_mspct}.}
 
-\item{type}{character Type of join: "left", "right", "inner" or "full"
-(default). See details for more information.}
+\item{type}{character Type of join: \code{"inner"} (default) or
+\code{"full"}. See details for more information.}
 
 \item{...}{ignored (possibly used by derived methods).}
 
 \item{col.name}{character, name of the column in the spectra to be preserved,
 in addition to "w.length".}
 
-\item{unit.out}{character Allowed values "energy", and "photon", or its alias
-"quantum".}
+\item{validate.names}{logical A flag to enable (default) or disable
+validation of column names with \code{\link[base]{make.names}}.}
 
-\item{qty.out}{character Allowed values "transmittance", and "absorbance".}
+\item{unit.out}{character Allowed values \code{"energy"}, and \code{"photon"}, or its alias
+\code{"quantum"}.}
+
+\item{qty.out}{character Allowed values \code{"transmittance"},
+\code{"absorptance"}, and \code{"absorbance"} and in the method for
+\code{object_spct}, also \code{"reflectance"} (.}
 }
 \value{
-An object of class dataframe, with the spectra joined by wave length,
-  with rows in addition sorted by wave length (variable \code{w.length}).
+A \code{\link[tibble]{tibble}} with the spectra joined by, possibly
+  interpolated, wavelength, with rows sorted by wavelength (variable
+  \code{w.length}) and data columns named according to the names of members
+  in \code{x}, possibly made unique and valid.
 }
 \description{
-Join all the spectra contained in a homogenous collection, returning a data
+Join all the spectra contained in a homogeneous collection, returning a data
 frame with spectral-data columns named according to the names of the spectra
-in the collection. By default a full join is done, filling the spectral
-data for missing wave lengths in individual spectra with \code{NA}.
+in the collection. By default a full join is done within the overlapping range
+of wavelengths, after interpolating the spectra to a shared set of wavelength
+values, and discarding data for wavelength not shared. Alternatively, filling
+the spectral data for wavelengths outside the overlapping range with with
+\code{NA} when data is not available.
 }
 \section{Methods (by class)}{
 \itemize{
@@ -77,8 +93,15 @@ data for missing wave lengths in individual spectra with \code{NA}.
 }}
 
 \note{
-Currently only generic_spct, source_mspct, response_mspct,
-  filter_mspct, reflector_mspct and object_mspct classes have this method
+Currently only \code{generic_spct}, \code{source_mspct},
+  \code{response_mspct}, \code{filter_mspct}, \code{reflector_mspct},
+  \code{object_mspct} and \code{solute_mspct} classes have this method
   implemented.
+}
+\examples{
+
+join_mspct(solute_mspct(list(water = water.spct, pha = phenylalanine.spct)),
+           type = "inner")
+
 }
 \concept{conversion of collections of spectra}

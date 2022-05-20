@@ -1,27 +1,42 @@
 #' Join all spectra in a collection
 #'
-#' Join all the spectra contained in a homogenous collection, returning a data
+#' Join all the spectra contained in a homogeneous collection, returning a data
 #' frame with spectral-data columns named according to the names of the spectra
-#' in the collection. By default a full join is done, filling the spectral
-#' data for missing wave lengths in individual spectra with \code{NA}.
+#' in the collection. By default a full join is done within the overlapping range
+#' of wavelengths, after interpolating the spectra to a shared set of wavelength
+#' values, and discarding data for wavelength not shared. Alternatively, filling
+#' the spectral data for wavelengths outside the overlapping range with with
+#' \code{NA} when data is not available.
 #'
-#' @param x A generic_mspct object, or an object of a class derived from
-#'   generic_mspct.
-#' @param unit.out character Allowed values "energy", and "photon", or its alias
-#'   "quantum".
-#' @param qty.out character Allowed values "transmittance", and "absorbance".
-#' @param type character Type of join: "left", "right", "inner" or "full"
-#'   (default). See details for more information.
+#' @param x generic_mspct object, or an object of a class derived from
+#'   \code{generic_mspct}.
+#' @param unit.out character Allowed values \code{"energy"}, and \code{"photon"}, or its alias
+#'   \code{"quantum"}.
+#' @param qty.out character Allowed values \code{"transmittance"},
+#'   \code{"absorptance"}, and \code{"absorbance"} and in the method for
+#'   \code{object_spct}, also \code{"reflectance"} (.
+#' @param type character Type of join: \code{"inner"} (default) or
+#'   \code{"full"}. See details for more information.
+#' @param validate.names logical A flag to enable (default) or disable
+#'   validation of column names with \code{\link[base]{make.names}}.
 #' @param ... ignored (possibly used by derived methods).
 #'
-#' @return An object of class dataframe, with the spectra joined by wave length,
-#'   with rows in addition sorted by wave length (variable \code{w.length}).
+#' @return A \code{data.frame} with the spectra joined by, possibly
+#'   interpolated, wavelength, with rows sorted by wavelength (variable
+#'   \code{w.length}) and data columns named according to the names of members
+#'   in \code{x}, possibly made unique and valid.
 #'
-#' @note Currently only generic_spct, source_mspct, response_mspct,
-#'   filter_mspct, reflector_mspct and object_mspct classes have this method
+#' @note Currently only \code{generic_spct}, \code{source_mspct},
+#'   \code{response_mspct}, \code{filter_mspct}, \code{reflector_mspct},
+#'   \code{object_mspct} and \code{solute_mspct} classes have this method
 #'   implemented.
 #'
 #' @export
+#'
+#' @examples
+#'
+#' join_mspct(solute_mspct(list(water = water.spct, pha = phenylalanine.spct)),
+#'            type = "inner")
 #'
 #' @family conversion of collections of spectra
 #'
@@ -32,8 +47,7 @@ join_mspct <- function(x, type, ...) UseMethod("join_mspct")
 #' @export
 #'
 join_mspct.default <- function(x, type = "full", ...) {
-  stop("'join_mspct()' is only implemented for collections of spectra, ",
-       "use 'plyr::join_all()' for lists of data frames.")
+  stop("'join_mspct()' is only implemented for some collections of spectra")
 }
 
 #' @describeIn join_mspct
@@ -45,30 +59,82 @@ join_mspct.default <- function(x, type = "full", ...) {
 #'
 join_mspct.generic_mspct <- function(x,
                                      type = "full",
-                                     col.name, ...) {
-  # if needed could be added as additional formal parameters
-  by <- "w.length"
-  match <- "first"
+                                     col.name,
+                                     validate.names = TRUE,
+                                     ...) {
+
+  col.exists <- function(spct, col.name) {
+    any(grepl(pattern = col.name, x = names(spct)))
+  }
 
   if (length(x) == 0L) {
-    return(data.frame())
+    return(data.frame("w.length" = numeric()))
   }
-  names <- names(x)
-  stopifnot(length(names) == length(x))
-  rmDerivedMspct(x)
-  col.selector <- c("w.length", col.name)
-  for (i in names) {
-    x[[i]] <- as.data.frame(x[[i]])[col.selector]
-#    x[[i]] <- plyr::rename(x[[i]], replace = c(parse(col.name) = i))) silently failing!!
-    col.names <- names(x[[i]])
-    names(x[[i]])[col.names == col.name] <- i
+
+  if (!all(sapply(x, col.exists, col.name = col.name))) {
+    stop("Variable '", col.name, "' not present in all spectra")
   }
+
+  if (validate.names) {
+    names(x) <- make.names(names(x), unique = TRUE)
+  }
+
+  spct.names <- names(x)
+
   if (length(x) == 1L) {
-    z <- as.data.frame(x[[i]])
+    z <- as.data.frame(x[[1]])[ , c("w.length", col.name)]
+    colnames(z)[2] <- spct.names
+    return(z)
   } else {
-    z <- plyr::join_all(dfs = x, by = by, type = type, match = match)
+    # we need to check consistency of walengths
+    wl.range <- c(photobiology::wl_range(x))
+    wl.stepsize <- photobiology::wl_stepsize(x)
+    wl.ranges.consistent <-
+      length(unique(wl.range[["min.wl"]])) == 1 &&
+      length(unique(wl.range[["max.wl"]])) == 1
+    wl.stepsizes.consistent <- length(unique(wl.stepsize[["min.step.wl"]])) == 1 &&
+      length(unique(wl.stepsize[["max.step.wl"]])) == 1
+
+    if (!wl.ranges.consistent || !wl.stepsizes.consistent) {
+      # overlapping range
+      wl.range.inner <- c(max(wl.range[["min.wl"]]),
+                          min(wl.range[["max.wl"]]))
+      # full range
+      wl.range.full <- c(min(wl.range[["min.wl"]]),
+                         max(wl.range[["max.wl"]]))
+      if (any(wl.range.inner != wl.range.full)) {
+        if (type == "inner") {
+          wl.range.out <- wl.range.inner
+          message("Trimming non-overlapping wavelengths")
+        } else if (type == "full") {
+          wl.range.out <- wl.range.inner
+          message("Filling non-overlapping wavelengths with NA")
+        }
+      }
+      wl.stepsize.out <- stats::median(wl.stepsize[["min.step.wl"]]) / 2
+      # we try to find a nearby "nice" stepsize
+      wl.stepsize.out <- ifelse(wl.stepsize.out >= 1,
+                                trunc(wl.stepsize.out),
+                                ifelse(wl.stepsize.out >= 0.25,
+                                       trunc(wl.stepsize.out * 4) / 4,
+                                       round(wl.stepsize.out, digits = 2)))
+      wl.out <- seq(from = wl.range.out[1],
+                    to = wl.range.out[2],
+                    by = wl.stepsize.out)
+      x <- photobiology::interpolate_mspct(x,
+                                           w.length.out = wl.out,
+                                           fill = NA_real_)
+      message("Spectra interpolated and/or trimmed as wavelengths differed.")
+    } else {
+      wl.out <- x[[1]][["w.length"]]
+    }
   }
-  dplyr::arrange(z, .data[["w.length"]])
+  rmDerivedMspct(x) # convert to list
+  z <- list(w.length = wl.out)
+  for (i in spct.names) {
+    z[[i]] <- x[[i]][[col.name]]
+  }
+  as.data.frame(z)
 }
 
 #' @describeIn join_mspct
@@ -78,39 +144,25 @@ join_mspct.generic_mspct <- function(x,
 join_mspct.source_mspct <- function(x,
                                     type = "full",
                                     unit.out = "energy",
+                                    validate.names = TRUE,
                                     ...) {
-  # if needed could be added as additional formal parameters
-  by <- "w.length"
-  match <- "first"
-
-  if (length(x) == 0L) {
-    return(data.frame())
-  }
-  names <- names(x)
-  stopifnot(length(names) == length(x))
-  if (unit.out == "energy") {
-    x <- q2e(x, action = "replace")
-    rmDerivedMspct(x)
-    for (i in names) {
-      x[[i]] <- as.data.frame(x[[i]])[c("w.length", "s.e.irrad")]
-      x[[i]] <- plyr::rename(x[[i]], c(s.e.irrad = i))
+  if (length(x)) {
+    if (unit.out == "energy") {
+      x <- q2e(x, action = "replace")
+      col.name <- "s.e.irrad"
+    } else if (unit.out %in% c("photon", "quantum")) {
+      x <- e2q(x, action = "replace")
+      col.name <- "s.q.irrad"
+    } else {
+      stop("Unit out '", unit.out, "' unknown")
     }
-  } else if (unit.out %in% c("photon", "quantum")) {
-    x <- e2q(x, action = "replace")
-    rmDerivedMspct(x)
-    for (i in names) {
-      x[[i]] <- as.data.frame(x[[i]])[c("w.length", "s.q.irrad")]
-      x[[i]] <- plyr::rename(x[[i]], c(s.q.irrad = i))
-    }
-  } else {
-    stop("Unit out '", unit.out, "' unknown")
   }
-  if (length(x) == 1L) {
-    z <- as.data.frame(x[[i]])
-  } else {
-    z <- plyr::join_all(dfs = x, by = by, type = type, match = match)
-  }
-  dplyr::arrange(z, .data[["w.length"]])
+  class(x) <- class(x)[-1L] # convert to generic_spct
+  join_mspct(x,
+             type = type,
+             col.name = col.name,
+             validate.names = validate.names,
+             ...)
 }
 
 #' @describeIn join_mspct
@@ -120,39 +172,25 @@ join_mspct.source_mspct <- function(x,
 join_mspct.response_mspct <- function(x,
                                       type = "full",
                                       unit.out = "energy",
+                                      validate.names = TRUE,
                                       ...) {
-  # if needed could be added as additional formal parameters
-  by <- "w.length"
-  match <- "first"
-
-  if (length(x) == 0L) {
-    return(data.frame())
-  }
-  names <- names(x)
-  stopifnot(length(names) == length(x))
-  if (unit.out == "energy") {
-    x <- q2e(x, action = "replace")
-    rmDerivedMspct(x)
-    for (i in names) {
-      x[[i]] <- as.data.frame(x[[i]])[c("w.length", "s.e.response")]
-      x[[i]] <- plyr::rename(x[[i]], c(s.e.response = i))
+  if (length(x)) {
+    if (unit.out == "energy") {
+      x <- q2e(x, action = "replace")
+      col.name <- "s.e.response"
+    } else if (unit.out %in% c("photon", "quantum")) {
+      x <- e2q(x, action = "replace")
+      col.name <- "s.q.response"
+    } else {
+      stop("Unit out '", unit.out, "' unknown")
     }
-  } else if (unit.out %in% c("photon", "quantum")) {
-    x <- e2q(x, action = "replace")
-    rmDerivedMspct(x)
-    for (i in names) {
-      x[[i]] <- as.data.frame(x[[i]])[c("w.length", "s.q.response")]
-      x[[i]] <- plyr::rename(x[[i]], c(s.q.response = i))
-    }
-  } else {
-    stop("Unit out '", unit.out, "' unknown")
   }
-  if (length(x) == 1L) {
-    z <- as.data.frame(x[[i]])
-  } else {
-    z <- plyr::join_all(dfs = x, by = by, type = type, match = match)
-  }
-  dplyr::arrange(z, .data[["w.length"]])
+  class(x) <- class(x)[-1L] # convert to generic_spct
+  join_mspct(x,
+             type = type,
+             col.name = col.name,
+             validate.names = validate.names,
+             ...)
 }
 
 #' @describeIn join_mspct
@@ -162,46 +200,28 @@ join_mspct.response_mspct <- function(x,
 join_mspct.filter_mspct <- function(x,
                                     type = "full",
                                     qty.out = "transmittance",
+                                    validate.names = TRUE,
                                     ...) {
-  # if needed could be added as additional formal parameters
-  by <- "w.length"
-  match <- "first"
-
-  if (length(x) == 0L) {
-    return(data.frame())
-  }
-  names <- names(x)
-  stopifnot(length(names) == length(x))
-  if (qty.out == "transmittance") {
-    x <- any2T(x, action = "replace")
-    rmDerivedMspct(x)
-    for (i in names) {
-      x[[i]] <- as.data.frame(x[[i]])[c("w.length", "Tfr")]
-      x[[i]] <- plyr::rename(x[[i]], c(Tfr = i))
+  if (length(x)) {
+    if (qty.out == "transmittance") {
+      x <- any2T(x, action = "replace")
+      col.name <- "Tfr"
+    } else if (qty.out == "absorbance") {
+      x <- any2A(x, action = "replace")
+      col.name <- "A"
+    } else if (qty.out == "absorptance") {
+      x <- any2Afr(x, action = "replace")
+      col.name <- "Afr"
+    } else {
+      stop("Unit out '", qty.out, "' unknown")
     }
-  } else if (qty.out == "absorbance") {
-    x <- any2A(x, action = "replace")
-    rmDerivedMspct(x)
-    for (i in names) {
-      x[[i]] <- as.data.frame(x[[i]])[c("w.length", "A")]
-      x[[i]] <- plyr::rename(x[[i]], c(A = i))
-    }
-  } else if (qty.out == "absorptance") {
-    x <- any2Afr(x, action = "replace")
-    rmDerivedMspct(x)
-    for (i in names) {
-      x[[i]] <- as.data.frame(x[[i]])[c("w.length", "Afr")]
-      x[[i]] <- plyr::rename(x[[i]], c(Afr = i))
-    }
-  } else {
-    stop("Unit out '", qty.out, "' unknown")
   }
-  if (length(x) == 1L) {
-    z <- as.data.frame(x[[i]])
-  } else {
-    z <- plyr::join_all(dfs = x, by = by, type = type, match = match)
-  }
-  dplyr::arrange(z, .data[["w.length"]])
+  class(x) <- class(x)[-1L] # convert to generic_spct
+  join_mspct(x,
+             type = type,
+             col.name = col.name,
+             validate.names = validate.names,
+             ...)
 }
 
 #' @describeIn join_mspct
@@ -210,27 +230,14 @@ join_mspct.filter_mspct <- function(x,
 #'
 join_mspct.reflector_mspct <- function(x,
                                        type = "full",
+                                       validate.names = TRUE,
                                        ...) {
-  # if needed could be added as additional formal parameters
-  by <- "w.length"
-  match <- "first"
-
-  if (length(x) == 0L) {
-    return(data.frame())
-  }
-  names <- names(x)
-  stopifnot(length(names) == length(x))
-  rmDerivedMspct(x)
-  for (i in names) {
-    x[[i]] <- as.data.frame(x[[i]])[c("w.length", "Rfr")]
-    x[[i]] <- plyr::rename(x[[i]], c(Rfr = i))
-  }
-  if (length(x) == 1L) {
-    z <- as.data.frame(x[[i]])
-  } else {
-    z <- plyr::join_all(dfs = x, by = by, type = type, match = match)
-  }
-  dplyr::arrange(z, .data[["w.length"]])
+  class(x) <- class(x)[-1L] # convert to generic_spct
+  join_mspct(x,
+             type = type,
+             col.name = "Rfr",
+             validate.names = validate.names,
+             ...)
 }
 
 #' @describeIn join_mspct
@@ -240,15 +247,37 @@ join_mspct.reflector_mspct <- function(x,
 join_mspct.object_mspct <- function(x,
                                     type = "full",
                                     qty.out,
+                                    validate.names = TRUE,
                                     ...) {
-  # # if needed could be added as additional formal parameters
-  # by <- "w.length"
-  # match <- "first"
   switch(qty.out,
          "transmittance" = join_mspct(as.filter_mspct(x), type = type, qty.out = qty.out, ...),
          "absorbance" = join_mspct(as.filter_mspct(x), type = type, qty.out = qty.out, ...),
          "absorbtance" = join_mspct(as.filter_mspct(x), type = type, qty.out = qty.out, ...),
          "reflectance" = join_mspct(as.reflector_mspct(x), type = type, ...),
          stop("'qty.out = ", qty.out, " not implemented.")
-           )
+  )
 }
+
+#' @describeIn join_mspct
+#'
+#' @export
+#'
+join_mspct.solute_mspct <- function(x,
+                                    type = "full",
+                                    validate.names = TRUE,
+                                    ...) {
+  # guess column name from 1st spectrum
+  if (length(x)) {
+    col.name <- intersect(c("K.mole", "K.mass"), names(x[[1]]))
+  } else {
+    col.name <- NA_character_
+  }
+
+  class(x) <- class(x)[-1L] # convert to generic_spct
+  join_mspct(x,
+             type = type,
+             col.name = col.name,
+             validate.names = validate.names,
+             ...)
+}
+
