@@ -138,9 +138,9 @@ print.generic_spct <- function(x, ..., n = NULL, width = NULL)
   }
   if (class_spct(x)[1] == "solute_spct") {
     if (exists("K.mole", where = x, inherits = FALSE)) {
-      cat("Molar ", getKType(x), " coefficient '", getTfrType(x), "'\n", sep = "")
+      cat("Molar ", getKType(x), " coefficient\n", sep = "")
     } else if (exists("K.mass", where = x, inherits = FALSE)){
-      cat("Mass ", getKType(x), " coefficient '", getTfrType(x), "'\n", sep = "")
+      cat("Mass ", getKType(x), " coefficient\n", sep = "")
     }
     properties <- solute_properties(x, return.null = TRUE)
     if (!is.null(properties)) {

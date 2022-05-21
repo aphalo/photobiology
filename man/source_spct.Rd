@@ -12,71 +12,71 @@
 \alias{solute_spct}
 \alias{object_spct}
 \alias{chroma_spct}
-\title{Spectral-object constructor}
+\title{Spectral-object constructors}
 \usage{
 source_spct(
   w.length = NULL,
   s.e.irrad = NULL,
   s.q.irrad = NULL,
+  ...,
   time.unit = c("second", "day", "exposure"),
   bswf.used = c("none", "unknown"),
   comment = NULL,
   strict.range = getOption("photobiology.strict.range", default = FALSE),
   multiple.wl = 1L,
-  idfactor = NULL,
-  ...
+  idfactor = NULL
 )
 
 calibration_spct(
   w.length = NULL,
   irrad.mult = NA_real_,
+  ...,
   comment = NULL,
   instr.desc = NA,
   multiple.wl = 1L,
-  idfactor = NULL,
-  ...
+  idfactor = NULL
 )
 
 raw_spct(
   w.length = NULL,
   counts = NA_real_,
+  ...,
   comment = NULL,
   instr.desc = NA,
   instr.settings = NA,
   multiple.wl = 1L,
-  idfactor = NULL,
-  ...
+  idfactor = NULL
 )
 
 cps_spct(
   w.length = NULL,
   cps = NA_real_,
+  ...,
   comment = NULL,
   instr.desc = NA,
   instr.settings = NA,
   multiple.wl = 1L,
-  idfactor = NULL,
-  ...
+  idfactor = NULL
 )
 
 generic_spct(
   w.length = NULL,
+  ...,
   comment = NULL,
   multiple.wl = 1L,
-  idfactor = NULL,
-  ...
+  idfactor = NULL
 )
 
 response_spct(
   w.length = NULL,
   s.e.response = NULL,
   s.q.response = NULL,
+  ...,
   time.unit = c("second", "day", "exposure"),
   response.type = c("response", "action"),
   comment = NULL,
   multiple.wl = 1L,
-  idfactor = NULL,
-  ...
+  idfactor = NULL
 )
 
 filter_spct(
@@ -85,36 +85,45 @@ filter_spct(
   Tpc = NULL,
   Afr = NULL,
   A = NULL,
+  ...,
   Tfr.type = c("total", "internal"),
+  Rfr.constant = NA_real_,
+  thickness = NA_real_,
+  attenuation.mode = NA,
   comment = NULL,
   strict.range = getOption("photobiology.strict.range", default = FALSE),
   multiple.wl = 1L,
-  idfactor = NULL,
-  ...
+  idfactor = NULL
 )
 
 reflector_spct(
   w.length = NULL,
   Rfr = NULL,
   Rpc = NULL,
+  ...,
   Rfr.type = c("total", "specular"),
   comment = NULL,
   strict.range = getOption("photobiology.strict.range", default = FALSE),
   multiple.wl = 1L,
-  idfactor = NULL,
-  ...
+  idfactor = NULL
 )
 
 solute_spct(
   w.length = NULL,
   K.mole = NULL,
   K.mass = NULL,
+  ...,
+  log.base = 10,
   K.type = c("attenuation", "absorption", "scattering"),
+  name = NA_character_,
+  mass = NA_character_,
+  formula = NULL,
+  structure = grDevices::as.raster(matrix()),
+  ID = NA_character_,
   comment = NULL,
   strict.range = getOption("photobiology.strict.range", default = FALSE),
   multiple.wl = 1L,
-  idfactor = NULL,
-  ...
+  idfactor = NULL
 )
 
 object_spct(
@@ -122,13 +131,13 @@ object_spct(
   Rfr = NULL,
   Tfr = NULL,
   Afr = NULL,
+  ...,
   Tfr.type = c("total", "internal"),
   Rfr.type = c("total", "specular"),
   comment = NULL,
   strict.range = getOption("photobiology.strict.range", default = FALSE),
   multiple.wl = 1L,
-  idfactor = NULL,
-  ...
+  idfactor = NULL
 )
 
 chroma_spct(
@@ -136,11 +145,11 @@ chroma_spct(
   x,
   y,
   z,
+  ...,
   comment = NULL,
   strict.range = getOption("photobiology.strict.range", default = FALSE),
   multiple.wl = 1L,
-  idfactor = NULL,
-  ...
+  idfactor = NULL
 )
 }
 \arguments{
@@ -151,6 +160,9 @@ nm-1] or [J d-1 m-2 nm-1]}
 
 \item{s.q.irrad}{numeric A vector with spectral photon irradiance in [mol s-1
 m-2 nm-1] or [mol d-1 m-2 nm-1].}
+
+\item{...}{other arguments passed to \code{tibble()} such as vectors or
+factors to be added as additional columns.}
 
 \item{time.unit}{character string indicating the time unit used for spectral
 irradiance or exposure ("second" , "day" or "exposure") or an object of
@@ -170,8 +182,6 @@ same value.}
 
 \item{idfactor}{character Name of factor distinguishing multiple spectra when
 stored logitudinally (required if mulitple.wl > 1).}
-
-\item{...}{other arguments passed to \code{tibble()}}
 
 \item{irrad.mult}{numeric vector with multipliers for each detector pixel.}
 
@@ -202,18 +212,42 @@ m-2 nm-1 or mol d-1 m-2 nm-1}
 \item{Tfr.type}{character string indicating whether transmittance
 and absorptance values are "total" or "internal" values}
 
+\item{Rfr.constant}{numeric The value of the reflection factor (/1).}
+
+\item{thickness}{numeric The thickness of the material.}
+
+\item{attenuation.mode}{character One of "reflection", "absorption" or
+"mixed".}
+
 \item{Rfr}{numeric vector with spectral reflectance as fraction of one}
 
 \item{Rpc}{numeric vector with spectral reflectance as percent values}
 
 \item{Rfr.type}{character A string, either "total" or "specular".}
 
-\item{K.mole}{numeric vector with spectral reflectance as fraction of one}
+\item{K.mole}{numeric vector with molar attenuation coefficient fraction
+[1 / m]}
 
-\item{K.mass}{numeric vector with spectral reflectance as percent values}
+\item{K.mass}{not implemented yet}
+
+\item{log.base}{numeric Normally one of e or 10. Data are stored always  on
+base 10 corresponding to decadal absorbance as used in chemistry.}
 
 \item{K.type}{character A string, either "attenuation", "absorption" or
 "scattering".}
+
+\item{name}{character The name of the substance. A named character
+vector, with member names such as "IUPAC" for the authority.}
+
+\item{mass}{numeric The molar mass in Dalton (Da = g/mol).}
+
+\item{formula}{character The molecular formula.}
+
+\item{structure}{raster A bitmap of the structure.}
+
+\item{ID}{character The name of the substance. A named character
+vector, with member names such as "ChemSpider" or "PubChen" for the
+authority.}
 
 \item{x, y, z}{numeric colour coordinates}
 }
@@ -233,12 +267,31 @@ The functions can be used to add only one spectral quantity to a
   same quantity expressed in different units. An actual parameter can be
   supplied to only one of these formal parameters in a given call to any of
   these functions.
-
-"internal" transmittance is defined as the transmittance of the
-  material body itself, while "total" transmittance includes the effects of
-  surface reflectance on the amount of light transmitted.
 }
+\section{Warning for filter_spct!}{
+ Not entering metadata when creating an
+  object will limit the available operations! While "internal" transmittance
+  is defined as the transmittance of the material body itself, "total"
+  transmittance includes the effects of surface reflectance on the amount of
+  light transmitted. For non-diffusing materials like glass an approximate
+  \code{Rfr.constant} value can be used to interconvert "total" and
+  "internal" transmittance values. Use \code{NA} if not known, or not
+  applicable, e.g., for materials subject to internal scattering.
+}
+
+\section{Warning for solute_spct!}{
+ You should always set the base for
+  logarithms to match that on which the data are expressed. Failing to do
+  this will result in bad data and all further computation will be wrong. Not
+  entering metadata when creating an object will limit the available
+  operations! Mass should be indicated in daltons or g / mol.
+}
+
 \seealso{
+\code{\link{setFilterProperties}}
+
+\code{\link{setSoluteProperties}}
+
 Other constructors of spectral objects: 
 \code{\link{as.calibration_spct}()},
 \code{\link{as.chroma_spct}()},

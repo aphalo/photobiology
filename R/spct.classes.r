@@ -1026,8 +1026,13 @@ setCpsSpct <-
 #'   error instead of a warning.
 #' @export
 #'
+#' @section Warning!: Not entering metadata when creating an object will limit the available
+#'    operations!
 #'
-#' @note For non-diffusing materials like glass an approximate \code{Rfr.constant}
+#' @note "internal" transmittance is defined as the transmittance of the
+#'   material body itself, while "total" transmittance includes the effects of
+#'   surface reflectance on the amount of light transmitted.
+#'   For non-diffusing materials like glass an approximate \code{Rfr.constant}
 #'   value can be used to interconvert "total" and "internal" transmittance
 #'   values. Use \code{NA} if not known, or not applicable, e.g., for materials
 #'   subject to internal scattering.
@@ -1037,7 +1042,7 @@ setFilterSpct <-
            Tfr.type = c("total", "internal"),
            Rfr.constant = NA_real_,
            thickness = NA_real_,
-           attenuation.mode = NA,
+           attenuation.mode = NA_character_,
            strict.range = getOption("photobiology.strict.range", default = FALSE),
            multiple.wl = 1L,
            idfactor = NULL) {
@@ -1070,8 +1075,15 @@ setFilterSpct <-
 #'
 #' @param K.type character A string, either "attenuation", "absorption" or
 #'   "scattering".
-#' @param strict.range logical Flag indicating whether off-range values result in an
-#'   error instead of a warning.
+#' @param mass numeric The mass in Dalton (Da = g/mol).
+#' @param formula character The molecular formula.
+#' @param structure raster A bitmap of the structure.
+#' @param name character The name of the substance. A named character
+#'     vector, with member names such as "IUPAC" for the authority.
+#' @param ID character The name of the substance. A named character
+#'     vector, with member names such as "ChemSpider" or "PubChen" for the
+#'     authority.
+#'
 #' @export
 #'
 #'
@@ -1083,6 +1095,11 @@ setFilterSpct <-
 setSoluteSpct <-
   function(x,
            K.type = c("attenuation", "absorption", "scattering"),
+           name = NA_character_,
+           mass = NA_character_,
+           formula = NA_character_,
+           structure = grDevices::as.raster(matrix()),
+           ID = NA_character_,
            strict.range = getOption("photobiology.strict.range", default = FALSE),
            multiple.wl = 1L,
            idfactor = NULL) {
@@ -1099,6 +1116,12 @@ setSoluteSpct <-
     setGenericSpct(x, multiple.wl = multiple.wl, idfactor = idfactor)
     class(x) <- c("solute_spct", class(x))
     setKType(x, K.type[1])
+    setSoluteProperties(x,
+                        pass.null = FALSE,
+                        mass = mass,
+                        formula = formula,
+                        structure = structure,
+                        name = name)
     x <- check_spct(x, strict.range = strict.range)
     if (is.name(name)) {
       name <- as.character(name)
@@ -2910,7 +2933,7 @@ setSoluteProperties <- function(x,
                                 structure = grDevices::as.raster(matrix()),
                                 name = NA_character_,
                                 ID = NA_character_) {
-  name <- substitute(x)
+  obj.name <- substitute(x)
   if (is.solute_spct(x)) {
     if (!(pass.null && is.null(solute.properties))) {
       if (is.null(solute.properties)) {
@@ -2956,9 +2979,9 @@ setSoluteProperties <- function(x,
       }
     }
     attr(x, "solute.properties") <- solute.properties
-    if (is.name(name)) {
-      name <- as.character(name)
-      assign(name, x, parent.frame(), inherits = TRUE)
+    if (is.name(obj.name)) {
+      obj.name <- as.character(obj.name)
+      assign(obj.name, x, parent.frame(), inherits = TRUE)
     }
   } else {
     warning("'setSoluteProperties()' not applicable to objects of class ",

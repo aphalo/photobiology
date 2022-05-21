@@ -2,7 +2,7 @@
 
 # Constructors ------------------------------------------------------------
 
-#' Spectral-object constructor
+#' Spectral-object constructors
 #'
 #' These functions can be used to create spectral objects derived from
 #' \code{generic_spct}. They take as arguments numeric vectors for the data
@@ -26,7 +26,8 @@
 #'   same value.
 #' @param idfactor character Name of factor distinguishing multiple spectra when
 #'   stored logitudinally (required if mulitple.wl > 1).
-#' @param ... other arguments passed to \code{tibble()}
+#' @param ... other arguments passed to \code{tibble()} such as vectors or
+#'   factors to be added as additional columns.
 #'
 #' @return A object of class generic_spct or a class derived from it, depending
 #'   on the function used. In other words an object of a class with the same
@@ -47,13 +48,13 @@
 source_spct <- function(w.length = NULL,
                         s.e.irrad = NULL,
                         s.q.irrad = NULL,
+                        ...,
                         time.unit = c("second", "day", "exposure"),
                         bswf.used = c("none", "unknown"),
                         comment = NULL,
                         strict.range = getOption("photobiology.strict.range", default = FALSE),
                         multiple.wl = 1L,
-                        idfactor = NULL,
-                        ...) {
+                        idfactor = NULL) {
   if (length(w.length) == 0) {
     z <- tibble::tibble(w.length = numeric(), s.e.irrad = numeric(), ...)
   } else if (is.null(s.q.irrad) && (is.numeric(s.e.irrad))) {
@@ -84,11 +85,11 @@ source_spct <- function(w.length = NULL,
 #'
 calibration_spct <- function(w.length = NULL,
                              irrad.mult = NA_real_,
+                             ...,
                              comment = NULL,
                              instr.desc = NA,
                              multiple.wl = 1L,
-                             idfactor = NULL,
-                             ...) {
+                             idfactor = NULL) {
   if (length(w.length) == 0) {
     z <- tibble::tibble(w.length = numeric(), irrad.mult = numeric(), ...)
   } else {
@@ -114,12 +115,12 @@ calibration_spct <- function(w.length = NULL,
 #'
 raw_spct <- function(w.length = NULL,
                      counts = NA_real_,
+                     ...,
                      comment = NULL,
                      instr.desc = NA,
                      instr.settings = NA,
                      multiple.wl = 1L,
-                     idfactor = NULL,
-                     ...) {
+                     idfactor = NULL) {
   if (length(w.length) == 0) {
     z <- tibble::tibble(w.length = numeric(), counts = numeric(), ...)
   } else {
@@ -144,12 +145,12 @@ raw_spct <- function(w.length = NULL,
 #'
 cps_spct <- function(w.length = NULL,
                      cps = NA_real_,
+                     ...,
                      comment = NULL,
                      instr.desc = NA,
                      instr.settings = NA,
                      multiple.wl = 1L,
-                     idfactor = NULL,
-                     ...) {
+                     idfactor = NULL) {
   if (any(grepl("^cps", names(list(...)))) && is.na(cps)) {
     if (length(w.length) == 0) {
       z <- tibble::tibble(w.length = numeric(), ...)
@@ -179,10 +180,10 @@ cps_spct <- function(w.length = NULL,
 #' @export
 #'
 generic_spct <- function(w.length = NULL,
+                         ...,
                          comment = NULL,
                          multiple.wl = 1L,
-                         idfactor = NULL,
-                         ...) {
+                         idfactor = NULL) {
   if (length(w.length) == 0) {
     z <- tibble::tibble(w.length = numeric(), ...)
   } else {
@@ -210,12 +211,12 @@ generic_spct <- function(w.length = NULL,
 response_spct <- function(w.length = NULL,
                           s.e.response = NULL,
                           s.q.response = NULL,
+                          ...,
                           time.unit = c("second", "day", "exposure"),
                           response.type = c("response", "action"),
                           comment = NULL,
                           multiple.wl = 1L,
-                          idfactor = NULL,
-                          ...) {
+                          idfactor = NULL) {
   if (length(w.length) == 0) {
     z <- tibble::tibble(w.length = numeric(), s.e.response = numeric(), ...)
   } else if (is.null(s.q.response) && (is.numeric(s.e.response))) {
@@ -245,10 +246,21 @@ response_spct <- function(w.length = NULL,
 #' @param A   numeric vector of absorbance values (log10 based a.u.)
 #' @param Tfr.type character string indicating whether transmittance
 #'   and absorptance values are "total" or "internal" values
+#' @param Rfr.constant numeric The value of the reflection factor (/1).
+#' @param thickness numeric The thickness of the material.
+#' @param attenuation.mode character One of "reflection", "absorption" or
+#'   "mixed".
 #'
-#' @note "internal" transmittance is defined as the transmittance of the
-#'   material body itself, while "total" transmittance includes the effects of
-#'   surface reflectance on the amount of light transmitted.
+#' @section Warning for filter_spct!: Not entering metadata when creating an
+#'   object will limit the available operations! While "internal" transmittance
+#'   is defined as the transmittance of the material body itself, "total"
+#'   transmittance includes the effects of surface reflectance on the amount of
+#'   light transmitted. For non-diffusing materials like glass an approximate
+#'   \code{Rfr.constant} value can be used to interconvert "total" and
+#'   "internal" transmittance values. Use \code{NA} if not known, or not
+#'   applicable, e.g., for materials subject to internal scattering.
+#'
+#' @seealso \code{\link{setFilterProperties}}
 #'
 #' @export
 #'
@@ -257,12 +269,15 @@ filter_spct <- function(w.length = NULL,
                         Tpc = NULL,
                         Afr = NULL,
                         A = NULL,
+                        ...,
                         Tfr.type = c("total", "internal"),
+                        Rfr.constant = NA_real_,
+                        thickness = NA_real_,
+                        attenuation.mode = NA,
                         comment = NULL,
                         strict.range = getOption("photobiology.strict.range", default = FALSE),
                         multiple.wl = 1L,
-                        idfactor = NULL,
-                        ...) {
+                        idfactor = NULL) {
   if (length(w.length) == 0) {
     z <- tibble::tibble(w.length = numeric(), Tfr = numeric())
   } else if (is.null(Tpc) && is.null(A) && is.null(Afr) && is.numeric(Tfr)) {
@@ -282,6 +297,9 @@ filter_spct <- function(w.length = NULL,
   }
   setFilterSpct(x = z,
                 Tfr.type = Tfr.type,
+                Rfr.constant = Rfr.constant,
+                thickness = thickness,
+                attenuation.mode = attenuation.mode,
                 strict.range = strict.range,
                 multiple.wl = multiple.wl,
                 idfactor = idfactor)
@@ -297,14 +315,14 @@ filter_spct <- function(w.length = NULL,
 #' @export
 #'
 reflector_spct <- function(w.length = NULL,
-                           Rfr=NULL,
-                           Rpc=NULL,
-                           Rfr.type=c("total", "specular"),
-                           comment=NULL,
+                           Rfr = NULL,
+                           Rpc = NULL,
+                           ...,
+                           Rfr.type = c("total", "specular"),
+                           comment = NULL,
                            strict.range = getOption("photobiology.strict.range", default = FALSE),
                            multiple.wl = 1L,
-                           idfactor = NULL,
-                           ...) {
+                           idfactor = NULL) {
   if (length(w.length) == 0) {
     z <- tibble::tibble(w.length = numeric(), Rfr = numeric(), ...)
   } else if (is.null(Rpc) && is.numeric(Rfr)) {
@@ -328,27 +346,59 @@ reflector_spct <- function(w.length = NULL,
 
 #' @rdname source_spct
 #'
-#' @param K.mole numeric vector with spectral reflectance as fraction of one
-#' @param K.mass numeric vector with spectral reflectance as percent values
+#' @param K.mole numeric vector with molar attenuation coefficient fraction
+#'    [1 / m]
+#' @param K.mass not implemented yet
 #' @param K.type character A string, either "attenuation", "absorption" or
 #'   "scattering".
+#' @param mass numeric The molar mass in Dalton (Da = g/mol).
+#' @param formula character The molecular formula.
+#' @param structure raster A bitmap of the structure.
+#' @param name character The name of the substance. A named character
+#'     vector, with member names such as "IUPAC" for the authority.
+#' @param ID character The name of the substance. A named character
+#'     vector, with member names such as "ChemSpider" or "PubChen" for the
+#'     authority.
+#' @param log.base numeric Normally one of e or 10. Data are stored always  on
+#'    base 10 corresponding to decadal absorbance as used in chemistry.
+#'
+#' @section Warning for solute_spct!: You should always set the base for
+#'   logarithms to match that on which the data are expressed. Failing to do
+#'   this will result in bad data and all further computation will be wrong. Not
+#'   entering metadata when creating an object will limit the available
+#'   operations! Mass should be indicated in daltons or g / mol.
+#'
+#' @seealso \code{\link{setSoluteProperties}}
 #'
 #' @export
 #'
 solute_spct <- function(w.length = NULL,
                         K.mole = NULL,
                         K.mass = NULL,
+                        ...,
+                        log.base = 10,
                         K.type = c("attenuation", "absorption", "scattering"),
+                        name = NA_character_,
+                        mass = NA_character_,
+                        formula = NULL,
+                        structure = grDevices::as.raster(matrix()),
+                        ID = NA_character_,
                         comment = NULL,
                         strict.range = getOption("photobiology.strict.range", default = FALSE),
                         multiple.wl = 1L,
-                        idfactor = NULL,
-                        ...) {
+                        idfactor = NULL) {
   if (length(w.length) == 0) {
     z <- tibble::tibble(w.length = numeric(), K.mole = numeric(), ...)
   } else if (is.null(K.mass) && is.numeric(K.mole)) {
+    if (log.base != 10) {
+      K.mole <- log10(K.mole^log.base)
+    }
     z <- tibble::tibble(w.length, K.mole, ...)
   } else if (is.null(K.mole) && is.numeric(K.mass)) {
+    stop("Support for 'K.mass' not yet implemented.")
+    if (log.base != 10) {
+      K.mass <- log10(K.mass^log.base)
+    }
     z <- tibble::tibble(w.length, K.mass, ...)
   } else {
     warning("Only one of K.mole, or K.mass should be different from NULL.")
@@ -359,6 +409,11 @@ solute_spct <- function(w.length = NULL,
   }
   setSoluteSpct(x = z,
                 K.type = K.type,
+                name = name,
+                mass = mass,
+                formula = formula,
+                structure = structure,
+                ID = ID,
                 strict.range = strict.range,
                 multiple.wl = multiple.wl,
                 idfactor = idfactor)
@@ -373,13 +428,13 @@ object_spct <- function(w.length = NULL,
                         Rfr = NULL,
                         Tfr = NULL,
                         Afr = NULL,
+                        ...,
                         Tfr.type = c("total", "internal"),
                         Rfr.type = c("total", "specular"),
                         comment = NULL,
                         strict.range = getOption("photobiology.strict.range", default = FALSE),
                         multiple.wl = 1L,
-                        idfactor = NULL,
-                        ...) {
+                        idfactor = NULL) {
   if (length(w.length) == 0) {
     z <- tibble::tibble(w.length = numeric(),
                         Rfr = numeric(), Tfr = numeric(), ...)
@@ -410,11 +465,11 @@ chroma_spct <- function(w.length=NULL,
                         x,
                         y,
                         z,
-                        comment=NULL,
+                        ...,
+                        comment = NULL,
                         strict.range = getOption("photobiology.strict.range", default = FALSE),
                         multiple.wl = 1L,
-                        idfactor = NULL,
-                        ...) {
+                        idfactor = NULL) {
   if (length(w.length) == 0) {
     z <- tibble::tibble(w.length = numeric(),
                         x = numeric(), y = numeric(), z = numeric(), ...)

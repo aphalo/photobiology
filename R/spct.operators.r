@@ -379,7 +379,7 @@ apply_oper <- function(e1, e2, oper) {
     } else if (class2 == "solute_spct") {
       z <- oper_spectra(e1[["w.length"]], e2[["w.length"]],
                         e1[[.name.solute.qty]], e2[[.name.solute.qty]],
-                        bin.oper=oper, trim="intersection")
+                        bin.oper = oper, trim = "intersection")
       names(z)[2] <- .name.solute.qty
       setSoluteSpct(z, strict.range = getOption("photobiology.strict.range",
                                                 default = FALSE))

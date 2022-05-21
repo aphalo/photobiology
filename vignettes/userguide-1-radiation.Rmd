@@ -58,6 +58,8 @@ Data for several spectra are included for use in examples and vignettes, and in 
 | `Ler_leaf_trns.spct` | `filter_spct` | fraction | Arabidopsis leaf (T total) |
 | `Ler_leaf_trns_i.spct` | `filter_spct` | fraction | Arabidopsis leaf (T internal) |
 | `Ler_leaf_rflt.spct` | `reflector_spct` | fraction | Arabidopsis leaf (R total) |
+| `water.spct` | `solute_spct` | $m^{-1}$ | pure water molar att. coef. |
+| `phenylalanine` | `solute_spct` | $m^{-1}$ | phenylalanine molar att. coef. |
 | `photodiode.spct` | `response_spct` |  $A / W$  | typical Si photodiode |
 | `ccd.spct` | `response_spct` |  $A / W$ | typical CCD array |
 | `white_led.raw_spct` | `raw_spct` | counts | example raw detector counts data |
@@ -173,15 +175,15 @@ remain valid.
 | `cps_spct`          | `w.length`, `cps`          | `instr.desc`, `instr.settings`, `linearized`        |
 | `source_spct`       | `w.length`, `s.e.irrad`    | `instr.desc`, `instr.settings`, `time.unit`, `bswf` |
 |                     | `w.length`, `s.q.irrad`    | `time.unit`, `bswf`                                 |
-| `filter_spct`       | `w.length`, `Tfr`          | `Tfr.type`, `filterProperties`                      |
-|                     | `w.length`, `A`            | `Tfr.type`, `filterProperties`                      |
+| `filter_spct`       | `w.length`, `Tfr`          | `Tfr.type`, `filter.properties`                     |
+|                     | `w.length`, `A`            | `Tfr.type`, `filter.roperties`                      |
 | `ref lector_spct`   | `w.length`, `Rfr`          | `Rfr.type`                                          |
 | `object_spct`       | `w.length`, `Tfr`, `Rfr`   | `Tfr.type`, `Rfr.type`                              |
 | `re sponse_spct`    | `w.length`, `s.e.response` | `time.unit`                                         |
 |                     | `w.length`, `s.q.response` | `time.unit`                                         |
 | `chroma_spct`       | `w.length`, `x`, `y`, `z`  |                                                     |
-| `solute_spct`       | `w.length`, `K.mole`       | `K.type`                                            |
-|                     | `w.length`, `K.mass`       | `K.type`                                            |
+| `solute_spct`       | `w.length`, `K.mole`       | `K.type`, `solute,prperties`                        |
+|                     | `w.length`, `K.mass`       | `K.type`, `solute,prperties`                        |
 
 ------------------------------------------------------------------------
 
@@ -219,9 +221,9 @@ collections.
 
 A key assumption of the package is that wavelengths are always expressed
 in manometers ($1~\mathrm{nm} = 1 \cdot 10^{-9}\,\mathrm{m}$). If the
-data to be analysed use different units for wavelengths, e.g. in Ångstrom
+data to be analysed use different units for wavelengths, e.g. Ångstrom
 ($1~\textrm{Å} = 1 \cdot 10^{-10}\,\mathrm{m}$), the values need to be
-re-scaled before creating objects of the spectral classes. The same
+re-expressed before creating objects of the spectral classes. The same
 applies to all spectral quantities, as there is an expectation in every
 case, of using base SI units for expression. Table 2 lists the units of
 expression for the different variables and the metadata attributes that
@@ -267,12 +269,9 @@ not the character strings.
 | s.q.response                | $\mathit{x}\,mol^{-1}\,nm^{-1}$         | time.unit = "exposure" |
 | s.q.response                | varies                                  | time.unit = *duration* |
 | x, y, z                     | [0,1]                                   |                        |
-| K.mole                      |                                         | K.type = "attenuation" |
-| K.mole                      |                                         | K.type = "absorption"  |
-| K.mole                      |                                         | K.type = "scattering"  |
-| K.mass                      |                                         | K.type = "attenuation" |
-| K.mass                      |                                         | K.type = "absorption"  |
-| K.mass                      |                                         | K.type = "scattering"  |
+| K.mole                      | $m^{-1}, \log_{10}$ based               | K.type = "attenuation" |
+| K.mole                      | $m^{-1}, \log_{10}$ based               | K.type = "absorption"  |
+| K.mole                      | $m^{-1}, \log_{10}$ based               | K.type = "scattering"  |
 | **B: converted**            |                                         |                        |
 | wl $\to$ w.length           | nm                                      |                        |
 | wavelength $\to$ w.length   | nm                                      |                        |
@@ -281,6 +280,9 @@ not the character strings.
 | Rpc $\to$ Rfr               | [0,100]                                 | Rfr.type = "total"     |
 | Rpc $\to$ Rfr               | [0,100]                                 | Rfr.type = "specular"  |
 | counts.per.second $\to$ cps | $n\,s^{-1}$                             |                        |
+| K.mole                      | $m^{-1}, \log_{e}$ based                | K.type = "attenuation" |
+| K.mole                      | $m^{-1}, \log_{e}$ based                | K.type = "absorption"  |
+| K.mole                      | $m^{-1}, \log_{e}$ based                | K.type = "scattering"  |
 
 ------------------------------------------------------------------------
 
@@ -298,12 +300,25 @@ The default time unit used is *second*, but *minute*, *hour*, *day* and
 `"day"`, or `"exposure"`---The meaning of `"exposure"` is the total
 exposure time, in other words, fluence instead of irradiance---to the
 constructor `source_spct()`. In addition to these character constants
-objects of class `lubridate:duration` are also accepted.
+objects of class `lubridate:duration` are also accepted. In other words
+irradiance is a flux rate while exposure is a flux, as both are expressed
+per unit of illuminated area.
+
+In the case of spectra of the molar attenuation coefficient we use 
+$\log_{10}$ as a base for the stored values but the constructor accepts
+data expressed in other log bases. The expected units are always in
+metres ($m^{-1}$) rather than the frequently used centimetres ($cm^{-1}$).
+
+Transmittance, reflectance and absorptance are stored as fractions of one.
+The constructors also accept these quantities expressed as percentages,
+and convert them.
 
 Most attributes are set when a spectral object is created, either using
 default values or with values supplied as arguments to the constructor.
-However, methods for querying and setting these attributes are also
-available.
+In many cases the default is `NA` used to indicate missing information.
+
+Methods for querying and setting these attributes in already constructed
+objects are also available.
 
 ------------------------------------------------------------------------
 
@@ -317,7 +332,7 @@ and the values returned by most functions wrong, without warning. Errors
 in some cases will be triggered at the time of object creation as the
 data input to constructors is tested to be within the expected range of
 values, which in the case of some quantities frequently allows detection
-of mistakes in the use unit scaling factors.\_
+of mistakes in the use unit scaling factors.
 
 ------------------------------------------------------------------------
 
@@ -357,6 +372,7 @@ function name, defined as a *synonym* for `is.generic_spct`:
 is.any_spct(sun.spct)
 is.generic_spct(sun.spct)
 is.source_spct(sun.spct)
+is.data.frame(sun.spct)
 ```
 
 In addition function `class_spct()` returns directly the
@@ -396,7 +412,11 @@ class(my.df)
 my.spct
 ```
 
-We can make a \`generic_spct' copy of any spectrum object.
+We can copy and convert any spectrum object into any of its base clases, such as
+`generic_spct` or `data.frame`. This can result in the immediate and surely in 
+the delayed loss of metadata when modified. In addition, objects _downgraded_ 
+to a base class support fewer operations and those still available may
+behave differently.
 
 ```{r, construction-2}
 my.g.spct <- as.generic_spct(my.spct)
@@ -443,7 +463,7 @@ source_spct(w.length = 300:305, s.e.irrad = -1)
 source_spct(w.length = 300:305, s.e.irrad = -1, strict.range = NULL)
 ```
 
-Finally argument `comment` can be used to add a comment to the data at
+Argument `comment` can be used to add a comment to the data at
 the time of construction.
 
 ```{r, construction-8}
@@ -451,6 +471,9 @@ my.cm.spct <- source_spct(w.length = 300:305, s.e.irrad = 1,
                           comment = "This is a comment")
 comment(my.cm.spct)
 ```
+The constructors treat unrecognized named arguments as data to create aditional 
+columns in the spectral objects.
+
 
 ### Metadata attributes
 

@@ -6,7 +6,7 @@ all_spct_attr.ls <-
     private = c("spct.version",
                 "spct.tags",
                 "na.action"),
-    fragile = c("filter.properties"),
+    fragile = c("filter.properties", "solute.properties"),
     generic_spct = c("comment",
                      "instr.desc",
                      "instr.settings",
@@ -293,9 +293,9 @@ merge_attributes.generic_spct <- function(x, y, z,
       attr(z, w) <- att.y
     } else if (length(att.y) == 0L) {
       attr(z, w) <- att.x
-    } else if (any(is.na(att.x)) || any(is.na(att.y)) ||
+    } else if (# any(is.na(att.x)) || any(is.na(att.y)) ||
                class(att.x)[1] != class(att.y)[1] ||
-               length(att.x) != length(att.y) ||
+#               length(att.x) != length(att.y) ||
                xor(is.atomic(att.x), is.atomic(att.y))) {
       attr(z, w) <- ifelse(w %in% c("comment", "time.unit"), NA_character_, NA)
     } else {
