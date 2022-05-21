@@ -345,7 +345,7 @@ solute_spct <- function(w.length = NULL,
                         idfactor = NULL,
                         ...) {
   if (length(w.length) == 0) {
-    z <- tibble::tibble(w.length = numeric(), Rfr = numeric(), ...)
+    z <- tibble::tibble(w.length = numeric(), K.mole = numeric(), ...)
   } else if (is.null(K.mass) && is.numeric(K.mole)) {
     z <- tibble::tibble(w.length, K.mole, ...)
   } else if (is.null(K.mole) && is.numeric(K.mass)) {

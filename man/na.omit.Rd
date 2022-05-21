@@ -19,6 +19,7 @@
 \alias{na.exclude.filter_spct}
 \alias{na.exclude.reflector_spct}
 \alias{na.exclude.object_spct}
+\alias{na.exclude.solute_spct}
 \alias{na.exclude.cps_spct}
 \alias{na.exclude.raw_spct}
 \alias{na.exclude.chroma_spct}
@@ -58,6 +59,8 @@
 \method{na.exclude}{reflector_spct}(object, na.action = "exclude", fill = NULL, ...)
 
 \method{na.exclude}{object_spct}(object, na.action = "exclude", fill = NULL, ...)
+
+\method{na.exclude}{solute_spct}(object, na.action = "exclude", fill = NULL, ...)
 
 \method{na.exclude}{cps_spct}(object, na.action = "exclude", fill = NULL, ...)
 

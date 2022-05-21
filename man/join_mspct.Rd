@@ -62,7 +62,7 @@ validation of column names with \code{\link[base]{make.names}}.}
 A \code{data.frame} with the spectra joined by, possibly
   interpolated, wavelength, with rows sorted by wavelength (variable
   \code{w.length}) and data columns named according to the names of members
-  in \code{x}, possibly made unique and valid.
+  in \code{x}, by default made unique and valid.
 }
 \description{
 Join all the spectra contained in a homogeneous collection, returning a data
@@ -99,12 +99,9 @@ Currently only \code{generic_spct}, \code{source_mspct},
   implemented.
 }
 \examples{
-
-join_mspct(solute_mspct(list(water = water.spct, pha = phenylalanine.spct)),
-           type = "inner")
-
-join_mspct(solute_mspct(list(water = water.spct, pha = phenylalanine.spct)),
-           type = "full")
+my.mspct <- solute_mspct(list(water = water.spct, pha = phenylalanine.spct))
+join_mspct(my.mspct, type = "inner")
+join_mspct(my.mspct, type = "full")
 
 }
 \concept{conversion of collections of spectra}
