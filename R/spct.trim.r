@@ -232,6 +232,9 @@ trim_mspct <- function(mspct,
                        verbose = getOption("photobiology.verbose"),
                        .parallel = FALSE,
                        .paropts = NULL) {
+
+  if (!length(mspct)) return(mspct) # class of x in no case changes
+
   name <- substitute(mspct)
 
   z <- msmsply(mspct = mspct,
@@ -388,6 +391,9 @@ trim_wl.generic_mspct <- function(x,
                                   fill = NULL, ...,
                                   .parallel = FALSE,
                                   .paropts = NULL) {
+
+  if (!length(x)) return(x) # class of x in no case changes
+
   if (is.null(range)) {
     return(x)
   }
@@ -440,6 +446,9 @@ trim_wl.list <- function(x,
                          trim = getOption("photobiology.waveband.trim",
                                           default = TRUE),
                          ...) {
+
+  if (!length(x)) return(x) # class of x in no case changes
+
   stopifnot(all(sapply(x, is.waveband)))
   if (is.null(range)) {
     return(x)
@@ -519,6 +528,7 @@ clip_wl.generic_spct <- function(x, range = NULL, ...) {
 #' @export
 #'
 clip_wl.generic_mspct <- function(x, range = NULL, ...) {
+  if (!length(x)) return(x) # class of x in no case changes
   msmsply(mspct = x,
           .fun = clip_wl,
           range = range)
@@ -542,6 +552,9 @@ clip_wl.waveband <- function(x, range = NULL, ...) {
 #' @export
 #'
 clip_wl.list <- function(x, range = NULL, ...) {
+
+  if (!length(x)) return(x) # class of x in no case changes
+
   stopifnot(all(sapply(x, is.waveband)))
   if (is.null(range)) {
     return(x)

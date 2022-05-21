@@ -246,6 +246,9 @@ fshift.response_mspct <-
            ...,
            .parallel = FALSE,
            .paropts = NULL) {
+
+    if (!length(x)) return(x) # class of x in no case changes
+
     msmsply(x,
             fshift,
             range = range,
@@ -269,6 +272,9 @@ fshift.filter_mspct <-
            ...,
            .parallel = FALSE,
            .paropts = NULL) {
+
+    if (!length(x)) return(x)
+
     msmsply(x,
             fshift,
             range = range,
@@ -291,6 +297,9 @@ fshift.reflector_mspct <-
            ...,
            .parallel = FALSE,
            .paropts = NULL) {
+
+    if (!length(x)) return(x)
+
     msmsply(x,
             fshift,
             range = range,
@@ -312,6 +321,9 @@ fshift.raw_mspct <-
            ...,
            .parallel = FALSE,
            .paropts = NULL) {
+
+    if (!length(x)) return(x)
+
     msmsply(x,
             fshift,
             range = range,
@@ -332,6 +344,9 @@ fshift.cps_mspct <-
            ...,
            .parallel = FALSE,
            .paropts = NULL) {
+
+    if (!length(x)) return(x)
+
     msmsply(x,
             fshift,
             range = range,
@@ -353,6 +368,9 @@ fshift.generic_mspct <-
            ...,
            .parallel = FALSE,
            .paropts = NULL) {
+
+    if (!length(x)) return(x)
+
     msmsply(x,
             fshift,
             range = range,

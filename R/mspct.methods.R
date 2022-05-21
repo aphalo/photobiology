@@ -24,6 +24,7 @@
 msmsply <- function(mspct, .fun, ...,
                     .parallel = FALSE, .paropts = NULL) {
   stopifnot(is.any_mspct(mspct))
+
   mspct.class <- class(mspct)
   byrow <- attr(mspct, "mspct.byrow", exact = TRUE)
   dim <- dim(mspct)

@@ -1,5 +1,8 @@
 library(photobiology)
 
+## need to add similar tests for additional  classes
+## need to add additional methods
+
 context("binding")
 
 test_that("unique_names_mspct", {
@@ -322,13 +325,13 @@ test_that("reflector_mspct", {
     expect_equal(getRfrType(spct), getRfrType(long.spct))
   }
 
-  rfl.spct <- tag(photodiode.spct)
-  my.mspct <- response_mspct(list(flt1 = rfl.spct, flt2 = rfl.spct))
+  rfl.spct <- tag(as.reflector_spct(white_body.spct))
+  my.mspct <- reflector_mspct(list(flt1 = rfl.spct, flt2 = rfl.spct))
   long.spct <- rbindspct(my.mspct)
-  expect_named(long.spct, c("w.length", "s.e.response", "spct.idx"))
+  expect_named(long.spct, c("w.length", "Rfr", "Tfr", "spct.idx"))
   expect_equal(is_normalized(rfl.spct), is_normalized(long.spct))
   expect_equal(is_scaled(rfl.spct), is_scaled(long.spct))
-  expect_equal(getTfrType(rfl.spct), getTfrType(long.spct))
+  expect_equal(getRfrType(rfl.spct), getRfrType(long.spct))
   expect_true(is_tagged(rfl.spct))
   expect_true(!is_tagged(long.spct))
 
@@ -425,5 +428,75 @@ test_that("object_mspct", {
     expect_true(!is_tagged(spct))
   }
 
-})## need to add similar tests for other classes
-## need to add additional methods
+})
+
+test_that("solute_mspct", {
+
+  # "conversion" retains all data columns
+  h20.spct <- as.solute_spct(water.spct)
+  my.mspct <- solute_mspct(list(flt1 = h20.spct, flt2 = h20.spct))
+  long.spct <- rbindspct(my.mspct)
+  expect_named(long.spct, c("w.length", "K.mole", "spct.idx"))
+  expect_equal(is_normalized(h20.spct), is_normalized(long.spct))
+  expect_equal(is_scaled(h20.spct), is_scaled(long.spct))
+  expect_equal(getKType(h20.spct), getKType(long.spct))
+
+  my_new.mspct <- subset2mspct(long.spct)
+  for (spct in my_new.mspct) {
+    expect_equal(is_normalized(spct), is_normalized(long.spct))
+    expect_equal(is_scaled(spct), is_scaled(long.spct))
+    expect_equal(getKType(spct), getKType(long.spct))
+  }
+
+  # "conversion" retains all data columns
+  h20.spct <- normalize(as.solute_spct(water.spct))
+  my.mspct <- solute_mspct(list(flt1 = h20.spct, flt2 = h20.spct))
+  long.spct <- rbindspct(my.mspct)
+  expect_named(long.spct, c("w.length", "K.mole", "spct.idx"))
+  expect_equal(is_normalized(h20.spct), is_normalized(long.spct))
+  expect_equal(is_scaled(h20.spct), is_scaled(long.spct))
+  expect_equal(getKType(h20.spct), getKType(long.spct))
+
+  my_new.mspct <- subset2mspct(long.spct)
+  for (spct in my_new.mspct) {
+    expect_equal(is_normalized(spct), is_normalized(long.spct))
+    expect_equal(is_scaled(spct), is_scaled(long.spct))
+    expect_equal(getKType(spct), getKType(long.spct))
+  }
+
+  h20.spct <- fscale(as.solute_spct(water.spct), f = max)
+  my.mspct <- solute_mspct(list(flt1 = h20.spct, flt2 = h20.spct))
+  long.spct <- rbindspct(my.mspct)
+  expect_named(long.spct, c("w.length", "K.mole", "spct.idx"))
+  expect_equal(is_normalized(h20.spct), is_normalized(long.spct))
+  expect_equal(is_scaled(h20.spct), is_scaled(long.spct))
+  expect_equal(getKType(h20.spct), getKType(long.spct))
+
+  my_new.mspct <- subset2mspct(long.spct)
+  for (spct in my_new.mspct) {
+    expect_equal(is_normalized(spct), is_normalized(long.spct))
+    expect_equal(is_scaled(spct), is_scaled(long.spct))
+    expect_equal(getKType(spct), getKType(long.spct))
+  }
+
+  h20.spct <- tag(water.spct)
+  my.mspct <- solute_mspct(list(flt1 = h20.spct, flt2 = h20.spct))
+  long.spct <- rbindspct(my.mspct)
+  expect_named(long.spct, c("w.length", "K.mole", "spct.idx"))
+  expect_equal(is_normalized(h20.spct), is_normalized(long.spct))
+  expect_equal(is_scaled(h20.spct), is_scaled(long.spct))
+  expect_equal(getKType(h20.spct), getKType(long.spct))
+  expect_true(is_tagged(h20.spct))
+  expect_true(!is_tagged(long.spct))
+
+  my_new.mspct <- subset2mspct(long.spct)
+  for (spct in my_new.mspct) {
+    expect_equal(is_normalized(spct), is_normalized(long.spct))
+    expect_equal(is_scaled(spct), is_scaled(long.spct))
+    expect_equal(is_effective(spct), is_effective(long.spct))
+    expect_equal(getKType(spct), getKType(long.spct))
+    expect_true(!is_tagged(spct))
+  }
+
+})
+

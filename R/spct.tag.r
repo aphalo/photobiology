@@ -516,6 +516,9 @@ untag.generic_spct <- function(x,
 #'
 untag.generic_mspct <- function(x,
                                byref = FALSE, ...) {
+
+  if (!length(x)) return(x) # class of x in no case changes
+
   name <- substitute(x)
 
   z <- msmsply(

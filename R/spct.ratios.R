@@ -471,7 +471,8 @@ eq_ratio.source_spct <-
 #' @describeIn q_ratio Calculates photon:photon from a \code{source_mspct}
 #'   object.
 #'
-#' @param attr2tb character vector, see \code{\link{add_attr2tb}} for the syntax for \code{attr2tb} passed as is to formal parameter \code{col.names}.
+#' @param attr2tb character vector, see \code{\link{add_attr2tb}} for the syntax
+#'   for \code{attr2tb} passed as is to formal parameter \code{col.names}.
 #' @param idx character Name of the column with the names of the members of the
 #'   collection of spectra.
 #' @param .parallel	if TRUE, apply function in parallel, using parallel backend

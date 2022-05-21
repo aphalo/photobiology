@@ -336,6 +336,9 @@ normalize.source_mspct <-
            na.rm = FALSE,
            .parallel = FALSE,
            .paropts = NULL) {
+
+    if (!length(x)) return(x) # class of x in no case changes
+
     msmsply(x,
             normalize,
             range = range,
@@ -362,6 +365,9 @@ normalize.response_mspct <-
            na.rm = FALSE,
            .parallel = FALSE,
            .paropts = NULL) {
+
+    if (!length(x)) return(x) # class of x in no case changes
+
     msmsply(x,
             normalize,
             range = range,
@@ -388,6 +394,9 @@ normalize.filter_mspct <-
            na.rm = FALSE,
            .parallel = FALSE,
            .paropts = NULL) {
+
+    if (!length(x)) return(x) # class of x in no case changes
+
     msmsply(x,
             normalize,
             range = range,
@@ -412,6 +421,9 @@ normalize.reflector_mspct <- function(x,
                                       na.rm = FALSE,
                                       .parallel = FALSE,
                                       .paropts = NULL) {
+
+  if (!length(x)) return(x) # class of x in no case changes
+
   msmsply(x,
           normalize,
           range = range,
@@ -435,6 +447,9 @@ normalize.raw_mspct <- function(x,
                                 na.rm = FALSE,
                                 .parallel = FALSE,
                                 .paropts = NULL) {
+
+  if (!length(x)) return(x) # class of x in no case changes
+
   msmsply(x,
           normalize,
           range = range,
@@ -456,6 +471,9 @@ normalize.cps_mspct <- function(x,
                                 na.rm = FALSE,
                                 .parallel = FALSE,
                                 .paropts = NULL) {
+
+  if (!length(x)) return(x) # class of x in no case changes
+
   msmsply(x,
           normalize,
           range = range,

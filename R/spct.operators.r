@@ -5,6 +5,7 @@
 # as in the older versions.
 
 apply_oper <- function(e1, e2, oper) {
+
   # adjust to current option settings using function variables
   # photon vs. energy
   .unit.irrad <- getOption("photobiology.radiation.unit",
@@ -92,6 +93,15 @@ apply_oper <- function(e1, e2, oper) {
     class2 <- "waveband"
   } else {
     class2 <- class_spct(e2)[1]
+  }
+
+  # get out of the way cases requiring special handling
+  if (is.numeric(e1) && is.any_spct(e2)) {
+    if (!length(e2)) return(e2)
+    else if (!length(e1)) return(e2[FALSE, ])
+  } else if (is.numeric(e2) && is.any_spct(e1)) {
+    if (!length(e1)) return(e1)
+    else if (!length(e2)) return(e1[FALSE, ])
   }
 
   # now we walk through all valid combinations of classes

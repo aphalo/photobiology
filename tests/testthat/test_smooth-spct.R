@@ -1,4 +1,5 @@
 library("photobiology")
+# need to ad cases for solute_spct
 
 context("smooth_spct")
 

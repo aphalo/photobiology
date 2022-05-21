@@ -7,6 +7,7 @@
 \alias{fscale.response_spct}
 \alias{fscale.filter_spct}
 \alias{fscale.reflector_spct}
+\alias{fscale.solute_spct}
 \alias{fscale.raw_spct}
 \alias{fscale.cps_spct}
 \alias{fscale.generic_spct}
@@ -14,6 +15,7 @@
 \alias{fscale.response_mspct}
 \alias{fscale.filter_mspct}
 \alias{fscale.reflector_mspct}
+\alias{fscale.solute_mspct}
 \alias{fscale.raw_mspct}
 \alias{fscale.cps_mspct}
 \alias{fscale.generic_mspct}
@@ -54,6 +56,16 @@ fscale(x, ...)
 )
 
 \method{fscale}{reflector_spct}(
+  x,
+  range = NULL,
+  f = "mean",
+  target = 1,
+  qty.out = NULL,
+  set.scaled = target == 1,
+  ...
+)
+
+\method{fscale}{solute_spct}(
   x,
   range = NULL,
   f = "mean",
@@ -119,6 +131,17 @@ fscale(x, ...)
   f = "mean",
   target = 1,
   qty.out = NULL,
+  set.scaled = target == 1,
+  ...,
+  .parallel = FALSE,
+  .paropts = NULL
+)
+
+\method{fscale}{solute_mspct}(
+  x,
+  range = NULL,
+  f = "mean",
+  target = 1,
   set.scaled = target == 1,
   ...,
   .parallel = FALSE,
@@ -234,6 +257,8 @@ After scaling, applying the function passed as argument to \code{f}
 
 \item \code{reflector_spct}: 
 
+\item \code{solute_spct}: 
+
 \item \code{raw_spct}: 
 
 \item \code{cps_spct}: 
@@ -247,6 +272,8 @@ After scaling, applying the function passed as argument to \code{f}
 \item \code{filter_mspct}: 
 
 \item \code{reflector_mspct}: 
+
+\item \code{solute_mspct}: 
 
 \item \code{raw_mspct}: 
 

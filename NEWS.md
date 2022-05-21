@@ -7,12 +7,15 @@ editor_options:
 # photobiology 0.11.0
 
 -   Add new classes of objects `solute_spct` and `solute_mspct` to be used to
-store molar and mass based coefficients of attenuation describing overall
-attenuation, or attenuation by absorption or by scattering. Implement the
-corresponding methods.
+    store molar (the default) and mass based coefficients of attenuation 
+    describing overall attenuation, or attenuation by absorption or by
+    scattering. Implement the corresponding methods.
 -   Add example data for two solutes: `water.spct` and `phenylalanine.spct`.
 -   Rewrite `join_mspct()` to use interpolation when wavelengths differ among
-member spectra. This should not break old cod but output can slightly differ.
+    member spectra. This should not break old cod but output can slightly 
+    differ.
+-   Fix failure to handle spectra with zero rows, a bug affecting several
+    methods, operators and functions.
 -   Fix bug in `rowwise_filter()` affecting parallel summaries of absorptance.
 -   Add method `s_mean_se_band_band()`.
 
@@ -21,16 +24,18 @@ member spectra. This should not break old cod but output can slightly differ.
 -   Update `normalize()` methods to support updating an already present
     normalization (`norm = "update"`) and skipping the normalization altogether
     (`norm = "skip"`).
--   Update `normalize()` methods to store `range` in the attribute, and `getNormalized()` to return it.
+-   Update `normalize()` methods to store `range` in the attribute, and 
+    `getNormalized()` to return it.
 -   Update `normalize()` methods to correctly handle normalization of
-previously normalized spectra, and add flexibility to the normalization of
-previously scaled spectra.
--   Add `getScaling()` and fix minor inconsistency in value returned by `getScaled()`.
+    previously normalized spectra, and add flexibility to the normalization of
+    previously scaled spectra.
+-   Add `getScaling()` and fix minor inconsistency in value returned by 
+    `getScaled()`.
 -   Fix bug in `getNormalization()` (wrong named member in returned value from
     spectra with no normalization data).
 -   Fix bug resulting in `"normalization"` attribute not being copied.
 -   Fix bug resulting in not all relevant attributes being copied to the
-value returned by `summary.generic_spct()`.
+    value returned by `summary.generic_spct()`.
 -   Improve printing of metadata for normalization and rescaling.
 -   Fix bug in `shared_member_class()` (wrong value returned for empty 
     collections).

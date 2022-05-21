@@ -207,6 +207,27 @@ fscale.reflector_spct <- function(x,
 #'
 #' @export
 #'
+fscale.solute_spct <- function(x,
+                               range = NULL,
+                               f = "mean",
+                               target = 1,
+                               qty.out = NULL,
+                               set.scaled = target == 1,
+                               ...) {
+  col.name <- intersect(c("K.mole", "K.mass"), names(x))
+  fscale_spct(spct = x,
+              range = range,
+              f = f,
+              target = target,
+              col.names = col.name,
+              set.scaled = set.scaled,
+              ...)
+}
+
+#' @describeIn fscale
+#'
+#' @export
+#'
 fscale.raw_spct <- function(x,
                             range = NULL,
                             f = "mean",
@@ -288,6 +309,9 @@ fscale.source_mspct <- function(x,
                                 ...,
                                 .parallel = FALSE,
                                 .paropts = NULL) {
+
+  if (!length(x)) return(x) # class of x in no case changes
+
   msmsply(x,
           fscale,
           range = range,
@@ -314,6 +338,9 @@ fscale.response_mspct <- function(x,
                                   ...,
                                   .parallel = FALSE,
                                   .paropts = NULL) {
+
+  if (!length(x)) return(x) # class of x in no case changes
+
   msmsply(x,
           fscale,
           range = range,
@@ -340,6 +367,9 @@ fscale.filter_mspct <- function(x,
                                 ...,
                                 .parallel = FALSE,
                                 .paropts = NULL) {
+
+  if (!length(x)) return(x) # class of x in no case changes
+
   msmsply(x,
           fscale,
           range = range,
@@ -365,6 +395,9 @@ fscale.reflector_mspct <- function(x,
                                    ...,
                                    .parallel = FALSE,
                                    .paropts = NULL) {
+
+  if (!length(x)) return(x) # class of x in no case changes
+
   msmsply(x,
           fscale,
           range = range,
@@ -372,6 +405,32 @@ fscale.reflector_mspct <- function(x,
           target = target,
           set.scaled = set.scaled,
           qty.out = qty.out,
+          ...,
+          .parallel = .parallel,
+          .paropts = .paropts)
+}
+
+#' @describeIn fscale
+#'
+#' @export
+#'
+fscale.solute_mspct <- function(x,
+                                   range = NULL,
+                                   f = "mean",
+                                   target = 1,
+                                   set.scaled = target == 1,
+                                   ...,
+                                   .parallel = FALSE,
+                                   .paropts = NULL) {
+
+  if (!length(x)) return(x) # class of x in no case changes
+
+  msmsply(x,
+          fscale,
+          range = range,
+          f = f,
+          target = target,
+          set.scaled = set.scaled,
           ...,
           .parallel = .parallel,
           .paropts = .paropts)
@@ -389,6 +448,9 @@ fscale.raw_mspct <- function(x,
                              ...,
                              .parallel = FALSE,
                              .paropts = NULL) {
+
+  if (!length(x)) return(x) # class of x in no case changes
+
   msmsply(x,
           fscale,
           range = range,
@@ -412,6 +474,9 @@ fscale.cps_mspct <- function(x,
                              ...,
                              .parallel = FALSE,
                              .paropts = NULL) {
+
+  if (!length(x)) return(x) # class of x in no case changes
+
   msmsply(x,
           fscale,
           range = range,
@@ -436,6 +501,9 @@ fscale.generic_mspct <- function(x,
                                  ...,
                                  .parallel = FALSE,
                                  .paropts = NULL) {
+
+  if (!length(x)) return(x) # class of x in no case changes
+
   msmsply(x,
           fscale,
           range = range,
