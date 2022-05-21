@@ -1035,6 +1035,7 @@ A2T.filter_mspct <- function(x,
                              ...,
                              .parallel = FALSE,
                              .paropts = NULL) {
+  if (!length(x)) return(x)
   msmsply(x,
           .fun = A2T,
           action = action,
@@ -1149,6 +1150,7 @@ T2A.filter_mspct <- function(x,
                              ...,
                              .parallel = FALSE,
                              .paropts = NULL) {
+  if (!length(x)) return(x)
   msmsply(x,
           .fun = T2A,
           action = action,
@@ -1350,6 +1352,7 @@ T2Afr.filter_mspct <- function(x,
                                ...,
                                .parallel = FALSE,
                                .paropts = NULL) {
+  if (!length(x)) return(x)
   msmsply(x,
           .fun = T2Afr,
           action = action,
@@ -1531,6 +1534,7 @@ Afr2T.filter_mspct <- function(x,
                                ...,
                                .parallel = FALSE,
                                .paropts = NULL) {
+  if (!length(x)) return(x)
   msmsply(x,
           .fun = T2Afr,
           action = action,
@@ -1579,6 +1583,7 @@ Afr2T.object_mspct <- Afr2T.filter_mspct
 #'
 any2T <- function(x, action = "add", clean = FALSE) {
   if (is.filter_mspct(x) || is.object_mspct(x)) {
+    if (!length(x)) return(x)
     return(msmsply(mspct = x,
                    .fun =  any2T,
                    action = action,
@@ -1598,6 +1603,7 @@ any2T <- function(x, action = "add", clean = FALSE) {
 #'
 any2A <- function(x, action = "add", clean = FALSE) {
   if (is.filter_mspct(x) || is.object_mspct(x)) {
+    if (!length(x)) return(x)
     return(msmsply(mspct = x,
                    .fun =  any2A,
                    action = action,
@@ -1618,6 +1624,7 @@ any2A <- function(x, action = "add", clean = FALSE) {
 #'
 any2Afr <- function(x, action = "add", clean = FALSE) {
   if (is.filter_mspct(x) || is.object_mspct(x)) {
+    if (!length(x)) return(x)
     return(msmsply(mspct = x,
                    .fun =  any2Afr,
                    action = action,
@@ -1728,6 +1735,7 @@ e2q.source_mspct <- function(x,
                              ...,
                              .parallel = FALSE,
                              .paropts = NULL) {
+  if (!length(x)) return(x)
   msmsply(x,
           .fun = e2q,
           action = action,
@@ -1747,6 +1755,7 @@ e2q.response_mspct <- function(x,
                                ...,
                                .parallel = FALSE,
                                .paropts = NULL) {
+  if (!length(x)) return(x)
   msmsply(x,
           .fun = e2q,
           action = action,
@@ -1848,6 +1857,7 @@ q2e.source_mspct <- function(x,
                              ...,
                              .parallel = FALSE,
                              .paropts = NULL) {
+  if (!length(x)) return(x)
   msmsply(x,
           q2e,
           action = action,
@@ -1868,6 +1878,7 @@ q2e.response_mspct <- function(x,
                                ...,
                                .parallel = FALSE,
                                .paropts = NULL) {
+  if (!length(x)) return(x)
   msmsply(x,
           q2e,
           action = action,

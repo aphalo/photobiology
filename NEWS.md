@@ -11,6 +11,8 @@ store molar and mass based coefficients of attenuation describing overall
 attenuation, or attenuation by absorption or by scattering. Implement the
 corresponding methods.
 -   Add example data for two solutes: `water.spct` and `phenylalanine.spct`.
+-   Rewrite `join_mspct()` to use interpolation when wavelengths differ among
+member spectra. This should not break old cod but output can slightly differ.
 -   Fix bug in `rowwise_filter()` affecting parallel summaries of absorptance.
 -   Add method `s_mean_se_band_band()`.
 

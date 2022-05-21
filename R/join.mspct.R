@@ -24,7 +24,7 @@
 #' @return A \code{data.frame} with the spectra joined by, possibly
 #'   interpolated, wavelength, with rows sorted by wavelength (variable
 #'   \code{w.length}) and data columns named according to the names of members
-#'   in \code{x}, possibly made unique and valid.
+#'   in \code{x}, by default made unique and valid.
 #'
 #' @note Currently only \code{generic_spct}, \code{source_mspct},
 #'   \code{response_mspct}, \code{filter_mspct}, \code{reflector_mspct},
@@ -34,9 +34,9 @@
 #' @export
 #'
 #' @examples
-#'
-#' join_mspct(solute_mspct(list(water = water.spct, pha = phenylalanine.spct)),
-#'            type = "inner")
+#' my.mspct <- solute_mspct(list(water = water.spct, pha = phenylalanine.spct))
+#' join_mspct(my.mspct, type = "inner")
+#' join_mspct(my.mspct, type = "full")
 #'
 #' @family conversion of collections of spectra
 #'
@@ -107,7 +107,7 @@ join_mspct.generic_mspct <- function(x,
           wl.range.out <- wl.range.inner
           message("Trimming non-overlapping wavelengths")
         } else if (type == "full") {
-          wl.range.out <- wl.range.inner
+          wl.range.out <- wl.range.full
           message("Filling non-overlapping wavelengths with NA")
         }
       }
@@ -146,16 +146,14 @@ join_mspct.source_mspct <- function(x,
                                     unit.out = "energy",
                                     validate.names = TRUE,
                                     ...) {
-  if (length(x)) {
-    if (unit.out == "energy") {
-      x <- q2e(x, action = "replace")
-      col.name <- "s.e.irrad"
-    } else if (unit.out %in% c("photon", "quantum")) {
-      x <- e2q(x, action = "replace")
-      col.name <- "s.q.irrad"
-    } else {
-      stop("Unit out '", unit.out, "' unknown")
-    }
+  if (unit.out == "energy") {
+    x <- q2e(x, action = "replace")
+    col.name <- "s.e.irrad"
+  } else if (unit.out %in% c("photon", "quantum")) {
+    x <- e2q(x, action = "replace")
+    col.name <- "s.q.irrad"
+  } else {
+    stop("Unit out '", unit.out, "' unknown")
   }
   class(x) <- class(x)[-1L] # convert to generic_spct
   join_mspct(x,
@@ -174,16 +172,14 @@ join_mspct.response_mspct <- function(x,
                                       unit.out = "energy",
                                       validate.names = TRUE,
                                       ...) {
-  if (length(x)) {
-    if (unit.out == "energy") {
-      x <- q2e(x, action = "replace")
-      col.name <- "s.e.response"
-    } else if (unit.out %in% c("photon", "quantum")) {
-      x <- e2q(x, action = "replace")
-      col.name <- "s.q.response"
-    } else {
-      stop("Unit out '", unit.out, "' unknown")
-    }
+  if (unit.out == "energy") {
+    x <- q2e(x, action = "replace")
+    col.name <- "s.e.response"
+  } else if (unit.out %in% c("photon", "quantum")) {
+    x <- e2q(x, action = "replace")
+    col.name <- "s.q.response"
+  } else {
+    stop("Unit out '", unit.out, "' unknown")
   }
   class(x) <- class(x)[-1L] # convert to generic_spct
   join_mspct(x,
@@ -202,19 +198,17 @@ join_mspct.filter_mspct <- function(x,
                                     qty.out = "transmittance",
                                     validate.names = TRUE,
                                     ...) {
-  if (length(x)) {
-    if (qty.out == "transmittance") {
-      x <- any2T(x, action = "replace")
-      col.name <- "Tfr"
-    } else if (qty.out == "absorbance") {
-      x <- any2A(x, action = "replace")
-      col.name <- "A"
-    } else if (qty.out == "absorptance") {
-      x <- any2Afr(x, action = "replace")
-      col.name <- "Afr"
-    } else {
-      stop("Unit out '", qty.out, "' unknown")
-    }
+  if (qty.out == "transmittance") {
+    x <- any2T(x, action = "replace")
+    col.name <- "Tfr"
+  } else if (qty.out == "absorbance") {
+    x <- any2A(x, action = "replace")
+    col.name <- "A"
+  } else if (qty.out == "absorptance") {
+    x <- any2Afr(x, action = "replace")
+    col.name <- "Afr"
+  } else {
+    stop("Unit out '", qty.out, "' unknown")
   }
   class(x) <- class(x)[-1L] # convert to generic_spct
   join_mspct(x,

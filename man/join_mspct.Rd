@@ -59,7 +59,7 @@ validation of column names with \code{\link[base]{make.names}}.}
 \code{object_spct}, also \code{"reflectance"} (.}
 }
 \value{
-A \code{\link[tibble]{tibble}} with the spectra joined by, possibly
+A \code{data.frame} with the spectra joined by, possibly
   interpolated, wavelength, with rows sorted by wavelength (variable
   \code{w.length}) and data columns named according to the names of members
   in \code{x}, possibly made unique and valid.
@@ -102,6 +102,9 @@ Currently only \code{generic_spct}, \code{source_mspct},
 
 join_mspct(solute_mspct(list(water = water.spct, pha = phenylalanine.spct)),
            type = "inner")
+
+join_mspct(solute_mspct(list(water = water.spct, pha = phenylalanine.spct)),
+           type = "full")
 
 }
 \concept{conversion of collections of spectra}
