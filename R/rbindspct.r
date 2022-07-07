@@ -816,9 +816,17 @@ subset.generic_spct <- function(x, subset, select, drop = FALSE, ...) {
 #'
 "[.generic_mspct" <-
   function(x, i, drop = NULL) {
-    spct.class <- rmDerivedMspct(x)[1]
-    xx <- `[`(x, i)
-    generic_mspct(xx, class = spct.class)
+    old.byrow <- attr(x, "mspct.byrow", exact = TRUE)
+    if (is.null(old.byrow)) {
+      old.byrow <- FALSE
+    }
+    old.class <- rmDerivedMspct(x)
+    x <- `[`(x, i)
+    class(x) <- c(old.class, class(x))
+    attr(x, "mspct.dim") <- length(i)
+    attr(x, "mspct.byrow") <- old.byrow
+    attr(x, "mspct.version") <- 2
+    x
   }
 
 # Not exported
@@ -840,12 +848,19 @@ is.member_class <- function(l, x) {
 "[<-.generic_mspct" <- function(x, i, value) {
   # could be improved to accept derived classes as valid for replacement.
   stopifnot(class(x) == class(value))
-  # could not find a better way of avoiding infinite recursion as '[[<-' is
+  # could not find a better way of avoiding infinite recursion as '[<-' is
   # a primitive with no explicit default method.
-  old.class <- class(x)
-  class(x) <- "list"
+  old.byrow <- attr(x, "mspct.byrow", exact = TRUE)
+  if (is.null(old.byrow)) {
+    old.byrow <- FALSE
+  }
+  old.mspct.dim <- attr(x, "mspct.dim")
+  old.class <- rmDerivedMspct(x)
   x[i] <- value
-  class(x) <- old.class
+  class(x) <- c(old.class, class(x))
+  attr(x, "mspct.dim") <- old.mspct.dim
+  attr(x, "mspct.byrow") <- old.byrow
+  attr(x, "mspct.version") <- 2
   x
 }
 
@@ -887,13 +902,16 @@ is.member_class <- function(l, x) {
   } else {
     dimension <- attr(x, "mspct.dim", exact = TRUE)
   }
-  old.class <- class(x)
   old.byrow <- attr(x, "mspct.byrow", exact = TRUE)
-  class(x) <- "list"
+  if (is.null(old.byrow)) {
+    old.byrow <- FALSE
+  }
+  old.class <- rmDerivedMspct(x)
   x[[name]] <- value
-  class(x) <- old.class
+  class(x) <- c(old.class, class(x))
   attr(x, "mspct.dim") <- dimension
   attr(x, "mspct.byrow") <- old.byrow
+  attr(x, "mspct.version") <- 2
   x
 }
 

@@ -18,6 +18,7 @@ library(dplyr)
 is.any_spct(sun.spct)
 is.generic_spct(sun.spct)
 is.source_spct(sun.spct)
+is.data.frame(sun.spct)
 
 ## ---- query-class-2-----------------------------------------------------------
 class_spct(sun.spct)

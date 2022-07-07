@@ -10,13 +10,15 @@ editor_options:
     store molar (the default) and mass based coefficients of attenuation 
     describing overall attenuation, or attenuation by absorption or by
     scattering. Implement the corresponding methods.
--   Add example data for two solutes: `water.spct` and `phenylalanine.spct`.
+-   Add example data for two substances: `water.spct` and `phenylalanine.spct`.
 -   Rewrite `join_mspct()` to use interpolation when wavelengths differ among
-    member spectra. This should not break old cod but output can slightly 
+    member spectra. This should not break old code but output can slightly 
     differ.
 -   Fix failure to handle spectra with zero rows, a bug affecting several
     methods, operators and functions.
 -   Fix bug in `rowwise_filter()` affecting parallel summaries of absorptance.
+-   Fix bugs in extraction and replacement functions for collections of spectra,
+    possibly triggered by changes in R >= 4.0.0.
 -   Add method `s_mean_se_band_band()`.
 
 # photobiology 0.10.10

@@ -129,8 +129,14 @@ msdply <- function(mspct, .fun, ..., idx = NULL, col.names = NULL,
 
   comment(z) <- paste("Applied function: '", f.name, "'.\n", sep = "", comment(mspct))
 
-  mspct.nrow <- nrow(mspct)
   mspct.ncol <- ncol(mspct)
+  if (is.na(mspct.ncol)) {
+    mspct.ncol <- 1
+  }
+  mspct.nrow <- nrow(mspct)
+  if (is.na(mspct.nrow)) {
+    mspct.nrow <- length(mspct) %/% mspct.ncol
+  }
   mspct.byrow <- attr(mspct, "mspct.byrow", exact = TRUE)
   if (is.null(mspct.byrow)) {
     mspct.nrow <- FALSE
