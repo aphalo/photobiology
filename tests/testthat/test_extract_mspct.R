@@ -86,6 +86,33 @@ test_that("source_mspct", {
   expect_error(my_z.mspct[["spct_1"]] <- TRUE)
   expect_error(my_z.mspct[["spct_1"]] <- as.generic_spct(my1.spct))
 
+  my_z.mspct <- my.mspct
+
+  my_z.mspct[[3]] <- my.mspct[[3]]
+  expect_equal(my_z.mspct, my.mspct)
+
+  my_z.mspct <- my.mspct
+
+  my_z.mspct[3] <- my_z.mspct[3]
+  expect_equal(my_z.mspct, my.mspct)
+
+  spct.l <- list(a = my1.spct, b = my2.spct, c = my3.spct, d = my4.spct, e = my5.spct)
+  my.mspct <- source_mspct(spct.l)
+  my_z.mspct <- my.mspct
+
+  my_z.mspct["c"] <- my_z.mspct["c"]
+  expect_equal(my_z.mspct, my.mspct)
+
+  my_z.mspct <- my.mspct
+
+  my_z.mspct[["c"]] <- my_z.mspct[["c"]]
+  expect_equal(my_z.mspct, my.mspct)
+
+  my_z.mspct <- my.mspct
+
+  my_z.mspct[c("b", "c")] <- my_z.mspct[c("b", "c")]
+  expect_equal(my_z.mspct, my.mspct)
+
 })
 
 context("combine_mspct")
