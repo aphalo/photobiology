@@ -1515,9 +1515,14 @@ valleys.raw_mspct <- function(x,
 #' variable in addition to "w.length".
 #'
 #' @param x an R object
-#' @param target numeric value indicating the spectral quantity value for which
-#'   wavelengths are to be searched and interpolated if need. The character
-#'   strings "half.maximum" and "half.range" are also accepted as arguments.
+#' @param target numeric or character. A numeric value indicates the spectral
+#'   quantity value for which wavelengths are to be searched. A character
+#'   representing a number is converted to a number. A character value
+#'   representing a number followed by a function name, will be also accepted
+#'   and decoded, such that \code{"0.1max"} is interpreted as targetting one
+#'   tenthof the maximum value in a column. The character
+#'   strings "half.maximum" and "HM" are synonyms for "0.5max" while
+#'   "half.range" and "HR" are synonyms for "0.5range".
 #' @param col.name.x character The name of the column in which to the
 #'   independent variable is stored. Defaults to "w.length" for objects of class
 #'   \code{"generic_spct"} or derived.
@@ -1550,6 +1555,12 @@ valleys.raw_mspct <- function(x,
 #' find_wls(white_led.source_spct, target = c(0.3, 0.4))
 #' find_wls(white_led.source_spct, target = c(0.3, 0.4), idfactor = "target")
 #' find_wls(white_led.source_spct, target = c(0.3, 0.4), idfactor = TRUE)
+#' find_wls(white_led.source_spct, target = "HM")
+#' find_wls(white_led.source_spct, target = "HM", idfactor = "target")
+#' find_wls(white_led.source_spct, target = "HR")
+#' find_wls(white_led.source_spct, target = "0.5max")
+#' find_wls(white_led.source_spct, target = "0.05max")
+#' find_wls(white_led.source_spct, target = "0.5range")
 #' find_wls(white_led.source_spct, target = c("HM", "HR"))
 #' find_wls(white_led.source_spct, target = c("HM", "HR"), interpolate = TRUE)
 #'
@@ -1605,21 +1616,34 @@ find_wls <- function(x,
   collector.ls <- list()
   targets <- target
   for (target in targets) {
+    # keeping this inside the loop allows target's argument can be a list
     if (is.character(target)) {
-      if (target %in% c("half.maximum", "HM")) {
-        target <- max(x[[col.name]], na.rm = na.rm) / 2
-      } else if (target %in% c("half.range", "HR")) {
-        target <- mean(range(x[[col.name]]), na.rm = na.rm)
+      target <- gsub("half.maximum|HM", "0.5max", target)
+      target <- gsub("half.range|HR", "0.5range", target)
+      target <- gsub("[ ]*", "", target)
+      ref.fun.name <- gsub("^[0-9.]*", "", target)
+      num.target <- as.numeric(gsub(ref.fun.name, "", target))
+      if (ref.fun.name == "") {
+        target.num <- num.target
       } else {
-        warning("Unrecognized character string: '", target, "' passed to 'target'", sep = "")
-        target <- NA_real_
+        ref.fun <- match.fun(ref.fun.name)
+        if (na.rm) {
+          target.num <- ref.fun(na.omit(x[[col.name]])) * num.target
+        } else {
+          target.num <- ref.fun(x[[col.name]]) * num.target
+        }
+        if (length(target.num) == 2L) {
+          target.num <- target.num[1] + target.num[2] * num.target
+        } else if (length(target.num) != 1L) {
+          warning("Target function '", ref.fun.name, "' returned of length > 1")
+          target.num <- NA_real_
+        }
       }
-      if (is.na(target)) {
-        next()
-      }
+    } else if (is.numeric(target)) {
+      target.num <- target
     }
     # test all rows for the condition
-    true.rows <- .fun(x[[col.name]], target)
+    true.rows <- .fun(x[[col.name]], target.num)
     # use run length to find transition points
     runs <- rle(true.rows)
     if (length(runs[["lengths"]]) < 2) {
@@ -1636,12 +1660,12 @@ find_wls <- function(x,
       # do vectorized interpolation to fetch true intersects
       delta.wl <- x[[col.name.x]][closing.idx] - x[[col.name.x]][opening.idx]
       delta.col <- x[[col.name]][closing.idx] - x[[col.name]][opening.idx]
-      delta.col.target <- target - x[[col.name]][opening.idx]
+      delta.col.target <- target.num - x[[col.name]][opening.idx]
       wl.increment <- delta.wl * abs(delta.col.target / delta.col)
       wls <- x[[col.name.x]][opening.idx] + wl.increment
 
       # return as a "short" spectrum containing only matching wls and target values
-      z <- tibble::tibble(wls, target)
+      z <- tibble::tibble(wls, target = target.num)
       names(z) <- c(col.name.x, col.name)
       if (x.class %in% spct_classes()) {
         z <- do.call(paste("as", x.class, sep = "."), args = list(x = z))
@@ -1650,14 +1674,14 @@ find_wls <- function(x,
       }
     } else {
       # extract nearest wl value for target
-      idxs <- ifelse(abs((x[[col.name]][closing.idx] - target) /
+      idxs <- ifelse(abs((x[[col.name]][closing.idx] - target.num) /
                            (x[[col.name]][closing.idx] - x[[col.name]][opening.idx])) > 0.5,
                      opening.idx,
                      closing.idx)
       # if the target value is close to a peak or valley, we may pick the same idx on both sides of it.
       z <- x[unique(idxs), ]
     }
-    collector.ls[[as.character(target)]] <- z
+    collector.ls[[as.character(target.num)]] <- z
   }
   if (!length(collector.ls)) {
     # we will still bind it to respect idfactor and ensure invariant columns
@@ -1691,9 +1715,14 @@ find_wls <- function(x,
 #' \code{filter.qty} or their defaults that depend on R options set.
 #'
 #' @param x data.frame or spectrum object.
-#' @param target numeric value indicating the spectral quantity value for which
-#'   wavelengths are to be searched and interpolated if need. The character
-#'   string "half.maximum" is also accepted as argument.
+#' @param target numeric or character. A numeric value indicates the spectral
+#'   quantity value for which wavelengths are to be searched. A character
+#'   string representing a number is converted to numeric. A character value
+#'   representing a number followed by a function name, will be also accepted
+#'   and decoded, such that \code{"0.1max"} is interpreted as targeting one
+#'   tenth of the maximum value in the column. The character
+#'   strings "half.maximum" and "HM" are synonyms for "0.5max" while
+#'   "half.range" and "HR" are synonyms for "0.5range".
 #' @param interpolate logical Indicating whether the nearest wavelength value
 #'   in \code{x} should be returned or a value calculated by linear
 #'   interpolation between wavelength values straddling the target.

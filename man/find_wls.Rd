@@ -18,9 +18,14 @@ find_wls(
 \arguments{
 \item{x}{an R object}
 
-\item{target}{numeric value indicating the spectral quantity value for which
-wavelengths are to be searched and interpolated if need. The character
-strings "half.maximum" and "half.range" are also accepted as arguments.}
+\item{target}{numeric or character. A numeric value indicates the spectral
+quantity value for which wavelengths are to be searched. A character
+representing a number is converted to a number. A character value
+representing a number followed by a function name, will be also accepted
+and decoded, such that \code{"0.1max"} is interpreted as targetting one
+tenthof the maximum value in a column. The character
+strings "half.maximum" and "HM" are synonyms for "0.5max" while
+"half.range" and "HR" are synonyms for "0.5range".}
 
 \item{col.name.x}{character The name of the column in which to the
 independent variable is stored. Defaults to "w.length" for objects of class
@@ -67,6 +72,12 @@ find_wls(white_led.source_spct, target = 0.4, interpolate = TRUE)
 find_wls(white_led.source_spct, target = c(0.3, 0.4))
 find_wls(white_led.source_spct, target = c(0.3, 0.4), idfactor = "target")
 find_wls(white_led.source_spct, target = c(0.3, 0.4), idfactor = TRUE)
+find_wls(white_led.source_spct, target = "HM")
+find_wls(white_led.source_spct, target = "HM", idfactor = "target")
+find_wls(white_led.source_spct, target = "HR")
+find_wls(white_led.source_spct, target = "0.5max")
+find_wls(white_led.source_spct, target = "0.05max")
+find_wls(white_led.source_spct, target = "0.5range")
 find_wls(white_led.source_spct, target = c("HM", "HR"))
 find_wls(white_led.source_spct, target = c("HM", "HR"), interpolate = TRUE)
 

@@ -14,6 +14,8 @@ editor_options:
 -   Rewrite `join_mspct()` to use interpolation when wavelengths differ among
     member spectra. This should not break old code but output can slightly 
     differ.
+-   Expand syntax accepted for `character` arguments passed to parameter 
+    `target` in all `wls_at_target()` methods.
 -   Fix failure to handle spectra with zero rows, a bug affecting several
     methods, operators and functions.
 -   Fix bug in `rowwise_filter()` affecting parallel summaries of absorptance.
@@ -120,24 +122,17 @@ editor_options:
 
 -   Improved performance in color-related functions, mainly benefiting
     package 'ggspectra'.
-
 -   Handle gracefully and consistently special input in
     `fast_color_of_wl()`.
-
 -   Add `fast_wb2rect_spct()`, which uses precomputed color definitions
     for narrow wavebands and optionally simplifies the returned spectrum
     by merging neighboring rectangles of identical color.
-
 -   Add `fast_color_of_wb()` that uses precomputed color definitions for
     narrow wavebands.
-
 -   Add parameter force to `check_spct()` methods, so that critical
     checks cannot be disabled.
-
 -   Implement math functions for class `generic_spct`.
-
 -   BUG FIX: ERROR in CRAN check because of bad example in docs.
-
 -   BUG FIX: `tag()` would fail to assign `wb.color` and `wb.name` to
     longest `w.length` value in spectrum.
 
@@ -185,39 +180,27 @@ editor_options:
 
 -   Add `setFilterProperties()`, `getFilterProperties()`,
     `filter_properties()` and `filter_properties<-()`.
-
 -   Add `convertTfrType()`, `convertThickness()`.
-
 -   Add `Afr2T()`, `any2T()`, `any2A()`, and `any2Afr()`.
-
 -   Add `print()` method for filter properties.
-
 -   Update example data for filters by adding filter properties.
 
 ### Fix bugs and "polish rough edges".
 
 -   **Major bug** in `T2Afr()` was causing wrong values to be returned!!
-
 -   **Major bug** in `clean.object_spct()`.
-
 -   Rewrite much of the code for dispatching math operations with
     spectral objects as operands.
-
 -   Revise `find_peaks()` so that `ignore.threshold` and `strict`
     arguments are respected also when `span = NULL`. This affects all
     peaks- and valleys-related methods. Changes return values for the
     previously undocumented use of negative threshold values and with
     `span = NULL` and `strict = TRUE` as arguments.
-
 -   Add `wls_at_target()` method for data frames.
-
 -   Revise `wls_at_target()` methods for consistency, add examples.
-
 -   Revise `rbindspct()` to not add columns to returned value when input
     is consistent.
-
 -   Revise `rbindspct()` to allow control of metadata copying.
-
 -   Add `is_absorptance_based()`\`.
 
 ### Defunct
