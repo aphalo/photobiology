@@ -216,6 +216,66 @@ test_that("source_mspct", {
 
 })
 
+test_that("data.frame", {
+
+  my.df <- data.frame(x = as.double(4:10), y = as.double(c(1:4, 3:1)))
+
+  wls.df <- find_wls(my.df, 2.5, col.name.x = "x")
+
+  expect_equal(nrow(wls.df), 2)
+  expect_true(all(c("x", "y") %in% colnames(wls.df)))
+  expect_equal(wls.df[["x"]], c(6, 9))
+  expect_is(wls.df, "data.frame")
+  expect_type(wls.df[["x"]], "double")
+  expect_type(wls.df[["y"]], "double")
+
+  wls.df <- find_wls(my.df, 2.5, col.name.x = "x", interpolate = TRUE)
+
+  expect_equal(nrow(wls.df), 2)
+  expect_true(all(c("x", "y") %in% colnames(wls.df)))
+  expect_equal(wls.df[["x"]], c(5.5, 8.5))
+  expect_is(wls.df, "data.frame")
+  expect_type(wls.df[["x"]], "double")
+  expect_type(wls.df[["y"]], "double")
+
+  wls.df <- find_wls(my.df, "HM", col.name.x = "x")
+
+  expect_equal(nrow(wls.df), 2)
+  expect_true(all(c("x", "y") %in% colnames(wls.df)))
+  expect_equal(wls.df[["x"]], c(5, 9))
+  expect_is(wls.df, "data.frame")
+  expect_type(wls.df[["x"]], "double")
+  expect_type(wls.df[["y"]], "double")
+
+  wls.df <- find_wls(my.df, "HM", col.name.x = "x", interpolate = TRUE)
+
+  expect_equal(nrow(wls.df), 2)
+  expect_true(all(c("x", "y") %in% colnames(wls.df)))
+  expect_equal(wls.df[["x"]], c(5, 9))
+  expect_is(wls.df, "data.frame")
+  expect_type(wls.df[["x"]], "double")
+  expect_type(wls.df[["y"]], "double")
+
+  wls.df <- find_wls(my.df, "HR", col.name.x = "x")
+
+  expect_equal(nrow(wls.df), 2)
+  expect_true(all(c("x", "y") %in% colnames(wls.df)))
+  expect_equal(wls.df[["x"]], c(6, 8))
+  expect_is(wls.df, "data.frame")
+  expect_type(wls.df[["x"]], "double")
+  expect_type(wls.df[["y"]], "double")
+
+  wls.df <- find_wls(my.df, "HR", col.name.x = "x", interpolate = TRUE)
+
+  expect_equal(nrow(wls.df), 2)
+  expect_true(all(c("x", "y") %in% colnames(wls.df)))
+  expect_equal(wls.df[["x"]], c(6, 8))
+  expect_is(wls.df, "data.frame")
+  expect_type(wls.df[["x"]], "double")
+  expect_type(wls.df[["y"]], "double")
+
+})
+
 context("spikes")
 
 test_that("source_spct", {
