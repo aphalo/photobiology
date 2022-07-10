@@ -116,6 +116,67 @@ test_that("source_mspct", {
 
 context("wls_at_target")
 
+test_that("source_spct", {
+
+  my.spct <- white_led.source_spct
+
+  wls.spct <- wls_at_target(my.spct)
+  expect_equal(nrow(wls.spct), 2)
+  expect_equal(names(wls.spct), c("w.length", "s.e.irrad"))
+  expect_is(wls.spct, "source_spct")
+
+  wls.spct <- wls_at_target(my.spct, idfactor = TRUE)
+  expect_equal(nrow(wls.spct), 2)
+  expect_equal(names(wls.spct), c("w.length", "s.e.irrad", "target.idx"))
+  expect_is(wls.spct, "source_spct")
+
+  wls.spct <- wls_at_target(my.spct, idfactor = "TARGET")
+  expect_equal(nrow(wls.spct), 2)
+  expect_equal(names(wls.spct), c("w.length", "s.e.irrad", "TARGET"))
+  expect_is(wls.spct, "source_spct")
+
+  wls.spct <- wls_at_target(my.spct, target = c("half.maximum", "half.range"))
+  expect_equal(nrow(wls.spct), 6)
+  expect_equal(names(wls.spct), c("w.length", "s.e.irrad", "target.idx"))
+  expect_is(wls.spct[["target.idx"]], "factor")
+  expect_equal(levels(wls.spct[["target.idx"]]), c("0.5max", "0.5range"))
+  expect_is(wls.spct, "source_spct")
+
+  wls.spct <- wls_at_target(my.spct, target = "half.maximum")
+  expect_equal(nrow(wls.spct), 2)
+  expect_equal(names(wls.spct), c("w.length", "s.e.irrad"))
+  expect_is(wls.spct, "source_spct")
+
+  expect_equal(wls_at_target(my.spct, target = "HM"), wls.spct)
+  expect_equal(wls_at_target(my.spct, target = "0.5max"), wls.spct)
+  expect_equal(wls_at_target(my.spct, target = "0.5 max"), wls.spct)
+
+  wls.spct <- wls_at_target(my.spct, target = "half.range")
+  expect_equal(nrow(wls.spct), 4)
+  expect_equal(names(wls.spct), c("w.length", "s.e.irrad"))
+  expect_is(wls.spct, "source_spct")
+
+  expect_equal(wls_at_target(my.spct, target = "HR"), wls.spct)
+  expect_equal(wls_at_target(my.spct, target = "0.5range"), wls.spct)
+  expect_equal(wls_at_target(my.spct, target = "0.5 range"), wls.spct)
+
+  wls.spct <- wls_at_target(my.spct, unit.out = "photon")
+  expect_equal(nrow(wls.spct), 2)
+  expect_equal(names(wls.spct), c("w.length", "s.q.irrad"))
+  expect_is(wls.spct, "source_spct")
+
+  wls.spct <- wls_at_target(my.spct, target = "half.maximum",
+                            unit.out = "photon")
+  expect_equal(nrow(wls.spct), 2)
+  expect_equal(names(wls.spct), c("w.length", "s.q.irrad"))
+  expect_is(wls.spct, "source_spct")
+
+  wls.spct <- find_wls(my.spct)
+  expect_equal(nrow(wls.spct), 0)
+  expect_equal(names(wls.spct), c("w.length", "s.e.irrad"))
+  expect_is(wls.spct, "source_spct")
+})
+
 test_that("source_mspct", {
 
   spct.l <- list(A = sun.spct, B = sun.spct)

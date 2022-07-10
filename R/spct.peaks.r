@@ -1533,7 +1533,7 @@ valleys.raw_mspct <- function(x,
 #'   \code{x} should be returned or a value calculated by linear interpolation
 #'   between wavelength values stradling the target.
 #' @param idfactor logical or character Generates an index column of factor
-#'   type. If \code{idfactor = TRUE} then the column is auto named spct.idx.
+#'   type. If \code{idfactor = TRUE} then the column is auto named target.idx.
 #'   Alternatively the column name can be directly passed as argument to
 #'   \code{idfactor} as a character string.
 #' @param na.rm logical indicating whether \code{NA} values should be stripped
@@ -1581,7 +1581,7 @@ find_wls <- function(x,
                      col.name = NULL,
                      .fun = `<=`,
                      interpolate = FALSE,
-                     idfactor = FALSE,
+                     idfactor = length(target) > 1,
                      na.rm = FALSE) {
   stopifnot(is.data.frame(x))
   x.class <- class(x)[1]
@@ -1614,6 +1614,7 @@ find_wls <- function(x,
   # }
   # .fun may not be vectorized over targets so we need to iterate
   collector.ls <- list()
+  target.names <- character()
   targets <- target
   for (target in targets) {
     # keeping this inside the loop allows target's argument can be a list
@@ -1681,28 +1682,29 @@ find_wls <- function(x,
       # if the target value is close to a peak or valley, we may pick the same idx on both sides of it.
       z <- x[unique(idxs), ]
     }
-    collector.ls[[as.character(target.num)]] <- z
+    current.name <- if (is.character(target)) target else as.character(target)
+    target.names <- c(target.names, rep(current.name, nrow(z)))
+    collector.ls <- c(collector.ls, list(z))
   }
   if (!length(collector.ls)) {
     # we will still bind it to respect idfactor and ensure invariant columns
     collector.ls[[1L]] <- x[NULL, ]
   }
   if (is.any_spct(x)) {
-    rbindspct(collector.ls,
-              fill = FALSE,
-              idfactor = idfactor,
-              attrs.source = 1L)
+    zz <- rbindspct(collector.ls,
+                    fill = FALSE,
+                    idfactor = FALSE,
+                    attrs.source = 1L)
   } else { # data.frame or tibble
-    if (is.logical(idfactor)) {
-      # convert to equivalent dplyr argument
-      if (!idfactor) {
-        # avoid setting of row names, for consistency
-        names(collector.ls) <- NULL
-      }
-      idfactor <- if (idfactor) "spct.idx" else NULL
-    }
-    dplyr::bind_rows(collector.ls, .id = idfactor)
+    zz <- dplyr::bind_rows(collector.ls, .id = NULL)
   }
+  if (is.logical(idfactor) && idfactor) {
+    idfactor <- "target.idx"
+  }
+  if (is.character(idfactor)) {
+    zz[[idfactor]] <- factor(target.names)
+  }
+  zz
 }
 
 # find wavelengths for a target y ----------------------------------------------
@@ -1715,7 +1717,7 @@ find_wls <- function(x,
 #' \code{filter.qty} or their defaults that depend on R options set.
 #'
 #' @param x data.frame or spectrum object.
-#' @param target numeric or character. A numeric value indicates the spectral
+#' @param target numeric or character vector. A numeric value indicates the spectral
 #'   quantity value for which wavelengths are to be searched. A character
 #'   string representing a number is converted to numeric. A character value
 #'   representing a number followed by a function name, will be also accepted
@@ -1730,18 +1732,20 @@ find_wls <- function(x,
 #'   which to search for the target value. Use of \code{col.name} is deprecated,
 #'   and is a synonym for \code{y.var.name}.
 #' @param idfactor logical or character Generates an index column of factor
-#'   type. If \code{idfactor = TRUE} then the column is auto named spct.idx.
+#'   type. If \code{idfactor = TRUE} then the column is auto named target.idx.
 #'   Alternatively the column name can be directly passed as argument to
 #'   \code{idfactor} as a character string.
 #' @param na.rm logical indicating whether \code{NA} values should be stripped
 #'   before searching for the target.
 #' @param ... currently ignored.
 #'
-#' @return A data.frame or a spectrum object of the same class as \code{x} with
-#'   fewer rows, possibly even no rows. If \code{FALSE} is passed to
-#'   \code{interpolate} a subset of \code{x} is returned, otherwise a new object
-#'   of the same class containing interpolated wavelengths for the \code{target}
-#'   value is returned.
+#' @return A data.frame, a spectrum object or a collection of spectra object of
+#'   the same class as \code{x} with fewer rows, possibly even no rows. If
+#'   \code{FALSE} is passed to \code{interpolate} a subset of \code{x} is
+#'   returned, otherwise a new object of the same class containing interpolated
+#'   wavelengths for the \code{target} value is returned. As `target` accepts
+#'   a vector or list as argument, a factor can be added to the output with
+#'   the corresponding target value.
 #'
 #' @note When interpolation is used, only column \code{w.length} and the column
 #'   against which the target value was compared are included in the returned
@@ -1764,7 +1768,7 @@ find_wls <- function(x,
 wls_at_target <- function(x,
                           target = NULL,
                           interpolate = FALSE,
-                          idfactor = FALSE,
+                          idfactor = length(target) > 1,
                           na.rm = FALSE,
                           ...) UseMethod("wls_at_target")
 
@@ -1776,7 +1780,7 @@ wls_at_target.default <-
   function(x,
            target = NULL,
            interpolate = FALSE,
-           idfactor = FALSE,
+           idfactor = length(target) > 1,
            na.rm = FALSE,
            ...) {
     warning("Method 'wls_at_target' not implemented for objects of class ", class(x)[1])
@@ -1791,7 +1795,7 @@ wls_at_target.data.frame <-
   function(x,
            target = "half.maximum",
            interpolate = FALSE,
-           idfactor = FALSE,
+           idfactor = length(target) > 1,
            na.rm = FALSE,
            x.var.name = NULL,
            y.var.name = NULL,
@@ -1818,7 +1822,7 @@ wls_at_target.generic_spct <-
   function(x,
            target = "half.maximum",
            interpolate = FALSE,
-           idfactor = FALSE,
+           idfactor = length(target) > 1,
            na.rm = FALSE,
            col.name = NULL,
            y.var.name = col.name,
@@ -1842,7 +1846,7 @@ wls_at_target.source_spct <-
   function(x,
            target = "half.maximum",
            interpolate = FALSE,
-           idfactor = FALSE,
+           idfactor = length(target) > 1,
            na.rm = FALSE,
            unit.out = getOption("photobiology.radiation.unit", default = "energy"),
            ...) {
@@ -1870,7 +1874,7 @@ wls_at_target.response_spct <-
   function(x,
            target = "half.maximum",
            interpolate = FALSE,
-           idfactor = FALSE,
+           idfactor = length(target) > 1,
            na.rm = FALSE,
            unit.out = getOption("photobiology.radiation.unit",
                                 default = "energy"),
@@ -1902,7 +1906,7 @@ wls_at_target.filter_spct <-
   function(x,
            target = "half.maximum",
            interpolate = FALSE,
-           idfactor = FALSE,
+           idfactor = length(target) > 1,
            na.rm = FALSE,
            filter.qty = getOption("photobiology.filter.qty",
                                   default = "transmittance"),
@@ -1931,7 +1935,7 @@ wls_at_target.reflector_spct <-
   function(x,
            target = "half.maximum",
            interpolate = FALSE,
-           idfactor = FALSE,
+           idfactor = length(target) > 1,
            na.rm = FALSE,
            ...) {
     find_wls(x,
@@ -1950,7 +1954,7 @@ wls_at_target.solute_spct <-
   function(x,
            target = "half.maximum",
            interpolate = FALSE,
-           idfactor = FALSE,
+           idfactor = length(target) > 1,
            na.rm = FALSE,
            ...) {
     cols <- intersect(c("K.mole", "K.mass"), names(x))
@@ -1976,7 +1980,7 @@ wls_at_target.cps_spct <-
   function(x,
            target = "half.maximum",
            interpolate = FALSE,
-           idfactor = FALSE,
+           idfactor = length(target) > 1,
            na.rm = FALSE,
            ...) {
     find_wls(x,
@@ -2002,7 +2006,7 @@ wls_at_target.cps_spct <-
 wls_at_target.generic_mspct <- function(x,
                                         target = "half.maximum",
                                         interpolate = FALSE,
-                                        idfactor = FALSE,
+                                        idfactor = length(target) > 1,
                                         na.rm = FALSE,
                                         ...,
                                         .parallel = FALSE,

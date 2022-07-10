@@ -84,26 +84,41 @@
 #' class(spct)
 #'
 rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE, attrs.source = NULL) {
+  if (is.null(l) || !is.list(l) || length(l) < 1) {
+    # _mspct classes are derived from "list"
+    warning("Argument 'l' should be a non-empty list or a collection of spectra.")
+    return(generic_spct())
+  }
+
   if ((is.null(idfactor) && (!is.null(names(l)))) ||
        (is.logical(idfactor) && idfactor )) {
     idfactor <- "spct.idx"
   }
-  if (use.names && !rlang::is_named(l) && all(sapply(l, getMultipleWl) == 1L)) {
+
+  # we skip spectra with no rows
+  selector <- unname(sapply(l, nrow)) > 0
+
+  if (use.names && !rlang::is_named(l) && all(sapply(l[selector], getMultipleWl) == 1L)) {
     names(l) <- paste("spct", seq_along(l), sep = "_")
   }
   add.idfactor <- is.character(idfactor)
 
-  if (is.null(l) || !is.list(l) || length(l) < 1) {
-    # _mspct classes are derived from "list"
-    warning("Argument 'l' should be a list or a collection of spectra.")
-    return(generic_spct())
-  }
   # We find the most derived common class for spectra
   l.class <- shared_member_class(l)
   if (length(l.class) < 1L) {
-    stop("Argument 'l' should contain only spectra.")
+    stop("Argument 'l' should contain spectra.")
   } else {
     l.class <- l.class[1L]
+  }
+  if (!any(selector)) {
+    return(do.call(what = l.class, args = list()))
+  }
+  if (length(l[selector]) == 1L) {
+    z <- l[selector][[1L]]
+    if (add.idfactor) {
+      z[[idfactor]] <- names(l[selector])
+    }
+    return(z)
   }
 
   # list may have members which already have multiple spectra in long form

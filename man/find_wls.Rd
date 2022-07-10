@@ -11,7 +11,7 @@ find_wls(
   col.name = NULL,
   .fun = `<=`,
   interpolate = FALSE,
-  idfactor = FALSE,
+  idfactor = length(target) > 1,
   na.rm = FALSE
 )
 }
@@ -41,7 +41,7 @@ target value.}
 between wavelength values stradling the target.}
 
 \item{idfactor}{logical or character Generates an index column of factor
-type. If \code{idfactor = TRUE} then the column is auto named spct.idx.
+type. If \code{idfactor = TRUE} then the column is auto named target.idx.
 Alternatively the column name can be directly passed as argument to
 \code{idfactor} as a character string.}
 
