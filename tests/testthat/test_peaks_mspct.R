@@ -121,22 +121,25 @@ test_that("source_spct", {
   my.spct <- white_led.source_spct
 
   wls.spct <- wls_at_target(my.spct)
+  expect_equal(wls.spct[["w.length"]], c(540.94, 660.78))
   expect_equal(nrow(wls.spct), 2)
   expect_equal(names(wls.spct), c("w.length", "s.e.irrad"))
   expect_is(wls.spct, "source_spct")
 
   wls.spct <- wls_at_target(my.spct, idfactor = TRUE)
+  expect_equal(wls.spct[["w.length"]], c(540.94, 660.78))
   expect_equal(nrow(wls.spct), 2)
   expect_equal(names(wls.spct), c("w.length", "s.e.irrad", "target.idx"))
   expect_is(wls.spct, "source_spct")
 
   wls.spct <- wls_at_target(my.spct, idfactor = "TARGET")
+  expect_equal(wls.spct[["w.length"]], c(540.94, 660.78))
   expect_equal(nrow(wls.spct), 2)
   expect_equal(names(wls.spct), c("w.length", "s.e.irrad", "TARGET"))
   expect_is(wls.spct, "source_spct")
 
   wls.spct <- wls_at_target(my.spct, target = c("half.maximum", "half.range"))
-  expect_equal(nrow(wls.spct), 6)
+  expect_equal(nrow(wls.spct), 4)
   expect_equal(names(wls.spct), c("w.length", "s.e.irrad", "target.idx"))
   expect_is(wls.spct[["target.idx"]], "factor")
   expect_equal(levels(wls.spct[["target.idx"]]), c("0.5max", "0.5range"))
@@ -152,7 +155,8 @@ test_that("source_spct", {
   expect_equal(wls_at_target(my.spct, target = "0.5 max"), wls.spct)
 
   wls.spct <- wls_at_target(my.spct, target = "half.range")
-  expect_equal(nrow(wls.spct), 4)
+  expect_equal(wls.spct[["w.length"]], c(540.94, 660.78))
+  expect_equal(nrow(wls.spct), 2)
   expect_equal(names(wls.spct), c("w.length", "s.e.irrad"))
   expect_is(wls.spct, "source_spct")
 

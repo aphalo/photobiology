@@ -78,6 +78,7 @@ find_wls(white_led.source_spct, target = "0.05max")
 find_wls(white_led.source_spct, target = "0.5range")
 
 led.df <- as.data.frame(white_led.source_spct)
+find_wls(led.df)
 find_wls(led.df, col.name = "s.e.irrad", col.name.x = "w.length")
 find_wls(led.df, col.name = "s.e.irrad", col.name.x = "w.length",
          target = 0.4)

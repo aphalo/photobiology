@@ -1561,6 +1561,7 @@ valleys.raw_mspct <- function(x,
 #' find_wls(white_led.source_spct, target = "0.5range")
 #'
 #' led.df <- as.data.frame(white_led.source_spct)
+#' find_wls(led.df)
 #' find_wls(led.df, col.name = "s.e.irrad", col.name.x = "w.length")
 #' find_wls(led.df, col.name = "s.e.irrad", col.name.x = "w.length",
 #'          target = 0.4)
@@ -1620,18 +1621,20 @@ find_wls <- function(x,
       target <- gsub("[ ]*", "", target)
       ref.fun.name <- gsub("^[0-9.]*", "", target)
       num.target <- as.numeric(gsub(ref.fun.name, "", target))
-      if (ref.fun.name == "") {
+      if (ref.fun.name == "") { # target is absolute
         target.num <- num.target
-      } else {
+      } else { # target is relative
         ref.fun <- match.fun(ref.fun.name)
         if (na.rm) {
-          target.num <- ref.fun(na.omit(x[[col.name]])) * num.target
+          target.num <- ref.fun(na.omit(x[[col.name]]))
         } else {
-          target.num <- ref.fun(x[[col.name]]) * num.target
+          target.num <- ref.fun(x[[col.name]])
         }
-        if (length(target.num) == 2L) {
+        if (length(target.num) == 1L) {
+          target.num <- target.num * num.target
+        } else if (length(target.num) == 2L) { # range
           target.num <- target.num[1] + target.num[2] * num.target
-        } else if (length(target.num) != 1L) {
+        } else {
           warning("Target function '", ref.fun.name, "' returned of length > 1")
           target.num <- NA_real_
         }
@@ -1700,7 +1703,8 @@ find_wls <- function(x,
   if (is.character(idfactor)) {
     zz[[idfactor]] <- factor(target.names)
   }
-  zz
+  # order by wavelength for spectra
+  zz[order(zz[[col.name.x]]), ]
 }
 
 # find wavelengths for a target y ----------------------------------------------
