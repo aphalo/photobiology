@@ -23,6 +23,7 @@ reference:
     - as.response_spct
     - as.filter_spct
     - as.reflector_spct
+    - as.solute_spct
     - as.object_spct
     - as.chroma_spct
     - setGenericSpct
@@ -43,6 +44,7 @@ reference:
     - as.response_mspct
     - as.filter_mspct
     - as.reflector_mspct
+    - as.solute_mspct
     - as.object_mspct
     - as.chroma_mspct
     - as.matrix-mspct
@@ -110,11 +112,16 @@ reference:
     - setRfrType
     - getFilterProperties
     - setFilterProperties
+    - getSoluteProperties
+    - setSoluteProperties
     - getTfrType
     - setTfrType
     - getAfrType
     - setAfrType
     - is_absorbance_based
+    - getKType
+    - setKType
+    - is_mole_based
     - getTimeUnit
     - setTimeUnit
     - getResponseType
@@ -289,6 +296,8 @@ reference:
     - white_led.raw_spct
     - white_led.cps_spct
     - white_led.source_spct
+    - phenylalanine.spct
+    - water.spct
     - A.illuminant.spct
     - D65.illuminant.spct
     - D2_spectrum
@@ -400,6 +409,7 @@ reference:
     - trim_tails
     - trim_waveband
     - v_insert_hinges
+    - v_replace_hinges
     - w_length_range2rgb
     - w_length2rgb
     - waveband_ratio
@@ -421,8 +431,8 @@ navbar:
     articles:
       text: User Guide
       menu:
-      - text: 'The R for Photobiology Suite'
-        href: articles/r4p-introduction.html
+      - text: '0 The R for Photobiology Suite'
+        href: articles/userguide-0-r4p-introduction.html
       - text: '1 Radiation'
         href: articles/userguide-1-radiation.html
       - text: '2 Astronomy and Atmosphere'

@@ -12,7 +12,7 @@
 
 <meta name="author" content="Pedro J. Aphalo" />
 
-<meta name="date" content="2022-07-07" />
+<meta name="date" content="2022-07-10" />
 
 <title>User Guide: 1 Radiation</title>
 
@@ -333,9 +333,9 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 
 <h1 class="title toc-ignore">User Guide: 1 Radiation</h1>
-<h3 class="subtitle">Package ‘photobiology’ 0.10.10.9001</h3>
+<h3 class="subtitle">Package ‘photobiology’ 0.10.10.9002</h3>
 <h4 class="author">Pedro J. Aphalo</h4>
-<h4 class="date">2022-07-07</h4>
+<h4 class="date">2022-07-10</h4>
 
 
 <div id="TOC">
@@ -7581,7 +7581,6 @@ spectrum.</p>
 ## Label: Ler_06_black.spct 
 ## Measured on 2017-07-03 13:18:18 UTC 
 ## Transmittance of type &#39;total&#39;
-## Rfr (/1): NA, thickness (mm): NA, attenuation mode: NA.
 ## 
 ## # A tibble: 1 × 2
 ##   w.length   Tfr
@@ -7612,20 +7611,18 @@ absorbance.</p>
 <div class="sourceCode" id="cb452"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb452-1"><a href="#cb452-1" aria-hidden="true" tabindex="-1"></a><span class="fu">wls_at_target</span>(filters.mspct, <span class="at">target =</span> <span class="st">&quot;half.maximum&quot;</span>)</span></code></pre></div>
 <pre><code>## Object: filter_mspct [3 x 1]
 ## --- Member: none ---
-## Object: filter_spct [0 x 5]
-## Label: theoretical fully transparent object 
-## Transmittance of type &#39;internal&#39;
+## Object: filter_spct [0 x 2]
+## Transmittance of type &#39;total&#39;
 ## Rfr (/1): NA, thickness (mm): NA, attenuation mode: NA.
 ## 
-## # A tibble: 0 × 5
-## # … with 5 variables: w.length &lt;dbl&gt;, Tfr &lt;dbl&gt;, Rfr.constant &lt;dbl&gt;,
-## #   thickness &lt;dbl&gt;, attenuation.mode &lt;chr&gt;
+## # A tibble: 0 × 2
+## # … with 2 variables: w.length &lt;dbl&gt;, Tfr &lt;dbl&gt;
 ## --- Member: pet ---
 ## Object: filter_spct [1 x 2]
 ## Wavelength range 322-322 nm, step NA nm 
 ## Label: clear polyester film 
 ## Transmittance of type &#39;total&#39;
-## Rfr (/1): NA, thickness (mm): NA, attenuation mode: NA.
+## Rfr (/1): 0.07, thickness (mm): 0.125, attenuation mode: absorption.
 ## 
 ## # A tibble: 1 × 2
 ##   w.length   Tfr
@@ -7636,7 +7633,7 @@ absorbance.</p>
 ## Wavelength range 509-509 nm, step NA nm 
 ## Label: yellow theatrical &#39;gel&#39;, Rosco supergel no. 312, &#39;canary yellow&#39; 
 ## Transmittance of type &#39;total&#39;
-## Rfr (/1): NA, thickness (mm): NA, attenuation mode: NA.
+## Rfr (/1): 0.07, thickness (mm): 0.085, attenuation mode: absorption.
 ## 
 ## # A tibble: 1 × 2
 ##   w.length   Tfr

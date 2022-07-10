@@ -4,12 +4,13 @@ editor_options:
     wrap: 72
 ---
 
-# photobiology 0.11.0
+# photobiology 0.10.11
 
 -   Add new classes of objects `solute_spct` and `solute_mspct` to be used to
-    store molar (the default) and mass based coefficients of attenuation 
+    store molar (default) and mass based coefficients of attenuation 
     describing overall attenuation, or attenuation by absorption or by
-    scattering. Implement the corresponding methods.
+    scattering. Implement the corresponding methods. (Unstable: interface may
+    change).
 -   Add example data for two substances: `water.spct` and `phenylalanine.spct`.
 -   Rewrite `join_mspct()` to use interpolation when wavelengths differ among
     member spectra. This should not break old code but output can slightly 
@@ -17,7 +18,7 @@ editor_options:
 -   Expand syntax accepted for `character` arguments passed to parameter 
     `target` in all `wls_at_target()` methods.
 -   Fix failure to handle spectra with zero rows, a bug affecting several
-    methods, operators and functions including  `rbindspct()` and `find_wls()`.
+    methods, operators and functions including `rbindspct()` and `find_wls()`.
 -   Fix bug in `rowwise_filter()` affecting parallel summaries of absorptance.
 -   Fix bugs in extraction and replacement functions for collections of spectra,
     possibly triggered by changes in R >= 4.0.0.
