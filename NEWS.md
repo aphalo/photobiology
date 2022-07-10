@@ -17,7 +17,7 @@ editor_options:
 -   Expand syntax accepted for `character` arguments passed to parameter 
     `target` in all `wls_at_target()` methods.
 -   Fix failure to handle spectra with zero rows, a bug affecting several
-    methods, operators and functions.
+    methods, operators and functions including  `rbindspct()` and `find_wls()`.
 -   Fix bug in `rowwise_filter()` affecting parallel summaries of absorptance.
 -   Fix bugs in extraction and replacement functions for collections of spectra,
     possibly triggered by changes in R >= 4.0.0.

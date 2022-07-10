@@ -34,7 +34,7 @@ wls_at_target(
 
 \method{wls_at_target}{data.frame}(
   x,
-  target = "half.maximum",
+  target = "0.5max",
   interpolate = FALSE,
   idfactor = length(target) > 1,
   na.rm = FALSE,
@@ -45,7 +45,7 @@ wls_at_target(
 
 \method{wls_at_target}{generic_spct}(
   x,
-  target = "half.maximum",
+  target = "0.5max",
   interpolate = FALSE,
   idfactor = length(target) > 1,
   na.rm = FALSE,
@@ -56,7 +56,7 @@ wls_at_target(
 
 \method{wls_at_target}{source_spct}(
   x,
-  target = "half.maximum",
+  target = "0.5max",
   interpolate = FALSE,
   idfactor = length(target) > 1,
   na.rm = FALSE,
@@ -66,7 +66,7 @@ wls_at_target(
 
 \method{wls_at_target}{response_spct}(
   x,
-  target = "half.maximum",
+  target = "0.5max",
   interpolate = FALSE,
   idfactor = length(target) > 1,
   na.rm = FALSE,
@@ -76,7 +76,7 @@ wls_at_target(
 
 \method{wls_at_target}{filter_spct}(
   x,
-  target = "half.maximum",
+  target = "0.5max",
   interpolate = FALSE,
   idfactor = length(target) > 1,
   na.rm = FALSE,
@@ -86,7 +86,7 @@ wls_at_target(
 
 \method{wls_at_target}{reflector_spct}(
   x,
-  target = "half.maximum",
+  target = "0.5max",
   interpolate = FALSE,
   idfactor = length(target) > 1,
   na.rm = FALSE,
@@ -95,7 +95,7 @@ wls_at_target(
 
 \method{wls_at_target}{solute_spct}(
   x,
-  target = "half.maximum",
+  target = "0.5max",
   interpolate = FALSE,
   idfactor = length(target) > 1,
   na.rm = FALSE,
@@ -104,7 +104,7 @@ wls_at_target(
 
 \method{wls_at_target}{cps_spct}(
   x,
-  target = "half.maximum",
+  target = "0.5max",
   interpolate = FALSE,
   idfactor = length(target) > 1,
   na.rm = FALSE,
@@ -113,7 +113,7 @@ wls_at_target(
 
 \method{wls_at_target}{generic_mspct}(
   x,
-  target = "half.maximum",
+  target = "0.5max",
   interpolate = FALSE,
   idfactor = length(target) > 1,
   na.rm = FALSE,

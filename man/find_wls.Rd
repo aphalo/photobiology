@@ -23,9 +23,10 @@ quantity value for which wavelengths are to be searched. A character
 representing a number is converted to a number. A character value
 representing a number followed by a function name, will be also accepted
 and decoded, such that \code{"0.1max"} is interpreted as targetting one
-tenthof the maximum value in a column. The character
-strings "half.maximum" and "HM" are synonyms for "0.5max" while
-"half.range" and "HR" are synonyms for "0.5range".}
+tenthof the maximum value in a column. The character strings "half.maximum"
+and "HM" are synonyms for "0.5max" while "half.range" and "HR" are synonyms
+for "0.5range". These synonyms are converted to the cannonical form before
+saving them to the returned value.}
 
 \item{col.name.x}{character The name of the column in which to the
 independent variable is stored. Defaults to "w.length" for objects of class
@@ -66,20 +67,15 @@ This function is used internally by method \code{wls_at_target()}, and
 }
 \examples{
 find_wls(white_led.source_spct)
-find_wls(white_led.source_spct, target = "half.maximum")
+find_wls(white_led.source_spct, target = "0.5max")
 find_wls(white_led.source_spct, target = 0.4)
 find_wls(white_led.source_spct, target = 0.4, interpolate = TRUE)
 find_wls(white_led.source_spct, target = c(0.3, 0.4))
 find_wls(white_led.source_spct, target = c(0.3, 0.4), idfactor = "target")
 find_wls(white_led.source_spct, target = c(0.3, 0.4), idfactor = TRUE)
-find_wls(white_led.source_spct, target = "HM")
-find_wls(white_led.source_spct, target = "HM", idfactor = "target")
-find_wls(white_led.source_spct, target = "HR")
 find_wls(white_led.source_spct, target = "0.5max")
 find_wls(white_led.source_spct, target = "0.05max")
 find_wls(white_led.source_spct, target = "0.5range")
-find_wls(white_led.source_spct, target = c("HM", "HR"))
-find_wls(white_led.source_spct, target = c("HM", "HR"), interpolate = TRUE)
 
 led.df <- as.data.frame(white_led.source_spct)
 find_wls(led.df, col.name = "s.e.irrad", col.name.x = "w.length")
