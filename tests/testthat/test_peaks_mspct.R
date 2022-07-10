@@ -260,7 +260,7 @@ test_that("data.frame", {
 
   expect_equal(nrow(wls.df), 2)
   expect_true(all(c("x", "y") %in% colnames(wls.df)))
-  expect_equal(wls.df[["x"]], c(6, 8))
+  expect_equal(wls.df[["x"]], c(6, 9))
   expect_is(wls.df, "data.frame")
   expect_type(wls.df[["x"]], "double")
   expect_type(wls.df[["y"]], "double")
@@ -269,7 +269,7 @@ test_that("data.frame", {
 
   expect_equal(nrow(wls.df), 2)
   expect_true(all(c("x", "y") %in% colnames(wls.df)))
-  expect_equal(wls.df[["x"]], c(6, 8))
+  expect_equal(wls.df[["x"]], c(5.5, 8.5))
   expect_is(wls.df, "data.frame")
   expect_type(wls.df[["x"]], "double")
   expect_type(wls.df[["y"]], "double")

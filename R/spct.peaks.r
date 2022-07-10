@@ -1620,22 +1620,22 @@ find_wls <- function(x,
       target <- gsub("half.range|HR", "0.5range", target)
       target <- gsub("[ ]*", "", target)
       ref.fun.name <- gsub("^[0-9.]*", "", target)
-      num.target <- as.numeric(gsub(ref.fun.name, "", target))
+      num.in.target <- as.numeric(gsub(ref.fun.name, "", target))
       if (ref.fun.name == "") { # target is absolute
-        target.num <- num.target
+        target.num <- num.in.target
       } else { # target is relative
         ref.fun <- match.fun(ref.fun.name)
         if (na.rm) {
-          target.num <- ref.fun(na.omit(x[[col.name]]))
+          ref.num <- ref.fun(na.omit(x[[col.name]]))
         } else {
-          target.num <- ref.fun(x[[col.name]])
+          ref.num <- ref.fun(x[[col.name]])
         }
-        if (length(target.num) == 1L) {
-          target.num <- target.num * num.target
-        } else if (length(target.num) == 2L) { # range
-          target.num <- target.num[1] + target.num[2] * num.target
+        if (length(ref.num) == 1L) { # summary value
+          target.num <- ref.num * num.in.target
+        } else if (length(ref.num) == 2L) { # two sorted values as range
+          target.num <- ref.num[1] + (ref.num[2] - ref.num[1]) * num.in.target
         } else {
-          warning("Target function '", ref.fun.name, "' returned of length > 1")
+          warning("Target function '", ref.fun.name, "' returned value of length > 2")
           target.num <- NA_real_
         }
       }
