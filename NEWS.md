@@ -4,6 +4,12 @@ editor_options:
     wrap: 72
 ---
 
+# photobiology 0.10.12
+
+This bug-fix release corrects major problems caused by recent updates to packages 'lubridate' and possibly 'tibble'. (Reported by _putmanlab_ by issue #7.)
+
+-   Functions `day_night()`, `sunrise_time()`, `noon_time()` and `sunset_time()`started returning wrong results when non-default `tz` arguments were passed together with objects of class `Date` as argumnts to `date`.
+
 # photobiology 0.10.11
 
 -   Add new classes of objects `solute_spct` and `solute_mspct` to be used to

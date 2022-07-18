@@ -12,7 +12,7 @@
 \usage{
 day_night(
   date = lubridate::now(tzone = "UTC"),
-  tz = ifelse(lubridate::is.Date(date), "", lubridate::tz(date)),
+  tz = ifelse(lubridate::is.Date(date), "UTC", lubridate::tz(date)),
   geocode = tibble::tibble(lon = 0, lat = 51.5, address = "Greenwich"),
   twilight = "none",
   unit.out = "hours"
@@ -61,10 +61,12 @@ night_length(
 )
 }
 \arguments{
-\item{date}{"vector" of POSIXct times or Date objects, any valid TZ is allowed,
-default is current date at Greenwich.}
+\item{date}{"vector" of \code{POSIXct} times or\code{Date} objects, any valid
+TZ is allowed, default is current date at Greenwich matching the default
+for \code{geocode}.}
 
-\item{tz}{character vector indicating time zone to be used in output.}
+\item{tz}{character vector indicating time zone to be used in output and to
+interpret \code{Date} values pased as argument to \code{date}.}
 
 \item{geocode}{data frame with one or more rows and variables lon and lat as
 numeric values (degrees). If present, address will be copied to the output.}

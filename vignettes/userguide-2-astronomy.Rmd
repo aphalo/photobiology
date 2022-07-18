@@ -32,6 +32,9 @@ We load two packages, our '**photobiology**' and '**lubridate**', as they will b
 ```{r, pkg-load, eval=TRUE, message = FALSE}
 library(photobiology)
 library(lubridate)
+# if installed, we use 'lutz' to lookup time zones from geocodes
+eval_lutz <- requireNamespace("lutz", quietly = TRUE)
+if (eval_lutz) {library(lutz)}
 ```
 
 ## Introduction

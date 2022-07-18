@@ -8,6 +8,9 @@ options(tibble.print_max = 6, tibble.print_min = 4)
 ## ---- pkg-load, eval=TRUE, message = FALSE------------------------------------
 library(photobiology)
 library(lubridate)
+# if installed, we use 'lutz' to lookup time zones from geocodes
+eval_lutz <- requireNamespace("lutz", quietly = TRUE)
+if (eval_lutz) {library(lutz)}
 
 ## -----------------------------------------------------------------------------
 my.geocode <- data.frame(lat = 60.16, lon = 24.93, address = "Helsinki")

@@ -308,9 +308,11 @@ tz_time_diff <- function(when = lubridate::now(),
 #' arbitrary solar elevation between 90 and -90 degrees by supplying "twilight"
 #' angle(s) as argument.
 #'
-#' @param date "vector" of POSIXct times or Date objects, any valid TZ is allowed,
-#'   default is current date at Greenwich.
-#' @param tz character vector indicating time zone to be used in output.
+#' @param date "vector" of \code{POSIXct} times or\code{Date} objects, any valid
+#'   TZ is allowed, default is current date at Greenwich matching the default
+#'   for \code{geocode}.
+#' @param tz character vector indicating time zone to be used in output and to
+#'   interpret \code{Date} values pased as argument to \code{date}.
 #' @param geocode data frame with one or more rows and variables lon and lat as
 #'   numeric values (degrees). If present, address will be copied to the output.
 #' @param twilight character string, one of "none", "rim", "refraction",
@@ -405,7 +407,7 @@ tz_time_diff <- function(when = lubridate::now(),
 #'
 day_night <- function(date = lubridate::now(tzone = "UTC"),
                       tz = ifelse(lubridate::is.Date(date),
-                                  "",
+                                  "UTC",
                                   lubridate::tz(date)),
                       geocode = tibble::tibble(lon = 0,
                                                lat = 51.5,
@@ -413,6 +415,11 @@ day_night <- function(date = lubridate::now(tzone = "UTC"),
                       twilight = "none",
                       unit.out = "hours") {
   stopifnot(! anyNA(date))
+  tz <- unique(tz)
+  if (length(tz) > 1L) {
+    tz <- tz[1]
+    warning("'tz' is a heterogeneous vector, using only: ", tz)
+  }
   geocode <- validate_geocode(geocode)
   if (any(lubridate::is.Date(date))) {
     date <- as.POSIXct(date, tz = tz)
@@ -484,7 +491,8 @@ day_night_fast <- function(date,
                        hour = 1,
                        minute = 60,
                        second = 3600,
-                       day = 1/24)
+                       day = 1/24,
+                       1) # default
 
   # not vectorized, but possibly different angle for sunset and sunrise
   # twilight.angles is always of length 2
@@ -579,15 +587,15 @@ day_night_fast <- function(date,
       lubridate::seconds(sunset * 86400)
 
     tibble::tibble(day           = date,
-                   tz            = rep(tz, length(date)),
+                   tz            = rep(!!tz, length(date)),
                    twilight.rise = rep(twilight.angles[1], length(date)),
                    twilight.set  = rep(twilight.angles[2], length(date)),
                    longitude     = rep(lon, length(date)),
                    latitude      = rep(lat, length(date)),
                    address       = rep(address, length(date)),
-                   sunrise       = lubridate::with_tz(sunrise.time, tzone = tz),
-                   noon          = lubridate::with_tz(noon.time, tzone = tz),
-                   sunset        = lubridate::with_tz(sunset.time, tzone = tz),
+                   sunrise       = lubridate::with_tz(sunrise.time, tzone = !!tz),
+                   noon          = lubridate::with_tz(noon.time, tzone = !!tz),
+                   sunset        = lubridate::with_tz(sunset.time, tzone = !!tz),
                    daylength     = daylength.hours,
                    nightlength   = 24 - daylength.hours,
                    .name_repair  = "minimal"
@@ -598,7 +606,7 @@ day_night_fast <- function(date,
     sunset.tod <- (sunset * 24 + tz.diff) %% 24
 
     tibble::tibble(day           = date,
-                   tz            = rep(tz, length(date)),
+                   tz            = rep(!!tz, length(date)),
                    twilight.rise = rep(twilight.angles[1], length(date)),
                    twilight.set  = rep(twilight.angles[2], length(date)),
                    longitude     = rep(lon, length(date)),

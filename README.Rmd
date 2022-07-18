@@ -38,7 +38,7 @@ The second example shows some simple astronomical calculations for the sun.
 
 ```{r example2}
 geocode <- data.frame(lon = 0, lat = 55)
-date <- lubridate::today(tzone = "UTC")
+date <- lubridate::now(tzone = "UTC")
 sunrise_time(date, tz = "UTC", geocode = geocode)
 day_length(date, tz = "UTC", geocode = geocode)
 ```
