@@ -43,6 +43,11 @@
 #'   is preferable to directly call \code{sun_angles} instead of the wrapper
 #'   functions as this avoids the unnecesary recalculation.
 #'
+#' @section Important!: Given an instant in time and a time zone, the date is
+#'   computed from these, and may differ by one day to that at the location
+#'   pointed by \code{geocode} at the same instant in time, unless the argument
+#'   passed to \code{tz} matches the time zone at this location.
+#'
 #' @note There exists a different R implementation of the same algorithms called
 #'   "AstroCalcPureR" available as function \code{astrocalc4r} in package
 #'   'fishmethods'. Although the equations used are almost all the same, the

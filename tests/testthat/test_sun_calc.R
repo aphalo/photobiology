@@ -104,6 +104,13 @@ test_that("sun_angles_times_vectorized", {
 test_that("sunrise_time", {
 
   expect_equal(
+    tz(sunrise_time()), "UTC"
+  )
+  expect_equal(
+    tz(sunrise_time(geocode = data.frame(lon = 24.93838, lat = 60.16986,
+                                         address = "Helsinki, Finland"))), "UTC"
+  )
+  expect_equal(
     tz(sunrise_time(ymd("2016-04-17", tz = "UTC"),
                     geocode = data.frame(lon = 24.93838, lat = 60.16986,
                                          address = "Helsinki, Finland"),
@@ -188,6 +195,13 @@ test_that("sunrise_time", {
 test_that("noon_time", {
 
   expect_equal(
+    tz(noon_time()), "UTC"
+  )
+  expect_equal(
+    tz(noon_time(geocode = data.frame(lon = 24.93838, lat = 60.16986,
+                                      address = "Helsinki, Finland"))), "UTC"
+  )
+  expect_equal(
     tz(noon_time(ymd("2016-04-17", tz = "UTC"),
                     geocode = data.frame(lon = 24.93838, lat = 60.16986,
                                          address = "Helsinki, Finland"),
@@ -265,6 +279,13 @@ test_that("noon_time", {
 })
 
 test_that("sunset_time", {
+  expect_equal(
+    tz(sunset_time()), "UTC"
+  )
+  expect_equal(
+    tz(sunset_time(geocode = data.frame(lon = 24.93838, lat = 60.16986,
+                                      address = "Helsinki, Finland"))), "UTC"
+  )
   expect_equal(
     tz(sunset_time(ymd("2016-04-17", tz = "UTC"),
                     geocode = data.frame(lon = 24.93838, lat = 60.16986,

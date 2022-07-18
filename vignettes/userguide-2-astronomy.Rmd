@@ -87,16 +87,20 @@ The function `sun_angles` returns location, civil time, local solar time, the
 azimuth in degrees eastwards, elevation in degrees above the horizon,
 declination, the equation of time and the hour angle. 
 
---------------------------------------------------------------------------------
-In versions up to 0.9.11 in addition parameter `geocode` most functions also had
+----
+
+In versions up to 0.9.11 in addition to parameter `geocode` most functions also had
 the redundant formal parameters `lon` and `lat` which were removed in version
 0.9.12. This change may require users' scripts to be revised.
---------------------------------------------------------------------------------
+
+----
+
 In versions 0.9.16 and later the code has been optimized for performance with
 time vectors, making massive calculations such as the sun position for every
 minute of the year quite fast (couple of seconds). We keep, however, examples
 with rather short vectors.
---------------------------------------------------------------------------------
+
+----
 
 For calculation of the position of the sun we need to supply geographic
 coordinates and a time instant. The time instant passed as argument should be a
@@ -187,39 +191,80 @@ sun_azimuth(time = my.times, geocode = my.geocode)
 
 ## Times of sunrise, solar noon and sunset
 
-Functions `sunrise_time()`, `sunset_time()`, `noon_time()`, `day_length()` and
-`night_length()` have all the same parameter signature. An additional function,
+Convenience functions `sunrise_time()`, `sunset_time()`, `noon_time()`, `day_length()` and
+`night_length()` have all the same parameter signature and are wrappers on function `day_night()`. Function
 `day_night` returns a data frame containing all the quantities returned by the
-other functions. They are all vectorized for the `date` and `geocode`
-parameters. As arguments are the same for all these functions, we use
-`sunrise_time()` in the examples below, but these examples are equally relevant
-to the other functions listed at the start of this paragraph.
+other functions. 
 
-Both latitude and longitude should be supplied through a `geocode`, but be aware
-that if the returned value is desired in the local time coordinates of the
-argument passed to `geocode`, the time zone should match the geographic
-coordinates. If geocodes contain a variable `"address"` it will be copied to the
-output. We reuse the geocode data frames created above, and create a vector of
-datetime objects differing in their date. The default time zone of function
-`ymd` is UTC, so we override it with EET to match the geocodes for Finnish
-cities.
+These functions are vectorized for their `date` and `geocode`
+parameters. They use as default location Greenwich in the U.K., and default time zone "UTC". The date is given by default by the current date based on "UTC". Universal Time Coordinate ("UTC") is the reference used to describe differences among time zones and is never modified by daylight saving time or summer time. The difference between EET (Eastern European Time) and UTC is +2 hours in winter and with EEST (Eastern European Summer Time) +3 hours.
+
+Latitude and longitude are passed through a `geocode` (a data frame). If the returned value is desired in the local time coordinates of the argument passed to `geocode`, the time zone should match the geographic coordinates. If geocodes contain a variable `"address"` it will be copied to the
+output. 
+
+In some of the examples below we reuse the geocode data frames created above, and we here create a vector of
+datetime objects differing in their date. The default time zone of function `ymd()` is `NULL`, so we override it with `EET` to match the geocodes for Finnish cities.
 
 ```{r}
 dates <- ymd("2015-03-01", tz = "EET") + months(0:5)
 dates
 ```
 
+As first example we compute the sunrise time for the current day in Helsinki, with the result returned eithe in UTC or EET coordinates. Time-zone names based on continent and city are also supported, and are to be preferred for past dates and the relationship between time zones and locations are affected by changes in country boundaries and in national laws.
+
 ```{r}
-sunrise_time(now("UTC"), tz = "UTC", geocode = my.geocode)
-sunrise_time(now("EET"), tz = "EET", geocode = my.geocode)
+sunrise_time(now("UTC"), geocode = my.geocode)
+sunrise_time(now("EET"), geocode = my.geocode)
+sunrise_time(now("Europe/Helsinki"), geocode = my.geocode)
+```
+
+----
+
+Be aware of the behaviour of functions `ymd()`, `dmy()`, `ym()` and `my()` from package 'lubridate'. A function call like `ymd("2015-03-01", tz = "UTC")` returns a `POSIXct` object while a call like `ymd("2015-03-01")` is equivalent to `ymd("2015-03-01", tz = NULL)` and returns a `Date` object. `Date` objects do not carry time zone information in the way `POSIXct` objects do, and consequently `Dates` do not uniquely match a period between two absolute instants in time, but rather between two instants in local time. Given these features, it is safer to use `POSIXct` objects as arguments to the functions from package 'photobiology'. Function `today()` always returns a `Date` while function `now()` always returns a `POSIXct`, independently of the argument passed to their `tzone` parameter. Consequently it is preferable to use `now()`, but if you do use `today()` make sure to path the same value as argument to parameter `tzone` of `today()` and to parameter `tz` of the functions from package 'photobiology'. _An instant in time and time zone strictly define a corresponding date at any location on Earth._
+
+The default for time zone is that of the `POSIXct` value passed as argument to parameter `date`, but this can be overridden.
+
+```{r}
+sunrise_time(geocode = my.geocode)
+sunrise_time(date = now("UTC"), geocode = my.geocode)
+sunrise_time(date = now("UTC"), tz = "UTC", geocode = my.geocode)
+sunrise_time(date = now("EET"), geocode = my.geocode)
+sunrise_time(date = now("EET"), tz = "EET", geocode = my.geocode)
+sunrise_time(today("EET"), tz = "EET", geocode = my.geocode)
+```
+
+----
+
+We can also compute the time of solar noon and of sunset.
+
+```{r}
+noon_time(now("UTC"), geocode = my.geocode)
+noon_time(now("EET"), geocode = my.geocode)
+```
+
+```{r}
+sunset_time(now("UTC"), geocode = my.geocode)
+sunset_time(now("EET"), geocode = my.geocode)
+```
+
+Functions `day_length()` and `night_length()` return the length of time, by default in hours and fraction.
+
+```{r}
+day_length(dates, geocode = my.geocode)
+night_length(dates, geocode = my.geocode)
 ```
 
 Southern hemisphere latitudes as well as longitudes to the West of the Greenwich
 meridian should be supplied as negative numbers.
 
 ```{r}
-sunrise_time(dates, geocode = data.frame(lat = 60, lon = 0))
-sunrise_time(dates, geocode = data.frame(lat = -60, lon = 0))
+sunrise_time(dates, geocode = data.frame(lat = 60, lon = 25))
+noon_time(dates, geocode = data.frame(lat = 60, lon = 25))
+```
+
+```{r}
+sunrise_time(dates, geocode = data.frame(lat = -60, lon = 25))
+noon_time(dates, geocode = data.frame(lat = -60, lon = 25))
 ```
 
 The angle used in the twilight calculation can be supplied, either as the name
@@ -244,82 +289,6 @@ sunrise_time(ymd("2017-03-21", tz = "EET"),
              twilight = +12)
 ```
 
-Default latitude is zero (the Equator), the default longitude is zero
-(Greenwich). Be also aware that for summer dates the times are formatted for
-printing accordingly. In the examples below this can be recognized by the time
-zone being reported as EEST instead of EET during the summer for Eastern Europe.
-
-The main function is called `day_night()` and returns a data frame containing
-both the input values and the results of the calculations. See below for
-additional convenience functions useful in the case one needs only one of the
-calculated variables. In other cases it is more efficient to compute the whole
-data frame and later select the columns of interest.
-
-```{r}
-day_night(dates[1:3], 
-          geocode = my.geocode)
-```
-
-The default for `unit.out` is `"hours"` with decimal fractions, as seen above.
-However other useful units like `"seconds"`, `"minutes"`, and `"days"` can be
-useful.
-
-```{r}
-day_night(dates[1:2], 
-          geocode = my.geocode, 
-          unit.out = "days")
-```
-
-Finally it is also possible to have the timing of solar events returned as
-`POSIXct` time values, in which case lengths of time are still returned as
-fractional hours.
-
-```{r}
-day_night(dates[1:2], 
-          geocode = my.geocode, 
-          unit.out = "datetime")
-```
-
-When multiple times and locations are supplied as arguments, the values returned
-are for all combinations of locations and times.
-
-```{r}
-day_night(dates[1:3], 
-          geocode = two.geocodes)
-```
-
-Different convenience functions return the calculated variables individually as
-vectors.
-
-```{r}
-sunrise_time(date = dates, geocode = my.geocode)
-```
-
-As seen above the default for `tz` is the time zone of the argument passed to
-`date`. This can be overridden with an explicit value as argument. In this
-example, when interpreted in the UTC time zone, the time instants correspond to
-the previous calendar day compared to the EET time zone. We can also see that
-"summer time" applies to the EET time zone but not to UTC (universal time
-coordinates).
-
-```{r}
-sunrise_time(date = dates, tz = "UTC", geocode = my.geocode)
-```
-
-```{r}
-noon_time(date = dates, geocode = my.geocode)
-```
-
-```{r}
-sunset_time(date = dates, geocode = my.geocode)
-```
-
-The default for `date` is the current day, using the system time zone settings.
-
-```{r}
-noon_time(geocode = my.geocode)
-```
-
 Parameter `unit.out` can be used to obtain the returned value expressed as
 time-of-day in hours, minutes, or seconds since midnight, instead of the default
 `datetime`.
@@ -334,25 +303,59 @@ sunrise_time(ymd("2017-03-21", tz = "EET"),
              unit.out = "hours")
 ```
 
-Functions `day_length()` and `night_length()` return by default the length of time
-in hours.
-
-```{r}
-day_length(dates, geocode = my.geocode)
-night_length(dates, geocode = my.geocode)
-```
+Similarly, the units can also be selected for the values returned by `day_length()` and `night_length()`.
 
 ```{r}
 day_length(dates, geocode = my.geocode, unit.out = "days")
 night_length(dates, geocode = my.geocode, unit.out = "days")
 ```
 
+----
+
+The core function is called `day_night()` and returns a data frame containing
+both the input values and the results of the calculations. See above for convenience functions useful in the case one needs only one of the
+calculated variables. In other cases it is more efficient to compute the whole
+data frame and later select the columns of interest.
+
+```{r}
+day_night(dates[1:3], 
+          geocode = my.geocode)
+```
+
+The default for `unit.out` is `"hours"` with decimal fractions, as seen above.
+However other useful units like `"seconds"`, `"minutes"`, and `"days"` can be
+useful.
+
+```{r}
+day_night(dates[1:3], 
+          geocode = my.geocode, 
+          unit.out = "days")
+```
+
+Finally it is also possible to have the timing of solar events returned as
+`POSIXct` time values, in which case lengths of time are still returned as
+fractional hours.
+
+```{r}
+day_night(dates[1:3], 
+          geocode = my.geocode, 
+          unit.out = "datetime")
+```
+
+When multiple times and locations are supplied as arguments, the values returned
+are for all combinations of locations and times.
+
+```{r}
+day_night(dates[1:3], 
+          geocode = two.geocodes)
+```
+
 ## Solar time
 
 In field research it is in many cases preferable to sample or measure, and
-present and plot data based on local solar time, as this are the time
-coordinates organisms are exposed to in nature. Two functions are provided. They
-differ in the value returned, either a time of day in hours, or a datetime.
+present and plot data based on local solar time. A new class is defined in package 'photobiology', with a print method, a constructor, a conversion function and a class query function.
+
+The constructor takes as arguments a `POSIXct` object describing and instant in time and a geocode describing the geographic coordinates. 
 
 ```{r}
 Paris.geo <- data.frame(lon = 2.352222, lat = 48.85661, address = "Paris")
@@ -377,7 +380,7 @@ is.timepoint(my.solar.d)
 
 Function `as_tod()` facilitates conversion of R's time date objects into a
 numeric value representing the time of day as numerical value with a decimal 
-fraction using one of hour, minute or second as unit of expression.
+fraction using one of hour, minute or second as unit of expression. While solar time is based on the astronomical position of the sun, time of day is based on the time coordinates for a time zone.
 
 ```{r}
 times <- now(tzone = "UTC") + hours(0:6)

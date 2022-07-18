@@ -103,6 +103,13 @@ There exists a different R implementation of the same algorithms called
   functions, one returning angles at given instants in time, and a separate
   one returning the timing of events for given dates.
 }
+\section{Important!}{
+ Given an instant in time and a time zone, the date is
+  computed from these, and may differ by one day to that at the location
+  pointed by \code{geocode} at the same instant in time, unless the argument
+  passed to \code{tz} matches the time zone at this location.
+}
+
 \examples{
 library(lubridate)
 sun_angles()

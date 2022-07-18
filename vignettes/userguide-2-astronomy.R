@@ -52,12 +52,37 @@ dates <- ymd("2015-03-01", tz = "EET") + months(0:5)
 dates
 
 ## -----------------------------------------------------------------------------
-sunrise_time(now("UTC"), tz = "UTC", geocode = my.geocode)
-sunrise_time(now("EET"), tz = "EET", geocode = my.geocode)
+sunrise_time(now("UTC"), geocode = my.geocode)
+sunrise_time(now("EET"), geocode = my.geocode)
+sunrise_time(now("Europe/Helsinki"), geocode = my.geocode)
 
 ## -----------------------------------------------------------------------------
-sunrise_time(dates, geocode = data.frame(lat = 60, lon = 0))
-sunrise_time(dates, geocode = data.frame(lat = -60, lon = 0))
+sunrise_time(geocode = my.geocode)
+sunrise_time(date = now("UTC"), geocode = my.geocode)
+sunrise_time(date = now("UTC"), tz = "UTC", geocode = my.geocode)
+sunrise_time(date = now("EET"), geocode = my.geocode)
+sunrise_time(date = now("EET"), tz = "EET", geocode = my.geocode)
+sunrise_time(today("EET"), tz = "EET", geocode = my.geocode)
+
+## -----------------------------------------------------------------------------
+noon_time(now("UTC"), geocode = my.geocode)
+noon_time(now("EET"), geocode = my.geocode)
+
+## -----------------------------------------------------------------------------
+sunset_time(now("UTC"), geocode = my.geocode)
+sunset_time(now("EET"), geocode = my.geocode)
+
+## -----------------------------------------------------------------------------
+day_length(dates, geocode = my.geocode)
+night_length(dates, geocode = my.geocode)
+
+## -----------------------------------------------------------------------------
+sunrise_time(dates, geocode = data.frame(lat = 60, lon = 25))
+noon_time(dates, geocode = data.frame(lat = 60, lon = 25))
+
+## -----------------------------------------------------------------------------
+sunrise_time(dates, geocode = data.frame(lat = -60, lon = 25))
+noon_time(dates, geocode = data.frame(lat = -60, lon = 25))
 
 ## -----------------------------------------------------------------------------
 sunrise_time(ymd("2017-03-21", tz = "EET"), 
@@ -74,39 +99,6 @@ sunrise_time(ymd("2017-03-21", tz = "EET"),
              twilight = +12)
 
 ## -----------------------------------------------------------------------------
-day_night(dates[1:3], 
-          geocode = my.geocode)
-
-## -----------------------------------------------------------------------------
-day_night(dates[1:2], 
-          geocode = my.geocode, 
-          unit.out = "days")
-
-## -----------------------------------------------------------------------------
-day_night(dates[1:2], 
-          geocode = my.geocode, 
-          unit.out = "datetime")
-
-## -----------------------------------------------------------------------------
-day_night(dates[1:3], 
-          geocode = two.geocodes)
-
-## -----------------------------------------------------------------------------
-sunrise_time(date = dates, geocode = my.geocode)
-
-## -----------------------------------------------------------------------------
-sunrise_time(date = dates, tz = "UTC", geocode = my.geocode)
-
-## -----------------------------------------------------------------------------
-noon_time(date = dates, geocode = my.geocode)
-
-## -----------------------------------------------------------------------------
-sunset_time(date = dates, geocode = my.geocode)
-
-## -----------------------------------------------------------------------------
-noon_time(geocode = my.geocode)
-
-## -----------------------------------------------------------------------------
 sunrise_time(ymd("2017-03-21", tz = "EET"), 
              tz = "EET", 
              geocode = my.geocode)
@@ -116,12 +108,26 @@ sunrise_time(ymd("2017-03-21", tz = "EET"),
              unit.out = "hours")
 
 ## -----------------------------------------------------------------------------
-day_length(dates, geocode = my.geocode)
-night_length(dates, geocode = my.geocode)
-
-## -----------------------------------------------------------------------------
 day_length(dates, geocode = my.geocode, unit.out = "days")
 night_length(dates, geocode = my.geocode, unit.out = "days")
+
+## -----------------------------------------------------------------------------
+day_night(dates[1:3], 
+          geocode = my.geocode)
+
+## -----------------------------------------------------------------------------
+day_night(dates[1:3], 
+          geocode = my.geocode, 
+          unit.out = "days")
+
+## -----------------------------------------------------------------------------
+day_night(dates[1:3], 
+          geocode = my.geocode, 
+          unit.out = "datetime")
+
+## -----------------------------------------------------------------------------
+day_night(dates[1:3], 
+          geocode = two.geocodes)
 
 ## -----------------------------------------------------------------------------
 Paris.geo <- data.frame(lon = 2.352222, lat = 48.85661, address = "Paris")
