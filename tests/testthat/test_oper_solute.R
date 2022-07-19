@@ -6,17 +6,17 @@ test_that("constructor fraction", {
   empty.spct <- solute_spct()
   expect_true(is.solute_spct(empty.spct))
   expect_true(is.any_spct(empty.spct))
-  expect_named(empty.spct, c("w.length", "K.mole"))
+  expect_named(empty.spct, c("w.length", "K.mol"))
   expect_equal(nrow(empty.spct), 0L)
 
-  my.spct <- solute_spct(w.length = 400:409, K.mole = 0.1)
+  my.spct <- solute_spct(w.length = 400:409, K.mol = 0.1)
   expect_equal(class(my.spct)[1:2], c("solute_spct", "generic_spct") )
   expect_equal(attr(my.spct, "spct.version", exact = TRUE), 2)
 
-  expect_warning(solute_spct(w.length = 400:409, K.mole = -0.1))
-  expect_equal(my.spct[["K.mole"]], rep(0.1, length.out = 10))
+  expect_warning(solute_spct(w.length = 400:409, K.mol = -0.1))
+  expect_equal(my.spct[["K.mol"]], rep(0.1, length.out = 10))
   expect_equal(my.spct[["w.length"]], 400:409)
-  expect_named(my.spct, c("w.length", "K.mole"))
+  expect_named(my.spct, c("w.length", "K.mol"))
   expect_null(attr(my.spct, "time.unit", exact = TRUE))
 
   expect_true(is.solute_spct(my.spct))
@@ -29,12 +29,12 @@ test_that("constructor fraction", {
   expect_false(is.response_spct(my.spct))
   expect_false(is.chroma_spct(my.spct))
 
-  my.df <- data.frame(w.length = 400:409, K.mole = 0.1)
+  my.df <- data.frame(w.length = 400:409, K.mol = 0.1)
   my.spct <- as.solute_spct(my.df)
 
   expect_equal(class(my.spct)[1:2], c("solute_spct", "generic_spct") )
   expect_equal(attr(my.spct, "spct.version", exact = TRUE), 2)
-  expect_named(my.spct, c("w.length", "K.mole"))
+  expect_named(my.spct, c("w.length", "K.mol"))
   expect_true(is.solute_spct(my.spct))
   expect_true(is.any_spct(my.spct))
 
@@ -42,8 +42,8 @@ test_that("constructor fraction", {
 
 test_that("oper", {
 
-  my.e.spct <- solute_spct(w.length = 400:409, K.mole = 0.1)
-  my.2e.spct <- solute_spct(w.length = 400:409, K.mole = 0.2)
+  my.e.spct <- solute_spct(w.length = 400:409, K.mol = 0.1)
+  my.2e.spct <- solute_spct(w.length = 400:409, K.mol = 0.2)
 
   expect_equal(my.e.spct + my.e.spct,  my.2e.spct)
   expect_equal(my.e.spct * 2, my.2e.spct)
@@ -66,20 +66,20 @@ test_that("oper", {
 
 test_that("math", {
 
-  my.e.spct <- solute_spct(w.length = 400:409, K.mole = 0.1)
-  my.2e.spct <- solute_spct(w.length = 400:409, K.mole = 0.2)
+  my.e.spct <- solute_spct(w.length = 400:409, K.mol = 0.1)
+  my.2e.spct <- solute_spct(w.length = 400:409, K.mol = 0.2)
 
   expect_warning(log10(my.e.spct))
-  expect_equal(suppressWarnings(log10(my.e.spct)[["K.mole"]]),
+  expect_equal(suppressWarnings(log10(my.e.spct)[["K.mol"]]),
                rep(log10(0.1), length.out = 10))
   expect_warning(log(my.e.spct))
-  expect_equal(suppressWarnings(log(my.e.spct)[["K.mole"]]),
+  expect_equal(suppressWarnings(log(my.e.spct)[["K.mol"]]),
                rep(log(0.1), length.out = 10))
   expect_warning(log(my.e.spct, 2))
-  expect_equal(suppressWarnings(log(my.e.spct, 2)[["K.mole"]]),
+  expect_equal(suppressWarnings(log(my.e.spct, 2)[["K.mol"]]),
                rep(log(0.1, 2), length.out = 10))
-  expect_equal(suppressWarnings(exp(my.e.spct)[["K.mole"]]),
+  expect_equal(suppressWarnings(exp(my.e.spct)[["K.mol"]]),
                rep(exp(0.1), length.out = 10))
-  expect_equal(sqrt(my.e.spct)[["K.mole"]],  rep(sqrt(0.1), length.out = 10))
+  expect_equal(sqrt(my.e.spct)[["K.mol"]],  rep(sqrt(0.1), length.out = 10))
 
 })

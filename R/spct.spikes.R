@@ -503,7 +503,7 @@ despike.solute_spct <-
            method = "run.mean",
            na.rm = FALSE,
            ...) {
-    cols <- intersect(c("K.mole", "K.mass"), names(x))
+    cols <- intersect(c("K.mol", "K.mass"), names(x))
     if (length(cols) == 1) {
       col.name <- cols
       z <- x
@@ -1012,7 +1012,7 @@ spikes.solute_spct <-
            max.spike.width = 8,
            na.rm = FALSE,
            ...) {
-    cols <- intersect(c("K.mole", "K.mass"), names(x))
+    cols <- intersect(c("K.mol", "K.mass"), names(x))
     if (length(cols) == 1) {
       col.name <- cols
       z <- x

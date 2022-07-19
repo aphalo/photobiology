@@ -14,32 +14,34 @@ merge2object_spct(
 )
 }
 \arguments{
-\item{x, y}{a filter_spct object and a reflector_spct object.}
+\item{x, y}{a \code{filter_spct} object and a \code{reflector_spct} object.}
 
 \item{by}{a vector of shared column names in \code{x} and \code{y} to merge
 on; \code{by} defaults to \code{w.length}.}
 
-\item{...}{other arguments passed to \code{dplyr::inner_join()}}
+\item{...}{other arguments passed to \code{dplyr::inner_join()}.}
 
 \item{w.length.out}{numeric vector of wavelengths to be used for the returned
-object (nm).}
+object (\eqn{nm}).}
 
-\item{Tfr.type.out}{character string indicating whether transmittance
-values in the returned object should be expressed as "total" or "internal".
-This applies only to the case when an object_spct is returned.}
+\item{Tfr.type.out}{character string indicating whether transmittance values
+in the returned object should be expressed as \code{"total"} or
+\code{"internal"}. This applies only to the case when an \code{object_spct}
+is returned.}
 }
 \value{
-An object_spct is returned as the result of merging a filter_spct and
-  a reflector_spct object.
+An \code{object_spct} is returned as the result of merging a
+  \code{filter_spct} and a \code{reflector_spct} object.
 }
 \description{
-Merge a filter_spct with a reflector_spct returning an object_spct object,
-even if wavelength values are mismatched.
+Merge a \code{filter_spct} with a \code{reflector_spct} returning an
+\code{object_spct} object, even if wavelength values are mismatched.
 }
 \note{
 If a numeric vector is supplied as argument for \code{w.length.out},
   the two spectra are interpolated to the new wavelength values before
-  merging. The default argument for \code{w.length.out} is x[[w.length]].
+  merging. The default argument for \code{w.length.out} is
+  \code{x[["w.length"]]}.
 }
 \seealso{
 \code{\link[dplyr]{join}}

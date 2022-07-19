@@ -15,7 +15,7 @@ A dataset containing the wavelengths at a 2 nm interval and the
   corresponding attenuation coefficients.
 }
 \details{
-\itemize{ \item w.length (nm), range 300 to 800 nm. \item K.mole
+\itemize{ \item w.length (nm), range 300 to 800 nm. \item K.mol
 (cm-1/M)}
 }
 \examples{

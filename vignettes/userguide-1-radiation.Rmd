@@ -182,7 +182,7 @@ remain valid.
 | `re sponse_spct`    | `w.length`, `s.e.response` | `time.unit`                                         |
 |                     | `w.length`, `s.q.response` | `time.unit`                                         |
 | `chroma_spct`       | `w.length`, `x`, `y`, `z`  |                                                     |
-| `solute_spct`       | `w.length`, `K.mole`       | `K.type`, `solute,prperties`                        |
+| `solute_spct`       | `w.length`, `K.mol`       | `K.type`, `solute,prperties`                        |
 |                     | `w.length`, `K.mass`       | `K.type`, `solute,prperties`                        |
 
 ------------------------------------------------------------------------
@@ -269,9 +269,9 @@ not the character strings.
 | s.q.response                | $\mathit{x}\,mol^{-1}\,nm^{-1}$         | time.unit = "exposure" |
 | s.q.response                | varies                                  | time.unit = *duration* |
 | x, y, z                     | [0,1]                                   |                        |
-| K.mole                      | $m^{-1}, \log_{10}$ based               | K.type = "attenuation" |
-| K.mole                      | $m^{-1}, \log_{10}$ based               | K.type = "absorption"  |
-| K.mole                      | $m^{-1}, \log_{10}$ based               | K.type = "scattering"  |
+| K.mol                      | $m^{-1}, \log_{10}$ based               | K.type = "attenuation" |
+| K.mol                      | $m^{-1}, \log_{10}$ based               | K.type = "absorption"  |
+| K.mol                      | $m^{-1}, \log_{10}$ based               | K.type = "scattering"  |
 | **B: converted**            |                                         |                        |
 | wl $\to$ w.length           | nm                                      |                        |
 | wavelength $\to$ w.length   | nm                                      |                        |
@@ -280,9 +280,9 @@ not the character strings.
 | Rpc $\to$ Rfr               | [0,100]                                 | Rfr.type = "total"     |
 | Rpc $\to$ Rfr               | [0,100]                                 | Rfr.type = "specular"  |
 | counts.per.second $\to$ cps | $n\,s^{-1}$                             |                        |
-| K.mole                      | $m^{-1}, \log_{e}$ based                | K.type = "attenuation" |
-| K.mole                      | $m^{-1}, \log_{e}$ based                | K.type = "absorption"  |
-| K.mole                      | $m^{-1}, \log_{e}$ based                | K.type = "scattering"  |
+| K.mol                      | $m^{-1}, \log_{e}$ based                | K.type = "attenuation" |
+| K.mol                      | $m^{-1}, \log_{e}$ based                | K.type = "absorption"  |
+| K.mol                      | $m^{-1}, \log_{e}$ based                | K.type = "scattering"  |
 
 ------------------------------------------------------------------------
 

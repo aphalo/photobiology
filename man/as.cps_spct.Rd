@@ -10,9 +10,9 @@ as.cps_spct(x, ...)
 \method{as.cps_spct}{default}(x, ...)
 }
 \arguments{
-\item{x}{an R object}
+\item{x}{an R object.}
 
-\item{...}{other arguments passed to "set" functions}
+\item{...}{other arguments passed to "set" functions.}
 }
 \value{
 A copy of \code{x} converted into a \code{cps_spct} object.

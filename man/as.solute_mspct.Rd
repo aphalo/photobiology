@@ -34,7 +34,7 @@ as.solute_mspct(x, ...)
 \method{as.solute_mspct}{matrix}(
   x,
   w.length,
-  spct.data.var = "K.mole",
+  spct.data.var = "K.mol",
   multiplier = 1,
   byrow = NULL,
   spct.names = "spct_",

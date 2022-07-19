@@ -214,7 +214,7 @@ fscale.solute_spct <- function(x,
                                qty.out = NULL,
                                set.scaled = target == 1,
                                ...) {
-  col.name <- intersect(c("K.mole", "K.mass"), names(x))
+  col.name <- intersect(c("K.mol", "K.mass"), names(x))
   fscale_spct(spct = x,
               range = range,
               f = f,

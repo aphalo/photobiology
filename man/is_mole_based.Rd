@@ -14,7 +14,7 @@ is_mass_based(x)
 }
 \value{
 \code{is_mole_based} returns TRUE if its argument is a
-  \code{solute_spct} object that contains spectral \code{K.mole} data and
+  \code{solute_spct} object that contains spectral \code{K.mol} data and
   \code{FALSE} if it contains \code{K.mass} data, but returns NA for any
   other R object, including those belonging other \code{generic_spct}-derived
   classes. \code{is_mass_based} returns the complement of

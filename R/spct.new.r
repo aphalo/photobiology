@@ -1,5 +1,3 @@
-
-
 # Constructors ------------------------------------------------------------
 
 #' Spectral-object constructors
@@ -8,24 +6,26 @@
 #' \code{generic_spct}. They take as arguments numeric vectors for the data
 #' character scalars for attributes, and a logical flag.
 #'
-#' @param w.length numeric vector with wavelengths in nanometres
-#' @param s.e.irrad numeric vector with spectral energy irradiance in [W m-2
-#'   nm-1] or [J d-1 m-2 nm-1]
-#' @param s.q.irrad numeric A vector with spectral photon irradiance in [mol s-1
-#'   m-2 nm-1] or [mol d-1 m-2 nm-1].
+#' @param w.length numeric vector with wavelengths in nanometres [\eqn{nm}].
+#' @param s.e.irrad numeric vector with spectral energy irradiance in
+#'   [\eqn{W\,m^{-2}\,nm^{-1}}] or [\eqn{J\,d^{-1}\,m^{-2}\,nm^{-1}}].
+#' @param s.q.irrad numeric A vector with spectral photon irradiance in
+#'   [\eqn{mol\,s^{-1}\,m^{-2}\,nm^{-1}}] or
+#'   [\eqn{mol\,d^{-1}\,m^{-2}\,nm^{-1}}].
 #' @param time.unit character string indicating the time unit used for spectral
-#'   irradiance or exposure ("second" , "day" or "exposure") or an object of
-#'   class duration as defined in package lubridate.
+#'   irradiance or exposure (\code{"second"}, \code{"day"} or \code{"exposure"})
+#'   or an object of class duration as defined in package lubridate.
 #' @param bswf.used character A string indicating the BSWF used, if any, for
-#'   spectral effective irradiance or exposure ("none" or the name of the BSWF).
+#'   spectral effective irradiance or exposure (\code{"none"} or the name of the
+#'   BSWF).
 #' @param comment character A string to be added as a comment attribute to the
 #'   object created.
 #' @param strict.range logical Flag indicating whether off-range values result
 #'   in an error instead of a warning.
-#' @param multiple.wl	numeric Maximum number of repeated w.length entries with
-#'   same value.
+#' @param multiple.wl	numeric Maximum number of repeated \code{w.length} entries
+#'   with same value.
 #' @param idfactor character Name of factor distinguishing multiple spectra when
-#'   stored logitudinally (required if mulitple.wl > 1).
+#'   stored longitudinally (required if \code{multiple.wl} > 1).
 #' @param ... other arguments passed to \code{tibble()} such as vectors or
 #'   factors to be added as additional columns.
 #'
@@ -79,7 +79,9 @@ source_spct <- function(w.length = NULL,
 
 #' @rdname source_spct
 #'
-#' @param irrad.mult numeric vector with multipliers for each detector pixel.
+#' @param irrad.mult numeric vector with multipliers for each detector pixel
+#'   expressed in units of \eqn{W\,m^{-2}\,nm^{-1}\,n^{-1}\,s}, where
+#'   \eqn{n\,s^{-1}} are detector counts per second.
 #'
 #' @export
 #'
@@ -107,9 +109,9 @@ calibration_spct <- function(w.length = NULL,
 
 #' @rdname source_spct
 #'
-#' @param counts numeric vector with raw counts expressed per scan
-#' @param instr.desc a list
-#' @param instr.settings a list
+#' @param counts numeric vector with raw counts expressed per scan.
+#' @param instr.desc a list describing the spectrometer used to acquire the data.
+#' @param instr.settings a list describing the settings used to acquire the data.
 #'
 #' @export
 #'
@@ -140,6 +142,7 @@ raw_spct <- function(w.length = NULL,
 #' @rdname source_spct
 #'
 #' @param cps numeric vector with linearized raw counts expressed per second
+#'   [\eqn{n\,s^{-1}}]
 #'
 #' @export
 #'
@@ -200,11 +203,14 @@ generic_spct <- function(w.length = NULL,
 
 #' @rdname source_spct
 #'
-#' @param s.e.response numeric vector with spectral energy irradiance in W m-2
-#'   nm-1 or J d-1 m-2 nm-1
-#' @param s.q.response numeric vector with spectral photon irradiance in mol s-1
-#'   m-2 nm-1 or mol d-1 m-2 nm-1
-#' @param response.type a character string, either "response" or "action".
+#' @param s.e.response numeric vector with a biological, chemical or physical
+#'   response expressed per unit spectral energy irradiance
+#'   [\eqn{W\,m^{-2}\,nm^{-1}} or \eqn{J\,d^{-1}\,m^{-2}\,nm^{-1}}].
+#' @param s.q.response numeric vector with a biological, chemical or physical
+#'   response expressed per unit spectral photon irradiance in
+#'   [\eqn{mol\,s^{-1}\,m^{-2}\,nm^{-1}} or \eqn{mol\,d^{-1}\,m^{-2}\,nm^{-1}}].
+#' @param response.type a character string, either \code{"response"} or
+#'   \code{"action"}.
 #'
 #' @export
 #'
@@ -241,23 +247,25 @@ response_spct <- function(w.length = NULL,
 #' @rdname source_spct
 #'
 #' @param Tfr numeric vector with spectral transmittance as fraction of one
+#'   [\eqn{/1}].
 #' @param Tpc numeric vector with spectral transmittance as percent values
-#' @param Afr numeric vector of absorptance as fraction of one
-#' @param A   numeric vector of absorbance values (log10 based a.u.)
-#' @param Tfr.type character string indicating whether transmittance
-#'   and absorptance values are "total" or "internal" values
-#' @param Rfr.constant numeric The value of the reflection factor (/1).
+#' @param Afr numeric vector of absorptance as fraction of one [\eqn{/1}].
+#' @param A   numeric vector of absorbance values (\eqn{log_{10}}{log10}-base
+#'   a.u.)
+#' @param Tfr.type character string indicating whether transmittance and
+#'   absorptance values are \code{"total"} or \code{"internal"} values
+#' @param Rfr.constant numeric The value of the reflection factor [\eqn{/1}].
 #' @param thickness numeric The thickness of the material.
-#' @param attenuation.mode character One of "reflection", "absorption" or
-#'   "mixed".
+#' @param attenuation.mode character One of \code{"reflection"},
+#'   \code{"absorption"} or \code{"mixed"}.
 #'
 #' @section Warning for filter_spct!: Not entering metadata when creating an
 #'   object will limit the available operations! While "internal" transmittance
 #'   is defined as the transmittance of the material body itself, "total"
 #'   transmittance includes the effects of surface reflectance on the amount of
 #'   light transmitted. For non-diffusing materials like glass an approximate
-#'   \code{Rfr.constant} value can be used to interconvert "total" and
-#'   "internal" transmittance values. Use \code{NA} if not known, or not
+#'   \code{Rfr.constant} value can be used to convert "total" into "internal"
+#'   transmittance values and vice versa. Use \code{NA} if not known, or not
 #'   applicable, e.g., for materials subject to internal scattering.
 #'
 #' @seealso \code{\link{setFilterProperties}}
@@ -309,8 +317,10 @@ filter_spct <- function(w.length = NULL,
 #' @rdname source_spct
 #'
 #' @param Rfr numeric vector with spectral reflectance as fraction of one
-#' @param Rpc numeric vector with spectral reflectance as percent values
-#' @param Rfr.type character A string, either "total" or "specular".
+#'   [\eqn{/1}].
+#' @param Rpc numeric vector with spectral reflectance as percent values.
+#' @param Rfr.type character A string, either \code{"total"} or
+#'   \code{"specular"}.
 #'
 #' @export
 #'
@@ -346,35 +356,46 @@ reflector_spct <- function(w.length = NULL,
 
 #' @rdname source_spct
 #'
-#' @param K.mole numeric vector with molar attenuation coefficient fraction
-#'    [1 / m]
-#' @param K.mass not implemented yet
-#' @param K.type character A string, either "attenuation", "absorption" or
-#'   "scattering".
-#' @param mass numeric The molar mass in Dalton (Da = g/mol).
+#' @param K.mol numeric vector with molar attenuation coefficient in SI units
+#'    [\eqn{m^2\,mol^-1}].
+#' @param K.mass numeric vector with mass attenuation coefficient in SI units
+#'    [\eqn{m^2\,g^-1}].
+#' @param attenuation.XS numeric vector with attenuation cross section values
+#'    (Converted during object construction into \code{K.mol}.)
+#' @param K.type character A string, either \code{"attenuation"},
+#'   \code{"absorption"} or \code{"scattering"}.
+#' @param mass numeric The molar mass in Dalton [Da] (\eqn{Da = g\,mol^{-1}}).
 #' @param formula character The molecular formula.
 #' @param structure raster A bitmap of the structure.
 #' @param name character The name of the substance. A named character
 #'     vector, with member names such as "IUPAC" for the authority.
 #' @param ID character The name of the substance. A named character
-#'     vector, with member names such as "ChemSpider" or "PubChen" for the
+#'     vector, with member names such as "ChemSpider" or "PubChem" for the
 #'     authority.
-#' @param log.base numeric Normally one of e or 10. Data are stored always  on
-#'    base 10 corresponding to decadal absorbance as used in chemistry.
+#' @param log.base numeric Normally one of \code{e} or \code{10}. Data are
+#'   stored always on base 10 corresponding to decadal absorbance as used in
+#'   chemistry.
 #'
-#' @section Warning for solute_spct!: You should always set the base for
-#'   logarithms to match that on which the data are expressed. Failing to do
-#'   this will result in bad data and all further computation will be wrong. Not
-#'   entering metadata when creating an object will limit the available
-#'   operations! Mass should be indicated in daltons or g / mol.
+#' @section Warning for solute_spct!:
+#'   You should always set the base for logarithms to match that on which the
+#'   absorbance data are expressed. Failing to do this will result in bad data
+#'   and all further computation will be wrong. Not entering metadata when
+#'   creating an object will limit the available operations! Mass should be
+#'   indicated in daltons or \eqn{g\,mol^{-1}}. The SI unit of molar attenuation
+#'   coefficient is the square metre per mole (\eqn{m^2 mol^{-1}}{m2 mol-1}),
+#'   but in practice, quantities are usually expressed in terms of
+#'   \eqn{M^{−1}⋅cm^{-1}} or \eqn{l⋅mol^{−1}⋅cm^{−1}} (the latter two units are
+#'   both equal to 0.1 \eqn{m^2 mol^{-1}} and quantities expressed in them need
+#'   to be divided by 10 when passed as arguments to \code{K.mol}.).
 #'
 #' @seealso \code{\link{setSoluteProperties}}
 #'
 #' @export
 #'
 solute_spct <- function(w.length = NULL,
-                        K.mole = NULL,
+                        K.mol = NULL,
                         K.mass = NULL,
+                        attenuation.XS = NULL,
                         ...,
                         log.base = 10,
                         K.type = c("attenuation", "absorption", "scattering"),
@@ -387,21 +408,24 @@ solute_spct <- function(w.length = NULL,
                         strict.range = getOption("photobiology.strict.range", default = FALSE),
                         multiple.wl = 1L,
                         idfactor = NULL) {
+  if (!is.null(attenuation.XS) && is.null(K.mol)) {
+    K.mol <- attenuation.XS / 3.82343216e-21 # epsilon = sigma * N_A / (log(10) * 1e3)
+  }
   if (length(w.length) == 0) {
-    z <- tibble::tibble(w.length = numeric(), K.mole = numeric(), ...)
-  } else if (is.null(K.mass) && is.numeric(K.mole)) {
+    z <- tibble::tibble(w.length = numeric(), K.mol = numeric(), ...)
+  } else if (is.null(K.mass) && is.numeric(K.mol)) {
     if (log.base != 10) {
-      K.mole <- log10(K.mole^log.base)
+      K.mol <- log10(K.mol^log.base)
     }
-    z <- tibble::tibble(w.length, K.mole, ...)
-  } else if (is.null(K.mole) && is.numeric(K.mass)) {
+    z <- tibble::tibble(w.length, K.mol, ...)
+  } else if (is.null(K.mol) && is.numeric(K.mass)) {
     stop("Support for 'K.mass' not yet implemented.")
     if (log.base != 10) {
       K.mass <- log10(K.mass^log.base)
     }
     z <- tibble::tibble(w.length, K.mass, ...)
   } else {
-    warning("Only one of K.mole, or K.mass should be different from NULL.")
+    warning("Only one of K.mol, or K.mass should be different from NULL.")
     z <- tibble::tibble(w.length, ...)
   }
   if (!is.null(comment)) {
@@ -519,8 +543,8 @@ as.generic_spct.default <- function(x, ...) {
 #'
 #' Return a copy of an R object with its class set to a given type of spectrum.
 #'
-#' @param x an R object
-#' @param ... other arguments passed to "set" functions
+#' @param x an R object.
+#' @param ... other arguments passed to "set" functions.
 #'
 #' @return A copy of \code{x} converted into a \code{calibration_spct} object.
 #'
@@ -544,8 +568,8 @@ as.calibration_spct.default <- function(x, ...) {
 #'
 #' Return a copy of an R object with its class set to a given type of spectrum.
 #'
-#' @param x an R object
-#' @param ... other arguments passed to "set" functions
+#' @param x an R object.
+#' @param ... other arguments passed to "set" functions.
 #'
 #' @return A copy of \code{x} converted into a \code{raw_spct} object.
 #'
@@ -569,8 +593,8 @@ as.raw_spct.default <- function(x, ...) {
 #'
 #' Return a copy of an R object with its class set to a given type of spectrum.
 #'
-#' @param x an R object
-#' @param ... other arguments passed to "set" functions
+#' @param x an R object.
+#' @param ... other arguments passed to "set" functions.
 #'
 #' @return A copy of \code{x} converted into a \code{cps_spct} object.
 #'
@@ -594,14 +618,16 @@ as.cps_spct.default <- function(x, ...) {
 #'
 #' Return a copy of an R object with its class set to a given type of spectrum.
 #'
-#' @param x an R object
+#' @param x an R object.
 #' @param time.unit character string indicating the time unit used for spectral
-#'   irradiance or exposure ("second" , "day" or "exposure") or an object of
-#'   class duration as defined in package lubridate.
-#' @param bswf.used character
+#'   irradiance or exposure (\code{"second"}, \code{"day"} or \code{"exposure"})
+#'   or an object of class duration as defined in package lubridate.
+#' @param bswf.used character A string indicating the BSWF used, if any, for
+#'   spectral effective irradiance or exposure (\code{"none"} or the name of the
+#'   BSWF).
 #' @param strict.range logical Flag indicating whether off-range values result
-#'   in an error instead of a warning
-#' @param ... other arguments passed to "set" functions
+#'   in an error instead of a warning.
+#' @param ... other arguments passed to "set" functions.
 #'
 #' @return A copy of \code{x} converted into a \code{source_spct} object.
 #'
@@ -634,11 +660,11 @@ as.source_spct.default <-
 #'
 #' Return a copy of an R object with its class set to a given type of spectrum.
 #'
-#' @param x an R object
+#' @param x an R object.
 #' @param time.unit character string indicating the time unit used for spectral
-#'   irradiance or exposure ("second" , "day" or "exposure") or an object of
-#'   class duration as defined in package lubridate.
-#' @param ... other arguments passed to "set" functions
+#'   irradiance or exposure (\code{"second"}, \code{"day"} or \code{"exposure"})
+#'   or an object of class duration as defined in package lubridate.
+#' @param ... other arguments passed to "set" functions.
 #'
 #' @return A copy of \code{x} converted into a \code{response_spct} object.
 #'
@@ -662,46 +688,12 @@ as.response_spct.default <- function(x, time.unit = "second", ...) {
 #'
 #' Return a copy of an R object with its class set to a given type of spectrum.
 #'
-#' @param x an R object
-#' @param Tfr.type a character string, either "total" or "internal"
+#' @param x an R object.
+#' @param Rfr.type a character string, either \code{"total"} or
+#'   \code{"specular"}.
 #' @param strict.range logical Flag indicating whether off-range values result
-#'   in an error instead of a warning
-#' @param ... other arguments passed to "set" functions
-#'
-#' @return A copy of \code{x} converted into a \code{filter_spct} object.
-#'
-#' @seealso \code{\link{setGenericSpct}}
-#'
-#' @export
-#'
-#' @family constructors of spectral objects
-#'
-as.filter_spct <- function(x, ...) {UseMethod("as.filter_spct")}
-
-#'@describeIn as.filter_spct
-#'
-#' @export
-#'
-as.filter_spct.default <-
-  function(x,
-           Tfr.type = c("total", "internal"),
-           strict.range = getOption("photobiology.strict.range", default = FALSE),
-           ...) {
-    setFilterSpct(x,
-                  Tfr.type = Tfr.type,
-                  strict.range = strict.range,
-                  ...)
-  }
-
-#' Coerce to a spectrum
-#'
-#' Return a copy of an R object with its class set to a given type of spectrum.
-#'
-#' @param x an R object
-#' @param Rfr.type a character string, either "total" or "specular"
-#' @param strict.range logical Flag indicating whether off-range values result
-#'   in an error instead of a warning
-#' @param ... other arguments passed to "set" functions
+#'   in an error instead of a warning.
+#' @param ... other arguments passed to "set" functions.
 #'
 #' @return A copy of \code{x} converted into a \code{reflector_spct} object.
 #'
@@ -733,12 +725,14 @@ as.reflector_spct.default <-
 #'
 #' Return a copy of an R object with its class set to a given type of spectrum.
 #'
-#' @param x an R object
-#' @param Tfr.type a character string, either "total" or "internal"
-#' @param Rfr.type a character string, either "total" or "specular"
+#' @param x an R object.
+#' @param Tfr.type a character string, either \code{"total"} or
+#'   \code{"internal"}.
+#' @param Rfr.type a character string, either \code{"total"} or
+#'   \code{"specular"}.
 #' @param strict.range logical Flag indicating whether off-range values result
-#'   in an error instead of a warning
-#' @param ... other arguments passed to "set" functions
+#'   in an error instead of a warning.
+#' @param ... other arguments passed to "set" functions.
 #'
 #' @return A copy of \code{x} converted into a \code{object_spct} object.
 #'
@@ -766,17 +760,20 @@ as.object_spct.default <- function(x,
                 ...)
 }
 
-#' Coerce to a spectrum
+#' Coerce or convert into a filter spectrum
 #'
-#' Return a copy of an R object with its class set to a given type of spectrum.
+#' Return a possibly modified copy of an R object with its class set to a filter
+#' spectrum. In the case of conversion from a \code{solute_spct} object, compute
+#' the spectral quantity based on additional input from user.
 #'
-#' @param x an R object
-#' @param Tfr.type a character string, either "total" or "internal"
+#' @param x an R object.
+#' @param Tfr.type a character string, either \code{"total"} or
+#'   \code{"internal"}.
 #' @param strict.range logical Flag indicating whether off-range values result
-#'   in an error instead of a warning
-#' @param ... other arguments passed to "set" functions
+#'   in an error instead of a warning.
+#' @param ... other arguments passed to "set" functions.
 #'
-#' @return A copy of \code{x} converted into a \code{filter_spct} object.
+#' @return A copy of \code{x} converted into a \code{filter_spct}. object.
 #'
 #' @seealso \code{\link{setGenericSpct}}
 #'
@@ -801,15 +798,77 @@ as.filter_spct.default <-
                   ...)
   }
 
+#'@describeIn as.filter_spct
+#'
+#' @param Rfr.constant numeric The value of the reflection factor (/1) to be
+#'   set.
+#' @param comment character A string to be added as a comment attribute to the
+#'   object created. If not supplied, the comment will be copied from \code{x}.
+#' @param molar.concentration,mass.concentration numeric Concentration to be
+#'   used to compute transmittance of the solute in solution.
+#' @param path.length numeric The length of the light path (\eqn{m}) used to
+#'   compute transmittance of the solute in solution.
+#'
+#' @export
+#'
+as.filter_spct.solute_spct <-
+  function(x,
+           Tfr.type = "internal",
+           strict.range = getOption("photobiology.strict.range", default = FALSE),
+           Rfr.constant = NA_real_,
+           comment = NULL,
+           molar.concentration = NULL,
+           mass.concentration = NULL,
+           path.length = 1, # meter
+           ...) {
+    stopifnot(Tfr.type == "internal" ||
+                Tfr.type == "total" && !is.na(Rfr.constant) && Rfr.constant >= 0)
+    stopifnot(xor(is.null(molar.concentration), is.null(mass.concentration)))
+    solute.properties <- getSoluteProperties(x)
+    attenuation.mode <- ifelse(getKType(x) == "absorption",
+                               "absorption",
+                               "mixed")
+    # we do calculations using moles
+    if (is.null(molar.concentration)) {
+      molar.concentration <- mass.concentration / solute.properties[["mass"]]
+    }
+    if (! "K.mol" %in% colnames(x)) {
+      x[["K.mol"]] <- x[["K.mass"]] / solute.properties[["mass"]]
+    }
+    if (is.null(comment)) {
+      comment <- paste("Computed from 'solute_spct' for ",
+                       solute.properties[["name"]], ".\n",
+                       comment(x), sep = "")
+    }
+    z <- filter_spct(w.length = x[["w.length"]],
+                    A = x[["K.mol"]] * molar.concentration * path.length,
+                    Tfr.type = "internal",
+                    Rfr.constant = Rfr.constant,
+                    thickness = path.length,
+                    attenuation.mode = attenuation.mode,
+                    comment = comment,
+                    strict.range = strict.range,
+                    multiple.wl = getMultipleWl(x),
+                    ...)
+    other.cols <-
+      setdiff(colnames(x), c("w.length", "K.mol", "K.mass"))
+    if (length(other.cols)) {
+      zz <- cbind(z, x[ , other.cols])
+      copy_attributes(z, zz)
+    } else {
+      z
+    }
+  }
+
 #' Coerce to a spectrum
 #'
 #' Return a copy of an R object with its class set to a given type of spectrum.
 #'
-#' @param x an R object
-#' @param K.type a character string, either "total" or "specular"
+#' @param x an R object.
+#' @param K.type a character string, either \code{"total"} or \code{"specular"}.
 #' @param strict.range logical Flag indicating whether off-range values result
-#'   in an error instead of a warning
-#' @param ... other arguments passed to "set" functions
+#'   in an error instead of a warning.
+#' @param ... other arguments passed to "set" functions.
 #'
 #' @return A copy of \code{x} converted into a \code{solute_spct} object.
 #'
@@ -841,10 +900,10 @@ as.solute_spct.default <-
 #'
 #' Return a copy of an R object with its class set to a given type of spectrum.
 #'
-#' @param x an R object
-#' @param ... other arguments passed to "set" functions
+#' @param x an R object.
+#' @param ... other arguments passed to "set" functions.
 #'
-#' @return A copy of \code{x} converted into a \code{chroma_spct} object.
+#' @return A copy of \code{x} converted into a \code{chroma_spct}. object.
 #'
 #' @seealso \code{\link{setGenericSpct}}
 #'
@@ -867,25 +926,27 @@ as.chroma_spct.default <- function(x, ...) {
 
 #' Merge into object_spct
 #'
-#' Merge a filter_spct with a reflector_spct returning an object_spct object,
-#' even if wavelength values are mismatched.
+#' Merge a \code{filter_spct} with a \code{reflector_spct} returning an
+#' \code{object_spct} object, even if wavelength values are mismatched.
 #'
-#' @param x,y a filter_spct object and a reflector_spct object.
+#' @param x,y a \code{filter_spct} object and a \code{reflector_spct} object.
 #' @param by a vector of shared column names in \code{x} and \code{y} to merge
 #'   on; \code{by} defaults to \code{w.length}.
-#' @param ... other arguments passed to \code{dplyr::inner_join()}
+#' @param ... other arguments passed to \code{dplyr::inner_join()}.
 #' @param w.length.out numeric vector of wavelengths to be used for the returned
-#'   object (nm).
-#' @param Tfr.type.out character string indicating whether transmittance
-#'   values in the returned object should be expressed as "total" or "internal".
-#'   This applies only to the case when an object_spct is returned.
+#'   object (\eqn{nm}).
+#' @param Tfr.type.out character string indicating whether transmittance values
+#'   in the returned object should be expressed as \code{"total"} or
+#'   \code{"internal"}. This applies only to the case when an \code{object_spct}
+#'   is returned.
 #'
 #' @note If a numeric vector is supplied as argument for \code{w.length.out},
 #'   the two spectra are interpolated to the new wavelength values before
-#'   merging. The default argument for \code{w.length.out} is x[[w.length]].
+#'   merging. The default argument for \code{w.length.out} is
+#'   \code{x[["w.length"]]}.
 #'
-#' @return An object_spct is returned as the result of merging a filter_spct and
-#'   a reflector_spct object.
+#' @return An \code{object_spct} is returned as the result of merging a
+#'   \code{filter_spct} and a \code{reflector_spct} object.
 #'
 #' @seealso \code{\link[dplyr]{join}}
 #'

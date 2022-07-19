@@ -110,8 +110,9 @@ reflector_spct(
 
 solute_spct(
   w.length = NULL,
-  K.mole = NULL,
+  K.mol = NULL,
   K.mass = NULL,
+  attenuation.XS = NULL,
   ...,
   log.base = 10,
   K.type = c("attenuation", "absorption", "scattering"),
@@ -153,23 +154,25 @@ chroma_spct(
 )
 }
 \arguments{
-\item{w.length}{numeric vector with wavelengths in nanometres}
+\item{w.length}{numeric vector with wavelengths in nanometres [\eqn{nm}].}
 
-\item{s.e.irrad}{numeric vector with spectral energy irradiance in [W m-2
-nm-1] or [J d-1 m-2 nm-1]}
+\item{s.e.irrad}{numeric vector with spectral energy irradiance in
+[\eqn{W\,m^{-2}\,nm^{-1}}] or [\eqn{J\,d^{-1}\,m^{-2}\,nm^{-1}}].}
 
-\item{s.q.irrad}{numeric A vector with spectral photon irradiance in [mol s-1
-m-2 nm-1] or [mol d-1 m-2 nm-1].}
+\item{s.q.irrad}{numeric A vector with spectral photon irradiance in
+[\eqn{mol\,s^{-1}\,m^{-2}\,nm^{-1}}] or
+[\eqn{mol\,d^{-1}\,m^{-2}\,nm^{-1}}].}
 
 \item{...}{other arguments passed to \code{tibble()} such as vectors or
 factors to be added as additional columns.}
 
 \item{time.unit}{character string indicating the time unit used for spectral
-irradiance or exposure ("second" , "day" or "exposure") or an object of
-class duration as defined in package lubridate.}
+irradiance or exposure (\code{"second"}, \code{"day"} or \code{"exposure"})
+or an object of class duration as defined in package lubridate.}
 
 \item{bswf.used}{character A string indicating the BSWF used, if any, for
-spectral effective irradiance or exposure ("none" or the name of the BSWF).}
+spectral effective irradiance or exposure (\code{"none"} or the name of the
+BSWF).}
 
 \item{comment}{character A string to be added as a comment attribute to the
 object created.}
@@ -177,76 +180,91 @@ object created.}
 \item{strict.range}{logical Flag indicating whether off-range values result
 in an error instead of a warning.}
 
-\item{multiple.wl}{numeric Maximum number of repeated w.length entries with
-same value.}
+\item{multiple.wl}{numeric Maximum number of repeated \code{w.length} entries
+with same value.}
 
 \item{idfactor}{character Name of factor distinguishing multiple spectra when
-stored logitudinally (required if mulitple.wl > 1).}
+stored longitudinally (required if \code{multiple.wl} > 1).}
 
-\item{irrad.mult}{numeric vector with multipliers for each detector pixel.}
+\item{irrad.mult}{numeric vector with multipliers for each detector pixel
+expressed in units of \eqn{W\,m^{-2}\,nm^{-1}\,n^{-1}\,s}, where
+\eqn{n\,s^{-1}} are detector counts per second.}
 
-\item{instr.desc}{a list}
+\item{instr.desc}{a list describing the spectrometer used to acquire the data.}
 
-\item{counts}{numeric vector with raw counts expressed per scan}
+\item{counts}{numeric vector with raw counts expressed per scan.}
 
-\item{instr.settings}{a list}
+\item{instr.settings}{a list describing the settings used to acquire the data.}
 
-\item{cps}{numeric vector with linearized raw counts expressed per second}
+\item{cps}{numeric vector with linearized raw counts expressed per second
+[\eqn{n\,s^{-1}}]}
 
-\item{s.e.response}{numeric vector with spectral energy irradiance in W m-2
-nm-1 or J d-1 m-2 nm-1}
+\item{s.e.response}{numeric vector with a biological, chemical or physical
+response expressed per unit spectral energy irradiance
+[\eqn{W\,m^{-2}\,nm^{-1}} or \eqn{J\,d^{-1}\,m^{-2}\,nm^{-1}}].}
 
-\item{s.q.response}{numeric vector with spectral photon irradiance in mol s-1
-m-2 nm-1 or mol d-1 m-2 nm-1}
+\item{s.q.response}{numeric vector with a biological, chemical or physical
+response expressed per unit spectral photon irradiance in
+[\eqn{mol\,s^{-1}\,m^{-2}\,nm^{-1}} or \eqn{mol\,d^{-1}\,m^{-2}\,nm^{-1}}].}
 
-\item{response.type}{a character string, either "response" or "action".}
+\item{response.type}{a character string, either \code{"response"} or
+\code{"action"}.}
 
-\item{Tfr}{numeric vector with spectral transmittance as fraction of one}
+\item{Tfr}{numeric vector with spectral transmittance as fraction of one
+[\eqn{/1}].}
 
 \item{Tpc}{numeric vector with spectral transmittance as percent values}
 
-\item{Afr}{numeric vector of absorptance as fraction of one}
+\item{Afr}{numeric vector of absorptance as fraction of one [\eqn{/1}].}
 
-\item{A}{numeric vector of absorbance values (log10 based a.u.)}
+\item{A}{numeric vector of absorbance values (\eqn{log_{10}}{log10}-base
+a.u.)}
 
-\item{Tfr.type}{character string indicating whether transmittance
-and absorptance values are "total" or "internal" values}
+\item{Tfr.type}{character string indicating whether transmittance and
+absorptance values are \code{"total"} or \code{"internal"} values}
 
-\item{Rfr.constant}{numeric The value of the reflection factor (/1).}
+\item{Rfr.constant}{numeric The value of the reflection factor [\eqn{/1}].}
 
 \item{thickness}{numeric The thickness of the material.}
 
-\item{attenuation.mode}{character One of "reflection", "absorption" or
-"mixed".}
+\item{attenuation.mode}{character One of \code{"reflection"},
+\code{"absorption"} or \code{"mixed"}.}
 
-\item{Rfr}{numeric vector with spectral reflectance as fraction of one}
+\item{Rfr}{numeric vector with spectral reflectance as fraction of one
+[\eqn{/1}].}
 
-\item{Rpc}{numeric vector with spectral reflectance as percent values}
+\item{Rpc}{numeric vector with spectral reflectance as percent values.}
 
-\item{Rfr.type}{character A string, either "total" or "specular".}
+\item{Rfr.type}{character A string, either \code{"total"} or
+\code{"specular"}.}
 
-\item{K.mole}{numeric vector with molar attenuation coefficient fraction
-[1 / m]}
+\item{K.mol}{numeric vector with molar attenuation coefficient in SI units
+[\eqn{m^2\,mol^-1}].}
 
-\item{K.mass}{not implemented yet}
+\item{K.mass}{numeric vector with mass attenuation coefficient in SI units
+[\eqn{m^2\,g^-1}].}
 
-\item{log.base}{numeric Normally one of e or 10. Data are stored always  on
-base 10 corresponding to decadal absorbance as used in chemistry.}
+\item{attenuation.XS}{numeric vector with attenuation cross section values
+(Converted during object construction into \code{K.mol}.)}
 
-\item{K.type}{character A string, either "attenuation", "absorption" or
-"scattering".}
+\item{log.base}{numeric Normally one of \code{e} or \code{10}. Data are
+stored always on base 10 corresponding to decadal absorbance as used in
+chemistry.}
+
+\item{K.type}{character A string, either \code{"attenuation"},
+\code{"absorption"} or \code{"scattering"}.}
 
 \item{name}{character The name of the substance. A named character
 vector, with member names such as "IUPAC" for the authority.}
 
-\item{mass}{numeric The molar mass in Dalton (Da = g/mol).}
+\item{mass}{numeric The molar mass in Dalton [Da] (\eqn{Da = g\,mol^{-1}}).}
 
 \item{formula}{character The molecular formula.}
 
 \item{structure}{raster A bitmap of the structure.}
 
 \item{ID}{character The name of the substance. A named character
-vector, with member names such as "ChemSpider" or "PubChen" for the
+vector, with member names such as "ChemSpider" or "PubChem" for the
 authority.}
 
 \item{x, y, z}{numeric colour coordinates}
@@ -274,17 +292,23 @@ The functions can be used to add only one spectral quantity to a
   is defined as the transmittance of the material body itself, "total"
   transmittance includes the effects of surface reflectance on the amount of
   light transmitted. For non-diffusing materials like glass an approximate
-  \code{Rfr.constant} value can be used to interconvert "total" and
-  "internal" transmittance values. Use \code{NA} if not known, or not
+  \code{Rfr.constant} value can be used to convert "total" into "internal"
+  transmittance values and vice versa. Use \code{NA} if not known, or not
   applicable, e.g., for materials subject to internal scattering.
 }
 
 \section{Warning for solute_spct!}{
- You should always set the base for
-  logarithms to match that on which the data are expressed. Failing to do
-  this will result in bad data and all further computation will be wrong. Not
-  entering metadata when creating an object will limit the available
-  operations! Mass should be indicated in daltons or g / mol.
+
+  You should always set the base for logarithms to match that on which the
+  absorbance data are expressed. Failing to do this will result in bad data
+  and all further computation will be wrong. Not entering metadata when
+  creating an object will limit the available operations! Mass should be
+  indicated in daltons or \eqn{g\,mol^{-1}}. The SI unit of molar attenuation
+  coefficient is the square metre per mole (\eqn{m^2 mol^{-1}}{m2 mol-1}),
+  but in practice, quantities are usually expressed in terms of
+  \eqn{M^{−1}⋅cm^{-1}} or \eqn{l⋅mol^{−1}⋅cm^{−1}} (the latter two units are
+  both equal to 0.1 \eqn{m^2 mol^{-1}} and quantities expressed in them need
+  to be divided by 10 when passed as arguments to \code{K.mol}.).
 }
 
 \seealso{

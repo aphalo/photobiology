@@ -159,7 +159,7 @@ na.omit.solute_spct <- function(object, na.action = "omit", fill = NULL, ...) {
   na.omit.generic_spct(object = object,
                        na.action = na.action,
                        fill = fill,
-                       target.colnames = c("K.mole", "K.mass"))
+                       target.colnames = c("K.mol", "K.mass"))
 }
 
 #' @rdname na.omit
@@ -279,7 +279,7 @@ na.exclude.solute_spct <- function(object, na.action = "exclude", fill = NULL, .
   na.omit.generic_spct(object = object,
                        na.action = na.action,
                        fill = fill,
-                       target.colnames = c("K.mole", "K.mass"))
+                       target.colnames = c("K.mol", "K.mass"))
 }
 
 #' @rdname na.omit

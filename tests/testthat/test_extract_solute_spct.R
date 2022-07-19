@@ -4,7 +4,7 @@ context("extract")
 
 test_that("solute_spct", {
 
-  my.spct <- solute_spct(w.length = 400:450, K.mole = 0.5, K.type = "attenuation")
+  my.spct <- solute_spct(w.length = 400:450, K.mol = 0.5, K.type = "attenuation")
   my_z.spct <- my.spct
   my_z.spct$z <- 1
 
@@ -43,7 +43,7 @@ context("replace")
 
 test_that("solute_spct", {
 
-  my.spct <- solute_spct(w.length = 400:450, K.mole = 0.5, K.type = "attenuation")
+  my.spct <- solute_spct(w.length = 400:450, K.mol = 0.5, K.type = "attenuation")
   my_z.spct <- my.spct
   my_z.spct[1, 2] <- 1
   expect_equal(class(my_z.spct), class(my.spct))

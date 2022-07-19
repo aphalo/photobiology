@@ -3,7 +3,8 @@
 \name{as.filter_spct}
 \alias{as.filter_spct}
 \alias{as.filter_spct.default}
-\title{Coerce to a spectrum}
+\alias{as.filter_spct.solute_spct}
+\title{Coerce or convert into a filter spectrum}
 \usage{
 as.filter_spct(x, ...)
 
@@ -14,59 +15,58 @@ as.filter_spct(x, ...)
   ...
 )
 
-as.filter_spct(x, ...)
-
-\method{as.filter_spct}{default}(
+\method{as.filter_spct}{solute_spct}(
   x,
-  Tfr.type = c("total", "internal"),
+  Tfr.type = "internal",
   strict.range = getOption("photobiology.strict.range", default = FALSE),
+  Rfr.constant = NA_real_,
+  comment = NULL,
+  molar.concentration = NULL,
+  mass.concentration = NULL,
+  path.length = 1,
   ...
 )
 }
 \arguments{
-\item{x}{an R object}
+\item{x}{an R object.}
 
-\item{...}{other arguments passed to "set" functions}
+\item{...}{other arguments passed to "set" functions.}
 
-\item{Tfr.type}{a character string, either "total" or "internal"}
+\item{Tfr.type}{a character string, either \code{"total"} or
+\code{"internal"}.}
 
 \item{strict.range}{logical Flag indicating whether off-range values result
-in an error instead of a warning}
+in an error instead of a warning.}
+
+\item{Rfr.constant}{numeric The value of the reflection factor (/1) to be
+set.}
+
+\item{comment}{character A string to be added as a comment attribute to the
+object created. If not supplied, the comment will be copied from \code{x}.}
+
+\item{molar.concentration, mass.concentration}{numeric Concentration to be
+used to compute transmittance of the solute in solution.}
+
+\item{path.length}{numeric The length of the light path (\eqn{m}) used to
+compute transmittance of the solute in solution.}
 }
 \value{
-A copy of \code{x} converted into a \code{filter_spct} object.
-
-A copy of \code{x} converted into a \code{filter_spct} object.
+A copy of \code{x} converted into a \code{filter_spct}. object.
 }
 \description{
-Return a copy of an R object with its class set to a given type of spectrum.
-
-Return a copy of an R object with its class set to a given type of spectrum.
+Return a possibly modified copy of an R object with its class set to a filter
+spectrum. In the case of conversion from a \code{solute_spct} object, compute
+the spectral quantity based on additional input from user.
 }
 \section{Methods (by class)}{
 \itemize{
 \item \code{default}: 
 
-\item \code{default}: 
+\item \code{solute_spct}: 
 }}
 
 \seealso{
 \code{\link{setGenericSpct}}
-
-\code{\link{setGenericSpct}}
-
-Other constructors of spectral objects: 
-\code{\link{as.calibration_spct}()},
-\code{\link{as.chroma_spct}()},
-\code{\link{as.cps_spct}()},
-\code{\link{as.generic_spct}()},
-\code{\link{as.object_spct}()},
-\code{\link{as.raw_spct}()},
-\code{\link{as.reflector_spct}()},
-\code{\link{as.response_spct}()},
-\code{\link{as.solute_spct}()},
-\code{\link{as.source_spct}()},
-\code{\link{source_spct}()}
 
 Other constructors of spectral objects: 
 \code{\link{as.calibration_spct}()},

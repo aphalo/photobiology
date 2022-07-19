@@ -260,9 +260,9 @@ test_that("solute_mspct", {
   expect_named(my.df, c("w.length", "water1", "water2"))
   expect_equal(my.df[["w.length"]], my.mspct[["water1"]][["w.length"]])
   expect_equal(my.df[["w.length"]], my.mspct[["water2"]][["w.length"]])
-  expect_equal(my.df[["water1"]], my.mspct[["water1"]][["K.mole"]])
-  expect_equal(my.df[["water1"]], my.mspct[["water1"]][["K.mole"]])
-  expect_equal(my.df[["water2"]], my.mspct[["water2"]][["K.mole"]])
+  expect_equal(my.df[["water1"]], my.mspct[["water1"]][["K.mol"]])
+  expect_equal(my.df[["water1"]], my.mspct[["water1"]][["K.mol"]])
+  expect_equal(my.df[["water2"]], my.mspct[["water2"]][["K.mol"]])
 
   # boundary cases
 
@@ -273,8 +273,8 @@ test_that("solute_mspct", {
   expect_is(my.df, "data.frame")
   expect_named(my.df, c("w.length", "h20"))
   expect_equal(ncol(my.df), 2L)
-  expect_equal(my.df[["h20"]], my1.mspct[["h20"]][["K.mole"]])
-  expect_equal(my.df[["h20"]], water.spct[["K.mole"]])
+  expect_equal(my.df[["h20"]], my1.mspct[["h20"]][["K.mol"]])
+  expect_equal(my.df[["h20"]], water.spct[["K.mol"]])
 
   my0.mspct <- solute_mspct()
   expect_is(my0.mspct, "solute_mspct")

@@ -3,7 +3,7 @@
 #' @description A dataset containing the wavelengths at a 2 nm interval and the
 #'   corresponding attenuation coefficients.
 #'
-#' @details \itemize{ \item w.length (nm), range 300 to 800 nm. \item K.mole
+#' @details \itemize{ \item w.length (nm), range 300 to 800 nm. \item K.mol
 #' (cm-1/M)}
 #'
 #' @author Buiteveld et al. (1994) (original data)
@@ -32,7 +32,7 @@
 #' @description A dataset containing the wavelengths at a 0.25 nm interval and the
 #'   corresponding attenuation coefficients.
 #'
-#' @details \itemize{ \item w.length (nm), range 222 to 720 nm. \item K.mole
+#' @details \itemize{ \item w.length (nm), range 222 to 720 nm. \item K.mol
 #' (cm-1/M)}
 #'
 #' @author Du et ql. (original data); Scott Prahl (included data).

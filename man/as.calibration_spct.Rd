@@ -10,9 +10,9 @@ as.calibration_spct(x, ...)
 \method{as.calibration_spct}{default}(x, ...)
 }
 \arguments{
-\item{x}{an R object}
+\item{x}{an R object.}
 
-\item{...}{other arguments passed to "set" functions}
+\item{...}{other arguments passed to "set" functions.}
 }
 \value{
 A copy of \code{x} converted into a \code{calibration_spct} object.

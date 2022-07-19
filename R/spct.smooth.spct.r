@@ -483,7 +483,7 @@ smooth_spct.solute_spct <- function(x,
     return(x)
   }
 
-  cols <- intersect(c("K.mole", "K.mass"), names(x))
+  cols <- intersect(c("K.mol", "K.mass"), names(x))
   if (length(cols) == 1) {
     col.name <- cols
   } else {
