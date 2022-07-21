@@ -153,27 +153,27 @@ class to "generic_spct".
 }
 \section{Functions}{
 \itemize{
-\item \code{setCalibrationSpct}: Set class of a an object to "calibration_spct".
+\item \code{setCalibrationSpct()}: Set class of a an object to "calibration_spct".
 
-\item \code{setRawSpct}: Set class of a an object to "raw_spct".
+\item \code{setRawSpct()}: Set class of a an object to "raw_spct".
 
-\item \code{setCpsSpct}: Set class of a an object to "cps_spct".
+\item \code{setCpsSpct()}: Set class of a an object to "cps_spct".
 
-\item \code{setFilterSpct}: Set class of an object to "filter_spct".
+\item \code{setFilterSpct()}: Set class of an object to "filter_spct".
 
-\item \code{setSoluteSpct}: Set class of an object to "solute_spct".
+\item \code{setSoluteSpct()}: Set class of an object to "solute_spct".
 
-\item \code{setReflectorSpct}: Set class of a an object to "reflector_spct".
+\item \code{setReflectorSpct()}: Set class of a an object to "reflector_spct".
 
-\item \code{setObjectSpct}: Set class of an object to "object_spct".
+\item \code{setObjectSpct()}: Set class of an object to "object_spct".
 
-\item \code{setResponseSpct}: Set class of an object to "response_spct".
+\item \code{setResponseSpct()}: Set class of an object to "response_spct".
 
-\item \code{setSourceSpct}: Set class of an object to "source_spct".
+\item \code{setSourceSpct()}: Set class of an object to "source_spct".
 
-\item \code{setChromaSpct}: Set class of an object to "chroma_spct".
+\item \code{setChromaSpct()}: Set class of an object to "chroma_spct".
+
 }}
-
 \note{
 This method alters x itself by reference and in addition
   returns x invisibly.

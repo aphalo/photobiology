@@ -61,17 +61,17 @@ Return a copy of an R object with its class set to a given type
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{default}: 
+\item \code{as.cps_mspct(default)}: 
 
-\item \code{data.frame}: 
+\item \code{as.cps_mspct(data.frame)}: 
 
-\item \code{cps_spct}: 
+\item \code{as.cps_mspct(cps_spct)}: 
 
-\item \code{list}: 
+\item \code{as.cps_mspct(list)}: 
 
-\item \code{matrix}: 
+\item \code{as.cps_mspct(matrix)}: 
+
 }}
-
 \note{
 When \code{x} is a square matrix an explicit argument is needed for
   \code{byrow} to indicate how data in \code{x} should be read. In every case

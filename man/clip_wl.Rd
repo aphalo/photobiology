@@ -40,17 +40,17 @@ interpolation used at range boundaries.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{default}: Default for generic function
+\item \code{clip_wl(default)}: Default for generic function
 
-\item \code{generic_spct}: Clip an object of class "generic_spct" or derived.
+\item \code{clip_wl(generic_spct)}: Clip an object of class "generic_spct" or derived.
 
-\item \code{generic_mspct}: Clip an object of class "generic_mspct" or derived.
+\item \code{clip_wl(generic_mspct)}: Clip an object of class "generic_mspct" or derived.
 
-\item \code{waveband}: Clip an object of class "waveband".
+\item \code{clip_wl(waveband)}: Clip an object of class "waveband".
 
-\item \code{list}: Clip a list (of objects of class "waveband").
+\item \code{clip_wl(list)}: Clip a list (of objects of class "waveband").
+
 }}
-
 \note{
 The condition tested is \code{wl >= range[1] & wl < (range[2] + 1e-13)}.
 }

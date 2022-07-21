@@ -44,15 +44,15 @@ or a filter_mspct.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{default}: default
+\item \code{getFilterProperties(default)}: default
 
-\item \code{filter_spct}: generic_spct
+\item \code{getFilterProperties(filter_spct)}: generic_spct
 
-\item \code{summary_filter_spct}: summary_generic_spct
+\item \code{getFilterProperties(summary_filter_spct)}: summary_generic_spct
 
-\item \code{generic_mspct}: filter_mspct
+\item \code{getFilterProperties(generic_mspct)}: filter_mspct
+
 }}
-
 \note{
 The method for collections of spectra returns the
   a tibble with a column of lists.

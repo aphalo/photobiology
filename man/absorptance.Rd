@@ -117,17 +117,17 @@ Absorptance is a different quantity than absorbance.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{default}: Default for generic function
+\item \code{absorptance(default)}: Default for generic function
 
-\item \code{filter_spct}: Specialization for filter spectra
+\item \code{absorptance(filter_spct)}: Specialization for filter spectra
 
-\item \code{object_spct}: Specialization for object spectra
+\item \code{absorptance(object_spct)}: Specialization for object spectra
 
-\item \code{filter_mspct}: Calculates absorptance from a \code{filter_mspct}
+\item \code{absorptance(filter_mspct)}: Calculates absorptance from a \code{filter_mspct}
 
-\item \code{object_mspct}: Calculates absorptance from a \code{object_mspct}
+\item \code{absorptance(object_mspct)}: Calculates absorptance from a \code{object_mspct}
+
 }}
-
 \note{
 The \code{use.hinges} parameter controls speed optimization. The
   defaults should be suitable in most cases. Only the range of wavelengths

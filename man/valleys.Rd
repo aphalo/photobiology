@@ -299,47 +299,47 @@ to local maxima.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{default}: Default function usable on numeric vectors.
+\item \code{valleys(default)}: Default function usable on numeric vectors.
 
-\item \code{default}: Default returning always NA.
+\item \code{valleys(default)}: Default returning always NA.
 
-\item \code{numeric}: Default function usable on numeric vectors.
+\item \code{valleys(numeric)}: Default function usable on numeric vectors.
 
-\item \code{data.frame}: Method for "data.frame" objects.
+\item \code{valleys(data.frame)}: Method for "data.frame" objects.
 
-\item \code{generic_spct}: Method for "generic_spct" objects.
+\item \code{valleys(generic_spct)}: Method for "generic_spct" objects.
 
-\item \code{source_spct}: Method for "source_spct" objects.
+\item \code{valleys(source_spct)}: Method for "source_spct" objects.
 
-\item \code{response_spct}: Method for "response_spct" objects.
+\item \code{valleys(response_spct)}: Method for "response_spct" objects.
 
-\item \code{filter_spct}: Method for "filter_spct" objects.
+\item \code{valleys(filter_spct)}: Method for "filter_spct" objects.
 
-\item \code{reflector_spct}: Method for "reflector_spct".
+\item \code{valleys(reflector_spct)}: Method for "reflector_spct".
 
-\item \code{solute_spct}: Method for "solute_spct" objects.
+\item \code{valleys(solute_spct)}: Method for "solute_spct" objects.
 
-\item \code{cps_spct}: Method for "cps_spct" objects.
+\item \code{valleys(cps_spct)}: Method for "cps_spct" objects.
 
-\item \code{raw_spct}: Method for "raw_spct" objects.
+\item \code{valleys(raw_spct)}: Method for "raw_spct" objects.
 
-\item \code{generic_mspct}: Method for "generic_mspct" objects.
+\item \code{valleys(generic_mspct)}: Method for "generic_mspct" objects.
 
-\item \code{source_mspct}: Method for "source_mspct" objects.
+\item \code{valleys(source_mspct)}: Method for "source_mspct" objects.
 
-\item \code{response_mspct}: Method for "cps_mspct" objects.
+\item \code{valleys(response_mspct)}: Method for "cps_mspct" objects.
 
-\item \code{filter_mspct}: Method for "filter_mspct" objects.
+\item \code{valleys(filter_mspct)}: Method for "filter_mspct" objects.
 
-\item \code{reflector_mspct}: Method for "reflector_mspct" objects.
+\item \code{valleys(reflector_mspct)}: Method for "reflector_mspct" objects.
 
-\item \code{solute_mspct}: Method for "solute_mspct" objects.
+\item \code{valleys(solute_mspct)}: Method for "solute_mspct" objects.
 
-\item \code{cps_mspct}: Method for "cps_mspct" objects.
+\item \code{valleys(cps_mspct)}: Method for "cps_mspct" objects.
 
-\item \code{raw_mspct}: Method for "raw_mspct" objects.
+\item \code{valleys(raw_mspct)}: Method for "raw_mspct" objects.
+
 }}
-
 \examples{
 valleys(sun.spct, span = 50)
 

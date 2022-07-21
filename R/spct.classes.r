@@ -1075,11 +1075,11 @@ setFilterSpct <-
 #'
 #' @param K.type character A string, either "attenuation", "absorption" or
 #'   "scattering".
+#' @param name character The name of the substance. A named character
+#'     vector, with member names such as "IUPAC" for the authority.
 #' @param mass numeric The mass in Dalton (Da = g/mol).
 #' @param formula character The molecular formula.
 #' @param structure raster A bitmap of the structure.
-#' @param name character The name of the substance. A named character
-#'     vector, with member names such as "IUPAC" for the authority.
 #' @param ID character The name of the substance. A named character
 #'     vector, with member names such as "ChemSpider" or "PubChen" for the
 #'     authority.

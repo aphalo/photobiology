@@ -38,15 +38,15 @@ differences between successive sorted values.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{default}: Default function usable on numeric vectors.
+\item \code{stepsize(default)}: Default function usable on numeric vectors.
 
-\item \code{numeric}: Method for numeric vectors.
+\item \code{stepsize(numeric)}: Method for numeric vectors.
 
-\item \code{generic_spct}: Method for "generic_spct" objects.
+\item \code{stepsize(generic_spct)}: Method for "generic_spct" objects.
 
-\item \code{generic_mspct}: Method for "generic_mspct" objects.
+\item \code{stepsize(generic_mspct)}: Method for "generic_mspct" objects.
+
 }}
-
 \examples{
 stepsize(sun.spct)
 wl_stepsize(sun.spct)

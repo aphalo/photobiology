@@ -44,17 +44,17 @@ Function that converts spectral photon irradiance (molar) into spectral energy i
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{default}: Default method
+\item \code{q2e(default)}: Default method
 
-\item \code{source_spct}: Method for spectral irradiance
+\item \code{q2e(source_spct)}: Method for spectral irradiance
 
-\item \code{response_spct}: Method for spectral responsiveness
+\item \code{q2e(response_spct)}: Method for spectral responsiveness
 
-\item \code{source_mspct}: Method for collections of (light) source spectra
+\item \code{q2e(source_mspct)}: Method for collections of (light) source spectra
 
-\item \code{response_mspct}: Method for collections of response spectra
+\item \code{q2e(response_mspct)}: Method for collections of response spectra
+
 }}
-
 \seealso{
 Other quantity conversion functions: 
 \code{\link{A2T}()},

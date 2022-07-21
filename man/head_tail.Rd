@@ -53,19 +53,19 @@ The value returned by \code{head_tail()} is equivalent to row
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{default}: 
+\item \code{head_tail(default)}: 
 
-\item \code{data.frame}: 
+\item \code{head_tail(data.frame)}: 
 
-\item \code{matrix}: 
+\item \code{head_tail(matrix)}: 
 
-\item \code{function}: 
+\item \code{head_tail(`function`)}: 
 
-\item \code{table}: 
+\item \code{head_tail(table)}: 
 
-\item \code{ftable}: 
+\item \code{head_tail(ftable)}: 
+
 }}
-
 \note{
 For some types of input, like functions, the output may be confusing,
  however, we have opted for consistency with existing functions. The code

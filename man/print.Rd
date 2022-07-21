@@ -33,9 +33,9 @@ Print method for objects of spectral classes.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{generic_mspct}: 
-}}
+\item \code{print(generic_mspct)}: 
 
+}}
 \note{
 This is simply a wrapper on the print method for tibbles, with
   additional information in the header. Curently, \code{width} applies only

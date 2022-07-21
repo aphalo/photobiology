@@ -36,22 +36,22 @@ A generic function for querying if a biological spectral weighting function
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{default}: Default method.
+\item \code{is_effective(default)}: Default method.
 
-\item \code{waveband}: Is a \code{waveband} object defining a method for
+\item \code{is_effective(waveband)}: Is a \code{waveband} object defining a method for
 calculating effective irradiance.
 
-\item \code{generic_spct}: Does a \code{source_spct} object contain effective
+\item \code{is_effective(generic_spct)}: Does a \code{source_spct} object contain effective
 spectral irradiance values.
 
-\item \code{source_spct}: Does a \code{source_spct} object contain effective
+\item \code{is_effective(source_spct)}: Does a \code{source_spct} object contain effective
 spectral irradiance values.
 
-\item \code{summary_generic_spct}: Method for "summary_generic_spct".
+\item \code{is_effective(summary_generic_spct)}: Method for "summary_generic_spct".
 
-\item \code{summary_source_spct}: Method for "summary_source_spct".
+\item \code{is_effective(summary_source_spct)}: Method for "summary_source_spct".
+
 }}
-
 \examples{
 is_effective(summary(sun.spct))
 

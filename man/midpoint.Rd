@@ -43,17 +43,17 @@ of the wavelength range of a waveband or spectrum object (or numeric vector).
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{default}: Default method for generic function
+\item \code{midpoint(default)}: Default method for generic function
 
-\item \code{numeric}: Default method for generic function
+\item \code{midpoint(numeric)}: Default method for generic function
 
-\item \code{waveband}: Wavelength at center of a "waveband".
+\item \code{midpoint(waveband)}: Wavelength at center of a "waveband".
 
-\item \code{generic_spct}: Method for "generic_spct".
+\item \code{midpoint(generic_spct)}: Method for "generic_spct".
 
-\item \code{generic_mspct}: Method for "generic_mspct" objects.
+\item \code{midpoint(generic_mspct)}: Method for "generic_mspct" objects.
+
 }}
-
 \examples{
 midpoint(10:20)
 midpoint(sun.spct)

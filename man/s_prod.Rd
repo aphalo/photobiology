@@ -52,23 +52,23 @@ collection returning a spectral object.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{default}: 
+\item \code{s_prod(default)}: 
 
-\item \code{source_mspct}: 
+\item \code{s_prod(source_mspct)}: 
 
-\item \code{response_mspct}: 
+\item \code{s_prod(response_mspct)}: 
 
-\item \code{filter_mspct}: 
+\item \code{s_prod(filter_mspct)}: 
 
-\item \code{reflector_mspct}: 
+\item \code{s_prod(reflector_mspct)}: 
 
-\item \code{calibration_mspct}: 
+\item \code{s_prod(calibration_mspct)}: 
 
-\item \code{cps_mspct}: 
+\item \code{s_prod(cps_mspct)}: 
 
-\item \code{raw_mspct}: 
+\item \code{s_prod(raw_mspct)}: 
+
 }}
-
 \note{
 Omission of NAs is done separately at each wavelength. Interpolation is
   not applied, so all spectra in \code{x} must share the same set of

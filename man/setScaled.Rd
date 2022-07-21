@@ -42,15 +42,15 @@ object.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{default}: Default for generic function
+\item \code{setScaled(default)}: Default for generic function
 
-\item \code{generic_spct}: Specialization for generic_spct
+\item \code{setScaled(generic_spct)}: Specialization for generic_spct
 
-\item \code{summary_generic_spct}: Specialization for summary_generic_spct
+\item \code{setScaled(summary_generic_spct)}: Specialization for summary_generic_spct
 
-\item \code{generic_mspct}: Specialization for generic_mspct
+\item \code{setScaled(generic_mspct)}: Specialization for generic_mspct
+
 }}
-
 \note{
 if x is not a \code{generic_spct} object, x is not modified.
 }

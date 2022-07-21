@@ -32,11 +32,11 @@ classes "waveband" or of class "generic_spct" or derived.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{generic_spct}: 
+\item \code{max(generic_spct)}: 
 
-\item \code{generic_mspct}: 
+\item \code{max(generic_mspct)}: 
+
 }}
-
 \examples{
 max(sun.spct)
 wl_max(sun.spct)

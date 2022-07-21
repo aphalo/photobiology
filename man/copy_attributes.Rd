@@ -41,12 +41,12 @@ and waveband objects of classes from package 'photobiology'.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{default}: Default for generic function
+\item \code{copy_attributes(default)}: Default for generic function
 
-\item \code{generic_spct}: 
+\item \code{copy_attributes(generic_spct)}: 
 
-\item \code{generic_mspct}: 
+\item \code{copy_attributes(generic_mspct)}: 
 
-\item \code{waveband}: 
+\item \code{copy_attributes(waveband)}: 
+
 }}
-

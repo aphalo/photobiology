@@ -82,17 +82,17 @@ possible.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{default}: Default for generic function
+\item \code{trim_wl(default)}: Default for generic function
 
-\item \code{generic_spct}: Trim an object of class "generic_spct" or derived.
+\item \code{trim_wl(generic_spct)}: Trim an object of class "generic_spct" or derived.
 
-\item \code{generic_mspct}: Trim an object of class "generic_mspct" or derived.
+\item \code{trim_wl(generic_mspct)}: Trim an object of class "generic_mspct" or derived.
 
-\item \code{waveband}: Trim an object of class "waveband".
+\item \code{trim_wl(waveband)}: Trim an object of class "waveband".
 
-\item \code{list}: Trim a list (of "waveband" objects).
+\item \code{trim_wl(list)}: Trim a list (of "waveband" objects).
+
 }}
-
 \note{
 By default the \code{w.length} values for the first and last rows
   in the returned object are the values supplied as \code{range}.

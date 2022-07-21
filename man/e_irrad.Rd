@@ -133,15 +133,15 @@ Energy irradiance for one or more wavebands of a light source spectrum.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{default}: Default for generic function
+\item \code{e_irrad(default)}: Default for generic function
 
-\item \code{source_spct}: Calculates energy irradiance from a \code{source_spct}
+\item \code{e_irrad(source_spct)}: Calculates energy irradiance from a \code{source_spct}
 object.
 
-\item \code{source_mspct}: Calculates energy irradiance from a
+\item \code{e_irrad(source_mspct)}: Calculates energy irradiance from a
 \code{source_mspct} object.
-}}
 
+}}
 \note{
 The last two parameters control speed optimizations. The defaults
   should be suitable in most cases. If you will use repeatedly the same SWFs

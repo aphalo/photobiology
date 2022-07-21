@@ -76,19 +76,19 @@ internal and total absorptance.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{default}: Default method for generic function
+\item \code{Afr2T(default)}: Default method for generic function
 
-\item \code{numeric}: Default method for generic function
+\item \code{Afr2T(numeric)}: Default method for generic function
 
-\item \code{filter_spct}: Method for filter spectra
+\item \code{Afr2T(filter_spct)}: Method for filter spectra
 
-\item \code{object_spct}: Method for object spectra
+\item \code{Afr2T(object_spct)}: Method for object spectra
 
-\item \code{filter_mspct}: Method for collections of filter spectra
+\item \code{Afr2T(filter_mspct)}: Method for collections of filter spectra
 
-\item \code{object_mspct}: Method for collections of object spectra
+\item \code{Afr2T(object_mspct)}: Method for collections of object spectra
+
 }}
-
 \examples{
 T2Afr(Ler_leaf.spct)
 

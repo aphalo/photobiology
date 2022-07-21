@@ -133,15 +133,15 @@ light source spectrum.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{default}: Default for generic function
+\item \code{q_irrad(default)}: Default for generic function
 
-\item \code{source_spct}: Calculates photon irradiance from a \code{source_spct}
+\item \code{q_irrad(source_spct)}: Calculates photon irradiance from a \code{source_spct}
 object.
 
-\item \code{source_mspct}: Calculates photon (quantum) irradiance from a
+\item \code{q_irrad(source_mspct)}: Calculates photon (quantum) irradiance from a
 \code{source_mspct} object.
-}}
 
+}}
 \note{
 The last two parameters control speed optimizations. The defaults
   should be suitable in most cases. If you will use repeatedly the same SWFs

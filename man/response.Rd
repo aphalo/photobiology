@@ -127,13 +127,13 @@ Calculate average photon- or energy-based photo-response.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{default}: Default for generic function
+\item \code{response(default)}: Default for generic function
 
-\item \code{response_spct}: Method for response spectra.
+\item \code{response(response_spct)}: Method for response spectra.
 
-\item \code{response_mspct}: Calculates response from a \code{response_mspct}
+\item \code{response(response_mspct)}: Calculates response from a \code{response_mspct}
+
 }}
-
 \note{
 The parameter \code{use.hinges} controls speed optimization. The
   defaults should be suitable in most cases. Only the range of wavelengths

@@ -52,23 +52,23 @@ in the collection returning a spectral object.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{default}: 
+\item \code{s_range(default)}: 
 
-\item \code{filter_mspct}: 
+\item \code{s_range(filter_mspct)}: 
 
-\item \code{source_mspct}: 
+\item \code{s_range(source_mspct)}: 
 
-\item \code{response_mspct}: 
+\item \code{s_range(response_mspct)}: 
 
-\item \code{reflector_mspct}: 
+\item \code{s_range(reflector_mspct)}: 
 
-\item \code{calibration_mspct}: 
+\item \code{s_range(calibration_mspct)}: 
 
-\item \code{cps_mspct}: 
+\item \code{s_range(cps_mspct)}: 
 
-\item \code{raw_mspct}: 
+\item \code{s_range(raw_mspct)}: 
+
 }}
-
 \note{
 Trimming of extreme values and omission of NAs is done separately at
   each wavelength. Interpolation is not applied, so all spectra in \code{x}

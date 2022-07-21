@@ -226,45 +226,45 @@ objects instead of vectors.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{default}: Default for generic function
+\item \code{clean(default)}: Default for generic function
 
-\item \code{source_spct}: Replace off-range values in a source spectrum
+\item \code{clean(source_spct)}: Replace off-range values in a source spectrum
 
-\item \code{filter_spct}: Replace off-range values in a filter spectrum
+\item \code{clean(filter_spct)}: Replace off-range values in a filter spectrum
 
-\item \code{reflector_spct}: Replace off-range values in a reflector spectrum
+\item \code{clean(reflector_spct)}: Replace off-range values in a reflector spectrum
 
-\item \code{solute_spct}: Replace off-range values in a solute spectrum
+\item \code{clean(solute_spct)}: Replace off-range values in a solute spectrum
 
-\item \code{object_spct}: Replace off-range values in an object spectrum
+\item \code{clean(object_spct)}: Replace off-range values in an object spectrum
 
-\item \code{response_spct}: Replace off-range values in a response spectrum
+\item \code{clean(response_spct)}: Replace off-range values in a response spectrum
 
-\item \code{cps_spct}: Replace off-range values in a counts per second spectrum
+\item \code{clean(cps_spct)}: Replace off-range values in a counts per second spectrum
 
-\item \code{raw_spct}: Replace off-range values in a raw counts spectrum
+\item \code{clean(raw_spct)}: Replace off-range values in a raw counts spectrum
 
-\item \code{generic_spct}: Replace off-range values in a generic spectrum
+\item \code{clean(generic_spct)}: Replace off-range values in a generic spectrum
 
-\item \code{source_mspct}: 
+\item \code{clean(source_mspct)}: 
 
-\item \code{filter_mspct}: 
+\item \code{clean(filter_mspct)}: 
 
-\item \code{reflector_mspct}: 
+\item \code{clean(reflector_mspct)}: 
 
-\item \code{object_mspct}: 
+\item \code{clean(object_mspct)}: 
 
-\item \code{solute_mspct}: 
+\item \code{clean(solute_mspct)}: 
 
-\item \code{response_mspct}: 
+\item \code{clean(response_mspct)}: 
 
-\item \code{cps_mspct}: 
+\item \code{clean(cps_mspct)}: 
 
-\item \code{raw_mspct}: 
+\item \code{clean(raw_mspct)}: 
 
-\item \code{generic_mspct}: 
+\item \code{clean(generic_mspct)}: 
+
 }}
-
 \note{
 In the case of \code{object_spct} objects, cleaning is done first
   on the Rfr and Tfr columns and subsequently Afr estimated and if needed

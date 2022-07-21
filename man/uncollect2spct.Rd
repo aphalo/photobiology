@@ -49,11 +49,11 @@ frame of the call.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{default}: Default for generic function
+\item \code{uncollect2spct(default)}: Default for generic function
 
-\item \code{generic_mspct}: 
+\item \code{uncollect2spct(generic_mspct)}: 
+
 }}
-
 \examples{
 
 my.mscpt <- source_mspct(list(sun1.spct = sun.spct, sun2.spct = sun.spct))

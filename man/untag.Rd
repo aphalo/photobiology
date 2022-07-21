@@ -35,13 +35,13 @@ unchanged.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{default}: Default for generic function
+\item \code{untag(default)}: Default for generic function
 
-\item \code{generic_spct}: Specialization for generic_spct
+\item \code{untag(generic_spct)}: Specialization for generic_spct
 
-\item \code{generic_mspct}: Specialization for generic_spct
+\item \code{untag(generic_mspct)}: Specialization for generic_spct
+
 }}
-
 \seealso{
 Other tagging and related functions: 
 \code{\link{is_tagged}()},

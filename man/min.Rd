@@ -32,11 +32,11 @@ classes "waveband" or of class "generic_spct" or derived.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{generic_spct}: 
+\item \code{min(generic_spct)}: 
 
-\item \code{generic_mspct}: 
+\item \code{min(generic_mspct)}: 
+
 }}
-
 \examples{
 min(sun.spct)
 wl_min(sun.spct)

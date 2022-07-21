@@ -60,33 +60,33 @@ Remove from spectral object additional columns that are user defined.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{default}: 
+\item \code{drop_user_cols(default)}: 
 
-\item \code{generic_spct}: 
+\item \code{drop_user_cols(generic_spct)}: 
 
-\item \code{source_spct}: 
+\item \code{drop_user_cols(source_spct)}: 
 
-\item \code{response_spct}: 
+\item \code{drop_user_cols(response_spct)}: 
 
-\item \code{object_spct}: 
+\item \code{drop_user_cols(object_spct)}: 
 
-\item \code{filter_spct}: 
+\item \code{drop_user_cols(filter_spct)}: 
 
-\item \code{reflector_spct}: 
+\item \code{drop_user_cols(reflector_spct)}: 
 
-\item \code{solute_spct}: 
+\item \code{drop_user_cols(solute_spct)}: 
 
-\item \code{chroma_spct}: 
+\item \code{drop_user_cols(chroma_spct)}: 
 
-\item \code{calibration_spct}: 
+\item \code{drop_user_cols(calibration_spct)}: 
 
-\item \code{cps_spct}: 
+\item \code{drop_user_cols(cps_spct)}: 
 
-\item \code{raw_spct}: 
+\item \code{drop_user_cols(raw_spct)}: 
 
-\item \code{generic_mspct}: 
+\item \code{drop_user_cols(generic_mspct)}: 
+
 }}
-
 \seealso{
 Other experimental utility functions: 
 \code{\link{collect2mspct}()},

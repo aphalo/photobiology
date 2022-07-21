@@ -56,23 +56,23 @@ wavelength across all the spectra in the collection.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{default}: 
+\item \code{s_var(default)}: 
 
-\item \code{filter_mspct}: 
+\item \code{s_var(filter_mspct)}: 
 
-\item \code{source_mspct}: 
+\item \code{s_var(source_mspct)}: 
 
-\item \code{response_mspct}: 
+\item \code{s_var(response_mspct)}: 
 
-\item \code{reflector_mspct}: 
+\item \code{s_var(reflector_mspct)}: 
 
-\item \code{calibration_mspct}: 
+\item \code{s_var(calibration_mspct)}: 
 
-\item \code{cps_mspct}: 
+\item \code{s_var(cps_mspct)}: 
 
-\item \code{raw_mspct}: 
+\item \code{s_var(raw_mspct)}: 
+
 }}
-
 \note{
 Omission of NAs is done separately at each wavelength. Interpolation is
   not applied, so all spectra in \code{x} must share the same set of

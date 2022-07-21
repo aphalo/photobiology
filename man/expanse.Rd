@@ -45,17 +45,17 @@ A function that returns the expanse (max(x) - min(x)) for R objects.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{default}: Default method for generic function
+\item \code{expanse(default)}: Default method for generic function
 
-\item \code{numeric}: Method for "numeric"
+\item \code{expanse(numeric)}: Method for "numeric"
 
-\item \code{waveband}: Method for "waveband"
+\item \code{expanse(waveband)}: Method for "waveband"
 
-\item \code{generic_spct}: Method for "generic_spct"
+\item \code{expanse(generic_spct)}: Method for "generic_spct"
 
-\item \code{generic_mspct}: Method for "generic_mspct" objects.
+\item \code{expanse(generic_mspct)}: Method for "generic_mspct" objects.
+
 }}
-
 \examples{
 expanse(10:20)
 expanse(sun.spct)

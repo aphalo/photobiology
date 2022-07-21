@@ -180,37 +180,37 @@ Metadata attributes are retained unchanged.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{default}: Default for generic function
+\item \code{fshift(default)}: Default for generic function
 
-\item \code{source_spct}: 
+\item \code{fshift(source_spct)}: 
 
-\item \code{response_spct}: 
+\item \code{fshift(response_spct)}: 
 
-\item \code{filter_spct}: 
+\item \code{fshift(filter_spct)}: 
 
-\item \code{reflector_spct}: 
+\item \code{fshift(reflector_spct)}: 
 
-\item \code{source_mspct}: 
+\item \code{fshift(source_mspct)}: 
 
-\item \code{raw_spct}: 
+\item \code{fshift(raw_spct)}: 
 
-\item \code{cps_spct}: 
+\item \code{fshift(cps_spct)}: 
 
-\item \code{generic_spct}: 
+\item \code{fshift(generic_spct)}: 
 
-\item \code{response_mspct}: 
+\item \code{fshift(response_mspct)}: 
 
-\item \code{filter_mspct}: 
+\item \code{fshift(filter_mspct)}: 
 
-\item \code{reflector_mspct}: 
+\item \code{fshift(reflector_mspct)}: 
 
-\item \code{raw_mspct}: 
+\item \code{fshift(raw_mspct)}: 
 
-\item \code{cps_mspct}: 
+\item \code{fshift(cps_mspct)}: 
 
-\item \code{generic_mspct}: 
+\item \code{fshift(generic_mspct)}: 
+
 }}
-
 \note{
 Method \code{fshift} is not implemented for \code{solute_spct} objects
   as the spectral data stored in them are a description of an intensive

@@ -33,9 +33,9 @@ Return a copy of an R object with its class set to a given type of spectrum.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{default}: 
-}}
+\item \code{as.reflector_spct(default)}: 
 
+}}
 \seealso{
 \code{\link{setGenericSpct}}
 

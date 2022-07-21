@@ -81,17 +81,17 @@ computed colors from spectral data.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{default}: Default method for generic
+\item \code{tag(default)}: Default method for generic
 
-\item \code{generic_spct}: Tag one of \code{generic_spct}, and derived classes including
+\item \code{tag(generic_spct)}: Tag one of \code{generic_spct}, and derived classes including
 \code{source_spct}, \code{filter_spct}, \code{reflector_spct},
 \code{object_spct}, and \code{response_spct}.
 
-\item \code{generic_mspct}: Tag one of \code{generic_mspct}, and derived classes including
+\item \code{tag(generic_mspct)}: Tag one of \code{generic_mspct}, and derived classes including
 \code{source_mspct}, \code{filter_mspct}, \code{reflector_mspct},
 \code{object_mspct}, and \code{response_mspct}.
-}}
 
+}}
 \note{
 \code{NULL} as \code{w.band} argument does not add any new tags,
   instead it removes existing tags if present. \code{NA}, the default, as

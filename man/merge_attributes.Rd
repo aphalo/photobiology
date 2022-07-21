@@ -44,8 +44,8 @@ Methods defined for spectral objects of classes from package 'photobiology'.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{default}: Default for generic function
+\item \code{merge_attributes(default)}: Default for generic function
 
-\item \code{generic_spct}: 
+\item \code{merge_attributes(generic_spct)}: 
+
 }}
-

@@ -44,17 +44,17 @@ Function that converts spectral energy irradiance into spectral photon irradianc
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{default}: Default method
+\item \code{e2q(default)}: Default method
 
-\item \code{source_spct}: Method for spectral irradiance
+\item \code{e2q(source_spct)}: Method for spectral irradiance
 
-\item \code{response_spct}: Method for spectral responsiveness
+\item \code{e2q(response_spct)}: Method for spectral responsiveness
 
-\item \code{source_mspct}: Method for collections of (light) source spectra
+\item \code{e2q(source_mspct)}: Method for collections of (light) source spectra
 
-\item \code{response_mspct}: Method for collections of response spectra
+\item \code{e2q(response_mspct)}: Method for collections of response spectra
+
 }}
-
 \seealso{
 Other quantity conversion functions: 
 \code{\link{A2T}()},

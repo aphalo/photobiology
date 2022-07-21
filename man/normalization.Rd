@@ -21,11 +21,11 @@ attributes.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{default}: Default methods.
+\item \code{normalization(default)}: Default methods.
 
-\item \code{waveband}: Normalization of a \code{\link{waveband}} object.
+\item \code{normalization(waveband)}: Normalization of a \code{\link{waveband}} object.
+
 }}
-
 \seealso{
 Other waveband attributes: 
 \code{\link{is_effective}()},

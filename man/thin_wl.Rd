@@ -106,37 +106,37 @@ The algorithm used for spectra is "naive" in an effort to keep it
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{default}: Default for generic function
+\item \code{thin_wl(default)}: Default for generic function
 
-\item \code{generic_spct}: 
+\item \code{thin_wl(generic_spct)}: 
 
-\item \code{source_spct}: 
+\item \code{thin_wl(source_spct)}: 
 
-\item \code{response_spct}: 
+\item \code{thin_wl(response_spct)}: 
 
-\item \code{filter_spct}: 
+\item \code{thin_wl(filter_spct)}: 
 
-\item \code{reflector_spct}: 
+\item \code{thin_wl(reflector_spct)}: 
 
-\item \code{solute_spct}: 
+\item \code{thin_wl(solute_spct)}: 
 
-\item \code{raw_spct}: 
+\item \code{thin_wl(raw_spct)}: 
 
-\item \code{cps_spct}: 
+\item \code{thin_wl(cps_spct)}: 
 
-\item \code{object_spct}: 
+\item \code{thin_wl(object_spct)}: 
 
-\item \code{chroma_spct}: 
+\item \code{thin_wl(chroma_spct)}: 
 
-\item \code{calibration_spct}: 
+\item \code{thin_wl(calibration_spct)}: 
 
-\item \code{generic_mspct}: 
+\item \code{thin_wl(generic_mspct)}: 
 
-\item \code{chroma_mspct}: 
+\item \code{thin_wl(chroma_mspct)}: 
 
-\item \code{calibration_mspct}: 
+\item \code{thin_wl(calibration_mspct)}: 
+
 }}
-
 \note{
 The value of \code{max.slope.delta} is expressed as relative change in
   the slope of spectral variable per nanometre. This means that values

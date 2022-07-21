@@ -115,17 +115,17 @@ Summary transmittance for supplied wavebands from filter or object spectrum.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{default}: Default method
+\item \code{transmittance(default)}: Default method
 
-\item \code{filter_spct}: Method for filter spectra
+\item \code{transmittance(filter_spct)}: Method for filter spectra
 
-\item \code{object_spct}: Method for object spectra
+\item \code{transmittance(object_spct)}: Method for object spectra
 
-\item \code{filter_mspct}: Calculates transmittance from a \code{filter_mspct}
+\item \code{transmittance(filter_mspct)}: Calculates transmittance from a \code{filter_mspct}
 
-\item \code{object_mspct}: Calculates transmittance from a \code{object_mspct}
+\item \code{transmittance(object_mspct)}: Calculates transmittance from a \code{object_mspct}
+
 }}
-
 \note{
 The \code{use.hinges} parameter controls speed optimization. The
   defaults should be suitable in most cases. Only the range of wavelengths

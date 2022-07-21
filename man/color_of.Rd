@@ -65,20 +65,20 @@ Equivalent RGB color of an object such as a spectrum, wavelength or waveband.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{default}: Default method (returns always "black").
+\item \code{color_of(default)}: Default method (returns always "black").
 
-\item \code{numeric}: Method that returns Color definitions corresponding to
+\item \code{color_of(numeric)}: Method that returns Color definitions corresponding to
 numeric values representing a wavelengths in nm.
 
-\item \code{list}: Method that returns Color of elements in a list.
+\item \code{color_of(list)}: Method that returns Color of elements in a list.
 
-\item \code{waveband}: Color at midpoint of a \code{\link{waveband}} object.
+\item \code{color_of(waveband)}: Color at midpoint of a \code{\link{waveband}} object.
 
-\item \code{source_spct}: 
+\item \code{color_of(source_spct)}: 
 
-\item \code{source_mspct}: 
+\item \code{color_of(source_mspct)}: 
+
 }}
-
 \note{
 When \code{x} is a list but not a waveband, if a method  \code{color_of}
   is not available for the class of each element of the list, then

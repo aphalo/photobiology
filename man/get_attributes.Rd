@@ -59,21 +59,21 @@ Vectors of character strings passed as argument to \code{which} are
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{generic_spct}: generic_spct
+\item \code{get_attributes(generic_spct)}: generic_spct
 
-\item \code{source_spct}: source_spct
+\item \code{get_attributes(source_spct)}: source_spct
 
-\item \code{filter_spct}: filter_spct
+\item \code{get_attributes(filter_spct)}: filter_spct
 
-\item \code{reflector_spct}: reflector_spct
+\item \code{get_attributes(reflector_spct)}: reflector_spct
 
-\item \code{object_spct}: object_spct
+\item \code{get_attributes(object_spct)}: object_spct
 
-\item \code{solute_spct}: solute_spct
+\item \code{get_attributes(solute_spct)}: solute_spct
 
-\item \code{waveband}: waveband
+\item \code{get_attributes(waveband)}: waveband
+
 }}
-
 \seealso{
 \code{\link{select_spct_attributes}}
 

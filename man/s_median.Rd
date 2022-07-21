@@ -51,23 +51,23 @@ collection returning a spectral object.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{default}: 
+\item \code{s_median(default)}: 
 
-\item \code{source_mspct}: 
+\item \code{s_median(source_mspct)}: 
 
-\item \code{response_mspct}: 
+\item \code{s_median(response_mspct)}: 
 
-\item \code{filter_mspct}: 
+\item \code{s_median(filter_mspct)}: 
 
-\item \code{reflector_mspct}: 
+\item \code{s_median(reflector_mspct)}: 
 
-\item \code{calibration_mspct}: 
+\item \code{s_median(calibration_mspct)}: 
 
-\item \code{cps_mspct}: 
+\item \code{s_median(cps_mspct)}: 
 
-\item \code{raw_mspct}: 
+\item \code{s_median(raw_mspct)}: 
+
 }}
-
 \note{
 Omission of NAs is done separately at each wavelength. Interpolation is
   not applied, so all spectra in \code{x} must share the same set of

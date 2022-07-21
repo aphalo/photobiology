@@ -32,11 +32,11 @@ classes "waveband" or of class "generic_spct" or derived.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{generic_spct}: 
+\item \code{range(generic_spct)}: 
 
-\item \code{generic_mspct}: 
+\item \code{range(generic_mspct)}: 
+
 }}
-
 \examples{
 range(sun.spct)
 wl_range(sun.spct)

@@ -54,23 +54,23 @@ collection returning a spectral object.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{default}: 
+\item \code{s_mean_se(default)}: 
 
-\item \code{filter_mspct}: 
+\item \code{s_mean_se(filter_mspct)}: 
 
-\item \code{source_mspct}: 
+\item \code{s_mean_se(source_mspct)}: 
 
-\item \code{response_mspct}: 
+\item \code{s_mean_se(response_mspct)}: 
 
-\item \code{reflector_mspct}: 
+\item \code{s_mean_se(reflector_mspct)}: 
 
-\item \code{calibration_mspct}: 
+\item \code{s_mean_se(calibration_mspct)}: 
 
-\item \code{cps_mspct}: 
+\item \code{s_mean_se(cps_mspct)}: 
 
-\item \code{raw_mspct}: 
+\item \code{s_mean_se(raw_mspct)}: 
+
 }}
-
 \note{
 Trimming of extreme values and omission of NAs is done separately at
   each wavelength. Interpolation is not applied, so all spectra in \code{x}

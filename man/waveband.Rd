@@ -73,9 +73,9 @@ irradiances.
 }
 \section{Functions}{
 \itemize{
-\item \code{new_waveband}: A less flexible variant
-}}
+\item \code{new_waveband()}: A less flexible variant
 
+}}
 \examples{
 waveband(c(400,700))
 

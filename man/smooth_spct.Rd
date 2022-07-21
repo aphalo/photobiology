@@ -99,21 +99,21 @@ when needed, defaults suitable for spectral data.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{default}: Default for generic function
+\item \code{smooth_spct(default)}: Default for generic function
 
-\item \code{source_spct}: Smooth a source spectrum
+\item \code{smooth_spct(source_spct)}: Smooth a source spectrum
 
-\item \code{filter_spct}: Smooth a filter spectrum
+\item \code{smooth_spct(filter_spct)}: Smooth a filter spectrum
 
-\item \code{reflector_spct}: Smooth a reflector spectrum
+\item \code{smooth_spct(reflector_spct)}: Smooth a reflector spectrum
 
-\item \code{solute_spct}: Smooth a solute attenuation spectrum
+\item \code{smooth_spct(solute_spct)}: Smooth a solute attenuation spectrum
 
-\item \code{response_spct}: Smooth a response spectrum
+\item \code{smooth_spct(response_spct)}: Smooth a response spectrum
 
-\item \code{generic_mspct}: 
+\item \code{smooth_spct(generic_mspct)}: 
+
 }}
-
 \note{
 Method "custom" is our home-brewed method which applies strong
   smoothing to low signal regions of the spectral data, and weaker or no

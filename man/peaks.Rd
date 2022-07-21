@@ -298,45 +298,45 @@ to local maxima.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{default}: Default returning always NA.
+\item \code{peaks(default)}: Default returning always NA.
 
-\item \code{numeric}: Default function usable on numeric vectors.
+\item \code{peaks(numeric)}: Default function usable on numeric vectors.
 
-\item \code{data.frame}: Method for "data.frame" objects.
+\item \code{peaks(data.frame)}: Method for "data.frame" objects.
 
-\item \code{generic_spct}: Method for "generic_spct" objects.
+\item \code{peaks(generic_spct)}: Method for "generic_spct" objects.
 
-\item \code{source_spct}: Method for "source_spct" objects.
+\item \code{peaks(source_spct)}: Method for "source_spct" objects.
 
-\item \code{response_spct}: Method for "response_spct" objects.
+\item \code{peaks(response_spct)}: Method for "response_spct" objects.
 
-\item \code{filter_spct}: Method for "filter_spct" objects.
+\item \code{peaks(filter_spct)}: Method for "filter_spct" objects.
 
-\item \code{reflector_spct}: Method for "reflector_spct" objects.
+\item \code{peaks(reflector_spct)}: Method for "reflector_spct" objects.
 
-\item \code{solute_spct}: Method for "solute_spct" objects.
+\item \code{peaks(solute_spct)}: Method for "solute_spct" objects.
 
-\item \code{cps_spct}: Method for "cps_spct" objects.
+\item \code{peaks(cps_spct)}: Method for "cps_spct" objects.
 
-\item \code{raw_spct}: Method for "raw_spct" objects.
+\item \code{peaks(raw_spct)}: Method for "raw_spct" objects.
 
-\item \code{generic_mspct}: Method for "generic_mspct" objects.
+\item \code{peaks(generic_mspct)}: Method for "generic_mspct" objects.
 
-\item \code{source_mspct}: Method for "source_mspct" objects.
+\item \code{peaks(source_mspct)}: Method for "source_mspct" objects.
 
-\item \code{response_mspct}: Method for "cps_mspct" objects.
+\item \code{peaks(response_mspct)}: Method for "cps_mspct" objects.
 
-\item \code{filter_mspct}: Method for "filter_mspct" objects.
+\item \code{peaks(filter_mspct)}: Method for "filter_mspct" objects.
 
-\item \code{reflector_mspct}: Method for "reflector_mspct" objects.
+\item \code{peaks(reflector_mspct)}: Method for "reflector_mspct" objects.
 
-\item \code{solute_mspct}: Method for "solute_mspct" objects.
+\item \code{peaks(solute_mspct)}: Method for "solute_mspct" objects.
 
-\item \code{cps_mspct}: Method for "cps_mspct" objects.
+\item \code{peaks(cps_mspct)}: Method for "cps_mspct" objects.
 
-\item \code{raw_mspct}: Method for "raw_mspct" objects.
+\item \code{peaks(raw_mspct)}: Method for "raw_mspct" objects.
+
 }}
-
 \note{
 Thresholds for ignoring peaks are applied after peaks are searched for,
 and negative threshold values can in some cases result in no peaks being

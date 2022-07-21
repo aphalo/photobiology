@@ -119,14 +119,14 @@ waveband and a response spectrum.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{default}: Default method for generic function
+\item \code{e_response(default)}: Default method for generic function
 
-\item \code{response_spct}: Method for response spectra.
+\item \code{e_response(response_spct)}: Method for response spectra.
 
-\item \code{response_mspct}: Calculates energy response from a
+\item \code{e_response(response_mspct)}: Calculates energy response from a
 \code{response_mspct}
-}}
 
+}}
 \note{
 The parameter \code{use.hinges} controls speed optimization. The
   defaults should be suitable in most cases. Only the range of wavelengths

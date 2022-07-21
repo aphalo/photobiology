@@ -8,10 +8,10 @@
 #'
 #' @param w.length numeric vector with wavelengths in nanometres [\eqn{nm}].
 #' @param s.e.irrad numeric vector with spectral energy irradiance in
-#'   [\eqn{W\,m^{-2}\,nm^{-1}}] or [\eqn{J\,d^{-1}\,m^{-2}\,nm^{-1}}].
+#'   [\eqn{W\,m^{-2}\,nm^{-1}}] or [\eqn{J\,d^{-1}\,m^{-2}\,nm^{-1}}{J d-1 m-2 nm-1}].
 #' @param s.q.irrad numeric A vector with spectral photon irradiance in
-#'   [\eqn{mol\,s^{-1}\,m^{-2}\,nm^{-1}}] or
-#'   [\eqn{mol\,d^{-1}\,m^{-2}\,nm^{-1}}].
+#'   [\eqn{mol\,s^{-1}\,m^{-2}\,nm^{-1}}{mol s-1 m-2 nm-1}] or
+#'   [\eqn{mol\,d^{-1}\,m^{-2}\,nm^{-1}}{mol d-1 m-2 nm-1}].
 #' @param time.unit character string indicating the time unit used for spectral
 #'   irradiance or exposure (\code{"second"}, \code{"day"} or \code{"exposure"})
 #'   or an object of class duration as defined in package lubridate.
@@ -80,8 +80,8 @@ source_spct <- function(w.length = NULL,
 #' @rdname source_spct
 #'
 #' @param irrad.mult numeric vector with multipliers for each detector pixel
-#'   expressed in units of \eqn{W\,m^{-2}\,nm^{-1}\,n^{-1}\,s}, where
-#'   \eqn{n\,s^{-1}} are detector counts per second.
+#'   expressed in units of \eqn{W\,m^{-2}\,nm^{-1}\,n^{-1}\,s}{W m-2 nm-1 n-1 s},
+#'   where \eqn{n\,s^{-1}}{n s-1} are detector counts per second.
 #'
 #' @export
 #'
@@ -142,7 +142,7 @@ raw_spct <- function(w.length = NULL,
 #' @rdname source_spct
 #'
 #' @param cps numeric vector with linearized raw counts expressed per second
-#'   [\eqn{n\,s^{-1}}]
+#'   [\eqn{n\,s^{-1}}{n s-1}]
 #'
 #' @export
 #'
@@ -205,10 +205,10 @@ generic_spct <- function(w.length = NULL,
 #'
 #' @param s.e.response numeric vector with a biological, chemical or physical
 #'   response expressed per unit spectral energy irradiance
-#'   [\eqn{W\,m^{-2}\,nm^{-1}} or \eqn{J\,d^{-1}\,m^{-2}\,nm^{-1}}].
+#'   [\eqn{W\,m^{-2}\,nm^{-1}}{W m-2 nm-1} or \eqn{J\,d^{-1}\,m^{-2}\,nm^{-1}}{J d-1 m-2 nm-1}].
 #' @param s.q.response numeric vector with a biological, chemical or physical
 #'   response expressed per unit spectral photon irradiance in
-#'   [\eqn{mol\,s^{-1}\,m^{-2}\,nm^{-1}} or \eqn{mol\,d^{-1}\,m^{-2}\,nm^{-1}}].
+#'   [\eqn{mol\,s^{-1}\,m^{-2}\,nm^{-1}}{mol s-1 m-2 nm-1} or \eqn{mol\,d^{-1}\,m^{-2}\,nm^{-1}}{mol d-1 m-2 nm-1}].
 #' @param response.type a character string, either \code{"response"} or
 #'   \code{"action"}.
 #'
@@ -357,14 +357,14 @@ reflector_spct <- function(w.length = NULL,
 #' @rdname source_spct
 #'
 #' @param K.mol numeric vector with molar attenuation coefficient in SI units
-#'    [\eqn{m^2\,mol^-1}].
+#'    [\eqn{m^2\,mol^-1}{m2 mol-1}].
 #' @param K.mass numeric vector with mass attenuation coefficient in SI units
-#'    [\eqn{m^2\,g^-1}].
+#'    [\eqn{m^2\,g^-1}{m2 g-1}].
 #' @param attenuation.XS numeric vector with attenuation cross section values
 #'    (Converted during object construction into \code{K.mol}.)
 #' @param K.type character A string, either \code{"attenuation"},
 #'   \code{"absorption"} or \code{"scattering"}.
-#' @param mass numeric The molar mass in Dalton [Da] (\eqn{Da = g\,mol^{-1}}).
+#' @param mass numeric The molar mass in Dalton [Da] (\eqn{Da = g\,mol^{-1}}{Da = g mol-1}).
 #' @param formula character The molecular formula.
 #' @param structure raster A bitmap of the structure.
 #' @param name character The name of the substance. A named character
@@ -381,11 +381,11 @@ reflector_spct <- function(w.length = NULL,
 #'   absorbance data are expressed. Failing to do this will result in bad data
 #'   and all further computation will be wrong. Not entering metadata when
 #'   creating an object will limit the available operations! Mass should be
-#'   indicated in daltons or \eqn{g\,mol^{-1}}. The SI unit of molar attenuation
-#'   coefficient is the square metre per mole (\eqn{m^2 mol^{-1}}{m2 mol-1}),
+#'   indicated in daltons or \eqn{g\,mol^{-1}}{g mol-1}. The SI unit of molar attenuation
+#'   coefficient is the square metre per mole (\eqn{m^2\,mol^{1}}{m2 mol-1}),
 #'   but in practice, quantities are usually expressed in terms of
-#'   \eqn{M^{−1}⋅cm^{-1}} or \eqn{l⋅mol^{−1}⋅cm^{−1}} (the latter two units are
-#'   both equal to 0.1 \eqn{m^2 mol^{-1}} and quantities expressed in them need
+#'   \eqn{M^{-1}\,cm^{-1}} or \eqn{l\,mol^{-1}\,cm^{-1}} (the latter two units are
+#'   both equal to 0.1 \eqn{m^2\,mol^{-1}} and quantities expressed in them need
 #'   to be divided by 10 when passed as arguments to \code{K.mol}.).
 #'
 #' @seealso \code{\link{setSoluteProperties}}
@@ -805,9 +805,11 @@ as.filter_spct.default <-
 #' @param comment character A string to be added as a comment attribute to the
 #'   object created. If not supplied, the comment will be copied from \code{x}.
 #' @param molar.concentration,mass.concentration numeric Concentration to be
-#'   used to compute transmittance of the solute in solution.
+#'   used to compute transmittance of the solute in solution
+#'   [\eqn{mol\,m^{-3} = mmol\,dm^{-3}}{mol m-3 = mmol dm-3} or
+#'   \eqn{kg\,m^{-3} = g\,dm^{-3}}{kg m-3 = g dm-3}, respectively].
 #' @param path.length numeric The length of the light path (\eqn{m}) used to
-#'   compute transmittance of the solute in solution.
+#'   compute transmittance of the solute in a solution.
 #'
 #' @export
 #'
@@ -860,12 +862,16 @@ as.filter_spct.solute_spct <-
     }
   }
 
-#' Coerce to a spectrum
+#' Coerce to a solute spectrum
 #'
-#' Return a copy of an R object with its class set to a given type of spectrum.
+#' Return a possibly modified copy of an R object with its class set to
+#' \code{solute_spct} (a solute spectrum). In the case of conversion from a
+#' \code{filter_spct} object, compute spectral molar attenuation  based on
+#' additional input from user.
 #'
 #' @param x an R object.
-#' @param K.type a character string, either \code{"total"} or \code{"specular"}.
+#' @param K.type a character string, one of \code{"attenuation"},
+#'   \code{"absorption"} or \code{"scattering"}.
 #' @param strict.range logical Flag indicating whether off-range values result
 #'   in an error instead of a warning.
 #' @param ... other arguments passed to "set" functions.
@@ -896,6 +902,77 @@ as.solute_spct.default <-
                   ...)
   }
 
+#'@describeIn as.solute_spct
+#'
+#' @param name character The name of the substance. A named character
+#'     vector, with member names such as "IUPAC" for the authority.
+#' @param mass numeric The mass in Dalton (Da = g/mol).
+#' @param formula character The molecular formula.
+#' @param structure raster A bitmap of the structure.
+#' @param ID character The name of the substance. A named character
+#'     vector, with member names such as "ChemSpider" or "PubChen" for the
+#'     authority.
+#' @param comment character A string to be added as a comment attribute to the
+#'   object created. If not supplied, the comment will be copied from \code{x}.
+#' @param molar.concentration,mass.concentration numeric Concentration to be
+#'   used to compute transmittance of the solute in solution
+#'   [\eqn{mol\,m^{-3} = mmol\,dm^{-3}}{mol m-3 = mmol dm-3} or
+#'   \eqn{kg\,m^{-3} = g\,dm^{-3}}{kg m-3 = g dm-3}, respectively].
+#' @param path.length numeric The length of the light path (\eqn{m}) used to
+#'   compute transmittance of the solute in a solution.
+#'
+#' @export
+#'
+as.solute_spct.filter_spct <-
+  function(x,
+           K.type = c("attenuation", "absorption", "scattering"),
+           name = NA_character_,
+           mass = NA_character_,
+           formula = NULL,
+           structure = grDevices::as.raster(matrix()),
+           ID = NA_character_,
+           strict.range = getOption("photobiology.strict.range", default = FALSE),
+           comment = NULL,
+           molar.concentration = NULL,
+           mass.concentration = NULL,
+           path.length = 1, # meter
+           ...) {
+    if (getTfrType(x) != "internal") {
+      x <- convertTfrType(x, Tfr.type = "internal")
+    }
+    x <- any2A(x, action = "replace")
+    # we do calculations using moles
+    if (is.null(molar.concentration)) {
+      molar.concentration <- mass.concentration / mass
+    }
+    if (is.null(comment)) {
+      comment <- paste("Computed from 'filter_spct' for ",
+                       name, ".\n",
+                       comment(x), sep = "")
+    }
+    z <- solute_spct(w.length = x[["w.length"]],
+                     K.mol = x[["A"]] / molar.concentration / path.length,
+                     log.base = 10,
+                     K.type = K.type,
+                     name = name,
+                     mass = mass,
+                     formula = formula,
+                     structure = structure,
+                     comment = comment,
+                     ID = ID,
+                     strict.range = strict.range,
+                     multiple.wl = getMultipleWl(x),
+                     ...)
+    other.cols <-
+      setdiff(colnames(x), c("w.length", "A"))
+    if (length(other.cols)) {
+      zz <- cbind(z, x[ , other.cols])
+      copy_attributes(z, zz)
+    } else {
+      z
+    }
+  }
+
 #' Coerce to a spectrum
 #'
 #' Return a copy of an R object with its class set to a given type of spectrum.
@@ -903,7 +980,7 @@ as.solute_spct.default <-
 #' @param x an R object.
 #' @param ... other arguments passed to "set" functions.
 #'
-#' @return A copy of \code{x} converted into a \code{chroma_spct}. object.
+#' @return A copy of \code{x} converted into a \code{chroma_spct} object.
 #'
 #' @seealso \code{\link{setGenericSpct}}
 #'

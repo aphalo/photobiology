@@ -294,45 +294,45 @@ source of spikes are "hot pixels" in CCD and diode array detectors.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{default}: Default returning always NA.
+\item \code{despike(default)}: Default returning always NA.
 
-\item \code{numeric}: Default function usable on numeric vectors.
+\item \code{despike(numeric)}: Default function usable on numeric vectors.
 
-\item \code{data.frame}: Method for "data.frame" objects.
+\item \code{despike(data.frame)}: Method for "data.frame" objects.
 
-\item \code{generic_spct}: Method for "generic_spct" objects.
+\item \code{despike(generic_spct)}: Method for "generic_spct" objects.
 
-\item \code{source_spct}: Method for "source_spct" objects.
+\item \code{despike(source_spct)}: Method for "source_spct" objects.
 
-\item \code{response_spct}: Method for "response_spct" objects.
+\item \code{despike(response_spct)}: Method for "response_spct" objects.
 
-\item \code{filter_spct}: Method for "filter_spct" objects.
+\item \code{despike(filter_spct)}: Method for "filter_spct" objects.
 
-\item \code{reflector_spct}: Method for "reflector_spct" objects.
+\item \code{despike(reflector_spct)}: Method for "reflector_spct" objects.
 
-\item \code{solute_spct}: Method for "solute_spct" objects.
+\item \code{despike(solute_spct)}: Method for "solute_spct" objects.
 
-\item \code{cps_spct}: Method for "cps_spct" objects.
+\item \code{despike(cps_spct)}: Method for "cps_spct" objects.
 
-\item \code{raw_spct}: Method for "raw_spct" objects.
+\item \code{despike(raw_spct)}: Method for "raw_spct" objects.
 
-\item \code{generic_mspct}: Method for "generic_mspct" objects.
+\item \code{despike(generic_mspct)}: Method for "generic_mspct" objects.
 
-\item \code{source_mspct}: Method for "source_mspct" objects.
+\item \code{despike(source_mspct)}: Method for "source_mspct" objects.
 
-\item \code{response_mspct}: Method for "cps_mspct" objects.
+\item \code{despike(response_mspct)}: Method for "cps_mspct" objects.
 
-\item \code{filter_mspct}: Method for "filter_mspct" objects.
+\item \code{despike(filter_mspct)}: Method for "filter_mspct" objects.
 
-\item \code{reflector_mspct}: Method for "reflector_mspct" objects.
+\item \code{despike(reflector_mspct)}: Method for "reflector_mspct" objects.
 
-\item \code{solute_mspct}: Method for "solute_mspct" objects.
+\item \code{despike(solute_mspct)}: Method for "solute_mspct" objects.
 
-\item \code{cps_mspct}: Method for "cps_mspct" objects.
+\item \code{despike(cps_mspct)}: Method for "cps_mspct" objects.
 
-\item \code{raw_mspct}: Method for "raw_mspct" objects.
+\item \code{despike(raw_mspct)}: Method for "raw_mspct" objects.
+
 }}
-
 \note{
 Current algorithm misidentifies steep smooth slopes as spikes, so
   manual inspection is needed together with adjustment by trial and error

@@ -57,15 +57,15 @@ Function that converts transmittance (fraction) into absorbance (a.u.).
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{default}: Default method for generic function
+\item \code{T2A(default)}: Default method for generic function
 
-\item \code{numeric}: Method for numeric vectors
+\item \code{T2A(numeric)}: Method for numeric vectors
 
-\item \code{filter_spct}: Method for filter spectra
+\item \code{T2A(filter_spct)}: Method for filter spectra
 
-\item \code{filter_mspct}: Method for collections of filter spectra
+\item \code{T2A(filter_mspct)}: Method for collections of filter spectra
+
 }}
-
 \seealso{
 Other quantity conversion functions: 
 \code{\link{A2T}()},

@@ -6,17 +6,18 @@ editor_options:
 
 # photobiology 0.10.12
 
-This release corrects problems triggered by recent updates to packages 'lubridate' and possibly 'tibble'. (Reported by _putmanlab_ in issue #7 at GitHub.)
-
 ----
 
 Conversions between `Date` and `POSIXct` objects are tricky because the former do not store information on the time zone. A change in 'lubridate' 1.8.0 made a previously working approach to these conversions silently fail to apply the shift to the hours. _In the current version of 'photobiology', if no time zone argument is passed concurrently with a date, the date is assumed to be in UTC. If this time zone does not match the location given by the geocode, the date used for the calculations can be wrong by one day._
 
 ----
 
+This release corrects problems triggered by recent updates to packages 'lubridate' and possibly 'tibble'. (Reported by _putmanlab_ in issue #7 at GitHub.) and adds enhancements for class `solute_spct`.
+
 -   Functions `day_night()`, `sunrise_time()`, `noon_time()` and `sunset_time()` would return wrong time values when non-default arguments to parameter `tz` were passed together with objects of class `Date` passed as arguments to `date
--   Rename `solute_spct` member variable `K.mole` into `K.mol`.
--   Add method `as.filter_spct()` especialized for conversion of objects of class `solute_spct`.
+
+-   Rename `solute_spct` member variable `K.mole` into `K.mol`. **Code breaking!**.
+-   Add methods`as.filter_spct()` and `as.solute_spct` especialized for conversion two-way conversion between objects of classes `solute_spct` and `filter_spct`.
 
 # photobiology 0.10.11
 

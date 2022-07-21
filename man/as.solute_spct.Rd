@@ -3,7 +3,8 @@
 \name{as.solute_spct}
 \alias{as.solute_spct}
 \alias{as.solute_spct.default}
-\title{Coerce to a spectrum}
+\alias{as.solute_spct.filter_spct}
+\title{Coerce to a solute spectrum}
 \usage{
 as.solute_spct(x, ...)
 
@@ -13,28 +14,74 @@ as.solute_spct(x, ...)
   strict.range = getOption("photobiology.strict.range", default = FALSE),
   ...
 )
+
+\method{as.solute_spct}{filter_spct}(
+  x,
+  K.type = c("attenuation", "absorption", "scattering"),
+  name = NA_character_,
+  mass = NA_character_,
+  formula = NULL,
+  structure = grDevices::as.raster(matrix()),
+  ID = NA_character_,
+  strict.range = getOption("photobiology.strict.range", default = FALSE),
+  comment = NULL,
+  molar.concentration = NULL,
+  mass.concentration = NULL,
+  path.length = 1,
+  ...
+)
 }
 \arguments{
 \item{x}{an R object.}
 
 \item{...}{other arguments passed to "set" functions.}
 
-\item{K.type}{a character string, either \code{"total"} or \code{"specular"}.}
+\item{K.type}{a character string, one of \code{"attenuation"},
+\code{"absorption"} or \code{"scattering"}.}
 
 \item{strict.range}{logical Flag indicating whether off-range values result
 in an error instead of a warning.}
+
+\item{name}{character The name of the substance. A named character
+vector, with member names such as "IUPAC" for the authority.}
+
+\item{mass}{numeric The mass in Dalton (Da = g/mol).}
+
+\item{formula}{character The molecular formula.}
+
+\item{structure}{raster A bitmap of the structure.}
+
+\item{ID}{character The name of the substance. A named character
+vector, with member names such as "ChemSpider" or "PubChen" for the
+authority.}
+
+\item{comment}{character A string to be added as a comment attribute to the
+object created. If not supplied, the comment will be copied from \code{x}.}
+
+\item{molar.concentration, mass.concentration}{numeric Concentration to be
+used to compute transmittance of the solute in solution
+[\eqn{mol\,m^{-3} = mmol\,dm^{-3}}{mol m-3 = mmol dm-3} or
+\eqn{kg\,m^{-3} = g\,dm^{-3}}{kg m-3 = g dm-3}, respectively].}
+
+\item{path.length}{numeric The length of the light path (\eqn{m}) used to
+compute transmittance of the solute in a solution.}
 }
 \value{
 A copy of \code{x} converted into a \code{solute_spct} object.
 }
 \description{
-Return a copy of an R object with its class set to a given type of spectrum.
+Return a possibly modified copy of an R object with its class set to
+\code{solute_spct} (a solute spectrum). In the case of conversion from a
+\code{filter_spct} object, compute spectral molar attenuation  based on
+additional input from user.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{default}: 
-}}
+\item \code{as.solute_spct(default)}: 
 
+\item \code{as.solute_spct(filter_spct)}: 
+
+}}
 \seealso{
 \code{\link{setSoluteSpct}}
 

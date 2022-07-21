@@ -38,15 +38,15 @@ or a generic_mspct.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{default}: default
+\item \code{getHowMeasured(default)}: default
 
-\item \code{generic_spct}: generic_spct
+\item \code{getHowMeasured(generic_spct)}: generic_spct
 
-\item \code{summary_generic_spct}: summary_generic_spct
+\item \code{getHowMeasured(summary_generic_spct)}: summary_generic_spct
 
-\item \code{generic_mspct}: generic_mspct
+\item \code{getHowMeasured(generic_mspct)}: generic_mspct
+
 }}
-
 \note{
 The method for collections of spectra returns the
   a tibble with a column of character strings.

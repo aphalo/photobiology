@@ -126,14 +126,14 @@ light source spectrum.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{default}: Default for generic function
+\item \code{e_ratio(default)}: Default for generic function
 
-\item \code{source_spct}: Method for \code{source_spct} objects
+\item \code{e_ratio(source_spct)}: Method for \code{source_spct} objects
 
-\item \code{source_mspct}: Calculates energy:energy ratio from a \code{source_mspct}
+\item \code{e_ratio(source_mspct)}: Calculates energy:energy ratio from a \code{source_mspct}
 object.
-}}
 
+}}
 \note{
 Recycling for wavebands takes place when the number of denominator and
   denominator wavebands differ. The last two parameters control speed

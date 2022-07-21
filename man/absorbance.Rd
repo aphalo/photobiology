@@ -118,17 +118,17 @@ spectral data stored in a \code{filter_spct} or in an \code{object_spct}.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{default}: Default for generic function
+\item \code{absorbance(default)}: Default for generic function
 
-\item \code{filter_spct}: Specialization for filter spectra
+\item \code{absorbance(filter_spct)}: Specialization for filter spectra
 
-\item \code{object_spct}: Specialization for object spectra
+\item \code{absorbance(object_spct)}: Specialization for object spectra
 
-\item \code{filter_mspct}: Calculates absorbance from a \code{filter_mspct}
+\item \code{absorbance(filter_mspct)}: Calculates absorbance from a \code{filter_mspct}
 
-\item \code{object_mspct}: Calculates absorbance from a \code{object_mspct}
+\item \code{absorbance(object_mspct)}: Calculates absorbance from a \code{object_mspct}
+
 }}
-
 \note{
 The \code{use.hinges} parameter controls speed optimization. The
   defaults should be suitable in most cases. Only the range of wavelengths in

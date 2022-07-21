@@ -20,9 +20,9 @@ A function to obtain the name and label of objects of class "waveband".
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{generic_spct}: 
-}}
+\item \code{labels(generic_spct)}: 
 
+}}
 \examples{
 labels(sun.spct)
 

@@ -247,41 +247,41 @@ After scaling, applying the function passed as argument to \code{f}
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{default}: Default for generic function
+\item \code{fscale(default)}: Default for generic function
 
-\item \code{source_spct}: 
+\item \code{fscale(source_spct)}: 
 
-\item \code{response_spct}: 
+\item \code{fscale(response_spct)}: 
 
-\item \code{filter_spct}: 
+\item \code{fscale(filter_spct)}: 
 
-\item \code{reflector_spct}: 
+\item \code{fscale(reflector_spct)}: 
 
-\item \code{solute_spct}: 
+\item \code{fscale(solute_spct)}: 
 
-\item \code{raw_spct}: 
+\item \code{fscale(raw_spct)}: 
 
-\item \code{cps_spct}: 
+\item \code{fscale(cps_spct)}: 
 
-\item \code{generic_spct}: 
+\item \code{fscale(generic_spct)}: 
 
-\item \code{source_mspct}: 
+\item \code{fscale(source_mspct)}: 
 
-\item \code{response_mspct}: 
+\item \code{fscale(response_mspct)}: 
 
-\item \code{filter_mspct}: 
+\item \code{fscale(filter_mspct)}: 
 
-\item \code{reflector_mspct}: 
+\item \code{fscale(reflector_mspct)}: 
 
-\item \code{solute_mspct}: 
+\item \code{fscale(solute_mspct)}: 
 
-\item \code{raw_mspct}: 
+\item \code{fscale(raw_mspct)}: 
 
-\item \code{cps_mspct}: 
+\item \code{fscale(cps_mspct)}: 
 
-\item \code{generic_mspct}: 
+\item \code{fscale(generic_mspct)}: 
+
 }}
-
 \note{
 Method \code{fscale} is not implemented for \code{solute_spct} objects
   as the spectral data stored in them are a description of an intensive

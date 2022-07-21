@@ -124,15 +124,15 @@ and a duration of exposure.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{default}: Default for generic function
+\item \code{fluence(default)}: Default for generic function
 
-\item \code{source_spct}: Calculate photon fluence from a \code{source_spct}
+\item \code{fluence(source_spct)}: Calculate photon fluence from a \code{source_spct}
 object and the duration of the exposure
 
-\item \code{source_mspct}: Calculates fluence from a \code{source_mspct}
+\item \code{fluence(source_mspct)}: Calculates fluence from a \code{source_mspct}
 object.
-}}
 
+}}
 \note{
 The last two parameters control speed optimizations. The defaults
   should be suitable in most cases. If you will use repeatedly the same SWFs

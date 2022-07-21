@@ -80,17 +80,17 @@ Return a copy of an R object with its class set to a given type
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{default}: 
+\item \code{as.generic_mspct(default)}: 
 
-\item \code{data.frame}: 
+\item \code{as.generic_mspct(data.frame)}: 
 
-\item \code{generic_spct}: 
+\item \code{as.generic_mspct(generic_spct)}: 
 
-\item \code{list}: 
+\item \code{as.generic_mspct(list)}: 
 
-\item \code{matrix}: 
+\item \code{as.generic_mspct(matrix)}: 
+
 }}
-
 \note{
 Members of \code{generic_mspct} objects can be heterogeneous: they can
   belong to any class derived from \code{generic_spct} and class is not

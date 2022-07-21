@@ -59,15 +59,15 @@ extrapolation.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{default}: Default for generic function
+\item \code{interpolate_wl(default)}: Default for generic function
 
-\item \code{generic_spct}: Interpolate wavelength in an object of class
+\item \code{interpolate_wl(generic_spct)}: Interpolate wavelength in an object of class
 "generic_spct" or derived.
 
-\item \code{generic_mspct}: Interpolate wavelength in an object of class
+\item \code{interpolate_wl(generic_mspct)}: Interpolate wavelength in an object of class
 "generic_mspct" or derived.
-}}
 
+}}
 \note{
 The default \code{fill = NA} fills extrapolated values with NA. Giving NULL as
 argument for \code{fill} deletes wavelengths outside the input data range from the

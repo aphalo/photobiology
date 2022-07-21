@@ -157,11 +157,11 @@ chroma_spct(
 \item{w.length}{numeric vector with wavelengths in nanometres [\eqn{nm}].}
 
 \item{s.e.irrad}{numeric vector with spectral energy irradiance in
-[\eqn{W\,m^{-2}\,nm^{-1}}] or [\eqn{J\,d^{-1}\,m^{-2}\,nm^{-1}}].}
+[\eqn{W\,m^{-2}\,nm^{-1}}] or [\eqn{J\,d^{-1}\,m^{-2}\,nm^{-1}}{J d-1 m-2 nm-1}].}
 
 \item{s.q.irrad}{numeric A vector with spectral photon irradiance in
-[\eqn{mol\,s^{-1}\,m^{-2}\,nm^{-1}}] or
-[\eqn{mol\,d^{-1}\,m^{-2}\,nm^{-1}}].}
+[\eqn{mol\,s^{-1}\,m^{-2}\,nm^{-1}}{mol s-1 m-2 nm-1}] or
+[\eqn{mol\,d^{-1}\,m^{-2}\,nm^{-1}}{mol d-1 m-2 nm-1}].}
 
 \item{...}{other arguments passed to \code{tibble()} such as vectors or
 factors to be added as additional columns.}
@@ -187,8 +187,8 @@ with same value.}
 stored longitudinally (required if \code{multiple.wl} > 1).}
 
 \item{irrad.mult}{numeric vector with multipliers for each detector pixel
-expressed in units of \eqn{W\,m^{-2}\,nm^{-1}\,n^{-1}\,s}, where
-\eqn{n\,s^{-1}} are detector counts per second.}
+expressed in units of \eqn{W\,m^{-2}\,nm^{-1}\,n^{-1}\,s}{W m-2 nm-1 n-1 s},
+where \eqn{n\,s^{-1}}{n s-1} are detector counts per second.}
 
 \item{instr.desc}{a list describing the spectrometer used to acquire the data.}
 
@@ -197,15 +197,15 @@ expressed in units of \eqn{W\,m^{-2}\,nm^{-1}\,n^{-1}\,s}, where
 \item{instr.settings}{a list describing the settings used to acquire the data.}
 
 \item{cps}{numeric vector with linearized raw counts expressed per second
-[\eqn{n\,s^{-1}}]}
+[\eqn{n\,s^{-1}}{n s-1}]}
 
 \item{s.e.response}{numeric vector with a biological, chemical or physical
 response expressed per unit spectral energy irradiance
-[\eqn{W\,m^{-2}\,nm^{-1}} or \eqn{J\,d^{-1}\,m^{-2}\,nm^{-1}}].}
+[\eqn{W\,m^{-2}\,nm^{-1}}{W m-2 nm-1} or \eqn{J\,d^{-1}\,m^{-2}\,nm^{-1}}{J d-1 m-2 nm-1}].}
 
 \item{s.q.response}{numeric vector with a biological, chemical or physical
 response expressed per unit spectral photon irradiance in
-[\eqn{mol\,s^{-1}\,m^{-2}\,nm^{-1}} or \eqn{mol\,d^{-1}\,m^{-2}\,nm^{-1}}].}
+[\eqn{mol\,s^{-1}\,m^{-2}\,nm^{-1}}{mol s-1 m-2 nm-1} or \eqn{mol\,d^{-1}\,m^{-2}\,nm^{-1}}{mol d-1 m-2 nm-1}].}
 
 \item{response.type}{a character string, either \code{"response"} or
 \code{"action"}.}
@@ -239,10 +239,10 @@ absorptance values are \code{"total"} or \code{"internal"} values}
 \code{"specular"}.}
 
 \item{K.mol}{numeric vector with molar attenuation coefficient in SI units
-[\eqn{m^2\,mol^-1}].}
+[\eqn{m^2\,mol^-1}{m2 mol-1}].}
 
 \item{K.mass}{numeric vector with mass attenuation coefficient in SI units
-[\eqn{m^2\,g^-1}].}
+[\eqn{m^2\,g^-1}{m2 g-1}].}
 
 \item{attenuation.XS}{numeric vector with attenuation cross section values
 (Converted during object construction into \code{K.mol}.)}
@@ -257,7 +257,7 @@ chemistry.}
 \item{name}{character The name of the substance. A named character
 vector, with member names such as "IUPAC" for the authority.}
 
-\item{mass}{numeric The molar mass in Dalton [Da] (\eqn{Da = g\,mol^{-1}}).}
+\item{mass}{numeric The molar mass in Dalton [Da] (\eqn{Da = g\,mol^{-1}}{Da = g mol-1}).}
 
 \item{formula}{character The molecular formula.}
 
@@ -303,11 +303,11 @@ The functions can be used to add only one spectral quantity to a
   absorbance data are expressed. Failing to do this will result in bad data
   and all further computation will be wrong. Not entering metadata when
   creating an object will limit the available operations! Mass should be
-  indicated in daltons or \eqn{g\,mol^{-1}}. The SI unit of molar attenuation
-  coefficient is the square metre per mole (\eqn{m^2 mol^{-1}}{m2 mol-1}),
+  indicated in daltons or \eqn{g\,mol^{-1}}{g mol-1}. The SI unit of molar attenuation
+  coefficient is the square metre per mole (\eqn{m^2\,mol^{1}}{m2 mol-1}),
   but in practice, quantities are usually expressed in terms of
-  \eqn{M^{−1}⋅cm^{-1}} or \eqn{l⋅mol^{−1}⋅cm^{−1}} (the latter two units are
-  both equal to 0.1 \eqn{m^2 mol^{-1}} and quantities expressed in them need
+  \eqn{M^{-1}\,cm^{-1}} or \eqn{l\,mol^{-1}\,cm^{-1}} (the latter two units are
+  both equal to 0.1 \eqn{m^2\,mol^{-1}} and quantities expressed in them need
   to be divided by 10 when passed as arguments to \code{K.mol}.).
 }
 

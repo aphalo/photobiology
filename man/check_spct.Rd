@@ -139,31 +139,31 @@ Check that an R object contains the expected data members.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{default}: Default for generic function.
+\item \code{check_spct(default)}: Default for generic function.
 
-\item \code{generic_spct}: Specialization for generic_spct.
+\item \code{check_spct(generic_spct)}: Specialization for generic_spct.
 
-\item \code{calibration_spct}: Specialization for calibration_spct.
+\item \code{check_spct(calibration_spct)}: Specialization for calibration_spct.
 
-\item \code{raw_spct}: Specialization for raw_spct.
+\item \code{check_spct(raw_spct)}: Specialization for raw_spct.
 
-\item \code{cps_spct}: Specialization for cps_spct.
+\item \code{check_spct(cps_spct)}: Specialization for cps_spct.
 
-\item \code{filter_spct}: Specialization for filter_spct.
+\item \code{check_spct(filter_spct)}: Specialization for filter_spct.
 
-\item \code{solute_spct}: Specialization for solute_spct.
+\item \code{check_spct(solute_spct)}: Specialization for solute_spct.
 
-\item \code{reflector_spct}: Specialization for reflector_spct.
+\item \code{check_spct(reflector_spct)}: Specialization for reflector_spct.
 
-\item \code{object_spct}: Specialization for object_spct.
+\item \code{check_spct(object_spct)}: Specialization for object_spct.
 
-\item \code{response_spct}: Specialization for response_spct.
+\item \code{check_spct(response_spct)}: Specialization for response_spct.
 
-\item \code{source_spct}: Specialization for source_spct.
+\item \code{check_spct(source_spct)}: Specialization for source_spct.
 
-\item \code{chroma_spct}: Specialization for chroma_spct.
+\item \code{check_spct(chroma_spct)}: Specialization for chroma_spct.
+
 }}
-
 \examples{
 check_spct(sun.spct)
 

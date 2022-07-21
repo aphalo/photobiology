@@ -45,10 +45,12 @@ set.}
 object created. If not supplied, the comment will be copied from \code{x}.}
 
 \item{molar.concentration, mass.concentration}{numeric Concentration to be
-used to compute transmittance of the solute in solution.}
+used to compute transmittance of the solute in solution
+[\eqn{mol\,m^{-3} = mmol\,dm^{-3}}{mol m-3 = mmol dm-3} or
+\eqn{kg\,m^{-3} = g\,dm^{-3}}{kg m-3 = g dm-3}, respectively].}
 
 \item{path.length}{numeric The length of the light path (\eqn{m}) used to
-compute transmittance of the solute in solution.}
+compute transmittance of the solute in a solution.}
 }
 \value{
 A copy of \code{x} converted into a \code{filter_spct}. object.
@@ -60,11 +62,11 @@ the spectral quantity based on additional input from user.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{default}: 
+\item \code{as.filter_spct(default)}: 
 
-\item \code{solute_spct}: 
+\item \code{as.filter_spct(solute_spct)}: 
+
 }}
-
 \seealso{
 \code{\link{setGenericSpct}}
 

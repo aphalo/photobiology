@@ -146,14 +146,14 @@ spectrum.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{default}: Default for generic function
+\item \code{irrad(default)}: Default for generic function
 
-\item \code{source_spct}: Calculates irradiance from a \code{source_spct}
+\item \code{irrad(source_spct)}: Calculates irradiance from a \code{source_spct}
 object.
 
-\item \code{source_mspct}: Calculates irradiance from a \code{source_mspct} object.
-}}
+\item \code{irrad(source_mspct)}: Calculates irradiance from a \code{source_mspct} object.
 
+}}
 \note{
 Formal parameter \code{allow.scaled} is used internally for calculation
   of ratios, as rescaling and normalization do not invalidate the calculation

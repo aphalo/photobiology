@@ -246,37 +246,37 @@ By default normalization is done based on the maximum of the
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{default}: Default for generic function
+\item \code{normalize(default)}: Default for generic function
 
-\item \code{source_spct}: Normalize a \code{source_spct} object.
+\item \code{normalize(source_spct)}: Normalize a \code{source_spct} object.
 
-\item \code{response_spct}: Normalize a response spectrum.
+\item \code{normalize(response_spct)}: Normalize a response spectrum.
 
-\item \code{filter_spct}: Normalize a filter spectrum.
+\item \code{normalize(filter_spct)}: Normalize a filter spectrum.
 
-\item \code{reflector_spct}: Normalize a reflector spectrum.
+\item \code{normalize(reflector_spct)}: Normalize a reflector spectrum.
 
-\item \code{solute_spct}: Normalize a solute spectrum.
+\item \code{normalize(solute_spct)}: Normalize a solute spectrum.
 
-\item \code{raw_spct}: Normalize a raw spectrum.
+\item \code{normalize(raw_spct)}: Normalize a raw spectrum.
 
-\item \code{cps_spct}: Normalize a cps spectrum.
+\item \code{normalize(cps_spct)}: Normalize a cps spectrum.
 
-\item \code{generic_spct}: Normalize a raw spectrum.
+\item \code{normalize(generic_spct)}: Normalize a raw spectrum.
 
-\item \code{source_mspct}: Normalize the members of a source_mspct object.
+\item \code{normalize(source_mspct)}: Normalize the members of a source_mspct object.
 
-\item \code{response_mspct}: Normalize the members of a response_mspct object.
+\item \code{normalize(response_mspct)}: Normalize the members of a response_mspct object.
 
-\item \code{filter_mspct}: Normalize the members of a filter_mspct object.
+\item \code{normalize(filter_mspct)}: Normalize the members of a filter_mspct object.
 
-\item \code{reflector_mspct}: Normalize the members of a reflector_mspct object.
+\item \code{normalize(reflector_mspct)}: Normalize the members of a reflector_mspct object.
 
-\item \code{raw_mspct}: Normalize the members of a raw_mspct object.
+\item \code{normalize(raw_mspct)}: Normalize the members of a raw_mspct object.
 
-\item \code{cps_mspct}: Normalize the members of a cps_mspct object.
+\item \code{normalize(cps_mspct)}: Normalize the members of a cps_mspct object.
+
 }}
-
 \note{
 If the spectrum passed as argument to \code{x} has been previously
   scaled, in 'photobiology' (<= 0.10.9) the scaling attribute was always

@@ -59,13 +59,13 @@ difference among then is in the wavebands used.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{default}: default
+\item \code{normalized_diff_ind(default)}: default
 
-\item \code{generic_spct}: 
+\item \code{normalized_diff_ind(generic_spct)}: 
 
-\item \code{generic_mspct}: 
+\item \code{normalized_diff_ind(generic_mspct)}: 
+
 }}
-
 \note{
 Some NDxI indexes are directly based on satellite instrument data, such
   as those in the Landsat satellites. To simulate such indexes using spectral

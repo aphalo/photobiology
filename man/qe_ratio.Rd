@@ -102,14 +102,14 @@ source spectrum.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{default}: Default for generic function
+\item \code{qe_ratio(default)}: Default for generic function
 
-\item \code{source_spct}: Method for \code{source_spct} objects
+\item \code{qe_ratio(source_spct)}: Method for \code{source_spct} objects
 
-\item \code{source_mspct}: Calculates photon:energy ratio from a
+\item \code{qe_ratio(source_mspct)}: Calculates photon:energy ratio from a
 \code{source_mspct} object.
-}}
 
+}}
 \note{
 The last two parameters control speed optimizations. The defaults
   should be suitable in most cases. If you will use repeatedly the same SWFs

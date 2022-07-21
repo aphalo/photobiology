@@ -44,15 +44,15 @@ generic_spct or an object of a class derived from generic_spct.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{default}: default
+\item \code{setWhereMeasured(default)}: default
 
-\item \code{generic_spct}: generic_spct
+\item \code{setWhereMeasured(generic_spct)}: generic_spct
 
-\item \code{summary_generic_spct}: summary_generic_spct
+\item \code{setWhereMeasured(summary_generic_spct)}: summary_generic_spct
 
-\item \code{generic_mspct}: generic_mspct
+\item \code{setWhereMeasured(generic_mspct)}: generic_mspct
+
 }}
-
 \note{
 This method alters x itself by reference and in addition
   returns x invisibly. If x is not a generic_spct or an object of a class derived from

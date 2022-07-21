@@ -57,15 +57,15 @@ Return a copy of an R object with its class set to a given type
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{default}: 
+\item \code{as.object_mspct(default)}: 
 
-\item \code{data.frame}: 
+\item \code{as.object_mspct(data.frame)}: 
 
-\item \code{object_spct}: 
+\item \code{as.object_mspct(object_spct)}: 
 
-\item \code{list}: 
+\item \code{as.object_mspct(list)}: 
+
 }}
-
 \seealso{
 Other Coercion methods for collections of spectra: 
 \code{\link{as.calibration_mspct}()},

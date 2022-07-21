@@ -38,15 +38,15 @@ or a generic_mspct.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{default}: default
+\item \code{getWhenMeasured(default)}: default
 
-\item \code{generic_spct}: generic_spct
+\item \code{getWhenMeasured(generic_spct)}: generic_spct
 
-\item \code{summary_generic_spct}: summary_generic_spct
+\item \code{getWhenMeasured(summary_generic_spct)}: summary_generic_spct
 
-\item \code{generic_mspct}: generic_mspct
+\item \code{getWhenMeasured(generic_mspct)}: generic_mspct
+
 }}
-
 \note{
 If x is not a \code{generic_spct} or an object of a derived class
   \code{NA} is returned.
