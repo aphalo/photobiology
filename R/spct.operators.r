@@ -39,13 +39,13 @@ apply_oper <- function(e1, e2, oper) {
   }
   # solutes
   if (is.solute_spct(e1)) {
-    .name.solute.qty <- intersect(c("K.mol", "K.mass"), names(e1))
+    .name.solute.qty <- intersect(c("K.mole", "K.mass"), names(e1))
     stopifnot(length(.name.filter.qty) == 1)
   } else {
     .name.solute.qty <- NULL
   }
   if (is.solute_spct(e2)) {
-    col.name <- intersect(c("K.mol", "K.mass"), names(e2))
+    col.name <- intersect(c("K.mole", "K.mass"), names(e2))
     stopifnot(length(.name.filter.qty) == 1)
     if (is.null(.name.solute.qty)) {
       .name.solute.qty <- col.name
@@ -686,7 +686,7 @@ f_dispatcher_spct <- function(x, .fun, ...) {
 
   # coeff base
   if (class.x == "solute_spct") {
-    .name.solute.qty <- intersect(c("K.mol", "K.mass"), names(x))
+    .name.solute.qty <- intersect(c("K.mole", "K.mass"), names(x))
     stopifnot(length(.name.solute.qty) == 1)
   }
 

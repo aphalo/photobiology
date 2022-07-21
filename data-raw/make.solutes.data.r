@@ -1,6 +1,6 @@
 water.tb <- read.table("data-raw/solutes/water-pure-buiteveld94.txt",
                        skip = 6,
-                       col.names = c("w.length", "K.mol"))
+                       col.names = c("w.length", "K.mole"))
 comment(water.tb) <-
   paste(readLines("data-raw/solutes/water-pure-buiteveld94.txt", n = 6),
         collapse = "\n")
@@ -20,7 +20,7 @@ solute_properties(water.spct)
 
 phenylalanine.tb <- read.table("data-raw/solutes/phenylalanine-abs.txt",
                        skip = 23,
-                       col.names = c("w.length", "K.mol"))
+                       col.names = c("w.length", "K.mole"))
 comment(phenylalanine.tb) <-
   paste(readLines("data-raw/solutes/phenylalanine-abs.txt", n = 23),
         collapse = "\n")

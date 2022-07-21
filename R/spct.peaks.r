@@ -587,7 +587,7 @@ peaks.solute_spct <-
            refine.wl = FALSE,
            method = "spline",
            ...) {
-    cols <- intersect(c("K.mol", "K.mass"), names(x))
+    cols <- intersect(c("K.mole", "K.mass"), names(x))
     if (length(cols) == 1) {
       col.name <- cols
       z <- x
@@ -1198,7 +1198,7 @@ valleys.solute_spct <-
            refine.wl = FALSE,
            method = "spline",
            ...) {
-    cols <- intersect(c("K.mol", "K.mass"), names(x))
+    cols <- intersect(c("K.mole", "K.mass"), names(x))
     if (length(cols) == 1) {
       col.name <- cols
       z <- x
@@ -1957,7 +1957,7 @@ wls_at_target.solute_spct <-
            idfactor = length(target) > 1,
            na.rm = FALSE,
            ...) {
-    cols <- intersect(c("K.mol", "K.mass"), names(x))
+    cols <- intersect(c("K.mole", "K.mass"), names(x))
     if (length(cols) == 1) {
       col.name <- cols
       z <- x

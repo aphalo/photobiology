@@ -110,7 +110,7 @@ reflector_spct(
 
 solute_spct(
   w.length = NULL,
-  K.mol = NULL,
+  K.mole = NULL,
   K.mass = NULL,
   attenuation.XS = NULL,
   ...,
@@ -238,14 +238,14 @@ absorptance values are \code{"total"} or \code{"internal"} values}
 \item{Rfr.type}{character A string, either \code{"total"} or
 \code{"specular"}.}
 
-\item{K.mol}{numeric vector with molar attenuation coefficient in SI units
+\item{K.mole}{numeric vector with molar attenuation coefficient in SI units
 [\eqn{m^2\,mol^-1}{m2 mol-1}].}
 
 \item{K.mass}{numeric vector with mass attenuation coefficient in SI units
 [\eqn{m^2\,g^-1}{m2 g-1}].}
 
 \item{attenuation.XS}{numeric vector with attenuation cross section values
-(Converted during object construction into \code{K.mol}.)}
+(Converted during object construction into \code{K.mole}.)}
 
 \item{log.base}{numeric Normally one of \code{e} or \code{10}. Data are
 stored always on base 10 corresponding to decadal absorbance as used in
@@ -308,7 +308,7 @@ The functions can be used to add only one spectral quantity to a
   but in practice, quantities are usually expressed in terms of
   \eqn{M^{-1}\,cm^{-1}} or \eqn{l\,mol^{-1}\,cm^{-1}} (the latter two units are
   both equal to 0.1 \eqn{m^2\,mol^{-1}} and quantities expressed in them need
-  to be divided by 10 when passed as arguments to \code{K.mol}.).
+  to be divided by 10 when passed as arguments to \code{K.mole}.).
 }
 
 \seealso{

@@ -65,7 +65,7 @@ split2reflector_mspct(
 
 split2solute_mspct(
   x,
-  spct.data.var = "K.mol",
+  spct.data.var = "K.mole",
   w.length.var = "w.length",
   idx.var = NULL,
   ncol = 1,

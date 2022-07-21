@@ -421,7 +421,7 @@ thin_wl.solute_spct <- function(x,
                                 max.wl.step = 10.0,
                                 max.slope.delta = 0.001,
                                 ...) {
-  cols <- intersect(c("K.mol", "K.mass"), names(x))
+  cols <- intersect(c("K.mole", "K.mass"), names(x))
   if (length(cols) == 1) {
     col.name <- cols
   } else {
@@ -590,7 +590,7 @@ drop_user_cols.reflector_spct <- function(x, keep.also = NULL, ...) {
 #' @export
 #'
 drop_user_cols.solute_spct <- function(x, keep.also = NULL, ...) {
-  default.cols <- c("w.length", "K.mol", "K.mass")
+  default.cols <- c("w.length", "K.mole", "K.mass")
   cols.to.keep <- unique(c(default.cols, keep.also))
   x[ , intersect(colnames(x), cols.to.keep)]
 }

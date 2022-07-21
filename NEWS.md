@@ -15,8 +15,6 @@ Conversions between `Date` and `POSIXct` objects are tricky because the former d
 This release corrects problems triggered by recent updates to packages 'lubridate' and possibly 'tibble'. (Reported by _putmanlab_ in issue #7 at GitHub.) and adds enhancements for class `solute_spct`.
 
 -   Functions `day_night()`, `sunrise_time()`, `noon_time()` and `sunset_time()` would return wrong time values when non-default arguments to parameter `tz` were passed together with objects of class `Date` passed as arguments to `date
-
--   Rename `solute_spct` member variable `K.mole` into `K.mol`. **Code breaking!**.
 -   Add methods`as.filter_spct()` and `as.solute_spct` especialized for conversion two-way conversion between objects of classes `solute_spct` and `filter_spct`.
 
 # photobiology 0.10.11

@@ -135,7 +135,7 @@ clean.solute_spct <-
            range.s.data = c(0, NA),
            fill = range.s.data,
            ...) {
-    col.name <- intersect(c("K.mol", "K.mass"), names(x))
+    col.name <- intersect(c("K.mole", "K.mass"), names(x))
     stopifnot(length(col.name) == 1L)
     clean_spct(x = x,
                range = range,

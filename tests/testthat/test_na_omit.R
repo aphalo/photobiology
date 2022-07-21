@@ -101,7 +101,7 @@ test_that("reflector_spct", {
 test_that("solute_spct", {
 
   my.spct <- my.ref.spct <- water.spct
-  my.spct[c(4,8), "K.mol"] <- NA
+  my.spct[c(4,8), "K.mole"] <- NA
   my.ref.spct <- my.ref.spct[-c(4 ,8), ]
   #  expect_equal(na.omit(my.spct), my.ref.spct)
   expect_equal(as.numeric(na.action(na.omit(my.spct))), c(4, 8))

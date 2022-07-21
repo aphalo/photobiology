@@ -356,12 +356,12 @@ reflector_spct <- function(w.length = NULL,
 
 #' @rdname source_spct
 #'
-#' @param K.mol numeric vector with molar attenuation coefficient in SI units
+#' @param K.mole numeric vector with molar attenuation coefficient in SI units
 #'    [\eqn{m^2\,mol^-1}{m2 mol-1}].
 #' @param K.mass numeric vector with mass attenuation coefficient in SI units
 #'    [\eqn{m^2\,g^-1}{m2 g-1}].
 #' @param attenuation.XS numeric vector with attenuation cross section values
-#'    (Converted during object construction into \code{K.mol}.)
+#'    (Converted during object construction into \code{K.mole}.)
 #' @param K.type character A string, either \code{"attenuation"},
 #'   \code{"absorption"} or \code{"scattering"}.
 #' @param mass numeric The molar mass in Dalton [Da] (\eqn{Da = g\,mol^{-1}}{Da = g mol-1}).
@@ -386,14 +386,14 @@ reflector_spct <- function(w.length = NULL,
 #'   but in practice, quantities are usually expressed in terms of
 #'   \eqn{M^{-1}\,cm^{-1}} or \eqn{l\,mol^{-1}\,cm^{-1}} (the latter two units are
 #'   both equal to 0.1 \eqn{m^2\,mol^{-1}} and quantities expressed in them need
-#'   to be divided by 10 when passed as arguments to \code{K.mol}.).
+#'   to be divided by 10 when passed as arguments to \code{K.mole}.).
 #'
 #' @seealso \code{\link{setSoluteProperties}}
 #'
 #' @export
 #'
 solute_spct <- function(w.length = NULL,
-                        K.mol = NULL,
+                        K.mole = NULL,
                         K.mass = NULL,
                         attenuation.XS = NULL,
                         ...,
@@ -408,24 +408,24 @@ solute_spct <- function(w.length = NULL,
                         strict.range = getOption("photobiology.strict.range", default = FALSE),
                         multiple.wl = 1L,
                         idfactor = NULL) {
-  if (!is.null(attenuation.XS) && is.null(K.mol)) {
-    K.mol <- attenuation.XS / 3.82343216e-21 # epsilon = sigma * N_A / (log(10) * 1e3)
+  if (!is.null(attenuation.XS) && is.null(K.mole)) {
+    K.mole <- attenuation.XS / 3.82343216e-21 # epsilon = sigma * N_A / (log(10) * 1e3)
   }
   if (length(w.length) == 0) {
-    z <- tibble::tibble(w.length = numeric(), K.mol = numeric(), ...)
-  } else if (is.null(K.mass) && is.numeric(K.mol)) {
+    z <- tibble::tibble(w.length = numeric(), K.mole = numeric(), ...)
+  } else if (is.null(K.mass) && is.numeric(K.mole)) {
     if (log.base != 10) {
-      K.mol <- log10(K.mol^log.base)
+      K.mole <- log10(K.mole^log.base)
     }
-    z <- tibble::tibble(w.length, K.mol, ...)
-  } else if (is.null(K.mol) && is.numeric(K.mass)) {
+    z <- tibble::tibble(w.length, K.mole, ...)
+  } else if (is.null(K.mole) && is.numeric(K.mass)) {
     stop("Support for 'K.mass' not yet implemented.")
     if (log.base != 10) {
       K.mass <- log10(K.mass^log.base)
     }
     z <- tibble::tibble(w.length, K.mass, ...)
   } else {
-    warning("Only one of K.mol, or K.mass should be different from NULL.")
+    warning("Only one of K.mole, or K.mass should be different from NULL.")
     z <- tibble::tibble(w.length, ...)
   }
   if (!is.null(comment)) {
@@ -834,8 +834,8 @@ as.filter_spct.solute_spct <-
     if (is.null(molar.concentration)) {
       molar.concentration <- mass.concentration / solute.properties[["mass"]]
     }
-    if (! "K.mol" %in% colnames(x)) {
-      x[["K.mol"]] <- x[["K.mass"]] / solute.properties[["mass"]]
+    if (! "K.mole" %in% colnames(x)) {
+      x[["K.mole"]] <- x[["K.mass"]] / solute.properties[["mass"]]
     }
     if (is.null(comment)) {
       comment <- paste("Computed from 'solute_spct' for ",
@@ -843,7 +843,7 @@ as.filter_spct.solute_spct <-
                        comment(x), sep = "")
     }
     z <- filter_spct(w.length = x[["w.length"]],
-                    A = x[["K.mol"]] * molar.concentration * path.length,
+                    A = x[["K.mole"]] * molar.concentration * path.length,
                     Tfr.type = "internal",
                     Rfr.constant = Rfr.constant,
                     thickness = path.length,
@@ -853,7 +853,7 @@ as.filter_spct.solute_spct <-
                     multiple.wl = getMultipleWl(x),
                     ...)
     other.cols <-
-      setdiff(colnames(x), c("w.length", "K.mol", "K.mass"))
+      setdiff(colnames(x), c("w.length", "K.mole", "K.mass"))
     if (length(other.cols)) {
       zz <- cbind(z, x[ , other.cols])
       copy_attributes(z, zz)
@@ -951,7 +951,7 @@ as.solute_spct.filter_spct <-
                        comment(x), sep = "")
     }
     z <- solute_spct(w.length = x[["w.length"]],
-                     K.mol = x[["A"]] / molar.concentration / path.length,
+                     K.mole = x[["A"]] / molar.concentration / path.length,
                      log.base = 10,
                      K.type = K.type,
                      name = name,

@@ -1428,7 +1428,7 @@ as.solute_mspct.list <- function(x,
 #'
 as.solute_mspct.matrix <- function(x,
                                    w.length,
-                                   spct.data.var = "K.mol",
+                                   spct.data.var = "K.mole",
                                    multiplier = 1,
                                    byrow = NULL,
                                    spct.names = "spct_",
@@ -1721,7 +1721,7 @@ split2reflector_mspct <- function(x,
 #' @export
 #'
 split2solute_mspct <- function(x,
-                               spct.data.var = "K.mol",
+                               spct.data.var = "K.mole",
                                w.length.var = "w.length", idx.var = NULL,
                                ncol = 1, byrow = FALSE, ...) {
   split2mspct(x = x,

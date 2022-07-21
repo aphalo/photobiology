@@ -262,7 +262,7 @@ join_mspct.solute_mspct <- function(x,
                                     ...) {
   # guess column name from 1st spectrum
   if (length(x)) {
-    col.name <- intersect(c("K.mol", "K.mass"), names(x[[1]]))
+    col.name <- intersect(c("K.mole", "K.mass"), names(x[[1]]))
   } else {
     col.name <- NA_character_
   }

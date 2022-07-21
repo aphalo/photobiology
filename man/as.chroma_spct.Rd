@@ -15,7 +15,7 @@ as.chroma_spct(x, ...)
 \item{...}{other arguments passed to "set" functions.}
 }
 \value{
-A copy of \code{x} converted into a \code{chroma_spct}. object.
+A copy of \code{x} converted into a \code{chroma_spct} object.
 }
 \description{
 Return a copy of an R object with its class set to a given type of spectrum.

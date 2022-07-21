@@ -445,10 +445,10 @@ check_spct.solute_spct <-
       warning("Missing K.type attribute replaced by 'attenuation'")
     }
 
-    if (exists("K.mol", x, mode = "numeric", inherits = FALSE)) {
-      range_check(x, strict.range = strict.range, k.base = "mol")
-      if (getOption("photobiology.verbose") && anyNA(x[["K.mol"]])) {
-        warning("At least one NA in 'K.mol'")
+    if (exists("K.mole", x, mode = "numeric", inherits = FALSE)) {
+      range_check(x, strict.range = strict.range, k.base = "mole")
+      if (getOption("photobiology.verbose") && anyNA(x[["K.mole"]])) {
+        warning("At least one NA in 'K.mole'")
       }
     } else if (exists("K.mass", x, mode = "numeric", inherits = FALSE)) {
       range_check(x, strict.range = strict.range, k.base = "mass")
@@ -457,7 +457,7 @@ check_spct.solute_spct <-
       }
     } else {
       warning("No coefficient of attenuation data found in solute_spct")
-      x[["K.mol"]] <- NA_real_
+      x[["K.mole"]] <- NA_real_
     }
     x
   }
@@ -1570,7 +1570,7 @@ is_transmittance_based <- function(x) {
 #' @param x an R object
 #'
 #' @return \code{is_mole_based} returns TRUE if its argument is a
-#'   \code{solute_spct} object that contains spectral \code{K.mol} data and
+#'   \code{solute_spct} object that contains spectral \code{K.mole} data and
 #'   \code{FALSE} if it contains \code{K.mass} data, but returns NA for any
 #'   other R object, including those belonging other \code{generic_spct}-derived
 #'   classes. \code{is_mass_based} returns the complement of
@@ -1584,7 +1584,7 @@ is_transmittance_based <- function(x) {
 #'
 is_mole_based <- function(x) {
   if (is.solute_spct(x) || is.summary_solute_spct(x)) {
-    return("K.mol" %in% names(x))
+    return("K.mole" %in% names(x))
   } else {
     return(NA_integer_)
   }
