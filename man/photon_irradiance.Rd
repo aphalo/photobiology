@@ -15,28 +15,31 @@ photon_irradiance(
 )
 }
 \arguments{
-\item{w.length}{numeric vector of wavelength (nm).}
+\item{w.length}{numeric vector of wavelength [\eqn{nm}].}
 
-\item{s.irrad}{numeric vector of spectral irradiances, by default as energy (W
-m-2 nm-1).}
+\item{s.irrad}{numeric vector of spectral irradiances in
+[\eqn{W\,m^{-2}\,nm^{-1}}{W m-2 nm-1}] or
+[\eqn{mol\,s^{-1}\,sm^{-2}\,nm^{-1}}{mol s-1 m-2 nm-1}] as indicated by the
+argument pased to \code{unit.in}.}
 
 \item{w.band}{waveband.}
 
-\item{unit.in}{character Values recognized "photon" or "energy".}
+\item{unit.in}{character Allowed values \code{"energy"}, and \code{"photon"},
+or its alias \code{"quantum"}.}
 
-\item{check.spectrum}{logical Flag telling whether to sanity check input data,
-default is TRUE.}
+\item{check.spectrum}{logical Flag telling whether to sanity check input
+data, default is \code{TRUE}.}
 
-\item{use.cached.mult}{logical Flag telling whether multiplier values should be
-cached between calls.}
+\item{use.cached.mult}{logical Flag telling whether multiplier values should
+be cached between calls.}
 
 \item{use.hinges}{logical Flag indicating whether to insert "hinges" into the
 spectral data before integration so as to reduce interpolation errors at
 the boundaries of the wavebands.}
 }
 \value{
-A single numeric value with no change in scale factor: [mol s-1 m-2 nm-1]
-  -> [mol s-1 m-2].
+A single numeric value with no change in scale factor:
+  [\eqn{mol\,s^{-1}\,sm^{-2}}{mol s-1 m-2}].
 }
 \description{
 This function returns the photon irradiance for a given waveband of a

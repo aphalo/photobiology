@@ -16,7 +16,8 @@
 \item{...}{not used in current version}
 }
 \description{
-A function to obtain the name and label of objects of class "waveband".
+A method specialization that extracts the name and label of objects of class
+\code{waveband}.
 }
 \section{Methods (by class)}{
 \itemize{

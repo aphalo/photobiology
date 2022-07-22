@@ -3,26 +3,28 @@
 #' Constructor for "waveband" objects that can be used as input when calculating
 #' irradiances.
 #'
-#' @param x any R object on which applying the function range yields an vector of
-#'   two numeric values, describing a range of wavelengths (nm)
-#' @param weight a character string "SWF" or "BSWF", use NULL (the default) to
-#'   indicate no weighting used when calculating irradiance
-#' @param SWF.e.fun a function giving multipliers for a spectral weighting
-#'   function (energy) as a function of wavelength (nm)
-#' @param SWF.q.fun a function giving multipliers for a spectral weighting
-#'   function (quantum) as a function of wavelength (nm)
+#' @param x any R object on which applying the method \code{range()} yields an
+#'   vector of two numeric values, describing a range of wavelengths [\eqn{nm}].
+#' @param weight a character string \code{"SWF"} or \code{"BSWF"}, use
+#'   \code{NULL} (the default) to indicate no weighting used when calculating
+#'   irradiance.
+#' @param SWF.e.fun,SWF.q.fun a functions giving multipliers for a spectral
+#'   weighting function (energy and quantum, respectively) as a function of
+#'   wavelength [\eqn{nm}].
 #' @param SWF.norm a numeric value giving the native normalization wavelength
-#'   (nm) used by SWF.e.fun and SWF.q.fun
-#' @param norm a single numeric value indicating the wavelength at which the SWF
-#'   should be normalized to 1.0, in nm. "NULL" means no normalization.
-#' @param hinges a numeric vector giving the wavelengths at which the s.irrad
-#'   should be inserted by interpolation, no interpolation is indicated by an
-#'   empty vector (numeric(0)), if NULL then interpolation will take place at
-#'   both ends of the band.
+#'   [\eqn{nm}] used by \code{SWF.e.fun} and \code{SWF.q.fun}.
+#' @param norm a single numeric value indicating the wavelength [\eqn{nm}] at
+#'   which the SWF should be normalized to 1.0; \code{NULL} is interpreted as no
+#'   normalization.
+#' @param hinges a numeric vector giving the wavelengths at which values in
+#'   \code{s.irrad} should be inserted by interpolation before integration is
+#'   attempted. No interpolation is indicated by an empty vector
+#'   (\code{numeric(0)}), while interpolation at both boundaries of the band is
+#'   indicated by \code{NULL}.
 #' @param wb.name character string giving the name for the waveband defined,
-#'   default is NULL
+#'   default is \code{NULL} for an automatically generated name.
 #' @param wb.label character string giving the label of the waveband to be used
-#'   for plotting, default is wb.name
+#'   for labelling computed summaries or plots, default is \code{wb.name}.
 #'
 #' @return a \code{waveband} object
 #'
@@ -33,8 +35,14 @@
 #' @family waveband constructors
 #'
 waveband <- function(x = NULL,
-                     weight = NULL, SWF.e.fun = NULL, SWF.q.fun = NULL, norm = NULL,
-                     SWF.norm = NULL, hinges = NULL, wb.name = NULL, wb.label = wb.name) {
+                     weight = NULL,
+                     SWF.e.fun = NULL,
+                     SWF.q.fun = NULL,
+                     norm = NULL,
+                     SWF.norm = NULL,
+                     hinges = NULL,
+                     wb.name = NULL,
+                     wb.label = wb.name) {
   if (length(x) == 0) {
     x <- NA_real_
   }
@@ -42,13 +50,20 @@ waveband <- function(x = NULL,
     wb.name = "Total"
   }
   x.range <- range(x)
-  new_waveband(x.range[1], x.range[2], weight=weight, SWF.e.fun=SWF.e.fun, SWF.q.fun=SWF.q.fun,
-               norm=norm, SWF.norm=SWF.norm, hinges=hinges, wb.name=wb.name, wb.label=wb.label)
+  new_waveband(x.range[1], x.range[2],
+               weight=weight,
+               SWF.e.fun=SWF.e.fun,
+               SWF.q.fun=SWF.q.fun,
+               norm=norm,
+               SWF.norm=SWF.norm,
+               hinges=hinges,
+               wb.name=wb.name,
+               wb.label=wb.label)
 }
 
 #' @describeIn waveband A less flexible variant
-#' @param w.low numeric value, wavelength at the short end of the band (nm)
-#' @param w.high numeric value, wavelength at the long end of the band (nm)
+#' @param w.low,w.high numeric value, wavelengths at the short end and long ends
+#'   of the wavelength band [\eqn{nm}].
 #'
 #' @export
 #'

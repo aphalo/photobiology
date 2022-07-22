@@ -16,21 +16,19 @@ irradiance(
 )
 }
 \arguments{
-\item{w.length}{numeric Vector of wavelength (nm).}
+\item{w.length}{numeric Vector of wavelength [\eqn{nm}].}
 
-\item{s.irrad}{numeric vector of spectral (energy) irradiances (W m-2 nm-1).}
+\item{s.irrad}{numeric vector of spectral (energy) irradiances
+[\eqn{W\,m^{-2}\,nm^{-1}}{W m-2 nm-1}].}
 
 \item{w.band}{waveband or list of waveband objects The waveband(s) determine
 the region(s) of the spectrum that are summarized.}
 
-\item{unit.out}{character Allowed values "energy", and "photon", or its alias
-"quantum".}
-
-\item{unit.in}{character Allowed values "energy", and "photon", or its alias
-"quantum".}
+\item{unit.out, unit.in}{character Allowed values \code{"energy"}, and
+\code{"photon"}, or its alias \code{"quantum"}.}
 
 \item{check.spectrum}{logical Flag indicating whether to sanity check input
-data, default is TRUE.}
+data, default is \code{TRUE}.}
 
 \item{use.cached.mult}{logical Flag indicating whether multiplier values
 should be cached between calls.}
@@ -41,7 +39,8 @@ the boundaries of the wavebands.}
 }
 \value{
 A single numeric value or a vector of numeric values with no change
-  in scale factor: [W m-2 nm-1] -> [mol s-1 m-2]
+  in scale factor: [\eqn{mol\,s^{-1}\,sm^{-2}\,nm^{-1}}{mol s-1 m-2 nm-1}]
+  yields [\eqn{mol\,s^{-1}\,sm^{-2}}{mol s-1 m-2}]
 }
 \description{
 Energy or photon irradiance for one or more wavebands of a radiation

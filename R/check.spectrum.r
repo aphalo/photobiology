@@ -3,9 +3,9 @@
 #' Checks spectral irradiance data in \code{numeric} vectors for
 #' compliance with assumptions used in calculations.
 #'
-#' @param w.length numeric vector of wavelengths (nm).
+#' @param w.length numeric vector of wavelengths [\eqn{nm}].
 #' @param s.irrad numeric Corresponding vector of spectral (energy) irradiances
-#'   (W m-2 nm-1).
+#'   [\eqn{W\,m^{-2}\,nm^{-1}}{W m-2 nm-1}].
 #'
 #' @return A single \code{logical} value indicating whether test was passed or
 #'   not

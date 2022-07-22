@@ -121,6 +121,8 @@ solute_spct(
   formula = NULL,
   structure = grDevices::as.raster(matrix()),
   ID = NA_character_,
+  solvent.name = NA_character_,
+  solvent.ID = NA_character_,
   comment = NULL,
   strict.range = getOption("photobiology.strict.range", default = FALSE),
   multiple.wl = 1L,
@@ -181,7 +183,7 @@ object created.}
 in an error instead of a warning.}
 
 \item{multiple.wl}{numeric Maximum number of repeated \code{w.length} entries
-with same value.}
+with same value. (As with multiple spectra stored in long from).}
 
 \item{idfactor}{character Name of factor distinguishing multiple spectra when
 stored longitudinally (required if \code{multiple.wl} > 1).}
@@ -254,8 +256,9 @@ chemistry.}
 \item{K.type}{character A string, either \code{"attenuation"},
 \code{"absorption"} or \code{"scattering"}.}
 
-\item{name}{character The name of the substance. A named character
-vector, with member names such as "IUPAC" for the authority.}
+\item{name, solvent.name}{character The names of the substance and of the
+solvent. A named character vector, with member names such as "IUPAC" for
+the authority.}
 
 \item{mass}{numeric The molar mass in Dalton [Da] (\eqn{Da = g\,mol^{-1}}{Da = g mol-1}).}
 
@@ -263,28 +266,32 @@ vector, with member names such as "IUPAC" for the authority.}
 
 \item{structure}{raster A bitmap of the structure.}
 
-\item{ID}{character The name of the substance. A named character
-vector, with member names such as "ChemSpider" or "PubChem" for the
-authority.}
+\item{ID, solvent.ID}{character The ID of the substance and of the solvent. A
+named character vector, with member names such as "ChemSpider" or "PubChem"
+for the authority.}
 
 \item{x, y, z}{numeric colour coordinates}
 }
 \value{
-A object of class generic_spct or a class derived from it, depending
-  on the function used. In other words an object of a class with the same
-  name as the constructor function.
+A object of class \code{generic_spct} or a class derived from it,
+  depending on the function used. In other words an object of a class with
+  the same name as the constructor function.
 }
 \description{
-These functions can be used to create spectral objects derived from
-\code{generic_spct}. They take as arguments numeric vectors for the data
-character scalars for attributes, and a logical flag.
+These constructor functions can be used to create spectral objects derived
+from \code{generic_spct}. They take as arguments numeric vectors for the
+wavelengths and spectral data, and numeric, character, and logical values for
+metadata attributes to be saved to the objects created and options
+controlling the creation process.
 }
-\note{
-The functions can be used to add only one spectral quantity to a
-  spectral object. Some of the functions have different arguments, for the
-  same quantity expressed in different units. An actual parameter can be
-  supplied to only one of these formal parameters in a given call to any of
-  these functions.
+\details{
+Constructors can be used to create spectral objects from spectral
+  quantities expressed on a single base or unit. Some of the functions have
+  different formal parameters accepting a quantity expressed in different
+  units, however, an argument can be passed to only one of these formal
+  parameters in a given call. The constructors \code{object_spct()} and
+  \code{chroma_spct()} require arguments to be passed for multiple but
+  distinct spectral quantities.
 }
 \section{Warning for filter_spct!}{
  Not entering metadata when creating an

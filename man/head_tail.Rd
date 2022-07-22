@@ -8,7 +8,7 @@
 \alias{head_tail.function}
 \alias{head_tail.table}
 \alias{head_tail.ftable}
-\title{Return the First and Last Part of an Object}
+\title{Return the First and Last Parts of an Object}
 \usage{
 head_tail(x, n, ...)
 
@@ -68,10 +68,10 @@ The value returned by \code{head_tail()} is equivalent to row
 }}
 \note{
 For some types of input, like functions, the output may be confusing,
- however, we have opted for consistency with existing functions. The code
- is in part a revision of that of head() and tail() from package 'utils'. I
- have been missing this method especially when checking spectral data, as
- both ends are of interest.
+  however, we have opted for consistency with existing functions. The code is
+  in part a revision of that of \code{head()} and \code{tail()} from package
+  \sQuote{utils}. This method is especially useful when checking spectral
+  data, as both ends are of interest.
 
 \code{head_tail()} methods for function, table and ftable classes, are
   wrappers for head() method.

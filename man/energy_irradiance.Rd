@@ -15,18 +15,20 @@ energy_irradiance(
 )
 }
 \arguments{
-\item{w.length}{numeric vector of wavelength (nm).}
+\item{w.length}{numeric vector of wavelength [\eqn{nm}].}
 
-\item{s.irrad}{numeric vector of spectral irradiances, by default as energy (W
-m-2 nm-1).}
+\item{s.irrad}{numeric vector of spectral irradiances in
+[\eqn{W\,m^{-2}\,nm^{-1}}{W m-2 nm-1}] or
+[\eqn{mol\,s^{-1}\,sm^{-2}\,nm^{-1}}{mol s-1 m-2 nm-1}] as indicated by the
+argument pased to \code{unit.in}.}
 
 \item{w.band}{waveband.}
 
-\item{unit.in}{a character Allowed values "photon" or "energy", default is
-"energy".}
+\item{unit.in}{character Allowed values \code{"energy"}, and \code{"photon"},
+or its alias \code{"quantum"}.}
 
 \item{check.spectrum}{logical Flag indicating whether to sanity check input
-data, default is TRUE.}
+data, default is \code{TRUE}.}
 
 \item{use.cached.mult}{logical Flag indicating whether multiplier values
 should be cached between calls.}
@@ -36,8 +38,8 @@ spectral data before integration so as to reduce interpolation errors at
 the boundaries of the wavebands.}
 }
 \value{
-A single numeric value with no change in scale factor: [W m-2 nm-1]
-  -> [W m-2].
+A single numeric value with no change in scale factor:
+  [\eqn{W\,m^{-2}}{W m-2}].
 }
 \description{
 Energy irradiance for a waveband from a radiation spectrum, optionally

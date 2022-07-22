@@ -15,8 +15,11 @@ normalization(x)
 \arguments{
 \item{x}{an R object}
 }
+\value{
+A single numeric value of wavelength [\eqn{nm}].
+}
 \description{
-Normalization wavelength of an R object, retrieved from the object's
+Normalization wavelength [\eqn{nm}] of an R object, retrieved from the object's
 attributes.
 }
 \section{Methods (by class)}{

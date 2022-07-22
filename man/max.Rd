@@ -21,14 +21,19 @@ wl_max(x, na.rm = FALSE)
 
 \item{na.rm}{ignored}
 
-\item{...}{not used in current version}
+\item{...}{numeric, \code{waveband} or \code{generic_spct} arguments.}
 
 \item{idx}{character Name of the column with the names of the members of the
 collection of spectra.}
 }
+\value{
+a length-one vector for individual objects or numeric vectors
+  or a data frame for collections of spectra.
+}
 \description{
-A method specialization that returns the wavelength maximum from objects of
-classes "waveband" or of class "generic_spct" or derived.
+A method specialization that returns the wavelength maximum [\eqn{nm}] from
+objects of classes \code{waveband} or of class \code{generic_spct} or
+derived.
 }
 \section{Methods (by class)}{
 \itemize{

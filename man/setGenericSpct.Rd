@@ -57,6 +57,8 @@ setSoluteSpct(
   formula = NA_character_,
   structure = grDevices::as.raster(matrix()),
   ID = NA_character_,
+  solvent.name = NA_character_,
+  solvent.ID = NA_character_,
   strict.range = getOption("photobiology.strict.range", default = FALSE),
   multiple.wl = 1L,
   idfactor = NULL
@@ -101,32 +103,34 @@ setChromaSpct(x, multiple.wl = 1L, idfactor = NULL)
 \arguments{
 \item{x}{data.frame, list or generic_spct and derived classes}
 
-\item{multiple.wl}{numeric Maximum number of repeated w.length entries with same value.}
+\item{multiple.wl}{numeric Maximum number of repeated \code{w.length} entries
+with same value.}
 
 \item{idfactor}{character Name of factor distinguishing multiple spectra when
-stored logitudinally (required if mulitple.wl > 1).}
+stored longitudinally (required if \code{mulitple.wl} > 1).}
 
-\item{strict.range}{logical Flag indicating whether off-range values result in an
-error instead of a warning.}
+\item{strict.range}{logical Flag indicating whether off-range values result
+in an error instead of a warning.}
 
 \item{time.unit}{character string indicating the time unit used for spectral
-irradiance or exposure ("second" , "day" or "exposure") or an object of
-class duration as defined in package lubridate.}
+irradiance or exposure (\code{"second"}, \code{"day"} or \code{"exposure"})
+or an object of class duration as defined in package lubridate.}
 
-\item{Tfr.type}{character A string, either "total" or "internal".}
+\item{Tfr.type}{character Either "total" or "internal".}
 
-\item{Rfr.constant}{numeric The value of the reflection factor (/1).}
+\item{Rfr.constant}{numeric The value of the reflection factor [\eqn{/1}].}
 
 \item{thickness}{numeric The thickness of the material.}
 
-\item{attenuation.mode}{character One of "reflection", "absorption" or
-"mixed".}
+\item{attenuation.mode}{character One of \code{"reflection"},
+\code{"absorption"} or \code{"mixed"}.}
 
 \item{K.type}{character A string, either "attenuation", "absorption" or
 "scattering".}
 
-\item{name}{character The name of the substance. A named character
-vector, with member names such as "IUPAC" for the authority.}
+\item{name, solvent.name}{character The names of the substance and of the
+solvent. A named character vector, with member names such as "IUPAC" for
+the authority.}
 
 \item{mass}{numeric The mass in Dalton (Da = g/mol).}
 
@@ -134,15 +138,17 @@ vector, with member names such as "IUPAC" for the authority.}
 
 \item{structure}{raster A bitmap of the structure.}
 
-\item{ID}{character The name of the substance. A named character
-vector, with member names such as "ChemSpider" or "PubChen" for the
-authority.}
+\item{ID, solvent.ID}{character The IDs of the substance and of the solvent. A
+named character vector, with member names such as "ChemSpider" or "PubChen"
+for the authority.}
 
 \item{Rfr.type}{character A string, either "total" or "specular".}
 
-\item{response.type}{a character string, either "response" or "action".}
+\item{response.type}{a character string, either \code{"response"} or \code{"action"}.}
 
-\item{bswf.used}{character A string, either "none" or the name of a BSWF.}
+\item{bswf.used}{character A string, either \code{"none"} or the name of a
+BSWF. (Users seldom need to change the default, as this metadata value
+is in normal use set by operators or functions that apply a BSWF.)}
 }
 \value{
 x
@@ -150,6 +156,14 @@ x
 \description{
 Sets the class attribute of a data.frame or an object of a derived
 class to "generic_spct".
+}
+\details{
+This method alters \code{x} itself by reference and in addition
+  returns the modified \code{x} invisibly. The wavelength values and data are
+  checked for validity and out-of-range values trigger warnings. These checks
+  are done during construction by means of the matching
+  \code{\link{check_spct}} methods, unless checks have been disabled by
+  setting the corresponding option (see \code{\link{enable_check_spct}}).
 }
 \section{Functions}{
 \itemize{
@@ -175,25 +189,44 @@ class to "generic_spct".
 
 }}
 \note{
-This method alters x itself by reference and in addition
-  returns x invisibly.
+\code{"internal"} \strong{transmittance} is defined as the
+  transmittance of the material body itself, while \code{"total"}
+  transmittance includes the effects of surface reflectance on the amount of
+  light transmitted. For non-diffusing materials like glass an approximate
+  \code{Rfr.constant} value can be used to inter-convert total and internal
+  transmittance values. Use \code{NA} if the the mode is not known, or not
+  applicable, e.g., for materials subject to internal scattering. The
+  validity of computations related to thickness of the material or length of
+  the light path depends on the availability and accuracy of the metadata.
 
-"internal" transmittance is defined as the transmittance of the
-  material body itself, while "total" transmittance includes the effects of
-  surface reflectance on the amount of light transmitted.
-  For non-diffusing materials like glass an approximate \code{Rfr.constant}
-  value can be used to interconvert "total" and "internal" transmittance
-  values. Use \code{NA} if not known, or not applicable, e.g., for materials
-  subject to internal scattering.
+Particles in suspension unlike disolved \strong{solutes} scatter light.
+  Thus two different processes can attenuate light in liquid media:
+  absorption and scattering. Coefficients of attenuation are always based on
+  measurements of internal absorbance or internal transmittance. In practice
+  this is achieved by using as reference pure solvent in a vessel, such as a
+  spectrometer cuvette, called \emph{blank}. The measurement of the blank is
+  done sequentially, before or after the \emph{sample} of interest in single
+  beam spectrophotometers and concurrently in double beam spectrophotometers.
+  \code{K.type} describes the process of attenuation: \code{"attenuation"},
+  \code{"absorption"} or \code{"scattering"}, with \code{"attenuation"} used
+  for cases of mixed modes of attenuation. Set \code{K.type = NA} if not
+  available or unknown, or not applicable.
 
-For non-diffusing materials like glass an approximate \code{Rfr.constant}
-  value can be used to interconvert "total" and "internal" transmittance
-  values. Use \code{NA} if not known, or not applicable, e.g., for materials
-  subject to internal scattering.
+\code{"specular"} \strong{reflectance} is defined as that measured by
+  collecting the light reflected by the surface at the \dQuote{mirror} of the
+  angle of incidence; i.e., using a probe with a narrow angle of aperture.
+  Usually measured close to normal angle of incidence. \code{"total"}
+  \strong{reflectance} is defined as that measured by collecting all the
+  light reflected by the surface; i.e., using an integrating sphere. In a
+  mirror, reflectance is mostly specular, while on the white surface of a
+  sheet of paper scattering predominates. In the first case the value for
+  total reflectance is not much more than for specular reflectance, while in
+  the second case the difference is much larger as the "specular" component
+  is much smaller.
 }
 \section{Warning!}{
- Not entering metadata when creating an object will limit the available
-   operations!
+ Not entering metadata when creating an object will limit
+  the available operations!
 }
 
 \examples{

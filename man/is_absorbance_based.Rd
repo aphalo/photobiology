@@ -16,15 +16,16 @@ is_transmittance_based(x)
 \item{x}{an R object}
 }
 \value{
-\code{is_absorbance_based} returns TRUE if its argument is a
-  \code{filter_spct} object that contains spectral absorbance data and FALSE
-  if it does not contain such data, but returns NA for any other R object,
-  including those belonging other \code{generic_spct}-derived classes.
+\code{is_absorbance_based} returns a logical value, \code{TRUE} if its argument is a \code{filter_spct}
+  object that contains spectral absorbance data and \code{FALSE} otherwise,
+  but returns \code{NA} for any other R object, including those belonging
+  other \code{generic_spct}-derived classes.
 
-\code{is_absorptance_based} returns TRUE if its argument is a
-  \code{filter_spct} object that contains spectral absorptance and FALSE if
-  it does not contain such data, but returns NA for any other R object,
-  including those belonging other \code{generic_spct}-derived classes.
+\code{is_absorptance_based} returns a logical value, if its argument
+  is a \code{filter_spct} object, \code{TRUE} if it contains data as spectral
+  absorptance and \code{FALSE} otherwise, but returns \code{NA} for any other
+  R object, including those belonging other \code{generic_spct}-derived
+  classes.
 
 \code{is_transmittance_based} returns TRUE if its argument is a
   \code{filter_spct} object that contains spectral transmittance data and
@@ -33,7 +34,7 @@ is_transmittance_based(x)
   classes.
 }
 \description{
-Functions to check if an filter spectrum contains spectral absorbance data or
+Functions to query if an filter spectrum contains spectral absorbance data or
 spectral transmittance data.
 }
 \examples{

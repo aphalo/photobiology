@@ -33,13 +33,15 @@ midpoint(x, ...)
 collection of spectra.}
 }
 \value{
-A numeric value equal to (max(x) - min(x)) / 2. In the case of spectral
-objects a wavelength in nm. For any other R object, according to available
-definitions of \code{\link{min}} and \code{\link{max}}.
+A numeric value equal to \code{max(x) - min(x)) / 2}. In the case of
+  spectral objects a wavelength [\eqn{nm}]. For any other R object, according
+  to available definitions of \code{\link{min}} and \code{\link{max}}.
 }
 \description{
-A function that returns the wavelength (or value) at the center of the
-of the wavelength range of a waveband or spectrum object (or numeric vector).
+A method that returns the wavelength [\eqn{nm}] (or value) at the center of
+the wavelength range of objects of classes \code{waveband} or of class
+\code{generic_spct} or derived (or the midpoint from a \code{numeric}
+vector).
 }
 \section{Methods (by class)}{
 \itemize{

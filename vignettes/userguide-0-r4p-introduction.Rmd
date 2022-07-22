@@ -74,9 +74,9 @@ organization of spectral data. *Methods in Ecology and Evolution*,
 ## Packages in the suite
 
 The core package in this suite is called
-['**photobiology**'](https://docs.r4photobiology.info/photobiology/).
-Other specialized packages for quantification of ultraviolet-, visible-
-and infra-red radiation
+['**photobiology**'](https://docs.r4photobiology.info/photobiology/) and
+all other packages in the suite depend on it. Other specialized packages
+for quantification of ultraviolet-, visible- and infra-red radiation
 (['**photobiologyWavebands**'](https://docs.r4photobiology.info/photobiologyWavebands/)),
 properties of plant photoreceptors and other plant photobiology related
 calculations
@@ -96,7 +96,7 @@ and for exchange of data in *foreign* formats
 are part of the suite. One additional package,
 (['**ggspectra**'](https://docs.r4photobiology.info/ggspectra/)),
 implements facilities for plotting spectral data by extending package
-'ggplot2'.
+'ggplot2'. Two additional packages (['**rOmniDriver**'](https://docs.r4photobiology.info/rOmniDriver/)) and (['**ooacquire**'](https://docs.r4photobiology.info/ooacquire/)) make it possible to acquire spectral data by controlling _Ocean Insight/Ocean Optics_ spectrometers from within R.
 
 | Package                     | Provides                                                                                                                                                                                                |
 |------------------------------------|------------------------------------|
@@ -117,7 +117,7 @@ For additional information on these and other packages by the author
 please visit (<https://www.r4photobiology.info>) for news, and
 (<https://www.r4photobiology.info/package-status/>) for current status
 and links to on-line documentation and public Git repositories. Each
-package has its own public Git repository at Bitbucket or GitHub account
+package has its own public Git repository at my Bitbucket or GitHub accounts
 (<https://bitbucket.org/aphalo/>, <https://github.com/aphalo/>) from
 where the source code of the current and earlier versions can be cloned
 or forked.

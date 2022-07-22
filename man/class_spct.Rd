@@ -10,12 +10,16 @@ class_spct(x)
 \item{x}{any R object}
 }
 \value{
-class_spct returns a vector containing all matching xxxx.spct
-  classes.
+A character vector containing all matching xxxx.spct S3 classes.
 }
 \description{
-Functions to check if an object is a generic spectrum, or coerce it if
-possible.
+Extract class information from a generic spectrum.
+}
+\details{
+The value returned is equivalent to the set intersection of the
+  value returned by \code{class(x)} and the value returned by
+  \code{\link{spct_classes}}, but preserving the order of the members of
+  the character vector.
 }
 \examples{
 class_spct(sun.spct)

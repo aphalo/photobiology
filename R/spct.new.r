@@ -2,9 +2,11 @@
 
 #' Spectral-object constructors
 #'
-#' These functions can be used to create spectral objects derived from
-#' \code{generic_spct}. They take as arguments numeric vectors for the data
-#' character scalars for attributes, and a logical flag.
+#' These constructor functions can be used to create spectral objects derived
+#' from \code{generic_spct}. They take as arguments numeric vectors for the
+#' wavelengths and spectral data, and numeric, character, and logical values for
+#' metadata attributes to be saved to the objects created and options
+#' controlling the creation process.
 #'
 #' @param w.length numeric vector with wavelengths in nanometres [\eqn{nm}].
 #' @param s.e.irrad numeric vector with spectral energy irradiance in
@@ -23,27 +25,29 @@
 #' @param strict.range logical Flag indicating whether off-range values result
 #'   in an error instead of a warning.
 #' @param multiple.wl	numeric Maximum number of repeated \code{w.length} entries
-#'   with same value.
+#'   with same value. (As with multiple spectra stored in long from).
 #' @param idfactor character Name of factor distinguishing multiple spectra when
 #'   stored longitudinally (required if \code{multiple.wl} > 1).
 #' @param ... other arguments passed to \code{tibble()} such as vectors or
 #'   factors to be added as additional columns.
 #'
-#' @return A object of class generic_spct or a class derived from it, depending
-#'   on the function used. In other words an object of a class with the same
-#'   name as the constructor function.
+#' @return A object of class \code{generic_spct} or a class derived from it,
+#'   depending on the function used. In other words an object of a class with
+#'   the same name as the constructor function.
+#'
+#' @details Constructors can be used to create spectral objects from spectral
+#'   quantities expressed on a single base or unit. Some of the functions have
+#'   different formal parameters accepting a quantity expressed in different
+#'   units, however, an argument can be passed to only one of these formal
+#'   parameters in a given call. The constructors \code{object_spct()} and
+#'   \code{chroma_spct()} require arguments to be passed for multiple but
+#'   distinct spectral quantities.
 #'
 #' @export
 #'
 #' @family constructors of spectral objects
 #'
 #' @rdname source_spct
-#'
-#' @note The functions can be used to add only one spectral quantity to a
-#'   spectral object. Some of the functions have different arguments, for the
-#'   same quantity expressed in different units. An actual parameter can be
-#'   supplied to only one of these formal parameters in a given call to any of
-#'   these functions.
 #'
 source_spct <- function(w.length = NULL,
                         s.e.irrad = NULL,
@@ -367,11 +371,12 @@ reflector_spct <- function(w.length = NULL,
 #' @param mass numeric The molar mass in Dalton [Da] (\eqn{Da = g\,mol^{-1}}{Da = g mol-1}).
 #' @param formula character The molecular formula.
 #' @param structure raster A bitmap of the structure.
-#' @param name character The name of the substance. A named character
-#'     vector, with member names such as "IUPAC" for the authority.
-#' @param ID character The name of the substance. A named character
-#'     vector, with member names such as "ChemSpider" or "PubChem" for the
-#'     authority.
+#' @param name,solvent.name character The names of the substance and of the
+#'   solvent. A named character vector, with member names such as "IUPAC" for
+#'   the authority.
+#' @param ID,solvent.ID character The ID of the substance and of the solvent. A
+#'   named character vector, with member names such as "ChemSpider" or "PubChem"
+#'   for the authority.
 #' @param log.base numeric Normally one of \code{e} or \code{10}. Data are
 #'   stored always on base 10 corresponding to decadal absorbance as used in
 #'   chemistry.
@@ -404,6 +409,8 @@ solute_spct <- function(w.length = NULL,
                         formula = NULL,
                         structure = grDevices::as.raster(matrix()),
                         ID = NA_character_,
+                        solvent.name = NA_character_,
+                        solvent.ID = NA_character_,
                         comment = NULL,
                         strict.range = getOption("photobiology.strict.range", default = FALSE),
                         multiple.wl = 1L,
@@ -438,6 +445,8 @@ solute_spct <- function(w.length = NULL,
                 formula = formula,
                 structure = structure,
                 ID = ID,
+                solvent.name = solvent.name,
+                solvent.ID = solvent.ID,
                 strict.range = strict.range,
                 multiple.wl = multiple.wl,
                 idfactor = idfactor)
@@ -904,20 +913,21 @@ as.solute_spct.default <-
 
 #'@describeIn as.solute_spct
 #'
-#' @param name character The name of the substance. A named character
-#'     vector, with member names such as "IUPAC" for the authority.
+#' @param name,solvent.name character The names of the substance and of the
+#'   solvent. A named character vector, with member names such as "IUPAC" for
+#'   the authority.
 #' @param mass numeric The mass in Dalton (Da = g/mol).
 #' @param formula character The molecular formula.
 #' @param structure raster A bitmap of the structure.
-#' @param ID character The name of the substance. A named character
-#'     vector, with member names such as "ChemSpider" or "PubChen" for the
-#'     authority.
+#' @param ID,solvent.ID character The IDs of the substance and of the solvent. A
+#'   named character vector, with member names such as "ChemSpider" or "PubChen"
+#'   for the authority.
 #' @param comment character A string to be added as a comment attribute to the
 #'   object created. If not supplied, the comment will be copied from \code{x}.
 #' @param molar.concentration,mass.concentration numeric Concentration to be
-#'   used to compute transmittance of the solute in solution
-#'   [\eqn{mol\,m^{-3} = mmol\,dm^{-3}}{mol m-3 = mmol dm-3} or
-#'   \eqn{kg\,m^{-3} = g\,dm^{-3}}{kg m-3 = g dm-3}, respectively].
+#'   used to compute transmittance of the solute in solution [\eqn{mol\,m^{-3} =
+#'   mmol\,dm^{-3}}{mol m-3 = mmol dm-3} or \eqn{kg\,m^{-3} = g\,dm^{-3}}{kg m-3
+#'   = g dm-3}, respectively].
 #' @param path.length numeric The length of the light path (\eqn{m}) used to
 #'   compute transmittance of the solute in a solution.
 #'
@@ -931,6 +941,8 @@ as.solute_spct.filter_spct <-
            formula = NULL,
            structure = grDevices::as.raster(matrix()),
            ID = NA_character_,
+           solvent.name = NA_character_,
+           solvent.ID = NA_character_,
            strict.range = getOption("photobiology.strict.range", default = FALSE),
            comment = NULL,
            molar.concentration = NULL,
@@ -960,6 +972,8 @@ as.solute_spct.filter_spct <-
                      structure = structure,
                      comment = comment,
                      ID = ID,
+                     solvent.name = solvent.name,
+                     solvent.ID = solvent.ID,
                      strict.range = strict.range,
                      multiple.wl = getMultipleWl(x),
                      ...)

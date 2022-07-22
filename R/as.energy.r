@@ -1,9 +1,10 @@
 #' Convert spectral photon irradiance into spectral energy irradiance
 #'
-#' Convert a spectral photon irradiance [mol s-1 m-2 nm-1] into a spectral
-#' energy irradiance [W m-2 nm-1].
+#' Convert a spectral photon irradiance [\eqn{mol\,s^{-1}\,m^{-2}\,nm^{-1}}{mol
+#' s-1 m-2 nm-1}] into a spectral energy irradiance [\eqn{W\,m^{-2}\,nm^{-1}}{W
+#' m-2 nm-1}].
 #'
-#' @param w.length numeric vector of wavelengths (nm).
+#' @param w.length numeric vector of wavelengths [\eqn{nm}]).
 #' @param s.qmol.irrad numeric vector of spectral photon irradiance values.
 #'
 #' @return A numeric vector of spectral (energy) irradiances.

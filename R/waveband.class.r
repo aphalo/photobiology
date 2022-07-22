@@ -2,7 +2,8 @@
 
 #' Find labels from "waveband" object
 #'
-#' A function to obtain the name and label of objects of class "waveband".
+#' A method specialization that extracts the name and label of objects of class
+#' \code{waveband}.
 #'
 #' @param object an object of class "waveband"
 #' @param ... not used in current version
@@ -43,14 +44,18 @@ wl_range <- function(x, na.rm = FALSE) {
 
 #' Wavelength range
 #'
-#' A method specialization that returns the wavelength range from objects of
-#' classes "waveband" or of class "generic_spct" or derived.
+#' A method specialization that returns the wavelength range [\eqn{nm}] from
+#' objects of classes \code{waveband} or of class \code{generic_spct} or
+#' derived.
 #'
 #' @param ... a single R object
 #' @param na.rm ignored
 #' @export
 #'
 #' @name range
+#'
+#' @return a length-two vector for individual objects or numeric vectors
+#'   or a data frame for collections of spectra.
 #'
 #' @family wavelength summaries
 #'
@@ -107,12 +112,16 @@ wl_min <- function(x, na.rm = FALSE) {
 
 #' Wavelength minimum
 #'
-#' A method specialization that returns the wavelength minimum from objects of
-#' classes "waveband" or of class "generic_spct" or derived.
+#' A method specialization that returns the wavelength minimum [\eqn{nm}] from
+#' objects of classes \code{waveband} or of class \code{generic_spct} or
+#' derived.
 #'
 #' @param ... not used in current version
 #' @param na.rm ignored
 #' @export
+#'
+#' @return a length-one vector for individual objects or numeric vectors
+#'   or a data frame for collections of spectra.
 #'
 #' @name min
 #'
@@ -167,12 +176,16 @@ wl_max <- function(x, na.rm = FALSE) {
 
 #' Wavelength maximum
 #'
-#' A method specialization that returns the wavelength maximum from objects of
-#' classes "waveband" or of class "generic_spct" or derived.
+#' A method specialization that returns the wavelength maximum [\eqn{nm}] from
+#' objects of classes \code{waveband} or of class \code{generic_spct} or
+#' derived.
 #'
-#' @param ... not used in current version
+#' @param ... numeric, \code{waveband} or \code{generic_spct} arguments.
 #' @param na.rm ignored
 #' @export
+#'
+#' @return a length-one vector for individual objects or numeric vectors
+#'   or a data frame for collections of spectra.
 #'
 #' @name max
 #'
@@ -224,16 +237,18 @@ wl_midpoint <- function(x, ...) {
 
 #' Midpoint
 #'
-#' A function that returns the wavelength (or value) at the center of the
-#' of the wavelength range of a waveband or spectrum object (or numeric vector).
+#' A method that returns the wavelength [\eqn{nm}] (or value) at the center of
+#' the wavelength range of objects of classes \code{waveband} or of class
+#' \code{generic_spct} or derived (or the midpoint from a \code{numeric}
+#' vector).
 #'
 #' @param x an R object
 #' @param ... not used in current version
 #' @export
 #'
-#' @return A numeric value equal to (max(x) - min(x)) / 2. In the case of spectral
-#' objects a wavelength in nm. For any other R object, according to available
-#' definitions of \code{\link{min}} and \code{\link{max}}.
+#' @return A numeric value equal to \code{max(x) - min(x)) / 2}. In the case of
+#'   spectral objects a wavelength [\eqn{nm}]. For any other R object, according
+#'   to available definitions of \code{\link{min}} and \code{\link{max}}.
 #'
 #' @family wavelength summaries
 #'
@@ -326,14 +341,18 @@ wl_expanse <- function(x, ...) {
 
 #' Expanse
 #'
-#' A function that returns the expanse (max(x) - min(x)) for R objects.
+#' A method that returns the expanse (\eqn{max(x) - min(x)}) for R objects. In
+#' particular the wavelength [\eqn{nm}] expanse of the wavelength range of
+#' objects of classes \code{waveband} or of class \code{generic_spct} or derived
+#' (or the expanse of values in a \code{numeric} vector).
 #'
 #' @param x an R object
 #' @param ... not used in current version
 #'
-#' @return A numeric value equal to max(x) - min(x). In the case of spectral
-#'   objects wavelength difference in nm. For any other R object, according to
-#'   available definitions of \code{\link{min}} and \code{\link{max}}.
+#' @return A numeric value equal to \code{max(x) - min(x)}. In the case of
+#'   spectral objects wavelength difference [\eqn{nm}]. For any other R object,
+#'   according to available specialised methods of \code{\link{min}} and
+#'   \code{\link{max}}.
 #'
 #' @export
 #'
@@ -403,11 +422,13 @@ expanse.generic_mspct <- function(x, ..., idx = "spct.idx") {
 
 #' Normalization of an R object
 #'
-#' Normalization wavelength of an R object, retrieved from the object's
+#' Normalization wavelength [\eqn{nm}] of an R object, retrieved from the object's
 #' attributes.
 #'
 #' @param x an R object
 #' @export
+#'
+#' @return A single numeric value of wavelength [\eqn{nm}].
 #'
 #' @family waveband attributes
 #'
@@ -516,8 +537,10 @@ wl_stepsize <- function(x, ...) {
 
 #' Stepsize
 #'
-#' Function that returns the range of step sizes in an object. Range of
-#' differences between successive sorted values.
+#' Method returning the range of step sizes in an object; i.e., the Range of
+#' differences between successive sorted values.  In particular the wavelength
+#' step sizes [\eqn{nm}] of objects of class \code{generic_spct} or derived (or
+#' the step sizes of values in a \code{numeric} vector).
 #'
 #' @param x an R object
 #' @param ... not used in current version

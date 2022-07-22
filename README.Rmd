@@ -23,7 +23,7 @@ Package '**photobiology**' defines a system of classes for storing spectral data
 
 The package supports storage and manipulation of data for radiation quantities and for optical properties of objects. 
 
-This package is the core of a suite of R packages for photobiological calculations described at the [r4photobiology](https://www.r4photobiology.info) web site.
+This package is the core of a suite of R packages for photobiological calculations described at the [r4photobiology](https://www.r4photobiology.info) web site and in the vignette [The R for Photobiology Suite](https://docs.r4photobiology.info/photobiology/articles/userguide-0-r4p-introduction.html).
 
 ## Examples
 

@@ -1,4 +1,4 @@
-#' Return the First and Last Part of an Object
+#' Return the First and Last Parts of an Object
 #'
 #' Returns the first and last "parts" (rows or members) of a spectrum,
 #' dataframe, vector, function, table or ftable. In other words, the combined
@@ -25,10 +25,10 @@
 #'  returned to the examples below.
 #'
 #' @note For some types of input, like functions, the output may be confusing,
-#'  however, we have opted for consistency with existing functions. The code
-#'  is in part a revision of that of head() and tail() from package 'utils'. I
-#'  have been missing this method especially when checking spectral data, as
-#'  both ends are of interest.
+#'   however, we have opted for consistency with existing functions. The code is
+#'   in part a revision of that of \code{head()} and \code{tail()} from package
+#'   \sQuote{utils}. This method is especially useful when checking spectral
+#'   data, as both ends are of interest.
 #'
 #' @export
 #'

@@ -3,21 +3,24 @@
 #' This function returns the photon irradiance for a given waveband of a
 #' radiation spectrum, optionally applies a BSWF.
 #'
-#' @param w.length numeric vector of wavelength (nm).
-#' @param s.irrad numeric vector of spectral irradiances, by default as energy (W
-#'   m-2 nm-1).
+#' @param w.length numeric vector of wavelength [\eqn{nm}].
+#' @param s.irrad numeric vector of spectral irradiances in
+#'   [\eqn{W\,m^{-2}\,nm^{-1}}{W m-2 nm-1}] or
+#'   [\eqn{mol\,s^{-1}\,sm^{-2}\,nm^{-1}}{mol s-1 m-2 nm-1}] as indicated by the
+#'   argument pased to \code{unit.in}.
 #' @param w.band waveband.
-#' @param unit.in character Values recognized "photon" or "energy".
-#' @param check.spectrum logical Flag telling whether to sanity check input data,
-#'   default is TRUE.
-#' @param use.cached.mult logical Flag telling whether multiplier values should be
-#'   cached between calls.
+#' @param unit.in character Allowed values \code{"energy"}, and \code{"photon"},
+#'   or its alias \code{"quantum"}.
+#' @param check.spectrum logical Flag telling whether to sanity check input
+#'   data, default is \code{TRUE}.
+#' @param use.cached.mult logical Flag telling whether multiplier values should
+#'   be cached between calls.
 #' @param use.hinges logical Flag indicating whether to insert "hinges" into the
 #'   spectral data before integration so as to reduce interpolation errors at
 #'   the boundaries of the wavebands.
 #'
-#' @return A single numeric value with no change in scale factor: [mol s-1 m-2 nm-1]
-#'   -> [mol s-1 m-2].
+#' @return A single numeric value with no change in scale factor:
+#'   [\eqn{mol\,s^{-1}\,sm^{-2}}{mol s-1 m-2}].
 #'
 #' @export
 #' @examples

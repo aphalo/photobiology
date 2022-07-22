@@ -19,20 +19,20 @@ filter_properties(x) <- value
 \arguments{
 \item{x}{a filter_spct object}
 
-\item{filter.properties, value}{a list with fields named "Rfr.constant",
-"thickness" and "attenuation.mode".}
+\item{filter.properties, value}{a list with fields named \code{"Rfr.constant"},
+\code{"thickness"} and \code{"attenuation.mode"}.}
 
 \item{pass.null}{logical If TRUE, the parameters to the next three
 parameters will be always ignored, otherwise they will be used to
-build an object of class "filter.properties" when the argument to
-filter.properties is NULL.}
+build an object of class \code{"filter.properties"} when the argument
+passed to parameter \code{filter.properties} is \code{NULL}.}
 
-\item{Rfr.constant}{numeric The value of the reflection factor (/1).}
+\item{Rfr.constant}{numeric The value of the reflection factor [/1].}
 
-\item{thickness}{numeric The thickness of the material.}
+\item{thickness}{numeric The thickness of the material [\eqn{m}].}
 
-\item{attenuation.mode}{character One of "reflection", "absorption",
-"absorption.layer" or "mixed".}
+\item{attenuation.mode}{character One of \code{"reflection"}, \code{"absorption"},
+\code{"absorption.layer"} or \code{"mixed"}.}
 }
 \value{
 \code{x}
@@ -50,17 +50,18 @@ Storing filter properties allows inter-conversion between internal
 }
 \note{
 This function alters \code{x} itself by reference and in addition
-  returns \code{x} invisibly. If \code{x} is not a filter_spct object,
+  returns \code{x} invisibly. If \code{x} is not a \code{filter_spct} object,
   \code{x} is not modified.
 
-  The values of `attenuation.mode` "reflection" and "absorption" should be
-  used when one of these processes is clearly the main one; "mixed" is for
-  cases when they both play a role, i.e., when a simple correction using a
-  single value of Rfr across wavelengths is not possible; "absorption.layer"
-  is for cases when a thin absorbing layer is deposited on the surface of a
-  transparent support or enclosed between two sheets of glass or other
-  transparent material. If in doubt, set this to NA to ensure that
-  computation of spectra for other thicknesses remains disabled.
+  The values of \code{attenuation.mode} \code{"reflection"} and
+  \code{"absorption"} should be used when one of these processes is clearly
+  the main one; \code{"mixed"} is for cases when they both play a role, i.e.,
+  when a simple correction using a single value of \code{Rfr} across
+  wavelengths is not possible; \code{"absorption.layer"} is for cases when a
+  thin absorbing layer is deposited on the surface of a transparent support
+  or enclosed between two sheets of glass or other transparent material. If
+  in doubt, set this to \code{NA} to ensure that computation of spectra for a
+  different thickness remains disabled.
 }
 \examples{
 

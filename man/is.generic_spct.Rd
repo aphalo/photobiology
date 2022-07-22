@@ -43,16 +43,15 @@ is.any_spct(x)
 \item{x}{an R object.}
 }
 \value{
-These functions return \code{TRUE} if its argument is a of the queried type
-  of spectrum and \code{FALSE} otherwise.
+A logical value, \code{TRUE} if the argument passed to \code{x} is an
+  object of the queried type of spectrum and \code{FALSE} otherwise.
 }
 \description{
-Functions to check if an object is of a given type of spectrum, or coerce it if
-possible.
+Functions to query whether an object is of a given type of spectrum.
 }
 \note{
-Derived types also return TRUE for a query for a base type such as
-\code{generic_spct}.
+Derived types also return \code{TRUE} for a query for a base type such
+  as \code{generic_spct}, following R's practice.
 }
 \examples{
 is.source_spct(sun.spct)

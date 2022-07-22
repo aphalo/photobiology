@@ -17,24 +17,23 @@ split_irradiance(
 )
 }
 \arguments{
-\item{w.length}{numeric Vector of wavelengths (nm).}
+\item{w.length}{numeric Vector of wavelengths [\eqn{nm}].}
 
-\item{s.irrad}{numeric vector of spectral (energy or photon) irradiances
-(W m-2 nm-1) or (mol s-1 m-2 nm-1).}
+\item{s.irrad}{numeric vector of spectral irradiances in
+[\eqn{W\,m^{-2}\,nm^{-1}}{W m-2 nm-1}] or
+[\eqn{mol\,s^{-1}\,sm^{-2}\,nm^{-1}}{mol s-1 m-2 nm-1}] as indicated by the
+argument pased to \code{unit.in}.}
 
-\item{cut.w.length}{numeric Vector of wavelengths (nm).}
+\item{cut.w.length}{numeric Vector of wavelengths [\eqn{nm}].}
 
-\item{unit.out}{character Allowed values "energy", and "photon",
-or its alias "quantum".}
-
-\item{unit.in}{character Allowed values "energy", and "photon",
-or its alias "quantum".}
+\item{unit.out, unit.in}{character Allowed values \code{"energy"}, and
+\code{"photon"}, or its alias \code{"quantum"}.}
 
 \item{scale}{a character A string indicating the scale used for the returned
-values ("absolute", "relative", "percent").}
+values (\code{"absolute"}, \code{"relative"} or \code{"percent"}).}
 
 \item{check.spectrum}{logical Flag indicating whether to sanity check input data,
-default is TRUE.}
+default is \code{TRUE}.}
 
 \item{use.cached.mult}{logical Flag indicating whether multiplier values should be
 cached between calls.}
@@ -44,10 +43,12 @@ spectral data before integration so as to reduce interpolation errors at
 the boundaries of the wavebands.}
 }
 \value{
-A numeric vector of irradiances with no change in scale factor: [W m-2
-  nm-1] -> [mol s-1 m-2] or [mol s-1 m-2 nm-1] -> [mol s-1 m-2] or relative
-  values (as fraction of one if \code{scale == "relative"} or percentages
-  if \code{scale == "percent"}.
+A numeric vector of irradiances with no change in scale factor if
+  \code{scale == "absolute"}, [\eqn{W\,m^{-2}}{W m-2}] or
+  [\eqn{mol\,s^{-1}\,sm^{-2}}{mol s-1 m-2}] depending on the argument passed
+  to \code{unit.out} or relative values (as fraction of one if \code{scale ==
+  "relative"} or percentages if \code{scale == "percent"} of photons or
+  energy depending on the argument passed to \code{unit.out}.
 }
 \description{
 This function returns the energy or photon irradiance for a series of

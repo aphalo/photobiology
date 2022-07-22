@@ -6,75 +6,103 @@ editor_options:
 
 # photobiology 0.10.12
 
-----
+------------------------------------------------------------------------
 
-Conversions between `Date` and `POSIXct` objects are tricky because the former do not store information on the time zone. A change in 'lubridate' 1.8.0 made a previously working approach to these conversions silently fail to apply the shift to the hours. _In the current version of 'photobiology', if no time zone argument is passed concurrently with a date, the date is assumed to be in UTC. If this time zone does not match the location given by the geocode, the date used for the calculations can be wrong by one day._
+Conversions between `Date` and `POSIXct` objects are tricky because the
+former do not store information on the time zone. A change in
+'lubridate' 1.8.0 made a previously working approach to these
+conversions silently fail to apply the shift to the hours. *In the
+current version of 'photobiology', if no time zone argument is passed
+concurrently with a date, the date is assumed to be in UTC. If this time
+zone does not match the location given by the geocode, the date used for
+the calculations can be wrong by one day.*
 
-----
+------------------------------------------------------------------------
 
-This release corrects problems triggered by recent updates to packages 'lubridate' and possibly 'tibble'. (Reported by _putmanlab_ in issue #7 at GitHub.) and adds enhancements for class `solute_spct`.
+This release corrects problems triggered by recent updates to packages
+'lubridate' and possibly 'tibble' (reported by *putmanlab* in [issue
+#7](https://github.com/aphalo/photobiology/issues/7)) and adds
+enhancements for class `solute_spct`.
 
--   Functions `day_night()`, `sunrise_time()`, `noon_time()` and `sunset_time()` would return wrong time values when non-default arguments to parameter `tz` were passed together with objects of class `Date` passed as arguments to `date
--   Add methods`as.filter_spct()` and `as.solute_spct` especialized for conversion two-way conversion between objects of classes `solute_spct` and `filter_spct`.
+-   Bug fixed: With 'lubridate' (1.8.0) but not with previous versions,
+    functions `day_night()`, `sunrise_time()`, `noon_time()` and
+    `sunset_time()` would return wrong time values when non-default
+    arguments to parameter `tz` were passed together with objects of
+    class `Date` passed as arguments to `date`.
+-   Add methods `as.filter_spct()` and `as.solute_spct` specialised for
+    two-way conversion between objects of classes `solute_spct` and
+    `filter_spct`.
+-   Revise the class `solute.properties` adding fields `solvent.name`
+    and `solvent.ID`.
+-   Revise documentation checking that units expected for arguments and
+    of returned values are clearly indicated and correctly formatted.
+    Update outdated text and correct mistakes and revise unclear
+    explanations.
 
 # photobiology 0.10.11
 
--   Add new classes of objects `solute_spct` and `solute_mspct` to be used to
-    store molar (default) and mass based coefficients of attenuation 
-    describing overall attenuation, or attenuation by absorption or by
-    scattering. Implement the corresponding methods. (Unstable: interface may
-    change).
--   Add example data for two substances: `water.spct` and `phenylalanine.spct`.
--   Rewrite `join_mspct()` to use interpolation when wavelengths differ among
-    member spectra. This should not break old code but output can slightly 
-    differ.
--   Expand syntax accepted for `character` arguments passed to parameter 
+-   Add new classes of objects `solute_spct` and `solute_mspct` to be
+    used to store molar (default) and mass based coefficients of
+    attenuation describing overall attenuation, or attenuation by
+    absorption or by scattering. Implement the corresponding methods.
+    (Unstable: interface may change).
+-   Add example data for two substances: `water.spct` and
+    `phenylalanine.spct`.
+-   Rewrite `join_mspct()` to use interpolation when wavelengths differ
+    among member spectra. This should not break old code but output can
+    slightly differ.
+-   Expand syntax accepted for `character` arguments passed to parameter
     `target` in all `wls_at_target()` methods.
--   Fix failure to handle spectra with zero rows, a bug affecting several
-    methods, operators and functions including `rbindspct()` and `find_wls()`.
--   Fix bug in `rowwise_filter()` affecting parallel summaries of absorptance.
--   Fix bugs in extraction and replacement functions for collections of spectra,
-    possibly triggered by changes in R >= 4.0.0.
+-   Fix failure to handle spectra with zero rows, a bug affecting
+    several methods, operators and functions including `rbindspct()` and
+    `find_wls()`.
+-   Fix bug in `rowwise_filter()` affecting parallel summaries of
+    absorptance.
+-   Fix bugs in extraction and replacement functions for collections of
+    spectra, possibly triggered by changes in R \>= 4.0.0.
 -   Add method `s_mean_se_band_band()`.
 
 # photobiology 0.10.10
 
 -   Update `normalize()` methods to support updating an already present
-    normalization (`norm = "update"`) and skipping the normalization altogether
-    (`norm = "skip"`).
--   Update `normalize()` methods to store `range` in the attribute, and 
+    normalization (`norm = "update"`) and skipping the normalization
+    altogether (`norm = "skip"`).
+-   Update `normalize()` methods to store `range` in the attribute, and
     `getNormalized()` to return it.
 -   Update `normalize()` methods to correctly handle normalization of
-    previously normalized spectra, and add flexibility to the normalization of
-    previously scaled spectra.
--   Add `getScaling()` and fix minor inconsistency in value returned by 
+    previously normalized spectra, and add flexibility to the
+    normalization of previously scaled spectra.
+-   Add `getScaling()` and fix minor inconsistency in value returned by
     `getScaled()`.
--   Fix bug in `getNormalization()` (wrong named member in returned value from
-    spectra with no normalization data).
+-   Fix bug in `getNormalization()` (wrong named member in returned
+    value from spectra with no normalization data).
 -   Fix bug resulting in `"normalization"` attribute not being copied.
 -   Fix bug resulting in not all relevant attributes being copied to the
     value returned by `summary.generic_spct()`.
 -   Improve printing of metadata for normalization and rescaling.
--   Fix bug in `shared_member_class()` (wrong value returned for empty 
+-   Fix bug in `shared_member_class()` (wrong value returned for empty
     collections).
--   Update `smooth_spct()` to handle bad arguments passed to `method` without
-    crashing and add support for skipping smoothing (`method = "skip"`).
+-   Update `smooth_spct()` to handle bad arguments passed to `method`
+    without crashing and add support for skipping smoothing
+    (`method = "skip"`).
 
 # photobiology 0.10.9
 
--   Update `smooth_spct()` methods so that `NA` values in `wl.range` are handled
-    as documented and consistently with other methods in the package.
--   Update to accommodate code-breaking change in 'dplyr' (>= 1.0.8).
-    
+-   Update `smooth_spct()` methods so that `NA` values in `wl.range` are
+    handled as documented and consistently with other methods in the
+    package.
+-   Update to accommodate code-breaking change in 'dplyr' (\>= 1.0.8).
+
 # photobiology 0.10.8
 
--   Update functions `normalize()`, `setNormalized()` and `getNormalized()`,
-    and add new function `getNormalization()`. These changes implement the
-    storage in attribute `normalization` of the operation done.
--   Fix bug in `mat2mspct()` affecting matrices with more than 26 columns and
-    without `colnames` previously set. 
+-   Update functions `normalize()`, `setNormalized()` and
+    `getNormalized()`, and add new function `getNormalization()`. These
+    changes implement the storage in attribute `normalization` of the
+    operation done.
+-   Fix bug in `mat2mspct()` affecting matrices with more than 26
+    columns and without `colnames` previously set.
 -   Fix bug in `rowwise` methods.
-    
+
 # photobiology 0.10.7
 
 -   Add function `ET_ref()` for computation of reference
@@ -83,12 +111,13 @@ This release corrects problems triggered by recent updates to packages 'lubridat
     short vegetation according to ASCE-EWRI. The formulation is that for
     ET expressed in mm/h, but modified to use as input flux rates in
     W/m2 and pressures expressed in Pa.
--   Add function `net_radiation()` that computes the long wave net radiation 
-    balance if down-welling long wave radiation is available and otherwise
-    estimates it.
--   Add function `irrad_extraterrestrial()` that computes down-welling solar 
-    irradiance on a horizontal plane at the top of the atmosphere.
--   Revise function `sun_angles()` to also return the Sun to Earth distance.
+-   Add function `net_radiation()` that computes the long wave net
+    radiation balance if down-welling long wave radiation is available
+    and otherwise estimates it.
+-   Add function `irrad_extraterrestrial()` that computes down-welling
+    solar irradiance on a horizontal plane at the top of the atmosphere.
+-   Revise function `sun_angles()` to also return the Sun to Earth
+    distance.
 
 # photobiology 0.10.6
 
@@ -136,17 +165,24 @@ This release corrects problems triggered by recent updates to packages 'lubridat
 
 -   Improved performance in color-related functions, mainly benefiting
     package 'ggspectra'.
+
 -   Handle gracefully and consistently special input in
     `fast_color_of_wl()`.
+
 -   Add `fast_wb2rect_spct()`, which uses precomputed color definitions
     for narrow wavebands and optionally simplifies the returned spectrum
     by merging neighboring rectangles of identical color.
+
 -   Add `fast_color_of_wb()` that uses precomputed color definitions for
     narrow wavebands.
+
 -   Add parameter force to `check_spct()` methods, so that critical
     checks cannot be disabled.
+
 -   Implement math functions for class `generic_spct`.
+
 -   BUG FIX: ERROR in CRAN check because of bad example in docs.
+
 -   BUG FIX: `tag()` would fail to assign `wb.color` and `wb.name` to
     longest `w.length` value in spectrum.
 
@@ -162,7 +198,7 @@ This release corrects problems triggered by recent updates to packages 'lubridat
 -   Update `tag()` to use precomputed color definitions, when possible,
     to improve performance.
 -   BUG FIX: Remove bad class exports from NAMESPACE.
--   New features of dplyr (>= 1.0.0) are used, so this new version is
+-   New features of dplyr (\>= 1.0.0) are used, so this new version is
     required.
 
 # photobiology 0.10.2
@@ -302,7 +338,7 @@ reflectance data like `object_spct` objects do.
     used to set a different target than the default of zero and in
     addition implement `clean.object_mspct()`, which was missing.
 
-    ### Compatibility with 'dplyr' (>= 1.0.0):
+    ### Compatibility with 'dplyr' (\>= 1.0.0):
 
     Some small internal changes were needed to avoid errors in calls to
     'dplyr' methods. From user's perspective as 'dplyr' now seems to
@@ -440,7 +476,7 @@ is fully consistent with that for new objects.
 -   Fix bug in merging of attributes which was causing errors in
     operations between spectra which had specific differences in their
     attributes.
--   Fix incompatibility with tibble (>= 2.0.0).
+-   Fix incompatibility with tibble (\>= 2.0.0).
 
 # photobiology 0.9.24
 
@@ -545,7 +581,7 @@ scheduled to be archived in CRAN.
     collections of spectra, used to automatically call add_attr2tb() to
     add attributes to their output.
 -   Fix bug in calculation of solar time of day which could result in
-    values > 24 h.
+    values \> 24 h.
 -   Fix a bug in the extraction operator for spectral objects (could
     lead to infinite recursion in rare occasions).
 -   Fix wrong value returned in some cases by is_tagged() due to a bug
@@ -729,14 +765,14 @@ version 0.9.4 (last version using Rcpp and C++). Add support for
 objects. Fix bug in getInstrSettings(). Allow small rounding and
 instrument errors to pass validity checks. Fix bug in setRawSpct().
 Implement clean(), normalize(), fscale() and fshift() methods for
-"generic_spct", "raw_spct" and "cps_spct" objects. \[New functions:
-cps2irrad(), cps2Tfr() and cps2Rfr(). Preliminary versions.\]
+"generic_spct", "raw_spct" and "cps_spct" objects. $$New functions:
+cps2irrad(), cps2Tfr() and cps2Rfr(). Preliminary versions.$$
 Constructors for \_spct objects gain a ... formal argument which allows
 addition of arbitrary columns to the objects created. Reorganize
 documentation into fewer help files. Fix bug leading to loss of special
-attributes. Add test cases. Fix bug in "extract" operator
-\[.object_spct. Update for compatibility with dplyr (>= 0.4.3.9001).
-Update tests for testthat (>= 0.11.0.9000).
+attributes. Add test cases. Fix bug in "extract" operator [.object_spct.
+Update for compatibility with dplyr (\>= 0.4.3.9001). Update tests for
+testthat (\>= 0.11.0.9000).
 
 # photobiology 0.9.5 (2016-02-03)
 
@@ -745,7 +781,7 @@ to 30% slower in high-level functions.
 
 # photobiology 0.9.4
 
-Prepare for CRAN submission. Rename check() -> check_spct() to avoid
+Prepare for CRAN submission. Rename check() -\> check_spct() to avoid
 name clash with 'devtools'. Fix bug in clean() methods for collections
 of spectra.
 
@@ -975,8 +1011,8 @@ No longer use data.table as a base class for spectral objects. \*\*
 Given the size of spectral data the advantages were too limited compared
 to the complications introduced. \*\*
 
-Extract and replacement methods "\[" and "\[\<-" and the subset()
-function should now work as expected when applied to spectral objects!
+Extract and replacement methods "[" and "[\<-" and the subset() function
+should now work as expected when applied to spectral objects!
 Subscripting of spectra can be used without any restrictions.
 
 Argument passing and assignment semantics follows normal R semantics of
@@ -1326,10 +1362,10 @@ annotations.
 # photobiology 0.5.11
 
 Changed code of irrad() and set\_\_\_Spct() functions to be able to
-handle locked data.table objects such as .SD when using by within \[ \]
-on spct objects. irrad() copies the spectrum only if needed, and the
-sorting key is set to "w.length" only if not already set to this same
-value.
+handle locked data.table objects such as .SD when using by within
+$$                $$ on spct objects. irrad() copies the spectrum only
+if needed, and the sorting key is set to "w.length" only if not already
+set to this same value.
 
 # photobiology 0.5.10
 

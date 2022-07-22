@@ -3,29 +3,21 @@
 #' Energy or photon irradiance for one or more wavebands of a radiation
 #' spectrum.
 #'
-#' @param w.length numeric Vector of wavelength (nm).
-#' @param s.irrad numeric vector of spectral (energy) irradiances (W m-2 nm-1).
+#' @param w.length numeric Vector of wavelength [\eqn{nm}].
+#' @param s.irrad numeric vector of spectral (energy) irradiances
+#' [\eqn{W\,m^{-2}\,nm^{-1}}{W m-2 nm-1}].
 #' @param w.band waveband or list of waveband objects The waveband(s) determine
 #'   the region(s) of the spectrum that are summarized.
-#' @param unit.out character Allowed values "energy", and "photon", or its alias
-#'   "quantum".
-#' @param unit.in character Allowed values "energy", and "photon", or its alias
-#'   "quantum".
+#' @param unit.out,unit.in character Allowed values \code{"energy"}, and
+#'   \code{"photon"}, or its alias \code{"quantum"}.
 #' @param check.spectrum logical Flag indicating whether to sanity check input
-#'   data, default is TRUE.
+#'   data, default is \code{TRUE}.
 #' @param use.cached.mult logical Flag indicating whether multiplier values
 #'   should be cached between calls.
 #' @param use.hinges logical Flag indicating whether to insert "hinges" into the
 #'   spectral data before integration so as to reduce interpolation errors at
 #'   the boundaries of the wavebands.
 #'
-#' @return A single numeric value or a vector of numeric values with no change
-#'   in scale factor: [W m-2 nm-1] -> [mol s-1 m-2]
-#'
-#' @export
-#' @examples
-#'
-#' with(sun.data, irradiance(w.length, s.e.irrad, new_waveband(400,700), "photon"))
 #' @note The last three parameters control speed optimizations. The defaults
 #'   should be suitable in most cases. If you set \code{check.spectrum=FALSE}
 #'   then you should call \code{check_spectrum()} at least once for your
@@ -39,6 +31,14 @@
 #'   speed, or in cases where there is no suitable C++ compiler for building the
 #'   package.
 #'
+#' @return A single numeric value or a vector of numeric values with no change
+#'   in scale factor: [\eqn{mol\,s^{-1}\,sm^{-2}\,nm^{-1}}{mol s-1 m-2 nm-1}]
+#'   yields [\eqn{mol\,s^{-1}\,sm^{-2}}{mol s-1 m-2}]
+#'
+#' @export
+#' @examples
+#'
+#' with(sun.data, irradiance(w.length, s.e.irrad, new_waveband(400,700), "photon"))
 #' @family low-level functions operating on numeric vectors.
 #'
 irradiance <-

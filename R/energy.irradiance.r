@@ -3,22 +3,24 @@
 #' Energy irradiance for a waveband from a radiation spectrum, optionally
 #' applying a "biological spectral weighting function" or BSWF.
 #'
-#' @param w.length numeric vector of wavelength (nm).
-#' @param s.irrad numeric vector of spectral irradiances, by default as energy (W
-#'   m-2 nm-1).
+#' @param w.length numeric vector of wavelength [\eqn{nm}].
+#' @param s.irrad numeric vector of spectral irradiances in
+#'   [\eqn{W\,m^{-2}\,nm^{-1}}{W m-2 nm-1}] or
+#'   [\eqn{mol\,s^{-1}\,sm^{-2}\,nm^{-1}}{mol s-1 m-2 nm-1}] as indicated by the
+#'   argument pased to \code{unit.in}.
 #' @param w.band waveband.
-#' @param unit.in a character Allowed values "photon" or "energy", default is
-#'   "energy".
+#' @param unit.in character Allowed values \code{"energy"}, and \code{"photon"},
+#'   or its alias \code{"quantum"}.
 #' @param check.spectrum logical Flag indicating whether to sanity check input
-#'   data, default is TRUE.
+#'   data, default is \code{TRUE}.
 #' @param use.cached.mult logical Flag indicating whether multiplier values
 #'   should be cached between calls.
 #' @param use.hinges logical Flag indicating whether to insert "hinges" into the
 #'   spectral data before integration so as to reduce interpolation errors at
 #'   the boundaries of the wavebands.
 #'
-#' @return A single numeric value with no change in scale factor: [W m-2 nm-1]
-#'   -> [W m-2].
+#' @return A single numeric value with no change in scale factor:
+#'   [\eqn{W\,m^{-2}}{W m-2}].
 #'
 #' @export
 #' @examples

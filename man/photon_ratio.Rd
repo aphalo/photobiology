@@ -18,15 +18,17 @@ photon_ratio(
 \arguments{
 \item{w.length}{numeric vector of wavelength (nm).}
 
-\item{s.irrad}{numeric vector of spectral (energy or photon) irradiances
-(W m-2 nm-1) or (mol s-1 m-2 nm-1).}
+\item{s.irrad}{numeric vector of spectral irradiances in
+[\eqn{W\,m^{-2}\,nm^{-1}}{W m-2 nm-1}] or
+[\eqn{mol\,s^{-1}\,sm^{-2}\,nm^{-1}}{mol s-1 m-2 nm-1}] as indicated by the
+argument pased to \code{unit.in}.}
 
 \item{w.band.num}{waveband object used to compute the numerator of the ratio.}
 
 \item{w.band.denom}{waveband object used to compute the denominator of the ratio.}
 
-\item{unit.in}{character Allowed values "energy", and "photon",
-or its alias "quantum".}
+\item{unit.in}{character Allowed values \code{"energy"}, and \code{"photon"},
+or its alias \code{"quantum"}.}
 
 \item{check.spectrum}{logical Flag telling whether to sanity check input data,
 default is TRUE.}

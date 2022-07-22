@@ -33,8 +33,10 @@ collection of spectra.}
 A numeric vector of length 2 with min and maximum stepsize values.
 }
 \description{
-Function that returns the range of step sizes in an object. Range of
-differences between successive sorted values.
+Method returning the range of step sizes in an object; i.e., the Range of
+differences between successive sorted values.  In particular the wavelength
+step sizes [\eqn{nm}] of objects of class \code{generic_spct} or derived (or
+the step sizes of values in a \code{numeric} vector).
 }
 \section{Methods (by class)}{
 \itemize{

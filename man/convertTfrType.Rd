@@ -9,28 +9,29 @@ convertTfrType(x, Tfr.type = NULL)
 \arguments{
 \item{x}{a filter_spct, object_spct, filter_mspct or object_mspct object.}
 
-\item{Tfr.type}{character One of #internal" or "total".}
+\item{Tfr.type}{character One of \code{"internal"} or \code{"total"}.}
 }
 \value{
 \code{x} possibly with the \code{"thickness"} field of the
   \code{"filter.properties"} attribute modified
 }
 \description{
-Function to set the "Tfr.type" attribute and simultaneously converting the
-spectral data to correspond to the new type.
+Function to set the \code{"Tfr.type"} attribute and simultaneously converting
+the spectral data to correspond to the new type.
 }
 \details{
 Internal transmittance uses as reference the light entering the
-  object while total transmittance takes the incident light as reference.
-  The conversion is possible only if reflectance is known. Either as
-  spectral data in an object_spct object, or a filter_spct object that is
-  under the hood an object_spct, or if a fixed reflectance factor applicable
-  to all wavelengths is known.
+  object while total transmittance takes the incident light as reference. The
+  conversion is possible only if reflectance is known. Either as spectral
+  data in an \code{object_spct} object, a \code{filter_spct} object that is
+  "under-the-hood" an \code{object_spct}, or if a fixed reflectance factor
+  applicable to all wavelengths is stored in the \code{filter.properties}
+  attribute of the \code{filter_spct} object.
 }
 \note{
-if x is not a \code{filter_spct} object, \code{x} is returned
-  unchanged. If or \code{x} does not have the \code{"filter.properties"}
-  attribute set and with no missing data, \code{x} is returned with
+if \code{x} is not a \code{filter_spct} object, \code{x} is returned
+  unchanged. If \code{x} does not have the \code{"filter.properties"}
+  attribute set if it is missing data, \code{x} is returned with
   \code{Tfr} set to \code{NA} values.
 }
 \examples{

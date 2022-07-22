@@ -31,38 +31,38 @@ new_waveband(
 )
 }
 \arguments{
-\item{x}{any R object on which applying the function range yields an vector of
-two numeric values, describing a range of wavelengths (nm)}
+\item{x}{any R object on which applying the method \code{range()} yields an
+vector of two numeric values, describing a range of wavelengths [\eqn{nm}].}
 
-\item{weight}{a character string "SWF" or "BSWF", use NULL (the default) to
-indicate no weighting used when calculating irradiance}
+\item{weight}{a character string \code{"SWF"} or \code{"BSWF"}, use
+\code{NULL} (the default) to indicate no weighting used when calculating
+irradiance.}
 
-\item{SWF.e.fun}{a function giving multipliers for a spectral weighting
-function (energy) as a function of wavelength (nm)}
+\item{SWF.e.fun, SWF.q.fun}{a functions giving multipliers for a spectral
+weighting function (energy and quantum, respectively) as a function of
+wavelength [\eqn{nm}].}
 
-\item{SWF.q.fun}{a function giving multipliers for a spectral weighting
-function (quantum) as a function of wavelength (nm)}
-
-\item{norm}{a single numeric value indicating the wavelength at which the SWF
-should be normalized to 1.0, in nm. "NULL" means no normalization.}
+\item{norm}{a single numeric value indicating the wavelength [\eqn{nm}] at
+which the SWF should be normalized to 1.0; \code{NULL} is interpreted as no
+normalization.}
 
 \item{SWF.norm}{a numeric value giving the native normalization wavelength
-(nm) used by SWF.e.fun and SWF.q.fun}
+[\eqn{nm}] used by \code{SWF.e.fun} and \code{SWF.q.fun}.}
 
-\item{hinges}{a numeric vector giving the wavelengths at which the s.irrad
-should be inserted by interpolation, no interpolation is indicated by an
-empty vector (numeric(0)), if NULL then interpolation will take place at
-both ends of the band.}
+\item{hinges}{a numeric vector giving the wavelengths at which values in
+\code{s.irrad} should be inserted by interpolation before integration is
+attempted. No interpolation is indicated by an empty vector
+(\code{numeric(0)}), while interpolation at both boundaries of the band is
+indicated by \code{NULL}.}
 
 \item{wb.name}{character string giving the name for the waveband defined,
-default is NULL}
+default is \code{NULL} for an automatically generated name.}
 
 \item{wb.label}{character string giving the label of the waveband to be used
-for plotting, default is wb.name}
+for labelling computed summaries or plots, default is \code{wb.name}.}
 
-\item{w.low}{numeric value, wavelength at the short end of the band (nm)}
-
-\item{w.high}{numeric value, wavelength at the long end of the band (nm)}
+\item{w.low, w.high}{numeric value, wavelengths at the short end and long ends
+of the wavelength band [\eqn{nm}].}
 }
 \value{
 a \code{waveband} object

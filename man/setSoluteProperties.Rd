@@ -13,7 +13,9 @@ setSoluteProperties(
   formula = NULL,
   structure = grDevices::as.raster(matrix()),
   name = NA_character_,
-  ID = NA_character_
+  ID = NA_character_,
+  solvent.name = NA_character_,
+  solvent.ID = NA_character_
 )
 
 solute_properties(x) <- value
@@ -29,16 +31,16 @@ parameters will be always ignored, otherwise they will be used to
 build an object of class \code{"solute.properties"} when the argument to
 \code{solute.properties} is \code{NULL}.}
 
-\item{mass}{numeric The mass in Dalton (Da = g/mol).}
+\item{mass}{numeric The mass in Dalton [\eqn{Da = g\,mol^{-1}}{Da = g/mol}].}
 
 \item{formula}{character The molecular formula.}
 
 \item{structure}{raster A bitmap of the structure.}
 
-\item{name}{character The name of the substance. A named character
+\item{name, solvent.name}{character The name of the substance and the name of the solvent. A named character
 vector, with member names such as "IUPAC" for the authority.}
 
-\item{ID}{character The name of the substance. A named character
+\item{ID, solvent.ID}{character The names of the substance and of the solvent. A named character
 vector, with member names such as "ChemSpider" or "PubChen" for the
 authority.}
 }
@@ -46,14 +48,18 @@ authority.}
 \code{x}
 }
 \description{
-Function to set by reference the \code{"solute.properties"} attribute of an existing
-\code{solute_spct} object.
+Function to set by reference the \code{"solute.properties"} attribute of an
+existing \code{solute_spct} object.
 }
 \details{
-Storing solute properties allows inter-conversion between bases
-  of expression, and ensures the unambiguous identification of the substances
-  to which the spectral data refer. The parameter \code{pass.null} makes
-  it possible to remove the attribute.
+Storing solute properties allows inter-conversion between bases of
+  expression, and ensures the unambiguous identification of the substances to
+  which the spectral data refer. These properties make it possible to compute
+  \code{filter_spct} objects for solutions of the solute, i.e., absorption
+  spectra of liquid filters. The parameter \code{pass.null} makes it possible
+  to remove the attribute. The solvent used for the determination of the
+  attenuation coefficient is important metadata as the solvent can alter
+  the spectral ansorption properties of the solute.
 }
 \note{
 This function alters \code{x} itself by reference and in addition
@@ -67,7 +73,9 @@ solute.properties <-
        name = c("water", IUPAC = "oxidane"),
        structure = grDevices::as.raster(matrix()),
        mass = 18.015, # Da
-       ID = c(ChemSpider = "917", CID = "962"))
+       ID = c(ChemSpider = "917", CID = "962"),
+       solvent.name = NA_character_,
+       solvent.ID = NA_character_)
 my.spct <- solute_spct()
 solute_properties(my.spct) <- solute.properties
 solute_properties(my.spct)

@@ -9,15 +9,15 @@
 #' @param spct an R object.
 #' @param w.band waveband or list of waveband objects The waveband(s) determine
 #'   the region(s) of the spectrum that are summarized.
-#' @param unit.out character string with allowed values "energy", and "photon",
-#'   or its alias "quantum".
+#' @param unit.out character Allowed values \code{"energy"}, and
+#'   \code{"photon"}, or its alias \code{"quantum"}.
 #' @param quantity character string One of "total", "average" or "mean",
 #'   "contribution", "contribution.pc", "relative" or "relative.pc".
 #' @param time.unit character or lubridate::duration object.
 #' @param scale.factor numeric vector of length 1, or length equal to that of
 #'   \code{w.band}. Numeric multiplier applied to returned values.
-#' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries
-#'   are trimmed, if FALSE, they are discarded.
+#' @param wb.trim logical if \code{TRUE} wavebands crossing spectral data
+#'   boundaries are trimmed, if \code{FALSE}, they are discarded.
 #' @param use.cached.mult logical indicating whether multiplier values should be
 #'   cached between calls.
 #' @param use.hinges logical Flag indicating whether to insert "hinges" into the
@@ -25,8 +25,9 @@
 #'   the boundaries of the wavebands.
 #' @param allow.scaled logical indicating whether scaled or normalized spectra
 #'   as argument to spct are flagged as an error.
-#' @param naming character one of "long", "default", "short" or "none". Used to
-#'   select the type of names to assign to returned value.
+#' @param naming character one of \code{"long"}, \code{"default"},
+#'   \code{"short"} or \code{"none"}. Used to select the type of names to assign
+#'   to returned value.
 #' @param ... other arguments (possibly ignored)
 #'
 #' @note Formal parameter \code{allow.scaled} is used internally for calculation

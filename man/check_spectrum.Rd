@@ -7,10 +7,10 @@
 check_spectrum(w.length, s.irrad)
 }
 \arguments{
-\item{w.length}{numeric vector of wavelengths (nm).}
+\item{w.length}{numeric vector of wavelengths [\eqn{nm}].}
 
 \item{s.irrad}{numeric Corresponding vector of spectral (energy) irradiances
-(W m-2 nm-1).}
+[\eqn{W\,m^{-2}\,nm^{-1}}{W m-2 nm-1}].}
 }
 \value{
 A single \code{logical} value indicating whether test was passed or

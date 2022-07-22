@@ -75,8 +75,8 @@ irrad(
 \item{w.band}{waveband or list of waveband objects The waveband(s) determine
 the region(s) of the spectrum that are summarized.}
 
-\item{unit.out}{character string with allowed values "energy", and "photon",
-or its alias "quantum".}
+\item{unit.out}{character Allowed values \code{"energy"}, and
+\code{"photon"}, or its alias \code{"quantum"}.}
 
 \item{quantity}{character string One of "total", "average" or "mean",
 "contribution", "contribution.pc", "relative" or "relative.pc".}
@@ -86,8 +86,8 @@ or its alias "quantum".}
 \item{scale.factor}{numeric vector of length 1, or length equal to that of
 \code{w.band}. Numeric multiplier applied to returned values.}
 
-\item{wb.trim}{logical if TRUE wavebands crossing spectral data boundaries
-are trimmed, if FALSE, they are discarded.}
+\item{wb.trim}{logical if \code{TRUE} wavebands crossing spectral data
+boundaries are trimmed, if \code{FALSE}, they are discarded.}
 
 \item{use.cached.mult}{logical indicating whether multiplier values should be
 cached between calls.}
@@ -101,8 +101,9 @@ as argument to spct are flagged as an error.}
 
 \item{...}{other arguments (possibly ignored)}
 
-\item{naming}{character one of "long", "default", "short" or "none". Used to
-select the type of names to assign to returned value.}
+\item{naming}{character one of \code{"long"}, \code{"default"},
+\code{"short"} or \code{"none"}. Used to select the type of names to assign
+to returned value.}
 
 \item{attr2tb}{character vector, see \code{\link{add_attr2tb}} for the syntax
 for \code{attr2tb} passed as is to formal parameter \code{col.names}.}

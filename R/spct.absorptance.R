@@ -9,15 +9,17 @@
 #'   length two. The waveband(s) determine the region(s) of the spectrum that
 #'   are summarized. If a numeric range is supplied a waveband object is
 #'   constructed on the fly from it.
-#' @param quantity character string One of "average" or "mean", "total",
-#'   "contribution", "contribution.pc", "relative" or "relative.pc".
-#' @param wb.trim logical Flag, if TRUE wavebands crossing spectral data
-#'   boundaries are trimmed and otherwise ignored.
+#' @param quantity character string One of \code{"average"} or \code{"mean"},
+#'   \code{"total"}, \code{"contribution"}, \code{"contribution.pc"},
+#'   \code{"relative"} or \code{"relative.pc"}.
+#' @param wb.trim logical if \code{TRUE} wavebands crossing spectral data
+#'   boundaries are trimmed, if \code{FALSE}, they are discarded.
 #' @param use.hinges logical Flag indicating whether to insert "hinges" into the
 #'   spectral data before integration so as to reduce interpolation errors at
 #'   the boundaries of the wavebands.
-#' @param naming character one of "long", "default", "short" or "none". Used to
-#'   select the type of names to assign to returned value.
+#' @param naming character one of \code{"long"}, \code{"default"},
+#'   \code{"short"} or \code{"none"}. Used to select the type of names to assign
+#'   to returned value.
 #' @param ... other arguments (possibly used by derived methods).
 #'
 #' @note The \code{use.hinges} parameter controls speed optimization. The

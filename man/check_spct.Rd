@@ -128,11 +128,13 @@ by copy of \code{x}}
 \item{strict.range}{logical indicating whether off-range values result in an
 error instead of a warning, \code{NA} disables the test.}
 
-\item{force}{logical If TRUE check is done even if checks are disabled.}
+\item{force}{logical If \code{TRUE} check is done even if checks are
+disabled.}
 
 \item{...}{additional param possible in derived methods}
 
-\item{multiple.wl}{numeric Maximum number of repeated w.length entries with same value.}
+\item{multiple.wl}{numeric Maximum number of repeated w.length entries with
+same value.}
 }
 \description{
 Check that an R object contains the expected data members.

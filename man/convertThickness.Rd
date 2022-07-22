@@ -9,11 +9,12 @@ convertThickness(x, thickness = NULL)
 \arguments{
 \item{x}{a filter_spct, object_spct, filter_mspct or object_mspct object.}
 
-\item{thickness}{numeric (m)}
+\item{thickness}{numeric [\eqn{m}].}
 }
 \value{
 \code{x} possibly with the \code{"thickness"} field of the
-  \code{"filter.properties"} attribute modified
+  \code{"filter.properties"} attribute modified and \code{Tfr} or \code{A}
+  computed for the requested thickness.
 }
 \description{
 Function to set the "thickness" attribute and simultaneously converting the
@@ -26,10 +27,11 @@ For spectral transmittance at a different thickness to be exactly
   metadata should be available. Please, see \code{\link{convertTfrType}}.
 }
 \note{
-if x is not a \code{filter_spct} object, \code{x} is returned
-  unchanged. If or \code{x} does not have the \code{"filter.properties"}
-  attribute set and with no missing data, \code{x} is returned with
-  \code{Tfr} set to \code{NA} values.
+if \code{x} is not a \code{filter_spct}, \code{object_spct},
+  \code{filter_mspct} or \code{object_mspct} object or a collection of such
+  objects, \code{x} is returned unchanged. If \code{x} does not have the
+  \code{"filter.properties"} attribute set or has it with missing member
+  data, \code{x} is returned with \code{Tfr} set to \code{NA} values.
 }
 \examples{
 

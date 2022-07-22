@@ -13,20 +13,19 @@ is_energy_based(x)
 \item{x}{any R object}
 }
 \value{
-\code{is_photon_based} returns \code{TRUE} if its argument is a
-  \code{source_spct} or a \code{response_spct} object that contains photon
-  base data and \code{FALSE} if such an object does not contain such data,
-  but returns \code{NA} for any other R object, including those belonging
-  other \code{generic_spct}-derived classes.
+\code{is_photon_based} returns a logical value, \code{TRUE} if its argument is a \code{source_spct}
+  or a \code{response_spct} object that contains photon base data and
+  \code{FALSE} otherwise, but returns \code{NA} for any other R object,
+  including those belonging other \code{generic_spct}-derived classes.
 
-\code{is_energy_based} returns \code{TRUE} if its argument is a \code{source_spct} or
-a \code{response_spct} object that contains energy base data and \code{FALSE} if such an
-object does not contain such data, but returns \code{NA} for any other R object,
-including those belonging other \code{generic_spct}-derived classes
+\code{is_energy_based} returns a logical value, \code{TRUE} if its argument is a \code{source_spct}
+  or a \code{response_spct} object that contains energy base data and
+  \code{FALSE} otherwise, but returns \code{NA} for any other R object,
+  including those belonging other \code{generic_spct}-derived classes
 }
 \description{
-Functions to check if \code{source_spct} and \code{response_spct} objects
-contains photon-based or energy-based data.
+Functions to query if \code{source_spct} and \code{response_spct} objects
+contain photon-based or energy-based data.
 }
 \examples{
 colnames(sun.spct)

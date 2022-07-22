@@ -23,6 +23,8 @@ as.solute_spct(x, ...)
   formula = NULL,
   structure = grDevices::as.raster(matrix()),
   ID = NA_character_,
+  solvent.name = NA_character_,
+  solvent.ID = NA_character_,
   strict.range = getOption("photobiology.strict.range", default = FALSE),
   comment = NULL,
   molar.concentration = NULL,
@@ -42,8 +44,9 @@ as.solute_spct(x, ...)
 \item{strict.range}{logical Flag indicating whether off-range values result
 in an error instead of a warning.}
 
-\item{name}{character The name of the substance. A named character
-vector, with member names such as "IUPAC" for the authority.}
+\item{name, solvent.name}{character The names of the substance and of the
+solvent. A named character vector, with member names such as "IUPAC" for
+the authority.}
 
 \item{mass}{numeric The mass in Dalton (Da = g/mol).}
 
@@ -51,17 +54,17 @@ vector, with member names such as "IUPAC" for the authority.}
 
 \item{structure}{raster A bitmap of the structure.}
 
-\item{ID}{character The name of the substance. A named character
-vector, with member names such as "ChemSpider" or "PubChen" for the
-authority.}
+\item{ID, solvent.ID}{character The IDs of the substance and of the solvent. A
+named character vector, with member names such as "ChemSpider" or "PubChen"
+for the authority.}
 
 \item{comment}{character A string to be added as a comment attribute to the
 object created. If not supplied, the comment will be copied from \code{x}.}
 
 \item{molar.concentration, mass.concentration}{numeric Concentration to be
-used to compute transmittance of the solute in solution
-[\eqn{mol\,m^{-3} = mmol\,dm^{-3}}{mol m-3 = mmol dm-3} or
-\eqn{kg\,m^{-3} = g\,dm^{-3}}{kg m-3 = g dm-3}, respectively].}
+used to compute transmittance of the solute in solution [\eqn{mol\,m^{-3} =
+mmol\,dm^{-3}}{mol m-3 = mmol dm-3} or \eqn{kg\,m^{-3} = g\,dm^{-3}}{kg m-3
+= g dm-3}, respectively].}
 
 \item{path.length}{numeric The length of the light path (\eqn{m}) used to
 compute transmittance of the solute in a solution.}

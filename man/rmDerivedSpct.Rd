@@ -10,25 +10,27 @@ rmDerivedSpct(x, keep.classes = NULL)
 \item{x}{an R object.}
 
 \item{keep.classes}{character vector Names of classes to keep. Can be used
-to retain base class "generic_spct".}
+to retain base class \code{"generic_spct"}.}
 }
 \value{
 A character vector containing the removed class attribute values.
   This is different to the behaviour of function \code{unlist} in base R!
 }
 \description{
-Removes from a spectrum object the class attributes "generic_spct" and any
-derived class attribute such as "source_spct". \strong{This operation is done
-by reference!}
+Removes from a spectrum object the class attributes \code{"generic_spct"} and
+any derived class attribute such as \code{"source_spct"}. \strong{This
+operation is done by reference!}
+}
+\details{
+This function alters \code{x} itself by reference. If \code{x} is
+  not a \code{generic_spct} object, \code{x} is not modified. This function
+  behaves similarly to \code{setdiff()} but preserving the original order of
+  the character vector of the S3 class names.
 }
 \note{
-If \code{x} is an object of any of the spectral classes defined
-  in this package, this function changes by reference the spectrum
-  object into the underlying data.frame object. Otherwise, it just leaves \code{x}
-  unchanged.
-
-This function alters x itself by reference. If x is not a generic_spct object, x is not
-  modified.
+If \code{x} is an object of any of the spectral classes defined in this
+  package, this function changes by reference the spectrum object into the
+  underlying data.frame object. Otherwise, it just leaves \code{x} unchanged.
 }
 \examples{
 my.spct <- sun.spct

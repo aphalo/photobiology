@@ -7,11 +7,11 @@
 w_length2rgb(w.length, sens = photobiology::ciexyzCMF2.spct, color.name = NULL)
 }
 \arguments{
-\item{w.length}{numeric Vector of wavelengths (nm)}
+\item{w.length}{numeric Vector of wavelengths [\eqn{nm}].}
 
-\item{sens}{chroma_spct Used as chromaticity definition}
+\item{sens}{chroma_spct Used as chromaticity definition.}
 
-\item{color.name}{character Used for naming the rgb color definition}
+\item{color.name}{character Used for naming the rgb color definition.}
 }
 \value{
 A vector of colors defined using \code{rgb()}. The numeric values of

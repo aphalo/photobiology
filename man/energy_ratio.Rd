@@ -16,20 +16,23 @@ energy_ratio(
 )
 }
 \arguments{
-\item{w.length}{numeric vector of wavelengths (nm).}
+\item{w.length}{numeric vector of wavelengths [\eqn{nm}].}
 
-\item{s.irrad}{numeric vector of spectral (energy) irradiances (W m-2
-nm-1).}
+\item{s.irrad}{numeric vector of spectral irradiances in
+[\eqn{W\,m^{-2}\,nm^{-1}}{W m-2 nm-1}] or
+[\eqn{mol\,s^{-1}\,sm^{-2}\,nm^{-1}}{mol s-1 m-2 nm-1}] as indicated by the
+argument pased to \code{unit.in}.}
 
 \item{w.band.num}{waveband object used to compute the numerator of the ratio.}
 
-\item{w.band.denom}{waveband object used to compute the denominator of the ratio.}
+\item{w.band.denom}{waveband object used to compute the denominator of the
+ratio.}
 
-\item{unit.in}{character Allowed values "energy", and "photon", or its alias
-"quantum".}
+\item{unit.in}{character Allowed values \code{"energy"}, and \code{"photon"},
+or its alias \code{"quantum"}.}
 
 \item{check.spectrum}{logical Flag indicating whether to sanity check input
-data, default is TRUE.}
+data, default is \code{TRUE}.}
 
 \item{use.cached.mult}{logical Flag indicating whether multiplier values
 should be cached between calls.}
@@ -39,7 +42,7 @@ spectral data before integration so as to reduce interpolation errors at
 the boundaries of the wavebands.}
 }
 \value{
-a single numeric value giving the unitless ratio.
+a single numeric value giving the unitless energy ratio.
 }
 \description{
 Energy irradiance ratio between two wavebands for a radiation spectrum.

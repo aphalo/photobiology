@@ -55,8 +55,8 @@ Function to read the \code{"solute.properties"} attribute of an existing
 
 }}
 \note{
-The method for collections of spectra returns the
-  a tibble with a column of lists.
+The method for collections of spectra returns the a tibble with a
+  column of lists.
 }
 \examples{
 solute_properties(water.spct)

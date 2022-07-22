@@ -13,8 +13,8 @@
 #'   in degrees or radians. If both are supplied, radians take precedence.
 #' @param n numeric vector, or generic_spct object Relative refractive index.
 #'   The default 1.5 is suitable for crown glass or acrylic interacting with
-#'   visible light. n depends on wavelength, more or less strongly depending on
-#'   the material.
+#'   visible light. \eqn{n} depends on wavelength, more or less strongly
+#'   depending on the material.
 #' @param p_fraction numeric in range 0 to 1. Polarization, defaults to 0.5
 #'   assuming light that is not polarized.
 #'

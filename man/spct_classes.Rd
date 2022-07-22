@@ -2,7 +2,7 @@
 % Please edit documentation in R/spct.classes.r
 \name{spct_classes}
 \alias{spct_classes}
-\title{Function that returns a vector containing the names of spectra classes.}
+\title{Function returning a vector containing the names of spectra classes.}
 \usage{
 spct_classes()
 }
@@ -10,7 +10,7 @@ spct_classes()
 A \code{character} vector of class names.
 }
 \description{
-Function that returns a vector containing the names of spectra classes.
+Function returning a vector containing the names of spectra classes.
 }
 \examples{
 spct_classes()

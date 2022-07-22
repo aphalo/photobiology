@@ -10,20 +10,22 @@
 #'   length two. The waveband(s) determine the region(s) of the spectrum that
 #'   are summarized. If a numeric range is supplied a waveband object is
 #'   constructed on the fly from it.
-#' @param unit.out character Allowed values "energy", and "photon", or its alias
-#'   "quantum".
-#' @param quantity character string One of "total", "average" or "mean",
-#'   "contribution", "contribution.pc", "relative" or "relative.pc".
+#' @param unit.out character Allowed values \code{"energy"}, and
+#'   \code{"photon"}, or its alias \code{"quantum"}.
+#' @param quantity character string One of \code{"average"} or \code{"mean"},
+#'   \code{"total"}, \code{"contribution"}, \code{"contribution.pc"},
+#'   \code{"relative"} or \code{"relative.pc"}.
 #' @param time.unit character or lubridate::duration object.
 #' @param scale.factor numeric vector of length 1, or length equal to that of
 #'   \code{w.band}. Numeric multiplier applied to returned values.
-#' @param wb.trim logical Flag telling if wavebands crossing spectral data boundaries
-#'   are trimmed or ignored.
+#' @param wb.trim logical if \code{TRUE} wavebands crossing spectral data
+#'   boundaries are trimmed, if \code{FALSE}, they are discarded.
 #' @param use.hinges logical Flag indicating whether to insert "hinges" into the
 #'   spectral data before integration so as to reduce interpolation errors at
 #'   the boundaries of the wavebands.
-#' @param naming character one of "long", "default", "short" or "none". Used to
-#'   select the type of names to assign to returned value.
+#' @param naming character one of \code{"long"}, \code{"default"},
+#'   \code{"short"} or \code{"none"}. Used to select the type of names to assign
+#'   to returned value.
 #' @param ... other arguments (possibly used by derived methods).
 #'
 #' @note The parameter \code{use.hinges} controls speed optimization. The

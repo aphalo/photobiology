@@ -1,7 +1,7 @@
 
 # names of all spectral classes -------------------------------------------
 
-#' Function that returns a vector containing the names of spectra classes.
+#' Function returning a vector containing the names of spectra classes.
 #'
 #' @export
 #'
@@ -65,7 +65,8 @@ set_check_spct <- function(x) {
 #'   by copy of \code{x}
 #' @param strict.range logical indicating whether off-range values result in an
 #'   error instead of a warning, \code{NA} disables the test.
-#' @param force logical If TRUE check is done even if checks are disabled.
+#' @param force logical If \code{TRUE} check is done even if checks are
+#'   disabled.
 #' @param ... additional param possible in derived methods
 #'
 #' @export
@@ -96,7 +97,8 @@ check_spct.default <-
 
 #' @describeIn check_spct Specialization for generic_spct.
 #'
-#' @param multiple.wl numeric Maximum number of repeated w.length entries with same value.
+#' @param multiple.wl numeric Maximum number of repeated w.length entries with
+#'   same value.
 #'
 #' @export
 check_spct.generic_spct <-
@@ -853,27 +855,30 @@ check_spct.chroma_spct <-
 
 #' Remove "generic_spct" and derived class attributes.
 #'
-#' Removes from a spectrum object the class attributes "generic_spct" and any
-#' derived class attribute such as "source_spct". \strong{This operation is done
-#' by reference!}
+#' Removes from a spectrum object the class attributes \code{"generic_spct"} and
+#' any derived class attribute such as \code{"source_spct"}. \strong{This
+#' operation is done by reference!}
 #'
 #' @param x an R object.
 #' @param keep.classes character vector Names of classes to keep. Can be used
-#'   to retain base class "generic_spct".
+#'   to retain base class \code{"generic_spct"}.
 #'
 #' @export
 #'
-#' @note If \code{x} is an object of any of the spectral classes defined
-#'   in this package, this function changes by reference the spectrum
-#'   object into the underlying data.frame object. Otherwise, it just leaves \code{x}
-#'   unchanged.
+#' @note If \code{x} is an object of any of the spectral classes defined in this
+#'   package, this function changes by reference the spectrum object into the
+#'   underlying data.frame object. Otherwise, it just leaves \code{x} unchanged.
 #'
-#' @note This function alters x itself by reference. If x is not a generic_spct object, x is not
-#'   modified.
+#' @details This function alters \code{x} itself by reference. If \code{x} is
+#'   not a \code{generic_spct} object, \code{x} is not modified. This function
+#'   behaves similarly to \code{setdiff()} but preserving the original order of
+#'   the character vector of the S3 class names.
+#'
 #' @return A character vector containing the removed class attribute values.
 #'   This is different to the behaviour of function \code{unlist} in base R!
 #'
 #' @family set and unset spectral class functions
+#'
 #' @examples
 #' my.spct <- sun.spct
 #' removed <- rmDerivedSpct(my.spct)
@@ -902,18 +907,24 @@ rmDerivedSpct <- function(x, keep.classes = NULL) {
 #' class to "generic_spct".
 #'
 #' @param x data.frame, list or generic_spct and derived classes
-#' @param multiple.wl numeric Maximum number of repeated w.length entries with same value.
+#' @param multiple.wl numeric Maximum number of repeated \code{w.length} entries
+#'   with same value.
 #' @param idfactor character Name of factor distinguishing multiple spectra when
-#'    stored logitudinally (required if mulitple.wl > 1).
+#'   stored longitudinally (required if \code{mulitple.wl} > 1).
 #'
 #' @export
 #'
-#'
 #' @return x
-#' @note This method alters x itself by reference and in addition
-#'   returns x invisibly.
+#'
+#' @details This method alters \code{x} itself by reference and in addition
+#'   returns the modified \code{x} invisibly. The wavelength values and data are
+#'   checked for validity and out-of-range values trigger warnings. These checks
+#'   are done during construction by means of the matching
+#'   \code{\link{check_spct}} methods, unless checks have been disabled by
+#'   setting the corresponding option (see \code{\link{enable_check_spct}}).
 #'
 #' @family set and unset spectral class functions
+#'
 #' @examples
 #' my.df <- data.frame(w.length = 300:309, s.e.irrad = rep(100, 10))
 #' is.source_spct(my.df)
@@ -1017,25 +1028,27 @@ setCpsSpct <-
 
 #' @describeIn setGenericSpct Set class of an object to "filter_spct".
 #'
-#' @param Tfr.type character A string, either "total" or "internal".
-#' @param Rfr.constant numeric The value of the reflection factor (/1).
+#' @param Tfr.type character Either "total" or "internal".
+#' @param Rfr.constant numeric The value of the reflection factor [\eqn{/1}].
 #' @param thickness numeric The thickness of the material.
-#' @param attenuation.mode character One of "reflection", "absorption" or
-#'   "mixed".
-#' @param strict.range logical Flag indicating whether off-range values result in an
-#'   error instead of a warning.
+#' @param attenuation.mode character One of \code{"reflection"},
+#'   \code{"absorption"} or \code{"mixed"}.
+#' @param strict.range logical Flag indicating whether off-range values result
+#'   in an error instead of a warning.
 #' @export
 #'
-#' @section Warning!: Not entering metadata when creating an object will limit the available
-#'    operations!
+#' @section Warning!: Not entering metadata when creating an object will limit
+#'   the available operations!
 #'
-#' @note "internal" transmittance is defined as the transmittance of the
-#'   material body itself, while "total" transmittance includes the effects of
-#'   surface reflectance on the amount of light transmitted.
-#'   For non-diffusing materials like glass an approximate \code{Rfr.constant}
-#'   value can be used to interconvert "total" and "internal" transmittance
-#'   values. Use \code{NA} if not known, or not applicable, e.g., for materials
-#'   subject to internal scattering.
+#' @note \code{"internal"} \strong{transmittance} is defined as the
+#'   transmittance of the material body itself, while \code{"total"}
+#'   transmittance includes the effects of surface reflectance on the amount of
+#'   light transmitted. For non-diffusing materials like glass an approximate
+#'   \code{Rfr.constant} value can be used to inter-convert total and internal
+#'   transmittance values. Use \code{NA} if the the mode is not known, or not
+#'   applicable, e.g., for materials subject to internal scattering. The
+#'   validity of computations related to thickness of the material or length of
+#'   the light path depends on the availability and accuracy of the metadata.
 #'
 setFilterSpct <-
   function(x,
@@ -1075,22 +1088,30 @@ setFilterSpct <-
 #'
 #' @param K.type character A string, either "attenuation", "absorption" or
 #'   "scattering".
-#' @param name character The name of the substance. A named character
-#'     vector, with member names such as "IUPAC" for the authority.
+#' @param name,solvent.name character The names of the substance and of the
+#'   solvent. A named character vector, with member names such as "IUPAC" for
+#'   the authority.
 #' @param mass numeric The mass in Dalton (Da = g/mol).
 #' @param formula character The molecular formula.
 #' @param structure raster A bitmap of the structure.
-#' @param ID character The name of the substance. A named character
-#'     vector, with member names such as "ChemSpider" or "PubChen" for the
-#'     authority.
+#' @param ID,solvent.ID character The IDs of the substance and of the solvent. A
+#'   named character vector, with member names such as "ChemSpider" or "PubChen"
+#'   for the authority.
 #'
 #' @export
 #'
-#'
-#' @note For non-diffusing materials like glass an approximate \code{Rfr.constant}
-#'   value can be used to interconvert "total" and "internal" transmittance
-#'   values. Use \code{NA} if not known, or not applicable, e.g., for materials
-#'   subject to internal scattering.
+#' @note Particles in suspension unlike disolved \strong{solutes} scatter light.
+#'   Thus two different processes can attenuate light in liquid media:
+#'   absorption and scattering. Coefficients of attenuation are always based on
+#'   measurements of internal absorbance or internal transmittance. In practice
+#'   this is achieved by using as reference pure solvent in a vessel, such as a
+#'   spectrometer cuvette, called \emph{blank}. The measurement of the blank is
+#'   done sequentially, before or after the \emph{sample} of interest in single
+#'   beam spectrophotometers and concurrently in double beam spectrophotometers.
+#'   \code{K.type} describes the process of attenuation: \code{"attenuation"},
+#'   \code{"absorption"} or \code{"scattering"}, with \code{"attenuation"} used
+#'   for cases of mixed modes of attenuation. Set \code{K.type = NA} if not
+#'   available or unknown, or not applicable.
 #'
 setSoluteSpct <-
   function(x,
@@ -1100,6 +1121,8 @@ setSoluteSpct <-
            formula = NA_character_,
            structure = grDevices::as.raster(matrix()),
            ID = NA_character_,
+           solvent.name = NA_character_,
+           solvent.ID = NA_character_,
            strict.range = getOption("photobiology.strict.range", default = FALSE),
            multiple.wl = 1L,
            idfactor = NULL) {
@@ -1121,7 +1144,10 @@ setSoluteSpct <-
                         mass = mass,
                         formula = formula,
                         structure = structure,
-                        name = name)
+                        name = name,
+                        ID = ID,
+                        solvent.name = solvent.name,
+                        solvent.ID = solvent.ID)
     x <- check_spct(x, strict.range = strict.range)
     if (is.name(name)) {
       name <- as.character(name)
@@ -1133,8 +1159,20 @@ setSoluteSpct <-
 #' @describeIn setGenericSpct Set class of a an object to "reflector_spct".
 #'
 #' @param Rfr.type character A string, either "total" or "specular".
+#'
 #' @export
 #'
+#' @note \code{"specular"} \strong{reflectance} is defined as that measured by
+#'   collecting the light reflected by the surface at the \dQuote{mirror} of the
+#'   angle of incidence; i.e., using a probe with a narrow angle of aperture.
+#'   Usually measured close to normal angle of incidence. \code{"total"}
+#'   \strong{reflectance} is defined as that measured by collecting all the
+#'   light reflected by the surface; i.e., using an integrating sphere. In a
+#'   mirror, reflectance is mostly specular, while on the white surface of a
+#'   sheet of paper scattering predominates. In the first case the value for
+#'   total reflectance is not much more than for specular reflectance, while in
+#'   the second case the difference is much larger as the "specular" component
+#'   is much smaller.
 #'
 setReflectorSpct <-
   function(x,
@@ -1166,7 +1204,6 @@ setReflectorSpct <-
 #' @describeIn setGenericSpct Set class of an object to "object_spct".
 #'
 #' @export
-#'
 #'
 setObjectSpct <-
   function(x,
@@ -1214,11 +1251,10 @@ setObjectSpct <-
 #' @describeIn setGenericSpct Set class of an object to "response_spct".
 #'
 #' @param time.unit character string indicating the time unit used for spectral
-#'   irradiance or exposure ("second" , "day" or "exposure") or an object of
-#'   class duration as defined in package lubridate.
-#' @param response.type a character string, either "response" or "action".
+#'   irradiance or exposure (\code{"second"}, \code{"day"} or \code{"exposure"})
+#'   or an object of class duration as defined in package lubridate.
+#' @param response.type a character string, either \code{"response"} or \code{"action"}.
 #' @export
-#'
 #'
 setResponseSpct <-
   function(x,
@@ -1242,7 +1278,10 @@ setResponseSpct <-
 
 #' @describeIn setGenericSpct Set class of an object to "source_spct".
 #'
-#' @param bswf.used character A string, either "none" or the name of a BSWF.
+#' @param bswf.used character A string, either \code{"none"} or the name of a
+#'   BSWF. (Users seldom need to change the default, as this metadata value
+#'   is in normal use set by operators or functions that apply a BSWF.)
+#'
 #' @export
 #'
 #'
@@ -1292,16 +1331,15 @@ setChromaSpct <-
 
 #' Query class of spectrum objects
 #'
-#' Functions to check if an object is of a given type of spectrum, or coerce it if
-#' possible.
+#' Functions to query whether an object is of a given type of spectrum.
 #'
 #' @param x an R object.
 #'
-#' @return These functions return \code{TRUE} if its argument is a of the queried type
-#'   of spectrum and \code{FALSE} otherwise.
+#' @return A logical value, \code{TRUE} if the argument passed to \code{x} is an
+#'   object of the queried type of spectrum and \code{FALSE} otherwise.
 #'
-#' @note Derived types also return TRUE for a query for a base type such as
-#' \code{generic_spct}.
+#' @note Derived types also return \code{TRUE} for a query for a base type such
+#'   as \code{generic_spct}, following R's practice.
 #'
 #' @examples
 #' is.source_spct(sun.spct)
@@ -1379,15 +1417,19 @@ is.any_spct <- function(x) {
 
 #' Query which is the class of a spectrum
 #'
-#' Functions to check if an object is a generic spectrum, or coerce it if
-#' possible.
+#' Extract class information from a generic spectrum.
+#'
+#' @details The value returned is equivalent to the set intersection of the
+#'   value returned by \code{class(x)} and the value returned by
+#'   \code{\link{spct_classes}}, but preserving the order of the members of
+#'   the character vector.
 #'
 #' @param x any R object
 #'
-#' @return class_spct returns a vector containing all matching xxxx.spct
-#'   classes.
+#' @return A character vector containing all matching xxxx.spct S3 classes.
 #'
 #' @export
+#'
 #' @examples
 #' class_spct(sun.spct)
 #' class(sun.spct)
@@ -1403,9 +1445,9 @@ class_spct <- function(x) {
 #'
 #' @param x any R object
 #'
-#' @return is_tagged returns TRUE if its argument is a a spectrum
-#' that contains tags and FALSE if it is an untagged spectrum, but
-#' returns NA for any other R object.
+#' @return \code{is_tagged} returns a logical value, \code{TRUE} if its argument is a a spectrum that contains
+#'   tags and \code{FALSE} if it is an untagged spectrum, but returns \code{NA}
+#'   for any other R object.
 #'
 #' @export
 #'
@@ -1426,16 +1468,15 @@ is_tagged <- function(x) {
 
 #' Query if a spectrum contains photon- or energy-based data.
 #'
-#' Functions to check if \code{source_spct} and \code{response_spct} objects
-#' contains photon-based or energy-based data.
+#' Functions to query if \code{source_spct} and \code{response_spct} objects
+#' contain photon-based or energy-based data.
 #'
 #' @param x any R object
 #'
-#' @return \code{is_photon_based} returns \code{TRUE} if its argument is a
-#'   \code{source_spct} or a \code{response_spct} object that contains photon
-#'   base data and \code{FALSE} if such an object does not contain such data,
-#'   but returns \code{NA} for any other R object, including those belonging
-#'   other \code{generic_spct}-derived classes.
+#' @return \code{is_photon_based} returns a logical value, \code{TRUE} if its argument is a \code{source_spct}
+#'   or a \code{response_spct} object that contains photon base data and
+#'   \code{FALSE} otherwise, but returns \code{NA} for any other R object,
+#'   including those belonging other \code{generic_spct}-derived classes.
 #'
 #' @export
 #' @family query units functions
@@ -1462,10 +1503,10 @@ is_photon_based <- function(x) {
 
 #' @rdname is_photon_based
 #'
-#' @return \code{is_energy_based} returns \code{TRUE} if its argument is a \code{source_spct} or
-#' a \code{response_spct} object that contains energy base data and \code{FALSE} if such an
-#' object does not contain such data, but returns \code{NA} for any other R object,
-#' including those belonging other \code{generic_spct}-derived classes
+#' @return \code{is_energy_based} returns a logical value, \code{TRUE} if its argument is a \code{source_spct}
+#'   or a \code{response_spct} object that contains energy base data and
+#'   \code{FALSE} otherwise, but returns \code{NA} for any other R object,
+#'   including those belonging other \code{generic_spct}-derived classes
 #'
 #' @export
 #' @examples
@@ -1489,15 +1530,15 @@ is_energy_based <- function(x) {
 
 #' Query if a spectrum contains absorbance or transmittance data
 #'
-#' Functions to check if an filter spectrum contains spectral absorbance data or
+#' Functions to query if an filter spectrum contains spectral absorbance data or
 #' spectral transmittance data.
 #'
 #' @param x an R object
 #'
-#' @return \code{is_absorbance_based} returns TRUE if its argument is a
-#'   \code{filter_spct} object that contains spectral absorbance data and FALSE
-#'   if it does not contain such data, but returns NA for any other R object,
-#'   including those belonging other \code{generic_spct}-derived classes.
+#' @return \code{is_absorbance_based} returns a logical value, \code{TRUE} if its argument is a \code{filter_spct}
+#'   object that contains spectral absorbance data and \code{FALSE} otherwise,
+#'   but returns \code{NA} for any other R object, including those belonging
+#'   other \code{generic_spct}-derived classes.
 #'
 #' @export
 #' @family query units functions
@@ -1521,10 +1562,11 @@ is_absorbance_based <- function(x) {
 
 #' @rdname is_absorbance_based
 #'
-#' @return \code{is_absorptance_based} returns TRUE if its argument is a
-#'   \code{filter_spct} object that contains spectral absorptance and FALSE if
-#'   it does not contain such data, but returns NA for any other R object,
-#'   including those belonging other \code{generic_spct}-derived classes.
+#' @return \code{is_absorptance_based} returns a logical value, if its argument
+#'   is a \code{filter_spct} object, \code{TRUE} if it contains data as spectral
+#'   absorptance and \code{FALSE} otherwise, but returns \code{NA} for any other
+#'   R object, including those belonging other \code{generic_spct}-derived
+#'   classes.
 #'
 #' @export
 #' @examples
@@ -2446,16 +2488,16 @@ getIdFactor <- function(x) {
 #' filter_spct object.
 #'
 #' @param x a filter_spct object
-#' @param filter.properties,value a list with fields named "Rfr.constant",
-#'   "thickness" and "attenuation.mode".
+#' @param filter.properties,value a list with fields named \code{"Rfr.constant"},
+#'   \code{"thickness"} and \code{"attenuation.mode"}.
 #' @param pass.null logical If TRUE, the parameters to the next three
 #'    parameters will be always ignored, otherwise they will be used to
-#'    build an object of class "filter.properties" when the argument to
-#'    filter.properties is NULL.
-#' @param Rfr.constant numeric The value of the reflection factor (/1).
-#' @param thickness numeric The thickness of the material.
-#' @param attenuation.mode character One of "reflection", "absorption",
-#'    "absorption.layer" or "mixed".
+#'    build an object of class \code{"filter.properties"} when the argument
+#'    passed to parameter \code{filter.properties} is \code{NULL}.
+#' @param Rfr.constant numeric The value of the reflection factor [/1].
+#' @param thickness numeric The thickness of the material [\eqn{m}].
+#' @param attenuation.mode character One of \code{"reflection"}, \code{"absorption"},
+#'    \code{"absorption.layer"} or \code{"mixed"}.
 #'
 #' @details Storing filter properties allows inter-conversion between internal
 #'   and total transmittance, as well as computation of transmittance for
@@ -2465,19 +2507,21 @@ getIdFactor <- function(x) {
 #'
 #' @return \code{x}
 #' @note This function alters \code{x} itself by reference and in addition
-#'   returns \code{x} invisibly. If \code{x} is not a filter_spct object,
+#'   returns \code{x} invisibly. If \code{x} is not a \code{filter_spct} object,
 #'   \code{x} is not modified.
 #'
-#'   The values of `attenuation.mode` "reflection" and "absorption" should be
-#'   used when one of these processes is clearly the main one; "mixed" is for
-#'   cases when they both play a role, i.e., when a simple correction using a
-#'   single value of Rfr across wavelengths is not possible; "absorption.layer"
-#'   is for cases when a thin absorbing layer is deposited on the surface of a
-#'   transparent support or enclosed between two sheets of glass or other
-#'   transparent material. If in doubt, set this to NA to ensure that
-#'   computation of spectra for other thicknesses remains disabled.
+#'   The values of \code{attenuation.mode} \code{"reflection"} and
+#'   \code{"absorption"} should be used when one of these processes is clearly
+#'   the main one; \code{"mixed"} is for cases when they both play a role, i.e.,
+#'   when a simple correction using a single value of \code{Rfr} across
+#'   wavelengths is not possible; \code{"absorption.layer"} is for cases when a
+#'   thin absorbing layer is deposited on the surface of a transparent support
+#'   or enclosed between two sheets of glass or other transparent material. If
+#'   in doubt, set this to \code{NA} to ensure that computation of spectra for a
+#'   different thickness remains disabled.
 #'
 #' @export
+#'
 #' @family measurement metadata functions
 #'
 #' @examples
@@ -2583,9 +2627,10 @@ setFilterProperties <- function(x,
 #'   \code{NA}.
 #' @param ... Allows use of additional arguments in methods for other classes.
 #'
-#' @return a list with fields named "Rfr.constant", "thickness" and "attenuation.mode".
-#'   If the attribute is not set, and \code{return.null} is FALSE, a list with
-#'   fields set to \code{NA} is returned, otherwise, \code{NULL}.
+#' @return a list with fields named \code{"Rfr.constant"} [\eqn{/1}],
+#'   \code{"thickness"} [\eqn{m}] and \code{"attenuation.mode"}. If the
+#'   attribute is not set, and \code{return.null} is FALSE, a list with fields
+#'   set to \code{NA} is returned, otherwise, \code{NULL}.
 #'
 #' @export
 #' @family measurement metadata functions
@@ -2654,8 +2699,8 @@ getFilterProperties.summary_filter_spct <- getFilterProperties.filter_spct
 #' @describeIn getFilterProperties filter_mspct
 #' @param idx character Name of the column with the names of the members of the
 #'   collection of spectra.
-#' @note The method for collections of spectra returns the
-#'   a tibble with a column of lists.
+#' @note The method for collections of spectra returns the a tibble with a
+#'   column of lists.
 #' @export
 #'
 getFilterProperties.generic_mspct <- function(x,
@@ -2682,15 +2727,17 @@ getFilterProperties.generic_mspct <- function(x,
 #'   metadata should be available. Please, see \code{\link{convertTfrType}}.
 #'
 #' @param x a filter_spct, object_spct, filter_mspct or object_mspct object.
-#' @param thickness numeric (m)
+#' @param thickness numeric [\eqn{m}].
 #'
 #' @return \code{x} possibly with the \code{"thickness"} field of the
-#'   \code{"filter.properties"} attribute modified
+#'   \code{"filter.properties"} attribute modified and \code{Tfr} or \code{A}
+#'   computed for the requested thickness.
 #'
-#' @note if x is not a \code{filter_spct} object, \code{x} is returned
-#'   unchanged. If or \code{x} does not have the \code{"filter.properties"}
-#'   attribute set and with no missing data, \code{x} is returned with
-#'   \code{Tfr} set to \code{NA} values.
+#' @note if \code{x} is not a \code{filter_spct}, \code{object_spct},
+#'   \code{filter_mspct} or \code{object_mspct} object or a collection of such
+#'   objects, \code{x} is returned unchanged. If \code{x} does not have the
+#'   \code{"filter.properties"} attribute set or has it with missing member
+#'   data, \code{x} is returned with \code{Tfr} set to \code{NA} values.
 #'
 #' @export
 #' @family time attribute functions
@@ -2768,25 +2815,26 @@ convertThickness <- function(x, thickness = NULL) {
 
 #' Convert the "Tfr.type" attribute
 #'
-#' Function to set the "Tfr.type" attribute and simultaneously converting the
-#' spectral data to correspond to the new type.
+#' Function to set the \code{"Tfr.type"} attribute and simultaneously converting
+#' the spectral data to correspond to the new type.
 #'
 #' @details Internal transmittance uses as reference the light entering the
-#'   object while total transmittance takes the incident light as reference.
-#'   The conversion is possible only if reflectance is known. Either as
-#'   spectral data in an object_spct object, or a filter_spct object that is
-#'   under the hood an object_spct, or if a fixed reflectance factor applicable
-#'   to all wavelengths is known.
+#'   object while total transmittance takes the incident light as reference. The
+#'   conversion is possible only if reflectance is known. Either as spectral
+#'   data in an \code{object_spct} object, a \code{filter_spct} object that is
+#'   "under-the-hood" an \code{object_spct}, or if a fixed reflectance factor
+#'   applicable to all wavelengths is stored in the \code{filter.properties}
+#'   attribute of the \code{filter_spct} object.
 #'
 #' @param x a filter_spct, object_spct, filter_mspct or object_mspct object.
-#' @param Tfr.type character One of #internal" or "total".
+#' @param Tfr.type character One of \code{"internal"} or \code{"total"}.
 #'
 #' @return \code{x} possibly with the \code{"thickness"} field of the
 #'   \code{"filter.properties"} attribute modified
 #'
-#' @note if x is not a \code{filter_spct} object, \code{x} is returned
-#'   unchanged. If or \code{x} does not have the \code{"filter.properties"}
-#'   attribute set and with no missing data, \code{x} is returned with
+#' @note if \code{x} is not a \code{filter_spct} object, \code{x} is returned
+#'   unchanged. If \code{x} does not have the \code{"filter.properties"}
+#'   attribute set if it is missing data, \code{x} is returned with
 #'   \code{Tfr} set to \code{NA} values.
 #'
 #' @export
@@ -2877,8 +2925,8 @@ convertTfrType <- function(x, Tfr.type = NULL) {
 
 #' Set the "solute.properties" attribute
 #'
-#' Function to set by reference the \code{"solute.properties"} attribute of an existing
-#' \code{solute_spct} object.
+#' Function to set by reference the \code{"solute.properties"} attribute of an
+#' existing \code{solute_spct} object.
 #'
 #' @param x solute_spct A spectrum of coefficients of attenuation.
 #' @param solute.properties,value a list with fields named \code{"mass"}, \code{"formula"},
@@ -2887,21 +2935,26 @@ convertTfrType <- function(x, Tfr.type = NULL) {
 #'    parameters will be always ignored, otherwise they will be used to
 #'    build an object of class \code{"solute.properties"} when the argument to
 #'    \code{solute.properties} is \code{NULL}.
-#' @param mass numeric The mass in Dalton (Da = g/mol).
+#' @param mass numeric The mass in Dalton [\eqn{Da = g\,mol^{-1}}{Da = g/mol}].
 #' @param formula character The molecular formula.
 #' @param structure raster A bitmap of the structure.
-#' @param name character The name of the substance. A named character
+#' @param name,solvent.name character The name of the substance and the name of the solvent. A named character
 #'     vector, with member names such as "IUPAC" for the authority.
-#' @param ID character The name of the substance. A named character
+#' @param ID,solvent.ID character The names of the substance and of the solvent. A named character
 #'     vector, with member names such as "ChemSpider" or "PubChen" for the
 #'     authority.
 #'
-#' @details Storing solute properties allows inter-conversion between bases
-#'   of expression, and ensures the unambiguous identification of the substances
-#'   to which the spectral data refer. The parameter \code{pass.null} makes
-#'   it possible to remove the attribute.
+#' @details Storing solute properties allows inter-conversion between bases of
+#'   expression, and ensures the unambiguous identification of the substances to
+#'   which the spectral data refer. These properties make it possible to compute
+#'   \code{filter_spct} objects for solutions of the solute, i.e., absorption
+#'   spectra of liquid filters. The parameter \code{pass.null} makes it possible
+#'   to remove the attribute. The solvent used for the determination of the
+#'   attenuation coefficient is important metadata as the solvent can alter
+#'   the spectral ansorption properties of the solute.
 #'
 #' @return \code{x}
+#'
 #' @note This function alters \code{x} itself by reference and in addition
 #'   returns \code{x} invisibly. If \code{x} is not a filter_spct object,
 #'   \code{x} is not modified.
@@ -2916,7 +2969,9 @@ convertTfrType <- function(x, Tfr.type = NULL) {
 #'        name = c("water", IUPAC = "oxidane"),
 #'        structure = grDevices::as.raster(matrix()),
 #'        mass = 18.015, # Da
-#'        ID = c(ChemSpider = "917", CID = "962"))
+#'        ID = c(ChemSpider = "917", CID = "962"),
+#'        solvent.name = NA_character_,
+#'        solvent.ID = NA_character_)
 #' my.spct <- solute_spct()
 #' solute_properties(my.spct) <- solute.properties
 #' solute_properties(my.spct)
@@ -2932,7 +2987,9 @@ setSoluteProperties <- function(x,
                                 formula = NULL,
                                 structure = grDevices::as.raster(matrix()),
                                 name = NA_character_,
-                                ID = NA_character_) {
+                                ID = NA_character_,
+                                solvent.name = NA_character_,
+                                solvent.ID = NA_character_) {
   obj.name <- substitute(x)
   if (is.solute_spct(x)) {
     if (!(pass.null && is.null(solute.properties))) {
@@ -2941,12 +2998,14 @@ setSoluteProperties <- function(x,
                                   formula = formula,
                                   structure = structure,
                                   name = name,
-                                  ID = ID)
+                                  ID = ID,
+                                  solvent.name = solvent.name,
+                                  solvent.ID = solvent.ID)
         class(solute.properties) <-
           c("solute_properties", class(solute.properties))
       } else {
         stopifnot(setequal(names(solute.properties),
-                           c("mass", "formula", "structure", "name", "ID")))
+                           c("mass", "formula", "structure", "name", "ID", "solvent.name", "solvent.ID")))
         if (class(solute.properties)[1] != "solute_properties") {
           class(solute.properties) <-
             c("solute_properties", class(solute.properties))
@@ -3048,7 +3107,9 @@ getSoluteProperties.default <- function(x,
                               formula = NA_character_,
                               structure = grDevices::as.raster(matrix()),
                               name = NA_character_,
-                              ID = NA_character_)
+                              ID = NA_character_,
+                              solvent.name =  NA_character_,
+                              solvent.ID = NA_character_)
     class(solute.properties) <-
       c("solute_properties", class(solute.properties))
     solute.properties
@@ -3068,13 +3129,15 @@ getSoluteProperties.solute_spct <- function(x,
                                 formula = NA_character_,
                                 structure = grDevices::as.raster(matrix()),
                                 name = NA_character_,
-                                ID = NA_character_)
+                                ID = NA_character_,
+                                solvent.name =  NA_character_,
+                                solvent.ID = NA_character_)
       class(solute.properties) <-
         c("solute_properties", class(solute.properties))
     }
   } else {
     stopifnot(setequal(names(solute.properties),
-                       c("mass", "formula", "structure", "name", "ID")))
+                       c("mass", "formula", "structure", "name", "ID", "solvent.name", "solvent.ID")))
   }
   solute.properties
 }
@@ -3086,10 +3149,13 @@ getSoluteProperties.solute_spct <- function(x,
 getSoluteProperties.summary_solute_spct <- getSoluteProperties.solute_spct
 
 #' @describeIn getSoluteProperties solute_mspct
+#'
 #' @param idx character Name of the column with the names of the members of the
 #'   collection of spectra.
-#' @note The method for collections of spectra returns the
-#'   a tibble with a column of lists.
+#'
+#' @note The method for collections of spectra returns the a tibble with a
+#'   column of lists.
+#'
 #' @export
 #'
 getSoluteProperties.solute_mspct <- function(x,

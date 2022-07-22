@@ -3,18 +3,18 @@
 #' This function gives the (energy or photon) irradiance ratio between two given
 #' wavebands of a radiation spectrum.
 #'
-#' @param w.length numeric Vector of wavelengths (nm)
-#' @param s.irrad numeric vector of spectral (energy or photon) irradiances (W
-#'   m-2 nm-1) or (mol s-1 m-2 nm-1).
-#' @param w.band.num waveband object used to compute the numerator of the ratio.
-#' @param w.band.denom waveband object used to compute the denominator of the
-#'   ratio.
-#' @param unit.out.num character Allowed values "energy", and "photon", or its
-#'   alias "quantum".
-#' @param unit.out.denom character Allowed values "energy", and "photon", or its
-#'   alias "quantum".
-#' @param unit.in character Allowed values "energy", and "photon", or its alias
-#'   "quantum".
+#' @param w.length numeric Vector of wavelengths [\eqn{nm}].
+#' @param s.irrad numeric vector of spectral irradiances in
+#'   [\eqn{W\,m^{-2}\,nm^{-1}}{W m-2 nm-1}] or
+#'   [\eqn{mol\,s^{-1}\,sm^{-2}\,nm^{-1}}{mol s-1 m-2 nm-1}] as indicated by the
+#'   argument pased to \code{unit.in}.
+#' @param w.band.num,w.band.denom waveband objects used to compute the numerator
+#'   and denominator of the ratio.
+#' @param unit.out.num,unit.out.denom character Base of expression used to
+#'   compute the numerator and denominator of the ratio. Allowed values
+#'   \code{"energy"}, and \code{"photon"}, or its alias \code{"quantum"}.
+#' @param unit.in character Allowed values \code{"energy"}, and \code{"photon"},
+#'   or its alias \code{"quantum"}.
 #' @param check.spectrum logical Flag indicating whether to sanity check input
 #'   data, default is TRUE.
 #' @param use.cached.mult logical Flag indicating whether multiplier values
@@ -24,7 +24,7 @@
 #'   the boundaries of the wavebands.
 #'
 #' @note The default for both \code{w.band} parameters is a waveband covering
-#'   the whole range of \code{w.length}. From version 9.19 onwards use of this
+#'   the whole range of \code{w.length}. From version 0.9.19 onwards use of this
 #'   default does not trigger a warning, but instead is used silently.
 #'
 #' @return a single numeric value giving the ratio
