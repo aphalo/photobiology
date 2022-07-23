@@ -765,8 +765,9 @@ version 0.9.4 (last version using Rcpp and C++). Add support for
 objects. Fix bug in getInstrSettings(). Allow small rounding and
 instrument errors to pass validity checks. Fix bug in setRawSpct().
 Implement clean(), normalize(), fscale() and fshift() methods for
-"generic_spct", "raw_spct" and "cps_spct" objects. $$New functions:
-cps2irrad(), cps2Tfr() and cps2Rfr(). Preliminary versions.$$
+"generic_spct", "raw_spct" and "cps_spct" objects. 
+
+New functions: cps2irrad(), cps2Tfr() and cps2Rfr(). Preliminary versions.
 Constructors for \_spct objects gain a ... formal argument which allows
 addition of arbitrary columns to the objects created. Reorganize
 documentation into fewer help files. Fix bug leading to loss of special
@@ -1363,9 +1364,9 @@ annotations.
 
 Changed code of irrad() and set\_\_\_Spct() functions to be able to
 handle locked data.table objects such as .SD when using by within
-$$                $$ on spct objects. irrad() copies the spectrum only
-if needed, and the sorting key is set to "w.length" only if not already
-set to this same value.
+`$$ $$` on spct objects. irrad() copies the spectrum only if needed, and the
+sorting key is set to "w.length" only if not already set to this same
+value.
 
 # photobiology 0.5.10
 
