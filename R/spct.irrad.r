@@ -232,6 +232,10 @@ irrad.source_spct <-
       w.length <- lst[["x"]]
       s.irrad <- lst[["y"]]
     }
+    if (anyNA(all.hinges)) {
+      warning("Missing hinges encountered and removed!")
+      all.hinges <- na.omit(all.hinges)
+    }
 
     # We iterate through the list of wavebands collecting the irradiances,
     # and waveband names.
@@ -247,6 +251,11 @@ irrad.source_spct <-
         } else {
           wb.name[i] <- labels(wb)[["name"]] # full name
         }
+      }
+      # check for NA wavebands
+      if (is.na(wb[["low"]]) || is.na(wb[["high"]])) {
+        irrad[i] <- NA_real_
+        next
       }
       if (is.effective.spectrum && is_effective(wb)) {
         warning("Effective spectral irradiance is not compatible with a BSWF: ",
@@ -277,6 +286,7 @@ irrad.source_spct <-
                                    ifelse(mult == 0, 0, s.irrad[wl.selector] * mult))
       }
     }
+
     if (quantity %in% c("contribution", "contribution.pc")) {
       if (any(sapply(w.band, is_effective))) {
         warning("'quantity '", quantity,
@@ -318,7 +328,7 @@ irrad.source_spct <-
 
     if (length(irrad) == 0) {
       irrad <- NA_real_
-      names(irrad) <- "out of range"
+      names(irrad) <- "out of range or NAs in waveband"
     } else if (naming %in% c("long", "default")) {
       names(irrad) <- paste(summary.name, wb.name, sep = "_")
     } else if (naming == "short") {

@@ -83,7 +83,8 @@ trim_waveband <-
     w.band.out <- list()
     i <- 0
     for (wb in w.band) {
-      if (min(wb) >= high.limit || max(wb) <= low.limit) {
+      if (is.na(min(wb)) || is.na(max(wb)) ||
+          min(wb) >= high.limit || max(wb) <= low.limit) {
         # delete name of skipped waveband
         w.band.names[i + 1] <- NULL
         next

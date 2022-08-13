@@ -4,6 +4,10 @@ editor_options:
     wrap: 72
 ---
 
+# photobiology 0.10.13
+
+- Improve handling of missing and default wavebands in `irrad()` and in `trim_waveband()`.
+
 # photobiology 0.10.12
 
 ------------------------------------------------------------------------
