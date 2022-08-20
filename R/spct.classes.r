@@ -2588,6 +2588,7 @@ setFilterProperties <- function(x,
         filter.properties[["attenuation.mode"]] <- "stack"
       }
       if (!is.character(filter.properties[["attenuation.mode"]])) {
+        # handle NA which is logical or numeric
         filter.properties[["attenuation.mode"]] <-
           as.character(filter.properties[["attenuation.mode"]])
        }
@@ -2598,10 +2599,10 @@ setFilterProperties <- function(x,
                 filter.properties[["attenuation.mode"]],
                 "' for \"attenuation.mode\" set to NA")
         filter.properties[["attenuation.mode"]][!filter.properties[["attenuation.mode"]] %in%
-                                                  c("reflection", "absorption", "absorption.layer", "mixed")] <- NA_character_
+                                                  c("reflection", "absorption", "absorption.layer", "mixed", "stack")] <- NA_character_
       }
-      if (filter.properties[["attenuation.mode"]] == "stack" &&
-         !all(is.na(filter.properties[["Rfr.constant"]]))) {
+      if (any(!is.na(filter.properties[["Rfr.constant"]])) &&
+          filter.properties[["attenuation.mode"]] == "stack") {
         warning("Setting 'Rfr.constant' to 'NA' for filter stack")
         filter.properties[["Rfr.constant"]] <- NA_real_
       }
@@ -2767,7 +2768,7 @@ convertThickness <- function(x, thickness = NULL) {
                    thickness = thickness))
   }
   if (!(is.filter_spct(x) || is.object_spct(x))) {
-    warning("'convertThickness()' mot applicable to class '", class(x)[1], "'. Skipping!")
+    warning("'convertThickness()' not applicable to class '", class(x)[1], "'. Skipping!")
     return(invisible(x))
   }
   if (is.null(thickness)) {
@@ -2781,6 +2782,9 @@ convertThickness <- function(x, thickness = NULL) {
     return(x * NA_real_)
   } else if (properties[["attenuation.mode"]] == "absorption.layer") {
     warning("Conversion is undefined when absorbing material is layered.")
+    return(x * NA_real_)
+  } else if (properties[["attenuation.mode"]] == "stack") {
+    warning("Conversion is undefined for stacks of filters.")
     return(x * NA_real_)
   } else if(properties[["attenuation.mode"]] == "reflection") {
     warning("Transmittance remains unchanged for purely reflective materials.")
