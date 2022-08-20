@@ -7,6 +7,7 @@ editor_options:
 # photobiology 0.10.13
 
 - Improve handling of missing and default wavebands in `irrad()` and in `trim_waveband()`.
+- Add preliminary support for filter stacks in `filter.properties` attribute.
 
 # photobiology 0.10.12
 

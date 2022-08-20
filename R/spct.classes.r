@@ -2497,7 +2497,7 @@ getIdFactor <- function(x) {
 #' @param Rfr.constant numeric The value of the reflection factor [/1].
 #' @param thickness numeric The thickness of the material [\eqn{m}].
 #' @param attenuation.mode character One of \code{"reflection"}, \code{"absorption"},
-#'    \code{"absorption.layer"} or \code{"mixed"}.
+#'    \code{"absorption.layer"}, \code{"mixed"} or \code{"stack"}.
 #'
 #' @details Storing filter properties allows inter-conversion between internal
 #'   and total transmittance, as well as computation of transmittance for
@@ -2575,10 +2575,17 @@ setFilterProperties <- function(x,
         filter.properties[["thickness"]] <-
           as.numeric(filter.properties[["thickness"]])
       }
-      if (!is.na(filter.properties[["thickness"]]) &&
-          filter.properties[["thickness"]] <= 0) {
+      if (any(!is.na(filter.properties[["thickness"]]) &
+          filter.properties[["thickness"]] <= 0)) {
         warning("'thickness' (m) <= 0 set to NA")
-        filter.properties[["thickness"]] <- NA_real_
+        filter.properties[["thickness"]][!is.na(filter.properties[["thickness"]]) &
+                                           filter.properties[["thickness"]] <= 0] <- NA_real_
+      }
+      # one could have a list with the properties of the stacked filters as an additional field
+      # but would require surgery of the code in several other places and careful thought
+      if (length(filter.properties[["thickness"]]) > 1L &&
+          filter.properties[["attenuation.mode"]] != "stack") {
+        filter.properties[["attenuation.mode"]] <- "stack"
       }
       if (!is.character(filter.properties[["attenuation.mode"]])) {
         filter.properties[["attenuation.mode"]] <-
@@ -2586,11 +2593,17 @@ setFilterProperties <- function(x,
        }
       if (!is.na(filter.properties[["attenuation.mode"]]) &&
                   !filter.properties[["attenuation.mode"]] %in%
-             c("reflection", "absorption", "absorption.layer", "mixed")) {
-        warning("Bad value '",
+             c("reflection", "absorption", "absorption.layer", "mixed", "stack")) {
+        warning("Bad value(s) '",
                 filter.properties[["attenuation.mode"]],
                 "' for \"attenuation.mode\" set to NA")
-        filter.properties[["attenuation.mode"]] <- NA_character_
+        filter.properties[["attenuation.mode"]][!filter.properties[["attenuation.mode"]] %in%
+                                                  c("reflection", "absorption", "absorption.layer", "mixed")] <- NA_character_
+      }
+      if (filter.properties[["attenuation.mode"]] == "stack" &&
+         !all(is.na(filter.properties[["Rfr.constant"]]))) {
+        warning("Setting 'Rfr.constant' to 'NA' for filter stack")
+        filter.properties[["Rfr.constant"]] <- NA_real_
       }
     }
     attr(x, "filter.properties") <- filter.properties

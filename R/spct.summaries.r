@@ -556,8 +556,10 @@ print.instr_settings <- function(x, ...) {
 #' @export
 #'
 print.filter_properties <- function(x, ...) {
-  cat("Rfr (/1): ", round(x[["Rfr.constant"]], digits = 3), ", ",
-      "thickness (mm): ", signif(x[["thickness"]] * 1e3, digits = 3), ", ",
+  cat("Rfr (/1): ",
+      paste(sprintf("%#.3f", x[["Rfr.constant"]]), collapse = " + "), ", ",
+      "thickness (mm): ",
+      paste(sprintf("%#.3g", x[["thickness"]] * 1e3), collapse = " + "), ", ",
       "attenuation mode: ", x[["attenuation.mode"]], ".",
        sep = "",
       ...

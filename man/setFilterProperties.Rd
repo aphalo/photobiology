@@ -32,7 +32,7 @@ passed to parameter \code{filter.properties} is \code{NULL}.}
 \item{thickness}{numeric The thickness of the material [\eqn{m}].}
 
 \item{attenuation.mode}{character One of \code{"reflection"}, \code{"absorption"},
-\code{"absorption.layer"} or \code{"mixed"}.}
+\code{"absorption.layer"}, \code{"mixed"} or \code{"stack"}.}
 }
 \value{
 \code{x}
