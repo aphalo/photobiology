@@ -2194,7 +2194,7 @@ getRfrType <- function(x) {
   }
 }
 
-# Tfr.type attribute ------------------------------------------------------
+# K.type attribute ------------------------------------------------------
 
 #' Set the "K.type" attribute
 #'
