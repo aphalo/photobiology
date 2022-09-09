@@ -8,6 +8,7 @@ editor_options:
 
 - Improve handling of missing and default wavebands in `irrad()` and in `trim_waveband()`.
 - Add preliminary support for filter stacks in `filter.properties` attribute.
+- Add `summary()` method for collections of spectra.
 
 # photobiology 0.10.12
 
