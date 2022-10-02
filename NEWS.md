@@ -6,9 +6,12 @@ editor_options:
 
 # photobiology 0.10.13
 
-- Improve handling of missing and default wavebands in `irrad()` and in `trim_waveband()`.
+- Improve handling of missing and default wavebands in `irrad()` and in
+  `trim_waveband()`.
 - Add preliminary support for filter stacks in `filter.properties` attribute.
 - Add `summary()` method for collections of spectra.
+- **Fix bug** in extract (`[`) operator for collections of spectra, resulting in
+wrong values for dimension attribute (`"mspct.dim"`).
 
 # photobiology 0.10.12
 

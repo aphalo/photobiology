@@ -838,7 +838,7 @@ subset.generic_spct <- function(x, subset, select, drop = FALSE, ...) {
     old.class <- rmDerivedMspct(x)
     x <- `[`(x, i)
     class(x) <- c(old.class, class(x))
-    attr(x, "mspct.dim") <- length(i)
+    attr(x, "mspct.dim") <- c(length(x), 1L)
     attr(x, "mspct.byrow") <- old.byrow
     attr(x, "mspct.version") <- 2
     x
