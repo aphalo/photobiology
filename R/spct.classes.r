@@ -2602,6 +2602,7 @@ setFilterProperties <- function(x,
                                                   c("reflection", "absorption", "absorption.layer", "mixed", "stack")] <- NA_character_
       }
       if (any(!is.na(filter.properties[["Rfr.constant"]])) &&
+          !is.na(filter.properties[["attenuation.mode"]]) &&
           filter.properties[["attenuation.mode"]] == "stack") {
         warning("Setting 'Rfr.constant' to 'NA' for filter stack")
         filter.properties[["Rfr.constant"]] <- NA_real_
