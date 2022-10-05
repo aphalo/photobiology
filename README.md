@@ -13,12 +13,14 @@ spectral data and accompanying metadata. For each of these classes
 specialised summary methods, maths operators and functions are provided.
 In addition, classes for storing collections of objects of the classes
 for individual spectra are defined as well as ‘apply’ functions.
-Extraction and replacement operators are also implemented. Functions for
+Extraction and replacement operators are implemented. Functions for
 calculation of the position of the sun, times of sunrise and sunset, day
 length and night length are also provided.
 
 The package supports storage and manipulation of data for radiation
-quantities and for optical properties of objects.
+quantities and for optical properties of objects and solutes, as well as
+response and action spectra for photobiological, photochemical and
+photoelectrical responses.
 
 This package is the core of a suite of R packages for photobiological
 calculations described at the
@@ -50,9 +52,9 @@ sun.
 geocode <- data.frame(lon = 0, lat = 55)
 date <- lubridate::now(tzone = "UTC")
 sunrise_time(date, tz = "UTC", geocode = geocode)
-#> [1] "2022-07-22 03:52:12 UTC"
+#> [1] "2022-10-05 06:10:18 UTC"
 day_length(date, tz = "UTC", geocode = geocode)
-#> [1] 16.47617
+#> [1] 11.27061
 ```
 
 ## Installation
