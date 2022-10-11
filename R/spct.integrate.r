@@ -125,17 +125,17 @@ interpolate_spct <- function(spct,
   if (is.null(fill)) {
     if (!is.null(w.length.out)) {
       w.length.out <-
-        unique(sort(c(ifelse(min(spct) > min(w.length.out), min(spct), min(w.length.out)),
+        unique(sort(c(ifelse(wl_min(spct) > min(w.length.out), wl_min(spct), min(w.length.out)),
                       w.length.out,
-                      ifelse(max(spct) < max(w.length.out), max(spct), max(w.length.out)))))
-      w.length.out <- w.length.out[w.length.out >= min(spct) & w.length.out <= max(spct)]
+                      ifelse(wl_max(spct) < max(w.length.out), wl_max(spct), max(w.length.out)))))
+      w.length.out <- w.length.out[w.length.out >= wl_min(spct) & w.length.out <= wl_max(spct)]
       fill <- NA_real_
     }
   } else if (is.na(fill)) {
     fill <- NA_real_
   }
   names.spct <- names(spct)
-  numeric.cols <- names.spct[sapply(spct[ ,names.spct], is.numeric)]
+  numeric.cols <- names.spct[sapply(spct, is.numeric)]
 #  other.cols <- setdiff(names.spct, numeric.cols)
   data.cols <- setdiff(numeric.cols, "w.length")
   if (nrow(spct) == 0) {
@@ -186,7 +186,7 @@ interpolate_spct <- function(spct,
   }
   if (!is.null(length.out) && length.out > 1) {
     if (is.null(w.length.out) || length(w.length.out) < 2L) {
-      w.length.out <- seq(min(spct), max(spct), length.out = length.out)
+      w.length.out <- seq(wl_min(spct), max(spct), length.out = length.out)
     } else {
       w.length.out <- seq(min(w.length.out), max(w.length.out), length.out = length.out)
     }
@@ -194,8 +194,8 @@ interpolate_spct <- function(spct,
     # nothing to do
     return(spct)
   }
-  max.spct <- max(spct)
-  min.spct <- min(spct)
+  max.spct <- wl_max(spct)
+  min.spct <- wl_min(spct)
   max.wl.out <- max(w.length.out)
   min.wl.out <- min(w.length.out)
   if (min.spct > min.wl.out && min.spct < max.wl.out) w.length.out <- c(min.spct, w.length.out)

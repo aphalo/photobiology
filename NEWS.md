@@ -6,7 +6,9 @@ editor_options:
 
 # photobiology 0.10.14
 
-- Fix warnings triggered by code breaking changes in 'tidyselect' 1.2.0.
+- Fix bug triggered by code breaking changes in 'tidyselect' 1.2.0.
+- Fix minor bugs.
+- Add function `illuminance()`.
 
 # photobiology 0.10.13
 

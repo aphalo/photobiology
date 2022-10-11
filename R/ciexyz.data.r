@@ -111,9 +111,7 @@
 #'
 #' \itemize{
 #'   \item w.length (nm)
-#'   \item x
-#'   \item y
-#'   \item z }
+#'   \item s.e.response}
 #'
 #' @author CIE
 #'
@@ -137,9 +135,7 @@
 #' @details
 #' \itemize{
 #'   \item w.length (nm)
-#'   \item x
-#'   \item y
-#'   \item z }
+#'   \item s.e.response}
 #'
 #' @author CIE
 #'
@@ -175,6 +171,8 @@
 #' @format A chroma_spct object with 440 rows and 4 variables
 #' @family Visual response data examples
 #'
+#' @note The missing data for z in the NIR have been filled with zeros.
+#'
 #' @examples
 #' cone_fundamentals10.spct
 #'
@@ -184,6 +182,6 @@
 #' @rdname cone_fundamentals10.spct
 #'
 #' @return A \code{response_mspct} object containing the same data in three
-#' \code{response_spct} objects.
+#' \code{response_spct} objects, one for each of x, y and z.
 #'
 "cone_fundamentals10.mspct"

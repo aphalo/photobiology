@@ -19,7 +19,7 @@ cone_fundamentals10.mspct
 A \code{chroma_spct} object.
 
 A \code{response_mspct} object containing the same data in three
-\code{response_spct} objects.
+\code{response_spct} objects, one for each of x, y and z.
 }
 \description{
 A dataset containing wavelengths at a 1 nm interval (390 nm to
@@ -33,6 +33,9 @@ A dataset containing wavelengths at a 1 nm interval (390 nm to
   \item x
   \item y
   \item z }
+}
+\note{
+The missing data for z in the NIR have been filled with zeros.
 }
 \examples{
 cone_fundamentals10.spct

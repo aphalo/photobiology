@@ -18,9 +18,7 @@ A dataset containing wavelengths at a 1 nm interval (390 nm to
 
 \itemize{
   \item w.length (nm)
-  \item x
-  \item y
-  \item z }
+  \item s.e.response}
 }
 \examples{
 ciev10.spct

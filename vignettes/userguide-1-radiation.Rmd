@@ -739,7 +739,7 @@ class(mixed.mspct)
 lapply(mixed.mspct, class_spct)
 ```
 
-#### Using *as.* functions
+#### Using *as.* conversion functions
 
 The `as.` coercion methods for collections of spectra, not only change
 the class of the collection object, but can also optionally apply the
@@ -3399,7 +3399,47 @@ compare_spct(filter_mspct(list(pet = polyester.spct,
             .comparison.fun = `<`)
 ```
 
-## RGB colours
+## Illumination and light as seen by humans
+
+### Illuminance
+
+Illuminance, or luminous flux incident on a surface, is relevant to human
+vision. It is an approximate quantity as the spectral response function of human
+vision varies among individuals, with their age and the conditions during
+measurement. The SI unit for illuminance is lux (lx) or lumnes per square meter.
+
+When function `illuminance()` is applied to spectral (energy) irradiance or 
+spectral photon irradiance, illuminance can be directly computed using the
+same time base of 1 s.
+
+```{r}
+illuminance(sun.spct)
+```
+
+The response of the human eye depends on the size of the target, and response
+spectra have been defined by CIE for both 2 degrees and 10 degrees targets.
+
+```{r}
+illuminance(sun.spct, std = "CIE10deg")
+```
+
+If one attempts to compute illuminance from spectral fluence or radiation
+spectra expressed as a flux of energy or photons over a period of time
+different to 1 s, the average illuminance is returned, in lux.
+
+```{r}
+illuminance(sun.daily.spct)
+```
+
+### CCT and CRI
+
+Colour temperature and colour rendition index can be computed from spectral
+irradiance. Package 'colorSpec' implement these and other calcualtions related
+to colour. Package 'photobiologyInOut' provides wrappers to facilitate the
+computation of CCT and CRI directly from `source_spct` objects by on-the-fly
+conversion and calling functions from 'colorSpec'.
+
+### RGB colours
 
 Different `color_of()` methods allow calculation of RGB colour values for
 light sources or objects. The returned values are R colour definitions.
