@@ -1204,7 +1204,7 @@ add_attr2tb <- function(tb = NULL,
     # expand metadata fields into columns
     for (col in list.cols) {
       # handles lists of lists or lists of dataframes
-      tb <- tidyr::unnest_wider(tb, col)
+      tb <- tidyr::unnest_wider(tb, tidyr::all_of(col))
     }
   }
   tb
