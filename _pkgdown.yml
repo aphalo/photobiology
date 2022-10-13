@@ -151,6 +151,7 @@ reference:
     - fluence
     - e_fluence
     - q_fluence
+    - illuminance
     - response
     - e_response
     - q_response
