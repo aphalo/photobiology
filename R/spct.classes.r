@@ -251,7 +251,13 @@ check_spct.raw_spct <-
   x <- check_spct.generic_spct(x, multiple.wl = multiple.wl)
 
   counts.cols <- grep("^counts", names(x))
+  counts.names <- colnames(x)[counts.cols]
 
+  if (length(counts.cols) == 1L && counts.names != "counts") {
+    # remove numbering from single columns
+    message("Renaming '", counts.names, "' into 'counts'")
+    names(x)[counts.cols] <- "counts"
+  }
   if (length(counts.cols) >= 1) {
     return(x)
   } else {
@@ -300,8 +306,14 @@ check_spct.cps_spct <-
 
   x <- check_spct.generic_spct(x, multiple.wl = multiple.wl)
 
-  cps.cols <- grep("^cps", names(x), value = TRUE)
+  cps.cols <- grep("^cps", names(x))
+  cps.names <- colnames(x)[cps.cols]
 
+  if (length(cps.cols) == 1L && cps.names != "cps") {
+    # remove numbering from single columns
+    message("Renaming '", cps.names, "' into 'cps'")
+    names(x)[cps.cols] <- "cps"
+  }
   if (length(cps.cols) >= 1) {
     range_check(x, cps.cols)
     return(x)
@@ -710,27 +722,22 @@ check_spct.response_spct <-
            force = FALSE,
            multiple.wl = getMultipleWl(x),
            ...) {
+    # no range test as spectral response can take any numeric value
 
     x <- check_spct.generic_spct(x, multiple.wl = multiple.wl)
 
     x <- checkTimeUnit(x)
 
-    if (exists("s.e.response", x, mode = "numeric", inherits=FALSE) ||
-        exists("s.q.response", x, mode = "numeric", inherits=FALSE)) {
-      NULL # nothing to do
-    } else if (exists("response", x, mode = "numeric", inherits=FALSE)) {
-      x[["s.e.response"]] <- x[["response"]]
-      x[["response"]] <- NULL
-      warning("Found variable 'response', I am assuming it is expressed on an energy basis")
-    } else if (exists("signal", x, mode = "numeric", inherits=FALSE)) {
-      x[["s.e.response"]] <- x[["signal"]]
-      x[["signal"]] <- NULL
-      warning("Found variable 'signal', I am assuming it is expressed on an energy basis")
-    } else {
-      warning("No response data found in response_spct")
-      x[["s.e.response"]] <- NA_real_
-      return(x)
+    if (!(exists("s.e.response", x, mode = "numeric", inherits=FALSE) ||
+          exists("s.q.response", x, mode = "numeric", inherits=FALSE))) {
+      x <- check_and_rename_vars(x,
+                                 target.var = "s.e.response",
+                                 alternative.vars = c("response", "signal"),
+                                 multiplier = c(1, 1),
+                                 required = TRUE,
+                                 fill = NA_real_)
     }
+
     if (getOption("photobiology.verbose")) {
       if (exists("s.e.response", x, mode = "numeric", inherits = FALSE) && anyNA(x[["s.e.response"]])) {
         warning("At least one NA in 's.e.response'")
@@ -809,18 +816,16 @@ check_spct.source_spct <-
       setBSWFUsed(x, "none")
       warning("Missing attribute 'bswf.used' set to 'none'")
     }
-    if (exists("s.e.irrad", x, mode = "numeric", inherits=FALSE) ||
-        exists("s.q.irrad", x, mode = "numeric", inherits=FALSE)) {
-      NULL
-    } else if (exists("irradiance", x, mode = "numeric", inherits=FALSE)) {
-      x[["s.e.irradiance"]] <- x[["irradiance"]]
-      x[["irradiance"]] <- NULL
-      warning("Found variable 'irradiance', I am assuming it is expressed on an energy basis")
-    } else {
-      warning("No spectral irradiance data found in source_spct")
-      x[["s.e.irrad"]] <- NA_real_
-      return(x)
+    if (!(exists("s.e.irrad", x, mode = "numeric", inherits=FALSE) ||
+        exists("s.q.irrad", x, mode = "numeric", inherits=FALSE))) {
+      x <- check_and_rename_vars(x,
+                                 target.var = "s.e.irrad",
+                                 alternative.vars = c("irradiance"),
+                                 multiplier = 1,
+                                 required = TRUE,
+                                 fill = NA_real_)
     }
+
     if (!is.null(strict.range) && !is.na(strict.range)) {
       range_check(x, strict.range = strict.range)
     }

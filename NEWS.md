@@ -8,7 +8,7 @@ editor_options:
 
 - Fix several bugs created by code-breaking changes in 'tidyselect' 1.2.0, and
   possibly 'rlang' 1.0.6, affecting 'dplyr'.
-- Fix minor bugs.
+- Fix other bugs, including handling of spectral with no non-missing data.
 - Add function `illuminance()`.
 
 # photobiology 0.10.13
