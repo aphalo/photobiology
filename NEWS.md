@@ -6,7 +6,8 @@ editor_options:
 
 # photobiology 0.10.14
 
-- Fix bug triggered by code breaking changes in 'tidyselect' 1.2.0.
+- Fix several bugs created by code-breaking changes in 'tidyselect' 1.2.0, and
+  possibly 'rlang' 1.0.6, affecting 'dplyr'.
 - Fix minor bugs.
 - Add function `illuminance()`.
 

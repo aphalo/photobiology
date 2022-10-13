@@ -56,6 +56,52 @@ set_check_spct <- function(x) {
   options(photobiology.check.spct = x)[[1]]
 }
 
+#' check and rename variables
+#'
+#' @param x data frame or equivalent R object.
+#' @param target.var character vector of length one, with the name of the
+#'    target variable.
+#' @param alternative.vars character vector of any length, with the names of the
+#'    of alternative variables that could replace the target.
+#' @param multiplier numeric vector with the multipliers to apply to the
+#'    alternative variables.
+#' @param required logical Indicating whether an error should be triggered if
+#'    no variable is found.
+#' @param fill if \code{required = TRUE} and \code{fill} different from
+#'    \code{NULL} the value is used to fill the target variable if it and
+#'    all alternative variables are missing.
+#'
+#' @keywords internal
+#'
+check_and_rename_vars <- function(x,
+                                  target.var,
+                                  alternative.vars,
+                                  multiplier,
+                                  required = FALSE,
+                                  fill = NULL) {
+  if (!exists(target.var, x, mode = "numeric", inherits = FALSE)) {
+    wl.col <- which(colnames(x) %in% alternative.vars)
+    if (length(wl.col) > 1L) {
+      wl.col <- wl.col[1]
+      warning("Multiple matches, using '", names(x)[wl.col], "' for '", target.var)
+    }
+    if (length(wl.col) == 1L) {
+      x[[wl.col]] <- x[[wl.col]] * multiplier[wl.col]
+      names(x)[wl.col] <- target.var
+    } else if (required) {
+      if (!is.null(fill)) {
+        if (is.na(fill)) {
+          warning("Missing '", target.var, "' variable in spectrum")
+        }
+        x[[target.var]] <- fill
+      } else {
+        stop("Missing '", target.var, "' variable in spectrum")
+      }
+    }
+  }
+  x
+}
+
 #' Check validity of spectral objects
 #'
 #' Check that an R object contains the expected data members.
@@ -119,24 +165,16 @@ check_spct.generic_spct <-
     class.x <- class_spct(x)
     if (!("tbl_df") %in% class(x)) {
       x <- tibble::as_tibble(x)
-    }
-    class(x) <- union(class.x, class(x)) # can change order!! BUG PRONE
-    # check variables
-    if (exists("wl", x, mode = "numeric", inherits = FALSE)) {
-      dots <- list(~wl)
-      x <- dplyr::rename_(x, .dots = stats::setNames(dots, "w.length"))
-    } else if (exists("wavelength", x, mode = "numeric", inherits = FALSE)) {
-      dots <- list(~wavelength)
-      x <- dplyr::rename_(x, .dots = stats::setNames(dots, "w.length"))
-    } else if (exists("Wavelength", x, mode = "numeric", inherits = FALSE)) {
-      dots <- list(~Wavelength)
-      x <- dplyr::rename_(x, .dots = stats::setNames(dots, "w.length"))
-    }
-    if (!exists("w.length", x, mode = "numeric", inherits = FALSE)) {
-      stop("No wavelength data found in generic_spct")
+      class(x) <- union(class.x, class(x)) # can change order!! BUG PRONE
     }
 
-    if (nrow(x)) {
+    x <- check_and_rename_vars(x,
+                               target.var = "w.length",
+                               alternative.vars = c("wl", "wavelength", "Wavelength"),
+                               multiplier = c(1, 1, 1),
+                               required = TRUE)
+
+    if (nrow(x) && !all(is.na(x[["w.length"]]))) {
       wl.min <- min(x[["w.length"]], na.rm = TRUE)
       #  wl.max <- max(x[["w.length"]], na.rm = TRUE)
       if (wl.min == Inf) {
@@ -358,40 +396,37 @@ check_spct.filter_spct <-
       setTfrType(x, "total")
       warning("Missing Tfr.type attribute replaced by 'total'")
     }
-    if (is.null(getTfrType(x))) {
-      setTfrType(x, "total")
-      warning("Missing Tfr.type attribute replaced by 'total'")
-    }
     # check and replace 'other' quantity names
-    if (exists("transmittance", x, mode = "numeric", inherits = FALSE)) {
-      dots <- list(~transmittance)
-      x <- dplyr::rename_(x, .dots = stats::setNames(dots, "Tpc"))
-      warning("Found variable 'transmittance', I am assuming it is expressed as percent")
+    if (!any(c("Tfr", "A", "Afr") %in% colnames(x))) {
+      x <- check_and_rename_vars(x,
+                                 target.var = "Afr",
+                                 alternative.vars = c("absorptance", "Absorptance", "Apc"),
+                                 multiplier = c(1, 1, 1e-2))
+      if (!"Afr" %in% colnames(x)) {
+        x <- check_and_rename_vars(x,
+                                   target.var = "A",
+                                   alternative.vars = c("absorbance", "Absorbance"),
+                                   multiplier = c(1, 1))
+        if (!"Tfr" %in% colnames(x)) {
+          x <- check_and_rename_vars(x,
+                                     target.var = "Tfr",
+                                     alternative.vars = c("transmittance", "Transmittance", "Tpc"),
+                                     multiplier = c(1e-2, 1e-2, 1e-2),
+                                     required = TRUE,
+                                     fill = NA_real_)
+        }
+      }
     }
-    if (exists("absorbance", x, mode = "numeric", inherits = FALSE)) {
-      dots <- list(~absorbance)
-      x <- dplyr::rename_(x, .dots = stats::setNames(dots, "A"))
-      warning("Found variable 'absorbance', I am assuming it is in log10-based absorbance units")
-    } else if (exists("Absorbance", x, mode = "numeric", inherits = FALSE)) {
-      dots <- list(~Absorbance)
-      x <- dplyr::rename_(x, .dots = stats::setNames(dots, "A"))
-      warning("Found variable 'Absorbance', I am assuming it is in log10-based absorbance units")
-    }
-    # look for percentages and change them into fractions of one
+
+    # check range of spectral data
     if (exists("Tfr", x, mode = "numeric", inherits = FALSE)) {
-      range_check_Tfr(x, strict.range = strict.range)
-    } else if (exists("Tpc", x, mode = "numeric", inherits = FALSE)) {
-      x[["Tfr"]] <- x[["Tpc"]] / 100
-      x[["Tpc"]] <-  NULL
       range_check_Tfr(x, strict.range = strict.range)
     } else if (exists("A", x, mode = "numeric", inherits = FALSE)) {
       range_check_A(x, strict.range = strict.range)
     } else if (exists("Afr", x, mode = "numeric", inherits = FALSE)) {
       range_check_Afr(x, strict.range = strict.range)
-    } else {
-      warning("No transmittance, absortance or absorbance data found in filter_spct")
-      x[["Tfr"]] <- NA_real_
     }
+
     if (getOption("photobiology.verbose")) {
       if (exists("Tfr", x, mode = "numeric", inherits = FALSE) && anyNA(x[["Tfr"]])) {
         warning("At least one NA in 'Tfr'")
@@ -505,24 +540,19 @@ check_spct.reflector_spct <-
       setRfrType(x, "total")
       warning("Missing Rfr.type attribute replaced by 'total'")
     }
-    if (exists("reflectance", x, mode = "numeric", inherits=FALSE)) {
-      dots <- list(~reflectance)
-      x <- dplyr::rename_(x, .dots = stats::setNames(dots, "Rpc"))
-      warning("Found variable 'reflectance', I am assuming it is expressed as percent")
+
+    if (!"Rfr" %in% colnames(x)) {
+      x <- check_and_rename_vars(x,
+                                 target.var = "Rfr",
+                                 alternative.vars = c("reflectance", "Reflectance", "Rpc"),
+                                 multiplier = c(1e-2, 1e-2, 1e-2),
+                                 required = TRUE,
+                                 fill = NA_real_)
     }
-    if (exists("Rfr", x, mode = "numeric", inherits=FALSE)) {
-      range_check(x, strict.range=strict.range)
-    } else if (exists("Rpc", x, mode = "numeric", inherits=FALSE)) {
-      x[["Rfr"]] <- x[["Rpc"]] / 100
-      x[["Rpc"]] <- NULL
-      range_check(x, strict.range=strict.range)
-    } else {
-      warning("No reflectance data found in reflector_spct")
-      x[["Rfr"]] <- NA_real_
-    }
-    if (getOption("photobiology.verbose") &&
-        exists("Rfr", x, mode = "numeric", inherits = FALSE) && anyNA(x[["Rfr"]])) {
-      warning("At least one NA in 'Tfr'")
+    range_check(x, strict.range=strict.range)
+
+    if (getOption("photobiology.verbose") && anyNA(x[["Rfr"]])) {
+      warning("At least one NA in 'Rfr'")
     }
     x
   }
@@ -625,56 +655,46 @@ check_spct.object_spct <-
       setRfrType(x, "total")
       warning("Missing Rfr.type attribute replaced by 'total'")
     }
-    if (exists("reflectance", x, mode = "numeric", inherits=FALSE)) {
-      dots <- list(~reflectance)
-      x <- dplyr::rename_(x, .dots = stats::setNames(dots, "Rpc"))
-      warning("Found variable 'reflectance', I am assuming it is expressed as percent")
+
+    if (!"Rfr" %in% colnames(x)) {
+      x <- check_and_rename_vars(x,
+                                 target.var = "Rfr",
+                                 alternative.vars = c("reflectance", "Reflectance", "Rpc"),
+                                 multiplier = c(1e-2, 1e-2, 1e-2),
+                                 required = TRUE,
+                                 fill = NA_real_)
     }
-    if (exists("Rfr", x, mode = "numeric", inherits=FALSE)) {
-      range_check_Rfr(x, strict.range=strict.range)
-    } else if (exists("Rpc", x, mode = "numeric", inherits=FALSE)) {
-      x[["Rfr"]] <- x[["Rpc"]] / 100
-      x[["Rpc"]] <- NULL
-      range_check_Rfr(x, strict.range=strict.range)
+
+    if (!any(c("Tfr", "Afr") %in% colnames(x))) {
+      x <- check_and_rename_vars(x,
+                                 target.var = "Afr",
+                                 alternative.vars = c("absorptance", "Absorptance", "Apc"),
+                                 multiplier = c(1, 1, 1e-2))
+      if (!"Afr" %in% colnames(x)) {
+          x <- check_and_rename_vars(x,
+                                     target.var = "Tfr",
+                                     alternative.vars = c("transmittance", "Transmittance", "Tpc"),
+                                     multiplier = c(1e-2, 1e-2, 1e-2),
+                                     required = TRUE,
+                                     fill = NA_real_)
+      }
+    }
+
+    # check range of spectral data
+    if (exists("Tfr", x, mode = "numeric", inherits = FALSE)) {
+      range_check_Tfr(x, strict.range = strict.range)
     } else {
-      warning("No reflectance data found in object_spct")
-      x[["Rfr"]] <- NA_real_
+      range_check_Afr(x, strict.range = strict.range)
     }
-
-    if (exists("transmittance", x, mode = "numeric", inherits=FALSE)) {
-      dots <- list(~transmittance)
-      x <- dplyr::rename_(x, .dots = stats::setNames(dots, "Tpc"))
-      warning("Found variable 'transmittance', I am assuming it expressed as percent")
-    }
-    if (exists("Afr", x, mode = "numeric", inherits=FALSE)) {
-      range_check_Afr(x, strict.range=strict.range)
-    }
-
-    if (exists("Tfr", x, mode = "numeric", inherits=FALSE)) {
-      range_check_Tfr(x, strict.range=strict.range)
-    } else if (exists("Tpc", x, mode = "numeric", inherits=FALSE)) {
-      x[["Tfr"]] <- x[["Tpc"]] / 100
-      x[["Tpc"]] <- NULL
-      range_check_Tfr(x, strict.range=strict.range)
-    }
-
-    quantities <- colnames(x)
-    if (!"Rfr" %in% quantities) {
-      x[["Rfr"]] <- NA_real_
-    }
-    if (! any(c("Tfr", "Afr") %in% quantities)) {
-      x[["Tfr"]] <- NA_real_
-    }
-    ### Creates an endless recursive call!!
-    # if ("Afr" %in% quantities) {
-    #   x <- Afr2T(x, action = "add")
-    # }
+    range_check_Rfr(x, strict.range=strict.range)
 
     if (getOption("photobiology.verbose")) {
       if (exists("Tfr", x, mode = "numeric", inherits = FALSE) && anyNA(x[["Tfr"]])) {
         warning("At least one NA in 'Tfr'")
+      } else if (anyNA(x[["Afr"]])) {
+        warning("At least one NA in 'Afr'")
       }
-      if (exists("Rfr", x, mode = "numeric", inherits = FALSE) && anyNA(x[["Rfr"]])) {
+      if (anyNA(x[["Rfr"]])) {
         warning("At least one NA in 'Rfr'")
       }
     }
