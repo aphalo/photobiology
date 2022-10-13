@@ -155,6 +155,7 @@ check_spct.generic_spct <-
            multiple.wl = getMultipleWl(x),
            ...)
   {
+    force(multiple.wl)
     # assert that option is set so that we can keep remaining code simpler.
     # defensive code in case the option has been unset by the user
     if (is.null(getOption("photobiology.verbose"))) {
@@ -2350,7 +2351,6 @@ checkSpctVersion <- function(x) {
 
 # multiple wl -------------------------------------------------------------
 
-
 #' Find repeated w.length values
 #'
 #' @param x a generic_spct object
@@ -2362,15 +2362,19 @@ checkSpctVersion <- function(x) {
 #'
 findMultipleWl <- function(x, same.wls = TRUE) {
   stopifnot(is.generic_spct(x))
+
   if (nrow(x) == 0L) {
-    return(0L)
-  }
-  runs <- rle(sort(x[["w.length"]]))
-  if (same.wls) {
-    num.copies <- unique(runs[["lengths"]])
-    stopifnot(length(num.copies) %in% c(0L, 1L))
+    num.copies <- 0L
+  } else if (all(is.na(x[["w.length"]]))) {
+    num.copies <- 1L
   } else {
-    num.copies <- max(runs[["lengths"]])
+    runs <- rle(sort(x[["w.length"]], na.last = NA)) # remove NAs
+    if (same.wls) {
+      num.copies <- unique(runs[["lengths"]])
+      stopifnot(length(num.copies) %in% c(0L, 1L))
+    } else {
+      num.copies <- max(runs[["lengths"]])
+    }
   }
   num.copies
 }
