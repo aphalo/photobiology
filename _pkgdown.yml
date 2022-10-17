@@ -353,15 +353,16 @@ reference:
     - check_w.length
     - checkTimeUnit
     - copy_attributes
+    - merge_attributes
     - formatted_range
+    - normalize_range_arg
+    - collect2mspct
+    - spct_wide2long
+    - uncollect2spct
+    - drop_user_cols
     - getSpctVersion
     - getMspctVersion
     - is.old_spct
-    - merge_attributes
-    - normalize_range_arg
-    - collect2mspct
-    - uncollect2spct
-    - drop_user_cols
     - upgrade_spct
     - upgrade_spectra
     - defunct

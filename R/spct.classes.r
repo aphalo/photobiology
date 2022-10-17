@@ -263,7 +263,7 @@ check_spct.raw_spct <-
     return(x)
   } else {
     warning("No raw 'counts' data found in raw_spct")
-    x[["counts"]] = NA_real_
+    x[["counts"]] <- NA_real_
     return(x)
   }
 }
@@ -320,7 +320,7 @@ check_spct.cps_spct <-
     return(x)
   } else {
     warning("No counts per second data found in cps_spct")
-    x[["cps_1"]] <- NA_real_
+    x[["cps"]] <- NA_real_
     return(x)
   }
 }

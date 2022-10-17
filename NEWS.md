@@ -4,11 +4,16 @@ editor_options:
     wrap: 72
 ---
 
+# photobiology 0.10.15
+
+- Add helper function `spct_wide2long()` a simple pure R replacement for
+  `dplyr::pivot_longer()` for spectra.
+
 # photobiology 0.10.14
 
 - Fix several bugs created by code-breaking changes in 'tidyselect' 1.2.0, and
   possibly 'rlang' 1.0.6, affecting 'dplyr'.
-- Fix other bugs, including handling of spectral with no non-missing data.
+- Fix other bugs, including handling of spectra with no non-missing data.
 - Add function `illuminance()`.
 
 # photobiology 0.10.13
