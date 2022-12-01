@@ -3,6 +3,7 @@
 \name{day_night}
 \alias{day_night}
 \alias{day_night_fast}
+\alias{is_daytime}
 \alias{noon_time}
 \alias{sunrise_time}
 \alias{sunset_time}
@@ -19,6 +20,14 @@ day_night(
 )
 
 day_night_fast(date, tz, geocode, twilight, unit.out)
+
+is_daytime(
+  date = lubridate::now(tzone = "UTC"),
+  tz = ifelse(lubridate::is.Date(date), "UTC", lubridate::tz(date)),
+  geocode = tibble::tibble(lon = 0, lat = 51.5, address = "Greenwich"),
+  twilight = "none",
+  unit.out = "hours"
+)
 
 noon_time(
   date = lubridate::now(tzone = "UTC"),
@@ -84,6 +93,9 @@ A tibble with variables day, tz, twilight.rise, twilight.set,
   longitude, latitude, address, sunrise, noon, sunset, daylength,
   nightlength or the corresponding individual vectors.
 
+\code{is_daytime()} returns a logical vector, with \code{TRUE} for
+  day time and \code{FALSE} for night time.
+
 \code{noon_time}, \code{sunrise_time} and \code{sunset_time} return a
   vector of POSIXct times
 
@@ -113,7 +125,7 @@ Twilight names are interpreted as follows. "none": solar elevation =
   used for sunrise and that with index 2 for sunset.
 }
 \note{
-This function is an implementation of Meeus equations as used in NOAAs
+Function \code{day_night()} is an implementation of Meeus equations as used in NOAAs
   on-line web calculator, which are very precise and valid for a very broad
   range of dates. For sunrise and sunset the times are affected by refraction
   in the atmosphere, which does in turn depend on weather conditions. The
@@ -128,17 +140,20 @@ This function is an implementation of Meeus equations as used in NOAAs
   "AstroCalcPureR" available as function \code{astrocalc4r} in package
   'fishmethods'. Although the equations used are almost all the same, the
   function signatures and which values are returned differ. In particular,
-  the present implementation splits the calculation into two separate
-  functions, one returning angles at given instants in time, and a separate
-  one returning the timing of events for given dates. In 'fishmethods' (=
-  1.11-0) there is a bug in function astrocalc4r() that affects sunrise and
-  sunset times. The times returned by the functions in package 'photobiology'
-  have been validated against the NOAA base implementation.
+  the implementation in 'photobiology' splits the calculation into two
+  separate functions, one returning angles at given instants in time, and a
+  separate one returning the timing of events for given dates. In
+  'fishmethods' (= 1.11-0) there is a bug in function astrocalc4r() that
+  affects sunrise and sunset times. The times returned by the functions in
+  package 'photobiology' have been validated against the NOAA base
+  implementation.
 
   In the current implementation functions \code{sunrise_time},
-  \code{noon_time}, \code{sunset_time} and \code{day_length} are wrappers
+  \code{noon_time}, \code{sunset_time}, \code{day_length},
+  \code{night_length} and \code{is_daytime} are all wrappers
   on \code{day_night}, so if more than one quantity is needed it is
-  preferable to directly call \code{day_night} as it will be faster.
+  preferable to directly call \code{day_night} and extract the different
+  components from the returned list.
 
 \code{night_length} returns the length of night-time conditions in one
   day (00:00:00 to 23:59:59), rather than the length of the night between two
@@ -150,18 +165,45 @@ This function is an implementation of Meeus equations as used in NOAAs
   based on time instants. The argument passed to \code{date} should be
   of class \code{POSIXct}, in other words an instant in time, from which
   the correct date will be computed based on the \code{tz} argument.
+
+  The time zone in which times passed to \code{date} as argument are
+  expressed does not need to be the local one or match the geocode, however,
+  the returned values will be in the same time zone as the input.
 }
 
 \examples{
 library(lubridate)
+
 my.geocode <- data.frame(lat = 60, lon = 25)
-day_night(ymd("2015-05-30"), geocode = my.geocode)
-day_night(ymd("2015-05-30") + days(1:10), geocode = my.geocode, twilight = "civil")
-sunrise_time(ymd("2015-05-30"), geocode = my.geocode)
-noon_time(ymd("2015-05-30"), geocode = my.geocode)
-sunset_time(ymd("2015-05-30"), geocode = my.geocode)
-day_length(ymd("2015-05-30"), geocode = my.geocode)
-day_length(ymd("2015-05-30"), geocode = my.geocode, unit.out = "day")
+
+day_night(ymd("2015-05-30", tz = "EET"),
+          geocode = my.geocode)
+day_night(ymd("2015-05-30", tz = "EET") + days(1:10),
+          geocode = my.geocode,
+          twilight = "civil")
+sunrise_time(ymd("2015-05-30", tz = "EET"),
+             geocode = my.geocode)
+noon_time(ymd("2015-05-30", tz = "EET"),
+          geocode = my.geocode)
+sunset_time(ymd("2015-05-30", tz = "EET"),
+            geocode = my.geocode)
+day_length(ymd("2015-05-30", tz = "EET"),
+           geocode = my.geocode)
+day_length(ymd("2015-05-30", tz = "EET"),
+           geocode = my.geocode,
+           unit.out = "day")
+is_daytime(ymd("2015-05-30", tz = "EET") + hours(c(0, 6, 12, 18, 24)),
+           geocode = my.geocode)
+is_daytime(ymd_hms("2015-05-30 03:00:00", tz = "EET"),
+           geocode = my.geocode)
+is_daytime(ymd_hms("2015-05-30 00:00:00", tz = "UTC"),
+           geocode = my.geocode)
+is_daytime(ymd_hms("2015-05-30 03:00:00", tz = "EET"),
+           geocode = my.geocode,
+           twilight = "civil")
+is_daytime(ymd_hms("2015-05-30 00:00:00", tz = "UTC"),
+           geocode = my.geocode,
+           twilight = "civil")
 
 }
 \references{

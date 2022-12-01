@@ -350,7 +350,7 @@ tz_time_diff <- function(when = lubridate::now(),
 #'
 #' @seealso \code{\link{sun_angles}}.
 #'
-#' @note This function is an implementation of Meeus equations as used in NOAAs
+#' @note Function \code{day_night()} is an implementation of Meeus equations as used in NOAAs
 #'   on-line web calculator, which are very precise and valid for a very broad
 #'   range of dates. For sunrise and sunset the times are affected by refraction
 #'   in the atmosphere, which does in turn depend on weather conditions. The
@@ -365,23 +365,30 @@ tz_time_diff <- function(when = lubridate::now(),
 #'   "AstroCalcPureR" available as function \code{astrocalc4r} in package
 #'   'fishmethods'. Although the equations used are almost all the same, the
 #'   function signatures and which values are returned differ. In particular,
-#'   the present implementation splits the calculation into two separate
-#'   functions, one returning angles at given instants in time, and a separate
-#'   one returning the timing of events for given dates. In 'fishmethods' (=
-#'   1.11-0) there is a bug in function astrocalc4r() that affects sunrise and
-#'   sunset times. The times returned by the functions in package 'photobiology'
-#'   have been validated against the NOAA base implementation.
+#'   the implementation in 'photobiology' splits the calculation into two
+#'   separate functions, one returning angles at given instants in time, and a
+#'   separate one returning the timing of events for given dates. In
+#'   'fishmethods' (= 1.11-0) there is a bug in function astrocalc4r() that
+#'   affects sunrise and sunset times. The times returned by the functions in
+#'   package 'photobiology' have been validated against the NOAA base
+#'   implementation.
 #'
 #'   In the current implementation functions \code{sunrise_time},
-#'   \code{noon_time}, \code{sunset_time} and \code{day_length} are wrappers
+#'   \code{noon_time}, \code{sunset_time}, \code{day_length},
+#'   \code{night_length} and \code{is_daytime} are all wrappers
 #'   on \code{day_night}, so if more than one quantity is needed it is
-#'   preferable to directly call \code{day_night} as it will be faster.
+#'   preferable to directly call \code{day_night} and extract the different
+#'   components from the returned list.
 #'
 #' @section Warning: Be aware that R's \code{Date} class does not save time zone
 #'   metadata. This can lead to ambiguities in the current implementation
 #'   based on time instants. The argument passed to \code{date} should be
 #'   of class \code{POSIXct}, in other words an instant in time, from which
 #'   the correct date will be computed based on the \code{tz} argument.
+#'
+#'   The time zone in which times passed to \code{date} as argument are
+#'   expressed does not need to be the local one or match the geocode, however,
+#'   the returned values will be in the same time zone as the input.
 #'
 #' @references
 #' The primary source for the algorithm used is the book:
@@ -401,14 +408,37 @@ tz_time_diff <- function(when = lubridate::now(),
 #' @export
 #' @examples
 #' library(lubridate)
+#'
 #' my.geocode <- data.frame(lat = 60, lon = 25)
-#' day_night(ymd("2015-05-30"), geocode = my.geocode)
-#' day_night(ymd("2015-05-30") + days(1:10), geocode = my.geocode, twilight = "civil")
-#' sunrise_time(ymd("2015-05-30"), geocode = my.geocode)
-#' noon_time(ymd("2015-05-30"), geocode = my.geocode)
-#' sunset_time(ymd("2015-05-30"), geocode = my.geocode)
-#' day_length(ymd("2015-05-30"), geocode = my.geocode)
-#' day_length(ymd("2015-05-30"), geocode = my.geocode, unit.out = "day")
+#'
+#' day_night(ymd("2015-05-30", tz = "EET"),
+#'           geocode = my.geocode)
+#' day_night(ymd("2015-05-30", tz = "EET") + days(1:10),
+#'           geocode = my.geocode,
+#'           twilight = "civil")
+#' sunrise_time(ymd("2015-05-30", tz = "EET"),
+#'              geocode = my.geocode)
+#' noon_time(ymd("2015-05-30", tz = "EET"),
+#'           geocode = my.geocode)
+#' sunset_time(ymd("2015-05-30", tz = "EET"),
+#'             geocode = my.geocode)
+#' day_length(ymd("2015-05-30", tz = "EET"),
+#'            geocode = my.geocode)
+#' day_length(ymd("2015-05-30", tz = "EET"),
+#'            geocode = my.geocode,
+#'            unit.out = "day")
+#' is_daytime(ymd("2015-05-30", tz = "EET") + hours(c(0, 6, 12, 18, 24)),
+#'            geocode = my.geocode)
+#' is_daytime(ymd_hms("2015-05-30 03:00:00", tz = "EET"),
+#'            geocode = my.geocode)
+#' is_daytime(ymd_hms("2015-05-30 00:00:00", tz = "UTC"),
+#'            geocode = my.geocode)
+#' is_daytime(ymd_hms("2015-05-30 03:00:00", tz = "EET"),
+#'            geocode = my.geocode,
+#'            twilight = "civil")
+#' is_daytime(ymd_hms("2015-05-30 00:00:00", tz = "UTC"),
+#'            geocode = my.geocode,
+#'            twilight = "civil")
 #'
 day_night <- function(date = lubridate::now(tzone = "UTC"),
                       tz = ifelse(lubridate::is.Date(date),
@@ -419,7 +449,7 @@ day_night <- function(date = lubridate::now(tzone = "UTC"),
                                                address = "Greenwich"),
                       twilight = "none",
                       unit.out = "hours") {
-  stopifnot(! anyNA(date))
+  stopifnot(!anyNA(date)) # NAs could be propagated instead
   tz <- unique(tz)
   if (length(tz) > 1L) {
     tz <- tz[1]
@@ -428,13 +458,11 @@ day_night <- function(date = lubridate::now(tzone = "UTC"),
   geocode <- validate_geocode(geocode)
   if (any(lubridate::is.Date(date))) {
     date <- as.POSIXct(date, tz = tz)
+  } else if (any(tz != lubridate::tz(date))) {
+#    warning("Converting times from ", lubridate::tz(date), " into ", tz)
+    date <- lubridate::with_tz(date, tzone = tz)
   }
-  # floor_date() converts into date and drops the time zone!!
-  # date <- lubridate::floor_date(date, unit = "days")
-  date <- lubridate::with_tz(date, tzone = "UTC")
-  lubridate::second(date) <- 0
-  lubridate::minute(date) <- 0
-  lubridate::hour(date) <- 0
+  date <- lubridate::floor_date(date, unit = "days") # buggy in old versions of lubridate
 
   if (unit.out == "date") {
     unit.out <- "datetime"
@@ -629,6 +657,36 @@ day_night_fast <- function(date,
   }
 }
 
+#' @rdname day_night
+#'
+#' @return \code{is_daytime()} returns a logical vector, with \code{TRUE} for
+#'   day time and \code{FALSE} for night time.
+#'
+#' @export
+#'
+is_daytime <- function(date = lubridate::now(tzone = "UTC"),
+                       tz = ifelse(lubridate::is.Date(date),
+                                   "UTC",
+                                   lubridate::tz(date)),
+                       geocode = tibble::tibble(lon = 0,
+                                                lat = 51.5,
+                                                address = "Greenwich"),
+                       twilight = "none",
+                       unit.out = "hours") {
+  if (!is.POSIXct(date)) {
+    warning("'date' must be a 'POSIXct' vector")
+    return(rep(NA, length(date)))
+  }
+  z <- day_night(date = date,
+                 tz = tz,
+                 geocode = geocode,
+                 twilight = twilight,
+                 unit.out = "datetime")
+
+  date > z[["sunrise"]] & date < z[["sunset"]]
+}
+
+
 #' twilight argument check and conversion
 #'
 #' @return numeric Solar elevation angle at sunrise or sunset
@@ -685,6 +743,7 @@ twilight2angle <- function(twilight) {
 #' @export
 #' @return \code{noon_time}, \code{sunrise_time} and \code{sunset_time} return a
 #'   vector of POSIXct times
+#'
 noon_time <- function(date = lubridate::now(tzone = "UTC"),
                       tz = lubridate::tz(date),
                       geocode = tibble::tibble(lon = 0,
@@ -703,6 +762,7 @@ noon_time <- function(date = lubridate::now(tzone = "UTC"),
 #' @rdname day_night
 #'
 #' @export
+#'
 sunrise_time <- function(date = lubridate::now(tzone = "UTC"),
                          tz = lubridate::tz(date),
                          geocode = tibble::tibble(lon = 0,
@@ -719,6 +779,7 @@ sunrise_time <- function(date = lubridate::now(tzone = "UTC"),
 }
 
 #' @rdname day_night
+#'
 #' @export
 #'
 sunset_time <- function(date = lubridate::now(tzone = "UTC"),

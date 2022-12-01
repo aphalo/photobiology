@@ -8,6 +8,8 @@ editor_options:
 
 - Add helper function `spct_wide2long()` a simple pure R replacement for
   `dplyr::pivot_longer()` for spectra.
+- Add function `is_daytime()` a wrapper on `day_night()` returning a logical
+  vector.
 
 # photobiology 0.10.14
 
