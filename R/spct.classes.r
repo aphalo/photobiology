@@ -180,7 +180,7 @@ check_spct.generic_spct <-
       #  wl.max <- max(x[["w.length"]], na.rm = TRUE)
       if (wl.min == Inf) {
         warning("No valid 'w.length' values found") # could be stop()
-      } else if (wl.min < 1) {
+      } else if (wl.min < 1e-20) { # take care of rounding errors but do not restrict use cases
         stop("Negative or zero 'w.length' values found: aborting!")
       } else if ((wl.min < 99.999 || wl.min > 2.8e3) &&
                  getOption("photobiology.verbose")) { # catch use of Angstrom
