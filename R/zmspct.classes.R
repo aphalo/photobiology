@@ -1854,129 +1854,142 @@ subset2mspct <- function(x,
       member.class <- class(x)[1]
     }
     stopifnot(is.character(member.class))
-    if (is.null(idx.var)) {
-      idx.var <- "spct.idx"
-    }
-    stopifnot(idx.var %in% names(x))
     collection.class <- sub("_spct", "_mspct", member.class, fixed = TRUE)
     stopifnot(collection.class %in% mspct_classes())
     member.constr <- paste("as", member.class, sep = ".")
     collection.constr <- collection.class
-    if (is.factor(x[[idx.var]])) {
-      groups <- levels(x[[idx.var]])
-      idx <- idx.var
-    } else {
-      # would hang or slowdown to a crawl if indexing by dates
-      # could try benchmarking with as.numeric() to see how much faster it is
-      if (lubridate::is.instant(x[[idx.var]])) {
-        x[["tmp.idx"]] <- as.character(x[[idx.var]], tz = "UTC")
-        idx <- "tmp.idx"
+    if (is.any_spct(x) && getMultipleWl(x) == 1) {
+      # nothing to subset
+      if (idx.var %in% names(x)) {
+        spct.name <- x[[idx.var]][1]
       } else {
+        spct.name <- "spct_1"
+      }
+      l <- list(`spct.name` = x)
+      margs <- list(l = l, ncol = ncol, byrow = byrow)
+      z <- do.call(collection.constr, margs)
+    } else {
+      if (is.null(idx.var)) {
+        idx.var <- "spct.idx"
+      }
+      stopifnot(idx.var %in% names(x))
+      if (is.factor(x[[idx.var]])) {
+        groups <- levels(x[[idx.var]])
         idx <- idx.var
-      }
-      groups <- unique(x[[idx]])
-    }
-    l <- list()
-    for (grp in groups) {
-      slice <- subset(x, x[[idx]] == grp)
-      if (drop.idx) {
-        slice[[idx.var]] <- NULL
-      }
-      if (idx != idx.var) {
-        slice[[idx]] <- NULL
-      }
-      args <- list(x = slice)
-      args.ellipsis <- list(...)
-      l[[grp]] <- do.call(member.constr, c(args, args.ellipsis))
-    }
-    margs <- list(l = l, ncol = ncol, byrow = byrow)
-    z <- do.call(collection.constr, margs)
-    # copy metadata
-    comment <- comment(x)
-    if (!is.null(comment)) {
-      z <- msmsply(z, `comment<-`, value = comment)
-    }
-    if (!is.generic_spct(x)) {
-      return(z)
-    }
-    if (is_scaled(x)) {
-      z <- msmsply(z, setScaled, scaled = TRUE)
-    }
-    if (is_normalized(x)) {
-      z <- msmsply(z, setNormalized, norm = TRUE)
-    }
-    if (member.class == "source_spct" && is_effective(x)) {
-      bswf.used <- getBSWFUsed(x)
-      z <- msmsply(z, setBSWFUsed, bswf.used = bswf.used)
-    }
-    if (member.class %in% c("source_spct", "response_spct")) {
-      time.unit <- getTimeUnit(x)
-      z <- msmsply(z, setTimeUnit, time.unit = time.unit, override.ok = TRUE)
-    }
-    if (member.class %in% c("filter_spct", "object_spct")) {
-      Tfr.type <- getTfrType(x)
-      z <- msmsply(z, setTfrType, Tfr.type = Tfr.type)
-    }
-    if (member.class %in% c("reflector_spct", "object_spct")) {
-      Rfr.type <- getRfrType(x)
-      z <- msmsply(z, setRfrType, Rfr.type = Rfr.type)
-    }
-    # these methods return NA if attribute is not set
-    when.measured <- getWhenMeasured(x)
-    what.measured <- getWhatMeasured(x)
-    # these methods return a data.frame
-    where.measured <- getWhereMeasured(x)
-    # these methods may return an empty list
-    instr.desc <- getInstrDesc(x)
-    instr.settings <- getInstrSettings(x)
-    filter.properties <- getFilterProperties(x, return.null = TRUE)
-    if (is.null(filter.properties)) {
-      filter.properties <- list()
-    }
-    for (i in seq(along.with = z)) {
-      if (!all(is.na(when.measured))) {
-        if (is.list(when.measured) && length(when.measured) == length(groups)) {
-          z[[i]] <- setWhenMeasured(z[[i]], when.measured[[i]])
+      } else {
+        # would hang or slowdown to a crawl if indexing by dates
+        # could try benchmarking with as.numeric() to see how much faster it is
+        if (lubridate::is.instant(x[[idx.var]])) {
+          x[["tmp.idx"]] <- as.character(x[[idx.var]], tz = "UTC")
+          idx <- "tmp.idx"
         } else {
-          z[[i]] <- setWhenMeasured(z[[i]], when.measured)
+          idx <- idx.var
+        }
+        groups <- unique(x[[idx]])
+      }
+      l <- list()
+      for (grp in groups) {
+        slice <- subset(x, x[[idx]] == grp)
+        if (drop.idx) {
+          slice[[idx.var]] <- NULL
+        }
+        if (idx != idx.var) {
+          slice[[idx]] <- NULL
+        }
+        args <- list(x = slice)
+        args.ellipsis <- list(...)
+        l[[grp]] <- do.call(member.constr, c(args, args.ellipsis))
+      }
+      margs <- list(l = l, ncol = ncol, byrow = byrow)
+      z <- do.call(collection.constr, margs)
+      # copy metadata
+      comment <- comment(x)
+      if (!is.null(comment)) {
+        z <- msmsply(z, `comment<-`, value = comment)
+      }
+      if (!is.generic_spct(x)) {
+        return(z)
+      }
+      if (is_scaled(x)) {
+        z <- msmsply(z, setScaled, scaled = TRUE)
+      }
+      if (is_normalized(x)) {
+        z <- msmsply(z, setNormalized, norm = TRUE)
+      }
+      if (member.class == "source_spct" && is_effective(x)) {
+        bswf.used <- getBSWFUsed(x)
+        z <- msmsply(z, setBSWFUsed, bswf.used = bswf.used)
+      }
+      if (member.class %in% c("source_spct", "response_spct")) {
+        time.unit <- getTimeUnit(x)
+        z <- msmsply(z, setTimeUnit, time.unit = time.unit, override.ok = TRUE)
+      }
+      if (member.class %in% c("filter_spct", "object_spct")) {
+        Tfr.type <- getTfrType(x)
+        z <- msmsply(z, setTfrType, Tfr.type = Tfr.type)
+      }
+      if (member.class %in% c("reflector_spct", "object_spct")) {
+        Rfr.type <- getRfrType(x)
+        z <- msmsply(z, setRfrType, Rfr.type = Rfr.type)
+      }
+      # these methods return NA if attribute is not set
+      when.measured <- getWhenMeasured(x)
+      what.measured <- getWhatMeasured(x)
+      # these methods return a data.frame
+      where.measured <- getWhereMeasured(x)
+      # these methods may return an empty list
+      instr.desc <- getInstrDesc(x)
+      instr.settings <- getInstrSettings(x)
+      filter.properties <- getFilterProperties(x, return.null = TRUE)
+      if (is.null(filter.properties)) {
+        filter.properties <- list()
+      }
+      for (i in seq(along.with = z)) {
+        if (!all(is.na(when.measured))) {
+          if (is.list(when.measured) && length(when.measured) == length(groups)) {
+            z[[i]] <- setWhenMeasured(z[[i]], when.measured[[i]])
+          } else {
+            z[[i]] <- setWhenMeasured(z[[i]], when.measured)
+          }
+        }
+        if (!all(is.na(what.measured))) {
+          if (is.list(what.measured) && length(what.measured) == length(groups)) {
+            z[[i]] <- setWhatMeasured(z[[i]], what.measured[[i]])
+          } else {
+            z[[i]] <- setWhatMeasured(z[[i]], what.measured)
+          }
+        }
+        if (length(instr.desc) > 0) {
+          if (is.list(instr.desc) &&
+              !inherits(instr.desc, "instr_desc") &&
+              length(instr.desc) == length(groups)) {
+            z[[i]] <- setInstrDesc(z[[i]], instr.desc[[i]])
+          } else {
+            z[[i]] <- setInstrDesc(z[[i]], instr.desc)
+          }
+        }
+        if (length(instr.settings) > 0) {
+          if (is.list(instr.settings) &&
+              !inherits(instr.settings, "instr_setting") &&
+              length(instr.settings) == length(groups)) {
+            z[[i]] <- setInstrSettings(z[[i]], instr.settings[[i]])
+          } else {
+            z[[i]] <- setInstrSettings(z[[i]], instr.settings)
+          }
+        }
+        if (length(filter.properties) > 0) {
+          if (is.list(filter.properties) &&
+              !inherits(filter.properties, "filter_properties") &&
+              length(filter.properties) == length(groups)) {
+            z[[i]] <- setFilterProperties(z[[i]], filter.properties[[i]])
+          } else {
+            z[[i]] <- setFilterProperties(z[[i]], filter.properties)
+          }
         }
       }
-      if (!all(is.na(what.measured))) {
-        if (is.list(what.measured) && length(what.measured) == length(groups)) {
-          z[[i]] <- setWhatMeasured(z[[i]], what.measured[[i]])
-        } else {
-          z[[i]] <- setWhatMeasured(z[[i]], what.measured)
-        }
-      }
-      if (length(instr.desc) > 0) {
-        if (is.list(instr.desc) &&
-            !inherits(instr.desc, "instr_desc") &&
-            length(instr.desc) == length(groups)) {
-          z[[i]] <- setInstrDesc(z[[i]], instr.desc[[i]])
-        } else {
-          z[[i]] <- setInstrDesc(z[[i]], instr.desc)
-        }
-      }
-      if (length(instr.settings) > 0) {
-        if (is.list(instr.settings) &&
-            !inherits(instr.settings, "instr_setting") &&
-            length(instr.settings) == length(groups)) {
-          z[[i]] <- setInstrSettings(z[[i]], instr.settings[[i]])
-        } else {
-          z[[i]] <- setInstrSettings(z[[i]], instr.settings)
-        }
-      }
-      if (length(filter.properties) > 0) {
-        if (is.list(filter.properties) &&
-            !inherits(filter.properties, "filter_properties") &&
-            length(filter.properties) == length(groups)) {
-          z[[i]] <- setFilterProperties(z[[i]], filter.properties[[i]])
-        } else {
-          z[[i]] <- setFilterProperties(z[[i]], filter.properties)
-        }
-      }
+      z <- setWhereMeasured(z, where.measured)
     }
-    z <- setWhereMeasured(z, where.measured)
+
     z
   }
 }

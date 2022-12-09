@@ -678,7 +678,7 @@ is_daytime <- function(date = lubridate::now(tzone = "UTC"),
                                                 address = "Greenwich"),
                        twilight = "none",
                        unit.out = "hours") {
-  if (!is.POSIXct(date)) {
+  if (!lubridate::is.POSIXct(date)) {
     warning("'date' must be a 'POSIXct' vector")
     return(rep(NA, length(date)))
   }

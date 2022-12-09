@@ -95,10 +95,16 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE, attrs.s
     idfactor <- "spct.idx"
   }
 
+  # inefficient but simpler to implement, and ensures proper naming
+  # make sure each member spct object contains a single spectrum
+  if (any(sapply(l, getMultipleWl) > 1L)) {
+    l <- subset2mspct(l)
+  }
+
   # we skip spectra with no rows
   selector <- unname(sapply(l, nrow)) > 0
 
-  if (use.names && !rlang::is_named(l) && all(sapply(l[selector], getMultipleWl) == 1L)) {
+  if (use.names && !rlang::is_named(l)) {
     names(l) <- paste("spct", seq_along(l), sep = "_")
   }
   add.idfactor <- is.character(idfactor)
