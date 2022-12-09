@@ -8,6 +8,8 @@ editor_options:
 
 - Add helper function `spct_wide2long()` a simple pure R replacement for
   `dplyr::pivot_longer()` for spectra.
+- Revise function `subset2mspct()` to accept collections of spectra and
+  split members containing multiple spectra in long form.
 - Add function `is_daytime()` a wrapper on `day_night()` returning a logical
   vector.
 

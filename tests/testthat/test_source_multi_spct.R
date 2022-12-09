@@ -471,6 +471,71 @@ test_that("source_mspct", {
   expect_equal(class(my3_df.mspct[[4]])[1:2], c("source_spct", "generic_spct") )
   expect_equal(class(my3_df.mspct[[5]])[1:2], c("source_spct", "generic_spct") )
 
+  # constructor methods for 'long' spct objects embedded in mspct collection -
+
+  # long is last
+  my_long.spct <- rbindspct(spct.l)
+  my_long.mspct <- my.mspct
+  my_long.mspct[["spct_6"]] <- my_long.spct
+  my4_df.mspct <- subset2mspct(my_long.mspct)
+
+  expect_equal(paste("spct", 1:5, sep = "_"), names(my4_df.mspct)[1:5])
+  expect_equal(paste("spct_6.spct", 1:5, sep = "_"), names(my4_df.mspct)[6:10])
+  expect_equal(class(my4_df.mspct)[1:2], c("source_mspct", "generic_mspct") )
+  expect_equal(class(my4_df.mspct[[1]])[1:2], c("source_spct", "generic_spct") )
+  expect_equal(class(my4_df.mspct[[2]])[1:2], c("source_spct", "generic_spct") )
+  expect_equal(class(my4_df.mspct[[3]])[1:2], c("source_spct", "generic_spct") )
+  expect_equal(class(my4_df.mspct[[4]])[1:2], c("source_spct", "generic_spct") )
+  expect_equal(class(my4_df.mspct[[5]])[1:2], c("source_spct", "generic_spct") )
+  expect_equal(class(my4_df.mspct[[6]])[1:2], c("source_spct", "generic_spct") )
+  expect_equal(class(my4_df.mspct[[7]])[1:2], c("source_spct", "generic_spct") )
+  expect_equal(class(my4_df.mspct[[8]])[1:2], c("source_spct", "generic_spct") )
+  expect_equal(class(my4_df.mspct[[9]])[1:2], c("source_spct", "generic_spct") )
+  expect_equal(class(my4_df.mspct[[10]])[1:2], c("source_spct", "generic_spct") )
+
+  # long is first
+  my_long.spct <- rbindspct(spct.l)
+
+  my_long.mspct <- source_mspct(c(list(my_long.spct), spct.l))
+
+  my5_df.mspct <- subset2mspct(my_long.mspct)
+
+  expect_equal(paste("spct", 2:6, sep = "_"), names(my5_df.mspct)[6:10])
+  expect_equal(paste("spct_1.spct", 1:5, sep = "_"), names(my5_df.mspct)[1:5])
+  expect_equal(class(my5_df.mspct)[1:2], c("source_mspct", "generic_mspct") )
+  expect_equal(class(my5_df.mspct[[1]])[1:2], c("source_spct", "generic_spct") )
+  expect_equal(class(my5_df.mspct[[2]])[1:2], c("source_spct", "generic_spct") )
+  expect_equal(class(my5_df.mspct[[3]])[1:2], c("source_spct", "generic_spct") )
+  expect_equal(class(my5_df.mspct[[4]])[1:2], c("source_spct", "generic_spct") )
+  expect_equal(class(my5_df.mspct[[5]])[1:2], c("source_spct", "generic_spct") )
+  expect_equal(class(my5_df.mspct[[6]])[1:2], c("source_spct", "generic_spct") )
+  expect_equal(class(my5_df.mspct[[7]])[1:2], c("source_spct", "generic_spct") )
+  expect_equal(class(my5_df.mspct[[8]])[1:2], c("source_spct", "generic_spct") )
+  expect_equal(class(my5_df.mspct[[9]])[1:2], c("source_spct", "generic_spct") )
+  expect_equal(class(my5_df.mspct[[10]])[1:2], c("source_spct", "generic_spct") )
+
+  # long in the middle
+  my_long.spct <- rbindspct(spct.l)
+
+  my_long.mspct <- source_mspct(c(spct.l[1:2], list(my_long.spct), spct.l[3:5]))
+
+  my6_df.mspct <- subset2mspct(my_long.mspct)
+
+  expect_equal(paste("spct", c(1:2, 4:6), sep = "_"), names(my6_df.mspct)[c(1:2, 8:10)])
+  expect_equal(paste("spct_3.spct", 1:5, sep = "_"), names(my6_df.mspct)[3:7])
+  expect_equal(class(my6_df.mspct)[1:2], c("source_mspct", "generic_mspct") )
+  expect_equal(class(my6_df.mspct[[1]])[1:2], c("source_spct", "generic_spct") )
+  expect_equal(class(my6_df.mspct[[2]])[1:2], c("source_spct", "generic_spct") )
+  expect_equal(class(my6_df.mspct[[3]])[1:2], c("source_spct", "generic_spct") )
+  expect_equal(class(my6_df.mspct[[4]])[1:2], c("source_spct", "generic_spct") )
+  expect_equal(class(my6_df.mspct[[5]])[1:2], c("source_spct", "generic_spct") )
+  expect_equal(class(my6_df.mspct[[6]])[1:2], c("source_spct", "generic_spct") )
+  expect_equal(class(my6_df.mspct[[7]])[1:2], c("source_spct", "generic_spct") )
+  expect_equal(class(my6_df.mspct[[8]])[1:2], c("source_spct", "generic_spct") )
+  expect_equal(class(my6_df.mspct[[9]])[1:2], c("source_spct", "generic_spct") )
+  expect_equal(class(my6_df.mspct[[10]])[1:2], c("source_spct", "generic_spct") )
+
+
   # print -------------------------------------------------------------------
 
   if (test.print) expect_equal(print(my.mspct), my.mspct)

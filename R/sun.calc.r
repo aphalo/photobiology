@@ -317,7 +317,7 @@ tz_time_diff <- function(when = lubridate::now(),
 #'   TZ is allowed, default is current date at Greenwich matching the default
 #'   for \code{geocode}.
 #' @param tz character vector indicating time zone to be used in output and to
-#'   interpret \code{Date} values pased as argument to \code{date}.
+#'   interpret \code{Date} values passed as argument to \code{date}.
 #' @param geocode data frame with one or more rows and variables lon and lat as
 #'   numeric values (degrees). If present, address will be copied to the output.
 #' @param twilight character string, one of "none", "rim", "refraction",
@@ -348,18 +348,21 @@ tz_time_diff <- function(when = lubridate::now(),
 #'   twilight is a numeric vector of length two, the element with index 1 is
 #'   used for sunrise and that with index 2 for sunset.
 #'
+#'   \code{is_daytime()} supports twilight specifications by name, a test
+#'   like \code{sun_elevation() > 0} may be used directly for a numeric angle.
+#'
 #' @seealso \code{\link{sun_angles}}.
 #'
-#' @note Function \code{day_night()} is an implementation of Meeus equations as used in NOAAs
-#'   on-line web calculator, which are very precise and valid for a very broad
-#'   range of dates. For sunrise and sunset the times are affected by refraction
-#'   in the atmosphere, which does in turn depend on weather conditions. The
-#'   effect of refraction on the apparent position of the sun is only an
-#'   estimate based on "typical" conditions. The more tangential to the horizon
-#'   is the path of the sun, the larger the effect of refraction is on the times
-#'   of visual occlusion of the sun behind the horizon---i.e. the largest timing
-#'   errors occur at high latitudes. The computation is not defined for
-#'   latitudes 90 and -90 degrees, i.e. at the poles.
+#' @note Function \code{day_night()} is an implementation of Meeus equations as
+#'   used in NOAAs on-line web calculator, which are very precise and valid for
+#'   a very broad range of dates. For sunrise and sunset the times are affected
+#'   by refraction in the atmosphere, which does in turn depend on weather
+#'   conditions. The effect of refraction on the apparent position of the sun is
+#'   only an estimate based on "typical" conditions. The more tangential to the
+#'   horizon is the path of the sun, the larger the effect of refraction is on
+#'   the times of visual occlusion of the sun behind the horizon---i.e. the
+#'   largest timing errors occur at high latitudes. The computation is not
+#'   defined for latitudes 90 and -90 degrees, i.e. at the poles.
 #'
 #'   There exists a different R implementation of the same algorithms called
 #'   "AstroCalcPureR" available as function \code{astrocalc4r} in package
@@ -409,7 +412,9 @@ tz_time_diff <- function(when = lubridate::now(),
 #' @examples
 #' library(lubridate)
 #'
-#' my.geocode <- data.frame(lat = 60, lon = 25)
+#' my.geocode <- data.frame(lon = 24.93838,
+#'                          lat = 60.16986,
+#'                          address = "Helsinki, Finland")
 #'
 #' day_night(ymd("2015-05-30", tz = "EET"),
 #'           geocode = my.geocode)
@@ -458,11 +463,11 @@ day_night <- function(date = lubridate::now(tzone = "UTC"),
   geocode <- validate_geocode(geocode)
   if (any(lubridate::is.Date(date))) {
     date <- as.POSIXct(date, tz = tz)
-  } else if (any(tz != lubridate::tz(date))) {
-#    warning("Converting times from ", lubridate::tz(date), " into ", tz)
-    date <- lubridate::with_tz(date, tzone = tz)
   }
-  date <- lubridate::floor_date(date, unit = "days") # buggy in old versions of lubridate
+  # as 'date' is not a Date but a time, we find the corresponding date in UTC
+  # as calculations are done in UTC time
+  date <- lubridate::with_tz(date, tzone = "UTC")
+  date <- lubridate::floor_date(date, unit = "days")
 
   if (unit.out == "date") {
     unit.out <- "datetime"
@@ -479,7 +484,7 @@ day_night <- function(date = lubridate::now(tzone = "UTC"),
   z <- list()
   for (i in seq_len(nrow(geocode))) {
     temp <- day_night_fast(date = date,
-                           tz = tz,
+                           tz = tz, # used for returned times
                            geocode = dplyr::slice(geocode, i),
                            twilight = twilight,
                            unit.out = unit.out)

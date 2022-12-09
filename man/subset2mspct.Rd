@@ -15,19 +15,20 @@ subset2mspct(
 )
 }
 \arguments{
-\item{x}{a generic_spct object or a derived class, or a data frame}
+\item{x}{a generic_spct object or of a derived class, or a data frame, or a
+generic_mspct object or of a derived class.}
 
-\item{member.class}{character string}
+\item{member.class}{character string.}
 
 \item{idx.var}{character Name of column containing data to be copied
-unchanged to each spct object}
+unchanged to each spct object.}
 
 \item{drop.idx}{logical Flag indicating whether to drop or keep idx.var in
 the collection members.}
 
-\item{ncol}{integer Number of 'virtual' columns in data}
+\item{ncol}{integer Number of 'virtual' columns in data.}
 
-\item{byrow}{logical If \code{ncol > 1} how to read in the data}
+\item{byrow}{logical If \code{ncol > 1} how to read in the data.}
 
 \item{...}{additional named arguments passed to the member constructor
 function.}
@@ -41,8 +42,10 @@ A collection of spectral objects, each with attributes set if x is a
 }
 \description{
 Convert a data frame object or spectral object into a collection
-  of spectra object of the corresponding class. For data frames converting
-  numeric columns other than wavelength into individual spct objects.
+  of spectra object of the matching class. For data frames converting numeric
+  columns other than wavelength into individual spct objects. For collection
+  of spectra objects, subset/expand long-form members into multiple members
+  of the same collection.
 }
 \note{
 A non-null value for \code{member.class} is mandatory only when

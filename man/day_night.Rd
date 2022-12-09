@@ -75,7 +75,7 @@ TZ is allowed, default is current date at Greenwich matching the default
 for \code{geocode}.}
 
 \item{tz}{character vector indicating time zone to be used in output and to
-interpret \code{Date} values pased as argument to \code{date}.}
+interpret \code{Date} values passed as argument to \code{date}.}
 
 \item{geocode}{data frame with one or more rows and variables lon and lat as
 numeric values (degrees). If present, address will be copied to the output.}
@@ -123,18 +123,21 @@ Twilight names are interpreted as follows. "none": solar elevation =
   hours when `"datetime"' is passed as argument to \code{unit.out}. If
   twilight is a numeric vector of length two, the element with index 1 is
   used for sunrise and that with index 2 for sunset.
+
+  \code{is_daytime()} supports twilight specifications by name, a test
+  like \code{sun_elevation() > 0} may be used directly for a numeric angle.
 }
 \note{
-Function \code{day_night()} is an implementation of Meeus equations as used in NOAAs
-  on-line web calculator, which are very precise and valid for a very broad
-  range of dates. For sunrise and sunset the times are affected by refraction
-  in the atmosphere, which does in turn depend on weather conditions. The
-  effect of refraction on the apparent position of the sun is only an
-  estimate based on "typical" conditions. The more tangential to the horizon
-  is the path of the sun, the larger the effect of refraction is on the times
-  of visual occlusion of the sun behind the horizon---i.e. the largest timing
-  errors occur at high latitudes. The computation is not defined for
-  latitudes 90 and -90 degrees, i.e. at the poles.
+Function \code{day_night()} is an implementation of Meeus equations as
+  used in NOAAs on-line web calculator, which are very precise and valid for
+  a very broad range of dates. For sunrise and sunset the times are affected
+  by refraction in the atmosphere, which does in turn depend on weather
+  conditions. The effect of refraction on the apparent position of the sun is
+  only an estimate based on "typical" conditions. The more tangential to the
+  horizon is the path of the sun, the larger the effect of refraction is on
+  the times of visual occlusion of the sun behind the horizon---i.e. the
+  largest timing errors occur at high latitudes. The computation is not
+  defined for latitudes 90 and -90 degrees, i.e. at the poles.
 
   There exists a different R implementation of the same algorithms called
   "AstroCalcPureR" available as function \code{astrocalc4r} in package
@@ -174,7 +177,9 @@ Function \code{day_night()} is an implementation of Meeus equations as used in N
 \examples{
 library(lubridate)
 
-my.geocode <- data.frame(lat = 60, lon = 25)
+my.geocode <- data.frame(lon = 24.93838,
+                         lat = 60.16986,
+                         address = "Helsinki, Finland")
 
 day_night(ymd("2015-05-30", tz = "EET"),
           geocode = my.geocode)
