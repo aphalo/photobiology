@@ -4,6 +4,7 @@ context("drop_user_cols")
 
 test_that("source_spct", {
 
+  sun.spct <- sun.spct[1:20]
   my.spct <- q2e(sun.spct, action = "add")
   my.spct$A <- "A"
   my.spct$two <- 2
@@ -59,6 +60,7 @@ test_that("source_spct", {
 
 test_that("response_spct", {
 
+  ccd.spct <- ccd.spct[1:20, ]
   my.spct <- q2e(ccd.spct, action = "add")
   my.spct$A <- "A"
   my.spct$two <- 2
@@ -113,7 +115,7 @@ test_that("response_spct", {
 })
 
 test_that("filter_spct", {
-
+  polyester.spct <- polyester.spct[1:20, ]
   my.spct <- T2A(polyester.spct, action = "add")
   my.spct$Z <- "Z"
   my.spct$two <- 2

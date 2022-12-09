@@ -526,7 +526,8 @@ drop_user_cols.generic_spct <- function(x, keep.also, ...) {
   stopifnot(length(keep.also) >= 1L)
   default.cols <- c("w.length")
   cols.to.keep <- unique(c(default.cols, keep.also))
-  x[ , intersect(colnames(x), cols.to.keep)]
+  selector <- colnames(x) %in% cols.to.keep
+  x[ , selector]
 }
 
 #' @describeIn drop_user_cols
@@ -536,7 +537,8 @@ drop_user_cols.generic_spct <- function(x, keep.also, ...) {
 drop_user_cols.source_spct <- function(x, keep.also = NULL, ...) {
   default.cols <- c("w.length", "s.e.irrad", "s.q.irrad")
   cols.to.keep <- unique(c(default.cols, keep.also))
-  x[ , intersect(colnames(x), cols.to.keep)]
+  selector <- colnames(x) %in% cols.to.keep
+  x[ , selector]
 }
 
 #' @describeIn drop_user_cols
@@ -546,7 +548,8 @@ drop_user_cols.source_spct <- function(x, keep.also = NULL, ...) {
 drop_user_cols.response_spct <- function(x, keep.also = NULL, ...) {
   default.cols <- c("w.length", "s.e.response", "s.q.response")
   cols.to.keep <- unique(c(default.cols, keep.also))
-  x[ , intersect(colnames(x), cols.to.keep)]
+  selector <- colnames(x) %in% cols.to.keep
+  x[ , selector]
 }
 
 #' @describeIn drop_user_cols
@@ -556,7 +559,8 @@ drop_user_cols.response_spct <- function(x, keep.also = NULL, ...) {
 drop_user_cols.object_spct <- function(x, keep.also = NULL, ...) {
   default.cols <- c("w.length", "Tfr", "Rfr", "Afr")
   cols.to.keep <- unique(c(default.cols, keep.also))
-  x[ , intersect(colnames(x), cols.to.keep)]
+  selector <- colnames(x) %in% cols.to.keep
+  x[ , selector]
 }
 
 #' @describeIn drop_user_cols
@@ -569,7 +573,8 @@ drop_user_cols.filter_spct <- function(x, keep.also = NULL, ...) {
     warning("Deleting 'object_spct' columns from 'filter_spct'.")
   }
   cols.to.keep <- unique(c(default.cols, keep.also))
-  x[ , intersect(colnames(x), cols.to.keep)]
+  selector <- colnames(x) %in% cols.to.keep
+  x[ , selector]
 }
 
 #' @describeIn drop_user_cols
@@ -582,7 +587,8 @@ drop_user_cols.reflector_spct <- function(x, keep.also = NULL, ...) {
     warning("Deleting 'object_spct' columns from 'reflector_spct'.")
   }
   cols.to.keep <- unique(c(default.cols, keep.also))
-  x[ , intersect(colnames(x), cols.to.keep)]
+  selector <- colnames(x) %in% cols.to.keep
+  x[ , selector]
 }
 
 #' @describeIn drop_user_cols
@@ -592,7 +598,8 @@ drop_user_cols.reflector_spct <- function(x, keep.also = NULL, ...) {
 drop_user_cols.solute_spct <- function(x, keep.also = NULL, ...) {
   default.cols <- c("w.length", "K.mole", "K.mass")
   cols.to.keep <- unique(c(default.cols, keep.also))
-  x[ , intersect(colnames(x), cols.to.keep)]
+  selector <- colnames(x) %in% cols.to.keep
+  x[ , selector]
 }
 
 #' @describeIn drop_user_cols
@@ -602,7 +609,8 @@ drop_user_cols.solute_spct <- function(x, keep.also = NULL, ...) {
 drop_user_cols.chroma_spct <- function(x, keep.also = NULL, ...) {
   default.cols <- c("w.length", "x", "y", "z")
   cols.to.keep <- unique(c(default.cols, keep.also))
-  x[ , intersect(colnames(x), cols.to.keep)]
+  selector <- colnames(x) %in% cols.to.keep
+  x[ , selector]
 }
 
 #' @describeIn drop_user_cols
@@ -612,7 +620,8 @@ drop_user_cols.chroma_spct <- function(x, keep.also = NULL, ...) {
 drop_user_cols.calibration_spct <- function(x, keep.also = NULL, ...) {
   default.cols <- c("w.length", "irrad.mult")
   cols.to.keep <- unique(c(default.cols, keep.also))
-  x[ , intersect(colnames(x), cols.to.keep)]
+  selector <- colnames(x) %in% cols.to.keep
+  x[ , selector]
 }
 
 #' @describeIn drop_user_cols
@@ -623,7 +632,8 @@ drop_user_cols.cps_spct <- function(x, keep.also = NULL, ...) {
   cps.cols <- grep("^cps", colnames(x), value = TRUE)
   default.cols <- c("w.length", cps.cols)
   cols.to.keep <- unique(c(default.cols, keep.also))
-  x[ , intersect(colnames(x), cols.to.keep)]
+  selector <- colnames(x) %in% cols.to.keep
+  x[ , selector]
 }
 
 #' @describeIn drop_user_cols
@@ -634,7 +644,8 @@ drop_user_cols.raw_spct <- function(x, keep.also = NULL, ...) {
   counts.cols <- grep("^counts", colnames(x), value = TRUE)
   default.cols <- c("w.length", counts.cols)
   cols.to.keep <- unique(c(default.cols, keep.also))
-  x[ , intersect(colnames(x), cols.to.keep)]
+  selector <- colnames(x) %in% cols.to.keep
+  x[ , selector]
 }
 
 #' @describeIn drop_user_cols
