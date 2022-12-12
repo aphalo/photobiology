@@ -7,22 +7,21 @@
 #'    spectral objects.
 #' @param .fun An R function or a list of functions.
 #' @param col.name.tag character Vector of extensions to paste to default column
-#'    name for the output from each of the functions. If col.name.tag[1] != "",
+#'    name for the output from each of the functions. If \code{col.name.tag[1] != ""},
 #'    this forces the return of an object of class \code{"generic_spct"}.
 #' @param .fun.name character string used to set what.measured attribute.
 #' @param w.length.out numeric vector of wavelengths (nanometres).
 #' @param ...	Arguments passed to .fun.
 #'
 #' @note Omission of NAs is done separately at each wavelength. Interpolation is
-#'   not applied, so all spectra in \code{x} must share the same set of
-#'   wavelengths. When defining new public functions using these utility
-#'   functions make sure to return data that is valid for the class of spectral
-#'   object returned!!
+#'   applied, so spectra in \code{x} do not need to share the same set of
+#'   wavelengths. When defining
+#'   new public functions using these utility functions make sure to return data
+#'   that is valid for the class of spectral object returned!!
 #'
-#'   Objects of classes raw_spct and cps_spct can contain data from multiple
-#'   scans. This functions are implemented for these classes only for the case
-#'   when all member spectra contain data for a single scan, or spliced into a
-#'   single column in the case of cps_spct members.
+#'   Objects of classes \code{raw_spct} and \code{cps_spct} can contain data
+#'   from multiple scans acquired with the same instrument, thus at the same set
+#'   of wave lengths.
 #'
 #' @keywords internal
 #'
@@ -572,7 +571,7 @@ make_wl_consistent <- function(x,
         wl.range[1] <- min(wl.ranges["min.wl"])
         wl.range[2] <- max(wl.ranges["max.wl"])
         max.length <- max(msaply(x, .fun = length))
-        stepsize <- min(msaply(x, .fun = function(x) { median(diff(x[["w.length"]])) }))
+        stepsize <- min(msaply(x, .fun = function(x) { stats::median(diff(x[["w.length"]])) }))
         length.out <- max(max.length, diff(wl.range) / stepsize)
         w.length.out <-
           seq.int(from = wl.range[1], to = wl.range[2], length.out = length.out)
