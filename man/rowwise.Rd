@@ -11,19 +11,68 @@
 \alias{rowwise_raw}
 \title{rowwise functions for collections of spectra}
 \usage{
-rowwise_filter(x, .fun, col.name.tag = "", .fun.name = "Summary of", ...)
+rowwise_filter(
+  x,
+  .fun,
+  col.name.tag = "",
+  .fun.name = "Summary of",
+  w.length.out = NULL,
+  ...
+)
 
-rowwise_source(x, .fun, col.name.tag = "", .fun.name = "Summary of", ...)
+rowwise_source(
+  x,
+  .fun,
+  col.name.tag = "",
+  .fun.name = "Summary of",
+  w.length.out = NULL,
+  ...
+)
 
-rowwise_response(x, .fun, col.name.tag = "", .fun.name = "Summary of", ...)
+rowwise_response(
+  x,
+  .fun,
+  col.name.tag = "",
+  .fun.name = "Summary of",
+  w.length.out = NULL,
+  ...
+)
 
-rowwise_reflector(x, .fun, col.name.tag = "", .fun.name = "Summary of", ...)
+rowwise_reflector(
+  x,
+  .fun,
+  col.name.tag = "",
+  .fun.name = "Summary of",
+  w.length.out = NULL,
+  ...
+)
 
-rowwise_calibration(x, .fun, col.name.tag = "", .fun.name = "Summary of", ...)
+rowwise_calibration(
+  x,
+  .fun,
+  col.name.tag = "",
+  .fun.name = "Summary of",
+  w.length.out = NULL,
+  ...
+)
 
-rowwise_cps(x, .fun, col.name.tag = "", .fun.name = "Summary of", ...)
+rowwise_cps(
+  x,
+  .fun,
+  col.name.tag = "",
+  .fun.name = "Summary of",
+  w.length.out = NULL,
+  ...
+)
 
-rowwise_raw(x, .fun, col.name.tag = "", .fun.name = "Summary of", ...)
+rowwise_raw(
+  x,
+  .fun,
+  col.name.tag = "",
+  .fun.name = "Summary of",
+  w.length.out = NULL,
+  ...
+)
 }
 \arguments{
 \item{x}{An R object. Currently this package defines methods for collections of
@@ -36,6 +85,8 @@ name for the output from each of the functions. If col.name.tag[1] != "",
 this forces the return of an object of class \code{"generic_spct"}.}
 
 \item{.fun.name}{character string used to set what.measured attribute.}
+
+\item{w.length.out}{numeric vector of wavelengths (nanometres).}
 
 \item{...}{Arguments passed to .fun.}
 }
