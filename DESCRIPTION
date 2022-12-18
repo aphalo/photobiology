@@ -49,5 +49,5 @@ URL: https://docs.r4photobiology.info/photobiology/,
     https://github.com/aphalo/photobiology
 BugReports: https://github.com/aphalo/photobiology/issues
 Encoding: UTF-8
-RoxygenNote: 7.2.2
+RoxygenNote: 7.2.3
 VignetteBuilder: knitr

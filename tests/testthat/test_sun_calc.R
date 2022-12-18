@@ -517,6 +517,11 @@ test_that("daylength", {
                             geocode = data.frame(lat = 45, lon = 0),
                             twilight = c(-6, -6)))
 
+  testthat::expect_true(is_daytime(ymd_hm("2014-03-21 12:00"),
+                                   geocode = data.frame(lat = 45, lon = 0)))
+  testthat::expect_false(is_daytime(ymd_hm("2014-03-21 23:59"),
+                                    geocode = data.frame(lat = 45, lon = 0)))
+
   expect_warning(day_length(ymd("2014-03-21"),
                           geocode = data.frame(lat = 45, lon = 0),
                           twilight = rep("none", 2)))

@@ -81,7 +81,7 @@ spectral objects.}
 \item{.fun}{An R function or a list of functions.}
 
 \item{col.name.tag}{character Vector of extensions to paste to default column
-name for the output from each of the functions. If col.name.tag[1] != "",
+name for the output from each of the functions. If \code{col.name.tag[1] != ""},
 this forces the return of an object of class \code{"generic_spct"}.}
 
 \item{.fun.name}{character string used to set what.measured attribute.}
@@ -96,14 +96,13 @@ across all the spectra in the collection.
 }
 \note{
 Omission of NAs is done separately at each wavelength. Interpolation is
-  not applied, so all spectra in \code{x} must share the same set of
-  wavelengths. When defining new public functions using these utility
-  functions make sure to return data that is valid for the class of spectral
-  object returned!!
+  applied, so spectra in \code{x} do not need to share the same set of
+  wavelengths. When defining
+  new public functions using these utility functions make sure to return data
+  that is valid for the class of spectral object returned!!
 
-  Objects of classes raw_spct and cps_spct can contain data from multiple
-  scans. This functions are implemented for these classes only for the case
-  when all member spectra contain data for a single scan, or spliced into a
-  single column in the case of cps_spct members.
+  Objects of classes \code{raw_spct} and \code{cps_spct} can contain data
+  from multiple scans acquired with the same instrument, thus at the same set
+  of wave lengths.
 }
 \keyword{internal}
