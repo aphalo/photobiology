@@ -10,7 +10,8 @@ is.waveband(x)
 \item{x}{any R object}
 }
 \value{
-is.waveband returns TRUE if its argument is a waveband and FALSE otherwise.
+is.waveband returns TRUE if its argument is a waveband and FALSE
+  otherwise.
 }
 \description{
 Functions to check if an object is waveband.

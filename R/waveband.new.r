@@ -3,6 +3,16 @@
 #' Constructor for "waveband" objects that can be used as input when calculating
 #' irradiances.
 #'
+#' @details Objects of class \code{waveband} are used to store the different
+#'   bits of information needed to compute summaries from spectral data by
+#'   integration over wavelengths. The wavelength ranges, possible spectral
+#'   weighting functions (SWF) or biological spectral weighting functions
+#'   (BSWF), their normalization wavelengths and names and labels used for
+#'   reporting the results are all stored in waveband objects. This facilitates
+#'   the use of functions that compute summaries, as well as ensures consistency
+#'   in computations and labelling, as all the bits of information are passed
+#'   together. Class \code{"waveband"} is derived from R class \code{list}.
+#'
 #' @param x any R object on which applying the method \code{range()} yields an
 #'   vector of two numeric values, describing a range of wavelengths [\eqn{nm}].
 #' @param weight a character string \code{"SWF"} or \code{"BSWF"}, use
@@ -24,7 +34,8 @@
 #' @param wb.name character string giving the name for the waveband defined,
 #'   default is \code{NULL} for an automatically generated name.
 #' @param wb.label character string giving the label of the waveband to be used
-#'   for labelling computed summaries or plots, default is \code{wb.name}.
+#'   for labelling computed summaries or plots, default is \code{wb.name}. (This
+#'   is usually a shorter character string than \code{wb.name}.)
 #'
 #' @return a \code{waveband} object
 #'
@@ -45,20 +56,27 @@ waveband <- function(x = NULL,
                      wb.label = wb.name) {
   if (length(x) == 0) {
     x <- NA_real_
+    if (length(wb.name) == 0) {
+      wb.name <- "Not available"
+    }
+    if (length(wb.label) == 0) {
+      wb.label <- "NA"
+    }
   }
   if (is.generic_spct(x) && is.null(wb.name)) {
     wb.name = "Total"
   }
   x.range <- range(x)
-  new_waveband(x.range[1], x.range[2],
-               weight=weight,
-               SWF.e.fun=SWF.e.fun,
-               SWF.q.fun=SWF.q.fun,
-               norm=norm,
-               SWF.norm=SWF.norm,
-               hinges=hinges,
-               wb.name=wb.name,
-               wb.label=wb.label)
+  new_waveband(w.low = x.range[1],
+               w.high = x.range[2],
+               weight = weight,
+               SWF.e.fun = SWF.e.fun,
+               SWF.q.fun = SWF.q.fun,
+               norm = norm,
+               SWF.norm = SWF.norm,
+               hinges = hinges,
+               wb.name = wb.name,
+               wb.label = wb.label)
 }
 
 #' @describeIn waveband A less flexible variant
@@ -71,11 +89,17 @@ waveband <- function(x = NULL,
 #' new_waveband(400,700)
 #'
 new_waveband <- function(w.low, w.high,
-                         weight = NULL, SWF.e.fun = NULL, SWF.q.fun = NULL, norm = NULL,
-                         SWF.norm = NULL, hinges = NULL, wb.name = NULL, wb.label = wb.name){
+                         weight = NULL,
+                         SWF.e.fun = NULL,
+                         SWF.q.fun = NULL,
+                         norm = NULL,
+                         SWF.norm = NULL,
+                         hinges = NULL,
+                         wb.name = NULL,
+                         wb.label = wb.name){
   # we make sure that hinges is not NULL, as this would cause problems elsewhere
-  # if we are not using a SWF then we do not need to add hinges as we will be anyway interpolating
-  # raw irradiances rather than weighted irradiances
+  # if we are not using a SWF then we do not need to add hinges as we will be
+  # anyway interpolating raw irradiances rather than weighted irradiances
   if (is.null(hinges)) {
     hinges <- c(w.low - 1e-12, w.low, w.high - 1e-12, w.high)
   }
@@ -100,19 +124,33 @@ new_waveband <- function(w.low, w.high,
       return(NA)
     }
     if (is.null(wb.name)) {
-      wb.name <- paste("range", as.character(signif(w.low, 4)), as.character(signif(w.high, 4)), "wtd", sep=".")
+      wb.name <- paste("range",
+                       as.character(signif(w.low, 4)),
+                       as.character(signif(w.high, 4)),
+                       "wtd",
+                       sep=".")
       wb.label <- wb.name
     }
   } else {
     weight <- "none"
     if (is.null(wb.name)) {
-      wb.name <- paste("range", as.character(signif(w.low, 4)), as.character(signif(w.high, 4)), sep=".")
+      wb.name <- paste("range",
+                       as.character(signif(w.low, 4)),
+                       as.character(signif(w.high, 4)),
+                       sep=".")
       wb.label <- wb.name
     }
   }
-  w_band <- list(low = w.low, high = w.high,
-                 weight = weight, SWF.e.fun = SWF.e.fun, SWF.q.fun = SWF.q.fun, SWF.norm = SWF.norm,
-                 norm = norm, hinges = hinges, name = wb.name, label = wb.label)
+  w_band <- list(low = w.low,
+                 high = w.high,
+                 weight = weight,
+                 SWF.e.fun = SWF.e.fun,
+                 SWF.q.fun = SWF.q.fun,
+                 SWF.norm = SWF.norm,
+                 norm = norm,
+                 hinges = hinges,
+                 name = wb.name,
+                 label = wb.label)
   class(w_band) <- c("waveband", class(w_band))
   w_band
 }
@@ -232,7 +270,8 @@ split_bands <- function(x,
 #'
 #' @param x any R object
 #'
-#' @return is.waveband returns TRUE if its argument is a waveband and FALSE otherwise.
+#' @return is.waveband returns TRUE if its argument is a waveband and FALSE
+#'   otherwise.
 #'
 #' @export
 #'
@@ -240,13 +279,17 @@ is.waveband <- function(x) {
   inherits(x, "waveband")
 }
 
-### I need to add a check.waveband() method and use it in the constructor and maybe also
-### add non-functional replacement operators.
+### I need to add a check.waveband() method and use it in the constructor and
+### maybe also add non-functional replacement operators.
 ###
 
-check.waveband <- function(x, byref = FALSE, strict.range = getOption("photobiology.strict.range", default = FALSE), ...) {
-  stopifnot(x[["low"]] < x[["high"]])
-  stopifnot(x[["weight"]] == "none" && !(is.null(x[["SWF.e.fun"]] && is.null(x[["SWF.q.fun"]]))))
-  stopifnot(x[["weight"]] != "none" && (is.null(x[["SWF.e.fun"]] || is.null(x[["SWF.q.fun"]]))))
-  x
-}
+check.waveband <-
+  function(x,
+           byref = FALSE,
+           strict.range = getOption("photobiology.strict.range", default = FALSE),
+           ...) {
+    stopifnot(x[["low"]] < x[["high"]])
+    stopifnot(x[["weight"]] == "none" && !(is.null(x[["SWF.e.fun"]] && is.null(x[["SWF.q.fun"]]))))
+    stopifnot(x[["weight"]] != "none" && (is.null(x[["SWF.e.fun"]] || is.null(x[["SWF.q.fun"]]))))
+    x
+  }

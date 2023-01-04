@@ -1657,12 +1657,25 @@ any2Afr <- function(x, action = "add", clean = FALSE) {
 
 #' Convert energy-based quantities into photon-based quantities.
 #'
-#' Function that converts spectral energy irradiance into spectral photon irradiance (molar).
+#' Conversion methods for spectral energy irradiance into spectral photon
+#' irradiance and for spectral energy response into spectral photon
+#' response.
 #'
-#' @param x an R object
-#' @param action a character string
-#' @param byref logical indicating if new object will be created by reference or by copy of x
-#' @param ... not used in current version
+#' @details The converted spectral values are added to or replace the existing
+#'   spectral values depending on the argument passed to parameter
+#'   \code{action}. Addition is currently not supported for normalized spectra.
+#'   If the spectrum has been normalized with a recent version of package
+#'   'photobiology' the spectrum will be renormalized after conversion using the
+#'   same arguments as previously. \code{"add.raw"} and \code{"replace.raw"}
+#'   prevent the re-normalization, are included for completeness and as a way
+#'   of restoring previous behaviour.
+#'
+#' @param x an R object.
+#' @param action a character string, one of "add", "replace", "add.raw" or
+#'   "replace.raw".
+#' @param byref logical indicating if a new object will be created by reference
+#'   or a new object returned.
+#' @param ... not used in current version.
 #'
 #' @export
 #' @family quantity conversion functions
@@ -1673,7 +1686,7 @@ e2q <- function(x, action, byref, ...) UseMethod("e2q")
 #'
 #' @export
 #'
-e2q.default <- function(x, action="add", byref = FALSE, ...) {
+e2q.default <- function(x, action = "add", byref = FALSE, ...) {
   return(NA)
 }
 
@@ -1681,20 +1694,30 @@ e2q.default <- function(x, action="add", byref = FALSE, ...) {
 #'
 #' @export
 #'
-e2q.source_spct <- function(x, action="add", byref = FALSE, ...) {
+e2q.source_spct <- function(x,
+                            action = "add",
+                            byref = FALSE,
+                            ...) {
   if (byref) {
     name <- substitute(x)
   }
-  if (exists("s.q.irrad", x, inherits = FALSE)) {
-    NULL
-  } else if (exists("s.e.irrad", x, inherits = FALSE)) {
-    x[["s.q.irrad"]] <- x[["s.e.irrad"]] * e2qmol_multipliers(x[["w.length"]])
+
+  if (is_normalised(x) && !action %in% c("add.raw", "replace.raw")) {
+    x <- normalise(x, norm = "update", unit.out = "photon")
   } else {
-    x[["s.q.irrad"]] <- NA
+    if (exists("s.q.irrad", x, inherits = FALSE)) {
+      NULL
+    } else if (exists("s.e.irrad", x, inherits = FALSE)) {
+      x[["s.q.irrad"]] <- x[["s.e.irrad"]] * e2qmol_multipliers(x[["w.length"]])
+    } else {
+      x[["s.q.irrad"]] <- NA
+    }
+    if (action %in% c("replace", "replace.raw") &&
+        exists("s.e.irrad", x, inherits = FALSE)) {
+      x[["s.e.irrad"]] <- NULL
+    }
   }
-  if (action=="replace" && exists("s.e.irrad", x, inherits = FALSE)) {
-    x[["s.e.irrad"]] <- NULL
-  }
+
   if (byref && is.name(name)) {  # this is a temporary safe net
     name <- as.character(name)
     assign(name, x, parent.frame(), inherits = TRUE)
@@ -1706,20 +1729,30 @@ e2q.source_spct <- function(x, action="add", byref = FALSE, ...) {
 #'
 #' @export
 #'
-e2q.response_spct <- function(x, action="add", byref = FALSE, ...) {
+e2q.response_spct <- function(x,
+                              action = "add",
+                              byref = FALSE,
+                              ...) {
   if (byref) {
     name <- substitute(x)
   }
-  if (exists("s.q.response", x, inherits = FALSE)) {
-    NULL
-  } else if (exists("s.e.response", x, inherits = FALSE)) {
-    x[["s.q.response"]] <- x[["s.e.response"]] / e2qmol_multipliers(x[["w.length"]])
+
+  if (is_normalised(x) && !action %in% c("add.raw", "replace.raw")) {
+    x <- normalise(x, norm = "update", unit.out = "photon")
   } else {
-    x[["s.q.response"]] <- NA
+    if (exists("s.q.response", x, inherits = FALSE)) {
+      NULL
+    } else if (exists("s.e.response", x, inherits = FALSE)) {
+      x[["s.q.response"]] <- x[["s.e.response"]] / e2qmol_multipliers(x[["w.length"]])
+    } else {
+      x[["s.q.response"]] <- NA
+    }
+    if (action %in% c("replace", "replace.raw") &&
+        exists("s.e.response", x, inherits = FALSE)) {
+      x[["s.e.response"]] <- NULL
+    }
   }
-  if (action=="replace" && exists("s.e.response", x, inherits = FALSE)) {
-    x[["s.e.response"]] <- NULL
-  }
+
   if (byref && is.name(name)) {  # this is a temporary safe net
     name <- as.character(name)
     assign(name, x, parent.frame(), inherits = TRUE)
@@ -1779,12 +1812,25 @@ e2q.response_mspct <- function(x,
 
 #' Convert photon-based quantities into energy-based quantities
 #'
-#' Function that converts spectral photon irradiance (molar) into spectral energy irradiance.
+#' Conversion methods for spectral photon irradiance into spectral energy
+#' irradiance and for spectral photon response into spectral energy
+#' response.
 #'
-#' @param x an R object
-#' @param action a character string
-#' @param byref logical indicating if new object will be created by reference or by copy of x
-#' @param ... not used in current version
+#' @details The converted spectral values are added to or replace the existing
+#'   spectral values depending on the argument passed to parameter
+#'   \code{action}. Addition is currently not supported for normalized spectra.
+#'   If the spectrum has been normalized with a recent version of package
+#'   'photobiology' the spectrum will be renormalized after conversion using the
+#'   same arguments as previously. \code{"add.raw"} and \code{"replace.raw"}
+#'   prevent the re-normalization, are included for completeness and as a way of
+#'   restoring previous behaviour.
+#'
+#' @param x an R object.
+#' @param action a character string, one of "add", "replace", "add.raw" or
+#'   "replace.raw".
+#' @param byref logical indicating if a new object will be created by reference
+#'   or a new object returned.
+#' @param ... not used in current version.
 #'
 #' @export
 #' @family quantity conversion functions
@@ -1795,7 +1841,7 @@ q2e <- function(x, action, byref, ...) UseMethod("q2e")
 #'
 #' @export
 #'
-q2e.default <- function(x, action="add", byref = FALSE, ...) {
+q2e.default <- function(x, action = "add", byref = FALSE, ...) {
   return(NA)
 }
 
@@ -1803,20 +1849,30 @@ q2e.default <- function(x, action="add", byref = FALSE, ...) {
 #'
 #' @export
 #'
-q2e.source_spct <- function(x, action="add", byref = FALSE, ...) {
+q2e.source_spct <- function(x,
+                            action = "add",
+                            byref = FALSE,
+                            ...) {
   if (byref) {
     name <- substitute(x)
   }
-  if (exists("s.e.irrad", x, inherits = FALSE)) {
-    NULL
-  } else if (exists("s.q.irrad", x, inherits = FALSE)) {
-    x[["s.e.irrad"]] <- x[["s.q.irrad"]] / e2qmol_multipliers(x[["w.length"]])
+
+  if (is_normalised(x) && !action %in% c("add.raw", "replace.raw")) {
+    x <- normalise(x, norm = "update", unit.out = "energy")
   } else {
-    x[["s.e.irrad"]] <- NA
+    if (exists("s.e.irrad", x, inherits = FALSE)) {
+      NULL
+    } else if (exists("s.q.irrad", x, inherits = FALSE)) {
+      x[["s.e.irrad"]] <- x[["s.q.irrad"]] / e2qmol_multipliers(x[["w.length"]])
+    } else {
+      x[["s.e.irrad"]] <- NA
+    }
+    if (action %in% c("replace", "replace.raw") &&
+        exists("s.q.irrad", x, inherits = FALSE)) {
+      x[["s.q.irrad"]] <- NULL
+    }
   }
-  if (action=="replace" && exists("s.q.irrad", x, inherits = FALSE)) {
-    x[["s.q.irrad"]] <- NULL
-  }
+
   if (byref && is.name(name)) {  # this is a temporary safe net
     name <- as.character(name)
     assign(name, x, parent.frame(), inherits = TRUE)
@@ -1828,20 +1884,30 @@ q2e.source_spct <- function(x, action="add", byref = FALSE, ...) {
 #'
 #' @export
 #'
-q2e.response_spct <- function(x, action="add", byref = FALSE, ...) {
+q2e.response_spct <- function(x,
+                              action = "add",
+                              byref = FALSE,
+                              ...) {
   if (byref) {
     name <- substitute(x)
   }
-  if (exists("s.e.response", x, inherits = FALSE)) {
-    NULL
-  } else if (exists("s.q.response", x, inherits = FALSE)) {
-    x[["s.e.response"]] <- x[["s.q.response"]] * e2qmol_multipliers(x[["w.length"]])
+
+  if (is_normalised(x) && !action %in% c("add.raw", "replace.raw")) {
+    x <- normalise(x, norm = "update", unit.out = "energy")
   } else {
-    x[["s.e.response"]] <- NA
+    if (exists("s.e.response", x, inherits = FALSE)) {
+      NULL
+    } else if (exists("s.q.response", x, inherits = FALSE)) {
+      x[["s.e.response"]] <- x[["s.q.response"]] * e2qmol_multipliers(x[["w.length"]])
+    } else {
+      x[["s.e.response"]] <- NA
+    }
+    if (action %in% c("replace", "replace.raw") &&
+        exists("s.q.response", x, inherits = FALSE)) {
+      x[["s.q.response"]] <- NULL
+    }
   }
-  if (action=="replace" && exists("s.q.response", x, inherits = FALSE)) {
-    x[["s.q.response"]] <- NULL
-  }
+
   if (byref && is.name(name)) {  # this is a temporary safe net
     name <- as.character(name)
     assign(name, x, parent.frame(), inherits = TRUE)

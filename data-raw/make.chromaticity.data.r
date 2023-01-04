@@ -1,6 +1,8 @@
 library(photobiology)
 library(dplyr)
 
+energy_as_default()
+
 oldwd <- setwd("data-raw/humans")
 
 # Human

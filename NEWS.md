@@ -14,6 +14,10 @@ editor_options:
   always return a `mspct` object.
 - Add function `is_daytime()` a wrapper on `day_night()` returning a logical
   vector.
+- Make the name and label returned by a call to `waveband()` accepting all
+  defaults argument more informative.
+- Update `e2q()` and `q2e()` to better handle previously normalized spectra 
+  passed as arguments: re-normalization is applied by default.
 
 # photobiology 0.10.14
 

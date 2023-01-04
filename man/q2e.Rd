@@ -22,13 +22,15 @@ q2e(x, action, byref, ...)
 \method{q2e}{response_mspct}(x, action = "add", byref = FALSE, ..., .parallel = FALSE, .paropts = NULL)
 }
 \arguments{
-\item{x}{an R object}
+\item{x}{an R object.}
 
-\item{action}{a character string}
+\item{action}{a character string, one of "add", "replace", "add.raw" or
+"replace.raw".}
 
-\item{byref}{logical indicating if new object will be created by reference or by copy of x}
+\item{byref}{logical indicating if a new object will be created by reference
+or a new object returned.}
 
-\item{...}{not used in current version}
+\item{...}{not used in current version.}
 
 \item{.parallel}{if TRUE, apply function in parallel, using parallel backend
 provided by foreach}
@@ -40,7 +42,19 @@ your code relies on external data or packages: use the .export and
 correct environment set up for computing.}
 }
 \description{
-Function that converts spectral photon irradiance (molar) into spectral energy irradiance.
+Conversion methods for spectral photon irradiance into spectral energy
+irradiance and for spectral photon response into spectral energy
+response.
+}
+\details{
+The converted spectral values are added to or replace the existing
+  spectral values depending on the argument passed to parameter
+  \code{action}. Addition is currently not supported for normalized spectra.
+  If the spectrum has been normalized with a recent version of package
+  'photobiology' the spectrum will be renormalized after conversion using the
+  same arguments as previously. \code{"add.raw"} and \code{"replace.raw"}
+  prevent the re-normalization, are included for completeness and as a way of
+  restoring previous behaviour.
 }
 \section{Methods (by class)}{
 \itemize{

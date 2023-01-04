@@ -112,14 +112,14 @@ normalize.source_spct <- function(x,
                                   keep.scaling = FALSE,
                                   na.rm = FALSE) {
   if (unit.out == "energy") {
-    return(normalize_spct(spct = q2e(x, action = "replace"),
+    return(normalize_spct(spct = q2e(x, action = "replace.raw"),
                           range = range,
                           norm = norm,
                           col.names = "s.e.irrad",
                           keep.scaling = keep.scaling,
                           na.rm = na.rm))
   } else if (unit.out %in% c("photon", "quantum") ) {
-    return(normalize_spct(spct = e2q(x, action = "replace"),
+    return(normalize_spct(spct = e2q(x, action = "replace.raw"),
                           range = range,
                           norm = norm,
                           col.names = "s.q.irrad",
@@ -143,14 +143,14 @@ normalize.response_spct <- function(x,
                                   keep.scaling = FALSE,
                                   na.rm = FALSE) {
   if (unit.out == "energy") {
-    return(normalize_spct(spct = q2e(x, action = "replace"),
+    return(normalize_spct(spct = q2e(x, action = "replace.raw"),
                           range = range,
                           norm = norm,
                           col.names = "s.e.response",
                           keep.scaling = keep.scaling,
                           na.rm = na.rm))
   } else if (unit.out %in% c("photon", "quantum") ) {
-    return(normalize_spct(spct = e2q(x, action = "replace"),
+    return(normalize_spct(spct = e2q(x, action = "replace.raw"),
                           range = range,
                           norm = norm,
                           col.names = "s.q.response",
@@ -608,22 +608,23 @@ normalize_spct <- function(spct,
     updating <- FALSE
   }
 
-  setNormalized(spct,
-                norm = norm,
-                norm.type =
-                  if (is.character(norm.arg)) {
-                    norm.arg
-                  } else if (is.numeric(norm.arg)) {
-                    "wavelength"
-                  },
-                norm.factors =
-                  if (scale.is.dirty || updating) {
-                    rep(NA_real_, length(col.names))
-                  } else {
-                    scale.factors
-                  },
-                norm.cols = col.names,
-                norm.range = range)
+  z <- setNormalized(spct,
+                     norm = norm,
+                     norm.type =
+                       if (is.character(norm.arg)) {
+                         norm.arg
+                       } else if (is.numeric(norm.arg)) {
+                         "wavelength"
+                       },
+                     norm.factors =
+                       if (scale.is.dirty || updating) {
+                         rep(NA_real_, length(col.names))
+                       } else {
+                         scale.factors
+                       },
+                     norm.cols = col.names,
+                     norm.range = range)
+  z # setNormalized makes its returned value invisible
 }
 
 

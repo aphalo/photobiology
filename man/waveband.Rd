@@ -59,7 +59,8 @@ indicated by \code{NULL}.}
 default is \code{NULL} for an automatically generated name.}
 
 \item{wb.label}{character string giving the label of the waveband to be used
-for labelling computed summaries or plots, default is \code{wb.name}.}
+for labelling computed summaries or plots, default is \code{wb.name}. (This
+is usually a shorter character string than \code{wb.name}.)}
 
 \item{w.low, w.high}{numeric value, wavelengths at the short end and long ends
 of the wavelength band [\eqn{nm}].}
@@ -70,6 +71,17 @@ a \code{waveband} object
 \description{
 Constructor for "waveband" objects that can be used as input when calculating
 irradiances.
+}
+\details{
+Objects of class \code{waveband} are used to store the different
+  bits of information needed to compute summaries from spectral data by
+  integration over wavelengths. The wavelength ranges, possible spectral
+  weighting functions (SWF) or biological spectral weighting functions
+  (BSWF), their normalization wavelengths and names and labels used for
+  reporting the results are all stored in waveband objects. This facilitates
+  the use of functions that compute summaries, as well as ensures consistency
+  in computations and labelling, as all the bits of information are passed
+  together. Class \code{"waveband"} is derived from R class \code{list}.
 }
 \section{Functions}{
 \itemize{
