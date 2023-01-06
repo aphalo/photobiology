@@ -316,7 +316,7 @@ test_that("response e_response q_response", {
                response.result * 0.5, tolerance = 1e-6)
   expect_equal(as.numeric(e_response(my.spct, time.unit = duration(1, "minutes"))),
                response.result * 60, tolerance = 1e-6)
-  response.result <- 101360909
+  response.result <- 101359432
   expect_equal(as.numeric(q_response(my.spct)), response.result, tolerance = 1e-6)
   expect_equal(as.numeric(q_response(my.spct, time.unit = "second")),
                response.result, tolerance = 1e-6)

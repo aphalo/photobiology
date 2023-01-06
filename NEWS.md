@@ -18,6 +18,11 @@ editor_options:
   defaults argument more informative.
 - Update `e2q()` and `q2e()` to better handle previously normalized spectra 
   passed as arguments: re-normalization is applied by default.
+- Increase accuracy of conversions in `e2q()` and `q2e()`. The change in 
+  computed values is at most 20 parts per million.
+- Add functions for conversions among quantities representable as wave length:
+  `wl2wavenumber()`, `wavenumber2wl()`, `wl2frequency()`, `frequency2wl()`,
+  `wl2energy()` and `energy2wl()`.
 
 # photobiology 0.10.14
 

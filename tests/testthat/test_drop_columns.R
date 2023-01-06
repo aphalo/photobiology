@@ -4,7 +4,7 @@ context("drop_user_cols")
 
 test_that("source_spct", {
 
-  sun.spct <- sun.spct[1:20]
+  sun.spct <- sun.spct[1:20, ]
   my.spct <- q2e(sun.spct, action = "add")
   my.spct$A <- "A"
   my.spct$two <- 2

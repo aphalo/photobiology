@@ -215,6 +215,7 @@ reference:
     - trim_wl
     - trim_spct
     - na.omit
+    - wl2wavenumber
   - subtitle: Mathematical operators and functions for spectra
     desc: Specializations of all R's mathematical functions and operators for spectral objects.
     contents:

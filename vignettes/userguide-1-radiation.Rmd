@@ -7,79 +7,130 @@ output:
   rmarkdown::html_vignette:
     toc: yes
 vignette: >
+  %\VignetteEncoding{UTF-8}
   %\VignetteIndexEntry{User Guide: 1 Radiation}
   %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
+editor_options: 
+  markdown: 
+    wrap: 72
 ---
 
 ## Radiation, astronomy and atmosphere
 
-The User Guide is divided into two volumes: _1. Radiation_ and _2. Astronomy_. The second volume also describes functions related to water vapour in the atmosphere.
+The User Guide is divided into two volumes: *1. Radiation* and *2.
+Astronomy*. The second volume also describes functions related to water
+vapour in the atmosphere.
 
 ## Naming conventions
 
-I have developed package '**photobiology**' over several years, and even though I have tried to remain consistent, some inconsistencies have crept in. I have attempted to correct inconsistencies without breaking old code by providing synonyms for some functions. 
+I have developed package '**photobiology**' over several years, and even
+though I have tried to remain consistent, some inconsistencies have
+crept in. I have attempted to correct inconsistencies without breaking
+old code by providing synonyms for some functions.
 
-In general I have used names in _snake case_ for methods and functions, such as `source_spct()` and _dot case_ for their arguments. There are two exceptions to this: the `as.` and `is.` methods which for consistency with base R, retain the dot: `as.source_spct()` and `ìs.source_spct()`. There are still some functions and methods whose names are in _camel case_: these are mostly accessors and setters of metadata attributes such as `setWhatMeasured()` and `getWhatMeasured()`, in which case synonyms `what_measured<-()` and `what_measured()` are now provided with a syntax that parallels that of R's `comment<-()`, `comment()`, and similar methods for other attributes. Names of attributes themselves use dots, while classes use snake case as functions do, allowing consistency between class names and their constructor functions. There is an additional twist: functions named like `clip_wl()` are "verbs" that act on the wavelengths ("wl") modifying them, while those named like `wl_range()` are "nouns" for the properties of the wavelengths.
+In general I have used names in *snake case* for methods and functions,
+such as `source_spct()` and *dot case* for their arguments. There are
+two exceptions to this: the `as.` and `is.` methods which for
+consistency with base R, retain the dot: `as.source_spct()` and
+`ìs.source_spct()`. There are still some functions and methods whose
+names are in *camel case*: these are mostly accessors and setters of
+metadata attributes such as `setWhatMeasured()` and `getWhatMeasured()`,
+in which case synonyms `what_measured<-()` and `what_measured()` are now
+provided with a syntax that parallels that of R's `comment<-()`,
+`comment()`, and similar methods for other attributes. Names of
+attributes themselves use dots, while classes use snake case as
+functions do, allowing consistency between class names and their
+constructor functions. There is an additional twist: functions named
+like `clip_wl()` are "verbs" that act on the wavelengths ("wl")
+modifying them, while those named like `wl_range()` are "nouns" for the
+properties of the wavelengths.
 
-In examples we use variable names ending in `.spct` for spectra, ending in `.mspct` for collections of spectra and ending in `.tb` for tibbles. In most cases the root of the variable names use "snake case" and may have a tag at the end separated with a dot. In the case of variable names used in examples I have been less strict about conventions than for the objects exported by the package.
+In examples we use variable names ending in `.spct` for spectra, ending
+in `.mspct` for collections of spectra and ending in `.tb` for tibbles.
+In most cases the root of the variable names use "snake case" and may
+have a tag at the end separated with a dot. In the case of variable
+names used in examples I have been less strict about conventions than
+for the objects exported by the package.
 
-None of these naming conventions are enforced for user defined objects and classes; these conventions are simply those I have tried to follow while developing this package as well as other packages in the r4photobiology suite.
+None of these naming conventions are enforced for user defined objects
+and classes; these conventions are simply those I have tried to follow
+while developing this package as well as other packages in the
+r4photobiology suite.
 
 ## High and low level functions
 
-The package exports two sets of functions for many operations: low-level functions programmed following a functional paradigm, and higher-level functions using an object-oriented paradigm. The former functions take as arguments numeric vectors and are sometimes faster. The later ones take _spectra_ objects as arguments, are easier to use, and at least at the moment, to some extent slower. For everyday use, methods for _spectra_ objects are recommended, but when maximum performance or flexibility in scripts is desired, the use of the functions taking numeric vectors as arguments may allow optimizations that are not possible with the object-oriented functions. The differences in performance becomes relevant only in extreme cases such as processing in a single script tenths of thousands of spectra. In the vignettes we emphasize the use of the object-oriented classes and methods.
+The package exports two sets of functions for many operations: low-level
+functions programmed following a functional paradigm, and higher-level
+functions using an object-oriented paradigm. The former functions take
+as arguments numeric vectors and are sometimes faster. The later ones
+take *spectra* objects as arguments, are easier to use, and at least at
+the moment, to some extent slower. For everyday use, methods for
+*spectra* objects are recommended, but when maximum performance or
+flexibility in scripts is desired, the use of the functions taking
+numeric vectors as arguments may allow optimizations that are not
+possible with the object-oriented functions. The differences in
+performance becomes relevant only in extreme cases such as processing in
+a single script tenths of thousands of spectra. In the vignettes we
+emphasize the use of the object-oriented classes and methods.
 
 ## Example data
 
-Data for several spectra are included for use in examples and vignettes, and in testing (Tables 1 and 2). Other packages in the '**r4photobiology suite**' provide many additional data sets.
+Data for several spectra are included for use in examples and vignettes,
+and in testing (Tables 1 and 2). Other packages in the '**r4photobiology
+suite**' provide many additional data sets.
 
---------------------------------------------------------------------------------
+------------------------------------------------------------------------
 
-**Table 1. Data sets included in the package: spectra.** The CIE standard illuminant data in this package are normalized to one at $\lambda = 560\,$nm, while in the CIE standard they are normalized to 100 at the same wavelength. See documentation for each data object for details and data sources.
- 
-| Object | class | units      | data description          |
-|:--------|:-------|:----------|:---------------------------|
-| `sun.spct` | `source_spct` | $W\,m^{-2}\,nm^{-1}$ | solar spectral irradiance |
-| `sun.daily.spct` | `source_spct` | $J\,m^{-2}\,d^{-1}\,nm^{-1}$  | solar spectral exposure |
-| `sun.data` | `data.frame` | $W\,m^{-2}\,nm^{-1}$ | solar spectral irradiance |
-| `sun.daily.data` | `data.frame` | $J\,m^{-2}\,d^{-1}\,nm^{-1}$  | solar spectral exposure|
-| `D65.illuminant.spct` | `source_spct` | (norm. 560 nm) | CIE standard |
-| `A.illuminant.spct` | `source_spct` | (norm. 560 nm)  | CIE standard |
-| `clear.spct` | `filter_spct` | fraction | ideal transparent filter |
-| `opaque.spct` | `filter_spct` | fraction | ideal opaque filter |
-| `polyester.spct` | `filter_spct` | fraction | plastic film |
-| `yellow_gel.spct` | `filter_spct` | fraction | theatrical _gel_ filter |
-| `green_leaf.spct` | `reflector_spct` | fraction | a birch leaf |
-| `clear_body.spct` | `object_spct` | fraction | ideal transparent body |
-| `black_body.spct` | `object_spct` | fraction | ideal black body |
-| `white_body.spct` | `object_spct` | fraction | ideal white body |
-| `Ler_leaf.spct` | `object_spct` | fraction | Arabidopsis leaf |
-| `Ler_leaf_trns.spct` | `filter_spct` | fraction | Arabidopsis leaf (T total) |
-| `Ler_leaf_trns_i.spct` | `filter_spct` | fraction | Arabidopsis leaf (T internal) |
-| `Ler_leaf_rflt.spct` | `reflector_spct` | fraction | Arabidopsis leaf (R total) |
-| `water.spct` | `solute_spct` | $m^{-1}$ | pure water molar att. coef. |
-| `phenylalanine` | `solute_spct` | $m^{-1}$ | phenylalanine molar att. coef. |
-| `photodiode.spct` | `response_spct` |  $A / W$  | typical Si photodiode |
-| `ccd.spct` | `response_spct` |  $A / W$ | typical CCD array |
-| `white_led.raw_spct` | `raw_spct` | counts | example raw detector counts data |
-| `white_led.cps_spct` | `cps_spct` | counts / s | example detector counts data |
-| `white_led.source_spct` | `source_spct` | $W\,m^{-2}\,nm^{-1}$ | spectral irradiance |
-| `filter_cps.mspct` | `cps_mspct` | $\mathrm{counts} / s$ | example detector counts data |
+**Table 1. Data sets included in the package: spectra.** The CIE
+standard illuminant data in this package are normalized to one at
+$\lambda = 560\,$nm, while in the CIE standard they are normalized to
+100 at the same wavelength. See documentation for each data object for
+details and data sources.
+
+| Object                  | class            | units                        | data description                 |
+|:-------------|:-------------|:-------------|:------------------------------|
+| `sun.spct`              | `source_spct`    | $W\,m^{-2}\,nm^{-1}$         | solar spectral irradiance        |
+| `sun.daily.spct`        | `source_spct`    | $J\,m^{-2}\,d^{-1}\,nm^{-1}$ | solar spectral exposure          |
+| `sun.data`              | `data.frame`     | $W\,m^{-2}\,nm^{-1}$         | solar spectral irradiance        |
+| `sun.daily.data`        | `data.frame`     | $J\,m^{-2}\,d^{-1}\,nm^{-1}$ | solar spectral exposure          |
+| `D65.illuminant.spct`   | `source_spct`    | (norm. 560 nm)               | CIE standard                     |
+| `A.illuminant.spct`     | `source_spct`    | (norm. 560 nm)               | CIE standard                     |
+| `clear.spct`            | `filter_spct`    | fraction                     | ideal transparent filter         |
+| `opaque.spct`           | `filter_spct`    | fraction                     | ideal opaque filter              |
+| `polyester.spct`        | `filter_spct`    | fraction                     | plastic film                     |
+| `yellow_gel.spct`       | `filter_spct`    | fraction                     | theatrical *gel* filter          |
+| `green_leaf.spct`       | `reflector_spct` | fraction                     | a birch leaf                     |
+| `clear_body.spct`       | `object_spct`    | fraction                     | ideal transparent body           |
+| `black_body.spct`       | `object_spct`    | fraction                     | ideal black body                 |
+| `white_body.spct`       | `object_spct`    | fraction                     | ideal white body                 |
+| `Ler_leaf.spct`         | `object_spct`    | fraction                     | Arabidopsis leaf                 |
+| `Ler_leaf_trns.spct`    | `filter_spct`    | fraction                     | Arabidopsis leaf (T total)       |
+| `Ler_leaf_trns_i.spct`  | `filter_spct`    | fraction                     | Arabidopsis leaf (T internal)    |
+| `Ler_leaf_rflt.spct`    | `reflector_spct` | fraction                     | Arabidopsis leaf (R total)       |
+| `water.spct`            | `solute_spct`    | $m^{-1}$                     | pure water molar att. coef.      |
+| `phenylalanine`         | `solute_spct`    | $m^{-1}$                     | phenylalanine molar att. coef.   |
+| `photodiode.spct`       | `response_spct`  | $A / W$                      | typical Si photodiode            |
+| `ccd.spct`              | `response_spct`  | $A / W$                      | typical CCD array                |
+| `white_led.raw_spct`    | `raw_spct`       | counts                       | example raw detector counts data |
+| `white_led.cps_spct`    | `cps_spct`       | counts / s                   | example detector counts data     |
+| `white_led.source_spct` | `source_spct`    | $W\,m^{-2}\,nm^{-1}$         | spectral irradiance              |
+| `filter_cps.mspct`      | `cps_mspct`      | $\mathrm{counts} / s$        | example detector counts data     |
+
 ------------------------------------------------------------------------
 
 ------------------------------------------------------------------------
 
-**Table 2. Data sets included in the package: chromaticity data.** See documentation for each data object for details and data sources.
+**Table 2. Data sets included in the package: chromaticity data.** See
+documentation for each data object for details and data sources.
 
-| Object  | class  | data description                 |
-|:--------|:-------|:-------------------------------|
-| `ciexyzCC2.spct` | `chroma_spct` |  human chromaticity coordinates $2^\circ$ |
-| `ciexyzCC10.spct` | `chroma_spct` |   human chromaticity coordinates $10^\circ$  |
-| `ciexyzCMF2.spct` | `chroma_spct` |   human colour matching function $2^\circ$ |
-| `ciexyzCMF10.spct` | `chroma_spct` |  human colour matching function $10^\circ$ |
-| `ciev2.spct` | `chroma_spct` |  human luminous efficiency $2^\circ$ |
-| `beesxyzCMF.spct` |  `chroma_spct` |  bee colour matching function |
+| Object             | class         | data description                          |
+|:--------------|:--------------|:-----------------------------------------|
+| `ciexyzCC2.spct`   | `chroma_spct` | human chromaticity coordinates $2^\circ$  |
+| `ciexyzCC10.spct`  | `chroma_spct` | human chromaticity coordinates $10^\circ$ |
+| `ciexyzCMF2.spct`  | `chroma_spct` | human colour matching function $2^\circ$  |
+| `ciexyzCMF10.spct` | `chroma_spct` | human colour matching function $10^\circ$ |
+| `ciev2.spct`       | `chroma_spct` | human luminous efficiency $2^\circ$       |
+| `beesxyzCMF.spct`  | `chroma_spct` | bee colour matching function              |
 
 ------------------------------------------------------------------------
 
@@ -94,46 +145,49 @@ options(tibble.print_max = 6, tibble.print_min = 4)
 
 ## Spectra
 
-Package '**photobiology**' defines a family of classes based on the `tibble`
-class, mostly compatible with R's data frames. The present package by imposing
-some restrictions on the naming of the member vectors, allows methods to *find*
-the data when passed one of these objects as argument. In addition, as the data
-are checked when the object is built or modified, there is no need to test for
-their validity each time a calculation is carried out. Another advantage of
-using spectrum objects, is that specialized versions of generic functions like
-`print` and operators like `+` are defined for spectra. Objects of all the
-`..._spct` classes are also `tibble` and `data.frame` objects, as a result of
-how classes have been derived.
+Package '**photobiology**' defines a family of classes based on the
+`tibble` class, mostly compatible with R's data frames. The present
+package by imposing some restrictions on the naming of the member
+vectors, allows methods to *find* the data when passed one of these
+objects as argument. In addition, as the data are checked when the
+object is built or modified, there is no need to test for their validity
+each time a calculation is carried out. Another advantage of using
+spectrum objects, is that specialized versions of generic functions like
+`print` and operators like `+` are defined for spectra. Objects of all
+the `..._spct` classes are also `tibble` and `data.frame` objects, as a
+result of how classes have been derived.
 
-In this package we define a *generic* or *base* spectrum class, derived from
-`tibble`, which in turn has been derived from `data.frame`. Classes for
-specialized types of spectra are derived from `generic_spct`. This *parenthood*
-hierarchy means that spectral objects can be used almost anywhere where a
-`data.frame` is expected (and also converted into data frames with R's function
-`as.data.frame()`). Specializations of many methods including extraction
-(indexing) methods and partial assignment methods are defined to ensure that the
-expectations on the variables contained in objects of these classes remain valid
-in most situations. Other specializations of methods and functions are related
-to achieving a convenient and concise syntax tailored for spectral data as in
-the case of mathematical operators and functions.
+In this package we define a *generic* or *base* spectrum class, derived
+from `tibble`, which in turn has been derived from `data.frame`. Classes
+for specialized types of spectra are derived from `generic_spct`. This
+*parenthood* hierarchy means that spectral objects can be used almost
+anywhere where a `data.frame` is expected (and also converted into data
+frames with R's function `as.data.frame()`). Specializations of many
+methods including extraction (indexing) methods and partial assignment
+methods are defined to ensure that the expectations on the variables
+contained in objects of these classes remain valid in most situations.
+Other specializations of methods and functions are related to achieving
+a convenient and concise syntax tailored for spectral data as in the
+case of mathematical operators and functions.
 
-Another important aspect is that when spectral data are stored in objects of
-these classes, the physical quantities and units of expression are also stored
-as metadata. Furthermore, attributes are used to keep track of both metadata
-related to the origin of the data and of later transformations that affect their
-interpretation, such as normalization or re-scaling. **Although sanity tests are
-applied at the time of object creation, to a large extent the responsibility of
-ensuring that the numbers provided as argument to object constructors comply
-with expectations remains with the users of the package.**
+Another important aspect is that when spectral data are stored in
+objects of these classes, the physical quantities and units of
+expression are also stored as metadata. Furthermore, attributes are used
+to keep track of both metadata related to the origin of the data and of
+later transformations that affect their interpretation, such as
+normalization or re-scaling. **Although sanity tests are applied at the
+time of object creation, to a large extent the responsibility of
+ensuring that the numbers provided as argument to object constructors
+comply with expectations remains with the users of the package.**
 
-In addition to the classes for storing individual spectra, classes for storing
-collections of these spectral objects are defined. These classes are derived
-from class `list` and can contain member spectra of different lengths and
-measured at different wavelength values.
+In addition to the classes for storing individual spectra, classes for
+storing collections of these spectral objects are defined. These classes
+are derived from class `list` and can contain member spectra of
+different lengths and measured at different wavelength values.
 
-We give in this vignette brief descriptions and examples of the use of different
-classes, methods, functions and operators. We start with the simplest and most
-frequently used methods.
+We give in this vignette brief descriptions and examples of the use of
+different classes, methods, functions and operators. We start with the
+simplest and most frequently used methods.
 
 ### Getting started
 
@@ -148,27 +202,28 @@ library(dplyr)
 
 ### Classes
 
-Package '**photobiology**' defines several classes intended to be used to store
-different types of spectral data. They are all derived from `generic_spct`,
-which in turn is derived from `tibble::tibble`. Table 1 lists these classes.
-Attributes are used to store *metadata* such as information about units of
-expression.
+Package '**photobiology**' defines several classes intended to be used
+to store different types of spectral data. They are all derived from
+`generic_spct`, which in turn is derived from `tibble::tibble`. Table 1
+lists these classes. Attributes are used to store *metadata* such as
+information about units of expression.
 
 ------------------------------------------------------------------------
 
-**Table 1. Classes for spectral data.** In addition to the required variables
-listed in the table, additional arbitrary variables are partly supported---some
-operations will not include them in returned values to avoid ambiguity and other
-possible conflicts. In addition to the attributes listed in the table, all
-spectral objects support attributes `multiple.wl`, `idfactor`, `normalized`,
-`scaled`, `when.measured`, `where.measured`, `what.measured`, `how.measured`
-plus the normal attributes of `tibble` (and `data.frame`) objects including
-`comment`. All these attributes plus attributes `instrument.descriptor` and
-`instrument.settings` are retained across operations on spectra as long as they
-remain valid.
+**Table 1. Classes for spectral data.** In addition to the required
+variables listed in the table, additional arbitrary variables are partly
+supported---some operations will not include them in returned values to
+avoid ambiguity and other possible conflicts. In addition to the
+attributes listed in the table, all spectral objects support attributes
+`multiple.wl`, `idfactor`, `normalized`, `scaled`, `when.measured`,
+`where.measured`, `what.measured`, `how.measured` plus the normal
+attributes of `tibble` (and `data.frame`) objects including `comment`.
+All these attributes plus attributes `instrument.descriptor` and
+`instrument.settings` are retained across operations on spectra as long
+as they remain valid.
 
 | Class name          | Required variables         | Attributes                                          |
-|:--------------------|:---------------------------|:----------------------------------------------------|
+|:----------------|:------------------|:-----------------------------------|
 | `generic_spct`      | `w.length`                 |                                                     |
 | `calib ration_spct` | `w.length`, `irrad.mult`   | `instr.desc`                                        |
 | `raw_spct`          | `w.length`, `counts`       | `instr.desc`, `instr.settings`, `linearized`        |
@@ -241,7 +296,7 @@ interpreted as seconds. `exposure.time` accepts these same values, but
 not the character strings.
 
 | Variables                   | Unit of expression                      | Attribute value        |
-|:----------------------------|:----------------------------------------|:-----------------------|
+|:---------------------|:------------------------------|:------------------|
 | **A: stored**               |                                         |                        |
 | w.length                    | nm                                      |                        |
 | counts                      | $n$                                     |                        |
@@ -301,17 +356,18 @@ The default time unit used is *second*, but *minute*, *hour*, *day* and
 exposure time, in other words, fluence instead of irradiance---to the
 constructor `source_spct()`. In addition to these character constants
 objects of class `lubridate:duration` are also accepted. In other words
-irradiance is a flux rate while exposure is a flux, as both are expressed
-per unit of illuminated area.
+irradiance is a flux rate while exposure is a flux, as both are
+expressed per unit of illuminated area.
 
-In the case of spectra of the molar attenuation coefficient we use 
+In the case of spectra of the molar attenuation coefficient we use
 $\log_{10}$ as a base for the stored values but the constructor accepts
 data expressed in other log bases. The expected units are always in
-metres ($m^{-1}$) rather than the frequently used centimetres ($cm^{-1}$).
+metres ($m^{-1}$) rather than the frequently used centimetres
+($cm^{-1}$).
 
-Transmittance, reflectance and absorptance are stored as fractions of one.
-The constructors also accept these quantities expressed as percentages,
-and convert them.
+Transmittance, reflectance and absorptance are stored as fractions of
+one. The constructors also accept these quantities expressed as
+percentages, and convert them.
 
 Most attributes are set when a spectral object is created, either using
 default values or with values supplied as arguments to the constructor.
@@ -412,11 +468,11 @@ class(my.df)
 my.spct
 ```
 
-We can copy and convert any spectrum object into any of its base clases, such as
-`generic_spct` or `data.frame`. This can result in the immediate and surely in 
-the delayed loss of metadata when modified. In addition, objects _downgraded_ 
-to a base class support fewer operations and those still available may
-behave differently.
+We can copy and convert any spectrum object into any of its base clases,
+such as `generic_spct` or `data.frame`. This can result in the immediate
+and surely in the delayed loss of metadata when modified. In addition,
+objects *downgraded* to a base class support fewer operations and those
+still available may behave differently.
 
 ```{r, construction-2}
 my.g.spct <- as.generic_spct(my.spct)
@@ -463,17 +519,17 @@ source_spct(w.length = 300:305, s.e.irrad = -1)
 source_spct(w.length = 300:305, s.e.irrad = -1, strict.range = NULL)
 ```
 
-Argument `comment` can be used to add a comment to the data at
-the time of construction.
+Argument `comment` can be used to add a comment to the data at the time
+of construction.
 
 ```{r, construction-8}
 my.cm.spct <- source_spct(w.length = 300:305, s.e.irrad = 1,
                           comment = "This is a comment")
 comment(my.cm.spct)
 ```
-The constructors treat unrecognized named arguments as data to create aditional 
-columns in the spectral objects.
 
+The constructors treat unrecognized named arguments as data to create
+aditional columns in the spectral objects.
 
 ### Metadata attributes
 
@@ -1054,7 +1110,7 @@ will be determined by the class(es) of the values returned by the
 applied function.
 
 | *apply* function | first arg. class | v\. class       | f.v. class     | f.v. length | f.v. dims   |
-|:-----------------|:-----------------|:----------------|:---------------|:------------|:------------|
+|:-----------|:-----------|:-----------|:-----------|:-----------|:-----------|
 | `msmsply`        | `generic_mspct`  | `generic_mspct` | `generic_spct` | 1           | any         |
 | `msdply`         | `generic_mspct`  | `data.frame`    | `numeric`      | $1\ldots n$ | 1           |
 | `mslply`         | `generic_mspct`  | `list`          | any            | any         | any         |
@@ -1128,54 +1184,76 @@ str(msaply(two.mspct, max))
 str(msaply(two.mspct, range))
 ```
 
-For the most common cases for which one would use the _apply_ functions described in the previous section methods and functions for operations on collections of spectra are defined in the package. These methods are described in a later section and listed in Table 9.
+For the most common cases for which one would use the *apply* functions
+described in the previous section methods and functions for operations
+on collections of spectra are defined in the package. These methods are
+described in a later section and listed in Table 9.
 
 ### Summary spectra
 
-Starting from a collection of spectra we may want to obtain a single spectrum containing a summary of them. The current implementation of the methods described in this section expects that all spectra in a collection are of the same class, and data is available for each of them at exactly the same set of wavelengths.
+Starting from a collection of spectra we may want to obtain a single
+spectrum containing a summary of them. The current implementation of the
+methods described in this section expects that all spectra in a
+collection are of the same class, and data is available for each of them
+at exactly the same set of wavelengths.
 
-| functions | class of argument | class of returned spectrum | variables in spectrum |
-|:--------------------|:----------|:---------------|:------------------------|
-| `s_sum`| `source_mspct` | `source_spct` | same as input |
-| `s_sum` | `response_mspct` | `response_spct` | same as input |
-| `s_sum` | `filter_mspct` | `generic_spct` | input tagged `.sum` |
-| `s_sum` | `reflector_mspct` | `generic_spct` | input tagged `.sum` |
-| `s_sum` | `calibration_mspct` | `generic_spct` | input tagged `.sum` |
-| `s_prod`| `source_mspct` | `source_spct` | input tagged `.prod`  |
-| `s_prod` | `response_mspct` | `response_spct` | input tagged `.prod`  |
-| `s_prod` | `filter_mspct` | `filter_spct` | same as input |
-| `s_prod` | `reflector_mspct` | `reflector_spct` | same as input |
-| `s_prod` | `calibration_mspct` | `generic_spct` | input tagged `.prod` |
-| `s_mean` or `s_median` | `source_mspct` | `source_spct` | same as input |
-| `s_mean` or `s_median` | `response_mspct` | `response_spct` | same as input |
-| `s_mean` or `s_median` | `filter_mspct` | `filter_spct` | same as input |
-| `s_mean` or `s_median` | `reflector_mspct` | `reflector_spct` | same as input |
-| `s_mean` or `s_median` | `calibration_mspct` | `calibration_spct` | same as input |
-| `s_var`, `s_se` or `s_sd` | `source_mspct` | `generic_spct` | input tagged `.var`, `.se` or `.sd` |
-| `s_var`, `s_se` or `s_sd` | `response_mspct` | `generic_spct` | input tagged `.var`, `.se` or `.sd` |
-| `s_var`, `s_se` or `s_sd` | `filter_mspct` | `generic_spct` | input tagged `.var`, `.se` or `.sd` |
-| `s_var`, `s_se` or `s_sd` | `reflector_mspct` | `generic_spct` | input tagged `.var`, `.se` or `.sd` |
-| `s_var`, `s_se` or `s_sd` | `calibration_mspct` | `generic_spct` | input tagged `.var`, `.se` or `.sd` |
-| `s_mean_se`| `source_mspct` | `source_spct` | same as input plus col. tagged `.se` |
-| `s_mean_se` | `response_mspct` | `response_spct` | same as input plus col. tagged `.se` |
-| `s_mean_se` | `filter_mspct` | `filter_spct` | same as input plus col. tagged `.se` |
-| `s_mean_se` | `reflector_mspct` | `reflector_spct` | same as input plus col. tagged `.se` |
-| `s_mean_se` | `calibration_mspct` | `calibration_spct` | same as input plus col. tagged `.se` |
-| `s_range` | `source_mspct` | `generic_spct` | input tagged `.min` and `.max` |
-| `s_range` | `response_mspct` | `generic_spct` | input tagged `.min` and `.max` |
-| `s_range` | `filter_mspct` | `generic_spct` | input tagged `.min` and `.max` |
-| `s_range` | `reflector_mspct` | `generic_spct` | input tagged `.min` and `.max` |
-| `s_range` | `calibration_mspct` | `generic_spct` | input tagged `.min` and `.max` | 
+| functions                 | class of argument   | class of returned spectrum | variables in spectrum                |
+|:------------------|:---------------|:---------------|:---------------------|
+| `s_sum`                   | `source_mspct`      | `source_spct`              | same as input                        |
+| `s_sum`                   | `response_mspct`    | `response_spct`            | same as input                        |
+| `s_sum`                   | `filter_mspct`      | `generic_spct`             | input tagged `.sum`                  |
+| `s_sum`                   | `reflector_mspct`   | `generic_spct`             | input tagged `.sum`                  |
+| `s_sum`                   | `calibration_mspct` | `generic_spct`             | input tagged `.sum`                  |
+| `s_prod`                  | `source_mspct`      | `source_spct`              | input tagged `.prod`                 |
+| `s_prod`                  | `response_mspct`    | `response_spct`            | input tagged `.prod`                 |
+| `s_prod`                  | `filter_mspct`      | `filter_spct`              | same as input                        |
+| `s_prod`                  | `reflector_mspct`   | `reflector_spct`           | same as input                        |
+| `s_prod`                  | `calibration_mspct` | `generic_spct`             | input tagged `.prod`                 |
+| `s_mean` or `s_median`    | `source_mspct`      | `source_spct`              | same as input                        |
+| `s_mean` or `s_median`    | `response_mspct`    | `response_spct`            | same as input                        |
+| `s_mean` or `s_median`    | `filter_mspct`      | `filter_spct`              | same as input                        |
+| `s_mean` or `s_median`    | `reflector_mspct`   | `reflector_spct`           | same as input                        |
+| `s_mean` or `s_median`    | `calibration_mspct` | `calibration_spct`         | same as input                        |
+| `s_var`, `s_se` or `s_sd` | `source_mspct`      | `generic_spct`             | input tagged `.var`, `.se` or `.sd`  |
+| `s_var`, `s_se` or `s_sd` | `response_mspct`    | `generic_spct`             | input tagged `.var`, `.se` or `.sd`  |
+| `s_var`, `s_se` or `s_sd` | `filter_mspct`      | `generic_spct`             | input tagged `.var`, `.se` or `.sd`  |
+| `s_var`, `s_se` or `s_sd` | `reflector_mspct`   | `generic_spct`             | input tagged `.var`, `.se` or `.sd`  |
+| `s_var`, `s_se` or `s_sd` | `calibration_mspct` | `generic_spct`             | input tagged `.var`, `.se` or `.sd`  |
+| `s_mean_se`               | `source_mspct`      | `source_spct`              | same as input plus col. tagged `.se` |
+| `s_mean_se`               | `response_mspct`    | `response_spct`            | same as input plus col. tagged `.se` |
+| `s_mean_se`               | `filter_mspct`      | `filter_spct`              | same as input plus col. tagged `.se` |
+| `s_mean_se`               | `reflector_mspct`   | `reflector_spct`           | same as input plus col. tagged `.se` |
+| `s_mean_se`               | `calibration_mspct` | `calibration_spct`         | same as input plus col. tagged `.se` |
+| `s_range`                 | `source_mspct`      | `generic_spct`             | input tagged `.min` and `.max`       |
+| `s_range`                 | `response_mspct`    | `generic_spct`             | input tagged `.min` and `.max`       |
+| `s_range`                 | `filter_mspct`      | `generic_spct`             | input tagged `.min` and `.max`       |
+| `s_range`                 | `reflector_mspct`   | `generic_spct`             | input tagged `.min` and `.max`       |
+| `s_range`                 | `calibration_mspct` | `generic_spct`             | input tagged `.min` and `.max`       |
 
-The calculations are done wavelength by wavelength yielding a spectrum at the same wavelengths than those in the input. Removal of `NA` values is done wavelength by wavelength. As shown in the table above, depending on the operation the returned quantity may be equivalent or not to the quantity in the input. When the quantity changes, even if units of expression remain the same, the name of the variable and class of the returned spectrum are different to those in the input.
+The calculations are done wavelength by wavelength yielding a spectrum
+at the same wavelengths than those in the input. Removal of `NA` values
+is done wavelength by wavelength. As shown in the table above, depending
+on the operation the returned quantity may be equivalent or not to the
+quantity in the input. When the quantity changes, even if units of
+expression remain the same, the name of the variable and class of the
+returned spectrum are different to those in the input.
 
-Methods in this "family" are fast and are specially useful for large collections of spectra containing even thousands of individual spectra. Nonetheless, for the example below we use a collection of two spectra. As computing the mean returns values of the same quantity as in the input the returned value is a `source_spct` object, in other words of the same class as the members of `two.mspct`.
+Methods in this "family" are fast and are specially useful for large
+collections of spectra containing even thousands of individual spectra.
+Nonetheless, for the example below we use a collection of two spectra.
+As computing the mean returns values of the same quantity as in the
+input the returned value is a `source_spct` object, in other words of
+the same class as the members of `two.mspct`.
 
 ```{r}
 s_mean(two.mspct)
 ```
 
-When we compute the standard error, the quantity returned is not the same. Consequently, the object returned is in this case a `generic_spct` instead of `source_spc` as it does not contain spectral irradiance data as the input did. The variable name is in addition tagged with `.se` to _advertise_ the change in the quantity.
+When we compute the standard error, the quantity returned is not the
+same. Consequently, the object returned is in this case a `generic_spct`
+instead of `source_spc` as it does not contain spectral irradiance data
+as the input did. The variable name is in addition tagged with `.se` to
+*advertise* the change in the quantity.
 
 ```{r}
 s_se(two.mspct)
@@ -1328,13 +1406,13 @@ are photon or energy based, nor whether the output irradiance will be
 based on photon or energy units. All waveband objects belong to the S3
 class `waveband`.
 
-A waveband stores the boundaries of a range of wavelengths, $\lambda_1$ and 
-$\lambda_2$, so that wavelengths within $\lambda_1 \ge \lambda > \lambda_2$
-belong to the waveband. If the waveband describes a spectral weighting
-function, in addition to the range, two formulations of the function
-used to compute the weights as a function of wavelength are also stored,
-$w_E(\lambda)$ and $w_Q(\lambda)$ to be used with energy- or photon based
-irradiances.
+A waveband stores the boundaries of a range of wavelengths, $\lambda_1$
+and $\lambda_2$, so that wavelengths within
+$\lambda_1 \ge \lambda > \lambda_2$ belong to the waveband. If the
+waveband describes a spectral weighting function, in addition to the
+range, two formulations of the function used to compute the weights as a
+function of wavelength are also stored, $w_E(\lambda)$ and
+$w_Q(\lambda)$ to be used with energy- or photon based irradiances.
 
 Spectral weighting functions are normally used to compute effective
 irradiances. In the current implementation their use is limited to this
@@ -1389,10 +1467,10 @@ CIE.wb <- waveband(c(250, 400), weight = "SWF",
                    SWF.e.fun = CIE_e_fun, SWF.norm = 298)
 ```
 
-Another case where you might want to enter the same function twice, is if you
-are using an absorptance spectrum as SWF, as the percent of radiation absorbed
-will be independent of whether photon or energy units are used for the spectral
-irradiance.
+Another case where you might want to enter the same function twice, is
+if you are using an absorptance spectrum as SWF, as the percent of
+radiation absorbed will be independent of whether photon or energy units
+are used for the spectral irradiance.
 
 The first argument to `waveband()` does not need to be a numeric vector
 of length two. Any R object of a class that supplies a `range()` method
@@ -1581,7 +1659,7 @@ forbidden and return `NA` and issue a warning. Operators `%/%` and `%%`
 follow `/`.
 
 | e1                 | `+` | `-` | `*` | `/` | `^` | e2                   | value                     |
-|:-------------------|:---:|:---:|:---:|:---:|:---:|:---------------------|:--------------------------|
+|:--------|:-------:|:-------:|:-------:|:-------:|:-------:|:--------|:----------|
 | `raw_spct`         |  Y  |  Y  |  Y  |  Y  |  Y  | `raw_spct`           | `raw_spct`                |
 | `cps_spct`         |  Y  |  Y  |  Y  |  Y  |  Y  | `cps_spct`           | `cps_spct`                |
 | `source_spct`      |  Y  |  Y  |  Y  |  Y  |  Y  | `source_spct`        | `source_spct`             |
@@ -1684,7 +1762,7 @@ and issue a warning. Additional supported functions:
 `log2, log10, sin, cos, tan, asin, acos, atan, sinpi, cospi, tanpi, signif, floor, ceiling, trunc, sign, abs`.
 
 | e1                 | `+, -` | `log, exp` | trig. | `round` | `sqrt` | value              |
-|:-------------------|:------:|:----------:|:-----:|:-------:|:------:|:-------------------|
+|:----------|:---------:|:---------:|:---------:|:---------:|:---------:|:----------|
 | `raw_spct`         |   Y    |     Y      |   Y   |    Y    |   Y    | `raw_spct`         |
 | `cps_spct`         |   Y    |     Y      |   Y   |    Y    |   Y    | `cps_spct`         |
 | `calibration_spct` |   Y    |     Y      |   Y   |    Y    |   Y    | `calibration_spct` |
@@ -1704,40 +1782,55 @@ sqrt(sun.spct)
 
 ### Options
 
-Table 7 lists all the recognized options affecting maths operators and functions, and their default values. Within the suite all functions have a default value which is used when the options are undefined. Options are set using base R's function `options`, and queried with functions `options` and `getOption`.
+Table 7 lists all the recognized options affecting maths operators and
+functions, and their default values. Within the suite all functions have
+a default value which is used when the options are undefined. Options
+are set using base R's function `options`, and queried with functions
+`options` and `getOption`.
 
 ------------------------------------------------------------------------
 
-**Table 7. Options used in the 'r4photobiology suite' and recognized by methods, operators and functions in the 'photobiology' package.** Option names, accepted and default values, and the purpose of the options are given. Option `photobiology.verbose` is set to the
-value of R's own `verbose` option at the time the 'photobiology' package is attached to the session.
+**Table 7. Options used in the 'r4photobiology suite' and recognized by
+methods, operators and functions in the 'photobiology' package.** Option
+names, accepted and default values, and the purpose of the options are
+given. Option `photobiology.verbose` is set to the value of R's own
+`verbose` option at the time the 'photobiology' package is attached to
+the session.
 
-| Option | `values`, **default** | purpose, _unit_                  | _convenience function_
-|:------|:---------------------|:------------------------------------|------------------|
-| **Base R** | | | |
-| `digits` | 7 | $d - 3$ used by `summary` | |
-| **tibble** | | | |
-| tibble.print_max | **20** | Maximum number of rows printed | |
-| tibble.print_min | **10** | Number of rows printed if row number threshold is exceeded | |
-| tibble.width     | **NULL** | Output width |
-| **r4photobiology** | | | |
-| photobiology.radiation.unit | **"energy"** | $W\,m^{-2}\,nm^{-1}$ | `using_energy()`, `energy_as_default()` |
-|                             | `"photon"` |$\mu mol\,m^{-2}\,nm^{-1}$ | `using_photon()`, `photon_as_default()` |
-| photobiology.filter.qty | **"transmittance"** | $/1$ | `using_Tfr()`, `Tfr_as_default()` |
-|                         | `"absorptance"` | $/1$ | `using_Afr()`, `Afr_as_default()` |
-|                         | `"absorbance"` | a.u. $\log_{10}$ base | `using_A()`, `A_as_default()` |
-| photobiology.strict.range | `NA` |  skip range test | `strict_range_as_default(NA)` |
-|                        | `TRUE` | trigger an error | `strict_range_as_default(TRUE)` |
-|                         | **FALSE** | trigger a warning | `strict_range_as_default(FALSE)` |
-| photobiology.check.spct | **TRUE** |  enable `check_spct()` | `enable_check_spct()` |
-|                         | `FALSE` | disable `check_spct()` | `disable_check_spct()` |
-| photobiology.waveband.trim | `FALSE` | exclude | `wb_trim_as_default(FALSE)` |
-|                            | **TRUE** | trim or exclude |  `wb_trim_as_default(TRUE)` |
-| photobiology.use.cached.mult | **FALSE** | do not cache intermediate results |  `use_cached_mult_as_default(FALSE)` |
-|                             | `TRUE` | cache intermediate results |  `use_cached_mult_as_default(TRUE)` |
-| photobiology.verbose | `FALSE` | minimal warnings and messages |   `verbose_as_default(FALSE)` |
-|                             | `TRUE` | all warnings and messages |   `verbose_as_default(TRUE)` |
+| Option                       | `values`, **default** | purpose, *unit*                                            | *convenience function*                  |
+|:--------------|:---------------|:---------------------------|---------------|
+| **Base R**                   |                       |                                                            |                                         |
+| `digits`                     | 7                     | $d - 3$ used by `summary`                                  |                                         |
+| **tibble**                   |                       |                                                            |                                         |
+| tibble.print_max             | **20**                | Maximum number of rows printed                             |                                         |
+| tibble.print_min             | **10**                | Number of rows printed if row number threshold is exceeded |                                         |
+| tibble.width                 | **NULL**              | Output width                                               |                                         |
+| **r4photobiology**           |                       |                                                            |                                         |
+| photobiology.radiation.unit  | **"energy"**          | $W\,m^{-2}\,nm^{-1}$                                       | `using_energy()`, `energy_as_default()` |
+|                              | `"photon"`            | $\mu mol\,m^{-2}\,nm^{-1}$                                 | `using_photon()`, `photon_as_default()` |
+| photobiology.filter.qty      | **"transmittance"**   | $/1$                                                       | `using_Tfr()`, `Tfr_as_default()`       |
+|                              | `"absorptance"`       | $/1$                                                       | `using_Afr()`, `Afr_as_default()`       |
+|                              | `"absorbance"`        | a.u. $\log_{10}$ base                                      | `using_A()`, `A_as_default()`           |
+| photobiology.strict.range    | `NA`                  | skip range test                                            | `strict_range_as_default(NA)`           |
+|                              | `TRUE`                | trigger an error                                           | `strict_range_as_default(TRUE)`         |
+|                              | **FALSE**             | trigger a warning                                          | `strict_range_as_default(FALSE)`        |
+| photobiology.check.spct      | **TRUE**              | enable `check_spct()`                                      | `enable_check_spct()`                   |
+|                              | `FALSE`               | disable `check_spct()`                                     | `disable_check_spct()`                  |
+| photobiology.waveband.trim   | `FALSE`               | exclude                                                    | `wb_trim_as_default(FALSE)`             |
+|                              | **TRUE**              | trim or exclude                                            | `wb_trim_as_default(TRUE)`              |
+| photobiology.use.cached.mult | **FALSE**             | do not cache intermediate results                          | `use_cached_mult_as_default(FALSE)`     |
+|                              | `TRUE`                | cache intermediate results                                 | `use_cached_mult_as_default(TRUE)`      |
+| photobiology.verbose         | `FALSE`               | minimal warnings and messages                              | `verbose_as_default(FALSE)`             |
+|                              | `TRUE`                | all warnings and messages                                  | `verbose_as_default(TRUE)`              |
 
-The behaviour of the operators defined in this package depends on the value of two global options. For example, if we would like the operators to operate on spectral photon irradiance and return spectral photon irradiance instead of spectral energy irradiance, this behaviour can be set, and will remain active until unset or reset. It is possible to change options using base R's function `options()` as shown in the next code chunk. The other options listed in the Table above can be set similarly, while to unset any option, they can be given a `NULL` value.
+The behaviour of the operators defined in this package depends on the
+value of two global options. For example, if we would like the operators
+to operate on spectral photon irradiance and return spectral photon
+irradiance instead of spectral energy irradiance, this behaviour can be
+set, and will remain active until unset or reset. It is possible to
+change options using base R's function `options()` as shown in the next
+code chunk. The other options listed in the Table above can be set
+similarly, while to unset any option, they can be given a `NULL` value.
 
 ```{r, options-1}
 options(photobiology.radiation.unit = "photon")
@@ -1780,7 +1873,7 @@ as arguments and return a collection of spectral objects.
 not available.
 
 | methods               | raw/cps | source | response | filter | reflector | object | chroma |
-|:----------------------|:-------:|:------:|:--------:|:------:|:---------:|:------:|:------:|
+|:---------|:-------:|:-------:|:-------:|:-------:|:-------:|:-------:|:-------:|
 | merge                 |   \+    |   \+   |    \+    |   \+   |    \+     |   \+   |   \+   |
 | rbindspct             |   \+    |   \+   |    \+    |   \+   |    \+     |   \+   |   \+   |
 | e2q, q2e              |   --    |   \+   |    \+    |   --   |    --     |   --   |   --   |
@@ -1815,7 +1908,7 @@ available, -- not available, **ms** use `msmsply()` or `convolve_each()`
 to apply function or operator to collection members.
 
 | methods               | raw/cps | source | response | filter | reflector | object | chroma |
-|:----------------------|:-------:|:------:|:--------:|:------:|:---------:|:------:|:------:|
+|:---------|:-------:|:-------:|:-------:|:-------:|:-------:|:-------:|:-------:|
 | convolve_each         |   --    |   \+   |    \+    |   \+   |    \+     |   \+   |   \+   |
 | msmsply               |   \+    |   \+   |    \+    |   \+   |    \+     |   \+   |   \+   |
 | msdply                |   \+    |   \+   |    \+    |   \+   |    \+     |   \+   |   \+   |
@@ -1907,16 +2000,19 @@ frames but check the validity of the spectra after the replacement.
 
 ### Conversions between radiation units
 
-The functions `e2q` and `q2e` can be used on source spectra to convert
-spectral energy irradiance into spectral photon irradiance and vice
-versa. A second optional argument sets the action with `"add"` and
-`"replace"` as possible values. By default these functions use normal
-reference semantics.
+The functions `e2q` and `q2e` can be used on source spectra to convert spectral
+energy irradiance into spectral photon irradiance and vice versa. They can be
+also used with response spectra. A second optional argument sets the action with
+`"add"` and `"replace"` as possible values. By default these functions use
+normal copy semantics but also support reference semantics.
 
 ```{r, manip-5}
 e2q(sun.spct, "add")
 e2q(sun.spct, "replace")
 ```
+
+When a normalized spectrum is converted, the normalization is reapplied to
+the converted data.
 
 ### Conversions among transmission quantities
 
@@ -1938,22 +2034,24 @@ any2Afr(polyester.spct, "add")
 any2Afr(polyester.spct, "replace")
 ```
 
+When a normalized spectrum is converted, the normalization is not reapplied to
+the converted data. _This will change in the future._
+
 ### Normalizing a spectrum
 
-Normalization is a way rescaling a spectrum so that the spectral quantity 
-takes a fixed value, in most cases exactly 1, at a specific wavelength. 
-Frequently this wavelength corresponds to the maximum value of the spectral
-quantity.
+Normalization is a way rescaling a spectrum so that the spectral
+quantity takes a fixed value, in most cases exactly 1, at a specific
+wavelength. Frequently this wavelength corresponds to the maximum value
+of the spectral quantity.
 
-$$Q_\mathrm{norm}(\lambda) = \frac{Q(\lambda)}{\max{Q(\lambda)}}$$ 
-When normalizing to a specific wavelength, say 300 nm, the equation becomes
+$$Q_\mathrm{norm}(\lambda) = \frac{Q(\lambda)}{\max{Q(\lambda)}}$$ When
+normalizing to a specific wavelength, say 300 nm, the equation becomes
 $$Q_\mathrm{norm}(\lambda) = \frac{Q(\lambda)}{{Q(\lambda = 300)}}$$
 Function `normalize` permits normalizing a spectrum to a value of one at
 an arbitrary wavelength (nm) or to the wavelength of either the maximum
 or the minimum spectral value. It supports all the different spectral
-classes, In the example we use a `source_spct` object. (Equivalent
-functions with names spelled with "s" instead of "z" are
-available.)
+classes. In the example we use a `source_spct` object. (Equivalent
+functions with names spelled with "s" instead of "z" are available.)
 
 ```{r, manip-6}
 normalize(sun.spct)
@@ -1988,7 +2086,8 @@ getNormalized(my.spct)
 Once a spectrum is normalized, summary methods that return values in
 absolute units such as `irrad()`, will trigger an error if applied.
 Ratios and similar summaries that are invariant with respect to
-normalization can be calculated.
+normalization can be calculated. Already normalized spectra can be normalized
+again.
 
 Applying method `fscale()` removes the normalization and clears the
 corresponding attribute where the normalization information is stored.
@@ -1997,20 +2096,21 @@ this is rarely valid or of any use.
 
 ### Rescaling a spectrum
 
-While normalization is done with respect to a single wavelength, rescaling as
-implemented in this package is more flexible. The scaling factor is computed as
-a summary over a range of wavelengths. This allows us, among other things to
-rescale spectral irradiance so that irradiance in a specific waveband is equal
-to one, or to some other user supplied target value.
+While normalization is done with respect to a single wavelength,
+rescaling as implemented in this package is more flexible. The scaling
+factor is computed as a summary over a range of wavelengths. This allows
+us, among other things to rescale spectral irradiance so that irradiance
+in a specific waveband is equal to one, or to some other user supplied
+target value.
 
 $$Q^\prime(\lambda) = \frac{Q(\lambda)}{f(Q(\lambda))_{\ \mathrm{for}\ \ \lambda_1\geq\lambda>\lambda_2}}\times \alpha$$
-where $\alpha$ is the target value for  $f(Q(\lambda))$.
+where $\alpha$ is the target value for $f(Q(\lambda))$.
 
 In other words, function `fscale()` rescales a spectrum by dividing each
-spectral data value by a value calculated with a function (f) selected by a
-character string ("total" or "mean"), or an actual R function which can accept
-the spectrum object supplied as its first argument. Additional named arguments
-can be also passed.
+spectral data value by a value calculated with a function (f) selected
+by a character string ("total" or "mean"), or an actual R function which
+can accept the spectrum object supplied as its first argument.
+Additional named arguments can be also passed.
 
 How metadata is set in the returned object is controlled by a logical
 argument to parameter `set.scaled`. If `TRUE`, the data are labelled as
@@ -2070,9 +2170,10 @@ separately from the emission spectrum.
 
 ### Shifting the zero of the spectral data scale
 
-While re-scaling relies on a multiplicative factor shifting of the scale is
-done by addition (or subtraction) or constant. This allows us, among other things to
-remove a baseline computed from a region known to be equal to zero.
+While re-scaling relies on a multiplicative factor shifting of the scale
+is done by addition (or subtraction) or constant. This allows us, among
+other things to remove a baseline computed from a region known to be
+equal to zero.
 
 $$Q^\prime(\lambda) = Q(\lambda) - f(Q(\lambda))_{\ \mathrm{for}\ \ \lambda_1\geq\lambda>\lambda_2}$$
 Function `fshift()` shifts the zero of the scale of a spectrum by
@@ -2314,6 +2415,13 @@ implemented for objects of all spectral classes that a single default
 data column in addition to wavelengths and also for collections of those
 objects.
 
+**NOTE:** Thinning, obviously, almost always changes spectra originally
+expressed at the same set of wavelength values into spectra expressed at two
+different sets of wavelengths values. This forbid some operations among
+them, like _parallel_ operations in collections of spectra or combining
+them into a wide data frame. Most of these restrictions have been removed
+by implementing on-the-fly interpolation in version 0.10.15.
+
 ### Convolving weights
 
 It is very instructive to look at weighted spectral data to understand
@@ -2323,16 +2431,17 @@ among photoreceptors and ambient radiation. It can also illustrate the
 large effect that small measuring errors can have on the estimated
 effective irradiances or exposures when SWFs have a steep slope.
 
-For biologically effective energy irradiance $E_\mathrm{BE}$ the following
-equation describes the convolution, wavelength by wavelength, between
-spectral energy irradiance and a biological spectral weighting function 
+For biologically effective energy irradiance $E_\mathrm{BE}$ the
+following equation describes the convolution, wavelength by wavelength,
+between spectral energy irradiance and a biological spectral weighting
+function
 
-$$E_\mathrm{BE}(\lambda) = E(\lambda) \times w_E(\lambda)$$
-or for biologically effective photon irradiance $Q_\mathrm{BE}$
-$$Q_\mathrm{BE}(\lambda) = Q(\lambda) \times w_Q(\lambda)$$
-For the convolution to be possible, both spectral irradiance and spectral
-weights should be available for the same basis of expression and at the same
-discrete wavelength values.
+$$E_\mathrm{BE}(\lambda) = E(\lambda) \times w_E(\lambda)$$ or for
+biologically effective photon irradiance $Q_\mathrm{BE}$
+$$Q_\mathrm{BE}(\lambda) = Q(\lambda) \times w_Q(\lambda)$$ For the
+convolution to be possible, both spectral irradiance and spectral
+weights should be available for the same basis of expression and at the
+same discrete wavelength values.
 
 #### Individual spectra
 
@@ -2346,34 +2455,52 @@ sun.spct * CIE.wb
 
 ### Tagging with bands and colours
 
-We call tagging, to the process of adding reference information to spectral data. For example we can add a factor indicating regions or bands in the spectrum. We can add also information on the colour, as seen by humans, for each observed value, or for individual regions or bands of the spectrum. In most cases this additional information is used for annotations when plotting the spectral data.
+We call tagging, to the process of adding reference information to
+spectral data. For example we can add a factor indicating regions or
+bands in the spectrum. We can add also information on the colour, as
+seen by humans, for each observed value, or for individual regions or
+bands of the spectrum. In most cases this additional information is used
+for annotations when plotting the spectral data.
 
 #### Individual spectra
 
-The function `tag` can be used to tag different parts of a spectrum according to wavebands.
+The function `tag` can be used to tag different parts of a spectrum
+according to wavebands.
 
 ```{r, tag-1}
 tag(sun.spct, PAR.wb)
 tag(sun.spct, UV_bands.lst)
 ```
 
-The added factor and colour data can be used for further processing or for plotting. Information about the tagging and wavebands is stored in an attribute `tag.attr` in every tagged spectrum, this yields a more compact output and keeps a _trace_ of the tagging.
+The added factor and colour data can be used for further processing or
+for plotting. Information about the tagging and wavebands is stored in
+an attribute `tag.attr` in every tagged spectrum, this yields a more
+compact output and keeps a *trace* of the tagging.
 
 ```{r, tag-2}
 tg.sun.spct <- tag(sun.spct, PAR.wb)
 attr(tg.sun.spct, "spct.tags")
 ```
 
-Additional functions are available which return a tagged spectrum and take as input a list of wavebands, but no spectral data. They _build_ a spectrum from the data in the wavebands, and are useful for plotting the boundaries of wavebands.
+Additional functions are available which return a tagged spectrum and
+take as input a list of wavebands, but no spectral data. They *build* a
+spectrum from the data in the wavebands, and are useful for plotting the
+boundaries of wavebands.
 
 ```{r, tag-3}
 wb2tagged_spct(UV_bands.lst)
 wb2rect_spct(UV_bands.lst)
 ```
 
-Function `wb2tagged_spct` returns a tagged spectrum, with two rows for each waveband, corresponding to the low and high wavelength boundaries, while function `wb2rect_spct` returns a spectrum with only one row per waveband, with `w.length` set to its midpoint but with additional columns  `xmin` and `xmax` corresponding to the low and high wavelength boundaries of the wavebands.
+Function `wb2tagged_spct` returns a tagged spectrum, with two rows for
+each waveband, corresponding to the low and high wavelength boundaries,
+while function `wb2rect_spct` returns a spectrum with only one row per
+waveband, with `w.length` set to its midpoint but with additional
+columns `xmin` and `xmax` corresponding to the low and high wavelength
+boundaries of the wavebands.
 
-Function `is_tagged` can be used to query if an spectrum is tagged or not, and function `untag` removes the tags.
+Function `is_tagged` can be used to query if an spectrum is tagged or
+not, and function `untag` removes the tags.
 
 ```{r, tag-4}
 tg.sun.spct
@@ -2464,7 +2591,7 @@ available, \* `attr2tb` supported, -- not available, **ms** use
 **a** use `msaply` to apply function to collection members.
 
 | methods        |   raw/cps   |   source    |  response   |   filter    |  reflector  |   object    |   chroma    |
-|:---------------|:-----------:|:-----------:|:-----------:|:-----------:|:-----------:|:-----------:|:-----------:|
+|:--------|:-------:|:-------:|:-------:|:-------:|:-------:|:-------:|:-------:|
 | irrad          |     --      |     \*      |     --      |     --      |     --      |     --      |     --      |
 | e_irrad        |     --      |     \*      |     --      |     --      |     --      |     --      |     --      |
 | q_irrad        |     --      |     \*      |     --      |     --      |     --      |     --      |     --      |
@@ -2570,14 +2697,14 @@ wl_range(filters.mspct)
 
 ### Peaks, valleys and spikes
 
-Peaks and valleys in spectra are usually features of interest, while in most
-cases spikes (very narrow peaks or valleys) are undesired "noise". Of course,
-there are exceptions and for this reason methods used for extract any of
-these features have a similar interface.
+Peaks and valleys in spectra are usually features of interest, while in
+most cases spikes (very narrow peaks or valleys) are undesired "noise".
+Of course, there are exceptions and for this reason methods used for
+extract any of these features have a similar interface.
 
-Peaks and valleys can be identified simply as local maxima and minima, or their
-actual location better estimated by fitted a model to the local maximum or
-minimum and its neighbours.
+Peaks and valleys can be identified simply as local maxima and minima,
+or their actual location better estimated by fitted a model to the local
+maximum or minimum and its neighbours.
 
 #### Individual spectra
 
@@ -2601,8 +2728,9 @@ peaks(white_led.source_spct,
       span = 101, 
       unit.out = "photon")$w.length
 ```
-By passing `refine.wl = TRUE` we request that location of the peaks is 
-_refined_ by fitting a model to describe the peak.
+
+By passing `refine.wl = TRUE` we request that location of the peaks is
+*refined* by fitting a model to describe the peak.
 
 ```{r, summary-6a}
 peaks(white_led.source_spct, 
@@ -2635,10 +2763,11 @@ of the value of the spectral quantity at the peak.
 peaks(sun.spct, span = NULL, refine.wl = TRUE)
 ```
 
-Method `spikes` differs from `peaks` in that it uses a different algorithm that
-detects only very narrow peaks, usually called by the name of spikes. The value
-returned is as in the case of `peaks` a subset of the original spectrum. The
-parameters controlling the sensitivity also differ.
+Method `spikes` differs from `peaks` in that it uses a different
+algorithm that detects only very narrow peaks, usually called by the
+name of spikes. The value returned is as in the case of `peaks` a subset
+of the original spectrum. The parameters controlling the sensitivity
+also differ.
 
 ```{r, summary-10}
 spikes(sun.spct)
@@ -2664,18 +2793,20 @@ object of length zero is returned for them.
 Method `wls_at_target` takes a spectrum as first argument and returns a
 subset of the spectral object data or a new object corresponding to
 wavelengths at which the spectrum is at the target value. Geometrically
-is equivalent to finding the wavelengths at which a horizontal _target_
+is equivalent to finding the wavelengths at which a horizontal *target*
 line intercepts the curve depicting the spectrum.
 
 ```{r, find-wls-1}
 wls_at_target(Ler_leaf_trns.spct, target = "half.maximum")
 wls_at_target(Ler_leaf_trns.spct, target = "half.maximum", interpolate = TRUE)
 ```
-This function can be used with all spectral classes defined in the package. In
-the case of `source_spct` and `response_spct` methods parameter `unit.out`
-allows to switch between energy and photon units for the search and returned
-value, while in the case of `filter_spct` methods filter.qty` allows to switch
-between transmittance, absorptance and absorbance.
+
+This function can be used with all spectral classes defined in the
+package. In the case of `source_spct` and `response_spct` methods
+parameter `unit.out` allows to switch between energy and photon units
+for the search and returned value, while in the case of `filter_spct`
+methods filter.qty\` allows to switch between transmittance, absorptance
+and absorbance.
 
 #### Collections of spectra
 
@@ -2687,19 +2818,24 @@ wls_at_target(filters.mspct, target = "half.maximum")
 
 ### Irradiance
 
-Energy irradiance is the integral over wavelengths of spectral energy irradiance
+Energy irradiance is the integral over wavelengths of spectral energy
+irradiance
 
 $$E = \int_{\lambda = \lambda_1}^{\lambda = \lambda_2} E(\lambda)\ \mathrm{d}\lambda$$
-where $\lambda_1 \geq \lambda > \lambda_2$ defines a waveband, or range of wavelengths.
+where $\lambda_1 \geq \lambda > \lambda_2$ defines a waveband, or range
+of wavelengths.
 
-Photon (=quantum) irradiance is the integral over wavelengths of spectral photon irradiance.
+Photon (=quantum) irradiance is the integral over wavelengths of
+spectral photon irradiance.
 
 $$Q = \int_{\lambda = \lambda_1}^{\lambda = \lambda_2} Q(\lambda)\ \mathrm{d}\lambda$$
-Spectrally weighted (or biologically effective) energy irradiance is the integral of the result of the convolution of spectral energy irradiance by a spectral weighting function $w(\lambda)$.
+Spectrally weighted (or biologically effective) energy irradiance is the
+integral of the result of the convolution of spectral energy irradiance
+by a spectral weighting function $w(\lambda)$.
 
 $$E_{BE} = \int_{\lambda = \lambda_1}^{\lambda = \lambda_2} E(\lambda) \cdot w_E(\lambda)\ \mathrm{d}\lambda$$
-Spectrally weighted (or effective) photon irradiance can be computed similarly
-with the corresponding weighting function $w_Q(\lambda)$.
+Spectrally weighted (or effective) photon irradiance can be computed
+similarly with the corresponding weighting function $w_Q(\lambda)$.
 
 #### Individual spectra
 
@@ -2930,27 +3066,34 @@ or the other can be used.
 
 ### Fluence
 
-Energy fluence is energy irradiance integrated over a lapse of time or event,
-and is expressed as energy per area.
+Energy fluence is energy irradiance integrated over a lapse of time or
+event, and is expressed as energy per area.
 
-Energy fluence is the integral over wavelengths and time of spectral energy irradiance
+Energy fluence is the integral over wavelengths and time of spectral
+energy irradiance
 
 $$F_E = \int_{\lambda = \lambda_1}^{\lambda = \lambda_2} \int_{t = t_1}^{t = t_2} E(\lambda)\ \mathrm{d}\lambda\,\mathrm{d}t$$
-where $\lambda_1 \geq \lambda > \lambda_2$ defines a waveband, or range of wavelengths, and $t_1 \geq t > t_2$.
+where $\lambda_1 \geq \lambda > \lambda_2$ defines a waveband, or range
+of wavelengths, and $t_1 \geq t > t_2$.
 
-However, if we assume that irradiance does not vary in time it simplifies to
+However, if we assume that irradiance does not vary in time it
+simplifies to
 $$F_E =  \Delta t\times\int_{\lambda = \lambda_1}^{\lambda = \lambda_2} E(\lambda)\ \mathrm{d}\lambda$$
 where $\Delta t = t_2 - t_1$.
 
 The equivalent equation for photon fluence is
 $$F_Q =  \Delta t\times\int_{\lambda = \lambda_1}^{\lambda = \lambda_2} Q(\lambda)\ \mathrm{d}\lambda$$
 
-Spectrally weighted (or effective) energy fluence is the integral over wavelengths and time of the result of the convolution of spectral energy irradiance by a spectral weight function $w(\lambda)$. Assuming that spectral irradiance does not vary with time the corresponding equation is
+Spectrally weighted (or effective) energy fluence is the integral over
+wavelengths and time of the result of the convolution of spectral energy
+irradiance by a spectral weight function $w(\lambda)$. Assuming that
+spectral irradiance does not vary with time the corresponding equation
+is
 
 $$F_{E_{BE}} = \Delta t\times\int_{\lambda = \lambda_1}^{\lambda = \lambda_2} E(\lambda) \times w_E(\lambda)\ \mathrm{d}\lambda$$
 
-Spectrally weighted (or effective) photon fluence can be computed similarly
-with the corresponding weighting function $w_Q(\lambda)$.
+Spectrally weighted (or effective) photon fluence can be computed
+similarly with the corresponding weighting function $w_Q(\lambda)$.
 
 #### Individual spectra
 
@@ -2983,42 +3126,44 @@ q_fluence(sun.spct, PAR.wb, exposure.time = duration(25, "minutes"))
 ### Photon and energy ratios
 
 A way to summarize the "colour" of light is to compute a ratio between
-irradiances computed for two different wavebands of the same spectrum. They can 
-be computed either on an energy or photon (quantum) basis, and although not a
-requirement, use of two wavelength bands with the same expanse is usually
-most informative. Photon ratios are usually preferred compared to energy 
-ratios in work related to photobiology and photochemistry.
+irradiances computed for two different wavebands of the same spectrum.
+They can be computed either on an energy or photon (quantum) basis, and
+although not a requirement, use of two wavelength bands with the same
+expanse is usually most informative. Photon ratios are usually preferred
+compared to energy ratios in work related to photobiology and
+photochemistry.
 
 $$Q_1 : Q_2 = \frac{\int_{\lambda = \lambda_1}^{\lambda = \lambda_2} Q(\lambda)\ \mathrm{d}\lambda}
 {\int_{\lambda = \lambda_3}^{\lambda = \lambda_4} Q(\lambda)\ \mathrm{d}\lambda}$$
 
-where $\lambda_1 \geq \lambda > \lambda_2$ defines the waveband for the 
-numerator and $\lambda_3 \geq \lambda > \lambda_4$ defines the waveband for the 
-denominator, i.e., two ranges of wavelengths.
+where $\lambda_1 \geq \lambda > \lambda_2$ defines the waveband for the
+numerator and $\lambda_3 \geq \lambda > \lambda_4$ defines the waveband
+for the denominator, i.e., two ranges of wavelengths.
 
 Energy ratios are computed similarly
 
 $$E_1 : E_2 = \frac{\int_{\lambda = \lambda_1}^{\lambda = \lambda_2} E(\lambda)\ \mathrm{d}\lambda}
 {\int_{\lambda = \lambda_3}^{\lambda = \lambda_4} E(\lambda)\ \mathrm{d}\lambda}$$
 
-where $\lambda_1 \geq \lambda > \lambda_2$ defines the waveband for the 
-numerator and $\lambda_3 \geq \lambda > \lambda_4$ defines the waveband for the 
-denominator, i.e., two ranges of wavelengths.
+where $\lambda_1 \geq \lambda > \lambda_2$ defines the waveband for the
+numerator and $\lambda_3 \geq \lambda > \lambda_4$ defines the waveband
+for the denominator, i.e., two ranges of wavelengths.
 
-An energy irradiance to photon irradiance ratio describes the average energy per 
-mol of photon for a waveband or range of wavelengths.
+An energy irradiance to photon irradiance ratio describes the average
+energy per mol of photon for a waveband or range of wavelengths.
 
 $$E : Q = \frac{\int_{\lambda = \lambda_1}^{\lambda = \lambda_2} E(\lambda)\ \mathrm{d}\lambda}
 {\int_{\lambda = \lambda_1}^{\lambda = \lambda_2} Q(\lambda)\ \mathrm{d}\lambda}$$
 
-where $\lambda_1 \geq \lambda > \lambda_2$ defines a waveband, or range of wavelengths.
+where $\lambda_1 \geq \lambda > \lambda_2$ defines a waveband, or range
+of wavelengths.
 
-We can compute the photon to energy ratio ($Q : E$) similarly. 
+We can compute the photon to energy ratio ($Q : E$) similarly.
 
 Although all these ratios are usually computed without use of spectral
-weighting functions, their computation can be easily done by including in the
-equations above a weighting functions ($w(\lambda)$) as described in the
-section on irradiance.
+weighting functions, their computation can be easily done by including
+in the equations above a weighting functions ($w(\lambda)$) as described
+in the section on irradiance.
 
 #### Individual spectra
 
@@ -3090,56 +3235,58 @@ Given the laws of conservation of energy, transmittance, reflectance and
 absorptance, expressed as fractions, always add up to one.
 
 $$1 = R_\mathrm{fr,total} + A_\mathrm{fr,total} + T_\mathrm{fr,total}$$
-Transmittance can be defined either as the fraction of the radiation "entering" 
-an object that is transmitted, called internal transmittance 
-($T_\mathrm{fr,internal}$) or as the fraction of the ration incident on an
-object that is transmitted ($T_\mathrm{fr,total}$).
+Transmittance can be defined either as the fraction of the radiation
+"entering" an object that is transmitted, called internal transmittance
+($T_\mathrm{fr,internal}$) or as the fraction of the ration incident on
+an object that is transmitted ($T_\mathrm{fr,total}$).
 
 $$1 \times R_\mathrm{fr,total} =  A_\mathrm{fr,internal} + T_\mathrm{fr,internal}$$
-giving 
+giving
 
 $$T_\mathrm{fr,internal} = T_\mathrm{fr,total} / R_\mathrm{fr,total}$$
 and
 $$A_\mathrm{fr,internal} = T_\mathrm{fr,total} / R_\mathrm{fr,total}$$
-In the case of reflectance, "total" has a different meaning, and refers to
-whether all reflected light or that an specific angle in considered.
+In the case of reflectance, "total" has a different meaning, and refers
+to whether all reflected light or that an specific angle in considered.
 
-In practice, both definitions of transmittance and absorptance are in use,
-while as it is easier to measure total- than internal transmittance, internal
-transmittance allows the computation of transmittance for different thickness
-of a material.
+In practice, both definitions of transmittance and absorptance are in
+use, while as it is easier to measure total- than internal
+transmittance, internal transmittance allows the computation of
+transmittance for different thickness of a material.
 
 Consequently, absorptance can be computed as:
 
-$$A_\mathrm{fr,internal} = 1 - T_\mathrm{fr,internal}$$
-or as
+$$A_\mathrm{fr,internal} = 1 - T_\mathrm{fr,internal}$$ or as
 
 $$A_\mathrm{fr,total} = 1 - T_\mathrm{fr,total} - R_\mathrm{fr,total}$$
 Absorbance, is a log transformed quantity that tends to be used when the
-range of values spans several orders of magnitude. It is frequently 
-based on internal absorptance, but can be also based on total absorptance.
+range of values spans several orders of magnitude. It is frequently
+based on internal absorptance, but can be also based on total
+absorptance.
 
 $$A_\mathrm{internal} = -\log_{10}(1 -A_\mathrm{fr,internal}) = -\log_{10}(T_\mathrm{fr,internal}) $$
 and
 
 $$A_\mathrm{total} = -\log_{10}(1 - A_\mathrm{fr,total}) = -\log_{10}(T_\mathrm{fr,total} + R_\mathrm{fr,total})$$
-When using a spectrophotometer, if our reference is a cuvette with pure solvent
-and the sample a solution of a compound in the same solvent we measure _internal_
-transmittance, absorptance or absorbance. If we instead measure the
-transmittance of a piece of glass or plastic with air as reference, we measure
-_total_ transmittance, absorptance or absorbance. This is so because in the
-first case the reference is the light transmitted after the reflectance on the
-cuvette walls has taken place while in the second case the reflections at the
-glass-air interfaces are missing from the reference.
+When using a spectrophotometer, if our reference is a cuvette with pure
+solvent and the sample a solution of a compound in the same solvent we
+measure *internal* transmittance, absorptance or absorbance. If we
+instead measure the transmittance of a piece of glass or plastic with
+air as reference, we measure *total* transmittance, absorptance or
+absorbance. This is so because in the first case the reference is the
+light transmitted after the reflectance on the cuvette walls has taken
+place while in the second case the reflections at the glass-air
+interfaces are missing from the reference.
 
 As a result of these different definitions, the implementation of the
-class `filter_spct()` and `object_spct` and their methods, need to keep track of 
-whether quantities are expressed as internal or total. As in many glasses 
-reflectance varies very weakly with wavelength, storing a constant value
-for $R_\mathrm{fr,total}$ is also supported. The refractive index of a
-material can also be used to estimate $R_\mathrm{fr,total}$ for a polished
-surface. Lack of a value for $R_\mathrm{fr,total}$ can make some conversions
-and computations impossible.
+class `filter_spct()` and `object_spct` and their methods, need to keep
+track of whether quantities are expressed as internal or total. As in
+many glasses reflectance varies very weakly with wavelength, storing a
+constant value for $R_\mathrm{fr,total}$ is also supported. The
+refractive index of a material can also be used to estimate
+$R_\mathrm{fr,total}$ for a polished surface. Lack of a value for
+$R_\mathrm{fr,total}$ can make some conversions and computations
+impossible.
 
 #### Individual spectra
 
@@ -3239,57 +3386,58 @@ transmittance(filters.mspct,
 
 ### Normalized difference indexes
 
-Like the ratios discussed above normalized differences are a way of summarizing
-or describing the colour of light sources or objects independently of the
-overall irradiance. As their name tells, they are defined as differences 
-relative to a sum.
+Like the ratios discussed above normalized differences are a way of
+summarizing or describing the colour of light sources or objects
+independently of the overall irradiance. As their name tells, they are
+defined as differences relative to a sum.
 
-Normalized difference indexes are used to summarize the spectral characteristics
-of light or objects. They are most frequently used in the analysis of spectral
-reflectance data in remote sensing.
+Normalized difference indexes are used to summarize the spectral
+characteristics of light or objects. They are most frequently used in
+the analysis of spectral reflectance data in remote sensing.
 
 $$NDI_{a, b} = \frac{R_a - R_b}{R_a + R_b}$$
 
-where $R_a$ and $R_b$ are reflectances computed from the same spectrum using
-two different wavebands.
+where $R_a$ and $R_b$ are reflectances computed from the same spectrum
+using two different wavebands.
 
-The most frequently used NDI is the NDVI or normalized difference vegetation
-index, which compares reflectance in the red and far-red regions as a way
-of assessing the presence of vegetation vs. bare land in remote sensing
-imagery.
+The most frequently used NDI is the NDVI or normalized difference
+vegetation index, which compares reflectance in the red and far-red
+regions as a way of assessing the presence of vegetation vs. bare land
+in remote sensing imagery.
 
-However, they can be computed based on energy or photon irradiances for two 
-wavebands as shown here, or for any other spectral quantity.
+However, they can be computed based on energy or photon irradiances for
+two wavebands as shown here, or for any other spectral quantity.
 
 $$NDI_{a, b} = \frac{Q_a - Q_b}{Q_a + Q_b}$$
 
-where $Q_a$ and $Q_b$ are irradiances computed from the same spectrum using
-two different wavebands.
+where $Q_a$ and $Q_b$ are irradiances computed from the same spectrum
+using two different wavebands.
 
-Although we here describe how to compute normalized difference indexes from
-spectral data, they are most frequently generated from data from broad-band
-sensors in satellite, air-borne or terrestrial imagers. To reconstruct from
-spectral data indexes computed from these instruments we need to use 
-waveband definitions that mimic the spectral response of the imager of
-interest.
-Package 'photobiologyWavebands' provides pre-defined wavebands for several
-different satellite imagers as well as for wavelength ranges in common use.
+Although we here describe how to compute normalized difference indexes
+from spectral data, they are most frequently generated from data from
+broad-band sensors in satellite, air-borne or terrestrial imagers. To
+reconstruct from spectral data indexes computed from these instruments
+we need to use waveband definitions that mimic the spectral response of
+the imager of interest. Package 'photobiologyWavebands' provides
+pre-defined wavebands for several different satellite imagers as well as
+for wavelength ranges in common use.
 
 #### Individual spectra
 
 Here we give an example of a possible definition of NDVI using function
-`normalized_diff_ind()` can be used to calculate, or any 
-index with a similar formulation structure.
+`normalized_diff_ind()` can be used to calculate, or any index with a
+similar formulation structure.
 
 ```{r}
 normalized_diff_ind(Ler_leaf_rflt.spct,
                     waveband(c(740, 840)), waveband(c(590, 690)),
                     reflectance)
 ```
+
 Here we give an *unusual* example to demonstrate that function
-`normalized_diff_ind()` can be used to calculate any 
-index with a similar formulation structure and using other spectral quantities 
-and summary functions.
+`normalized_diff_ind()` can be used to calculate any index with a
+similar formulation structure and using other spectral quantities and
+summary functions.
 
 ```{r}
 normalized_diff_ind(sun.spct,
@@ -3299,25 +3447,26 @@ normalized_diff_ind(sun.spct,
 
 ### Integrated response
 
-As with other spectral quantities, we can integrate over wavelengths spectral
-responsiveness. In response and action spectra the quantity is a response 
-measured in some arbitrary unit expressed per unit wavelengths and per unit
-energy or quantum.
+As with other spectral quantities, we can integrate over wavelengths
+spectral responsiveness. In response and action spectra the quantity is
+a response measured in some arbitrary unit expressed per unit
+wavelengths and per unit energy or quantum.
 
 $$X_E = \int_{\lambda = \lambda_1}^{\lambda = \lambda_2} X_E(\lambda)\ \mathrm{d}\lambda$$
-where $\lambda_1 \geq \lambda > \lambda_2$ defines a waveband, or range of wavelengths.
+where $\lambda_1 \geq \lambda > \lambda_2$ defines a waveband, or range
+of wavelengths.
 
-The conversion between energy and photon (= quantum) basis of expression is
-possible as it is for radiation spectra. Depending on the base of expression the
-returned  integrated value is computed **assuming** either a light source with a
-flat spectral energy irradiance of 1 or spectral photon irradiance of 1,
-respectively.
+The conversion between energy and photon (= quantum) basis of expression
+is possible as it is for radiation spectra. Depending on the base of
+expression the returned integrated value is computed **assuming** either
+a light source with a flat spectral energy irradiance of 1 or spectral
+photon irradiance of 1, respectively.
 
 #### Individual spectra
 
 The functions `response`, `e_response` and `q_response` take
-`response_spct` objects as arguments. If no
-waveband is supplied as argument, the whole spectrum is integrated.
+`response_spct` objects as arguments. If no waveband is supplied as
+argument, the whole spectrum is integrated.
 
 ```{r}
 response(photodiode.spct)
@@ -3403,29 +3552,31 @@ compare_spct(filter_mspct(list(pet = polyester.spct,
 
 ### Illuminance
 
-Illuminance, or luminous flux incident on a surface, is relevant to human
-vision. It is an approximate quantity as the spectral response function of human
-vision varies among individuals, with their age and the conditions during
-measurement. The SI unit for illuminance is lux (lx) or lumnes per square meter.
+Illuminance, or luminous flux incident on a surface, is relevant to
+human vision. It is an approximate quantity as the spectral response
+function of human vision varies among individuals, with their age and
+the conditions during measurement. The SI unit for illuminance is lux
+(lx) or lumnes per square meter.
 
-When function `illuminance()` is applied to spectral (energy) irradiance or 
-spectral photon irradiance, illuminance can be directly computed using the
-same time base of 1 s.
+When function `illuminance()` is applied to spectral (energy) irradiance
+or spectral photon irradiance, illuminance can be directly computed
+using the same time base of 1 s.
 
 ```{r}
 illuminance(sun.spct)
 ```
 
-The response of the human eye depends on the size of the target, and response
-spectra have been defined by CIE for both 2 degrees and 10 degrees targets.
+The response of the human eye depends on the size of the target, and
+response spectra have been defined by CIE for both 2 degrees and 10
+degrees targets.
 
 ```{r}
 illuminance(sun.spct, std = "CIE10deg")
 ```
 
-If one attempts to compute illuminance from spectral fluence or radiation
-spectra expressed as a flux of energy or photons over a period of time
-different to 1 s, the average illuminance is returned, in lux.
+If one attempts to compute illuminance from spectral fluence or
+radiation spectra expressed as a flux of energy or photons over a period
+of time different to 1 s, the average illuminance is returned, in lux.
 
 ```{r}
 illuminance(sun.daily.spct)
@@ -3433,20 +3584,21 @@ illuminance(sun.daily.spct)
 
 ### CCT and CRI
 
-Colour temperature and colour rendition index can be computed from spectral
-irradiance. Package 'colorSpec' implement these and other calcualtions related
-to colour. Package 'photobiologyInOut' provides wrappers to facilitate the
-computation of CCT and CRI directly from `source_spct` objects by on-the-fly
-conversion and calling functions from 'colorSpec'.
+Colour temperature and colour rendition index can be computed from
+spectral irradiance. Package 'colorSpec' implement these and other
+calcualtions related to colour. Package 'photobiologyInOut' provides
+wrappers to facilitate the computation of CCT and CRI directly from
+`source_spct` objects by on-the-fly conversion and calling functions
+from 'colorSpec'.
 
 ### RGB colours
 
-Different `color_of()` methods allow calculation of RGB colour values for
-light sources or objects. The returned values are R colour definitions.
-Method `color_of()` works rather differently depending on the object.
-The method for `numeric` vectors assumes the numbers are wavelengths in
-nanometres, and returns a vector of colour definitions of the same length
-assuming monochromatic light.
+Different `color_of()` methods allow calculation of RGB colour values
+for light sources or objects. The returned values are R colour
+definitions. Method `color_of()` works rather differently depending on
+the object. The method for `numeric` vectors assumes the numbers are
+wavelengths in nanometres, and returns a vector of colour definitions of
+the same length assuming monochromatic light.
 
 ```{r}
 color_of(550) # green

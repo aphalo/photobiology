@@ -87,7 +87,7 @@ test_that("normalize response_spct", {
   expect_false(all(is.na(unlist(getNormalization(my_norm_max.spct)))))
   expect_equal(getNormalization(my_norm_max.spct)[["norm.type"]], "max")
   expect_equal(getNormalization(my_norm_max.spct)[["norm.wl"]], 742.6704, tolerance = 1e-4)
-  expect_equal(getNormalization(my_norm_max.spct)[["norm.factors"]], 228805.6, tolerance = 1e-5)
+  expect_equal(getNormalization(my_norm_max.spct)[["norm.factors"]], 228802.2, tolerance = 1e-5)
   expect_equal(getNormalization(my_norm_max.spct)[["norm.cols"]], "s.e.response")
   expect_equal(max(normalize(my.spct)$s.e.response), 1, tolerance = 1e-5)
   expect_equal(max(my_norm_max.spct$s.e.response), 1, tolerance = 1e-5)

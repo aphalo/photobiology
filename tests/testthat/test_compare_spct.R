@@ -2,10 +2,11 @@ context("compare_spct")
 
 test_that("source_mspct", {
 
+  energy_as_default()
+
   my.mspct <- source_mspct(list(sun1 = sun.spct, sun2 = sun.spct * 2))
   my.mspct <- clip_wl(my.mspct, range = c(400, 450)) # make tests faster
 
-  energy_as_default()
   expect_known_value(compare_spct(my.mspct), "./data/compare-spct-default-value-e")
   expect_named(compare_spct(my.mspct),
                c("w.length", "wl.min", "wl.max", "sun1.irrad", "sun2.irrad",
@@ -24,6 +25,10 @@ test_that("source_mspct", {
                compare_spct(my.mspct, returned.value = "data.frame"))
 
   photon_as_default()
+
+  my.mspct <- source_mspct(list(sun1 = sun.spct, sun2 = sun.spct * 2))
+  my.mspct <- clip_wl(my.mspct, range = c(400, 450)) # make tests faster
+
   expect_known_value(compare_spct(my.mspct), "./data/compare-spct-default-value-q")
   expect_named(compare_spct(my.mspct),
                c("w.length", "wl.min", "wl.max", "sun1.irrad", "sun2.irrad",
