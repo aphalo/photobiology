@@ -62,7 +62,7 @@
 #' VA, USA. ISBN 978-0943396613.
 #'
 #' A different implementation is available at
-#' \url{https://apps-nefsc.fisheries.noaa.gov/AstroCalc4R/}.
+#' \url{https://github.com/NEFSC/READ-PDB-AstroCalc4R/}.
 #'
 #' An interactive web page using the same algorithms is available at
 #' \url{https://gml.noaa.gov/grad/solcalc/}. There are small
