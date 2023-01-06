@@ -4,7 +4,7 @@
 [![CRAN
 version](https://www.r-pkg.org/badges/version-last-release/photobiology)](https://cran.r-project.org/package=photobiology)
 [![cran
-checks](https://cranchecks.info/badges/worst/photobiology)](https://cran.r-project.org/web/checks/check_results_photobiology.html)
+checks](https://badges.cranchecks.info/worst/photobiology.svg)](https://cran.r-project.org/web/checks/check_results_photobiology.html)
 [![R build
 status](https://github.com/aphalo/photobiology/workflows/R-CMD-check/badge.svg)](https://github.com/aphalo/photobiology/actions)
 
@@ -13,9 +13,10 @@ spectral data and accompanying metadata. For each of these classes
 specialised summary methods, maths operators and functions are provided.
 In addition, classes for storing collections of objects of the classes
 for individual spectra are defined as well as ‘apply’ functions.
-Extraction and replacement operators are implemented. Functions for
-calculation of the position of the sun, times of sunrise and sunset, day
-length and night length are also provided.
+Extraction and replacement operators are implemented.
+
+Functions for calculation of the position of the sun, times of sunrise
+and sunset, day length and night length are also implemented.
 
 The package supports storage and manipulation of data for radiation
 quantities and for optical properties of objects and solutes, as well as
@@ -52,9 +53,9 @@ sun.
 geocode <- data.frame(lon = 0, lat = 55)
 date <- lubridate::now(tzone = "UTC")
 sunrise_time(date, tz = "UTC", geocode = geocode)
-#> [1] "2022-12-09 08:12:27 UTC"
+#> [1] "2023-01-06 08:23:01 UTC"
 day_length(date, tz = "UTC", geocode = geocode)
-#> [1] 7.329354
+#> [1] 7.423294
 ```
 
 ## Installation
@@ -144,6 +145,6 @@ citation("photobiology")
 
 ## License
 
-© 2012-2022 Pedro J. Aphalo (<pedro.aphalo@helsinki.fi>). Released under
+© 2012-2023 Pedro J. Aphalo (<pedro.aphalo@helsinki.fi>). Released under
 the GPL, version 2 or greater. This software carries no warranty of any
 kind.
