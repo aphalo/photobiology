@@ -217,7 +217,7 @@ Meeus, J. (1998) Astronomical Algorithms, 2 ed., Willmann-Bell, Richmond,
 VA, USA. ISBN 978-0943396613.
 
 A different implementation is available at
-\url{https://apps-nefsc.fisheries.noaa.gov/AstroCalc4R/} and in R paclage
+\url{https://github.com/NEFSC/READ-PDB-AstroCalc4R/} and in R paclage
 'fishmethods'. In 'fishmethods' (= 1.11-0) there is a bug in function
 astrocalc4r() that affects sunrise and sunset times.
 
