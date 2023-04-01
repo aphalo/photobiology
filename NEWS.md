@@ -4,6 +4,11 @@ editor_options:
     wrap: 72
 ---
 
+# photobiology 0.10.16
+
+- Fix bug in `subset2mspct()` affecting collections of spectra with as single
+  member a spct object with multiple spectra in long form.
+
 # photobiology 0.10.15
 
 - Add helper function `spct_wide2long()` a simple pure R replacement for

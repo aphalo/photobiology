@@ -13,13 +13,11 @@ knitr::opts_chunk$set(
 )
 ```
 
-# photobiology <img src="man/figures/logo.png" align="right" width="120" />
+# photobiology <img src="man/figures/logo.png" align="right" width="120"/>
 
-[![CRAN version](https://www.r-pkg.org/badges/version-last-release/photobiology)](https://cran.r-project.org/package=photobiology) 
-[![cran checks](https://badges.cranchecks.info/worst/photobiology.svg)](https://cran.r-project.org/web/checks/check_results_photobiology.html)
-[![R build status](https://github.com/aphalo/photobiology/workflows/R-CMD-check/badge.svg)](https://github.com/aphalo/photobiology/actions)
+[![CRAN version](https://www.r-pkg.org/badges/version-last-release/photobiology)](https://cran.r-project.org/package=photobiology) [![cran checks](https://badges.cranchecks.info/worst/photobiology.svg)](https://cran.r-project.org/web/checks/check_results_photobiology.html) [![R build status](https://github.com/aphalo/photobiology/workflows/R-CMD-check/badge.svg)](https://github.com/aphalo/photobiology/actions)
 
-Package '**photobiology**' defines a system of classes for storing spectral data and accompanying metadata. For each of these classes specialised summary methods, maths operators and functions are provided. In addition, classes for storing collections of objects of the classes for individual spectra are defined as well as 'apply' functions. Extraction and replacement operators are implemented. 
+Package '**photobiology**' defines a system of classes for storing spectral data and accompanying metadata. For each of these classes specialised summary methods, maths operators and functions are provided. In addition, classes for storing collections of objects of the classes for individual spectra are defined as well as 'apply' functions. Extraction and replacement operators are implemented.
 
 Functions for calculation of the position of the sun, times of sunrise and sunset, day length and night length are also implemented.
 
@@ -70,23 +68,21 @@ Installation of the current unstable version from GitHub:
 devtools::install_github("aphalo/photobiology")
 ```
 
-## Documentation 
+## Documentation
 
-HTML documentation is available at (https://docs.r4photobiology.info/photobiology/), including three _User Guides_.
+HTML documentation is available at (<https://docs.r4photobiology.info/photobiology/>), including three *User Guides*.
 
-News on updates to the different packages of the 'r4photobiology' suite are regularly posted at (https://www.r4photobiology.info/).
+News on updates to the different packages of the 'r4photobiology' suite are regularly posted at (<https://www.r4photobiology.info/>).
 
-Two articles introduce the basic ideas behind the design of the suite and describe its use:
-Aphalo P. J. (2015) (https://doi.org/10.19232/uv4pb.2015.1.14) and Aphalo P. J. (2016)  (https://doi.org/10.19232/uv4pb.2016.1.15).
+Two articles introduce the basic ideas behind the design of the suite and describe its use: Aphalo P. J. (2015) (<https://doi.org/10.19232/uv4pb.2015.1.14>) and Aphalo P. J. (2016) (<https://doi.org/10.19232/uv4pb.2016.1.15>).
 
-A book is under preparation, and the draft is currently available at (https://leanpub.com/r4photobiology/).
+A book is under preparation, and the draft is currently available at (<https://leanpub.com/r4photobiology/>).
 
-A handbook written before the suite was developed contains useful information on the quantification and manipulation of ultraviolet and visible radiation:
-Aphalo, P. J., Albert, A., Björn, L. O., McLeod, A. R., Robson, T. M., & Rosenqvist, E. (Eds.) (2012) Beyond the Visible: A handbook of best practice in plant UV photobiology (1st ed., p. xxx + 174). Helsinki: University of Helsinki, Department of Biosciences, Division of Plant Biology. ISBN 978-952-10-8363-1 (PDF), 978-952-10-8362-4 (paperback). PDF file available from (https://hdl.handle.net/10138/37558).
+A handbook written before the suite was developed contains useful information on the quantification and manipulation of ultraviolet and visible radiation: Aphalo, P. J., Albert, A., Björn, L. O., McLeod, A. R., Robson, T. M., & Rosenqvist, E. (Eds.) (2012) Beyond the Visible: A handbook of best practice in plant UV photobiology (1st ed., p. xxx + 174). Helsinki: University of Helsinki, Department of Biosciences, Division of Plant Biology. ISBN 978-952-10-8363-1 (PDF), 978-952-10-8362-4 (paperback). PDF file available from (<https://hdl.handle.net/10138/37558>).
 
 ## Contributing
 
-Pull requests, bug reports, and feature requests are welcome at (https://github.com/aphalo/photobiology).
+Pull requests, bug reports, and feature requests are welcome at (<https://github.com/aphalo/photobiology>).
 
 ## Citation
 
@@ -98,5 +94,4 @@ citation("photobiology")
 
 ## License
 
-© 2012-2023 Pedro J. Aphalo (pedro.aphalo@helsinki.fi). Released under the GPL, version 2 or greater. This software carries no warranty of any kind.
-
+© 2012-2023 Pedro J. Aphalo ([pedro.aphalo\@helsinki.fi](mailto:pedro.aphalo@helsinki.fi){.email}). Released under the GPL, version 2 or greater. This software carries no warranty of any kind.

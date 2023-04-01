@@ -1822,33 +1822,42 @@ subset2mspct <- function(x,
   # subset members of a mspct collection in place
   # possible future optimization: reserve memory and start assembly from tail
   if (is.any_mspct(x)) {
-    i.head <- i <- 1L
-    i.tail <- length(x)
-    while (i <= i.tail) {
-      if (getMultipleWl(x[[i]]) > 1L) {
-        y <- subset2mspct(x[[i]], # 1-deep recursive call
+    if (length(x) == 0L) {
+      return(x)
+    } else if (length(x) == 1L) {
+      return(subset2mspct(x[[1]], # 1-deep recursive call
                           member.class = member.class,
-                          idx.var = attr(x[[i]], "idfactor"),
-                          drop.idx = drop.idx)
-        # ensure unique names
-        names(y) <- paste(names(x[i]), names(y), sep = ".")
-        # insert
-        if (i == i.head) {
-          x <- c(y, x[(i+1):i.tail])
-        } else if (i == i.tail) {
-          x <- c(x[i.head:(i-1)], y)
+                          idx.var = attr(x[[1]], "idfactor"),
+                          drop.idx = drop.idx))
+    } else { # length > 1
+      i.head <- i <- 1L
+      i.tail <- length(x)
+      while (i <= i.tail) {
+        if (getMultipleWl(x[[i]]) > 1L) {
+          y <- subset2mspct(x[[i]], # 1-deep recursive call
+                            member.class = member.class,
+                            idx.var = attr(x[[i]], "idfactor"),
+                            drop.idx = drop.idx)
+          # ensure unique names
+          names(y) <- paste(names(x[i]), names(y), sep = ".")
+          # insert
+          if (i == i.head) {
+            x <- c(y, x[(i+1):i.tail])
+          } else if (i == i.tail) {
+            x <- c(x[i.head:(i-1)], y)
+          } else {
+            x <- c(x[i.head:(i-1)], y, x[(i+1):i.tail])
+          }
+          i.tail <- i.tail + length(y) - 1L
+          i <- i + length(y)
         } else {
-          x <- c(x[i.head:(i-1)], y, x[(i+1):i.tail])
+          i <- i + 1L
         }
-        i.tail <- i.tail + length(y) - 1L
-        i <- i + length(y)
-      } else {
-        i <- i + 1L
       }
+      return(x)
     }
-    x
   } else {
-    # subset a long-form spct object into a list
+  # subset a long-form spct object into a list
     stopifnot(is.data.frame(x))
     if (is.generic_spct(x) && is.null(member.class)) {
       member.class <- class(x)[1]
