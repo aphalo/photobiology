@@ -10,9 +10,9 @@
 \usage{
 \method{log}{generic_spct}(x, base = exp(1))
 
-log2.generic_spct(x)
+\method{log2}{generic_spct}(x)
 
-log10.generic_spct(x)
+\method{log10}{generic_spct}(x)
 
 \method{exp}{generic_spct}(x)
 }

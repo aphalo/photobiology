@@ -765,6 +765,7 @@ log.generic_spct <- function(x, base = exp(1)) {
 
 #' @rdname log
 #'
+#' @method log2 generic_spct
 #' @export
 #'
 log2.generic_spct <- function(x) {
@@ -773,6 +774,7 @@ log2.generic_spct <- function(x) {
 
 #' @rdname log
 #'
+#' @method log10 generic_spct
 #' @export
 #'
 log10.generic_spct <- function(x) {
