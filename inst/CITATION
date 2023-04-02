@@ -1,7 +1,9 @@
-citHeader("To cite package 'photobiology' in publications, please use:")
-
-citEntry(entry = "article",
-  author = "Pedro J. Aphalo",
+bibentry(bibtype = "article",
+  author = person(given = "Pedro J.",
+                  family = "Aphalo",
+                  role = c("aut", "cre"),
+                  email = "pedro.aphalo@helsinki.fi",
+                  comment = c(ORCID = "0000-0003-3385-972X")),
   title = "The r4photobiology suite",
   journal = "UV4Plants Bulletin",
   volume = "2015",
@@ -9,5 +11,6 @@ citEntry(entry = "article",
   pages = "21-29",
   year = "2015",
   doi = "10.19232/uv4pb.2015.1.14",
-  textVersion = "Aphalo, Pedro J. (2015) The r4photobiology suite. UV4Plants Bulletin, 2015:1, 21-29. DOI:10.19232/uv4pb.2015.1.14"
+  textVersion = "Aphalo, Pedro J. (2015) The r4photobiology suite. UV4Plants Bulletin, 2015:1, 21-29. DOI:10.19232/uv4pb.2015.1.14",
+  mheader = "To cite package ‘photobiology’ in publications use:"
 )

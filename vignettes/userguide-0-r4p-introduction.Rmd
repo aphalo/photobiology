@@ -115,10 +115,9 @@ implements facilities for plotting spectral data by extending package
 
 For additional information on these and other packages by the author
 please visit (<https://www.r4photobiology.info>) for news, and
-(<https://www.r4photobiology.info/package-status/>) for current status
+check the menue entry **R Packages > Checks and Issues** for current status
 and links to on-line documentation and public Git repositories. Each
-package has its own public Git repository at my Bitbucket or GitHub accounts
-(<https://bitbucket.org/aphalo/>, <https://github.com/aphalo/>) from
+package has its own public Git repository at my [GitHub account](<https://github.com/aphalo/>) from
 where the source code of the current and earlier versions can be cloned
 or forked.
 
