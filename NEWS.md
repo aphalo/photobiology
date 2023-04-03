@@ -4,12 +4,17 @@ editor_options:
     wrap: 72
 ---
 
+# photobiology 0.10.17
+
+- Fix bug in `subset2mspct()` when applied to the case of a collection
+  containing a single spct object containing a single spectrum.
+
 # photobiology 0.10.16
 
 - Fix bug in `subset2mspct()` introduced in 0.10.15 affecting collections of 
   spectra with a single spct object with multiple spectra in long form as only 
   member.
-- Fix failure of automatic registration  of methods `log2()` and `log10()`.
+- Fix failure of automatic registration of methods `log2()` and `log10()`.
 
 # photobiology 0.10.15
 

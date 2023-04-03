@@ -1869,7 +1869,7 @@ subset2mspct <- function(x,
     collection.constr <- collection.class
     if (is.any_spct(x) && getMultipleWl(x) == 1) {
       # nothing to subset
-      if (idx.var %in% names(x)) {
+      if (!is.null(idx.var) && idx.var %in% names(x)) {
         spct.name <- x[[idx.var]][1]
       } else {
         spct.name <- "spct_1"
@@ -1879,6 +1879,7 @@ subset2mspct <- function(x,
       z <- do.call(collection.constr, margs)
     } else {
       if (is.null(idx.var)) {
+        # handle objects created with old versions of 'photobiology'
         idx.var <- "spct.idx"
       }
       stopifnot(idx.var %in% names(x))
