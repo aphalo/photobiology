@@ -1,3 +1,5 @@
+# q_fraction() ---------------------------------------------------------------
+
 #' Photon:photon fraction
 #'
 #' This function returns the photon fraction for a given pair of wavebands of a
@@ -146,6 +148,68 @@ q_fraction.source_spct <-
     return(fraction)
   }
 
+#' @describeIn q_fraction Calculates photon:photon from a \code{source_mspct}
+#'   object.
+#'
+#' @param attr2tb character vector, see \code{\link{add_attr2tb}} for the syntax
+#'   for \code{attr2tb} passed as is to formal parameter \code{col.names}.
+#' @param idx character Name of the column with the names of the members of the
+#'   collection of spectra.
+#' @param .parallel	if TRUE, apply function in parallel, using parallel backend
+#'   provided by foreach
+#' @param .paropts a list of additional options passed into the foreach function
+#'   when parallel computation is enabled. This is important if (for example)
+#'   your code relies on external data or packages: use the .export and
+#'   .packages arguments to supply them so that all cluster nodes have the
+#'   correct environment set up for computing.
+#'
+#' @export
+#'
+q_fraction.source_mspct <-
+  function(spct,
+           w.band.num = NULL,
+           w.band.denom = NULL,
+           scale.factor = 1,
+           wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
+           use.cached.mult = FALSE,
+           use.hinges = NULL,
+           quantity = "total",
+           naming = "short",
+           name.tag = ifelse(naming != "none", "[q:q]", ""),
+           ...,
+           attr2tb = NULL,
+           idx = "spct.idx",
+           .parallel = FALSE,
+           .paropts = NULL) {
+    if (naming == "none") {
+      # need names for columns
+      naming <- "short"
+    }
+    z <-
+      msdply(
+        mspct = spct,
+        .fun = q_fraction,
+        w.band.num = w.band.num,
+        w.band.denom = w.band.denom,
+        quantity = quantity,
+        wb.trim = wb.trim,
+        scale.factor = scale.factor,
+        use.cached.mult = use.cached.mult,
+        use.hinges = use.hinges,
+        naming = naming,
+        name.tag = name.tag,
+        idx = idx,
+        .parallel = .parallel,
+        .paropts = .paropts
+      )
+    add_attr2tb(tb = z,
+                mspct = spct,
+                col.names = attr2tb,
+                idx = idx)
+  }
+
+# e_fraction() ---------------------------------------------------------------
+
 #' Energy:energy fraction
 #'
 #' This function returns the energy fraction for a given pair of wavebands of a
@@ -293,68 +357,6 @@ e_fraction.source_spct <-
       attr(fraction, "radiation.unit") <- "e(wl):e(wl) fraction"
     }
     return(fraction)
-  }
-
-# source_mspct methods ----------------------------------------------------
-
-#' @describeIn q_fraction Calculates photon:photon from a \code{source_mspct}
-#'   object.
-#'
-#' @param attr2tb character vector, see \code{\link{add_attr2tb}} for the syntax
-#'   for \code{attr2tb} passed as is to formal parameter \code{col.names}.
-#' @param idx character Name of the column with the names of the members of the
-#'   collection of spectra.
-#' @param .parallel	if TRUE, apply function in parallel, using parallel backend
-#'   provided by foreach
-#' @param .paropts a list of additional options passed into the foreach function
-#'   when parallel computation is enabled. This is important if (for example)
-#'   your code relies on external data or packages: use the .export and
-#'   .packages arguments to supply them so that all cluster nodes have the
-#'   correct environment set up for computing.
-#'
-#' @export
-#'
-q_fraction.source_mspct <-
-  function(spct,
-           w.band.num = NULL,
-           w.band.denom = NULL,
-           scale.factor = 1,
-           wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
-           use.cached.mult = FALSE,
-           use.hinges = NULL,
-           quantity = "total",
-           naming = "short",
-           name.tag = ifelse(naming != "none", "[q:q]", ""),
-           ...,
-           attr2tb = NULL,
-           idx = "spct.idx",
-           .parallel = FALSE,
-           .paropts = NULL) {
-    if (naming == "none") {
-      # need names for columns
-      naming <- "short"
-    }
-    z <-
-      msdply(
-        mspct = spct,
-        .fun = q_fraction,
-        w.band.num = w.band.num,
-        w.band.denom = w.band.denom,
-        quantity = quantity,
-        wb.trim = wb.trim,
-        scale.factor = scale.factor,
-        use.cached.mult = use.cached.mult,
-        use.hinges = use.hinges,
-        naming = naming,
-        name.tag = name.tag,
-        idx = idx,
-        .parallel = .parallel,
-        .paropts = .paropts
-      )
-    add_attr2tb(tb = z,
-                mspct = spct,
-                col.names = attr2tb,
-                idx = idx)
   }
 
 #' @describeIn e_fraction Calculates energy:energy fraction from a \code{source_mspct}

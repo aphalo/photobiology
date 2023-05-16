@@ -60,7 +60,9 @@
 #'
 #' @export
 #' @examples
-#' q_ratio(sun.spct, new_waveband(400,500), new_waveband(400,700))
+#' q_ratio(sun.spct,
+#'         waveband(c(400,500), wb.name = "Blue"),
+#'         waveband(c(400,700), wb.name = "White"))
 #'
 #' @note The last two parameters control speed
 #'   optimizations. The defaults should be suitable in most cases. If you will
@@ -146,7 +148,6 @@ q_ratio.source_spct <-
     return(ratio)
   }
 
-
 #' @describeIn q_ratio Calculates photon:photon from a \code{source_mspct}
 #'   object.
 #'
@@ -166,7 +167,8 @@ q_ratio.source_spct <-
 #'
 q_ratio.source_mspct <-
   function(spct,
-           w.band.num = NULL, w.band.denom = NULL,
+           w.band.num = NULL,
+           w.band.denom = NULL,
            scale.factor = 1,
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.cached.mult = FALSE,
@@ -268,7 +270,9 @@ q_ratio.source_mspct <-
 #'
 #' @export
 #' @examples
-#' e_ratio(sun.spct, new_waveband(400,500), new_waveband(400,700))
+#' e_ratio(sun.spct,
+#'         waveband(c(400,500), wb.name = "Blue"),
+#'         waveband(c(400,700), wb.name = "White"))
 #'
 #' @note Recycling for wavebands takes place when the number of denominator and
 #'   denominator wavebands differ. The last two parameters control speed
@@ -459,7 +463,11 @@ e_ratio.source_mspct <-
 #'
 #' @export
 #' @examples
-#' qe_ratio(sun.spct, new_waveband(400,700))
+#' qe_ratio(sun.spct,
+#'          waveband(c(400,700), wb.name = "White")) # mol J-1
+#' qe_ratio(sun.spct,
+#'          waveband(c(400,700), wb.name = "White"),
+#'          scale.factor = 1e6) # umol J-1
 #'
 #' @note The last two parameters control speed optimizations. The defaults
 #'   should be suitable in most cases. If you will use repeatedly the same SWFs
@@ -586,14 +594,12 @@ qe_ratio.source_mspct <-
                 idx = idx)
   }
 
-
 # eq_ratio() --------------------------------------------------------------
-
 
 #' Energy:photon ratio
 #'
-#' This function returns the energy to mole of photons ratio for each waveband and a
-#' light source spectrum.
+#' This function returns the energy to mole of photons ratio for each waveband
+#' and a light source spectrum.
 #'
 #' @param spct source_spct.
 #' @param w.band waveband or list of waveband objects.
@@ -629,12 +635,16 @@ qe_ratio.source_mspct <-
 #'   to parameter \code{quantity} they can be re-expressed as relative fractions
 #'   or percentages. In the case of vector output, \code{names} attribute is set
 #'   to the name of the corresponding waveband unless a named list is supplied
-#'   in which case the names of the list members are used, with "[e:q]" prepended.
-#'   Units [J mol-1].
+#'   in which case the names of the list members are used, with "[e:q]"
+#'   prepended. Units [J mol-1].
 #'
 #' @export
 #' @examples
-#' eq_ratio(sun.spct, new_waveband(400,700))
+#' eq_ratio(sun.spct,
+#'          waveband(c(400,700), wb.name = "White")) # J mol-1
+#' eq_ratio(sun.spct,
+#'          waveband(c(400,700), wb.name = "White"),
+#'          scale.factor = 1e-6) # J umol-1
 #'
 #' @note The last two parameters control speed optimizations. The defaults
 #'   should be suitable in most cases. If you will use repeatedly the same SWFs
@@ -749,9 +759,9 @@ eq_ratio.source_mspct <-
                 idx = idx)
   }
 
-# intertnal utility function --------------------------------------------------
+# internal utility function --------------------------------------------------
 
-#' Compute two irrads for ratio or fraction
+#' Compute two irrads for ratio, fraction or normalised difference
 #'
 #' Internal function that computes the two irradiances needed to compute
 #' various waveband ratios and fractions.

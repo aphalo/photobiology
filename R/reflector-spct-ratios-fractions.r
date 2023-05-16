@@ -106,10 +106,13 @@ normalized_diff_ind.generic_mspct <- function(spct, plus.w.band, minus.w.band, f
          ...)
 }
 
+
+# Rfr_ratio() -------------------------------------------------------------
+
 #' reflectance:reflectance ratio
 #'
 #' This function returns the reflectance ratio for a given pair of wavebands of a
-#' light reflector spectrum.
+#' reflector spectrum.
 #'
 #' @param spct an object of class "reflector_spct".
 #' @param w.band.num waveband object or a list of waveband objects used to
@@ -131,16 +134,16 @@ normalized_diff_ind.generic_mspct <- function(spct, plus.w.band, minus.w.band, f
 #' @param name.tag character Used to tag the name of the returned values.
 #' @param ... other arguments (possibly ignored)
 #'
-#' @details With the default \code{quantity = "total"} the ratio is based on
-#'   two \strong{photon irradiances}, one computed for each waveband.
-#'
-#'   \deqn{\frac{\mathrm{Rfr}(s, wb_\mathrm{num})}{\mathrm{Rfr}(s, wb_\mathrm{denom})}}
-#'
-#' If the argument is set to \code{quantity = "mean"} or
+#' @details With the default \code{quantity = "mean"} or
 #'  \code{quantity = "average"} the ratio is based on
 #'   two \strong{mean spectral photon irradiances}, one computed for each waveband.
 #'
 #'   \deqn{\frac{\bar{\mathrm{Rfr}_\lambda}(s, wb_\mathrm{num})}{\bar{\mathrm{Rfr}_\lambda}(s, wb_\mathrm{denom}))}}
+#'
+#' If the argument is set to \code{quantity = "total"} the ratio is based on
+#'   two \strong{photon irradiances}, one computed for each waveband.
+#'
+#'   \deqn{\frac{\mathrm{Rfr}(s, wb_\mathrm{num})}{\mathrm{Rfr}(s, wb_\mathrm{denom})}}
 #'
 #' Only if the wavelength expanse of the two wavebands is the same, these two
 #' ratios are numerically identical.
@@ -166,7 +169,17 @@ normalized_diff_ind.generic_mspct <- function(spct, plus.w.band, minus.w.band, f
 #'
 #' @export
 #' @examples
-#' Rfr_ratio(white_body.spct, new_waveband(400,500), new_waveband(400,700))
+#' Rfr_ratio(Ler_leaf_rflt.spct,
+#'           waveband(c(400,500), wb.name = "Blue"),
+#'           waveband(c(600,700), wb.name = "Red"))
+#' Rfr_ratio(Ler_leaf_rflt.spct,
+#'           waveband(c(400,500), wb.name = "Blue"),
+#'           waveband(c(600,700), wb.name = "Red"),
+#'           quantity = "total")
+#' Rfr_ratio(Ler_leaf_rflt.spct,
+#'           waveband(c(400,500), wb.name = "Blue"),
+#'           waveband(c(600,700), wb.name = "Red"),
+#'           quantity = "mean")
 #'
 #' @note The last two parameters control speed
 #'   optimizations. The defaults should be suitable in most cases. If you will
@@ -185,7 +198,7 @@ Rfr_ratio <- function(spct,
                       wb.trim,
                       use.cached.mult,
                       use.hinges,
-                      ...) UseMethod("Rfr_fraction")
+                      ...) UseMethod("Rfr_ratio")
 
 #' @describeIn Rfr_ratio Default for generic function
 #'
@@ -215,7 +228,7 @@ Rfr_ratio.reflector_spct <-
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.cached.mult = FALSE,
            use.hinges = NULL,
-           quantity = "total",
+           quantity = "mean",
            naming = "short",
            name.tag = NULL,
            ... ) {
@@ -240,22 +253,84 @@ Rfr_ratio.reflector_spct <-
 
     Rfr.num <- reflectances[["Rfr.1"]]
     Rfr.denom <- reflectances[["Rfr.2"]]
-    fraction <- Rfr.num / Rfr.denom * scale.factor
-    names(fraction) <-
-      paste(names(Rfr.num), ":", names(Rfr.num), name.tag, sep = "")
-    setRfrType(fraction, getRfrType(spct))
+    ratio <- Rfr.num / Rfr.denom * scale.factor
+    names(ratio) <-
+      paste(names(Rfr.num), ":", names(Rfr.denom), name.tag, sep = "")
+    attr(ratio, "Rfr.type") <- getRfrType(spct)
     if (quantity == "total") {
-      attr(fraction, "radiation.unit") <- "Rfr:Rfr fraction"
+      attr(ratio, "radiation.unit") <- "Rfr:Rfr ratio"
     } else {
-      attr(fraction, "radiation.unit") <- "Rfr(wl):Rfr(wl) fraction"
+      attr(ratio, "radiation.unit") <- "Rfr(wl):Rfr(wl) ratio"
     }
-    return(fraction)
+    return(ratio)
   }
+
+#' @describeIn Rfr_ratio Calculates Rfr:Rfr from a \code{reflector_mspct}
+#'   object.
+#'
+#' @param attr2tb character vector, see \code{\link{add_attr2tb}} for the syntax
+#'   for \code{attr2tb} passed as is to formal parameter \code{col.names}.
+#' @param idx character Name of the column with the names of the members of the
+#'   collection of spectra.
+#' @param .parallel	if TRUE, apply function in parallel, using parallel backend
+#'   provided by foreach
+#' @param .paropts a list of additional options passed into the foreach function
+#'   when parallel computation is enabled. This is important if (for example)
+#'   your code relies on external data or packages: use the .export and
+#'   .packages arguments to supply them so that all cluster nodes have the
+#'   correct environment set up for computing.
+#'
+#' @export
+#'
+Rfr_ratio.reflector_mspct <-
+  function(spct,
+           w.band.num = NULL,
+           w.band.denom = NULL,
+           scale.factor = 1,
+           wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
+           use.cached.mult = FALSE,
+           use.hinges = NULL,
+           quantity = "mean",
+           naming = "short",
+           name.tag = NULL,
+           ...,
+           attr2tb = NULL,
+           idx = "spct.idx",
+           .parallel = FALSE,
+           .paropts = NULL) {
+    if (naming == "none") {
+      # need names for columns
+      naming <- "short"
+    }
+    z <-
+      msdply(
+        mspct = spct,
+        .fun = Rfr_ratio,
+        w.band.num = w.band.num,
+        w.band.denom = w.band.denom,
+        wb.trim = wb.trim,
+        scale.factor = scale.factor,
+        use.cached.mult = use.cached.mult,
+        use.hinges = use.hinges,
+        quantity = quantity,
+        naming = naming,
+        name.tag = name.tag,
+        idx = idx,
+        .parallel = .parallel,
+        .paropts = .paropts
+      )
+    add_attr2tb(tb = z,
+                mspct = spct,
+                col.names = attr2tb,
+                idx = idx)
+  }
+
+# Rfr_fraction() ----------------------------------------------------------
 
 #' reflectance:reflectance fraction
 #'
 #' This function returns the reflectance fraction for a given pair of wavebands of a
-#' light reflector spectrum.
+#' reflector spectrum.
 #'
 #' @param spct an object of class "reflector_spct".
 #' @param w.band.num waveband object or a list of waveband objects used to
@@ -277,16 +352,16 @@ Rfr_ratio.reflector_spct <-
 #' @param name.tag character Used to tag the name of the returned values.
 #' @param ... other arguments (possibly ignored)
 #'
-#' @details With the default \code{quantity = "total"} the fraction is based on
+#' @details With the default \code{quantity = "mean"} or \code{quantity =
+#'   "average"} the ratio is based on two \strong{mean spectral photon
+#'   irradiances}, one computed for each waveband.
+#'
+#'   \deqn{\frac{\bar{\mathrm{Rfr}_\lambda}(s, wb_\mathrm{num})}{\bar{\mathrm{Rfr}_\lambda}(s, wb_\mathrm{denom}) + \bar{\mathrm{Rfr}_\lambda}(s, wb_\mathrm{num})}}
+#'
+#' If the argument is set to \code{quantity = "total"} the fraction is based on
 #'   two \strong{photon irradiances}, one computed for each waveband.
 #'
 #'   \deqn{\frac{\mathrm{Rfr}(s, wb_\mathrm{num})}{\mathrm{Rfr}(s, wb_\mathrm{denom}) + \mathrm{Rfr}(s, wb_\mathrm{num})}}
-#'
-#' If the argument is set to \code{quantity = "mean"} or
-#'  \code{quantity = "average"} the ratio is based on
-#'   two \strong{mean spectral photon irradiances}, one computed for each waveband.
-#'
-#'   \deqn{\frac{\bar{\mathrm{Rfr}_\lambda}(s, wb_\mathrm{num})}{\bar{\mathrm{Rfr}_\lambda}(s, wb_\mathrm{denom}) + \bar{\mathrm{Rfr}_\lambda}(s, wb_\mathrm{num})}}
 #'
 #' Only if the wavelength expanse of the two wavebands is the same, these two
 #' ratios are numerically identical.
@@ -312,7 +387,17 @@ Rfr_ratio.reflector_spct <-
 #'
 #' @export
 #' @examples
-#' Rfr_fraction(white_body.spct, new_waveband(400,500), new_waveband(400,700))
+#' Rfr_fraction(Ler_leaf_rflt.spct,
+#'              waveband(c(400,500), wb.name = "Blue"),
+#'              waveband(c(600,700), wb.name = "Red"))
+#' Rfr_fraction(Ler_leaf_rflt.spct,
+#'              waveband(c(400,500), wb.name = "Blue"),
+#'              waveband(c(600,700), wb.name = "Red"),
+#'              quantity = "total")
+#' Rfr_fraction(Ler_leaf_rflt.spct,
+#'              waveband(c(400,500), wb.name = "Blue"),
+#'              waveband(c(600,700), wb.name = "Red"),
+#'              quantity = "mean")
 #'
 #' @note The last two parameters control speed
 #'   optimizations. The defaults should be suitable in most cases. If you will
@@ -361,7 +446,7 @@ Rfr_fraction.reflector_spct <-
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.cached.mult = FALSE,
            use.hinges = NULL,
-           quantity = "total",
+           quantity = "mean",
            naming = "short",
            name.tag = NULL,
            ... ) {
@@ -390,7 +475,7 @@ Rfr_fraction.reflector_spct <-
     names(fraction) <- paste(names(Rfr.num), ":(",
                              names(Rfr.num), "+", names(Rfr.denom), ")",
                              name.tag, sep = "")
-    setRfrType(fraction, getRfrType(spct))
+    attr(fraction, "Rfr.type") <- getRfrType(spct)
     if (quantity == "total") {
       attr(fraction, "radiation.unit") <- "Rfr:Rfr fraction"
     } else {
@@ -399,11 +484,73 @@ Rfr_fraction.reflector_spct <-
     return(fraction)
   }
 
+#' @describeIn Rfr_fraction Calculates Rfr:Rfr from a \code{reflector_mspct}
+#'   object.
+#'
+#' @param attr2tb character vector, see \code{\link{add_attr2tb}} for the syntax
+#'   for \code{attr2tb} passed as is to formal parameter \code{col.names}.
+#' @param idx character Name of the column with the names of the members of the
+#'   collection of spectra.
+#' @param .parallel	if TRUE, apply function in parallel, using parallel backend
+#'   provided by foreach
+#' @param .paropts a list of additional options passed into the foreach function
+#'   when parallel computation is enabled. This is important if (for example)
+#'   your code relies on external data or packages: use the .export and
+#'   .packages arguments to supply them so that all cluster nodes have the
+#'   correct environment set up for computing.
+#'
+#' @export
+#'
+Rfr_fraction.reflector_mspct <-
+  function(spct,
+           w.band.num = NULL,
+           w.band.denom = NULL,
+           scale.factor = 1,
+           wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
+           use.cached.mult = FALSE,
+           use.hinges = NULL,
+           quantity = "mean",
+           naming = "short",
+           name.tag = NULL,
+           ...,
+           attr2tb = NULL,
+           idx = "spct.idx",
+           .parallel = FALSE,
+           .paropts = NULL) {
+    if (naming == "none") {
+      # need names for columns
+      naming <- "short"
+    }
+    z <-
+      msdply(
+        mspct = spct,
+        .fun = Rfr_fraction,
+        w.band.num = w.band.num,
+        w.band.denom = w.band.denom,
+        wb.trim = wb.trim,
+        scale.factor = scale.factor,
+        use.cached.mult = use.cached.mult,
+        use.hinges = use.hinges,
+        quantity = quantity,
+        naming = naming,
+        name.tag = name.tag,
+        idx = idx,
+        .parallel = .parallel,
+        .paropts = .paropts
+      )
+    add_attr2tb(tb = z,
+                mspct = spct,
+                col.names = attr2tb,
+                idx = idx)
+  }
 
-#' reflectance:reflectance NDI
+
+# Rfr_normdiff() ----------------------------------------------------------
+
+#' reflectance:reflectance normalised difference
 #'
 #' This function returns the reflectance normalized difference index for a given
-#' pair of wavebands of a light reflector spectrum.
+#' pair of wavebands of a reflector spectrum.
 #'
 #' @param spct an object of class "reflector_spct".
 #' @param w.band.plus,w.band.minus waveband object(s) or a list(s) of waveband
@@ -424,16 +571,16 @@ Rfr_fraction.reflector_spct <-
 #' @param name.tag character Used to tag the name of the returned values.
 #' @param ... other arguments (possibly ignored)
 #'
-#' @details With the default \code{quantity = "total"} the fraction is based on
-#'   two \strong{photon reflectances}, one computed for each waveband.
-#'
-#'   \deqn{\frac{\mathrm{Rfr}(s, wb_\mathrm{plus}) - \mathrm{Rfr}(s, wb_\mathrm{minus})}{\mathrm{Rfr}(s, wb_\mathrm{plus}) + \mathrm{Rfr}(s, wb_\mathrm{minus})}}
-#'
-#' If the argument is set to \code{quantity = "mean"} or
+#' @details With the default \code{quantity = "mean"} or
 #'  \code{quantity = "average"} the ratio is based on
 #'   two \strong{mean spectral photon reflectances}, one computed for each waveband.
 #'
 #'   \deqn{\frac{\bar{\mathrm{Rfr}_\lambda}(s, wb_\mathrm{plus}) - \bar{\mathrm{Rfr}_\lambda}(s, wb_\mathrm{minus})}{\bar{\mathrm{Rfr}_\lambda}(s, wb_\mathrm{plus}) + \bar{\mathrm{Rfr}_\lambda}(s, wb_\mathrm{minus})}}
+#'
+#' If the argument is set to \code{quantity = "total"} the fraction is based on
+#'   two \strong{photon reflectances}, one computed for each waveband.
+#'
+#'   \deqn{\frac{\mathrm{Rfr}(s, wb_\mathrm{plus}) - \mathrm{Rfr}(s, wb_\mathrm{minus})}{\mathrm{Rfr}(s, wb_\mathrm{plus}) + \mathrm{Rfr}(s, wb_\mathrm{minus})}}
 #'
 #' Only if the wavelength expanse of the two wavebands is the same, these two
 #' ratios are numerically identical.
@@ -459,15 +606,25 @@ Rfr_fraction.reflector_spct <-
 #'
 #' @export
 #' @examples
-#' Rfr_normdiff(white_body.spct, new_waveband(400,500), new_waveband(400,700))
+#' Rfr_normdiff(Ler_leaf_rflt.spct,
+#'              waveband(c(400,500), wb.name = "Blue"),
+#'              waveband(c(600,700), wb.name = "Red"))
+#' Rfr_normdiff(Ler_leaf_rflt.spct,
+#'              waveband(c(400,500), wb.name = "Blue"),
+#'              waveband(c(600,700), wb.name = "Red"),
+#'              quantity = "total")
+#' Rfr_normdiff(Ler_leaf_rflt.spct,
+#'              waveband(c(400,500), wb.name = "Blue"),
+#'              waveband(c(600,700), wb.name = "Red"),
+#'              quantity = "mean")
 #'
-#' @note The last two parameters control speed
-#'   optimizations. The defaults should be suitable in most cases. If you will
-#'   use repeatedly the same SWFs on many spectra measured at exactly the same
-#'   wavelengths you may obtain some speed up by setting
-#'   \code{use.cached.mult=TRUE}. However, be aware that you are responsible for
-#'   ensuring that the wavelengths are the same in each call, as the only test
-#'   done is for the length of the \code{w.length} vector.
+#' @note The last two parameters control speed optimizations. The defaults
+#'   should be suitable in most cases. If you will use repeatedly the same SWFs
+#'   on many spectra measured at exactly the same wavelengths you may obtain
+#'   some speed up by setting \code{use.cached.mult =T RUE}. However, be aware
+#'   that you are responsible for ensuring that the wavelengths are the same in
+#'   each call, as the only test done is for the length of the \code{w.length}
+#'   vector.
 #'
 #' @family Reflectance ratio functions
 #' @seealso \code{\link{normalized_diff_ind}}, accepts different summary
@@ -480,7 +637,7 @@ Rfr_normdiff <- function(spct,
                          wb.trim,
                          use.cached.mult,
                          use.hinges,
-                         ...) UseMethod("Rfr_fraction")
+                         ...) UseMethod("Rfr_normdiff")
 
 #' @describeIn Rfr_normdiff Default for generic function
 #'
@@ -510,7 +667,7 @@ Rfr_normdiff.reflector_spct <-
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.cached.mult = FALSE,
            use.hinges = NULL,
-           quantity = "total",
+           quantity = "mean",
            naming = "short",
            name.tag = NULL,
            ... ) {
@@ -535,23 +692,84 @@ Rfr_normdiff.reflector_spct <-
 
     Rfr.plus <- reflectances[["Rfr.1"]]
     Rfr.minus <- reflectances[["Rfr.2"]]
-    Rfr.NDI <- (Rfr.plus - Rfr.minus) / (Rfr.plus + Rfr.minus) * scale.factor
-    names(Rfr.NDI) <- paste("(",
+    Rfr.normdiff <- (Rfr.plus - Rfr.minus) / (Rfr.plus + Rfr.minus) * scale.factor
+    names(Rfr.normdiff) <- paste("(",
                             names(Rfr.plus), "-", names(Rfr.minus),
                             "):(",
                             names(Rfr.plus), "+", names(Rfr.minus), ")",
                             name.tag, sep = "")
-    setRfrType(Rfr.NDI, getRfrType(spct))
+    attr(Rfr.normdiff, "Rfr.type") <- getRfrType(spct)
     if (quantity == "total") {
-      attr(Rfr.NDI, "radiation.unit") <- "Rfr:Rfr NDI"
+      attr(Rfr.normdiff, "radiation.unit") <- "Rfr:Rfr normdiff"
     } else {
-      attr(Rfr.NDI, "radiation.unit") <- "Rfr(wl):Rfr(wl) NDI"
+      attr(Rfr.normdiff, "radiation.unit") <- "Rfr(wl):Rfr(wl) normdiff"
     }
-    return(Rfr.NDI)
+    return(Rfr.normdiff)
   }
 
+#' @describeIn Rfr_normdiff Calculates Rfr:Rfr from a \code{reflector_mspct}
+#'   object.
+#'
+#' @param attr2tb character vector, see \code{\link{add_attr2tb}} for the syntax
+#'   for \code{attr2tb} passed as is to formal parameter \code{col.names}.
+#' @param idx character Name of the column with the names of the members of the
+#'   collection of spectra.
+#' @param .parallel	if TRUE, apply function in parallel, using parallel backend
+#'   provided by foreach
+#' @param .paropts a list of additional options passed into the foreach function
+#'   when parallel computation is enabled. This is important if (for example)
+#'   your code relies on external data or packages: use the .export and
+#'   .packages arguments to supply them so that all cluster nodes have the
+#'   correct environment set up for computing.
+#'
+#' @export
+#'
+Rfr_normdiff.reflector_mspct <-
+  function(spct,
+           w.band.plus = NULL,
+           w.band.minus = NULL,
+           scale.factor = 1,
+           wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
+           use.cached.mult = FALSE,
+           use.hinges = NULL,
+           quantity = "mean",
+           naming = "short",
+           name.tag = NULL,
+           ...,
+           attr2tb = NULL,
+           idx = "spct.idx",
+           .parallel = FALSE,
+           .paropts = NULL) {
+    if (naming == "none") {
+      # need names for columns
+      naming <- "short"
+    }
+    z <-
+      msdply(
+        mspct = spct,
+        .fun = Rfr_normdiff,
+        w.band.plus = w.band.plus,
+        w.band.minus = w.band.minus,
+        wb.trim = wb.trim,
+        scale.factor = scale.factor,
+        use.cached.mult = use.cached.mult,
+        use.hinges = use.hinges,
+        quantity = quantity,
+        naming = naming,
+        name.tag = name.tag,
+        idx = idx,
+        .parallel = .parallel,
+        .paropts = .paropts
+      )
+    add_attr2tb(tb = z,
+                mspct = spct,
+                col.names = attr2tb,
+                idx = idx)
+  }
 
-#' Compute two reflectances for ratio, fraction or index
+# internal utility function --------------------------------------------------
+
+#' Compute two reflectances for ratio, fraction or normalised difference
 #'
 #' Internal function that computes the two reflectances needed to compute
 #' various waveband ratios and fractions.

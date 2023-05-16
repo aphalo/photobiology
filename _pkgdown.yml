@@ -167,7 +167,14 @@ reference:
     - q_ratio
     - eq_ratio
     - qe_ratio
-    - normalized_diff_ind
+    - e_fraction
+    - q_fraction
+    - Tfr_ratio
+    - Tfr_fraction
+    - Tfr_normdiff
+    - Rfr_ratio
+    - Rfr_fraction
+    - Rfr_normdiff
     - min
     - max
     - range
@@ -396,6 +403,7 @@ reference:
     - interpolate_spectrum
     - irradiance
     - merge_attributes
+    - normalized_diff_ind
     - oper_spectra
     - photon_irradiance
     - photon_ratio
