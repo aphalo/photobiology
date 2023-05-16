@@ -26,13 +26,13 @@
 #' @param ... other arguments (possibly ignored)
 #'
 #' @details With the default \code{quantity = "mean"} or \code{quantity =
-#'   "average"} the ratio is based on two \strong{mean spectral photon
-#'   irradiances}, one computed for each waveband.
+#'   "average"} the ratio is based on two \strong{mean spectral transmittance},
+#'   one computed for each waveband.
 #'
-#'   \deqn{\frac{\bar{\mathrm{Tfr}_\lambda}(s, wb_\mathrm{num})}{\bar{\mathrm{Tfr}_\lambda}(s, wb_\mathrm{denom}))}}
+#'   \deqn{\frac{\overline{\mathrm{Tfr}_\lambda}(s, wb_\mathrm{num})}{\overline{\mathrm{Tfr}_\lambda}(s, wb_\mathrm{denom}))}}
 #'
 #' If the argument is set to \code{quantity = "total"} the ratio is based on
-#'   two \strong{photon irradiances}, one computed for each waveband.
+#'   two \strong{integrated transmittance}, one computed for each waveband.
 #'
 #'   \deqn{\frac{\mathrm{Tfr}(s, wb_\mathrm{num})}{\mathrm{Tfr}(s, wb_\mathrm{denom})}}
 #'
@@ -156,7 +156,7 @@ Tfr_ratio.filter_spct <-
     return(ratio)
   }
 
-#' @describeIn Tfr_ratio Calculates Tfr:Tfr from a \code{reflector_mspct}
+#' @describeIn Tfr_ratio Calculates Tfr:Tfr from a \code{filter_mspct}
 #'   object.
 #'
 #' @param attr2tb character vector, see \code{\link{add_attr2tb}} for the syntax
@@ -173,7 +173,7 @@ Tfr_ratio.filter_spct <-
 #'
 #' @export
 #'
-Tfr_ratio.reflector_mspct <-
+Tfr_ratio.filter_mspct <-
   function(spct,
            w.band.num = NULL,
            w.band.denom = NULL,
@@ -243,14 +243,14 @@ Tfr_ratio.reflector_mspct <-
 #' @param name.tag character Used to tag the name of the returned values.
 #' @param ... other arguments (possibly ignored)
 #'
-#' @details With the default \code{quantity = "mean"} or
-#'  \code{quantity = "average"} the ratio is based on
-#'   two \strong{mean spectral photon irradiances}, one computed for each waveband.
+#' @details With the default \code{quantity = "mean"} or \code{quantity =
+#'   "average"} the ratio is based on two \strong{mean spectral transmittance},
+#'   one computed for each waveband.
 #'
-#'   \deqn{\frac{\bar{\mathrm{Tfr}_\lambda}(s, wb_\mathrm{num})}{\bar{\mathrm{Tfr}_\lambda}(s, wb_\mathrm{denom}) + \bar{\mathrm{Tfr}_\lambda}(s, wb_\mathrm{num})}}
+#'   \deqn{\frac{\overline{\mathrm{Tfr}_\lambda}(s, wb_\mathrm{num})}{\overline{\mathrm{Tfr}_\lambda}(s, wb_\mathrm{denom}) + \overline{\mathrm{Tfr}_\lambda}(s, wb_\mathrm{num})}}
 #'
 #' If the argument is set to \code{quantity = "total"} the fraction is based on
-#'   two \strong{photon irradiances}, one computed for each waveband.
+#'   two \strong{integrated transmittance}, one computed for each waveband.
 #'
 #'   \deqn{\frac{\mathrm{Tfr}(s, wb_\mathrm{num})}{\mathrm{Tfr}(s, wb_\mathrm{denom}) + \mathrm{Tfr}(s, wb_\mathrm{num})}}
 #'
@@ -375,7 +375,7 @@ Tfr_fraction.filter_spct <-
     return(fraction)
   }
 
-#' @describeIn Tfr_fraction Calculates Tfr:Tfr from a \code{reflector_mspct}
+#' @describeIn Tfr_fraction Calculates Tfr:Tfr from a \code{filter_mspct}
 #'   object.
 #'
 #' @param attr2tb character vector, see \code{\link{add_attr2tb}} for the syntax
@@ -392,7 +392,7 @@ Tfr_fraction.filter_spct <-
 #'
 #' @export
 #'
-Tfr_fraction.reflector_mspct <-
+Tfr_fraction.filter_mspct <-
   function(spct,
            w.band.num = NULL,
            w.band.denom = NULL,
@@ -465,7 +465,7 @@ Tfr_fraction.reflector_mspct <-
 #'  \code{quantity = "average"} the ratio is based on
 #'   two \strong{mean spectral photon transmittances}, one computed for each waveband.
 #'
-#'   \deqn{\frac{\bar{\mathrm{Tfr}_\lambda}(s, wb_\mathrm{plus}) - \bar{\mathrm{Tfr}_\lambda}(s, wb_\mathrm{minus})}{\bar{\mathrm{Tfr}_\lambda}(s, wb_\mathrm{plus}) + \bar{\mathrm{Tfr}_\lambda}(s, wb_\mathrm{minus})}}
+#'   \deqn{\frac{\overline{\mathrm{Tfr}_\lambda}(s, wb_\mathrm{plus}) - \overline{\mathrm{Tfr}_\lambda}(s, wb_\mathrm{minus})}{\overline{\mathrm{Tfr}_\lambda}(s, wb_\mathrm{plus}) + \overline{\mathrm{Tfr}_\lambda}(s, wb_\mathrm{minus})}}
 #'
 #' If the argument is set to \code{quantity = "total"} the fraction is based on
 #'   two \strong{photon transmittances}, one computed for each waveband.
@@ -597,7 +597,7 @@ Tfr_normdiff.filter_spct <-
     return(Tfr.normdiff)
   }
 
-#' @describeIn Tfr_normdiff Calculates Tfr:Tfr from a \code{reflector_mspct}
+#' @describeIn Tfr_normdiff Calculates Tfr:Tfr from a \code{filter_mspct}
 #'   object.
 #'
 #' @param attr2tb character vector, see \code{\link{add_attr2tb}} for the syntax
@@ -614,7 +614,7 @@ Tfr_normdiff.filter_spct <-
 #'
 #' @export
 #'
-Tfr_normdiff.reflector_mspct <-
+Tfr_normdiff.filter_mspct <-
   function(spct,
            w.band.plus = NULL,
            w.band.minus = NULL,

@@ -4,7 +4,7 @@
 \alias{Tfr_fraction}
 \alias{Tfr_fraction.default}
 \alias{Tfr_fraction.filter_spct}
-\alias{Tfr_fraction.reflector_mspct}
+\alias{Tfr_fraction.filter_mspct}
 \title{transmittance:transmittance fraction}
 \usage{
 Tfr_fraction(
@@ -43,7 +43,7 @@ Tfr_fraction(
   ...
 )
 
-\method{Tfr_fraction}{reflector_mspct}(
+\method{Tfr_fraction}{filter_mspct}(
   spct,
   w.band.num = NULL,
   w.band.denom = NULL,
@@ -132,14 +132,14 @@ This function returns the transmittance fraction for a given pair of wavebands o
 filter spectrum.
 }
 \details{
-With the default \code{quantity = "mean"} or
- \code{quantity = "average"} the ratio is based on
-  two \strong{mean spectral photon irradiances}, one computed for each waveband.
+With the default \code{quantity = "mean"} or \code{quantity =
+  "average"} the ratio is based on two \strong{mean spectral transmittance},
+  one computed for each waveband.
 
-  \deqn{\frac{\bar{\mathrm{Tfr}_\lambda}(s, wb_\mathrm{num})}{\bar{\mathrm{Tfr}_\lambda}(s, wb_\mathrm{denom}) + \bar{\mathrm{Tfr}_\lambda}(s, wb_\mathrm{num})}}
+  \deqn{\frac{\overline{\mathrm{Tfr}_\lambda}(s, wb_\mathrm{num})}{\overline{\mathrm{Tfr}_\lambda}(s, wb_\mathrm{denom}) + \overline{\mathrm{Tfr}_\lambda}(s, wb_\mathrm{num})}}
 
 If the argument is set to \code{quantity = "total"} the fraction is based on
-  two \strong{photon irradiances}, one computed for each waveband.
+  two \strong{integrated transmittance}, one computed for each waveband.
 
   \deqn{\frac{\mathrm{Tfr}(s, wb_\mathrm{num})}{\mathrm{Tfr}(s, wb_\mathrm{denom}) + \mathrm{Tfr}(s, wb_\mathrm{num})}}
 
@@ -152,7 +152,7 @@ ratios are numerically identical.
 
 \item \code{Tfr_fraction(filter_spct)}: Method for \code{filter_spct} objects
 
-\item \code{Tfr_fraction(reflector_mspct)}: Calculates Tfr:Tfr from a \code{reflector_mspct}
+\item \code{Tfr_fraction(filter_mspct)}: Calculates Tfr:Tfr from a \code{filter_mspct}
 object.
 
 }}

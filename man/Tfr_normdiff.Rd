@@ -4,7 +4,7 @@
 \alias{Tfr_normdiff}
 \alias{Tfr_normdiff.default}
 \alias{Tfr_normdiff.filter_spct}
-\alias{Tfr_normdiff.reflector_mspct}
+\alias{Tfr_normdiff.filter_mspct}
 \title{transmittance:transmittance normalised difference}
 \usage{
 Tfr_normdiff(
@@ -43,7 +43,7 @@ Tfr_normdiff(
   ...
 )
 
-\method{Tfr_normdiff}{reflector_mspct}(
+\method{Tfr_normdiff}{filter_mspct}(
   spct,
   w.band.plus = NULL,
   w.band.minus = NULL,
@@ -134,7 +134,7 @@ With the default \code{quantity = "mean"} or
  \code{quantity = "average"} the ratio is based on
   two \strong{mean spectral photon transmittances}, one computed for each waveband.
 
-  \deqn{\frac{\bar{\mathrm{Tfr}_\lambda}(s, wb_\mathrm{plus}) - \bar{\mathrm{Tfr}_\lambda}(s, wb_\mathrm{minus})}{\bar{\mathrm{Tfr}_\lambda}(s, wb_\mathrm{plus}) + \bar{\mathrm{Tfr}_\lambda}(s, wb_\mathrm{minus})}}
+  \deqn{\frac{\overline{\mathrm{Tfr}_\lambda}(s, wb_\mathrm{plus}) - \overline{\mathrm{Tfr}_\lambda}(s, wb_\mathrm{minus})}{\overline{\mathrm{Tfr}_\lambda}(s, wb_\mathrm{plus}) + \overline{\mathrm{Tfr}_\lambda}(s, wb_\mathrm{minus})}}
 
 If the argument is set to \code{quantity = "total"} the fraction is based on
   two \strong{photon transmittances}, one computed for each waveband.
@@ -150,7 +150,7 @@ ratios are numerically identical.
 
 \item \code{Tfr_normdiff(filter_spct)}: Method for \code{filter_spct} objects
 
-\item \code{Tfr_normdiff(reflector_mspct)}: Calculates Tfr:Tfr from a \code{reflector_mspct}
+\item \code{Tfr_normdiff(filter_mspct)}: Calculates Tfr:Tfr from a \code{filter_mspct}
 object.
 
 }}

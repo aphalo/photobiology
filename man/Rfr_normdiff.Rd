@@ -134,7 +134,7 @@ With the default \code{quantity = "mean"} or
  \code{quantity = "average"} the ratio is based on
   two \strong{mean spectral photon reflectances}, one computed for each waveband.
 
-  \deqn{\frac{\bar{\mathrm{Rfr}_\lambda}(s, wb_\mathrm{plus}) - \bar{\mathrm{Rfr}_\lambda}(s, wb_\mathrm{minus})}{\bar{\mathrm{Rfr}_\lambda}(s, wb_\mathrm{plus}) + \bar{\mathrm{Rfr}_\lambda}(s, wb_\mathrm{minus})}}
+  \deqn{\frac{\overline{\mathrm{Rfr}_\lambda}(s, wb_\mathrm{plus}) - \overline{\mathrm{Rfr}_\lambda}(s, wb_\mathrm{minus})}{\overline{\mathrm{Rfr}_\lambda}(s, wb_\mathrm{plus}) + \overline{\mathrm{Rfr}_\lambda}(s, wb_\mathrm{minus})}}
 
 If the argument is set to \code{quantity = "total"} the fraction is based on
   two \strong{photon reflectances}, one computed for each waveband.

@@ -134,12 +134,12 @@ reflector spectrum.
 \details{
 With the default \code{quantity = "mean"} or
  \code{quantity = "average"} the ratio is based on
-  two \strong{mean spectral photon irradiances}, one computed for each waveband.
+  two \strong{mean spectral reflectance}, one computed for each waveband.
 
-  \deqn{\frac{\bar{\mathrm{Rfr}_\lambda}(s, wb_\mathrm{num})}{\bar{\mathrm{Rfr}_\lambda}(s, wb_\mathrm{denom}))}}
+  \deqn{\frac{\overline{\mathrm{Rfr}_\lambda}(s, wb_\mathrm{num})}{\overline{\mathrm{Rfr}_\lambda}(s, wb_\mathrm{denom}))}}
 
 If the argument is set to \code{quantity = "total"} the ratio is based on
-  two \strong{photon irradiances}, one computed for each waveband.
+  two \strong{integrated reflectance}, one computed for each waveband.
 
   \deqn{\frac{\mathrm{Rfr}(s, wb_\mathrm{num})}{\mathrm{Rfr}(s, wb_\mathrm{denom})}}
 

@@ -141,7 +141,7 @@ If the argument is set to \code{quantity = "mean"} or
  \code{quantity = "average"} the ratio is based on
   two mean spectral photon irradiances, one computed for each waveband.
 
-  \deqn{\frac{\bar{I_\lambda}(s, wb_\mathrm{num})}{\bar{I_\lambda}(s, wb_\mathrm{denom})}}
+  \deqn{\frac{\overline{I_\lambda}(s, wb_\mathrm{num})}{\overline{I_\lambda}(s, wb_\mathrm{denom})}}
 
 Only if the wavelength expanse of the two wavebands is the same, these two
 ratios are numerically identical.
