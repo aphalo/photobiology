@@ -391,6 +391,21 @@ test_that("source_mspct", {
     ))[["A[q:e]"]], 9), rep(3.365e-06, 5)
   )
 
+  # fractions ------------------------------------------------------------------
+
+  expect_equal(
+    round(q_fraction(my.mspct,
+                  waveband(c(400,405), wb.name = "A"),
+                  waveband(c(405,410), wb.name = "B")
+    )[["A:(A+B)[q:q]"]], 3), rep(0.497, 5)
+  )
+  expect_equal(
+    round(e_fraction(my.mspct,
+                  waveband(c(400,405), wb.name = "A"),
+                  waveband(c(405,410), wb.name = "B")
+    )[["A:(A+B)[e:e]"]], 3), rep(0.500, 5)
+  )
+
   # min ---------------------------------------------------------------------
 
   expect_equal(min(my.mspct)[["spct.idx"]],

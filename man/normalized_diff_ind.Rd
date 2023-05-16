@@ -76,3 +76,6 @@ Some NDxI indexes are directly based on satellite instrument data, such
 
 \code{NDxI()} is a shorthand for \code{normalized_diff_ind()}.
 }
+\seealso{
+\code{\link{Rfr_normdiff}}
+}

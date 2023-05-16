@@ -37,8 +37,9 @@ q_ratio(
   wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
   use.cached.mult = FALSE,
   use.hinges = NULL,
+  quantity = "total",
   naming = "short",
-  name.tag = ifelse(naming != "none", "[q:q]", ""),
+  name.tag = NULL,
   ...
 )
 
@@ -50,6 +51,7 @@ q_ratio(
   wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
   use.cached.mult = FALSE,
   use.hinges = NULL,
+  quantity = "total",
   naming = "short",
   name.tag = ifelse(naming != "none", "[q:q]", ""),
   ...,
@@ -83,6 +85,8 @@ the boundaries of the wavebands.}
 
 \item{...}{other arguments (possibly ignored)}
 
+\item{quantity}{character One of "total", "average" or "mean".}
+
 \item{naming}{character one of "long", "default", "short" or "none". Used to
 select the type of names to assign to returned value.}
 
@@ -105,24 +109,42 @@ correct environment set up for computing.}
 }
 \value{
 In the case of methods for individual spectra, a \code{numeric}
-  vector of adimensional values giving a photon ratio between integrated
-  photon irradiances for pairs of wavebands, with name attribute set to
-  the name of the wavebands unless a named list of wavebands is supplied in
-  which case the names of the list elements are used, with "(q:q)" appended.
-  A \code{data.frame} in the case of collections of spectra, containing one
-  column for each ratio definition, an index column with the names of the
-  spectra, and optionally additional columns with metadata values retrieved
-  from the attributes of the member spectra.
+  vector with name attribute set. The name is based on the name of the
+  wavebands unless a named list of wavebands is supplied in which case the
+  names of the list elements are used. "[q:q]" is appended if \code{quantity
+  = "total"} and "[q(wl):q(wl)]" if \code{quantity = "mean"} or
+  \code{quantity = "average"}.
 
-  Ratio definitions are "assembled" from the arguments passed to
-  \code{w.band.num} and \code{w.band.denom}. If both arguments are of equal
-  length, then the wavebands are paired to obtain as many ratios as the
-  number of wavebands in each list. Recycling for wavebands takes place when
-  the number of denominator and numerator wavebands differ.
+  A \code{data.frame} is returned in the case of collections of spectra,
+  containing one column for each fraction definition, an index column with
+  the names of the spectra, and optionally additional columns with metadata
+  values retrieved from the attributes of the member spectra.
+
+  Fraction definitions are "assembled" from the arguments passed to
+  \code{w.band.num} and \code{w.band.denom}. If both arguments are lists of
+  waveband definitions, with an equal number of mebers, then the wavebands
+  are paired to obtain as many fractions as the number of wavebands in each
+  list. Recycling for wavebands takes place when the number of denominator
+  and numerator wavebands differ.
 }
 \description{
 This function returns the photon ratio for a given pair of wavebands of a
 light source spectrum.
+}
+\details{
+With the default \code{quantity = "total"} the ratio is based on
+  two photon irradiances, one computed for each waveband.
+
+  \deqn{\frac{Q(s, wb_\mathrm{num})}{Q(s, wb_\mathrm{denom})}}
+
+If the argument is set to \code{quantity = "mean"} or
+ \code{quantity = "average"} the ratio is based on
+  two mean spectral photon irradiances, one computed for each waveband.
+
+  \deqn{\frac{\bar{Q_\lambda}(s, wb_\mathrm{num})}{\bar{Q_\lambda}(s, wb_\mathrm{denom})}}
+
+Only if the wavelength expanse of the two wavebands is the same, these two
+ratios are numerically identical.
 }
 \section{Methods (by class)}{
 \itemize{
@@ -149,6 +171,7 @@ q_ratio(sun.spct, new_waveband(400,500), new_waveband(400,700))
 }
 \seealso{
 Other photon and energy ratio functions: 
+\code{\link{e_fraction}()},
 \code{\link{e_ratio}()},
 \code{\link{eq_ratio}()},
 \code{\link{q_fraction}()},

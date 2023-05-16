@@ -17,26 +17,44 @@
 #' @param use.hinges logical Flag indicating whether to insert "hinges" into the
 #'   spectral data before integration so as to reduce interpolation errors at
 #'   the boundaries of the wavebands.
+#' @param quantity character One of "total", "average" or "mean".
 #' @param naming character one of "long", "default", "short" or "none". Used to
 #'   select the type of names to assign to returned value.
 #' @param name.tag character Used to tag the name of the returned values.
 #' @param ... other arguments (possibly ignored)
 #'
+#' @details With the default \code{quantity = "total"} the fraction is based on
+#'   two \strong{photon irradiances}, one computed for each waveband.
+#'
+#'   \deqn{\frac{Q(s, wb_\mathrm{num})}{Q(s, wb_\mathrm{denom}) + Q(s, wb_\mathrm{num})}}
+#'
+#' If the argument is set to \code{quantity = "mean"} or
+#'  \code{quantity = "average"} the ratio is based on
+#'   two \strong{mean spectral photon irradiances}, one computed for each waveband.
+#'
+#'   \deqn{\frac{\bar{Q_\lambda}(s, wb_\mathrm{num})}{\bar{Q_\lambda}(s, wb_\mathrm{denom}) + \bar{Q_\lambda}(s, wb_\mathrm{num})}}
+#'
+#' Only if the wavelength expanse of the two wavebands is the same, these two
+#' ratios are numerically identical.
+#'
 #' @return In the case of methods for individual spectra, a \code{numeric}
-#'   vector of adimensional values giving a photon fraction between integrated
-#'   photon irradiances for pairs of wavebands, with name attribute set to
-#'   the name of the wavebands unless a named list of wavebands is supplied in
-#'   which case the names of the list elements are used, with "(q:q)" appended.
-#'   A \code{data.frame} in the case of collections of spectra, containing one
-#'   column for each fraction definition, an index column with the names of the
-#'   spectra, and optionally additional columns with metadata values retrieved
-#'   from the attributes of the member spectra.
+#'   vector with name attribute set. The name is based on the name of the
+#'   wavebands unless a named list of wavebands is supplied in which case the
+#'   names of the list elements are used. "[q:q]" is appended if \code{quantity
+#'   = "total"} and "[q(wl):q(wl)]" if \code{quantity = "mean"} or
+#'   \code{quantity = "average"}.
+#'
+#'   A \code{data.frame} is returned in the case of collections of spectra,
+#'   containing one column for each fraction definition, an index column with
+#'   the names of the spectra, and optionally additional columns with metadata
+#'   values retrieved from the attributes of the member spectra.
 #'
 #'   Fraction definitions are "assembled" from the arguments passed to
-#'   \code{w.band.num} and \code{w.band.denom}. If both arguments are of equal
-#'   length, then the wavebands are paired to obtain as many fractions as the
-#'   number of wavebands in each list. Recycling for wavebands takes place when
-#'   the number of denominator and numerator wavebands differ.
+#'   \code{w.band.num} and \code{w.band.denom}. If both arguments are lists of
+#'   waveband definitions, with an equal number of members, then the wavebands
+#'   are paired to obtain as many fractions as the number of wavebands in each
+#'   list. Recycling for wavebands takes place when the number of denominator
+#'   and numerator wavebands differ.
 #'
 #' @export
 #' @examples
@@ -52,15 +70,27 @@
 #'
 #' @family photon and energy ratio functions
 #'
-q_fraction <- function(spct, w.band.num, w.band.denom, scale.factor, wb.trim,
-                    use.cached.mult, use.hinges, ...) UseMethod("q_fraction")
+q_fraction <- function(spct,
+                       w.band.num,
+                       w.band.denom,
+                       scale.factor,
+                       wb.trim,
+                       use.cached.mult,
+                       use.hinges,
+                       ...) UseMethod("q_fraction")
 
 #' @describeIn q_fraction Default for generic function
 #'
 #' @export
 #'
-q_fraction.default <- function(spct, w.band.num, w.band.denom, scale.factor, wb.trim,
-                            use.cached.mult, use.hinges, ...) {
+q_fraction.default <- function(spct,
+                               w.band.num,
+                               w.band.denom,
+                               scale.factor,
+                               wb.trim,
+                               use.cached.mult,
+                               use.hinges,
+                               ...) {
   warning("'q_fraction' is not defined for objects of class ", class(spct)[1])
   return(NA)
 }
@@ -77,28 +107,42 @@ q_fraction.source_spct <-
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.cached.mult = FALSE,
            use.hinges = NULL,
+           quantity = "total",
            naming = "short",
-           name.tag = ifelse(naming != "none", "[q:q]", ""),
+           name.tag = NULL,
            ... ) {
+
+    if (is.null(name.tag) && naming != "none") {
+      if (quantity  == "total") {
+        name.tag <- "[q:q]"
+      } else {
+        name.tag <- "[q(wl):q(wl)]"
+      }
+    }
 
     irrads <- two_irrads(spct = spct,
                          w.band.num = w.band.num,
                          w.band.denom = w.band.denom,
                          unit.out.num = "photon",
                          unit.out.denom = "photon",
-                         quantity = "total",
+                         quantity = quantity,
                          wb.trim = wb.trim,
                          use.cached.mult = use.cached.mult,
                          use.hinges = use.hinges,
-                         naming = naming,
-                         ...)
+                         naming = naming)
 
     q.irrad.num <- irrads[["irrad.num"]]
     q.irrad.denom <- irrads[["irrad.denom"]]
     fraction <- q.irrad.num / (q.irrad.denom + q.irrad.num) * scale.factor
-    names(fraction) <- paste(names(q.irrad.num), ":", names(q.irrad.denom), name.tag, sep = "")
+    names(fraction) <- paste(names(q.irrad.num), ":(",
+                             names(q.irrad.num), "+", names(q.irrad.denom), ")",
+                             name.tag, sep = "")
     attr(fraction, "time.unit") <- NULL
-    attr(fraction, "radiation.unit") <- "q:q fraction"
+    if (quantity == "total") {
+      attr(fraction, "radiation.unit") <- "q:q fraction"
+    } else {
+      attr(fraction, "radiation.unit") <- "q(wl):q(wl) fraction"
+    }
     return(fraction)
   }
 
@@ -121,26 +165,44 @@ q_fraction.source_spct <-
 #' @param use.hinges logical Flag indicating whether to insert "hinges" into the
 #'   spectral data before integration so as to reduce interpolation errors at
 #'   the boundaries of the wavebands.
+#' @param quantity character One of "total", "average" or "mean".
 #' @param naming character one of "long", "default", "short" or "none". Used to
 #'   select the type of names to assign to returned value.
 #' @param name.tag character Used to tag the name of the returned values.
 #' @param ... other arguments (possibly used by derived methods).
 #'
+#' @details With the default \code{quantity = "total"} the fraction is based on
+#'   two \strong{energy irradiances}, one computed for each waveband.
+#'
+#'   \deqn{\frac{E(s, wb_\mathrm{num})}{E(s, wb_\mathrm{denom}) + E(s, wb_\mathrm{num})}}
+#'
+#' If the argument is set to \code{quantity = "mean"} or
+#'  \code{quantity = "average"} the ratio is based on
+#'   two \strong{mean spectral energy irradiances}, one computed for each waveband.
+#'
+#'   \deqn{\frac{\bar{Q_\lambda}(s, wb_\mathrm{num})}{\bar{Q_\lambda}(s, wb_\mathrm{denom}) + \bar{Q_\lambda}(s, wb_\mathrm{num})}}
+#'
+#' Only if the wavelength expanse of the two wavebands is the same, these two
+#' ratios are numerically identical.
+#'
 #' @return In the case of methods for individual spectra, a \code{numeric}
-#'   vector of adimensional values giving a energy fraction between
-#'   integrated energy irradiances for pairs of wavebands, with name attribute
-#'   set to the name of the wavebands unless a named list of wavebands is
-#'   supplied in which case the names of the list elements are used, with
-#'   "(e:e)" appended. A \code{data.frame} in the case of collections of
-#'   spectra, containing one column for each fraction definition, an index column
-#'   with the names of the spectra, and optionally additional columns with
-#'   metadata values retrieved from the attributes of the member spectra.
+#'   vector with name attribute set. The name is based on the name of the
+#'   wavebands unless a named list of wavebands is supplied in which case the
+#'   names of the list elements are used. "[e:e]" is appended if \code{quantity
+#'   = "total"} and "[e(wl):e(wl)]" if \code{quantity = "mean"} or
+#'   \code{quantity = "average"}.
+#'
+#'   A \code{data.frame} is returned in the case of collections of spectra,
+#'   containing one column for each fraction definition, an index column with
+#'   the names of the spectra, and optionally additional columns with metadata
+#'   values retrieved from the attributes of the member spectra.
 #'
 #'   Fraction definitions are "assembled" from the arguments passed to
-#'   \code{w.band.num} and \code{w.band.denom}. If both arguments are of equal
-#'   length, then the wavebands are paired to obtain as many fractions as the
-#'   number of wavebands in each list. Recycling for wavebands takes place when
-#'   the number of denominator and numerator wavebands differ.
+#'   \code{w.band.num} and \code{w.band.denom}. If both arguments are lists of
+#'   waveband definitions, with an equal number of members, then the wavebands
+#'   are paired to obtain as many fractions as the number of wavebands in each
+#'   list. Recycling for wavebands takes place when the number of denominator
+#'   and numerator wavebands differ.
 #'
 #' @export
 #' @examples
@@ -155,17 +217,29 @@ q_fraction.source_spct <-
 #'   ensuring that the wavelengths are the same in each call, as the only test
 #'   done is for the length of the \code{w.length} vector.
 #'
-#' @family photon and energy fraction functions
+#' @family photon and energy ratio functions
 #'
-e_fraction <- function(spct, w.band.num, w.band.denom, scale.factor, wb.trim,
-                    use.cached.mult, use.hinges, ...) UseMethod("e_fraction")
+e_fraction <- function(spct,
+                       w.band.num,
+                       w.band.denom,
+                       scale.factor,
+                       wb.trim,
+                       use.cached.mult,
+                       use.hinges,
+                       ...) UseMethod("e_fraction")
 
 #' @describeIn e_fraction Default for generic function
 #'
 #' @export
 #'
-e_fraction.default <- function(spct, w.band.num, w.band.denom, scale.factor, wb.trim,
-                            use.cached.mult, use.hinges, ...) {
+e_fraction.default <- function(spct,
+                               w.band.num,
+                               w.band.denom,
+                               scale.factor,
+                               wb.trim,
+                               use.cached.mult,
+                               use.hinges,
+                               ...) {
   warning("'e_fraction' is not defined for objects of class ", class(spct)[1])
   return(NA)
 }
@@ -176,33 +250,170 @@ e_fraction.default <- function(spct, w.band.num, w.band.denom, scale.factor, wb.
 #'
 e_fraction.source_spct <-
   function(spct,
-           w.band.num = NULL, w.band.denom = NULL,
+           w.band.num = NULL,
+           w.band.denom = NULL,
            scale.factor = 1,
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.cached.mult = FALSE,
            use.hinges = NULL,
+           quantity = "total",
            naming = "short",
-           name.tag = ifelse(naming != "none", "[e:e]", ""),
+           name.tag = NULL,
            ...) {
+
+    if (is.null(name.tag) && naming != "none") {
+      if (quantity  == "total") {
+        name.tag <- "[e:e]"
+      } else {
+        name.tag <- "[e(wl):e(wl)]"
+      }
+    }
 
     irrads <- two_irrads(spct = spct,
                          w.band.num = w.band.num,
                          w.band.denom = w.band.denom,
                          unit.out.num = "energy",
                          unit.out.denom = "energy",
-                         quantity = "total",
+                         quantity = quantity,
                          wb.trim = wb.trim,
                          use.cached.mult = use.cached.mult,
                          use.hinges = use.hinges,
-                         naming = naming,
-                         ...)
+                         naming = naming)
 
     e.irrad.num <- irrads[["irrad.num"]]
     e.irrad.denom <- irrads[["irrad.denom"]]
     fraction <- e.irrad.num / (e.irrad.denom + e.irrad.num) * scale.factor
-    names(fraction) <- paste(names(e.irrad.num), ":", names(e.irrad.denom), name.tag, sep="")
+    names(fraction) <- paste(names(e.irrad.num), ":(",
+                             names(e.irrad.num), "+", names(e.irrad.denom), ")",
+                             name.tag, sep = "")
     attr(fraction, "time.unit") <- NULL
-    attr(fraction, "radiation.unit") <- "e:e fraction"
+    if (quantity == "total") {
+      attr(fraction, "radiation.unit") <- "e:e fraction"
+    } else {
+      attr(fraction, "radiation.unit") <- "e(wl):e(wl) fraction"
+    }
     return(fraction)
+  }
+
+# source_mspct methods ----------------------------------------------------
+
+#' @describeIn q_fraction Calculates photon:photon from a \code{source_mspct}
+#'   object.
+#'
+#' @param attr2tb character vector, see \code{\link{add_attr2tb}} for the syntax
+#'   for \code{attr2tb} passed as is to formal parameter \code{col.names}.
+#' @param idx character Name of the column with the names of the members of the
+#'   collection of spectra.
+#' @param .parallel	if TRUE, apply function in parallel, using parallel backend
+#'   provided by foreach
+#' @param .paropts a list of additional options passed into the foreach function
+#'   when parallel computation is enabled. This is important if (for example)
+#'   your code relies on external data or packages: use the .export and
+#'   .packages arguments to supply them so that all cluster nodes have the
+#'   correct environment set up for computing.
+#'
+#' @export
+#'
+q_fraction.source_mspct <-
+  function(spct,
+           w.band.num = NULL,
+           w.band.denom = NULL,
+           scale.factor = 1,
+           wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
+           use.cached.mult = FALSE,
+           use.hinges = NULL,
+           quantity = "total",
+           naming = "short",
+           name.tag = ifelse(naming != "none", "[q:q]", ""),
+           ...,
+           attr2tb = NULL,
+           idx = "spct.idx",
+           .parallel = FALSE,
+           .paropts = NULL) {
+    if (naming == "none") {
+      # need names for columns
+      naming <- "short"
+    }
+    z <-
+      msdply(
+        mspct = spct,
+        .fun = q_fraction,
+        w.band.num = w.band.num,
+        w.band.denom = w.band.denom,
+        quantity = quantity,
+        wb.trim = wb.trim,
+        scale.factor = scale.factor,
+        use.cached.mult = use.cached.mult,
+        use.hinges = use.hinges,
+        naming = naming,
+        name.tag = name.tag,
+        idx = idx,
+        .parallel = .parallel,
+        .paropts = .paropts
+      )
+    add_attr2tb(tb = z,
+                mspct = spct,
+                col.names = attr2tb,
+                idx = idx)
+  }
+
+#' @describeIn e_fraction Calculates energy:energy fraction from a \code{source_mspct}
+#'   object.
+#'
+#' @param attr2tb character vector, see \code{\link{add_attr2tb}} for the syntax
+#'   for \code{attr2tb} passed as is to formal parameter \code{col.names}.
+#' @param idx character Name of the column with the names of the members of the
+#'   collection of spectra.
+#' @param .parallel	if TRUE, apply function in parallel, using parallel backend
+#'   provided by foreach.
+#' @param .paropts a list of additional options passed into the foreach function
+#'   when parallel computation is enabled. This is important if (for example)
+#'   your code relies on external data or packages: use the .export and
+#'   .packages arguments to supply them so that all cluster nodes have the
+#'   correct environment set up for computing.
+#'
+#' @export
+#'
+e_fraction.source_mspct <-
+  function(spct,
+           w.band.num = NULL,
+           w.band.denom = NULL,
+           scale.factor = 1,
+           wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
+           use.cached.mult = FALSE,
+           use.hinges = NULL,
+           quantity = "total",
+           naming = "short",
+           name.tag = ifelse(naming != "none", "[e:e]", ""),
+           ...,
+           attr2tb = NULL,
+           idx = "spct.idx",
+           .parallel = FALSE,
+           .paropts = NULL) {
+    if (naming == "none") {
+      # need names for columns
+      naming <- "short"
+    }
+    z <-
+      msdply(
+        mspct = spct,
+        .fun = e_fraction,
+        w.band.num = w.band.num,
+        w.band.denom = w.band.denom,
+        quantity = quantity,
+        wb.trim = wb.trim,
+        scale.factor = scale.factor,
+        use.cached.mult = use.cached.mult,
+        use.hinges = use.hinges,
+        naming = naming,
+        name.tag = name.tag,
+        idx = idx,
+        .parallel = .parallel,
+        .paropts = .paropts
+      )
+    add_attr2tb(tb = z,
+                mspct = spct,
+                col.names = attr2tb,
+                idx = idx)
   }
 

@@ -93,12 +93,18 @@ Computed values are ratios between photon irradiance and energy
   to parameter \code{quantity} they can be re-expressed as relative fractions
   or percentages. In the case of vector output, \code{names} attribute is set
   to the name of the corresponding waveband unless a named list is supplied
-  in which case the names of the list members are used, with "q:e" prepended.
+  in which case the names of the list members are used, with "[q:e]" prepended.
   Units [mol J-1].
 }
 \description{
 This function returns the photon to energy ratio for each waveband of a light
 source spectrum.
+}
+\details{
+The ratio is based on one photon irrandiance and one energy
+  irradiance, both computed for the same waveband.
+
+  \deqn{\frac{Q(s, wb)}{I(s, wb)}}
 }
 \section{Methods (by class)}{
 \itemize{
@@ -125,6 +131,7 @@ qe_ratio(sun.spct, new_waveband(400,700))
 }
 \seealso{
 Other photon and energy ratio functions: 
+\code{\link{e_fraction}()},
 \code{\link{e_ratio}()},
 \code{\link{eq_ratio}()},
 \code{\link{q_fraction}()},

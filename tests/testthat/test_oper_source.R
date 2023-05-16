@@ -531,17 +531,34 @@ test_that("fluence e_fluence q_fluence", {
 })
 
 test_that("ratio q_ratio e_ratio", {
-  red.wb <- waveband(c(600,700))
-  blue.wb <- waveband(c(400,500))
+  red.wb <- waveband(c(600,700), wb.name = "R")
+  blue.wb <- waveband(c(400,500), wb.name = "B")
+  narrow.wb <- waveband(c(460,480), wb.name = "B.narrow")
 
   q.ratio.result <- 0.83169703201068901
   expect_equal(
     as.numeric(q_ratio(sun.spct, blue.wb, red.wb)),
     q.ratio.result, tolerance = 1e-12)
+  expect_equal(
+    as.numeric(q_ratio(sun.spct, blue.wb, red.wb, quantity = "mean")),
+    q.ratio.result, tolerance = 1e-12)
+  expect_equal(
+    as.numeric(q_ratio(sun.spct, blue.wb, red.wb, quantity = "average")),
+    q.ratio.result, tolerance = 1e-12)
+  expect_error(q_ratio(sun.spct, blue.wb, red.wb, quantity = "bad argument"))
+
   e.ratio.result <- 1.1922198464802185
   expect_equal(
     as.numeric(e_ratio(sun.spct, blue.wb, red.wb)),
     e.ratio.result, tolerance = 1e-112)
+  expect_equal(
+    as.numeric(e_ratio(sun.spct, blue.wb, red.wb, quantity = "mean")),
+    e.ratio.result, tolerance = 1e-12)
+  expect_equal(
+    as.numeric(e_ratio(sun.spct, blue.wb, red.wb, quantity = "average")),
+    e.ratio.result, tolerance = 1e-12)
+  expect_error(e_ratio(sun.spct, blue.wb, red.wb, quantity = "bad argument"))
+
   eq.ratio.result <- 264631.91378474719
   expect_equal(
     as.numeric(eq_ratio(sun.spct, blue.wb)),
@@ -550,18 +567,118 @@ test_that("ratio q_ratio e_ratio", {
   expect_equal(
     as.numeric(qe_ratio(sun.spct, blue.wb)),
     qe.ratio.result, tolerance = 1e-12)
+
+  q.ratio.result <- 0.943427252286716
+  expect_equal(
+    as.numeric(q_ratio(sun.spct, narrow.wb, red.wb, quantity = "mean")),
+    q.ratio.result, tolerance = 1e-12)
+  expect_equal(
+    as.numeric(q_ratio(sun.spct, narrow.wb, red.wb, quantity = "average")),
+    q.ratio.result, tolerance = 1e-12)
+
+  q.ratio.result <- 0.188685450457343
+  expect_equal(
+    as.numeric(q_ratio(sun.spct, narrow.wb, red.wb, quantity = "total")),
+               q.ratio.result, tolerance = 1e-12)
+
+  expect_named(
+    q_ratio(sun.spct, blue.wb, red.wb, quantity = "total"),
+    "B:R[q:q]")
+
+  expect_named(
+    q_ratio(sun.spct, blue.wb, red.wb, quantity = "mean"),
+    "B:R[q(wl):q(wl)]")
+
+  e.ratio.result <- 1.30070948808942
+  expect_equal(
+    as.numeric(e_ratio(sun.spct, narrow.wb, red.wb, quantity = "mean")),
+    e.ratio.result, tolerance = 1e-12)
+  expect_equal(
+    as.numeric(e_ratio(sun.spct, narrow.wb, red.wb, quantity = "average")),
+    e.ratio.result, tolerance = 1e-12)
+
+  e.ratio.result <- 0.260141897617884
+  expect_equal(
+    as.numeric(e_ratio(sun.spct, narrow.wb, red.wb, quantity = "total")),
+    e.ratio.result, tolerance = 1e-12)
+
+  expect_named(
+    e_ratio(sun.spct, blue.wb, red.wb, quantity = "total"),
+    "B:R[e:e]")
+
+  expect_named(
+    e_ratio(sun.spct, blue.wb, red.wb, quantity = "mean"),
+    "B:R[e(wl):e(wl)]")
 })
 
 test_that("fraction q_fraction e_fraction", {
-  red.wb <- waveband(c(600,700))
-  blue.wb <- waveband(c(400,500))
+  red.wb <- waveband(c(600,700), wb.name = "R")
+  blue.wb <- waveband(c(400,500), wb.name = "B")
+  narrow.wb <- waveband(c(460,480), wb.name = "B.narrow")
 
   q.fraction.result <- 0.454058186193444
   expect_equal(
     as.numeric(q_fraction(sun.spct, blue.wb, red.wb)),
     q.fraction.result, tolerance = 1e-12)
+  expect_equal(
+    as.numeric(q_fraction(sun.spct, blue.wb, red.wb, quantity = "mean")),
+    q.fraction.result, tolerance = 1e-12)
+  expect_equal(
+    as.numeric(q_fraction(sun.spct, blue.wb, red.wb, quantity = "average")),
+    q.fraction.result, tolerance = 1e-12)
+  expect_error(q_fraction(sun.spct, blue.wb, red.wb, quantity = "bad argument"))
+
   e.fraction.result <- 0.543841370834418
   expect_equal(
     as.numeric(e_fraction(sun.spct, blue.wb, red.wb)),
     e.fraction.result, tolerance = 1e-12)
+  expect_equal(
+    as.numeric(e_fraction(sun.spct, blue.wb, red.wb, quantity = "mean")),
+    e.fraction.result, tolerance = 1e-12)
+  expect_equal(
+    as.numeric(e_fraction(sun.spct, blue.wb, red.wb, quantity = "average")),
+    e.fraction.result, tolerance = 1e-12)
+  expect_error(q_fraction(sun.spct, blue.wb, red.wb, quantity = "bad argument"))
+
+  q.fraction.result <- 0.485445107953818
+  expect_equal(
+    as.numeric(q_fraction(sun.spct, narrow.wb, red.wb, quantity = "mean")),
+    q.fraction.result, tolerance = 1e-12)
+  expect_equal(
+    as.numeric(q_fraction(sun.spct, narrow.wb, red.wb, quantity = "average")),
+    q.fraction.result, tolerance = 1e-12)
+
+  q.fraction.result <- 0.158734550325948
+  expect_equal(
+    as.numeric(q_fraction(sun.spct, narrow.wb, red.wb, quantity = "total")),
+    q.fraction.result, tolerance = 1e-12)
+
+  expect_named(
+    q_fraction(sun.spct, blue.wb, red.wb, quantity = "total"),
+    "B:(B+R)[q:q]")
+
+  expect_named(
+    q_fraction(sun.spct, blue.wb, red.wb, quantity = "mean"),
+    "B:(B+R)[q(wl):q(wl)]")
+
+  e.fraction.result <- 0.565351468676547
+  expect_equal(
+    as.numeric(e_fraction(sun.spct, narrow.wb, red.wb, quantity = "mean")),
+    e.fraction.result, tolerance = 1e-12)
+  expect_equal(
+    as.numeric(e_fraction(sun.spct, narrow.wb, red.wb, quantity = "average")),
+    e.fraction.result, tolerance = 1e-12)
+
+  e.fraction.result <- 0.206438574980837
+  expect_equal(
+    as.numeric(e_fraction(sun.spct, narrow.wb, red.wb, quantity = "total")),
+    e.fraction.result, tolerance = 1e-12)
+
+  expect_named(
+    e_fraction(sun.spct, blue.wb, red.wb, quantity = "total"),
+    "B:(B+R)[e:e]")
+
+  expect_named(
+    e_fraction(sun.spct, blue.wb, red.wb, quantity = "mean"),
+    "B:(B+R)[e(wl):e(wl)]")
 })

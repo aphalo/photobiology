@@ -9,7 +9,9 @@ editor_options:
 - Fix bug in `subset2mspct()` when applied to the case of a collection
   containing a single spct object containing a single spectrum.
 - Add specialization of `smooth_spct()` method for class `"cps_spct"`.
-- Add `e_fraction()` and `q_fraction`.
+- Add `e_fraction()` and `q_fraction` methods.
+- Add `Rfr_ratio()`, `Rfr_fraction()` and `Rfr_normdiff()`.
+- Add formal parameter `quantity` to `q_ratio()` and `e_ratio()` methods.
 
 # photobiology 0.10.16
 

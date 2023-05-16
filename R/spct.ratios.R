@@ -1,3 +1,5 @@
+# q_ratio() ---------------------------------------------------------------
+
 #' Photon:photon ratio
 #'
 #' This function returns the photon ratio for a given pair of wavebands of a
@@ -17,26 +19,44 @@
 #' @param use.hinges logical Flag indicating whether to insert "hinges" into the
 #'   spectral data before integration so as to reduce interpolation errors at
 #'   the boundaries of the wavebands.
+#' @param quantity character One of "total", "average" or "mean".
 #' @param naming character one of "long", "default", "short" or "none". Used to
 #'   select the type of names to assign to returned value.
 #' @param name.tag character Used to tag the name of the returned values.
 #' @param ... other arguments (possibly ignored)
 #'
-#' @return In the case of methods for individual spectra, a \code{numeric}
-#'   vector of adimensional values giving a photon ratio between integrated
-#'   photon irradiances for pairs of wavebands, with name attribute set to
-#'   the name of the wavebands unless a named list of wavebands is supplied in
-#'   which case the names of the list elements are used, with "(q:q)" appended.
-#'   A \code{data.frame} in the case of collections of spectra, containing one
-#'   column for each ratio definition, an index column with the names of the
-#'   spectra, and optionally additional columns with metadata values retrieved
-#'   from the attributes of the member spectra.
+#' @details With the default \code{quantity = "total"} the ratio is based on
+#'   two photon irradiances, one computed for each waveband.
 #'
-#'   Ratio definitions are "assembled" from the arguments passed to
-#'   \code{w.band.num} and \code{w.band.denom}. If both arguments are of equal
-#'   length, then the wavebands are paired to obtain as many ratios as the
-#'   number of wavebands in each list. Recycling for wavebands takes place when
-#'   the number of denominator and numerator wavebands differ.
+#'   \deqn{\frac{Q(s, wb_\mathrm{num})}{Q(s, wb_\mathrm{denom})}}
+#'
+#' If the argument is set to \code{quantity = "mean"} or
+#'  \code{quantity = "average"} the ratio is based on
+#'   two mean spectral photon irradiances, one computed for each waveband.
+#'
+#'   \deqn{\frac{\bar{Q_\lambda}(s, wb_\mathrm{num})}{\bar{Q_\lambda}(s, wb_\mathrm{denom})}}
+#'
+#' Only if the wavelength expanse of the two wavebands is the same, these two
+#' ratios are numerically identical.
+#'
+#' @return In the case of methods for individual spectra, a \code{numeric}
+#'   vector with name attribute set. The name is based on the name of the
+#'   wavebands unless a named list of wavebands is supplied in which case the
+#'   names of the list elements are used. "[q:q]" is appended if \code{quantity
+#'   = "total"} and "[q(wl):q(wl)]" if \code{quantity = "mean"} or
+#'   \code{quantity = "average"}.
+#'
+#'   A \code{data.frame} is returned in the case of collections of spectra,
+#'   containing one column for each fraction definition, an index column with
+#'   the names of the spectra, and optionally additional columns with metadata
+#'   values retrieved from the attributes of the member spectra.
+#'
+#'   Fraction definitions are "assembled" from the arguments passed to
+#'   \code{w.band.num} and \code{w.band.denom}. If both arguments are lists of
+#'   waveband definitions, with an equal number of mebers, then the wavebands
+#'   are paired to obtain as many fractions as the number of wavebands in each
+#'   list. Recycling for wavebands takes place when the number of denominator
+#'   and numerator wavebands differ.
 #'
 #' @export
 #' @examples
@@ -52,15 +72,27 @@
 #'
 #' @family photon and energy ratio functions
 #'
-q_ratio <- function(spct, w.band.num, w.band.denom, scale.factor, wb.trim,
-                  use.cached.mult, use.hinges, ...) UseMethod("q_ratio")
+q_ratio <- function(spct,
+                    w.band.num,
+                    w.band.denom,
+                    scale.factor,
+                    wb.trim,
+                    use.cached.mult,
+                    use.hinges,
+                    ...) UseMethod("q_ratio")
 
 #' @describeIn q_ratio Default for generic function
 #'
 #' @export
 #'
-q_ratio.default <- function(spct, w.band.num, w.band.denom, scale.factor, wb.trim,
-                            use.cached.mult, use.hinges, ...) {
+q_ratio.default <- function(spct,
+                            w.band.num,
+                            w.band.denom,
+                            scale.factor,
+                            wb.trim,
+                            use.cached.mult,
+                            use.hinges,
+                            ...) {
   warning("'q_ratio' is not defined for objects of class ", class(spct)[1])
   return(NA)
 }
@@ -77,30 +109,104 @@ q_ratio.source_spct <-
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.cached.mult = FALSE,
            use.hinges = NULL,
+           quantity = "total",
            naming = "short",
-           name.tag = ifelse(naming != "none", "[q:q]", ""),
+           name.tag = NULL,
            ... ) {
+
+    if (is.null(name.tag) && naming != "none") {
+      if (quantity  == "total") {
+        name.tag <- "[q:q]"
+      } else {
+        name.tag <- "[q(wl):q(wl)]"
+      }
+    }
 
     irrads <- two_irrads(spct = spct,
                          w.band.num = w.band.num,
                          w.band.denom = w.band.denom,
                          unit.out.num = "photon",
                          unit.out.denom = "photon",
-                         quantity = "total",
+                         quantity = quantity,
                          wb.trim = wb.trim,
                          use.cached.mult = use.cached.mult,
                          use.hinges = use.hinges,
-                         naming = naming,
-                         ...)
+                         naming = naming)
 
     q.irrad.num <- irrads[["irrad.num"]]
     q.irrad.denom <- irrads[["irrad.denom"]]
     ratio <- q.irrad.num / q.irrad.denom * scale.factor
     names(ratio) <- paste(names(q.irrad.num), ":", names(q.irrad.denom), name.tag, sep = "")
     attr(ratio, "time.unit") <- NULL
-    attr(ratio, "radiation.unit") <- "q:q ratio"
+    if (quantity == "total") {
+      attr(ratio, "radiation.unit") <- "q:q ratio"
+    } else {
+      attr(ratio, "radiation.unit") <- "q(wl):q(wl) ratio"
+    }
     return(ratio)
   }
+
+
+#' @describeIn q_ratio Calculates photon:photon from a \code{source_mspct}
+#'   object.
+#'
+#' @param attr2tb character vector, see \code{\link{add_attr2tb}} for the syntax
+#'   for \code{attr2tb} passed as is to formal parameter \code{col.names}.
+#' @param idx character Name of the column with the names of the members of the
+#'   collection of spectra.
+#' @param .parallel	if TRUE, apply function in parallel, using parallel backend
+#'   provided by foreach
+#' @param .paropts a list of additional options passed into the foreach function
+#'   when parallel computation is enabled. This is important if (for example)
+#'   your code relies on external data or packages: use the .export and
+#'   .packages arguments to supply them so that all cluster nodes have the
+#'   correct environment set up for computing.
+#'
+#' @export
+#'
+q_ratio.source_mspct <-
+  function(spct,
+           w.band.num = NULL, w.band.denom = NULL,
+           scale.factor = 1,
+           wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
+           use.cached.mult = FALSE,
+           use.hinges = NULL,
+           quantity = "total",
+           naming = "short",
+           name.tag = ifelse(naming != "none", "[q:q]", ""),
+           ...,
+           attr2tb = NULL,
+           idx = "spct.idx",
+           .parallel = FALSE,
+           .paropts = NULL) {
+    if (naming == "none") {
+      # need names for columns
+      naming <- "short"
+    }
+    z <-
+      msdply(
+        mspct = spct,
+        .fun = q_ratio,
+        w.band.num = w.band.num,
+        w.band.denom = w.band.denom,
+        quantity = quantity,
+        wb.trim = wb.trim,
+        scale.factor = scale.factor,
+        use.cached.mult = use.cached.mult,
+        use.hinges = use.hinges,
+        naming = naming,
+        name.tag = name.tag,
+        idx = idx,
+        .parallel = .parallel,
+        .paropts = .paropts
+      )
+    add_attr2tb(tb = z,
+                mspct = spct,
+                col.names = attr2tb,
+                idx = idx)
+  }
+
+# e_ratio() ---------------------------------------------------------------
 
 #' Energy:energy ratio
 #'
@@ -121,26 +227,44 @@ q_ratio.source_spct <-
 #' @param use.hinges logical Flag indicating whether to insert "hinges" into the
 #'   spectral data before integration so as to reduce interpolation errors at
 #'   the boundaries of the wavebands.
+#' @param quantity character One of "total", "average" or "mean".
 #' @param naming character one of "long", "default", "short" or "none". Used to
 #'   select the type of names to assign to returned value.
 #' @param name.tag character Used to tag the name of the returned values.
 #' @param ... other arguments (possibly used by derived methods).
 #'
-#' @return In the case of methods for individual spectra, a \code{numeric}
-#'   vector of adimensional values giving a energy ratio between
-#'   integrated energy irradiances for pairs of wavebands, with name attribute
-#'   set to the name of the wavebands unless a named list of wavebands is
-#'   supplied in which case the names of the list elements are used, with
-#'   "(e:e)" appended. A \code{data.frame} in the case of collections of
-#'   spectra, containing one column for each ratio definition, an index column
-#'   with the names of the spectra, and optionally additional columns with
-#'   metadata values retrieved from the attributes of the member spectra.
+#' @details With the default \code{quantity = "total"} the ratio is based on
+#'   two energy irradiances, one computed for each waveband.
 #'
-#'   Ratio definitions are "assembled" from the arguments passed to
-#'   \code{w.band.num} and \code{w.band.denom}. If both arguments are of equal
-#'   length, then the wavebands are paired to obtain as many ratios as the
-#'   number of wavebands in each list. Recycling for wavebands takes place when
-#'   the number of denominator and numerator wavebands differ.
+#'   \deqn{\frac{I(s, wb_\mathrm{num})}{I(s, wb_\mathrm{denom})}}
+#'
+#' If the argument is set to \code{quantity = "mean"} or
+#'  \code{quantity = "average"} the ratio is based on
+#'   two mean spectral photon irradiances, one computed for each waveband.
+#'
+#'   \deqn{\frac{\bar{I_\lambda}(s, wb_\mathrm{num})}{\bar{I_\lambda}(s, wb_\mathrm{denom})}}
+#'
+#' Only if the wavelength expanse of the two wavebands is the same, these two
+#' ratios are numerically identical.
+#'
+#' @return In the case of methods for individual spectra, a \code{numeric}
+#'   vector with name attribute set. The name is based on the name of the
+#'   wavebands unless a named list of wavebands is supplied in which case the
+#'   names of the list elements are used. "[e:e]" is appended if \code{quantity
+#'   = "total"} and "[e(wl):e(wl)]" if \code{quantity = "mean"} or
+#'   \code{quantity = "average"}.
+#'
+#'   A \code{data.frame} is returned in the case of collections of spectra,
+#'   containing one column for each fraction definition, an index column with
+#'   the names of the spectra, and optionally additional columns with metadata
+#'   values retrieved from the attributes of the member spectra.
+#'
+#'   Fraction definitions are "assembled" from the arguments passed to
+#'   \code{w.band.num} and \code{w.band.denom}. If both arguments are lists of
+#'   waveband definitions, with an equal number of members, then the wavebands
+#'   are paired to obtain as many fractions as the number of wavebands in each
+#'   list. Recycling for wavebands takes place when the number of denominator
+#'   and numerator wavebands differ.
 #'
 #' @export
 #' @examples
@@ -157,15 +281,26 @@ q_ratio.source_spct <-
 #'
 #' @family photon and energy ratio functions
 #'
-e_ratio <- function(spct, w.band.num, w.band.denom, scale.factor, wb.trim,
-                    use.cached.mult, use.hinges, ...) UseMethod("e_ratio")
+e_ratio <- function(spct,
+                    w.band.num,
+                    w.band.denom,
+                    scale.factor,
+                    wb.trim,
+                    use.cached.mult,
+                    use.hinges, ...) UseMethod("e_ratio")
 
 #' @describeIn e_ratio Default for generic function
 #'
 #' @export
 #'
-e_ratio.default <- function(spct, w.band.num, w.band.denom, scale.factor, wb.trim,
-                            use.cached.mult, use.hinges, ...) {
+e_ratio.default <- function(spct,
+                            w.band.num,
+                            w.band.denom,
+                            scale.factor,
+                            wb.trim,
+                            use.cached.mult,
+                            use.hinges,
+                            ...) {
   warning("'e_ratio' is not defined for objects of class ", class(spct)[1])
   return(NA)
 }
@@ -176,35 +311,109 @@ e_ratio.default <- function(spct, w.band.num, w.band.denom, scale.factor, wb.tri
 #'
 e_ratio.source_spct <-
   function(spct,
-           w.band.num = NULL, w.band.denom = NULL,
+           w.band.num = NULL,
+           w.band.denom = NULL,
            scale.factor = 1,
            wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
            use.cached.mult = FALSE,
            use.hinges = NULL,
+           quantity = "total",
            naming = "short",
-           name.tag = ifelse(naming != "none", "[e:e]", ""),
+           name.tag = NULL,
             ...) {
+
+    if (is.null(name.tag) && naming != "none") {
+      if (quantity  == "total") {
+        name.tag <- "[e:e]"
+      } else {
+        name.tag <- "[e(wl):e(wl)]"
+      }
+    }
 
     irrads <- two_irrads(spct = spct,
                          w.band.num = w.band.num,
                          w.band.denom = w.band.denom,
+                         quantity = quantity,
                          unit.out.num = "energy",
                          unit.out.denom = "energy",
-                         quantity = "total",
                          wb.trim = wb.trim,
                          use.cached.mult = use.cached.mult,
                          use.hinges = use.hinges,
-                         naming = naming,
-                         ...)
+                         naming = naming)
 
     e.irrad.num <- irrads[["irrad.num"]]
     e.irrad.denom <- irrads[["irrad.denom"]]
     ratio <- e.irrad.num / e.irrad.denom * scale.factor
     names(ratio) <- paste(names(e.irrad.num), ":", names(e.irrad.denom), name.tag, sep="")
     attr(ratio, "time.unit") <- NULL
-    attr(ratio, "radiation.unit") <- "e:e ratio"
+    if (quantity == "total") {
+      attr(ratio, "radiation.unit") <- "e:e ratio"
+    } else {
+      attr(ratio, "radiation.unit") <- "e(wl):e(wl) ratio"
+    }
     return(ratio)
   }
+
+#' @describeIn e_ratio Calculates energy:energy ratio from a \code{source_mspct}
+#'   object.
+#'
+#' @param attr2tb character vector, see \code{\link{add_attr2tb}} for the syntax
+#'   for \code{attr2tb} passed as is to formal parameter \code{col.names}.
+#' @param idx character Name of the column with the names of the members of the
+#'   collection of spectra.
+#' @param .parallel	if TRUE, apply function in parallel, using parallel backend
+#'   provided by foreach.
+#' @param .paropts a list of additional options passed into the foreach function
+#'   when parallel computation is enabled. This is important if (for example)
+#'   your code relies on external data or packages: use the .export and
+#'   .packages arguments to supply them so that all cluster nodes have the
+#'   correct environment set up for computing.
+#'
+#' @export
+#'
+e_ratio.source_mspct <-
+  function(spct,
+           w.band.num = NULL, w.band.denom = NULL,
+           scale.factor = 1,
+           wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
+           use.cached.mult = FALSE,
+           use.hinges = NULL,
+           quantity = "total",
+           naming = "short",
+           name.tag = ifelse(naming != "none", "[e:e]", ""),
+           ...,
+           attr2tb = NULL,
+           idx = "spct.idx",
+           .parallel = FALSE,
+           .paropts = NULL) {
+    if (naming == "none") {
+      # need names for columns
+      naming <- "short"
+    }
+    z <-
+      msdply(
+        mspct = spct,
+        .fun = e_ratio,
+        w.band.num = w.band.num,
+        w.band.denom = w.band.denom,
+        quantity = quantity,
+        wb.trim = wb.trim,
+        scale.factor = scale.factor,
+        use.cached.mult = use.cached.mult,
+        use.hinges = use.hinges,
+        naming = naming,
+        name.tag = name.tag,
+        idx = idx,
+        .parallel = .parallel,
+        .paropts = .paropts
+      )
+    add_attr2tb(tb = z,
+                mspct = spct,
+                col.names = attr2tb,
+                idx = idx)
+  }
+
+# qe_ratio() --------------------------------------------------------------
 
 #' Photon:energy ratio
 #'
@@ -227,6 +436,11 @@ e_ratio.source_spct <-
 #' @param name.tag character Used to tag the name of the returned values.
 #' @param ... other arguments (possibly used by derived methods).
 #'
+#' @details The ratio is based on one photon irrandiance and one energy
+#'   irradiance, both computed for the same waveband.
+#'
+#'   \deqn{\frac{Q(s, wb)}{I(s, wb)}}
+#'
 #' @return Computed values are ratios between photon irradiance and energy
 #'   irradiance for a given waveband. A named \code{numeric} vector in the case
 #'   of methods for individual spectra, with one value for each \code{waveband}
@@ -240,7 +454,7 @@ e_ratio.source_spct <-
 #'   to parameter \code{quantity} they can be re-expressed as relative fractions
 #'   or percentages. In the case of vector output, \code{names} attribute is set
 #'   to the name of the corresponding waveband unless a named list is supplied
-#'   in which case the names of the list members are used, with "q:e" prepended.
+#'   in which case the names of the list members are used, with "[q:e]" prepended.
 #'   Units [mol J-1].
 #'
 #' @export
@@ -257,15 +471,25 @@ e_ratio.source_spct <-
 #'
 #' @family photon and energy ratio functions
 #'
-qe_ratio <- function(spct, w.band, scale.factor, wb.trim,
-                     use.cached.mult, use.hinges, ...) UseMethod("qe_ratio")
+qe_ratio <- function(spct,
+                     w.band,
+                     scale.factor,
+                     wb.trim,
+                     use.cached.mult,
+                     use.hinges,
+                     ...) UseMethod("qe_ratio")
 
 #' @describeIn qe_ratio Default for generic function
 #'
 #' @export
 #'
-qe_ratio.default <- function(spct, w.band, scale.factor, wb.trim,
-                             use.cached.mult, use.hinges, ...) {
+qe_ratio.default <- function(spct,
+                             w.band,
+                             scale.factor,
+                             wb.trim,
+                             use.cached.mult,
+                             use.hinges,
+                             ...) {
   warning("'qe_ratio' is not defined for objects of class ", class(spct)[1])
   return(NA)
 }
@@ -294,8 +518,7 @@ qe_ratio.source_spct <-
                          wb.trim = wb.trim,
                          use.cached.mult = use.cached.mult,
                          use.hinges = use.hinges,
-                         naming = naming,
-                         ...)
+                         naming = naming)
 
     q.irrad <- irrads[["irrad.num"]]
     e.irrad <- irrads[["irrad.denom"]]
@@ -305,266 +528,6 @@ qe_ratio.source_spct <-
     attr(ratio, "time.unit") <- NULL
     attr(ratio, "radiation.unit") <- "q:e ratio"
     return(ratio)
-  }
-
-#' Energy:photon ratio
-#'
-#' This function returns the energy to mole of photons ratio for each waveband and a
-#' light source spectrum.
-#'
-#' @param spct source_spct.
-#' @param w.band waveband or list of waveband objects.
-#' @param scale.factor numeric vector of length 1, or length equal to that of
-#'   \code{w.band}. Numeric multiplier applied to returned values.
-#' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries
-#'   are trimmed, if FALSE, they are discarded.
-#' @param use.cached.mult logical Flag telling whether multiplier values should
-#'   be cached between calls.
-#' @param use.hinges logical Flag indicating whether to insert "hinges" into the
-#'   spectral data before integration so as to reduce interpolation errors at
-#'   the boundaries of the wavebands.
-#' @param naming character one of "long", "default", "short" or "none". Used to
-#'   select the type of names to assign to returned value.
-#' @param name.tag character Used to tag the name of the returned values.
-#' @param ... other arguments (possibly used by derived methods).
-#'
-#' @return Computed values are ratios between energy irradiance and photon
-#'   irradiance for a given waveband. A named \code{numeric} vector in the case
-#'   of methods for individual spectra, with one value for each \code{waveband}
-#'   passed to parameter \code{w.band}. A \code{data.frame} in the case of
-#'   collections of spectra, containing one column for each \code{waveband}
-#'   object, an index column with the names of the spectra, and optionally
-#'   additional columns with metadata values retrieved from the attributes of
-#'   the member spectra.
-#'
-#'   By default values are only integrated, but depending on the argument passed
-#'   to parameter \code{quantity} they can be re-expressed as relative fractions
-#'   or percentages. In the case of vector output, \code{names} attribute is set
-#'   to the name of the corresponding waveband unless a named list is supplied
-#'   in which case the names of the list members are used, with "e:q" prepended.
-#'   Units [J mol-1].
-#'
-#' @export
-#' @examples
-#' eq_ratio(sun.spct, new_waveband(400,700))
-#'
-#' @note The last two parameters control speed optimizations. The defaults
-#'   should be suitable in most cases. If you will use repeatedly the same SWFs
-#'   on many spectra measured at exactly the same wavelengths you may obtain
-#'   some speed up by setting \code{use.cached.mult=TRUE}. However, be aware
-#'   that you are responsible for ensuring that the wavelengths are the same in
-#'   each call, as the only test done is for the length of the \code{w.length}
-#'   vector.
-#'
-#' @family photon and energy ratio functions
-#'
-eq_ratio <- function(spct, w.band, scale.factor, wb.trim,
-                     use.cached.mult, use.hinges, ...) UseMethod("eq_ratio")
-
-#' @describeIn eq_ratio Default for generic function
-#'
-#' @export
-#'
-eq_ratio.default <- function(spct, w.band, scale.factor, wb.trim,
-                             use.cached.mult, use.hinges, ...) {
-  warning("'eq_ratio' is not defined for objects of class ", class(spct)[1])
-  return(NA)
-}
-
-#' @describeIn eq_ratio Method for \code{source_spct} objects
-#'
-#' @export
-#'
-eq_ratio.source_spct <-
-  function(spct,
-           w.band=NULL,
-           scale.factor = 1,
-           wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
-           use.cached.mult = FALSE,
-           use.hinges  = NULL,
-           naming = "short",
-           name.tag = ifelse(naming != "none", "[e:q]", ""),
-           ...) {
-
-    ratio <- scale.factor /
-      qe_ratio(spct = spct, w.band = w.band, wb.trim = wb.trim,
-               use.cached.mult = use.cached.mult, use.hinges = use.hinges)
-    names(ratio) <- gsub("q:e", "e:q", names(ratio), fixed = TRUE )
-    attr(ratio, "time.unit") <- NULL
-    attr(ratio, "radiation.unit") <- "e:q ratio"
-    return(ratio)
-  }
-
-# source_mspct methods ----------------------------------------------------
-
-#' @describeIn q_ratio Calculates photon:photon from a \code{source_mspct}
-#'   object.
-#'
-#' @param attr2tb character vector, see \code{\link{add_attr2tb}} for the syntax
-#'   for \code{attr2tb} passed as is to formal parameter \code{col.names}.
-#' @param idx character Name of the column with the names of the members of the
-#'   collection of spectra.
-#' @param .parallel	if TRUE, apply function in parallel, using parallel backend
-#'   provided by foreach
-#' @param .paropts a list of additional options passed into the foreach function
-#'   when parallel computation is enabled. This is important if (for example)
-#'   your code relies on external data or packages: use the .export and
-#'   .packages arguments to supply them so that all cluster nodes have the
-#'   correct environment set up for computing.
-#'
-#' @export
-#'
-q_ratio.source_mspct <-
-  function(spct,
-           w.band.num = NULL, w.band.denom = NULL,
-           scale.factor = 1,
-           wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
-           use.cached.mult = FALSE,
-           use.hinges = NULL,
-           naming = "short",
-           name.tag = ifelse(naming != "none", "[q:q]", ""),
-           ...,
-           attr2tb = NULL,
-           idx = "spct.idx",
-           .parallel = FALSE,
-           .paropts = NULL) {
-    if (naming == "none") {
-      # need names for columns
-      naming <- "short"
-    }
-    z <-
-      msdply(
-        mspct = spct,
-        .fun = q_ratio,
-        w.band.num = w.band.num,
-        w.band.denom = w.band.denom,
-        wb.trim = wb.trim,
-        scale.factor = scale.factor,
-        use.cached.mult = use.cached.mult,
-        use.hinges = use.hinges,
-        naming = naming,
-        name.tag = name.tag,
-        idx = idx,
-        .parallel = .parallel,
-        .paropts = .paropts
-      )
-    add_attr2tb(tb = z,
-                mspct = spct,
-                col.names = attr2tb,
-                idx = idx)
-  }
-
-#' @describeIn e_ratio Calculates energy:energy ratio from a \code{source_mspct}
-#'   object.
-#'
-#' @param attr2tb character vector, see \code{\link{add_attr2tb}} for the syntax
-#'   for \code{attr2tb} passed as is to formal parameter \code{col.names}.
-#' @param idx character Name of the column with the names of the members of the
-#'   collection of spectra.
-#' @param .parallel	if TRUE, apply function in parallel, using parallel backend
-#'   provided by foreach.
-#' @param .paropts a list of additional options passed into the foreach function
-#'   when parallel computation is enabled. This is important if (for example)
-#'   your code relies on external data or packages: use the .export and
-#'   .packages arguments to supply them so that all cluster nodes have the
-#'   correct environment set up for computing.
-#'
-#' @export
-#'
-e_ratio.source_mspct <-
-  function(spct,
-           w.band.num = NULL, w.band.denom = NULL,
-           scale.factor = 1,
-           wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
-           use.cached.mult = FALSE,
-           use.hinges = NULL,
-           naming = "short",
-           name.tag = ifelse(naming != "none", "[e:e]", ""),
-           ...,
-           attr2tb = NULL,
-           idx = "spct.idx",
-           .parallel = FALSE,
-           .paropts = NULL) {
-    if (naming == "none") {
-      # need names for coloumns
-      naming <- "short"
-    }
-    z <-
-      msdply(
-        mspct = spct,
-        .fun = e_ratio,
-        w.band.num = w.band.num,
-        w.band.denom = w.band.denom,
-        wb.trim = wb.trim,
-        scale.factor = scale.factor,
-        use.cached.mult = use.cached.mult,
-        use.hinges = use.hinges,
-        naming = naming,
-        name.tag = name.tag,
-        idx = idx,
-        .parallel = .parallel,
-        .paropts = .paropts
-      )
-    add_attr2tb(tb = z,
-                mspct = spct,
-                col.names = attr2tb,
-                idx = idx)
-  }
-
-#' @describeIn eq_ratio Calculates energy:photon from a \code{source_mspct}
-#'   object.
-#'
-#' @param attr2tb character vector, see \code{\link{add_attr2tb}} for the syntax
-#'   for \code{attr2tb} passed as is to formal parameter \code{col.names}.
-#' @param idx character Name of the column with the names of the members of the
-#'   collection of spectra.
-#' @param .parallel	if TRUE, apply function in parallel, using parallel backend
-#'   provided by foreach
-#' @param .paropts a list of additional options passed into the foreach function
-#'   when parallel computation is enabled. This is important if (for example)
-#'   your code relies on external data or packages: use the .export and
-#'   .packages arguments to supply them so that all cluster nodes have the
-#'   correct environment set up for computing.
-#'
-#' @export
-#'
-eq_ratio.source_mspct <-
-  function(spct, w.band = NULL,
-           scale.factor = 1,
-           wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
-           use.cached.mult = FALSE,
-           use.hinges = NULL,
-           naming = "short",
-           name.tag = ifelse(naming != "none", "[e:q]", ""),
-           ...,
-           attr2tb = NULL,
-           idx = "spct.idx",
-           .parallel = FALSE,
-           .paropts = NULL) {
-    if (naming == "none") {
-      # need names for coloumns
-      naming <- "short"
-    }
-    z <-
-      msdply(
-        mspct = spct,
-        .fun = eq_ratio,
-        w.band = w.band,
-        wb.trim = wb.trim,
-        scale.factor = scale.factor,
-        use.cached.mult = use.cached.mult,
-        use.hinges = use.hinges,
-        naming = naming,
-        name.tag = name.tag,
-        idx = idx,
-        col.names = names(w.band),
-        .parallel = .parallel,
-        .paropts = .paropts
-      )
-    add_attr2tb(tb = z,
-                mspct = spct,
-                col.names = attr2tb,
-                idx = idx)
   }
 
 #' @describeIn qe_ratio Calculates photon:energy ratio from a
@@ -624,6 +587,170 @@ qe_ratio.source_mspct <-
   }
 
 
+# eq_ratio() --------------------------------------------------------------
+
+
+#' Energy:photon ratio
+#'
+#' This function returns the energy to mole of photons ratio for each waveband and a
+#' light source spectrum.
+#'
+#' @param spct source_spct.
+#' @param w.band waveband or list of waveband objects.
+#' @param scale.factor numeric vector of length 1, or length equal to that of
+#'   \code{w.band}. Numeric multiplier applied to returned values.
+#' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries
+#'   are trimmed, if FALSE, they are discarded.
+#' @param use.cached.mult logical Flag telling whether multiplier values should
+#'   be cached between calls.
+#' @param use.hinges logical Flag indicating whether to insert "hinges" into the
+#'   spectral data before integration so as to reduce interpolation errors at
+#'   the boundaries of the wavebands.
+#' @param naming character one of "long", "default", "short" or "none". Used to
+#'   select the type of names to assign to returned value.
+#' @param name.tag character Used to tag the name of the returned values.
+#' @param ... other arguments (possibly used by derived methods).
+#'
+#' @details The ratio is based on one photon irradiance and one energy
+#'   irradiance, both computed for the same waveband.
+#'
+#'   \deqn{\frac{I(s, wb)}{Q(s, wb)}}
+#'
+#' @return Computed values are ratios between energy irradiance and photon
+#'   irradiance for a given waveband. A named \code{numeric} vector in the case
+#'   of methods for individual spectra, with one value for each \code{waveband}
+#'   passed to parameter \code{w.band}. A \code{data.frame} in the case of
+#'   collections of spectra, containing one column for each \code{waveband}
+#'   object, an index column with the names of the spectra, and optionally
+#'   additional columns with metadata values retrieved from the attributes of
+#'   the member spectra.
+#'
+#'   By default values are only integrated, but depending on the argument passed
+#'   to parameter \code{quantity} they can be re-expressed as relative fractions
+#'   or percentages. In the case of vector output, \code{names} attribute is set
+#'   to the name of the corresponding waveband unless a named list is supplied
+#'   in which case the names of the list members are used, with "[e:q]" prepended.
+#'   Units [J mol-1].
+#'
+#' @export
+#' @examples
+#' eq_ratio(sun.spct, new_waveband(400,700))
+#'
+#' @note The last two parameters control speed optimizations. The defaults
+#'   should be suitable in most cases. If you will use repeatedly the same SWFs
+#'   on many spectra measured at exactly the same wavelengths you may obtain
+#'   some speed up by setting \code{use.cached.mult=TRUE}. However, be aware
+#'   that you are responsible for ensuring that the wavelengths are the same in
+#'   each call, as the only test done is for the length of the \code{w.length}
+#'   vector.
+#'
+#' @family photon and energy ratio functions
+#'
+eq_ratio <- function(spct,
+                     w.band,
+                     scale.factor,
+                     wb.trim,
+                     use.cached.mult,
+                     use.hinges,
+                     ...) UseMethod("eq_ratio")
+
+#' @describeIn eq_ratio Default for generic function
+#'
+#' @export
+#'
+eq_ratio.default <- function(spct,
+                             w.band,
+                             scale.factor,
+                             wb.trim,
+                             use.cached.mult,
+                             use.hinges,
+                             ...) {
+  warning("'eq_ratio' is not defined for objects of class ", class(spct)[1])
+  return(NA)
+}
+
+#' @describeIn eq_ratio Method for \code{source_spct} objects
+#'
+#' @export
+#'
+eq_ratio.source_spct <-
+  function(spct,
+           w.band=NULL,
+           scale.factor = 1,
+           wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
+           use.cached.mult = FALSE,
+           use.hinges  = NULL,
+           naming = "short",
+           name.tag = ifelse(naming != "none", "[e:q]", ""),
+           ...) {
+
+    ratio <- scale.factor /
+      qe_ratio(spct = spct, w.band = w.band, wb.trim = wb.trim,
+               use.cached.mult = use.cached.mult, use.hinges = use.hinges)
+    names(ratio) <- gsub("q:e", "e:q", names(ratio), fixed = TRUE )
+    attr(ratio, "time.unit") <- NULL
+    attr(ratio, "radiation.unit") <- "e:q ratio"
+    return(ratio)
+  }
+
+#' @describeIn eq_ratio Calculates energy:photon from a \code{source_mspct}
+#'   object.
+#'
+#' @param attr2tb character vector, see \code{\link{add_attr2tb}} for the syntax
+#'   for \code{attr2tb} passed as is to formal parameter \code{col.names}.
+#' @param idx character Name of the column with the names of the members of the
+#'   collection of spectra.
+#' @param .parallel	if TRUE, apply function in parallel, using parallel backend
+#'   provided by foreach
+#' @param .paropts a list of additional options passed into the foreach function
+#'   when parallel computation is enabled. This is important if (for example)
+#'   your code relies on external data or packages: use the .export and
+#'   .packages arguments to supply them so that all cluster nodes have the
+#'   correct environment set up for computing.
+#'
+#' @export
+#'
+eq_ratio.source_mspct <-
+  function(spct, w.band = NULL,
+           scale.factor = 1,
+           wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
+           use.cached.mult = FALSE,
+           use.hinges = NULL,
+           naming = "short",
+           name.tag = ifelse(naming != "none", "[e:q]", ""),
+           ...,
+           attr2tb = NULL,
+           idx = "spct.idx",
+           .parallel = FALSE,
+           .paropts = NULL) {
+    if (naming == "none") {
+      # need names for columns
+      naming <- "short"
+    }
+    z <-
+      msdply(
+        mspct = spct,
+        .fun = eq_ratio,
+        w.band = w.band,
+        wb.trim = wb.trim,
+        scale.factor = scale.factor,
+        use.cached.mult = use.cached.mult,
+        use.hinges = use.hinges,
+        naming = naming,
+        name.tag = name.tag,
+        idx = idx,
+        col.names = names(w.band),
+        .parallel = .parallel,
+        .paropts = .paropts
+      )
+    add_attr2tb(tb = z,
+                mspct = spct,
+                col.names = attr2tb,
+                idx = idx)
+  }
+
+# intertnal utility function --------------------------------------------------
+
 #' Compute two irrads for ratio or fraction
 #'
 #' Internal function that computes the two irradiances needed to compute
@@ -637,8 +764,7 @@ qe_ratio.source_mspct <-
 #'   waveband(s) determine the region(s) of the spectrum that are summarized.
 #' @param unit.out.num,unit.out.denom character Allowed values "energy", and
 #'   "photon", or its alias "quantum".
-#' @param quantity character string One of "total", "average" or "mean",
-#'   "contribution", "contribution.pc", "relative" or "relative.pc".
+#' @param quantity character string One of "total", "average" or "mean".
 #' @param wb.trim logical if TRUE wavebands crossing spectral data boundaries
 #'   are trimmed, if FALSE, they are discarded
 #' @param use.cached.mult logical indicating whether multiplier values should be
@@ -648,7 +774,6 @@ qe_ratio.source_mspct <-
 #'   the boundaries of the wavebands.
 #' @param naming character one of "long", "default", "short" or "none". Used to
 #'   select the type of names to assign to returned value.
-#' @param ... other arguments (possibly ignored)
 #'
 #' @keywords internal
 #'
@@ -664,8 +789,7 @@ two_irrads <- function(spct,
                        wb.trim,
                        use.cached.mult,
                        use.hinges,
-                       naming,
-                       ...) {
+                       naming) {
 
   # we look for multiple spectra in long form
   num.spectra <- getMultipleWl(spct)
@@ -685,9 +809,11 @@ two_irrads <- function(spct,
                       wb.trim = wb.trim,
                       use.cached.mult = use.cached.mult,
                       use.hinges = use.hinges,
-                      naming = naming,
-                      ...))
+                      naming = naming))
   }
+
+  stopifnot("Unsupported argument passed to 'quantity'" =
+              quantity %in% c("total", "average", "mean"))
 
   irrad.num <- irrad(spct,
                      w.band = w.band.num,

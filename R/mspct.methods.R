@@ -90,6 +90,7 @@ msdply <- function(mspct, .fun, ..., idx = NULL, col.names = NULL,
                     "irrad", "q_irrad", "e_irrad",
                     "fluence", "q_fluence", "e_fluence",
                     "q_ratio", "e_ratio", "eq_ratio", "qe_ratio",
+                    "q_fraction", "e_fraction",
                     "response", "q_response", "e_response",
                     "absorbance", "absorptance", "transmittance",
                     "reflectance")) {
