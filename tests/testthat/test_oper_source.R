@@ -551,3 +551,17 @@ test_that("ratio q_ratio e_ratio", {
     as.numeric(qe_ratio(sun.spct, blue.wb)),
     qe.ratio.result, tolerance = 1e-12)
 })
+
+test_that("fraction q_fraction e_fraction", {
+  red.wb <- waveband(c(600,700))
+  blue.wb <- waveband(c(400,500))
+
+  q.fraction.result <- 0.454058186193444
+  expect_equal(
+    as.numeric(q_fraction(sun.spct, blue.wb, red.wb)),
+    q.fraction.result, tolerance = 1e-12)
+  e.fraction.result <- 0.543841370834418
+  expect_equal(
+    as.numeric(e_fraction(sun.spct, blue.wb, red.wb)),
+    e.fraction.result, tolerance = 1e-12)
+})

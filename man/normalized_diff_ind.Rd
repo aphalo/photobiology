@@ -24,11 +24,8 @@ NDxI(spct, plus.w.band, minus.w.band, f, ...)
 \arguments{
 \item{spct}{an R object}
 
-\item{plus.w.band}{waveband objects The waveband determine the
-region of the spectrum used in the calculations}
-
-\item{minus.w.band}{waveband objects The waveband determine the
-region of the spectrum used in the calculations}
+\item{plus.w.band, minus.w.band}{waveband objects The wavebands determine the
+regions of the spectrum used in the calculations.}
 
 \item{f}{function used for integration taking spct as first argument and a
 list of wavebands as second argument.}
@@ -55,7 +52,10 @@ difference among then is in the wavebands used.
   can be used if there is a good reason for it. In every case \code{spct}
   should be of the class expected by \code{f}. When using two wavebands of
   different widths do consider passing to \code{f} a suitable \code{quantity}
-  argument. Wavebands can describe weighting functions if desired.
+  argument, for example to compare averages rather than integrals. Wavebands
+  can describe weighting functions if desired.
+
+  \deqn{\mathrm{NDxI} = \frac{f(s, wb_\mathrm{plus}) - f(s, wb_\mathrm{minus})}{f(s, wb_\mathrm{plus}) + f(s, wb_\mathrm{minus})}}
 }
 \section{Methods (by class)}{
 \itemize{
@@ -69,8 +69,8 @@ difference among then is in the wavebands used.
 \note{
 Some NDxI indexes are directly based on satellite instrument data, such
   as those in the Landsat satellites. To simulate such indexes using spectral
-  reflectande as input, \code{waveband} definitions provided by package
-  'photobiologyWavebands' can be used.
+  reflectande as input, constructors of \code{waveband} definitions from package
+  'photobiologyWavebands' can be useful.
 
 \code{normalised_diff_ind()} is a synonym for \code{normalized_diff_ind()}.
 

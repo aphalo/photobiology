@@ -127,6 +127,7 @@ qe_ratio(sun.spct, new_waveband(400,700))
 Other photon and energy ratio functions: 
 \code{\link{e_ratio}()},
 \code{\link{eq_ratio}()},
+\code{\link{q_fraction}()},
 \code{\link{q_ratio}()}
 }
 \concept{photon and energy ratio functions}

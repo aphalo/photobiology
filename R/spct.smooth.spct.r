@@ -694,6 +694,109 @@ smooth_spct.response_spct <- function(x,
   check_spct(x, force = FALSE)
 }
 
+#' @describeIn smooth_spct Smooth a counts per second spectrum
+#'
+#' @export
+#'
+smooth_spct.cps_spct <- function(x,
+                                 method = "custom",
+                                 strength = 1,
+                                 wl.range = NULL,
+                                 na.rm = FALSE,
+                                 ...) {
+  supported.methods <- c("custom", "lowess", "supsmu")
+  if (!method %in% supported.methods) {
+    if (method != "skip") {
+      warning("Method \"", method, "\" not supported. Skiping!")
+    }
+    return(x)
+  }
+
+  num.cps.cols <- sum(grepl("^cps", colnames(x)))
+  if (num.cps.cols != 1) {
+    warning("Skipping smoothing as object contains ",
+            num.cps.cols, " spectra in wide form.")
+    return(x)
+  }
+
+  num.spectra <- getMultipleWl(x)
+  if (num.spectra != 1) {
+    warning("Skipping smoothing as object contains ",
+            num.spectra, " spectra in long form.")
+    return(x)
+  }
+
+  stopifnot(strength >= 0)
+  if (strength == 0) {
+    return(x)
+  }
+
+  if (anyNA(x[["cps"]])) {
+    if (na.rm) {
+      message("Removing NA values at ", sum(is.na(x[["cps"]])), " wavelengths.")
+      x <- na.omit(x)
+    } else {
+      stop("NAs encountered when smoothing.")
+    }
+  }
+
+  # Skip checks for intermediate results
+  # as intermediate values may be off-range
+  prev_state <- disable_check_spct()
+  on.exit(set_check_spct(prev_state), add = TRUE)
+
+  # positional selectors are computed after NAs are omitted from the spectrum
+  if (is.null(wl.range) || all(is.na(wl.range))) {
+    wl.selector <- TRUE
+  } else {
+    if (is.generic_spct(wl.range) ||
+        (is.numeric(wl.range) && length(wl.range) > 2L)) {
+      wl.range <- range(wl.range, na.rm = TRUE)
+    } else {
+      if (is.na(wl.range[1])) {
+        wl.range[1] <- wl_min(x)
+      }
+      if (is.na(wl.range[2])) {
+        wl.range[2] <- wl_max(x)
+      }
+    }
+    wl.selector <-
+      x[["w.length"]] >= wl.range[1] & x[["w.length"]] <= wl.range[2]
+  }
+
+  xx <- x[wl.selector, ]
+
+  if (method == "lowess") {
+    span = 1/50 * strength
+    z <- stats::lowess(xx[["w.length"]], xx[["cps"]], f = span, ...)
+    x[wl.selector, "Rfr"] <- z[["y"]]
+    comment.text <- paste("Smoothed using 'lowess', f =", signif(span, 3))
+  } else if (method == "supsmu") {
+    span = 1/50 * strength
+    z <- stats::supsmu(xx[["w.length"]], xx[["cps"]], span = span, ...)
+    x[wl.selector, "cps"] <- z[["y"]]
+    comment.text <-  paste("Smoothed using 'supsmu', span =", signif(span, 3))
+  } else if (method == "custom") {
+    smooth.limit <- 1e-3 * strength
+    zero.limit.cnst <- max(x[["cps"]]) * 3e-4 * strength
+    smooth.threshold <-  max(x[["cps"]]) * 5e-2 * strength
+    z <- adaptive_smoothing(xx[["w.length"]], xx[["cps"]],
+                            zero.limit.cnst = zero.limit.cnst,
+                            smooth.limit = smooth.limit,
+                            smooth.threshold = smooth.threshold,
+                            ...)
+    x[wl.selector, "cps"] <- z[["y"]]
+    comment.text <- paste("Smoothed using 'custom', smooth.limit =",
+                          signif(smooth.limit, 3))
+  }
+
+  if (!is.null(comment(x))) {
+    comment(x) <- paste(comment.text, "\n\n", comment(x))
+  } else {
+    comment(x) <- comment.text
+  }
+  check_spct(x, force = FALSE)
+}
 
 #' @describeIn smooth_spct
 #'
