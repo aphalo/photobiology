@@ -1007,20 +1007,24 @@ A2T.filter_spct <- function(x, action="add", byref = FALSE, ...) {
   if (byref) {
     name <- substitute(x)
   }
-  if (exists("Tfr", x, inherits = FALSE)) {
-    NULL
-  } else if (exists("A", x, inherits = FALSE)) {
-    x[["Tfr"]] <- 10^-x[["A"]]
+  if (is_normalised(x) && !action %in% c("add.raw", "replace.raw")) {
+    x <- normalise(x, norm = "update", qty.out = "transmittance")
   } else {
-    x[["Tfr"]] <- NA_real_
-    action <- "add"
-    warning("'A' not available in 'A2T()', ignoring \"replace\" action.")
-  }
-  if (action=="replace" && exists("A", x, inherits = FALSE)) {
-    x[["A"]] <- NULL
-  }
-  if (action=="replace" && exists("Afr", x, inherits = FALSE)) {
-    x[["Afr"]] <- NULL
+    if (exists("Tfr", x, inherits = FALSE)) {
+      NULL
+    } else if (exists("A", x, inherits = FALSE)) {
+      x[["Tfr"]] <- 10^-x[["A"]]
+    } else {
+      x[["Tfr"]] <- NA_real_
+      action <- "add"
+      warning("'A' not available in 'A2T()', ignoring \"replace\" action.")
+    }
+    if (action=="replace" && exists("A", x, inherits = FALSE)) {
+      x[["A"]] <- NULL
+    }
+    if (action=="replace" && exists("Afr", x, inherits = FALSE)) {
+      x[["Afr"]] <- NULL
+    }
   }
   if (byref && is.name(name)) { # this is a temporary safe net
     name <- as.character(name)
@@ -1114,25 +1118,30 @@ T2A.filter_spct <- function(x, action="add", byref = FALSE, clean = TRUE, ...) {
   if (byref) {
     name <- substitute(x)
   }
-  if (exists("A", x, inherits = FALSE)) {
-    NULL
-  } else if (exists("Tfr", x, inherits = FALSE)) {
-    if (clean) {
-      # we need to avoid infinite recursion
-      using_Tfr(x <- clean(x))
-    }
-    x[["A"]] <- -log10(x[["Tfr"]])
+  if (is_normalised(x) && !action %in% c("add.raw", "replace.raw")) {
+    x <- normalise(x, norm = "update", qty.out = "absorbance")
   } else {
-    x[["A"]] <- NA_real_
-    action <- "add"
-    warning("'Tfr' not available in 'T2A()', ignoring \"replace\" action.")
+    if (exists("A", x, inherits = FALSE)) {
+      NULL
+    } else if (exists("Tfr", x, inherits = FALSE)) {
+      if (clean) {
+        # we need to avoid infinite recursion
+        using_Tfr(x <- clean(x))
+      }
+      x[["A"]] <- -log10(x[["Tfr"]])
+    } else {
+      x[["A"]] <- NA_real_
+      warning("'Tfr' not available in 'T2A()', filling 'A' with 'NA'.")
+      action <- "add"
+    }
+    if (action=="replace" && exists("Tfr", x, inherits = FALSE)) {
+      x[["Tfr"]] <- NULL
+    }
+    if (action=="replace" && exists("Afr", x, inherits = FALSE)) {
+      x[["Afr"]] <- NULL
+    }
   }
-  if (action=="replace" && exists("Tfr", x, inherits = FALSE)) {
-    x[["Tfr"]] <- NULL
-  }
-  if (action=="replace" && exists("Afr", x, inherits = FALSE)) {
-    x[["Afr"]] <- NULL
-  }
+
   if (byref && is.name(name)) {  # this is a temporary safe net
     name <- as.character(name)
     assign(name, x, parent.frame(), inherits = TRUE)
@@ -1254,36 +1263,40 @@ T2Afr.filter_spct <- function(x,
     name <- substitute(x)
   }
   current.Tfr.type <- getTfrType(x)
-  if (exists("Afr", x, inherits = FALSE)) {
-    NULL
-  } else if (exists("Tfr", x, inherits = FALSE)) {
-    if (clean) {
-      x <- using_Tfr(clean(x))
-    }
-    if (current.Tfr.type == "total") {
-      if (exists("Rfr", x, inherits = FALSE)) {
-        x[["Afr"]] <- 1 - x[["Tfr"]] - x[["Rfr"]]
-      } else {
-        x <- convertTfrType(x, "internal")
-        x[["Afr"]] <- 1 - x[["Tfr"]]
-        if (all(is.na(x[["Afr"]]))) {
-          action <- "add"
-          warning("'Tfr.type' or 'Rfr.constant' not available in ')'.")
-        }
-      }
-    } else if (current.Tfr.type == "internal") {
-      x[["Afr"]] <- 1 - x[["Tfr"]]
-    }
+  if (is_normalised(x) && !action %in% c("add.raw", "replace.raw")) {
+    x <- normalise(x, norm = "update", qty.out = "absorptance")
   } else {
-    x[["Afr"]] <- NA_real_
-    action <- "add"
-    warning("'Tfr' not available in 'T2Afr()'.")
-  }
-  if (action == "replace" && exists("A", x, inherits = FALSE)) {
-    x[["A"]] <- NULL
-  }
-  if (action == "replace" && exists("Tfr", x, inherits = FALSE)) {
-    x[["Tfr"]] <- NULL
+    if (exists("Afr", x, inherits = FALSE)) {
+      NULL
+    } else if (exists("Tfr", x, inherits = FALSE)) {
+      if (clean) {
+        x <- using_Tfr(clean(x))
+      }
+      if (current.Tfr.type == "total") {
+        if (exists("Rfr", x, inherits = FALSE)) {
+          x[["Afr"]] <- 1 - x[["Tfr"]] - x[["Rfr"]]
+        } else {
+          x <- convertTfrType(x, "internal")
+          x[["Afr"]] <- 1 - x[["Tfr"]]
+          if (all(is.na(x[["Afr"]]))) {
+            action <- "add"
+            warning("'Tfr.type' or 'Rfr.constant' not available in ')'.")
+          }
+        }
+      } else if (current.Tfr.type == "internal") {
+        x[["Afr"]] <- 1 - x[["Tfr"]]
+      }
+    } else {
+      x[["Afr"]] <- NA_real_
+      action <- "add"
+      warning("'Tfr' not available in 'T2Afr()'.")
+    }
+    if (action == "replace" && exists("A", x, inherits = FALSE)) {
+      x[["A"]] <- NULL
+    }
+    if (action == "replace" && exists("Tfr", x, inherits = FALSE)) {
+      x[["Tfr"]] <- NULL
+    }
   }
   if (current.Tfr.type == "total") {
     if (action == "add") {
@@ -1463,26 +1476,30 @@ Afr2T.filter_spct <- function(x,
     name <- substitute(x)
   }
   current.Tfr.type <- getTfrType(x)
-  if (exists("Tfr", x, inherits = FALSE)) {
-    NULL
-  } else if (current.Tfr.type == "internal") {
-    # we assume this is what is desired
-    x[["Tfr"]] <- 1 - x[["Afr"]]
-  } else if (current.Tfr.type == "total") {
-    if (exists("Rfr", x, inherits = FALSE)) {
-      x[["Tfr"]] <- 1 - x[["Afr"]] - x[["Rfr"]]
-    } else {
-      properties <- getFilterProperties(x, return.null = FALSE)
-      x[["Tfr"]] <- 1 - x[["Afr"]] - properties[["Rfr.constant"]]
-    }
+  if (is_normalised(x) && !action %in% c("add.raw", "replace.raw")) {
+    x <- normalise(x, norm = "update", qty.out = "transmittance")
   } else {
-    stop("Invalid 'Tfr.type' attribute: ", current.Tfr.type)
-  }
-  if (action == "replace" && exists("Tfr", x, inherits = FALSE)) {
-    x[["Afr"]] <- NULL
-  }
-  if (action == "replace" && exists("A", x, inherits = FALSE)) {
-    x[["A"]] <- NULL
+    if (exists("Tfr", x, inherits = FALSE)) {
+      NULL
+    } else if (current.Tfr.type == "internal") {
+      # we assume this is what is desired
+      x[["Tfr"]] <- 1 - x[["Afr"]]
+    } else if (current.Tfr.type == "total") {
+      if (exists("Rfr", x, inherits = FALSE)) {
+        x[["Tfr"]] <- 1 - x[["Afr"]] - x[["Rfr"]]
+      } else {
+        properties <- getFilterProperties(x, return.null = FALSE)
+        x[["Tfr"]] <- 1 - x[["Afr"]] - properties[["Rfr.constant"]]
+      }
+    } else {
+      stop("Invalid 'Tfr.type' attribute: ", current.Tfr.type)
+    }
+    if (action == "replace" && exists("Tfr", x, inherits = FALSE)) {
+      x[["Afr"]] <- NULL
+    }
+    if (action == "replace" && exists("A", x, inherits = FALSE)) {
+      x[["A"]] <- NULL
+    }
   }
 
   if (byref && is.name(name)) {  # this is a temporary safe net

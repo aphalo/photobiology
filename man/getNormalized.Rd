@@ -5,7 +5,7 @@
 \alias{getNormalised}
 \alias{getNormalization}
 \alias{getNormalisation}
-\title{Get the "normalized" attribute}
+\title{Query the "normalized" and "normalization" attributes}
 \usage{
 getNormalized(x, .force.numeric = FALSE)
 
@@ -16,23 +16,36 @@ getNormalization(x)
 getNormalisation(x)
 }
 \arguments{
-\item{x}{a generic_spct object}
+\item{x}{a generic_spct object.}
 
 \item{.force.numeric}{logical If \code{TRUE} always silently return a
 numeric value, with \code{FALSE} encoded as zero, and character values
 as \code{NA}.}
 }
 \value{
-numeric or logical (possibly character for objects created with
-  earlier versions).
+\code{getNormalized()} returns numeric or logical (possibly character
+  for objects created with earlier versions). If \code{x} is not a
+  \code{generic_spct} object, \code{NA} or a list with fields set to NAs is
+  returned. Objects created with versions of package 'photobiology' earlier
+  than 0.10.8 are lacking the normalization metadata.
+
+\code{getNormalization()} returns a list with five fields: norm.type,
+  norm.wl, norm.factors, norm.cols, norm.range. See
+  \code{\link{setNormalization}} for the values stored in the fields.
 }
 \description{
-Function to read the "normalized" attribute of an existing generic_spct
-object.
+Functions to read the "normalized" and "normalization" attributes of an
+existing generic_spct object.
+}
+\details{
+Spectral data that has been normalized needs to be used diffferently
+  in computations than data expresed in original units. These two functions
+  make it possible to query if data stored in an object of class
+  \code{generic_spct} or of a derived class contains data expressed in
+  physical units or normalized. In the later case, it is possible to also
+  query how the normalization was done.
 }
 \note{
-if x is not a \code{generic_spct} object, \code{NA} is returned
-
 \code{getNormalised()} is a synonym for this \code{getNormalized()}
   method.
 }

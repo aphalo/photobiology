@@ -178,21 +178,21 @@ normalize.filter_spct <-
            keep.scaling = FALSE,
            na.rm = FALSE) {
     if (qty.out == "transmittance") {
-      return(normalize_spct(spct = A2T(x, action = "replace"),
+      return(normalize_spct(spct = A2T(x, action = "replace.raw"),
                             range = range,
                             norm = norm,
                             col.names = "Tfr",
                             keep.scaling = keep.scaling,
                             na.rm = na.rm))
     } else if (qty.out == "absorbance") {
-      return(normalize_spct(spct = T2A(x, action = "replace"),
+      return(normalize_spct(spct = T2A(x, action = "replace.raw"),
                             range = range,
                             norm = norm,
                             col.names = "A",
                             keep.scaling = keep.scaling,
                             na.rm = na.rm))
     } else if (qty.out == "absorptance") {
-      return(normalize_spct(spct = T2Afr(x, action = "replace"),
+      return(normalize_spct(spct = T2Afr(x, action = "replace.raw"),
                             range = range,
                             norm = norm,
                             col.names = "Afr",
@@ -649,6 +649,9 @@ is_normalized <- function(x) {
     return(NA)
   }
   spct.attr <- attr(x, "normalized", exact = TRUE)
+  # in some versions a logical was used, but later the normalization wavelength
+  # in old versions the attribute was set only when normalization was applied
+  stopifnot(is.null(spct.attr) || is.numeric(spct.attr) || is.logical(spct.attr))
   !is.null(spct.attr) && as.logical(spct.attr)
 }
 
@@ -663,29 +666,50 @@ is_normalised <- is_normalized
 
 # getNormalized -----------------------------------------------------------
 
-#' Get the "normalized" attribute
+#' Query the "normalized" and "normalization" attributes
 #'
-#' Function to read the "normalized" attribute of an existing generic_spct
-#' object.
+#' Functions to read the "normalized" and "normalization" attributes of an
+#' existing generic_spct object.
 #'
-#' @param x a generic_spct object
+#' @param x a generic_spct object.
 #' @param .force.numeric logical If \code{TRUE} always silently return a
 #'   numeric value, with \code{FALSE} encoded as zero, and character values
 #'   as \code{NA}.
 #'
-#' @return numeric or logical (possibly character for objects created with
-#'   earlier versions).
+#' @details Spectral data that has been normalized needs to be used diffferently
+#'   in computations than data expresed in original units. These two functions
+#'   make it possible to query if data stored in an object of class
+#'   \code{generic_spct} or of a derived class contains data expressed in
+#'   physical units or normalized. In the later case, it is possible to also
+#'   query how the normalization was done.
 #'
-#' @note if x is not a \code{generic_spct} object, \code{NA} is returned
+#' @return \code{getNormalized()} returns numeric or logical (possibly character
+#'   for objects created with earlier versions). If \code{x} is not a
+#'   \code{generic_spct} object, \code{NA} or a list with fields set to NAs is
+#'   returned. Objects created with versions of package 'photobiology' earlier
+#'   than 0.10.8 are lacking the normalization metadata.
 #'
 #' @export
 #'
 #' @examples
 #'
-#' sun_norm.spct <- normalize(sun.spct)
-#'
 #' getNormalized(sun.spct)
 #' getNormalization(sun.spct)
+#'
+#' sun_norm.spct <- normalize(sun.spct)
+#'
+#' getNormalized(sun_norm.spct)
+#' getNormalization(sun_norm.spct)
+#'
+#' getNormalization(e2q(sun_norm.spct))
+#'
+#' gel_norm.spct <- normalize(yellow_gel.spct)
+#'
+#' getNormalized(gel_norm.spct)
+#' getNormalization(gel_norm.spct)
+#'
+#' getNormalization(T2Afr(gel_norm.spct))
+#' getNormalization(T2A(gel_norm.spct))
 #'
 #' @family rescaling functions
 #'
@@ -694,7 +718,7 @@ getNormalized <- function(x,
   if (is.generic_spct(x) || is.summary_generic_spct(x)) {
     normalized <- attr(x, "normalized", exact = TRUE)
     if (is.null(normalized) || is.na(normalized)) {
-      # need to handle objects created with old versions
+      # need to handle objects created with very old versions
       normalized <- FALSE
     }
   } else {
@@ -719,6 +743,10 @@ getNormalized <- function(x,
 getNormalised <- getNormalized
 
 #' @rdname getNormalized
+#'
+#' @return \code{getNormalization()} returns a list with five fields: norm.type,
+#'   norm.wl, norm.factors, norm.cols, norm.range. See
+#'   \code{\link{setNormalization}} for the values stored in the fields.
 #'
 #' @export
 #'
@@ -764,9 +792,20 @@ getNormalisation <- getNormalization
 #' @param norm.cols character The name(s) of the data columns normalized.
 #' @param norm.range numeric The wavelength range used for normalization (nm).
 #'
-#' @note If \code{x} is not a \code{generic_spct} object, \code{x} is not
-#'   modified. Passing a \code{logical} as argument to \code{norm} is deprecated
-#'   but kept for backwards compatibility.
+#' @details This function \strong{is used internally}, although occasionally
+#'   users may want to use it to "pretend" that spectral data have not been
+#'   normalized. Use \code{\link{normalize()}} methods to apply a normalization
+#'   and set the attributes accordingly. Functions \code{setNormalized()} and
+#'   \code{setNormalization()} only set the attributes that store the metadata
+#'   corresponding to an already applied normalization. Thus a trace of the
+#'   transformations applied to spectral data is kept, which currently is used
+#'   to renormalize the spectra when the quantity used for expression is changed
+#'   with a conversion function. It is also used in other packages like
+#'   'ggspectra' when generating automatically axis labels. If \code{x} is not a
+#'   \code{generic_spct} object, \code{x} is not modified.
+#'
+#' @note Passing a \code{logical} as argument to \code{norm} is deprecated
+#'   but accepted silently for backwards compatibility.
 #'
 #' @export
 #' @family rescaling functions
@@ -777,17 +816,23 @@ setNormalized <- function(x,
                           norm.factors = NA_real_,
                           norm.cols = NA_character_,
                           norm.range = rep(NA_real_, 2)) {
+  stopifnot("'norm' must be numeric or logical, but it is not" =
+              is.numeric(norm) || is.logical(norm))
   name <- substitute(x)
   if ((is.generic_spct(x) || is.summary_generic_spct(x)) &&
       (is.na(norm) || is.numeric(norm) || is.logical(norm))) {
     attr(x, "normalized") <- norm
-    attr(x, "normalization") <- list(norm.type = norm.type,
-                                     norm.wl = ifelse(is.numeric(norm),
-                                                      norm,
-                                                      NA_real_),
-                                     norm.factors = norm.factors,
-                                     norm.cols = norm.cols,
-                                     norm.range = norm.range)
+    normalization.ls <- list(norm.type = norm.type,
+                             norm.wl = ifelse(is.numeric(norm),
+                                              norm,
+                                              NA_real_),
+                             norm.factors = norm.factors,
+                             norm.cols = norm.cols,
+                             norm.range = norm.range)
+    if (norm && anyNA(normalization.ls, recursive = TRUE)) {
+      message("\"normalized\" attribute set to TRUE, with incomplete normalization data.")
+    }
+    attr(x, "normalization") <- normalization.ls
     if (is.name(name)) {
       name <- as.character(name)
       assign(name, x, parent.frame(), inherits = TRUE)
