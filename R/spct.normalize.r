@@ -505,7 +505,7 @@ normalize_spct <- function(spct,
     return(spct)
   }
 
-  stopifnot(!is.null(col.names), col.names %in% names(spct))
+  stopifnot(all(col.names %in% colnames(spct)))
 
   if (getMultipleWl(spct) != 1L) {
     warning("Object contains data for ",
@@ -513,11 +513,34 @@ normalize_spct <- function(spct,
     return(spct)
   }
 
+  if (na.rm) {
+    x <- na.omit(spct)
+  } else {
+    x <- spct
+  }
+
+  if (is.null(range) || all(is.na(range))) {
+    range <- wl_range(x, na.rm = TRUE)
+  } else {
+    x <- trim_wl(x, range)
+    range <- wl_range(x, na.rm = TRUE) # if range was broader x is not expanded
+  }
+  stopifnot(nrow(x) > 2) # too short a slice
+
   updating <- is_normalized(spct)
 
   if (updating) {
     old.normalization.ls <- getNormalization(spct)
     has.normalization.metadata <- !all(is.na(unlist(old.normalization.ls)))
+
+    if (has.normalization.metadata &&
+        (old.normalization.ls[["norm"]] == norm || norm == "update") &&
+        all(old.normalization.ls[["norm.cols"]] == col.names) &&
+        all(old.normalization.ls[["norm.range"]] == range)) {
+      # nothing to do
+      return(spct)
+    }
+
     if (norm == "update") {
       if (!has.normalization.metadata) {
         warning("Normalization not updated: unsupported old object)")
@@ -552,20 +575,6 @@ normalize_spct <- function(spct,
     setNormalized(spct, norm = FALSE)
   }
 
-  if (na.rm) {
-    x <- na.omit(spct)
-  } else {
-    x <- spct
-  }
-
-  if (is.null(range) || all(is.na(range))) {
-    range <- wl_range(x)
-  } else {
-    x <- trim_wl(x, range)
-    range <- wl_range(x) # if range was broader x is not expanded
-  }
-  stopifnot(nrow(x) > 2) # too short a slice
-
   # rescaling needed
   scale.factors <- numeric(0)
   for (col in col.names) {
@@ -598,13 +607,12 @@ normalize_spct <- function(spct,
     spct[[col]] <- spct[ , col, drop = TRUE] * scale.factor
   }
 
+  # filter_spct, reflector_spct and object_spct -> different quantities
+  # source_spct, response_spct -> photon and energy conversion depends on wl
   if (updating &&
       length(scale.factors) == length(old.normalization.ls[["norm.factors"]]) &&
-      # filter_spct, reflector_spct and object_spct -> different quantities
-      (col.names == old.normalization.ls[["norm.cols"]] ||
-      # source_spct and response_spct -> different units can be mixed
-      all(grepl("s.e.|s.q.", col.names)))) { #
-    scale.factors <- scale.factors * old.normalization.ls[["norm.factors"]]
+      all(col.names == old.normalization.ls[["norm.cols"]])) { #
+    scale.factors <- scale.factors / old.normalization.ls[["norm.factors"]]
     updating <- FALSE
   }
 
@@ -709,7 +717,7 @@ is_normalised <- is_normalized
 #' getNormalization(gel_norm.spct)
 #'
 #' getNormalization(T2Afr(gel_norm.spct))
-#' getNormalization(T2A(gel_norm.spct))
+#' getNormalization(any2A(gel_norm.spct))
 #'
 #' @family rescaling functions
 #'
@@ -746,7 +754,7 @@ getNormalised <- getNormalized
 #'
 #' @return \code{getNormalization()} returns a list with five fields: norm.type,
 #'   norm.wl, norm.factors, norm.cols, norm.range. See
-#'   \code{\link{setNormalization}} for the values stored in the fields.
+#'   \code{\link{setNormalized}()} for the values stored in the fields.
 #'
 #' @export
 #'
@@ -794,14 +802,14 @@ getNormalisation <- getNormalization
 #'
 #' @details This function \strong{is used internally}, although occasionally
 #'   users may want to use it to "pretend" that spectral data have not been
-#'   normalized. Use \code{\link{normalize()}} methods to apply a normalization
-#'   and set the attributes accordingly. Functions \code{setNormalized()} and
-#'   \code{setNormalization()} only set the attributes that store the metadata
-#'   corresponding to an already applied normalization. Thus a trace of the
-#'   transformations applied to spectral data is kept, which currently is used
-#'   to renormalize the spectra when the quantity used for expression is changed
-#'   with a conversion function. It is also used in other packages like
-#'   'ggspectra' when generating automatically axis labels. If \code{x} is not a
+#'   normalized. Use \code{\link{normalize}()} methods to apply a normalization
+#'   and set the attributes accordingly. Function \code{setNormalized()} only
+#'   sets the attributes that store the metadata corresponding to an already
+#'   applied normalization. Thus a trace of the transformations applied to
+#'   spectral data is kept, which currently is used to renormalize the spectra
+#'   when the quantity used for expression is changed with a conversion
+#'   function. It is also used in other packages like 'ggspectra' when
+#'   generating automatically axis labels. If \code{x} is not a
 #'   \code{generic_spct} object, \code{x} is not modified.
 #'
 #' @note Passing a \code{logical} as argument to \code{norm} is deprecated

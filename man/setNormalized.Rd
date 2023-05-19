@@ -44,14 +44,14 @@ object.
 \details{
 This function \strong{is used internally}, although occasionally
   users may want to use it to "pretend" that spectral data have not been
-  normalized. Use \code{\link{normalize()}} methods to apply a normalization
-  and set the attributes accordingly. Functions \code{setNormalized()} and
-  \code{setNormalization()} only set the attributes that store the metadata
-  corresponding to an already applied normalization. Thus a trace of the
-  transformations applied to spectral data is kept, which currently is used
-  to renormalize the spectra when the quantity used for expression is changed
-  with a conversion function. It is also used in other packages like
-  'ggspectra' when generating automatically axis labels. If \code{x} is not a
+  normalized. Use \code{\link{normalize}()} methods to apply a normalization
+  and set the attributes accordingly. Function \code{setNormalized()} only
+  sets the attributes that store the metadata corresponding to an already
+  applied normalization. Thus a trace of the transformations applied to
+  spectral data is kept, which currently is used to renormalize the spectra
+  when the quantity used for expression is changed with a conversion
+  function. It is also used in other packages like 'ggspectra' when
+  generating automatically axis labels. If \code{x} is not a
   \code{generic_spct} object, \code{x} is not modified.
 }
 \note{

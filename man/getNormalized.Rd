@@ -31,7 +31,7 @@ as \code{NA}.}
 
 \code{getNormalization()} returns a list with five fields: norm.type,
   norm.wl, norm.factors, norm.cols, norm.range. See
-  \code{\link{setNormalization}} for the values stored in the fields.
+  \code{\link{setNormalized}()} for the values stored in the fields.
 }
 \description{
 Functions to read the "normalized" and "normalization" attributes of an
@@ -51,10 +51,23 @@ Spectral data that has been normalized needs to be used diffferently
 }
 \examples{
 
-sun_norm.spct <- normalize(sun.spct)
-
 getNormalized(sun.spct)
 getNormalization(sun.spct)
+
+sun_norm.spct <- normalize(sun.spct)
+
+getNormalized(sun_norm.spct)
+getNormalization(sun_norm.spct)
+
+getNormalization(e2q(sun_norm.spct))
+
+gel_norm.spct <- normalize(yellow_gel.spct)
+
+getNormalized(gel_norm.spct)
+getNormalization(gel_norm.spct)
+
+getNormalization(T2Afr(gel_norm.spct))
+getNormalization(any2A(gel_norm.spct))
 
 }
 \seealso{
