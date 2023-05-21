@@ -15,7 +15,7 @@ editor_options:
 - Add formal parameter `quantity` to `q_ratio()` and `e_ratio()` methods.
 - Extend the "update" of normalizations to objects of class 
   `"filter_spct"` and fix a bug affecting setting of metadata attribute during
-  updated to the normalization of `"source_spct"` and `"response_spct"`
+ updates to the normalization of `"source_spct"` and `"response_spct"`
   objects.
 
 # photobiology 0.10.16

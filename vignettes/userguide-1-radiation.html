@@ -12,7 +12,7 @@
 
 <meta name="author" content="Pedro J. Aphalo" />
 
-<meta name="date" content="2023-01-04" />
+<meta name="date" content="2023-05-19" />
 
 <title>User Guide: 1 Radiation</title>
 
@@ -339,9 +339,9 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 
 <h1 class="title toc-ignore">User Guide: 1 Radiation</h1>
-<h3 class="subtitle">Package ‘photobiology’ 0.10.15</h3>
+<h3 class="subtitle">Package ‘photobiology’ 0.10.16.9002</h3>
 <h4 class="author">Pedro J. Aphalo</h4>
-<h4 class="date">2023-01-04</h4>
+<h4 class="date">2023-05-19</h4>
 
 
 <div id="TOC">
@@ -1347,7 +1347,7 @@ real use it is more usual to supply a vector of the same length as the
 ## 2      401         1
 ## 3      402         1
 ## 4      403         1
-## # … with 7 more rows</code></pre>
+## # ℹ 7 more rows</code></pre>
 <p>We can copy and convert any spectrum object into any of its base
 clases, such as <code>generic_spct</code> or <code>data.frame</code>.
 This can result in the immediate and surely in the delayed loss of
@@ -1416,8 +1416,8 @@ first code chunk of this section.</p>
 <p>Argument <code>strict.range</code> can be used to override or make
 more strict the validation of the data values.</p>
 <div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">source_spct</span>(<span class="at">w.length =</span> <span class="dv">300</span><span class="sc">:</span><span class="dv">305</span>, <span class="at">s.e.irrad =</span> <span class="sc">-</span><span class="dv">1</span>)</span></code></pre></div>
-<pre><code>## Warning in range_check(x, strict.range = strict.range): Negative spectral energy
-## irradiance values; minimum s.e.irrad = -1.00</code></pre>
+<pre><code>## Warning in range_check(x, strict.range = strict.range): Negative spectral
+## energy irradiance values; minimum s.e.irrad = -1.00</code></pre>
 <pre><code>## Object: source_spct [6 x 2]
 ## Wavelength range 300-305 nm, step 1 nm 
 ## Time unit 1s
@@ -1544,7 +1544,7 @@ value is always a data frame with columns <code>&quot;lon&quot;</code>,
 ## 2     281.         0         0
 ## 3     282.         0         0
 ## 4     283.         0         0
-## # … with 518 more rows</code></pre>
+## # ℹ 518 more rows</code></pre>
 <p>Functions <code>what_measured()</code> and
 <code>where_measured&lt;-()</code>, and <code>how_measured()</code> and
 <code>how_measured&lt;-()</code> are used for retrieving or setting a
@@ -1568,7 +1568,7 @@ data.</p>
 ## 2     281.         0         0
 ## 3     282.         0         0
 ## 4     283.         0         0
-## # … with 518 more rows</code></pre>
+## # ℹ 518 more rows</code></pre>
 <p>Functions using a different syntax are also available, for these and
 other attributes which are not likely to be set by users. Many of these
 additional attributes are meaningful only some types of spectra.</p>
@@ -1605,7 +1605,7 @@ header.</p>
 ## 2     281.         0         0
 ## 3     282.         0         0
 ## 4     283.         0         0
-## # … with 518 more rows</code></pre>
+## # ℹ 518 more rows</code></pre>
 <p>For example function <code>is_effective()</code> returns
 <code>TRUE</code> if the spectral data has been weighted with a BSWF.
 The corresponding <code>getBSWFUsed()</code> function can be used, in
@@ -1640,7 +1640,7 @@ attribute, preserving the validity of the data object.</p>
 ## 2     281.         0         0
 ## 3     282.         0         0
 ## 4     283.         0         0
-## # … with 518 more rows</code></pre>
+## # ℹ 518 more rows</code></pre>
 <div class="sourceCode" id="cb61"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a><span class="fu">getTimeUnit</span>(ten.minutes.spct)</span></code></pre></div>
 <pre><code>## [1] &quot;600s (~10 minutes)&quot;</code></pre>
 </div>
@@ -1682,7 +1682,7 @@ objects.</p>
 ## 2      241 0.00464
 ## 3      242 0.00446
 ## 4      243 0.00429
-## # … with 557 more rows</code></pre>
+## # ℹ 557 more rows</code></pre>
 <p>We estimate the spectral transmittance of 2 mm-thick PET film.</p>
 <div class="sourceCode" id="cb65"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a><span class="fu">convertThickness</span>(polyester.spct, <span class="at">thickness =</span> <span class="fl">2e-3</span>)</span></code></pre></div>
 <pre><code>## Object: filter_spct [561 x 2]
@@ -1698,7 +1698,7 @@ objects.</p>
 ## 2      241 1.38e-37
 ## 3      242 7.39e-38
 ## 4      243 3.85e-38
-## # … with 557 more rows</code></pre>
+## # ℹ 557 more rows</code></pre>
 <hr />
 <p>Attributes <code>instr_desc</code> and <code>instr_settings</code>
 are used to store measurement-related metadata, describing the
@@ -1864,7 +1864,7 @@ starting point, in this case the spectral irradiance for sunlight.</p>
 ## 2     281.         0         0
 ## 3     282.         0         0
 ## 4     283.         0         0
-## # … with 518 more rows
+## # ℹ 518 more rows
 ## --- Member: sun2 ---
 ## Object: source_spct [522 x 3]
 ## Wavelength range 280-800 nm, step 0.9230769-1 nm 
@@ -1880,7 +1880,7 @@ starting point, in this case the spectral irradiance for sunlight.</p>
 ## 2     281.         0         0
 ## 3     282.         0         0
 ## 4     283.         0         0
-## # … with 518 more rows
+## # ℹ 518 more rows
 ## 
 ## --- END ---</code></pre>
 <p>We can also create heterogeneous collections, but this drastically
@@ -1950,7 +1950,7 @@ transmittance stored as percentages (hence “Tpc”).</p>
 ## 2      502  0.02
 ## 3      503  0.03
 ## 4      504  0.04
-## # … with 46 more rows
+## # ℹ 46 more rows
 ## --- Member: spct_2 ---
 ## Object: filter_spct [50 x 2]
 ## Wavelength range 501-550 nm, step 1 nm 
@@ -1964,7 +1964,7 @@ transmittance stored as percentages (hence “Tpc”).</p>
 ## 2      502  0.52
 ## 3      503  0.53
 ## 4      504  0.54
-## # … with 46 more rows
+## # ℹ 46 more rows
 ## 
 ## --- END ---</code></pre>
 <p>In a second example we supply explicit names for the spectra.</p>
@@ -1983,7 +1983,7 @@ transmittance stored as percentages (hence “Tpc”).</p>
 ## 2      502  0.02
 ## 3      503  0.03
 ## 4      504  0.04
-## # … with 46 more rows
+## # ℹ 46 more rows
 ## --- Member: B ---
 ## Object: filter_spct [50 x 2]
 ## Wavelength range 501-550 nm, step 1 nm 
@@ -1997,7 +1997,7 @@ transmittance stored as percentages (hence “Tpc”).</p>
 ## 2      502  0.52
 ## 3      503  0.53
 ## 4      504  0.54
-## # … with 46 more rows
+## # ℹ 46 more rows
 ## 
 ## --- END ---</code></pre>
 <p>There is no change in the call for data stored by row. We create a
@@ -2019,7 +2019,7 @@ packages do.</p>
 ## 2      502  0.02
 ## 3      503  0.03
 ## 4      504  0.04
-## # … with 46 more rows
+## # ℹ 46 more rows
 ## --- Member: spct_2 ---
 ## Object: filter_spct [50 x 2]
 ## Wavelength range 501-550 nm, step 1 nm 
@@ -2033,7 +2033,7 @@ packages do.</p>
 ## 2      502  0.52
 ## 3      503  0.53
 ## 4      504  0.54
-## # … with 46 more rows
+## # ℹ 46 more rows
 ## 
 ## --- END ---</code></pre>
 <p>There is only one case when an explicit argument for
@@ -2106,7 +2106,7 @@ retained as named lists or multi-row data frames.</p>
 ## 2     281.         0 a                0
 ## 3     282.         0 a                0
 ## 4     283.         0 a                0
-## # … with 1,040 more rows</code></pre>
+## # ℹ 1,040 more rows</code></pre>
 <p>The reverse operation, separating the individual spectra from a
 spectrum object containing multiple spectra in <em>long form</em> and
 storing them as a collection, is implemented in method
@@ -2133,7 +2133,7 @@ metadata.</p>
 ## 2     281.         0         0
 ## 3     282.         0         0
 ## 4     283.         0         0
-## # … with 518 more rows
+## # ℹ 518 more rows
 ## --- Member: b ---
 ## Object: source_spct [522 x 3]
 ## Wavelength range 280-800 nm, step 0.9230769-1 nm 
@@ -2149,7 +2149,7 @@ metadata.</p>
 ## 2     281.         0         0
 ## 3     282.         0         0
 ## 4     283.         0         0
-## # … with 518 more rows
+## # ℹ 518 more rows
 ## 
 ## --- END ---</code></pre>
 <p>If multiple spectra are stored in long form (as <em>tidy</em> data)
@@ -2176,7 +2176,7 @@ example below, adds only default metadata to spectral objects.</p>
 ## 2      201         1
 ## 3      202         1
 ## 4      203         1
-## # … with 7 more rows
+## # ℹ 7 more rows
 ## --- Member: B ---
 ## Object: source_spct [11 x 2]
 ## Wavelength range 200-210 nm, step 1 nm 
@@ -2189,7 +2189,7 @@ example below, adds only default metadata to spectral objects.</p>
 ## 2      201         2
 ## 3      202         2
 ## 4      203         2
-## # … with 7 more rows
+## # ℹ 7 more rows
 ## 
 ## --- END ---</code></pre>
 <p>If all member spectra share the same metadata, and the constructor
@@ -2210,7 +2210,7 @@ argument.</p>
 ## 2      201         1
 ## 3      202         1
 ## 4      203         1
-## # … with 7 more rows
+## # ℹ 7 more rows
 ## --- Member: B ---
 ## Object: source_spct [11 x 2]
 ## Wavelength range 200-210 nm, step 1 nm 
@@ -2223,7 +2223,7 @@ argument.</p>
 ## 2      201         2
 ## 3      202         2
 ## 4      203         2
-## # … with 7 more rows
+## # ℹ 7 more rows
 ## 
 ## --- END ---</code></pre>
 <p>To directly convert a <em>tidy</em> data frame into a long form
@@ -2273,7 +2273,7 @@ columns containing spectral values.</p>
 ## 2      201         1
 ## 3      202         1
 ## 4      203         1
-## # … with 7 more rows
+## # ℹ 7 more rows
 ## --- Member: B ---
 ## Object: source_spct [11 x 2]
 ## Wavelength range 200-210 nm, step 1 nm 
@@ -2286,7 +2286,7 @@ columns containing spectral values.</p>
 ## 2      201         2
 ## 3      202         2
 ## 4      203         2
-## # … with 7 more rows
+## # ℹ 7 more rows
 ## 
 ## --- END ---</code></pre>
 <div class="sourceCode" id="cb120"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb120-1"><a href="#cb120-1" aria-hidden="true" tabindex="-1"></a><span class="fu">split2source_mspct</span>(test2.df, <span class="at">spct.data.var =</span> <span class="st">&quot;s.q.irrad&quot;</span>)</span></code></pre></div>
@@ -2305,7 +2305,7 @@ columns containing spectral values.</p>
 ## 2      201         1
 ## 3      202         1
 ## 4      203         1
-## # … with 7 more rows
+## # ℹ 7 more rows
 ## --- Member: B ---
 ## Object: source_spct [11 x 2]
 ## Wavelength range 200-210 nm, step 1 nm 
@@ -2318,7 +2318,7 @@ columns containing spectral values.</p>
 ## 2      201         2
 ## 3      202         2
 ## 4      203         2
-## # … with 7 more rows
+## # ℹ 7 more rows
 ## 
 ## --- END ---</code></pre>
 <p>Also in this case, it is possible to pass additional named arguments
@@ -2339,7 +2339,7 @@ to the constructor of spectral objects.</p>
 ## 2      201         1
 ## 3      202         1
 ## 4      203         1
-## # … with 7 more rows
+## # ℹ 7 more rows
 ## --- Member: B ---
 ## Object: source_spct [11 x 2]
 ## Wavelength range 200-210 nm, step 1 nm 
@@ -2352,7 +2352,7 @@ to the constructor of spectral objects.</p>
 ## 2      201         2
 ## 3      202         2
 ## 4      203         2
-## # … with 7 more rows
+## # ℹ 7 more rows
 ## 
 ## --- END ---</code></pre>
 </div>
@@ -2446,7 +2446,7 @@ They always return or expect objects of one of the spectral classes.</p>
 ## 2     281.         0         0
 ## 3     282.         0         0
 ## 4     283.         0         0
-## # … with 518 more rows</code></pre>
+## # ℹ 518 more rows</code></pre>
 <div class="sourceCode" id="cb146"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb146-1"><a href="#cb146-1" aria-hidden="true" tabindex="-1"></a>two_suns.mspct<span class="sc">$</span>sun1</span></code></pre></div>
 <pre><code>## Object: source_spct [522 x 3]
 ## Wavelength range 280-800 nm, step 0.9230769-1 nm 
@@ -2462,7 +2462,7 @@ They always return or expect objects of one of the spectral classes.</p>
 ## 2     281.         0         0
 ## 3     282.         0         0
 ## 4     283.         0         0
-## # … with 518 more rows</code></pre>
+## # ℹ 518 more rows</code></pre>
 <div class="sourceCode" id="cb148"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb148-1"><a href="#cb148-1" aria-hidden="true" tabindex="-1"></a>two_suns.mspct[[<span class="st">&quot;sun1&quot;</span>]]</span></code></pre></div>
 <pre><code>## Object: source_spct [522 x 3]
 ## Wavelength range 280-800 nm, step 0.9230769-1 nm 
@@ -2478,7 +2478,7 @@ They always return or expect objects of one of the spectral classes.</p>
 ## 2     281.         0         0
 ## 3     282.         0         0
 ## 4     283.         0         0
-## # … with 518 more rows</code></pre>
+## # ℹ 518 more rows</code></pre>
 <div class="sourceCode" id="cb150"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb150-1"><a href="#cb150-1" aria-hidden="true" tabindex="-1"></a>two_suns.mspct[[<span class="st">&quot;sun1&quot;</span>]] <span class="ot">&lt;-</span> sun.spct <span class="sc">*</span> <span class="dv">2</span></span>
 <span id="cb150-2"><a href="#cb150-2" aria-hidden="true" tabindex="-1"></a>two_suns.mspct[[<span class="st">&quot;sun2&quot;</span>]] <span class="ot">&lt;-</span> <span class="cn">NULL</span></span>
 <span id="cb150-3"><a href="#cb150-3" aria-hidden="true" tabindex="-1"></a>two_suns.mspct</span></code></pre></div>
@@ -2498,7 +2498,7 @@ They always return or expect objects of one of the spectral classes.</p>
 ## 2     281.         0
 ## 3     282.         0
 ## 4     283.         0
-## # … with 518 more rows
+## # ℹ 518 more rows
 ## 
 ## --- END ---</code></pre>
 <p>As with R’s <code>list</code> objects, can combine collections of
@@ -2521,7 +2521,7 @@ collections from individual spectra using this method.</p>
 ## 2     281.         0
 ## 3     282.         0
 ## 4     283.         0
-## # … with 518 more rows
+## # ℹ 518 more rows
 ## --- Member: filter ---
 ## Object: filter_spct [561 x 2]
 ## Wavelength range 240-800 nm, step 1 nm 
@@ -2536,7 +2536,7 @@ collections from individual spectra using this method.</p>
 ## 2      241 0.00464
 ## 3      242 0.00446
 ## 4      243 0.00429
-## # … with 557 more rows
+## # ℹ 557 more rows
 ## --- Member: source ---
 ## Object: source_spct [522 x 3]
 ## Wavelength range 280-800 nm, step 0.9230769-1 nm 
@@ -2552,7 +2552,7 @@ collections from individual spectra using this method.</p>
 ## 2     281.         0         0
 ## 3     282.         0         0
 ## 4     283.         0         0
-## # … with 518 more rows
+## # ℹ 518 more rows
 ## 
 ## --- END ---</code></pre>
 </div>
@@ -2675,7 +2675,7 @@ spectrum in the collection</p>
 ## 2     281.       0.1
 ## 3     282.       0.1
 ## 4     283.       0.1
-## # … with 518 more rows
+## # ℹ 518 more rows
 ## --- Member: B ---
 ## Object: source_spct [522 x 2]
 ## Wavelength range 280-800 nm, step 0.9230769-1 nm 
@@ -2691,7 +2691,7 @@ spectrum in the collection</p>
 ## 2     281.       0.1
 ## 3     282.       0.1
 ## 4     283.       0.1
-## # … with 518 more rows
+## # ℹ 518 more rows
 ## 
 ## --- END ---</code></pre>
 <p>and continue with a more complex example in which we trim each
@@ -2713,7 +2713,7 @@ spectrum</p>
 ## 2     281.        NA
 ## 3     281.        NA
 ## 4     281          0
-## # … with 521 more rows
+## # ℹ 521 more rows
 ## --- Member: B ---
 ## Object: source_spct [525 x 2]
 ## Wavelength range 280-800 nm, step 1.023182e-12-1 nm 
@@ -2729,7 +2729,7 @@ spectrum</p>
 ## 2     281.        NA
 ## 3     281.        NA
 ## 4     281          0
-## # … with 521 more rows
+## # ℹ 521 more rows
 ## 
 ## --- END ---</code></pre>
 <p>In the second example we pass two arguments by name to the applied
@@ -3031,7 +3031,7 @@ words of the same class as the members of <code>two.mspct</code>.</p>
 ## 2     281.         0
 ## 3     282.         0
 ## 4     283.         0
-## # … with 518 more rows</code></pre>
+## # ℹ 518 more rows</code></pre>
 <p>When we compute the standard error, the quantity returned is not the
 same. Consequently, the object returned is in this case a
 <code>generic_spct</code> instead of <code>source_spc</code> as it does
@@ -3050,7 +3050,7 @@ change in the quantity.</p>
 ## 2     281.            0
 ## 3     282.            0
 ## 4     283.            0
-## # … with 518 more rows</code></pre>
+## # ℹ 518 more rows</code></pre>
 <p>We can also compute both the mean and standard error
 simultaneously.</p>
 <div class="sourceCode" id="cb176"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb176-1"><a href="#cb176-1" aria-hidden="true" tabindex="-1"></a><span class="fu">s_mean_se</span>(two.mspct)</span></code></pre></div>
@@ -3066,7 +3066,7 @@ simultaneously.</p>
 ## 2     281.         0            0
 ## 3     282.         0            0
 ## 4     283.         0            0
-## # … with 518 more rows</code></pre>
+## # ℹ 518 more rows</code></pre>
 <p>The other functions in this family work in a similar way to those
 described here.</p>
 </div>
@@ -3102,7 +3102,7 @@ for non-transitive operations the order does matter.</p>
 ## 2     281.         0
 ## 3     282.         0
 ## 4     283.         0
-## # … with 518 more rows
+## # ℹ 518 more rows
 ## --- Member: B ---
 ## Object: source_spct [522 x 2]
 ## Wavelength range 280-800 nm, step 0.9230769-1 nm 
@@ -3118,7 +3118,7 @@ for non-transitive operations the order does matter.</p>
 ## 2     281.         0
 ## 3     282.         0
 ## 4     283.         0
-## # … with 518 more rows
+## # ℹ 518 more rows
 ## 
 ## --- END ---</code></pre>
 <div class="sourceCode" id="cb180"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb180-1"><a href="#cb180-1" aria-hidden="true" tabindex="-1"></a><span class="fu">convolve_each</span>(sun.spct, two.mspct)</span></code></pre></div>
@@ -3138,7 +3138,7 @@ for non-transitive operations the order does matter.</p>
 ## 2     281.         0
 ## 3     282.         0
 ## 4     283.         0
-## # … with 518 more rows
+## # ℹ 518 more rows
 ## --- Member: B ---
 ## Object: source_spct [522 x 2]
 ## Wavelength range 280-800 nm, step 0.9230769-1 nm 
@@ -3154,7 +3154,7 @@ for non-transitive operations the order does matter.</p>
 ## 2     281.         0
 ## 3     282.         0
 ## 4     283.         0
-## # … with 518 more rows
+## # ℹ 518 more rows
 ## 
 ## --- END ---</code></pre>
 <div class="sourceCode" id="cb182"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb182-1"><a href="#cb182-1" aria-hidden="true" tabindex="-1"></a>another_two.mspct <span class="ot">&lt;-</span> two.mspct</span>
@@ -3176,7 +3176,7 @@ for non-transitive operations the order does matter.</p>
 ## 2     281.         0
 ## 3     282.         0
 ## 4     283.         0
-## # … with 518 more rows
+## # ℹ 518 more rows
 ## --- Member: a_B ---
 ## Object: source_spct [522 x 2]
 ## Wavelength range 280-800 nm, step 0.9230769-1 nm 
@@ -3192,7 +3192,7 @@ for non-transitive operations the order does matter.</p>
 ## 2     281.         0
 ## 3     282.         0
 ## 4     283.         0
-## # … with 518 more rows
+## # ℹ 518 more rows
 ## --- Member: b_A ---
 ## Object: source_spct [522 x 2]
 ## Wavelength range 280-800 nm, step 0.9230769-1 nm 
@@ -3208,7 +3208,7 @@ for non-transitive operations the order does matter.</p>
 ## 2     281.         0
 ## 3     282.         0
 ## 4     283.         0
-## # … with 518 more rows
+## # ℹ 518 more rows
 ## --- Member: b_B ---
 ## Object: source_spct [522 x 2]
 ## Wavelength range 280-800 nm, step 0.9230769-1 nm 
@@ -3224,7 +3224,7 @@ for non-transitive operations the order does matter.</p>
 ## 2     281.         0
 ## 3     282.         0
 ## 4     283.         0
-## # … with 518 more rows
+## # ℹ 518 more rows
 ## 
 ## --- END ---</code></pre>
 <p>The function <code>convolve_each</code> will use other operators or
@@ -3247,7 +3247,7 @@ supplied as arguments.</p>
 ## 2     281.         0
 ## 3     282.         0
 ## 4     283.         0
-## # … with 518 more rows
+## # ℹ 518 more rows
 ## --- Member: B ---
 ## Object: source_spct [522 x 2]
 ## Wavelength range 280-800 nm, step 0.9230769-1 nm 
@@ -3263,7 +3263,7 @@ supplied as arguments.</p>
 ## 2     281.         0
 ## 3     282.         0
 ## 4     283.         0
-## # … with 518 more rows
+## # ℹ 518 more rows
 ## 
 ## --- END ---</code></pre>
 <hr />
@@ -3318,7 +3318,7 @@ examples follow.</p>
 ## 2     281.         0
 ## 3     282.         0
 ## 4     283.         0
-## # … with 518 more rows
+## # ℹ 518 more rows
 ## --- Member: B ---
 ## Object: source_spct [522 x 2]
 ## Wavelength range 280-800 nm, step 0.9230769-1 nm 
@@ -3334,7 +3334,7 @@ examples follow.</p>
 ## 2     281.         0
 ## 3     282.         0
 ## 4     283.         0
-## # … with 518 more rows
+## # ℹ 518 more rows
 ## 
 ## --- END ---</code></pre>
 <p>Other methods available are <code>getWhereMeasured</code> and
@@ -3369,12 +3369,11 @@ collection of spectra can be passed. By default columns containing only
 missing data are dropped.</p>
 <div class="sourceCode" id="cb198"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb198-1"><a href="#cb198-1" aria-hidden="true" tabindex="-1"></a><span class="fu">spct_metadata</span>(two.mspct)</span></code></pre></div>
 <pre><code>## # A tibble: 2 × 10
-##   spct.idx   lat   lon address       when.measured       what.…¹ norma…² multi…³
-##   &lt;fct&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;         &lt;dttm&gt;              &lt;chr&gt;     &lt;dbl&gt;   &lt;dbl&gt;
-## 1 A         60.2  25.0 Kumpula, Hel… 2015-10-31 08:00:00 sunlig…       0       1
-## 2 B         60.2  25.0 Kumpula, Hel… 2015-10-31 09:00:00 sunlig…       0       1
-## # … with 2 more variables: time.unit &lt;Duration&gt;, bswf.used &lt;chr&gt;, and
-## #   abbreviated variable names ¹​what.measured, ²​normalized, ³​multiplier</code></pre>
+##   spct.idx   lat   lon address      when.measured       what.measured normalized
+##   &lt;fct&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;        &lt;dttm&gt;              &lt;chr&gt;              &lt;dbl&gt;
+## 1 A         60.2  25.0 Kumpula, He… 2015-10-31 08:00:00 sunlight, si…          0
+## 2 B         60.2  25.0 Kumpula, He… 2015-10-31 09:00:00 sunlight, si…          0
+## # ℹ 3 more variables: multiplier &lt;dbl&gt;, time.unit &lt;Duration&gt;, bswf.used &lt;chr&gt;</code></pre>
 <div class="sourceCode" id="cb200"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb200-1"><a href="#cb200-1" aria-hidden="true" tabindex="-1"></a><span class="fu">spct_metadata</span>(two.mspct, </span>
 <span id="cb200-2"><a href="#cb200-2" aria-hidden="true" tabindex="-1"></a>              <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">&quot;when.measured&quot;</span> <span class="ot">=</span> <span class="st">&quot;time&quot;</span>, </span>
 <span id="cb200-3"><a href="#cb200-3" aria-hidden="true" tabindex="-1"></a>                            <span class="st">&quot;where.measured&quot;</span> <span class="ot">=</span> <span class="st">&quot;geocode&quot;</span>),</span>
@@ -3779,7 +3778,7 @@ base R, can be used with spectra.</p>
 ## 2     281.         0         0
 ## 3     282.         0         0
 ## 4     283.         0         0
-## # … with 518 more rows</code></pre>
+## # ℹ 518 more rows</code></pre>
 <div class="sourceCode" id="cb242"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb242-1"><a href="#cb242-1" aria-hidden="true" tabindex="-1"></a><span class="fu">na.exclude</span>(sun.spct)</span></code></pre></div>
 <pre><code>## Object: source_spct [522 x 3]
 ## Wavelength range 280-800 nm, step 0.9230769-1 nm 
@@ -3795,7 +3794,7 @@ base R, can be used with spectra.</p>
 ## 2     281.         0         0
 ## 3     282.         0         0
 ## 4     283.         0         0
-## # … with 518 more rows</code></pre>
+## # ℹ 518 more rows</code></pre>
 </div>
 </div>
 <div id="transformations-using-operators" class="section level2">
@@ -4120,7 +4119,7 @@ Validity and class of result. All operations marked
 ## 2     281.         0
 ## 3     282.         0
 ## 4     283.         0
-## # … with 518 more rows</code></pre>
+## # ℹ 518 more rows</code></pre>
 <p>When meaningful, operations between different spectra are also
 allowed. For example, it is possible to simulate the effect of a filter
 on a light source by multiplying (or convolving) the two spectra.</p>
@@ -4139,7 +4138,7 @@ on a light source by multiplying (or convolving) the two spectra.</p>
 ## 2     281.         0
 ## 3     281          0
 ## 4     282.         0
-## # … with 529 more rows</code></pre>
+## # ℹ 529 more rows</code></pre>
 <p>If we have two layers of the filter, this can be approximated using
 either of these two statements.</p>
 <div class="sourceCode" id="cb248"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb248-1"><a href="#cb248-1" aria-hidden="true" tabindex="-1"></a>sun.spct <span class="sc">*</span> polyester.spct <span class="sc">*</span> polyester.spct</span></code></pre></div>
@@ -4157,7 +4156,7 @@ either of these two statements.</p>
 ## 2     281.         0
 ## 3     281          0
 ## 4     282.         0
-## # … with 529 more rows</code></pre>
+## # ℹ 529 more rows</code></pre>
 <div class="sourceCode" id="cb250"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb250-1"><a href="#cb250-1" aria-hidden="true" tabindex="-1"></a>sun.spct <span class="sc">*</span> polyester.spct<span class="sc">^</span><span class="dv">2</span></span></code></pre></div>
 <pre><code>## Object: source_spct [533 x 2]
 ## Wavelength range 280-800 nm, step 0.07692308-1 nm 
@@ -4173,7 +4172,7 @@ either of these two statements.</p>
 ## 2     281.         0
 ## 3     281          0
 ## 4     282.         0
-## # … with 529 more rows</code></pre>
+## # ℹ 529 more rows</code></pre>
 <p>Operators are also defined for operations between a spectrum and a
 numeric vector (with normal recycling).</p>
 <div class="sourceCode" id="cb252"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb252-1"><a href="#cb252-1" aria-hidden="true" tabindex="-1"></a>sun.spct <span class="sc">*</span> <span class="dv">2</span></span></code></pre></div>
@@ -4191,7 +4190,7 @@ numeric vector (with normal recycling).</p>
 ## 2     281.         0
 ## 3     282.         0
 ## 4     283.         0
-## # … with 518 more rows</code></pre>
+## # ℹ 518 more rows</code></pre>
 <div class="sourceCode" id="cb254"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb254-1"><a href="#cb254-1" aria-hidden="true" tabindex="-1"></a><span class="dv">2</span> <span class="sc">*</span> sun.spct</span></code></pre></div>
 <pre><code>## Object: source_spct [522 x 2]
 ## Wavelength range 280-800 nm, step 0.9230769-1 nm 
@@ -4207,7 +4206,7 @@ numeric vector (with normal recycling).</p>
 ## 2     281.         0
 ## 3     282.         0
 ## 4     283.         0
-## # … with 518 more rows</code></pre>
+## # ℹ 518 more rows</code></pre>
 <div class="sourceCode" id="cb256"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb256-1"><a href="#cb256-1" aria-hidden="true" tabindex="-1"></a>sun.spct <span class="sc">*</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>)</span></code></pre></div>
 <pre><code>## Object: source_spct [522 x 2]
 ## Wavelength range 280-800 nm, step 0.9230769-1 nm 
@@ -4223,7 +4222,7 @@ numeric vector (with normal recycling).</p>
 ## 2     281.         0
 ## 3     282.         0
 ## 4     283.         0
-## # … with 518 more rows</code></pre>
+## # ℹ 518 more rows</code></pre>
 <p>There is one special case, for <code>chroma_spct</code>: if the
 numeric operand has length three, containing three <em>named</em> values
 <em>x</em>, <em>y</em> and <em>z</em>, the corresponding value is used
@@ -4250,7 +4249,7 @@ BSWF.</p>
 ## 2     281.         0
 ## 3     282.         0
 ## 4     283.         0
-## # … with 33 more rows</code></pre>
+## # ℹ 33 more rows</code></pre>
 <div class="sourceCode" id="cb260"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb260-1"><a href="#cb260-1" aria-hidden="true" tabindex="-1"></a>sun.spct <span class="sc">*</span> CIE.wb</span></code></pre></div>
 <p>And of course these operations can be combined into more complex
 statements, including parentheses, when needed. The example below
@@ -4274,7 +4273,7 @@ spectral data used, which corresponds to Southern Finland.</p>
 ## 2     281.         0
 ## 3     281          0
 ## 4     282.         0
-## # … with 129 more rows</code></pre>
+## # ℹ 129 more rows</code></pre>
 </div>
 <div id="unary-operators-and-maths-functions" class="section level3">
 <h3>Unary operators and maths functions</h3>
@@ -4394,8 +4393,8 @@ supported functions:
 </table>
 <hr />
 <div class="sourceCode" id="cb263"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb263-1"><a href="#cb263-1" aria-hidden="true" tabindex="-1"></a><span class="sc">-</span>sun.spct</span></code></pre></div>
-<pre><code>## Warning in range_check(x, strict.range = strict.range): Negative spectral energy
-## irradiance values; minimum s.e.irrad = -0.82</code></pre>
+<pre><code>## Warning in range_check(x, strict.range = strict.range): Negative spectral
+## energy irradiance values; minimum s.e.irrad = -0.82</code></pre>
 <pre><code>## Object: source_spct [522 x 2]
 ## Wavelength range 280-800 nm, step 0.9230769-1 nm 
 ## Label: sunlight, simulated 
@@ -4410,7 +4409,7 @@ supported functions:
 ## 2     281.         0
 ## 3     282.         0
 ## 4     283.         0
-## # … with 518 more rows</code></pre>
+## # ℹ 518 more rows</code></pre>
 <div class="sourceCode" id="cb266"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb266-1"><a href="#cb266-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sqrt</span>(sun.spct)</span></code></pre></div>
 <pre><code>## Object: source_spct [522 x 2]
 ## Wavelength range 280-800 nm, step 0.9230769-1 nm 
@@ -4426,7 +4425,7 @@ supported functions:
 ## 2     281.         0
 ## 3     282.         0
 ## 4     283.         0
-## # … with 518 more rows</code></pre>
+## # ℹ 518 more rows</code></pre>
 </div>
 <div id="options" class="section level3">
 <h3>Options</h3>
@@ -4629,7 +4628,7 @@ be set similarly, while to unset any option, they can be given a
 ## 2     281.         0
 ## 3     282.         0
 ## 4     283.         0
-## # … with 33 more rows</code></pre>
+## # ℹ 33 more rows</code></pre>
 <div class="sourceCode" id="cb270"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb270-1"><a href="#cb270-1" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">photobiology.radiation.unit =</span> <span class="st">&quot;energy&quot;</span>)</span>
 <span id="cb270-2"><a href="#cb270-2" aria-hidden="true" tabindex="-1"></a>sun.spct <span class="sc">*</span> UVB.wb</span></code></pre></div>
 <pre><code>## Object: source_spct [37 x 2]
@@ -4646,7 +4645,7 @@ be set similarly, while to unset any option, they can be given a
 ## 2     281.         0
 ## 3     282.         0
 ## 4     283.         0
-## # … with 33 more rows</code></pre>
+## # ℹ 33 more rows</code></pre>
 <p>However using convenience functions is easier. The chunk above can be
 rewritten as below.</p>
 <div class="sourceCode" id="cb272"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb272-1"><a href="#cb272-1" aria-hidden="true" tabindex="-1"></a><span class="fu">photon_as_default</span>()</span>
@@ -4665,7 +4664,7 @@ rewritten as below.</p>
 ## 2     281.         0
 ## 3     282.         0
 ## 4     283.         0
-## # … with 33 more rows</code></pre>
+## # ℹ 33 more rows</code></pre>
 <div class="sourceCode" id="cb274"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb274-1"><a href="#cb274-1" aria-hidden="true" tabindex="-1"></a><span class="fu">energy_as_default</span>()</span>
 <span id="cb274-2"><a href="#cb274-2" aria-hidden="true" tabindex="-1"></a>sun.spct <span class="sc">*</span> UVB.wb</span></code></pre></div>
 <pre><code>## Object: source_spct [37 x 2]
@@ -4682,7 +4681,7 @@ rewritten as below.</p>
 ## 2     281.         0
 ## 3     282.         0
 ## 4     283.         0
-## # … with 33 more rows</code></pre>
+## # ℹ 33 more rows</code></pre>
 <div class="sourceCode" id="cb276"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb276-1"><a href="#cb276-1" aria-hidden="true" tabindex="-1"></a><span class="fu">unset_radiation_unit_default</span>()</span></code></pre></div>
 <p>Furthermore, it is possible to temporarily change the options for the
 evaluation of a single, possibly compound, R expression using a
@@ -4702,7 +4701,7 @@ different syntax, reminiscent of that of R’s <code>with()</code>.</p>
 ## 2     281.         0
 ## 3     282.         0
 ## 4     283.         0
-## # … with 33 more rows</code></pre>
+## # ℹ 33 more rows</code></pre>
 <div class="sourceCode" id="cb279"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb279-1"><a href="#cb279-1" aria-hidden="true" tabindex="-1"></a><span class="fu">using_energy</span>(sun.spct <span class="sc">*</span> UVB.wb)</span></code></pre></div>
 <pre><code>## Object: source_spct [37 x 2]
 ## Wavelength range 280-315 nm, step 0.9230769-1 nm 
@@ -4718,7 +4717,7 @@ different syntax, reminiscent of that of R’s <code>with()</code>.</p>
 ## 2     281.         0
 ## 3     282.         0
 ## 4     283.         0
-## # … with 33 more rows</code></pre>
+## # ℹ 33 more rows</code></pre>
 </div>
 </div>
 <div id="transformations-methods-and-functions" class="section level2">
@@ -5364,7 +5363,7 @@ argument, this is used as name for the factor.</p>
 ## 2     281.         0         0 spct_1  
 ## 3     282.         0         0 spct_1  
 ## 4     283.         0         0 spct_1  
-## # … with 1,040 more rows</code></pre>
+## # ℹ 1,040 more rows</code></pre>
 <div class="sourceCode" id="cb284"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb284-1"><a href="#cb284-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rbindspct</span>(<span class="fu">list</span>(<span class="at">A =</span> sun.spct, <span class="at">B =</span> shade.spct), <span class="at">idfactor =</span> <span class="st">&quot;site&quot;</span>)</span></code></pre></div>
 <pre><code>## Object: source_spct [1,044 x 4]
 ## containing 2 spectra in long form
@@ -5384,7 +5383,7 @@ argument, this is used as name for the factor.</p>
 ## 2     281.         0         0 A    
 ## 3     282.         0         0 A    
 ## 4     283.         0         0 A    
-## # … with 1,040 more rows</code></pre>
+## # ℹ 1,040 more rows</code></pre>
 <p>The name of the ID factor is stored as metadata in attribute
 <code>&quot;idfactor&quot;</code> of the spectral data object.</p>
 <p>Special <em>Extract</em> methods for spectral objects have been
@@ -5406,7 +5405,7 @@ the spectral object.</p>
 ## 2     281.         0         0
 ## 3     282.         0         0
 ## 4     283.         0         0
-## # … with 6 more rows</code></pre>
+## # ℹ 6 more rows</code></pre>
 <div class="sourceCode" id="cb288"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb288-1"><a href="#cb288-1" aria-hidden="true" tabindex="-1"></a>sun.spct[<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>, <span class="dv">1</span>]</span></code></pre></div>
 <pre><code>##  [1] 280.0000 280.9231 281.8462 282.7692 283.6923 284.6154 285.5385 286.4615
 ##  [9] 287.3846 288.3077</code></pre>
@@ -5437,7 +5436,7 @@ attributes.</p>
 ## 2      325     0.217 0.000000589
 ## 3      326     0.277 0.000000756
 ## 4      327     0.285 0.000000779
-## # … with 471 more rows</code></pre>
+## # ℹ 471 more rows</code></pre>
 <div class="sourceCode" id="cb296"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb296-1"><a href="#cb296-1" aria-hidden="true" tabindex="-1"></a><span class="fu">subset</span>(sun.spct, w.length <span class="sc">&gt;</span> <span class="dv">600</span>)</span></code></pre></div>
 <pre><code>## Object: source_spct [200 x 3]
 ## Wavelength range 601-800 nm, step 1 nm 
@@ -5453,7 +5452,7 @@ attributes.</p>
 ## 2      602     0.631 0.00000317
 ## 3      603     0.636 0.00000321
 ## 4      604     0.658 0.00000332
-## # … with 196 more rows</code></pre>
+## # ℹ 196 more rows</code></pre>
 <div class="sourceCode" id="cb298"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb298-1"><a href="#cb298-1" aria-hidden="true" tabindex="-1"></a><span class="fu">subset</span>(sun.spct, <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="fu">rep</span>(<span class="cn">FALSE</span>, <span class="dv">99</span>)))</span></code></pre></div>
 <pre><code>## Object: source_spct [6 x 3]
 ## Wavelength range 280-779 nm, step 99-100 nm 
@@ -5501,7 +5500,7 @@ reference semantics.</p>
 ## 2     281.         0         0
 ## 3     282.         0         0
 ## 4     283.         0         0
-## # … with 518 more rows</code></pre>
+## # ℹ 518 more rows</code></pre>
 <div class="sourceCode" id="cb302"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb302-1"><a href="#cb302-1" aria-hidden="true" tabindex="-1"></a><span class="fu">e2q</span>(sun.spct, <span class="st">&quot;replace&quot;</span>)</span></code></pre></div>
 <pre><code>## Object: source_spct [522 x 2]
 ## Wavelength range 280-800 nm, step 0.9230769-1 nm 
@@ -5517,7 +5516,7 @@ reference semantics.</p>
 ## 2     281.         0
 ## 3     282.         0
 ## 4     283.         0
-## # … with 518 more rows</code></pre>
+## # ℹ 518 more rows</code></pre>
 <p>When a normalized spectrum is converted, the normalization is
 reapplied to the converted data.</p>
 </div>
@@ -5543,7 +5542,7 @@ the attribute <code>filter.properties</code>.</p>
 ## 2      241 0.00464
 ## 3      242 0.00446
 ## 4      243 0.00429
-## # … with 557 more rows</code></pre>
+## # ℹ 557 more rows</code></pre>
 <div class="sourceCode" id="cb306"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb306-1"><a href="#cb306-1" aria-hidden="true" tabindex="-1"></a><span class="fu">any2Afr</span>(polyester.spct, <span class="st">&quot;add&quot;</span>)</span></code></pre></div>
 <pre><code>## Object: filter_spct [561 x 3]
 ## Wavelength range 240-800 nm, step 1 nm 
@@ -5558,7 +5557,7 @@ the attribute <code>filter.properties</code>.</p>
 ## 2      241 0.00464 0.995
 ## 3      242 0.00446 0.995
 ## 4      243 0.00429 0.995
-## # … with 557 more rows</code></pre>
+## # ℹ 557 more rows</code></pre>
 <div class="sourceCode" id="cb308"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb308-1"><a href="#cb308-1" aria-hidden="true" tabindex="-1"></a><span class="fu">any2Afr</span>(polyester.spct, <span class="st">&quot;replace&quot;</span>)</span></code></pre></div>
 <pre><code>## Object: filter_spct [561 x 2]
 ## Wavelength range 240-800 nm, step 1 nm 
@@ -5572,7 +5571,7 @@ the attribute <code>filter.properties</code>.</p>
 ## 2      241 0.995
 ## 3      242 0.995
 ## 4      243 0.995
-## # … with 557 more rows</code></pre>
+## # ℹ 557 more rows</code></pre>
 <p>When a normalized spectrum is converted, the normalization is not
 reapplied to the converted data. <em>This will change in the
 future.</em></p>
@@ -5609,7 +5608,7 @@ are available.)</p>
 ## 2     281.         0
 ## 3     282.         0
 ## 4     283.         0
-## # … with 518 more rows</code></pre>
+## # ℹ 518 more rows</code></pre>
 <p>Which is equivalent to supplying <code>&quot;max&quot;</code> as argument to
 <code>norm</code>, it is also possible to give a range within which the
 maximum should be searched.</p>
@@ -5629,7 +5628,7 @@ maximum should be searched.</p>
 ## 2     281.         0
 ## 3     282.         0
 ## 4     283.         0
-## # … with 518 more rows</code></pre>
+## # ℹ 518 more rows</code></pre>
 <p>It is also possible to normalize to an arbitrary wavelength within
 the range of the data, even if it is not one of the wavelength values
 present in the spectral object, as interpolation is used when
@@ -5650,7 +5649,7 @@ needed.</p>
 ## 2     281.         0
 ## 3     282.         0
 ## 4     283.         0
-## # … with 518 more rows</code></pre>
+## # ℹ 518 more rows</code></pre>
 <p>The normalization status of a spectral object can be tested with
 method <code>is_normalized()</code> and the normalization used can be
 recalled with method <code>getNormalized()</code>.</p>
@@ -5713,7 +5712,7 @@ labelling depends on them.</p>
 ## 2     281.         0
 ## 3     282.         0
 ## 4     283.         0
-## # … with 518 more rows</code></pre>
+## # ℹ 518 more rows</code></pre>
 <div class="sourceCode" id="cb322"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb322-1"><a href="#cb322-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fscale</span>(sun.spct, <span class="at">set.scaled =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
 <pre><code>## Object: source_spct [522 x 2]
 ## Wavelength range 280-800 nm, step 0.9230769-1 nm 
@@ -5729,7 +5728,7 @@ labelling depends on them.</p>
 ## 2     281.         0
 ## 3     282.         0
 ## 4     283.         0
-## # … with 518 more rows</code></pre>
+## # ℹ 518 more rows</code></pre>
 <div class="sourceCode" id="cb324"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb324-1"><a href="#cb324-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fscale</span>(sun.spct, <span class="at">target =</span> <span class="dv">100</span>)</span></code></pre></div>
 <pre><code>## Object: source_spct [522 x 2]
 ## Wavelength range 280-800 nm, step 0.9230769-1 nm 
@@ -5745,7 +5744,7 @@ labelling depends on them.</p>
 ## 2     281.         0
 ## 3     282.         0
 ## 4     283.         0
-## # … with 518 more rows</code></pre>
+## # ℹ 518 more rows</code></pre>
 <div class="sourceCode" id="cb326"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb326-1"><a href="#cb326-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fscale</span>(sun.spct, <span class="at">target =</span> <span class="dv">100</span>, <span class="at">set.scaled =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
 <pre><code>## Object: source_spct [522 x 2]
 ## Wavelength range 280-800 nm, step 0.9230769-1 nm 
@@ -5762,7 +5761,7 @@ labelling depends on them.</p>
 ## 2     281.         0
 ## 3     282.         0
 ## 4     283.         0
-## # … with 518 more rows</code></pre>
+## # ℹ 518 more rows</code></pre>
 <p>The default for <code>f</code> can be overridden. R functions passed
 as argument should be suitable for summarizing spectral objects as they
 will receive as first argument a spectrum rather than a numeric vector.
@@ -5787,7 +5786,7 @@ spectral data.)</p>
 ## 2     281.         0
 ## 3     282.         0
 ## 4     283.         0
-## # … with 518 more rows</code></pre>
+## # ℹ 518 more rows</code></pre>
 <div class="sourceCode" id="cb330"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb330-1"><a href="#cb330-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fscale</span>(sun.spct, <span class="at">range =</span> PAR.wb, <span class="at">f =</span> e_irrad)</span></code></pre></div>
 <pre><code>## Object: source_spct [522 x 2]
 ## Wavelength range 280-800 nm, step 0.9230769-1 nm 
@@ -5804,7 +5803,7 @@ spectral data.)</p>
 ## 2     281.         0
 ## 3     282.         0
 ## 4     283.         0
-## # … with 518 more rows</code></pre>
+## # ℹ 518 more rows</code></pre>
 <div class="sourceCode" id="cb332"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb332-1"><a href="#cb332-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fscale</span>(sun.spct, <span class="at">range =</span> PAR.wb, <span class="at">f =</span> q_irrad, <span class="at">target =</span> <span class="fl">800e-6</span>)</span></code></pre></div>
 <pre><code>## Object: source_spct [522 x 2]
 ## Wavelength range 280-800 nm, step 0.9230769-1 nm 
@@ -5820,7 +5819,7 @@ spectral data.)</p>
 ## 2     281.         0
 ## 3     282.         0
 ## 4     283.         0
-## # … with 518 more rows</code></pre>
+## # ℹ 518 more rows</code></pre>
 <p>In the third example, the spectral data is rescaled so that the
 corresponding photosynthetically-active irradiance is equal to one.</p>
 <p>The normalization status of a spectral object can be tested with
@@ -5874,7 +5873,7 @@ to be used as <em>reference</em> in the calculation of the summary.</p>
 <pre><code>## Object: source_spct [1,421 x 2]
 ## Wavelength range 251.16-898.81 nm, step 0.43-0.48 nm 
 ## Label: led_desk201 
-## Measured on 2016-12-19 16:19:57 UTC 
+## Measured on 2016-12-19 16:19:57.298874 UTC 
 ## Time unit 1s
 ## 
 ## # A tibble: 1,421 × 2
@@ -5884,7 +5883,7 @@ to be used as <em>reference</em> in the calculation of the summary.</p>
 ## 2     252.         0
 ## 3     252.         0
 ## 4     253.         0
-## # … with 1,417 more rows</code></pre>
+## # ℹ 1,417 more rows</code></pre>
 <div class="sourceCode" id="cb340"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb340-1"><a href="#cb340-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fshift</span>(sun.spct, <span class="at">range =</span> <span class="fu">c</span>(<span class="dv">280</span>,<span class="dv">290</span>), <span class="at">f =</span> <span class="st">&quot;min&quot;</span>)</span></code></pre></div>
 <pre><code>## Object: source_spct [522 x 2]
 ## Wavelength range 280-800 nm, step 0.9230769-1 nm 
@@ -5900,7 +5899,7 @@ to be used as <em>reference</em> in the calculation of the summary.</p>
 ## 2     281.         0
 ## 3     282.         0
 ## 4     283.         0
-## # … with 518 more rows</code></pre>
+## # ℹ 518 more rows</code></pre>
 <p>In the first example, the spectral data shifted so that the mean
 spectral irradiance becomes zero for the UV-B region. In the second
 example the minimum value in the range of wavelengths between 280~nm and
@@ -5933,7 +5932,7 @@ values by subtracting a constant from each spectrum.</p>
 ## 2      241     0
 ## 3      242     0
 ## 4      243     0
-## # … with 557 more rows</code></pre>
+## # ℹ 557 more rows</code></pre>
 <p>It is possible to restrict the <em>cleaning</em> to a range of
 wavelengths and to provide a value to be used as replacement for the
 off-range data.</p>
@@ -5952,7 +5951,7 @@ off-range data.</p>
 ## 2     281.     NA   
 ## 3     282.     NA   
 ## 4     283.     -0.01
-## # … with 518 more rows</code></pre>
+## # ℹ 518 more rows</code></pre>
 </div>
 <div id="removing-spikes" class="section level3">
 <h3>Removing spikes</h3>
@@ -5983,7 +5982,7 @@ experience if spikes can be real features or not.</p>
 ## Time unit 1s
 ## 
 ## # A tibble: 0 × 2
-## # … with 2 variables: w.length &lt;dbl&gt;, s.e.irrad &lt;dbl&gt;</code></pre>
+## # ℹ 2 variables: w.length &lt;dbl&gt;, s.e.irrad &lt;dbl&gt;</code></pre>
 </div>
 <div id="smoothing-of-spectra" class="section level3">
 <h3>Smoothing of spectra</h3>
@@ -6019,7 +6018,7 @@ updated.</p>
 ## 2     281.         0         0
 ## 3     282.         0         0
 ## 4     283.         0         0
-## # … with 518 more rows</code></pre>
+## # ℹ 518 more rows</code></pre>
 <div class="sourceCode" id="cb353"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb353-1"><a href="#cb353-1" aria-hidden="true" tabindex="-1"></a><span class="fu">smooth_spct</span>(polyester.spct, <span class="at">method =</span> <span class="st">&quot;supsmu&quot;</span>, <span class="at">strength =</span> <span class="dv">2</span>)</span></code></pre></div>
 <pre><code>## Object: filter_spct [561 x 2]
 ## Wavelength range 240-800 nm, step 1 nm 
@@ -6034,7 +6033,7 @@ updated.</p>
 ## 2      241 0.00453
 ## 3      242 0.00445
 ## 4      243 0.00438
-## # … with 557 more rows</code></pre>
+## # ℹ 557 more rows</code></pre>
 </div>
 <div id="wavelength-interpolation" class="section level3">
 <h3>Wavelength interpolation</h3>
@@ -6064,7 +6063,7 @@ spectrum being interpolated.</p>
 ## 2     400.     0.610 0.00000204
 ## 3     400.     0.612 0.00000205
 ## 4     400.     0.614 0.00000205
-## # … with 997 more rows</code></pre>
+## # ℹ 997 more rows</code></pre>
 </div>
 <div id="trimming-clipping-and-thining" class="section level3">
 <h3>Trimming, clipping and thining</h3>
@@ -6110,7 +6109,7 @@ numeric vector of length two.</p>
 ## 2      401     0.626 0.00000210
 ## 3      402     0.650 0.00000218
 ## 4      403     0.621 0.00000209
-## # … with 397 more rows</code></pre>
+## # ℹ 397 more rows</code></pre>
 <p>As for other methods in the package, the range can be also supplied
 as a <code>waveband</code> object, or any other object for which
 <code>range()</code> returns a numeric range. Even a different spectrum
@@ -6130,7 +6129,7 @@ object is acceptable, and in many cases useful.</p>
 ## 2      316     0.102 0.000000270
 ## 3      317     0.149 0.000000394
 ## 4      318     0.141 0.000000376
-## # … with 82 more rows</code></pre>
+## # ℹ 82 more rows</code></pre>
 <p>The result can be a spectrum of length zero.</p>
 <div class="sourceCode" id="cb363"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb363-1"><a href="#cb363-1" aria-hidden="true" tabindex="-1"></a><span class="fu">clip_wl</span>(sun.spct, <span class="at">range =</span> <span class="fu">c</span>(<span class="dv">100</span>, <span class="dv">200</span>))</span></code></pre></div>
 <pre><code>## Object: source_spct [0 x 3]
@@ -6140,7 +6139,7 @@ object is acceptable, and in many cases useful.</p>
 ## Time unit 1s
 ## 
 ## # A tibble: 0 × 3
-## # … with 3 variables: w.length &lt;dbl&gt;, s.e.irrad &lt;dbl&gt;, s.q.irrad &lt;dbl&gt;</code></pre>
+## # ℹ 3 variables: w.length &lt;dbl&gt;, s.e.irrad &lt;dbl&gt;, s.q.irrad &lt;dbl&gt;</code></pre>
 </div>
 <div id="method-trim_wl" class="section level4">
 <h4>Method <code>trim_wl()</code></h4>
@@ -6173,7 +6172,7 @@ to <code>range</code>.</p>
 ## 2     283.         0         0
 ## 3     284.         0         0
 ## 4     285.         0         0
-## # … with 516 more rows</code></pre>
+## # ℹ 516 more rows</code></pre>
 <div class="sourceCode" id="cb367"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb367-1"><a href="#cb367-1" aria-hidden="true" tabindex="-1"></a><span class="fu">clip_wl</span>(sun.spct, <span class="fu">c</span>(<span class="fl">282.5</span>, <span class="cn">NA</span>))</span></code></pre></div>
 <pre><code>## Object: source_spct [519 x 3]
 ## Wavelength range 282.76923-800 nm, step 0.9230769-1 nm 
@@ -6189,7 +6188,7 @@ to <code>range</code>.</p>
 ## 2     284.         0         0
 ## 3     285.         0         0
 ## 4     286.         0         0
-## # … with 515 more rows</code></pre>
+## # ℹ 515 more rows</code></pre>
 <p>As for <code>clip_wl()</code> the range can be also supplied as a
 <code>waveband</code> object, or any other object for which
 <code>range()</code> returns a numeric range. Even a different spectrum
@@ -6209,7 +6208,7 @@ object is acceptable.</p>
 ## 2      401     0.626 0.00000210
 ## 3      402     0.650 0.00000218
 ## 4      403     0.621 0.00000209
-## # … with 297 more rows</code></pre>
+## # ℹ 297 more rows</code></pre>
 <p>The default for <code>fill</code> is <code>NULL</code> which results
 in deletion values outside the trimmed region. However, it is possible
 to supply a different argument, to be used to replace the off-range data
@@ -6229,7 +6228,7 @@ values.</p>
 ## 2     281.        NA        NA
 ## 3     281.        NA        NA
 ## 4     282.         0         0
-## # … with 520 more rows</code></pre>
+## # ℹ 520 more rows</code></pre>
 <p>Furthermore, when fill is not <code>NULL</code>, expansion is
 possible.</p>
 <div class="sourceCode" id="cb373"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb373-1"><a href="#cb373-1" aria-hidden="true" tabindex="-1"></a><span class="fu">trim_wl</span>(sun.spct, <span class="fu">c</span>(<span class="dv">275</span>, <span class="cn">NA</span>), <span class="at">fill =</span> <span class="dv">0</span>)</span></code></pre></div>
@@ -6247,7 +6246,7 @@ possible.</p>
 ## 2     276.         0         0
 ## 3     277.         0         0
 ## 4     277.         0         0
-## # … with 525 more rows</code></pre>
+## # ℹ 525 more rows</code></pre>
 <p>By default interpolation at the boundaries is used, but setting
 <code>use.hinges</code> to <code>FALSE</code> results in clipping, a
 behaviour similar to that of <code>clip_wl</code> only if
@@ -6267,7 +6266,7 @@ behaviour similar to that of <code>clip_wl</code> only if
 ## 2     281.        NA        NA
 ## 3     281.        NA        NA
 ## 4     282.         0         0
-## # … with 520 more rows</code></pre>
+## # ℹ 520 more rows</code></pre>
 <div class="sourceCode" id="cb377"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb377-1"><a href="#cb377-1" aria-hidden="true" tabindex="-1"></a><span class="fu">trim_wl</span>(sun.spct, <span class="fu">c</span>(<span class="fl">281.5</span>, <span class="cn">NA</span>), <span class="at">fill =</span> <span class="cn">NA</span>, <span class="at">use.hinges =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
 <pre><code>## Object: source_spct [522 x 3]
 ## Wavelength range 280-800 nm, step 0.9230769-1 nm 
@@ -6283,7 +6282,7 @@ behaviour similar to that of <code>clip_wl</code> only if
 ## 2     281.        NA        NA
 ## 3     282.         0         0
 ## 4     283.         0         0
-## # … with 518 more rows</code></pre>
+## # ℹ 518 more rows</code></pre>
 <p>When <code>use.hinges == TRUE</code> and expansion or replacement is
 done, two observations are inserted at each boundary, differing in
 wavelength by <span class="math inline">\(1 \times 10^{-12}\)</span>,nm
@@ -6318,7 +6317,7 @@ value.</p>
 ## 2     281.         0
 ## 3     282.         0
 ## 4     283.         0
-## # … with 518 more rows
+## # ℹ 518 more rows
 ## --- Member: B ---
 ## Object: source_spct [522 x 2]
 ## Wavelength range 280-800 nm, step 0.9230769-1 nm 
@@ -6334,7 +6333,7 @@ value.</p>
 ## 2     281.         0
 ## 3     282.         0
 ## 4     283.         0
-## # … with 518 more rows
+## # ℹ 518 more rows
 ## 
 ## --- END ---</code></pre>
 <div class="sourceCode" id="cb381"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb381-1"><a href="#cb381-1" aria-hidden="true" tabindex="-1"></a><span class="fu">extend2extremes</span>(two.mspct, <span class="at">fill =</span> <span class="dv">0</span>)</span></code></pre></div>
@@ -6354,7 +6353,7 @@ value.</p>
 ## 2     281.         0
 ## 3     282.         0
 ## 4     283.         0
-## # … with 518 more rows
+## # ℹ 518 more rows
 ## --- Member: B ---
 ## Object: source_spct [522 x 2]
 ## Wavelength range 280-800 nm, step 0.9230769-1 nm 
@@ -6370,7 +6369,7 @@ value.</p>
 ## 2     281.         0
 ## 3     282.         0
 ## 4     283.         0
-## # … with 518 more rows
+## # ℹ 518 more rows
 ## 
 ## --- END ---</code></pre>
 </div>
@@ -6447,7 +6446,7 @@ easiest way of doing the calculations.</p>
 ## 2     281.         0
 ## 3     282.         0
 ## 4     283.         0
-## # … with 118 more rows</code></pre>
+## # ℹ 118 more rows</code></pre>
 </div>
 </div>
 <div id="tagging-with-bands-and-colours" class="section level3">
@@ -6477,7 +6476,7 @@ spectrum according to wavebands.</p>
 ## 2     281.         0         0 #000000  &lt;NA&gt;     &lt;NA&gt; 
 ## 3     282.         0         0 #000000  &lt;NA&gt;     &lt;NA&gt; 
 ## 4     283.         0         0 #000000  &lt;NA&gt;     &lt;NA&gt; 
-## # … with 520 more rows</code></pre>
+## # ℹ 520 more rows</code></pre>
 <div class="sourceCode" id="cb395"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb395-1"><a href="#cb395-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tag</span>(sun.spct, UV_bands.lst)</span></code></pre></div>
 <pre><code>## Object: source_spct [524 x 6]
 ## Wavelength range 280-800 nm, step 1.023182e-12-1 nm 
@@ -6493,7 +6492,7 @@ spectrum according to wavebands.</p>
 ## 2     281.         0         0 #000000  black    UVB  
 ## 3     282.         0         0 #000000  black    UVB  
 ## 4     283.         0         0 #000000  black    UVB  
-## # … with 520 more rows</code></pre>
+## # ℹ 520 more rows</code></pre>
 <p>The added factor and colour data can be used for further processing
 or for plotting. Information about the tagging and wavebands is stored
 in an attribute <code>tag.attr</code> in every tagged spectrum, this
@@ -6540,27 +6539,26 @@ for plotting the boundaries of wavebands.</p>
 ## Wavelength range 100-400 nm, step 9.947598e-13-180 nm 
 ## 
 ## # A tibble: 8 × 12
-##   w.len…¹ counts   cps s.e.i…² s.q.i…³   Tfr   Rfl s.e.r…⁴ wl.co…⁵ wb.co…⁶ wb.f 
-##     &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;   &lt;fct&gt;
-## 1    100.      0     0       0       0     0     0       0 #000000 &lt;NA&gt;    &lt;NA&gt; 
-## 2    100       0     0       0       0     0     0       0 #000000 black   UVC  
-## 3    280.      0     0       0       0     0     0       0 #000000 black   UVC  
-## 4    280       0     0       0       0     0     0       0 #000000 black   UVB  
-## # … with 4 more rows, 1 more variable: y &lt;dbl&gt;, and abbreviated variable names
-## #   ¹​w.length, ²​s.e.irrad, ³​s.q.irrad, ⁴​s.e.response, ⁵​wl.color, ⁶​wb.color</code></pre>
+##   w.length counts   cps s.e.irrad s.q.irrad   Tfr   Rfl s.e.response wl.color
+##      &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;        &lt;dbl&gt; &lt;chr&gt;   
+## 1     100.      0     0         0         0     0     0            0 #000000 
+## 2     100       0     0         0         0     0     0            0 #000000 
+## 3     280.      0     0         0         0     0     0            0 #000000 
+## 4     280       0     0         0         0     0     0            0 #000000 
+## # ℹ 4 more rows
+## # ℹ 3 more variables: wb.color &lt;chr&gt;, wb.f &lt;fct&gt;, y &lt;dbl&gt;</code></pre>
 <div class="sourceCode" id="cb401"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb401-1"><a href="#cb401-1" aria-hidden="true" tabindex="-1"></a><span class="fu">wb2rect_spct</span>(UV_bands.lst)</span></code></pre></div>
 <pre><code>## Object: generic_spct [3 x 15]
 ## Wavelength range 190-357.5 nm, step 60-107.5 nm 
 ## 
 ## # A tibble: 3 × 15
-##   w.length counts   cps s.e.irrad s.q.irrad   Tfr   Rfl s.e.re…¹ wl.co…² wb.co…³
-##      &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;  
-## 1     190       0     0         0         0     0     0        0 #000000 black  
-## 2     298.      0     0         0         0     0     0        0 #000000 black  
-## 3     358.      0     0         0         0     0     0        0 #000000 #02000F
-## # … with 5 more variables: wb.name &lt;chr&gt;, wb.f &lt;fct&gt;, wl.high &lt;dbl&gt;,
-## #   wl.low &lt;dbl&gt;, y &lt;dbl&gt;, and abbreviated variable names ¹​s.e.response,
-## #   ²​wl.color, ³​wb.color</code></pre>
+##   w.length counts   cps s.e.irrad s.q.irrad   Tfr   Rfl s.e.response wl.color
+##      &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;        &lt;dbl&gt; &lt;chr&gt;   
+## 1     190       0     0         0         0     0     0            0 #000000 
+## 2     298.      0     0         0         0     0     0            0 #000000 
+## 3     358.      0     0         0         0     0     0            0 #000000 
+## # ℹ 6 more variables: wb.color &lt;chr&gt;, wb.name &lt;chr&gt;, wb.f &lt;fct&gt;, wl.high &lt;dbl&gt;,
+## #   wl.low &lt;dbl&gt;, y &lt;dbl&gt;</code></pre>
 <p>Function <code>wb2tagged_spct</code> returns a tagged spectrum, with
 two rows for each waveband, corresponding to the low and high wavelength
 boundaries, while function <code>wb2rect_spct</code> returns a spectrum
@@ -6585,7 +6583,7 @@ is tagged or not, and function <code>untag</code> removes the tags.</p>
 ## 2     281.         0         0 #000000  &lt;NA&gt;     &lt;NA&gt; 
 ## 3     282.         0         0 #000000  &lt;NA&gt;     &lt;NA&gt; 
 ## 4     283.         0         0 #000000  &lt;NA&gt;     &lt;NA&gt; 
-## # … with 520 more rows</code></pre>
+## # ℹ 520 more rows</code></pre>
 <div class="sourceCode" id="cb405"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb405-1"><a href="#cb405-1" aria-hidden="true" tabindex="-1"></a><span class="fu">is_tagged</span>(tg.sun.spct)</span></code></pre></div>
 <pre><code>## [1] TRUE</code></pre>
 <div class="sourceCode" id="cb407"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb407-1"><a href="#cb407-1" aria-hidden="true" tabindex="-1"></a>untg.sun.spct <span class="ot">&lt;-</span> <span class="fu">untag</span>(tg.sun.spct)</span>
@@ -6614,7 +6612,7 @@ avoided.</p>
 ## 2     281.         0         0
 ## 3     282.         0         0
 ## 4     283.         0         0
-## # … with 520 more rows</code></pre>
+## # ℹ 520 more rows</code></pre>
 <div class="sourceCode" id="cb413"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb413-1"><a href="#cb413-1" aria-hidden="true" tabindex="-1"></a><span class="fu">is_tagged</span>(untg.sun.spct)</span></code></pre></div>
 <pre><code>## [1] FALSE</code></pre>
 </div>
@@ -7507,7 +7505,7 @@ number of observations.</p>
 ## 2      393     0.242
 ## 3      431     0.414
 ## 4      487     0.651
-## # … with 5 more rows</code></pre>
+## # ℹ 5 more rows</code></pre>
 <p>In the case of <code>source_spct</code> and
 <code>response_spct</code> methods <code>unit.out</code> can be used to
 force peaks to be searched using either energy or photon based spectral
@@ -7544,7 +7542,7 @@ are increased with a warning.</p>
 ## 2      366     0.449
 ## 3      378     0.497
 ## 4      416     0.676
-## # … with 14 more rows</code></pre>
+## # ℹ 14 more rows</code></pre>
 <p>A value of <code>NULL</code> as argument to <code>span</code>
 searches for a single maximum for the whole spectrum.</p>
 <div class="sourceCode" id="cb443"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb443-1"><a href="#cb443-1" aria-hidden="true" tabindex="-1"></a><span class="fu">peaks</span>(sun.spct, <span class="at">span =</span> <span class="cn">NULL</span>)</span></code></pre></div>
@@ -7609,7 +7607,7 @@ vectors as first argument.</p>
 ## Rfr (/1): NA, thickness (mm): NA, attenuation mode: NA.
 ## 
 ## # A tibble: 0 × 5
-## # … with 5 variables: w.length &lt;dbl&gt;, Tfr &lt;dbl&gt;, Rfr.constant &lt;dbl&gt;,
+## # ℹ 5 variables: w.length &lt;dbl&gt;, Tfr &lt;dbl&gt;, Rfr.constant &lt;dbl&gt;,
 ## #   thickness &lt;dbl&gt;, attenuation.mode &lt;chr&gt;
 ## --- Member: pet ---
 ## Object: filter_spct [3 x 2]
@@ -7657,7 +7655,7 @@ spectrum.</p>
 <pre><code>## Object: filter_spct [1 x 2]
 ## Wavelength range 709.35352-709.35352 nm, step NA nm 
 ## Label: Ler_06_black.spct 
-## Measured on 2017-07-03 13:18:18 UTC 
+## Measured on 2017-07-03 13:18:18.615114 UTC 
 ## Transmittance of type &#39;total&#39;
 ## 
 ## # A tibble: 1 × 2
@@ -7668,7 +7666,7 @@ spectrum.</p>
 <pre><code>## Object: filter_spct [1 x 2]
 ## Wavelength range 709.50991-709.50991 nm, step NA nm 
 ## Label: Ler_06_black.spct 
-## Measured on 2017-07-03 13:18:18 UTC 
+## Measured on 2017-07-03 13:18:18.615114 UTC 
 ## Transmittance of type &#39;total&#39;
 ## Rfr (/1): NA, thickness (mm): NA, attenuation mode: NA.
 ## 
@@ -7694,7 +7692,7 @@ absorbance.</p>
 ## Rfr (/1): NA, thickness (mm): NA, attenuation mode: NA.
 ## 
 ## # A tibble: 0 × 2
-## # … with 2 variables: w.length &lt;dbl&gt;, Tfr &lt;dbl&gt;
+## # ℹ 2 variables: w.length &lt;dbl&gt;, Tfr &lt;dbl&gt;
 ## --- Member: pet ---
 ## Object: filter_spct [1 x 2]
 ## Wavelength range 322-322 nm, step NA nm 
@@ -7799,8 +7797,8 @@ aware that conversion into a different time unit than that used during
 measurement, is only valid for sources like lamps, which have an output
 the remains constant in time.</p>
 <div class="sourceCode" id="cb465"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb465-1"><a href="#cb465-1" aria-hidden="true" tabindex="-1"></a><span class="fu">q_irrad</span>(white_led.source_spct, PAR.wb, <span class="at">time.unit =</span> <span class="st">&quot;hour&quot;</span>)</span></code></pre></div>
-<pre><code>##    Q_PAR 
-## 1.584957 
+<pre><code>##   Q_PAR 
+## 1.58498 
 ## attr(,&quot;time.unit&quot;)
 ## [1] &quot;hour&quot;
 ## attr(,&quot;radiation.unit&quot;)
@@ -8524,7 +8522,7 @@ objects using defaults for most arguments.</p>
 ## 2      295    290    300    0.00204    0.00407                 2
 ## 3      305    300    310    0.203      0.406                   2
 ## 4      315    310    320    1.13       2.26                    2
-## # … with 48 more rows</code></pre>
+## # ℹ 48 more rows</code></pre>
 <p>The value returned by default is a <code>generic_spct</code> object
 containing the computed summaries for each waveband plus the result of
 the comparison between the summaries. The first three columns contain
@@ -8548,7 +8546,7 @@ operator.</p>
 ## 2      315    290    340           0.292            0.00220   TRUE             
 ## 3      365    340    390           0.861            0.000825  TRUE             
 ## 4      415    390    440           0.918            0.0000100 TRUE             
-## # … with 7 more rows</code></pre>
+## # ℹ 7 more rows</code></pre>
 </div>
 <div id="illumination-and-light-as-seen-by-humans" class="section level2">
 <h2>Illumination and light as seen by humans</h2>
