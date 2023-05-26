@@ -135,3 +135,87 @@ test_that("reflectance", {
 
 
 })
+
+test_that("Rfr_ratio", {
+  uvb.wb <- waveband(c(280,315), wb.name = "UVB")
+  blue.wb <- waveband(c(400,500), wb.name = "B")
+
+  Rfr.ratio.result <- 0.827905455600525
+  expect_equal(
+    as.numeric(Rfr_ratio(Ler_leaf_rflt.spct, uvb.wb, blue.wb)),
+    Rfr.ratio.result, tolerance = 1e-12)
+  expect_equal(
+    as.numeric(Rfr_ratio(Ler_leaf_rflt.spct, uvb.wb, blue.wb, scale.factor = 10)),
+    Rfr.ratio.result * 10, tolerance = 1e-12)
+  expect_equal(
+    as.numeric(Rfr_ratio(Ler_leaf_rflt.spct, uvb.wb, blue.wb, quantity = "mean")),
+    Rfr.ratio.result, tolerance = 1e-12)
+  expect_equal(
+    as.numeric(Rfr_ratio(Ler_leaf_rflt.spct, uvb.wb, blue.wb, quantity = "average")),
+    Rfr.ratio.result, tolerance = 1e-12)
+
+  Rfr.ratio.result <- 0.289766909460184
+  expect_equal(
+    as.numeric(Rfr_ratio(Ler_leaf_rflt.spct, uvb.wb, blue.wb, quantity = "total")),
+    Rfr.ratio.result, tolerance = 1e-12)
+
+  expect_error(Rfr_ratio(Ler_leaf_rflt.spct, uvb.wb, blue.wb, quantity = "bad argument"))
+  expect_warning(Rfr_ratio(sun.spct, uvb.wb, blue.wb))
+
+  expect_named(
+    Rfr_ratio(Ler_leaf_rflt.spct, uvb.wb, blue.wb),
+    "UVB:B[Rfr(wl):Rfr(wl)]")
+
+  Rfr.fraction.result <- 0.45292575338834
+  expect_equal(
+    as.numeric(Rfr_fraction(Ler_leaf_rflt.spct, uvb.wb, blue.wb)),
+    Rfr.fraction.result, tolerance = 1e-12)
+  expect_equal(
+    as.numeric(Rfr_fraction(Ler_leaf_rflt.spct, uvb.wb, blue.wb, scale.factor = 10)),
+    Rfr.fraction.result * 10, tolerance = 1e-12)
+  expect_equal(
+    as.numeric(Rfr_fraction(Ler_leaf_rflt.spct, uvb.wb, blue.wb, quantity = "mean")),
+    Rfr.fraction.result, tolerance = 1e-12)
+  expect_equal(
+    as.numeric(Rfr_fraction(Ler_leaf_rflt.spct, uvb.wb, blue.wb, quantity = "average")),
+    Rfr.fraction.result, tolerance = 1e-12)
+
+  Rfr.fraction.result <- 0.224666106204773
+  expect_equal(
+    as.numeric(Rfr_fraction(Ler_leaf_rflt.spct, uvb.wb, blue.wb, quantity = "total")),
+    Rfr.fraction.result, tolerance = 1e-12)
+
+  expect_error(Rfr_fraction(Ler_leaf_rflt.spct, uvb.wb, blue.wb, quantity = "bad argument"))
+  expect_warning(Rfr_fraction(sun.spct, uvb.wb, blue.wb))
+
+  expect_named(
+    Rfr_fraction(Ler_leaf_rflt.spct, uvb.wb, blue.wb),
+    "UVB:(UVB+B)[Rfr(wl):Rfr(wl)]")
+
+  Rfr.normdiff.result <- 0.0941484932233198
+  expect_equal(
+    as.numeric(Rfr_normdiff(Ler_leaf_rflt.spct, blue.wb, uvb.wb)),
+    Rfr.normdiff.result, tolerance = 1e-12)
+  expect_equal(
+    as.numeric(Rfr_normdiff(Ler_leaf_rflt.spct, blue.wb, uvb.wb, scale.factor = 10)),
+    Rfr.normdiff.result * 10, tolerance = 1e-12)
+  expect_equal(
+    as.numeric(Rfr_normdiff(Ler_leaf_rflt.spct, blue.wb, uvb.wb, quantity = "mean")),
+    Rfr.normdiff.result, tolerance = 1e-12)
+  expect_equal(
+    as.numeric(Rfr_normdiff(Ler_leaf_rflt.spct, blue.wb, uvb.wb, quantity = "average")),
+    Rfr.normdiff.result, tolerance = 1e-12)
+
+  Rfr.normdiff.result <- 0.550667787590454
+  expect_equal(
+    as.numeric(Rfr_normdiff(Ler_leaf_rflt.spct, blue.wb, uvb.wb, quantity = "total")),
+    Rfr.normdiff.result, tolerance = 1e-12)
+
+  expect_error(Rfr_normdiff(Ler_leaf_rflt.spct, blue.wb, uvb.wb, quantity = "bad argument"))
+  expect_warning(Rfr_normdiff(sun.spct, blue.wb, uvb.wb))
+
+  expect_named(
+    Rfr_normdiff(Ler_leaf_rflt.spct, blue.wb, uvb.wb),
+    "(B-UVB):(B+UVB)[Rfr(wl):Rfr(wl)]")
+})
+

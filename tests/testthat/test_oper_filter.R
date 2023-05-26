@@ -310,3 +310,78 @@ test_that("absorbance", {
 
 
 })
+
+test_that("Tfr_ratio", {
+  uvb.wb <- waveband(c(280,315), wb.name = "UVB")
+  blue.wb <- waveband(c(400,500), wb.name = "B")
+
+  Tfr.ratio.result <- 0.0105339221480326
+  expect_equal(
+    as.numeric(Tfr_ratio(polyester.spct, uvb.wb, blue.wb)),
+    Tfr.ratio.result, tolerance = 1e-12)
+  expect_equal(
+    as.numeric(Tfr_ratio(polyester.spct, uvb.wb, blue.wb, quantity = "mean")),
+    Tfr.ratio.result, tolerance = 1e-12)
+  expect_equal(
+    as.numeric(Tfr_ratio(polyester.spct, uvb.wb, blue.wb, quantity = "average")),
+    Tfr.ratio.result, tolerance = 1e-12)
+
+  Tfr.ratio.result <- 0.0036868727518114
+  expect_equal(
+    as.numeric(Tfr_ratio(polyester.spct, uvb.wb, blue.wb, quantity = "total")),
+    Tfr.ratio.result, tolerance = 1e-12)
+
+  expect_error(Tfr_ratio(polyester.spct, uvb.wb, blue.wb, quantity = "bad argument"))
+  expect_warning(Tfr_ratio(sun.spct, uvb.wb, blue.wb))
+
+  expect_named(
+    Tfr_ratio(polyester.spct, uvb.wb, blue.wb),
+    "UVB:B[Tfr(wl):Tfr(wl)]")
+
+  Tfr.fraction.result <- 0.010424115328698
+  expect_equal(
+    as.numeric(Tfr_fraction(polyester.spct, uvb.wb, blue.wb)),
+    Tfr.fraction.result, tolerance = 1e-12)
+  expect_equal(
+    as.numeric(Tfr_fraction(polyester.spct, uvb.wb, blue.wb, quantity = "mean")),
+    Tfr.fraction.result, tolerance = 1e-12)
+  expect_equal(
+    as.numeric(Tfr_fraction(polyester.spct, uvb.wb, blue.wb, quantity = "average")),
+    Tfr.fraction.result, tolerance = 1e-12)
+
+  Tfr.fraction.result <- 0.00367332965280605
+  expect_equal(
+    as.numeric(Tfr_fraction(polyester.spct, uvb.wb, blue.wb, quantity = "total")),
+    Tfr.fraction.result, tolerance = 1e-12)
+
+  expect_error(Tfr_fraction(polyester.spct, uvb.wb, blue.wb, quantity = "bad argument"))
+  expect_warning(Tfr_fraction(sun.spct, uvb.wb, blue.wb))
+
+  expect_named(
+    Tfr_fraction(polyester.spct, uvb.wb, blue.wb),
+    "UVB:(UVB+B)[Tfr(wl):Tfr(wl)]")
+
+  Tfr.normdiff.result <- 0.979151769342604
+  expect_equal(
+    as.numeric(Tfr_normdiff(polyester.spct, blue.wb, uvb.wb)),
+    Tfr.normdiff.result, tolerance = 1e-12)
+  expect_equal(
+    as.numeric(Tfr_normdiff(polyester.spct, blue.wb, uvb.wb, quantity = "mean")),
+    Tfr.normdiff.result, tolerance = 1e-12)
+  expect_equal(
+    as.numeric(Tfr_normdiff(polyester.spct, blue.wb, uvb.wb, quantity = "average")),
+    Tfr.normdiff.result, tolerance = 1e-12)
+
+  Tfr.normdiff.result <- 0.992653340694388
+  expect_equal(
+    as.numeric(Tfr_normdiff(polyester.spct, blue.wb, uvb.wb, quantity = "total")),
+    Tfr.normdiff.result, tolerance = 1e-12)
+
+  expect_error(Tfr_normdiff(polyester.spct, blue.wb, uvb.wb, quantity = "bad argument"))
+  expect_warning(Tfr_normdiff(sun.spct, blue.wb, uvb.wb))
+
+  expect_named(
+    Tfr_normdiff(polyester.spct, blue.wb, uvb.wb),
+    "(B-UVB):(B+UVB)[Tfr(wl):Tfr(wl)]")
+})
+
