@@ -75,6 +75,7 @@ reference:
     - s_se
     - s_mean_se
     - s_mean_se_band
+    - sample_spct
   - subtitle: Wavebands
     desc: Methods for waveband objects used to store descriptions of wavelength ranges and spectral weighting functions.
     contents:

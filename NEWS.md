@@ -8,6 +8,7 @@ editor_options:
 
 - Fix bug in `subset2mspct()` when applied to the case of a collection
   containing a single spct object containing a single spectrum.
+- Add functions `sample_spct()` and `sample_mspct()`.
 - Add specialization of `smooth_spct()` method for class `"cps_spct"`.
 - Add `e_fraction()` and `q_fraction` methods.
 - Add `Rfr_ratio()`, `Rfr_fraction()` and `Rfr_normdiff()`.
