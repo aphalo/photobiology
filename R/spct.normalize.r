@@ -634,14 +634,6 @@ normalize_spct <- function(spct,
     old.normalization.ls <- getNormalization(spct)
     has.normalization.metadata <- !any(is.na(unlist(old.normalization.ls)))
 
-    if (has.normalization.metadata &&
-        (old.normalization.ls[["norm"]] == norm || norm == "update") &&
-        all(old.normalization.ls[["norm.cols"]] == col.names) &&
-        all(old.normalization.ls[["norm.range"]] == range)) {
-      # nothing to do
-      return(spct)
-    }
-
     if (norm == "update") {
       if (!has.normalization.metadata) {
         warning("Normalization not updated: action not supported for objects created with 'photobiology' (<= 0.10.9).")
