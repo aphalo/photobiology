@@ -241,9 +241,10 @@ After scaling, applying the function passed as argument to \code{f}
   relative units, while in the second case we retain actual physical units.
   To indicate this, this package uses an attribute, which will by default be
   set assuming the first of these two situations when \code{target == 1} and
-  not set assuming the second situation otherwise. These defaults can be
+  not set assuming the second situation. These defaults can be
   overriden with an explicit \code{logical} argument passed to
-  \code{set.scaled}.
+  \code{set.scaled}. When present, normalization metadata is filled with
+  \code{NA} values, and the spectrum tagged as not normalized.
 }
 \section{Methods (by class)}{
 \itemize{

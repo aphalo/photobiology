@@ -11,7 +11,8 @@ setNormalized(
   norm.type = NA_character_,
   norm.factors = NA_real_,
   norm.cols = NA_character_,
-  norm.range = rep(NA_real_, 2)
+  norm.range = rep(NA_real_, 2),
+  verbose = getOption("verbose_as_default", default = FALSE)
 )
 
 setNormalised(
@@ -20,7 +21,8 @@ setNormalised(
   norm.type = NA_character_,
   norm.factors = NA_real_,
   norm.cols = NA_character_,
-  norm.range = rep(NA_real_, 2)
+  norm.range = rep(NA_real_, 2),
+  verbose = getOption("verbose_as_default", default = FALSE)
 )
 }
 \arguments{
@@ -36,6 +38,8 @@ values by this factor reverts the normalization.}
 \item{norm.cols}{character The name(s) of the data columns normalized.}
 
 \item{norm.range}{numeric The wavelength range used for normalization (nm).}
+
+\item{verbose}{logical Flag enabling or silencing informative warnings.}
 }
 \description{
 Function to write the "normalized" attribute of an existing generic_spct

@@ -20,9 +20,10 @@
 #'   relative units, while in the second case we retain actual physical units.
 #'   To indicate this, this package uses an attribute, which will by default be
 #'   set assuming the first of these two situations when \code{target == 1} and
-#'   not set assuming the second situation otherwise. These defaults can be
+#'   not set assuming the second situation. These defaults can be
 #'   overriden with an explicit \code{logical} argument passed to
-#'   \code{set.scaled}.
+#'   \code{set.scaled}. When present, normalization metadata is filled with
+#'   \code{NA} values, and the spectrum tagged as not normalized.
 #'
 #' @note Method \code{fscale} is not implemented for \code{solute_spct} objects
 #'   as the spectral data stored in them are a description of an intensive
@@ -313,7 +314,7 @@ fscale.source_mspct <- function(x,
   if (!length(x)) return(x) # class of x in no case changes
 
   msmsply(x,
-          fscale,
+          fscale.source_spct,
           range = range,
           f = f,
           target = target,
@@ -342,7 +343,7 @@ fscale.response_mspct <- function(x,
   if (!length(x)) return(x) # class of x in no case changes
 
   msmsply(x,
-          fscale,
+          fscale.response_spct,
           range = range,
           f = f,
           target = target,
@@ -371,7 +372,7 @@ fscale.filter_mspct <- function(x,
   if (!length(x)) return(x) # class of x in no case changes
 
   msmsply(x,
-          fscale,
+          fscale.filter_spct,
           range = range,
           f = f,
           target = target,
@@ -399,7 +400,7 @@ fscale.reflector_mspct <- function(x,
   if (!length(x)) return(x) # class of x in no case changes
 
   msmsply(x,
-          fscale,
+          fscale.reflector_spct,
           range = range,
           f = f,
           target = target,
@@ -426,7 +427,7 @@ fscale.solute_mspct <- function(x,
   if (!length(x)) return(x) # class of x in no case changes
 
   msmsply(x,
-          fscale,
+          fscale.solute_spct,
           range = range,
           f = f,
           target = target,
@@ -452,7 +453,7 @@ fscale.raw_mspct <- function(x,
   if (!length(x)) return(x) # class of x in no case changes
 
   msmsply(x,
-          fscale,
+          fscale.raw_spct,
           range = range,
           f = f,
           target = target,
@@ -478,7 +479,7 @@ fscale.cps_mspct <- function(x,
   if (!length(x)) return(x) # class of x in no case changes
 
   msmsply(x,
-          fscale,
+          fscale.cps_spct,
           range = range,
           f = f,
           target = target,

@@ -121,6 +121,7 @@ normalise(x, ...)
   range = NULL,
   norm = "max",
   unit.out = getOption("photobiology.radiation.unit", default = "energy"),
+  keep.scaling = FALSE,
   na.rm = FALSE,
   .parallel = FALSE,
   .paropts = NULL
@@ -132,6 +133,7 @@ normalise(x, ...)
   range = NULL,
   norm = "max",
   qty.out = getOption("photobiology.filter.qty", default = "transmittance"),
+  keep.scaling = FALSE,
   na.rm = FALSE,
   .parallel = FALSE,
   .paropts = NULL
@@ -143,6 +145,7 @@ normalise(x, ...)
   range = x,
   norm = "max",
   qty.out = NULL,
+  keep.scaling = FALSE,
   na.rm = FALSE,
   .parallel = FALSE,
   .paropts = NULL
@@ -153,6 +156,7 @@ normalise(x, ...)
   ...,
   range = x,
   norm = "max",
+  keep.scaling = FALSE,
   na.rm = FALSE,
   .parallel = FALSE,
   .paropts = NULL
@@ -163,6 +167,7 @@ normalise(x, ...)
   ...,
   range = x,
   norm = "max",
+  keep.scaling = FALSE,
   na.rm = FALSE,
   .parallel = FALSE,
   .paropts = NULL
@@ -186,9 +191,10 @@ return of \code{x} unchanged.}
 \item{unit.out}{character Allowed values "energy", and "photon",
 or its alias "quantum"}
 
-\item{keep.scaling}{logical Flag to indicate if any existing scaling should
-be preserved or not. The default, \code{FALSE}, preserves the behaviour
-of versions (<= 0.10.9).}
+\item{keep.scaling}{logical or numeric Flag to indicate if any existing
+scaling should be preserved or not. The default, \code{FALSE}, preserves
+the behaviour of versions (<= 0.10.9). If numeric, the spectrum is scaled
+to this value before normalization and marked as not scaled.}
 
 \item{na.rm}{logical indicating whether \code{NA} values should be stripped
 before calculating the summary (e.g. "max") used for normalization.}
@@ -291,7 +297,19 @@ If the spectrum passed as argument to \code{x} has been previously
   contain only \code{NA} values. If \code{na.rm == TRUE} then the summary
   quantity will be calculated after striping \code{NA} values, and only the
   values that were \code{NA} in \code{x} will be {NA} values in the returned
-  spectrum.
+  spectrum. 2) When a numeric value is passed as argument to keep.scaling,
+  the scaling uses \code{f = "total"} or \code{f = "mean"} depending on the
+  class of \code{x}. Prescaling is only occasionally needed.
+
+  The argument passed to parameter \code{keep.scaling} affects only the
+  metadata stored in the \code{"normalization"} and \code{"scaling"}
+  attributes of the returned object.
+
+  Method \code{normalize} is implemented for \code{solute_spct} objects
+  but as the spectral data stored in them are a description of an intensive
+  property of a substance, care should be taken of when normalization is
+  applied. To represent solutions of specific concentrations
+  of solutes, \code{filter_spct} objects can be used instead.
 }
 \examples{
 
