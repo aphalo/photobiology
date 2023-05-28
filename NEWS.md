@@ -6,7 +6,7 @@ editor_options:
 
 # photobiology 0.10.18
 
-- Enable code coverage reporting with GitHub action using _coveralls_.
+- Enable code coverage reporting with GitHub action using _coveralls_. (NOT WORKING)
 
 # photobiology 0.10.17
 
