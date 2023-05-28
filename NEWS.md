@@ -4,6 +4,10 @@ editor_options:
     wrap: 72
 ---
 
+# photobiology 0.10.18
+
+- Enable code coverage reporting with GitHub action using _coveralls_.
+
 # photobiology 0.10.17
 
 - Fix bug in `subset2mspct()` when applied to the case of a collection
