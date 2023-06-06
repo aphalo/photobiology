@@ -665,7 +665,8 @@ trimInstrDesc <- function(x,
                                      "spectrometer.name",
                                      "spectrometer.sn",
                                      "bench.grating",
-                                     "bench.slit")
+                                     "bench.slit",
+                                     "entrance.optics")
 ) {
   name <- substitute(x)
   if ((is.generic_spct(x) || is.summary_generic_spct(x)) &&

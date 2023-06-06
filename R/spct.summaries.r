@@ -529,11 +529,18 @@ print.summary_generic_spct <- function(x, ...) {
 #' @export
 #'
 print.instr_desc <- function(x, ...) {
+  if (is.null(x[["entrance.optics"]])) {
+    diffuser <- "unknown"
+  } else {
+    diffuser <- x[["entrance.optics"]][["geometry"]]
+  }
   cat("Data acquired with '",
       x[["spectrometer.name"]], "' s.n. ", x[["spectrometer.sn"]],
             "\ngrating '", x[["bench.grating"]],
-            "', slit '", x[["bench.slit"]], "'", sep = "",
-      ...
+            "', slit '", x[["bench.slit"]], "'",
+      "\ndiffuser '", diffuser, "'",
+      ...,
+      sep = ""
   )
   invisible(x)
 }

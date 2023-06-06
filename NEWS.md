@@ -6,7 +6,11 @@ editor_options:
 
 # photobiology 0.10.18
 
-- Enable code coverage reporting with GitHub action using _coveralls_. (NOT WORKING)
+- Enable code coverage reporting with GitHub action using _coveralls_. 
+(upload to coveralls is failling)
+- Include 'entrance.optics' in the output of `print.instr_desc()`.
+- Edit `trimInstrDesc()` so that it by default it keeps the `entrance.optics`
+  field.
 
 # photobiology 0.10.17
 
