@@ -7,7 +7,7 @@
 trimInstrDesc(
   x,
   fields = c("time", "spectrometer.name", "spectrometer.sn", "bench.grating",
-    "bench.slit")
+    "bench.slit", "entrance.optics")
 )
 }
 \arguments{
