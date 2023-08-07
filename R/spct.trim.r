@@ -22,7 +22,8 @@
 #'   by copy of spct.
 #' @param verbose logical.
 #'
-#' @return a spectrum of same class as input with its tails trimmed or expanded.
+#' @return a spectrum object or a collection of spectral objects of the same
+#'   class as \code{x} with wavelength heads and tails clipped or extended.
 #'
 #' @note When expanding a spectrum, if fill==NULL, then expansion is not
 #'   performed. Range can be "waveband" object, a numeric vector or a list of
@@ -40,6 +41,7 @@
 #' trim_spct(sun.spct, range = c(300, 400))
 #' trim_spct(sun.spct, range = c(300, NA))
 #' trim_spct(sun.spct, range = c(NA, 400))
+#'
 trim_spct <- function(spct,
                       range = NULL,
                       low.limit = NULL, high.limit = NULL,
@@ -362,7 +364,24 @@ trim_wl.default <- function(x, range, use.hinges, fill, ...) {
 trim_wl.generic_spct <- function(x,
                                  range = NULL,
                                  use.hinges = TRUE,
-                                 fill = NULL, ...) {
+                                 fill = NULL,
+                                 ...) {
+
+  # we look for multiple spectra in long form
+  if (getMultipleWl(x) > 1) {
+    # convert to a collection of spectra
+    mspct <- subset2mspct(x = x,
+                          idx.var = getIdFactor(x),
+                          drop.idx = FALSE)
+    # call method on the collection
+    z <- trim_wl(x = mspct,
+                 range = range,
+                 use.hinges = use.hinges,
+                 fill = fill,
+                 ...)
+    return(rbindspct(z))
+  }
+
   if (is.null(range)) {
     return(x)
   }
@@ -393,6 +412,8 @@ trim_wl.generic_mspct <- function(x,
                                   .paropts = NULL) {
 
   if (!length(x)) return(x) # class of x in no case changes
+
+  x <- subset2mspct(x) # expand long form spectra within collection
 
   if (is.null(range)) {
     return(x)
@@ -470,8 +491,8 @@ trim_wl.list <- function(x,
 #'   nanometres.
 #' @param ... ignored (possibly used by derived methods).
 #'
-#' @return A copy of \code{x}, most frequently of a shorter length, and never
-#'   longer.
+#' @return a spectrum object or a collection of spectral objects of the same
+#'   class as \code{x} with wavelength heads and tails clipped.
 #'
 #' @note The condition tested is \code{wl >= range[1] & wl < (range[2] + 1e-13)}.
 #'
@@ -498,11 +519,20 @@ clip_wl.default <- function(x, range, ...) {
 #' @export
 #'
 clip_wl.generic_spct <- function(x, range = NULL, ...) {
-  num.spectra <- getMultipleWl(x)
-  if (num.spectra != 1) {
-    warning("Clip may an object that contains ",
-            num.spectra, " spectra")
+
+  # we look for multiple spectra in long form
+  if (getMultipleWl(x) > 1) {
+    # convert to a collection of spectra
+    mspct <- subset2mspct(x = x,
+                          idx.var = getIdFactor(x),
+                          drop.idx = FALSE)
+    # call method on the collection
+    z <- trim_wl(x = mspct,
+                 range = range,
+                 ...)
+    return(rbindspct(z))
   }
+
   if (is.null(range)) {
     return(x)
   }
@@ -529,6 +559,9 @@ clip_wl.generic_spct <- function(x, range = NULL, ...) {
 #'
 clip_wl.generic_mspct <- function(x, range = NULL, ...) {
   if (!length(x)) return(x) # class of x in no case changes
+
+  x <- subset2mspct(x) # expand long form spectra within collection
+
   msmsply(mspct = x,
           .fun = clip_wl,
           range = range)

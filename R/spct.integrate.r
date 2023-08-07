@@ -312,6 +312,21 @@ interpolate_wl.generic_spct <- function(x,
                                         fill = NA,
                                         length.out = NULL,
                                         ...) {
+
+  # we look for multiple spectra in long form
+  if (getMultipleWl(x) > 1) {
+    # convert to a collection of spectra
+    mspct <- subset2mspct(x = x,
+                          idx.var = getIdFactor(x),
+                          drop.idx = FALSE)
+    # call method on the collection
+    return(interpolate_wl(x = mspct,
+                          w.length.out = w.length.out,
+                          fill = fill,
+                          length.out = length.out,
+                          ...))
+  }
+
   interpolate_spct(spct = x,
                    w.length.out = w.length.out,
                    fill = fill,
@@ -337,6 +352,9 @@ interpolate_wl.generic_mspct <- function(x,
                                          ...,
                                          .parallel = FALSE,
                                          .paropts = NULL) {
+
+  x <- subset2mspct(x) # expand long form spectra within collection
+
   interpolate_mspct(mspct = x,
                     w.length.out = w.length.out,
                     fill = fill,

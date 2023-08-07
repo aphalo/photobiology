@@ -7,7 +7,7 @@
 #' difference among then is in the wavebands used.
 #'
 #' @param spct an R object
-#' @param plus.w.band,minus.w.band waveband objects The wavebands determine the
+#' @param w.band.plus,w.band.minus waveband objects The wavebands determine the
 #'   regions of the spectrum used in the calculations.
 #' @param f function used for integration taking spct as first argument and a
 #'   list of wavebands as second argument.
@@ -41,7 +41,7 @@
 #' @export
 #'
 normalized_diff_ind <-
-  function(spct, plus.w.band, minus.w.band, f, ...) {
+  function(spct, w.band.plus, w.band.minus, f, ...) {
     UseMethod("normalized_diff_ind")
   }
 
@@ -66,7 +66,7 @@ NDxI <- normalized_diff_ind
 #' @export
 #'
 normalized_diff_ind.default <-
-  function(spct, plus.w.band, minus.w.band, f, ...) {
+  function(spct, w.band.plus, w.band.minus, f, ...) {
     warning("'normalized_diff_ind' is not defined for objects of class ",
             class(spct)[1])
     return(spct)
@@ -76,18 +76,37 @@ normalized_diff_ind.default <-
 #'
 #' @export
 #'
-normalized_diff_ind.generic_spct <- function(spct, plus.w.band, minus.w.band, f, ...) {
+normalized_diff_ind.generic_spct <- function(spct,
+                                             w.band.plus,
+                                             w.band.minus,
+                                             f,
+                                             ...) {
+
+  # we look for multiple spectra in long form
+  if (getMultipleWl(spct) > 1) {
+    # convert to a collection of spectra
+    mspct <- subset2mspct(x = spct,
+                          idx.var = getIdFactor(spct),
+                          drop.idx = FALSE)
+    # call method on the collection
+    return(normalized_diff_ind(spct = mspct,
+                               w.band.plus =  w.band.plus,
+                               w.band.minus = w.band.minus,
+                               f = f,
+                               ...))
+  }
+
   # check that spectral data fully covers both wavebands
-  min.wl.bands <- min(wl_min(plus.w.band), wl_min(minus.w.band))
-  max.wl.bands <- max(wl_max(plus.w.band), wl_max(minus.w.band))
+  min.wl.bands <- min(wl_min(w.band.plus), wl_min(w.band.minus))
+  max.wl.bands <- max(wl_max(w.band.plus), wl_max(w.band.minus))
   if (wl_min(spct) > min.wl.bands || wl_max(spct) < max.wl.bands) {
     NA_real_
   } else {
-    x <- as.numeric(f(spct, list(plus.w.band, minus.w.band), ...))
+    x <- as.numeric(f(spct, list(w.band.plus, w.band.minus), ...))
     z <- (x[1] - x[2]) / (x[1] + x[2])
     name <- paste("NDI ", as.character(substitute(f)), " [",
-                  sub("range.", "", labels(plus.w.band)[["label"]]), "] - [",
-                  sub("range.", "", labels(minus.w.band)[["label"]]), "]",
+                  sub("range.", "", labels(w.band.plus)[["label"]]), "] - [",
+                  sub("range.", "", labels(w.band.minus)[["label"]]), "]",
                   sep = "")
     names(z) <- name
     z
@@ -98,10 +117,14 @@ normalized_diff_ind.generic_spct <- function(spct, plus.w.band, minus.w.band, f,
 #'
 #' @export
 #'
-normalized_diff_ind.generic_mspct <- function(spct, plus.w.band, minus.w.band, f, ...) {
+normalized_diff_ind.generic_mspct <- function(spct, w.band.plus, w.band.minus, f, ...) {
+
+  spct <- subset2mspct(spct) # expand long form spectra within collection
+
   msdply(mspct = spct,
-         plus.w.band = plus.w.band,
-         minus.w.band = minus.w.band,
+         .fun = normalized_diff_ind,
+         w.band.plus = w.band.plus,
+         w.band.minus = w.band.minus,
          f = f,
          ...)
 }

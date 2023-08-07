@@ -108,10 +108,9 @@ irrad.source_spct <-
            allow.scaled = !quantity %in% c("average", "mean", "total"),
            naming = "default",
            ...) {
+
     # we look for multiple spectra in long form
-    num.spectra <- getMultipleWl(spct)
-    if (num.spectra > 1) {
-      message("Object contains ", num.spectra, " spectra in long form")
+    if (getMultipleWl(spct) > 1) {
       # convert to a collection of spectra
       mspct <- subset2mspct(x = spct,
                             idx.var = getIdFactor(spct),
@@ -465,6 +464,27 @@ e_irrad.source_spct <-
            allow.scaled = !quantity  %in% c("average", "mean", "total"),
            naming = "default",
            ...) {
+
+    # we look for multiple spectra in long form
+    if (getMultipleWl(spct) > 1) {
+      # convert to a collection of spectra
+      mspct <- subset2mspct(x = spct,
+                            idx.var = getIdFactor(spct),
+                            drop.idx = FALSE)
+      # call method on the collection
+      return(e_irrad(spct = mspct,
+                     w.band = w.band,
+                     quantity = quantity,
+                     time.unit = time.unit,
+                     scale.factor = scale.factor,
+                     wb.trim = wb.trim,
+                     use.cached.mult = use.cached.mult,
+                     use.hinges = use.hinges,
+                     allow.scaled = allow.scaled,
+                     naming = naming,
+                     ...))
+    }
+
     irrad_spct(spct, w.band = w.band, unit.out = "energy",
                scale.factor = scale.factor,
                quantity = quantity,
@@ -571,6 +591,27 @@ q_irrad.source_spct <-
            allow.scaled = !quantity  %in% c("average", "mean", "total"),
            naming = "default",
            ...) {
+
+    # we look for multiple spectra in long form
+    if (getMultipleWl(spct) > 1) {
+      # convert to a collection of spectra
+      mspct <- subset2mspct(x = spct,
+                            idx.var = getIdFactor(spct),
+                            drop.idx = FALSE)
+      # call method on the collection
+      return(q_irrad(spct = mspct,
+                     w.band = w.band,
+                     quantity = quantity,
+                     time.unit = time.unit,
+                     scale.factor = scale.factor,
+                     wb.trim = wb.trim,
+                     use.cached.mult = use.cached.mult,
+                     use.hinges = use.hinges,
+                     allow.scaled = allow.scaled,
+                     naming = naming,
+                     ...))
+    }
+
     irrad_spct(spct, w.band = w.band, unit.out = "photon", quantity = quantity,
                time.unit = time.unit,
                scale.factor = scale.factor,
@@ -662,6 +703,27 @@ fluence.source_spct <-
            allow.scaled = FALSE,
            naming = "default",
            ...) {
+
+    # we look for multiple spectra in long form
+    if (getMultipleWl(spct) > 1) {
+      # convert to a collection of spectra
+      mspct <- subset2mspct(x = spct,
+                            idx.var = getIdFactor(spct),
+                            drop.idx = FALSE)
+      # call method on the collection
+      return(fluence(spct = mspct,
+                     w.band = w.band,
+                     unit.out = unit.out,
+                     exposure.time = exposure.time,
+                     scale.factor = scale.factor,
+                     wb.trim = wb.trim,
+                     use.cached.mult = use.cached.mult,
+                     use.hinges = use.hinges,
+                     allow.scaled = allow.scaled,
+                     naming = naming,
+                     ...))
+    }
+
     if (!lubridate::is.duration(exposure.time) &&
         !lubridate::is.period(exposure.time) &&
         !is.numeric(exposure.time) ) {
@@ -765,6 +827,26 @@ q_fluence.source_spct <-
            allow.scaled = FALSE,
            naming = "default",
            ...) {
+
+    # we look for multiple spectra in long form
+    if (getMultipleWl(spct) > 1) {
+      # convert to a collection of spectra
+      mspct <- subset2mspct(x = spct,
+                            idx.var = getIdFactor(spct),
+                            drop.idx = FALSE)
+      # call method on the collection
+      return(q_fluence(spct = mspct,
+                       w.band = w.band,
+                       exposure.time = exposure.time,
+                       scale.factor = scale.factor,
+                       wb.trim = wb.trim,
+                       use.cached.mult = use.cached.mult,
+                       use.hinges = use.hinges,
+                       allow.scaled = allow.scaled,
+                       naming = naming,
+                       ...))
+    }
+
     if (!lubridate::is.duration(exposure.time) &&
         !lubridate::is.period(exposure.time) &&
         !is.numeric(exposure.time) ) {
@@ -862,6 +944,26 @@ e_fluence.source_spct <-
            allow.scaled = FALSE,
            naming = "default",
            ...) {
+
+    # we look for multiple spectra in long form
+    if (getMultipleWl(spct) > 1) {
+      # convert to a collection of spectra
+      mspct <- subset2mspct(x = spct,
+                            idx.var = getIdFactor(spct),
+                            drop.idx = FALSE)
+      # call method on the collection
+      return(q_fluence(spct = mspct,
+                       w.band = w.band,
+                       exposure.time = exposure.time,
+                       scale.factor = scale.factor,
+                       wb.trim = wb.trim,
+                       use.cached.mult = use.cached.mult,
+                       use.hinges = use.hinges,
+                       allow.scaled = allow.scaled,
+                       naming = naming,
+                       ...))
+    }
+
     if (!lubridate::is.duration(exposure.time) &&
         !lubridate::is.period(exposure.time) &&
         !is.numeric(exposure.time) ) {
@@ -918,6 +1020,9 @@ irrad.source_mspct <-
            idx = "spct.idx",
            .parallel = FALSE,
            .paropts = NULL) {
+
+    spct <- subset2mspct(spct) # expand long form spectra within collection
+
     z <-
       msdply(
         mspct = spct,
@@ -937,6 +1042,7 @@ irrad.source_mspct <-
         .parallel = .parallel,
         .paropts = .paropts
       )
+
     add_attr2tb(tb = z,
                 mspct = spct,
                 col.names = attr2tb,
@@ -974,6 +1080,9 @@ q_irrad.source_mspct <-
            idx = "spct.idx",
            .parallel = FALSE,
            .paropts = NULL) {
+
+    spct <- subset2mspct(spct) # expand long form spectra within collection
+
     z <-
       msdply(
         mspct = spct,
@@ -992,6 +1101,7 @@ q_irrad.source_mspct <-
         .parallel = .parallel,
         .paropts = .paropts
       )
+
     add_attr2tb(tb = z,
                 mspct = spct,
                 col.names = attr2tb,
@@ -1029,6 +1139,9 @@ e_irrad.source_mspct <-
            idx = "spct.idx",
            .parallel = FALSE,
            .paropts = NULL) {
+
+    spct <- subset2mspct(spct) # expand long form spectra within collection
+
     z <-
       msdply(
         mspct = spct,
@@ -1047,6 +1160,7 @@ e_irrad.source_mspct <-
         .parallel = .parallel,
         .paropts = .paropts
       )
+
     add_attr2tb(tb = z,
                 mspct = spct,
                 col.names = attr2tb,
@@ -1084,6 +1198,9 @@ fluence.source_mspct <-
            idx = "spct.idx",
            .parallel = FALSE,
            .paropts = NULL) {
+
+    spct <- subset2mspct(spct) # expand long form spectra within collection
+
     z <-
       msdply(
         mspct = spct,
@@ -1102,6 +1219,7 @@ fluence.source_mspct <-
         .parallel = .parallel,
         .paropts = .paropts
       )
+
     add_attr2tb(tb = z,
                 mspct = spct,
                 col.names = attr2tb,
@@ -1137,6 +1255,9 @@ e_fluence.source_mspct <-
            idx = "spct.idx",
            .parallel = FALSE,
            .paropts = NULL) {
+
+    spct <- subset2mspct(spct) # expand long form spectra within collection
+
     z <-
       msdply(
         mspct = spct,
@@ -1153,6 +1274,7 @@ e_fluence.source_mspct <-
         .parallel = .parallel,
         .paropts = .paropts
       )
+
     add_attr2tb(tb = z,
                 mspct = spct,
                 col.names = attr2tb,
@@ -1189,6 +1311,9 @@ q_fluence.source_mspct <-
            idx = "spct.idx",
            .parallel = FALSE,
            .paropts = NULL) {
+
+    spct <- subset2mspct(spct) # expand long form spectra within collection
+
     z <-
       msdply(
         mspct = spct,
@@ -1206,6 +1331,7 @@ q_fluence.source_mspct <-
         .parallel = .parallel,
         .paropts = .paropts
       )
+
     add_attr2tb(tb = z,
                 mspct = spct,
                 col.names = attr2tb,

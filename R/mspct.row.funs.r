@@ -43,7 +43,7 @@ rowwise_filter <-
     # validate input
     stopifnot(length(.fun) == length(col.name.tag))
 
-    # ensure rowise computtaions are possible
+    # ensure rowwise computations are possible
     x <- make_wl_consistent(x = x, w.length.out = w.length.out)
 
     # collect and check consistency of quantities

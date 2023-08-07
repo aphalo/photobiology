@@ -80,6 +80,23 @@ absorptance.filter_spct <-
            use.hinges = NULL,
            naming = "default",
            ... ) {
+
+    # we look for multiple spectra in long form
+    if (getMultipleWl(spct) > 1) {
+      # convert to a collection of spectra
+      mspct <- subset2mspct(x = spct,
+                            idx.var = getIdFactor(spct),
+                            drop.idx = FALSE)
+      # call method on the collection
+      return(absorptance(spct = mspct,
+                         w.band = w.band,
+                         quantity = quantity,
+                         wb.trim = wb.trim,
+                         use.hinges = use.hinges,
+                         naming = naming,
+                         ...))
+    }
+
     if (getTfrType(spct) != "internal") {
       warning("Internal absorptance cannot be calculated from total transmittance alone")
       return(NA)
@@ -104,6 +121,23 @@ absorptance.object_spct <-
            use.hinges = NULL,
            naming = "default",
            ...)  {
+
+    # we look for multiple spectra in long form
+    if (getMultipleWl(spct) > 1) {
+      # convert to a collection of spectra
+      mspct <- subset2mspct(x = spct,
+                            idx.var = getIdFactor(spct),
+                            drop.idx = FALSE)
+      # call method on the collection
+      return(absorptance(spct = mspct,
+                         w.band = w.band,
+                         quantity = quantity,
+                         wb.trim = wb.trim,
+                         use.hinges = use.hinges,
+                         naming = naming,
+                         ...))
+    }
+
     absorptance_spct(spct = spct,
                      w.band = w.band,
                      quantity = quantity,
@@ -142,24 +176,6 @@ absorptance_spct <-
            use.hinges,
            naming,
            ...) {
-
-    # we look for multiple spectra in long form
-    num.spectra <- getMultipleWl(spct)
-    if (num.spectra != 1) {
-      message("Object contains ", num.spectra, " spectra in long form")
-      # convert to a collection of spectra
-      mspct <- subset2mspct(x = spct,
-                            idx.var = getIdFactor(spct),
-                            drop.idx = FALSE)
-      # call method on the collection
-      return(absorptance(spct = mspct,
-                         w.band = w.band,
-                         quantity = quantity,
-                         wb.trim = wb.trim,
-                         use.hinges = use.hinges,
-                         naming,
-                         ...))
-    }
 
     summary.name <-
       switch(quantity,
@@ -328,6 +344,9 @@ absorptance.filter_mspct <-
            ...,
            attr2tb = NULL,
            idx = "spct.idx" ) {
+
+    spct <- subset2mspct(spct) # expand long form spectra within collection
+
     z <-
       msdply(
         mspct = spct,
@@ -371,6 +390,9 @@ absorptance.object_mspct <-
            idx = "spct.idx",
            .parallel = FALSE,
            .paropts = NULL) {
+
+    spct <- subset2mspct(spct) # expand long form spectra within collection
+
     z <-
       msdply(
         mspct = spct,

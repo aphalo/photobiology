@@ -71,10 +71,9 @@ illuminance.source_spct <-
            allow.scaled = FALSE,
            naming = "default",
            ...) {
+
     # we look for multiple spectra in long form
-    num.spectra <- getMultipleWl(spct)
-    if (num.spectra > 1) {
-      message("Object contains ", num.spectra, " spectra in long form")
+    if (getMultipleWl(spct) > 1) {
       # convert to a collection of spectra
       mspct <- subset2mspct(x = spct,
                             idx.var = getIdFactor(spct),
@@ -166,6 +165,9 @@ illuminance.source_mspct <-
            idx = "spct.idx",
            .parallel = FALSE,
            .paropts = NULL) {
+
+    spct <- subset2mspct(spct) # expand long form spectra within collection
+
     z <-
       msdply(
         mspct = spct,

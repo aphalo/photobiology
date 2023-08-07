@@ -66,6 +66,23 @@ reflectance.reflector_spct <-
            use.hinges = NULL,
            naming = "default",
            ...) {
+
+    # we look for multiple spectra in long form
+    if (getMultipleWl(spct) > 1) {
+      # convert to a collection of spectra
+      mspct <- subset2mspct(x = spct,
+                            idx.var = getIdFactor(spct),
+                            drop.idx = FALSE)
+      # call method on the collection
+      return(reflectance(spct = mspct,
+                         w.band = w.band,
+                         quantity = quantity,
+                         wb.trim = wb.trim,
+                         use.hinges = use.hinges,
+                         naming = naming,
+                         ...))
+    }
+
     reflectance_spct(spct = spct, w.band = w.band,
                      quantity = quantity,
                      wb.trim = wb.trim,
@@ -85,6 +102,23 @@ reflectance.object_spct <-
            use.hinges = NULL,
            naming = "default",
            ... ) {
+
+    # we look for multiple spectra in long form
+    if (getMultipleWl(spct) > 1) {
+      # convert to a collection of spectra
+      mspct <- subset2mspct(x = spct,
+                            idx.var = getIdFactor(spct),
+                            drop.idx = FALSE)
+      # call method on the collection
+      return(reflectance(spct = mspct,
+                         w.band = w.band,
+                         quantity = quantity,
+                         wb.trim = wb.trim,
+                         use.hinges = use.hinges,
+                         naming = naming,
+                         ...))
+    }
+
     reflectance_spct(spct = spct, w.band = w.band,
                      quantity = quantity,
                      wb.trim = wb.trim,
@@ -124,24 +158,6 @@ reflectance_spct <-
            use.hinges,
            naming,
            ...){
-
-    # we look for multiple spectra in long form
-    num.spectra <- getMultipleWl(spct)
-    if (num.spectra != 1) {
-      message("Object contains ", num.spectra, " spectra in long form")
-      # convert into a collection of spectra
-      mspct <- subset2mspct(x = spct,
-                            idx.var = getIdFactor(spct),
-                            drop.idx = FALSE)
-      # call method on the collection
-      return(reflectance(spct = mspct,
-                         w.band = w.band,
-                         quantity = quantity,
-                         wb.trim = wb.trim,
-                         use.hinges = use.hinges,
-                         naming,
-                         ...))
-    }
 
     summary.name <-
       switch(quantity,
@@ -299,6 +315,9 @@ reflectance.reflector_mspct <-
            idx = "spct.idx",
            .parallel = FALSE,
            .paropts = NULL) {
+
+    spct <- subset2mspct(spct) # expand long form spectra within collection
+
     z <-
       msdply(
         mspct = spct,
@@ -313,6 +332,7 @@ reflectance.reflector_mspct <-
         .parallel = .parallel,
         .paropts = .paropts
       )
+
     add_attr2tb(tb = z,
                 mspct = spct,
                 col.names = attr2tb,
@@ -336,6 +356,9 @@ reflectance.object_mspct <-
            idx = "spct.idx",
            .parallel = FALSE,
            .paropts = NULL) {
+
+    spct <- subset2mspct(spct) # expand long form spectra within collection
+
     z <-
       msdply(
         mspct = spct,
@@ -350,6 +373,7 @@ reflectance.object_mspct <-
         .parallel = .parallel,
         .paropts = .paropts
       )
+
     add_attr2tb(tb = z,
                 mspct = spct,
                 col.names = attr2tb,

@@ -9,22 +9,22 @@
 \alias{normalized_diff_ind.generic_mspct}
 \title{Calculate a normalized difference.}
 \usage{
-normalized_diff_ind(spct, plus.w.band, minus.w.band, f, ...)
+normalized_diff_ind(spct, w.band.plus, w.band.minus, f, ...)
 
-normalised_diff_ind(spct, plus.w.band, minus.w.band, f, ...)
+normalised_diff_ind(spct, w.band.plus, w.band.minus, f, ...)
 
-NDxI(spct, plus.w.band, minus.w.band, f, ...)
+NDxI(spct, w.band.plus, w.band.minus, f, ...)
 
-\method{normalized_diff_ind}{default}(spct, plus.w.band, minus.w.band, f, ...)
+\method{normalized_diff_ind}{default}(spct, w.band.plus, w.band.minus, f, ...)
 
-\method{normalized_diff_ind}{generic_spct}(spct, plus.w.band, minus.w.band, f, ...)
+\method{normalized_diff_ind}{generic_spct}(spct, w.band.plus, w.band.minus, f, ...)
 
-\method{normalized_diff_ind}{generic_mspct}(spct, plus.w.band, minus.w.band, f, ...)
+\method{normalized_diff_ind}{generic_mspct}(spct, w.band.plus, w.band.minus, f, ...)
 }
 \arguments{
 \item{spct}{an R object}
 
-\item{plus.w.band, minus.w.band}{waveband objects The wavebands determine the
+\item{w.band.plus, w.band.minus}{waveband objects The wavebands determine the
 regions of the spectrum used in the calculations.}
 
 \item{f}{function used for integration taking spct as first argument and a

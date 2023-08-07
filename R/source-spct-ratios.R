@@ -116,6 +116,26 @@ q_ratio.source_spct <-
            name.tag = NULL,
            ... ) {
 
+    # we look for multiple spectra in long form
+    if (getMultipleWl(spct) > 1) {
+      # convert to a collection of spectra
+      mspct <- subset2mspct(x = spct,
+                            idx.var = getIdFactor(spct),
+                            drop.idx = FALSE)
+      # call method on the collection
+      return(q_ratio(spct = mspct,
+                     w.band.num = w.band.num,
+                     w.band.denom = w.band.denom,
+                     scale.factor = scale.factor,
+                     wb.trim = wb.trim,
+                     use.cached.mult = use.cached.mult,
+                     use.hinges = use.hinges,
+                     quantity = quantity,
+                     naming = naming,
+                     name.tag = name.tag,
+                     ...))
+    }
+
     if (is.null(name.tag) && naming != "none") {
       if (quantity  == "total") {
         name.tag <- "[q:q]"
@@ -185,6 +205,9 @@ q_ratio.source_mspct <-
       # need names for columns
       naming <- "short"
     }
+
+    spct <- subset2mspct(spct) # expand long form spectra within collection
+
     z <-
       msdply(
         mspct = spct,
@@ -326,6 +349,26 @@ e_ratio.source_spct <-
            name.tag = NULL,
             ...) {
 
+    # we look for multiple spectra in long form
+    if (getMultipleWl(spct) > 1) {
+      # convert to a collection of spectra
+      mspct <- subset2mspct(x = spct,
+                            idx.var = getIdFactor(spct),
+                            drop.idx = FALSE)
+      # call method on the collection
+      return(e_ratio(spct = mspct,
+                     w.band.num = w.band.num,
+                     w.band.denom = w.band.denom,
+                     scale.factor = scale.factor,
+                     wb.trim = wb.trim,
+                     use.cached.mult = use.cached.mult,
+                     use.hinges = use.hinges,
+                     quantity = quantity,
+                     naming = naming,
+                     name.tag = name.tag,
+                     ...))
+    }
+
     if (is.null(name.tag) && naming != "none") {
       if (quantity  == "total") {
         name.tag <- "[e:e]"
@@ -394,6 +437,7 @@ e_ratio.source_mspct <-
       # need names for columns
       naming <- "short"
     }
+    spct <- subset2mspct(spct) # expand long form spectra within collection
     z <-
       msdply(
         mspct = spct,
@@ -517,6 +561,24 @@ qe_ratio.source_spct <-
            name.tag = ifelse(naming != "none", "[q:e]", ""),
            ...) {
 
+    # we look for multiple spectra in long form
+    if (getMultipleWl(spct) > 1) {
+      # convert to a collection of spectra
+      mspct <- subset2mspct(x = spct,
+                            idx.var = getIdFactor(spct),
+                            drop.idx = FALSE)
+      # call method on the collection
+      return(qe_ratio(spct = mspct,
+                     w.band = w.band,
+                     scale.factor = scale.factor,
+                     wb.trim = wb.trim,
+                     use.cached.mult = use.cached.mult,
+                     use.hinges = use.hinges,
+                     naming = naming,
+                     name.tag = name.tag,
+                     ...))
+    }
+
     irrads <- two_irrads(spct = spct,
                          w.band.num = w.band,
                          w.band.denom = w.band,
@@ -572,6 +634,8 @@ qe_ratio.source_mspct <-
       # need names for columns
       naming <- "short"
     }
+
+    spct <- subset2mspct(spct) # expand long form spectra within collection
     z <-
       msdply(
         spct,
@@ -694,6 +758,24 @@ eq_ratio.source_spct <-
            name.tag = ifelse(naming != "none", "[e:q]", ""),
            ...) {
 
+    # we look for multiple spectra in long form
+    if (getMultipleWl(spct) > 1) {
+      # convert to a collection of spectra
+      mspct <- subset2mspct(x = spct,
+                            idx.var = getIdFactor(spct),
+                            drop.idx = FALSE)
+      # call method on the collection
+      return(eq_ratio(spct = mspct,
+                      w.band = w.band,
+                      scale.factor = scale.factor,
+                      wb.trim = wb.trim,
+                      use.cached.mult = use.cached.mult,
+                      use.hinges = use.hinges,
+                      naming = naming,
+                      name.tag = name.tag,
+                      ...))
+    }
+
     ratio <- scale.factor /
       qe_ratio(spct = spct, w.band = w.band, wb.trim = wb.trim,
                use.cached.mult = use.cached.mult, use.hinges = use.hinges)
@@ -737,6 +819,8 @@ eq_ratio.source_mspct <-
       # need names for columns
       naming <- "short"
     }
+
+    spct <- subset2mspct(spct) # expand long form spectra within collection
     z <-
       msdply(
         mspct = spct,
@@ -800,27 +884,6 @@ two_irrads <- function(spct,
                        use.cached.mult,
                        use.hinges,
                        naming) {
-
-  # we look for multiple spectra in long form
-  num.spectra <- getMultipleWl(spct)
-  if (num.spectra > 1) {
-    message("Object contains ", num.spectra, " spectra in long form")
-    # convert to a collection of spectra
-    mspct <- subset2mspct(x = spct,
-                          idx.var = getIdFactor(spct),
-                          drop.idx = FALSE)
-    # call method on the collection
-    return(two_irrads(spct = mspct,
-                      w.band.num = w.band.num,
-                      w.band.denom = w.band.denom,
-                      unit.out.num = unit.out.num,
-                      unit.out.denom = unit.out.denom,
-                      quantity = quantity,
-                      wb.trim = wb.trim,
-                      use.cached.mult = use.cached.mult,
-                      use.hinges = use.hinges,
-                      naming = naming))
-  }
 
   stopifnot("Unsupported argument passed to 'quantity'" =
               quantity %in% c("total", "average", "mean"))

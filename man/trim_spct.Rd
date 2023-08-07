@@ -84,7 +84,8 @@ your code relies on external data or packages: use the .export and
 correct environment set up for computing.}
 }
 \value{
-a spectrum of same class as input with its tails trimmed or expanded.
+a spectrum object or a collection of spectral objects of the same
+  class as \code{x} with wavelength heads and tails clipped or extended.
 }
 \description{
 Trim head and tail of a spectrum based on wavelength limits, interpolating
@@ -108,6 +109,7 @@ trim_spct(sun.spct, low.limit=300, fill=0.0)
 trim_spct(sun.spct, range = c(300, 400))
 trim_spct(sun.spct, range = c(300, NA))
 trim_spct(sun.spct, range = c(NA, 400))
+
 }
 \seealso{
 Other trim functions: 

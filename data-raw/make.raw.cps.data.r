@@ -1,5 +1,6 @@
 library(photobiology)
 library(ooacquire)
+library(ggspectra)
 
 load(file = "./data-raw/ooacquire/led_desk201.spct.Rda")
 
@@ -27,6 +28,10 @@ getInstrDesc(white_led.source_spct)
 getInstrSettings(white_led.raw_spct)
 getInstrSettings(white_led.cps_spct)
 getInstrSettings(white_led.source_spct)
+
+autoplot(white_led.raw_spct)
+autoplot(white_led.cps_spct)
+autoplot(white_led.source_spct)
 
 save(white_led.raw_spct, white_led.cps_spct, white_led.source_spct,
      file = "./data/white-led-spct.rda")

@@ -44,8 +44,8 @@ spikes(x, z.threshold, max.spike.width, na.rm, ...)
   z.threshold = 9,
   max.spike.width = 8,
   na.rm = FALSE,
-  ...,
-  var.name = NULL
+  var.name = NULL,
+  ...
 )
 
 \method{spikes}{source_spct}(
@@ -84,8 +84,8 @@ spikes(x, z.threshold, max.spike.width, na.rm, ...)
   z.threshold = 9,
   max.spike.width = 8,
   na.rm = FALSE,
-  ...,
-  var.name = "cps"
+  var.name = "cps",
+  ...
 )
 
 \method{spikes}{raw_spct}(
@@ -93,8 +93,8 @@ spikes(x, z.threshold, max.spike.width, na.rm, ...)
   z.threshold = 9,
   max.spike.width = 8,
   na.rm = FALSE,
-  ...,
-  var.name = "counts"
+  var.name = "counts",
+  ...
 )
 
 \method{spikes}{generic_mspct}(

@@ -124,6 +124,26 @@ Rfr_ratio.reflector_spct <-
            name.tag = NULL,
            ... ) {
 
+    # we look for multiple spectra in long form
+    if (getMultipleWl(spct) > 1) {
+      # convert to a collection of spectra
+      mspct <- subset2mspct(x = spct,
+                            idx.var = getIdFactor(spct),
+                            drop.idx = FALSE)
+      # call method on the collection
+      return(Rfr_ratio(spct = mspct,
+                       w.band.num = w.band.num,
+                       w.band.denom = w.band.denom,
+                       scale.factor = scale.factor,
+                       wb.trim = wb.trim,
+                       use.cached.mult = use.cached.mult,
+                       use.hinges = use.hinges,
+                       quantity = quantity,
+                       naming = naming,
+                       name.tag = name.tag,
+                       ...))
+    }
+
     if (is.null(name.tag) && naming != "none") {
       if (quantity  == "total") {
         name.tag <- "[Rfr:Rfr]"
@@ -193,6 +213,9 @@ Rfr_ratio.reflector_mspct <-
       # need names for columns
       naming <- "short"
     }
+
+    spct <- subset2mspct(spct) # expand long form spectra within collection
+
     z <-
       msdply(
         mspct = spct,
@@ -342,6 +365,26 @@ Rfr_fraction.reflector_spct <-
            name.tag = NULL,
            ... ) {
 
+    # we look for multiple spectra in long form
+    if (getMultipleWl(spct) > 1) {
+      # convert to a collection of spectra
+      mspct <- subset2mspct(x = spct,
+                            idx.var = getIdFactor(spct),
+                            drop.idx = FALSE)
+      # call method on the collection
+      return(Rfr_ratio(spct = mspct,
+                       w.band.num = w.band.num,
+                       w.band.denom = w.band.denom,
+                       scale.factor = scale.factor,
+                       wb.trim = wb.trim,
+                       use.cached.mult = use.cached.mult,
+                       use.hinges = use.hinges,
+                       quantity = quantity,
+                       naming = naming,
+                       name.tag = name.tag,
+                       ...))
+    }
+
     if (is.null(name.tag) && naming != "none") {
       if (quantity  == "total") {
         name.tag <- "[Rfr:Rfr]"
@@ -412,6 +455,9 @@ Rfr_fraction.reflector_mspct <-
       # need names for columns
       naming <- "short"
     }
+
+    spct <- subset2mspct(spct) # expand long form spectra within collection
+
     z <-
       msdply(
         mspct = spct,
@@ -563,6 +609,26 @@ Rfr_normdiff.reflector_spct <-
            name.tag = NULL,
            ... ) {
 
+    # we look for multiple spectra in long form
+    if (getMultipleWl(spct) > 1) {
+      # convert to a collection of spectra
+      mspct <- subset2mspct(x = spct,
+                            idx.var = getIdFactor(spct),
+                            drop.idx = FALSE)
+      # call method on the collection
+      return(Rfr_normdiff(spct = mspct,
+                          w.band.plus = w.band.plus,
+                          w.band.minus = w.band.minus,
+                          scale.factor = scale.factor,
+                          wb.trim = wb.trim,
+                          use.cached.mult = use.cached.mult,
+                          use.hinges = use.hinges,
+                          quantity = quantity,
+                          naming = naming,
+                          name.tag = name.tag,
+                          ...))
+    }
+
     if (is.null(name.tag) && naming != "none") {
       if (quantity  == "total") {
         name.tag <- "[Rfr:Rfr]"
@@ -635,6 +701,9 @@ Rfr_normdiff.reflector_mspct <-
       # need names for columns
       naming <- "short"
     }
+
+    spct <- subset2mspct(spct) # expand long form spectra within collection
+
     z <-
       msdply(
         mspct = spct,
@@ -695,25 +764,6 @@ two_reflectances <- function(spct,
                              use.cached.mult,
                              use.hinges,
                              naming) {
-
-  # we look for multiple spectra in long form
-  num.spectra <- getMultipleWl(spct)
-  if (num.spectra > 1) {
-    message("Object contains ", num.spectra, " spectra in long form")
-    # convert to a collection of spectra
-    mspct <- subset2mspct(x = spct,
-                          idx.var = getIdFactor(spct),
-                          drop.idx = FALSE)
-    # call method on the collection
-    return(two_reflectances(spct = mspct,
-                            w.band.1 = w.band.1,
-                            w.band.2 = w.band.2,
-                            quantity = quantity,
-                            wb.trim = wb.trim,
-                            use.cached.mult = use.cached.mult,
-                            use.hinges = use.hinges,
-                            naming = naming))
-  }
 
   stopifnot("Unsupported argument passed to 'quantity'" =
               quantity %in% c("total", "average", "mean"))

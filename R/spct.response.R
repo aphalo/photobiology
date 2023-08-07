@@ -75,6 +75,26 @@ response.response_spct <-
            use.hinges = getOption("photobiology.use.hinges", default = NULL),
            naming = "default",
            ... ) {
+
+    # we look for multiple spectra in long form
+    if (getMultipleWl(spct) > 1) {
+      # convert to a collection of spectra
+      mspct <- subset2mspct(x = spct,
+                            idx.var = getIdFactor(spct),
+                            drop.idx = FALSE)
+      # call method on the collection
+      return(response(spct = mspct,
+                      w.band = w.band,
+                      unit.out = unit.out,
+                      quantity = quantity,
+                      time.unit = time.unit,
+                      scale.factor = scale.factor,
+                      wb.trim = wb.trim,
+                      use.hinges = use.hinges,
+                      naming = naming,
+                      ...))
+    }
+
     resp_spct(spct = spct,
               w.band = w.band,
               unit.out = unit.out,
@@ -166,13 +186,6 @@ resp_spct <-
       stop("Unrecognized 'quantity' : \"", quantity, "\"")
     }
 
-    # we look for multiple spectra and return with a warning
-    num.spectra <- getMultipleWl(spct)
-    if (num.spectra != 1) {
-      warning("Skipping response calculation as object contains ",
-              num.spectra, " spectra")
-      return(NA_real_)
-    }
     if (!allow.scaled && is_normalized(spct)) {
       warning("The spectral data has been normalized, making impossible to calculate response")
       return(NA_real_)
@@ -408,6 +421,25 @@ e_response.response_spct <-
            use.hinges = getOption("photobiology.use.hinges", default = NULL),
            naming = "default",
            ...) {
+
+    # we look for multiple spectra in long form
+    if (getMultipleWl(spct) > 1) {
+      # convert to a collection of spectra
+      mspct <- subset2mspct(x = spct,
+                            idx.var = getIdFactor(spct),
+                            drop.idx = FALSE)
+      # call method on the collection
+      return(e_response(spct = mspct,
+                        w.band = w.band,
+                        quantity = quantity,
+                        time.unit = time.unit,
+                        scale.factor = scale.factor,
+                        wb.trim = wb.trim,
+                        use.hinges = use.hinges,
+                        naming = naming,
+                        ...))
+    }
+
     resp_spct(spct = spct,
               w.band = w.band,
               unit.out = "energy",
@@ -500,6 +532,25 @@ q_response.response_spct <-
            use.hinges = getOption("photobiology.use.hinges", default = NULL),
            naming = "default",
            ... ) {
+
+    # we look for multiple spectra in long form
+    if (getMultipleWl(spct) > 1) {
+      # convert to a collection of spectra
+      mspct <- subset2mspct(x = spct,
+                            idx.var = getIdFactor(spct),
+                            drop.idx = FALSE)
+      # call method on the collection
+      return(q_response(spct = mspct,
+                       w.band = w.band,
+                       quantity = quantity,
+                       time.unit = time.unit,
+                       scale.factor = scale.factor,
+                       wb.trim = wb.trim,
+                       use.hinges = use.hinges,
+                       naming = naming,
+                       ...))
+    }
+
     resp_spct(spct = spct,
               w.band = w.band,
               unit.out = "photon",
@@ -542,6 +593,9 @@ response.response_mspct <-
            idx = "spct.idx",
            .parallel = FALSE,
            .paropts = NULL) {
+
+    spct <- subset2mspct(spct) # expand long form spectra within collection
+
     z <-
       msdply(
         mspct = spct,
@@ -559,6 +613,7 @@ response.response_mspct <-
         .parallel = .parallel,
         .paropts = .paropts
       )
+
     add_attr2tb(tb = z,
                 mspct = spct,
                 col.names = attr2tb,
@@ -594,6 +649,9 @@ q_response.response_mspct <-
            idx = "spct.idx",
            .parallel = FALSE,
            .paropts = NULL) {
+
+    spct <- subset2mspct(spct) # expand long form spectra within collection
+
     z <-
       msdply(
         mspct = spct,
@@ -610,6 +668,7 @@ q_response.response_mspct <-
         .parallel = .parallel,
         .paropts = .paropts
       )
+
     add_attr2tb(tb = z,
                 mspct = spct,
                 col.names = attr2tb,
@@ -645,6 +704,9 @@ e_response.response_mspct <-
            idx = "spct.idx",
            .parallel = FALSE,
            .paropts = NULL) {
+
+    spct <- subset2mspct(spct) # expand long form spectra within collection
+
     z <-
       msdply(
         mspct = spct,
@@ -661,6 +723,7 @@ e_response.response_mspct <-
         .parallel = .parallel,
         .paropts = .paropts
       )
+
     add_attr2tb(tb = z,
                 mspct = spct,
                 col.names = attr2tb,

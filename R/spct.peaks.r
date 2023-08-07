@@ -394,6 +394,25 @@ peaks.generic_spct <-
            refine.wl = FALSE,
            method = "spline",
            ...) {
+
+    # we look for multiple spectra in long form
+    if (getMultipleWl(x) > 1) {
+      # convert to a collection of spectra
+      mspct <- subset2mspct(x = x,
+                            idx.var = getIdFactor(x),
+                            drop.idx = FALSE)
+      # call method on the collection
+      return(peaks(x = x,
+                   span = span,
+                   ignore_threshold = ignore_threshold,
+                   strict = strict,
+                   na.rm = na.rm,
+                   var.name = var.name,
+                   refine.wl = refine.wl,
+                   method = method,
+                   ...))
+    }
+
     if (is.null(var.name)) {
       # find target variable
       var.name <- names(x)
@@ -404,6 +423,7 @@ peaks.generic_spct <-
         return(x[NA, ])
       }
     }
+
     peaks.idx <-
       which(find_peaks(x[[var.name]],
                        span = span, ignore_threshold = ignore_threshold,
@@ -439,6 +459,25 @@ peaks.source_spct <-
            refine.wl = FALSE,
            method = "spline",
            ...) {
+
+    # we look for multiple spectra in long form
+    if (getMultipleWl(x) > 1) {
+      # convert to a collection of spectra
+      mspct <- subset2mspct(x = x,
+                            idx.var = getIdFactor(x),
+                            drop.idx = FALSE)
+      # call method on the collection
+      return(peaks(x = mspct,
+                   span = span,
+                   ignore_threshold = ignore_threshold,
+                   strict = strict,
+                   na.rm = na.rm,
+                   unit.out = unit.out,
+                   refine.wl = refine.wl,
+                   method = method,
+                   ...))
+    }
+
     if (unit.out == "energy") {
       z <- q2e(x, "replace", FALSE)
       col.name <- "s.e.irrad"
@@ -478,6 +517,25 @@ peaks.response_spct <-
            refine.wl = FALSE,
            method = "spline",
            ...) {
+
+    # we look for multiple spectra in long form
+    if (getMultipleWl(x) > 1) {
+      # convert to a collection of spectra
+      mspct <- subset2mspct(x = x,
+                            idx.var = getIdFactor(x),
+                            drop.idx = FALSE)
+      # call method on the collection
+      return(peaks(x = mspct,
+                   span = span,
+                   ignore_threshold = ignore_threshold,
+                   strict = strict,
+                   na.rm = na.rm,
+                   unit.out = unit.out,
+                   refine.wl = refine.wl,
+                   method = method,
+                   ...))
+    }
+
     if (unit.out == "energy") {
       z <- q2e(x, "replace", FALSE)
       col.name <- "s.e.response"
@@ -520,6 +578,25 @@ peaks.filter_spct <-
            refine.wl = FALSE,
            method = "spline",
            ...) {
+
+    # we look for multiple spectra in long form
+    if (getMultipleWl(x) > 1) {
+      # convert to a collection of spectra
+      mspct <- subset2mspct(x = x,
+                            idx.var = getIdFactor(x),
+                            drop.idx = FALSE)
+      # call method on the collection
+      return(peaks(x = mspct,
+                   span = span,
+                   ignore_threshold = ignore_threshold,
+                   strict = strict,
+                   na.rm = na.rm,
+                   filter.qty = filter.qty,
+                   refine.wl = refine.wl,
+                   method = method,
+                   ...))
+    }
+
     if (filter.qty == "transmittance") {
       z <- A2T(x, "replace", FALSE)
       col.name <- "Tfr"
@@ -557,6 +634,24 @@ peaks.reflector_spct <- function(x,
                                  refine.wl = FALSE,
                                  method = "spline",
                                  ...) {
+
+  # we look for multiple spectra in long form
+  if (getMultipleWl(x) > 1) {
+    # convert to a collection of spectra
+    mspct <- subset2mspct(x = x,
+                          idx.var = getIdFactor(x),
+                          drop.idx = FALSE)
+    # call method on the collection
+    return(peaks(x = mspct,
+                 span = span,
+                 ignore_threshold = ignore_threshold,
+                 strict = strict,
+                 na.rm = na.rm,
+                 refine.wl = refine.wl,
+                 method = method,
+                 ...))
+  }
+
   col.name <- "Rfr"
   peaks.idx <-
     which(find_peaks(x[[col.name]],
@@ -587,6 +682,24 @@ peaks.solute_spct <-
            refine.wl = FALSE,
            method = "spline",
            ...) {
+
+    # we look for multiple spectra in long form
+    if (getMultipleWl(x) > 1) {
+      # convert to a collection of spectra
+      mspct <- subset2mspct(x = x,
+                            idx.var = getIdFactor(x),
+                            drop.idx = FALSE)
+      # call method on the collection
+      return(peaks(x = mspct,
+                   span = span,
+                   ignore_threshold = ignore_threshold,
+                   strict = strict,
+                   na.rm = na.rm,
+                   refine.wl = refine.wl,
+                   method = method,
+                   ...))
+    }
+
     cols <- intersect(c("K.mole", "K.mass"), names(x))
     if (length(cols) == 1) {
       col.name <- cols
@@ -614,7 +727,8 @@ peaks.solute_spct <-
 #'
 #' @export
 #'
-peaks.cps_spct <- function(x, span = 5,
+peaks.cps_spct <- function(x,
+                           span = 5,
                            ignore_threshold = 0,
                            strict = TRUE,
                            na.rm = FALSE,
@@ -622,6 +736,25 @@ peaks.cps_spct <- function(x, span = 5,
                            refine.wl = FALSE,
                            method = "spline",
                            ...) {
+
+  # we look for multiple spectra in long form
+  if (getMultipleWl(x) > 1) {
+    # convert to a collection of spectra
+    mspct <- subset2mspct(x = x,
+                          idx.var = getIdFactor(x),
+                          drop.idx = FALSE)
+    # call method on the collection
+    return(peaks(x = mspct,
+                 span = span,
+                 ignore_threshold = ignore_threshold,
+                 strict = strict,
+                 na.rm = na.rm,
+                 var.name = var.name,
+                 refine.wl = refine.wl,
+                 method = method,
+                 ...))
+  }
+
   peaks.idx <-
     which(find_peaks(x[[var.name]],
                      span = span, ignore_threshold = ignore_threshold,
@@ -650,6 +783,25 @@ peaks.raw_spct <- function(x, span = 5,
                            refine.wl = FALSE,
                            method = "spline",
                            ...) {
+
+  # we look for multiple spectra in long form
+  if (getMultipleWl(x) > 1) {
+    # convert to a collection of spectra
+    mspct <- subset2mspct(x = x,
+                          idx.var = getIdFactor(x),
+                          drop.idx = FALSE)
+    # call method on the collection
+    return(peaks(x = mspct,
+                 span = span,
+                 ignore_threshold = ignore_threshold,
+                 strict = strict,
+                 na.rm = na.rm,
+                 var.name = var.name,
+                 refine.wl = refine.wl,
+                 method = method,
+                 ...))
+  }
+
   peaks.idx <-
     which(find_peaks(x[[var.name]],
                      span = span, ignore_threshold = ignore_threshold,
@@ -689,6 +841,9 @@ peaks.generic_mspct <- function(x,
                                 ...,
                                 .parallel = FALSE,
                                 .paropts = NULL) {
+
+  x <- subset2mspct(x) # expand long form spectra within collection
+
   msmsply(x,
           .fun = peaks,
           span = span,
@@ -720,6 +875,9 @@ peaks.source_mspct <-
            ...,
            .parallel = FALSE,
            .paropts = NULL) {
+
+    x <- subset2mspct(x) # expand long form spectra within collection
+
     msmsply(x,
             .fun = peaks,
             span = span,
@@ -751,6 +909,9 @@ peaks.response_mspct <-
            ...,
            .parallel = FALSE,
            .paropts = NULL) {
+
+    x <- subset2mspct(x) # expand long form spectra within collection
+
     msmsply(x,
             .fun = peaks,
             span = span,
@@ -782,6 +943,9 @@ peaks.filter_mspct <-
            ...,
            .parallel = FALSE,
            .paropts = NULL) {
+
+    x <- subset2mspct(x) # expand long form spectra within collection
+
     msmsply(x,
             .fun = peaks,
             span = span,
@@ -812,6 +976,9 @@ peaks.reflector_mspct <-
            ...,
            .parallel = FALSE,
            .paropts = NULL) {
+
+    x <- subset2mspct(x) # expand long form spectra within collection
+
     msmsply(x,
             .fun = peaks,
             span = span,
@@ -847,6 +1014,9 @@ peaks.cps_mspct <- function(x,
                             ...,
                             .parallel = FALSE,
                             .paropts = NULL) {
+
+  x <- subset2mspct(x) # expand long form spectra within collection
+
   msmsply(x,
           .fun = peaks,
           span = span,
@@ -876,6 +1046,9 @@ peaks.raw_mspct <- function(x,
                             ...,
                             .parallel = FALSE,
                             .paropts = NULL) {
+
+  x <- subset2mspct(x) # expand long form spectra within collection
+
   msmsply(x,
           .fun = peaks,
           span = span,
@@ -965,6 +1138,7 @@ valleys.data.frame <-
            refine.wl = FALSE,
            method = "spline",
            ...) {
+
     if (is.null(var.name) || (refine.wl && is.null(x.var.name))) {
       warning("Variable (column) names required.")
       return(x[NA, ])
@@ -1000,6 +1174,25 @@ valleys.generic_spct <-
            refine.wl = FALSE,
            method = "spline",
            ...) {
+
+    # we look for multiple spectra in long form
+    if (getMultipleWl(x) > 1) {
+      # convert to a collection of spectra
+      mspct <- subset2mspct(x = x,
+                            idx.var = getIdFactor(x),
+                            drop.idx = FALSE)
+      # call method on the collection
+      return(valleys(x = mspct,
+                     span = span,
+                     ignore_threshold = ignore_threshold,
+                     strict = strict,
+                     na.rm = na.rm,
+                     var.name = var.name,
+                     refine.wl = refine.wl,
+                     method = method,
+                     ...))
+    }
+
     if (is.null(var.name)) {
       # find target variable
       var.name <- names(x)
@@ -1046,6 +1239,25 @@ valleys.source_spct <-
            refine.wl = FALSE,
            method = "spline",
            ...) {
+
+    # we look for multiple spectra in long form
+    if (getMultipleWl(x) > 1) {
+      # convert to a collection of spectra
+      mspct <- subset2mspct(x = x,
+                            idx.var = getIdFactor(x),
+                            drop.idx = FALSE)
+      # call method on the collection
+      return(valleys(x = mspct,
+                     span = span,
+                     ignore_threshold = ignore_threshold,
+                     strict = strict,
+                     na.rm = na.rm,
+                     unit.out = unit.out,
+                     refine.wl = refine.wl,
+                     method = method,
+                     ...))
+    }
+
     if (unit.out == "energy") {
       z <- q2e(x, "replace", FALSE)
       col.name <- "s.e.irrad"
@@ -1086,6 +1298,25 @@ valleys.response_spct <-
            refine.wl = FALSE,
            method = "spline",
            ...) {
+
+    # we look for multiple spectra in long form
+    if (getMultipleWl(x) > 1) {
+      # convert to a collection of spectra
+      mspct <- subset2mspct(x = x,
+                            idx.var = getIdFactor(x),
+                            drop.idx = FALSE)
+      # call method on the collection
+      return(valleys(x = mspct,
+                     span = span,
+                     ignore_threshold = ignore_threshold,
+                     strict = strict,
+                     na.rm = na.rm,
+                     unit.out = unit.out,
+                     refine.wl = refine.wl,
+                     method = method,
+                     ...))
+    }
+
     if (unit.out == "energy") {
       z <- q2e(x, "replace", FALSE)
       col.name <- "s.e.response"
@@ -1128,6 +1359,25 @@ valleys.filter_spct <-
            refine.wl = FALSE,
            method = "spline",
            ...) {
+
+    # we look for multiple spectra in long form
+    if (getMultipleWl(x) > 1) {
+      # convert to a collection of spectra
+      mspct <- subset2mspct(x = x,
+                            idx.var = getIdFactor(x),
+                            drop.idx = FALSE)
+      # call method on the collection
+      return(valleys(x = mspct,
+                     span = span,
+                     ignore_threshold = ignore_threshold,
+                     strict = strict,
+                     na.rm = na.rm,
+                     filter.qty = filter.qty,
+                     refine.wl = refine.wl,
+                     method = method,
+                     ...))
+    }
+
     if (filter.qty == "transmittance") {
       z <- A2T(x, "replace", FALSE)
       col.name <- "Tfr"
@@ -1167,6 +1417,24 @@ valleys.reflector_spct <-
            refine.wl = FALSE,
            method = "spline",
            ...) {
+
+    # we look for multiple spectra in long form
+    if (getMultipleWl(x) > 1) {
+      # convert to a collection of spectra
+      mspct <- subset2mspct(x = x,
+                            idx.var = getIdFactor(x),
+                            drop.idx = FALSE)
+      # call method on the collection
+      return(valleys(x = mspct,
+                     span = span,
+                     ignore_threshold = ignore_threshold,
+                     strict = strict,
+                     na.rm = na.rm,
+                     refine.wl = refine.wl,
+                     method = method,
+                     ...))
+    }
+
     col.name <- "Rfr"
     valleys.idx <-
       which(find_peaks(-x[[col.name]],
@@ -1198,6 +1466,24 @@ valleys.solute_spct <-
            refine.wl = FALSE,
            method = "spline",
            ...) {
+
+    # we look for multiple spectra in long form
+    if (getMultipleWl(x) > 1) {
+      # convert to a collection of spectra
+      mspct <- subset2mspct(x = x,
+                            idx.var = getIdFactor(x),
+                            drop.idx = FALSE)
+      # call method on the collection
+      return(valleys(x = mspct,
+                     span = span,
+                     ignore_threshold = ignore_threshold,
+                     strict = strict,
+                     na.rm = na.rm,
+                     refine.wl = refine.wl,
+                     method = method,
+                     ...))
+    }
+
     cols <- intersect(c("K.mole", "K.mass"), names(x))
     if (length(cols) == 1) {
       col.name <- cols
@@ -1235,6 +1521,24 @@ valleys.cps_spct <-
            refine.wl = FALSE,
            method = "spline",
            ...) {
+
+    # we look for multiple spectra in long form
+    if (getMultipleWl(x) > 1) {
+      # convert to a collection of spectra
+      mspct <- subset2mspct(x = x,
+                            idx.var = getIdFactor(x),
+                            drop.idx = FALSE)
+      # call method on the collection
+      return(valleys(x = mspct,
+                     span = span,
+                     ignore_threshold = ignore_threshold,
+                     strict = strict,
+                     na.rm = na.rm,
+                     refine.wl = refine.wl,
+                     method = method,
+                     ...))
+    }
+
     col.name <- "cps"
     valleys.idx <-
       which(find_peaks(-x[[col.name]],
@@ -1265,6 +1569,25 @@ valleys.raw_spct <- function(x, span = 5,
                              refine.wl = FALSE,
                              method = "spline",
                              ...) {
+
+  # we look for multiple spectra in long form
+  if (getMultipleWl(x) > 1) {
+    # convert to a collection of spectra
+    mspct <- subset2mspct(x = x,
+                          idx.var = getIdFactor(x),
+                          drop.idx = FALSE)
+    # call method on the collection
+    return(valleys(x = mspct,
+                   span = span,
+                   ignore_threshold = ignore_threshold,
+                   strict = strict,
+                   na.rm = na.rm,
+                   var.name = var.name,
+                   refine.wl = refine.wl,
+                   method = method,
+                   ...))
+  }
+
   valleys.idx <-
     which(find_peaks(-x[[var.name]],
                      span = span, ignore_threshold = ignore_threshold,
@@ -1304,6 +1627,9 @@ valleys.generic_mspct <- function(x,
                                   ...,
                                   .parallel = FALSE,
                                   .paropts = NULL) {
+
+  x <- subset2mspct(x) # expand long form spectra within collection
+
   msmsply(x,
           .fun = valleys,
           span = span,
@@ -1335,6 +1661,9 @@ valleys.source_mspct <-
            ...,
            .parallel = FALSE,
            .paropts = NULL) {
+
+    x <- subset2mspct(x) # expand long form spectra within collection
+
     msmsply(x,
             .fun = valleys,
             span = span,
@@ -1366,6 +1695,9 @@ valleys.response_mspct <-
            ...,
            .parallel = FALSE,
            .paropts = NULL) {
+
+    x <- subset2mspct(x) # expand long form spectra within collection
+
     msmsply(x,
             .fun = valleys,
             span = span,
@@ -1397,6 +1729,9 @@ valleys.filter_mspct <-
            ...,
            .parallel = FALSE,
            .paropts = NULL) {
+
+    x <- subset2mspct(x) # expand long form spectra within collection
+
     msmsply(x,
             .fun = valleys,
             span = span,
@@ -1427,6 +1762,9 @@ valleys.reflector_mspct <-
            ...,
            .parallel = FALSE,
            .paropts = NULL) {
+
+    x <- subset2mspct(x) # expand long form spectra within collection
+
     msmsply(x,
             .fun = valleys,
             span = span,
@@ -1462,6 +1800,9 @@ valleys.cps_mspct <- function(x,
                               ...,
                               .parallel = FALSE,
                               .paropts = NULL) {
+
+  x <- subset2mspct(x) # expand long form spectra within collection
+
   msmsply(x,
           .fun = valleys,
           span = span,
@@ -1491,6 +1832,9 @@ valleys.raw_mspct <- function(x,
                               ...,
                               .parallel = FALSE,
                               .paropts = NULL) {
+
+  x <- subset2mspct(x) # expand long form spectra within collection
+
   msmsply(x,
           .fun = valleys,
           span = span,
@@ -1827,6 +2171,24 @@ wls_at_target.generic_spct <-
            col.name = NULL,
            y.var.name = col.name,
            ...) {
+
+    # we look for multiple spectra in long form
+    if (getMultipleWl(x) > 1) {
+      # convert to a collection of spectra
+      mspct <- subset2mspct(x = x,
+                            idx.var = getIdFactor(x),
+                            drop.idx = FALSE)
+      # call method on the collection
+      return(wls_at_target(x = mspct,
+                           target = target,
+                           interpolate = interpolate,
+                           idfactor = idfactor,
+                           na.rm = na.rm,
+                           col.name = col.name,
+                           y.var.name = y.var.name,
+                           ...))
+    }
+
     find_wls(x,
              target = target,
              col.name = col.name,
@@ -1850,6 +2212,23 @@ wls_at_target.source_spct <-
            na.rm = FALSE,
            unit.out = getOption("photobiology.radiation.unit", default = "energy"),
            ...) {
+
+    # we look for multiple spectra in long form
+    if (getMultipleWl(x) > 1) {
+      # convert to a collection of spectra
+      mspct <- subset2mspct(x = x,
+                            idx.var = getIdFactor(x),
+                            drop.idx = FALSE)
+      # call method on the collection
+      return(wls_at_target(x = mspct,
+                           target = target,
+                           interpolate = interpolate,
+                           idfactor = idfactor,
+                           na.rm = na.rm,
+                           unit.out = unit.out,
+                           ...))
+    }
+
     if (unit.out == "energy") {
       z <- q2e(x, "replace", FALSE)
       col.name <- "s.e.irrad"
@@ -1879,6 +2258,23 @@ wls_at_target.response_spct <-
            unit.out = getOption("photobiology.radiation.unit",
                                 default = "energy"),
            ...) {
+
+    # we look for multiple spectra in long form
+    if (getMultipleWl(x) > 1) {
+      # convert to a collection of spectra
+      mspct <- subset2mspct(x = x,
+                            idx.var = getIdFactor(x),
+                            drop.idx = FALSE)
+      # call method on the collection
+      return(wls_at_target(x = mspct,
+                           target = target,
+                           interpolate = interpolate,
+                           idfactor = idfactor,
+                           na.rm = na.rm,
+                           unit.out = unit.out,
+                           ...))
+    }
+
     if (unit.out == "energy") {
       z <- q2e(x, "replace", FALSE)
       col.name <- "s.e.response"
@@ -1911,6 +2307,23 @@ wls_at_target.filter_spct <-
            filter.qty = getOption("photobiology.filter.qty",
                                   default = "transmittance"),
            ...) {
+
+    # we look for multiple spectra in long form
+    if (getMultipleWl(x) > 1) {
+      # convert to a collection of spectra
+      mspct <- subset2mspct(x = x,
+                            idx.var = getIdFactor(x),
+                            drop.idx = FALSE)
+      # call method on the collection
+      return(wls_at_target(x = mspct,
+                           target = target,
+                           interpolate = interpolate,
+                           idfactor = idfactor,
+                           na.rm = na.rm,
+                           filter.qty = filter.qty,
+                           ...))
+    }
+
     if (filter.qty == "transmittance") {
       z <- A2T(x, "replace", FALSE)
       col.name <- "Tfr"
@@ -1938,6 +2351,22 @@ wls_at_target.reflector_spct <-
            idfactor = length(target) > 1,
            na.rm = FALSE,
            ...) {
+
+    # we look for multiple spectra in long form
+    if (getMultipleWl(x) > 1) {
+      # convert to a collection of spectra
+      mspct <- subset2mspct(x = x,
+                            idx.var = getIdFactor(x),
+                            drop.idx = FALSE)
+      # call method on the collection
+      return(wls_at_target(x = mspct,
+                           target = target,
+                           interpolate = interpolate,
+                           idfactor = idfactor,
+                           na.rm = na.rm,
+                           ...))
+    }
+
     find_wls(x,
              target = target,
              col.name = "Rfr",
@@ -1957,6 +2386,22 @@ wls_at_target.solute_spct <-
            idfactor = length(target) > 1,
            na.rm = FALSE,
            ...) {
+
+    # we look for multiple spectra in long form
+    if (getMultipleWl(x) > 1) {
+      # convert to a collection of spectra
+      mspct <- subset2mspct(x = x,
+                            idx.var = getIdFactor(x),
+                            drop.idx = FALSE)
+      # call method on the collection
+      return(wls_at_target(x = mspct,
+                           target = target,
+                           interpolate = interpolate,
+                           idfactor = idfactor,
+                           na.rm = na.rm,
+                           ...))
+    }
+
     cols <- intersect(c("K.mole", "K.mass"), names(x))
     if (length(cols) == 1) {
       col.name <- cols
@@ -1983,6 +2428,22 @@ wls_at_target.cps_spct <-
            idfactor = length(target) > 1,
            na.rm = FALSE,
            ...) {
+
+    # we look for multiple spectra in long form
+    if (getMultipleWl(x) > 1) {
+      # convert to a collection of spectra
+      mspct <- subset2mspct(x = x,
+                            idx.var = getIdFactor(x),
+                            drop.idx = FALSE)
+      # call method on the collection
+      return(wls_at_target(x = mspct,
+                           target = target,
+                           interpolate = interpolate,
+                           idfactor = idfactor,
+                           na.rm = na.rm,
+                           ...))
+    }
+
     find_wls(x,
              target = target,
              col.name = "cps",
@@ -2011,6 +2472,9 @@ wls_at_target.generic_mspct <- function(x,
                                         ...,
                                         .parallel = FALSE,
                                         .paropts = NULL) {
+
+  x <- subset2mspct(x) # expand long form spectra within collection
+
   msmsply(x,
           .fun = wls_at_target,
           target = target,

@@ -334,9 +334,28 @@ despike.generic_spct <-
            window.width = 11,
            method = "run.mean",
            na.rm = FALSE,
-           ...,
            y.var.name = NULL,
-           var.name = y.var.name) {
+           var.name = y.var.name,
+           ...) {
+
+    # we look for multiple spectra in long form
+    if (getMultipleWl(x) > 1) {
+      # convert to a collection of spectra
+      mspct <- subset2mspct(x = x,
+                            idx.var = getIdFactor(x),
+                            drop.idx = FALSE)
+      # call method on the collection
+      return(wls_at_target(x = mspct,
+                           z.threshold = z.threshold,
+                           max.spike.width = max.spike.width,
+                           window.width = window.width,
+                           method = method,
+                           na.rm = na.rm,
+                           y.var.name = y.var.name,
+                           var.name = var.name,
+                           ...))
+    }
+
     if (is.null(var.name)) {
       # find target variable
       var.name <- names(x)
@@ -378,6 +397,24 @@ despike.source_spct <-
            unit.out = getOption("photobiology.radiation.unit",
                                 default = "energy"),
            ...) {
+
+    # we look for multiple spectra in long form
+    if (getMultipleWl(x) > 1) {
+      # convert to a collection of spectra
+      mspct <- subset2mspct(x = x,
+                            idx.var = getIdFactor(x),
+                            drop.idx = FALSE)
+      # call method on the collection
+      return(wls_at_target(x = mspct,
+                           z.threshold = z.threshold,
+                           max.spike.width = max.spike.width,
+                           window.width = window.width,
+                           method = method,
+                           na.rm = na.rm,
+                           unit.out = unit.out,
+                           ...))
+    }
+
     if (unit.out == "energy") {
       z <- q2e(x, action = "replace", byref = FALSE)
       col.name <- "s.e.irrad"
@@ -411,6 +448,24 @@ despike.response_spct <-
            unit.out = getOption("photobiology.radiation.unit",
                                 default = "energy"),
            ...) {
+
+    # we look for multiple spectra in long form
+    if (getMultipleWl(x) > 1) {
+      # convert to a collection of spectra
+      mspct <- subset2mspct(x = x,
+                            idx.var = getIdFactor(x),
+                            drop.idx = FALSE)
+      # call method on the collection
+      return(wls_at_target(x = mspct,
+                           z.threshold = z.threshold,
+                           max.spike.width = max.spike.width,
+                           window.width = window.width,
+                           method = method,
+                           na.rm = na.rm,
+                           unit.out = unit.out,
+                           ...))
+    }
+
     if (unit.out == "energy") {
       z <- q2e(x, action = "replace", byref = FALSE)
       col.name <- "s.e.response"
@@ -446,6 +501,24 @@ despike.filter_spct <-
            filter.qty = getOption("photobiology.filter.qty",
                                   default = "transmittance"),
            ...) {
+
+    # we look for multiple spectra in long form
+    if (getMultipleWl(x) > 1) {
+      # convert to a collection of spectra
+      mspct <- subset2mspct(x = x,
+                            idx.var = getIdFactor(x),
+                            drop.idx = FALSE)
+      # call method on the collection
+      return(wls_at_target(x = mspct,
+                           z.threshold = z.threshold,
+                           max.spike.width = max.spike.width,
+                           window.width = window.width,
+                           method = method,
+                           na.rm = na.rm,
+                           filter.qty = filter.qty,
+                           ...))
+    }
+
     if (filter.qty == "transmittance") {
       z <- A2T(x, action = "replace", byref = FALSE)
       col.name <- "Tfr"
@@ -479,6 +552,23 @@ despike.reflector_spct <- function(x,
                                    method = "run.mean",
                                    na.rm = FALSE,
                                    ...) {
+
+  # we look for multiple spectra in long form
+  if (getMultipleWl(x) > 1) {
+    # convert to a collection of spectra
+    mspct <- subset2mspct(x = x,
+                          idx.var = getIdFactor(x),
+                          drop.idx = FALSE)
+    # call method on the collection
+    return(wls_at_target(x = mspct,
+                         z.threshold = z.threshold,
+                         max.spike.width = max.spike.width,
+                         window.width = window.width,
+                         method = method,
+                         na.rm = na.rm,
+                         ...))
+  }
+
   col.name <- "Rfr"
   x[[col.name]] <- despike(x[[col.name]],
                           z.threshold = z.threshold,
@@ -503,6 +593,23 @@ despike.solute_spct <-
            method = "run.mean",
            na.rm = FALSE,
            ...) {
+
+    # we look for multiple spectra in long form
+    if (getMultipleWl(x) > 1) {
+      # convert to a collection of spectra
+      mspct <- subset2mspct(x = x,
+                            idx.var = getIdFactor(x),
+                            drop.idx = FALSE)
+      # call method on the collection
+      return(wls_at_target(x = mspct,
+                           z.threshold = z.threshold,
+                           max.spike.width = max.spike.width,
+                           window.width = window.width,
+                           method = method,
+                           na.rm = na.rm,
+                           ...))
+    }
+
     cols <- intersect(c("K.mole", "K.mass"), names(x))
     if (length(cols) == 1) {
       col.name <- cols
@@ -531,6 +638,23 @@ despike.cps_spct <- function(x,
                              method = "run.mean",
                              na.rm = FALSE,
                              ...) {
+
+  # we look for multiple spectra in long form
+  if (getMultipleWl(x) > 1) {
+    # convert to a collection of spectra
+    mspct <- subset2mspct(x = x,
+                          idx.var = getIdFactor(x),
+                          drop.idx = FALSE)
+    # call method on the collection
+    return(wls_at_target(x = mspct,
+                         z.threshold = z.threshold,
+                         max.spike.width = max.spike.width,
+                         window.width = window.width,
+                         method = method,
+                         na.rm = na.rm,
+                         ...))
+  }
+
   var.name <- grep("cps", colnames(x), value = TRUE)
   for (col.name in var.name) {
     x[[col.name]] <- despike(x[[col.name]],
@@ -556,6 +680,23 @@ despike.raw_spct <- function(x,
                              method = "run.mean",
                              na.rm = FALSE,
                              ...) {
+
+  # we look for multiple spectra in long form
+  if (getMultipleWl(x) > 1) {
+    # convert to a collection of spectra
+    mspct <- subset2mspct(x = x,
+                          idx.var = getIdFactor(x),
+                          drop.idx = FALSE)
+    # call method on the collection
+    return(wls_at_target(x = mspct,
+                         z.threshold = z.threshold,
+                         max.spike.width = max.spike.width,
+                         window.width = window.width,
+                         method = method,
+                         na.rm = na.rm,
+                         ...))
+  }
+
   var.name <- grep("counts", colnames(x), value = TRUE)
   for (col.name in var.name) {
     x[[col.name]] <- despike(x[[col.name]],
@@ -593,6 +734,9 @@ despike.generic_mspct <- function(x,
                                   var.name = y.var.name,
                                   .parallel = FALSE,
                                   .paropts = NULL) {
+
+  x <- subset2mspct(x) # expand long form spectra within collection
+
   msmsply(x,
           .fun = despike,
           z.threshold = z.threshold,
@@ -622,6 +766,9 @@ despike.source_mspct <-
            ...,
            .parallel = FALSE,
            .paropts = NULL) {
+
+    x <- subset2mspct(x) # expand long form spectra within collection
+
     msmsply(x,
             .fun = despike,
             z.threshold = z.threshold,
@@ -651,6 +798,9 @@ despike.response_mspct <-
            ...,
            .parallel = FALSE,
            .paropts = NULL) {
+
+    x <- subset2mspct(x) # expand long form spectra within collection
+
     msmsply(x,
             .fun = despike,
             z.threshold = z.threshold,
@@ -680,6 +830,9 @@ despike.filter_mspct <-
            ...,
            .parallel = FALSE,
            .paropts = NULL) {
+
+    x <- subset2mspct(x) # expand long form spectra within collection
+
     msmsply(x,
             .fun = despike,
             z.threshold = z.threshold,
@@ -708,6 +861,9 @@ despike.reflector_mspct <-
            ...,
            .parallel = FALSE,
            .paropts = NULL) {
+
+    x <- subset2mspct(x) # expand long form spectra within collection
+
     msmsply(x,
             .fun = despike,
             z.threshold = z.threshold,
@@ -739,6 +895,9 @@ despike.cps_mspct <- function(x,
                               ...,
                               .parallel = FALSE,
                               .paropts = NULL) {
+
+  x <- subset2mspct(x) # expand long form spectra within collection
+
   msmsply(x,
           .fun = despike,
           z.threshold = z.threshold,
@@ -764,6 +923,9 @@ despike.raw_mspct <- function(x,
                               ...,
                               .parallel = FALSE,
                               .paropts = NULL) {
+
+  x <- subset2mspct(x) # expand long form spectra within collection
+
   msmsply(x,
           .fun = despike,
           z.threshold = z.threshold,
@@ -872,8 +1034,24 @@ spikes.generic_spct <-
            z.threshold = 9,
            max.spike.width = 8,
            na.rm = FALSE,
-           ...,
-           var.name = NULL) {
+           var.name = NULL,
+           ...) {
+
+    # we look for multiple spectra in long form
+    if (getMultipleWl(x) > 1) {
+      # convert to a collection of spectra
+      mspct <- subset2mspct(x = x,
+                            idx.var = getIdFactor(x),
+                            drop.idx = FALSE)
+      # call method on the collection
+      return(wls_at_target(x = mspct,
+                           z.threshold = z.threshold,
+                           max.spike.width = max.spike.width,
+                           na.rm = na.rm,
+                           var.name = var.name,
+                           ...))
+    }
+
     if (is.null(var.name)) {
       # find target variable
       var.name <- names(x)
@@ -907,6 +1085,22 @@ spikes.source_spct <-
            unit.out = getOption("photobiology.radiation.unit",
                                 default = "energy"),
            ...) {
+
+    # we look for multiple spectra in long form
+    if (getMultipleWl(x) > 1) {
+      # convert to a collection of spectra
+      mspct <- subset2mspct(x = x,
+                            idx.var = getIdFactor(x),
+                            drop.idx = FALSE)
+      # call method on the collection
+      return(wls_at_target(x = mspct,
+                           z.threshold = z.threshold,
+                           max.spike.width = max.spike.width,
+                           na.rm = na.rm,
+                           unit.out = unit.out,
+                           ...))
+    }
+
     if (unit.out == "energy") {
       z <- q2e(x, "replace", FALSE)
       col.name <- "s.e.irrad"
@@ -936,6 +1130,22 @@ spikes.response_spct <-
            unit.out = getOption("photobiology.radiation.unit",
                                 default = "energy"),
            ...) {
+
+    # we look for multiple spectra in long form
+    if (getMultipleWl(x) > 1) {
+      # convert to a collection of spectra
+      mspct <- subset2mspct(x = x,
+                            idx.var = getIdFactor(x),
+                            drop.idx = FALSE)
+      # call method on the collection
+      return(wls_at_target(x = mspct,
+                           z.threshold = z.threshold,
+                           max.spike.width = max.spike.width,
+                           na.rm = na.rm,
+                           unit.out = unit.out,
+                           ...))
+    }
+
     if (unit.out == "energy") {
       z <- q2e(x, "replace", FALSE)
       col.name <- "s.e.response"
@@ -967,6 +1177,22 @@ spikes.filter_spct <-
            filter.qty = getOption("photobiology.filter.qty",
                                   default = "transmittance"),
            ...) {
+
+    # we look for multiple spectra in long form
+    if (getMultipleWl(x) > 1) {
+      # convert to a collection of spectra
+      mspct <- subset2mspct(x = x,
+                            idx.var = getIdFactor(x),
+                            drop.idx = FALSE)
+      # call method on the collection
+      return(wls_at_target(x = mspct,
+                           z.threshold = z.threshold,
+                           max.spike.width = max.spike.width,
+                           na.rm = na.rm,
+                           filter.qty = filter.qty,
+                           ...))
+    }
+
     if (filter.qty == "transmittance") {
       z <- A2T(x, "replace", FALSE)
       col.name <- "Tfr"
@@ -993,6 +1219,21 @@ spikes.reflector_spct <- function(x,
                                   max.spike.width = 8,
                                   na.rm = FALSE,
                                   ...) {
+
+  # we look for multiple spectra in long form
+  if (getMultipleWl(x) > 1) {
+    # convert to a collection of spectra
+    mspct <- subset2mspct(x = x,
+                          idx.var = getIdFactor(x),
+                          drop.idx = FALSE)
+    # call method on the collection
+    return(wls_at_target(x = mspct,
+                         z.threshold = z.threshold,
+                         max.spike.width = max.spike.width,
+                         na.rm = na.rm,
+                         ...))
+  }
+
   col.name <- "Rfr"
   spikes.idx <-
     which(find_spikes(x[[col.name]],
@@ -1012,6 +1253,21 @@ spikes.solute_spct <-
            max.spike.width = 8,
            na.rm = FALSE,
            ...) {
+
+    # we look for multiple spectra in long form
+    if (getMultipleWl(x) > 1) {
+      # convert to a collection of spectra
+      mspct <- subset2mspct(x = x,
+                            idx.var = getIdFactor(x),
+                            drop.idx = FALSE)
+      # call method on the collection
+      return(wls_at_target(x = mspct,
+                           z.threshold = z.threshold,
+                           max.spike.width = max.spike.width,
+                           na.rm = na.rm,
+                           ...))
+    }
+
     cols <- intersect(c("K.mole", "K.mass"), names(x))
     if (length(cols) == 1) {
       col.name <- cols
@@ -1035,8 +1291,24 @@ spikes.cps_spct <- function(x,
                             z.threshold = 9,
                             max.spike.width = 8,
                             na.rm = FALSE,
-                            ...,
-                            var.name = "cps") {
+                            var.name = "cps",
+                            ...) {
+
+  # we look for multiple spectra in long form
+  if (getMultipleWl(x) > 1) {
+    # convert to a collection of spectra
+    mspct <- subset2mspct(x = x,
+                          idx.var = getIdFactor(x),
+                          drop.idx = FALSE)
+    # call method on the collection
+    return(wls_at_target(x = mspct,
+                         z.threshold = z.threshold,
+                         max.spike.width = max.spike.width,
+                         na.rm = na.rm,
+                         var.name = var.name,
+                         ...))
+  }
+
   spikes.idx <-
     which(find_spikes(x[[var.name]],
                       z.threshold = z.threshold,
@@ -1050,11 +1322,27 @@ spikes.cps_spct <- function(x,
 #' @export
 #'
 spikes.raw_spct <- function(x,
-                           z.threshold = 9,
-                           max.spike.width = 8,
-                           na.rm = FALSE,
-                            ...,
-                           var.name = "counts") {
+                            z.threshold = 9,
+                            max.spike.width = 8,
+                            na.rm = FALSE,
+                            var.name = "counts",
+                            ...) {
+
+  # we look for multiple spectra in long form
+  if (getMultipleWl(x) > 1) {
+    # convert to a collection of spectra
+    mspct <- subset2mspct(x = x,
+                          idx.var = getIdFactor(x),
+                          drop.idx = FALSE)
+    # call method on the collection
+    return(wls_at_target(x = mspct,
+                         z.threshold = z.threshold,
+                         max.spike.width = max.spike.width,
+                         na.rm = na.rm,
+                         var.name = var.name,
+                         ...))
+  }
+
   spikes.idx <-
     which(find_spikes(x[[var.name]],
                       z.threshold = z.threshold,
@@ -1083,6 +1371,9 @@ spikes.generic_mspct <- function(x,
                                  var.name = NULL,
                                  .parallel = FALSE,
                                  .paropts = NULL) {
+
+  x <- subset2mspct(x) # expand long form spectra within collection
+
   msmsply(x,
           .fun = spikes,
           z.threshold = z.threshold,
@@ -1108,6 +1399,9 @@ spikes.source_mspct <-
            ...,
            .parallel = FALSE,
            .paropts = NULL) {
+
+    x <- subset2mspct(x) # expand long form spectra within collection
+
     msmsply(x,
             .fun = spikes,
             z.threshold = z.threshold,
@@ -1133,6 +1427,9 @@ spikes.response_mspct <-
            ...,
            .parallel = FALSE,
            .paropts = NULL) {
+
+    x <- subset2mspct(x) # expand long form spectra within collection
+
     msmsply(x,
             .fun = spikes,
             z.threshold = z.threshold,
@@ -1158,6 +1455,9 @@ spikes.filter_mspct <-
            ...,
            .parallel = FALSE,
            .paropts = NULL) {
+
+    x <- subset2mspct(x) # expand long form spectra within collection
+
     msmsply(x,
             .fun = spikes,
             z.threshold = z.threshold,
@@ -1182,6 +1482,9 @@ spikes.reflector_mspct <-
            ...,
            .parallel = FALSE,
            .paropts = NULL) {
+
+    x <- subset2mspct(x) # expand long form spectra within collection
+
     msmsply(x,
             .fun = spikes,
             z.threshold = z.threshold,
@@ -1211,6 +1514,9 @@ spikes.cps_mspct <- function(x,
                              var.name = "cps",
                              .parallel = FALSE,
                              .paropts = NULL) {
+
+  x <- subset2mspct(x) # expand long form spectra within collection
+
   msmsply(x,
           .fun = spikes,
           z.threshold = z.threshold,
@@ -1234,6 +1540,9 @@ spikes.raw_mspct <- function(x,
                              var.name = "counts",
                              .parallel = FALSE,
                              .paropts = NULL) {
+
+  x <- subset2mspct(x) # expand long form spectra within collection
+
   msmsply(x,
           .fun = spikes,
           z.threshold = z.threshold,

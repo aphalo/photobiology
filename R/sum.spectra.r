@@ -1,7 +1,7 @@
 #' Add two spectra
 #'
-#' Merge wavelength vectors of two spectra are merged, and the missing spectral
-#' values are calculated by interpolation. After this, the two spectral values
+#' Merge wavelength vectors of two spectra, and compute the missing spectral
+#' values by interpolation within each spectrum. After this, the spectral values
 #' at each wavelength are added. This is a 'parallel' operation between two
 #' spectra.
 #'
@@ -13,7 +13,7 @@
 #' @param na.rm a logical value, if TRUE, not the default, NAs in the input are
 #'   replaced with zeros.
 #'
-#' @return a dataframe with two numeric variables \item{w.length}{A numeric
+#' @return a \code{data.frame} with two numeric variables \item{w.length}{A numeric
 #'   vector with the wavelengths (nm) obtained by "fusing" w.length1 and
 #'   w.length2. w.length contains all the unique vales, sorted in ascending
 #'   order.} \item{s.irrad}{A numeric vector with the sum of the two spectral
@@ -23,8 +23,9 @@
 #'   values are set in each input spectrum to zero before addition. If
 #'   trim=="intersection" then the range of wavelengths covered by both input
 #'   spectra is returned, and the non-overlapping regions discarded. If
-#'   w.length2==NULL, it is assumed that both spectra are measured at the same
+#'   \code{w.length2 = NULL}, it is assumed that both spectra are measured at the same
 #'   wavelengths, and a simple addition is used, ensuring fast calculation.
+#'
 #' @export
 #'
 #' @family low-level functions operating on numeric vectors.

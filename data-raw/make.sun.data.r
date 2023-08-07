@@ -39,3 +39,16 @@ comment(sun.daily.spct) <- "Total daily spectral exposure estimated from hourly 
 save(sun.daily.spct, file = "data/sun.daily.spct.rda")
 save(sun.daily.data, file = "data/sun.daily.data.rda")
 rm(sun.daily.spct, sun.daily.data)
+
+## time series
+
+geocode.viiki <- data.frame(lat = 60.227,
+                            lon = 24.018,
+                            address = "Viikki, Helsinki, FI",
+                            stringsAsFactors = FALSE)
+
+load("data-raw/ooacquire/cosine.hour.9.spct.Rda")
+where_measured(cosine.hour.9.spct) <- geocode.viiki
+where_measured(cosine.hour.9.spct)
+sun_evening.spct <- sample_spct(cosine.hour.9.spct, 3)
+sun_evening.spct <- clip_wl(sun_evening.spct, range = c(400, 900))

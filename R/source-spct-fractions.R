@@ -114,6 +114,27 @@ q_fraction.source_spct <-
            name.tag = NULL,
            ... ) {
 
+    # we look for multiple spectra in long form
+    num.spectra <- getMultipleWl(spct)
+    if (num.spectra > 1) {
+      # convert to a collection of spectra
+      mspct <- subset2mspct(x = spct,
+                            idx.var = getIdFactor(spct),
+                            drop.idx = FALSE)
+      # call method on the collection
+      return(q_fraction(spct = mspct,
+                        w.band.num = w.band.num,
+                        w.band.denom = w.band.denom,
+                        scale.factor = scale.factor,
+                        wb.trim = wb.trim,
+                        use.cached.mult = use.cached.mult,
+                        use.hinges = use.hinges,
+                        quantity = quantity,
+                        naming = naming,
+                        name.tag = name.tag,
+                        ...))
+    }
+
     if (is.null(name.tag) && naming != "none") {
       if (quantity  == "total") {
         name.tag <- "[q:q]"
@@ -185,6 +206,9 @@ q_fraction.source_mspct <-
       # need names for columns
       naming <- "short"
     }
+
+    spct <- subset2mspct(spct) # expand long form spectra within collection
+
     z <-
       msdply(
         mspct = spct,
@@ -325,6 +349,27 @@ e_fraction.source_spct <-
            name.tag = NULL,
            ...) {
 
+    # we look for multiple spectra in long form
+    num.spectra <- getMultipleWl(spct)
+    if (num.spectra > 1) {
+      # convert to a collection of spectra
+      mspct <- subset2mspct(x = spct,
+                            idx.var = getIdFactor(spct),
+                            drop.idx = FALSE)
+      # call method on the collection
+      return(e_fraction(spct = mspct,
+                        w.band.num = w.band.num,
+                        w.band.denom = w.band.denom,
+                        scale.factor = scale.factor,
+                        wb.trim = wb.trim,
+                        use.cached.mult = use.cached.mult,
+                        use.hinges = use.hinges,
+                        quantity = quantity,
+                        naming = naming,
+                        name.tag = name.tag,
+                        ...))
+    }
+
     if (is.null(name.tag) && naming != "none") {
       if (quantity  == "total") {
         name.tag <- "[e:e]"
@@ -396,6 +441,9 @@ e_fraction.source_mspct <-
       # need names for columns
       naming <- "short"
     }
+
+    spct <- subset2mspct(spct) # expand long form spectra within collection
+
     z <-
       msdply(
         mspct = spct,

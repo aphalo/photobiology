@@ -64,9 +64,9 @@ despike(x, z.threshold, max.spike.width, window.width, method, na.rm, ...)
   window.width = 11,
   method = "run.mean",
   na.rm = FALSE,
-  ...,
   y.var.name = NULL,
-  var.name = y.var.name
+  var.name = y.var.name,
+  ...
 )
 
 \method{despike}{source_spct}(

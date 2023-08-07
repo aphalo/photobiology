@@ -3,24 +3,43 @@
 \name{sample_spct}
 \alias{sample_spct}
 \alias{sample_mspct}
-\title{Random sample from collection of spectra}
+\title{Random sample of spectra}
 \usage{
-sample_spct(x, size = 1)
+sample_spct(x, size = 1, replace = FALSE, recursive = FALSE, keep.order = TRUE)
 
-sample_mspct(x, size = 1, recursive = FALSE)
+sample_mspct(
+  x,
+  size = 1,
+  replace = FALSE,
+  recursive = FALSE,
+  keep.order = TRUE,
+  simplify = FALSE
+)
 }
 \arguments{
-\item{x}{generic_spct An object possibly containing multiple spectra.}
+\item{x}{generic_spct or generic_mspct An object possibly containing multiple
+spectra.}
 
 \item{size}{integer The number of spectra to extract, if available.}
 
+\item{replace}{logical Sample with or without replacement.}
+
 \item{recursive}{logical Sample members of x directly, or first split
 members containing multiple spectra.}
+
+\item{keep.order}{logical Return the spectra ordered as in \code{x} or in
+random order.}
+
+\item{simplify}{logical When \code{n = 1} return a collection with a single
+member or a spectrum object.}
 }
 \value{
-If \code{x} is an object, such as a
-  "filter_spct" object, the returned object is of same class but possibly
-  containing fewer spectra in long form than \code{x}.
+If \code{x} is an spectrum object, such as a
+  \code{"filter_spct"} object, the returned object is of the same class but
+  in most cases containing fewer spectra in long form than \code{x}.
+   If \code{x} is a collection of spectrum objecta, such as a
+  \code{"filter_mspct"} object, the returned object is of the same class but
+  in most cases containing fewer member spectra than \code{x}.
 }
 \description{
 A method to extract a random sample of spectra from a collection of spectra

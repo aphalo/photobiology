@@ -31,8 +31,8 @@ nanometres.}
 \item{...}{ignored (possibly used by derived methods).}
 }
 \value{
-A copy of \code{x}, most frequently of a shorter length, and never
-  longer.
+a spectrum object or a collection of spectral objects of the same
+  class as \code{x} with wavelength heads and tails clipped.
 }
 \description{
 Clip head and tail of a spectrum based on wavelength limits, no
