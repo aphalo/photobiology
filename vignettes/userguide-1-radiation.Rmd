@@ -237,8 +237,8 @@ as they remain valid.
 | `re sponse_spct`    | `w.length`, `s.e.response` | `time.unit`                                         |
 |                     | `w.length`, `s.q.response` | `time.unit`                                         |
 | `chroma_spct`       | `w.length`, `x`, `y`, `z`  |                                                     |
-| `solute_spct`       | `w.length`, `K.mole`       | `K.type`, `solute,prperties`                        |
-|                     | `w.length`, `K.mass`       | `K.type`, `solute,prperties`                        |
+| `solute_spct`       | `w.length`, `K.mole`       | `K.type`, `solute.properties`                       |
+|                     | `w.length`, `K.mass`       | `K.type`, `solute.properties`                       |
 
 ------------------------------------------------------------------------
 
@@ -246,29 +246,32 @@ The *design* imposes the restriction that data from different
 observations are never present as different *data columns*, if present,
 additional data columns represent different properties from the same
 observation event. In other words, the storage format is *tidy* as
-defined by Hadley Wickham. In most cases, one spectral object should
-correspond to one spectral observation, but some functions are
+nicknamed by Hadley Wickham. In most cases, one spectral object correspond to 
+one spectral observation, but most functions and methods are
 compatible or can be used to create spectral objects where the spectral
 data from different observations are stored "longitudinally" and
 "tagged" with a factor with a level for each observation event. These
-observations must use consistent units of expression and attribute
-values. This long format is useful, for example, when producing plots
-with package 'ggplot2'. If spectra are stored in *long form*, e.g. for
-plotting with 'ggplot2', attributes are stored as named lists or
-enforced to be the same across spectra. This allows to reconstruct a
+observations must use consistent units of expression. This long format is 
+useful, for example, when producing plots with package 'ggplot2' or when
+acquiring or storing time series of spectra. If spectra are stored in 
+*long form*, e.g. for plotting with 'ggplot2', attributes are stored as named 
+lists or enforced to be the same across spectra. This allows to reconstruct a
 collection of spectra from a long-form spectral object and *vice versa*
-preserving most of the metadata.
+preserving nearly all of the metadata. In 'photobiology' (<= 0.11.0) the
+support for these conversions was limited and spectral objects with multiple
+spectra in long form created with these versions lack complete metadata
+or have the metadata stored in a way that cannot be easily retrieved, leading
+to metadata loss on conversion to collections of spectra.
 
 ------------------------------------------------------------------------
 
-*Collections of spectra should be in general preferred to multiple
-spectra stored in a single spectral object.* This is because collections
-are the "native" storage approach, supporting all operations
-efficiently. All operations that have as return value a spectrum are not
-implemented for spectral objects containing multiple spectra, while
-those summary methods that return a single numeric value for each
-spectrum are implemented by on-the-fly conversion of such spectra into
-collections.
+*Collections of spectra are to be in general preferred to multiple
+spectra stored in a single spectral object.* This is because collections are the
+"native" storage approach in the 'photobiology' package, supporting all
+operations efficiently, while operations on spectra stored in long form are
+implemented by means of two way on-the-fly conversions into collections of
+spectra. Two-way conversions can be expected to depend on memory allocation and
+thus to decrease performance.
 
 ------------------------------------------------------------------------
 
@@ -304,17 +307,18 @@ not the character strings.
 | irrad.mult                  | $J\,m^{-2}\,nm^{-1}\,n^{-1}$            |                        |
 | s.e.irrad                   | $W\,m^{-2}\,nm^{-1}$                    | time.unit = "second"   |
 | s.e.irrad                   | $J\,m^{-2}\,d^{-1}\,nm^{-1}$            | time.unit = "day"      |
+| s.e.irrad                   | $J\,m^{-2}\,nm^{-1}$                    | time.unit = "exposure" |
 | s.e.irrad                   | varies                                  | time.unit = *duration* |
 | s.q.irrad                   | $mol\,m^{-2}\,s^{-1}\,nm^{-1}$          | time.unit = "second"   |
 | s.q.irrad                   | $mol\,m^{-2}\,d^{-1}\,nm^{-1}$          | time.unit = "day"      |
 | s.q.irrad                   | $mol\,m^{-2}\,nm^{-1}$                  | time.unit = "exposure" |
 | s.q.irrad                   | varies                                  | time.unit = *duration* |
-| Tfr                         | [0,1]                                   | Tfr.type = "total"     |
-| Tfr                         | [0,1]                                   | Tfr.type = "internal"  |
+| Tfr                         | [0..1]                                  | Tfr.type = "total"     |
+| Tfr                         | [0..1]                                  | Tfr.type = "internal"  |
 | A                           | a.u.                                    |                        |
-| Afr                         | [0,1]                                   |                        |
-| Rfr                         | [0,1]                                   | Rfr.type = "total"     |
-| Rfr                         | [0,1]                                   | Rfr.type = "specular"  |
+| Afr                         | [0..1]                                  |                        |
+| Rfr                         | [0..1]                                  | Rfr.type = "total"     |
+| Rfr                         | [0..1]                                  | Rfr.type = "specular"  |
 | s.e.response                | $\mathit{x}\,J^{-1}\,s^{-1}\,nm^{-1}$   | time.unit = "second"   |
 | s.e.response                | $\mathit{x}\,mol^{-1}\,d^{-1}\,nm^{-1}$ | time.unit = "day"      |
 | s.e.response                | $\mathit{x}\,J^{-1}\,nm^{-1}$           | time.unit = "exposure" |
@@ -324,25 +328,31 @@ not the character strings.
 | s.q.response                | $\mathit{x}\,mol^{-1}\,nm^{-1}$         | time.unit = "exposure" |
 | s.q.response                | varies                                  | time.unit = *duration* |
 | x, y, z                     | [0,1]                                   |                        |
-| K.mole                      | $m^{-1}, \log_{10}$ based               | K.type = "attenuation" |
-| K.mole                      | $m^{-1}, \log_{10}$ based               | K.type = "absorption"  |
-| K.mole                      | $m^{-1}, \log_{10}$ based               | K.type = "scattering"  |
+| K.mole                      | $m^{2}\,mol^{-1}, \log_{10}$ based      | K.type = "attenuation" |
+| K.mole                      | $m^{2}\,mol^{-1}, \log_{10}$ based      | K.type = "absorption"  |
+| K.mole                      | $m^{2}\,mol^{-1}, \log_{10}$ based      | K.type = "scattering"  |
+| K.mass                      | $m^{2}\,g^{-1}, \log_{10}$ based        | K.type = "attenuation" |
+| K.mass                      | $m^{2}\,g^{-1}, \log_{10}$ based        | K.type = "absorption"  |
+| K.mass                      | $m^{2}\,g^{-1}, \log_{10}$ based        | K.type = "scattering"  |
 | **B: converted**            |                                         |                        |
 | wl $\to$ w.length           | nm                                      |                        |
 | wavelength $\to$ w.length   | nm                                      |                        |
-| Tpc $\to$ Tfr               | [0,100]                                 | Tfr.type = "total"     |
-| Tpc $\to$ Tfr               | [0,100]                                 | Tfr.type = "internal"  |
-| Rpc $\to$ Rfr               | [0,100]                                 | Rfr.type = "total"     |
-| Rpc $\to$ Rfr               | [0,100]                                 | Rfr.type = "specular"  |
+| Tpc $\to$ Tfr               | [0..100]                                | Tfr.type = "total"     |
+| Tpc $\to$ Tfr               | [0..100]                                | Tfr.type = "internal"  |
+| Rpc $\to$ Rfr               | [0..100]                                | Rfr.type = "total"     |
+| Rpc $\to$ Rfr               | [0..100]                                | Rfr.type = "specular"  |
 | counts.per.second $\to$ cps | $n\,s^{-1}$                             |                        |
-| K.mole                      | $m^{-1}, \log_{e}$ based                | K.type = "attenuation" |
-| K.mole                      | $m^{-1}, \log_{e}$ based                | K.type = "absorption"  |
-| K.mole                      | $m^{-1}, \log_{e}$ based                | K.type = "scattering"  |
+| K.mole $log_e \to log_{10}$ | $m^{-1}\,mol^{-1}, \log_{e}$ based      | K.type = "attenuation" |
+| K.mole $log_e \to log_{10}$ | $m^{-1}\,mol^{-1}, \log_{e}$ based      | K.type = "absorption"  |
+| K.mole $log_e \to log_{10}$ | $m^{-1}\,mol^{-1}, \log_{e}$ based      | K.type = "scattering"  |
+| K.mass $log_e \to log_{10}$ | $m^{-1}\,g^{-1}, \log_{e}$ based        | K.type = "attenuation" |
+| K.mass $log_e \to log_{10}$ | $m^{-1}\,g^{-1}, \log_{e}$ based        | K.type = "absorption"  |
+| K.mass $log_e \to log_{10}$ | $m^{-1}\,g^{-1}, \log_{e}$ based        | K.type = "scattering"  |
 
 ------------------------------------------------------------------------
 
 Energy irradiance is assumed to be expressed in $W\,m^{-2}$ and photon
-irradiances in $mol^{-1}\,m^{-2}\,s^{-1}$, that is to say using second
+irradiance in $mol^{-1}\,m^{-2}\,s^{-1}$, that is to say using second
 as unit for time and no SI scale factors for the measured variables.
 With respect to time, second is the default, but it is possible to set
 the unit for time to an arbitrary time duration such as day. Obviously,
@@ -393,7 +403,7 @@ of mistakes in the use unit scaling factors.
 ------------------------------------------------------------------------
 
 If spectral irradiance data is in $W\,m^{-2}\,nm^{-1}$, and the
-wavelength in nm, as is the case for many Macam spectroradiometers, the
+wavelength in $nm$, as is the case for many Macam spectroradiometers, the
 data can be used directly and functions in the package will return
 irradiances in $W\,m^{-2}$.
 
@@ -610,7 +620,7 @@ my.spct
 
 Functions using a different syntax are also available, for these and
 other attributes which are not likely to be set by users. Many of these
-additional attributes are meaningful only some types of spectra.
+additional attributes are meaningful only for some types of spectra.
 
 #### Attributes supported by `source_spct` objects
 
@@ -702,24 +712,24 @@ default fields if the attribute is set. The expectation is that these
 attributes are set by other packages such as 'ooacquire' used for direct
 data acquisition or raw instrument data import.
 
-These instrument-specific attributes can contain lots of information and
-bloat the size of spectral objects. Two methods, `trimInstrDesc()` and
-`trimInstrSettings()` can be used to discard parts of these metadata,
-such as instrument calibration information, once the raw data has been
-converted into physical units.
+These instrument-specific attributes can contain lots of information and bloat
+the size of spectral objects. Two methods, `trimInstrDesc()` and
+`trimInstrSettings()` can be used to discard parts of these metadata, such as
+instrument calibration information, once the raw-counts data have been converted
+into physical units.
 
 ------------------------------------------------------------------------
 
 ------------------------------------------------------------------------
 
-Spectral objects created with earlier (pre-release) versions of this
-package are missing some attributes. For this reason *summary* and
-*plot* functions may not work as expected with them. These *very old*
-objects can be updated by adding the missing attributes using functions
-`setTimeUnit`, `setBSWFUsed`, `setTfrType` and `setRfrType`. However, in
-many cases function `update_spct` can be used to set the missing
-attributes to default values, or the scripts re-run to rebuild the data
-objects from raw data.
+Spectral objects created with earlier versions (from before the first CRAN
+release in 2016) of this package are missing some metadata attributes. For this
+reason *summary* methods from this package and `autoplot()` and `ggplot()`
+methods from package 'ggspectra' may print warnings. These *very old* objects
+can be updated by adding the missing attributes using functions `setTimeUnit`,
+`setBSWFUsed`, `setTfrType` and `setRfrType`. However, in many cases function
+`update_spct` can be used to set the missing attributes to default values, or
+user scripts re-run to rebuild the data objects from raw data.
 
 ------------------------------------------------------------------------
 
@@ -758,21 +768,20 @@ attributes used in individual member spectra of collections.
 
 ------------------------------------------------------------------------
 
-Objects of these classes, except for class `generic_mspct`, can only
-contain members belonging the matching class of spectra. As all other
-spectral object classes are derived from `generic_spct`, `generic_mspct`
-objects can contain heterogeneous collections of spectra. In all cases,
-there are no restrictions on the lengths, wavelength range and/or
-wavelength step size, or attributes other than `class` of the contained
-spectra. Mimicking R's arrays and matrices, a `dim` attribute is always
-present and `dim` methods are provided. This approach allows the storage
-of time series of spectral data, or (hyper)spectral image data, or even
-higher dimensional spectral data. The handling of 1D and 2D spectral
-collections is already implemented in the summary methods. Handling of
-3D and higher dimensional data can be implemented in the future without
-changing the class definitions. By having implemented `dim`, also
-methods `ncol` and `nrow` are available as they use `dim` internally.
-Array-like subscripting collections of spectra is **not** implemented.
+Objects of these classes, except for class `generic_mspct`, can only contain
+members belonging the matching class of spectra. As all other spectral object
+classes are derived from `generic_spct`, `generic_mspct` objects can contain
+heterogeneous collections of spectra. In all cases, there are no restrictions on
+the lengths, wavelength range and/or wavelength step size, or attributes other
+than `class` of the contained spectra. Mimicking R's arrays and matrices, a
+`dim` attribute is always present and `dim` methods are provided. This approach
+is expected to allow the storage of time series of spectral data, or
+(hyper)spectral image data, or even higher dimensional spectral data. The
+handling of 1D and 2D spectral collections is already implemented in the summary
+methods. Handling of 3D and higher dimensional data can be implemented in the
+future without changing the class definitions. By having implemented `dim`, also
+methods `ncol` and `nrow` are available as they use `dim` internally. Array-like
+subscripting collections of spectra is **not** implemented.
 
 ### Construction
 
@@ -950,7 +959,7 @@ subset2mspct(test1.df, member.class = "source_spct", idx.var = "spectrum",
 
 To directly convert a *tidy* data frame into a long form spectral object
 we need to pass the number of spectra through parameter `multiple.wl` to
-override the usual check for unique wavelength values (default is
+change the target value of the check for unique wavelength values (default is
 `multiple.wl = 1L`).
 
 ```{r, set-class-1}
@@ -995,6 +1004,12 @@ the constructor of spectral objects.
 ```{r, split-2}
 split2source_mspct(test2.df, spct.data.var = "s.q.irrad", time.unit = "day")
 ```
+
+An additional way of storing spectral data is with one spectrum per row and
+one wavelength per coulmn. In such a case, we can transpose the data frame
+with function `t()` before pasing it as argument to `split2source_mspct()`,
+taking care to copy wavelength values into a column and that the column
+names of the transposed data frame match the expected ones.
 
 ### Conversion into a "wide" data frame
 
@@ -1047,15 +1062,17 @@ always a collection of spectra.
 
 ------------------------------------------------------------------------
 
-```{r, extract-1, eval=FALSE}
-# not run as this triggers an error when building the vignette with 'devtools'
+```{r, extract-1}
 two_suns.mspct[1]
+```
+
+```{r, extract-1a}
 two_suns.mspct[1:2]
 ```
 
-Avoid code like that in the chunk bellow. Collections of spectra are
+**Avoid code like that in the chunk bellow. Collections of spectra are
 named lists, consequently assigning by position as shown here swaps the
-values without swapping the names of the slots!
+values without swapping the names of the slots!**
 
 ```{r, extract-2, eval=FALSE}
 # not run as this triggers an error when building the vignette with 'devtools'
@@ -1089,6 +1106,13 @@ spectra using this method.
 ```{r, extract-5}
 c(two_suns.mspct, mixed.mspct)
 ```
+
+### Random sampling
+
+With large collections of spectra it can be useful to extract a random
+subset of spectra. Functions `sample_num()` and `sample_mspct()` make
+this easy for multiple spectra stored in long form objects or in collection
+of spectra objects.
 
 ### Transform or *apply* functions
 

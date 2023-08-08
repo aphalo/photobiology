@@ -4,19 +4,19 @@ editor_options:
     wrap: 72
 ---
 
-# photobiology 0.10.18
+# photobiology 0.11.0
 
-- Enable code coverage reporting with GitHub action using _coveralls_. 
-(upload to coveralls is failing)
 - Include 'entrance.optics' in the output of `print.instr_desc()`.
-- Edit `trimInstrDesc()` so that by default it keeps the `entrance.optics`
+- Update`trimInstrDesc()` so that by default it keeps the `entrance.optics`
   field.
+- Add method `pull_sample()` for pulling random samples of spectram, replacing
+functions functions `sample_spct()` and `sample_mspct()` added in 0.10,17.
 - Improve handling of objects containing multiple spectra in long form. Most 
 methods automatically expand these objects into collections of spectra and
 recursively dispatch themselves. Many operations that would earlier fail with
 an error message are now handled transparently.
 - In `normalized_diff_ind()` methods rename `plus.w.band` into `w.band.plus` 
-and `minus.w.band` into `w.band.minus` for consitency with `Tfr_normdiff()`,
+and `minus.w.band` into `w.band.minus` for consistency with `Tfr_normdiff()`,
 `Rfr_normdiff()` and other functions.
 - Spectral data objects included in the package and used in examples and unit
 tests have been rebuilt leading to small changes in data values. New data have

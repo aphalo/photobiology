@@ -8,6 +8,8 @@
 \alias{T2T}
 \alias{getAfrType}
 \alias{setAfrType}
+\alias{sample_spct}
+\alias{sample_mspct}
 \title{Defunct functions and methods}
 \usage{
 f_mspct(...)
@@ -21,6 +23,10 @@ T2T(...)
 getAfrType(...)
 
 setAfrType(...)
+
+sample_spct(...)
+
+sample_mspct(...)
 }
 \arguments{
 \item{...}{ignored}
@@ -41,4 +47,8 @@ Function \code{calc_filter_multipliers()} has been removed.
 Method \code{getAfrType()} has been removed.
 
 Method \code{setAfrType()} has been removed.
+
+Function \code{sample_spct()} has been removed.
+
+Function \code{sample_mspct()} has been removed.
 }

@@ -199,7 +199,7 @@ This method alters \code{x} itself by reference and in addition
   validity of computations related to thickness of the material or length of
   the light path depends on the availability and accuracy of the metadata.
 
-Particles in suspension unlike disolved \strong{solutes} scatter light.
+Particles in suspension unlike dissolved \strong{solutes} scatter light.
   Thus two different processes can attenuate light in liquid media:
   absorption and scattering. Coefficients of attenuation are always based on
   measurements of internal absorbance or internal transmittance. In practice

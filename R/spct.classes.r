@@ -1126,7 +1126,7 @@ setFilterSpct <-
 #'
 #' @export
 #'
-#' @note Particles in suspension unlike disolved \strong{solutes} scatter light.
+#' @note Particles in suspension unlike dissolved \strong{solutes} scatter light.
 #'   Thus two different processes can attenuate light in liquid media:
 #'   absorption and scattering. Coefficients of attenuation are always based on
 #'   measurements of internal absorbance or internal transmittance. In practice

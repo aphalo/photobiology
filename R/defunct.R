@@ -69,3 +69,22 @@ setAfrType <- function(...) {
 attribute is redundant and no longer used.")
 }
 
+#' @rdname defunct
+#'
+#' @export
+#'
+#' @note Function \code{sample_spct()} has been removed.
+#'
+sample_spct <- function(...) {
+  stop("Function 'photobiology::sample_spct()' has been replaced by method 'photobiology::pull_sample()'")
+}
+
+#' @rdname defunct
+#'
+#' @export
+#'
+#' @note Function \code{sample_mspct()} has been removed.
+#'
+sample_mspct <- function(...) {
+  stop("Function 'photobiology::sample_mspct()' has been replaced by method 'photobiology::pull_sample()'")
+}

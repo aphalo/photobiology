@@ -8,9 +8,7 @@ version](https://www.r-pkg.org/badges/version-last-release/photobiology)](https:
 [![cran
 checks](https://badges.cranchecks.info/worst/photobiology.svg)](https://cran.r-project.org/web/checks/check_results_photobiology.html)
 [![R build
-status](https://github.com/aphalo/photobiology/workflows/R-CMD-check/badge.svg)](https://github.com/aphalo/photobiology/actions)[![Coveralls
-test
-coverage](https://coveralls.io/repos/github/aphalo/photobiology/badge.svg)](https://coveralls.io/github/aphalo/photobiology)
+status](https://github.com/aphalo/photobiology/workflows/R-CMD-check/badge.svg)](https://github.com/aphalo/photobiology/actions)
 <!-- badges: end -->
 
 Package ‘**photobiology**’ defines a system of classes for storing
