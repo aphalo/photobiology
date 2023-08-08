@@ -3,6 +3,7 @@
 ^\.git/*
 ^test/*
 ^data-raw$
+^data-old$
 ^vignettes/*.html
 ^vignettes/*.R
 ^.*\.bak$

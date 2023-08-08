@@ -50,5 +50,5 @@ geocode.viiki <- data.frame(lat = 60.227,
 load("data-raw/ooacquire/cosine.hour.9.spct.Rda")
 where_measured(cosine.hour.9.spct) <- geocode.viiki
 where_measured(cosine.hour.9.spct)
-sun_evening.spct <- sample_spct(cosine.hour.9.spct, 3)
+sun_evening.spct <- pull_sample(cosine.hour.9.spct, 3)
 sun_evening.spct <- clip_wl(sun_evening.spct, range = c(400, 900))
