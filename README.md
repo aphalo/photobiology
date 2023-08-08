@@ -10,7 +10,7 @@ checks](https://badges.cranchecks.info/worst/photobiology.svg)](https://cran.r-p
 [![R build
 status](https://github.com/aphalo/photobiology/workflows/R-CMD-check/badge.svg)](https://github.com/aphalo/photobiology/actions)[![Coveralls
 test
-coverage](https://coveralls.io/repos/github/aphalo/photobiology/badge.svg)](https://coveralls.io/r/aphalo/photobiology?branch=master)
+coverage](https://coveralls.io/repos/github/aphalo/photobiology/badge.svg)](https://coveralls.io/github/aphalo/photobiology)
 <!-- badges: end -->
 
 Package ‘**photobiology**’ defines a system of classes for storing
@@ -43,8 +43,8 @@ transmission spectrum.
 ``` r
 library(photobiology)
 e_irrad(sun.spct * yellow_gel.spct)
-#> E_Total 
-#> 146.506 
+#>  E_Total 
+#> 146.5053 
 #> attr(,"time.unit")
 #> [1] "second"
 #> attr(,"radiation.unit")
@@ -58,9 +58,9 @@ sun.
 geocode <- data.frame(lon = 0, lat = 55)
 date <- lubridate::now(tzone = "UTC")
 sunrise_time(date, tz = "UTC", geocode = geocode)
-#> [1] "2023-08-07 04:19:36 UTC"
+#> [1] "2023-08-08 04:21:26 UTC"
 day_length(date, tz = "UTC", geocode = geocode)
-#> [1] 15.54037
+#> [1] 15.47508
 ```
 
 ## Installation
