@@ -6,16 +6,16 @@ editor_options:
 
 # photobiology 0.11.0
 
-- Include 'entrance.optics' in the output of `print.instr_desc()`.
-- Update`trimInstrDesc()` so that by default it keeps the `entrance.optics`
-  field.
-- Add method `pull_sample()` for pulling random samples of spectram, replacing
-functions functions `sample_spct()` and `sample_mspct()` added in 0.10,17.
 - Improve handling of objects containing multiple spectra in long form. Most 
 methods automatically expand these objects into collections of spectra and
 recursively dispatch themselves. Many operations that would earlier fail with
 an error message are now handled transparently.
-- In `normalized_diff_ind()` methods rename `plus.w.band` into `w.band.plus` 
+- Include 'entrance.optics' in the output of `print.instr_desc()`.
+- Update`trimInstrDesc()` so that by default it keeps the `entrance.optics`
+  field.
+- Add method `pull_sample()` for pulling random samples of spectra, replacing
+functions functions `sample_spct()` and `sample_mspct()` added in 0.10,17.
+- In `normalized_diff_ind()` methods, rename `plus.w.band` into `w.band.plus` 
 and `minus.w.band` into `w.band.minus` for consistency with `Tfr_normdiff()`,
 `Rfr_normdiff()` and other functions.
 - Spectral data objects included in the package and used in examples and unit

@@ -21,7 +21,7 @@ merge_attributes(x, y, z, which, which.not, ...)
 )
 }
 \arguments{
-\item{x, y, z}{R objects. Objects \code{x} and {y} must be of the same class,
+\item{x, y, z}{R objects. Objects \code{x} and \code{y} must be of the same class,
 \code{z} must be an object with a structure valid for this same class.}
 
 \item{which}{character Names of attributes to copy, if NULL all those

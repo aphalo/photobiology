@@ -92,7 +92,7 @@ normalize.default <- function(x, ...) {
 #'   normalization is based on a summary quantity, the returned spectrum will
 #'   contain only \code{NA} values. If \code{na.rm == TRUE} then the summary
 #'   quantity will be calculated after striping \code{NA} values, and only the
-#'   values that were \code{NA} in \code{x} will be {NA} values in the returned
+#'   values that were \code{NA} in \code{x} will be \code{NA} values in the returned
 #'   spectrum. 2) When a numeric value is passed as argument to keep.scaling,
 #'   the scaling uses \code{f = "total"} or \code{f = "mean"} depending on the
 #'   class of \code{x}. Prescaling is only occasionally needed.

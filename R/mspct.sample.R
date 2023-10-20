@@ -7,13 +7,13 @@
 #'   components.
 #' @param size integer The number of spectra to extract, if available.
 #' @param replace logical Sample with or without replacement.
-#' @param recursive logical If code{x} is a collection, expand or not member
+#' @param recursive logical If \code{x} is a collection, expand or not member
 #'   spectra containing multiple spectra in long form into individual members
 #'   before sampling.
 #' @param keep.order logical Return the spectra ordered as in \code{x} or in
 #'   random order.
-#' @param simplify logical If \code{size = 1}, and code{x} is a collection
-#'   return the spectrum object instead of a colelction with it as only member.
+#' @param simplify logical If \code{size = 1}, and \code{x} is a collection
+#'   return the spectrum object instead of a collection with it as only member.
 #' @param ... currently ignored.
 #'
 #' @return If \code{x} is an spectrum object, such as a

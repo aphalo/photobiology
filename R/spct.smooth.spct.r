@@ -825,9 +825,9 @@ smooth_spct.generic_mspct <-
 #' @param x,y numeric vectors of equal length.
 #' @param zero.limit numeric vector of length one or of the same leangth as
 #'   \code{x} and \code{y}. Smaller values in y are forced to zero.
-#' @param smooth.limt numeric mad/median value above which no smoothing is
+#' @param smooth.limit numeric mad/median value above which no smoothing is
 #'   applied.
-#' @param smooth.thershold numeric y value above which no smoothing is applied.
+#' @param smooth.threshold numeric y value above which no smoothing is applied.
 #'
 #' @keywords internal
 #'

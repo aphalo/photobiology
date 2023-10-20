@@ -230,7 +230,7 @@ copy_attributes.waveband <- function(x, y, which = NULL, ...) {
 #' Merge attributes from \code{x} and \code{y} and copy them to \code{z}.
 #' Methods defined for spectral objects of classes from package 'photobiology'.
 #'
-#' @param x,y,z R objects. Objects \code{x} and {y} must be of the same class,
+#' @param x,y,z R objects. Objects \code{x} and \code{y} must be of the same class,
 #'     \code{z} must be an object with a structure valid for this same class.
 #' @param which character Names of attributes to copy, if NULL all those
 #'    relevant according to the class of \code{x} are used as default,

@@ -53,10 +53,10 @@ components.}
 \item{keep.order}{logical Return the spectra ordered as in \code{x} or in
 random order.}
 
-\item{simplify}{logical If \code{size = 1}, and code{x} is a collection
-return the spectrum object instead of a colelction with it as only member.}
+\item{simplify}{logical If \code{size = 1}, and \code{x} is a collection
+return the spectrum object instead of a collection with it as only member.}
 
-\item{recursive}{logical If code{x} is a collection, expand or not member
+\item{recursive}{logical If \code{x} is a collection, expand or not member
 spectra containing multiple spectra in long form into individual members
 before sampling.}
 }

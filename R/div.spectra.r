@@ -13,13 +13,13 @@
 #'   replaced with zeros.
 #'
 #' @return a dataframe with two numeric variables.
-#' \itemize{
-#'    \item{w.length}{A numeric
-#'   vector with the wavelengths (nm) obtained by "fusing" w.length1 and
+#' \item{w.length}{A numeric vector with the wavelengths (nm) obtained
+#'   by "fusing" w.length1 and
 #'   w.length2. w.length contains all the unique vales, sorted in ascending
 #'   order.}
-#'   \item{s.irrad}{A numeric vector with the sum of the two spectral
-#'   values at each wavelength.}}
+#'   \item{s.irrad}{A numeric vector with the ratio between the two spectral
+#'   values at each wavelength.}
+#'
 #' @details If trim=="union" spectral values are calculated for the whole range
 #'   of wavelengths covered by at least one of the input spectra, and missing
 #'   values are set in each input spectrum to zero before addition. If

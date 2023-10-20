@@ -16,13 +16,13 @@ adaptive_smoothing(
 \arguments{
 \item{x, y}{numeric vectors of equal length.}
 
-\item{zero.limit}{numeric vector of length one or of the same leangth as
-\code{x} and \code{y}. Smaller values in y are forced to zero.}
-
-\item{smooth.limt}{numeric mad/median value above which no smoothing is
+\item{smooth.limit}{numeric mad/median value above which no smoothing is
 applied.}
 
-\item{smooth.thershold}{numeric y value above which no smoothing is applied.}
+\item{smooth.threshold}{numeric y value above which no smoothing is applied.}
+
+\item{zero.limit}{numeric vector of length one or of the same leangth as
+\code{x} and \code{y}. Smaller values in y are forced to zero.}
 }
 \description{
 Generic implementation of the custom smoothing method
