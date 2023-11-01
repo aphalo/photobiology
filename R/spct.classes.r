@@ -256,7 +256,9 @@ check_spct.raw_spct <-
 
   if (length(counts.cols) == 1L && counts.names != "counts") {
     # remove numbering from single columns
-    message("Renaming '", counts.names, "' into 'counts'")
+    if (getOption("photobiology.verbose", TRUE)) {
+      message("Renaming '", counts.names, "' into 'counts'")
+    }
     names(x)[counts.cols] <- "counts"
   }
   if (length(counts.cols) >= 1) {
@@ -312,7 +314,9 @@ check_spct.cps_spct <-
 
   if (length(cps.cols) == 1L && cps.names != "cps") {
     # remove numbering from single columns
-    message("Renaming '", cps.names, "' into 'cps'")
+    if (getOption("photobiology.verbose", TRUE)) {
+        message("Renaming '", cps.names, "' into 'cps'")
+    }
     names(x)[cps.cols] <- "cps"
   }
   if (length(cps.cols) >= 1) {

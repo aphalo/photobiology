@@ -4,6 +4,13 @@ editor_options:
     wrap: 72
 ---
 
+# photobiology 0.11.1
+
+- Add parameter `span` to `thin_wl()` methods, with the previously hard-coded
+value of 21 as default.
+- When checking `raw_spct` and `cps_spct` do not emit a message about renaming 
+columns if option `photobiology.verbose` is set to `FALSE`.
+
 # photobiology 0.11.0
 
 - Improve handling of objects containing multiple spectra in long form. Most 

@@ -23,12 +23,20 @@ thin_wl(x, ...)
 
 \method{thin_wl}{default}(x, ...)
 
-\method{thin_wl}{generic_spct}(x, max.wl.step = 10, max.slope.delta = 0.001, col.names, ...)
+\method{thin_wl}{generic_spct}(
+  x,
+  max.wl.step = 10,
+  max.slope.delta = 0.001,
+  span = 21,
+  col.names,
+  ...
+)
 
 \method{thin_wl}{source_spct}(
   x,
   max.wl.step = 10,
   max.slope.delta = 0.001,
+  span = 21,
   unit.out = getOption("photobiology.radiation.unit", default = "energy"),
   ...
 )
@@ -37,6 +45,7 @@ thin_wl(x, ...)
   x,
   max.wl.step = 10,
   max.slope.delta = 0.001,
+  span = 21,
   unit.out = getOption("photobiology.radiation.unit", default = "energy"),
   ...
 )
@@ -45,25 +54,47 @@ thin_wl(x, ...)
   x,
   max.wl.step = 10,
   max.slope.delta = 0.001,
+  span = 21,
   qty.out = getOption("photobiology.filter.qty", default = "transmittance"),
   ...
 )
 
-\method{thin_wl}{reflector_spct}(x, max.wl.step = 10, max.slope.delta = 0.001, ...)
+\method{thin_wl}{reflector_spct}(x, max.wl.step = 10, max.slope.delta = 0.001, span = 21, ...)
 
-\method{thin_wl}{solute_spct}(x, max.wl.step = 10, max.slope.delta = 0.001, ...)
+\method{thin_wl}{solute_spct}(x, max.wl.step = 10, max.slope.delta = 0.001, span = 21, ...)
 
-\method{thin_wl}{raw_spct}(x, max.wl.step = 10, max.slope.delta = 0.001, col.names, ...)
+\method{thin_wl}{raw_spct}(
+  x,
+  max.wl.step = 10,
+  max.slope.delta = 0.001,
+  span = 21,
+  col.names,
+  ...
+)
 
-\method{thin_wl}{cps_spct}(x, max.wl.step = 10, max.slope.delta = 0.001, col.names, ...)
+\method{thin_wl}{cps_spct}(
+  x,
+  max.wl.step = 10,
+  max.slope.delta = 0.001,
+  span = 21,
+  col.names,
+  ...
+)
 
-\method{thin_wl}{object_spct}(x, max.wl.step = 10, max.slope.delta = 0.001, col.names, ...)
+\method{thin_wl}{object_spct}(
+  x,
+  max.wl.step = 10,
+  max.slope.delta = 0.001,
+  span = 21,
+  col.names,
+  ...
+)
 
 \method{thin_wl}{chroma_spct}(x, ...)
 
 \method{thin_wl}{calibration_spct}(x, ...)
 
-\method{thin_wl}{generic_mspct}(x, max.wl.step = 10, max.slope.delta = 0.001, ...)
+\method{thin_wl}{generic_mspct}(x, max.wl.step = 10, max.slope.delta = 0.001, span = 21, ...)
 
 \method{thin_wl}{chroma_mspct}(x, ...)
 
@@ -78,7 +109,11 @@ thin_wl(x, ...)
 adjacent spectral values in nanometres (nm).}
 
 \item{max.slope.delta}{numeric in 0 to 1. Largest allowed change in relative
-slope of the spectral quantity per nm betweem adjacent pairs of values.}
+slope of the spectral quantity per nm between adjacent pairs of values.}
+
+\item{span}{integer A peak (or valley) is defined as an element in a sequence
+which is greater (or smaller) than all other elements within a window of
+width span centred at that element. Use NULL for the global peak.}
 
 \item{col.names}{character. Name of the column of \code{x} containing the
 spectral data to check against \code{max.slope.delta}. Currently only one
@@ -140,10 +175,10 @@ The algorithm used for spectra is "naive" in an effort to keep it
 \note{
 The value of \code{max.slope.delta} is expressed as relative change in
   the slope of spectral variable per nanometre. This means that values
-  between 0.0005 and 0.005 tend to work reasonably well. The best value
-  will depend on the wavelength step of the input and noise in data. A
-  moderate smoothing before thinning can sometimes help in the case of
-  noisy data.
+  between 0.0005 and 0.005 tend to work reasonably well. The best value will
+  depend on the wavelength step of the input and noise in data. A moderate
+  smoothing before thinning can sometimes help in the case of noisy data.
+
   The amount of thinning is almost always less than the value of criteria
   passed as argument as it is based on existing wavelength values. For
   example if we start with a spectrum with a uniform wavelength step of 1 nm,
@@ -152,6 +187,9 @@ The value of \code{max.slope.delta} is expressed as relative change in
   Thinning is most effective for spectra with large "featureless" regions as
   the algorithm attempts not to discard information, contrary to smoothing or
   interpolation.
+
+  Local peaks and valleys are always preserved, using by default a span of 21
+  to search for them. See \code{\link{find_peaks}}.
 }
 \examples{
 
