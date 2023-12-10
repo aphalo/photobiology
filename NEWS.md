@@ -6,6 +6,10 @@ editor_options:
 
 # photobiology 0.11.1
 
+- Implement subsetting of metadata in `subset()` method for objects of class 
+`generic_spct` and derived classes. This makes it possible to extract a
+subset of spectra from an object containing multiple spectra in long form.
+In earlier versions metadata were not subset.
 - Add parameter `span` to `thin_wl()` methods, with the previously hard-coded
 value of 21 as default.
 - When checking `raw_spct` and `cps_spct` do not emit a message about renaming 

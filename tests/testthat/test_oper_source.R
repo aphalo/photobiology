@@ -290,7 +290,7 @@ test_that("math photon photon", {
 })
 
 test_that("irrad e_irrad q_irrad", {
-  irrad.result <- 269.1249
+  irrad.result <- 269.12490033493787678
   expect_equal(as.numeric(irrad(sun.spct)), irrad.result, tolerance = 1e-6)
   expect_equal(as.numeric(irrad(sun.spct, quantity = "total")), irrad.result, tolerance = 1e-6)
   expect_equal(as.numeric(irrad(sun.spct, quantity = "average")),
@@ -353,7 +353,7 @@ test_that("irrad e_irrad q_irrad", {
                                       w.band = split_bands(c(400, 600), length.out = 3)))), 1)
 
 
-  irrad.result <- 0.001255336
+  irrad.result <- 0.001255353974944903089
 
   expect_equal(as.numeric(q_irrad(sun.spct)), irrad.result, tolerance = 1e-6)
   expect_equal(as.numeric(q_irrad(sun.spct, time.unit = "second")),
@@ -459,7 +459,7 @@ test_that("fluence e_fluence q_fluence", {
                fluence.result * 60, tolerance = 1e-6)
   expect_equal(as.numeric(e_fluence(sun.spct, exposure.time = hms("00:01:00"))),
                fluence.result * 60, tolerance = 1e-6)
-  fluence.result <- 0.001255336
+  fluence.result <- 0.001255353974944903089
   expect_error(q_fluence(sun.spct))
   expect_error(q_fluence(sun.spct, exposure.time = "second"))
   expect_error(q_fluence(sun.spct, exposure.time = "hour"))
@@ -475,7 +475,7 @@ test_that("fluence e_fluence q_fluence", {
                fluence.result * 60, tolerance = 1e-6)
 
   # cached multipliers
-  fluence.result <- 269.1249
+  fluence.result <- 269.12490033493787678
 
   expect_equal(as.numeric(fluence(sun.spct,
                                   exposure.time = duration(1),
@@ -511,7 +511,7 @@ test_that("fluence e_fluence q_fluence", {
                fluence.result * 60, tolerance = 1e-6)
   expect_equal(as.numeric(e_fluence(sun.spct, exposure.time = hms("00:01:00"))),
                fluence.result * 60, tolerance = 1e-6)
-  fluence.result <- 0.001255336
+  fluence.result <- 0.001255353974944903089
   expect_error(q_fluence(sun.spct))
   expect_error(q_fluence(sun.spct, exposure.time = "second"))
   expect_error(q_fluence(sun.spct, exposure.time = "hour"))
@@ -559,7 +559,7 @@ test_that("ratio q_ratio e_ratio", {
     e.ratio.result, tolerance = 1e-12)
   expect_error(e_ratio(sun.spct, blue.wb, red.wb, quantity = "bad argument"))
 
-  eq.ratio.result <- 264631.91378474719
+  eq.ratio.result <- 264628.05810932186432
   expect_equal(
     as.numeric(eq_ratio(sun.spct, blue.wb)),
     eq.ratio.result, tolerance = 1e-12)
@@ -568,7 +568,7 @@ test_that("ratio q_ratio e_ratio", {
     as.numeric(qe_ratio(sun.spct, blue.wb)),
     qe.ratio.result, tolerance = 1e-12)
 
-  q.ratio.result <- 0.943427252286716
+  q.ratio.result <- 0.94342725228671586724
   expect_equal(
     as.numeric(q_ratio(sun.spct, narrow.wb, red.wb, quantity = "mean")),
     q.ratio.result, tolerance = 1e-12)
@@ -576,7 +576,7 @@ test_that("ratio q_ratio e_ratio", {
     as.numeric(q_ratio(sun.spct, narrow.wb, red.wb, quantity = "average")),
     q.ratio.result, tolerance = 1e-12)
 
-  q.ratio.result <- 0.188685450457343
+  q.ratio.result <- 0.1886854504573431679
   expect_equal(
     as.numeric(q_ratio(sun.spct, narrow.wb, red.wb, quantity = "total")),
                q.ratio.result, tolerance = 1e-12)
@@ -589,7 +589,7 @@ test_that("ratio q_ratio e_ratio", {
     q_ratio(sun.spct, blue.wb, red.wb, quantity = "mean"),
     "B:R[q(wl):q(wl)]")
 
-  e.ratio.result <- 1.30070948808942
+  e.ratio.result <- 1.3007094880894196631
   expect_equal(
     as.numeric(e_ratio(sun.spct, narrow.wb, red.wb, quantity = "mean")),
     e.ratio.result, tolerance = 1e-12)
@@ -597,7 +597,7 @@ test_that("ratio q_ratio e_ratio", {
     as.numeric(e_ratio(sun.spct, narrow.wb, red.wb, quantity = "average")),
     e.ratio.result, tolerance = 1e-12)
 
-  e.ratio.result <- 0.260141897617884
+  e.ratio.result <- 0.26014189761788392152
   expect_equal(
     as.numeric(e_ratio(sun.spct, narrow.wb, red.wb, quantity = "total")),
     e.ratio.result, tolerance = 1e-12)

@@ -18,6 +18,9 @@ all_spct_attr.ls <-
                      "normalization",
                      "scaled",
                      "multiple.wl",
+                     "straylight.corrected",
+                     "slit.corrected",
+                     "QC_dark_pass",
                      "idfactor",
                      "spct.idx"),
     raw_spct = c("time.unit", "linearized"),
@@ -324,7 +327,7 @@ merge_attributes.generic_spct <- function(x, y, z,
 #' @param x a generic_spct object.
 #' @param to.keep character vector Indices to the spectra for
 #'   which attributes are to be extracted and retained.
-#' @param target character vector Names of attributes to be subset using
+#' @param target.attributes character vector Names of attributes to be subset using
 #'   \code{which}.
 #' @param ... currently ignored
 #'
@@ -336,15 +339,14 @@ merge_attributes.generic_spct <- function(x, y, z,
 #'
 #' @seealso \code{\link{select_spct_attributes}}
 #'
-#' @export
+#' @keywords internal
 #'
 #' @family measurement metadata functions
 #'
 subset_attributes <-
-  function(x, to.keep, ...) UseMethod("get_attributes")
+  function(x, to.keep, ...) UseMethod("subset_attributes")
 
-#' @describeIn get_attributes default
-#' @export
+#' @describeIn subset_attributes default
 #'
 subset_attributes.default <-
   function(x, to.keep, ...) {
@@ -352,8 +354,7 @@ subset_attributes.default <-
     x
   }
 
-#' @describeIn get_attributes generic_spct
-#' @export
+#' @describeIn subset_attributes generic_spct
 #'
 subset_attributes.generic_spct <-
   function(x,
@@ -370,14 +371,19 @@ subset_attributes.generic_spct <-
         length(to.keep) == getMultipleWl(x)) {
       return(x)
     }
-    spct.attr <- attributes(x)
-    attr2subset <- spct.attr[names(spct.attr) %in% target.attributes]
-    for (a in attr2subset) {
-      if (is.list(a) && all(to.keep %in% names(a))) {
-        a <- a[to.keep]
+    all.attr <- attributes(x)
+    target.attr.names <- intersect(names(all.attr), target.attributes)
+    id.factor <- getIdFactor(x)
+    for (attr.name in target.attr.names) {
+      temp <- all.attr[[attr.name]]
+      if (is.data.frame(temp) && id.factor %in% colnames(temp)) {
+        all.attr[[attr.name]] <- temp[temp[[id.factor]] %in% to.keep, ]
+      } else if (is.list(temp) && all(to.keep %in% names(temp))) {
+        all.attr[[attr.name]] <- temp[to.keep]
       }
     }
-    attributes(x) <- a
+    all.attr["multiple.wl"] <- length(to.keep)
+    attributes(x) <- all.attr
     x
   }
 

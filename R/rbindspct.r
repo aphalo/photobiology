@@ -422,20 +422,22 @@ subset.generic_spct <- function(x, subset, select, drop = FALSE, ...) {
     r & !is.na(r)
   }
   vars <- if (missing(select))
-    TRUE
+    rep_len(TRUE, ncol(x))
   else {
     nl <- as.list(seq_along(x))
     names(nl) <- names(x)
     eval(substitute(select), nl, parent.frame())
   }
   z <- x[r, vars, drop = drop]
-  copy_attributes(x, z)
+  z <- copy_attributes(x, z)
   id.factor <- getIdFactor(x)
-  print(id.factor)
-  # drop unused levels
-  x[[id.factor]] <- factor(x[[id.factor]])
-  subset_attributes(x, to.keep = levels(x[[id.factor]]))
-  x
+  if (!is.na(id.factor)) {
+    # drop unused levels
+    z[[id.factor]] <- factor(z[[id.factor]])
+    # keep attributes matching remaining spectra
+    z <- subset_attributes(z, to.keep = levels(z[[id.factor]]))
+  }
+  z
 }
 
 # Extract ------------------------------------------------------------------
@@ -503,13 +505,17 @@ subset.generic_spct <- function(x, subset, select, drop = FALSE, ...) {
     }
     if (is.data.frame(xx)) {
       if ("w.length" %in% names(xx)) {
+        # still a generic_spct object
+        xx <- copy_attributes(x, xx)
         if (!(getMultipleWl(x) == 1L || nrow(xx) == nrow(x))) {
           # subsetting of rows can decrease the number of spectra
-          multiple.wl <- findMultipleWl(xx, same.wls = FALSE)
-          xx <- setMultipleWl(xx, multiple.wl)
-        }
-        if (ncol(xx) != ncol(x)) {
-          xx <- copy_attributes(x, xx)
+          id.factor <- getIdFactor(x)
+          if (!is.na(id.factor)) {
+            # drop unused levels
+            xx[[id.factor]] <- factor(xx[[id.factor]])
+            # keep attributes matching remaining spectra
+            xx <- subset_attributes(xx, to.keep = levels(xx[[id.factor]]))
+          }
         }
         xx <- check_spct(xx)
       } else {
@@ -578,199 +584,37 @@ subset.generic_spct <- function(x, subset, select, drop = FALSE, ...) {
 #' @export
 #' @rdname extract
 #'
-"[.source_spct" <-
-  function(x, i, j, drop = NULL) {
-    if (is.null(drop)) {
-      xx <- `[.data.frame`(x, i, j)
-    } else {
-      xx <- `[.data.frame`(x, i, j, drop = drop)
-    }
-    if (is.data.frame(xx)) {
-      if ("w.length" %in% names(xx)) {
-        if (!(getMultipleWl(x) == 1L || nrow(xx) == nrow(x))) {
-          # subsetting of rows can decrease the number of spectra
-          multiple.wl <- findMultipleWl(xx, same.wls = FALSE)
-          xx <- setMultipleWl(xx, multiple.wl)
-        }
-        if (ncol(xx) != ncol(x)) {
-          xx <- copy_attributes(x, xx)
-        }
-        xx <- check_spct(xx)
-      } else {
-        rmDerivedSpct(xx)
-      }
-    }
-    xx
-  }
+"[.source_spct" <- `[.generic_spct`
 
 #' @export
 #' @rdname extract
 #'
-"[.response_spct" <-
-  function(x, i, j, drop = NULL) {
-    if (is.null(drop)) {
-      xx <- `[.data.frame`(x, i, j)
-    } else {
-      xx <- `[.data.frame`(x, i, j, drop = drop)
-    }
-    if (is.data.frame(xx)) {
-      if ("w.length" %in% names(xx)) {
-        if (!(getMultipleWl(x) == 1L || nrow(xx) == nrow(x))) {
-          # subsetting of rows can decrease the number of spectra
-          multiple.wl <- findMultipleWl(xx, same.wls = FALSE)
-          xx <- setMultipleWl(xx, multiple.wl)
-        }
-        if (ncol(xx) != ncol(x)) {
-          xx <- copy_attributes(x, xx)
-        }
-        xx <- check_spct(xx)
-      } else {
-        rmDerivedSpct(xx)
-      }
-    }
-    xx
-  }
+"[.response_spct" <-`[.generic_spct`
 
 #' @export
 #' @rdname extract
 #'
-"[.filter_spct" <-
-  function(x, i, j, drop = NULL) {
-    if (is.null(drop)) {
-      xx <- `[.data.frame`(x, i, j)
-    } else {
-      xx <- `[.data.frame`(x, i, j, drop = drop)
-    }
-    if (is.data.frame(xx)) {
-      if ("w.length" %in% names(xx)) {
-        if (!(getMultipleWl(x) == 1L || nrow(xx) == nrow(x))) {
-          # subsetting of rows can decrease the number of spectra
-          multiple.wl <- findMultipleWl(xx, same.wls = FALSE)
-          xx <- setMultipleWl(xx, multiple.wl)
-        }
-        if (ncol(xx) != ncol(x)) {
-          xx <- copy_attributes(x, xx)
-        }
-        xx <- check_spct(xx)
-      } else {
-        rmDerivedSpct(xx)
-      }
-    }
-    xx
-  }
+"[.filter_spct" <-`[.generic_spct`
 
 #' @export
 #' @rdname extract
 #'
-"[.reflector_spct" <-
-  function(x, i, j, drop = NULL) {
-    if (is.null(drop)) {
-      xx <- `[.data.frame`(x, i, j)
-    } else {
-      xx <- `[.data.frame`(x, i, j, drop = drop)
-    }
-    if (is.data.frame(xx)) {
-      if ("w.length" %in% names(xx)) {
-        if (!(getMultipleWl(x) == 1L || nrow(xx) == nrow(x))) {
-          # subsetting of rows can decrease the number of spectra
-          multiple.wl <- findMultipleWl(xx, same.wls = FALSE)
-          xx <- setMultipleWl(xx, multiple.wl)
-        }
-        if (ncol(xx) != ncol(x)) {
-          xx <- copy_attributes(x, xx)
-        }
-        xx <- check_spct(xx)
-      } else {
-        rmDerivedSpct(xx)
-      }
-    }
-    xx
-  }
+"[.reflector_spct" <- `[.generic_spct`
 
 #' @export
 #' @rdname extract
 #'
-"[.solute_spct" <-
-  function(x, i, j, drop = NULL) {
-    if (is.null(drop)) {
-      xx <- `[.data.frame`(x, i, j)
-    } else {
-      xx <- `[.data.frame`(x, i, j, drop = drop)
-    }
-    if (is.data.frame(xx)) {
-      if ("w.length" %in% names(xx)) {
-        if (!(getMultipleWl(x) == 1L || nrow(xx) == nrow(x))) {
-          # subsetting of rows can decrease the number of spectra
-          multiple.wl <- findMultipleWl(xx, same.wls = FALSE)
-          xx <- setMultipleWl(xx, multiple.wl)
-        }
-        if (ncol(xx) != ncol(x)) {
-          xx <- copy_attributes(x, xx)
-        }
-        xx <- check_spct(xx)
-      } else {
-        rmDerivedSpct(xx)
-      }
-    }
-    xx
-  }
+"[.solute_spct" <- `[.generic_spct`
 
 #' @export
 #' @rdname extract
 #'
-"[.object_spct" <-
-  function(x, i, j, drop = NULL) {
-    if (is.null(drop)) {
-      xx <- `[.data.frame`(x, i, j)
-    } else {
-      xx <- `[.data.frame`(x, i, j, drop = drop)
-    }
-    if (is.data.frame(xx)) {
-      if ("w.length" %in% names(xx)) {
-        if (!(getMultipleWl(x) == 1L || nrow(xx) == nrow(x))) {
-          # subsetting of rows can decrease the number of spectra
-          multiple.wl <- findMultipleWl(xx, same.wls = FALSE)
-          xx <- setMultipleWl(xx, multiple.wl)
-        }
-        if (ncol(xx) != ncol(x)) {
-          xx <- copy_attributes(x, xx)
-        }
-        xx <- check_spct(xx)
-      } else {
-        rmDerivedSpct(xx)
-      }
-    }
-    xx
-  }
+"[.object_spct" <- `[.generic_spct`
 
 #' @export
 #' @rdname extract
 #'
-"[.chroma_spct" <-
-  function(x, i, j, drop = NULL) {
-    if (is.null(drop)) {
-      xx <- `[.data.frame`(x, i, j)
-    } else {
-      xx <- `[.data.frame`(x, i, j, drop = drop)
-    }
-    if (is.data.frame(xx)) {
-      if ("w.length" %in% names(xx)) {
-        if (!(getMultipleWl(x) == 1L || nrow(xx) == nrow(x))) {
-          # subsetting of rows can decrease the number of spectra
-          multiple.wl <- findMultipleWl(xx, same.wls = FALSE)
-          xx <- setMultipleWl(xx, multiple.wl)
-        }
-        if (ncol(xx) != ncol(x)) {
-          xx <- copy_attributes(x, xx)
-        }
-        xx <- check_spct(xx)
-      } else {
-        rmDerivedSpct(xx)
-      }
-    }
-    xx
-  }
-
+"[.chroma_spct" <- `[.generic_spct`
 
 # replace -----------------------------------------------------------------
 

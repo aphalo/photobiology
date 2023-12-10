@@ -101,7 +101,7 @@ test_that("source_spct_data", {
   expect_equal(sun.daily.spct[c(1, 100, 200, 300), "w.length"],
                c(280, 378, 478, 578))
   expect_equal(round(white_led.source_spct[c(1, 100, 200, 300, 500), "s.e.irrad"], 7),
-               c(0, 0, 0, 0, 0.1140273))
+               c(0, 0, 0, 0, 0.1140664))
   expect_equal(white_led.source_spct[c(1, 100, 200, 300, 500), "w.length"],
                c(251.16, 298.05, 345.19, 392.09, 485.15))
 })

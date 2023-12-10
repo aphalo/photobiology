@@ -20,7 +20,7 @@ If x is not a \code{generic_spct} or an object of a derived class
   \code{NA} is returned.
 }
 \examples{
-getMultipleWl(sun.spct)
+getIdFactor(white_led.cps_spct)
 
 }
 \seealso{

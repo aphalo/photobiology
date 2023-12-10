@@ -2498,14 +2498,18 @@ setIdFactor <- function(x, idfactor) {
 #' @export
 #' @family idfactor attribute functions
 #' @examples
-#' getMultipleWl(sun.spct)
+#' getIdFactor(white_led.cps_spct)
 #'
 getIdFactor <- function(x) {
   if (is.generic_spct(x) || is.summary_generic_spct(x)) {
     idfactor <- attr(x, "idfactor", exact = TRUE)
     if (is.null(idfactor) || is.na(idfactor) || !is.character(idfactor)) {
       # need to handle objects created with old versions
-      idfactor <- NA_character_
+      if (is.generic_spct(x) && "spct.idx" %in% colnames(x)) {
+        idfactor <- "spct.idx"
+      } else {
+        idfactor <- NA_character_
+      }
     }
   } else {
     idfactor <- NA_character_

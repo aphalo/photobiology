@@ -2,9 +2,20 @@
 % Please edit documentation in R/copy.attr.R
 \name{subset_attributes}
 \alias{subset_attributes}
+\alias{subset_attributes.default}
+\alias{subset_attributes.generic_spct}
 \title{Subset the metadata attributes}
 \usage{
 subset_attributes(x, to.keep, ...)
+
+\method{subset_attributes}{default}(x, to.keep, ...)
+
+\method{subset_attributes}{generic_spct}(
+  x,
+  to.keep = character,
+  target.attributes = spct_attributes(class(x)[1]),
+  ...
+)
 }
 \arguments{
 \item{x}{a generic_spct object.}
@@ -14,7 +25,7 @@ which attributes are to be extracted and retained.}
 
 \item{...}{currently ignored}
 
-\item{target}{character vector Names of attributes to be subset using
+\item{target.attributes}{character vector Names of attributes to be subset using
 \code{which}.}
 }
 \value{
@@ -32,6 +43,13 @@ The values in \code{which} are passed as argument to the extract
   operator only if the value of the attribute is a list of the same length
   as the logical vector passed as argument to \code{which}.
 }
+\section{Methods (by class)}{
+\itemize{
+\item \code{subset_attributes(default)}: default
+
+\item \code{subset_attributes(generic_spct)}: generic_spct
+
+}}
 \seealso{
 \code{\link{select_spct_attributes}}
 
@@ -45,6 +63,7 @@ Other measurement metadata functions:
 \code{\link{getWhatMeasured}()},
 \code{\link{getWhenMeasured}()},
 \code{\link{getWhereMeasured}()},
+\code{\link{get_attributes}()},
 \code{\link{isValidInstrDesc}()},
 \code{\link{isValidInstrSettings}()},
 \code{\link{select_spct_attributes}()},
@@ -58,8 +77,8 @@ Other measurement metadata functions:
 \code{\link{setWhereMeasured}()},
 \code{\link{spct_attr2tb}()},
 \code{\link{spct_metadata}()},
-\code{\link{subset_attributes.default}()},
 \code{\link{trimInstrDesc}()},
 \code{\link{trimInstrSettings}()}
 }
 \concept{measurement metadata functions}
+\keyword{internal}

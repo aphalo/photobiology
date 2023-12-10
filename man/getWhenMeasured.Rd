@@ -69,6 +69,7 @@ Other measurement metadata functions:
 \code{\link{getSoluteProperties}()},
 \code{\link{getWhatMeasured}()},
 \code{\link{getWhereMeasured}()},
+\code{\link{get_attributes}()},
 \code{\link{isValidInstrDesc}()},
 \code{\link{isValidInstrSettings}()},
 \code{\link{select_spct_attributes}()},
@@ -82,7 +83,6 @@ Other measurement metadata functions:
 \code{\link{setWhereMeasured}()},
 \code{\link{spct_attr2tb}()},
 \code{\link{spct_metadata}()},
-\code{\link{subset_attributes.default}()},
 \code{\link{subset_attributes}()},
 \code{\link{trimInstrDesc}()},
 \code{\link{trimInstrSettings}()}
