@@ -430,6 +430,12 @@ subset.generic_spct <- function(x, subset, select, drop = FALSE, ...) {
   }
   z <- x[r, vars, drop = drop]
   copy_attributes(x, z)
+  id.factor <- getIdFactor(x)
+  print(id.factor)
+  # drop unused levels
+  x[[id.factor]] <- factor(x[[id.factor]])
+  subset_attributes(x, to.keep = levels(x[[id.factor]]))
+  x
 }
 
 # Extract ------------------------------------------------------------------
