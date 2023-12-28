@@ -51,7 +51,8 @@ cps2irrad <- function(x.sample,
     x.sample <- pre.fun(x.sample, ...)
   }
   cps.col.sample <- grep("^cps", names(x.sample), value = TRUE)
-  stopifnot(length(cps.col.sample) == 1)
+  stopifnot("Multiple 'cps' columns found when one expected" =
+              length(cps.col.sample) == 1)
   z <- as.generic_spct(x.sample)
   z[[cps.col.sample]] <- NULL
   z[["s.e.irrad"]] <- x.sample[[cps.col.sample]] * irrad.mult
