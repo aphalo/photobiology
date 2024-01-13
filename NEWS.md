@@ -18,6 +18,8 @@ columns if option `photobiology.verbose` is set to `FALSE`.
 - Fix bug: some operations failed to copy all metadata attributes to the
 returned value. Some of the dropped attributes are used in package 'ooacquire' 
 (>= 0.4.1).
+- Rewrite method `pull_sample()` specialization for `generic_spct` for faster 
+performance.
 
 # photobiology 0.11.0
 

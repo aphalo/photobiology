@@ -21,14 +21,7 @@ pull_sample(x, size, ...)
   ...
 )
 
-\method{pull_sample}{generic_spct}(
-  x,
-  size = 1,
-  replace = FALSE,
-  recursive = FALSE,
-  keep.order = TRUE,
-  ...
-)
+\method{pull_sample}{generic_spct}(x, size = 1, replace = FALSE, keep.order = TRUE, ...)
 
 \method{pull_sample}{generic_mspct}(
   x,

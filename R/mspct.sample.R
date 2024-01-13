@@ -88,7 +88,6 @@ pull_sample.list <- function(x,
 pull_sample.generic_spct <- function(x,
                                      size = 1,
                                      replace = FALSE,
-                                     recursive = FALSE,
                                      keep.order = TRUE,
                                      ...) {
   num.spectra <- getMultipleWl(x)
@@ -96,14 +95,12 @@ pull_sample.generic_spct <- function(x,
     # nothing to do
     return(x)
   }
-  # brute force method ensures handling of metadata attributes
-  mspct <- subset2mspct(x)
-  z <- pull_sample(x = mspct,
-                   size = size,
-                   replace = replace,
-                   recursive = recursive,
-                   keep.order = keep.order)
-  rbindspct(z)
+
+  selector.idx <- sample(x = num.spectra, size = size, replace = replace)
+  id.factor <- x[[getIdFactor(x)]]
+  pulled.ids <- unique(id.factor)[selector.idx]
+
+  x[id.factor %in% pulled.ids, ]
 }
 
 #' @describeIn pull_sample Specialization for generic_mspct
