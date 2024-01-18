@@ -23,8 +23,8 @@ water.spct
 solute_properties(water.spct)
 
 phenylalanine.tb <- read.table("data-raw/solutes/phenylalanine-abs.txt",
-                       skip = 23,
-                       col.names = c("w.length", "K.mole"))
+                               skip = 23,
+                               col.names = c("w.length", "K.mole"))
 comment(phenylalanine.tb) <-
   paste(readLines("data-raw/solutes/phenylalanine-abs.txt", n = 23),
         collapse = "\n")
