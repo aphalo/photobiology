@@ -111,28 +111,43 @@ irrad.source_spct <-
 
     # we look for multiple spectra in long form
     if (getMultipleWl(spct) > 1) {
-      # convert to a collection of spectra
-      mspct <- subset2mspct(x = spct,
-                            idx.var = getIdFactor(spct),
-                            drop.idx = FALSE)
-      # call method on the collection
-      return(irrad(spct = mspct,
-                   w.band = w.band,
-                   unit.out = unit.out,
-                   quantity = quantity,
-                   time.unit = time.unit,
-                   scale.factor = scale.factor,
-                   wb.trim = wb.trim,
-                   use.cached.mult = use.cached.mult,
-                   use.hinges = use.hinges,
-                   allow.scaled = allow.scaled,
-                   naming = naming,
-                   ...))
+      # compute in place
+      idx.var.name <- getIdFactor(spct)
+      idxs <- unique(spct[[idx.var.name]])
+      # do conversion in one go and delete values not used
+      if (unit.out == "energy") {
+        spct <- q2e(spct, action = "replace")
+      } else {
+        spct <- e2q(spct, action = "replace")
+      }
+      z <- list()
+      for (idx in idxs) {
+        temp <- irrad_spct(spct = spct[spct[[idx.var.name]] == idx, ],
+                           w.band = w.band,
+                           unit.out = unit.out,
+                           quantity = quantity,
+                           time.unit = time.unit,
+                           scale.factor = scale.factor,
+                           wb.trim = wb.trim,
+                           use.cached.mult = use.cached.mult,
+                           use.hinges = use.hinges,
+                           allow.scaled = allow.scaled,
+                           naming = naming,
+                           ...)
+        z[[idx]] <- tibble::as_tibble_row(temp, .name_repair = "minimal")
+      }
+      z <- dplyr::bind_rows(z)
+      z[[idx.var.name]] <- idxs
+      z[["when.measured"]] <-
+        as.POSIXct(unlist(when_measured(spct), use.names = FALSE),
+                   tz = "UTC")
+      return(z)
     }
 
     if (unit.out == "quantum") {
       unit.out <- "photon"
     }
+
     if (quantity == "total") {
       summary.name <- switch(unit.out,
                              photon = "Q",
@@ -465,26 +480,6 @@ e_irrad.source_spct <-
            naming = "default",
            ...) {
 
-    # we look for multiple spectra in long form
-    if (getMultipleWl(spct) > 1) {
-      # convert to a collection of spectra
-      mspct <- subset2mspct(x = spct,
-                            idx.var = getIdFactor(spct),
-                            drop.idx = FALSE)
-      # call method on the collection
-      return(e_irrad(spct = mspct,
-                     w.band = w.band,
-                     quantity = quantity,
-                     time.unit = time.unit,
-                     scale.factor = scale.factor,
-                     wb.trim = wb.trim,
-                     use.cached.mult = use.cached.mult,
-                     use.hinges = use.hinges,
-                     allow.scaled = allow.scaled,
-                     naming = naming,
-                     ...))
-    }
-
     irrad_spct(spct, w.band = w.band, unit.out = "energy",
                scale.factor = scale.factor,
                quantity = quantity,
@@ -591,26 +586,6 @@ q_irrad.source_spct <-
            allow.scaled = !quantity  %in% c("average", "mean", "total"),
            naming = "default",
            ...) {
-
-    # we look for multiple spectra in long form
-    if (getMultipleWl(spct) > 1) {
-      # convert to a collection of spectra
-      mspct <- subset2mspct(x = spct,
-                            idx.var = getIdFactor(spct),
-                            drop.idx = FALSE)
-      # call method on the collection
-      return(q_irrad(spct = mspct,
-                     w.band = w.band,
-                     quantity = quantity,
-                     time.unit = time.unit,
-                     scale.factor = scale.factor,
-                     wb.trim = wb.trim,
-                     use.cached.mult = use.cached.mult,
-                     use.hinges = use.hinges,
-                     allow.scaled = allow.scaled,
-                     naming = naming,
-                     ...))
-    }
 
     irrad_spct(spct, w.band = w.band, unit.out = "photon", quantity = quantity,
                time.unit = time.unit,
