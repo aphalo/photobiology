@@ -134,7 +134,8 @@ irrad.source_spct <-
       z <- list()
       for (idx in idx.levels) {
         target.rows <- which(idx.var == idx) # a lot faster than logical
-        z[[idx]] <- irrad_spct(spct = spct[target.rows, ],
+        temp.spct <- spct[target.rows, ]
+        z[[idx]] <- irrad_spct(spct = temp.spct,
                                w.band = w.band,
                                unit.out = unit.out,
                                quantity = quantity,
@@ -153,6 +154,14 @@ irrad.source_spct <-
       z[["when.measured"]] <-
         as.POSIXct(unlist(when_measured(spct), use.names = FALSE),
                    tz = "UTC")
+      attr(z, "time.unit") <- getTimeUnit(spct)
+      if (is_effective(spct)) {
+        attr(z, "radiation.unit") <-
+          paste(unit.out, "irradiance", quantity, "effective:", getBSWFUsed(spct))
+      } else {
+        attr(z, "radiation.unit") <- paste(quantity, unit.out, "irradiance")
+      }
+
       return(z)
     }
 
