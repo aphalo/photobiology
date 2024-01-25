@@ -44,6 +44,7 @@ e_irrad(
   use.hinges = NULL,
   allow.scaled = !quantity \%in\% c("average", "mean", "total"),
   naming = "default",
+  return.tb = FALSE,
   ...
 )
 
@@ -96,6 +97,10 @@ as argument to spct are flagged as an error.}
 \item{naming}{character one of "long", "default", "short" or "none". Used to
 select the type of names to assign to returned value.}
 
+\item{return.tb}{logical Flag forcing a tibble to be always returned, even
+for a single spectrum as argumnet to \code{spct}. The default is
+\code{FALSE} for backwards compatibility.}
+
 \item{attr2tb}{character vector, see \code{\link{add_attr2tb}} for the syntax for \code{attr2tb} passed as is to formal parameter \code{col.names}.}
 
 \item{idx}{character Name of the column with the names of the members of the
@@ -111,18 +116,19 @@ your code relies on external data or packages: use the .export and
 correct environment set up for computing.}
 }
 \value{
-A named \code{numeric} vector in the case of methods for individual
-  spectra, with one value for each \code{waveband} passed to parameter
-  \code{w.band}. A \code{data.frame} in the case of collections of spectra,
-  containing one column for each \code{waveband} object, an index column with
-  the names of the spectra, and optionally additional columns with metadata
-  values retrieved from the attributes of the member spectra.
+A named \code{numeric} vector in the case of a \code{_spct} object
+  containing a single spectrum and \code{return.tb = FALSE}. The vector has
+  one member one value for each \code{waveband} passed to parameter
+  \code{w.band}. In all other cases a \code{tibble}, containing one column
+  for each \code{waveband} object, an index column with the names of the
+  spectra, and optionally additional columns with metadata values retrieved
+  from the attributes of the member spectra.
 
   By default values are only integrated, but depending on the argument passed
   to parameter \code{quantity} they can be re-expressed as relative fractions
   or percentages. In the case of vector output, \code{names} attribute is set
   to the name of the corresponding waveband unless a named list is supplied
-  in which case the names of the list members are used. The  time.unit
+  in which case the names of the list members are used. The time.unit
   attribute is copied from the spectrum object to the output. Units are as
   follows: If units are absolute and time.unit is second, [W m-2 nm-1] -> [W
   m-2] If time.unit is day, [J d-1 m-2 nm-1] -> [J m-2]; if units are

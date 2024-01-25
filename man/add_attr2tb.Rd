@@ -30,12 +30,7 @@ add_attr2tb(
   unnest = FALSE
 )
 
-when_measured2tb(
-  mspct,
-  tb = NULL,
-  col.names = "when.measured",
-  idx = "spct.idx"
-)
+when_measured2tb(mspct, tb = NULL, col.names = "when.measured", idx = NULL)
 
 geocode2tb(mspct, tb = NULL, col.names = "geocode", idx = "spct.idx")
 

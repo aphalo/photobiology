@@ -11,9 +11,16 @@ operator `[ ]` for objects of class `generic_spct` and derived classes. This
 makes it possible to extract a subset of spectra from an object containing
 multiple spectra in long form, such as time series of spectra. In earlier 
 versions metadata were not subset.
+- Rewrite method `pull_sample()` specialization for `generic_spct` for faster 
+performance.
+- Revise `irrad()`, `e_irrad()` and `q_irrad()` adding parameter `return.tb`
+making it possible to force the return of a tibble even for summaries of
+individual spectra.
 - Revise `irrad()`, `e_irrad()` and `q_irrad()` for faster performance with
 multiple spectra in long-form. (Adding attributes to the returned tibble is not 
 yet supported except for `when.measured`.)
+- Revise `when_measured2tb()` to support `generic_spct` in addition to 
+`generic_mspct` objects. (Methods to add other attributes are not yet revised.)
 - Add parameter `span` to `thin_wl()` methods, with the previously hard-coded
 value of 21 as default.
 - When checking `raw_spct` and `cps_spct` do not emit a message about renaming 
@@ -21,8 +28,8 @@ columns if option `photobiology.verbose` is set to `FALSE`.
 - Fix bug: some operations failed to copy all metadata attributes to the
 returned value. Some of the dropped attributes are used in package 'ooacquire' 
 (>= 0.4.1).
-- Rewrite method `pull_sample()` specialization for `generic_spct` for faster 
-performance.
+- Fix bug affecting `irrad()`, `e_irrad()` and `q_irrad()` causing a crash with
+argument `use.hinges = FALSE`.
 
 # photobiology 0.11.0
 

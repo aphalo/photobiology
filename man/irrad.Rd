@@ -44,9 +44,10 @@ irrad(
   scale.factor = 1,
   wb.trim = getOption("photobiology.waveband.trim", default = TRUE),
   use.cached.mult = getOption("photobiology.use.cached.mult", default = FALSE),
-  use.hinges = getOption("photobiology.use.hinges"),
+  use.hinges = NULL,
   allow.scaled = !quantity \%in\% c("average", "mean", "total"),
   naming = "default",
+  return.tb = FALSE,
   ...
 )
 
@@ -94,7 +95,7 @@ cached between calls.}
 
 \item{use.hinges}{logical Flag indicating whether to insert "hinges" into the
 spectral data before integration so as to reduce interpolation errors at
-the boundaries of the wavebands.}
+the boundaries of the wavebands. If NULL, default is chosen based on data.}
 
 \item{allow.scaled}{logical indicating whether scaled or normalized spectra
 as argument to spct are flagged as an error.}
@@ -104,6 +105,10 @@ as argument to spct are flagged as an error.}
 \item{naming}{character one of \code{"long"}, \code{"default"},
 \code{"short"} or \code{"none"}. Used to select the type of names to assign
 to returned value.}
+
+\item{return.tb}{logical Flag forcing a tibble to be always returned, even
+for a single spectrum as argumnet to \code{spct}. The default is
+\code{FALSE} for backwards compatibility.}
 
 \item{attr2tb}{character vector, see \code{\link{add_attr2tb}} for the syntax
 for \code{attr2tb} passed as is to formal parameter \code{col.names}.}
@@ -121,13 +126,15 @@ your code relies on external data or packages: use the .export and
 correct environment set up for computing.}
 }
 \value{
-A named \code{numeric} vector in the case of methods for individual
-  spectra, with one value for each \code{waveband} passed to parameter
-  \code{w.band}. A \code{data.frame} in the case of collections of spectra,
-  containing one column for each \code{waveband} object, an index column with
-  the names of the spectra, and optionally additional columns with metadata
-  values retrieved from the attributes of the member spectra. If
-  \code{naming = "long"} the names generated reflect both quantity and
+A named \code{numeric} vector in the case of a \code{_spct} object
+  containing a single spectrum and \code{return.tb = FALSE}. The vector has
+  one member one value for each \code{waveband} passed to parameter
+  \code{w.band}. In all other cases a \code{tibble}, containing one column
+  for each \code{waveband} object, an index column with the names of the
+  spectra, and optionally additional columns with metadata values retrieved
+  from the attributes of the member spectra.
+
+  If \code{naming = "long"} the names generated reflect both quantity and
   waveband, if \code{naming = "short"}, names are based only on the wavebands,
   and if \code{naming = "none"} the returned vector has no names.
 

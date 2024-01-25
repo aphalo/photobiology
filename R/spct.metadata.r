@@ -1218,10 +1218,33 @@ add_attr2tb <- function(tb = NULL,
 when_measured2tb <- function(mspct,
                              tb = NULL,
                              col.names = "when.measured",
-                             idx = "spct.idx") {
-  stopifnot(length(col.names) == 1L)
-  when.tb <- getWhenMeasured(mspct, idx = idx)
-  names(when.tb)[2L] <- col.names
+                             idx = NULL) {
+  stopifnot((is.generic_spct(mspct) || is.generic_mspct(mspct)) &&
+              length(col.names) == 1L)
+  if (is.generic_spct(mspct)) {
+    if (is.null(idx)) {
+      idx <- getIdFactor(mspct)
+      if (is.na(idx)) {
+        idx <- "spct.idx"
+      }
+    }
+    when.ls  <- getWhenMeasured(mspct, idx = idx)
+    if (getMultipleWl(mspct) == 1) {
+      when.ls <- list(spct.nn = when.ls)
+    }
+    when.tb <-
+      tibble::tibble(names(when.ls),
+                     as.POSIXct(unlist(when.ls, use.names = FALSE),
+                                tz = "UTC"))
+    names(when.tb) <- c(idx, col.names)
+  } else if (is.generic_mspct(mspct)) {
+    if (is.null(idx)) {
+      idx <- "spct.idx"
+    }
+    when.tb <- getWhenMeasured(mspct, idx = idx)
+    names(when.tb)[2L] <- col.names
+  }
+
   if (is.null(tb)) {
     when.tb
   } else {
