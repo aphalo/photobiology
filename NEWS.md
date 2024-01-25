@@ -11,6 +11,9 @@ operator `[ ]` for objects of class `generic_spct` and derived classes. This
 makes it possible to extract a subset of spectra from an object containing
 multiple spectra in long form, such as time series of spectra. In earlier 
 versions metadata were not subset.
+- Revise `irrad()`, `e_irrad()` and `q_irrad()` for faster performance with
+multiple spectra in long-form. (Adding attributes to the returned tibble is not 
+yet supported except for `when.measured`.)
 - Add parameter `span` to `thin_wl()` methods, with the previously hard-coded
 value of 21 as default.
 - When checking `raw_spct` and `cps_spct` do not emit a message about renaming 

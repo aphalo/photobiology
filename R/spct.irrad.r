@@ -113,7 +113,12 @@ irrad.source_spct <-
     if (getMultipleWl(spct) > 1) {
       # compute in place
       idx.var.name <- getIdFactor(spct)
-      idxs <- unique(spct[[idx.var.name]])
+      idx.var <- spct[[idx.var.name]] # not faster than inline
+      if (is.factor(idx.var)) {
+        idx.levels <- levels(idx.var)
+      } else {
+        idx.levels <- unique(idx.var)
+      }
       # do conversion in one go and delete values not used
       if (unit.out == "energy") {
         spct <- q2e(spct, action = "replace")
@@ -121,8 +126,9 @@ irrad.source_spct <-
         spct <- e2q(spct, action = "replace")
       }
       z <- list()
-      for (idx in idxs) {
-        temp <- irrad_spct(spct = spct[spct[[idx.var.name]] == idx, ],
+      for (idx in idx.levels) {
+        target.rows <- which(idx.var == idx) # a lot faster than logical
+        temp <- irrad_spct(spct = spct[target.rows, ],
                            w.band = w.band,
                            unit.out = unit.out,
                            quantity = quantity,
@@ -137,7 +143,7 @@ irrad.source_spct <-
         z[[idx]] <- tibble::as_tibble_row(temp, .name_repair = "minimal")
       }
       z <- dplyr::bind_rows(z)
-      z[[idx.var.name]] <- idxs
+      z[[idx.var.name]] <- idx.levels
       z[["when.measured"]] <-
         as.POSIXct(unlist(when_measured(spct), use.names = FALSE),
                    tz = "UTC")
