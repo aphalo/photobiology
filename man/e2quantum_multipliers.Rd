@@ -28,12 +28,12 @@ with(sun.data, e2quantum_multipliers(w.length, molar = TRUE))
 Other quantity conversion functions: 
 \code{\link{A2T}()},
 \code{\link{Afr2T}()},
-\code{\link{T2Afr}()},
 \code{\link{T2A}()},
+\code{\link{T2Afr}()},
 \code{\link{any2T}()},
 \code{\link{as_quantum}()},
-\code{\link{e2qmol_multipliers}()},
 \code{\link{e2q}()},
+\code{\link{e2qmol_multipliers}()},
 \code{\link{q2e}()}
 }
 \concept{quantity conversion functions}

@@ -26,12 +26,12 @@ with(sun.data, as_quantum(w.length, s.e.irrad))
 Other quantity conversion functions: 
 \code{\link{A2T}()},
 \code{\link{Afr2T}()},
-\code{\link{T2Afr}()},
 \code{\link{T2A}()},
+\code{\link{T2Afr}()},
 \code{\link{any2T}()},
+\code{\link{e2q}()},
 \code{\link{e2qmol_multipliers}()},
 \code{\link{e2quantum_multipliers}()},
-\code{\link{e2q}()},
 \code{\link{q2e}()}
 }
 \concept{quantity conversion functions}

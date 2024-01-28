@@ -215,40 +215,38 @@ your code relies on external data or packages: use the .export and
 correct environment set up for computing.}
 }
 \value{
-A copy of \code{x}, with spectral data values normalized to one for
-  the criterion specified by the argument passed to \code{norm} with
-  information about the normalization applied saved in attributes
-  \code{"normalized"} and \code{"normalization"}.
-
-A copy of \code{x} with the values of the spectral quantity rescaled
-  to 1 at the normalization wavelength. If the normalization wavelength is
-  not already present in \code{x}, it is added by interpolation---i.e. the
-  returned value may be one row longer than \code{x}. Attributes
-  \code{normalized} and \code{normalization} are set to keep a log of the
-  computations applied.
+A copy of the object passed as argument to \code{x} with the values
+  of the spectral quantity rescaled to 1 at the normalization wavelength. If
+  the normalization wavelength is not already present in \code{x}, it is
+  added by interpolation---i.e. the returned value may be one row longer than
+  \code{x}. Attributes \code{normalized} and \code{normalization} are set to
+  keep a log of the computations applied.
 }
 \description{
-This method returns a spectral object of the same class as the one
-supplied as argument but with the spectral data normalized to 1.0 at a
-specific wavelength.
+This method returns a spectral object of the same class as the one supplied
+as argument but with the spectral data normalized to 1.0 at a specific
+wavelength.  When the object contains multiple spectra, the normalisation is
+applied to each spectrum individually.
 }
 \details{
 By default normalization is done based on the maximum of the
   spectral data. It is possible to also do the normalization based on a
-  user-supplied wavelength expressed in nanometres or the minimum. It is
-  also possible to update an existing normalization for different units
-  of expression or after a conversion to a related spectral quantity.
+  user-supplied wavelength expressed in nanometres or the minimum. An
+  existing normalization can be updated for a different unit of expression or
+  after a conversion to a related spectral quantity.
 
   By default the function is applied to the whole spectrum, but by passing a
-  range of wavelengths as input, the search can be limited to a region of
-  interest within the spectrum.
+  range of wavelengths as input, the search, e.g., for the maximum, can be
+  limited to a range of wavelengths of interest instead of the whole
+  spectrum.
 
   In 'photobiology' (>= 0.10.8) detailed information about the normalization
   is stored in an attribute. In 'photobiology' (>= 0.10.10)
   applying a new normalization to an already normalized spectrum recomputes
   the multiplier factors stored in the attributes whenever possible. This
-  ensures that the returned object is identical independently of the previous
-  application of a different normalization.
+  ensures that the returned object is identical, except for possible
+  accumulated loss of precision due to floating-point arithmetic,
+  independently of the previous application of a different normalization.
 }
 \section{Methods (by class)}{
 \itemize{
@@ -284,32 +282,30 @@ By default normalization is done based on the maximum of the
 
 }}
 \note{
-If the spectrum passed as argument to \code{x} has been previously
+When the spectrum passed as argument to \code{x} had been previously
   scaled, in 'photobiology' (<= 0.10.9) the scaling attribute was always
   removed and no normalization factors returned. In 'photobiology'
   (>= 0.10.10) scaling information can be preserved by passing
-  \code{keep.scaling = TRUE} (experimental feature).
+  \code{keep.scaling = TRUE}.
 
-\code{normalise()} is a synonym for this \code{normalize()} method.
-
-1) By default if \code{x} contains one or more \code{NA} values and the
+  By default if \code{x} contains one or more \code{NA} values and the
   normalization is based on a summary quantity, the returned spectrum will
   contain only \code{NA} values. If \code{na.rm == TRUE} then the summary
   quantity will be calculated after striping \code{NA} values, and only the
-  values that were \code{NA} in \code{x} will be \code{NA} values in the returned
-  spectrum. 2) When a numeric value is passed as argument to keep.scaling,
-  the scaling uses \code{f = "total"} or \code{f = "mean"} depending on the
-  class of \code{x}. Prescaling is only occasionally needed.
+  values that were \code{NA} in \code{x} will be \code{NA} values in the
+  returned spectrum.
 
-  The argument passed to parameter \code{keep.scaling} affects only the
-  metadata stored in the \code{"normalization"} and \code{"scaling"}
-  attributes of the returned object.
+  When a numeric value is passed as argument to keep.scaling, the scaling
+  uses \code{f = "total"} or \code{f = "mean"} depending on the class of
+  \code{x}. Prescaling is only occasionally needed.
 
-  Method \code{normalize} is implemented for \code{solute_spct} objects
-  but as the spectral data stored in them are a description of an intensive
-  property of a substance, care should be taken of when normalization is
-  applied. To represent solutions of specific concentrations
-  of solutes, \code{filter_spct} objects can be used instead.
+  Method \code{normalize} is implemented for \code{solute_spct} objects but
+  as the spectral data stored in them are a description of an intensive
+  property of a substance, normalization is unlikely to useful. To represent
+  solutions of specific concentrations of solutes, \code{filter_spct} objects
+  should be used instead.
+
+\code{normalise()} is a synonym for this \code{normalize()} method.
 }
 \examples{
 

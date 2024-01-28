@@ -214,7 +214,8 @@ your code relies on external data or packages: use the .export and
 correct environment set up for computing.}
 }
 \value{
-A subset of \code{x} with rows corresponding to spikes.
+A subset of the object passed as argument to \code{x} with rows
+  corresponding to spikes.
 }
 \description{
 Function that returns a subset of an R object with observations corresponding
@@ -223,6 +224,19 @@ neighbors. They are usually individual values or very short runs of similar
 "unusual" values. Spikes caused by cosmic radiation are a frequent problem in
 Raman spectra. Another source of spikes are "hot pixels" in CCD and diode
 arrays.
+}
+\details{
+Spikes are detected based on a modified Z score calculated from the
+  differenced spectrum. The Z threshold used should be adjusted to the
+  characteristics of the input and desired sensitivity. The lower the
+  threshold the more stringent the test becomes, resulting in most cases in
+  more spikes being detected. A modified version of the algorithm is used if
+  a value different from \code{NULL} is passed as argument to
+  \code{max.spike.width}. In such a case, an additional step filters out
+  broader spikes (or falsely detected steep slopes) from the returned values.
+
+  When the argument passed to \code{x} contains multiple spectra, the spikes
+  are searched for in each spectrum independently of other spectra.
 }
 \section{Methods (by class)}{
 \itemize{

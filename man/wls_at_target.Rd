@@ -11,6 +11,7 @@
 \alias{wls_at_target.reflector_spct}
 \alias{wls_at_target.solute_spct}
 \alias{wls_at_target.cps_spct}
+\alias{wls_at_target.raw_spct}
 \alias{wls_at_target.generic_mspct}
 \title{Find wavelengths values corresponding to a target spectral value}
 \usage{
@@ -111,6 +112,15 @@ wls_at_target(
   ...
 )
 
+\method{wls_at_target}{raw_spct}(
+  x,
+  target = "0.5max",
+  interpolate = FALSE,
+  idfactor = length(target) > 1,
+  na.rm = FALSE,
+  ...
+)
+
 \method{wls_at_target}{generic_mspct}(
   x,
   target = "0.5max",
@@ -200,6 +210,8 @@ same class as \code{x}.
 \item \code{wls_at_target(solute_spct)}: Method for "solute_spct" objects.
 
 \item \code{wls_at_target(cps_spct)}: Method for "cps_spct" objects.
+
+\item \code{wls_at_target(raw_spct)}: Method for "raw_spct" objects.
 
 \item \code{wls_at_target(generic_mspct)}: Method for "generic_mspct" objects.
 

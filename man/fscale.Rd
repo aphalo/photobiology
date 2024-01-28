@@ -218,9 +218,9 @@ your code relies on external data or packages: use the .export and
 correct environment set up for computing.}
 }
 \value{
-A copy of \code{x} with the original spectral data values replaced
-  with rescaled values, and the \code{"scaled"} attribute set to a list
-  describing the scaling applied.
+A copy of the object passed as argument to \code{x} with the original
+  spectral data values replaced with rescaled values, and the \code{"scaled"}
+  attribute set to a list describing the scaling applied.
 
 a new object of the same class as \code{x}.
 }
@@ -228,7 +228,8 @@ a new object of the same class as \code{x}.
 These methods return a spectral object of the same class as the one
 supplied as argument but with the spectral data rescaled based on a summary
 function \code{f} applied over a specific \code{range} of wavelengths and a
-\code{target} value for the summary value.
+\code{target} value for the summary value. When the object contains
+multiple spectra, the rescaling is applied separately to each spectrum.
 }
 \details{
 After scaling, applying the function passed as argument to \code{f}

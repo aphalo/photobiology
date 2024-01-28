@@ -3,40 +3,62 @@
 
 #' Normalize spectral data
 #'
-#' This method returns a spectral object of the same class as the one
-#' supplied as argument but with the spectral data normalized to 1.0 at a
-#' specific wavelength.
+#' This method returns a spectral object of the same class as the one supplied
+#' as argument but with the spectral data normalized to 1.0 at a specific
+#' wavelength.  When the object contains multiple spectra, the normalisation is
+#' applied to each spectrum individually.
 #'
 #' @details By default normalization is done based on the maximum of the
 #'   spectral data. It is possible to also do the normalization based on a
-#'   user-supplied wavelength expressed in nanometres or the minimum. It is
-#'   also possible to update an existing normalization for different units
-#'   of expression or after a conversion to a related spectral quantity.
+#'   user-supplied wavelength expressed in nanometres or the minimum. An
+#'   existing normalization can be updated for a different unit of expression or
+#'   after a conversion to a related spectral quantity.
 #'
 #'   By default the function is applied to the whole spectrum, but by passing a
-#'   range of wavelengths as input, the search can be limited to a region of
-#'   interest within the spectrum.
+#'   range of wavelengths as input, the search, e.g., for the maximum, can be
+#'   limited to a range of wavelengths of interest instead of the whole
+#'   spectrum.
 #'
 #'   In 'photobiology' (>= 0.10.8) detailed information about the normalization
 #'   is stored in an attribute. In 'photobiology' (>= 0.10.10)
 #'   applying a new normalization to an already normalized spectrum recomputes
 #'   the multiplier factors stored in the attributes whenever possible. This
-#'   ensures that the returned object is identical independently of the previous
-#'   application of a different normalization.
+#'   ensures that the returned object is identical, except for possible
+#'   accumulated loss of precision due to floating-point arithmetic,
+#'   independently of the previous application of a different normalization.
 #'
-#' @note If the spectrum passed as argument to \code{x} has been previously
+#' @note When the spectrum passed as argument to \code{x} had been previously
 #'   scaled, in 'photobiology' (<= 0.10.9) the scaling attribute was always
 #'   removed and no normalization factors returned. In 'photobiology'
 #'   (>= 0.10.10) scaling information can be preserved by passing
-#'   \code{keep.scaling = TRUE} (experimental feature).
+#'   \code{keep.scaling = TRUE}.
+#'
+#'   By default if \code{x} contains one or more \code{NA} values and the
+#'   normalization is based on a summary quantity, the returned spectrum will
+#'   contain only \code{NA} values. If \code{na.rm == TRUE} then the summary
+#'   quantity will be calculated after striping \code{NA} values, and only the
+#'   values that were \code{NA} in \code{x} will be \code{NA} values in the
+#'   returned spectrum.
+#'
+#'   When a numeric value is passed as argument to keep.scaling, the scaling
+#'   uses \code{f = "total"} or \code{f = "mean"} depending on the class of
+#'   \code{x}. Prescaling is only occasionally needed.
+#'
+#'   Method \code{normalize} is implemented for \code{solute_spct} objects but
+#'   as the spectral data stored in them are a description of an intensive
+#'   property of a substance, normalization is unlikely to useful. To represent
+#'   solutions of specific concentrations of solutes, \code{filter_spct} objects
+#'   should be used instead.
 #'
 #' @param x An R object
 #' @param ... not used in current version
 #'
-#' @return A copy of \code{x}, with spectral data values normalized to one for
-#'   the criterion specified by the argument passed to \code{norm} with
-#'   information about the normalization applied saved in attributes
-#'   \code{"normalized"} and \code{"normalization"}.
+#' @return A copy of the object passed as argument to \code{x} with the values
+#'   of the spectral quantity rescaled to 1 at the normalization wavelength. If
+#'   the normalization wavelength is not already present in \code{x}, it is
+#'   added by interpolation---i.e. the returned value may be one row longer than
+#'   \code{x}. Attributes \code{normalized} and \code{normalization} are set to
+#'   keep a log of the computations applied.
 #'
 #' @examples
 #'
@@ -88,32 +110,6 @@ normalize.default <- function(x, ...) {
 #' @param na.rm logical indicating whether \code{NA} values should be stripped
 #'   before calculating the summary (e.g. "max") used for normalization.
 #'
-#' @note 1) By default if \code{x} contains one or more \code{NA} values and the
-#'   normalization is based on a summary quantity, the returned spectrum will
-#'   contain only \code{NA} values. If \code{na.rm == TRUE} then the summary
-#'   quantity will be calculated after striping \code{NA} values, and only the
-#'   values that were \code{NA} in \code{x} will be \code{NA} values in the returned
-#'   spectrum. 2) When a numeric value is passed as argument to keep.scaling,
-#'   the scaling uses \code{f = "total"} or \code{f = "mean"} depending on the
-#'   class of \code{x}. Prescaling is only occasionally needed.
-#'
-#'   The argument passed to parameter \code{keep.scaling} affects only the
-#'   metadata stored in the \code{"normalization"} and \code{"scaling"}
-#'   attributes of the returned object.
-#'
-#'   Method \code{normalize} is implemented for \code{solute_spct} objects
-#'   but as the spectral data stored in them are a description of an intensive
-#'   property of a substance, care should be taken of when normalization is
-#'   applied. To represent solutions of specific concentrations
-#'   of solutes, \code{filter_spct} objects can be used instead.
-#'
-#' @return A copy of \code{x} with the values of the spectral quantity rescaled
-#'   to 1 at the normalization wavelength. If the normalization wavelength is
-#'   not already present in \code{x}, it is added by interpolation---i.e. the
-#'   returned value may be one row longer than \code{x}. Attributes
-#'   \code{normalized} and \code{normalization} are set to keep a log of the
-#'   computations applied.
-#'
 #' @export
 #'
 normalize.source_spct <- function(x,
@@ -124,6 +120,21 @@ normalize.source_spct <- function(x,
                                                        default = "energy"),
                                   keep.scaling = FALSE,
                                   na.rm = FALSE) {
+  if (getMultipleWl(x) > 1L) {
+    # brute force and slow approach, unsuitable for long time series
+    mspct <- subset2mspct(x,
+                          idx.var = getIdFactor(x),
+                          drop.idx = FALSE)
+    mspct <- normalize(x = mspct,
+                       range = range,
+                       norm = norm,
+                       unit.out = unit.out,
+                       keep.scaling = keep.scaling,
+                       na.rm = na.rm,
+                       ...)
+    return(rbindspct(mspct, idfactor = FALSE))
+  }
+
   if (is.numeric(keep.scaling)) {
     if (!norm %in% c("update", "skip")) {
       x <- setNormalised(x, FALSE)
@@ -142,14 +153,16 @@ normalize.source_spct <- function(x,
                           norm = norm,
                           col.names = "s.e.irrad",
                           keep.scaling = keep.scaling,
-                          na.rm = na.rm))
+                          na.rm = na.rm,
+                          ...))
   } else if (unit.out %in% c("photon", "quantum") ) {
     return(normalize_spct(spct = e2q(x, action = "replace.raw"),
                           range = range,
                           norm = norm,
                           col.names = "s.q.irrad",
                           keep.scaling = keep.scaling,
-                          na.rm = na.rm))
+                          na.rm = na.rm,
+                          ...))
   } else {
     stop("'unit.out ", unit.out, " is unknown")
   }
@@ -167,6 +180,20 @@ normalize.response_spct <- function(x,
                                                        default = "energy"),
                                   keep.scaling = FALSE,
                                   na.rm = FALSE) {
+  if (getMultipleWl(x) > 1L) {
+    mspct <- subset2mspct(x,
+                          idx.var = getIdFactor(x),
+                          drop.idx = FALSE)
+    mspct <- normalize(x = mspct,
+                       range = range,
+                       norm = norm,
+                       unit.out = unit.out,
+                       keep.scaling = keep.scaling,
+                       na.rm = na.rm,
+                       ...)
+    return(rbindspct(mspct, idfactor = FALSE))
+  }
+
   if (is.numeric(keep.scaling)) {
     if (!norm %in% c("update", "skip")) {
       x <- setNormalised(x, FALSE)
@@ -185,14 +212,16 @@ normalize.response_spct <- function(x,
                           norm = norm,
                           col.names = "s.e.response",
                           keep.scaling = keep.scaling,
-                          na.rm = na.rm))
+                          na.rm = na.rm,
+                          ...))
   } else if (unit.out %in% c("photon", "quantum") ) {
     return(normalize_spct(spct = e2q(x, action = "replace.raw"),
                           range = range,
                           norm = norm,
                           col.names = "s.q.response",
                           keep.scaling = keep.scaling,
-                          na.rm = na.rm))
+                          na.rm = na.rm,
+                          ...))
   } else {
     stop("'unit.out ", unit.out, " is unknown")
   }
@@ -214,6 +243,20 @@ normalize.filter_spct <-
                                default = "transmittance"),
            keep.scaling = FALSE,
            na.rm = FALSE) {
+    if (getMultipleWl(x) > 1L) {
+      mspct <- subset2mspct(x,
+                            idx.var = getIdFactor(x),
+                            drop.idx = FALSE)
+      mspct <- normalize(x = mspct,
+                         range = range,
+                         norm = norm,
+                         qty.out = qty.out,
+                         keep.scaling = keep.scaling,
+                         na.rm = na.rm,
+                         ...)
+      return(rbindspct(mspct, idfactor = FALSE))
+    }
+
     if (is.numeric(keep.scaling)) {
       if (!norm %in% c("update", "skip")) {
         x <- setNormalised(x, FALSE)
@@ -232,21 +275,24 @@ normalize.filter_spct <-
                             norm = norm,
                             col.names = "Tfr",
                             keep.scaling = keep.scaling,
-                            na.rm = na.rm))
+                            na.rm = na.rm,
+                            ...))
     } else if (qty.out == "absorbance") {
       return(normalize_spct(spct = T2A(x, action = "replace.raw"),
                             range = range,
                             norm = norm,
                             col.names = "A",
                             keep.scaling = keep.scaling,
-                            na.rm = na.rm))
+                            na.rm = na.rm,
+                            ...))
     } else if (qty.out == "absorptance") {
       return(normalize_spct(spct = T2Afr(x, action = "replace.raw"),
                             range = range,
                             norm = norm,
                             col.names = "Afr",
                             keep.scaling = keep.scaling,
-                            na.rm = na.rm))
+                            na.rm = na.rm,
+                            ...))
     } else {
       stop("'qty.out ", qty.out, " is unknown")
     }
@@ -264,6 +310,20 @@ normalize.reflector_spct <-
            qty.out = NULL,
            keep.scaling = FALSE,
            na.rm = FALSE) {
+    if (getMultipleWl(x) > 1L) {
+      mspct <- subset2mspct(x,
+                            idx.var = getIdFactor(x),
+                            drop.idx = FALSE)
+      mspct <- normalize(x = mspct,
+                         range = range,
+                         norm = norm,
+                         qty.out = qty.out,
+                         keep.scaling = keep.scaling,
+                         na.rm = na.rm,
+                         ...)
+      return(rbindspct(mspct, idfactor = FALSE))
+    }
+
     if (is.numeric(keep.scaling)) {
       if (!norm %in% c("update", "skip")) {
         x <- setNormalised(x, FALSE)
@@ -280,7 +340,8 @@ normalize.reflector_spct <-
                    norm = norm,
                    col.names = "Rfr",
                    keep.scaling = keep.scaling,
-                   na.rm = na.rm)
+                   na.rm = na.rm,
+                   ...)
   }
 
 #' @describeIn normalize Normalize a solute spectrum.
@@ -295,6 +356,20 @@ normalize.solute_spct <-
            keep.scaling = FALSE,
            na.rm = FALSE) {
     # for consistency use qty.out parameter and add support!!!
+    if (getMultipleWl(x) > 1L) {
+      mspct <- subset2mspct(x,
+                            idx.var = getIdFactor(x),
+                            drop.idx = FALSE)
+      mspct <- normalize(x = mspct,
+                         range = range,
+                         norm = norm,
+#                         qty.out = qty.out,
+                         keep.scaling = keep.scaling,
+                         na.rm = na.rm,
+                         ...)
+      return(rbindspct(mspct, idfactor = FALSE))
+    }
+
     if (is.numeric(keep.scaling)) {
       warning("Scaling before normalization not supported for class ", class(x)[1])
       keep.scaling <- FALSE
@@ -310,7 +385,8 @@ normalize.solute_spct <-
                    norm = norm,
                    col.names = col.name,
                    keep.scaling = keep.scaling,
-                   na.rm = na.rm)
+                   na.rm = na.rm,
+                   ...)
   }
 
 #' @describeIn normalize Normalize a raw spectrum.
@@ -324,6 +400,19 @@ normalize.raw_spct <-
            norm = "max",
            keep.scaling = FALSE,
            na.rm = FALSE) {
+    if (getMultipleWl(x) > 1L) {
+      mspct <- subset2mspct(x,
+                            idx.var = getIdFactor(x),
+                            drop.idx = FALSE)
+      mspct <- normalize(x = mspct,
+                         range = range,
+                         norm = norm,
+                         keep.scaling = keep.scaling,
+                         na.rm = na.rm,
+                         ...)
+      return(rbindspct(mspct, idfactor = FALSE))
+    }
+
     if (is.numeric(keep.scaling)) {
       if (!norm %in% c("update", "skip")) {
         x <- setNormalised(x, FALSE)
@@ -340,7 +429,8 @@ normalize.raw_spct <-
                    norm = norm,
                    col.names = grep("^counts", names(x), value = TRUE),
                    keep.scaling = keep.scaling,
-                   na.rm = na.rm)
+                   na.rm = na.rm,
+                   ...)
   }
 
 #' @describeIn normalize Normalize a cps spectrum.
@@ -354,6 +444,19 @@ normalize.cps_spct <-
            norm = "max",
            keep.scaling = FALSE,
            na.rm = FALSE) {
+    if (getMultipleWl(x) > 1L) {
+      mspct <- subset2mspct(x,
+                            idx.var = getIdFactor(x),
+                            drop.idx = FALSE)
+      mspct <- normalize(x = mspct,
+                         range = range,
+                         norm = norm,
+                         keep.scaling = keep.scaling,
+                         na.rm = na.rm,
+                         ...)
+      return(rbindspct(mspct, idfactor = FALSE))
+    }
+
     if (is.numeric(keep.scaling)) {
       if (!norm %in% c("update", "skip")) {
         x <- setNormalised(x, FALSE)
@@ -370,7 +473,8 @@ normalize.cps_spct <-
                    norm = norm,
                    col.names = grep("^cps", names(x), value = TRUE),
                    keep.scaling = keep.scaling,
-                   na.rm = na.rm)
+                   na.rm = na.rm,
+                   ...)
   }
 
 #' @describeIn normalize Normalize a raw spectrum.
@@ -392,12 +496,28 @@ normalize.generic_spct <-
       warning("Pre-scaling before normalization not implemented for class ", class(x)[1])
       keep.scaling <- FALSE
     }
+
+    if (getMultipleWl(x) > 1L) {
+      mspct <- subset2mspct(x,
+                            idx.var = getIdFactor(x),
+                            drop.idx = FALSE)
+      mspct <- normalize(x = mspct,
+                         range = range,
+                         norm = norm,
+                         col.names = col.names,
+                         keep.scaling = keep.scaling,
+                         na.rm = na.rm,
+                         ...)
+      return(rbindspct(mspct, idfactor = FALSE))
+    }
+
     normalize_spct(spct = x,
                    range = range,
                    norm = norm,
                    col.names = col.names,
                    keep.scaling = keep.scaling,
-                   na.rm = na.rm)
+                   na.rm = na.rm,
+                   ...)
   }
 
 # collections of spectra --------------------------------------------------
@@ -594,10 +714,11 @@ normalize_spct <- function(spct,
                            norm,
                            col.names,
                            na.rm,
-                           keep.scaling) {
+                           keep.scaling,
+                           ...) {
   stopifnot(is.generic_spct(spct))
 
-  # handle "skip" early so that long-from multiple spectra or missing columns
+  # handle "skip" early so that long-form multiple spectra or missing columns
   # do not trigger errors
   if (is.na(norm) ||
       is.null(norm) ||
@@ -606,13 +727,8 @@ normalize_spct <- function(spct,
     return(spct)
   }
 
-  stopifnot(all(col.names %in% colnames(spct)))
-
-  if (getMultipleWl(spct) != 1L) {
-    warning("Object contains data for ",
-            getMultipleWl(spct), " spectra; skipping normalization")
-    return(spct)
-  }
+  stopifnot("Missing columns" = all(col.names %in% colnames(spct)),
+            "Multiple spectra in long form" = getMultipleWl(spct) == 1L)
 
   if (na.rm) {
     x <- na.omit(spct)

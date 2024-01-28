@@ -19,6 +19,12 @@ individual spectra.
 - Revise `irrad()`, `e_irrad()` and `q_irrad()` for faster performance with
 multiple spectra in long-form. (Adding attributes to the returned tibble is not 
 yet supported except for `when.measured`.)
+- Revise `normalise()`, `fscale()` and `smooth_spct()` methods to accept
+multiple spectra in long form as their argument returning a similar object, with
+the spectra individually normalised or scaled.
+- Revise `peaks()`, `valleys()`, `wls_at_target()`, `spikes()` and `despike()`
+methods to consistently return an object as the same class as their `x` 
+argument. 
 - Revise `when_measured2tb()` to support `generic_spct` in addition to 
 `generic_mspct` objects. (Methods to add other attributes are not yet revised.)
 - Add parameter `span` to `thin_wl()` methods, with the previously hard-coded

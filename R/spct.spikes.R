@@ -204,6 +204,28 @@ replace_bad_pixs <-
 #' caused by cosmic radiation are a frequent problem in Raman spectra. Another
 #' source of spikes are "hot pixels" in CCD and diode array detectors.
 #'
+#' @details Spikes are detected based on a modified Z score calculated from the
+#'   differenced spectrum. The Z threshold used should be adjusted to the
+#'   characteristics of the input and desired sensitivity. The lower the
+#'   threshold the more stringent the test becomes, resulting in most cases in
+#'   more spikes being detected. A modified version of the algorithm is used if
+#'   a value different from \code{NULL} is passed as argument to
+#'   \code{max.spike.width}. In such a case, an additional step filters out
+#'   broader spikes (or falsely detected steep slopes) from the returned values.
+#'
+#'   Simple interpolation replaces values of isolated bad pixels by the mean of
+#'   their two closest neighbors. The running mean approach allows the
+#'   replacement of short runs of bad pixels by the running mean of neighboring
+#'   pixels within a window of user-specified width. The first approach works
+#'   well for spectra from array spectrometers to correct for hot and dead
+#'   pixels in an instrument. The second approach is most suitable for Raman
+#'   spectra in which spikes triggered by radiation are wider than a single
+#'   pixel but usually not more than five pixels wide.
+#'
+#'   When the argument passed to \code{x} contains multiple spectra, the spikes
+#'   are searched for and replaced in each spectrum independently of other
+#'   spectra.
+#'
 #' @param x an R object
 #' @param z.threshold numeric Modified Z values larger than \code{z.threshold}
 #'   are considered to correspond to spikes.
@@ -220,8 +242,9 @@ replace_bad_pixs <-
 #'   for spikes to remove.
 #' @param ... Arguments passed by name to \code{find_spikes()}.
 #'
-#' @return \code{x} with rows corresponding to spikes replaced by a local
-#'   average of adjacent neighbors outside the spike.
+#' @return A copy of the object passed as argument to \code{x} with values
+#'   detected as spikes replaced by a local average of adjacent neighbors
+#'   outside the spike.
 #'
 #' @note Current algorithm misidentifies steep smooth slopes as spikes, so
 #'   manual inspection is needed together with adjustment by trial and error
@@ -345,15 +368,16 @@ despike.generic_spct <-
                             idx.var = getIdFactor(x),
                             drop.idx = FALSE)
       # call method on the collection
-      return(wls_at_target(x = mspct,
-                           z.threshold = z.threshold,
-                           max.spike.width = max.spike.width,
-                           window.width = window.width,
-                           method = method,
-                           na.rm = na.rm,
-                           y.var.name = y.var.name,
-                           var.name = var.name,
-                           ...))
+      mspct <- despike(x = mspct,
+                       z.threshold = z.threshold,
+                       max.spike.width = max.spike.width,
+                       window.width = window.width,
+                       method = method,
+                       na.rm = na.rm,
+                       y.var.name = y.var.name,
+                       var.name = var.name,
+                       ...)
+      return(rbindspct(mspct, idfactor = FALSE))
     }
 
     if (is.null(var.name)) {
@@ -405,14 +429,15 @@ despike.source_spct <-
                             idx.var = getIdFactor(x),
                             drop.idx = FALSE)
       # call method on the collection
-      return(wls_at_target(x = mspct,
-                           z.threshold = z.threshold,
-                           max.spike.width = max.spike.width,
-                           window.width = window.width,
-                           method = method,
-                           na.rm = na.rm,
-                           unit.out = unit.out,
-                           ...))
+      mspct <- despike(x = mspct,
+                       z.threshold = z.threshold,
+                       max.spike.width = max.spike.width,
+                       window.width = window.width,
+                       method = method,
+                       na.rm = na.rm,
+                       unit.out = unit.out,
+                       ...)
+      return(rbindspct(mspct, idfactor = FALSE))
     }
 
     if (unit.out == "energy") {
@@ -456,14 +481,15 @@ despike.response_spct <-
                             idx.var = getIdFactor(x),
                             drop.idx = FALSE)
       # call method on the collection
-      return(wls_at_target(x = mspct,
-                           z.threshold = z.threshold,
-                           max.spike.width = max.spike.width,
-                           window.width = window.width,
-                           method = method,
-                           na.rm = na.rm,
-                           unit.out = unit.out,
-                           ...))
+      mspct <- despike(x = mspct,
+                       z.threshold = z.threshold,
+                       max.spike.width = max.spike.width,
+                       window.width = window.width,
+                       method = method,
+                       na.rm = na.rm,
+                       unit.out = unit.out,
+                       ...)
+      return(rbindspct(mspct, idfactor = FALSE))
     }
 
     if (unit.out == "energy") {
@@ -509,14 +535,15 @@ despike.filter_spct <-
                             idx.var = getIdFactor(x),
                             drop.idx = FALSE)
       # call method on the collection
-      return(wls_at_target(x = mspct,
-                           z.threshold = z.threshold,
-                           max.spike.width = max.spike.width,
-                           window.width = window.width,
-                           method = method,
-                           na.rm = na.rm,
-                           filter.qty = filter.qty,
-                           ...))
+      mspct <- despike(x = mspct,
+                       z.threshold = z.threshold,
+                       max.spike.width = max.spike.width,
+                       window.width = window.width,
+                       method = method,
+                       na.rm = na.rm,
+                       filter.qty = filter.qty,
+                       ...)
+      return(rbindspct(mspct, idfactor = FALSE))
     }
 
     if (filter.qty == "transmittance") {
@@ -560,13 +587,14 @@ despike.reflector_spct <- function(x,
                           idx.var = getIdFactor(x),
                           drop.idx = FALSE)
     # call method on the collection
-    return(wls_at_target(x = mspct,
-                         z.threshold = z.threshold,
-                         max.spike.width = max.spike.width,
-                         window.width = window.width,
-                         method = method,
-                         na.rm = na.rm,
-                         ...))
+    mspct <- despike(x = mspct,
+                     z.threshold = z.threshold,
+                     max.spike.width = max.spike.width,
+                     window.width = window.width,
+                     method = method,
+                     na.rm = na.rm,
+                     ...)
+    return(rbindspct(mspct, idfactor = FALSE))
   }
 
   col.name <- "Rfr"
@@ -601,13 +629,14 @@ despike.solute_spct <-
                             idx.var = getIdFactor(x),
                             drop.idx = FALSE)
       # call method on the collection
-      return(wls_at_target(x = mspct,
-                           z.threshold = z.threshold,
-                           max.spike.width = max.spike.width,
-                           window.width = window.width,
-                           method = method,
-                           na.rm = na.rm,
-                           ...))
+      mspct <- despike(x = mspct,
+                       z.threshold = z.threshold,
+                       max.spike.width = max.spike.width,
+                       window.width = window.width,
+                       method = method,
+                       na.rm = na.rm,
+                       ...)
+      return(rbindspct(mspct, idfactor = FALSE))
     }
 
     cols <- intersect(c("K.mole", "K.mass"), names(x))
@@ -646,13 +675,14 @@ despike.cps_spct <- function(x,
                           idx.var = getIdFactor(x),
                           drop.idx = FALSE)
     # call method on the collection
-    return(wls_at_target(x = mspct,
-                         z.threshold = z.threshold,
-                         max.spike.width = max.spike.width,
-                         window.width = window.width,
-                         method = method,
-                         na.rm = na.rm,
-                         ...))
+    mspct <- despike(x = mspct,
+                     z.threshold = z.threshold,
+                     max.spike.width = max.spike.width,
+                     window.width = window.width,
+                     method = method,
+                     na.rm = na.rm,
+                     ...)
+    return(rbindspct(mspct, idfactor = FALSE))
   }
 
   var.name <- grep("cps", colnames(x), value = TRUE)
@@ -688,13 +718,14 @@ despike.raw_spct <- function(x,
                           idx.var = getIdFactor(x),
                           drop.idx = FALSE)
     # call method on the collection
-    return(wls_at_target(x = mspct,
-                         z.threshold = z.threshold,
-                         max.spike.width = max.spike.width,
-                         window.width = window.width,
-                         method = method,
-                         na.rm = na.rm,
-                         ...))
+    mspct <- despike(x = mspct,
+                     z.threshold = z.threshold,
+                     max.spike.width = max.spike.width,
+                     window.width = window.width,
+                     method = method,
+                     na.rm = na.rm,
+                     ...)
+    return(rbindspct(mspct, idfactor = FALSE))
   }
 
   var.name <- grep("counts", colnames(x), value = TRUE)
@@ -710,6 +741,9 @@ despike.raw_spct <- function(x,
   }
   x
 }
+
+
+# _mspct methods ----------------------------------------------------------
 
 #' @describeIn despike  Method for "generic_mspct" objects.
 #'
@@ -949,6 +983,18 @@ despike.raw_mspct <- function(x,
 #' Raman spectra. Another source of spikes are "hot pixels" in CCD and diode
 #' arrays.
 #'
+#' @details Spikes are detected based on a modified Z score calculated from the
+#'   differenced spectrum. The Z threshold used should be adjusted to the
+#'   characteristics of the input and desired sensitivity. The lower the
+#'   threshold the more stringent the test becomes, resulting in most cases in
+#'   more spikes being detected. A modified version of the algorithm is used if
+#'   a value different from \code{NULL} is passed as argument to
+#'   \code{max.spike.width}. In such a case, an additional step filters out
+#'   broader spikes (or falsely detected steep slopes) from the returned values.
+#'
+#'   When the argument passed to \code{x} contains multiple spectra, the spikes
+#'   are searched for in each spectrum independently of other spectra.
+#'
 #' @param x an R object
 #' @param z.threshold numeric Modified Z values larger than \code{z.threshold}
 #'   are considered to correspond to spikes.
@@ -960,7 +1006,8 @@ despike.raw_mspct <- function(x,
 #'   for spikes.
 #' @param ... ignored
 #'
-#' @return A subset of \code{x} with rows corresponding to spikes.
+#' @return A subset of the object passed as argument to \code{x} with rows
+#'   corresponding to spikes.
 #'
 #' @seealso See the documentation for \code{\link{find_spikes}} for details of
 #'   the algorithm and implementation.
@@ -1044,12 +1091,13 @@ spikes.generic_spct <-
                             idx.var = getIdFactor(x),
                             drop.idx = FALSE)
       # call method on the collection
-      return(wls_at_target(x = mspct,
-                           z.threshold = z.threshold,
-                           max.spike.width = max.spike.width,
-                           na.rm = na.rm,
-                           var.name = var.name,
-                           ...))
+      mspct <- spikes(x = mspct,
+                      z.threshold = z.threshold,
+                      max.spike.width = max.spike.width,
+                      na.rm = na.rm,
+                      var.name = var.name,
+                      ...)
+      return(rbindspct(mspct, idfactor = FALSE))
     }
 
     if (is.null(var.name)) {
@@ -1093,12 +1141,13 @@ spikes.source_spct <-
                             idx.var = getIdFactor(x),
                             drop.idx = FALSE)
       # call method on the collection
-      return(wls_at_target(x = mspct,
-                           z.threshold = z.threshold,
-                           max.spike.width = max.spike.width,
-                           na.rm = na.rm,
-                           unit.out = unit.out,
-                           ...))
+      mspct <- spikes(x = mspct,
+                      z.threshold = z.threshold,
+                      max.spike.width = max.spike.width,
+                      na.rm = na.rm,
+                      unit.out = unit.out,
+                      ...)
+      return(rbindspct(mspct, idfactor = FALSE))
     }
 
     if (unit.out == "energy") {
@@ -1138,12 +1187,13 @@ spikes.response_spct <-
                             idx.var = getIdFactor(x),
                             drop.idx = FALSE)
       # call method on the collection
-      return(wls_at_target(x = mspct,
-                           z.threshold = z.threshold,
-                           max.spike.width = max.spike.width,
-                           na.rm = na.rm,
-                           unit.out = unit.out,
-                           ...))
+      mspct <- spikes(x = mspct,
+                      z.threshold = z.threshold,
+                      max.spike.width = max.spike.width,
+                      na.rm = na.rm,
+                      unit.out = unit.out,
+                      ...)
+      return(rbindspct(mspct, idfactor = FALSE))
     }
 
     if (unit.out == "energy") {
@@ -1185,12 +1235,13 @@ spikes.filter_spct <-
                             idx.var = getIdFactor(x),
                             drop.idx = FALSE)
       # call method on the collection
-      return(wls_at_target(x = mspct,
-                           z.threshold = z.threshold,
-                           max.spike.width = max.spike.width,
-                           na.rm = na.rm,
-                           filter.qty = filter.qty,
-                           ...))
+      mspct <- spikes(x = mspct,
+                      z.threshold = z.threshold,
+                      max.spike.width = max.spike.width,
+                      na.rm = na.rm,
+                      filter.qty = filter.qty,
+                      ...)
+      return(rbindspct(mspct, idfactor = FALSE))
     }
 
     if (filter.qty == "transmittance") {
@@ -1227,11 +1278,12 @@ spikes.reflector_spct <- function(x,
                           idx.var = getIdFactor(x),
                           drop.idx = FALSE)
     # call method on the collection
-    return(wls_at_target(x = mspct,
-                         z.threshold = z.threshold,
-                         max.spike.width = max.spike.width,
-                         na.rm = na.rm,
-                         ...))
+    mspct <- spikes(x = mspct,
+                    z.threshold = z.threshold,
+                    max.spike.width = max.spike.width,
+                    na.rm = na.rm,
+                    ...)
+    return(rbindspct(mspct, idfactor = FALSE))
   }
 
   col.name <- "Rfr"
@@ -1261,11 +1313,12 @@ spikes.solute_spct <-
                             idx.var = getIdFactor(x),
                             drop.idx = FALSE)
       # call method on the collection
-      return(wls_at_target(x = mspct,
-                           z.threshold = z.threshold,
-                           max.spike.width = max.spike.width,
-                           na.rm = na.rm,
-                           ...))
+      mspct <- spikes(x = mspct,
+                      z.threshold = z.threshold,
+                      max.spike.width = max.spike.width,
+                      na.rm = na.rm,
+                      ...)
+      return(rbindspct(mspct, idfactor = FALSE))
     }
 
     cols <- intersect(c("K.mole", "K.mass"), names(x))
@@ -1301,12 +1354,13 @@ spikes.cps_spct <- function(x,
                           idx.var = getIdFactor(x),
                           drop.idx = FALSE)
     # call method on the collection
-    return(wls_at_target(x = mspct,
-                         z.threshold = z.threshold,
-                         max.spike.width = max.spike.width,
-                         na.rm = na.rm,
-                         var.name = var.name,
-                         ...))
+    mspct <- spikes(x = mspct,
+                    z.threshold = z.threshold,
+                    max.spike.width = max.spike.width,
+                    na.rm = na.rm,
+                    var.name = var.name,
+                    ...)
+    return(rbindspct(mspct, idfactor = FALSE))
   }
 
   spikes.idx <-
@@ -1335,12 +1389,13 @@ spikes.raw_spct <- function(x,
                           idx.var = getIdFactor(x),
                           drop.idx = FALSE)
     # call method on the collection
-    return(wls_at_target(x = mspct,
-                         z.threshold = z.threshold,
-                         max.spike.width = max.spike.width,
-                         na.rm = na.rm,
-                         var.name = var.name,
-                         ...))
+    mspct <- spikes(x = mspct,
+                    z.threshold = z.threshold,
+                    max.spike.width = max.spike.width,
+                    na.rm = na.rm,
+                    var.name = var.name,
+                    ...)
+    return(rbindspct(mspct, idfactor = FALSE))
   }
 
   spikes.idx <-

@@ -402,15 +402,16 @@ peaks.generic_spct <-
                             idx.var = getIdFactor(x),
                             drop.idx = FALSE)
       # call method on the collection
-      return(peaks(x = x,
-                   span = span,
-                   ignore_threshold = ignore_threshold,
-                   strict = strict,
-                   na.rm = na.rm,
-                   var.name = var.name,
-                   refine.wl = refine.wl,
-                   method = method,
-                   ...))
+      mspct <- peaks(x = mspct,
+                     span = span,
+                     ignore_threshold = ignore_threshold,
+                     strict = strict,
+                     na.rm = na.rm,
+                     var.name = var.name,
+                     refine.wl = refine.wl,
+                     method = method,
+                     ...)
+      return(rbindspct(mspct, idfactor = FALSE))
     }
 
     if (is.null(var.name)) {
@@ -467,15 +468,16 @@ peaks.source_spct <-
                             idx.var = getIdFactor(x),
                             drop.idx = FALSE)
       # call method on the collection
-      return(peaks(x = mspct,
-                   span = span,
-                   ignore_threshold = ignore_threshold,
-                   strict = strict,
-                   na.rm = na.rm,
-                   unit.out = unit.out,
-                   refine.wl = refine.wl,
-                   method = method,
-                   ...))
+      mspct <- peaks(x = mspct,
+                     span = span,
+                     ignore_threshold = ignore_threshold,
+                     strict = strict,
+                     na.rm = na.rm,
+                     unit.out = unit.out,
+                     refine.wl = refine.wl,
+                     method = method,
+                     ...)
+      return(rbindspct(mspct, idfactor = FALSE))
     }
 
     if (unit.out == "energy") {
@@ -525,15 +527,16 @@ peaks.response_spct <-
                             idx.var = getIdFactor(x),
                             drop.idx = FALSE)
       # call method on the collection
-      return(peaks(x = mspct,
-                   span = span,
-                   ignore_threshold = ignore_threshold,
-                   strict = strict,
-                   na.rm = na.rm,
-                   unit.out = unit.out,
-                   refine.wl = refine.wl,
-                   method = method,
-                   ...))
+      mspct <- peaks(x = mspct,
+                     span = span,
+                     ignore_threshold = ignore_threshold,
+                     strict = strict,
+                     na.rm = na.rm,
+                     unit.out = unit.out,
+                     refine.wl = refine.wl,
+                     method = method,
+                     ...)
+      return(rbindspct(mspct, idfactor = FALSE))
     }
 
     if (unit.out == "energy") {
@@ -586,15 +589,16 @@ peaks.filter_spct <-
                             idx.var = getIdFactor(x),
                             drop.idx = FALSE)
       # call method on the collection
-      return(peaks(x = mspct,
-                   span = span,
-                   ignore_threshold = ignore_threshold,
-                   strict = strict,
-                   na.rm = na.rm,
-                   filter.qty = filter.qty,
-                   refine.wl = refine.wl,
-                   method = method,
-                   ...))
+      mspct <- peaks(x = mspct,
+                     span = span,
+                     ignore_threshold = ignore_threshold,
+                     strict = strict,
+                     na.rm = na.rm,
+                     filter.qty = filter.qty,
+                     refine.wl = refine.wl,
+                     method = method,
+                     ...)
+      return(rbindspct(mspct, idfactor = FALSE))
     }
 
     if (filter.qty == "transmittance") {
@@ -608,9 +612,9 @@ peaks.filter_spct <-
     }
     peaks.idx <-
       which(find_peaks(z[[col.name]],
-                            span = span, ignore_threshold = ignore_threshold,
-                            strict = strict,
-                            na.rm = na.rm))
+                       span = span, ignore_threshold = ignore_threshold,
+                       strict = strict,
+                       na.rm = na.rm))
     if (refine.wl && length(peaks.idx > 0L)) {
       fit_peaks(x = z,
                 peaks.idx = peaks.idx,
@@ -642,14 +646,15 @@ peaks.reflector_spct <- function(x,
                           idx.var = getIdFactor(x),
                           drop.idx = FALSE)
     # call method on the collection
-    return(peaks(x = mspct,
-                 span = span,
-                 ignore_threshold = ignore_threshold,
-                 strict = strict,
-                 na.rm = na.rm,
-                 refine.wl = refine.wl,
-                 method = method,
-                 ...))
+    mspct <- peaks(x = mspct,
+                   span = span,
+                   ignore_threshold = ignore_threshold,
+                   strict = strict,
+                   na.rm = na.rm,
+                   refine.wl = refine.wl,
+                   method = method,
+                   ...)
+    return(rbindspct(mspct, idfactor = FALSE))
   }
 
   col.name <- "Rfr"
@@ -690,14 +695,15 @@ peaks.solute_spct <-
                             idx.var = getIdFactor(x),
                             drop.idx = FALSE)
       # call method on the collection
-      return(peaks(x = mspct,
-                   span = span,
-                   ignore_threshold = ignore_threshold,
-                   strict = strict,
-                   na.rm = na.rm,
-                   refine.wl = refine.wl,
-                   method = method,
-                   ...))
+      mspct <- peaks(x = mspct,
+                     span = span,
+                     ignore_threshold = ignore_threshold,
+                     strict = strict,
+                     na.rm = na.rm,
+                     refine.wl = refine.wl,
+                     method = method,
+                     ...)
+      return(rbindspct(mspct, idfactor = FALSE))
     }
 
     cols <- intersect(c("K.mole", "K.mass"), names(x))
@@ -744,15 +750,16 @@ peaks.cps_spct <- function(x,
                           idx.var = getIdFactor(x),
                           drop.idx = FALSE)
     # call method on the collection
-    return(peaks(x = mspct,
-                 span = span,
-                 ignore_threshold = ignore_threshold,
-                 strict = strict,
-                 na.rm = na.rm,
-                 var.name = var.name,
-                 refine.wl = refine.wl,
-                 method = method,
-                 ...))
+    mspct <- peaks(x = mspct,
+                   span = span,
+                   ignore_threshold = ignore_threshold,
+                   strict = strict,
+                   na.rm = na.rm,
+                   var.name = var.name,
+                   refine.wl = refine.wl,
+                   method = method,
+                   ...)
+    return(rbindspct(mspct, idfactor = FALSE))
   }
 
   peaks.idx <-
@@ -791,15 +798,16 @@ peaks.raw_spct <- function(x, span = 5,
                           idx.var = getIdFactor(x),
                           drop.idx = FALSE)
     # call method on the collection
-    return(peaks(x = mspct,
-                 span = span,
-                 ignore_threshold = ignore_threshold,
-                 strict = strict,
-                 na.rm = na.rm,
-                 var.name = var.name,
-                 refine.wl = refine.wl,
-                 method = method,
-                 ...))
+    mspct <- peaks(x = mspct,
+                   span = span,
+                   ignore_threshold = ignore_threshold,
+                   strict = strict,
+                   na.rm = na.rm,
+                   var.name = var.name,
+                   refine.wl = refine.wl,
+                   method = method,
+                   ...)
+    return(rbindspct(mspct, idfactor = FALSE))
   }
 
   peaks.idx <-
@@ -817,6 +825,10 @@ peaks.raw_spct <- function(x, span = 5,
     x[peaks.idx,  , drop = FALSE]
   }
 }
+
+
+# _mspct ------------------------------------------------------------------
+
 
 #' @describeIn peaks  Method for "generic_mspct" objects.
 #'
@@ -1182,15 +1194,16 @@ valleys.generic_spct <-
                             idx.var = getIdFactor(x),
                             drop.idx = FALSE)
       # call method on the collection
-      return(valleys(x = mspct,
-                     span = span,
-                     ignore_threshold = ignore_threshold,
-                     strict = strict,
-                     na.rm = na.rm,
-                     var.name = var.name,
-                     refine.wl = refine.wl,
-                     method = method,
-                     ...))
+      mspct <- valleys(x = mspct,
+                       span = span,
+                       ignore_threshold = ignore_threshold,
+                       strict = strict,
+                       na.rm = na.rm,
+                       var.name = var.name,
+                       refine.wl = refine.wl,
+                       method = method,
+                       ...)
+      return(rbindspct(mspct, idfactor = FALSE))
     }
 
     if (is.null(var.name)) {
@@ -1247,15 +1260,16 @@ valleys.source_spct <-
                             idx.var = getIdFactor(x),
                             drop.idx = FALSE)
       # call method on the collection
-      return(valleys(x = mspct,
-                     span = span,
-                     ignore_threshold = ignore_threshold,
-                     strict = strict,
-                     na.rm = na.rm,
-                     unit.out = unit.out,
-                     refine.wl = refine.wl,
-                     method = method,
-                     ...))
+      mspct <- valleys(x = mspct,
+                       span = span,
+                       ignore_threshold = ignore_threshold,
+                       strict = strict,
+                       na.rm = na.rm,
+                       unit.out = unit.out,
+                       refine.wl = refine.wl,
+                       method = method,
+                       ...)
+      return(rbindspct(mspct, idfactor = FALSE))
     }
 
     if (unit.out == "energy") {
@@ -1306,15 +1320,16 @@ valleys.response_spct <-
                             idx.var = getIdFactor(x),
                             drop.idx = FALSE)
       # call method on the collection
-      return(valleys(x = mspct,
-                     span = span,
-                     ignore_threshold = ignore_threshold,
-                     strict = strict,
-                     na.rm = na.rm,
-                     unit.out = unit.out,
-                     refine.wl = refine.wl,
-                     method = method,
-                     ...))
+      mspct <- valleys(x = mspct,
+                       span = span,
+                       ignore_threshold = ignore_threshold,
+                       strict = strict,
+                       na.rm = na.rm,
+                       unit.out = unit.out,
+                       refine.wl = refine.wl,
+                       method = method,
+                       ...)
+      return(rbindspct(mspct, idfactor = FALSE))
     }
 
     if (unit.out == "energy") {
@@ -1367,15 +1382,16 @@ valleys.filter_spct <-
                             idx.var = getIdFactor(x),
                             drop.idx = FALSE)
       # call method on the collection
-      return(valleys(x = mspct,
-                     span = span,
-                     ignore_threshold = ignore_threshold,
-                     strict = strict,
-                     na.rm = na.rm,
-                     filter.qty = filter.qty,
-                     refine.wl = refine.wl,
-                     method = method,
-                     ...))
+      mspct <- valleys(x = mspct,
+                       span = span,
+                       ignore_threshold = ignore_threshold,
+                       strict = strict,
+                       na.rm = na.rm,
+                       filter.qty = filter.qty,
+                       refine.wl = refine.wl,
+                       method = method,
+                       ...)
+      return(rbindspct(mspct, idfactor = FALSE))
     }
 
     if (filter.qty == "transmittance") {
@@ -1425,14 +1441,15 @@ valleys.reflector_spct <-
                             idx.var = getIdFactor(x),
                             drop.idx = FALSE)
       # call method on the collection
-      return(valleys(x = mspct,
-                     span = span,
-                     ignore_threshold = ignore_threshold,
-                     strict = strict,
-                     na.rm = na.rm,
-                     refine.wl = refine.wl,
-                     method = method,
-                     ...))
+      mspct <- valleys(x = mspct,
+                       span = span,
+                       ignore_threshold = ignore_threshold,
+                       strict = strict,
+                       na.rm = na.rm,
+                       refine.wl = refine.wl,
+                       method = method,
+                       ...)
+      return(rbindspct(mspct, idfactor = FALSE))
     }
 
     col.name <- "Rfr"
@@ -1474,14 +1491,15 @@ valleys.solute_spct <-
                             idx.var = getIdFactor(x),
                             drop.idx = FALSE)
       # call method on the collection
-      return(valleys(x = mspct,
-                     span = span,
-                     ignore_threshold = ignore_threshold,
-                     strict = strict,
-                     na.rm = na.rm,
-                     refine.wl = refine.wl,
-                     method = method,
-                     ...))
+      mspct <- valleys(x = mspct,
+                       span = span,
+                       ignore_threshold = ignore_threshold,
+                       strict = strict,
+                       na.rm = na.rm,
+                       refine.wl = refine.wl,
+                       method = method,
+                       ...)
+      return(rbindspct(mspct, idfactor = FALSE))
     }
 
     cols <- intersect(c("K.mole", "K.mass"), names(x))
@@ -1518,6 +1536,7 @@ valleys.cps_spct <-
            ignore_threshold = 0,
            strict = TRUE,
            na.rm = FALSE,
+           var.name = "cps",
            refine.wl = FALSE,
            method = "spline",
            ...) {
@@ -1529,19 +1548,20 @@ valleys.cps_spct <-
                             idx.var = getIdFactor(x),
                             drop.idx = FALSE)
       # call method on the collection
-      return(valleys(x = mspct,
-                     span = span,
-                     ignore_threshold = ignore_threshold,
-                     strict = strict,
-                     na.rm = na.rm,
-                     refine.wl = refine.wl,
-                     method = method,
-                     ...))
+      mspct <- valleys(x = mspct,
+                       span = span,
+                       ignore_threshold = ignore_threshold,
+                       strict = strict,
+                       na.rm = na.rm,
+                       var.name = var.name,
+                       refine.wl = refine.wl,
+                       method = method,
+                       ...)
+      return(rbindspct(mspct, idfactor = FALSE))
     }
 
-    col.name <- "cps"
     valleys.idx <-
-      which(find_peaks(-x[[col.name]],
+      which(find_peaks(-x[[var.name]],
                        span = span,
                        ignore_threshold = ignore_threshold,
                        strict = strict,
@@ -1550,7 +1570,7 @@ valleys.cps_spct <-
       fit_valleys(x = x,
                   valleys.idx = valleys.idx,
                   span = span,
-                  y.col.name = col.name,
+                  y.col.name = var.name,
                   method = method)
     } else {
       x[valleys.idx,  , drop = FALSE]
@@ -1577,15 +1597,16 @@ valleys.raw_spct <- function(x, span = 5,
                           idx.var = getIdFactor(x),
                           drop.idx = FALSE)
     # call method on the collection
-    return(valleys(x = mspct,
-                   span = span,
-                   ignore_threshold = ignore_threshold,
-                   strict = strict,
-                   na.rm = na.rm,
-                   var.name = var.name,
-                   refine.wl = refine.wl,
-                   method = method,
-                   ...))
+    mspct <- valleys(x = mspct,
+                     span = span,
+                     ignore_threshold = ignore_threshold,
+                     strict = strict,
+                     na.rm = na.rm,
+                     var.name = var.name,
+                     refine.wl = refine.wl,
+                     method = method,
+                     ...)
+    return(rbindspct(mspct, idfactor = FALSE))
   }
 
   valleys.idx <-
@@ -1603,6 +1624,10 @@ valleys.raw_spct <- function(x, span = 5,
     x[valleys.idx,  , drop = FALSE]
   }
 }
+
+
+# _mspct ------------------------------------------------------------------
+
 
 #' @describeIn valleys  Method for "generic_mspct" objects.
 #'
@@ -2179,14 +2204,15 @@ wls_at_target.generic_spct <-
                             idx.var = getIdFactor(x),
                             drop.idx = FALSE)
       # call method on the collection
-      return(wls_at_target(x = mspct,
-                           target = target,
-                           interpolate = interpolate,
-                           idfactor = idfactor,
-                           na.rm = na.rm,
-                           col.name = col.name,
-                           y.var.name = y.var.name,
-                           ...))
+      mspct <- wls_at_target(x = mspct,
+                             target = target,
+                             interpolate = interpolate,
+                             idfactor = idfactor,
+                             na.rm = na.rm,
+                             col.name = col.name,
+                             y.var.name = y.var.name,
+                             ...)
+      return(rbindspct(mspct, idfactor = FALSE))
     }
 
     find_wls(x,
@@ -2220,13 +2246,14 @@ wls_at_target.source_spct <-
                             idx.var = getIdFactor(x),
                             drop.idx = FALSE)
       # call method on the collection
-      return(wls_at_target(x = mspct,
-                           target = target,
-                           interpolate = interpolate,
-                           idfactor = idfactor,
-                           na.rm = na.rm,
-                           unit.out = unit.out,
-                           ...))
+      mspct <- wls_at_target(x = mspct,
+                             target = target,
+                             interpolate = interpolate,
+                             idfactor = idfactor,
+                             na.rm = na.rm,
+                             unit.out = unit.out,
+                             ...)
+      return(rbindspct(mspct, idfactor = FALSE))
     }
 
     if (unit.out == "energy") {
@@ -2266,13 +2293,14 @@ wls_at_target.response_spct <-
                             idx.var = getIdFactor(x),
                             drop.idx = FALSE)
       # call method on the collection
-      return(wls_at_target(x = mspct,
-                           target = target,
-                           interpolate = interpolate,
-                           idfactor = idfactor,
-                           na.rm = na.rm,
-                           unit.out = unit.out,
-                           ...))
+      mspct <- wls_at_target(x = mspct,
+                             target = target,
+                             interpolate = interpolate,
+                             idfactor = idfactor,
+                             na.rm = na.rm,
+                             unit.out = unit.out,
+                             ...)
+      return(rbindspct(mspct, idfactor = FALSE))
     }
 
     if (unit.out == "energy") {
@@ -2315,13 +2343,14 @@ wls_at_target.filter_spct <-
                             idx.var = getIdFactor(x),
                             drop.idx = FALSE)
       # call method on the collection
-      return(wls_at_target(x = mspct,
-                           target = target,
-                           interpolate = interpolate,
-                           idfactor = idfactor,
-                           na.rm = na.rm,
-                           filter.qty = filter.qty,
-                           ...))
+      mspct <- wls_at_target(x = mspct,
+                             target = target,
+                             interpolate = interpolate,
+                             idfactor = idfactor,
+                             na.rm = na.rm,
+                             filter.qty = filter.qty,
+                             ...)
+      return(rbindspct(mspct, idfactor = FALSE))
     }
 
     if (filter.qty == "transmittance") {
@@ -2359,12 +2388,13 @@ wls_at_target.reflector_spct <-
                             idx.var = getIdFactor(x),
                             drop.idx = FALSE)
       # call method on the collection
-      return(wls_at_target(x = mspct,
-                           target = target,
-                           interpolate = interpolate,
-                           idfactor = idfactor,
-                           na.rm = na.rm,
-                           ...))
+      mspct <- wls_at_target(x = mspct,
+                             target = target,
+                             interpolate = interpolate,
+                             idfactor = idfactor,
+                             na.rm = na.rm,
+                             ...)
+      return(rbindspct(mspct, idfactor = FALSE))
     }
 
     find_wls(x,
@@ -2394,12 +2424,13 @@ wls_at_target.solute_spct <-
                             idx.var = getIdFactor(x),
                             drop.idx = FALSE)
       # call method on the collection
-      return(wls_at_target(x = mspct,
-                           target = target,
-                           interpolate = interpolate,
-                           idfactor = idfactor,
-                           na.rm = na.rm,
-                           ...))
+      mspct <- wls_at_target(x = mspct,
+                             target = target,
+                             interpolate = interpolate,
+                             idfactor = idfactor,
+                             na.rm = na.rm,
+                             ...)
+      return(rbindspct(mspct, idfactor = FALSE))
     }
 
     cols <- intersect(c("K.mole", "K.mass"), names(x))
@@ -2436,12 +2467,13 @@ wls_at_target.cps_spct <-
                             idx.var = getIdFactor(x),
                             drop.idx = FALSE)
       # call method on the collection
-      return(wls_at_target(x = mspct,
-                           target = target,
-                           interpolate = interpolate,
-                           idfactor = idfactor,
-                           na.rm = na.rm,
-                           ...))
+      mspct <- wls_at_target(x = mspct,
+                             target = target,
+                             interpolate = interpolate,
+                             idfactor = idfactor,
+                             na.rm = na.rm,
+                             ...)
+      return(rbindspct(mspct, idfactor = FALSE))
     }
 
     find_wls(x,
@@ -2451,6 +2483,47 @@ wls_at_target.cps_spct <-
              idfactor = idfactor,
              na.rm = na.rm)
   }
+
+
+#' @describeIn wls_at_target Method for "raw_spct" objects.
+#'
+#' @export
+#'
+wls_at_target.raw_spct <-
+  function(x,
+           target = "0.5max",
+           interpolate = FALSE,
+           idfactor = length(target) > 1,
+           na.rm = FALSE,
+           ...) {
+
+    # we look for multiple spectra in long form
+    if (getMultipleWl(x) > 1) {
+      # convert to a collection of spectra
+      mspct <- subset2mspct(x = x,
+                            idx.var = getIdFactor(x),
+                            drop.idx = FALSE)
+      # call method on the collection
+      mspct <- wls_at_target(x = mspct,
+                             target = target,
+                             interpolate = interpolate,
+                             idfactor = idfactor,
+                             na.rm = na.rm,
+                             ...)
+      return(rbindspct(mspct, idfactor = FALSE))
+    }
+
+    find_wls(x,
+             target = target,
+             col.name = "counts",
+             interpolate = interpolate,
+             idfactor = idfactor,
+             na.rm = na.rm)
+  }
+
+
+# _mspct ------------------------------------------------------------------
+
 
 #' @describeIn wls_at_target  Method for "generic_mspct" objects.
 #'

@@ -100,9 +100,9 @@ Other quantity conversion functions:
 \code{\link{T2A}()},
 \code{\link{any2T}()},
 \code{\link{as_quantum}()},
+\code{\link{e2q}()},
 \code{\link{e2qmol_multipliers}()},
 \code{\link{e2quantum_multipliers}()},
-\code{\link{e2q}()},
 \code{\link{q2e}()}
 }
 \concept{quantity conversion functions}

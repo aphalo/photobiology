@@ -5,7 +5,8 @@
 #' These methods return a spectral object of the same class as the one
 #' supplied as argument but with the spectral data rescaled based on a summary
 #' function \code{f} applied over a specific \code{range} of wavelengths and a
-#' \code{target} value for the summary value.
+#' \code{target} value for the summary value. When the object contains
+#' multiple spectra, the rescaling is applied separately to each spectrum.
 #'
 #' @param x An R object
 #' @param ... additional named arguments passed down to \code{f}.
@@ -38,9 +39,9 @@
 #'   format irrespective of this variation use accessor \code{getScaling()}, which
 #'   fills missing fields with \code{NA}.
 #'
-#' @return A copy of \code{x} with the original spectral data values replaced
-#'   with rescaled values, and the \code{"scaled"} attribute set to a list
-#'   describing the scaling applied.
+#' @return A copy of the object passed as argument to \code{x} with the original
+#'   spectral data values replaced with rescaled values, and the \code{"scaled"}
+#'   attribute set to a list describing the scaling applied.
 #'
 #' @examples
 #'
@@ -96,6 +97,21 @@ fscale.source_spct <- function(x,
                                unit.out = getOption("photobiology.radiation.unit", default="energy"),
                                set.scaled = target == 1,
                                ...) {
+  if (getMultipleWl(x) > 1L) {
+    # brute force and slow approach, unsuitable for long time series
+    mspct <- subset2mspct(x,
+                          idx.var = getIdFactor(x),
+                          drop.idx = FALSE)
+    mspct <- normalize(x = mspct,
+                       range = range,
+                       f = f,
+                       target = target,
+                       unit.out = unit.out,
+                       set.scaled = set.scaled,
+                       ...)
+    return(rbindspct(mspct, idfactor = FALSE))
+  }
+
   if (unit.out == "energy") {
     fscale_spct(spct = q2e(x, action = "replace"),
                 range = range,
@@ -128,6 +144,21 @@ fscale.response_spct <- function(x,
                                  unit.out = getOption("photobiology.radiation.unit", default="energy"),
                                  set.scaled = target == 1,
                                  ...) {
+  if (getMultipleWl(x) > 1L) {
+    # brute force and slow approach, unsuitable for long time series
+    mspct <- subset2mspct(x,
+                          idx.var = getIdFactor(x),
+                          drop.idx = FALSE)
+    mspct <- normalize(x = mspct,
+                       range = range,
+                       f = f,
+                       target = target,
+                       unit.out = unit.out,
+                       set.scaled = set.scaled,
+                       ...)
+    return(rbindspct(mspct, idfactor = FALSE))
+  }
+
   if (unit.out == "energy") {
     fscale_spct(spct = q2e(x, action = "replace"),
                 range = range,
@@ -163,6 +194,21 @@ fscale.filter_spct <- function(x,
                                                    default = "transmittance"),
                                set.scaled = target == 1,
                                ...) {
+  if (getMultipleWl(x) > 1L) {
+    # brute force and slow approach, unsuitable for long time series
+    mspct <- subset2mspct(x,
+                          idx.var = getIdFactor(x),
+                          drop.idx = FALSE)
+    mspct <- normalize(x = mspct,
+                       range = range,
+                       f = f,
+                       target = target,
+                       qty.out = qty.out,
+                       set.scaled = set.scaled,
+                       ...)
+    return(rbindspct(mspct, idfactor = FALSE))
+  }
+
   if (qty.out == "transmittance") {
     fscale_spct(spct = A2T(x, action = "replace"),
                 range = range,
@@ -195,6 +241,21 @@ fscale.reflector_spct <- function(x,
                                   qty.out = NULL,
                                   set.scaled = target == 1,
                                   ...) {
+  if (getMultipleWl(x) > 1L) {
+    # brute force and slow approach, unsuitable for long time series
+    mspct <- subset2mspct(x,
+                          idx.var = getIdFactor(x),
+                          drop.idx = FALSE)
+    mspct <- normalize(x = mspct,
+                       range = range,
+                       f = f,
+                       target = target,
+                       qty.out = qty.out,
+                       set.scaled = set.scaled,
+                       ...)
+    return(rbindspct(mspct, idfactor = FALSE))
+  }
+
   fscale_spct(spct = x,
               range = range,
               f = f,
@@ -215,6 +276,21 @@ fscale.solute_spct <- function(x,
                                qty.out = NULL,
                                set.scaled = target == 1,
                                ...) {
+  if (getMultipleWl(x) > 1L) {
+    # brute force and slow approach, unsuitable for long time series
+    mspct <- subset2mspct(x,
+                          idx.var = getIdFactor(x),
+                          drop.idx = FALSE)
+    mspct <- normalize(x = mspct,
+                       range = range,
+                       f = f,
+                       target = target,
+                       qty.out = qty.out,
+                       set.scaled = set.scaled,
+                       ...)
+    return(rbindspct(mspct, idfactor = FALSE))
+  }
+
   col.name <- intersect(c("K.mole", "K.mass"), names(x))
   fscale_spct(spct = x,
               range = range,
@@ -235,6 +311,20 @@ fscale.raw_spct <- function(x,
                             target = 1,
                             set.scaled = target == 1,
                             ...) {
+  if (getMultipleWl(x) > 1L) {
+    # brute force and slow approach, unsuitable for long time series
+    mspct <- subset2mspct(x,
+                          idx.var = getIdFactor(x),
+                          drop.idx = FALSE)
+    mspct <- normalize(x = mspct,
+                       range = range,
+                       f = f,
+                       target = target,
+                       set.scaled = set.scaled,
+                       ...)
+    return(rbindspct(mspct, idfactor = FALSE))
+  }
+
   fscale_spct(spct = x,
               range = range,
               f = f,
@@ -254,6 +344,20 @@ fscale.cps_spct <- function(x,
                             target = 1,
                             set.scaled = target == 1,
                             ...) {
+  if (getMultipleWl(x) > 1L) {
+    # brute force and slow approach, unsuitable for long time series
+    mspct <- subset2mspct(x,
+                          idx.var = getIdFactor(x),
+                          drop.idx = FALSE)
+    mspct <- normalize(x = mspct,
+                       range = range,
+                       f = f,
+                       target = target,
+                       set.scaled = set.scaled,
+                       ...)
+    return(rbindspct(mspct, idfactor = FALSE))
+  }
+
   fscale_spct(spct = x,
               range = range,
               f = f,
@@ -277,6 +381,21 @@ fscale.generic_spct <- function(x,
                                 set.scaled = target == 1,
                                 col.names,
                                 ...) {
+  if (getMultipleWl(x) > 1L) {
+    # brute force and slow approach, unsuitable for long time series
+    mspct <- subset2mspct(x,
+                          idx.var = getIdFactor(x),
+                          drop.idx = FALSE)
+    mspct <- normalize(x = mspct,
+                       range = range,
+                       f = f,
+                       target = target,
+                       set.scaled = set.scaled,
+                       col.names = col.names,
+                       ...)
+    return(rbindspct(mspct, idfactor = FALSE))
+  }
+
   fscale_spct(spct = x,
               range = range,
               f = f,
@@ -542,6 +661,10 @@ fscale_spct <- function(spct, range, col.names, f, target, set.scaled, ...) {
   # Skip checks for intermediate results
   prev_state <- disable_check_spct()
   on.exit(set_check_spct(prev_state), add = TRUE)
+
+  stopifnot("Missing columns" = all(col.names %in% colnames(spct)),
+            "Multiple spectra in long form" = getMultipleWl(spct) == 1L)
+
   # re-scaling will wipe out any existing normalization
   if (is_normalized(spct)) {
     setNormalized(spct, norm = FALSE)

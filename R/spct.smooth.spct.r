@@ -72,11 +72,17 @@ smooth_spct.source_spct <- function(x,
     return(x)
   }
 
-  num.spectra <- getMultipleWl(x)
-  if (num.spectra != 1) {
-    warning("Skipping smoothing as object contains ",
-            num.spectra, " spectra in long form.")
-    return(x)
+  if (getMultipleWl(x) > 1L) {
+    mspct <- subset2mspct(x,
+                          idx.var = getIdFactor(x),
+                          drop.idx = FALSE)
+    mspct <- smooth_spct(x = mspct,
+                         method = method,
+                         strength = strength,
+                         wl.range = wl.range,
+                         na.rm = na.rm,
+                         ...)
+    return(rbindspct(mspct, idfactor = FALSE))
   }
 
   stopifnot(strength >= 0)
@@ -209,11 +215,17 @@ smooth_spct.filter_spct <- function(x,
     return(x)
   }
 
-  num.spectra <- getMultipleWl(x)
-  if (num.spectra != 1) {
-    warning("Skipping smoothing as object contains ",
-            num.spectra, " spectra in long form.")
-    return(x)
+  if (getMultipleWl(x) > 1L) {
+    mspct <- subset2mspct(x,
+                          idx.var = getIdFactor(x),
+                          drop.idx = FALSE)
+    mspct <- smooth_spct(x = mspct,
+                         method = method,
+                         strength = strength,
+                         wl.range = wl.range,
+                         na.rm = na.rm,
+                         ...)
+    return(rbindspct(mspct, idfactor = FALSE))
   }
 
   stopifnot(strength >= 0)
@@ -374,11 +386,17 @@ smooth_spct.reflector_spct <- function(x,
     return(x)
   }
 
-  num.spectra <- getMultipleWl(x)
-  if (num.spectra != 1) {
-    warning("Skipping smoothing as object contains ",
-            num.spectra, " spectra in long form.")
-    return(x)
+  if (getMultipleWl(x) > 1L) {
+    mspct <- subset2mspct(x,
+                          idx.var = getIdFactor(x),
+                          drop.idx = FALSE)
+    mspct <- smooth_spct(x = mspct,
+                         method = method,
+                         strength = strength,
+                         wl.range = wl.range,
+                         na.rm = na.rm,
+                         ...)
+    return(rbindspct(mspct, idfactor = FALSE))
   }
 
   stopifnot(strength >= 0)
@@ -471,11 +489,17 @@ smooth_spct.solute_spct <- function(x,
     return(x)
   }
 
-  num.spectra <- getMultipleWl(x)
-  if (num.spectra != 1) {
-    warning("Skipping smoothing as object contains ",
-            num.spectra, " spectra in long form.")
-    return(x)
+  if (getMultipleWl(x) > 1L) {
+    mspct <- subset2mspct(x,
+                          idx.var = getIdFactor(x),
+                          drop.idx = FALSE)
+    mspct <- smooth_spct(x = mspct,
+                         method = method,
+                         strength = strength,
+                         wl.range = wl.range,
+                         na.rm = na.rm,
+                         ...)
+    return(rbindspct(mspct, idfactor = FALSE))
   }
 
   stopifnot(strength >= 0)
@@ -575,11 +599,17 @@ smooth_spct.response_spct <- function(x,
     return(x)
   }
 
-  num.spectra <- getMultipleWl(x)
-  if (num.spectra != 1) {
-    warning("Skipping smoothing as object contains ",
-            num.spectra, " spectra in long form.")
-    return(x)
+  if (getMultipleWl(x) > 1L) {
+    mspct <- subset2mspct(x,
+                          idx.var = getIdFactor(x),
+                          drop.idx = FALSE)
+    mspct <- smooth_spct(x = mspct,
+                         method = method,
+                         strength = strength,
+                         wl.range = wl.range,
+                         na.rm = na.rm,
+                         ...)
+    return(rbindspct(mspct, idfactor = FALSE))
   }
 
   stopifnot(strength >= 0)
@@ -719,11 +749,17 @@ smooth_spct.cps_spct <- function(x,
     return(x)
   }
 
-  num.spectra <- getMultipleWl(x)
-  if (num.spectra != 1) {
-    warning("Skipping smoothing as object contains ",
-            num.spectra, " spectra in long form.")
-    return(x)
+  if (getMultipleWl(x) > 1L) {
+    mspct <- subset2mspct(x,
+                          idx.var = getIdFactor(x),
+                          drop.idx = FALSE)
+    mspct <- smooth_spct(x = mspct,
+                         method = method,
+                         strength = strength,
+                         wl.range = wl.range,
+                         na.rm = na.rm,
+                         ...)
+    return(rbindspct(mspct, idfactor = FALSE))
   }
 
   stopifnot(strength >= 0)
@@ -798,6 +834,10 @@ smooth_spct.cps_spct <- function(x,
   check_spct(x, force = FALSE)
 }
 
+
+# _mspct ------------------------------------------------------------------
+
+
 #' @describeIn smooth_spct
 #'
 #' @export
@@ -817,6 +857,9 @@ smooth_spct.generic_mspct <-
             na.rm = na.rm,
             ...)
   }
+
+
+# private -----------------------------------------------------------------
 
 #' Custom smoothing
 #'

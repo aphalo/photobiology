@@ -121,6 +121,7 @@ valleys(x, span, ignore_threshold, strict, ...)
   ignore_threshold = 0,
   strict = TRUE,
   na.rm = FALSE,
+  var.name = "cps",
   refine.wl = FALSE,
   method = "spline",
   ...
