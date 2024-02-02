@@ -36,8 +36,23 @@
 #'
 #'   \deqn{\frac{\overline{Q_\lambda}(s, wb_\mathrm{num})}{\overline{Q_\lambda}(s, wb_\mathrm{denom})}}
 #'
-#' Only if the wavelength expanse of the two wavebands is the same, these two
-#' ratios are numerically identical.
+#'   Ratios based on totals and means are numerically identical only if the
+#'   wavelength expanse of the two wavebands is the same.
+#'
+#'   Fraction definitions are "assembled" from the arguments passed to
+#'   \code{w.band.num} and \code{w.band.denom}. If both arguments are lists of
+#'   waveband definitions, with an equal number of members, then the wavebands
+#'   are paired to obtain as many fractions as the number of wavebands in each
+#'   list. Recycling for wavebands takes place when the number of denominator
+#'   and numerator wavebands differ.
+#'
+#'   The last two parameters control speed optimizations. The defaults
+#'   should be suitable in most cases. If you will use repeatedly the same SWFs
+#'   on many spectra measured at exactly the same wavelengths you may obtain
+#'   some speed up by setting \code{use.cached.mult=TRUE}. However, be aware
+#'   that you are responsible for ensuring that the wavelengths are the same in
+#'   each call, as the only test done is for the length of the \code{w.length}
+#'   vector.
 #'
 #' @return In the case of methods for individual spectra, a \code{numeric}
 #'   vector with name attribute set. The name is based on the name of the
@@ -51,26 +66,19 @@
 #'   the names of the spectra, and optionally additional columns with metadata
 #'   values retrieved from the attributes of the member spectra.
 #'
-#'   Fraction definitions are "assembled" from the arguments passed to
-#'   \code{w.band.num} and \code{w.band.denom}. If both arguments are lists of
-#'   waveband definitions, with an equal number of mebers, then the wavebands
-#'   are paired to obtain as many fractions as the number of wavebands in each
-#'   list. Recycling for wavebands takes place when the number of denominator
-#'   and numerator wavebands differ.
-#'
 #' @export
 #' @examples
 #' q_ratio(sun.spct,
 #'         waveband(c(400,500), wb.name = "Blue"),
 #'         waveband(c(400,700), wb.name = "White"))
 #'
-#' @note The last two parameters control speed
-#'   optimizations. The defaults should be suitable in most cases. If you will
-#'   use repeatedly the same SWFs on many spectra measured at exactly the same
-#'   wavelengths you may obtain some speed up by setting
-#'   \code{use.cached.mult=TRUE}. However, be aware that you are responsible for
-#'   ensuring that the wavelengths are the same in each call, as the only test
-#'   done is for the length of the \code{w.length} vector.
+#' @section Performance: As this method accepts spectra as its input, it
+#'   computes irradiances before computing the ratios. If you need to compute
+#'   both ratios and irradiances from several hundreds or thousands of spectra,
+#'   computing the ratios from previously computed irradiances avoids their
+#'   repeated computation. A less dramatic, but still important, increase in
+#'   performance is available when computing in the same function call ratios
+#'   that share the same denominator.
 #'
 #' @family photon and energy ratio functions
 #'
@@ -272,6 +280,21 @@ q_ratio.source_mspct <-
 #' Only if the wavelength expanse of the two wavebands is the same, these two
 #' ratios are numerically identical.
 #'
+#'   Fraction definitions are "assembled" from the arguments passed to
+#'   \code{w.band.num} and \code{w.band.denom}. If both arguments are lists of
+#'   waveband definitions, with an equal number of members, then the wavebands
+#'   are paired to obtain as many fractions as the number of wavebands in each
+#'   list. Recycling for wavebands takes place when the number of denominator
+#'   and numerator wavebands differ.
+#'
+#'   The last two parameters control speed optimizations. The defaults
+#'   should be suitable in most cases. If you will use repeatedly the same SWFs
+#'   on many spectra measured at exactly the same wavelengths you may obtain
+#'   some speed up by setting \code{use.cached.mult=TRUE}. However, be aware
+#'   that you are responsible for ensuring that the wavelengths are the same in
+#'   each call, as the only test done is for the length of the \code{w.length}
+#'   vector.
+#'
 #' @return In the case of methods for individual spectra, a \code{numeric}
 #'   vector with name attribute set. The name is based on the name of the
 #'   wavebands unless a named list of wavebands is supplied in which case the
@@ -284,27 +307,19 @@ q_ratio.source_mspct <-
 #'   the names of the spectra, and optionally additional columns with metadata
 #'   values retrieved from the attributes of the member spectra.
 #'
-#'   Fraction definitions are "assembled" from the arguments passed to
-#'   \code{w.band.num} and \code{w.band.denom}. If both arguments are lists of
-#'   waveband definitions, with an equal number of members, then the wavebands
-#'   are paired to obtain as many fractions as the number of wavebands in each
-#'   list. Recycling for wavebands takes place when the number of denominator
-#'   and numerator wavebands differ.
-#'
 #' @export
 #' @examples
 #' e_ratio(sun.spct,
 #'         waveband(c(400,500), wb.name = "Blue"),
 #'         waveband(c(400,700), wb.name = "White"))
 #'
-#' @note Recycling for wavebands takes place when the number of denominator and
-#'   denominator wavebands differ. The last two parameters control speed
-#'   optimizations. The defaults should be suitable in most cases. If you will
-#'   use repeatedly the same SWFs on many spectra measured at exactly the same
-#'   wavelengths you may obtain some speed up by setting
-#'   \code{use.cached.mult=TRUE}. However, be aware that you are responsible for
-#'   ensuring that the wavelengths are the same in each call, as the only test
-#'   done is for the length of the \code{w.length} vector.
+#' @section Performance: As this method accepts spectra as its input, it
+#'   computes irradiances before computing the ratios. If you need to compute
+#'   both ratios and irradiances from several hundreds or thousands of spectra,
+#'   computing the ratios from previously computed irradiances avoids their
+#'   repeated computation. A less dramatic, but still important, increase in
+#'   performance is available when computing in the same function call ratios
+#'   that share the same denominator.
 #'
 #' @family photon and energy ratio functions
 #'
@@ -489,6 +504,14 @@ e_ratio.source_mspct <-
 #'
 #'   \deqn{\frac{Q(s, wb)}{I(s, wb)}}
 #'
+#'   The last two parameters control speed optimizations. The defaults
+#'   should be suitable in most cases. If you will use repeatedly the same SWFs
+#'   on many spectra measured at exactly the same wavelengths you may obtain
+#'   some speed up by setting \code{use.cached.mult=TRUE}. However, be aware
+#'   that you are responsible for ensuring that the wavelengths are the same in
+#'   each call, as the only test done is for the length of the \code{w.length}
+#'   vector.
+#'
 #' @return Computed values are ratios between photon irradiance and energy
 #'   irradiance for a given waveband. A named \code{numeric} vector in the case
 #'   of methods for individual spectra, with one value for each \code{waveband}
@@ -513,13 +536,13 @@ e_ratio.source_mspct <-
 #'          waveband(c(400,700), wb.name = "White"),
 #'          scale.factor = 1e6) # umol J-1
 #'
-#' @note The last two parameters control speed optimizations. The defaults
-#'   should be suitable in most cases. If you will use repeatedly the same SWFs
-#'   on many spectra measured at exactly the same wavelengths you may obtain
-#'   some speed up by setting \code{use.cached.mult=TRUE}. However, be aware
-#'   that you are responsible for ensuring that the wavelengths are the same in
-#'   each call, as the only test done is for the length of the \code{w.length}
-#'   vector.
+#' @section Performance: As this method accepts spectra as its input, it
+#'   computes irradiances before computing the ratios. If you need to compute
+#'   both ratios and irradiances from several hundreds or thousands of spectra,
+#'   computing the ratios from previously computed irradiances avoids their
+#'   repeated computation. A less dramatic, but still important, increase in
+#'   performance is available when computing in the same function call ratios
+#'   that share the same denominator.
 #'
 #' @family photon and energy ratio functions
 #'
@@ -686,7 +709,13 @@ qe_ratio.source_mspct <-
 #'
 #'   \deqn{\frac{I(s, wb)}{Q(s, wb)}}
 #'
-#' @return Computed values are ratios between energy irradiance and photon
+#'   The last two parameters control speed optimizations. The defaults should be
+#'   suitable in most cases. If you will use repeatedly the same SWFs on many
+#'   spectra measured at exactly the same wavelengths you may obtain some speed
+#'   up by setting \code{use.cached.mult=TRUE}. However, be aware that you are
+#'   responsible for ensuring that the wavelengths are the same in each call, as
+#'   the only test done is for the length of the \code{w.length} vector.#'
+#'   @return Computed values are ratios between energy irradiance and photon
 #'   irradiance for a given waveband. A named \code{numeric} vector in the case
 #'   of methods for individual spectra, with one value for each \code{waveband}
 #'   passed to parameter \code{w.band}. A \code{data.frame} in the case of
@@ -702,7 +731,24 @@ qe_ratio.source_mspct <-
 #'   in which case the names of the list members are used, with "[e:q]"
 #'   prepended. Units [J mol-1].
 #'
+#' @return Computed values are ratios between energy irradiance and photon
+#'   irradiance for a given waveband. A named \code{numeric} vector in the case
+#'   of methods for individual spectra, with one value for each \code{waveband}
+#'   passed to parameter \code{w.band}. A \code{data.frame} in the case of
+#'   multiple spectra, containing one column with ratios for each \code{waveband}
+#'   object, an index column with the names of the spectra, and optionally
+#'   additional columns with metadata values retrieved from the attributes of
+#'   the member spectra.
+#'
+#'   By default values are only integrated, but depending on the argument passed
+#'   to parameter \code{quantity} they are expressed as relative fractions
+#'   or percentages. In the case of vector output, \code{names} attribute is set
+#'   to the name of the corresponding waveband unless a named list is supplied
+#'   in which case the names of the list members are used, with "[e:q]" prepended.
+#'   Units [mol J-1].
+#'
 #' @export
+#'
 #' @examples
 #' eq_ratio(sun.spct,
 #'          waveband(c(400,700), wb.name = "White")) # J mol-1
@@ -710,13 +756,13 @@ qe_ratio.source_mspct <-
 #'          waveband(c(400,700), wb.name = "White"),
 #'          scale.factor = 1e-6) # J umol-1
 #'
-#' @note The last two parameters control speed optimizations. The defaults
-#'   should be suitable in most cases. If you will use repeatedly the same SWFs
-#'   on many spectra measured at exactly the same wavelengths you may obtain
-#'   some speed up by setting \code{use.cached.mult=TRUE}. However, be aware
-#'   that you are responsible for ensuring that the wavelengths are the same in
-#'   each call, as the only test done is for the length of the \code{w.length}
-#'   vector.
+#' @section Performance: As this method accepts spectra as its input, it
+#'   computes irradiances before computing the ratios. If you need to compute
+#'   both ratios and irradiances from several hundreds or thousands of spectra,
+#'   computing the ratios from previously computed irradiances avoids their
+#'   repeated computation. A less dramatic, but still important, increase in
+#'   performance is available when computing in the same function call ratios
+#'   that share the same denominator.
 #'
 #' @family photon and energy ratio functions
 #'

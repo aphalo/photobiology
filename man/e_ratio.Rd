@@ -119,13 +119,6 @@ In the case of methods for individual spectra, a \code{numeric}
   containing one column for each fraction definition, an index column with
   the names of the spectra, and optionally additional columns with metadata
   values retrieved from the attributes of the member spectra.
-
-  Fraction definitions are "assembled" from the arguments passed to
-  \code{w.band.num} and \code{w.band.denom}. If both arguments are lists of
-  waveband definitions, with an equal number of members, then the wavebands
-  are paired to obtain as many fractions as the number of wavebands in each
-  list. Recycling for wavebands takes place when the number of denominator
-  and numerator wavebands differ.
 }
 \description{
 This function returns the photon ratio for a given pair of wavebands of a
@@ -145,6 +138,21 @@ If the argument is set to \code{quantity = "mean"} or
 
 Only if the wavelength expanse of the two wavebands is the same, these two
 ratios are numerically identical.
+
+  Fraction definitions are "assembled" from the arguments passed to
+  \code{w.band.num} and \code{w.band.denom}. If both arguments are lists of
+  waveband definitions, with an equal number of members, then the wavebands
+  are paired to obtain as many fractions as the number of wavebands in each
+  list. Recycling for wavebands takes place when the number of denominator
+  and numerator wavebands differ.
+
+  The last two parameters control speed optimizations. The defaults
+  should be suitable in most cases. If you will use repeatedly the same SWFs
+  on many spectra measured at exactly the same wavelengths you may obtain
+  some speed up by setting \code{use.cached.mult=TRUE}. However, be aware
+  that you are responsible for ensuring that the wavelengths are the same in
+  each call, as the only test done is for the length of the \code{w.length}
+  vector.
 }
 \section{Methods (by class)}{
 \itemize{
@@ -156,16 +164,16 @@ ratios are numerically identical.
 object.
 
 }}
-\note{
-Recycling for wavebands takes place when the number of denominator and
-  denominator wavebands differ. The last two parameters control speed
-  optimizations. The defaults should be suitable in most cases. If you will
-  use repeatedly the same SWFs on many spectra measured at exactly the same
-  wavelengths you may obtain some speed up by setting
-  \code{use.cached.mult=TRUE}. However, be aware that you are responsible for
-  ensuring that the wavelengths are the same in each call, as the only test
-  done is for the length of the \code{w.length} vector.
+\section{Performance}{
+ As this method accepts spectra as its input, it
+  computes irradiances before computing the ratios. If you need to compute
+  both ratios and irradiances from several hundreds or thousands of spectra,
+  computing the ratios from previously computed irradiances avoids their
+  repeated computation. A less dramatic, but still important, increase in
+  performance is available when computing in the same function call ratios
+  that share the same denominator.
 }
+
 \examples{
 e_ratio(sun.spct,
         waveband(c(400,500), wb.name = "Blue"),

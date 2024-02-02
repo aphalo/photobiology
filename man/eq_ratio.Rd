@@ -84,6 +84,38 @@ Computed values are ratios between energy irradiance and photon
   irradiance for a given waveband. A named \code{numeric} vector in the case
   of methods for individual spectra, with one value for each \code{waveband}
   passed to parameter \code{w.band}. A \code{data.frame} in the case of
+  multiple spectra, containing one column with ratios for each \code{waveband}
+  object, an index column with the names of the spectra, and optionally
+  additional columns with metadata values retrieved from the attributes of
+  the member spectra.
+
+  By default values are only integrated, but depending on the argument passed
+  to parameter \code{quantity} they are expressed as relative fractions
+  or percentages. In the case of vector output, \code{names} attribute is set
+  to the name of the corresponding waveband unless a named list is supplied
+  in which case the names of the list members are used, with "[e:q]" prepended.
+  Units [mol J-1].
+}
+\description{
+This function returns the energy to mole of photons ratio for each waveband
+and a light source spectrum.
+}
+\details{
+The ratio is based on one photon irradiance and one energy
+  irradiance, both computed for the same waveband.
+
+  \deqn{\frac{I(s, wb)}{Q(s, wb)}}
+
+  The last two parameters control speed optimizations. The defaults should be
+  suitable in most cases. If you will use repeatedly the same SWFs on many
+  spectra measured at exactly the same wavelengths you may obtain some speed
+  up by setting \code{use.cached.mult=TRUE}. However, be aware that you are
+  responsible for ensuring that the wavelengths are the same in each call, as
+  the only test done is for the length of the \code{w.length} vector.#'
+  @return Computed values are ratios between energy irradiance and photon
+  irradiance for a given waveband. A named \code{numeric} vector in the case
+  of methods for individual spectra, with one value for each \code{waveband}
+  passed to parameter \code{w.band}. A \code{data.frame} in the case of
   collections of spectra, containing one column for each \code{waveband}
   object, an index column with the names of the spectra, and optionally
   additional columns with metadata values retrieved from the attributes of
@@ -96,16 +128,6 @@ Computed values are ratios between energy irradiance and photon
   in which case the names of the list members are used, with "[e:q]"
   prepended. Units [J mol-1].
 }
-\description{
-This function returns the energy to mole of photons ratio for each waveband
-and a light source spectrum.
-}
-\details{
-The ratio is based on one photon irradiance and one energy
-  irradiance, both computed for the same waveband.
-
-  \deqn{\frac{I(s, wb)}{Q(s, wb)}}
-}
 \section{Methods (by class)}{
 \itemize{
 \item \code{eq_ratio(default)}: Default for generic function
@@ -116,15 +138,16 @@ The ratio is based on one photon irradiance and one energy
 object.
 
 }}
-\note{
-The last two parameters control speed optimizations. The defaults
-  should be suitable in most cases. If you will use repeatedly the same SWFs
-  on many spectra measured at exactly the same wavelengths you may obtain
-  some speed up by setting \code{use.cached.mult=TRUE}. However, be aware
-  that you are responsible for ensuring that the wavelengths are the same in
-  each call, as the only test done is for the length of the \code{w.length}
-  vector.
+\section{Performance}{
+ As this method accepts spectra as its input, it
+  computes irradiances before computing the ratios. If you need to compute
+  both ratios and irradiances from several hundreds or thousands of spectra,
+  computing the ratios from previously computed irradiances avoids their
+  repeated computation. A less dramatic, but still important, increase in
+  performance is available when computing in the same function call ratios
+  that share the same denominator.
 }
+
 \examples{
 eq_ratio(sun.spct,
          waveband(c(400,700), wb.name = "White")) # J mol-1

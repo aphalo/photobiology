@@ -105,6 +105,14 @@ The ratio is based on one photon irrandiance and one energy
   irradiance, both computed for the same waveband.
 
   \deqn{\frac{Q(s, wb)}{I(s, wb)}}
+
+  The last two parameters control speed optimizations. The defaults
+  should be suitable in most cases. If you will use repeatedly the same SWFs
+  on many spectra measured at exactly the same wavelengths you may obtain
+  some speed up by setting \code{use.cached.mult=TRUE}. However, be aware
+  that you are responsible for ensuring that the wavelengths are the same in
+  each call, as the only test done is for the length of the \code{w.length}
+  vector.
 }
 \section{Methods (by class)}{
 \itemize{
@@ -116,15 +124,16 @@ The ratio is based on one photon irrandiance and one energy
 \code{source_mspct} object.
 
 }}
-\note{
-The last two parameters control speed optimizations. The defaults
-  should be suitable in most cases. If you will use repeatedly the same SWFs
-  on many spectra measured at exactly the same wavelengths you may obtain
-  some speed up by setting \code{use.cached.mult=TRUE}. However, be aware
-  that you are responsible for ensuring that the wavelengths are the same in
-  each call, as the only test done is for the length of the \code{w.length}
-  vector.
+\section{Performance}{
+ As this method accepts spectra as its input, it
+  computes irradiances before computing the ratios. If you need to compute
+  both ratios and irradiances from several hundreds or thousands of spectra,
+  computing the ratios from previously computed irradiances avoids their
+  repeated computation. A less dramatic, but still important, increase in
+  performance is available when computing in the same function call ratios
+  that share the same denominator.
 }
+
 \examples{
 qe_ratio(sun.spct,
          waveband(c(400,700), wb.name = "White")) # mol J-1
