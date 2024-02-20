@@ -855,21 +855,26 @@ normalize_spct <- function(spct,
 #'
 #' @param x An R object.
 #'
-#' @return A \code{logical} value. If \code{x} is not normalized or \code{x} is
-#'   not a \code{generic_spct} object the value returned is \code{FALSE}.
+#' @return A \code{logical} value indicating if \code{x} is normalized or not,
+#'   for collections of spectra, a named list with \code{logicals} as members.
+#'   If \code{x} is not a \code{generic_spct} or \code{generic_mspct} object the
+#'   value returned is \code{NA}.
 #'
 #' @export
 #' @family rescaling functions
 #'
 is_normalized <- function(x) {
-  if (!is.generic_spct(x) && !is.summary_generic_spct(x)) {
+  if (is.generic_spct(x) || is.summary_generic_spct(x)) {
+    spct.attr <- attr(x, "normalized", exact = TRUE)
+    # in some versions a logical was used, but later the normalization wavelength
+    # in old versions the attribute was set only when normalization was applied
+    stopifnot(is.null(spct.attr) || is.numeric(spct.attr) || is.logical(spct.attr))
+    !is.null(spct.attr) && as.logical(spct.attr)
+  } else if (is.generic_mspct(x)) {
+    return(mslply(x, is_normalized))
+  } else {
     return(NA)
   }
-  spct.attr <- attr(x, "normalized", exact = TRUE)
-  # in some versions a logical was used, but later the normalization wavelength
-  # in old versions the attribute was set only when normalization was applied
-  stopifnot(is.null(spct.attr) || is.numeric(spct.attr) || is.logical(spct.attr))
-  !is.null(spct.attr) && as.logical(spct.attr)
 }
 
 #' @rdname is_normalized
@@ -901,10 +906,11 @@ is_normalised <- is_normalized
 #'   query how the normalization was done.
 #'
 #' @return \code{getNormalized()} returns numeric or logical (possibly character
-#'   for objects created with earlier versions). If \code{x} is not a
+#'   for objects created with earlier versions); for collections of spectra, a
+#'   named list, with one member for each spectrum. If \code{x} is not a
 #'   \code{generic_spct} object, \code{NA} or a list with fields set to NAs is
 #'   returned. Objects created with versions of package 'photobiology' earlier
-#'   than 0.10.8 are lacking the normalization metadata.
+#'   than 0.10.8 are lacking the detailed normalization metadata.
 #'
 #' @export
 #'
@@ -938,6 +944,8 @@ getNormalized <- function(x,
       # need to handle objects created with very old versions
       normalized <- FALSE
     }
+  } else if (is.generic_mspct(x)) {
+    return(mslply(x, getNormalized, .force.numeric = .force.numeric))
   } else {
     warning("Method 'getNormalized()' not implemented for class: ",
             class(x)[1])
@@ -962,8 +970,10 @@ getNormalised <- getNormalized
 #' @rdname getNormalized
 #'
 #' @return \code{getNormalization()} returns a list with five fields: norm.type,
-#'   norm.wl, norm.factors, norm.cols, norm.range. See
-#'   \code{\link{setNormalized}()} for the values stored in the fields.
+#'   norm.wl, norm.factors, norm.cols, norm.range. For collections of spectra, a
+#'   named list of lists, with one member list for each member of the collection
+#'   of spectra. See \code{\link{setNormalized}()} for the values stored in the
+#'   fields.
 #'
 #' @export
 #'
@@ -980,6 +990,8 @@ getNormalization <- function(x) {
         return(normalization.list)
       }
     }
+  } else if (is.generic_mspct(x)) {
+    return(mslply(x, getNormalization))
   } else {
     warning("Method 'getNormalization()' not implemented for class: ",
             class(x)[1])

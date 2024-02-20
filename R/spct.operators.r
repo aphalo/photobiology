@@ -1010,6 +1010,9 @@ A2T.filter_spct <- function(x, action="add", byref = FALSE, ...) {
   if (is_normalised(x) && !action %in% c("add.raw", "replace.raw")) {
     x <- normalise(x, norm = "update", qty.out = "transmittance")
   } else {
+    if (is_normalised(x)) {
+      x <- setNormalised(x)
+    }
     if (exists("Tfr", x, inherits = FALSE)) {
       NULL
     } else if (exists("A", x, inherits = FALSE)) {
@@ -1019,13 +1022,17 @@ A2T.filter_spct <- function(x, action="add", byref = FALSE, ...) {
       action <- "add"
       warning("'A' not available in 'A2T()', ignoring \"replace\" action.")
     }
-    if (action=="replace" && exists("A", x, inherits = FALSE)) {
-      x[["A"]] <- NULL
-    }
-    if (action=="replace" && exists("Afr", x, inherits = FALSE)) {
-      x[["Afr"]] <- NULL
-    }
   }
+
+  if (action %in% c("replace", "replace.raw") &&
+      exists("A", x, inherits = FALSE)) {
+    x[["A"]] <- NULL
+  }
+  if (action %in% c("replace", "replace.raw") &&
+      exists("Afr", x, inherits = FALSE)) {
+    x[["Afr"]] <- NULL
+  }
+
   if (byref && is.name(name)) { # this is a temporary safe net
     name <- as.character(name)
     assign(name, x, parent.frame(), inherits = TRUE)
@@ -1121,6 +1128,9 @@ T2A.filter_spct <- function(x, action="add", byref = FALSE, clean = TRUE, ...) {
   if (is_normalised(x) && !action %in% c("add.raw", "replace.raw")) {
     x <- normalise(x, norm = "update", qty.out = "absorbance")
   } else {
+    if (is_normalised(x)) {
+      x <- setNormalised(x)
+    }
     if (exists("A", x, inherits = FALSE)) {
       NULL
     } else if (exists("Tfr", x, inherits = FALSE)) {
@@ -1134,12 +1144,15 @@ T2A.filter_spct <- function(x, action="add", byref = FALSE, clean = TRUE, ...) {
       warning("'Tfr' not available in 'T2A()', filling 'A' with 'NA'.")
       action <- "add"
     }
-    if (action=="replace" && exists("Tfr", x, inherits = FALSE)) {
-      x[["Tfr"]] <- NULL
-    }
-    if (action=="replace" && exists("Afr", x, inherits = FALSE)) {
-      x[["Afr"]] <- NULL
-    }
+  }
+
+  if (action %in% c("replace", "replace.raw") &&
+      exists("Tfr", x, inherits = FALSE)) {
+    x[["Tfr"]] <- NULL
+  }
+  if (action %in% c("replace", "replace.raw") &&
+      exists("Afr", x, inherits = FALSE)) {
+    x[["Afr"]] <- NULL
   }
 
   if (byref && is.name(name)) {  # this is a temporary safe net
@@ -1266,6 +1279,9 @@ T2Afr.filter_spct <- function(x,
   if (is_normalised(x) && !action %in% c("add.raw", "replace.raw")) {
     x <- normalise(x, norm = "update", qty.out = "absorptance")
   } else {
+    if (is_normalised(x)) {
+      x <- setNormalised(x)
+    }
     if (exists("Afr", x, inherits = FALSE)) {
       NULL
     } else if (exists("Tfr", x, inherits = FALSE)) {
@@ -1291,13 +1307,17 @@ T2Afr.filter_spct <- function(x,
       action <- "add"
       warning("'Tfr' not available in 'T2Afr()'.")
     }
-    if (action == "replace" && exists("A", x, inherits = FALSE)) {
-      x[["A"]] <- NULL
-    }
-    if (action == "replace" && exists("Tfr", x, inherits = FALSE)) {
-      x[["Tfr"]] <- NULL
-    }
   }
+
+  if (action %in% c("replace", "replace.raw") &&
+      exists("A", x, inherits = FALSE)) {
+    x[["A"]] <- NULL
+  }
+  if (action %in% c("replace", "replace.raw") &&
+      exists("Tfr", x, inherits = FALSE)) {
+    x[["Tfr"]] <- NULL
+  }
+
   if (current.Tfr.type == "total") {
     if (action == "add") {
       x <- convertTfrType(x, Tfr.type = "total")
@@ -1479,6 +1499,9 @@ Afr2T.filter_spct <- function(x,
   if (is_normalised(x) && !action %in% c("add.raw", "replace.raw")) {
     x <- normalise(x, norm = "update", qty.out = "transmittance")
   } else {
+    if (is_normalised(x)) {
+      x <- setNormalised(x)
+    }
     if (exists("Tfr", x, inherits = FALSE)) {
       NULL
     } else if (current.Tfr.type == "internal") {
@@ -1494,12 +1517,14 @@ Afr2T.filter_spct <- function(x,
     } else {
       stop("Invalid 'Tfr.type' attribute: ", current.Tfr.type)
     }
-    if (action == "replace" && exists("Tfr", x, inherits = FALSE)) {
-      x[["Afr"]] <- NULL
-    }
-    if (action == "replace" && exists("A", x, inherits = FALSE)) {
-      x[["A"]] <- NULL
-    }
+  }
+
+  if (action %in% c("replace", "replace.raw") &&
+      exists("Tfr", x, inherits = FALSE)) {
+    x[["Afr"]] <- NULL
+  }
+  if (action %in% c("replace", "replace.raw") && exists("A", x, inherits = FALSE)) {
+    x[["A"]] <- NULL
   }
 
   if (byref && is.name(name)) {  # this is a temporary safe net

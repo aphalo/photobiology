@@ -13,8 +13,10 @@ is_normalised(x)
 \item{x}{An R object.}
 }
 \value{
-A \code{logical} value. If \code{x} is not normalized or \code{x} is
-  not a \code{generic_spct} object the value returned is \code{FALSE}.
+A \code{logical} value indicating if \code{x} is normalized or not,
+  for collections of spectra, a named list with \code{logicals} as members.
+  If \code{x} is not a \code{generic_spct} or \code{generic_mspct} object the
+  value returned is \code{NA}.
 }
 \description{
 This function tests a \code{generic_spct} object for an attribute that

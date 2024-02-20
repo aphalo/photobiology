@@ -24,14 +24,17 @@ as \code{NA}.}
 }
 \value{
 \code{getNormalized()} returns numeric or logical (possibly character
-  for objects created with earlier versions). If \code{x} is not a
+  for objects created with earlier versions); for collections of spectra, a
+  named list, with one member for each spectrum. If \code{x} is not a
   \code{generic_spct} object, \code{NA} or a list with fields set to NAs is
   returned. Objects created with versions of package 'photobiology' earlier
-  than 0.10.8 are lacking the normalization metadata.
+  than 0.10.8 are lacking the detailed normalization metadata.
 
 \code{getNormalization()} returns a list with five fields: norm.type,
-  norm.wl, norm.factors, norm.cols, norm.range. See
-  \code{\link{setNormalized}()} for the values stored in the fields.
+  norm.wl, norm.factors, norm.cols, norm.range. For collections of spectra, a
+  named list of lists, with one member list for each member of the collection
+  of spectra. See \code{\link{setNormalized}()} for the values stored in the
+  fields.
 }
 \description{
 Functions to read the "normalized" and "normalization" attributes of an

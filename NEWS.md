@@ -7,7 +7,7 @@ editor_options:
 # photobiology 0.11.1
 
 - Implement subsetting of metadata in `subset()` method and the extraction 
-operator `[ ]` for objects of class `generic_spct` and derived classes. This 
+operator `[]` for objects of class `generic_spct` and derived classes. This 
 makes it possible to extract a subset of spectra from an object containing
 multiple spectra in long form, such as time series of spectra. In earlier 
 versions metadata were not subset.
@@ -29,6 +29,10 @@ argument.
 `generic_mspct` objects. (Methods to add other attributes are not yet revised.)
 - Add parameter `span` to `thin_wl()` methods, with the previously hard-coded
 value of 21 as default.
+- Revise `getNormalized()`, `getNormalised()`, `getNormalization()`, 
+`getNormalisation()`, `is_normalized()`, and `is_normalised()` to support
+collections of spectra as their argument in addition to individual spectra. In
+this case they return a named list.
 - When checking `raw_spct` and `cps_spct` do not emit a message about renaming 
 columns if option `photobiology.verbose` is set to `FALSE`.
 - Fix bug: some operations failed to copy all metadata attributes to the
@@ -36,6 +40,9 @@ returned value. Some of the dropped attributes are used in package 'ooacquire'
 (>= 0.4.1).
 - Fix bug affecting `irrad()`, `e_irrad()` and `q_irrad()` causing a crash with
 argument `use.hinges = FALSE`.
+- Fix bug affecting handling of existing normalizations in conversions between
+quantities used for describing spectral properties filters, visible only as a
+spurious warning when plotting with 'ggspectra'.
 
 # photobiology 0.11.0
 
