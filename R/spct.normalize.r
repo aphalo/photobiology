@@ -981,7 +981,7 @@ getNormalization <- function(x) {
       }
     }
   } else {
-    warning("Method 'getNormalized()' not implemented for class: ",
+    warning("Method 'getNormalization()' not implemented for class: ",
             class(x)[1])
   }
   list(norm.type = NA_character_,
