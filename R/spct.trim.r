@@ -549,7 +549,8 @@ clip_wl.generic_spct <- function(x, range = NULL, ...) {
     }
   } else {
     range = range(range, na.rm = TRUE)
-    x[x[["w.length"]] >= range[1] & x[["w.length"]] < range[2] + guard, ]
+    row.selector <- x[["w.length"]] >= range[1] & x[["w.length"]] < range[2] + guard
+    x[row.selector, ]
   }
 }
 

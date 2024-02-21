@@ -300,9 +300,8 @@ reference:
   - subtitle: Data for radiation sources
     contents:
     - sun.spct
-    - sun.data
-    - sun.daily.spct
-    - sun.daily.data
+    - sun_daily.spct
+    - sun_evening.spct
     - white_led.raw_spct
     - white_led.cps_spct
     - white_led.source_spct

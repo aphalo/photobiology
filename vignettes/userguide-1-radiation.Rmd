@@ -90,9 +90,9 @@ details and data sources.
 | Object                  | class            | units                        | data description                 |
 |:-------------|:-------------|:-------------|:------------------------------|
 | `sun.spct`              | `source_spct`    | $W\,m^{-2}\,nm^{-1}$         | solar spectral irradiance        |
-| `sun.daily.spct`        | `source_spct`    | $J\,m^{-2}\,d^{-1}\,nm^{-1}$ | solar spectral exposure          |
+| `sun_daily.spct`        | `source_spct`    | $J\,m^{-2}\,d^{-1}\,nm^{-1}$ | solar spectral exposure          |
 | `sun.data`              | `data.frame`     | $W\,m^{-2}\,nm^{-1}$         | solar spectral irradiance        |
-| `sun.daily.data`        | `data.frame`     | $J\,m^{-2}\,d^{-1}\,nm^{-1}$ | solar spectral exposure          |
+| `sun_daily.data`        | `data.frame`     | $J\,m^{-2}\,d^{-1}\,nm^{-1}$ | solar spectral exposure          |
 | `D65.illuminant.spct`   | `source_spct`    | (norm. 560 nm)               | CIE standard                     |
 | `A.illuminant.spct`     | `source_spct`    | (norm. 560 nm)               | CIE standard                     |
 | `clear.spct`            | `filter_spct`    | fraction                     | ideal transparent filter         |
@@ -1075,7 +1075,7 @@ named lists, consequently assigning by position as shown here swaps the
 values without swapping the names of the slots!**
 
 ```{r, extract-2, eval=FALSE}
-# not run as this triggers an error when building the vignette with 'devtools'
+# not run: this does not swap the names, even if it swaps the spectra
 two_suns.mspct[1:2] <- two_suns.mspct[2:1]
 ```
 
@@ -2920,7 +2920,7 @@ Using a shorter time unit than the original, yields an average value
 re-expressed on a new time unit base.
 
 ```{r, irrad-6}
-e_irrad(sun.daily.spct, PAR.wb, time.unit = "second")
+e_irrad(sun_daily.spct, PAR.wb, time.unit = "second")
 ```
 
 Lists of wavebands are also accepted as argument for parameter `w.band`
@@ -3603,7 +3603,7 @@ radiation spectra expressed as a flux of energy or photons over a period
 of time different to 1 s, the average illuminance is returned, in lux.
 
 ```{r}
-illuminance(sun.daily.spct)
+illuminance(sun_daily.spct)
 ```
 
 ### CCT and CRI

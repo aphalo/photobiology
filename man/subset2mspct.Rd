@@ -7,7 +7,7 @@
 subset2mspct(
   x,
   member.class = NULL,
-  idx.var = attr(x, "idfactor"),
+  idx.var = getIdFactor(x),
   drop.idx = TRUE,
   ncol = 1,
   byrow = FALSE,

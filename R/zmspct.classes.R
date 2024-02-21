@@ -1816,7 +1816,7 @@ split2calibration_mspct <- function(x,
 #'
 subset2mspct <- function(x,
                          member.class = NULL,
-                         idx.var = attr(x, "idfactor"),
+                         idx.var = getIdFactor(x),
                          drop.idx = TRUE,
                          ncol = 1, byrow = FALSE, ...) {
   # subset members of a mspct collection in place
@@ -1827,7 +1827,7 @@ subset2mspct <- function(x,
     } else if (length(x) == 1L) {
       return(subset2mspct(x[[1]], # 1-deep recursive call
                           member.class = member.class,
-                          idx.var = attr(x[[1]], "idfactor"),
+                          idx.var = getIdFactor(x[[1]]),
                           drop.idx = drop.idx))
     } else { # length > 1
       i.head <- i <- 1L
@@ -1836,7 +1836,7 @@ subset2mspct <- function(x,
         if (getMultipleWl(x[[i]]) > 1L) {
           y <- subset2mspct(x[[i]], # 1-deep recursive call
                             member.class = member.class,
-                            idx.var = attr(x[[i]], "idfactor"),
+                            idx.var = getIdFactor(x[[1]]),
                             drop.idx = drop.idx)
           # ensure unique names
           names(y) <- paste(names(x[i]), names(y), sep = ".")
@@ -1857,7 +1857,7 @@ subset2mspct <- function(x,
       return(x)
     }
   } else {
-  # subset a long-form spct object into a list
+  # subset a long-form spct object or data frame into a list
     stopifnot(is.data.frame(x))
     if (is.generic_spct(x) && is.null(member.class)) {
       member.class <- class(x)[1]
@@ -1869,7 +1869,7 @@ subset2mspct <- function(x,
     collection.constr <- collection.class
     if (is.any_spct(x) && getMultipleWl(x) == 1) {
       # nothing to subset
-      if (!is.null(idx.var) && idx.var %in% names(x)) {
+      if (!is.null(idx.var) && !is.na(idx.var) && idx.var %in% names(x)) {
         spct.name <- x[[idx.var]][1]
       } else {
         spct.name <- "spct_1"
@@ -1878,7 +1878,7 @@ subset2mspct <- function(x,
       margs <- list(l = l, ncol = ncol, byrow = byrow)
       z <- do.call(collection.constr, margs)
     } else {
-      if (is.null(idx.var)) {
+      if (is.null(idx.var) || is.na(idx.var)) {
         # handle objects created with old versions of 'photobiology'
         idx.var <- "spct.idx"
       }
@@ -1890,6 +1890,7 @@ subset2mspct <- function(x,
         # would hang or slowdown to a crawl if indexing by dates
         # could try benchmarking with as.numeric() to see how much faster it is
         if (lubridate::is.instant(x[[idx.var]])) {
+          # indexing with unique integers could be faster
           x[["tmp.idx"]] <- as.character(x[[idx.var]], tz = "UTC")
           idx <- "tmp.idx"
         } else {

@@ -204,7 +204,7 @@ two_suns.mspct[1]
 two_suns.mspct[1:2]
 
 ## ----extract-2, eval=FALSE----------------------------------------------------
-#  # not run as this triggers an error when building the vignette with 'devtools'
+#  # not run: this does not swap the names, even if it swaps the spectra
 #  two_suns.mspct[1:2] <- two_suns.mspct[2:1]
 
 ## ----extract-3----------------------------------------------------------------
@@ -648,7 +648,7 @@ q_irrad(sun.spct, PAR.wb, scale.factor = 1e6) # umol s-1 m-2
 q_irrad(white_led.source_spct, PAR.wb, time.unit = "hour")
 
 ## ----irrad-6------------------------------------------------------------------
-e_irrad(sun.daily.spct, PAR.wb, time.unit = "second")
+e_irrad(sun_daily.spct, PAR.wb, time.unit = "second")
 
 ## ----irrad-7------------------------------------------------------------------
 e_irrad(sun.spct, UV_bands.lst) # W m-2
@@ -844,7 +844,7 @@ illuminance(sun.spct)
 illuminance(sun.spct, std = "CIE10deg")
 
 ## -----------------------------------------------------------------------------
-illuminance(sun.daily.spct)
+illuminance(sun_daily.spct)
 
 ## -----------------------------------------------------------------------------
 color_of(550) # green

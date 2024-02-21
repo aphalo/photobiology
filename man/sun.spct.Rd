@@ -3,12 +3,18 @@
 \docType{data}
 \name{sun.spct}
 \alias{sun.spct}
+\alias{sun.data}
 \title{Solar spectral irradiance (simulated)}
 \format{
-A \code{source_spct} object with 508 rows and 3 variables
+A \code{source_spct} object and a \code{data.frame}, each with 511
+rows and 3 variables
+
+An object of class \code{data.frame} with 508 rows and 3 columns.
 }
 \usage{
 sun.spct
+
+sun.data
 }
 \description{
 A dataset containing the wavelengths at a 1 nm interval and the
@@ -22,6 +28,7 @@ A dataset containing the wavelengths at a 1 nm interval and the
 }
 \examples{
 sun.spct
+summary(sun.spct)
 
 }
 \references{
@@ -48,9 +55,8 @@ Other Spectral data examples:
 \code{\link{phenylalanine.spct}},
 \code{\link{photodiode.spct}},
 \code{\link{polyester.spct}},
-\code{\link{sun.daily.data}},
-\code{\link{sun.daily.spct}},
-\code{\link{sun.data}},
+\code{\link{sun_daily.spct}},
+\code{\link{sun_evening.spct}},
 \code{\link{water.spct}},
 \code{\link{white_body.spct}},
 \code{\link{white_led.cps_spct}},

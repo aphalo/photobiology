@@ -43,6 +43,13 @@ argument `use.hinges = FALSE`.
 - Fix bug affecting handling of existing normalizations in conversions between
 quantities used for describing spectral properties filters, visible only as a
 spurious warning when plotting with 'ggspectra'.
+- Fix handling of default `idFactor` in `subset2mspct()`.
+- Improve handling of `idFactor` and other non-numeric variables in `clip_wl()`
+and `trim_wl()` so that they are filled with good values instead of NA when 
+possible and fix a bug that converted non-numeric variables into numeric ones
+in the returned value.
+- Add a short time series of sunlight spectra in objects `sun_evening.spct` and
+`sun_evening.mspct`.
 
 # photobiology 0.11.0
 

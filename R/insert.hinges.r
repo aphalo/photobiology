@@ -36,26 +36,30 @@ insert_hinges <- function(x, y, h) {
   # save lengths
   j <- length(h)
   k <- length(x)
-  # allocate vectors for the output
-  x.out <- numeric(j + k)
-  y.out <- numeric(j + k)
   # compute the new idx values after shift caused by insertions
   idxs.in <- findInterval(h, x)
   idxs.out <- idxs.in + 1:j
   idxs.diff <- diff(c(0,idxs.in,k))
   idxs.map <- 1:k + rep(0:j, idxs.diff)
-  # we copy everything that does not require interpolation
-  x.out[idxs.map] <- x
-  y.out[idxs.map] <- y
-  x.out[idxs.out] <- h
   # we use recycling to interpolate all values and insert them into the gaps
   if (is.numeric(y)) {
+    # allocate vectors for the output
+    x.out <- numeric(j + k)
+    y.out <- numeric(j + k)
+    # we copy everything that does not require interpolation
+    x.out[idxs.map] <- x
+    y.out[idxs.map] <- y
+    x.out[idxs.out] <- h
+    # we fill the hinges by interpolation
     y.out[idxs.out] <- y[idxs.in + 1] -
       (x[idxs.in + 1] - x.out[idxs.out]) /
       (x[idxs.in + 1] - x[idxs.in]) *
       (y[idxs.in + 1] - y[idxs.in])
+  } else if (length(unique(y)) == 1) {
+    y.out <- rep(y[1], j + k)
   } else {
-    y.out[idxs.out] <- NA
+    y.out <- rep(y[NA], j + k)
+    y.out[idxs.map] <- y
   }
   data.frame(x = x.out, y = y.out)
 }
@@ -89,26 +93,30 @@ l_insert_hinges <- function(x, y, h) {
   # save lengths
   j <- length(h)
   k <- length(x)
-  # allocate vectors for the output
-  x.out <- numeric(j + k)
-  y.out <- numeric(j + k)
   # compute the new idx values after shift caused by insertions
   idxs.in <- findInterval(h, x)
   idxs.out <- idxs.in + 1:j
   idxs.diff <- diff(c(0,idxs.in,k))
   idxs.map <- 1:k + rep(0:j, idxs.diff)
-  # we copy everything that does not require interpolation
-  x.out[idxs.map] <- x
-  y.out[idxs.map] <- y
-  x.out[idxs.out] <- h
   # we use recycling to interpolate all values and insert them into the gaps
   if (is.numeric(y)) {
+    # allocate vectors for the output
+    x.out <- numeric(j + k)
+    y.out <- numeric(j + k)
+    # we copy everything that does not require interpolation
+    x.out[idxs.map] <- x
+    y.out[idxs.map] <- y
+    x.out[idxs.out] <- h
+    # we fill the hinges by interpolation
     y.out[idxs.out] <- y[idxs.in + 1] -
       (x[idxs.in + 1] - x.out[idxs.out]) /
       (x[idxs.in + 1] - x[idxs.in]) *
       (y[idxs.in + 1] - y[idxs.in])
+  } else if (length(unique(y)) == 1) {
+    y.out <- rep(y[1], j + k)
   } else {
-    y.out[idxs.out] <- NA
+    y.out <- rep(y[NA], j + k)
+    y.out[idxs.map] <- y
   }
   list(x = x.out, y = y.out)
 }
@@ -145,26 +153,30 @@ v_insert_hinges <- function(x, y, h) {
   # save lengths
   j <- length(h)
   k <- length(x)
-  # allocate vectors for the output
-  x.out <- numeric(j + k)
-  y.out <- numeric(j + k)
   # compute the new idx values after shift caused by insertions
   idxs.in <- findInterval(h, x)
   idxs.out <- idxs.in + 1:j
   idxs.diff <- diff(c(0,idxs.in,k))
   idxs.map <- 1:k + rep(0:j, idxs.diff)
-  # we copy everything that does not require interpolation
-  x.out[idxs.map] <- x
-  y.out[idxs.map] <- y
-  x.out[idxs.out] <- h
   # we use recycling to interpolate all values and insert them into the gaps
   if (is.numeric(y)) {
+    # allocate vectors for the output
+    x.out <- numeric(j + k)
+    y.out <- numeric(j + k)
+    # we copy everything that does not require interpolation
+    x.out[idxs.map] <- x
+    y.out[idxs.map] <- y
+    x.out[idxs.out] <- h
+    # we fill the hinges by interpolation
     y.out[idxs.out] <- y[idxs.in + 1] -
       (x[idxs.in + 1] - x.out[idxs.out]) /
       (x[idxs.in + 1] - x[idxs.in]) *
       (y[idxs.in + 1] - y[idxs.in])
+  } else if (length(unique(y)) == 1) {
+    y.out <- rep(y[1], j + k)
   } else {
-    y.out[idxs.out] <- NA
+    y.out <- rep(y[NA], j + k)
+    y.out[idxs.map] <- y
   }
   y.out
 }
@@ -193,12 +205,14 @@ v_replace_hinges <- function(x, y, h) {
   # sanitize 'hinges'
   h.idxs <- which(x %in% h)
   y.out <- y
-  # we use recycling to interpolate all values and overwrite them into the hinges
+  # we fill the hinges by interpolation
   if (is.numeric(y)) {
     y.out[h.idxs] <- y[h.idxs + 1] -
       (x[h.idxs + 1] - x[h.idxs - 1]) /
       (x[h.idxs + 1] - x[h.idxs]) *
       (y[h.idxs + 1] - y[h.idxs - 1])
+  } else if (length(unique(y)) == 1) {
+    y.out[h.idxs] <- y[1]
   } else {
     y.out[h.idxs] <- NA
   }

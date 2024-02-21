@@ -12,7 +12,7 @@
 
 <meta name="author" content="Pedro J. Aphalo" />
 
-<meta name="date" content="2023-08-07" />
+<meta name="date" content="2024-02-20" />
 
 <title>User Guide: 1 Radiation</title>
 
@@ -339,9 +339,9 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 
 <h1 class="title toc-ignore">User Guide: 1 Radiation</h1>
-<h3 class="subtitle">Package ‘photobiology’ 0.10.17.9009</h3>
+<h3 class="subtitle">Package ‘photobiology’ 0.11.0.9003</h3>
 <h4 class="author">Pedro J. Aphalo</h4>
-<h4 class="date">2023-08-07</h4>
+<h4 class="date">2024-02-20</h4>
 
 
 <div id="TOC">
@@ -561,7 +561,7 @@ documentation for each data object for details and data sources.</p>
 <td align="left">solar spectral irradiance</td>
 </tr>
 <tr class="even">
-<td align="left"><code>sun.daily.spct</code></td>
+<td align="left"><code>sun_daily.spct</code></td>
 <td align="left"><code>source_spct</code></td>
 <td align="left"><span class="math inline">\(J\,m^{-2}\,d^{-1}\,nm^{-1}\)</span></td>
 <td align="left">solar spectral exposure</td>
@@ -573,7 +573,7 @@ documentation for each data object for details and data sources.</p>
 <td align="left">solar spectral irradiance</td>
 </tr>
 <tr class="even">
-<td align="left"><code>sun.daily.data</code></td>
+<td align="left"><code>sun_daily.data</code></td>
 <td align="left"><code>data.frame</code></td>
 <td align="left"><span class="math inline">\(J\,m^{-2}\,d^{-1}\,nm^{-1}\)</span></td>
 <td align="left">solar spectral exposure</td>
@@ -1728,9 +1728,9 @@ objects.</p>
 <div class="sourceCode" id="cb63"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" tabindex="-1"></a>polyester.spct</span></code></pre></div>
 <pre><code>## Object: filter_spct [561 x 2]
 ## Wavelength range 240-800 nm, step 1 nm 
-## Label: clear polyester film 
+## Label: Polyester, clear film, 0.000125 m thick, Autostat CT5 from McDermit Autotype; new 
 ## Transmittance of type &#39;total&#39;
-## Rfr (/1): 0.070, thickness (mm): 0.125, attenuation mode: absorption.
+## Rfr (/1): 0.074, thickness (mm): 0.125, attenuation mode: absorption.
 ## 
 ## # A tibble: 561 × 2
 ##   w.length     Tfr
@@ -1744,17 +1744,17 @@ objects.</p>
 <div class="sourceCode" id="cb65"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" tabindex="-1"></a><span class="fu">convertThickness</span>(polyester.spct, <span class="at">thickness =</span> <span class="fl">2e-3</span>)</span></code></pre></div>
 <pre><code>## Object: filter_spct [561 x 2]
 ## Wavelength range 240-800 nm, step 1 nm 
-## Label: clear polyester film 
+## Label: Polyester, clear film, 0.000125 m thick, Autostat CT5 from McDermit Autotype; new 
 ## Transmittance of type &#39;total&#39;
-## Rfr (/1): 0.070, thickness (mm): 2.00, attenuation mode: absorption.
+## Rfr (/1): 0.074, thickness (mm): 2.00, attenuation mode: absorption.
 ## 
 ## # A tibble: 561 × 2
 ##   w.length      Tfr
 ##      &lt;int&gt;    &lt;dbl&gt;
-## 1      240 2.53e-37
-## 2      241 1.38e-37
-## 3      242 7.39e-38
-## 4      243 3.85e-38
+## 1      240 2.70e-37
+## 2      241 1.48e-37
+## 3      242 7.89e-38
+## 4      243 4.10e-38
 ## # ℹ 557 more rows</code></pre>
 <hr />
 <p>Attributes <code>instr_desc</code> and <code>instr_settings</code>
@@ -2542,7 +2542,7 @@ expected replacement value is also, always a collection of spectra.</p>
 spectra are named lists, consequently assigning by position as shown
 here swaps the values without swapping the names of the
 slots!</strong></p>
-<div class="sourceCode" id="cb146"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb146-1"><a href="#cb146-1" tabindex="-1"></a><span class="co"># not run as this triggers an error when building the vignette with &#39;devtools&#39;</span></span>
+<div class="sourceCode" id="cb146"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb146-1"><a href="#cb146-1" tabindex="-1"></a><span class="co"># not run: this does not swap the names, even if it swaps the spectra</span></span>
 <span id="cb146-2"><a href="#cb146-2" tabindex="-1"></a>two_suns.mspct[<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>] <span class="ot">&lt;-</span> two_suns.mspct[<span class="dv">2</span><span class="sc">:</span><span class="dv">1</span>]</span></code></pre></div>
 <hr />
 <p>Methods <code>[[</code>, <code>$</code> and <code>[[&lt;-</code>,
@@ -2643,9 +2643,9 @@ collections from individual spectra using this method.</p>
 ## --- Member: filter ---
 ## Object: filter_spct [561 x 2]
 ## Wavelength range 240-800 nm, step 1 nm 
-## Label: clear polyester film 
+## Label: Polyester, clear film, 0.000125 m thick, Autostat CT5 from McDermit Autotype; new 
 ## Transmittance of type &#39;total&#39;
-## Rfr (/1): 0.070, thickness (mm): 0.125, attenuation mode: absorption.
+## Rfr (/1): 0.074, thickness (mm): 0.125, attenuation mode: absorption.
 ## 
 ## # A tibble: 561 × 2
 ##   w.length     Tfr
@@ -3493,12 +3493,13 @@ applicable metadata values are returned. A single spectrum or a
 collection of spectra can be passed. By default columns containing only
 missing data are dropped.</p>
 <div class="sourceCode" id="cb201"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb201-1"><a href="#cb201-1" tabindex="-1"></a><span class="fu">spct_metadata</span>(two.mspct)</span></code></pre></div>
-<pre><code>## # A tibble: 2 × 10
-##   spct.idx   lat   lon address      when.measured       what.measured normalized
-##   &lt;fct&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;        &lt;dttm&gt;              &lt;chr&gt;              &lt;dbl&gt;
-## 1 A         60.2  25.0 Kumpula, He… 2015-10-31 08:00:00 sunlight, si…          0
-## 2 B         60.2  25.0 Kumpula, He… 2015-10-31 09:00:00 sunlight, si…          0
-## # ℹ 3 more variables: multiplier &lt;dbl&gt;, time.unit &lt;Duration&gt;, bswf.used &lt;chr&gt;</code></pre>
+<pre><code>## # A tibble: 2 × 11
+##   spct.idx   lat   lon address    when.measured       what.measured how.measured
+##   &lt;fct&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;      &lt;dttm&gt;              &lt;chr&gt;         &lt;chr&gt;       
+## 1 A         60.2  25.0 Kumpula, … 2015-10-31 08:00:00 sunlight, si… Simulated u…
+## 2 B         60.2  25.0 Kumpula, … 2015-10-31 09:00:00 sunlight, si… Simulated u…
+## # ℹ 4 more variables: normalized &lt;dbl&gt;, multiplier &lt;dbl&gt;, time.unit &lt;Duration&gt;,
+## #   bswf.used &lt;chr&gt;</code></pre>
 <div class="sourceCode" id="cb203"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb203-1"><a href="#cb203-1" tabindex="-1"></a><span class="fu">spct_metadata</span>(two.mspct, </span>
 <span id="cb203-2"><a href="#cb203-2" tabindex="-1"></a>              <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">&quot;when.measured&quot;</span> <span class="ot">=</span> <span class="st">&quot;time&quot;</span>, </span>
 <span id="cb203-3"><a href="#cb203-3" tabindex="-1"></a>                            <span class="st">&quot;where.measured&quot;</span> <span class="ot">=</span> <span class="st">&quot;geocode&quot;</span>),</span>
@@ -5656,9 +5657,9 @@ the attribute <code>filter.properties</code>.</p>
 <div class="sourceCode" id="cb307"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb307-1"><a href="#cb307-1" tabindex="-1"></a>polyester.spct</span></code></pre></div>
 <pre><code>## Object: filter_spct [561 x 2]
 ## Wavelength range 240-800 nm, step 1 nm 
-## Label: clear polyester film 
+## Label: Polyester, clear film, 0.000125 m thick, Autostat CT5 from McDermit Autotype; new 
 ## Transmittance of type &#39;total&#39;
-## Rfr (/1): 0.070, thickness (mm): 0.125, attenuation mode: absorption.
+## Rfr (/1): 0.074, thickness (mm): 0.125, attenuation mode: absorption.
 ## 
 ## # A tibble: 561 × 2
 ##   w.length     Tfr
@@ -5671,9 +5672,9 @@ the attribute <code>filter.properties</code>.</p>
 <div class="sourceCode" id="cb309"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb309-1"><a href="#cb309-1" tabindex="-1"></a><span class="fu">any2Afr</span>(polyester.spct, <span class="st">&quot;add&quot;</span>)</span></code></pre></div>
 <pre><code>## Object: filter_spct [561 x 3]
 ## Wavelength range 240-800 nm, step 1 nm 
-## Label: clear polyester film 
+## Label: Polyester, clear film, 0.000125 m thick, Autostat CT5 from McDermit Autotype; new 
 ## Transmittance of type &#39;total&#39;
-## Rfr (/1): 0.070, thickness (mm): 0.125, attenuation mode: absorption.
+## Rfr (/1): 0.074, thickness (mm): 0.125, attenuation mode: absorption.
 ## 
 ## # A tibble: 561 × 3
 ##   w.length     Tfr   Afr
@@ -5686,8 +5687,8 @@ the attribute <code>filter.properties</code>.</p>
 <div class="sourceCode" id="cb311"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb311-1"><a href="#cb311-1" tabindex="-1"></a><span class="fu">any2Afr</span>(polyester.spct, <span class="st">&quot;replace&quot;</span>)</span></code></pre></div>
 <pre><code>## Object: filter_spct [561 x 2]
 ## Wavelength range 240-800 nm, step 1 nm 
-## Label: clear polyester film 
-## Rfr (/1): 0.070, thickness (mm): 0.125, attenuation mode: absorption.
+## Label: Polyester, clear film, 0.000125 m thick, Autostat CT5 from McDermit Autotype; new 
+## Rfr (/1): 0.074, thickness (mm): 0.125, attenuation mode: absorption.
 ## 
 ## # A tibble: 561 × 2
 ##   w.length   Afr
@@ -6046,9 +6047,9 @@ values by subtracting a constant from each spectrum.</p>
 ## transmittance values [-0.050..0.872] instead of [0..1]</code></pre>
 <pre><code>## Object: filter_spct [561 x 2]
 ## Wavelength range 240-800 nm, step 1 nm 
-## Label: clear polyester film 
+## Label: Polyester, clear film, 0.000125 m thick, Autostat CT5 from McDermit Autotype; new 
 ## Transmittance of type &#39;total&#39;
-## Rfr (/1): 0.070, thickness (mm): 0.125, attenuation mode: absorption.
+## Rfr (/1): 0.074, thickness (mm): 0.125, attenuation mode: absorption.
 ## 
 ## # A tibble: 561 × 2
 ##   w.length   Tfr
@@ -6147,9 +6148,9 @@ updated.</p>
 <div class="sourceCode" id="cb356"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb356-1"><a href="#cb356-1" tabindex="-1"></a><span class="fu">smooth_spct</span>(polyester.spct, <span class="at">method =</span> <span class="st">&quot;supsmu&quot;</span>, <span class="at">strength =</span> <span class="dv">2</span>)</span></code></pre></div>
 <pre><code>## Object: filter_spct [561 x 2]
 ## Wavelength range 240-800 nm, step 1 nm 
-## Label: clear polyester film 
+## Label: Polyester, clear film, 0.000125 m thick, Autostat CT5 from McDermit Autotype; new 
 ## Transmittance of type &#39;total&#39;
-## Rfr (/1): 0.070, thickness (mm): 0.125, attenuation mode: absorption.
+## Rfr (/1): 0.074, thickness (mm): 0.125, attenuation mode: absorption.
 ## 
 ## # A tibble: 561 × 2
 ##   w.length     Tfr
@@ -7504,7 +7505,7 @@ only if set in the spectral object summarized.</p>
 ##  1st Qu.:409.2   1st Qu.:0.4115   1st Qu.:1.980e-06  
 ##  Median :539.5   Median :0.5799   Median :2.929e-06  
 ##  Mean   :539.5   Mean   :0.5160   Mean   :2.407e-06  
-##  3rd Qu.:669.8   3rd Qu.:0.6664   3rd Qu.:3.154e-06  
+##  3rd Qu.:669.8   3rd Qu.:0.6664   3rd Qu.:3.155e-06  
 ##  Max.   :800.0   Max.   :0.8205   Max.   :3.375e-06</code></pre>
 <div class="sourceCode" id="cb420"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb420-1"><a href="#cb420-1" tabindex="-1"></a><span class="fu">summary</span>(two_suns.spct)</span></code></pre></div>
 <pre><code>## Summary of source_spct [1,044 x 4] object: two_suns.spct
@@ -7647,7 +7648,7 @@ peak.</p>
 <span id="cb442-2"><a href="#cb442-2" tabindex="-1"></a>      <span class="at">span =</span> <span class="dv">101</span>, </span>
 <span id="cb442-3"><a href="#cb442-3" tabindex="-1"></a>      <span class="at">unit.out =</span> <span class="st">&quot;photon&quot;</span>, </span>
 <span id="cb442-4"><a href="#cb442-4" tabindex="-1"></a>      <span class="at">refine.wl =</span> <span class="cn">TRUE</span>)<span class="sc">$</span>w.length</span></code></pre></div>
-<pre><code>## [1] 455.3068 608.8524</code></pre>
+<pre><code>## [1] 455.3069 608.8525</code></pre>
 <p>It is possible to approximately set the width in nanometres of the
 moving window within which a maximum is searched by passing an odd
 number as argument to <code>span</code>. However, even numbers if passed
@@ -7726,20 +7727,19 @@ vectors as first argument.</p>
 <div class="sourceCode" id="cb452"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb452-1"><a href="#cb452-1" tabindex="-1"></a><span class="fu">msmsply</span>(filters.mspct, peaks, <span class="at">span =</span> <span class="dv">21</span>)</span></code></pre></div>
 <pre><code>## Object: filter_mspct [3 x 1]
 ## --- Member: none ---
-## Object: filter_spct [0 x 5]
+## Object: filter_spct [0 x 2]
 ## Label: theoretical fully transparent object 
 ## Transmittance of type &#39;internal&#39;
-## Rfr (/1): NA, thickness (mm): NA, attenuation mode: NA.
+## Rfr (/1): 0.000, thickness (mm): 1.00e+03, attenuation mode: absorption.
 ## 
-## # A tibble: 0 × 5
-## # ℹ 5 variables: w.length &lt;dbl&gt;, Tfr &lt;dbl&gt;, Rfr.constant &lt;dbl&gt;,
-## #   thickness &lt;dbl&gt;, attenuation.mode &lt;chr&gt;
+## # A tibble: 0 × 2
+## # ℹ 2 variables: w.length &lt;dbl&gt;, Tfr &lt;dbl&gt;
 ## --- Member: pet ---
 ## Object: filter_spct [3 x 2]
 ## Wavelength range 451-714 nm, step 102-161 nm 
-## Label: clear polyester film 
+## Label: Polyester, clear film, 0.000125 m thick, Autostat CT5 from McDermit Autotype; new 
 ## Transmittance of type &#39;total&#39;
-## Rfr (/1): 0.070, thickness (mm): 0.125, attenuation mode: absorption.
+## Rfr (/1): 0.074, thickness (mm): 0.125, attenuation mode: absorption.
 ## 
 ## # A tibble: 3 × 2
 ##   w.length   Tfr
@@ -7750,9 +7750,9 @@ vectors as first argument.</p>
 ## --- Member: yellow ---
 ## Object: filter_spct [5 x 2]
 ## Wavelength range 331-768 nm, step 23-293 nm 
-## Label: yellow theatrical &#39;gel&#39;, Rosco supergel no. 312, &#39;canary yellow&#39; 
+## Label: Theatrical &#39;gel&#39;, type &#39;Canary Supergel no312; new; from Rosco, UK 
 ## Transmittance of type &#39;total&#39;
-## Rfr (/1): 0.070, thickness (mm): 0.0850, attenuation mode: absorption.
+## Rfr (/1): 0.080, thickness (mm): 0.0900, attenuation mode: absorption.
 ## 
 ## # A tibble: 5 × 2
 ##   w.length     Tfr
@@ -7821,9 +7821,9 @@ absorbance.</p>
 ## --- Member: pet ---
 ## Object: filter_spct [1 x 2]
 ## Wavelength range 322-322 nm, step NA nm 
-## Label: clear polyester film 
+## Label: Polyester, clear film, 0.000125 m thick, Autostat CT5 from McDermit Autotype; new 
 ## Transmittance of type &#39;total&#39;
-## Rfr (/1): 0.070, thickness (mm): 0.125, attenuation mode: absorption.
+## Rfr (/1): 0.074, thickness (mm): 0.125, attenuation mode: absorption.
 ## 
 ## # A tibble: 1 × 2
 ##   w.length   Tfr
@@ -7832,9 +7832,9 @@ absorbance.</p>
 ## --- Member: yellow ---
 ## Object: filter_spct [1 x 2]
 ## Wavelength range 509-509 nm, step NA nm 
-## Label: yellow theatrical &#39;gel&#39;, Rosco supergel no. 312, &#39;canary yellow&#39; 
+## Label: Theatrical &#39;gel&#39;, type &#39;Canary Supergel no312; new; from Rosco, UK 
 ## Transmittance of type &#39;total&#39;
-## Rfr (/1): 0.070, thickness (mm): 0.0850, attenuation mode: absorption.
+## Rfr (/1): 0.080, thickness (mm): 0.0900, attenuation mode: absorption.
 ## 
 ## # A tibble: 1 × 2
 ##   w.length   Tfr
@@ -7911,7 +7911,7 @@ irradiance (= quantum irradiance) is expressed in <span class="math inline">\(mo
 scaling factor as shown below if needed.</p>
 <div class="sourceCode" id="cb466"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb466-1"><a href="#cb466-1" tabindex="-1"></a><span class="fu">q_irrad</span>(sun.spct, PAR.wb, <span class="at">scale.factor =</span> <span class="fl">1e6</span>) <span class="co"># umol s-1 m-2</span></span></code></pre></div>
 <pre><code>##    Q_PAR 
-## 894.1352 
+## 894.1483 
 ## attr(,&quot;time.unit&quot;)
 ## [1] &quot;second&quot;
 ## attr(,&quot;radiation.unit&quot;)
@@ -7922,15 +7922,15 @@ aware that conversion into a different time unit than that used during
 measurement, is only valid for sources like lamps, which have an output
 the remains constant in time.</p>
 <div class="sourceCode" id="cb468"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb468-1"><a href="#cb468-1" tabindex="-1"></a><span class="fu">q_irrad</span>(white_led.source_spct, PAR.wb, <span class="at">time.unit =</span> <span class="st">&quot;hour&quot;</span>)</span></code></pre></div>
-<pre><code>##   Q_PAR 
-## 1.58498 
+<pre><code>##    Q_PAR 
+## 1.585972 
 ## attr(,&quot;time.unit&quot;)
 ## [1] &quot;hour&quot;
 ## attr(,&quot;radiation.unit&quot;)
 ## [1] &quot;total photon irradiance&quot;</code></pre>
 <p>Using a shorter time unit than the original, yields an average value
 re-expressed on a new time unit base.</p>
-<div class="sourceCode" id="cb470"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb470-1"><a href="#cb470-1" tabindex="-1"></a><span class="fu">e_irrad</span>(sun.daily.spct, PAR.wb, <span class="at">time.unit =</span> <span class="st">&quot;second&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb470"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb470-1"><a href="#cb470-1" tabindex="-1"></a><span class="fu">e_irrad</span>(sun_daily.spct, PAR.wb, <span class="at">time.unit =</span> <span class="st">&quot;second&quot;</span>)</span></code></pre></div>
 <pre><code>##    E_PAR 
 ## 92.16251 
 ## attr(,&quot;time.unit&quot;)
@@ -7949,14 +7949,14 @@ values is returned by default.</p>
 ## [1] &quot;total energy irradiance&quot;</code></pre>
 <div class="sourceCode" id="cb474"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb474-1"><a href="#cb474-1" tabindex="-1"></a><span class="fu">q_irrad</span>(sun.spct, UV_bands.lst) <span class="co"># mol s-1 m-2</span></span></code></pre></div>
 <pre><code>##        Q_UVB        Q_UVA 
-## 1.675362e-06 8.481970e-05 
+## 1.675387e-06 8.482093e-05 
 ## attr(,&quot;time.unit&quot;)
 ## [1] &quot;second&quot;
 ## attr(,&quot;radiation.unit&quot;)
 ## [1] &quot;total photon irradiance&quot;</code></pre>
 <div class="sourceCode" id="cb476"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb476-1"><a href="#cb476-1" tabindex="-1"></a><span class="fu">q_irrad</span>(sun.spct, UV_bands.lst, <span class="at">scale.factor =</span> <span class="fl">1e6</span>) <span class="co"># umol s-1 m-2</span></span></code></pre></div>
 <pre><code>##     Q_UVB     Q_UVA 
-##  1.675362 84.819697 
+##  1.675387 84.820933 
 ## attr(,&quot;time.unit&quot;)
 ## [1] &quot;second&quot;
 ## attr(,&quot;radiation.unit&quot;)
@@ -8050,14 +8050,14 @@ wavebands as shown below, obtained from the label stored in the waveband
 definitions.</p>
 <div class="sourceCode" id="cb494"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb494-1"><a href="#cb494-1" tabindex="-1"></a><span class="fu">q_irrad</span>(sun.spct, UV_bands.lst, <span class="at">naming =</span> <span class="st">&quot;short&quot;</span>)</span></code></pre></div>
 <pre><code>##          UVB          UVA 
-## 1.675362e-06 8.481970e-05 
+## 1.675387e-06 8.482093e-05 
 ## attr(,&quot;time.unit&quot;)
 ## [1] &quot;second&quot;
 ## attr(,&quot;radiation.unit&quot;)
 ## [1] &quot;total photon irradiance&quot;</code></pre>
 <p>Naming can also be completely suppressed.</p>
 <div class="sourceCode" id="cb496"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb496-1"><a href="#cb496-1" tabindex="-1"></a><span class="fu">q_irrad</span>(sun.spct, UV_bands.lst, <span class="at">naming =</span> <span class="st">&quot;none&quot;</span>)</span></code></pre></div>
-<pre><code>## [1] 1.675362e-06 8.481970e-05
+<pre><code>## [1] 1.675387e-06 8.482093e-05
 ## attr(,&quot;time.unit&quot;)
 ## [1] &quot;second&quot;
 ## attr(,&quot;radiation.unit&quot;)
@@ -8067,7 +8067,7 @@ waveband definitions.</p>
 <div class="sourceCode" id="cb498"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb498-1"><a href="#cb498-1" tabindex="-1"></a><span class="fu">names</span>(UV_bands.lst) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;UV-C&quot;</span>, <span class="st">&quot;UV-B&quot;</span>, <span class="st">&quot;UV-A&quot;</span>)</span>
 <span id="cb498-2"><a href="#cb498-2" tabindex="-1"></a><span class="fu">q_irrad</span>(sun.spct, UV_bands.lst, <span class="at">naming =</span> <span class="st">&quot;short&quot;</span>, <span class="at">scale.factor =</span> <span class="fl">1e6</span>)</span></code></pre></div>
 <pre><code>##      UV-B      UV-A 
-##  1.675362 84.819697 
+##  1.675387 84.820933 
 ## attr(,&quot;time.unit&quot;)
 ## [1] &quot;second&quot;
 ## attr(,&quot;radiation.unit&quot;)
@@ -8133,11 +8133,11 @@ position of the remaining columns.</p>
 <span id="cb507-4"><a href="#cb507-4" tabindex="-1"></a>        <span class="at">naming =</span> <span class="st">&quot;short&quot;</span>,</span>
 <span id="cb507-5"><a href="#cb507-5" tabindex="-1"></a>        <span class="at">attr2tb =</span> <span class="fu">c</span>(<span class="at">what.measured =</span> <span class="st">&quot;Filter type&quot;</span>))[ , <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">2</span>, <span class="dv">3</span>)]</span></code></pre></div>
 <pre><code>## # A tibble: 3 × 3
-##   `Filter type`                                                    `UV-A`   PAR
-##   &lt;chr&gt;                                                             &lt;dbl&gt; &lt;dbl&gt;
-## 1 theoretical fully transparent object                             84.8    894.
-## 2 clear polyester film                                             70.2    823.
-## 3 yellow theatrical &#39;gel&#39;, Rosco supergel no. 312, &#39;canary yellow&#39;  0.105  536.</code></pre>
+##   `Filter type`                                                     `UV-A`   PAR
+##   &lt;chr&gt;                                                              &lt;dbl&gt; &lt;dbl&gt;
+## 1 theoretical fully transparent object                              84.8    894.
+## 2 Polyester, clear film, 0.000125 m thick, Autostat CT5 from McDer… 70.2    823.
+## 3 Theatrical &#39;gel&#39;, type &#39;Canary Supergel no312; new; from Rosco, …  0.105  536.</code></pre>
 <p>It is also possible to use an <em>apply</em> function. See sections
 <em>apply</em> functions and <code>convolve</code> for more details, as
 in certain cases only one or the other can be used.</p>
@@ -8202,7 +8202,7 @@ example, photosynthetically active radiation, we use the
 25 minutes of exposure.</p>
 <div class="sourceCode" id="cb514"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb514-1"><a href="#cb514-1" tabindex="-1"></a><span class="fu">q_fluence</span>(sun.spct, PAR.wb, <span class="at">exposure.time =</span> <span class="fu">duration</span>(<span class="dv">25</span>, <span class="st">&quot;minutes&quot;</span>))</span></code></pre></div>
 <pre><code>##    Q_PAR 
-## 1.341203 
+## 1.341222 
 ## attr(,&quot;radiation.unit&quot;)
 ## [1] &quot;photon fluence (mol m-2)&quot;
 ## attr(,&quot;exposure.duration&quot;)
@@ -8286,7 +8286,7 @@ returned value easy.</p>
 <span id="cb522-3"><a href="#cb522-3" tabindex="-1"></a>         <span class="at">scale.factor =</span> <span class="fl">1e6</span>,</span>
 <span id="cb522-4"><a href="#cb522-4" tabindex="-1"></a>         <span class="at">name.tag =</span> <span class="st">&quot; (umol/J)&quot;</span>)</span></code></pre></div>
 <pre><code>## UV-B (umol/J)  PAR (umol/J) 
-##      2.599434      4.547199 
+##      2.599472      4.547266 
 ## attr(,&quot;radiation.unit&quot;)
 ## [1] &quot;q:e ratio&quot;</code></pre>
 </div>
@@ -8388,7 +8388,7 @@ above for <code>irrad()</code>.</p>
 <pre><code>## Tfr(wl)_UVB Tfr(wl)_UVA Tfr(wl)_PAR 
 ## 0.009722449 0.781851261 0.920239286 
 ## attr(,&quot;Tfr.type&quot;)
-## [1] &quot;unknown&quot;
+## [1] &quot;total&quot;
 ## attr(,&quot;radiation.unit&quot;)
 ## [1] &quot;transmittance average&quot;</code></pre>
 <p>We can obtain numerical values without names if needed,</p>
@@ -8397,7 +8397,7 @@ above for <code>irrad()</code>.</p>
 <span id="cb530-3"><a href="#cb530-3" tabindex="-1"></a>              <span class="at">naming =</span> <span class="st">&quot;none&quot;</span>)</span></code></pre></div>
 <pre><code>## [1] 0.009722449 0.781851261 0.920239286
 ## attr(,&quot;Tfr.type&quot;)
-## [1] &quot;unknown&quot;
+## [1] &quot;total&quot;
 ## attr(,&quot;radiation.unit&quot;)
 ## [1] &quot;transmittance average&quot;</code></pre>
 <p>or named only according to the wavebands.</p>
@@ -8407,7 +8407,7 @@ above for <code>irrad()</code>.</p>
 <pre><code>##         UVB         UVA         PAR 
 ## 0.009722449 0.781851261 0.920239286 
 ## attr(,&quot;Tfr.type&quot;)
-## [1] &quot;unknown&quot;
+## [1] &quot;total&quot;
 ## attr(,&quot;radiation.unit&quot;)
 ## [1] &quot;transmittance average&quot;</code></pre>
 <p>The reflectance of a leaf.</p>
@@ -8415,7 +8415,7 @@ above for <code>irrad()</code>.</p>
 <pre><code>## Rfr(wl)_range.600.700 
 ##              0.089647 
 ## attr(,&quot;Rfr.type&quot;)
-## [1] &quot;unknown&quot;
+## [1] &quot;total&quot;
 ## attr(,&quot;radiation.unit&quot;)
 ## [1] &quot;reflectance average&quot;</code></pre>
 </div>
@@ -8478,8 +8478,8 @@ desired.</p>
 ##   spct.idx     UVA `Filter type`                                                
 ##   &lt;fct&gt;      &lt;dbl&gt; &lt;chr&gt;                                                        
 ## 1 none     1.00    theoretical fully transparent object                         
-## 2 pet      0.782   clear polyester film                                         
-## 3 yellow   0.00160 yellow theatrical &#39;gel&#39;, Rosco supergel no. 312, &#39;canary yel…</code></pre>
+## 2 pet      0.782   Polyester, clear film, 0.000125 m thick, Autostat CT5 from M…
+## 3 yellow   0.00160 Theatrical &#39;gel&#39;, type &#39;Canary Supergel no312; new; from Ros…</code></pre>
 <p>We can add metadata attributes as a column, and select and rearrange
 the columns.</p>
 <div class="sourceCode" id="cb546"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb546-1"><a href="#cb546-1" tabindex="-1"></a><span class="fu">transmittance</span>(filters.mspct,</span>
@@ -8489,8 +8489,8 @@ the columns.</p>
 ##   what.measured                                                    `Tfr(wl)_UVA`
 ##   &lt;chr&gt;                                                                    &lt;dbl&gt;
 ## 1 theoretical fully transparent object                                   1.00   
-## 2 clear polyester film                                                   0.782  
-## 3 yellow theatrical &#39;gel&#39;, Rosco supergel no. 312, &#39;canary yellow&#39;       0.00160</code></pre>
+## 2 Polyester, clear film, 0.000125 m thick, Autostat CT5 from McDe…       0.782  
+## 3 Theatrical &#39;gel&#39;, type &#39;Canary Supergel no312; new; from Rosco,…       0.00160</code></pre>
 </div>
 </div>
 <div id="normalized-difference-indexes" class="section level3">
@@ -8613,7 +8613,7 @@ this section apply to objects of any of the derived spectral classes as
 well.</p>
 <div class="sourceCode" id="cb558"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb558-1"><a href="#cb558-1" tabindex="-1"></a><span class="fu">integrate_spct</span>(sun.spct)</span></code></pre></div>
 <pre><code>##      e.irrad      q.irrad 
-## 2.691249e+02 1.255336e-03</code></pre>
+## 2.691249e+02 1.255354e-03</code></pre>
 <p>The function <code>average_spct</code> integrates every column
 holding numeric values from a spectrum object, except for
 <code>w.length</code>, and divides the result by the <em>spread</em> or
@@ -8621,7 +8621,7 @@ width of the wavelength range integrated, returning a value expressed in
 the same units as the spectral data.</p>
 <div class="sourceCode" id="cb560"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb560-1"><a href="#cb560-1" tabindex="-1"></a><span class="fu">average_spct</span>(sun.spct)</span></code></pre></div>
 <pre><code>##      e.irrad      q.irrad 
-## 5.175479e-01 2.414107e-06</code></pre>
+## 5.175479e-01 2.414142e-06</code></pre>
 </div>
 </div>
 </div>
@@ -8706,7 +8706,7 @@ degrees targets.</p>
 radiation spectra expressed as a flux of energy or photons over a period
 of time different to 1 s, the average illuminance is returned, in
 lux.</p>
-<div class="sourceCode" id="cb570"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb570-1"><a href="#cb570-1" tabindex="-1"></a><span class="fu">illuminance</span>(sun.daily.spct)</span></code></pre></div>
+<div class="sourceCode" id="cb570"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb570-1"><a href="#cb570-1" tabindex="-1"></a><span class="fu">illuminance</span>(sun_daily.spct)</span></code></pre></div>
 <pre><code>##   Ev[lx] 
 ## 24475.59 
 ## attr(,&quot;time.unit&quot;)
