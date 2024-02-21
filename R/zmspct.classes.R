@@ -1808,7 +1808,7 @@ split2calibration_mspct <- function(x,
 #'   spectral object in long form with metadata attributes. If this object
 #'   was created by row binding with 'photobiology' 0.9.14 or later then
 #'   all metadata for each individual spectrum will be preserved, except for
-#'   comments which are merged.
+#'   unique comments which are merged.
 #'
 #' @export
 #'

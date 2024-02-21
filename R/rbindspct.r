@@ -29,7 +29,12 @@
 #'   provided to \code{idfactor} as a character string.
 #'
 #' @param attrs.source integer Index into the members of the list from which
-#'   attributes should be copied. If \code{NULL}, all attributes are merged.
+#'   attributes should be copied. If \code{NULL}, all attributes are collected
+#'   into named lists, except that unique comments are pasted.
+#'
+#' @param attrs.simplify logical Flag indicating that when all values of an
+#'   attribute are equal for all members, the named list will be replaced by
+#'   a single copy of the value.
 #'
 #' @details Each item of \code{l} should be a spectrum, including \code{NULL}
 #'   (skipped) or an empty object (0 rows). \code{rbindspc} is most useful when
@@ -83,7 +88,12 @@
 #' head(spct)
 #' class(spct)
 #'
-rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE, attrs.source = NULL) {
+rbindspct <- function(l,
+                      use.names = TRUE,
+                      fill = TRUE,
+                      idfactor = TRUE,
+                      attrs.source = NULL,
+                      attrs.simplify = FALSE) {
   if (is.null(l) || !is.list(l) || length(l) < 1) {
     # _mspct classes are derived from "list"
     warning("Argument 'l' should be a non-empty list or a collection of spectra.")
@@ -230,30 +240,49 @@ rbindspct <- function(l, use.names = TRUE, fill = TRUE, idfactor = TRUE, attrs.s
     what.measured <- getWhatMeasured(l[[idxs]])
     how.measured <- getHowMeasured(l[[idxs]])
   } else {
-    for (i in idxs) {
-      temp <- comment(l[[i]])
-      comments.found <- comments.found || !is.null(temp)
-      if (add.idfactor) {
-        temp <- paste("\n", idfactor , "= ", names.spct[i], ":\n", comment(l[[i]]), sep = "")
-      } else {
-        temp <- paste("\n spectrum = ", names.spct[i], ":\n", comment(l[[i]]), sep = "")
-      }
-      comment.ans <- paste(comment.ans, temp)
-    }
-    if (!comments.found) {
-      comment.ans <- NULL
-    }
+    # we avoid duplicating the attributes when possible
+    comments <- lapply(l[idxs], comment)
+    comment.ans <- paste(unique(comments))
+
     instr.desc <- lapply(l[idxs], getInstrDesc)
-    names(instr.desc) <- names.spct[idxs]
+    if (attrs.simplify && length(unique(instr.desc)) == 1) {
+      instr.desc <- instr.desc[[1]]
+    } else {
+      names(instr.desc) <- names.spct[idxs]
+    }
+
     instr.settings <- lapply(l[idxs], getInstrSettings)
-    names(instr.settings) <- names.spct[idxs]
+    if (attrs.simplify && length(unique(instr.settings)) == 1) {
+      instr.settings <- instr.settings[[1]]
+    } else {
+      names(instr.settings) <- names.spct[idxs]
+    }
+
     when.measured <- lapply(l[idxs], getWhenMeasured)
     names(when.measured) <- names.spct[idxs]
+
     where.measured <- dplyr::bind_rows(lapply(l[idxs], getWhereMeasured), .id = "spct.idx")
+    if (attrs.simplify &&
+        (all(is.na(where.measured$lon)) || length(unique(where.measured$lon)) == 1) &&
+        (all(is.na(where.measured$lat)) || length(unique(where.measured$lat)) == 1) &&
+        (all(is.na(where.measured$address)) || length(unique(where.measured$address)) == 1) ) {
+      where.measured <- where.measured[1, -1]
+    }
+
     what.measured <- lapply(l[idxs], getWhatMeasured)
-    names(what.measured) <- names.spct[idxs]
+    if (attrs.simplify && length(unique(what.measured)) == 1) {
+      what.measured <- what.measured[[1]]
+    } else {
+      names(what.measured) <- names.spct[idxs]
+    }
+
     how.measured <- lapply(l[idxs], getHowMeasured)
-    names(how.measured) <- names.spct[idxs]
+    if (attrs.simplify && length(unique(how.measured)) == 1) {
+      how.measured <- how.measured[[1]]
+    } else {
+      names(how.measured) <- names.spct[idxs]
+    }
+
   }
 
   if (l.class == "source_spct") {

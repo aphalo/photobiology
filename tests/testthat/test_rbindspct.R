@@ -29,7 +29,7 @@ test_that("unique_names_mspct", {
   expect_equal(levels(long.spct$spct.idx),
                names(how_measured(long.spct)))
   expect_equal(comment(long.spct),
-               "rbindspct: concatenated comments \nspct.idx= sun:\nTEST \nspct.idx= sun_1:\nTEST")
+               "TEST")
 })
 
 test_that("duplicated_names_mspct", {
@@ -56,7 +56,7 @@ test_that("duplicated_names_mspct", {
   expect_equal(levels(long.spct$spct.idx),
                names(how_measured(long.spct)))
   expect_equal(comment(long.spct),
-               "rbindspct: concatenated comments \nspct.idx= sun:\nTEST \nspct.idx= sun_1:\nTEST")
+               "TEST")
 })
 
 test_that("source_mspct", {

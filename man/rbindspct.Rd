@@ -9,7 +9,8 @@ rbindspct(
   use.names = TRUE,
   fill = TRUE,
   idfactor = TRUE,
-  attrs.source = NULL
+  attrs.source = NULL,
+  attrs.simplify = FALSE
 )
 }
 \arguments{
@@ -36,7 +37,12 @@ named \code{spct.idx}. Alternatively the column name can be directly
 provided to \code{idfactor} as a character string.}
 
 \item{attrs.source}{integer Index into the members of the list from which
-attributes should be copied. If \code{NULL}, all attributes are merged.}
+attributes should be copied. If \code{NULL}, all attributes are collected
+into named lists, except that unique comments are pasted.}
+
+\item{attrs.simplify}{logical Flag indicating that when all values of an
+attribute are equal for all members, the named list will be replaced by
+a single copy of the value.}
 }
 \value{
 An spectral object of a type common to all bound items containing a

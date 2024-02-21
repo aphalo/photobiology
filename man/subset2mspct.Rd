@@ -38,7 +38,7 @@ A collection of spectral objects, each with attributes set if x is a
   spectral object in long form with metadata attributes. If this object
   was created by row binding with 'photobiology' 0.9.14 or later then
   all metadata for each individual spectrum will be preserved, except for
-  comments which are merged.
+  unique comments which are merged.
 }
 \description{
 Convert a data frame object or spectral object into a collection

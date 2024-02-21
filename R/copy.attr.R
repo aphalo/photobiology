@@ -358,7 +358,7 @@ subset_attributes.default <-
 #'
 subset_attributes.generic_spct <-
   function(x,
-           to.keep = character,
+           to.keep = character(),
            target.attributes = spct_attributes(class(x)[1]),
            ...) {
     stopifnot("Argument for 'to.keep' should be a character vector" =

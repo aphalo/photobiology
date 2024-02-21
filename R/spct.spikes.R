@@ -377,7 +377,7 @@ despike.generic_spct <-
                        y.var.name = y.var.name,
                        var.name = var.name,
                        ...)
-      return(rbindspct(mspct, idfactor = FALSE))
+      return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
     }
 
     if (is.null(var.name)) {
@@ -437,7 +437,7 @@ despike.source_spct <-
                        na.rm = na.rm,
                        unit.out = unit.out,
                        ...)
-      return(rbindspct(mspct, idfactor = FALSE))
+      return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
     }
 
     if (unit.out == "energy") {
@@ -489,7 +489,7 @@ despike.response_spct <-
                        na.rm = na.rm,
                        unit.out = unit.out,
                        ...)
-      return(rbindspct(mspct, idfactor = FALSE))
+      return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
     }
 
     if (unit.out == "energy") {
@@ -543,7 +543,7 @@ despike.filter_spct <-
                        na.rm = na.rm,
                        filter.qty = filter.qty,
                        ...)
-      return(rbindspct(mspct, idfactor = FALSE))
+      return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
     }
 
     if (filter.qty == "transmittance") {
@@ -594,7 +594,7 @@ despike.reflector_spct <- function(x,
                      method = method,
                      na.rm = na.rm,
                      ...)
-    return(rbindspct(mspct, idfactor = FALSE))
+    return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
   }
 
   col.name <- "Rfr"
@@ -636,7 +636,7 @@ despike.solute_spct <-
                        method = method,
                        na.rm = na.rm,
                        ...)
-      return(rbindspct(mspct, idfactor = FALSE))
+      return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
     }
 
     cols <- intersect(c("K.mole", "K.mass"), names(x))
@@ -682,7 +682,7 @@ despike.cps_spct <- function(x,
                      method = method,
                      na.rm = na.rm,
                      ...)
-    return(rbindspct(mspct, idfactor = FALSE))
+    return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
   }
 
   var.name <- grep("cps", colnames(x), value = TRUE)
@@ -725,7 +725,7 @@ despike.raw_spct <- function(x,
                      method = method,
                      na.rm = na.rm,
                      ...)
-    return(rbindspct(mspct, idfactor = FALSE))
+    return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
   }
 
   var.name <- grep("counts", colnames(x), value = TRUE)
@@ -1097,7 +1097,7 @@ spikes.generic_spct <-
                       na.rm = na.rm,
                       var.name = var.name,
                       ...)
-      return(rbindspct(mspct, idfactor = FALSE))
+      return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
     }
 
     if (is.null(var.name)) {
@@ -1147,7 +1147,7 @@ spikes.source_spct <-
                       na.rm = na.rm,
                       unit.out = unit.out,
                       ...)
-      return(rbindspct(mspct, idfactor = FALSE))
+      return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
     }
 
     if (unit.out == "energy") {
@@ -1193,7 +1193,7 @@ spikes.response_spct <-
                       na.rm = na.rm,
                       unit.out = unit.out,
                       ...)
-      return(rbindspct(mspct, idfactor = FALSE))
+      return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
     }
 
     if (unit.out == "energy") {
@@ -1241,7 +1241,7 @@ spikes.filter_spct <-
                       na.rm = na.rm,
                       filter.qty = filter.qty,
                       ...)
-      return(rbindspct(mspct, idfactor = FALSE))
+      return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
     }
 
     if (filter.qty == "transmittance") {
@@ -1283,7 +1283,7 @@ spikes.reflector_spct <- function(x,
                     max.spike.width = max.spike.width,
                     na.rm = na.rm,
                     ...)
-    return(rbindspct(mspct, idfactor = FALSE))
+    return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
   }
 
   col.name <- "Rfr"
@@ -1318,7 +1318,7 @@ spikes.solute_spct <-
                       max.spike.width = max.spike.width,
                       na.rm = na.rm,
                       ...)
-      return(rbindspct(mspct, idfactor = FALSE))
+      return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
     }
 
     cols <- intersect(c("K.mole", "K.mass"), names(x))
@@ -1360,7 +1360,7 @@ spikes.cps_spct <- function(x,
                     na.rm = na.rm,
                     var.name = var.name,
                     ...)
-    return(rbindspct(mspct, idfactor = FALSE))
+    return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
   }
 
   spikes.idx <-
@@ -1395,7 +1395,7 @@ spikes.raw_spct <- function(x,
                     na.rm = na.rm,
                     var.name = var.name,
                     ...)
-    return(rbindspct(mspct, idfactor = FALSE))
+    return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
   }
 
   spikes.idx <-

@@ -12,7 +12,7 @@ subset_attributes(x, to.keep, ...)
 
 \method{subset_attributes}{generic_spct}(
   x,
-  to.keep = character,
+  to.keep = character(),
   target.attributes = spct_attributes(class(x)[1]),
   ...
 )

@@ -914,11 +914,13 @@ be created by row-binding compatible spectral objects. For for binding
 to succeed, the list of spectra passed as argument must be homogeneous
 with respect to member class, as well as for certain attributes such as
 `time.unit`. Other metadata attributes are retained as named lists or
-multi-row data frames.
+multi-row data frames. We use a time series of sunlight spectra. The
+default name `spct.idx` is used for the `idfactor` unless an argument is
+passed to parameter `idfactor`.
 
 ```{r, bind-1}
-two_suns.spct <- rbindspct(list(a = sun.spct, b = sun.spct / 2))
-two_suns.spct
+sun_evening_12.spct <- rbindspct(sun_evening.mspct[1:2])
+sun_evening_12.spct
 ```
 
 The reverse operation, separating the individual spectra from a spectrum
@@ -931,7 +933,7 @@ object by means of `rbindspct()`. Versions 0.9.14 and later preserve
 most of the metadata.
 
 ```{r, bind-1a}
-subset2mspct(two_suns.spct)
+subset2mspct(sun_evening_12.spct)
 ```
 
 If multiple spectra are stored in long form (as *tidy* data) in an
@@ -950,7 +952,9 @@ subset2mspct(test1.df, member.class = "source_spct", idx.var = "spectrum")
 ```
 
 If all member spectra share the same metadata, and the constructor has a
-parameter allowing it to be set, it can be passed as a named argument.
+parameter allowing it to be set, it can be passed as a named argument. Here
+we set the time base of expression of the spectral data to a whole day instead
+of the default of using seconds as is usual for irradiance.
 
 ```{r, bind-3}
 subset2mspct(test1.df, member.class = "source_spct", idx.var = "spectrum",
@@ -960,12 +964,15 @@ subset2mspct(test1.df, member.class = "source_spct", idx.var = "spectrum",
 To directly convert a *tidy* data frame into a long form spectral object
 we need to pass the number of spectra through parameter `multiple.wl` to
 change the target value of the check for unique wavelength values (default is
-`multiple.wl = 1L`).
+`multiple.wl = 1L`). The data should be anyway ordered by increasing wavelength 
+and the name of the factor distinguishing the spectra also passed as an 
+argument.
 
 ```{r, set-class-1}
 test2.df <- test1.df
-setSourceSpct(test2.df, multiple.wl = 2L)
+setSourceSpct(test2.df, multiple.wl = 2L, idfactor = "spectrum")
 getMultipleWl(test2.df)
+getIdFactor(test2.df)
 ```
 
 If `multiple.wl = NULL` a suitable value is guessed from the data frame
@@ -975,8 +982,9 @@ fixed number of spectra.
 
 ```{r, set-class-2}
 test3.df <- test1.df
-setSourceSpct(test3.df, multiple.wl = NULL)
+setSourceSpct(test3.df, multiple.wl = NULL, idfactor = "spectrum")
 getMultipleWl(test3.df)
+getIdFactor(test3.df)
 ```
 
 #### Converting *untidy* data frames
@@ -990,11 +998,27 @@ the remaining classes of spectral objects (class is determined by the
 function used, and columns which are not `numeric` are skipped). The
 column containing wavelength values in nanometres is recognized by means
 of its name. The names used for the spectra in the collection are
-derived from the names of the columns containing spectral values.
+derived from the names of the columns containing numeric (assumed spectral data) 
+values.
 
-```{r, split-1}
-test2.df <- data.frame(w.length = 200:210, A = 1, B = 2, z = "A")
-split2source_mspct(test2.df)
+Using defaults when variables have the names expected by default.
+
+```{r, split-1a}
+test2.df <- data.frame(w.length = 200:210, A = 1, B = 2)
+split2source_mspct(x = test2.df)
+```
+
+If variable names differ from the default expectation, they can be named in the call.
+
+```{r, split-1b}
+test3.df <- data.frame(w = 200:210, A = 1, B = 2, z = "Z")
+split2source_mspct(x = test3.df, w.length.var = "w", idx.var = "z")
+```
+
+The interpretation of the data in the numeric columns other than the wavelengths
+can be changed.
+
+```{r}
 split2source_mspct(test2.df, spct.data.var = "s.q.irrad")
 ```
 
@@ -1019,8 +1043,7 @@ example below we use a collection with only two member spectra, but
 `join_mspct()` can handle collections of any length.
 
 ```{r, join-mspct-01}
-my.mspct <- source_mspct(list(sun1 = sun.spct, sun2 = sun.spct * 2))
-my.df <- join_mspct(my.mspct)
+my.df <- join_mspct(sun_evening.mspct)
 head(my.df)
 ```
 
@@ -1030,8 +1053,8 @@ head(my.df)
 can also be used.
 
 ```{r, col-query-class-1}
-is.source_mspct(two_suns.mspct)
-class(two_suns.mspct)
+is.source_mspct(sun_evening.mspct)
+class(sun_evening.mspct)
 ```
 
 In addition to using `class` to query the class of the collection, we
@@ -1039,11 +1062,11 @@ can use base R's `lapply` together with `class` or `class_spct` to query
 the class of each of the members of the collection.
 
 ```{r, col-query-class-2}
-is.filter_mspct(mixed.mspct)
-is.any_mspct(mixed.mspct)
-class(mixed.mspct)
-lapply(mixed.mspct, class_spct)
-lapply(mixed.mspct, class)
+is.filter_mspct(sun_evening.mspct)
+is.any_mspct(sun_evening.mspct)
+class(sun_evening.mspct)
+lapply(sun_evening.mspct, class_spct)
+lapply(sun_evening.mspct, class)
 ```
 
 ### Extract, replace and combine
@@ -1063,20 +1086,32 @@ always a collection of spectra.
 ------------------------------------------------------------------------
 
 ```{r, extract-1}
-two_suns.mspct[1]
+sun_evening.mspct[1]
 ```
 
 ```{r, extract-1a}
-two_suns.mspct[1:2]
+sun_evening.mspct[1:3]
 ```
 
-**Avoid code like that in the chunk bellow. Collections of spectra are
-named lists, consequently assigning by position as shown here swaps the
-values without swapping the names of the slots!**
+**Code like that in the chunk below, may be counterintuitive. Collections of
+spectra are named lists, consequently assigning by position as shown here swaps
+the values without swapping the names of the slots!**
 
-```{r, extract-2, eval=FALSE}
-# not run: this does not swap the names, even if it swaps the spectra
-two_suns.mspct[1:2] <- two_suns.mspct[2:1]
+Using summary to check the names and time stamps we can demonstrate this
+behaviour.
+
+```{r, extract-2}
+# warning: this does not swap the names, even if it swaps the spectra
+my.mspct <- sun_evening.mspct
+summary(my.mspct, which.metadata = "when.measured")$summary[ , -(2:6)]
+
+# member spectr swapped positions, but not the slot names
+my.mspct[1:2] <- my.mspct[2:1]
+summary(my.mspct, which.metadata = "when.measured")$summary[ , -(2:6)]
+
+# of course, we can also swap the names if needed
+names(my.mspct)[1:2] <- names(my.mspct)[2:1]
+summary(my.mspct, which.metadata = "when.measured")$summary[ , -(2:6)]
 ```
 
 ------------------------------------------------------------------------
@@ -1088,31 +1123,51 @@ one of the spectral classes.
 ------------------------------------------------------------------------
 
 ```{r, extract-3}
-two_suns.mspct[[1]]
-two_suns.mspct$sun1
-two_suns.mspct[["sun1"]]
+sun_evening.mspct[[1]]
+sun_evening.mspct$time.01
+sun_evening.mspct[["time.01"]]
 ```
 
 ```{r, extract-4}
-two_suns.mspct[["sun1"]] <- sun.spct * 2
-two_suns.mspct[["sun2"]] <- NULL
-two_suns.mspct
+# local copy
+my.mspct <- sun_evening.mspct
+names(my.mspct)
+# add computed member
+my.mspct[["time.01x2"]] <- my.mspct[["time.01"]] * 2
+names(my.mspct)
+# delete a member
+my.mspct[["time.01x2"]] <- NULL
+names(my.mspct)
 ```
 
 As with R's `list` objects, can combine collections of spectra with
 method `c()` but we can not create new collections from individual
-spectra using this method.
+spectra using this method. Extraction plus concatenation, moves names 
+together with spectra.
 
 ```{r, extract-5}
-c(two_suns.mspct, mixed.mspct)
+new.spct <- c(my.mspct[5:4], my.mspct[3])
+summary(new.spct, which.metadata = "when.measured")$summary[ , -(2:6)]
 ```
 
 ### Random sampling
 
-With large collections of spectra it can be useful to extract a random
-subset of spectra. Functions `sample_num()` and `sample_mspct()` make
-this easy for multiple spectra stored in long form objects or in collection
-of spectra objects.
+With large collections of spectra it can be useful to extract a random subset of
+spectra. Method `pull_sample()` make this easy for multiple spectra, stored
+either in long form or in collections of spectra. (We can set the seed of the
+pseudo-random number generator to ensure repeatability).
+
+```{r}
+set.seed(1234564)
+sampled.mspct <- pull_sample(sun_evening.mspct, size = 2)
+summary(sampled.mspct, which.metadata = "when.measured")$summary[ , -(2:6)]
+```
+
+```{r}
+set.seed(1234564)
+sampled.spct <- pull_sample(sun_evening.spct, size = 2)
+summary(sampled.spct)
+```
 
 ### Transform or *apply* functions
 
@@ -1158,14 +1213,15 @@ We start with a simple example in which we add a constant to each
 spectrum in the collection
 
 ```{r, apply-1}
-two.mspct <- source_mspct(list(A = sun.spct * 1, B = sun.spct * 2))
+two.mspct <- sun_evening.mspct[1:2]
 msmsply(two.mspct, `+`, 0.1)
 ```
 
-and continue with a more complex example in which we trim each spectrum
+and continue with a more complex example in which we trim each spectrum, and
+fill the added values with `NA` values.
 
 ```{r, apply-2}
-msmsply(two.mspct, trim_wl, range = c(281, 500), fill = NA)
+msmsply(two.mspct, trim_wl, range = c(285, 500), fill = NA)
 ```
 
 In the second example we pass two arguments by name to the applied
@@ -1193,7 +1249,7 @@ In the case of `mslply()` the applied function is expected to return an
 R object of any length, possibly variable among members.
 
 ```{r, apply-6}
-str(mslply(two.mspct, names))
+str(mslply(two.mspct, colnames))
 ```
 
 In the case of `msaply()` the applied function is expected to return an
@@ -1205,7 +1261,7 @@ str(msaply(two.mspct, max))
 ```
 
 ```{r, apply-8}
-str(msaply(two.mspct, range))
+msaply(two.mspct, range)
 ```
 
 For the most common cases for which one would use the *apply* functions
@@ -1270,7 +1326,7 @@ input the returned value is a `source_spct` object, in other words of
 the same class as the members of `two.mspct`.
 
 ```{r}
-s_mean(two.mspct)
+s_mean(sun_evening.mspct)
 ```
 
 When we compute the standard error, the quantity returned is not the
@@ -1280,13 +1336,13 @@ as the input did. The variable name is in addition tagged with `.se` to
 *advertise* the change in the quantity.
 
 ```{r}
-s_se(two.mspct)
+s_se(sun_evening.mspct)
 ```
 
 We can also compute both the mean and standard error simultaneously.
 
 ```{r}
-s_mean_se(two.mspct)
+s_mean_se(sun_evening.mspct)
 ```
 
 The other functions in this family work in a similar way to those
@@ -1307,14 +1363,17 @@ both of the two first arguments must be a collection of spectra. When
 only one argument is a collection of spectra, the other one can be a
 spectrum, or even a numeric vector. For multiplication the order of the
 operands does not affect the returned value. With operators or functions
-for non-transitive operations the order does matter.
+for non-transitive operations the order does, obviously, matter.
+
+Convolution can be used, for example to simulate the effect of an optical
+filter on the irradiance from a light source.
 
 ```{r, convolve-1}
-convolve_each(two.mspct, sun.spct)
+convolve_each(two.mspct, yellow_gel.spct)
 ```
 
 ```{r, convolve-2}
-convolve_each(sun.spct, two.mspct)
+convolve_each(yellow_gel.spct, two.mspct)
 ```
 
 ```{r, convolve-3}
@@ -1353,7 +1412,7 @@ when_measured(two.mspct) <- ymd("2015-10-31", tz = "EET")
 when_measured(two.mspct)
 when_measured(two.mspct) <- list(ymd_hm("2015-10-31 10:00", tz = "EET"),
                                  ymd_hm("2015-10-31 11:00", tz = "EET"))
-when_measured(two.mspct)
+when_measured(two.mspct) # UTC shown!
 two.mspct
 ```
 
@@ -1369,14 +1428,14 @@ attribute are saved into a new column appended at the right edge of the
 tibble or data frame.
 
 ```{r}
-when_measured2tb(two.mspct)
+when_measured2tb(sun_evening.mspct)
 ```
 
 By default the new column is named after the name of the attribute, but
 this default can be overridden by the user.
 
 ```{r}
-when_measured2tb(two.mspct, col.names = c(when.measured = "time"))
+when_measured2tb(sun_evening.mspct, col.names = c(when.measured = "acquisition.time"))
 ```
 
 Function `spct_metadata()` returns the metadata in a tibble. Unless the
@@ -2664,7 +2723,11 @@ summary(sun.spct)
 ```
 
 ```{r, summary-2}
-summary(two_suns.spct)
+summary(sun_evening.spct)
+```
+
+```{r, summary-2a}
+summary(sun_evening.mspct)
 ```
 
 ### Wavelength

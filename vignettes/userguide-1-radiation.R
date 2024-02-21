@@ -147,11 +147,11 @@ head(dimnames(two_suns.row_mat)$spct)
 head(attr(two_suns.row_mat, "w.length"))
 
 ## ----bind-1-------------------------------------------------------------------
-two_suns.spct <- rbindspct(list(a = sun.spct, b = sun.spct / 2))
-two_suns.spct
+sun_evening_12.spct <- rbindspct(sun_evening.mspct[1:2])
+sun_evening_12.spct
 
 ## ----bind-1a------------------------------------------------------------------
-subset2mspct(two_suns.spct)
+subset2mspct(sun_evening_12.spct)
 
 ## ----bind-2-------------------------------------------------------------------
 test1.df <- data.frame(w.length = rep(200:210, 2),
@@ -165,67 +165,100 @@ subset2mspct(test1.df, member.class = "source_spct", idx.var = "spectrum",
 
 ## ----set-class-1--------------------------------------------------------------
 test2.df <- test1.df
-setSourceSpct(test2.df, multiple.wl = 2L)
+setSourceSpct(test2.df, multiple.wl = 2L, idfactor = "spectrum")
 getMultipleWl(test2.df)
+getIdFactor(test2.df)
 
 ## ----set-class-2--------------------------------------------------------------
 test3.df <- test1.df
-setSourceSpct(test3.df, multiple.wl = NULL)
+setSourceSpct(test3.df, multiple.wl = NULL, idfactor = "spectrum")
 getMultipleWl(test3.df)
+getIdFactor(test3.df)
 
-## ----split-1------------------------------------------------------------------
-test2.df <- data.frame(w.length = 200:210, A = 1, B = 2, z = "A")
-split2source_mspct(test2.df)
+## ----split-1a-----------------------------------------------------------------
+test2.df <- data.frame(w.length = 200:210, A = 1, B = 2)
+split2source_mspct(x = test2.df)
+
+## ----split-1b-----------------------------------------------------------------
+test3.df <- data.frame(w = 200:210, A = 1, B = 2, z = "Z")
+split2source_mspct(x = test3.df, w.length.var = "w", idx.var = "z")
+
+## -----------------------------------------------------------------------------
 split2source_mspct(test2.df, spct.data.var = "s.q.irrad")
 
 ## ----split-2------------------------------------------------------------------
 split2source_mspct(test2.df, spct.data.var = "s.q.irrad", time.unit = "day")
 
 ## ----join-mspct-01------------------------------------------------------------
-my.mspct <- source_mspct(list(sun1 = sun.spct, sun2 = sun.spct * 2))
-my.df <- join_mspct(my.mspct)
+my.df <- join_mspct(sun_evening.mspct)
 head(my.df)
 
 ## ----col-query-class-1--------------------------------------------------------
-is.source_mspct(two_suns.mspct)
-class(two_suns.mspct)
+is.source_mspct(sun_evening.mspct)
+class(sun_evening.mspct)
 
 ## ----col-query-class-2--------------------------------------------------------
-is.filter_mspct(mixed.mspct)
-is.any_mspct(mixed.mspct)
-class(mixed.mspct)
-lapply(mixed.mspct, class_spct)
-lapply(mixed.mspct, class)
+is.filter_mspct(sun_evening.mspct)
+is.any_mspct(sun_evening.mspct)
+class(sun_evening.mspct)
+lapply(sun_evening.mspct, class_spct)
+lapply(sun_evening.mspct, class)
 
 ## ----extract-1----------------------------------------------------------------
-two_suns.mspct[1]
+sun_evening.mspct[1]
 
 ## ----extract-1a---------------------------------------------------------------
-two_suns.mspct[1:2]
+sun_evening.mspct[1:3]
 
-## ----extract-2, eval=FALSE----------------------------------------------------
-#  # not run: this does not swap the names, even if it swaps the spectra
-#  two_suns.mspct[1:2] <- two_suns.mspct[2:1]
+## ----extract-2----------------------------------------------------------------
+# warning: this does not swap the names, even if it swaps the spectra
+my.mspct <- sun_evening.mspct
+summary(my.mspct, which.metadata = "when.measured")$summary[ , -(2:6)]
+
+# member spectr swapped positions, but not the slot names
+my.mspct[1:2] <- my.mspct[2:1]
+summary(my.mspct, which.metadata = "when.measured")$summary[ , -(2:6)]
+
+# of course, we can also swap the names if needed
+names(my.mspct)[1:2] <- names(my.mspct)[2:1]
+summary(my.mspct, which.metadata = "when.measured")$summary[ , -(2:6)]
 
 ## ----extract-3----------------------------------------------------------------
-two_suns.mspct[[1]]
-two_suns.mspct$sun1
-two_suns.mspct[["sun1"]]
+sun_evening.mspct[[1]]
+sun_evening.mspct$time.01
+sun_evening.mspct[["time.01"]]
 
 ## ----extract-4----------------------------------------------------------------
-two_suns.mspct[["sun1"]] <- sun.spct * 2
-two_suns.mspct[["sun2"]] <- NULL
-two_suns.mspct
+# local copy
+my.mspct <- sun_evening.mspct
+names(my.mspct)
+# add computed member
+my.mspct[["time.01x2"]] <- my.mspct[["time.01"]] * 2
+names(my.mspct)
+# delete a member
+my.mspct[["time.01x2"]] <- NULL
+names(my.mspct)
 
 ## ----extract-5----------------------------------------------------------------
-c(two_suns.mspct, mixed.mspct)
+new.spct <- c(my.mspct[5:4], my.mspct[3])
+summary(new.spct, which.metadata = "when.measured")$summary[ , -(2:6)]
+
+## -----------------------------------------------------------------------------
+set.seed(1234564)
+sampled.mspct <- pull_sample(sun_evening.mspct, size = 2)
+summary(sampled.mspct, which.metadata = "when.measured")$summary[ , -(2:6)]
+
+## -----------------------------------------------------------------------------
+set.seed(1234564)
+sampled.spct <- pull_sample(sun_evening.spct, size = 2)
+summary(sampled.spct)
 
 ## ----apply-1------------------------------------------------------------------
-two.mspct <- source_mspct(list(A = sun.spct * 1, B = sun.spct * 2))
+two.mspct <- sun_evening.mspct[1:2]
 msmsply(two.mspct, `+`, 0.1)
 
 ## ----apply-2------------------------------------------------------------------
-msmsply(two.mspct, trim_wl, range = c(281, 500), fill = NA)
+msmsply(two.mspct, trim_wl, range = c(285, 500), fill = NA)
 
 ## ----apply-3------------------------------------------------------------------
 msdply(two.mspct, max)
@@ -239,28 +272,28 @@ cat(comment(ranges.df))
 msdply(two.mspct, range, na.rm = TRUE)
 
 ## ----apply-6------------------------------------------------------------------
-str(mslply(two.mspct, names))
+str(mslply(two.mspct, colnames))
 
 ## ----apply-7------------------------------------------------------------------
 str(msaply(two.mspct, max))
 
 ## ----apply-8------------------------------------------------------------------
-str(msaply(two.mspct, range))
+msaply(two.mspct, range)
 
 ## -----------------------------------------------------------------------------
-s_mean(two.mspct)
+s_mean(sun_evening.mspct)
 
 ## -----------------------------------------------------------------------------
-s_se(two.mspct)
+s_se(sun_evening.mspct)
 
 ## -----------------------------------------------------------------------------
-s_mean_se(two.mspct)
+s_mean_se(sun_evening.mspct)
 
 ## ----convolve-1---------------------------------------------------------------
-convolve_each(two.mspct, sun.spct)
+convolve_each(two.mspct, yellow_gel.spct)
 
 ## ----convolve-2---------------------------------------------------------------
-convolve_each(sun.spct, two.mspct)
+convolve_each(yellow_gel.spct, two.mspct)
 
 ## ----convolve-3---------------------------------------------------------------
 another_two.mspct <- two.mspct
@@ -276,14 +309,14 @@ when_measured(two.mspct) <- ymd("2015-10-31", tz = "EET")
 when_measured(two.mspct)
 when_measured(two.mspct) <- list(ymd_hm("2015-10-31 10:00", tz = "EET"),
                                  ymd_hm("2015-10-31 11:00", tz = "EET"))
-when_measured(two.mspct)
+when_measured(two.mspct) # UTC shown!
 two.mspct
 
 ## -----------------------------------------------------------------------------
-when_measured2tb(two.mspct)
+when_measured2tb(sun_evening.mspct)
 
 ## -----------------------------------------------------------------------------
-when_measured2tb(two.mspct, col.names = c(when.measured = "time"))
+when_measured2tb(sun_evening.mspct, col.names = c(when.measured = "acquisition.time"))
 
 ## -----------------------------------------------------------------------------
 spct_metadata(two.mspct)
@@ -579,7 +612,10 @@ is_tagged(untg.sun.spct)
 summary(sun.spct)
 
 ## ----summary-2----------------------------------------------------------------
-summary(two_suns.spct)
+summary(sun_evening.spct)
+
+## ----summary-2a---------------------------------------------------------------
+summary(sun_evening.mspct)
 
 ## ----summary-3----------------------------------------------------------------
 wl_range(sun.spct)

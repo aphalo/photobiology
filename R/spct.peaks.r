@@ -411,7 +411,7 @@ peaks.generic_spct <-
                      refine.wl = refine.wl,
                      method = method,
                      ...)
-      return(rbindspct(mspct, idfactor = FALSE))
+      return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
     }
 
     if (is.null(var.name)) {
@@ -477,7 +477,7 @@ peaks.source_spct <-
                      refine.wl = refine.wl,
                      method = method,
                      ...)
-      return(rbindspct(mspct, idfactor = FALSE))
+      return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
     }
 
     if (unit.out == "energy") {
@@ -536,7 +536,7 @@ peaks.response_spct <-
                      refine.wl = refine.wl,
                      method = method,
                      ...)
-      return(rbindspct(mspct, idfactor = FALSE))
+      return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
     }
 
     if (unit.out == "energy") {
@@ -598,7 +598,7 @@ peaks.filter_spct <-
                      refine.wl = refine.wl,
                      method = method,
                      ...)
-      return(rbindspct(mspct, idfactor = FALSE))
+      return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
     }
 
     if (filter.qty == "transmittance") {
@@ -654,7 +654,7 @@ peaks.reflector_spct <- function(x,
                    refine.wl = refine.wl,
                    method = method,
                    ...)
-    return(rbindspct(mspct, idfactor = FALSE))
+    return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
   }
 
   col.name <- "Rfr"
@@ -703,7 +703,7 @@ peaks.solute_spct <-
                      refine.wl = refine.wl,
                      method = method,
                      ...)
-      return(rbindspct(mspct, idfactor = FALSE))
+      return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
     }
 
     cols <- intersect(c("K.mole", "K.mass"), names(x))
@@ -759,7 +759,7 @@ peaks.cps_spct <- function(x,
                    refine.wl = refine.wl,
                    method = method,
                    ...)
-    return(rbindspct(mspct, idfactor = FALSE))
+    return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
   }
 
   peaks.idx <-
@@ -807,7 +807,7 @@ peaks.raw_spct <- function(x, span = 5,
                    refine.wl = refine.wl,
                    method = method,
                    ...)
-    return(rbindspct(mspct, idfactor = FALSE))
+    return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
   }
 
   peaks.idx <-
@@ -1203,7 +1203,7 @@ valleys.generic_spct <-
                        refine.wl = refine.wl,
                        method = method,
                        ...)
-      return(rbindspct(mspct, idfactor = FALSE))
+      return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
     }
 
     if (is.null(var.name)) {
@@ -1269,7 +1269,7 @@ valleys.source_spct <-
                        refine.wl = refine.wl,
                        method = method,
                        ...)
-      return(rbindspct(mspct, idfactor = FALSE))
+      return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
     }
 
     if (unit.out == "energy") {
@@ -1329,7 +1329,7 @@ valleys.response_spct <-
                        refine.wl = refine.wl,
                        method = method,
                        ...)
-      return(rbindspct(mspct, idfactor = FALSE))
+      return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
     }
 
     if (unit.out == "energy") {
@@ -1391,7 +1391,7 @@ valleys.filter_spct <-
                        refine.wl = refine.wl,
                        method = method,
                        ...)
-      return(rbindspct(mspct, idfactor = FALSE))
+      return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
     }
 
     if (filter.qty == "transmittance") {
@@ -1449,7 +1449,7 @@ valleys.reflector_spct <-
                        refine.wl = refine.wl,
                        method = method,
                        ...)
-      return(rbindspct(mspct, idfactor = FALSE))
+      return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
     }
 
     col.name <- "Rfr"
@@ -1499,7 +1499,7 @@ valleys.solute_spct <-
                        refine.wl = refine.wl,
                        method = method,
                        ...)
-      return(rbindspct(mspct, idfactor = FALSE))
+      return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
     }
 
     cols <- intersect(c("K.mole", "K.mass"), names(x))
@@ -1557,7 +1557,7 @@ valleys.cps_spct <-
                        refine.wl = refine.wl,
                        method = method,
                        ...)
-      return(rbindspct(mspct, idfactor = FALSE))
+      return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
     }
 
     valleys.idx <-
@@ -1606,7 +1606,7 @@ valleys.raw_spct <- function(x, span = 5,
                      refine.wl = refine.wl,
                      method = method,
                      ...)
-    return(rbindspct(mspct, idfactor = FALSE))
+    return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
   }
 
   valleys.idx <-
@@ -2212,7 +2212,7 @@ wls_at_target.generic_spct <-
                              col.name = col.name,
                              y.var.name = y.var.name,
                              ...)
-      return(rbindspct(mspct, idfactor = FALSE))
+      return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
     }
 
     find_wls(x,
@@ -2253,7 +2253,7 @@ wls_at_target.source_spct <-
                              na.rm = na.rm,
                              unit.out = unit.out,
                              ...)
-      return(rbindspct(mspct, idfactor = FALSE))
+      return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
     }
 
     if (unit.out == "energy") {
@@ -2300,7 +2300,7 @@ wls_at_target.response_spct <-
                              na.rm = na.rm,
                              unit.out = unit.out,
                              ...)
-      return(rbindspct(mspct, idfactor = FALSE))
+      return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
     }
 
     if (unit.out == "energy") {
@@ -2350,7 +2350,7 @@ wls_at_target.filter_spct <-
                              na.rm = na.rm,
                              filter.qty = filter.qty,
                              ...)
-      return(rbindspct(mspct, idfactor = FALSE))
+      return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
     }
 
     if (filter.qty == "transmittance") {
@@ -2394,7 +2394,7 @@ wls_at_target.reflector_spct <-
                              idfactor = idfactor,
                              na.rm = na.rm,
                              ...)
-      return(rbindspct(mspct, idfactor = FALSE))
+      return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
     }
 
     find_wls(x,
@@ -2430,7 +2430,7 @@ wls_at_target.solute_spct <-
                              idfactor = idfactor,
                              na.rm = na.rm,
                              ...)
-      return(rbindspct(mspct, idfactor = FALSE))
+      return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
     }
 
     cols <- intersect(c("K.mole", "K.mass"), names(x))
@@ -2473,7 +2473,7 @@ wls_at_target.cps_spct <-
                              idfactor = idfactor,
                              na.rm = na.rm,
                              ...)
-      return(rbindspct(mspct, idfactor = FALSE))
+      return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
     }
 
     find_wls(x,
@@ -2510,7 +2510,7 @@ wls_at_target.raw_spct <-
                              idfactor = idfactor,
                              na.rm = na.rm,
                              ...)
-      return(rbindspct(mspct, idfactor = FALSE))
+      return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
     }
 
     find_wls(x,
