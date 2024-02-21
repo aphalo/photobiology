@@ -1010,12 +1010,12 @@ A2T.filter_spct <- function(x, action="add", byref = FALSE, ...) {
   if (is_normalised(x) && !action %in% c("add.raw", "replace.raw")) {
     x <- normalise(x, norm = "update", qty.out = "transmittance")
   } else {
-    if (is_normalised(x)) {
-      x <- setNormalised(x)
-    }
     if (exists("Tfr", x, inherits = FALSE)) {
       NULL
     } else if (exists("A", x, inherits = FALSE)) {
+      if (is_normalised(x)) {
+        x <- setNormalised(x)
+      }
       x[["Tfr"]] <- 10^-x[["A"]]
     } else {
       x[["Tfr"]] <- NA_real_
@@ -1128,15 +1128,15 @@ T2A.filter_spct <- function(x, action="add", byref = FALSE, clean = TRUE, ...) {
   if (is_normalised(x) && !action %in% c("add.raw", "replace.raw")) {
     x <- normalise(x, norm = "update", qty.out = "absorbance")
   } else {
-    if (is_normalised(x)) {
-      x <- setNormalised(x)
-    }
     if (exists("A", x, inherits = FALSE)) {
       NULL
     } else if (exists("Tfr", x, inherits = FALSE)) {
       if (clean) {
         # we need to avoid infinite recursion
         using_Tfr(x <- clean(x))
+      }
+      if (is_normalised(x)) {
+        x <- setNormalised(x)
       }
       x[["A"]] <- -log10(x[["Tfr"]])
     } else {
@@ -1279,14 +1279,14 @@ T2Afr.filter_spct <- function(x,
   if (is_normalised(x) && !action %in% c("add.raw", "replace.raw")) {
     x <- normalise(x, norm = "update", qty.out = "absorptance")
   } else {
-    if (is_normalised(x)) {
-      x <- setNormalised(x)
-    }
     if (exists("Afr", x, inherits = FALSE)) {
       NULL
     } else if (exists("Tfr", x, inherits = FALSE)) {
       if (clean) {
         x <- using_Tfr(clean(x))
+      }
+      if (is_normalised(x)) {
+        x <- setNormalised(x)
       }
       if (current.Tfr.type == "total") {
         if (exists("Rfr", x, inherits = FALSE)) {
@@ -1499,15 +1499,18 @@ Afr2T.filter_spct <- function(x,
   if (is_normalised(x) && !action %in% c("add.raw", "replace.raw")) {
     x <- normalise(x, norm = "update", qty.out = "transmittance")
   } else {
-    if (is_normalised(x)) {
-      x <- setNormalised(x)
-    }
     if (exists("Tfr", x, inherits = FALSE)) {
       NULL
     } else if (current.Tfr.type == "internal") {
+      if (is_normalised(x)) {
+        x <- setNormalised(x)
+      }
       # we assume this is what is desired
       x[["Tfr"]] <- 1 - x[["Afr"]]
     } else if (current.Tfr.type == "total") {
+      if (is_normalised(x)) {
+        x <- setNormalised(x)
+      }
       if (exists("Rfr", x, inherits = FALSE)) {
         x[["Tfr"]] <- 1 - x[["Afr"]] - x[["Rfr"]]
       } else {
