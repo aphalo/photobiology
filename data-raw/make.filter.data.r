@@ -22,7 +22,9 @@ polyester.spct <- filters.mspct$McDermit_PET_Autostat_CT5_125um
 
 yellow_gel.spct <- filters.mspct$Rosco_Canary_Supergel_no312
 
-save(clear.spct, file = "./data/clear.spct.rda")
-save(opaque.spct, file = "./data/opaque.spct.rda")
-save(polyester.spct, file = "./data/polyester.spct.rda")
-save(yellow_gel.spct, file = "./data/yellow.gel.rda")
+two_filters.mspct <- filter_mspct(list(polyester.spct, yellow_gel.spct))
+
+two_filters.spct <- rbindspct(list(polyester.spct, yellow_gel.spct))
+
+save(clear.spct, opaque.spct, polyester.spct, yellow_gel.spct,
+     two_filters.spct, two_filters.mspct, file = "data/filter-data.rda")

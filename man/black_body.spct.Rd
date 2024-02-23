@@ -3,13 +3,17 @@
 \docType{data}
 \name{black_body.spct}
 \alias{black_body.spct}
-\title{Theoretical black body}
+\alias{white_body.spct}
+\alias{clear_body.spct}
+\title{Theoretical optical bodies}
 \format{
 A \code{object_spct} object with 4 rows and 3 variables
 }
 \description{
-A dataset for a hypothetical object with transmittance 0/1
-  (0\%), reflectance 0/1 (0\%)
+Datasets for a hypothetical objects with transmittance 0/1
+  (0\%), reflectance 0/1 (0\%), with transmittance 0/1
+  (0\%), reflectance 1/1 (100\%), and with with transmittance 1/1
+  (100\%), reflectance 0/1 (0\%).
 }
 \details{
 \itemize{ \item w.length (nm) \item Tfr (0..1) \item Rfr (0..1) }
@@ -19,27 +23,18 @@ Other Spectral data examples:
 \code{\link{A.illuminant.spct}},
 \code{\link{D65.illuminant.spct}},
 \code{\link{Ler_leaf.spct}},
-\code{\link{Ler_leaf_rflt.spct}},
-\code{\link{Ler_leaf_trns.spct}},
-\code{\link{Ler_leaf_trns_i.spct}},
 \code{\link{ccd.spct}},
 \code{\link{clear.spct}},
-\code{\link{clear_body.spct}},
 \code{\link{filter_cps.mspct}},
 \code{\link{green_leaf.spct}},
-\code{\link{opaque.spct}},
 \code{\link{phenylalanine.spct}},
 \code{\link{photodiode.spct}},
-\code{\link{polyester.spct}},
 \code{\link{sun.spct}},
 \code{\link{sun_daily.spct}},
 \code{\link{sun_evening.spct}},
+\code{\link{two_filters.spct}},
 \code{\link{water.spct}},
-\code{\link{white_body.spct}},
-\code{\link{white_led.cps_spct}},
-\code{\link{white_led.raw_spct}},
-\code{\link{white_led.source_spct}},
-\code{\link{yellow_gel.spct}}
+\code{\link{white_led.source_spct}}
 }
 \concept{Spectral data examples}
 \keyword{datasets}

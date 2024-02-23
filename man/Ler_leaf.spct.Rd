@@ -3,12 +3,29 @@
 \docType{data}
 \name{Ler_leaf.spct}
 \alias{Ler_leaf.spct}
+\alias{Ler_leaf_rflt.spct}
+\alias{Ler_leaf_trns.spct}
+\alias{Ler_leaf_trns_i.spct}
 \title{Green Arabidopsis leaf reflectance and transmittance.}
 \format{
-An \code{object_spct} object with 2401 rows and 3 variables
+Datasets stored as \code{object_spct}, \code{reflector_spct} and
+   \code{filter_spct} objects, containing transmittance and reflectance
+   data.
+
+An object of class \code{reflector_spct} (inherits from \code{generic_spct}, \code{tbl_df}, \code{tbl}, \code{data.frame}) with 1750 rows and 2 columns.
+
+An object of class \code{filter_spct} (inherits from \code{generic_spct}, \code{tbl_df}, \code{tbl}, \code{data.frame}) with 1753 rows and 2 columns.
+
+An object of class \code{filter_spct} (inherits from \code{generic_spct}, \code{tbl_df}, \code{tbl}, \code{data.frame}) with 2401 rows and 3 columns.
 }
 \usage{
 Ler_leaf.spct
+
+Ler_leaf_rflt.spct
+
+Ler_leaf_trns.spct
+
+Ler_leaf_trns_i.spct
 }
 \description{
 A dataset of total spectral reflectance and total spectral
@@ -24,34 +41,26 @@ Measured with a Jaz spectrometer from Ocean Optics (USA) configured
 }
 \examples{
 Ler_leaf.spct
+Ler_leaf_rflt.spct
 
 }
 \seealso{
 Other Spectral data examples: 
 \code{\link{A.illuminant.spct}},
 \code{\link{D65.illuminant.spct}},
-\code{\link{Ler_leaf_rflt.spct}},
-\code{\link{Ler_leaf_trns.spct}},
-\code{\link{Ler_leaf_trns_i.spct}},
 \code{\link{black_body.spct}},
 \code{\link{ccd.spct}},
 \code{\link{clear.spct}},
-\code{\link{clear_body.spct}},
 \code{\link{filter_cps.mspct}},
 \code{\link{green_leaf.spct}},
-\code{\link{opaque.spct}},
 \code{\link{phenylalanine.spct}},
 \code{\link{photodiode.spct}},
-\code{\link{polyester.spct}},
 \code{\link{sun.spct}},
 \code{\link{sun_daily.spct}},
 \code{\link{sun_evening.spct}},
+\code{\link{two_filters.spct}},
 \code{\link{water.spct}},
-\code{\link{white_body.spct}},
-\code{\link{white_led.cps_spct}},
-\code{\link{white_led.raw_spct}},
-\code{\link{white_led.source_spct}},
-\code{\link{yellow_gel.spct}}
+\code{\link{white_led.source_spct}}
 }
 \author{
 Aphalo, P. J. & Wang, F (unpublished data)

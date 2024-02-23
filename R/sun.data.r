@@ -20,6 +20,10 @@
 #' rows and 3 variables
 #' @family Spectral data examples
 #'
+#' @note Package 'photobiologySun' contains data sets for the daylight spectrum
+#'   under different conditions in and outside vegetation, stored in objects of
+#'   these same classes, ready to be used with package 'photobiology'.
+#'
 #' @examples
 #' sun.spct
 #' summary(sun.spct)

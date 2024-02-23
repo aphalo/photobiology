@@ -297,47 +297,35 @@ reference:
     - Rfr_from_n
 
   - title: Datasets
-  - subtitle: Data for radiation sources
+    desc: Spectral data used in documentation examples and unit tests
+  - subtitle: Data for light sources
+    desc: Spectral irradiance data for daylight and artificial light
     contents:
     - sun.spct
     - sun_daily.spct
     - sun_evening.spct
-    - white_led.raw_spct
-    - white_led.cps_spct
     - white_led.source_spct
     - phenylalanine.spct
     - water.spct
     - A.illuminant.spct
     - D65.illuminant.spct
-    - D2_spectrum
-    - D2.UV586
-    - D2.UV653
-    - D2.UV654
     - FEL_spectrum
-    - FEL.BN.9101.165
-  - subtitle: Data for real objects including filters
+    - D2_spectrum
+    - D2.UV653
+  - subtitle: Data for real and theoretical objects
+    desc: Spectral transmittance, spectral reflectance and spectral absorptance data for real and theoretical objects
     contents:
-    - yellow_gel.spct
-    - polyester.spct
+    - two_filters.spct
     - clear.spct
-    - opaque.spct
     - green_leaf.spct
     - Ler_leaf.spct
-    - Ler_leaf_rflt.spct
-    - Ler_leaf_trns.spct
-    - Ler_leaf_trns_i.spct
-    - Ler_leaf.spct
-    - Ler_leaf.spct
-  - subtitle: Data for theoretical physical bodies
-    contents:
-    - clear_body.spct
-    - white_body.spct
     - black_body.spct
   - subtitle: Data for light sensors
     contents:
     - ccd.spct
     - photodiode.spct
   - subtitle: Data for human vision
+    desc: Data for the spectral response of the human eye as used in different computaions related to illumination and vision
     contents:
     - ciev10.spct
     - ciev2.spct
@@ -347,9 +335,11 @@ reference:
     - ciexyzCMF2.spct
     - cone_fundamentals10.spct
   - subtitle: Data for animal vision
+    desc: Data for the spectral response of bee vision
     contents:
     - beesxyzCMF.spct
   - subtitle: Utility data
+    desc: List of packages in the R for Photobiology suite
     contents:
     - r4p_pkgs
 

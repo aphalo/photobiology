@@ -3,16 +3,25 @@
 \docType{data}
 \name{D2.UV653}
 \alias{D2.UV653}
+\alias{D2.UV586}
+\alias{D2.UV654}
+\alias{FEL.BN.9101.165}
 \title{Data for typical calibration lamps}
 \format{
 A \code{polynom::polynomial} object with 6 constants.
 }
 \description{
 A dataset containing fitted constants to be used as input for
-  function \code{D2_spectrum}.
+  functions \code{\link{D2_spectrum}} and \code{\link{FEL_spectrum}} for
+  computing example spectral curves based on fitted polynomials.
 }
 \details{
 An object of class \code{polynom::polynomial}.
+}
+\examples{
+D2.UV653
+as.character(D2.UV653)
+
 }
 \author{
 Lasse Ylianttila (data)

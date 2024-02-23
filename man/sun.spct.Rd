@@ -26,6 +26,11 @@ A dataset containing the wavelengths at a 1 nm interval and the
 \itemize{ \item w.length (nm), range 293 to 800 nm. \item s.e.irrad
 (W m-2 nm-1) \item s.q.irrad (mol m-2 nm-1) }
 }
+\note{
+Package 'photobiologySun' contains data sets for the daylight spectrum
+  under different conditions in and outside vegetation, stored in objects of
+  these same classes, ready to be used with package 'photobiology'.
+}
 \examples{
 sun.spct
 summary(sun.spct)
@@ -42,27 +47,18 @@ Other Spectral data examples:
 \code{\link{A.illuminant.spct}},
 \code{\link{D65.illuminant.spct}},
 \code{\link{Ler_leaf.spct}},
-\code{\link{Ler_leaf_rflt.spct}},
-\code{\link{Ler_leaf_trns.spct}},
-\code{\link{Ler_leaf_trns_i.spct}},
 \code{\link{black_body.spct}},
 \code{\link{ccd.spct}},
 \code{\link{clear.spct}},
-\code{\link{clear_body.spct}},
 \code{\link{filter_cps.mspct}},
 \code{\link{green_leaf.spct}},
-\code{\link{opaque.spct}},
 \code{\link{phenylalanine.spct}},
 \code{\link{photodiode.spct}},
-\code{\link{polyester.spct}},
 \code{\link{sun_daily.spct}},
 \code{\link{sun_evening.spct}},
+\code{\link{two_filters.spct}},
 \code{\link{water.spct}},
-\code{\link{white_body.spct}},
-\code{\link{white_led.cps_spct}},
-\code{\link{white_led.raw_spct}},
-\code{\link{white_led.source_spct}},
-\code{\link{yellow_gel.spct}}
+\code{\link{white_led.source_spct}}
 }
 \author{
 Anders K. Lindfors (data)

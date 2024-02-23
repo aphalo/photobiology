@@ -3,16 +3,21 @@
 \docType{data}
 \name{clear.spct}
 \alias{clear.spct}
-\title{Theoretical spectrum of a clear material}
+\alias{opaque.spct}
+\title{Theoretical spectrum of clear and apaque materials}
 \format{
 A \code{filter_spct} object with 4 rows and 2 variables
+
+An object of class \code{filter_spct} (inherits from \code{generic_spct}, \code{tbl_df}, \code{tbl}, \code{data.frame}) with 4 rows and 2 columns.
 }
 \usage{
 clear.spct
+
+opaque.spct
 }
 \description{
-A dataset for a hypothetical object with transmittance 1/1
-  (100\%)
+Dataset for hypothetical objects with transmittance 1/1
+  (100\%) and transmittance 0/1 (0\%)
 }
 \details{
 \itemize{ \item w.length (nm). \item Tfr
@@ -20,6 +25,7 @@ A dataset for a hypothetical object with transmittance 1/1
 }
 \examples{
 clear.spct
+opaque.spct
 
 }
 \seealso{
@@ -27,27 +33,18 @@ Other Spectral data examples:
 \code{\link{A.illuminant.spct}},
 \code{\link{D65.illuminant.spct}},
 \code{\link{Ler_leaf.spct}},
-\code{\link{Ler_leaf_rflt.spct}},
-\code{\link{Ler_leaf_trns.spct}},
-\code{\link{Ler_leaf_trns_i.spct}},
 \code{\link{black_body.spct}},
 \code{\link{ccd.spct}},
-\code{\link{clear_body.spct}},
 \code{\link{filter_cps.mspct}},
 \code{\link{green_leaf.spct}},
-\code{\link{opaque.spct}},
 \code{\link{phenylalanine.spct}},
 \code{\link{photodiode.spct}},
-\code{\link{polyester.spct}},
 \code{\link{sun.spct}},
 \code{\link{sun_daily.spct}},
 \code{\link{sun_evening.spct}},
+\code{\link{two_filters.spct}},
 \code{\link{water.spct}},
-\code{\link{white_body.spct}},
-\code{\link{white_led.cps_spct}},
-\code{\link{white_led.raw_spct}},
-\code{\link{white_led.source_spct}},
-\code{\link{yellow_gel.spct}}
+\code{\link{white_led.source_spct}}
 }
 \concept{Spectral data examples}
 \keyword{datasets}
