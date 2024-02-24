@@ -21,7 +21,7 @@
 #'
 #' @examples
 #' polyester.spct
-#' yellow.spct
+#' yellow_gel.spct
 #' summary(two_filters.mspct)
 #'
 "two_filters.spct"
