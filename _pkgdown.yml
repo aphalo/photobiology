@@ -90,7 +90,6 @@ reference:
     desc: Methods for setting and querying metadata from spectral objects.
     contents:
     - is_photon_based
-    - getBSWFUsed
     - setBSWFUsed
     - is_effective
     - getInstrDesc
@@ -123,7 +122,6 @@ reference:
     - is_mole_based
     - getTimeUnit
     - setTimeUnit
-    - getResponseType
     - setResponseType
     - getWhatMeasured
     - setWhatMeasured

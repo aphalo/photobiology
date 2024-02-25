@@ -39,7 +39,8 @@ frequently the interconversion is approximate or even not possible.
 where \eqn{T} is total transmittance and \eqn{\tau} is internal transmittance;
 \eqn{I_0} is the radiant power incident on an object and \eqn{I_z} is the
 radiant power at depth \eqn{z}, in most cases measured below the non-illuminated
-side of the object, and \eqn{\rho} is the reflectance at the illuminated surface.
+side of the object, and \eqn{\rho} is the total reflectance at the
+illuminated surface.
 
 The transmittance of an object as a whole depends on the length of the light
 path within the object and reflectance on the angle of incidence of the light
@@ -48,7 +49,7 @@ quantities are at their minimum.
 
 Thus, the interconversion of total spectral transmittance, \eqn{T(\lambda)},
 into internal spectral transmittance, \eqn{\tau(\lambda)}, is strictly
-possible only if the spectral reflectance \eqn{R(\lambda)} is known. In
+possible only if the spectral reflectance \eqn{\rho(\lambda)} is known. In
 practice, the spectral reflectance is approximated by a constant value
 that is assumed independent of wavelength.
 
@@ -68,9 +69,10 @@ be the case of objects created with early versions of the package.
 Absorptance, \eqn{\alpha}, and absorbance, \eqn{A}, are normally given as
 \code{"internal"}, and this is the assumption in this package. However,
 as in some cases strict enforcement would prevent conversions, this is not
-strictly enforced. (IUPAC, recommends use of the name attenuance instead of
-absorptance when light attenuation involves processes other than pure
-absortion, such as scattering.)
+strictly enforced. (IUPAC, recommends use of the name \emph{attenuance}
+(formerly \emph{extinction}) instead of
+\emph{absorbance} when light attenuation involves processes other than pure
+absorption, such as scattering and luminescence.)
 
 \deqn{1 = \alpha + \rho + \tau}
 
@@ -85,6 +87,10 @@ glass, in most cases a blank is not available.
 For semitransparent objects like glass, it is important to take into
 account that reflections occur at each interface between substances with
 different refractive index.
+
+This attribute is normally set when the \code{source_spct} object
+is created. But \code{convertTfrType()} updates it when it changes due
+to a conversion.
 }
 \note{
 Function \code{setTfrType()} alters \code{x} itself by reference and in
@@ -102,6 +108,6 @@ getTfrType(my.spct)
 
 }
 \seealso{
-\code{\link{convertTfrType}} and \code{\link{filter_spct}}.
+\code{\link{convertTfrType}}, \code{\link{filter_spct}},
+ and \code{\link{object_spct}}.
 }
-\concept{Tfr attribute functions}

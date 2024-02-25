@@ -1903,15 +1903,20 @@ char2duration <- function(time.unit) {
 
 #' Set the "response.type" attribute
 #'
-#' Function to set by reference the "response.type" attribute of an existing
-#' response_spct object.
+#' Functions to set by reference the \code{"response.type"} attribute of an
+#' existing \code{response_spct} object, and to query its value.
 #'
+#' @details
 #' Objects of class \code{response_spct()} can contain data for a response
 #' spectrum or an action spectrum. Response spectra are measured using the
 #' same photon (or energy) irradiance at each wavelength. Action spectra are
 #' derived from dose response curves at each wavelength, and responsivity
 #' at each wavelength is expressed as the reciprocal of the photon fluence
-#' required to obtain a fixed level of response.
+#' required to obtain a fixed level of response. In the case of biological
+#' systems the action and response spectra frequently differ in their shape
+#' and spectral values. This is a property inherent to a data set and not
+#' subject to conversions, thus normally set when a \code{response_spct} object
+#' is created and never modified.
 #'
 #' @param x a response_spct object
 #' @param response.type a character string, either "response" or "action"
@@ -1924,10 +1929,12 @@ char2duration <- function(time.unit) {
 #'   attribute set.
 #'
 #' @export
-#' @family response type attribute functions
+#'
 #' @examples
 #' my.spct <- ccd.spct
 #' setResponseType(my.spct, "action")
+#' getResponseType(ccd.spct)
+#' getResponseType(sun.spct)
 #'
 setResponseType <- function(x,
                             response.type = c("response", "action")) {
@@ -1953,29 +1960,9 @@ setResponseType <- function(x,
   invisible(x)
 }
 
-#' Get the "response.type" attribute
-#'
-#' Function to read the "response.type" attribute of an existing response_spct
-#' object.
-#'
-#' Objects of class \code{response_spct()} can contain data for a response
-#' spectrum or an action spectrum. Response spectra are measured using the
-#' same photon (or energy) irradiance at each wavelength. Action spectra are
-#' derived from dose response curves at each wavelength, and responsivity
-#' at each wavelength is expressed as the reciprocal of the photon fluence
-#' required to obtain a fixed level of response.
-#'
-#' @param x a response_spct object
-#'
-#' @return character string
-#'
-#' @note If x is not a \code{response_spct} object, \code{NA} is returned.
+#' @rdname setResponseType
 #'
 #' @export
-#' @family response.type attribute functions
-#' @examples
-#' getResponseType(ccd.spct)
-#' getResponseType(sun.spct)
 #'
 getResponseType <- function(x) {
   if (is.response_spct(x) || is.summary_response_spct(x)) {
@@ -1992,23 +1979,57 @@ getResponseType <- function(x) {
 
 # bswf attribute -----------------------------------------------------
 
-#' Set the "bswf.used" attribute
+#' The "bswf.used" attribute
 #'
-#' Function to set by reference the "time.unit" attribute of an existing
-#' source_spct object
+#' Function to set by reference the \code{"time.unit"} attribute of an
+#' existing \code{source_spct object}, and function to query its value.
 #'
-#' @param x a source_spct object
-#' @param bswf.used a character string, either "none" or the name of a BSWF
+#' @details
+#' Effective spectral irradiance, describes an estimate of the strength of
+#' the radiation towards eliciting a given response, frequently, but not only
+#' a biological response. The biological spectral weighting function, BSWF,
+#' used, can be for example that of the human eye, or an action spectrum,
+#' such as the erythema, or reddening of the human skin, action spectrum.
 #'
-#' @return x
-#' @note This function alters x itself by reference and in addition
-#'   returns x invisibly. If x is not a source_spct, x is not modified. The behaviour of this
-#'   function is 'unusual' in that the default for parameter \code{bswf.used} is
-#'   used only if \code{x} does not already have this attribute set.
-#'   \code{time.unit = "hour"} is currently not fully supported.
+#' \deqn{I_{BE}(\lambda) = I(\lambda) \times f_{BE}(\lambda)}
+#'
+#' where, \eqn{I_{BE}(\lambda)} is the biologically effective spectral
+#' irradiance, \eqn{I(\lambda)} is the spectral irradiance
+#' and \eqn{f_{BE}(\lambda)} is one of many possible BSWF.
+#'
+#' When the values stored in a \code{source_spct} object have been multiplied
+#' by those from a curve describing a certain response or effect, the
+#' attribute \code{"time.unit"} is set accordingly to track the transformation
+#' applied to the data. When a spectral response data have been directly measured,
+#' they should be stored in an object of class \code{response_spct} as they
+#' are expressed in actual response units, not
+#' of class \code{source_spct} expressed in irradiance units, even if weighted.
+#' However, when like in the case of spectral
+#' illuminance, the aim is technical measure of a light source,
+#' class \code{source_spct} should be used and the BSWF set in the metadata.
+#'
+#' This attribute is normally set by the function or operator used to apply
+#' the BSWF to spectral irradiance data, or set when the \code{source_spct} object
+#' is created.
+#'
+#' @param x a source_spct object.
+#' @param bswf.used a character string, either \code{"none"} or the name of a
+#'  BSWF.
+#'
+#' @return \code{x} or the \code{character} value stored in \code{x}.
+#'
+#' @note Function \code{setBSWFUsed()} alters \code{x} itself by reference and in addition
+#'   returns \code{x} invisibly. If \code{x} is not a \code{source_spct}, \code{x} is not modified.
+#'   The behaviour of this function is 'unusual' in that the default for
+#'   parameter \code{bswf.used} is used only if \code{x} does not already have
+#'   this attribute set. Function \code{getBSWFUsed()} returns the value to
+#'   which the attribute is set as a \code{character} string and otherwise
+#'   \code{NA}.
 #'
 #' @export
-#' @family BSWF attribute functions
+#'
+#' @examples
+#' getBSWFUsed(sun.spct)
 #'
 setBSWFUsed <- function(x, bswf.used=c("none", "unknown")) {
   if (is.null(bswf.used) || length(bswf.used) < 1) {
@@ -2036,20 +2057,9 @@ setBSWFUsed <- function(x, bswf.used=c("none", "unknown")) {
   invisible(x)
 }
 
-#' Get the "bswf.used" attribute
-#'
-#' Function to read the "time.unit" attribute of an existing source_spct object
-#'
-#' @param x a source_spct object
-#'
-#' @return character string
-#'
-#' @note if x is not a \code{source_spct} object, NA is returned
+#' @rdname setBSWFUsed
 #'
 #' @export
-#' @family BSWF attribute functions
-#' @examples
-#' getBSWFUsed(sun.spct)
 #'
 getBSWFUsed <- function(x) {
   if (is.source_spct(x) || is.summary_source_spct(x)) {
@@ -2088,7 +2098,8 @@ getBSWFUsed <- function(x) {
 #' where \eqn{T} is total transmittance and \eqn{\tau} is internal transmittance;
 #' \eqn{I_0} is the radiant power incident on an object and \eqn{I_z} is the
 #' radiant power at depth \eqn{z}, in most cases measured below the non-illuminated
-#' side of the object, and \eqn{\rho} is the reflectance at the illuminated surface.
+#' side of the object, and \eqn{\rho} is the total reflectance at the
+#' illuminated surface.
 #'
 #' The transmittance of an object as a whole depends on the length of the light
 #' path within the object and reflectance on the angle of incidence of the light
@@ -2097,7 +2108,7 @@ getBSWFUsed <- function(x) {
 #'
 #' Thus, the interconversion of total spectral transmittance, \eqn{T(\lambda)},
 #' into internal spectral transmittance, \eqn{\tau(\lambda)}, is strictly
-#' possible only if the spectral reflectance \eqn{R(\lambda)} is known. In
+#' possible only if the spectral reflectance \eqn{\rho(\lambda)} is known. In
 #' practice, the spectral reflectance is approximated by a constant value
 #' that is assumed independent of wavelength.
 #'
@@ -2117,9 +2128,10 @@ getBSWFUsed <- function(x) {
 #' Absorptance, \eqn{\alpha}, and absorbance, \eqn{A}, are normally given as
 #' \code{"internal"}, and this is the assumption in this package. However,
 #' as in some cases strict enforcement would prevent conversions, this is not
-#' strictly enforced. (IUPAC, recommends use of the name attenuance instead of
-#' absorptance when light attenuation involves processes other than pure
-#' absortion, such as scattering.)
+#' strictly enforced. (IUPAC, recommends use of the name \emph{attenuance}
+#' (formerly \emph{extinction}) instead of
+#' \emph{absorbance} when light attenuation involves processes other than pure
+#' absorption, such as scattering and luminescence.)
 #'
 #' \deqn{1 = \alpha + \rho + \tau}
 #'
@@ -2134,6 +2146,10 @@ getBSWFUsed <- function(x) {
 #' For semitransparent objects like glass, it is important to take into
 #' account that reflections occur at each interface between substances with
 #' different refractive index.
+#'
+#' This attribute is normally set when the \code{source_spct} object
+#' is created. But \code{convertTfrType()} updates it when it changes due
+#' to a conversion.
 #'
 #' @param x a \code{filter_spct} or an \code{object_spct} object.
 #' @param Tfr.type character string, either \code{"total"} or \code{"internal"}.
@@ -2151,11 +2167,11 @@ getBSWFUsed <- function(x) {
 #'   for parameter \code{Tfr.type} is used only if \code{x} does not already
 #'   have this attribute set.
 #'
-#' @seealso \code{\link{convertTfrType}} and \code{\link{filter_spct}}.
+#' @seealso \code{\link{convertTfrType}}, \code{\link{filter_spct}},
+#'  and \code{\link{object_spct}}.
 #'
 #' @export
 #'
-#' @family Tfr attribute functions
 #' @examples
 #' my.spct <- polyester.spct
 #' getTfrType(my.spct)
@@ -2223,12 +2239,13 @@ getTfrType <- function(x) {
 #' reflected radiation is collected, corresponding to mirror-like reflection,
 #' called specular. Thus,
 #'
-#' \deqn{\rho_t = \rho_s + \rho_d}
+#' \deqn{\rho = \rho_s + \rho_d}
 #'
-#' where, \eqn{\rho_t} is total reflectance, \eqn{\rho_s} is specular
-#' reflectance, and \eqn{\rho_d} is diffuse or scattered reflectance.
+#' where, \eqn{\rho} is total reflectance, and its components, \eqn{\rho_s}, specular
+#' reflectance, and \eqn{\rho_d}, diffuse or scattered reflectance.
 #' When strong scattering takes place, total reflectance can
-#' be much more than the specular component.
+#' be much more than the specular component. In most cases \eqn{\rho_d} is
+#' not measured directly.
 #'
 #' The distinction depends on the measuring procedure, and this information is
 #' stored as metadata in an attribute of objects of classes
@@ -2240,6 +2257,9 @@ getTfrType <- function(x) {
 #' scatter light, it may be possible to assume that specular reflectance
 #' represents most of the total reflectance.) Consequently, checking the stored
 #' value of this attribute is used as a safeguard in these compuations.
+#'
+#' This attribute is normally set when the \code{source_spct} object
+#' is created.
 #'
 #' @return \code{x}, with the modified attribute in the case of \code{setRfrType()} or
 #'   the \code{character} value, \code{"total"} or \code{"specular"}, stored
@@ -2254,8 +2274,10 @@ getTfrType <- function(x) {
 #'   for parameter \code{Rfr.type} is used only if \code{x} does not already
 #'   have this attribute set.
 #'
+#' @seealso \code{\link{reflector_spct}} and \code{\link{object_spct}}.
+#'
 #' @export
-#' @family Rfr attribute functions
+#'
 #' @examples
 #' my.spct <- reflector_spct(w.length = 400:409, Rfr = 0.1)
 #' getRfrType(my.spct)

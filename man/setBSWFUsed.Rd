@@ -2,31 +2,64 @@
 % Please edit documentation in R/spct.classes.r
 \name{setBSWFUsed}
 \alias{setBSWFUsed}
-\title{Set the "bswf.used" attribute}
+\alias{getBSWFUsed}
+\title{The "bswf.used" attribute}
 \usage{
 setBSWFUsed(x, bswf.used = c("none", "unknown"))
+
+getBSWFUsed(x)
 }
 \arguments{
-\item{x}{a source_spct object}
+\item{x}{a source_spct object.}
 
-\item{bswf.used}{a character string, either "none" or the name of a BSWF}
+\item{bswf.used}{a character string, either \code{"none"} or the name of a
+BSWF.}
 }
 \value{
-x
+\code{x} or the \code{character} value stored in \code{x}.
 }
 \description{
-Function to set by reference the "time.unit" attribute of an existing
-source_spct object
+Function to set by reference the \code{"time.unit"} attribute of an
+existing \code{source_spct object}, and function to query its value.
+}
+\details{
+Effective spectral irradiance, describes an estimate of the strength of
+the radiation towards eliciting a given response, frequently, but not only
+a biological response. The biological spectral weighting function, BSWF,
+used, can be for example that of the human eye, or an action spectrum,
+such as the erythema, or reddening of the human skin, action spectrum.
+
+\deqn{I_{BE}(\lambda) = I(\lambda) \times f_{BE}(\lambda)}
+
+where, \eqn{I_{BE}(\lambda)} is the biologically effective spectral
+irradiance, \eqn{I(\lambda)} is the spectral irradiance
+and \eqn{f_{BE}(\lambda)} is one of many possible BSWF.
+
+When the values stored in a \code{source_spct} object have been multiplied
+by those from a curve describing a certain response or effect, the
+attribute \code{"time.unit"} is set accordingly to track the transformation
+applied to the data. When a spectral response data have been directly measured,
+they should be stored in an object of class \code{response_spct} as they
+are expressed in actual response units, not
+of class \code{source_spct} expressed in irradiance units, even if weighted.
+However, when like in the case of spectral
+illuminance, the aim is technical measure of a light source,
+class \code{source_spct} should be used and the BSWF set in the metadata.
+
+This attribute is normally set by the function or operator used to apply
+the BSWF to spectral irradiance data, or set when the \code{source_spct} object
+is created.
 }
 \note{
-This function alters x itself by reference and in addition
-  returns x invisibly. If x is not a source_spct, x is not modified. The behaviour of this
-  function is 'unusual' in that the default for parameter \code{bswf.used} is
-  used only if \code{x} does not already have this attribute set.
-  \code{time.unit = "hour"} is currently not fully supported.
+Function \code{setBSWFUsed()} alters \code{x} itself by reference and in addition
+  returns \code{x} invisibly. If \code{x} is not a \code{source_spct}, \code{x} is not modified.
+  The behaviour of this function is 'unusual' in that the default for
+  parameter \code{bswf.used} is used only if \code{x} does not already have
+  this attribute set. Function \code{getBSWFUsed()} returns the value to
+  which the attribute is set as a \code{character} string and otherwise
+  \code{NA}.
 }
-\seealso{
-Other BSWF attribute functions: 
-\code{\link{getBSWFUsed}()}
+\examples{
+getBSWFUsed(sun.spct)
+
 }
-\concept{BSWF attribute functions}

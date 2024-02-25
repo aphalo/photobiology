@@ -2,9 +2,12 @@
 % Please edit documentation in R/spct.classes.r
 \name{setResponseType}
 \alias{setResponseType}
+\alias{getResponseType}
 \title{Set the "response.type" attribute}
 \usage{
 setResponseType(x, response.type = c("response", "action"))
+
+getResponseType(x)
 }
 \arguments{
 \item{x}{a response_spct object}
@@ -15,8 +18,8 @@ setResponseType(x, response.type = c("response", "action"))
 x
 }
 \description{
-Function to set by reference the "response.type" attribute of an existing
-response_spct object.
+Functions to set by reference the \code{"response.type"} attribute of an
+existing \code{response_spct} object, and to query its value.
 }
 \details{
 Objects of class \code{response_spct()} can contain data for a response
@@ -24,7 +27,11 @@ spectrum or an action spectrum. Response spectra are measured using the
 same photon (or energy) irradiance at each wavelength. Action spectra are
 derived from dose response curves at each wavelength, and responsivity
 at each wavelength is expressed as the reciprocal of the photon fluence
-required to obtain a fixed level of response.
+required to obtain a fixed level of response. In the case of biological
+systems the action and response spectra frequently differ in their shape
+and spectral values. This is a property inherent to a data set and not
+subject to conversions, thus normally set when a \code{response_spct} object
+is created and never modified.
 }
 \note{
 This function alters x itself by reference and in addition returns x
@@ -36,6 +43,7 @@ This function alters x itself by reference and in addition returns x
 \examples{
 my.spct <- ccd.spct
 setResponseType(my.spct, "action")
+getResponseType(ccd.spct)
+getResponseType(sun.spct)
 
 }
-\concept{response type attribute functions}

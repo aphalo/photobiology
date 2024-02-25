@@ -34,12 +34,13 @@ collected at a narrow angle mirroring the incident angle, only part of the
 reflected radiation is collected, corresponding to mirror-like reflection,
 called specular. Thus,
 
-\deqn{\rho_t = \rho_s + \rho_d}
+\deqn{\rho = \rho_s + \rho_d}
 
-where, \eqn{\rho_t} is total reflectance, \eqn{\rho_s} is specular
-reflectance, and \eqn{\rho_d} is diffuse or scattered reflectance.
+where, \eqn{\rho} is total reflectance, and its components, \eqn{\rho_s}, specular
+reflectance, and \eqn{\rho_d}, diffuse or scattered reflectance.
 When strong scattering takes place, total reflectance can
-be much more than the specular component.
+be much more than the specular component. In most cases \eqn{\rho_d} is
+not measured directly.
 
 The distinction depends on the measuring procedure, and this information is
 stored as metadata in an attribute of objects of classes
@@ -51,6 +52,9 @@ reflectance can be meaningfully used (if the object does not noticeably
 scatter light, it may be possible to assume that specular reflectance
 represents most of the total reflectance.) Consequently, checking the stored
 value of this attribute is used as a safeguard in these compuations.
+
+This attribute is normally set when the \code{source_spct} object
+is created.
 }
 \note{
 Function \code{setRfrType()} alters \code{x} itself by reference and in
@@ -67,4 +71,6 @@ setRfrType(my.spct, "specular")
 getRfrType(my.spct)
 
 }
-\concept{Rfr attribute functions}
+\seealso{
+\code{\link{reflector_spct}} and \code{\link{object_spct}}.
+}
