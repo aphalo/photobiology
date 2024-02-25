@@ -15,15 +15,16 @@ getRfrType(x)
 \item{Rfr.type}{character String, either \code{"total"} or \code{"specular"}.}
 }
 \value{
-\code{x}, modified in the case of \code{setRfrType()} or the
-  \code{character} value, \code{"total"} or \code{"specular"}, stored in the
-  "Rfr.type" attribute of \code{x} in the case of \code{getRfrType()}. If
-  \code{x} is not a \code{reflector_spct} or an \code{object_spct} object,
-  \code{NA} is returned.
+\code{x}, with the modified attribute in the case of \code{setRfrType()} or
+  the \code{character} value, \code{"total"} or \code{"specular"}, stored
+  in the \code{"Rfr.type"} attribute of \code{x} in the case
+  of \code{getRfrType()}. If \code{x} is not a \code{reflector_spct} or
+  an \code{object_spct} object, \code{NA} is returned.
 }
 \description{
-Function to set by reference the \code{"Rfr.type"} attribute of an existing
-\code{reflector_spct} or \code{object_spct} object.
+Function to set by reference the \code{"Rfr.type"} attribute of an
+existing \code{reflector_spct} or \code{object_spct} object, and function to
+query its current status.
 }
 \details{
 Reflectance can be measured by collecting the light reflected out of a
@@ -31,17 +32,25 @@ surface in all directions, using an integrating sphere, obtaining a
 quantity called total reflectance. If instead, the reflected light is
 collected at a narrow angle mirroring the incident angle, only part of the
 reflected radiation is collected, corresponding to mirror-like reflection,
-called specular. When strong scattering takes place, total reflectance can
-be much more than the specular component. The distinction depends on the
-measuring procedure, and this information is stored as metadata in an
-attribute of objects of classes \code{reflector_spct} or an
-\code{object_spct}.
+called specular. Thus,
+
+\deqn{\rho_t = \rho_s + \rho_d}
+
+where, \eqn{\rho_t} is total reflectance, \eqn{\rho_s} is specular
+reflectance, and \eqn{\rho_d} is diffuse or scattered reflectance.
+When strong scattering takes place, total reflectance can
+be much more than the specular component.
+
+The distinction depends on the measuring procedure, and this information is
+stored as metadata in an attribute of objects of classes
+\code{reflector_spct} or an \code{object_spct}.
 
 When converting between internal and total transmittance, or computing
 absorptance by difference based on transmittance and reflectance, only total
 reflectance can be meaningfully used (if the object does not noticeably
 scatter light, it may be possible to assume that specular reflectance
-represents most of the total reflectance.)
+represents most of the total reflectance.) Consequently, checking the stored
+value of this attribute is used as a safeguard in these compuations.
 }
 \note{
 Function \code{setRfrType()} alters \code{x} itself by reference and in

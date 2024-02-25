@@ -15,15 +15,16 @@ getTfrType(x)
 \item{Tfr.type}{character string, either \code{"total"} or \code{"internal"}.}
 }
 \value{
-\code{x}, modified in the case of \code{setTfrType()} or the
-  \code{character} value, \code{"total"} or \code{internal}, stored in the
-  "Tfr.type" attribute of \code{x} in the case of \code{getTfrType()}. If
-  \code{x} is not a \code{filter_spct} or an \code{object_spct} object,
-  \code{NA} is returned.
+\code{x}, with the modified attribute in the case of \code{setTfrType()} or
+  the \code{character} value, \code{"total"} or \code{internal}, stored in
+  the \code{"Tfr.type"} attribute of \code{x} in the case
+  of \code{getTfrType()}. If \code{x} is not a \code{filter_spct} or
+  an \code{object_spct} object, \code{NA} is returned.
 }
 \description{
-Function to set by reference the \code{"Tfr.type"} attribute of an existing
-filter_spct or object_spct object and function to query its current status.
+Function to set by reference the \code{"Tfr.type"} attribute of an
+existing \code{filter_spct} or \code{object_spct} object, and function to
+query its current status.
 }
 \details{
 Transmittance, \eqn{T} or \eqn{\tau}, has two different definitions that
@@ -71,9 +72,9 @@ strictly enforced. (IUPAC, recommends use of the name attenuance instead of
 absorptance when light attenuation involves processes other than pure
 absortion, such as scattering.)
 
-\deqn{1 = \alpha + \rho + \Tau}
+\deqn{1 = \alpha + \rho + \tau}
 
-\deqn{A_{10} = \log_{10} \frac{1}{\alpha} = - \log{10} \alpha}
+\deqn{A_{10} = \log_{10} \frac{1}{\alpha} = - \log_{10} \alpha}
 
 When a solvent-only \emph{blank} is used when measuring the absorbance of a
 solution, the absorbance is not only \code{"internal"} to the solution
@@ -87,8 +88,8 @@ different refractive index.
 }
 \note{
 Function \code{setTfrType()} alters \code{x} itself by reference and in
-  addition returns \code{x} invisibly. If \code{x} is not a
-  \code{filter_spct} or an \code{object_spct object}, \code{x} is not
+  addition returns \code{x} invisibly. If \code{x} is not
+  a \code{filter_spct} or an \code{object_spct object}, \code{x} is not
   modified. The behaviour of this function is 'unusual' in that the default
   for parameter \code{Tfr.type} is used only if \code{x} does not already
   have this attribute set.
