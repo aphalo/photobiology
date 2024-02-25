@@ -2,28 +2,54 @@
 % Please edit documentation in R/spct.classes.r
 \name{setRfrType}
 \alias{setRfrType}
-\title{Set the "Rfr.type" attribute}
+\alias{getRfrType}
+\title{The "Rfr.type" attribute}
 \usage{
 setRfrType(x, Rfr.type = c("total", "specular"))
+
+getRfrType(x)
 }
 \arguments{
-\item{x}{a reflector_spct or an object_spct object}
+\item{x}{a \code{reflector_spct} or an \code{object_spct} object.}
 
-\item{Rfr.type}{a character string, either "total" or "specular"}
+\item{Rfr.type}{character String, either \code{"total"} or \code{"specular"}.}
 }
 \value{
-x
+\code{x}, modified in the case of \code{setRfrType()} or the
+  \code{character} value, \code{"total"} or \code{"specular"}, stored in the
+  "Rfr.type" attribute of \code{x} in the case of \code{getRfrType()}. If
+  \code{x} is not a \code{reflector_spct} or an \code{object_spct} object,
+  \code{NA} is returned.
 }
 \description{
-Function to set by reference the "Rfr.type" attribute  of an existing
-reflector_spct or object_spct object.
+Function to set by reference the \code{"Rfr.type"} attribute of an existing
+\code{reflector_spct} or \code{object_spct} object.
+}
+\details{
+Reflectance can be measured by collecting the light reflected out of a
+surface in all directions, using an integrating sphere, obtaining a
+quantity called total reflectance. If instead, the reflected light is
+collected at a narrow angle mirroring the incident angle, only part of the
+reflected radiation is collected, corresponding to mirror-like reflection,
+called specular. When strong scattering takes place, total reflectance can
+be much more than the specular component. The distinction depends on the
+measuring procedure, and this information is stored as metadata in an
+attribute of objects of classes \code{reflector_spct} or an
+\code{object_spct}.
+
+When converting between internal and total transmittance, or computing
+absorptance by difference based on transmittance and reflectance, only total
+reflectance can be meaningfully used (if the object does not noticeably
+scatter light, it may be possible to assume that specular reflectance
+represents most of the total reflectance.)
 }
 \note{
-This function alters x itself by reference and in addition
-  returns x invisibly. If x is not a reflector_spct or object_spct object, x is not modified.
-  The behaviour of this function is 'unusual' in that the default for
-  parameter Rfr.type is used only if \code{x} does not already have this
-  attribute set.
+Function \code{setRfrType()} alters \code{x} itself by reference and in
+  addition returns \code{x} invisibly. If \code{x} is not a
+  \code{reflector_spct} or an \code{object_spct object}, \code{x} is not
+  modified. The behaviour of this function is 'unusual' in that the default
+  for parameter \code{Rfr.type} is used only if \code{x} does not already
+  have this attribute set.
 }
 \examples{
 my.spct <- reflector_spct(w.length = 400:409, Rfr = 0.1)
@@ -31,9 +57,5 @@ getRfrType(my.spct)
 setRfrType(my.spct, "specular")
 getRfrType(my.spct)
 
-}
-\seealso{
-Other Rfr attribute functions: 
-\code{\link{getRfrType}()}
 }
 \concept{Rfr attribute functions}

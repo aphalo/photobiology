@@ -2,28 +2,96 @@
 % Please edit documentation in R/spct.classes.r
 \name{setTfrType}
 \alias{setTfrType}
-\title{Set the "Tfr.type" attribute}
+\alias{getTfrType}
+\title{The "Tfr.type" attribute}
 \usage{
 setTfrType(x, Tfr.type = c("total", "internal"))
+
+getTfrType(x)
 }
 \arguments{
-\item{x}{a filter_spct or an object_spct object}
+\item{x}{a \code{filter_spct} or an \code{object_spct} object.}
 
-\item{Tfr.type}{a character string, either "total" or "internal"}
+\item{Tfr.type}{character string, either \code{"total"} or \code{"internal"}.}
 }
 \value{
-x
+\code{x}, modified in the case of \code{setTfrType()} or the
+  \code{character} value, \code{"total"} or \code{internal}, stored in the
+  "Tfr.type" attribute of \code{x} in the case of \code{getTfrType()}. If
+  \code{x} is not a \code{filter_spct} or an \code{object_spct} object,
+  \code{NA} is returned.
 }
 \description{
-Function to set by reference the "Tfr.type" attribute of an existing
-filter_spct or object_spct object
+Function to set by reference the \code{"Tfr.type"} attribute of an existing
+filter_spct or object_spct object and function to query its current status.
+}
+\details{
+Transmittance, \eqn{T} or \eqn{\tau}, has two different definitions that
+differ in how reflectance is taken into account: "total" transmittance and
+"internal" transmittance. They are both in widespread use, and rather
+frequently the interconversion is approximate or even not possible.
+
+\deqn{T = \frac{I_z}{I_0}}
+
+\deqn{\tau = \frac{I_z}{I_0 - \rho}}
+
+where \eqn{T} is total transmittance and \eqn{\tau} is internal transmittance;
+\eqn{I_0} is the radiant power incident on an object and \eqn{I_z} is the
+radiant power at depth \eqn{z}, in most cases measured below the non-illuminated
+side of the object, and \eqn{\rho} is the reflectance at the illuminated surface.
+
+The transmittance of an object as a whole depends on the length of the light
+path within the object and reflectance on the angle of incidence of the light
+on the surface. When the light beam is near-normal to the surface, both
+quantities are at their minimum.
+
+Thus, the interconversion of total spectral transmittance, \eqn{T(\lambda)},
+into internal spectral transmittance, \eqn{\tau(\lambda)}, is strictly
+possible only if the spectral reflectance \eqn{R(\lambda)} is known. In
+practice, the spectral reflectance is approximated by a constant value
+that is assumed independent of wavelength.
+
+Objects of class \code{object_spct} contain spectral data for both spectral
+transmittance and spectral reflectance or spectral absorptance, making
+conversion possible. Objects of class \code{filter_spct} do not contain
+spectral reflectance data, but may have a known approximate value for a
+reflectance constant, but this is frequently not the case.
+
+The type of transmittance data stored in an object of these classes is
+recorded as metadata in attribute \code{Tfr.Type}. The functions described
+here set and query this attribute. Contrary to directly accessing the
+attribute, the query function consistently returns \code{NA} both when the
+attribute is set to \code{NA} and when the attribute has not been set, as can
+be the case of objects created with early versions of the package.
+
+Absorptance, \eqn{\alpha}, and absorbance, \eqn{A}, are normally given as
+\code{"internal"}, and this is the assumption in this package. However,
+as in some cases strict enforcement would prevent conversions, this is not
+strictly enforced. (IUPAC, recommends use of the name attenuance instead of
+absorptance when light attenuation involves processes other than pure
+absortion, such as scattering.)
+
+\deqn{1 = \alpha + \rho + \Tau}
+
+\deqn{A_{10} = \log_{10} \frac{1}{\alpha} = - \log{10} \alpha}
+
+When a solvent-only \emph{blank} is used when measuring the absorbance of a
+solution, the absorbance is not only \code{"internal"} to the solution
+(discounting reflections at the cuvette boundaries) but also discounts the
+effect of the solvent itself. When measuring solid samples, like a sheet of
+glass, in most cases a blank is not available.
+
+For semitransparent objects like glass, it is important to take into
+account that reflections occur at each interface between substances with
+different refractive index.
 }
 \note{
-This function alters x itself by reference and in addition
-  returns x invisibly. If x is not a filter_spct or an object_spct object, x is not modified
-  The behaviour of this function is 'unusual' in that the default for
-  parameter \code{Tfr.type} is used only if \code{x} does not already have
-  this attribute set.
+Function \code{setTfrType()} alters \code{x} itself by reference and in
+  addition returns \code{x} invisibly. If \code{x} is not a
+  \code{filter_spct} or an \code{object_spct object}, \code{x} is not
+  modified. The behaviour of this function is 'unusual' in that the default
+  for parameter \code{Tfr.type} is used only if \code{x} does not already
+  have this attribute set.
 }
 \examples{
 my.spct <- polyester.spct
@@ -33,7 +101,6 @@ getTfrType(my.spct)
 
 }
 \seealso{
-Other Tfr attribute functions: 
-\code{\link{getTfrType}()}
+\code{\link{convertTfrType}} and \code{\link{filter_spct}}.
 }
 \concept{Tfr attribute functions}
