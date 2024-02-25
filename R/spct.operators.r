@@ -1074,12 +1074,46 @@ A2T.filter_mspct <- function(x,
 
 #' Convert transmittance into absorbance.
 #'
-#' Function that converts transmittance (fraction) into absorbance (a.u.).
+#' Function that converts transmittance (fraction) into \eqn{\log_{10}}-based
+#' absorbance (a.u.).
 #'
-#' @param x an R object
-#' @param action character Allowed values "replace" and "add"
-#' @param byref logical indicating if new object will be created by reference or by copy of x
+#' @details
+#' Absorbance, \eqn{A}, is frequently used in chemistry as it is linearly
+#' related to the concentration of a solute dissolved in a solvent.
+#'
+#' \deqn{A = -\log_{10} \tau}
+#'
+#' where, \eqn{A} absorbance and \eqn{\tau} is internal transmittance. By
+#' default, if total transmittance, \eqn{T}, is stored in \code{x}, the
+#' returned value computed as
+#'
+#' \deqn{A = -\log_{10} T}
+#'
+#' is not strictly absorbance. In this
+#' case and in cases when the measured light attenuation is the result of
+#' scattering, or when part of measured light is re-emitted after absorption
+#' the use of \emph{attenuance} is the IUPAC-recommended name for this quantity.
+#'
+#' If \code{strict.A = TRUE} is passed in the call and total
+#' transmittance, \eqn{T}, and total
+#' reflectance, \eqn{\rho}, are both available, absorbance is computed as:
+#'
+#' \deqn{A = -\log_{10} (T - \rho) / (1 - \rho)}
+#'
+#' where \eqn{\rho} can be either spectral total reflectance stored in \code{x}
+#' as data or a single approximate \code{Rfr.constant} value stored as part
+#' of the metadata.
+#'
+#' @note The default \code{A.strict = FALSE} ensures indentical behaviour
+#'   as in 'photobiology' (<= 0.11.0).
+#'
+#' @param x an R object.
+#' @param action character Allowed values \code{"replace"} and \code{"add"}.
+#' @param byref logical indicating if new object will be created by reference
+#'   or by copy of \code{x}.
 #' @param clean logical replace off-boundary values before conversion
+#' @param strict.A logical Attempt to compute a true internal absorbance even
+#'   if \code{"total"} transmittance is stored in \code{x}.
 #' @param ... not used in current version
 #'
 #' @return A copy of \code{x} with a column \code{A} added and other columns
@@ -1105,7 +1139,11 @@ T2A.default <- function(x, action=NULL, byref = FALSE, ...) {
 #'
 #' @export
 #'
-T2A.numeric <- function(x, action=NULL, byref = FALSE, clean = TRUE, ...) {
+T2A.numeric <- function(x,
+                        action=NULL,
+                        byref = FALSE,
+                        clean = TRUE,
+                        ...) {
   if (clean) {
     Tfr.zero <- getOption("photobiology.Tfr.zero", default = 0)
     if (any(x < Tfr.zero)) {
@@ -1121,7 +1159,12 @@ T2A.numeric <- function(x, action=NULL, byref = FALSE, clean = TRUE, ...) {
 #'
 #' @export
 #'
-T2A.filter_spct <- function(x, action="add", byref = FALSE, clean = TRUE, ...) {
+T2A.filter_spct <- function(x,
+                            action="add",
+                            byref = FALSE,
+                            clean = TRUE,
+                            strict.A = FALSE,
+                            ...) {
   if (byref) {
     name <- substitute(x)
   }
@@ -1137,6 +1180,14 @@ T2A.filter_spct <- function(x, action="add", byref = FALSE, clean = TRUE, ...) {
       }
       if (is_normalised(x)) {
         x <- setNormalised(x)
+      }
+      if (strict.A && getTfrType(x) == "total") {
+        if (exists("Rfr", x, inherits = FALSE) ||
+            !is.na(getFilterProperties(x)[["Rfr.constant"]])) {
+          x <- convertTfrType(x, Tfr.type = "internal")
+        } else {
+          warning("Attenuance computed from total Tfr.")
+        }
       }
       x[["A"]] <- -log10(x[["Tfr"]])
     } else {
@@ -1167,7 +1218,7 @@ T2A.filter_spct <- function(x, action="add", byref = FALSE, clean = TRUE, ...) {
 
 #' @describeIn T2A Method for collections of filter spectra
 #'
-#' @param .parallel	if TRUE, apply function in parallel, using parallel backend
+#' @param .parallel	if \code{TRUE}, apply function in parallel, using parallel backend
 #'   provided by foreach
 #' @param .paropts a list of additional options passed into the foreach function
 #'   when parallel computation is enabled. This is important if (for example)
@@ -1181,6 +1232,7 @@ T2A.filter_mspct <- function(x,
                              action = "add",
                              byref = FALSE,
                              clean = TRUE,
+                             strict.A = TRUE,
                              ...,
                              .parallel = FALSE,
                              .paropts = NULL) {
@@ -1200,19 +1252,50 @@ T2A.filter_mspct <- function(x,
 #' Convert transmittance into absorptance.
 #'
 #' Function that converts transmittance (fraction) into absorptance (fraction).
-#' If reflectance (fraction) is available, it allows conversions between
+#' If reflectance (fraction) is available, it also allows conversions between
 #' internal and total absorptance.
 #'
-#' @param x an R object
-#' @param action character Allowed values "replace" and "add"
-#' @param byref logical indicating if new object will be created by reference or by copy of x
-#' @param clean logical replace off-boundary values before conversion
-#' @param ... not used in current version
+#' @details
+#' Absorptance, internal transmittance and total reflectance when expressed as
+#' fractions, add up to one:
+#'
+#' \deqn{1 = \alpha + \tau + \rho}
+#'
+#' where, \eqn{\alpha} is absorptance, \eqn{\tau} is internal transmittance and
+#' \eqn{\rho} is total reflectance. If any two of these quantities are known,
+#' the third one can be computed from them.
+#'
+#' On the other hand:
+#'
+#' \deqn{1 = \alpha\prime + T}
+#'
+#' where, \eqn{\alpha\prime = \alpha + \rho}, measured together. In this case,
+#' there is not enough information available to compute \eqn{\alpha}.
+#'
+#' Thus, method \code{T2Afr()} computes
+#' either \eqn{\alpha} or \eqn{\alpha\prime},
+#' depending on whether \eqn{\tau} or \eqn{T} are contained in the argument
+#' passed to \code{x}, but neither of them when only \eqn{\tau} is known. To
+#' know which quantity has been computed, use \code{getTfrType()} to query
+#' whether the computations were based on \eqn{\tau} or \eqn{T}.
+#'
+#' The R names used are: \code{Tfr} for \eqn{\tau} and \eqn{\T} are \code{Tfr},
+#' \code{Afr} for \eqn{\alpha} and \eqn{\alpha\prime}, and \code{Rfr} for
+#' \eqn{rho}. The distinction between \eqn{\tau} and \eqn{\T} and
+#' between \eqn{\alpha} and \eqn{\alpha\prime} is made based on metadata
+#' attributes.
+#'
+#' @param x an R object.
+#' @param action character Allowed values \code{"replace"} and \code{"add"}.
+#' @param byref logical indicating if new object will be created by reference
+#' or by copy of \code{x}.
+#' @param clean logical replace off-boundary values before conversion.
+#' @param ... not used in current version.
 #'
 #' @return A copy of \code{x} with a column \code{Afr} added and other columns
 #'   possibly deleted except for \code{w.length}. If \code{action = "replace"},
-#'   in all cases, the additional columns are removed, even if no column needs
-#'   to be added.
+#'   in all cases, the redundant columns are removed, even when
+#'   column \code{Afr} was present in the argument passed to \code{x}.
 #'
 #' @export
 #' @family quantity conversion functions
@@ -1276,6 +1359,7 @@ T2Afr.filter_spct <- function(x,
     name <- substitute(x)
   }
   current.Tfr.type <- getTfrType(x)
+  properties <- getFilterProperties(x)
   if (is_normalised(x) && !action %in% c("add.raw", "replace.raw")) {
     x <- normalise(x, norm = "update", qty.out = "absorptance")
   } else {
@@ -1291,20 +1375,22 @@ T2Afr.filter_spct <- function(x,
       if (current.Tfr.type == "total") {
         if (exists("Rfr", x, inherits = FALSE)) {
           x[["Afr"]] <- 1 - x[["Tfr"]] - x[["Rfr"]]
+        } else if (!is.na(properties[["Rfr.constant"]])) {
+          x[["Afr"]] <- 1 - x[["Tfr"]] - properties[["Rfr.constant"]]
         } else {
-          x <- convertTfrType(x, "internal")
-          x[["Afr"]] <- 1 - x[["Tfr"]]
-          if (all(is.na(x[["Afr"]]))) {
-            action <- "add"
-            warning("'Tfr.type' or 'Rfr.constant' not available in ')'.")
-          }
+          x[["Afr"]] <- NA_real_
+          action <- "add" # avoid loss of information
+          warning("Conversion from internal Tfr to Afr possible only ",
+                  "if Rfr or Rfr.constant are known.")
         }
       } else if (current.Tfr.type == "internal") {
         x[["Afr"]] <- 1 - x[["Tfr"]]
+      } else {
+        stop("Missing or bad 'Tfr.type' attribute setting.")
       }
     } else {
       x[["Afr"]] <- NA_real_
-      action <- "add"
+      action <- "add" # avoid loss of information
       warning("'Tfr' not available in 'T2Afr()'.")
     }
   }
@@ -1353,6 +1439,7 @@ T2Afr.object_spct <- function(x,
     }
     current.Tfr.type <- getTfrType(x)
     if (current.Tfr.type == "internal") {
+      # always possible for class object_spct
       x <- convertTfrType(x, "total")
     }
     x[["Afr"]] <- 1 - x[["Tfr"]] - x[["Rfr"]]

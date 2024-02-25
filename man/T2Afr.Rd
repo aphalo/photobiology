@@ -41,15 +41,16 @@ T2Afr(x, action, byref, clean, ...)
 )
 }
 \arguments{
-\item{x}{an R object}
+\item{x}{an R object.}
 
-\item{action}{character Allowed values "replace" and "add"}
+\item{action}{character Allowed values \code{"replace"} and \code{"add"}.}
 
-\item{byref}{logical indicating if new object will be created by reference or by copy of x}
+\item{byref}{logical indicating if new object will be created by reference
+or by copy of \code{x}.}
 
-\item{clean}{logical replace off-boundary values before conversion}
+\item{clean}{logical replace off-boundary values before conversion.}
 
-\item{...}{not used in current version}
+\item{...}{not used in current version.}
 
 \item{Rfr}{numeric vector. Spectral reflectance o reflectance factor.
 Set to zero if \code{x} is internal reflectance,}
@@ -66,13 +67,43 @@ correct environment set up for computing.}
 \value{
 A copy of \code{x} with a column \code{Afr} added and other columns
   possibly deleted except for \code{w.length}. If \code{action = "replace"},
-  in all cases, the additional columns are removed, even if no column needs
-  to be added.
+  in all cases, the redundant columns are removed, even when
+  column \code{Afr} was present in the argument passed to \code{x}.
 }
 \description{
 Function that converts transmittance (fraction) into absorptance (fraction).
-If reflectance (fraction) is available, it allows conversions between
+If reflectance (fraction) is available, it also allows conversions between
 internal and total absorptance.
+}
+\details{
+Absorptance, internal transmittance and total reflectance when expressed as
+fractions, add up to one:
+
+\deqn{1 = \alpha + \tau + \rho}
+
+where, \eqn{\alpha} is absorptance, \eqn{\tau} is internal transmittance and
+\eqn{\rho} is total reflectance. If any two of these quantities are known,
+the third one can be computed from them.
+
+On the other hand:
+
+\deqn{1 = \alpha\prime + T}
+
+where, \eqn{\alpha\prime = \alpha + \rho}, measured together. In this case,
+there is not enough information available to compute \eqn{\alpha}.
+
+Thus, method \code{T2Afr()} computes
+either \eqn{\alpha} or \eqn{\alpha\prime},
+depending on whether \eqn{\tau} or \eqn{T} are contained in the argument
+passed to \code{x}, but neither of them when only \eqn{\tau} is known. To
+know which quantity has been computed, use \code{getTfrType()} to query
+whether the computations were based on \eqn{\tau} or \eqn{T}.
+
+The R names used are: \code{Tfr} for \eqn{\tau} and \eqn{\T} are \code{Tfr},
+\code{Afr} for \eqn{\alpha} and \eqn{\alpha\prime}, and \code{Rfr} for
+\eqn{rho}. The distinction between \eqn{\tau} and \eqn{\T} and
+between \eqn{\alpha} and \eqn{\alpha\prime} is made based on metadata
+attributes.
 }
 \section{Methods (by class)}{
 \itemize{

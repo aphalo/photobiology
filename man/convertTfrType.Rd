@@ -7,7 +7,7 @@
 convertTfrType(x, Tfr.type = NULL)
 }
 \arguments{
-\item{x}{a filter_spct, object_spct, filter_mspct or object_mspct object.}
+\item{x}{a \code{filter_spct}, \code{object_spct}, \code{filter_mspct} or \code{object_mspct} object.}
 
 \item{Tfr.type}{character One of \code{"internal"} or \code{"total"}.}
 }
@@ -27,6 +27,12 @@ Internal transmittance uses as reference the light entering the
   "under-the-hood" an \code{object_spct}, or if a fixed reflectance factor
   applicable to all wavelengths is stored in the \code{filter.properties}
   attribute of the \code{filter_spct} object.
+
+  For the conversion to take place the object passed as argument to \code{x},
+  must contain a column with transmittance data, named \code{Tfr}. Any
+  necessary conversion from absorbance \code{A} or from \code{Afr} into
+  transmittance, \code{Tfr}, must be done before
+  calling \code{convertTfrType()}.
 }
 \note{
 if \code{x} is not a \code{filter_spct} object, \code{x} is returned
@@ -35,12 +41,9 @@ if \code{x} is not a \code{filter_spct} object, \code{x} is returned
   \code{Tfr} set to \code{NA} values.
 }
 \examples{
-
-my.spct <- polyester.spct
-filter_properties(my.spct) <- list(Rfr.constant = 0.07,
-                                   thickness = 125e-6,
-                                   attenuation.mode = "absorption")
-convertTfrType(my.spct, Tfr.type = "internal")
+getTfrType(polyester.spct)
+filter_properties(polyester.spct)
+convertTfrType(polyester.spct, Tfr.type = "internal")
 
 }
 \seealso{

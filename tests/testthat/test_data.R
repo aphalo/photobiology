@@ -101,7 +101,7 @@ test_that("source_spct_data", {
   expect_equal(sun.daily.spct[c(1, 100, 200, 300), "w.length"],
                c(280, 378, 478, 578))
   expect_equal(round(white_led.source_spct[c(1, 100, 200, 300, 500), "s.e.irrad"], 7),
-               c(0, 0, 0, 0, 0.1140664))
+               c(0, 0, 0, 0, 0.1140026))
   expect_equal(white_led.source_spct[c(1, 100, 200, 300, 500), "w.length"],
                c(251.16, 298.05, 345.19, 392.09, 485.15))
 })
@@ -118,14 +118,14 @@ test_that("response_spct_data", {
 })
 
 test_that("filter_spct_data", {
-  expect_equal(round(polyester.spct[c(1, 100, 200, 300), "Tfr"], 3),
-               c(0.005, 0.778, 0.924, 0.923))
+  expect_equal(round(polyester.spct[c(1, 100, 200, 300), "Tfr"], 4),
+               c(0.0048, 0.8547, 0.9247, 0.9180))
   expect_equal(polyester.spct[c(1, 100, 200, 300), "w.length"],
-               c(240, 339, 439, 539))
+               c(240, 360, 481, 604))
   expect_equal(round(yellow_gel.spct[c(1, 100, 200, 300, 400), "Tfr"], 5),
-               c(0.00271, 0.00001, 0.00001, 0.10357, 0.89314))
+               c(0.00271, 0.00001, 0.00001, 0.88236, 0.90093))
   expect_equal(yellow_gel.spct[c(1, 100, 200, 300, 400), "w.length"],
-               c(190, 289, 389, 489, 589))
+               c(190, 291, 443, 566, 761))
 })
 
 test_that("object_spct_data", {

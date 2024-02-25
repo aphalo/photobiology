@@ -14,30 +14,35 @@ T2A(x, action, byref, clean, ...)
 
 \method{T2A}{numeric}(x, action = NULL, byref = FALSE, clean = TRUE, ...)
 
-\method{T2A}{filter_spct}(x, action = "add", byref = FALSE, clean = TRUE, ...)
+\method{T2A}{filter_spct}(x, action = "add", byref = FALSE, clean = TRUE, strict.A = FALSE, ...)
 
 \method{T2A}{filter_mspct}(
   x,
   action = "add",
   byref = FALSE,
   clean = TRUE,
+  strict.A = TRUE,
   ...,
   .parallel = FALSE,
   .paropts = NULL
 )
 }
 \arguments{
-\item{x}{an R object}
+\item{x}{an R object.}
 
-\item{action}{character Allowed values "replace" and "add"}
+\item{action}{character Allowed values \code{"replace"} and \code{"add"}.}
 
-\item{byref}{logical indicating if new object will be created by reference or by copy of x}
+\item{byref}{logical indicating if new object will be created by reference
+or by copy of \code{x}.}
 
 \item{clean}{logical replace off-boundary values before conversion}
 
 \item{...}{not used in current version}
 
-\item{.parallel}{if TRUE, apply function in parallel, using parallel backend
+\item{strict.A}{logical Attempt to compute a true internal absorbance even
+if \code{"total"} transmittance is stored in \code{x}.}
+
+\item{.parallel}{if \code{TRUE}, apply function in parallel, using parallel backend
 provided by foreach}
 
 \item{.paropts}{a list of additional options passed into the foreach function
@@ -53,7 +58,35 @@ A copy of \code{x} with a column \code{A} added and other columns
   to be added.
 }
 \description{
-Function that converts transmittance (fraction) into absorbance (a.u.).
+Function that converts transmittance (fraction) into \eqn{\log_{10}}-based
+absorbance (a.u.).
+}
+\details{
+Absorbance, \eqn{A}, is frequently used in chemistry as it is linearly
+related to the concentration of a solute dissolved in a solvent.
+
+\deqn{A = -\log_{10} \tau}
+
+where, \eqn{A} absorbance and \eqn{\tau} is internal transmittance. By
+default, if total transmittance, \eqn{T}, is stored in \code{x}, the
+returned value computed as
+
+\deqn{A = -\log_{10} T}
+
+is not strictly absorbance. In this
+case and in cases when the measured light attenuation is the result of
+scattering, or when part of measured light is re-emitted after absorption
+the use of \emph{attenuance} is the IUPAC-recommended name for this quantity.
+
+If \code{strict.A = TRUE} is passed in the call and total
+transmittance, \eqn{T}, and total
+reflectance, \eqn{\rho}, are both available, absorbance is computed as:
+
+\deqn{A = -\log_{10} (T - \rho) / (1 - \rho)}
+
+where \eqn{\rho} can be either spectral total reflectance stored in \code{x}
+as data or a single approximate \code{Rfr.constant} value stored as part
+of the metadata.
 }
 \section{Methods (by class)}{
 \itemize{
@@ -66,6 +99,10 @@ Function that converts transmittance (fraction) into absorbance (a.u.).
 \item \code{T2A(filter_mspct)}: Method for collections of filter spectra
 
 }}
+\note{
+The default \code{A.strict = FALSE} ensures indentical behaviour
+  as in 'photobiology' (<= 0.11.0).
+}
 \seealso{
 Other quantity conversion functions: 
 \code{\link{A2T}()},

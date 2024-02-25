@@ -2983,7 +2983,13 @@ convertThickness <- function(x, thickness = NULL) {
 #'   applicable to all wavelengths is stored in the \code{filter.properties}
 #'   attribute of the \code{filter_spct} object.
 #'
-#' @param x a filter_spct, object_spct, filter_mspct or object_mspct object.
+#'   For the conversion to take place the object passed as argument to \code{x},
+#'   must contain a column with transmittance data, named \code{Tfr}. Any
+#'   necessary conversion from absorbance \code{A} or from \code{Afr} into
+#'   transmittance, \code{Tfr}, must be done before
+#'   calling \code{convertTfrType()}.
+#'
+#' @param x a \code{filter_spct}, \code{object_spct}, \code{filter_mspct} or \code{object_mspct} object.
 #' @param Tfr.type character One of \code{"internal"} or \code{"total"}.
 #'
 #' @return \code{x} possibly with the \code{"thickness"} field of the
@@ -2997,12 +3003,9 @@ convertThickness <- function(x, thickness = NULL) {
 #' @export
 #' @family time attribute functions
 #' @examples
-#'
-#' my.spct <- polyester.spct
-#' filter_properties(my.spct) <- list(Rfr.constant = 0.07,
-#'                                    thickness = 125e-6,
-#'                                    attenuation.mode = "absorption")
-#' convertTfrType(my.spct, Tfr.type = "internal")
+#' getTfrType(polyester.spct)
+#' filter_properties(polyester.spct)
+#' convertTfrType(polyester.spct, Tfr.type = "internal")
 #'
 convertTfrType <- function(x, Tfr.type = NULL) {
   if (is.filter_mspct(x) || is.object_mspct(x)) {
@@ -3021,8 +3024,8 @@ convertTfrType <- function(x, Tfr.type = NULL) {
   }
 
   columns <- intersect(colnames(x), c("Tfr", "Afr", "A", "Rfr") )
-  if (length(setdiff(columns, "Rfr")) == 0L) {
-    warning("No column to convert to new Tfr.type")
+  if (! "Tfr" %in% columns) {
+    warning("No 'Tfr' column in 'x' to convert to new 'Tfr.type'")
     return(invisible(x))
   }
 

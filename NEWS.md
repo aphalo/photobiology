@@ -61,6 +61,10 @@ spurious warning when plotting with 'ggspectra'.
 - Spectral data objects included in the package and used in examples and unit
 tests have been rebuilt making small changes in textual metadata, and/or adding
 new fields with additional information.
+- Values and length of objects `polyester.spct` and `yellow_gel.spct` have
+changed slightly as storage use was optimized. This is a code breaking change
+if positional indexes have been used, but otherwise differences in computed
+values should be nearly identical.
 
 # photobiology 0.11.0
 

@@ -120,20 +120,20 @@ test_that("source_spct", {
 
   my.spct <- white_led.source_spct
 
-  wls.spct <- wls_at_target(my.spct)
-  expect_equal(wls.spct[["w.length"]], c(540.94, 661.23))
+  wls.spct <- wls_at_target(my.spct, interpolate = TRUE)
+  expect_equal(wls.spct[["w.length"]], c(541.0686, 661.0016), tolerance = 1e-6)
   expect_equal(nrow(wls.spct), 2)
   expect_equal(names(wls.spct), c("w.length", "s.e.irrad"))
   expect_is(wls.spct, "source_spct")
 
-  wls.spct <- wls_at_target(my.spct, idfactor = TRUE)
-  expect_equal(wls.spct[["w.length"]], c(540.94, 661.23))
+  wls.spct <- wls_at_target(my.spct, idfactor = TRUE, interpolate = TRUE)
+  expect_equal(wls.spct[["w.length"]], c(541.0686, 661.0016), tolerance = 1e-6)
   expect_equal(nrow(wls.spct), 2)
   expect_equal(names(wls.spct), c("w.length", "s.e.irrad", "target.idx"))
   expect_is(wls.spct, "source_spct")
 
-  wls.spct <- wls_at_target(my.spct, idfactor = "TARGET")
-  expect_equal(wls.spct[["w.length"]], c(540.94, 661.23))
+  wls.spct <- wls_at_target(my.spct, idfactor = "TARGET", interpolate = TRUE)
+  expect_equal(wls.spct[["w.length"]], c(541.0686, 661.0016), tolerance = 1e-5)
   expect_equal(nrow(wls.spct), 2)
   expect_equal(names(wls.spct), c("w.length", "s.e.irrad", "TARGET"))
   expect_is(wls.spct, "source_spct")
@@ -154,15 +154,24 @@ test_that("source_spct", {
   expect_equal(wls_at_target(my.spct, target = "0.5max"), wls.spct)
   expect_equal(wls_at_target(my.spct, target = "0.5 max"), wls.spct)
 
-  wls.spct <- wls_at_target(my.spct, target = "half.range")
-  expect_equal(wls.spct[["w.length"]], c(540.94, 661.23))
+  wls.spct <- wls_at_target(my.spct, target = "half.range", interpolate = TRUE)
+  expect_equal(wls.spct[["w.length"]], c(541.0686, 661.0016), tolerance = 1e-5)
   expect_equal(nrow(wls.spct), 2)
   expect_equal(names(wls.spct), c("w.length", "s.e.irrad"))
   expect_is(wls.spct, "source_spct")
 
+  expect_equal(wls_at_target(my.spct, target = "HR", interpolate = TRUE), wls.spct)
+  expect_equal(wls_at_target(my.spct, target = "0.5range", interpolate = TRUE), wls.spct)
+  expect_equal(wls_at_target(my.spct, target = "0.5 range", interpolate = TRUE), wls.spct)
+
+  wls.spct <- wls_at_target(my.spct, target = "half.range")
   expect_equal(wls_at_target(my.spct, target = "HR"), wls.spct)
   expect_equal(wls_at_target(my.spct, target = "0.5range"), wls.spct)
   expect_equal(wls_at_target(my.spct, target = "0.5 range"), wls.spct)
+
+  expect_lt(max(abs(wls_at_target(my.spct, target = "0.5 range")$w.length -
+                             wls_at_target(my.spct, target = "0.5 range",
+                                           interpolate = TRUE)$w.length)), 0.225)
 
   wls.spct <- wls_at_target(my.spct, unit.out = "photon")
   expect_equal(nrow(wls.spct), 2)
