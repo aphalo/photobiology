@@ -21,7 +21,6 @@ is returned
 }
 \seealso{
 Other time attribute functions: 
-\code{\link{convertTfrType}()},
 \code{\link{convertThickness}()},
 \code{\link{convertTimeUnit}()},
 \code{\link{getTimeUnit}()},

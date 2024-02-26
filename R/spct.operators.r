@@ -1279,9 +1279,9 @@ T2A.filter_mspct <- function(x,
 #' know which quantity has been computed, use \code{getTfrType()} to query
 #' whether the computations were based on \eqn{\tau} or \eqn{T}.
 #'
-#' The R names used are: \code{Tfr} for \eqn{\tau} and \eqn{\T} are \code{Tfr},
+#' The R names used are: \code{Tfr} for \eqn{\tau} and \eqn{T} are \code{Tfr},
 #' \code{Afr} for \eqn{\alpha} and \eqn{\alpha\prime}, and \code{Rfr} for
-#' \eqn{rho}. The distinction between \eqn{\tau} and \eqn{\T} and
+#' \eqn{rho}. The distinction between \eqn{\tau} and \eqn{T} and
 #' between \eqn{\alpha} and \eqn{\alpha\prime} is made based on metadata
 #' attributes.
 #'
@@ -1316,7 +1316,7 @@ T2Afr.default <- function(x,
                           ...) {
   warning("'T2Afr()' not implemented for class \"", class(x)[1], "\".")
   x
-  }
+}
 
 #' @describeIn T2Afr Default method for generic function
 #'

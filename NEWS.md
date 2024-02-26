@@ -15,10 +15,11 @@ long or tidy form.
 - Implement subsetting of metadata in `subset()` method and the extraction 
 operator `[]` for objects of class `generic_spct` and derived classes. This 
 makes it possible to extract a subset of spectra from an object containing
-multiple spectra in long form, such as time series of spectra. In earlier 
+multiple spectra in long form, such as a time series of spectra, with no
+extraneous metadata attribute values carried along. In earlier 
 versions metadata were not subset.
-- In `rbindspct()` implement simplification metadata by removing unnecessary
-duplication.
+- In `rbindspct()` implement simplification of metadata by removing unnecessary
+duplication of invariant values.
 - Rewrite method `pull_sample()` specialization for `generic_spct` for faster 
 performance.
 - Revise `irrad()`, `e_irrad()` and `q_irrad()` adding parameter `return.tb`
@@ -64,7 +65,7 @@ new fields with additional information.
 - Values and length of objects `polyester.spct` and `yellow_gel.spct` have
 changed slightly as storage use was optimized. This is a code breaking change
 if positional indexes have been used, but otherwise differences in computed
-values should be nearly identical.
+values are minor.
 
 # photobiology 0.11.0
 

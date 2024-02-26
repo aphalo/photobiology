@@ -43,7 +43,6 @@ convertThickness(my.spct, thickness = 250e-6)
 \seealso{
 Other time attribute functions: 
 \code{\link{checkTimeUnit}()},
-\code{\link{convertTfrType}()},
 \code{\link{convertTimeUnit}()},
 \code{\link{getTimeUnit}()},
 \code{\link{setTimeUnit}()}

@@ -99,9 +99,9 @@ passed to \code{x}, but neither of them when only \eqn{\tau} is known. To
 know which quantity has been computed, use \code{getTfrType()} to query
 whether the computations were based on \eqn{\tau} or \eqn{T}.
 
-The R names used are: \code{Tfr} for \eqn{\tau} and \eqn{\T} are \code{Tfr},
+The R names used are: \code{Tfr} for \eqn{\tau} and \eqn{T} are \code{Tfr},
 \code{Afr} for \eqn{\alpha} and \eqn{\alpha\prime}, and \code{Rfr} for
-\eqn{rho}. The distinction between \eqn{\tau} and \eqn{\T} and
+\eqn{rho}. The distinction between \eqn{\tau} and \eqn{T} and
 between \eqn{\alpha} and \eqn{\alpha\prime} is made based on metadata
 attributes.
 }

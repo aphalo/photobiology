@@ -12,27 +12,36 @@ convertTfrType(x, Tfr.type = NULL)
 \item{Tfr.type}{character One of \code{"internal"} or \code{"total"}.}
 }
 \value{
-\code{x} possibly with the \code{"thickness"} field of the
-  \code{"filter.properties"} attribute modified
+\code{x} if possible, with the value of the \code{"Tfr.type"} attribute
+  modified and the values stored in the \code{Tfr} variable converted to the
+  new quantity.
 }
 \description{
-Function to set the \code{"Tfr.type"} attribute and simultaneously converting
+Function to set the \code{"Tfr.type"} attribute and simultaneously convert
 the spectral data to correspond to the new type.
 }
 \details{
-Internal transmittance uses as reference the light entering the
-  object while total transmittance takes the incident light as reference. The
-  conversion is possible only if reflectance is known. Either as spectral
+Internal transmittance, \eqn{\tau}, uses as reference the light
+  entering the object while total transmittance, \eqn{T}, takes the incident
+  light as reference. The
+  conversion is possible only if total reflectance, \eqn{\rho}, is known. Either as spectral
   data in an \code{object_spct} object, a \code{filter_spct} object that is
   "under-the-hood" an \code{object_spct}, or if a fixed reflectance factor
   applicable to all wavelengths is stored in the \code{filter.properties}
   attribute of the \code{filter_spct} object.
 
+  Conversions are computed as:
+
+\deqn{\tau = \frac{T - \rho}{1 - \rho}}
+
+and
+
+\deqn{T = \tau * (1 - \rho) + \rho}
+
   For the conversion to take place the object passed as argument to \code{x},
   must contain a column with transmittance data, named \code{Tfr}. Any
   necessary conversion from absorbance \code{A} or from \code{Afr} into
-  transmittance, \code{Tfr}, must be done before
-  calling \code{convertTfrType()}.
+  transmittance, must be done before calling \code{convertTfrType()}.
 }
 \note{
 if \code{x} is not a \code{filter_spct} object, \code{x} is returned
@@ -47,11 +56,5 @@ convertTfrType(polyester.spct, Tfr.type = "internal")
 
 }
 \seealso{
-Other time attribute functions: 
-\code{\link{checkTimeUnit}()},
-\code{\link{convertThickness}()},
-\code{\link{convertTimeUnit}()},
-\code{\link{getTimeUnit}()},
-\code{\link{setTimeUnit}()}
+\code{\link{setTfrType}}, \code{\link{filter_spct}}
 }
-\concept{time attribute functions}

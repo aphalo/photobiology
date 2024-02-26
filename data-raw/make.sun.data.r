@@ -54,6 +54,11 @@ geocode.viiki <- data.frame(lat = 60.227,
                             stringsAsFactors = FALSE)
 
 load("data-raw/ooacquire/cosine.hour.9.spct.Rda")
+
+# ensure we remove depenndency on 'ooacquire'
+cosine.hour.9.spct <- trimInstrDesc(cosine.hour.9.spct)
+cosine.hour.9.spct <- trimInstrSettings(cosine.hour.9.spct)
+
 where_measured(cosine.hour.9.spct) <- geocode.viiki
 where_measured(cosine.hour.9.spct)
 
