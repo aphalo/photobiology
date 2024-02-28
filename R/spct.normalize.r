@@ -125,13 +125,14 @@ normalize.source_spct <- function(x,
     mspct <- subset2mspct(x,
                           idx.var = getIdFactor(x),
                           drop.idx = FALSE)
-    mspct <- normalize(x = mspct,
-                       range = range,
-                       norm = norm,
-                       unit.out = unit.out,
-                       keep.scaling = keep.scaling,
-                       na.rm = na.rm,
-                       ...)
+    mspct <-
+      normalize.source_mspct(x = mspct,
+                             range = range,
+                             norm = norm,
+                             unit.out = unit.out,
+                             keep.scaling = keep.scaling,
+                             na.rm = na.rm,
+                             ...)
     return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
   }
 
@@ -184,13 +185,14 @@ normalize.response_spct <- function(x,
     mspct <- subset2mspct(x,
                           idx.var = getIdFactor(x),
                           drop.idx = FALSE)
-    mspct <- normalize(x = mspct,
-                       range = range,
-                       norm = norm,
-                       unit.out = unit.out,
-                       keep.scaling = keep.scaling,
-                       na.rm = na.rm,
-                       ...)
+    mspct <-
+      normalize.response_mspct(x = mspct,
+                               range = range,
+                               norm = norm,
+                               unit.out = unit.out,
+                               keep.scaling = keep.scaling,
+                               na.rm = na.rm,
+                               ...)
     return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
   }
 
@@ -247,13 +249,14 @@ normalize.filter_spct <-
       mspct <- subset2mspct(x,
                             idx.var = getIdFactor(x),
                             drop.idx = FALSE)
-      mspct <- normalize(x = mspct,
-                         range = range,
-                         norm = norm,
-                         qty.out = qty.out,
-                         keep.scaling = keep.scaling,
-                         na.rm = na.rm,
-                         ...)
+      mspct <-
+        normalize.filter_mspct(x = mspct,
+                               range = range,
+                               norm = norm,
+                               qty.out = qty.out,
+                               keep.scaling = keep.scaling,
+                               na.rm = na.rm,
+                               ...)
       return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
     }
 
@@ -314,13 +317,14 @@ normalize.reflector_spct <-
       mspct <- subset2mspct(x,
                             idx.var = getIdFactor(x),
                             drop.idx = FALSE)
-      mspct <- normalize(x = mspct,
-                         range = range,
-                         norm = norm,
-                         qty.out = qty.out,
-                         keep.scaling = keep.scaling,
-                         na.rm = na.rm,
-                         ...)
+      mspct <-
+        normalize.reflector_mspct(x = mspct,
+                                  range = range,
+                                  norm = norm,
+                                  qty.out = qty.out,
+                                  keep.scaling = keep.scaling,
+                                  na.rm = na.rm,
+                                  ...)
       return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
     }
 
@@ -360,13 +364,14 @@ normalize.solute_spct <-
       mspct <- subset2mspct(x,
                             idx.var = getIdFactor(x),
                             drop.idx = FALSE)
-      mspct <- normalize(x = mspct,
-                         range = range,
-                         norm = norm,
-#                         qty.out = qty.out,
-                         keep.scaling = keep.scaling,
-                         na.rm = na.rm,
-                         ...)
+      mspct <-
+        normalize.solute_mspct(x = mspct,
+                               range = range,
+                               norm = norm,
+                               #                         qty.out = qty.out,
+                               keep.scaling = keep.scaling,
+                               na.rm = na.rm,
+                               ...)
       return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
     }
 
@@ -404,12 +409,13 @@ normalize.raw_spct <-
       mspct <- subset2mspct(x,
                             idx.var = getIdFactor(x),
                             drop.idx = FALSE)
-      mspct <- normalize(x = mspct,
-                         range = range,
-                         norm = norm,
-                         keep.scaling = keep.scaling,
-                         na.rm = na.rm,
-                         ...)
+      mspct <-
+        normalize.raw_mspct(x = mspct,
+                            range = range,
+                            norm = norm,
+                            keep.scaling = keep.scaling,
+                            na.rm = na.rm,
+                            ...)
       return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
     }
 
@@ -448,12 +454,13 @@ normalize.cps_spct <-
       mspct <- subset2mspct(x,
                             idx.var = getIdFactor(x),
                             drop.idx = FALSE)
-      mspct <- normalize(x = mspct,
-                         range = range,
-                         norm = norm,
-                         keep.scaling = keep.scaling,
-                         na.rm = na.rm,
-                         ...)
+      mspct <-
+        normalize.cps_mspct(x = mspct,
+                            range = range,
+                            norm = norm,
+                            keep.scaling = keep.scaling,
+                            na.rm = na.rm,
+                            ...)
       return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
     }
 
@@ -501,13 +508,14 @@ normalize.generic_spct <-
       mspct <- subset2mspct(x,
                             idx.var = getIdFactor(x),
                             drop.idx = FALSE)
-      mspct <- normalize(x = mspct,
-                         range = range,
-                         norm = norm,
-                         col.names = col.names,
-                         keep.scaling = keep.scaling,
-                         na.rm = na.rm,
-                         ...)
+      mspct <-
+        normalize.generic_mspct(x = mspct,
+                                range = range,
+                                norm = norm,
+                                col.names = col.names,
+                                keep.scaling = keep.scaling,
+                                na.rm = na.rm,
+                                ...)
       return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
     }
 
@@ -698,6 +706,59 @@ normalize.cps_mspct <- function(x,
           normalize.cps_spct,
           range = range,
           norm = norm,
+          keep.scaling = keep.scaling,
+          na.rm = na.rm,
+          ...,
+          .parallel = .parallel,
+          .paropts = .paropts)
+}
+
+#' @describeIn normalize Normalize the members of a solute_mspct object.
+#'
+#' @export
+#'
+normalize.solute_mspct <- function(x,
+                                   ...,
+                                   range = x,
+                                   norm = "max",
+                                   keep.scaling = FALSE,
+                                   na.rm = FALSE,
+                                   .parallel = FALSE,
+                                   .paropts = NULL) {
+
+  if (!length(x)) return(x) # class of x in no case changes
+
+  msmsply(x,
+          normalize.solute_spct,
+          range = range,
+          norm = norm,
+          keep.scaling = keep.scaling,
+          na.rm = na.rm,
+          ...,
+          .parallel = .parallel,
+          .paropts = .paropts)
+}
+
+#' @describeIn normalize Normalize the members of a solute_mspct object.
+#'
+#' @export
+#'
+normalize.generic_mspct <- function(x,
+                                    ...,
+                                    range = NULL,
+                                    norm = "max",
+                                    col.names,
+                                    keep.scaling = FALSE,
+                                    na.rm = FALSE,
+                                    .parallel = FALSE,
+                                    .paropts = NULL) {
+
+  if (!length(x)) return(x) # class of x in no case changes
+
+  msmsply(x,
+          normalize, # members can be heterogeneous
+          range = range,
+          norm = "max",
           keep.scaling = keep.scaling,
           na.rm = na.rm,
           ...,

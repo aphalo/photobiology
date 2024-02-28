@@ -11,33 +11,35 @@
 #' @param x An R object
 #' @param ... additional named arguments passed down to \code{f}.
 #'
-#' @details After scaling, applying the function passed as argument to \code{f}
-#'   to the scaled spectrum will return the value passed as argument to
+#' @details After scaling, calling the function passed as argument to \code{f}
+#'   with the scaled spectrum as argument, will return the value passed as
+#'   argument to
 #'   \code{target}. \strong{The default for \code{set.scaled} depends
-#'   dynamically on the passed to \code{target}.} Sometimes we rescale a
+#'   dynamically on the value passed to \code{target}.} Sometimes we rescale a
 #'   spectrum to a "theoretical" value for the summary, while in other cases we
-#'   rescale the spectrum to a real-world target value of e.g. a reference
+#'   rescale the spectrum to a real-world target value of, e.g., a reference
 #'   energy irradiance. In the first case we say that the data are expressed in
 #'   relative units, while in the second case we retain actual physical units.
-#'   To indicate this, this package uses an attribute, which will by default be
-#'   set assuming the first of these two situations when \code{target == 1} and
-#'   not set assuming the second situation. These defaults can be
-#'   overriden with an explicit \code{logical} argument passed to
-#'   \code{set.scaled}. When present, normalization metadata is filled with
-#'   \code{NA} values, and the spectrum tagged as not normalized.
+#'   To indicate this, the default argument for `set.scaled` is TRUE when
+#'   \code{target == 1}, assuming the first of these two situations, and false
+#'   otherwise, assuming the second situation. These defaults can be overriden
+#'   with an explicit \code{logical} argument passed to \code{set.scaled}.
+#'   Scaling overrides any previous normalization with the spectrum tagged as
+#'   not normalized.
 #'
-#' @note Method \code{fscale} is not implemented for \code{solute_spct} objects
+#'   Method \code{fscale} is implemented for \code{solute_spct} objects but
 #'   as the spectral data stored in them are a description of an intensive
-#'   property of a substance. To represent solutions of specific concentrations
-#'   of solutes, \code{filter_spct} objects can be used.
+#'   property of a substance, scaling is unlikely to useful. To represent
+#'   solutions of specific concentrations of solutes, \code{filter_spct} objects
+#'   should be used instead.
 #'
 #' @section Important changes: Metadata describing the rescaling operation are
-#'   stored in an attribute only if \code{set.scaled = TRUE} is passed to the call.
-#'   The exact format and data stored in the attribute \code{"scaled"} has changed
-#'   during the development of the package. Spectra re-scaled with earlier
-#'   versions will lack some information. To obtain the metadata in a consistent
-#'   format irrespective of this variation use accessor \code{getScaling()}, which
-#'   fills missing fields with \code{NA}.
+#'   stored in an attribute only if \code{set.scaled = TRUE} is passed to the
+#'   call. The exact format and data stored in the attribute \code{"scaled"} has
+#'   changed during the development history of the package. Spectra re-scaled
+#'   with earlier versions will lack some information. To obtain the metadata in
+#'   a consistent format irrespective of this variation use accessor
+#'   \code{getScaling()}, which fills missing fields with \code{NA}.
 #'
 #' @return A copy of the object passed as argument to \code{x} with the original
 #'   spectral data values replaced with rescaled values, and the \code{"scaled"}
@@ -49,7 +51,7 @@
 #' fscale(sun.spct, f = "mean") # same as default
 #' fscale(sun.spct, f = "mean", na.rm = TRUE)
 #' fscale(sun.spct, range = c(400, 700)) # default is whole spectrum
-#' fscale(sun.spct, f = e_irrad, range = c(400, 700))
+#' fscale(sun.spct, f = "e_irrad", range = c(400, 700))
 #' s400.spct <- fscale(sun.spct,
 #'                     f = e_irrad,
 #'                     range = c(400, 700),
@@ -102,13 +104,14 @@ fscale.source_spct <- function(x,
     mspct <- subset2mspct(x,
                           idx.var = getIdFactor(x),
                           drop.idx = FALSE)
-    mspct <- normalize(x = mspct,
-                       range = range,
-                       f = f,
-                       target = target,
-                       unit.out = unit.out,
-                       set.scaled = set.scaled,
-                       ...)
+    mspct <-
+      fscale.source_mspct(x = mspct,
+                          range = range,
+                          f = f,
+                          target = target,
+                          unit.out = unit.out,
+                          set.scaled = set.scaled,
+                          ...)
     return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
   }
 
@@ -149,13 +152,14 @@ fscale.response_spct <- function(x,
     mspct <- subset2mspct(x,
                           idx.var = getIdFactor(x),
                           drop.idx = FALSE)
-    mspct <- normalize(x = mspct,
-                       range = range,
-                       f = f,
-                       target = target,
-                       unit.out = unit.out,
-                       set.scaled = set.scaled,
-                       ...)
+    mspct <-
+      fscale.response_mspct(x = mspct,
+                            range = range,
+                            f = f,
+                            target = target,
+                            unit.out = unit.out,
+                            set.scaled = set.scaled,
+                            ...)
     return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
   }
 
@@ -199,13 +203,14 @@ fscale.filter_spct <- function(x,
     mspct <- subset2mspct(x,
                           idx.var = getIdFactor(x),
                           drop.idx = FALSE)
-    mspct <- normalize(x = mspct,
-                       range = range,
-                       f = f,
-                       target = target,
-                       qty.out = qty.out,
-                       set.scaled = set.scaled,
-                       ...)
+    mspct <-
+      fscale.filter_mspct(x = mspct,
+                          range = range,
+                          f = f,
+                          target = target,
+                          qty.out = qty.out,
+                          set.scaled = set.scaled,
+                          ...)
     return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
   }
 
@@ -246,13 +251,14 @@ fscale.reflector_spct <- function(x,
     mspct <- subset2mspct(x,
                           idx.var = getIdFactor(x),
                           drop.idx = FALSE)
-    mspct <- normalize(x = mspct,
-                       range = range,
-                       f = f,
-                       target = target,
-                       qty.out = qty.out,
-                       set.scaled = set.scaled,
-                       ...)
+    mspct <-
+      fscale.reflector_mspct(x = mspct,
+                             range = range,
+                             f = f,
+                             target = target,
+                             qty.out = qty.out,
+                             set.scaled = set.scaled,
+                             ...)
     return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
   }
 
@@ -281,13 +287,14 @@ fscale.solute_spct <- function(x,
     mspct <- subset2mspct(x,
                           idx.var = getIdFactor(x),
                           drop.idx = FALSE)
-    mspct <- normalize(x = mspct,
-                       range = range,
-                       f = f,
-                       target = target,
-                       qty.out = qty.out,
-                       set.scaled = set.scaled,
-                       ...)
+    mspct <-
+      fscale.solute_mspct(x = mspct,
+                          range = range,
+                          f = f,
+                          target = target,
+                          qty.out = qty.out,
+                          set.scaled = set.scaled,
+                          ...)
     return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
   }
 
@@ -316,7 +323,8 @@ fscale.raw_spct <- function(x,
     mspct <- subset2mspct(x,
                           idx.var = getIdFactor(x),
                           drop.idx = FALSE)
-    mspct <- normalize(x = mspct,
+    mspct <-
+      fscale.raw_mspct(x = mspct,
                        range = range,
                        f = f,
                        target = target,
@@ -349,7 +357,8 @@ fscale.cps_spct <- function(x,
     mspct <- subset2mspct(x,
                           idx.var = getIdFactor(x),
                           drop.idx = FALSE)
-    mspct <- normalize(x = mspct,
+    mspct <-
+      fscale.cps_mspct(x = mspct,
                        range = range,
                        f = f,
                        target = target,
@@ -386,13 +395,14 @@ fscale.generic_spct <- function(x,
     mspct <- subset2mspct(x,
                           idx.var = getIdFactor(x),
                           drop.idx = FALSE)
-    mspct <- normalize(x = mspct,
-                       range = range,
-                       f = f,
-                       target = target,
-                       set.scaled = set.scaled,
-                       col.names = col.names,
-                       ...)
+    mspct <-
+      fscale.generic_mspct(x = mspct,
+                           range = range,
+                           f = f,
+                           target = target,
+                           set.scaled = set.scaled,
+                           col.names = col.names,
+                           ...)
     return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
   }
 
@@ -535,13 +545,13 @@ fscale.reflector_mspct <- function(x,
 #' @export
 #'
 fscale.solute_mspct <- function(x,
-                                   range = NULL,
-                                   f = "mean",
-                                   target = 1,
-                                   set.scaled = target == 1,
-                                   ...,
-                                   .parallel = FALSE,
-                                   .paropts = NULL) {
+                                range = NULL,
+                                f = "mean",
+                                target = 1,
+                                set.scaled = target == 1,
+                                ...,
+                                .parallel = FALSE,
+                                .paropts = NULL) {
 
   if (!length(x)) return(x) # class of x in no case changes
 
@@ -625,7 +635,7 @@ fscale.generic_mspct <- function(x,
   if (!length(x)) return(x) # class of x in no case changes
 
   msmsply(x,
-          fscale,
+          fscale, # members can be heterogeneous
           range = range,
           f = f,
           target = target,
@@ -648,16 +658,25 @@ fscale.generic_mspct <- function(x,
 #' @param range an R object on which range() returns a vector of length 2, with
 #'   min and max wavelengths (nm)
 #' @param col.names character The name of the variable to fscale
-#' @param f function A summary function to be applied to \code{spct}
+#' @param f function A summary function to be applied to \code{spct} or the
+#'   name of such a function as a \code{character} string.
 #' @param set.scaled logical Flag indicating if the data is to be marked
 #'   as "scaled" or not.
-#' @param ... other arguments passed to f()
+#' @param na.rm logical Indicating whether NA values should be stripped before
+#'   the computation proceeds
+#' @param ... other arguments passed to f() by name.
 #'
 #' @return a new object of the same class as \code{spct}.
 #'
 #' @keywords internal
 #'
-fscale_spct <- function(spct, range, col.names, f, target, set.scaled, ...) {
+fscale_spct <- function(spct,
+                        range,
+                        col.names,
+                        f, target,
+                        set.scaled,
+                        na.rm = FALSE,
+                        ...) {
   # Skip checks for intermediate results
   prev_state <- disable_check_spct()
   on.exit(set_check_spct(prev_state), add = TRUE)
@@ -682,6 +701,9 @@ fscale_spct <- function(spct, range, col.names, f, target, set.scaled, ...) {
     }
   }
   tmp.spct <- trim_spct(spct, range, byref = FALSE)
+  if (na.rm) {
+    tmp.spct <- na.omit(tmp.spct)
+  }
   multipliers <- numeric(length(col.names))
   i <- 0L
   for (col in col.names) {
@@ -690,12 +712,20 @@ fscale_spct <- function(spct, range, col.names, f, target, set.scaled, ...) {
     if (!is.null(f)) {
       if (is.character(f)) {
         if (f %in% c("mean", "average")) {
-          summary.value <- average_spct(tmp.spct[, c("w.length", col)])
+          summary.value <- average_spct(tmp.spct[, c("w.length", col)], ...)
         } else if (f %in% c("total", "integral")) {
-          summary.value <- integrate_spct(tmp.spct[, c("w.length", col)])
+          summary.value <- integrate_spct(tmp.spct[, c("w.length", col)], ...)
         } else {
-          warning("Invalid character '", f, "'value in 'f'")
-          summary.value <- NA_real_
+          f.name <- f
+          f <- try(match.fun(f.name), silent = TRUE)
+          if (is.function(f)) {
+            summary.value <- f(tmp.spct[, c("w.length", col)], ...)
+            f <- f.name
+          } else {
+            warning("A function named '", f.name, "' not found. Skipping!")
+            summary.value <- NA_real_
+            f <- NA
+          }
         }
       } else if (is.function(f)) {
         summary.value <- f(tmp.spct[, c("w.length", col)], ...)

@@ -18,6 +18,8 @@
 \alias{normalize.reflector_mspct}
 \alias{normalize.raw_mspct}
 \alias{normalize.cps_mspct}
+\alias{normalize.solute_mspct}
+\alias{normalize.generic_mspct}
 \title{Normalize spectral data}
 \usage{
 normalize(x, ...)
@@ -172,6 +174,29 @@ normalise(x, ...)
   .parallel = FALSE,
   .paropts = NULL
 )
+
+\method{normalize}{solute_mspct}(
+  x,
+  ...,
+  range = x,
+  norm = "max",
+  keep.scaling = FALSE,
+  na.rm = FALSE,
+  .parallel = FALSE,
+  .paropts = NULL
+)
+
+\method{normalize}{generic_mspct}(
+  x,
+  ...,
+  range = NULL,
+  norm = "max",
+  col.names,
+  keep.scaling = FALSE,
+  na.rm = FALSE,
+  .parallel = FALSE,
+  .paropts = NULL
+)
 }
 \arguments{
 \item{x}{An R object}
@@ -279,6 +304,10 @@ By default normalization is done based on the maximum of the
 \item \code{normalize(raw_mspct)}: Normalize the members of a raw_mspct object.
 
 \item \code{normalize(cps_mspct)}: Normalize the members of a cps_mspct object.
+
+\item \code{normalize(solute_mspct)}: Normalize the members of a solute_mspct object.
+
+\item \code{normalize(generic_mspct)}: Normalize the members of a solute_mspct object.
 
 }}
 \note{

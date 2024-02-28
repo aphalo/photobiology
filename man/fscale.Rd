@@ -232,20 +232,27 @@ function \code{f} applied over a specific \code{range} of wavelengths and a
 multiple spectra, the rescaling is applied separately to each spectrum.
 }
 \details{
-After scaling, applying the function passed as argument to \code{f}
-  to the scaled spectrum will return the value passed as argument to
+After scaling, calling the function passed as argument to \code{f}
+  with the scaled spectrum as argument, will return the value passed as
+  argument to
   \code{target}. \strong{The default for \code{set.scaled} depends
-  dynamically on the passed to \code{target}.} Sometimes we rescale a
+  dynamically on the value passed to \code{target}.} Sometimes we rescale a
   spectrum to a "theoretical" value for the summary, while in other cases we
-  rescale the spectrum to a real-world target value of e.g. a reference
+  rescale the spectrum to a real-world target value of, e.g., a reference
   energy irradiance. In the first case we say that the data are expressed in
   relative units, while in the second case we retain actual physical units.
-  To indicate this, this package uses an attribute, which will by default be
-  set assuming the first of these two situations when \code{target == 1} and
-  not set assuming the second situation. These defaults can be
-  overriden with an explicit \code{logical} argument passed to
-  \code{set.scaled}. When present, normalization metadata is filled with
-  \code{NA} values, and the spectrum tagged as not normalized.
+  To indicate this, the default argument for `set.scaled` is TRUE when
+  \code{target == 1}, assuming the first of these two situations, and false
+  otherwise, assuming the second situation. These defaults can be overriden
+  with an explicit \code{logical} argument passed to \code{set.scaled}.
+  Scaling overrides any previous normalization with the spectrum tagged as
+  not normalized.
+
+  Method \code{fscale} is implemented for \code{solute_spct} objects but
+  as the spectral data stored in them are a description of an intensive
+  property of a substance, scaling is unlikely to useful. To represent
+  solutions of specific concentrations of solutes, \code{filter_spct} objects
+  should be used instead.
 }
 \section{Methods (by class)}{
 \itemize{
@@ -284,20 +291,14 @@ After scaling, applying the function passed as argument to \code{f}
 \item \code{fscale(generic_mspct)}: 
 
 }}
-\note{
-Method \code{fscale} is not implemented for \code{solute_spct} objects
-  as the spectral data stored in them are a description of an intensive
-  property of a substance. To represent solutions of specific concentrations
-  of solutes, \code{filter_spct} objects can be used.
-}
 \section{Important changes}{
  Metadata describing the rescaling operation are
-  stored in an attribute only if \code{set.scaled = TRUE} is passed to the call.
-  The exact format and data stored in the attribute \code{"scaled"} has changed
-  during the development of the package. Spectra re-scaled with earlier
-  versions will lack some information. To obtain the metadata in a consistent
-  format irrespective of this variation use accessor \code{getScaling()}, which
-  fills missing fields with \code{NA}.
+  stored in an attribute only if \code{set.scaled = TRUE} is passed to the
+  call. The exact format and data stored in the attribute \code{"scaled"} has
+  changed during the development history of the package. Spectra re-scaled
+  with earlier versions will lack some information. To obtain the metadata in
+  a consistent format irrespective of this variation use accessor
+  \code{getScaling()}, which fills missing fields with \code{NA}.
 }
 
 \examples{
@@ -306,7 +307,7 @@ fscale(sun.spct)
 fscale(sun.spct, f = "mean") # same as default
 fscale(sun.spct, f = "mean", na.rm = TRUE)
 fscale(sun.spct, range = c(400, 700)) # default is whole spectrum
-fscale(sun.spct, f = e_irrad, range = c(400, 700))
+fscale(sun.spct, f = "e_irrad", range = c(400, 700))
 s400.spct <- fscale(sun.spct,
                     f = e_irrad,
                     range = c(400, 700),

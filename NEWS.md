@@ -4,6 +4,15 @@ editor_options:
     wrap: 72
 ---
 
+# photobiology 0.11.2
+
+- Accept arbitrary functions names in addition to function objects in 
+`fscale()` methods.
+- Fix major bug affecting `fscale()` methods when applied to `<xxx>_spct` objects
+containing multiple spectra in long form.
+- Implement missing methods `normalize.solute_mspct()` and 
+`normalize.generic_mspct()` 
+
 # photobiology 0.11.1
 
 The main enhancements in this update are **1)** the implementation of proper
