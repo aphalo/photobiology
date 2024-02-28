@@ -27,10 +27,11 @@
 #'   Scaling overrides any previous normalization with the spectrum tagged as
 #'   not normalized.
 #'
-#' @note Method \code{fscale} is not implemented for \code{solute_spct} objects
+#'   Method \code{fscale} is implemented for \code{solute_spct} objects but
 #'   as the spectral data stored in them are a description of an intensive
-#'   property of a substance. To represent solutions of specific concentrations
-#'   of solutes, \code{filter_spct} objects can be used.
+#'   property of a substance, scaling is unlikely to useful. To represent
+#'   solutions of specific concentrations of solutes, \code{filter_spct} objects
+#'   should be used instead.
 #'
 #' @section Important changes: Metadata describing the rescaling operation are
 #'   stored in an attribute only if \code{set.scaled = TRUE} is passed to the
@@ -103,13 +104,14 @@ fscale.source_spct <- function(x,
     mspct <- subset2mspct(x,
                           idx.var = getIdFactor(x),
                           drop.idx = FALSE)
-    mspct <- fscale(x = mspct,
-                    range = range,
-                    f = f,
-                    target = target,
-                    unit.out = unit.out,
-                    set.scaled = set.scaled,
-                    ...)
+    mspct <-
+      fscale.source_mspct(x = mspct,
+                          range = range,
+                          f = f,
+                          target = target,
+                          unit.out = unit.out,
+                          set.scaled = set.scaled,
+                          ...)
     return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
   }
 
@@ -150,13 +152,14 @@ fscale.response_spct <- function(x,
     mspct <- subset2mspct(x,
                           idx.var = getIdFactor(x),
                           drop.idx = FALSE)
-    mspct <- fscale(x = mspct,
-                    range = range,
-                    f = f,
-                    target = target,
-                    unit.out = unit.out,
-                    set.scaled = set.scaled,
-                    ...)
+    mspct <-
+      fscale.response_mspct(x = mspct,
+                            range = range,
+                            f = f,
+                            target = target,
+                            unit.out = unit.out,
+                            set.scaled = set.scaled,
+                            ...)
     return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
   }
 
@@ -200,13 +203,14 @@ fscale.filter_spct <- function(x,
     mspct <- subset2mspct(x,
                           idx.var = getIdFactor(x),
                           drop.idx = FALSE)
-    mspct <- fscale(x = mspct,
-                    range = range,
-                    f = f,
-                    target = target,
-                    qty.out = qty.out,
-                    set.scaled = set.scaled,
-                    ...)
+    mspct <-
+      fscale.filter_mspct(x = mspct,
+                          range = range,
+                          f = f,
+                          target = target,
+                          qty.out = qty.out,
+                          set.scaled = set.scaled,
+                          ...)
     return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
   }
 
@@ -247,13 +251,14 @@ fscale.reflector_spct <- function(x,
     mspct <- subset2mspct(x,
                           idx.var = getIdFactor(x),
                           drop.idx = FALSE)
-    mspct <- fscale(x = mspct,
-                    range = range,
-                    f = f,
-                    target = target,
-                    qty.out = qty.out,
-                    set.scaled = set.scaled,
-                    ...)
+    mspct <-
+      fscale.reflector_mspct(x = mspct,
+                             range = range,
+                             f = f,
+                             target = target,
+                             qty.out = qty.out,
+                             set.scaled = set.scaled,
+                             ...)
     return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
   }
 
@@ -282,13 +287,14 @@ fscale.solute_spct <- function(x,
     mspct <- subset2mspct(x,
                           idx.var = getIdFactor(x),
                           drop.idx = FALSE)
-    mspct <- fscale(x = mspct,
-                    range = range,
-                    f = f,
-                    target = target,
-                    qty.out = qty.out,
-                    set.scaled = set.scaled,
-                    ...)
+    mspct <-
+      fscale.solute_mspct(x = mspct,
+                          range = range,
+                          f = f,
+                          target = target,
+                          qty.out = qty.out,
+                          set.scaled = set.scaled,
+                          ...)
     return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
   }
 
@@ -317,12 +323,13 @@ fscale.raw_spct <- function(x,
     mspct <- subset2mspct(x,
                           idx.var = getIdFactor(x),
                           drop.idx = FALSE)
-    mspct <- fscale(x = mspct,
-                    range = range,
-                    f = f,
-                    target = target,
-                    set.scaled = set.scaled,
-                    ...)
+    mspct <-
+      fscale.raw_mspct(x = mspct,
+                       range = range,
+                       f = f,
+                       target = target,
+                       set.scaled = set.scaled,
+                       ...)
     return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
   }
 
@@ -350,12 +357,13 @@ fscale.cps_spct <- function(x,
     mspct <- subset2mspct(x,
                           idx.var = getIdFactor(x),
                           drop.idx = FALSE)
-    mspct <- fscale(x = mspct,
-                    range = range,
-                    f = f,
-                    target = target,
-                    set.scaled = set.scaled,
-                    ...)
+    mspct <-
+      fscale.cps_mspct(x = mspct,
+                       range = range,
+                       f = f,
+                       target = target,
+                       set.scaled = set.scaled,
+                       ...)
     return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
   }
 
@@ -387,13 +395,14 @@ fscale.generic_spct <- function(x,
     mspct <- subset2mspct(x,
                           idx.var = getIdFactor(x),
                           drop.idx = FALSE)
-    mspct <- fscale(x = mspct,
-                    range = range,
-                    f = f,
-                    target = target,
-                    set.scaled = set.scaled,
-                    col.names = col.names,
-                    ...)
+    mspct <-
+      fscale.generic_mspct(x = mspct,
+                           range = range,
+                           f = f,
+                           target = target,
+                           set.scaled = set.scaled,
+                           col.names = col.names,
+                           ...)
     return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
   }
 
@@ -536,13 +545,13 @@ fscale.reflector_mspct <- function(x,
 #' @export
 #'
 fscale.solute_mspct <- function(x,
-                                   range = NULL,
-                                   f = "mean",
-                                   target = 1,
-                                   set.scaled = target == 1,
-                                   ...,
-                                   .parallel = FALSE,
-                                   .paropts = NULL) {
+                                range = NULL,
+                                f = "mean",
+                                target = 1,
+                                set.scaled = target == 1,
+                                ...,
+                                .parallel = FALSE,
+                                .paropts = NULL) {
 
   if (!length(x)) return(x) # class of x in no case changes
 
@@ -626,7 +635,7 @@ fscale.generic_mspct <- function(x,
   if (!length(x)) return(x) # class of x in no case changes
 
   msmsply(x,
-          fscale,
+          fscale, # members can be heterogeneous
           range = range,
           f = f,
           target = target,

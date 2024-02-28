@@ -247,6 +247,12 @@ After scaling, calling the function passed as argument to \code{f}
   with an explicit \code{logical} argument passed to \code{set.scaled}.
   Scaling overrides any previous normalization with the spectrum tagged as
   not normalized.
+
+  Method \code{fscale} is implemented for \code{solute_spct} objects but
+  as the spectral data stored in them are a description of an intensive
+  property of a substance, scaling is unlikely to useful. To represent
+  solutions of specific concentrations of solutes, \code{filter_spct} objects
+  should be used instead.
 }
 \section{Methods (by class)}{
 \itemize{
@@ -285,20 +291,14 @@ After scaling, calling the function passed as argument to \code{f}
 \item \code{fscale(generic_mspct)}: 
 
 }}
-\note{
-Method \code{fscale} is not implemented for \code{solute_spct} objects
-  as the spectral data stored in them are a description of an intensive
-  property of a substance. To represent solutions of specific concentrations
-  of solutes, \code{filter_spct} objects can be used.
-}
 \section{Important changes}{
  Metadata describing the rescaling operation are
-  stored in an attribute only if \code{set.scaled = TRUE} is passed to the call.
-  The exact format and data stored in the attribute \code{"scaled"} has changed
-  during the development of the package. Spectra re-scaled with earlier
-  versions will lack some information. To obtain the metadata in a consistent
-  format irrespective of this variation use accessor \code{getScaling()}, which
-  fills missing fields with \code{NA}.
+  stored in an attribute only if \code{set.scaled = TRUE} is passed to the
+  call. The exact format and data stored in the attribute \code{"scaled"} has
+  changed during the development history of the package. Spectra re-scaled
+  with earlier versions will lack some information. To obtain the metadata in
+  a consistent format irrespective of this variation use accessor
+  \code{getScaling()}, which fills missing fields with \code{NA}.
 }
 
 \examples{
