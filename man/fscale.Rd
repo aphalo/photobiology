@@ -232,20 +232,21 @@ function \code{f} applied over a specific \code{range} of wavelengths and a
 multiple spectra, the rescaling is applied separately to each spectrum.
 }
 \details{
-After scaling, applying the function passed as argument to \code{f}
-  to the scaled spectrum will return the value passed as argument to
+After scaling, calling the function passed as argument to \code{f}
+  with the scaled spectrum as argument, will return the value passed as
+  argument to
   \code{target}. \strong{The default for \code{set.scaled} depends
-  dynamically on the passed to \code{target}.} Sometimes we rescale a
+  dynamically on the value passed to \code{target}.} Sometimes we rescale a
   spectrum to a "theoretical" value for the summary, while in other cases we
-  rescale the spectrum to a real-world target value of e.g. a reference
+  rescale the spectrum to a real-world target value of, e.g., a reference
   energy irradiance. In the first case we say that the data are expressed in
   relative units, while in the second case we retain actual physical units.
-  To indicate this, this package uses an attribute, which will by default be
-  set assuming the first of these two situations when \code{target == 1} and
-  not set assuming the second situation. These defaults can be
-  overriden with an explicit \code{logical} argument passed to
-  \code{set.scaled}. When present, normalization metadata is filled with
-  \code{NA} values, and the spectrum tagged as not normalized.
+  To indicate this, the default argument for `set.scaled` is TRUE when
+  \code{target == 1}, assuming the first of these two situations, and false
+  otherwise, assuming the second situation. These defaults can be overriden
+  with an explicit \code{logical} argument passed to \code{set.scaled}.
+  Scaling overrides any previous normalization with the spectrum tagged as
+  not normalized.
 }
 \section{Methods (by class)}{
 \itemize{
@@ -306,7 +307,7 @@ fscale(sun.spct)
 fscale(sun.spct, f = "mean") # same as default
 fscale(sun.spct, f = "mean", na.rm = TRUE)
 fscale(sun.spct, range = c(400, 700)) # default is whole spectrum
-fscale(sun.spct, f = e_irrad, range = c(400, 700))
+fscale(sun.spct, f = "e_irrad", range = c(400, 700))
 s400.spct <- fscale(sun.spct,
                     f = e_irrad,
                     range = c(400, 700),

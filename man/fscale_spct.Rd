@@ -4,7 +4,7 @@
 \alias{fscale_spct}
 \title{fscale a spectrum}
 \usage{
-fscale_spct(spct, range, col.names, f, target, set.scaled, ...)
+fscale_spct(spct, range, col.names, f, target, set.scaled, na.rm = FALSE, ...)
 }
 \arguments{
 \item{spct}{generic_spct The spectrum to be normalized}
@@ -14,12 +14,16 @@ min and max wavelengths (nm)}
 
 \item{col.names}{character The name of the variable to fscale}
 
-\item{f}{function A summary function to be applied to \code{spct}}
+\item{f}{function A summary function to be applied to \code{spct} or the
+name of such a function as a \code{character} string.}
 
 \item{set.scaled}{logical Flag indicating if the data is to be marked
 as "scaled" or not.}
 
-\item{...}{other arguments passed to f()}
+\item{na.rm}{logical Indicating whether NA values should be stripped before
+the computation proceeds}
+
+\item{...}{other arguments passed to f() by name.}
 }
 \value{
 a new object of the same class as \code{spct}.

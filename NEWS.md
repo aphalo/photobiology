@@ -6,6 +6,11 @@ editor_options:
 
 # photobiology 0.11.1
 
+- Accept arbitrary functions names in addition to function objects in 
+`fscale()` methods.
+
+# photobiology 0.11.1
+
 The main enhancements in this update are **1)** the implementation of proper
 handling of metadata attributes in objects containing multiple spectra in long
 form and during their two way conversion to collections of spectra, and **2)**
