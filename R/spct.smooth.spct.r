@@ -83,7 +83,7 @@ smooth_spct.source_spct <- function(x,
                          wl.range = wl.range,
                          na.rm = na.rm,
                          ...)
-    return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
+    return(rbindspct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
   }
 
   stopifnot(strength >= 0)
@@ -226,7 +226,7 @@ smooth_spct.filter_spct <- function(x,
                          wl.range = wl.range,
                          na.rm = na.rm,
                          ...)
-    return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
+    return(rbindspct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
   }
 
   stopifnot(strength >= 0)
@@ -397,7 +397,7 @@ smooth_spct.reflector_spct <- function(x,
                          wl.range = wl.range,
                          na.rm = na.rm,
                          ...)
-    return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
+    return(rbindspct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
   }
 
   stopifnot(strength >= 0)
@@ -500,7 +500,7 @@ smooth_spct.solute_spct <- function(x,
                          wl.range = wl.range,
                          na.rm = na.rm,
                          ...)
-    return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
+    return(rbindspct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
   }
 
   stopifnot(strength >= 0)
@@ -610,7 +610,7 @@ smooth_spct.response_spct <- function(x,
                          wl.range = wl.range,
                          na.rm = na.rm,
                          ...)
-    return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
+    return(rbindspct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
   }
 
   stopifnot(strength >= 0)
@@ -760,7 +760,7 @@ smooth_spct.cps_spct <- function(x,
                          wl.range = wl.range,
                          na.rm = na.rm,
                          ...)
-    return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
+    return(rbindspct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
   }
 
   stopifnot(strength >= 0)

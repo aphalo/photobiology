@@ -112,7 +112,7 @@ fscale.source_spct <- function(x,
                           unit.out = unit.out,
                           set.scaled = set.scaled,
                           ...)
-    return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
+    return(rbindspct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
   }
 
   if (unit.out == "energy") {
@@ -160,7 +160,7 @@ fscale.response_spct <- function(x,
                             unit.out = unit.out,
                             set.scaled = set.scaled,
                             ...)
-    return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
+    return(rbindspct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
   }
 
   if (unit.out == "energy") {
@@ -211,7 +211,7 @@ fscale.filter_spct <- function(x,
                           qty.out = qty.out,
                           set.scaled = set.scaled,
                           ...)
-    return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
+    return(rbindspct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
   }
 
   if (qty.out == "transmittance") {
@@ -259,7 +259,7 @@ fscale.reflector_spct <- function(x,
                              qty.out = qty.out,
                              set.scaled = set.scaled,
                              ...)
-    return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
+    return(rbindspct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
   }
 
   fscale_spct(spct = x,
@@ -295,7 +295,7 @@ fscale.solute_spct <- function(x,
                           qty.out = qty.out,
                           set.scaled = set.scaled,
                           ...)
-    return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
+    return(rbindspct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
   }
 
   col.name <- intersect(c("K.mole", "K.mass"), names(x))
@@ -330,7 +330,7 @@ fscale.raw_spct <- function(x,
                        target = target,
                        set.scaled = set.scaled,
                        ...)
-    return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
+    return(rbindspct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
   }
 
   fscale_spct(spct = x,
@@ -364,7 +364,7 @@ fscale.cps_spct <- function(x,
                        target = target,
                        set.scaled = set.scaled,
                        ...)
-    return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
+    return(rbindspct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
   }
 
   fscale_spct(spct = x,
@@ -403,7 +403,7 @@ fscale.generic_spct <- function(x,
                            set.scaled = set.scaled,
                            col.names = col.names,
                            ...)
-    return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
+    return(rbindspct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
   }
 
   fscale_spct(spct = x,

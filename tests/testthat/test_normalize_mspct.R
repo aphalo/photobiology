@@ -33,3 +33,26 @@ test_that("source_mspct", {
   expect_equal(class(my.mspct), class(normalized.mspct))
 
 })
+
+test_that("normalization of long source_spct", {
+
+  my1.spct <- source_spct(w.length = 400:410, s.e.irrad = 1)
+  my2.spct <- source_spct(w.length = 400:410, s.e.irrad = 2)
+  my3.spct <- source_spct(w.length = 400:410, s.e.irrad = 3)
+  my4.spct <- source_spct(w.length = 400:410, s.e.irrad = 4)
+  my5.spct <- source_spct(w.length = 400:410, s.e.irrad = 5)
+
+  spct.l <- list(my1.spct, my2.spct, my3.spct, my4.spct, my5.spct)
+  my.mspct <- source_mspct(spct.l)
+  my.spct <- rbindspct(my.mspct, idfactor = "test.id")
+
+  normalized.spct <- normalize(my.spct)
+
+  expect_equal(getIdFactor(my.spct), getIdFactor(normalized.spct))
+  expect_equal(colnames(my.spct), colnames(normalized.spct))
+  expect_equal(getMultipleWl(my.spct), getMultipleWl(normalized.spct))
+  expect_equal(nrow(my.spct), nrow(normalized.spct))
+  expect_equal(my.spct$w.length, normalized.spct$w.length)
+  expect_equal(class(my.spct), class(normalized.spct))
+
+})
