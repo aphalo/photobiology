@@ -3,6 +3,26 @@ library("photobiology")
 
 context("smooth_spct")
 
+test_that("smoothing of long source_spct", {
+
+  my1.spct <- my2.spct <- my3.spct <- my4.spct <- my5.spct <- sun.spct[200:300]
+
+  spct.l <- list(my1.spct, my2.spct, my3.spct, my4.spct, my5.spct)
+  my.mspct <- source_mspct(spct.l)
+  my.spct <- rbindspct(my.mspct, idfactor = "test.id")
+
+  smoothed.spct <- smooth_spct(my.spct)
+
+  expect_equal(getIdFactor(my.spct), getIdFactor(smoothed.spct))
+  expect_equal(sort(colnames(my.spct)), sort(colnames(smoothed.spct)))
+  expect_equal(getMultipleWl(my.spct), getMultipleWl(smoothed.spct))
+  expect_equal(nrow(my.spct), nrow(smoothed.spct))
+  expect_equal(my.spct$w.length, smoothed.spct$w.length)
+  expect_equal(class(my.spct), class(smoothed.spct))
+
+})
+
+
 test_that("source_spct", {
 
   x <- sun.spct[200:300]
