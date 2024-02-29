@@ -132,7 +132,8 @@ rbindspct <- function(l,
   if (length(l[selector]) == 1L) {
     z <- l[selector][[1L]]
     if (add.idfactor) {
-      z[[idfactor]] <- names(l[selector])
+      z[[idfactor]] <- factor(rep(names(l[selector]), times = nrow(z)))
+      setIdFactor(z, idfactor)
     }
     return(z)
   }
@@ -388,7 +389,9 @@ rbindspct <- function(l,
   if (!is.null(comment.ans)) {
     comment(ans) <- comment.ans
   }
-  attr(ans, "idfactor") <- idfactor
+  if (is.character(idfactor)) {
+    setIdFactor(ans, idfactor)
+  }
   setWhenMeasured(ans, when.measured)
   setWhereMeasured(ans, where.measured)
   setWhatMeasured(ans, what.measured)

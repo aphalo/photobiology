@@ -133,7 +133,7 @@ normalize.source_spct <- function(x,
                              keep.scaling = keep.scaling,
                              na.rm = na.rm,
                              ...)
-    return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
+    return(rbindspct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
   }
 
   if (is.numeric(keep.scaling)) {
@@ -193,7 +193,7 @@ normalize.response_spct <- function(x,
                                keep.scaling = keep.scaling,
                                na.rm = na.rm,
                                ...)
-    return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
+    return(rbindspct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
   }
 
   if (is.numeric(keep.scaling)) {
@@ -257,7 +257,7 @@ normalize.filter_spct <-
                                keep.scaling = keep.scaling,
                                na.rm = na.rm,
                                ...)
-      return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
+      return(rbindspct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
     }
 
     if (is.numeric(keep.scaling)) {
@@ -325,7 +325,7 @@ normalize.reflector_spct <-
                                   keep.scaling = keep.scaling,
                                   na.rm = na.rm,
                                   ...)
-      return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
+      return(rbindspct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
     }
 
     if (is.numeric(keep.scaling)) {
@@ -372,7 +372,7 @@ normalize.solute_spct <-
                                keep.scaling = keep.scaling,
                                na.rm = na.rm,
                                ...)
-      return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
+      return(rbindspct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
     }
 
     if (is.numeric(keep.scaling)) {
@@ -416,7 +416,7 @@ normalize.raw_spct <-
                             keep.scaling = keep.scaling,
                             na.rm = na.rm,
                             ...)
-      return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
+      return(rbindspct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
     }
 
     if (is.numeric(keep.scaling)) {
@@ -461,7 +461,7 @@ normalize.cps_spct <-
                             keep.scaling = keep.scaling,
                             na.rm = na.rm,
                             ...)
-      return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
+      return(rbindspct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
     }
 
     if (is.numeric(keep.scaling)) {
@@ -516,7 +516,7 @@ normalize.generic_spct <-
                                 keep.scaling = keep.scaling,
                                 na.rm = na.rm,
                                 ...)
-      return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
+      return(rbindspct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
     }
 
     normalize_spct(spct = x,

@@ -1,9 +1,50 @@
 library(photobiology)
 
-## need to add similar tests for additional  classes
+## need to add similar tests for additional classes
 ## need to add additional methods
 
 context("binding")
+
+test_that("idfactor", {
+  # test shared code only once
+  my.spct <- sun.spct
+  my.mspct <- source_mspct(list(sun = my.spct, sun_1 = my.spct))
+
+  expect_silent(long.spct <- rbindspct(my.mspct, idfactor = "test.id"))
+  expect_named(long.spct, c("w.length", "s.e.irrad", "s.q.irrad", "test.id"))
+  expect_equal(levels(long.spct$test.id), c("sun", "sun_1"))
+  expect_equal(attr(long.spct, "idfactor"), "test.id")
+  expect_equal(getIdFactor(long.spct), "test.id")
+
+  expect_silent(long.spct <- rbindspct(my.mspct["sun"], idfactor = "test.id"))
+  expect_named(long.spct, c("w.length", "s.e.irrad", "s.q.irrad", "test.id"))
+  expect_equal(levels(long.spct$test.id), c("sun"))
+  expect_equal(attr(long.spct, "idfactor"), "test.id")
+  expect_equal(getIdFactor(long.spct), "test.id")
+
+  expect_silent(long.spct <- rbindspct(my.mspct, idfactor = TRUE))
+  expect_named(long.spct, c("w.length", "s.e.irrad", "s.q.irrad", "spct.idx"))
+  expect_equal(levels(long.spct$spct.idx), c("sun", "sun_1"))
+  expect_equal(attr(long.spct, "idfactor"), "spct.idx")
+  expect_equal(getIdFactor(long.spct), "spct.idx")
+
+  expect_silent(long.spct <- rbindspct(my.mspct["sun"], idfactor = TRUE))
+  expect_named(long.spct, c("w.length", "s.e.irrad", "s.q.irrad", "spct.idx"))
+  expect_equal(levels(long.spct$spct.idx), c("sun"))
+  expect_equal(attr(long.spct, "idfactor"), "spct.idx")
+  expect_equal(getIdFactor(long.spct), "spct.idx")
+
+  expect_silent(long.spct <- rbindspct(my.mspct, idfactor = FALSE))
+  expect_named(long.spct, c("w.length", "s.e.irrad", "s.q.irrad"))
+  expect_null(attr(long.spct, "idfactor"))
+  expect_true(is.na(getIdFactor(long.spct)))
+
+  expect_silent(long.spct <- rbindspct(my.mspct["sun"], idfactor = FALSE))
+  expect_named(long.spct, c("w.length", "s.e.irrad", "s.q.irrad"))
+  expect_null(attr(long.spct, "idfactor"))
+  expect_true(is.na(getIdFactor(long.spct)))
+
+})
 
 test_that("unique_names_mspct", {
   # test shared code only once
