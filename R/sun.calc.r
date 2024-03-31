@@ -462,7 +462,7 @@ day_night <- function(date = lubridate::now(tzone = "UTC"),
   }
   geocode <- validate_geocode(geocode)
   if (any(lubridate::is.Date(date))) {
-    date <- as.POSIXct(date, tz = tz)
+    date <- as.POSIXct(date, tz = tz, origin = lubridate::origin)
   }
   # as 'date' is not a Date but a time, we find the corresponding date in UTC
   # as calculations are done in UTC time
