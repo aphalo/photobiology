@@ -1235,7 +1235,7 @@ when_measured2tb <- function(mspct,
     when.tb <-
       tibble::tibble(names(when.ls),
                      as.POSIXct(unlist(when.ls, use.names = FALSE),
-                                tz = "UTC"))
+                                tz = "UTC", origin = lubridate::origin))
     names(when.tb) <- c(idx, col.names)
   } else if (is.generic_mspct(mspct)) {
     if (is.null(idx)) {

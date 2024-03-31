@@ -153,7 +153,8 @@ irrad.source_spct <-
       z[[idx.var.name]] <- idx.levels
       z[["when.measured"]] <-
         as.POSIXct(unlist(when_measured(spct), use.names = FALSE),
-                   tz = "UTC")
+                   tz = "UTC",
+                   origin = lubridate::origin)
       attr(z, "time.unit") <- getTimeUnit(spct)
       if (is_effective(spct)) {
         attr(z, "radiation.unit") <-

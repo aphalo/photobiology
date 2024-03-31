@@ -6,17 +6,21 @@ editor_options:
 
 # photobiology 0.11.2
 
-- Accept arbitrary function names in addition to function objects in 
-`fscale()` methods.
+Mostly a bug-fix release.
+
 - Implement missing methods `normalize.solute_mspct()` and 
 `normalize.generic_mspct()` 
+- Accept arbitrary function names in addition to function objects in 
+`fscale()` methods.
 - Fix major bug affecting `fscale()` methods when applied to `<xxx>_spct` objects
 containing multiple spectra in long form.
 - Fix bug in `rbindspct()` non-default `idfactor` values could be ignored in
 some cases.
-- Fix bug in `normalise()`, `fscale()`, and `smooth_spct()` methods dropped 
+- Fix bug in `normalise()`, `fscale()`, and `smooth_spct()` methods: dropped 
 `idfactor` attribute when operating on `<xxx>_spct` objects containing multiple 
 spectra in long form.
+- Fix bug triggered in R < 4.3.0: missing argument for `origin` in two calls to
+`as.POSIXct()`.
 
 # photobiology 0.11.1
 
