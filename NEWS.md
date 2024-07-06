@@ -4,6 +4,10 @@ editor_options:
     wrap: 72
 ---
 
+# photobiology 0.11.3
+
+- Support renaming of the `idfactor` with `setIdFactor()`.
+
 # photobiology 0.11.2
 
 Mostly a bug-fix release.
