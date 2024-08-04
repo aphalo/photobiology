@@ -3,6 +3,7 @@
 \name{s_range}
 \alias{s_range}
 \alias{s_range.default}
+\alias{s_range.generic_spct}
 \alias{s_range.filter_mspct}
 \alias{s_range.source_mspct}
 \alias{s_range.response_mspct}
@@ -15,6 +16,8 @@
 s_range(x, na.rm, ...)
 
 \method{s_range}{default}(x, na.rm = FALSE, ...)
+
+\method{s_range}{generic_spct}(x, na.rm = FALSE, ...)
 
 \method{s_range}{filter_mspct}(x, na.rm = FALSE, ...)
 
@@ -53,6 +56,8 @@ in the collection returning a spectral object.
 \section{Methods (by class)}{
 \itemize{
 \item \code{s_range(default)}: 
+
+\item \code{s_range(generic_spct)}: 
 
 \item \code{s_range(filter_mspct)}: 
 

@@ -323,8 +323,13 @@ is.any_summary_spct <- function(x) {
 #' @param digits integer Used for number formatting with \code{\link{format}()}.
 #' @param ... additional arguments affecting the summary produced, ignored in
 #'   current version
+#' @param expand logical or character One of "none", "collection" or "each"
+#'   indicating that multiple spectra in long form should be converted to a
+#'   collection of spectra in advance of summary, summarized as a collection or
+#'   individually.
 #'
-#' @return A summary object matching the class of \code{object}.
+#' @return A summary object matching the class of \code{object}, a list of
+#'   such objects or a summary object for a matching collection of spectra.
 #'
 #' @export
 #' @method summary generic_spct
@@ -333,11 +338,35 @@ is.any_summary_spct <- function(x) {
 #'
 #' @examples
 #' summary(sun.spct)
+#' summary(two_filters.spct)
+#' summary(two_filters.spct, expand = TRUE)
+#' summary(two_filters.spct, expand = "each")
+#' summary(two_filters.spct, expand = "collection")
 #'
 summary.generic_spct <- function(object,
                                  maxsum = 7,
                                  digits = max(3, getOption("digits") - 3),
-                                 ...) {
+                                 ...,
+                                 expand = FALSE) {
+
+  if (expand == TRUE) {
+    if (getMultipleWl(object) > 1 && getMultipleWl(object) <= 10) {
+      expand <- "each"
+    } else {
+      expand <- "collection"
+    }
+  }
+
+  # optionally convert from long form into collection derived from generic_mspct
+  if (expand == "collection" && getMultipleWl(object) > 1) {
+    return(summary(subset2mspct(object), maxsum = maxsum, digits = digits, ...))
+  } else if (expand == "each" && getMultipleWl(object) > 1) {
+    return(lapply(subset2mspct(object),
+                  FUN = summary,
+                  maxsum = maxsum, digits = digits, ...))
+  }
+
+  # summary of a generic_spct
   z <- list()
   class(z) <- c(paste("summary_", class_spct(object), sep = ""), class(z))
 

@@ -47,7 +47,7 @@ This is simply a wrapper on the print method for tibbles, with
   to the table of data.
 }
 \examples{
-print(summary(sun.spct))
+print(summary(sun_evening.mspct))
 
 
 print(sun.spct)

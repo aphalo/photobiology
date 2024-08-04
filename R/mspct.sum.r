@@ -50,6 +50,14 @@ s_sum.default <- function(x, na.rm = FALSE, ...) {
 #'
 #' @export
 #'
+s_sum.generic_spct <- function(x, na.rm = FALSE, ...) {
+  s_sum(subset2mspct(x), na.rm = na.rm, ...)
+}
+
+#' @describeIn s_sum
+#'
+#' @export
+#'
 s_sum.filter_mspct <- function(x, na.rm = FALSE, ...) {
   warning("A sum of Tfr values does not yield Tfr values, while a summ of A values yields A values!!")
   rowwise_filter(

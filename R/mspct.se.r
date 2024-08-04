@@ -44,6 +44,14 @@ s_se.default <- function(x, na.rm = FALSE, ...) {
 #'
 #' @export
 #'
+s_se.generic_spct <- function(x, na.rm = FALSE, ...) {
+  s_se(subset2mspct(x), na.rm = na.rm, ...)
+}
+
+#' @describeIn s_se
+#'
+#' @export
+#'
 s_se.source_mspct <- function(x, na.rm = FALSE, ...) {
   rowwise_source(
     x = x,

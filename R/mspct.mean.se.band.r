@@ -48,6 +48,14 @@ s_mean_se_band.default <- function(x, na.rm = FALSE, mult = 1, ...) {
 #'
 #' @export
 #'
+s_mean_se_band.generic_spct <- function(x, na.rm = FALSE, mult = 1, ...) {
+  s_mean_se_band(subset2mspct(x), na.rm = na.rm, mult = mult, ...)
+}
+
+#' @describeIn s_mean_se_band
+#'
+#' @export
+#'
 s_mean_se_band.filter_mspct <-
   function(x, na.rm = FALSE, mult = 1, ...) {
     rowwise_filter(

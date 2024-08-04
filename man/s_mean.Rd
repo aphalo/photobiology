@@ -3,6 +3,7 @@
 \name{s_mean}
 \alias{s_mean}
 \alias{s_mean.default}
+\alias{s_mean.generic_spct}
 \alias{s_mean.source_mspct}
 \alias{s_mean.response_mspct}
 \alias{s_mean.filter_mspct}
@@ -15,6 +16,8 @@
 s_mean(x, trim, na.rm, ...)
 
 \method{s_mean}{default}(x, trim = 0, na.rm = FALSE, ...)
+
+\method{s_mean}{generic_spct}(x, trim = 0, na.rm = FALSE, ...)
 
 \method{s_mean}{source_mspct}(x, trim = 0, na.rm = FALSE, ...)
 
@@ -57,6 +60,8 @@ collection returning a spectral object.
 \section{Methods (by class)}{
 \itemize{
 \item \code{s_mean(default)}: 
+
+\item \code{s_mean(generic_spct)}: 
 
 \item \code{s_mean(source_mspct)}: 
 

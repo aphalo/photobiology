@@ -47,6 +47,14 @@ s_range.default <- function(x, na.rm = FALSE, ...) {
 #'
 #' @export
 #'
+s_range.generic_spct <- function(x, na.rm = FALSE, ...) {
+  s_range(subset2mspct(x), na.rm = na.rm, ...)
+}
+
+#' @describeIn s_range
+#'
+#' @export
+#'
 s_range.filter_mspct <- function(x, na.rm = FALSE, ...) {
   rowwise_filter(
     x,

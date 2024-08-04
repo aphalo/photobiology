@@ -3,6 +3,7 @@
 \name{s_se}
 \alias{s_se}
 \alias{s_se.default}
+\alias{s_se.generic_spct}
 \alias{s_se.source_mspct}
 \alias{s_se.response_mspct}
 \alias{s_se.filter_mspct}
@@ -15,6 +16,8 @@
 s_se(x, na.rm, ...)
 
 \method{s_se}{default}(x, na.rm = FALSE, ...)
+
+\method{s_se}{generic_spct}(x, na.rm = FALSE, ...)
 
 \method{s_se}{source_mspct}(x, na.rm = FALSE, ...)
 
@@ -53,6 +56,8 @@ across all the spectra in the collection returning a spectral object.
 \section{Methods (by class)}{
 \itemize{
 \item \code{s_se(default)}: 
+
+\item \code{s_se(generic_spct)}: 
 
 \item \code{s_se(source_mspct)}: 
 

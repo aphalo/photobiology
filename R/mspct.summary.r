@@ -25,7 +25,9 @@
 #' @name summary
 #'
 #' @examples
-#' summary(sun.spct)
+#' summary(sun_evening.mspct)
+#' summary(sun_evening.mspct, which.metadata = "when.measured")
+#' summary(two_filters.mspct, which.metadata = "what.measured")
 #'
 summary.generic_mspct <- function(object,
                                   maxsum = 7,
@@ -96,7 +98,7 @@ summary.generic_mspct <- function(object,
 #' @export
 #'
 #' @examples
-#' print(summary(sun.spct))
+#' print(summary(sun_evening.mspct))
 #'
 print.summary_generic_mspct <- function(x, width = NULL, ..., n = NULL) {
   cat("Summary of ", x[["orig.class"]], " ", x[["orig.dim_desc"]], " object: ", x[["orig.name"]] ,"\n", sep = "")

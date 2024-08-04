@@ -4,6 +4,14 @@ editor_options:
     wrap: 72
 ---
 
+# photobiology 0.11.3
+
+-  Implement methods `s_mean()`, `s_mean_se_band()`, `s_median()`, `s_sd()`,
+`s_se()`, `s_var()`, `s_sum()`, `s_prod()`, `s_range()` for class `generic_spct`.
+-  Update `summary.generic_spct()` to optionally expand objects containing
+multiple spectra in long form into collections of spectra in advance of creating
+the summary.
+
 # photobiology 0.11.2
 
 Mostly a bug-fix release.

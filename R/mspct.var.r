@@ -50,6 +50,14 @@ s_var.default <- function(x, na.rm = FALSE, ...) {
 #'
 #' @export
 #'
+s_var.generic_spct <- function(x, na.rm = FALSE, ...) {
+  s_var(subset2mspct(x), na.rm = na.rm, ...)
+}
+
+#' @describeIn s_var
+#'
+#' @export
+#'
 s_var.filter_mspct <- function(x, na.rm = FALSE, ...) {
   rowwise_filter(
     x = x,

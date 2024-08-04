@@ -3,6 +3,7 @@
 \name{s_sd}
 \alias{s_sd}
 \alias{s_sd.default}
+\alias{s_sd.generic_spct}
 \alias{s_sd.filter_mspct}
 \alias{s_sd.source_mspct}
 \alias{s_sd.response_mspct}
@@ -15,6 +16,8 @@
 s_sd(x, na.rm, ...)
 
 \method{s_sd}{default}(x, na.rm = FALSE, ...)
+
+\method{s_sd}{generic_spct}(x, na.rm = FALSE, ...)
 
 \method{s_sd}{filter_mspct}(x, na.rm = FALSE, ...)
 
@@ -53,6 +56,8 @@ across all the spectra in the collection returning a spectral object.
 \section{Methods (by class)}{
 \itemize{
 \item \code{s_sd(default)}: 
+
+\item \code{s_sd(generic_spct)}: 
 
 \item \code{s_sd(filter_mspct)}: 
 

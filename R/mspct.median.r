@@ -43,6 +43,18 @@ s_median.default <- function(x, na.rm = FALSE, ...) {
 #'
 #' @export
 #'
+s_median.generic_spct <- function(x, na.rm = FALSE, ...) {
+  if (getMultipleWl(x) > 1) {
+    s_median(subset2mspct(x), na.rm = na.rm, ...)
+  } else {
+    x
+  }
+}
+
+#' @describeIn s_median
+#'
+#' @export
+#'
 s_median.source_mspct <- function(x, na.rm = FALSE, ...) {
   rowwise_source(x = x, .fun = stats::median, na.rm = na.rm, .fun.name = "Median of")
 }
