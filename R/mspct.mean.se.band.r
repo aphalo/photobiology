@@ -1,34 +1,43 @@
 #' Mean plus and minus standard error from collection of spectra
 #'
-#' A method to compute the mean of values and se across members of a collections
-#' of spectra. Computes the mean at each wavelength across all the spectra in
-#' the collection returning a spectral object.
+#' Method to compute the "parallel" mean and limits based on SEM. The spectral
+#' values are summarised across members of a collection of spectra or of a
+#' spectral object containing multiple spectra in long form.
 #'
-#' @param x An R object Currently this package defines methods for collections of
-#'    spectral objects.
+#' @details Method specializations compute the  mean and limits based on SEM at
+#'   each wavelength across a group of spectra stored in an object of one of the
+#'   classes defined in package 'photobiology'. Omission of NAs is done
+#'   separately at each wavelength. Interpolation is not applied, so all spectra
+#'   in \code{x} must share the same set of wavelengths. An error is triggered
+#'   if this condition is nor fulfilled. The value passed as argument to `mult`
+#'   can be used to estimate a confidence interval for each mean value.
+#'
+#' @param x An R object.
 #' @param na.rm	logical A value indicating whether NA values should be stripped
 #'   before the computation proceeds.
 #' @param mult	numeric number of multiples of standard error.
 #' @param ...	Further arguments passed to or from other methods.
 #'
 #' @return If \code{x} is a collection spectral of objects, such as a
-#'   "filter_mspct" object, the returned object is of same class as the
-#'   members of the collection, such as "filter_spct", containing the mean
-#'   spectrum.
+#'   \code{"filter_mspct"} object, the returned object is of same class as the
+#'   members of the collection, such as \code{"filter_spct"}, containing the
+#'   summary spectrum, with variables with names tagged for summaries other
+#'   than mean or median.
 #'
-#' @note Trimming of extreme values and omission of NAs is done separately at
-#'   each wavelength. Interpolation is not applied, so all spectra in \code{x}
-#'   must share the same set of wavelengths.
-#'
-#'   Objects of classes raw_spct and cps_spct can contain data from multiple
-#'   scans. This functions are implemented for these classes only for the case
-#'   when all member spectra contain data for a single scan, or spliced into a
-#'   single column in the case of cps_spct members.
+#' @note Objects of classes \code{raw_spct} and \code{cps_spct} can contain data
+#'   from multiple scans in multiple variables or "columns". The methods accept
+#'   as arguments objects of these classes only if spectra contain data for a
+#'   single spectrometer scan. In the case of \code{cps_spct} objects, a single
+#'   column can also contain data from multiple scans spliced into a single
+#'   variable.
 #'
 #' @seealso See \code{\link[base]{mean}} for the \code{mean()} method used for
 #'   the computations.
 #'
 #' @export
+#'
+#' @examples
+#' s_mean_se_band(sun_evening.mspct)
 #'
 s_mean_se_band <- function(x, na.rm, mult, ...)
   UseMethod("s_mean_se_band")
@@ -64,7 +73,7 @@ s_mean_se_band.filter_mspct <-
       col.name.tag = c("", ".se.m", ".se.p"),
       na.rm = na.rm,
       mult = mult,
-      .fun.name = "Mean and SEM of"
+      .fun.name = "Mean and mean +/- SEM of"
     )
   }
 
@@ -80,7 +89,7 @@ s_mean_se_band.source_mspct <-
       col.name.tag = c("", ".se.m", ".se.p"),
       na.rm = na.rm,
       mult = mult,
-      .fun.name = "Mean and SEM of"
+      .fun.name = "Mean and mean +/- SEM of"
     )
   }
 
@@ -96,7 +105,7 @@ s_mean_se_band.response_mspct <-
       col.name.tag = c("", ".se.m", ".se.p"),
       na.rm = na.rm,
       mult = mult,
-      .fun.name = "Mean and SEM of"
+      .fun.name = "Mean and mean +/- SEM of"
     )
   }
 
@@ -112,7 +121,7 @@ s_mean_se_band.reflector_mspct <-
       col.name.tag = c("", ".se.m", ".se.p"),
       na.rm = na.rm,
       mult = mult,
-      .fun.name = "Mean and SEM of"
+      .fun.name = "Mean and mean +/- SEM of"
     )
   }
 
@@ -128,7 +137,7 @@ s_mean_se_band.calibration_mspct <-
       col.name.tag = c("", ".se.m", ".se.p"),
       na.rm = na.rm,
       mult = mult,
-      .fun.name = "Mean and SEM of"
+      .fun.name = "Mean and mean +/- SEM of"
     )
   }
 
@@ -143,7 +152,7 @@ s_mean_se_band.cps_mspct <- function(x, na.rm = FALSE, mult = 1, ...) {
     col.name.tag = c("", ".se.m", ".se.p"),
     na.rm = na.rm,
     mult = mult,
-    .fun.name = "Mean and SEM of"
+    .fun.name = "Mean and mean +/- SEM of"
   )
 }
 
@@ -158,7 +167,7 @@ s_mean_se_band.raw_mspct <- function(x, na.rm = FALSE, mult = 1, ...) {
     col.name.tag = c("", ".se.m", ".se.p"),
     na.rm = na.rm,
     mult = mult,
-    .fun.name = "Mean and SEM of"
+    .fun.name = "Mean and mean +/- SEM of"
   )
 }
 
@@ -178,7 +187,7 @@ se.p <- function(x, na.rm = FALSE, mult = 1, ...) {
   if (na.rm) {
     x <- stats::na.omit(x)
   }
-  x + mult * sqrt(stats::var(x) / length(x))
+  mean(x) + mult * sqrt(stats::var(x) / length(x))
 }
 
 # Helper function, not exported
@@ -197,5 +206,5 @@ se.m <- function(x, na.rm = FALSE, mult = 1, ...) {
   if (na.rm) {
     x <- stats::na.omit(x)
   }
-  x - mult * sqrt(stats::var(x) / length(x))
+  mean(x) - mult * sqrt(stats::var(x) / length(x))
 }
