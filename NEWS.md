@@ -11,6 +11,7 @@ editor_options:
 -  Update `summary.generic_spct()` to optionally expand objects containing
 multiple spectra in long form into collections of spectra in advance of creating
 the summary.
+- Support renaming of the `idfactor` with `setIdFactor()`.
 
 # photobiology 0.11.2
 
