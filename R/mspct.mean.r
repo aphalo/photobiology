@@ -47,6 +47,18 @@ s_mean.default <- function(x, trim = 0, na.rm = FALSE, ...) {
 #'
 #' @export
 #'
+s_mean.generic_spct <- function(x, trim = 0, na.rm = FALSE, ...) {
+  if (getMultipleWl(x) > 1) {
+    s_mean(subset2mspct(x), trim = trim, na.rm = na.rm, ...)
+  } else {
+    x
+  }
+}
+
+#' @describeIn s_mean
+#'
+#' @export
+#'
 s_mean.source_mspct <- function(x, trim = 0, na.rm = FALSE, ...) {
   rowwise_source(x, .fun = base::mean, trim = trim, na.rm = na.rm, .fun.name = "Mean of")
 }

@@ -3,6 +3,7 @@
 \name{s_prod}
 \alias{s_prod}
 \alias{s_prod.default}
+\alias{s_prod.generic_spct}
 \alias{s_prod.source_mspct}
 \alias{s_prod.response_mspct}
 \alias{s_prod.filter_mspct}
@@ -15,6 +16,8 @@
 s_prod(x, na.rm, ...)
 
 \method{s_prod}{default}(x, na.rm = FALSE, ...)
+
+\method{s_prod}{generic_spct}(x, na.rm = FALSE, ...)
 
 \method{s_prod}{source_mspct}(x, na.rm = FALSE, ...)
 
@@ -53,6 +56,8 @@ collection returning a spectral object.
 \section{Methods (by class)}{
 \itemize{
 \item \code{s_prod(default)}: 
+
+\item \code{s_prod(generic_spct)}: 
 
 \item \code{s_prod(source_mspct)}: 
 

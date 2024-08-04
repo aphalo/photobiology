@@ -3,6 +3,7 @@
 \name{s_var}
 \alias{s_var}
 \alias{s_var.default}
+\alias{s_var.generic_spct}
 \alias{s_var.filter_mspct}
 \alias{s_var.source_mspct}
 \alias{s_var.response_mspct}
@@ -15,6 +16,8 @@
 s_var(x, na.rm, ...)
 
 \method{s_var}{default}(x, na.rm = FALSE, ...)
+
+\method{s_var}{generic_spct}(x, na.rm = FALSE, ...)
 
 \method{s_var}{filter_mspct}(x, na.rm = FALSE, ...)
 
@@ -57,6 +60,8 @@ wavelength across all the spectra in the collection.
 \section{Methods (by class)}{
 \itemize{
 \item \code{s_var(default)}: 
+
+\item \code{s_var(generic_spct)}: 
 
 \item \code{s_var(filter_mspct)}: 
 

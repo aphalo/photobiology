@@ -3,6 +3,7 @@
 \name{s_sum}
 \alias{s_sum}
 \alias{s_sum.default}
+\alias{s_sum.generic_spct}
 \alias{s_sum.filter_mspct}
 \alias{s_sum.source_mspct}
 \alias{s_sum.response_mspct}
@@ -15,6 +16,8 @@
 s_sum(x, na.rm, ...)
 
 \method{s_sum}{default}(x, na.rm = FALSE, ...)
+
+\method{s_sum}{generic_spct}(x, na.rm = FALSE, ...)
 
 \method{s_sum}{filter_mspct}(x, na.rm = FALSE, ...)
 
@@ -53,6 +56,8 @@ collection returning a spectral object.
 \section{Methods (by class)}{
 \itemize{
 \item \code{s_sum(default)}: 
+
+\item \code{s_sum(generic_spct)}: 
 
 \item \code{s_sum(filter_mspct)}: 
 

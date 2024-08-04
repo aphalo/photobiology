@@ -3,6 +3,7 @@
 \name{s_median}
 \alias{s_median}
 \alias{s_median.default}
+\alias{s_median.generic_spct}
 \alias{s_median.source_mspct}
 \alias{s_median.response_mspct}
 \alias{s_median.filter_mspct}
@@ -15,6 +16,8 @@
 s_median(x, na.rm, ...)
 
 \method{s_median}{default}(x, na.rm = FALSE, ...)
+
+\method{s_median}{generic_spct}(x, na.rm = FALSE, ...)
 
 \method{s_median}{source_mspct}(x, na.rm = FALSE, ...)
 
@@ -52,6 +55,8 @@ collection returning a spectral object.
 \section{Methods (by class)}{
 \itemize{
 \item \code{s_median(default)}: 
+
+\item \code{s_median(generic_spct)}: 
 
 \item \code{s_median(source_mspct)}: 
 

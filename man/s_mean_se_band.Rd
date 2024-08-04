@@ -3,6 +3,7 @@
 \name{s_mean_se_band}
 \alias{s_mean_se_band}
 \alias{s_mean_se_band.default}
+\alias{s_mean_se_band.generic_spct}
 \alias{s_mean_se_band.filter_mspct}
 \alias{s_mean_se_band.source_mspct}
 \alias{s_mean_se_band.response_mspct}
@@ -15,6 +16,8 @@
 s_mean_se_band(x, na.rm, mult, ...)
 
 \method{s_mean_se_band}{default}(x, na.rm = FALSE, mult = 1, ...)
+
+\method{s_mean_se_band}{generic_spct}(x, na.rm = FALSE, mult = 1, ...)
 
 \method{s_mean_se_band}{filter_mspct}(x, na.rm = FALSE, mult = 1, ...)
 
@@ -55,6 +58,8 @@ the collection returning a spectral object.
 \section{Methods (by class)}{
 \itemize{
 \item \code{s_mean_se_band(default)}: 
+
+\item \code{s_mean_se_band(generic_spct)}: 
 
 \item \code{s_mean_se_band(filter_mspct)}: 
 

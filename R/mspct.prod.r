@@ -51,6 +51,18 @@ s_prod.default <- function(x, na.rm = FALSE, ...) {
 #'
 #' @export
 #'
+s_prod.generic_spct <- function(x, na.rm = FALSE, ...) {
+  if (getMultipleWl(x) > 1) {
+    s_prod(subset2mspct(x), na.rm = na.rm, ...)
+  } else {
+    x
+  }
+}
+
+#' @describeIn s_prod
+#'
+#' @export
+#'
 s_prod.source_mspct <- function(x, na.rm = FALSE, ...) {
   warning("A product of irradiance values does not yield response irradiance!!")
   rowwise_source(

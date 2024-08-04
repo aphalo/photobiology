@@ -15,7 +15,13 @@
   ...
 )
 
-\method{summary}{generic_spct}(object, maxsum = 7, digits = max(3, getOption("digits") - 3), ...)
+\method{summary}{generic_spct}(
+  object,
+  maxsum = 7,
+  digits = max(3, getOption("digits") - 3),
+  ...,
+  expand = FALSE
+)
 }
 \arguments{
 \item{object}{An object of one of the spectral classes for which a summary is
@@ -33,11 +39,17 @@ collection of spectra.}
 
 \item{...}{additional arguments affecting the summary produced, ignored in
 current version}
+
+\item{expand}{logical or character One of "none", "collection" or "each"
+indicating that multiple spectra in long form should be converted to a
+collection of spectra in advance of summary, summarized as a collection or
+individually.}
 }
 \value{
 A summary object matching the class of \code{object}.
 
-A summary object matching the class of \code{object}.
+A summary object matching the class of \code{object}, a list of
+  such objects or a summary object for a matching collection of spectra.
 }
 \description{
 Method of generic function summary for objects of spectral collection
@@ -46,8 +58,14 @@ classes.
 Methods of generic function summary for objects of spectral classes.
 }
 \examples{
-summary(sun.spct)
+summary(sun_evening.mspct)
+summary(sun_evening.mspct, which.metadata = "when.measured")
+summary(two_filters.mspct, which.metadata = "what.measured")
 
 summary(sun.spct)
+summary(two_filters.spct)
+summary(two_filters.spct, expand = TRUE)
+summary(two_filters.spct, expand = "each")
+summary(two_filters.spct, expand = "collection")
 
 }

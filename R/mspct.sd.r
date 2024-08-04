@@ -47,6 +47,14 @@ s_sd.default <- function(x, na.rm = FALSE, ...) {
 #'
 #' @export
 #'
+s_sd.generic_spct <- function(x, na.rm = FALSE, ...) {
+  s_sd(subset2mspct(x), na.rm = na.rm, ...)
+}
+
+#' @describeIn s_sd
+#'
+#' @export
+#'
 s_sd.filter_mspct <- function(x, na.rm = FALSE, ...) {
   rowwise_filter(
     x = x,
