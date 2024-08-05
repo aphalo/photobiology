@@ -4,6 +4,11 @@ editor_options:
     wrap: 72
 ---
 
+# photobiology 0.12.0
+
+- Move sun- and atmosphere related calculations to new package 
+'photobiologySunCalc'.
+
 # photobiology 0.11.3
 
 -  Fix bug that prevented use of `s_mean_se_band()`.

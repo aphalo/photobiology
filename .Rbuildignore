@@ -13,5 +13,4 @@
 ^README\.Rmd$
 ^.*\.sh$
 ^\.github$
-^CITATION\.cff$
 ^revdep
