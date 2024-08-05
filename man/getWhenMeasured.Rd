@@ -15,7 +15,7 @@ when_measured(x, ...)
 
 \method{getWhenMeasured}{default}(x, ...)
 
-\method{getWhenMeasured}{generic_spct}(x, ...)
+\method{getWhenMeasured}{generic_spct}(x, as.df = FALSE, ...)
 
 \method{getWhenMeasured}{summary_generic_spct}(x, ...)
 
@@ -25,6 +25,9 @@ when_measured(x, ...)
 \item{x}{a generic_spct object}
 
 \item{...}{Allows use of additional arguments in methods for other classes.}
+
+\item{as.df}{logical If TRUE return a data frame instead of a list, when
+the value stored in the attribute is a list.}
 
 \item{idx}{character Name of the column with the names of the members of the
 collection of spectra.}
