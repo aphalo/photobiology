@@ -1,18 +1,20 @@
-#' @details Package \sQuote{photobiology} is at the core of a suite of R packages
-#'   supporting computations and plotting relevant to photobiology (described at
-#'   \url{https://www.r4photobiology.info/}). Package 'photobiology' has its
-#'   main focus in the characterization of the light environment, the
-#'   description of optical properties of objects and substances and description
-#'   of light responses of organisms and devices used to measure light. The
-#'   facilities for spectral data storage and manipulations are widely useful in
-#'   photobiology, chemistry, geophysics, radiation climatology and remote
-#'   sensing. Astronomical computations for the sun are also implemented. The
-#'   design of object classes for spectral data supports reproducibility by
-#'   facilitating the consistent use of units and physical quantities and
-#'   consistent embedding of metadata. Data are expressed throughout using SI
-#'   base units, except for wavelengths which are consistently expressed in
-#'   nanometres [\eqn{nm}]. Please see the vignette \emph{0: The R for
-#'   Photobiology Suite} for a description of the suite.
+#' @details Package \sQuote{photobiology} is at the core of a suite of R
+#'   packages supporting computations and plotting relevant to photobiology
+#'   (described at \url{https://www.r4photobiology.info/}). Package
+#'   'photobiology' has its main focus in the characterization of the light
+#'   environment, the description of optical properties of objects and
+#'   substances and description of light responses of organisms and devices used
+#'   to measure light. The facilities for spectral data storage and
+#'   manipulations are widely useful in photobiology, chemistry, geophysics,
+#'   radiation climatology and remote sensing. Astronomical computations for the
+#'   sun, implemented in package \sQuote{photobiologySunCalc} are also made
+#'   available for backwards compatibility. The design of object classes for
+#'   spectral data supports reproducibility by facilitating the consistent use
+#'   of units and physical quantities and consistent embedding of metadata. Data
+#'   are expressed throughout using SI base units, except for wavelengths which
+#'   are consistently expressed in nanometres [\eqn{nm}]. Please see the
+#'   vignette \emph{0: The R for Photobiology Suite} for a description of the
+#'   suite.
 #'
 #' @references
 #' Aphalo, P. J., Albert, A., Björn, L. O., McLeod, A. R., Robson, T. M.,
