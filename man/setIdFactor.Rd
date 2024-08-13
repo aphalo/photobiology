@@ -7,7 +7,7 @@
 setIdFactor(x, idfactor)
 }
 \arguments{
-\item{x}{a generic_spct object}
+\item{x}{a generic_spct object.}
 
 \item{idfactor}{character The name of a factor identifying multiple
 spectra stored longitudinally.}
@@ -17,16 +17,18 @@ x
 }
 \description{
 Function to set, rename or unset by reference the "idfactor" attribute of an
-existing generic_spct or an object of a class derived from generic_spct.
+existing object of class \code{generic_spct} or an object of a class derived
+from \code{generic_spct}.
 }
 \details{
-If the attribute \code{idfactor} is already set, and a variable
-  with name \code{idfactor} does not exist in \code{x}, the currently set
-  variable is renamed and the attribute value updated. If a variable named
-  as the argument passed to \code{idfactor} exists in \code{x}, it will be
-  set as id by storing this name in the attribute. If the value passed to
-  \code{idfactor} is \code{NULL} the attribute will be unset. If the
-  attribute is not already set and a variable with a name matching the
+If the attribute \code{idfactor} is already set, and a variable with
+  name equal to the value passed as argument to \code{idfactor} does not
+  exist in \code{x}, the currently set variable is renamed and the attribute
+  value updated. If a variable named as the argument passed to
+  \code{idfactor} exists in \code{x}, it will be set as id by storing this
+  name in the attribute. If the value passed as argument to \code{idfactor}
+  is \code{NULL} the attribute will be unset. If the attribute is not already
+  set and there is no member variable in \code{x} with a name matching the
   argument passed to \code{idfactor}, an error is triggered.
 }
 \note{
@@ -36,9 +38,18 @@ This function alters x itself by reference and in addition
 }
 \examples{
 my.spct <- sun_evening.spct
+
+# inspecting
 getIdFactor(my.spct)
 colnames(my.spct)
+
+# renaming
 setIdFactor(my.spct, "time")
+getIdFactor(my.spct)
+colnames(my.spct)
+
+# removing
+setIdFactor(my.spct, NULL)
 getIdFactor(my.spct)
 colnames(my.spct)
 
