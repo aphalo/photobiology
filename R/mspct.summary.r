@@ -12,11 +12,15 @@
 #' @param idx character Name of the column with the names of the members of the
 #' collection of spectra.
 #' @param which.metadata character vector Names of attributes to retrieve, or
-#'   "none" or "all".
+#'   "none" or "all". Obeyed if \code{expand = FALSE}, its default.
+#' @param expand character One of "none" or "each", indicating whether members
+#'   of the collection are to be summarised individually or not.
 #' @param ... additional arguments affecting the summary produced, ignored in
 #'   current version
 #'
-#' @return A summary object matching the class of \code{object}.
+#' @return A summary object matching the class of \code{object} or a list of
+#'   summary objects, each matching the class of the corresponding member of
+#'   of \code{object}.
 #'
 #' @export
 #'
@@ -28,13 +32,27 @@
 #' summary(sun_evening.mspct)
 #' summary(sun_evening.mspct, which.metadata = "when.measured")
 #' summary(two_filters.mspct, which.metadata = "what.measured")
+#' summary(sun_evening.mspct, expand = "each")
 #'
 summary.generic_mspct <- function(object,
                                   maxsum = 7,
                                   digits = max(3, getOption("digits") - 3),
                                   idx = "spct.idx",
                                   which.metadata = NULL,
+                                  expand = "none",
                                   ...) {
+
+  if (expand == "each") {
+    return(lapply(subset2mspct(object), #
+                  FUN = summary,
+                  maxsum = maxsum,
+                  digits = digits,
+                  expand = "none", # avoid endless recursion
+                  ...))
+  }
+
+  stopifnot(expand %in% c("none", "collection"))
+
   if (is.null(which.metadata)) {
     which.metadata <- switch(class(object)[1],
                              filter_mspct = c("multiple.wl", "Tfr.type"),

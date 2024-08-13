@@ -419,6 +419,7 @@ navbar:
     intro:
       icon: fas fa-home fa-lg
       href: index.html
+      aria-label: Home
     reference:
       text: Reference
       href: reference/index.html
@@ -443,3 +444,5 @@ navbar:
         href: https://doi.org/10.31885/9789521083631
       - text: Photobiological Sciences Online
         href: http://photobiology.info/
+      - text: FOSS for Spectroscopy
+        href: https://bryanhanson.github.io/FOSS4Spectroscopy/

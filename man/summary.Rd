@@ -12,6 +12,7 @@
   digits = max(3, getOption("digits") - 3),
   idx = "spct.idx",
   which.metadata = NULL,
+  expand = "none",
   ...
 )
 
@@ -20,7 +21,7 @@
   maxsum = 7,
   digits = max(3, getOption("digits") - 3),
   ...,
-  expand = FALSE
+  expand = "none"
 )
 }
 \arguments{
@@ -35,18 +36,20 @@ desired}
 collection of spectra.}
 
 \item{which.metadata}{character vector Names of attributes to retrieve, or
-"none" or "all".}
+"none" or "all". Obeyed if \code{expand = FALSE}, its default.}
 
-\item{...}{additional arguments affecting the summary produced, ignored in
-current version}
-
-\item{expand}{logical or character One of "none", "collection" or "each"
+\item{expand}{character One of "none", "collection" or "each"
 indicating that multiple spectra in long form should be converted to a
 collection of spectra in advance of summary, summarized as a collection or
 individually.}
+
+\item{...}{additional arguments affecting the summary produced, ignored in
+current version}
 }
 \value{
-A summary object matching the class of \code{object}.
+A summary object matching the class of \code{object} or a list of
+  summary objects, each matching the class of the corresponding member of
+  of \code{object}.
 
 A summary object matching the class of \code{object}, a list of
   such objects or a summary object for a matching collection of spectra.
@@ -61,10 +64,13 @@ Methods of generic function summary for objects of spectral classes.
 summary(sun_evening.mspct)
 summary(sun_evening.mspct, which.metadata = "when.measured")
 summary(two_filters.mspct, which.metadata = "what.measured")
+summary(sun_evening.mspct, expand = "each")
 
 summary(sun.spct)
 summary(two_filters.spct)
-summary(two_filters.spct, expand = TRUE)
+summary(sun_evening.spct)
+summary(two_filters.spct, expand = "none")
+summary(two_filters.spct, expand = "auto")
 summary(two_filters.spct, expand = "each")
 summary(two_filters.spct, expand = "collection")
 

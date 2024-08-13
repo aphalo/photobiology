@@ -13,6 +13,8 @@ for class `generic_spct`.
 -  Update `summary.generic_spct()` to optionally expand objects containing
 multiple spectra in long form into collections of spectra in advance of creating
 the summary.
+-  Update `summary.generic_mspct()` to optionally expand member objects and
+call `summary.generic_spct()` on each of them.
 - Support renaming of the `idfactor` with `setIdFactor()`.
 
 # photobiology 0.11.2
