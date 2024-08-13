@@ -41,6 +41,9 @@ getMultipleWl(my.spct)
 multiple_wl(my.spct) <- 1L # must be a valid value or NULL!
 multiple_wl(my.spct)
 
+multiple_wl(my.spct) <- NULL # must be a valid value or NULL!
+multiple_wl(my.spct)
+
 }
 \seealso{
 Other multiple.wl attribute functions: 
