@@ -1,13 +1,15 @@
 # print -------------------------------------------------------------------
 
-#' Print a spectral object
+#' Print spectral objects
 #'
-#' Print method for objects of spectral classes.
+#' Print methods for objects of spectral classes, including collections of
+#' spectra.
 #'
-#' @param x An object of one of the summary classes for spectra
-#' @param ... not used in current version
+#' @param x An object of one of the summary classes for spectra.
+#' @param ... not used in current version.
 #' @param n	Number of rows to show. If NULL, the default, will print all rows if
-#'   less than option dplyr.print_max. Otherwise, will print dplyr.print_min
+#'   less than option \code{dplyr.print_max}. Otherwise, will print
+#'   \code{dplyr.print_min} rows.
 #' @param width	Width of text output to generate. This defaults to NULL, which
 #'   means use getOption("width") and only display the columns that fit on one
 #'   screen. You can also set option(dplyr.width = Inf) to override this default
@@ -245,8 +247,10 @@ summary_spct_classes <- function() {
   c("summary_raw_spct", "summary_cps_spct",
     "summary_filter_spct", "summary_reflector_spct",
     "summary_source_spct", "summary_object_spct",
-    "summary_response_spct", "summary_chroma_spct", "summary_generic_spct")
+    "summary_response_spct", "summary_chroma_spct",
+    "summary_solute_spct", "summary_generic_spct")
 }
+
 # is functions for spct summary classes --------------------------------------------
 
 #' Query class of spectrum summary objects
@@ -706,12 +710,40 @@ print.summary_generic_mspct <- function(x, width = NULL, ..., n = NULL) {
   print(x[["summary"]], width = width, ..., n = n)
 }
 
-
-# Print attributes ---------------------------------------------------------
+# Print properties ---------------------------------------------------------
 #
-# These methods are called when printing spectra and their summaries
+# These methods are called when printing spectra and their summaries.
 
+#' Print methods for metadata records
+#'
+#' Print methods for objects of classes used to store different meta data
+#' properties in the classes for different types of spectra.
+#'
+#' @param x An object of one of the summary classes for spectra.
+#' @param ... not used in current version.
+#'
+#' @details These methods print an abbreviated representaion of objects used
+#' to store metadata in attributes. They are similar to \emph{records} and
+#' formatted printing is useful both on its own and in the print methods for
+#' spectra and their summaries.
+#'
 #' @export
+#'
+#' @examples
+#'
+#' print(getInstrDesc(sun_evening.spct))
+#' str(getInstrDesc(sun_evening.spct))
+#'
+#' print(getInstrSettings(sun_evening.spct))
+#' str(getInstrSettings(sun_evening.spct))
+#'
+#' print(filter_properties(polyester.spct))
+#' str(filter_properties(polyester.spct))
+#'
+#' print(solute_properties(phenylalanine.spct))
+#' str(solute_properties(phenylalanine.spct))
+#'
+#' @name print.metadata
 #'
 print.instr_desc <- function(x, ...) {
   if (is.null(x[["entrance.optics"]])) {
@@ -730,6 +762,8 @@ print.instr_desc <- function(x, ...) {
   invisible(x)
 }
 
+#' @rdname print.metadata
+#'
 #' @export
 #'
 print.instr_settings <- function(x, ...) {
@@ -745,6 +779,8 @@ print.instr_settings <- function(x, ...) {
   invisible(x)
 }
 
+#' @rdname print.metadata
+#'
 #' @export
 #'
 print.filter_properties <- function(x, ...) {
@@ -759,6 +795,8 @@ print.filter_properties <- function(x, ...) {
   invisible(x)
 }
 
+#' @rdname print.metadata
+#'
 #' @export
 #'
 print.solute_properties <- function(x, ...) {
