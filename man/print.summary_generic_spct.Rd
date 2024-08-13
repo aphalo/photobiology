@@ -2,19 +2,38 @@
 % Please edit documentation in R/spct.summaries.r
 \name{print.summary_generic_spct}
 \alias{print.summary_generic_spct}
+\alias{print.summary_generic_mspct}
 \title{Print spectral summary}
 \usage{
 \method{print}{summary_generic_spct}(x, ...)
+
+\method{print}{summary_generic_mspct}(x, width = NULL, ..., n = NULL)
 }
 \arguments{
 \item{x}{An object of one of the summary classes for spectra}
 
-\item{...}{not used in current version}
+\item{...}{named arguments passed to the \code{print()} method for class
+\code{"tbl_df"}.}
+
+\item{width}{integer Width of text output to generate. This defaults to NULL,
+which means use the width option.}
+
+\item{n}{integer Number of member spectra for which information is printed.}
 }
 \description{
 A function to nicely print objects of classes "summary...spct".
 }
+\section{Functions}{
+\itemize{
+\item \code{print(summary_generic_mspct)}: 
+
+}}
 \examples{
 print(summary(sun.spct))
 
+print(summary(sun_evening.mspct))
+
+}
+\seealso{
+\code{\link[tibble]{formatting}}
 }

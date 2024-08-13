@@ -17,16 +17,28 @@
 #'
 #' @export
 #'
-#' @note This is simply a wrapper on the print method for tibbles, with
-#'   additional information in the header. Curently, \code{width} applies only
-#'   to the table of data.
+#' @details This is simply a wrapper on the print method for tibbles, with
+#' additional information in the header. Currently, \code{width} applies only to
+#' the table of data.
 #'
-#' @name print
+#' Objects are printed as is, ignoring the current settings of R options
+#' \code{photobiology.radiation.unit} and \code{photobiology.filter.qty}.
+#'
+#' @name print.generic_spct
 #'
 #' @examples
 #'
 #' print(sun.spct)
 #' print(sun.spct, n = 5)
+#'
+#' print(q2e(sun.spct, action = "replace"))
+#' print(e2q(sun.spct, action = "replace"))
+#'
+#' print(polyester.spct)
+#' print(any2A(polyester.spct))
+#' print(any2Afr(polyester.spct))
+#'
+#' print(two_filters.spct)
 #'
 print.generic_spct <- function(x, ..., n = NULL, width = NULL)
 {
@@ -193,7 +205,7 @@ print.generic_spct <- function(x, ..., n = NULL, width = NULL)
 
 # print method ------------------------------------------------------------
 
-#' @describeIn print
+#' @describeIn print.generic_spct
 #'
 #' @param n.members	numeric Number of members of the collection to print.
 #'
@@ -313,37 +325,72 @@ is.any_summary_spct <- function(x) {
 
 # summary -----------------------------------------------------------------
 
-#' Summary of a spectral object
+#' Summary of one or more spectra
 #'
-#' Methods of generic function summary for objects of spectral classes.
+#' Methods of generic function summary for objects of spectral classes and
+#' of classes for collections of spectra.
 #'
 #' @param object An object of one of the spectral classes for which a summary is
-#'   desired
+#'   desired.
 #' @param maxsum integer Indicates how many levels should be shown for factors.
 #' @param digits integer Used for number formatting with \code{\link{format}()}.
 #' @param ... additional arguments affecting the summary produced, ignored in
-#'   current version
-#' @param expand character One of "none", "collection" or "each"
-#'   indicating that multiple spectra in long form should be converted to a
-#'   collection of spectra in advance of summary, summarized as a collection or
-#'   individually.
+#'   current version.
+#' @param expand character One of \code{"none"}, \code{"collection"},
+#'   \code{"each"} or \code{"auto"} indicating if multiple spectra in long form
+#'   should be summarized as a collection or individually.
 #'
-#' @return A summary object matching the class of \code{object}, a list of
+#' @details
+#' Objects are summarized as is, ignoring the current settings of R options
+#' \code{photobiology.radiation.unit} and \code{photobiology.filter.qty}. Unlike
+#' R's summary, these methods can optionally summarize each spectrum stored in
+#' long form returning a list of summaries. Although this is frequently the most
+#' informative approach, the default remains similar to \code{summary()} method
+#' from R: to summarize \code{object} as a whole. Alternatively, multiple
+#' spectra stored in long form, can optionally be summarized also as a
+#' collection of spectra. Passing \code{"auto"} in the call, is equivalent to
+#' passing \code{"each"} or \code{"collection"} depending on the number of
+#' spectra contained in the object.
+#'
+#' @return A summary object matching the class of \code{object}, or a list of
 #'   such objects or a summary object for a matching collection of spectra.
+#'   Metadata stored in attributes are copied to identical attributes in the
+#'   returned summary objects except when \code{object} is a collection
+#'   of spectra or if \code{expand = "collection"} is passed in the call. In
+#'   this two cases, a condensed summary is returned as a data frame and
+#'   attributes from each member can be copied to variables in it.
+#'
+#' @seealso \code{\link[photobiology]{print.summary_generic_spct}}
 #'
 #' @export
+#'
 #' @method summary generic_spct
 #'
-#' @name summary
+#' @name summary.generic_spct
 #'
 #' @examples
 #' summary(sun.spct)
+#' class(summary(sun.spct))
+#'
 #' summary(two_filters.spct)
+#' class(summary(two_filters.spct))
+#'
 #' summary(sun_evening.spct)
 #' summary(two_filters.spct, expand = "none")
-#' summary(two_filters.spct, expand = "auto")
 #' summary(two_filters.spct, expand = "each")
 #' summary(two_filters.spct, expand = "collection")
+#' summary(two_filters.spct, expand = "auto") # <= 4 spectra
+#' summary(sun_evening.spct, expand = "auto") # > 4 spectra
+#'
+#' where_measured(sun.spct)
+#' where_measured(summary(sun.spct))
+#' what_measured(summary(two_filters.spct))
+#' what_measured(summary(two_filters.spct, expand = "each")[[1]])
+#'
+#' summary(sun_evening.mspct)
+#' summary(sun_evening.mspct, which.metadata = "when.measured")
+#' summary(two_filters.mspct, which.metadata = "what.measured")
+#' summary(two_filters.mspct, expand = "each")
 #'
 summary.generic_spct <- function(object,
                                  maxsum = 7,
@@ -352,7 +399,7 @@ summary.generic_spct <- function(object,
                                  expand = "none") {
 
   if (expand == "auto") {
-    if (getMultipleWl(object) > 1 && getMultipleWl(object) <= 10) {
+    if (getMultipleWl(object) > 1 && getMultipleWl(object) <= 4L) {
       expand <- "each"
     } else {
       expand <- "collection"
@@ -398,7 +445,12 @@ summary.generic_spct <- function(object,
 #' @param x An object of one of the summary classes for spectra
 #' @param ... not used in current version
 #'
+#' @method print summary_generic_spct
+#'
+#' @name print.summary_generic_spct
+#'
 #' @export
+#'
 #' @examples
 #' print(summary(sun.spct))
 #'
@@ -557,7 +609,107 @@ print.summary_generic_spct <- function(x, ...) {
   invisible(x)
 }
 
-# Instrument data ---------------------------------------------------------
+# summary -----------------------------------------------------------------
+
+#' @describeIn summary.generic_spct
+#'
+#' @param idx character Name of the column with the names of the members of the
+#' collection of spectra.
+#' @param which.metadata character vector Names of attributes to retrieve, or
+#'   "none" or "all". Obeyed if \code{expand = FALSE}, its default.
+#'
+#' @export
+#'
+#' @method summary generic_mspct
+#'
+summary.generic_mspct <- function(object,
+                                  maxsum = 7,
+                                  digits = max(3, getOption("digits") - 3),
+                                  idx = "spct.idx",
+                                  which.metadata = NULL,
+                                  expand = "none",
+                                  ...) {
+
+  if (expand == "each") {
+    return(lapply(subset2mspct(object), #
+                  FUN = summary,
+                  maxsum = maxsum,
+                  digits = digits,
+                  expand = "none", # avoid endless recursion
+                  ...))
+  }
+
+  stopifnot(expand %in% c("none", "collection"))
+
+  if (is.null(which.metadata)) {
+    which.metadata <- switch(class(object)[1],
+                             filter_mspct = c("multiple.wl", "Tfr.type"),
+                             reflector_mspct = c("multiple.wl", "Rfr.type"),
+                             object_mspct = c("multiple.wl", "Tfr.type", "Rfr.type"),
+                             source_mspct = c("multiple.wl", "time.unit"),
+                             generic_mspct = "multiple.wl",
+                             "multiple.wl")
+  }
+  object.name <- substitute(object)
+  z <- list()
+  z[["orig.name"]] <- if (is.name(object.name)) as.character(object.name) else "anonymous"
+  z[["orig.class"]] <- class(object)[1]
+  z[["orig.dim_desc"]] <- dplyr::dim_desc(object)
+
+  summary.tb <- tibble::tibble(.rows = length(object))
+  summary.tb[[idx]] <- names(object)
+  summary.tb[["class"]] <- sapply(object, function(x) {class(x)[1]})
+  summary.tb[["dim"]] <- sapply(object, dplyr::dim_desc)
+  summary.tb[["w.length.min"]] <- sapply(object, wl_min)
+  summary.tb[["w.length.max"]] <- sapply(object, wl_max)
+  summary.tb[["colnames"]] <- unname(lapply(object, colnames))
+
+  if (length(which.metadata) != 1L || which.metadata != "none") {
+    if (length(which.metadata) == 1L && which.metadata == "all") {
+      which.metadata <- c("-", "names", "row.names", "spct.tags", "spct.version", "comment")
+    }
+    metadata.tb <- msdply(object, spct_attr2tb, which = which.metadata, idx = idx)
+    names(metadata.tb) <- gsub("spct_attr2tb_", "", names(metadata.tb))
+    summary.tb <- dplyr::left_join(summary.tb, metadata.tb, by = idx)
+  }
+
+  z[["summary"]] <- summary.tb
+
+  class(z) <- c(paste("summary_",
+                      grep("_mspct$", class(object), value = TRUE),
+                      sep = ""), class(z))
+
+  comment(z) <- paste("Comment from '", z[["object.name"]], "'.\n",
+                      comment(object), sep = "")
+  z
+}
+
+#' @describeIn print.summary_generic_spct
+#'
+#' @param width integer Width of text output to generate. This defaults to NULL,
+#'   which means use the width option.
+#' @param ... named arguments passed to the \code{print()} method for class
+#'   \code{"tbl_df"}.
+#' @param n integer Number of member spectra for which information is printed.
+#'
+#' @seealso \code{\link[tibble]{formatting}}
+#'
+#' @method print summary_generic_mspct
+#'
+#' @export
+#'
+#' @examples
+#' print(summary(sun_evening.mspct))
+#'
+print.summary_generic_mspct <- function(x, width = NULL, ..., n = NULL) {
+  cat("Summary of ", x[["orig.class"]], " ", x[["orig.dim_desc"]], " object: ", x[["orig.name"]] ,"\n", sep = "")
+  print(x[["summary"]], width = width, ..., n = n)
+}
+
+
+# Print attributes ---------------------------------------------------------
+#
+# These methods are called when printing spectra and their summaries
 
 #' @export
 #'

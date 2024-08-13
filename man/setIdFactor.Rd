@@ -40,6 +40,8 @@ This function alters x itself by reference and in addition
 my.spct <- sun_evening.spct
 
 # inspecting
+getIdFactor(sun.spct) # no idfactor set
+
 getIdFactor(my.spct)
 colnames(my.spct)
 
