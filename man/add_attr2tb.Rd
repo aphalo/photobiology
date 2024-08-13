@@ -16,6 +16,7 @@
 \alias{instr_settings2tb}
 \alias{BSWF_used2tb}
 \alias{filter_properties2tb}
+\alias{solute_properties2tb}
 \alias{Tfr_type2tb}
 \alias{Rfr_type2tb}
 \alias{time_unit2tb}
@@ -73,6 +74,13 @@ filter_properties2tb(
   idx = "spct.idx"
 )
 
+solute_properties2tb(
+  mspct,
+  tb = NULL,
+  col.names = "solute.properties",
+  idx = "spct.idx"
+)
+
 Tfr_type2tb(mspct, tb = NULL, col.names = "Tfr.type", idx = "spct.idx")
 
 Rfr_type2tb(mspct, tb = NULL, col.names = "Rfr.type", idx = "spct.idx")
@@ -121,7 +129,8 @@ The attributes are copied to a column in a tibble or data frame. If
   \code{"where.measured"}, \code{"when.measured"}, \code{"what.measured"},
   \code{"how.measured"}, \code{"comment"}, \code{"normalised"},
   \code{"normalized"}, \code{"scaled"}, \code{"bswf.used"},
-  \code{"instr.desc"}, \code{"instr.settings"}, \code{"filter.properties"},
+  \code{"instr.desc"}, \code{"instr.settings"},
+  \code{solute.properties}, \code{"filter.properties"},
   \code{"Tfr.type"}, \code{"Rfr.type"}, \code{"time.unit"}.
 }
 \note{

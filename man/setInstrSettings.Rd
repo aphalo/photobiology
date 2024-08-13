@@ -2,14 +2,17 @@
 % Please edit documentation in R/spct.metadata.r
 \name{setInstrSettings}
 \alias{setInstrSettings}
+\alias{instr_settings<-}
 \title{Set the "instr.settings" attribute}
 \usage{
 setInstrSettings(x, instr.settings)
+
+instr_settings(x) <- value
 }
 \arguments{
 \item{x}{a generic_spct object}
 
-\item{instr.settings}{a list}
+\item{instr.settings, value}{a list}
 }
 \value{
 x

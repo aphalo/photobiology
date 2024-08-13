@@ -2,9 +2,12 @@
 % Please edit documentation in R/spct.metadata.r
 \name{getInstrSettings}
 \alias{getInstrSettings}
+\alias{instr_settings}
 \title{Get the "instr.settings" attribute}
 \usage{
 getInstrSettings(x)
+
+instr_settings(x)
 }
 \arguments{
 \item{x}{a generic_spct object}
