@@ -2,14 +2,17 @@
 % Please edit documentation in R/spct.metadata.r
 \name{setInstrDesc}
 \alias{setInstrDesc}
+\alias{instr_descriptor<-}
 \title{Set the "instr.desc" attribute}
 \usage{
 setInstrDesc(x, instr.desc)
+
+instr_descriptor(x) <- value
 }
 \arguments{
 \item{x}{a generic_spct object}
 
-\item{instr.desc}{a list}
+\item{instr.desc, value}{a list}
 }
 \value{
 x

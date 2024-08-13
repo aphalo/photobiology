@@ -2,9 +2,12 @@
 % Please edit documentation in R/spct.metadata.r
 \name{getInstrDesc}
 \alias{getInstrDesc}
+\alias{instr_descriptor}
 \title{Get the "instr.desc" attribute}
 \usage{
 getInstrDesc(x)
+
+instr_descriptor(x)
 }
 \arguments{
 \item{x}{a generic_spct object}

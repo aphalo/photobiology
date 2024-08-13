@@ -3,19 +3,20 @@
 \name{print.generic_spct}
 \alias{print.generic_spct}
 \alias{print.generic_mspct}
-\title{Print a spectral object}
+\title{Print spectral objects}
 \usage{
 \method{print}{generic_spct}(x, ..., n = NULL, width = NULL)
 
 \method{print}{generic_mspct}(x, ..., n = NULL, width = NULL, n.members = 10)
 }
 \arguments{
-\item{x}{An object of one of the summary classes for spectra}
+\item{x}{An object of one of the summary classes for spectra.}
 
-\item{...}{not used in current version}
+\item{...}{not used in current version.}
 
 \item{n}{Number of rows to show. If NULL, the default, will print all rows if
-less than option dplyr.print_max. Otherwise, will print dplyr.print_min}
+less than option \code{dplyr.print_max}. Otherwise, will print
+\code{dplyr.print_min} rows.}
 
 \item{width}{Width of text output to generate. This defaults to NULL, which
 means use getOption("width") and only display the columns that fit on one
@@ -28,7 +29,8 @@ and always print all columns.}
 Returns \code{x} invisibly.
 }
 \description{
-Print method for objects of spectral classes.
+Print methods for objects of spectral classes, including collections of
+spectra.
 }
 \details{
 This is simply a wrapper on the print method for tibbles, with
