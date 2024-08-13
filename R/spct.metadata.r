@@ -180,12 +180,12 @@ getWhenMeasured.generic_spct <- function(x, as.df = FALSE, ...) {
   when.measured <- attr(x, "when.measured", exact = TRUE)
   if (is.null(when.measured)) {
     when.measured <- lubridate::NA_POSIXct_
-  } else if (lubridate::is.POSIXlt(when.measured)) {
+  } else if (lubridate::is.POSIXct(when.measured)) {
     when.measured <-
       as.POSIXct(when.measured, tz = "UTC", origin = lubridate::origin)
   } else if (as.df && is.list(when.measured)) {
     if (all(sapply(when.measured, lubridate::is.instant))) {
-      when.measured <-
+     when.measured <-
         tibble::tibble(spct.idx = names(when.measured),
                        when.measured = as.POSIXct(unlist(when.measured, use.names = FALSE),
                                                   tz = lubridate::tz(when.measured[[1]])))
