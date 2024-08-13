@@ -2516,6 +2516,9 @@ findMultipleWl <- function(x, same.wls = TRUE) {
 #' multiple_wl(my.spct) <- 1L # must be a valid value or NULL!
 #' multiple_wl(my.spct)
 #'
+#' multiple_wl(my.spct) <- NULL # must be a valid value or NULL!
+#' multiple_wl(my.spct)
+#'
 #' @family multiple.wl attribute functions
 #'
 setMultipleWl <- function(x, multiple.wl = NULL) {
@@ -2664,7 +2667,8 @@ setIdFactor <- function(x, idfactor) {
 
 #' Get the "idfactor" attribute
 #'
-#' Function to read the "idfactor" attribute of an existing generic_spct.
+#' Function to read the \code{idfactor} attribute of an existing
+#' \code{generic_spct}.
 #'
 #' @param x a generic_spct object
 #'
@@ -2674,9 +2678,11 @@ setIdFactor <- function(x, idfactor) {
 #'   \code{NA} is returned.
 #'
 #' @export
+#'
 #' @family idfactor attribute functions
+#'
 #' @examples
-#' getIdFactor(white_led.cps_spct)
+#' id_factor(sun_evening.spct)
 #'
 getIdFactor <- function(x) {
   if (is.generic_spct(x) || is.summary_generic_spct(x)) {
