@@ -2,28 +2,45 @@
 % Please edit documentation in R/spct.classes.r
 \name{setMultipleWl}
 \alias{setMultipleWl}
+\alias{multiple_wl<-}
 \title{Set the "multiple.wl" attribute}
 \usage{
 setMultipleWl(x, multiple.wl = NULL)
+
+multiple_wl(x) <- value
 }
 \arguments{
 \item{x}{a generic_spct object}
 
-\item{multiple.wl}{numeric >= 1 If \code{multiple.wl} is \code{NULL}, the
-default, the attribute is not modified if it is already present and valid,
-and set to 1 otherwise.}
+\item{multiple.wl, value}{numeric >= 1 If \code{multiple.wl = NULL}, the
+default, the value is guessed.}
 }
 \value{
-x
+\code{x}, modified in place by reference. If x is not a
+  \code{generic_spct} or an object of a class derived from
+  \code{generic_spct}, \code{x} is not modified.
 }
 \description{
-Function to set by reference the "multiple.wl" attribute  of an existing
-generic_spct or an object of a class derived from generic_spct.
+Function to set by reference the \code{multiple.wl} attribute  of an existing
+\code{generic_spct} object or an object of a class derived from
+\code{generic_spct}.
 }
-\note{
-This function alters x itself by reference and in addition
-  returns x invisibly. If x is not a generic_spct or an object of a class derived from
-  generic_spct, x is not modified. If \code{multiple.wl}
+\details{
+These methods set the attribute \code{multiple.wl} and if the
+argument of \code{multiple.wl} or \code{value} is \code{NULL}, they call
+\code{\link{findMultipleWl}} to obtain a guess. Pathological cases where
+multiple spectra in long form do not share any wavelength value underestimate
+the number of spectra, and require an explicit numeric argument. Calling
+these methods is very rarely needed in user code.
+}
+\examples{
+my.spct <- sun.spct
+setMultipleWl(my.spct) # default is to search x, here my.spct
+getMultipleWl(my.spct)
+
+multiple_wl(my.spct) <- 1L # must be a valid value or NULL!
+multiple_wl(my.spct)
+
 }
 \seealso{
 Other multiple.wl attribute functions: 

@@ -2,25 +2,28 @@
 % Please edit documentation in R/spct.classes.r
 \name{getMultipleWl}
 \alias{getMultipleWl}
+\alias{multiple_wl}
 \title{Get the "multiple.wl" attribute}
 \usage{
 getMultipleWl(x)
+
+multiple_wl(x)
 }
 \arguments{
 \item{x}{a generic_spct object}
 }
 \value{
-integer
+\code{integer} value, the value of attribute \code{multiple.wl}, or
+  \code{NA} if the attribute is not set, or if \code{x} is not a
+  \code{generic_spct} object or an object of a derived class.
 }
 \description{
-Function to read the "multiple.wl" attribute of an existing generic_spct.
-}
-\note{
-If x is not a \code{generic_spct} or an object of a derived class
-  \code{NA} is returned.
+Function to query the value of the \code{multiple.wl} attribute of an
+existing \code{generic_spct}.
 }
 \examples{
-getMultipleWl(sun.spct)
+multiple_wl(sun.spct)
+multiple_wl(sun_evening.spct)
 
 }
 \seealso{
