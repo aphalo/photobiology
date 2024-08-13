@@ -78,12 +78,17 @@ For some types of input, like functions, the output may be confusing,
 }
 \examples{
 
+head_tail(1:20)
+head_tail(1:20, 12)
+head_tail(1:20, -7)
+head_tail(1:20, -10)
 head_tail(letters)
-head_tail(letters, n = -6L)
-head_tail(freeny.x, n = 10L)
-head_tail(freeny.y)
-
-head_tail(stats::ftable(Titanic))
+head_tail(sun.spct)
+head_tail(sun.spct, 6)
+head_tail(sun.data)
+head_tail(as.matrix(sun.data))
+head_tail(sun_evening.spct)
+head_tail(sun_evening.mspct, 1L)
 
 }
 \seealso{

@@ -52,14 +52,15 @@ reference:
     - mspct_classes
     - rmDerivedMspct
     - shared_member_class
-  - subtitle: Summaries from spectra
+  - subtitle: Summaries and print methods for spectra
     desc: Methods for summarizing spectral data.
     contents:
-    - summary
     - is.summary_generic_spct
-    - print
-    - print.summary_generic_spct
     - head_tail
+    - print.generic_spct
+    - print.summary_generic_spct
+    - print.metadata
+    - summary.generic_spct
     - summary_spct_classes
   - subtitle: Summaries from collections of spectra
     desc: Methods for summarizing data across members of collections spectra.
