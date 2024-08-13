@@ -10,8 +10,19 @@ reference:
     - '`photobiology-package`'
 
   - title: Radiation
-  - subtitle: Spectra
-    desc: Constructor and query methods for objects used to store spectral data.
+    desc: Classes, methods and objects for storing, manipulating and describing spectral data.
+  - subtitle: Waveband and spectral weighting functions
+    desc: Constructors and other methods for waveband objects used to store descriptions of wavelength ranges and spectral weighting functions.
+    contents:
+    - waveband
+    - is.waveband
+    - split_bands
+    - wb2spct
+    - wb2rect_spct
+    - wb2tagged_spct
+    - print.waveband
+  - subtitle: Individual spectra
+    desc: Constructors and query methods for objects used to store spectral data.
     contents:
     - source_spct
     - is.generic_spct
@@ -52,8 +63,8 @@ reference:
     - mspct_classes
     - rmDerivedMspct
     - shared_member_class
-  - subtitle: Summaries and print methods for spectra
-    desc: Methods for summarizing spectral data.
+  - subtitle: summary() and print() methods for spectra
+    desc: Specializations and variants of R's generic methods for spectral data and accompanying metadata records.
     contents:
     - is.summary_generic_spct
     - head_tail
@@ -62,8 +73,50 @@ reference:
     - print.metadata
     - summary.generic_spct
     - summary_spct_classes
-  - subtitle: Summaries from collections of spectra
-    desc: Methods for summarizing data across members of collections spectra.
+  - subtitle: Summary quantities from individual spectra, related to spectral values
+    desc: Methods for the computation of non-spectral derived quantities from spectra. Each spectrum is described by one or up to a few scalar values resulting from integration or averaging of spectral values over wavelengths, or other properties.
+    contents:
+    - irrad
+    - e_irrad
+    - q_irrad
+    - fluence
+    - e_fluence
+    - q_fluence
+    - illuminance
+    - response
+    - e_response
+    - q_response
+    - absorbance
+    - absorptance
+    - transmittance
+    - reflectance
+    - average_spct
+    - integrate_spct
+    - color_of
+    - rgb_spct
+    - e_ratio
+    - q_ratio
+    - eq_ratio
+    - qe_ratio
+    - e_fraction
+    - q_fraction
+    - Tfr_ratio
+    - Tfr_fraction
+    - Tfr_normdiff
+    - Rfr_ratio
+    - Rfr_fraction
+    - Rfr_normdiff
+  - subtitle: Summary quantities from individual spectra and wavebands, related to wavelength
+    desc: Methods for querying about the wavelength values of spectra and wavebands. Each spectrum or wavebdand is described by one or two scalar values.
+    contents:
+    - min
+    - max
+    - range
+    - expanse
+    - midpoint
+    - stepsize
+  - subtitle: Statistical summaries from groups of spectra
+    desc: Methods that compute statistical summaries of spectral data, treating individual spectra as replicates or sampled members from a population of spectra. A summary spectrum or fewer spectra than input are returned.
     contents:
     - compare_spct
     - s_sum
@@ -77,16 +130,6 @@ reference:
     - s_mean_se
     - s_mean_se_band
     - pull_sample
-  - subtitle: Wavebands
-    desc: Methods for waveband objects used to store descriptions of wavelength ranges and spectral weighting functions.
-    contents:
-    - waveband
-    - is.waveband
-    - split_bands
-    - wb2spct
-    - wb2rect_spct
-    - wb2tagged_spct
-    - print.waveband
   - subtitle: Metadata attributes
     desc: Methods for setting and querying metadata from spectral objects.
     contents:
@@ -140,45 +183,6 @@ reference:
     - add_attr2tb
     - spct_attr2tb
     - spct_metadata
-  - subtitle: Summary quantities
-    desc: Methods for the computation of physical summary quantities from spectra.
-    contents:
-    - irrad
-    - e_irrad
-    - q_irrad
-    - fluence
-    - e_fluence
-    - q_fluence
-    - illuminance
-    - response
-    - e_response
-    - q_response
-    - absorbance
-    - absorptance
-    - transmittance
-    - reflectance
-    - average_spct
-    - integrate_spct
-    - color_of
-    - rgb_spct
-    - e_ratio
-    - q_ratio
-    - eq_ratio
-    - qe_ratio
-    - e_fraction
-    - q_fraction
-    - Tfr_ratio
-    - Tfr_fraction
-    - Tfr_normdiff
-    - Rfr_ratio
-    - Rfr_fraction
-    - Rfr_normdiff
-    - min
-    - max
-    - range
-    - expanse
-    - midpoint
-    - stepsize
   - subtitle: Spectral features
     desc: Methods for detection of specific features in spectra.
     contents:
@@ -186,7 +190,7 @@ reference:
     - valleys
     - wls_at_target
     - spikes
-  - subtitle: Transformations, radiation-related
+  - subtitle: Transformations and conversions, related to spectral values
     desc: Non-summary methods for transforming or modifying the radiation-related quantity of spectral data objects.
     contents:
     - clean
@@ -209,7 +213,7 @@ reference:
     - untag
     - cps2irrad
     - smooth_spct
-  - subtitle: Transformations, wavelength-related
+  - subtitle: Transformations, related to wavelength
     desc: Non-summary methods for transforming or modifying the wavelengths of spectral data objects.
     contents:
     - insert_hinges
@@ -236,13 +240,6 @@ reference:
     - MathFun
     - sign
     - round
-  - subtitle: Options
-    desc: Convenience functions for setting R options recognized by functions in the 'r4photobiology' suite of R packages.
-    contents:
-    - using_Tfr
-    - energy_as_default
-    - wb_trim_as_default
-    - verbose_as_default
   - subtitle: Extract, replace and combine
     desc: Functions and operators, both specializations of R's ones and new ones specific to spectra and collections of spectra.
     contents:
@@ -260,6 +257,13 @@ reference:
     contents:
     - msmsply
     - convolve_each
+  - subtitle: Options
+    desc: Convenience functions for setting R options recognized by functions in the 'r4photobiology' suite of R packages.
+    contents:
+    - using_Tfr
+    - energy_as_default
+    - wb_trim_as_default
+    - verbose_as_default
 
   - title: Astronomy
     desc: Astronomical computations of interest in photobiology and meteorology.
