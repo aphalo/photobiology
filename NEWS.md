@@ -6,8 +6,12 @@ editor_options:
 
 # photobiology 0.12.0
 
-- Move sun- and atmosphere related calculations to new package 
-'photobiologySunCalc'.
+- Move sun- and atmosphere related calculations to new package
+'photobiologySunCalc', and depend `'photobiology' on this new package. If the
+moved functions and objects have been called giving an explicit namespace using
+the colon (`::`) notation, `photobiology::` will need to be replaced by
+`photobiologySuncalc::`. This code-breaking change is more likely to affect
+packages than user scripts.
 
 # photobiology 0.11.3
 
