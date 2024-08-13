@@ -2,14 +2,17 @@
 % Please edit documentation in R/spct.classes.r
 \name{setIdFactor}
 \alias{setIdFactor}
+\alias{id_factor<-}
 \title{Set the "idfactor" attribute}
 \usage{
 setIdFactor(x, idfactor)
+
+id_factor(x) <- value
 }
 \arguments{
 \item{x}{a generic_spct object.}
 
-\item{idfactor}{character The name of a factor identifying multiple
+\item{idfactor, value}{character The name of a factor identifying multiple
 spectra stored longitudinally.}
 }
 \value{
@@ -40,13 +43,13 @@ This function alters x itself by reference and in addition
 my.spct <- sun_evening.spct
 
 # inspecting
-getIdFactor(sun.spct) # no idfactor set
+id_factor(sun.spct) # no idfactor set
 
-getIdFactor(my.spct)
+id_factor(my.spct)
 colnames(my.spct)
 
 # renaming
-setIdFactor(my.spct, "time")
+id_factor(my.spct) <- "time"
 getIdFactor(my.spct)
 colnames(my.spct)
 

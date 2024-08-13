@@ -2,9 +2,12 @@
 % Please edit documentation in R/spct.classes.r
 \name{getIdFactor}
 \alias{getIdFactor}
+\alias{id_factor}
 \title{Get the "idfactor" attribute}
 \usage{
 getIdFactor(x)
+
+id_factor(x)
 }
 \arguments{
 \item{x}{a generic_spct object}

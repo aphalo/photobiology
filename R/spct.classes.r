@@ -2487,20 +2487,35 @@ findMultipleWl <- function(x, same.wls = TRUE) {
 
 #' Set the "multiple.wl" attribute
 #'
-#' Function to set by reference the "multiple.wl" attribute  of an existing
-#' generic_spct or an object of a class derived from generic_spct.
+#' Function to set by reference the \code{multiple.wl} attribute  of an existing
+#' \code{generic_spct} object or an object of a class derived from
+#' \code{generic_spct}.
 #'
 #' @param x a generic_spct object
-#' @param multiple.wl numeric >= 1 If \code{multiple.wl} is \code{NULL}, the
-#'   default, the attribute is not modified if it is already present and valid,
-#'   and set to 1 otherwise.
+#' @param multiple.wl,value numeric >= 1 If \code{multiple.wl = NULL}, the
+#'   default, the value is guessed.
 #'
-#' @return x
-#' @note This function alters x itself by reference and in addition
-#'   returns x invisibly. If x is not a generic_spct or an object of a class derived from
-#'   generic_spct, x is not modified. If \code{multiple.wl}
+#' @details These methods set the attribute \code{multiple.wl} and if the
+#' argument of \code{multiple.wl} or \code{value} is \code{NULL}, they call
+#' \code{\link{findMultipleWl}} to obtain a guess. Pathological cases where
+#' multiple spectra in long form do not share any wavelength value underestimate
+#' the number of spectra, and require an explicit numeric argument. Calling
+#' these methods is very rarely needed in user code.
+#'
+#' @return \code{x}, modified in place by reference. If x is not a
+#'   \code{generic_spct} or an object of a class derived from
+#'   \code{generic_spct}, \code{x} is not modified.
 #'
 #' @export
+#'
+#' @examples
+#' my.spct <- sun.spct
+#' setMultipleWl(my.spct) # default is to search x, here my.spct
+#' getMultipleWl(my.spct)
+#'
+#' multiple_wl(my.spct) <- 1L # must be a valid value or NULL!
+#' multiple_wl(my.spct)
+#'
 #' @family multiple.wl attribute functions
 #'
 setMultipleWl <- function(x, multiple.wl = NULL) {
@@ -2520,21 +2535,32 @@ setMultipleWl <- function(x, multiple.wl = NULL) {
   invisible(x)
 }
 
+#' @rdname setMultipleWl
+#'
+#' @export
+#'
+`multiple_wl<-` <- function(x, value) {
+  setMultipleWl(x = x, multiple.wl = value)
+}
+
 #' Get the "multiple.wl" attribute
 #'
-#' Function to read the "multiple.wl" attribute of an existing generic_spct.
+#' Function to query the value of the \code{multiple.wl} attribute of an
+#' existing \code{generic_spct}.
 #'
 #' @param x a generic_spct object
 #'
-#' @return integer
-#'
-#' @note If x is not a \code{generic_spct} or an object of a derived class
-#'   \code{NA} is returned.
+#' @return \code{integer} value, the value of attribute \code{multiple.wl}, or
+#'   \code{NA} if the attribute is not set, or if \code{x} is not a
+#'   \code{generic_spct} object or an object of a derived class.
 #'
 #' @export
+#'
 #' @family multiple.wl attribute functions
+#'
 #' @examples
-#' getMultipleWl(sun.spct)
+#' multiple_wl(sun.spct)
+#' multiple_wl(sun_evening.spct)
 #'
 getMultipleWl <- function(x) {
   if (is.generic_spct(x) || is.summary_generic_spct(x)) {
@@ -2549,6 +2575,11 @@ getMultipleWl <- function(x) {
   }
 }
 
+#' @rdname getMultipleWl
+#'
+#' @export
+#'
+multiple_wl <- getMultipleWl
 
 # idfactor -------------------------------------------------------------
 
@@ -2559,7 +2590,7 @@ getMultipleWl <- function(x) {
 #' from \code{generic_spct}.
 #'
 #' @param x a generic_spct object.
-#' @param idfactor character The name of a factor identifying multiple
+#' @param idfactor,value character The name of a factor identifying multiple
 #'    spectra stored longitudinally.
 #'
 #' @details If the attribute \code{idfactor} is already set, and a variable with
@@ -2582,13 +2613,13 @@ getMultipleWl <- function(x) {
 #' my.spct <- sun_evening.spct
 #'
 #' # inspecting
-#' getIdFactor(sun.spct) # no idfactor set
+#' id_factor(sun.spct) # no idfactor set
 #'
-#' getIdFactor(my.spct)
+#' id_factor(my.spct)
 #' colnames(my.spct)
 #'
 #' # renaming
-#' setIdFactor(my.spct, "time")
+#' id_factor(my.spct) <- "time"
 #' getIdFactor(my.spct)
 #' colnames(my.spct)
 #'
@@ -2621,6 +2652,14 @@ setIdFactor <- function(x, idfactor) {
     assign(name, x, parent.frame(), inherits = TRUE)
   }
   invisible(x)
+}
+
+#' @rdname setIdFactor
+#'
+#' @export
+#'
+`id_factor<-` <- function(x, value) {
+  setIdFactor(x = x, idfactor = value)
 }
 
 #' Get the "idfactor" attribute
@@ -2656,6 +2695,11 @@ getIdFactor <- function(x) {
   idfactor
 }
 
+#' @rdname getIdFactor
+#'
+#' @export
+#'
+id_factor <- getIdFactor
 
 # "filter.properties" attribute ----------------------------------------------
 
