@@ -115,6 +115,56 @@ test_that("any_spct", {
   expect_equal(getSpctVersion(my.spct), 2L)
 })
 
+context("set get long from spct")
+
+test_that("any_spct", {
+
+  my.spct <- sun_evening.spct
+
+  expect_is(getWhenMeasured(my.spct), "list")
+  expect_named(getWhenMeasured(my.spct), levels(my.spct$spct.idx))
+
+  expect_is(getWhereMeasured(my.spct), "tbl_df")
+  expect_named(getWhereMeasured(my.spct), c("lat", "lon", "address"))
+
+  expect_is(getMultipleWl(my.spct), "integer")
+
+  expect_true(isValidInstrDesc(my.spct))
+  expect_equal(length(getInstrDesc(my.spct)), 6)
+  expect_is(getInstrDesc(my.spct), "instr_desc")
+
+  expect_equal(length(getInstrSettings(my.spct)), 16)
+  expect_is(getInstrSettings(my.spct), "instr_settings")
+
+  expect_equal(getSpctVersion(my.spct), 2L)
+
+  expect_is(getIdFactor(my.spct), "character")
+  expect_equal(length(getIdFactor(my.spct)), 1L)
+  expect_equal(getIdFactor(my.spct), "spct.idx")
+
+  setIdFactor(my.spct, "time")
+  expect_is(getIdFactor(my.spct), "character")
+  expect_equal(length(getIdFactor(my.spct)), 1L)
+  expect_equal(getIdFactor(my.spct), "time")
+  expect_true("time" %in% colnames(my.spct))
+
+  setIdFactor(my.spct, NULL)
+  expect_is(getIdFactor(my.spct), "character")
+  expect_equal(length(getIdFactor(my.spct)), 1L)
+  expect_true(is.na(getIdFactor(my.spct)))
+  expect_true("time" %in% colnames(my.spct))
+
+  setIdFactor(my.spct, "time")
+  expect_is(getIdFactor(my.spct), "character")
+  expect_equal(length(getIdFactor(my.spct)), 1L)
+  expect_equal(getIdFactor(my.spct), "time")
+  expect_true("time" %in% colnames(my.spct))
+
+  setIdFactor(my.spct, NULL)
+  expect_error(setIdFactor(my.spct, "inexistent.variable"))
+})
+
+
 context("set_get_mspct")
 
 test_that("any_mspct", {
@@ -315,8 +365,7 @@ test_that("integrate_spct", {
 
 })
 
-context("return same attributes")
-
+context("invariant attributes after operation")
 
 test_that("trim_wl attr", {
 
