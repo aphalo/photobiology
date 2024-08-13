@@ -170,18 +170,31 @@ getWhenMeasured.default <- function(x, ...) {
 }
 
 #' @describeIn getWhenMeasured generic_spct
+#'
+#' @param as.df logical If TRUE return a data frame instead of a list, when
+#'   the value stored in the attribute is a list.
+#'
 #' @export
-getWhenMeasured.generic_spct <- function(x, ...) {
+#'
+getWhenMeasured.generic_spct <- function(x, as.df = FALSE, ...) {
   when.measured <- attr(x, "when.measured", exact = TRUE)
-  if (is.null(when.measured) ||
-      !all(sapply(when.measured, lubridate::is.instant))) {
-    # need to handle invalid attribute values
-    # we return an NA of class POSIXct
-    when.measured <-
-      suppressWarnings(lubridate::ymd_hms(NA_character_, tz = "UTC"))
+  if (is.null(when.measured)) {
+    when.measured <- lubridate::NA_POSIXct_
   } else if (lubridate::is.POSIXlt(when.measured)) {
     when.measured <-
       as.POSIXct(when.measured, tz = "UTC", origin = lubridate::origin)
+  } else if (as.df && is.list(when.measured)) {
+    if (all(sapply(when.measured, lubridate::is.instant))) {
+      when.measured <-
+        tibble::tibble(spct.idx = names(when.measured),
+                       when.measured = as.POSIXct(unlist(when.measured, use.names = FALSE),
+                                                  tz = lubridate::tz(when.measured[[1]])))
+    } else {
+      when.measured <-
+        tibble::tibble(spct.idx = names(when.measured),
+                       when.measured = rep(lubridate::NA_POSIXct_,
+                                           length(when.measured)))
+    }
   }
   when.measured
 }
