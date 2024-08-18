@@ -17,7 +17,7 @@ the summary.
 call `summary.generic_spct()` on each of them.
 - Support renaming of the `idfactor` with `setIdFactor()`.
 - New method `make_var_labels()` dynamically creates a named list of labels for 
-the variables in spectral objects.
+the variables in spectral objects [unstable].
 
 # photobiology 0.11.2
 

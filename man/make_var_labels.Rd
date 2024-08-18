@@ -37,11 +37,13 @@ make_var_labels(x, ...)
 }
 \value{
 A named list of character strings with one member for each recognized
-  column in \code{x}.
+  column in \code{x}. This list can be used to set variable labels with
+  methods from package 'labelled'. However, package 'photobiology' does not
+  natively support variable labels stored in attribute \code{label}.
 }
 \description{
-Create a named list of character strings suitable to be used to set variable
-labels with methods from package 'labelled' or similar.
+Create a named list of character strings describing the variables contained
+in a spectrum object.
 }
 \details{
 Objects of classes derived from \code{generic_spct} are used to
@@ -77,15 +79,24 @@ Objects of classes derived from \code{generic_spct} are used to
 
 }}
 \note{
-This methods are still under development and the text of the labels
+These methods are still under development and the text of the labels
   may change. Not all classes derived from \code{generic_spct} are yet
   supported.
 }
 \examples{
 make_var_labels(sun.spct)
-make_var_labels(sun_daily.spct)
-make_var_labels(polyester.spct)
-make_var_labels(white_led.cps_spct)
-make_var_labels(white_led.raw_spct)
+# str() prints more compactly than print()
+str(make_var_labels(sun.spct))
+str(make_var_labels(normalize(sun.spct)))
+str(make_var_labels(fscale(sun.spct)))
+
+str(make_var_labels(sun_daily.spct))
+
+str(make_var_labels(polyester.spct))
+str(make_var_labels(normalize(polyester.spct)))
+str(make_var_labels(fscale(polyester.spct)))
+
+str(make_var_labels(white_led.cps_spct))
+str(make_var_labels(white_led.raw_spct))
 
 }

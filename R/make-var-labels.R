@@ -1,7 +1,7 @@
 #' Column or variable labels
 #'
-#' Create a named list of character strings suitable to be used to set variable
-#' labels with methods from package 'labelled' or similar.
+#' Create a named list of character strings describing the variables contained
+#' in a spectrum object.
 #'
 #' @param x An object of a class derived from \code{generic_spct}.
 #' @param ... Currently ignored.
@@ -19,21 +19,32 @@
 #'   attribute in each variable (= column) of a data frame or tibble. This is
 #'   compatible with the approach used by package 'haven'.
 #'
-#' @note This methods are still under development and the text of the labels
+#' @note These methods are still under development and the text of the labels
 #'   may change. Not all classes derived from \code{generic_spct} are yet
 #'   supported.
 #'
 #' @return A named list of character strings with one member for each recognized
-#'   column in \code{x}.
+#'   column in \code{x}. This list can be used to set variable labels with
+#'   methods from package 'labelled'. However, package 'photobiology' does not
+#'   natively support variable labels stored in attribute \code{label}.
 #'
 #' @export
 #'
 #' @examples
 #' make_var_labels(sun.spct)
-#' make_var_labels(sun_daily.spct)
-#' make_var_labels(polyester.spct)
-#' make_var_labels(white_led.cps_spct)
-#' make_var_labels(white_led.raw_spct)
+#' # str() prints more compactly than print()
+#' str(make_var_labels(sun.spct))
+#' str(make_var_labels(normalize(sun.spct)))
+#' str(make_var_labels(fscale(sun.spct)))
+#'
+#' str(make_var_labels(sun_daily.spct))
+#'
+#' str(make_var_labels(polyester.spct))
+#' str(make_var_labels(normalize(polyester.spct)))
+#' str(make_var_labels(fscale(polyester.spct)))
+#'
+#' str(make_var_labels(white_led.cps_spct))
+#' str(make_var_labels(white_led.raw_spct))
 #'
 make_var_labels <- function(x, ...) {
     UseMethod("make_var_labels")
@@ -62,45 +73,51 @@ make_var_labels.source_spct <- function(x, ...) {
     } else if (time.unit == lubridate::days(1)) {
       time.unit <- "day"
     } else {
-      return(
+      labels <-
         list(w.length = "Wavelength [nm]",
              s.e.irrad = "Spectral energy exposure [J m-2 nm-1]",
              s.q.irrad = "Spectral photon exposure [mol m-2 nm-1]")[colnames(x)]
-      )
-    }
+     }
   }
   if (is.character(time.unit)) {
     if (time.unit == "second") {
-      return(
+      labels <-
         list(w.length = "Wavelength [nm]",
              s.e.irrad = "Spectral energy irradiance [W m-2 nm-1]",
-             s.q.irrad = "Spectral photon irradiance [mol s-1 m-2 nm-1]")[colnames(x)]
-      )
+             s.q.irrad = "Spectral photon irradiance [mol s-1 m-2 nm-1]")
     } else if (time.unit == "hour") {
-      return(
+      labels <-
         list(w.length = "Wavelength [nm]",
              s.e.irrad = "Spectral energy irradiance [J h-1 m-2 nm-1]",
-             s.q.irrad = "Spectral photon irradiance [mol h-1 m-2 nm-1]")[colnames(x)]
-      )
+             s.q.irrad = "Spectral photon irradiance [mol h-1 m-2 nm-1]")
     } else if (time.unit == "day") {
-      return(list(w.length = "Wavelength [nm]",
+      labels <-
+        list(w.length = "Wavelength [nm]",
                   s.e.irrad = "Spectral energy exposure [J d-1 m-2 nm-1]",
-                  s.q.irrad = "Spectral photon exposure [mol d-1 m-2 nm-1]")[colnames(x)]
-      )
+                  s.q.irrad = "Spectral photon exposure [mol d-1 m-2 nm-1]")
     } else if (time.unit == "exposure") {
-      return(
+      labels <-
         list(w.length = "Wavelength [nm]",
              s.e.irrad = "Spectral energy exposure [J m-2 nm-1]",
-             s.q.irrad = "Spectral photon exposure [mol m-2 nm-1]")[colnames(x)]
-      )
+             s.q.irrad = "Spectral photon exposure [mol m-2 nm-1]")
     } else if (time.unit == "none") {
-      return(
+      labels <-
         list(w.length = "Wavelength [nm]",
              s.e.irrad = "Spectral energy exposure",
              s.q.irrad = "Spectral photon exposure")[colnames(x)]
-      )
     }
   }
+  # lapply preserves the list and member names
+  sub.pattern <-
+    "J m-2 nm-1|mol m-2 nm-1|W m-2 nm-1|J [shd]-1 m-2 nm-1|mol [shd]-1 m-2 nm-1"
+  if (is_normalized(x)) {
+    labels <- lapply(labels, gsub, pattern = sub.pattern, replacement = "normalized")
+  } else if (is_scaled(x)) {
+    labels <- lapply(labels, gsub, pattern = sub.pattern, replacement = "scaled")
+  }
+
+  labels[colnames(x)]
+
 }
 
 #' @describeIn make_var_labels
@@ -117,45 +134,49 @@ make_var_labels.response_spct <- function(x, ...) {
     } else if (time.unit == lubridate::days(1)) {
       time.unit <- "day"
     } else {
-      return(
+      labels <-
         list(w.length = "Wavelength [nm]",
              s.e.irrad = "Spectral energy response [J-1 m2 nm]",
-             s.q.irrad = "Spectral photon response [mol-1 m nm1]")[colnames(x)]
-      )
+             s.q.irrad = "Spectral photon response [mol-1 m nm]")
     }
   }
   if (is.character(time.unit)) {
     if (time.unit == "second") {
-      return(
+      labels <-
         list(w.length = "Wavelength [nm]",
              s.e.irrad = "Spectral energy response [W-1 m2 nm]",
-             s.q.irrad = "Spectral photon response [mol-1 s m2 nm]")[colnames(x)]
-      )
+             s.q.irrad = "Spectral photon response [mol-1 s m2 nm]")
     } else if (time.unit == "hour") {
-      return(
+      labels <-
         list(w.length = "Wavelength [nm]",
              s.e.irrad = "Spectral energy response [J-1 h m2 nm]",
-             s.q.irrad = "Spectral photon response [mol-1 h m2 nm]")[colnames(x)]
-      )
+             s.q.irrad = "Spectral photon response [mol-1 h m2 nm]")
     } else if (time.unit == "day") {
-      return(list(w.length = "Wavelength [nm]",
+      labels <-
+        list(w.length = "Wavelength [nm]",
                   s.e.irrad = "Spectral energy response [J-1 d m2 nm]",
-                  s.q.irrad = "Spectral photon response [mol-1 d m2 nm]")[colnames(x)]
-      )
+                  s.q.irrad = "Spectral photon response [mol-1 d m2 nm]")
     } else if (time.unit == "exposure") {
-      return(
+      labels <-
         list(w.length = "Wavelength [nm]",
              s.e.irrad = "Spectral energy response [J-1 m2 nm]",
-             s.q.irrad = "Spectral photon response [mol-1 m2 nm]")[colnames(x)]
-      )
+             s.q.irrad = "Spectral photon response [mol-1 m2 nm]")
     } else if (time.unit == "none") {
-      return(
+      labels <-
         list(w.length = "Wavelength [nm]",
              s.e.irrad = "Spectral energy response",
-             s.q.irrad = "Spectral photon response")[colnames(x)]
-      )
-    }
+             s.q.irrad = "Spectral photon response")
+     }
   }
+  sub.pattern <- "J-1 m2 nm|mol-1 m nm|J-1 [shd] m2 nm|mol-1 [shd] m2 nm"
+  if (is_normalized(x)) {
+    labels <- lapply(labels, gsub, pattern = sub.pattern, replacement = "normalized")
+  } else if (is_scaled(x)) {
+    labels <- lapply(labels, gsub, pattern = sub.pattern, replacement = "scaled")
+  }
+
+  labels[colnames(x)]
+
 }
 
 #' @describeIn make_var_labels
@@ -163,32 +184,25 @@ make_var_labels.response_spct <- function(x, ...) {
 #' @export
 #'
 make_var_labels.filter_spct <- function(x, ...) {
+
   Tfr.type <- getTfrType(x)
-  if (Tfr.type == "total") {
-    return(
-      list(w.length = "Wavelength [nm]",
-           Tfr = "Total spectral transmittance [/1]",
-           Afr = "Spectral absorptance [/1]",
-           A = "Spectral absorbance log10 based [a.u.]")[colnames(x)]
-    )
-  } else if (Tfr.type == "internal") {
-    return(
-      list(w.length = "Wavelength [nm]",
-           Tfr = "Internal spectral transmittance [/1]",
-           Afr = "Spectral absorptance [/1]",
-           A = "Spectral absorbance log10 based [a.u.]")[colnames(x)]
-    )
-  } else if (Tfr.type == "unknown") {
-    return(list(w.length = "Wavelength [nm]",
-                Tfr = "Spectral transmittance [/1]",
-                Afr = "Spectral absorptance [/1]",
-                A = "Spectral absorbance log10 based [a.u.]")[colnames(x)]
-    )
-  } else {
-    return(
-      list(w.length = "Wavelength [nm]")[colnames(x)]
-    )
+  Tfr.label <- c(total = "Total spectral transmittance [/1]",
+                 internal = "Internal spectral transmittance [/1]",
+                 unknown = "Spectral transmittance [/1]")
+  labels <-
+    list(w.length = "Wavelength [nm]",
+         Tfr = Tfr.label[Tfr.type],
+         Afr = "Spectral absorptance [/1]",
+         A = "Spectral absorbance log10 based [a.u.]")
+  sub.pattern <- "/1|a\\.u\\."
+  if (is_normalized(x)) {
+    labels <- lapply(labels, gsub, pattern = sub.pattern, replacement = "normalized")
+  } else if (is_scaled(x)) {
+    labels <- lapply(labels, gsub, pattern = sub.pattern, replacement = "scaled")
   }
+
+  labels[colnames(x)]
+
 }
 
 #' @describeIn make_var_labels
@@ -196,26 +210,23 @@ make_var_labels.filter_spct <- function(x, ...) {
 #' @export
 #'
 make_var_labels.reflector_spct <- function(x, ...) {
+
   Rfr.type <- getRfrType(x)
-  if (Rfr.type == "total") {
-    return(
-      list(w.length = "Wavelength [nm]",
-           Rfr = "Total spectral reflectance [/1]")[colnames(x)]
-    )
-  } else if (Rfr.type == "specular") {
-    return(
-      list(w.length = "Wavelength [nm]",
-           Rfr = "Specular spectral reflectance [/1]")[colnames(x)]
-    )
-  } else if (Rfr.type == "unknown") {
-    return(list(w.length = "Wavelength [nm]",
-                Rfr = "Spectral reflectance [/1]")[colnames(x)]
-    )
-  } else {
-    return(
-      list(w.length = "Wavelength [nm]")[colnames(x)]
-    )
+  Rfr.label <- c(total = "Total spectral reflectance [/1]",
+                 specular = "Specular spectral reflectance [/1]",
+                 unknown = "Spectral reflectance [/1]")
+  labels <-
+    list(w.length = "Wavelength [nm]",
+         Rfr = Rfr.label[Rfr.type])
+  sub.pattern <- "/1"
+  if (is_normalized(x)) {
+    labels <- lapply(labels, gsub, pattern = sub.pattern, replacement = "normalized")
+  } else if (is_scaled(x)) {
+    labels <- lapply(labels, gsub, pattern = sub.pattern, replacement = "scaled")
   }
+
+  labels[colnames(x)]
+
 }
 
 #' @describeIn make_var_labels
@@ -223,38 +234,23 @@ make_var_labels.reflector_spct <- function(x, ...) {
 #' @export
 #'
 make_var_labels.object_spct <- function(x, ...) {
+  # scaling and normalization not supported by class object_spct
   Tfr.type <- getTfrType(x)
+  Tfr.label <- c(total = "Total spectral transmittance [/1]",
+                 internal = "Internal spectral transmittance [/1]",
+                 unknown = "Spectral transmittance [/1]")
   Rfr.type <- getRfrType(x)
   Rfr.label <- c(total = "Total spectral reflectance [/1]",
                  specular = "Specular spectral reflectance [/1]")
-  if (Tfr.type == "total") {
-    return(
-      list(w.length = "Wavelength [nm]",
-           Tfr = "Total spectral transmittance [/1]",
-           Rfr = Rfr.label[Rfr.type],
-           Afr = "Spectral absorptance [/1]",
-           A = "Spectral absorbance log10 based [a.u.]")[colnames(x)]
-    )
-  } else if (Tfr.type == "internal") {
-    return(
-      list(w.length = "Wavelength [nm]",
-           Tfr = "Internal spectral transmittance [/1]",
-           Rfr = Rfr.label[Rfr.type],
-           Afr = "Spectral absorptance [/1]",
-           A = "Spectral absorbance log10 based [a.u.]")[colnames(x)]
-    )
-  } else if (Tfr.type == "unknown") {
-    return(list(w.length = "Wavelength [nm]",
-                Tfr = "Spectral transmittance [/1]",
-                Rfr = Rfr.label[Rfr.type],
-                Afr = "Spectral absorptance [/1]",
-                A = "Spectral absorbance log10 based [a.u.]")[colnames(x)]
-    )
-  } else {
-    return(
-      list(w.length = "Wavelength [nm]")[colnames(x)]
-    )
-  }
+  labels <-
+    list(w.length = "Wavelength [nm]",
+         Tfr = Tfr.label[Tfr.type],
+         Rfr = Rfr.label[Rfr.type],
+         Afr = "Spectral absorptance [/1]",
+         A = "Spectral absorbance log10 based [a.u.]")
+
+  labels[colnames(x)]
+
 }
 
 #' @describeIn make_var_labels
@@ -266,7 +262,15 @@ make_var_labels.raw_spct <- function(x, ...) {
   count.cols <- grepl("^counts", column.names)
   labels <- c("Wavelength [nm]", rep("Raw detector counts [number]", sum(count.cols)))
   names(labels) <- c("w.length", column.names[count.cols])
-  return(as.list(labels))
+  sub.pattern <- "number"
+  if (is_normalized(x)) {
+    labels <- lapply(labels, gsub, pattern = sub.pattern, replacement = "normalized")
+  } else if (is_scaled(x)) {
+    labels <- lapply(labels, gsub, pattern = sub.pattern, replacement = "scaled")
+  }
+
+  as.list(labels)
+
 }
 
 #' @describeIn make_var_labels
@@ -278,7 +282,15 @@ make_var_labels.cps_spct <- function(x, ...) {
   count.cols <- grepl("^cps", column.names)
   labels <- c("Wavelength [nm]", rep("Detector counts [number s-1]", sum(count.cols)))
   names(labels) <- c("w.length", column.names[count.cols])
-  return(as.list(labels))
+  sub.pattern <- "number  s-1"
+  if (is_normalized(x)) {
+    labels <- lapply(labels, gsub, pattern = sub.pattern, replacement = "normalized")
+  } else if (is_scaled(x)) {
+    labels <- lapply(labels, gsub, pattern = sub.pattern, replacement = "scaled")
+  }
+
+  as.list(labels)
+
 }
 
 
