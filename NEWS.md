@@ -6,18 +6,26 @@ editor_options:
 
 # photobiology 0.11.3
 
--  Fix bug that prevented use of `s_mean_se_band()`.
--  Implement methods `s_mean()`, `s_mean_se()`, `s_mean_se_band()`, 
+Bug fixes and improved printing of spectra and their summaries. This changes
+the printed text, but should not break code.
+
+- Fix bug that prevented use of `s_mean_se_band()`.
+- Implement methods `s_mean()`, `s_mean_se()`, `s_mean_se_band()`, 
 `s_median()`, `s_sd()`, `s_se()`, `s_var()`, `s_sum()`, `s_prod()`, `s_range()` 
 for class `generic_spct`.
+-  Support renaming of the `idfactor` with `setIdFactor()`.
+- New method `make_var_labels()` dynamically creates a named list of labels for 
+the variables in spectral objects [unstable].
+- Update `print.generic_spct()` to include variable labels in header, instead
+of showing metadata directly.
+- Update `summary.generic_spct()` to save variable labels in returned object.
+- Update `print.summary_generic_spct()` to print a header equal to the one
+printed by the updated `print()` methods.
 -  Update `summary.generic_spct()` to optionally expand objects containing
 multiple spectra in long form into collections of spectra in advance of creating
 the summary.
 -  Update `summary.generic_mspct()` to optionally expand member objects and
 call `summary.generic_spct()` on each of them.
-- Support renaming of the `idfactor` with `setIdFactor()`.
-- New method `make_var_labels()` dynamically creates a named list of labels for 
-the variables in spectral objects [unstable].
 
 # photobiology 0.11.2
 
