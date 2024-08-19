@@ -42,6 +42,7 @@ reference:
     - class_spct
     - spct_classes
     - rmDerivedSpct
+    - make_var_labels
   - subtitle: Collections of spectra
     desc: Constructor and query methods for objects used to store multiple spectra.
     contents:
