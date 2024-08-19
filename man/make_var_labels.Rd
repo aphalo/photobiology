@@ -8,6 +8,9 @@
 \alias{make_var_labels.filter_spct}
 \alias{make_var_labels.reflector_spct}
 \alias{make_var_labels.object_spct}
+\alias{make_var_labels.solute_spct}
+\alias{make_var_labels.chroma_spct}
+\alias{make_var_labels.calibration_spct}
 \alias{make_var_labels.raw_spct}
 \alias{make_var_labels.cps_spct}
 \title{Column or variable labels}
@@ -25,6 +28,12 @@ make_var_labels(x, ...)
 \method{make_var_labels}{reflector_spct}(x, ...)
 
 \method{make_var_labels}{object_spct}(x, ...)
+
+\method{make_var_labels}{solute_spct}(x, ...)
+
+\method{make_var_labels}{chroma_spct}(x, ...)
+
+\method{make_var_labels}{calibration_spct}(x, ...)
 
 \method{make_var_labels}{raw_spct}(x, ...)
 
@@ -72,6 +81,12 @@ Objects of classes derived from \code{generic_spct} are used to
 \item \code{make_var_labels(reflector_spct)}: 
 
 \item \code{make_var_labels(object_spct)}: 
+
+\item \code{make_var_labels(solute_spct)}: 
+
+\item \code{make_var_labels(chroma_spct)}: 
+
+\item \code{make_var_labels(calibration_spct)}: 
 
 \item \code{make_var_labels(raw_spct)}: 
 

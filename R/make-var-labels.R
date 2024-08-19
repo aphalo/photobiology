@@ -116,7 +116,7 @@ make_var_labels.source_spct <- function(x, ...) {
     labels <- lapply(labels, gsub, pattern = sub.pattern, replacement = "scaled")
   }
 
-  labels[colnames(x)]
+  labels[intersect(colnames(x), names(labels))]
 
 }
 
@@ -136,36 +136,36 @@ make_var_labels.response_spct <- function(x, ...) {
     } else {
       labels <-
         list(w.length = "Wavelength [nm]",
-             s.e.irrad = "Spectral energy response [J-1 m2 nm]",
-             s.q.irrad = "Spectral photon response [mol-1 m nm]")
+             s.e.response = "Spectral energy response [J-1 m2 nm]",
+             s.q.response = "Spectral photon response [mol-1 m nm]")
     }
   }
   if (is.character(time.unit)) {
     if (time.unit == "second") {
       labels <-
         list(w.length = "Wavelength [nm]",
-             s.e.irrad = "Spectral energy response [W-1 m2 nm]",
-             s.q.irrad = "Spectral photon response [mol-1 s m2 nm]")
+             s.e.response = "Spectral energy response [W-1 m2 nm]",
+             s.q.response = "Spectral photon response [mol-1 s m2 nm]")
     } else if (time.unit == "hour") {
       labels <-
         list(w.length = "Wavelength [nm]",
-             s.e.irrad = "Spectral energy response [J-1 h m2 nm]",
-             s.q.irrad = "Spectral photon response [mol-1 h m2 nm]")
+             s.e.response = "Spectral energy response [J-1 h m2 nm]",
+             s.q.response = "Spectral photon response [mol-1 h m2 nm]")
     } else if (time.unit == "day") {
       labels <-
         list(w.length = "Wavelength [nm]",
-                  s.e.irrad = "Spectral energy response [J-1 d m2 nm]",
-                  s.q.irrad = "Spectral photon response [mol-1 d m2 nm]")
+                  s.e.response = "Spectral energy response [J-1 d m2 nm]",
+                  s.q.response = "Spectral photon response [mol-1 d m2 nm]")
     } else if (time.unit == "exposure") {
       labels <-
         list(w.length = "Wavelength [nm]",
-             s.e.irrad = "Spectral energy response [J-1 m2 nm]",
-             s.q.irrad = "Spectral photon response [mol-1 m2 nm]")
+             s.e.response = "Spectral energy response [J-1 m2 nm]",
+             s.q.response = "Spectral photon response [mol-1 m2 nm]")
     } else if (time.unit == "none") {
       labels <-
         list(w.length = "Wavelength [nm]",
-             s.e.irrad = "Spectral energy response",
-             s.q.irrad = "Spectral photon response")
+             s.e.response = "Spectral energy response",
+             s.q.response = "Spectral photon response")
      }
   }
   sub.pattern <- "J-1 m2 nm|mol-1 m nm|J-1 [shd] m2 nm|mol-1 [shd] m2 nm"
@@ -175,7 +175,7 @@ make_var_labels.response_spct <- function(x, ...) {
     labels <- lapply(labels, gsub, pattern = sub.pattern, replacement = "scaled")
   }
 
-  labels[colnames(x)]
+  labels[intersect(colnames(x), names(labels))]
 
 }
 
@@ -201,7 +201,7 @@ make_var_labels.filter_spct <- function(x, ...) {
     labels <- lapply(labels, gsub, pattern = sub.pattern, replacement = "scaled")
   }
 
-  labels[colnames(x)]
+  labels[intersect(colnames(x), names(labels))]
 
 }
 
@@ -225,7 +225,7 @@ make_var_labels.reflector_spct <- function(x, ...) {
     labels <- lapply(labels, gsub, pattern = sub.pattern, replacement = "scaled")
   }
 
-  labels[colnames(x)]
+  labels[intersect(colnames(x), names(labels))]
 
 }
 
@@ -234,7 +234,6 @@ make_var_labels.reflector_spct <- function(x, ...) {
 #' @export
 #'
 make_var_labels.object_spct <- function(x, ...) {
-  # scaling and normalization not supported by class object_spct
   Tfr.type <- getTfrType(x)
   Tfr.label <- c(total = "Total spectral transmittance [/1]",
                  internal = "Internal spectral transmittance [/1]",
@@ -248,8 +247,61 @@ make_var_labels.object_spct <- function(x, ...) {
          Rfr = Rfr.label[Rfr.type],
          Afr = "Spectral absorptance [/1]",
          A = "Spectral absorbance log10 based [a.u.]")
+  # scaling and normalization not supported by class object_spct
 
-  labels[colnames(x)]
+  labels[intersect(colnames(x), names(labels))]
+
+}
+
+#' @describeIn make_var_labels
+#'
+#' @export
+#'
+make_var_labels.solute_spct <- function(x, ...) {
+  # To follow IUPAC "attenuation" could be used in all cases
+  K.type <- getKType(x)
+  labels <-
+    list(w.length = "Wavelength [nm]",
+         K.mole = paste("Molar",  K.type, "coefficient [m2 mol-1]"),
+         K.mass = paste("Mass", K.type, "coefficient [m2 g-1]"))
+  sub.pattern <- "m2 mol-1|m2 g-1"
+  if (is_normalized(x)) {
+    labels <- lapply(labels, gsub, pattern = sub.pattern, replacement = "normalized")
+  } else if (is_scaled(x)) {
+    labels <- lapply(labels, gsub, pattern = sub.pattern, replacement = "scaled")
+  }
+
+  labels[intersect(colnames(x), names(labels))]
+
+}
+
+#' @describeIn make_var_labels
+#'
+#' @export
+#'
+make_var_labels.chroma_spct <- function(x, ...) {
+  labels <-
+    list(w.length = "Wavelength [nm]",
+         x = "Numeric colour coordinate X",
+         y = "Numeric colour coordinates Y",
+         z = "Numeric colour coordinates Z")
+  # scaling and normalization not supported by class chroma_spct
+
+  labels[intersect(colnames(x), names(labels))]
+
+}
+
+#' @describeIn make_var_labels
+#'
+#' @export
+#'
+make_var_labels.calibration_spct <- function(x, ...) {
+  labels <-
+    list(w.length = "Wavelength [nm]",
+         irrad.mult = "Irradiance multipliers [J m-2 nm-1 n-1]")
+  # scaling and normalization not supported by class calibration_spct
+
+  labels[intersect(colnames(x), names(labels))]
 
 }
 
@@ -292,7 +344,6 @@ make_var_labels.cps_spct <- function(x, ...) {
   as.list(labels)
 
 }
-
 
 # summary.sec.variable.labels <-
 #   list(e.irrad = "Energy irradiance [W m-2]",
