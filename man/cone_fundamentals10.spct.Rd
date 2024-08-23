@@ -35,6 +35,10 @@ A dataset containing wavelengths at a 1 nm interval (390 nm to
   \item z }
 }
 \note{
+These data are not from the official CIE on-line distribution but
+  are retained for backwards compatibility. It is recommended to download
+  the latest version from \url{https://cie.co.at/data-tables}.
+
 The missing data for z in the NIR have been filled with zeros.
 }
 \examples{

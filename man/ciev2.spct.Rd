@@ -21,6 +21,11 @@ A dataset containing wavelengths at a 1 nm interval (390 nm to
   \item w.length (nm)
   \item s.e.response}
 }
+\note{
+These data are not from the official CIE on-line distribution but
+  are retained for backwards compatibility. It is recommended to download
+  the latest version from \url{https://cie.co.at/data-tables}.
+}
 \examples{
 ciev2.spct
 

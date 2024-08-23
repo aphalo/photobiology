@@ -14,6 +14,10 @@
 #'
 #' @author CIE
 #'
+#' @note These data are not from the official CIE on-line distribution but
+#'   are retained for backwards compatibility. It is recommended to download
+#'   the latest version from \url{https://cie.co.at/data-tables}.
+#'
 #' @docType data
 #' @keywords datasets
 #' @format A chroma_spct object with 441 rows and 4 variables
@@ -39,6 +43,10 @@
 #'   \item z }
 #'
 #' @author CIE
+#'
+#' @note These data are not from the official CIE on-line distribution but
+#'   are retained for backwards compatibility. It is recommended to download
+#'   the latest version from \url{https://cie.co.at/data-tables}.
 #'
 #' @docType data
 #' @keywords datasets
@@ -66,6 +74,10 @@
 #'
 #' @author CIE
 #'
+#' @note These data are not from the official CIE on-line distribution but
+#'   are retained for backwards compatibility. It is recommended to download
+#'   the latest version from \url{https://cie.co.at/data-tables}.
+#'
 #' @docType data
 #' @keywords datasets
 #' @format A chroma_spct object with 441 rows and 4 variables
@@ -91,6 +103,14 @@
 #'   \item z }
 #'
 #' @author CIE
+#'
+#' @note These data are not from the official CIE on-line distribution but
+#'   are retained for backwards compatibility. It is recommended to download
+#'   the latest version from \url{https://cie.co.at/data-tables}.
+#'
+#' @note These data are not from the official CIE on-line distribution but
+#'   are retained for backwards compatibility. It is recommended to download
+#'   the latest version from \url{https://cie.co.at/data-tables}.
 #'
 #' @docType data
 #' @keywords datasets
@@ -139,6 +159,10 @@
 #'
 #' @author CIE
 #'
+#' @note These data are not from the official CIE on-line distribution but
+#'   are retained for backwards compatibility. It is recommended to download
+#'   the latest version from \url{https://cie.co.at/data-tables}.
+#'
 #' @docType data
 #' @keywords datasets
 #' @format A chroma_spct object with 441 rows and 4 variables
@@ -164,6 +188,10 @@
 #'   \item z }
 #'
 #' @author CIE
+#'
+#' @note These data are not from the official CIE on-line distribution but
+#'   are retained for backwards compatibility. It is recommended to download
+#'   the latest version from \url{https://cie.co.at/data-tables}.
 #'
 #' @return A \code{chroma_spct} object.
 #' @docType data
