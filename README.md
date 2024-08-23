@@ -7,8 +7,11 @@
 version](https://www.r-pkg.org/badges/version-last-release/photobiology)](https://cran.r-project.org/package=photobiology)
 [![cran
 checks](https://badges.cranchecks.info/worst/photobiology.svg)](https://cran.r-project.org/web/checks/check_results_photobiology.html)
-[![R build
-status](https://github.com/aphalo/photobiology/workflows/R-CMD-check/badge.svg)](https://github.com/aphalo/photobiology/actions)
+[![photobiology status
+badge](https://aphalo.r-universe.dev/badges/photobiology)](https://aphalo.r-universe.dev/photobiology)
+[![R-CMD-check](https://github.com/aphalo/photobiology/workflows/R-CMD-check/badge.svg)](https://github.com/aphalo/photobiology/actions)
+[![Documentation](https://img.shields.io/badge/documentation-photobiology-informational.svg)](https://docs.r4photobiology.info/photobiology/)
+[![doi](https://img.shields.io/badge/doi-10.32614/CRAN.package.photobiology-blue.svg)](https://doi.org/10.32614/CRAN.package.photobiology)
 <!-- badges: end -->
 
 Package ‘**photobiology**’ defines a system of classes for storing
@@ -56,9 +59,9 @@ sun.
 geocode <- data.frame(lon = 0, lat = 55)
 date <- lubridate::now(tzone = "UTC")
 sunrise_time(date, tz = "UTC", geocode = geocode)
-#> [1] "2024-08-04 04:15:32 UTC"
+#> [1] "2024-08-23 04:50:47 UTC"
 day_length(date, tz = "UTC", geocode = geocode)
-#> [1] 15.68462
+#> [1] 14.39096
 ```
 
 ## Installation
