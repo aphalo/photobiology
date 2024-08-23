@@ -1271,44 +1271,45 @@ described in a later section and listed in Table 9.
 
 ### Summary spectra
 
-Starting from a collection of spectra we may want to obtain a single
-spectrum containing a summary of them. The current implementation of the
-methods described in this section expects that all spectra in a
-collection are of the same class, and data is available for each of them
-at exactly the same set of wavelengths.
+Starting from a collection of spectra, or multiple spectra stored in long form,
+we can obtain a single spectrum containing a "parallel" summary across them. The
+current implementation of the methods described in this section expects that all
+spectra in a collection are of the same class, and data is available for each of
+them at exactly the same set of wavelengths. In the table below, 
+`source_spct/mspct` is an abbreviation for `source_spct` or `source_mspct`.
 
 | functions                 | class of argument   | class of returned spectrum | variables in spectrum                |
 |:------------------|:---------------|:---------------|:---------------------|
-| `s_sum`                   | `source_mspct`      | `source_spct`              | same as input                        |
-| `s_sum`                   | `response_mspct`    | `response_spct`            | same as input                        |
-| `s_sum`                   | `filter_mspct`      | `generic_spct`             | input tagged `.sum`                  |
-| `s_sum`                   | `reflector_mspct`   | `generic_spct`             | input tagged `.sum`                  |
-| `s_sum`                   | `calibration_mspct` | `generic_spct`             | input tagged `.sum`                  |
-| `s_prod`                  | `source_mspct`      | `source_spct`              | input tagged `.prod`                 |
-| `s_prod`                  | `response_mspct`    | `response_spct`            | input tagged `.prod`                 |
-| `s_prod`                  | `filter_mspct`      | `filter_spct`              | same as input                        |
-| `s_prod`                  | `reflector_mspct`   | `reflector_spct`           | same as input                        |
-| `s_prod`                  | `calibration_mspct` | `generic_spct`             | input tagged `.prod`                 |
-| `s_mean` or `s_median`    | `source_mspct`      | `source_spct`              | same as input                        |
-| `s_mean` or `s_median`    | `response_mspct`    | `response_spct`            | same as input                        |
-| `s_mean` or `s_median`    | `filter_mspct`      | `filter_spct`              | same as input                        |
-| `s_mean` or `s_median`    | `reflector_mspct`   | `reflector_spct`           | same as input                        |
-| `s_mean` or `s_median`    | `calibration_mspct` | `calibration_spct`         | same as input                        |
-| `s_var`, `s_se` or `s_sd` | `source_mspct`      | `generic_spct`             | input tagged `.var`, `.se` or `.sd`  |
-| `s_var`, `s_se` or `s_sd` | `response_mspct`    | `generic_spct`             | input tagged `.var`, `.se` or `.sd`  |
-| `s_var`, `s_se` or `s_sd` | `filter_mspct`      | `generic_spct`             | input tagged `.var`, `.se` or `.sd`  |
-| `s_var`, `s_se` or `s_sd` | `reflector_mspct`   | `generic_spct`             | input tagged `.var`, `.se` or `.sd`  |
-| `s_var`, `s_se` or `s_sd` | `calibration_mspct` | `generic_spct`             | input tagged `.var`, `.se` or `.sd`  |
-| `s_mean_se`               | `source_mspct`      | `source_spct`              | same as input plus col. tagged `.se` |
-| `s_mean_se`               | `response_mspct`    | `response_spct`            | same as input plus col. tagged `.se` |
-| `s_mean_se`               | `filter_mspct`      | `filter_spct`              | same as input plus col. tagged `.se` |
-| `s_mean_se`               | `reflector_mspct`   | `reflector_spct`           | same as input plus col. tagged `.se` |
-| `s_mean_se`               | `calibration_mspct` | `calibration_spct`         | same as input plus col. tagged `.se` |
-| `s_range`                 | `source_mspct`      | `generic_spct`             | input tagged `.min` and `.max`       |
-| `s_range`                 | `response_mspct`    | `generic_spct`             | input tagged `.min` and `.max`       |
-| `s_range`                 | `filter_mspct`      | `generic_spct`             | input tagged `.min` and `.max`       |
-| `s_range`                 | `reflector_mspct`   | `generic_spct`             | input tagged `.min` and `.max`       |
-| `s_range`                 | `calibration_mspct` | `generic_spct`             | input tagged `.min` and `.max`       |
+| `s_sum`                   | `source_spct/mspct`      | `source_spct`              | same as input                        |
+| `s_sum`                   | `response_spct/mspct`    | `response_spct`            | same as input                        |
+| `s_sum`                   | `filter_spct/mspct`      | `generic_spct`             | input tagged `.sum`                  |
+| `s_sum`                   | `reflector_spct/mspct`   | `generic_spct`             | input tagged `.sum`                  |
+| `s_sum`                   | `calibration_spct/mspct` | `generic_spct`             | input tagged `.sum`                  |
+| `s_prod`                  | `source_spct/mspct`      | `source_spct`              | input tagged `.prod`                 |
+| `s_prod`                  | `response_spct/mspct`    | `response_spct`            | input tagged `.prod`                 |
+| `s_prod`                  | `filter_spct/mspct`      | `filter_spct`              | same as input                        |
+| `s_prod`                  | `reflector_spct/mspct`   | `reflector_spct`           | same as input                        |
+| `s_prod`                  | `calibration_spct/mspct` | `generic_spct`             | input tagged `.prod`                 |
+| `s_mean` or `s_median`    | `source_spct/mspct`      | `source_spct`              | same as input                        |
+| `s_mean` or `s_median`    | `response_spct/mspct`    | `response_spct`            | same as input                        |
+| `s_mean` or `s_median`    | `filter_spct/mspct`      | `filter_spct`              | same as input                        |
+| `s_mean` or `s_median`    | `reflector_spct/mspct`   | `reflector_spct`           | same as input                        |
+| `s_mean` or `s_median`    | `calibration_spct/mspct` | `calibration_spct`         | same as input                        |
+| `s_var`, `s_se` or `s_sd` | `source_spct/mspct`      | `generic_spct`             | input tagged `.var`, `.se` or `.sd`  |
+| `s_var`, `s_se` or `s_sd` | `response_spct/mspct`    | `generic_spct`             | input tagged `.var`, `.se` or `.sd`  |
+| `s_var`, `s_se` or `s_sd` | `filter_spct/mspct`      | `generic_spct`             | input tagged `.var`, `.se` or `.sd`  |
+| `s_var`, `s_se` or `s_sd` | `reflector_spct/mspct`   | `generic_spct`             | input tagged `.var`, `.se` or `.sd`  |
+| `s_var`, `s_se` or `s_sd` | `calibration_spct/mspct` | `generic_spct`             | input tagged `.var`, `.se` or `.sd`  |
+| `s_mean_se`               | `source_spct/mspct`      | `source_spct`              | same as input plus col. tagged `.se` |
+| `s_mean_se`               | `response_spct/mspct`    | `response_spct`            | same as input plus col. tagged `.se` |
+| `s_mean_se`               | `filter_spct/mspct`      | `filter_spct`              | same as input plus col. tagged `.se` |
+| `s_mean_se`               | `reflector_spct/mspct`   | `reflector_spct`           | same as input plus col. tagged `.se` |
+| `s_mean_se`               | `calibration_spct/mspct` | `calibration_spct`         | same as input plus col. tagged `.se` |
+| `s_range`                 | `source_spct/mspct`      | `generic_spct`             | input tagged `.min` and `.max`       |
+| `s_range`                 | `response_spct/mspct`    | `generic_spct`             | input tagged `.min` and `.max`       |
+| `s_range`                 | `filter_spct/mspct`      | `generic_spct`             | input tagged `.min` and `.max`       |
+| `s_range`                 | `reflector_spct/mspct`   | `generic_spct`             | input tagged `.min` and `.max`       |
+| `s_range`                 | `calibration_spct/mspct` | `generic_spct`             | input tagged `.min` and `.max`       |
 
 The calculations are done wavelength by wavelength yielding a spectrum
 at the same wavelengths than those in the input. Removal of `NA` values
@@ -2722,12 +2723,38 @@ in the summary print out only if set in the spectral object summarized.
 summary(sun.spct)
 ```
 
+In the case of collections of spectra, by default a conscise summary is
+printed.
+
 ```{r, summary-2}
-summary(sun_evening.spct)
+summary(two_filters.mspct)
 ```
 
+However, the spectra can be also summarized individually.
+
+```{r, summary-2-each}
+summary(two_filters.mspct, expand = "each")
+```
+
+In the case of multiple spectra in long form, by default a single summary is
+printed.
+
 ```{r, summary-2a}
-summary(sun_evening.mspct)
+summary(two_filters.spct)
+```
+
+Passing `eval="collection"` we obtain the same condensed summary as shown above
+as the default for collections of spectra. (Output not shown here.)
+
+```{r, summary-2a-collection, eval=FALSE}
+summary(two_filters.spct, expand = "collection")
+```
+
+Passing `eval="each"` we obtain the same expanded summary as shown above
+for `eval="each"` for collections of spectra. (Output not shown here.)
+
+```{r, summary-2a-each, eval=FALSE}
+summary(two_filters.spct, expand = "each")
 ```
 
 ### Wavelength
@@ -2735,10 +2762,10 @@ summary(sun_evening.mspct)
 #### Individual spectra
 
 The *usual* and three new summary methods are available for spectra, but
-redefined to return wavelength-based summaries in nanometres (nm). For
-clarity synonyms with clearer names are provided. The three new generic
-methods `midpoint()`, `expanse()` and `stepsize()` are also defined for
-`numeric`.
+redefined to return _wavelength_-based summaries in nanometres (nm) directly
+from spectra. For clarity, synonyms with names starting with `wl_` are provided.
+The three new generic methods `midpoint()`, `expanse()` and `stepsize()` are
+also defined for `numeric`.
 
 ```{r, summary-3}
 wl_range(sun.spct)
@@ -3093,12 +3120,6 @@ or spectral images, but also when dealing with a small group of related
 spectra. In the example below we show how to use a collection of spectra
 to estimate irradiances under different filters set up in sunlight.
 
-We create a collection of two spectra, for use in our examples.
-
-```{r}
-two_suns.mspct <- source_mspct(list(sun1 = sun.spct, sun2 = sun.spct * 2))
-```
-
 Methods `irrad()`, `e_irrad()` and `q_irrad()` can be used for
 collections of spectra exactly as for a single spectrum (as described
 above). We here only show the additional features that apply to
@@ -3106,7 +3127,7 @@ collections. In this first example, we can see that the returned object
 is a data frame instead of a named numeric vector.
 
 ```{r}
-e_irrad(two_suns.mspct, w.band = PAR.wb)
+e_irrad(sun_evening.mspct, w.band = PAR.wb)
 ```
 
 Spectral objects can contain metadata as attributes. When summarizing a
@@ -3115,7 +3136,7 @@ metadata, extracted from each member of the collection, to columns in
 the returned data frame. This can be done as follows.
 
 ```{r}
-q_irrad(two_suns.mspct, 
+q_irrad(sun_evening.mspct, 
         w.band = PAR.wb,
         scale.factor = 1e6, # umol m-2 s-1
         attr2tb = c(when.measured = "time", lon = "lon", lat = "lat"))

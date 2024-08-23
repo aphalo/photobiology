@@ -612,10 +612,19 @@ is_tagged(untg.sun.spct)
 summary(sun.spct)
 
 ## ----summary-2----------------------------------------------------------------
-summary(sun_evening.spct)
+summary(two_filters.mspct)
+
+## ----summary-2-each-----------------------------------------------------------
+summary(two_filters.mspct, expand = "each")
 
 ## ----summary-2a---------------------------------------------------------------
-summary(sun_evening.mspct)
+summary(two_filters.spct)
+
+## ----summary-2a-collection, eval=FALSE----------------------------------------
+#  summary(two_filters.spct, expand = "collection")
+
+## ----summary-2a-each, eval=FALSE----------------------------------------------
+#  summary(two_filters.spct, expand = "each")
 
 ## ----summary-3----------------------------------------------------------------
 wl_range(sun.spct)
@@ -730,13 +739,10 @@ names(UV_bands.lst) <- c("UV-C", "UV-B", "UV-A")
 q_irrad(sun.spct, UV_bands.lst, naming = "short", scale.factor = 1e6)
 
 ## -----------------------------------------------------------------------------
-two_suns.mspct <- source_mspct(list(sun1 = sun.spct, sun2 = sun.spct * 2))
+e_irrad(sun_evening.mspct, w.band = PAR.wb)
 
 ## -----------------------------------------------------------------------------
-e_irrad(two_suns.mspct, w.band = PAR.wb)
-
-## -----------------------------------------------------------------------------
-q_irrad(two_suns.mspct, 
+q_irrad(sun_evening.mspct, 
         w.band = PAR.wb,
         scale.factor = 1e6, # umol m-2 s-1
         attr2tb = c(when.measured = "time", lon = "lon", lat = "lat"))
