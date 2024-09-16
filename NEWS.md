@@ -4,6 +4,11 @@ editor_options:
     wrap: 72
 ---
 
+# photobiology 0.11.4
+
+- Implement methods `where_measured()`, `what_measured()`, `how_measured()` and
+`when_measured()` for data frames (and tibbles).
+
 # photobiology 0.11.3
 
 Bug fixes and improved printing of spectra and their summaries. This changes

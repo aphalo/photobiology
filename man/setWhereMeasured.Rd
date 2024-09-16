@@ -6,6 +6,7 @@
 \alias{setWhereMeasured.default}
 \alias{setWhereMeasured.generic_spct}
 \alias{setWhereMeasured.summary_generic_spct}
+\alias{setWhereMeasured.data.frame}
 \alias{setWhereMeasured.generic_mspct}
 \title{Set the "where.measured" attribute}
 \usage{
@@ -18,6 +19,8 @@ where_measured(x) <- value
 \method{setWhereMeasured}{generic_spct}(x, where.measured = NA, lat = NA, lon = NA, address = NA, ...)
 
 \method{setWhereMeasured}{summary_generic_spct}(x, where.measured = NA, lat = NA, lon = NA, address = NA, ...)
+
+\method{setWhereMeasured}{data.frame}(x, where.measured = NA, lat = NA, lon = NA, address = NA, ...)
 
 \method{setWhereMeasured}{generic_mspct}(x, where.measured = NA, lat = NA, lon = NA, address = NA, ...)
 }
@@ -49,6 +52,8 @@ generic_spct or an object of a class derived from generic_spct.
 \item \code{setWhereMeasured(generic_spct)}: generic_spct
 
 \item \code{setWhereMeasured(summary_generic_spct)}: summary_generic_spct
+
+\item \code{setWhereMeasured(data.frame)}: data.frame
 
 \item \code{setWhereMeasured(generic_mspct)}: generic_mspct
 

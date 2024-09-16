@@ -6,6 +6,7 @@
 \alias{getWhenMeasured.default}
 \alias{getWhenMeasured.generic_spct}
 \alias{getWhenMeasured.summary_generic_spct}
+\alias{getWhenMeasured.data.frame}
 \alias{getWhenMeasured.generic_mspct}
 \title{Get the "when.measured" attribute}
 \usage{
@@ -17,7 +18,9 @@ when_measured(x, ...)
 
 \method{getWhenMeasured}{generic_spct}(x, as.df = FALSE, ...)
 
-\method{getWhenMeasured}{summary_generic_spct}(x, ...)
+\method{getWhenMeasured}{summary_generic_spct}(x, as.df = FALSE, ...)
+
+\method{getWhenMeasured}{data.frame}(x, as.df = FALSE, ...)
 
 \method{getWhenMeasured}{generic_mspct}(x, ..., idx = "spct.idx")
 }
@@ -46,6 +49,8 @@ or a generic_mspct.
 \item \code{getWhenMeasured(generic_spct)}: generic_spct
 
 \item \code{getWhenMeasured(summary_generic_spct)}: summary_generic_spct
+
+\item \code{getWhenMeasured(data.frame)}: data.frame
 
 \item \code{getWhenMeasured(generic_mspct)}: generic_mspct
 
