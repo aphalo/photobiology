@@ -15,7 +15,7 @@ test_that("numeric", {
   expect_is(color_of(NA_integer_), "character")
   expect_true(is.na(color_of(NA_integer_)))
   expect_silent(color_of(NA_integer_))
-  expect_error(color_of(-1))
+  expect_error(color_of(c(-1, 1)))
   expect_warning(color_of(300, chroma.type = "zz"))
   expect_warning(color_of(300, chroma.type = 2))
   expect_warning(color_of(300, chroma.type = sun.spct))

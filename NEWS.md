@@ -8,6 +8,8 @@ editor_options:
 
 - Implement methods `where_measured()`, `what_measured()`, `how_measured()` and
 `when_measured()` for data frames (and tibbles).
+- Support negative wavelengths as input in `color_of.numeric()` by changing 
+sign. This is temporary patch to allow reverse transform in scale in 'ggspectra'.
 
 # photobiology 0.11.3
 
