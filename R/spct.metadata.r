@@ -77,32 +77,12 @@ setWhenMeasured.generic_spct <-
 #' @describeIn setWhenMeasured summary_generic_spct
 #' @export
 #'
-setWhenMeasured.summary_generic_spct <-
-  function(x,
-           when.measured = lubridate::now(tzone = "UTC"),
-           ...) {
-    name <- substitute(x)
-    if (!is.null(when.measured)) {
-      if (!is.list(when.measured)) {
-        when.measured <- list(when.measured)
-      } else if (!length(when.measured) %in% c(1L, getMultipleWl(x))) {
-        warning("Length of 'when.measured' does not match spectrum object")
-      }
-      if (all(sapply(when.measured, lubridate::is.instant))) {
-        when.measured <-
-          lapply(when.measured, lubridate::with_tz, tzone = "UTC")
-      }
-      if (is.list(when.measured) && length(when.measured) == 1) {
-        when.measured <- when.measured[[1]]
-      }
-    }
-    attr(x, "when.measured") <- when.measured
-    if (is.name(name)) {
-      name <- as.character(name)
-      assign(name, x, parent.frame(), inherits = TRUE)
-    }
-    invisible(x)
-  }
+setWhenMeasured.summary_generic_spct <- setWhenMeasured.generic_spct
+
+#' @describeIn setWhenMeasured data.frame
+#' @export
+#'
+setWhenMeasured.data.frame <- setWhenMeasured.generic_spct
 
 #' @describeIn setWhenMeasured generic_mspct
 #' @export
@@ -201,20 +181,11 @@ getWhenMeasured.generic_spct <- function(x, as.df = FALSE, ...) {
 
 #' @describeIn getWhenMeasured summary_generic_spct
 #' @export
-getWhenMeasured.summary_generic_spct <- function(x, ...) {
-  when.measured <- attr(x, "when.measured", exact = TRUE)
-  if (is.null(when.measured) ||
-      !all(sapply(when.measured, lubridate::is.instant))) {
-    # need to handle invalid attribute values
-    # we return an NA of class POSIXct
-    when.measured <- suppressWarnings(lubridate::ymd_hms(NA_character_,
-                                                         tz = "UTC"))
-  } else if (lubridate::is.POSIXlt(when.measured)) {
-    when.measured <-
-      as.POSIXct(when.measured, tz = "UTC", origin = lubridate::origin)
-  }
-  when.measured
-}
+getWhenMeasured.summary_generic_spct <- getWhenMeasured.generic_spct
+
+#' @describeIn getWhenMeasured data.frame
+#' @export
+getWhenMeasured.data.frame <- getWhenMeasured.generic_spct
 
 #' @describeIn getWhenMeasured generic_mspct
 #' @param idx character Name of the column with the names of the members of the
@@ -326,6 +297,11 @@ setWhereMeasured.generic_spct <- function(x,
 #'
 #' @export
 setWhereMeasured.summary_generic_spct <- setWhereMeasured.generic_spct
+
+#' @describeIn setWhereMeasured data.frame
+#'
+#' @export
+setWhereMeasured.data.frame <- setWhereMeasured.generic_spct
 
 #' @describeIn setWhereMeasured generic_mspct
 #' @note Method for collections of spectra recycles the location information
@@ -472,6 +448,22 @@ getWhereMeasured.generic_mspct <- function(x,
   }
 }
 
+#' @describeIn getWhereMeasured data.frame
+#' @export
+#'
+getWhereMeasured.data.frame <- function(x, ...) {
+  where.measured <- attr(x, "where.measured", exact = TRUE)
+  if (is.null(where.measured)) return(na_geocode())
+  stopifnot("The value of 'geocode' attribute is invalid" =
+              is_valid_geocode(where.measured))
+
+  if (is.list(where.measured) && !is.data.frame(where.measured)) {
+    x <- dplyr::bind_rows(where.measured)
+  }
+  # needed to clean inconsistent values from previous versions
+  validate_geocode(where.measured)
+}
+
 # how.measured attributes -------------------------------------------------
 
 #' Set the "how.measured" attribute
@@ -499,7 +491,7 @@ getWhereMeasured.generic_mspct <- function(x,
 #'
 setHowMeasured <- function(x, how.measured) {
   name <- substitute(x)
-  if (is.generic_spct(x) || is.summary_generic_spct(x)) {
+  if (is.generic_spct(x) || is.summary_generic_spct(x) || is.data.frame(x)) {
     attr(x, "how.measured") <- how.measured
     if (is.name(name)) {
       name <- as.character(name)
@@ -562,15 +554,11 @@ getHowMeasured.generic_spct <- function(x, ...) {
 
 #' @describeIn getHowMeasured summary_generic_spct
 #' @export
-getHowMeasured.summary_generic_spct <- function(x, ...) {
-  how.measured <- attr(x, "how.measured", exact = TRUE)
-  if (is.null(how.measured) || (is.atomic(how.measured) && all(is.na(how.measured)))) {
-    # need to handle objects created with old versions
-    NA_character_
-  } else {
-    how.measured
-  }
-}
+getHowMeasured.summary_generic_spct <- getHowMeasured.generic_spct
+
+#' @describeIn getHowMeasured data.frame
+#' @export
+getHowMeasured.data.frame <- getHowMeasured.generic_spct
 
 #' @describeIn getHowMeasured generic_mspct
 #' @param idx character Name of the column with the names of the members of the
@@ -978,7 +966,7 @@ isValidInstrSettings <- function(x) {
 #'
 setWhatMeasured <- function(x, what.measured) {
   name <- substitute(x)
-  if (is.generic_spct(x) || is.summary_generic_spct(x)) {
+  if (is.generic_spct(x) || is.summary_generic_spct(x) || is.data.frame(x)) {
     attr(x, "what.measured") <- what.measured
     if (is.name(name)) {
       name <- as.character(name)
@@ -1043,15 +1031,11 @@ getWhatMeasured.generic_spct <- function(x, ...) {
 
 #' @describeIn getWhatMeasured summary_generic_spct
 #' @export
-getWhatMeasured.summary_generic_spct <- function(x, ...) {
-  what.measured <- attr(x, "what.measured", exact = TRUE)
-  if (is.null(what.measured) || (is.atomic(what.measured) && all(is.na(what.measured)))) {
-    # need to handle objects created with old versions
-    NA_character_
-  } else {
-    what.measured
-  }
-}
+getWhatMeasured.summary_generic_spct <- getWhatMeasured.generic_spct
+
+#' @describeIn getWhatMeasured data.frame
+#' @export
+getWhatMeasured.data.frame <- getWhatMeasured.generic_spct
 
 #' @describeIn getWhatMeasured generic_mspct
 #' @param idx character Name of the column with the names of the members of the

@@ -17,6 +17,12 @@
 #'   definitions and by default an additional column with names of the spectra
 #'   as index. In case of missing input the returned value is \code{NA}.
 #'
+#' @note The specialization of \code{color_of()} for \code{numeric} and function
+#'   \code{fast_color_of_wl()} accept both positive and negative values in
+#'   \code{x} as long as all values have the same sign. This makes its use in
+#'   'ggspectra' simpler as the reverse scale transform changes the sign of the
+#'   data. This should be considered a temporary fix.
+#'
 #' @examples
 #' wavelengths <- c(300, 420, 500, 600, NA) # nanometres
 #' color_of(wavelengths)
@@ -61,6 +67,10 @@ color_of.numeric <- function(x,
                              ...) {
   if (length(x) == 0) {
     return(character())
+  }
+  # allow use of reverse scale transformation in 'ggspectra'
+  if (all(na.omit(x) < 0)) {
+    x <- -x
   }
   stopifnot(all(ifelse(is.na(x), Inf, x) > 0)) # w.length > 0 or NA
   if (is.character(chroma.type)) {
@@ -276,6 +286,10 @@ color <- function(x, ...) {
 #'
 fast_color_of_wl <- function(x, type = "CMF", ...) {
   stopifnot(is.numeric(x))
+  # allow use of reverse scale transformation in 'ggspectra'
+  if (all(na.omit(x) < 0)) {
+    x <- -x
+  }
   # ensure default color names are always used
   x <- unname(x)
   # fall-back to slower color_of() when pre-computed colors are not available

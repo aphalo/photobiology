@@ -80,6 +80,12 @@ numeric values representing a wavelengths in nm.
 
 }}
 \note{
+The specialization of \code{color_of()} for \code{numeric} and function
+  \code{fast_color_of_wl()} accept both positive and negative values in
+  \code{x} as long as all values have the same sign. This makes its use in
+  'ggspectra' simpler as the reverse scale transform changes the sign of the
+  data. This should be considered a temporary fix.
+
 When \code{x} is a list but not a waveband, if a method  \code{color_of}
   is not available for the class of each element of the list, then
   \code{color_of.default} will be called.

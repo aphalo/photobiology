@@ -13,6 +13,13 @@ the colon (`::`) notation, `photobiology::` will need to be replaced by
 `photobiologySuncalc::`. This code-breaking change is more likely to affect
 packages than user scripts.
 
+# photobiology 0.11.4
+
+- Implement methods `where_measured()`, `what_measured()`, `how_measured()` and
+`when_measured()` for data frames (and tibbles).
+- Support negative wavelengths as input in `color_of.numeric()` by changing 
+sign. This is temporary patch to allow reverse transform in scale in 'ggspectra'.
+
 # photobiology 0.11.3
 
 Bug fixes and improved printing of spectra and their summaries. This changes
