@@ -21,6 +21,11 @@
 #'   or \code{NULL} an error is triggered. A \code{POSIXct} describes an
 #'   instant in time (date plus time-of-day plus time zone).
 #'
+#'   Be aware that \code{lubridate::ymd()} returns an incompatible \code{Date}
+#'   object while \code{lubridate::ymd_h()}, \code{lubridate::ymd_hm()} and
+#'   \code{lubridate::ymd_hms()} and similar functions return objects of class
+#'   \code{POSIXct} acceptable as arguments for parameter \code{when.measured}.
+#'
 #' @export
 #' @family measurement metadata functions
 #' @examples
@@ -479,7 +484,7 @@ getWhereMeasured.data.frame <- function(x, ...) {
 #'
 #' @param x a R object
 #' @param how.measured,value a list or a character string.
-#' @param ... currently ignored.
+#' @param ... Allows use of additional arguments in methods for other classes.
 #'
 #' @return x modified by reference.
 #'
@@ -542,7 +547,7 @@ setHowMeasured.data.frame <- setHowMeasured.generic_spct
 setHowMeasured.generic_mspct <- function(x,
                                          how.measured,
                                          ...) {
-  msmsply(mspct = x, .fun = setWhatMeasured, ..., how.measured = how.measured)
+  msmsply(mspct = x, .fun = setHowMeasured, ..., how.measured = how.measured)
 }
 
 #' Get the "how.measured" attribute
@@ -990,6 +995,7 @@ isValidInstrSettings <- function(x) {
 #'
 #' @param x a generic_spct object
 #' @param what.measured,value a list
+#' @param ... Allows use of additional arguments in methods for other classes.
 #'
 #' @return x
 #' @note This function alters x itself by reference and in addition
@@ -1016,7 +1022,7 @@ setWhatMeasured <- function(x, ...) {UseMethod("setWhatMeasured")}
   setWhatMeasured(x, what.measured = value)
 }
 
-#' @describeIn setHowMeasured default
+#' @describeIn setWhatMeasured default
 #' @export
 setWhatMeasured.default <- function(x, what.measured, ...) {
   x
@@ -1048,7 +1054,7 @@ setWhatMeasured.data.frame <- setWhatMeasured.generic_spct
 setWhatMeasured.generic_mspct <- function(x,
                                           what.measured,
                                          ...) {
-  msmsply(mspct = x, .fun = setWhatMeasured, ..., how.measured = how.measured)
+  msmsply(mspct = x, .fun = setWhatMeasured, ..., what.measured = what.measured)
 }
 
 #' Get the "what.measured" attribute

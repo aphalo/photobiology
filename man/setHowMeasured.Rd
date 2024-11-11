@@ -8,7 +8,6 @@
 \alias{setHowMeasured.summary_generic_spct}
 \alias{setHowMeasured.data.frame}
 \alias{setHowMeasured.generic_mspct}
-\alias{setWhatMeasured.default}
 \title{Set the "how.measured" attribute}
 \usage{
 setHowMeasured(x, ...)
@@ -24,13 +23,11 @@ how_measured(x) <- value
 \method{setHowMeasured}{data.frame}(x, how.measured, ...)
 
 \method{setHowMeasured}{generic_mspct}(x, how.measured, ...)
-
-\method{setWhatMeasured}{default}(x, what.measured, ...)
 }
 \arguments{
 \item{x}{a R object}
 
-\item{...}{currently ignored.}
+\item{...}{Allows use of additional arguments in methods for other classes.}
 
 \item{how.measured, value}{a list or a character string.}
 }
@@ -53,11 +50,6 @@ derived-class object.
 \item \code{setHowMeasured(data.frame)}: data.frame
 
 \item \code{setHowMeasured(generic_mspct)}: generic_mspct
-
-}}
-\section{Functions}{
-\itemize{
-\item \code{setWhatMeasured(default)}: default
 
 }}
 \note{

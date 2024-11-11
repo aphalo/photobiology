@@ -58,6 +58,11 @@ This method alters x itself by reference and in addition
   generic_spct, x is not modified. If \code{when} is not a POSIXct object
   or \code{NULL} an error is triggered. A \code{POSIXct} describes an
   instant in time (date plus time-of-day plus time zone).
+
+  Be aware that \code{lubridate::ymd()} returns an incompatible \code{Date}
+  object while \code{lubridate::ymd_h()}, \code{lubridate::ymd_hm()} and
+  \code{lubridate::ymd_hms()} and similar functions return objects of class
+  \code{POSIXct} acceptable as arguments for parameter \code{when.measured}.
 }
 \examples{
 my.spct <- sun.spct

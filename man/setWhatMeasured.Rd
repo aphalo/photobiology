@@ -3,6 +3,7 @@
 \name{setWhatMeasured}
 \alias{setWhatMeasured}
 \alias{what_measured<-}
+\alias{setWhatMeasured.default}
 \alias{setWhatMeasured.generic_spct}
 \alias{setWhatMeasured.summary_generic_spct}
 \alias{setWhatMeasured.data.frame}
@@ -12,6 +13,8 @@
 setWhatMeasured(x, ...)
 
 what_measured(x) <- value
+
+\method{setWhatMeasured}{default}(x, what.measured, ...)
 
 \method{setWhatMeasured}{generic_spct}(x, what.measured, ...)
 
@@ -23,6 +26,8 @@ what_measured(x) <- value
 }
 \arguments{
 \item{x}{a generic_spct object}
+
+\item{...}{Allows use of additional arguments in methods for other classes.}
 
 \item{what.measured, value}{a list}
 }
@@ -36,6 +41,8 @@ derived-class object.
 }
 \section{Methods (by class)}{
 \itemize{
+\item \code{setWhatMeasured(default)}: default
+
 \item \code{setWhatMeasured(generic_spct)}: generic_spct
 
 \item \code{setWhatMeasured(summary_generic_spct)}: summary_generic_spct
