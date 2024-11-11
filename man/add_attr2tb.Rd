@@ -117,8 +117,8 @@ The attributes are copied to a column in a tibble or data frame. If
   \code{tibble} is passed as argument, new columns are added to it. However,
   the number of rows in the argument passed to \code{tb} must match the
   number of spectra in the argument passed to \code{mspct}. Only in the case
-  of method \code{add_attr2tb()} if the argument
-  to \code{col.names} is a named vector, the names of members are used as names for the columns
+  of method \code{add_attr2tb()} if the argument to \code{col.names} is a
+  named vector, the names of members are used as names for the columns
   created. This permits setting any valid name for the new columns. If the
   vector passed to \code{col.names} has no names the names of the attributes
   are used for the new columns. If the fields of the attributes are unnested

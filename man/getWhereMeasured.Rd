@@ -42,7 +42,9 @@ a data.frame with a single row and at least columns "lon" and "lat",
    unless expand is set to \code{FALSE}.
 }
 \description{
-Function to read the "where.measured" attribute of an existing generic_spct.
+Function to read the "where.measured" attribute of
+generic_spct, generic_mspct, summary_generic_spct, data.frame or a
+derived-class object.
 }
 \section{Methods (by class)}{
 \itemize{

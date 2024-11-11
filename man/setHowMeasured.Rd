@@ -3,28 +3,67 @@
 \name{setHowMeasured}
 \alias{setHowMeasured}
 \alias{how_measured<-}
+\alias{setHowMeasured.default}
+\alias{setHowMeasured.generic_spct}
+\alias{setHowMeasured.summary_generic_spct}
+\alias{setHowMeasured.data.frame}
+\alias{setHowMeasured.generic_mspct}
+\alias{setWhatMeasured.default}
 \title{Set the "how.measured" attribute}
 \usage{
-setHowMeasured(x, how.measured)
+setHowMeasured(x, ...)
 
 how_measured(x) <- value
+
+\method{setHowMeasured}{default}(x, how.measured, ...)
+
+\method{setHowMeasured}{generic_spct}(x, how.measured, ...)
+
+\method{setHowMeasured}{summary_generic_spct}(x, how.measured, ...)
+
+\method{setHowMeasured}{data.frame}(x, how.measured, ...)
+
+\method{setHowMeasured}{generic_mspct}(x, how.measured, ...)
+
+\method{setWhatMeasured}{default}(x, what.measured, ...)
 }
 \arguments{
-\item{x}{a generic_spct object}
+\item{x}{a R object}
 
-\item{how.measured, value}{a list}
+\item{...}{currently ignored.}
+
+\item{how.measured, value}{a list or a character string.}
 }
 \value{
-x
+x modified by reference.
 }
 \description{
-Function to set by reference the "how.measured" attribute  of an existing
-generic_spct or derived-class object.
+Function to set the "how.measured" attribute  of an existing
+generic_spct, generic_mspct, summary_generic_spct, data.frame or a
+derived-class object.
 }
+\section{Methods (by class)}{
+\itemize{
+\item \code{setHowMeasured(default)}: default
+
+\item \code{setHowMeasured(generic_spct)}: generic_spct
+
+\item \code{setHowMeasured(summary_generic_spct)}: summary_generic_spct
+
+\item \code{setHowMeasured(data.frame)}: data.frame
+
+\item \code{setHowMeasured(generic_mspct)}: generic_mspct
+
+}}
+\section{Functions}{
+\itemize{
+\item \code{setWhatMeasured(default)}: default
+
+}}
 \note{
 This function alters x itself by reference and in addition
-  returns x invisibly. If x is not a generic_spct object, x is not
-  modified.
+  returns x invisibly. If x is not an object of a supported class, \code{x}
+  is silently returned unchanged.
 }
 \examples{
 

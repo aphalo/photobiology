@@ -43,7 +43,8 @@ x
 }
 \description{
 Function to set by reference the "where.measured" attribute  of an existing
-generic_spct or an object of a class derived from generic_spct.
+generic_spct, generic_mspct, summary_generic_spct, data.frame or a
+derived-class object.
 }
 \section{Methods (by class)}{
 \itemize{

@@ -36,8 +36,9 @@ collection of spectra.}
 character vector An object containing a description of the data.
 }
 \description{
-Function to read the "what.measured" attribute of an existing generic_spct
-or a generic_mspct.
+Function to read the "what.measured" attribute of an existing
+generic_spct, generic_mspct, summary_generic_spct, data.frame or a
+derived-class object.
 }
 \section{Methods (by class)}{
 \itemize{

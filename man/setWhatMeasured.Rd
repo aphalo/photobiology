@@ -3,11 +3,23 @@
 \name{setWhatMeasured}
 \alias{setWhatMeasured}
 \alias{what_measured<-}
+\alias{setWhatMeasured.generic_spct}
+\alias{setWhatMeasured.summary_generic_spct}
+\alias{setWhatMeasured.data.frame}
+\alias{setWhatMeasured.generic_mspct}
 \title{Set the "what.measured" attribute}
 \usage{
-setWhatMeasured(x, what.measured)
+setWhatMeasured(x, ...)
 
 what_measured(x) <- value
+
+\method{setWhatMeasured}{generic_spct}(x, what.measured, ...)
+
+\method{setWhatMeasured}{summary_generic_spct}(x, what.measured, ...)
+
+\method{setWhatMeasured}{data.frame}(x, what.measured, ...)
+
+\method{setWhatMeasured}{generic_mspct}(x, what.measured, ...)
 }
 \arguments{
 \item{x}{a generic_spct object}
@@ -19,8 +31,20 @@ x
 }
 \description{
 Function to set by reference the "what.measured" attribute  of an existing
-generic_spct or derived-class object.
+generic_spct, generic_mspct, summary_generic_spct, data.frame or a
+derived-class object.
 }
+\section{Methods (by class)}{
+\itemize{
+\item \code{setWhatMeasured(generic_spct)}: generic_spct
+
+\item \code{setWhatMeasured(summary_generic_spct)}: summary_generic_spct
+
+\item \code{setWhatMeasured(data.frame)}: data.frame
+
+\item \code{setWhatMeasured(generic_mspct)}: generic_mspct
+
+}}
 \note{
 This function alters x itself by reference and in addition
   returns x invisibly. If x is not a generic_spct object, x is not
