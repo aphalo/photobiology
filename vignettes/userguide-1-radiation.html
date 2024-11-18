@@ -12,7 +12,7 @@
 
 <meta name="author" content="Pedro J. Aphalo" />
 
-<meta name="date" content="2024-08-23" />
+<meta name="date" content="2024-11-11" />
 
 <title>User Guide: 1 Radiation</title>
 
@@ -62,7 +62,7 @@ div.sourceCode { overflow: auto; }
 }
 @media print {
 pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
 { counter-reset: source-line 0; }
@@ -339,9 +339,9 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 
 <h1 class="title toc-ignore">User Guide: 1 Radiation</h1>
-<h3 class="subtitle">Package ‘photobiology’ 0.11.3</h3>
+<h3 class="subtitle">Package ‘photobiology’ 0.11.3.9000</h3>
 <h4 class="author">Pedro J. Aphalo</h4>
-<h4 class="date">2024-08-23</h4>
+<h4 class="date">2024-11-11</h4>
 
 
 <div id="TOC">
@@ -1570,7 +1570,7 @@ operating on <code>POSIXct</code> objects rather easy.</p>
 <span id="cb37-2"><a href="#cb37-2" tabindex="-1"></a><span class="fu">when_measured</span>(my.spct) <span class="ot">&lt;-</span>  <span class="cn">NULL</span></span>
 <span id="cb37-3"><a href="#cb37-3" tabindex="-1"></a><span class="fu">when_measured</span>(my.spct)</span></code></pre></div>
 <pre><code>## [1] NA</code></pre>
-<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" tabindex="-1"></a><span class="fu">when_measured</span>(my.spct) <span class="ot">&lt;-</span> lubridate<span class="sc">::</span><span class="fu">ymd_hms</span>(<span class="st">&quot;2015-10-31 22:55:00&quot;</span>, <span class="at">tz =</span> <span class="st">&quot;EET&quot;</span>)</span>
+<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" tabindex="-1"></a><span class="fu">when_measured</span>(my.spct) <span class="ot">&lt;-</span> lubridate<span class="sc">::</span><span class="fu">ymd_hms</span>(<span class="st">&quot;2015-10-31 22:55:00&quot;</span>, <span class="at">tz =</span> <span class="st">&quot;Europe/Helsinki&quot;</span>)</span>
 <span id="cb39-2"><a href="#cb39-2" tabindex="-1"></a><span class="fu">when_measured</span>(my.spct)</span></code></pre></div>
 <pre><code>## [1] &quot;2015-10-31 20:55:00 UTC&quot;</code></pre>
 <p>Functions <code>where_measured()</code> and
@@ -3623,15 +3623,15 @@ examples follow.</p>
 ##   &lt;fct&gt;    &lt;dttm&gt;             
 ## 1 time.01  2023-06-12 18:38:00
 ## 2 time.02  2023-06-12 18:39:00</code></pre>
-<div class="sourceCode" id="cb207"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb207-1"><a href="#cb207-1" tabindex="-1"></a><span class="fu">when_measured</span>(two.mspct) <span class="ot">&lt;-</span> <span class="fu">ymd</span>(<span class="st">&quot;2015-10-31&quot;</span>, <span class="at">tz =</span> <span class="st">&quot;EET&quot;</span>)</span>
+<div class="sourceCode" id="cb207"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb207-1"><a href="#cb207-1" tabindex="-1"></a><span class="fu">when_measured</span>(two.mspct) <span class="ot">&lt;-</span> <span class="fu">ymd</span>(<span class="st">&quot;2015-10-31&quot;</span>, <span class="at">tz =</span> <span class="st">&quot;Europe/Helsinki&quot;</span>)</span>
 <span id="cb207-2"><a href="#cb207-2" tabindex="-1"></a><span class="fu">when_measured</span>(two.mspct)</span></code></pre></div>
 <pre><code>## # A tibble: 2 × 2
 ##   spct.idx when.measured      
 ##   &lt;fct&gt;    &lt;dttm&gt;             
 ## 1 time.01  2015-10-30 22:00:00
 ## 2 time.02  2015-10-30 22:00:00</code></pre>
-<div class="sourceCode" id="cb209"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb209-1"><a href="#cb209-1" tabindex="-1"></a><span class="fu">when_measured</span>(two.mspct) <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="fu">ymd_hm</span>(<span class="st">&quot;2015-10-31 10:00&quot;</span>, <span class="at">tz =</span> <span class="st">&quot;EET&quot;</span>),</span>
-<span id="cb209-2"><a href="#cb209-2" tabindex="-1"></a>                                 <span class="fu">ymd_hm</span>(<span class="st">&quot;2015-10-31 11:00&quot;</span>, <span class="at">tz =</span> <span class="st">&quot;EET&quot;</span>))</span>
+<div class="sourceCode" id="cb209"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb209-1"><a href="#cb209-1" tabindex="-1"></a><span class="fu">when_measured</span>(two.mspct) <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="fu">ymd_hm</span>(<span class="st">&quot;2015-10-31 10:00&quot;</span>, <span class="at">tz =</span> <span class="st">&quot;Europe/Helsinki&quot;</span>),</span>
+<span id="cb209-2"><a href="#cb209-2" tabindex="-1"></a>                                 <span class="fu">ymd_hm</span>(<span class="st">&quot;2015-10-31 11:00&quot;</span>, <span class="at">tz =</span> <span class="st">&quot;Europe/Helsinki&quot;</span>))</span>
 <span id="cb209-3"><a href="#cb209-3" tabindex="-1"></a><span class="fu">when_measured</span>(two.mspct) <span class="co"># UTC shown!</span></span></code></pre></div>
 <pre><code>## # A tibble: 2 × 2
 ##   spct.idx when.measured      

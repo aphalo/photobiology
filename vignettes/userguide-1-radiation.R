@@ -11,8 +11,8 @@ library(lubridate)
 library(dplyr)
 
 ## ----example-1, eval=FALSE----------------------------------------------------
-#  # not run
-#  my.spct <- source_spct(w.length = wavelength/10, s.e.irrad = irrad/1000)
+# # not run
+# my.spct <- source_spct(w.length = wavelength/10, s.e.irrad = irrad/1000)
 
 ## ----query-class-1------------------------------------------------------------
 is.any_spct(sun.spct)
@@ -64,7 +64,7 @@ comment(my.cm.spct)
 my.spct <- sun.spct
 when_measured(my.spct) <-  NULL
 when_measured(my.spct)
-when_measured(my.spct) <- lubridate::ymd_hms("2015-10-31 22:55:00", tz = "EET")
+when_measured(my.spct) <- lubridate::ymd_hms("2015-10-31 22:55:00", tz = "Europe/Helsinki")
 when_measured(my.spct)
 
 ## ----attr-2-------------------------------------------------------------------
@@ -305,10 +305,10 @@ convolve_each(two.mspct, sun.spct, oper = `+`)
 
 ## ----col-attr-1---------------------------------------------------------------
 when_measured(two.mspct)
-when_measured(two.mspct) <- ymd("2015-10-31", tz = "EET")
+when_measured(two.mspct) <- ymd("2015-10-31", tz = "Europe/Helsinki")
 when_measured(two.mspct)
-when_measured(two.mspct) <- list(ymd_hm("2015-10-31 10:00", tz = "EET"),
-                                 ymd_hm("2015-10-31 11:00", tz = "EET"))
+when_measured(two.mspct) <- list(ymd_hm("2015-10-31 10:00", tz = "Europe/Helsinki"),
+                                 ymd_hm("2015-10-31 11:00", tz = "Europe/Helsinki"))
 when_measured(two.mspct) # UTC shown!
 two.mspct
 
@@ -398,14 +398,14 @@ split_bands(UV_bands.lst, length.out  =  2)
 split_bands(list(c(100, 150, 200), c(800, 825)), length.out = 1)
 
 ## ----set-up-printing, eval=FALSE----------------------------------------------
-#  options(tibble.print_max = 4)
-#  options(tibble.print_min = 4)
+# options(tibble.print_max = 4)
+# options(tibble.print_min = 4)
 
 ## ----print-1, eval=FALSE------------------------------------------------------
-#  print(sun.spct, n = 3)
+# print(sun.spct, n = 3)
 
 ## ----print-2, eval=FALSE------------------------------------------------------
-#  summary(sun.spct)
+# summary(sun.spct)
 
 ## -----------------------------------------------------------------------------
 na.omit(sun.spct)
@@ -430,7 +430,7 @@ sun.spct * c(0,1)
 sun.spct * UVB.wb
 
 ## ----bin-oper-6, eval=FALSE---------------------------------------------------
-#  sun.spct * CIE.wb
+# sun.spct * CIE.wb
 
 ## ----unary-oper-1-------------------------------------------------------------
 -sun.spct
@@ -621,10 +621,10 @@ summary(two_filters.mspct, expand = "each")
 summary(two_filters.spct)
 
 ## ----summary-2a-collection, eval=FALSE----------------------------------------
-#  summary(two_filters.spct, expand = "collection")
+# summary(two_filters.spct, expand = "collection")
 
 ## ----summary-2a-each, eval=FALSE----------------------------------------------
-#  summary(two_filters.spct, expand = "each")
+# summary(two_filters.spct, expand = "each")
 
 ## ----summary-3----------------------------------------------------------------
 wl_range(sun.spct)

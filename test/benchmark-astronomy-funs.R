@@ -263,15 +263,15 @@ astrocalc4r_Version2.3_for_fishmethods=function (day, month, year, hour, timezon
 ## vectorised time points
 
 num.years <- 1
-times.per.min <- as.POSIXct(seq(from = today(tzone = "EET"), to = today(tzone = "EET") + years(num.years),
+times.per.min <- as.POSIXct(seq(from = today(tzone = "Europe/Helsinki"), to = today(tzone = "Europe/Helsinki") + years(num.years),
                  length.out =  365 * 24 * 60 * (num.years)))
-times.per.hour <- as.POSIXct(seq(from = today(tzone = "EET"), to = today(tzone = "EET") + years(num.years),
+times.per.hour <- as.POSIXct(seq(from = today(tzone = "Europe/Helsinki"), to = today(tzone = "Europe/Helsinki") + years(num.years),
                              length.out =  365 * 24 * (num.years)))
-times.per.day <- as.POSIXct(seq(from = today(tzone = "EET"), to = today(tzone = "EET") + years(num.years),
+times.per.day <- as.POSIXct(seq(from = today(tzone = "Europe/Helsinki"), to = today(tzone = "Europe/Helsinki") + years(num.years),
                              length.out =  365 * (num.years)))
-times.per.month <- as.POSIXct(seq(from = today(tzone = "EET"), to = today(tzone = "EET") + years(num.years),
+times.per.month <- as.POSIXct(seq(from = today(tzone = "Europe/Helsinki"), to = today(tzone = "Europe/Helsinki") + years(num.years),
                             length.out =  12 * (num.years)))
-times.per.year <- as.POSIXct(seq(from = today(tzone = "EET"), to = today(tzone = "EET") + years(num.years),
+times.per.year <- as.POSIXct(seq(from = today(tzone = "Europe/Helsinki"), to = today(tzone = "Europe/Helsinki") + years(num.years),
                              length.out = num.years))
 length(times.per.year)
 times.per.year
@@ -336,7 +336,7 @@ latitudes <- list(thousands = seq(0, 87, length.out = 2^12),
                   ones = seq(0, 87, length.out = 2^3))
 
 # every hour for a week
-t <- as.POSIXct(seq(from = today(tzone = "EET"), to = today(tzone = "EET") + days(1),
+t <- as.POSIXct(seq(from = today(tzone = "Europe/Helsinki"), to = today(tzone = "Europe/Helsinki") + days(1),
                     length.out =  24))
 
 benchmark.results <- list()
@@ -398,7 +398,7 @@ dev.off()
 
 ## profile
 
-t <- as.POSIXct(seq(from = today(tzone = "EET"), to = today(tzone = "EET") + days(1),
+t <- as.POSIXct(seq(from = today(tzone = "Europe/Helsinki"), to = today(tzone = "Europe/Helsinki") + days(1),
                     length.out = 3))
 localities <- data.frame(lat = latitudes$thousands, lon = 0)
 profvis::profvis(sun_angles(t, geocode = localities))
@@ -755,7 +755,7 @@ dev.off()
 
 ## other functions
 
-days <- seq(from = today(tzone = "EET") - years(1000), to = today(tzone = "EET"),
+days <- seq(from = today(tzone = "Europe/Helsinki") - years(1000), to = today(tzone = "Europe/Helsinki"),
             length.out =  365 * 1000)
 length(days)
 
@@ -785,10 +785,10 @@ autoplot(sun_rise.bench)
 # test values
 
 geocode <- data.frame(lat = 60.17, lon = 24.94, address = "Helsinki, Finland")
-day_night(geocode = geocode, tz = "EET", unit.out = "datetime")
-day_night(geocode = geocode, tz = "EET", unit.out = "hour")
-local_t <- day_night(geocode = geocode, tz = "EET", unit.out = "datetime")$sunrise
+day_night(geocode = geocode, tz = "Europe/Helsinki", unit.out = "datetime")
+day_night(geocode = geocode, tz = "Europe/Helsinki", unit.out = "hour")
+local_t <- day_night(geocode = geocode, tz = "Europe/Helsinki", unit.out = "datetime")$sunrise
 local_t
 sol_t <- solar_time(local_t, geocode = geocode)
 sol_t
-computeSunriseHour(today(tzone = "EET"), longDeg = geocode$lon, latDeg = geocode$lat)
+computeSunriseHour(today(tzone = "Europe/Helsinki"), longDeg = geocode$lon, latDeg = geocode$lat)

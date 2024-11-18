@@ -12,6 +12,8 @@ editor_options:
 methods for collections of spectra.
 - Support negative wavelengths as input in `color_of.numeric()` by changing 
 sign. This is temporary patch to allow reverse transform in scale in 'ggspectra'.
+- Replace use of unsupported time zone name "EET" by "Europe/Helsinki" for
+compatibility with future R (==4.5.0).
 
 # photobiology 0.11.3
 

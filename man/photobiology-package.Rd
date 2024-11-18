@@ -48,10 +48,10 @@ e_irrad(sun.spct, waveband(c(400,700)))
 e_irrad(sun.spct * yellow_gel.spct, waveband(c(400,500)))
 e_irrad(sun.spct * yellow_gel.spct, waveband(c(500,700)))
 # daylength
-sunrise_time(lubridate::today(tzone = "EET"), tz = "EET",
+sunrise_time(lubridate::today(tzone = "Europe/Helsinki"), tz = "Europe/Helsinki",
              geocode = data.frame(lat = 60, lon = 25),
              unit.out = "hour")
-day_length(lubridate::today(tzone = "EET"), tz = "EET",
+day_length(lubridate::today(tzone = "Europe/Helsinki"), tz = "Europe/Helsinki",
            geocode = data.frame(lat = 60, lon = 25),
            unit.out = "hour")
 # colour as seen by humans

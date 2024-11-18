@@ -131,7 +131,7 @@ The position of the sun at Helsinki, at the given instant in time for
 time zone _Eastern European Time_.
 
 ```{r}
-sun_angles(time = ymd_hms("2017-06-20 08:00:00", tz = "EET"), geocode = my.geocode)
+sun_angles(time = ymd_hms("2017-06-20 08:00:00", tz = "Europe/Helsinki"), geocode = my.geocode)
 ```
 
 Functions have defaults for their arguments, but rarely Greenwich will be the
@@ -148,12 +148,12 @@ multiple calls to the function. The vector of times can be created on the fly,
 or stored beforehand.
 
 ```{r}
-sun_angles(time = ymd_hms("2014-01-01 0:0:0", tz = "EET") + hours(c(0, 6, 12)), 
+sun_angles(time = ymd_hms("2014-01-01 0:0:0", tz = "Europe/Helsinki") + hours(c(0, 6, 12)), 
            geocode = my.geocode)
 ```
 
 ```{r}
-my.times <- ymd_hms("2014-01-01 0:0:0", tz = "EET") + hours(c(0, 6, 12))
+my.times <- ymd_hms("2014-01-01 0:0:0", tz = "Europe/Helsinki") + hours(c(0, 6, 12))
 sun_angles(time = my.times, geocode = my.geocode)
 ```
 
@@ -197,24 +197,24 @@ Convenience functions `sunrise_time()`, `sunset_time()`, `noon_time()`, `day_len
 other functions. 
 
 These functions are vectorized for their `date` and `geocode`
-parameters. They use as default location Greenwich in the U.K., and default time zone "UTC". The date is given by default by the current date based on "UTC". Universal Time Coordinate ("UTC") is the reference used to describe differences among time zones and is never modified by daylight saving time or summer time. The difference between EET (Eastern European Time) and UTC is +2 hours in winter and with EEST (Eastern European Summer Time) +3 hours.
+parameters. They use as default location Greenwich in the U.K., and default time zone "UTC". The date is given by default by the current date based on "UTC". Universal Time Coordinate ("UTC") is the reference used to describe differences among time zones and is never modified by daylight saving time or summer time. The difference between Europe/Helsinki (Eastern European Time) and UTC is +2 hours in winter and with EEST (Eastern European Summer Time) +3 hours.
 
 Latitude and longitude are passed through a `geocode` (a data frame). If the returned value is desired in the local time coordinates of the argument passed to `geocode`, the time zone should match the geographic coordinates. If geocodes contain a variable `"address"` it will be copied to the
 output. 
 
 In some of the examples below we reuse the geocode data frames created above, and we here create a vector of
-datetime objects differing in their date. The default time zone of function `ymd()` is `NULL`, so we override it with `EET` to match the geocodes for Finnish cities.
+datetime objects differing in their date. The default time zone of function `ymd()` is `NULL`, so we override it with `Europe/Helsinki` to match the geocodes for Finnish cities.
 
 ```{r}
-dates <- ymd("2015-03-01", tz = "EET") + months(0:5)
+dates <- ymd("2015-03-01", tz = "Europe/Helsinki") + months(0:5)
 dates
 ```
 
-As first example we compute the sunrise time for the current day in Helsinki, with the result returned eithe in UTC or EET coordinates. Time-zone names based on continent and city are also supported, and are to be preferred for past dates and the relationship between time zones and locations are affected by changes in country boundaries and in national laws.
+As first example we compute the sunrise time for the current day in Helsinki, with the result returned eithe in UTC or Europe/Helsinki coordinates. Time-zone names based on continent and city are also supported, and are to be preferred for past dates and the relationship between time zones and locations are affected by changes in country boundaries and in national laws.
 
 ```{r}
 sunrise_time(now("UTC"), geocode = my.geocode)
-sunrise_time(now("EET"), geocode = my.geocode)
+sunrise_time(now("Europe/Helsinki"), geocode = my.geocode)
 sunrise_time(now("Europe/Helsinki"), geocode = my.geocode)
 ```
 
@@ -228,9 +228,9 @@ The default for time zone is that of the `POSIXct` value passed as argument to p
 sunrise_time(geocode = my.geocode)
 sunrise_time(date = now("UTC"), geocode = my.geocode)
 sunrise_time(date = now("UTC"), tz = "UTC", geocode = my.geocode)
-sunrise_time(date = now("EET"), geocode = my.geocode)
-sunrise_time(date = now("EET"), tz = "EET", geocode = my.geocode)
-sunrise_time(today("EET"), tz = "EET", geocode = my.geocode)
+sunrise_time(date = now("Europe/Helsinki"), geocode = my.geocode)
+sunrise_time(date = now("Europe/Helsinki"), tz = "Europe/Helsinki", geocode = my.geocode)
+sunrise_time(today("Europe/Helsinki"), tz = "Europe/Helsinki", geocode = my.geocode)
 ```
 
 ----
@@ -239,12 +239,12 @@ We can also compute the time of solar noon and of sunset.
 
 ```{r}
 noon_time(now("UTC"), geocode = my.geocode)
-noon_time(now("EET"), geocode = my.geocode)
+noon_time(now("Europe/Helsinki"), geocode = my.geocode)
 ```
 
 ```{r}
 sunset_time(now("UTC"), geocode = my.geocode)
-sunset_time(now("EET"), geocode = my.geocode)
+sunset_time(now("Europe/Helsinki"), geocode = my.geocode)
 ```
 
 Functions `day_length()` and `night_length()` return the length of time, by default in hours and fraction.
@@ -275,16 +275,16 @@ default for `twilight` is `"none"` meaning that times correspond to the
 occlusion of the upper rim of the sun disk below the theoretical horizon.
 
 ```{r}
-sunrise_time(ymd("2017-03-21", tz = "EET"), 
-             tz = "EET", 
+sunrise_time(ymd("2017-03-21", tz = "Europe/Helsinki"), 
+             tz = "Europe/Helsinki", 
              geocode = my.geocode,
              twilight = "civil")
-sunrise_time(ymd("2017-03-21", tz = "EET"), 
-             tz = "EET", 
+sunrise_time(ymd("2017-03-21", tz = "Europe/Helsinki"), 
+             tz = "Europe/Helsinki", 
              geocode = my.geocode,
              twilight = -10)
-sunrise_time(ymd("2017-03-21", tz = "EET"), 
-             tz = "EET", 
+sunrise_time(ymd("2017-03-21", tz = "Europe/Helsinki"), 
+             tz = "Europe/Helsinki", 
              geocode = my.geocode,
              twilight = +12)
 ```
@@ -294,11 +294,11 @@ time-of-day in hours, minutes, or seconds since midnight, instead of the default
 `datetime`.
 
 ```{r}
-sunrise_time(ymd("2017-03-21", tz = "EET"), 
-             tz = "EET", 
+sunrise_time(ymd("2017-03-21", tz = "Europe/Helsinki"), 
+             tz = "Europe/Helsinki", 
              geocode = my.geocode)
-sunrise_time(ymd("2017-03-21", tz = "EET"), 
-             tz = "EET", 
+sunrise_time(ymd("2017-03-21", tz = "Europe/Helsinki"), 
+             tz = "Europe/Helsinki", 
              geocode = my.geocode,
              unit.out = "hours")
 ```

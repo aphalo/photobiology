@@ -129,14 +129,14 @@ test_that("sunrise_time", {
                     twilight = "none")), "UTC"
   )
   expect_equal(
-    tz(sunrise_time(ymd_hms("2016-04-17 12:00:20", tz = "UTC"), tz = "EET",
+    tz(sunrise_time(ymd_hms("2016-04-17 12:00:20", tz = "UTC"), tz = "Europe/Helsinki",
                     geocode = data.frame(lon = 24.93838, lat = 60.16986,
                                          address = "Helsinki, Finland"),
-                    twilight = "none")), "EET"
+                    twilight = "none")), "Europe/Helsinki"
   )
   expect_equal(
     as.duration(
-      sunrise_time(ymd("2016-04-17", tz = "UTC"), tz = "EET",
+      sunrise_time(ymd("2016-04-17", tz = "UTC"), tz = "Europe/Helsinki",
                    geocode = data.frame(lon = 24.93838, lat = 60.16986,
                                         address = "Helsinki, Finland"),
                    twilight = "none") %--%
@@ -220,14 +220,14 @@ test_that("noon_time", {
                     twilight = "none")), "UTC"
   )
   expect_equal(
-    tz(noon_time(ymd_hms("2016-04-17 12:00:20", tz = "UTC"), tz = "EET",
+    tz(noon_time(ymd_hms("2016-04-17 12:00:20", tz = "UTC"), tz = "Europe/Helsinki",
                     geocode = data.frame(lon = 24.93838, lat = 60.16986,
                                          address = "Helsinki, Finland"),
-                    twilight = "none")), "EET"
+                    twilight = "none")), "Europe/Helsinki"
   )
   expect_equal(
     as.duration(
-      noon_time(ymd("2016-04-17", tz = "UTC"), tz = "EET",
+      noon_time(ymd("2016-04-17", tz = "UTC"), tz = "Europe/Helsinki",
                    geocode = data.frame(lon = 24.93838, lat = 60.16986,
                                         address = "Helsinki, Finland"),
                    twilight = "none") %--%
@@ -305,14 +305,14 @@ test_that("sunset_time", {
                     twilight = "none")), "UTC"
   )
   expect_equal(
-    tz(sunset_time(ymd_hms("2016-04-17 12:00:20", tz = "UTC"), tz = "EET",
+    tz(sunset_time(ymd_hms("2016-04-17 12:00:20", tz = "UTC"), tz = "Europe/Helsinki",
                     geocode = data.frame(lon = 24.93838, lat = 60.16986,
                                          address = "Helsinki, Finland"),
-                    twilight = "none")), "EET"
+                    twilight = "none")), "Europe/Helsinki"
   )
   expect_equal(
     as.duration(
-      sunset_time(ymd("2016-04-17", tz = "UTC"), tz = "EET",
+      sunset_time(ymd("2016-04-17", tz = "UTC"), tz = "Europe/Helsinki",
                    geocode = data.frame(lon = 24.93838, lat = 60.16986,
                                         address = "Helsinki, Finland"),
                    twilight = "none") %--%
