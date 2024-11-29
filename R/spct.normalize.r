@@ -1131,6 +1131,9 @@ setNormalized <- function(x,
       name <- as.character(name)
       assign(name, x, parent.frame(), inherits = TRUE)
     }
+  } else {
+    warning("Method 'setNormalization()' not implemented for class: ",
+            class(x)[1])
   }
   invisible(x)
 }
