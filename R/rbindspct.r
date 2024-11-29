@@ -396,8 +396,12 @@ rbindspct <- function(l,
   setWhereMeasured(ans, where.measured)
   setWhatMeasured(ans, what.measured)
   setHowMeasured(ans, how.measured)
-  setInstrDesc(ans, instr.desc)
-  setInstrSettings(ans, instr.settings)
+  if (!all(is.na(instr.desc))) {
+    setInstrDesc(ans, instr.desc)
+  }
+  if (!all(is.na(instr.settings))) {
+    setInstrSettings(ans, instr.settings)
+  }
   ans
 }
 
