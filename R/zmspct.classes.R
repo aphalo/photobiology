@@ -1822,7 +1822,8 @@ subset2mspct <- function(x,
   # subset members of a mspct collection in place
   # possible future optimization: reserve memory and start assembly from tail
   if (is.any_mspct(x)) {
-    if (length(x) == 0L) {
+    if (length(x) == 0L || (length(x) == 1L && getMultipleWl(x[[1]]) == 1L)) {
+      # noothing to do
       return(x)
     } else if (length(x) == 1L) {
       return(subset2mspct(x[[1]], # 1-deep recursive call
