@@ -1793,7 +1793,8 @@ split2calibration_mspct <- function(x,
 #'   generic_mspct object or of a derived class.
 #' @param member.class character string.
 #' @param idx.var character Name of column containing data to be copied
-#'   unchanged to each spct object.
+#'   unchanged to each spct object or used for member names. If \code{NULL},
+#'   the default, the name is retrieved from x or its members when possible.
 #' @param drop.idx logical Flag indicating whether to drop or keep idx.var in
 #'   the collection members.
 #' @param ncol integer Number of 'virtual' columns in data.
@@ -1816,7 +1817,7 @@ split2calibration_mspct <- function(x,
 #'
 subset2mspct <- function(x,
                          member.class = NULL,
-                         idx.var = getIdFactor(x),
+                         idx.var = NULL,
                          drop.idx = TRUE,
                          ncol = 1, byrow = FALSE, ...) {
   # subset members of a mspct collection in place
@@ -1880,8 +1881,11 @@ subset2mspct <- function(x,
       z <- do.call(collection.constr, margs)
     } else {
       if (is.null(idx.var) || is.na(idx.var)) {
+        idx.var <- getIdFactor(x)
         # handle objects created with old versions of 'photobiology'
-        idx.var <- "spct.idx"
+        if (is.na(idx.var)) {
+          idx.var <- "spct.idx"
+        }
       }
       stopifnot(idx.var %in% names(x))
       if (is.factor(x[[idx.var]])) {

@@ -7,7 +7,7 @@
 subset2mspct(
   x,
   member.class = NULL,
-  idx.var = getIdFactor(x),
+  idx.var = NULL,
   drop.idx = TRUE,
   ncol = 1,
   byrow = FALSE,
@@ -21,7 +21,8 @@ generic_mspct object or of a derived class.}
 \item{member.class}{character string.}
 
 \item{idx.var}{character Name of column containing data to be copied
-unchanged to each spct object.}
+unchanged to each spct object or used for member names. If \code{NULL},
+the default, the name is retrieved from x or its members when possible.}
 
 \item{drop.idx}{logical Flag indicating whether to drop or keep idx.var in
 the collection members.}
