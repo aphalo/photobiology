@@ -232,9 +232,9 @@ as they remain valid.
 |                     | `w.length`, `s.q.irrad`    | `time.unit`, `bswf`                                 |
 | `filter_spct`       | `w.length`, `Tfr`          | `Tfr.type`, `filter.properties`                     |
 |                     | `w.length`, `A`            | `Tfr.type`, `filter.roperties`                      |
-| `ref lector_spct`   | `w.length`, `Rfr`          | `Rfr.type`                                          |
+| `reflector_spct`    | `w.length`, `Rfr`          | `Rfr.type`                                          |
 | `object_spct`       | `w.length`, `Tfr`, `Rfr`   | `Tfr.type`, `Rfr.type`                              |
-| `re sponse_spct`    | `w.length`, `s.e.response` | `time.unit`                                         |
+| `response_spct`     | `w.length`, `s.e.response` | `time.unit`                                         |
 |                     | `w.length`, `s.q.response` | `time.unit`                                         |
 | `chroma_spct`       | `w.length`, `x`, `y`, `z`  |                                                     |
 | `solute_spct`       | `w.length`, `K.mole`       | `K.type`, `solute.properties`                       |
