@@ -809,7 +809,9 @@ normalize_spct <- function(spct,
 
   if (updating) {
     old.normalization.ls <- getNormalization(spct)
-    has.normalization.metadata <- !any(is.na(unlist(old.normalization.ls)))
+    required.fields <- c("norm.type", "norm.wl", "norm.cols", "norm.range")
+    has.normalization.metadata <-
+      !any(is.na(unlist(old.normalization.ls[required.fields])))
 
     if (norm == "update") {
       if (!has.normalization.metadata) {
@@ -820,6 +822,7 @@ normalize_spct <- function(spct,
         if (norm == "wavelength") {
           norm <- old.normalization.ls$norm.wl
         }
+        # old range would be needed here!!
       }
     }
   } else if (norm == "update") {
@@ -881,7 +884,8 @@ normalize_spct <- function(spct,
   # source_spct, response_spct -> photon and energy conversion depends on wl
   if (updating && has.normalization.metadata &&
       length(scale.factors) == length(old.normalization.ls[["norm.factors"]]) &&
-      all(col.names == old.normalization.ls[["norm.cols"]])) { #
+      all(col.names == old.normalization.ls[["norm.cols"]]) &&
+      all(is.finite(old.normalization.ls[["norm.factors"]]))) { #
     scale.factors <- scale.factors / old.normalization.ls[["norm.factors"]]
     updating <- FALSE
   }
