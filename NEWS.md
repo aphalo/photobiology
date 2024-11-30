@@ -8,7 +8,7 @@ editor_options:
 
 - Fix bug in function `subset2mspct()`: failure with same value of attribute
 `when.measured` in all spectra.
-- Fix bug in function in `rbindspct()`: unnecessary setting of missing metadata
+- Fix bug in function `rbindspct()`: unnecessary setting of missing metadata
 to `NA`s.
 - Fix bug in `normalize()` methods: failure of repeated updates.
 - Implement methods `where_measured()`, `what_measured()`, `how_measured()` and
