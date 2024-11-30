@@ -6,6 +6,11 @@ editor_options:
 
 # photobiology 0.11.4
 
+- Fix bug in function `subset2mspct()`: failure with same value of attribute
+`when.measured` in all spectra.
+- Fix bug in function in `rbindspct()`: unnecessary setting of missing metadata
+to `NA`s.
+- Fix bug in `normalize()` methods: failure of repeated updates.
 - Implement methods `where_measured()`, `what_measured()`, `how_measured()` and
 `when_measured()` for data frames (and tibbles).
 - Implement previously missing `setHowMeasured()` and `setWhatMeasured()` 
