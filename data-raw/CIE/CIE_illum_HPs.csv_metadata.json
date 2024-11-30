@@ -1,0 +1,155 @@
+{
+	"identifier": {
+		"identifier": "10.25039/CIE.DS.f6rvvnev",
+		"identifierType": "DOI"
+	},
+	"creators": [
+		{
+			"name": "International Commission on Illumination (CIE)",
+			"nameType": "Organizational"
+		}
+	],
+	"titles": [
+		{
+			"title": "Relative spectral power distributions of high pressure discharge lamp illuminants"
+		}
+	],
+	"publisher": "International Commission on Illumination (CIE), Vienna, AT",
+	"publicationYear": "2018",
+	"subjects": [
+		{
+			"subject": "Colorimetry"
+		},
+		{
+			"subject": "Colour of objects"
+		},
+		{
+			"subject": "Colour vision"
+		},
+		{
+			"subject": "Perception of colour"
+		}
+	],
+	"language": "en",
+	"alternateIdentifiers": [
+		{
+			"alternateIdentifier": "CIE_illum_HPs.csv",
+			"alternateIdentifierType": "fileName"
+		}
+	],
+	"relatedItems": [
+		{
+			"relatedItemIdentifier": "10.25039/tr.015.2018",
+			"relatedItemIdentifierType": "DOI",
+			"relationType": "IsPartOf",
+			"relatedItemType": "Report",
+			"titles": [
+				"CIE 015:2018 Colorimetry, 4th Edition"
+			]
+		}
+	],
+	"formats": [
+		"text/csv"
+	],
+	"types": {
+		"resourceType": "dataTable",
+		"resourceTypeGeneral": "Dataset"
+	},
+	"descriptions": [
+		{
+			"description": "Relative spectral power distributions of high pressure discharge lamp illuminants, wavelength range: 380 nm to 780 nm, wavelength increment: 5 nm, original source: CIE 015:2018 table 11",
+			"descriptionType": "Abstract"
+		}
+	],
+	"rightsList": [
+		{
+			"rights": "Creative Commons Attribution-ShareAlike 4.0 International",
+			"rightsURI": "https://creativecommons.org/licenses/by-sa/4.0/",
+			"rightsIdentifier": "CC BY-SA 4.0"
+		}
+	],
+	"checksums": [
+		{
+			"hashMethod": "md5",
+			"checksum": "423e996fd3ee17eaf783633e4fd2f62c"
+		},
+		{
+			"hashMethod": "sha256",
+			"checksum": "035e09d62b27f4b1e362ff1ba99a50235fd7886c2781c50d49851b6e4bb4552"
+		}
+	],
+	"datatableInfo": {
+		"validations": [
+			{
+				"validationType": "sumOfColumns",
+				"validationValue": "[46980,2534.73,4929.55,3329.71,3591.43,3885.13]"
+			},
+			{
+				"validationType": "sampleRow",
+				"validationParameter": "29",
+				"validationValue": "520,2.10,20.02,34.22,34.45,48.70"
+			}
+		],
+		"interpolationMethod": "linear",
+		"extrapolationMethod": "zero",
+		"dataQuality": "approximated",
+		"columnHeaders": [
+			{
+				"title": "lambda",
+				"unit": "nm",
+				"quantity": "wavelength",
+				"wavelength_first": 380,
+				"wavelength_last": 780,
+				"wavelength_step": 5
+			},
+			{
+				"title": "HP1",
+				"unit": "dimensionless",
+				"quantity": "spectral distribution",
+				"description": "Standard high pressure sodium lamp",
+				"wavelength_first": 380,
+				"wavelength_last": 780,
+				"wavelength_step": 5
+			},
+			{
+				"title": "HP2",
+				"unit": "dimensionless",
+				"quantity": "spectral distribution",
+				"description": "Colour enhanced high pressure sodium lamp",
+				"wavelength_first": 380,
+				"wavelength_last": 780,
+				"wavelength_step": 5
+			},
+			{
+				"title": "HP3",
+				"unit": "dimensionless",
+				"quantity": "spectral distribution",
+				"description": "High pressure metal halide lamps",
+				"wavelength_first": 380,
+				"wavelength_last": 780,
+				"wavelength_step": 5
+			},
+			{
+				"title": "HP4",
+				"unit": "dimensionless",
+				"quantity": "spectral distribution",
+				"description": "High pressure metal halide lamps",
+				"wavelength_first": 380,
+				"wavelength_last": 780,
+				"wavelength_step": 5
+			},
+			{
+				"title": "HP5",
+				"unit": "dimensionless",
+				"quantity": "spectral distribution",
+				"description": "High pressure metal halide lamps",
+				"wavelength_first": 380,
+				"wavelength_last": 780,
+				"wavelength_step": 5
+			}
+		]
+	},
+	"schemaName": "CIEmetaDigitalProduct",
+	"schemaVersion": 4,
+	"schemaURL": "https://doi.org/10.25039/CIE.SC.4taqevcd"
+}

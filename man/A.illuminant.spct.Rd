@@ -5,7 +5,9 @@
 \alias{A.illuminant.spct}
 \title{CIE A illuminant data}
 \format{
-A source spectrum with 96 rows and 2 variables
+A source spectrum with 531 rows and 2 variables.
+
+\itemize{ \item w.length (nm) \item s.e.irrad (rel. units) }
 }
 \usage{
 A.illuminant.spct
@@ -16,18 +18,24 @@ A dataset containing wavelengths at a 5 nm interval (300 nm to
   560 nm. Spectrum approximates typical, domestic, tungsten-filament lighting
   and 'corresponds' to a black body a 2856 K. CIE standard illuminant A is
   intended to represent typical, domestic, tungsten-filament lighting.
-  Original data from \url{http://files.cie.co.at/204.xls} downloaded on
-  2014-07-25 The variables are as follows:
+  Original data from CIE downloaded on 2024-11-30.
 }
-\details{
-\itemize{ \item w.length (nm) \item s.e.irrad (rel. units) }
+\note{
+This and other CIE illuminant spectra can be downloaded from
+  \url{https://cie.co.at/data-tables} as .CSV files.
 }
 \examples{
 A.illuminant.spct
 
 }
+\references{
+CIE 2018, CIE standard illuminant A - 1 nm, International
+Commission on Illumination (CIE), Vienna, Austria,
+\doi{10.25039/CIE.DS.8jsxjrsn}.
+}
 \seealso{
 Other Spectral data examples: 
+\code{\link{D50.illuminant.spct}},
 \code{\link{D65.illuminant.spct}},
 \code{\link{Ler_leaf.spct}},
 \code{\link{black_body.spct}},

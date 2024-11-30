@@ -1,5 +1,5 @@
 .onAttach <- function(libname, pkgname) {
-  packageStartupMessage("News at https://www.r4photobiology.info/")
+  packageStartupMessage("Documentation at https://docs.r4photobiology.info/")
 }
 
 .onLoad <- function(libname, pkgname) {

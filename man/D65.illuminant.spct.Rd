@@ -5,7 +5,9 @@
 \alias{D65.illuminant.spct}
 \title{CIE D65 illuminant data}
 \format{
-A source spectrum with 107 rows and 2 variables
+A source spectrum with 531 rows and 2 variables
+
+\itemize{ \item w.length (nm) \item s.e.irrad (rel. units) }
 }
 \usage{
 D65.illuminant.spct
@@ -15,19 +17,24 @@ A dataset containing wavelengths at a 5 nm interval (300 nm to
   830 nm) and the corresponding spectral energy irradiance normalized to 1 at
   560 nm. Spectrum approximates the midday solar spectrum at middle latitude
   as 'corresponds' to the white point of a black body a 6504 K. Original data
-  from \url{http://files.cie.co.at/204.xls} downloaded on 2014-07-25 The
-  variables are as follows:
+  from CIE downloaded on 2024-11-30 The variables are as follows:
 }
-\details{
-\itemize{ \item w.length (nm) \item s.e.irrad (rel. units) }
+\note{
+This and other CIE illuminant spectra can be downloaded from
+  \url{https://cie.co.at/data-tables} as .CSV files.
 }
 \examples{
 D65.illuminant.spct
 
 }
+\references{
+CIE 2022, CIE standard illuminant D65, International Commission
+on Illumination (CIE), Vienna, Austria, \doi{10.25039/CIE.DS.hjfjmt59}.
+}
 \seealso{
 Other Spectral data examples: 
 \code{\link{A.illuminant.spct}},
+\code{\link{D50.illuminant.spct}},
 \code{\link{Ler_leaf.spct}},
 \code{\link{black_body.spct}},
 \code{\link{ccd.spct}},

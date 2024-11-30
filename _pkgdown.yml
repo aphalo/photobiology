@@ -310,6 +310,7 @@ reference:
     - phenylalanine.spct
     - water.spct
     - A.illuminant.spct
+    - D50.illuminant.spct
     - D65.illuminant.spct
     - FEL_spectrum
     - D2_spectrum

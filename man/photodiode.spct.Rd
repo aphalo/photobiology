@@ -33,6 +33,7 @@ Visited 2017-12-15.
 \seealso{
 Other Spectral data examples: 
 \code{\link{A.illuminant.spct}},
+\code{\link{D50.illuminant.spct}},
 \code{\link{D65.illuminant.spct}},
 \code{\link{Ler_leaf.spct}},
 \code{\link{black_body.spct}},

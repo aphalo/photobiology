@@ -1,0 +1,131 @@
+{
+	"identifier": {
+		"identifier": "10.25039/CIE.DS.dm6qiig7",
+		"identifierType": "DOI"
+	},
+	"creators": [
+		{
+			"name": "International Commission on Illumination (CIE)",
+			"nameType": "Organizational"
+		}
+	],
+	"titles": [
+		{
+			"title": "CIE cone-fundamental-based spectral tristimulus values for 10°field size"
+		}
+	],
+	"publisher": "International Commission on Illumination (CIE), Vienna, AT",
+	"publicationYear": "2015",
+	"subjects": [
+		{
+			"subject": "Photometry"
+		},
+		{
+			"subject": "Objective photometry"
+		},
+		{
+			"subject": "Units. Constants"
+		}
+	],
+	"language": "en",
+	"alternateIdentifiers": [
+		{
+			"alternateIdentifier": "CIE_cfb_stv_10deg.csv",
+			"alternateIdentifierType": "fileName"
+		}
+	],
+	"relatedItems": [
+		{
+			"relatedItemIdentifier": "10.25039/TR.170-2.2015",
+			"relatedItemIdentifierType": "DOI",
+			"relationType": "IsPartOf",
+			"relatedItemType": "Report",
+			"titles": [
+				"CIE 170-2:2015 Fundamental Chromaticity Diagram with Physiological Axes - Part 2: Spectral Luminous Efficiency Functions and Chromaticity Diagrams"
+			]
+		}
+	],
+	"formats": [
+		"text/csv"
+	],
+	"types": {
+		"resourceType": "dataTable",
+		"resourceTypeGeneral": "Dataset"
+	},
+	"descriptions": [
+		{
+			"description": "CIE cone-fundamental-based spectral tristimulus values for 10°field size, wavelength range: 390 nm to 830 nm, wavelength increment: 1 nm, original source: CIE 170-2:2015, Table 10.8 (x_F,10_bar, y_F,10_bar, z_F,10_bar)",
+			"descriptionType": "Abstract"
+		}
+	],
+	"rightsList": [
+		{
+			"rights": "Creative Commons Attribution-ShareAlike 4.0 International",
+			"rightsURI": "https://creativecommons.org/licenses/by-sa/4.0/",
+			"rightsIdentifier": "CC BY-SA 4.0"
+		}
+	],
+	"checksums": [
+		{
+			"hashMethod": "md5",
+			"checksum": "c8504e70d7f4760253a0a4d3a42b7d20"
+		},
+		{
+			"hashMethod": "sha256",
+			"checksum": "9019a35f8f51215e245f818e87d4251147d1925a8fbe9a49944fe7f011f16e38"
+		}
+	],
+	"datatableInfo": {
+		"validations": [
+			{
+				"validationType": "sumOfColumns",
+				"validationValue": "[269010,118.518090897436,118.5180915321789,118.518095303296]"
+			},
+			{
+				"validationType": "sampleRow",
+				"validationParameter": "120",
+				"validationValue": "509,3.199910E-02,6.096388E-01,9.682266E-02"
+			}
+		],
+		"interpolationMethod": "useRelatedFormula",
+		"extrapolationMethod": "zero",
+		"dataQuality": "approximated",
+		"columnHeaders": [
+			{
+				"title": "lambda",
+				"unit": "nm",
+				"quantity": "wavelength",
+				"wavelength_first": 390,
+				"wavelength_last": 830,
+				"wavelength_step": 1
+			},
+			{
+				"title": "xbar_F,10(lambda)",
+				"unit": "dimensionless",
+				"quantity": "spectral tristimulus values",
+				"wavelength_first": 390,
+				"wavelength_last": 830,
+				"wavelength_step": 1
+			},
+			{
+				"title": "ybar_F,10(lambda)",
+				"unit": "dimensionless",
+				"quantity": "spectral tristimulus values",
+				"wavelength_first": 390,
+				"wavelength_last": 830,
+				"wavelength_step": 1
+			},
+			{
+				"title": "zbar_F,10(lambda)",
+				"unit": "dimensionless",
+				"quantity": "spectral tristimulus values",
+				"wavelength_first": 390,
+				"wavelength_last": 830,
+				"wavelength_step": 1
+			}
+		]
+	},
+	"schemaName": "CIEmetaDigitalProduct",
+	"schemaVersion": 4,
+	"schemaURL": "https://doi.org/10.25039/CIE.SC.4taqevcd"
+}

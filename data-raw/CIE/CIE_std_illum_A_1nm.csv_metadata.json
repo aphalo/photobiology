@@ -1,0 +1,115 @@
+{
+	"identifier": {
+		"identifier": "10.25039/CIE.DS.8jsxjrsn",
+		"identifierType": "DOI"
+	},
+	"creators": [
+		{
+			"name": "International Commission on Illumination (CIE)",
+			"nameType": "Organizational"
+		}
+	],
+	"titles": [
+		{
+			"title": "CIE standard illuminant A - 1 nm"
+		}
+	],
+	"publisher": "International Commission on Illumination (CIE), Vienna, AT",
+	"publicationYear": "2018",
+	"subjects": [
+		{
+			"subject": "Photometry"
+		},
+		{
+			"subject": "Objective photometry"
+		},
+		{
+			"subject": "Units. Constants"
+		}
+	],
+	"language": "en",
+	"alternateIdentifiers": [
+		{
+			"alternateIdentifier": "CIE_std_illum_A_1nm.csv",
+			"alternateIdentifierType": "fileName"
+		}
+	],
+	"relatedItems": [
+		{
+			"relatedItemIdentifier": "10.25039/IS.ISO_CIE.11664-2.2022",
+			"relatedItemIdentifierType": "DOI",
+			"relationType": "IsPartOf",
+			"relatedItemType": "Standard",
+			"titles": [
+				"ISO/CIE 11664-2:2022 Colorimetry — Part 2: CIE Standard Illuminants"
+			]
+		}
+	],
+	"formats": [
+		"text/csv"
+	],
+	"types": {
+		"resourceType": "dataTable",
+		"resourceTypeGeneral": "Dataset"
+	},
+	"descriptions": [
+		{
+			"description": "CIE standard illuminant A. The values are calculated using equation 1 of  ISO/CIE 11664-2:2022, rounded to 6 digits, wavelength range: 300 nm to 830 nm, wavelength increment: 1 nm,original source:  ISO/CIE 11664-2:2022 Table A.1",
+			"descriptionType": "Abstract"
+		}
+	],
+	"rightsList": [
+		{
+			"rights": "Creative Commons Attribution-ShareAlike 4.0 International",
+			"rightsURI": "https://creativecommons.org/licenses/by-sa/4.0/",
+			"rightsIdentifier": "CC BY-SA 4.0"
+		}
+	],
+	"checksums": [
+		{
+			"hashMethod": "md5",
+			"checksum": "ed0e4effb55d82b950c0912b6278a9d1"
+		},
+		{
+			"hashMethod": "sha256",
+			"checksum": "61ef23fe146b8b665c74706717ab28cec7db6c9022993490bdc71991f43cb59b"
+		}
+	],
+	"datatableInfo": {
+		"validations": [
+			{
+				"validationType": "sumOfColumns",
+				"validationValue": "[300015,60210.114316]"
+			},
+			{
+				"validationType": "sampleRow",
+				"validationParameter": "120",
+				"validationValue": "419,20.647"
+			}
+		],
+		"interpolationMethod": "useRelatedFormula",
+		"extrapolationMethod": "zero",
+		"dataQuality": "approximated",
+		"columnHeaders": [
+			{
+				"title": "lambda",
+				"unit": "nm",
+				"quantity": "wavelength",
+				"wavelength_first": 300,
+				"wavelength_last": 830,
+				"wavelength_step": 1
+			},
+			{
+				"title": "S_A(lambda)",
+				"unit": "dimensionless",
+				"quantity": "spectral distribution",
+				"wavelength_first": 300,
+				"wavelength_last": 830,
+				"wavelength_step": 1
+			}
+		]
+	},
+	"schemaName": "CIEmetaDigitalProduct",
+	"schemaVersion": 4,
+	"schemaURL": "https://doi.org/10.25039/CIE.SC.4taqevcd"
+}

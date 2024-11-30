@@ -35,6 +35,7 @@ H. Buiteveld and J. M. H. Hakvoort and M. Donze (1994) "The
 \seealso{
 Other Spectral data examples: 
 \code{\link{A.illuminant.spct}},
+\code{\link{D50.illuminant.spct}},
 \code{\link{D65.illuminant.spct}},
 \code{\link{Ler_leaf.spct}},
 \code{\link{black_body.spct}},

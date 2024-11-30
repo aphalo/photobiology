@@ -21,6 +21,7 @@ Datasets for a hypothetical objects with transmittance 0/1
 \seealso{
 Other Spectral data examples: 
 \code{\link{A.illuminant.spct}},
+\code{\link{D50.illuminant.spct}},
 \code{\link{D65.illuminant.spct}},
 \code{\link{Ler_leaf.spct}},
 \code{\link{ccd.spct}},

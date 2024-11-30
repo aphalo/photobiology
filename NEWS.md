@@ -19,6 +19,9 @@ methods for collections of spectra.
 sign. This is temporary patch to allow reverse transform in scale in 'ggspectra'.
 - Replace use of unsupported time zone name "EET" by "Europe/Helsinki" for
 compatibility with future R (==4.5.0).
+- Update CIE data to the most recent version at 1 nm for A and D65 illuminants
+and add the D50 illuminant.
+- Rebuild all data objects.
 
 # photobiology 0.11.3
 

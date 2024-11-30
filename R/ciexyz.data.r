@@ -173,7 +173,7 @@
 #'
 "ciev2.spct"
 
-#' @title Ten-degree cone fundaamentals
+#' @title Ten-degree cone fundamentals
 #'
 #' @description A dataset containing wavelengths at a 1 nm interval (390 nm to
 #'   830 nm) and the corresponding response values for a 2 degrees target.

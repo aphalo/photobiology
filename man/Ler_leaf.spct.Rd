@@ -47,6 +47,7 @@ Ler_leaf_rflt.spct
 \seealso{
 Other Spectral data examples: 
 \code{\link{A.illuminant.spct}},
+\code{\link{D50.illuminant.spct}},
 \code{\link{D65.illuminant.spct}},
 \code{\link{black_body.spct}},
 \code{\link{ccd.spct}},

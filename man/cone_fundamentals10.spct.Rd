@@ -4,7 +4,7 @@
 \name{cone_fundamentals10.spct}
 \alias{cone_fundamentals10.spct}
 \alias{cone_fundamentals10.mspct}
-\title{Ten-degree cone fundaamentals}
+\title{Ten-degree cone fundamentals}
 \format{
 A chroma_spct object with 440 rows and 4 variables
 
