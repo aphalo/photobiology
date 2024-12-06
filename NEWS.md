@@ -4,6 +4,11 @@ editor_options:
     wrap: 72
 ---
 
+# photobiology 0.11.5
+
+- Add support in `normalize()` for undoing an existing normalization when 
+detailed normalization metadata are stored as object attributes.
+
 # photobiology 0.11.4
 
 - Fix bug in function `subset2mspct()`: failure with same value of attribute

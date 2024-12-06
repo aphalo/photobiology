@@ -99,8 +99,8 @@ normalize.default <- function(x, ...) {
 #' @param norm numeric Normalization wavelength (nm) or character string "max",
 #'   or "min" for normalization at the corresponding wavelength, "update" to
 #'   update the normalization after modifying units of expression, quantity
-#'   or range but respecting the previously used criterion, or "skip" to force
-#'   return of \code{x} unchanged.
+#'   or range but respecting the previously used criterion, "undo" to revert
+#'   an existing normalization or "skip" to force return of \code{x} unchanged.
 #' @param unit.out character Allowed values "energy", and "photon",
 #'   or its alias "quantum"
 #' @param keep.scaling logical or numeric Flag to indicate if any existing
@@ -148,24 +148,35 @@ normalize.source_spct <- function(x,
                 set.scaled = FALSE)
     keep.scaling <- FALSE
   }
-  if (unit.out == "energy") {
-    return(normalize_spct(spct = q2e(x, action = "replace.raw"),
-                          range = range,
-                          norm = norm,
-                          col.names = "s.e.irrad",
-                          keep.scaling = keep.scaling,
-                          na.rm = na.rm,
-                          ...))
-  } else if (unit.out %in% c("photon", "quantum") ) {
-    return(normalize_spct(spct = e2q(x, action = "replace.raw"),
-                          range = range,
-                          norm = norm,
-                          col.names = "s.q.irrad",
-                          keep.scaling = keep.scaling,
-                          na.rm = na.rm,
-                          ...))
+  if (norm == "undo") {
+    x <- denormalize_spct(x)
+    if (unit.out == "energy") {
+      return(q2e(x, action = "replace.raw"))
+    } else if (unit.out %in% c("photon", "quantum") ) {
+      return(e2q(x, action = "replace.raw"))
+    } else {
+      stop("'unit.out ", unit.out, " is unknown")
+    }
   } else {
-    stop("'unit.out ", unit.out, " is unknown")
+    if (unit.out == "energy") {
+      return(normalize_spct(spct = q2e(x, action = "replace.raw"),
+                            range = range,
+                            norm = norm,
+                            col.names = "s.e.irrad",
+                            keep.scaling = keep.scaling,
+                            na.rm = na.rm,
+                            ...))
+    } else if (unit.out %in% c("photon", "quantum") ) {
+      return(normalize_spct(spct = e2q(x, action = "replace.raw"),
+                            range = range,
+                            norm = norm,
+                            col.names = "s.q.irrad",
+                            keep.scaling = keep.scaling,
+                            na.rm = na.rm,
+                            ...))
+    } else {
+      stop("'unit.out ", unit.out, " is unknown")
+    }
   }
 }
 
@@ -174,13 +185,13 @@ normalize.source_spct <- function(x,
 #' @export
 #'
 normalize.response_spct <- function(x,
-                                  ...,
-                                  range = NULL,
-                                  norm = "max",
-                                  unit.out = getOption("photobiology.radiation.unit",
-                                                       default = "energy"),
-                                  keep.scaling = FALSE,
-                                  na.rm = FALSE) {
+                                    ...,
+                                    range = NULL,
+                                    norm = "max",
+                                    unit.out = getOption("photobiology.radiation.unit",
+                                                         default = "energy"),
+                                    keep.scaling = FALSE,
+                                    na.rm = FALSE) {
   if (getMultipleWl(x) > 1L) {
     mspct <- subset2mspct(x,
                           idx.var = getIdFactor(x),
@@ -208,24 +219,35 @@ normalize.response_spct <- function(x,
                 set.scaled = FALSE)
     keep.scaling <- FALSE
   }
-  if (unit.out == "energy") {
-    return(normalize_spct(spct = q2e(x, action = "replace.raw"),
-                          range = range,
-                          norm = norm,
-                          col.names = "s.e.response",
-                          keep.scaling = keep.scaling,
-                          na.rm = na.rm,
-                          ...))
-  } else if (unit.out %in% c("photon", "quantum") ) {
-    return(normalize_spct(spct = e2q(x, action = "replace.raw"),
-                          range = range,
-                          norm = norm,
-                          col.names = "s.q.response",
-                          keep.scaling = keep.scaling,
-                          na.rm = na.rm,
-                          ...))
+  if (norm == "undo") {
+    x <- denormalize_spct(x)
+    if (unit.out == "energy") {
+      return(q2e(x, action = "replace.raw"))
+    } else if (unit.out %in% c("photon", "quantum") ) {
+      return(e2q(x, action = "replace.raw"))
+    } else {
+      stop("'unit.out ", unit.out, " is unknown")
+    }
   } else {
-    stop("'unit.out ", unit.out, " is unknown")
+    if (unit.out == "energy") {
+      return(normalize_spct(spct = q2e(x, action = "replace.raw"),
+                            range = range,
+                            norm = norm,
+                            col.names = "s.e.response",
+                            keep.scaling = keep.scaling,
+                            na.rm = na.rm,
+                            ...))
+    } else if (unit.out %in% c("photon", "quantum") ) {
+      return(normalize_spct(spct = e2q(x, action = "replace.raw"),
+                            range = range,
+                            norm = norm,
+                            col.names = "s.q.response",
+                            keep.scaling = keep.scaling,
+                            na.rm = na.rm,
+                            ...))
+    } else {
+      stop("'unit.out ", unit.out, " is unknown")
+    }
   }
 }
 
@@ -272,32 +294,45 @@ normalize.filter_spct <-
                   set.scaled = FALSE)
       keep.scaling <- FALSE
     }
-    if (qty.out == "transmittance") {
-      return(normalize_spct(spct = A2T(x, action = "replace.raw"),
-                            range = range,
-                            norm = norm,
-                            col.names = "Tfr",
-                            keep.scaling = keep.scaling,
-                            na.rm = na.rm,
-                            ...))
-    } else if (qty.out == "absorbance") {
-      return(normalize_spct(spct = T2A(x, action = "replace.raw"),
-                            range = range,
-                            norm = norm,
-                            col.names = "A",
-                            keep.scaling = keep.scaling,
-                            na.rm = na.rm,
-                            ...))
-    } else if (qty.out == "absorptance") {
-      return(normalize_spct(spct = T2Afr(x, action = "replace.raw"),
-                            range = range,
-                            norm = norm,
-                            col.names = "Afr",
-                            keep.scaling = keep.scaling,
-                            na.rm = na.rm,
-                            ...))
+    if (norm == "undo") {
+      x <- denormalize_spct(x)
+      if (qty.out == "transmittance") {
+        return(any2T(x, action = "replace.raw"))
+      } else if (qty.out == "absorbance") {
+        return(any2A(x, action = "replace.raw"))
+      } else if (qty.out == "absorptance") {
+        return(any2Afr(x, action = "replace.raw"))
+      } else {
+        stop("'qty.out' ", qty.out, " is unknown")
+      }
     } else {
-      stop("'qty.out ", qty.out, " is unknown")
+      if (qty.out == "transmittance") {
+        return(normalize_spct(spct = A2T(x, action = "replace.raw"),
+                              range = range,
+                              norm = norm,
+                              col.names = "Tfr",
+                              keep.scaling = keep.scaling,
+                              na.rm = na.rm,
+                              ...))
+      } else if (qty.out == "absorbance") {
+        return(normalize_spct(spct = T2A(x, action = "replace.raw"),
+                              range = range,
+                              norm = norm,
+                              col.names = "A",
+                              keep.scaling = keep.scaling,
+                              na.rm = na.rm,
+                              ...))
+      } else if (qty.out == "absorptance") {
+        return(normalize_spct(spct = T2Afr(x, action = "replace.raw"),
+                              range = range,
+                              norm = norm,
+                              col.names = "Afr",
+                              keep.scaling = keep.scaling,
+                              na.rm = na.rm,
+                              ...))
+      } else {
+        stop("'qty.out ", qty.out, " is unknown")
+      }
     }
   }
 
@@ -339,13 +374,17 @@ normalize.reflector_spct <-
                   set.scaled = FALSE)
       keep.scaling <- FALSE
     }
-    normalize_spct(spct = x,
-                   range = range,
-                   norm = norm,
-                   col.names = "Rfr",
-                   keep.scaling = keep.scaling,
-                   na.rm = na.rm,
-                   ...)
+    if (norm == "undo") {
+      denormalize_spct(x)
+    } else {
+      normalize_spct(spct = x,
+                     range = range,
+                     norm = norm,
+                     col.names = "Rfr",
+                     keep.scaling = keep.scaling,
+                     na.rm = na.rm,
+                     ...)
+    }
   }
 
 #' @describeIn normalize Normalize a solute spectrum.
@@ -385,13 +424,17 @@ normalize.solute_spct <-
     } else {
       stop("Invalid number of columns found:", length(cols))
     }
-    normalize_spct(spct = x,
-                   range = range,
-                   norm = norm,
-                   col.names = col.name,
-                   keep.scaling = keep.scaling,
-                   na.rm = na.rm,
-                   ...)
+    if (norm == "undo") {
+      denormalize_spct(x)
+    } else {
+      normalize_spct(spct = x,
+                     range = range,
+                     norm = norm,
+                     col.names = col.name,
+                     keep.scaling = keep.scaling,
+                     na.rm = na.rm,
+                     ...)
+    }
   }
 
 #' @describeIn normalize Normalize a raw spectrum.
@@ -430,13 +473,17 @@ normalize.raw_spct <-
                   set.scaled = FALSE)
       keep.scaling <- FALSE
     }
-    normalize_spct(spct = x,
-                   range = range,
-                   norm = norm,
-                   col.names = grep("^counts", names(x), value = TRUE),
-                   keep.scaling = keep.scaling,
-                   na.rm = na.rm,
-                   ...)
+    if (norm == "undo") {
+      denormalize_spct(x)
+    } else {
+      normalize_spct(spct = x,
+                     range = range,
+                     norm = norm,
+                     col.names = grep("^counts", names(x), value = TRUE),
+                     keep.scaling = keep.scaling,
+                     na.rm = na.rm,
+                     ...)
+    }
   }
 
 #' @describeIn normalize Normalize a cps spectrum.
@@ -475,13 +522,17 @@ normalize.cps_spct <-
                   set.scaled = FALSE)
       keep.scaling <- FALSE
     }
-    normalize_spct(spct = x,
-                   range = range,
-                   norm = norm,
-                   col.names = grep("^cps", names(x), value = TRUE),
-                   keep.scaling = keep.scaling,
-                   na.rm = na.rm,
-                   ...)
+    if (norm == "undo") {
+      denormalize_spct(x)
+    } else {
+      normalize_spct(spct = x,
+                     range = range,
+                     norm = norm,
+                     col.names = grep("^cps", names(x), value = TRUE),
+                     keep.scaling = keep.scaling,
+                     na.rm = na.rm,
+                     ...)
+    }
   }
 
 #' @describeIn normalize Normalize a raw spectrum.
@@ -518,14 +569,17 @@ normalize.generic_spct <-
                                 ...)
       return(rbindspct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
     }
-
-    normalize_spct(spct = x,
-                   range = range,
-                   norm = norm,
-                   col.names = col.names,
-                   keep.scaling = keep.scaling,
-                   na.rm = na.rm,
-                   ...)
+    if (norm == "undo") {
+      denormalize_spct(x)
+    } else {
+      normalize_spct(spct = x,
+                     range = range,
+                     norm = norm,
+                     col.names = col.names,
+                     keep.scaling = keep.scaling,
+                     na.rm = na.rm,
+                     ...)
+    }
   }
 
 # collections of spectra --------------------------------------------------
@@ -909,6 +963,32 @@ normalize_spct <- function(spct,
   z # setNormalized makes its returned value invisible
 }
 
+#' @keywords internal
+#'
+denormalize_spct <- function(spct) {
+  if (!is_normalized(spct)) {
+    return(spct)
+  }
+
+  old.normalization.ls <- getNormalization(spct)
+  required.fields <-
+    c("norm.factors", "norm.cols")
+  has.normalization.metadata <-
+    !any(is.na(unlist(old.normalization.ls[required.fields])))
+
+  if (has.normalization.metadata) {
+    for (i in seq_along(old.normalization.ls$norm.cols)) {
+      col <- old.normalization.ls$norm.cols[i]
+      spct[[col]] <- spct[[col]] / old.normalization.ls$norm.factors[i]
+    }
+    attr(spct, "normalized") <- FALSE
+    attr(spct, "normalization") <- NULL
+    spct
+  } else {
+    warning("Normalization metadata missing, denormalization not possible.")
+    spct
+  }
+}
 
 # is_normalized function --------------------------------------------------
 

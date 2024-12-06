@@ -210,8 +210,8 @@ wavelengths (nm) used to set boundaries for search for normalization.}
 \item{norm}{numeric Normalization wavelength (nm) or character string "max",
 or "min" for normalization at the corresponding wavelength, "update" to
 update the normalization after modifying units of expression, quantity
-or range but respecting the previously used criterion, or "skip" to force
-return of \code{x} unchanged.}
+or range but respecting the previously used criterion, "undo" to revert
+an existing normalization or "skip" to force return of \code{x} unchanged.}
 
 \item{unit.out}{character Allowed values "energy", and "photon",
 or its alias "quantum"}
