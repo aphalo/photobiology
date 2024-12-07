@@ -1829,27 +1829,63 @@ e2q.default <- function(x, action = "add", byref = FALSE, ...) {
 #' @export
 #'
 e2q.source_spct <- function(x,
-                            action = "add",
+                            action = NULL,
                             byref = FALSE,
                             ...) {
+
   if (byref) {
     name <- substitute(x)
   }
 
-  if (is_normalised(x) && !action %in% c("add.raw", "replace.raw")) {
-    x <- normalise(x, norm = "update", unit.out = "photon")
-  } else {
-    if (exists("s.q.irrad", x, inherits = FALSE)) {
-      NULL
-    } else if (exists("s.e.irrad", x, inherits = FALSE)) {
-      x[["s.q.irrad"]] <- x[["s.e.irrad"]] * e2qmol_multipliers(x[["w.length"]])
+  if (is.null(action)) {
+    if (is_normalized(x)) {
+      action = "replace"
     } else {
-      x[["s.q.irrad"]] <- NA
+      action = "add"
     }
-    if (action %in% c("replace", "replace.raw") &&
-        exists("s.e.irrad", x, inherits = FALSE)) {
-      x[["s.e.irrad"]] <- NULL
+  }
+
+  if (grepl("\\.raw$", action)) {
+    norm.action <- "undo"
+    action <- gsub("\\.raw$", "", action)
+  } else {
+    norm.action <- "update"
+  }
+
+  if (is_normalised(x)) {
+    old.normalization.ls <- getNormalization(x)
+
+    if (norm.action == "undo") {
+      x <- denormalize_spct(x)
     }
+
+  } else {
+    norm.action = "skip"
+  }
+
+  if (exists("s.q.irrad", x, inherits = FALSE)) {
+    NULL
+  } else if (exists("s.e.irrad", x, inherits = FALSE)) {
+    x[["s.q.irrad"]] <- x[["s.e.irrad"]] * e2qmol_multipliers(x[["w.length"]])
+  } else {
+    x[["s.q.irrad"]] <- NA
+  }
+  if (action == "replace" &&
+      exists("s.e.irrad", x, inherits = FALSE)) {
+    x[["s.e.irrad"]] <- NULL
+  }
+
+  if (norm.action == "update") {
+    old.norm <- old.normalization.ls$norm.type
+    if (old.norm == "wavelength") {
+      old.norm <- old.normalization.ls$norm.wl
+    }
+    old.range <- old.normalization.ls$norm.range
+    # remove the old normalization
+    x <- normalize(x,
+                   range = old.range,
+                   norm = old.norm,
+                   keep.scaling = TRUE)
   }
 
   if (byref && is.name(name)) {  # this is a temporary safe net

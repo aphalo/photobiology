@@ -902,14 +902,24 @@ normalize_spct <- function(spct,
   z # setNormalized makes its returned value invisible
 }
 
+#' Remove a previously applied normalization
+#'
+#' @param spct An object of one of the classes derived from \code{geberic_spct}
+#'   containing data for a single spectrum (\code{getMultipleWl(spct) == 1}).
+#' @param wipe.away logical If \code{TRUE} the normalization metadata is removed
+#'   without undoing the effect of the normalization.
+#'
+#' @return A modified copy of \code{spct} if it was previously normalized or
+#' \code{spct} unchanged, otherwise.
+#'
 #' @keywords internal
 #'
-denormalize_spct <- function(spct, force = FALSE) {
+denormalize_spct <- function(spct, wipe.away = FALSE) {
   if (!is_normalized(spct)) {
     return(spct)
   }
 
-  if (force) {
+  if (wipe.away) {
     message("Removing normalization metadata keeping normalization!")
     attr(spct, "normalized") <- FALSE
     attr(spct, "normalization") <- NULL
@@ -921,9 +931,10 @@ denormalize_spct <- function(spct, force = FALSE) {
     c("norm.factors", "norm.cols")
   has.normalization.metadata <-
     !any(is.na(unlist(old.normalization.ls[required.fields])))
+  norm.ls.idx <- which(old.normalization.ls$norm.cols %in% colnames(spct))
 
   if (has.normalization.metadata) {
-    stopifnot("Missing columns" = all(col.names %in% colnames(spct)),
+    stopifnot("Missing columns" = length(norm.ls.idx) > 0L,
               "Multiple spectra in long form" = getMultipleWl(spct) == 1L)
     # earlier bug lead to not saving all norm.factors for multiple columns
     if (length(old.normalization.ls$norm.cols) !=
@@ -932,10 +943,11 @@ denormalize_spct <- function(spct, force = FALSE) {
       return(spct)
     }
     for (i in seq_along(old.normalization.ls$norm.cols)) {
+      if (!i %in% norm.ls.idx) {
+        next()
+      }
       col.name.i <- old.normalization.ls$norm.cols[i]
       norm.factor.i <- old.normalization.ls$norm.factors[i]
-      print(col.name.i)
-      print(norm.factor.i)
       spct[[col.name.i]] <- spct[[col.name.i]] / norm.factor.i
     }
     attr(spct, "normalized") <- FALSE
