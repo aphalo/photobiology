@@ -4,10 +4,23 @@ editor_options:
     wrap: 72
 ---
 
-# photobiology 0.11.5
+# photobiology 0.12.0
 
-- Add support in `normalize()` for undoing an existing normalization when 
-detailed normalization metadata are stored as object attributes.
+- Redesign the user interface for normalization and changes in units or quantities.
+This should keep the logic of both package code and user code simpler. This
+change is is likely to break user code, and code in the other packages in the 
+R for Photobiology suite.
+  * `normalize()` methods no longer supports on-the-fly change of units or 
+  quantities.
+  * Methods for conversion between quantities and between units update the
+  existing normalization or remove it as requested.
+  * Add support in `normalize()` for undoing an existing normalization when 
+detailed normalization metadata have been stored as object attributes.
+  * Support normalization of multiple columns.
+- (coming soon) Move to package 'SunCalcMeeus' the functions and methods for sun position and
+day length calculations.
+- (coming soon) Move to a separate package the evapotranspiration, water in the atmosphere 
+and net radiation functions.
 
 # photobiology 0.11.4
 

@@ -1854,11 +1854,7 @@ e2q.source_spct <- function(x,
 
   if (is_normalised(x)) {
     old.normalization.ls <- getNormalization(x)
-
-    if (norm.action == "undo") {
-      x <- denormalize_spct(x)
-    }
-
+    x <- denormalize_spct(x) # remove normalization
   } else {
     norm.action = "skip"
   }
@@ -1876,12 +1872,12 @@ e2q.source_spct <- function(x,
   }
 
   if (norm.action == "update") {
+    # apply the pre-existing normalization criteria
     old.norm <- old.normalization.ls$norm.type
-    if (old.norm == "wavelength") {
+    if (old.norm[1] == "wavelength") {
       old.norm <- old.normalization.ls$norm.wl
     }
     old.range <- old.normalization.ls$norm.range
-    # remove the old normalization
     x <- normalize(x,
                    range = old.range,
                    norm = old.norm,
@@ -1907,20 +1903,51 @@ e2q.response_spct <- function(x,
     name <- substitute(x)
   }
 
-  if (is_normalised(x) && !action %in% c("add.raw", "replace.raw")) {
-    x <- normalise(x, norm = "update", unit.out = "photon")
-  } else {
-    if (exists("s.q.response", x, inherits = FALSE)) {
-      NULL
-    } else if (exists("s.e.response", x, inherits = FALSE)) {
-      x[["s.q.response"]] <- x[["s.e.response"]] / e2qmol_multipliers(x[["w.length"]])
+  if (is.null(action)) {
+    if (is_normalized(x)) {
+      action = "replace"
     } else {
-      x[["s.q.response"]] <- NA
+      action = "add"
     }
-    if (action %in% c("replace", "replace.raw") &&
-        exists("s.e.response", x, inherits = FALSE)) {
-      x[["s.e.response"]] <- NULL
+  }
+
+  if (grepl("\\.raw$", action)) {
+    norm.action <- "undo"
+    action <- gsub("\\.raw$", "", action)
+  } else {
+    norm.action <- "update"
+  }
+
+  if (is_normalised(x)) {
+    old.normalization.ls <- getNormalization(x)
+    x <- denormalize_spct(x) # remove normalization
+  } else {
+    norm.action = "skip"
+  }
+
+  if (exists("s.q.response", x, inherits = FALSE)) {
+    NULL
+  } else if (exists("s.e.response", x, inherits = FALSE)) {
+    x[["s.q.response"]] <- x[["s.e.response"]] / e2qmol_multipliers(x[["w.length"]])
+  } else {
+    x[["s.q.response"]] <- NA
+  }
+  if (action %in% c("replace", "replace.raw") &&
+      exists("s.e.response", x, inherits = FALSE)) {
+    x[["s.e.response"]] <- NULL
+  }
+
+  if (norm.action == "update") {
+    # apply the pre-existing normalization criteria
+    old.norm <- old.normalization.ls$norm.type
+    if (old.norm[1] == "wavelength") {
+      old.norm <- old.normalization.ls$norm.wl
     }
+    old.range <- old.normalization.ls$norm.range
+    x <- normalize(x,
+                   range = old.range,
+                   norm = old.norm,
+                   keep.scaling = TRUE)
   }
 
   if (byref && is.name(name)) {  # this is a temporary safe net

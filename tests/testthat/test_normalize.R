@@ -6,15 +6,41 @@ test_that("normalize source_spct", {
 
   my.spct <- q2e(sun.spct, action = "replace")
   my_norm_max.spct <- normalize(my.spct, norm = "max")
-  my_norm_emax.spct <- normalize(my.spct, norm = "max", unit.out = "energy")
-  my_norm_qmax.spct <- normalize(my.spct, norm = "max", unit.out = "photon")
-  my_norm_qumax.spct <- normalize(my_norm_emax.spct, norm = "update",
-                                  unit.out = "photon")
+  my_norm_umax.spct <- normalize(my_norm_max.spct, norm = "update")
+  expect_equal(getNormalization(my_norm_umax.spct),
+               getNormalization(my_norm_max.spct))
+
+  my_norm_500.spct <- normalize(my.spct, norm = 500)
+  my_norm_u500.spct <- normalize(my_norm_500.spct, norm = "update")
+  expect_equal(getNormalization(my_norm_500.spct),
+               getNormalization(my_norm_u500.spct))
+
+  my.q.spct <- e2q(sun.spct, action = "replace")
+  my_norm_qmax.spct <- normalize(my.q.spct, norm = "max")
+  my_norm_qumax.spct <- normalize(my_norm_qmax.spct, norm = "update")
+  expect_equal(getNormalization(my_norm_qmax.spct),
+               getNormalization(my_norm_qumax.spct))
+
+  my_norm_q500.spct <- normalize(my.q.spct, norm = 500)
+  my_norm_qu500.spct <- normalize(my_norm_q500.spct, norm = "update")
+  expect_equal(getNormalization(my_norm_q500.spct),
+               getNormalization(my_norm_qu500.spct))
+
+  my.eq.spct <- e2q(sun.spct, action = "add")
+  my_norm_eqmax.spct <- normalize(my.eq.spct, norm = "max")
+  my_norm_equmax.spct <- normalize(my_norm_eqmax.spct, norm = "update")
+  expect_equal(getNormalization(my_norm_eqmax.spct),
+               getNormalization(my_norm_equmax.spct))
+
+  my_norm_eq500.spct <- normalize(my.eq.spct, norm = 500)
+  my_norm_equ500.spct <- normalize(my_norm_eq500.spct, norm = "update")
+  expect_equal(getNormalization(my_norm_eq500.spct),
+               getNormalization(my_norm_equ500.spct))
+
   my_scaled.spct <- fscale(my.spct)
   my_norm_smax.spct <- normalize(my_scaled.spct, norm = "max")
   my_norm_ssmax.spct <- normalize(my_scaled.spct, norm = "max", keep.scaling = TRUE)
 
-  expect_equal(my_norm_max.spct, my_norm_emax.spct)
   expect_equal(normalize(my.spct, norm = "skip"), my.spct)
   expect_equal(normalize(my.spct, norm = "update"), my.spct)
   # expect_equal(normalize(my_norm_qmax.spct, norm = "update"),
@@ -29,8 +55,6 @@ test_that("normalize source_spct", {
                getNormalization(my_norm_qmax.spct)[["norm.wl"]])
   expect_equal(getNormalized(my_norm_qmax.spct),
                getNormalized(my_norm_qumax.spct))
-  expect_equal(getNormalized(my_norm_emax.spct),
-               getNormalized(my_norm_max.spct))
   expect_true(all(is.na(unlist(getNormalization(my.spct)))))
   expect_false(all(is.na(unlist(getNormalization(my_norm_max.spct)))))
   expect_equal(getNormalization(my_norm_max.spct)[["norm.type"]], "max")
@@ -61,12 +85,28 @@ test_that("normalize response_spct", {
 
   my.spct <- q2e(ccd.spct, action = "replace")
   my_norm_max.spct <- normalize(my.spct, norm = "max")
-  my_norm_emax.spct <- normalize(my.spct, norm = "max", unit.out = "energy")
-  my_norm_qmax.spct <- normalize(my.spct, norm = "max", unit.out = "photon")
-  my_norm_qumax.spct <- normalize(my_norm_emax.spct, norm = "update",
-                                  unit.out = "photon")
+  getNormalization(my_norm_max.spct)
+  my_norm_500.spct <- normalize(my.spct, norm = 500)
+  getNormalization(my_norm_500.spct)
+  my_norm_umax.spct <- normalize(my_norm_max.spct, norm = "update")
+  getNormalization(my_norm_umax.spct)
 
-  expect_equal(my_norm_max.spct, my_norm_emax.spct)
+  my.q.spct <- e2q(ccd.spct, action = "replace")
+  my_norm_qmax.spct <- normalize(my.q.spct, norm = "max")
+  getNormalization(my_norm_qmax.spct)
+  my_norm_q500.spct <- normalize(my.q.spct, norm = 500)
+  getNormalization(my_norm_q500.spct)
+  my_norm_qumax.spct <- normalize(my_norm_qmax.spct, norm = "update")
+  getNormalization(my_norm_qumax.spct)
+
+  my.eq.spct <- e2q(ccd.spct, action = "add")
+  my_norm_eqmax.spct <- normalize(my.eq.spct, norm = "max")
+  getNormalization(my_norm_eqmax.spct)
+  my_norm_eq500.spct <- normalize(my.eq.spct, norm = 500)
+  getNormalization(my_norm_eq500.spct)
+  my_norm_equmax.spct <- normalize(my_norm_eqmax.spct, norm = "update")
+  getNormalization(my_norm_equmax.spct)
+
   expect_equal(normalize(my.spct, norm = "skip"), my.spct)
   expect_equal(normalize(my.spct, norm = "update"), my.spct)
   # expect_equal(normalize(my_norm_qmax.spct, norm = "update"),
@@ -81,8 +121,6 @@ test_that("normalize response_spct", {
                getNormalization(my_norm_qmax.spct)[["norm.wl"]])
   expect_equal(getNormalized(my_norm_qmax.spct),
                getNormalized(my_norm_qumax.spct))
-  expect_equal(getNormalized(my_norm_emax.spct),
-               getNormalized(my_norm_max.spct))
   expect_true(all(is.na(unlist(getNormalization(my.spct)))))
   expect_false(all(is.na(unlist(getNormalization(my_norm_max.spct)))))
   expect_equal(getNormalization(my_norm_max.spct)[["norm.type"]], "max")
