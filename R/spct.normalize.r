@@ -953,7 +953,7 @@ is_normalised <- is_normalized
 #' getNormalized(gel_norm.spct)
 #' getNormalization(gel_norm.spct)
 #'
-#' getNormalization(T2Afr(gel_norm.spct))
+#' # getNormalization(T2Afr(gel_norm.spct))
 #' getNormalization(any2A(gel_norm.spct))
 #'
 #' @family rescaling functions
