@@ -221,7 +221,7 @@ normalize.filter_spct <- function(x,
     return(normalize_spct(spct = x,
                           range = range,
                           norm = norm,
-                          col.names = "Tfr",
+                          col.names = col.names,
                           keep.scaling = keep.scaling,
                           na.rm = na.rm,
                           ...))
