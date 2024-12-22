@@ -5,10 +5,54 @@ context("normalize.spct")
 test_that("normalize source_spct", {
 
   my.spct <- q2e(sun.spct, action = "replace")
+  my_norm.spct <- normalize(my.spct)
+
+  # check query function and method consistency
+  expect_equal(normalization(my_norm.spct),
+               getNormalisation(my_norm.spct))
+
+  # check norm = "skip" is a no-op
+  expect_equal(my.spct, normalize(my.spct, norm = "skip"))
+
+  # check norm = "undo" reverts the normalizatiom
+  expect_equal(my.spct[["w.length"]],
+               normalize(my_norm.spct, norm = "undo")[["w.length"]])
+  expect_equal(my.spct[["s.e.irrad"]],
+               normalize(my_norm.spct, norm = "undo")[["s.e.irrad"]])
+  expect_contains(attributes(normalize(my_norm.spct, norm = "undo")),
+                  attributes(my.spct))
+
+  # check that default is norm = "max"
   my_norm_max.spct <- normalize(my.spct, norm = "max")
+  expect_equal(getNormalization(my_norm.spct),
+               getNormalization(my_norm_max.spct))
+
+  # check that unnecessary update does not change the result
   my_norm_umax.spct <- normalize(my_norm_max.spct, norm = "update")
   expect_equal(getNormalization(my_norm_umax.spct),
                getNormalization(my_norm_max.spct))
+
+  # check that old style normalization is handled correctly
+  my_old_style_norm.spct <- my_norm.spct
+  attr(my_old_style_norm.spct, "normalization") <- NULL
+  expect_true(is_normalised(my_old_style_norm.spct))
+  expect_no_warning(normalization(my_old_style_norm.spct))
+  expect_no_error(normalization(my_old_style_norm.spct))
+  expect_no_message(normalization(my_old_style_norm.spct))
+  expect_false(all(is.na(unlist(normalization(my_old_style_norm.spct)))))
+  expect_equal(normalization(my_old_style_norm.spct)[["norm.wl"]], 451)
+  expect_warning(normalize(my_old_style_norm.spct, norm = "update"))
+
+  # check that old style normalization is handled correctly
+  my_vold_style_norm.spct <- my_old_style_norm.spct
+  attr(my_vold_style_norm.spct, "normalized") <- TRUE
+  expect_true(is_normalised(my_vold_style_norm.spct))
+  expect_no_warning(normalization(my_vold_style_norm.spct))
+  expect_no_error(normalization(my_vold_style_norm.spct))
+  expect_no_message(normalization(my_vold_style_norm.spct))
+  expect_true(all(is.na(unlist(normalization(my_vold_style_norm.spct)))))
+  expect_true(is.na(normalization(my_vold_style_norm.spct)[["norm.wl"]]))
+  expect_warning(normalize(my_vold_style_norm.spct, norm = "update"))
 
   my_norm_500.spct <- normalize(my.spct, norm = 500)
   my_norm_u500.spct <- normalize(my_norm_500.spct, norm = "update")

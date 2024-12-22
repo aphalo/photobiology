@@ -654,7 +654,7 @@ normalize.generic_mspct <- function(x,
   msmsply(x,
           normalize, # members can be heterogeneous
           range = range,
-          norm = "max",
+          norm = norm,
           col.names = col.names,
           keep.scaling = keep.scaling,
           na.rm = na.rm,
@@ -714,13 +714,18 @@ normalize_spct <- function(spct,
       warning("Normalization not updated: action not supported for objects created with 'photobiology' (<= 0.10.9).")
       return(spct)
     } else {
-      norm <- old.normalization.ls$norm.type
-      if (norm[1] == "wavelength") {
-        norm <- old.normalization.ls$norm.wl
+      if (norm[1] != "undo") {
+        norm <- old.normalization.ls$norm.type
+        if (norm[1] == "wavelength") {
+          norm <- old.normalization.ls$norm.wl
+        }
+        range <- old.normalization.ls$norm.range
       }
-      range <- old.normalization.ls$norm.range
       # remove the old normalization
-      spct <- denormalize_spct(spct)
+      spct <- denormalize_spct(spct, wipe.away = FALSE)
+      if (norm[1] == "undo") {
+        return(spct)
+      }
     }
   } else if (norm[1] == "update") {
     # not normalized, nothing to update
@@ -893,8 +898,10 @@ is_normalized <- function(x) {
     return(!is.null(spct.attr) && as.logical(spct.attr))
   } else if (is.generic_mspct(x)) {
     return(mslply(x, is_normalized))
+  } else if (is.waveband(x)) {
+    return(!is.na(normalization(x)))
   } else {
-    warning("Method 'is_normalized()' not implemented for class: ", class(x)[1])
+    warning("Method 'is_normalized()' not implemented for class: '", class(x)[1], "'.")
     return(NA)
   }
 }
@@ -1010,6 +1017,13 @@ getNormalization <- function(x) {
           normalization.list[["norm.range"]] <- rep(NA_real_, 2)
         }
         return(normalization.list)
+      } else if (is.numeric(getNormalized(x, .force.numeric = FALSE))) {
+        return(list(norm.type = NA_character_,
+                    norm.wl = getNormalized(x),
+                    norm.factors = NA_real_,
+                    norm.cols = NA_character_,
+                    norm.range = rep(NA_real_, 2))
+        )
       }
     }
   } else if (is.generic_mspct(x)) {
