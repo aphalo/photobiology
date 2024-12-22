@@ -1,4 +1,5 @@
 ---
+title: NEWS
 editor_options:
   markdown:
     wrap: 72
@@ -14,11 +15,14 @@ R for Photobiology suite.
   quantities.
   * Methods for conversion between quantities and between units update the
   existing normalization or remove it as requested.
-  * Add support in `normalize()` for undoing an existing normalization when 
-detailed normalization metadata have been stored as object attributes.
+  * Add support in `normalize()` for undoing an existing normalization with 
+`norm = "undo"` when detailed normalization metadata have been stored as object 
+attributes.
   * Support normalization of multiple columns.
-- (coming soon) Move to package 'SunCalcMeeus' the functions and methods for sun position and
-day length calculations.
+  * Query method `normalization()` implemented for spectra, summaries of spectra
+and collections of spectra as equivalent to `getNormalization()`.
+- Move to package ['SunCalcMeeus'](https://docs.r4photobiology.info/SunCalcMeeus/) 
+the functions and methods for sun position and day length calculations.
 - (coming soon) Move to a separate package the evapotranspiration, water in the atmosphere 
 and net radiation functions.
 
