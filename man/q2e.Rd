@@ -24,8 +24,7 @@ q2e(x, action, byref, ...)
 \arguments{
 \item{x}{an R object.}
 
-\item{action}{a character string, one of "add", "replace", "add.raw" or
-"replace.raw".}
+\item{action}{a character string, one of "add", or "replace".}
 
 \item{byref}{logical indicating if a new object will be created by reference
 or a new object returned.}
@@ -52,9 +51,7 @@ The converted spectral values are added to or replace the existing
   \code{action}. Addition is currently not supported for normalized spectra.
   If the spectrum has been normalized with a recent version of package
   'photobiology' the spectrum will be renormalized after conversion using the
-  same arguments as previously. \code{"add.raw"} and \code{"replace.raw"}
-  prevent the re-normalization, are included for completeness and as a way of
-  restoring previous behaviour.
+  same arguments as previously.
 }
 \section{Methods (by class)}{
 \itemize{

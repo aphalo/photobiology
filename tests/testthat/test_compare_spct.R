@@ -98,14 +98,21 @@ test_that("filter_mspct", {
   my.mspct <- filter_mspct(list(pet1 = clean(polyester.spct), pet2 = clean(polyester.spct) * 2))
   my.mspct <- clip_wl(my.mspct, range = c(400, 450)) # make tests faster
 
-  expect_known_value(compare_spct(my.mspct, .summary.fun = absorbance),
+  expect_known_value(compare_spct(my.mspct,
+                                  .summary.fun = absorbance,
+                                  .comparison.fun = `/`),
                      "./data/compare-spct-default-value-A", update = FALSE)
   expect_named(compare_spct(my.mspct, .summary.fun = absorbance),
                c("w.length", "wl.min", "wl.max", "pet1.absorbance", "pet2.absorbance",
                  "comparison.result"))
-  expect_equal(unique(na.omit(compare_spct(my.mspct, .summary.fun = absorbance)[["comparison.result"]])), 2)
-  expect_is(unique(na.omit(compare_spct(my.mspct, .summary.fun = absorbance)[["comparison.result"]])), "numeric")
-  expect_is(unique(na.omit(compare_spct(my.mspct, .summary.fun = absorbance, .comparison.fun = `>`)[["comparison.result"]])), "logical")
+  expect_equal(unique(compare_spct(my.mspct,
+                                      .summary.fun = absorbance,
+                                      .comparison.fun = `/`)[["comparison.result"]]), 2)
+  expect_is(compare_spct(my.mspct,
+                         .summary.fun = absorbance)[["comparison.result"]], "numeric")
+  expect_is(compare_spct(my.mspct,
+                         summary.fun = absorbance,
+                         .comparison.fun = `>`)[["comparison.result"]], "logical")
 
   unset_filter_qty_default()
 

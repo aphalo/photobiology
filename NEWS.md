@@ -9,15 +9,15 @@ editor_options:
 
 - Redesign the user interface for normalization and changes in units or quantities.
 This should keep the logic of both package code and user code simpler. This
-change is is likely to break user code, and code in the other packages in the 
+change is likely to break user code, and code in the other packages in the 
 R for Photobiology suite.
   * `normalize()` methods no longer supports on-the-fly change of units or 
   quantities.
   * Methods for conversion between quantities and between units update the
-  existing normalization or remove it as requested.
+  existing normalization.
   * Add support in `normalize()` for undoing an existing normalization with 
-`norm = "undo"` when detailed normalization metadata have been stored as object 
-attributes.
+`norm = "undo"`. Available when normalization has been done with 'photobiology'
+(>= 0.10.9), as earlier versions did not store the history as metadata.
   * Support normalization of multiple columns.
   * Query method `normalization()` implemented for spectra, summaries of spectra
 and collections of spectra as equivalent to `getNormalization()`.
