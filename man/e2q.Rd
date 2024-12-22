@@ -13,7 +13,7 @@ e2q(x, action, byref, ...)
 
 \method{e2q}{default}(x, action = "add", byref = FALSE, ...)
 
-\method{e2q}{source_spct}(x, action = "add", byref = FALSE, ...)
+\method{e2q}{source_spct}(x, action = NULL, byref = FALSE, ...)
 
 \method{e2q}{response_spct}(x, action = "add", byref = FALSE, ...)
 

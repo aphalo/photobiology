@@ -69,7 +69,7 @@ gel_norm.spct <- normalize(yellow_gel.spct)
 getNormalized(gel_norm.spct)
 getNormalization(gel_norm.spct)
 
-getNormalization(T2Afr(gel_norm.spct))
+# getNormalization(T2Afr(gel_norm.spct))
 getNormalization(any2A(gel_norm.spct))
 
 }

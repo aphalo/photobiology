@@ -33,7 +33,7 @@ normalise(x, ...)
   ...,
   range = NULL,
   norm = "max",
-  unit.out = getOption("photobiology.radiation.unit", default = "energy"),
+  unit.out = NA,
   keep.scaling = FALSE,
   na.rm = FALSE
 )
@@ -43,7 +43,7 @@ normalise(x, ...)
   ...,
   range = NULL,
   norm = "max",
-  unit.out = getOption("photobiology.radiation.unit", default = "energy"),
+  unit.out = NA,
   keep.scaling = FALSE,
   na.rm = FALSE
 )
@@ -53,7 +53,7 @@ normalise(x, ...)
   ...,
   range = NULL,
   norm = "max",
-  qty.out = getOption("photobiology.filter.qty", default = "transmittance"),
+  qty.out = NA,
   keep.scaling = FALSE,
   na.rm = FALSE
 )
@@ -63,7 +63,7 @@ normalise(x, ...)
   ...,
   range = NULL,
   norm = "max",
-  qty.out = NULL,
+  qty.out = NA,
   keep.scaling = FALSE,
   na.rm = FALSE
 )
@@ -73,6 +73,7 @@ normalise(x, ...)
   ...,
   range = NULL,
   norm = "max",
+  qty.out = NA,
   keep.scaling = FALSE,
   na.rm = FALSE
 )
@@ -110,7 +111,7 @@ normalise(x, ...)
   ...,
   range = NULL,
   norm = "max",
-  unit.out = getOption("photobiology.radiation.unit", default = "energy"),
+  unit.out = NA,
   keep.scaling = FALSE,
   na.rm = FALSE,
   .parallel = FALSE,
@@ -122,7 +123,7 @@ normalise(x, ...)
   ...,
   range = NULL,
   norm = "max",
-  unit.out = getOption("photobiology.radiation.unit", default = "energy"),
+  unit.out = NA,
   keep.scaling = FALSE,
   na.rm = FALSE,
   .parallel = FALSE,
@@ -134,7 +135,7 @@ normalise(x, ...)
   ...,
   range = NULL,
   norm = "max",
-  qty.out = getOption("photobiology.filter.qty", default = "transmittance"),
+  qty.out = NA,
   keep.scaling = FALSE,
   na.rm = FALSE,
   .parallel = FALSE,
@@ -146,7 +147,7 @@ normalise(x, ...)
   ...,
   range = x,
   norm = "max",
-  qty.out = NULL,
+  qty.out = NA,
   keep.scaling = FALSE,
   na.rm = FALSE,
   .parallel = FALSE,
@@ -180,6 +181,7 @@ normalise(x, ...)
   ...,
   range = x,
   norm = "max",
+  qty.out = NA,
   keep.scaling = FALSE,
   na.rm = FALSE,
   .parallel = FALSE,
@@ -213,8 +215,7 @@ update the normalization after modifying units of expression, quantity
 or range but respecting the previously used criterion, "undo" to revert
 an existing normalization or "skip" to force return of \code{x} unchanged.}
 
-\item{unit.out}{character Allowed values "energy", and "photon",
-or its alias "quantum"}
+\item{unit.out}{No longer supported and is ignored with a warning.}
 
 \item{keep.scaling}{logical or numeric Flag to indicate if any existing
 scaling should be preserved or not. The default, \code{FALSE}, preserves
@@ -224,11 +225,11 @@ to this value before normalization and marked as not scaled.}
 \item{na.rm}{logical indicating whether \code{NA} values should be stripped
 before calculating the summary (e.g. "max") used for normalization.}
 
-\item{qty.out}{character string  Allowed values are "transmittance", and
-"absorbance" indicating on which quantity to apply the normalization.}
+\item{qty.out}{No longer supported and is ignored with a warning..}
 
 \item{col.names}{character vector containing the names of columns or
-variables to which to apply the normalization.}
+variables. Columns in \code{x} matching the names in \code{col.names} are
+normalized, other columns are returned unchanged.}
 
 \item{.parallel}{if TRUE, apply function in parallel, using parallel backend
 provided by foreach}

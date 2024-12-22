@@ -121,7 +121,7 @@ test_that("source_mspct", {
     expect_equal(is_tagged(spct), is_tagged(long.spct))
   }
 
-  my.spct <- normalize(sun.spct)
+  my.spct <- normalize(q2e(sun.spct, action = "replace"))
   my.mspct <- source_mspct(list(sun1 = my.spct, sun2 = my.spct))
   long.spct <- rbindspct(my.mspct)
   expect_named(long.spct, c("w.length", "s.e.irrad", "spct.idx"))

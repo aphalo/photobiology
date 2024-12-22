@@ -422,13 +422,39 @@ expanse.generic_mspct <- function(x, ..., idx = "spct.idx") {
 
 #' Normalization of an R object
 #'
-#' Normalization wavelength [\eqn{nm}] of an R object, retrieved from the object's
-#' attributes.
+#' Normalization wavelength [\eqn{nm}] and other normalization metadata of an R
+#' object, retrieved from the object's attributes.
+#'
+#' @details In the case of wavebands for spectral weighting functions
+#'   (\code{waveband} objects), the normalization wavelength is returned. For
+#'   spectral objects (\code{generic_spct} and derived ), the normalization
+#'   descriptor, a list object, is returned. This list contains in addition to
+#'   the normalization wavelength, the multiplier used and type of normalization
+#'   applied. These metadata makes it possible to "undo" the normalization and
+#'   to "update" the normalization after a transformation, such as conversion to
+#'   a related physical quantity, of the spectral data.
 #'
 #' @param x an R object
 #' @export
 #'
-#' @return A single numeric value of wavelength [\eqn{nm}].
+#' @return A single numeric value of wavelength [\eqn{nm}] or a list with
+#'   with members.
+#'
+#' @note Older versions of the package stored only a subset of the metadata or
+#'   only a flag to indicate that normalization had been applied. For such
+#'   objects some or even all fields in the returned list are set to \code{NA}.
+#'
+#' @examples
+#'
+#' is_normalized(sun.spct)
+#' normalization(sun.spct)
+#' sun_norm.spct <- normalize(sun.spct)
+#' is_normalized(sun_norm.spct)
+#' normalization(sun_norm.spct)
+#'
+#' my_wband <- waveband(c(400,700))
+#' is_normalized(my_wband)
+#' normalization(my_wband)
 #'
 #' @family waveband attributes
 #'
@@ -439,7 +465,7 @@ normalization <- function(x) UseMethod("normalization")
 #' @export
 #'
 normalization.default <- function(x) {
-  warning("'normalization()' not implemented for class '", class(x), "'.")
+  warning("'normalization()' not implemented for class '", class(x)[1], "'.")
   return(NA_real_)
 }
 
@@ -449,6 +475,30 @@ normalization.default <- function(x) {
 #'
 normalization.waveband <- function(x) {
   return(ifelse(is.null(x[["norm"]]), NA_real_, x[["norm"]]))
+}
+
+#' @describeIn normalization Normalization of a \code{\link{generic_spct}} object.
+#'
+#' @export
+#'
+normalization.generic_spct <- function(x) {
+  getNormalization(x)
+}
+
+#' @describeIn normalization Normalization of a \code{\link{summary.generic_spct}} object.
+#'
+#' @export
+#'
+normalization.summary_generic_spct <- function(x) {
+  getNormalization(x)
+}
+
+#' @describeIn normalization Normalization of a \code{\link{generic_mspct}} object.
+#'
+#' @export
+#'
+normalization.generic_mspct <- function(x) {
+  getNormalization(x)
 }
 
 # is_effective -----------------------------------------------------------
