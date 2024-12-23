@@ -1,7 +1,7 @@
 Package: photobiology
 Type: Package
 Title: Photobiological Calculations
-Version: 0.11.4.9003
+Version: 0.11.4.9004
 Date: 2024-12-23
 Authors@R:
    c(
@@ -22,7 +22,8 @@ Description: Definitions of classes, methods, operators and functions for use
     suite, Aphalo, P. J. (2015) <doi:10.19232/uv4pb.2015.1.14>.
 License: GPL (>= 2)
 Depends:
-    R (>= 4.0.0)
+    R (>= 4.0.0),
+    SunCalcMeeus (>= 0.1.1)
 Imports:
     stats,
     grDevices,
