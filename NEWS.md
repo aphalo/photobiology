@@ -7,6 +7,10 @@ editor_options:
 
 # photobiology 0.12.0
 
+**This is a major update, that breaks the `autoplot()` methods from 'ggspectra'.
+As of 2024-12-23 the development version of 'photobiology' is not yet compatible
+with the released or under development versions of 'ggspectra'.**
+
 - Redesign the user interface for normalization and changes in units or quantities.
 This should keep the logic of both package code and user code simpler. This
 change is likely to break user code, and code in the other packages in the 
