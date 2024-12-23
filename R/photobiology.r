@@ -40,6 +40,7 @@
 #'
 #' @importFrom rlang .data
 #' @import tibble
+#' @import SunCalcMeeus
 #'
 #' @examples
 #' # irradiance of the whole spectrum
