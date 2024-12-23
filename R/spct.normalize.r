@@ -337,7 +337,7 @@ normalize.raw_spct <- function(x,
                  keep.scaling = keep.scaling,
                  na.rm = na.rm,
                  ...)
-  I  }
+}
 
 #' @describeIn normalize Normalize a cps spectrum.
 #'
@@ -359,19 +359,19 @@ normalize.cps_spct <- function(x,
                           norm = norm,
                           keep.scaling = keep.scaling,
                           na.rm = na.rm,
-                            ...)
-      return(rbindspct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
-    }
-
-    col.names <- grep("^cps", names(x), value = TRUE)
-    normalize_spct(spct = x,
-                   range = range,
-                   norm = norm,
-                   col.names = grep("^cps", names(x), value = TRUE),
-                   keep.scaling = keep.scaling,
-                   na.rm = na.rm,
-                   ...)
+                          ...)
+    return(rbindspct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
   }
+
+  col.names <- grep("^cps", names(x), value = TRUE)
+  normalize_spct(spct = x,
+                 range = range,
+                 norm = norm,
+                 col.names = grep("^cps", names(x), value = TRUE),
+                 keep.scaling = keep.scaling,
+                 na.rm = na.rm,
+                 ...)
+}
 
 #' @describeIn normalize Normalize a raw spectrum.
 #'
@@ -488,7 +488,7 @@ normalize.response_mspct <- function(x,
           .parallel = .parallel,
           .paropts = .paropts)
 
-  }
+}
 
 #' @describeIn normalize Normalize the members of a filter_mspct object.
 #'
@@ -1092,7 +1092,7 @@ setNormalized <- function(x,
     attr(spct, "normalized") <- FALSE
     attr(spct, "normalization") <- NULL
   } else if ((is.generic_spct(x) || is.summary_generic_spct(x)) &&
-      (all(is.na(norm)) || all(is.numeric(norm)) || all(is.logical(norm)))) {
+             (all(is.na(norm)) || all(is.numeric(norm)) || all(is.logical(norm)))) {
     attr(x, "normalized") <-
       if (length(norm) == 1L) {
         norm
