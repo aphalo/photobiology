@@ -25,7 +25,7 @@ knitr::opts_chunk$set(
   
 Package '**photobiology**' defines a system of classes for storing spectral data and accompanying metadata. For each of these classes specialised summary methods, maths operators and functions are provided. In addition, classes for storing collections of objects of the classes for individual spectra are defined as well as 'apply' functions. Extraction and replacement operators are implemented.
 
-Functions for calculation of the position of the sun, times of sunrise and sunset, day length and night length are also implemented.
+Functions for calculation of the position of the sun, times of sunrise and sunset, day length and night length are also available. Starting from 'photobiology' 0.12.0 they are imported from package 'SunCalcMeeus', which is a spin-off of 'photobiology. _If you only use these functions, you can attach or load 'SunCalcMeeus' instead of 'photobiology', otherwise, the only visible change is that the on-line help is at [a separate site](https://docs.r4photobiology.info/SunCalcMeeus/)._
 
 The package supports storage and manipulation of data for radiation quantities and for optical properties of objects and solutes, as well as response and action spectra for photobiological, photochemical and photoelectrical responses.
 

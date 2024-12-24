@@ -266,31 +266,13 @@ reference:
     - wb_trim_as_default
     - verbose_as_default
 
-  - title: Astronomy
-    desc: Astronomical computations of interest in photobiology and meteorology.
-    contents:
-    - solar_time
-    - as.solar_date
-    - is.solar_time
-    - is.solar_date
-    - as_tod
-    - format.tod_time
-    - print.tod_time
-    - tz_time_diff
-    - day_night
-    - sun_angles
-    - format.solar_time
-    - print.solar_time
-    - validate_geocode
-    - irrad_extraterrestrial
-
   - title: Atmosphere
     desc: Computations related to water vapour in air, and on equivalent air mass at different solar elevations.
     contents:
     - water_vp_sat
-    - relative_AM
     - ET_ref
     - net_irradiance
+    - irrad_extraterrestrial
 
   - title: Optics
     desc: Computations related to radiation physics.
@@ -440,8 +422,8 @@ navbar:
         href: articles/userguide-0-r4p-introduction.html
       - text: '1 Radiation'
         href: articles/userguide-1-radiation.html
-      - text: '2 Astronomy and Atmosphere'
-        href: articles/userguide-2-astronomy.html
+      - text: 'SunCalcMeeus Astronomy and Atmosphere'
+        href: https://docs.r4photobiology.info/SunCalcMeeus/
     tutorials:
       text: Resources
       menu:

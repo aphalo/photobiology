@@ -22,7 +22,13 @@ for individual spectra are defined as well as ‘apply’ functions.
 Extraction and replacement operators are implemented.
 
 Functions for calculation of the position of the sun, times of sunrise
-and sunset, day length and night length are also implemented.
+and sunset, day length and night length are also available. Starting
+from ‘photobiology’ 0.12.0 they are imported from package
+‘SunCalcMeeus’, which is a spin-off of ’photobiology. *If you only use
+these functions, you can attach or load ‘SunCalcMeeus’ instead of
+‘photobiology’, otherwise, the only visible change is that the on-line
+help is at [a separate
+site](https://docs.r4photobiology.info/SunCalcMeeus/).*
 
 The package supports storage and manipulation of data for radiation
 quantities and for optical properties of objects and solutes, as well as
@@ -59,9 +65,9 @@ sun.
 geocode <- data.frame(lon = 0, lat = 55)
 date <- lubridate::now(tzone = "UTC")
 sunrise_time(date, tz = "UTC", geocode = geocode)
-#> [1] "2024-08-23 04:50:47 UTC"
+#> [1] "2024-12-24 08:24:33 UTC"
 day_length(date, tz = "UTC", geocode = geocode)
-#> [1] 14.39096
+#> [1] 7.175161
 ```
 
 ## Installation
