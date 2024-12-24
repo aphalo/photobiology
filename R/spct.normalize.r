@@ -1089,8 +1089,8 @@ setNormalized <- function(x,
   name <- substitute(x)
 
   if (is.logical(norm) && all(!norm)) {
-    attr(spct, "normalized") <- FALSE
-    attr(spct, "normalization") <- NULL
+    attr(x, "normalized") <- FALSE
+    attr(x, "normalization") <- NULL
   } else if ((is.generic_spct(x) || is.summary_generic_spct(x)) &&
              (all(is.na(norm)) || all(is.numeric(norm)) || all(is.logical(norm)))) {
     attr(x, "normalized") <-
