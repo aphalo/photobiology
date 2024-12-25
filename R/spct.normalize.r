@@ -1083,10 +1083,19 @@ setNormalized <- function(x,
                           norm.cols = NA_character_,
                           norm.range = rep(NA_real_, 2),
                           verbose = getOption("verbose_as_default", default = FALSE)) {
+  name <- substitute(x)
+
   stopifnot("'norm' must be numeric or logical, but it is not" =
               is.numeric(norm) || is.logical(norm))
 
-  name <- substitute(x)
+  if (!length(norm.cols)) {
+    norm.cols = NA_character_
+  } else if (!all(is.na(norm.cols))) {
+    norm.cols <- na.omit(norm.cols)
+    norm.cols <- intersect(norm.cols, setdiff(colnames(x), "w.length"))
+    stopifnot("'norm.cols' argument must be 'NA' or name(s) of columns" =
+                length(norm.cols) > 0L)
+  }
 
   if (is.logical(norm) && all(!norm)) {
     attr(x, "normalized") <- FALSE

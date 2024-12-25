@@ -1,11 +1,106 @@
 library("photobiology")
 
+context("setNormalized")
+
+test_that("setNormalized source_spct", {
+  energy_as_default()
+
+  my.spct <- sun.spct
+  my.spct <- q2e(my.spct, action = "replace")
+  my_norm.spct <- normalize(my.spct)
+  my_unset_norm.spct <- my_norm.spct
+  setNormalized(my_unset_norm.spct, norm = FALSE)
+  my_defaultset_norm.spct <- my_norm.spct
+  setNormalized(my_defaultset_norm.spct)
+
+  expect_false(is_normalized(my.spct))
+  expect_true(is_normalized(my_norm.spct))
+  expect_false(is_normalized(my_unset_norm.spct))
+  expect_false(is_normalized(my_defaultset_norm.spct))
+
+  # check query function and method consistency
+  expect_equal(normalization(my_norm.spct),
+               normalization(my_norm.spct))
+
+  expect_true(all(is.na(unlist(normalization(my.spct)))))
+  expect_true(!any(is.na(unlist(normalization(my_norm.spct)))))
+  expect_true(all(is.na(unlist(normalization(my_unset_norm.spct)))))
+  expect_true(all(is.na(unlist(normalization(my_defaultset_norm.spct)))))
+
+  expect_named(normalization(my.spct),
+               c("norm.type", "norm.wl", "norm.factors", "norm.cols", "norm.range"))
+  expect_named(normalization(my_norm.spct),
+               c("norm.type", "norm.wl", "norm.factors", "norm.cols", "norm.range"))
+  expect_named(normalization(my_unset_norm.spct),
+               c("norm.type", "norm.wl", "norm.factors", "norm.cols", "norm.range"))
+  expect_named(normalization(my_defaultset_norm.spct),
+               c("norm.type", "norm.wl", "norm.factors", "norm.cols", "norm.range"))
+
+  my.spct <- sun.spct
+  expect_silent(setNormalized(as.data.frame(my.spct)))
+  my.spct <- sun.spct
+  expect_silent(setNormalized(as.data.frame(my.spct), FALSE))
+  my.spct <- sun.spct
+  expect_warning(setNormalized(as.data.frame(my.spct), TRUE))
+
+  temp.spct <- sun.spct
+  setNormalized(temp.spct, norm = 450)
+  expect_true(is_normalized(temp.spct))
+  expect_equal(getNormalized(temp.spct), 450) # backwards compatibility
+  expect_equal(sum(is.na(unlist(normalization(temp.spct)))), 5L)
+  expect_named(normalization(temp.spct),
+               c("norm.type", "norm.wl", "norm.factors", "norm.cols", "norm.range"))
+  expect_equal(normalization(temp.spct)[["norm.wl"]], 450)
+
+  temp.spct <- sun.spct
+  setNormalized(temp.spct, norm = TRUE, norm.type = "max")
+  expect_true(is_normalized(temp.spct))
+  expect_equal(getNormalized(temp.spct), TRUE) # backwards compatibility
+  expect_equal(sum(is.na(unlist(normalization(temp.spct)))), 5L)
+  expect_named(normalization(temp.spct),
+               c("norm.type", "norm.wl", "norm.factors", "norm.cols", "norm.range"))
+  expect_equal(normalization(temp.spct)[["norm.type"]], "max")
+  expect_true(is.na(normalization(temp.spct)[["norm.wl"]]))
+
+  temp.spct <- sun.spct
+  expect_silent(setNormalized(temp.spct, norm = TRUE, norm.cols = c("s.e.irrad", "s.q.irrad")))
+  temp.spct <- sun.spct
+  expect_silent(setNormalized(temp.spct, norm = TRUE, norm.cols = "s.q.irrad"))
+  temp.spct <- sun.spct
+  expect_silent(setNormalized(temp.spct, norm = TRUE, norm.cols = "s.e.irrad"))
+  temp.spct <- sun.spct
+  expect_error(setNormalized(temp.spct, norm = TRUE, norm.cols = "zzzzzz"))
+  temp.spct <- sun.spct
+  expect_silent(setNormalized(temp.spct, norm = TRUE, norm.cols = c("s.q.irrad", "zzzzzz")))
+  temp.spct <- sun.spct
+  expect_silent(setNormalized(temp.spct, norm = TRUE, norm.cols = c("s.e.irrad", "zzzzzz")))
+  temp.spct <- sun.spct
+  expect_silent(setNormalized(temp.spct, norm = TRUE, norm.cols = c("s.q.irrad", NA)))
+  temp.spct <- sun.spct
+  expect_error(setNormalized(temp.spct, norm = TRUE, norm.cols = ""))
+  temp.spct <- sun.spct
+  expect_silent(setNormalized(temp.spct, norm = TRUE, norm.cols = character()))
+
+  temp.spct <- sun.spct
+  setNormalized(temp.spct, norm = TRUE)
+  expect_true(is_normalized(temp.spct))
+  expect_equal(getNormalized(temp.spct), TRUE) # backwards compatibility
+  expect_equal(sum(is.na(unlist(normalization(temp.spct)))), 6L)
+  expect_named(normalization(temp.spct),
+               c("norm.type", "norm.wl", "norm.factors", "norm.cols", "norm.range"))
+
+})
+
 context("normalize.spct")
 
 test_that("normalize source_spct", {
+  energy_as_default()
 
   my.spct <- q2e(sun.spct, action = "replace")
   my_norm.spct <- normalize(my.spct)
+
+  # expect_equal(my.spct, setNormalized(my_norm.spct))
+  # expect_equal(my.spct, setNormalized(my_norm.spct, norm = FALSE))
 
   # check query function and method consistency
   expect_equal(normalization(my_norm.spct),
@@ -33,6 +128,8 @@ test_that("normalize source_spct", {
                getNormalization(my_norm_max.spct))
 
   # check that old style normalization is handled correctly
+  my_norm.spct <- normalize(my.spct)
+
   my_old_style_norm.spct <- my_norm.spct
   attr(my_old_style_norm.spct, "normalization") <- NULL
   expect_true(is_normalised(my_old_style_norm.spct))
@@ -283,3 +380,4 @@ test_that("integrate_spct", {
 
 
 })
+
