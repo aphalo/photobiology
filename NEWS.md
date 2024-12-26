@@ -7,22 +7,25 @@ editor_options:
 
 # photobiology 0.12.0
 
-**This is a major update, that breaks the `autoplot()` methods from 'ggspectra'
-(<= 0.11.4). As of 2024-12-24 the development version of 'photobiology' (>=
-0.11.4.9004) is compatible with 'ggspectra' (>= 0.3.14.9000).**
+**This is a major update with new features and includes signiifcant changes to 
+internal code. As of 2024-12-26 the development version of 'photobiology' (>=
+0.11.4.9004) is compatible with the current CRAN versions of 'ggspectra' 
+(>= 0.3.14) and of most other packages in the suite. The development versions
+are all intercompatible.**
 
-- Redesign the user interface for normalization and changes in units or quantities.
-This should keep the logic of both package code and user code simpler. This
-change is likely to break user code, and code in the other packages in the
-R for Photobiology suite.
+- Redesign the user interface for normalization and conversions of units or 
+quantities. These changes keep the logic of both package code and user code 
+simpler. These changes can break some user code.
   * `normalize()` methods no longer supports on-the-fly change of units or 
   quantities.
   * Methods for conversion between quantities and between units update the
   existing normalization.
-  * Add support in `normalize()` for undoing an existing normalization with 
+  * Support in `normalize()` the undoing of an existing normalization with 
 `norm = "undo"`. Available when normalization has been done with 'photobiology'
-(>= 0.10.9), as earlier versions did not store the history as metadata.
-  * Support normalization of multiple columns.
+(>= 0.10.9), as earlier versions did not store the normalization multipliers as 
+metadata.
+  * Support normalization of multiple columns in spectra, such as photon- and
+energy irradiances.
   * Query method `normalization()` implemented for spectra, summaries of spectra
 and collections of spectra as equivalent to `getNormalization()`.
 - Move to package ['SunCalcMeeus'](https://docs.r4photobiology.info/SunCalcMeeus/) 
