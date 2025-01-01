@@ -28,7 +28,7 @@ alternative variables.}
 \item{required}{logical Indicating whether an error should be triggered if
 no variable is found.}
 
-\item{fill}{if \code{required = TRUE} and \code{fill} different from
+\item{fill}{If \code{required = TRUE} and \code{fill} different from
 \code{NULL} the value is used to fill the target variable if it and
 all alternative variables are missing.}
 }

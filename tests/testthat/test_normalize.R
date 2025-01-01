@@ -336,7 +336,10 @@ context("clean.spct")
 test_that("clean", {
 
   my.spct <- q2e(sun.spct, action = "replace")
-  expect_warning(my.spct[1, "s.e.irrad"] <- -1)
+  expect_silent(my.spct[1:2, "s.e.irrad"] <- -1)
+  expect_warning(my.spct[1:3, "s.e.irrad"] <- -1)
+  expect_silent(my.spct[1:3, "s.e.irrad"] <- -0.01)
+  expect_warning(my.spct[1:3, "s.e.irrad"] <- -0.1)
 
   expect_equal(irrad(clean(my.spct)), irrad(sun.spct))
   expect_equal(clean(my.spct), q2e(sun.spct, action = "replace"))

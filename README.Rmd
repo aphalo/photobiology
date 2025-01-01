@@ -27,6 +27,8 @@ Package '**photobiology**' defines a system of classes for storing spectral data
 
 Functions for calculation of the position of the sun, times of sunrise and sunset, day length and night length are also available. Starting from 'photobiology' 0.12.0 they are imported from package 'SunCalcMeeus', which is a spin-off of 'photobiology. _If you only use these functions, you can attach or load 'SunCalcMeeus' instead of 'photobiology', otherwise, the only visible change is that the on-line help is at [a separate site](https://docs.r4photobiology.info/SunCalcMeeus/)._
 
+Functions for the estimation of evapotranspiration and the energy balance of vegetation have been migrated to package ['photobiologyPlants'](https://docs.r4photobiology.info/photobiologyPlants/) as they are related to vegetation. To use them with this version of package 'photobiology', please, add `library(photobiologyPlants)` to your code.
+
 The package supports storage and manipulation of data for radiation quantities and for optical properties of objects and solutes, as well as response and action spectra for photobiological, photochemical and photoelectrical responses.
 
 This package is the core of a suite of R packages for photobiological calculations described at the [r4photobiology](https://www.r4photobiology.info) web site and in the vignette [The R for Photobiology Suite](https://docs.r4photobiology.info/photobiology/articles/userguide-0-r4p-introduction.html).

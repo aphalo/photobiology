@@ -266,14 +266,6 @@ reference:
     - wb_trim_as_default
     - verbose_as_default
 
-  - title: Atmosphere
-    desc: Computations related to water vapour in air, and on equivalent air mass at different solar elevations.
-    contents:
-    - water_vp_sat
-    - ET_ref
-    - net_irradiance
-    - irrad_extraterrestrial
-
   - title: Optics
     desc: Computations related to radiation physics.
     contents:

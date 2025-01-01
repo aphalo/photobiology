@@ -7,11 +7,12 @@ editor_options:
 
 # photobiology 0.12.0
 
-**This is a major update with new features and includes signiifcant changes to 
-internal code. As of 2024-12-26 the development version of 'photobiology' (>=
-0.11.4.9004) is compatible with the current CRAN versions of 'ggspectra' 
-(>= 0.3.14) and of most other packages in the suite. The development versions
-are all intercompatible.**
+**This is a major update with new features and includes significant changes to
+internal code and the migration of some functions to other packages. As of
+2024-12-26 the development version of 'photobiology' (>= 0.11.4.9004) is
+compatible with the current CRAN versions of 'ggspectra' (>= 0.3.14) and of
+other packages in the suite. Some functions have been migrated to package
+'photobiologySun' and others to 'SunCalcMeeus'.**
 
 - Redesign the user interface for normalization and conversions of units or 
 quantities. These changes keep the logic of both package code and user code 
@@ -28,10 +29,16 @@ metadata.
 energy irradiances.
   * Query method `normalization()` implemented for spectra, summaries of spectra
 and collections of spectra as equivalent to `getNormalization()`.
+- Update range-checks of spectra to tolerate 1 in 250 pixels off-range in all 
+range tests. Update the messages to report the number of off-range values in
+addition to the extreme values.
 - Move to package ['SunCalcMeeus'](https://docs.r4photobiology.info/SunCalcMeeus/) 
 the functions and methods for sun position and day length calculations.
-- (coming soon) Move to a separate package the evapotranspiration, water in the atmosphere 
-and net radiation functions.
+- Move functions related to energy, water and carbon exchange between
+vegetation and the atmosphere, including those for evapotranspiration rates,
+water content in the atmosphere and radiation balance functions to package
+'photobiologySun'. This is a code breaking change that will require adding
+`library(photobiologySun)` to scripts that call these functions.
 
 # photobiology 0.11.4
 

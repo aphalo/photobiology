@@ -30,6 +30,13 @@ these functions, you can attach or load ‘SunCalcMeeus’ instead of
 help is at [a separate
 site](https://docs.r4photobiology.info/SunCalcMeeus/).*
 
+Functions for the estimation of evapotranspiration and the energy
+balance of vegetation have been migrated to package
+[‘photobiologyPlants’](https://docs.r4photobiology.info/photobiologyPlants/)
+as they are related to vegetation. To use them with this version of
+package ‘photobiology’, please, add `library(photobiologyPlants)` to
+your code.
+
 The package supports storage and manipulation of data for radiation
 quantities and for optical properties of objects and solutes, as well as
 response and action spectra for photobiological, photochemical and
@@ -65,9 +72,9 @@ sun.
 geocode <- data.frame(lon = 0, lat = 55)
 date <- lubridate::now(tzone = "UTC")
 sunrise_time(date, tz = "UTC", geocode = geocode)
-#> [1] "2024-12-24 08:24:33 UTC"
+#> [1] "2024-12-31 08:24:57 UTC"
 day_length(date, tz = "UTC", geocode = geocode)
-#> [1] 7.175161
+#> [1] 7.275128
 ```
 
 ## Installation

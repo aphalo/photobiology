@@ -25,7 +25,17 @@ The previous value of the option, which can be passed as argument
 Choose between protection against errors or faster performance by enabling
 (the default) or disabling data-consistency and sanity checks.
 }
+\details{
+Checks are applied by default after each operation that modifies
+  the data. This can be excessive in production code. Some functions within
+  this package disable checks for partial computations and apply them to the
+  value they return. It is possible for users to apply this same approach,
+  in which case it is best to schedule the restore of the previous setting
+  using `on.exit()`.
+}
 \seealso{
+[check_spct()]
+
 Other data validity check functions: 
 \code{\link{check_spct}()},
 \code{\link{check_spectrum}()},

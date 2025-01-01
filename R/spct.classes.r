@@ -25,6 +25,15 @@ spct_classes <- function() {
 #' Choose between protection against errors or faster performance by enabling
 #' (the default) or disabling data-consistency and sanity checks.
 #'
+#' @details Checks are applied by default after each operation that modifies
+#'   the data. This can be excessive in production code. Some functions within
+#'   this package disable checks for partial computations and apply them to the
+#'   value they return. It is possible for users to apply this same approach,
+#'   in which case it is best to schedule the restore of the previous setting
+#'   using `on.exit()`.
+#'
+#' @seealso [check_spct()]
+#'
 #' @family data validity check functions
 #'
 #' @return The previous value of the option, which can be passed as argument
@@ -58,6 +67,8 @@ set_check_spct <- function(x) {
 
 #' check and rename variables
 #'
+#'
+#'
 #' @param x data frame or equivalent R object.
 #' @param target.var character vector of length one, with the name of the
 #'    target variable.
@@ -67,7 +78,7 @@ set_check_spct <- function(x) {
 #'    alternative variables.
 #' @param required logical Indicating whether an error should be triggered if
 #'    no variable is found.
-#' @param fill if \code{required = TRUE} and \code{fill} different from
+#' @param fill If \code{required = TRUE} and \code{fill} different from
 #'    \code{NULL} the value is used to fill the target variable if it and
 #'    all alternative variables are missing.
 #'
@@ -102,18 +113,261 @@ check_and_rename_vars <- function(x,
   x
 }
 
+#' Internal utility range-check functions
+#'
+#' Functions used in the different \code{check_spct()} methods.
+#'
+#' @param x Spectral object to check.
+#' @param strict.range logical indicating the stringency of the test.
+#'
+#' @details If \code{strict.range} is \code{NULL} or \code{NA} the failed
+#'   test is output using \code{message()}, if \code{FALSE}, using
+#'   \code{warning()} and if \code{TRUE}, using \code{stop()}. Currently
+#'   the test condition and the message text is the same in all cases.
+#'
+#'   The test is failed only if more than 1/250 spectral values are off-range,
+#'   except for \code{cps_spct} objects where 1/100 negative spectral values
+#'   are tolerated. The test for off-range values includes a small tolerance
+#'   to avoid failure in cases of loss of numerical precision.
+#'
+#'   The criteria are empirical (almost arbitrary) and may be adjusted in
+#'   future versions. The difficulty is that measured spectral data can be
+#'   noisy even when valid and error-free.
+#'
+#' @keywords internal
+#'
+range_check_Tfr <- function(x, strict.range) {
+  if (!all(is.na(x[["Tfr"]]))) {
+    tfr <- na.omit(x[["Tfr"]])
+    n.off.range <- sum(tfr < -1e-4 | tfr > 1 + 1e-6)
+    if (n.off.range > length(tfr) / 250) {
+      Tfr.range <- range(tfr)
+      message.text <-
+        paste0(
+          "Found ", n.off.range, "/", length(tfr),
+          " off-range 'Tfr' values [",
+          formatted_range(Tfr.range),
+          "] instead of  [0..1]",
+          sep = ""
+        )
+      if (is.null(strict.range) || is.na(strict.range)) {
+        message(message.text)
+      } else if (strict.range) {
+        stop(message.text)
+      } else if (!strict.range) {
+        warning(message.text, call. = FALSE)
+      } else {
+        stop ("Bad argument for 'strict.range': ", strict.range)
+      }
+    }
+  }
+}
+
+#' @rdname range_check_Tfr
+#'
+#' @keywords internal
+#'
+range_check_Afr <- function(x, strict.range) {
+  if (!all(is.na(x[["Afr"]]))) {
+    afr <- na.omit(x[["Afr"]])
+    n.off.range <- sum(afr < -1e-4 | afr > 1 + 1e-6)
+    if (n.off.range > length(afr) / 250) {
+      Afr.range <- range(afr)
+      message.text <-
+        paste0(
+          "Found ", n.off.range, "/", length(afr),
+          " off-range 'Afr' values [",
+          formatted_range(Afr.range),
+          "] instead of [0..1]",
+          sep = ""
+        )
+      if (is.null(strict.range) || is.na(strict.range)) {
+        message(message.text)
+      } else if (strict.range) {
+        stop(message.text)
+      } else if (!strict.range) {
+        warning(message.text, call. = FALSE)
+      } else {
+        stop ("Bad argument for 'strict.range': ", strict.range)
+      }
+    }
+  }
+}
+
+#' @rdname range_check_Tfr
+#'
+#' @keywords internal
+#'
+range_check_Rfr <- function(x, strict.range) {
+  if (!all(is.na(x[["Rfr"]]))) {
+    rfr <- na.omit(x[["Rfr"]])
+    n.off.range <- sum(rfr < -1e-4 | rfr > 1 + 1e-6)
+    if (n.off.range > length(rfr) / 250) {
+      Rfr.range <- range(rfr)
+      message.text <-
+        paste0(
+          "Found ", n.off.range, "/", length(rfr),
+          " off-range 'Rfr' values [",
+          formatted_range(Rfr.range),
+          "] instead of  [0..1]",
+          sep = ""
+        )
+      if (is.null(strict.range) || is.na(strict.range)) {
+        message(message.text)
+      } else if (strict.range) {
+        stop(message.text)
+      } else if (!strict.range) {
+        warning(message.text, call. = FALSE)
+      } else {
+        stop ("Bad argument for 'strict.range': ", strict.range)
+      }
+    }
+  }
+}
+
+#' @rdname range_check_Tfr
+#'
+#' @keywords internal
+#'
+range_check_A <- function(x, strict.range) {
+  if (!all(is.na(x[["A"]]))) {
+    xa <- na.omit(x[["A"]])
+    n.off.range <- sum(xa < -1e-7 | xa > 20)
+    if (n.off.range > length(xa) / 250) {
+      A.range <- range(xa)
+      message.text <- paste("Found ", n.off.range, "/", length(xa),
+                            "off-range 'A' values [",
+                            formatted_range(A.range),
+                            "] instead of  [0..20]", sep = "")
+      if (is.null(strict.range) || is.na(strict.range)) {
+        message(message.text)
+      } else if (strict.range) {
+        stop(message.text)
+      } else if (!strict.range) {
+        warning(message.text, call. = FALSE)
+      } else {
+        stop ("Bad argument for 'strict.range': ", strict.range)
+      }
+    }
+  }
+}
+
+#' @rdname range_check_Tfr
+#'
+#' @keywords internal
+#'
+range_check_cps <- function(x, cps.cols, strict.range) {
+  for (col in cps.cols) {
+    stopifnot(is.numeric(x[[col]]))
+    if (all(is.na(x[[col]]))) {
+      next()
+    } else {
+      xcol <- na.omit(x[[col]])
+    }
+    # we need to include zero and a reasonably high number as otherwise dark scans may not pass the test
+    cps.range <- range(0, xcol, 1e3)
+    # we need to be very lax here as during processing of scans we can get negative
+    # values due to subtraction of dark scans
+    n.off.range <- sum(xcol < (cps.range[1] - cps.range[2]) / 10)
+    if (n.off.range > length(xcol) / 100) {
+      message.text <- paste("Found ", n.off.range, "/", length(xcol),
+                            " \"negative\" ", col, " values [",
+                            formatted_range(cps.range),
+                            "]", sep = "")
+      if (is.null(strict.range) || is.na(strict.range)) {
+        message(message.text)
+      } else if (strict.range) {
+        stop(message.text)
+      } else if (!strict.range) {
+        warning(message.text, call. = FALSE)
+      } else {
+        stop ("Bad argument for 'strict.range': ", strict.range)
+      }
+    }
+  }
+}
+
+#' @rdname range_check_Tfr
+#'
+#' @keywords internal
+#'
+range_check_s.irrad <- function(x, strict.range) {
+  min.limit <- -0.10 # we accept small negative values
+  if (exists("s.e.irrad", x, inherits = FALSE) &&
+      !all(is.na(x[["s.e.irrad"]]))) {
+    xse <- na.omit(x[["s.e.irrad"]])
+    s.e.range <- range(xse)
+    s.e.spread <- s.e.range[2] - min(0, s.e.range[1])
+    n.off.range <- sum(xse < (min.limit * max(s.e.spread, 0.04)))
+    # for irradiance zero is meaningful
+    # we need to be fairly lax as dark reference spectra may have
+    # proportionally lots of noise. We also accept 0.4% of pixels off-range.
+    if (n.off.range > length(xse) / 250) {
+      message.text <-
+        paste(
+          "Found ", n.off.range, "/", length(xse),
+          " \"negative\" values; 's.e.irrad' >= ",
+          format(s.e.range[1], digits = 3, nsmall = 2), " W/m2.",
+          sep = ""
+        )
+      if (is.null(strict.range) || is.na(strict.range)) {
+        message(message.text)
+      } else if (strict.range) {
+        stop(message.text)
+      } else if (!strict.range) {
+        warning(message.text, call. = FALSE)
+      } else {
+        stop ("Bad argument for 'strict.range': ", strict.range)
+      }
+    }
+  }
+  if (exists("s.q.irrad", x, inherits = FALSE) &&
+      !all(is.na(x[["s.q.irrad"]]))) {
+    xsq <- na.omit(x[["s.q.irrad"]])
+    s.q.range <- range(xsq)
+    s.q.spread <- s.q.range[2] - min(0, s.q.range[1])
+    n.off.range <- sum(xsq < (min.limit * max(s.q.spread, 2e-7)))
+    # zero is meaningful
+    # we need to be fairly lax as dark reference spectra may have
+    # proportionally lots of noise. We also accept 0.4% of pixels off-range.
+    if (n.off.range > length(xsq) / 250) {
+      message.text <-
+        paste(
+          "Found ", n.off.range, "/", length(xsq),
+          " \"negative\" values; 's.q.irrad' >= ",
+          signif(s.q.range[1] * 1e6, digits = 3), " umol/m2/s.",
+          sep = ""
+        )
+      if (is.null(strict.range) || is.na(strict.range)) {
+        message(message.text)
+      } else if (strict.range) {
+        stop(message.text)
+      } else if (!strict.range) {
+        warning(message.text, call. = FALSE)
+      } else {
+        stop ("Bad argument for 'strict.range': ", strict.range)
+      }
+    }
+  }
+}
+
 #' Check validity of spectral objects
 #'
-#' Check that an R object contains the expected data members.
+#' Check that an R object contains the expected data members and within range
+#' values in them. For wavelengths also check if ordered and if unique or not.
 #'
 #' @param x An R object
 #' @param byref logical indicating if new object will be created by reference or
 #'   by copy of \code{x}
 #' @param strict.range logical indicating whether off-range values result in an
-#'   error instead of a warning, \code{NA} disables the test.
+#'   error instead of a warning, with \code{NA} a message is issued on failure.
 #' @param force logical If \code{TRUE} check is done even if checks are
 #'   disabled.
-#' @param ... additional param possible in derived methods
+#' @param ... additional parameters possible in derived methods
+#'
+#' @details These methods are exported and can be called by user code if needed,
+#'   for example, when the checks have been disabled by setting an R option
+#'   with \code{\link{disable_check_spct}}.
 #'
 #' @export
 #' @examples
@@ -169,25 +423,28 @@ check_spct.generic_spct <-
       class(x) <- union(class.x, class(x)) # can change order!! BUG PRONE
     }
 
-    x <- check_and_rename_vars(x,
-                               target.var = "w.length",
-                               alternative.vars = c("wl", "wavelength", "Wavelength"),
-                               multiplier = c(1, 1, 1),
-                               required = TRUE)
+    x <-
+      check_and_rename_vars(x,
+                            target.var = "w.length",
+                            alternative.vars =
+                              c("wl", "wavelength", "Wavelength"),
+                            multiplier = c(1, 1, 1),
+                            required = TRUE)
 
     if (nrow(x) && !all(is.na(x[["w.length"]]))) {
       wl.min <- min(x[["w.length"]], na.rm = TRUE)
       #  wl.max <- max(x[["w.length"]], na.rm = TRUE)
       if (wl.min == Inf) {
         warning("No valid 'w.length' values found") # could be stop()
-      } else if (wl.min < 1e-20) { # take care of rounding errors but do not restrict use cases
+      } else if (wl.min < 1e-20) { # take care of rounding errors
         stop("Negative or zero 'w.length' values found: aborting!")
       } else if ((wl.min < 99.999 || wl.min > 2.8e3) &&
                  getOption("photobiology.verbose")) { # catch use of Angstrom
-        warning("Possibly off-range w.length values, minimum = ", signif(wl.min, 4), " nm. (Nanometers expected.)")
+        warning("Possibly off-range 'w.length' values, minimum = ",
+                signif(wl.min, 4), " nm. (Nanometers expected.)")
       }
-      # we use run length encoding to find the maximum number of copies of any w.length value
-      # this be needed. This redundancy needs to be fixed.
+      # we use run length encoding to find the maximum number of copies of
+      # any w.length. (This redundancy needs to be fixed.)
       if (multiple.wl == 1) {
         if (is.unsorted(x[["w.length"]], na.rm = TRUE, strictly = TRUE)) {
           if (is.unsorted(-x[["w.length"]], na.rm = TRUE, strictly = TRUE)) {
@@ -216,7 +473,8 @@ check_spct.generic_spct <-
 check_spct.calibration_spct <-
   function(x,
            byref = TRUE,
-           strict.range = getOption("photobiology.strict.range", default = FALSE),
+           strict.range =
+             getOption("photobiology.strict.range", default = FALSE),
            force = FALSE,
            multiple.wl = getMultipleWl(x),
            ...) {
@@ -244,7 +502,8 @@ check_spct.calibration_spct <-
 check_spct.raw_spct <-
   function(x,
            byref = TRUE,
-           strict.range = getOption("photobiology.strict.range", default = FALSE),
+           strict.range =
+             getOption("photobiology.strict.range", default = FALSE),
            force = FALSE,
            multiple.wl = getMultipleWl(x),
            ...) {
@@ -275,37 +534,11 @@ check_spct.raw_spct <-
 check_spct.cps_spct <-
   function(x,
            byref = TRUE,
-           strict.range = getOption("photobiology.strict.range", default = FALSE),
+           strict.range =
+             getOption("photobiology.strict.range", default = FALSE),
            force = FALSE,
            multiple.wl = getMultipleWl(x),
            ...) {
-
-  range_check <- function(x, cps.cols) {
-    for (col in cps.cols) {
-      stopifnot(is.numeric(x[[col]]))
-      if (all(is.na(x[[col]]))) {
-        next()
-      }
-      # we need to include zero and a reasonably high number as otherwise dark scans may not pass the test
-      cps.range <- range(0, x[[col]], 1e3, na.rm = TRUE)
-      # we need to be very lax here as during processing of scans we can get negative
-      # values due to subtraction of dark scans
-      if (cps.range[2] < 0 || abs(cps.range[1]) > (cps.range[2] / 10)) {
-        message.text <- paste("Possible off-range cps values [",
-                              formatted_range(cps.range),
-                              "]", sep = "")
-        if (is.null(strict.range) || is.na(strict.range)) {
-          message(message.text)
-        } else if (strict.range) {
-          stop(message.text)
-        } else if (!strict.range) {
-          warning(message.text)
-        } else {
-          stop ("Bad argument for 'strict.range': ", strict.range)
-        }
-      }
-    }
-  }
 
   x <- check_spct.generic_spct(x, multiple.wl = multiple.wl)
 
@@ -320,7 +553,7 @@ check_spct.cps_spct <-
     names(x)[cps.cols] <- "cps"
   }
   if (length(cps.cols) >= 1) {
-    range_check(x, cps.cols)
+    range_check_cps(x = x, cps.cols = cps.cols, strict.range = strict.range)
     return(x)
   } else {
     warning("No counts per second data found in cps_spct")
@@ -334,78 +567,12 @@ check_spct.cps_spct <-
 check_spct.filter_spct <-
   function(x,
            byref = TRUE,
-           strict.range = getOption("photobiology.strict.range", default = FALSE),
+           strict.range =
+             getOption("photobiology.strict.range", default = FALSE),
            force = FALSE,
            multiple.wl = getMultipleWl(x),
            ...)
   {
-
-    range_check_Tfr <- function(x, strict.range) {
-      if (!all(is.na(x[["Tfr"]]))) {
-        Tfr.min <- min(x[["Tfr"]], na.rm = TRUE)
-        Tfr.max <- max(x[["Tfr"]], na.rm = TRUE)
-        if (Tfr.min < -1e-4 || Tfr.max > 1 + 1e-6) {
-          message.text <- paste("Off-range transmittance values [",
-                                formatted_range(c(Tfr.min, Tfr.max)),
-                                "] instead of  [0..1]", sep = "")
-          if (is.null(strict.range) || is.na(strict.range)) {
-            message(message.text)
-          } else if (strict.range) {
-            stop(message.text)
-          } else if (!strict.range) {
-            warning(message.text)
-          } else {
-            stop ("Bad argument for 'strict.range': ", strict.range)
-          }
-        }
-      }
-    }
-
-    range_check_Afr <- function(x, strict.range) {
-      if (!all(is.na(x[["Afr"]]))) {
-        Afr.min <- min(x[["Afr"]], na.rm = TRUE)
-        Afr.max <- max(x[["Afr"]], na.rm = TRUE)
-        if (Afr.min < -1e-4 || Afr.max > 1 + 1e-6) {
-          message.text <-
-            paste0(
-              "Off-range absorptance values [",
-              formatted_range(c(Afr.min, Afr.max)),
-              "] instead of  [0..1]",
-              sep = ""
-            )
-          if (is.null(strict.range) || is.na(strict.range)) {
-            message(message.text)
-          } else if (strict.range) {
-            stop(message.text)
-          } else if (!strict.range) {
-            warning(message.text)
-          } else {
-            stop ("Bad argument for 'strict.range': ", strict.range)
-          }
-        }
-      }
-    }
-
-    range_check_A <- function(x, strict.range) {
-      if (!all(is.na(x[["A"]]))) {
-        A.min <- min(x[["A"]], na.rm = TRUE)
-        A.max <- max(x[["A"]], na.rm = TRUE)
-        if (A.min < -1e-7 || A.max > 20) {
-          message.text <- paste("Off-range absorbance values [",
-                                formatted_range(c(A.min, A.max)),
-                                "] instead of  [0..20]", sep = "")
-          if (is.null(strict.range) || is.na(strict.range)) {
-            message(message.text)
-          } else if (strict.range) {
-            stop(message.text)
-          } else if (!strict.range) {
-            warning(message.text)
-          } else {
-            stop ("Bad argument for 'strict.range': ", strict.range)
-          }
-        }
-      }
-    }
 
     x <- check_spct.generic_spct(x, multiple.wl = multiple.wl)
 
@@ -415,22 +582,30 @@ check_spct.filter_spct <-
     }
     # check and replace 'other' quantity names
     if (!any(c("Tfr", "A", "Afr") %in% colnames(x))) {
-      x <- check_and_rename_vars(x,
-                                 target.var = "Afr",
-                                 alternative.vars = c("absorptance", "Absorptance", "Apc"),
-                                 multiplier = c(1, 1, 1e-2))
+      x <-
+        check_and_rename_vars(x,
+                              target.var = "Afr",
+                              alternative.vars = c("absorptance",
+                                                   "Absorptance",
+                                                   "Apc"),
+                              multiplier = c(1, 1, 1e-2))
       if (!"Afr" %in% colnames(x)) {
-        x <- check_and_rename_vars(x,
-                                   target.var = "A",
-                                   alternative.vars = c("absorbance", "Absorbance"),
-                                   multiplier = c(1, 1))
+        x <-
+          check_and_rename_vars(x,
+                                target.var = "A",
+                                alternative.vars = c("absorbance",
+                                                     "Absorbance"),
+                                multiplier = c(1, 1))
         if (!"Tfr" %in% colnames(x)) {
-          x <- check_and_rename_vars(x,
-                                     target.var = "Tfr",
-                                     alternative.vars = c("transmittance", "Transmittance", "Tpc"),
-                                     multiplier = c(1e-2, 1e-2, 1e-2),
-                                     required = TRUE,
-                                     fill = NA_real_)
+          x <-
+            check_and_rename_vars(x,
+                                  target.var = "Tfr",
+                                  alternative.vars = c("transmittance",
+                                                       "Transmittance",
+                                                       "Tpc"),
+                                  multiplier = c(1e-2, 1e-2, 1e-2),
+                                  required = TRUE,
+                                  fill = NA_real_)
         }
       }
     }
@@ -445,10 +620,12 @@ check_spct.filter_spct <-
     }
 
     if (getOption("photobiology.verbose")) {
-      if (exists("Tfr", x, mode = "numeric", inherits = FALSE) && anyNA(x[["Tfr"]])) {
+      if (exists("Tfr", x, mode = "numeric", inherits = FALSE) &&
+          anyNA(x[["Tfr"]])) {
         warning("At least one NA in 'Tfr'")
       }
-      if (exists("A", x, mode = "numeric", inherits = FALSE) && anyNA(x[["A"]])) {
+      if (exists("A", x, mode = "numeric", inherits = FALSE) &&
+          anyNA(x[["A"]])) {
         warning("At least one NA in 'A'")
       }
     }
@@ -460,7 +637,8 @@ check_spct.filter_spct <-
 check_spct.solute_spct <-
   function(x,
            byref = TRUE,
-           strict.range = getOption("photobiology.strict.range", default = FALSE),
+           strict.range =
+             getOption("photobiology.strict.range", default = FALSE),
            force = FALSE,
            multiple.wl = getMultipleWl(x),
            ...) {
@@ -485,7 +663,7 @@ check_spct.solute_spct <-
           } else if (strict.range) {
             stop(message.text)
           } else if (!strict.range) {
-            warning(message.text)
+            warning(message.text, call. = FALSE)
           } else {
             stop ("Bad argument for 'strict.range': ", strict.range)
           }
@@ -521,35 +699,11 @@ check_spct.solute_spct <-
 check_spct.reflector_spct <-
   function(x,
            byref = TRUE,
-           strict.range = getOption("photobiology.strict.range", default = FALSE),
+           strict.range =
+             getOption("photobiology.strict.range", default = FALSE),
            force = FALSE,
            multiple.wl = getMultipleWl(x),
            ...) {
-
-    range_check <- function(x, strict.range) {
-      if (!all(is.na(x[["Rfr"]]))) {
-        Rfr.min <- min(x[["Rfr"]], na.rm = TRUE)
-        Rfr.max <- max(x[["Rfr"]], na.rm = TRUE)
-        if (Rfr.min < -1e-4 ||  Rfr.max > 1 + 1e-6) {
-          message.text <-
-            paste0(
-              "Off-range reflectance values [",
-              formatted_range(c(Rfr.min, Rfr.max)),
-              "] instead of  [0..1]",
-              sep = ""
-            )
-          if (is.null(strict.range) || is.na(strict.range)) {
-            message(message.text)
-          } else if (strict.range) {
-            stop(message.text)
-          } else if (!strict.range) {
-            warning(message.text)
-          } else {
-            stop ("Bad argument for 'strict.range': ", strict.range)
-          }
-        }
-      }
-    }
 
     x <- check_spct.generic_spct(x, multiple.wl = multiple.wl)
 
@@ -559,14 +713,17 @@ check_spct.reflector_spct <-
     }
 
     if (!"Rfr" %in% colnames(x)) {
-      x <- check_and_rename_vars(x,
-                                 target.var = "Rfr",
-                                 alternative.vars = c("reflectance", "Reflectance", "Rpc"),
-                                 multiplier = c(1e-2, 1e-2, 1e-2),
-                                 required = TRUE,
-                                 fill = NA_real_)
+      x <-
+        check_and_rename_vars(x,
+                              target.var = "Rfr",
+                              alternative.vars = c("reflectance",
+                                                   "Reflectance",
+                                                   "Rpc"),
+                              multiplier = c(1e-2, 1e-2, 1e-2),
+                              required = TRUE,
+                              fill = NA_real_)
     }
-    range_check(x, strict.range=strict.range)
+    range_check_Rfr(x, strict.range=strict.range)
 
     if (getOption("photobiology.verbose") && anyNA(x[["Rfr"]])) {
       warning("At least one NA in 'Rfr'")
@@ -580,87 +737,11 @@ check_spct.reflector_spct <-
 check_spct.object_spct <-
   function(x,
            byref = TRUE,
-           strict.range = getOption("photobiology.strict.range", default = FALSE),
+           strict.range =
+             getOption("photobiology.strict.range", default = FALSE),
            force = FALSE,
            multiple.wl = getMultipleWl(x),
            ...) {
-
-    range_check_Tfr <- function(x, strict.range) {
-      if (!all(is.na(x[["Tfr"]]))) {
-        Tfr.min <- min(x[["Tfr"]], na.rm = TRUE)
-        Tfr.max <- max(x[["Tfr"]], na.rm = TRUE)
-        if (Tfr.min < -1e-4 || Tfr.max > 1 + 1e-6) {
-          message.text <-
-            paste0(
-              "Off-range transmittance values [",
-              formatted_range(c(Tfr.min, Tfr.max)),
-              "] instead of  [0..1]",
-              sep = ""
-            )
-          if (is.null(strict.range) || is.na(strict.range)) {
-            message(message.text)
-          } else if (strict.range) {
-            stop(message.text)
-          } else if (!strict.range) {
-            warning(message.text)
-          } else {
-            stop ("Bad argument for 'strict.range': ", strict.range)
-          }
-        }
-      }
-    }
-
-    range_check_Afr <- function(x, strict.range) {
-      if (!all(is.na(x[["Afr"]]))) {
-        Afr.min <- min(x[["Afr"]], na.rm = TRUE)
-        Afr.max <- max(x[["Afr"]], na.rm = TRUE)
-        if (Afr.min < -1e-4 || Afr.max > 1 + 1e-6) {
-          message.text <-
-            paste0(
-              "Off-range absorptance values [",
-              formatted_range(c(Afr.min, Afr.max)),
-              "] instead of  [0..1]",
-              sep = ""
-            )
-          if (is.null(strict.range) || is.na(strict.range)) {
-            message(message.text)
-          } else if (strict.range) {
-            stop(message.text)
-          } else if (!strict.range) {
-            warning(message.text)
-          } else {
-            stop ("Bad argument for 'strict.range': ", strict.range)
-          }
-        }
-      }
-    }
-
-    range_check_Rfr <- function(x, strict.range) {
-      if (!all(is.na(x[["Rfr"]]))) {
-        Rfr.min <- min(x[["Rfr"]], na.rm = TRUE)
-        Rfr.max <- max(x[["Rfr"]], na.rm = TRUE)
-        if (!is.na(Rfr.min) && !is.na(Rfr.max)) {
-          if (Rfr.min < -1e-4 ||  Rfr.max > 1 + 1e-6) {
-            message.text <-
-              paste0(
-                "Off-range reflectance values [",
-                formatted_range(c(Rfr.min, Rfr.max)),
-                "] instead of  [0..1]",
-                sep = ""
-              )
-            if (is.null(strict.range) || is.na(strict.range)) {
-              message(message.text)
-            } else if (strict.range) {
-              stop(message.text)
-            } else if (!strict.range) {
-              warning(message.text)
-            } else {
-              stop ("Bad argument for 'strict.range': ", strict.range)
-            }
-          }
-        }
-      }
-    }
 
     x <- check_spct.generic_spct(x, multiple.wl = multiple.wl)
 
@@ -674,26 +755,35 @@ check_spct.object_spct <-
     }
 
     if (!"Rfr" %in% colnames(x)) {
-      x <- check_and_rename_vars(x,
-                                 target.var = "Rfr",
-                                 alternative.vars = c("reflectance", "Reflectance", "Rpc"),
-                                 multiplier = c(1e-2, 1e-2, 1e-2),
-                                 required = TRUE,
-                                 fill = NA_real_)
+      x <-
+        check_and_rename_vars(x,
+                              target.var = "Rfr",
+                              alternative.vars = c("reflectance",
+                                                   "Reflectance",
+                                                   "Rpc"),
+                              multiplier = c(1e-2, 1e-2, 1e-2),
+                              required = TRUE,
+                              fill = NA_real_)
     }
 
     if (!any(c("Tfr", "Afr") %in% colnames(x))) {
-      x <- check_and_rename_vars(x,
-                                 target.var = "Afr",
-                                 alternative.vars = c("absorptance", "Absorptance", "Apc"),
-                                 multiplier = c(1, 1, 1e-2))
+      x <-
+        check_and_rename_vars(x,
+                              target.var = "Afr",
+                              alternative.vars = c("absorptance",
+                                                   "Absorptance",
+                                                   "Apc"),
+                              multiplier = c(1, 1, 1e-2))
       if (!"Afr" %in% colnames(x)) {
-          x <- check_and_rename_vars(x,
-                                     target.var = "Tfr",
-                                     alternative.vars = c("transmittance", "Transmittance", "Tpc"),
-                                     multiplier = c(1e-2, 1e-2, 1e-2),
-                                     required = TRUE,
-                                     fill = NA_real_)
+          x <-
+            check_and_rename_vars(x,
+                                  target.var = "Tfr",
+                                  alternative.vars = c("transmittance",
+                                                       "Transmittance",
+                                                       "Tpc"),
+                                  multiplier = c(1e-2, 1e-2, 1e-2),
+                                  required = TRUE,
+                                  fill = NA_real_)
       }
     }
 
@@ -706,7 +796,8 @@ check_spct.object_spct <-
     range_check_Rfr(x, strict.range=strict.range)
 
     if (getOption("photobiology.verbose")) {
-      if (exists("Tfr", x, mode = "numeric", inherits = FALSE) && anyNA(x[["Tfr"]])) {
+      if (exists("Tfr", x, mode = "numeric", inherits = FALSE) &&
+          anyNA(x[["Tfr"]])) {
         warning("At least one NA in 'Tfr'")
       } else if (anyNA(x[["Afr"]])) {
         warning("At least one NA in 'Afr'")
@@ -735,19 +826,22 @@ check_spct.response_spct <-
 
     if (!(exists("s.e.response", x, mode = "numeric", inherits=FALSE) ||
           exists("s.q.response", x, mode = "numeric", inherits=FALSE))) {
-      x <- check_and_rename_vars(x,
-                                 target.var = "s.e.response",
-                                 alternative.vars = c("response", "signal"),
-                                 multiplier = c(1, 1),
-                                 required = TRUE,
-                                 fill = NA_real_)
+      x <-
+        check_and_rename_vars(x,
+                              target.var = "s.e.response",
+                              alternative.vars = c("response", "signal"),
+                              multiplier = c(1, 1),
+                              required = TRUE,
+                              fill = NA_real_)
     }
 
     if (getOption("photobiology.verbose")) {
-      if (exists("s.e.response", x, mode = "numeric", inherits = FALSE) && anyNA(x[["s.e.response"]])) {
+      if (exists("s.e.response", x, mode = "numeric", inherits = FALSE) &&
+          anyNA(x[["s.e.response"]])) {
         warning("At least one NA in 's.e.response'")
       }
-      if (exists("s.q.response", x, mode = "numeric", inherits = FALSE) && anyNA(x[["s.q.response"]])) {
+      if (exists("s.q.response", x, mode = "numeric", inherits = FALSE) &&
+          anyNA(x[["s.q.response"]])) {
         warning("At least one NA in 's.q.response'")
       }
     }
@@ -759,60 +853,11 @@ check_spct.response_spct <-
 check_spct.source_spct <-
   function(x,
            byref = TRUE,
-           strict.range = getOption("photobiology.strict.range", default = FALSE),
+           strict.range =
+             getOption("photobiology.strict.range", default = FALSE),
            force = FALSE,
            multiple.wl = getMultipleWl(x),
            ...) {
-
-    range_check <- function(x, strict.range) {
-      min.limit <- -0.10 # we accept small negative values
-      if (exists("s.e.irrad", x, inherits = FALSE) &&
-          !all(is.na(x[["s.e.irrad"]]))) {
-        s.e.range <- range(x[["s.e.irrad"]], na.rm = TRUE)
-        s.e.spread <- s.e.range[2] # for irradiance zero is meaningful
-        # we need to be fairly lax as dark reference spectra may have
-        # proportionally lots of noise.
-        if (s.e.range[1] < (min.limit * max(s.e.spread, 0.04) )) {
-          message.text <-
-            paste(
-              "Negative spectral energy irradiance values; minimum s.e.irrad =",
-              format(s.e.range[1], digits = 3, nsmall = 2)
-            )
-          if (is.null(strict.range) || is.na(strict.range)) {
-            message(message.text)
-          } else if (strict.range) {
-            stop(message.text)
-          } else if (!strict.range) {
-            warning(message.text)
-          } else {
-            stop ("Bad argument for 'strict.range': ", strict.range)
-          }
-        }
-      }
-      if (exists("s.q.irrad", x, inherits = FALSE) &&
-          !all(is.na(x[["s.q.irrad"]]))) {
-        s.q.range <- range(x[["s.q.irrad"]], na.rm = TRUE)
-        s.q.spread <- s.q.range[2] # zero is meaningful
-        # we need to be fairly lax as dark reference spectra may have
-        # proportionally lots of noise.
-        if (s.q.range[1] < (min.limit * (max(s.q.spread, 1e-5)) )) {
-          message.text <-
-            paste(
-              "Negative spectral photon irradiance values; minimum s.q.irrad =",
-              signif(s.q.range[1], 2)
-            )
-          if (is.null(strict.range) || is.na(strict.range)) {
-            message(message.text)
-          } else if (strict.range) {
-            stop(message.text)
-          } else if (!strict.range) {
-            warning(message.text)
-          } else {
-            stop ("Bad argument for 'strict.range': ", strict.range)
-          }
-        }
-      }
-    }
 
     x <- check_spct.generic_spct(x, multiple.wl = multiple.wl)
     x <- checkTimeUnit(x)
@@ -832,13 +877,15 @@ check_spct.source_spct <-
     }
 
     if (!is.null(strict.range) && !is.na(strict.range)) {
-      range_check(x, strict.range = strict.range)
+      range_check_s.irrad(x, strict.range = strict.range)
     }
     if (getOption("photobiology.verbose")) {
-      if (exists("s.e.irrad", x, mode = "numeric", inherits = FALSE) && anyNA(x[["s.e.irrad"]])) {
+      if (exists("s.e.irrad", x, mode = "numeric", inherits = FALSE) &&
+          anyNA(x[["s.e.irrad"]])) {
         warning("At least one NA in 's.e.irrad'")
       }
-      if (exists("s.q.irrad", x, mode = "numeric", inherits = FALSE) && anyNA(x[["s.q.irrad"]])) {
+      if (exists("s.q.irrad", x, mode = "numeric", inherits = FALSE) &&
+          anyNA(x[["s.q.irrad"]])) {
         warning("At least one NA in 's.q.irrad'")
       }
     }
@@ -851,7 +898,8 @@ check_spct.source_spct <-
 check_spct.chroma_spct <-
   function(x,
            byref = TRUE,
-           strict.range = getOption("photobiology.strict.range", default = FALSE),
+           strict.range =
+             getOption("photobiology.strict.range", default = FALSE),
            force = FALSE,
            multiple.wl = getMultipleWl(x),
            ...) {
@@ -874,7 +922,8 @@ check_spct.chroma_spct <-
       warning("Chromaticity coordinate 'z' data missing")
       x[["z"]] <- NA_real_
     }
-    if (getOption("photobiology.verbose") && (anyNA(x[["x"]]) || anyNA(x[["y"]]) || anyNA(x[["z"]]))) {
+    if (getOption("photobiology.verbose") &&
+        (anyNA(x[["x"]]) || anyNA(x[["y"]]) || anyNA(x[["z"]]))) {
       warning("One or more NAs in chromaticity coordinates")
     }
     return(x)

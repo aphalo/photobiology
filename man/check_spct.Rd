@@ -126,18 +126,24 @@ check_spct(x, byref, strict.range, force = FALSE, ...)
 by copy of \code{x}}
 
 \item{strict.range}{logical indicating whether off-range values result in an
-error instead of a warning, \code{NA} disables the test.}
+error instead of a warning, with \code{NA} a message is issued on failure.}
 
 \item{force}{logical If \code{TRUE} check is done even if checks are
 disabled.}
 
-\item{...}{additional param possible in derived methods}
+\item{...}{additional parameters possible in derived methods}
 
 \item{multiple.wl}{numeric Maximum number of repeated w.length entries with
 same value.}
 }
 \description{
-Check that an R object contains the expected data members.
+Check that an R object contains the expected data members and within range
+values in them. For wavelengths also check if ordered and if unique or not.
+}
+\details{
+These methods are exported and can be called by user code if needed,
+  for example, when the checks have been disabled by setting an R option
+  with \code{\link{disable_check_spct}}.
 }
 \section{Methods (by class)}{
 \itemize{
