@@ -31,15 +31,16 @@ passed to parameter \code{filter.properties} is \code{NULL}.}
 
 \item{thickness}{numeric The thickness of the material [\eqn{m}].}
 
-\item{attenuation.mode}{character One of \code{"reflection"}, \code{"absorption"},
-\code{"absorption.layer"}, \code{"mixed"} or \code{"stack"}.}
+\item{attenuation.mode}{character One of \code{"reflection"},
+\code{"absorption"}, \code{"absorption.layer"}, \code{"scattering"},
+\code{"mixed"} or \code{"stack"}.}
 }
 \value{
 \code{x}
 }
 \description{
-Function to set by reference the "filter.properties" attribute  of an existing
-filter_spct object.
+Function to set by reference the "filter.properties" attribute  of an
+existing filter_spct object.
 }
 \details{
 Storing filter properties allows inter-conversion between internal
@@ -53,15 +54,17 @@ This function alters \code{x} itself by reference and in addition
   returns \code{x} invisibly. If \code{x} is not a \code{filter_spct} object,
   \code{x} is not modified.
 
-  The values of \code{attenuation.mode} \code{"reflection"} and
-  \code{"absorption"} should be used when one of these processes is clearly
-  the main one; \code{"mixed"} is for cases when they both play a role, i.e.,
+  The values of \code{attenuation.mode} \code{"reflection"},
+  \code{"absorption"}, \code{"absorption.layer"} or \code{"scattering"}
+  should be used when one of these processes is clearly the main one;
+  \code{"mixed"} is for when multiple modes play a significanr role, i.e.,
   when a simple correction using a single value of \code{Rfr} across
   wavelengths is not possible; \code{"absorption.layer"} is for cases when a
   thin absorbing layer is deposited on the surface of a transparent support
-  or enclosed between two sheets of glass or other transparent material. If
-  in doubt, set this to \code{NA} to ensure that computation of spectra for a
-  different thickness remains disabled.
+  or enclosed between two sheets of glass or other transparent material.
+  Finally \code{"stack"} is for multiple individual filters piled. If in
+  doubt, set this argument to \code{NA} to ensure that computation of spectra
+  for a different thickness remains disabled.
 }
 \examples{
 

@@ -32,6 +32,8 @@ and collections of spectra as equivalent to `getNormalization()`.
 - Update range-checks of spectra to tolerate 1 in 250 pixels off-range in all 
 range tests. Update the messages to report the number of off-range values in
 addition to the extreme values.
+- Add support for `attenuation.mode = "scattering"` in filter properties 
+attribute.
 - Move to package ['SunCalcMeeus'](https://docs.r4photobiology.info/SunCalcMeeus/) 
 the functions and methods for sun position and day length calculations.
 - Move functions related to energy, water and carbon exchange between

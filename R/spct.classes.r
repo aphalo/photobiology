@@ -2760,8 +2760,8 @@ id_factor <- getIdFactor
 
 #' Set the "filter.properties" attribute
 #'
-#' Function to set by reference the "filter.properties" attribute  of an existing
-#' filter_spct object.
+#' Function to set by reference the "filter.properties" attribute  of an
+#' existing filter_spct object.
 #'
 #' @param x a filter_spct object
 #' @param filter.properties,value a list with fields named \code{"Rfr.constant"},
@@ -2772,8 +2772,9 @@ id_factor <- getIdFactor
 #'    passed to parameter \code{filter.properties} is \code{NULL}.
 #' @param Rfr.constant numeric The value of the reflection factor [/1].
 #' @param thickness numeric The thickness of the material [\eqn{m}].
-#' @param attenuation.mode character One of \code{"reflection"}, \code{"absorption"},
-#'    \code{"absorption.layer"}, \code{"mixed"} or \code{"stack"}.
+#' @param attenuation.mode character One of \code{"reflection"},
+#'   \code{"absorption"}, \code{"absorption.layer"}, \code{"scattering"},
+#'   \code{"mixed"} or \code{"stack"}.
 #'
 #' @details Storing filter properties allows inter-conversion between internal
 #'   and total transmittance, as well as computation of transmittance for
@@ -2786,15 +2787,17 @@ id_factor <- getIdFactor
 #'   returns \code{x} invisibly. If \code{x} is not a \code{filter_spct} object,
 #'   \code{x} is not modified.
 #'
-#'   The values of \code{attenuation.mode} \code{"reflection"} and
-#'   \code{"absorption"} should be used when one of these processes is clearly
-#'   the main one; \code{"mixed"} is for cases when they both play a role, i.e.,
+#'   The values of \code{attenuation.mode} \code{"reflection"},
+#'   \code{"absorption"}, \code{"absorption.layer"} or \code{"scattering"}
+#'   should be used when one of these processes is clearly the main one;
+#'   \code{"mixed"} is for when multiple modes play a significanr role, i.e.,
 #'   when a simple correction using a single value of \code{Rfr} across
 #'   wavelengths is not possible; \code{"absorption.layer"} is for cases when a
 #'   thin absorbing layer is deposited on the surface of a transparent support
-#'   or enclosed between two sheets of glass or other transparent material. If
-#'   in doubt, set this to \code{NA} to ensure that computation of spectra for a
-#'   different thickness remains disabled.
+#'   or enclosed between two sheets of glass or other transparent material.
+#'   Finally \code{"stack"} is for multiple individual filters piled. If in
+#'   doubt, set this argument to \code{NA} to ensure that computation of spectra
+#'   for a different thickness remains disabled.
 #'
 #' @export
 #'
@@ -2819,6 +2822,10 @@ setFilterProperties <- function(x,
                                 thickness = NA_real_,
                                 attenuation.mode = NA_character_) {
   name <- substitute(x)
+  valid.attenuation.modes <-
+    c("reflection", "absorption", "absorption.layer", "scattering",
+      "mixed", "stack")
+
   if (is.filter_spct(x) || is.object_spct(x)) {
     if (!(pass.null && is.null(filter.properties))) {
       if (is.null(filter.properties)) {
@@ -2870,12 +2877,12 @@ setFilterProperties <- function(x,
        }
       if (!is.na(filter.properties[["attenuation.mode"]]) &&
                   !filter.properties[["attenuation.mode"]] %in%
-             c("reflection", "absorption", "absorption.layer", "mixed", "stack")) {
+             valid.attenuation.modes) {
         warning("Bad value(s) '",
                 filter.properties[["attenuation.mode"]],
                 "' for \"attenuation.mode\" set to NA")
         filter.properties[["attenuation.mode"]][!filter.properties[["attenuation.mode"]] %in%
-                                                  c("reflection", "absorption", "absorption.layer", "mixed", "stack")] <- NA_character_
+            valid.attenuation.modes] <- NA_character_
       }
       if (any(!is.na(filter.properties[["Rfr.constant"]])) &&
           !is.na(filter.properties[["attenuation.mode"]]) &&
