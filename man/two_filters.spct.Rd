@@ -15,9 +15,9 @@ A \code{filter_spct} object with 611 rows and 2 variables.
 
 An object of class \code{filter_mspct} (inherits from \code{generic_mspct}, \code{list}) with 2 rows and 1 columns.
 
-An object of class \code{filter_spct} (inherits from \code{generic_spct}, \code{tbl_df}, \code{tbl}, \code{data.frame}) with 454 rows and 2 columns.
+An object of class \code{filter_spct} (inherits from \code{generic_spct}, \code{tbl_df}, \code{tbl}, \code{data.frame}) with 561 rows and 2 columns.
 
-An object of class \code{filter_spct} (inherits from \code{generic_spct}, \code{tbl_df}, \code{tbl}, \code{data.frame}) with 425 rows and 2 columns.
+An object of class \code{filter_spct} (inherits from \code{generic_spct}, \code{tbl_df}, \code{tbl}, \code{data.frame}) with 611 rows and 2 columns.
 }
 \usage{
 two_filters.spct

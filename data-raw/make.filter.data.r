@@ -16,11 +16,13 @@ opaque.spct <- filter_spct(w.length = c(100, 101, 4999, 5000),
                            attenuation.mode = "absorption")
 setWhatMeasured(opaque.spct, "theoretical fully opaque object")
 
-library(photobiologyFilters)
+# we fetch the spectra without thinning
+load("../photobiologyFilters/data-raw/rda/rosco.mspct.rda")
+load("../photobiologyFilters/data-raw/rda/mcdermit.mspct.rda")
 
-polyester.spct <- filters.mspct$McDermit_PET_Autostat_CT5_125um
+polyester.spct <- mcdermit.mspct$McDermit_PET_Autostat_CT5_125um
 
-yellow_gel.spct <- filters.mspct$Rosco_Canary_Supergel_no312
+yellow_gel.spct <- rosco.mspct$Rosco_Canary_Supergel_no312
 
 two_filters.mspct <- filter_mspct(list(polyester.spct, yellow_gel.spct))
 
