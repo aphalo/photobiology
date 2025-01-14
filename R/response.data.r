@@ -51,3 +51,31 @@
 #' ccd.spct
 #'
 "ccd.spct"
+
+#' @title Spectral response of two light sensors.
+#'
+#' @description A dataset containing a collection of two spectra.
+#'
+#' @details The spectra in \code{\link{photodiode.spct}} and
+#'   \code{\link{ccd.spct}} stored as a collection in a
+#'   \code{\link{response_mspct}} object named \code{response.mspct} with
+#'   members \code{photodiode} and \code{ccd}, and and in long form in a
+#'   \code{link{response_spct}} object named \code{response.mspct} identified
+#'   bit the levels of factor \code{spct.idx}.
+#'
+#' @seealso \code{\link{photodiode.spct}} and \code{\link{ccd.spct}}.
+#'
+#' @docType data
+#' @keywords datasets
+#' @format A \code{response_spct} object with 186 rows and 2 variables
+#' @family Spectral data examples
+#'
+#' @examples
+#' two_sensors.mspct
+#' two_sensors.spct
+#'
+"two_sensors.mspct"
+
+#' @rdname two_sensors.mspct
+#'
+"two_sensors.spct"

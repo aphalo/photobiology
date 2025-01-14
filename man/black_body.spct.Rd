@@ -34,6 +34,7 @@ Other Spectral data examples:
 \code{\link{sun_daily.spct}},
 \code{\link{sun_evening.spct}},
 \code{\link{two_filters.spct}},
+\code{\link{two_sensors.mspct}},
 \code{\link{water.spct}},
 \code{\link{white_led.source_spct}}
 }
