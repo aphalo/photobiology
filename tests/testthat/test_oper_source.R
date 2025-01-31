@@ -1,4 +1,3 @@
-library("photobiology")
 library("lubridate")
 
 context("source_spct")

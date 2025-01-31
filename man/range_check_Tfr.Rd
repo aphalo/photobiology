@@ -7,6 +7,7 @@
 \alias{range_check_A}
 \alias{range_check_cps}
 \alias{range_check_s.irrad}
+\alias{range_check_irrad.mult}
 \title{Internal utility range-check functions}
 \usage{
 range_check_Tfr(x, strict.range)
@@ -20,6 +21,8 @@ range_check_A(x, strict.range)
 range_check_cps(x, cps.cols, strict.range)
 
 range_check_s.irrad(x, strict.range)
+
+range_check_irrad.mult(x, strict.range)
 }
 \arguments{
 \item{x}{Spectral object to check.}

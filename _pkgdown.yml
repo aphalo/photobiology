@@ -301,6 +301,7 @@ reference:
     contents:
     - ccd.spct
     - photodiode.spct
+    - two_sensors.mspct
   - subtitle: Data for human vision
     desc: Data for the spectral response of the human eye as used in different computaions related to illumination and vision
     contents:

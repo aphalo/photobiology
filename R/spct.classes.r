@@ -140,7 +140,7 @@ range_check_Tfr <- function(x, strict.range) {
   if (!all(is.na(x[["Tfr"]]))) {
     tfr <- na.omit(x[["Tfr"]])
     n.off.range <- sum(tfr < -1e-4 | tfr > 1 + 1e-6)
-    if (n.off.range > length(tfr) / 250) {
+    if (n.off.range > length(tfr) / 250 || any(tfr < -0.5 | tfr > 1.5)) {
       Tfr.range <- range(tfr)
       message.text <-
         paste0(
@@ -171,7 +171,7 @@ range_check_Afr <- function(x, strict.range) {
   if (!all(is.na(x[["Afr"]]))) {
     afr <- na.omit(x[["Afr"]])
     n.off.range <- sum(afr < -1e-4 | afr > 1 + 1e-6)
-    if (n.off.range > length(afr) / 250) {
+    if (n.off.range > length(afr) / 250 || any(afr < -0.5 | afr > 1.5)) {
       Afr.range <- range(afr)
       message.text <-
         paste0(
@@ -202,7 +202,7 @@ range_check_Rfr <- function(x, strict.range) {
   if (!all(is.na(x[["Rfr"]]))) {
     rfr <- na.omit(x[["Rfr"]])
     n.off.range <- sum(rfr < -1e-4 | rfr > 1 + 1e-6)
-    if (n.off.range > length(rfr) / 250) {
+    if (n.off.range > length(rfr) / 250 || any(rfr < -0.5 | rfr > 1.5)) {
       Rfr.range <- range(rfr)
       message.text <-
         paste0(
@@ -233,12 +233,12 @@ range_check_A <- function(x, strict.range) {
   if (!all(is.na(x[["A"]]))) {
     xa <- na.omit(x[["A"]])
     n.off.range <- sum(xa < -1e-7 | xa > 20)
-    if (n.off.range > length(xa) / 250) {
+    if (n.off.range > length(xa) / 250 || any(xa < -0.176)) { # Tfr = 1.5
       A.range <- range(xa)
       message.text <- paste("Found ", n.off.range, "/", length(xa),
-                            "off-range 'A' values [",
+                            " off-range 'A' values [",
                             formatted_range(A.range),
-                            "] instead of  [0..20]", sep = "")
+                            "] instead of [0..20]", sep = "")
       if (is.null(strict.range) || is.na(strict.range)) {
         message(message.text)
       } else if (strict.range) {
@@ -265,15 +265,15 @@ range_check_cps <- function(x, cps.cols, strict.range) {
       xcol <- na.omit(x[[col]])
     }
     # we need to include zero and a reasonably high number as otherwise dark scans may not pass the test
-    cps.range <- range(0, xcol, 1e3)
+    cps.max <- max(xcol, 1e4)
     # we need to be very lax here as during processing of scans we can get negative
     # values due to subtraction of dark scans
-    n.off.range <- sum(xcol < (cps.range[1] - cps.range[2]) / 10)
-    if (n.off.range > length(xcol) / 100) {
+    n.off.range <- sum(xcol < -cps.max / 10)
+    if (n.off.range > length(xcol) / 100 || any(xcol < -cps.max)) {
       message.text <- paste("Found ", n.off.range, "/", length(xcol),
-                            " \"negative\" ", col, " values [",
-                            formatted_range(cps.range),
-                            "]", sep = "")
+                            " off-range '", col, "' values [",
+                            formatted_range(range(xcol)),
+                            "] instead of [0..Inf]", sep = "")
       if (is.null(strict.range) || is.na(strict.range)) {
         message(message.text)
       } else if (strict.range) {
@@ -292,22 +292,25 @@ range_check_cps <- function(x, cps.cols, strict.range) {
 #' @keywords internal
 #'
 range_check_s.irrad <- function(x, strict.range) {
-  min.limit <- -0.10 # we accept small negative values
+  # negative values are valid for IR emission, but not for irradiance
+  min.limit <- ifelse(strict.range,
+                      -0.10,
+                      -Inf) # we accept negative values
   if (exists("s.e.irrad", x, inherits = FALSE) &&
       !all(is.na(x[["s.e.irrad"]]))) {
     xse <- na.omit(x[["s.e.irrad"]])
     s.e.range <- range(xse)
     s.e.spread <- s.e.range[2] - min(0, s.e.range[1])
     n.off.range <- sum(xse < (min.limit * max(s.e.spread, 0.04)))
-    # for irradiance zero is meaningful
+    # for irradiance zero is meaningful and for fluxes negative values also
     # we need to be fairly lax as dark reference spectra may have
-    # proportionally lots of noise. We also accept 0.4% of pixels off-range.
+    # proportionally lots of noise. We also accept 0.4% of pixels off-range
     if (n.off.range > length(xse) / 250) {
       message.text <-
         paste(
           "Found ", n.off.range, "/", length(xse),
-          " \"negative\" values; 's.e.irrad' >= ",
-          format(s.e.range[1], digits = 3, nsmall = 2), " W/m2.",
+          " off-range 's.e.irrad' values [",
+          formatted_range(s.e.range), "] instead of >= 0 W/m2",
           sep = ""
         )
       if (is.null(strict.range) || is.na(strict.range)) {
@@ -334,8 +337,8 @@ range_check_s.irrad <- function(x, strict.range) {
       message.text <-
         paste(
           "Found ", n.off.range, "/", length(xsq),
-          " \"negative\" values; 's.q.irrad' >= ",
-          signif(s.q.range[1] * 1e6, digits = 3), " umol/m2/s.",
+          " off-range 's.q.irrad' values [",
+          formatted_range(s.q.range * 1e6), "] instead of >= 0 umol/m2/s",
           sep = ""
         )
       if (is.null(strict.range) || is.na(strict.range)) {
@@ -347,6 +350,31 @@ range_check_s.irrad <- function(x, strict.range) {
       } else {
         stop ("Bad argument for 'strict.range': ", strict.range)
       }
+    }
+  }
+}
+
+#' @rdname range_check_Tfr
+#'
+#' @keywords internal
+#'
+range_check_irrad.mult <- function(x, strict.range) {
+  xmult <- na.omit(x[["irrad.mult"]])
+  n.off.range <- sum(xmult < 0)
+  if (n.off.range > 0) {
+    message.text <- paste("Found ", n.off.range, "/", length(xmult),
+                          " off-range 'irrad.mult' values [",
+                          formatted_range(range(xmult)),
+                          "] instead of >= 0 W m-2 counts-1", sep = "")
+    if (is.null(strict.range) || is.na(strict.range)) {
+      message(message.text)
+    } else if (strict.range) {
+      stop(message.text)
+    } else if (!strict.range) {
+      x[["irrad.mult"]][x[["irrad.mult"]] < 0] <- NA_real_
+      warning(message.text, call. = FALSE)
+    } else {
+      stop ("Bad argument for 'strict.range': ", strict.range)
     }
   }
 }
@@ -484,11 +512,11 @@ check_spct.calibration_spct <-
   mult.cols <- grep("^irrad.mult$", names(x))
 
   if (length(mult.cols) == 1 &&
-      is.numeric(x[["irrad.mult"]]) &&
-      all(na.omit(x[["irrad.mult"]]) >= 0)) {
+      is.numeric(x[["irrad.mult"]])) {
     if (getOption("photobiology.verbose") && anyNA(x[["irrad.mult"]])) {
       warning("At least one NA in 'irrad.mult'")
     }
+    range_check_irrad.mult(x, strict.range = strict.range)
     return(x)
   } else {
     warning("No valid 'irrad.mult' data found in calibration_spct")
@@ -723,7 +751,7 @@ check_spct.reflector_spct <-
                               required = TRUE,
                               fill = NA_real_)
     }
-    range_check_Rfr(x, strict.range=strict.range)
+    range_check_Rfr(x, strict.range = strict.range)
 
     if (getOption("photobiology.verbose") && anyNA(x[["Rfr"]])) {
       warning("At least one NA in 'Rfr'")

@@ -29,8 +29,9 @@ metadata.
 energy irradiances.
   * Query method `normalization()` implemented for spectra, summaries of spectra
 and collections of spectra as equivalent to `getNormalization()`.
-- Update range-checks of spectra to tolerate 1 in 250 pixels off-range in all 
-range tests. Update the messages to report the number of off-range values in
+- Update range-checks of spectra to tolerate 1 in 250 pixels "mildly" off-range,
+except `cps_spct` where 1 in 100 is tolerated and `raw_spct` with no range check
+for counts. Update the messages to report the number of off-range values in
 addition to the extreme values.
 - Add support for `attenuation.mode = "scattering"` in filter properties 
 attribute.
