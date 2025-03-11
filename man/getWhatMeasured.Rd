@@ -16,11 +16,11 @@ what_measured(x, ...)
 
 \method{getWhatMeasured}{default}(x, ...)
 
-\method{getWhatMeasured}{generic_spct}(x, ...)
+\method{getWhatMeasured}{generic_spct}(x, ..., simplify = FALSE)
 
-\method{getWhatMeasured}{summary_generic_spct}(x, ...)
+\method{getWhatMeasured}{summary_generic_spct}(x, ..., simplify = FALSE)
 
-\method{getWhatMeasured}{data.frame}(x, ...)
+\method{getWhatMeasured}{data.frame}(x, ..., simplify = FALSE)
 
 \method{getWhatMeasured}{generic_mspct}(x, ..., idx = "spct.idx", simplify = FALSE)
 }
@@ -29,11 +29,11 @@ what_measured(x, ...)
 
 \item{...}{Allows use of additional arguments in methods for other classes.}
 
+\item{simplify}{logical If all members share the same attribute value return
+one copy instead of a data.frame.}
+
 \item{idx}{character Name of the column with the names of the members of the
 collection of spectra.}
-
-\item{simplify}{If all members share the same attribute value return one
-copy instead of a data.frame.}
 }
 \value{
 character vector An object containing a description of the data.

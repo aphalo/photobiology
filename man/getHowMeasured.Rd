@@ -16,11 +16,11 @@ how_measured(x, ...)
 
 \method{getHowMeasured}{default}(x, ...)
 
-\method{getHowMeasured}{generic_spct}(x, ...)
+\method{getHowMeasured}{generic_spct}(x, ..., simplify = FALSE)
 
-\method{getHowMeasured}{summary_generic_spct}(x, ...)
+\method{getHowMeasured}{summary_generic_spct}(x, ..., simplify = FALSE)
 
-\method{getHowMeasured}{data.frame}(x, ...)
+\method{getHowMeasured}{data.frame}(x, ..., simplify = FALSE)
 
 \method{getHowMeasured}{generic_mspct}(x, ..., idx = "spct.idx", simplify = FALSE)
 }
@@ -29,11 +29,11 @@ how_measured(x, ...)
 
 \item{...}{Allows use of additional arguments in methods for other classes.}
 
+\item{simplify}{logical If all members share the same attribute value return
+one copy instead of a data.frame.}
+
 \item{idx}{character Name of the column with the names of the members of the
 collection of spectra.}
-
-\item{simplify}{If all members share the same attribute value return one
-copy instead of a data.frame.}
 }
 \value{
 character vector An object containing a description of the data.

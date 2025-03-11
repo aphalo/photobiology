@@ -13,6 +13,11 @@ copied, and when unique across the summarised spectra, they are simplified. This
 change affects specializations for collections of spectra of methods `s_mean()`,
 `s_median()`, `s_prod()`, `s_range()`, `s_sd()`, `s_se()`, `s_sum()`. `s_var()`,
 `s_mean_se()`.
+* Simplify repeated identical attributes when printing multiple spectra in long 
+form or as a collection, and when printing their summaries. Simplification
+controlled by formal paremeter `attr.simplify` with default to `TRUE`.
+* Support simpliication in `what_measured()`, `when_measured()`, 
+`where_measured(), and `how_measured()` attribute accessors.
 
 # photobiology 0.12.0
 

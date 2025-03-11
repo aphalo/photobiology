@@ -16,11 +16,11 @@ when_measured(x, ...)
 
 \method{getWhenMeasured}{default}(x, ...)
 
-\method{getWhenMeasured}{generic_spct}(x, as.df = FALSE, ...)
+\method{getWhenMeasured}{generic_spct}(x, as.df = FALSE, ..., simplify = FALSE)
 
-\method{getWhenMeasured}{summary_generic_spct}(x, as.df = FALSE, ...)
+\method{getWhenMeasured}{summary_generic_spct}(x, as.df = FALSE, ..., simplify = FALSE)
 
-\method{getWhenMeasured}{data.frame}(x, as.df = FALSE, ...)
+\method{getWhenMeasured}{data.frame}(x, as.df = FALSE, ..., simplify = FALSE)
 
 \method{getWhenMeasured}{generic_mspct}(x, ..., idx = "spct.idx", simplify = FALSE)
 }
@@ -32,11 +32,11 @@ when_measured(x, ...)
 \item{as.df}{logical If TRUE return a data frame instead of a list, when
 the value stored in the attribute is a list.}
 
+\item{simplify}{logical If all members share the same attribute value return
+one copy instead of a data.frame.}
+
 \item{idx}{character Name of the column with the names of the members of the
 collection of spectra.}
-
-\item{simplify}{If all members share the same attribute value return one
-copy instead of a data.frame.}
 }
 \value{
 POSIXct An object with date and time.

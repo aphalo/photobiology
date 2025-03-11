@@ -5,7 +5,7 @@
 \alias{print.summary_generic_mspct}
 \title{Print spectral summary}
 \usage{
-\method{print}{summary_generic_spct}(x, ...)
+\method{print}{summary_generic_spct}(x, ..., attr.simplify = TRUE)
 
 \method{print}{summary_generic_mspct}(x, width = NULL, ..., n = NULL)
 }
@@ -14,6 +14,9 @@
 
 \item{...}{named arguments passed to the \code{print()} method for class
 \code{"tbl_df"}.}
+
+\item{attr.simplify}{logical If all members share the same attribute value
+return one copy instead of a data.frame, list or vector.}
 
 \item{width}{integer Width of text output to generate. This defaults to NULL,
 which means use the width option.}

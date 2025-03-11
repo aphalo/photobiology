@@ -5,14 +5,17 @@
 \alias{print.generic_mspct}
 \title{Print spectral objects}
 \usage{
-\method{print}{generic_spct}(x, ..., n = NULL, width = NULL)
+\method{print}{generic_spct}(x, ..., attr.simplify = TRUE, n = NULL, width = NULL)
 
-\method{print}{generic_mspct}(x, ..., n = NULL, width = NULL, n.members = 10)
+\method{print}{generic_mspct}(x, ..., attr.simplify = TRUE, n = NULL, width = NULL, n.members = 10)
 }
 \arguments{
 \item{x}{An object of one of the summary classes for spectra.}
 
 \item{...}{not used in current version.}
+
+\item{attr.simplify}{logical If all members share the same attribute value
+return one copy instead of a data.frame, list or vector.}
 
 \item{n}{Number of rows to show. If NULL, the default, will print all rows if
 less than option \code{dplyr.print_max}. Otherwise, will print

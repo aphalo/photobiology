@@ -7,6 +7,8 @@
 #'
 #' @param x An object of one of the summary classes for spectra.
 #' @param ... not used in current version.
+#' @param attr.simplify logical If all members share the same attribute value
+#'   return one copy instead of a data.frame, list or vector.
 #' @param n	Number of rows to show. If NULL, the default, will print all rows if
 #'   less than option \code{dplyr.print_max}. Otherwise, will print
 #'   \code{dplyr.print_min} rows.
@@ -42,7 +44,7 @@
 #'
 #' print(two_filters.spct)
 #'
-print.generic_spct <- function(x, ..., n = NULL, width = NULL)
+print.generic_spct <- function(x, ..., attr.simplify = TRUE, n = NULL, width = NULL)
 {
   # Skip checks of validity as we are only printing
   prev_state <- disable_check_spct()
@@ -59,7 +61,7 @@ print.generic_spct <- function(x, ..., n = NULL, width = NULL)
         paste(unique(signif(stepsize(x), 7)), sep = "", collapse = "-"),
         " nm \n", sep = "")
   }
-  what.measured <- getWhatMeasured(x)
+  what.measured <- getWhatMeasured(x, simplify = attr.simplify)
   if (!any(is.na(what.measured))) {
     if (!is.list(what.measured)) {
       what.measured <- list(what.measured)
@@ -74,7 +76,7 @@ print.generic_spct <- function(x, ..., n = NULL, width = NULL)
               what.measured,
               sep = "", collapse = "\n"), "\n")
   }
-  when.measured <- getWhenMeasured(x)
+  when.measured <- getWhenMeasured(x, simplify = attr.simplify)
   if (!any(is.na(when.measured))) {
     if (!is.list(when.measured)) {
       when.measured <- list(when.measured)
@@ -89,7 +91,7 @@ print.generic_spct <- function(x, ..., n = NULL, width = NULL)
               sapply(when.measured, as.character), " UTC",
               sep = "", collapse = "\n"), "\n")
   }
-  where.measured <- getWhereMeasured(x)
+  where.measured <- getWhereMeasured(x, simplify = attr.simplify)
   if (!any(is.na(where.measured))) {
     if (is.data.frame(where.measured)) {
       where.measured <- list(where.measured)
@@ -194,7 +196,12 @@ print.generic_spct <- function(x, ..., n = NULL, width = NULL)
 #'
 #' @export
 #'
-print.generic_mspct <- function(x, ..., n = NULL, width = NULL, n.members = 10)  {
+print.generic_mspct <- function(x,
+                                ...,
+                                attr.simplify = TRUE,
+                                n = NULL,
+                                width = NULL,
+                                n.members = 10)  {
   cat("Object: ", class(x)[1], " ", dplyr::dim_desc(x), "\n", sep = "")
   member.names <- names(x)
   if (length(member.names) > n.members) {
@@ -205,7 +212,7 @@ print.generic_mspct <- function(x, ..., n = NULL, width = NULL, n.members = 10) 
   }
   for (name in member.names) {
     cat("--- Member:", name, "---\n")
-    print(x[[name]], n = n, width = width)
+    print(x[[name]], ..., attr.simplify = attr.simplify, n = n, width = width)
   }
   if (skipped.members > 0) {
     cat("..........................\n",
@@ -422,6 +429,7 @@ summary.generic_spct <- function(object,
   z
 }
 
+
 # Print spectral summaries ------------------------------------------------
 
 #' Print spectral summary
@@ -440,7 +448,7 @@ summary.generic_spct <- function(object,
 #' @examples
 #' print(summary(sun.spct))
 #'
-print.summary_generic_spct <- function(x, ...) {
+print.summary_generic_spct <- function(x, ..., attr.simplify = TRUE) {
   # ensure backwards compatibility with summary objects created by versions < 0.9.30
   if (!exists("orig.name", x) || is.na(x[["orig.name"]])) {
     x[["orig.name"]] <- "'unknown name'"
@@ -454,37 +462,45 @@ print.summary_generic_spct <- function(x, ...) {
       paste(signif(x[["wl.range"]], 8), sep = "", collapse = "-"), " nm, step ",
       paste(unique(signif(x[["wl.stepsize"]], 7)), sep = "", collapse = "-"),
       " nm\n", sep = "")
-  what.measured <- getWhatMeasured(x)
+  what.measured <- getWhatMeasured(x, simplify = attr.simplify)
   if (!any(is.na(what.measured))) {
-    if (!is.list(what.measured)) {
-      what.measured <- list(what.measured)
-    }
-    names <- names(what.measured)
-    if (is.null(names)) {
-      names <- "Label: "
+    if (length(what.measured) > 1) {
+      if (!is.list(what.measured)) {
+        what.measured <- list(what.measured)
+      }
+      names <- names(what.measured)
+      if (is.null(names)) {
+        names <- "Label: "
+      } else {
+        names <- paste(names, "label: ")
+      }
+      cat(paste(names,
+                what.measured,
+                sep = "", collapse = "\n"), "\n")
     } else {
-      names <- paste(names, "label: ")
+      cat("Label: ", what.measured, "\n")
     }
-    cat(paste(names,
-              what.measured,
-              sep = "", collapse = "\n"), "\n")
   }
-  when.measured <- getWhenMeasured(x)
+  when.measured <- getWhenMeasured(x, simplify = attr.simplify)
   if (!any(is.na(when.measured))) {
-    if (!is.list(when.measured)) {
-      when.measured <- list(when.measured)
-    }
-    names <- names(when.measured)
-    if (is.null(names)) {
-      names <- "Measured on "
+    if (length(when.measured) > 1) {
+      if (!is.list(when.measured)) {
+        when.measured <- list(when.measured)
+      }
+      names <- names(when.measured)
+      if (is.null(names)) {
+        names <- "Measured on "
+      } else {
+        names <- paste(names, "measured on ")
+      }
+      cat(paste(names,
+                sapply(when.measured, as.character), " UTC",
+                sep = "", collapse = "\n"), "\n")
     } else {
-      names <- paste(names, "measured on ")
+      cat("Measured on ", as.character(when.measured), " UTC\n")
     }
-    cat(paste(names,
-              sapply(when.measured, as.character), " UTC",
-              sep = "", collapse = "\n"), "\n")
   }
-  where.measured <- getWhereMeasured(x)
+  where.measured <- getWhereMeasured(x, simplify = attr.simplify)
   if (!any(is.na(where.measured))) {
     if (is.data.frame(where.measured)) {
       where.measured <- list(where.measured)
@@ -655,6 +671,8 @@ summary.generic_mspct <- function(object,
 #'   which means use the width option.
 #' @param ... named arguments passed to the \code{print()} method for class
 #'   \code{"tbl_df"}.
+#' @param attr.simplify logical If all members share the same attribute value
+#'   return one copy instead of a data.frame, list or vector.
 #' @param n integer Number of member spectra for which information is printed.
 #'
 #' @seealso \code{\link[tibble]{formatting}}
@@ -666,8 +684,12 @@ summary.generic_mspct <- function(object,
 #' @examples
 #' print(summary(sun_evening.mspct))
 #'
-print.summary_generic_mspct <- function(x, width = NULL, ..., n = NULL) {
-  cat("Summary of ", x[["orig.class"]], " ", x[["orig.dim_desc"]], " object: ", x[["orig.name"]] ,"\n", sep = "")
+print.summary_generic_mspct <- function(x,
+                                        width = NULL,
+                                        ...,
+                                        n = NULL) {
+  cat("Summary of ", x[["orig.class"]], " ", x[["orig.dim_desc"]],
+      " object: ", x[["orig.name"]] ,"\n", sep = "")
   print(x[["summary"]], width = width, ..., n = n)
 }
 

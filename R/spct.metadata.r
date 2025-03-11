@@ -163,11 +163,14 @@ getWhenMeasured.default <- function(x, ...) {
 #'
 #' @export
 #'
-getWhenMeasured.generic_spct <- function(x, as.df = FALSE, ...) {
+getWhenMeasured.generic_spct <- function(x, as.df = FALSE, ..., simplify = FALSE) {
   when.measured <- attr(x, "when.measured", exact = TRUE)
   if (is.null(when.measured)) {
     when.measured <- lubridate::NA_POSIXct_
   } else if (lubridate::is.POSIXct(when.measured)) {
+    if (simplify && length(unique(when.measured)) == 1) {
+      when.measured <- when.measured[1]
+    }
     when.measured <-
       as.POSIXct(when.measured, tz = "UTC", origin = lubridate::origin)
   } else if (as.df && is.list(when.measured)) {
@@ -181,6 +184,10 @@ getWhenMeasured.generic_spct <- function(x, as.df = FALSE, ...) {
         tibble::tibble(spct.idx = names(when.measured),
                        when.measured = rep(lubridate::NA_POSIXct_,
                                            length(when.measured)))
+    }
+    if (simplify &&
+        sum(!duplicated(when.measured[ , -which(names(when.measured) == getIdFactor(x))])) == 1) {
+      when.measured <- when.measured[1 , -which(names(when.measured) == getIdFactor(x))]
     }
   }
   when.measured
@@ -197,8 +204,8 @@ getWhenMeasured.data.frame <- getWhenMeasured.generic_spct
 #' @describeIn getWhenMeasured generic_mspct
 #' @param idx character Name of the column with the names of the members of the
 #'   collection of spectra.
-#' @param simplify If all members share the same attribute value return one
-#'   copy instead of a data.frame.
+#' @param simplify logical If all members share the same attribute value return
+#'   one copy instead of a data.frame.
 #' @note The method for collections of spectra returns the
 #'   a tibble with the correct times in TZ = "UTC".
 #' @export
@@ -424,25 +431,29 @@ where_measured <- getWhereMeasured
 #' @export
 #'
 getWhereMeasured.default <- function(x, ...) {
-  na_geocode()
+  SunCalcMeeus::na_geocode()
 }
 
 #' @describeIn getWhereMeasured generic_spct
 #' @export
 #'
-getWhereMeasured.generic_spct <- function(x, ...) {
+getWhereMeasured.generic_spct <- function(x, ..., simplify = FALSE) {
   where.measured <- attr(x, "where.measured", exact = TRUE)
-  if (is.null(where.measured)) return(na_geocode())
+  if (is.null(where.measured)) return(SunCalcMeeus::na_geocode())
 
   if (is.list(where.measured) && !is.data.frame(where.measured)) {
-    x <- dplyr::bind_rows(where.measured)
+    where.measured <- dplyr::bind_rows(where.measured)
   }
   if (!is.data.frame(where.measured)) {
     # need to handle invalid or missing attribute values
-    where.measured <- na_geocode()
+    where.measured <- SunCalcMeeus::na_geocode()
+  } else if (simplify && nrow(where.measured) > 1L &&
+              sum(!duplicated(where.measured[ , -which(names(where.measured) == getIdFactor(x))]) == 1L)) {
+    where.measured <-
+      where.measured[1, -which(names(where.measured) == getIdFactor(x))]
   }
   # needed to clean inconsistent values from previous versions
-  validate_geocode(where.measured)
+  SunCalcMeeus::validate_geocode(where.measured)
 }
 
 #' @describeIn getWhereMeasured summary_generic_spct
@@ -452,8 +463,8 @@ getWhereMeasured.summary_generic_spct <- getWhereMeasured.generic_spct
 #' @describeIn getWhereMeasured generic_mspct
 #' @param idx character Name of the column with the names of the members of the
 #'   collection of spectra.
-#' @param simplify If all members share the same attribute value return one
-#'   copy instead of a data.frame.
+#' @param simplify logical If all members share the same attribute value return
+#'   one copy instead of a data.frame.
 #' @param .bind.geocodes logical In the case of collections of spectra if
 #'    \code{.bind.geocodes = TRUE}, the default, the returned value is a single
 #'    geocode with one row for each member spectrum. Otherwise the individual
@@ -472,8 +483,6 @@ getWhereMeasured.generic_mspct <- function(x,
       unique.rows <- !duplicated(z[ , -which(names(z) == idx)])
       if (sum(unique.rows) <= 1) {
         z <- z[1, -which(names(z) == idx)]
-      } else {
-        z <- z[ ,  -which(names(z) == idx)]
       }
     }
   } else {
@@ -614,14 +623,17 @@ getHowMeasured.default <- function(x, ...) {
 #' @describeIn getHowMeasured generic_spct
 #'
 #' @export
-getHowMeasured.generic_spct <- function(x, ...) {
-  how.measured <- attr(x, "how.measured", exact = TRUE)
-  if (is.null(how.measured) || (is.atomic(how.measured) && all(is.na(how.measured)))) {
+getHowMeasured.generic_spct <- function(x, ..., simplify = FALSE) {
+  z <- attr(x, "how.measured", exact = TRUE)
+  if (is.null(z) || (is.atomic(z) && all(is.na(z)))) {
     # need to handle objects created with old versions
-    NA_character_
-  } else {
-    how.measured
+    z <- NA_character_
+  } else if (simplify && is.list(z)) {
+    if (length(z) == 1L || sum(!duplicated(z) == 1L)) {
+      z <- z[[1]]
+    }
   }
+  z
 }
 
 #' @describeIn getHowMeasured summary_generic_spct
@@ -638,8 +650,8 @@ getHowMeasured.data.frame <- getHowMeasured.generic_spct
 #'
 #' @param idx character Name of the column with the names of the members of the
 #'   collection of spectra.
-#' @param simplify If all members share the same attribute value return one
-#'   copy instead of a data.frame.
+#' @param simplify logical If all members share the same attribute value return
+#'   one copy instead of a data.frame.
 #' @note The method for collections of spectra returns the
 #'   a tibble with a column of character strings.
 #' @export
@@ -1138,15 +1150,26 @@ getWhatMeasured.default <- function(x, ...) {
 
 #' @describeIn getWhatMeasured generic_spct
 #' @export
-getWhatMeasured.generic_spct <- function(x, ...) {
-  what.measured <- attr(x, "what.measured", exact = TRUE)
-  if (is.null(what.measured) ||
-      (is.atomic(what.measured) && all(is.na(what.measured)))) {
+getWhatMeasured.generic_spct <- function(x,
+                                         ...,
+                                         simplify = FALSE) {
+  z <- attr(x, "what.measured", exact = TRUE)
+  if (is.null(z) ||
+      (is.atomic(z) && all(is.na(z)))) {
     # need to handle objects created with old versions
-    NA_character_
+    z <- NA_character_
   } else {
-    what.measured
+    if (simplify) {
+      if (is.list(z)) {
+        if (length(z) == 1L || sum(!duplicated(z) == 1L)) {
+          z <- z[[1]]
+        } else {
+          z <- unlist(z, use.names = TRUE)
+        }
+      }
+    }
   }
+  z
 }
 
 #' @describeIn getWhatMeasured summary_generic_spct
@@ -1155,13 +1178,14 @@ getWhatMeasured.summary_generic_spct <- getWhatMeasured.generic_spct
 
 #' @describeIn getWhatMeasured data.frame
 #' @export
+#'
 getWhatMeasured.data.frame <- getWhatMeasured.generic_spct
 
 #' @describeIn getWhatMeasured generic_mspct
 #' @param idx character Name of the column with the names of the members of the
 #'   collection of spectra.
-#' @param simplify If all members share the same attribute value return one
-#'   copy instead of a data.frame.
+#' @param simplify logical If all members share the same attribute value return
+#'   one copy instead of a data.frame.
 #' @note The method for collections of spectra returns the
 #'   a tibble with a column of character strings.
 #' @export
