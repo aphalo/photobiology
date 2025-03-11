@@ -197,14 +197,30 @@ getWhenMeasured.data.frame <- getWhenMeasured.generic_spct
 #' @describeIn getWhenMeasured generic_mspct
 #' @param idx character Name of the column with the names of the members of the
 #'   collection of spectra.
+#' @param simplify If all members share the same attribute value return one
+#'   copy instead of a data.frame.
 #' @note The method for collections of spectra returns the
 #'   a tibble with the correct times in TZ = "UTC".
 #' @export
 getWhenMeasured.generic_mspct <- function(x,
                                           ...,
-                                          idx = "spct.idx") {
-  z <- msdply(mspct = x, .fun = getWhenMeasured, ..., idx = idx, col.names = "when.measured")
+                                          idx = "spct.idx",
+                                          simplify = FALSE) {
+  z <- msdply(mspct = x,
+              .fun = getWhenMeasured,
+              ...,
+              idx = idx,
+              col.names = "when.measured")
   z[["when.measured"]] <- lubridate::with_tz(z[["when.measured"]], "UTC")
+
+  if (simplify) {
+    zz <- unique(z[["when.measured"]])
+    if (length(zz) <= 1) {
+      z <- zz
+    } else {
+      z <- z[["when.measured"]]
+    }
+  }
   z
 }
 
@@ -436,6 +452,8 @@ getWhereMeasured.summary_generic_spct <- getWhereMeasured.generic_spct
 #' @describeIn getWhereMeasured generic_mspct
 #' @param idx character Name of the column with the names of the members of the
 #'   collection of spectra.
+#' @param simplify If all members share the same attribute value return one
+#'   copy instead of a data.frame.
 #' @param .bind.geocodes logical In the case of collections of spectra if
 #'    \code{.bind.geocodes = TRUE}, the default, the returned value is a single
 #'    geocode with one row for each member spectrum. Otherwise the individual
@@ -446,16 +464,27 @@ getWhereMeasured.summary_generic_spct <- getWhereMeasured.generic_spct
 getWhereMeasured.generic_mspct <- function(x,
                                            ...,
                                            idx = "spct.idx",
-                                           .bind.geocodes = TRUE) {
-  if (.bind.geocodes) {
-    msdply(mspct = x, .fun = getWhereMeasured, idx = idx, ...)
+                                           .bind.geocodes = TRUE,
+                                           simplify = FALSE) {
+  if (.bind.geocodes || simplify) {
+    z <- msdply(mspct = x, .fun = getWhereMeasured, idx = idx, ...)
+    if (simplify) {
+      unique.rows <- !duplicated(z[ , -which(names(z) == idx)])
+      if (sum(unique.rows) <= 1) {
+        z <- z[1, -which(names(z) == idx)]
+      } else {
+        z <- z[ ,  -which(names(z) == idx)]
+      }
+    }
   } else {
     l <- mslply(mspct = x, .fun = getWhereMeasured, ...)
     comment(l) <- NULL
     z <- list(where.measured = l)
     z[[idx]] <- factor(names(l), levels = names(l))
-    tibble::as_tibble(z[c(2, 1)])
+    z <- tibble::as_tibble(z[c(2, 1)])
   }
+
+  z
 }
 
 #' @describeIn getWhereMeasured data.frame
@@ -609,14 +638,30 @@ getHowMeasured.data.frame <- getHowMeasured.generic_spct
 #'
 #' @param idx character Name of the column with the names of the members of the
 #'   collection of spectra.
+#' @param simplify If all members share the same attribute value return one
+#'   copy instead of a data.frame.
 #' @note The method for collections of spectra returns the
 #'   a tibble with a column of character strings.
 #' @export
 #'
 getHowMeasured.generic_mspct <- function(x,
-                                          ...,
-                                          idx = "spct.idx") {
-  msdply(mspct = x, .fun = getHowMeasured, ..., idx = idx, col.names = "how.measured")
+                                         ...,
+                                         idx = "spct.idx",
+                                         simplify = FALSE) {
+  z <- msdply(mspct = x,
+              .fun = getHowMeasured,
+              ...,
+              idx = idx,
+              col.names = "how.measured")
+  if (simplify) {
+    zz <- unique(z[["how.measured"]])
+    if (length(zz) <= 1) {
+      z <- zz
+    } else {
+      z <- paste(z[["how.measured"]], "\n", collapse = "", sep = "")
+    }
+  }
+  z
 }
 
 ##
@@ -1115,18 +1160,30 @@ getWhatMeasured.data.frame <- getWhatMeasured.generic_spct
 #' @describeIn getWhatMeasured generic_mspct
 #' @param idx character Name of the column with the names of the members of the
 #'   collection of spectra.
+#' @param simplify If all members share the same attribute value return one
+#'   copy instead of a data.frame.
 #' @note The method for collections of spectra returns the
 #'   a tibble with a column of character strings.
 #' @export
 #'
 getWhatMeasured.generic_mspct <- function(x,
                                           ...,
-                                          idx = "spct.idx") {
-  msdply(mspct = x,
-         .fun = getWhatMeasured,
-         ...,
-         idx = idx,
-         col.names = "what.measured")
+                                          idx = "spct.idx",
+                                          simplify = FALSE) {
+  z <- msdply(mspct = x,
+              .fun = getWhatMeasured,
+              ...,
+              idx = idx,
+              col.names = "what.measured")
+  if (simplify) {
+    zz <- unique(z[["what.measured"]])
+    if (length(zz) <= 1) {
+      z <- zz
+    } else {
+      z <- paste(z[["what.measured"]], "\n", collapse = "", sep = "")
+    }
+  }
+  z
 }
 
 # utility functions for attributes ----------------------------------------

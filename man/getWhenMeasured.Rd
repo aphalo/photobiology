@@ -22,7 +22,7 @@ when_measured(x, ...)
 
 \method{getWhenMeasured}{data.frame}(x, as.df = FALSE, ...)
 
-\method{getWhenMeasured}{generic_mspct}(x, ..., idx = "spct.idx")
+\method{getWhenMeasured}{generic_mspct}(x, ..., idx = "spct.idx", simplify = FALSE)
 }
 \arguments{
 \item{x}{a generic_spct object}
@@ -34,6 +34,9 @@ the value stored in the attribute is a list.}
 
 \item{idx}{character Name of the column with the names of the members of the
 collection of spectra.}
+
+\item{simplify}{If all members share the same attribute value return one
+copy instead of a data.frame.}
 }
 \value{
 POSIXct An object with date and time.

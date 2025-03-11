@@ -102,7 +102,12 @@ rowwise_filter <-
       zz <- setGenericSpct(zz,
                            multiple.wl = 1L)
     }
-    setWhatMeasured(zz, paste(.fun.name, length(x), class(x[[1]])[1], "objects."))
+    what.measured <- what_measured(x, simplify = TRUE)
+    what_measured(zz) <- paste(.fun.name, length(x), class(x[[1]])[1], "objects.\n",
+                              what.measured)
+    how_measured(zz) <- how_measured(x, simplify = TRUE)
+    when_measured(zz) <- when_measured(x, simplify = TRUE)
+    where_measured(zz) <- where_measured(x, simplify = TRUE)
 
     zz
   }
@@ -195,7 +200,12 @@ rowwise_source <-
       zz <- setGenericSpct(zz,
                            multiple.wl = 1L)
     }
-    setWhatMeasured(zz, paste(.fun.name, length(x), class(x[[1]])[1], "objects."))
+    what.measured <- what_measured(x, simplify = TRUE)
+    what_measured(zz) <- paste(.fun.name, length(x), class(x[[1]])[1], "objects.\n",
+                               what.measured)
+    how_measured(zz) <- how_measured(x, simplify = TRUE)
+    when_measured(zz) <- when_measured(x, simplify = TRUE)
+    where_measured(zz) <- where_measured(x, simplify = TRUE)
 
     zz
   }
@@ -278,7 +288,12 @@ rowwise_response <-
       zz <- setGenericSpct(zz,
                            multiple.wl = 1L)
     }
-    setWhatMeasured(zz, paste(.fun.name, length(x), class(x[[1]])[1], "objects."))
+    what.measured <- what_measured(x, simplify = TRUE)
+    what_measured(zz) <- paste(.fun.name, length(x), class(x[[1]])[1], "objects.\n",
+                               what.measured)
+    how_measured(zz) <- how_measured(x, simplify = TRUE)
+    when_measured(zz) <- when_measured(x, simplify = TRUE)
+    where_measured(zz) <- where_measured(x, simplify = TRUE)
 
     zz
   }
@@ -344,7 +359,12 @@ rowwise_reflector <-
       zz <- setGenericSpct(zz,
                            multiple.wl = 1L)
     }
-    setWhatMeasured(zz, paste(.fun.name, length(x), class(x[[1]])[1], "objects."))
+    what.measured <- what_measured(x, simplify = TRUE)
+    what_measured(zz) <- paste(.fun.name, length(x), class(x[[1]])[1], "objects.\n",
+                               what.measured)
+    how_measured(zz) <- how_measured(x, simplify = TRUE)
+    when_measured(zz) <- when_measured(x, simplify = TRUE)
+    where_measured(zz) <- where_measured(x, simplify = TRUE)
 
     zz
   }
@@ -397,7 +417,13 @@ rowwise_calibration <-
 
     # set class and attributes of spectrum to be returned
     zz <- setCalibrationSpct(zz, multiple.wl = 1L)
-    setWhatMeasured(zz, paste(.fun.name, length(x), class(x[[1]])[1], "objects."))
+
+    what.measured <- what_measured(x, simplify = TRUE)
+    what_measured(zz) <- paste(.fun.name, length(x), class(x[[1]])[1], "objects.\n",
+                               what.measured)
+    how_measured(zz) <- how_measured(x, simplify = TRUE)
+    when_measured(zz) <- when_measured(x, simplify = TRUE)
+    where_measured(zz) <- where_measured(x, simplify = TRUE)
 
     zz
   }
@@ -459,7 +485,12 @@ rowwise_cps <-
       zz <- setCpsSpct(zz, multiple.wl = 1L)
     }
 
-    setWhatMeasured(zz, paste(.fun.name, length(x), class(x[[1]])[1], "objects."))
+    what.measured <- what_measured(x, simplify = TRUE)
+    what_measured(zz) <- paste(.fun.name, length(x), class(x[[1]])[1], "objects.\n",
+                               what.measured)
+    how_measured(zz) <- how_measured(x, simplify = TRUE)
+    when_measured(zz) <- when_measured(x, simplify = TRUE)
+    where_measured(zz) <- where_measured(x, simplify = TRUE)
 
     zz
   }
@@ -521,7 +552,12 @@ rowwise_raw <-
       zz <- setRawSpct(zz, multiple.wl = 1L)
     }
 
-    setWhatMeasured(zz, paste(.fun.name, length(x), class(x[[1]])[1], "objects."))
+    what.measured <- what_measured(x, simplify = TRUE)
+    what_measured(zz) <- paste(.fun.name, length(x), class(x[[1]])[1], "objects.\n",
+                               what.measured)
+    how_measured(zz) <- how_measured(x, simplify = TRUE)
+    when_measured(zz) <- when_measured(x, simplify = TRUE)
+    where_measured(zz) <- where_measured(x, simplify = TRUE)
 
     zz
   }

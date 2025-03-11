@@ -5,6 +5,15 @@ editor_options:
     wrap: 72
 ---
 
+# photobiology 0.12.1
+
+* Improve copying of attributes in row-wise summary methods: `"when.measured"`,
+ `"where.measured"`, `"what.measured"`, and `"how.measured"` attributes are
+copied, and when unique across the summarised spectra, they are simplified. This
+change affects specializations for collections of spectra of methods `s_mean()`,
+`s_median()`, `s_prod()`, `s_range()`, `s_sd()`, `s_se()`, `s_sum()`. `s_var()`,
+`s_mean_se()`.
+
 # photobiology 0.12.0
 
 **This is a major update with new features and includes significant changes to

@@ -1,5 +1,7 @@
 library("photobiology")
 
+update_all <- FALSE
+
 context("s_mean")
 
 test_that("source_mspct", {
@@ -15,22 +17,22 @@ test_that("source_mspct", {
 #  expect_equal(s_prod(lamps.mspct)[[2]][100], prod(row100))
 
   print.flag <- FALSE # TRUE leads to warnings about encoding
-  expect_known_value(s_mean(lamps.mspct), "data/s-mean-value")
-  expect_known_value(s_median(lamps.mspct), "data/s-median-value")
-  expect_known_value(s_mean_se(lamps.mspct), "data/s-mean-se-value")
-  expect_known_value(s_sd(lamps.mspct), "data/s-sd-value")
-  expect_known_value(s_se(lamps.mspct), "data/s-se-value")
-  expect_known_value(s_var(lamps.mspct), "data/s-var-value")
-  expect_known_value(s_sum(lamps.mspct), "data/s-sum-value")
+  expect_known_value(s_mean(lamps.mspct), "data/s-mean-value", update = update_all)
+  expect_known_value(s_median(lamps.mspct), "data/s-median-value", update = update_all)
+  expect_known_value(s_mean_se(lamps.mspct), "data/s-mean-se-value", update = update_all)
+  expect_known_value(s_sd(lamps.mspct), "data/s-sd-value", update = update_all)
+  expect_known_value(s_se(lamps.mspct), "data/s-se-value", update = update_all)
+  expect_known_value(s_var(lamps.mspct), "data/s-var-value", update = update_all)
+  expect_known_value(s_sum(lamps.mspct), "data/s-sum-value", update = update_all)
   expect_warning(s_prod(lamps.mspct))
 
-  expect_known_value(s_mean(lamps.mspct, na.rm = TRUE), "data/s-mean-na-value")
-  expect_known_value(s_median(lamps.mspct, na.rm = TRUE), "data/s-median-na-value")
-  expect_known_value(s_mean_se(lamps.mspct, na.rm = TRUE), "data/s-mean-se-na-value")
-  expect_known_value(s_sd(lamps.mspct, na.rm = TRUE), "data/s-sd-na-value")
-  expect_known_value(s_se(lamps.mspct, na.rm = TRUE), "data/s-se-na-value")
-  expect_known_value(s_var(lamps.mspct, na.rm = TRUE), "data/s-var-na-value")
-  expect_known_value(s_sum(lamps.mspct, na.rm = TRUE), "data/s-sum-na-value")
+  expect_known_value(s_mean(lamps.mspct, na.rm = TRUE), "data/s-mean-na-value", update = update_all)
+  expect_known_value(s_median(lamps.mspct, na.rm = TRUE), "data/s-median-na-value", update = update_all)
+  expect_known_value(s_mean_se(lamps.mspct, na.rm = TRUE), "data/s-mean-se-na-value", update = update_all)
+  expect_known_value(s_sd(lamps.mspct, na.rm = TRUE), "data/s-sd-na-value", update = update_all)
+  expect_known_value(s_se(lamps.mspct, na.rm = TRUE), "data/s-se-na-value", update = update_all)
+  expect_known_value(s_var(lamps.mspct, na.rm = TRUE), "data/s-var-na-value", update = update_all)
+  expect_known_value(s_sum(lamps.mspct, na.rm = TRUE), "data/s-sum-na-value", update = update_all)
   expect_warning(s_prod(lamps.mspct, na.rm = TRUE))
 })
 

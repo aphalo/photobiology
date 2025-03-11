@@ -20,7 +20,13 @@ where_measured(x, ...)
 
 \method{getWhereMeasured}{summary_generic_spct}(x, ...)
 
-\method{getWhereMeasured}{generic_mspct}(x, ..., idx = "spct.idx", .bind.geocodes = TRUE)
+\method{getWhereMeasured}{generic_mspct}(
+  x,
+  ...,
+  idx = "spct.idx",
+  .bind.geocodes = TRUE,
+  simplify = FALSE
+)
 
 \method{getWhereMeasured}{data.frame}(x, ...)
 }
@@ -36,6 +42,9 @@ collection of spectra.}
 \code{.bind.geocodes = TRUE}, the default, the returned value is a single
 geocode with one row for each member spectrum. Otherwise the individual
 geocode data frames are returned in a list column within a tibble.}
+
+\item{simplify}{If all members share the same attribute value return one
+copy instead of a data.frame.}
 }
 \value{
 a data.frame with a single row and at least columns "lon" and "lat",

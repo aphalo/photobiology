@@ -538,4 +538,3 @@ spct_attr2tb <-
     spct.attr <- get_attributes(x = x, which = which, ...)
     as_tibble(spct.attr)
   }
-

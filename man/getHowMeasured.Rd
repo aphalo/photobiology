@@ -22,7 +22,7 @@ how_measured(x, ...)
 
 \method{getHowMeasured}{data.frame}(x, ...)
 
-\method{getHowMeasured}{generic_mspct}(x, ..., idx = "spct.idx")
+\method{getHowMeasured}{generic_mspct}(x, ..., idx = "spct.idx", simplify = FALSE)
 }
 \arguments{
 \item{x}{a generic_spct object}
@@ -31,6 +31,9 @@ how_measured(x, ...)
 
 \item{idx}{character Name of the column with the names of the members of the
 collection of spectra.}
+
+\item{simplify}{If all members share the same attribute value return one
+copy instead of a data.frame.}
 }
 \value{
 character vector An object containing a description of the data.
