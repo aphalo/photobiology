@@ -315,7 +315,7 @@ test_that("Tfr_ratio", {
   uvb.wb <- waveband(c(280,315), wb.name = "UVB")
   blue.wb <- waveband(c(400,500), wb.name = "B")
 
-  Tfr.ratio.result <- 0.01054274
+  Tfr.ratio.result <- 0.01053392
   expect_equal(
     as.numeric(Tfr_ratio(polyester.spct, uvb.wb, blue.wb)),
     Tfr.ratio.result, tolerance = 1e-6)
@@ -326,7 +326,7 @@ test_that("Tfr_ratio", {
     as.numeric(Tfr_ratio(polyester.spct, uvb.wb, blue.wb, quantity = "average")),
     Tfr.ratio.result, tolerance = 1e-6)
 
-  Tfr.ratio.result <- 0.00368996
+  Tfr.ratio.result <- 0.003686873
   expect_equal(
     as.numeric(Tfr_ratio(polyester.spct, uvb.wb, blue.wb, quantity = "total")),
     Tfr.ratio.result, tolerance = 1e-6)
@@ -338,7 +338,7 @@ test_that("Tfr_ratio", {
     Tfr_ratio(polyester.spct, uvb.wb, blue.wb),
     "UVB:B[Tfr(wl):Tfr(wl)]")
 
-  Tfr.fraction.result <- 0.01043275
+  Tfr.fraction.result <- 0.01042412
   expect_equal(
     as.numeric(Tfr_fraction(polyester.spct, uvb.wb, blue.wb)),
     Tfr.fraction.result, tolerance = 1e-6)
@@ -349,7 +349,7 @@ test_that("Tfr_ratio", {
     as.numeric(Tfr_fraction(polyester.spct, uvb.wb, blue.wb, quantity = "average")),
     Tfr.fraction.result, tolerance = 1e-6)
 
-  Tfr.fraction.result <- 0.003676394
+  Tfr.fraction.result <- 0.00367333
   expect_equal(
     as.numeric(Tfr_fraction(polyester.spct, uvb.wb, blue.wb, quantity = "total")),
     Tfr.fraction.result, tolerance = 1e-6)
@@ -361,7 +361,7 @@ test_that("Tfr_ratio", {
     Tfr_fraction(polyester.spct, uvb.wb, blue.wb),
     "UVB:(UVB+B)[Tfr(wl):Tfr(wl)]")
 
-  Tfr.normdiff.result <- 0.9791345
+  Tfr.normdiff.result <- 0.9791518
   expect_equal(
     as.numeric(Tfr_normdiff(polyester.spct, blue.wb, uvb.wb)),
     Tfr.normdiff.result, tolerance = 1e-6)
@@ -372,7 +372,7 @@ test_that("Tfr_ratio", {
     as.numeric(Tfr_normdiff(polyester.spct, blue.wb, uvb.wb, quantity = "average")),
     Tfr.normdiff.result, tolerance = 1e-6)
 
-  Tfr.normdiff.result <- 0.9926472
+  Tfr.normdiff.result <- 0.9926533
   expect_equal(
     as.numeric(Tfr_normdiff(polyester.spct, blue.wb, uvb.wb, quantity = "total")),
     Tfr.normdiff.result, tolerance = 1e-6)

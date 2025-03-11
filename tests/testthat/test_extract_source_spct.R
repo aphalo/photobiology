@@ -49,9 +49,9 @@ test_that("source_spct", {
   expect_equal(class(my_z.spct), class(my.spct))
   my_z.spct[ , 2] <- 1
   expect_equal(class(my_z.spct), class(my.spct))
-  expect_warning(my_z.spct[ , 2] <- -1)
+  expect_silent(my_z.spct[ , 2] <- -1) # negative irradiances are valid!
   expect_equal(class(my_z.spct), class(my.spct))
-  expect_warning(my_z.spct[ , 2] <- -(my.spct[ , 2]))
+  expect_silent(my_z.spct[ , 2] <- -(my.spct[ , 2])) # negative irradiances are valid!
   expect_equal(class(my_z.spct), class(my.spct))
   my_z.spct <- my.spct
   expect_error(my_z.spct[ , 1] <- -(my.spct[ , 1]))
