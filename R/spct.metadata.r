@@ -449,8 +449,11 @@ getWhereMeasured.generic_spct <- function(x, ..., simplify = FALSE) {
     where.measured <- SunCalcMeeus::na_geocode()
   } else if (simplify && nrow(where.measured) > 1L &&
               sum(!duplicated(where.measured[ , -which(names(where.measured) == getIdFactor(x))]) == 1L)) {
+    # double test below is because of a bug in earlier versions of 'photobiology'
+    # the default "spct.idx" could have persisted in objects with user-renamed idfactor
+    # triggering an error under R 5.0.0 RC
     where.measured <-
-      where.measured[1, -which(names(where.measured) == getIdFactor(x))]
+      where.measured[1, -which(names(where.measured) %in% c(getIdFactor(x), "spct.idx"))]
   }
   # needed to clean inconsistent values from previous versions
   SunCalcMeeus::validate_geocode(where.measured)

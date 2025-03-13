@@ -100,9 +100,10 @@ rbindspct <- function(l,
     return(generic_spct())
   }
 
-  if ((is.null(idfactor) && (!is.null(names(l)))) ||
-       (is.logical(idfactor) && idfactor )) {
+  if ((is.null(idfactor) && (!is.null(names(l)))) || is.logical(idfactor) && idfactor) {
     idfactor <- "spct.idx"
+  } else if (is.logical(idfactor) && !idfactor) {
+    idfactor <- NULL
   }
 
   # inefficient but simpler to implement, and ensures proper naming
@@ -262,7 +263,7 @@ rbindspct <- function(l,
     when.measured <- lapply(l[idxs], getWhenMeasured)
     names(when.measured) <- names.spct[idxs]
 
-    where.measured <- dplyr::bind_rows(lapply(l[idxs], getWhereMeasured), .id = "spct.idx")
+    where.measured <- dplyr::bind_rows(lapply(l[idxs], getWhereMeasured), .id = idfactor)
     if (attrs.simplify &&
         (all(is.na(where.measured$lon)) || length(unique(where.measured$lon)) == 1) &&
         (all(is.na(where.measured$lat)) || length(unique(where.measured$lat)) == 1) &&
