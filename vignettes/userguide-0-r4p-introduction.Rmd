@@ -23,34 +23,38 @@ print(citation('photobiology'), style = "textVersion")
 
 ## Introduction
 
-Package 'photobiology' is at the core of a suite of packages for
-analysis and plotting of data relevant to photobiology (described at
-<https://www.r4photobiology.info/>). The accompanying packages provide
-data and definitions that are to a large extent application-area
-specific while the functions in the package 'photobioloy' are widely
-useful in photobiology and in radiation quantification in geophysics and
-meteorology. Package 'photobiology' has its main focus in the
-characterization of the light environment in a biologically relevant
-manner and in the manipulation of spectral data to simulate
-photo-physical, photo-chemical and photo-biological interactions and
-responses. In addition it implements the algorithms of Jean Meeus for
-the position of the sun, as this and derived quantities like day- and
-night length are important for most organisms.
+Package ['photobiology'](https://docs.r4photobiology.info/photobiology/)
+is at the core of a suite of packages for analysis and
+plotting of data relevant to photobiology. The accompanying packages provide data and
+definitions that are to a large extent application-area specific while the
+functions in the package 'photobioloy' are widely useful in photobiology and in
+radiation quantification in geophysics and meteorology. Package 'photobiology'
+has its main focus in the characterization of the light environment in a
+biologically relevant manner and in the manipulation of spectral data to
+simulate photo-physical, photo-chemical and photo-biological interactions and
+responses. In addition it gives access to the implementation of the algorithms
+of Jean Meeus for the position of the sun from package 'SunCalcMeeus', including
+derived quantities like day- and night length that are important for most
+organisms.
 
-Data exchange with packages 'pavo', 'colorSpec' and 'hyperSpec' is
-supported. The focus of package 'pavo' (Maia et al. 2003) is on color
-perception by animals and assessment of animal coloration. The focus of
-package 'colorSpec' (Davis 2019) is on color-related computations:
-"Calculate with spectral properties of light sources, materials,
-cameras, eyes, and scanners." The focus of package 'hyperSpec' (Beleites
-and Sergo) is the handling of hyperspectral data sets, such as spectral
-images and time series of spectra.
-
-Because of their different focus, these packages mostly complement each
-other, in spite of some overlap and differences in approach or even, in
-philosophy about data handling.'
+Data exchange with packages 'pavo', 'colorSpec' and 'hyperSpec' is supported.
+The focus of package 'pavo' (Maia et al. 2003) is on color perception by animals
+and assessment of animal coloration. The focus of package 'colorSpec' (Davis
+2019) is on color-related computations: "Calculate with spectral properties of
+light sources, materials, cameras, eyes, and scanners." The focus of package
+'hyperSpec' (Beleites and Sergo) is the handling of hyperspectral data sets,
+such as spectral images and time series of spectra. Because of their different
+focus, these packages mostly complement each other and this suite, in spite of
+some overlap and differences in approach or even, in philosophy about data
+handling.'
 
 ### References
+
+Aphalo, Pedro J. (2015) The r4photobiology suite. *UV4Plants Bulletin*,
+2015:1, 21-29. (<https://doi.org/10.19232/uv4pb.2015.1.14>).
+
+Aphalo, Pedro J. (2024) *Learn R: As a Language.* 2ed. The R Series. 
+Boca Raton: Chapman & Hall/CRC. ([Web page](https://www.learnr-book.info/))
 
 Aphalo, P. J., Albert, A., Björn, L. O., McLeod, A. R., Robson, T. M.,
 Rosenqvist, E. (Eds.). (2012). *Beyond the Visible: A handbook of best
@@ -59,8 +63,9 @@ University of Helsinki, Department of Biosciences, Division of Plant
 Biology. ISBN 978-952-10-8363-1 (PDF), 978-952-10-8362-4 (paperback).
 Open access at <https://doi.org/10.31885/9789521083631>.
 
-Aphalo, Pedro J. (2015) The r4photobiology suite. *UV4Plants Bulletin*,
-2015:1, 21-29. (<https://doi.org/10.19232/uv4pb.2015.1.14>).
+Aphalo, Pedro J., Robson, T. Matthew, Kotilainen, Titta K. (2016-2025)
+*R for Photobiology: Theory and recipes for common calculations.* 
+Pre-release available at [LeanPub](https://leanpub.com/r4photobiology).
 
 Davis G (2019). *A Centroid for Sections of a Cube in a Function Space,
 with application to Colorimetry.* *ArXiv e-prints*. 1811.00990,
@@ -73,61 +78,58 @@ organization of spectral data. *Methods in Ecology and Evolution*,
 
 ## Packages in the suite
 
-The core package in this suite is called
-['**photobiology**'](https://docs.r4photobiology.info/photobiology/) and
-all other packages in the suite depend on it. Other specialized packages
-for quantification of ultraviolet-, visible- and infra-red radiation
-(['**photobiologyWavebands**'](https://docs.r4photobiology.info/photobiologyWavebands/)),
-properties of plant photoreceptors and other plant photobiology related
-calculations
-(['**photobiologyPlants**'](https://docs.r4photobiology.info/photobiologyPlants/)),
-example spectral data for filters and objects
-(['**photobiologyFilters**'](https://docs.r4photobiology.info/photobiologyFilters/)),
-lamps
-(['**photobiologyLamps**'](https://docs.r4photobiology.info/photobiologyLamps/)),
-LEDs
-(['**photobiologyLEDs**'](https://docs.r4photobiology.info/photobiologyLEDs/)),
-sunlight
-(['**photobiologySun**'](https://docs.r4photobiology.info/photobiologySun/)),
-light sensors
-(['**photobiologySensors**'](https://docs.r4photobiology.info/photobiologySensors/))
-and for exchange of data in *foreign* formats
-(['**photobiologyInOut**'](https://docs.r4photobiology.info/photobiologyInOut/))
-are part of the suite. One additional package,
-(['**ggspectra**'](https://docs.r4photobiology.info/ggspectra/)),
-implements facilities for plotting spectral data by extending package
-'ggplot2'. Two additional packages (['**rOmniDriver**'](https://docs.r4photobiology.info/rOmniDriver/)) and (['**ooacquire**'](https://docs.r4photobiology.info/ooacquire/)) make it possible to acquire spectral data by controlling _Ocean Insight/Ocean Optics_ spectrometers from within R.
+The core packages in this suite are called
+['photobiology'](https://docs.r4photobiology.info/photobiology/) and 
+['SunCalcMeeus'](https://docs.r4photobiology.info/SunCalcMeeus/).
+All other packages in the suite depend on them (see Table below).
+
+The current and archived releases of all packages except
+(['rOmniDriver'](https://docs.r4photobiology.info/rOmniDriver/)) and
+(['ooacquire'](https://docs.r4photobiology.info/ooacquire/)) are available
+through CRAN. The most recent, including pre-release versions, of all the
+packages in the suite are available through an [R-Universe
+repository](https://aphalo.r-universe.dev/). Installation instructions are given
+in the README file in each package's documentation accessible through the links
+in the Table below.
 
 | Package                     | Provides                                                                                                                                                                                                |
 |------------------------------------|------------------------------------|
-| 'photobiology'              | Core classes, methods and functions                                                                                                                                                                     |
-| 'photobiologyWavebands'     | Definitions of standardized and frequently used wavelength band definitions and spectral weighting functions.                                                                                           |
-| 'photobiologyPlants'        | Methods, functions and data for plants and vegetation.                                                                                                                                                  |
-| 'photobiologyInOut'         | Exchange of data within R and using different proprietary and standard-based formats.                                                                                                                   |
-| 'photobiologyLamps'         | Spectral emission and other data for various lamp types.                                                                                                                                                |
-| 'photobiologyLEDs'          | Spectral emission and other data for various LEDs and LED arrays.                                                                                                                                       |
-| 'photobiologySensors'       | Spectral response and other data for various UV, VIS and NIR sensors.                                                                                                                                   |
-| 'photobiologySun'           | Spectral irradiance and other data for sunlight. Both measured and standard definitions for ground level and top of the atmosphere.                                                                     |
-| 'photobiologyFilters'       | Spectral transmittance and spectral reflectance data for different materials including optical filters. Spectral data on refractive index.                                                              |
-| 'ggspectra'                 | Extensions to package 'ggplot2' for easier plotting of spectral data, including `autoplot()` and `ggplot()` methods for the classes defined in package 'photobiology' and scales, geoms and statistics. |
-| 'oocquire' (Not in CRAN)    | Data acquision and control of Ocean Optics (now Ocean Insight) spectrometers.                                                                                                                           |
-| 'rOmniDriver' (Not in CRAN) | Interface to OmniDriver drivers for communication with spectrometers from Ocean Optics (now Ocean Insight)                                                                                              |
+| ['photobiology'](https://docs.r4photobiology.info/photobiology/)              | Core classes, methods and functions                                                                                                                                                                     |
+| ['SunCalcMeeus'](https://docs.r4photobiology.info/SunCalcMeeus/)              | Functions for the position of the Sun                                                                                                                                                                     |
+| ['photobiologyWavebands'](https://docs.r4photobiology.info/photobiologyWavebands/)     | Definitions of standardized and frequently used wavelength band definitions and spectral weighting functions.                                                                                           |
+| ['photobiologyPlants'](https://docs.r4photobiology.info/photobiologyPlants/)        | Methods, functions and data for plants and vegetation.                                                                                                                                                  |
+| ['photobiologyInOut'](https://docs.r4photobiology.info/photobiologyInOut/)         | Exchange of data within R and using different proprietary and standard-based formats.                                                                                                                   |
+| ['photobiologyLamps'](https://docs.r4photobiology.info/photobiologyLamps/)         | Spectral emission and other data for various lamp types.                                                                                                                                                |
+| ['photobiologyLEDs'](https://docs.r4photobiology.info/photobiologyLEDs/)          | Spectral emission and other data for various LEDs and LED arrays.                                                                                                                                       |
+| ['photobiologySensors'](https://docs.r4photobiology.info/photobiologySensors/)       | Spectral response and other data for various UV, VIS and NIR sensors.                                                                                                                                   |
+| ['photobiologySun'](https://docs.r4photobiology.info/photobiologySun/)           | Spectral irradiance and other data for sunlight. Both measured and standard definitions for ground level and top of the atmosphere.                                                                     |
+| ['photobiologyFilters'](https://docs.r4photobiology.info/photobiologyFilters/)       | Spectral transmittance and spectral reflectance data for different materials including optical filters. Spectral data on refractive index.                                                              |
+| ['ggspectra'](https://docs.r4photobiology.info/ggspectra/)                 | Extensions to package 'ggplot2' for easier plotting of spectral data, including `autoplot()` and `ggplot()` methods for the classes defined in package 'photobiology' and scales, geoms and statistics. |
+| ['oocquire'](https://docs.r4photobiology.info/oocquire/) (Not in CRAN)    | Data acquisition and control of Ocean Optics (now Ocean Insight) spectrometers.                                                                                                                           |
+| ['rOmniDriver'](https://docs.r4photobiology.info/rOmniDriver/) (Not in CRAN) | Interface to OmniDriver drivers for communication with spectrometers from Ocean Optics (now Ocean Insight)                                                                                              |
 
-For additional information on these and other packages by the author
-please visit (<https://www.r4photobiology.info>) for news, and
-check the menue entry **R Packages > Checks and Issues** for current status
-and links to on-line documentation and public Git repositories. Each
-package has its own public Git repository at my [GitHub account](<https://github.com/aphalo/>) from
-where the source code of the current and earlier versions can be cloned
-or forked.
+For information on other packages by the author please visit
+(<https://www.r4photobiology.info>). The current status of the packages is
+summarised by badges in their README files, which function as the home page of
+their on-line documentation (linked in the table above). Each package has its
+own public Git repository at my [GitHub account](<https://github.com/aphalo/>)
+from where the source code of the current and earlier versions can be cloned or
+forked. Support questions, bug reports and suggestions for improvements are
+welcome as Git issues.
 
 ## Acknowledgements
 
-This work was funded in part by the Academy of Finland (decision
-252548), and done when the author was employed at the University of
-Helsinki, Finland. COST Action FA9604 'UV4Growth' facilitated
+The development of the software was funded in part by the Academy of Finland
+(decision 252548), and done mainly while the author was employed (2006 to 2024)
+at the University of Helsinki, Finland. The sources of the data included are
+described in the documentation of the packages. We thank all those who
+authorized reuse of their data or published their data in the open.
+
+COST Action FA9604 'UV4Growth' facilitated
 discussions and exchanges of ideas that lead to the development of this
-package. The contributions of Andy McLeod, Lars Olof Björn, Nigel Paul,
+package. 
+
+The contributions of Andy McLeod, Lars Olof Björn, Nigel Paul,
 Lasse Ylianttila, Glen Davis, Agnese Fazio, T. Matthew Robson and Titta
 Kotilainen were specially significant. Other members of the UV4Plants
 Association (<https://www.uv4plants.org/>) and participants in workshops
@@ -136,5 +138,5 @@ and solutions to implement.
 
 Tutorials by Hadley Wickham and comments on my presentation at
 *UseR!2015* allowed me to significantly improve the coding and
-functionality. The generous on-line help by many members of the R
-community over more than 20 years is also warmly thanked.
+functionality. The generous and friendly help from many members of the R
+community since 1999 is also warmly thanked.
