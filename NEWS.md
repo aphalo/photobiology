@@ -18,6 +18,8 @@ change affects specializations for collections of spectra of methods `s_mean()`,
 * Simplify repeated identical attributes when printing multiple spectra in long 
 form or as a collection, and when printing their summaries. Simplification
 controlled by formal parameter `attr.simplify` with default to `TRUE`.
+* Warn if `find_spikes()` is called with spectral data expressed on irregular 
+wavelength steps, such as after applying `thin_wl()`.
 
 # photobiology 0.12.0
 

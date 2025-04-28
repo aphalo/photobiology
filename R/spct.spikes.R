@@ -2,10 +2,10 @@
 #'
 #' This function finds spikes in a numeric vector using the algorithm of
 #' Whitaker and Hayes (2018). Spikes are values in spectra that are unusually
-#' high or low compared to neighbors. They are usually individual values or very
+#' high or low compared to neighbours. They are usually individual values or very
 #' short runs of similar "unusual" values. Spikes caused by cosmic radiation are
 #' a frequent problem in Raman spectra. Another source of spikes are "hot
-#' pixels" in CCD and diode arrays. Other kinds of accidental "outlayers" will
+#' pixels" in CCD and diode arrays. Other kinds of accidental "outliers" will
 #' be also detected.
 #'
 #' @details Spikes are detected based on a modified Z score calculated from the
@@ -389,6 +389,11 @@ despike.generic_spct <-
     if (length(var.name) == 0L) {
       warning("No data columns found, skipping.")
     }
+    wl.step.range <- range(wl_stepsize())
+    if (wl.step.range[2] / wl.step.range[1] > 2.5) {
+      warning("Despike assumes consistent w.length steps! max step / min step = ",
+              wl.step.range[2] / wl.step.range[1])
+    }
     for (col.name in var.name) {
       if (!is.numeric(x[[col.name]])) {
         next()
@@ -502,12 +507,12 @@ despike.response_spct <-
       stop("Unrecognized 'unit.out': ", unit.out)
     }
     z[[col.name]] <- despike(z[[col.name]],
-                            z.threshold = z.threshold,
-                            max.spike.width = max.spike.width,
-                            window.width = window.width,
-                            method = method,
-                            na.rm = na.rm,
-                            ...)
+                             z.threshold = z.threshold,
+                             max.spike.width = max.spike.width,
+                             window.width = window.width,
+                             method = method,
+                             na.rm = na.rm,
+                             ...)
     z
   }
 
@@ -559,12 +564,12 @@ despike.filter_spct <-
       stop("Unrecognized 'filter.qty': ", filter.qty)
     }
     z[[col.name]] <- despike(z[[col.name]],
-                            z.threshold = z.threshold,
-                            max.spike.width = max.spike.width,
-                            window.width = window.width,
-                            method = method,
-                            na.rm = na.rm,
-                            ...)
+                             z.threshold = z.threshold,
+                             max.spike.width = max.spike.width,
+                             window.width = window.width,
+                             method = method,
+                             na.rm = na.rm,
+                             ...)
     z
   }
 
@@ -599,12 +604,12 @@ despike.reflector_spct <- function(x,
 
   col.name <- "Rfr"
   x[[col.name]] <- despike(x[[col.name]],
-                          z.threshold = z.threshold,
-                          max.spike.width = max.spike.width,
-                          window.width = window.width,
-                          method = method,
-                          na.rm = na.rm,
-                          ...
+                           z.threshold = z.threshold,
+                           max.spike.width = max.spike.width,
+                           window.width = window.width,
+                           method = method,
+                           na.rm = na.rm,
+                           ...
   )
   x
 }
@@ -647,12 +652,12 @@ despike.solute_spct <-
       stop("Invalid number of columns found:", length(cols))
     }
     z[[col.name]] <- despike(z[[col.name]],
-                            z.threshold = z.threshold,
-                            max.spike.width = max.spike.width,
-                            window.width = window.width,
-                            method = method,
-                            na.rm = na.rm,
-                            ...)
+                             z.threshold = z.threshold,
+                             max.spike.width = max.spike.width,
+                             window.width = window.width,
+                             method = method,
+                             na.rm = na.rm,
+                             ...)
     z
   }
 
@@ -688,12 +693,12 @@ despike.cps_spct <- function(x,
   var.name <- grep("cps", colnames(x), value = TRUE)
   for (col.name in var.name) {
     x[[col.name]] <- despike(x[[col.name]],
-                            z.threshold = z.threshold,
-                            max.spike.width = max.spike.width,
-                            window.width = window.width,
-                            method = method,
-                            na.rm = na.rm,
-                            ...
+                             z.threshold = z.threshold,
+                             max.spike.width = max.spike.width,
+                             window.width = window.width,
+                             method = method,
+                             na.rm = na.rm,
+                             ...
     )
   }
   x
@@ -731,12 +736,12 @@ despike.raw_spct <- function(x,
   var.name <- grep("counts", colnames(x), value = TRUE)
   for (col.name in var.name) {
     x[[col.name]] <- despike(x[[col.name]],
-                            z.threshold = z.threshold,
-                            max.spike.width = max.spike.width,
-                            window.width = window.width,
-                            method = method,
-                            na.rm = na.rm,
-                            ...
+                             z.threshold = z.threshold,
+                             max.spike.width = max.spike.width,
+                             window.width = window.width,
+                             method = method,
+                             na.rm = na.rm,
+                             ...
     )
   }
   x
