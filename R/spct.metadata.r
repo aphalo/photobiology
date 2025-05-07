@@ -798,13 +798,15 @@ trimInstrDesc <- function(x,
       instr.desc <- list(instr.desc)
     }
     for (i in seq(along.with = instr.desc)) {
+      # in earlier versions of 'photobiology' the record had fewer fields
+      # thus, we silently ignore missing fields, avoiding NAs
       if (!(is.null(instr.desc[[i]]) || all(is.na(instr.desc[[i]])))) {
         if (fields[1] == "-") {
           fields.tmp <- setdiff(names(instr.desc[[i]]), fields[-1])
         } else if (fields[1] == "=") {
-          fields.tmp <- fields[-1]
+          fields.tmp <- intersect(fields[-1], names(instr.desc[[i]]))
         } else {
-          fields.tmp <- fields
+          fields.tmp <- intersect(fields, names(instr.desc[[i]]))
         }
         instr.desc[[i]] <- instr.desc[[i]][fields.tmp]
         if (!inherits(instr.desc[[i]], "instr_desc")) {
