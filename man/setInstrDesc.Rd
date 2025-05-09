@@ -10,22 +10,28 @@ setInstrDesc(x, instr.desc)
 instr_descriptor(x) <- value
 }
 \arguments{
-\item{x}{a generic_spct object}
+\item{x}{a \code{generic_spct} object.}
 
-\item{instr.desc, value}{a list}
+\item{instr.desc, value}{a \code{list}, \code{instr_desc} object, or
+\code{NULL}.}
 }
 \value{
-x
+\code{x}, with the value of its \code{"instr.desc"} attribute set to
+  the value of the argument passed to \code{instr.desc} or to \code{value}.
 }
 \description{
-Function to set by reference the "instr.desc" attribute  of an existing
-generic_spct or derived-class object.
+Function to set by reference the \code{"instr.desc"} attribute of an existing
+\code{generic_spct} or derived-class object, or of a
+\code{summary_generic_spct} or derived-class object.
+}
+\details{
+This function alters \code{x} itself by reference and in addition
+  returns \code{x} invisibly. If \code{x} is not a \code{generic_spct} object,
+  \code{x} is not modified, silently. If \code{inst.desc = NULL} is passed
+  in the call, the attribute \code{"instr.desc"} is removed.
+  \emph{This function is very rarely called from user code.}
 }
 \note{
-This function alters x itself by reference and in addition
-  returns x invisibly. If x is not a generic_spct object, x is not
-  modified.
-
 The fields to be passed in the list \code{instr.desc} in part vary
 depending on the instrument brand and model.
 }

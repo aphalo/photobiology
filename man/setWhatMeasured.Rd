@@ -25,7 +25,7 @@ what_measured(x) <- value
 \method{setWhatMeasured}{generic_mspct}(x, what.measured, ...)
 }
 \arguments{
-\item{x}{a generic_spct object}
+\item{x}{an R object.}
 
 \item{...}{Allows use of additional arguments in methods for other classes.}
 
@@ -35,9 +35,13 @@ what_measured(x) <- value
 x
 }
 \description{
-Function to set by reference the "what.measured" attribute  of an existing
-generic_spct, generic_mspct, summary_generic_spct, data.frame or a
-derived-class object.
+Method to set by reference the \code{"what.measured"} attribute  of an R
+object.
+}
+\details{
+This function alters \code{x} itself by reference and in addition
+  returns \code{x} invisibly. If \code{x} does not belong to one of the
+  supported classes, \code{x} is not modified.
 }
 \section{Methods (by class)}{
 \itemize{
@@ -52,11 +56,6 @@ derived-class object.
 \item \code{setWhatMeasured(generic_mspct)}: generic_mspct
 
 }}
-\note{
-This function alters x itself by reference and in addition
-  returns x invisibly. If x is not a generic_spct object, x is not
-  modified.
-}
 \examples{
 my.spct <- sun.spct
 what_measured(my.spct)

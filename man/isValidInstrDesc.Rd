@@ -7,14 +7,29 @@
 isValidInstrDesc(x)
 }
 \arguments{
-\item{x}{a generic_spct object}
+\item{x}{a \code{generic_spct} object or a \code{summary_generic_spct}
+object.}
 }
 \value{
-logical TRUE if at least instrument name and serial number is found.
+A \code{logical} vector of length one.
 }
 \description{
-Function to validate the "instr.settings" attribute of an existing generic_spct
-object.
+Function to validate the \code{"instr.settings"} attribute of an existing
+\code{generic_spct} object or \code{summary_generic_spct} object.
+}
+\details{
+Test if at least one of instrument name (field
+ \code{spectrometer.name}) or serial number (field \code{spectrometer.sn})
+ is found in the value of the R attribute \code{"instr.desc"} of \code{x}.
+ \code{FALSE} is silently returned if \code{x} does not belong to a class
+ derived from class \code{generic_spct} or from class
+ \code{summary_generic_spct}, or if it is derived from these classes but the
+ attribute is not set.
+}
+\examples{
+isValidInstrDesc(white_led.cps_spct)
+isValidInstrDesc(white_body.spct)
+
 }
 \seealso{
 Other measurement metadata functions: 

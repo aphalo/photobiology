@@ -7,14 +7,17 @@
 isValidInstrSettings(x)
 }
 \arguments{
-\item{x}{a generic_spct object}
+\item{x}{a \code{generic_spct} object or a \code{summary_generic_spct}
+object.}
 }
 \value{
-logical TRUE if at least integration time data is found.
+logical TRUE if at least the integration time is found in the
+  metadata attribute. If \code{x} is not a \code{generic_spct} or
+  a \code{summary_generic_spct} object, \code{NA} is returned.
 }
 \description{
-Function to validate the "instr.settings" attribute of an existing generic_spct
-object.
+Function to validate the \code{"instr.settings"} attribute of an existing
+\code{generic_spct} or \code{summary_generic_spct} object.
 }
 \seealso{
 Other measurement metadata functions: 

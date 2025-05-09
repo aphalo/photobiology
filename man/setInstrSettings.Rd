@@ -10,21 +10,25 @@ setInstrSettings(x, instr.settings)
 instr_settings(x) <- value
 }
 \arguments{
-\item{x}{a generic_spct object}
+\item{x}{a \code{generic_spct} object or a \code{summary_generic_spct}
+object.}
 
-\item{instr.settings, value}{a list}
+\item{instr.settings, value}{a \code{list} or a \code{instr_settings} object.}
 }
 \value{
 x
 }
 \description{
-Function to set by reference the "what.measured" attribute  of an existing
-generic_spct or derived-class object.
+Function to set by reference the \code{"what.measured"} attribute  of a
+\code{generic_spct}, or of a \code{summary_generic_spct} object.
 }
-\note{
-This function alters x itself by reference and in addition
-  returns x invisibly. If x is not a generic_spct object, x is not
-  modified.
+\details{
+This function alters \code{x} itself by reference and in addition
+  returns \code{x} invisibly. If \code{x} is not a \code{generic_spct} object
+  or a \code{summary_generic_spct} object, \code{x} is not modified,
+  silently. If \code{inst.desc = NULL} is passed in the call, the attribute
+  \code{instr.settings} is removed. \emph{This function is very rarely called
+  from user code.}
 }
 \seealso{
 Other measurement metadata functions: 

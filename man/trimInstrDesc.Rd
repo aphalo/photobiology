@@ -11,25 +11,42 @@ trimInstrDesc(
 )
 }
 \arguments{
-\item{x}{a generic_spct object}
+\item{x}{a \code{generic_spct} object or a \code{summary_generic_spct}
+object.}
 
 \item{fields}{a character vector with the names of the fields to keep,
-or if first member is `"-"`, the names of fields to delete; "*" as
-first member of the vector makes the function a no-op, leaving the spectrum
-object unaltered.}
+or if first member is \code{"-"}, the names of fields to delete; \code{"*"}
+as the first member of the vector makes the function a no-op, leaving the
+spectrum object unaltered.}
 }
 \value{
-x
+\code{x}, possibly with the \code{"instr.desc"} attribute
+  modified.
 }
 \description{
 Function to trim the "instr.desc" attribute of an existing generic_spct
-object, discarding all fields except for `spectrometer.name`,
-`spectrometer.sn`, `bench.grating`, `bench.slit`, and calibration name.
+object, by default discarding all fields except for \code{spectrometer.name},
+\code{spectrometer.sn}, \code{bench.grating}, \code{bench.slit}, and
+\code{entrance.optics}.
 }
-\note{
-This function alters x itself by reference and in addition
-  returns x invisibly. If x is not a generic_spct object, x is not
+\details{
+This function alters \code{x} itself by reference and in addition
+  returns \code{x} invisibly. If \code{x} is not a \code{generic_spct} object
+  or a \code{summary_generic_spct} object, or if the \code{"instr.desc"}
+  attribute is not present in a \code{generic_spct} object, \code{x} is not
   modified.
+
+  Attempts to remove or keep fields that are not present in the attribute are
+  ignored silently. The value of fields in the attribute is never modified,
+  fields are either kept unchanged or removed.
+}
+\examples{
+
+my.spct <- white_led.cps_spct
+names(instr_descriptor(my.spct))
+trimInstrDesc(my.spct) # modified by reference!
+names(instr_descriptor(my.spct))
+
 }
 \seealso{
 Other measurement metadata functions: 

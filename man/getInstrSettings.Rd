@@ -10,14 +10,27 @@ getInstrSettings(x)
 instr_settings(x)
 }
 \arguments{
-\item{x}{a generic_spct object}
+\item{x}{a \code{generic_spct} object or a \code{summary_generic_spct}
+object.}
 }
 \value{
-list
+an object of class \code{"instr_settings"} derived from \code{"list"}.
 }
 \description{
-Function to read the "instr.settings" attribute of an existing generic_spct
-object.
+Function to extract the \code{"instr.settings"} attribute from
+\code{generic_spct} object or from a \code{summary_generic_spct}.
+}
+\details{
+If \code{x} is derived from \code{generic_spct} or from
+\code{summary_generic_spct}, the value of attribute \code{"instr.settings"}
+is returned (\code{NULL}, if missing). Otherwise \code{list()} is returned.
+}
+\examples{
+settings <- getInstrSettings(white_led.cps_spct)
+class(settings)
+print(settings)
+print(str(settings))
+
 }
 \seealso{
 Other measurement metadata functions: 

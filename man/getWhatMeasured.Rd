@@ -8,7 +8,7 @@
 \alias{getWhatMeasured.summary_generic_spct}
 \alias{getWhatMeasured.data.frame}
 \alias{getWhatMeasured.generic_mspct}
-\title{Get the "what.measured" attribute}
+\title{Get the \code{"what.measured"} attribute}
 \usage{
 getWhatMeasured(x, ...)
 
@@ -25,7 +25,7 @@ what_measured(x, ...)
 \method{getWhatMeasured}{generic_mspct}(x, ..., idx = "spct.idx", simplify = FALSE)
 }
 \arguments{
-\item{x}{a generic_spct object}
+\item{x}{an R object.}
 
 \item{...}{Allows use of additional arguments in methods for other classes.}
 
@@ -36,12 +36,12 @@ one copy instead of a data.frame.}
 collection of spectra.}
 }
 \value{
-character vector An object containing a description of the data.
+\code{character} vector An object containing a description of the
+  data. If \code{x} does not belong to a supported class \code{NA} is
+  returned.
 }
 \description{
-Function to read the "what.measured" attribute of an existing
-generic_spct, generic_mspct, summary_generic_spct, data.frame or a
-derived-class object.
+Method to read the \code{"what.measured"} attribute of an R object.
 }
 \section{Methods (by class)}{
 \itemize{

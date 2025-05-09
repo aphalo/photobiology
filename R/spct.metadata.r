@@ -683,16 +683,22 @@ getHowMeasured.generic_mspct <- function(x,
 
 #' Set the "instr.desc" attribute
 #'
-#' Function to set by reference the "instr.desc" attribute  of an existing
-#' generic_spct or derived-class object.
+#' Function to set by reference the \code{"instr.desc"} attribute of an existing
+#' \code{generic_spct} or derived-class object, or of a
+#' \code{summary_generic_spct} or derived-class object.
 #'
-#' @param x a generic_spct object
-#' @param instr.desc,value a list
+#' @param x a \code{generic_spct} object.
+#' @param instr.desc,value a \code{list}, \code{instr_desc} object, or
+#'   \code{NULL}.
 #'
-#' @return x
-#' @note This function alters x itself by reference and in addition
-#'   returns x invisibly. If x is not a generic_spct object, x is not
-#'   modified.
+#' @return \code{x}, with the value of its \code{"instr.desc"} attribute set to
+#'   the value of the argument passed to \code{instr.desc} or to \code{value}.
+#'
+#' @details This function alters \code{x} itself by reference and in addition
+#'   returns \code{x} invisibly. If \code{x} is not a \code{generic_spct} object,
+#'   \code{x} is not modified, silently. If \code{inst.desc = NULL} is passed
+#'   in the call, the attribute \code{"instr.desc"} is removed.
+#'   \emph{This function is very rarely called from user code.}
 #'
 #' @note
 #' The fields to be passed in the list \code{instr.desc} in part vary
@@ -705,12 +711,44 @@ getHowMeasured.generic_mspct <- function(x,
 setInstrDesc <- function(x, instr.desc) {
   name <- substitute(x)
   if (is.generic_spct(x) || is.summary_generic_spct(x)) {
+    if (!is.null(instr.desc)) {
+      if (length(instr.desc) == 1L) {
+        if (is.na(instr.desc)) {
+          instr.desc <- list()
+        }
+        stopifnot("The argument passed to 'instr.desc' must be a list" =
+                    is.list(instr.desc))
+        minimal.desc <- list(spectrometer.name = NA_character_,
+                             spectrometer.sn = NA_character_,
+                             bench.grating = NA_character_,
+                             bench.slit = NA_character_)
+        missing <- !c("spectrometer.name",
+                      "spectrometer.sn",
+                      "bench.grating",
+                      "bench.slit") %in% names(instr.desc)
+        if (any(missing)) {
+          instr.desc <- c(instr.desc, minimal.desc[missing])
+        }
+        if (!inherits(instr.desc, "instr_desc") &&
+            !inherits(instr.desc[[1]], "instr_desc")) {
+          class(instr.desc) <- c("instr_desc", class(instr.desc))
+        }
+      # when all descriptors are the same the attr is not expanded into a list
+      } else if (!is.list(instr.desc) ||
+                 (length(instr.desc) != getMultipleWl(x) &&
+                  !any(c("spectrometer.name", "spectrometer.sn") %in%
+                       names(instr.desc)))) {
+        warning("Length of 'instr.desc' list different to number of spectra: ",
+                length(instr.desc), " != ", getMultipleWl(x))
+      }
+    }
     attr(x, "instr.desc") <- instr.desc
     if (is.name(name)) {
       name <- as.character(name)
       assign(name, x, parent.frame(), inherits = TRUE)
     }
   }
+
   invisible(x)
 }
 
@@ -724,15 +762,32 @@ setInstrDesc <- function(x, instr.desc) {
 
 #' Get the "instr.desc" attribute
 #'
-#' Function to read the "instr.desc" attribute of an existing generic_spct
-#' object.
+#' Function to query the \code{"instr.desc"} attribute of an existing
+#' \code{generic_spct} or derived-class object, or of a
+#' \code{summary_generic_spct} or derived-class object.
 #'
-#' @param x a generic_spct object
+#' @param x a \code{generic_spct} object or a \code{summary_generic_spct}
+#'   object.
 #'
-#' @return list (depends on instrument type)
-#'
+#' @return an object of class \code{"instr_desc"} derived from \code{"list"}.
+#'   The fields \code{spectrometer.name}, \code{spectrometer.sn},
+#'   \code{bench.grating} and \code{bench.slit} are always present, although may
+#'   be set to \code{NA}. Additional fields can be present depending on the
+#'   origin of the data.
 #'
 #' @export
+#'
+#' @examples
+#' valid.descriptor <- getInstrDesc(white_led.cps_spct)
+#' class(valid.descriptor)
+#' print(valid.descriptor)
+#' print(str(valid.descriptor))
+#'
+#' missing.descriptor <- getInstrDesc(white_body.spct)
+#' class(missing.descriptor)
+#' print(missing.descriptor)
+#' print(str(missing.descriptor))
+#'
 #' @family measurement metadata functions
 #'
 getInstrDesc <- function(x) {
@@ -740,14 +795,24 @@ getInstrDesc <- function(x) {
     if (isValidInstrDesc(x)) {
       instr.desc <- attr(x, "instr.desc", exact = TRUE)
     } else {
-      instr.desc <- list(spectrometer.name = NA_character_,
-                         spectrometer.sn = NA_character_,
-                         bench.grating = NA_character_,
-                         bench.slit = NA_character_)
+      instr.desc <- list()
     }
-    if (!inherits(instr.desc, "instr_desc") &&
-        !inherits(instr.desc[[1]], "instr_desc")) {
-      class(instr.desc) <- c("instr_desc", class(instr.desc))
+    if (getMultipleWl(x) == 1) {
+      minimal.desc <- list(spectrometer.name = NA_character_,
+                           spectrometer.sn = NA_character_,
+                           bench.grating = NA_character_,
+                           bench.slit = NA_character_)
+      missing <- !c("spectrometer.name",
+                    "spectrometer.sn",
+                    "bench.grating",
+                    "bench.slit") %in% names(instr.desc)
+      if (any(missing)) {
+        instr.desc <- c(instr.desc, minimal.desc[missing])
+      }
+      if (!inherits(instr.desc, "instr_desc") &&
+          !inherits(instr.desc[[1]], "instr_desc")) {
+        class(instr.desc) <- c("instr_desc", class(instr.desc))
+      }
     }
     instr.desc
   } else {
@@ -764,21 +829,39 @@ instr_descriptor <- getInstrDesc
 #' Trim the "instr.desc" attribute
 #'
 #' Function to trim the "instr.desc" attribute of an existing generic_spct
-#' object, discarding all fields except for `spectrometer.name`,
-#' `spectrometer.sn`, `bench.grating`, `bench.slit`, and calibration name.
+#' object, by default discarding all fields except for \code{spectrometer.name},
+#' \code{spectrometer.sn}, \code{bench.grating}, \code{bench.slit}, and
+#' \code{entrance.optics}.
 #'
-#' @param x a generic_spct object
+#' @param x a \code{generic_spct} object or a \code{summary_generic_spct}
+#'   object.
 #' @param fields a character vector with the names of the fields to keep,
-#'   or if first member is `"-"`, the names of fields to delete; "*" as
-#'   first member of the vector makes the function a no-op, leaving the spectrum
-#'   object unaltered.
+#'   or if first member is \code{"-"}, the names of fields to delete; \code{"*"}
+#'   as the first member of the vector makes the function a no-op, leaving the
+#'   spectrum object unaltered.
 #'
-#' @return x
-#' @note This function alters x itself by reference and in addition
-#'   returns x invisibly. If x is not a generic_spct object, x is not
+#' @details This function alters \code{x} itself by reference and in addition
+#'   returns \code{x} invisibly. If \code{x} is not a \code{generic_spct} object
+#'   or a \code{summary_generic_spct} object, or if the \code{"instr.desc"}
+#'   attribute is not present in a \code{generic_spct} object, \code{x} is not
+#'   modified.
+#'
+#'   Attempts to remove or keep fields that are not present in the attribute are
+#'   ignored silently. The value of fields in the attribute is never modified,
+#'   fields are either kept unchanged or removed.
+#'
+#' @return \code{x}, possibly with the \code{"instr.desc"} attribute
 #'   modified.
 #'
 #' @export
+#'
+#' @examples
+#'
+#' my.spct <- white_led.cps_spct
+#' names(instr_descriptor(my.spct))
+#' trimInstrDesc(my.spct) # modified by reference!
+#' names(instr_descriptor(my.spct))
+#'
 #' @family measurement metadata functions
 #'
 trimInstrDesc <- function(x,
@@ -828,14 +911,27 @@ trimInstrDesc <- function(x,
 
 #' Check the "instr.desc" attribute
 #'
-#' Function to validate the "instr.settings" attribute of an existing generic_spct
-#' object.
+#' Function to validate the \code{"instr.settings"} attribute of an existing
+#' \code{generic_spct} object or \code{summary_generic_spct} object.
 #'
-#' @param x a generic_spct object
+#' @param x a \code{generic_spct} object or a \code{summary_generic_spct}
+#'   object.
 #'
-#' @return logical TRUE if at least instrument name and serial number is found.
+#' @details Test if at least one of instrument name (field
+#'  \code{spectrometer.name}) or serial number (field \code{spectrometer.sn})
+#'  is found in the value of the R attribute \code{"instr.desc"} of \code{x}.
+#'  \code{FALSE} is silently returned if \code{x} does not belong to a class
+#'  derived from class \code{generic_spct} or from class
+#'  \code{summary_generic_spct}, or if it is derived from these classes but the
+#'  attribute is not set.
+#'
+#' @return A \code{logical} vector of length one.
 #'
 #' @export
+#'
+#' @examples
+#' isValidInstrDesc(white_led.cps_spct)
+#' isValidInstrDesc(white_body.spct)
 #'
 #' @family measurement metadata functions
 #'
@@ -872,16 +968,21 @@ isValidInstrDesc <- function(x) {
 
 #' Set the "instr.settings" attribute
 #'
-#' Function to set by reference the "what.measured" attribute  of an existing
-#' generic_spct or derived-class object.
+#' Function to set by reference the \code{"what.measured"} attribute  of a
+#' \code{generic_spct}, or of a \code{summary_generic_spct} object.
 #'
-#' @param x a generic_spct object
-#' @param instr.settings,value a list
+#' @param x a \code{generic_spct} object or a \code{summary_generic_spct}
+#'   object.
+#' @param instr.settings,value a \code{list} or a \code{instr_settings} object.
 #'
 #' @return x
-#' @note This function alters x itself by reference and in addition
-#'   returns x invisibly. If x is not a generic_spct object, x is not
-#'   modified.
+#'
+#' @details This function alters \code{x} itself by reference and in addition
+#'   returns \code{x} invisibly. If \code{x} is not a \code{generic_spct} object
+#'   or a \code{summary_generic_spct} object, \code{x} is not modified,
+#'   silently. If \code{inst.desc = NULL} is passed in the call, the attribute
+#'   \code{instr.settings} is removed. \emph{This function is very rarely called
+#'   from user code.}
 #'
 #' @export
 #' @family measurement metadata functions
@@ -889,6 +990,29 @@ isValidInstrDesc <- function(x) {
 setInstrSettings <- function(x, instr.settings) {
   name <- substitute(x)
   if (is.generic_spct(x) || is.summary_generic_spct(x)) {
+    if (!is.null(instr.settings)) {
+      if (getMultipleWl(x) == 1L) {
+        if (length(instr.settings) == 1L && is.na(instr.settings)) {
+          instr.settings <- list(integ.time = NA_real_,
+                                 tot.time = NA_real_,
+                                 num.scans = NA_integer_,
+                                 rel.signal = NA_real_)
+        }
+        stopifnot("The argument passed to 'instr.settings' must be a list" =
+                    is.list(instr.settings))
+        if (!inherits(instr.settings, "instr_settings") &&
+            !inherits(instr.settings[[1]], "instr_settings")) {
+          class(instr.settings) <- c("instr_settings", class(instr.settings))
+        }
+      # when all settings are the same the attr is not expanded into a list
+      } else if (!is.list(instr.settings) ||
+                 (length(instr.settings) != getMultipleWl(x) &&
+                  !any(c("integ.time", "tot.time", "num.scans") %in%
+                       names(instr.settings)))) {
+        warning("Length of 'instr.settings' list different to number of spectra: ",
+                length(instr.settings), " != ", getMultipleWl(x))
+      }
+    }
     attr(x, "instr.settings") <- instr.settings
     if (is.name(name)) {
       name <- as.character(name)
@@ -908,33 +1032,47 @@ setInstrSettings <- function(x, instr.settings) {
 
 #' Get the "instr.settings" attribute
 #'
-#' Function to read the "instr.settings" attribute of an existing generic_spct
-#' object.
+#' Function to extract the \code{"instr.settings"} attribute from
+#' \code{generic_spct} object or from a \code{summary_generic_spct}.
 #'
-#' @param x a generic_spct object
+#' @param x a \code{generic_spct} object or a \code{summary_generic_spct}
+#'   object.
 #'
-#' @return list
+#' @return an object of class \code{"instr_settings"} derived from \code{"list"}.
 #'
+#' @details If \code{x} is derived from \code{generic_spct} or from
+#' \code{summary_generic_spct}, the value of attribute \code{"instr.settings"}
+#' is returned (\code{NULL}, if missing). Otherwise \code{list()} is returned.
 #'
 #' @export
+#'
+#' @examples
+#' settings <- getInstrSettings(white_led.cps_spct)
+#' class(settings)
+#' print(settings)
+#' print(str(settings))
 #'
 #' @family measurement metadata functions
 #'
 getInstrSettings <- function(x) {
   if (is.generic_spct(x) || is.summary_generic_spct(x)) {
-    if (isValidInstrSettings(x)) {
-      instr.settings <- attr(x, "instr.settings", exact = TRUE)
+    if (getMultipleWl(x) == 1) {
+      if (isValidInstrSettings(x)) {
+        instr.settings <- attr(x, "instr.settings", exact = TRUE)
+      } else {
+        instr.settings <- list(integ.time = NA_real_,
+                               tot.time = NA_real_,
+                               num.scans = NA_integer_,
+                               rel.signal = NA_real_)
+      }
+      if (!inherits(instr.settings, "instr_settings") &&
+          !inherits(instr.settings[[1]], "instr_settings")) {
+        class(instr.settings) <- c("instr_settings", class(instr.settings))
+      }
+      instr.settings
     } else {
-      instr.settings <- list(integ.time = NA_real_,
-                             tot.time = NA_real_,
-                             num.scans = NA_integer_,
-                             rel.signal = NA_real_)
+      attr(x, "instr.settings", exact = TRUE)
     }
-    if (!inherits(instr.settings, "instr_settings") &&
-        !inherits(instr.settings[[1]], "instr_settings")) {
-      class(instr.settings) <- c("instr_settings", class(instr.settings))
-    }
-    instr.settings
   } else {
     list()
   }
@@ -948,21 +1086,37 @@ instr_settings <- getInstrSettings
 
 #' Trim the "instr.settings" attribute
 #'
-#' Function to trim the "instr.settings" attribute of an existing generic_spct
-#' object, by discarding some fields.
+#' Trim the \code{"instr.settings"} attribute of an existing \code{generic_spct}
+#' object or of a \code{summary_generic_spct} object, by discarding some fields.
 #'
-#' @param x a generic_spct object
-#' @param fields a character vector with the names of the fields to keep,
-#'   or if first member is `"-"`, the names of fields to delete; "*" as
+#' @param x a \code{generic_spct} object or a \code{summary_generic_spct}
+#'   object.
+#' @param fields a character vector with the names of the fields to keep, or if
+#'   first member is \code{"-"}, the names of fields to delete; \code{"*"} as
 #'   first member of the vector makes the function a no-op, leaving the spectrum
 #'   object unaltered.
 #'
-#' @return x
-#' @note This function alters x itself by reference and in addition
-#'   returns x invisibly. If x is not a generic_spct object, x is not
+#' @details This function alters \code{x} itself by reference and in addition
+#'   returns \code{x} invisibly. If \code{x} is not a \code{generic_spct} object
+#'   or a \code{summary_generic_spct} object, or if the \code{"instr.settings"}
+#'   attribute is not present in \code{x}, \code{x} is not modified.
+#'
+#'   Attempts to remove or keep fields that are not present in the attribute are
+#'   ignored silently. The value of fields in the attribute is never modified,
+#'   fields are either kept unchanged or removed.
+#'
+#' @return \code{x}, possibly with the \code{"instr.settings"} attribute
 #'   modified.
 #'
 #' @export
+#'
+#' @examples
+#'
+#' my.spct <- white_led.cps_spct
+#' names(instr_settings(my.spct))
+#' trimInstrSettings(my.spct, fields = c("-", "pix.selector")) # by reference!
+#' names(instr_settings(my.spct))
+#'
 #' @family measurement metadata functions
 #'
 trimInstrSettings <- function(x,
@@ -976,13 +1130,14 @@ trimInstrSettings <- function(x,
       instr.settings <- list(instr.settings)
     }
     for (i in seq(along.with = instr.settings)) {
+      # silently ignore missing fields, avoiding NAs
       if (!(length(instr.settings[[i]]) == 0 || all(is.na(instr.settings[[i]])))) {
         if (fields[1] == "-") {
           fields.tmp <- setdiff(names(instr.settings[[i]]), fields[-1])
         } else if (fields[1] == "=") {
-          fields.tmp <- fields[-1]
+          fields.tmp <- intersect(fields[-1], names(instr.settings[[i]]))
         } else {
-          fields.tmp <- fields
+          fields.tmp <- intersect(fields, names(instr.settings[[i]]))
         }
         instr.settings[[i]] <- instr.settings[[i]][fields.tmp]
         if (!inherits(instr.settings[[i]], "instr_settings")) {
@@ -1004,12 +1159,15 @@ trimInstrSettings <- function(x,
 
 #' Check the "instr.settings" attribute
 #'
-#' Function to validate the "instr.settings" attribute of an existing generic_spct
-#' object.
+#' Function to validate the \code{"instr.settings"} attribute of an existing
+#' \code{generic_spct} or \code{summary_generic_spct} object.
 #'
-#' @param x a generic_spct object
+#' @param x a \code{generic_spct} object or a \code{summary_generic_spct}
+#'   object.
 #'
-#' @return logical TRUE if at least integration time data is found.
+#' @return logical TRUE if at least the integration time is found in the
+#'   metadata attribute. If \code{x} is not a \code{generic_spct} or
+#'   a \code{summary_generic_spct} object, \code{NA} is returned.
 #'
 #' @export
 #'
@@ -1051,18 +1209,17 @@ isValidInstrSettings <- function(x) {
 
 #' Set the "what.measured" attribute
 #'
-#' Function to set by reference the "what.measured" attribute  of an existing
-#' generic_spct, generic_mspct, summary_generic_spct, data.frame or a
-#' derived-class object.
+#' Method to set by reference the \code{"what.measured"} attribute  of an R
+#' object.
 #'
-#' @param x a generic_spct object
+#' @param x an R object.
 #' @param what.measured,value a list
 #' @param ... Allows use of additional arguments in methods for other classes.
 #'
 #' @return x
-#' @note This function alters x itself by reference and in addition
-#'   returns x invisibly. If x is not a generic_spct object, x is not
-#'   modified.
+#' @details This function alters \code{x} itself by reference and in addition
+#'   returns \code{x} invisibly. If \code{x} does not belong to one of the
+#'   supported classes, \code{x} is not modified.
 #'
 #' @export
 #'
@@ -1119,16 +1276,16 @@ setWhatMeasured.generic_mspct <- function(x,
   msmsply(mspct = x, .fun = setWhatMeasured, ..., what.measured = what.measured)
 }
 
-#' Get the "what.measured" attribute
+#' Get the \code{"what.measured"} attribute
 #'
-#' Function to read the "what.measured" attribute of an existing
-#' generic_spct, generic_mspct, summary_generic_spct, data.frame or a
-#' derived-class object.
+#' Method to read the \code{"what.measured"} attribute of an R object.
 #'
-#' @param x a generic_spct object
+#' @param x an R object.
 #' @param ... Allows use of additional arguments in methods for other classes.
 #'
-#' @return character vector An object containing a description of the data.
+#' @return \code{character} vector An object containing a description of the
+#'   data. If \code{x} does not belong to a supported class \code{NA} is
+#'   returned.
 #'
 #' @export
 #'
@@ -1217,7 +1374,7 @@ getWhatMeasured.generic_mspct <- function(x,
 
 # utility functions for attributes ----------------------------------------
 
-#' Copy attributes from members of a generic_mspct
+#' Copy attributes from members of a \code{generic_mspct}
 #'
 #' Copy metadata attributes from members of a generic_mspct object into a tibble
 #' or data.frame.

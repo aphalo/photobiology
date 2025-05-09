@@ -10,14 +10,32 @@ getInstrDesc(x)
 instr_descriptor(x)
 }
 \arguments{
-\item{x}{a generic_spct object}
+\item{x}{a \code{generic_spct} object or a \code{summary_generic_spct}
+object.}
 }
 \value{
-list (depends on instrument type)
+an object of class \code{"instr_desc"} derived from \code{"list"}.
+  The fields \code{spectrometer.name}, \code{spectrometer.sn},
+  \code{bench.grating} and \code{bench.slit} are always present, although may
+  be set to \code{NA}. Additional fields can be present depending on the
+  origin of the data.
 }
 \description{
-Function to read the "instr.desc" attribute of an existing generic_spct
-object.
+Function to query the \code{"instr.desc"} attribute of an existing
+\code{generic_spct} or derived-class object, or of a
+\code{summary_generic_spct} or derived-class object.
+}
+\examples{
+valid.descriptor <- getInstrDesc(white_led.cps_spct)
+class(valid.descriptor)
+print(valid.descriptor)
+print(str(valid.descriptor))
+
+missing.descriptor <- getInstrDesc(white_body.spct)
+class(missing.descriptor)
+print(missing.descriptor)
+print(str(missing.descriptor))
+
 }
 \seealso{
 Other measurement metadata functions: 

@@ -89,8 +89,8 @@ test_that("any_spct", {
   trimInstrDesc(my.spct, c("-", "bench.slit"))
   expect_true(isValidInstrDesc(my.spct))
   expect_is(getInstrDesc(my.spct), "instr_desc")
-  expect_equal(length(getInstrDesc(my.spct)), 3)
-  expect_equal(names(getInstrDesc(my.spct)), setdiff(names(my.descriptor), "bench.slit"))
+  expect_equal(length(getInstrDesc(my.spct)), 4)
+  expect_true(is.na(getInstrDesc(my.spct)$bench.slit))
 
   my.settings <- list(integ.time = 321,
                       tot.time = 1000,

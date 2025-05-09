@@ -729,19 +729,24 @@ print.summary_generic_mspct <- function(x,
 #' @name print.metadata
 #'
 print.instr_desc <- function(x, ...) {
-  if (is.null(x[["entrance.optics"]])) {
-    diffuser <- "unknown"
+  if (!length(x) || !is.list(x)) {
+    warning("'x' is not an instrument descriptor")
   } else {
-    diffuser <- x[["entrance.optics"]][["geometry"]]
+    if (!("entrance.optics" %in% names(x)) ||
+        all(is.na(x[["entrance.optics"]]))) {
+      diffuser <- "unknown"
+    } else {
+      diffuser <- x[["entrance.optics"]][["geometry"]]
+    }
+    cat("Data acquired with '",
+        x[["spectrometer.name"]], "' s.n. ", x[["spectrometer.sn"]],
+        "\ngrating '", x[["bench.grating"]],
+        "', slit '", x[["bench.slit"]], "'",
+        "\ndiffuser '", diffuser, "'",
+        ...,
+        sep = ""
+    )
   }
-  cat("Data acquired with '",
-      x[["spectrometer.name"]], "' s.n. ", x[["spectrometer.sn"]],
-            "\ngrating '", x[["bench.grating"]],
-            "', slit '", x[["bench.slit"]], "'",
-      "\ndiffuser '", diffuser, "'",
-      ...,
-      sep = ""
-  )
   invisible(x)
 }
 
@@ -750,15 +755,21 @@ print.instr_desc <- function(x, ...) {
 #' @export
 #'
 print.instr_settings <- function(x, ...) {
-  cat("integ. time (s): ",
-      paste(signif(as.numeric(x[["integ.time"]]) * 1e-6, digits = 3), collapse = ", "),
-      "\ntotal time (s): ",
-      paste(signif(as.numeric(x[["tot.time"]]) * 1e-6, digits = 3), collapse = ", "),
-      "\ncounts @ peak (% of max): ",
-      signif(as.numeric(x[["rel.signal"]]) * 100, digits = 3),
-      sep = "",
-      ...
-  )
+  if (!length(x) || !is.list(x)) {
+    warning("'x' is not an instrument settings record")
+  } else {
+    cat("integ. time (s): ",
+        paste(signif(as.numeric(x[["integ.time"]]) * 1e-6, digits = 3),
+              collapse = ", "),
+        "\ntotal time (s): ",
+        paste(signif(as.numeric(x[["tot.time"]]) * 1e-6, digits = 3),
+              collapse = ", "),
+        "\ncounts @ peak (% of max): ",
+        signif(as.numeric(x[["rel.signal"]]) * 100, digits = 3),
+        sep = "",
+        ...
+    )
+  }
   invisible(x)
 }
 
@@ -767,14 +778,18 @@ print.instr_settings <- function(x, ...) {
 #' @export
 #'
 print.filter_properties <- function(x, ...) {
-  cat("Rfr (/1): ",
-      paste(sprintf("%#.3f", x[["Rfr.constant"]]), collapse = " + "), ", ",
-      "thickness (mm): ",
-      paste(sprintf("%#.3g", x[["thickness"]] * 1e3), collapse = " + "), ", ",
-      "attenuation mode: ", x[["attenuation.mode"]], ".",
-       sep = "",
-      ...
-  )
+  if (!length(x) || !is.list(x)) {
+    warning("'x' is not a filter properties record")
+  } else {
+    cat("Rfr (/1): ",
+        paste(sprintf("%#.3f", x[["Rfr.constant"]]), collapse = " + "), ", ",
+        "thickness (mm): ",
+        paste(sprintf("%#.3g", x[["thickness"]] * 1e3), collapse = " + "), ", ",
+        "attenuation mode: ", x[["attenuation.mode"]], ".",
+        sep = "",
+        ...
+    )
+  }
   invisible(x)
 }
 
@@ -783,11 +798,15 @@ print.filter_properties <- function(x, ...) {
 #' @export
 #'
 print.solute_properties <- function(x, ...) {
-  cat("Name: ", x[["name"]][1], ", ",
+  if (!length(x) || !is.list(x)) {
+    warning("'x' is not a solute properties record")
+  } else {
+    cat("Name: ", x[["name"]][1], ", ",
       "Molar mass (Da): ", round(x[["mass"]], digits = 2), ", ",
       "Formula: ", x[["formula"]][1], ".",
       sep = "",
       ...
-  )
+    )
+  }
   invisible(x)
 }

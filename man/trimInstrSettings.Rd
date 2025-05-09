@@ -7,24 +7,39 @@
 trimInstrSettings(x, fields = "*")
 }
 \arguments{
-\item{x}{a generic_spct object}
+\item{x}{a \code{generic_spct} object or a \code{summary_generic_spct}
+object.}
 
-\item{fields}{a character vector with the names of the fields to keep,
-or if first member is `"-"`, the names of fields to delete; "*" as
+\item{fields}{a character vector with the names of the fields to keep, or if
+first member is \code{"-"}, the names of fields to delete; \code{"*"} as
 first member of the vector makes the function a no-op, leaving the spectrum
 object unaltered.}
 }
 \value{
-x
+\code{x}, possibly with the \code{"instr.settings"} attribute
+  modified.
 }
 \description{
-Function to trim the "instr.settings" attribute of an existing generic_spct
-object, by discarding some fields.
+Trim the \code{"instr.settings"} attribute of an existing \code{generic_spct}
+object or of a \code{summary_generic_spct} object, by discarding some fields.
 }
-\note{
-This function alters x itself by reference and in addition
-  returns x invisibly. If x is not a generic_spct object, x is not
-  modified.
+\details{
+This function alters \code{x} itself by reference and in addition
+  returns \code{x} invisibly. If \code{x} is not a \code{generic_spct} object
+  or a \code{summary_generic_spct} object, or if the \code{"instr.settings"}
+  attribute is not present in \code{x}, \code{x} is not modified.
+
+  Attempts to remove or keep fields that are not present in the attribute are
+  ignored silently. The value of fields in the attribute is never modified,
+  fields are either kept unchanged or removed.
+}
+\examples{
+
+my.spct <- white_led.cps_spct
+names(instr_settings(my.spct))
+trimInstrSettings(my.spct, fields = c("-", "pix.selector")) # by reference!
+names(instr_settings(my.spct))
+
 }
 \seealso{
 Other measurement metadata functions: 
