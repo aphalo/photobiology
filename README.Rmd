@@ -21,6 +21,7 @@ knitr::opts_chunk$set(
 [![R-CMD-check](https://github.com/aphalo/photobiology/workflows/R-CMD-check/badge.svg)](https://github.com/aphalo/photobiology/actions)
 [![Documentation](https://img.shields.io/badge/documentation-photobiology-informational.svg)](https://docs.r4photobiology.info/photobiology/)
 [![doi](https://img.shields.io/badge/doi-10.32614/CRAN.package.photobiology-blue.svg)](https://doi.org/10.32614/CRAN.package.photobiology)
+[![R-CMD-check](https://github.com/aphalo/photobiology/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/aphalo/photobiology/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
   
 Package '**photobiology**' defines a system of classes for storing spectral data and accompanying metadata. For each of these classes specialised summary methods, maths operators and functions are provided. In addition, classes for storing collections of objects of the classes for individual spectra are defined as well as 'apply' functions. Extraction and replacement operators are implemented.
