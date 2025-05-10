@@ -15,7 +15,8 @@ setSoluteProperties(
   name = NA_character_,
   ID = NA_character_,
   solvent.name = NA_character_,
-  solvent.ID = NA_character_
+  solvent.ID = NA_character_,
+  verbose = TRUE
 )
 
 solute_properties(x) <- value
@@ -43,6 +44,9 @@ vector, with member names such as "IUPAC" for the authority.}
 \item{ID, solvent.ID}{character The names of the substance and of the solvent. A named character
 vector, with member names such as "ChemSpider" or "PubChen" for the
 authority.}
+
+\item{verbose}{logical Flag to enable warning when applied to object of
+unsuported class.}
 }
 \value{
 \code{x}

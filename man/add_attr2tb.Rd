@@ -21,6 +21,7 @@
 \alias{Rfr_type2tb}
 \alias{time_unit2tb}
 \alias{comment2tb}
+\alias{multiple_wl2tb}
 \title{Copy attributes from members of a \code{generic_mspct}}
 \usage{
 add_attr2tb(
@@ -88,6 +89,8 @@ Rfr_type2tb(mspct, tb = NULL, col.names = "Rfr.type", idx = "spct.idx")
 time_unit2tb(mspct, tb = NULL, col.names = "time.unit", idx = "spct.idx")
 
 comment2tb(mspct, tb = NULL, col.names = "comment", idx = "spct.idx")
+
+multiple_wl2tb(mspct, tb = NULL, col.names = "multiple.wl", idx = "spct.idx")
 }
 \arguments{
 \item{tb}{tibble or \code{data.frame} to which to add the data (optional).}

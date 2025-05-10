@@ -11,7 +11,8 @@ setFilterProperties(
   pass.null = FALSE,
   Rfr.constant = NA_real_,
   thickness = NA_real_,
-  attenuation.mode = NA_character_
+  attenuation.mode = NA_character_,
+  verbose = TRUE
 )
 
 filter_properties(x) <- value
@@ -34,6 +35,9 @@ passed to parameter \code{filter.properties} is \code{NULL}.}
 \item{attenuation.mode}{character One of \code{"reflection"},
 \code{"absorption"}, \code{"absorption.layer"}, \code{"scattering"},
 \code{"mixed"} or \code{"stack"}.}
+
+\item{verbose}{logical Flag to enable warning when applied to object of
+unsuported class.}
 }
 \value{
 \code{x}

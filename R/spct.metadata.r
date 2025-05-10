@@ -1514,6 +1514,10 @@ add_attr2tb <- function(tb = NULL,
   for (a in names(col.names)) {
     tb <-
       switch(a,
+             multiple.wl = multiple_wl2tb(mspct = mspct,
+                                          tb = tb,
+                                          col.names = col.names["multiple.wl"],
+                                          idx = idx),
              lon = lon2tb(mspct = mspct,
                           tb = tb,
                           col.names = col.names["lon"],
@@ -2001,6 +2005,25 @@ comment2tb <- function(mspct,
     comments.tb
   } else {
     dplyr::full_join(tb, comments.tb, by = idx)
+  }
+}
+
+#' @rdname add_attr2tb
+#'
+#' @export
+#'
+multiple_wl2tb <- function(mspct,
+                           tb = NULL,
+                           col.names = "multiple.wl",
+                           idx = "spct.idx") {
+  stopifnot(length(col.names) == 1L)
+  # method not implemented yet for collections
+  multiple_wl.tb <- msdply(mspct = mspct, .fun = getMultipleWl)
+  names(multiple_wl.tb)[2L] <- col.names
+  if (is.null(tb)) {
+    multiple_wl.tb
+  } else {
+    dplyr::full_join(tb, multiple_wl.tb, by = idx)
   }
 }
 

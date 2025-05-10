@@ -42,7 +42,7 @@ should be summarized as a collection or individually.}
 collection of spectra.}
 
 \item{which.metadata}{character vector Names of attributes to retrieve, or
-"none" or "all". Obeyed if \code{expand = FALSE}, its default.}
+"none" or "all". Obeyed if \code{expand = "collection"}, its default.}
 }
 \value{
 A summary object matching the class of \code{object}, or a list of

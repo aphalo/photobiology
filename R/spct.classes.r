@@ -2803,6 +2803,8 @@ id_factor <- getIdFactor
 #' @param attenuation.mode character One of \code{"reflection"},
 #'   \code{"absorption"}, \code{"absorption.layer"}, \code{"scattering"},
 #'   \code{"mixed"} or \code{"stack"}.
+#' @param verbose logical Flag to enable warning when applied to object of
+#'   unsuported class.
 #'
 #' @details Storing filter properties allows inter-conversion between internal
 #'   and total transmittance, as well as computation of transmittance for
@@ -2848,7 +2850,8 @@ setFilterProperties <- function(x,
                                 pass.null = FALSE,
                                 Rfr.constant = NA_real_,
                                 thickness = NA_real_,
-                                attenuation.mode = NA_character_) {
+                                attenuation.mode = NA_character_,
+                                verbose = TRUE) {
   name <- substitute(x)
   valid.attenuation.modes <-
     c("reflection", "absorption", "absorption.layer", "scattering",
@@ -2924,7 +2927,7 @@ setFilterProperties <- function(x,
       name <- as.character(name)
       assign(name, x, parent.frame(), inherits = TRUE)
     }
-  } else {
+  } else if (verbose) {
     warning("'setFilterProperties()' not applicable to objects of class ",
             class(x)[1], ", skipping.")
   }
@@ -3285,6 +3288,8 @@ convertTfrType <- function(x, Tfr.type = NULL) {
 #' @param ID,solvent.ID character The names of the substance and of the solvent. A named character
 #'     vector, with member names such as "ChemSpider" or "PubChen" for the
 #'     authority.
+#' @param verbose logical Flag to enable warning when applied to object of
+#'   unsuported class.
 #'
 #' @details Storing solute properties allows inter-conversion between bases of
 #'   expression, and ensures the unambiguous identification of the substances to
@@ -3331,7 +3336,8 @@ setSoluteProperties <- function(x,
                                 name = NA_character_,
                                 ID = NA_character_,
                                 solvent.name = NA_character_,
-                                solvent.ID = NA_character_) {
+                                solvent.ID = NA_character_,
+                                verbose = TRUE) {
   obj.name <- substitute(x)
   if (is.solute_spct(x)) {
     if (!(pass.null && is.null(solute.properties))) {
@@ -3384,7 +3390,7 @@ setSoluteProperties <- function(x,
       obj.name <- as.character(obj.name)
       assign(obj.name, x, parent.frame(), inherits = TRUE)
     }
-  } else {
+  } else if (verbose) {
     warning("'setSoluteProperties()' not applicable to objects of class ",
             class(x)[1], ", skipping.")
   }

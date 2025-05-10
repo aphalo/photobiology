@@ -597,7 +597,7 @@ print.summary_generic_spct <- function(x, ..., attr.simplify = TRUE) {
 #' @param idx character Name of the column with the names of the members of the
 #' collection of spectra.
 #' @param which.metadata character vector Names of attributes to retrieve, or
-#'   "none" or "all". Obeyed if \code{expand = FALSE}, its default.
+#'   "none" or "all". Obeyed if \code{expand = "collection"}, its default.
 #'
 #' @export
 #'
@@ -645,13 +645,21 @@ summary.generic_mspct <- function(object,
   summary.tb[["w.length.max"]] <- sapply(object, wl_max)
   summary.tb[["colnames"]] <- unname(lapply(object, colnames))
 
-  if (length(which.metadata) != 1L || which.metadata != "none") {
-    if (length(which.metadata) == 1L && which.metadata == "all") {
-      which.metadata <- c("-", "names", "row.names", "spct.tags", "spct.version", "comment")
+  if (length(which.metadata) != 0L && which.metadata[1] != "none") {
+    if (length(which.metadata) == 1L && which.metadata[1] == "all") {
+     which.metadata <-
+       setdiff(spct_attributes(class(object)[1]),
+               c("spct.tags", "spct.version", "comment",
+                 "straylight.corrected",
+                 "slit.corrected",
+                 "QC_dark_pass",
+                 "idfactor",
+                 "spct.idx",
+                 "normalization")
+               )
     }
-    metadata.tb <- msdply(object, spct_attr2tb, which = which.metadata, idx = idx)
-    names(metadata.tb) <- gsub("spct_attr2tb_", "", names(metadata.tb))
-    summary.tb <- dplyr::left_join(summary.tb, metadata.tb, by = idx)
+    summary.tb <-
+      add_attr2tb(summary.tb, object, col.names = which.metadata)
   }
 
   z[["summary"]] <- summary.tb

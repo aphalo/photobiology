@@ -1951,6 +1951,7 @@ subset2mspct <- function(x,
       # these methods return NA if attribute is not set
       when.measured <- getWhenMeasured(x)
       what.measured <- getWhatMeasured(x)
+      how.measured <- getHowMeasured(x)
       # these methods return a data.frame
       where.measured <- getWhereMeasured(x)
       # these methods may return an empty list
@@ -1960,6 +1961,10 @@ subset2mspct <- function(x,
       if (is.null(filter.properties)) {
         filter.properties <- list()
       }
+      solute.properties <- getSoluteProperties(x, return.null = TRUE)
+      if (is.null(solute.properties)) {
+        solute.properties <- list()
+      }
       for (i in seq(along.with = z)) {
         if (!all(is.na(when.measured))) {
           if (is.list(when.measured) && length(when.measured) == length(groups)) {
@@ -1967,6 +1972,8 @@ subset2mspct <- function(x,
           } else {
             z[[i]] <- setWhenMeasured(z[[i]], when.measured)
           }
+        } else {
+          z[[i]] <- setWhenMeasured(z[[i]], NULL)
         }
         if (!all(is.na(what.measured))) {
           if (is.list(what.measured) && length(what.measured) == length(groups)) {
@@ -1974,6 +1981,17 @@ subset2mspct <- function(x,
           } else {
             z[[i]] <- setWhatMeasured(z[[i]], what.measured)
           }
+        } else {
+          z[[i]] <- setWhatMeasured(z[[i]], NULL)
+        }
+        if (!all(is.na(how.measured))) {
+          if (is.list(how.measured) && length(how.measured) == length(groups)) {
+            z[[i]] <- setHowMeasured(z[[i]], how.measured[[i]])
+          } else {
+            z[[i]] <- setHowMeasured(z[[i]], how.measured)
+          }
+        } else {
+          z[[i]] <- setHowMeasured(z[[i]], NULL)
         }
         if (length(instr.desc) > 0) {
           if (is.list(instr.desc) &&
@@ -1983,6 +2001,8 @@ subset2mspct <- function(x,
           } else {
             z[[i]] <- setInstrDesc(z[[i]], instr.desc)
           }
+        } else {
+          z[[i]] <- setInstrDesc(z[[i]], NULL)
         }
         if (length(instr.settings) > 0) {
           if (is.list(instr.settings) &&
@@ -1992,6 +2012,8 @@ subset2mspct <- function(x,
           } else {
             z[[i]] <- setInstrSettings(z[[i]], instr.settings)
           }
+        } else {
+          z[[i]] <- setInstrSettings(z[[i]], NULL)
         }
         if (length(filter.properties) > 0) {
           if (is.list(filter.properties) &&
@@ -2001,6 +2023,19 @@ subset2mspct <- function(x,
           } else {
             z[[i]] <- setFilterProperties(z[[i]], filter.properties)
           }
+        } else {
+          z[[i]] <- setFilterProperties(z[[i]], NULL, verbose = FALSE)
+        }
+        if (length(solute.properties) > 0) {
+          if (is.list(solute.properties) &&
+              !inherits(solute.properties, "solute_properties") &&
+              length(solute.properties) == length(groups)) {
+            z[[i]] <- setSoluteProperties(z[[i]], solute.properties[[i]])
+          } else {
+            z[[i]] <- setSoluteProperties(z[[i]], solute.properties)
+          }
+        } else {
+          z[[i]] <- setSoluteProperties(z[[i]], NULL, verbose = FALSE)
         }
       }
       z <- setWhereMeasured(z, where.measured)
