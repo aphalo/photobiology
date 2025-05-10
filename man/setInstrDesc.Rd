@@ -10,7 +10,8 @@ setInstrDesc(x, instr.desc)
 instr_descriptor(x) <- value
 }
 \arguments{
-\item{x}{a \code{generic_spct} object.}
+\item{x}{a \code{generic_spct} object or a \code{summary_generic_spct}
+object.}
 
 \item{instr.desc, value}{a \code{list}, \code{instr_desc} object, or
 \code{NULL}.}

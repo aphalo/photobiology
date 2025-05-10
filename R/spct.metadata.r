@@ -6,20 +6,20 @@
 
 #' Set the "when.measured" attribute
 #'
-#' Function to set by reference the "when" attribute  of an existing
-#' generic_spct, generic_mspct, summary_generic_spct, data.frame or a
-#' derived-class object.
+#' Method to set by reference the \code{"when.measured"} attribute  of an R
+#' object.
 #'
-#' @param x a generic_spct object
+#' @param x an R object
 #' @param when.measured,value POSIXct to add as attribute, or a list of POSIXct.
 #' @param ... Allows use of additional arguments in methods for other classes.
 #'
-#' @return x
-#' @note This method alters x itself by reference and in addition
-#'   returns x invisibly. If x is not a generic_spct or an object of a class derived from
-#'   generic_spct, x is not modified. If \code{when} is not a POSIXct object
-#'   or \code{NULL} an error is triggered. A \code{POSIXct} describes an
-#'   instant in time (date plus time-of-day plus time zone).
+#' @return \code{x}, with its \code{"when.measured"} set.
+#' @details This method alters \code{x} itself by reference and in addition
+#'   returns \code{x} invisibly. If \code{x} is not an object of a supported
+#'   class, \code{x} is not modified. If the arguments to \code{"when.measured"}
+#'   or \code{value} are not a \code{POSIXct} object or \code{NULL} an error is
+#'   triggered. A \code{POSIXct} describes an instant in time (date plus
+#'   time-of-day plus time zone).
 #'
 #'   Be aware that \code{lubridate::ymd()} returns an incompatible \code{Date}
 #'   object while \code{lubridate::ymd_h()}, \code{lubridate::ymd_hm()} and
@@ -27,11 +27,15 @@
 #'   \code{POSIXct} acceptable as arguments for parameter \code{when.measured}.
 #'
 #' @export
+#'
 #' @family measurement metadata functions
+#'
 #' @examples
 #' my.spct <- sun.spct
 #' when_measured(my.spct)
 #' when_measured(my.spct) <- lubridate::ymd_hms("2020-01-01 08:00:00")
+#' when_measured(my.spct)
+#' when_measured(my.spct) <- NULL
 #' when_measured(my.spct)
 #'
 setWhenMeasured <- function(x, when.measured, ...) UseMethod("setWhenMeasured")
@@ -123,23 +127,22 @@ setWhenMeasured.generic_mspct <-
 
 #' Get the "when.measured" attribute
 #'
-#' Function to read the "when.measured" attribute of an existing
-#' generic_spct, generic_mspct, summary_generic_spct, data.frame or a
-#' derived-class object.
+#' Method to read the \code{"when.measured"} attribute of an R object.
 #'
-#' @param x a generic_spct object
+#' @param x an R object
 #' @param ... Allows use of additional arguments in methods for other classes.
 #'
-#' @return POSIXct An object with date and time.
+#' @return a \code{POSIXct} object with date and time, or named list of such
+#'   objects, or, on user request, a data frame.
 #'
-#' @note If x is not a \code{generic_spct} or an object of a derived class
+#' @note If \code{x} is not an object of one of the supported classes,
 #'   \code{NA} is returned.
 #'
 #' @export
-#' @family measurement metadata functions
-#' @examples
 #'
-#' when_measured(sun.spct)
+#' @inherit setWhenMeasured examples
+#'
+#' @family measurement metadata functions
 #'
 getWhenMeasured <- function(x, ...) UseMethod("getWhenMeasured")
 
@@ -158,8 +161,8 @@ getWhenMeasured.default <- function(x, ...) {
 
 #' @describeIn getWhenMeasured generic_spct
 #'
-#' @param as.df logical If TRUE return a data frame instead of a list, when
-#'   the value stored in the attribute is a list.
+#' @param as.df logical If \code{TRUE} return a data frame instead of a list,
+#'   when the value stored in the attribute is a list.
 #'
 #' @export
 #'
@@ -206,9 +209,17 @@ getWhenMeasured.data.frame <- getWhenMeasured.generic_spct
 #'   collection of spectra.
 #' @param simplify logical If all members share the same attribute value return
 #'   one copy instead of a data.frame.
-#' @note The method for collections of spectra returns the
-#'   a tibble with the correct times in TZ = "UTC".
+#' @note The method for collections of spectra returns a tibble with the
+#'   times expressed in TZ = "UTC".
 #' @export
+#' @examples
+#' my.spct <- sun.spct
+#' when_measured(my.spct)
+#' when_measured(my.spct) <- lubridate::ymd_hms("2020-01-01 08:00:00")
+#' when_measured(my.spct)
+#' when_measured(my.spct) <- NULL
+#' when_measured(my.spct)
+#'
 getWhenMeasured.generic_mspct <- function(x,
                                           ...,
                                           idx = "spct.idx",
@@ -235,36 +246,37 @@ getWhenMeasured.generic_mspct <- function(x,
 
 #' Set the "where.measured" attribute
 #'
-#' Function to set by reference the "where.measured" attribute  of an existing
-#' generic_spct, generic_mspct, summary_generic_spct, data.frame or a
-#' derived-class object.
+#' Method to set by reference the \code{"where.measured"} attribute  of an R
+#' object.
 #'
-#' @param x a generic_spct object
-#' @param where.measured,value A one row data.frame such as returned by
-#'   function \code{geocode} from package 'ggmap' for a location search.
-#' @param lat numeric Latitude in decimal degrees North
-#' @param lon numeric Longitude in decimal degrees West
-#' @param address character Human readable address
+#' @param x an R object
+#' @param where.measured,value A one row \code{data.frame} with the same format
+#'   as returned by function \code{geocode} from package 'ggmap' for a location
+#'   search.
+#' @param lat numeric Latitude in decimal degrees North.
+#' @param lon numeric Longitude in decimal degrees West.
+#' @param address character Human readable address.
 #' @param ... Allows use of additional arguments in methods for other classes.
 #'
-#' @return x
-#' @note This method alters x itself by reference and in addition
-#'   returns x invisibly. If x is not a generic_spct or an object of a class derived from
-#'   generic_spct, x is not modified. If \code{where} is not a POSIXct object
-#'   or \code{NULL} an error is triggered. A \code{POSIXct} describes an
-#'   instant in time (date plus time-of-day plus time zone). As expected
-#'   passing \code{NULL} as argument for \code{where.measured} unsets the
-#'   attribute.
+#' @return x, with the \code{"where.measured"} attribute set.
+#' @note This method alters \code{x} itself by reference and in addition returns
+#'   \code{x} invisibly. If \code{x} is not an object of a supported class,
+#'   \code{x} is not modified. If the argument to \code{where.measured} is not a
+#'   \code{POSIXct} object or \code{NULL} an error is triggered. A
+#'   \code{POSIXct} describes an instant in time (date plus time-of-day plus
+#'   time zone). As with \code{attr()} passing \code{NULL} as argument for
+#'   parameter \code{where.measured} unsets the attribute.
 #'
 #' @export
 #'
 #' @family measurement metadata functions
 #'
 #' @examples
-#'
 #' my.spct <- sun.spct
 #' where_measured(my.spct)
 #' where_measured(my.spct) <- data.frame(lon = 0, lat = -60)
+#' where_measured(my.spct)
+#' where_measured(my.spct) <- NULL
 #' where_measured(my.spct)
 #'
 setWhereMeasured <-
@@ -336,7 +348,7 @@ setWhereMeasured.data.frame <- setWhereMeasured.generic_spct
 
 #' @describeIn setWhereMeasured generic_mspct
 #' @note Method for collections of spectra recycles the location information
-#'   only if it is of length one.
+#'   only if it is a one row \code{data.frame}.
 #' @export
 setWhereMeasured.generic_mspct <- function(x,
                                            where.measured = NA,
@@ -399,7 +411,7 @@ setWhereMeasured.generic_mspct <- function(x,
 
 #' Get the "where.measured" attribute
 #'
-#' Function to read the "where.measured" attribute of
+#' Method to read the "where.measured" attribute of
 #' generic_spct, generic_mspct, summary_generic_spct, data.frame or a
 #' derived-class object.
 #'
@@ -416,8 +428,7 @@ setWhereMeasured.generic_mspct <- function(x,
 #'
 #' @family measurement metadata functions
 #'
-#' @examples
-#' where_measured(sun.spct)
+#' @inherit setWhereMeasured examples
 #'
 getWhereMeasured <- function(x, ...) UseMethod("getWhereMeasured")
 
@@ -519,28 +530,27 @@ getWhereMeasured.data.frame <- function(x, ...) {
 
 #' Set the "how.measured" attribute
 #'
-#' Function to set the "how.measured" attribute  of an existing
-#' generic_spct, generic_mspct, summary_generic_spct, data.frame or a
-#' derived-class object.
+#' Method to set the \code{"how.measured"} attribute of an R object.
 #'
-#' @param x a R object
+#' @param x a R object.
 #' @param how.measured,value a list or a character string.
 #' @param ... Allows use of additional arguments in methods for other classes.
 #'
 #' @return x modified by reference.
 #'
-#' @note This function alters x itself by reference and in addition
-#'   returns x invisibly. If x is not an object of a supported class, \code{x}
-#'   is silently returned unchanged.
+#' @note This function alters \code{x} itself by reference and in addition
+#'   returns \code{x} invisibly. If \code{x} is not an object of a supported
+#'   class, \code{x} is silently returned unchanged.
 #'
 #' @export
 #' @family measurement metadata functions
 #'
 #' @examples
-#'
 #' my.spct <- sun.spct
 #' how_measured(my.spct)
-#' how_measured(my.spct) <- "simulated with a radiation transfer model"
+#' how_measured(my.spct) <- "Simulated with a radiation transfer model"
+#' how_measured(my.spct)
+#' how_measured(my.spct) <- NULL
 #' how_measured(my.spct)
 #'
 setHowMeasured <- function(x, ...) {UseMethod("setHowMeasured")}
@@ -593,19 +603,19 @@ setHowMeasured.generic_mspct <- function(x,
 
 #' Get the "how.measured" attribute
 #'
-#' Function to read the "how.measured" attribute of an existing generic_spct,
-#' generic_mspct, summary_generic_spct, data.frame or a derived-class object.
+#' Method to read the \code{"how.measured"} attribute of an R object.
 #'
-#' @param x a generic_spct object
+#' @param x an R object.
 #' @param ... Allows use of additional arguments in methods for other classes.
 #'
-#' @return character vector An object containing a description of the data.
+#' @return character vector An object containing a verbal description of the
+#'   data.
 #'
 #' @export
-#' @family measurement metadata functions
 #'
-#' @examples
-#' how_measured(sun.spct)
+#' @inherit setHowMeasured examples
+#'
+#' @family measurement metadata functions
 #'
 getHowMeasured <- function(x, ...) UseMethod("getHowMeasured")
 
@@ -656,7 +666,7 @@ getHowMeasured.data.frame <- getHowMeasured.generic_spct
 #' @param simplify logical If all members share the same attribute value return
 #'   one copy instead of a data.frame.
 #' @note The method for collections of spectra returns the
-#'   a tibble with a column of character strings.
+#'   a data frame with a column of character strings.
 #' @export
 #'
 getHowMeasured.generic_mspct <- function(x,
@@ -679,7 +689,8 @@ getHowMeasured.generic_mspct <- function(x,
   z
 }
 
-##
+
+# Instrument descriptor attribute -----------------------------------------
 
 #' Set the "instr.desc" attribute
 #'
@@ -687,7 +698,8 @@ getHowMeasured.generic_mspct <- function(x,
 #' \code{generic_spct} or derived-class object, or of a
 #' \code{summary_generic_spct} or derived-class object.
 #'
-#' @param x a \code{generic_spct} object.
+#' @param x a \code{generic_spct} object or a \code{summary_generic_spct}
+#'  object.
 #' @param instr.desc,value a \code{list}, \code{instr_desc} object, or
 #'   \code{NULL}.
 #'
@@ -828,10 +840,10 @@ instr_descriptor <- getInstrDesc
 
 #' Trim the "instr.desc" attribute
 #'
-#' Function to trim the "instr.desc" attribute of an existing generic_spct
-#' object, by default discarding all fields except for \code{spectrometer.name},
-#' \code{spectrometer.sn}, \code{bench.grating}, \code{bench.slit}, and
-#' \code{entrance.optics}.
+#' Function to trim the \code{"instr.desc"} attribute of a \code{generic_spct}
+#' or a \code{summary_generic_spct} object, by default discarding all fields
+#' except for \code{spectrometer.name}, \code{spectrometer.sn},
+#' \code{bench.grating}, \code{bench.slit}, and \code{entrance.optics}.
 #'
 #' @param x a \code{generic_spct} object or a \code{summary_generic_spct}
 #'   object.
@@ -850,13 +862,16 @@ instr_descriptor <- getInstrDesc
 #'   ignored silently. The value of fields in the attribute is never modified,
 #'   fields are either kept unchanged or removed.
 #'
+#' @note Some of the spectrometer-specific metadata can be large, as they can
+#'   include calibration coefficients. In the case of R package 'ooacquire' also
+#'   pointers to Java objects may need to be deleted.
+#'
 #' @return \code{x}, possibly with the \code{"instr.desc"} attribute
 #'   modified.
 #'
 #' @export
 #'
 #' @examples
-#'
 #' my.spct <- white_led.cps_spct
 #' names(instr_descriptor(my.spct))
 #' trimInstrDesc(my.spct) # modified by reference!
@@ -965,6 +980,8 @@ isValidInstrDesc <- function(x) {
   }
   valid
 }
+
+# Instrument settings attribute -------------------------------------------
 
 #' Set the "instr.settings" attribute
 #'
@@ -1209,7 +1226,7 @@ isValidInstrSettings <- function(x) {
 
 #' Set the "what.measured" attribute
 #'
-#' Method to set by reference the \code{"what.measured"} attribute  of an R
+#' Method to set by reference the \code{"what.measured"} attribute of an R
 #' object.
 #'
 #' @param x an R object.
@@ -1227,6 +1244,8 @@ isValidInstrSettings <- function(x) {
 #' my.spct <- sun.spct
 #' what_measured(my.spct)
 #' what_measured(my.spct) <- "Sun"
+#' what_measured(my.spct)
+#' what_measured(my.spct) <- NULL
 #' what_measured(my.spct)
 #'
 #' @family measurement metadata functions
@@ -1291,9 +1310,7 @@ setWhatMeasured.generic_mspct <- function(x,
 #'
 #' @family measurement metadata functions
 #'
-#' @examples
-#'
-#' what_measured(sun.spct)
+#' @inherit setWhatMeasured examples
 #'
 getWhatMeasured <- function(x, ...) UseMethod("getWhatMeasured")
 
@@ -1347,9 +1364,9 @@ getWhatMeasured.data.frame <- getWhatMeasured.generic_spct
 #' @param idx character Name of the column with the names of the members of the
 #'   collection of spectra.
 #' @param simplify logical If all members share the same attribute value return
-#'   one copy instead of a data.frame.
+#'   one copy instead of a \code{data.frame}.
 #' @note The method for collections of spectra returns the
-#'   a tibble with a column of character strings.
+#'   a \code{data.frame} with a column of character strings.
 #' @export
 #'
 getWhatMeasured.generic_mspct <- function(x,
@@ -1372,64 +1389,86 @@ getWhatMeasured.generic_mspct <- function(x,
   z
 }
 
-# utility functions for attributes ----------------------------------------
+# copy attributes to data.frame -------------------------------------------
 
 #' Copy attributes from members of a \code{generic_mspct}
 #'
-#' Copy metadata attributes from members of a generic_mspct object into a tibble
-#' or data.frame.
+#' Copy metadata attributes from members of a \code{generic_mspct} object into
+#' a \code{data.frame} or a \code{tibble}.
 #'
-#' @param mspct generic_mspct Any collection of spectra.
-#' @param tb tibble or data.frame to which to add the data (optional).
-#' @param col.names named character vector Name(s) of metadata attributes
-#'   to copy, while if named, the names provide the name for the column.
+#' @param mspct generic_mspct or generic_spct Any collection of spectra or one
+#'   or more spectra in long form.
+#' @param tb tibble or \code{data.frame} to which to add the data (optional).
+#' @param col.names named \code{character} vector Name(s) of metadata attributes
+#'   to copy. If named, the names provide the name for the columns.
 #' @param idx character Name of the column with the names of the members of the
 #'   collection of spectra.
 #' @param unnest logical Flag controlling if metadata attributes that are lists
 #'   of values should be returned in a list column or in separate columns.
 #'
-#' @return A tibble With the metadata attributes in separate new variables.
+#' @return A \code{data.frame} or a \code{tibble} With the metadata attributes
+#'   in separate new variables.
 #'
-#' @details The attributes are copied to a column in a tibble or data frame. If
-#'   the \code{tb} formal parameter receives \code{NULL} as argument, a new
-#'   \code{tibble} will be created. If an existing \code{data.frame} or
-#'   \code{tibble} is passed as argument, new columns are added to it. However,
-#'   the number of rows in the argument passed to \code{tb} must match the
-#'   number of spectra in the argument passed to \code{mspct}. Only in the case
-#'   of method \code{add_attr2tb()} if the argument to \code{col.names} is a
-#'   named vector, the names of members are used as names for the columns
-#'   created. This permits setting any valid name for the new columns. If the
-#'   vector passed to \code{col.names} has no names the names of the attributes
-#'   are used for the new columns. If the fields of the attributes are unnested
-#'   their names are used as names for the columns.
+#' @details Each attribute is by default copied to a column in a \code{tibble}
+#'   or a \code{data.frame}. If the argument for \code{tb} is \code{NULL}, as by
+#'   default, a new \code{tibble} will be created. If an existing
+#'   \code{data.frame} or \code{tibble} is passed as argument, new columns are
+#'   added to it. However, the number of rows in the argument passed to
+#'   \code{tb} must match the number of spectra in the argument passed to
+#'   \code{mspct}. Only in the case of methods \code{add_attr2tb()} and
+#'   \code{spct_metadata()} if the argument to \code{col.names} is a named
+#'   vector, the names of members are used as names for the columns created.
+#'   This permits setting any valid name for the new columns. If the members of
+#'   the vector passed to \code{col.names} have no names, then the value is
+#'   interpreted as the name of the attributes to add, and also used as name for
+#'   the new column.
 #'
-#'   Valid accepted as argument to \code{col.names} are \code{NULL},
+#'   Valid values accepted as argument to \code{col.names} are \code{NULL}, or a
+#'   vector containing one or more of the following \code{character} strings:
 #'   \code{"lon"}, \code{"lat"}, \code{"address"}, \code{"geocode"},
 #'   \code{"where.measured"}, \code{"when.measured"}, \code{"what.measured"},
 #'   \code{"how.measured"}, \code{"comment"}, \code{"normalised"},
 #'   \code{"normalized"}, \code{"scaled"}, \code{"bswf.used"},
-#'   \code{"instr.desc"}, \code{"instr.settings"},
-#'   \code{solute.properties}, \code{"filter.properties"},
-#'   \code{"Tfr.type"}, \code{"Rfr.type"}, \code{"time.unit"}.
+#'   \code{"instr.desc"}, \code{"instr.settings"}, \code{solute.properties},
+#'   \code{"filter.properties"}, \code{"Tfr.type"}, \code{"Rfr.type"},
+#'   \code{"time.unit"}.
 #'
-#' @note The order of the first two arguments
-#'   is reversed in \code{add_attr2tb()} compared to the other functions. This
-#'   is to allow its use in 'pipes', while the functions for single attributes
-#'   are expected to be used mostly to create new tibbles.
+#' @note The order of the first two arguments is reversed in
+#'   \code{add_attr2tb()}, \code{when_measured2tb()}, \code{what_measured2tb()},
+#'   etc., compared to attribute query functions, such as \code{spct_metadata},
+#'   \code{when_measured()}, \code{what_measured()}, \code{how_measured()}, etc.
+#'   This is to allow the use of \code{add_attr2tb()} in 'pipes' to add metadata
+#'   to summaries computed at earlier steps in the pipe.
 #'
 #' @family measurement metadata functions
 #'
 #' @examples
+#' # Add attributes to irradiance
+#' ## from collection of spectra
+#' e_irrad(sun_evening.mspct) |>
+#'   add_attr2tb(sun_evening.mspct,
+#'               c(when.measured = "time"))
 #'
-#' library(dplyr)
+#' ## from spectra in long form
+#' e_irrad(sun_evening.spct) |>
+#'   add_attr2tb(sun_evening.spct,
+#'               c(when.measured = "time"))
 #'
-#' my.mspct <- source_mspct(list(sun1 = sun.spct, sun2 = sun.spct * 2))
-#' q_irrad(my.mspct) %>%
-#'   add_attr2tb(my.mspct, c(lat = "latitude",
-#'                           lon = "longitude",
-#'                           when.measured = "time"))
+#' # Add attributes to transmittance
+#' ## from collection of spectra
+#' transmittance(two_filters.mspct) |>
+#'   add_attr2tb(two_filters.mspct, col.names = "what.measured")
 #'
-#' when_measured2tb(my.mspct)
+#' transmittance(two_filters.mspct) |>
+#'   add_attr2tb(two_filters.mspct,
+#'               col.names = c("filter.properties", "what.measured"),
+#'               unnest = TRUE)
+#'
+#' # Create a new data frame
+#' add_attr2tb(mspct = two_filters.mspct,
+#'             idx = "filter",
+#'             col.names = c("filter.properties", "what.measured"),
+#'             unnest = TRUE)
 #'
 #' @export
 #'
@@ -1438,6 +1477,14 @@ add_attr2tb <- function(tb = NULL,
                         col.names = NULL,
                         idx = "spct.idx",
                         unnest = FALSE) {
+  # ensure we operate on a collection of spectra
+  if (is.any_spct(mspct)) {
+    mspct <- subset2mspct(mspct)
+  }
+  # we accept NULL, list(), generic_mspct() as input
+  if (length(mspct) == 0L) {
+    return(data.frame())
+  }
   stopifnot(is.generic_mspct(mspct))
 
   force(col.names)
@@ -1957,12 +2004,13 @@ comment2tb <- function(mspct,
   }
 }
 
-# get all metadata --------------------------------------------------------
+# extract all metadata ----------------------------------------------------
 
 #' Access metadata
 #'
 #' Return metadata attributes from a single spectrum or a collection of spectra
-#' as a tibble.
+#' as a \code{data.frame}. A wrapper on \code{add_attr2tb} providing an
+#' alternative order of formal parameters and constrained functionality.
 #'
 #' @param x generic_mspct or generic_spct Any collection of spectra or spectrum.
 #' @param col.names named character vector Name(s) of column(s) to create.
@@ -1973,41 +2021,32 @@ comment2tb <- function(mspct,
 #' @param unnest logical Flag controlling if metadata attributes that are lists
 #'   of values should be returned in a list column or in separate columns.
 #'
-#' @return A tibble With the metadata attributes and an index column.
-#'
-#' @details Attributes are returned as columns in a tibble. If the argument to
-#'   \code{col.names} is a named vector, with the names of members matching the
-#'   names of attributes, then the values are used as names for the columns
-#'   created. This permits setting any valid name for the new columns. If the
-#'   vector passed to \code{col.names} has no names, then the values are
-#'   interpreted as the names of the attributes to add, and also used as names
-#'   for the new columns.
-#'
-#'   Some metadata values are stored in lists or data frames, these can be
-#'   returned as a list columns or the individual fields unnested into separate
-#'   columns.
+#' @inherit add_attr2tb details return note
 #'
 #' @seealso \code{\link{add_attr2tb}} for more details.
 #'
 #' @family measurement metadata functions
 #'
 #' @examples
+#' # collection of spectra
+#' spct_metadata(sun_evening.mspct)
 #'
-#' my.mspct <- source_mspct(list(sun1 = sun.spct, sun2 = sun.spct * 2))
+#' spct_metadata(sun_evening.mspct, na.rm = FALSE)
 #'
-#' spct_metadata(my.mspct)
+#' spct_metadata(sun_evening.mspct,
+#'               col.names = "geocode",
+#'               unnest = FALSE)
 #'
-#' spct_metadata(sun.spct)
+#' spct_metadata(sun_evening.mspct,
+#'               col.names = c(when.measured = "time", "what.measured"))
 #'
-#' spct_metadata(my.mspct, na.rm = TRUE)
+#' # multiple spectra in long form
+#' spct_metadata(sun_evening.spct,
+#'               col.names = c("geocode", "when.measured"))
 #'
-#' spct_metadata(sun.spct, na.rm = TRUE)
-#'
-#' spct_metadata(my.mspct, col.names = c(geocode = "geo", "instr.desc"))
-#'
-#' spct_metadata(sun.spct, col.names = c(geocode = "geo", "instr.desc"))
-#'
-#' spct_metadata(sun.spct, col.names = "where.measured")$where.measured
+#' # single spectrum
+#' spct_metadata(sun.spct,
+#'               col.names = c("geocode", "when.measured"))
 #'
 #' @export
 #'
@@ -2029,12 +2068,12 @@ spct_metadata <- function(x,
                    "Tfr.type",
                    "Rfr.type")
   }
+  # ensure we operate on a collection of spectra
   if (is.any_spct(x)) {
-    # ensure we operate on a collection of spectra
-    name <- substitute(x)
-    l <- list()
-    l[[name]] <- x
-    x <- generic_mspct(l, class = class(x)[1])
+    x <- subset2mspct(x)
+  }
+  if (!is.generic_mspct(x) || length(x) == 0L) {
+    return(data.frame())
   }
   z <- add_attr2tb(tb = NULL,
                    mspct = x,
@@ -2053,4 +2092,3 @@ spct_metadata <- function(x,
   }
   z
 }
-

@@ -25,7 +25,7 @@ how_measured(x) <- value
 \method{setHowMeasured}{generic_mspct}(x, how.measured, ...)
 }
 \arguments{
-\item{x}{a R object}
+\item{x}{a R object.}
 
 \item{...}{Allows use of additional arguments in methods for other classes.}
 
@@ -35,9 +35,7 @@ how_measured(x) <- value
 x modified by reference.
 }
 \description{
-Function to set the "how.measured" attribute  of an existing
-generic_spct, generic_mspct, summary_generic_spct, data.frame or a
-derived-class object.
+Method to set the \code{"how.measured"} attribute of an R object.
 }
 \section{Methods (by class)}{
 \itemize{
@@ -53,15 +51,16 @@ derived-class object.
 
 }}
 \note{
-This function alters x itself by reference and in addition
-  returns x invisibly. If x is not an object of a supported class, \code{x}
-  is silently returned unchanged.
+This function alters \code{x} itself by reference and in addition
+  returns \code{x} invisibly. If \code{x} is not an object of a supported
+  class, \code{x} is silently returned unchanged.
 }
 \examples{
-
 my.spct <- sun.spct
 how_measured(my.spct)
-how_measured(my.spct) <- "simulated with a radiation transfer model"
+how_measured(my.spct) <- "Simulated with a radiation transfer model"
+how_measured(my.spct)
+how_measured(my.spct) <- NULL
 how_measured(my.spct)
 
 }

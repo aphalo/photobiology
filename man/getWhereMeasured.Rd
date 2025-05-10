@@ -51,7 +51,7 @@ a data.frame with a single row and at least columns "lon" and "lat",
    unless expand is set to \code{FALSE}.
 }
 \description{
-Function to read the "where.measured" attribute of
+Method to read the "where.measured" attribute of
 generic_spct, generic_mspct, summary_generic_spct, data.frame or a
 derived-class object.
 }
@@ -73,7 +73,12 @@ If x is not a \code{generic_spct} or an object of a derived class
   \code{NA} is returned.
 }
 \examples{
-where_measured(sun.spct)
+my.spct <- sun.spct
+where_measured(my.spct)
+where_measured(my.spct) <- data.frame(lon = 0, lat = -60)
+where_measured(my.spct)
+where_measured(my.spct) <- NULL
+where_measured(my.spct)
 
 }
 \seealso{

@@ -30,7 +30,7 @@ what_measured(x, ...)
 \item{...}{Allows use of additional arguments in methods for other classes.}
 
 \item{simplify}{logical If all members share the same attribute value return
-one copy instead of a data.frame.}
+one copy instead of a \code{data.frame}.}
 
 \item{idx}{character Name of the column with the names of the members of the
 collection of spectra.}
@@ -58,11 +58,15 @@ Method to read the \code{"what.measured"} attribute of an R object.
 }}
 \note{
 The method for collections of spectra returns the
-  a tibble with a column of character strings.
+  a \code{data.frame} with a column of character strings.
 }
 \examples{
-
-what_measured(sun.spct)
+my.spct <- sun.spct
+what_measured(my.spct)
+what_measured(my.spct) <- "Sun"
+what_measured(my.spct)
+what_measured(my.spct) <- NULL
+what_measured(my.spct)
 
 }
 \seealso{

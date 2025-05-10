@@ -90,12 +90,13 @@ time_unit2tb(mspct, tb = NULL, col.names = "time.unit", idx = "spct.idx")
 comment2tb(mspct, tb = NULL, col.names = "comment", idx = "spct.idx")
 }
 \arguments{
-\item{tb}{tibble or data.frame to which to add the data (optional).}
+\item{tb}{tibble or \code{data.frame} to which to add the data (optional).}
 
-\item{mspct}{generic_mspct Any collection of spectra.}
+\item{mspct}{generic_mspct or generic_spct Any collection of spectra or one
+or more spectra in long form.}
 
-\item{col.names}{named character vector Name(s) of metadata attributes
-to copy, while if named, the names provide the name for the column.}
+\item{col.names}{named \code{character} vector Name(s) of metadata attributes
+to copy. If named, the names provide the name for the columns.}
 
 \item{idx}{character Name of the column with the names of the members of the
 collection of spectra.}
@@ -104,52 +105,73 @@ collection of spectra.}
 of values should be returned in a list column or in separate columns.}
 }
 \value{
-A tibble With the metadata attributes in separate new variables.
+A \code{data.frame} or a \code{tibble} With the metadata attributes
+  in separate new variables.
 }
 \description{
-Copy metadata attributes from members of a generic_mspct object into a tibble
-or data.frame.
+Copy metadata attributes from members of a \code{generic_mspct} object into
+a \code{data.frame} or a \code{tibble}.
 }
 \details{
-The attributes are copied to a column in a tibble or data frame. If
-  the \code{tb} formal parameter receives \code{NULL} as argument, a new
-  \code{tibble} will be created. If an existing \code{data.frame} or
-  \code{tibble} is passed as argument, new columns are added to it. However,
-  the number of rows in the argument passed to \code{tb} must match the
-  number of spectra in the argument passed to \code{mspct}. Only in the case
-  of method \code{add_attr2tb()} if the argument to \code{col.names} is a
-  named vector, the names of members are used as names for the columns
-  created. This permits setting any valid name for the new columns. If the
-  vector passed to \code{col.names} has no names the names of the attributes
-  are used for the new columns. If the fields of the attributes are unnested
-  their names are used as names for the columns.
+Each attribute is by default copied to a column in a \code{tibble}
+  or a \code{data.frame}. If the argument for \code{tb} is \code{NULL}, as by
+  default, a new \code{tibble} will be created. If an existing
+  \code{data.frame} or \code{tibble} is passed as argument, new columns are
+  added to it. However, the number of rows in the argument passed to
+  \code{tb} must match the number of spectra in the argument passed to
+  \code{mspct}. Only in the case of methods \code{add_attr2tb()} and
+  \code{spct_metadata()} if the argument to \code{col.names} is a named
+  vector, the names of members are used as names for the columns created.
+  This permits setting any valid name for the new columns. If the members of
+  the vector passed to \code{col.names} have no names, then the value is
+  interpreted as the name of the attributes to add, and also used as name for
+  the new column.
 
-  Valid accepted as argument to \code{col.names} are \code{NULL},
+  Valid values accepted as argument to \code{col.names} are \code{NULL}, or a
+  vector containing one or more of the following \code{character} strings:
   \code{"lon"}, \code{"lat"}, \code{"address"}, \code{"geocode"},
   \code{"where.measured"}, \code{"when.measured"}, \code{"what.measured"},
   \code{"how.measured"}, \code{"comment"}, \code{"normalised"},
   \code{"normalized"}, \code{"scaled"}, \code{"bswf.used"},
-  \code{"instr.desc"}, \code{"instr.settings"},
-  \code{solute.properties}, \code{"filter.properties"},
-  \code{"Tfr.type"}, \code{"Rfr.type"}, \code{"time.unit"}.
+  \code{"instr.desc"}, \code{"instr.settings"}, \code{solute.properties},
+  \code{"filter.properties"}, \code{"Tfr.type"}, \code{"Rfr.type"},
+  \code{"time.unit"}.
 }
 \note{
-The order of the first two arguments
-  is reversed in \code{add_attr2tb()} compared to the other functions. This
-  is to allow its use in 'pipes', while the functions for single attributes
-  are expected to be used mostly to create new tibbles.
+The order of the first two arguments is reversed in
+  \code{add_attr2tb()}, \code{when_measured2tb()}, \code{what_measured2tb()},
+  etc., compared to attribute query functions, such as \code{spct_metadata},
+  \code{when_measured()}, \code{what_measured()}, \code{how_measured()}, etc.
+  This is to allow the use of \code{add_attr2tb()} in 'pipes' to add metadata
+  to summaries computed at earlier steps in the pipe.
 }
 \examples{
+# Add attributes to irradiance
+## from collection of spectra
+e_irrad(sun_evening.mspct) |>
+  add_attr2tb(sun_evening.mspct,
+              c(when.measured = "time"))
 
-library(dplyr)
+## from spectra in long form
+e_irrad(sun_evening.spct) |>
+  add_attr2tb(sun_evening.spct,
+              c(when.measured = "time"))
 
-my.mspct <- source_mspct(list(sun1 = sun.spct, sun2 = sun.spct * 2))
-q_irrad(my.mspct) \%>\%
-  add_attr2tb(my.mspct, c(lat = "latitude",
-                          lon = "longitude",
-                          when.measured = "time"))
+# Add attributes to transmittance
+## from collection of spectra
+transmittance(two_filters.mspct) |>
+  add_attr2tb(two_filters.mspct, col.names = "what.measured")
 
-when_measured2tb(my.mspct)
+transmittance(two_filters.mspct) |>
+  add_attr2tb(two_filters.mspct,
+              col.names = c("filter.properties", "what.measured"),
+              unnest = TRUE)
+
+# Create a new data frame
+add_attr2tb(mspct = two_filters.mspct,
+            idx = "filter",
+            col.names = c("filter.properties", "what.measured"),
+            unnest = TRUE)
 
 }
 \seealso{

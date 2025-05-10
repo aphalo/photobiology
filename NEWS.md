@@ -7,8 +7,13 @@ editor_options:
 
 # photobiology 0.12.1
 
+This update focus is on more efficient storage of metadata in attributes and
+on an improved match between operations on spectra stored as collections and
+multiple spectra stored in long form. It also includes a bug fix resolving a
+problem in package 'ooacquire'. R (>= 4.1.0) is now required.
+
 * Support simplification of attributes in `what_measured()`, `when_measured()`, 
-`where_measured(), and `how_measured()` attribute accessors.
+`where_measured()`, and `how_measured()` attribute accessors.
 * Improve copying of attributes in row-wise summary methods: `"when.measured"`,
  `"where.measured"`, `"what.measured"`, and `"how.measured"` attributes are
 copied, and when unique across the summarised spectra, they are simplified. This
@@ -18,9 +23,13 @@ change affects specializations for collections of spectra of methods `s_mean()`,
 * Simplify repeated identical attributes when printing multiple spectra in long 
 form or as a collection, and when printing their summaries. Simplification
 controlled by formal parameter `attr.simplify` with default to `TRUE`.
+* Handle correctly simplified attributes in query and print methods.
+* Accept spectra in long form in addition to collections of spectra as input to
+`add_attr2tb()` and `spct_metadata()`. 
 * Warn if `find_spikes()` is called with spectral data expressed on irregular 
 wavelength steps, such as after applying `thin_wl()`.
-* Bug fix: in `trimInstrDesc()` handle correctly missing record fields. 
+* Bug fix: in `trimInstrDesc()` and `trimInstrSettings()` handle correctly
+missing record fields.
 
 # photobiology 0.12.0
 

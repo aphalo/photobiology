@@ -24,10 +24,10 @@ spectrum object unaltered.}
   modified.
 }
 \description{
-Function to trim the "instr.desc" attribute of an existing generic_spct
-object, by default discarding all fields except for \code{spectrometer.name},
-\code{spectrometer.sn}, \code{bench.grating}, \code{bench.slit}, and
-\code{entrance.optics}.
+Function to trim the \code{"instr.desc"} attribute of a \code{generic_spct}
+or a \code{summary_generic_spct} object, by default discarding all fields
+except for \code{spectrometer.name}, \code{spectrometer.sn},
+\code{bench.grating}, \code{bench.slit}, and \code{entrance.optics}.
 }
 \details{
 This function alters \code{x} itself by reference and in addition
@@ -40,8 +40,12 @@ This function alters \code{x} itself by reference and in addition
   ignored silently. The value of fields in the attribute is never modified,
   fields are either kept unchanged or removed.
 }
+\note{
+Some of the spectrometer-specific metadata can be large, as they can
+  include calibration coefficients. In the case of R package 'ooacquire' also
+  pointers to Java objects may need to be deleted.
+}
 \examples{
-
 my.spct <- white_led.cps_spct
 names(instr_descriptor(my.spct))
 trimInstrDesc(my.spct) # modified by reference!

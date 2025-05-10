@@ -27,42 +27,67 @@ values.}
 of values should be returned in a list column or in separate columns.}
 }
 \value{
-A tibble With the metadata attributes and an index column.
+A \code{data.frame} or a \code{tibble} With the metadata attributes
+  in separate new variables.
 }
 \description{
 Return metadata attributes from a single spectrum or a collection of spectra
-as a tibble.
+as a \code{data.frame}. A wrapper on \code{add_attr2tb} providing an
+alternative order of formal parameters and constrained functionality.
 }
 \details{
-Attributes are returned as columns in a tibble. If the argument to
-  \code{col.names} is a named vector, with the names of members matching the
-  names of attributes, then the values are used as names for the columns
-  created. This permits setting any valid name for the new columns. If the
-  vector passed to \code{col.names} has no names, then the values are
-  interpreted as the names of the attributes to add, and also used as names
-  for the new columns.
+Each attribute is by default copied to a column in a \code{tibble}
+  or a \code{data.frame}. If the argument for \code{tb} is \code{NULL}, as by
+  default, a new \code{tibble} will be created. If an existing
+  \code{data.frame} or \code{tibble} is passed as argument, new columns are
+  added to it. However, the number of rows in the argument passed to
+  \code{tb} must match the number of spectra in the argument passed to
+  \code{mspct}. Only in the case of methods \code{add_attr2tb()} and
+  \code{spct_metadata()} if the argument to \code{col.names} is a named
+  vector, the names of members are used as names for the columns created.
+  This permits setting any valid name for the new columns. If the members of
+  the vector passed to \code{col.names} have no names, then the value is
+  interpreted as the name of the attributes to add, and also used as name for
+  the new column.
 
-  Some metadata values are stored in lists or data frames, these can be
-  returned as a list columns or the individual fields unnested into separate
-  columns.
+  Valid values accepted as argument to \code{col.names} are \code{NULL}, or a
+  vector containing one or more of the following \code{character} strings:
+  \code{"lon"}, \code{"lat"}, \code{"address"}, \code{"geocode"},
+  \code{"where.measured"}, \code{"when.measured"}, \code{"what.measured"},
+  \code{"how.measured"}, \code{"comment"}, \code{"normalised"},
+  \code{"normalized"}, \code{"scaled"}, \code{"bswf.used"},
+  \code{"instr.desc"}, \code{"instr.settings"}, \code{solute.properties},
+  \code{"filter.properties"}, \code{"Tfr.type"}, \code{"Rfr.type"},
+  \code{"time.unit"}.
+}
+\note{
+The order of the first two arguments is reversed in
+  \code{add_attr2tb()}, \code{when_measured2tb()}, \code{what_measured2tb()},
+  etc., compared to attribute query functions, such as \code{spct_metadata},
+  \code{when_measured()}, \code{what_measured()}, \code{how_measured()}, etc.
+  This is to allow the use of \code{add_attr2tb()} in 'pipes' to add metadata
+  to summaries computed at earlier steps in the pipe.
 }
 \examples{
+# collection of spectra
+spct_metadata(sun_evening.mspct)
 
-my.mspct <- source_mspct(list(sun1 = sun.spct, sun2 = sun.spct * 2))
+spct_metadata(sun_evening.mspct, na.rm = FALSE)
 
-spct_metadata(my.mspct)
+spct_metadata(sun_evening.mspct,
+              col.names = "geocode",
+              unnest = FALSE)
 
-spct_metadata(sun.spct)
+spct_metadata(sun_evening.mspct,
+              col.names = c(when.measured = "time", "what.measured"))
 
-spct_metadata(my.mspct, na.rm = TRUE)
+# multiple spectra in long form
+spct_metadata(sun_evening.spct,
+              col.names = c("geocode", "when.measured"))
 
-spct_metadata(sun.spct, na.rm = TRUE)
-
-spct_metadata(my.mspct, col.names = c(geocode = "geo", "instr.desc"))
-
-spct_metadata(sun.spct, col.names = c(geocode = "geo", "instr.desc"))
-
-spct_metadata(sun.spct, col.names = "where.measured")$where.measured
+# single spectrum
+spct_metadata(sun.spct,
+              col.names = c("geocode", "when.measured"))
 
 }
 \seealso{

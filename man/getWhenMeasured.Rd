@@ -25,12 +25,12 @@ when_measured(x, ...)
 \method{getWhenMeasured}{generic_mspct}(x, ..., idx = "spct.idx", simplify = FALSE)
 }
 \arguments{
-\item{x}{a generic_spct object}
+\item{x}{an R object}
 
 \item{...}{Allows use of additional arguments in methods for other classes.}
 
-\item{as.df}{logical If TRUE return a data frame instead of a list, when
-the value stored in the attribute is a list.}
+\item{as.df}{logical If \code{TRUE} return a data frame instead of a list,
+when the value stored in the attribute is a list.}
 
 \item{simplify}{logical If all members share the same attribute value return
 one copy instead of a data.frame.}
@@ -39,12 +39,11 @@ one copy instead of a data.frame.}
 collection of spectra.}
 }
 \value{
-POSIXct An object with date and time.
+a \code{POSIXct} object with date and time, or named list of such
+  objects, or, on user request, a data frame.
 }
 \description{
-Function to read the "when.measured" attribute of an existing
-generic_spct, generic_mspct, summary_generic_spct, data.frame or a
-derived-class object.
+Method to read the \code{"when.measured"} attribute of an R object.
 }
 \section{Methods (by class)}{
 \itemize{
@@ -60,15 +59,19 @@ derived-class object.
 
 }}
 \note{
-If x is not a \code{generic_spct} or an object of a derived class
+If \code{x} is not an object of one of the supported classes,
   \code{NA} is returned.
 
-The method for collections of spectra returns the
-  a tibble with the correct times in TZ = "UTC".
+The method for collections of spectra returns a tibble with the
+  times expressed in TZ = "UTC".
 }
 \examples{
-
-when_measured(sun.spct)
+my.spct <- sun.spct
+when_measured(my.spct)
+when_measured(my.spct) <- lubridate::ymd_hms("2020-01-01 08:00:00")
+when_measured(my.spct)
+when_measured(my.spct) <- NULL
+when_measured(my.spct)
 
 }
 \seealso{

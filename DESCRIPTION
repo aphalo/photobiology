@@ -22,13 +22,13 @@ Description: Definitions of classes, methods, operators and functions for use
     suite, Aphalo, P. J. (2015) <doi:10.19232/uv4pb.2015.1.14>.
 License: GPL (>= 2)
 Depends:
-    R (>= 4.0.0),
-    SunCalcMeeus (>= 0.1.1)
+    R (>= 4.1.0),
+    SunCalcMeeus (>= 0.1.2)
 Imports:
     stats,
     grDevices,
     polynom (>= 1.4-1),
-    tibble (>= 3.1.6),
+    tibble (>= 3.2.0),
     stringr (>= 1.4.0),
     lubridate (>= 1.9.3),
     plyr (>= 1.8.9),

@@ -35,7 +35,7 @@ what_measured(x) <- value
 x
 }
 \description{
-Method to set by reference the \code{"what.measured"} attribute  of an R
+Method to set by reference the \code{"what.measured"} attribute of an R
 object.
 }
 \details{
@@ -60,6 +60,8 @@ This function alters \code{x} itself by reference and in addition
 my.spct <- sun.spct
 what_measured(my.spct)
 what_measured(my.spct) <- "Sun"
+what_measured(my.spct)
+what_measured(my.spct) <- NULL
 what_measured(my.spct)
 
 }

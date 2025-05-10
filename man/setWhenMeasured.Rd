@@ -25,19 +25,31 @@ when_measured(x) <- value
 \method{setWhenMeasured}{generic_mspct}(x, when.measured = lubridate::now(tzone = "UTC"), ...)
 }
 \arguments{
-\item{x}{a generic_spct object}
+\item{x}{an R object}
 
 \item{when.measured, value}{POSIXct to add as attribute, or a list of POSIXct.}
 
 \item{...}{Allows use of additional arguments in methods for other classes.}
 }
 \value{
-x
+\code{x}, with its \code{"when.measured"} set.
 }
 \description{
-Function to set by reference the "when" attribute  of an existing
-generic_spct, generic_mspct, summary_generic_spct, data.frame or a
-derived-class object.
+Method to set by reference the \code{"when.measured"} attribute  of an R
+object.
+}
+\details{
+This method alters \code{x} itself by reference and in addition
+  returns \code{x} invisibly. If \code{x} is not an object of a supported
+  class, \code{x} is not modified. If the arguments to \code{"when.measured"}
+  or \code{value} are not a \code{POSIXct} object or \code{NULL} an error is
+  triggered. A \code{POSIXct} describes an instant in time (date plus
+  time-of-day plus time zone).
+
+  Be aware that \code{lubridate::ymd()} returns an incompatible \code{Date}
+  object while \code{lubridate::ymd_h()}, \code{lubridate::ymd_hm()} and
+  \code{lubridate::ymd_hms()} and similar functions return objects of class
+  \code{POSIXct} acceptable as arguments for parameter \code{when.measured}.
 }
 \section{Methods (by class)}{
 \itemize{
@@ -52,22 +64,12 @@ derived-class object.
 \item \code{setWhenMeasured(generic_mspct)}: generic_mspct
 
 }}
-\note{
-This method alters x itself by reference and in addition
-  returns x invisibly. If x is not a generic_spct or an object of a class derived from
-  generic_spct, x is not modified. If \code{when} is not a POSIXct object
-  or \code{NULL} an error is triggered. A \code{POSIXct} describes an
-  instant in time (date plus time-of-day plus time zone).
-
-  Be aware that \code{lubridate::ymd()} returns an incompatible \code{Date}
-  object while \code{lubridate::ymd_h()}, \code{lubridate::ymd_hm()} and
-  \code{lubridate::ymd_hms()} and similar functions return objects of class
-  \code{POSIXct} acceptable as arguments for parameter \code{when.measured}.
-}
 \examples{
 my.spct <- sun.spct
 when_measured(my.spct)
 when_measured(my.spct) <- lubridate::ymd_hms("2020-01-01 08:00:00")
+when_measured(my.spct)
+when_measured(my.spct) <- NULL
 when_measured(my.spct)
 
 }

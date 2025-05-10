@@ -25,26 +25,26 @@ where_measured(x) <- value
 \method{setWhereMeasured}{generic_mspct}(x, where.measured = NA, lat = NA, lon = NA, address = NA, ...)
 }
 \arguments{
-\item{x}{a generic_spct object}
+\item{x}{an R object}
 
-\item{where.measured, value}{A one row data.frame such as returned by
-function \code{geocode} from package 'ggmap' for a location search.}
+\item{where.measured, value}{A one row \code{data.frame} with the same format
+as returned by function \code{geocode} from package 'ggmap' for a location
+search.}
 
-\item{lat}{numeric Latitude in decimal degrees North}
+\item{lat}{numeric Latitude in decimal degrees North.}
 
-\item{lon}{numeric Longitude in decimal degrees West}
+\item{lon}{numeric Longitude in decimal degrees West.}
 
-\item{address}{character Human readable address}
+\item{address}{character Human readable address.}
 
 \item{...}{Allows use of additional arguments in methods for other classes.}
 }
 \value{
-x
+x, with the \code{"where.measured"} attribute set.
 }
 \description{
-Function to set by reference the "where.measured" attribute  of an existing
-generic_spct, generic_mspct, summary_generic_spct, data.frame or a
-derived-class object.
+Method to set by reference the \code{"where.measured"} attribute  of an R
+object.
 }
 \section{Methods (by class)}{
 \itemize{
@@ -60,22 +60,23 @@ derived-class object.
 
 }}
 \note{
-This method alters x itself by reference and in addition
-  returns x invisibly. If x is not a generic_spct or an object of a class derived from
-  generic_spct, x is not modified. If \code{where} is not a POSIXct object
-  or \code{NULL} an error is triggered. A \code{POSIXct} describes an
-  instant in time (date plus time-of-day plus time zone). As expected
-  passing \code{NULL} as argument for \code{where.measured} unsets the
-  attribute.
+This method alters \code{x} itself by reference and in addition returns
+  \code{x} invisibly. If \code{x} is not an object of a supported class,
+  \code{x} is not modified. If the argument to \code{where.measured} is not a
+  \code{POSIXct} object or \code{NULL} an error is triggered. A
+  \code{POSIXct} describes an instant in time (date plus time-of-day plus
+  time zone). As with \code{attr()} passing \code{NULL} as argument for
+  parameter \code{where.measured} unsets the attribute.
 
 Method for collections of spectra recycles the location information
-  only if it is of length one.
+  only if it is a one row \code{data.frame}.
 }
 \examples{
-
 my.spct <- sun.spct
 where_measured(my.spct)
 where_measured(my.spct) <- data.frame(lon = 0, lat = -60)
+where_measured(my.spct)
+where_measured(my.spct) <- NULL
 where_measured(my.spct)
 
 }
