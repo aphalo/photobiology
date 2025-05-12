@@ -12,10 +12,10 @@ test_that("source_spct", {
   peaks.spct <- peaks(sun.spct, span = NULL, strict = FALSE)
   expect_equal(nrow(peaks.spct), 1)
 
-  peaks.spct <- peaks(sun.spct, span = NULL, strict = TRUE, ignore_threshold = 0.9)
+  peaks.spct <- peaks(sun.spct, span = NULL, strict = TRUE, global.threshold = 0.9)
   expect_equal(nrow(peaks.spct), 1)
 
-  peaks.spct <- peaks(sun.spct, span = NULL, strict = FALSE, ignore_threshold = -0.1)
+  peaks.spct <- peaks(sun.spct, span = NULL, strict = FALSE, global.threshold = -0.1)
   expect_equal(nrow(peaks.spct), 0)
 
   peaks.spct <- peaks(sun.spct)
@@ -69,10 +69,10 @@ test_that("source_spct", {
   valleys.spct <- valleys(sun.spct, span = NULL, strict = FALSE)
   expect_equal(nrow(valleys.spct), 14)
 
-  valleys.spct <- valleys(sun.spct, span = NULL, ignore_threshold = -0.1)
+  valleys.spct <- valleys(sun.spct, span = NULL, global.threshold = -0.1)
   expect_equal(nrow(valleys.spct), 0)
 
-  valleys.spct <- valleys(sun.spct, span = NULL, ignore_threshold = 0.1)
+  valleys.spct <- valleys(sun.spct, span = NULL, global.threshold = 0.1)
   expect_equal(nrow(valleys.spct), 0)
 
   valleys.spct <- valleys(sun.spct)

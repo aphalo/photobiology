@@ -2,44 +2,87 @@
 % Please edit documentation in R/spct.peaks.r
 \name{find_peaks}
 \alias{find_peaks}
-\title{Find peaks in a spectrum}
+\title{Find local maxima or global maximum (peaks)}
 \usage{
-find_peaks(x, ignore_threshold = 0, span = 3, strict = TRUE, na.rm = FALSE)
+find_peaks(
+  x,
+  global.threshold = 0,
+  local.threshold = 0,
+  local.reference = "minimum",
+  threshold.range = NULL,
+  span = 3,
+  strict = FALSE,
+  na.rm = FALSE
+)
 }
 \arguments{
-\item{x}{numeric vector}
+\item{x}{numeric vector. Hint: to find valleys, change the sign of the
+argument with the unary operator \code{-}.}
 
-\item{ignore_threshold}{numeric Value between 0.0 and 1.0 indicating the
-relative size compared to tallest peak threshold below which peaks will be
-ignored. Negative values set a threshold so that the tallest peaks are
-ignored, instead of the shortest.}
+\item{global.threshold}{numeric A value between 0.0 and 1.0,
+relative to \code{threshold.range} indicating the \emph{global} height
+(depth) threshold below which peaks (valleys) will be ignored, or a
+negative value, between 0.0 and -1.0 indicating the \emph{global} height
+(depth) threshold above which peaks (valleys) will be ignored. If
+\code{threshold.range = 0} or the value passed as argument belongs to class
+\code{"AsIs"} the value is interpreted as an absolute value expressed in
+data units.}
 
-\item{span}{integer A peak is defined as an element in a sequence which is
-greater than all other elements within a window of width \code{span}
-centered at that element. Use \code{NULL} for the global peak.}
+\item{local.threshold}{numeric A value between 0.0 and 1.0, relative to
+\code{threshold.range}, indicating the
+\emph{within-window} height (depth) threshold below which peaks (valleys)
+will be ignored.  If \code{threshold.range = 0} or the value passed
+as argument belongs to class \code{"AsIs"} the value is interpreted as an
+absolute value expressed in data units.}
 
-\item{strict}{logical If \code{TRUE}, an element must be strictly greater
-than all other values in its window to be considered a peak.}
+\item{local.reference}{character One of \code{"minimum"} (eqv.
+\code{"maximum"}) or \code{"median"}. The reference used to assess the
+height of the peak, either the minimum (maximum) value within the window or
+the median of all values in the window.}
+
+\item{threshold.range}{numeric vector of length 2 or a longer vector or list
+on which a call to \code{range()} returns a numeric vector of length 2. If
+\code{NULL}, the default, \code{range(x)} is used.}
+
+\item{span}{odd integer A peak is defined as an element in a sequence which
+is greater than all other elements within a moving window of width
+\code{span} centred at that element. The default value is 5, meaning that a
+peak is taller than its four nearest neighbours. \code{span = NULL} extends
+the span to the whole length of \code{x}.}
+
+\item{strict}{logical flag: if TRUE, an element must be strictly greater than
+all other values in its window to be considered a peak. Default: TRUE.}
 
 \item{na.rm}{logical indicating whether \code{NA} values should be stripped
 before searching for peaks.}
 }
 \value{
-A logical vector of the same length as \code{x}. Values that are
-  \code{TRUE} correspond to local peaks in the data.
+A vector of logical values of the same length as \code{x}. Values
+  that are TRUE correspond to local peaks in vector \code{x} and can be used
+  to extract the rows corresponding to peaks from a data frame.
 }
 \description{
-This function finds all peaks (local maxima) in a spectrum, using a user
-provided size threshold relative to the tallest peak (global maximum) bellow
-which found peaks are ignored---i.e., not included in the returned value. This
-is a wrapper built on top of function \code{peaks()} from package 'splus2R'.
+This function finds peaks (local maxima) in a vector, using a user selectable
+span and size threshold relative to the tallest peak (global maximum).
+}
+\details{
+This function is a wrapper built onto function
+  \code{\link[splus2R]{peaks}} from \pkg{splus2R} and handles non-finite
+  (including NA) values differently than \code{peaks}, instead of giving an
+  error when \code{na.rm = FALSE} and \code{x} contains \code{NA} values,
+  \code{NA} values are replaced with the smallest finite value in \code{x}.
+  \code{span = NULL} is treated as a special case and returns \code{max(x)}.
+  Two tests are optional, one based on the absolute height of the peaks
+  (\code{global.threshold}) and another based on the height of the peaks
+  compared to other values within the window of width equal to \code{span}
+  (\code{local.threshold}). The reference value used within each window
+  containing a peak is given by \code{local.reference}.
 }
 \note{
-This function is a wrapper built on function
-  \code{\link[splus2R]{peaks}} from \pkg{splus2R} and handles non-finite
-  (including \code{NA}) values differently than \code{splus2R::peaks},
-  instead of giving an error they are replaced with the smallest finite value
-  in \code{x}.
+The default for parameter \code{strict} is \code{FALSE} in functions
+  \code{peaks()} and \code{find_peaks()}, as in \code{stat_peaks()} and in
+  \code{stat_valleys()}, while the default in \code{\link[splus2R]{peaks}}
+  is \code{strict = TRUE}.
 }
 \examples{
 with(sun.data, w.length[find_peaks(s.e.irrad)])

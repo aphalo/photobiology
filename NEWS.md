@@ -5,11 +5,12 @@ editor_options:
     wrap: 72
 ---
 
-# photobiology 0.12.1
+# photobiology 0.13.0
 
-This update focus is on more efficient storage of metadata in attributes and
-on an improved match between operations on spectra stored as collections and
-multiple spectra stored in long form. It also includes a bug fix resolving a
+This update focus is on 1) more efficient storage of metadata in attributes, 2)
+an improved match between operations on spectra stored as collections and
+multiple spectra stored in long form, and 3) finer control of the detection and
+extraction of peaks and valleys. It also includes a bug fix resolving a
 problem in package 'ooacquire'. R (>= 4.1.0) is now required.
 
 * Support simplification of attributes in `what_measured()`, `when_measured()`, 
@@ -28,6 +29,15 @@ controlled by formal parameter `attr.simplify` with default to `TRUE`.
 `add_attr2tb()` and `spct_metadata()`. 
 * Warn if `find_spikes()` is called with spectral data expressed on irregular 
 wavelength steps, such as after applying `thin_wl()`.
+* Implement a local (within-window span) threshold for peak height and valley 
+depth in `stat_peaks()`  and `stat_valleys()`, using parameters 
+`local.threshold` and `local.reference`.
+* **Code breaking:** Rename parameter `ignore_threshold` into `global.threshold`
+in `find_peaks()`, `get_peaks()`, `peaks()`  and `valleys()` for naming
+consistency and clarity.
+* The scaling applied to user-supplied values for `global.threshold` and 
+`local.threshold` can be controlled by passing a `character` argument to 
+`threshold.scaling`. Non-scaled thresholds are also supported.
 * Bug fix: in `trimInstrDesc()` and `trimInstrSettings()` handle correctly
 missing record fields.
 

@@ -8,7 +8,10 @@
 get_peaks(
   x,
   y,
-  ignore_threshold = 0,
+  global.threshold = 0,
+  local.threshold = 0,
+  local.reference = "minimum",
+  threshold.range = NULL,
   span = 5,
   strict = TRUE,
   x_unit = "",
@@ -19,7 +22,10 @@ get_peaks(
 get_valleys(
   x,
   y,
-  ignore_threshold = 0,
+  global.threshold = 0,
+  local.threshold = 0,
+  local.reference = "minimum",
+  threshold.range = NULL,
   span = 5,
   strict = TRUE,
   x_unit = "",
@@ -28,21 +34,41 @@ get_valleys(
 )
 }
 \arguments{
-\item{x}{numeric}
+\item{x, y}{numeric}
 
-\item{y}{numeric}
+\item{global.threshold}{numeric A value between 0.0 and 1.0,
+relative to \code{threshold.range} indicating the \emph{global} height
+(depth) threshold below which peaks (valleys) will be ignored, or a
+negative value, between 0.0 and -1.0 indicating the \emph{global} height
+(depth) threshold above which peaks (valleys) will be ignored. If
+\code{threshold.range = 0} or the value passed as argument belongs to class
+\code{"AsIs"} the value is interpreted as an absolute value expressed in
+data units.}
 
-\item{ignore_threshold}{numeric Value between 0.0 and 1.0 indicating the
-relative size compared to tallest peak threshold below which peaks will be
-ignored. Negative values set a threshold so that the tallest peaks are
-ignored, instead of the shortest.}
+\item{local.threshold}{numeric A value between 0.0 and 1.0, relative to
+\code{threshold.range}, indicating the
+\emph{within-window} height (depth) threshold below which peaks (valleys)
+will be ignored.  If \code{threshold.range = 0} or the value passed
+as argument belongs to class \code{"AsIs"} the value is interpreted as an
+absolute value expressed in data units.}
 
-\item{span}{integer A peak is defined as an element in a sequence which is
-greater than all other elements within a window of width \code{span}
-centered at that element. Use \code{NULL} for the global peak.}
+\item{local.reference}{character One of \code{"minimum"} (eqv.
+\code{"maximum"}) or \code{"median"}. The reference used to assess the
+height of the peak, either the minimum (maximum) value within the window or
+the median of all values in the window.}
 
-\item{strict}{logical If \code{TRUE}, an element must be strictly greater
-than all other values in its window to be considered a peak.}
+\item{threshold.range}{numeric vector of length 2 or a longer vector or list
+on which a call to \code{range()} returns a numeric vector of length 2. If
+\code{NULL}, the default, \code{range(x)} is used.}
+
+\item{span}{odd integer A peak is defined as an element in a sequence which
+is greater than all other elements within a moving window of width
+\code{span} centred at that element. The default value is 5, meaning that a
+peak is taller than its four nearest neighbours. \code{span = NULL} extends
+the span to the whole length of \code{x}.}
+
+\item{strict}{logical flag: if TRUE, an element must be strictly greater than
+all other values in its window to be considered a peak. Default: TRUE.}
 
 \item{x_unit}{character Vector of texts to be pasted at end of labels built
 from x value at peaks.}

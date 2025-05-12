@@ -15,14 +15,7 @@
 \alias{wls_at_target.generic_mspct}
 \title{Find wavelengths values corresponding to a target spectral value}
 \usage{
-wls_at_target(
-  x,
-  target = NULL,
-  interpolate = FALSE,
-  idfactor = length(target) > 1,
-  na.rm = FALSE,
-  ...
-)
+wls_at_target(x, target, interpolate, idfactor, na.rm, ...)
 
 \method{wls_at_target}{default}(
   x,
