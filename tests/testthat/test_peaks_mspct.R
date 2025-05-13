@@ -2,25 +2,73 @@ library("photobiology")
 
 context("peaks")
 
-test_that("source_spct", {
+test_that("source_spct single", {
 
   my.spct <- sun.spct
 
   peaks.spct <- peaks(sun.spct, span = NULL, strict = TRUE)
   expect_equal(nrow(peaks.spct), 1)
+  expect_is(peaks.spct, "source_spct")
 
   peaks.spct <- peaks(sun.spct, span = NULL, strict = FALSE)
   expect_equal(nrow(peaks.spct), 1)
+  expect_is(peaks.spct, "source_spct")
 
   peaks.spct <- peaks(sun.spct, span = NULL, strict = TRUE, global.threshold = 0.9)
   expect_equal(nrow(peaks.spct), 1)
+  expect_is(peaks.spct, "source_spct")
 
   peaks.spct <- peaks(sun.spct, span = NULL, strict = FALSE, global.threshold = -0.1)
   expect_equal(nrow(peaks.spct), 0)
+  expect_is(peaks.spct, "source_spct")
+
+  peaks.spct <- peaks(sun.spct, span = NULL, strict = TRUE,
+                      global.threshold = 0.9, threshold.range = c(0, 0.82))
+  expect_equal(nrow(peaks.spct), 1)
+  expect_is(peaks.spct, "source_spct")
+
+  peaks.spct <- peaks(sun.spct, span = 5)
+  expect_equal(nrow(peaks.spct), 76)
+  expect_equal(names(peaks.spct), c("w.length", "s.e.irrad"))
+  expect_is(peaks.spct, "source_spct")
+
+  peaks.spct <- peaks(sun.spct, span = 51)
+  expect_equal(nrow(peaks.spct), 3)
+  expect_equal(names(peaks.spct), c("w.length", "s.e.irrad"))
+  expect_is(peaks.spct, "source_spct")
+
+  peaks.spct <- peaks(sun.spct, span = 5) # default
+  expect_equal(nrow(peaks.spct), 76)
+  expect_equal(names(peaks.spct), c("w.length", "s.e.irrad"))
+  expect_is(peaks.spct, "source_spct")
 
   peaks.spct <- peaks(sun.spct)
-
   expect_equal(nrow(peaks.spct), 76)
+  expect_equal(names(peaks.spct), c("w.length", "s.e.irrad"))
+  expect_is(peaks.spct, "source_spct")
+
+  peaks.spct <- peaks(sun.spct, global.threshold = 0.9)
+  expect_equal(nrow(peaks.spct), 15)
+  expect_equal(names(peaks.spct), c("w.length", "s.e.irrad"))
+  expect_is(peaks.spct, "source_spct")
+
+  peaks.spct <- peaks(sun.spct, global.threshold = -0.1)
+  expect_equal(nrow(peaks.spct), 0)
+  expect_equal(names(peaks.spct), c("w.length", "s.e.irrad"))
+  expect_is(peaks.spct, "source_spct")
+
+  peaks.spct <- peaks(sun.spct, local.threshold = 0.1)
+  expect_equal(nrow(peaks.spct), 16)
+  expect_equal(names(peaks.spct), c("w.length", "s.e.irrad"))
+  expect_is(peaks.spct, "source_spct")
+
+  peaks.spct <- peaks(sun.spct, local.threshold = 0.1, local.reference = "minimum")
+  expect_equal(nrow(peaks.spct), 16)
+  expect_equal(names(peaks.spct), c("w.length", "s.e.irrad"))
+  expect_is(peaks.spct, "source_spct")
+
+  peaks.spct <- peaks(sun.spct, local.threshold = 0.05, local.reference = "median")
+  expect_equal(nrow(peaks.spct), 9)
   expect_equal(names(peaks.spct), c("w.length", "s.e.irrad"))
   expect_is(peaks.spct, "source_spct")
 
@@ -37,8 +85,9 @@ test_that("source_spct", {
 
 test_that("source_mspct", {
 
-  spct.l <- list(A = sun.spct, B = sun.spct)
-  my.mspct <- source_mspct(spct.l)
+#  spct.l <- list(A = sun.spct, B = sun.spct)
+#  my.mspct <- source_mspct(spct.l)
+  my.mspct <- sun_evening.mspct
 
   peaks.mspct <- peaks(my.mspct)
 
@@ -65,18 +114,68 @@ test_that("source_spct", {
 
   valleys.spct <- valleys(sun.spct, span = NULL, strict = TRUE)
   expect_equal(nrow(valleys.spct), 0)
+  expect_is(valleys.spct, "source_spct")
 
   valleys.spct <- valleys(sun.spct, span = NULL, strict = FALSE)
   expect_equal(nrow(valleys.spct), 14)
+  expect_is(valleys.spct, "source_spct")
 
-  valleys.spct <- valleys(sun.spct, span = NULL, global.threshold = -0.1)
-  expect_equal(nrow(valleys.spct), 0)
+  valleys.spct <- valleys(sun.spct, span = NULL, strict = FALSE, global.threshold = -0.1)
+  expect_equal(nrow(valleys.spct), 14)
+  expect_is(valleys.spct, "source_spct")
 
-  valleys.spct <- valleys(sun.spct, span = NULL, global.threshold = 0.1)
+  valleys.spct <- valleys(sun.spct, span = NULL, strict = FALSE, global.threshold = 0.1)
   expect_equal(nrow(valleys.spct), 0)
+  expect_is(valleys.spct, "source_spct")
+
+  valleys.spct <- valleys(sun.spct, span = NULL, strict = FALSE, global.threshold = -0.9)
+  expect_equal(nrow(valleys.spct), 14)
+  expect_is(valleys.spct, "source_spct")
+
+  valleys.spct <- valleys(sun.spct, strict = FALSE, global.threshold = -0.1)
+  expect_equal(nrow(valleys.spct), 12)
+  expect_is(valleys.spct, "source_spct")
+
+  valleys.spct <- valleys(sun.spct, strict = FALSE, global.threshold = 0.1)
+  expect_equal(nrow(valleys.spct), 0)
+  expect_is(valleys.spct, "source_spct")
+
+  valleys.spct <- valleys(sun.spct, strict = FALSE, global.threshold = -0.9)
+  expect_equal(nrow(valleys.spct), 87)
+  expect_is(valleys.spct, "source_spct")
+
+  valleys.spct <- valleys(sun.spct, strict = FALSE,
+                          global.threshold = -0.9,
+                          threshold.range = c(0, 0.82))
+  expect_equal(nrow(valleys.spct), 87)
+  expect_is(valleys.spct, "source_spct")
+
+  valleys.spct <- valleys(sun.spct, strict = FALSE,
+                          local.threshold = 0.1)
+  expect_equal(nrow(valleys.spct), 16)
+  expect_is(valleys.spct, "source_spct")
+
+  valleys.spct <- valleys(sun.spct, span = 51)
+  expect_equal(nrow(valleys.spct), 9)
+  expect_equal(names(valleys.spct), c("w.length", "s.e.irrad"))
+  expect_is(valleys.spct, "source_spct")
+
+  valleys.spct <- valleys(sun.spct, span = 5)
+  expect_equal(nrow(valleys.spct), 75)
+  expect_equal(names(valleys.spct), c("w.length", "s.e.irrad"))
+  expect_is(valleys.spct, "source_spct")
 
   valleys.spct <- valleys(sun.spct)
+  expect_equal(nrow(valleys.spct), 75)
+  expect_equal(names(valleys.spct), c("w.length", "s.e.irrad"))
+  expect_is(valleys.spct, "source_spct")
 
+  valleys.spct <- valleys(sun.spct)
+  expect_equal(nrow(valleys.spct), 75)
+  expect_equal(names(valleys.spct), c("w.length", "s.e.irrad"))
+  expect_is(valleys.spct, "source_spct")
+
+  valleys.spct <- valleys(sun.spct)
   expect_equal(nrow(valleys.spct), 75)
   expect_equal(names(valleys.spct), c("w.length", "s.e.irrad"))
   expect_is(valleys.spct, "source_spct")
@@ -323,8 +422,9 @@ test_that("source_spct", {
 
 test_that("source_mspct", {
 
-  spct.l <- list(A = sun.spct, B = sun.spct)
-  my.mspct <- source_mspct(spct.l)
+  # spct.l <- list(A = sun.spct, B = sun.spct)
+  # my.mspct <- source_mspct(spct.l)
+  my.mspct <- sun_evening.mspct
 
   spikes.mspct <- spikes(my.mspct)
 
