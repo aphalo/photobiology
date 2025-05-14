@@ -3,7 +3,7 @@
 \name{get_peaks}
 \alias{get_peaks}
 \alias{get_valleys}
-\title{Get peaks and valleys in a spectrum}
+\title{Get peaks and valleys from a spectrum}
 \usage{
 get_peaks(
   x,
@@ -83,15 +83,40 @@ A data frame with variables w.length and s.irrad with their values at
   the peaks or valleys plus a character variable of labels.
 }
 \description{
-These functions find peaks (local maxima) or valleys (local minima) in a
-spectrum, using a user selectable size threshold relative to the tallest peak
-(global maximum). This a wrapper built on top of function peaks from package
-splus2R.
+These functions "get" (or extract) peaks (maxima) and valleys (minima) in two
+vectors, usually a spectral quantity and wavelength, using a user selectable
+span for window width and global and local (within moving window) size
+thresholds. They also generate \code{character} values for \code{x}.
 }
-\examples{
-with(sun.spct, get_peaks(w.length, s.e.irrad))
-with(sun.spct, get_valleys(w.length, s.e.irrad))
+\details{
+Function \code{find_peaks} is a wrapper built onto function
+  \code{\link[splus2R]{peaks}} from \pkg{splus2R}, adds support for peak
+  height thresholds and handles \code{span = NULL} and non-finite (including
+  NA) values differently than \code{splus2R::peaks}. Instead of giving an
+  error when \code{na.rm = FALSE} and \code{x} contains \code{NA} values,
+  \code{NA} values are replaced with the smallest finite value in \code{x}.
+  \code{span = NULL} is treated as a special case and selects \code{max(x)}.
+  Two tests are optional, one based on the absolute height of the peaks
+  (\code{global.threshold}) and another based on the height of the peaks
+  compared to other values within the window of width equal to \code{span}
+  (\code{local.threshold}). The reference value used within each window
+  containing a peak is given by \code{local.reference}. Parameter
+  \code{threshold.range} determines how the values passed as argument to
+  \code{global.threshold} and \code{local.threshold} are scaled. The default,
+  \code{NULL} uses the range of \code{x}. Thresholds for ignoring too small
+  peaks are applied after peaks are searched for, and negative threshold
+  values can in some cases result in no peaks being returned.
 
+  While function \code{find_peaks} accepts as input a \code{numeric} vector
+  and returns a \code{logical} vector, methods \code{peaks} and
+  \code{valleys} accept as input different R objects, including spectra and
+  collections of spectra and return a subset of the object. These methods
+  are implemented using calls to functions \code{find_peaks} and
+  \code{\link{fit_peaks}}.
+}
+\note{
+The use of these two functions is deprecated. They are retained for
+  backwards compatibility and will be removed in the near future.
 }
 \seealso{
 Other peaks and valleys functions: 

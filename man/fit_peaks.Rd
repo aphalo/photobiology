@@ -53,8 +53,8 @@ minima.}
 }
 \value{
 An R object of the same class as \code{x} containing the fitted
-  values for the peaks, and optionally the values for at \code{peaks.idx} or
-  \code{valleys.idx} for other retained columns.
+  values for the peaks, and optionally the unmodified values at the rows
+  matching \code{peaks.idx} or \code{valleys.idx} for other retained columns.
 }
 \description{
 Functions implementing fitting of peaks in a class-agnostic way. The fitting
@@ -62,9 +62,19 @@ refines the location of peaks and value of peaks based on the location of
 maxima and minima supplied. This function is to be used together with
 \code{find_peaks()} or \code{find_valleys()}.
 }
+\details{
+The only method currently implemented is \code{"spline"} based on
+  a call to \code{\link[stats]{splinefun}} in a window of width \code{span}
+  centred on each peak pointed at by \code{peaks.idx}. A spline fitted to
+  a narrow window will usually locate the position of the peak in the
+  column named by the argument passed to \code{x.col.name} better than
+  estimating the true height of the peak in the column named by the argument
+  passed to \code{y.col.name}.
+}
 \note{
 These functions are not meant for everyday use. Use option
-  \code{refine.wl = TRUE} of methods \code{peaks()} and \code{valleys()} instead.
+  \code{refine.wl = TRUE} of methods \code{peaks()} and \code{valleys()}
+  instead.
 }
 \examples{
 

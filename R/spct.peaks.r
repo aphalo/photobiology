@@ -1,7 +1,8 @@
 #' Find local maxima or global maximum (peaks)
 #'
-#' This function finds peaks (local maxima) in a vector, using a user selectable
-#' span and size threshold relative to the tallest peak (global maximum).
+#' This function finds peaks (local maxima) in a numeric vector, using a user
+#' selectable span and global and local size thresholds, returning a
+#' \code{logical} vector.
 #'
 #' @param x numeric vector. Hint: to find valleys, change the sign of the
 #'   argument with the unary operator \code{-}.
@@ -40,24 +41,37 @@
 #'   that are TRUE correspond to local peaks in vector \code{x} and can be used
 #'   to extract the rows corresponding to peaks from a data frame.
 #'
-#' @details This function is a wrapper built onto function
-#'   \code{\link[splus2R]{peaks}} from \pkg{splus2R} and handles non-finite
-#'   (including NA) values differently than \code{peaks}, instead of giving an
+#' @details Function \code{find_peaks} is a wrapper built onto function
+#'   \code{\link[splus2R]{peaks}} from \pkg{splus2R}, adds support for peak
+#'   height thresholds and handles \code{span = NULL} and non-finite (including
+#'   NA) values differently than \code{splus2R::peaks}. Instead of giving an
 #'   error when \code{na.rm = FALSE} and \code{x} contains \code{NA} values,
 #'   \code{NA} values are replaced with the smallest finite value in \code{x}.
-#'   \code{span = NULL} is treated as a special case and returns \code{max(x)}.
+#'   \code{span = NULL} is treated as a special case and selects \code{max(x)}.
 #'   Two tests are optional, one based on the absolute height of the peaks
 #'   (\code{global.threshold}) and another based on the height of the peaks
 #'   compared to other values within the window of width equal to \code{span}
 #'   (\code{local.threshold}). The reference value used within each window
-#'   containing a peak is given by \code{local.reference}.
+#'   containing a peak is given by \code{local.reference}. Parameter
+#'   \code{threshold.range} determines how the values passed as argument to
+#'   \code{global.threshold} and \code{local.threshold} are scaled. The default,
+#'   \code{NULL} uses the range of \code{x}. Thresholds for ignoring too small
+#'   peaks are applied after peaks are searched for, and negative threshold
+#'   values can in some cases result in no peaks being returned.
+#'
+#'   While function \code{find_peaks} accepts as input a \code{numeric} vector
+#'   and returns a \code{logical} vector, methods \code{peaks} and
+#'   \code{valleys} accept as input different R objects, including spectra and
+#'   collections of spectra and return a subset of the object. These methods
+#'   are implemented using calls to functions \code{find_peaks} and
+#'   \code{\link{fit_peaks}}.
 #'
 #' @note The default for parameter \code{strict} is \code{FALSE} in functions
 #'   \code{peaks()} and \code{find_peaks()}, as in \code{stat_peaks()} and in
 #'   \code{stat_valleys()}, while the default in \code{\link[splus2R]{peaks}}
 #'   is \code{strict = TRUE}.
 #'
-#' @seealso \code{\link[splus2R]{peaks}}
+#' @seealso \code{\link[splus2R]{peaks}}.
 #'
 #' @family peaks and valleys functions
 #'
@@ -165,12 +179,12 @@ find_peaks <-
     pks
   }
 
-#' Get peaks and valleys in a spectrum
+#' Get peaks and valleys from a spectrum
 #'
-#' These functions find peaks (local maxima) or valleys (local minima) in a
-#' spectrum, using a user selectable size threshold relative to the tallest peak
-#' (global maximum). This a wrapper built on top of function peaks from package
-#' splus2R.
+#' These functions "get" (or extract) peaks (maxima) and valleys (minima) in two
+#' vectors, usually a spectral quantity and wavelength, using a user selectable
+#' span for window width and global and local (within moving window) size
+#' thresholds. They also generate \code{character} values for \code{x}.
 #'
 #' @param x,y numeric
 #' @param x_unit character Vector of texts to be pasted at end of labels built
@@ -178,13 +192,15 @@ find_peaks <-
 #' @param x_digits numeric Number of significant digits in wavelength label.
 #' @inheritParams find_peaks
 #'
+#' @inherit find_peaks details seealso
+#'
+#' @note The use of these two functions is deprecated. They are retained for
+#'   backwards compatibility and will be removed in the near future.
+#'
 #' @return A data frame with variables w.length and s.irrad with their values at
 #'   the peaks or valleys plus a character variable of labels.
 #'
 #' @export
-#' @examples
-#' with(sun.spct, get_peaks(w.length, s.e.irrad))
-#' with(sun.spct, get_valleys(w.length, s.e.irrad))
 #'
 #' @family peaks and valleys functions
 #'
@@ -199,6 +215,7 @@ get_peaks <- function(x,
                       x_unit = "",
                       x_digits = 3,
                       na.rm = FALSE) {
+  warning("Functions 'get_peaks()' and 'get_valeys()' have been deprecated: please use 'peaks()' and 'valleys()', or 'find_peaks()', instead.")
   stopifnot(length(x) == length(y))
   selector <- find_peaks(x = y,
                          global.threshold = global.threshold,
@@ -279,11 +296,20 @@ get_valleys <- function(x, y,
 #' @param keep.cols logical Keep unrecognized columns in data frames
 #'
 #' @note These functions are not meant for everyday use. Use option
-#'   \code{refine.wl = TRUE} of methods \code{peaks()} and \code{valleys()} instead.
+#'   \code{refine.wl = TRUE} of methods \code{peaks()} and \code{valleys()}
+#'   instead.
+#'
+#' @details The only method currently implemented is \code{"spline"} based on
+#'   a call to \code{\link[stats]{splinefun}} in a window of width \code{span}
+#'   centred on each peak pointed at by \code{peaks.idx}. A spline fitted to
+#'   a narrow window will usually locate the position of the peak in the
+#'   column named by the argument passed to \code{x.col.name} better than
+#'   estimating the true height of the peak in the column named by the argument
+#'   passed to \code{y.col.name}.
 #'
 #' @return An R object of the same class as \code{x} containing the fitted
-#'   values for the peaks, and optionally the values for at \code{peaks.idx} or
-#'   \code{valleys.idx} for other retained columns.
+#'   values for the peaks, and optionally the unmodified values at the rows
+#'   matching \code{peaks.idx} or \code{valleys.idx} for other retained columns.
 #'
 #' @examples
 #'
@@ -389,24 +415,43 @@ fit_valleys <- function(x,
 #' @inheritParams find_peaks
 #' @param var.name,x.var.name,y.var.name character Name of column where to look
 #'   for peaks.
-#' @param refine.wl logical Flag indicating if peak location should be refined by
-#'   fitting a function.
+#' @param refine.wl logical Flag indicating if peak location should be refined
+#'   by fitting a function.
 #' @param method character String with the name of a method. Currently only
 #'   spline interpolation is implemented.
 #' @param ... ignored
 #'
-#' @return A subset of \code{x} with rows corresponding to local maxima.
+#' @inherit find_peaks details note seealso
 #'
-#' @note Thresholds for ignoring peaks are applied after peaks are searched for,
-#' and negative threshold values can in some cases result in no peaks being
-#' returned.
+#' @return A subset of \code{x} with rows corresponding to local maxima.
 #'
 #' @export
 #'
 #' @examples
-#' peaks(sun.spct, span = 51)
+#' # default span = 5
+#' peaks(sun.spct)
+#' # global maximum
 #' peaks(sun.spct, span = NULL)
-#' peaks(sun.spct, span = 51, refine.wl = TRUE)
+#' peaks(sun.spct, span = NULL)$w.length
+#' # fitted peak wavelength
+#' peaks(sun.spct, span = NULL, refine.wl = TRUE)
+#' peaks(sun.spct, span = NULL, refine.wl = TRUE)$w.length
+#' # a wider window
+#' peaks(sun.spct, span = 51)
+#' # global threshold relative to the range of s.e.irrad values
+#' peaks(sun.spct, global.threshold = 0.7)
+#' peaks(sun.spct, global.threshold = -0.3)
+#' # global threshold in actual s.e.irrad values
+#' peaks(sun.spct, global.threshold = 0.7, threshold.range = c(0, 1))
+#' # local threshold  relative to the range of s.e.irrad values
+#' peaks(sun.spct, local.threshold = 0.1)
+#' # local threshold in actual s.e.irrad values
+#' peaks(sun.spct, local.threshold = 0.1, threshold.range = c(0, 1))
+#' # local threshold  relative to the range of s.e.irrad values, using window
+#' # median instead of window minimum
+#' peaks(sun.spct, local.threshold = 0.05, local.reference = "median")
+#' # minimum, the default.
+#' peaks(sun.spct, local.threshold = 0.05, local.reference = "minimum")
 #'
 #' @family peaks and valleys functions
 #'
@@ -1335,10 +1380,32 @@ peaks.raw_mspct <- function(x,
 #'   spline interpolation is implemented.
 #' @param ... ignored
 #'
-#' @return A subset of \code{x} with rows corresponding to local minima.
+#' @inherit find_peaks details note seealso
+#'
+#' @return A subset of \code{x} with rows corresponding to local minima or
+#'   global minimum.
 #'
 #' @examples
-#' valleys(sun.spct, span = 50)
+#' # default span = 5
+#' valleys(sun.spct)
+#' # global minimum
+#' valleys(sun.spct, span = NULL)
+#' valleys(sun.spct, span = NULL, strict = FALSE)
+#' # a wider window
+#' valleys(sun.spct, span = 51)
+#' # global threshold relative to the range of s.e.irrad values
+#' valleys(sun.spct, global.threshold = -0.2)
+#' # global threshold in actual s.e.irrad values
+#' valleys(sun.spct, global.threshold = -0.2, threshold.range = c(0, 1))
+#' # local threshold  relative to the range of s.e.irrad values
+#' valleys(sun.spct, local.threshold = 0.1)
+#' # local threshold in actual s.e.irrad values
+#' valleys(sun.spct, local.threshold = 0.1, threshold.range = c(0, 1))
+#' # local threshold  relative to the range of s.e.irrad values, using window
+#' # median instead of window minimum
+#' valleys(sun.spct, local.threshold = 0.1, local.reference = "median")
+#' # minimum, the default.
+#' valleys(sun.spct, local.threshold = 0.1, local.reference = "minimum")
 #'
 #' @export
 #'

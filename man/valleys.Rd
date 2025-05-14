@@ -392,11 +392,38 @@ your code relies on external data or packages: use the .export and
 correct environment set up for computing.}
 }
 \value{
-A subset of \code{x} with rows corresponding to local minima.
+A subset of \code{x} with rows corresponding to local minima or
+  global minimum.
 }
 \description{
 Function that returns a subset of an R object with observations corresponding
 to local maxima.
+}
+\details{
+Function \code{find_peaks} is a wrapper built onto function
+  \code{\link[splus2R]{peaks}} from \pkg{splus2R}, adds support for peak
+  height thresholds and handles \code{span = NULL} and non-finite (including
+  NA) values differently than \code{splus2R::peaks}. Instead of giving an
+  error when \code{na.rm = FALSE} and \code{x} contains \code{NA} values,
+  \code{NA} values are replaced with the smallest finite value in \code{x}.
+  \code{span = NULL} is treated as a special case and selects \code{max(x)}.
+  Two tests are optional, one based on the absolute height of the peaks
+  (\code{global.threshold}) and another based on the height of the peaks
+  compared to other values within the window of width equal to \code{span}
+  (\code{local.threshold}). The reference value used within each window
+  containing a peak is given by \code{local.reference}. Parameter
+  \code{threshold.range} determines how the values passed as argument to
+  \code{global.threshold} and \code{local.threshold} are scaled. The default,
+  \code{NULL} uses the range of \code{x}. Thresholds for ignoring too small
+  peaks are applied after peaks are searched for, and negative threshold
+  values can in some cases result in no peaks being returned.
+
+  While function \code{find_peaks} accepts as input a \code{numeric} vector
+  and returns a \code{logical} vector, methods \code{peaks} and
+  \code{valleys} accept as input different R objects, including spectra and
+  collections of spectra and return a subset of the object. These methods
+  are implemented using calls to functions \code{find_peaks} and
+  \code{\link{fit_peaks}}.
 }
 \section{Methods (by class)}{
 \itemize{
@@ -439,8 +466,33 @@ to local maxima.
 \item \code{valleys(raw_mspct)}: Method for "raw_mspct" objects.
 
 }}
+\note{
+The default for parameter \code{strict} is \code{FALSE} in functions
+  \code{peaks()} and \code{find_peaks()}, as in \code{stat_peaks()} and in
+  \code{stat_valleys()}, while the default in \code{\link[splus2R]{peaks}}
+  is \code{strict = TRUE}.
+}
 \examples{
-valleys(sun.spct, span = 50)
+# default span = 5
+valleys(sun.spct)
+# global minimum
+valleys(sun.spct, span = NULL)
+valleys(sun.spct, span = NULL, strict = FALSE)
+# a wider window
+valleys(sun.spct, span = 51)
+# global threshold relative to the range of s.e.irrad values
+valleys(sun.spct, global.threshold = -0.2)
+# global threshold in actual s.e.irrad values
+valleys(sun.spct, global.threshold = -0.2, threshold.range = c(0, 1))
+# local threshold  relative to the range of s.e.irrad values
+valleys(sun.spct, local.threshold = 0.1)
+# local threshold in actual s.e.irrad values
+valleys(sun.spct, local.threshold = 0.1, threshold.range = c(0, 1))
+# local threshold  relative to the range of s.e.irrad values, using window
+# median instead of window minimum
+valleys(sun.spct, local.threshold = 0.1, local.reference = "median")
+# minimum, the default.
+valleys(sun.spct, local.threshold = 0.1, local.reference = "minimum")
 
 valleys(sun.spct)
 

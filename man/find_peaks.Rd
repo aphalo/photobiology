@@ -62,21 +62,35 @@ A vector of logical values of the same length as \code{x}. Values
   to extract the rows corresponding to peaks from a data frame.
 }
 \description{
-This function finds peaks (local maxima) in a vector, using a user selectable
-span and size threshold relative to the tallest peak (global maximum).
+This function finds peaks (local maxima) in a numeric vector, using a user
+selectable span and global and local size thresholds, returning a
+\code{logical} vector.
 }
 \details{
-This function is a wrapper built onto function
-  \code{\link[splus2R]{peaks}} from \pkg{splus2R} and handles non-finite
-  (including NA) values differently than \code{peaks}, instead of giving an
+Function \code{find_peaks} is a wrapper built onto function
+  \code{\link[splus2R]{peaks}} from \pkg{splus2R}, adds support for peak
+  height thresholds and handles \code{span = NULL} and non-finite (including
+  NA) values differently than \code{splus2R::peaks}. Instead of giving an
   error when \code{na.rm = FALSE} and \code{x} contains \code{NA} values,
   \code{NA} values are replaced with the smallest finite value in \code{x}.
-  \code{span = NULL} is treated as a special case and returns \code{max(x)}.
+  \code{span = NULL} is treated as a special case and selects \code{max(x)}.
   Two tests are optional, one based on the absolute height of the peaks
   (\code{global.threshold}) and another based on the height of the peaks
   compared to other values within the window of width equal to \code{span}
   (\code{local.threshold}). The reference value used within each window
-  containing a peak is given by \code{local.reference}.
+  containing a peak is given by \code{local.reference}. Parameter
+  \code{threshold.range} determines how the values passed as argument to
+  \code{global.threshold} and \code{local.threshold} are scaled. The default,
+  \code{NULL} uses the range of \code{x}. Thresholds for ignoring too small
+  peaks are applied after peaks are searched for, and negative threshold
+  values can in some cases result in no peaks being returned.
+
+  While function \code{find_peaks} accepts as input a \code{numeric} vector
+  and returns a \code{logical} vector, methods \code{peaks} and
+  \code{valleys} accept as input different R objects, including spectra and
+  collections of spectra and return a subset of the object. These methods
+  are implemented using calls to functions \code{find_peaks} and
+  \code{\link{fit_peaks}}.
 }
 \note{
 The default for parameter \code{strict} is \code{FALSE} in functions
@@ -89,7 +103,7 @@ with(sun.data, w.length[find_peaks(s.e.irrad)])
 
 }
 \seealso{
-\code{\link[splus2R]{peaks}}
+\code{\link[splus2R]{peaks}}.
 
 Other peaks and valleys functions: 
 \code{\link{find_spikes}()},
