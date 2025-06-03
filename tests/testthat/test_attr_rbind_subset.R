@@ -316,6 +316,29 @@ test_that("source_spct", {
   expect_is(getInstrSettings(long.spct)[["one"]], "instr_settings")
   expect_is(getInstrSettings(long.spct)[["two"]], "instr_settings")
 
+  ## attributes
+  zz <- rbindspct(sun_evening.mspct, attrs.simplify = TRUE)
+  expect_equal(length(comment(zz)), 1L)
+  expect_equal(nrow(where_measured(zz)), 1L)
+  expect_equal(length(what_measured(zz)), 1L)
+  expect_equal(length(how_measured(zz)), 1L)
+  expect_equal(length(when_measured(zz)), length(sun_evening.mspct))
+  zz <- rbindspct(sun_evening.mspct, attrs.simplify = FALSE)
+  expect_equal(length(comment(zz)), 1L)
+  expect_equal(nrow(where_measured(zz)), length(sun_evening.mspct))
+  expect_equal(length(what_measured(zz)), length(sun_evening.mspct))
+  expect_equal(length(how_measured(zz)), length(sun_evening.mspct))
+  expect_equal(length(when_measured(zz)), length(sun_evening.mspct))
+
+  ## idfactor
+  zz <- rbindspct(sun_evening.mspct, idfactor = FALSE, attrs.simplify = FALSE)
+  expect_equal(colnames(zz), c( "w.length", "s.e.irrad"))
+  expect_true(setequal(colnames(where_measured(zz)), c("lat", "lon", "address")))
+
+  zz <- rbindspct(sun_evening.mspct, idfactor = TRUE, attrs.simplify = FALSE)
+  expect_equal(colnames(zz), c( "w.length", "s.e.irrad", "spct.idx"))
+  expect_true(setequal(colnames(where_measured(zz)), c("lat", "lon", "address", "spct.idx")))
+
   ## recovered collection
   recovered.mspct <- subset2mspct(long.spct)
 

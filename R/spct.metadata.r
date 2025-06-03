@@ -315,17 +315,18 @@ setWhereMeasured.generic_spct <- function(x,
       # replace missing geocode with a valid one
       # type conversion needed for NA
       where.measured <-
-        validate_geocode(data.frame(lon = as.numeric(lon),
-                                    lat = as.numeric(lat),
-                                    address = as.character(address),
-                                    stringsAsFactors = FALSE))
-      stopifnot(is_valid_geocode(where.measured))
+        SunCalcMeeus::validate_geocode(
+          data.frame(lon = as.numeric(lon),
+                     lat = as.numeric(lat),
+                     address = as.character(address),
+                     stringsAsFactors = FALSE))
+      stopifnot(SunCalcMeeus::is_valid_geocode(where.measured))
     } else if (is.list(where.measured) && !is.data.frame(where.measured)) {
-      where.measured <- sapply(where.measured, validate_geocode)
-      stopifnot(all(sapply(where.measured, is_valid_geocode)))
+      where.measured <- sapply(where.measured, SunCalcMeeus::validate_geocode)
+      stopifnot(all(sapply(where.measured, SunCalcMeeus::is_valid_geocode)))
     } else {
-      where.measured <- validate_geocode(where.measured)
-      stopifnot(is_valid_geocode(where.measured))
+      where.measured <- SunCalcMeeus::validate_geocode(where.measured)
+      stopifnot(SunCalcMeeus::is_valid_geocode(where.measured))
     }
   }
   attr(x, "where.measured") <- where.measured
@@ -359,23 +360,29 @@ setWhereMeasured.generic_mspct <- function(x,
   name <- substitute(x)
   if (!is.null(where.measured)) {
     if (is.atomic(where.measured) && all(is.na(where.measured))) {
-      # replace missing geocode with a valid one
+      # replace missing geocode with a valid one built from other arguments
       # type conversion needed for NA
       where.measured <- data.frame(lon = as.numeric(lon),
                                    lat = as.numeric(lat),
                                    address = as.character(address),
                                    stringsAsFactors = FALSE)
-    } else if (!is_valid_geocode(where.measured)) {
-      stop("Bad 'where.measured' argument of class: ", class(where.measured))
+    }
+    if (!SunCalcMeeus::is_valid_geocode(where.measured)) {
+      stop("Bad 'where.measured' argument. ",
+           "Class: ", class(where.measured),
+           "; named: ", names(where.measured),
+           "; length: ", length(where.measured))
     }
   }
   if (is.null(where.measured) ||
       (is.data.frame(where.measured) && nrow(where.measured) == 1)) {
+    # recycle and apply to each member
     x <- msmsply(mspct = x,
                  .fun = setWhereMeasured,
                  where.measured = where.measured)
   } else if (is.data.frame(where.measured) &&
              nrow(where.measured) == length(x)) {
+    # match and split metadata to members
     if (exists("spct.idx", where.measured)) {
       if (setequal(where.measured[["spct.idx"]], names(x))) {
         # we use name matching
@@ -515,15 +522,15 @@ getWhereMeasured.generic_mspct <- function(x,
 #'
 getWhereMeasured.data.frame <- function(x, ...) {
   where.measured <- attr(x, "where.measured", exact = TRUE)
-  if (is.null(where.measured)) return(na_geocode())
+  if (is.null(where.measured)) return(SunCalcMeeus::na_geocode())
   stopifnot("The value of 'geocode' attribute is invalid" =
-              is_valid_geocode(where.measured))
+              SunCalcMeeus::is_valid_geocode(where.measured))
 
   if (is.list(where.measured) && !is.data.frame(where.measured)) {
     x <- dplyr::bind_rows(where.measured)
   }
   # needed to clean inconsistent values from previous versions
-  validate_geocode(where.measured)
+  SunCalcMeeus::validate_geocode(where.measured)
 }
 
 # how.measured attributes -------------------------------------------------

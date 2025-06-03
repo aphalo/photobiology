@@ -108,6 +108,9 @@ trim_wl(sun.spct, range = c(400, 500))
 trim_wl(sun.spct, range = c(NA, 500))
 trim_wl(sun.spct, range = c(400, NA))
 
+trim_wl(sun_evening.spct)
+trim_wl(sun_evening.mspct)
+
 }
 \seealso{
 Other trim functions: 
