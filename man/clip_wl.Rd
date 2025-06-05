@@ -15,7 +15,7 @@ clip_wl(x, range, ...)
 
 \method{clip_wl}{generic_spct}(x, range = NULL, ...)
 
-\method{clip_wl}{generic_mspct}(x, range = NULL, ...)
+\method{clip_wl}{generic_mspct}(x, range = NULL, expand = TRUE, ...)
 
 \method{clip_wl}{waveband}(x, range = NULL, ...)
 
@@ -29,6 +29,8 @@ function \code{range()} will return range of wavelengths expressed in
 nanometres.}
 
 \item{...}{ignored (possibly used by derived methods).}
+
+\item{expand}{logical Expand or not members containing spectra in long form.}
 }
 \value{
 a spectrum object or a collection of spectral objects of the same

@@ -7,12 +7,25 @@ library(dplyr)
 library(ggplot2)
 library(ggpmisc)
 library(lubridate)
-library(photobiology) # sun_angles() and day_night()
+library(SunCalcMeeus) # sun_angles() and day_night()
 library(solartime) # computeSunPosition(), computeSunriseHour(), computeSunsetHour()
 library(suncalc) # getSunlightPosition(), getSunlightTimes()
 library(fishmethods) # astrocalc4r()
 
 ## From Gary Nelson, maintainer of 'fishmethods'
+
+caption <-
+  paste(trimws(unname(Sys.info()["nodename"])),
+        "; SunCalcMeeus ", packageVersion("SunCalcMeeus"),
+        "; solartime ", packageVersion("SunCalcMeeus"),
+        "; suncalc ", packageVersion("SunCalcMeeus"),
+        with(R.version, paste("; R ", major, ".", minor, sep = "")), sep = "")
+
+out.folder <- paste("./tests-local/suncalc-test", format(today()), sep = "-")
+
+if (!dir.exists(out.folder)) {
+  dir.create(out.folder)
+}
 
 astrocalc4r_Version2.3_for_fishmethods=function (day, month, year, hour, timezone, lat, lon, withinput = FALSE,
                                                  seaorland = "maritime", acknowledgment = FALSE)
@@ -309,9 +322,10 @@ summary.vec.times.tb %>%
   geom_line() +
   scale_x_log10(name = "Length of vector of times points") +
   scale_y_log10(name = "Total execution time (ms)") +
+  labs(caption = caption) +
   theme_bw() + theme(legend.position = "top") -> total.times.ggp
 
-svglite("./test/total-times-ggp.svg", width = 6, height = 4)
+svglite(paste(out.folder, "total-times-ggp.svg", sep = "/"), width = 6, height = 4)
 print(total.times.ggp)
 dev.off()
 
@@ -322,9 +336,10 @@ summary.vec.times.tb %>%
   expand_limits(y = 0) +
   scale_x_log10(name = "Length of vector of time points") +
   scale_y_continuous(name = expression("Execution time per time point"~~(mu*s))) +
+  labs(caption = caption) +
   theme_bw() + theme(legend.position = "top") -> per.timepoint.ggp
 
-svglite("./test/per-timepoint-ggp.svg", width = 6, height = 4)
+svglite(paste(out.folder, "per-timepoint-ggp.svg", sep = "/"), width = 6, height = 4)
 print(per.timepoint.ggp)
 dev.off()
 
@@ -377,9 +392,10 @@ summary.vec.latitudes.tb %>%
   geom_line() +
   scale_x_log10(name = "Length of vector of latitudes") +
   scale_y_log10(name = "Total execution time (ms)") +
+  labs(caption = caption) +
   theme_bw() + theme(legend.position = "top") -> total.times.latitudes.ggp
 
-svglite("./test/total-times-latitudes-ggp.svg", width = 6, height = 4)
+svglite(paste(out.folder, "total-times-latitudes-ggp.svg", sep = "/"), width = 6, height = 4)
 print(total.times.latitudes.ggp)
 dev.off()
 
@@ -390,9 +406,10 @@ summary.vec.latitudes.tb %>%
   scale_x_log10(name = "Length of vector of latitudes") +
   scale_y_continuous(name = expression("Execution time per time point"~~(mu*s))) +
   expand_limits(y = 0) +
+  labs(caption = caption) +
   theme_bw() + theme(legend.position = "top") -> per.timepoint.latitudes.ggp
 
-svglite("./test/per-timepoint-latitudes-ggp.svg", width = 6, height = 4)
+svglite(paste(out.folder, "per-timepoint-latitudes-ggp.svg", sep = "/"), width = 6, height = 4)
 print(per.timepoint.latitudes.ggp)
 dev.off()
 
@@ -403,7 +420,7 @@ t <- as.POSIXct(seq(from = today(tzone = "Europe/Helsinki"), to = today(tzone = 
 localities <- data.frame(lat = latitudes$thousands, lon = 0)
 profvis::profvis(sun_angles(t, geocode = localities))
 
-## test values computed for extreme dates
+## tests-local values computed for extreme dates
 
 date_times <-  as.POSIXct((ymd_hm("0001-01-01 00:00") +
                              years(c(0, 100, 1000, 1800, 1900, 2000, 2020, 2100, 3000) - 1)) +
@@ -531,11 +548,12 @@ all_results.tb %>%
   facet_wrap(~sa_year, labeller = label_both, ncol = 2) +
   labs(y = "Difference in solar azimuth (degrees)",
        x = "Latitude (degrees)",
-       colour = "Time of day\nUTC (h)") +
+       colour = "Time of day\nUTC (h)",
+       caption = caption) +
   theme_bw() + theme(legend.position = "top") +
   ggtitle("Azimuth: astrocalc4r() vs. sun_angles()") -> acr4r_azimuth_error.ggp
 
-svglite("./test/acr4r-azimuth-error-ggp.svg", width = 6, height = 10)
+svglite(paste(out.folder, "acr4r-azimuth-error-ggp.svg", sep = "/"), width = 6, height = 10)
 print(acr4r_azimuth_error.ggp)
 dev.off()
 
@@ -549,11 +567,12 @@ all_results.tb %>%
   facet_wrap(~sa_year, labeller = label_both, ncol = 2) +
   labs(y = "Difference in solar azimuth (degrees)",
        x = "Latitude (degrees)",
-       colour = "Time of day\nUTC (h)") +
+       colour = "Time of day\nUTC (h)",
+       caption = caption) +
   theme_bw() + theme(legend.position = "top") +
   ggtitle("Azimuth: computeSunPosition() vs. sun_angles()") -> csp_azimuth_error.ggp
 
-svglite("./test/csp-azimuth-error-ggp.svg", width = 6, height = 10)
+svglite(paste(out.folder, "csp-azimuth-error-ggp.svg", sep = "/"), width = 6, height = 10)
 print(csp_azimuth_error.ggp)
 dev.off()
 
@@ -568,11 +587,12 @@ all_results.tb %>%
   facet_wrap(~sa_year, labeller = label_both, ncol = 2) +
   labs(y = "Difference in solar azimuth (degrees)",
        x = "Latitude (degrees)",
-       colour = "Time of day\nUTC (h)") +
+       colour = "Time of day\nUTC (h)",
+       caption = caption) +
   theme_bw() + theme(legend.position = "top") +
   ggtitle("Azimuth: getSunlightPosition() vs. sun_angles()") -> sc_azimuth_error.ggp
 
-svglite("./test/sc-azimuth-error-ggp.svg", width = 6, height = 10)
+svglite(paste(out.folder, "sc-azimuth-error-ggp.svg", sep = "/"), width = 6, height = 10)
 print(sc_azimuth_error.ggp)
 dev.off()
 
@@ -588,11 +608,12 @@ all_results.tb %>%
   facet_wrap(~sa_year, labeller = label_both, ncol = 2) +
   labs(y = "Difference in solar elevation (degrees)",
        x = "Latitude (degrees)",
-       colour = "Time of day\nUTC (h)") +
+       colour = "Time of day\nUTC (h)",
+       caption = caption) +
   theme_bw() + theme(legend.position = "top") +
   ggtitle("Azimuth: astrocalc4r() vs. sun_angles()") -> acr4r_elevation_error.ggp
 
-svglite("./test/acr4r-elevation-error-ggp.svg", width = 6, height = 10)
+svglite(paste(out.folder, "acr4r-elevation-error-ggp.svg", sep = "/"), width = 6, height = 10)
 print(acr4r_elevation_error.ggp)
 dev.off()
 
@@ -606,11 +627,12 @@ all_results.tb %>%
   facet_wrap(~sa_year, labeller = label_both, ncol = 2) +
   labs(y = "Difference in solar elevation (degrees)",
        x = "Latitude (degrees)",
-       colour = "Time of day\nUTC (h)") +
+       colour = "Time of day\nUTC (h)",
+       caption = caption) +
   theme_bw() + theme(legend.position = "top") +
   ggtitle("Azimuth: computeSunPosition() vs. sun_angles()") -> csp_elevation_error.ggp
 
-svglite("./test/csp-elevation-error-ggp.svg", width = 6, height = 10)
+svglite(paste(out.folder, "csp-elevation-error-ggp.svg", sep = "/"), width = 6, height = 10)
 print(csp_elevation_error.ggp)
 dev.off()
 
@@ -625,11 +647,12 @@ all_results.tb %>%
   facet_wrap(~sa_year, labeller = label_both, ncol = 2) +
   labs(y = "Difference in solar elevation (degrees)",
        x = "Latitude (degrees)",
-       colour = "Time of day\nUTC (h)") +
+       colour = "Time of day\nUTC (h)",
+       caption = caption) +
   theme_bw() + theme(legend.position = "top") +
   ggtitle("Azimuth: getSunlightPosition() vs. sun_angles()") -> sc_elevation_error.ggp
 
-svglite("./test/sc-elevation-error-ggp.svg", width = 6, height = 10)
+svglite(paste(out.folder, "sc-elevation-error-ggp.svg", sep = "/"), width = 6, height = 10)
 print(sc_elevation_error.ggp)
 dev.off()
 
@@ -645,11 +668,12 @@ all_results.tb %>%
   facet_wrap(~sa_year, labeller = label_both, ncol = 2) +
   labs(y = "Difference in solar time (min)",
        x = "Latitude (degrees)",
-       colour = "Time of day\nUTC (h)") +
+       colour = "Time of day\nUTC (h)",
+       caption = caption) +
   theme_bw() + theme(legend.position = "top") +
   ggtitle("Azimuth: computeSunPosition() vs. sun_angles()") -> acr_solartime_error.ggp
 
-svglite("./test/acr-solartime-error-ggp.svg", width = 6, height = 10)
+svglite(paste(out.folder, "acr-solartime-error-ggp.svg", sep = "/"), width = 6, height = 10)
 print(acr_solartime_error.ggp)
 dev.off()
 
@@ -665,11 +689,12 @@ all_results.tb %>%
   facet_wrap(~sa_year, labeller = label_both, ncol = 2) +
   labs(y = "Difference in sunrise time (min)",
        x = "Latitude (degrees)",
-       colour = "Time of day\nUTC (h)") +
+       colour = "Time of day\nUTC (h)",
+       caption = caption) +
   theme_bw() + theme(legend.position = "top") +
   ggtitle("Azimuth: astrocalc4r() vs. sun_angles()") -> acr4r_sunrise_error.ggp
 
-svglite("./test/acr4r-sunrise-error-ggp.svg", width = 6, height = 10)
+svglite(paste(out.folder, "acr4r-sunrise-error-ggp.svg", sep = "/"), width = 6, height = 10)
 print(acr4r_sunrise_error.ggp)
 dev.off()
 
@@ -685,11 +710,12 @@ all_results.tb %>%
   facet_wrap(~sa_year, labeller = label_both, ncol = 2) +
   labs(y = "Difference in noon time (min)",
        x = "Latitude (degrees)",
-       colour = "Time of day\nUTC (h)") +
+       colour = "Time of day\nUTC (h)",
+       caption = caption) +
   theme_bw() + theme(legend.position = "top") +
   ggtitle("Azimuth: astrocalc4r() vs. sun_angles()") -> acr4r_noon_error.ggp
 
-svglite("./test/acr4r-noon-error-ggp.svg", width = 6, height = 10)
+svglite(paste(out.folder, "acr4r-noon-error-ggp.svg", sep = "/"), width = 6, height = 10)
 print(acr4r_noon_error.ggp)
 dev.off()
 
@@ -705,11 +731,12 @@ all_results.tb %>%
   facet_wrap(~sa_year, labeller = label_both, ncol = 2) +
   labs(y = "Difference in sunset time (min)",
        x = "Latitude (degrees)",
-       colour = "Time of day\nUTC (h)") +
+       colour = "Time of day\nUTC (h)",
+       caption = caption) +
   theme_bw() + theme(legend.position = "top") +
   ggtitle("Azimuth: astrocalc4r() vs. sun_angles()") -> acr4r_sunset_error.ggp
 
-svglite("./test/acr4r-sunset-error-ggp.svg", width = 6, height = 10)
+svglite(paste(out.folder, "acr4r-sunset-error-ggp.svg", sep = "/"), width = 6, height = 10)
 print(acr4r_sunset_error.ggp)
 dev.off()
 
@@ -725,11 +752,12 @@ all_results.tb %>%
   facet_wrap(~sa_year, labeller = label_both, ncol = 2) +
   labs(y = "Difference in daylength time (min)",
        x = "Latitude (degrees)",
-       colour = "Time of day\nUTC (h)") +
+       colour = "Time of day\nUTC (h)",
+       caption = caption) +
   theme_bw() + theme(legend.position = "top") +
   ggtitle("Azimuth: astrocalc4r() vs. sun_angles()") -> acr4r_daylength_error.ggp
 
-svglite("./test/acr4r-daylength-error-ggp.svg", width = 6, height = 10)
+svglite(paste(out.folder, "acr4r-daylength-error-ggp.svg", sep = "/"), width = 6, height = 10)
 print(acr4r_daylength_error.ggp)
 dev.off()
 
@@ -745,11 +773,12 @@ all_results.tb %>%
   facet_wrap(~sa_year, labeller = label_both, ncol = 2) +
   labs(y = "Sunset time (h)",
        x = "Latitude (degrees)",
-       colour = "Time of day\nUTC (h)") +
+       colour = "Time of day\nUTC (h)",
+       caption = caption) +
   theme_bw() + theme(legend.position = "top") +
   ggtitle("Azimuth: astrocalc4r() vs. sun_angles()") -> sunset.ggp
 
-svglite("./test/sunset-ggp.svg", width = 6, height = 10)
+svglite(paste(out.folder, "sunset-ggp.svg", sep = "/"), width = 6, height = 10)
 print(sunset.ggp)
 dev.off()
 

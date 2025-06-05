@@ -523,19 +523,7 @@ clip_wl.default <- function(x, range, ...) {
 #'
 clip_wl.generic_spct <- function(x, range = NULL, ...) {
 
-  # we look for multiple spectra in long form
-  if (getMultipleWl(x) > 1) {
-    # convert to a collection of spectra
-    mspct <- subset2mspct(x = x,
-                          idx.var = getIdFactor(x),
-                          drop.idx = FALSE)
-    # call method on the collection
-    z <- trim_wl(x = mspct,
-                 range = range,
-                 ...)
-    return(rbindspct(z, idfactor = FALSE, attrs.simplify = TRUE))
-  }
-
+  # this also works for multiple spectra in long form
   if (is.null(range)) {
     return(x)
   }
@@ -559,12 +547,16 @@ clip_wl.generic_spct <- function(x, range = NULL, ...) {
 
 #' @describeIn clip_wl  Clip an object of class "generic_mspct" or derived.
 #'
+#' @param expand logical Expand or not members containing spectra in long form.
+#'
 #' @export
 #'
-clip_wl.generic_mspct <- function(x, range = NULL, ...) {
+clip_wl.generic_mspct <- function(x, range = NULL, expand = TRUE, ...) {
   if (!length(x)) return(x) # class of x in no case changes
 
-  x <- subset2mspct(x) # expand long form spectra within collection
+  if (expand) {
+    x <- subset2mspct(x) # expand long form spectra within collection
+  }
 
   msmsply(mspct = x,
           .fun = clip_wl,

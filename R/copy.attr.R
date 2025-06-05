@@ -170,7 +170,7 @@ copy_attributes.generic_spct <- function(x, y,
                                          which.not = NULL,
                                          copy.class = FALSE,
                                          ...) {
-  if (copy.class) {
+  if (copy.class && !identical(class(y), class(x))) {
     class(y) <- class(x)
     check_spct(y)
   }
@@ -185,7 +185,7 @@ copy_attributes.generic_spct <- function(x, y,
   which.x <- intersect(names(attr.x), which)
   ## this is likely to be slow
   for (w in which.x) {
-        attr(y, w) <- attr.x[[w]]
+    attr(y, w) <- attr.x[[w]]
   }
 
   y

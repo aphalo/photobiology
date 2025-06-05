@@ -2,10 +2,10 @@ library(lubridate)
 # today() does not behave as I expected
 tz(now(tzone = "Europe/Helsinki"))
 tz(today(tzone = "Europe/Helsinki")) # UTC!!
-today("America/New_York") == today("Asia/Tokyo") # FALSE with no warning.
+today("America/New_York") == today("Asia/Tokyo") # (FALSE/TRUE depends on current time of day with no warning).
 tz(today("America/New_York")) # UTC!
 tz(today("Asia/Tokyo")) # UTC!
-ymd("2017-06-19", tz = "America/New_York") == ymd("2017-06-20", tz = "Asia/Tokyo") # FALSE with warning.
+ymd("2017-06-19", tz = "America/New_York") == ymd("2017-06-20", tz = "Asia/Tokyo") # FALSE with no warning.
 tz(ymd("2017-06-19", tz = "America/New_York")) # OK
 tz(ymd("2017-06-20", tz = "Asia/Tokyo")) # OK
 

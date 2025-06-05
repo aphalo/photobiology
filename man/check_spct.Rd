@@ -126,7 +126,8 @@ check_spct(x, byref, strict.range, force = FALSE, ...)
 by copy of \code{x}}
 
 \item{strict.range}{logical indicating whether off-range values result in an
-error instead of a warning, with \code{NA} a message is issued on failure.}
+error instead of a warning, with \code{NA} a message is issued on failure,
+and with \code{NULL} the range test is skipped.}
 
 \item{force}{logical If \code{TRUE} check is done even if checks are
 disabled.}
@@ -134,7 +135,7 @@ disabled.}
 \item{...}{additional parameters possible in derived methods}
 
 \item{multiple.wl}{numeric Maximum number of repeated w.length entries with
-same value.}
+same value. If \code{NULL} skip check of ordering and multiple wavelengths.}
 }
 \description{
 Check that an R object contains the expected data members and within range

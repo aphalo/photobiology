@@ -548,14 +548,24 @@ subset.generic_spct <- function(x, subset, select, drop = FALSE, ...) {
           # subsetting of rows can decrease the number of spectra
           id.factor <- getIdFactor(x)
           if (!is.na(id.factor)) {
-            # drop unused levels
-            xx[[id.factor]] <- factor(xx[[id.factor]])
-            # keep attributes matching remaining spectra
-            xx <- subset_attributes(xx, to.keep = levels(xx[[id.factor]]))
+            # drop unused levels only if needed for performance
+            if (length(unique(xx[[id.factor]])) != length(levels(x[[id.factor]]))) {
+              xx[[id.factor]] <- factor(xx[[id.factor]])
+              multiple_wl(xx) <- length(levels(xx[[id.factor]]))
+              # keep attributes matching remaining spectra
+              xx <- subset_attributes(xx, to.keep = levels(xx[[id.factor]]))
+            }
+            # disable check of wavelengths as known good
+            xx <- check_spct(xx, strict.range = NULL, multiple.wl = NULL)
+          } else {
+            xx <- check_spct(xx, strict.range = NULL)
           }
+        } else {
+          # disable check of wavelengths as known good
+          xx <- check_spct(xx, strict.range = NULL, multiple.wl = NULL)
         }
-        xx <- check_spct(xx)
       } else {
+        # no longer a valid spectrum or spectra object
         rmDerivedSpct(xx)
       }
     }

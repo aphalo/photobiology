@@ -33,10 +33,11 @@ range_check_irrad.mult(x, strict.range)
 Functions used in the different \code{check_spct()} methods.
 }
 \details{
-If \code{strict.range} is \code{NULL} or \code{NA} the failed
-  test is output using \code{message()}, if \code{FALSE}, using
-  \code{warning()} and if \code{TRUE}, using \code{stop()}. Currently
-  the test condition and the message text is the same in all cases.
+If \code{strict.range} is \code{NULL} the test is skipped, if
+  \code{NA} the failed test is reported using \code{message()}, if
+  \code{FALSE}, using \code{warning()} and if \code{TRUE}, using
+  \code{stop()}. Currently the test condition and the message text is the
+  same in all cases.
 
   The test is failed only if more than 1/250 spectral values are off-range,
   except for \code{cps_spct} objects where 1/100 negative spectral values
@@ -46,5 +47,10 @@ If \code{strict.range} is \code{NULL} or \code{NA} the failed
   The criteria are empirical (almost arbitrary) and may be adjusted in
   future versions. The difficulty is that measured spectral data can be
   noisy even when valid and error-free.
+}
+\note{
+\code{NULL} is passed as argument to \code{strict.range} internally
+  by methods that do not modify the data, but instead subset them. This
+  improves performance.
 }
 \keyword{internal}
