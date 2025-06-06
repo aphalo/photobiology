@@ -647,22 +647,22 @@ wl_range(filters.mspct)
 peaks(sun.spct, span = 51)
 valleys(sun.spct, span = 51)
 
-## ----summary-6----------------------------------------------------------------
-peaks(white_led.source_spct, 
-      span = 101, 
-      unit.out = "photon")$w.length
-
-## ----summary-6a---------------------------------------------------------------
-peaks(white_led.source_spct, 
-      span = 101, 
-      unit.out = "photon", 
-      refine.wl = TRUE)$w.length
-
-## ----summary-7----------------------------------------------------------------
-peaks(sun.spct, span = 21)
-
 ## ----summary-8----------------------------------------------------------------
 peaks(sun.spct, span = NULL)
+
+## ----summary-6a---------------------------------------------------------------
+peaks(sun.spct, 
+      span = NULL,
+      refine.wl = TRUE)
+
+## ----summary-6----------------------------------------------------------------
+peaks(sun.spct, 
+      span = NULL, 
+      unit.out = "energy")
+
+peaks(sun.spct, 
+      span = NULL, 
+      unit.out = "photon")
 
 ## ----summary-9----------------------------------------------------------------
 peaks(sun.spct, span = NULL, refine.wl = TRUE)
@@ -674,8 +674,11 @@ spikes(sun.spct)
 msmsply(filters.mspct, peaks, span = 21)
 
 ## ----find-wls-1---------------------------------------------------------------
-wls_at_target(Ler_leaf_trns.spct, target = "half.maximum")
-wls_at_target(Ler_leaf_trns.spct, target = "half.maximum", interpolate = TRUE)
+wls_at_target(Ler_leaf_trns.spct, 
+              target = "half.maximum")
+wls_at_target(Ler_leaf_trns.spct, 
+              target = "half.maximum", 
+              interpolate = TRUE)
 
 ## ----find-wls-2---------------------------------------------------------------
 wls_at_target(filters.mspct, target = "half.maximum")

@@ -587,6 +587,8 @@ peaks.generic_spct <-
       return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
     }
 
+    check_wl_stepsize(x = x, span = span)
+
     if (is.null(var.name)) {
       # find target variable
       var.name <- names(x)
@@ -597,7 +599,6 @@ peaks.generic_spct <-
         return(x[NA, ])
       }
     }
-
     peaks.idx <-
       which(find_peaks(x[[var.name]],
                        span = span,
@@ -662,6 +663,8 @@ peaks.source_spct <-
                      ...)
       return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
     }
+
+    check_wl_stepsize(x = x, span = span)
 
     if (unit.out == "energy") {
       z <- q2e(x, "replace", FALSE)
@@ -731,6 +734,8 @@ peaks.response_spct <-
                      ...)
       return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
     }
+
+    check_wl_stepsize(x = x, span = span)
 
     if (unit.out == "energy") {
       z <- q2e(x, "replace", FALSE)
@@ -804,6 +809,8 @@ peaks.filter_spct <-
       return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
     }
 
+    check_wl_stepsize(x = x, span = span)
+
     if (filter.qty == "transmittance") {
       z <- A2T(x, "replace", FALSE)
       col.name <- "Tfr"
@@ -870,6 +877,8 @@ peaks.reflector_spct <- function(x,
     return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
   }
 
+  check_wl_stepsize(x = x, span = span)
+
   col.name <- "Rfr"
   peaks.idx <-
     which(find_peaks(x[[col.name]],
@@ -928,6 +937,8 @@ peaks.solute_spct <-
                      ...)
       return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
     }
+
+    check_wl_stepsize(x = x, span = span)
 
     cols <- intersect(c("K.mole", "K.mass"), names(x))
     if (length(cols) == 1) {
@@ -995,6 +1006,8 @@ peaks.cps_spct <- function(x,
     return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
   }
 
+  check_wl_stepsize(x = x, span = span)
+
   peaks.idx <-
     which(find_peaks(x[[var.name]],
                      span = span,
@@ -1052,6 +1065,8 @@ peaks.raw_spct <- function(x, span = 5,
                    ...)
     return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
   }
+
+  check_wl_stepsize(x = x, span = span)
 
   peaks.idx <-
     which(find_peaks(x[[var.name]],
@@ -1540,6 +1555,8 @@ valleys.generic_spct <-
       return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
     }
 
+    check_wl_stepsize(x = x, span = span)
+
     if (is.null(var.name)) {
       # find target variable
       var.name <- names(x)
@@ -1615,6 +1632,8 @@ valleys.source_spct <-
       return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
     }
 
+    check_wl_stepsize(x = x, span = span)
+
     if (unit.out == "energy") {
       z <- q2e(x, "replace", FALSE)
       col.name <- "s.e.irrad"
@@ -1683,6 +1702,8 @@ valleys.response_spct <-
                        ...)
       return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
     }
+
+    check_wl_stepsize(x = x, span = span)
 
     if (unit.out == "energy") {
       z <- q2e(x, "replace", FALSE)
@@ -1755,6 +1776,8 @@ valleys.filter_spct <-
       return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
     }
 
+    check_wl_stepsize(x = x, span = span)
+
     if (filter.qty == "transmittance") {
       z <- A2T(x, "replace", FALSE)
       col.name <- "Tfr"
@@ -1822,6 +1845,8 @@ valleys.reflector_spct <-
       return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
     }
 
+    check_wl_stepsize(x = x, span = span)
+
     col.name <- "Rfr"
     valleys.idx <-
       which(find_peaks(-x[[col.name]],
@@ -1880,6 +1905,8 @@ valleys.solute_spct <-
                        ...)
       return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
     }
+
+    check_wl_stepsize(x = x, span = span)
 
     cols <- intersect(c("K.mole", "K.mass"), names(x))
     if (length(cols) == 1) {
@@ -1948,6 +1975,8 @@ valleys.cps_spct <-
       return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
     }
 
+    check_wl_stepsize(x = x, span = span)
+
     valleys.idx <-
       which(find_peaks(-x[[var.name]],
                        span = span,
@@ -2005,6 +2034,8 @@ valleys.raw_spct <- function(x, span = 5,
                      ...)
     return(rbindspct(mspct, idfactor = FALSE, attrs.simplify = TRUE))
   }
+
+  check_wl_stepsize(x = x, span = span)
 
   valleys.idx <-
     which(find_peaks(-x[[var.name]],
@@ -3001,4 +3032,41 @@ wls_at_target.generic_mspct <- function(x,
           .parallel = .parallel,
           .paropts = .paropts)
 }
+
+
+# utils -------------------------------------------------------------------
+
+#' Check wavelength stepsize
+#'
+#' @inheritParams peaks
+#'
+#' @details As the search for peaks uses a window based on a fixed number of
+#'   observations at neighbouring wavelengths, if the wavelength step between
+#'   observations varies drastically, the window expressed in nanometres of
+#'   wavelength becomes very irregular. With the default \code{span = 5} the
+#'   search for peaks in most cases still works.
+#'
+#'   The typical case are spectra returned by \code{thin_wl()}, which retain
+#'   the original local maxima, and a reasonably narrow wavelength maximum
+#'   step size when using default arguments.
+#'
+#' @return logical \code{TRUE} if check is passed and otherwise \code{FALSE}
+#' with a warning.
+#'
+#' @keywords internal
+#'
+check_wl_stepsize <-
+  function(x,
+           span) {
+    if (!is.null(span) && span > 5) {
+      step.size.range <- wl_stepsize(x)
+      step.size.range[1] <- max(1, step.size.range[1]) # ignore wl steps < 1 nm
+      if ((step.size.range[2] / step.size.range[1]) > 2) {
+        warning("Peaks cannot be reliably searched for when the wavelength step varies")
+        return(invisible(FALSE))
+      }
+    }
+    invisible(TRUE)
+  }
+
 

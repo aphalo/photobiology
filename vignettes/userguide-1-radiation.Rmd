@@ -2835,36 +2835,6 @@ peaks(sun.spct, span = 51)
 valleys(sun.spct, span = 51)
 ```
 
-In the case of `source_spct` and `response_spct` methods `unit.out` can
-be used to force peaks to be searched using either energy or photon
-based spectral irradiance. The default is energy, or the option
-`"photobiology.radiation.unit"` if set.
-
-```{r, summary-6}
-peaks(white_led.source_spct, 
-      span = 101, 
-      unit.out = "photon")$w.length
-```
-
-By passing `refine.wl = TRUE` we request that location of the peaks is
-*refined* by fitting a model to describe the peak.
-
-```{r, summary-6a}
-peaks(white_led.source_spct, 
-      span = 101, 
-      unit.out = "photon", 
-      refine.wl = TRUE)$w.length
-```
-
-It is possible to approximately set the width in nanometres of the
-moving window within which a maximum is searched by passing an odd
-number as argument to `span`. However, even numbers if passed are
-increased with a warning.
-
-```{r, summary-7}
-peaks(sun.spct, span = 21)
-```
-
 A value of `NULL` as argument to `span` searches for a single maximum
 for the whole spectrum.
 
@@ -2872,13 +2842,37 @@ for the whole spectrum.
 peaks(sun.spct, span = NULL)
 ```
 
-The position of peaks can be refined by spline interpolation. This is
-still an experimental feature, that may fail, especially in the estimate
-of the value of the spectral quantity at the peak.
+By passing `refine.wl = TRUE` we request that location of the peaks is
+*refined* by fitting a model to describe the peak. **The interpolated `w.length` estimate can be usually trusted as good if the data are not noisy, while the `s.e.irrad` and `s.q.irrad` estimates should be always checked as their values are frequently suspect.** 
+
+```{r, summary-6a}
+peaks(sun.spct, 
+      span = NULL,
+      refine.wl = TRUE)
+```
+
+In the case of `source_spct` and `response_spct` methods `unit.out` can
+be used to force peaks to be searched using either energy or photon
+based spectral irradiance. The default is energy, or the option
+`"photobiology.radiation.unit"` if set. As expected, the wavelength at the maximum differs when the data are expressed as a flux of energy or of photons.
+
+```{r, summary-6}
+peaks(sun.spct, 
+      span = NULL, 
+      unit.out = "energy")
+
+peaks(sun.spct, 
+      span = NULL, 
+      unit.out = "photon")
+```
+
+As `span` is given as a number of successive observations, if this step varies significantly, the algorithm fails except for the global maximum. In such a case a warning is issued.
 
 ```{r, summary-9}
 peaks(sun.spct, span = NULL, refine.wl = TRUE)
 ```
+
+Frequently, we are not interested in all local maxima, but instead only in those that exceed a certain heigh globally or locally (within the window of width `span`). Arguments paased to additional parameters make this possible as described in the help page of `peaks()` methods.
 
 Method `spikes` differs from `peaks` in that it uses a different
 algorithm that detects only very narrow peaks, usually called by the
@@ -2914,8 +2908,11 @@ is equivalent to finding the wavelengths at which a horizontal *target*
 line intercepts the curve depicting the spectrum.
 
 ```{r, find-wls-1}
-wls_at_target(Ler_leaf_trns.spct, target = "half.maximum")
-wls_at_target(Ler_leaf_trns.spct, target = "half.maximum", interpolate = TRUE)
+wls_at_target(Ler_leaf_trns.spct, 
+              target = "half.maximum")
+wls_at_target(Ler_leaf_trns.spct, 
+              target = "half.maximum", 
+              interpolate = TRUE)
 ```
 
 This function can be used with all spectral classes defined in the

@@ -81,6 +81,12 @@ test_that("source_spct single", {
   expect_equal(names(peaks.spct), c("w.length", "s.q.irrad"))
   expect_is(peaks.spct, "source_spct")
 
+  my_thn.spct <- thin_wl(sun.spct)
+  expect_silent(peaks(my_thn.spct))
+  expect_silent(peaks(my_thn.spct, span = 5L))
+  expect_silent(peaks(my_thn.spct, span = NULL))
+  expect_warning(peaks(my_thn.spct, span = 7L))
+  expect_warning(peaks(my_thn.spct, span = 101L))
 })
 
 test_that("source_mspct", {
@@ -190,6 +196,12 @@ test_that("source_spct", {
   expect_equal(names(valleys.spct), c("w.length", "s.q.irrad"))
   expect_is(valleys.spct, "source_spct")
 
+  my_thn.spct <- thin_wl(sun.spct)
+  expect_silent(valleys(my_thn.spct))
+  expect_silent(valleys(my_thn.spct, span = 5L))
+  expect_silent(valleys(my_thn.spct, span = NULL))
+  expect_warning(valleys(my_thn.spct, span = 7L))
+  expect_warning(valleys(my_thn.spct, span = 101L))
 })
 
 test_that("source_mspct", {
