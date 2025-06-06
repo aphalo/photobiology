@@ -27,8 +27,9 @@ controlled by formal parameter `attr.simplify` with default to `TRUE`.
 * Handle correctly simplified attributes in query and print methods.
 * Accept spectra in long form in addition to collections of spectra as input to
 `add_attr2tb()` and `spct_metadata()`. 
-* Warn if `find_spikes()` is called with spectral data expressed on irregular 
-wavelength steps, such as after applying `thin_wl()`.
+* Methods `peaks()`, `valleys()`, `wls_at_target()`, `spikes()`, and `despike()`
+warn when called with spectral data expressed on irregular wavelength steps,
+such as after applying `thin_wl()`.
 * Implement a local (within-window span) threshold for peak height and valley 
 depth in `stat_peaks()`  and `stat_valleys()`, using parameters 
 `local.threshold` and `local.reference`.

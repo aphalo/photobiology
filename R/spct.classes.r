@@ -988,6 +988,50 @@ check_spct.chroma_spct <-
     return(x)
   }
 
+# Checks called by other methods ---------------------------------------------
+# Check for assumptions of algorithms used in peaks() and other methods
+
+#' Check consistency of wavelength step size
+#'
+#' @inheritParams peaks
+#'
+#' @details As the search for peaks uses a window based on a fixed number of
+#'   observations at neighbouring wavelengths, if the wavelength step between
+#'   observations varies drastically, the window expressed in nanometres of
+#'   wavelength becomes very irregular. With the default \code{span = 5} in
+#'   \code{peaks()}, \code{valleys()}, and \code{wls_at_target()} the
+#'   search in most cases still works for "thinned" spectra, and the check is
+#'   skipped. With \code{spikes()} and \code{despike()} methods the check is
+#'   always done as these methods do not override \code{span = Inf}.
+#'
+#'   The typical case when the step can vary strongly are spectra returned by
+#'   \code{thin_wl()}. As when using default arguments \code{thin_wl()} retains
+#'   the original local maxima, and a reasonably narrow wavelength maximum step
+#'   a call to \code{peaks} with \code{span = NULL} or \code{span = 5}
+#'   \emph{tends} to discover the original peaks missing at most a few.
+#'
+#' @return logical \code{TRUE} if check is passed and otherwise \code{FALSE}
+#' with a warning.
+#'
+#' @keywords internal
+#'
+check_wl_stepsize <-
+  function(x, span = Inf) {
+    if (!is.null(span) && span > 5) {
+      step.size.range <- wl_stepsize(x)
+      step.size.range[1] <- max(1, step.size.range[1]) # ignore wl steps < 1 nm
+      if ((step.size.range[2] / step.size.range[1]) > 2.5) {
+        caller.name <- gsub("\\(.*$|\\..*$", "",
+                            deparse(sys.calls()[[sys.nframe()-1]]))
+        warning("'", caller.name,
+                "()' assumes consistent w.length steps! ",
+                "max step / min step = ",
+                round(step.size.range[2] / step.size.range[1], 1))
+        return(invisible(FALSE))
+      }
+    }
+    invisible(TRUE)
+  }
 
 # set class ---------------------------------------------------------------
 
