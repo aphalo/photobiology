@@ -89,10 +89,32 @@ test_that("source_spct single", {
   expect_warning(peaks(my_thn.spct, span = 101L))
 })
 
+test_that("long source_spct", {
+
+  my.lspct <- sun_evening.spct
+
+  peaks.lspct <- peaks(my.lspct)
+
+  expect_equal(length(unique(my.lspct$spct.idx)),
+               length(unique(peaks.lspct$spct.idx)))
+  expect_true(setequal(colnames(peaks.lspct),
+                       c("w.length", "s.e.irrad", "spct.idx")))
+  expect_is(peaks.lspct, "source_spct")
+
+  peaks.lspct <- peaks(my.lspct, unit.out = "photon")
+
+  expect_equal(length(unique(my.lspct$spct.idx)),
+               length(unique(peaks.lspct$spct.idx)))
+  expect_true(setequal(colnames(peaks.lspct),
+                       c("w.length", "s.q.irrad", "spct.idx")))
+  expect_is(peaks.lspct, "source_spct")
+
+})
+
 test_that("source_mspct", {
 
-#  spct.l <- list(A = sun.spct, B = sun.spct)
-#  my.mspct <- source_mspct(spct.l)
+  #  spct.l <- list(A = sun.spct, B = sun.spct)
+  #  my.mspct <- source_mspct(spct.l)
   my.mspct <- sun_evening.mspct
 
   peaks.mspct <- peaks(my.mspct)
@@ -110,7 +132,6 @@ test_that("source_mspct", {
   expect_is(peaks.mspct, "source_mspct")
 
 })
-
 
 context("valleys")
 
@@ -202,6 +223,28 @@ test_that("source_spct", {
   expect_silent(valleys(my_thn.spct, span = NULL))
   expect_warning(valleys(my_thn.spct, span = 7L))
   expect_warning(valleys(my_thn.spct, span = 101L))
+})
+
+test_that("long source_spct", {
+
+  my.lspct <- sun_evening.spct
+
+  valleys.lspct <- valleys(my.lspct)
+
+  expect_equal(length(unique(my.lspct$spct.idx)),
+               length(unique(valleys.lspct$spct.idx)))
+  expect_true(setequal(colnames(valleys.lspct),
+                       c("w.length", "s.e.irrad", "spct.idx")))
+  expect_is(valleys.lspct, "source_spct")
+
+  valleys.lspct <- valleys(my.lspct, unit.out = "photon")
+
+  expect_equal(length(unique(my.lspct$spct.idx)),
+               length(unique(valleys.lspct$spct.idx)))
+  expect_true(setequal(colnames(valleys.lspct),
+              c("w.length", "s.q.irrad", "spct.idx")))
+  expect_is(valleys.lspct, "source_spct")
+
 })
 
 test_that("source_mspct", {
@@ -301,36 +344,100 @@ test_that("source_spct", {
   expect_is(wls.spct, "source_spct")
 })
 
+test_that("source_lspct", {
+
+  my.lspct <- sun_evening.spct
+
+  wls.lspct <-
+    wls_at_target(my.lspct,
+                  target = 0.05)
+
+  expect_equal(length(unique(wls.lspct$spct.idx)),
+               length(unique(my.lspct$spct.idx)))
+  expect_equal(nrow(wls.lspct), 45L)
+  expect_true(setequal(colnames(wls.lspct),
+                       c("w.length", "s.e.irrad", "spct.idx")))
+  expect_is(wls.lspct, "source_spct")
+
+  wls.lspct <- wls_at_target(my.lspct,
+                             target = 6e-8,
+                             unit.out = "photon")
+
+  expect_equal(length(unique(wls.lspct$spct.idx)),
+               length(unique(my.lspct$spct.idx)))
+  expect_equal(nrow(wls.lspct), 80L)
+  expect_true(setequal(colnames(wls.lspct),
+                       c("w.length", "s.q.irrad", "spct.idx")))
+  expect_is(wls.lspct, "source_spct")
+
+  wls.lspct <- wls_at_target(my.lspct,
+                             target = 0.05,
+                             interpolate = TRUE)
+
+  expect_equal(length(unique(wls.lspct$spct.idx)),
+               length(unique(my.lspct$spct.idx)))
+  expect_equal(nrow(wls.lspct), 50L)
+  expect_true(setequal(colnames(wls.lspct),
+                       c("w.length", "s.e.irrad", "spct.idx")))
+  expect_is(wls.lspct, "source_spct")
+
+  wls.lspct <- wls_at_target(my.lspct,
+                             target = 6e-8,
+                             interpolate = TRUE,
+                             unit.out = "photon")
+
+  expect_equal(length(unique(wls.lspct$spct.idx)),
+               length(unique(my.lspct$spct.idx)))
+  expect_equal(nrow(wls.lspct), 91L)
+  expect_true(setequal(colnames(wls.lspct),
+                       c("w.length", "s.q.irrad", "spct.idx")))
+  expect_is(wls.lspct, "source_spct")
+
+})
+
 test_that("source_mspct", {
 
-  spct.l <- list(A = sun.spct, B = sun.spct)
-  my.mspct <- source_mspct(spct.l)
+  my.mspct <- sun_evening.mspct
 
-  wls.mspct <- wls_at_target(my.mspct, 0.5)
+  wls.mspct <-
+    wls_at_target(my.mspct,
+                  target = 0.05)
 
   expect_equal(length(wls.mspct), length(my.mspct))
-  expect_true(all(c("w.length", "s.e.irrad") %in% names(wls.mspct[[1]])))
+  expect_equal(nrow(wls.mspct[[1]]), 4L)
+  expect_named(wls.mspct[[1]], c("w.length", "s.e.irrad"))
   expect_is(wls.mspct[[1]], "source_spct")
   expect_is(wls.mspct, "source_mspct")
 
-  wls.mspct <- wls_at_target(my.mspct, target = 1e-6, unit.out = "photon")
+  wls.mspct <- wls_at_target(my.mspct,
+                             target = 6e-8,
+                             unit.out = "photon")
 
   expect_equal(length(wls.mspct), length(my.mspct))
-  expect_true(all(c("w.length", "s.q.irrad") %in% names(wls.mspct[[1]])))
+  expect_equal(nrow(wls.mspct[[1]]), 14L)
+  expect_named(wls.mspct[[1]], c("w.length", "s.q.irrad"))
   expect_is(wls.mspct[[1]], "source_spct")
   expect_is(wls.mspct, "source_mspct")
 
-  wls.mspct <- wls_at_target(my.mspct, target = 1e-6, interpolate = TRUE)
+  wls.mspct <- wls_at_target(my.mspct,
+                             target = 0.05,
+                             interpolate = TRUE)
 
   expect_equal(length(wls.mspct), length(my.mspct))
-  expect_equal(names(wls.mspct[[1]]), c("w.length", "s.e.irrad"))
+  expect_equal(nrow(wls.mspct[[1]]), 4L)
+  expect_named(wls.mspct[[1]], c("w.length", "s.e.irrad"))
   expect_is(wls.mspct[[1]], "source_spct")
   expect_is(wls.mspct, "source_mspct")
 
-  wls.mspct <- wls_at_target(my.mspct, target = 1e-6, interpolate = TRUE, unit.out = "photon")
+  wls.mspct <- wls_at_target(my.mspct,
+                             target = 6e-8,
+                             interpolate = TRUE,
+                             unit.out = "photon")
 
   expect_equal(length(wls.mspct), length(my.mspct))
-  expect_equal(names(wls.mspct[[1]]), c("w.length", "s.q.irrad"))
+  expect_equal(nrow(wls.mspct[[1]]), 15L)
+  expect_true(setequal(colnames(wls.mspct[[1]]),
+                       c("w.length", "s.q.irrad")))
   expect_is(wls.mspct[[1]], "source_spct")
   expect_is(wls.mspct, "source_mspct")
 
@@ -429,6 +536,28 @@ test_that("source_spct", {
   expect_equal(nrow(spikes.spct), 1)
   expect_equal(names(spikes.spct), c("w.length", "s.q.irrad"))
   expect_is(spikes.spct, "source_spct")
+
+})
+
+test_that("long source_spct", {
+
+  my.lspct <- sun_evening.spct
+
+  spikes.lspct <- spikes(my.lspct)
+
+  expect_equal(length(unique(my.lspct$spct.idx)),
+               length(unique(spikes.lspct$spct.idx)))
+  expect_true(setequal(colnames(spikes.lspct),
+                       c("w.length", "s.e.irrad", "spct.idx")))
+  expect_is(spikes.lspct, "source_spct")
+
+  spikes.lspct <- spikes(my.lspct, unit.out = "photon")
+
+  expect_equal(length(unique(my.lspct$spct.idx)),
+               length(unique(spikes.lspct$spct.idx)))
+  expect_true(setequal(colnames(spikes.lspct),
+                       c("w.length", "s.q.irrad", "spct.idx")))
+  expect_is(spikes.lspct, "source_spct")
 
 })
 

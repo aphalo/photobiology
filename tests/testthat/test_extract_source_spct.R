@@ -38,7 +38,6 @@ test_that("source_spct", {
   expect_equal(nrow(my.spct[FALSE , ]), 0)
 })
 
-
 context("replace")
 
 test_that("source_spct", {
