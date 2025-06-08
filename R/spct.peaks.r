@@ -92,7 +92,7 @@ find_peaks <-
     # keep track
     threshold.delta.computed <- FALSE
     # find peaks
-    if(is.null(span) || span >= length(x)) {
+    if (is.null(span) || span >= length(x)) {
       pks <- x == max(x, na.rm = na.rm)
       if (strict && sum(pks) != 1L) {
         pks <- logical(length(x)) # all FALSE
@@ -162,16 +162,21 @@ find_peaks <-
         }
         # apply local height threshold test to found peaks
         if (abs(local.threshold) >= 1e-5) {
-          smooth_x <-
-            switch(local.reference,
-                   minimum = caTools::runmin(x, k = span, endrule = "min"),
-                   median = stats::runmed(x, k = span, endrule = "median"))
-
-          if (inherits(local.threshold, "AsIs")) {
-            pks <- ifelse(x - smooth_x > local.threshold, pks , FALSE)
+          if (is.null(span) || span >= length(x)) {
+            warning("Ignoring 'local.threshold = '", local.threshold,
+                    "' as 'span = ", format(span), "' includes all observations")
           } else {
-            scaled.local.threshold <- threshold.delta * abs(local.threshold)
-            pks <- ifelse(x - smooth_x > scaled.local.threshold, pks , FALSE)
+            smooth_x <-
+              switch(local.reference,
+                     minimum = caTools::runmin(x, k = span, endrule = "min"),
+                     median = stats::runmed(x, k = span, endrule = "median"))
+
+            if (inherits(local.threshold, "AsIs")) {
+              pks <- ifelse(x - smooth_x > local.threshold, pks , FALSE)
+            } else {
+              scaled.local.threshold <- threshold.delta * abs(local.threshold)
+              pks <- ifelse(x - smooth_x > scaled.local.threshold, pks , FALSE)
+            }
           }
         }
       }
@@ -250,7 +255,7 @@ get_peaks <- function(x,
 get_valleys <- function(x, y,
                         global.threshold = 0,
                         local.threshold = 0,
-                        local.reference = "minimum",
+                        local.reference = "maximum",
                         threshold.range = NULL,
                         span = 5,
                         strict = TRUE,

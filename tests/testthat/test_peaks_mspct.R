@@ -1,5 +1,3 @@
-library("photobiology")
-
 context("peaks")
 
 test_that("source_spct single", {

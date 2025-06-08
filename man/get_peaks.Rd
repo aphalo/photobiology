@@ -24,7 +24,7 @@ get_valleys(
   y,
   global.threshold = 0,
   local.threshold = 0,
-  local.reference = "minimum",
+  local.reference = "maximum",
   threshold.range = NULL,
   span = 5,
   strict = TRUE,
