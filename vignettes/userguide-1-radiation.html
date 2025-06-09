@@ -12,7 +12,7 @@
 
 <meta name="author" content="Pedro J. Aphalo" />
 
-<meta name="date" content="2025-06-06" />
+<meta name="date" content="2025-06-09" />
 
 <title>User Guide: 1 Radiation</title>
 
@@ -339,9 +339,9 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 
 <h1 class="title toc-ignore">User Guide: 1 Radiation</h1>
-<h3 class="subtitle">Package ‘photobiology’ 0.12.0.9003</h3>
+<h3 class="subtitle">Package ‘photobiology’ 0.13.0.9000</h3>
 <h4 class="author">Pedro J. Aphalo</h4>
-<h4 class="date">2025-06-06</h4>
+<h4 class="date">2025-06-09</h4>
 
 
 <div id="TOC">
@@ -8198,9 +8198,9 @@ global maximum. In such a case a warning is issued.</p>
 ## 1     451.     0.821</code></pre>
 <p>Frequently, we are not interested in all local maxima, but instead
 only in those that exceed a certain heigh globally or locally (within
-the window of width <code>span</code>). Arguments paased to additional
+the window of width <code>span</code>). Arguments passed to additional
 parameters make this possible as described in the help page of
-<code>peaks()</code> methods.</p>
+<code>peaks()</code>and <code>valleys()</code> methods.</p>
 <p>Method <code>spikes</code> differs from <code>peaks</code> in that it
 uses a different algorithm that detects only very narrow peaks, usually
 called by the name of spikes. The value returned is as in the case of
@@ -8221,8 +8221,8 @@ controlling the sensitivity also differ.</p>
 ##      &lt;dbl&gt;     &lt;dbl&gt;
 ## 1      398     0.504
 ## 2      432     0.646</code></pre>
-<p>Low level functions <code>find_peaks</code>, <code>get_peaks</code>,
-<code>get_valleys</code>, <code>fit_peaks</code>,
+<p>Low level functions <code>find_peaks</code>,
+<code>find_valleys</code>, <code>fit_peaks</code>,
 <code>fit_valleys</code>, and <code>find_spikes</code> take numeric
 vectors as first argument.</p>
 </div>
@@ -8230,51 +8230,59 @@ vectors as first argument.</p>
 <h4>Collections of spectra</h4>
 <p>The methods are also implemented for collections of spectra.</p>
 <div class="sourceCode" id="cb478"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb478-1"><a href="#cb478-1" tabindex="-1"></a><span class="fu">msmsply</span>(filters.mspct, peaks, <span class="at">span =</span> <span class="dv">21</span>)</span></code></pre></div>
-<pre><code>## Warning in check_wl_stepsize(x = x, span = span): Peaks cannot be reliably
-## searched for when the wavelength step varies</code></pre>
+<pre><code>## Warning in check_wl_stepsize(x = x, span = span): &#39;peaks()&#39; assumes consistent
+## w.length steps! max step / min step = 4898</code></pre>
 <pre><code>## Object: filter_mspct [3 x 1]
 ## --- Member: none ---
-## Object: filter_spct [0 x 2]
+## Object: filter_spct [4 x 2]
+## Wavelength range 100-5000 nm, step 1-4898 nm 
 ## Label: theoretical fully transparent object 
 ## Rfr (/1): 0.000, thickness (mm): 1.000e+03, attenuation mode: absorption.
 ## Variables:
 ##  w.length: Wavelength [nm]
 ##  Tfr: Internal spectral transmittance [/1] 
 ## --
-## # A tibble: 0 × 2
-## # ℹ 2 variables: w.length &lt;dbl&gt;, Tfr &lt;dbl&gt;
+## # A tibble: 4 × 2
+##   w.length   Tfr
+##      &lt;dbl&gt; &lt;dbl&gt;
+## 1      100     1
+## 2      101     1
+## 3     4999     1
+## 4     5000     1
 ## --- Member: pet ---
-## Object: filter_spct [3 x 2]
-## Wavelength range 451-714 nm, step 102-161 nm 
+## Object: filter_spct [38 x 2]
+## Wavelength range 267-740 nm, step 1-162 nm 
 ## Label: Polyester, clear film, 0.000125 m thick, Autostat CT5 from McDermit Autotype; new 
 ## Rfr (/1): 0.074, thickness (mm): 0.125, attenuation mode: absorption.
 ## Variables:
 ##  w.length: Wavelength [nm]
 ##  Tfr: Total spectral transmittance [/1] 
 ## --
-## # A tibble: 3 × 2
+## # A tibble: 38 × 2
 ##   w.length   Tfr
 ##      &lt;int&gt; &lt;dbl&gt;
-## 1      451 0.925
-## 2      612 0.918
-## 3      714 0.913
+## 1      267 0.004
+## 2      268 0.004
+## 3      269 0.004
+## 4      270 0.004
+## # ℹ 34 more rows
 ## --- Member: yellow ---
-## Object: filter_spct [5 x 2]
-## Wavelength range 331-768 nm, step 23-293 nm 
+## Object: filter_spct [143 x 2]
+## Wavelength range 206-768 nm, step 1-191 nm 
 ## Label: Theatrical &#39;gel&#39;, type &#39;Canary Supergel no312; new; from Rosco, UK 
 ## Rfr (/1): 0.080, thickness (mm): 0.0900, attenuation mode: absorption.
 ## Variables:
 ##  w.length: Wavelength [nm]
 ##  Tfr: Total spectral transmittance [/1] 
 ## --
-## # A tibble: 5 × 2
-##   w.length     Tfr
-##      &lt;int&gt;   &lt;dbl&gt;
-## 1      331 0.00471
-## 2      624 0.898  
-## 3      708 0.900  
-## 4      731 0.901  
-## 5      768 0.902  
+## # A tibble: 143 × 2
+##   w.length       Tfr
+##      &lt;int&gt;     &lt;dbl&gt;
+## 1      206 0.0000100
+## 2      207 0.0000100
+## 3      208 0.0000100
+## 4      209 0.0000100
+## # ℹ 139 more rows
 ## 
 ## --- END ---</code></pre>
 <p>Two of the filters in the collection do not have peaks, and a
