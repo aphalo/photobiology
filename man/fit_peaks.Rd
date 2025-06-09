@@ -3,7 +3,7 @@
 \name{fit_peaks}
 \alias{fit_peaks}
 \alias{fit_valleys}
-\title{Refine position and value of extremes by fitting}
+\title{Refine position and value of extremes by itting}
 \usage{
 fit_peaks(
   x,

@@ -1,39 +1,44 @@
 #' Find local maxima or global maximum (peaks)
 #'
-#' This function finds peaks (local maxima) in a numeric vector, using a user
-#' selectable span and global and local size thresholds, returning a
-#' \code{logical} vector.
+#' These functions find peaks (local maxima) and valleys (local minima) in a
+#' numeric vector, using a user selectable span and global and local size
+#' thresholds, returning a \code{logical} vector.
 #'
 #' @param x numeric vector. Hint: to find valleys, change the sign of the
 #'   argument with the unary operator \code{-}.
-#' @param global.threshold numeric A value between 0.0 and 1.0,
-#'   relative to \code{threshold.range} indicating the \emph{global} height
-#'   (depth) threshold below which peaks (valleys) will be ignored, or a
-#'   negative value, between 0.0 and -1.0 indicating the \emph{global} height
-#'   (depth) threshold above which peaks (valleys) will be ignored. If
-#'   \code{threshold.range = 0} or the value passed as argument belongs to class
-#'   \code{"AsIs"} the value is interpreted as an absolute value expressed in
-#'   data units.
-#' @param local.threshold numeric A value between 0.0 and 1.0, relative to
-#'   \code{threshold.range}, indicating the
-#'   \emph{within-window} height (depth) threshold below which peaks (valleys)
-#'   will be ignored.  If \code{threshold.range = 0} or the value passed
-#'   as argument belongs to class \code{"AsIs"} the value is interpreted as an
-#'   absolute value expressed in data units.
-#' @param local.reference character One of \code{"minimum"} (eqv.
-#'   \code{"maximum"}) or \code{"median"}. The reference used to assess the
-#'   height of the peak, either the minimum (maximum) value within the window or
-#'   the median of all values in the window.
-#' @param threshold.range numeric vector of length 2 or a longer vector or list
-#'   on which a call to \code{range()} returns a numeric vector of length 2. If
-#'   \code{NULL}, the default, \code{range(x)} is used.
-#' @param span odd integer A peak is defined as an element in a sequence which
-#'   is greater than all other elements within a moving window of width
-#'   \code{span} centred at that element. The default value is 5, meaning that a
-#'   peak is taller than its four nearest neighbours. \code{span = NULL} extends
-#'   the span to the whole length of \code{x}.
+#' @param global.threshold numeric A value belonging to class \code{"AsIs"} is
+#'   interpreted as an absolute minimum height or depth expressed in data units.
+#'   A bare \code{numeric} value (normally between 0.0 and 1.0), is interpreted
+#'   as relative to \code{threshold.range}. In both cases it sets a
+#'   \emph{global} height (depth) threshold below which peaks (valleys) are
+#'   ignored. A bare negative \code{numeric} value indicates the \emph{global}
+#'   height (depth) threshold below which peaks (valleys) are be ignored. If
+#'   \code{global.threshold = NULL}, no threshold is applied and all peaks
+#'   returned.
+#' @param local.threshold numeric A value belonging to class \code{"AsIs"} is
+#'   interpreted as an absolute minimum height (depth) expressed in data units
+#'   relative to a within-window computed reference value. A bare \code{numeric}
+#'   value (normally between 0.0 and 1.0), is interpreted as expressed in units
+#'   relative to \code{threshold.range}. In both cases \code{local.threshold}
+#'   sets a \emph{local} height (depth) threshold below which peaks (valleys)
+#'   are ignored. If \code{local.threshold = NULL} or if \code{span} spans the
+#'   whole of \code{x}, no threshold is applied.
+#' @param local.reference character One of \code{"minimum"} or \code{"median"}.
+#'   The reference used to assess the height of the peak, either the minimum
+#'   value within the window or the median of all values in the window.
+#' @param threshold.range numeric vector If of length 2 or a longer vector
+#'   \code{range(threshold.range)} is used to scale both thresholds. With
+#'   \code{NULL}, the default, \code{range(x)} is used, and with a vector of
+#'   length one \code{range(threshold.range, x)} is used, i.e., the range
+#'   is expanded.
+#' @param span odd positive integer A peak is defined as an element in a
+#'   sequence which is greater than all other elements within a moving window of
+#'   width \code{span} centred at that element. The default value is 5, meaning
+#'   that a peak is taller than its four nearest neighbours. \code{span = NULL}
+#'   extends the span to the whole length of \code{x}.
 #' @param strict logical flag: if TRUE, an element must be strictly greater than
-#'   all other values in its window to be considered a peak. Default: TRUE.
+#'   all other values in its window to be considered a peak. Default: FALSE
+#'   (since version 0.13.1).
 #' @param na.rm logical indicating whether \code{NA} values should be stripped
 #'   before searching for peaks.
 #'
@@ -48,28 +53,36 @@
 #'   error when \code{na.rm = FALSE} and \code{x} contains \code{NA} values,
 #'   \code{NA} values are replaced with the smallest finite value in \code{x}.
 #'   \code{span = NULL} is treated as a special case and selects \code{max(x)}.
-#'   Two tests are optional, one based on the absolute height of the peaks
-#'   (\code{global.threshold}) and another based on the height of the peaks
-#'   compared to other values within the window of width equal to \code{span}
-#'   (\code{local.threshold}). The reference value used within each window
-#'   containing a peak is given by \code{local.reference}. Parameter
-#'   \code{threshold.range} determines how the values passed as argument to
-#'   \code{global.threshold} and \code{local.threshold} are scaled. The default,
-#'   \code{NULL} uses the range of \code{x}. Thresholds for ignoring too small
-#'   peaks are applied after peaks are searched for, and negative threshold
-#'   values can in some cases result in no peaks being returned.
+#'   Passing `strict = TRUE` ensures that multiple global and within window
+#'   maxima are ignored, and can result in no peaks being returned.
+#'
+#'   Two tests make it possible to ignore irrelevant peaks. One test
+#'   (\code{global.threshold}) is based on the absolute height of the peaks and
+#'   can be used in all cases to ignore globally low peaks. A second test
+#'   (\code{local.threshold}) is available when the window defined by `span`
+#'   does not include all observations and can be used to ignore peaks that are
+#'   not locally prominent. In this second approach the height of each peak is
+#'   compared to a summary computed from other values within the window of width
+#'   equal to \code{span} where it was found. In this second case, the reference
+#'   value used within each window containing a peak is given by
+#'   \code{local.reference}. Parameter \code{threshold.range} determines how the
+#'   values passed as argument to \code{global.threshold} and
+#'   \code{local.threshold} are scaled. The default, \code{NULL} uses the range
+#'   of \code{x}. Thresholds for ignoring too small peaks are applied after
+#'   peaks are searched for, and threshold values can in some cases
+#'   result in no peaks being returned.
 #'
 #'   While function \code{find_peaks} accepts as input a \code{numeric} vector
-#'   and returns a \code{logical} vector, methods \code{peaks} and
-#'   \code{valleys} accept as input different R objects, including spectra and
-#'   collections of spectra and return a subset of the object. These methods
-#'   are implemented using calls to functions \code{find_peaks} and
+#'   and returns a \code{logical} vector, methods \code{\link{peaks}} and
+#'   \code{\link{valleys}} accept as input different R objects, including
+#'   spectra and collections of spectra and return a subset of the object. These
+#'   methods are implemented using calls to functions \code{find_peaks} and
 #'   \code{\link{fit_peaks}}.
 #'
 #' @note The default for parameter \code{strict} is \code{FALSE} in functions
 #'   \code{peaks()} and \code{find_peaks()}, as in \code{stat_peaks()} and in
 #'   \code{stat_valleys()}, while the default in \code{\link[splus2R]{peaks}}
-#'   is \code{strict = TRUE}.
+#'   is \code{strict = FALSE}.
 #'
 #' @seealso \code{\link[splus2R]{peaks}}.
 #'
@@ -78,208 +91,157 @@
 #' @export
 #'
 #' @examples
-#' with(sun.data, w.length[find_peaks(s.e.irrad)])
+#' with(sun.data, which(find_peaks(s.e.irrad, span = NULL)))
+#' with(sun.data, which(find_peaks(s.e.irrad, span = 51)))
+#' with(sun.data, w.length[find_peaks(s.e.irrad, span = 51)])
+#' with(sun.data, sum(find_peaks(s.e.irrad, span = NULL, strict = TRUE)))
+#'
+#' with(sun.data, which(find_valleys(s.e.irrad, span = NULL)))
+#' with(sun.data, which(find_valleys(s.e.irrad, span = 51)))
 #'
 find_peaks <-
   function(x,
-           global.threshold = 0,
-           local.threshold = 0,
+           global.threshold = NULL,
+           local.threshold = NULL,
            local.reference = "minimum",
            threshold.range = NULL,
            span = 3,
            strict = FALSE,
            na.rm = FALSE) {
-    # keep track
-    threshold.delta.computed <- FALSE
-    # find peaks
+    # validate parameters
     if (is.null(span) || span >= length(x)) {
-      pks <- x == max(x, na.rm = na.rm)
-      if (strict && sum(pks) != 1L) {
+      # ignore local.threshold argument when not applicable
+      local.threshold <- NULL
+    }
+    if (!is.null(span) && (is.na(span) || !is.numeric(span) || span < 1)) {
+      stop("'span' must be NULL or a positive odd integer, not: ", format(span))
+    }
+    if (!is.null(local.threshold) && !is.numeric(local.threshold)) {
+      stop("'local.threshold' must be NULL or a number, not: ", format(local.threshold))
+    }
+    if (!is.null(global.threshold) && !is.numeric(global.threshold)) {
+      stop("'global.threshold' must be NULL or a number, not: ", format(local.threshold))
+    }
+
+    # Replace NA, NaN and Inf with smallest finite value
+    if (na.rm) {
+      x <- ifelse(!is.finite(x), min(x, na.rm = TRUE), x)
+    }
+
+    # compute threshold range only if needed
+    if (!is.null(global.threshold) || !is.null(local.threshold)) {
+      if (is.null(threshold.range)) {
+        threshold.range <- range(x, na.rm = TRUE)
+      } else if (length(threshold.range) == 1L) {
+        threshold.range <- range(threshold.range, x, na.rm = TRUE)
+      } else {
+        threshold.range <- range(threshold.range, na.rm = TRUE)
+      }
+      if (length(threshold.range) != 2L ||
+          (threshold.range[2] - threshold.range[1]) < 1e-16) {
+        warning("Skipping! Bad 'threshold.range': [",
+                paste(threshold.range, collapse = ", "), "]")
+        return(logical(length(x)))
+      }
+    }
+    # compute only if needed
+    if (!is.null(global.threshold)) {
+      if (inherits(global.threshold, "AsIs")) {
+        global.multiplier <- 1
+        global.base <- 0
+      } else {
+        global.multiplier <- threshold.range[2] - threshold.range[1]
+        global.base <- threshold.range[1]
+      }
+    }
+    # compute only if needed
+    if (!is.null(local.threshold)) {
+      if (inherits(local.threshold, "AsIs")) {
+        local.multiplier <- 1
+        local.base <- 0
+      } else {
+        local.multiplier <- threshold.range[2] - threshold.range[1]
+        local.base <- threshold.range[1]
+      }
+    }
+
+    # search for global or local maxima
+    if (is.null(span) || span >= length(x)) {
+      # find maximum
+      pks <- (x == max(x, na.rm = na.rm))
+      if (strict && sum(pks) > 1L) {
+        message("Multiple maxima/minima dropped as 'strict = TRUE'")
         pks <- logical(length(x)) # all FALSE
       }
     } else {
-      pks <- splus2R::peaks(x = x, span = span, strict = strict)
+      # search for local maxima
+      pks <-
+        splus2R::peaks(x = x, span = span, strict = strict, endbehavior = 0)
     }
 
-    x <- ifelse(!is.finite(x), min(x, na.rm = TRUE), x)
-    # discard peaks that are low or not locally prominent
-    if (abs(global.threshold) >= 1e-5 || abs(local.threshold) >= 1e-5) {
-      if (is.null(threshold.range)) {
-        threshold.range <- range(x)
+    # apply global height threshold test
+    if (!is.null(global.threshold)) {
+      if (global.threshold >= 0 || inherits(global.threshold, "AsIs")) {
+        pks <- pks &
+          x > global.base + global.threshold * global.multiplier
       } else {
-        threshold.range <- range(threshold.range)
+        pks <- pks &
+          x <= global.base + abs(global.threshold) * global.multiplier
       }
-      if (all(abs(threshold.range < 1e-5))) {
-        if (!inherits(global.threshold, "AsIs")) {
-          global.threshold <- I(global.threshold)
-        }
-      } else {
-        threshold.delta <- threshold.range[2] - threshold.range[1]
-        threshold.delta.computed <- TRUE
-        if (length(unique(threshold.range)) != 2L ||
-            !all(is.finite(threshold.range))) {
-          threshold.range <- signif(threshold.range, digits = 3)
-          stop("Bad 'threshold.range' value: (",
-               threshold.range[1], ", ", threshold.range[2], ")")
-        }
-      }
-      # apply global height threshold test to found peaks
-      if (abs(global.threshold) >= 1e-5) {
-        # this can cater for the case when max_x < 0, as with logs
-        if (inherits(global.threshold, "AsIs")) {
-          pks <- ifelse(x > global.threshold, pks , FALSE)
-        } else {
-          scaled.global.threshold <- threshold.delta * abs(global.threshold)
-          if (global.threshold > 0.0) {
-            pks <- ifelse(x - threshold.range[1] > scaled.global.threshold,
-                          pks ,
-                          FALSE)
-          } else {
-            pks <- ifelse(x - threshold.range[1] <= scaled.global.threshold,
-                          pks ,
-                          FALSE)
-          }
-        }
-      }
-      # apply local.threshold height test to found peaks
-      if (local.threshold > 0) {
-        # we always search for maxima, even in the case of valleys
-        if (local.reference == "maximum") {
-          local.reference <- "minimum"
-        }
+    }
 
-        if (all(threshold.range == 0) && !inherits(local.threshold, "AsIs")) {
-          local.threshold <- I(local.threshold)
-        } else if (!threshold.delta.computed) {
-          threshold.delta <- threshold.range[2] - threshold.range[1]
-          if (length(unique(threshold.range)) != 2L ||
-              !all(is.finite(threshold.range))) {
-            threshold.range <- signif(threshold.range, digits = 3)
-            stop("Bad 'threshold.range' value: (",
-                 threshold.range[1], ", ",
-                 threshold.range[2], ")")
-          }
-        }
-        # apply local height threshold test to found peaks
-        if (abs(local.threshold) >= 1e-5) {
-          if (is.null(span) || span >= length(x)) {
-            warning("Ignoring 'local.threshold = '", local.threshold,
-                    "' as 'span = ", format(span), "' includes all observations")
-          } else {
-            smooth_x <-
-              switch(local.reference,
-                     minimum = caTools::runmin(x, k = span, endrule = "min"),
-                     median = stats::runmed(x, k = span, endrule = "median"))
-
-            if (inherits(local.threshold, "AsIs")) {
-              pks <- ifelse(x - smooth_x > local.threshold, pks , FALSE)
-            } else {
-              scaled.local.threshold <- threshold.delta * abs(local.threshold)
-              pks <- ifelse(x - smooth_x > scaled.local.threshold, pks , FALSE)
-            }
-          }
-        }
-      }
+    # apply local.threshold height test to found peaks
+    if (!is.null(local.threshold)) {
+      # apply local height threshold test
+      local.base <-
+        switch(local.reference,
+               minimum = caTools::runmin(x, k = span, endrule = "min"),
+               median = stats::runmed(x, k = span, endrule = "median"),
+               stop("Bad 'local.reference': ", local.reference))
+      pks <- pks & x > local.base + local.threshold * local.multiplier
     }
     pks
   }
 
-#' Get peaks and valleys from a spectrum
-#'
-#' These functions "get" (or extract) peaks (maxima) and valleys (minima) in two
-#' vectors, usually a spectral quantity and wavelength, using a user selectable
-#' span for window width and global and local (within moving window) size
-#' thresholds. They also generate \code{character} values for \code{x}.
-#'
-#' @param x,y numeric
-#' @param x_unit character Vector of texts to be pasted at end of labels built
-#'   from x value at peaks.
-#' @param x_digits numeric Number of significant digits in wavelength label.
-#' @inheritParams find_peaks
-#'
-#' @inherit find_peaks details seealso
-#'
-#' @note The use of these two functions is deprecated. They are retained for
-#'   backwards compatibility and will be removed in the near future.
-#'
-#' @return A data frame with variables w.length and s.irrad with their values at
-#'   the peaks or valleys plus a character variable of labels.
+#' @rdname find_peaks
 #'
 #' @export
 #'
-#' @family peaks and valleys functions
-#'
-get_peaks <- function(x,
-                      y,
-                      global.threshold = 0,
-                      local.threshold = 0,
-                      local.reference = "minimum",
-                      threshold.range = NULL,
-                      span = 5,
-                      strict = TRUE,
-                      x_unit = "",
-                      x_digits = 3,
-                      na.rm = FALSE) {
-  warning("Functions 'get_peaks()' and 'get_valeys()' have been deprecated: please use 'peaks()' and 'valleys()', or 'find_peaks()', instead.")
-  stopifnot(length(x) == length(y))
-  selector <- find_peaks(x = y,
-                         global.threshold = global.threshold,
-                         local.threshold = local.threshold,
-                         local.reference = local.reference,
-                         threshold.range = threshold.range,
-                         span = span,
-                         strict = strict,
-                         na.rm = na.rm)
-  if (sum(selector) < 1) {
-    return(data.frame(
-      x = numeric(0),
-      y = numeric(0),
-      label = character(0)
-    ))
-  } else {
-    peaks.x <- x[selector]
-    peaks.y <- y[selector]
-    return(data.frame(
-      x = peaks.x,
-      y = peaks.y,
-      label = paste(as.character(signif(
-        x = peaks.x, digits = x_digits
-      )), x_unit, sep = "")
-    ))
+find_valleys <-
+  function(x,
+           global.threshold = NULL,
+           local.threshold = NULL,
+           local.reference = "maximum",
+           threshold.range = NULL,
+           span = 3,
+           strict = FALSE,
+           na.rm = FALSE) {
+    x <- -x
+    if (inherits(global.threshold, "AsIs")) {
+      global.threshold <- I(-global.threshold)
+    }
+    if (inherits(local.threshold, "AsIs")) {
+      local.threshold <- I(-local.threshold)
+    }
+    if (local.reference == "maximum") {
+      local.reference <- "minimum"
+    }
+    if (!is.null(threshold.range)) {
+      threshold.range <- rev(-threshold.range)
+    }
+    find_peaks(x = x,
+               global.threshold = global.threshold,
+               local.threshold = local.threshold,
+               local.reference = local.reference,
+               threshold.range = threshold.range,
+               span = span,
+               strict = strict,
+               na.rm = na.rm)
   }
-}
-
-#' @rdname get_peaks
-#' @export
-#'
-get_valleys <- function(x, y,
-                        global.threshold = 0,
-                        local.threshold = 0,
-                        local.reference = "maximum",
-                        threshold.range = NULL,
-                        span = 5,
-                        strict = TRUE,
-                        x_unit = "",
-                        x_digits = 3,
-                        na.rm = FALSE) {
-  xy.data <- get_peaks(x = x, y = -y,
-                       global.threshold = global.threshold,
-                       local.threshold = local.threshold,
-                       local.reference = local.reference,
-                       threshold.range = threshold.range,
-                       span = span,
-                       strict = strict,
-                       x_unit = x_unit,
-                       x_digits = x_digits,
-                       na.rm = na.rm)
-  xy.data[["y"]] <- -xy.data[["y"]]
-  return(xy.data)
-}
-
 
 # fit peaks ---------------------------------------------------------------
 
-#' Refine position and value of extremes by fitting
+#' Refine position and value of extremes by itting
 #'
 #' Functions implementing fitting of peaks in a class-agnostic way. The fitting
 #' refines the location of peaks and value of peaks based on the location of
@@ -491,11 +453,11 @@ peaks.default <-
 peaks.numeric <-
   function(x,
            span = 5,
-           global.threshold = 0,
-           local.threshold = 0,
+           global.threshold = NULL,
+           local.threshold = NULL,
            local.reference = "minimum",
            threshold.range = NULL,
-           strict = TRUE,
+           strict = FALSE,
            na.rm = FALSE,
            ...) {
   x[find_peaks(x = x,
@@ -515,11 +477,11 @@ peaks.numeric <-
 peaks.data.frame <-
   function(x,
            span = 5,
-           global.threshold = 0,
-           local.threshold = 0,
+           global.threshold = NULL,
+           local.threshold = NULL,
            local.reference = "minimum",
            threshold.range = NULL,
-           strict = TRUE,
+           strict = FALSE,
            na.rm = FALSE,
            x.var.name = NULL,
            y.var.name = NULL,
@@ -559,11 +521,11 @@ peaks.data.frame <-
 peaks.generic_spct <-
   function(x,
            span = 5,
-           global.threshold = 0,
-           local.threshold = 0,
+           global.threshold = NULL,
+           local.threshold = NULL,
            local.reference = "minimum",
            threshold.range = NULL,
-           strict = TRUE,
+           strict = FALSE,
            na.rm = FALSE,
            var.name = NULL,
            refine.wl = FALSE,
@@ -636,11 +598,11 @@ peaks.generic_spct <-
 peaks.source_spct <-
   function(x,
            span = 5,
-           global.threshold = 0,
-           local.threshold = 0,
+           global.threshold = NULL,
+           local.threshold = NULL,
            local.reference = "minimum",
            threshold.range = NULL,
-           strict = TRUE,
+           strict = FALSE,
            na.rm = FALSE,
            unit.out = getOption("photobiology.radiation.unit", default = "energy"),
            refine.wl = FALSE,
@@ -707,11 +669,11 @@ peaks.source_spct <-
 peaks.response_spct <-
   function(x,
            span = 5,
-           global.threshold = 0,
-           local.threshold = 0,
+           global.threshold = NULL,
+           local.threshold = NULL,
            local.reference = "minimum",
            threshold.range = NULL,
-           strict = TRUE,
+           strict = FALSE,
            na.rm = FALSE,
            unit.out = getOption("photobiology.radiation.unit", default = "energy"),
            refine.wl = FALSE,
@@ -780,11 +742,11 @@ peaks.response_spct <-
 peaks.filter_spct <-
   function(x,
            span = 5,
-           global.threshold = 0,
-           local.threshold = 0,
+           global.threshold = NULL,
+           local.threshold = NULL,
            local.reference = "minimum",
            threshold.range = NULL,
-           strict = TRUE,
+           strict = FALSE,
            na.rm = FALSE,
            filter.qty = getOption("photobiology.filter.qty",
                                   default = "transmittance"),
@@ -851,11 +813,11 @@ peaks.filter_spct <-
 #'
 peaks.reflector_spct <- function(x,
                                  span = 5,
-                                 global.threshold = 0,
-                                 local.threshold = 0,
+                                 global.threshold = NULL,
+                                 local.threshold = NULL,
                                  local.reference = "minimum",
                                  threshold.range = NULL,
-                                 strict = TRUE,
+                                 strict = FALSE,
                                  na.rm = FALSE,
                                  refine.wl = FALSE,
                                  method = "spline",
@@ -912,11 +874,11 @@ peaks.reflector_spct <- function(x,
 peaks.solute_spct <-
   function(x,
            span = 5,
-           global.threshold = 0,
-           local.threshold = 0,
+           global.threshold = NULL,
+           local.threshold = NULL,
            local.reference = "minimum",
            threshold.range = NULL,
-           strict = TRUE,
+           strict = FALSE,
            na.rm = FALSE,
            refine.wl = FALSE,
            method = "spline",
@@ -978,11 +940,11 @@ peaks.solute_spct <-
 #'
 peaks.cps_spct <- function(x,
                            span = 5,
-                           global.threshold = 0,
-                           local.threshold = 0,
+                           global.threshold = NULL,
+                           local.threshold = NULL,
                            local.reference = "minimum",
                            threshold.range = NULL,
-                           strict = TRUE,
+                           strict = FALSE,
                            na.rm = FALSE,
                            var.name = "cps",
                            refine.wl = FALSE,
@@ -1038,11 +1000,11 @@ peaks.cps_spct <- function(x,
 #' @export
 #'
 peaks.raw_spct <- function(x, span = 5,
-                           global.threshold = 0,
-                           local.threshold = 0,
+                           global.threshold = NULL,
+                           local.threshold = NULL,
                            local.reference = "minimum",
                            threshold.range = NULL,
-                           strict = TRUE,
+                           strict = FALSE,
                            na.rm = FALSE,
                            var.name = "counts",
                            refine.wl = FALSE,
@@ -1111,11 +1073,11 @@ peaks.raw_spct <- function(x, span = 5,
 #'
 peaks.generic_mspct <- function(x,
                                 span = 5,
-                                global.threshold = 0,
-                                local.threshold = 0,
+                                global.threshold = NULL,
+                                local.threshold = NULL,
                                 local.reference = "minimum",
                                 threshold.range = NULL,
-                                strict = TRUE,
+                                strict = FALSE,
                                 na.rm = FALSE,
                                 var.name = NULL,
                                 refine.wl = FALSE,
@@ -1150,11 +1112,11 @@ peaks.generic_mspct <- function(x,
 peaks.source_mspct <-
   function(x,
            span = 5,
-           global.threshold = 0,
-           local.threshold = 0,
+           global.threshold = NULL,
+           local.threshold = NULL,
            local.reference = "minimum",
            threshold.range = NULL,
-           strict = TRUE,
+           strict = FALSE,
            na.rm = FALSE,
            unit.out = getOption("photobiology.radiation.unit",
                                 default = "energy"),
@@ -1190,11 +1152,11 @@ peaks.source_mspct <-
 peaks.response_mspct <-
   function(x,
            span = 5,
-           global.threshold = 0,
-           local.threshold = 0,
+           global.threshold = NULL,
+           local.threshold = NULL,
            local.reference = "minimum",
            threshold.range = NULL,
-           strict = TRUE,
+           strict = FALSE,
            na.rm = FALSE,
            unit.out = getOption("photobiology.radiation.unit",
                                 default = "energy"),
@@ -1230,11 +1192,11 @@ peaks.response_mspct <-
 peaks.filter_mspct <-
   function(x,
            span = 5,
-           global.threshold = 0,
-           local.threshold = 0,
+           global.threshold = NULL,
+           local.threshold = NULL,
            local.reference = "minimum",
            threshold.range = NULL,
-           strict = TRUE,
+           strict = FALSE,
            na.rm = FALSE,
            filter.qty = getOption("photobiology.filter.qty",
                                   default = "transmittance"),
@@ -1271,11 +1233,11 @@ peaks.filter_mspct <-
 peaks.reflector_mspct <-
   function(x,
            span = 5,
-           global.threshold = 0,
-           local.threshold = 0,
+           global.threshold = NULL,
+           local.threshold = NULL,
            local.reference = "minimum",
            threshold.range = NULL,
-           strict = TRUE,
+           strict = FALSE,
            na.rm = FALSE,
            refine.wl = FALSE,
            method = "spline",
@@ -1314,11 +1276,11 @@ peaks.solute_mspct <- peaks.reflector_mspct
 #'
 peaks.cps_mspct <- function(x,
                             span = 5,
-                            global.threshold = 0,
-                            local.threshold = 0,
+                            global.threshold = NULL,
+                            local.threshold = NULL,
                             local.reference = "minimum",
                             threshold.range = NULL,
-                            strict = TRUE,
+                            strict = FALSE,
                             na.rm = FALSE,
                             var.name = "cps",
                             refine.wl = FALSE,
@@ -1352,11 +1314,11 @@ peaks.cps_mspct <- function(x,
 #'
 peaks.raw_mspct <- function(x,
                             span = 5,
-                            global.threshold = 0,
-                            local.threshold = 0,
+                            global.threshold = NULL,
+                            local.threshold = NULL,
                             local.reference = "minimum",
                             threshold.range = NULL,
-                            strict = TRUE,
+                            strict = FALSE,
                             na.rm = FALSE,
                             var.name = "counts",
                             refine.wl = FALSE,
@@ -1459,21 +1421,21 @@ valleys.default <- function(x,
 valleys.numeric <-
   function(x,
            span = 5,
-           global.threshold = 0,
-           local.threshold = 0,
+           global.threshold = NULL,
+           local.threshold = NULL,
            local.reference = "minimum",
            threshold.range = NULL,
-           strict = TRUE,
+           strict = FALSE,
            na.rm = FALSE,
            ...) {
-    x[find_peaks(x = -x,
-                 span = span,
-                 global.threshold = global.threshold,
-                 local.threshold = local.threshold,
-                 local.reference = local.reference,
-                 threshold.range = threshold.range,
-                 strict = strict,
-                 na.rm = na.rm)]
+    x[find_valleys(x = x,
+                   span = span,
+                   global.threshold = global.threshold,
+                   local.threshold = local.threshold,
+                   local.reference = local.reference,
+                   threshold.range = threshold.range,
+                   strict = strict,
+                   na.rm = na.rm)]
   }
 
 #' @describeIn valleys  Method for "data.frame" objects.
@@ -1483,11 +1445,11 @@ valleys.numeric <-
 valleys.data.frame <-
   function(x,
            span = 5,
-           global.threshold = 0,
-           local.threshold = 0,
+           global.threshold = NULL,
+           local.threshold = NULL,
            local.reference = "minimum",
            threshold.range = NULL,
-           strict = TRUE,
+           strict = FALSE,
            na.rm = FALSE,
            x.var.name = NULL,
            y.var.name = NULL,
@@ -1501,13 +1463,13 @@ valleys.data.frame <-
       return(x[NA, ])
     }
     valleys.idx <-
-      which(find_peaks(-x[[var.name]],
-                       span = span,
-                       global.threshold = global.threshold,
-                       local.threshold = local.threshold,
-                       local.reference = local.reference,
-                       threshold.range = threshold.range,
-                       strict = strict))
+      which(find_valleys(x = x[[var.name]],
+                         span = span,
+                         global.threshold = global.threshold,
+                         local.threshold = local.threshold,
+                         local.reference = local.reference,
+                         threshold.range = threshold.range,
+                         strict = strict))
     if (refine.wl && length(valleys.idx > 0L)) {
       fit_valleys(x = x,
                 valleys.idx = valleys.idx,
@@ -1527,11 +1489,11 @@ valleys.data.frame <-
 valleys.generic_spct <-
   function(x,
            span = 5,
-           global.threshold = 0,
-           local.threshold = 0,
+           global.threshold = NULL,
+           local.threshold = NULL,
            local.reference = "minimum",
            threshold.range = NULL,
-           strict = TRUE,
+           strict = FALSE,
            na.rm = FALSE,
            var.name = NULL,
            refine.wl = FALSE,
@@ -1573,14 +1535,14 @@ valleys.generic_spct <-
       }
     }
     valleys.idx <-
-      which(find_peaks(-x[[var.name]],
-                       span = span,
-                       global.threshold = global.threshold,
-                       local.threshold = local.threshold,
-                       local.reference = local.reference,
-                       threshold.range = threshold.range,
-                       strict = strict,
-                       na.rm = na.rm))
+      which(find_valleys(x = x[[var.name]],
+                         span = span,
+                         global.threshold = global.threshold,
+                         local.threshold = local.threshold,
+                         local.reference = local.reference,
+                         threshold.range = threshold.range,
+                         strict = strict,
+                         na.rm = na.rm))
     if (refine.wl && length(valleys.idx > 0L)) {
       fit_valleys(x = x,
                   valleys.idx = valleys.idx,
@@ -1604,11 +1566,11 @@ valleys.generic_spct <-
 valleys.source_spct <-
   function(x,
            span = 5,
-           global.threshold = 0,
-           local.threshold = 0,
-           local.reference = "minimum",
+           global.threshold = NULL,
+           local.threshold = NULL,
+           local.reference = "maximum",
            threshold.range = NULL,
-           strict = TRUE,
+           strict = FALSE,
            na.rm = FALSE,
            unit.out = getOption("photobiology.radiation.unit", default = "energy"),
            refine.wl = FALSE,
@@ -1649,14 +1611,14 @@ valleys.source_spct <-
       stop("Unrecognized 'unit.out': ", unit.out)
     }
     valleys.idx <-
-      which(find_peaks(-z[[col.name]],
-                       span = span,
-                       global.threshold = global.threshold,
-                       local.threshold = local.threshold,
-                       local.reference = local.reference,
-                       threshold.range = threshold.range,
-                       strict = strict,
-                       na.rm = na.rm))
+      which(find_valleys(x = z[[col.name]],
+                         span = span,
+                         global.threshold = global.threshold,
+                         local.threshold = local.threshold,
+                         local.reference = local.reference,
+                         threshold.range = threshold.range,
+                         strict = strict,
+                         na.rm = na.rm))
     if (refine.wl && length(valleys.idx > 0L)) {
       fit_valleys(x = z,
                   valleys.idx = valleys.idx,
@@ -1675,11 +1637,11 @@ valleys.source_spct <-
 valleys.response_spct <-
   function(x,
            span = 5,
-           global.threshold = 0,
-           local.threshold = 0,
+           global.threshold = NULL,
+           local.threshold = NULL,
            local.reference = "minimum",
            threshold.range = NULL,
-           strict = TRUE,
+           strict = FALSE,
            na.rm = FALSE,
            unit.out = getOption("photobiology.radiation.unit", default = "energy"),
            refine.wl = FALSE,
@@ -1720,14 +1682,14 @@ valleys.response_spct <-
       stop("Unrecognized 'unit.out': ", unit.out)
     }
     valleys.idx <-
-      which(find_peaks(-z[[col.name]],
-                       span = span,
-                       global.threshold = global.threshold,
-                       local.threshold = local.threshold,
-                       local.reference = local.reference,
-                       threshold.range = threshold.range,
-                       strict = strict,
-                       na.rm = na.rm))
+      which(find_valleys(z[[col.name]],
+                         span = span,
+                         global.threshold = global.threshold,
+                         local.threshold = local.threshold,
+                         local.reference = local.reference,
+                         threshold.range = threshold.range,
+                         strict = strict,
+                         na.rm = na.rm))
     if (refine.wl && length(valleys.idx > 0L)) {
       fit_valleys(x = z,
                   valleys.idx = valleys.idx,
@@ -1748,11 +1710,11 @@ valleys.response_spct <-
 valleys.filter_spct <-
   function(x,
            span = 5,
-           global.threshold = 0,
-           local.threshold = 0,
+           global.threshold = NULL,
+           local.threshold = NULL,
            local.reference = "minimum",
            threshold.range = NULL,
-           strict = TRUE,
+           strict = FALSE,
            na.rm = FALSE,
            filter.qty = getOption("photobiology.filter.qty", default = "transmittance"),
            refine.wl = FALSE,
@@ -1793,14 +1755,14 @@ valleys.filter_spct <-
       stop("Unrecognized 'filter.qty': ", filter.qty)
     }
     valleys.idx <-
-      which(find_peaks(-z[[col.name]],
-                       span = span,
-                       global.threshold = global.threshold,
-                       local.threshold = local.threshold,
-                       local.reference = local.reference,
-                       threshold.range = threshold.range,
-                       strict = strict,
-                       na.rm = na.rm))
+      which(find_valleys(z[[col.name]],
+                         span = span,
+                         global.threshold = global.threshold,
+                         local.threshold = local.threshold,
+                         local.reference = local.reference,
+                         threshold.range = threshold.range,
+                         strict = strict,
+                         na.rm = na.rm))
     if (refine.wl && length(valleys.idx > 0L)) {
       fit_valleys(x = z,
                   valleys.idx = valleys.idx,
@@ -1819,11 +1781,11 @@ valleys.filter_spct <-
 valleys.reflector_spct <-
   function(x,
            span = 5,
-           global.threshold = 0,
-           local.threshold = 0,
+           global.threshold = NULL,
+           local.threshold = NULL,
            local.reference = "minimum",
            threshold.range = NULL,
-           strict = TRUE,
+           strict = FALSE,
            na.rm = FALSE,
            refine.wl = FALSE,
            method = "spline",
@@ -1854,14 +1816,14 @@ valleys.reflector_spct <-
 
     col.name <- "Rfr"
     valleys.idx <-
-      which(find_peaks(-x[[col.name]],
-                       span = span,
-                       global.threshold = global.threshold,
-                       local.threshold = local.threshold,
-                       local.reference = local.reference,
-                       threshold.range = threshold.range,
-                       strict = strict,
-                       na.rm = na.rm))
+      which(find_valleys(x[[col.name]],
+                         span = span,
+                         global.threshold = global.threshold,
+                         local.threshold = local.threshold,
+                         local.reference = local.reference,
+                         threshold.range = threshold.range,
+                         strict = strict,
+                         na.rm = na.rm))
     if (refine.wl && length(valleys.idx > 0L)) {
       fit_valleys(x = x,
                   valleys.idx = valleys.idx,
@@ -1880,11 +1842,11 @@ valleys.reflector_spct <-
 valleys.solute_spct <-
   function(x,
            span = 5,
-           global.threshold = 0,
-           local.threshold = 0,
+           global.threshold = NULL,
+           local.threshold = NULL,
            local.reference = "minimum",
            threshold.range = NULL,
-           strict = TRUE,
+           strict = FALSE,
            na.rm = FALSE,
            refine.wl = FALSE,
            method = "spline",
@@ -1921,14 +1883,14 @@ valleys.solute_spct <-
       stop("Invalid number of columns found:", length(cols))
     }
     valleys.idx <-
-      which(find_peaks(-z[[col.name]],
-                       span = span,
-                       global.threshold = global.threshold,
-                       local.threshold = local.threshold,
-                       local.reference = local.reference,
-                       threshold.range = threshold.range,
-                       strict = strict,
-                       na.rm = na.rm))
+      which(find_valleys(z[[col.name]],
+                         span = span,
+                         global.threshold = global.threshold,
+                         local.threshold = local.threshold,
+                         local.reference = local.reference,
+                         threshold.range = threshold.range,
+                         strict = strict,
+                         na.rm = na.rm))
     if (refine.wl && length(valleys.idx > 0L)) {
       fit_valleys(x = z,
                   valleys.idx = valleys.idx,
@@ -1947,11 +1909,11 @@ valleys.solute_spct <-
 valleys.cps_spct <-
   function(x,
            span = 5,
-           global.threshold = 0,
-           local.threshold = 0,
+           global.threshold = NULL,
+           local.threshold = NULL,
            local.reference = "minimum",
            threshold.range = NULL,
-           strict = TRUE,
+           strict = FALSE,
            na.rm = FALSE,
            var.name = "cps",
            refine.wl = FALSE,
@@ -1983,14 +1945,14 @@ valleys.cps_spct <-
     check_wl_stepsize(x = x, span = span)
 
     valleys.idx <-
-      which(find_peaks(-x[[var.name]],
-                       span = span,
-                       global.threshold = global.threshold,
-                       local.threshold = local.threshold,
-                       local.reference = local.reference,
-                       threshold.range = threshold.range,
-                       strict = strict,
-                       na.rm = na.rm))
+      which(find_valleys(x[[var.name]],
+                         span = span,
+                         global.threshold = global.threshold,
+                         local.threshold = local.threshold,
+                         local.reference = local.reference,
+                         threshold.range = threshold.range,
+                         strict = strict,
+                         na.rm = na.rm))
     if (refine.wl && length(valleys.idx > 0L)) {
       fit_valleys(x = x,
                   valleys.idx = valleys.idx,
@@ -2007,11 +1969,11 @@ valleys.cps_spct <-
 #' @export
 #'
 valleys.raw_spct <- function(x, span = 5,
-                             global.threshold = 0,
-                             local.threshold = 0,
+                             global.threshold = NULL,
+                             local.threshold = NULL,
                              local.reference = "minimum",
                              threshold.range = NULL,
-                             strict = TRUE,
+                             strict = FALSE,
                              na.rm = FALSE,
                              var.name = "counts",
                              refine.wl = FALSE,
@@ -2043,14 +2005,14 @@ valleys.raw_spct <- function(x, span = 5,
   check_wl_stepsize(x = x, span = span)
 
   valleys.idx <-
-    which(find_peaks(-x[[var.name]],
-                     span = span,
-                     global.threshold = global.threshold,
-                     local.threshold = local.threshold,
-                     local.reference = local.reference,
-                     threshold.range = threshold.range,
-                     strict = strict,
-                     na.rm = na.rm))
+    which(find_valleys(x[[var.name]],
+                       span = span,
+                       global.threshold = global.threshold,
+                       local.threshold = local.threshold,
+                       local.reference = local.reference,
+                       threshold.range = threshold.range,
+                       strict = strict,
+                       na.rm = na.rm))
   if (refine.wl && length(valleys.idx > 0L)) {
     fit_valleys(x = x,
                 valleys.idx = valleys.idx,
@@ -2080,11 +2042,11 @@ valleys.raw_spct <- function(x, span = 5,
 #'
 valleys.generic_mspct <- function(x,
                                   span = 5,
-                                  global.threshold = 0,
-                                  local.threshold = 0,
+                                  global.threshold = NULL,
+                                  local.threshold = NULL,
                                   local.reference = "minimum",
                                   threshold.range = NULL,
-                                  strict = TRUE,
+                                  strict = FALSE,
                                   na.rm = FALSE,
                                   var.name = NULL,
                                   refine.wl = FALSE,
@@ -2119,11 +2081,11 @@ valleys.generic_mspct <- function(x,
 valleys.source_mspct <-
   function(x,
            span = 5,
-           global.threshold = 0,
-           local.threshold = 0,
+           global.threshold = NULL,
+           local.threshold = NULL,
            local.reference = "minimum",
            threshold.range = NULL,
-           strict = TRUE,
+           strict = FALSE,
            na.rm = FALSE,
            unit.out = getOption("photobiology.radiation.unit",
                                 default = "energy"),
@@ -2159,11 +2121,11 @@ valleys.source_mspct <-
 valleys.response_mspct <-
   function(x,
            span = 5,
-           global.threshold = 0,
-           local.threshold = 0,
+           global.threshold = NULL,
+           local.threshold = NULL,
            local.reference = "minimum",
            threshold.range = NULL,
-           strict = TRUE,
+           strict = FALSE,
            na.rm = FALSE,
            unit.out = getOption("photobiology.radiation.unit",
                                 default = "energy"),
@@ -2199,11 +2161,11 @@ valleys.response_mspct <-
 valleys.filter_mspct <-
   function(x,
            span = 5,
-           global.threshold = 0,
-           local.threshold = 0,
+           global.threshold = NULL,
+           local.threshold = NULL,
            local.reference = "minimum",
            threshold.range = NULL,
-           strict = TRUE,
+           strict = FALSE,
            na.rm = FALSE,
            filter.qty = getOption("photobiology.filter.qty",
                                   default = "transmittance"),
@@ -2240,11 +2202,11 @@ valleys.filter_mspct <-
 valleys.reflector_mspct <-
   function(x,
            span = 5,
-           global.threshold = 0,
-           local.threshold = 0,
+           global.threshold = NULL,
+           local.threshold = NULL,
            local.reference = "minimum",
            threshold.range = NULL,
-           strict = TRUE,
+           strict = FALSE,
            na.rm = FALSE,
            refine.wl = FALSE,
            method = "spline",
@@ -2283,11 +2245,11 @@ valleys.solute_mspct <- valleys.reflector_mspct
 #'
 valleys.cps_mspct <- function(x,
                               span = 5,
-                              global.threshold = 0,
-                              local.threshold = 0,
+                              global.threshold = NULL,
+                              local.threshold = NULL,
                               local.reference = "minimum",
                               threshold.range = NULL,
-                              strict = TRUE,
+                              strict = FALSE,
                               na.rm = FALSE,
                               var.name = "cps",
                               refine.wl = FALSE,
@@ -2321,11 +2283,11 @@ valleys.cps_mspct <- function(x,
 #'
 valleys.raw_mspct <- function(x,
                               span = 5,
-                              global.threshold = 0,
-                              local.threshold = 0,
+                              global.threshold = NULL,
+                              local.threshold = NULL,
                               local.reference = "minimum",
                               threshold.range = NULL,
-                              strict = TRUE,
+                              strict = FALSE,
                               na.rm = FALSE,
                               var.name = "counts",
                               refine.wl = FALSE,
