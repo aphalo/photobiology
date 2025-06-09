@@ -50,11 +50,11 @@ peaks(
 \method{peaks}{numeric}(
   x,
   span = 5,
-  global.threshold = 0,
-  local.threshold = 0,
+  global.threshold = NULL,
+  local.threshold = NULL,
   local.reference = "minimum",
   threshold.range = NULL,
-  strict = TRUE,
+  strict = FALSE,
   na.rm = FALSE,
   ...
 )
@@ -62,11 +62,11 @@ peaks(
 \method{peaks}{data.frame}(
   x,
   span = 5,
-  global.threshold = 0,
-  local.threshold = 0,
+  global.threshold = NULL,
+  local.threshold = NULL,
   local.reference = "minimum",
   threshold.range = NULL,
-  strict = TRUE,
+  strict = FALSE,
   na.rm = FALSE,
   x.var.name = NULL,
   y.var.name = NULL,
@@ -79,11 +79,11 @@ peaks(
 \method{peaks}{generic_spct}(
   x,
   span = 5,
-  global.threshold = 0,
-  local.threshold = 0,
+  global.threshold = NULL,
+  local.threshold = NULL,
   local.reference = "minimum",
   threshold.range = NULL,
-  strict = TRUE,
+  strict = FALSE,
   na.rm = FALSE,
   var.name = NULL,
   refine.wl = FALSE,
@@ -94,11 +94,11 @@ peaks(
 \method{peaks}{source_spct}(
   x,
   span = 5,
-  global.threshold = 0,
-  local.threshold = 0,
+  global.threshold = NULL,
+  local.threshold = NULL,
   local.reference = "minimum",
   threshold.range = NULL,
-  strict = TRUE,
+  strict = FALSE,
   na.rm = FALSE,
   unit.out = getOption("photobiology.radiation.unit", default = "energy"),
   refine.wl = FALSE,
@@ -109,11 +109,11 @@ peaks(
 \method{peaks}{response_spct}(
   x,
   span = 5,
-  global.threshold = 0,
-  local.threshold = 0,
+  global.threshold = NULL,
+  local.threshold = NULL,
   local.reference = "minimum",
   threshold.range = NULL,
-  strict = TRUE,
+  strict = FALSE,
   na.rm = FALSE,
   unit.out = getOption("photobiology.radiation.unit", default = "energy"),
   refine.wl = FALSE,
@@ -124,11 +124,11 @@ peaks(
 \method{peaks}{filter_spct}(
   x,
   span = 5,
-  global.threshold = 0,
-  local.threshold = 0,
+  global.threshold = NULL,
+  local.threshold = NULL,
   local.reference = "minimum",
   threshold.range = NULL,
-  strict = TRUE,
+  strict = FALSE,
   na.rm = FALSE,
   filter.qty = getOption("photobiology.filter.qty", default = "transmittance"),
   refine.wl = FALSE,
@@ -139,11 +139,11 @@ peaks(
 \method{peaks}{reflector_spct}(
   x,
   span = 5,
-  global.threshold = 0,
-  local.threshold = 0,
+  global.threshold = NULL,
+  local.threshold = NULL,
   local.reference = "minimum",
   threshold.range = NULL,
-  strict = TRUE,
+  strict = FALSE,
   na.rm = FALSE,
   refine.wl = FALSE,
   method = "spline",
@@ -153,11 +153,11 @@ peaks(
 \method{peaks}{solute_spct}(
   x,
   span = 5,
-  global.threshold = 0,
-  local.threshold = 0,
+  global.threshold = NULL,
+  local.threshold = NULL,
   local.reference = "minimum",
   threshold.range = NULL,
-  strict = TRUE,
+  strict = FALSE,
   na.rm = FALSE,
   refine.wl = FALSE,
   method = "spline",
@@ -167,11 +167,11 @@ peaks(
 \method{peaks}{cps_spct}(
   x,
   span = 5,
-  global.threshold = 0,
-  local.threshold = 0,
+  global.threshold = NULL,
+  local.threshold = NULL,
   local.reference = "minimum",
   threshold.range = NULL,
-  strict = TRUE,
+  strict = FALSE,
   na.rm = FALSE,
   var.name = "cps",
   refine.wl = FALSE,
@@ -182,11 +182,11 @@ peaks(
 \method{peaks}{raw_spct}(
   x,
   span = 5,
-  global.threshold = 0,
-  local.threshold = 0,
+  global.threshold = NULL,
+  local.threshold = NULL,
   local.reference = "minimum",
   threshold.range = NULL,
-  strict = TRUE,
+  strict = FALSE,
   na.rm = FALSE,
   var.name = "counts",
   refine.wl = FALSE,
@@ -197,11 +197,11 @@ peaks(
 \method{peaks}{generic_mspct}(
   x,
   span = 5,
-  global.threshold = 0,
-  local.threshold = 0,
+  global.threshold = NULL,
+  local.threshold = NULL,
   local.reference = "minimum",
   threshold.range = NULL,
-  strict = TRUE,
+  strict = FALSE,
   na.rm = FALSE,
   var.name = NULL,
   refine.wl = FALSE,
@@ -214,11 +214,11 @@ peaks(
 \method{peaks}{source_mspct}(
   x,
   span = 5,
-  global.threshold = 0,
-  local.threshold = 0,
+  global.threshold = NULL,
+  local.threshold = NULL,
   local.reference = "minimum",
   threshold.range = NULL,
-  strict = TRUE,
+  strict = FALSE,
   na.rm = FALSE,
   unit.out = getOption("photobiology.radiation.unit", default = "energy"),
   refine.wl = FALSE,
@@ -231,11 +231,11 @@ peaks(
 \method{peaks}{response_mspct}(
   x,
   span = 5,
-  global.threshold = 0,
-  local.threshold = 0,
+  global.threshold = NULL,
+  local.threshold = NULL,
   local.reference = "minimum",
   threshold.range = NULL,
-  strict = TRUE,
+  strict = FALSE,
   na.rm = FALSE,
   unit.out = getOption("photobiology.radiation.unit", default = "energy"),
   refine.wl = FALSE,
@@ -248,11 +248,11 @@ peaks(
 \method{peaks}{filter_mspct}(
   x,
   span = 5,
-  global.threshold = 0,
-  local.threshold = 0,
+  global.threshold = NULL,
+  local.threshold = NULL,
   local.reference = "minimum",
   threshold.range = NULL,
-  strict = TRUE,
+  strict = FALSE,
   na.rm = FALSE,
   filter.qty = getOption("photobiology.filter.qty", default = "transmittance"),
   refine.wl = FALSE,
@@ -265,11 +265,11 @@ peaks(
 \method{peaks}{reflector_mspct}(
   x,
   span = 5,
-  global.threshold = 0,
-  local.threshold = 0,
+  global.threshold = NULL,
+  local.threshold = NULL,
   local.reference = "minimum",
   threshold.range = NULL,
-  strict = TRUE,
+  strict = FALSE,
   na.rm = FALSE,
   refine.wl = FALSE,
   method = "spline",
@@ -281,11 +281,11 @@ peaks(
 \method{peaks}{solute_mspct}(
   x,
   span = 5,
-  global.threshold = 0,
-  local.threshold = 0,
+  global.threshold = NULL,
+  local.threshold = NULL,
   local.reference = "minimum",
   threshold.range = NULL,
-  strict = TRUE,
+  strict = FALSE,
   na.rm = FALSE,
   refine.wl = FALSE,
   method = "spline",
@@ -297,11 +297,11 @@ peaks(
 \method{peaks}{cps_mspct}(
   x,
   span = 5,
-  global.threshold = 0,
-  local.threshold = 0,
+  global.threshold = NULL,
+  local.threshold = NULL,
   local.reference = "minimum",
   threshold.range = NULL,
-  strict = TRUE,
+  strict = FALSE,
   na.rm = FALSE,
   var.name = "cps",
   refine.wl = FALSE,
@@ -314,11 +314,11 @@ peaks(
 \method{peaks}{raw_mspct}(
   x,
   span = 5,
-  global.threshold = 0,
-  local.threshold = 0,
+  global.threshold = NULL,
+  local.threshold = NULL,
   local.reference = "minimum",
   threshold.range = NULL,
-  strict = TRUE,
+  strict = FALSE,
   na.rm = FALSE,
   var.name = "counts",
   refine.wl = FALSE,
@@ -332,39 +332,44 @@ peaks(
 \item{x}{numeric vector. Hint: to find valleys, change the sign of the
 argument with the unary operator \code{-}.}
 
-\item{span}{odd integer A peak is defined as an element in a sequence which
-is greater than all other elements within a moving window of width
-\code{span} centred at that element. The default value is 5, meaning that a
-peak is taller than its four nearest neighbours. \code{span = NULL} extends
-the span to the whole length of \code{x}.}
+\item{span}{odd positive integer A peak is defined as an element in a
+sequence which is greater than all other elements within a moving window of
+width \code{span} centred at that element. The default value is 5, meaning
+that a peak is taller than its four nearest neighbours. \code{span = NULL}
+extends the span to the whole length of \code{x}.}
 
-\item{global.threshold}{numeric A value between 0.0 and 1.0,
-relative to \code{threshold.range} indicating the \emph{global} height
-(depth) threshold below which peaks (valleys) will be ignored, or a
-negative value, between 0.0 and -1.0 indicating the \emph{global} height
-(depth) threshold above which peaks (valleys) will be ignored. If
-\code{threshold.range = 0} or the value passed as argument belongs to class
-\code{"AsIs"} the value is interpreted as an absolute value expressed in
-data units.}
+\item{global.threshold}{numeric A value belonging to class \code{"AsIs"} is
+interpreted as an absolute minimum height or depth expressed in data units.
+A bare \code{numeric} value (normally between 0.0 and 1.0), is interpreted
+as relative to \code{threshold.range}. In both cases it sets a
+\emph{global} height (depth) threshold below which peaks (valleys) are
+ignored. A bare negative \code{numeric} value indicates the \emph{global}
+height (depth) threshold below which peaks (valleys) are be ignored. If
+\code{global.threshold = NULL}, no threshold is applied and all peaks
+returned.}
 
-\item{local.threshold}{numeric A value between 0.0 and 1.0, relative to
-\code{threshold.range}, indicating the
-\emph{within-window} height (depth) threshold below which peaks (valleys)
-will be ignored.  If \code{threshold.range = 0} or the value passed
-as argument belongs to class \code{"AsIs"} the value is interpreted as an
-absolute value expressed in data units.}
+\item{local.threshold}{numeric A value belonging to class \code{"AsIs"} is
+interpreted as an absolute minimum height (depth) expressed in data units
+relative to a within-window computed reference value. A bare \code{numeric}
+value (normally between 0.0 and 1.0), is interpreted as expressed in units
+relative to \code{threshold.range}. In both cases \code{local.threshold}
+sets a \emph{local} height (depth) threshold below which peaks (valleys)
+are ignored. If \code{local.threshold = NULL} or if \code{span} spans the
+whole of \code{x}, no threshold is applied.}
 
-\item{local.reference}{character One of \code{"minimum"} (eqv.
-\code{"maximum"}) or \code{"median"}. The reference used to assess the
-height of the peak, either the minimum (maximum) value within the window or
-the median of all values in the window.}
+\item{local.reference}{character One of \code{"minimum"} or \code{"median"}.
+The reference used to assess the height of the peak, either the minimum
+value within the window or the median of all values in the window.}
 
-\item{threshold.range}{numeric vector of length 2 or a longer vector or list
-on which a call to \code{range()} returns a numeric vector of length 2. If
-\code{NULL}, the default, \code{range(x)} is used.}
+\item{threshold.range}{numeric vector If of length 2 or a longer vector
+\code{range(threshold.range)} is used to scale both thresholds. With
+\code{NULL}, the default, \code{range(x)} is used, and with a vector of
+length one \code{range(threshold.range, x)} is used, i.e., the range
+is expanded.}
 
 \item{strict}{logical flag: if TRUE, an element must be strictly greater than
-all other values in its window to be considered a peak. Default: TRUE.}
+all other values in its window to be considered a peak. Default: FALSE
+(since version 0.13.1).}
 
 \item{na.rm}{logical indicating whether \code{NA} values should be stripped
 before searching for peaks.}
@@ -408,22 +413,30 @@ Function \code{find_peaks} is a wrapper built onto function
   error when \code{na.rm = FALSE} and \code{x} contains \code{NA} values,
   \code{NA} values are replaced with the smallest finite value in \code{x}.
   \code{span = NULL} is treated as a special case and selects \code{max(x)}.
-  Two tests are optional, one based on the absolute height of the peaks
-  (\code{global.threshold}) and another based on the height of the peaks
-  compared to other values within the window of width equal to \code{span}
-  (\code{local.threshold}). The reference value used within each window
-  containing a peak is given by \code{local.reference}. Parameter
-  \code{threshold.range} determines how the values passed as argument to
-  \code{global.threshold} and \code{local.threshold} are scaled. The default,
-  \code{NULL} uses the range of \code{x}. Thresholds for ignoring too small
-  peaks are applied after peaks are searched for, and negative threshold
-  values can in some cases result in no peaks being returned.
+  Passing `strict = TRUE` ensures that multiple global and within window
+  maxima are ignored, and can result in no peaks being returned.
+
+  Two tests make it possible to ignore irrelevant peaks. One test
+  (\code{global.threshold}) is based on the absolute height of the peaks and
+  can be used in all cases to ignore globally low peaks. A second test
+  (\code{local.threshold}) is available when the window defined by `span`
+  does not include all observations and can be used to ignore peaks that are
+  not locally prominent. In this second approach the height of each peak is
+  compared to a summary computed from other values within the window of width
+  equal to \code{span} where it was found. In this second case, the reference
+  value used within each window containing a peak is given by
+  \code{local.reference}. Parameter \code{threshold.range} determines how the
+  values passed as argument to \code{global.threshold} and
+  \code{local.threshold} are scaled. The default, \code{NULL} uses the range
+  of \code{x}. Thresholds for ignoring too small peaks are applied after
+  peaks are searched for, and threshold values can in some cases
+  result in no peaks being returned.
 
   While function \code{find_peaks} accepts as input a \code{numeric} vector
-  and returns a \code{logical} vector, methods \code{peaks} and
-  \code{valleys} accept as input different R objects, including spectra and
-  collections of spectra and return a subset of the object. These methods
-  are implemented using calls to functions \code{find_peaks} and
+  and returns a \code{logical} vector, methods \code{\link{peaks}} and
+  \code{\link{valleys}} accept as input different R objects, including
+  spectra and collections of spectra and return a subset of the object. These
+  methods are implemented using calls to functions \code{find_peaks} and
   \code{\link{fit_peaks}}.
 }
 \section{Methods (by class)}{
@@ -471,7 +484,7 @@ Function \code{find_peaks} is a wrapper built onto function
 The default for parameter \code{strict} is \code{FALSE} in functions
   \code{peaks()} and \code{find_peaks()}, as in \code{stat_peaks()} and in
   \code{stat_valleys()}, while the default in \code{\link[splus2R]{peaks}}
-  is \code{strict = TRUE}.
+  is \code{strict = FALSE}.
 }
 \examples{
 # default span = 5
@@ -506,7 +519,6 @@ peaks(sun.spct)
 Other peaks and valleys functions: 
 \code{\link{find_peaks}()},
 \code{\link{find_spikes}()},
-\code{\link{get_peaks}()},
 \code{\link{replace_bad_pixs}()},
 \code{\link{spikes}()},
 \code{\link{valleys}()},

@@ -1,10 +1,12 @@
-library("photobiology")
-
 context("peaks")
 
 test_that("source_spct single", {
 
   my.spct <- sun.spct
+
+  peaks.spct <- peaks(sun.spct, span = NULL)
+  expect_equal(nrow(peaks.spct), 1)
+  expect_is(peaks.spct, "source_spct")
 
   peaks.spct <- peaks(sun.spct, span = NULL, strict = TRUE)
   expect_equal(nrow(peaks.spct), 1)
@@ -14,11 +16,13 @@ test_that("source_spct single", {
   expect_equal(nrow(peaks.spct), 1)
   expect_is(peaks.spct, "source_spct")
 
-  peaks.spct <- peaks(sun.spct, span = NULL, strict = TRUE, global.threshold = 0.9)
+  peaks.spct <- peaks(sun.spct, span = NULL, strict = TRUE,
+                      global.threshold = 0.9)
   expect_equal(nrow(peaks.spct), 1)
   expect_is(peaks.spct, "source_spct")
 
-  peaks.spct <- peaks(sun.spct, span = NULL, strict = FALSE, global.threshold = -0.1)
+  peaks.spct <- peaks(sun.spct, span = NULL, strict = FALSE,
+                      global.threshold = -0.1)
   expect_equal(nrow(peaks.spct), 0)
   expect_is(peaks.spct, "source_spct")
 
@@ -27,55 +31,85 @@ test_that("source_spct single", {
   expect_equal(nrow(peaks.spct), 1)
   expect_is(peaks.spct, "source_spct")
 
-  peaks.spct <- peaks(sun.spct, span = 5)
+  peaks.spct <- peaks(sun.spct, strict = TRUE)
   expect_equal(nrow(peaks.spct), 76)
   expect_equal(names(peaks.spct), c("w.length", "s.e.irrad"))
   expect_is(peaks.spct, "source_spct")
 
-  peaks.spct <- peaks(sun.spct, span = 51)
+  peaks.spct <- peaks(sun.spct, span = 51, strict = TRUE)
   expect_equal(nrow(peaks.spct), 3)
   expect_equal(names(peaks.spct), c("w.length", "s.e.irrad"))
   expect_is(peaks.spct, "source_spct")
 
-  peaks.spct <- peaks(sun.spct, span = 5) # default
-  expect_equal(nrow(peaks.spct), 76)
-  expect_equal(names(peaks.spct), c("w.length", "s.e.irrad"))
-  expect_is(peaks.spct, "source_spct")
-
-  peaks.spct <- peaks(sun.spct)
-  expect_equal(nrow(peaks.spct), 76)
-  expect_equal(names(peaks.spct), c("w.length", "s.e.irrad"))
-  expect_is(peaks.spct, "source_spct")
-
-  peaks.spct <- peaks(sun.spct, global.threshold = 0.9)
+  peaks.spct <- peaks(sun.spct, global.threshold = 0.9, strict = TRUE)
   expect_equal(nrow(peaks.spct), 15)
   expect_equal(names(peaks.spct), c("w.length", "s.e.irrad"))
   expect_is(peaks.spct, "source_spct")
 
-  peaks.spct <- peaks(sun.spct, global.threshold = -0.1)
+  peaks.spct <- peaks(sun.spct, global.threshold = 0.1, strict = TRUE)
+  expect_equal(nrow(peaks.spct), 76)
+  expect_equal(names(peaks.spct), c("w.length", "s.e.irrad"))
+  expect_is(peaks.spct, "source_spct")
+
+  peaks.spct <- peaks(sun.spct, global.threshold = -0.1, strict = TRUE)
   expect_equal(nrow(peaks.spct), 0)
   expect_equal(names(peaks.spct), c("w.length", "s.e.irrad"))
   expect_is(peaks.spct, "source_spct")
 
-  peaks.spct <- peaks(sun.spct, local.threshold = 0.1)
+  peaks.spct <- peaks(sun.spct, global.threshold = -0.9, strict = TRUE)
+  expect_equal(nrow(peaks.spct), 61)
+  expect_equal(names(peaks.spct), c("w.length", "s.e.irrad"))
+  expect_is(peaks.spct, "source_spct")
+
+  peaks.spct <- peaks(sun.spct, global.threshold = I(0.1), strict = TRUE)
+  expect_equal(nrow(peaks.spct), 76)
+  expect_equal(names(peaks.spct), c("w.length", "s.e.irrad"))
+  expect_is(peaks.spct, "source_spct")
+
+  peaks.spct <- peaks(sun.spct, global.threshold = I(0), strict = TRUE)
+  expect_equal(nrow(peaks.spct), 76)
+  expect_equal(names(peaks.spct), c("w.length", "s.e.irrad"))
+  expect_is(peaks.spct, "source_spct")
+
+  peaks.spct <- peaks(sun.spct, global.threshold = I(0.8), strict = TRUE)
+  expect_equal(nrow(peaks.spct), 1)
+  expect_equal(names(peaks.spct), c("w.length", "s.e.irrad"))
+  expect_is(peaks.spct, "source_spct")
+
+  peaks.spct <- peaks(sun.spct, local.threshold = 0.1, strict = TRUE)
   expect_equal(nrow(peaks.spct), 16)
   expect_equal(names(peaks.spct), c("w.length", "s.e.irrad"))
   expect_is(peaks.spct, "source_spct")
 
-  peaks.spct <- peaks(sun.spct, local.threshold = 0.1, local.reference = "minimum")
+  peaks.spct <- peaks(sun.spct, local.threshold = 0,
+                      local.reference = "minimum", strict = TRUE)
+  expect_equal(nrow(peaks.spct), 76)
+  expect_equal(names(peaks.spct), c("w.length", "s.e.irrad"))
+  expect_is(peaks.spct, "source_spct")
+
+  peaks.spct <- peaks(sun.spct, local.threshold = 1,
+                      local.reference = "minimum", strict = TRUE)
+  expect_equal(nrow(peaks.spct), 0)
+  expect_equal(names(peaks.spct), c("w.length", "s.e.irrad"))
+  expect_is(peaks.spct, "source_spct")
+
+  peaks.spct <- peaks(sun.spct, local.threshold = 0.1,
+                      local.reference = "minimum", strict = TRUE)
   expect_equal(nrow(peaks.spct), 16)
   expect_equal(names(peaks.spct), c("w.length", "s.e.irrad"))
   expect_is(peaks.spct, "source_spct")
 
-  peaks.spct <- peaks(sun.spct, local.threshold = 0.05, local.reference = "median")
+  peaks.spct <- peaks(sun.spct, local.threshold = 0.05,
+                      local.reference = "median", strict = TRUE)
   expect_equal(nrow(peaks.spct), 9)
   expect_equal(names(peaks.spct), c("w.length", "s.e.irrad"))
   expect_is(peaks.spct, "source_spct")
 
-  peaks.spct <- peaks(sun.spct, span = NULL, unit.out = "photon")
+  peaks.spct <- peaks(sun.spct, span = NULL, unit.out = "photon",
+                      strict = TRUE)
   expect_equal(nrow(peaks.spct), 1)
 
-  peaks.spct <- peaks(my.spct, unit.out = "photon")
+  peaks.spct <- peaks(my.spct, unit.out = "photon", strict = TRUE)
 
   expect_equal(nrow(peaks.spct), 77)
   expect_equal(names(peaks.spct), c("w.length", "s.q.irrad"))
@@ -139,6 +173,10 @@ test_that("source_spct", {
 
   my.spct <- sun.spct
 
+  valleys.spct <- valleys(sun.spct, span = NULL)
+  expect_equal(nrow(valleys.spct), 14)
+  expect_is(valleys.spct, "source_spct")
+
   valleys.spct <- valleys(sun.spct, span = NULL, strict = TRUE)
   expect_equal(nrow(valleys.spct), 0)
   expect_is(valleys.spct, "source_spct")
@@ -147,39 +185,75 @@ test_that("source_spct", {
   expect_equal(nrow(valleys.spct), 14)
   expect_is(valleys.spct, "source_spct")
 
-  valleys.spct <- valleys(sun.spct, span = NULL, strict = FALSE, global.threshold = -0.1)
+  valleys.spct <- valleys(sun.spct, span = NULL, strict = FALSE,
+                          global.threshold = 0.1)
   expect_equal(nrow(valleys.spct), 14)
   expect_is(valleys.spct, "source_spct")
 
-  valleys.spct <- valleys(sun.spct, span = NULL, strict = FALSE, global.threshold = 0.1)
+  valleys.spct <- valleys(sun.spct, span = NULL, strict = FALSE,
+                          global.threshold = -0.1)
   expect_equal(nrow(valleys.spct), 0)
   expect_is(valleys.spct, "source_spct")
 
-  valleys.spct <- valleys(sun.spct, span = NULL, strict = FALSE, global.threshold = -0.9)
+  valleys.spct <- valleys(sun.spct, span = NULL,
+                          strict = FALSE, global.threshold = 0.9)
   expect_equal(nrow(valleys.spct), 14)
   expect_is(valleys.spct, "source_spct")
 
-  valleys.spct <- valleys(sun.spct, strict = FALSE, global.threshold = -0.1)
+  valleys.spct <- valleys(sun.spct, strict = FALSE,
+                          global.threshold = 0)
+  expect_equal(nrow(valleys.spct), 87)
+  expect_is(valleys.spct, "source_spct")
+
+  valleys.spct <- valleys(sun.spct, strict = TRUE,
+                          global.threshold = 0)
+  expect_equal(nrow(valleys.spct), 75)
+  expect_is(valleys.spct, "source_spct")
+
+  valleys.spct <- valleys(sun.spct, strict = FALSE,
+                          global.threshold = 1)
+  expect_equal(nrow(valleys.spct), 0)
+  expect_is(valleys.spct, "source_spct")
+
+  valleys.spct <- valleys(sun.spct, strict = FALSE,
+                          global.threshold = 0.9)
   expect_equal(nrow(valleys.spct), 12)
   expect_is(valleys.spct, "source_spct")
 
-  valleys.spct <- valleys(sun.spct, strict = FALSE, global.threshold = 0.1)
-  expect_equal(nrow(valleys.spct), 0)
+  valleys.spct <- valleys(sun.spct, strict = FALSE,
+                          global.threshold = -0.9)
+  expect_equal(nrow(valleys.spct), 75)
   expect_is(valleys.spct, "source_spct")
 
-  valleys.spct <- valleys(sun.spct, strict = FALSE, global.threshold = -0.9)
+  valleys.spct <- valleys(sun.spct, strict = FALSE,
+                          global.threshold = 0)
   expect_equal(nrow(valleys.spct), 87)
   expect_is(valleys.spct, "source_spct")
 
   valleys.spct <- valleys(sun.spct, strict = FALSE,
-                          global.threshold = -0.9,
+                          global.threshold = 0.9,
                           threshold.range = c(0, 0.82))
+  expect_equal(nrow(valleys.spct), 12)
+  expect_is(valleys.spct, "source_spct")
+
+  valleys.spct <- valleys(sun.spct, strict = FALSE,
+                          global.threshold = 0.7)
+  expect_equal(nrow(valleys.spct), 16)
+  expect_is(valleys.spct, "source_spct")
+
+  valleys.spct <- valleys(sun.spct, strict = FALSE,
+                          global.threshold = I(0.82))
   expect_equal(nrow(valleys.spct), 87)
   expect_is(valleys.spct, "source_spct")
 
   valleys.spct <- valleys(sun.spct, strict = FALSE,
-                          local.threshold = 0.1)
-  expect_equal(nrow(valleys.spct), 16)
+                          global.threshold = I(0.5))
+  expect_equal(nrow(valleys.spct), 44)
+  expect_is(valleys.spct, "source_spct")
+
+  valleys.spct <- valleys(sun.spct, strict = FALSE,
+                          local.threshold = 0.99)
+  expect_equal(nrow(valleys.spct), 0)
   expect_is(valleys.spct, "source_spct")
 
   valleys.spct <- valleys(sun.spct, span = 51)
@@ -187,33 +261,41 @@ test_that("source_spct", {
   expect_equal(names(valleys.spct), c("w.length", "s.e.irrad"))
   expect_is(valleys.spct, "source_spct")
 
-  valleys.spct <- valleys(sun.spct, span = 5)
+  valleys.spct <- valleys(sun.spct, span = 5, strict = TRUE)
   expect_equal(nrow(valleys.spct), 75)
   expect_equal(names(valleys.spct), c("w.length", "s.e.irrad"))
   expect_is(valleys.spct, "source_spct")
 
-  valleys.spct <- valleys(sun.spct)
+  valleys.spct <- valleys(sun.spct, span = 5, strict = FALSE)
+  expect_equal(nrow(valleys.spct), 87)
+  expect_equal(names(valleys.spct), c("w.length", "s.e.irrad"))
+  expect_is(valleys.spct, "source_spct")
+
+  valleys.spct <- valleys(sun.spct, span = 5, strict = TRUE,
+                          local.threshold = 1)
+  expect_equal(nrow(valleys.spct), 0)
+  expect_equal(names(valleys.spct), c("w.length", "s.e.irrad"))
+  expect_is(valleys.spct, "source_spct")
+
+  valleys.spct <- valleys(sun.spct, span = 5, strict = TRUE,
+                          local.threshold = 0)
   expect_equal(nrow(valleys.spct), 75)
   expect_equal(names(valleys.spct), c("w.length", "s.e.irrad"))
   expect_is(valleys.spct, "source_spct")
 
-  valleys.spct <- valleys(sun.spct)
-  expect_equal(nrow(valleys.spct), 75)
-  expect_equal(names(valleys.spct), c("w.length", "s.e.irrad"))
   expect_is(valleys.spct, "source_spct")
 
-  valleys.spct <- valleys(sun.spct)
-  expect_equal(nrow(valleys.spct), 75)
-  expect_equal(names(valleys.spct), c("w.length", "s.e.irrad"))
-  expect_is(valleys.spct, "source_spct")
-
-  valleys.spct <- valleys(sun.spct, span = NULL,
+  valleys.spct <- valleys(sun.spct, span = NULL, strict = TRUE,
                           unit.out = "photon")
   expect_equal(nrow(valleys.spct), 0)
 
-  valleys.spct <- valleys(my.spct, unit.out = "photon")
-
+  valleys.spct <- valleys(sun.spct, unit.out = "photon", strict = TRUE)
   expect_equal(nrow(valleys.spct), 77)
+  expect_equal(names(valleys.spct), c("w.length", "s.q.irrad"))
+  expect_is(valleys.spct, "source_spct")
+
+  valleys.spct <- valleys(sun.spct, unit.out = "photon", strict = FALSE)
+  expect_equal(nrow(valleys.spct), 89)
   expect_equal(names(valleys.spct), c("w.length", "s.q.irrad"))
   expect_is(valleys.spct, "source_spct")
 

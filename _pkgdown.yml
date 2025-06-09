@@ -365,7 +365,6 @@ reference:
     - find_wls
     - fit_peaks
     - get_attributes
-    - get_peaks
     - insert_spct_hinges
     - integrate_xy
     - interpolate_spectrum

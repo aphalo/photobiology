@@ -2872,7 +2872,7 @@ As `span` is given as a number of successive observations, if this step varies s
 peaks(sun.spct, span = NULL, refine.wl = TRUE)
 ```
 
-Frequently, we are not interested in all local maxima, but instead only in those that exceed a certain heigh globally or locally (within the window of width `span`). Arguments paased to additional parameters make this possible as described in the help page of `peaks()` methods.
+Frequently, we are not interested in all local maxima, but instead only in those that exceed a certain heigh globally or locally (within the window of width `span`). Arguments passed to additional parameters make this possible as described in the help page of `peaks()`and `valleys()` methods.
 
 Method `spikes` differs from `peaks` in that it uses a different
 algorithm that detects only very narrow peaks, usually called by the
@@ -2884,9 +2884,7 @@ also differ.
 spikes(sun.spct)
 ```
 
-Low level functions `find_peaks`, `get_peaks`, `get_valleys`,
-`fit_peaks`, `fit_valleys`, and `find_spikes` take numeric vectors as
-first argument.
+Low level functions `find_peaks`, `find_valleys`, `fit_peaks`, `fit_valleys`, and `find_spikes` take numeric vectors as first argument.
 
 #### Collections of spectra
 

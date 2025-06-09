@@ -10,11 +10,11 @@ check_wl_stepsize(x, span = Inf)
 \item{x}{numeric vector. Hint: to find valleys, change the sign of the
 argument with the unary operator \code{-}.}
 
-\item{span}{odd integer A peak is defined as an element in a sequence which
-is greater than all other elements within a moving window of width
-\code{span} centred at that element. The default value is 5, meaning that a
-peak is taller than its four nearest neighbours. \code{span = NULL} extends
-the span to the whole length of \code{x}.}
+\item{span}{odd positive integer A peak is defined as an element in a
+sequence which is greater than all other elements within a moving window of
+width \code{span} centred at that element. The default value is 5, meaning
+that a peak is taller than its four nearest neighbours. \code{span = NULL}
+extends the span to the whole length of \code{x}.}
 }
 \value{
 logical \code{TRUE} if check is passed and otherwise \code{FALSE}
