@@ -109,6 +109,9 @@ find_peaks <-
            strict = FALSE,
            na.rm = FALSE) {
     # validate parameters
+    if (length(unique(na.omit(x))) < 2L) {
+      return(logical(length(x)))
+    }
     if (is.null(span) || span >= length(x)) {
       # ignore local.threshold argument when not applicable
       local.threshold <- NULL
