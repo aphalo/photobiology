@@ -66,9 +66,9 @@ width \code{span} centred at that element. The default value is 5, meaning
 that a peak is taller than its four nearest neighbours. \code{span = NULL}
 extends the span to the whole length of \code{x}.}
 
-\item{strict}{logical flag: if TRUE, an element must be strictly greater than
-all other values in its window to be considered a peak. Default: FALSE
-(since version 0.13.1).}
+\item{strict}{logical flag: if \code{TRUE}, an element must be strictly
+greater than all other values in its window to be considered a peak.
+Default: \code{FALSE} (since version 0.13.1).}
 
 \item{na.rm}{logical indicating whether \code{NA} values should be stripped
 before searching for peaks.}
