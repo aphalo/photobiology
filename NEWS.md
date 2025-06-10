@@ -10,9 +10,11 @@ editor_options:
 * Remove functions `get_peaks()` and `get_valleys()` as their use has been 
 deprecated some time ago.
 * Rewrite function `find_peaks()` fixing a bug in the logic of threshold tests.
-This modifies the behaviour compared to version 0.13.1, when first introduced.
+This modifies the behaviour compared to version 0.13.0, when first introduced.
 * Add function `find_valleys()` and edit `valleys()` methods to use it.
-* These changes, repair the behaviour of `peaks()` and `valleys()` methods. 
+* Add utility function `check_wl_stepsize()`.
+* These changes, repair the behaviour of `peaks()` and `valleys()` methods. In
+particular, they remain backwards compatible with versions < 0.13.0.
 
 # photobiology 0.13.0
 
