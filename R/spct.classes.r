@@ -1010,19 +1010,26 @@ check_spct.chroma_spct <-
 #'   a call to \code{peaks} with \code{span = NULL} or \code{span = 5}
 #'   \emph{tends} to discover the original peaks missing at most a few.
 #'
-#' @return logical \code{TRUE} if check is passed and otherwise \code{FALSE}
-#' with a warning.
+#' @return A logical \code{TRUE} is returned invisibly if check is passed and
+#'   otherwise \code{FALSE} with a warning.
 #'
-#' @keywords internal
+#' @examples
+#'
+#' check_wl_stepsize(sun.spct)
+#' check_wl_stepsize(1:20, 30)
+#'
+#' @export
 #'
 check_wl_stepsize <-
   function(x, span = Inf) {
     if (!is.null(span) && span > 5) {
-      step.size.range <- wl_stepsize(x)
+      step.size.range <- stepsize(x)
       step.size.range[1] <- max(1, step.size.range[1]) # ignore wl steps < 1 nm
       if ((step.size.range[2] / step.size.range[1]) > 2.5) {
         caller.name <- gsub("\\(.*$|\\..*$", "",
-                            deparse(sys.calls()[[sys.nframe()-1]]))
+                            deparse(sys.calls()[[if (sys.nframe() <= 1) 1
+                                                 else sys.nframe() - 1]]))
+        # if..else allows calling check_wl_stepsize() directly at CLI.
         warning("'", caller.name,
                 "()' assumes consistent w.length steps! ",
                 "max step / min step = ",

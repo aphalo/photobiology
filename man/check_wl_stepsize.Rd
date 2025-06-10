@@ -17,8 +17,8 @@ that a peak is taller than its four nearest neighbours. \code{span = NULL}
 extends the span to the whole length of \code{x}.}
 }
 \value{
-logical \code{TRUE} if check is passed and otherwise \code{FALSE}
-with a warning.
+A logical \code{TRUE} is returned invisibly if check is passed and
+  otherwise \code{FALSE} with a warning.
 }
 \description{
 Check consistency of wavelength step size
@@ -39,4 +39,9 @@ As the search for peaks uses a window based on a fixed number of
   a call to \code{peaks} with \code{span = NULL} or \code{span = 5}
   \emph{tends} to discover the original peaks missing at most a few.
 }
-\keyword{internal}
+\examples{
+
+check_wl_stepsize(sun.spct)
+check_wl_stepsize(1:20, 30)
+
+}

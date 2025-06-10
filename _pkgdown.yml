@@ -352,6 +352,7 @@ reference:
     - calc_multipliers
     - calc_source_output
     - check_spectrum
+    - check_wl_stepsize
     - copy_attributes
     - div_spectra
     - e2qmol_multipliers
