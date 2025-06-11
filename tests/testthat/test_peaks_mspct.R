@@ -76,25 +76,27 @@ test_that("source_spct single", {
   expect_equal(names(peaks.spct), c("w.length", "s.e.irrad"))
   expect_is(peaks.spct, "source_spct")
 
-  peaks.spct <- peaks(sun.spct, local.threshold = 0.1, strict = TRUE)
+  peaks.spct <- peaks(sun.spct,
+                      local.threshold = 0.1, local.reference = "farthest",
+                      strict = TRUE)
   expect_equal(nrow(peaks.spct), 16)
   expect_equal(names(peaks.spct), c("w.length", "s.e.irrad"))
   expect_is(peaks.spct, "source_spct")
 
   peaks.spct <- peaks(sun.spct, local.threshold = 0,
-                      local.reference = "minimum", strict = TRUE)
+                      local.reference = "farthest", strict = TRUE)
   expect_equal(nrow(peaks.spct), 76)
   expect_equal(names(peaks.spct), c("w.length", "s.e.irrad"))
   expect_is(peaks.spct, "source_spct")
 
   peaks.spct <- peaks(sun.spct, local.threshold = 1,
-                      local.reference = "minimum", strict = TRUE)
+                      local.reference = "farthest", strict = TRUE)
   expect_equal(nrow(peaks.spct), 0)
   expect_equal(names(peaks.spct), c("w.length", "s.e.irrad"))
   expect_is(peaks.spct, "source_spct")
 
   peaks.spct <- peaks(sun.spct, local.threshold = 0.1,
-                      local.reference = "minimum", strict = TRUE)
+                      local.reference = "farthest", strict = TRUE)
   expect_equal(nrow(peaks.spct), 16)
   expect_equal(names(peaks.spct), c("w.length", "s.e.irrad"))
   expect_is(peaks.spct, "source_spct")

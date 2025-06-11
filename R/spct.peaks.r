@@ -5,7 +5,7 @@
 #' thresholds, returning a \code{logical} vector.
 #'
 #' @param x numeric vector. Hint: to find valleys, change the sign of the
-#'   argument with the unary operator \code{-}.
+#'   argument with the unnary operator \code{-}.
 #' @param global.threshold numeric A value belonging to class \code{"AsIs"} is
 #'   interpreted as an absolute minimum height or depth expressed in data units.
 #'   A bare \code{numeric} value (normally between 0.0 and 1.0), is interpreted
@@ -23,9 +23,10 @@
 #'   sets a \emph{local} height (depth) threshold below which peaks (valleys)
 #'   are ignored. If \code{local.threshold = NULL} or if \code{span} spans the
 #'   whole of \code{x}, no threshold is applied.
-#' @param local.reference character One of \code{"minimum"} or \code{"median"}.
-#'   The reference used to assess the height of the peak, either the minimum
-#'   value within the window or the median of all values in the window.
+#' @param local.reference character One of \code{"median"} or \code{"farthest"}.
+#'   The reference used to assess the height of the peak, either the
+#'   minimum/maximum value within the window or the median of all values in the
+#'   window.
 #' @param threshold.range numeric vector If of length 2 or a longer vector
 #'   \code{range(threshold.range)} is used to scale both thresholds. With
 #'   \code{NULL}, the default, \code{range(x)} is used, and with a vector of
@@ -72,12 +73,12 @@
 #'   peaks are searched for, and threshold values can in some cases
 #'   result in no peaks being returned.
 #'
-#'   While function \code{find_peaks} accepts as input a \code{numeric} vector
-#'   and returns a \code{logical} vector, methods \code{\link{peaks}} and
-#'   \code{\link{valleys}} accept as input different R objects, including
-#'   spectra and collections of spectra and return a subset of the object. These
-#'   methods are implemented using calls to functions \code{find_peaks} and
-#'   \code{\link{fit_peaks}}.
+#'   While functions \code{find_peaks} and \code{find_valleys()} accept as input
+#'   a \code{numeric} vector and return a \code{logical} vector, methods
+#'   \code{\link{peaks}} and \code{\link{valleys}} accept as input different R
+#'   objects, including spectra and collections of spectra and return a subset
+#'   of the object. These methods are implemented using calls to functions
+#'   \code{find_peaks} and \code{\link{fit_peaks}}.
 #'
 #' @note The default for parameter \code{strict} is \code{FALSE} in functions
 #'   \code{peaks()} and \code{find_peaks()}, as in \code{stat_peaks()} and in
@@ -103,7 +104,7 @@ find_peaks <-
   function(x,
            global.threshold = NULL,
            local.threshold = NULL,
-           local.reference = "minimum",
+           local.reference = "median",
            threshold.range = NULL,
            span = 3,
            strict = FALSE,
@@ -198,8 +199,8 @@ find_peaks <-
       # apply local height threshold test
       local.base <-
         switch(local.reference,
-               minimum = caTools::runmin(x, k = span, endrule = "min"),
                median = stats::runmed(x, k = span, endrule = "median"),
+               farthest = caTools::runmin(x, k = span, endrule = "min"),
                stop("Bad 'local.reference': ", local.reference))
       pks <- pks & x > local.base + local.threshold * local.multiplier
     }
@@ -214,7 +215,7 @@ find_valleys <-
   function(x,
            global.threshold = NULL,
            local.threshold = NULL,
-           local.reference = "maximum",
+           local.reference = "median",
            threshold.range = NULL,
            span = 3,
            strict = FALSE,
@@ -225,9 +226,6 @@ find_valleys <-
     }
     if (inherits(local.threshold, "AsIs")) {
       local.threshold <- I(-local.threshold)
-    }
-    if (local.reference == "maximum") {
-      local.reference <- "minimum"
     }
     if (!is.null(threshold.range)) {
       threshold.range <- rev(-threshold.range)
@@ -244,7 +242,7 @@ find_valleys <-
 
 # fit peaks ---------------------------------------------------------------
 
-#' Refine position and value of extremes by itting
+#' Refine position and value of extremes by fitting
 #'
 #' Functions implementing fitting of peaks in a class-agnostic way. The fitting
 #' refines the location of peaks and value of peaks based on the location of
@@ -421,7 +419,7 @@ fit_valleys <- function(x,
 #' # median instead of window minimum
 #' peaks(sun.spct, local.threshold = 0.05, local.reference = "median")
 #' # minimum, the default.
-#' peaks(sun.spct, local.threshold = 0.05, local.reference = "minimum")
+#' peaks(sun.spct, local.threshold = 0.05, local.reference = "farthest")
 #'
 #' @family peaks and valleys functions
 #'
@@ -458,7 +456,7 @@ peaks.numeric <-
            span = 5,
            global.threshold = NULL,
            local.threshold = NULL,
-           local.reference = "minimum",
+           local.reference = "median",
            threshold.range = NULL,
            strict = FALSE,
            na.rm = FALSE,
@@ -482,7 +480,7 @@ peaks.data.frame <-
            span = 5,
            global.threshold = NULL,
            local.threshold = NULL,
-           local.reference = "minimum",
+           local.reference = "median",
            threshold.range = NULL,
            strict = FALSE,
            na.rm = FALSE,
@@ -526,7 +524,7 @@ peaks.generic_spct <-
            span = 5,
            global.threshold = NULL,
            local.threshold = NULL,
-           local.reference = "minimum",
+           local.reference = "median",
            threshold.range = NULL,
            strict = FALSE,
            na.rm = FALSE,
@@ -603,7 +601,7 @@ peaks.source_spct <-
            span = 5,
            global.threshold = NULL,
            local.threshold = NULL,
-           local.reference = "minimum",
+           local.reference = "median",
            threshold.range = NULL,
            strict = FALSE,
            na.rm = FALSE,
@@ -674,7 +672,7 @@ peaks.response_spct <-
            span = 5,
            global.threshold = NULL,
            local.threshold = NULL,
-           local.reference = "minimum",
+           local.reference = "median",
            threshold.range = NULL,
            strict = FALSE,
            na.rm = FALSE,
@@ -747,7 +745,7 @@ peaks.filter_spct <-
            span = 5,
            global.threshold = NULL,
            local.threshold = NULL,
-           local.reference = "minimum",
+           local.reference = "median",
            threshold.range = NULL,
            strict = FALSE,
            na.rm = FALSE,
@@ -818,7 +816,7 @@ peaks.reflector_spct <- function(x,
                                  span = 5,
                                  global.threshold = NULL,
                                  local.threshold = NULL,
-                                 local.reference = "minimum",
+                                 local.reference = "median",
                                  threshold.range = NULL,
                                  strict = FALSE,
                                  na.rm = FALSE,
@@ -879,7 +877,7 @@ peaks.solute_spct <-
            span = 5,
            global.threshold = NULL,
            local.threshold = NULL,
-           local.reference = "minimum",
+           local.reference = "median",
            threshold.range = NULL,
            strict = FALSE,
            na.rm = FALSE,
@@ -945,7 +943,7 @@ peaks.cps_spct <- function(x,
                            span = 5,
                            global.threshold = NULL,
                            local.threshold = NULL,
-                           local.reference = "minimum",
+                           local.reference = "median",
                            threshold.range = NULL,
                            strict = FALSE,
                            na.rm = FALSE,
@@ -1005,7 +1003,7 @@ peaks.cps_spct <- function(x,
 peaks.raw_spct <- function(x, span = 5,
                            global.threshold = NULL,
                            local.threshold = NULL,
-                           local.reference = "minimum",
+                           local.reference = "median",
                            threshold.range = NULL,
                            strict = FALSE,
                            na.rm = FALSE,
@@ -1078,7 +1076,7 @@ peaks.generic_mspct <- function(x,
                                 span = 5,
                                 global.threshold = NULL,
                                 local.threshold = NULL,
-                                local.reference = "minimum",
+                                local.reference = "median",
                                 threshold.range = NULL,
                                 strict = FALSE,
                                 na.rm = FALSE,
@@ -1117,7 +1115,7 @@ peaks.source_mspct <-
            span = 5,
            global.threshold = NULL,
            local.threshold = NULL,
-           local.reference = "minimum",
+           local.reference = "median",
            threshold.range = NULL,
            strict = FALSE,
            na.rm = FALSE,
@@ -1157,7 +1155,7 @@ peaks.response_mspct <-
            span = 5,
            global.threshold = NULL,
            local.threshold = NULL,
-           local.reference = "minimum",
+           local.reference = "median",
            threshold.range = NULL,
            strict = FALSE,
            na.rm = FALSE,
@@ -1197,7 +1195,7 @@ peaks.filter_mspct <-
            span = 5,
            global.threshold = NULL,
            local.threshold = NULL,
-           local.reference = "minimum",
+           local.reference = "median",
            threshold.range = NULL,
            strict = FALSE,
            na.rm = FALSE,
@@ -1238,7 +1236,7 @@ peaks.reflector_mspct <-
            span = 5,
            global.threshold = NULL,
            local.threshold = NULL,
-           local.reference = "minimum",
+           local.reference = "median",
            threshold.range = NULL,
            strict = FALSE,
            na.rm = FALSE,
@@ -1281,7 +1279,7 @@ peaks.cps_mspct <- function(x,
                             span = 5,
                             global.threshold = NULL,
                             local.threshold = NULL,
-                            local.reference = "minimum",
+                            local.reference = "median",
                             threshold.range = NULL,
                             strict = FALSE,
                             na.rm = FALSE,
@@ -1319,7 +1317,7 @@ peaks.raw_mspct <- function(x,
                             span = 5,
                             global.threshold = NULL,
                             local.threshold = NULL,
-                            local.reference = "minimum",
+                            local.reference = "median",
                             threshold.range = NULL,
                             strict = FALSE,
                             na.rm = FALSE,
@@ -1390,7 +1388,7 @@ peaks.raw_mspct <- function(x,
 #' # median instead of window minimum
 #' valleys(sun.spct, local.threshold = 0.1, local.reference = "median")
 #' # minimum, the default.
-#' valleys(sun.spct, local.threshold = 0.1, local.reference = "minimum")
+#' valleys(sun.spct, local.threshold = 0.1, local.reference = "farthest")
 #'
 #' @export
 #'
@@ -1426,7 +1424,7 @@ valleys.numeric <-
            span = 5,
            global.threshold = NULL,
            local.threshold = NULL,
-           local.reference = "minimum",
+           local.reference = "median",
            threshold.range = NULL,
            strict = FALSE,
            na.rm = FALSE,
@@ -1450,7 +1448,7 @@ valleys.data.frame <-
            span = 5,
            global.threshold = NULL,
            local.threshold = NULL,
-           local.reference = "minimum",
+           local.reference = "median",
            threshold.range = NULL,
            strict = FALSE,
            na.rm = FALSE,
@@ -1494,7 +1492,7 @@ valleys.generic_spct <-
            span = 5,
            global.threshold = NULL,
            local.threshold = NULL,
-           local.reference = "minimum",
+           local.reference = "median",
            threshold.range = NULL,
            strict = FALSE,
            na.rm = FALSE,
@@ -1571,7 +1569,7 @@ valleys.source_spct <-
            span = 5,
            global.threshold = NULL,
            local.threshold = NULL,
-           local.reference = "maximum",
+           local.reference = "median",
            threshold.range = NULL,
            strict = FALSE,
            na.rm = FALSE,

@@ -9,7 +9,7 @@ find_peaks(
   x,
   global.threshold = NULL,
   local.threshold = NULL,
-  local.reference = "minimum",
+  local.reference = "median",
   threshold.range = NULL,
   span = 3,
   strict = FALSE,
@@ -20,7 +20,7 @@ find_valleys(
   x,
   global.threshold = NULL,
   local.threshold = NULL,
-  local.reference = "maximum",
+  local.reference = "median",
   threshold.range = NULL,
   span = 3,
   strict = FALSE,
@@ -29,7 +29,7 @@ find_valleys(
 }
 \arguments{
 \item{x}{numeric vector. Hint: to find valleys, change the sign of the
-argument with the unary operator \code{-}.}
+argument with the unnary operator \code{-}.}
 
 \item{global.threshold}{numeric A value belonging to class \code{"AsIs"} is
 interpreted as an absolute minimum height or depth expressed in data units.
@@ -50,9 +50,10 @@ sets a \emph{local} height (depth) threshold below which peaks (valleys)
 are ignored. If \code{local.threshold = NULL} or if \code{span} spans the
 whole of \code{x}, no threshold is applied.}
 
-\item{local.reference}{character One of \code{"minimum"} or \code{"median"}.
-The reference used to assess the height of the peak, either the minimum
-value within the window or the median of all values in the window.}
+\item{local.reference}{character One of \code{"median"} or \code{"farthest"}.
+The reference used to assess the height of the peak, either the
+minimum/maximum value within the window or the median of all values in the
+window.}
 
 \item{threshold.range}{numeric vector If of length 2 or a longer vector
 \code{range(threshold.range)} is used to scale both thresholds. With
@@ -110,12 +111,12 @@ Function \code{find_peaks} is a wrapper built onto function
   peaks are searched for, and threshold values can in some cases
   result in no peaks being returned.
 
-  While function \code{find_peaks} accepts as input a \code{numeric} vector
-  and returns a \code{logical} vector, methods \code{\link{peaks}} and
-  \code{\link{valleys}} accept as input different R objects, including
-  spectra and collections of spectra and return a subset of the object. These
-  methods are implemented using calls to functions \code{find_peaks} and
-  \code{\link{fit_peaks}}.
+  While functions \code{find_peaks} and \code{find_valleys()} accept as input
+  a \code{numeric} vector and return a \code{logical} vector, methods
+  \code{\link{peaks}} and \code{\link{valleys}} accept as input different R
+  objects, including spectra and collections of spectra and return a subset
+  of the object. These methods are implemented using calls to functions
+  \code{find_peaks} and \code{\link{fit_peaks}}.
 }
 \note{
 The default for parameter \code{strict} is \code{FALSE} in functions
