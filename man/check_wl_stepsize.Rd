@@ -4,7 +4,7 @@
 \alias{check_wl_stepsize}
 \title{Check consistency of wavelength step size}
 \usage{
-check_wl_stepsize(x, span = Inf)
+check_wl_stepsize(x, span = Inf, na.rm = FALSE)
 }
 \arguments{
 \item{x}{numeric vector. Hint: to find valleys, change the sign of the
@@ -15,13 +15,19 @@ sequence which is greater than all other elements within a moving window of
 width \code{span} centred at that element. The default value is 5, meaning
 that a peak is taller than its four nearest neighbours. \code{span = NULL}
 extends the span to the whole length of \code{x}.}
+
+\item{na.rm}{logical indicating whether \code{NA} values should be stripped
+before searching for peaks.}
 }
 \value{
 A logical \code{TRUE} is returned invisibly if check is passed and
-  otherwise \code{FALSE} with a warning.
+  otherwise \code{FALSE} with a warning. A warning is issued on failure as
+  a side effect.
 }
 \description{
-Check consistency of wavelength step size
+Check the spread of wavelength step sizes in an ordered \code{numeric}
+vector, or in the \code{"w.length"} column of a spectral object containing
+a single spectrum.
 }
 \details{
 As the search for peaks uses a window based on a fixed number of
@@ -34,10 +40,11 @@ As the search for peaks uses a window based on a fixed number of
   always done as these methods do not override \code{span = Inf}.
 
   The typical case when the step can vary strongly are spectra returned by
-  \code{thin_wl()}. As when using default arguments \code{thin_wl()} retains
-  the original local maxima, and a reasonably narrow wavelength maximum step
-  a call to \code{peaks} with \code{span = NULL} or \code{span = 5}
-  \emph{tends} to discover the original peaks missing at most a few.
+  \code{thin_wl()}. As when using default arguments, including
+  \code{span = 21}, \code{thin_wl()} retains the original local maxima and global maximum,
+  and a reasonably narrow wavelength maximum step a call to \code{peaks} with
+  \code{span = NULL} or \code{span = 5} \emph{tends} to discover the original
+  peaks missing at most a few.
 }
 \examples{
 

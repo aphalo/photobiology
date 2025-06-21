@@ -993,6 +993,10 @@ check_spct.chroma_spct <-
 
 #' Check consistency of wavelength step size
 #'
+#' Check the spread of wavelength step sizes in an ordered \code{numeric}
+#' vector, or in the \code{"w.length"} column of a spectral object containing
+#' a single spectrum.
+#'
 #' @inheritParams peaks
 #'
 #' @details As the search for peaks uses a window based on a fixed number of
@@ -1005,13 +1009,15 @@ check_spct.chroma_spct <-
 #'   always done as these methods do not override \code{span = Inf}.
 #'
 #'   The typical case when the step can vary strongly are spectra returned by
-#'   \code{thin_wl()}. As when using default arguments \code{thin_wl()} retains
-#'   the original local maxima, and a reasonably narrow wavelength maximum step
-#'   a call to \code{peaks} with \code{span = NULL} or \code{span = 5}
-#'   \emph{tends} to discover the original peaks missing at most a few.
+#'   \code{thin_wl()}. As when using default arguments, including
+#'   \code{span = 21}, \code{thin_wl()} retains the original local maxima and global maximum,
+#'   and a reasonably narrow wavelength maximum step a call to \code{peaks} with
+#'   \code{span = NULL} or \code{span = 5} \emph{tends} to discover the original
+#'   peaks missing at most a few.
 #'
 #' @return A logical \code{TRUE} is returned invisibly if check is passed and
-#'   otherwise \code{FALSE} with a warning.
+#'   otherwise \code{FALSE} with a warning. A warning is issued on failure as
+#'   a side effect.
 #'
 #' @examples
 #'
@@ -1021,8 +1027,16 @@ check_spct.chroma_spct <-
 #' @export
 #'
 check_wl_stepsize <-
-  function(x, span = Inf) {
-    if (!is.null(span) && span > 5) {
+  function(x, span = Inf, na.rm = FALSE) {
+    if (is.generic_spct(x)) {
+      stopifnot(getMultipleWl(x) == 1L)
+      x <- x[["w.length"]]
+    }
+    if (na.rm) {
+      x <- na.omit(x)
+    }
+    if (length(x) > 2L &&
+        (!is.null(span) && span > 5)) {
       step.size.range <- stepsize(x)
       step.size.range[1] <- max(1, step.size.range[1]) # ignore wl steps < 1 nm
       if ((step.size.range[2] / step.size.range[1]) > 2.5) {
@@ -1030,7 +1044,7 @@ check_wl_stepsize <-
                             deparse(sys.calls()[[if (sys.nframe() <= 1) 1
                                                  else sys.nframe() - 1]]))
         # if..else allows calling check_wl_stepsize() directly at CLI.
-        warning("'", caller.name,
+        message("'", caller.name,
                 "()' assumes consistent w.length steps! ",
                 "max step / min step = ",
                 round(step.size.range[2] / step.size.range[1], 1))

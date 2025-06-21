@@ -174,7 +174,7 @@ find_peaks <-
       # find maximum
       pks <- (x == max(x, na.rm = na.rm))
       if (strict && sum(pks) > 1L) {
-        message("Multiple maxima/minima dropped as 'strict = TRUE'")
+        message("Non-unique extreme value discarded as 'strict = TRUE'")
         pks <- logical(length(x)) # all FALSE
       }
     } else {
@@ -494,6 +494,16 @@ peaks.data.frame <-
       warning("Variable (column) names required.")
       return(x[NA, ])
     }
+
+    # vector is not necessarily sorted
+    if (!is.null(x.var.name)) {
+      if (is.unsorted(x[[x.var.name]])) {
+        message("In 'peaks.data.frame()' x variable is not sorted")
+      } else {
+        check_wl_stepsize(x = x[[x.var.name]], span = span, na.rm = TRUE)
+      }
+    }
+
     peaks.idx <-
       which(find_peaks(x[[var.name]],
                        span = span,
@@ -555,7 +565,7 @@ peaks.generic_spct <-
       return(rbindspct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
     }
 
-    check_wl_stepsize(x = x, span = span)
+    check_wl_stepsize(x = x, span = span, na.rm = TRUE)
 
     if (is.null(var.name)) {
       # find target variable
@@ -632,7 +642,7 @@ peaks.source_spct <-
       return(rbindspct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
     }
 
-    check_wl_stepsize(x = x, span = span)
+    check_wl_stepsize(x = x, span = span, na.rm = TRUE)
 
     if (unit.out == "energy") {
       z <- q2e(x, action = "replace", byref = FALSE)
@@ -703,7 +713,7 @@ peaks.response_spct <-
       return(rbindspct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
     }
 
-    check_wl_stepsize(x = x, span = span)
+    check_wl_stepsize(x = x, span = span, na.rm = TRUE)
 
     if (unit.out == "energy") {
       z <- q2e(x, "replace", FALSE)
@@ -777,7 +787,7 @@ peaks.filter_spct <-
       return(rbindspct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
     }
 
-    check_wl_stepsize(x = x, span = span)
+    check_wl_stepsize(x = x, span = span, na.rm = TRUE)
 
     if (filter.qty == "transmittance") {
       z <- A2T(x, "replace", FALSE)
@@ -845,7 +855,7 @@ peaks.reflector_spct <- function(x,
     return(rbindspct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
   }
 
-  check_wl_stepsize(x = x, span = span)
+  check_wl_stepsize(x = x, span = span, na.rm = TRUE)
 
   col.name <- "Rfr"
   peaks.idx <-
@@ -906,7 +916,7 @@ peaks.solute_spct <-
       return(rbindspct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
     }
 
-    check_wl_stepsize(x = x, span = span)
+    check_wl_stepsize(x = x, span = span, na.rm = TRUE)
 
     cols <- intersect(c("K.mole", "K.mass"), names(x))
     if (length(cols) == 1) {
@@ -974,7 +984,7 @@ peaks.cps_spct <- function(x,
     return(rbindspct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
   }
 
-  check_wl_stepsize(x = x, span = span)
+  check_wl_stepsize(x = x, span = span, na.rm = TRUE)
 
   peaks.idx <-
     which(find_peaks(x[[var.name]],
@@ -1034,7 +1044,7 @@ peaks.raw_spct <- function(x, span = 5,
     return(rbindspct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
   }
 
-  check_wl_stepsize(x = x, span = span)
+  check_wl_stepsize(x = x, span = span, na.rm = TRUE)
 
   peaks.idx <-
     which(find_peaks(x[[var.name]],
@@ -1523,7 +1533,7 @@ valleys.generic_spct <-
       return(rbindspct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
     }
 
-    check_wl_stepsize(x = x, span = span)
+    check_wl_stepsize(x = x, span = span, na.rm = TRUE)
 
     if (is.null(var.name)) {
       # find target variable
@@ -1600,7 +1610,7 @@ valleys.source_spct <-
       return(rbindspct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
     }
 
-    check_wl_stepsize(x = x, span = span)
+    check_wl_stepsize(x = x, span = span, na.rm = TRUE)
 
     if (unit.out == "energy") {
       z <- q2e(x, "replace", FALSE)
@@ -1671,7 +1681,7 @@ valleys.response_spct <-
       return(rbindspct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
     }
 
-    check_wl_stepsize(x = x, span = span)
+    check_wl_stepsize(x = x, span = span, na.rm = TRUE)
 
     if (unit.out == "energy") {
       z <- q2e(x, "replace", FALSE)
@@ -1744,7 +1754,7 @@ valleys.filter_spct <-
       return(rbindspct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
     }
 
-    check_wl_stepsize(x = x, span = span)
+    check_wl_stepsize(x = x, span = span, na.rm = TRUE)
 
     if (filter.qty == "transmittance") {
       z <- A2T(x, "replace", FALSE)
@@ -1813,7 +1823,7 @@ valleys.reflector_spct <-
       return(rbindspct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
     }
 
-    check_wl_stepsize(x = x, span = span)
+    check_wl_stepsize(x = x, span = span, na.rm = TRUE)
 
     col.name <- "Rfr"
     valleys.idx <-
@@ -1874,7 +1884,7 @@ valleys.solute_spct <-
       return(rbindspct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
     }
 
-    check_wl_stepsize(x = x, span = span)
+    check_wl_stepsize(x = x, span = span, na.rm = TRUE)
 
     cols <- intersect(c("K.mole", "K.mass"), names(x))
     if (length(cols) == 1) {
@@ -1943,7 +1953,7 @@ valleys.cps_spct <-
       return(rbindspct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
     }
 
-    check_wl_stepsize(x = x, span = span)
+    check_wl_stepsize(x = x, span = span, na.rm = TRUE)
 
     valleys.idx <-
       which(find_valleys(x[[var.name]],
@@ -2003,7 +2013,7 @@ valleys.raw_spct <- function(x, span = 5,
     return(rbindspct(mspct, idfactor = getIdFactor(x), attrs.simplify = TRUE))
   }
 
-  check_wl_stepsize(x = x, span = span)
+  check_wl_stepsize(x = x, span = span, na.rm = TRUE)
 
   valleys.idx <-
     which(find_valleys(x[[var.name]],

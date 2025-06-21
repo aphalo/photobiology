@@ -581,7 +581,7 @@ is_effective.summary_source_spct <- function(x) {
 #' @export
 #'
 wl_stepsize <- function(x, ...) {
-  stopifnot(is.any_spct(x) || is.any_mspct(x) || is.waveband(x))
+  stopifnot(is.any_spct(x) || is.any_mspct(x))
   stepsize(x, ...)
 }
 
